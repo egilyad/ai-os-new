@@ -137,11 +137,8 @@ export function DebateTabContent({
     replay?: () => void;
 }) {
     const flexColumn: React.CSSProperties = {
-        flex: 1,
-        display: 'flex',
-        flexDirection: 'column',
-        minWidth: 0,
-        overflow: 'hidden',
+        display: 'block',
+        overflow: 'visible',
     };
     const [internalProbeLoading, setInternalProbeLoading] = useState(false);
     const combinedProbeLoading = internalProbeLoading;
@@ -213,12 +210,8 @@ export function DebateTabContent({
                 ) : (
                     <div
                         style={{
-                            flex: 1,
-                            display: 'grid',
-                            gridTemplateColumns: session ? '1fr 380px' : '1fr',
-                            gap: '1.5rem',
-                            minHeight: 0,
-                            overflow: 'hidden',
+                            display: 'block',
+                            overflow: 'visible',
                         }}
                     >
                         {isLoading && !session && (

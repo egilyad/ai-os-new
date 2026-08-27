@@ -348,10 +348,8 @@ export const AppLayout: React.FC = () => {
                                 key={activeTab}
                                 className="route-enter-animation"
                                 style={{
-                                    flex: 1,
-                                    minHeight: 0,
-                                    display: 'flex',
-                                    flexDirection: 'column',
+                                    display: 'block',
+                                    overflow: 'visible',
                                     position: 'relative',
                                     zIndex: 10,
                                 }}

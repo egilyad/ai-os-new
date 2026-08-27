@@ -455,11 +455,8 @@ const DebatePanel: React.FC = () => {
                 return (
                     <DebateTabContent
                         containerStyle={{
-                            flex: 1,
-                            display: 'flex',
-                            flexDirection: 'column',
-                            minHeight: 0,
-                            overflow: 'hidden',
+                            display: 'block',
+                            overflow: 'visible',
                         }}
                         {...baseProps}
                     />
