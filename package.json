@@ -51,7 +51,7 @@
     "@react-aria/focus": "^3.22.0",
     "@tanstack/react-virtual": "^3.14.2",
     "@tiptap/extension-placeholder": "^3.27.1",
-    "@tiptap/pm": "^3.27.1",
+    "@tiptap/pm": "^3.30.3",
     "@tiptap/react": "^3.27.1",
     "@tiptap/starter-kit": "^3.27.1",
     "@xyflow/react": "^12.10.2",
