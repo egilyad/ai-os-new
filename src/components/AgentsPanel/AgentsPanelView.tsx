@@ -29,6 +29,7 @@ import { AgentWizard } from './AgentWizard';
 import { AgentDetailPanel } from './AgentDetailPanel';
 import { AgentCard } from './AgentCard';
 import { AgentGroupsSection } from './AgentGroupsSection';
+import { QuickCreateAgentModal } from './QuickCreateAgentModal';
 import { AGENT_TEMPLATES } from './agent-templates';
 
 const AgentsPanelView: React.FC = () => {
@@ -72,6 +73,7 @@ const AgentsPanelView: React.FC = () => {
 
     const [customTemplates, setCustomTemplates] = useState<ServiceAgentTemplate[]>([]);
     const [showWizard, setShowWizard] = useState(false);
+    const [showQuickCreate, setShowQuickCreate] = useState(false);
     const [deleteConfirmAgent, setDeleteConfirmAgent] = useState<{
         id: string;
         name: string;
@@ -130,7 +132,7 @@ const AgentsPanelView: React.FC = () => {
                         <PlayCircle size={16} /> Resume All
                     </button>
                     <button
-                        onClick={() => onDeployNewAgent()}
+                        onClick={() => setShowQuickCreate(true)}
                         className="agents-spawn-btn btn-primary"
                     >
                         <Plus size={18} /> {t('agents.spawn_agent')}
@@ -395,6 +397,19 @@ const AgentsPanelView: React.FC = () => {
                 isOpen={showWizard}
                 onClose={() => setShowWizard(false)}
                 onAgentCreated={() => {}}
+            />
+            <QuickCreateAgentModal
+                open={showQuickCreate}
+                onClose={() => setShowQuickCreate(false)}
+                availableRoles={availableRoles}
+                onCreate={({ name, roleName, roleId, model, avatar }) => {
+                    const config: Record<string, unknown> = { roleName, model, avatar: { emoji: avatar, color: '#8b5cf6' } };
+                    if (roleId) (config as Record<string, unknown>).roleId = roleId;
+                    // keep ENGINE untouched — after quick create user stays in Agent Manager
+                    // open detail only if they want to configure
+                    agentService.spawnAgent(name, roleId, config);
+                    window.dispatchEvent(new CustomEvent('agents:updated'));
+                }}
             />
             <ModuleInfo moduleKey="agents" />
             <ConfirmDialog
