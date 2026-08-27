@@ -86,7 +86,7 @@
     "commitlint": "^21.2.1",
     "dependency-cruiser": "18.0.0",
     "esbuild": "0.28.1",
-    "eslint": "^10.2.1",
+    "eslint": "^10.9.0",
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.2",
     "fake-indexeddb": "^6.2.5",
