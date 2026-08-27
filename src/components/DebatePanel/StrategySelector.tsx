@@ -76,75 +76,26 @@ interface StrategySelectorProps {
     t: (key: string) => string;
 }
 
-const StrategySelector: React.FC<StrategySelectorProps> = ({ value, onChange, t }) => {
+const STRATEGY_LABELS: Record<string, string> = {
+    round_robin: 'Round Robin',
+    socratic: 'Socratic',
+    argument_tree: 'Argument Tree',
+    constrained: 'Constrained',
+    moderated: 'Moderated',
+    free_for_all: 'Free for All',
+    jury_trial: 'Jury Trial',
+};
+const StrategySelector: React.FC<StrategySelectorProps> = ({ value, onChange }) => {
     return (
-        <div
-            style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
-                gap: 8,
-            }}
+        <select
+            value={value}
+            onChange={e => onChange(e.target.value)}
+            style={{ width: '100%', padding: '10px 12px', borderRadius: 10, border: '1px solid rgba(100,116,139,0.25)', background: 'rgba(15,23,42,0.6)', color: 'var(--slate-100)', fontSize: '0.9rem', outline: 'none' }}
         >
-            {STRATEGIES.map((s, i) => {
-                const Icon = s.icon;
-                const isSelected = value === s.id;
-                return (
-                    <motion.div
-                        key={s.id}
-                        layout
-                        initial={{ opacity: 0, y: 12 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: i * 0.04, duration: 0.2 }}
-                        role="button"
-                        tabIndex={0}
-                        aria-pressed={isSelected}
-                        onClick={() => onChange(s.id)}
-                        onKeyDown={(e) => {
-                            if (e.key === 'Enter' || e.key === ' ') {
-                                e.preventDefault();
-                                onChange(s.id);
-                            }
-                        }}
-                        style={{
-                            padding: '0.7rem 0.8rem',
-                            borderRadius: 10,
-                            border: '1px solid',
-                            borderColor: isSelected ? s.color : s.border,
-                            background: isSelected ? s.bg : 'rgba(255,255,255,0.02)',
-                            cursor: 'pointer',
-                            transition: 'all 0.15s',
-                            display: 'flex',
-                            flexDirection: 'column',
-                            gap: 6,
-                            outline: isSelected ? `2px solid ${s.color}20` : 'none',
-                            outlineOffset: 1,
-                        }}
-                    >
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                            <Icon size={18} color={isSelected ? s.color : 'var(--slate-500)'} />
-                            <span
-                                style={{
-                                    fontWeight: 700,
-                                    fontSize: '0.8rem',
-                                    color: isSelected ? s.color : 'var(--slate-300)',
-                                }}
-                            >
-                                {t(`debate.strategy.${s.id}`)}
-                            </span>
-                        </div>
-                        <span
-                            style={{
-                                fontSize: '0.68rem',
-                                color: isSelected ? '#94a3b8' : '#64748b',
-                                lineHeight: 1.4,
-                            }}
-                        >
-                            {t(`debate.strategy.${s.id}_desc`)}
-                        </span>
-                    </motion.div>
-                );
-            })}
-        </div>
+            {STRATEGIES.map(s => (
+                <option key={s.id} value={s.id}>{STRATEGY_LABELS[s.id] || s.id}</option>
+            ))}
+        </select>
     );
 };
 

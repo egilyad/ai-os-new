@@ -167,13 +167,15 @@ export function DebateTabContent({
         <div style={containerStyle}>
             {showSidebar && <DebateSidebar />}
             <div style={flexColumn}>
-                <TabBarSection
-                    viewTab={viewTab}
-                    setViewTab={setViewTab}
-                    historyLength={history.length}
-                    sessionStatus={session?.status}
-                    refreshHistory={refreshHistory}
-                />
+                {session && (
+                    <TabBarSection
+                        viewTab={viewTab}
+                        setViewTab={setViewTab}
+                        historyLength={history.length}
+                        sessionStatus={session?.status}
+                        refreshHistory={refreshHistory}
+                    />
+                )}
 
                 {viewTab === 'tournament' ? (
                     <div style={{ flex: 1, overflow: 'auto' }}>

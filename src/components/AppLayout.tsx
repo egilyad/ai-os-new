@@ -359,7 +359,7 @@ export const AppLayout: React.FC = () => {
                                 <AppRoutes />
                             </div>
                         </section>
-                        <NextActionPredictions />
+                        {activeTab !== 'debate' && <NextActionPredictions />}
                         <AlertLayer />
                         <CommandPalette
                             open={isPaletteOpen}

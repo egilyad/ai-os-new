@@ -348,17 +348,16 @@ const DebatePanel: React.FC = () => {
 
     return (
         <div style={debatePanelRoot}>
-            {/* Top Header */}
-            <div style={sectionHeaderBottom}>
-                <div>
-                    <h2 style={pageTitleLarge}>
-                        <MessageSquare size={28} color="#a855f7" aria-hidden="true" />{' '}
-                        {t('debate.title')}
-                    </h2>
-                    <p style={pageSubtitleMuted}>{t('debate.subtitle')}</p>
-                </div>
-
-                {session && (
+            {/* Minimal header only when session active */}
+            {session && (
+                <div style={sectionHeaderBottom}>
+                    <div>
+                        <h2 style={pageTitleLarge}>
+                            <MessageSquare size={28} color="#a855f7" aria-hidden="true" />{' '}
+                            {t('debate.title')}
+                        </h2>
+                        <p style={pageSubtitleMuted}>{t('debate.subtitle')}</p>
+                    </div>
                     <DebateSessionHeader
                         session={session}
                         now={now}
@@ -372,8 +371,8 @@ const DebatePanel: React.FC = () => {
                         clearError={clearError}
                         t={t}
                     />
-                )}
-            </div>
+                </div>
+            )}
 
             {error && (
                 <div role="alert" aria-live="assertive" style={errorBanner}>
