@@ -98,7 +98,7 @@ const DebateSetupWizard: React.FC<DebateSetupWizardProps> = ({
 
     const canNextStep = () => {
         if (step === 0) return topic.trim().length > 0;
-        if (step === 1) return selectedAgents.length + selectedHistoricalCount >= 2;
+        if (step === 1) return selectedAgents.length >= 2;
         return true;
     };
 
@@ -159,24 +159,10 @@ const DebateSetupWizard: React.FC<DebateSetupWizardProps> = ({
                                 topic={topic}
                                 strategy={strategy}
                                 maxRounds={maxRounds}
-                                debateTemperature={debateTemperature}
                                 selectedAgents={selectedAgents}
                                 availableAgents={availableAgents}
-                                probeResults={probeResults}
-                                probeLoading={probeLoading}
-                                onProbe={onProbe}
-                                expandedProbe={expandedProbe}
-                                onToggleProbe={onToggleProbe}
                                 actionLoading={actionLoading}
                                 onStart={onStart}
-                                showAuto={showAuto}
-                                onToggleAuto={onToggleAuto}
-                                autoResults={autoResults}
-                                autoWinRates={autoWinRates}
-                                onAutoDebate={onAutoDebate}
-                                onStressTest={onStressTest}
-                                onBatchTest={onBatchTest}
-                                onClearAuto={onClearAuto}
                                 t={t}
                             />
                         )}

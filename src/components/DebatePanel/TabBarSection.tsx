@@ -44,32 +44,6 @@ export const TabBarSection: React.FC<Props> = ({
                 <Clock size={16} /> History{' '}
                 {historyLength > 0 && <span style={debateHistoryCountBadge}>{historyLength}</span>}
             </Button>
-            <Button
-                variant="ghost"
-                onClick={() => setViewTab('tournament')}
-                className={`debate-tab ${viewTab === 'tournament' ? 'active' : ''}`}
-                style={tabStyle('tournament', '#ef4444')}
-            >
-                <Swords size={16} /> Tournament
-            </Button>
-            <Button
-                variant="ghost"
-                onClick={() => setViewTab('memory')}
-                className={`debate-tab ${viewTab === 'memory' ? 'active' : ''}`}
-                style={tabStyle('memory', '#8b5cf6')}
-            >
-                <Brain size={16} /> Memory
-            </Button>
-            {sessionStatus === 'completed' && (
-                <Button
-                    variant="ghost"
-                    onClick={() => setViewTab('verdict')}
-                    className={`debate-tab ${viewTab === 'verdict' ? 'active' : ''}`}
-                    style={tabStyle('verdict', '#10b981')}
-                >
-                    <ThumbsUp size={16} /> Verdict
-                </Button>
-            )}
             {(viewTab === 'history' || viewTab === 'verdict' || viewTab === 'memory') && (
                 <Button
                     variant="success"

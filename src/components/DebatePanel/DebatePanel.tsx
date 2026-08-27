@@ -453,7 +453,7 @@ const DebatePanel: React.FC = () => {
                     onStart: handleStart,
                     replay: handleReplay,
                 } as const;
-                return isMobile ? (
+                return (
                     <DebateTabContent
                         containerStyle={{
                             flex: 1,
@@ -462,17 +462,6 @@ const DebatePanel: React.FC = () => {
                             minHeight: 0,
                             overflow: 'hidden',
                         }}
-                        {...baseProps}
-                    />
-                ) : (
-                    <DebateTabContent
-                        containerStyle={{
-                            flex: 1,
-                            display: 'flex',
-                            minHeight: 0,
-                            overflow: 'hidden',
-                        }}
-                        showSidebar
                         {...baseProps}
                     />
                 );
