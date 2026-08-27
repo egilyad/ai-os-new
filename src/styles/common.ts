@@ -810,10 +810,11 @@ export const buttonSmAction: CSSProperties = {
 
 /* Debate surface extraction */
 export const debatePanelRoot: CSSProperties = {
-    height: '100%',
+    flex: 1,
+    minHeight: 0,
     display: 'flex',
     flexDirection: 'column',
-    gap: '2rem',
+    gap: '1rem',
     overflow: 'hidden',
 };
 export const debateStatusText: CSSProperties = {
@@ -877,9 +878,11 @@ export const debateLoadingState: CSSProperties = {
     padding: '6rem',
 };
 export const debateArenaPanel: CSSProperties = {
+    flex: 1,
+    minHeight: 0,
     display: 'flex',
     flexDirection: 'column',
-    overflow: 'hidden',
+    overflow: 'auto',
     borderRadius: 24,
     border: '1px solid rgba(255,255,255,0.05)',
 };

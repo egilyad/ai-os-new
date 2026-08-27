@@ -129,12 +129,11 @@ const DebateSidebar: React.FC<DebateSidebarProps> = ({ isOpen = true }) => {
 
     return (
         <div
-            data-debug="rooms-sidebar-200pct"
             style={{
                 width: SIDEBAR_WIDTH,
                 minWidth: SIDEBAR_WIDTH,
-                height: '200%',
-                minHeight: '200%',
+                flex: '0 0 280px',
+                minHeight: 0,
                 display: 'flex',
                 flexDirection: 'column',
                 background: 'rgba(15,23,42,0.85)',
