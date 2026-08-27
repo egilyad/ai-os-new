@@ -55,7 +55,7 @@
     "@tiptap/react": "^3.27.1",
     "@tiptap/starter-kit": "^3.27.1",
     "@xyflow/react": "^12.10.2",
-    "dexie": "^4.4.2",
+    "dexie": "^4.4.5",
     "dompurify": "^3.4.12",
     "framer-motion": "^12.38.0",
     "groq-sdk": "^1.4.0",
