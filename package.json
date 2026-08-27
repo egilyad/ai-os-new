@@ -54,7 +54,7 @@
     "@tiptap/pm": "^3.27.1",
     "@tiptap/react": "^3.27.1",
     "@tiptap/starter-kit": "^3.27.1",
-    "@xyflow/react": "^12.10.2",
+    "@xyflow/react": "^12.11.3",
     "dexie": "^4.4.2",
     "dompurify": "^3.4.12",
     "framer-motion": "^12.38.0",
