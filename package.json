@@ -67,7 +67,7 @@
     "react-is": "^19.2.7",
     "react-router-dom": "^7.15.0",
     "zod": "^4.4.3",
-    "zustand": "^4.5.7"
+    "zustand": "^5.0.15"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.8.1",
