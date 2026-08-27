@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" font-family="Space Grotesk, Inter, system-ui, sans-serif">
+  <rect width="1200" height="760" fill="#15101c"/>
+  <!-- dock -->
+  <rect x="0" y="0" width="72" height="760" fill="#1c1626"/>
+  <circle cx="36" cy="32" r="14" fill="#d946ef"/><text x="36" y="37" fill="#fff" font-size="14" text-anchor="middle" font-weight="700">S</text>
+  <rect x="0" y="64" width="72" height="3" fill="#d946ef"/>
+  <text x="36" y="120" fill="#a392b8" font-size="9" text-anchor="middle">Canvas</text>
+  <text x="36" y="180" fill="#a392b8" font-size="9" text-anchor="middle">Agents</text>
+  <text x="36" y="240" fill="#a392b8" font-size="9" text-anchor="middle">Library</text>
+  <text x="36" y="300" fill="#a392b8" font-size="9" text-anchor="middle">Exp.</text>
+  <text x="36" y="360" fill="#a392b8" font-size="9" text-anchor="middle">Know.</text>
+  <text x="96" y="44" fill="#f4ecff" font-size="18" font-weight="700">Studio Home</text>
+  <!-- canvas tiles -->
+  <rect x="96" y="70" width="360" height="220" rx="10" fill="#241b30" stroke="#3a2d4d"/>
+  <text x="116" y="100" fill="#f4ecff" font-size="13" font-weight="600">Medical Ethics Debate</text>
+  <circle cx="160" cy="180" r="26" fill="none" stroke="#3a2d4d"/><circle cx="280" cy="220" r="26" fill="none" stroke="#3a2d4d"/><circle cx="360" cy="160" r="26" fill="none" stroke="#3a2d4d"/>
+  <line x1="186" y1="180" x2="254" y2="210" stroke="#3a2d4d"/><line x1="306" y1="200" x2="334" y2="174" stroke="#3a2d4d"/>
+  <rect x="96" y="310" width="360" height="220" rx="10" fill="#241b30" stroke="#3a2d4d"/>
+  <text x="116" y="340" fill="#f4ecff" font-size="13" font-weight="600">Quantum Research</text>
+  <circle cx="160" cy="430" r="24" fill="#d946ef" opacity="0.4"/><text x="116" y="500" fill="#a392b8" font-size="11">7-phase graph</text>
+  <rect x="96" y="550" width="200" height="150" rx="10" fill="#d946ef"/><text x="196" y="630" fill="#fff" font-size="13" text-anchor="middle" font-weight="700">+ New canvas</text>
+  <!-- side: experiments + live -->
+  <rect x="480" y="70" width="360" height="630" rx="10" fill="#241b30" stroke="#3a2d4d"/>
+  <text x="500" y="100" fill="#d946ef" font-size="12" font-weight="700">RECENT EXPERIMENTS</text>
+  <g font-size="12" fill="#f4ecff">
+    <text x="500" y="130">● Medical Ethics · 2/5 turns</text>
+    <text x="500" y="160">● Quantum Research · 3/7 phases</text>
+    <text x="500" y="190">● Invoke Architect · done</text>
+  </g>
+  <text x="500" y="240" fill="#a392b8" font-size="11">LIVE PREVIEW</text>
+  <rect x="500" y="252" width="320" height="120" rx="8" fill="#15101c" stroke="#3a2d4d"/>
+  <circle cx="560" cy="312" r="22" fill="none" stroke="#34d399"/><circle cx="700" cy="312" r="22" fill="none" stroke="#d946ef"/>
+  <line x1="582" y1="312" x2="678" y2="312" stroke="#22d3ee" stroke-dasharray="4"/>
+  <rect x="480" y="70" width="360" height="630" rx="10" fill="none"/>
+  <!-- inspector -->
+  <rect x="864" y="70" width="320" height="630" rx="10" fill="#241b30" stroke="#3a2d4d"/>
+  <text x="884" y="100" fill="#d946ef" font-size="12" font-weight="700">INSPECTOR</text>
+  <text x="884" y="130" fill="#a392b8" font-size="11">Select a canvas or node.</text>
+  <text x="884" y="470" fill="#fbbf24" font-size="11">⚠ Scheduler node: preview — not connected</text>
+  <text x="96" y="744" fill="#a392b8" font-size="11">Design C — Studio Home (mockup 01) · canvas-first, stubs as greyed Library cards</text>
+</svg>

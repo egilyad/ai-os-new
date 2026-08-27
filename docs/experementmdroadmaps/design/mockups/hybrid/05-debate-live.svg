@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" font-family="Inter, system-ui, sans-serif">
+  <rect width="1200" height="760" fill="#0f1117"/>
+  <rect x="0" y="0" width="200" height="760" fill="#161922" stroke="#232733"/>
+  <text x="20" y="34" fill="#e6e9ef" font-size="14" font-weight="700">SuperAgents OS</text>
+  <text x="20" y="700" fill="#7c828c" font-size="10">⌘K command · ⌘J live</text>
+  <!-- header monitor -->
+  <rect x="200" y="0" width="1000" height="44" fill="#161922" stroke="#232733"/>
+  <text x="220" y="28" fill="#9aa3b2" font-size="12">System Monitor</text>
+  <circle cx="380" cy="22" r="6" fill="#34d399"/><text x="392" y="26" fill="#9aa3b2" font-size="11">Debate #d4 live</text>
+  <circle cx="540" cy="22" r="6" fill="#34d399"/><text x="552" y="26" fill="#9aa3b2" font-size="11">2 agents</text>
+  <circle cx="690" cy="22" r="6" fill="#fbbf24"/><text x="702" y="26" fill="#9aa3b2" font-size="11">phase 2/7</text>
+  <rect x="900" y="10" width="180" height="26" rx="13" fill="#0f1117" stroke="#232733"/>
+  <text x="916" y="27" fill="#7c828c" font-size="11">⌘K · ask or command…</text>
+  <!-- debate arena -->
+  <text x="240" y="80" fill="#e6e9ef" font-size="16" font-weight="700">Debate #d4 — "medical ethics"</text>
+  <rect x="240" y="100" width="900" height="520" rx="10" fill="#161922" stroke="#232733"/>
+  <g font-size="12">
+    <rect x="264" y="124" width="400" height="200" rx="8" fill="#0f1117" stroke="#a78bfa"/>
+    <text x="284" y="150" fill="#a78bfa">● System Architect</text>
+    <text x="284" y="178" fill="#e6e9ef">"Autonomy must be balanced</text>
+    <text x="284" y="198" fill="#e6e9ef">against harm prevention…"</text>
+    <text x="284" y="300" fill="#34d399" font-size="10">▸ generating (live)</text>
+
+    <rect x="684" y="124" width="400" height="200" rx="8" fill="#0f1117" stroke="#a78bfa"/>
+    <text x="704" y="150" fill="#a78bfa">● Medical Expert</text>
+    <text x="704" y="178" fill="#e6e9ef">"Clinical precedent favors</text>
+    <text x="704" y="198" fill="#e6e9ef">paternalism in emergencies."</text>
+    <text x="704" y="300" fill="#7c828c" font-size="10">waiting</text>
+
+    <rect x="264" y="344" width="820" height="60" rx="8" fill="#0f1117" stroke="#e0a82e"/>
+    <text x="284" y="372" fill="#e0a82e">◆ Synthesis</text>
+    <text x="284" y="394" fill="#e6e9ef" font-size="11">pending — awaits both turns</text>
+
+    <text x="284" y="436" fill="#7c828c" font-size="11">Empty arena guidance: pick 2+ agents, set a topic, press Run. (UX-013)</text>
+  </g>
+  <!-- scoped live strip -->
+  <rect x="0" y="640" width="1200" height="120" fill="#161922" stroke="#232733"/>
+  <text x="20" y="664" fill="#34d399" font-size="11" font-weight="700">⌘J LIVE · scoped to Debate #d4</text>
+  <g font-size="11">
+    <text x="20" y="688" fill="#60a5fa">12:01:04</text><text x="120" y="688" fill="#e6e9ef">agent:Architect ▸ turn started</text>
+    <text x="20" y="708" fill="#60a5fa">12:01:09</text><text x="120" y="708" fill="#e6e9ef">agent:Expert ▸ received prompt</text>
+    <text x="20" y="728" fill="#60a5fa">12:01:15</text><text x="120" y="728" fill="#fbbf24">synthesis ▸ awaiting</text>
+  </g>
+  <text x="240" y="744" fill="#7c828c" font-size="11">Hybrid — Debate live (mockup 05) · B monitor + F ⌘J scoped strip; arena guidance (UX-012/013)</text>
+</svg>

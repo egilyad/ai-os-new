@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" font-family="IBM Plex Sans, system-ui, sans-serif">
+  <rect width="1200" height="760" fill="#0a0c10"/>
+  <rect x="0" y="0" width="1200" height="48" fill="#12151a" stroke="#222831"/>
+  <rect x="0" y="48" width="56" height="712" fill="#12151a"/><rect x="0" y="48" width="3" height="40" fill="#06b6d4"/>
+  <text x="80" y="84" fill="#e6edf3" font-size="18" font-weight="700">Operation — Research: Quantum Batteries</text>
+  <text x="80" y="106" fill="#7d8aa0" font-size="12">3/7 phases · RUNNING</text>
+  <rect x="80" y="124" width="1040" height="120" rx="6" fill="#12151a" stroke="#222831"/>
+  <text x="100" y="150" fill="#7d8aa0" font-size="11">PHASE PROGRESS (dark phases surfaced — UX-010)</text>
+  <g font-size="11">
+    <rect x="100" y="164" width="140" height="44" rx="5" fill="#0a0c10" stroke="#22c55e"/><text x="170" y="190" fill="#e6edf3" font-size="11" text-anchor="middle">1 Lit scan</text><text x="170" y="204" fill="#22c55e" font-size="9" text-anchor="middle">done</text>
+    <rect x="252" y="164" width="140" height="44" rx="5" fill="#0a0c10" stroke="#22c55e"/><text x="322" y="190" fill="#e6edf3" font-size="11" text-anchor="middle">2 Cite graph</text><text x="322" y="204" fill="#22c55e" font-size="9" text-anchor="middle">done</text>
+    <rect x="404" y="164" width="140" height="44" rx="5" fill="#0a0c10" stroke="#06b6d4"/><text x="474" y="190" fill="#e6edf3" font-size="11" text-anchor="middle">3 Citations</text><text x="474" y="204" fill="#06b6d4" font-size="9" text-anchor="middle">running</text>
+    <rect x="556" y="164" width="140" height="44" rx="5" fill="#0a0c10" stroke="#f59e0b"/><text x="626" y="190" fill="#f59e0b" font-size="11" text-anchor="middle">4 Know graph</text><text x="626" y="204" fill="#f59e0b" font-size="9" text-anchor="middle">planned</text>
+    <rect x="708" y="164" width="140" height="44" rx="5" fill="#0a0c10" stroke="#f59e0b"/><text x="778" y="190" fill="#f59e0b" font-size="11" text-anchor="middle">5 Systematic</text><text x="778" y="204" fill="#f59e0b" font-size="9" text-anchor="middle">planned</text>
+    <rect x="860" y="164" width="140" height="44" rx="5" fill="#0a0c10" stroke="#f59e0b"/><text x="930" y="190" fill="#f59e0b" font-size="11" text-anchor="middle">6 Fact-check</text><text x="930" y="204" fill="#f59e0b" font-size="9" text-anchor="middle">planned</text>
+    <rect x="1012" y="164" width="100" height="44" rx="5" fill="#0a0c10" stroke="#f59e0b"/><text x="1062" y="190" fill="#f59e0b" font-size="11" text-anchor="middle">7 Peer</text><text x="1062" y="204" fill="#f59e0b" font-size="9" text-anchor="middle">planned</text>
+  </g>
+  <rect x="80" y="260" width="1040" height="420" rx="6" fill="#12151a" stroke="#222831"/>
+  <text x="100" y="288" fill="#06b6d4" font-size="11" font-weight="700">OUTPUT</text>
+  <g font-family="JetBrains Mono, monospace" font-size="11" fill="#7d8aa0">
+    <text x="100" y="320">[1] A. Smith, Solid-state reviews (2024)</text>
+    <text x="100" y="344">[2] B. Lee, Ionic conductivity (2023)</text>
+    <text x="100" y="368">[3] C. Ruiz, Anode materials (2025)</text>
+  </g>
+  <text x="100" y="420" fill="#e6edf3" font-size="13" font-weight="600">Citation graph</text>
+  <g stroke="#222831" stroke-width="1.5">
+    <line x1="300" y1="500" x2="200" y2="600"/><line x1="300" y1="500" x2="400" y2="600"/><line x1="300" y1="500" x2="300" y2="640"/>
+  </g>
+  <circle cx="300" cy="500" r="12" fill="#06b6d4"/><circle cx="200" cy="600" r="12" fill="#22c55e"/><circle cx="400" cy="600" r="12" fill="#22c55e"/><circle cx="300" cy="640" r="12" fill="#f59e0b"/>
+  <text x="80" y="744" fill="#7d8aa0" font-size="11">Design B — Research Operation (mockup 05)</text>
+</svg>

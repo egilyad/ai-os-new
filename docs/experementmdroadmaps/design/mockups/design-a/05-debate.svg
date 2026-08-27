@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" font-family="Inter, system-ui, sans-serif">
+  <rect width="1200" height="760" fill="#0f1117"/>
+  <rect x="0" y="0" width="64" height="760" fill="#12151c"/><circle cx="32" cy="32" r="14" fill="#6366f1"/><text x="32" y="37" fill="#fff" font-size="14" text-anchor="middle" font-weight="700">S</text>
+  <text x="320" y="56" fill="#e2e8f0" font-size="20" font-weight="700">Debate — Medical Ethics</text>
+  <text x="320" y="80" fill="#8b95a7" font-size="12">3 agents · 2/5 turns · paused</text>
+  <!-- launch form (top) -->
+  <rect x="320" y="100" width="850" height="90" rx="8" fill="#171a21" stroke="#262b36"/>
+  <text x="344" y="128" fill="#6366f1" font-size="12" font-weight="700">START DEBATE</text>
+  <text x="344" y="152" fill="#8b95a7" font-size="12">Topic</text><rect x="400" y="142" width="380" height="26" rx="5" fill="#0f1117" stroke="#3a4250"/>
+  <text x="800" y="152" fill="#8b95a7" font-size="12">Participants</text><rect x="884" y="142" width="120" height="26" rx="5" fill="#0f1117" stroke="#3a4250"/>
+  <rect x="1024" y="142" width="120" height="26" rx="5" fill="#6366f1"/><text x="1084" y="159" fill="#fff" font-size="12" text-anchor="middle">Launch</text>
+  <!-- arena -->
+  <rect x="320" y="210" width="850" height="430" rx="8" fill="#171a21" stroke="#262b36"/>
+  <circle cx="600" cy="420" r="150" fill="none" stroke="#262b36" stroke-width="2"/>
+  <circle cx="600" cy="270" r="34" fill="#6366f1" stroke="#a5b4fc" stroke-width="2"/><text x="600" y="276" fill="#fff" font-size="13" text-anchor="middle" font-weight="700">SA</text>
+  <circle cx="470" cy="470" r="34" fill="#22c55e" stroke="#bbf7d0" stroke-width="2"/><text x="470" y="476" fill="#04210f" font-size="13" text-anchor="middle" font-weight="700">SK</text>
+  <circle cx="730" cy="470" r="34" fill="#f59e0b" stroke="#fde68a" stroke-width="2"/><text x="730" y="476" fill="#3a2600" font-size="13" text-anchor="middle" font-weight="700">ME</text>
+  <line x1="600" y1="304" x2="490" y2="442" stroke="#3a4250" stroke-width="1.5"/>
+  <line x1="600" y1="304" x2="710" y2="442" stroke="#3a4250" stroke-width="1.5"/>
+  <line x1="490" y1="504" x2="710" y2="504" stroke="#3a4250" stroke-width="1.5"/>
+  <text x="600" y="250" fill="#8b95a7" font-size="11" text-anchor="middle">turn 3 · Mediator</text>
+  <!-- turn log right -->
+  <rect x="1000" y="210" width="0" fill="none"/>
+  <text x="344" y="540" fill="#8b95a7" font-size="12">Empty-arena guidance: "Start a debate to see agents reason here." (UX-013)</text>
+  <rect x="320" y="660" width="850" height="40" rx="6" fill="#12151c"/>
+  <text x="344" y="685" fill="#8b95a7" font-size="11">Design A — Debate (mockup 05) · stub analysis tools moved to "Planned"</text>
+</svg>

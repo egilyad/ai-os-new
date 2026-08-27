@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" font-family="Inter, system-ui, sans-serif">
+  <rect width="1200" height="760" fill="#0f1117"/>
+  <rect x="0" y="0" width="64" height="760" fill="#12151c"/><circle cx="32" cy="32" r="14" fill="#6366f1"/><text x="32" y="37" fill="#fff" font-size="14" text-anchor="middle" font-weight="700">S</text>
+  <text x="320" y="56" fill="#e2e8f0" font-size="20" font-weight="700">Settings</text>
+  <text x="320" y="80" fill="#8b95a7" font-size="12">Grouped · supports the "add policy" recovery path</text>
+  <!-- group rail -->
+  <rect x="320" y="110" width="240" height="580" rx="8" fill="#171a21" stroke="#262b36"/>
+  <text x="344" y="144" fill="#e2e8f0" font-size="13" font-weight="600">General</text>
+  <text x="344" y="180" fill="#e2e8f0" font-size="13" font-weight="600">Keys &amp; Providers</text>
+  <text x="344" y="216" fill="#6366f1" font-size="13" font-weight="700">Policies</text>
+  <text x="344" y="252" fill="#e2e8f0" font-size="13">Roles</text>
+  <text x="344" y="288" fill="#e2e8f0" font-size="13">Appearance</text>
+  <!-- policy editor -->
+  <rect x="580" y="110" width="590" height="580" rx="8" fill="#171a21" stroke="#262b36"/>
+  <text x="604" y="144" fill="#e2e8f0" font-size="13" font-weight="600">Invocation Policies</text>
+  <g>
+    <rect x="604" y="160" width="540" height="48" rx="6" fill="#0f1117" stroke="#262b36"/>
+    <text x="624" y="180" fill="#e2e8f0" font-size="12">Manual Room Chat</text>
+    <text x="624" y="198" fill="#8b95a7" font-size="11">source: human-mention · mode: chat</text>
+    <rect x="1024" y="172" width="90" height="24" rx="5" fill="#1f2733" stroke="#3a4250"/><text x="1069" y="188" fill="#e2e8f0" font-size="11" text-anchor="middle">Edit</text>
+  </g>
+  <g>
+    <rect x="604" y="220" width="540" height="48" rx="6" fill="#0f1117" stroke="#262b36"/>
+    <text x="624" y="240" fill="#e2e8f0" font-size="12">Manual Room Debate</text>
+    <text x="624" y="258" fill="#8b95a7" font-size="11">source: human-mention · mode: debate</text>
+    <rect x="1024" y="232" width="90" height="24" rx="5" fill="#6366f1"/><text x="1069" y="248" fill="#fff" font-size="11" text-anchor="middle">Create</text>
+  </g>
+  <text x="604" y="300" fill="#f59e0b" font-size="11">⚠ Create a "debate" policy so invocations in debate mode stop being rejected.</text>
+  <rect x="604" y="320" width="540" height="320" rx="6" fill="#0f1117" stroke="#262b36"/>
+  <text x="624" y="348" fill="#8b95a7" font-size="11">NEW POLICY</text>
+  <text x="624" y="376" fill="#8b95a7" font-size="12">Name</text><rect x="624" y="386" width="500" height="28" rx="5" fill="#171a21" stroke="#3a4250"/>
+  <text x="624" y="432" fill="#8b95a7" font-size="12">Source</text><rect x="624" y="442" width="240" height="28" rx="5" fill="#171a21" stroke="#3a4250"/><text x="636" y="461" fill="#8b95a7" font-size="11">human-mention ▾</text>
+  <text x="884" y="432" fill="#8b95a7" font-size="12">Mode</text><rect x="884" y="442" width="240" height="28" rx="5" fill="#171a21" stroke="#3a4250"/><text x="896" y="461" fill="#8b95a7" font-size="11">debate ▾</text>
+  <rect x="604" y="600" width="120" height="30" rx="6" fill="#6366f1"/><text x="664" y="620" fill="#fff" font-size="12" text-anchor="middle">Save policy</text>
+  <text x="320" y="720" fill="#8b95a7" font-size="11">Design A — Settings (mockup 08)</text>
+</svg>

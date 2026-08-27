@@ -1,0 +1,36 @@
+# 02 — CAPABILITIES matrix
+
+> Capability | Exists | Used | Exposed in UI | Evidence | Flag
+> Flags: **UI-HIDDEN** (capability exists in data but not surfaced), **PARTIAL**, **EXISTS-BUT-UNUSED**, **DEAD**, **POTENTIAL**.
+
+| #   | Capability                                      | Exists            | Used                     | UI                      | Evidence                                                        | Flag                                             |
+| --- | ----------------------------------------------- | ----------------- | ------------------------ | ----------------------- | --------------------------------------------------------------- | ------------------------------------------------ |
+| 1   | Identity (name/role/avatar)                     | ✅                | ✅                       | ✅                      | `agent-profiles.ts:192`, `agent-identity.ts:62`                 | —                                                |
+| 2   | System prompt (PO persona)                      | ✅                | ✅                       | ⚠️ (editor only)        | `topology-defaults.ts:362`                                      | UI-HIDDEN (not in card narrative)                |
+| 3   | Specializations (Backlog/Vision/Prioritization) | ✅                | ❌                       | ✅ (card text)          | `agent-profiles.ts:200`, `AgentCard.tsx:68`                     | EXISTS-BUT-UNUSED (no behavior)                  |
+| 4   | Model pin `groq/llama-3.3-70b-versatile`        | ✅ (profile)      | ❌                       | ⚠️                      | `agent-profiles.ts:199` vs `agent-service.ts:351-353`           | EXISTS-BUT-UNUSED (overridden by `model:'auto'`) |
+| 5   | Provider `groq`                                 | ✅ (profile)      | ❌ (resolved at runtime) | ⚠️                      | `agent-profiles.ts:198`                                         | EXISTS-BUT-UNUSED at exec                        |
+| 6   | Debate participation                            | ✅                | ✅                       | ✅                      | `debate-llm-prompt-context.ts:871`                              | PARTIAL (persona flag-gated)                     |
+| 7   | Debate persona injection                        | ✅ (generic)      | ⚠️                       | ❌                      | `persona-selector.ts:251`                                       | PARTIAL (keyed on debate role, not PO spec)      |
+| 8   | ConversationCore / Director turn                | ✅                | ✅                       | ✅                      | `conversation-backed-debate-orchestrator.ts:42`, `ChatExecutor` | —                                                |
+| 9   | Invocation (human)                              | ✅                | ✅                       | ✅ (RoomPanel)          | `phase21-invocation.ts:43-58`                                   | —                                                |
+| 10  | Research / Knowledge participation              | ❌                | —                        | —                       | no PO-specific research path                                    | N/A                                              |
+| 11  | Memory (journal)                                | ✅                | ✅                       | ⚠️ (history tab)        | `agent-journal-service.ts:150`                                  | PARTIAL (no PO continuity logic)                 |
+| 12  | Cognitive-stream events                         | ✅ (as subject)   | ✅                       | ✅ (LiveActivityStream) | `orchestration-service.ts:414`                                  | —                                                |
+| 13  | Workflow / Builder                              | ✅ (generic node) | ✅                       | ✅                      | topology node                                                   | EXISTS-BUT-UNUSED for PO semantics               |
+| 14  | Forum authorship                                | ✅                | ✅                       | ✅ (AuthorBadge)        | ForumPanel                                                      | —                                                |
+| 15  | Knowledge / Crystal                             | ❌                | —                        | —                       | no PO bridge                                                    | POTENTIAL                                        |
+| 16  | Scheduler                                       | ❌                | —                        | —                       | no scheduler                                                    | POTENTIAL                                        |
+| 17  | Analytics / stats                               | ✅                | ✅                       | ✅ (StatsDashboard)     | `agent-service.ts:184,306`                                      | —                                                |
+| 18  | UI card                                         | ✅                | ✅                       | ✅                      | `AgentCard.tsx`                                                 | —                                                |
+| 19  | Health / auto-recovery                          | ✅                | ✅                       | ✅ (health monitor)     | `agent-health-monitor.ts:66`                                    | —                                                |
+| 20  | Groups / teams                                  | ✅                | ✅                       | ✅ (AgentGroupsSection) | `agent-service.ts:27-35`                                        | EXISTS-BUT-UNUSED (PO not pre-grouped)           |
+| 21  | Lens                                            | ❌                | —                        | —                       | `lens-library.ts`                                               | EXISTS-BUT-UNUSED (no PO lens)                   |
+| 22  | AgentWizard / spawn                             | ✅                | ✅                       | ✅                      | `AgentWizard.tsx`                                               | generic                                          |
+| 23  | Prompt audit (Management group)                 | ✅                | ✅                       | ✅                      | `prompt-audit-service.ts:19`                                    | —                                                |
+
+## Key findings (VERIFIED)
+
+- **Specializations are display-only.** No selector, router, or persona code reads `agent-po`'s `['Backlog','Vision','Prioritization']` (`persona-selector.ts` keys on debate role + topic keywords, not specialization; `invocation-engine-service.ts:167-173` reads specializations only for `expertise`-target matching, which RoomPanel does not use).
+- **Model pin is dropped.** `resolveAgent` returns `model` only when not `'auto'`/`'default'` (`agent-service.ts:351-353`); topology node is `'auto'` (`topology-defaults.ts:365`). The groq pin in `AGENT_PROFILES` is therefore cosmetic at execution time → **EXISTS-BUT-UNUSED**.
+- **Debate persona is generic and flag-gated** (`isQ('dynamic-persona')`, `debate-llm-prompt-context.ts:873`). When applied, it matches on `participant.role` (pro/con/neutral) + topic — never on PO identity.

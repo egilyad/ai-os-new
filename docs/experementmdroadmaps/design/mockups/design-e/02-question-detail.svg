@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" font-family="Inter, system-ui, sans-serif">
+  <rect width="1200" height="760" fill="#16140f"/>
+  <rect x="0" y="0" width="64" height="760" fill="#1f1c16"/><circle cx="32" cy="32" r="14" fill="#e0a82e"/>
+  <text x="96" y="56" fill="#f3ede0" font-size="20" font-weight="700">"Best debate format for medical ethics?"</text>
+  <text x="96" y="80" fill="#a89e8a" font-size="12">in progress · 2 debates · 3 agents · started 12 min ago</text>
+  <rect x="96" y="100" width="640" height="600" rx="8" fill="#1f1c16" stroke="#3a342a"/>
+  <text x="116" y="130" fill="#e0a82e" font-size="12" font-weight="700">CONCLUSION (draft)</text>
+  <text x="116" y="162" fill="#f3ede0" font-size="14">A structured 3-agent panel with a dedicated</text>
+  <text x="116" y="184" fill="#f3ede0" font-size="14">synthesizer yields the most balanced outcome.</text>
+  <g>
+    <rect x="116" y="208" width="160" height="22" rx="6" fill="#5aa9e6"/><text x="196" y="223" fill="#07223a" font-size="10" text-anchor="middle">src: debate #d2</text>
+    <rect x="288" y="208" width="160" height="22" rx="6" fill="#a78bfa"/><text x="368" y="223" fill="#1a0f33" font-size="10" text-anchor="middle">src: agent SA</text>
+    <rect x="460" y="208" width="160" height="22" rx="6" fill="#5fbf6b"/><text x="540" y="223" fill="#0c1f10" font-size="10" text-anchor="middle">src: research</text>
+  </g>
+  <text x="116" y="280" fill="#e0a82e" font-size="12" font-weight="700">EVIDENCE</text>
+  <g font-family="JetBrains Mono, monospace" font-size="11" fill="#a89e8a">
+    <text x="116" y="312">[1] Smith 2024  [2] Lee 2023  [3] Ruiz 2025</text>
+  </g>
+  <text x="116" y="380" fill="#e0a82e" font-size="12" font-weight="700">PROVENANCE CHAIN</text>
+  <text x="116" y="412" fill="#f3ede0" font-size="12">question → debate #d2 → agent SA → conclusion</text>
+  <rect x="760" y="100" width="400" height="600" rx="8" fill="#1f1c16" stroke="#3a342a"/>
+  <text x="780" y="130" fill="#e0a82e" font-size="12" font-weight="700">KNOWLEDGE GRAPH (this question)</text>
+  <circle cx="880" cy="260" r="18" fill="#e0a82e"/><text x="880" y="265" fill="#16140f" font-size="10" text-anchor="middle" font-weight="700">Q</text>
+  <circle cx="800" cy="360" r="16" fill="#a78bfa"/><text x="800" y="365" fill="#fff" font-size="10" text-anchor="middle">SA</text>
+  <circle cx="960" cy="360" r="16" fill="#a78bfa"/><text x="960" y="365" fill="#fff" font-size="10" text-anchor="middle">SK</text>
+  <circle cx="880" cy="470" r="18" fill="#5fbf6b"/><text x="880" y="475" fill="#0c1f10" font-size="10" text-anchor="middle">C</text>
+  <g stroke="#3a342a"><line x1="880" y1="278" x2="800" y2="346"/><line x1="880" y1="278" x2="960" y2="346"/><line x1="800" y1="376" x2="880" y2="454"/><line x1="960" y1="376" x2="880" y2="454"/></g>
+  <text x="96" y="744" fill="#a89e8a" font-size="11">Design E — Question detail (mockup 02) · conclusion + provenance + graph</text>
+</svg>

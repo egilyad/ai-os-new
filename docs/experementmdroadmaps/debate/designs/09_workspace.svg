@@ -1,0 +1,45 @@
+<svg viewBox="0 0 1000 640" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1000" height="640" fill="#0f1117"/>
+  <rect x="0" y="0" width="1000" height="48" fill="#1a1d27"/>
+  <rect x="0" y="48" width="1000" height="2" fill="#2a2f3a"/>
+  <circle cx="20" cy="24" r="6" fill="#34d399"/>
+  <text x="36" y="29" font-family="Segoe UI, sans-serif" font-size="16" fill="#e5e7eb" font-weight="bold">Research → Debate Workspace</text>
+
+  <!-- left: research question + evidence -->
+  <rect x="20" y="64" width="300" height="556" rx="10" fill="#161922" stroke="#2a2f3a"/>
+  <text x="40" y="90" font-family="Segoe UI, sans-serif" font-size="13" fill="#9ca3af">RESEARCH QUESTION</text>
+  <rect x="40" y="100" width="260" height="70" rx="8" fill="#1a1d27" stroke="#2a2f3a"/>
+  <text x="55" y="125" font-family="Segoe UI, sans-serif" font-size="12" fill="#e5e7eb">"Is X cost-effective</text>
+  <text x="55" y="145" font-family="Segoe UI, sans-serif" font-size="12" fill="#e5e7eb">over 3 cycles?"</text>
+  <text x="40" y="195" font-family="Segoe UI, sans-serif" font-size="13" fill="#9ca3af">EVIDENCE / CRYSTALS</text>
+  <rect x="40" y="205" width="260" height="40" rx="8" fill="#1a1d27" stroke="#e0a82e"/>
+  <text x="55" y="230" font-family="Segoe UI, sans-serif" font-size="12" fill="#e0a82e">◆ Crystal: cost-baseline</text>
+  <rect x="40" y="255" width="260" height="40" rx="8" fill="#1a1d27" stroke="#e0a82e"/>
+  <text x="55" y="280" font-family="Segoe UI, sans-serif" font-size="12" fill="#e0a82e">◆ Crystal: cycle-amort</text>
+  <text x="40" y="330" font-family="Segoe UI, sans-serif" font-size="12" fill="#9ca3af">linked debate:</text>
+  <text x="40" y="350" font-family="Segoe UI, sans-serif" font-size="12" fill="#6366f1">session #a91f</text>
+
+  <!-- center: embedded arena -->
+  <rect x="340" y="64" width="380" height="556" rx="10" fill="#161922" stroke="#2a2f3a"/>
+  <text x="360" y="90" font-family="Segoe UI, sans-serif" font-size="13" fill="#9ca3af">ARENA (tab)</text>
+  <rect x="360" y="100" width="340" height="230" rx="8" fill="#1a1d27" stroke="#2a2f3a"/>
+  <text x="375" y="125" font-family="Segoe UI, sans-serif" font-size="12" fill="#e5e7eb">Advocate: "baseline set"</text>
+  <text x="375" y="160" font-family="Segoe UI, sans-serif" font-size="12" fill="#e5e7eb">Skeptic: "cost fails"</text>
+  <text x="375" y="195" font-family="Segoe UI, sans-serif" font-size="12" fill="#e5e7eb">Advocate: "amortized +"</text>
+  <rect x="360" y="345" width="340" height="40" rx="8" fill="#1a1d27" stroke="#2a2f3a"/>
+  <text x="375" y="370" font-family="Segoe UI, sans-serif" font-size="12" fill="#34d399">streaming… LIVE</text>
+
+  <!-- right: write-back rail + verdict -->
+  <rect x="740" y="64" width="240" height="556" rx="10" fill="#161922" stroke="#2a2f3a"/>
+  <text x="760" y="90" font-family="Segoe UI, sans-serif" font-size="13" fill="#9ca3af">VERDICT</text>
+  <rect x="760" y="100" width="200" height="120" rx="8" fill="#1a1d27" stroke="#e0a82e"/>
+  <text x="775" y="125" font-family="Segoe UI, sans-serif" font-size="12" fill="#e0a82e">net positive</text>
+  <text x="775" y="150" font-family="Segoe UI, sans-serif" font-size="11" fill="#9ca3af">resolved 3 / open 1</text>
+  <text x="760" y="245" font-family="Segoe UI, sans-serif" font-size="13" fill="#e5e7eb" font-weight="bold">WRITE-BACK</text>
+  <rect x="760" y="255" width="200" height="30" rx="6" fill="#1a1d27" stroke="#e0a82e"/>
+  <text x="775" y="275" font-family="Segoe UI, sans-serif" font-size="12" fill="#e0a82e">→ Save as Crystal</text>
+  <rect x="760" y="295" width="200" height="30" rx="6" fill="#1a1d27" stroke="#34d399"/>
+  <text x="775" y="315" font-family="Segoe UI, sans-serif" font-size="12" fill="#34d399">→ Post to Forum</text>
+  <rect x="760" y="335" width="200" height="30" rx="6" fill="#6366f1"/>
+  <text x="775" y="355" font-family="Segoe UI, sans-serif" font-size="12" fill="#fff">Close Question</text>
+</svg>

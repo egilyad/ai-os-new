@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" font-family="Inter, system-ui, sans-serif">
+  <rect width="1200" height="760" fill="#10131a"/>
+  <rect x="0" y="0" width="1200" height="36" fill="#1a1f29"/><text x="16" y="24" fill="#e8edf4" font-size="13" font-weight="700">SuperAgents OS</text>
+  <rect x="900" y="6" width="240" height="24" rx="6" fill="#10131a" stroke="#2b3340"/><text x="912" y="22" fill="#8a94a6" font-size="11">⌘K · search or launch…</text>
+  <rect x="60" y="56" width="1080" height="620" rx="10" fill="#1a1f29" stroke="#2b3340"/>
+  <rect x="60" y="56" width="1080" height="30" rx="10" fill="#222a36"/><text x="76" y="76" fill="#e8edf4" font-size="12">Agents — app</text>
+  <text x="80" y="130" fill="#e8edf4" font-size="16" font-weight="700">Agents</text>
+  <g>
+    <rect x="80" y="150" width="330" height="100" rx="8" fill="#151a22" stroke="#2b3340"/>
+    <circle cx="120" cy="186" r="20" fill="#3b82f6" stroke="#93c5fd" stroke-width="2"/><text x="120" y="192" fill="#fff" font-size="13" text-anchor="middle" font-weight="700">SA</text>
+    <text x="152" y="180" fill="#e8edf4" font-size="13" font-weight="600">System Architect</text>
+    <text x="152" y="200" fill="#8a94a6" font-size="10">Planner · ready</text>
+    <rect x="360" y="174" width="120" height="24" rx="6" fill="#222a36"/><text x="420" y="191" fill="#e8edf4" font-size="11" text-anchor="middle">Ask agent ▾</text>
+    <rect x="80" y="266" width="330" height="100" rx="8" fill="#151a22" stroke="#2b3340"/>
+    <circle cx="120" cy="302" r="20" fill="#22c55e" stroke="#bbf7d0" stroke-width="2"/><text x="120" y="308" fill="#04210f" font-size="13" text-anchor="middle" font-weight="700">SK</text>
+    <text x="152" y="296" fill="#e8edf4" font-size="13" font-weight="600">Skeptic</text>
+    <text x="152" y="316" fill="#8a94a6" font-size="10">Critic · busy</text>
+  </g>
+  <!-- ask menu -->
+  <rect x="80" y="390" width="500" height="260" rx="8" fill="#151a22" stroke="#2b3340"/>
+  <text x="100" y="420" fill="#3b82f6" font-size="12" font-weight="700">ASK SYSTEM ARCHITECT</text>
+  <rect x="100" y="434" width="220" height="36" rx="6" fill="#222a36"/><text x="210" y="457" fill="#e8edf4" font-size="12" text-anchor="middle">💬 Chat with agent</text>
+  <rect x="332" y="434" width="220" height="36" rx="6" fill="#222a36"/><text x="442" y="457" fill="#e8edf4" font-size="12" text-anchor="middle">⚔️ Run a debate</text>
+  <text x="100" y="510" fill="#8a94a6" font-size="11">Plain outcomes replace abstract Where/Mode (UX-005)</text>
+  <!-- empty -->
+  <rect x="620" y="150" width="490" height="500" rx="8" fill="#151a22" stroke="#2b3340" stroke-dasharray="6"/>
+  <circle cx="865" cy="380" r="36" fill="none" stroke="#2b3340"/><text x="865" y="388" fill="#8a94a6" font-size="26" text-anchor="middle">+</text>
+  <text x="865" y="450" fill="#8a94a6" font-size="13" text-anchor="middle">No agents — create one from Launchpad (UX-011)</text>
+  <text x="60" y="744" fill="#8a94a6" font-size="11">Design D — Agents app (mockup 03)</text>
+</svg>

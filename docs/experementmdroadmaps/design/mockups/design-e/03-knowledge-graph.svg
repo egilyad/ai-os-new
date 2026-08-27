@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" font-family="Inter, system-ui, sans-serif">
+  <rect width="1200" height="760" fill="#16140f"/>
+  <rect x="0" y="0" width="64" height="760" fill="#1f1c16"/><circle cx="32" cy="32" r="14" fill="#e0a82e"/>
+  <text x="96" y="56" fill="#f3ede0" font-size="20" font-weight="700">Knowledge Graph</text>
+  <text x="96" y="80" fill="#a89e8a" font-size="12">Lenses · Crystals · Synthesis · Forum as nodes (UX unifies grab-bag)</text>
+  <rect x="96" y="100" width="1040" height="600" rx="8" fill="#1f1c16" stroke="#3a342a"/>
+  <g>
+    <circle cx="300" cy="220" r="34" fill="#e0a82e"/><text x="300" y="225" fill="#16140f" font-size="12" text-anchor="middle" font-weight="700">Q1</text>
+    <circle cx="620" cy="180" r="34" fill="#5aa9e6"/><text x="620" y="185" fill="#07223a" font-size="12" text-anchor="middle">Crystal A</text>
+    <circle cx="900" cy="240" r="34" fill="#5fbf6b"/><text x="900" y="245" fill="#0c1f10" font-size="12" text-anchor="middle">Conclusion</text>
+    <circle cx="420" cy="420" r="28" fill="#a78bfa"/><text x="420" y="425" fill="#fff" font-size="11" text-anchor="middle">SA</text>
+    <circle cx="720" cy="440" r="28" fill="#a78bfa"/><text x="720" y="445" fill="#fff" font-size="11" text-anchor="middle">SK</text>
+    <circle cx="560" cy="580" r="30" fill="#5aa9e6"/><text x="560" y="585" fill="#07223a" font-size="11" text-anchor="middle">Citation</text>
+  </g>
+  <g stroke="#3a342a" stroke-width="1.5">
+    <line x1="330" y1="232" x2="590" y2="196"/><line x1="650" y1="206" x2="876" y2="232"/>
+    <line x1="330" y1="244" x2="406" y2="400"/><line x1="446" y1="436" x2="690" y2="424"/>
+    <line x1="620" y1="214" x2="560" y2="556"/><line x1="900" y1="274" x2="560" y2="566"/>
+  </g>
+  <text x="96" y="744" fill="#a89e8a" font-size="11">Design E — Knowledge Graph (mockup 03) · all knowledge modules linked</text>
+</svg>

@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" font-family="Inter, system-ui, sans-serif">
+  <rect width="1200" height="760" fill="#0f1117"/>
+  <rect x="0" y="0" width="200" height="760" fill="#161922" stroke="#232733"/>
+  <text x="20" y="34" fill="#e6e9ef" font-size="14" font-weight="700">SuperAgents OS</text>
+  <text x="20" y="700" fill="#7c828c" font-size="10">⌘K command · ⌘J live</text>
+  <text x="240" y="56" fill="#e6e9ef" font-size="18" font-weight="700">Invoke an agent</text>
+  <text x="240" y="80" fill="#7c828c" font-size="12">Build the request as a graph — no abstract "Where/Mode" (UX-005)</text>
+  <!-- node graph -->
+  <g>
+    <circle cx="400" cy="300" r="40" fill="#0f1117" stroke="#6366f1" stroke-width="2"/>
+    <text x="400" y="296" fill="#e6e9ef" font-size="11" text-anchor="middle">You</text>
+    <text x="400" y="312" fill="#9aa3b2" font-size="9" text-anchor="middle">(human)</text>
+
+    <circle cx="700" cy="220" r="40" fill="#0f1117" stroke="#a78bfa" stroke-width="2"/>
+    <text x="700" y="216" fill="#a78bfa" font-size="11" text-anchor="middle">System</text>
+    <text x="700" y="232" fill="#a78bfa" font-size="11" text-anchor="middle">Architect</text>
+
+    <circle cx="700" cy="380" r="40" fill="#0f1117" stroke="#a78bfa" stroke-width="2"/>
+    <text x="700" y="376" fill="#a78bfa" font-size="11" text-anchor="middle">Medical</text>
+    <text x="700" y="392" fill="#a78bfa" font-size="11" text-anchor="middle">Expert</text>
+
+    <circle cx="980" cy="300" r="46" fill="#0f1117" stroke="#e0a82e" stroke-width="2"/>
+    <text x="980" y="290" fill="#e0a82e" font-size="11" text-anchor="middle">Task</text>
+    <text x="980" y="308" fill="#9aa3b2" font-size="10" text-anchor="middle">"debate medical</text>
+    <text x="980" y="322" fill="#9aa3b2" font-size="10" text-anchor="middle">ethics"</text>
+
+    <g stroke="#6366f1" stroke-width="2">
+      <line x1="438" y1="280" x2="662" y2="240"/>
+      <line x1="438" y1="320" x2="662" y2="360"/>
+    </g>
+    <g stroke="#a78bfa" stroke-width="2">
+      <line x1="740" y1="250" x2="940" y2="280"/>
+      <line x1="740" y1="350" x2="940" y2="320"/>
+    </g>
+    <text x="540" y="252" fill="#7c828c" font-size="10">invokes</text>
+    <text x="840" y="262" fill="#7c828c" font-size="10">topic</text>
+  </g>
+  <!-- inspector -->
+  <rect x="240" y="470" width="900" height="240" rx="10" fill="#161922" stroke="#232733"/>
+  <text x="264" y="500" fill="#6366f1" font-size="12" font-weight="700">INSPECTOR</text>
+  <text x="264" y="530" fill="#e6e9ef" font-size="12">Agents: System Architect, Medical Expert</text>
+  <text x="264" y="556" fill="#e6e9ef" font-size="12">Task: debate medical ethics</text>
+  <text x="264" y="582" fill="#e6e9ef" font-size="12">Where: this Room (scoped feed)</text>
+  <text x="264" y="608" fill="#e85c5c" font-size="12">Mode: debate · policy "Manual Room Chat" ✓</text>
+  <rect x="264" y="628" width="160" height="34" rx="8" fill="#34d399"/>
+  <text x="344" y="650" fill="#0c1f10" font-size="12" text-anchor="middle">Invoke →</text>
+  <text x="240" y="744" fill="#7c828c" font-size="11">Hybrid — Invocation node (mockup 03) · C node graph + inspector replaces RoomPanel Where/Mode</text>
+</svg>

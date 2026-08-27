@@ -1,0 +1,313 @@
+import type { Lens } from '../../types/lens-types';
+
+/**
+ * Preset lens library — mirrors role-library.ts for roles.
+ *
+ * Each lens is a composable perspective transform. Meta-lenses
+ * (meta-consensus, meta-dissent-preservation) are used by the
+ * Synthesis Engine (see IMPLEMENTATION_PLAN module 4).
+ */
+export const LENS_LIBRARY: Lens[] = [
+    {
+        id: 'lens:critical',
+        name: 'Critical Lens',
+        description: 'Активно ищет слабые места, неявные допущения, контрпримеры.',
+        category: 'analytical',
+        transform: {
+            kind: 'perspective-inject',
+            questions: [
+                'Какое неявное допущение лежит в основе этого вывода?',
+                'Какой контрпример опровергнет это утверждение?',
+                'Какие данные могли бы изменить заключение?',
+                'Где граница применимости этого утверждения?',
+            ],
+        },
+        applicability: { taskTypes: ['analysis', 'review', 'debate'], domains: ['*'] },
+        compositionRules: {
+            stackable: true,
+            maxStackSize: 5,
+            orderMatters: true,
+            allowedWith: '*',
+        },
+        conflictWith: [],
+        priority: 10,
+        isBuiltin: true,
+        metadata: {
+            version: 1,
+            author: 'system',
+            tags: ['critical', 'analysis'],
+            maturity: 'stable',
+        },
+    },
+    {
+        id: 'lens:second-order',
+        name: 'Second-Order Effects',
+        description: 'Рассматривает последствия второго и третьего порядка.',
+        category: 'temporal',
+        transform: {
+            kind: 'prompt-prefix',
+            text: 'Перед ответом проанализируй последствия 2-го и 3-го порядка. Что изменится через 1 месяц, 1 год, 5 лет?',
+        },
+        applicability: { taskTypes: ['planning', 'decision', 'forecast'], domains: ['*'] },
+        compositionRules: {
+            stackable: true,
+            maxStackSize: 5,
+            orderMatters: true,
+            allowedWith: '*',
+        },
+        conflictWith: [],
+        priority: 8,
+        isBuiltin: true,
+        metadata: {
+            version: 1,
+            author: 'system',
+            tags: ['temporal', 'planning'],
+            maturity: 'stable',
+        },
+    },
+    {
+        id: 'lens:security',
+        name: 'Security Lens',
+        description: 'Adversarial perspective: ищет векторы атак, утечки, привилегии.',
+        category: 'risk',
+        transform: {
+            kind: 'perspective-inject',
+            questions: [
+                'Каковы векторы атаки на это решение?',
+                'Где могут возникнуть утечки данных или привилегий?',
+                'Что произойдёт при компрометации ключевого компонента?',
+            ],
+        },
+        applicability: {
+            taskTypes: ['architecture', 'review', 'deploy'],
+            domains: ['security', 'tech'],
+        },
+        compositionRules: {
+            stackable: true,
+            maxStackSize: 5,
+            orderMatters: true,
+            allowedWith: '*',
+        },
+        conflictWith: [],
+        priority: 9,
+        isBuiltin: true,
+        metadata: { version: 1, author: 'system', tags: ['security', 'risk'], maturity: 'stable' },
+    },
+    {
+        id: 'lens:economic',
+        name: 'Economic Lens',
+        description: 'Анализирует через incentive structures и trade-offs.',
+        category: 'domain',
+        transform: {
+            kind: 'prompt-prefix',
+            text: 'Оцени решение через incentive structures, cost/benefit и trade-offs. Кто выигрывает, кто проигрывает экономически?',
+        },
+        applicability: {
+            taskTypes: ['decision', 'strategy', 'business'],
+            domains: ['business', 'economics'],
+        },
+        compositionRules: {
+            stackable: true,
+            maxStackSize: 5,
+            orderMatters: true,
+            allowedWith: '*',
+        },
+        conflictWith: [],
+        priority: 6,
+        isBuiltin: true,
+        metadata: {
+            version: 1,
+            author: 'system',
+            tags: ['economics', 'strategy'],
+            maturity: 'stable',
+        },
+    },
+    {
+        id: 'lens:multi-stakeholder',
+        name: 'Multi-Stakeholder',
+        description: 'Рассматривает с позиции каждого стейкхолдера по очереди.',
+        category: 'stakeholder',
+        transform: {
+            kind: 'perspective-inject',
+            questions: [
+                'Как это видит каждая заинтересованная сторона?',
+                'Чьи интересы ущемляются этим решением?',
+                'Как изменение одного стейкхолдера повлияет на других?',
+            ],
+        },
+        applicability: { taskTypes: ['decision', 'policy', 'debate'], domains: ['*'] },
+        compositionRules: {
+            stackable: true,
+            maxStackSize: 5,
+            orderMatters: true,
+            allowedWith: '*',
+        },
+        conflictWith: [],
+        priority: 7,
+        isBuiltin: true,
+        metadata: {
+            version: 1,
+            author: 'system',
+            tags: ['stakeholder', 'policy'],
+            maturity: 'stable',
+        },
+    },
+    {
+        id: 'lens:meta-consensus',
+        name: 'Meta-Consensus',
+        description: 'Ищет точки согласия между перспективами.',
+        category: 'analytical',
+        transform: {
+            kind: 'perspective-inject',
+            questions: [
+                'По каким утверждениям все перспективы сходятся?',
+                'Какова общая основа согласия?',
+                'Какое утверждение максимально усилит консенсус?',
+            ],
+        },
+        applicability: { taskTypes: ['synthesis', 'debate', 'consensus'], domains: ['*'] },
+        compositionRules: {
+            stackable: true,
+            maxStackSize: 5,
+            orderMatters: true,
+            allowedWith: '*',
+        },
+        conflictWith: ['lens:meta-dissent'],
+        priority: 5,
+        isBuiltin: true,
+        metadata: { version: 1, author: 'system', tags: ['meta', 'consensus'], maturity: 'stable' },
+    },
+    {
+        id: 'lens:meta-dissent',
+        name: 'Meta-Dissent-Preservation',
+        description: 'Защищает меньшинство от подавления (против groupthink).',
+        category: 'ethical',
+        transform: {
+            kind: 'perspective-inject',
+            questions: [
+                'Какое мнение меньшинства подавляется консенсусом?',
+                'Какие аргументы оппозиции недостаточно представлены?',
+                'Что можно потерять, если согласиться со всеми?',
+            ],
+        },
+        applicability: { taskTypes: ['synthesis', 'debate', 'consensus'], domains: ['*'] },
+        compositionRules: {
+            stackable: true,
+            maxStackSize: 5,
+            orderMatters: true,
+            allowedWith: '*',
+        },
+        conflictWith: ['lens:meta-consensus'],
+        priority: 5,
+        isBuiltin: true,
+        metadata: { version: 1, author: 'system', tags: ['meta', 'dissent'], maturity: 'stable' },
+    },
+    {
+        id: 'lens:meta-uncertainty',
+        name: 'Meta-Uncertainty',
+        description: 'Помечает зоны, где данных мало.',
+        category: 'analytical',
+        transform: {
+            kind: 'perspective-inject',
+            questions: [
+                'Какие утверждения не подтверждены данными?',
+                'Где границы уверенности этого вывода?',
+                'Какие эксперименты нужны для проверки?',
+            ],
+        },
+        applicability: { taskTypes: ['synthesis', 'research', 'analysis'], domains: ['*'] },
+        compositionRules: {
+            stackable: true,
+            maxStackSize: 5,
+            orderMatters: true,
+            allowedWith: '*',
+        },
+        conflictWith: [],
+        priority: 4,
+        isBuiltin: true,
+        metadata: {
+            version: 1,
+            author: 'system',
+            tags: ['meta', 'uncertainty'],
+            maturity: 'stable',
+        },
+    },
+    {
+        id: 'lens:optimistic',
+        name: 'Optimistic Lens',
+        description: 'Ищет возможности и позитивные сценарии.',
+        category: 'analytical',
+        transform: {
+            kind: 'prompt-prefix',
+            text: 'Сфокусируйся на возможностях, сильных сторонах и позитивных сценариях развития.',
+        },
+        applicability: { taskTypes: ['planning', 'strategy'], domains: ['*'] },
+        compositionRules: {
+            stackable: true,
+            maxStackSize: 5,
+            orderMatters: true,
+            allowedWith: '*',
+        },
+        conflictWith: ['lens:critical'],
+        priority: 3,
+        isBuiltin: true,
+        metadata: { version: 1, author: 'system', tags: ['optimistic'], maturity: 'stable' },
+    },
+    {
+        id: 'lens:long-term',
+        name: 'Long-Term Lens',
+        description: 'Рассматривает устойчивость и долгосрочные последствия.',
+        category: 'temporal',
+        transform: {
+            kind: 'prompt-prefix',
+            text: 'Оцени устойчивость решения в долгосрочной перспективе (10+ лет). Что останется актуальным?',
+        },
+        applicability: { taskTypes: ['planning', 'architecture', 'policy'], domains: ['*'] },
+        compositionRules: {
+            stackable: true,
+            maxStackSize: 5,
+            orderMatters: true,
+            allowedWith: '*',
+        },
+        conflictWith: [],
+        priority: 6,
+        isBuiltin: true,
+        metadata: {
+            version: 1,
+            author: 'system',
+            tags: ['temporal', 'long-term'],
+            maturity: 'stable',
+        },
+    },
+    {
+        id: 'lens:meta-meta',
+        name: 'Meta-Meta',
+        description:
+            'Наблюдает за самим процессом синтеза: не искажает ли консенсус, не сместился ли фокус, полнота зон.',
+        category: 'analytical',
+        transform: {
+            kind: 'perspective-inject',
+            questions: [
+                'Не приписывает ли процесс слишком много веса одной перспективе?',
+                'Какие перспективы не были рассмотрены вовсе?',
+                'Является ли итоговая квалификация уверенности честной относительно данных?',
+            ],
+        },
+        applicability: { taskTypes: ['synthesis', 'meta'], domains: ['*'] },
+        compositionRules: {
+            stackable: true,
+            maxStackSize: 5,
+            orderMatters: true,
+            allowedWith: '*',
+        },
+        conflictWith: [],
+        priority: 5,
+        isBuiltin: true,
+        metadata: {
+            version: 1,
+            author: 'system',
+            tags: ['meta', 'self-reflection'],
+            maturity: 'stable',
+        },
+    },
+];

@@ -1,0 +1,55 @@
+<svg viewBox="0 0 1000 640" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1000" height="640" fill="#0f1117"/>
+  <rect x="0" y="0" width="1000" height="48" fill="#1a1d27"/>
+  <rect x="0" y="48" width="1000" height="2" fill="#2a2f3a"/>
+  <rect x="14" y="14" width="20" height="20" rx="4" fill="#6366f1"/>
+  <text x="44" y="29" font-family="Segoe UI, sans-serif" font-size="16" fill="#e5e7eb" font-weight="bold">Debate Mission Control</text>
+  <text x="900" y="29" font-family="Segoe UI, sans-serif" font-size="13" fill="#34d399">MODERATOR</text>
+
+  <!-- left: agent grid -->
+  <text x="24" y="74" font-family="Segoe UI, sans-serif" font-size="13" fill="#9ca3af">AGENT STATUS GRID</text>
+  <rect x="20" y="84" width="250" height="150" rx="10" fill="#161922" stroke="#2a2f3a"/>
+  <circle cx="45" cy="110" r="6" fill="#34d399"/>
+  <text x="60" y="115" font-family="Segoe UI, sans-serif" font-size="13" fill="#e5e7eb">Advocate</text>
+  <rect x="40" y="128" width="180" height="8" rx="4" fill="#2a2f3a"/><rect x="40" y="128" width="150" height="8" rx="4" fill="#6366f1"/>
+  <text x="40" y="155" font-family="Segoe UI, sans-serif" font-size="11" fill="#9ca3af">err 0 · to 0 · fb 0</text>
+
+  <rect x="20" y="244" width="250" height="150" rx="10" fill="#161922" stroke="#2a2f3a"/>
+  <circle cx="45" cy="270" r="6" fill="#e0a82e"/>
+  <text x="60" y="275" font-family="Segoe UI, sans-serif" font-size="13" fill="#e5e7eb">Skeptic</text>
+  <rect x="40" y="288" width="180" height="8" rx="4" fill="#2a2f3a"/><rect x="40" y="288" width="80" height="8" rx="4" fill="#ef4444"/>
+  <text x="40" y="315" font-family="Segoe UI, sans-serif" font-size="11" fill="#9ca3af">err 1 · to 0 · fb 0</text>
+
+  <!-- center: consensus gauge + mini arena -->
+  <rect x="290" y="84" width="420" height="310" rx="10" fill="#161922" stroke="#2a2f3a"/>
+  <text x="310" y="110" font-family="Segoe UI, sans-serif" font-size="13" fill="#9ca3af">GLOBAL CONSENSUS</text>
+  <circle cx="500" cy="220" r="80" fill="none" stroke="#2a2f3a" stroke-width="14"/>
+  <path d="M500 220 L500 140 A80 80 0 0 1 565 255 Z" fill="none" stroke="#e0a82e" stroke-width="14"/>
+  <text x="480" y="228" font-family="Segoe UI, sans-serif" font-size="22" fill="#e0a82e" font-weight="bold">0.55</text>
+  <text x="370" y="340" font-family="Segoe UI, sans-serif" font-size="12" fill="#34d399">agree 4</text>
+  <text x="560" y="340" font-family="Segoe UI, sans-serif" font-size="12" fill="#ef4444">conflict 2</text>
+
+  <!-- right: inject / override + integration rail -->
+  <rect x="730" y="84" width="250" height="200" rx="10" fill="#161922" stroke="#2a2f3a"/>
+  <text x="748" y="108" font-family="Segoe UI, sans-serif" font-size="13" fill="#e5e7eb" font-weight="bold">INJECT / OVERRIDE</text>
+  <rect x="748" y="120" width="214" height="60" rx="8" fill="#0f1117" stroke="#2a2f3a"/>
+  <text x="758" y="140" font-family="Segoe UI, sans-serif" font-size="11" fill="#9ca3af">moderator statement…</text>
+  <rect x="748" y="188" width="100" height="26" rx="6" fill="#6366f1"/>
+  <text x="772" y="206" font-family="Segoe UI, sans-serif" font-size="12" fill="#fff">Inject</text>
+  <rect x="858" y="188" width="104" height="26" rx="6" fill="#1a1d27" stroke="#2a2f3a"/>
+  <text x="870" y="206" font-family="Segoe UI, sans-serif" font-size="12" fill="#e5e7eb">Override next</text>
+
+  <rect x="730" y="300" width="250" height="94" rx="10" fill="#161922" stroke="#2a2f3a"/>
+  <text x="748" y="322" font-family="Segoe UI, sans-serif" font-size="13" fill="#e5e7eb" font-weight="bold">INTEGRATIONS</text>
+  <rect x="748" y="332" width="214" height="22" rx="5" fill="#1a1d27" stroke="#2a2f3a"/>
+  <text x="758" y="348" font-family="Segoe UI, sans-serif" font-size="11" fill="#e0a82e">→ Save as Crystal</text>
+  <rect x="748" y="360" width="214" height="22" rx="5" fill="#1a1d27" stroke="#2a2f3a"/>
+  <text x="758" y="376" font-family="Segoe UI, sans-serif" font-size="11" fill="#34d399">→ Post to Forum</text>
+
+  <!-- bottom: quality strip -->
+  <rect x="20" y="540" width="960" height="80" rx="10" fill="#1a1d27" stroke="#2a2f3a"/>
+  <text x="40" y="568" font-family="Segoe UI, sans-serif" font-size="13" fill="#9ca3af">QUALITY MONITOR (DebateQualityPanel)</text>
+  <rect x="40" y="582" width="120" height="12" rx="6" fill="#2a2f3a"/><rect x="40" y="582" width="95" height="12" rx="6" fill="#34d399"/>
+  <rect x="200" y="582" width="120" height="12" rx="6" fill="#2a2f3a"/><rect x="200" y="582" width="70" height="12" rx="6" fill="#6366f1"/>
+  <rect x="360" y="582" width="120" height="12" rx="6" fill="#2a2f3a"/><rect x="360" y="582" width="50" height="12" rx="6" fill="#ef4444"/>
+</svg>

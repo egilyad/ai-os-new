@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" font-family="Inter, system-ui, sans-serif">
+  <rect width="1200" height="760" fill="#0f1117"/>
+  <rect x="0" y="0" width="200" height="760" fill="#161922" stroke="#232733"/>
+  <text x="20" y="34" fill="#e6e9ef" font-size="14" font-weight="700">SuperAgents OS</text>
+  <text x="20" y="700" fill="#7c828c" font-size="10">⌘K command · ⌘J live</text>
+  <text x="240" y="56" fill="#e0a82e" font-family="Source Serif, Georgia, serif" font-style="italic" font-size="18">"Best antibiotic for uncomplicated UTI?"</text>
+  <text x="240" y="80" fill="#7c828c" font-size="12">Conclusion · confidence 0.82 · provenance below</text>
+  <!-- provenance chain -->
+  <rect x="240" y="110" width="900" height="120" rx="10" fill="#161922" stroke="#232733"/>
+  <text x="264" y="140" fill="#e0a82e" font-size="12" font-weight="700">PROVENANCE CHAIN</text>
+  <g font-size="12">
+    <rect x="264" y="156" width="150" height="40" rx="8" fill="#0f1117" stroke="#232733"/>
+    <text x="339" y="180" fill="#e6e9ef" font-size="11" text-anchor="middle">Question</text>
+    <text x="469" y="180" fill="#6366f1" font-size="18" text-anchor="middle">→</text>
+    <rect x="489" y="156" width="150" height="40" rx="8" fill="#0f1117" stroke="#a78bfa"/>
+    <text x="564" y="180" fill="#a78bfa" font-size="11" text-anchor="middle">Research #r3</text>
+    <text x="694" y="180" fill="#6366f1" font-size="18" text-anchor="middle">→</text>
+    <rect x="714" y="156" width="150" height="40" rx="8" fill="#0f1117" stroke="#a78bfa"/>
+    <text x="789" y="180" fill="#a78bfa" font-size="11" text-anchor="middle">Debate #d4</text>
+    <text x="919" y="180" fill="#6366f1" font-size="18" text-anchor="middle">→</text>
+    <rect x="939" y="156" width="150" height="40" rx="8" fill="#0f1117" stroke="#e0a82e"/>
+    <text x="1014" y="180" fill="#e0a82e" font-size="11" text-anchor="middle">Conclusion</text>
+  </g>
+  <text x="264" y="218" fill="#9aa3b2" font-size="11">Evidence: [1] Smith 2024 · [2] Lee 2023 · [3] Ruiz 2025 (citations surfaced, not dark phases)</text>
+  <!-- conclusions list -->
+  <text x="240" y="280" fill="#e0a82e" font-size="12" font-weight="700">ALL CONCLUSIONS</text>
+  <g font-size="13">
+    <rect x="240" y="296" width="900" height="70" rx="8" fill="#161922" stroke="#232733"/>
+    <text x="264" y="326" fill="#e6e9ef">Nitrofurantoin first-line; resistance rising for trimethoprim.</text>
+    <rect x="264" y="338" width="120" height="18" rx="6" fill="#34d399"/><text x="324" y="351" fill="#0c1f10" font-size="9" text-anchor="middle">0.82</text>
+    <rect x="240" y="378" width="900" height="70" rx="8" fill="#161922" stroke="#232733"/>
+    <text x="264" y="408" fill="#e6e9ef">3-agent panel + synthesizer beats free-form on balance.</text>
+    <rect x="264" y="420" width="120" height="18" rx="6" fill="#e0a82e"/><text x="324" y="433" fill="#16140f" font-size="9" text-anchor="middle">0.67</text>
+    <rect x="240" y="460" width="900" height="70" rx="8" fill="#161922" stroke="#232733"/>
+    <text x="264" y="490" fill="#e6e9ef">Widen governor timeout; classify SSE idle as retryable.</text>
+    <rect x="264" y="502" width="120" height="18" rx="6" fill="#34d399"/><text x="324" y="515" fill="#0c1f10" font-size="9" text-anchor="middle">0.79</text>
+  </g>
+  <text x="240" y="744" fill="#7c828c" font-size="11">Hybrid — Knowledge & provenance (mockup 04) · E Conclusions + chain; research phases visible</text>
+</svg>

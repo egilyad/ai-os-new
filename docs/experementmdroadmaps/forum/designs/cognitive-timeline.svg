@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="520" viewBox="0 0 900 520" font-family="Segoe UI, sans-serif">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,3 L0,6 z" fill="#64748b"/>
+    </marker>
+    <style>
+      .hdr { fill:#8b5cf6; font-size:15px; font-weight:700; }
+      .lbl { fill:#cbd5e1; font-size:11px; }
+      .sub { fill:#64748b; font-size:9px; }
+      .box { fill:#0d1526; stroke:#334155; stroke-width:1; rx:8; }
+      .boxA { fill:#1a1433; stroke:#8b5cf6; stroke-width:1; }
+      .boxD { fill:#0f1f2e; stroke:#38bdf8; stroke-width:1; }
+      .boxC { fill:#0f2a1c; stroke:#10b981; stroke-width:1; }
+      .ev { fill:#1e293b; stroke:#475569; stroke-width:1; }
+    </style>
+  </defs>
+
+  <!-- Title -->
+  <text x="20" y="26" class="hdr">Cognitive Timeline inside Forum — UX concept (over existing events, no new system)</text>
+  <text x="20" y="42" class="sub">Join keys: post.agentProvenance.traceId  ↔  COGNITIVE_TRACE_UPDATED ;  invocation.context.ref===topicId  ↔  conversation:*/debate:*</text>
+
+  <!-- LEFT: Forum Topic thread (TopicView) -->
+  <rect x="20" y="60" width="380" height="440" rx="10" class="box"/>
+  <text x="36" y="82" class="lbl" font-weight="700">TopicView — forum thread</text>
+
+  <rect x="40" y="96" width="340" height="34" rx="6" class="ev"/>
+  <text x="52" y="117" class="lbl">Post · human asks claim  [parentId supported, unused]</text>
+
+  <rect x="40" y="140" width="340" height="34" rx="6" class="boxA"/>
+  <text x="52" y="161" class="lbl">◆ Agent "Architect" joins (author.id → agentProvenance.traceId)</text>
+
+  <rect x="40" y="184" width="340" height="34" rx="6" class="ev"/>
+  <text x="52" y="205" class="lbl">Post · agent challenges (free-text ref to human post)</text>
+
+  <rect x="40" y="228" width="340" height="34" rx="6" class="ev"/>
+  <text x="52" y="249" class="lbl">Post · agent posts evidence</text>
+
+  <rect x="40" y="272" width="340" height="34" rx="6" class="boxD"/>
+  <text x="52" y="293" class="lbl">⚔ Debate spun (invocation context forum-topic → sessionRef)</text>
+
+  <rect x="40" y="316" width="340" height="34" rx="6" class="ev"/>
+  <text x="52" y="337" class="lbl">Post · SYSTEM case-study (DEBATE_VERDICT_GENERATED)</text>
+
+  <rect x="40" y="360" width="340" height="34" rx="6" class="boxC"/>
+  <text x="52" y="381" class="lbl">✓ Consensus badge = getConsensus(topicId)</text>
+
+  <rect x="40" y="404" width="340" height="34" rx="6" class="boxC"/>
+  <text x="52" y="425" class="lbl">★ Synthesis capstone (SYNTHESIS_EXPORTED_TO_FORUM, reviver)</text>
+
+  <rect x="40" y="448" width="340" height="34" rx="6" class="ev"/>
+  <text x="52" y="469" class="lbl">Post · SYSTEM crystal announcement (CRYSTAL_FORMED)</text>
+
+  <!-- RIGHT: Cognitive Timeline rail -->
+  <rect x="500" y="60" width="380" height="440" rx="10" class="box"/>
+  <text x="516" y="82" class="lbl" font-weight="700">CognitiveTimeline rail (new component)</text>
+
+  <rect x="520" y="96" width="340" height="30" rx="6" class="ev"/>
+  <text x="532" y="115" class="sub">joined  ← invocation:accepted (context.ref=topic)</text>
+
+  <rect x="520" y="134" width="340" height="30" rx="6" class="ev"/>
+  <text x="532" y="153" class="sub">researching  ← COGNITIVE_STEP_ACTIVE (nodeId)</text>
+
+  <rect x="520" y="172" width="340" height="30" rx="6" class="ev"/>
+  <text x="532" y="191" class="sub">evidence  ← COGNITIVE_STEP_COMPLETED (output, model)</text>
+
+  <rect x="520" y="210" width="340" height="30" rx="6" class="ev"/>
+  <text x="532" y="229" class="sub">decision  ← COGNITIVE_DECISION_MADE (dead today)</text>
+
+  <rect x="520" y="248" width="340" height="30" rx="6" class="boxD"/>
+  <text x="532" y="267" class="sub">debate  ← debate:started/argument/consensus (sessionRef)</text>
+
+  <rect x="520" y="286" width="340" height="30" rx="6" class="ev"/>
+  <text x="532" y="305" class="sub">trace join  ← post.agentProvenance.traceId = trace.id</text>
+
+  <rect x="520" y="324" width="340" height="30" rx="6" class="boxC"/>
+  <text x="532" y="343" class="sub">consensus  ← getConsensus status badge</text>
+
+  <rect x="520" y="362" width="340" height="30" rx="6" class="boxC"/>
+  <text x="532" y="381" class="sub">synthesis  ← SYNTHESIS_EXPORTED_TO_FORUM consumer</text>
+
+  <!-- Connectors -->
+  <line x1="380" y1="113" x2="500" y2="111" stroke="#64748b" stroke-width="1" marker-end="url(#arrow)"/>
+  <line x1="380" y1="157" x2="500" y2="149" stroke="#8b5cf6" stroke-width="1" marker-end="url(#arrow)"/>
+  <line x1="380" y1="201" x2="500" y2="187" stroke="#64748b" stroke-width="1" marker-end="url(#arrow)"/>
+  <line x1="380" y1="245" x2="500" y2="263" stroke="#38bdf8" stroke-width="1" marker-end="url(#arrow)"/>
+  <line x1="380" y1="289" x2="500" y2="301" stroke="#64748b" stroke-width="1" marker-end="url(#arrow)"/>
+  <line x1="380" y1="377" x2="500" y2="339" stroke="#10b981" stroke-width="1" marker-end="url(#arrow)"/>
+  <line x1="380" y1="421" x2="500" y2="377" stroke="#10b981" stroke-width="1" marker-end="url(#arrow)"/>
+
+  <text x="20" y="512" class="sub">No new events. All arrows are consumer-side joins over EventBus.onSafe + agentProvenance.traceId. Hover a post → expand its trace.</text>
+</svg>
