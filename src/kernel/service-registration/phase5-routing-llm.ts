@@ -32,7 +32,6 @@ import { AdvisorService, AdvisorServiceDeps } from '../services/advisor-service'
 import { SreAgentDefinition } from '../agents/SreAgent';
 import { CapabilityManager } from '../services/capability-manager';
 import type { ICapabilityManager } from '../contracts/capability-manager';
-import type { ToolService } from '../services/tool-executor';
 import type { SkillService } from '../services/skill-service';
 
 import { RouterService as RouterServiceClass } from '../services/provider-router';
@@ -40,7 +39,6 @@ import { UsageTracker } from '../services/usage-tracker';
 import { CacheService } from '../services/cache-service';
 import { ConfigService } from '../services/config-service';
 import { SnapshotService as SnapshotServiceClass } from '../services/snapshot-service';
-import { AdvisorService } from '../services/advisor-service';
 import { AdminService } from '../services/admin-service';
 import { TimelineService } from '../services/timeline-service';
 import { MonitoringService } from '../services/monitoring-service';
@@ -102,9 +100,6 @@ export const registerPhase5: Phase = (helpers) => {
         });
     });
 
-import { SreAgentDefinition } from '../agents/SreAgent';
-
-// ... (inside register function)
     register('capabilityManager', (c) => new CapabilityManager({
         toolService: c.get<ToolService>('toolService'),
         skillService: c.get<SkillService>('skillService')
