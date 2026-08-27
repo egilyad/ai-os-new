@@ -1,7 +1,8 @@
 import { SRE_AGENT_METADATA, SRE_AGENT_PERSONA } from './persona';
 import { SRE_AGENT_TOOLS } from './tools';
 import { SRE_AGENT_JOURNAL_HOOKS } from './journal';
-import { AdvisorService, AdvisorServiceDeps } from '../../services/advisor-service';
+import { AdvisorService } from '../../services/advisor-service';
+import type { AdvisorServiceDeps } from '../../services/advisor-service';
 
 export const SreAgentDefinition = {
     metadata: SRE_AGENT_METADATA,
