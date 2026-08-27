@@ -132,7 +132,7 @@ const DebateSidebar: React.FC<DebateSidebarProps> = ({ isOpen = true }) => {
             style={{
                 width: SIDEBAR_WIDTH,
                 minWidth: SIDEBAR_WIDTH,
-                height: '100%',
+                height: '200%',
                 display: 'flex',
                 flexDirection: 'column',
                 background: 'rgba(15,23,42,0.85)',
