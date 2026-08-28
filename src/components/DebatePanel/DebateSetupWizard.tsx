@@ -81,35 +81,39 @@ const DebateSetupWizard: React.FC<DebateSetupWizardProps> = ({
                             <StrategySelector value={strategy} onChange={onStrategyChange} t={t} />
                         </label>
 
-                        {/* 3. Agents minimal */}
+                        {/* 3. Agents dropdown + chips */}
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                                <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--slate-300)' }}>3. {t('debate.participants')} — {selectedAgents.length} {t('debate.selected')}</span>
-                                <div style={{ display: 'flex', gap: 6 }}>
-                                    <button onClick={onSelectAll} style={{ fontSize: '0.7rem', padding: '4px 8px', borderRadius: 6, border: '1px solid rgba(168,85,247,0.3)', background: 'transparent', color: '#a855f7', cursor: 'pointer' }}>Select All</button>
-                                    <button onClick={onDeselectAll} style={{ fontSize: '0.7rem', padding: '4px 8px', borderRadius: 6, border: '1px solid rgba(255,255,255,0.1)', background: 'transparent', color: 'var(--slate-400)', cursor: 'pointer' }}>Clear</button>
-                                </div>
-                            </div>
-                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: 8, maxHeight: 220, overflowY: 'auto', padding: 2 }}>
-                                {availableAgents.map(agent => {
-                                    const selected = selectedAgents.includes(agent.id);
+                            <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--slate-300)' }}>3. {t('debate.participants')} — {selectedAgents.length} {t('debate.selected')}</span>
+                            <select
+                                value=""
+                                onChange={(e) => { if (e.target.value) onToggleAgent(e.target.value); }}
+                                style={{ width: '100%', padding: '10px 12px', borderRadius: 10, border: '1px solid rgba(100,116,139,0.25)', background: 'rgba(15,23,42,0.6)', color: 'var(--slate-100)', fontSize: '0.9rem', outline: 'none', boxSizing: 'border-box' }}
+                            >
+                                <option value="">Select agent…</option>
+                                {availableAgents.map(agent => (
+                                    <option key={agent.id} value={agent.id}>{agent.label}</option>
+                                ))}
+                            </select>
+                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 4 }}>
+                                {selectedAgents.map(id => {
+                                    const agent = availableAgents.find(a => a.id === id);
                                     return (
-                                        <button
-                                            key={agent.id}
-                                            onClick={() => onToggleAgent(agent.id)}
-                                            style={{
-                                                padding: '10px 12px', borderRadius: 10, textAlign: 'left', cursor: 'pointer', fontSize: '0.85rem', fontWeight: 600,
-                                                border: selected ? '1px solid rgba(168,85,247,0.4)' : '1px solid rgba(255,255,255,0.08)',
-                                                background: selected ? 'rgba(168,85,247,0.12)' : 'rgba(15,23,42,0.4)',
-                                                color: selected ? '#e9d5ff' : 'var(--slate-300)',
-                                            }}
+                                        <span
+                                            key={id}
+                                            style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '6px 10px', borderRadius: 999, border: '1px solid rgba(168,85,247,0.4)', background: 'rgba(168,85,247,0.12)', color: '#e9d5ff', fontSize: '0.8rem', fontWeight: 600 }}
                                         >
-                                            {selected ? '✓ ' : ''}{agent.label}
-                                        </button>
+                                            {agent ? agent.label : id}
+                                            <button
+                                                type="button"
+                                                onClick={() => onToggleAgent(id)}
+                                                aria-label={`Remove ${agent ? agent.label : id}`}
+                                                style={{ border: 'none', background: 'transparent', color: '#e9d5ff', cursor: 'pointer', fontSize: '0.9rem', padding: 0, lineHeight: 1 }}
+                                            >✕</button>
+                                        </span>
                                     );
                                 })}
-                                {availableAgents.length === 0 && <div style={{ fontSize: '0.8rem', color: 'var(--slate-500)' }}>{t('debate.no_agents')}</div>}
                             </div>
+                            {selectedAgents.length === 0 && availableAgents.length === 0 && <div style={{ fontSize: '0.8rem', color: 'var(--slate-500)' }}>{t('debate.no_agents')}</div>}
                         </div>
 
                         {/* 4. Rounds */}
