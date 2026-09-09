@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" font-family="Inter, system-ui, sans-serif">
+  <rect width="1200" height="760" fill="#10131a"/>
+  <rect x="0" y="0" width="1200" height="36" fill="#1a1f29"/><text x="16" y="24" fill="#e8edf4" font-size="13" font-weight="700">SuperAgents OS</text>
+  <rect x="900" y="6" width="240" height="24" rx="6" fill="#10131a" stroke="#2b3340"/><text x="912" y="22" fill="#8a94a6" font-size="11">⌘K · search or launch…</text>
+  <text x="60" y="80" fill="#e8edf4" font-size="20" font-weight="700">Launchpad</text>
+  <text x="60" y="104" fill="#8a94a6" font-size="12">All apps · stubs marked PLANNED (UX-001)</text>
+  <!-- folders -->
+  <text x="60" y="150" fill="#8a94a6" font-size="12" font-weight="700">COMMUNICATION</text>
+  <g>
+    <rect x="60" y="164" width="160" height="120" rx="10" fill="#1a1f29" stroke="#2b3340"/><text x="140" y="234" fill="#e8edf4" font-size="12" text-anchor="middle">Chat</text>
+    <rect x="236" y="164" width="160" height="120" rx="10" fill="#1a1f29" stroke="#2b3340"/><text x="316" y="234" fill="#e8edf4" font-size="12" text-anchor="middle">Debate</text>
+    <rect x="412" y="164" width="160" height="120" rx="10" fill="#1a1f29" stroke="#2b3340"/><text x="492" y="234" fill="#e8edf4" font-size="12" text-anchor="middle">Room</text>
+  </g>
+  <text x="60" y="330" fill="#8a94a6" font-size="12" font-weight="700">AGENTS</text>
+  <g>
+    <rect x="60" y="344" width="160" height="120" rx="10" fill="#1a1f29" stroke="#2b3340"/><text x="140" y="414" fill="#e8edf4" font-size="12" text-anchor="middle">Agents</text>
+    <rect x="236" y="344" width="160" height="120" rx="10" fill="#1a1f29" stroke="#2b3340"/><text x="316" y="414" fill="#e8edf4" font-size="12" text-anchor="middle">Groups</text>
+  </g>
+  <text x="60" y="510" fill="#8a94a6" font-size="12" font-weight="700">KNOWLEDGE</text>
+  <g>
+    <rect x="60" y="524" width="160" height="120" rx="10" fill="#1a1f29" stroke="#2b3340"/><text x="140" y="594" fill="#e8edf4" font-size="12" text-anchor="middle">Lenses</text>
+    <rect x="236" y="524" width="160" height="120" rx="10" fill="#1a1f29" stroke="#2b3340"/><text x="316" y="594" fill="#e8edf4" font-size="12" text-anchor="middle">Crystals</text>
+    <rect x="412" y="524" width="160" height="120" rx="10" fill="#1a1f29" stroke="#2b3340"/><text x="492" y="594" fill="#e8edf4" font-size="12" text-anchor="middle">Forum</text>
+  </g>
+  <!-- planned -->
+  <text x="640" y="150" fill="#f59e0b" font-size="12" font-weight="700">PLANNED (stubs)</text>
+  <g>
+    <rect x="640" y="164" width="160" height="120" rx="10" fill="#151a22" stroke="#3a3320"/>
+    <text x="720" y="234" fill="#f59e0b" font-size="12" text-anchor="middle">Steelman</text>
+    <rect x="720" y="246" width="70" height="18" rx="9" fill="#f59e0b"/><text x="755" y="259" fill="#3a2600" font-size="9" text-anchor="middle">PLANNED</text>
+    <rect x="816" y="164" width="160" height="120" rx="10" fill="#151a22" stroke="#3a3320"/>
+    <text x="896" y="234" fill="#f59e0b" font-size="12" text-anchor="middle">Scheduler</text>
+    <rect x="896" y="246" width="70" height="18" rx="9" fill="#f59e0b"/><text x="931" y="259" fill="#3a2600" font-size="9" text-anchor="middle">PREVIEW</text>
+  </g>
+  <text x="60" y="744" fill="#8a94a6" font-size="11">Design D — Launchpad (mockup 02) · 177 items grouped into app folders; stubs clearly labeled</text>
+</svg>

@@ -1,0 +1,2 @@
+npx lint-staged
+npx tsc -b --noEmit  # BLD-C3: solution-style tsconfig — type-checks via `tsc -b --noEmit` in CI

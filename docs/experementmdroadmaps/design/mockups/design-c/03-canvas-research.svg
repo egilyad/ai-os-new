@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" font-family="Space Grotesk, Inter, system-ui, sans-serif">
+  <rect width="1200" height="760" fill="#15101c"/>
+  <rect x="0" y="0" width="72" height="760" fill="#1c1626"/><circle cx="36" cy="32" r="14" fill="#d946ef"/>
+  <text x="96" y="44" fill="#f4ecff" font-size="18" font-weight="700">Canvas — Research: Quantum Batteries</text>
+  <rect x="96" y="64" width="1008" height="630" rx="10" fill="#1c1626" stroke="#3a2d4d"/>
+  <!-- phase graph -->
+  <g>
+    <circle cx="200" cy="180" r="34" fill="#241b30" stroke="#34d399" stroke-width="2"/><text x="200" y="184" fill="#f4ecff" font-size="11" text-anchor="middle">Lit</text>
+    <circle cx="420" cy="180" r="34" fill="#241b30" stroke="#34d399" stroke-width="2"/><text x="420" y="184" fill="#f4ecff" font-size="11" text-anchor="middle">Cite</text>
+    <circle cx="640" cy="180" r="34" fill="#241b30" stroke="#22d3ee" stroke-width="2"/><text x="640" y="184" fill="#f4ecff" font-size="11" text-anchor="middle">Citations</text>
+    <circle cx="860" cy="180" r="34" fill="#241b30" stroke="#fbbf24" stroke-width="2"/><text x="860" y="184" fill="#fbbf24" font-size="11" text-anchor="middle">Know</text>
+    <circle cx="200" cy="380" r="34" fill="#241b30" stroke="#fbbf24" stroke-width="2"/><text x="200" y="384" fill="#fbbf24" font-size="11" text-anchor="middle">Syst</text>
+    <circle cx="420" cy="380" r="34" fill="#241b30" stroke="#fbbf24" stroke-width="2"/><text x="420" y="384" fill="#fbbf24" font-size="11" text-anchor="middle">Fact</text>
+    <circle cx="640" cy="380" r="34" fill="#241b30" stroke="#fbbf24" stroke-width="2"/><text x="640" y="384" fill="#fbbf24" font-size="11" text-anchor="middle">Peer</text>
+  </g>
+  <g stroke="#3a2d4d" stroke-width="2">
+    <line x1="234" y1="180" x2="386" y2="180"/><line x1="454" y1="180" x2="606" y2="180"/>
+    <line x1="200" y1="214" x2="200" y2="346"/><line x1="420" y1="214" x2="420" y2="346"/><line x1="640" y1="214" x2="640" y2="346"/>
+  </g>
+  <!-- output render -->
+  <rect x="760" y="320" width="320" height="340" rx="10" fill="#241b30" stroke="#3a2d4d"/>
+  <text x="780" y="350" fill="#d946ef" font-size="12" font-weight="700">RENDER · CITATIONS</text>
+  <g font-family="JetBrains Mono, monospace" font-size="10" fill="#a392b8">
+    <text x="780" y="382">[1] Smith 2024</text><text x="780" y="402">[2] Lee 2023</text><text x="780" y="422">[3] Ruiz 2025</text>
+  </g>
+  <circle cx="880" cy="520" r="14" fill="#d946ef"/><circle cx="800" cy="580" r="14" fill="#34d399"/><circle cx="960" cy="580" r="14" fill="#34d399"/><circle cx="880" cy="620" r="14" fill="#fbbf24"/>
+  <g stroke="#3a2d4d"><line x1="880" y1="534" x2="800" y2="566"/><line x1="880" y1="534" x2="960" y2="566"/><line x1="880" y1="534" x2="880" y2="606"/></g>
+  <text x="96" y="744" fill="#a392b8" font-size="11">Design C — Canvas (mockup 03) · research phase graph + render panel (UX-010)</text>
+</svg>

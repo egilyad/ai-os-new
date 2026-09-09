@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" font-family="Inter, system-ui, sans-serif">
+  <rect width="1200" height="760" fill="#16140f"/>
+  <rect x="0" y="0" width="64" height="760" fill="#1f1c16"/><circle cx="32" cy="32" r="14" fill="#e0a82e"/><text x="32" y="37" fill="#16140f" font-size="14" text-anchor="middle" font-weight="700">S</text>
+  <rect x="64" y="0" width="200" height="760" fill="#1f1c16" stroke="#3a342a"/>
+  <text x="84" y="100" fill="#e0a82e" font-size="13" font-weight="700">Questions</text>
+  <text x="84" y="140" fill="#a89e8a" font-size="13">Evidence</text>
+  <text x="84" y="180" fill="#a89e8a" font-size="13">Debates</text>
+  <text x="84" y="220" fill="#a89e8a" font-size="13">Agents</text>
+  <text x="84" y="260" fill="#a89e8a" font-size="13">Graph</text>
+  <text x="84" y="300" fill="#a89e8a" font-size="13">Library</text>
+  <text x="296" y="56" fill="#f3ede0" font-size="22" font-weight="700">Questions &amp; Conclusions</text>
+  <rect x="296" y="76" width="170" height="38" rx="8" fill="#e0a82e"/><text x="381" y="100" fill="#16140f" font-size="13" text-anchor="middle" font-weight="700">Ask a question</text>
+  <g>
+    <rect x="296" y="134" width="860" height="100" rx="8" fill="#1f1c16" stroke="#3a342a"/>
+    <text x="316" y="166" fill="#f3ede0" font-size="14" font-weight="600">"What is the best debate format for medical ethics?"</text>
+    <text x="316" y="192" fill="#a89e8a" font-size="11">status: in progress · 2 debates · 3 agents</text>
+    <g><rect x="316" y="204" width="90" height="18" rx="9" fill="#5aa9e6"/><text x="361" y="217" fill="#07223a" font-size="9" text-anchor="middle">evidence 12</text><rect x="416" y="204" width="90" height="18" rx="9" fill="#a78bfa"/><text x="461" y="217" fill="#1a0f33" font-size="9" text-anchor="middle">agents 3</text></g>
+  </g>
+  <g>
+    <rect x="296" y="250" width="860" height="100" rx="8" fill="#1f1c16" stroke="#3a342a"/>
+    <text x="316" y="282" fill="#f3ede0" font-size="14" font-weight="600">"Are solid-state batteries viable by 2030?"</text>
+    <text x="316" y="308" fill="#5fbf6b" font-size="11">✓ concluded · confidence 0.74</text>
+    <g><rect x="316" y="320" width="110" height="18" rx="9" fill="#5fbf6b"/><text x="371" y="333" fill="#0c1f10" font-size="9" text-anchor="middle">citations 9</text></g>
+  </g>
+  <g>
+    <rect x="296" y="366" width="860" height="100" rx="8" fill="#1f1c16" stroke="#3a342a"/>
+    <text x="316" y="398" fill="#f3ede0" font-size="14" font-weight="600">"How do agents resolve contradictory evidence?"</text>
+    <text x="316" y="424" fill="#a89e8a" font-size="11">open · 1 debate scheduled</text>
+  </g>
+  <rect x="296" y="480" width="860" height="230" rx="8" fill="#1f1c16" stroke="#3a342a"/>
+  <text x="316" y="510" fill="#e0a82e" font-size="12" font-weight="700">REASONING (live · scoped to question)</text>
+  <g font-family="JetBrains Mono, monospace" font-size="11" fill="#a89e8a">
+    <text x="316" y="544">12:04  debate:turn  agent-2 → question</text>
+    <text x="316" y="568" fill="#5fbf6b">12:03  evidence:added  3 citations</text>
+    <text x="316" y="592" fill="#e06b6b">12:01  policy:rejected  (debate mode)</text>
+  </g>
+  <text x="296" y="744" fill="#a89e8a" font-size="11">Design E — Questions &amp; Conclusions (mockup 01) · product purpose is obvious</text>
+</svg>

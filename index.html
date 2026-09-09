@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+            rel="stylesheet"
+        />
+        <!-- WARNING: Keep this CSP in sync with docker/nginx.conf.
+             The meta-tag CSP applies in dev (Vite strips it per vite.config.ts overrides).
+             The nginx add_header applies in production.
+             Both must allow the same connect-src origins for provider APIs. -->
+        <meta
+            http-equiv="Content-Security-Policy"
+            content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https:; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' https://*.openrouter.ai https://*.openai.com https://*.anthropic.com https://generativelanguage.googleapis.com https://*.cloudflare.com https://*.cerebras.ai https://*.groq.com https://*.nvidia.com; frame-src 'self' blob:; object-src 'none'; base-uri 'self'; worker-src 'self' blob:; child-src 'self' blob:; form-action 'self'; upgrade-insecure-requests"
+        />
+        <title>SuperAgents OS</title>
+    </head>
+    <body>
+        <div id="root"></div>
+        <script type="module" src="/src/main.tsx"></script>
+    </body>
+</html>

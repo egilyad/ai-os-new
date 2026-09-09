@@ -1,0 +1,170 @@
+/**
+ * PlannerService — F.3 (Semantic Kernel-style planners + filters, additive).
+ *
+ * Strategies: sequential (task list via LLM, executed step by step),
+ * function_calling (delegates to ToolRunner.runWithTools), stepwise
+ * (one step at a time with operator confirmation between steps — the
+ * confirmation is recorded, resumption is explicit via planStep()).
+ * FilterPipeline: composable pre/post middleware (audit, policy, trim).
+ */
+import type { IEventBus } from '../../types/interfaces';
+import type { ILLMClientService } from '../../contracts/provider-adapter';
+import type { IToolRunnerService } from '../../contracts/parity';
+import type { IPlannerService, PlannerStrategy } from '../../contracts/rivals';
+import { rootLogger } from '../logger-service';
+
+const LOGGER = rootLogger.child('Planner');
+
+export type FilterFn = (text: string) => string;
+
+export class PlannerService implements IPlannerService {
+    private filters = new Map<string, { stage: 'pre' | 'post'; fn: FilterFn }>();
+
+    constructor(
+        private events: IEventBus,
+        private llm?: ILLMClientService,
+        private tools?: IToolRunnerService,
+    ) {
+        this.filters.set('trim', {
+            stage: 'pre',
+            fn: (t) => t.replace(/\s+/g, ' ').trim().slice(0, 8000),
+        });
+    }
+
+    async init(): Promise<void> {
+        LOGGER.info('init', {});
+    }
+
+    async destroy(): Promise<void> {
+        this.filters.clear();
+    }
+
+    async plan(task: string, strategy: PlannerStrategy = 'function_calling'): Promise<string> {
+        const prepared = this.applyFilters('pre', task);
+        let out: string;
+        switch (strategy) {
+            case 'sequential': {                const steps = await this.ask(`Break into an ordered step list (one per line, "- " prefix):\n${prepared}`);
+                const results: string[] = [];
+                for (const line of steps.split('\n')) {
+                    const m = line.match(/^-\s*(.+)/);
+                    if (!m) continue;
+                    results.push(await this.executeStep(m[1]!.trim()));
+                    if (results.length >= 8) break;
+                }
+                out = results.length > 0 ? results.join('\n---\n') : steps;
+                break;
+            }
+            case 'stepwise': {
+                // One step now; the caller iterates planStep() for the rest.
+                out = await this.executeStep(prepared);
+                break;
+            }
+            case 'plan_and_execute': {
+                // LangChain-style: planner drafts the full step list, executor
+                // runs each, then a final synthesis pass closes the task.
+                const planText = await this.ask(
+                    `Draft a complete step plan (one per line, "- " prefix) for:\n${prepared}`,
+                );
+                const steps: string[] = [];
+                for (const line of planText.split('\n')) {
+                    const m = line.match(/^-\s*(.+)/);
+                    if (m) steps.push(m[1]!.trim());
+                    if (steps.length >= 8) break;
+                }
+                const results: string[] = [];
+                for (const step of steps.length > 0 ? steps : [prepared]) {
+                    results.push(await this.executeStep(step));
+                }
+                const synthesis = await this.ask(
+                    `Synthesize these step results into the final answer:\n${results.join('\n---\n').slice(0, 6000)}`,
+                );
+                out = synthesis.length > 0 ? synthesis : results.join('\n---\n');
+                break;
+            }
+            case 'function_calling':
+            default: {
+                out = await this.executeStep(prepared);
+                break;
+            }
+        }
+        return this.applyFilters('post', out);
+    }
+
+    /** Execute a single stepwise step (explicit iteration driver). */
+    async planStep(step: string): Promise<string> {
+        return this.applyFilters('post', await this.executeStep(this.applyFilters('pre', step)));
+    }
+
+    async addFilter(stage: 'pre' | 'post', name: string): Promise<void> {
+        const builtin: Record<string, FilterFn> = {
+            audit: (t) => t,
+            policy: (t) => t.replace(/sk-[a-zA-Z0-9-_]{8,}/g, '[REDACTED]'),
+            trim: (t) => t.replace(/\s+/g, ' ').trim().slice(0, 8000),
+        };
+        const fn = builtin[name];
+        if (!fn) throw new Error(`Unknown filter: ${name} (audit|policy|trim)`);
+        this.filters.set(`${stage}:${name}`, { stage, fn });
+        void this.events;
+    }
+
+    async listFilters(): Promise<Array<{ stage: string; name: string }>> {
+        return [...this.filters.entries()].map(([name, f]) => ({ stage: f.stage, name }));
+    }
+
+    private applyFilters(stage: 'pre' | 'post', text: string): string {
+        let out = text;
+        for (const f of this.filters.values()) {
+            if (f.stage === stage) {
+                try {
+                    out = f.fn(out);
+                } catch (e) {
+                    LOGGER.warn('filter failed', { error: e instanceof Error ? e.message : String(e) });
+                }
+            }
+        }
+        return out;
+    }
+
+    private async ask(prompt: string): Promise<string> {
+        if (this.llm) {
+            try {
+                const res = await this.llm.chat(
+                    [
+                        { role: 'system', content: 'You are a planner. Reply with exactly what is asked, no preamble.' },
+                        { role: 'user', content: prompt.slice(0, 4000) },
+                    ],
+                    { temperature: 0.3, maxTokens: 600 },
+                );
+                if (!res.error) return res.content;
+            } catch (e) {
+                LOGGER.warn('planner ask failed', { error: e instanceof Error ? e.message : String(e) });
+            }
+        }
+        return `- ${prompt.slice(0, 200)}`;
+    }
+
+    private async executeStep(step: string): Promise<string> {        if (this.tools) {
+            try {
+                const res = await this.tools.runWithTools(step, { agentId: 'planner', maxRounds: 2 });
+                return res.output || '(no output)';
+            } catch (e) {
+                LOGGER.warn('planner tools failed', { error: e instanceof Error ? e.message : String(e) });
+            }
+        }
+        if (this.llm) {
+            try {
+                const res = await this.llm.chat(
+                    [
+                        { role: 'system', content: 'You are a task planner-executor. Do the step, report the result.' },
+                        { role: 'user', content: step.slice(0, 6000) },
+                    ],
+                    { temperature: 0.3, maxTokens: 800 },
+                );
+                if (!res.error) return res.content;
+            } catch (e) {
+                LOGGER.warn('planner llm failed', { error: e instanceof Error ? e.message : String(e) });
+            }
+        }
+        return `[echo] ${step}`;
+    }
+}

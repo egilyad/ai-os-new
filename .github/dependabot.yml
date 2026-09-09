@@ -1,0 +1,40 @@
+# P1.28: Automated dependency security/version updates.
+# GitHub enable Dependabot to open PRs for npm dependency updates.
+version: 2
+updates:
+    - package-ecosystem: npm
+      directory: /
+      schedule:
+          interval: weekly
+          day: monday
+          time: '08:00'
+          timezone: Etc/UTC
+      open-pull-requests-limit: 10
+      # Suppress updates for major/breaking upgrades that require manual work:
+      # react-router is pinned because 7.12-8.2 has an unpatched RSC-CSRF
+      # advisory (GHSA-qwww-vcr4-c8h2) and the only fix is a breaking downgrade.
+      ignore:
+          - dependency-name: react-router
+          - dependency-name: react-router-dom
+          - dependency-name: zod
+          - dependency-name: typescript
+      labels:
+          - dependencies
+          - security
+      reviewers:
+          - n95887174-source
+      commit-message:
+          prefix: chore(deps)
+          prefix-development: chore(deps-dev)
+
+    - package-ecosystem: github-actions
+      directory: /
+      schedule:
+          interval: weekly
+          day: monday
+          time: '08:00'
+          timezone: Etc/UTC
+      open-pull-requests-limit: 5
+      labels:
+          - ci
+          - dependencies

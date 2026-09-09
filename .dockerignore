@@ -1,0 +1,61 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Dependencies
+node_modules
+.npm
+.pnpm-store
+yarn-error.log
+npm-debug.log*
+
+# Build output (re-built in Docker)
+dist
+build
+.vite
+*.tsbuildinfo
+
+# Local config / secrets — never bake into an image
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.crt
+*.p12
+secrets/
+certs/
+
+# Editor / OS junk
+.DS_Store
+Thumbs.db
+.idea
+.vscode
+.history
+
+# Tests / coverage
+coverage
+.nyc_output
+*.lcov
+playwright-report
+test-results
+
+# Documentation source (huge; only the built docs/ dist is needed)
+docs-raw
+docs
+audit
+
+# Large generated files
+tsc-errors.txt
+
+# E2E tests (not needed in production image)
+e2e
+
+# Prompt vault (dev-only reference material)
+prompt-vault
+
+# Scripts that shouldn't ship
+scripts/dev-only
+*.bak
+*.tmp

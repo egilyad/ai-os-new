@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" font-family="Inter, system-ui, sans-serif">
+  <rect width="1200" height="760" fill="#16140f"/>
+  <rect x="0" y="0" width="64" height="760" fill="#1f1c16"/><circle cx="32" cy="32" r="14" fill="#e0a82e"/>
+  <text x="96" y="56" fill="#f3ede0" font-size="20" font-weight="700">Debate as a method — Medical Ethics</text>
+  <text x="96" y="80" fill="#a89e8a" font-size="12">resolves question Q1 · 2/5 turns</text>
+  <rect x="96" y="100" width="700" height="600" rx="8" fill="#1f1c16" stroke="#3a342a"/>
+  <circle cx="446" cy="400" r="150" fill="none" stroke="#3a342a" stroke-width="2"/>
+  <circle cx="446" cy="270" r="32" fill="#1f1c16" stroke="#e0a82e"/><text x="446" y="275" fill="#f3ede0" font-size="12" text-anchor="middle" font-weight="700">Topic</text>
+  <circle cx="330" cy="480" r="32" fill="#1f1c16" stroke="#a78bfa"/><text x="330" y="485" fill="#f3ede0" font-size="12" text-anchor="middle" font-weight="700">SA</text>
+  <circle cx="562" cy="480" r="32" fill="#1f1c16" stroke="#5fbf6b"/><text x="562" y="485" fill="#f3ede0" font-size="12" text-anchor="middle" font-weight="700">SK</text>
+  <text x="446" y="250" fill="#a89e8a" font-size="10" text-anchor="middle">serves Q1</text>
+  <rect x="816" y="100" width="320" height="600" rx="8" fill="#1f1c16" stroke="#3a342a"/>
+  <text x="836" y="130" fill="#e0a82e" font-size="12" font-weight="700">PROVENANCE</text>
+  <text x="836" y="162" fill="#f3ede0" font-size="12">question Q1</text>
+  <text x="836" y="186" fill="#a89e8a" font-size="11">↓ debate #d2</text>
+  <text x="836" y="210" fill="#f3ede0" font-size="12">↓ agents SA, SK</text>
+  <text x="836" y="234" fill="#a89e8a" font-size="11">↓ → conclusion (draft)</text>
+  <text x="96" y="744" fill="#a89e8a" font-size="11">Design E — Debate as method (mockup 04) · debate has visible purpose</text>
+</svg>
