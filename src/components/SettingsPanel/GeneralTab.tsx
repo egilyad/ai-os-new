@@ -19,6 +19,8 @@ import { setFeatureFlag } from '../../kernel/services/config-mutations';
 import { settingsService, rootLogger } from '../../kernel/instances';
 const LOGGER = rootLogger.child('GeneralTab');
 import type { SystemSettings } from '../../kernel/instances';
+import { useKeyList } from '../../stores/useKeyStore';
+import { PROVIDER_DEFAULT_MODELS } from '../../kernel/utils/provider-default-models';
 import { useTranslation } from '../../i18n/useTranslation';
 import { safeClone } from '../../shared/utils/safe-json';
 import {
@@ -36,6 +38,89 @@ interface GeneralTabProps {
     setSettings: React.Dispatch<React.SetStateAction<SystemSettings>>;
     setFeatureFlags: (flags: Record<string, boolean>) => void;
 }
+
+// T2: global default key/model for new chats (per-chat override lives on ChatSession)
+const CHAT_MODEL_OPTIONS: Array<{ value: string; label: string }> = [
+    { value: '', label: 'Auto' },
+    ...Object.entries(PROVIDER_DEFAULT_MODELS)
+        .filter(([p]) => !['gemini_flash', 'gemini_pro'].includes(p))
+        .map(([p, m]) => ({ value: m, label: `${m} (${p})` })),
+];
+
+const ChatDefaultsRow: React.FC<{
+    settings: SystemSettings;
+    updateSetting: (key: keyof SystemSettings, val: boolean | string | number) => void;
+}> = ({ settings, updateSetting }) => {
+    const { activeKeys } = useKeyList();
+    const providers = [...new Set(activeKeys.map((k) => k.provider))].sort();
+    const defProvider = settings.chatDefaultProvider ?? '';
+    const defKeys = defProvider ? activeKeys.filter((k) => k.provider === defProvider) : [];
+    return (
+        <>
+            <SettingRow
+                icon={<MessageSquare size={20} aria-hidden="true" />}
+                title="Default chat provider"
+                description="Used for new chats. Each chat can override it."
+            >
+                <select
+                    value={defProvider}
+                    onChange={(e) => {
+                        updateSetting('chatDefaultProvider', e.target.value);
+                        updateSetting('chatDefaultKeyId', '');
+                    }}
+                    style={settingSelect}
+                    aria-label="Default chat provider"
+                >
+                    <option value="">Auto</option>
+                    {providers.map((p) => (
+                        <option key={p} value={p}>
+                            {p}
+                        </option>
+                    ))}
+                </select>
+            </SettingRow>
+            {defProvider !== '' && (
+                <SettingRow
+                    icon={<MessageSquare size={20} aria-hidden="true" />}
+                    title="Default chat key"
+                    description="Pinned key for new chats. Empty = pool."
+                >
+                    <select
+                        value={settings.chatDefaultKeyId ?? ''}
+                        onChange={(e) => updateSetting('chatDefaultKeyId', e.target.value)}
+                        style={settingSelect}
+                        aria-label="Default chat key"
+                    >
+                        <option value="">Auto (pool)</option>
+                        {defKeys.map((k) => (
+                            <option key={k.id} value={k.id}>
+                                {k.label || k.id.slice(0, 12)}
+                            </option>
+                        ))}
+                    </select>
+                </SettingRow>
+            )}
+            <SettingRow
+                icon={<MessageSquare size={20} aria-hidden="true" />}
+                title="Default chat model"
+                description="Used for new chats. Each chat can override it per key."
+            >
+                <select
+                    value={settings.chatDefaultModel ?? ''}
+                    onChange={(e) => updateSetting('chatDefaultModel', e.target.value)}
+                    style={settingSelect}
+                    aria-label="Default chat model"
+                >
+                    {CHAT_MODEL_OPTIONS.map((o) => (
+                        <option key={o.value || 'auto'} value={o.value}>
+                            {o.label}
+                        </option>
+                    ))}
+                </select>
+            </SettingRow>
+        </>
+    );
+};
 
 const GeneralTab: React.FC<GeneralTabProps> = ({
     settings,
@@ -103,6 +188,7 @@ const GeneralTab: React.FC<GeneralTabProps> = ({
                     <option value="ru">{t('settings.lang_ru')}</option>
                 </select>
             </SettingRow>
+            <ChatDefaultsRow settings={settings} updateSetting={updateSetting} />
             <SettingRow
                 icon={<Bell size={20} aria-hidden="true" />}
                 title={t('settings.notifications')}

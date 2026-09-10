@@ -1,21 +1,35 @@
 import React, { useState } from 'react';
 import { X } from 'lucide-react';
 import { ModalShell } from '../ModalShell';
+import { PROVIDER_DEFAULT_MODELS } from '../../kernel/utils/provider-default-models';
+import type { ApiKey } from '../../types/metrics';
 
 const AVATAR_OPTIONS = ['🧠', '🤖', '⚡', '🔧', '📊', '🛡️', '🎯', '💡', '🔬', '🎨', '📝', '🚀', '🧪', '🏗️', '🔍', '🌐'];
+
+// T1.3: model options from SSOT (old hardcoded llama-3.x IDs are EOL)
+const MODEL_OPTIONS: Array<{ value: string; label: string }> = [
+    { value: 'auto', label: 'Auto (router)' },
+    ...Object.entries(PROVIDER_DEFAULT_MODELS)
+        .filter(([p]) => !['gemini_flash', 'gemini_pro'].includes(p))
+        .map(([p, m]) => ({ value: m, label: `${m} (${p})` })),
+];
 
 interface QuickCreateAgentModalProps {
     open: boolean;
     onClose: () => void;
-    onCreate: (data: { name: string; roleName: string; roleId?: string; model: string; avatar: string }) => void;
+    onCreate: (data: { name: string; roleName: string; roleId?: string; model: string; provider?: string; keyId?: string; avatar: string }) => void;
     availableRoles: { id: string; name: string }[];
+    keys?: ApiKey[];
 }
 
-export const QuickCreateAgentModal: React.FC<QuickCreateAgentModalProps> = ({ open, onClose, onCreate, availableRoles }) => {
+export const QuickCreateAgentModal: React.FC<QuickCreateAgentModalProps> = ({ open, onClose, onCreate, availableRoles, keys = [] }) => {
     const [name, setName] = useState('New Autonomous Agent');
     const [roleName, setRoleName] = useState('General Assistant');
     const [roleId, setRoleId] = useState<string | undefined>(undefined);
     const [model, setModel] = useState('auto');
+    // T1.3: rotation (default) vs pinned provider/key binding
+    const [provider, setProvider] = useState('auto');
+    const [keyId, setKeyId] = useState('auto');
     const [avatar, setAvatar] = useState('🧠');
 
     const handleRoleChange = (val: string) => {
@@ -29,10 +43,26 @@ export const QuickCreateAgentModal: React.FC<QuickCreateAgentModalProps> = ({ op
         }
     };
 
+    const providers = [...new Set(keys.filter((k) => k.status === 'active').map((k) => k.provider))].sort();
+    const providerKeys = provider === 'auto' ? [] : keys.filter((k) => k.provider === provider && k.status === 'active');
+
+    const handleProviderChange = (val: string) => {
+        setProvider(val);
+        setKeyId('auto');
+    };
+
     const handleCreate = () => {
         const trimmed = name.trim();
         if (!trimmed) return;
-        onCreate({ name: trimmed, roleName: roleName.trim() || 'General Assistant', roleId, model, avatar });
+        onCreate({
+            name: trimmed,
+            roleName: roleName.trim() || 'General Assistant',
+            roleId,
+            model,
+            provider: provider === 'auto' ? undefined : provider,
+            keyId: keyId === 'auto' ? undefined : keyId,
+            avatar,
+        });
         // reset for next open but keep values for UX
         onClose();
     };
@@ -76,17 +106,45 @@ export const QuickCreateAgentModal: React.FC<QuickCreateAgentModalProps> = ({ op
                 </label>
 
                 <label style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                    <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--slate-300)' }}>Provider (rotation by default)</span>
+                    <select
+                        value={provider}
+                        onChange={e => handleProviderChange(e.target.value)}
+                        style={{ padding: '10px 12px', borderRadius: 8, border: '1px solid rgba(100,116,139,0.3)', background: 'rgba(15,23,42,0.6)', color: 'var(--slate-100)', fontSize: '0.9rem', outline: 'none' }}
+                    >
+                        <option value="auto">Auto (rotation)</option>
+                        {providers.map(p => (
+                            <option key={p} value={p}>{p}</option>
+                        ))}
+                    </select>
+                </label>
+
+                {provider !== 'auto' && (
+                    <label style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                        <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--slate-300)' }}>Key (pinned to provider)</span>
+                        <select
+                            value={keyId}
+                            onChange={e => setKeyId(e.target.value)}
+                            style={{ padding: '10px 12px', borderRadius: 8, border: '1px solid rgba(100,116,139,0.3)', background: 'rgba(15,23,42,0.6)', color: 'var(--slate-100)', fontSize: '0.9rem', outline: 'none' }}
+                        >
+                            <option value="auto">Auto (pool)</option>
+                            {providerKeys.map(k => (
+                                <option key={k.id} value={k.id}>{k.label || k.id.slice(0, 12)}</option>
+                            ))}
+                        </select>
+                    </label>
+                )}
+
+                <label style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                     <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--slate-300)' }}>Model</span>
                     <select
                         value={model}
                         onChange={e => setModel(e.target.value)}
                         style={{ padding: '10px 12px', borderRadius: 8, border: '1px solid rgba(100,116,139,0.3)', background: 'rgba(15,23,42,0.6)', color: 'var(--slate-100)', fontSize: '0.9rem', outline: 'none' }}
                     >
-                        <option value="auto">Auto (router)</option>
-                        <option value="llama-3.3-70b-versatile">llama-3.3-70b-versatile (groq)</option>
-                        <option value="llama-3.1-8b-instant">llama-3.1-8b-instant (groq)</option>
-                        <option value="gemini-3.1-flash-lite">gemini-3.1-flash-lite</option>
-                        <option value="meta/llama-3.3-70b-instruct">meta/llama-3.3-70b-instruct (nvidia)</option>
+                        {MODEL_OPTIONS.map(o => (
+                            <option key={o.value} value={o.value}>{o.label}</option>
+                        ))}
                     </select>
                 </label>
 

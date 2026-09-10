@@ -98,7 +98,8 @@ const DEFAULTS: SystemSettings = {
     autoUpdateCheck: true,
     fallbackChains: {
         free_first: [
-            { provider: 'groq', model: 'llama-3.3-70b-versatile' },
+            // Aug-2026: llama-3.3-70b-versatile decommissioned by Groq (404)
+            { provider: 'groq', model: 'meta-llama/llama-4-maverick-17b-128e-instruct' },
             { provider: 'gemini', model: 'gemini-3.1-flash-lite' },
             { provider: 'openrouter', model: PROVIDER_DEFAULT_MODELS.openrouter },
         ],
@@ -213,6 +214,13 @@ function validateSettings(updates: Partial<SystemSettings>): Partial<SystemSetti
     if (updates.sidebarCollapsed !== undefined) valid.sidebarCollapsed = updates.sidebarCollapsed;
     if (updates.telemetryEnabled !== undefined) valid.telemetryEnabled = updates.telemetryEnabled;
     if (updates.autoUpdateCheck !== undefined) valid.autoUpdateCheck = updates.autoUpdateCheck;
+    // T2: global chat defaults (free strings, empty = unset)
+    if (updates.chatDefaultProvider !== undefined)
+        valid.chatDefaultProvider = String(updates.chatDefaultProvider);
+    if (updates.chatDefaultModel !== undefined)
+        valid.chatDefaultModel = String(updates.chatDefaultModel);
+    if (updates.chatDefaultKeyId !== undefined)
+        valid.chatDefaultKeyId = String(updates.chatDefaultKeyId);
     return valid;
 }
 

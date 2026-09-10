@@ -6,6 +6,7 @@ import { AgentHistoryTab } from './AgentHistoryTab';
 import { AgentPolicySection } from './AgentPolicySection';
 import { sidebarTabs } from './sidebar-tabs';
 import AgentConfigTab from './AgentConfigTab';
+import AgentProfileTab from './AgentProfileTab';
 import AgentCapabilitiesTab from './AgentCapabilitiesTab';
 import AgentInfraTab from './AgentInfraTab';
 import AgentObservabilityTab from './AgentObservabilityTab';
@@ -172,6 +173,16 @@ export const AgentDetailPanel: React.FC<AgentDetailPanelProps> = ({
                             id={`agents-tabpanel-${activeTab}`}
                             aria-labelledby={`agents-tab-${activeTab}`}
                         >
+                            {activeTab === 'profile' && (
+                                <AgentProfileTab
+                                    agent={agent}
+                                    agentStats={agentStats}
+                                    onDuplicateAgent={onDuplicateAgent}
+                                    onResetAgentStats={onResetAgentStats}
+                                    onEdit={() => onSetActiveTab('config')}
+                                    onClose={onClose}
+                                />
+                            )}
                             {activeTab === 'config' && (
                                 <AgentConfigTab
                                     agent={agent}

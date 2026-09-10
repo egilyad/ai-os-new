@@ -13,6 +13,7 @@ import { estimateTokens } from '../utils/tokenEstimate';
 import { rootLogger } from './logger-service';
 import { sanitizePromptVar } from '../utils/sanitize';
 import type { IDiagnosticService } from '../contracts/diagnostic-service';
+import { PROVIDER_DEFAULT_MODELS } from '../utils/provider-default-models';
 
 const LOGGER = rootLogger.child('CognitiveService');
 
@@ -70,7 +71,11 @@ export interface CognitiveServiceDeps {
             agentId?: string,
         ) => CognitiveRouterProvider[];
     };
-    keyService?: { getKey?: (id: string) => unknown };
+    // T1.3: agent key/model binding — getKey resolves pinned keyId, selectFromPool falls back to pool
+    keyService?: {
+        getKey?: (id: string) => { key?: string; status?: string } | undefined;
+        selectFromPool?: (provider: string) => { key?: string; id?: string } | null;
+    };
     roleService: CognitiveRoleService;
     adapterRegistry: {
         getAdapter: (provider: string) => IProviderAdapter | undefined;
@@ -461,6 +466,9 @@ export class CognitiveService {
         data: NodeContext,
         input: string,
     ): DecisionAlternative[] {
+        // T1.3: pinned agent binding wins — node.config.provider/keyId/model set at create/edit time
+        const pinned = this.resolvePinnedBinding(node);
+        if (pinned) return [pinned];
         const strategy = typeof data.strategy === 'string' ? data.strategy : 'auto';
         const providers = this.deps.routerService.getRankedProviders(
             strategy,
@@ -493,6 +501,43 @@ export class CognitiveService {
                 },
             }),
         );
+    }
+
+    /**
+     * T1.3: resolve pinned key/model binding from node.config.
+     * Returns single alternative or undefined (→ router path). Never throws.
+     */
+    private resolvePinnedBinding(node: ISNode): DecisionAlternative | undefined {
+        try {
+            const cfg = (node.config ?? {}) as Record<string, unknown>;
+            const provider = typeof cfg.provider === 'string' ? cfg.provider : '';
+            if (!provider || provider === 'auto') return undefined;
+            const rawModel = typeof cfg.model === 'string' ? cfg.model : '';
+            const model =
+                rawModel && rawModel !== 'auto'
+                    ? rawModel
+                    : PROVIDER_DEFAULT_MODELS[provider.toLowerCase()] ?? 'auto';
+            const keyId = typeof cfg.keyId === 'string' ? cfg.keyId : '';
+            let key = '';
+            if (keyId) {
+                const rec = this.deps.keyService?.getKey?.(keyId);
+                if (rec?.key && rec.status !== 'error') key = rec.key;
+            }
+            if (!key) {
+                const pooled = this.deps.keyService?.selectFromPool?.(provider);
+                if (pooled?.key) key = pooled.key;
+            }
+            if (!key) return undefined;
+            return {
+                id: 'alt-pinned',
+                label: `${provider}/${model} (pinned)`,
+                score: 1,
+                reasoning: 'Pinned agent binding (key/model set at create/edit time)',
+                metadata: { key: { provider, model, key } },
+            };
+        } catch {
+            return undefined;
+        }
     }
 
     private makeDecision(alts: DecisionAlternative[]): DecisionAlternative {

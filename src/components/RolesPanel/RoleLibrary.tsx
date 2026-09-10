@@ -5,22 +5,12 @@ import { roleService, eventBus, EVENTS, rootLogger } from '../../kernel/instance
 const LOGGER = rootLogger.child('RoleLibrary');
 import type { RoleCategory } from '../../types/role';
 
-// Fallback: data/role-library missing — empty library (panel renders "No roles match")
-export interface LibraryRole {
-    id: string;
-    name: string;
-    description: string;
-    systemPrompt: string;
-    baseTemperature: number;
-    capabilities: string[];
-    tags: string[];
-    category: 'code' | 'writing' | 'analysis' | 'moderation' | 'devops' | 'design';
-    recommendedModel?: string;
-}
-const LIBRARY_ROLES: LibraryRole[] = [];
-function getLibraryRolesByCategory(category: LibraryRole['category']): LibraryRole[] {
-    return LIBRARY_ROLES.filter((r) => r.category === category);
-}
+// T3.1: real seed — src/data/role-library.ts (RU scientists)
+import {
+    LIBRARY_ROLES,
+    getLibraryRolesByCategory,
+    type LibraryRole,
+} from '../../data/role-library';
 
 const CATEGORIES: Array<{ key: LibraryRole['category'] | 'all'; label: string }> = [
     { key: 'all', label: 'All' },

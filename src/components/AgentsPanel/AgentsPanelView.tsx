@@ -183,9 +183,13 @@ const AgentsPanelView: React.FC = () => {
                 open={showQuickCreate}
                 onClose={() => setShowQuickCreate(false)}
                 availableRoles={availableRoles}
-                onCreate={({ name, roleName, roleId, model, avatar }) => {
+                keys={keys}
+                onCreate={({ name, roleName, roleId, model, provider, keyId, avatar }) => {
                     const config: Record<string, unknown> = { roleName, model, avatar: { emoji: avatar, color: '#8b5cf6' } };
                     if (roleId) config.roleId = roleId;
+                    // T1.3: pinned binding lands in node.config; runtime honors it, rotation stays default
+                    if (provider) config.provider = provider;
+                    if (keyId) config.keyId = keyId;
                     agentService.spawnAgent(name, roleId, config);
                     window.dispatchEvent(new CustomEvent('agents:updated'));
                 }}

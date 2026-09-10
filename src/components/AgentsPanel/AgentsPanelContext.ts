@@ -1,6 +1,7 @@
 import React, { createContext, useContext } from 'react';
 
 export type TabId =
+    | 'profile'
     | 'config'
     | 'capabilities'
     | 'infra'
@@ -19,6 +20,8 @@ export interface Agent {
     roleId?: string;
     description: string;
     providerId: string;
+    // T1.4: pinned key binding (node.config.keyId), undefined = pool/rotation
+    keyId?: string;
     model: string;
     status: 'active' | 'paused' | 'error';
     temperature: number;

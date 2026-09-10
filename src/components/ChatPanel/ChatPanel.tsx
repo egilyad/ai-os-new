@@ -1,4 +1,4 @@
-import { storageAdapter } from '../../kernel/instances';
+import { storageAdapter, settingsService } from '../../kernel/instances';
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 
 import { X } from 'lucide-react';
@@ -32,19 +32,59 @@ const ChatPanel: React.FC = () => {
     const forkSession = useChatStore((s) => s.forkSession);
     const editEntry = useChatStore((s) => s.editEntry);
     const getSessionConfig = useChatStore((s) => s.getSessionConfig);
+    const switchModel = useChatStore((s) => s.switchModel);
+    const switchKey = useChatStore((s) => s.switchKey);
+    // T2: global default key/model for new chats (per-chat override persists on session)
+    const globalDefaults = (() => {
+        try {
+            const s = settingsService.getSettings();
+            return {
+                provider: s.chatDefaultProvider || '',
+                model: s.chatDefaultModel || '',
+                keyId: s.chatDefaultKeyId || '',
+            };
+        } catch {
+            return { provider: '', model: '', keyId: '' };
+        }
+    })();
     const systemPrompt = useChatStore((s) => s.systemPrompt);
     const setSystemPrompt = useChatStore((s) => s.setSystemPrompt);
     const isSending = useChatStore((s) => s.activeRequestIds.size > 0);
     const messagesEndRef = useRef<HTMLDivElement>(null);
-    const [selectedKeys, setSelectedKeys] = useState<string[]>(() =>
-        activeKeys.length > 0 ? [activeKeys[0]!.id] : [],
+    const defaultKeyFor = useCallback(
+        () => {
+            if (globalDefaults.keyId) {
+                const k = activeKeys.find((x) => x.id === globalDefaults.keyId);
+                if (k) return k;
+            }
+            if (globalDefaults.provider) {
+                const k = activeKeys.find(
+                    (x) => x.provider.toLowerCase() === globalDefaults.provider.toLowerCase(),
+                );
+                if (k) return k;
+            }
+            return activeKeys[0];
+        },
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [activeKeys],
     );
+    const defaultModelFor = useCallback(
+        (key?: { availableModels?: string[]; provider: string }) => {
+            if (!key) return '';
+            if (globalDefaults.model) return globalDefaults.model;
+            return key.availableModels?.[0] || DEFAULT_MODELS[key.provider] || '';
+        },
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [],
+    );
+    const [selectedModelPerKey, setSelectedModelPerKey] = useState<Record<string, string>>({});
+    const [selectedKeys, setSelectedKeys] = useState<string[]>(() => {
+        const k = defaultKeyFor();
+        return k ? [k.id] : [];
+    });
     const lastAutoSelectRef = useRef<string[]>([]);
-    const [selectedModel, setSelectedModel] = useState<string>(
-        () =>
-            activeKeys[0]?.availableModels?.[0] ||
-            DEFAULT_MODELS[activeKeys[0]?.provider || ''] ||
-            '',
+    const [selectedModel, setSelectedModel] = useState<string>(() =>
+        defaultModelFor(defaultKeyFor()),
     );
     useEffect(() => {
         if (activeKeys.length === 0) return;
@@ -55,15 +95,29 @@ const ChatPanel: React.FC = () => {
         ) {
             return;
         }
-        lastAutoSelectRef.current = [activeKeys[0]!.id];
+        const k = defaultKeyFor();
+        if (!k) return;
+        lastAutoSelectRef.current = [k.id];
         if (selectedKeys.length > 0) return;
         setSelectedKeys(lastAutoSelectRef.current);
-        const firstModel =
-            activeKeys[0]?.availableModels?.[0] ||
-            DEFAULT_MODELS[activeKeys[0]?.provider || ''] ||
-            '';
-        setSelectedModel(firstModel);
+        setSelectedModel(defaultModelFor(k));
     }, [activeKeys]); // eslint-disable-line react-hooks/exhaustive-deps
+    // T2: restore per-chat override on session switch
+    useEffect(() => {
+        if (!activeSessionId) return;
+        const cfg = getSessionConfig();
+        if (!cfg) return;
+        if (cfg.keyId) {
+            setSelectedKeys([cfg.keyId]);
+            if (cfg.model) {
+                setSelectedModel(cfg.model);
+                setSelectedModelPerKey({ [cfg.keyId]: cfg.model });
+            }
+        } else if (cfg.model) {
+            setSelectedModel(cfg.model);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [activeSessionId]);
 
     const { t } = useTranslation();
     const [showSidebar, setShowSidebar] = useState(true);
@@ -117,8 +171,6 @@ const ChatPanel: React.FC = () => {
         const distFromBottom = el.scrollHeight - el.scrollTop - el.clientHeight;
         userScrolledUpRef.current = distFromBottom > 100;
     }, []);
-
-    const [selectedModelPerKey, setSelectedModelPerKey] = useState<Record<string, string>>({});
 
     const handleSend = useCallback(
         (text: string) => {
@@ -338,9 +390,28 @@ const ChatPanel: React.FC = () => {
                     onSend={handleSend}
                     isSending={isSending}
                     onError={(msg) => showStatus(msg, 'error')}
-                    onKeysChange={setSelectedKeys}
-                    onModelChange={setSelectedModel}
-                    onSelectedModelsChange={setSelectedModelPerKey}
+                    onKeysChange={(ids) => {
+                        setSelectedKeys(ids);
+                        // T2: persist per-chat override (first selected key)
+                        if (ids.length > 0 && ids[0] !== selectedKeys[0]) {
+                            void switchKey(ids[0]).catch(() => {});
+                        }
+                    }}
+                    onModelChange={(m) => {
+                        setSelectedModel(m);
+                        const kid = selectedKeys[0];
+                        const provider = activeKeys.find((k) => k.id === kid)?.provider ?? 'auto';
+                        void switchModel(provider, m).catch(() => {});
+                    }}
+                    onSelectedModelsChange={(models) => {
+                        setSelectedModelPerKey(models);
+                        const kid = selectedKeys[0];
+                        const m = kid ? models[kid] : undefined;
+                        if (kid && m) {
+                            const provider = activeKeys.find((k) => k.id === kid)?.provider ?? 'auto';
+                            void switchModel(provider, m).catch(() => {});
+                        }
+                    }}
                 />
             </div>
 

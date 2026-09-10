@@ -7,6 +7,7 @@ import { agentService, adapterRegistry, keyService } from '../../kernel/instance
 import { AgentGenerator } from '../../kernel/services/agent-generator';
 import { AgentAvatar } from './AgentAvatar';
 import { useTranslation } from '../../i18n/useTranslation';
+import { useKeyList } from '../../stores/useKeyStore';
 
 interface AgentWizardProps {
   isOpen: boolean;
@@ -40,6 +41,12 @@ export const AgentWizard: React.FC<AgentWizardProps> = ({ isOpen, onClose, onAge
   const [isCreating, setIsCreating] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [created, setCreated] = useState(false);
+  // T1.3: rotation (default) vs pinned provider/key binding
+  const [bindProvider, setBindProvider] = useState('auto');
+  const [bindKeyId, setBindKeyId] = useState('auto');
+  const { activeKeys } = useKeyList();
+  const bindProviders = [...new Set(activeKeys.map((k) => k.provider))].sort();
+  const bindProviderKeys = bindProvider === 'auto' ? [] : activeKeys.filter((k) => k.provider === bindProvider);
 
   const generator = React.useMemo(() => new AgentGenerator({
     sendMessage: async (messages, model, apiKey) => {
@@ -95,7 +102,11 @@ export const AgentWizard: React.FC<AgentWizardProps> = ({ isOpen, onClose, onAge
     setError(null);
     try {
       const spawnArgs = generator.configToSpawnArgs(config);
-      const agentId = agentService.spawnAgent(spawnArgs.name, undefined, spawnArgs.config);
+      // T1.3: pinned binding lands in node.config; runtime honors it, rotation stays default
+      const spawnConfig: Record<string, unknown> = { ...spawnArgs.config };
+      if (bindProvider !== 'auto') spawnConfig.provider = bindProvider;
+      if (bindKeyId !== 'auto') spawnConfig.keyId = bindKeyId;
+      const agentId = agentService.spawnAgent(spawnArgs.name, undefined, spawnConfig);
       if (agentId) {
         setCreated(true);
         onAgentCreated?.(agentId);
@@ -268,6 +279,38 @@ export const AgentWizard: React.FC<AgentWizardProps> = ({ isOpen, onClose, onAge
                     {isRefining ? <Loader2 size={12} className="provider-spin" /> : <RefreshCw size={12} />}
                     Refine
                   </button>
+                </div>
+
+                {/* T1.3: key/model binding — rotation by default */}
+                <div style={{ marginTop: 10, display: 'flex', gap: 8 }}>
+                  <label style={{ flex: 1, fontSize: '0.7rem', color: 'var(--slate-500)' }}>
+                    Provider
+                    <select
+                      value={bindProvider}
+                      onChange={e => { setBindProvider(e.target.value); setBindKeyId('auto'); }}
+                      style={{ display: 'block', width: '100%', marginTop: 4, padding: '8px 10px', borderRadius: 8, border: '1px solid rgba(100,116,139,0.2)', background: 'rgba(20,20,40,0.5)', color: 'var(--slate-200)', fontSize: '0.8rem', outline: 'none' }}
+                    >
+                      <option value="auto">Auto (rotation)</option>
+                      {bindProviders.map(p => (
+                        <option key={p} value={p}>{p}</option>
+                      ))}
+                    </select>
+                  </label>
+                  {bindProvider !== 'auto' && (
+                    <label style={{ flex: 1, fontSize: '0.7rem', color: 'var(--slate-500)' }}>
+                      Key
+                      <select
+                        value={bindKeyId}
+                        onChange={e => setBindKeyId(e.target.value)}
+                        style={{ display: 'block', width: '100%', marginTop: 4, padding: '8px 10px', borderRadius: 8, border: '1px solid rgba(100,116,139,0.2)', background: 'rgba(20,20,40,0.5)', color: 'var(--slate-200)', fontSize: '0.8rem', outline: 'none' }}
+                      >
+                        <option value="auto">Auto (pool)</option>
+                        {bindProviderKeys.map(k => (
+                          <option key={k.id} value={k.id}>{k.label || k.id.slice(0, 12)}</option>
+                        ))}
+                      </select>
+                    </label>
+                  )}
                 </div>
 
                 {/* Create Button */}

@@ -62,6 +62,8 @@ const getAgentsFromTopology = (): Agent[] => {
                 roleId: n.config.roleId ? String(n.config.roleId) : undefined,
                 description: n.config.prompt || 'No specific description.',
                 providerId: n.config.provider || 'Auto',
+                // T1.4: surface pinned key binding for edit form
+                keyId: typeof n.config.keyId === 'string' ? n.config.keyId : undefined,
                 model: n.config.model || 'auto',
                 status: getAgentStatus(n.id),
                 temperature: n.config.temperature ?? 0.7,
@@ -106,7 +108,8 @@ const AgentsPanelContainer: React.FC = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
     const [selectedAgentId, setSelectedAgentId] = useState<string | null>(null);
-    const [activeTab, setActiveTab] = useState<TabId>('config');
+    // T3.2: detail opens on profile card
+    const [activeTab, setActiveTab] = useState<TabId>('profile');
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [resetAllArmed, setResetAllArmed] = useState(false);

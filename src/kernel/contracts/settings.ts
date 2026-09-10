@@ -46,6 +46,10 @@ export interface SystemSettings {
     autoUpdateCheck: boolean;
     fallbackChains: Record<string, Array<{ provider: string; model?: string }>>;
     modelDowngradeChains: Record<string, string[]>;
+    // T2: global default key/model for new chats (per-chat override lives on ChatSession)
+    chatDefaultProvider?: string;
+    chatDefaultModel?: string;
+    chatDefaultKeyId?: string;
 }
 
 export interface SettingsProfile {
