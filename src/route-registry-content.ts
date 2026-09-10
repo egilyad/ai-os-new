@@ -5,18 +5,6 @@ export const CONTENT_SECTIONS: NavSection[] = [
     // KNOWLEDGE split into one section per item (menu cleanup).
     // Route ids unchanged, only grouping changed.
     {
-        id: 'section-patterns',
-        labelKey: 'nav.section_patterns',
-        items: [
-            {
-                id: 'patterns',
-                labelKey: 'nav.patterns',
-                icon: Icons.bookOpen,
-                color: '#10b981',
-            },
-        ],
-    },
-    {
         id: 'section-knowledge-one',
         labelKey: 'nav.section_knowledge_one',
         items: [
@@ -700,6 +688,12 @@ export const CONTENT_SECTIONS: NavSection[] = [
                 icon: Icons.sparkles,
                 color: '#a855f7',
                 lazy: true,
+            },
+            {
+                id: 'patterns',
+                labelKey: 'nav.patterns',
+                icon: Icons.bookOpen,
+                color: '#10b981',
             },
             {
                 id: 'experimental',
