@@ -221,6 +221,7 @@ const MCPPanelLazy = React.lazy(() => import('./components/MCPPanel/MCPPanel'));
 const PatternsPanelLazy = React.lazy(() => import('./components/PatternsPanel/PatternsPanel'));
 
 const SchedulerPanelLazy = React.lazy(() => import('./components/SchedulerPanel'));
+const RivalsCatalogPanelLazy = React.lazy(() => import('./components/RivalsCatalogPanel'));
 const ExperimentalPanelLazy = React.lazy(() => import('./components/ExperimentalPanel'));
 const ComingSoonPanel = React.lazy(() => import('./components/ComingSoonPanel'));
 const SteelmanPanelLazy = React.lazy(() => import('./components/SteelmanPanel/SteelmanPanel'));
@@ -450,6 +451,7 @@ export const PANEL_COMPONENTS: Record<string, React.ComponentType<any>> = {
     'justification': JustificationPanelLazy,
     'logical-form': LogicalFormPanelLazy,
     scheduler: SchedulerPanelLazy,
+    'rivals-catalog': RivalsCatalogPanelLazy,
 };
 
 export const PanelLoader: React.FC<{ name: string; children: React.ReactNode }> = (props) => {

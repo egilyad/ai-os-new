@@ -10,6 +10,7 @@ const nav: Record<string, string> = {
     'nav.section_knowledge': 'Знания',
     'nav.section_integrations': 'Интеграции',
     'nav.section_randoms': 'Рандомс',
+    'nav.rivals_catalog': 'Проекты Rivals',
     'nav.section_google': 'Google AI',
     'nav.section_fleet': 'Флот',
     'nav.section_docs': 'Документация',

@@ -690,6 +690,13 @@ export const CONTENT_SECTIONS: NavSection[] = [
                 lazy: true,
             },
             {
+                id: 'rivals-catalog',
+                labelKey: 'nav.rivals_catalog',
+                icon: Icons.flaskConical,
+                color: '#a855f7',
+                lazy: true,
+            },
+            {
                 id: 'patterns',
                 labelKey: 'nav.patterns',
                 icon: Icons.bookOpen,
