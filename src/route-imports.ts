@@ -178,6 +178,7 @@ const FleetGraphsPanelLazy = React.lazy(() => import('./components/FleetPanels/G
 const FleetPersonaPanelLazy = React.lazy(() => import('./components/FleetPanels/PersonaOpsPanel'));
 const FleetInteropPanelLazy = React.lazy(() => import('./components/FleetPanels/InteropPanel'));
 const FleetFrontierPanelLazy = React.lazy(() => import('./components/FleetPanels/FrontierPanel'));
+const SimulationPanelLazy = React.lazy(() => import('./components/SimulationPanel/SimulationPanel'));
 
 // ── Section 11 P2+P3 Lazy Imports ─────────────────────────────────────────────
 const FederatedMemoryPanelLazy = React.lazy(() => import('./components/FederatedMemoryPanel'));
@@ -403,6 +404,7 @@ export const PANEL_COMPONENTS: Record<string, React.ComponentType<any>> = {
     'fleet-persona': FleetPersonaPanelLazy,
     'fleet-interop': FleetInteropPanelLazy,
     'fleet-frontier': FleetFrontierPanelLazy,
+    simulation: SimulationPanelLazy,
     'federated-memory': FederatedMemoryPanelLazy,
     'plugin-sdk': PluginSdkPanelLazy,
     'persona-marketplace': PersonaMarketplacePanelLazy,

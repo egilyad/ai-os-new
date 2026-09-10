@@ -2,9 +2,11 @@
 import type { NavSection } from './types/routing';
 
 export const CONTENT_SECTIONS: NavSection[] = [
+    // KNOWLEDGE split into one section per item (menu cleanup).
+    // Route ids unchanged, only grouping changed.
     {
-        id: 'section-knowledge',
-        labelKey: 'nav.section_knowledge',
+        id: 'section-patterns',
+        labelKey: 'nav.section_patterns',
         items: [
             {
                 id: 'patterns',
@@ -12,32 +14,24 @@ export const CONTENT_SECTIONS: NavSection[] = [
                 icon: Icons.bookOpen,
                 color: '#10b981',
             },
+        ],
+    },
+    {
+        id: 'section-knowledge-one',
+        labelKey: 'nav.section_knowledge_one',
+        items: [
             {
                 id: 'knowledge',
                 labelKey: 'nav.knowledge',
                 icon: Icons.brain,
                 color: '#a855f7',
             },
-            {
-                id: 'docs',
-                labelKey: 'nav.docs',
-                icon: Icons.bookText,
-                color: '#8b5cf6',
-            },
-            {
-                id: 'decision-log',
-                labelKey: 'nav.decision_log',
-                icon: Icons.clipboardList,
-                color: '#10b981',
-                lazy: true,
-            },
-            {
-                id: 'eval-datasets',
-                labelKey: 'nav.eval_datasets',
-                icon: Icons.barChart3,
-                color: '#a855f7',
-                lazy: true,
-            },
+        ],
+    },
+    {
+        id: 'section-project-os',
+        labelKey: 'nav.section_project_os',
+        items: [
             {
                 id: 'project-os',
                 labelKey: 'nav.project_os_explorer',
@@ -46,14 +40,12 @@ export const CONTENT_SECTIONS: NavSection[] = [
                 lazy: true,
                 experimental: true,
             },
-            {
-                id: 'hypothesis-gen',
-                labelKey: 'nav.hypothesis_generator',
-                icon: Icons.flaskConical,
-                color: '#3b82f6',
-                lazy: true,
-                experimental: true,
-            },
+        ],
+    },
+    {
+        id: 'section-lenses',
+        labelKey: 'nav.section_lenses',
+        items: [
             {
                 id: 'lenses',
                 labelKey: 'nav.lenses',
@@ -62,6 +54,12 @@ export const CONTENT_SECTIONS: NavSection[] = [
                 lazy: true,
                 experimental: true,
             },
+        ],
+    },
+    {
+        id: 'section-crystals',
+        labelKey: 'nav.section_crystals',
+        items: [
             {
                 id: 'crystals',
                 labelKey: 'nav.crystals',
@@ -70,6 +68,12 @@ export const CONTENT_SECTIONS: NavSection[] = [
                 lazy: true,
                 experimental: true,
             },
+        ],
+    },
+    {
+        id: 'section-junctions',
+        labelKey: 'nav.section_junctions',
+        items: [
             {
                 id: 'junctions',
                 labelKey: 'nav.junctions',
@@ -78,6 +82,12 @@ export const CONTENT_SECTIONS: NavSection[] = [
                 lazy: true,
                 experimental: true,
             },
+        ],
+    },
+    {
+        id: 'section-synthesis',
+        labelKey: 'nav.section_synthesis',
+        items: [
             {
                 id: 'synthesis',
                 labelKey: 'nav.synthesis',
@@ -86,6 +96,12 @@ export const CONTENT_SECTIONS: NavSection[] = [
                 lazy: true,
                 experimental: true,
             },
+        ],
+    },
+    {
+        id: 'section-knowledge-generator',
+        labelKey: 'nav.section_knowledge_generator',
+        items: [
             {
                 id: 'knowledge-generator',
                 labelKey: 'nav.knowledge_generator',
@@ -94,6 +110,12 @@ export const CONTENT_SECTIONS: NavSection[] = [
                 lazy: true,
                 experimental: true,
             },
+        ],
+    },
+    {
+        id: 'section-forum',
+        labelKey: 'nav.section_forum',
+        items: [
             {
                 id: 'forum',
                 labelKey: 'nav.forum',
@@ -102,6 +124,12 @@ export const CONTENT_SECTIONS: NavSection[] = [
                 lazy: true,
                 experimental: true,
             },
+        ],
+    },
+    {
+        id: 'section-builder',
+        labelKey: 'nav.section_builder',
+        items: [
             {
                 id: 'builder',
                 labelKey: 'nav.builder',
@@ -110,6 +138,12 @@ export const CONTENT_SECTIONS: NavSection[] = [
                 lazy: true,
                 experimental: true,
             },
+        ],
+    },
+    {
+        id: 'section-director',
+        labelKey: 'nav.section_director',
+        items: [
             {
                 id: 'director',
                 labelKey: 'nav.director',
@@ -118,6 +152,12 @@ export const CONTENT_SECTIONS: NavSection[] = [
                 lazy: true,
                 experimental: true,
             },
+        ],
+    },
+    {
+        id: 'section-room',
+        labelKey: 'nav.section_room',
+        items: [
             {
                 id: 'room',
                 labelKey: 'nav.room',
@@ -126,6 +166,13 @@ export const CONTENT_SECTIONS: NavSection[] = [
                 lazy: true,
                 experimental: true,
             },
+        ],
+    },
+    {
+        // FLEET + GOVERNANCE category (menu cleanup). Route ids unchanged, only grouping changed.
+        id: 'section-fleet',
+        labelKey: 'nav.section_fleet',
+        items: [
             {
                 id: 'fleet',
                 labelKey: 'nav.fleet',
@@ -177,6 +224,13 @@ export const CONTENT_SECTIONS: NavSection[] = [
                 lazy: true,
             },
             {
+                id: 'simulation',
+                labelKey: 'nav.simulation',
+                icon: Icons.flaskConical,
+                color: '#06b6d4',
+                lazy: true,
+            },
+            {
                 id: 'governance',
                 labelKey: 'nav.governance',
                 icon: Icons.shield,
@@ -191,18 +245,77 @@ export const CONTENT_SECTIONS: NavSection[] = [
                 lazy: true,
             },
             {
-                id: 'research-engine',
-                labelKey: 'nav.research_engine',
-                icon: Icons.layers,
-                color: '#8b5cf6',
+                id: 'gov-stress-test',
+                labelKey: 'nav.governance_stress_test',
+                icon: Icons.shield,
+                color: '#ef4444',
                 lazy: true,
                 experimental: true,
             },
             {
-                id: 'tutorials',
-                labelKey: 'nav.tutorials',
+                id: 'obs-gaps',
+                labelKey: 'nav.observability_gaps_scanner',
+                icon: Icons.crosshair,
+                color: '#f97316',
+                lazy: true,
+                experimental: true,
+            },
+        ],
+    },
+    {
+        // GoogleAI category — all Google/Gemini panels in one place (menu cleanup).
+        // Route ids unchanged, only grouping changed.
+        id: 'section-google',
+        labelKey: 'nav.section_google',
+        items: [
+            {
+                id: 'google-studio',
+                labelKey: 'nav.google_studio',
+                icon: Icons.shield,
+                color: '#4285F4',
+                lazy: true,
+            },
+            {
+                id: 'google-cache',
+                labelKey: 'nav.google_cache',
+                icon: Icons.container,
+                color: '#4285F4',
+                lazy: true,
+            },
+            {
+                id: 'gemini-live',
+                labelKey: 'nav.gemini_live',
+                icon: Icons.mic,
+                color: '#4285F4',
+                lazy: true,
+                experimental: true,
+            },
+            {
+                id: 'research-gemini',
+                labelKey: 'nav.research_gemini',
                 icon: Icons.sparkles,
-                color: '#a855f7',
+                color: '#8b5cf6',
+                lazy: true,
+                experimental: true,
+            },
+        ],
+    },
+    {
+        // DOCUMENTATION category (menu cleanup). Route ids unchanged.
+        id: 'section-docs',
+        labelKey: 'nav.section_docs',
+        items: [
+            {
+                id: 'docs',
+                labelKey: 'nav.docs',
+                icon: Icons.bookText,
+                color: '#8b5cf6',
+            },
+            {
+                id: 'decision-log',
+                labelKey: 'nav.decision_log',
+                icon: Icons.clipboardList,
+                color: '#10b981',
                 lazy: true,
             },
             {
@@ -222,26 +335,24 @@ export const CONTENT_SECTIONS: NavSection[] = [
                 experimental: true,
             },
             {
-                id: 'routing-experiments',
-                labelKey: 'nav.model_routing_experiments',
-                icon: Icons.barChart3,
+                id: 'template-sharing',
+                labelKey: 'nav.template_sharing',
+                icon: Icons.share2,
+                color: '#10b981',
+                lazy: true,
+            },
+        ],
+    },
+    {
+        // RESEARCH category (menu cleanup). Route ids unchanged, only grouping changed.
+        id: 'section-research',
+        labelKey: 'nav.section_research',
+        items: [
+            {
+                id: 'research-engine',
+                labelKey: 'nav.research_engine',
+                icon: Icons.layers,
                 color: '#8b5cf6',
-                lazy: true,
-                experimental: true,
-            },
-            {
-                id: 'gov-stress-test',
-                labelKey: 'nav.governance_stress_test',
-                icon: Icons.shield,
-                color: '#ef4444',
-                lazy: true,
-                experimental: true,
-            },
-            {
-                id: 'obs-gaps',
-                labelKey: 'nav.observability_gaps_scanner',
-                icon: Icons.crosshair,
-                color: '#f97316',
                 lazy: true,
                 experimental: true,
             },
@@ -270,25 +381,25 @@ export const CONTENT_SECTIONS: NavSection[] = [
                 experimental: true,
             },
             {
-                id: 'research-gemini',
-                labelKey: 'nav.research_gemini',
-                icon: Icons.sparkles,
-                color: '#8b5cf6',
+                id: 'hypothesis-gen',
+                labelKey: 'nav.hypothesis_generator',
+                icon: Icons.flaskConical,
+                color: '#3b82f6',
                 lazy: true,
                 experimental: true,
             },
             {
-                id: 'template-sharing',
-                labelKey: 'nav.template_sharing',
-                icon: Icons.share2,
-                color: '#10b981',
+                id: 'eval-datasets',
+                labelKey: 'nav.eval_datasets',
+                icon: Icons.barChart3,
+                color: '#a855f7',
                 lazy: true,
             },
             {
-                id: 'experimental',
-                labelKey: 'nav.experimental',
-                icon: Icons.flaskConical,
-                color: '#a855f7',
+                id: 'routing-experiments',
+                labelKey: 'nav.model_routing_experiments',
+                icon: Icons.barChart3,
+                color: '#8b5cf6',
                 lazy: true,
                 experimental: true,
             },
@@ -298,18 +409,6 @@ export const CONTENT_SECTIONS: NavSection[] = [
         id: 'section-integrations',
         labelKey: 'nav.section_integrations',
         items: [
-            {
-                id: 'skills',
-                labelKey: 'nav.skills',
-                icon: Icons.gitMerge,
-                color: '#f59e0b',
-            },
-            {
-                id: 'tools',
-                labelKey: 'nav.tools',
-                icon: Icons.wrench,
-                color: '#f59e0b',
-            },
             {
                 id: 'editors',
                 labelKey: 'nav.editors',
@@ -425,28 +524,6 @@ export const CONTENT_SECTIONS: NavSection[] = [
                 lazy: true,
             },
             {
-                id: 'google-studio',
-                labelKey: 'nav.google_studio',
-                icon: Icons.shield,
-                color: '#4285F4',
-                lazy: true,
-            },
-            {
-                id: 'google-cache',
-                labelKey: 'nav.google_cache',
-                icon: Icons.container,
-                color: '#4285F4',
-                lazy: true,
-            },
-            {
-                id: 'gemini-live',
-                labelKey: 'nav.gemini_live',
-                icon: Icons.mic,
-                color: '#4285F4',
-                lazy: true,
-                experimental: true,
-            },
-            {
                 id: 'meta-learning',
                 labelKey: 'nav.meta_learning',
                 icon: Icons.brain,
@@ -539,6 +616,138 @@ export const CONTENT_SECTIONS: NavSection[] = [
                 labelKey: 'nav.time_machine',
                 icon: Icons.clock,
                 color: '#8b5cf6',
+                lazy: true,
+            },
+        ],
+    },
+    {
+        // RANDOMS — quarantine for unchecked items. Move here anything
+        // that needs review before getting a real home (menu cleanup).
+        id: 'section-randoms',
+        labelKey: 'nav.section_randoms',
+        items: [
+            {
+                id: 'bookmarks',
+                labelKey: 'nav.bookmarks',
+                icon: Icons.bookmark,
+                color: '#f59e0b',
+                lazy: true,
+            },
+            {
+                id: 'aquarium',
+                labelKey: 'nav.aquarium',
+                icon: Icons.eye,
+                color: '#06b6d4',
+                lazy: true,
+                experimental: true,
+            },
+            {
+                id: 'ecosystem',
+                labelKey: 'nav.ecosystem',
+                icon: Icons.fish,
+                color: '#22c55e',
+                lazy: true,
+                experimental: true,
+            },
+            {
+                id: 'health-sla',
+                labelKey: 'nav.health_sla',
+                icon: Icons.slidersHorizontal,
+                color: '#10b981',
+                lazy: true,
+            },
+            {
+                id: 'leaderboard',
+                labelKey: 'nav.leaderboard',
+                icon: Icons.trophy,
+                color: '#f59e0b',
+                lazy: true,
+            },
+            {
+                id: 'federated-memory',
+                labelKey: 'nav.federated_memory',
+                icon: Icons.server,
+                color: '#3b82f6',
+                lazy: true,
+                experimental: true,
+            },
+            {
+                id: 'memory-export-import',
+                labelKey: 'nav.memory_export_import',
+                icon: Icons.upload,
+                color: '#3b82f6',
+                lazy: true,
+            },
+            {
+                id: 'aquarium-trading',
+                labelKey: 'nav.aquarium_trading',
+                icon: Icons.fish,
+                color: '#06b6d4',
+                lazy: true,
+                experimental: true,
+            },
+            {
+                id: 'scheduler',
+                labelKey: 'nav.scheduler',
+                icon: Icons.clock,
+                color: '#3b82f6',
+                lazy: true,
+                experimental: true,
+            },
+            {
+                id: 'tutorials',
+                labelKey: 'nav.tutorials',
+                icon: Icons.sparkles,
+                color: '#a855f7',
+                lazy: true,
+            },
+            {
+                id: 'experimental',
+                labelKey: 'nav.experimental',
+                icon: Icons.flaskConical,
+                color: '#a855f7',
+                lazy: true,
+                experimental: true,
+            },
+            {
+                id: 'custom-metrics',
+                labelKey: 'nav.custom_metrics',
+                icon: Icons.barChart3,
+                color: '#8b5cf6',
+                lazy: true,
+            },
+            {
+                id: 'key-usage-analytics',
+                labelKey: 'nav.key_usage_analytics',
+                icon: Icons.barChart3,
+                color: '#8b5cf6',
+                lazy: true,
+            },
+            {
+                id: 'routing',
+                labelKey: 'nav.routing_ai',
+                icon: Icons.route,
+                color: '#8b5cf6',
+                lazy: true,
+            },
+            {
+                id: 'contribution-graph',
+                labelKey: 'nav.contribution_graph',
+                icon: Icons.gitCommit,
+                color: '#10b981',
+                lazy: true,
+            },
+            {
+                id: 'tasks',
+                labelKey: 'nav.tasks',
+                icon: Icons.checkSquare,
+                color: '#f59e0b',
+            },
+            {
+                id: 'files',
+                labelKey: 'nav.files',
+                icon: Icons.folderOpen,
+                color: '#a855f7',
                 lazy: true,
             },
         ],

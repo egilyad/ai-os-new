@@ -49,38 +49,10 @@ export const CORE_SECTIONS: NavSection[] = [
                 lazy: true,
             },
             {
-                id: 'custom-metrics',
-                labelKey: 'nav.custom_metrics',
-                icon: Icons.barChart3,
-                color: '#8b5cf6',
-                lazy: true,
-            },
-            {
                 id: 'budget-alerts',
                 labelKey: 'nav.budget_alerts',
                 icon: Icons.bell,
                 color: '#f97316',
-                lazy: true,
-            },
-            {
-                id: 'key-usage-analytics',
-                labelKey: 'nav.key_usage_analytics',
-                icon: Icons.barChart3,
-                color: '#8b5cf6',
-                lazy: true,
-            },
-            {
-                id: 'routing',
-                labelKey: 'nav.routing_ai',
-                icon: Icons.route,
-                color: '#8b5cf6',
-                lazy: true,
-            },
-            {
-                id: 'contribution-graph',
-                labelKey: 'nav.contribution_graph',
-                icon: Icons.gitCommit,
-                color: '#10b981',
                 lazy: true,
             },
         ],
@@ -110,33 +82,12 @@ export const CORE_SECTIONS: NavSection[] = [
                 color: '#8b5cf6',
                 lazy: true,
             },
-            {
-                id: 'bookmarks',
-                labelKey: 'nav.bookmarks',
-                icon: Icons.bookmark,
-                color: '#f59e0b',
-                lazy: true,
-            },
-            {
-                id: 'tasks',
-                labelKey: 'nav.tasks',
-                icon: Icons.checkSquare,
-                color: '#f59e0b',
-            },
-            {
-                id: 'files',
-                labelKey: 'nav.files',
-                icon: Icons.folderOpen,
-                color: '#a855f7',
-                lazy: true,
-            },
         ],
     },
     {
         id: 'section-debates',
         labelKey: 'nav.section_debates',
         items: [
-            ...TECHNIQUE_NAV_ITEMS,
             {
                 id: 'debate',
                 labelKey: 'nav.debate_arena',
@@ -242,6 +193,15 @@ export const CORE_SECTIONS: NavSection[] = [
                 color: '#06b6d4',
                 lazy: true,
             },
+        ],
+    },
+    {
+        // Debate technique panels — separate collapsible section (menu cleanup).
+        // Route ids unchanged, only grouping changed.
+        id: 'section-techniques',
+        labelKey: 'nav.section_techniques',
+        items: [
+            ...TECHNIQUE_NAV_ITEMS,
             {
                 id: 'steelman',
                 labelKey: 'nav.steelman',
