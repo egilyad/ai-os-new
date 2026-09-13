@@ -222,6 +222,14 @@ const PatternsPanelLazy = React.lazy(() => import('./components/PatternsPanel/Pa
 
 const SchedulerPanelLazy = React.lazy(() => import('./components/SchedulerPanel'));
 const RivalsCatalogPanelLazy = React.lazy(() => import('./components/RivalsCatalogPanel'));
+const GroupChatPanelLazy = React.lazy(() => import('./components/GroupChatPanel/GroupChatPanel'));
+const GuardrailsPanelLazy = React.lazy(() => import('./components/GuardrailsPanel/GuardrailsPanel'));
+const PlannerPanelLazy = React.lazy(() => import('./components/PlannerPanel/PlannerPanel'));
+const AutonomyPanelLazy = React.lazy(() => import('./components/AutonomyPanel/AutonomyPanel'));
+const DyadPanelLazy = React.lazy(() => import('./components/DyadPanel/DyadPanel'));
+const SopPanelLazy = React.lazy(() => import('./components/SopPanel/SopPanel'));
+const RunQueuePanelLazy = React.lazy(() => import('./components/RunQueuePanel/RunQueuePanel'));
+const RivalLabsPanelLazy = React.lazy(() => import('./components/RivalLabs/RivalLabsPanel'));
 const ExperimentalPanelLazy = React.lazy(() => import('./components/ExperimentalPanel'));
 const ComingSoonPanel = React.lazy(() => import('./components/ComingSoonPanel'));
 const SteelmanPanelLazy = React.lazy(() => import('./components/SteelmanPanel/SteelmanPanel'));
@@ -452,6 +460,14 @@ export const PANEL_COMPONENTS: Record<string, React.ComponentType<any>> = {
     'logical-form': LogicalFormPanelLazy,
     scheduler: SchedulerPanelLazy,
     'rivals-catalog': RivalsCatalogPanelLazy,
+    'group-chat': GroupChatPanelLazy,
+    guardrails: GuardrailsPanelLazy,
+    planner: PlannerPanelLazy,
+    autonomy: AutonomyPanelLazy,
+    dyad: DyadPanelLazy,
+    sop: SopPanelLazy,
+    'run-queue': RunQueuePanelLazy,
+    'rival-labs': RivalLabsPanelLazy,
 };
 
 export const PanelLoader: React.FC<{ name: string; children: React.ReactNode }> = (props) => {

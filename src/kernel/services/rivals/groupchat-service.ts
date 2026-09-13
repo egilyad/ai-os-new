@@ -158,6 +158,10 @@ export class GroupChatService implements IGroupChatService {
         return this.repo.getChat(chatId);
     }
 
+    async listChats(): Promise<GroupChat[]> {
+        return this.repo.listChats();
+    }
+
     private pickSpeaker(chat: GroupChat): string {
         if (chat.selection === 'round_robin') {
             return chat.members[chat.turns.length % chat.members.length] as string;

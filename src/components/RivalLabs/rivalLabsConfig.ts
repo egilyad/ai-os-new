@@ -1,5 +1,5 @@
 /**
- * RivalLabs config — one card per RIVAL service (phases R/T/V/W/X/Y/Z).
+ * RivalLabs config — one card per RIVAL service (phases G–Z).
  *
  * Data-driven UI surface: each entry maps a lazyService + one representative
  * method + an arg mapper over max 2 text inputs. Complex signatures are
@@ -22,7 +22,7 @@ export interface RivalServiceDef {
 }
 
 export interface RivalPhaseDef {
-    id: 'r' | 't' | 'v' | 'w' | 'x' | 'y' | 'z';
+    id: 'g' | 'h' | 'i' | 'j' | 'k' | 'l' | 'm' | 'n' | 'p' | 'q' | 'r' | 't' | 'v' | 'w' | 'x' | 'y' | 'z';
     services: RivalServiceDef[];
 }
 
@@ -59,6 +59,142 @@ function def(
 }
 
 export const RIVAL_PHASES: RivalPhaseDef[] = [
+    {
+        id: 'g',
+        services: [
+            def('react', 'ReAct', S.reactService, 'run', 'a', A(one)),
+            def('loader', 'Loader', S.loaderService, 'loadText', 'ab', A(two)),
+            def('rag', 'RAG', S.ragService, 'answer', 'ab', A((a, b) => [a, b ? Number(b) || 2 : 2])),
+            def('runtime', 'Runtime', S.runtimeService, 'startRun', 'a', A(one)),
+            def('swe', 'SWE', S.sweService, 'edit', 'ab', A(two)),
+            def('aider', 'Aider', S.aiderService, 'applyEdit', 'ab', A(two)),
+            def('modes', 'Modes', S.modesService, 'switchMode', 'a', A(one)),
+            def('scopedmem', 'ScopedMem', S.scopedMemService, 'search', 'ab', A(two)),
+            def('integrations', 'Integrations', S.integrationsService, 'fireTrigger', 'ab', A(two)),
+            def('character', 'Character', S.characterService, 'routeFromClient', 'ab', A(two)),
+        ],
+    },
+    {
+        id: 'h',
+        services: [
+            def('reasoning', 'Reasoning', S.reasoningService, 'think', 'a', A(one)),
+            def('sessionstate', 'SessionState', S.sessionStateService, 'runLoop', 'a', A(one)),
+            def('dataset', 'Dataset', S.datasetService, 'query', 'ab', A(two)),
+            def('flowapi', 'FlowApi', S.flowApiService, 'invoke', 'ab', A(two)),
+            def('docstore', 'DocStore', S.docStoreService, 'ask', 'ab', A(two)),
+            def('typedagent', 'TypedAgent', S.typedAgentService, 'runAgent', 'ab', A(two)),
+            def('codeplan', 'CodePlan', S.codePlanService, 'planAndRun', 'a', A(one)),
+            def('dialogue', 'Dialogue', S.dialogueService, 'handleMessage', 'ab', A(two)),
+            def('botrouter', 'BotRouter', S.botRouterService, 'route', 'ab', A((a, b) => [csv(a), b || 'default'])),
+            def('prototype', 'Prototype', S.prototypeService, 'exportTranscript', 'ab', A(two)),
+        ],
+    },
+    {
+        id: 'i',
+        services: [
+            def('copilot', 'Copilot', S.copilotService, 'handleMessage', 'ab', A(two)),
+            def('bedrock', 'Bedrock', S.bedrockService, 'callAction', 'ab', A(two)),
+            def('cxf', 'CXF', S.cxfService, 'handleMessage', 'ab', A(two)),
+            def('agentforce', 'Agentforce', S.agentforceService, 'run', 'ab', A(two)),
+            def('entity', 'Entity', S.entityService, 'extractList', 'ab', A(two)),
+            def('kore', 'Kore', S.koreService, 'sendMessage', 'ab', A(two)),
+            def('campaign', 'Campaign', S.campaignService, 'broadcast', 'a', A(one)),
+            def('employee', 'Employee', S.employeeService, 'runOnTrigger', 'ab', A(two)),
+            def('codeagent', 'CodeAgent', S.codeAgentService, 'run', 'a', A(one)),
+            def('assistant', 'Assistant', S.assistantService, 'chat', 'ab', A(two)),
+            def('gum', 'Gum', S.gumService, 'forEach', 'ab', A(two)),
+        ],
+    },
+    {
+        id: 'j',
+        services: [
+            def('appbuilder', 'AppBuilder', S.appBuilderService, 'scaffold', 'a', A(one)),
+            def('ide', 'IDE', S.ideService, 'askCodebase', 'a', A(one)),
+            def('prompthub', 'PromptHub', S.promptHubService, 'render', 'ab', A(two)),
+            def('ontology', 'Ontology', S.ontologyService, 'runAction', 'ab', A(two)),
+            def('acl', 'ACL', S.aclService, 'searchScoped', 'ab', A(two)),
+            def('workqueue', 'WorkQueue', S.workQueueService, 'claim', 'a', A(one)),
+            def('writer', 'Writer', S.writerService, 'check', 'a', A(one)),
+            def('computer5', 'Computer', S.computerService, 'act', 'ab', A(two)),
+            def('search', 'Search', S.searchService, 'search', 'ab', A((a, b) => [a, b ? Number(b) || 10 : 10])),
+            def('codeexec', 'CodeExec', S.codeExecService, 'submit', 'ab', A(two)),
+        ],
+    },
+    {
+        id: 'k',
+        services: [
+            def('n8n', 'N8N', S.n8nService, 'run', 'ab', A(two)),
+            def('make', 'Make', S.makeService, 'runScenario', 'a', A(one)),
+            def('zapier', 'Zapier', S.zapierService, 'fire', 'ab', A(two)),
+            def('temporal', 'Temporal', S.temporalService, 'startRun', 'a', A(one)),
+            def('asset', 'Asset', S.assetService, 'materialize', 'a', A(one)),
+            def('sensor', 'Sensor', S.sensorService, 'poke', 'a', A(one)),
+            def('voice', 'Voice', S.voiceService, 'startCall', 'ab', A(two)),
+            def('support', 'Support', S.supportService, 'botDraft', 'a', A(one)),
+            def('verify', 'Verify', S.verifyService, 'verifiedAnswer', 'a', A(one)),
+            def('deck', 'Deck', S.deckService, 'buildDeck', 'ab', A((a, b) => [a, b ? Number(b) || 8 : 8])),
+        ],
+    },
+    {
+        id: 'l',
+        services: [
+            def('format', 'Format', S.formatService, 'run', 'ab', A(two)),
+            def('argtech', 'ArgTech', S.argTechService, 'mineClaims', 'a', A(one)),
+        ],
+    },
+    {
+        id: 'm',
+        services: [
+            def('forumplus', 'ForumPlus', S.forumPlusService, 'createPoll', 'ab', A(two)),
+            def('decision', 'Decision', S.decisionService, 'propose', 'a', A(one)),
+            def('polis', 'Polis', S.polisService, 'consensus', 'a', A(one)),
+            def('reflexion', 'Reflexion', S.reflexionService, 'run', 'a', A(one)),
+            def('tot', 'Tree-of-Thought', S.totService, 'search', 'a', A(one)),
+            def('selfcon', 'SelfConsistency', S.selfConsistencyService, 'sample', 'a', A(one)),
+            def('soar', 'SOAR', S.soarService, 'cycle', 'none'),
+            def('atom', 'Atom', S.atomService, 'deduce', 'a', A(one)),
+            def('meter', 'Meter', S.meterService, 'gauge', 'ab', A(two)),
+            def('errinbox', 'ErrorInbox', S.errorInboxService, 'capture', 'a', A(one)),
+        ],
+    },
+    {
+        id: 'n',
+        services: [
+            def('openclaw', 'OpenClaw', S.openClawService, 'importSoul', 'a', A(one)),
+            def('dsh', 'DSH', S.dshService, 'spawnSubagent', 'a', A(one)),
+            def('manus', 'Manus', S.manusService, 'runVerified', 'a', A(one)),
+            def('genspark', 'Genspark', S.gensparkService, 'fanout', 'a', A(one)),
+        ],
+    },
+    {
+        id: 'p',
+        services: [
+            def('a2a', 'A2A-Spec', S.a2aSpecService, 'submitTask', 'ab', A(two)),
+            def('cachereg', 'CacheRegistry', S.cacheRegistryService, 'create', 'ab', A(two)),
+            def('dotprompt', 'Dotprompt', S.dotpromptService, 'render', 'ab', A(two)),
+            def('notebook', 'Notebook', S.notebookService, 'askNotebook', 'ab', A(two)),
+            def('livebridge', 'LiveBridge', S.liveBridgeService, 'bargeIn', 'ab', A(two)),
+            def('assist', 'Assist', S.assistService, 'smartReplies', 'a', A(one)),
+            def('vertex', 'VertexSearch', S.vertexSearchService, 'answer', 'ab', A(two)),
+            def('deepres', 'DeepResearch', S.deepResearchService, 'run', 'a', A(one)),
+            def('quota', 'QuotaGuard', S.quotaGuardService, 'check', 'a', A(one)),
+            def('studiopack', 'StudioPack', S.studioPackService, 'translate', 'ab', A(two)),
+        ],
+    },
+    {
+        id: 'q',
+        services: [
+            def('netlogo', 'NetLogo', S.netLogoService, 'tick', 'ab', A((a, b) => [a, b ? Number(b) || 10 : 10])),
+            def('mesa', 'Mesa', S.mesaService, 'step', 'ab', A((a, b) => [a, b ? Number(b) || 10 : 10])),
+            def('bonsai', 'Bonsai', S.bonsaiService, 'train', 'ab', A((a, b) => [a, b ? Number(b) || 100 : 100])),
+            def('chainlit', 'Chainlit', S.chainlitService, 'startRun', 'a', A(one)),
+            def('gradio', 'Gradio', S.gradioService, 'predict', 'ab', A(two)),
+            def('chart', 'Chart', S.chartService, 'spec', 'ab', A(two)),
+            def('graphviz', 'GraphViz', S.graphVizService, 'layout', 'ab', A((a, b) => [csv(a), csv(b)])),
+            def('malmo', 'Malmo', S.malmoService, 'act', 'ab', A(two)),
+            def('gym', 'Gym', S.gymService, 'step', 'ab', A(two)),
+        ],
+    },
     {
         id: 'r',
         services: [

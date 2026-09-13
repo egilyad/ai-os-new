@@ -38,6 +38,7 @@ export interface IGroupChatService extends ILifecycle {
     summarize(chatId: string): Promise<string>;
     /** Nested chat: run a sub-chat, inject its summary as a turn here. */
     nestChat(chatId: string, topic: string): Promise<GroupChat>;
+    listChats(): Promise<GroupChat[]>;
     get(chatId: string): Promise<GroupChat | null>;
 }
 
@@ -76,6 +77,7 @@ export interface IAutonomyService extends ILifecycle {
     runGoal(goal: string, maxIterations?: number): Promise<AgentLoop>;
     /** BabyAGI loop: create → prioritize → execute task list. */
     runTaskQueue(objective: string, maxIterations?: number): Promise<AgentLoop>;
+    listLoops(): Promise<AgentLoop[]>;
     getLoop(id: string): Promise<AgentLoop | null>;
     abortLoop(id: string): Promise<void>;
 }

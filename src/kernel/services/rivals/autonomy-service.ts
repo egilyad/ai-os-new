@@ -164,6 +164,10 @@ export class AutonomyService implements IAutonomyService {
         return this.deps.repo.getLoop(id);
     }
 
+    async listLoops(): Promise<AgentLoop[]> {
+        return this.deps.repo.listLoops();
+    }
+
     async abortLoop(id: string): Promise<void> {
         this.aborted.add(id);
         const loop = await this.deps.repo.getLoop(id);
