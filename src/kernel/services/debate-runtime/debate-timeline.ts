@@ -16,21 +16,6 @@ function storageKey(sessionId: string): string {
     return `debate_timeline_${sessionId}`;
 }
 
-const MAX_TIMELINE_CONTENT = 500;
-
-function truncatePayload(entry: TimelineEntry): TimelineEntry {
-    if (entry.type === 'agent:responded' && entry.payload && typeof entry.payload === 'object') {
-        const p = entry.payload as Record<string, unknown>;
-        if (typeof p.content === 'string' && p.content.length > MAX_TIMELINE_CONTENT) {
-            return {
-                ...entry,
-                payload: { ...p, content: p.content.slice(0, MAX_TIMELINE_CONTENT) },
-            };
-        }
-    }
-    return entry;
-}
-
 export class DebateTimeline implements IDebateTimeline {
     private entries: TimelineEntry[] = [];
     private cursor = 0;
@@ -83,11 +68,11 @@ export class DebateTimeline implements IDebateTimeline {
     }
 
     record(entry: Omit<TimelineEntry, 'id' | 'timestamp'>): void {
-        const full = truncatePayload({
+        const full: TimelineEntry = {
             ...entry,
             id: `${Date.now()}-${this.cursor}`,
             timestamp: Date.now(),
-        });
+        };
 
         if (this.entries.length < getMaxEntries()) {
             this.entries.push(full);
