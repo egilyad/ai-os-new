@@ -2472,6 +2472,35 @@ export const EVENT_REGISTRY = {
         'project:error:logged',
         z.object({ projectId: z.string(), source: z.string(), severity: z.string(), message: z.string() }),
     ),
+
+    // ── Agent Channels (mIRC-like) ──
+    CHANNEL_CREATED: event(
+        'channel:created',
+        z.object({ channelId: z.string(), name: z.string() }),
+    ),
+    CHANNEL_MESSAGE: event(
+        'channel:message',
+        z.object({
+            channelId: z.string(),
+            messageId: z.string(),
+            authorId: z.string(),
+            kind: z.string(),
+            content: z.string(),
+            mentions: z.array(z.string()).optional(),
+        }),
+    ),
+    CHANNEL_AGENT_JOINED: event(
+        'channel:agent:joined',
+        z.object({ channelId: z.string(), agentId: z.string(), displayName: z.string() }),
+    ),
+    CHANNEL_AGENT_LEFT: event(
+        'channel:agent:left',
+        z.object({ channelId: z.string(), agentId: z.string() }),
+    ),
+    CHANNEL_ARCHIVED: event(
+        'channel:archived',
+        z.object({ channelId: z.string() }),
+    ),
 } as const;
 
 type Registry = typeof EVENT_REGISTRY;

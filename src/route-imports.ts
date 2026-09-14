@@ -168,6 +168,7 @@ const KnowledgeGenPanelLazy = React.lazy(
 const ForumPanelLazy = React.lazy(() => import('./components/ForumPanel/ForumPanel'));
 const DirectorPanelLazy = React.lazy(() => import('./components/DirectorPanel/DirectorPanel'));
 const RoomPanelLazy = React.lazy(() => import('./components/RoomPanel/RoomPanel'));
+const ChannelPanelLazy = React.lazy(() => import('./components/ChannelPanel/ChannelPanel'));
 const ProjectsPanelLazy = React.lazy(() => import('./components/ProjectsPanel/ProjectsPanel'));
 const FleetPanelLazy = React.lazy(() => import('./components/FleetPanel/FleetPanel'));
 const GovernancePanelLazy = React.lazy(() => import('./components/GovernancePanel/GovernancePanel'));
@@ -405,6 +406,7 @@ export const PANEL_COMPONENTS: Record<string, React.ComponentType<any>> = {
     forum: ForumPanelLazy,
     director: DirectorPanelLazy,
     room: RoomPanelLazy,
+    channels: ChannelPanelLazy,
     projects: ProjectsPanelLazy,
     fleet: FleetPanelLazy,
     governance: GovernancePanelLazy,

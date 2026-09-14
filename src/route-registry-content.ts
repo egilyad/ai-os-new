@@ -823,4 +823,18 @@ export const CONTENT_SECTIONS: NavSection[] = [
             },
         ],
     },
+    // ── Channels (mIRC-like agent channels) ──
+    {
+        id: 'section-channels',
+        labelKey: 'nav.section_channels',
+        items: [
+            {
+                id: 'channels',
+                labelKey: 'nav.channels',
+                icon: Icons.room,
+                color: '#06b6d4',
+                lazy: true,
+            },
+        ],
+    },
 ];

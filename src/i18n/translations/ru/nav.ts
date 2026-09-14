@@ -132,6 +132,8 @@ const nav: Record<string, string> = {
     'nav.forum': 'Форум агентов',
     'nav.director': 'Директор разговоров',
     'nav.room': 'Комнаты агентов',
+    'nav.channels': 'Каналы',
+    'nav.section_channels': 'Каналы',
     'nav.projects': 'Проекты',
     'nav.fleet': 'Консоль флота',
     'nav.fleet_crews': 'Флот — Команды',

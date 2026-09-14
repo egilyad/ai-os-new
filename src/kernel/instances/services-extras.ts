@@ -172,6 +172,7 @@ import type { IProjectDebateIntegration } from '../contracts/debate-integration'
 import type { IAutonomyOrchestrator } from '../contracts/autonomy';
 import type { IAutonomyRunner } from '../contracts/autonomy-runner';
 import type { IProjectInvocationBridge } from '../contracts/project-invocation-bridge';
+import type { IChannelService } from '../contracts/channel';
 import type { ICapabilityResolver, IAgentFactory } from '../contracts/capability';
 import type {
     IALifeService,
@@ -601,6 +602,7 @@ export const projectDebateIntegration = lazyService<IProjectDebateIntegration>('
 export const autonomyOrchestrator = lazyService<IAutonomyOrchestrator>('autonomyOrchestrator');
 export const autonomyRunner = lazyService<IAutonomyRunner>('autonomyRunner');
 export const projectInvocationBridge = lazyService<IProjectInvocationBridge>('projectInvocationBridge');
+export const channelService = lazyService<IChannelService>('channelService');
 export const dynamicWorkflowService = lazyService<IDynamicWorkflowService>('dynamicWorkflowService');
 export const routineService = lazyService<IRoutineService>('routineService');
 export const agentViewService = lazyService<IAgentViewService>('agentViewService');

@@ -51,6 +51,7 @@ import {
     RefreshCw,
     FileText,
     ListOrdered,
+    Hash,
     GitPullRequest,
     Rocket,
     Bell,

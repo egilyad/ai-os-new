@@ -132,6 +132,8 @@ const nav: Record<string, string> = {
     'nav.forum': 'Agent Forum',
     'nav.director': 'Conversation Director',
     'nav.room': 'Agent Rooms',
+    'nav.channels': 'Channels',
+    'nav.section_channels': 'Channels',
     'nav.projects': 'Projects',
     'nav.fleet': 'Fleet Console',
     'nav.fleet_crews': 'Fleet — Crews',
