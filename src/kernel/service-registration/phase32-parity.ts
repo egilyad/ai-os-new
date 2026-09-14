@@ -19,6 +19,7 @@ import type { IToolGovernanceService } from '../contracts/ops';
 import type { IWorkspaceService } from '../contracts/workspace';
 import type { ICrewService } from '../contracts/crew';
 import type { MCPService } from '../services/mcp-service';
+import type { DebateSyncManager } from '../services/debate-runtime/debate-sync-manager';
 import { ParityRepository } from '../dal/parity-repository';
 import { ToolRunnerService } from '../services/parity/tool-runner-service';
 import { KnowledgeService } from '../services/parity/knowledge-service';
@@ -54,6 +55,9 @@ export const registerPhase32: Phase = ({ register }) => {
                 ? c.get<IWorkspaceService>('workspaceService')
                 : undefined,
             mcp: c.has('mcpService') ? c.get<MCPService>('mcpService') : undefined,
+            debate: c.has('debateService')
+                ? c.get<DebateSyncManager>('debateService')
+                : undefined,
             knowledge,
         });
     });

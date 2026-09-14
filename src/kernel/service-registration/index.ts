@@ -64,6 +64,7 @@ import { registerPhase62 } from './phase62-world-state';
 import { registerPhase63 } from './phase63-simulation-engine';
 import { registerPhase64 } from './phase64-agent-adapter';
 import { registerPhase65 } from './phase65-council-migration';
+import { registerPhase66 } from './phase66-projects';
 import type { IContainer } from '../container';
 import type { IEventBus } from '../types/interfaces';
 
@@ -140,6 +141,7 @@ export function registerServices(
     registerPhase63(helpers, ctx);
     registerPhase64(helpers, ctx);
     registerPhase65(helpers, ctx);
+    registerPhase66(helpers, ctx);
 }
 
 export type { PhaseContext, Phase } from './helpers';

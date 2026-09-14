@@ -152,11 +152,26 @@ import type {
     IMcpDeepService,
     IFilesApiService,
     ICacheControlService,
-    IProjectService,
     IDynamicWorkflowService,
     IRoutineService,
     IAgentViewService,
 } from '../contracts/rivals14';
+import type { IProjectManagerService } from '../contracts/project';
+import type { IProjectWorkspaceService } from '../contracts/project-workspace';
+import type { IAgentProjectRuntime } from '../contracts/agent-runtime';
+import type { IWebsitePreviewService } from '../contracts/website-preview';
+import type { IQABrowserInspector } from '../contracts/qa-inspector';
+import type { IMultiAgentProjectService } from '../contracts/multi-agent-project';
+import type { IPythonRunnerService } from '../contracts/python-runner';
+import type { IProjectObservabilityService } from '../contracts/project-observability';
+import type { IProjectMemoryService } from '../contracts/project-memory';
+import type { IApprovalService } from '../contracts/approval';
+import type { IArtifactService } from '../contracts/artifact';
+import type { IProjectTemplateService } from '../contracts/project-template';
+import type { IProjectDebateIntegration } from '../contracts/debate-integration';
+import type { IAutonomyOrchestrator } from '../contracts/autonomy';
+import type { IAutonomyRunner } from '../contracts/autonomy-runner';
+import type { IProjectInvocationBridge } from '../contracts/project-invocation-bridge';
 import type { ICapabilityResolver, IAgentFactory } from '../contracts/capability';
 import type {
     IALifeService,
@@ -570,7 +585,22 @@ export const claudeCodeService = lazyService<IClaudeCodeService>('claudeCodeServ
 export const mcpDeepService = lazyService<IMcpDeepService>('mcpDeepService');
 export const filesApiService = lazyService<IFilesApiService>('filesApiService');
 export const cacheControlService = lazyService<ICacheControlService>('cacheControlService');
-export const projectService = lazyService<IProjectService>('projectService');
+export const projectManagerService = lazyService<IProjectManagerService>('projectManagerService');
+export const projectWorkspaceService = lazyService<IProjectWorkspaceService>('projectWorkspaceService');
+export const agentProjectRuntime = lazyService<IAgentProjectRuntime>('agentProjectRuntime');
+export const websitePreviewService = lazyService<IWebsitePreviewService>('websitePreviewService');
+export const browserInspectorService = lazyService<IQABrowserInspector>('browserInspectorService');
+export const multiAgentProjectService = lazyService<IMultiAgentProjectService>('multiAgentProjectService');
+export const pythonRunnerService = lazyService<IPythonRunnerService>('pythonRunnerService');
+export const projectObservabilityService = lazyService<IProjectObservabilityService>('projectObservabilityService');
+export const projectMemoryService = lazyService<IProjectMemoryService>('projectMemoryService');
+export const approvalService = lazyService<IApprovalService>('approvalService');
+export const artifactService = lazyService<IArtifactService>('artifactService');
+export const projectTemplateService = lazyService<IProjectTemplateService>('projectTemplateService');
+export const projectDebateIntegration = lazyService<IProjectDebateIntegration>('projectDebateIntegration');
+export const autonomyOrchestrator = lazyService<IAutonomyOrchestrator>('autonomyOrchestrator');
+export const autonomyRunner = lazyService<IAutonomyRunner>('autonomyRunner');
+export const projectInvocationBridge = lazyService<IProjectInvocationBridge>('projectInvocationBridge');
 export const dynamicWorkflowService = lazyService<IDynamicWorkflowService>('dynamicWorkflowService');
 export const routineService = lazyService<IRoutineService>('routineService');
 export const agentViewService = lazyService<IAgentViewService>('agentViewService');

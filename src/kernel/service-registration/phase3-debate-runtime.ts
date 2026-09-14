@@ -741,4 +741,29 @@ export const registerPhase3: Phase = (helpers, ctx) => {
                 ),
             }),
     );
+
+    // --- Debate Enhancement services (#2 Cross-debate memory, #3 Breakpoints, #4 Quality benchmarks) ---
+
+    register('crossDebateMemory', (c) => {
+        const { CrossDebateMemoryService } = require('../services/debate-runtime/cross-debate-memory');
+        return new CrossDebateMemoryService({
+            eventBus: c.get<IEventBus>('eventBus'),
+            store: storageLayer,
+        });
+    });
+
+    register('debateBreakpointService', (c) => {
+        const { DebateBreakpointService } = require('../services/debate-runtime/debate-breakpoint-service');
+        return new DebateBreakpointService({
+            eventBus: c.get<IEventBus>('eventBus'),
+        });
+    });
+
+    register('debateQualityBenchmark', (c) => {
+        const { DebateQualityBenchmarkService } = require('../services/debate-runtime/debate-quality-benchmark');
+        return new DebateQualityBenchmarkService({
+            eventBus: c.get<IEventBus>('eventBus'),
+            store: storageLayer,
+        });
+    });
 };

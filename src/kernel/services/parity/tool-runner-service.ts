@@ -3,7 +3,8 @@
  *
  * Built-in tools: workspace.list/read/search (via Workspace delegate),
  * http.fetch (SSRF-guarded, best-effort), time.now, math.calc (safe parser),
- * knowledge.search (via Knowledge delegate), mcp.call (via MCPService).
+ * knowledge.search (via Knowledge delegate), mcp.call (via MCPService),
+ * debate.start/debate.verdict/debate.status (via DebateSyncManager).
  * Every call is policy-gated through ToolGovernance when wired.
  * `runWithTools()` implements the LLM → toolCalls → execute → LLM loop.
  */
@@ -12,6 +13,7 @@ import type { ILLMClientService, AdapterMessage } from '../../contracts/provider
 import type { IToolGovernanceService } from '../../contracts/ops';
 import type { IWorkspaceService } from '../../contracts/workspace';
 import type { MCPService } from '../mcp-service';
+import type { DebateSyncManager } from '../debate-runtime/debate-sync-manager';
 import type { IToolRunnerService, ToolRunResult } from '../../contracts/parity';
 import { rootLogger } from '../logger-service';
 import { EVENTS } from '../../events/event-names';
@@ -109,6 +111,7 @@ export interface ToolRunnerDeps {
     governance?: IToolGovernanceService;
     workspace?: IWorkspaceService;
     mcp?: MCPService;
+    debate?: DebateSyncManager;
     knowledge?: { retrieve(query: string, limit?: number): Promise<Array<{ title: string; chunk: string }>> };
 }
 
@@ -357,6 +360,129 @@ export class ToolRunnerService implements IToolRunnerService {
                     (args['args'] ?? {}) as Record<string, unknown>,
                 );
                 return JSON.stringify(out).slice(0, 6000);
+            },
+        });
+
+        this.tools.set('debate.start', {
+            name: 'debate.start',
+            description: 'Start a multi-agent debate on a topic. Returns the session ID. Agents argue pro/con and a verdict is generated.',
+            parameters: {
+                type: 'object',
+                properties: {
+                    topic: { type: 'string', description: 'The debate topic or question' },
+                    participants: {
+                        type: 'array',
+                        items: { type: 'string' },
+                        description: 'Agent IDs to participate (min 2)',
+                    },
+                    strategy: {
+                        type: 'string',
+                        enum: ['round_robin', 'sequential', 'judge', 'tree-of-thought', 'red-blue', 'free_for_all'],
+                        description: 'Debate strategy (default: round_robin)',
+                    },
+                    maxRounds: { type: 'number', description: 'Maximum rounds (default: 5)' },
+                },
+                required: ['topic', 'participants'],
+            },
+            run: async (args) => {
+                if (!this.deps.debate) throw new Error('Debate service not configured');
+                const topic = str(args['topic']);
+                const participantIds = args['participants'] as string[];
+                if (!topic) throw new Error('topic is required');
+                if (!Array.isArray(participantIds) || participantIds.length < 2) {
+                    throw new Error('At least 2 participants required');
+                }
+                const strategy = (str(args['strategy']) || 'round_robin') as Parameters<DebateSyncManager['startDebate']>[2];
+                const maxRounds = typeof args['maxRounds'] === 'number' ? args['maxRounds'] : 5;
+                const participants = participantIds.map((id) => ({
+                    id,
+                    name: id,
+                    role: 'pro' as const,
+                }));
+                const session = await this.deps.debate.startDebate(
+                    topic,
+                    participants,
+                    strategy,
+                    maxRounds,
+                );
+                return JSON.stringify({
+                    sessionId: session.id,
+                    topic: session.topic,
+                    status: session.status,
+                    strategy,
+                    maxRounds,
+                }).slice(0, 6000);
+            },
+        });
+
+        this.tools.set('debate.verdict', {
+            name: 'debate.verdict',
+            description: 'Get the verdict/result of a completed debate.',
+            parameters: {
+                type: 'object',
+                properties: {
+                    sessionId: { type: 'string', description: 'The debate session ID' },
+                },
+                required: ['sessionId'],
+            },
+            run: async (args) => {
+                if (!this.deps.debate) throw new Error('Debate service not configured');
+                const sessionId = str(args['sessionId']);
+                if (!sessionId) throw new Error('sessionId is required');
+                const verdict = this.deps.debate.getCachedVerdict(sessionId);
+                if (!verdict) {
+                    const session = this.deps.debate.engine?.getSession(sessionId);
+                    if (!session) return 'Debate session not found.';
+                    return JSON.stringify({
+                        sessionId,
+                        topic: session.topic,
+                        phase: session.phase,
+                        round: session.round,
+                        status: 'not_yet_completed',
+                        message: 'Debate is still in progress. Call debate.verdict later.',
+                    }).slice(0, 6000);
+                }
+                return JSON.stringify({
+                    sessionId: verdict.sessionId,
+                    topic: verdict.topic,
+                    summary: verdict.summary,
+                    conclusionType: verdict.conclusionType,
+                    stanceResult: verdict.stanceResult,
+                    confidence: verdict.confidence,
+                    roundsTotal: verdict.roundsTotal,
+                    keyArguments: verdict.keyArguments.slice(0, 5),
+                }).slice(0, 6000);
+            },
+        });
+
+        this.tools.set('debate.status', {
+            name: 'debate.status',
+            description: 'Get the current status of a debate session (phase, round, participants).',
+            parameters: {
+                type: 'object',
+                properties: {
+                    sessionId: { type: 'string', description: 'The debate session ID' },
+                },
+                required: ['sessionId'],
+            },
+            run: async (args) => {
+                if (!this.deps.debate) throw new Error('Debate service not configured');
+                const sessionId = str(args['sessionId']);
+                if (!sessionId) throw new Error('sessionId is required');
+                const session = this.deps.debate.engine?.getSession(sessionId);
+                if (!session) return 'Debate session not found.';
+                return JSON.stringify({
+                    sessionId,
+                    topic: session.topic,
+                    phase: session.phase,
+                    round: session.round,
+                    agents: session.agentStates.map((a) => ({
+                        agentId: a.agentId,
+                        phase: a.phase,
+                        tokensUsed: a.tokensUsed,
+                    })),
+                    totalTokens: session.totalTokens,
+                }).slice(0, 6000);
             },
         });
     }

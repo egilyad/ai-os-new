@@ -157,6 +157,20 @@ export const CONTENT_SECTIONS: NavSection[] = [
         ],
     },
     {
+        id: 'section-projects',
+        labelKey: 'nav.section_projects',
+        items: [
+            {
+                id: 'projects',
+                labelKey: 'nav.projects',
+                icon: Icons.folderOpen,
+                color: '#3b82f6',
+                lazy: true,
+                experimental: true,
+            },
+        ],
+    },
+    {
         // FLEET + GOVERNANCE category (menu cleanup). Route ids unchanged, only grouping changed.
         id: 'section-fleet',
         labelKey: 'nav.section_fleet',

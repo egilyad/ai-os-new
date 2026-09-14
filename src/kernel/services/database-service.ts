@@ -90,6 +90,14 @@ import type {
     QueuedRun,
 } from '../types/rival-types';
 import type { GraphThread } from '../types/graph-types';
+import type {
+    Project,
+    ProjectTask,
+    ProjectRun,
+    ProjectFile,
+    ProjectArtifact,
+    ProjectAgentAssignment,
+} from '../types/project-types';
 import type { IDatabaseService } from '../types/interfaces';
 import { REDACTED_MARKER, SuperAgentsDB } from './dexie-schema';
 import { rootLogger } from './logger-service';
@@ -581,6 +589,24 @@ export class DatabaseService implements IDatabaseService {
     }
     get scopedMem(): Table<ScopedMem> {
         return getDexieDb().scopedMem;
+    }
+    get projects(): Table<Project> {
+        return getDexieDb().projects;
+    }
+    get projectTasks(): Table<ProjectTask> {
+        return getDexieDb().projectTasks;
+    }
+    get projectRuns(): Table<ProjectRun> {
+        return getDexieDb().projectRuns;
+    }
+    get projectFiles(): Table<ProjectFile> {
+        return getDexieDb().projectFiles;
+    }
+    get projectArtifacts(): Table<ProjectArtifact> {
+        return getDexieDb().projectArtifacts;
+    }
+    get projectAssignments(): Table<ProjectAgentAssignment> {
+        return getDexieDb().projectAssignments;
     }
     get db() {
         return getDexieDb();
