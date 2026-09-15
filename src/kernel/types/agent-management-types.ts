@@ -105,21 +105,35 @@ export interface AgentRecord {
     name: string;
     slug: string;
     avatar?: string; // Emoji or image URL
+    role?: string;
+    description?: string;
     type: AgentType;
     status: AgentStatus;
 
     // LLM
     llmProvider: LLMProvider;
     llmModel: string;
-    llmConfig: LLMConfig;
+    llmConfig?: LLMConfig;
+    temperature?: number;
+    maxTokens?: number;
 
     // Mission
     systemPrompt: string;
     mission?: string;
     values?: string[];
 
-    // Runtime
-    runtimeConfig: RuntimeConfig;
+    // Runtime (flat fields as persisted by AgentManagementService)
+    runtimeConfig?: RuntimeConfig;
+    runtimeMode?: string;
+    maxIterations?: number;
+    timeoutMs?: number;
+    mcpServers?: string[];
+    allowedCommands?: string[];
+    blockedCommands?: string[];
+    toolApprovalMode?: string;
+
+    // External adapter (opaque pass-through, never inspected by the service)
+    externalAdapter?: unknown;
 
     // External adapter
     adapterType?: AdapterType;
@@ -134,7 +148,8 @@ export interface AgentRecord {
     createdByAgentId?: string;
 
     // Version
-    version: number;
+    version?: number;
+    configVersion?: number;
     metadata?: Record<string, unknown>;
 
     // Timestamps
@@ -150,19 +165,21 @@ export interface AgentSkillRecord {
     skillId: string;
     config?: Record<string, unknown>;
     enabled: boolean;
+    addedAt?: number;
 }
 
 // ── Agent Tool ────────────────────────────────────────
 
-export type ToolApprovalMode = 'free' | 'requires_approval' | 'blocked';
+export type ToolApprovalMode = 'free' | 'requires_approval' | 'blocked' | 'auto' | 'require-approval';
 
 export interface AgentToolRecord {
     id: string;
     agentId: string;
     toolId: string;
-    permissions: { read: boolean; write: boolean; execute: boolean };
+    permissions?: { read: boolean; write: boolean; execute: boolean };
     approvalMode: ToolApprovalMode;
     enabled: boolean;
+    addedAt?: number;
 }
 
 // ── Responsibility ────────────────────────────────────
@@ -174,14 +191,17 @@ export interface ResponsibilityRecord {
     agentId: string;
     title: string;
     description?: string;
+    kpis?: string[];
     kpiMetrics?: Record<string, string>;
-    priority: Priority;
+    priority?: Priority;
+    createdAt?: number;
 }
 
 // ── Agent Metrics ─────────────────────────────────────
 
 export type MetricType =
     | 'cost'
+    | 'cost_usd'
     | 'latency'
     | 'quality'
     | 'error_rate'
@@ -195,6 +215,7 @@ export interface AgentMetricRecord {
     value: number;
     periodStart: number;
     periodEnd: number;
+    recordedAt?: number;
     metadata?: Record<string, unknown>;
 }
 
@@ -222,11 +243,13 @@ export type TriggerType =
     | 'manual'
     | 'meeting'
     | 'telegram'
-    | 'approval';
+    | 'approval'
+    | 'scheduled';
 
 export type ExecutionStatus =
     | 'running'
     | 'completed'
+    | 'success'
     | 'failed'
     | 'cancelled'
     | 'waiting_hitl';
@@ -235,8 +258,10 @@ export interface AgentExecutionRecord {
     id: string;
     agentId: string;
     status: ExecutionStatus;
-    triggerType: TriggerType;
+    trigger?: TriggerType;
+    triggerType?: TriggerType;
     triggerId?: string;
+    taskSummary?: string;
     input?: Record<string, unknown>;
     output?: Record<string, unknown>;
     toolCalls?: Array<{ tool: string; input: unknown; output: unknown }>;
@@ -248,7 +273,10 @@ export interface AgentExecutionRecord {
     outputTokens?: number;
     cachedInputTokens?: number;
     error?: string;
+    result?: string;
     startedAt: number;
+    completedAt?: number;
+    durationMs?: number;
     endedAt?: number;
 }
 
@@ -258,9 +286,11 @@ export interface AgentConfigRevisionRecord {
     id: string;
     agentId: string;
     version: number;
-    changeset: Record<string, { old: unknown; new: unknown }>;
-    snapshot: Record<string, unknown>;
-    changedBy: ActorType;
+    patch?: Partial<UpdateAgentInput>;
+    note?: string;
+    changeset?: Record<string, { old: unknown; new: unknown }>;
+    snapshot?: Record<string, unknown>;
+    changedBy?: ActorType;
     changedById?: string;
     changeNote?: string;
     createdAt: number;
@@ -271,9 +301,11 @@ export interface AgentConfigRevisionRecord {
 export interface AgentApiKeyRecord {
     id: string;
     agentId: string;
-    name: string;
+    name?: string;
+    provider?: string;
+    status?: string;
     keyHash: string;
-    keyPrefix: string;
+    keyPrefix?: string;
     lastUsedAt?: number;
     expiresAt?: number;
     revokedAt?: number;
@@ -285,16 +317,20 @@ export interface AgentApiKeyRecord {
 export interface AgentBudgetRecord {
     id: string;
     agentId: string;
-    monthlyLimitUsd: number;
+    monthlyLimitUsd?: number;
+    limitUsd?: number;
+    period?: string;
+    alertThreshold?: number;
+    currentUsageUsd?: number;
     dailyLimitUsd?: number;
     hourlyLimitUsd?: number;
-    currentSpendUsd: number;
-    periodStart: number;
-    periodEnd: number;
-    softAlertPercent: number; // Default 80
-    hardStopEnabled: boolean; // Default true
-    alertSent: boolean;
-    hardStopTriggered: boolean;
+    currentSpendUsd?: number;
+    periodStart?: number;
+    periodEnd?: number;
+    softAlertPercent?: number; // Default 80
+    hardStopEnabled?: boolean; // Default true
+    alertSent?: boolean;
+    hardStopTriggered?: boolean;
     metadata?: Record<string, unknown>;
     createdAt: number;
     updatedAt: number;
@@ -324,18 +360,31 @@ export interface CreateAgentInput {
     name: string;
     slug?: string;
     avatar?: string;
+    role?: string;
+    description?: string;
     type?: AgentType;
     llmProvider: LLMProvider;
     llmModel: string;
     llmConfig?: Partial<LLMConfig>;
+    temperature?: number;
+    maxTokens?: number;
     systemPrompt: string;
     mission?: string;
     values?: string[];
     runtimeConfig?: Partial<RuntimeConfig>;
+    runtimeMode?: string;
+    maxIterations?: number;
+    timeoutMs?: number;
+    mcpServers?: string[];
+    allowedCommands?: string[];
+    blockedCommands?: string[];
+    toolApprovalMode?: string;
     adapterType?: AdapterType;
     adapterConfig?: Record<string, unknown>;
+    externalAdapter?: unknown;
     telegramConfig?: TelegramConfig;
     parentAgentId?: string;
+    ownerId?: string;
     metadata?: Record<string, unknown>;
 }
 
@@ -343,19 +392,33 @@ export interface UpdateAgentInput {
     name?: string;
     slug?: string;
     avatar?: string;
+    role?: string;
+    description?: string;
     type?: AgentType;
     status?: AgentStatus;
     llmProvider?: LLMProvider;
     llmModel?: string;
     llmConfig?: Partial<LLMConfig>;
+    temperature?: number;
+    maxTokens?: number;
     systemPrompt?: string;
     mission?: string;
     values?: string[];
     runtimeConfig?: Partial<RuntimeConfig>;
+    runtimeMode?: string;
+    maxIterations?: number;
+    timeoutMs?: number;
+    mcpServers?: string[];
+    allowedCommands?: string[];
+    blockedCommands?: string[];
+    toolApprovalMode?: string;
     adapterType?: AdapterType;
     adapterConfig?: Record<string, unknown>;
+    externalAdapter?: unknown;
     telegramConfig?: TelegramConfig;
     parentAgentId?: string | null;
+    ownerId?: string;
+    configVersion?: number;
     metadata?: Record<string, unknown>;
 }
 
@@ -364,6 +427,8 @@ export interface AgentFilters {
     type?: AgentType;
     llmProvider?: LLMProvider;
     search?: string;
+    ownerId?: string;
+    parentAgentId?: string;
     page?: number;
     pageSize?: number;
 }
@@ -371,11 +436,11 @@ export interface AgentFilters {
 // ── Cost Stats ────────────────────────────────────────
 
 export interface CostStats {
-    totalCost: number;
-    byProvider: Record<string, number>;
-    byModel: Record<string, number>;
-    byDay: Record<string, number>;
-    period: { start: number; end: number };
+    totalCostUsd: number;
+    totalTokens: number;
+    tasksDone: number;
+    avgCostPerTask: number;
+    avgTokensPerTask: number;
 }
 
 // ── Export/Import ─────────────────────────────────────
@@ -392,12 +457,16 @@ export interface ExportedAgent {
 
 export interface ImportAgentInput {
     data: ExportedAgent;
+    exported: ExportedAgent;
     reLinkBySlug?: boolean;
 }
 
 export interface ImportResult {
     agentId: string;
-    skillsLinked: number;
-    toolsLinked: number;
-    memoryImported: number;
+    slug: string;
+    relinkedCount?: number;
+    warnings?: string[];
+    skillsLinked?: number;
+    toolsLinked?: number;
+    memoryImported?: number;
 }
