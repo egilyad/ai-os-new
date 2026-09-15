@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from '../../i18n/useTranslation';
 import type {
@@ -47,19 +47,6 @@ const LOG_ROW: React.CSSProperties = {
     border: '1px solid #2a2a35',
     marginBottom: '0.35rem',
     fontSize: '0.78rem',
-};
-
-const AVATAR: React.CSSProperties = {
-    width: 28,
-    height: 28,
-    borderRadius: '50%',
-    flex: '0 0 auto',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    background: 'rgba(34,211,238,0.25)',
-    fontWeight: 600,
-    fontSize: '0.8rem',
 };
 
 const FIELD: React.CSSProperties = {
@@ -129,12 +116,6 @@ const RoomPanel: React.FC = () => {
         else if (ref.kind === 'conversation') navigate(`/director?session=${ref.ref}`);
     };
 
-    const idToName = useMemo(() => {
-        const m: Record<string, string> = {};
-        for (const a of agents) m[a.id] = a.name;
-        return m;
-    }, [agents]);
-
     // Scope the live feed to the selected invocation's session (honest, not a
     // global mix). Fall back to the most recent invocation that has a session,
     // otherwise show all feed while nothing is selected.
@@ -171,11 +152,6 @@ const RoomPanel: React.FC = () => {
                 setError(t('room.error.generic'));
             }
         }
-    };
-
-    const displayName = (id?: string): string => {
-        if (!id) return t('room.unknownAgent');
-        return idToName[id] ?? id;
     };
 
     return (

@@ -32,7 +32,7 @@ export class BizTicketService {
 }
 
 export class MeetingService {
-    constructor(private dal: DataAccessLayer, private events: IEventBus) {}
+    constructor(private dal: DataAccessLayer, _events: IEventBus) {}
     async init(){} async destroy(){}
     async startMeeting(topic: string, agenda: string[]){
         const id=genId('meet'); await this.dal.kv.set(`meeting/${id}`, { id, topic: topic.slice(0,120), agenda: agenda.slice(0,10), votes: {} as Record<string,string>, createdAt: Date.now() }); return id;

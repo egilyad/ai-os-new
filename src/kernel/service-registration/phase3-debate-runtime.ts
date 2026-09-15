@@ -54,11 +54,6 @@ import type { IIncentiveDetector } from '../contracts/debate-incentives';
 import type { IGoTDeliberation } from '../contracts/debate-got';
 import type { IConceptBlender } from '../contracts/debate-blending';
 import type { IOutcomeForecaster } from '../contracts/debate-forecaster';
-import type { ICrossExaminationService } from '../contracts/debate-cross-examination';
-import type { IDeltaFocusingService } from '../contracts/debate-delta-focusing';
-import type { IAgreementAnchoringService } from '../contracts/debate-agreement-anchoring';
-import type { IBurdenOfProofService } from '../contracts/debate-burden-of-proof';
-import type { IPrePublishCriticService } from '../contracts/debate-pre-publish-critic';
 
 import { SimilarityMonitor } from '../services/debate-runtime/similarity-monitor';
 import { PersonaDriftDetector } from '../services/debate-runtime/persona-drift-detector';

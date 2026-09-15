@@ -7,7 +7,6 @@
 import type {
     PlatformBudget,
     BudgetIncident,
-    BudgetIncidentType,
     IPlatformBudgetService,
     IBudgetIncidentService,
 } from '../contracts/budget';

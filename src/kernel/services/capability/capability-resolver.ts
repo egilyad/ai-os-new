@@ -8,7 +8,7 @@ import type { IGovernanceService } from '../../contracts/trust';
 import { rootLogger } from '../logger-service';
 const LOGGER = rootLogger.child('CapabilityResolver');
 export class CapabilityResolver implements ICapabilityResolver {
-    constructor(private dal: DataAccessLayer, private persona?: IPersonaService, private skills?: ISkillMarketService, private tools?: IToolRunnerService, private gov?: IGovernanceService) {}
+    constructor(_dal: DataAccessLayer, private persona?: IPersonaService, private skills?: ISkillMarketService, private tools?: IToolRunnerService, private gov?: IGovernanceService) {}
     async init(){ LOGGER.info('init',{}); } async destroy(){}
     async skillToTools(skillIds: string[]){
         if (!this.skills || skillIds.length===0) return [];

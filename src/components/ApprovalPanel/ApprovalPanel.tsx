@@ -6,7 +6,6 @@ import type {
     ApprovalRequest,
     ApprovalComment,
     ApprovalRequestStatus,
-    ApprovalCategory,
 } from '../../kernel/types/safety-types';
 import { CATEGORY_LABELS, DEFAULT_PRESETS, RISK_LEVELS } from '../../kernel/types/safety-types';
 
@@ -107,15 +106,6 @@ export function ApprovalPanel() {
             if (next.has(id)) next.delete(id); else next.add(id);
             return next;
         });
-    };
-
-    const toggleSelectAll = () => {
-        const filtered = statusFilter === 'all' ? requests : requests.filter(r => r.status === statusFilter);
-        if (selectedIds.size === filtered.length) {
-            setSelectedIds(new Set());
-        } else {
-            setSelectedIds(new Set(filtered.map(r => r.id)));
-        }
     };
 
     const filtered = statusFilter === 'all' ? requests : requests.filter(r => r.status === statusFilter);

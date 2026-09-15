@@ -267,14 +267,6 @@ export function createPhaseChangeHandler(
                                     const consensusForCorrelation = consensusEngine.evaluate(claims);
                                     // For paused: record interim correlation (not finalize), for completed: same (finalize after)
                                     const isPausedCorrelation = isPaused;
-                                    const avgOverall = session.participants.length > 0
-                                        ? session.participants.reduce((sum, p) => {
-                                              // Use last emitted overall per participant via qualityCollector? For N3 we approximate via evaluator's last scores already emitted
-                                              // Instead, use consensus confidence vs avg overall from this batch (already computed as avg of scores)
-                                              // We have no direct avgOverall here, so we use consensus confidence as is for attribution
-                                              return sum;
-                                          }, 0)
-                                        : 0;
                                     // Record attribution: consensus confidence + evaluator scores (factuality already in evaluator)
                                     deps.qualityCollector.record({
                                         id: `${sessionId}-judging-correlation-${Date.now()}-${isPaused ? 'paused' : 'completed'}`,

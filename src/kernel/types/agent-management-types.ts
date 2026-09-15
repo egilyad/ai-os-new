@@ -354,7 +354,7 @@ export interface UpdateAgentInput {
     runtimeConfig?: Partial<RuntimeConfig>;
     adapterType?: AdapterType;
     adapterConfig?: Record<string, unknown>;
-    telegramConfig?: TelegramConfig>;
+    telegramConfig?: TelegramConfig;
     parentAgentId?: string | null;
     metadata?: Record<string, unknown>;
 }

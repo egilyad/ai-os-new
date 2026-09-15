@@ -10,9 +10,6 @@ import type {
     ProjectObservability,
 } from '../types/observability-types';
 import type { IEventBus } from '../types/interfaces';
-import { rootLogger } from './logger-service';
-
-const LOGGER = rootLogger.child('ProjectObservabilityService');
 
 export interface IProjectObservabilityService {
     logActivity(projectId: string, type: ActivityEventType, agentId?: string, details?: Record<string, unknown>): void;

@@ -12,7 +12,7 @@ interface Props {
     t: (key: string) => string;
 }
 
-export const AgentManagementTab: React.FC<Props> = ({ agentId, t }) => {
+export const AgentManagementTab: React.FC<Props> = ({ agentId }) => {
     const [skills, setSkills] = useState<AgentSkillRecord[]>([]);
     const [tools, setTools] = useState<AgentToolRecord[]>([]);
     const [responsibilities, setResponsibilities] = useState<ResponsibilityRecord[]>([]);
@@ -132,7 +132,7 @@ export const AgentManagementTab: React.FC<Props> = ({ agentId, t }) => {
                         <div style={{ fontSize: '0.75rem', color: 'var(--slate-500)', marginTop: 2 }}>{r.description}</div>
                         {r.kpis.length > 0 && (
                             <div style={{ display: 'flex', gap: 4, marginTop: 4, flexWrap: 'wrap' }}>
-                                {r.kpis.map((kpi, i) => (
+                                {r.kpis.map((kpi: string, i: number) => (
                                     <span key={i} style={{ padding: '1px 6px', borderRadius: 4, fontSize: '0.65rem', background: 'rgba(234,179,8,0.1)', color: '#eab308' }}>{kpi}</span>
                                 ))}
                             </div>

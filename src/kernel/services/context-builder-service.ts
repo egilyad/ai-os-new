@@ -2,10 +2,6 @@
  * Context Builder Service — AGEMS port, Phase 11.4.
  * Collects recent messages from other channels for context injection.
  */
-import { rootLogger } from './logger-service';
-
-const log = rootLogger.child('ContextBuilderService');
-
 export interface ChannelMessage {
     id: string;
     channelId: string;

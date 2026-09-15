@@ -71,7 +71,7 @@ export class TemporalService implements ITemporalService {
     }
 
     async signal(runId: string, key: string, value: unknown): Promise<void> {
-        const run = await this.require(runId);
+        await this.require(runId);
         const inbox = (await this.dal.kv.get<Record<string, unknown>>(`durable-inbox/${runId}`)) ?? {};
         inbox[key.slice(0, 80)] = value;
         await this.dal.kv.set(`durable-inbox/${runId}`, inbox);

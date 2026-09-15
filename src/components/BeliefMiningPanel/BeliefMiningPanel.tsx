@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { Brain, Search, Zap, AlertTriangle, Info, RefreshCw } from 'lucide-react';
+import { Brain, Search, AlertTriangle, Info, RefreshCw } from 'lucide-react';
 import { BeliefMiningService } from '../../kernel/services/debate-runtime/debate-belief-mining-service';
 import { useTranslation } from '../../i18n/useTranslation';
 import { useRealAgents } from '../../hooks/useRealAgents';

@@ -62,7 +62,6 @@ export const AgentAvatar: React.FC<AgentAvatarProps> = ({
     name,
     size = 40,
     ring = false,
-    emoji,
     color,
     url,
 }) => {

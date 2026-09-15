@@ -3,7 +3,6 @@
  * ApprovalWorkflowService — Dexie-persisted presets, requests, comments (AGEMS port Phase 3).
  */
 import type {
-    Capability,
     ApprovalGate,
     ExecutionLimit,
     SandboxBoundary,
@@ -16,7 +15,7 @@ import type {
     CreateApprovalRequestInput,
     UpdateApprovalPresetInput,
 } from '../types/safety-types';
-import { DEFAULT_EXECUTION_LIMITS, DEFAULT_SANDBOX, DEFAULT_PRESETS } from '../types/safety-types';
+import { DEFAULT_EXECUTION_LIMITS, DEFAULT_SANDBOX } from '../types/safety-types';
 import type { IApprovalService, IApprovalWorkflowService } from '../contracts/approval';
 import { rootLogger } from './logger-service';
 
@@ -108,7 +107,6 @@ export class ApprovalService implements IApprovalService {
 
 let reqCounter = 0;
 let commentCounter = 0;
-let ruleCounter = 0;
 let presetCounter = 0;
 
 function genId(prefix: string): string {

@@ -4,7 +4,7 @@ import { rootLogger } from '../logger-service';
 const LOGGER = rootLogger.child('MetaCtrl');
 const CATALOG=['blackboard','storm','debate','synthesis','genius','reflexion'];
 export class MetaControllerService implements IMetaControllerService {
-    constructor(private events: IEventBus) {}
+    constructor(_events: IEventBus) {}
     async init(){ LOGGER.info('init',{}); } async destroy(){}
     async pick(task: string){
         const low=task.toLowerCase();

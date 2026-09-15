@@ -1,5 +1,5 @@
 import type { ILifecycle } from './lifecycle';
-import type { AgentDefinition, Capability, ResolvedAgent } from '../types/capability-types';
+import type { AgentDefinition, ResolvedAgent } from '../types/capability-types';
 export type { AgentDefinition, Capability, ResolvedAgent } from '../types/capability-types';
 
 export interface ICapabilityResolver extends ILifecycle {

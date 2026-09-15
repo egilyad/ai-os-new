@@ -121,13 +121,6 @@ const RunTab: React.FC<{ scenario?: ConversationScenario | null }> = ({ scenario
     const failed = turnLog.filter((e) => e.status === 'error').length;
     const progress = plannedTotal > 0 ? Math.round((plannedDone / plannedTotal) * 100) : 0;
 
-    const conversationRoleOf = (pid?: string | null) =>
-        pid ? scenario.participants.find((p) => p.id === pid)?.role : undefined;
-    const currentIdentity = useMemo(
-        () => resolveAgentIdentity(currentParticipantId ?? '', { resolver: agentService }),
-        [currentParticipantId],
-    );
-
     const handleRun = async () => {
         await controls.load(scenario.id);
         await controls.run();

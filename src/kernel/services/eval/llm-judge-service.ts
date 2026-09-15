@@ -18,7 +18,7 @@ function tok(s: string): string[] {
     return s.toLowerCase().split(/[^a-zа-яё0-9]+/u).filter((t) => t.length > 0);
 }
 
-function stubScore(task: string, output: string, reference?: string): ScorerResult & { reasoning: string } {
+function stubScore(output: string, reference?: string): ScorerResult & { reasoning: string } {
     const ref = tok(reference ?? '');
     const out = tok(output);
     if (ref.length === 0) {
@@ -69,7 +69,7 @@ export class LlmJudgeService implements ILlmJudgeService {
                         };
                     } catch {
                         // fall through to stub scoring but via=llm with note
-                        const stub = stubScore(task, output, reference);
+                        const stub = stubScore(output, reference);
                         return { ...stub, reasoning: `llm parse failed, fallback stub: ${stub.reasoning}`, via: 'llm' };
                     }
                 }
@@ -77,7 +77,7 @@ export class LlmJudgeService implements ILlmJudgeService {
                 LOGGER.warn('llm judge failed, fallback stub', { error: e instanceof Error ? e.message : String(e) });
             }
         }
-        const stub = stubScore(task, output, reference);
+        const stub = stubScore(output, reference);
         try {
             (this.deps.events as unknown as { emit: (n: string, p: unknown) => void }).emit(
                 (EVENTS as unknown as Record<string, string>).EVAL_JUDGE_DONE ?? ('eval:judge:done' as unknown as string),

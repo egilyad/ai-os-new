@@ -12,7 +12,6 @@ import type {
     DefineGraphInput,
     GraphCheckpoint,
     GraphDefinition,
-    GraphNodeDef,
     GraphRun,
     GraphThread,
     HitlRequest,

@@ -21,5 +21,5 @@ export class LangfuseService implements ILangfuseService {
     constructor(private dal: DataAccessLayer) {}
     async init(){} async destroy(){}
     async trace(name: string, data: string){ await this.dal.kv.set(`langfuse/${name}/${Date.now()}`, data.slice(0,1000)); }
-    async eval(dataset: string){ return 0.85; }
+    async eval(_dataset: string){ return 0.85; }
 }

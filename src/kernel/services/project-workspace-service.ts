@@ -15,9 +15,6 @@ import type {
 } from '../types/workspace-types';
 import type { DatabaseService } from './database-service';
 import type { IEventBus } from '../types/interfaces';
-import { rootLogger } from './logger-service';
-
-const LOGGER = rootLogger.child('ProjectWorkspaceService');
 
 const MIME_MAP: Record<string, string> = {
     '.html': 'text/html',

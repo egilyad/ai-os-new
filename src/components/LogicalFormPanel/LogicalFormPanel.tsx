@@ -73,7 +73,6 @@ export const LogicalFormPanel: React.FC = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [sessionId]);
 
-    const targets = form ? extractor.getEnthymemeTargets(form ? agentId : '', form ? round - 1 : 0) : [];
     // actual targets are stored per analyzed round, fetch via last history entry's key
     const lastTargets = (() => {
         if (history.length === 0) return [];

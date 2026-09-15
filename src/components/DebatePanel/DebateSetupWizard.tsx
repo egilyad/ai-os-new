@@ -49,8 +49,6 @@ const DebateSetupWizard: React.FC<DebateSetupWizardProps> = ({
     onMaxRoundsChange,
     selectedAgents,
     onToggleAgent,
-    onSelectAll,
-    onDeselectAll,
     availableAgents,
     actionLoading,
     onStart,

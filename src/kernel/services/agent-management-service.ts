@@ -36,20 +36,6 @@ import type {
 } from '../types/agent-management-types';
 import { genId } from '../../utils/gen-id';
 
-const TABLES = {
-    agents: 'agentManaged',
-    skills: 'agentSkills',
-    tools: 'agentTools',
-    responsibilities: 'agentResponsibilities',
-    metrics: 'agentMetrics',
-    memory: 'agentMemory',
-    executions: 'agentExecutions',
-    revisions: 'agentConfigRevisions',
-    apiKeys: 'agentApiKeys',
-    budgets: 'agentBudgets',
-    budgetIncidents: 'budgetIncidents',
-} as const;
-
 export class AgentManagementService implements IAgentManagementService {
     constructor(
         private database: IDatabaseService,

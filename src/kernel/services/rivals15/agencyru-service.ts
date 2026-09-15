@@ -9,7 +9,7 @@ const CATALOG=[
     // 10 показано, остальных 177 — как шаблоны (генерируем по запросу)
 ];
 export class AgencyRuService implements IAgencyRuService {
-    constructor(private dal: DataAccessLayer, private crews?: ICrewService) {}
+    constructor(_dal: DataAccessLayer, private crews?: ICrewService) {}
     async init(){ LOGGER.info('init',{}); } async destroy(){}
     async catalog(){
         const extra=Array.from({length:177},(_,i)=>`RU Agent #${i+11}`);

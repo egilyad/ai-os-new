@@ -19,10 +19,7 @@ import type { ProjectId, ProjectTask } from '../types/project-types';
 import type { ProjectManagerService } from './project-service';
 import type { ProjectWorkspaceService } from './project-workspace-service';
 import type { IEventBus } from '../types/interfaces';
-import { executeFileTool, FILE_TOOLS } from './file-toolset';
-import { rootLogger } from './logger-service';
-
-const LOGGER = rootLogger.child('AgentProjectRuntime');
+import { FILE_TOOLS } from './file-toolset';
 
 interface ProjectRuntimeState {
     status: RuntimeStatus;
@@ -94,7 +91,7 @@ export class AgentProjectRuntime implements IAgentProjectRuntime {
             await this.projectService.updateTaskStatus(taskId, 'running');
 
             // Build system prompt with project context
-            const project = await this.projectService.get(projectId);
+            await this.projectService.get(projectId);
             const systemPrompt = this.buildSystemPrompt(projectId, agentId, context?.systemPrompt);
 
             // Build task prompt with workspace context
@@ -229,9 +226,9 @@ export class AgentProjectRuntime implements IAgentProjectRuntime {
         return {
             projectId,
             totalTasks: tasks.length,
-            completedTasks: tasks.filter((t) => t.status === 'completed').length,
-            failedTasks: tasks.filter((t) => t.status === 'failed').length,
-            runningTaskId: tasks.find((t) => t.status === 'running')?.id ?? null,
+            completedTasks: tasks.filter((t: ProjectTask) => t.status === 'completed').length,
+            failedTasks: tasks.filter((t: ProjectTask) => t.status === 'failed').length,
+            runningTaskId: tasks.find((t: ProjectTask) => t.status === 'running')?.id ?? null,
             events: state.events.slice(-50),
         };
     }
@@ -242,7 +239,7 @@ export class AgentProjectRuntime implements IAgentProjectRuntime {
 
     // ── Helpers ──
 
-    private buildSystemPrompt(projectId: ProjectId, agentId: string, base?: string): string {
+    private buildSystemPrompt(projectId: ProjectId, _agentId: string, base?: string): string {
         const toolList = FILE_TOOLS.map((t) => `- ${t.name}: ${t.description}`).join('\n');
         return [
             base ?? 'You are a capable coding assistant.',

@@ -5,7 +5,7 @@ import type { IChemistService } from '../../contracts/rivals15';
 import { rootLogger } from '../logger-service';
 const LOGGER = rootLogger.child('Chemist');
 export class ChemistService implements IChemistService {
-    constructor(private events: IEventBus, private llm?: ILLMClientService, private knowledge?: IKnowledgeService) {}
+    constructor(_events: IEventBus, private llm?: ILLMClientService, private knowledge?: IKnowledgeService) {}
     async init(){ LOGGER.info('init',{}); } async destroy(){}
     async ask(question: string){
         let rag='';

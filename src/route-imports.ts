@@ -174,7 +174,6 @@ const FleetPanelLazy = React.lazy(() => import('./components/FleetPanel/FleetPan
 const GovernancePanelLazy = React.lazy(() => import('./components/GovernancePanel/GovernancePanel'));
 const ProvenancePanelLazy = React.lazy(() => import('./components/ProvenancePanel/ProvenancePanel'));
 const FleetCrewsPanelLazy = React.lazy(() => import('./components/FleetPanels/CrewsPanel'));
-const FleetCouncilsPanelLazy = React.lazy(() => import('./components/FleetPanels/CouncilsPanel'));
 const CouncilPanelLazy = React.lazy(() => import('./components/CouncilPanel/CouncilPanel'));
 const FleetGraphsPanelLazy = React.lazy(() => import('./components/FleetPanels/GraphsPanel'));
 const FleetPersonaPanelLazy = React.lazy(() => import('./components/FleetPanels/PersonaOpsPanel'));
@@ -239,7 +238,6 @@ const SopPanelLazy = React.lazy(() => import('./components/SopPanel/SopPanel'));
 const RunQueuePanelLazy = React.lazy(() => import('./components/RunQueuePanel/RunQueuePanel'));
 const RivalLabsPanelLazy = React.lazy(() => import('./components/RivalLabs/RivalLabsPanel'));
 const ExperimentalPanelLazy = React.lazy(() => import('./components/ExperimentalPanel'));
-const ComingSoonPanel = React.lazy(() => import('./components/ComingSoonPanel'));
 const SteelmanPanelLazy = React.lazy(() => import('./components/SteelmanPanel/SteelmanPanel'));
 const BayesianJudgePanelLazy = React.lazy(() => import('./components/BayesianJudgePanel/BayesianJudgePanel'));
 const BlindEvalPanelLazy = React.lazy(() => import('./components/BlindEvalPanel/BlindEvalPanel'));

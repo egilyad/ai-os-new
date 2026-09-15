@@ -11,7 +11,7 @@ export const IncentiveDetectorPanel: React.FC = () => {
     const { t } = useTranslation();
     const detector = useMemo(() => new IncentiveDetector(), []);
     const realAgents = useRealAgents();
-    const { args: liveArgs, topic: liveTopic, sessionId, hasLiveDebate } = useDebateArguments();
+    const { topic: liveTopic, sessionId, hasLiveDebate } = useDebateArguments();
     const agents = realAgents;
     if (agents.length === 0) {
         return (

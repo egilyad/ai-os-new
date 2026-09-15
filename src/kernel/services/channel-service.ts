@@ -9,7 +9,7 @@ import type { IEventBus } from '../types/interfaces';
 import type {
     Channel, ChannelId, ChannelMessage, ChannelMember,
     CreateChannelInput, SendMessageInput, AgentId, AgentChannelEvent,
-    TypingIndicator, AgentPresence, Reaction, MessageId,
+    TypingIndicator, AgentPresence, MessageId,
     RespondToMode, ChannelType, ChannelVisibility,
 } from '../types/channel-types';
 import { rootLogger } from './logger-service';

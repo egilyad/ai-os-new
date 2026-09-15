@@ -4,7 +4,7 @@ import type { IIdeatorService } from '../../contracts/rivals16';
 import { rootLogger } from '../logger-service';
 const LOGGER = rootLogger.child('Ideator');
 export class IdeatorService implements IIdeatorService {
-    constructor(private dal: DataAccessLayer, private llm?: ILLMClientService) {}
+    constructor(private dal: DataAccessLayer, _llm?: ILLMClientService) {}
     async init(){ LOGGER.info('init',{}); } async destroy(){}
     async testDialogues(topic: string){
         const designs=['debate','brainstorm','critique'];

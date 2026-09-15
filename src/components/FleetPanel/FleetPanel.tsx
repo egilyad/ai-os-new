@@ -38,7 +38,6 @@ import {
     ideService,
     knowledgeService,
     malmoService,
-    manusService,
     mesaService,
     meterService,
     mobileAccessService,

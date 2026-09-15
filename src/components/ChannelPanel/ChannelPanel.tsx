@@ -28,7 +28,6 @@ const MSG_ACTIONS: React.CSSProperties = { position: 'absolute', top: '-8px', ri
 const MSG_HOVER: React.CSSProperties = { ':hover .msg-actions': { display: 'flex' } };
 const THREAD_COUNT: React.CSSProperties = { fontSize: '0.7rem', color: 'var(--accent)', cursor: 'pointer', marginTop: '0.2rem' };
 const REACTION: React.CSSProperties = { display: 'inline-flex', alignItems: 'center', gap: '0.2rem', padding: '0.1rem 0.4rem', borderRadius: '999px', fontSize: '0.75rem', background: 'var(--surface-alt)', border: '1px solid var(--border-default)', cursor: 'pointer', marginRight: '0.2rem', marginTop: '0.2rem' };
-const REACTION_ACTIVE: React.CSSProperties = { ...REACTION, background: 'var(--accent-muted, #dbeafe)', borderColor: 'var(--accent)' };
 const INPUT_BAR: React.CSSProperties = { display: 'flex', gap: '0.5rem', padding: '0.5rem', borderTop: '1px solid var(--border-default)' };
 const INPUT: React.CSSProperties = { flex: 1, padding: '0.4rem 0.6rem', borderRadius: '4px', border: '1px solid var(--border-default)', background: 'var(--surface)', color: 'var(--text-primary)', fontSize: '0.85rem' };
 const MEMBER_BADGE: React.CSSProperties = { display: 'inline-flex', alignItems: 'center', gap: '0.3rem', padding: '0.15rem 0.4rem', borderRadius: '999px', fontSize: '0.7rem', background: 'var(--surface-alt)', marginRight: '0.3rem', marginBottom: '0.2rem' };
@@ -47,7 +46,7 @@ const ChannelPanel: React.FC = () => {
     const [editContent, setEditContent] = useState('');
     const [members, setMembers] = useState<Array<{ agentId: string; displayName: string; status: string; respondTo: string }>>([]);
     const [typing, setTyping] = useState<TypingIndicator[]>([]);
-    const [presence, setPresence] = useState<AgentPresence[]>([]);
+    const [, setPresence] = useState<AgentPresence[]>([]);
     const [showCreate, setShowCreate] = useState(false);
     const [newName, setNewName] = useState('');
     const [newType, setNewType] = useState<'stream' | 'forum' | 'dm'>('stream');

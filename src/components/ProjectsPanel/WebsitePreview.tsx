@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useTranslation } from '../../i18n/useTranslation';
-import { projectManagerService, projectWorkspaceService } from '../../kernel/instances/services-extras';
+import { projectWorkspaceService } from '../../kernel/instances/services-extras';
 import { Button } from '../../components/Common';
 import type { Project } from '../../kernel/types/project-types';
 

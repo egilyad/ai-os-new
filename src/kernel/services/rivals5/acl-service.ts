@@ -19,7 +19,7 @@ export class AclService implements IAclService {
     constructor(
         private dal: DataAccessLayer,
         private knowledge?: IKnowledgeService,
-        private workspace?: IWorkspaceService,
+        _workspace?: IWorkspaceService,
         private governance?: IGovernanceService,
     ) {}
 

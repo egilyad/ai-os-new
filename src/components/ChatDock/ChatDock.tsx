@@ -3,8 +3,8 @@
  * Floating chat panels (up to 5 concurrent), minimize/maximize/close, unread badges.
  */
 import { useState, useCallback, useRef, useEffect } from 'react';
-import { useTranslation } from '../../i18n/useTranslation';
 import { useChatStore } from '../../stores/chat/hooks';
+import type { ChatStoreShape } from '../../stores/chat/types';
 
 interface DockSession {
     id: string;
@@ -20,11 +20,10 @@ const DOCK_WIDTH = 360;
 const DOCK_HEIGHT = 480;
 
 export function ChatDock() {
-    const { t } = useTranslation();
-    const sessions = useChatStore(s => s.sessions);
-    const activeSessionId = useChatStore(s => s.activeSessionId);
+    const sessions = useChatStore((s: ChatStoreShape) => s.sessions);
+    const activeSessionId = useChatStore((s: ChatStoreShape) => s.activeSessionId);
     const [docked, setDocked] = useState<DockSession[]>([]);
-    const [expanded, setExpanded] = useState(false);
+    const [, setExpanded] = useState(false);
     const dragRef = useRef<{ id: string; startX: number; startY: number; origX: number; origY: number } | null>(null);
 
     const addDock = useCallback((sessionId: string) => {
@@ -89,7 +88,7 @@ export function ChatDock() {
 
     // Simulate unread (would be wired to real events in production)
     useEffect(() => {
-        const unsub = useChatStore.subscribe((state, prev) => {
+        const unsub = useChatStore.subscribe((state: ChatStoreShape, prev: ChatStoreShape) => {
             // When a new message arrives for a non-active docked session, increment unread
             const activeId = state.activeSessionId;
             if (!activeId) return;

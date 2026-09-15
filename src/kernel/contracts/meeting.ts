@@ -1,7 +1,7 @@
 /**
  * Meeting service contract — AGEMS port, Phase 5.
  */
-import type { Meeting, MeetingDecision, MeetingMessage, MeetingStatus, MeetingRole, VoteResult } from '../types/meeting-types';
+import type { Meeting, MeetingDecision, MeetingMessage, MeetingStatus, MeetingRole } from '../types/meeting-types';
 
 export interface IMeetingService {
     // CRUD

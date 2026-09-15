@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from '../../i18n/useTranslation';
 import { meetingService } from '../../kernel/instances/services-extras';
 import type { Meeting } from '../../kernel/types/meeting-types';

@@ -1,10 +1,13 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useTranslation } from '../../i18n/useTranslation';
-import { projectManagerService, projectWorkspaceService, websitePreviewService, browserInspectorService, multiAgentProjectService, pythonRunnerService, artifactService, projectTemplateService, projectDebateIntegration, autonomyOrchestrator, projectMemoryService, projectObservabilityService } from '../../kernel/instances/services-extras';
+import { projectManagerService, projectWorkspaceService, websitePreviewService, browserInspectorService, multiAgentProjectService, pythonRunnerService, artifactService, projectTemplateService, autonomyOrchestrator, projectMemoryService } from '../../kernel/instances/services-extras';
 import { useProjectStore, ensureSubscribed, destroy } from '../../stores/project-store';
 import { StatusBadge, Button } from '../../components/Common';
 import ActivitiesPanel from './ActivitiesPanel';
 import type { CreateProjectInput } from '../../kernel/types/project-types';
+import type { WorkspaceTreeEntry } from '../../kernel/types/workspace-types';
+import type { TemplateSummary } from '../../kernel/types/template-types';
+import type { Artifact } from '../../kernel/types/artifact-types';
 
 const CARD: React.CSSProperties = { margin: '0.5rem 0', padding: '0.6rem 0.75rem', borderRadius: 8, border: '1px solid #2a2a35', background: 'rgba(59,130,246,0.08)', cursor: 'pointer' };
 const INPUT: React.CSSProperties = { padding: '0.4rem 0.6rem', borderRadius: 6, border: '1px solid #2a2a35', background: '#1a1a2e', color: 'inherit', fontSize: '0.85rem', width: '100%', boxSizing: 'border-box' };
@@ -12,7 +15,6 @@ const SELECT: React.CSSProperties = { ...INPUT, width: 'auto' };
 const LABEL: React.CSSProperties = { fontSize: '0.78rem', opacity: 0.7, marginBottom: '0.2rem', display: 'block' };
 const FORM_ROW: React.CSSProperties = { display: 'flex', gap: '0.75rem', alignItems: 'flex-end', flexWrap: 'wrap', marginBottom: '0.75rem' };
 const TAB_BTN = (active: boolean): React.CSSProperties => ({ padding: '0.35rem 0.75rem', borderRadius: 6, border: 'none', cursor: 'pointer', fontSize: '0.8rem', background: active ? '#3b82f6' : 'transparent', color: active ? '#fff' : 'inherit', opacity: active ? 1 : 0.6 });
-const SECTION: React.CSSProperties = { padding: '0.75rem 0', borderBottom: '1px solid #2a2a35' };
 const FILE_ROW: React.CSSProperties = { display: 'flex', justifyContent: 'space-between', padding: '0.3rem 0', fontSize: '0.85rem', borderBottom: '1px solid rgba(255,255,255,0.05)' };
 const PREVIEW_IFRAME: React.CSSProperties = { width: '100%', height: 400, border: '1px solid #2a2a35', borderRadius: 6, background: '#fff' };
 
@@ -25,7 +27,7 @@ const TABS: Tab[] = ['files', 'preview', 'pipeline', 'qa', 'memory', 'templates'
 
 const ProjectsPanel: React.FC = () => {
     const { t } = useTranslation();
-    const { projects, order, loading, error, loadProjects, select, refresh, clear, selectedId } = useProjectStore();
+    const { projects, order, loading, error, loadProjects, select, refresh, selectedId } = useProjectStore();
     const [showCreate, setShowCreate] = useState(false);
     const [newName, setNewName] = useState('');
     const [newDesc, setNewDesc] = useState('');
@@ -50,7 +52,7 @@ const ProjectsPanel: React.FC = () => {
         try {
             if (activeTab === 'files') {
                 const tree = await projectWorkspaceService().getTree(selectedId);
-                setFiles(tree.map((e) => e.path));
+                setFiles(tree.map((e: WorkspaceTreeEntry) => e.path));
             } else if (activeTab === 'preview') {
                 const r = await websitePreviewService().generatePreview(selectedId);
                 setPreviewHtml(r.html);
@@ -90,8 +92,8 @@ const ProjectsPanel: React.FC = () => {
 
     const handleApplyTemplate = async (templateId: string) => {
         if (!selectedId) return;
-        const count = await projectTemplateService().applyTemplate(templateId, selectedId);
-        setFiles((await projectWorkspaceService().getTree(selectedId)).map((e) => e.path));
+        await projectTemplateService().applyTemplate(templateId, selectedId);
+        setFiles((await projectWorkspaceService().getTree(selectedId)).map((e: WorkspaceTreeEntry) => e.path));
         setActiveTab('files');
     };
 
@@ -126,7 +128,7 @@ const ProjectsPanel: React.FC = () => {
 
     const handleCreateGoal = () => {
         if (!selectedId) return;
-        const goal = autonomyOrchestrator().createGoal(selectedId, 'New goal');
+        autonomyOrchestrator().createGoal(selectedId, 'New goal');
         setGoals(autonomyOrchestrator().listGoals(selectedId));
     };
 
@@ -290,7 +292,7 @@ const ProjectsPanel: React.FC = () => {
                         <h3 style={{ margin: '0 0 0.5rem' }}>{t('templates.title')}</h3>
                         <p style={{ fontSize: '0.8rem', opacity: 0.7, marginBottom: '0.75rem' }}>{templateCount} templates available</p>
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '0.5rem' }}>
-                            {projectTemplateService().listTemplates().map((tpl) => (
+                            {projectTemplateService().listTemplates().map((tpl: TemplateSummary) => (
                                 <div key={tpl.id} style={{ ...CARD, cursor: 'default' }}>
                                     <strong style={{ fontSize: '0.85rem' }}>{tpl.name}</strong>
                                     <div style={{ fontSize: '0.75rem', opacity: 0.7, margin: '0.25rem 0' }}>{tpl.description}</div>
@@ -313,7 +315,7 @@ const ProjectsPanel: React.FC = () => {
                             </div>
                         </div>
                         <p style={{ fontSize: '0.8rem', opacity: 0.7 }}>Snapshots: {snapshotCount}</p>
-                        {artifactService().listArtifacts(selectedId).map((art) => (
+                        {artifactService().listArtifacts(selectedId).map((art: Artifact) => (
                             <div key={art.id} style={{ ...CARD, cursor: 'default' }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                                     <strong style={{ fontSize: '0.85rem' }}>{art.name}</strong>
@@ -362,7 +364,7 @@ const ProjectsPanel: React.FC = () => {
                             <h3 style={{ margin: 0 }}>{t('python.title')}</h3>
                             <Button variant="primary" size="sm" onClick={async () => {
                                 await pythonRunnerService().createPythonProject(selectedId);
-                                const run = await pythonRunnerService().run(selectedId);
+                                await pythonRunnerService().run(selectedId);
                                 setPyHistory(pythonRunnerService().getRunHistory(selectedId));
                             }}>{t('python.run')}</Button>
                         </div>

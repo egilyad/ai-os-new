@@ -5,7 +5,6 @@ import type {
     CouncilConfig,
     CouncilMessage,
     CouncilParticipant,
-    CouncilPhase,
     CouncilRoleKind,
     CouncilSession,
     FactPacket,

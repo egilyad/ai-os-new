@@ -10,17 +10,6 @@ const AVATAR_IMAGES = [
     '/avatars/ava.png',
     '/avatars/lily.png',
 ];
-const AVATAR_COLORS = [
-    '#667eea',
-    '#f093fb',
-    '#4facfe',
-    '#43e97b',
-    '#fa709a',
-    '#a18cd1',
-    '#fccb90',
-    '#e0c3fc',
-];
-
 const fieldStyle: React.CSSProperties = {
     background: 'rgba(0,0,0,0.25)',
     border: '1px solid rgba(255,255,255,0.12)',

@@ -31,17 +31,15 @@ export interface IProjectInvocationBridge {
 }
 
 export class ProjectInvocationBridge implements IProjectInvocationBridge {
-    private projectManager: IProjectManagerService;
     private workspace: IProjectWorkspaceService;
     private observability: IProjectObservabilityService;
     private invocations = new Map<string, Array<{ agentId: string; task: string; timestamp: number; success: boolean }>>();
 
     constructor(
-        projectManager: IProjectManagerService,
+        _projectManager: IProjectManagerService,
         workspace: IProjectWorkspaceService,
         observability: IProjectObservabilityService,
     ) {
-        this.projectManager = projectManager;
         this.workspace = workspace;
         this.observability = observability;
     }
@@ -60,7 +58,7 @@ export class ProjectInvocationBridge implements IProjectInvocationBridge {
         const fileCount = tree.filter((e) => e.type === 'file').length;
 
         // Build context-aware prompt
-        const prompt = this.buildProjectPrompt(projectId, task, fileCount);
+        this.buildProjectPrompt(projectId, task, fileCount);
 
         // Record the invocation
         const list = this.invocations.get(projectId) || [];

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from '../../i18n/useTranslation';
 import { platformBudgetService, budgetIncidentService } from '../../kernel/instances/services-extras';
 import type { PlatformBudget, BudgetIncident } from '../../kernel/contracts/budget';

@@ -13,7 +13,7 @@ export const GETTING_STARTED_STEPS = [
     },
     {
         title: '3. Memory & Semantic Search',
-        text: 'Every cognitive step is automatically stored in the Vector Memory Mesh. The panel provides full-text search via Orama (offline BM25) and semantic search via Transformers.js with all-MiniLM-L6-v2 embeddings (384-dim). Toggle "Semantic" mode for intent-based retrieval.',
+        text: 'Every cognitive step is automatically stored in the Vector Memory Mesh. The panel provides full-text search via Orama (offline BM25) and lightweight vector search via hash-based embeddings (FNV, zero dependencies) with cosine similarity. Toggle "Semantic" mode for intent-based retrieval.',
         icon: <Brain size={20} color="#a855f7" />,
     },
     {
@@ -213,7 +213,7 @@ export const FAQ_ITEMS: FaqData[] = [
     },
     {
         q: 'How does semantic search work?',
-        a: 'When enabled, the Semantic toggle sends your query through a Transformers.js pipeline (all-MiniLM-L6-v2, 384-dim) running in a Web Worker. The generated embedding is compared against stored vectors using cosine similarity.',
+        a: 'When enabled, the Semantic toggle converts your query into a hash-based embedding (FNV, computed locally in a Web Worker, no external model download). The generated vector is compared against stored vectors using cosine similarity.',
     },
     {
         q: 'Is my data persisted across sessions?',
@@ -293,7 +293,7 @@ export const RELEASES: ChangelogData[] = [
         date: '2026-05-10',
         changes: [
             'Orama Worker for full-text BM25 search',
-            'Transformers.js real semantic embeddings (384-dim)',
+            'Hash-based vector embeddings (FNV, zero dependencies)',
             'Hybrid search: auto \u2192 semantic \u2192 fulltext \u2192 substring',
             'Vector persistence in Dexie',
         ],

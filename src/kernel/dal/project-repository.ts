@@ -16,9 +16,6 @@ import type {
     TaskStatus,
 } from '../types/project-types';
 import type { DatabaseService } from '../services/database-service';
-import { rootLogger } from '../services/logger-service';
-
-const LOGGER = rootLogger.child('ProjectRepository');
 
 export class ProjectRepository {
     private db: DatabaseService;

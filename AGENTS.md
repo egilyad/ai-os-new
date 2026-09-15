@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-Autonomous, event-driven multi-agent runtime. v4.5.0 — 177 contracts, 352 services, 7 LLM adapters + 11 decorators, 638 UI panels.
+Autonomous, event-driven multi-agent runtime. v4.5.0 — 280+ contracts, 480+ events, 11 provider adapters + 11 decorators, 790+ UI files, Dexie v44 (130+ tables), 100+ registration phases.
 
 ## Workflow Convention
 
@@ -1380,3 +1380,11 @@ Covered by Phase 0 (agent types, config revisions, hierarchy, avatars, export/im
 - **Deferred:** Elo `updateRatings` wiring (needs stance→agent mapping across debate pipeline)
 
 Full session log: `docs/SESSION_LOG.md`
+
+## Changes — P2-19 Documentation refresh (2026-09-15)
+
+- **Removed false Transformers.js/MiniLM promises** (audit P2-19): `package.json` has no `@huggingface/transformers`/`@xenova/transformers`; real implementation is hash-based (FNV `getFNVEmbedding` in `utils/embedding.ts`, word-level hashing in `memory.worker.ts:30`).
+  - `README.md`: Memory Mesh section rewritten (Orama BM25 + FNV hash embeddings, no external model); convergence scoring → "hash-based embeddings (FNV) + cosine with Jaccard fallback"; Tech Stack table (`Dexie v44, 130+ tables`; `Orama + hash-based embeddings`); architecture diagram (`280+ contracts`, `480+ events`, `100+ phases`, `11 providers`, `Dexie v44 130+ tables`).
+  - `doc-content-data.tsx` (in-app docs): 3 fixes — quickstart card, "How does semantic search work?" FAQ, v3.7.0 changelog entry (now "Hash-based vector embeddings (FNV, zero dependencies)").
+- **Refreshed stale stats**: AGENTS.md header → 280+ contracts / 480+ events / 11 adapters / 790+ UI files / Dexie v44 (130+ tables) / 100+ phases (was 177 / 352 / 7 / 638 / v43 / 77).
+- Out of scope: other docs mentioning Transformers.js as design/fallback (`SYSTEM_PASSPORT`, `COGNITIVE_RUNTIME_SPEC`, `004-hybrid-search-strategy`, CHANGELOG entries) describe plans/history, left untouched.

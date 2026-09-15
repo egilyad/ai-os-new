@@ -67,15 +67,15 @@ SuperAgents OS reimagines the browser as an AI operating system. Every component
 │  SystemKernel  EventBus  Container  Bootstrap        │
 │  KeyService  RouterService  MemoryService            │
 │  RotationService  AdvisorService  ToolService        │
-│  Contracts (177+)  Events (352+)  State  Types       │
-│  Service Registration (77 phases)                    │
+│  Contracts (280+)  Events (480+)  State  Types       │
+│  Service Registration (100+ phases)                   │
 └────────────────────────┬────────────────────────────┘
                          │
 ┌────────────────────────▼────────────────────────────┐
 │               Infrastructure Layer                    │
-│  LLM adapters (7 providers, 11 decorators)           │
+│  LLM adapters (11 providers, 11 decorators)          │
 │  Web Workers (memory, sandbox execution)             │
-│  Dexie v43 (IndexedDB) — 20+ tables                  │
+│  Dexie v44 (IndexedDB) — 130+ tables                 │
 └─────────────────────────────────────────────────────┘
 ```
 
@@ -169,7 +169,7 @@ Multi-agent debate system with configurable strategies and comprehensive metrics
 - **Post-debate interpretation**: Disagreement timeline, trajectory changers, constraint correlation, insights
 - **Activity heatmap**: Per-agent activity levels, most-discussed arguments
 - **Quality metrics**: Depth, Originality, Usefulness
-- **Convergence scoring**: Semantic similarity (Transformers.js) with Jaccard fallback
+- **Convergence scoring**: hash-based embeddings (FNV) + cosine similarity with Jaccard fallback
 - **Human-in-the-loop**: Inject arguments mid-debate
 - **Circuit breaker** for LLM calls
 - **Multi-session support**: Concurrent debates with per-session store projection
@@ -186,11 +186,10 @@ Scenario-based conversation orchestration:
 
 ### Memory Mesh
 
-Hybrid search combining keyword and semantic retrieval:
+Hybrid retrieval combining keyword and lightweight vector search (no external model):
 
 - **BM25 full-text search** via Orama (runs in Web Worker)
-- **Semantic search** via Transformers.js (`all-MiniLM-L6-v2`, 384-dim embeddings)
-- **Cosine similarity** scoring for semantic results
+- **Hash-based embeddings** (FNV / word-level hashing, zero dependencies) with cosine similarity
 - **Hybrid mode**: auto-selects between BM25 and embeddings based on query
 - **Automatic storage**: every cognitive step is logged and indexed
 
@@ -247,10 +246,10 @@ Full port of the AGEMS agent management system:
 | **Language**     | TypeScript 6.x                                     |
 | **UI Framework** | React 19.x                                         |
 | **Build Tool**   | Vite 8.x                                           |
-| **Database**     | Dexie.js v43 (IndexedDB wrapper, 20+ tables)       |
+| **Database**     | Dexie.js v44 (IndexedDB wrapper, 130+ tables)      |
 | **State**        | Zustand + React hooks + EventBus                    |
 | **Workflows**    | React Flow (@xyflow/react 12.x)                    |
-| **Search**       | Orama (BM25) + Transformers.js (embeddings)        |
+| **Search**       | Orama (BM25) + hash-based embeddings (FNV)         |
 | **Workers**      | Web Workers (memory, sandbox execution)            |
 | **Animation**    | Framer Motion 12.x                                 |
 | **Icons**        | Lucide React                                       |
@@ -310,8 +309,8 @@ Open `http://localhost:5173` in your browser.
 ```
 src/
 ├── kernel/              # Kernel (DI, contracts, services, events, state)
-│   ├── contracts/       # 177 contract interfaces
-│   ├── services/        # 352+ service implementations
+│   ├── contracts/       # 280+ contract interfaces
+│   ├── services/        # 890+ service implementation files
 │   │   ├── agent-management/    # AGEMS agent management
 │   │   ├── task-manager/        # Task system with Kanban
 │   │   ├── approval-service/    # HITL approval workflows
@@ -324,19 +323,19 @@ src/
 │   │   ├── debate-runtime/      # Debate engine + governor
 │   │   ├── key-management/      # API key vault
 │   │   ├── provider-runtime/    # LLM provider adapters
-│   │   ├── memory/              # Memory mesh (BM25 + semantic)
+│   │   ├── memory/              # Memory mesh (BM25 + hash embeddings)
 │   │   ├── routing-policy/      # Smart routing (UCB1 bandit)
 │   │   └── ... (30+ more subdirs)
 │   ├── agents/          # 6 registry-canonical agent definitions
 │   ├── dal/             # Data Access Layer (Dexie)
-│   ├── events/          # Event registry: 352+ events
+│   ├── events/          # Event registry: 480+ events
 │   ├── state/           # Topology defaults (52 agents)
 │   ├── types/           # Zod schemas, domain types
-│   ├── bootstrap.ts     # Phase-based init (77 phases)
+│   ├── bootstrap.ts     # Phase-based init (100+ phases)
 │   ├── container.ts     # DI container
 │   ├── event-bus.ts     # Typed EventBus with dead-letter queue
 │   └── instances.ts     # Lazy singleton exports
-├── components/          # 638+ UI panels across 9 nav sections
+├── components/          # 790+ UI files across 9 nav sections
 │   ├── AgentsPanel/     # Agent management + avatars
 │   ├── ChatPanel/       # Chat interface with streaming
 │   ├── BuilderPanel/    # Visual cognitive workflow editor

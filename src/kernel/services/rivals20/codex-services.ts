@@ -14,7 +14,7 @@ export class CodexService implements ICodexService {
     }
 }
 export class GeminiCliService implements IGeminiCliService {
-    constructor(private dal: DataAccessLayer, private llm?: ILLMClientService) {}
+    constructor(_dal: DataAccessLayer, private llm?: ILLMClientService) {}
     async init(){} async destroy(){}
     async chat(message: string){
         if (this.llm) { try { const r=await this.llm.chat([{role:'user',content:message.slice(0,2000)}],{temperature:0.4,maxTokens:500}); if(!r.error) return r.content; } catch {} }

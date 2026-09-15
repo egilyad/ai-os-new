@@ -6,7 +6,7 @@ import { EVENTS } from '../../events/event-names';
 const LOGGER = rootLogger.child('BizPacks');
 
 export class SeoPackService {
-    constructor(private dal: DataAccessLayer, private events: IEventBus) {}
+    constructor(private dal: DataAccessLayer, _events: IEventBus) {}
     async init(){ LOGGER.info('init',{}); } async destroy(){}
     async keywordCluster(seed: string[]){
         const clusters: Record<string,string[]>={};
@@ -46,7 +46,7 @@ export class OutreachPackService {
 export class FinancePackService {
     constructor(private dal: DataAccessLayer, private events: IEventBus) {}
     async init(){} async destroy(){}
-    async recordSpend(agentId: string, amount: number, note?: string){
+    async recordSpend(agentId: string, amount: number, _note?: string){
         const key=`finance-spend/${agentId}`; const cur=(await this.dal.kv.get<number>(key))??0; await this.dal.kv.set(key, cur+amount);
         const totalKey='finance-total'; const total=(await this.dal.kv.get<number>(totalKey))??1000; await this.dal.kv.set(totalKey, total-amount);
         this.events.emit(EVENTS.OPS_BUDGET, { nodeId: agentId, spent: cur+amount } as never);

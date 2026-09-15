@@ -8,7 +8,6 @@ import type {
     MeetingMessage,
     MeetingStatus,
     MeetingRole,
-    VoteResult,
 } from '../types/meeting-types';
 import type { IMeetingService } from '../contracts/meeting';
 import { rootLogger } from './logger-service';

@@ -51,7 +51,7 @@ export const registerPhase47: Phase = ({ register }) => {
             } catch {}
             try {
                 // Tools: yadisk/vk/wb/yandex — mock, безопасно (только имена, без секретов)
-                const { toolRunnerService, skillMarketService } = await import('../instances/services-extras');
+                const { toolRunnerService } = await import('../instances/services-extras');
                 const runner = toolRunnerService as unknown as { listTools(): Array<{name:string}>; addTool(d: {name:string;description:string;parameters?:unknown;run:(a:Record<string,unknown>)=>Promise<string>}): void };
                 const existing = new Set(runner.listTools().map(t=>t.name));
                 const add = (name:string, desc:string) => {

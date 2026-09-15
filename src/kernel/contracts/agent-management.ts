@@ -6,8 +6,6 @@
  */
 import type {
     AgentRecord,
-    AgentType,
-    AgentStatus,
     AgentSkillRecord,
     AgentToolRecord,
     ResponsibilityRecord,

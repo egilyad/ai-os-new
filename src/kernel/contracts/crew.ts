@@ -5,7 +5,6 @@ import type {
     Crew,
     CrewProcess,
     CrewTask,
-    CrewTaskStatus,
 } from '../types/crew-types';
 
 export type {

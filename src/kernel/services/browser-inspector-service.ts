@@ -12,9 +12,6 @@ import type {
     QAReport,
 } from '../types/qa-types';
 import type { ProjectWorkspaceService } from './project-workspace-service';
-import { rootLogger } from './logger-service';
-
-const LOGGER = rootLogger.child('BrowserInspectorService');
 
 export interface IQABrowserInspector {
     inspect(projectId: string): Promise<QAReport>;
