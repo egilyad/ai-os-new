@@ -3,33 +3,22 @@ import { lensEngine } from '../../kernel/instances/services-extras';
 import { resolveAgentIdentity } from '../../kernel/services/agent-identity';
 import { AgentAvatar } from './AgentAvatar';
 
-const AVATAR_EMOJIS = [
-    '🤖',
-    '🧠',
-    '⚡',
-    '🛡️',
-    '🎯',
-    '💡',
-    '🔬',
-    '🏗️',
-    '🌐',
-    '🧩',
-    '💻',
-    '🎨',
-    '📊',
-    '🔍',
-    '⚙️',
-    '🚀',
+const AVATAR_IMAGES = [
+    '/avatars/alex.png',
+    '/avatars/sophia.png',
+    '/avatars/james.png',
+    '/avatars/ava.png',
+    '/avatars/lily.png',
 ];
 const AVATAR_COLORS = [
-    '#3b82f6',
-    '#10b981',
-    '#a855f7',
-    '#f59e0b',
-    '#ef4444',
-    '#06b6d4',
-    '#ec4899',
-    '#8b5cf6',
+    '#667eea',
+    '#f093fb',
+    '#4facfe',
+    '#43e97b',
+    '#fa709a',
+    '#a18cd1',
+    '#fccb90',
+    '#e0c3fc',
 ];
 
 const fieldStyle: React.CSSProperties = {
@@ -240,37 +229,52 @@ const AgentIdentityEditor: React.FC<{
             </div>
 
             <label style={labelStyle}>{t('agents.identity.avatar')}</label>
-            <div style={groupStyle}>
-                <select
-                    aria-label={t('agents.identity.avatar_emoji')}
-                    value={avatarEmoji}
-                    onChange={(e) => {
-                        setAvatarEmoji(e.target.value);
-                        setAvatarUrl('');
-                    }}
-                    style={{ ...fieldStyle, width: 'auto' }}
-                >
-                    {AVATAR_EMOJIS.map((em) => (
-                        <option key={em} value={em}>
-                            {em}
-                        </option>
-                    ))}
-                </select>
+            <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap', alignItems: 'center' }}>
+                {AVATAR_IMAGES.map((img) => (
+                    <button
+                        key={img}
+                        type="button"
+                        onClick={() => {
+                            setAvatarUrl(img);
+                            setAvatarEmoji('');
+                        }}
+                        style={{
+                            width: 40,
+                            height: 40,
+                            borderRadius: '50%',
+                            overflow: 'hidden',
+                            border: avatarUrl === img ? '2px solid var(--accent)' : '2px solid transparent',
+                            cursor: 'pointer',
+                            padding: 0,
+                            background: 'none',
+                            flexShrink: 0,
+                        }}
+                    >
+                        <img
+                            src={img}
+                            alt={img.split('/').pop()?.replace('.png', '') || 'avatar'}
+                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                        />
+                    </button>
+                ))}
+                <input
+                    aria-label={t('agents.identity.avatar_url')}
+                    value={avatarUrl}
+                    onChange={(e) => setAvatarUrl(e.target.value)}
+                    placeholder={t('agents.identity.avatar_url')}
+                    style={{ ...fieldStyle, flex: 1, minWidth: 120 }}
+                />
+            </div>
+            <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center', marginTop: '0.3rem' }}>
+                <span style={{ fontSize: '0.72rem', opacity: 0.5 }}>{t('agents.identity.avatar_color')}:</span>
                 <input
                     aria-label={t('agents.identity.avatar_color')}
                     type="color"
                     value={avatarColor}
                     onChange={(e) => setAvatarColor(e.target.value)}
-                    style={{ width: 40, height: 34, background: 'none', border: 'none' }}
+                    style={{ width: 32, height: 28, background: 'none', border: 'none', cursor: 'pointer' }}
                 />
             </div>
-            <input
-                aria-label={t('agents.identity.avatar_url')}
-                value={avatarUrl}
-                onChange={(e) => setAvatarUrl(e.target.value)}
-                placeholder={t('agents.identity.avatar_url')}
-                style={fieldStyle}
-            />
 
             <div style={groupStyle}>
                 <div style={{ flex: 1, minWidth: 120 }}>

@@ -121,9 +121,9 @@ describe('SkillService', () => {
             expect(updated.status).toBe('not_installed');
         });
 
-        it('should emit event', () => {
+        it('should emit event', async () => {
             const active = svc.getSkills().find((s) => s.status === 'active')!;
-            svc.toggleActive(active.id);
+            await svc.toggleActive(active.id);
             expect(deps.eventBus.emit).toHaveBeenCalled();
         });
     });
@@ -134,15 +134,15 @@ describe('SkillService', () => {
             await svc.init();
         });
 
-        it('should install a not_installed skill', () => {
+        it('should install a not_installed skill', async () => {
             const notInstalled = svc.getSkills().find((s) => s.status === 'not_installed')!;
-            svc.installSkill(notInstalled.id);
+            await svc.installSkill(notInstalled.id);
             expect(svc.getSkills().find((s) => s.id === notInstalled.id)!.status).toBe('installed');
         });
 
-        it('should emit event', () => {
+        it('should emit event', async () => {
             const notInstalled = svc.getSkills().find((s) => s.status === 'not_installed')!;
-            svc.installSkill(notInstalled.id);
+            await svc.installSkill(notInstalled.id);
             expect(deps.eventBus.emit).toHaveBeenCalled();
         });
     });
@@ -174,22 +174,22 @@ describe('SkillService', () => {
             expect(parsed.length).toBeGreaterThanOrEqual(5);
         });
 
-        it('should import new skills', () => {
+        it('should import new skills', async () => {
             const before = svc.getSkills().length;
             const newSkill = makeSkill({ id: 'sk-imported', name: 'Imported' });
-            const imported = svc.importSkills(JSON.stringify([newSkill]));
+            const imported = await svc.importSkills(JSON.stringify([newSkill]));
             expect(imported).toBe(1);
             expect(svc.getSkills().length).toBe(before + 1);
         });
 
-        it('should not import duplicate IDs', () => {
+        it('should not import duplicate IDs', async () => {
             const existing = svc.getSkills()[0];
-            const imported = svc.importSkills(JSON.stringify([existing]));
+            const imported = await svc.importSkills(JSON.stringify([existing]));
             expect(imported).toBe(0);
         });
 
-        it('should throw on invalid JSON', () => {
-            expect(() => svc.importSkills('not json')).toThrow();
+        it('should throw on invalid JSON', async () => {
+            await expect(svc.importSkills('not json')).rejects.toThrow();
         });
     });
 
@@ -199,6 +199,71 @@ describe('SkillService', () => {
             await svc.init();
             svc.destroy();
             expect(svc.getSkills().length).toBe(0);
+        });
+    });
+
+    describe('lifecycle (stale/archived)', () => {
+        beforeEach(async () => {
+            deps.skillsStore.count = vi.fn().mockResolvedValue(0);
+            await svc.init();
+        });
+
+        it('markStale sets status to stale', async () => {
+            const active = svc.getSkills().find((s) => s.status === 'active')!;
+            await svc.markStale(active.id);
+            expect(svc.getSkills().find((s) => s.id === active.id)!.status).toBe('stale');
+        });
+
+        it('archive sets status to archived and sets archivedAt', async () => {
+            const active = svc.getSkills().find((s) => s.status === 'active')!;
+            await svc.archive(active.id);
+            const updated = svc.getSkills().find((s) => s.id === active.id)!;
+            expect(updated.status).toBe('archived');
+            expect(updated.archivedAt).toBeDefined();
+        });
+
+        it('restore sets status back to installed', async () => {
+            const active = svc.getSkills().find((s) => s.status === 'active')!;
+            await svc.archive(active.id);
+            await svc.restore(active.id);
+            const updated = svc.getSkills().find((s) => s.id === active.id)!;
+            expect(updated.status).toBe('installed');
+            expect(updated.archivedAt).toBeUndefined();
+        });
+
+        it('getStale returns only stale skills', async () => {
+            const active = svc.getSkills().find((s) => s.status === 'active')!;
+            await svc.markStale(active.id);
+            const stale = svc.getStale();
+            expect(stale.every((s) => s.status === 'stale')).toBe(true);
+            expect(stale.length).toBeGreaterThanOrEqual(1);
+        });
+
+        it('getArchived returns only archived skills', async () => {
+            const active = svc.getSkills().find((s) => s.status === 'active')!;
+            await svc.archive(active.id);
+            const archived = svc.getArchived();
+            expect(archived.every((s) => s.status === 'archived')).toBe(true);
+            expect(archived.length).toBeGreaterThanOrEqual(1);
+        });
+
+        it('detectStale marks active skills unused > threshold as stale', async () => {
+            const active = svc.getSkills().find((s) => s.status === 'active')!;
+            // Set lastUsedAt to 31 days ago
+            await svc.incrementExecution(active.id); // sets lastUsedAt
+            const staleThreshold = 30 * 24 * 60 * 60 * 1000;
+            // Manually set lastUsedAt to past
+            svc['skills'] = svc['skills'].map((s) =>
+                s.id === active.id ? { ...s, lastUsedAt: Date.now() - staleThreshold - 1 } : s,
+            );
+            await svc.detectStale(staleThreshold);
+            expect(svc.getSkills().find((s) => s.id === active.id)!.status).toBe('stale');
+        });
+
+        it('incrementExecution sets lastUsedAt', async () => {
+            const skill = svc.getSkills()[0];
+            await svc.incrementExecution(skill.id);
+            expect(svc.getSkills().find((s) => s.id === skill.id)!.lastUsedAt).toBeDefined();
         });
     });
 });

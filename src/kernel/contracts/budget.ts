@@ -37,6 +37,38 @@ export interface BudgetAlert {
     timestamp: number;
 }
 
+// ── AGEMS Phase 4: Platform Budget + Incidents ──
+
+export type BudgetIncidentType = 'soft_alert' | 'hard_stop' | 'budget_reset' | 'manual_override';
+
+export interface PlatformBudget {
+    id: string;
+    hourlyLimitUsd?: number;
+    dailyLimitUsd?: number;
+    monthlyLimitUsd?: number;
+    currentSpendUsd: number;
+    softAlertPercent: number; // default 80
+    hardStopEnabled: boolean; // default true
+    periodStart: number;
+    periodEnd: number;
+    createdAt: number;
+    updatedAt: number;
+}
+
+export interface BudgetIncident {
+    id: string;
+    budgetId: string;
+    type: BudgetIncidentType;
+    message: string;
+    spendUsd: number;
+    limitUsd: number;
+    agentId?: string;
+    provider?: string;
+    resolvedBy?: string;
+    resolvedAt?: number;
+    createdAt: number;
+}
+
 export interface IBudgetService {
     init(): Promise<void>;
     destroy(): void;
@@ -77,4 +109,22 @@ export interface IBudgetService {
     getCostByAgent(): Record<string, number>;
     getCostByInvocation(): Record<string, number>;
     clearHistory(): void;
+}
+
+// ── AGEMS Phase 4: Extended budget methods ──
+
+export interface IPlatformBudgetService {
+    getPlatformBudget(): Promise<PlatformBudget | undefined>;
+    setPlatformBudget(input: Partial<Omit<PlatformBudget, 'id' | 'createdAt' | 'updatedAt'>>): Promise<PlatformBudget>;
+    checkPlatformBudget(costUsd: number): Promise<{ allowed: boolean; reason?: string }>;
+    recordPlatformSpend(amountUsd: number): Promise<void>;
+    resetPeriod(): Promise<void>;
+}
+
+export interface IBudgetIncidentService {
+    logIncident(input: Omit<BudgetIncident, 'id' | 'createdAt'>): Promise<BudgetIncident>;
+    listIncidents(limit?: number): Promise<BudgetIncident[]>;
+    listIncidentsByAgent(agentId: string): Promise<BudgetIncident[]>;
+    resolveIncident(id: string, resolvedBy: string): Promise<BudgetIncident>;
+    getIncidentStats(): Promise<{ softAlerts: number; hardStops: number; total: number }>;
 }

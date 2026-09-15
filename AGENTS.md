@@ -55,7 +55,7 @@ npm run check:circular-kernel  # circular deps check
 
 ## Current Session — Consolidated Plan (docs/new/CONSOLIDATED_PLAN.md)
 
-All P0/P1/P2 tasks except P2.16–P2.19 are complete. Remaining: P2.16 drag-and-drop+undo/redo (Cognitive Builder), P2.17 smoke tests, P2.18 CSS, P2.19 Dexie schema versioning check. Runtime-hardening session validated in live 10-agent debate: heap stable 70–113MB (was 1.2GB OOM), `saveSnapshot version=1` WARN once, no EventRecorder streaming spam.
+All P0/P1/P2 tasks except P2.16–P2.18 are complete. P2.19 (Dexie schema versioning check) is now DONE — tests updated to v43 with all AGEMS port tables verified. Remaining: P2.16 drag-and-drop+undo/redo (Cognitive Builder), P2.17 smoke tests, P2.18 CSS adaptation. Runtime-hardening session validated in live 10-agent debate: heap stable 70–113MB (was 1.2GB OOM), `saveSnapshot version=1` WARN once, no EventRecorder streaming spam.
 
 ## Changes — ConversationCore Step B (Conversation Director) B1/B2/B3 (2026-08-12)
 
@@ -1236,6 +1236,128 @@ bg-elevated`, `border-subtle/default/strong`, spacing `space-1..8`, radius `radi
   clearAllSubscriptions clears sink) + existing `event-bus.test.ts` **36/36** + `container.test.ts`
   **40/40** (4 new B-06 edge-recording tests). No regression.
 
-## Session History
+## Changes — AGEMS Port (Phase 0–2) (2026-09-14)
+
+Phase 0–2 of the AGEMS port are **DONE**. Full roadmap: `docs/road/AGEMS_ROADMAP.md`.
+
+### Phase 0 — Agent Management System ✅ DONE
+
+- Types: `agent-management-types.ts` (AgentManaged, AgentSkill, AgentTool, AgentResponsibility, AgentMetric, AgentMemory, AgentExecution, AgentConfigRevision, AgentApiKey, AgentBudget, BudgetIncident)
+- Contract: `agent-management.ts` (40+ methods: CRUD, skills, tools, responsibilities, config revisions, API keys, budgets, hierarchy, archive/restore, metrics, export/import)
+- Service: `agent-management-service.ts` (full Dexie persistence)
+- DI: phase68, lazyService export
+- Dexie v36: 11 agent tables + versionDefs + IDatabaseService/DatabaseService getters
+- Events: 7 agent:* events
+- UI: AgentWizard, AgentDetailPanel, AgentManagementTab, sidebar-tabs, AgentsPanelContext
+- Tests: 42/42 (service 37 + UI 5)
+
+### Phase 1 — Agent Types + Config ✅ DONE
+
+Covered by Phase 0 (agent types, config revisions, hierarchy, avatars, export/import).
+
+### Phase 2 — Tasks System ✅ DONE
+
+- Types: `task-types.ts` (TaskRecord, TaskStatus 10-state, TaskPriority, TaskComment, TaskWorkProduct, TaskLabel, TaskTriggerRecord)
+- Contracts: `task-manager.ts` + `task-trigger.ts`
+- Services: `task-manager-service.ts` (CRUD, transitions, claims, labels, comments, work products) + `task-trigger-service.ts` (CRUD, HMAC/bearer/none auth, fire)
+- DI: phase69 (taskManagerService) + phase70 (taskTriggerService), lazyService exports
+- Dexie v37 (tasks, taskLabels, taskComments, taskWorkProducts) + v38 (taskTriggers) + versionDefs
+- Events: task:trigger:created/updated/deleted/fired
+- UI: KanbanBoard (5-column grid + create form + CronBuilder), TaskDetail (labels, comments, triggers, work products), CronBuilder (presets + custom + preview), TaskTriggerPanel (CRUD + verify + fire)
+- Routes: `tasks-board` → KanbanBoard
+- i18n: ~60 tasks.* keys in en/ru
+- Tests: 62/62 (task-manager 22, task-trigger 15, TaskTriggerPanel 4, TaskDetail 4, CronBuilder 4, KanbanBoard 4, dexie-schema-versioning 5, i18n 4)
+
+### Phase 3 — Approvals / HITL ✅ DONE
+
+- Types: `safety-types.ts` (ApprovalPreset, ApprovalPresetConfig, ApprovalCategory, ApprovalAction, AutoApproveRule, ApprovalRequest, ApprovalRequestStatus, ApprovalComment, CreateApprovalRequestInput, UpdateApprovalPresetInput, DEFAULT_PRESETS)
+- Contract: `approval.ts` (IApprovalService legacy + IApprovalWorkflowService: presets CRUD, requests submit/approve/reject/bulk, check auto-approve, comments)
+- Service: `approval-service.ts` (ApprovalService legacy in-memory + ApprovalWorkflowService Dexie-persisted with preset evaluation, glob tool matching, auto-approve/deny rules)
+- DI: phase71 (approvalWorkflowService), lazyService export
+- Dexie v39: approvalPresets, approvalRequests, approvalComments + versionDefs + IDatabaseService/DatabaseService getters
+- Events: 5 approval:* events (request:submitted/approved/rejected/expired, bulk:resolved)
+- UI: ApprovalPanel (requests tab with filters + bulk select, presets tab with category defaults, detail modal with approve/reject + comments)
+- Route: `approvals` → ApprovalPanel (KNOWLEDGE section, Shield icon)
+- i18n: ~35 approval.* keys in en/ru
+- Tests: 29/29 (workflow 18, legacy 11, dexie-schema-versioning 5, i18n 4 + 2)
+
+### Phase 4 — Budgets ✅ DONE
+
+- Types: `PlatformBudget`, `BudgetIncident`, `BudgetIncidentType` (soft_alert/hard_stop/budget_reset/manual_override) in `src/kernel/contracts/budget.ts`
+- Services: `PlatformBudgetService` (Dexie KV persistence) + `BudgetIncidentService` in `src/kernel/services/platform-budget-service.ts`
+- DI: phase72, lazyService exports
+- UI: `BudgetPanel/BudgetPanel.tsx`, route `budget` (DollarSign icon)
+- i18n: ~25 budget.* keys in en/ru
+- Tests: 13/13 (platform-budget-service.test.ts)
+
+### Phase 5 — Meetings ✅ DONE
+
+- Types: `Meeting`, `MeetingDecision`, `MeetingMessage`, `MeetingStatus`, `MeetingRole`, `VoteResult` in `src/kernel/types/meeting-types.ts`
+- Contract: `IMeetingService` (20+ methods) in `src/kernel/contracts/meeting.ts`
+- Service: `MeetingService` (Dexie-persisted) in `src/kernel/services/meeting-service.ts`
+- Dexie v40: meetings, meetingDecisions, meetingMessages
+- DI: phase73, lazyService exports
+- UI: `MeetingsPanel/MeetingsPanel.tsx`, route `meetings` (Users icon)
+- i18n: ~30 meeting.* keys in en/ru
+- Tests: 10/10 (meeting-service.test.ts)
+
+### Phase 6 — Skills + Tools ✅ DONE
+
+- Extended `CognitiveSkill.status` with 'stale' | 'archived'; `ToolAuthType` (none/api_key/bearer_token/basic/oauth2/custom)
+- Tests: 24/24 skill-service.test.ts
+
+### Phase 7 — Settings + UI ✅ DONE
+
+- `ModuleSettingsService` with per-module `enabled`, `activityLevel`, `autonomyLevel`
+- DI: phase74, lazyService export
+- Tests: 8/8 module-settings-service.test.ts
+
+### Phase 8 — Catalog/Marketplace ✅ DONE
+
+- Types: `CatalogAgent`, `CatalogSkill`, `CatalogFilters` in `src/kernel/types/catalog-types.ts`
+- Service: `CatalogService` (Dexie-persisted, listAgents/listSkills with filters/search/sort, import/remove)
+- Dexie v41: catalogAgents + catalogSkills
+- DI: phase75, lazyService export
+- i18n: ~15 catalog.* keys in en/ru
+- Tests: 8/8 catalog-service.test.ts
+
+### Phase 9 — Security + Audit ✅ DONE (9.1–9.2)
+
+- Types: `AuditAction` (11 actions), `AuditLogEntry`, `AccessRule`, `AuditFilters` in `src/kernel/types/audit-types.ts`
+- Service: `AuditService` (Dexie-persisted, log/list/count, access rules with wildcard + exact match, checkAccess)
+- Dexie v42: auditLogs + accessRules
+- DI: phase76, lazyService export
+- UI: `AuditPanel/AuditPanel.tsx` (log viewer + access rule management), route `audit` (Shield icon)
+- i18n: ~35 audit.* keys in en/ru
+- Tests: 12/12 (audit-service.test.ts)
+
+### Phase 10 — Integrations ✅ DONE
+
+- Types: `TelegramChat`, `TelegramMessage`, `TelegramConfig`, `N8NWorkflow`, `N8NConfig`, `MCPServer`, `IntegrationStatus` in `src/kernel/types/integration-types.ts`
+- Service: `IntegrationService` (Dexie-persisted, Telegram/N8N/MCP CRUD + config + status)
+- Dexie v43: telegramChats, telegramMessages, n8nWorkflows, mcpServers
+- DI: phase77, lazyService export
+- UI: `IntegrationsPanel/IntegrationsPanel.tsx` (4 tabs: status/telegram/n8n/mcp), route `integrations` (Globe icon)
+- i18n: ~35 integration.* keys in en/ru
+- Tests: 14/14 (integration-service.test.ts)
+
+### Phase 11 — Chat System ✅ DONE
+
+- **11.1 ChatDock:** `ChatDock.tsx` (floating panels, up to 5 concurrent, drag, minimize/maximize/close, unread badges, dock bar)
+- **11.2 Channel Filters:** existing ChannelPanel + Agent Channels
+- **11.3 Message Queuing:** `ChatQueueService` (in-process queue, retry logic, status tracking)
+- **11.4 Cross-Channel Context:** `ContextBuilderService` (collects messages from channels, token-aware windowing, format for LLM)
+- Tests: 6/6 (chat-queue 6) + 9/9 (context-builder 9)
+
+### Phase 12 — AI Runner Enhancements ✅ DONE
+
+- **12.1 Tool Loop Detector:** `tool-loop-detector.ts` (sliding window + hash dedup + ping-pong detection), 9/9 tests
+- **12.4 Tool Repair:** `tool-repair.ts` (fixes invalid tool_use input: missing required fields, type mismatches, invalid enums, unknown fields), 8/8 tests
+- **12.4 Token Estimator:** `token-estimator.ts` (character-based heuristic for English/Russian/CJK/code, message estimation, truncation), 6/6 tests
+- **12.5 Cost Calculator:** `cost-calculator.ts` (pricing tables, custom pricing, cost formatting), 6/6 tests
+- **12.6 Smart Retry:** `smart-retry.ts` (exponential backoff, retryable error detection), 5/5 tests
+- **12.7 Streaming Accumulator:** `streaming-accumulator.ts` (chunk accumulation, done/error tracking), 7/7 tests
+
+### Phase 13 — Production Hardening ← NEXT
 
 Full session log: `docs/SESSION_LOG.md`

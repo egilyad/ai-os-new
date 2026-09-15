@@ -152,9 +152,57 @@ export class SkillService {
 
     async incrementExecution(id: string) {
         this.skills = this.skills.map((s) =>
-            s.id === id ? { ...s, executionCount: s.executionCount + 1 } : s,
+            s.id === id ? { ...s, executionCount: s.executionCount + 1, lastUsedAt: Date.now() } : s,
         );
         await this.persist();
+    }
+
+    async markStale(id: string) {
+        this.skills = this.skills.map((s) =>
+            s.id === id ? { ...s, status: 'stale' as const } : s,
+        );
+        await this.persist();
+        this.emit();
+    }
+
+    async archive(id: string) {
+        this.skills = this.skills.map((s) =>
+            s.id === id ? { ...s, status: 'archived' as const, archivedAt: Date.now() } : s,
+        );
+        await this.persist();
+        this.emit();
+    }
+
+    async restore(id: string) {
+        this.skills = this.skills.map((s) =>
+            s.id === id ? { ...s, status: 'installed' as const, archivedAt: undefined } : s,
+        );
+        await this.persist();
+        this.emit();
+    }
+
+    async detectStale(thresholdMs = 30 * 24 * 60 * 60 * 1000) {
+        const now = Date.now();
+        let changed = false;
+        this.skills = this.skills.map((s) => {
+            if (s.status === 'active' && s.lastUsedAt && (now - s.lastUsedAt) > thresholdMs) {
+                changed = true;
+                return { ...s, status: 'stale' as const };
+            }
+            return s;
+        });
+        if (changed) {
+            await this.persist();
+            this.emit();
+        }
+    }
+
+    getStale(): CognitiveSkill[] {
+        return this.skills.filter((s) => s.status === 'stale');
+    }
+
+    getArchived(): CognitiveSkill[] {
+        return this.skills.filter((s) => s.status === 'archived');
     }
 
     exportSkills(): string {

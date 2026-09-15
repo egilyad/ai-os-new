@@ -76,6 +76,7 @@ const agents: Record<string, string> = {
     'agent_wizard.title': 'Название',
     'agents.tab_identity': 'Идентичность',
     'agents.tab_profile': 'Профиль',
+    'agents.tab_management': 'Навыки и KPI',
     'agents.identity.display_name': 'Отображаемое имя',
     'agents.identity.first_name': 'Имя',
     'agents.identity.last_name': 'Фамилия',

@@ -212,6 +212,12 @@ const DocumentationPanelLazy = React.lazy(
 const AnalyticsPanelLazy = React.lazy(() => import('./components/AnalyticsPanel/AnalyticsPanel'));
 const SkillsPanelLazy = React.lazy(() => import('./components/SkillsPanel/SkillsPanel'));
 const TasksPanelLazy = React.lazy(() => import('./components/TasksPanel/TasksPanel'));
+const KanbanBoardLazy = React.lazy(() => import('./components/TasksPanel/KanbanBoard'));
+const ApprovalPanelLazy = React.lazy(() => import('./components/ApprovalPanel/ApprovalPanel'));
+const BudgetPanelLazy = React.lazy(() => import('./components/BudgetPanel/BudgetPanel'));
+const MeetingsPanelLazy = React.lazy(() => import('./components/MeetingsPanel/MeetingsPanel'));
+const AuditPanelLazy = React.lazy(() => import('./components/AuditPanel/AuditPanel'));
+const IntegrationsPanelLazy = React.lazy(() => import('./components/IntegrationsPanel/IntegrationsPanel'));
 const RolesPanelLazy = React.lazy(() => import('./components/RolesPanel/RolesPanel'));
 const AuditLogViewLazy = React.lazy(() => import('./components/AuditLogView'));
 const ConfigHistoryViewLazy = React.lazy(() => import('./components/ConfigHistoryView'));
@@ -281,6 +287,12 @@ export const PANEL_COMPONENTS: Record<string, React.ComponentType<any>> = {
     'session-hub': SessionHubPanel,
     bookmarks: BookmarksPanel,
     tasks: TasksPanelLazy,
+    'tasks-board': KanbanBoardLazy,
+    approvals: ApprovalPanelLazy,
+    budget: BudgetPanelLazy,
+    meetings: MeetingsPanelLazy,
+    audit: AuditPanelLazy,
+    integrations: IntegrationsPanelLazy,
     files: WorkspacePanel,
     debate: DebateArena,
     builder: CognitiveBuilder,

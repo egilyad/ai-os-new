@@ -608,6 +608,97 @@ export class DatabaseService implements IDatabaseService {
     get projectAssignments(): Table<ProjectAgentAssignment> {
         return getDexieDb().projectAssignments;
     }
+    // Phase 0: Agent Management (AGEMS port)
+    get agentManaged(): Table<Record<string, unknown>> {
+        return getDexieDb().agentManaged;
+    }
+    get agentSkills(): Table<Record<string, unknown>> {
+        return getDexieDb().agentSkills;
+    }
+    get agentTools(): Table<Record<string, unknown>> {
+        return getDexieDb().agentTools;
+    }
+    get agentResponsibilities(): Table<Record<string, unknown>> {
+        return getDexieDb().agentResponsibilities;
+    }
+    get agentMetrics(): Table<Record<string, unknown>> {
+        return getDexieDb().agentMetrics;
+    }
+    get agentMemory(): Table<Record<string, unknown>> {
+        return getDexieDb().agentMemory;
+    }
+    get agentExecutions(): Table<Record<string, unknown>> {
+        return getDexieDb().agentExecutions;
+    }
+    get agentConfigRevisions(): Table<Record<string, unknown>> {
+        return getDexieDb().agentConfigRevisions;
+    }
+    get agentApiKeys(): Table<Record<string, unknown>> {
+        return getDexieDb().agentApiKeys;
+    }
+    get agentBudgets(): Table<Record<string, unknown>> {
+        return getDexieDb().agentBudgets;
+    }
+    get budgetIncidents(): Table<Record<string, unknown>> {
+        return getDexieDb().budgetIncidents;
+    }
+    get tasks(): Table<Record<string, unknown>> {
+        return getDexieDb().tasks;
+    }
+    get taskLabels(): Table<Record<string, unknown>> {
+        return getDexieDb().taskLabels;
+    }
+    get taskComments(): Table<Record<string, unknown>> {
+        return getDexieDb().taskComments;
+    }
+    get taskWorkProducts(): Table<Record<string, unknown>> {
+        return getDexieDb().taskWorkProducts;
+    }
+    get taskTriggers(): Table<Record<string, unknown>> {
+        return getDexieDb().taskTriggers;
+    }
+    get approvalPresets(): Table<Record<string, unknown>> {
+        return getDexieDb().approvalPresets;
+    }
+    get approvalRequests(): Table<Record<string, unknown>> {
+        return getDexieDb().approvalRequests;
+    }
+    get approvalComments(): Table<Record<string, unknown>> {
+        return getDexieDb().approvalComments;
+    }
+    get meetings(): Table<Record<string, unknown>> {
+        return getDexieDb().meetings;
+    }
+    get meetingDecisions(): Table<Record<string, unknown>> {
+        return getDexieDb().meetingDecisions;
+    }
+    get meetingMessages(): Table<Record<string, unknown>> {
+        return getDexieDb().meetingMessages;
+    }
+    get catalogAgents(): Table<Record<string, unknown>> {
+        return getDexieDb().catalogAgents;
+    }
+    get catalogSkills(): Table<Record<string, unknown>> {
+        return getDexieDb().catalogSkills;
+    }
+    get auditLogs(): Table<Record<string, unknown>> {
+        return getDexieDb().auditLogs;
+    }
+    get accessRules(): Table<Record<string, unknown>> {
+        return getDexieDb().accessRules;
+    }
+    get telegramChats(): Table<Record<string, unknown>> {
+        return getDexieDb().telegramChats;
+    }
+    get telegramMessages(): Table<Record<string, unknown>> {
+        return getDexieDb().telegramMessages;
+    }
+    get n8nWorkflows(): Table<Record<string, unknown>> {
+        return getDexieDb().n8nWorkflows;
+    }
+    get mcpServers(): Table<Record<string, unknown>> {
+        return getDexieDb().mcpServers;
+    }
     get db() {
         return getDexieDb();
     }

@@ -199,6 +199,37 @@ export interface IDatabaseService {
     get runQueue(): Table<QueuedRun>;
     get threads(): Table<GraphThread>;
     get scopedMem(): Table<ScopedMem>;
+    // Phase 0: Agent Management (AGEMS port)
+    get agentManaged(): Table<Record<string, unknown>>;
+    get agentSkills(): Table<Record<string, unknown>>;
+    get agentTools(): Table<Record<string, unknown>>;
+    get agentResponsibilities(): Table<Record<string, unknown>>;
+    get agentMetrics(): Table<Record<string, unknown>>;
+    get agentMemory(): Table<Record<string, unknown>>;
+    get agentExecutions(): Table<Record<string, unknown>>;
+    get agentConfigRevisions(): Table<Record<string, unknown>>;
+    get agentApiKeys(): Table<Record<string, unknown>>;
+    get agentBudgets(): Table<Record<string, unknown>>;
+    get budgetIncidents(): Table<Record<string, unknown>>;
+    get tasks(): Table<Record<string, unknown>>;
+    get taskLabels(): Table<Record<string, unknown>>;
+    get taskComments(): Table<Record<string, unknown>>;
+    get taskWorkProducts(): Table<Record<string, unknown>>;
+    get taskTriggers(): Table<Record<string, unknown>>;
+    get approvalPresets(): Table<Record<string, unknown>>;
+    get approvalRequests(): Table<Record<string, unknown>>;
+    get approvalComments(): Table<Record<string, unknown>>;
+    get meetings(): Table<Record<string, unknown>>;
+    get meetingDecisions(): Table<Record<string, unknown>>;
+    get meetingMessages(): Table<Record<string, unknown>>;
+    get catalogAgents(): Table<Record<string, unknown>>;
+    get catalogSkills(): Table<Record<string, unknown>>;
+    get auditLogs(): Table<Record<string, unknown>>;
+    get accessRules(): Table<Record<string, unknown>>;
+    get telegramChats(): Table<Record<string, unknown>>;
+    get telegramMessages(): Table<Record<string, unknown>>;
+    get n8nWorkflows(): Table<Record<string, unknown>>;
+    get mcpServers(): Table<Record<string, unknown>>;
 }
 
 /** Data Access Layer — single entry point for all persistent data access */

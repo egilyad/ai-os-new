@@ -2501,6 +2501,76 @@ export const EVENT_REGISTRY = {
         'channel:archived',
         z.object({ channelId: z.string() }),
     ),
+
+    // ── Agent Management (AGEMS port) ──
+    AGENT_CREATED: event(
+        'agent:created',
+        z.object({ agentId: z.string(), slug: z.string(), type: z.string() }),
+    ),
+    AGENT_UPDATED: event(
+        'agent:updated',
+        z.object({ agentId: z.string() }),
+    ),
+    AGENT_DELETED: event(
+        'agent:deleted',
+        z.object({ agentId: z.string() }),
+    ),
+    AGENT_STATUS_CHANGED: event(
+        'agent:status-changed',
+        z.object({ agentId: z.string(), from: z.string(), to: z.string() }),
+    ),
+    AGENT_EXECUTION_STARTED: event(
+        'agent:execution:started',
+        z.object({ agentId: z.string(), executionId: z.string() }),
+    ),
+    AGENT_EXECUTION_COMPLETED: event(
+        'agent:execution:completed',
+        z.object({ agentId: z.string(), executionId: z.string(), status: z.string() }),
+    ),
+    AGENT_CONFIG_ROLLBACK: event(
+        'agent:config:rollback',
+        z.object({ agentId: z.string(), revisionId: z.string() }),
+    ),
+
+    // ── Task Triggers (AGEMS port, Phase 2.8) ──
+    TASK_TRIGGER_CREATED: event(
+        'task:trigger:created',
+        z.object({ triggerId: z.string(), taskId: z.string() }),
+    ),
+    TASK_TRIGGER_UPDATED: event(
+        'task:trigger:updated',
+        z.object({ triggerId: z.string() }),
+    ),
+    TASK_TRIGGER_DELETED: event(
+        'task:trigger:deleted',
+        z.object({ triggerId: z.string() }),
+    ),
+    TASK_TRIGGER_FIRED: event(
+        'task:trigger:fired',
+        z.object({ triggerId: z.string(), taskId: z.string() }),
+    ),
+
+    // ── Approval Workflow (AGEMS port, Phase 3) ──
+    APPROVAL_REQUEST_SUBMITTED: event(
+        'approval:request:submitted',
+        z.object({ requestId: z.string(), agentId: z.string(), toolName: z.string(), category: z.string(), riskLevel: z.string() }),
+    ),
+    APPROVAL_REQUEST_APPROVED: event(
+        'approval:request:approved',
+        z.object({ requestId: z.string(), resolvedBy: z.string() }),
+    ),
+    APPROVAL_REQUEST_REJECTED: event(
+        'approval:request:rejected',
+        z.object({ requestId: z.string(), resolvedBy: z.string(), reason: z.string().optional() }),
+    ),
+    APPROVAL_REQUEST_EXPIRED: event(
+        'approval:request:expired',
+        z.object({ requestId: z.string() }),
+    ),
+    APPROVAL_BULK_RESOLVED: event(
+        'approval:bulk:resolved',
+        z.object({ ids: z.array(z.string()), action: z.string(), resolvedBy: z.string() }),
+    ),
 } as const;
 
 type Registry = typeof EVENT_REGISTRY;

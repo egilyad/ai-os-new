@@ -6,7 +6,7 @@
 import { create } from 'zustand';
 import type { Channel, ChannelMessage } from '../kernel/types/channel-types';
 import { channelService } from '../kernel/instances/services-extras';
-import { coreEventBus } from '../kernel/events/event-bus';
+import { eventBus as coreEventBus } from '../kernel/events/event-bus';
 
 interface ChannelView {
     id: string;

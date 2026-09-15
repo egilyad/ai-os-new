@@ -173,6 +173,11 @@ import type { IAutonomyOrchestrator } from '../contracts/autonomy';
 import type { IAutonomyRunner } from '../contracts/autonomy-runner';
 import type { IProjectInvocationBridge } from '../contracts/project-invocation-bridge';
 import type { IChannelService } from '../contracts/channel';
+import type { IAgentManagementService } from '../contracts/agent-management';
+import type { ITaskManagerService } from '../contracts/task-manager';
+import type { ITaskTriggerService } from '../contracts/task-trigger';
+import type { IApprovalWorkflowService } from '../contracts/approval';
+import type { IPlatformBudgetService, IBudgetIncidentService } from '../contracts/budget';
 import type { ICapabilityResolver, IAgentFactory } from '../contracts/capability';
 import type {
     IALifeService,
@@ -279,9 +284,12 @@ import type {
     IA2aSpecService,
     IAssistService,
     ICacheRegistryService,
+    ICatalogService,
     IDeepResearchService,
     IDotpromptService,
+    IIntegrationService,
     ILiveBridgeService,
+    IModuleSettingsService,
     INotebookService,
     IQuotaGuardService,
     IStudioPackService,
@@ -603,12 +611,21 @@ export const autonomyOrchestrator = lazyService<IAutonomyOrchestrator>('autonomy
 export const autonomyRunner = lazyService<IAutonomyRunner>('autonomyRunner');
 export const projectInvocationBridge = lazyService<IProjectInvocationBridge>('projectInvocationBridge');
 export const channelService = lazyService<IChannelService>('channelService');
+export const agentManagementService = lazyService<IAgentManagementService>('agentManagementService');
+export const taskManagerService = lazyService<ITaskManagerService>('taskManagerService');
+export const taskTriggerService = lazyService<ITaskTriggerService>('taskTriggerService');
+export const approvalWorkflowService = lazyService<IApprovalWorkflowService>('approvalWorkflowService');
+export const platformBudgetService = lazyService<IPlatformBudgetService>('platformBudgetService');
+export const budgetIncidentService = lazyService<IBudgetIncidentService>('budgetIncidentService');
 export const dynamicWorkflowService = lazyService<IDynamicWorkflowService>('dynamicWorkflowService');
 export const routineService = lazyService<IRoutineService>('routineService');
 export const agentViewService = lazyService<IAgentViewService>('agentViewService');
 export const orgChartService = lazyService<IOrgChartService>('orgChartService');
 export const bizTicketService = lazyService<IBizTicketService>('bizTicketService');
 export const meetingService = lazyService<IMeetingService>('meetingService');
+export const moduleSettingsService = lazyService<IModuleSettingsService>('moduleSettingsService');
+export const catalogService = lazyService<ICatalogService>('catalogService');
+export const integrationService = lazyService<IIntegrationService>('integrationService');
 export const hitlLevelsService = lazyService<IHITLLevelsService>('hitlLevelsService');
 export const playbookService = lazyService<IPlaybookService>('playbookService');
 export const composeService = lazyService<IComposeService>('composeService');

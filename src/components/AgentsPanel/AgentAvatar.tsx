@@ -1,39 +1,11 @@
-const COLORS = [
-    '#3b82f6',
-    '#10b981',
-    '#a855f7',
-    '#f59e0b',
-    '#ef4444',
-    '#06b6d4',
-    '#ec4899',
-    '#8b5cf6',
-    '#14b8a6',
-    '#f97316',
-    '#6366f1',
-    '#84cc16',
-];
+import React from 'react';
 
-const EMOJIS = [
-    '🤖',
-    '🧠',
-    '⚡',
-    '🔧',
-    '📊',
-    '🛡️',
-    '🎯',
-    '💡',
-    '🔬',
-    '🎨',
-    '📝',
-    '🚀',
-    '🧪',
-    '🏗️',
-    '🔍',
-    '⚙️',
-    '🌐',
-    '🧩',
-    '💻',
-    '🎪',
+const AVATAR_IMAGES = [
+    '/avatars/alex.png',
+    '/avatars/sophia.png',
+    '/avatars/james.png',
+    '/avatars/ava.png',
+    '/avatars/lily.png',
 ];
 
 function hashString(str: string): number {
@@ -44,12 +16,34 @@ function hashString(str: string): number {
     return Math.abs(hash);
 }
 
-export function getAgentAvatar(agentId: string): { color: string; emoji: string } {
+function getAgentAvatarImage(agentId: string): string {
     const safeId = agentId || 'unknown';
     const h = hashString(safeId);
+    return AVATAR_IMAGES[h % AVATAR_IMAGES.length]!;
+}
+
+function getAgentFallbackColor(agentId: string): string {
+    const COLORS = [
+        '#667eea', '#f093fb', '#4facfe', '#43e97b', '#fa709a',
+        '#a18cd1', '#fccb90', '#e0c3fc', '#f5576c', '#89f7fe',
+    ];
+    const h = hashString(agentId || 'unknown');
+    return COLORS[h % COLORS.length]!;
+}
+
+function getInitials(name: string, agentId: string): string {
+    const source = name || agentId;
+    const parts = source.split(/[\s_-]+/).filter(Boolean);
+    if (parts.length >= 2) {
+        return (parts[0]![0] + parts[1]![0]).toUpperCase();
+    }
+    return source.slice(0, 2).toUpperCase();
+}
+
+export function getAgentAvatar(agentId: string): { color: string; emoji: string } {
     return {
-        color: COLORS[h % COLORS.length]!,
-        emoji: EMOJIS[h % EMOJIS.length]!,
+        color: getAgentFallbackColor(agentId),
+        emoji: '',
     };
 }
 
@@ -58,10 +52,8 @@ interface AgentAvatarProps {
     name?: string;
     size?: number;
     ring?: boolean;
-    /** Optional canonical avatar override (emoji/color) from identity. */
     emoji?: string;
     color?: string;
-    /** Optional persistent image; when present the avatar renders an <img>. */
     url?: string;
 }
 
@@ -74,29 +66,62 @@ export const AgentAvatar: React.FC<AgentAvatarProps> = ({
     color,
     url,
 }) => {
-    const fallback = getAgentAvatar(agentId || 'unknown');
-    const resolvedEmoji = emoji ?? fallback.emoji;
-    const resolvedColor = color ?? fallback.color;
+    const imageUrl = url || getAgentAvatarImage(agentId || 'unknown');
+    const fallbackColor = color || getAgentFallbackColor(agentId || 'unknown');
+    const initials = getInitials(name || '', agentId || '');
 
-    if (url) {
+    if (imageUrl) {
         return (
-            <img
-                src={url}
-                alt={name || agentId}
+            <div
                 title={name || agentId}
-                width={size}
-                height={size}
                 style={{
+                    width: size,
+                    height: size,
                     borderRadius: '50%',
-                    objectFit: 'cover',
-                    border: ring ? `2px solid ${resolvedColor}` : '2px solid transparent',
                     flexShrink: 0,
                     userSelect: 'none',
+                    position: 'relative',
+                    overflow: 'hidden',
+                    boxShadow: ring
+                        ? `0 0 0 2px ${fallbackColor}, 0 2px 8px ${fallbackColor}40`
+                        : '0 1px 3px rgba(0,0,0,0.15)',
                 }}
-            />
+            >
+                <img
+                    src={imageUrl}
+                    alt={name || agentId}
+                    width={size}
+                    height={size}
+                    style={{
+                        width: '100%',
+                        height: '100%',
+                        borderRadius: '50%',
+                        objectFit: 'cover',
+                    }}
+                    onError={(e) => {
+                        // Fallback to initials on image load error
+                        const target = e.target as HTMLImageElement;
+                        target.style.display = 'none';
+                        const parent = target.parentElement;
+                        if (parent) {
+                            const fallback = document.createElement('div');
+                            fallback.style.cssText = `
+                                width: 100%; height: 100%;
+                                display: flex; align-items: center; justify-content: center;
+                                background: linear-gradient(135deg, ${fallbackColor}, ${fallbackColor}cc);
+                                color: white; font-size: ${size * 0.38}px; font-weight: 600;
+                                letter-spacing: 0.5px;
+                            `;
+                            fallback.textContent = initials;
+                            parent.appendChild(fallback);
+                        }
+                    }}
+                />
+            </div>
         );
     }
 
+    // Pure fallback: gradient + initials
     return (
         <div
             title={name || agentId}
@@ -104,18 +129,23 @@ export const AgentAvatar: React.FC<AgentAvatarProps> = ({
                 width: size,
                 height: size,
                 borderRadius: '50%',
-                background: `${resolvedColor}20`,
-                border: ring ? `2px solid ${resolvedColor}` : '2px solid transparent',
+                background: `linear-gradient(135deg, ${fallbackColor}, ${fallbackColor}cc)`,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                fontSize: size * 0.5,
-                lineHeight: 1,
                 flexShrink: 0,
                 userSelect: 'none',
+                position: 'relative',
+                boxShadow: ring
+                    ? `0 0 0 2px ${fallbackColor}, 0 2px 8px ${fallbackColor}40`
+                    : '0 1px 3px rgba(0,0,0,0.15)',
+                color: 'white',
+                fontSize: size * 0.38,
+                fontWeight: 600,
+                letterSpacing: '0.5px',
             }}
         >
-            {resolvedEmoji}
+            {initials}
         </div>
     );
 };

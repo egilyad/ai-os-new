@@ -73,7 +73,6 @@ import {
     Lightbulb,
     MessagesSquare,
     Clapperboard,
-    Hash,
 } from 'lucide-react';
 
 const s = 18;

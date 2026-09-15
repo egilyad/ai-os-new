@@ -118,14 +118,14 @@ describe('AgentAvatarService', () => {
             const svc = makeSvc();
             const emojis = svc.getAvailableEmojis();
             expect(emojis.length).toBeGreaterThan(0);
-            expect(emojis).toContain('🔴');
+            expect(emojis).toContain('🤖');
         });
 
         it('should return available colors', () => {
             const svc = makeSvc();
             const colors = svc.getAvailableColors();
             expect(colors.length).toBeGreaterThan(0);
-            expect(colors).toContain('#3498db');
+            expect(colors).toContain('#667eea');
         });
     });
 

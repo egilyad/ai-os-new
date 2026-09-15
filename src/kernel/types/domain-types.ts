@@ -94,10 +94,12 @@ export interface CognitiveSkill {
     name: string;
     description: string;
     category: 'analysis' | 'generation' | 'orchestration' | 'utility';
-    status: 'installed' | 'active' | 'not_installed';
+    status: 'installed' | 'active' | 'not_installed' | 'stale' | 'archived';
     toolsUsed: string[];
     version: string;
     executionCount: number;
+    lastUsedAt?: number;
+    archivedAt?: number;
 }
 
 export interface GuardrailResult {

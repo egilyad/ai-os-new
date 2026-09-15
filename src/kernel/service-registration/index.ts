@@ -66,6 +66,16 @@ import { registerPhase64 } from './phase64-agent-adapter';
 import { registerPhase65 } from './phase65-council-migration';
 import { registerPhase66 } from './phase66-projects';
 import { registerPhase67 } from './phase67-channels';
+import { registerPhase68 } from './phase68-agent-management';
+import { registerPhase69 } from './phase69-task-manager';
+import { registerPhase70 } from './phase70-task-trigger';
+import { registerPhase71 } from './phase71-approval-workflow';
+import { registerPhase72 } from './phase72-platform-budget';
+import { registerPhase73 } from './phase73-meeting';
+import { registerPhase74 } from './phase74-module-settings';
+import { registerPhase75 } from './phase75-catalog';
+import { registerPhase76 } from './phase76-audit';
+import { registerPhase77 } from './phase77-integration';
 import type { IContainer } from '../container';
 import type { IEventBus } from '../types/interfaces';
 
@@ -144,6 +154,16 @@ export function registerServices(
     registerPhase65(helpers, ctx);
     registerPhase66(helpers, ctx);
     registerPhase67(helpers, ctx);
+    registerPhase68(helpers, ctx);
+    registerPhase69(helpers, ctx);
+    registerPhase70(helpers, ctx);
+    registerPhase71(helpers, ctx);
+    registerPhase72(helpers, ctx);
+    registerPhase73(helpers, ctx);
+    registerPhase74(helpers, ctx);
+    registerPhase75(helpers, ctx);
+    registerPhase76(helpers, ctx);
+    registerPhase77(helpers, ctx);
 }
 
 export type { PhaseContext, Phase } from './helpers';

@@ -1,4 +1,4 @@
-import { Settings, Zap, Cpu, Activity, Shield, BookOpen, RefreshCw, User, Info } from 'lucide-react';
+import { Settings, Zap, Cpu, Activity, Shield, BookOpen, RefreshCw, User, Info, Wrench } from 'lucide-react';
 import type { TabId } from './AgentsPanelContext';
 
 export const sidebarTabs: { id: TabId; label: string; icon: React.ReactNode }[] = [
@@ -6,6 +6,7 @@ export const sidebarTabs: { id: TabId; label: string; icon: React.ReactNode }[] 
     { id: 'config' as TabId, label: 'Identity & Routing', icon: <Settings size={18} /> },
     { id: 'identity' as TabId, label: 'Agent Identity', icon: <User size={18} /> },
     { id: 'capabilities' as TabId, label: 'Equipped Tools', icon: <Zap size={18} /> },
+    { id: 'management' as TabId, label: 'Skills & KPIs', icon: <Wrench size={18} /> },
     { id: 'infra' as TabId, label: 'Compute Engine', icon: <Cpu size={18} /> },
     { id: 'observability' as TabId, label: 'Live Telemetry', icon: <Activity size={18} /> },
     { id: 'permissions' as TabId, label: 'Safety Guards', icon: <Shield size={18} /> },

@@ -1,4 +1,4 @@
-import { Copy, BookOpen, RefreshCw, Trash2, Pause, Play, X } from 'lucide-react';
+import { Copy, BookOpen, RefreshCw, Trash2, Pause, Play, X, Archive, RotateCcw } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { templateService } from '../../kernel/instances';
 import type { ISNode } from '../../kernel/contracts/topology';
@@ -12,6 +12,7 @@ import AgentInfraTab from './AgentInfraTab';
 import AgentObservabilityTab from './AgentObservabilityTab';
 import AgentHandoffsTab from './AgentHandoffsTab';
 import AgentIdentityEditor from './AgentIdentityEditor';
+import { AgentManagementTab } from './AgentManagementTab';
 import { AgentAvatar } from './AgentAvatar';
 import { resolveAgentIdentity } from '../../kernel/services/agent-identity';
 import type { AgentDetailPanelProps } from './AgentDetailPanelProps';
@@ -64,6 +65,14 @@ export const AgentDetailPanel: React.FC<AgentDetailPanelProps> = ({
                             >
                                 {agent.status.toUpperCase()}
                             </span>
+                            {(agent as Record<string, unknown>).agentType && (
+                                <>
+                                    <span className="agents-modal-header-dot" />
+                                    <span style={{ padding: '1px 6px', borderRadius: 4, fontSize: '0.65rem', fontWeight: 600, background: 'rgba(99,102,241,0.12)', color: '#818cf8', textTransform: 'capitalize' }}>
+                                        {(agent as Record<string, unknown>).agentType as string}
+                                    </span>
+                                </>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -128,6 +137,26 @@ export const AgentDetailPanel: React.FC<AgentDetailPanelProps> = ({
                         {agent.status === 'active' ? <Pause size={16} /> : <Play size={16} />}
                         {agent.status === 'active' ? 'Pause Node' : 'Resume Node'}
                     </button>
+                    {agent.status === 'active' && (
+                        <button
+                            onClick={() => onUpdateAgent(agent.id, { status: 'archived' } as Parameters<typeof onUpdateAgent>[1])}
+                            className="agents-modal-header-action-btn btn-secondary"
+                            title="Archive Agent"
+                            aria-label="Archive agent"
+                        >
+                            <Archive size={16} /> Archive
+                        </button>
+                    )}
+                    {agent.status === 'archived' && (
+                        <button
+                            onClick={() => onUpdateAgent(agent.id, { status: 'draft' } as Parameters<typeof onUpdateAgent>[1])}
+                            className="agents-modal-header-action-btn btn-secondary"
+                            title="Restore Agent"
+                            aria-label="Restore agent"
+                        >
+                            <RotateCcw size={16} /> Restore
+                        </button>
+                    )}
                     <button
                         onClick={onClose}
                         className="agents-modal-close-btn btn-secondary"
@@ -201,6 +230,9 @@ export const AgentDetailPanel: React.FC<AgentDetailPanelProps> = ({
                             )}
                             {activeTab === 'permissions' && (
                                 <AgentPolicySection agentId={agent.id} />
+                            )}
+                            {activeTab === 'management' && (
+                                <AgentManagementTab agentId={agent.id} t={t} />
                             )}
                             {activeTab === 'infra' && (
                                 <AgentInfraTab agent={agent} onUpdateAgent={onUpdateAgent} />

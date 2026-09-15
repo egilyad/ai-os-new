@@ -163,6 +163,19 @@ export class ToolCatalogService implements IToolCatalogService {
         return out;
     }
 
+    // ── AGEMS Phase 6.2: Auth config storage ──
+
+    private authStore = new Map<string, { authType: string; config: Record<string, unknown> }>();
+
+    async setAuthConfig(name: string, authType: string, config: Record<string, unknown>): Promise<void> {
+        this.authStore.set(name, { authType, config });
+        LOGGER.info('setAuthConfig', `Set auth config for ${name} (type: ${authType})`);
+    }
+
+    async getAuthConfig(name: string): Promise<{ authType: string; config: Record<string, unknown> } | null> {
+        return this.authStore.get(name) ?? null;
+    }
+
     private emitUpdated(): void {
         try {
             // best-effort — event may not be registered yet in static builds

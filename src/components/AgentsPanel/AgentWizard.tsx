@@ -23,12 +23,25 @@ interface GeneratedConfig {
   tools: string[];
   temperature: number;
   category: string;
+  agentType: string;
+  llmProvider: string;
+  llmModel: string;
+  maxTokens: number;
+  maxIterations: number;
 }
 
 const TOOL_LIST = [
   'code_execution', 'file_read', 'file_write', 'web_search', 'web_fetch',
   'data_analysis', 'terminal', 'git', 'database_query', 'api_call',
   'memory_read', 'memory_write', 'agent_spawn', 'notification',
+];
+
+const AGENT_TYPES = [
+  { value: 'assistant', label: 'Assistant', desc: 'General-purpose helper' },
+  { value: 'autonomous', label: 'Autonomous', desc: 'Runs independently' },
+  { value: 'meta', label: 'Meta', desc: 'Manages other agents' },
+  { value: 'reactive', label: 'Reactive', desc: 'Responds to events' },
+  { value: 'external', label: 'External', desc: 'Bridges to external tools' },
 ];
 
 export const AgentWizard: React.FC<AgentWizardProps> = ({ isOpen, onClose, onAgentCreated }) => {
@@ -106,6 +119,12 @@ export const AgentWizard: React.FC<AgentWizardProps> = ({ isOpen, onClose, onAge
       const spawnConfig: Record<string, unknown> = { ...spawnArgs.config };
       if (bindProvider !== 'auto') spawnConfig.provider = bindProvider;
       if (bindKeyId !== 'auto') spawnConfig.keyId = bindKeyId;
+      // Phase 0: agent type + LLM config
+      if (config.agentType) spawnConfig.agentType = config.agentType;
+      if (config.llmProvider) spawnConfig.llmProvider = config.llmProvider;
+      if (config.llmModel) spawnConfig.llmModel = config.llmModel;
+      if (config.maxTokens) spawnConfig.maxTokens = config.maxTokens;
+      if (config.maxIterations) spawnConfig.maxIterations = config.maxIterations;
       const agentId = agentService.spawnAgent(spawnArgs.name, undefined, spawnConfig);
       if (agentId) {
         setCreated(true);
@@ -241,6 +260,70 @@ export const AgentWizard: React.FC<AgentWizardProps> = ({ isOpen, onClose, onAge
                         type="range" min={0} max={2} step={0.1} value={config.temperature}
                         onChange={e => setConfig({ ...config, temperature: parseFloat(e.target.value) })}
                         style={{ width: '100%' }}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Agent Type */}
+                  <div style={{ marginBottom: 10 }}>
+                    <label style={{ fontSize: '0.7rem', color: 'var(--slate-500)', display: 'block', marginBottom: 4 }}>Agent Type</label>
+                    <div style={{ display: 'flex', gap: 4 }}>
+                      {AGENT_TYPES.map(at => (
+                        <button
+                          key={at.value}
+                          onClick={() => setConfig({ ...config, agentType: at.value })}
+                          title={at.desc}
+                          style={{ padding: '4px 10px', borderRadius: 6, fontSize: '0.7rem', border: `1px solid ${config.agentType === at.value ? 'rgba(139,92,246,0.4)' : 'rgba(100,116,139,0.2)'}`, background: config.agentType === at.value ? 'rgba(139,92,246,0.15)' : 'rgba(30,30,50,0.5)', color: config.agentType === at.value ? 'var(--purple)' : '#64748b', cursor: 'pointer' }}
+                        >
+                          {at.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* LLM Config */}
+                  <div style={{ display: 'flex', gap: 8, marginBottom: 10 }}>
+                    <div style={{ flex: 1 }}>
+                      <label style={{ fontSize: '0.7rem', color: 'var(--slate-500)', display: 'block', marginBottom: 4 }}>Provider</label>
+                      <select
+                        value={config.llmProvider}
+                        onChange={e => setConfig({ ...config, llmProvider: e.target.value })}
+                        style={{ width: '100%', padding: '6px 8px', borderRadius: 8, border: '1px solid rgba(100,116,139,0.2)', background: 'rgba(20,20,40,0.5)', color: 'var(--slate-200)', fontSize: '0.8rem', outline: 'none' }}
+                      >
+                        <option value="">System default</option>
+                        {['openai','anthropic','gemini','groq','openrouter','nvidia','deepseek'].map(p => (
+                          <option key={p} value={p}>{p}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <label style={{ fontSize: '0.7rem', color: 'var(--slate-500)', display: 'block', marginBottom: 4 }}>Model</label>
+                      <input
+                        value={config.llmModel}
+                        onChange={e => setConfig({ ...config, llmModel: e.target.value })}
+                        placeholder="e.g. gpt-4"
+                        style={{ width: '100%', padding: '6px 8px', borderRadius: 8, border: '1px solid rgba(100,116,139,0.2)', background: 'rgba(20,20,40,0.5)', color: 'var(--slate-200)', fontSize: '0.8rem', outline: 'none' }}
+                      />
+                    </div>
+                  </div>
+
+                  <div style={{ display: 'flex', gap: 8, marginBottom: 10 }}>
+                    <div style={{ flex: 1 }}>
+                      <label style={{ fontSize: '0.7rem', color: 'var(--slate-500)', display: 'block', marginBottom: 4 }}>Max Tokens</label>
+                      <input
+                        type="number" min={256} max={128000} step={256}
+                        value={config.maxTokens}
+                        onChange={e => setConfig({ ...config, maxTokens: parseInt(e.target.value) || 4096 })}
+                        style={{ width: '100%', padding: '6px 8px', borderRadius: 8, border: '1px solid rgba(100,116,139,0.2)', background: 'rgba(20,20,40,0.5)', color: 'var(--slate-200)', fontSize: '0.8rem', outline: 'none' }}
+                      />
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <label style={{ fontSize: '0.7rem', color: 'var(--slate-500)', display: 'block', marginBottom: 4 }}>Max Iterations</label>
+                      <input
+                        type="number" min={1} max={100} step={1}
+                        value={config.maxIterations}
+                        onChange={e => setConfig({ ...config, maxIterations: parseInt(e.target.value) || 25 })}
+                        style={{ width: '100%', padding: '6px 8px', borderRadius: 8, border: '1px solid rgba(100,116,139,0.2)', background: 'rgba(20,20,40,0.5)', color: 'var(--slate-200)', fontSize: '0.8rem', outline: 'none' }}
                       />
                     </div>
                   </div>

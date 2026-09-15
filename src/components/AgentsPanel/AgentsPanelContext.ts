@@ -9,9 +9,10 @@ export type TabId =
     | 'permissions'
     | 'handoffs'
     | 'history'
-    | 'identity';
+    | 'identity'
+    | 'management';
 export type ViewMode = 'grid' | 'list';
-export type StatusFilter = 'all' | 'active' | 'paused' | 'error';
+export type StatusFilter = 'all' | 'active' | 'paused' | 'error' | 'archived' | 'draft';
 
 export interface Agent {
     id: string;

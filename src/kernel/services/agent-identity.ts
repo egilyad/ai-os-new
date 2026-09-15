@@ -60,7 +60,7 @@ export function setAgentIdentityResolver(resolver: IAgentResolver | undefined): 
     _defaultResolver = resolver;
 }
 
-const NEUTRAL_AVATAR = { emoji: '🤖', color: '#64748b' };
+const NEUTRAL_AVATAR = { emoji: '🤖', color: '#667eea' };
 
 /** Safe, human-readable label used when an agent cannot be resolved. Never an internal id. */
 export const UNKNOWN_AGENT_LABEL = 'Unknown Agent';

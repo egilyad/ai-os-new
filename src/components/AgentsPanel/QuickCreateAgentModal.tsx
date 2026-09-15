@@ -4,7 +4,13 @@ import { ModalShell } from '../ModalShell';
 import { PROVIDER_DEFAULT_MODELS } from '../../kernel/utils/provider-default-models';
 import type { ApiKey } from '../../types/metrics';
 
-const AVATAR_OPTIONS = ['🧠', '🤖', '⚡', '🔧', '📊', '🛡️', '🎯', '💡', '🔬', '🎨', '📝', '🚀', '🧪', '🏗️', '🔍', '🌐'];
+const AVATAR_IMAGES = [
+    '/avatars/alex.png',
+    '/avatars/sophia.png',
+    '/avatars/james.png',
+    '/avatars/ava.png',
+    '/avatars/lily.png',
+];
 
 // T1.3: model options from SSOT (old hardcoded llama-3.x IDs are EOL)
 const MODEL_OPTIONS: Array<{ value: string; label: string }> = [
@@ -30,7 +36,7 @@ export const QuickCreateAgentModal: React.FC<QuickCreateAgentModalProps> = ({ op
     // T1.3: rotation (default) vs pinned provider/key binding
     const [provider, setProvider] = useState('auto');
     const [keyId, setKeyId] = useState('auto');
-    const [avatar, setAvatar] = useState('🧠');
+    const [avatar, setAvatar] = useState('/avatars/alex.png');
 
     const handleRoleChange = (val: string) => {
         const found = availableRoles.find(r => r.name === val || r.id === val);
@@ -151,21 +157,20 @@ export const QuickCreateAgentModal: React.FC<QuickCreateAgentModalProps> = ({ op
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                     <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--slate-300)' }}>Avatar</span>
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-                        {AVATAR_OPTIONS.map(e => (
+                        {AVATAR_IMAGES.map(img => (
                             <button
-                                key={e}
-                                onClick={() => setAvatar(e)}
+                                key={img}
+                                onClick={() => setAvatar(img)}
                                 style={{
-                                    width: 36, height: 36, borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                    fontSize: '1.1rem',
-                                    border: avatar === e ? '2px solid #8b5cf6' : '1px solid rgba(100,116,139,0.2)',
-                                    background: avatar === e ? 'rgba(139,92,246,0.15)' : 'rgba(15,23,42,0.4)',
+                                    width: 40, height: 40, borderRadius: '50%', overflow: 'hidden', padding: 0,
+                                    border: avatar === img ? '2px solid #8b5cf6' : '2px solid transparent',
+                                    background: 'none',
                                     cursor: 'pointer'
                                 }}
-                                aria-label={`Select avatar ${e}`}
-                                aria-pressed={avatar === e}
+                                aria-label={`Select avatar ${img.split('/').pop()?.replace('.png', '')}`}
+                                aria-pressed={avatar === img}
                             >
-                                {e}
+                                <img src={img} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                             </button>
                         ))}
                     </div>

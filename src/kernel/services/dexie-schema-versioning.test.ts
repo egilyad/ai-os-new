@@ -12,18 +12,12 @@ import { SuperAgentsDB } from './dexie-schema';
 
 describe('Dexie schema versioning (P2.19)', () => {
     it('version declarations are in ascending order', () => {
-        // Dexie requires .version(N) calls with strictly ascending N.
-        // Extract version numbers from the class source — they appear as .version(N)
-        // in the constructor. We verify by instantiating and checking the version list.
         const db = new SuperAgentsDB();
-        // Dexie stores versions in db.verno (the highest version) and db._versions (internal)
-        // But we can't access _versions directly. Instead, verify the DB opens without error
-        // (which means Dexie accepted the version ordering).
         expect(db).toBeDefined();
-        expect(db.verno).toBe(35);
+        expect(db.verno).toBe(43);
     });
 
-    it('latest version (v35) includes all project tables', async () => {
+    it('latest version (v43) includes all project tables', async () => {
         const db = new SuperAgentsDB();
         db.version(999).stores({
             projects: 'id, status, type, createdAt, updatedAt',
@@ -43,6 +37,50 @@ describe('Dexie schema versioning (P2.19)', () => {
         expect(db.projectArtifacts).toBeDefined();
         expect(db.projectAssignments).toBeDefined();
 
+        // Verify agent management tables exist
+        expect(db.agentManaged).toBeDefined();
+        expect(db.agentSkills).toBeDefined();
+        expect(db.agentTools).toBeDefined();
+        expect(db.agentResponsibilities).toBeDefined();
+        expect(db.agentMetrics).toBeDefined();
+        expect(db.agentMemory).toBeDefined();
+        expect(db.agentExecutions).toBeDefined();
+        expect(db.agentConfigRevisions).toBeDefined();
+        expect(db.agentApiKeys).toBeDefined();
+        expect(db.agentBudgets).toBeDefined();
+        expect(db.budgetIncidents).toBeDefined();
+
+        // Verify task system tables exist (AGEMS port, Phase 2)
+        expect(db.tasks).toBeDefined();
+        expect(db.taskLabels).toBeDefined();
+        expect(db.taskComments).toBeDefined();
+        expect(db.taskWorkProducts).toBeDefined();
+        expect(db.taskTriggers).toBeDefined();
+
+        // Verify approval tables (AGEMS port, Phase 3)
+        expect(db.approvalPresets).toBeDefined();
+        expect(db.approvalRequests).toBeDefined();
+        expect(db.approvalComments).toBeDefined();
+
+        // Verify meeting tables (AGEMS port, Phase 5)
+        expect(db.meetings).toBeDefined();
+        expect(db.meetingDecisions).toBeDefined();
+        expect(db.meetingMessages).toBeDefined();
+
+        // Verify catalog tables (AGEMS port, Phase 8)
+        expect(db.catalogAgents).toBeDefined();
+        expect(db.catalogSkills).toBeDefined();
+
+        // Verify audit tables (AGEMS port, Phase 9)
+        expect(db.auditLogs).toBeDefined();
+        expect(db.accessRules).toBeDefined();
+
+        // Verify integration tables (AGEMS port, Phase 10)
+        expect(db.telegramChats).toBeDefined();
+        expect(db.telegramMessages).toBeDefined();
+        expect(db.n8nWorkflows).toBeDefined();
+        expect(db.mcpServers).toBeDefined();
+
         await db.delete();
     });
 
@@ -56,15 +94,12 @@ describe('Dexie schema versioning (P2.19)', () => {
         // The DB constructor calls validateMigrations() which logs warnings for dropped tables.
         // If the constructor succeeds, the schema is valid.
         expect(db).toBeDefined();
-        expect(db.verno).toBeGreaterThanOrEqual(35);
+        expect(db.verno).toBeGreaterThanOrEqual(43);
     });
 
     it('validateMigrations covers all versions up to latest', () => {
-        // The versionDefs array in validateMigrations() should cover v5 through the latest.
-        // We can't read the private array directly, but we can verify the DB's highest version
-        // matches the expected latest (35).
         const db = new SuperAgentsDB();
-        expect(db.verno).toBe(35);
+        expect(db.verno).toBe(43);
     });
 
     it('Table type declarations match actual Dexie table properties', () => {
@@ -102,6 +137,15 @@ describe('Dexie schema versioning (P2.19)', () => {
             'scopedMem',
             'projects', 'projectTasks', 'projectRuns', 'projectFiles',
             'projectArtifacts', 'projectAssignments',
+            'agentManaged', 'agentSkills', 'agentTools', 'agentResponsibilities',
+            'agentMetrics', 'agentMemory', 'agentExecutions', 'agentConfigRevisions',
+            'agentApiKeys', 'agentBudgets', 'budgetIncidents',
+            'tasks', 'taskLabels', 'taskComments', 'taskWorkProducts', 'taskTriggers',
+            'approvalPresets', 'approvalRequests', 'approvalComments',
+            'meetings', 'meetingDecisions', 'meetingMessages',
+            'catalogAgents', 'catalogSkills',
+            'auditLogs', 'accessRules',
+            'telegramChats', 'telegramMessages', 'n8nWorkflows', 'mcpServers',
         ];
 
         for (const table of expectedTables) {

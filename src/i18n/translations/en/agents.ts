@@ -36,6 +36,7 @@ const agents: Record<string, string> = {
     'agents.skill_type': 'Skill Type',
     'agents.tab_identity': 'Identity',
     'agents.tab_profile': 'Profile',
+    'agents.tab_management': 'Skills & KPIs',
     'agents.identity.display_name': 'Display name',
     'agents.identity.first_name': 'First name',
     'agents.identity.last_name': 'Last name',
