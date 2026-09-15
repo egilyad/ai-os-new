@@ -316,3 +316,5 @@ export function ApprovalPanel() {
         </div>
     );
 }
+
+export default ApprovalPanel;

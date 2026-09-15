@@ -101,6 +101,17 @@ export function IntegrationsPanel() {
     const btn = (bg: string) => ({ padding: '6px 14px', background: bg, color: '#fff', border: 'none', borderRadius: 6, cursor: 'pointer' as const });
     const input = { padding: 6, borderRadius: 4, background: '#1e293b', color: '#e2e8f0', border: '1px solid #334155' };
 
+    // Dexie records from older DB versions may carry non-primitive field values.
+    // Coercing such a value (e.g. a React key) throws
+    // "Cannot convert object to primitive value" and crashes the panel,
+    // so only true primitives are rendered — everything else falls back.
+    const toText = (v: unknown): string =>
+        typeof v === 'string' || typeof v === 'number' || typeof v === 'boolean' ? String(v) : '';
+    const toKey = (v: unknown, fb: string): string => {
+        const t = toText(v);
+        return t !== '' ? t : fb;
+    };
+
     return (
         <div style={{ padding: 24 }}>
             <h1>{t('integration.title')}</h1>
@@ -154,10 +165,10 @@ export function IntegrationsPanel() {
                         <p style={{ color: '#94a3b8' }}>{t('integration.chat_empty')}</p>
                     ) : (
                         <ul style={{ listStyle: 'none', padding: 0 }}>
-                            {telegramChats.map(chat => (
-                                <li key={chat.id} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 12px', borderBottom: '1px solid #1e293b' }}>
-                                    <span style={{ color: '#6366f1' }}>{chat.username ?? chat.telegramChatId}</span>
-                                    <span style={{ color: '#94a3b8', fontSize: 12 }}>agent: {chat.agentId}</span>
+                            {telegramChats.map((chat, i) => (
+                                <li key={toKey(chat.id, `chat-${i}`)} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 12px', borderBottom: '1px solid #1e293b' }}>
+                                    <span style={{ color: '#6366f1' }}>{toText(chat.username) || toText(chat.telegramChatId)}</span>
+                                    <span style={{ color: '#94a3b8', fontSize: 12 }}>agent: {toText(chat.agentId)}</span>
                                     <span style={{ padding: '2px 8px', borderRadius: 4, background: chat.isApproved ? '#166534' : '#92400e', fontSize: 12 }}>
                                         {chat.isApproved ? t('integration.approve') : 'pending'}
                                     </span>
@@ -187,9 +198,9 @@ export function IntegrationsPanel() {
                         <p style={{ color: '#94a3b8' }}>{t('integration.workflow_empty')}</p>
                     ) : (
                         <ul style={{ listStyle: 'none', padding: 0 }}>
-                            {n8nWorkflows.map(wf => (
-                                <li key={wf.id} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 12px', borderBottom: '1px solid #1e293b' }}>
-                                    <span style={{ color: '#6366f1' }}>{wf.name}</span>
+                            {n8nWorkflows.map((wf, i) => (
+                                <li key={toKey(wf.id, `wf-${i}`)} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 12px', borderBottom: '1px solid #1e293b' }}>
+                                    <span style={{ color: '#6366f1' }}>{toText(wf.name)}</span>
                                     <span style={{ padding: '2px 8px', borderRadius: 4, background: wf.active ? '#166534' : '#92400e', fontSize: 12 }}>
                                         {wf.active ? t('integration.workflow_active') : t('integration.workflow_inactive')}
                                     </span>
@@ -217,12 +228,12 @@ export function IntegrationsPanel() {
                         <p style={{ color: '#94a3b8' }}>{t('integration.server_empty')}</p>
                     ) : (
                         <ul style={{ listStyle: 'none', padding: 0 }}>
-                            {mcpServers.map(s => (
-                                <li key={s.id} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 12px', borderBottom: '1px solid #1e293b' }}>
-                                    <span style={{ color: '#6366f1' }}>{s.name}</span>
-                                    <span style={{ color: '#94a3b8', fontSize: 12 }}>{s.url}</span>
+                            {mcpServers.map((s, i) => (
+                                <li key={toKey(s.id, `mcp-${i}`)} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 12px', borderBottom: '1px solid #1e293b' }}>
+                                    <span style={{ color: '#6366f1' }}>{toText(s.name)}</span>
+                                    <span style={{ color: '#94a3b8', fontSize: 12 }}>{toText(s.url)}</span>
                                     <span style={{ padding: '2px 8px', borderRadius: 4, background: s.status === 'connected' ? '#166534' : '#991b1b', fontSize: 12 }}>
-                                        {s.status}
+                                        {toText(s.status)}
                                     </span>
                                     <button onClick={() => handleDeleteMCP(s.id)} style={btn('#991b1b')}>{t('integration.delete')}</button>
                                 </li>
@@ -234,3 +245,5 @@ export function IntegrationsPanel() {
         </div>
     );
 }
+
+export default IntegrationsPanel;

@@ -212,3 +212,5 @@ export function AuditPanel() {
         </div>
     );
 }
+
+export default AuditPanel;
