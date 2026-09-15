@@ -99,8 +99,9 @@ export function buildDebateState(args: DebateArgument[], currentAgentId: string)
     }
 
     // Detect resolved claims: a claim is resolved when addressed by the other side in a subsequent round
+    // Use recentRoundNumbers (not roundNumbers) — rounds[] only contains the last MAX_CONTEXT_ROUNDS entries
     const resolvedClaims: ClaimEntry[] = [];
-    for (let i = 0; i < roundNumbers.length - 1; i++) {
+    for (let i = 0; i < recentRoundNumbers.length - 1; i++) {
         const roundClaims = rounds[i]!.claims;
         const nextRoundClaims = rounds[i + 1]!.claims;
         for (const claim of roundClaims) {

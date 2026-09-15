@@ -32,7 +32,7 @@ export class ServiceBackedMemoryStore implements IMemoryStore {
     async query(query: MemoryStoreQuery): Promise<MemoryEntry[]> {
         const svc = this.memoryService();
         if (!svc) return [];
-        const all = (svc as unknown as { memories: MemoryEntry[] }).memories || [];
+        const all = svc.getMemories();
         let results = all.filter((e) => (e.metadata.type || '').startsWith(this.type));
         if (query.timeRange)
             results = results.filter((e) => {
@@ -57,7 +57,7 @@ export class ServiceBackedMemoryStore implements IMemoryStore {
     async get(id: string): Promise<MemoryEntry | undefined> {
         const svc = this.memoryService();
         if (!svc) return undefined;
-        const all = (svc as unknown as { memories: MemoryEntry[] }).memories || [];
+        const all = svc.getMemories();
         return all.find((e) => e.id === id && (e.metadata.type || '').startsWith(this.type));
     }
 
@@ -70,7 +70,7 @@ export class ServiceBackedMemoryStore implements IMemoryStore {
     async clear(): Promise<void> {
         const svc = this.memoryService();
         if (!svc) return;
-        const all = (svc as unknown as { memories: MemoryEntry[] }).memories || [];
+        const all = svc.getMemories();
         for (const e of all) {
             if ((e.metadata.type || '').startsWith(this.type)) {
                 await svc.deleteMemory(e.id);
@@ -81,7 +81,7 @@ export class ServiceBackedMemoryStore implements IMemoryStore {
     async getStats(): Promise<MemoryStats> {
         const svc = this.memoryService();
         if (!svc) return { totalEntries: 0, byType: {}, byImportance: {} } as MemoryStats;
-        const all = (svc as unknown as { memories: MemoryEntry[] }).memories || [];
+        const all = svc.getMemories();
         const filtered = all.filter((e) => (e.metadata.type || '').startsWith(this.type));
         return computeMemoryStats(filtered);
     }
@@ -93,7 +93,7 @@ export class ServiceBackedMemoryStore implements IMemoryStore {
         let oldestEntry = Date.now();
         let newestEntry = 0;
         if (svc) {
-            const all = (svc as unknown as { memories: MemoryEntry[] }).memories || [];
+            const all = svc.getMemories();
             const filtered = all.filter((e) => (e.metadata.type || '').startsWith(this.type));
             entryCount = filtered.length;
             for (const e of filtered) {

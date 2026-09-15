@@ -304,6 +304,7 @@ export interface ServicesConfigSection {
         semanticEnabled: boolean;
         autoEmbedOnStore: boolean;
         maxEntries: number;
+        ttlMs: number;
     };
 }
 

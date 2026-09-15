@@ -29,7 +29,7 @@ export function finalizeDebateState(session: DebateSession, deps: FinalizerDeps)
 }
 
 export function emitFinalizeEvents(session: DebateSession, deps: FinalizerDeps): void {
-    deps.eventBus.emitOnce(EVENTS.DEBATE_UPDATED, session.id, session);
+    deps.eventBus.emit(EVENTS.DEBATE_UPDATED, session);
     deps.eventBus.emit(EVENTS.DEBATE_ENDED, {
         sessionId: session.id,
         topic: session.topic,

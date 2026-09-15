@@ -142,7 +142,7 @@ export function setupChatEventHandlers(set: ZustandSet, _get: ZustandGet): Array
                                 r.requestId === payload.requestId
                                     ? {
                                           ...r,
-                                          content: '',
+                                          content: r.content, // preserve partial stream content
                                           error: payload.error,
                                           status: 'error' as const,
                                       }

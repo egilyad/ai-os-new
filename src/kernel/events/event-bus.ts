@@ -324,6 +324,29 @@ export class EventBus implements IEventBus {
         }
     }
 
+    // P1-13b: Periodic dead-letter consumer — drains and logs dropped events
+    // so developers can see what the bus is silently dropping.
+    private _dlqTimer: ReturnType<typeof setInterval> | null = null;
+
+    startDeadLetterLogger(intervalMs = 60_000): void {
+        if (this._dlqTimer) return;
+        this._dlqTimer = setInterval(() => {
+            const dropped = this.drainDeadLetterQueue();
+            if (dropped.length > 0 && this.logger) {
+                this.logger.warn('EventBus', `Dead-letter: ${dropped.length} dropped events`, {
+                    events: dropped.slice(0, 10).map((d) => `${d.event} (${d.reason})`),
+                });
+            }
+        }, intervalMs);
+    }
+
+    stopDeadLetterLogger(): void {
+        if (this._dlqTimer) {
+            clearInterval(this._dlqTimer);
+            this._dlqTimer = null;
+        }
+    }
+
     subscribeAll(callback: (payload: { event: string; data: unknown }) => void) {
         return this.on('*', callback as Callback<EventMap['*']>);
     }

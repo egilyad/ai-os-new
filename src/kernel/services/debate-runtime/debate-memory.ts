@@ -160,6 +160,7 @@ export class DebateMemory implements IDebateMemory {
      * Strip content from steps older than the last `keepCount`, freeing
      * LLM response strings for GC while preserving step structure (agentId,
      * type, confidence, timestamp) for metrics and chain calculations.
+     * Keep a 200-char summary so claim extraction still works for consensus.
      * Call after each round completes to prevent unbounded memory growth
      * (observed: +300MB/round with 10 agents on 70B models).
      */
@@ -167,7 +168,8 @@ export class DebateMemory implements IDebateMemory {
         if (keepCount <= 0 || this.steps.length <= keepCount) return;
         const keepFrom = this.steps.length - keepCount;
         for (let i = 0; i < keepFrom; i++) {
-            this.steps[i] = { ...this.steps[i]!, content: '' };
+            const orig = this.steps[i]!;
+            this.steps[i] = { ...orig, content: orig.content.slice(0, 200) };
         }
         for (const chainArr of this.chains.values()) {
             for (const chain of chainArr) {
@@ -175,7 +177,7 @@ export class DebateMemory implements IDebateMemory {
                 for (let i = 0; i < trimLimit; i++) {
                     const s = chain.steps[i];
                     if (s?.content) {
-                        chain.steps[i] = { ...s, content: '' } as ReasoningStep;
+                        chain.steps[i] = { ...s, content: s.content.slice(0, 200) } as ReasoningStep;
                     }
                 }
             }

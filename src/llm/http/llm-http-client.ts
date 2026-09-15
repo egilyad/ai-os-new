@@ -105,7 +105,7 @@ export class LLMHttpClient {
         defaultHeaders: Record<string, string> = {},
         authHeaderName = 'x-goog-api-key',
         provider = 'unknown',
-        timeoutMs = 60000,
+        timeoutMs = 120000,
     ) {
         this.#baseUrl = baseUrl;
         this.#defaultHeaders = defaultHeaders;
@@ -114,14 +114,14 @@ export class LLMHttpClient {
         this.#timeoutMs = timeoutMs;
     }
 
-    #withTimeout(signal?: AbortSignal): { signal: AbortSignal; controller: AbortController } {
+    #withTimeout(signal?: AbortSignal): { signal: AbortSignal; controller: AbortController; timer?: ReturnType<typeof setTimeout> } {
         if (!signal) {
             const ctrl = new AbortController();
-            setTimeout(
+            const timer = setTimeout(
                 () => ctrl.abort(new DOMException('Timeout', 'TimeoutError')),
                 this.#timeoutMs,
             );
-            return { signal: ctrl.signal, controller: ctrl };
+            return { signal: ctrl.signal, controller: ctrl, timer };
         }
         // Avoid AbortSignal.any() due to Chrome GC bug:
         // AbortSignal.any() does not release internal onabort handlers
@@ -148,7 +148,7 @@ export class LLMHttpClient {
                 { once: true },
             );
         }
-        return { signal: controller.signal, controller };
+        return { signal: controller.signal, controller, timer };
     }
 
     /** Register an in-flight request and return a dispose function. */
@@ -381,7 +381,7 @@ export class LLMHttpClient {
         signal?: AbortSignal,
     ): Promise<Response> {
         await LLMHttpClient.acquireSlot();
-        const { signal: mergedSignal, controller } = this.#withTimeout(signal);
+        const { signal: mergedSignal, controller, timer } = this.#withTimeout(signal);
         const done = this.#trackInFlight(controller, path);
         try {
             let res: Response;
@@ -399,6 +399,11 @@ export class LLMHttpClient {
             } catch (err) {
                 this.#handleFetchError(err, mergedSignal);
             }
+
+            // Headers received — clear the time-to-headers timer.
+            // The remaining timeout is handled by the SSE idle timer or the
+            // caller's own abort signal, not the HTTP-layer timer.
+            if (timer) clearTimeout(timer);
 
             if (mergedSignal.aborted) {
                 res.body?.cancel()?.catch(() => {});

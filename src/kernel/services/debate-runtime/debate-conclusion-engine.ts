@@ -101,7 +101,7 @@ export class DebateConclusionEngine {
             args.push({
                 agentId: payload.agentId,
                 agentName: nameMap.get(payload.agentId) || payload.agentId,
-                content: payload.content.slice(0, 500),
+                content: payload.content.slice(0, 2000),
                 stance,
                 strength: this.estimateStrength(payload.content),
             });
@@ -394,7 +394,7 @@ export class DebateConclusionEngine {
             .slice(0, 10)
             .map(
                 (a, i) =>
-                    `${i + 1}. [${a.stance}] ${sanitizePromptVar(a.agentName)}: ${sanitizePromptVar(a.content.slice(0, 300))}`,
+                    `${i + 1}. [${a.stance}] ${sanitizePromptVar(a.agentName)}: ${sanitizePromptVar(a.content.slice(0, 1000))}`,
             )
             .join('\n');
 

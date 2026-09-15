@@ -115,15 +115,15 @@ describe('DebateMemory', () => {
         mem.recordStep(makeStep({ content: '2' }));
         mem.recordStep(makeStep({ content: '3' }));
         mem.trimContent(2);
-        const recent = mem.getRecentSteps(3);
-        expect(recent).toHaveLength(2);
-        expect(recent[0]).toBeDefined();
-        expect(recent[0]!.content).toBe('2');
-        expect(recent[1]).toBeDefined();
-        expect(recent[1]!.content).toBe('3');
+        const all = mem.getAllSteps();
+        // All 3 steps still exist; only content is trimmed
+        expect(all).toHaveLength(3);
+        // Last 2 keep full content
+        expect(all[1]!.content).toBe('2');
+        expect(all[2]!.content).toBe('3');
     });
 
-    it('trims content of older steps beyond keepCount', () => {
+    it('preserves 200-char summary for trimmed steps', () => {
         const mem = new DebateMemory();
         mem.recordStep(makeStep({ content: 'old' }));
         mem.recordStep(makeStep({ content: 'mid' }));
@@ -131,7 +131,8 @@ describe('DebateMemory', () => {
         mem.trimContent(2);
         const steps = mem.getAllSteps();
         expect(steps[0]).toBeDefined();
-        expect(steps[0]!.content).toBe('');
+        // Content is preserved as a summary (short content stays intact)
+        expect(steps[0]!.content).toBe('old');
         expect(steps[1]).toBeDefined();
         expect(steps[1]!.content).toBe('mid');
         expect(steps[2]).toBeDefined();

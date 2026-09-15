@@ -809,65 +809,23 @@ export class DatabaseService implements IDatabaseService {
     }
 
     async exportToJson(includeSecrets = false): Promise<Record<string, unknown[]>> {
-        const [
-            notes,
-            memories,
-            apiKeys,
-            sessions,
-            roles,
-            cognitiveTraces,
-            traces,
-            skills,
-            connectors,
-            keyValue,
-            debateSessions,
-            debateVerdicts,
-            debateTimeline,
-            debateOverrides,
-            sessionLinks,
-            eventLog,
-        ] = await Promise.all([
-            getDexieDb().notes.toArray(),
-            getDexieDb().memories.toArray(),
-            getDexieDb().apiKeys.toArray(),
-            getDexieDb().sessions.toArray(),
-            getDexieDb().roles.toArray(),
-            getDexieDb().cognitiveTraces.toArray(),
-            getDexieDb().traces.toArray(),
-            getDexieDb().skills.toArray(),
-            getDexieDb().connectors.toArray(),
-            getDexieDb().keyValue.toArray(),
-            getDexieDb().debateSessions.toArray(),
-            getDexieDb().debateVerdicts.toArray(),
-            getDexieDb().debateTimeline.toArray(),
-            getDexieDb().debateOverrides.toArray(),
-            getDexieDb().sessionLinks.toArray(),
-            getDexieDb().eventLog.toArray(),
-        ]);
-        const exportedKeys = includeSecrets
-            ? apiKeys
-            : apiKeys.map((k) => ({
-                  ...k,
-                  key: REDACTED_MARKER,
-              }));
-        return {
-            notes,
-            memories,
-            apiKeys: exportedKeys,
-            sessions,
-            roles,
-            cognitiveTraces,
-            traces,
-            skills,
-            connectors,
-            keyValue,
-            debateSessions,
-            debateVerdicts,
-            debateTimeline,
-            debateOverrides,
-            sessionLinks,
-            eventLog,
-        };
+        const dexie = getDexieDb();
+        const result: Record<string, unknown[]> = {};
+        // Dynamically export ALL tables (not hardcoded 16)
+        await Promise.all(
+            dexie.tables.map(async (table) => {
+                const rows = await table.toArray();
+                if (table.name === 'apiKeys' && !includeSecrets) {
+                    result[table.name] = rows.map((k) => ({
+                        ...k,
+                        key: REDACTED_MARKER,
+                    }));
+                } else {
+                    result[table.name] = rows;
+                }
+            }),
+        );
+        return result;
     }
 
     async verifyIntegrity(): Promise<IntegrityReport[]> {
@@ -902,28 +860,16 @@ export class DatabaseService implements IDatabaseService {
     }
 
     async importFromJson(data: Record<string, unknown[]>): Promise<void> {
-        const tableMap: Record<string, Table> = {
-            notes: getDexieDb().notes,
-            memories: getDexieDb().memories,
-            apiKeys: getDexieDb().apiKeys,
-            sessions: getDexieDb().sessions,
-            roles: getDexieDb().roles,
-            cognitiveTraces: getDexieDb().cognitiveTraces,
-            traces: getDexieDb().traces,
-            skills: getDexieDb().skills,
-            connectors: getDexieDb().connectors,
-            keyValue: getDexieDb().keyValue,
-            debateSessions: getDexieDb().debateSessions,
-            debateVerdicts: getDexieDb().debateVerdicts,
-            debateTimeline: getDexieDb().debateTimeline,
-            debateOverrides: getDexieDb().debateOverrides,
-            sessionLinks: getDexieDb().sessionLinks,
-            eventLog: getDexieDb().eventLog,
-        };
-        const tables = Object.values(tableMap);
-        await getDexieDb().transaction('rw', tables, async () => {
+        const dexie = getDexieDb();
+        // Build dynamic table lookup from all Dexie tables
+        const tableMap = new Map<string, Table>();
+        for (const table of dexie.tables) {
+            tableMap.set(table.name, table);
+        }
+        const tables = [...tableMap.values()];
+        await dexie.transaction('rw', tables, async () => {
             for (const [tableName, rows] of Object.entries(data)) {
-                const table = tableMap[tableName];
+                const table = tableMap.get(tableName);
                 if (!table) continue;
                 let valid = rows.filter(
                     (r) => typeof r === 'object' && r !== null && !Array.isArray(r),

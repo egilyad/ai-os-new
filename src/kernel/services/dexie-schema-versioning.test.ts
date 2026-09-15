@@ -14,10 +14,10 @@ describe('Dexie schema versioning (P2.19)', () => {
     it('version declarations are in ascending order', () => {
         const db = new SuperAgentsDB();
         expect(db).toBeDefined();
-        expect(db.verno).toBe(43);
+        expect(db.verno).toBe(44);
     });
 
-    it('latest version (v43) includes all project tables', async () => {
+    it('latest version (v44) includes all project tables', async () => {
         const db = new SuperAgentsDB();
         db.version(999).stores({
             projects: 'id, status, type, createdAt, updatedAt',
@@ -94,12 +94,12 @@ describe('Dexie schema versioning (P2.19)', () => {
         // The DB constructor calls validateMigrations() which logs warnings for dropped tables.
         // If the constructor succeeds, the schema is valid.
         expect(db).toBeDefined();
-        expect(db.verno).toBeGreaterThanOrEqual(43);
+        expect(db.verno).toBeGreaterThanOrEqual(44);
     });
 
     it('validateMigrations covers all versions up to latest', () => {
         const db = new SuperAgentsDB();
-        expect(db.verno).toBe(43);
+        expect(db.verno).toBe(44);
     });
 
     it('Table type declarations match actual Dexie table properties', () => {

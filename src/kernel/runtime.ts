@@ -161,6 +161,7 @@ export class RuntimeManager {
         crossTabStateSync.destroy();
         await this.container.clear();
         clearResolvedServices();
+        coreEventBus.stopDeadLetterLogger();
         coreEventBus.clearAllSubscriptions();
         this.registerCoreServices();
         this.initialized = false;
@@ -237,6 +238,7 @@ export class RuntimeManager {
         this.container.register('dal', new DataAccessLayerImpl(coreDatabase));
         this.container.register('eventBus', coreEventBus);
         coreEventBus.setLogger(rootLogger);
+        coreEventBus.startDeadLetterLogger();
         this.container.register('securityService', new SecurityService());
         this.container.register('BucketStorageAdapter', localStorageAdapter);
         const schedulerService = initSchedulerService(coreDatabase, coreEventBus);

@@ -61,8 +61,15 @@ export class SessionRepository {
   }
 
   async save(session: ChatSession): Promise<void> {
-    await this.db.sessions.put(session);
-    this.cache.set(session.id, session);
+    // OCC: read current version, skip stale writes, auto-increment
+    const current = await this.db.sessions.get(session.id);
+    const currentVersion = (current as { version?: number })?.version ?? 0;
+    const incomingVersion = (session as { version?: number })?.version ?? 0;
+    if (incomingVersion > 0 && incomingVersion < currentVersion) return;
+    const newVersion = Math.max(currentVersion, incomingVersion) + 1;
+    const record = { ...session, version: newVersion };
+    await this.db.sessions.put(record);
+    this.cache.set(session.id, record);
     await this.enforceLimit();
   }
 

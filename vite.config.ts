@@ -111,7 +111,7 @@ export default defineConfig({
                 "script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'; " +
                 "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
                 "font-src 'self' data: https://fonts.gstatic.com; " +
-                "connect-src 'self' https://generativelanguage.googleapis.com https://openrouter.ai https://integrate.api.nvidia.com https://api.groq.com https://api.cerebras.ai https://api.cloudflare.com https://api.openai.com; " +
+                "connect-src 'self' https://generativelanguage.googleapis.com https://openrouter.ai https://integrate.api.nvidia.com https://api.groq.com https://api.cerebras.ai https://api.cloudflare.com https://api.openai.com https://api.deepseek.com https://api.moonshot.ai https://api.minimax.io https://dashscope-intl.aliyuncs.com https://api.together.xyz https://api.fireworks.ai https://api.mistral.ai https://api.cohere.com https://api.blackbox.ai https://api.scaleway.ai https://api.cometapi.com https://models.inference.ai.azure.com https://api-inference.huggingface.co https://api.perplexity.ai; " +
                 "worker-src 'self' blob:; " +
                 "img-src 'self' data: blob:;",
         },
@@ -157,6 +157,90 @@ export default defineConfig({
                 target: process.env.VITE_PROXY_OPENAI || 'https://api.openai.com',
                 changeOrigin: true,
                 rewrite: (path) => path.replace(/^\/proxy\/openai/, ''),
+                secure: true,
+            }),
+            '/proxy/deepseek': withProxyErrorHandler({
+                target: process.env.VITE_PROXY_DEEPSEEK || 'https://api.deepseek.com/v1',
+                changeOrigin: true,
+                rewrite: (path) => path.replace(/^\/proxy\/deepseek/, ''),
+                secure: true,
+            }),
+            '/proxy/kimi': withProxyErrorHandler({
+                target: process.env.VITE_PROXY_KIMI || 'https://api.moonshot.ai/v1',
+                changeOrigin: true,
+                rewrite: (path) => path.replace(/^\/proxy\/kimi/, ''),
+                secure: true,
+            }),
+            '/proxy/minimax': withProxyErrorHandler({
+                target: process.env.VITE_PROXY_MINIMAX || 'https://api.minimax.io/v1',
+                changeOrigin: true,
+                rewrite: (path) => path.replace(/^\/proxy\/minimax/, ''),
+                secure: true,
+            }),
+            '/proxy/qwen': withProxyErrorHandler({
+                target: process.env.VITE_PROXY_QWEN || 'https://dashscope-intl.aliyuncs.com/compatible-mode/v1',
+                changeOrigin: true,
+                rewrite: (path) => path.replace(/^\/proxy\/qwen/, ''),
+                secure: true,
+            }),
+            '/proxy/together': withProxyErrorHandler({
+                target: process.env.VITE_PROXY_TOGETHER || 'https://api.together.xyz/v1',
+                changeOrigin: true,
+                rewrite: (path) => path.replace(/^\/proxy\/together/, ''),
+                secure: true,
+            }),
+            '/proxy/fireworks': withProxyErrorHandler({
+                target: process.env.VITE_PROXY_FIREWORKS || 'https://api.fireworks.ai/inference/v1',
+                changeOrigin: true,
+                rewrite: (path) => path.replace(/^\/proxy\/fireworks/, ''),
+                secure: true,
+            }),
+            '/proxy/mistral': withProxyErrorHandler({
+                target: process.env.VITE_PROXY_MISTRAL || 'https://api.mistral.ai/v1',
+                changeOrigin: true,
+                rewrite: (path) => path.replace(/^\/proxy\/mistral/, ''),
+                secure: true,
+            }),
+            '/proxy/cohere': withProxyErrorHandler({
+                target: process.env.VITE_PROXY_COHERE || 'https://api.cohere.com/v1',
+                changeOrigin: true,
+                rewrite: (path) => path.replace(/^\/proxy\/cohere/, ''),
+                secure: true,
+            }),
+            '/proxy/blackbox': withProxyErrorHandler({
+                target: process.env.VITE_PROXY_BLACKBOX || 'https://api.blackbox.ai',
+                changeOrigin: true,
+                rewrite: (path) => path.replace(/^\/proxy\/blackbox/, ''),
+                secure: true,
+            }),
+            '/proxy/scaleway': withProxyErrorHandler({
+                target: process.env.VITE_PROXY_SCALEWAY || 'https://api.scaleway.ai/v1',
+                changeOrigin: true,
+                rewrite: (path) => path.replace(/^\/proxy\/scaleway/, ''),
+                secure: true,
+            }),
+            '/proxy/cometapi': withProxyErrorHandler({
+                target: process.env.VITE_PROXY_COMETAPI || 'https://api.cometapi.com/v1',
+                changeOrigin: true,
+                rewrite: (path) => path.replace(/^\/proxy\/cometapi/, ''),
+                secure: true,
+            }),
+            '/proxy/github': withProxyErrorHandler({
+                target: process.env.VITE_PROXY_GITHUB || 'https://models.inference.ai.azure.com',
+                changeOrigin: true,
+                rewrite: (path) => path.replace(/^\/proxy\/github/, ''),
+                secure: true,
+            }),
+            '/proxy/huggingface': withProxyErrorHandler({
+                target: process.env.VITE_PROXY_HUGGINGFACE || 'https://api-inference.huggingface.co/v1',
+                changeOrigin: true,
+                rewrite: (path) => path.replace(/^\/proxy\/huggingface/, ''),
+                secure: true,
+            }),
+            '/proxy/perplexity': withProxyErrorHandler({
+                target: process.env.VITE_PROXY_PERPLEXITY || 'https://api.perplexity.ai',
+                changeOrigin: true,
+                rewrite: (path) => path.replace(/^\/proxy\/perplexity/, ''),
                 secure: true,
             }),
             // SEC-07: Fetch proxy for sandboxed URL fetching.

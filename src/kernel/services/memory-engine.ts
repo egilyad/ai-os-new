@@ -25,7 +25,7 @@ function getMaxMemoryEntries(): number {
     return CONFIG?.services?.memory?.maxEntries ?? 1000;
 }
 function getMemoryTtlMs(): number {
-    return CONFIG?.services?.cache?.defaultTTLMs ?? 30 * 24 * 60 * 60 * 1000;
+    return CONFIG?.services?.memory?.ttlMs ?? 30 * 24 * 60 * 60 * 1000;
 }
 function getPruneIntervalMs(): number {
     return getMemoryTtlMs() * 0.5;
@@ -792,5 +792,11 @@ export class MemoryService implements IMemoryEngine {
     recall(context: string, limit = 3): MemoryEntry[] {
         if (!CONFIG.featureFlags.memory.enabled) return [];
         return recallRank(this.cache.entries, context, limit);
+    }
+
+    /** Return all cached memory entries (used by ServiceBackedMemoryStore). */
+    getMemories(limit?: number): MemoryEntry[] {
+        if (limit !== undefined) return this.cache.slice(limit);
+        return this.cache.entries;
     }
 }

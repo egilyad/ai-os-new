@@ -591,7 +591,7 @@ export class DebateSyncManager {
         const keyArguments: VerdictKeyArgument[] = allArgs.slice(-5).map((a) => ({
             agentId: a.agentId ?? 'unknown',
             agentName: a.agentName ?? a.agentId ?? 'unknown',
-            content: (a.content ?? '').slice(0, 500),
+            content: (a.content ?? '').slice(0, 2000),
             stance: (a.position as 'pro' | 'con' | 'neutral') ?? 'neutral',
             strength: a.confidence ?? 0.7,
         }));
@@ -775,7 +775,7 @@ export class DebateSyncManager {
                     argument: arg,
                 });
             }
-            this.deps!.eventBus.emitOnce(EVENTS.DEBATE_UPDATED, session.id, session);
+            this.deps!.eventBus.emit(EVENTS.DEBATE_UPDATED, session);
         } finally {
             entry.syncing = false;
         }

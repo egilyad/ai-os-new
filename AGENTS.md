@@ -1358,6 +1358,25 @@ Covered by Phase 0 (agent types, config revisions, hierarchy, avatars, export/im
 - **12.6 Smart Retry:** `smart-retry.ts` (exponential backoff, retryable error detection), 5/5 tests
 - **12.7 Streaming Accumulator:** `streaming-accumulator.ts` (chunk accumulation, done/error tracking), 7/7 tests
 
-### Phase 13 — Production Hardening ← NEXT
+### Phase 13 — Production Hardening ✅ DONE
+
+**Audit P0 fixes (8/8):**
+- Memory TTL: `services.memory.ttlMs` (30 days) separate from cache TTL
+- `debate-state-builder.ts` round 6+ TypeError: loop bound `roundNumbers.length` → `recentRoundNumbers.length`
+- `mockServices.enabled: false` by default
+- Verdict truncation limits: 500→2000, 300→1000 (conclusion-engine + sync-manager)
+- `trimContent(8)` preserves 200-char summaries instead of emptying to `''`
+- LLM timeout 60s→120s; timer cleared after headers in `streamPost`
+- 7 cognitive layers memory access: `svc.memories` cast → `svc.getMemories()`
+- STREAM_ERROR preserves partial content (`content: r.content`)
+
+**Audit P1 fixes (6/7, 1 deferred):**
+- 14 proxy routes + CSP connect-src update (deepseek, kimi, minimax, qwen, together, fireworks, mistral, cohere, blackbox, scaleway, cometapi, github, huggingface, perplexity)
+- SessionRepository.save() OCC version propagation
+- emitOnce→emit for DEBATE_UPDATED (5 call sites)
+- Dead-letter consumer: `EventBus.startDeadLetterLogger()` drains+logs every 60s, wired into bootstrap/shutdown
+- Dexie v44: remove `content` from memories index (large text field bloat)
+- Backup: `exportToJson`/`importFromJson` now dynamically cover ALL Dexie tables (16→~100+)
+- **Deferred:** Elo `updateRatings` wiring (needs stance→agent mapping across debate pipeline)
 
 Full session log: `docs/SESSION_LOG.md`
