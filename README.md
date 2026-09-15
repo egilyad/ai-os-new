@@ -8,6 +8,7 @@ SuperAgents OS is an event-driven platform for orchestrating distributed intelli
 [![React](https://img.shields.io/badge/React-19-61DAFB?logo=react)](https://react.dev)
 [![Vite](https://img.shields.io/badge/Vite-8-646CFF?logo=vite)](https://vitejs.dev)
 [![Dexie](https://img.shields.io/badge/Dexie-4-4B8BBE?logo=indexeddb)](https://dexie.org)
+[![Vitest](https://img.shields.io/badge/Vitest-3-6E9F18?logo=vitest)](https://vitest.dev)
 [![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
 
 ---
@@ -17,17 +18,20 @@ SuperAgents OS is an event-driven platform for orchestrating distributed intelli
 - [Overview](#overview)
 - [Architecture](#architecture)
 - [Features](#features)
+  - [52 Agent Workforce](#52-agent-workforce)
+  - [52 Role Templates](#52-role-templates)
   - [Provider Management](#provider-management)
   - [Chat & Execution](#chat--execution)
-  - [Agent System](#agent-system)
-  - [Memory Mesh](#memory-mesh)
-  - [Cognitive Builder](#cognitive-builder)
+  - [Agent Channels (mIRC-like)](#agent-channels-mirc-like)
   - [Debate Arena](#debate-arena)
+  - [Conversation Director](#conversation-director)
+  - [Memory Mesh](#memory-mesh)
+  - [Cognitive Modules](#cognitive-modules)
+  - [AGEMS Port (Phases 0–12)](#agems-port-phases-0-12)
   - [Telemetry & Monitoring](#telemetry--monitoring)
 - [Tech Stack](#tech-stack)
 - [Getting Started](#getting-started)
 - [Project Structure](#project-structure)
-- [Configuration](#configuration)
 - [Scripts](#scripts)
 - [Documentation](#documentation)
 - [Contributing](#contributing)
@@ -45,6 +49,7 @@ SuperAgents OS reimagines the browser as an AI operating system. Every component
 - **Event-driven**: All communication flows through a typed EventBus — panels and services are decoupled
 - **Multi-strategy routing**: UCB1 bandit, broadcast, race, cost-optimized, and more
 - **Pluggable providers**: Gemini, OpenRouter, Groq, NVIDIA, OpenAI-compatible, and custom endpoints
+- **52 specialized agents**: English technical + Russian scientific/cognitive roles
 
 ---
 
@@ -56,38 +61,61 @@ SuperAgents OS reimagines the browser as an AI operating system. Every component
 │  React components, Zustand stores                    │
 │  (imports services + contracts only)                 │
 └────────────────────────┬────────────────────────────┘
-                          │ EventBus
+                         │ EventBus
 ┌────────────────────────▼────────────────────────────┐
 │                   Kernel Layer                        │
 │  SystemKernel  EventBus  Container  Bootstrap        │
 │  KeyService  RouterService  MemoryService            │
 │  RotationService  AdvisorService  ToolService        │
-│  Contracts (96+)  Events (216+)  State  Types        │
+│  Contracts (177+)  Events (352+)  State  Types       │
+│  Service Registration (77 phases)                    │
 └────────────────────────┬────────────────────────────┘
                          │
 ┌────────────────────────▼────────────────────────────┐
 │               Infrastructure Layer                    │
-│  LLM adapters (OpenRouter, Gemini, Groq, NVIDIA)     │
-│  Web Workers (memory.worker, sandbox.worker)         │
-│  Dexie (IndexedDB) — sessions, keys, memory, traces  │
+│  LLM adapters (7 providers, 11 decorators)           │
+│  Web Workers (memory, sandbox execution)             │
+│  Dexie v43 (IndexedDB) — 20+ tables                  │
 └─────────────────────────────────────────────────────┘
 ```
-
-The system is built on three design patterns:
-
-1. **Reducer pattern** (like Redux) — `SystemKernel` processes all mutations through a pure `reduce()` function
-2. **Event sourcing** — every action is an event on the `EventBus`; state is derived from event history
-3. **Service-oriented architecture** — each domain has an isolated service with its own persistence
 
 ---
 
 ## Features
 
+### 52 Agent Workforce
+
+52 specialized agents across technical, analytical, creative, management, scientific, social, and medical domains:
+
+| Category | Agents |
+|----------|--------|
+| **Technical** (6) | System Architect, Security Engineer, DevOps Engineer, Database Engineer, Network Engineer, Performance Engineer |
+| **Analytical** (5) | Critical Auditor, Data Scientist, Risk Analyst, Research Analyst, Quality Engineer |
+| **Creative** (4) | Creative Visionary, Product Designer, Content Strategist, UX Researcher |
+| **Management** (3) | Project Manager, Product Owner, Team Lead |
+| **Documentation** (5) | Documentation Architect, Documentation Auditor, Documentation Simplifier, Documentation Historian, Consistency Checker |
+| **Russian Cognitive** (6) | Генератор идей, Критик, Аналитик, Защитник решения, Модератор, Факт-чекер |
+| **Russian Knowledge** (4) | Секретарь, Эрудит, Организатор, Эксперт |
+| **Russian Communication** (3) | Коммуникатор, Реализатор, Систематизатор |
+| **Russian Science** (6) | Математик, Физик, Химик, Биолог, Информатик, Экономист |
+| **Russian Social** (5) | Статистик, Социолог, Психолог, Философ, Юрист |
+| **Russian Medical** (3) | Криптограф, Врач, Эколог |
+
+Each agent has:
+- Curated identity (name, avatar, specializations)
+- Russian system prompt with role-specific instructions
+- Provider/model assignment (groq, openrouter, nvidia)
+- Router → agent → aggregator topology edges
+
+### 52 Role Templates
+
+52 role templates for quick agent creation via the Roles panel. Each template includes name, description, system prompt, tools, and temperature.
+
 ### Provider Management
 
 Connect any LLM provider through API keys. Keys are stored in IndexedDB (browser storage) and never leave your machine.
 
-> **⚠️ Security note:** API keys are currently stored **in plaintext** in browser storage — they can be read by any code running in this browser profile. Treat this as a single-user, single-machine tool (equivalent to keeping keys in a `.env` file) and **do not use it on shared machines**.
+> **⚠️ Security note:** API keys are currently stored **in plaintext** in browser storage — they can be read by any code running in this browser profile. Treat this as a single-user, single-machine tool and **do not use it on shared machines**.
 
 **Supported providers:**
 
@@ -101,7 +129,6 @@ Connect any LLM provider through API keys. Keys are stored in IndexedDB (browser
 | **Cerebras** (via OpenAI-compatible)               | ✅                 | ✅           | Partial         |
 | **Cloudflare** (via OpenAI-compatible)             | ✅                 | ✅           | Partial         |
 | **Azure** (via OpenAI-compatible, user-configured) | ✅                 | ✅           | —               |
-| **Anthropic**                                      | ❌ not implemented | —            | —               |
 | **Custom**                                         | Depends            | Depends      | —               |
 
 Each provider adapter wraps the vendor API through a decorator chain:
@@ -117,19 +144,45 @@ Request → Logging → Cache → CostManager → PriorityQueue → CircuitBreak
 - **Split-view comparison** — see multiple provider responses side-by-side
 - **Smart routing**: UCB1 multi-armed bandit balances latency, cost, and reliability
 - **Memory-enhanced prompts**: automatic retrieval of relevant past conversations
+- **Tool loop detection** and **smart retry** with exponential backoff
 
-### Agent System
+### Agent Channels (mIRC-like)
 
-Define agent personas with system prompts, temperature, and model selection.
+Real-time agent communication channels:
 
-| Feature              | Status         |
-| -------------------- | -------------- |
-| CRUD roles           | ✅ Full        |
-| Spawn from template  | ✅ 10 presets  |
-| Bulk pause/resume    | ✅             |
-| Skills registration  | ✅             |
-| Topology integration | ✅             |
-| Observability tab    | ⏳ Placeholder |
+- **Channel creation** with topic, description, and member management
+- **Real-time message streaming** via EventBus
+- **Agent presence** tracking (online/offline/typing)
+- **Message history** with Dexie persistence
+- **Cross-channel context** via ContextBuilderService
+
+### Debate Arena
+
+Multi-agent debate system with configurable strategies and comprehensive metrics:
+
+- **3 positions**: Pro, Con, Neutral
+- **13 strategies** (33 built-in presets): Round-robin, Moderated, Free-for-all, Socratic Method, Argument Tree, Constrained Debates
+- **52 agent workforce**: Distinct roles, prompts, temperatures, tools, models
+- **Debate temperature slider**: Pure Logic → Balanced → Pure Emotion tone control
+- **Structural graph metrics**: Depth, branching, orphan rate, challenge/refinement density
+- **Constraint compliance scoring**: 6 constraint types (facts-only, emotional, data-driven, etc.)
+- **Post-debate interpretation**: Disagreement timeline, trajectory changers, constraint correlation, insights
+- **Activity heatmap**: Per-agent activity levels, most-discussed arguments
+- **Quality metrics**: Depth, Originality, Usefulness
+- **Convergence scoring**: Semantic similarity (Transformers.js) with Jaccard fallback
+- **Human-in-the-loop**: Inject arguments mid-debate
+- **Circuit breaker** for LLM calls
+- **Multi-session support**: Concurrent debates with per-session store projection
+
+### Conversation Director
+
+Scenario-based conversation orchestration:
+
+- **Scenario CRUD**: Create, edit, duplicate, archive conversation scenarios
+- **Turn-based execution**: Ordered turns with participant assignment and objective types
+- **Runtime controls**: Run, Pause, Resume, Skip, Override, Abort
+- **Live status tracking**: Real-time turn progress and completion
+- **Event integration**: `conversation:*` events for observability
 
 ### Memory Mesh
 
@@ -141,35 +194,39 @@ Hybrid search combining keyword and semantic retrieval:
 - **Hybrid mode**: auto-selects between BM25 and embeddings based on query
 - **Automatic storage**: every cognitive step is logged and indexed
 
-### Cognitive Builder
+### Cognitive Modules
 
-Visual workflow builder for creating multi-node cognitive pipelines using React Flow.
+7 cognitive modules for knowledge processing:
 
-| Feature               | Status |
-| --------------------- | ------ |
-| Visual node editor    | ✅     |
-| Deploy to engine      | ✅     |
-| Save/Load workflow    | ✅     |
-| Drag-and-drop palette | ⏳     |
-| Undo/redo             | ⏳     |
+| Module | Purpose |
+|--------|---------|
+| **Lenses** | Apply analytical perspectives to content |
+| **Crystal Vault** | Knowledge crystallization and lifecycle management |
+| **Junction Engine** | Detect connections between concepts |
+| **Synthesis Engine** | Multi-perspective synthesis with consensus zones |
+| **Knowledge Generator** | Automated knowledge creation with peer review |
+| **Agent Forum** | Discussion and debate on knowledge topics |
+| **Builder Agent** | Visual workflow builder for cognitive pipelines |
 
-### Debate Arena
+### AGEMS Port (Phases 0–12)
 
-Multi-agent debate system with configurable strategies and comprehensive metrics:
+Full port of the AGEMS agent management system:
 
-- **3 positions**: Pro, Con, Neutral
-- **13 strategies** (33 built-in presets): Round-robin, Moderated, Free-for-all, Socratic Method, Argument Tree, Constrained Debates
-- **25 agent workforce**: Distinct roles, prompts, temperatures, tools, models
-- **Debate temperature slider**: Pure Logic → Balanced → Pure Emotion tone control
-- **Structural graph metrics**: Depth, branching, orphan rate, challenge/refinement density
-- **Constraint compliance scoring**: 6 constraint types (facts-only, emotional, data-driven, etc.)
-- **Post-debate interpretation**: Disagreement timeline, trajectory changers, constraint correlation, insights
-- **Activity heatmap**: Per-agent activity levels, most-discussed arguments
-- **Round timeline**: Visual round-by-round progression with intensity bars
-- **Quality metrics**: Depth (lexical diversity, topic breadth), Originality (self/cross-repetition), Usefulness (relevance, evidence, structure)
-- **Convergence scoring**: Semantic similarity (Transformers.js) with Jaccard fallback
-- **Human-in-the-loop**: Inject arguments mid-debate
-- **Circuit breaker** for LLM calls
+| Phase | Feature | Status |
+|-------|---------|--------|
+| 0 | Agent Management System | ✅ |
+| 1 | Agent Types + Config | ✅ |
+| 2 | Tasks System (Kanban) | ✅ |
+| 3 | Approvals / HITL | ✅ |
+| 4 | Budgets | ✅ |
+| 5 | Meetings | ✅ |
+| 6 | Skills + Tools | ✅ |
+| 7 | Settings + UI | ✅ |
+| 8 | Catalog/Marketplace | ✅ |
+| 9 | Security + Audit | ✅ |
+| 10 | Integrations (Telegram, N8N, MCP) | ✅ |
+| 11 | Chat System (Dock, Queuing, Context) | ✅ |
+| 12 | AI Runner Enhancements | ✅ |
 
 ### Telemetry & Monitoring
 
@@ -190,8 +247,8 @@ Multi-agent debate system with configurable strategies and comprehensive metrics
 | **Language**     | TypeScript 6.x                                     |
 | **UI Framework** | React 19.x                                         |
 | **Build Tool**   | Vite 8.x                                           |
-| **Database**     | Dexie.js (IndexedDB wrapper)                       |
-| **State**        | React hooks + EventBus (custom typed event system) |
+| **Database**     | Dexie.js v43 (IndexedDB wrapper, 20+ tables)       |
+| **State**        | Zustand + React hooks + EventBus                    |
 | **Workflows**    | React Flow (@xyflow/react 12.x)                    |
 | **Search**       | Orama (BM25) + Transformers.js (embeddings)        |
 | **Workers**      | Web Workers (memory, sandbox execution)            |
@@ -215,7 +272,7 @@ Multi-agent debate system with configurable strategies and comprehensive metrics
 
 ```bash
 # Clone the repository
-git clone https://github.com/n95887174-source/ai-os-new
+git clone https://github.com/egilyad/ai-os-new.git
 cd ai-os-new
 
 # Install dependencies
@@ -242,8 +299,9 @@ Open `http://localhost:5173` in your browser.
 1. **Add a provider key** — Navigate to **Providers → Installed → Add Key**. Start with OpenRouter (free tier available).
 2. **Test the connection** — The system automatically runs a health check; verify green status.
 3. **Start chatting** — Open **Chat** panel, select your provider, and send a message.
-4. **Explore agents** — Go to **Roles** to create agent personas, then **Skills** to register capabilities.
-5. **Build a workflow** — Use **Builder** to connect cognitive nodes visually and deploy.
+4. **Explore agents** — Go to **Agents** to see 52 pre-configured agents, or **Roles** to create custom personas.
+5. **Start a debate** — Go to **Debate** and launch a multi-agent discussion.
+6. **Build a workflow** — Use **Builder** to connect cognitive nodes visually and deploy.
 
 ---
 
@@ -252,88 +310,61 @@ Open `http://localhost:5173` in your browser.
 ```
 src/
 ├── kernel/              # Kernel (DI, contracts, services, events, state)
-│   ├── contracts/       # 123 contract interfaces (IKeyVault, IProviderAdapter, etc.)
-│   ├── services/        # 299 files across 18 subdirs (key-management, provider-runtime,
-│   │                   #   debate-runtime, debate-governor, agent-diversity,
-│   │                   #   routing-policy, rotation, cognitive-intelligence,
-│   │                   #   event-sourcing, advisor, runtime-intelligence,
-│   │                   #   storage, memory, research-adapters, debate-interpreter, etc.)
-│   ├── events/          # Event registry: 198 registered schemas (event-registry.ts)
+│   ├── contracts/       # 177 contract interfaces
+│   ├── services/        # 352+ service implementations
+│   │   ├── agent-management/    # AGEMS agent management
+│   │   ├── task-manager/        # Task system with Kanban
+│   │   ├── approval-service/    # HITL approval workflows
+│   │   ├── meeting-service/     # Meeting management
+│   │   ├── catalog-service/     # Agent/skill marketplace
+│   │   ├── audit-service/       # Security audit logging
+│   │   ├── integration-service/ # Telegram, N8N, MCP
+│   │   ├── chat-queue/          # Message queuing
+│   │   ├── context-builder/     # Cross-channel context
+│   │   ├── debate-runtime/      # Debate engine + governor
+│   │   ├── key-management/      # API key vault
+│   │   ├── provider-runtime/    # LLM provider adapters
+│   │   ├── memory/              # Memory mesh (BM25 + semantic)
+│   │   ├── routing-policy/      # Smart routing (UCB1 bandit)
+│   │   └── ... (30+ more subdirs)
+│   ├── agents/          # 6 registry-canonical agent definitions
+│   ├── dal/             # Data Access Layer (Dexie)
+│   ├── events/          # Event registry: 352+ events
+│   ├── state/           # Topology defaults (52 agents)
 │   ├── types/           # Zod schemas, domain types
-│   ├── state/           # State shapes + defaults
-│   ├── utils/           # Kernel utilities
-│   ├── bootstrap.ts     # Phase-based init (System→Kernel→Database→Topology→Services)
+│   ├── bootstrap.ts     # Phase-based init (77 phases)
 │   ├── container.ts     # DI container
-│   ├── event-bus.ts     # Typed EventBus with onSafe<K>() Zod validation
-│   ├── kernel.ts        # Reducer-pattern state machine
-│   ├── runtime.ts       # LifecycleManager (init→start→destroy LIFO)
-│   ├── transaction.ts   # TransactionContext (deferred persistence/emission)
-│   ├── instances.ts     # 126 lazyService singleton exports
-│   └── DEPENDENCY_MAP.md
-├── components/          # 145 UI panels across 9 nav sections
+│   ├── event-bus.ts     # Typed EventBus with dead-letter queue
+│   └── instances.ts     # Lazy singleton exports
+├── components/          # 638+ UI panels across 9 nav sections
+│   ├── AgentsPanel/     # Agent management + avatars
 │   ├── ChatPanel/       # Chat interface with streaming
 │   ├── BuilderPanel/    # Visual cognitive workflow editor
-│   ├── AgentsPanel/     # Agent role management + consortia
-│   ├── ProviderManager/ # API key management suite
-│   ├── DebatePanel/     # Multi-agent debate visualization + runtime
-│   ├── DebateLive/      # Circular live debate view
-│   ├── RolesPanel/      # Unified role registry (610+ roles, 37 consilia)
+│   ├── DebatePanel/     # Multi-agent debate visualization
+│   ├── DirectorPanel/   # Conversation Director
+│   ├── RolesPanel/      # Role registry (52 builtin + custom)
 │   ├── MemoryPanel/     # Memory palace (7-store architecture)
-│   ├── ResearchPanel/   # Research engine (23+ API sources)
-│   ├── Editors/         # TipTap, Monaco, DSL Canvas, JSON Schema editors
-│   └── ... (Cache, Webhooks, Budget, Rotations, Health, DocsHealth,
-│           Traces, Analytics, Audience, Guardians, Deploy, Workflows,
-│           Prompts, Security, GoogleStudio, GeminiLive, EvalDatasets,
-│           CustomMetrics, Aquarium, Ecosystem, etc.)
-├── kernel/workers/      # Web Workers (2 files)
-│   ├── memory.worker.ts   # Web Worker: BM25 + semantic search
-│   └── sandbox.worker.ts  # Web Worker: AST-based code validation
-├── llm/                 # LLM provider adapters (7 adapters, 25 supported names, 11 decorators)
-│   ├── gemini/          # Gemini adapter + Google GenAI SDK integration
-│   ├── openai-compatible/ # OpenAI-compatible (Groq, Cerebras, Cloudflare, etc.)
+│   ├── TasksPanel/      # Kanban board + task management
+│   ├── ApprovalPanel/   # HITL approval workflows
+│   ├── MeetingsPanel/   # Meeting management
+│   ├── AuditPanel/      # Security audit logging
+│   ├── IntegrationsPanel/ # Telegram, N8N, MCP
+│   ├── RoomPanel/       # Agent rooms (invocation engine)
+│   ├── ForumPanel/      # Agent forum
+│   ├── CrystalVaultPanel/ # Knowledge crystals
+│   ├── SynthesisPanel/  # Multi-perspective synthesis
+│   └── ... (50+ more panels)
+├── llm/                 # LLM provider adapters (7 adapters, 11 decorators)
+│   ├── gemini/          # Gemini adapter
+│   ├── openai-compatible/ # OpenAI-compatible (Groq, Cerebras, etc.)
 │   ├── openrouter/      # OpenRouter adapter
 │   ├── nvidia/          # NVIDIA NIM adapter
-│   └── decorators/      # Circuit Breaker, Cache, Retry, Fallback, Rate Limiter, etc.
-├── stores/              # React state stores
-│   ├── useChatStore.ts  # Chat sessions & messages
-│   ├── useKeyStore.ts   # API key management (StorageAdapter-backed)
-│   └── debateLiveStore.ts # Live debate streaming state
-├── types/               # Re-exports from kernel/types/
-├── i18n/                # Internationalization (en.ts, ru.ts, I18nProvider)
-├── styles/              # CSSProperties constants (common.ts — 302 constants)
-├── routes.tsx            # ~70 routes across 9 nav sections
+│   └── decorators/      # Cache, Retry, CircuitBreaker, etc.
+├── stores/              # Zustand stores (22 files)
+├── i18n/                # Internationalization (en/ru)
+├── styles/              # CSS tokens + variables (7 themes)
 └── tests/               # Test setup and config
 ```
-
----
-
-## Configuration
-
-### Environment Variables
-
-Create `.env` in the project root:
-
-See `.env.example` for all available variables. Provider proxy targets default in `vite.config.ts` and can be overridden via `VITE_PROXY_*` env vars.
-
-### Tool Execution Proxy
-
-A lightweight CORS proxy is required for sandboxed tool execution (configured via `VITE_PROXY_URL` in `.env`):
-
-```bash
-npm run proxy
-```
-
-### SLA Configuration
-
-Adjust routing behavior in **Settings → SLA Mode**:
-
-| Mode             | Behavior                                                           |
-| ---------------- | ------------------------------------------------------------------ |
-| **LOW_LATENCY**  | Prioritize lowest latency                                          |
-| **ECONOMY**      | Prioritize cheapest provider                                       |
-| **BALANCED**     | Equal weight to latency, cost, reliability                         |
-| **HIGH_QUALITY** | Prioritize highest success rate                                    |
-| **FREE_FIRST**   | Use free-tier models until quota exhausted, then fall back to paid |
 
 ---
 
@@ -343,25 +374,13 @@ Adjust routing behavior in **Settings → SLA Mode**:
 | ------------------------------- | ---------------------------------------------------------------------------- |
 | `npm run dev`                   | Start development server (HMR)                                               |
 | `npm run build`                 | TypeScript check + production build                                          |
-| `npm run preview`               | Preview production build                                                     |
 | `npm run test`                  | Run all tests (Vitest)                                                       |
-| `npm run test:ui`               | Run tests with UI dashboard                                                  |
-| `npm run test:e2e`              | Run Playwright e2e tests                                                     |
 | `npm run lint`                  | ESLint check                                                                 |
 | `npm run typecheck`             | TypeScript check (no emit)                                                   |
-| `npm run lint:staged`           | Lint staged files                                                            |
-| `npm run check:circular-kernel` | Check circular deps in kernel                                                |
-| `npm run check:deps`            | Check unused/missing dependencies                                            |
+| `npm run typecheck:fast`        | Fast typecheck (src/ only)                                                   |
 | `npm run proxy`                 | Start CORS proxy server                                                      |
-| `npm run build:skip-typecheck`  | Vite build WITHOUT typecheck (prints warning — use only for quick iteration) |
-| `npm run sourcemaps:upload`     | Upload hidden sourcemaps to Sentry/Datadog (no-op without credentials)       |
-| `npm run check:deps:graph`      | Generate dependency graph SVG                                                |
 | `npm run dev:shared`            | Runs Vite + sync-server together                                             |
-| `npm run fix:unused`            | Remove unused exports                                                        |
-| `npm run prepare`               | Install husky hooks                                                          |
-| `npm run sync-server`           | Start collaboration sync server                                              |
-| `npm run test:watch`            | Watch mode tests                                                             |
-| `npm run typecheck:watch`       | Watch mode type checking                                                     |
+| `npm run check:circular-kernel` | Check circular deps in kernel                                                |
 
 ---
 
@@ -370,11 +389,8 @@ Adjust routing behavior in **Settings → SLA Mode**:
 | Document                                                   | Description                                             |
 | ---------------------------------------------------------- | ------------------------------------------------------- |
 | [System Manifest](./docs/SYSTEM_MANIFEST.md)               | Architecture principles and design decisions            |
-| [Full Registry (RU)](./docs/ПОЛНЫЙ_РЕЕСТР.md)              | Complete system passport: 246 entries across all layers |
-| [Services Catalog (RU)](./docs/SERVICES_RU.md)             | All 277 DI services with purpose, events, lifecycle     |
-| [UI Layer (RU)](./docs/07-ui-layer_RU.md)                  | All 145 panels with categories, event maps              |
-| [Event Reference](./docs/events.md)                        | 141+ typed events with payloads and Zod schemas         |
-| [Cognitive Runtime Spec](./docs/COGNITIVE_RUNTIME_SPEC.md) | Event data and runtime specification                    |
+| [AGEMS Roadmap](./docs/road/AGEMS_ROADMAP.md)              | AGEMS port phases 0–12 roadmap                          |
+| [Consolidated Plan](./docs/new/CONSOLIDATED_PLAN.md)       | Full project plan and status                            |
 | [Architecture (RU)](./docs/01-system-architecture_RU.md)   | System architecture overview                            |
 | [Debt Report](./docs/DEBT_REPORT.md)                       | Technical debt assessment                               |
 
@@ -394,7 +410,7 @@ Contributions are welcome! The project is in active development.
 
 - Follow existing code style and patterns
 - Add tests for new functionality
-- Ensure TypeScript strict mode passes (`npx tsc -b --noEmit`)
+- Ensure TypeScript strict mode passes (`npm run typecheck:fast`)
 - Update documentation as needed
 
 ---
@@ -406,5 +422,5 @@ MIT © 2026 Antigravity
 ---
 
 <p align="center">
-  <i>Built with TypeScript, React, and 🧠</i>
+  <i>Built with TypeScript, React, and 52 AI agents</i>
 </p>
