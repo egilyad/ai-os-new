@@ -1,13 +1,15 @@
 import { useState, useEffect, useCallback } from 'react';
 import { settingsService } from '../kernel/instances';
-import { t as translate, setLanguage } from './translations';
+import { getTranslation } from './translations';
 import { loadLocale } from './translations/index';
+
+let _currentLang: 'en' | 'ru' = 'en';
 
 export function useTranslation() {
     const [lang, setLang] = useState<'en' | 'ru'>(() => {
         const s = settingsService.getSettings();
         const l = s.language === 'ru' ? 'ru' : 'en';
-        setLanguage(l);
+        _currentLang = l;
         loadLocale(l);
         return l;
     });
@@ -15,8 +17,8 @@ export function useTranslation() {
     useEffect(() => {
         const unsub = settingsService.subscribe((settings) => {
             const l = settings.language === 'ru' ? 'ru' : 'en';
+            _currentLang = l;
             setLang(l);
-            setLanguage(l);
             loadLocale(l);
         });
         return () => {
@@ -26,7 +28,7 @@ export function useTranslation() {
 
     const t = useCallback(
         (key: string, params?: Record<string, string | number>): string => {
-            return translate(key, lang, params);
+            return getTranslation(lang, key, params);
         },
         [lang],
     );

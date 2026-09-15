@@ -64,5 +64,15 @@ const _warnedKeys = new Set<string>();
 
 export const DEFAULT_LOCALE: Locale = 'en';
 
+let _currentLocale: Locale = DEFAULT_LOCALE;
+
+export function setLanguage(locale: Locale): void {
+    _currentLocale = locale;
+}
+
+export function getCurrentLanguage(): Locale {
+    return _currentLocale;
+}
+
 // Kick off initial locale load immediately (non-blocking)
 loadLocale(DEFAULT_LOCALE);
