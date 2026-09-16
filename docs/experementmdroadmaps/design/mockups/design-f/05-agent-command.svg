@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" font-family="Geist, Inter, system-ui, sans-serif">
+  <rect width="1200" height="760" fill="#08090c"/>
+  <rect x="0" y="0" width="1200" height="40" fill="#0e1014" stroke="#1c2026"/>
+  <circle cx="1180" cy="20" r="7" fill="#34d399"/><text x="1160" y="24" fill="#7c828c" font-size="10" text-anchor="end">online</text>
+  <text x="20" y="26" fill="#7c828c" font-size="12">SuperAgents OS</text>
+  <!-- command sheet -->
+  <rect x="240" y="120" width="720" height="500" rx="14" fill="#0e1014" stroke="#1c2026" stroke-width="1.5" filter="url(#s)"/>
+  <defs><filter id="s" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="20" stdDeviation="30" flood-color="#000" flood-opacity="0.6"/></filter></defs>
+  <rect x="264" y="144" width="672" height="44" rx="10" bg="#08090c" fill="#08090c" stroke="#1c2026"/>
+  <text x="284" y="172" fill="#e6e9ef" font-size="15">&gt; create agent </text>
+  <text x="284" y="212" fill="#7c828c" font-size="11">↵ run · ↑↓ choose · esc cancel</text>
+  <g font-size="13">
+    <rect x="264" y="232" width="672" height="44" rx="8" fill="#14181f"/>
+    <text x="284" y="259" fill="#e6e9ef">⚡ Create agent — from template</text>
+    <text x="284" y="302" fill="#e6e9ef">⚡ Create agent — blank</text>
+  </g>
+  <rect x="264" y="336" width="672" height="256" rx="8" fill="#14181f"/>
+  <text x="284" y="364" fill="#34d399" font-size="11" font-weight="700">PREVIEW · CREATE AGENT</text>
+  <text x="284" y="396" fill="#e6e9ef" font-size="12">Choose a template to start:</text>
+  <g font-size="12">
+    <rect x="284" y="412" width="320" height="58" rx="8" fill="#0e1014" stroke="#1c2026"/>
+    <text x="300" y="436" fill="#a78bfa">● Researcher</text>
+    <text x="300" y="456" fill="#7c828c">domain expert, sourcing</text>
+    <rect x="620" y="412" width="296" height="58" rx="8" fill="#0e1014" stroke="#1c2026"/>
+    <text x="636" y="436" fill="#a78bfa">● Critic</text>
+    <text x="636" y="456" fill="#7c828c">adversarial reviewer</text>
+    <rect x="284" y="482" width="320" height="58" rx="8" fill="#0e1014" stroke="#1c2026"/>
+    <text x="300" y="506" fill="#a78bfa">● Synthesizer</text>
+    <text x="300" y="526" fill="#7c828c">consensus builder</text>
+    <rect x="620" y="482" width="296" height="58" rx="8" fill="#0e1014" stroke="#1c2026"/>
+    <text x="636" y="506" fill="#a78bfa">● Planner</text>
+    <text x="636" y="526" fill="#7c828c">task decomposer</text>
+  </g>
+  <text x="284" y="572" fill="#7c828c" font-size="11">Solves UX-011 (no guided first-agent flow) — template picker inline.</text>
+  <text x="240" y="668" fill="#7c828c" font-size="11">Design F — Create Agent command (mockup 05) · inline template picker</text>
+</svg>

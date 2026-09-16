@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" font-family="Space Grotesk, Inter, system-ui, sans-serif">
+  <rect width="1200" height="760" fill="#15101c"/>
+  <rect x="0" y="0" width="72" height="760" fill="#1c1626"/><circle cx="36" cy="32" r="14" fill="#d946ef"/>
+  <text x="96" y="44" fill="#f4ecff" font-size="18" font-weight="700">Inspector — Policies (Settings node)</text>
+  <rect x="96" y="64" width="1008" height="630" rx="10" fill="#1c1626" stroke="#3a2d4d"/>
+  <rect x="116" y="90" width="968" height="60" rx="8" fill="#241b30" stroke="#3a2d4d"/>
+  <text x="136" y="118" fill="#f4ecff" font-size="13" font-weight="600">Manual Room Chat</text><text x="136" y="138" fill="#a392b8" font-size="11">source: human-mention · mode: chat · enabled</text>
+  <rect x="116" y="164" width="968" height="60" rx="8" fill="#241b30" stroke="#fbbf24"/>
+  <text x="136" y="192" fill="#fbbf24" font-size="13" font-weight="600">Manual Room Debate</text><text x="136" y="212" fill="#a392b8" font-size="11">create to stop debate-mode rejections</text>
+  <rect x="136" y="240" width="140" height="28" rx="6" fill="#d946ef"/><text x="206" y="259" fill="#fff" font-size="11" text-anchor="middle">Create</text>
+  <rect x="116" y="264" width="968" height="360" rx="8" fill="#241b30" stroke="#3a2d4d"/>
+  <text x="136" y="296" fill="#a392b8" font-size="11">NEW POLICY</text>
+  <text x="136" y="324" fill="#a392b8" font-size="12">Name</text><rect x="136" y="334" width="900" height="28" rx="6" fill="#1c1626" stroke="#3a2d4d"/>
+  <text x="136" y="382" fill="#a392b8" font-size="12">Source</text><rect x="136" y="392" width="430" height="28" rx="6" fill="#1c1626" stroke="#3a2d4d"/><text x="148" y="411" fill="#a392b8" font-size="11">human-mention ▾</text>
+  <text x="600" y="382" fill="#a392b8" font-size="12">Mode</text><rect x="600" y="392" width="430" height="28" rx="6" fill="#1c1626" stroke="#3a2d4d"/><text x="612" y="411" fill="#a392b8" font-size="11">debate ▾</text>
+  <rect x="136" y="580" width="120" height="28" rx="6" fill="#d946ef"/><text x="196" y="599" fill="#fff" font-size="12" text-anchor="middle">Save policy</text>
+  <text x="96" y="744" fill="#a392b8" font-size="11">Design C — Settings Inspector (mockup 07)</text>
+</svg>

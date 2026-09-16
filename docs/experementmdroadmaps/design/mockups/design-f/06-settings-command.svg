@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" font-family="Geist, Inter, system-ui, sans-serif">
+  <rect width="1200" height="760" fill="#08090c"/>
+  <rect x="0" y="0" width="1200" height="40" fill="#0e1014" stroke="#1c2026"/>
+  <circle cx="1180" cy="20" r="7" fill="#34d399"/><text x="1160" y="24" fill="#7c828c" font-size="10" text-anchor="end">online</text>
+  <text x="20" y="26" fill="#7c828c" font-size="12">SuperAgents OS</text>
+  <rect x="240" y="120" width="720" height="500" rx="14" fill="#0e1014" stroke="#1c2026" stroke-width="1.5" filter="url(#s)"/>
+  <defs><filter id="s" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="20" stdDeviation="30" flood-color="#000" flood-opacity="0.6"/></filter></defs>
+  <rect x="264" y="144" width="672" height="44" rx="10" fill="#08090c" stroke="#1c2026"/>
+  <text x="284" y="172" fill="#e6e9ef" font-size="15">&gt; settings policies </text>
+  <text x="284" y="212" fill="#7c828c" font-size="11">↵ run · ↑↓ choose · esc cancel</text>
+  <g font-size="13">
+    <rect x="264" y="232" width="672" height="40" rx="8" fill="#14181f"/>
+    <text x="284" y="258" fill="#e6e9ef">⚙ Settings ▸ Policies</text>
+  </g>
+  <rect x="264" y="288" width="672" height="304" rx="8" fill="#14181f"/>
+  <text x="284" y="316" fill="#34d399" font-size="11" font-weight="700">POLICY EDITOR (jumped directly)</text>
+  <g font-size="12">
+    <rect x="284" y="332" width="632" height="44" rx="8" fill="#0e1014" stroke="#1c2026"/>
+    <text x="300" y="358" fill="#e6e9ef">Manual Room Chat (human-selected agent)</text>
+    <text x="820" y="358" fill="#34d399">● active</text>
+    <rect x="284" y="384" width="632" height="44" rx="8" fill="#0e1014" stroke="#1c2026"/>
+    <text x="300" y="410" fill="#e6e9ef">Auto-expertise match</text>
+    <text x="820" y="410" fill="#fbbf24">○ paused</text>
+    <rect x="284" y="436" width="632" height="44" rx="8" fill="#0e1014" stroke="#1c2026"/>
+    <text x="300" y="462" fill="#e6e9ef">Scheduler probe</text>
+    <text x="820" y="462" fill="#fbbf24">○ paused</text>
+  </g>
+  <text x="284" y="512" fill="#7c828c" font-size="11">Editing "Manual Room Chat":</text>
+  <rect x="284" y="524" width="632" height="48" rx="8" fill="#0e1014" stroke="#1c2026"/>
+  <text x="300" y="552" fill="#e6e9ef" font-size="12">match.source = human-mention · allowAgentInitiated = false</text>
+  <text x="240" y="668" fill="#7c828c" font-size="11">Design F — Settings command (mockup 06) · jump straight to recovery (UX-004)</text>
+</svg>

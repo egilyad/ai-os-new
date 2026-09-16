@@ -1,0 +1,56 @@
+<svg viewBox="0 0 1000 640" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1000" height="640" fill="#0f1117"/>
+  <!-- title bar -->
+  <rect x="0" y="0" width="1000" height="48" fill="#1a1d27"/>
+  <rect x="0" y="48" width="1000" height="2" fill="#2a2f3a"/>
+  <circle cx="24" cy="24" r="6" fill="#34d399"/>
+  <text x="40" y="29" font-family="Segoe UI, sans-serif" font-size="16" fill="#e5e7eb" font-weight="bold">Debate Arena · classic</text>
+  <text x="900" y="29" font-family="Segoe UI, sans-serif" font-size="13" fill="#34d399">LIVE</text>
+
+  <!-- stance columns -->
+  <text x="30" y="80" font-family="Segoe UI, sans-serif" font-size="15" fill="#9ca3af">PRO</text>
+  <text x="520" y="80" font-family="Segoe UI, sans-serif" font-size="15" fill="#9ca3af">CON</text>
+
+  <!-- PRO column -->
+  <rect x="20" y="95" width="470" height="430" rx="10" fill="#161922" stroke="#2a2f3a"/>
+  <rect x="35" y="110" width="440" height="60" rx="10" fill="#1a1d27" stroke="#2a2f3a"/>
+  <text x="50" y="135" font-family="Segoe UI, sans-serif" font-size="14" fill="#e5e7eb">Agent: Advocate</text>
+  <rect x="50" y="145" width="200" height="8" rx="4" fill="#2a2f3a"/>
+  <rect x="50" y="145" width="160" height="8" rx="4" fill="#6366f1"/>
+  <circle cx="300" cy="125" r="6" fill="#34d399"/>
+  <text x="315" y="130" font-family="Segoe UI, sans-serif" font-size="12" fill="#9ca3af">conf 0.82 · calm</text>
+
+  <rect x="35" y="185" width="440" height="120" rx="10" fill="#1a1d27" stroke="#2a2f3a"/>
+  <text x="50" y="207" font-family="Segoe UI, sans-serif" font-size="13" fill="#9ca3af">streaming…</text>
+  <text x="50" y="230" font-family="Segoe UI, sans-serif" font-size="13" fill="#e5e7eb">"The proposal fails on cost grounds</text>
+  <text x="50" y="250" font-family="Segoe UI, sans-serif" font-size="13" fill="#e5e7eb">because the marginal benefit—"</text>
+  <rect x="50" y="265" width="14" height="14" rx="3" fill="#34d399"/>
+
+  <rect x="35" y="320" width="440" height="80" rx="10" fill="#1a1d27" stroke="#2a2f3a"/>
+  <text x="50" y="345" font-family="Segoe UI, sans-serif" font-size="13" fill="#e5e7eb">"Prior round established the baseline."</text>
+
+  <!-- CON column -->
+  <rect x="510" y="95" width="470" height="430" rx="10" fill="#161922" stroke="#2a2f3a"/>
+  <rect x="525" y="110" width="440" height="60" rx="10" fill="#1a1d27" stroke="#2a2f3a"/>
+  <text x="540" y="135" font-family="Segoe UI, sans-serif" font-size="14" fill="#e5e7eb">Agent: Skeptic</text>
+  <rect x="540" y="145" width="200" height="8" rx="4" fill="#2a2f3a"/>
+  <rect x="540" y="145" width="90" height="8" rx="4" fill="#ef4444"/>
+  <circle cx="790" cy="125" r="6" fill="#e0a82e"/>
+  <text x="805" y="130" font-family="Segoe UI, sans-serif" font-size="12" fill="#9ca3af">conf 0.41 · tense</text>
+
+  <rect x="525" y="185" width="440" height="120" rx="10" fill="#1a1d27" stroke="#2a2f3a"/>
+  <text x="540" y="230" font-family="Segoe UI, sans-serif" font-size="13" fill="#e5e7eb">"Counterpoint: the cost is amortized</text>
+  <text x="540" y="250" font-family="Segoe UI, sans-serif" font-size="13" fill="#e5e7eb">over 3 cycles — net positive."</text>
+
+  <rect x="525" y="320" width="440" height="80" rx="10" fill="#1a1d27" stroke="#2a2f3a"/>
+  <text x="540" y="345" font-family="Segoe UI, sans-serif" font-size="13" fill="#e5e7eb">"Rebutting the baseline claim…"</text>
+
+  <!-- consensus gauge strip -->
+  <rect x="20" y="540" width="960" height="80" rx="10" fill="#1a1d27" stroke="#2a2f3a"/>
+  <text x="40" y="570" font-family="Segoe UI, sans-serif" font-size="13" fill="#9ca3af">ROUND 3 · consensus</text>
+  <rect x="40" y="585" width="400" height="14" rx="7" fill="#2a2f3a"/>
+  <rect x="40" y="585" width="220" height="14" rx="7" fill="#e0a82e"/>
+  <text x="470" y="597" font-family="Segoe UI, sans-serif" font-size="13" fill="#e0a82e">0.55</text>
+  <text x="560" y="570" font-family="Segoe UI, sans-serif" font-size="13" fill="#34d399">agreements 4</text>
+  <text x="700" y="570" font-family="Segoe UI, sans-serif" font-size="13" fill="#ef4444">conflicts 2</text>
+</svg>

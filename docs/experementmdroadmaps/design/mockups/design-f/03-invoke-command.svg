@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" font-family="Geist, Inter, system-ui, sans-serif">
+  <rect width="1200" height="760" fill="#08090c"/>
+  <rect x="0" y="0" width="1200" height="40" fill="#0e1014" stroke="#1c2026"/>
+  <text x="20" y="26" fill="#7c828c" font-size="12">SuperAgents OS</text>
+  <rect x="240" y="120" width="720" height="480" rx="14" fill="#0e1014" stroke="#1c2026"/>
+  <rect x="264" y="144" width="672" height="44" rx="10" fill="#08090c" stroke="#1c2026"/>
+  <text x="284" y="172" fill="#e6e9ef" font-size="15">&gt; ask System Architect</text>
+  <g font-size="13">
+    <rect x="264" y="200" width="672" height="40" rx="8" fill="#14181f"/><text x="284" y="225" fill="#e6e9ef">⚡ Chat with agent</text>
+    <rect x="264" y="248" width="672" height="40" rx="8" fill="#14181f"/><text x="284" y="273" fill="#e6e9ef">⚡ Run a debate</text>
+    <rect x="264" y="296" width="672" height="40" rx="8" fill="#14181f"/><text x="284" y="321" fill="#e6e9ef">⚡ Guided plan</text>
+  </g>
+  <rect x="264" y="356" width="672" height="180" rx="8" fill="#14181f"/>
+  <text x="284" y="384" fill="#34d399" font-size="11" font-weight="700">PREVIEW · INVOKE (scoped live — UX-012)</text>
+  <g font-family="JetBrains Mono, monospace" font-size="11" fill="#7c828c">
+    <text x="284" y="416">12:04  invocation:requested   SA</text>
+    <text x="284" y="440" fill="#34d399">12:04  invocation:accepted    policy=chat</text>
+    <text x="284" y="464" fill="#f87171">12:05  invocation:rejected    mode=debate</text>
+    <text x="284" y="496">12:06  chat:message          SA → user</text>
+  </g>
+  <text x="240" y="640" fill="#7c828c" font-size="11">Design F — Invoke via command (mockup 03)</text>
+</svg>
