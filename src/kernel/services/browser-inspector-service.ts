@@ -82,7 +82,8 @@ export class BrowserInspectorService implements IQABrowserInspector {
 
         while ((match = linkRegex.exec(html)) !== null) {
             const url = match[1];
-            const text = match[2].replace(/<[^>]*>/g, '').trim();
+            if (url === undefined) continue;
+            const text = (match[2] ?? '').replace(/<[^>]*>/g, '').trim();
 
             // Check for broken anchors
             if (url.startsWith('#')) {
@@ -148,7 +149,7 @@ export class BrowserInspectorService implements IQABrowserInspector {
         let emptyLinks = 0;
         let linkMatch;
         while ((linkMatch = linkRegex.exec(html)) !== null) {
-            const content = linkMatch[1].replace(/<[^>]*>/g, '').trim();
+            const content = (linkMatch[1] ?? '').replace(/<[^>]*>/g, '').trim();
             if (!content) emptyLinks++;
         }
 
@@ -156,7 +157,7 @@ export class BrowserInspectorService implements IQABrowserInspector {
         let emptyButtons = 0;
         let btnMatch;
         while ((btnMatch = buttonRegex.exec(html)) !== null) {
-            const content = btnMatch[1].replace(/<[^>]*>/g, '').trim();
+            const content = (btnMatch[1] ?? '').replace(/<[^>]*>/g, '').trim();
             if (!content) emptyButtons++;
         }
 

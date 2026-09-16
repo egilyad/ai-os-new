@@ -197,7 +197,7 @@ export class ProjectWorkspaceService implements IProjectWorkspaceService {
             // Add file entry to its parent
             const fileName = filePath.split('/').pop()!;
             if (fileDir === dir) {
-                entries.get(dir)!.children!.push(fileName);
+                (entries.get(dir)!.children! as unknown as string[]).push(fileName);
             }
 
             // If the file is in the target dir, add it to results
@@ -208,7 +208,7 @@ export class ProjectWorkspaceService implements IProjectWorkspaceService {
                     entries.set(filePath, {
                         path: filePath,
                         type: 'file',
-                        size: record.size,
+                        size: (record as unknown as { size: number }).size,
                     });
                 }
             }
@@ -270,8 +270,9 @@ export class ProjectWorkspaceService implements IProjectWorkspaceService {
                 // Register this dir as child of its parent
                 const parPath = i === 0 ? '/' : current.substring(0, current.lastIndexOf('/')) || '/';
                 const par = dirs.get(parPath);
-                if (par && par.children && !par.children.includes(parts[i])) {
-                    par.children.push(parts[i]);
+                const part = parts[i];
+                if (part !== undefined && par && par.children && !(par.children as unknown as string[]).includes(part)) {
+                    (par.children as unknown as string[]).push(part);
                 }
             }
 
@@ -280,8 +281,8 @@ export class ProjectWorkspaceService implements IProjectWorkspaceService {
             const parent = dirs.get(parentPath);
             if (parent && parent.children) {
                 const fileName = parts[parts.length - 1];
-                if (!parent.children.includes(fileName)) {
-                    parent.children.push(fileName);
+                if (fileName !== undefined && !(parent.children as unknown as string[]).includes(fileName)) {
+                    (parent.children as unknown as string[]).push(fileName);
                 }
             }
         }
@@ -307,7 +308,7 @@ export class ProjectWorkspaceService implements IProjectWorkspaceService {
                     return {
                         path: childPath,
                         type: 'file' as const,
-                        size: file?.size,
+                        size: (file as unknown as { size?: number } | undefined)?.size,
                     };
                 });
         };
@@ -336,12 +337,14 @@ export class ProjectWorkspaceService implements IProjectWorkspaceService {
         for (const record of allFiles) {
             const filePath = normalizePath(record.path);
             if (root !== '/' && !filePath.startsWith(root + '/') && filePath !== root) continue;
-            if (record.size && record.size > 100_000) continue; // skip large files
+            const recordSize = (record as unknown as { size?: number }).size;
+            if (recordSize && recordSize > 100_000) continue; // skip large files
 
             const lines = record.content.split('\n');
             for (let i = 0; i < lines.length; i++) {
-                if (regex.test(lines[i])) {
-                    results.push({ path: filePath, line: i + 1, content: lines[i] });
+                const lineContent = lines[i];
+                if (lineContent !== undefined && regex.test(lineContent)) {
+                    results.push({ path: filePath, line: i + 1, content: lineContent });
                     if (results.length >= 100) return results;
                 }
             }

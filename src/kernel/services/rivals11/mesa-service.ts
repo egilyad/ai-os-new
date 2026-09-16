@@ -54,7 +54,7 @@ export class MesaService implements IMesaService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('init', 'Mesa initialized');
     }
 
     async destroy(): Promise<void> {
@@ -110,11 +110,13 @@ export class MesaService implements IMesaService {
                 model.agents.length > 0
                     ? model.agents.reduce((x, a) => x + a.energy, 0) / model.agents.length
                     : 0;
-            model.series.population.push(model.agents.length);
-            model.series.meanEnergy.push(Math.round(mean * 100) / 100);
-            if (model.series.population.length > 1000) {
-                model.series.population.splice(0, model.series.population.length - 1000);
-                model.series.meanEnergy.splice(0, model.series.meanEnergy.length - 1000);
+            const population = (model.series.population ??= []);
+            const meanEnergy = (model.series.meanEnergy ??= []);
+            population.push(model.agents.length);
+            meanEnergy.push(Math.round(mean * 100) / 100);
+            if (population.length > 1000) {
+                population.splice(0, population.length - 1000);
+                meanEnergy.splice(0, meanEnergy.length - 1000);
             }
         }
         await this.dal.kv.set(`mesa/${modelId}`, model);
@@ -132,7 +134,7 @@ export class MesaService implements IMesaService {
             await this.addAgents(id, Math.max(1, Math.min(500, Math.floor(p.agents))));
             await this.step(id, Math.max(1, Math.min(100, Math.floor(p.steps))));
             const model = await this.require(id);
-            const pop = model.series.population;
+            const pop = model.series.population ?? [];
             const mean = pop.length > 0 ? pop.reduce((a, b) => a + b, 0) / pop.length : 0;
             out.push({ params: { agents: p.agents, steps: p.steps }, mean: Math.round(mean * 100) / 100 });
         }

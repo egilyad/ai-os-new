@@ -27,7 +27,7 @@ const TABS: Tab[] = ['files', 'preview', 'pipeline', 'qa', 'memory', 'templates'
 
 const ProjectsPanel: React.FC = () => {
     const { t } = useTranslation();
-    const { projects, order, loading, error, loadProjects, select, refresh, selectedId } = useProjectStore();
+    const { projects, order, loading, error, loadProjects, select, refresh, selectedProjectId: selectedId } = useProjectStore();
     const [showCreate, setShowCreate] = useState(false);
     const [newName, setNewName] = useState('');
     const [newDesc, setNewDesc] = useState('');
@@ -51,29 +51,29 @@ const ProjectsPanel: React.FC = () => {
         if (!selectedId) return;
         try {
             if (activeTab === 'files') {
-                const tree = await projectWorkspaceService().getTree(selectedId);
+                const tree = await projectWorkspaceService.getTree(selectedId);
                 setFiles(tree.map((e: WorkspaceTreeEntry) => e.path));
             } else if (activeTab === 'preview') {
-                const r = await websitePreviewService().generatePreview(selectedId);
+                const r = await websitePreviewService.generatePreview(selectedId);
                 setPreviewHtml(r.html);
             } else if (activeTab === 'qa') {
-                const r = await browserInspectorService().inspect(selectedId);
+                const r = await browserInspectorService.inspect(selectedId);
                 setQaScore(r.score);
                 setQaIssues(r.issues);
             } else if (activeTab === 'pipeline') {
-                let pipe = await multiAgentProjectService().getPipeline(selectedId);
-                if (!pipe) pipe = await multiAgentProjectService().createPipeline(selectedId);
+                let pipe = await multiAgentProjectService.getPipeline(selectedId);
+                if (!pipe) pipe = await multiAgentProjectService.createPipeline(selectedId);
                 setPipelineStage(pipe.currentStage);
             } else if (activeTab === 'templates') {
-                setTemplateCount(projectTemplateService().listTemplates().length);
+                setTemplateCount(projectTemplateService.listTemplates().length);
             } else if (activeTab === 'artifacts') {
-                setSnapshotCount(artifactService().listSnapshots(selectedId).length);
+                setSnapshotCount(artifactService.listSnapshots(selectedId).length);
             } else if (activeTab === 'memory') {
-                setMemories(projectMemoryService().getEntries(selectedId));
+                setMemories(projectMemoryService.getEntries(selectedId));
             } else if (activeTab === 'autonomy') {
-                setGoals(autonomyOrchestrator().listGoals(selectedId));
+                setGoals(autonomyOrchestrator.listGoals(selectedId));
             } else if (activeTab === 'python') {
-                setPyHistory(pythonRunnerService().getRunHistory(selectedId));
+                setPyHistory(pythonRunnerService.getRunHistory(selectedId));
             }
         } catch (e) { console.error('[ProjectsPanel] loadTab error', e); }
     }, [selectedId, activeTab]);
@@ -84,7 +84,7 @@ const ProjectsPanel: React.FC = () => {
         if (!newName.trim()) return;
         setCreating(true);
         try {
-            await projectManagerService().create({ name: newName.trim(), description: newDesc.trim(), type: newType as CreateProjectInput['type'] });
+            await projectManagerService.create({ name: newName.trim(), description: newDesc.trim(), type: newType as CreateProjectInput['type'] });
             setNewName(''); setNewDesc(''); setShowCreate(false);
             await refresh();
         } finally { setCreating(false); }
@@ -92,44 +92,44 @@ const ProjectsPanel: React.FC = () => {
 
     const handleApplyTemplate = async (templateId: string) => {
         if (!selectedId) return;
-        await projectTemplateService().applyTemplate(templateId, selectedId);
-        setFiles((await projectWorkspaceService().getTree(selectedId)).map((e: WorkspaceTreeEntry) => e.path));
+        await projectTemplateService.applyTemplate(templateId, selectedId);
+        setFiles((await projectWorkspaceService.getTree(selectedId)).map((e: WorkspaceTreeEntry) => e.path));
         setActiveTab('files');
     };
 
     const handleBuild = async () => {
         if (!selectedId) return;
-        await artifactService().build(selectedId, `Build ${Date.now()}`);
-        setSnapshotCount(artifactService().listSnapshots(selectedId).length);
+        await artifactService.build(selectedId, `Build ${Date.now()}`);
+        setSnapshotCount(artifactService.listSnapshots(selectedId).length);
     };
 
     const handleSnapshot = async () => {
         if (!selectedId) return;
-        await artifactService().createSnapshot(selectedId, `Snapshot ${Date.now()}`);
-        setSnapshotCount(artifactService().listSnapshots(selectedId).length);
+        await artifactService.createSnapshot(selectedId, `Snapshot ${Date.now()}`);
+        setSnapshotCount(artifactService.listSnapshots(selectedId).length);
     };
 
     const handleAdvancePipeline = async () => {
         if (!selectedId) return;
-        const pipe = await multiAgentProjectService().getPipeline(selectedId);
+        const pipe = await multiAgentProjectService.getPipeline(selectedId);
         if (pipe) {
-            await multiAgentProjectService().completeStage(selectedId, pipe.currentStage, 'Done');
-            await multiAgentProjectService().advancePipeline(selectedId);
-            const updated = await multiAgentProjectService().getPipeline(selectedId);
+            await multiAgentProjectService.completeStage(selectedId, pipe.currentStage, 'Done');
+            await multiAgentProjectService.advancePipeline(selectedId);
+            const updated = await multiAgentProjectService.getPipeline(selectedId);
             setPipelineStage(updated?.currentStage || 'done');
         }
     };
 
     const handleAddMemory = (type: string) => {
         if (!selectedId) return;
-        projectMemoryService().addEntry(selectedId, { type: type as any, title: `New ${type}`, content: '', tags: [] });
-        setMemories(projectMemoryService().getEntries(selectedId));
+        projectMemoryService.addEntry(selectedId, { projectId: selectedId, type: type as any, title: `New ${type}`, content: '', tags: [] });
+        setMemories(projectMemoryService.getEntries(selectedId));
     };
 
     const handleCreateGoal = () => {
         if (!selectedId) return;
-        autonomyOrchestrator().createGoal(selectedId, 'New goal');
-        setGoals(autonomyOrchestrator().listGoals(selectedId));
+        autonomyOrchestrator.createGoal(selectedId, 'New goal');
+        setGoals(autonomyOrchestrator.listGoals(selectedId));
     };
 
     // ── Project list view ──
@@ -292,7 +292,7 @@ const ProjectsPanel: React.FC = () => {
                         <h3 style={{ margin: '0 0 0.5rem' }}>{t('templates.title')}</h3>
                         <p style={{ fontSize: '0.8rem', opacity: 0.7, marginBottom: '0.75rem' }}>{templateCount} templates available</p>
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '0.5rem' }}>
-                            {projectTemplateService().listTemplates().map((tpl: TemplateSummary) => (
+                            {projectTemplateService.listTemplates().map((tpl: TemplateSummary) => (
                                 <div key={tpl.id} style={{ ...CARD, cursor: 'default' }}>
                                     <strong style={{ fontSize: '0.85rem' }}>{tpl.name}</strong>
                                     <div style={{ fontSize: '0.75rem', opacity: 0.7, margin: '0.25rem 0' }}>{tpl.description}</div>
@@ -315,7 +315,7 @@ const ProjectsPanel: React.FC = () => {
                             </div>
                         </div>
                         <p style={{ fontSize: '0.8rem', opacity: 0.7 }}>Snapshots: {snapshotCount}</p>
-                        {artifactService().listArtifacts(selectedId).map((art: Artifact) => (
+                        {artifactService.listArtifacts(selectedId).map((art: Artifact) => (
                             <div key={art.id} style={{ ...CARD, cursor: 'default' }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                                     <strong style={{ fontSize: '0.85rem' }}>{art.name}</strong>
@@ -363,9 +363,9 @@ const ProjectsPanel: React.FC = () => {
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
                             <h3 style={{ margin: 0 }}>{t('python.title')}</h3>
                             <Button variant="primary" size="sm" onClick={async () => {
-                                await pythonRunnerService().createPythonProject(selectedId);
-                                await pythonRunnerService().run(selectedId);
-                                setPyHistory(pythonRunnerService().getRunHistory(selectedId));
+                                await pythonRunnerService.createPythonProject(selectedId);
+                                await pythonRunnerService.run(selectedId);
+                                setPyHistory(pythonRunnerService.getRunHistory(selectedId));
                             }}>{t('python.run')}</Button>
                         </div>
                         {pyHistory.length === 0 && <p style={{ opacity: 0.5 }}>No runs yet. Write a main.py via agent, then run.</p>}

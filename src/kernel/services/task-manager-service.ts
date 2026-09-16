@@ -66,7 +66,7 @@ export class TaskManagerService implements ITaskManagerService {
             createdAt: now,
             updatedAt: now,
         };
-        await this.database.tasks.put(task);
+        await this.database.tasks.put(task as unknown as Record<string, unknown>);
         this.emit('task:created', { taskId: task.id, title: task.title });
         return task;
     }
@@ -76,7 +76,7 @@ export class TaskManagerService implements ITaskManagerService {
     }
 
     async list(filters?: TaskFilters): Promise<TaskRecord[]> {
-        let all = (await this.database.tasks.toArray()) as TaskRecord[];
+        let all = (await this.database.tasks.toArray()) as unknown as TaskRecord[];
         if (!filters) return all;
         if (filters.status) all = all.filter(t => t.status === filters.status);
         if (filters.type) all = all.filter(t => t.type === filters.type);
@@ -84,7 +84,7 @@ export class TaskManagerService implements ITaskManagerService {
         if (filters.assigneeId) all = all.filter(t => t.assigneeId === filters.assigneeId);
         if (filters.creatorId) all = all.filter(t => t.creatorId === filters.creatorId);
         if (filters.projectId) all = all.filter(t => t.projectId === filters.projectId);
-        if (filters.labelId) all = all.filter(t => t.labelIds.includes(filters.labelId));
+        if (filters.labelId) all = all.filter(t => t.labelIds.includes(filters.labelId ?? ''));
         if (filters.search) {
             const q = filters.search.toLowerCase();
             all = all.filter(t => t.title.toLowerCase().includes(q) || t.description.toLowerCase().includes(q));
@@ -96,7 +96,7 @@ export class TaskManagerService implements ITaskManagerService {
         const existing = await this.get(id);
         if (!existing) throw new Error(`Task ${id} not found`);
         const updated: TaskRecord = { ...existing, ...input, updatedAt: Date.now() };
-        await this.database.tasks.put(updated);
+        await this.database.tasks.put(updated as unknown as Record<string, unknown>);
         this.emit('task:updated', { taskId: id });
         return updated;
     }
@@ -149,12 +149,12 @@ export class TaskManagerService implements ITaskManagerService {
 
     async createLabel(name: string, color: string): Promise<TaskLabel> {
         const label: TaskLabel = { id: genId('label'), name, color, createdAt: Date.now() };
-        await this.database.taskLabels.put(label);
+        await this.database.taskLabels.put(label as unknown as Record<string, unknown>);
         return label;
     }
 
     async listLabels(): Promise<TaskLabel[]> {
-        return (await this.database.taskLabels.toArray()) as TaskLabel[];
+        return (await this.database.taskLabels.toArray()) as unknown as TaskLabel[];
     }
 
     async deleteLabel(id: string): Promise<void> {
@@ -176,13 +176,13 @@ export class TaskManagerService implements ITaskManagerService {
             content,
             createdAt: Date.now(),
         };
-        await this.database.taskComments.put(comment);
+        await this.database.taskComments.put(comment as unknown as Record<string, unknown>);
         this.emit('task:comment:added', { taskId, commentId: comment.id });
         return comment;
     }
 
     async getComments(taskId: string): Promise<TaskComment[]> {
-        const all = (await this.database.taskComments.toArray()) as TaskComment[];
+        const all = (await this.database.taskComments.toArray()) as unknown as TaskComment[];
         return all.filter(c => c.taskId === taskId).sort((a, b) => a.createdAt - b.createdAt);
     }
 
@@ -203,12 +203,12 @@ export class TaskManagerService implements ITaskManagerService {
             createdBy,
             createdAt: Date.now(),
         };
-        await this.database.taskWorkProducts.put(product);
+        await this.database.taskWorkProducts.put(product as unknown as Record<string, unknown>);
         return product;
     }
 
     async getWorkProducts(taskId: string): Promise<TaskWorkProduct[]> {
-        const all = (await this.database.taskWorkProducts.toArray()) as TaskWorkProduct[];
+        const all = (await this.database.taskWorkProducts.toArray()) as unknown as TaskWorkProduct[];
         return all.filter(p => p.taskId === taskId);
     }
 }

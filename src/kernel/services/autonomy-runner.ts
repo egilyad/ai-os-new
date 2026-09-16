@@ -77,7 +77,7 @@ export class AutonomyRunner implements IAutonomyRunner {
                 const prompt = this.buildPrompt(task, goal);
 
                 // Run through the real agent runtime
-                const result = await this.runtime.execute(goal.projectId, prompt, {
+                const result = await this.runtime.runPrompt(goal.projectId, 'autonomy-agent', prompt, {
                     agentId: 'autonomy-agent',
                     maxRounds: 3,
                 });
@@ -154,10 +154,10 @@ export class AutonomyRunner implements IAutonomyRunner {
         const fileBlockRegex = /(?:FILE|file|File):\s*([^\n`]+)\n```[\s\S]*?```/g;
         let match;
         while ((match = fileBlockRegex.exec(output)) !== null) {
-            const path = match[1].trim();
+            const path = (match[1] ?? '').trim();
             const contentMatch = match[0].match(/```\w*\n([\s\S]*?)```/);
             if (contentMatch && path.startsWith('/')) {
-                await this.workspace.writeFile(projectId, path, contentMatch[1]);
+                await this.workspace.writeFile(projectId, path, contentMatch[1] ?? '');
                 filesWritten++;
             }
         }
@@ -165,8 +165,8 @@ export class AutonomyRunner implements IAutonomyRunner {
         // Pattern 2: [file: /path] content (until next [file: or end)
         const inlineFileRegex = /\[file:\s*([^\]]+)\]\s*([\s\S]*?)(?=\[file:|$)/g;
         while ((match = inlineFileRegex.exec(output)) !== null) {
-            const path = match[1].trim();
-            const content = match[2].trim();
+            const path = (match[1] ?? '').trim();
+            const content = (match[2] ?? '').trim();
             if (path.startsWith('/') && content.length > 0) {
                 await this.workspace.writeFile(projectId, path, content);
                 filesWritten++;
@@ -176,8 +176,8 @@ export class AutonomyRunner implements IAutonomyRunner {
         // Pattern 3: Create file /path: content (single line or multi-line)
         const createFileRegex = /(?:Create|create|WRITE|write)\s+(?:file\s+)?(\/[^\s:]+):\s*\n?([\s\S]*?)(?=\n(?:Create|create|WRITE|write)\s|$)/g;
         while ((match = createFileRegex.exec(output)) !== null) {
-            const path = match[1].trim();
-            const content = match[2].trim();
+            const path = (match[1] ?? '').trim();
+            const content = (match[2] ?? '').trim();
             if (content.length > 0) {
                 await this.workspace.writeFile(projectId, path, content);
                 filesWritten++;
@@ -193,7 +193,7 @@ export class AutonomyRunner implements IAutonomyRunner {
         const tasks: Array<Omit<DecomposedTask, 'id' | 'goalId' | 'planId' | 'status' | 'revisionCount' | 'createdAt' | 'updatedAt'>> = [];
 
         for (let i = 0; i < lines.length; i++) {
-            const line = lines[i].trim().replace(/^\d+[\.\)]\s*/, '');
+            const line = (lines[i] ?? '').trim().replace(/^\d+[\.\)]\s*/, '');
             if (line.length < 3) continue;
 
             tasks.push({
@@ -201,7 +201,7 @@ export class AutonomyRunner implements IAutonomyRunner {
                 description: line,
                 requiredCapabilities: [],
                 estimatedDurationMs: 5000,
-                dependencies: i > 0 ? [tasks[i - 1].title] : [],
+                dependencies: i > 0 ? [tasks[i - 1]?.title ?? ''] : [],
                 order: i,
             });
         }

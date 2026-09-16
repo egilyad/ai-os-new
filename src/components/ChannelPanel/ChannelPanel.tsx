@@ -25,7 +25,7 @@ const MSG_DELETED: React.CSSProperties = { ...MSG, color: 'var(--text-secondary)
 const MSG_AUTHOR: React.CSSProperties = { fontWeight: 600, marginRight: '0.4rem' };
 const MSG_TIME: React.CSSProperties = { color: 'var(--text-secondary)', fontSize: '0.75rem', marginLeft: '0.4rem' };
 const MSG_ACTIONS: React.CSSProperties = { position: 'absolute', top: '-8px', right: '0', display: 'none', gap: '0.2rem', background: 'var(--surface)', border: '1px solid var(--border-default)', borderRadius: '4px', padding: '0.1rem 0.3rem', fontSize: '0.7rem' };
-const MSG_HOVER: React.CSSProperties = { ':hover .msg-actions': { display: 'flex' } };
+const MSG_HOVER = { ':hover .msg-actions': { display: 'flex' } } as React.CSSProperties;
 const THREAD_COUNT: React.CSSProperties = { fontSize: '0.7rem', color: 'var(--accent)', cursor: 'pointer', marginTop: '0.2rem' };
 const REACTION: React.CSSProperties = { display: 'inline-flex', alignItems: 'center', gap: '0.2rem', padding: '0.1rem 0.4rem', borderRadius: '999px', fontSize: '0.75rem', background: 'var(--surface-alt)', border: '1px solid var(--border-default)', cursor: 'pointer', marginRight: '0.2rem', marginTop: '0.2rem' };
 const INPUT_BAR: React.CSSProperties = { display: 'flex', gap: '0.5rem', padding: '0.5rem', borderTop: '1px solid var(--border-default)' };
@@ -68,7 +68,7 @@ const ChannelPanel: React.FC = () => {
 
     useEffect(() => {
         if (!selectedId) { setMembers([]); setTyping([]); setPresence([]); return; }
-        const svc = channelService();
+        const svc = channelService;
         svc.getMembers(selectedId).then(setMembers);
         svc.getPresence(selectedId).then(setPresence);
         const interval = setInterval(() => {
@@ -79,7 +79,7 @@ const ChannelPanel: React.FC = () => {
     }, [selectedId, messages]);
 
     const loadThread = useCallback(async (rootId: string) => {
-        const svc = channelService();
+        const svc = channelService;
         const thread = await svc.getThread(rootId);
         setThreadMessages(thread);
         setViewThread(rootId);
@@ -87,7 +87,7 @@ const ChannelPanel: React.FC = () => {
 
     const handleSend = useCallback(async () => {
         if (!input.trim() || !selectedId) return;
-        const svc = channelService();
+        const svc = channelService;
         const mentions = input.match(/@(\w+)/g)?.map((m) => m.slice(1)) || [];
         await svc.sendMessage({
             channelId: selectedId,
@@ -103,7 +103,7 @@ const ChannelPanel: React.FC = () => {
 
     const handleEdit = useCallback(async (msgId: string) => {
         if (!editContent.trim()) return;
-        const svc = channelService();
+        const svc = channelService;
         await svc.editMessage(msgId, editContent, 'human');
         setEditId(null);
         setEditContent('');
@@ -111,13 +111,13 @@ const ChannelPanel: React.FC = () => {
     }, [editContent, refresh]);
 
     const handleDelete = useCallback(async (msgId: string) => {
-        const svc = channelService();
+        const svc = channelService;
         await svc.deleteMessage(msgId, 'human');
         refresh();
     }, [refresh]);
 
     const handleReaction = useCallback(async (msgId: string, emoji: string) => {
-        const svc = channelService();
+        const svc = channelService;
         await svc.addReaction(msgId, 'human', emoji);
         setReactionPickerMsg(null);
         refresh();
@@ -125,7 +125,7 @@ const ChannelPanel: React.FC = () => {
 
     const handleCreate = useCallback(async () => {
         if (!newName.trim()) return;
-        const svc = channelService();
+        const svc = channelService;
         await svc.createChannel({
             name: newName.trim(),
             type: newType,

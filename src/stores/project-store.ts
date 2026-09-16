@@ -61,7 +61,7 @@ export const useProjectStore = create<ProjectStoreState>((set, get) => ({
     loadProjects: async () => {
         set({ loading: true, error: null });
         try {
-            const svc = projectManagerService();
+            const svc = projectManagerService;
             const list = await svc.list();
             const projects = new Map<ProjectId, ProjectView>();
             const order: ProjectId[] = [];

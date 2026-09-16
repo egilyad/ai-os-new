@@ -24,7 +24,7 @@ export const AgentManagementTab: React.FC<Props> = ({ agentId }) => {
 
     const reload = async () => {
         if (!agentManagementService) return;
-        const svc = await agentManagementService();
+        const svc = agentManagementService;
         const [s, r, resp] = await Promise.all([
             svc.listSkills(agentId),
             svc.listTools(agentId),
@@ -39,35 +39,35 @@ export const AgentManagementTab: React.FC<Props> = ({ agentId }) => {
 
     const addSkill = async () => {
         if (!newSkill.trim()) return;
-        const svc = await agentManagementService();
+        const svc = agentManagementService;
         await svc.addSkill(agentId, newSkill.trim());
         setNewSkill('');
         reload();
     };
 
     const removeSkill = async (skillId: string) => {
-        const svc = await agentManagementService();
+        const svc = agentManagementService;
         await svc.removeSkill(agentId, skillId);
         reload();
     };
 
     const addTool = async () => {
         if (!newTool.trim()) return;
-        const svc = await agentManagementService();
+        const svc = agentManagementService;
         await svc.addTool(agentId, newTool.trim());
         setNewTool('');
         reload();
     };
 
     const removeTool = async (toolId: string) => {
-        const svc = await agentManagementService();
+        const svc = agentManagementService;
         await svc.removeTool(agentId, toolId);
         reload();
     };
 
     const addResponsibility = async () => {
         if (!newRespTitle.trim()) return;
-        const svc = await agentManagementService();
+        const svc = agentManagementService;
         const kpis = newRespKpis.split(',').map(k => k.trim()).filter(Boolean);
         await svc.setResponsibility(agentId, newRespTitle.trim(), newRespDesc.trim(), kpis);
         setNewRespTitle('');
@@ -77,7 +77,7 @@ export const AgentManagementTab: React.FC<Props> = ({ agentId }) => {
     };
 
     const removeResponsibility = async (respId: string) => {
-        const svc = await agentManagementService();
+        const svc = agentManagementService;
         await svc.removeResponsibility(agentId, respId);
         reload();
     };
@@ -130,9 +130,9 @@ export const AgentManagementTab: React.FC<Props> = ({ agentId }) => {
                     <div key={r.id} style={{ padding: '8px 10px', borderRadius: 8, background: 'rgba(30,30,50,0.4)', marginBottom: 6, position: 'relative' }}>
                         <div style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--slate-200)' }}>{r.title}</div>
                         <div style={{ fontSize: '0.75rem', color: 'var(--slate-500)', marginTop: 2 }}>{r.description}</div>
-                        {r.kpis.length > 0 && (
+                        {(r.kpis ?? []).length > 0 && (
                             <div style={{ display: 'flex', gap: 4, marginTop: 4, flexWrap: 'wrap' }}>
-                                {r.kpis.map((kpi: string, i: number) => (
+                                {(r.kpis ?? []).map((kpi: string, i: number) => (
                                     <span key={i} style={{ padding: '1px 6px', borderRadius: 4, fontSize: '0.65rem', background: 'rgba(234,179,8,0.1)', color: '#eab308' }}>{kpi}</span>
                                 ))}
                             </div>
