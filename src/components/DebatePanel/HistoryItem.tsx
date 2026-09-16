@@ -67,7 +67,7 @@ const HistoryItem: React.FC<HistoryItemProps> = ({
     sessionManager,
     t,
 }) => {
-    const [argDisplayCount, setArgDisplayCount] = useState(6);
+    const [argDisplayCount, setArgDisplayCount] = useState(20);
     const [agentFilter, setAgentFilter] = useState('all');
 
     const date = new Date(h.createdAt || 0);
@@ -265,8 +265,6 @@ const HistoryItem: React.FC<HistoryItemProps> = ({
                     style={{
                         borderTop: '1px solid rgba(255,255,255,0.05)',
                         padding: '1rem 1.25rem',
-                        maxHeight: 400,
-                        overflowY: 'auto',
                     }}
                 >
                     {h.consensus && (
@@ -347,7 +345,7 @@ const HistoryItem: React.FC<HistoryItemProps> = ({
                                 value={agentFilter}
                                 onChange={(e) => {
                                     setAgentFilter(e.target.value);
-                                    setArgDisplayCount(6);
+                                    setArgDisplayCount(20);
                                 }}
                                 style={{
                                     padding: '0.25rem 0.5rem',
@@ -403,7 +401,7 @@ const HistoryItem: React.FC<HistoryItemProps> = ({
                         </button>
                     ) : filteredArguments.length > 6 ? (
                         <button
-                            onClick={() => setArgDisplayCount(6)}
+                            onClick={() => setArgDisplayCount(20)}
                             style={{
                                 marginTop: '0.75rem',
                                 background: 'none',

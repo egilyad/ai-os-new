@@ -80,7 +80,7 @@ const DebateHistoryPanel: React.FC<DebateHistoryPanelProps> = ({
                 flex: 1,
                 display: 'flex',
                 flexDirection: 'column',
-                overflow: 'hidden',
+                overflow: 'auto',
                 borderRadius: 24,
                 border: '1px solid rgba(255,255,255,0.05)',
             }}

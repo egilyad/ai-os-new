@@ -82,7 +82,7 @@ const DebateHistoryPage: React.FC = () => {
                     </span>
                 </div>
             </div>
-            <div style={{ flex: 1, overflow: 'hidden' }}>
+            <div style={{ flex: 1, overflow: 'auto' }}>
                 <DebateHistoryPanel
                     history={history}
                     expandedHistory={expandedHistory}

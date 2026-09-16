@@ -19,8 +19,9 @@ interface HistoryArgumentRowProps {
 
 const HistoryArgumentRow: React.FC<HistoryArgumentRowProps> = ({ arg }) => {
     const [expanded, setExpanded] = useState(false);
-    const needsTruncate = arg.content.length > 200;
-    const display = expanded ? arg.content : arg.content.slice(0, 200);
+    const content = arg.content || '(no content)';
+    const needsTruncate = content.length > 600;
+    const display = expanded ? content : content.slice(0, 600);
     return (
         <div
             style={{
