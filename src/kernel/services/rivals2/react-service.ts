@@ -28,7 +28,7 @@ export class ReactService implements IReactService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('ReAct', 'init', {});
     }
 
     async destroy(): Promise<void> {
@@ -121,7 +121,7 @@ export class ReactService implements IReactService {
                     return { thought: res.content.slice(0, 2000) };
                 }
             } catch (e) {
-                LOGGER.warn('react think failed', { error: e instanceof Error ? e.message : String(e) });
+                LOGGER.warn('ReAct', 'react think failed', { error: e instanceof Error ? e.message : String(e) });
             }
         }
         return { thought: `[echo] ${task}` };

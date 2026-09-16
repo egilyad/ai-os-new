@@ -32,7 +32,7 @@ export class SearchService implements ISearchService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('SearchProviders', 'init', {});
     }
 
     async destroy(): Promise<void> {
@@ -72,7 +72,7 @@ export class SearchService implements ISearchService {
                 const hits = await fetcher(query, limit);
                 for (const h of hits.slice(0, limit)) push(h.title, h.snippet, name);
             } catch (e) {
-                LOGGER.warn('provider failed, continuing chain', {
+                LOGGER.warn('SearchProviders', 'provider failed, continuing chain', {
                     name,
                     error: e instanceof Error ? e.message : String(e),
                 });
@@ -85,7 +85,7 @@ export class SearchService implements ISearchService {
                 const hits = await this.knowledge.retrieve(query, limit - out.length);
                 for (const h of hits) push(h.title, h.chunk, 'local-knowledge');
             } catch (e) {
-                LOGGER.warn('local fallback failed', { error: e instanceof Error ? e.message : String(e) });
+                LOGGER.warn('SearchProviders', 'local fallback failed', { error: e instanceof Error ? e.message : String(e) });
             }
         }
         this.events.emit(EVENTS.SEARCH_FANOUT, { providers: providers.length, hits: out.length });

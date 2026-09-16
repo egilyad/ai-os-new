@@ -7,7 +7,7 @@ const LOGGER = rootLogger.child('BizPacks');
 
 export class SeoPackService {
     constructor(private dal: DataAccessLayer, _events: IEventBus) {}
-    async init(){ LOGGER.info('init',{}); } async destroy(){}
+    async init(){ LOGGER.info('BizPacks', 'init',{}); } async destroy(){}
     async keywordCluster(seed: string[]){
         const clusters: Record<string,string[]>={};
         for (const kw of seed){ const root=kw.split(' ')[0]?.toLowerCase()??'other'; (clusters[root]??=[]).push(kw); clusters[root]=clusters[root] as string[]; }

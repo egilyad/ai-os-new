@@ -5,7 +5,7 @@ import { rootLogger } from '../logger-service';
 const LOGGER = rootLogger.child('GptPilot');
 export class GptPilotService implements IGptPilotService {
     constructor(private dal: DataAccessLayer) {}
-    async init(){ LOGGER.info('init',{}); } async destroy(){}
+    async init(){ LOGGER.info('GptPilot', 'init',{}); } async destroy(){}
     async start(spec: string){
         const id=genId('pilot'); const phases=['spec','arch','tasks','code','review'];
         await this.dal.kv.set(`pilot/${id}`, { id, spec: spec.slice(0,500), phase: 0, phases });

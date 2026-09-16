@@ -40,7 +40,7 @@ export class AtomService implements IAtomService {
     constructor(private dal: DataAccessLayer) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('Atom', 'init', {});
     }
 
     async destroy(): Promise<void> {

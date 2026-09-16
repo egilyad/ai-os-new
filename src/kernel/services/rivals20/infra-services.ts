@@ -4,7 +4,7 @@ import { rootLogger } from '../logger-service';
 const L=rootLogger.child('Infra');
 export class HeliconeService implements IHeliconeService {
     constructor(private dal: DataAccessLayer) {}
-    async init(){ L.info('init',{}); } async destroy(){}
+    async init(){ L.info('Infra', 'init',{}); } async destroy(){}
     async log(request: string){ await this.dal.kv.set(`helicone/${Date.now()}`, request.slice(0,500)); }
     async hits(){ const rows=await this.dal.kv.list('helicone/'); return rows.length; }
 }

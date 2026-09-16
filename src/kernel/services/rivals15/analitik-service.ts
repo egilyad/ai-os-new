@@ -6,7 +6,7 @@ import { rootLogger } from '../logger-service';
 const LOGGER = rootLogger.child('Analitik');
 export class AnalitikService implements IAnalitikService {
     constructor(private dal: DataAccessLayer, private llm?: ILLMClientService) {}
-    async init(){ LOGGER.info('init',{}); } async destroy(){}
+    async init(){ LOGGER.info('Analitik', 'init',{}); } async destroy(){}
     async intake(request: string){
         const id=genId('analitik');
         // GigaChat style: Intake → Supervisor → Proposal

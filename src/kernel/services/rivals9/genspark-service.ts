@@ -29,7 +29,7 @@ export class GensparkService implements IGensparkService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('Genspark', 'init', {});
     }
 
     async destroy(): Promise<void> {
@@ -79,7 +79,7 @@ export class GensparkService implements IGensparkService {
                 );
                 if (!res.error) synthesis = res.content;
             } catch (e) {
-                LOGGER.warn('fanout synthesis failed', { error: e instanceof Error ? e.message : String(e) });
+                LOGGER.warn('Genspark', 'fanout synthesis failed', { error: e instanceof Error ? e.message : String(e) });
             }
         }
         this.events.emit(EVENTS.GEN_FANOUT, { providers: list.length });

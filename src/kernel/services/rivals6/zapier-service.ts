@@ -44,7 +44,7 @@ export class ZapierService implements IZapierService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('Zapier', 'init', {});
     }
 
     async destroy(): Promise<void> {

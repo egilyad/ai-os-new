@@ -7,7 +7,7 @@ const ROLES=['Scholar','Syn','Axis','Critic','Memory','Weaver','Curator','Analys
 export class CognitaeService implements ICognitaeService {
     constructor(private dal: DataAccessLayer, private llm?: ILLMClientService) {}
     async init(){
-        LOGGER.info('init',{}); 
+        LOGGER.info('Cognitae', 'init',{}); 
         for (const r of ROLES) await this.dal.kv.set(`cognitae-role/${r}`, { role: r, yaml: `role: ${r}\narch: strict` });
     }
     async destroy(){}

@@ -2,7 +2,7 @@ import type { IInterpreterService, IMiniSweService } from '../../contracts/rival
 import { rootLogger } from '../logger-service';
 const L1=rootLogger.child('Interpreter');
 export class InterpreterService implements IInterpreterService {
-    async init(){ L1.info('init',{}); } async destroy(){}
+    async init(){ L1.info('Interpreter', 'init',{}); } async destroy(){}
     async exec(code: string, lang='python'){ return `exec ${lang}: ${code.slice(0,100)} → ok (stub)`; }
 }
 export class MiniSweService implements IMiniSweService {

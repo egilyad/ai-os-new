@@ -4,7 +4,7 @@ import { rootLogger } from '../logger-service';
 const LOGGER = rootLogger.child('NeuroSym');
 export class NeuroSymbolicService implements INeuroSymbolicService {
     constructor(private dal: DataAccessLayer) {}
-    async init(){ LOGGER.info('init',{}); } async destroy(){}
+    async init(){ LOGGER.info('NeuroSym', 'init',{}); } async destroy(){}
     async setPredicate(name: string, score: Record<string,number>){
         const clean: Record<string,number> = {};
         for (const [k,v] of Object.entries(score)) clean[k.slice(0,80)] = Math.max(0,Math.min(1,v));

@@ -21,7 +21,7 @@ export class DeepResearchService implements IDeepResearchService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('DeepResearch', 'init', {});
     }
 
     async destroy(): Promise<void> {
@@ -47,7 +47,7 @@ export class DeepResearchService implements IDeepResearchService {
                     if (steps.length > 0) return steps;
                 }
             } catch (e) {
-                LOGGER.warn('plan failed', { error: e instanceof Error ? e.message : String(e) });
+                LOGGER.warn('DeepResearch', 'plan failed', { error: e instanceof Error ? e.message : String(e) });
             }
         }
         return [

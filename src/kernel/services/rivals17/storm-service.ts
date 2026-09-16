@@ -6,7 +6,7 @@ import { rootLogger } from '../logger-service';
 const LOGGER = rootLogger.child('STORM');
 export class StormService implements IStormService {
     constructor(private dal: DataAccessLayer, private llm?: ILLMClientService, private knowledge?: IKnowledgeService) {}
-    async init(){ LOGGER.info('init',{}); } async destroy(){}
+    async init(){ LOGGER.info('STORM', 'init',{}); } async destroy(){}
     async research(topic: string){
         let perspectives=['technical','economic','ethical'];
         if (this.llm) {

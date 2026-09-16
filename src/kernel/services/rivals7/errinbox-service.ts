@@ -47,7 +47,7 @@ export class ErrorInboxService implements IErrorInboxService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('ErrInbox', 'init', {});
     }
 
     async destroy(): Promise<void> {

@@ -76,7 +76,7 @@ export class PersonaService implements IPersonaService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('Persona', 'init', {});
     }
 
     async destroy(): Promise<void> {
@@ -97,7 +97,7 @@ export class PersonaService implements IPersonaService {
                 if (refined.styleNotes.length > 0) styleNotes = refined.styleNotes;
                 if (refined.judgments.length > 0) judgments = refined.judgments;
             } catch (e) {
-                LOGGER.warn('llm distill failed', { error: e instanceof Error ? e.message : String(e) });
+                LOGGER.warn('Persona', 'llm distill failed', { error: e instanceof Error ? e.message : String(e) });
             }
         }
         const existing = await this.repo.getPersonByOwner(input.ownerId);

@@ -39,7 +39,7 @@ export class VoiceAgentService implements IVoiceAgentService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('Voice', 'init', {});
     }
 
     async destroy(): Promise<void> {

@@ -39,7 +39,7 @@ export class TrainingService implements ITrainingService {
     }
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('Training', 'init', {});
     }
 
     async destroy(): Promise<void> {

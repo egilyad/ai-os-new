@@ -20,7 +20,7 @@ export class GuardrailService implements IGuardrailService {
     constructor(private events: IEventBus) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('Guardrail', 'init', {});
     }
 
     async destroy(): Promise<void> {

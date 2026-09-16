@@ -5,7 +5,7 @@ import { rootLogger } from '../logger-service';
 const LOGGER = rootLogger.child('AgentView');
 export class AgentViewService implements IAgentViewService {
     constructor(private dal: DataAccessLayer, private tools?: IToolRunnerService) {}
-    async init(){ LOGGER.info('init',{}); } async destroy(){}
+    async init(){ LOGGER.info('AgentView', 'init',{}); } async destroy(){}
     async sessions(){
         const rows=await this.dal.kv.list('cc-plan/');
         return rows.map(r=>{ const v=r.value as Record<string,string>; return { id: r.id, title: v.task ?? r.id }; }).slice(0,20);

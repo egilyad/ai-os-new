@@ -35,7 +35,7 @@ export class AutonomyService implements IAutonomyService {
     constructor(private deps: AutonomyDeps) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('Autonomy', 'init', {});
     }
 
     async destroy(): Promise<void> {
@@ -190,7 +190,7 @@ export class AutonomyService implements IAutonomyService {
                 );
                 if (!res.error) return res.content;
             } catch (e) {
-                LOGGER.warn('autonomy think failed', { error: e instanceof Error ? e.message : String(e) });
+                LOGGER.warn('Autonomy', 'autonomy think failed', { error: e instanceof Error ? e.message : String(e) });
             }
         }
         return `NEXT: continue working (${prompt.slice(0, 80)}…)`;
@@ -202,7 +202,7 @@ export class AutonomyService implements IAutonomyService {
                 const res = await this.deps.tools.runWithTools(task, { agentId: 'autonomy-loop', maxRounds: 2 });
                 return res.output || '(no output)';
             } catch (e) {
-                LOGGER.warn('autonomy act failed', { error: e instanceof Error ? e.message : String(e) });
+                LOGGER.warn('Autonomy', 'autonomy act failed', { error: e instanceof Error ? e.message : String(e) });
             }
         }
         return await this.think(`Execute: ${task}`);

@@ -5,7 +5,7 @@ const LOGGER = rootLogger.child('MetaCtrl');
 const CATALOG=['blackboard','storm','debate','synthesis','genius','reflexion'];
 export class MetaControllerService implements IMetaControllerService {
     constructor(_events: IEventBus) {}
-    async init(){ LOGGER.info('init',{}); } async destroy(){}
+    async init(){ LOGGER.info('MetaCtrl', 'init',{}); } async destroy(){}
     async pick(task: string){
         const low=task.toLowerCase();
         if (low.includes('debate')||low.includes('спор')) return 'debate';

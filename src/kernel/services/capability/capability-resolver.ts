@@ -9,7 +9,7 @@ import { rootLogger } from '../logger-service';
 const LOGGER = rootLogger.child('CapabilityResolver');
 export class CapabilityResolver implements ICapabilityResolver {
     constructor(_dal: DataAccessLayer, private persona?: IPersonaService, private skills?: ISkillMarketService, private tools?: IToolRunnerService, private gov?: IGovernanceService) {}
-    async init(){ LOGGER.info('init',{}); } async destroy(){}
+    async init(){ LOGGER.info('CapabilityResolver', 'init',{}); } async destroy(){}
     async skillToTools(skillIds: string[]){
         if (!this.skills || skillIds.length===0) return [];
         const all = await this.skills.list().catch(()=>[]);
@@ -20,12 +20,12 @@ export class CapabilityResolver implements ICapabilityResolver {
             if (!s) { missingSkills.push(id); continue; }
             if (s?.permissions) tools.push(...s.permissions);
         }
-        if (missingSkills.length>0) LOGGER.warn('skillToTools: missing skills', { missingSkills });
+        if (missingSkills.length>0) LOGGER.warn('CapabilityResolver', 'skillToTools: missing skills', { missingSkills });
         // validate against ToolRunner registry (existing mechanism, no duplicate)
         if (this.tools) {
             const available = new Set(this.tools.listTools().map(t=>t.name));
             const unknown = tools.filter(t=>!available.has(t) && !available.has(t.split('.')[0] as string));
-            if (unknown.length>0) LOGGER.warn('skillToTools: tools not in registry (will be gated)', { unknown });
+            if (unknown.length>0) LOGGER.warn('CapabilityResolver', 'skillToTools: tools not in registry (will be gated)', { unknown });
         }
         return [...new Set(tools)];
     }

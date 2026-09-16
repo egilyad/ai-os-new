@@ -3,7 +3,7 @@ import { rootLogger } from '../logger-service';
 const LOGGER = rootLogger.child('Swarm');
 function hash(s:string){ let h=2166136261; for(let i=0;i<s.length;i++){ h^=s.charCodeAt(i); h=Math.imul(h,16777619)>>>0; } return h; }
 export class SwarmService implements ISwarmService {
-    async init(){ LOGGER.info('init',{}); } async destroy(){}
+    async init(){ LOGGER.info('Swarm', 'init',{}); } async destroy(){}
     async aco(nodes: string[], edges: Array<[string,string,number]>){
         if (nodes.length===0) return [];
         const pheromones = new Map<string,number>();

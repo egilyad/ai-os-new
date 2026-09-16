@@ -47,7 +47,7 @@ export class GovernanceService implements IGovernanceService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('Governance', 'init', {});
     }
 
     async destroy(): Promise<void> {

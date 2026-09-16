@@ -19,7 +19,7 @@ export class ReasoningService implements IReasoningService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('Reasoning', 'init', {});
     }
 
     async destroy(): Promise<void> {
@@ -60,7 +60,7 @@ export class ReasoningService implements IReasoningService {
                     }
                 }
             } catch (e) {
-                LOGGER.warn('think failed', { error: e instanceof Error ? e.message : String(e) });
+                LOGGER.warn('Reasoning', 'think failed', { error: e instanceof Error ? e.message : String(e) });
             }
         }
         const fallback: Reasoning = {

@@ -7,7 +7,7 @@ import { rootLogger } from '../logger-service';
 const LOGGER = rootLogger.child('AiScientist');
 export class AiScientistService implements IAiScientistService {
     constructor(private dal: DataAccessLayer, private llm?: ILLMClientService, private tools?: IToolRunnerService) {}
-    async init(){ LOGGER.info('init',{}); } async destroy(){}
+    async init(){ LOGGER.info('AiScientist', 'init',{}); } async destroy(){}
     async queueIdea(idea: string){ const id=genId('idea'); await this.dal.kv.set(`ai-sci/${id}`, { id, idea: idea.slice(0,500), status: 'queued' }); return id; }
     async runNext(){
         const rows=await this.dal.kv.list('ai-sci/');

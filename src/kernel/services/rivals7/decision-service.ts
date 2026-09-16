@@ -30,7 +30,7 @@ export class DecisionService implements IDecisionService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('Decision', 'init', {});
     }
 
     async destroy(): Promise<void> {

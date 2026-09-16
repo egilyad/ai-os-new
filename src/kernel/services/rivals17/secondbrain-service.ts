@@ -5,7 +5,7 @@ const LOGGER = rootLogger.child('SecondBrain');
 const ROLES=['Researcher','Synthesizer','Critic','Memory','Planner','Writer','Verifier','Curator','Analyst','Orchestrator'];
 export class SecondBrainService implements ISecondBrainService {
     constructor(private dal: DataAccessLayer) {}
-    async init(){ LOGGER.info('init',{}); for(const r of ROLES) await this.dal.kv.set(`secondbrain-role/${r}`, { role: r }); } async destroy(){}
+    async init(){ LOGGER.info('SecondBrain', 'init',{}); for(const r of ROLES) await this.dal.kv.set(`secondbrain-role/${r}`, { role: r }); } async destroy(){}
     async run(task: string){
         // V-model: worker ≠ verifier
         const worker=ROLES[Math.floor(Math.random()*5) as number] as string;

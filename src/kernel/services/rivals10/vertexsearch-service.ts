@@ -26,7 +26,7 @@ export class VertexSearchService implements IVertexSearchService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('VertexSearch', 'init', {});
     }
 
     async destroy(): Promise<void> {

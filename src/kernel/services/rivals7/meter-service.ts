@@ -31,7 +31,7 @@ export class MeterService implements IMeterService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('Meter', 'init', {});
     }
 
     async destroy(): Promise<void> {

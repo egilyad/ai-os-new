@@ -4,7 +4,7 @@ import { rootLogger } from '../logger-service';
 const LOGGER = rootLogger.child('Continue');
 export class ContinueService implements IContinueService {
     constructor(private llm?: ILLMClientService) {}
-    async init(){ LOGGER.info('init',{}); } async destroy(){}
+    async init(){ LOGGER.info('Continue', 'init',{}); } async destroy(){}
     async autocomplete(prefix: string){
         if (this.llm) { try { const r=await this.llm.chat([{role:'system',content:'Autocomplete code, one line.'},{role:'user',content:prefix.slice(-500)}],{temperature:0.2,maxTokens:40}); if(!r.error) return r.content.trim().slice(0,100); } catch {} }
         return `${prefix} // autocomplete`;

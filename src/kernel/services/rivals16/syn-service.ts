@@ -4,7 +4,7 @@ import { rootLogger } from '../logger-service';
 const LOGGER = rootLogger.child('Syn');
 export class SynService implements ISynService {
     constructor(private dal: DataAccessLayer) {}
-    async init(){ LOGGER.info('init',{}); } async destroy(){}
+    async init(){ LOGGER.info('Syn', 'init',{}); } async destroy(){}
     async remember(kind: string, text: string){ await this.dal.kv.set(`syn-mem/${kind}/${Date.now()}`, text.slice(0,1000)); }
     async sleep(){
         const rows=await this.dal.kv.list('syn-mem/');

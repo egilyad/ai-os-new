@@ -41,7 +41,7 @@ export class ToolCatalogService implements IToolCatalogService {
     }) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('ToolCatalog', 'init', {});
     }
 
     async destroy(): Promise<void> {}
@@ -70,7 +70,7 @@ export class ToolCatalogService implements IToolCatalogService {
                     manifestId: m.id,
                 }));
             } catch (e) {
-                LOGGER.warn('skillMarket list failed', { error: e instanceof Error ? e.message : String(e) });
+                LOGGER.warn('ToolCatalog', 'skillMarket list failed', { error: e instanceof Error ? e.message : String(e) });
             }
         }
 
@@ -91,7 +91,7 @@ export class ToolCatalogService implements IToolCatalogService {
                     }
                 }
             } catch (e) {
-                LOGGER.warn('mcp list failed', { error: e instanceof Error ? e.message : String(e) });
+                LOGGER.warn('ToolCatalog', 'mcp list failed', { error: e instanceof Error ? e.message : String(e) });
             }
         }
 
@@ -169,7 +169,7 @@ export class ToolCatalogService implements IToolCatalogService {
 
     async setAuthConfig(name: string, authType: string, config: Record<string, unknown>): Promise<void> {
         this.authStore.set(name, { authType, config });
-        LOGGER.info('setAuthConfig', `Set auth config for ${name} (type: ${authType})`);
+        LOGGER.info('ToolCatalog', 'setAuthConfig', `Set auth config for ${name} (type: ${authType})`);
     }
 
     async getAuthConfig(name: string): Promise<{ authType: string; config: Record<string, unknown> } | null> {

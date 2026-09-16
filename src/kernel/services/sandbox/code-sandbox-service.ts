@@ -32,7 +32,7 @@ export class CodeSandboxService implements ICodeSandboxService {
     constructor(private deps: { dal: DataAccessLayer; codeExec: ICodeExecService; events: IEventBus }) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', { policy: this.policy });
+        LOGGER.info('CodeSandbox', 'init', { policy: this.policy });
         // Install sandbox executor as CodeExec delegate (hardened)
         this.deps.codeExec.setExecutor(async (ticketId, lang, code) => {
             return this.runWithTimeout(ticketId, lang, code);
@@ -45,7 +45,7 @@ export class CodeSandboxService implements ICodeSandboxService {
 
     setPolicy(patch: Partial<SandboxPolicy>): void {
         this.policy = { ...this.policy, ...patch, banned: patch.banned ?? this.policy.banned, allowedLanguages: patch.allowedLanguages ?? this.policy.allowedLanguages };
-        LOGGER.info('policy updated', { policy: this.policy });
+        LOGGER.info('CodeSandbox', 'policy updated', { policy: this.policy });
     }
 
     getPolicy(): SandboxPolicy {

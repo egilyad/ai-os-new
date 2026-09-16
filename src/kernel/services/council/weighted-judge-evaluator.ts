@@ -31,7 +31,7 @@ export class WeightedJudgeEvaluator implements IDebateEvaluator {
         try {
             // Best-effort: scan keyValue prefix council:judge: and council:audience: via getKv on known index not available,
             // so we restore lazily per sessionId on first record* call via getKv, and also via restoreSession(sessionId) below
-        } catch (e) { LOGGER.warn('restoreAll failed', { error: e instanceof Error ? e.message : String(e) }); }
+        } catch (e) { LOGGER.warn('WeightedJudge', 'restoreAll failed', { error: e instanceof Error ? e.message : String(e) }); }
     }
 
     async restoreSession(sessionId: string): Promise<void> {
@@ -49,7 +49,7 @@ export class WeightedJudgeEvaluator implements IDebateEvaluator {
                 for (const [k, v] of Object.entries(a.votes)) m.set(k, v);
                 if (m.size > 0) this.audienceVotes.set(sessionId, m);
             }
-        } catch (e) { LOGGER.warn('restoreSession failed', { error: e instanceof Error ? e.message : String(e) }); }
+        } catch (e) { LOGGER.warn('WeightedJudge', 'restoreSession failed', { error: e instanceof Error ? e.message : String(e) }); }
     }
 
     /** D4.3a: record judge vote — idempotent, persists via keyValue CAS + snapshot best-effort */
@@ -86,7 +86,7 @@ export class WeightedJudgeEvaluator implements IDebateEvaluator {
         if (!m) return;
         const payload = Object.fromEntries(m);
         const checksum = JSON.stringify(payload).length.toString(16);
-        try { await this.deps.database.setKv(`council:judge:${sessionId}`, { votes: payload, checksum, updatedAt: Date.now() }); } catch (e) { LOGGER.warn('persistJudge failed', { error: e instanceof Error ? e.message : String(e) }); }
+        try { await this.deps.database.setKv(`council:judge:${sessionId}`, { votes: payload, checksum, updatedAt: Date.now() }); } catch (e) { LOGGER.warn('WeightedJudge', 'persistJudge failed', { error: e instanceof Error ? e.message : String(e) }); }
         try { this.deps.eventBus?.emit('council:judge:score' as unknown as string, { sessionId } as unknown as never); } catch { /* ignore */ }
     }
 
@@ -96,7 +96,7 @@ export class WeightedJudgeEvaluator implements IDebateEvaluator {
         if (!m) return;
         const payload = Object.fromEntries(m);
         const checksum = JSON.stringify(payload).length.toString(16);
-        try { await this.deps.database.setKv(`council:audience:${sessionId}`, { votes: payload, checksum, updatedAt: Date.now() }); } catch (e) { LOGGER.warn('persistAudience failed', { error: e instanceof Error ? e.message : String(e) }); }
+        try { await this.deps.database.setKv(`council:audience:${sessionId}`, { votes: payload, checksum, updatedAt: Date.now() }); } catch (e) { LOGGER.warn('WeightedJudge', 'persistAudience failed', { error: e instanceof Error ? e.message : String(e) }); }
         try { this.deps.eventBus?.emit('council:audience:vote' as unknown as string, { sessionId } as unknown as never); } catch { /* ignore */ }
     }
 

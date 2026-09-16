@@ -39,7 +39,7 @@ export class GymService implements IGymService {
     constructor(private dal: DataAccessLayer) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('Gym', 'init', {});
     }
 
     async destroy(): Promise<void> {

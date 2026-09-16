@@ -37,7 +37,7 @@ export class RuntimeService implements IRuntimeService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', { micros: Object.keys(MICRO_AGENTS).length });
+        LOGGER.info('Runtime', 'init', { micros: Object.keys(MICRO_AGENTS).length });
     }
 
     async destroy(): Promise<void> {

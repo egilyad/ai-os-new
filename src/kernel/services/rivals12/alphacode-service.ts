@@ -4,7 +4,7 @@ import { rootLogger } from '../logger-service';
 const LOGGER = rootLogger.child('AlphaCode');
 export class AlphaCodeService implements IAlphaCodeService {
     constructor(private llm?: ILLMClientService) {}
-    async init(){ LOGGER.info('init',{}); } async destroy(){}
+    async init(){ LOGGER.info('AlphaCode', 'init',{}); } async destroy(){}
     async generate(task: string, samples = 5){
         const n = Math.max(1, Math.min(10, samples));
         let candidates: string[] = [];

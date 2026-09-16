@@ -115,7 +115,7 @@ export class AdvisorService {
         
         // POC Integration Slice: Prove CapabilityManager connectivity
         const tools = this.deps.capabilityManager.listTools();
-        LOGGER.info('SRE Agent (AdvisorService) initialized with capability manager', { toolCount: tools.length });
+        LOGGER.info('AdvisorService', 'SRE Agent (AdvisorService) initialized with capability manager', { toolCount: tools.length });
     }
 
     private setupListeners() {

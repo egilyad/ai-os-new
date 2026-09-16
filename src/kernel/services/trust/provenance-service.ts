@@ -27,7 +27,7 @@ export class ProvenanceService implements IProvenanceService {
     constructor(private repo: TrustRepository) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('Provenance', 'init', {});
     }
 
     async destroy(): Promise<void> {

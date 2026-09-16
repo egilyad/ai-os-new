@@ -5,7 +5,7 @@ import { rootLogger } from '../logger-service';
 const LOGGER = rootLogger.child('Darwin');
 export class DarwinService implements IDarwinService {
     constructor(private dal: DataAccessLayer) {}
-    async init(){ LOGGER.info('init',{}); } async destroy(){}
+    async init(){ LOGGER.info('Darwin', 'init',{}); } async destroy(){}
     async evolve(seed: string, gens=5){
         let best=seed; let score=seed.length % 10;
         for(let i=0;i<Math.max(1,Math.min(10,gens));i++){

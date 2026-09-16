@@ -8,7 +8,7 @@ const LOGGER = rootLogger.child('PaperclipAgents');
 /** Paperclip org-chart + Biz tickets + Lindy playbooks + SmythOS compose + AGEMS meetings/HITL — one file for S.1 (kv only) */
 export class OrgChartService {
     constructor(private dal: DataAccessLayer, private events: IEventBus) {}
-    async init(){ LOGGER.info('init',{}); } async destroy(){}
+    async init(){ LOGGER.info('PaperclipAgents', 'init',{}); } async destroy(){}
     async createNode(title: string, parentId?: string, roleId?: string, budget?: number){
         const id = genId('org'); await this.dal.kv.set(`org/${id}`, { id, title: title.slice(0,80), parentId, roleId, budget, approved: false }); this.events.emit(EVENTS.OPS_HIERARCHY, { nodeId: id, action: 'created' } as never); return id;
     }

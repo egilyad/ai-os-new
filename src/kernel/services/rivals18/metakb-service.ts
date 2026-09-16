@@ -4,7 +4,7 @@ import { rootLogger } from '../logger-service';
 const LOGGER = rootLogger.child('MetaKb');
 export class MetaKbService implements IMetaKbService {
     constructor(private dal: DataAccessLayer) {}
-    async init(){ LOGGER.info('init',{}); } async destroy(){}
+    async init(){ LOGGER.info('MetaKb', 'init',{}); } async destroy(){}
     async put(entry: string, text: string){ await this.dal.kv.set(`metakb/${entry.slice(0,80)}`, text.slice(0,2000)); }
     async query(q: string){
         const rows=await this.dal.kv.list('metakb/');

@@ -36,7 +36,7 @@ export class FormatService implements IFormatService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('Formats', 'init', {});
     }
 
     async destroy(): Promise<void> {
@@ -199,7 +199,7 @@ export class FormatService implements IFormatService {
                 const res = await this.rag.answer(`Balanced briefing on: ${topic}`, 0);
                 briefing = res.answer.slice(0, 2000);
             } catch (e) {
-                LOGGER.warn('briefing failed', { error: e instanceof Error ? e.message : String(e) });
+                LOGGER.warn('Formats', 'briefing failed', { error: e instanceof Error ? e.message : String(e) });
             }
         }
         const pre = await this.strawPoll(topic, 'pre');

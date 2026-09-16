@@ -31,7 +31,7 @@ function validateRoom(r: Omit<WorldRoom, 'agents'>): void {
 export class WorldStateService implements IWorldStateService {
     constructor(private deps: { database: DatabaseService; events: IEventBus }) {}
 
-    async init(): Promise<void> { LOGGER.info('init', {}); }
+    async init(): Promise<void> { LOGGER.info('WorldState', 'init', {}); }
     async destroy(): Promise<void> {}
 
     async create(input: { name: string; rooms?: Omit<WorldRoom, 'agents'>[]; agentIds?: string[] }): Promise<SimulationWorld> {
@@ -67,7 +67,7 @@ export class WorldStateService implements IWorldStateService {
                 { worldId: world.id, name: world.name },
             );
         } catch { /* ignore */ }
-        LOGGER.info('world created', { worldId: world.id });
+        LOGGER.info('WorldState', 'world created', { worldId: world.id });
         return world;
     }
 

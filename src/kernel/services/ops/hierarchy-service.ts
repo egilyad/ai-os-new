@@ -26,7 +26,7 @@ export class HierarchyService implements IHierarchyService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('Hierarchy', 'init', {});
     }
 
     async destroy(): Promise<void> {

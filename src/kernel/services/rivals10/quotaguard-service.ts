@@ -22,7 +22,7 @@ export class QuotaGuardService implements IQuotaGuardService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('QuotaGuard', 'init', {});
     }
 
     async destroy(): Promise<void> {

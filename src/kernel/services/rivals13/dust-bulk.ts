@@ -7,7 +7,7 @@ const LOGGER = rootLogger.child('DustBulk');
 
 export class DataSourceService {
     constructor(private dal: DataAccessLayer, private events: IEventBus) {}
-    async init(){ LOGGER.info('init',{}); } async destroy(){}
+    async init(){ LOGGER.info('DustBulk', 'init',{}); } async destroy(){}
     async addSource(name: string, kind: string){ const id=genId('ds'); await this.dal.kv.set(`datasource/${id}`, { id, name: name.slice(0,80), kind, status: 'idle' }); return id; }
     async sync(sourceId: string){ const s=await this.dal.kv.get<Record<string,unknown>>(`datasource/${sourceId}`); if(!s) throw new Error('source not found'); (s as Record<string,unknown>).status='synced'; (s as Record<string,unknown>).syncedAt=Date.now(); await this.dal.kv.set(`datasource/${sourceId}`, s); this.events.emit(EVENTS.DATASET_HIT, { datasetId: sourceId, fromAnnotation: false } as never); }
     async status(sourceId: string){ const s=await this.dal.kv.get<Record<string,unknown>>(`datasource/${sourceId}`); return (s as Record<string,unknown>)?.status as string ?? 'unknown'; }

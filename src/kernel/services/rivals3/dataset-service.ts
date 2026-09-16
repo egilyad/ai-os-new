@@ -46,7 +46,7 @@ export class DatasetService implements IDatasetService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('Dataset', 'init', {});
     }
 
     async destroy(): Promise<void> {

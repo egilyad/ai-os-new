@@ -39,7 +39,7 @@ function integrityPayload(session: import('../../types/council-types').CouncilSe
 export class CouncilMigrationService {
     constructor(private deps: { councilRepo: CouncilRepository; database: DatabaseService; debateStore?: import('../../contracts/storage/storage-layer').DebateStore }) {}
 
-    async init(): Promise<void> { LOGGER.info('init', {}); }
+    async init(): Promise<void> { LOGGER.info('CouncilMigration', 'init', {}); }
     async destroy(): Promise<void> {}
 
     /** Gate: can this session be migrated? Checks not already migrated (marker) and integrity pre-check */
@@ -117,7 +117,7 @@ export class CouncilMigrationService {
 
         await this.deps.database.setKv(`${MARKER_PREFIX}${sessionId}`, { checksum, at: Date.now(), debateId: session.id, topic: session.topic });
 
-        LOGGER.info('migrated one session (gate+checksum, no bulk)', { sessionId, checksum, debateId: session.id });
+        LOGGER.info('CouncilMigration', 'migrated one session (gate+checksum, no bulk)', { sessionId, checksum, debateId: session.id });
         return { checksum, debateId: session.id };
     }
 
@@ -142,7 +142,7 @@ export class CouncilMigrationService {
         // Clear marker so can retry
         await this.deps.database.setKv(`${MARKER_PREFIX}${sessionId}`, null as unknown as { checksum: string });
         await this.deps.database.setKv(`${SNAPSHOT_PREFIX}${sessionId}`, null as unknown as unknown);
-        LOGGER.info('rollback one session', { sessionId });
+        LOGGER.info('CouncilMigration', 'rollback one session', { sessionId });
     }
 
     /** List already migrated (gate knows 36 done) */

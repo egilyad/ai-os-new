@@ -57,7 +57,7 @@ export class EcosystemService implements IEcosystemService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('Ecosystem', 'init', {});
     }
 
     async destroy(): Promise<void> {

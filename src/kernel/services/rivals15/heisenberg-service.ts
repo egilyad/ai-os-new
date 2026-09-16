@@ -5,7 +5,7 @@ import { rootLogger } from '../logger-service';
 const LOGGER = rootLogger.child('Heisenberg');
 export class HeisenbergService implements IHeisenbergService {
     constructor(private dal: DataAccessLayer) {}
-    async init(){ LOGGER.info('init',{}); } async destroy(){}
+    async init(){ LOGGER.info('Heisenberg', 'init',{}); } async destroy(){}
     async board(){
         const rows=await this.dal.kv.list('heisenberg/');
         return rows.map(r=>{ const v=r.value as Record<string,string>; return { id: r.id, title: v.title as string, status: v.status as string }; }).slice(0,50);

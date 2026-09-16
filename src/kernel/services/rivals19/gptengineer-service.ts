@@ -5,7 +5,7 @@ import { rootLogger } from '../logger-service';
 const LOGGER = rootLogger.child('GptEngineer');
 export class GptEngineerService implements IGptEngineerService {
     constructor(private llm?: ILLMClientService, private tools?: IToolRunnerService) {}
-    async init(){ LOGGER.info('init',{}); } async destroy(){}
+    async init(){ LOGGER.info('GptEngineer', 'init',{}); } async destroy(){}
     async run(spec: string){
         let clarify=`Spec: ${spec.slice(0,100)}`;
         if (this.llm) { try { const r=await this.llm.chat([{role:'system',content:'Ask 2 clarifying questions, "- " each.'},{role:'user',content:spec.slice(0,1000)}],{temperature:0.4,maxTokens:200}); if(!r.error) clarify=r.content; } catch {} }

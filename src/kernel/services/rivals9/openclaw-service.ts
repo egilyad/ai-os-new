@@ -78,7 +78,7 @@ export class OpenClawService implements IOpenClawService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('OpenClaw', 'init', {});
     }
 
     async destroy(): Promise<void> {

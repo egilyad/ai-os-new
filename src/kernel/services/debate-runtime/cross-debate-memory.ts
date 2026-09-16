@@ -135,7 +135,7 @@ export class CrossDebateMemoryService {
             EVENTS.DEBATE_VERDICT_GENERATED,
             (data) => {
                 this.indexVerdict(data.sessionId, data.verdict).catch((e) => {
-                    LOGGER.warn('Failed to index verdict', { error: String(e) });
+                    LOGGER.warn('CrossDebateMemory', 'Failed to index verdict', { error: String(e) });
                 });
             },
         );
@@ -152,14 +152,14 @@ export class CrossDebateMemoryService {
             this.entries = [];
         }
         this._loaded = true;
-        LOGGER.info('Loaded cross-debate memory index', { count: this.entries.length });
+        LOGGER.info('CrossDebateMemory', 'Loaded cross-debate memory index', { count: this.entries.length });
     }
 
     private async persistIndex(): Promise<void> {
         try {
             await this.deps.store.config.set(STORAGE_KEY, this.entries);
         } catch (e) {
-            LOGGER.warn('Failed to persist cross-debate memory index', { error: String(e) });
+            LOGGER.warn('CrossDebateMemory', 'Failed to persist cross-debate memory index', { error: String(e) });
         }
     }
 
@@ -192,7 +192,7 @@ export class CrossDebateMemoryService {
         }
 
         await this.persistIndex();
-        LOGGER.info('Indexed cross-debate memory', {
+        LOGGER.info('CrossDebateMemory', 'Indexed cross-debate memory', {
             sessionId,
             topic: verdict.topic,
             conclusionType: verdict.conclusionType,

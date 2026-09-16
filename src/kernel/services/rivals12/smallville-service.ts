@@ -6,7 +6,7 @@ const LOGGER = rootLogger.child('Smallville');
 interface Mem { text: string; importance: number; at: number; }
 export class SmallvilleService implements ISmallvilleService {
     constructor(private dal: DataAccessLayer, private llm?: ILLMClientService) {}
-    async init(){ LOGGER.info('init',{}); } async destroy(){}
+    async init(){ LOGGER.info('Smallville', 'init',{}); } async destroy(){}
     async observe(agentId: string, text: string, importance = 0.5){
         const key = `smallville/${agentId.slice(0,80)}`;
         const list = (await this.dal.kv.get<Mem[]>(key)) ?? [];
@@ -30,7 +30,7 @@ export class SmallvilleService implements ISmallvilleService {
                     for (const ins of insights) await this.observe(agentId, `insight: ${ins}`, 0.9);
                     return insights;
                 }
-            } catch (e){ LOGGER.warn('reflect failed',{error:e instanceof Error?e.message:String(e)}); }
+            } catch (e){ LOGGER.warn('Smallville', 'reflect failed',{error:e instanceof Error?e.message:String(e)}); }
         }
         const ins = `reflection on ${mems.length} memories at ${new Date().toISOString()}`;
         await this.observe(agentId, `insight: ${ins}`, 0.9);

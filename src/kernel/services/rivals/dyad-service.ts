@@ -28,7 +28,7 @@ export class DyadService implements IDyadService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('Dyad', 'init', {});
     }
 
     async destroy(): Promise<void> {
@@ -109,7 +109,7 @@ export class DyadService implements IDyadService {
                 );
                 if (!res.error) return res.content;
             } catch (e) {
-                LOGGER.warn('dyad turn failed', { error: e instanceof Error ? e.message : String(e) });
+                LOGGER.warn('Dyad', 'dyad turn failed', { error: e instanceof Error ? e.message : String(e) });
             }
         }
         return `[${role}] acknowledges.`;

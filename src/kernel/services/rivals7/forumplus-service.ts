@@ -37,7 +37,7 @@ export class ForumPlusService implements IForumPlusService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('ForumPlus', 'init', {});
     }
 
     async destroy(): Promise<void> {

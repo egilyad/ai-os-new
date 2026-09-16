@@ -38,7 +38,7 @@ export class AssistService implements IAssistService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('Assist', 'init', {});
     }
 
     async destroy(): Promise<void> {
@@ -64,7 +64,7 @@ export class AssistService implements IAssistService {
                     if (lines.length > 0) return lines;
                 }
             } catch (e) {
-                LOGGER.warn('smartReplies failed', { error: e instanceof Error ? e.message : String(e) });
+                LOGGER.warn('Assist', 'smartReplies failed', { error: e instanceof Error ? e.message : String(e) });
             }
         }
         return [...FALLBACK_REPLIES];

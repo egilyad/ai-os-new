@@ -46,13 +46,13 @@ export class ScorerRegistryService implements IScorerRegistryService {
     constructor(private events: IEventBus) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', { builtins: [...this.scorers.keys()] });
+        LOGGER.info('ScorerRegistry', 'init', { builtins: [...this.scorers.keys()] });
     }
 
     async destroy(): Promise<void> {}
 
     register(name: string, fn: ScorerFn): void {
-        if (this.scorers.has(name)) LOGGER.warn('overwrite scorer', { name });
+        if (this.scorers.has(name)) LOGGER.warn('ScorerRegistry', 'overwrite scorer', { name });
         this.scorers.set(name, fn);
         try {
             (this.events as unknown as { emit: (n: string, p: unknown) => void }).emit(

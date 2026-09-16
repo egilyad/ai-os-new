@@ -30,7 +30,7 @@ export class CacheRegistryService implements ICacheRegistryService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('CacheRegistry', 'init', {});
     }
 
     async destroy(): Promise<void> {

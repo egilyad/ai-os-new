@@ -30,7 +30,7 @@ export class AssetService implements IAssetService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('Assets', 'init', {});
     }
 
     async destroy(): Promise<void> {
@@ -60,7 +60,7 @@ export class AssetService implements IAssetService {
                         await this.provenance.link(depNode.id, node.id, 'derived_from');
                     }
                 } catch (e) {
-                    LOGGER.warn('lineage failed', { error: e instanceof Error ? e.message : String(e) });
+                    LOGGER.warn('Assets', 'lineage failed', { error: e instanceof Error ? e.message : String(e) });
                 }
             }
             outputs.push(`${asset}: ok`);

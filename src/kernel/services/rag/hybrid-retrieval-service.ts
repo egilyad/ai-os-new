@@ -90,7 +90,7 @@ export class HybridRetrievalService implements IHybridRetrievalService {
     private events: IEventBus;
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('HybridRetrieval', 'init', {});
         await this.bm25.init();
         await this.reranker.init();
     }
@@ -138,7 +138,7 @@ export class HybridRetrievalService implements IHybridRetrievalService {
             await this.bm25.build(chunks);
             bm25Hits = await this.bm25.search(query, cand);
         } catch (e) {
-            LOGGER.warn('bm25 failed, continue vector-only', { error: e instanceof Error ? e.message : String(e) });
+            LOGGER.warn('HybridRetrieval', 'bm25 failed, continue vector-only', { error: e instanceof Error ? e.message : String(e) });
         }
 
         // Vector (via embedder, cached per chunk)
@@ -162,13 +162,13 @@ export class HybridRetrievalService implements IHybridRetrievalService {
                 vectorHits = scored.filter((x) => x.score > 0).slice(0, cand);
             }
         } catch (e) {
-            LOGGER.warn('vector retrieval failed, continue bm25-only', { error: e instanceof Error ? e.message : String(e) });
+            LOGGER.warn('HybridRetrieval', 'vector retrieval failed, continue bm25-only', { error: e instanceof Error ? e.message : String(e) });
         }
 
         if (bm25Hits.length === 0 && vectorHits.length === 0) {
             // fallback-compatible: nothing retrieved — return empty (caller may fall back to token retrieve)
             this.last = { bm25Candidates: 0, vectorCandidates: 0, fused: 0, reranked: 0 };
-            LOGGER.warn('hybrid: both retrievers empty — fallback to empty (existing retrieve() still available)', {});
+            LOGGER.warn('HybridRetrieval', 'hybrid: both retrievers empty — fallback to empty (existing retrieve() still available)', {});
             return [];
         }
 
@@ -195,7 +195,7 @@ export class HybridRetrievalService implements IHybridRetrievalService {
             try {
                 final = await this.reranker.rerank(query, preRerank);
             } catch (e) {
-                LOGGER.warn('reranker failed, keep fused order', { error: e instanceof Error ? e.message : String(e) });
+                LOGGER.warn('HybridRetrieval', 'reranker failed, keep fused order', { error: e instanceof Error ? e.message : String(e) });
             }
         }
         const out = final.slice(0, limit);

@@ -7,7 +7,7 @@ function bindVec(a:number[],b:number[]){ return a.map((v,i)=>v*(b[i]??1)); }
 function bundleVecs(vecs:number[][]){ const d=vecs[0]?.length??128; const out=new Array(d).fill(0); for(const v of vecs) for(let i=0;i<d;i++) out[i]+=v[i]??0; return out.map(x=> x>0?1:x<0?-1:0); }
 export class RckService implements IRckService {
     constructor(private dal: DataAccessLayer) {}
-    async init(){ LOGGER.info('init',{}); } async destroy(){}
+    async init(){ LOGGER.info('RCK', 'init',{}); } async destroy(){}
     async bind(a: string, b: string){ const v=bindVec(hv(a),hv(b)); await this.dal.kv.set(`rck/bind/${a}~${b}`, v.slice(0,8)); return `bind(${a}·${b})`; }
     async bundle(vectors: string[]){ const vecs=vectors.map(s=>hv(s)); const b=bundleVecs(vecs); await this.dal.kv.set(`rck/bundle/${Date.now()}`, b.slice(0,8)); return `bundle(${vectors.join('+')})`; }
     async infer(chain: string[]){

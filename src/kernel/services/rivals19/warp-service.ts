@@ -6,7 +6,7 @@ import { rootLogger } from '../logger-service';
 const LOGGER = rootLogger.child('Warp');
 export class WarpService implements IWarpService {
     constructor(private dal: DataAccessLayer, private llm?: ILLMClientService) {}
-    async init(){ LOGGER.info('init',{}); } async destroy(){}
+    async init(){ LOGGER.info('Warp', 'init',{}); } async destroy(){}
     async block(input: string){ const id=genId('warp'); await this.dal.kv.set(`warp-block/${id}`, { input: input.slice(0,1000), output: `output for ${input.slice(0,40)}`, status: 'done' }); return id; }
     async workflow(name: string, steps: string[]){ const id=genId('warp-wf'); await this.dal.kv.set(`warp-wf/${id}`, { name: name.slice(0,80), steps: steps.slice(0,10) }); return id; }
     async aiCommand(prompt: string){

@@ -22,7 +22,7 @@ export class RagService implements IRagService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('RagLoop', 'init', {});
     }
 
     async destroy(): Promise<void> {
@@ -63,7 +63,7 @@ export class RagService implements IRagService {
                 );
                 if (!res.error && res.content.trim()) return res.content.trim().slice(0, 500);
             } catch (e) {
-                LOGGER.warn('rewrite failed', { error: e instanceof Error ? e.message : String(e) });
+                LOGGER.warn('RagLoop', 'rewrite failed', { error: e instanceof Error ? e.message : String(e) });
             }
         }
         return query;
@@ -74,7 +74,7 @@ export class RagService implements IRagService {
         try {
             return await this.knowledge.retrieve(query, 5);
         } catch (e) {
-            LOGGER.warn('retrieve failed', { error: e instanceof Error ? e.message : String(e) });
+            LOGGER.warn('RagLoop', 'retrieve failed', { error: e instanceof Error ? e.message : String(e) });
             return [];
         }
     }
@@ -97,7 +97,7 @@ export class RagService implements IRagService {
                 );
                 if (!res.error) return res.content;
             } catch (e) {
-                LOGGER.warn('synthesize failed, extractive fallback', {
+                LOGGER.warn('RagLoop', 'synthesize failed, extractive fallback', {
                     error: e instanceof Error ? e.message : String(e),
                 });
             }
@@ -123,7 +123,7 @@ export class RagService implements IRagService {
                 );
                 if (!res.error) return res.content.trim().slice(0, 300);
             } catch (e) {
-                LOGGER.warn('critique failed', { error: e instanceof Error ? e.message : String(e) });
+                LOGGER.warn('RagLoop', 'critique failed', { error: e instanceof Error ? e.message : String(e) });
             }
         }
         return 'SUFFICIENT';

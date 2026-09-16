@@ -26,7 +26,7 @@ function esc(s: string): string {
 
 export class GraphVizService implements IGraphVizService {
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('GraphViz', 'init', {});
     }
 
     async destroy(): Promise<void> {

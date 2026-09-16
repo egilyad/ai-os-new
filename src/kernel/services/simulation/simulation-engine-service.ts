@@ -60,7 +60,7 @@ export class SimulationEngineService implements ISimulationEngineService {
         return new StubActPort();
     }
 
-    async init(): Promise<void> { LOGGER.info('init', {}); }
+    async init(): Promise<void> { LOGGER.info('SimEngine', 'init', {}); }
     async destroy(): Promise<void> { this.running.clear(); }
 
     async status(worldId: string): Promise<{ tick: number; running: boolean } | null> {
@@ -85,14 +85,14 @@ export class SimulationEngineService implements ISimulationEngineService {
                 try {
                     await this.deps.worldState.moveAgent(worldId, a.agentId, a.targetRoomId);
                 } catch (e) {
-                    LOGGER.warn('moveAgent failed', { worldId, agentId: a.agentId, error: e instanceof Error ? e.message : String(e) });
+                    LOGGER.warn('SimEngine', 'moveAgent failed', { worldId, agentId: a.agentId, error: e instanceof Error ? e.message : String(e) });
                 }
             }
         }
 
         const ticked = await this.deps.worldState.tick(worldId);
         // act events are already handled via sim:tick from worldState; we also could emit per-acts if needed
-        LOGGER.info('tick', { worldId, tick: ticked.globalClock, acts: acts.length });
+        LOGGER.info('SimEngine', 'tick', { worldId, tick: ticked.globalClock, acts: acts.length });
         return { world: ticked, acts };
     }
 

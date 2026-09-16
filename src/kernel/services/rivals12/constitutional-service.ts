@@ -7,7 +7,7 @@ import { EVENTS } from '../../events/event-names';
 const LOGGER = rootLogger.child('Constitutional');
 export class ConstitutionalService implements IConstitutionalService {
     constructor(private dal: DataAccessLayer, private events: IEventBus, private llm?: ILLMClientService) {}
-    async init(){ LOGGER.info('init',{}); } async destroy(){}
+    async init(){ LOGGER.info('Constitutional', 'init',{}); } async destroy(){}
     async setConstitution(rules: string[]){ await this.dal.kv.set('constitution/rules', rules.map(r=>r.slice(0,300)).slice(0,20)); }
     async critique(text: string){
         const rules = (await this.dal.kv.get<string[]>('constitution/rules')) ?? [];
@@ -24,7 +24,7 @@ export class ConstitutionalService implements IConstitutionalService {
                     this.events.emit(EVENTS.CONSTIT_CRITIQUE, { violations: vs.length });
                     return { violations: vs, ok: vs.length===0 };
                 }
-            } catch (e){ LOGGER.warn('critique failed',{error:e instanceof Error?e.message:String(e)}); }
+            } catch (e){ LOGGER.warn('Constitutional', 'critique failed',{error:e instanceof Error?e.message:String(e)}); }
         }
         const vs: string[] = [];
         const low = text.toLowerCase();

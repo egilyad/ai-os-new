@@ -12,7 +12,7 @@ import { EVENTS } from '../../events/event-names';
 const LOGGER = rootLogger.child('AgentFactory');
 export class AgentFactory implements IAgentFactory {
     constructor(private dal: DataAccessLayer, private events: IEventBus, private resolver: ICapabilityResolver, private llm?: ILLMClientService, private tools?: IToolRunnerService, private memory?: ICogMemoryService) {}
-    async init(){ LOGGER.info('init',{}); } async destroy(){}
+    async init(){ LOGGER.info('AgentFactory', 'init',{}); } async destroy(){}
     async create(input: Omit<AgentDefinition,'id'|'createdAt'|'updatedAt'>){
         const now=Date.now();
         const def: AgentDefinition = { id: genId('agent'), createdAt: now, updatedAt: now, ...input };
@@ -42,7 +42,7 @@ export class AgentFactory implements IAgentFactory {
             try {
                 const r = await this.tools.runWithTools(task, { agentId: id, system: resolved.prompt, maxRounds: 2 });
                 output = r.output; toolCalls.push(...r.toolCalls);
-            } catch (e){ LOGGER.warn('tool run failed',{error:e instanceof Error?e.message:String(e)}); }
+            } catch (e){ LOGGER.warn('AgentFactory', 'tool run failed',{error:e instanceof Error?e.message:String(e)}); }
         }
         if (!output && this.llm) {
             try {

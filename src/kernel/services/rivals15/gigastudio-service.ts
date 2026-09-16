@@ -6,7 +6,7 @@ import { EVENTS } from '../../events/event-names';
 const LOGGER = rootLogger.child('GigaStudio');
 export class GigaStudioService implements IGigaStudioService {
     constructor(private events: IEventBus, private llm?: ILLMClientService) {}
-    async init(){ LOGGER.info('init',{}); } async destroy(){}
+    async init(){ LOGGER.info('GigaStudio', 'init',{}); } async destroy(){}
     async generate(spec: string){
         let files: string[]=['app/page.tsx','app/layout.tsx','components/Header.tsx'];
         let preview=`GigaStudio Next.js for: ${spec.slice(0,80)}`;
@@ -21,7 +21,7 @@ export class GigaStudioService implements IGigaStudioService {
                     if(m){ const parsed=JSON.parse(m[0]) as string[]; if(parsed.length) files=parsed.slice(0,12); }
                     preview=r.content.slice(0,1500);
                 }
-            } catch (e){ LOGGER.warn('gigastudio failed',{error:e instanceof Error?e.message:String(e)}); }
+            } catch (e){ LOGGER.warn('GigaStudio', 'gigastudio failed',{error:e instanceof Error?e.message:String(e)}); }
         }
         this.events.emit(EVENTS.GIGASTUDIO_GEN, { files: files.length } as never);
         return { files, preview };

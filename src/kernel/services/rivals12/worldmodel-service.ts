@@ -4,7 +4,7 @@ import { rootLogger } from '../logger-service';
 const LOGGER = rootLogger.child('WorldModel');
 export class WorldModelService implements IWorldModelService {
     constructor(private dal: DataAccessLayer) {}
-    async init(){ LOGGER.info('init',{}); } async destroy(){}
+    async init(){ LOGGER.info('WorldModel', 'init',{}); } async destroy(){}
     async record(state: string, action: string, next: string, reward: number){
         const key = `world/${state.slice(0,80)}/${action.slice(0,40)}`;
         const list = (await this.dal.kv.get<Array<{next:string;reward:number}>>(key)) ?? [];

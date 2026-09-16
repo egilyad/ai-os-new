@@ -21,7 +21,7 @@ export class GumService implements IGumService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('Gum', 'init', {});
     }
 
     async destroy(): Promise<void> {
@@ -71,7 +71,7 @@ export class GumService implements IGumService {
         if (!stored) {
             await this.dal.kv.set(`vault-refs/${name}`, name);
         }
-        LOGGER.debug('vault ref resolved', { key: name });
+        LOGGER.debug('Gum', 'vault ref resolved', { key: name });
         return name;
     }
 }

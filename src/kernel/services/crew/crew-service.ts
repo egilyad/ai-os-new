@@ -70,7 +70,7 @@ export class CrewService implements ICrewService {
     }
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('CrewService', 'init', {});
     }
 
     async destroy(): Promise<void> {

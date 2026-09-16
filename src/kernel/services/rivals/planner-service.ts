@@ -32,7 +32,7 @@ export class PlannerService implements IPlannerService {
     }
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('Planner', 'init', {});
     }
 
     async destroy(): Promise<void> {
@@ -118,7 +118,7 @@ export class PlannerService implements IPlannerService {
                 try {
                     out = f.fn(out);
                 } catch (e) {
-                    LOGGER.warn('filter failed', { error: e instanceof Error ? e.message : String(e) });
+                    LOGGER.warn('Planner', 'filter failed', { error: e instanceof Error ? e.message : String(e) });
                 }
             }
         }
@@ -137,7 +137,7 @@ export class PlannerService implements IPlannerService {
                 );
                 if (!res.error) return res.content;
             } catch (e) {
-                LOGGER.warn('planner ask failed', { error: e instanceof Error ? e.message : String(e) });
+                LOGGER.warn('Planner', 'planner ask failed', { error: e instanceof Error ? e.message : String(e) });
             }
         }
         return `- ${prompt.slice(0, 200)}`;
@@ -148,7 +148,7 @@ export class PlannerService implements IPlannerService {
                 const res = await this.tools.runWithTools(step, { agentId: 'planner', maxRounds: 2 });
                 return res.output || '(no output)';
             } catch (e) {
-                LOGGER.warn('planner tools failed', { error: e instanceof Error ? e.message : String(e) });
+                LOGGER.warn('Planner', 'planner tools failed', { error: e instanceof Error ? e.message : String(e) });
             }
         }
         if (this.llm) {
@@ -162,7 +162,7 @@ export class PlannerService implements IPlannerService {
                 );
                 if (!res.error) return res.content;
             } catch (e) {
-                LOGGER.warn('planner llm failed', { error: e instanceof Error ? e.message : String(e) });
+                LOGGER.warn('Planner', 'planner llm failed', { error: e instanceof Error ? e.message : String(e) });
             }
         }
         return `[echo] ${step}`;

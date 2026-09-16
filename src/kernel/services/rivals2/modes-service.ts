@@ -46,7 +46,7 @@ export class ModesService implements IModesService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('Modes', 'init', {});
         for (const b of BUILTIN) {
             const existing = await this.dal.kv.get<ModeDef>(`modes/${b.name}`);
             if (!existing) {

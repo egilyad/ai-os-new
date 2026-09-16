@@ -149,7 +149,7 @@ export class AgentForgeService implements IAgentForgeService {
                     return fromLlm;
                 }
             } catch (e) {
-                LOGGER.warn('llm proposer failed, falling back to heuristics', {
+                LOGGER.warn('AgentForge', 'llm proposer failed, falling back to heuristics', {
                     error: e instanceof Error ? e.message : String(e),
                 });
             }

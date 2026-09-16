@@ -4,7 +4,7 @@ import { rootLogger } from '../logger-service';
 const LOGGER = rootLogger.child('Qyvaria');
 export class QyvariaService implements IQyvariaService {
     constructor(private dal: DataAccessLayer) {}
-    async init(){ LOGGER.info('init',{}); } async destroy(){}
+    async init(){ LOGGER.info('Qyvaria', 'init',{}); } async destroy(){}
     async addNode(name: string, neighbors: string[] = []){
         await this.dal.kv.set(`qyvaria/${name.slice(0,80)}`, { neighbors: neighbors.slice(0,10).map(n=>n.slice(0,80)), causal: [] as string[] });
     }

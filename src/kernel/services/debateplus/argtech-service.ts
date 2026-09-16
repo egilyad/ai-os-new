@@ -55,7 +55,7 @@ export class ArgTechService implements IArgTechService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('ArgTech', 'init', {});
     }
 
     async destroy(): Promise<void> {
@@ -80,7 +80,7 @@ export class ArgTechService implements IArgTechService {
                     if (lines.length > 0) candidates = lines.slice(0, 10);
                 }
             } catch (e) {
-                LOGGER.warn('mine llm failed', { error: e instanceof Error ? e.message : String(e) });
+                LOGGER.warn('ArgTech', 'mine llm failed', { error: e instanceof Error ? e.message : String(e) });
             }
         }
         if (candidates.length === 0) candidates = sentences.slice(0, 3);

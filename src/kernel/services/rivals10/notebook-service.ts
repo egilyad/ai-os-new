@@ -33,7 +33,7 @@ export class NotebookService implements INotebookService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('Notebook', 'init', {});
     }
 
     async destroy(): Promise<void> {
@@ -65,7 +65,7 @@ export class NotebookService implements INotebookService {
                 );
                 script = res.error ? this.outlineScript(material) : res.content;
             } catch (e) {
-                LOGGER.warn('audio script failed', { error: e instanceof Error ? e.message : String(e) });
+                LOGGER.warn('Notebook', 'audio script failed', { error: e instanceof Error ? e.message : String(e) });
                 script = this.outlineScript(material);
             }
         } else {

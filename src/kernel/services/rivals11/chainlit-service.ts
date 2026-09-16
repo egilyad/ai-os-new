@@ -39,7 +39,7 @@ export class ChainlitService implements IChainlitService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('Chainlit', 'init', {});
     }
 
     async destroy(): Promise<void> {

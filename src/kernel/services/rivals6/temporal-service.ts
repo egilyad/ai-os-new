@@ -43,7 +43,7 @@ export class TemporalService implements ITemporalService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('Temporal', 'init', {});
     }
 
     async destroy(): Promise<void> {
@@ -141,7 +141,7 @@ export class TemporalService implements ITemporalService {
                 });
             } catch (e) {
                 lastError = e instanceof Error ? e.message : String(e);
-                LOGGER.warn('activity failed, retrying', { step: step.name, attempt: a + 1 });
+                LOGGER.warn('Temporal', 'activity failed, retrying', { step: step.name, attempt: a + 1 });
                 await sleep(Math.min(2000, 200 * (a + 1)));
             }
         }

@@ -35,7 +35,7 @@ export class AssistantService implements IAssistantService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('Assistant', 'init', {});
     }
 
     async destroy(): Promise<void> {
@@ -79,7 +79,7 @@ export class AssistantService implements IAssistantService {
                 const block = await this.personas.promptFor(owner);
                 if (block) parts.push(block);
             } catch (e) {
-                LOGGER.warn('persona block failed', { error: e instanceof Error ? e.message : String(e) });
+                LOGGER.warn('Assistant', 'persona block failed', { error: e instanceof Error ? e.message : String(e) });
             }
         }
         // Dataset knowledge scope.
@@ -89,7 +89,7 @@ export class AssistantService implements IAssistantService {
                 const res = await this.datasets.query(doc.datasetId, message, 3);
                 knowledge = res.answer;
             } catch (e) {
-                LOGGER.warn('dataset query failed', { error: e instanceof Error ? e.message : String(e) });
+                LOGGER.warn('Assistant', 'dataset query failed', { error: e instanceof Error ? e.message : String(e) });
             }
         }
         // Tool gating notice for the loop.

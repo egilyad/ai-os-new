@@ -57,7 +57,7 @@ export class StrategyService implements IStrategyService {
     constructor(private repo: MetaRepository) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('Strategy', 'init', {});
     }
 
     async destroy(): Promise<void> {

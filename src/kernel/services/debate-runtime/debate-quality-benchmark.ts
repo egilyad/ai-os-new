@@ -229,7 +229,7 @@ export class DebateQualityBenchmarkService {
         this.deps.eventBus.onSafe<{ sessionId: string; verdict: DebateVerdict }>(
             'debate:verdict:generated',
             (data) => {
-                LOGGER.info('Auto-scoring debate', { sessionId: data.sessionId });
+                LOGGER.info('QualityBenchmark', 'Auto-scoring debate', { sessionId: data.sessionId });
             },
         );
     }
@@ -254,7 +254,7 @@ export class DebateQualityBenchmarkService {
             await this.deps.store.config.set(SCORES_KEY, this.scores.slice(0, MAX_SCORES));
             await this.deps.store.config.set(AGENTS_KEY, [...this.agentProfiles.values()]);
         } catch (e) {
-            LOGGER.warn('Failed to persist quality scores', { error: String(e) });
+            LOGGER.warn('QualityBenchmark', 'Failed to persist quality scores', { error: String(e) });
         }
     }
 
@@ -303,7 +303,7 @@ export class DebateQualityBenchmarkService {
         if (this.scores.length > MAX_SCORES) this.scores = this.scores.slice(0, MAX_SCORES);
 
         await this.persist();
-        LOGGER.info('Scored debate', {
+        LOGGER.info('QualityBenchmark', 'Scored debate', {
             sessionId: session.id,
             composite: compositeScore.toFixed(3),
             percentile,

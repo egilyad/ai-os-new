@@ -29,7 +29,7 @@ export class GatewayService implements IGatewayService {
     }
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('Gateway', 'init', {});
     }
 
     async destroy(): Promise<void> {

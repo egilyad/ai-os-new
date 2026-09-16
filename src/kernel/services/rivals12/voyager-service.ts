@@ -8,7 +8,7 @@ import { EVENTS } from '../../events/event-names';
 const LOGGER = rootLogger.child('Voyager');
 export class VoyagerService implements IVoyagerService {
     constructor(private dal: DataAccessLayer, private events: IEventBus, private llm?: ILLMClientService, private tools?: IToolRunnerService) {}
-    async init(){ LOGGER.info('init',{}); } async destroy(){}
+    async init(){ LOGGER.info('Voyager', 'init',{}); } async destroy(){}
     async addSkill(name: string, code: string){
         await this.dal.kv.set(`voyager-skills/${name.slice(0,80)}`, code.slice(0,8000));
         this.events.emit(EVENTS.VOYAGER_SKILL, { name });

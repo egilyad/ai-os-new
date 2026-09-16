@@ -69,7 +69,7 @@ export class GraphService implements IGraphService {
     }
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('GraphService', 'init', {});
     }
 
     async destroy(): Promise<void> {
@@ -382,7 +382,7 @@ export class GraphService implements IGraphService {
                 const node = wave[i]!;
                 const res = results[i]!;
                 if (!res.ok) {
-                    LOGGER.warn('node execution failed', { nodeId: node.id, error: res.error });
+                    LOGGER.warn('GraphService', 'node execution failed', { nodeId: node.id, error: res.error });
                     await this.logDecision(run, node.id, `failed: ${res.error}`, `Node "${node.label}" failed`, []);
                     continue;
                 }
@@ -525,7 +525,7 @@ export class GraphService implements IGraphService {
             }
         } catch (e) {
             const msg = e instanceof Error ? e.message : String(e);
-            LOGGER.warn('node execution failed', { nodeId: node.id, error: msg });
+            LOGGER.warn('GraphService', 'node execution failed', { nodeId: node.id, error: msg });
             return `[${node.label}] failed: ${msg}`;
         }
     }
@@ -535,7 +535,7 @@ export class GraphService implements IGraphService {
             try {
                 return await this.llm.reflect({ visited: [...run.visited], state: run.state });
             } catch (e) {
-                LOGGER.warn('llm reflect failed', { error: e instanceof Error ? e.message : String(e) });
+                LOGGER.warn('GraphService', 'llm reflect failed', { error: e instanceof Error ? e.message : String(e) });
             }
         }
         const keys = Object.keys(run.state).filter((k) => !k.startsWith('out:'));

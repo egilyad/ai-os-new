@@ -60,7 +60,7 @@ export class ProjectService implements IProjectManagerService {
         };
         await this.repo.put(project);
         this.emit('project:created', { projectId: project.id, name: project.name, type: project.type });
-        LOGGER.info('Project created', { id: project.id, name: project.name, type: project.type });
+        LOGGER.info('ProjectService', 'Project created', { id: project.id, name: project.name, type: project.type });
         return project;
     }
 
@@ -84,7 +84,7 @@ export class ProjectService implements IProjectManagerService {
     async delete(id: ProjectId): Promise<void> {
         await this.repo.delete(id);
         this.emit('project:deleted', { projectId: id });
-        LOGGER.info('Project deleted', { id });
+        LOGGER.info('ProjectService', 'Project deleted', { id });
     }
 
     // ── Agents ──

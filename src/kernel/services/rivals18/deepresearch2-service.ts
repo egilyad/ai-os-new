@@ -5,7 +5,7 @@ import { rootLogger } from '../logger-service';
 const LOGGER = rootLogger.child('Deep2');
 export class DeepResearch2Service implements IDeepResearch2Service {
     constructor(private dal: DataAccessLayer, private llm?: ILLMClientService) {}
-    async init(){ LOGGER.info('init',{}); } async destroy(){}
+    async init(){ LOGGER.info('Deep2', 'init',{}); } async destroy(){}
     async run(topic: string){
         const stages=['Retriever','Enricher','Analyzer','Insight','Report'];
         let context=topic;

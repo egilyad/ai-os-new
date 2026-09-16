@@ -40,7 +40,7 @@ export class ScopedMemService implements IScopedMemService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('ScopedMem', 'init', {});
     }
 
     async destroy(): Promise<void> {

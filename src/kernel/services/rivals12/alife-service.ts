@@ -5,7 +5,7 @@ import { rootLogger } from '../logger-service';
 const LOGGER = rootLogger.child('ALife');
 export class ALifeService implements IALifeService {
     constructor(private dal: DataAccessLayer) {}
-    async init(){ LOGGER.info('init',{}); } async destroy(){}
+    async init(){ LOGGER.info('ALife', 'init',{}); } async destroy(){}
     async seed(genome: string){
         const id = genId('life');
         await this.dal.kv.set(`alife/${id}`, { id, genome: genome.slice(0,500), fitness: genome.length % 10 });

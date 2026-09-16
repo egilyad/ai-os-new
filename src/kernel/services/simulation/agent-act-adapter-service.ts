@@ -46,7 +46,7 @@ function parseAct(agentId: string, output: string): AgentAct {
 export class AgentActAdapterService implements IAgentActPort {
     constructor(private deps: { agentFactory: IAgentFactory }) {}
 
-    async init(): Promise<void> { LOGGER.info('init', {}); }
+    async init(): Promise<void> { LOGGER.info('AgentActAdapter', 'init', {}); }
     async destroy(): Promise<void> {}
 
     async act(agentId: string, worldId: string, tick: number, world: SimulationWorld): Promise<AgentAct> {
@@ -61,7 +61,7 @@ export class AgentActAdapterService implements IAgentActPort {
         try {
             const def = await this.deps.agentFactory.get(agentId);
             if (!def) {
-                LOGGER.warn('agent not found, stub fallback', { agentId });
+                LOGGER.warn('AgentActAdapter', 'agent not found, stub fallback', { agentId });
                 return stubAct(agentId, tick, world);
             }
             const result = await this.deps.agentFactory.execute(agentId, prompt);
@@ -83,10 +83,10 @@ export class AgentActAdapterService implements IAgentActPort {
                     parsed.targetRoomId = world.rooms[(idx + 1) % world.rooms.length]!.id;
                 }
             }
-            LOGGER.info('agent act', { agentId, worldId, tick, action: parsed.action });
+            LOGGER.info('AgentActAdapter', 'agent act', { agentId, worldId, tick, action: parsed.action });
             return parsed;
         } catch (e) {
-            LOGGER.warn('agentFactory execute failed, stub fallback', { agentId, error: e instanceof Error ? e.message : String(e) });
+            LOGGER.warn('AgentActAdapter', 'agentFactory execute failed, stub fallback', { agentId, error: e instanceof Error ? e.message : String(e) });
             return stubAct(agentId, tick, world);
         }
     }

@@ -82,7 +82,7 @@ export class DebateBreakpointService {
             createdAt: Date.now(),
         };
         this.breakpoints.set(id, bp);
-        LOGGER.info('Breakpoint set', { id, sessionId, trigger, condition });
+        LOGGER.info('DebateBreakpoint', 'Breakpoint set', { id, sessionId, trigger, condition });
         return bp;
     }
 
@@ -117,7 +117,7 @@ export class DebateBreakpointService {
                     hitAt: Date.now(),
                 };
                 this.hits.push(hit);
-                LOGGER.info('Breakpoint hit', { id: bp.id, trigger, round });
+                LOGGER.info('DebateBreakpoint', 'Breakpoint hit', { id: bp.id, trigger, round });
                 return bp;
             }
         }
@@ -146,7 +146,7 @@ export class DebateBreakpointService {
     applyFeedback(feedback: Omit<HumanFeedback, 'appliedAt'>): HumanFeedback {
         const full: HumanFeedback = { ...feedback, appliedAt: Date.now() };
         this.feedback.push(full);
-        LOGGER.info('Human feedback applied', {
+        LOGGER.info('DebateBreakpoint', 'Human feedback applied', {
             breakpointId: feedback.breakpointId,
             sessionId: feedback.sessionId,
             hasSteer: !!feedback.steerTo,

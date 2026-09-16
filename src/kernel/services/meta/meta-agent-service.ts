@@ -39,7 +39,7 @@ export class MetaAgentService implements IMetaAgentService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('MetaAgent', 'init', {});
     }
 
     async destroy(): Promise<void> {

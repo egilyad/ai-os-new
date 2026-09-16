@@ -30,7 +30,7 @@ export class GradioService implements IGradioService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('Gradio', 'init', {});
     }
 
     async destroy(): Promise<void> {

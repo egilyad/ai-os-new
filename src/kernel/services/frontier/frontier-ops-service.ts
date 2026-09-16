@@ -66,7 +66,7 @@ export class FrontierOpsService implements IFrontierOpsService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('FrontierOps', 'init', {});
     }
 
     async destroy(): Promise<void> {
@@ -138,7 +138,7 @@ export class FrontierOpsService implements IFrontierOpsService {
                 const first = steps[0]!;
                 await this.delegates.buildGraph(first.action, intent.slice(0, 200));
             } catch (e) {
-                LOGGER.warn('intent graph materialization failed', {
+                LOGGER.warn('FrontierOps', 'intent graph materialization failed', {
                     error: e instanceof Error ? e.message : String(e),
                 });
             }

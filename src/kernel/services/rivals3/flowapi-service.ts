@@ -27,7 +27,7 @@ export class FlowApiService implements IFlowApiService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('FlowApi', 'init', {});
     }
 
     async destroy(): Promise<void> {

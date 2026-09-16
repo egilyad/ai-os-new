@@ -7,7 +7,7 @@ const LOGGER = rootLogger.child('Metabolic');
 // Сеченов → Павлов → Ухтомский → Бернштейн → Лурия → Бехтерева — без обучения, чистая динамика
 export class MetabolicService implements IMetabolicService {
     constructor(private dal: DataAccessLayer, private events: IEventBus) {}
-    async init(){ LOGGER.info('init',{}); } async destroy(){}
+    async init(){ LOGGER.info('Metabolic', 'init',{}); } async destroy(){}
     async setDominant(goal: string){ await this.dal.kv.set('metabolic/dominant', goal.slice(0,200)); }
     async dominantFocus(){ return (await this.dal.kv.get<string>('metabolic/dominant')) ?? 'explore'; }
     async tick(signal: string, intensity=0.5){

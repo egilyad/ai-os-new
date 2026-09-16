@@ -31,7 +31,7 @@ export class CampaignService implements ICampaignService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('Campaign', 'init', {});
     }
 
     async destroy(): Promise<void> {
@@ -73,7 +73,7 @@ export class CampaignService implements ICampaignService {
                 delivered += 1;
                 await this.dal.kv.set(`campaign-ticks/${campaignId}/delivered`, delivered);
             } catch (e) {
-                LOGGER.warn('campaign delivery failed', {
+                LOGGER.warn('Campaign', 'campaign delivery failed', {
                     userId,
                     error: e instanceof Error ? e.message : String(e),
                 });

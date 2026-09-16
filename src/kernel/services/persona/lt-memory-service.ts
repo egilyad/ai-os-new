@@ -51,7 +51,7 @@ export class LtMemoryService implements ILtMemoryService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('LtMemory', 'init', {});
     }
 
     async destroy(): Promise<void> {
@@ -188,7 +188,7 @@ export class LtMemoryService implements ILtMemoryService {
             try {
                 return await this.llm.summarizeMemories(all.slice(0, 50));
             } catch (e) {
-                LOGGER.warn('llm summarize failed', { error: e instanceof Error ? e.message : String(e) });
+                LOGGER.warn('LtMemory', 'llm summarize failed', { error: e instanceof Error ? e.message : String(e) });
             }
         }
         const byTier: Record<string, number> = {};

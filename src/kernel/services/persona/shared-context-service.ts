@@ -36,7 +36,7 @@ export class SharedContextService implements ISharedContextService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('SharedContext', 'init', {});
     }
 
     async destroy(): Promise<void> {

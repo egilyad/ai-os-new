@@ -81,7 +81,7 @@ export class KnowledgeService implements IKnowledgeService {
     }
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('Knowledge', 'init', {});
     }
 
     async destroy(): Promise<void> {
@@ -115,7 +115,7 @@ export class KnowledgeService implements IKnowledgeService {
                     clearTimeout(timer);
                 }
             } catch (e) {
-                LOGGER.warn('url ingest failed (source registered without content)', {
+                LOGGER.warn('Knowledge', 'url ingest failed (source registered without content)', {
                     uri: input.uri,
                     error: e instanceof Error ? e.message : String(e),
                 });
@@ -157,7 +157,7 @@ export class KnowledgeService implements IKnowledgeService {
                 const vecs = await this.embedder.embed([query]);
                 queryVec = vecs[0];
             } catch (e) {
-                LOGGER.warn('embedder query failed, token-only retrieval', {
+                LOGGER.warn('Knowledge', 'embedder query failed, token-only retrieval', {
                     error: e instanceof Error ? e.message : String(e),
                 });
             }

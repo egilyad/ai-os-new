@@ -28,7 +28,7 @@ export class FederationService implements IFederationService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', { loopback: !this.transport });
+        LOGGER.info('Federation', 'init', { loopback: !this.transport });
     }
 
     async destroy(): Promise<void> {

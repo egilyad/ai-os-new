@@ -4,7 +4,7 @@ import { rootLogger } from '../logger-service';
 const LOGGER = rootLogger.child('Helix');
 export class HelixService implements IHelixService {
     constructor(private dal: DataAccessLayer) {}
-    async init(){ LOGGER.info('init',{}); } async destroy(){}
+    async init(){ LOGGER.info('Helix', 'init',{}); } async destroy(){}
     async addOnto(term: string, rel: string){ await this.dal.kv.set(`helix-onto/${term}/${rel}`, { at: Date.now() }); }
     async gaps(){
         const rows=await this.dal.kv.list('helix-onto/');
