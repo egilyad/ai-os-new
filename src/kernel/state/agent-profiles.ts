@@ -293,7 +293,7 @@ export const AGENT_PROFILES: Record<string, CuratedAgentIdentity> = {
         model: 'llama-3.3-70b-versatile',
         specializations: ['Ideation', 'Hypothesis', 'Creativity'],
     },
-    'agent-critic': {
+    'agent-critic-ru': {
         firstName: 'Daria',
         lastName: 'Kozlova',
         displayName: 'Критик',
