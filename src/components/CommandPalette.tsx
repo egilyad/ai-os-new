@@ -84,6 +84,7 @@ function buildItems(t: (key: TranslationKey) => string): PaletteItem[] {
         path: string;
         icon: React.ReactNode;
         color: string;
+        action?: () => void;
     }> = [
         {
             id: 'action-new-scenario',
@@ -119,6 +120,47 @@ function buildItems(t: (key: TranslationKey) => string): PaletteItem[] {
             path: 'room',
             icon: <Hash size={16} />,
             color: '#22d3ee',
+        },
+        {
+            id: 'action-toggle-theme',
+            labelKey: 'palette.action.toggleTheme',
+            path: '',
+            icon: <Search size={16} />,
+            color: '#f59e0b',
+            action: () => {
+                const cur = document.documentElement.getAttribute('data-theme') || 'dark';
+                const next = cur === 'dark' ? 'light' : 'dark';
+                document.documentElement.setAttribute('data-theme', next);
+                try { localStorage.setItem('theme', next); } catch {}
+            },
+        },
+        {
+            id: 'action-open-settings',
+            labelKey: 'palette.action.openSettings',
+            path: 'settings',
+            icon: <Search size={16} />,
+            color: '#64748b',
+        },
+        {
+            id: 'action-open-providers',
+            labelKey: 'palette.action.openProviders',
+            path: 'providers',
+            icon: <Search size={16} />,
+            color: '#10b981',
+        },
+        {
+            id: 'action-open-chat',
+            labelKey: 'palette.action.openChat',
+            path: 'chat',
+            icon: <MessageSquare size={16} />,
+            color: '#3b82f6',
+        },
+        {
+            id: 'action-open-agents',
+            labelKey: 'palette.action.openAgents',
+            path: 'agents',
+            icon: <Users size={16} />,
+            color: '#8b5cf6',
         },
     ];
     for (const a of actions) {
