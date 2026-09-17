@@ -20,6 +20,9 @@ import ModuleInfo from '../ModuleInfo';
 import { useAutoClearError } from '../../hooks/useAutoClearError';
 import { useTranslation } from '../../i18n/useTranslation';
 import { getStatusColor } from '../Common/status-vocabulary';
+import { agemsTaskService } from '../../kernel/services/agems-task-service';
+import { KANBAN_COLUMNS } from '../../kernel/types/agems-task';
+import type { AgemsTask, AgemsTaskStatus } from '../../kernel/types/agems-task';
 import {
     taskMetaItem,
     textWhiteWeight800Sm,
@@ -79,6 +82,9 @@ const TasksPanel: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
     const [filter, setFilter] = useState<'all' | 'running' | 'completed' | 'failed'>('all');
     const [isRefreshing, setIsRefreshing] = useState(false);
+    const [agemsTasks, setAgemsTasks] = useState<AgemsTask[]>([]);
+    const [kanbanView, setKanbanView] = useState<'board' | 'list'>('board');
+    const [newTaskTitle, setNewTaskTitle] = useState('');
 
     const { t } = useTranslation();
     const isMountedRef = useRef(true);
@@ -161,6 +167,25 @@ const TasksPanel: React.FC = () => {
         } finally {
             if (isMountedRef.current) setIsRefreshing(false);
         }
+    };
+
+    // AGEMS 2.1: load agemsTasks
+    useEffect(() => {
+        void agemsTaskService.list().then(setAgemsTasks).catch(() => {});
+    }, []);
+
+    const handleCreateAgemsTask = async () => {
+        if (!newTaskTitle.trim()) return;
+        const task = await agemsTaskService.create({ title: newTaskTitle.trim(), type: 'ONE_TIME', status: 'PENDING', priority: 'MEDIUM' });
+        setAgemsTasks((prev) => [task, ...prev]);
+        setNewTaskTitle('');
+    };
+
+    const handleDrop = async (e: React.DragEvent, newStatus: AgemsTaskStatus) => {
+        const id = e.dataTransfer.getData('text/plain');
+        if (!id) return;
+        const updated = await agemsTaskService.updateStatus(id, newStatus);
+        if (updated) setAgemsTasks((prev) => prev.map((t) => (t.id === id ? updated : t)));
     };
 
     const filteredTasks = tasks.filter((t) => {
@@ -433,6 +458,55 @@ const TasksPanel: React.FC = () => {
                             <RotateCcw size={16} aria-hidden="true" />
                         )}
                     </button>
+                </div>
+            </div>
+
+            {/* AGEMS Kanban — 5 columns, drag between statuses */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+                    <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--slate-500)', letterSpacing: 0.5, textTransform: 'uppercase' }}>AGEMS Kanban · {agemsTasks.length} tasks</span>
+                    <div style={{ display: 'flex', gap: 4, marginLeft: 'auto' }}>
+                        <button onClick={() => setKanbanView('board')} style={{ padding: '4px 8px', borderRadius: 6, fontSize: 11, fontWeight: 600, border: kanbanView === 'board' ? '1px solid #3b82f6' : '1px solid rgba(255,255,255,0.08)', background: kanbanView === 'board' ? 'rgba(59,130,246,0.12)' : 'transparent', color: kanbanView === 'board' ? '#60a5fa' : 'var(--slate-500)', cursor: 'pointer' }}>Board</button>
+                        <button onClick={() => setKanbanView('list')} style={{ padding: '4px 8px', borderRadius: 6, fontSize: 11, fontWeight: 600, border: kanbanView === 'list' ? '1px solid #3b82f6' : '1px solid rgba(255,255,255,0.08)', background: kanbanView === 'list' ? 'rgba(59,130,246,0.12)' : 'transparent', color: kanbanView === 'list' ? '#60a5fa' : 'var(--slate-500)', cursor: 'pointer' }}>List</button>
+                    </div>
+                </div>
+                {kanbanView === 'board' ? (
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 8, minHeight: 180 }}>
+                        {KANBAN_COLUMNS.map((col) => {
+                            const colTasks = agemsTasks.filter((t) => col.status.includes(t.status));
+                            return (
+                                <div key={col.title} onDragOver={(e) => e.preventDefault()} onDrop={(e) => void handleDrop(e, col.status[0] as AgemsTaskStatus)} style={{ background: 'rgba(255,255,255,0.02)', border: `1px solid ${col.color}20`, borderTop: `3px solid ${col.color}`, borderRadius: 10, padding: '8px 6px', display: 'flex', flexDirection: 'column', gap: 6, minHeight: 160 }}>
+                                    <div style={{ fontSize: 10, fontWeight: 800, color: col.color, letterSpacing: 0.5, textTransform: 'uppercase', display: 'flex', justifyContent: 'space-between' }}>
+                                        <span>{col.title}</span><span style={{ background: `${col.color}20`, padding: '1px 6px', borderRadius: 6 }}>{colTasks.length}</span>
+                                    </div>
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: 6, flex: 1, overflowY: 'auto' }}>
+                                        {colTasks.map((t) => (
+                                            <div key={t.id} draggable onDragStart={(e) => e.dataTransfer.setData('text/plain', t.id)} style={{ padding: '8px 8px', borderRadius: 8, background: 'rgba(0,0,0,0.25)', border: '1px solid rgba(255,255,255,0.06)', cursor: 'grab', fontSize: 11 }}>
+                                                <div style={{ fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{t.title}</div>
+                                                <div style={{ fontSize: 10, color: 'var(--slate-500)', marginTop: 2 }}>{t.priority} · {t.type}</div>
+                                            </div>
+                                        ))}
+                                        {colTasks.length === 0 && <div style={{ fontSize: 10, color: 'var(--slate-500)', textAlign: 'center', padding: 8, border: '1px dashed rgba(255,255,255,0.08)', borderRadius: 8 }}>Drop here</div>}
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                ) : (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                        {agemsTasks.map((t) => (
+                            <div key={t.id} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 10px', borderRadius: 8, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', fontSize: 12 }}>
+                                <span style={{ fontWeight: 600, flex: 1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{t.title}</span>
+                                <span style={{ fontSize: 10, padding: '2px 6px', borderRadius: 6, background: 'rgba(59,130,246,0.12)', color: '#60a5fa' }}>{t.status}</span>
+                                <span style={{ fontSize: 10, color: 'var(--slate-500)' }}>{t.priority}</span>
+                            </div>
+                        ))}
+                        {agemsTasks.length === 0 && <div style={{ fontSize: 11, color: 'var(--slate-500)', textAlign: 'center', padding: 12 }}>No AGEMS tasks — create one below</div>}
+                    </div>
+                )}
+                <div style={{ display: 'flex', gap: 8 }}>
+                    <input placeholder="New AGEMS task title…" value={newTaskTitle} onChange={(e) => setNewTaskTitle(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter' && newTaskTitle.trim()) void handleCreateAgemsTask(); }} style={{ flex: 1, padding: '8px 10px', borderRadius: 8, border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(255,255,255,0.05)', color: 'inherit', fontSize: 12 }} />
+                    <button onClick={() => void handleCreateAgemsTask()} disabled={!newTaskTitle.trim()} style={{ padding: '8px 14px', borderRadius: 8, border: 'none', background: newTaskTitle.trim() ? '#3b82f6' : 'rgba(255,255,255,0.08)', color: 'white', fontWeight: 700, fontSize: 12, cursor: newTaskTitle.trim() ? 'pointer' : 'not-allowed' }}>Create</button>
                 </div>
             </div>
 
