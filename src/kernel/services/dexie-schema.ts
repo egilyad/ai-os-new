@@ -244,6 +244,8 @@ export class SuperAgentsDB extends Dexie {
     catalogAgents!: Table<CatalogAgent>;
     catalogSkills!: Table<{ id?: number; slug: string; name: string }>;
     catalogTools!: Table<{ id?: number; slug: string; name: string }>;
+    // Phase 9 — AGEMS Audit
+    auditLogs!: Table<import('../services/agems-audit-service').AuditLog>;
 
     invocations!: Table<InvocationRecord>;
     invocationPolicies!: Table<InvocationPolicyRecord>;
@@ -1855,6 +1857,11 @@ export class SuperAgentsDB extends Dexie {
             catalogAgents: '++id, slug, name',
             catalogSkills: '++id, slug, name',
             catalogTools: '++id, slug, name',
+        });
+
+        // v41 — AGEMS Phase 9 (Audit): additive
+        this.version(41).stores({
+            auditLogs: '++id, [actorType+actorId], [resourceType+resourceId], action, createdAt',
         });
 
         const rejectHook =

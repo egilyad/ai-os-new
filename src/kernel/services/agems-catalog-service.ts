@@ -15,12 +15,53 @@ export interface CatalogAgent {
     downloads: number;
 }
 
+export interface CatalogSkill {
+    id?: number;
+    slug: string;
+    name: string;
+    description: string;
+    content: string;
+    version: string;
+    type: string;
+    tags: string[];
+    downloads: number;
+}
+
+export interface CatalogTool {
+    id?: number;
+    slug: string;
+    name: string;
+    description: string;
+    type: string;
+    configTemplate: Record<string, unknown>;
+    tags: string[];
+    downloads: number;
+}
+
 export class AgemsCatalogService {
     async listAgents(query?: string): Promise<CatalogAgent[]> {
         let arr = (await getDexieDb().catalogAgents.toArray()) as unknown as CatalogAgent[];
         if (query) {
             const q = query.toLowerCase();
             arr = arr.filter((a) => a.name.toLowerCase().includes(q) || a.slug.includes(q) || a.tags.some((t) => t.toLowerCase().includes(q)));
+        }
+        return arr;
+    }
+
+    async listSkills(query?: string): Promise<CatalogSkill[]> {
+        let arr = (await getDexieDb().catalogSkills.toArray()) as unknown as CatalogSkill[];
+        if (query) {
+            const q = query.toLowerCase();
+            arr = arr.filter((s) => s.name.toLowerCase().includes(q) || s.slug.includes(q));
+        }
+        return arr;
+    }
+
+    async listTools(query?: string): Promise<CatalogTool[]> {
+        let arr = (await getDexieDb().catalogTools.toArray()) as unknown as CatalogTool[];
+        if (query) {
+            const q = query.toLowerCase();
+            arr = arr.filter((t) => t.name.toLowerCase().includes(q) || t.slug.includes(q));
         }
         return arr;
     }
