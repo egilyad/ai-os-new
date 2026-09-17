@@ -16,6 +16,7 @@ import { Breadcrumbs } from './Common/Breadcrumbs';
 import { OnboardingWizard } from './OnboardingWizard/OnboardingWizard';
 import { KeyboardShortcutsModal } from './Common/KeyboardShortcutsModal';
 import { CONFIG } from '../kernel/instances';
+import ChatDock from './ChatDock/ChatDock';
 import { safeClone } from '../shared/utils/safe-json';
 import { eventBus, EVENTS } from '../kernel/instances';
 import { settingsService, groupManager } from '../kernel/instances';
@@ -373,6 +374,7 @@ export const AppLayout: React.FC = () => {
                             isOpen={shortcutsOpen}
                             onClose={() => setShortcutsOpen(false)}
                         />
+                        <ChatDock />
                     </main>
                     {isMobile && <BottomNav />}
                 </LayoutProvider>

@@ -140,6 +140,7 @@ import type { AgemsTask, TaskComment, Label, TaskLabel } from '../types/agems-ta
 import type { ApprovalPolicy, ApprovalRequest } from '../types/agems-approval';
 import type { PlatformBudget, BudgetIncident } from '../types/agems-budget';
 import type { Meeting, MeetingDecision } from '../types/agems-meeting';
+import type { CatalogAgent } from '../services/agems-catalog-service';
 import {
     DebateSessionRecordSchema,
     DebateVerdictRecordSchema,
@@ -239,6 +240,10 @@ export class SuperAgentsDB extends Dexie {
     budgetIncidents!: Table<BudgetIncident>;
     meetings!: Table<Meeting>;
     meetingDecisions!: Table<MeetingDecision>;
+    // Phase 8 — AGEMS Catalog
+    catalogAgents!: Table<CatalogAgent>;
+    catalogSkills!: Table<{ id?: number; slug: string; name: string }>;
+    catalogTools!: Table<{ id?: number; slug: string; name: string }>;
 
     invocations!: Table<InvocationRecord>;
     invocationPolicies!: Table<InvocationPolicyRecord>;
@@ -1843,6 +1848,13 @@ export class SuperAgentsDB extends Dexie {
             budgetIncidents: '++id, budgetId, type, createdAt',
             meetings: 'id, status, scheduledAt, createdAt',
             meetingDecisions: '++id, meetingId, createdAt',
+        });
+
+        // v40 — AGEMS Phase 8 (Catalog): additive
+        this.version(40).stores({
+            catalogAgents: '++id, slug, name',
+            catalogSkills: '++id, slug, name',
+            catalogTools: '++id, slug, name',
         });
 
         const rejectHook =
