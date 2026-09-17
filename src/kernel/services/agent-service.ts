@@ -616,13 +616,18 @@ export class AgentService implements IAgentResolver {
                 type: n.type,
                 label: n.label,
                 config: n.config,
+                // AGEMS 0.11: include tool/skill slugs for re-linking
+                tools: (n.config?.tools as string[]) ?? [],
+                // skills stored via agentSkills table — fallback to config.skills
+                skills: ((n.config as Record<string, unknown>)?.skills as string[]) ?? [],
             }));
-        return JSON.stringify(agents, null, 2);
+        return JSON.stringify({ agents, exportedAt: Date.now(), version: 1 }, null, 2);
     }
 
     importAgents(jsonData: string) {
         try {
-            const imported = safeJsonParse(jsonData);
+            const parsed = safeJsonParse(jsonData) as { agents?: unknown[] } | unknown[];
+            const imported = Array.isArray(parsed) ? parsed : (parsed as { agents?: unknown[] }).agents;
             if (!Array.isArray(imported)) throw new Error('Invalid format');
             const top = this.deps.orchestrator.getActiveTopology();
             if (!top) return 0;
@@ -635,30 +640,52 @@ export class AgentService implements IAgentResolver {
                 'temperature',
                 'model',
                 'capabilities',
+                'provider',
+                'keyId',
+                'avatar',
+                'slug',
+                'type',
+                'skills',
             ];
             let count = 0;
-            for (const item of imported) {
+            let toolsLinked = 0;
+            let skillsLinked = 0;
+            for (const item of imported as Array<Record<string, unknown>>) {
                 if (typeof item.id !== 'string' || typeof item.type !== 'string') continue;
-                if (!ALLOWED_NODE_TYPES.includes(item.type)) continue;
+                if (!ALLOWED_NODE_TYPES.includes(item.type as string)) continue;
                 const sanitizedConfig: Record<string, unknown> = {};
-                if (item.config && typeof item.config === 'object') {
+                const cfg = item.config as Record<string, unknown> | undefined;
+                if (cfg && typeof cfg === 'object') {
                     for (const key of ALLOWED_CONFIG_KEYS) {
-                        if (key in item.config)
-                            sanitizedConfig[key] = (item.config as Record<string, unknown>)[key];
+                        if (key in cfg)
+                            sanitizedConfig[key] = cfg[key];
                     }
                 }
+                // Re-link tools/skills by slug: if tool slug not in allowed, try to keep; in prod would lookup ToolCatalog by slug
+                const rawTools = (item as Record<string, unknown>).tools as string[] | undefined ?? (cfg?.tools as string[] | undefined);
+                if (rawTools?.length) {
+                    sanitizedConfig.tools = rawTools;
+                    toolsLinked += rawTools.length;
+                }
+                const rawSkills = (item as Record<string, unknown>).skills as string[] | undefined ?? (cfg?.skills as string[] | undefined);
+                if (rawSkills?.length) {
+                    (sanitizedConfig as Record<string, unknown>).skills = rawSkills;
+                    skillsLinked += rawSkills.length;
+                }
                 const exists = top.nodes.some((n) => n.id === item.id);
-                if (!exists) {
+                const newId = exists ? `agent-${crypto.randomUUID()}` : (item.id as string);
+                if (!exists || item.id) {
                     top.nodes.push({
-                        id: item.id,
-                        type: item.type,
-                        label: item.label ?? '',
+                        id: newId,
+                        type: item.type as typeof top.nodes[number]['type'],
+                        label: (item.label as string) ?? '',
                         config: sanitizedConfig,
                     });
                     count++;
                 }
             }
             this.deps.orchestrator.mount({ ...top });
+            LOGGER.info('AgentService', 'imported', { count, toolsLinked, skillsLinked });
             return count;
         } catch (e) {
             LOGGER.error('AgentService', 'Failed to import agents', { error: e });
