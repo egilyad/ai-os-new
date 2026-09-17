@@ -58,6 +58,7 @@ const mockChatState = {
     hasMoreSessions: true,
     loadMoreSessions: vi.fn(),
     getSessionConfig: vi.fn(),
+    setAgent: vi.fn(),
     systemPrompt: '',
     setSystemPrompt: vi.fn(),
     activeRequestIds: new Set<string>(),
@@ -85,6 +86,12 @@ vi.mock('../../kernel/instances', () => ({
         getAll: vi.fn(() => []),
         getActive: vi.fn(() => null),
         setActive: vi.fn(),
+    },
+    orchestrator: {
+        getActiveTopology: vi.fn(() => ({ nodes: [], edges: [] })),
+    },
+    agentService: {
+        resolveAgent: vi.fn(() => null),
     },
 }));
 

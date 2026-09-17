@@ -611,8 +611,48 @@ export const useChatStore = create<ChatStoreShape>((set, get) => {
                       provider: session.currentProvider,
                       model: session.currentModel,
                       keyId: session.currentKeyId,
+                      agentId: session.currentAgentId,
                   }
                 : undefined;
+        },
+
+        setAgent: async (agentId) => {
+            const sessionId = get().activeSessionId;
+            const session = get().sessions.find((s) => s.id === sessionId);
+            if (!session) return;
+            const label = agentId ? agentId.slice(0, 12) : 'none';
+            const systemEntry: ChatEntry = {
+                id: crypto.randomUUID(),
+                role: 'system' as const,
+                text: agentId
+                    ? `\u{1F9D1} Attached agent ${label}`
+                    : `\u{1F9D1} Detached agent`,
+                responses: [],
+                timestamp: Date.now(),
+            };
+            const sStore = resolveSessionStore();
+            if (sStore) {
+                const fullSession = get().sessions.find((s) => s.id === sessionId);
+                if (fullSession) {
+                    try {
+                        await sStore.put({
+                            ...fullSession,
+                            currentAgentId: agentId ?? undefined,
+                            history: [...fullSession.history, systemEntry],
+                            updatedAt: Date.now(),
+                        });
+                    } catch (e) {
+                        console.error('[ChatStore] Failed to persist setAgent', e);
+                        return;
+                    }
+                }
+            }
+            set((s) => ({
+                sessions: updateSessionInList(s.sessions, sessionId, {
+                    currentAgentId: agentId ?? undefined,
+                }),
+            }));
+            uas((prev) => [...prev, systemEntry]);
         },
 
         destroy: () => {

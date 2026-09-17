@@ -1,4 +1,4 @@
-import { storageAdapter, settingsService } from '../../kernel/instances';
+import { storageAdapter, settingsService, orchestrator } from '../../kernel/instances';
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 
 import { X } from 'lucide-react';
@@ -35,6 +35,8 @@ const ChatPanel: React.FC = () => {
     const getSessionConfig = useChatStore((s) => s.getSessionConfig);
     const switchModel = useChatStore((s) => s.switchModel);
     const switchKey = useChatStore((s) => s.switchKey);
+    const setAgent = useChatStore((s) => s.setAgent);
+    const currentAgentId = useChatStore((s) => s.sessions.find((x) => x.id === s.activeSessionId)?.currentAgentId ?? null);
     // T2: global default key/model for new chats (per-chat override persists on session)
     const globalDefaults = (() => {
         try {
@@ -133,6 +135,8 @@ const ChatPanel: React.FC = () => {
         } else if (cfg.model) {
             setSelectedModel(cfg.model);
         }
+        // restore agent selection for Poe-style continuation
+        // (agent is continuation state, not identity)
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [activeSessionId]);
 
@@ -196,11 +200,12 @@ const ChatPanel: React.FC = () => {
                     provider: 'auto',
                     model: selectedModelPerKey[id] || selectedModel,
                     keyId: id,
+                    ...(currentAgentId ? { agentId: currentAgentId } : {}),
                 })),
                 text,
             );
         },
-        [sendMessage, selectedKeys, selectedModel, selectedModelPerKey],
+        [sendMessage, selectedKeys, selectedModel, selectedModelPerKey, currentAgentId],
     );
 
     const handleStartEdit = useCallback((id: string, text: string) => {
@@ -248,11 +253,12 @@ const ChatPanel: React.FC = () => {
                     provider: 'auto',
                     model: selectedModelPerKey[id] || selectedModel,
                     keyId: id,
+                    ...(currentAgentId ? { agentId: currentAgentId } : {}),
                 })),
                 originalText,
             );
         },
-        [sendMessage, selectedKeys, selectedModel, selectedModelPerKey],
+        [sendMessage, selectedKeys, selectedModel, selectedModelPerKey, currentAgentId],
     );
 
     const activeConfig = activeSessionId ? getSessionConfig() : undefined;
@@ -430,6 +436,62 @@ const ChatPanel: React.FC = () => {
                         }
                     }}
                 />
+                {/* FIX(chat-agent): optional Agent attach — Poe-style continuation state */}
+                <div
+                    style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 8,
+                        padding: '6px 12px',
+                        borderTop: '1px solid rgba(255,255,255,0.06)',
+                        background: 'rgba(255,255,255,0.02)',
+                    }}
+                >
+                    <span style={{ fontSize: 11, color: 'var(--slate-500)', whiteSpace: 'nowrap' }}>
+                        Agent:
+                    </span>
+                    <select
+                        value={currentAgentId ?? ''}
+                        onChange={(e) => {
+                            const v = e.target.value || null;
+                            void setAgent(v).catch(() => {});
+                        }}
+                        style={{
+                            flex: 1,
+                            padding: '4px 8px',
+                            borderRadius: 6,
+                            border: '1px solid rgba(255,255,255,0.1)',
+                            background: 'rgba(0,0,0,0.3)',
+                            color: 'var(--slate-200)',
+                            fontSize: 12,
+                        }}
+                    >
+                        <option value="">— No agent (direct) —</option>
+                        {(orchestrator.getActiveTopology()?.nodes.filter((n) => n.type === 'agent') ?? []).map(
+                            (n) => (
+                                <option key={n.id} value={n.id}>
+                                    {n.label || n.id}
+                                </option>
+                            ),
+                        )}
+                    </select>
+                    {currentAgentId && (
+                        <button
+                            onClick={() => void setAgent(null).catch(() => {})}
+                            style={{
+                                padding: '4px 8px',
+                                borderRadius: 6,
+                                border: '1px solid rgba(255,255,255,0.1)',
+                                background: 'rgba(255,255,255,0.05)',
+                                color: 'var(--slate-400)',
+                                fontSize: 11,
+                                cursor: 'pointer',
+                            }}
+                        >
+                            Detach
+                        </button>
+                    )}
+                </div>
             </div>
 
             <AnimatePresence>

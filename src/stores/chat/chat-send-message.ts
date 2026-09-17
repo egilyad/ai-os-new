@@ -8,6 +8,7 @@ import {
     executionGovernor,
     memoryService,
     workspaceService,
+    agentService,
     getDistributedLock,
 } from './service-deps';
 import type { ChatEntry, ZustandSet, ZustandGet, ChatStoreShape } from './types';
@@ -15,7 +16,7 @@ import { genId, MAX_HISTORY, requestEntryMap } from './types';
 import { resolveSessionStore, updateSessionInList } from './store-helpers';
 
 interface QueuedMessage {
-    targets: Array<{ provider: string; model: string; keyId?: string }>;
+    targets: Array<{ provider: string; model: string; keyId?: string; agentId?: string }>;
     text: string;
     systemPromptArg?: string;
     temperature?: number;
@@ -136,7 +137,30 @@ export function createSendMessageHandler(
                         '[filtered]',
                     );
 
+            // FIX(chat-agent): if a session has an attached agent, inject its persona
+            // as a system message so the LLM speaks as that agent. The store's
+            // currentAgentId is the Poe-style continuation state (like currentModel).
+            // Persona is resolved via AgentService (topology/registry canonical).
+            let agentSystemPrompt: string | null = null;
+            let attachedAgentId: string | undefined;
+            try {
+                const sess = get().sessions.find((s) => s.id === sessionId);
+                attachedAgentId = sess?.currentAgentId || undefined;
+                // Allow per-message override: if any target already carries agentId, use it
+                const targetAgent = targets.find((t) => t.agentId)?.agentId;
+                if (targetAgent) attachedAgentId = targetAgent;
+                if (attachedAgentId) {
+                    const resolved = (agentService as { resolveAgent?: (id: string) => { systemPrompt?: string } | null })?.resolveAgent?.(attachedAgentId) ?? null;
+                    if (resolved?.systemPrompt) agentSystemPrompt = resolved.systemPrompt;
+                }
+            } catch {
+                // agentService not ready — proceed without persona
+            }
+
             const messages: ChatMessage[] = [
+                ...(agentSystemPrompt
+                    ? [{ role: 'system' as const, content: sanitize(agentSystemPrompt) }]
+                    : []),
                 ...(systemPromptArg
                     ? [{ role: 'system' as const, content: sanitize(systemPromptArg) }]
                     : []),
@@ -152,10 +176,9 @@ export function createSendMessageHandler(
                     : []),
                 ...currentHistory.flatMap<ChatMessage>((h) => {
                     if (h.role === 'system') {
-                        // FIX(chat-context): switch markers (🔄 Switched to ...) are UI/persistence
-                        // indicators, not model context. Feeding them as system messages
-                        // polluted every subsequent request after a key/model switch.
-                        if (h.text.startsWith('🔄')) return [];
+                        // FIX(chat-context): switch/agent markers are UI/persistence
+                        // indicators, not model context.
+                        if (h.text.startsWith('🔄') || h.text.startsWith('🧑')) return [];
                         return [{ role: 'system' as const, content: sanitize(h.text) }];
                     }
                     return [
@@ -177,6 +200,8 @@ export function createSendMessageHandler(
                     targets.length > 1 ? `${requestId}-${t.provider}-${t.keyId ?? idx}` : requestId,
                 provider: t.provider,
                 model: t.model,
+                keyId: t.keyId,
+                agentId: t.agentId || attachedAgentId,
                 content: '',
                 latency: 0,
                 status: 'loading',
@@ -251,7 +276,13 @@ export function createSendMessageHandler(
                     model: t.model,
                     keyId: t.keyId,
                     messages,
-                    options: { temperature, maxTokens },
+                    options: {
+                        temperature,
+                        maxTokens,
+                        ...(attachedAgentId || t.agentId
+                            ? { metadata: { agentId: (t.agentId || attachedAgentId)! } }
+                            : {}),
+                    },
                 });
             });
 

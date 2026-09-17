@@ -111,6 +111,21 @@ const ResponseCard: React.FC<ResponseCardProps> = memo(
                                 <span style={{ fontWeight: 700, fontSize: '0.9rem', color }}>
                                     {res.provider}
                                 </span>
+                                {res.agentId && (
+                                    <span
+                                        style={{
+                                            fontSize: '0.6rem',
+                                            color: '#a78bfa',
+                                            background: 'rgba(167,139,250,0.15)',
+                                            padding: '2px 6px',
+                                            borderRadius: 4,
+                                            fontWeight: 700,
+                                        }}
+                                        title={`Agent: ${res.agentId}`}
+                                    >
+                                        🤖 {res.agentId.slice(0, 12)}
+                                    </span>
+                                )}
                                 {isStreaming && (
                                     <Loader2
                                         size={12}

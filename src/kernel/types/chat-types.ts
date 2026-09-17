@@ -12,6 +12,7 @@ export interface ChatResponse {
     provider: string;
     model: string;
     keyId?: string;
+    agentId?: string;
     content: string;
     latency: number;
     status: ChatStatus;

@@ -44,6 +44,7 @@ export interface ChatSession {
     currentProvider?: string;
     currentModel?: string;
     currentKeyId?: string;
+    currentAgentId?: string;
 }
 
 export const DEFAULT_SESSION: ChatSession = {
@@ -81,7 +82,7 @@ export interface ChatActions {
     setIsLoaded: (v: boolean) => void;
     loadMoreSessions: () => Promise<void>;
     sendMessage: (
-        targets: { provider: string; model: string; keyId?: string }[],
+        targets: { provider: string; model: string; keyId?: string; agentId?: string }[],
         text: string,
         systemPrompt?: string,
         temperature?: number,
@@ -103,7 +104,8 @@ export interface ChatActions {
     importSessions: (importedSessions: ChatSession[]) => void;
     switchModel: (provider: string, model: string) => void;
     switchKey: (keyId: string) => void;
-    getSessionConfig: () => { provider?: string; model?: string; keyId?: string } | undefined;
+    setAgent: (agentId: string | null) => void;
+    getSessionConfig: () => { provider?: string; model?: string; keyId?: string; agentId?: string } | undefined;
     destroy: () => void;
 }
 
