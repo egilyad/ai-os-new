@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useTranslation } from '../../i18n/useTranslation';
 import { useAgentsPanel } from './AgentsPanelContext';
-import { Bot, Plus, Search, X, AlertTriangle, Wand2 } from 'lucide-react';
+import { Bot, Plus, Search, X, AlertTriangle, Wand2, LayoutGrid, List, Upload, Download } from 'lucide-react';
 import { ModalShell } from '../ModalShell';
 import { ConfirmDialog } from '../ConfirmDialog';
 import { agentService } from '../../kernel/instances';
@@ -10,11 +10,13 @@ import { AgentWizard } from './AgentWizard';
 import { AgentDetailPanel } from './AgentDetailPanel';
 import { QuickCreateAgentModal } from './QuickCreateAgentModal';
 import { AgentsTable } from './AgentsTable';
+import { AgentCard } from './AgentCard';
 
 const AgentsPanelView: React.FC = () => {
     const { t } = useTranslation();
     const {
         agentStats,
+        viewMode,
         searchQuery,
         statusFilter,
         selectedAgent,
@@ -27,6 +29,7 @@ const AgentsPanelView: React.FC = () => {
         keys,
         fileInputRef,
         searchInputRef,
+        onSetViewMode,
         onSetSearchQuery,
         onSetStatusFilter,
         onSetSelectedAgentId,
@@ -38,6 +41,8 @@ const AgentsPanelView: React.FC = () => {
         onApplyRoleToAgent,
         onDuplicateAgent,
         onResetAgentStats,
+        onExportAgents,
+        onImportAgents,
     } = useAgentsPanel();
 
     const [showWizard, setShowWizard] = useState(false);
@@ -69,6 +74,20 @@ const AgentsPanelView: React.FC = () => {
                     </div>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
+                    <button
+                        onClick={() => fileInputRef.current?.click()}
+                        title="Import from JSON / Catalog"
+                        style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '9px 12px', borderRadius: 10, border: '1px solid rgba(255,255,255,0.08)', background: 'rgba(255,255,255,0.04)', color: 'var(--slate-300)', fontWeight: 600, fontSize: '0.82rem', cursor: 'pointer' }}
+                    >
+                        <Upload size={14} /> Import
+                    </button>
+                    <button
+                        onClick={onExportAgents}
+                        title="Export all agents to JSON"
+                        style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '9px 12px', borderRadius: 10, border: '1px solid rgba(255,255,255,0.08)', background: 'rgba(255,255,255,0.04)', color: 'var(--slate-300)', fontWeight: 600, fontSize: '0.82rem', cursor: 'pointer' }}
+                    >
+                        <Download size={14} /> Export
+                    </button>
                     <button
                         onClick={() => setShowWizard(true)}
                         style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '9px 12px', borderRadius: 10, border: '1px solid rgba(139,92,246,0.25)', background: 'rgba(139,92,246,0.08)', color: '#a78bfa', fontWeight: 600, fontSize: '0.82rem', cursor: 'pointer' }}
@@ -122,9 +141,13 @@ const AgentsPanelView: React.FC = () => {
                         </button>
                     ))}
                 </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginLeft: 'auto', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 8, padding: 2, background: 'rgba(0,0,0,0.2)' }}>
+                    <button onClick={() => onSetViewMode('grid')} aria-label="Grid view" aria-pressed={viewMode === 'grid'} style={{ padding: '6px 8px', borderRadius: 6, border: 'none', background: viewMode === 'grid' ? 'rgba(59,130,246,0.2)' : 'transparent', color: viewMode === 'grid' ? '#93c5fd' : 'var(--slate-400)', cursor: 'pointer' }}><LayoutGrid size={14} /></button>
+                    <button onClick={() => onSetViewMode('list')} aria-label="List view" aria-pressed={viewMode === 'list'} style={{ padding: '6px 8px', borderRadius: 6, border: 'none', background: viewMode === 'list' ? 'rgba(59,130,246,0.2)' : 'transparent', color: viewMode === 'list' ? '#93c5fd' : 'var(--slate-400)', cursor: 'pointer' }}><List size={14} /></button>
+                </div>
             </div>
 
-            {/* Table */}
+            {/* Content — grid or table */}
             <div style={{ flex: 1, minHeight: 0 }}>
                 {isLoading ? (
                     <div style={{ border: '1px solid rgba(255,255,255,0.06)', borderRadius: 12, overflow: 'hidden' }}>
@@ -141,6 +164,22 @@ const AgentsPanelView: React.FC = () => {
                             <button onClick={onNavigateBuilder} style={{ padding: '8px 14px', borderRadius: 10, border: 'none', background: '#3b82f6', color: 'white', fontWeight: 600, cursor: 'pointer' }}>{t('agents.open_builder')}</button>
                         )}
                     </div>
+                ) : viewMode === 'grid' ? (
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 12 }}>
+                        {filteredAgents.map((a) => (
+                            <AgentCard
+                                key={a.id}
+                                agent={a}
+                                agentStats={agentStats[a.id]}
+                                viewMode="grid"
+                                onSelect={onSetSelectedAgentId}
+                                onToggleStatus={onToggleStatus}
+                                onDuplicate={onDuplicateAgent}
+                                onDeleteRequest={(id, name) => setDeleteConfirmAgent({ id, name })}
+                                t={t}
+                            />
+                        ))}
+                    </div>
                 ) : (
                     <AgentsTable
                         agents={filteredAgents}
@@ -154,7 +193,7 @@ const AgentsPanelView: React.FC = () => {
                 )}
             </div>
 
-            <input type="file" ref={fileInputRef} accept=".json" style={{ display: 'none' }} aria-hidden="true" />
+            <input type="file" ref={fileInputRef} accept=".json" style={{ display: 'none' }} aria-hidden="true" onChange={onImportAgents} />
 
             <ModalShell open={selectedAgent !== null} onClose={() => onSetSelectedAgentId(null)} width={1100}>
                 {selectedAgent && (
