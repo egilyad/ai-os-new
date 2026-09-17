@@ -125,6 +125,17 @@ import {
     KeyValueSchema,
     ApiKeySchema,
 } from '../../types/schemas';
+import type {
+    AgentSkillLink,
+    AgentToolLink,
+    AgentResponsibility,
+    AgentMetric,
+    AgentMemory,
+    AgentExecution,
+    AgentConfigRevision,
+    AgentApiKey,
+    AgentBudget,
+} from '../types/agems-agent';
 import {
     DebateSessionRecordSchema,
     DebateVerdictRecordSchema,
@@ -201,6 +212,16 @@ export class SuperAgentsDB extends Dexie {
     workflows!: Table<WorkflowRecord>;
 
     scenarios!: Table<ConversationScenario>;
+    // Phase 0 — AGEMS Agent Management (additive, isolated)
+    agentSkills!: Table<AgentSkillLink>;
+    agentTools!: Table<AgentToolLink>;
+    agentResponsibilities!: Table<AgentResponsibility>;
+    agentMetrics!: Table<AgentMetric>;
+    agentMemory!: Table<AgentMemory>;
+    agentExecutions!: Table<AgentExecution>;
+    agentConfigRevisions!: Table<AgentConfigRevision>;
+    agentApiKeys!: Table<AgentApiKey>;
+    agentBudgets!: Table<AgentBudget>;
 
     invocations!: Table<InvocationRecord>;
     invocationPolicies!: Table<InvocationPolicyRecord>;
@@ -1770,6 +1791,19 @@ export class SuperAgentsDB extends Dexie {
             projectFiles: '[projectId+path], projectId, path',
             projectArtifacts: 'id, projectId, type, createdAt',
             projectAssignments: '[projectId+agentId], projectId, agentId',
+        });
+
+        // v36 — AGEMS Phase 0 (Agent Management): additive, no upgrades.
+        this.version(36).stores({
+            agentSkills: '++id, agentId, skillId, [agentId+skillId]',
+            agentTools: '++id, agentId, toolId, [agentId+toolId]',
+            agentResponsibilities: '++id, agentId, priority, createdAt',
+            agentMetrics: '++id, agentId, metricType, periodStart, [agentId+metricType]',
+            agentMemory: '++id, agentId, type, createdAt, expiresAt',
+            agentExecutions: 'id, agentId, status, triggerType, startedAt',
+            agentConfigRevisions: '++id, agentId, version, createdAt, [agentId+version]',
+            agentApiKeys: 'id, agentId, createdAt',
+            agentBudgets: '++id, agentId, periodStart',
         });
 
         const rejectHook =
