@@ -8,7 +8,13 @@ export type SettingsTab =
     | 'prompts'
     | 'advanced'
     | 'notifications'
-    | 'appearance';
+    | 'appearance'
+    | 'llmKeys'
+    | 'platform'
+    | 'aiModules'
+    | 'systemPrompts'
+    | 'n8n'
+    | 'system';
 
 export const SettingRow = ({
     icon,

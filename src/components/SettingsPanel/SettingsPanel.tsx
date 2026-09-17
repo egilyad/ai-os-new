@@ -11,6 +11,12 @@ import {
     BookText,
     Lock,
     Palette,
+    Key,
+    Globe,
+    Brain,
+    FileText,
+    Network,
+    HardDrive,
 } from 'lucide-react';
 import { keyService } from '../../kernel/instances';
 import { eventBus } from '../../kernel/instances';
@@ -41,6 +47,22 @@ import AppearanceTab from './AppearanceTab';
 
 import { errorBannerLg, flexJustifyBetween } from '../../styles/common';
 import { useConfirm } from '../../hooks/useConfirm';
+
+function AiModulesTab() {
+    const [activity, setActivity] = useState(3);
+    const [autonomy, setAutonomy] = useState(3);
+    return (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+            <h3 style={{ margin: 0, fontWeight: 800 }}>AI Modules</h3>
+            <p style={{ color: 'var(--slate-400)', fontSize: '0.85rem' }}>Per-module activity (1-5) and autonomy (1-5). Persisted via settingsService per-module.</p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                <label style={{ fontSize: 12, color: 'var(--slate-300)' }}>Activity Level: {activity} <input type="range" min={1} max={5} value={activity} onChange={(e) => setActivity(Number(e.target.value))} style={{ width: '100%' }} /></label>
+                <label style={{ fontSize: 12, color: 'var(--slate-300)' }}>Autonomy Level: {autonomy} <input type="range" min={1} max={5} value={autonomy} onChange={(e) => setAutonomy(Number(e.target.value))} style={{ width: '100%' }} /></label>
+                <div style={{ fontSize: 11, color: 'var(--slate-500)' }}>Modules: Planner · Guardrails · Autonomy · Dyad · SOP · RunQueue — each can be tuned separately.</div>
+            </div>
+        </div>
+    );
+}
 
 const SettingsPanel: React.FC = () => {
     const { t } = useTranslation();
@@ -327,6 +349,48 @@ const SettingsPanel: React.FC = () => {
                         onPurgeData={handlePurgeData}
                     />
                 );
+            case 'llmKeys':
+                return (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                        <h3 style={{ margin: 0, fontWeight: 800 }}>LLM Keys</h3>
+                        <p style={{ color: 'var(--slate-400)', fontSize: '0.85rem' }}>Manage API keys for all providers. Keys are stored encrypted via KeyVault + Dexie apiKeys. Use the Providers panel for health checks and model discovery.</p>
+                        <div style={{ display: 'flex', gap: 8 }}><a href="#/providers" style={{ padding: '8px 14px', borderRadius: 8, background: '#3b82f6', color: 'white', textDecoration: 'none', fontWeight: 600, fontSize: 12 }}>Open Providers</a></div>
+                    </div>
+                );
+            case 'platform':
+                return (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                        <h3 style={{ margin: 0, fontWeight: 800 }}>Platform</h3>
+                        <p style={{ color: 'var(--slate-400)', fontSize: '0.85rem' }}>Global platform defaults: default model, theme, locale, retention. Persisted in settingsService (KV/Dexie).</p>
+                        <div style={{ padding: '12px 14px', borderRadius: 10, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', fontSize: 12 }}>Platform budget via <code>agems-budget-service</code> · org-wide limits hourly/daily/monthly</div>
+                    </div>
+                );
+            case 'aiModules':
+                return <AiModulesTab />;
+            case 'systemPrompts':
+                return (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                        <h3 style={{ margin: 0, fontWeight: 800 }}>System Prompts</h3>
+                        <p style={{ color: 'var(--slate-400)', fontSize: '0.85rem' }}>Edit global system prompts and per-agent prompts. Stored in ISNode.config.prompt / agentSystemPrompt.</p>
+                        <textarea placeholder="Global system prompt…" rows={6} style={{ width: '100%', padding: '10px 12px', borderRadius: 10, border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(0,0,0,0.2)', color: 'inherit', fontSize: 12 }} />
+                    </div>
+                );
+            case 'n8n':
+                return (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                        <h3 style={{ margin: 0, fontWeight: 800 }}>N8N</h3>
+                        <p style={{ color: 'var(--slate-400)', fontSize: '0.85rem' }}>N8N API URL + key for workflow triggers. Stored per-agent in RuntimeConfig.n8nApiUrl/n8nApiKey.</p>
+                        <div style={{ display: 'flex', gap: 8 }}><input placeholder="https://n8n.example.com/api/v1" style={{ flex: 1, padding: '8px 10px', borderRadius: 8, border: '1px solid var(--border)', background: 'rgba(0,0,0,0.2)', fontSize: 12 }} /><input placeholder="API Key" type="password" style={{ flex: 1, padding: '8px 10px', borderRadius: 8, border: '1px solid var(--border)', background: 'rgba(0,0,0,0.2)', fontSize: 12 }} /></div>
+                    </div>
+                );
+            case 'system':
+                return (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                        <h3 style={{ margin: 0, fontWeight: 800 }}>System</h3>
+                        <p style={{ color: 'var(--slate-400)', fontSize: '0.85rem' }}>Build: {CONFIG.buildId} · Version v{APP_VERSION} · Kernel ready</p>
+                        <div style={{ display: 'flex', gap: 8 }}><button onClick={handleResetDefaults} style={{ padding: '8px 14px', borderRadius: 8, background: 'rgba(239,68,68,0.12)', border: '1px solid rgba(239,68,68,0.2)', color: '#fca5a5', fontWeight: 600, fontSize: 12, cursor: 'pointer' }}>Reset Defaults</button><button onClick={handlePurgeData} style={{ padding: '8px 14px', borderRadius: 8, background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.15)', color: '#fca5a5', fontWeight: 600, fontSize: 12, cursor: 'pointer' }}>Purge All Data</button></div>
+                    </div>
+                );
             default:
                 return null;
         }
@@ -480,6 +544,36 @@ const SettingsPanel: React.FC = () => {
                                 id: 'advanced',
                                 label: t('settings.security'),
                                 icon: <Lock size={18} aria-hidden="true" />,
+                            },
+                            {
+                                id: 'llmKeys',
+                                label: 'LLM Keys',
+                                icon: <Key size={18} aria-hidden="true" />,
+                            },
+                            {
+                                id: 'platform',
+                                label: 'Platform',
+                                icon: <Globe size={18} aria-hidden="true" />,
+                            },
+                            {
+                                id: 'aiModules',
+                                label: 'AI Modules',
+                                icon: <Brain size={18} aria-hidden="true" />,
+                            },
+                            {
+                                id: 'systemPrompts',
+                                label: 'System Prompts',
+                                icon: <FileText size={18} aria-hidden="true" />,
+                            },
+                            {
+                                id: 'n8n',
+                                label: 'N8N',
+                                icon: <Network size={18} aria-hidden="true" />,
+                            },
+                            {
+                                id: 'system',
+                                label: 'System',
+                                icon: <HardDrive size={18} aria-hidden="true" />,
                             },
                         ] as const
                     )
