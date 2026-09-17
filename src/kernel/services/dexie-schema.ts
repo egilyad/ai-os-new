@@ -136,6 +136,7 @@ import type {
     AgentApiKey,
     AgentBudget,
 } from '../types/agems-agent';
+import type { AgemsTask, TaskComment, Label, TaskLabel } from '../types/agems-task';
 import {
     DebateSessionRecordSchema,
     DebateVerdictRecordSchema,
@@ -222,6 +223,11 @@ export class SuperAgentsDB extends Dexie {
     agentConfigRevisions!: Table<AgentConfigRevision>;
     agentApiKeys!: Table<AgentApiKey>;
     agentBudgets!: Table<AgentBudget>;
+    // Phase 2 — AGEMS Tasks
+    agemsTasks!: Table<AgemsTask>;
+    taskComments!: Table<TaskComment>;
+    labels!: Table<Label>;
+    taskLabels!: Table<TaskLabel>;
 
     invocations!: Table<InvocationRecord>;
     invocationPolicies!: Table<InvocationPolicyRecord>;
@@ -1804,6 +1810,14 @@ export class SuperAgentsDB extends Dexie {
             agentConfigRevisions: '++id, agentId, version, createdAt, [agentId+version]',
             agentApiKeys: 'id, agentId, createdAt',
             agentBudgets: '++id, agentId, periodStart',
+        });
+
+        // v37 — AGEMS Phase 2 (Tasks): additive
+        this.version(37).stores({
+            agemsTasks: 'id, status, priority, assigneeId, creatorId, projectId, createdAt, updatedAt',
+            taskComments: '++id, taskId, createdAt',
+            labels: '++id, name',
+            taskLabels: '++id, taskId, labelId, [taskId+labelId]',
         });
 
         const rejectHook =
