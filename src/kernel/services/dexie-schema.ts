@@ -137,6 +137,7 @@ import type {
     AgentBudget,
 } from '../types/agems-agent';
 import type { AgemsTask, TaskComment, Label, TaskLabel } from '../types/agems-task';
+import type { ApprovalPolicy, ApprovalRequest } from '../types/agems-approval';
 import {
     DebateSessionRecordSchema,
     DebateVerdictRecordSchema,
@@ -228,6 +229,9 @@ export class SuperAgentsDB extends Dexie {
     taskComments!: Table<TaskComment>;
     labels!: Table<Label>;
     taskLabels!: Table<TaskLabel>;
+    // Phase 3 — AGEMS Approvals
+    approvalPolicies!: Table<ApprovalPolicy>;
+    approvalRequests!: Table<ApprovalRequest>;
 
     invocations!: Table<InvocationRecord>;
     invocationPolicies!: Table<InvocationPolicyRecord>;
@@ -1818,6 +1822,12 @@ export class SuperAgentsDB extends Dexie {
             taskComments: '++id, taskId, createdAt',
             labels: '++id, name',
             taskLabels: '++id, taskId, labelId, [taskId+labelId]',
+        });
+
+        // v38 — AGEMS Phase 3 (Approvals): additive
+        this.version(38).stores({
+            approvalPolicies: '++id, agentId, preset, updatedAt',
+            approvalRequests: '++id, agentId, status, createdAt, [status+createdAt]',
         });
 
         const rejectHook =

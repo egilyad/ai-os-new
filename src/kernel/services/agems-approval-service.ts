@@ -1,0 +1,62 @@
+import { getDexieDb } from './dexie-schema';
+import type { ApprovalPolicy, ApprovalRequest, ApprovalPreset } from '../types/agems-approval';
+import { PRESET_DEFAULTS } from '../types/agems-approval';
+
+export class AgemsApprovalService {
+    async getPolicy(agentId: string): Promise<ApprovalPolicy | undefined> {
+        return (await getDexieDb().approvalPolicies.where('agentId').equals(agentId).first()) as unknown as ApprovalPolicy | undefined;
+    }
+
+    async setPreset(agentId: string, preset: ApprovalPreset): Promise<ApprovalPolicy> {
+        const existing = await this.getPolicy(agentId);
+        const defaults = PRESET_DEFAULTS[preset];
+        const policy: ApprovalPolicy = {
+            ...(existing as ApprovalPolicy ?? { agentId, preset, updatedAt: Date.now() }),
+            agentId,
+            preset,
+            ...defaults,
+            updatedAt: Date.now(),
+        };
+        if (existing?.id) {
+            await getDexieDb().approvalPolicies.update(existing.id as number, policy as never);
+            return { ...policy, id: existing.id } as ApprovalPolicy;
+        }
+        const id = (await getDexieDb().approvalPolicies.add(policy as never)) as unknown as number;
+        return { ...policy, id } as ApprovalPolicy;
+    }
+
+    async requestApproval(input: Omit<ApprovalRequest, 'id' | 'status' | 'createdAt'>): Promise<ApprovalRequest> {
+        const req: ApprovalRequest = {
+            agentId: input.agentId,
+            toolName: input.toolName,
+            toolInput: input.toolInput,
+            category: input.category,
+            riskLevel: input.riskLevel,
+            description: input.description,
+            status: 'PENDING',
+            expiresAt: input.expiresAt ?? Date.now() + 24 * 3600000,
+            createdAt: Date.now(),
+        };
+        const id = (await getDexieDb().approvalRequests.add(req as never)) as unknown as number;
+        return { ...req, id } as ApprovalRequest;
+    }
+
+    async resolve(id: number, status: 'APPROVED' | 'REJECTED', reason?: string, resolverId?: string): Promise<void> {
+        await getDexieDb().approvalRequests.update(id, { status, rejectionReason: reason, resolvedBy: resolverId, resolvedAt: Date.now() } as never);
+    }
+
+    async list(agentId?: string, status?: ApprovalRequest['status']): Promise<ApprovalRequest[]> {
+        let col = getDexieDb().approvalRequests.toCollection();
+        const all = (await col.toArray()) as unknown as ApprovalRequest[];
+        let filtered = all;
+        if (agentId) filtered = filtered.filter((r) => r.agentId === agentId);
+        if (status) filtered = filtered.filter((r) => r.status === status);
+        return filtered.sort((a, b) => b.createdAt - a.createdAt);
+    }
+
+    async bulkResolve(ids: number[], status: 'APPROVED' | 'REJECTED'): Promise<void> {
+        for (const id of ids) await this.resolve(id, status);
+    }
+}
+
+export const agemsApprovalService = new AgemsApprovalService();
