@@ -161,7 +161,8 @@ const chat: Record<string, string> = {
     'chat_export.paste': 'Вставить',
     'chat_export.source': 'Источник',
     'chat_export.subtitle': 'Подзаголовок',
-    'chat_export.title': 'Название',
+    'chat_export.title': 'Заголовок',
+    'chat.delete_session_aria': 'Удалить сессию чата',
 };
 
 export { chat };

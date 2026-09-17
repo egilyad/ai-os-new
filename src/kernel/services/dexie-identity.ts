@@ -47,8 +47,8 @@ export function logDexieIdentity(source: string, instance: Dexie): void {
     const g = globalRef();
     const globalInstance = g.__DEXIE_INSTANCE__;
     const sameAsGlobal = globalInstance === instance;
-    // Synchronous log only; count() is async and would require awaited log
-    rootLogger.info('DexieIdentity', '[DEXIE_IDENTITY]', {
+    // Demoted to debug — INFO spam in prod (was on every hydration/reload)
+    rootLogger.debug('DexieIdentity', '[DEXIE_IDENTITY]', {
         source,
         instanceRef: instanceName(instance),
         sameAsGlobalThis: sameAsGlobal,
@@ -73,7 +73,7 @@ export async function logDexieIdentityWithCount(source: string, instance: Dexie)
     } catch (e) {
         rootLogger.warn('DexieIdentity', '[DEXIE_IDENTITY] count() failed', { source, error: e });
     }
-    rootLogger.info('DexieIdentity', '[DEXIE_IDENTITY_WITH_COUNT]', {
+    rootLogger.debug('DexieIdentity', '[DEXIE_IDENTITY_WITH_COUNT]', {
         source,
         instanceRef: instanceName(instance),
         sameAsGlobalThis: sameAsGlobal,
@@ -106,7 +106,7 @@ export async function anchorDexieInstance(source: string, instance: Dexie): Prom
         } catch {
             g.__DEXIE_INSTANCE_COUNT__ = 0;
         }
-        rootLogger.info('DexieIdentity', '[DEXIE_ANCHOR] first anchor set', {
+        rootLogger.debug('DexieIdentity', '[DEXIE_ANCHOR] first anchor set', {
             source,
             instanceRef: instanceName(instance),
             apiKeysCount: g.__DEXIE_INSTANCE_COUNT__,

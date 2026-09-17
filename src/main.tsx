@@ -32,7 +32,7 @@ window.addEventListener('unhandledrejection', unhandledRejectionHandler);
 
 // Memory monitor — logs every 30 seconds (DEV only)
 let memTimer: ReturnType<typeof setInterval> | undefined;
-if (import.meta.env.DEV && typeof window !== 'undefined') {
+if (import.meta.env.DEV && typeof window !== 'undefined' && (import.meta.env as unknown as { VITE_DEBUG_MEMORY?: string }).VITE_DEBUG_MEMORY) {
     let memCount = 0;
     memTimer = setInterval(() => {
         const mem = (
@@ -41,14 +41,14 @@ if (import.meta.env.DEV && typeof window !== 'undefined') {
             }
         ).memory;
         if (mem) {
-            LOGGER.info(
+            LOGGER.debug(
                 'Main',
                 `[Memory] heap: ${(mem.usedJSHeapSize / 1024 / 1024).toFixed(1)}MB / ${(mem.totalJSHeapSize / 1024 / 1024).toFixed(1)}MB`,
             );
         }
         memCount++;
         if (memCount > 10) {
-            LOGGER.info('Main', '[Memory] Still alive after 5 minutes');
+            LOGGER.debug('Main', '[Memory] Still alive after 5 minutes');
             memCount = 0;
         }
     }, 30000);

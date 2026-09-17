@@ -1,15 +1,15 @@
 /** Single source of truth for per-provider default model names.
  *  All production code should import from here instead of hardcoding model strings. */
 export const PROVIDER_DEFAULT_MODELS: Record<string, string> = {
-    // Aug-2026: llama-3.3-70b-versatile / llama-3.1-8b-instant decommissioned by Groq — use Llama 4
-    groq: 'meta-llama/llama-4-maverick-17b-128e-instruct',
+    // Groq: use stable Llama 3.3 (Llama 4 EOL 2026-07, 410/404)
+    groq: 'llama-3.3-70b-versatile',
     gemini: 'gemini-3.1-flash-lite',
     gemini_flash: 'gemini-3.1-flash-lite',
     gemini_pro: 'gemini-3.1-pro',
     anthropic: 'claude-3-5-sonnet',
     openrouter: 'meta-llama/llama-3.1-8b-instruct',
-    // Aug-2026: meta/llama-3.1-8b-instruct EOL on NIM hosted endpoint (410) — use Llama 4
-    nvidia: 'meta/llama-4-maverick-17b-128e-instruct',
+    // NVIDIA NIM: Llama 4 EOL 410 — fall back to 3.1
+    nvidia: 'meta/llama-3.1-8b-instruct',
     openai: 'gpt-4o',
     cerebras: 'cerebras-gpt-3.5',
     cloudflare: '@cf/meta/llama-3.1-8b-instruct',
@@ -21,11 +21,11 @@ export const PROVIDER_DEFAULT_MODELS: Record<string, string> = {
 
 /** Preferred models for each provider (ordered by quality). */
 export const PROVIDER_PREFERRED_MODELS: Record<string, string[]> = {
-    groq: ['meta-llama/llama-4-maverick-17b-128e-instruct', 'meta-llama/llama-4-scout-17b-16e-instruct'],
+    groq: ['llama-3.3-70b-versatile', 'llama-3.1-8b-instant'],
     gemini: ['gemini-3.1-flash-lite', 'gemini-3.1-pro'],
     anthropic: ['claude-3-5-sonnet', 'claude-3-haiku', 'claude-3-opus'],
-    nvidia: ['meta/llama-4-maverick-17b-128e-instruct', 'meta/llama-4-scout-17b-16e-instruct'],
-    'nvidia-nim': ['meta/llama-4-maverick-17b-128e-instruct', 'meta/llama-4-scout-17b-16e-instruct'],
+    nvidia: ['meta/llama-3.1-8b-instruct', 'meta/llama-3.1-70b-instruct'],
+    'nvidia-nim': ['meta/llama-3.1-8b-instruct', 'meta/llama-3.1-70b-instruct'],
     deepseek: ['deepseek-chat', 'deepseek-reasoner'],
     kimi: ['kimi-k2', 'kimi-k2-thinking'],
     minimax: ['MiniMax-M1'],

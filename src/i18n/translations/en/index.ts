@@ -6,6 +6,7 @@ import { debate } from './debate';
 import { agents } from './agents';
 import { memory } from './memory';
 import { chat } from './chat';
+import { groupChat } from './groupChat';
 import { providers } from './providers';
 import { dashboard } from './dashboard';
 import { analytics } from './analytics';
@@ -25,6 +26,7 @@ const en: Record<string, string> = {
     ...agents,
     ...memory,
     ...chat,
+    ...groupChat,
     ...providers,
     ...dashboard,
     ...analytics,

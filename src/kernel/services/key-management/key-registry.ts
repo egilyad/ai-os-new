@@ -175,7 +175,7 @@ export class KeyRegistry {
 
     async reload(): Promise<void> {
         const prevCount = this.keys.length;
-        if (import.meta.env.DEV)
+        if (import.meta.env.DEV && (import.meta.env as unknown as { VITE_DEBUG_KEYS?: string }).VITE_DEBUG_KEYS)
             console.trace('[KEY_REGISTRY_OVERWRITE]', {
                 source: 'reload:enter',
                 seq: ++_overwriteSeq,
@@ -505,7 +505,9 @@ export class KeyRegistry {
         const arrow =
             beforeCount > 0 || afterCount > 0 ? `${beforeCount} -> ${afterCount}` : `${afterCount}`;
         const dropMarker = afterCount === 0 && beforeCount > 0 ? '  ❌ DROP HERE' : '';
-        LOGGER.info('KeyRegistry', `[KEY_TRACE] ${stage}: ${arrow}${dropMarker}`, {
+        // Silence in prod — KEY_TRACE is extremely verbose (18 keys × many stages)
+        // Keep as debug so dev can enable via logger level, but not INFO by default.
+        LOGGER.debug('KeyRegistry', `[KEY_TRACE] ${stage}: ${arrow}${dropMarker}`, {
             sample: safeSample,
             ...extra,
         });

@@ -168,12 +168,18 @@ export function useChatStoreHydration(): void {
                 if (!changed) return;
 
                 const merged = [...sessions];
+                const mergedIdx = new Map(merged.map((s, i) => [s.id, i] as const));
                 for (const [id, cur] of currentMap) {
-                    const existing = merged.find((s) => s.id === id);
-                    if (existing) {
+                    const idx = mergedIdx.get(id);
+                    if (idx !== undefined) {
+                        const existing = merged[idx]!;
                         if (cur.updatedAt < existing.updatedAt) continue;
+                        // replace stale Dexie version with newer in-memory version
+                        merged[idx] = cur;
+                    } else {
+                        merged.push(cur);
+                        mergedIdx.set(id, merged.length - 1);
                     }
-                    merged.push(cur);
                 }
                 merged.sort((a, b) => b.updatedAt - a.updatedAt);
                 db.sessions.count().then((total) => {

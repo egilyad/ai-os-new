@@ -244,5 +244,6 @@ const nav: Record<string, string> = {
     'nav.justification': 'Обоснование',
     'nav.logical_form': 'Логическая форма',
     'nav.skip_to_content': 'К содержимому',
+    'nav.start_debate': 'Начать дебаты',
 };
 export { nav };

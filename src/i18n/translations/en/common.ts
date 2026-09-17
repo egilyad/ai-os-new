@@ -168,6 +168,9 @@ const common: Record<string, string> = {
     'sidepanel.add_provider': 'Add Provider',
     'experimental.badge': 'Experimental',
     'experimental.badge_title': 'Research / experimental panel — not production-grade',
+    'common.req_unit': 'req',
+    'info.chat': 'Chat',
+    'info.dashboard': 'Dashboard',
 };
 
 export { common };

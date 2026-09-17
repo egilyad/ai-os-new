@@ -162,6 +162,7 @@ const chat: Record<string, string> = {
     'chat_export.source': 'Source',
     'chat_export.subtitle': 'Subtitle',
     'chat_export.title': 'Title',
+    'chat.delete_session_aria': 'Delete chat session',
 };
 
 export { chat };

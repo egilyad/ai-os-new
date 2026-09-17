@@ -169,6 +169,9 @@ const common: Record<string, string> = {
     'experimental.badge': 'Экспериментально',
     'experimental.badge_title':
         'Исследовательская / экспериментальная панель — не production-grade',
+    'common.req_unit': 'запр.',
+    'info.chat': 'Чат',
+    'info.dashboard': 'Дашборд',
 };
 
 export { common };
