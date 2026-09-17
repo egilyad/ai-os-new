@@ -24,6 +24,7 @@ import { agemsTaskService } from '../../kernel/services/agems-task-service';
 import { KANBAN_COLUMNS } from '../../kernel/types/agems-task';
 import type { AgemsTask, AgemsTaskStatus, CronSchedule } from '../../kernel/types/agems-task';
 import { getPresets, formatCronPreview } from '../../kernel/services/cron-builder-service';
+import TaskDetailModal from './TaskDetailModal';
 import {
     taskMetaItem,
     textWhiteWeight800Sm,
@@ -88,6 +89,7 @@ const TasksPanel: React.FC = () => {
     const [newTaskTitle, setNewTaskTitle] = useState('');
     const [newTaskCron, setNewTaskCron] = useState<CronSchedule | undefined>(undefined);
     const [showCronPicker, setShowCronPicker] = useState(false);
+    const [selectedTask, setSelectedTask] = useState<AgemsTask | null>(null);
 
     const { t } = useTranslation();
     const isMountedRef = useRef(true);
@@ -197,6 +199,11 @@ const TasksPanel: React.FC = () => {
         if (!id) return;
         const updated = await agemsTaskService.updateStatus(id, newStatus);
         if (updated) setAgemsTasks((prev) => prev.map((t) => (t.id === id ? updated : t)));
+    };
+
+    const handleTaskUpdate = (updated: AgemsTask) => {
+        setAgemsTasks((prev) => prev.map((t) => (t.id === updated.id ? updated : t)));
+        setSelectedTask(updated);
     };
 
     const filteredTasks = tasks.filter((t) => {
@@ -492,9 +499,14 @@ const TasksPanel: React.FC = () => {
                                     </div>
                                     <div style={{ display: 'flex', flexDirection: 'column', gap: 6, flex: 1, overflowY: 'auto' }}>
                                         {colTasks.map((t) => (
-                                            <div key={t.id} draggable onDragStart={(e) => e.dataTransfer.setData('text/plain', t.id)} style={{ padding: '8px 8px', borderRadius: 8, background: 'rgba(0,0,0,0.25)', border: '1px solid rgba(255,255,255,0.06)', cursor: 'grab', fontSize: 11 }}>
-                                                <div style={{ fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{t.title}</div>
+                                            <div key={t.id} draggable onDragStart={(e) => e.dataTransfer.setData('text/plain', t.id)} onClick={() => setSelectedTask(t)} style={{ padding: '8px 8px', borderRadius: 8, background: 'rgba(0,0,0,0.25)', border: t.lockedBy && t.lockedUntil && t.lockedUntil > Date.now() ? '1px solid rgba(245,158,11,0.4)' : '1px solid rgba(255,255,255,0.06)', cursor: 'grab', fontSize: 11 }}>
+                                                <div style={{ fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{t.title} {t.lockedBy && t.lockedUntil && t.lockedUntil > Date.now() ? '🔒' : ''}</div>
                                                 <div style={{ fontSize: 10, color: 'var(--slate-500)', marginTop: 2 }}>{t.priority} · {t.cronSchedule ? '⏰ ' + (t.cronSchedule.kind === 'preset' ? t.cronSchedule.preset : 'custom') : t.type}</div>
+                                                {t.labels && t.labels.length > 0 && (
+                                                    <div style={{ display: 'flex', gap: 3, marginTop: 3, flexWrap: 'wrap' }}>
+                                                        {t.labels.map((lbl) => <span key={lbl} style={{ fontSize: 9, padding: '1px 4px', borderRadius: 4, background: 'rgba(59,130,246,0.12)', color: '#60a5fa' }}>{lbl}</span>)}
+                                                    </div>
+                                                )}
                                             </div>
                                         ))}
                                         {colTasks.length === 0 && <div style={{ fontSize: 10, color: 'var(--slate-500)', textAlign: 'center', padding: 8, border: '1px dashed rgba(255,255,255,0.08)', borderRadius: 8 }}>Drop here</div>}
@@ -845,6 +857,7 @@ const TasksPanel: React.FC = () => {
                 )}
                 <ModuleInfo moduleKey="tasks" />
             </div>
+            {selectedTask && <TaskDetailModal task={selectedTask} onClose={() => setSelectedTask(null)} onUpdate={handleTaskUpdate} />}
         </div>
     );
 };
