@@ -468,6 +468,98 @@ export class AgentService implements IAgentResolver {
         }
     }
 
+    // --- AGEMS Phase 0.4: Lifecycle (DRAFT/ACTIVE/PAUSED/ARCHIVED) — maps to lifecycleStates
+    activate(id: string): void {
+        this.transitionLifecycle(id, this.lifecycleStates.get(id), 'ready');
+        this.deps.orchestrator.setNodeDisabled(id, false);
+    }
+
+    pause(id: string): void {
+        this.transitionLifecycle(id, this.lifecycleStates.get(id) || 'ready', 'paused');
+        this.deps.orchestrator.setNodeDisabled(id, true);
+    }
+
+    archive(id: string): void {
+        this.transitionLifecycle(id, this.lifecycleStates.get(id), 'terminated');
+        this.deps.orchestrator.setNodeDisabled(id, true);
+    }
+
+    unarchive(id: string): void {
+        this.transitionLifecycle(id, 'terminated', 'ready');
+        this.deps.orchestrator.setNodeDisabled(id, false);
+    }
+
+    // --- Hierarchy (parentAgentId stored in ISNode.config.parentAgentId)
+    getParent(childId: string): string | null {
+        const top = this.deps.orchestrator.getActiveTopology();
+        const node = top?.nodes.find((n) => n.id === childId);
+        return (node?.config?.parentAgentId as string) ?? null;
+    }
+
+    getChildren(parentId: string): string[] {
+        const top = this.deps.orchestrator.getActiveTopology();
+        if (!top) return [];
+        return top.nodes.filter((n) => (n.config?.parentAgentId as string) === parentId).map((n) => n.id);
+    }
+
+    setParent(childId: string, parentId: string | null): void {
+        const top = this.deps.orchestrator.getActiveTopology();
+        if (!top) throw new Error('No active topology');
+        const child = top.nodes.find((n) => n.id === childId);
+        if (!child) throw new Error(`Agent ${childId} not found`);
+        if (parentId) {
+            const parent = top.nodes.find((n) => n.id === parentId);
+            if (!parent) throw new Error(`Parent ${parentId} not found`);
+            child.config = { ...child.config, parentAgentId: parentId };
+        } else {
+            const { parentAgentId: _omit, ...rest } = child.config as Record<string, unknown>;
+            child.config = rest as typeof child.config;
+        }
+        this.deps.orchestrator.mount({ ...top });
+        this.deps.eventBus.emit('agent:parentChanged', { childId, parentId });
+    }
+
+    removeParent(childId: string): void {
+        this.setParent(childId, null);
+    }
+
+    /** Spawn child inheriting LLM/runtime/tools from parent */
+    spawn(parentId: string, input: { name: string; roleId?: string; config?: Record<string, unknown> }): string | null {
+        const top = this.deps.orchestrator.getActiveTopology();
+        const parent = top?.nodes.find((n) => n.id === parentId);
+        if (!parent) throw new Error(`Parent ${parentId} not found`);
+        const inherited: Record<string, unknown> = {
+            roleId: input.roleId ?? parent.config?.roleId,
+            roleName: (parent.config?.roleName as string) ?? 'General Assistant',
+            prompt: parent.config?.prompt,
+            model: parent.config?.model ?? 'auto',
+            provider: parent.config?.provider,
+            tools: [...((parent.config?.tools as string[]) ?? [])],
+            temperature: parent.config?.temperature ?? 0.7,
+            parentAgentId: parentId,
+            ...input.config,
+        };
+        return this.spawnAgent(input.name, inherited.roleId as string | undefined, inherited);
+    }
+
+    /** Delegate: parent assigns task to child (creates task loop entry) */
+    async delegate(parentId: string, childId: string, task: { text: string; maxIterations?: number }): Promise<string> {
+        // Minimal: create an AgentLoop via autonomyService if available, else just emit
+        const bus = this.deps.eventBus;
+        bus.emit('agent:delegated', { parentId, childId, text: task.text });
+        // If autonomyService is registered, try to run as goal loop for child
+        try {
+            const autonomy = (await import('../../kernel/instances')).autonomyService as unknown as { runGoal?: (goal: string, max: number) => Promise<{ id: string }> };
+            if (autonomy?.runGoal) {
+                const loop = await autonomy.runGoal(task.text, task.maxIterations ?? 8);
+                return loop.id;
+            }
+        } catch {
+            // fallback — no autonomy service
+        }
+        return `delegated:${childId}:${Date.now()}`;
+    }
+
     pauseAllAgents() {
         const top = this.deps.orchestrator.getActiveTopology();
         if (!top) return;
