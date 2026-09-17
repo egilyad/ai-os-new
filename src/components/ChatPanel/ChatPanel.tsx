@@ -1,4 +1,4 @@
-import { storageAdapter, settingsService, orchestrator } from '../../kernel/instances';
+import { storageAdapter, settingsService, orchestrator, keyService } from '../../kernel/instances';
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 
 import { X } from 'lucide-react';
@@ -139,6 +139,24 @@ const ChatPanel: React.FC = () => {
         // (agent is continuation state, not identity)
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [activeSessionId]);
+
+    // B.3: auto-discover models for keys that have no cached availableModels
+    // (e.g. freshly added key, or imported DB). Uses existing KeyService discovery.
+    useEffect(() => {
+        if (activeKeys.length === 0) return;
+        for (const k of activeKeys) {
+            if (!k.availableModels || k.availableModels.length === 0) {
+                try {
+                    // keyService.refreshModels is fire-and-forget; UI updates via liveQuery
+                    (keyService as unknown as { refreshModels?: (id: string) => Promise<void> })?.refreshModels?.(
+                        k.id,
+                    )?.catch(() => {});
+                } catch {
+                    // service not ready yet
+                }
+            }
+        }
+    }, [activeKeys]);
 
     const { t } = useTranslation();
     const [showSidebar, setShowSidebar] = useState(true);

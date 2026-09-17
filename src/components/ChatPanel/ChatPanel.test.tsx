@@ -93,14 +93,17 @@ vi.mock('../../kernel/instances', () => ({
     agentService: {
         resolveAgent: vi.fn(() => null),
     },
+    keyService: {
+        refreshModels: vi.fn(() => Promise.resolve()),
+    },
 }));
 
 vi.mock('../../kernel/events/event-bus', () => ({
     eventBus: { emit: vi.fn(), on: vi.fn(() => vi.fn()), off: vi.fn() },
     EVENTS: {
         NOTIFICATION: 'notification',
-        START_CHAT_WITH_TARGET: 'chat:start_with_target',
-        SELECT_MODEL: 'chat:select_model',
+        START_CHAT_WITH_TARGET: 'chat:target:start',
+        SELECT_MODEL: 'chat:model:select',
         NAVIGATE: 'system:navigate',
     },
 }));

@@ -485,6 +485,28 @@ export const ChatSessionsManagerPanel: React.FC = () => {
                                         {active.summary}
                                     </div>
                                 )}
+                                {/* J.2: per-response execution truth (provider/model/agent per answer) */}
+                                {(active as unknown as { history?: Array<{ responses?: Array<{ provider?: string; model?: string; agentId?: string; status?: string }> }> }).history?.length ? (
+                                    <div style={{ gridColumn: '1 / -1', marginTop: 8 }}>
+                                        <span style={{ color: 'var(--slate-500)' }}>Recent execution:</span>{' '}
+                                        <span style={{ fontSize: 11, color: 'var(--slate-400)' }}>
+                                            {(() => {
+                                                const hist = (active as unknown as { history: Array<{ responses: Array<{ provider?: string; model?: string; agentId?: string; status?: string }> }> }).history;
+                                                const flat = hist
+                                                    .flatMap((e) => e.responses ?? [])
+                                                    .filter((r) => r.status === 'done')
+                                                    .slice(-5);
+                                                if (flat.length === 0) return '(no done responses yet)';
+                                                return flat
+                                                    .map(
+                                                        (r) =>
+                                                            `${r.provider ?? '?'} / ${r.model ?? '?'}${r.agentId ? ` / 🤖${r.agentId.slice(0, 8)}` : ''}`,
+                                                    )
+                                                    .join('  ·  ');
+                                            })()}
+                                        </span>
+                                    </div>
+                                ) : null}
                             </div>
                         </div>
 
