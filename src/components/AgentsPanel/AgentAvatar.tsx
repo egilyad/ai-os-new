@@ -56,14 +56,19 @@ export function getAgentAvatar(agentId: string): { color: string; emoji: string 
 interface AgentAvatarProps {
     agentId: string;
     name?: string;
-    size?: number;
+    size?: number | 'sm' | 'md' | 'lg';
     ring?: boolean;
     /** Optional canonical avatar override (emoji/color) from identity. */
     emoji?: string;
     color?: string;
     /** Optional persistent image; when present the avatar renders an <img>. */
     url?: string;
+    /** AGEMS 0.6: status dot (green=active, yellow=paused, red=error) */
+    status?: 'active' | 'paused' | 'error';
+    showStatus?: boolean;
 }
+
+const SIZE_MAP: Record<string, number> = { sm: 32, md: 40, lg: 64 };
 
 export const AgentAvatar: React.FC<AgentAvatarProps> = ({
     agentId,
@@ -73,49 +78,58 @@ export const AgentAvatar: React.FC<AgentAvatarProps> = ({
     emoji,
     color,
     url,
+    status,
+    showStatus = false,
 }) => {
+    const px = typeof size === 'string' ? SIZE_MAP[size] ?? 40 : size;
     const fallback = getAgentAvatar(agentId || 'unknown');
     const resolvedEmoji = emoji ?? fallback.emoji;
     const resolvedColor = color ?? fallback.color;
+    const dotColor = status === 'active' ? '#22c55e' : status === 'paused' ? '#f59e0b' : status === 'error' ? '#ef4444' : null;
 
     if (url) {
         return (
-            <img
-                src={url}
-                alt={name || agentId}
-                title={name || agentId}
-                width={size}
-                height={size}
-                style={{
-                    borderRadius: '50%',
-                    objectFit: 'cover',
-                    border: ring ? `2px solid ${resolvedColor}` : '2px solid transparent',
-                    flexShrink: 0,
-                    userSelect: 'none',
-                }}
-            />
+            <div style={{ position: 'relative', width: px, height: px, flexShrink: 0 }}>
+                <img
+                    src={url}
+                    alt={name || agentId}
+                    title={name || agentId}
+                    width={px}
+                    height={px}
+                    style={{
+                        borderRadius: '50%',
+                        objectFit: 'cover',
+                        border: ring ? `2px solid ${resolvedColor}` : '2px solid transparent',
+                        display: 'block',
+                        userSelect: 'none',
+                    }}
+                />
+                {showStatus && dotColor && <span style={{ position: 'absolute', right: -1, bottom: -1, width: px * 0.28, height: px * 0.28, borderRadius: '50%', background: dotColor, border: `2px solid #0f172a` }} />}
+            </div>
         );
     }
 
     return (
-        <div
-            title={name || agentId}
-            style={{
-                width: size,
-                height: size,
-                borderRadius: '50%',
-                background: `${resolvedColor}20`,
-                border: ring ? `2px solid ${resolvedColor}` : '2px solid transparent',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontSize: size * 0.5,
-                lineHeight: 1,
-                flexShrink: 0,
-                userSelect: 'none',
-            }}
-        >
-            {resolvedEmoji}
+        <div style={{ position: 'relative', width: px, height: px, flexShrink: 0 }}>
+            <div
+                title={name || agentId}
+                style={{
+                    width: px,
+                    height: px,
+                    borderRadius: '50%',
+                    background: `${resolvedColor}20`,
+                    border: ring ? `2px solid ${resolvedColor}` : '2px solid transparent',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: px * 0.5,
+                    lineHeight: 1,
+                    userSelect: 'none',
+                }}
+            >
+                {resolvedEmoji}
+            </div>
+            {showStatus && dotColor && <span style={{ position: 'absolute', right: -1, bottom: -1, width: px * 0.28, height: px * 0.28, borderRadius: '50%', background: dotColor, border: `2px solid #0f172a` }} />}
         </div>
     );
 };

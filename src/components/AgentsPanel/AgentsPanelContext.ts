@@ -30,6 +30,9 @@ export interface Agent {
     systemPrompt: string;
     hilEnabled: boolean;
     vpcEnabled: boolean;
+    // Phase 1.1: AGEMS AgentType
+    type?: 'AUTONOMOUS' | 'ASSISTANT' | 'META' | 'REACTIVE' | 'EXTERNAL';
+    slug?: string;
     stats: {
         calls: number;
         tokens: number;

@@ -5,6 +5,14 @@ import { AgentAvatar } from './AgentAvatar';
 import { resolveAgentIdentity } from '../../kernel/services/agent-identity';
 import type { AgentWithStats } from './AgentsPanelContext';
 
+const TYPE_ICON: Record<string, string> = {
+    AUTONOMOUS: '🤖',
+    ASSISTANT: '💬',
+    META: '👑',
+    REACTIVE: '⚡',
+    EXTERNAL: '🔗',
+};
+
 interface AgentCardProps {
     agent: AgentWithStats;
     agentStats: Record<string, { calls: number; errors?: number; latency?: number }>;
@@ -56,15 +64,17 @@ export const AgentCard: React.FC<AgentCardProps> = memo(
                             <AgentAvatar
                                 agentId={agent.id}
                                 name={agent.name}
-                                size={36}
+                                size="md"
                                 emoji={identity.avatar.emoji}
                                 color={identity.avatar.color}
                                 url={identity.avatar.url}
+                                status={agent.status}
+                                showStatus
                             />
                         </div>
                         <div className="agents-card-info">
                             <h3 className="agents-card-name">{agent.name}</h3>
-                            <p className="agents-card-role">{agent.role}</p>
+                            <p className="agents-card-role">{agent.role} {agent.type && <span style={{ marginLeft: 6, fontSize: '0.65rem', padding: '2px 6px', borderRadius: 6, background: 'rgba(139,92,246,0.12)', border: '1px solid rgba(139,92,246,0.2)', color: '#a78bfa' }}>{TYPE_ICON[agent.type] ?? '🤖'} {agent.type}</span>}</p>
                             {identity.specializations.length > 0 && (
                                 <p
                                     style={{
