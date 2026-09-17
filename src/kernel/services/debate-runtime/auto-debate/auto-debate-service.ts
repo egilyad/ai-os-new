@@ -494,10 +494,10 @@ export class AutoDebateService implements IAutoDebateService {
                 );
                 const proScore = scoreParticipant(proArgs);
                 const conScore = scoreParticipant(conArgs);
-                // Break reference chain to argument content after scoring.
-                // This lets V8 reclaim LLM response strings before finalizeInternal()
-                // strips the active session's arguments in a later microtask.
-                session.arguments = [];
+                // FIX(debate-text-truncation): Do NOT clear session.arguments here.
+                // The session object is shared by reference with DebateSyncManager,
+                // which calls saveToDebateHistory() later in _finalizeInternal().
+                // Clearing arguments here destroys the debate artifact before persistence.
 
                 return {
                     pairId: `match-${m}`,
