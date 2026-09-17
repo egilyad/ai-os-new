@@ -138,6 +138,8 @@ import type {
 } from '../types/agems-agent';
 import type { AgemsTask, TaskComment, Label, TaskLabel } from '../types/agems-task';
 import type { ApprovalPolicy, ApprovalRequest } from '../types/agems-approval';
+import type { PlatformBudget, BudgetIncident } from '../types/agems-budget';
+import type { Meeting, MeetingDecision } from '../types/agems-meeting';
 import {
     DebateSessionRecordSchema,
     DebateVerdictRecordSchema,
@@ -232,6 +234,11 @@ export class SuperAgentsDB extends Dexie {
     // Phase 3 — AGEMS Approvals
     approvalPolicies!: Table<ApprovalPolicy>;
     approvalRequests!: Table<ApprovalRequest>;
+    // Phase 4-5 — AGEMS Budgets & Meetings
+    platformBudgets!: Table<PlatformBudget>;
+    budgetIncidents!: Table<BudgetIncident>;
+    meetings!: Table<Meeting>;
+    meetingDecisions!: Table<MeetingDecision>;
 
     invocations!: Table<InvocationRecord>;
     invocationPolicies!: Table<InvocationPolicyRecord>;
@@ -1828,6 +1835,14 @@ export class SuperAgentsDB extends Dexie {
         this.version(38).stores({
             approvalPolicies: '++id, agentId, preset, updatedAt',
             approvalRequests: '++id, agentId, status, createdAt, [status+createdAt]',
+        });
+
+        // v39 — AGEMS Phase 4-5 (Platform Budget + Meetings): additive
+        this.version(39).stores({
+            platformBudgets: '++id, orgId, periodStart',
+            budgetIncidents: '++id, budgetId, type, createdAt',
+            meetings: 'id, status, scheduledAt, createdAt',
+            meetingDecisions: '++id, meetingId, createdAt',
         });
 
         const rejectHook =
