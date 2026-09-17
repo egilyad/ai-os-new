@@ -489,7 +489,7 @@ export const DebatesManagerPanel: React.FC = () => {
                                     <button
                                         style={{ ...btn, background: 'var(--accent)' }}
                                         onClick={() =>
-                                            navigate(`/debate?mode=runtime&sessionId=${active.id}`)
+                                            navigate(`/debate?sessionId=${active.id}`)
                                         }
                                     >
                                         Open

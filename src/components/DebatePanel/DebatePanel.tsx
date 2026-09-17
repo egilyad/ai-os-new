@@ -197,6 +197,7 @@ const DebatePanel: React.FC = () => {
         const thesis = searchParams.get('thesis');
         const hypothesisId = searchParams.get('hypothesisId');
         const roomId = searchParams.get('roomId');
+        const sessionId = searchParams.get('sessionId');
         // eslint-disable-next-line react-hooks/set-state-in-effect
         if (thesis) setTopic(decodeURIComponent(thesis));
         if (hypothesisId) pendingHypothesisId.current = hypothesisId;
@@ -204,7 +205,36 @@ const DebatePanel: React.FC = () => {
             const room = debateWorkspace.getRoomEntry(roomId);
             if (room) setTopic(room.topic);
         }
-        if (thesis || hypothesisId || roomId) {
+        if (sessionId) {
+            // Open a saved debate (e.g. from debates-manager) in classic Debate Arena
+            // with full arguments. History first (in-memory, fastest), then Dexie.
+            const fromHistory = sessionManager
+                .getDebateHistory()
+                .find((s) => s.id === sessionId);
+            if (fromHistory) {
+                setSession({ ...fromHistory });
+                setViewTab('active');
+                setIsLoading(false);
+            } else {
+                setIsLoading(true);
+                // Dynamic import: avoids pulling Dexie store into the bundle/tests
+                // unless a saved session is actually being opened.
+                void import('../../stores/debate-session-store')
+                    .then((m) => m.useDebateSessionStore.getState().loadSession(sessionId))
+                    .then((loaded) => {
+                        if (!isMountedRef.current) return;
+                        if (loaded) {
+                            setSession({ ...loaded });
+                            setViewTab('active');
+                        }
+                        setIsLoading(false);
+                    })
+                    .catch(() => {
+                        if (isMountedRef.current) setIsLoading(false);
+                    });
+            }
+        }
+        if (thesis || hypothesisId || roomId || sessionId) {
             window.history.replaceState({}, '', '/debate');
         }
     }, [searchParams]);
