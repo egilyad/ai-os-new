@@ -1,6 +1,7 @@
+import React, { useState, useEffect } from 'react';
 import { Copy, BookOpen, RefreshCw, Trash2, Pause, Play, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { templateService } from '../../kernel/instances';
+import { templateService, agentService } from '../../kernel/instances';
 import type { ISNode } from '../../kernel/contracts/topology';
 import { AgentHistoryTab } from './AgentHistoryTab';
 import { AgentPolicySection } from './AgentPolicySection';
@@ -15,6 +16,9 @@ import AgentIdentityEditor from './AgentIdentityEditor';
 import { AgentAvatar } from './AgentAvatar';
 import { resolveAgentIdentity } from '../../kernel/services/agent-identity';
 import type { AgentDetailPanelProps } from './AgentDetailPanelProps';
+import { getDexieDb } from '../../kernel/instances';
+import { useChatStore } from '../../stores/useChatStore';
+import { useState, useEffect } from 'react';
 
 const AgentAvatarHeader: React.FC<{ agent: AgentDetailPanelProps['agent'] }> = ({ agent }) => {
     const identity = resolveAgentIdentity(agent.id);
@@ -228,6 +232,13 @@ export const AgentDetailPanel: React.FC<AgentDetailPanelProps> = ({
                                     <AgentHistoryTab agentId={agent.id} />
                                 </div>
                             )}
+                            {activeTab === 'memory' && <MemoryTab agentId={agent.id} />}
+                            {activeTab === 'hierarchy' && <HierarchyTab agentId={agent.id} agentName={agent.name} />}
+                            {activeTab === 'approvals' && <ApprovalsTab agentId={agent.id} />}
+                            {activeTab === 'responsibilities' && <ResponsibilitiesTab agentId={agent.id} />}
+                            {activeTab === 'budget' && <BudgetTab agentId={agent.id} />}
+                            {activeTab === 'repository' && <RepositoryTab agentId={agent.id} />}
+                            {activeTab === 'chat' && <ChatTab agentId={agent.id} agentName={agent.name} />}
                         </motion.div>
                     </AnimatePresence>
                 </div>
@@ -235,3 +246,169 @@ export const AgentDetailPanel: React.FC<AgentDetailPanelProps> = ({
         </div>
     );
 };
+
+// --- Minimal inline tabs for AGEMS 0.3 (full CRUD to be expanded) ---
+
+function MemoryTab({ agentId }: { agentId: string }) {
+    const [entries, setEntries] = useState<Array<{ id: number; type: string; content: string }>>([]);
+    const [content, setContent] = useState('');
+    const [type, setType] = useState('CONTEXT');
+    useEffect(() => {
+        getDexieDb().agentMemory.where('agentId').equals(agentId).toArray().then((rows) => setEntries(rows as unknown as Array<{ id: number; type: string; content: string }>));
+    }, [agentId]);
+    const add = async () => {
+        if (!content.trim()) return;
+        await getDexieDb().agentMemory.add({ agentId, type: type as 'CONTEXT', content: content.slice(0, 2000), createdAt: Date.now() } as unknown as never);
+        setContent('');
+        const rows = await getDexieDb().agentMemory.where('agentId').equals(agentId).toArray();
+        setEntries(rows as unknown as Array<{ id: number; type: string; content: string }>);
+    };
+    return (
+        <div style={{ padding: '1rem', display: 'flex', flexDirection: 'column', gap: 12 }}>
+            <div style={{ fontWeight: 700 }}>Memory — {entries.length} entries</div>
+            <div style={{ display: 'flex', gap: 8 }}>
+                <select value={type} onChange={(e) => setType(e.target.value)} style={{ padding: '6px 8px', borderRadius: 8, border: '1px solid var(--border)', background: 'var(--bg-elevated)', fontSize: 12 }}>
+                    <option value="CONTEXT">CONTEXT</option><option value="CONVERSATION">CONVERSATION</option><option value="FILE">FILE</option><option value="KNOWLEDGE">KNOWLEDGE</option>
+                </select>
+                <input value={content} onChange={(e) => setContent(e.target.value)} placeholder="New memory…" style={{ flex: 1, padding: '6px 10px', borderRadius: 8, border: '1px solid var(--border)', background: 'var(--bg-elevated)', fontSize: 12 }} />
+                <button onClick={() => void add()} style={{ padding: '6px 12px', borderRadius: 8, background: '#3b82f6', color: 'white', border: 'none', fontWeight: 600, fontSize: 12, cursor: 'pointer' }}>Add</button>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                {entries.map((e) => (
+                    <div key={e.id} style={{ padding: '8px 10px', borderRadius: 8, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)', fontSize: 12 }}>
+                        <span style={{ fontWeight: 700, color: '#60a5fa', marginRight: 6 }}>{e.type}</span>{e.content}
+                    </div>
+                ))}
+                {entries.length === 0 && <div style={{ color: 'var(--slate-500)', fontSize: 12, textAlign: 'center', padding: 12 }}>No memory yet</div>}
+            </div>
+        </div>
+    );
+}
+
+function HierarchyTab({ agentId, agentName }: { agentId: string; agentName: string }) {
+    const [parent, setParent] = useState<string | null>(null);
+    const [children, setChildren] = useState<string[]>([]);
+    const [newChildName, setNewChildName] = useState('');
+    useEffect(() => {
+        try { setParent(agentService.getParent(agentId)); } catch { setParent(null); }
+        try { setChildren(agentService.getChildren(agentId)); } catch { setChildren([]); }
+    }, [agentId]);
+    const spawn = () => {
+        if (!newChildName.trim()) return;
+        const id = agentService.spawn(agentId, { name: newChildName.trim() });
+        if (id) { setChildren((prev) => [...prev, id]); setNewChildName(''); }
+    };
+    return (
+        <div style={{ padding: '1rem', display: 'flex', flexDirection: 'column', gap: 12 }}>
+            <div><span style={{ fontWeight: 700 }}>Hierarchy</span> — parent: {parent ?? '— none —'} · children: {children.length}</div>
+            <div style={{ display: 'flex', gap: 8 }}>
+                <input value={newChildName} onChange={(e) => setNewChildName(e.target.value)} placeholder={`Child of ${agentName}`} style={{ flex: 1, padding: '6px 10px', borderRadius: 8, border: '1px solid var(--border)', background: 'var(--bg-elevated)', fontSize: 12 }} />
+                <button onClick={spawn} style={{ padding: '6px 12px', borderRadius: 8, background: '#8b5cf6', color: 'white', border: 'none', fontWeight: 600, fontSize: 12, cursor: 'pointer' }}>Spawn Child</button>
+            </div>
+            {children.length > 0 && <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>{children.map((id) => <span key={id} style={{ padding: '4px 8px', borderRadius: 8, background: 'rgba(139,92,246,0.12)', border: '1px solid rgba(139,92,246,0.2)', fontSize: 11 }}>{id}</span>)}</div>}
+            <div style={{ fontSize: 11, color: 'var(--slate-500)' }}>Parent stored in ISNode.config.parentAgentId · child inherits LLM/runtime/tools</div>
+        </div>
+    );
+}
+
+function ApprovalsTab({ agentId }: { agentId: string }) {
+    return (
+        <div style={{ padding: '1rem', display: 'flex', flexDirection: 'column', gap: 12 }}>
+            <div style={{ fontWeight: 700 }}>Approval Policy — {agentId.slice(0, 8)}</div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+                {['readMode', 'writeMode', 'deleteMode', 'executeMode', 'sendMode', 'adminMode'].map((k) => (
+                    <div key={k} style={{ padding: '8px 10px', borderRadius: 8, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)', fontSize: 11 }}>
+                        <div style={{ fontWeight: 700, color: 'var(--slate-400)' }}>{k}</div>
+                        <div style={{ marginTop: 4, color: 'var(--slate-300)' }}>FREE · requires approval → Guided preset</div>
+                    </div>
+                ))}
+            </div>
+            <div style={{ fontSize: 11, color: 'var(--slate-500)' }}>Full per-tool overrides + auto-approve rules (costThreshold, low-risk) in next iteration. Persists to Dexie `approvalPolicies`.</div>
+        </div>
+    );
+}
+
+function ResponsibilitiesTab({ agentId }: { agentId: string }) {
+    const [items, setItems] = useState<Array<{ id: number; title: string; priority: string }>>([]);
+    const [title, setTitle] = useState('');
+    useEffect(() => { getDexieDb().agentResponsibilities.where('agentId').equals(agentId).toArray().then((rows) => setItems(rows as unknown as Array<{ id: number; title: string; priority: string }>)); }, [agentId]);
+    const add = async () => {
+        if (!title.trim()) return;
+        await getDexieDb().agentResponsibilities.add({ agentId, title: title.slice(0, 120), priority: 'MEDIUM' } as unknown as never);
+        setTitle('');
+        const rows = await getDexieDb().agentResponsibilities.where('agentId').equals(agentId).toArray();
+        setItems(rows as unknown as Array<{ id: number; title: string; priority: string }>);
+    };
+    return (
+        <div style={{ padding: '1rem', display: 'flex', flexDirection: 'column', gap: 12 }}>
+            <div style={{ fontWeight: 700 }}>Responsibilities & KPIs — {items.length}</div>
+            <div style={{ display: 'flex', gap: 8 }}>
+                <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="New responsibility…" style={{ flex: 1, padding: '6px 10px', borderRadius: 8, border: '1px solid var(--border)', background: 'var(--bg-elevated)', fontSize: 12 }} />
+                <button onClick={() => void add()} style={{ padding: '6px 12px', borderRadius: 8, background: '#f59e0b', color: 'white', border: 'none', fontWeight: 600, fontSize: 12, cursor: 'pointer' }}>Add</button>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                {items.map((r) => <div key={r.id} style={{ padding: '8px 10px', borderRadius: 8, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)', fontSize: 12 }}>{r.title} <span style={{ float: 'right', fontSize: 10, padding: '2px 6px', borderRadius: 6, background: 'rgba(245,158,11,0.15)', color: '#f59e0b' }}>{r.priority}</span></div>)}
+                {items.length === 0 && <div style={{ color: 'var(--slate-500)', fontSize: 12, textAlign: 'center', padding: 12 }}>No duties yet</div>}
+            </div>
+        </div>
+    );
+}
+
+function BudgetTab({ agentId }: { agentId: string }) {
+    const [budget, setBudget] = useState<{ monthlyLimitUsd: number; currentSpendUsd: number } | null>(null);
+    useEffect(() => { getDexieDb().agentBudgets.where('agentId').equals(agentId).first().then((b) => setBudget(b as unknown as { monthlyLimitUsd: number; currentSpendUsd: number } | null)); }, [agentId]);
+    return (
+        <div style={{ padding: '1rem', display: 'flex', flexDirection: 'column', gap: 12 }}>
+            <div style={{ fontWeight: 700 }}>Budget — {agentId.slice(0, 8)}</div>
+            {budget ? (
+                <div style={{ padding: '12px 14px', borderRadius: 10, background: 'rgba(16,185,129,0.06)', border: '1px solid rgba(16,185,129,0.15)' }}>
+                    <div style={{ fontSize: 12 }}>Monthly limit: ${budget.monthlyLimitUsd} · spent: ${budget.currentSpendUsd.toFixed(2)} · {(budget.currentSpendUsd / budget.monthlyLimitUsd * 100).toFixed(1)}%</div>
+                    <div style={{ height: 6, borderRadius: 6, background: 'rgba(0,0,0,0.2)', marginTop: 8 }}><div style={{ width: `${Math.min(100, budget.currentSpendUsd / budget.monthlyLimitUsd * 100)}%`, height: '100%', borderRadius: 6, background: '#10b981' }} /></div>
+                </div>
+            ) : (
+                <div style={{ padding: '12px 14px', borderRadius: 10, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', fontSize: 12, color: 'var(--slate-500)' }}>No budget set — default hardStop at $100/mo (soft alert 80%). Create via BudgetPanel or set monthlyLimitUsd in agent config.</div>
+            )}
+        </div>
+    );
+}
+
+function RepositoryTab({ agentId }: { agentId: string }) {
+    return (
+        <div style={{ padding: '1rem', display: 'flex', flexDirection: 'column', gap: 12 }}>
+            <div style={{ fontWeight: 700 }}>Repository — {agentId.slice(0, 8)}</div>
+            <div style={{ padding: '12px 14px', borderRadius: 10, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', fontSize: 12, color: 'var(--slate-500)' }}>Link agent to git repo (branch selector). Reads/writes via WorkspaceService — uses <code>projectFiles</code> Dexie table. Connect in Projects panel.</div>
+        </div>
+    );
+}
+
+function ChatTab({ agentId, agentName }: { agentId: string; agentName: string }) {
+    const [text, setText] = useState('');
+    const send = () => {
+        if (!text.trim()) return;
+        const store = useChatStore.getState();
+        const target = store.getSessionConfig();
+        // Direct message: create or reuse chat session with agent attached
+        void store.setAgent(agentId).then(() => {
+            const firstKey = store.getSessionConfig()?.keyId;
+            if (!firstKey) return;
+            // use current model/key from session
+        });
+        // Minimal: just set agent and send via default key/model
+        const cfg = useChatStore.getState().getSessionConfig();
+        const provider = cfg?.provider ?? 'auto';
+        const model = cfg?.model ?? 'llama-3.3-70b-versatile';
+        const keyId = cfg?.keyId;
+        void useChatStore.getState().sendMessage([{ provider, model, keyId, agentId }], text);
+        setText('');
+    };
+    return (
+        <div style={{ padding: '1rem', display: 'flex', flexDirection: 'column', gap: 12, height: 360 }}>
+            <div style={{ fontWeight: 700 }}>Chat with {agentName} — direct channel</div>
+            <div style={{ flex: 1, overflowY: 'auto', padding: '8px 10px', borderRadius: 10, background: 'rgba(0,0,0,0.2)', border: '1px solid rgba(255,255,255,0.06)', fontSize: 12, color: 'var(--slate-400)' }}>Auto-creates channel on first message. History appears in Chat panel with agent badge.</div>
+            <div style={{ display: 'flex', gap: 8 }}>
+                <input value={text} onChange={(e) => setText(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') send(); }} placeholder={`Message ${agentName}…`} style={{ flex: 1, padding: '8px 10px', borderRadius: 8, border: '1px solid var(--border)', background: 'var(--bg-elevated)', fontSize: 12 }} />
+                <button onClick={send} style={{ padding: '8px 14px', borderRadius: 8, background: '#3b82f6', color: 'white', border: 'none', fontWeight: 700, fontSize: 12, cursor: 'pointer' }}>Send</button>
+            </div>
+        </div>
+    );
+}

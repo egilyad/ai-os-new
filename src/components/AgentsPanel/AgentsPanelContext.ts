@@ -9,7 +9,14 @@ export type TabId =
     | 'permissions'
     | 'handoffs'
     | 'history'
-    | 'identity';
+    | 'identity'
+    | 'memory'
+    | 'hierarchy'
+    | 'approvals'
+    | 'responsibilities'
+    | 'budget'
+    | 'repository'
+    | 'chat';
 export type ViewMode = 'grid' | 'list';
 export type StatusFilter = 'all' | 'active' | 'paused' | 'error';
 
