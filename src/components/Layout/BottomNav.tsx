@@ -7,14 +7,14 @@
 
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Users, Brain, Database, FlaskConical } from 'lucide-react';
+import { LayoutDashboard, Bot, CheckSquare, Inbox, MessageCircle } from 'lucide-react';
 
 const ITEMS: Array<{ id: string; path: string; label: string; Icon: React.ComponentType<{ size?: number }> }> = [
-    { id: 'fleet', path: 'fleet', label: 'Fleet', Icon: Users },
-    { id: 'councils', path: 'fleet', label: 'Councils', Icon: Brain }, // Fleet tab councils (same route, query handled inside)
-    { id: 'dashboard', path: 'dashboard', label: 'Home', Icon: LayoutDashboard },
-    { id: 'memory', path: 'memory', label: 'Memory', Icon: Database },
-    { id: 'simulation', path: 'simulation', label: 'Sim', Icon: FlaskConical },
+    { id: 'home', path: 'dashboard', label: 'Home', Icon: LayoutDashboard },
+    { id: 'agents', path: 'agents', label: 'Agents', Icon: Bot },
+    { id: 'tasks', path: 'tasks', label: 'Tasks', Icon: CheckSquare },
+    { id: 'inbox', path: 'chat-sessions', label: 'Inbox', Icon: Inbox },
+    { id: 'chat', path: 'chat', label: 'Chat', Icon: MessageCircle },
 ];
 
 export const BottomNav: React.FC = () => {
