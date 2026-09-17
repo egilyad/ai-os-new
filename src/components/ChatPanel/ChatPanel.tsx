@@ -1,4 +1,4 @@
-import { storageAdapter, settingsService, orchestrator, keyService } from '../../kernel/instances';
+import { storageAdapter, settingsService, orchestrator } from '../../kernel/instances';
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 
 import { X } from 'lucide-react';
@@ -141,22 +141,11 @@ const ChatPanel: React.FC = () => {
     }, [activeSessionId]);
 
     // B.3: auto-discover models for keys that have no cached availableModels
-    // (e.g. freshly added key, or imported DB). Uses existing KeyService discovery.
-    useEffect(() => {
-        if (activeKeys.length === 0) return;
-        for (const k of activeKeys) {
-            if (!k.availableModels || k.availableModels.length === 0) {
-                try {
-                    // keyService.refreshModels is fire-and-forget; UI updates via liveQuery
-                    (keyService as unknown as { refreshModels?: (id: string) => Promise<void> })?.refreshModels?.(
-                        k.id,
-                    )?.catch(() => {});
-                } catch {
-                    // service not ready yet
-                }
-            }
-        }
-    }, [activeKeys]);
+    // Temporarily disabled — discovery is on-demand via KeyTable; auto-spam
+    // on every activeKeys ref change was suspected to block UI.
+    // Manual refresh via Settings > Keys > Refresh still works, and
+    // DEFAULT_MODELS fallback ensures Chat remains usable without discovery.
+    // Re-enable with debounced single-shot if needed.
 
     const { t } = useTranslation();
     const [showSidebar, setShowSidebar] = useState(true);
@@ -424,6 +413,66 @@ const ChatPanel: React.FC = () => {
                     onToggleModelConfig={setShowModelConfig}
                 />
 
+                {/* FIX(chat-agent): optional Agent attach — Poe-style continuation state (above input, always clickable) */}
+                <div
+                    style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 8,
+                        padding: '6px 12px',
+                        borderTop: '1px solid rgba(255,255,255,0.06)',
+                        borderBottom: '1px solid rgba(255,255,255,0.06)',
+                        background: 'rgba(255,255,255,0.02)',
+                    }}
+                >
+                    <span style={{ fontSize: 11, color: 'var(--slate-500)', whiteSpace: 'nowrap' }}>
+                        Agent:
+                    </span>
+                    <select
+                        value={currentAgentId ?? ''}
+                        onChange={(e) => {
+                            const v = e.target.value || null;
+                            void setAgent(v)
+                                .then(() => showStatus(v ? `Agent ${v.slice(0, 8)} attached` : 'Agent detached', 'success'))
+                                .catch(() => showStatus('Failed to set agent', 'error'));
+                        }}
+                        style={{
+                            flex: 1,
+                            padding: '4px 8px',
+                            borderRadius: 6,
+                            border: '1px solid rgba(255,255,255,0.1)',
+                            background: 'rgba(0,0,0,0.3)',
+                            color: 'var(--slate-200)',
+                            fontSize: 12,
+                        }}
+                    >
+                        <option value="">— No agent (direct) —</option>
+                        {(orchestrator.getActiveTopology()?.nodes.filter((n) => n.type === 'agent') ?? []).map(
+                            (n) => (
+                                <option key={n.id} value={n.id}>
+                                    {n.label || n.id}
+                                </option>
+                            ),
+                        )}
+                    </select>
+                    {currentAgentId && (
+                        <button
+                            onClick={() => void setAgent(null).then(() => showStatus('Agent detached', 'info')).catch(() => {})}
+                            style={{
+                                padding: '4px 8px',
+                                borderRadius: 6,
+                                border: '1px solid rgba(255,255,255,0.1)',
+                                background: 'rgba(255,255,255,0.05)',
+                                color: 'var(--slate-400)',
+                                fontSize: 11,
+                                cursor: 'pointer',
+                            }}
+                        >
+                            Detach
+                        </button>
+                    )}
+                </div>
+
                 <ChatInputArea
                     selectedKeys={selectedKeys}
                     selectedModel={selectedModel}
@@ -454,62 +503,6 @@ const ChatPanel: React.FC = () => {
                         }
                     }}
                 />
-                {/* FIX(chat-agent): optional Agent attach — Poe-style continuation state */}
-                <div
-                    style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 8,
-                        padding: '6px 12px',
-                        borderTop: '1px solid rgba(255,255,255,0.06)',
-                        background: 'rgba(255,255,255,0.02)',
-                    }}
-                >
-                    <span style={{ fontSize: 11, color: 'var(--slate-500)', whiteSpace: 'nowrap' }}>
-                        Agent:
-                    </span>
-                    <select
-                        value={currentAgentId ?? ''}
-                        onChange={(e) => {
-                            const v = e.target.value || null;
-                            void setAgent(v).catch(() => {});
-                        }}
-                        style={{
-                            flex: 1,
-                            padding: '4px 8px',
-                            borderRadius: 6,
-                            border: '1px solid rgba(255,255,255,0.1)',
-                            background: 'rgba(0,0,0,0.3)',
-                            color: 'var(--slate-200)',
-                            fontSize: 12,
-                        }}
-                    >
-                        <option value="">— No agent (direct) —</option>
-                        {(orchestrator.getActiveTopology()?.nodes.filter((n) => n.type === 'agent') ?? []).map(
-                            (n) => (
-                                <option key={n.id} value={n.id}>
-                                    {n.label || n.id}
-                                </option>
-                            ),
-                        )}
-                    </select>
-                    {currentAgentId && (
-                        <button
-                            onClick={() => void setAgent(null).catch(() => {})}
-                            style={{
-                                padding: '4px 8px',
-                                borderRadius: 6,
-                                border: '1px solid rgba(255,255,255,0.1)',
-                                background: 'rgba(255,255,255,0.05)',
-                                color: 'var(--slate-400)',
-                                fontSize: 11,
-                                cursor: 'pointer',
-                            }}
-                        >
-                            Detach
-                        </button>
-                    )}
-                </div>
             </div>
 
             <AnimatePresence>
