@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 
 import { X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useSearchParams } from 'react-router-dom';
 import { useKeyList } from '../../stores/useKeyStore';
 import { useChatStore } from '../../stores/useChatStore';
 import MessageSearchPanel from '../MessageSearchPanel';
@@ -50,6 +51,22 @@ const ChatPanel: React.FC = () => {
     const systemPrompt = useChatStore((s) => s.systemPrompt);
     const setSystemPrompt = useChatStore((s) => s.setSystemPrompt);
     const isSending = useChatStore((s) => s.activeRequestIds.size > 0);
+    const sessions = useChatStore((s) => s.sessions);
+    const isLoaded = useChatStore((s) => s.isLoaded);
+    const [searchParams, setSearchParams] = useSearchParams();
+    // FIX(chat-deep-link): honor ?session=<id> from chat-sessions/session-hub "Open in Chat".
+    // Previously the param was ignored and hydration always selected most-recent.
+    // Unknown ids are ignored; the param is cleared after handling.
+    useEffect(() => {
+        if (!isLoaded) return;
+        const sid = searchParams.get('session');
+        if (!sid) return;
+        if (sid !== activeSessionId && sessions.some((s) => s.id === sid)) {
+            setActiveSessionId(sid);
+        }
+        setSearchParams({}, { replace: true });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [searchParams, isLoaded, sessions]);
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const defaultKeyFor = useCallback(
         () => {

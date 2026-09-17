@@ -151,8 +151,13 @@ export function createSendMessageHandler(
                       ]
                     : []),
                 ...currentHistory.flatMap<ChatMessage>((h) => {
-                    if (h.role === 'system')
+                    if (h.role === 'system') {
+                        // FIX(chat-context): switch markers (🔄 Switched to ...) are UI/persistence
+                        // indicators, not model context. Feeding them as system messages
+                        // polluted every subsequent request after a key/model switch.
+                        if (h.text.startsWith('🔄')) return [];
                         return [{ role: 'system' as const, content: sanitize(h.text) }];
+                    }
                     return [
                         { role: 'user' as const, content: sanitize(h.text) },
                         ...h.responses

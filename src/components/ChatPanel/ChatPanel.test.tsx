@@ -100,6 +100,11 @@ vi.mock('../../kernel/events/event-bus', () => ({
 
 vi.mock('../ProviderIcon/ProviderIcon', () => ({ default: () => null }));
 
+vi.mock('react-router-dom', () => ({
+    useSearchParams: () => [new URLSearchParams(), vi.fn()],
+    useNavigate: () => vi.fn(),
+}));
+
 describe('ChatPanel', () => {
     beforeEach(() => {
         vi.clearAllMocks();

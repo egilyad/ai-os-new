@@ -126,9 +126,25 @@ export function useChatStoreHydration(): void {
                     db.sessions.count().then((total) => {
                         if (!cancelled) {
                             _lqEpoch++;
+                            // FIX(chat-identity): restore the user's last selected session
+                            // instead of always jumping to most-recent. Validate: the saved
+                            // id may point to a deleted session.
+                            let restoredId: string | null = null;
+                            try {
+                                restoredId = BucketStorageAdapter.getItem(
+                                    'chat_active_session_id',
+                                );
+                            } catch {
+                                restoredId = null;
+                            }
+                            const ids = new Set(cleaned.map((s) => s.id));
+                            const activeSessionId =
+                                (restoredId && ids.has(restoredId) && restoredId) ||
+                                cleaned[0]?.id ||
+                                DEFAULT_SESSION.id;
                             useChatStore.setState({
                                 sessions: cleaned,
-                                activeSessionId: cleaned[0]?.id ?? DEFAULT_SESSION.id,
+                                activeSessionId,
                                 hasMoreSessions: total > 100,
                                 isLoaded: true,
                                 activeRequestIds: new Set(),

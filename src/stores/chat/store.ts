@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { rootLogger } from '../../kernel/instances';
 const LOGGER = rootLogger.child('ChatStore');
+import { BucketStorageAdapter } from '../../kernel/storage-adapter-instance';
 import { eventBus, EVENTS, sessionManager, getDistributedLock } from './service-deps';
 import { setupChatEventHandlers } from './chat-event-handlers';
 import { createSendMessageHandler, _sendQueue, _historyLimitWarned } from './chat-send-message';
@@ -42,7 +43,17 @@ export const useChatStore = create<ChatStoreShape>((set, get) => {
         systemPrompt: '',
 
         setSessions: (updater) => set((s) => ({ sessions: updater(s.sessions) })),
-        setActiveSessionId: (id) => set({ activeSessionId: id }),
+        setActiveSessionId: (id) => {
+            set({ activeSessionId: id });
+            // FIX(chat-identity): persist the user's session choice so reload
+            // reopens the same conversation instead of most-recent (hydration.ts).
+            try {
+                if (id) BucketStorageAdapter.setItem('chat_active_session_id', id);
+                else BucketStorageAdapter.removeItem('chat_active_session_id');
+            } catch {
+                // storage unavailable (SSR/quota) — selection still works in-memory
+            }
+        },
         addActiveRequestId: (requestId) =>
             set((s) => {
                 const next = new Set(s.activeRequestIds);
