@@ -192,3 +192,13 @@ export interface AgentBudget {
     softAlertPercent: number;
     hardStopEnabled: boolean;
 }
+
+export interface AgentRepository {
+    id?: number;
+    agentId: string;
+    repositoryId: string;
+    repoUrl: string;
+    branch: string;
+    isDefault: boolean;
+    createdAt: number;
+}

@@ -15,6 +15,7 @@ import AgentHandoffsTab from './AgentHandoffsTab';
 import AgentIdentityEditor from './AgentIdentityEditor';
 import { AgentAvatar } from './AgentAvatar';
 import { resolveAgentIdentity } from '../../kernel/services/agent-identity';
+import { agentRepositoryService } from '../../kernel/services/agent-repository-service';
 import type { AgentDetailPanelProps } from './AgentDetailPanelProps';
 import { getDexieDb } from '../../kernel/instances';
 import { useChatStore } from '../../stores/useChatStore';
@@ -373,10 +374,47 @@ function BudgetTab({ agentId }: { agentId: string }) {
 }
 
 function RepositoryTab({ agentId }: { agentId: string }) {
+    const [repoUrl, setRepoUrl] = useState('');
+    const [branch, setBranch] = useState('main');
+    const [repos, setRepos] = useState<Array<{ repositoryId: string; repoUrl: string; branch: string; isDefault: boolean }>>([]);
+
+    const load = async () => {
+        const list = await agentRepositoryService.listByAgent(agentId);
+        setRepos(list);
+    };
+    useEffect(() => { void load(); }, [agentId]);
+
+    const handleLink = async () => {
+        if (!repoUrl.trim()) return;
+        await agentRepositoryService.link(agentId, repoUrl.trim(), branch.trim() || 'main', repos.length === 0);
+        setRepoUrl('');
+        void load();
+    };
+
+    const handleUnlink = async (repositoryId: string) => {
+        await agentRepositoryService.unlink(repositoryId);
+        void load();
+    };
+
     return (
         <div style={{ padding: '1rem', display: 'flex', flexDirection: 'column', gap: 12 }}>
             <div style={{ fontWeight: 700 }}>Repository — {agentId.slice(0, 8)}</div>
-            <div style={{ padding: '12px 14px', borderRadius: 10, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', fontSize: 12, color: 'var(--slate-500)' }}>Link agent to git repo (branch selector). Reads/writes via WorkspaceService — uses <code>projectFiles</code> Dexie table. Connect in Projects panel.</div>
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                <input value={repoUrl} onChange={(e) => setRepoUrl(e.target.value)} placeholder="https://github.com/org/repo" style={{ flex: 1, minWidth: 200, padding: '6px 10px', borderRadius: 8, border: '1px solid var(--border)', background: 'var(--bg-elevated)', color: 'inherit', fontSize: 12 }} />
+                <input value={branch} onChange={(e) => setBranch(e.target.value)} placeholder="branch" style={{ width: 120, padding: '6px 10px', borderRadius: 8, border: '1px solid var(--border)', background: 'var(--bg-elevated)', color: 'inherit', fontSize: 12 }} />
+                <button onClick={handleLink} disabled={!repoUrl.trim()} style={{ padding: '6px 14px', borderRadius: 8, border: 'none', background: repoUrl.trim() ? '#3b82f6' : 'rgba(255,255,255,0.08)', color: 'white', fontWeight: 700, fontSize: 12, cursor: repoUrl.trim() ? 'pointer' : 'not-allowed' }}>Link</button>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                {repos.map((r) => (
+                    <div key={r.repositoryId} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 10px', borderRadius: 8, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', fontSize: 12 }}>
+                        <span style={{ fontWeight: 600, flex: 1 }}>{r.repoUrl}{r.isDefault ? ' ⭐' : ''}</span>
+                        <span style={{ fontSize: 10, color: 'var(--slate-500)' }}>branch: {r.branch}</span>
+                        <button onClick={() => handleUnlink(r.repositoryId)} style={{ border: 'none', background: 'rgba(239,68,68,0.15)', color: '#ef4444', borderRadius: 4, padding: '2px 6px', cursor: 'pointer', fontSize: 10 }}>✕</button>
+                    </div>
+                ))}
+                {repos.length === 0 && <div style={{ fontSize: 11, color: 'var(--slate-500)', textAlign: 'center', padding: 8 }}>No repositories linked</div>}
+            </div>
+            <div style={{ fontSize: 11, color: 'var(--slate-500)' }}>Reads/writes via WorkspaceService — uses <code>projectFiles</code> Dexie table.</div>
         </div>
     );
 }

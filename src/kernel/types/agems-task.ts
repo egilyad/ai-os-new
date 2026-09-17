@@ -16,6 +16,10 @@ export type AgemsTaskStatus =
     | 'BLOCKED'
     | 'CANCELLED';
 
+export type CronSchedule =
+    | { kind: 'preset'; preset: 'DAILY' | 'WEEKDAY' | 'WEEKLY' | 'MONTHLY' | 'HOURLY' }
+    | { kind: 'custom'; minute: number; hour: number; dayOfMonth?: number; month?: number; weekday?: number };
+
 export interface AgemsTask {
     id: string;
     title: string;
@@ -29,6 +33,7 @@ export interface AgemsTask {
     goalId?: string;
     labels: string[];
     dueDate?: number;
+    cronSchedule?: CronSchedule;
     createdAt: number;
     updatedAt: number;
     lockedBy?: string;

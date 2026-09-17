@@ -22,7 +22,8 @@ import { useTranslation } from '../../i18n/useTranslation';
 import { getStatusColor } from '../Common/status-vocabulary';
 import { agemsTaskService } from '../../kernel/services/agems-task-service';
 import { KANBAN_COLUMNS } from '../../kernel/types/agems-task';
-import type { AgemsTask, AgemsTaskStatus } from '../../kernel/types/agems-task';
+import type { AgemsTask, AgemsTaskStatus, CronSchedule } from '../../kernel/types/agems-task';
+import { getPresets, formatCronPreview } from '../../kernel/services/cron-builder-service';
 import {
     taskMetaItem,
     textWhiteWeight800Sm,
@@ -85,6 +86,8 @@ const TasksPanel: React.FC = () => {
     const [agemsTasks, setAgemsTasks] = useState<AgemsTask[]>([]);
     const [kanbanView, setKanbanView] = useState<'board' | 'list'>('board');
     const [newTaskTitle, setNewTaskTitle] = useState('');
+    const [newTaskCron, setNewTaskCron] = useState<CronSchedule | undefined>(undefined);
+    const [showCronPicker, setShowCronPicker] = useState(false);
 
     const { t } = useTranslation();
     const isMountedRef = useRef(true);
@@ -176,9 +179,17 @@ const TasksPanel: React.FC = () => {
 
     const handleCreateAgemsTask = async () => {
         if (!newTaskTitle.trim()) return;
-        const task = await agemsTaskService.create({ title: newTaskTitle.trim(), type: 'ONE_TIME', status: 'PENDING', priority: 'MEDIUM' });
+        const task = await agemsTaskService.create({
+            title: newTaskTitle.trim(),
+            type: newTaskCron ? 'RECURRING' : 'ONE_TIME',
+            status: 'PENDING',
+            priority: 'MEDIUM',
+            cronSchedule: newTaskCron,
+        });
         setAgemsTasks((prev) => [task, ...prev]);
         setNewTaskTitle('');
+        setNewTaskCron(undefined);
+        setShowCronPicker(false);
     };
 
     const handleDrop = async (e: React.DragEvent, newStatus: AgemsTaskStatus) => {
@@ -483,7 +494,7 @@ const TasksPanel: React.FC = () => {
                                         {colTasks.map((t) => (
                                             <div key={t.id} draggable onDragStart={(e) => e.dataTransfer.setData('text/plain', t.id)} style={{ padding: '8px 8px', borderRadius: 8, background: 'rgba(0,0,0,0.25)', border: '1px solid rgba(255,255,255,0.06)', cursor: 'grab', fontSize: 11 }}>
                                                 <div style={{ fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{t.title}</div>
-                                                <div style={{ fontSize: 10, color: 'var(--slate-500)', marginTop: 2 }}>{t.priority} · {t.type}</div>
+                                                <div style={{ fontSize: 10, color: 'var(--slate-500)', marginTop: 2 }}>{t.priority} · {t.cronSchedule ? '⏰ ' + (t.cronSchedule.kind === 'preset' ? t.cronSchedule.preset : 'custom') : t.type}</div>
                                             </div>
                                         ))}
                                         {colTasks.length === 0 && <div style={{ fontSize: 10, color: 'var(--slate-500)', textAlign: 'center', padding: 8, border: '1px dashed rgba(255,255,255,0.08)', borderRadius: 8 }}>Drop here</div>}
@@ -496,18 +507,31 @@ const TasksPanel: React.FC = () => {
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
                         {agemsTasks.map((t) => (
                             <div key={t.id} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 10px', borderRadius: 8, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', fontSize: 12 }}>
-                                <span style={{ fontWeight: 600, flex: 1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{t.title}</span>
-                                <span style={{ fontSize: 10, padding: '2px 6px', borderRadius: 6, background: 'rgba(59,130,246,0.12)', color: '#60a5fa' }}>{t.status}</span>
+                                <span style={{ fontWeight: 600, flex: 1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{t.title} {t.cronSchedule ? '⏰' : ''}</span>
+                                <span style={{ fontSize: 10, padding: '2px 6px', borderRadius: 6, background: 'rgba(59,130,246,0.12)', color: '#60a5fa' }}>{t.cronSchedule ? (t.cronSchedule.kind === 'preset' ? t.cronSchedule.preset : 'custom') : t.status}</span>
                                 <span style={{ fontSize: 10, color: 'var(--slate-500)' }}>{t.priority}</span>
                             </div>
                         ))}
                         {agemsTasks.length === 0 && <div style={{ fontSize: 11, color: 'var(--slate-500)', textAlign: 'center', padding: 12 }}>No AGEMS tasks — create one below</div>}
                     </div>
                 )}
-                <div style={{ display: 'flex', gap: 8 }}>
+                <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
                     <input placeholder="New AGEMS task title…" value={newTaskTitle} onChange={(e) => setNewTaskTitle(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter' && newTaskTitle.trim()) void handleCreateAgemsTask(); }} style={{ flex: 1, padding: '8px 10px', borderRadius: 8, border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(255,255,255,0.05)', color: 'inherit', fontSize: 12 }} />
+                    <button onClick={() => setShowCronPicker((p) => !p)} style={{ padding: '8px 10px', borderRadius: 8, border: '1px solid rgba(255,255,255,0.1)', background: newTaskCron ? 'rgba(59,130,246,0.2)' : 'rgba(255,255,255,0.05)', color: newTaskCron ? '#60a5fa' : 'var(--slate-400)', fontWeight: 600, fontSize: 11, cursor: 'pointer', whiteSpace: 'nowrap' }}>
+                        {newTaskCron ? formatCronPreview(newTaskCron) : '⏰ Schedule'}
+                    </button>
                     <button onClick={() => void handleCreateAgemsTask()} disabled={!newTaskTitle.trim()} style={{ padding: '8px 14px', borderRadius: 8, border: 'none', background: newTaskTitle.trim() ? '#3b82f6' : 'rgba(255,255,255,0.08)', color: 'white', fontWeight: 700, fontSize: 12, cursor: newTaskTitle.trim() ? 'pointer' : 'not-allowed' }}>Create</button>
                 </div>
+                {showCronPicker && (
+                    <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', padding: '8px 0' }}>
+                        {getPresets().map((p) => (
+                            <button key={p.key} onClick={() => setNewTaskCron({ kind: 'preset', preset: p.preset })} style={{ padding: '4px 10px', borderRadius: 6, border: '1px solid rgba(255,255,255,0.1)', background: newTaskCron?.kind === 'preset' && newTaskCron.preset === p.preset ? 'rgba(59,130,246,0.2)' : 'rgba(255,255,255,0.05)', color: newTaskCron?.kind === 'preset' && newTaskCron.preset === p.preset ? '#60a5fa' : 'var(--slate-400)', fontSize: 11, cursor: 'pointer' }}>{p.label}</button>
+                        ))}
+                        {newTaskCron && (
+                            <button onClick={() => setNewTaskCron(undefined)} style={{ padding: '4px 10px', borderRadius: 6, border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(255,255,255,0.05)', color: 'var(--slate-400)', fontSize: 11, cursor: 'pointer' }}>Clear</button>
+                        )}
+                    </div>
+                )}
             </div>
 
             {/* Task List */}

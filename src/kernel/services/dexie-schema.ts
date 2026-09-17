@@ -135,6 +135,7 @@ import type {
     AgentConfigRevision,
     AgentApiKey,
     AgentBudget,
+    AgentRepository,
 } from '../types/agems-agent';
 import type { AgemsTask, TaskComment, Label, TaskLabel } from '../types/agems-task';
 import type { ApprovalPolicy, ApprovalRequest } from '../types/agems-approval';
@@ -227,6 +228,7 @@ export class SuperAgentsDB extends Dexie {
     agentConfigRevisions!: Table<AgentConfigRevision>;
     agentApiKeys!: Table<AgentApiKey>;
     agentBudgets!: Table<AgentBudget>;
+    agentRepositories!: Table<AgentRepository>;
     // Phase 2 — AGEMS Tasks
     agemsTasks!: Table<AgemsTask>;
     taskComments!: Table<TaskComment>;
@@ -1862,6 +1864,11 @@ export class SuperAgentsDB extends Dexie {
         // v41 — AGEMS Phase 9 (Audit): additive
         this.version(41).stores({
             auditLogs: '++id, [actorType+actorId], [resourceType+resourceId], action, createdAt',
+        });
+
+        // v42 — AGEMS Phase 0 (Repository): additive
+        this.version(42).stores({
+            agentRepositories: '++id, agentId, [agentId+repositoryId]',
         });
 
         const rejectHook =
