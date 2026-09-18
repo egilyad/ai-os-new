@@ -1,36 +1,80 @@
-import { getDexieDb } from './dexie-schema';
 import type { AgentConfigRevision, AgemsAgentCore } from '../types/agems-agent';
+import { rootLogger } from './logger-service';
+
+const LOGGER = rootLogger.child('AgentConfigRevisionService');
+
+export interface AgentConfigRevisionDeps {
+    database: {
+        getKv: <T>(id: string) => Promise<T | null>;
+        setKv: <T>(id: string, value: T) => Promise<void>;
+    };
+    eventBus?: {
+        emit: (event: string, data?: unknown) => void;
+    };
+}
+
+const REVISIONS_KEY_PREFIX = 'super_agents_agent_revisions_';
 
 export class AgentConfigRevisionService {
-    async saveRevision(agentId: string, snapshot: AgemsAgentCore, changeset: Record<string, { old: unknown; new: unknown }>, changedBy: string, note?: string): Promise<AgentConfigRevision> {
-        const existing = (await getDexieDb().agentConfigRevisions.where('agentId').equals(agentId).toArray()) as unknown as AgentConfigRevision[];
-        const version = (existing.reduce((m, r) => Math.max(m, r.version), 0) || 0) + 1;
-        const rev: AgentConfigRevision = {
+    private deps: AgentConfigRevisionDeps;
+
+    constructor(deps: AgentConfigRevisionDeps) {
+        this.deps = deps;
+    }
+
+    private getKey(agentId: string): string {
+        return `${REVISIONS_KEY_PREFIX}${agentId}`;
+    }
+
+    async getRevisions(agentId: string): Promise<AgentConfigRevision[]> {
+        try {
+            const res = await this.deps.database.getKv<AgentConfigRevision[]>(this.getKey(agentId));
+            return res || [];
+        } catch (e) {
+            LOGGER.error('AgentConfigRevisionService', `Failed to get revisions for agent ${agentId}`, { error: e });
+            return [];
+        }
+    }
+
+    async getRevision(agentId: string, version: number): Promise<AgentConfigRevision | null> {
+        const revisions = await this.getRevisions(agentId);
+        return revisions.find((r) => r.version === version) || null;
+    }
+
+    async saveRevision(
+        agentId: string,
+        snapshot: AgemsAgentCore,
+        changeset: Record<string, { old: unknown; new: unknown }>,
+        changedBy = 'user',
+        changeNote?: string,
+    ): Promise<AgentConfigRevision> {
+        const revisions = await this.getRevisions(agentId);
+        const version = (revisions.length > 0 ? Math.max(...revisions.map((r) => r.version)) : 0) + 1;
+        const revision: AgentConfigRevision = {
+            id: Date.now(),
             agentId,
             version,
             changeset,
             snapshot,
             changedBy,
-            changeNote: note,
+            changeNote,
             createdAt: Date.now(),
         };
-        const id = (await getDexieDb().agentConfigRevisions.add(rev as never)) as unknown as number;
-        return { ...rev, id };
-    }
 
-    async list(agentId: string): Promise<AgentConfigRevision[]> {
-        return (await getDexieDb().agentConfigRevisions.where('agentId').equals(agentId).sortBy('version')).reverse() as unknown as AgentConfigRevision[];
-    }
-
-    async get(agentId: string, version: number): Promise<AgentConfigRevision | undefined> {
-        const rows = (await getDexieDb().agentConfigRevisions.where('[agentId+version]').equals([agentId, version]).toArray()) as unknown as AgentConfigRevision[];
-        return rows[0];
+        revisions.push(revision);
+        await this.deps.database.setKv(this.getKey(agentId), revisions);
+        this.deps.eventBus?.emit('agent:configRevisionSaved', { agentId, version });
+        return revision;
     }
 
     async rollback(agentId: string, version: number): Promise<AgemsAgentCore | null> {
-        const rev = await this.get(agentId, version);
-        return rev?.snapshot ?? null;
+        const target = await this.getRevision(agentId, version);
+        if (!target) {
+            LOGGER.warn('AgentConfigRevisionService', `Rollback target version ${version} not found for agent ${agentId}`);
+            return null;
+        }
+
+        this.deps.eventBus?.emit('agent:configRollback', { agentId, version });
+        return target.snapshot;
     }
 }
-
-export const agentConfigRevisionService = new AgentConfigRevisionService();

@@ -3686,6 +3686,31 @@ export class SuperAgentsDB extends Dexie {
                     projectFiles: '[projectId+path], projectId, path',
                     projectArtifacts: 'id, projectId, type, createdAt',
                     projectAssignments: '[projectId+agentId], projectId, agentId',
+                    // AGEMS tables
+                    agentSkills: '++id, [agentId+skillId], agentId',
+                    agentTools: '++id, [agentId+toolId], agentId',
+                    agentResponsibilities: '++id, agentId',
+                    agentMetrics: '++id, [agentId+metricType], [agentId+periodStart]',
+                    agentMemory: '++id, [agentId+type], agentId',
+                    agentExecutions: '++id, [agentId+status], [agentId+startedAt], [provider+model]',
+                    agentConfigRevisions: '++id, [agentId+version], agentId',
+                    agentApiKeys: '++id, agentId',
+                    agentBudgets: '++id, agentId',
+                    agentRepositories: '++id, [agentId+repositoryId], agentId',
+                    agemsTasks: '++id, status, assigneeId, creatorId, projectId, goalId',
+                    taskComments: '++id, taskId',
+                    labels: '++id, name',
+                    taskLabels: '++id, taskId, labelId',
+                    approvalPolicies: '++id, agentId',
+                    approvalRequests: '++id, agentId, status, [status+createdAt]',
+                    platformBudgets: '++id, orgId',
+                    budgetIncidents: '++id, budgetId',
+                    meetings: '++id, status',
+                    meetingDecisions: '++id, meetingId',
+                    catalogAgents: '++id, slug',
+                    catalogSkills: '++id, slug',
+                    catalogTools: '++id, slug',
+                    auditLogs: '++id, [actorType+actorId], [resourceType+resourceId], createdAt',
                 },
             },
         ];
@@ -3713,3 +3738,6 @@ export class SuperAgentsDB extends Dexie {
         }
     }
 }
+
+export { getDexieDb } from './database-service';
+

@@ -15,16 +15,22 @@ const TYPE_ICON: Record<string, string> = {
 
 interface AgentCardProps {
     agent: AgentWithStats;
-    agentStats: Record<string, { calls: number; errors?: number; latency?: number }>;
+    agentStats?: Record<string, { calls: number; errors?: number; latency?: number }> | { calls: number; errors?: number; latency?: number };
     viewMode: 'grid' | 'list';
     onSelect: (id: string) => void;
     onToggleStatus: (id: string) => void;
+    onDuplicate?: (id: string) => void;
+    onDeleteRequest?: (id: string, name: string) => void;
     t: (key: string) => string;
 }
 
 export const AgentCard: React.FC<AgentCardProps> = memo(
     ({ agent, agentStats, onSelect, onToggleStatus, t }) => {
-        const stats = agentStats[agent.id];
+        const stats = agentStats
+            ? typeof agentStats === 'object' && 'calls' in agentStats
+                ? (agentStats as { calls: number; errors?: number; latency?: number })
+                : (agentStats as Record<string, { calls: number; errors?: number; latency?: number }>)?.[agent.id]
+            : undefined;
         const successRate =
             stats && stats.calls > 0 ? (stats.calls - (stats.errors ?? 0)) / stats.calls : null;
         const latency = stats?.latency || 0;

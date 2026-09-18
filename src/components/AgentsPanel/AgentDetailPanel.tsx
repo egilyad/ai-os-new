@@ -19,7 +19,6 @@ import { agentRepositoryService } from '../../kernel/services/agent-repository-s
 import type { AgentDetailPanelProps } from './AgentDetailPanelProps';
 import { getDexieDb } from '../../kernel/instances';
 import { useChatStore } from '../../stores/useChatStore';
-import { useState, useEffect } from 'react';
 
 const AgentAvatarHeader: React.FC<{ agent: AgentDetailPanelProps['agent'] }> = ({ agent }) => {
     const identity = resolveAgentIdentity(agent.id);

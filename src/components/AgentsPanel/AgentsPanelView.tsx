@@ -170,7 +170,7 @@ const AgentsPanelView: React.FC = () => {
                             <AgentCard
                                 key={a.id}
                                 agent={a}
-                                agentStats={agentStats[a.id]}
+                                agentStats={agentStats}
                                 viewMode="grid"
                                 onSelect={onSetSelectedAgentId}
                                 onToggleStatus={onToggleStatus}

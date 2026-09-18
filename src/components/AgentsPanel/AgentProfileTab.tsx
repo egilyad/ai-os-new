@@ -1,5 +1,4 @@
 import { Copy, Pencil, Swords, RotateCcw } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
 import type { Agent } from './AgentsPanelContext';
 
 interface AgentProfileTabProps {
@@ -62,7 +61,6 @@ const AgentProfileTab: React.FC<AgentProfileTabProps> = ({
     onEdit,
     onClose,
 }) => {
-    const navigate = useNavigate();
     const stats = agentStats[agent.id];
     const pinned = agent.providerId && agent.providerId !== 'Auto';
     const binding = pinned
@@ -126,7 +124,7 @@ const AgentProfileTab: React.FC<AgentProfileTabProps> = ({
                     style={btnStyle}
                     onClick={() => {
                         onClose();
-                        navigate('/debate');
+                        window.location.hash = '#debate';
                     }}
                     aria-label="Open debates"
                 >

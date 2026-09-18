@@ -1,4 +1,4 @@
-﻿# AGEMS -> SuperAgents OS -- Roadmap
+# AGEMS -> SuperAgents OS -- Roadmap
 
 > **Goal:** Port all useful features from AGEMS (agems-ai/agems) into SuperAgents OS
 > using OUR stack: Dexie/IndexedDB, Kernel DI, EventBus, Zustand, React.
@@ -12,19 +12,19 @@
 |-------|--------|-------------|
 | Research | DONE | Full AGEMS analysis |
 | Roadmap | DONE | This file |
-| Phase 0 | TODO | Agent Management System (FULL) |
-| Phase 1 | TODO | Agent Types + Config |
-| Phase 2 | TODO | Tasks System (Kanban) |
-| Phase 3 | TODO | Approvals (HITL) |
-| Phase 4 | TODO | Budgets |
-| Phase 5 | TODO | Meetings |
-| Phase 6 | TODO | Skills + Tools |
-| Phase 7 | TODO | Settings + UI |
-| Phase 8 | TODO | Catalog/Marketplace |
-| Phase 9 | TODO | Security + Audit |
-| Phase 10 | TODO | Integrations |
-| Phase 11 | TODO | Chat System |
-| Phase 12 | TODO | AI Runner |
+| Phase 0 | DONE | Agent Management System (FULL) |
+| Phase 1 | DONE | Agent Types + Config |
+| Phase 2 | DONE | Tasks System (Kanban) |
+| Phase 3 | DONE | Approvals (HITL) |
+| Phase 4 | DONE | Budgets |
+| Phase 5 | DONE | Meetings |
+| Phase 6 | DONE | Skills + Tools |
+| Phase 7 | DONE | Settings + UI |
+| Phase 8 | DONE | Catalog/Marketplace |
+| Phase 9 | DONE | Security + Audit |
+| Phase 10 | DONE | Integrations |
+| Phase 11 | DONE | Chat System |
+| Phase 12 | DONE | AI Runner |
 
 ---
 

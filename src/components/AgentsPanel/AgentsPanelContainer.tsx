@@ -44,34 +44,34 @@ const getAgentsFromTopology = (): Agent[] => {
     const top = orchestrator.getActiveTopology();
     if (!top) return [];
     return top.nodes
-        .filter((n) => n.type === 'agent' || n.type === 'router')
+        .filter((n) => n && (n.type === 'agent' || n.type === 'router'))
         .map((n) => {
+            const cfg = (n.config ?? {}) as Record<string, unknown>;
             const identity = resolveAgentIdentity(n.id);
             const name =
                 identity.displayName && identity.displayName !== n.id
                     ? identity.displayName
-                    : n.label;
+                    : n.label || n.id;
             const role =
                 n.type === 'router'
                     ? 'Semantic Router'
-                    : identity.baseRole || String(n.config.roleName ?? '') || 'Autonomous Agent';
+                    : identity.baseRole || String(cfg.roleName ?? '') || 'Autonomous Agent';
             return {
                 id: n.id,
                 name,
                 role,
-                roleId: n.config.roleId ? String(n.config.roleId) : undefined,
-                description: n.config.prompt || 'No specific description.',
-                providerId: n.config.provider || 'Auto',
-                // T1.4: surface pinned key binding for edit form
-                keyId: typeof n.config.keyId === 'string' ? n.config.keyId : undefined,
-                model: n.config.model || 'auto',
+                roleId: cfg.roleId ? String(cfg.roleId) : undefined,
+                description: String(cfg.prompt || 'No specific description.'),
+                providerId: String(cfg.provider || 'Auto'),
+                keyId: typeof cfg.keyId === 'string' ? cfg.keyId : undefined,
+                model: String(cfg.model || 'auto'),
                 status: getAgentStatus(n.id),
-                temperature: n.config.temperature ?? 0.7,
-                tools: Array.isArray(n.config.tools) ? n.config.tools : [],
-                skills: Array.isArray(n.config.skills) ? n.config.skills : [],
-                systemPrompt: n.config.prompt || '',
-                hilEnabled: Boolean(n.config.hilEnabled ?? false),
-                vpcEnabled: Boolean(n.config.vpcEnabled ?? true),
+                temperature: typeof cfg.temperature === 'number' ? cfg.temperature : 0.7,
+                tools: Array.isArray(cfg.tools) ? (cfg.tools as string[]) : [],
+                skills: Array.isArray(cfg.skills) ? (cfg.skills as string[]) : [],
+                systemPrompt: String(cfg.prompt || ''),
+                hilEnabled: Boolean(cfg.hilEnabled ?? false),
+                vpcEnabled: Boolean(cfg.vpcEnabled ?? true),
                 stats: { calls: 0, tokens: 0, latency: 0 },
             };
         });
