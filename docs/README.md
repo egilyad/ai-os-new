@@ -64,3 +64,8 @@ ConsistencyChecker.checkDocs() → mismatch detected
 | `10-experiments-framework_RU.md` | Как запускать дебаты, сравнивать прогоны                                             |
 | `SERVICES_RU.md`                 | Все 88+ DI-сервисов ядра: назначение, события, lifecycle                             |
 | `SYSTEM_MANIFEST_RU.md`          | Манифест системы                                                                     |
+
+## Archive
+
+Исторический материал — в [`archive/`](archive/README.md). Ничего оттуда не является
+источником текущего состояния. Актуальные аудиты (2026-09-18) — в `audits/`.
