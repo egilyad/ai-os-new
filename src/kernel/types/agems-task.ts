@@ -62,6 +62,27 @@ export interface TaskLabel {
     labelId: number;
 }
 
+export interface TaskWorkProduct {
+    id?: number;
+    taskId: string;
+    fileName: string;
+    filePath?: string;
+    mimeType?: string;
+    size?: number;
+    createdAt: number;
+    createdBy?: string;
+}
+
+export interface TaskTrigger {
+    id?: number;
+    taskId: string;
+    onStatus: AgemsTaskStatus;
+    action: string;
+    target?: string;
+    enabled: boolean;
+    createdAt: number;
+}
+
 // Kanban column mapping (roadmap 2.2: 5 columns)
 export const KANBAN_COLUMNS: Array<{ status: AgemsTaskStatus[]; title: string; color: string }> = [
     { status: ['PENDING', 'BLOCKED'], title: 'Pending', color: '#64748b' },

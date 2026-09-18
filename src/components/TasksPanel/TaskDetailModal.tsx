@@ -1,12 +1,14 @@
 /**
- * TaskDetailModal — AGEMS 2.4/2.5/2.6
- * Comments, Labels, Locking indicator
+ * TaskDetailModal — AGEMS 2.4/2.5/2.6/2.7/2.8
+ * Comments, Labels, Locking, Work products, Triggers
  */
 import React, { useState, useEffect } from 'react';
-import { X, Lock, Unlock, Clock, Tag, MessageSquare, Plus } from 'lucide-react';
+import { X, Lock, Unlock, Clock, Tag, MessageSquare, Plus, Paperclip, Zap } from 'lucide-react';
 import { getDexieDb } from '../../kernel/instances';
-import type { AgemsTask, TaskComment, Label, TaskLabel } from '../../kernel/types/agems-task';
+import type { AgemsTask, TaskComment, Label, TaskLabel, TaskWorkProduct, TaskTrigger } from '../../kernel/types/agems-task';
 import { agemsTaskService } from '../../kernel/services/agems-task-service';
+import { taskWorkProductService } from '../../kernel/services/task-work-product-service';
+import { taskTriggerService } from '../../kernel/services/task-trigger-service';
 
 interface TaskDetailModalProps {
     task: AgemsTask;
@@ -21,12 +23,19 @@ export default function TaskDetailModal({ task, onClose, onUpdate }: TaskDetailM
     const [newComment, setNewComment] = useState('');
     const [newLabelName, setNewLabelName] = useState('');
     const [newLabelColor, setNewLabelColor] = useState('#3b82f6');
+    const [workProducts, setWorkProducts] = useState<TaskWorkProduct[]>([]);
+    const [triggers, setTriggers] = useState<TaskTrigger[]>([]);
+    const [newWpName, setNewWpName] = useState('');
+    const [newTriggerAction, setNewTriggerAction] = useState('');
+    const [newTriggerStatus, setNewTriggerStatus] = useState<AgemsTask['status']>('COMPLETED');
 
     useEffect(() => {
         const db = getDexieDb();
         void db.taskComments.where('taskId').equals(task.id).toArray().then(setComments);
         void db.labels.toArray().then(setAllLabels);
         void db.taskLabels.where('taskId').equals(task.id).toArray().then(setTaskLabelIds);
+        void taskWorkProductService.list(task.id).then(setWorkProducts);
+        void taskTriggerService.list(task.id).then(setTriggers);
     }, [task.id]);
 
     const addComment = async () => {
@@ -152,6 +161,20 @@ export default function TaskDetailModal({ task, onClose, onUpdate }: TaskDetailM
                         <input value={newComment} onChange={(e) => setNewComment(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') void addComment(); }} placeholder="Add comment…" style={{ flex: 1, padding: '6px 10px', borderRadius: 8, border: '1px solid var(--border)', background: 'var(--bg-elevated)', fontSize: 12, color: 'inherit' }} />
                         <button onClick={addComment} disabled={!newComment.trim()} style={{ padding: '6px 12px', borderRadius: 8, border: 'none', background: newComment.trim() ? '#3b82f6' : 'rgba(255,255,255,0.08)', color: 'white', fontWeight: 700, fontSize: 12, cursor: newComment.trim() ? 'pointer' : 'not-allowed' }}>Post</button>
                     </div>
+                </div>
+
+                {/* Work products 2.7 */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                    <div style={{ fontWeight: 700, fontSize: 12, display: 'flex', alignItems: 'center', gap: 6 }}><Paperclip size={14} /> Work products ({workProducts.length})</div>
+                    {workProducts.map(wp => <div key={wp.id} style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, padding: '4px 8px', borderRadius: 6, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}><span style={{ flex: 1 }}>{wp.fileName}</span><button onClick={() => { void taskWorkProductService.remove(wp.id!).then(() => setWorkProducts(p => p.filter(x => x.id !== wp.id))); }} style={{ border: 'none', background: 'none', color: '#ef4444', cursor: 'pointer' }}><X size={12} /></button></div>)}
+                    <div style={{ display: 'flex', gap: 4 }}><input value={newWpName} onChange={e => setNewWpName(e.target.value)} onKeyDown={e => { if (e.key === 'Enter') { void taskWorkProductService.add(task.id, newWpName.trim()).then(wp => setWorkProducts(p => [...p, wp])); setNewWpName(''); } }} placeholder="file.pdf" style={{ flex: 1, padding: '4px 8px', borderRadius: 6, border: '1px solid var(--border)', background: 'var(--bg-elevated)', fontSize: 11, color: 'inherit' }} /><button onClick={() => { if (!newWpName.trim()) return; void taskWorkProductService.add(task.id, newWpName.trim()).then(wp => setWorkProducts(p => [...p, wp])); setNewWpName(''); }} style={{ padding: '4px 8px', borderRadius: 6, border: 'none', background: newWpName.trim() ? '#10b981' : 'rgba(255,255,255,0.08)', color: 'white', fontSize: 11, cursor: newWpName.trim() ? 'pointer' : 'not-allowed' }}><Plus size={12} /></button></div>
+                </div>
+
+                {/* Triggers 2.8 */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                    <div style={{ fontWeight: 700, fontSize: 12, display: 'flex', alignItems: 'center', gap: 6 }}><Zap size={14} /> Triggers ({triggers.length})</div>
+                    {triggers.map(tg => <div key={tg.id} style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, padding: '4px 8px', borderRadius: 6, background: tg.enabled ? 'rgba(59,130,246,0.08)' : 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}><span>{tg.onStatus} → {tg.action}</span><span style={{ marginLeft: 'auto', fontSize: 10, color: tg.enabled ? '#22c55e' : 'var(--slate-500)' }}>{tg.enabled ? 'ON' : 'OFF'}</span><button onClick={() => { const ne = !tg.enabled; void taskTriggerService.toggle(tg.id!, ne).then(() => setTriggers(p => p.map(x => x.id === tg.id ? { ...x, enabled: ne } : x))); }} style={{ padding: '2px 6px', borderRadius: 4, border: '1px solid var(--border)', background: 'transparent', color: 'var(--slate-400)', fontSize: 10, cursor: 'pointer' }}>{tg.enabled ? 'Disable' : 'Enable'}</button><button onClick={() => { void taskTriggerService.remove(tg.id!).then(() => setTriggers(p => p.filter(x => x.id !== tg.id))); }} style={{ border: 'none', background: 'none', color: '#ef4444', cursor: 'pointer' }}><X size={12} /></button></div>)}
+                    <div style={{ display: 'flex', gap: 4, alignItems: 'center', flexWrap: 'wrap' }}><select value={newTriggerStatus} onChange={e => setNewTriggerStatus(e.target.value as AgemsTask['status'])} style={{ padding: '4px 6px', borderRadius: 6, border: '1px solid var(--border)', background: 'var(--bg-elevated)', fontSize: 11, color: 'inherit' }}>{['PENDING','IN_PROGRESS','IN_REVIEW','COMPLETED','FAILED','BLOCKED'].map(s => <option key={s} value={s}>{s}</option>)}</select><input value={newTriggerAction} onChange={e => setNewTriggerAction(e.target.value)} placeholder="action e.g. notify" style={{ flex: 1, minWidth: 80, padding: '4px 8px', borderRadius: 6, border: '1px solid var(--border)', background: 'var(--bg-elevated)', fontSize: 11, color: 'inherit' }} /><button onClick={() => { if (!newTriggerAction.trim()) return; void taskTriggerService.add(task.id, newTriggerStatus, newTriggerAction.trim()).then(tg => setTriggers(p => [...p, tg])); setNewTriggerAction(''); }} style={{ padding: '4px 8px', borderRadius: 6, border: 'none', background: newTriggerAction.trim() ? '#f59e0b' : 'rgba(255,255,255,0.08)', color: 'white', fontSize: 11, cursor: newTriggerAction.trim() ? 'pointer' : 'not-allowed' }}><Plus size={12} /></button></div>
                 </div>
 
                 {/* Description */}

@@ -137,7 +137,7 @@ import type {
     AgentBudget,
     AgentRepository,
 } from '../types/agems-agent';
-import type { AgemsTask, TaskComment, Label, TaskLabel } from '../types/agems-task';
+import type { AgemsTask, TaskComment, Label, TaskLabel, TaskWorkProduct, TaskTrigger } from '../types/agems-task';
 import type { ApprovalPolicy, ApprovalRequest } from '../types/agems-approval';
 import type { PlatformBudget, BudgetIncident } from '../types/agems-budget';
 import type { Meeting, MeetingDecision } from '../types/agems-meeting';
@@ -234,6 +234,8 @@ export class SuperAgentsDB extends Dexie {
     taskComments!: Table<TaskComment>;
     labels!: Table<Label>;
     taskLabels!: Table<TaskLabel>;
+    taskWorkProducts!: Table<TaskWorkProduct>;
+    taskTriggers!: Table<TaskTrigger>;
     // Phase 3 — AGEMS Approvals
     approvalPolicies!: Table<ApprovalPolicy>;
     approvalRequests!: Table<ApprovalRequest>;
@@ -1869,6 +1871,12 @@ export class SuperAgentsDB extends Dexie {
         // v42 — AGEMS Phase 0 (Repository): additive
         this.version(42).stores({
             agentRepositories: '++id, agentId, [agentId+repositoryId]',
+        });
+
+        // v43 — AGEMS Phase 2 (Work products + Triggers): additive
+        this.version(43).stores({
+            taskWorkProducts: '++id, taskId, createdAt',
+            taskTriggers: '++id, taskId, onStatus, enabled',
         });
 
         const rejectHook =
