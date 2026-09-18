@@ -54,6 +54,22 @@ export class AgemsApprovalService {
         return filtered.sort((a, b) => b.createdAt - a.createdAt);
     }
 
+    async updatePolicy(agentId: string, patch: Partial<ApprovalPolicy>): Promise<ApprovalPolicy> {
+        const existing = await this.getPolicy(agentId);
+        if (existing?.id) {
+            await getDexieDb().approvalPolicies.update(existing.id as number, { ...patch, updatedAt: Date.now() } as never);
+            return { ...existing, ...patch, updatedAt: Date.now() } as ApprovalPolicy;
+        }
+        return this.setPreset(agentId, patch.preset ?? 'SUPERVISED').then(async (pol) => {
+            const { preset: _p, ...rest } = patch;
+            if (Object.keys(rest).length) {
+                await getDexieDb().approvalPolicies.update(pol.id as number, { ...rest, updatedAt: Date.now() } as never);
+                return { ...pol, ...rest } as ApprovalPolicy;
+            }
+            return pol;
+        });
+    }
+
     async bulkResolve(ids: number[], status: 'APPROVED' | 'REJECTED'): Promise<void> {
         for (const id of ids) await this.resolve(id, status);
     }

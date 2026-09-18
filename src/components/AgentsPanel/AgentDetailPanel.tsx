@@ -18,6 +18,7 @@ import { resolveAgentIdentity } from '../../kernel/services/agent-identity';
 import { agentRepositoryService } from '../../kernel/services/agent-repository-service';
 import { agemsApprovalService } from '../../kernel/services/agems-approval-service';
 import { approvalBulkService } from '../../kernel/services/approval-bulk-service';
+import { approvalAutoService } from '../../kernel/services/approval-auto-service';
 import type { AgentDetailPanelProps } from './AgentDetailPanelProps';
 import { getDexieDb } from '../../kernel/instances';
 import { useChatStore } from '../../stores/useChatStore';
@@ -319,9 +320,16 @@ function ApprovalsTab({ agentId }: { agentId: string }) {
     const [selected, setSelected] = useState<number[]>([]);
     const [rejectReason, setRejectReason] = useState('No justification');
     const [commentDrafts, setCommentDrafts] = useState<Record<number, string>>({});
+    const [lowRisk, setLowRisk] = useState(false);
+    const [afterMin, setAfterMin] = useState('');
+    const [costThreshold, setCostThreshold] = useState('');
     const load = async () => {
+        await approvalAutoService.evaluateAgent(agentId);
         const pol = await agemsApprovalService.getPolicy(agentId);
         setPreset(pol?.preset ?? '—');
+        setLowRisk(!!pol?.autoApproveLowRisk);
+        setAfterMin(pol?.autoApproveAfterMin !== undefined ? String(pol.autoApproveAfterMin) : '');
+        setCostThreshold(pol?.costThresholdUsd !== undefined ? String(pol.costThresholdUsd) : '');
         const list = await approvalBulkService.listPending(agentId);
         setPending(list as unknown as typeof pending);
         setSelected([]);
@@ -345,8 +353,13 @@ function ApprovalsTab({ agentId }: { agentId: string }) {
                     <button key={p} onClick={() => { void agemsApprovalService.setPreset(agentId, p).then(() => setPreset(p)); }} style={{ padding: '4px 10px', borderRadius: 6, border: preset === p ? '1px solid #3b82f6' : '1px solid rgba(255,255,255,0.08)', background: preset === p ? 'rgba(59,130,246,0.12)' : 'transparent', color: preset === p ? '#60a5fa' : 'var(--slate-400)', fontSize: 11, cursor: 'pointer' }}>{p}</button>
                 ))}
             </div>
-            <div style={{ fontWeight: 700, fontSize: 12 }}>Pending queue ({pending.length})</div>
-            {selected.length > 0 && (
+            <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap', fontSize: 11 }}>
+                <label style={{ display: 'flex', gap: 4, alignItems: 'center', color: 'var(--slate-300)' }}><input type="checkbox" checked={lowRisk} onChange={(e) => { const v = e.target.checked; setLowRisk(v); void agemsApprovalService.updatePolicy(agentId, { autoApproveLowRisk: v }); }} /> auto-approve low-risk</label>
+                <label style={{ display: 'flex', gap: 4, alignItems: 'center', color: 'var(--slate-300)' }}>after min <input value={afterMin} onChange={(e) => setAfterMin(e.target.value)} onBlur={() => { void agemsApprovalService.updatePolicy(agentId, { autoApproveAfterMin: afterMin === '' ? undefined : Number(afterMin) }).then(() => void load()); }} placeholder="—" style={{ width: 52, padding: '4px 6px', borderRadius: 6, border: '1px solid var(--border)', background: 'var(--bg-elevated)', fontSize: 11, color: 'inherit' }} /></label>
+                <label style={{ display: 'flex', gap: 4, alignItems: 'center', color: 'var(--slate-300)' }}>$ threshold <input value={costThreshold} onChange={(e) => setCostThreshold(e.target.value)} onBlur={() => { void agemsApprovalService.updatePolicy(agentId, { costThresholdUsd: costThreshold === '' ? undefined : Number(costThreshold) }).then(() => void load()); }} placeholder="—" style={{ width: 64, padding: '4px 6px', borderRadius: 6, border: '1px solid var(--border)', background: 'var(--bg-elevated)', fontSize: 11, color: 'inherit' }} /></label>
+                <button onClick={() => void load()} style={{ padding: '4px 10px', borderRadius: 6, border: '1px solid var(--border)', background: 'transparent', color: 'var(--slate-400)', fontSize: 11, cursor: 'pointer' }}>Re-evaluate</button>
+            </div>
+            <div style={{ fontWeight: 700, fontSize: 12 }}>Pending queue ({pending.length})</div>            {selected.length > 0 && (
                 <div style={{ display: 'flex', gap: 6, alignItems: 'center', flexWrap: 'wrap' }}>
                     <span style={{ fontSize: 11, color: 'var(--slate-400)' }}>{selected.length} selected</span>
                     <button onClick={approve} style={{ padding: '4px 10px', borderRadius: 6, border: 'none', background: '#10b981', color: 'white', fontSize: 11, cursor: 'pointer' }}>Approve</button>
