@@ -12,6 +12,7 @@ import { Button } from './Common';
 import { GlobalBudgetSection } from './BudgetPanel/GlobalBudgetSection';
 import { ProviderBudgetSection } from './BudgetPanel/ProviderBudgetSection';
 import { AgentBudgetSection } from './BudgetPanel/AgentBudgetSection';
+import { PlatformBudgetSection } from './BudgetPanel/PlatformBudgetSection';
 import { AlertsSection } from './BudgetPanel/AlertsSection';
 
 const BudgetPanel: React.FC = () => {
@@ -156,6 +157,7 @@ const BudgetPanel: React.FC = () => {
                     />
                     <ProviderBudgetSection providers={summary.providers} lang={lang} />
                     <AgentBudgetSection agents={summary.agents} lang={lang} />
+                    <PlatformBudgetSection />
                     <AlertsSection alerts={alerts} />
                 </>
             )}

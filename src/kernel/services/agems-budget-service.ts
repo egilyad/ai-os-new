@@ -42,6 +42,34 @@ export class AgemsBudgetService {
         await getDexieDb().budgetIncidents.add({ budgetId, type, spendUsd: spend, limitUsd: limit, message: msg, createdAt: Date.now() } as never);
     }
 
+    /** Increment spend; auto-records SOFT_ALERT on first crossing softAlertPercent, HARD_STOP at monthly limit */
+    async addSpend(orgId = 'default', amountUsd: number): Promise<{ spent: number; blocked: boolean }> {
+        const b = await this.getPlatform(orgId);
+        if (!b?.id || amountUsd <= 0) return { spent: b?.currentSpendUsd ?? 0, blocked: false };
+        const prev = b.currentSpendUsd;
+        const spent = prev + amountUsd;
+        await getDexieDb().platformBudgets.update(b.id as number, { currentSpendUsd: spent, updatedAt: Date.now() } as never);
+        const limit = b.monthlyLimitUsd ?? 0;
+        if (limit > 0) {
+            const softAt = (limit * (b.softAlertPercent ?? 80)) / 100;
+            if (prev < softAt && spent >= softAt) {
+                await this.recordIncident(b.id as number, 'SOFT_ALERT', spent, limit, `Spend crossed ${b.softAlertPercent}% of $${limit} monthly limit`);
+            }
+            if (b.hardStopEnabled && prev < limit && spent >= limit) {
+                await this.recordIncident(b.id as number, 'HARD_STOP', spent, limit, `Spend hit $${limit} monthly hard stop`);
+            }
+        }
+        const check = await this.checkPlatformBudget(orgId);
+        return { spent, blocked: check.blocked };
+    }
+
+    async resetSpend(orgId = 'default'): Promise<void> {
+        const b = await this.getPlatform(orgId);
+        if (!b?.id) return;
+        await getDexieDb().platformBudgets.update(b.id as number, { currentSpendUsd: 0, periodStart: Date.now(), periodEnd: Date.now() + 30 * 86400000, updatedAt: Date.now() } as never);
+        await this.recordIncident(b.id as number, 'BUDGET_RESET', 0, b.monthlyLimitUsd ?? 0, 'Spend reset for new period');
+    }
+
     async incidents(budgetId?: number): Promise<BudgetIncident[]> {
         if (budgetId) return (await getDexieDb().budgetIncidents.where('budgetId').equals(budgetId).toArray()) as unknown as BudgetIncident[];
         return (await getDexieDb().budgetIncidents.toArray()) as unknown as BudgetIncident[];
