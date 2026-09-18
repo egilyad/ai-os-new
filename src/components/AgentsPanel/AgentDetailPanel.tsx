@@ -16,6 +16,8 @@ import AgentIdentityEditor from './AgentIdentityEditor';
 import { AgentAvatar } from './AgentAvatar';
 import { resolveAgentIdentity } from '../../kernel/services/agent-identity';
 import { agentRepositoryService } from '../../kernel/services/agent-repository-service';
+import { agemsApprovalService } from '../../kernel/services/agems-approval-service';
+import { approvalBulkService } from '../../kernel/services/approval-bulk-service';
 import type { AgentDetailPanelProps } from './AgentDetailPanelProps';
 import { getDexieDb } from '../../kernel/instances';
 import { useChatStore } from '../../stores/useChatStore';
@@ -312,18 +314,68 @@ function HierarchyTab({ agentId, agentName }: { agentId: string; agentName: stri
 }
 
 function ApprovalsTab({ agentId }: { agentId: string }) {
+    const [preset, setPreset] = useState<string>('—');
+    const [pending, setPending] = useState<Array<{ id: number; toolName: string; riskLevel: string; description?: string; reviewComments?: Array<{ authorId: string; text: string; at: number }> }>>([]);
+    const [selected, setSelected] = useState<number[]>([]);
+    const [rejectReason, setRejectReason] = useState('No justification');
+    const [commentDrafts, setCommentDrafts] = useState<Record<number, string>>({});
+    const load = async () => {
+        const pol = await agemsApprovalService.getPolicy(agentId);
+        setPreset(pol?.preset ?? '—');
+        const list = await approvalBulkService.listPending(agentId);
+        setPending(list as unknown as typeof pending);
+        setSelected([]);
+    };
+    useEffect(() => { void load(); }, [agentId]);
+    const toggle = (id: number) => setSelected((p) => (p.includes(id) ? p.filter((x) => x !== id) : [...p, id]));
+    const approve = async () => { if (!selected.length) return; await approvalBulkService.bulkApprove(selected); void load(); };
+    const reject = async () => { if (!selected.length) return; await approvalBulkService.bulkReject(selected, rejectReason); void load(); };
+    const comment = async (id: number) => {
+        const text = (commentDrafts[id] ?? '').trim();
+        if (!text) return;
+        await approvalBulkService.addComment(id, 'current', text);
+        setCommentDrafts((p) => ({ ...p, [id]: '' }));
+        void load();
+    };
     return (
         <div style={{ padding: '1rem', display: 'flex', flexDirection: 'column', gap: 12 }}>
-            <div style={{ fontWeight: 700 }}>Approval Policy — {agentId.slice(0, 8)}</div>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
-                {['readMode', 'writeMode', 'deleteMode', 'executeMode', 'sendMode', 'adminMode'].map((k) => (
-                    <div key={k} style={{ padding: '8px 10px', borderRadius: 8, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)', fontSize: 11 }}>
-                        <div style={{ fontWeight: 700, color: 'var(--slate-400)' }}>{k}</div>
-                        <div style={{ marginTop: 4, color: 'var(--slate-300)' }}>FREE · requires approval → Guided preset</div>
-                    </div>
+            <div style={{ fontWeight: 700 }}>Approval Policy — {agentId.slice(0, 8)} · preset: {preset}</div>
+            <div style={{ display: 'flex', gap: 6, alignItems: 'center', flexWrap: 'wrap' }}>
+                {(['FULL_CONTROL', 'SUPERVISED', 'GUIDED', 'AUTOPILOT'] as const).map((p) => (
+                    <button key={p} onClick={() => { void agemsApprovalService.setPreset(agentId, p).then(() => setPreset(p)); }} style={{ padding: '4px 10px', borderRadius: 6, border: preset === p ? '1px solid #3b82f6' : '1px solid rgba(255,255,255,0.08)', background: preset === p ? 'rgba(59,130,246,0.12)' : 'transparent', color: preset === p ? '#60a5fa' : 'var(--slate-400)', fontSize: 11, cursor: 'pointer' }}>{p}</button>
                 ))}
             </div>
-            <div style={{ fontSize: 11, color: 'var(--slate-500)' }}>Full per-tool overrides + auto-approve rules (costThreshold, low-risk) in next iteration. Persists to Dexie `approvalPolicies`.</div>
+            <div style={{ fontWeight: 700, fontSize: 12 }}>Pending queue ({pending.length})</div>
+            {selected.length > 0 && (
+                <div style={{ display: 'flex', gap: 6, alignItems: 'center', flexWrap: 'wrap' }}>
+                    <span style={{ fontSize: 11, color: 'var(--slate-400)' }}>{selected.length} selected</span>
+                    <button onClick={approve} style={{ padding: '4px 10px', borderRadius: 6, border: 'none', background: '#10b981', color: 'white', fontSize: 11, cursor: 'pointer' }}>Approve</button>
+                    <input value={rejectReason} onChange={(e) => setRejectReason(e.target.value)} placeholder="reject reason" style={{ width: 160, padding: '4px 8px', borderRadius: 6, border: '1px solid var(--border)', background: 'var(--bg-elevated)', fontSize: 11, color: 'inherit' }} />
+                    <button onClick={reject} style={{ padding: '4px 10px', borderRadius: 6, border: 'none', background: '#ef4444', color: 'white', fontSize: 11, cursor: 'pointer' }}>Reject</button>
+                </div>
+            )}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                {pending.map((r) => (
+                    <div key={r.id} style={{ padding: '8px 10px', borderRadius: 8, background: 'rgba(255,255,255,0.03)', border: selected.includes(r.id) ? '1px solid #3b82f6' : '1px solid rgba(255,255,255,0.06)', fontSize: 12 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                            <input type="checkbox" checked={selected.includes(r.id)} onChange={() => toggle(r.id)} />
+                            <span style={{ fontWeight: 600, flex: 1 }}>{r.toolName}</span>
+                            <span style={{ fontSize: 10, padding: '2px 6px', borderRadius: 6, background: r.riskLevel === 'high' ? 'rgba(239,68,68,0.15)' : r.riskLevel === 'medium' ? 'rgba(245,158,11,0.15)' : 'rgba(16,185,129,0.15)', color: r.riskLevel === 'high' ? '#ef4444' : r.riskLevel === 'medium' ? '#f59e0b' : '#10b981' }}>{r.riskLevel}</span>
+                        </div>
+                        {r.description && <div style={{ fontSize: 11, color: 'var(--slate-400)', marginTop: 4 }}>{r.description}</div>}
+                        {(r.reviewComments ?? []).length > 0 && (
+                            <div style={{ marginTop: 6, display: 'flex', flexDirection: 'column', gap: 3 }}>
+                                {(r.reviewComments ?? []).map((c, i) => <div key={i} style={{ fontSize: 11, color: 'var(--slate-400)' }}><b>{c.authorId}</b>: {c.text}</div>)}
+                            </div>
+                        )}
+                        <div style={{ display: 'flex', gap: 4, marginTop: 6 }}>
+                            <input value={commentDrafts[r.id] ?? ''} onChange={(e) => setCommentDrafts((p) => ({ ...p, [r.id]: e.target.value }))} onKeyDown={(e) => { if (e.key === 'Enter') void comment(r.id); }} placeholder="Review comment…" style={{ flex: 1, padding: '4px 8px', borderRadius: 6, border: '1px solid var(--border)', background: 'var(--bg-elevated)', fontSize: 11, color: 'inherit' }} />
+                            <button onClick={() => void comment(r.id)} style={{ padding: '4px 8px', borderRadius: 6, border: 'none', background: '#3b82f6', color: 'white', fontSize: 11, cursor: 'pointer' }}>Post</button>
+                        </div>
+                    </div>
+                ))}
+                {pending.length === 0 && <div style={{ fontSize: 11, color: 'var(--slate-500)', textAlign: 'center', padding: 8 }}>No pending requests</div>}
+            </div>
         </div>
     );
 }

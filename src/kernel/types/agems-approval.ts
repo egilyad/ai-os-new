@@ -33,6 +33,13 @@ export interface ApprovalRequest {
     rejectionReason?: string;
     expiresAt?: number;
     createdAt: number;
+    reviewComments?: ApprovalReviewComment[];
+}
+
+export interface ApprovalReviewComment {
+    authorId: string;
+    text: string;
+    at: number;
 }
 
 export const PRESET_DEFAULTS: Record<ApprovalPreset, Partial<ApprovalPolicy>> = {
