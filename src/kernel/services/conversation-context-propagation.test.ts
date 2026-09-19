@@ -3,7 +3,8 @@ import { describe, it, expect } from 'vitest';
 import { ChatExecutionEngine } from './conversation-execution-engine';
 import { ConversationOrchestrator } from './conversation-orchestrator';
 import { HybridPolicy } from './conversation-hybrid-policy';
-import type { ConversationContext, TurnProposal } from '../contracts/conversation/context';
+import type { ConversationContext } from '../contracts/conversation/context';
+import type { TurnProposal } from '../contracts/conversation/turn';
 import { eventBus, EVENTS } from '../events/event-bus';
 
 /**
