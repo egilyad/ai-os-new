@@ -578,12 +578,6 @@ export type {
     GeminiLiveMessage,
     LiveStatus,
 } from './gemini-live';
-export type {
-    IMetaLearningService,
-    MetaLearningState,
-    LearningSignal,
-    LearnedPattern,
-} from './meta-learning';
 
 // ── Gemini Research ─────────────────────────────────────────────
 export type {

@@ -77,7 +77,6 @@ import { TemplateSharingService } from '../services/template-sharing-service';
 import { MemoryTransferService } from '../services/memory-transfer-service';
 import { TimeMachineService } from '../services/time-machine-service';
 import { ContributionService } from '../services/contribution-service';
-import { MetaLearningService } from '../services/meta-learning-service';
 import { SmartRoutingService } from '../services/smart-routing-service';
 import {
     NvidiaEnterpriseService,
@@ -401,8 +400,6 @@ export const registerPhase6: Phase = (helpers, ctx) => {
     );
     // ── Agent Avatar Service ───────────────────────────
     register('agentAvatarService', (_c) => new AgentAvatarService());
-    // ── Meta-Learning / Self-Improvement Service ─────
-    register('metaLearningService', (_c) => new MetaLearningService());
     // ── Smart Routing Service ─────────────────────
     register(
         'smartRoutingService',

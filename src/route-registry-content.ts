@@ -665,14 +665,6 @@ export const CONTENT_SECTIONS: NavSection[] = [
                 lazy: true,
             },
             {
-                id: 'meta-learning',
-                labelKey: 'nav.meta_learning',
-                icon: Icons.brain,
-                color: '#a855f7',
-                lazy: true,
-                experimental: true,
-            },
-            {
                 id: 'governance',
                 labelKey: 'nav.governance',
                 icon: Icons.shield,

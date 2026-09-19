@@ -54,7 +54,6 @@ import type { IMemoryTransferService } from '../contracts/memory-transfer';
 import type { ITimeMachineService } from '../contracts/time-machine';
 import type { IContributionService } from '../contracts/contribution';
 import type { IGeminiLiveService } from '../contracts/gemini-live';
-import type { IMetaLearningService } from '../contracts/meta-learning';
 import type { ISmartRoutingService } from '../contracts/smart-routing';
 import type { INvidiaEnterpriseService } from '../contracts/nvidia-enterprise';
 import type { IGeminiCacheService } from '../contracts/gemini-cache';
@@ -703,7 +702,6 @@ export const memoryTransferService = lazyService<IMemoryTransferService>('memory
 export const timeMachineService = lazyService<ITimeMachineService>('timeMachineService');
 export const contributionService = lazyService<IContributionService>('contributionService');
 export const geminiLiveService = lazyService<IGeminiLiveService>('geminiLiveService');
-export const metaLearningService = lazyService<IMetaLearningService>('metaLearningService');
 export const smartRoutingService = lazyService<ISmartRoutingService>('smartRoutingService');
 export const nvidiaEnterpriseService =
     lazyService<INvidiaEnterpriseService>('nvidiaEnterpriseService');

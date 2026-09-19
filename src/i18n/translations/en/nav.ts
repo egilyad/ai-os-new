@@ -198,7 +198,6 @@ const nav: Record<string, string> = {
     'nav.gemini_live': 'Gemini Live',
     'nav.agent_scheduler': 'Agent Scheduler',
     'nav.scheduler': 'Scheduler',
-    'nav.meta_learning': 'Meta-Learning',
     'nav.debate_quality': 'Debate Quality',
     'nav.quality_impact': 'Quality Impact',
     'nav.debate_runtime_arena': 'Debate Runtime Arena',
