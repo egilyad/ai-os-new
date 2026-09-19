@@ -15,4 +15,5 @@
 - `IMPLEMENTATION_PLAN.md` — план внедрения когнитивных модулей (основан на `roadmap2.md` + архитектура v4.5.0).
 - `roadmap2.md` — роадмап следующего уровня («после Волны 5»).
 - `DEBATE_MULTI_SESSION_DESIGN.md` — дизайн multi-session дебатов (на него ссылается код: `activeDebateStore`, `debate-sync-manager`).
+- `CHAT_DESIGN.md` (Этап 2, 2026-09-17) — минимальный план исправлений чата по `CHAT_ARCHAEOLOGY.md` + `CURRENT_CHAT_FAILURES.md` (оба в `../audits/`).
 - `roadmapp.md` живёт в `../reference/` — нормативный док для project-контрактов (на него ссылается `IProjectManagerService`).
