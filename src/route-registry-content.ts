@@ -301,19 +301,6 @@ export const CONTENT_SECTIONS: NavSection[] = [
         labelKey: 'nav.section_docs',
         items: [
             {
-                id: 'docs',
-                labelKey: 'nav.docs',
-                icon: Icons.bookText,
-                color: '#8b5cf6',
-            },
-            {
-                id: 'decision-log',
-                labelKey: 'nav.decision_log',
-                icon: Icons.clipboardList,
-                color: '#10b981',
-                lazy: true,
-            },
-            {
                 id: 'arch-review',
                 labelKey: 'nav.architecture_review',
                 icon: Icons.bookText,
@@ -726,12 +713,6 @@ export const CONTENT_SECTIONS: NavSection[] = [
                 icon: Icons.flaskConical,
                 color: '#a855f7',
                 lazy: true,
-            },
-            {
-                id: 'patterns',
-                labelKey: 'nav.patterns',
-                icon: Icons.bookOpen,
-                color: '#10b981',
             },
             {
                 id: 'experimental',

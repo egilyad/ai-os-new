@@ -48,7 +48,6 @@ const ChatSessionsManagerPanel = React.lazy(() => import('./components/ChatSessi
 const SessionHubPanel = React.lazy(() => import('./components/SessionHubPanel'));
 const KeyNotesPanel = React.lazy(() => import('./components/KeyNotesPanel'));
 const AgentJournalPanel = React.lazy(() => import('./components/AgentJournalPanel'));
-const DecisionLogPanel = React.lazy(() => import('./components/DecisionLogPanel'));
 const StateInspectorPanel = React.lazy(
     () => import('./components/StateInspectorPanel/StateInspectorPanel'),
 );
@@ -123,7 +122,7 @@ const GeminiResearchLazy = React.lazy(
 );
 const AudiencePanelLazy = React.lazy(() => import('./components/AudiencePanel'));
 const EditorsPanelLazy = React.lazy(() => import('./components/Editors/EditorsPanel'));
-const TutorialPanelLazy = React.lazy(() => import('./components/TutorialPanel'));
+const LearnHubPanelLazy = React.lazy(() => import('./components/LearnHubPanel'));
 const CommunityHubPanelLazy = React.lazy(() => import('./components/CommunityHubPanel'));
 const ExportImportPanelLazy = React.lazy(() => import('./components/ExportImportPanel'));
 const CollaborationPanelLazy = React.lazy(() => import('./components/CollaborationPanel'));
@@ -197,9 +196,6 @@ const ConnectorsPanelLazy = React.lazy(
 );
 const KnowledgePanelLazy = React.lazy(() => import('./components/KnowledgePanel/KnowledgePanel'));
 const SettingsPanelLazy = React.lazy(() => import('./components/SettingsPanel/SettingsPanel'));
-const DocumentationPanelLazy = React.lazy(
-    () => import('./components/DocumentationPanel/DocumentationPanel'),
-);
 const AnalyticsPanelLazy = React.lazy(() => import('./components/AnalyticsPanel/AnalyticsPanel'));
 const SkillsPanelLazy = React.lazy(() => import('./components/SkillsPanel/SkillsPanel'));
 const TasksPanelLazy = React.lazy(() => import('./components/TasksPanel/TasksPanel'));
@@ -211,7 +207,6 @@ const PoolStatusPanelLazy = React.lazy(
 );
 const PolicyPanelLazy = React.lazy(() => import('./components/PolicyPanel/PolicyPanel'));
 const MCPPanelLazy = React.lazy(() => import('./components/MCPPanel/MCPPanel'));
-const PatternsPanelLazy = React.lazy(() => import('./components/PatternsPanel/PatternsPanel'));
 
 const SchedulerPanelLazy = React.lazy(() => import('./components/SchedulerPanel'));
 const RivalsCatalogPanelLazy = React.lazy(() => import('./components/RivalsCatalogPanel'));
@@ -336,10 +331,7 @@ export const PANEL_COMPONENTS: Record<string, React.ComponentType<any>> = {
     'causal-debugger': CausalDebugger,
     counterfactual: CounterfactualPanel,
     aquarium: AquariumPanel,
-    patterns: PatternsPanelLazy,
     knowledge: KnowledgePanelLazy,
-    docs: DocumentationPanelLazy,
-    'decision-log': DecisionLogPanel,
     'project-os': ProjectOsExplorer,
     'hypothesis-gen': HypothesisGenerator,
     'research-advanced': ResearchEngineAdvancedPanelLazy,
@@ -361,7 +353,7 @@ export const PANEL_COMPONENTS: Record<string, React.ComponentType<any>> = {
     'google-studio': GoogleStudioPanelLazy,
     'google-cache': GoogleCachePanelLazy,
     'gemini-live': GeminiLivePanelLazy,
-    tutorials: TutorialPanelLazy,
+    tutorials: LearnHubPanelLazy,
     'team-collaboration': CollaborationPanelLazy,
     'model-distillation': DistillationPanelLazy,
     deploy: DeployPanelLazy,
