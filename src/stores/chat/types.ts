@@ -102,9 +102,9 @@ export interface ChatActions {
     moveToFolder: (id: string, folder: string) => void;
     pinSession: (id: string) => void;
     importSessions: (importedSessions: ChatSession[]) => void;
-    switchModel: (provider: string, model: string) => void;
-    switchKey: (keyId: string) => void;
-    setAgent: (agentId: string | null) => void;
+    switchModel: (provider: string, model: string) => Promise<void>;
+    switchKey: (keyId: string) => Promise<void>;
+    setAgent: (agentId: string | null) => Promise<void>;
     getSessionConfig: () => { provider?: string; model?: string; keyId?: string; agentId?: string } | undefined;
     destroy: () => void;
 }

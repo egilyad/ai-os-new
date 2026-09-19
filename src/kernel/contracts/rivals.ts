@@ -110,4 +110,6 @@ export interface IDyadService extends ILifecycle {
         maxTurns?: number;
         stopPhrases?: string[];
     }): Promise<AgentLoop>;
+    listLoops(): Promise<AgentLoop[]>;
+    getLoop(id: string): Promise<AgentLoop | null>;
 }

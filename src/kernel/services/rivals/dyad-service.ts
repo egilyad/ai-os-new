@@ -97,6 +97,14 @@ export class DyadService implements IDyadService {
         return loop;
     }
 
+    async listLoops(): Promise<AgentLoop[]> {
+        return this.repo.listLoops();
+    }
+
+    async getLoop(id: string): Promise<AgentLoop | null> {
+        return this.repo.getLoop(id);
+    }
+
     private async say(system: string, user: string, role: string, sessionId: string): Promise<string> {
         if (this.llm) {
             try {

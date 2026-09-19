@@ -38,6 +38,7 @@ import { useChatStore } from '../../stores/chat/store';
 import { useMediaQuery } from '../../hooks/useMediaQuery';
 import { useNow } from '../../hooks/useNow';
 import { useDebatePanelSubscriptions } from './useDebatePanelSubscriptions';
+import { resolveAgentIdentity } from '../../kernel/services/agent-identity';
 import { HistoricalFiguresPicker } from './HistoricalFiguresPicker';
 import { DebateSessionHeader } from './DebateSessionHeader';
 import { getHistoricalFigure } from '../../kernel/instances';
