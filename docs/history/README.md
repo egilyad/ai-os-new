@@ -13,4 +13,9 @@
 
 | Дата | Что | Откуда |
 |---|---|---|
-| — | (пока пусто) | — |
+| 2026-09-18 | N-серия (N1…N4d + POST, 12 файлов) — закрытые PASS-static батчи | `docs/` |
+| 2026-09-18 | T-серия (T1.2…T3.2 POST, 6 файлов) — закрытые done-батчи | `docs/` |
+| 2026-09-18 | D-планы и префлайты (D2×3, D3, D4.3×6, D4.4, D4.5×3, D4.6, 12 файлов) | `docs/` |
+| 2026-09-18 | `R-GAP-03_POST_AUDIT.md` (R-GAP-03 CLOSED-static) | `docs/` |
+| 2026-09-18 | Промпты аудитов (`AUDIT_PROMPT_V2/V3/V4`, `CAPABILITY_PROMPT_V6`, `CONSOLIDATION_PROMPT`) | `docs/` |
+| 2026-09-18 | `DEBATE_SYSTEM_AUDIT_D1.md` (GAP-01…11), `DEBATE_RUNTIME_REAUDIT_POST_N4.md` (R-GAP-01…18), `COUNCIL_DEBATE_CONSOLIDATION_AUDIT.md` — источники открытых гэпов, см. `../audits/OPEN_GAPS.md` | `docs/` |
