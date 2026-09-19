@@ -97,7 +97,7 @@ export function LayoutProvider({ children }: { children: React.ReactNode }) {
         if (route.startsWith('/debate'))
             return ['default', 'wide', 'cinema', 'focus', 'presentation'];
         if (route.startsWith('/chat')) return ['default', 'wide', 'focus'];
-        if (route.startsWith('/ecosystem') || route.startsWith('/aquarium'))
+        if (route.startsWith('/aquarium'))
             return ['default', 'wide', 'cinema'];
         return ['default', 'wide', 'focus', 'debug'];
     }, [route]);

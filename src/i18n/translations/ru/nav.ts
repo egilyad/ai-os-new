@@ -151,7 +151,6 @@ const nav: Record<string, string> = {
     'nav.governance_stress_test': 'Стресс-тест управления',
     'nav.observability_gaps_scanner': 'сканер пробелов наблюдаемости',
     'nav.aquarium': 'аквариум',
-    'nav.ecosystem': 'экосистема',
     'nav.guardians': 'стражи',
     'nav.memory_palace': 'Дворец памяти',
     'nav.eval_datasets': 'наборы данных для оценки',

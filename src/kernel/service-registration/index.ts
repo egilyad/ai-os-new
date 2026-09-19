@@ -9,7 +9,6 @@ import { registerPhase6 } from './phase6-high-level';
 import { registerPhase7 } from './phase7-memory-eval-metrics';
 import { registerPhase8 } from './phase8-roles-consortia';
 import { registerPhase9 } from './phase9-research-engine';
-import { registerPhase10 } from './phase10-ecosystem';
 import { registerPhase11 } from './phase11-causal-debugger';
 import { registerPhase13 } from './phase13-lenses';
 import { registerPhase14 } from './phase14-crystals';
@@ -87,7 +86,6 @@ export function registerServices(
     registerPhase7(helpers, ctx);
     registerPhase8(helpers, ctx);
     registerPhase9(helpers, ctx);
-    registerPhase10(helpers, ctx);
     registerPhase11(helpers, ctx);
     registerPhase13(helpers, ctx);
     registerPhase14(helpers, ctx);

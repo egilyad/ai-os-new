@@ -113,9 +113,6 @@ const ResearchEnginePanelLazy = React.lazy(
 const ResearchEngineAdvancedPanelLazy = React.lazy(
     () => import('./components/ResearchPanel/ResearchEngineAdvancedPanel'),
 );
-const EcosystemDashboardLazy = React.lazy(
-    () => import('./components/AquariumPanel/EcosystemDashboard'),
-);
 const GoogleStudioPanelLazy = React.lazy(
     () => import('./components/GoogleStudio/GoogleStudioPanel'),
 );
@@ -360,7 +357,6 @@ export const PANEL_COMPONENTS: Record<string, React.ComponentType<any>> = {
     'obs-gaps': ObsGaps,
     'debate-system-research': DebateSystemResearch,
     'research-engine': ResearchEnginePanelLazy,
-    ecosystem: EcosystemDashboardLazy,
     skills: SkillsPanelLazy,
     tools: ToolsPanelLazy,
     cache: CachePanel,

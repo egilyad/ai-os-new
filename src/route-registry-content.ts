@@ -621,14 +621,6 @@ export const CONTENT_SECTIONS: NavSection[] = [
                 experimental: true,
             },
             {
-                id: 'ecosystem',
-                labelKey: 'nav.ecosystem',
-                icon: Icons.fish,
-                color: '#22c55e',
-                lazy: true,
-                experimental: true,
-            },
-            {
                 id: 'health-sla',
                 labelKey: 'nav.health_sla',
                 icon: Icons.slidersHorizontal,

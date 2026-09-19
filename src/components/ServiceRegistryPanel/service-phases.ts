@@ -200,7 +200,7 @@ export const SERVICE_PHASE: Record<string, string> = {
     researchEngine: 'phase9',
     geminiResearchService: 'phase9',
 
-    ecosystemEngine: 'phase10',
+    ecosystemService: 'phase30',
 
     causalScopeManager: 'phase11',
     causalTimelineService: 'phase11',
@@ -313,7 +313,6 @@ export const VALID_ROUTE_IDS: string[] = [
     'causal-debugger',
     'counterfactual',
     'aquarium',
-    'ecosystem',
     'health-sla',
     'leaderboard',
     'federated-memory',
@@ -462,7 +461,6 @@ export const ROUTE_PATH: Record<string, string> = {
     'causal-debugger': '/causal-debugger',
     counterfactual: '/counterfactual',
     aquarium: '/aquarium',
-    ecosystem: '/ecosystem',
     'health-sla': '/health-sla',
     leaderboard: '/leaderboard',
     'federated-memory': '/federated-memory',
@@ -749,9 +747,6 @@ export const SERVICE_ROUTE_MAP: Record<string, string> = {
     // Phase 9 — Research
     researchEngine: 'research-engine',
     geminiResearchService: 'research-gemini',
-
-    // Phase 10 — Ecosystem
-    ecosystemEngine: 'ecosystem',
 
     // Phase 11 — Causal
     schedulerService: 'scheduler',

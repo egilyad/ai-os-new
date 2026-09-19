@@ -36,7 +36,6 @@ import type { MemoryOrchestrator } from '../services/memory-orchestrator';
 import type { IEvalDatasetService } from '../contracts/eval-dataset';
 import type { ICustomMetricsService } from '../contracts/custom-metrics';
 import type { IUnifiedRoleRegistry } from '../contracts/unified-role';
-import type { IEcosystemEngine } from '../contracts/ecosystem';
 import type { IRoleTeamService } from '../contracts/role-team';
 import type { ChatExecutor } from '../services/chat-executor';
 import type { AutoDebateService as AutoDebateServiceType } from '../services/debate-runtime/auto-debate/auto-debate-service';
@@ -79,7 +78,6 @@ export const evalDatasetService = lazyService<IEvalDatasetService>('evalDatasetS
 export const customMetricsService = lazyService<ICustomMetricsService>('customMetricsService');
 export const unifiedRoleRegistry = lazyService<IUnifiedRoleRegistry>('unifiedRoleRegistry');
 export const roleTeamService = lazyService<IRoleTeamService>('roleTeamService');
-export const ecosystemEngine = lazyService<IEcosystemEngine>('ecosystemEngine');
 
 export const monitoringService = lazyService<MonitoringService>('monitoringService');
 export const cognitiveIntelligenceService = lazyService<CognitiveIntelligenceService>(
