@@ -191,7 +191,6 @@ const PersonaMarketplacePanelLazy = React.lazy(
 const PersonaPickerPanelLazy = React.lazy(() => import('./components/PersonaPickerPanel'));
 const TemplateSharingPanelLazy = React.lazy(() => import('./components/TemplateSharingPanel'));
 const MemoryTransferPanelLazy = React.lazy(() => import('./components/MemoryTransferPanel'));
-const AquariumTradingPanelLazy = React.lazy(() => import('./components/AquariumTradingPanel'));
 const TimeMachinePanelLazy = React.lazy(() => import('./components/TimeMachinePanel'));
 const ContributionGraphPanelLazy = React.lazy(() => import('./components/ContributionGraphPanel'));
 
@@ -424,7 +423,6 @@ export const PANEL_COMPONENTS: Record<string, React.ComponentType<any>> = {
     'persona-picker': PersonaPickerPanelLazy,
     'template-sharing': TemplateSharingPanelLazy,
     'memory-export-import': MemoryTransferPanelLazy,
-    'aquarium-trading': AquariumTradingPanelLazy,
     'time-machine': TimeMachinePanelLazy,
     'contribution-graph': ContributionGraphPanelLazy,
     // Collapsed ~33 orphaned ComingSoonPanel debate sub-service stubs (Q8) into

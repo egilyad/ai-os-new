@@ -658,14 +658,6 @@ export const CONTENT_SECTIONS: NavSection[] = [
                 lazy: true,
             },
             {
-                id: 'aquarium-trading',
-                labelKey: 'nav.aquarium_trading',
-                icon: Icons.fish,
-                color: '#06b6d4',
-                lazy: true,
-                experimental: true,
-            },
-            {
                 id: 'scheduler',
                 labelKey: 'nav.scheduler',
                 icon: Icons.clock,

@@ -75,7 +75,6 @@ import { PluginSdkService } from '../services/plugin-sdk-service';
 import { PersonaMarketplaceService } from '../services/persona-marketplace-service';
 import { TemplateSharingService } from '../services/template-sharing-service';
 import { MemoryTransferService } from '../services/memory-transfer-service';
-import { AquariumTradingService } from '../services/aquarium-trading-service';
 import { TimeMachineService } from '../services/time-machine-service';
 import { ContributionService } from '../services/contribution-service';
 import { MetaLearningService } from '../services/meta-learning-service';
@@ -366,8 +365,6 @@ export const registerPhase6: Phase = (helpers, ctx) => {
                 database: c.get<IDatabaseService>('database'),
             }),
     );
-    // ── Aquarium Trading Service ──────────────────────
-    register('aquariumTradingService', (_c) => new AquariumTradingService());
     // ── Time Machine Service ──────────────────────────
     register(
         'timeMachineService',

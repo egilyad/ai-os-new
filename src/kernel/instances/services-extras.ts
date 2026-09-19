@@ -51,7 +51,6 @@ import type { IPluginSdkService } from '../contracts/plugin-sdk';
 import type { IPersonaMarketplaceService } from '../contracts/persona-marketplace';
 import type { ITemplateSharingService } from '../contracts/template-sharing';
 import type { IMemoryTransferService } from '../contracts/memory-transfer';
-import type { IAquariumTradingService } from '../contracts/aquarium-trading';
 import type { ITimeMachineService } from '../contracts/time-machine';
 import type { IContributionService } from '../contracts/contribution';
 import type { IGeminiLiveService } from '../contracts/gemini-live';
@@ -702,8 +701,6 @@ export const personaMarketplaceService = lazyService<IPersonaMarketplaceService>
 export const templateSharingService =
     lazyService<ITemplateSharingService>('templateSharingService');
 export const memoryTransferService = lazyService<IMemoryTransferService>('memoryTransferService');
-export const aquariumTradingService =
-    lazyService<IAquariumTradingService>('aquariumTradingService');
 export const timeMachineService = lazyService<ITimeMachineService>('timeMachineService');
 export const contributionService = lazyService<IContributionService>('contributionService');
 export const geminiLiveService = lazyService<IGeminiLiveService>('geminiLiveService');

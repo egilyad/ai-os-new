@@ -192,7 +192,6 @@ const nav: Record<string, string> = {
     'nav.template_sharing': 'Общий доступ к шаблону',
     'nav.experimental': 'Эксперименты',
     'nav.memory_export_import': 'Память Экспорт Импорт',
-    'nav.aquarium_trading': 'торговля в аквариуме',
     'nav.time_machine': 'машина времени',
     'nav.contribution_graph': 'Граф вклада',
     'nav.google_studio': 'Google Studio',

@@ -565,7 +565,6 @@ export type {
     MemoryImport,
     ExportFormat,
 } from './memory-transfer';
-export type { IAquariumTradingService, TradeOffer, TradeStatus } from './aquarium-trading';
 export type { ITimeMachineService, TimeSnapshot, SnapshotScope } from './time-machine';
 export type {
     IContributionService,
