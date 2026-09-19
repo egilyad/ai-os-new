@@ -2,7 +2,10 @@
   "extends": "./tsconfig.app.json",
   "compilerOptions": {
     "types": ["vite/client", "vitest/globals"],
-    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.test.tsbuildinfo"
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.test.tsbuildinfo",
+    // Tests assert shapes at runtime (expect().toBe() before indexing), so
+    // strict indexed access only produces noise here. Production (app) stays strict.
+    "noUncheckedIndexedAccess": false
   },
   "include": [
     "src/**/*.test.ts",

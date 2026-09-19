@@ -29,7 +29,5 @@ export const DOC_FILES = [
     'docs/SYSTEM_PASSPORT.md',
     'docs/COGNITIVE_RUNTIME_SPEC.md',
     'docs/ПОЛНЫЙ_РЕЕСТР.md',
-    'docs/ДЛЯ_ДЕДУШКИ.md',
     'docs/DEBT_REPORT.md',
-    'docs/BACKLOG_UI.md',
 ];
