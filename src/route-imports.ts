@@ -127,7 +127,6 @@ const TutorialPanelLazy = React.lazy(() => import('./components/TutorialPanel'))
 const CommunityHubPanelLazy = React.lazy(() => import('./components/CommunityHubPanel'));
 const ExportImportPanelLazy = React.lazy(() => import('./components/ExportImportPanel'));
 const CollaborationPanelLazy = React.lazy(() => import('./components/CollaborationPanel'));
-const FineTuningPanelLazy = React.lazy(() => import('./components/FineTuningPanel'));
 const AgentComparisonPanelLazy = React.lazy(() => import('./components/AgentComparisonPanel'));
 const DebateTemplatesPanelLazy = React.lazy(() => import('./components/DebateTemplatesPanel'));
 const SmartRoutingPanelLazy = React.lazy(() => import('./components/SmartRoutingPanel'));
@@ -364,7 +363,6 @@ export const PANEL_COMPONENTS: Record<string, React.ComponentType<any>> = {
     'gemini-live': GeminiLivePanelLazy,
     tutorials: TutorialPanelLazy,
     'team-collaboration': CollaborationPanelLazy,
-    'fine-tuning': FineTuningPanelLazy,
     'model-distillation': DistillationPanelLazy,
     deploy: DeployPanelLazy,
     'budget-alerts': BudgetAlertsPanelLazy,

@@ -465,15 +465,6 @@ export type {
 } from './team-collaboration';
 
 export type {
-    FineTuningMethod,
-    FineTuningStatus,
-    FineTuningHyperparams,
-    FineTuningDataset,
-    FineTuningJob,
-    IFineTuningService,
-} from './fine-tuning';
-
-export type {
     DistillationMethod,
     DistillationStatus,
     DistillationConfig,

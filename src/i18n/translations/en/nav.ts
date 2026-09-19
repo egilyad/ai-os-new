@@ -165,7 +165,6 @@ const nav: Record<string, string> = {
     'nav.research_engine': 'Research Engine',
     'nav.tutorials': 'Tutorials',
     'nav.team_collaboration': 'Team Collaboration',
-    'nav.fine_tuning': 'Fine-Tuning',
     'nav.model_distillation': 'Model Distillation',
     'nav.deploy': 'Deploy to Production',
     'nav.budget_alerts': 'Budget Alerts',

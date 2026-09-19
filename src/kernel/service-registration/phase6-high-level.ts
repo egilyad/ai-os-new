@@ -57,7 +57,6 @@ import { ReconnectionService } from '../services/reconnection-service';
 import { AudienceService } from '../services/audience-service';
 import { TutorialService } from '../services/tutorial-service';
 import { TeamCollaborationService } from '../services/team-collaboration-service';
-import { FineTuningService } from '../services/fine-tuning-service';
 import { DistillationService } from '../services/model-distillation-service';
 import { DeployService } from '../services/deploy-service';
 import { BudgetAlertService } from '../services/budget-alert-service';
@@ -289,8 +288,6 @@ export const registerPhase6: Phase = (helpers, ctx) => {
     register('tutorialService', (_c) => new TutorialService());
     // ── Team Collaboration Service ──────────────────────────────
     register('teamCollaborationService', (_c) => new TeamCollaborationService());
-    // ── Fine-Tuning Service ───────────────────────────────────
-    register('fineTuningService', (_c) => new FineTuningService());
     // ── Distillation Service ─────────────────────────────────
     register('distillationService', (_c) => new DistillationService());
     // ── Deploy to Production Service ─────────────────────────

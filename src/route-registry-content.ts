@@ -498,13 +498,6 @@ export const CONTENT_SECTIONS: NavSection[] = [
                 experimental: true,
             },
             {
-                id: 'fine-tuning',
-                labelKey: 'nav.fine_tuning',
-                icon: Icons.brain,
-                color: '#a855f7',
-                lazy: true,
-            },
-            {
                 id: 'team-collaboration',
                 labelKey: 'nav.team_collaboration',
                 icon: Icons.users,

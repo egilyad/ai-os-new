@@ -322,7 +322,7 @@ export interface FeatureFlagsConfigSection {
         experimentalVisuals: boolean;
     };
     mockServices: {
-        /** Master switch for @deprecated MOCK backends (deploy, fine-tuning, distillation, health-sla).
+        /** Master switch for @deprecated MOCK backends (deploy, distillation, health-sla).
          *  When disabled, their UI panels render a placeholder instead of simulated data. */
         enabled: boolean;
     };

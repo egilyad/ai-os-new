@@ -34,7 +34,6 @@ import type { IGeminiResearchService } from '../contracts/gemini-research';
 import type { IAudienceService } from '../contracts/audience';
 import type { ITutorialService } from '../contracts/tutorial';
 import type { ITeamCollaborationService } from '../contracts/team-collaboration';
-import type { IFineTuningService } from '../contracts/fine-tuning';
 import type { IDistillationService } from '../contracts/model-distillation';
 import type { IDeployService } from '../contracts/deploy';
 import type { IBudgetAlertService } from '../contracts/budget-alert';
@@ -673,7 +672,6 @@ export const tutorialService = lazyService<ITutorialService>('tutorialService');
 export const teamCollaborationService = lazyService<ITeamCollaborationService>(
     'teamCollaborationService',
 );
-export const fineTuningService = lazyService<IFineTuningService>('fineTuningService');
 export const distillationService = lazyService<IDistillationService>('distillationService');
 export const deployService = lazyService<IDeployService>('deployService');
 export const budgetAlertService = lazyService<IBudgetAlertService>('budgetAlertService');
