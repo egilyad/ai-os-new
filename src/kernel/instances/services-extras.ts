@@ -55,7 +55,6 @@ import type { ITimeMachineService } from '../contracts/time-machine';
 import type { IContributionService } from '../contracts/contribution';
 import type { IGeminiLiveService } from '../contracts/gemini-live';
 import type { IMetaLearningService } from '../contracts/meta-learning';
-import type { IQuantumInspirationService } from '../contracts/quantum-inspiration';
 import type { ISmartRoutingService } from '../contracts/smart-routing';
 import type { INvidiaEnterpriseService } from '../contracts/nvidia-enterprise';
 import type { IGeminiCacheService } from '../contracts/gemini-cache';
@@ -705,9 +704,6 @@ export const timeMachineService = lazyService<ITimeMachineService>('timeMachineS
 export const contributionService = lazyService<IContributionService>('contributionService');
 export const geminiLiveService = lazyService<IGeminiLiveService>('geminiLiveService');
 export const metaLearningService = lazyService<IMetaLearningService>('metaLearningService');
-export const quantumInspirationService = lazyService<IQuantumInspirationService>(
-    'quantumInspirationService',
-);
 export const smartRoutingService = lazyService<ISmartRoutingService>('smartRoutingService');
 export const nvidiaEnterpriseService =
     lazyService<INvidiaEnterpriseService>('nvidiaEnterpriseService');

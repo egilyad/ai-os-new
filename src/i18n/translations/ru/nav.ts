@@ -199,7 +199,6 @@ const nav: Record<string, string> = {
     'nav.agent_scheduler': 'Планировщик агентов',
     'nav.scheduler': 'Планировщик',
     'nav.meta_learning': 'Мета-обучение',
-    'nav.quantum_inspiration': 'Квантовое вдохновение',
     'nav.debate_quality': 'Качество дебатов',
     'nav.quality_impact': 'Влияние техник',
     'nav.debate_runtime_arena': 'Арена дебатов',

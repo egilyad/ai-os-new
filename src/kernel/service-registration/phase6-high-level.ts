@@ -78,7 +78,6 @@ import { MemoryTransferService } from '../services/memory-transfer-service';
 import { TimeMachineService } from '../services/time-machine-service';
 import { ContributionService } from '../services/contribution-service';
 import { MetaLearningService } from '../services/meta-learning-service';
-import { QuantumInspirationService } from '../services/quantum-inspiration-service';
 import { SmartRoutingService } from '../services/smart-routing-service';
 import {
     NvidiaEnterpriseService,
@@ -404,8 +403,6 @@ export const registerPhase6: Phase = (helpers, ctx) => {
     register('agentAvatarService', (_c) => new AgentAvatarService());
     // ── Meta-Learning / Self-Improvement Service ─────
     register('metaLearningService', (_c) => new MetaLearningService());
-    // ── Quantum Inspiration Service ─────────────────
-    register('quantumInspirationService', (_c) => new QuantumInspirationService());
     // ── Smart Routing Service ─────────────────────
     register(
         'smartRoutingService',

@@ -673,14 +673,6 @@ export const CONTENT_SECTIONS: NavSection[] = [
                 experimental: true,
             },
             {
-                id: 'quantum-inspiration',
-                labelKey: 'nav.quantum_inspiration',
-                icon: Icons.atom,
-                color: '#a855f7',
-                lazy: true,
-                experimental: true,
-            },
-            {
                 id: 'governance',
                 labelKey: 'nav.governance',
                 icon: Icons.shield,

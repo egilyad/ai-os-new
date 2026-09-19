@@ -122,9 +122,6 @@ const MetaLearningPanelLazy = React.lazy(() => import('./components/MetaLearning
 const GeminiResearchLazy = React.lazy(
     () => import('./components/GeminiResearch/GeminiResearchPanel'),
 );
-const QuantumInspirationPanelLazy = React.lazy(
-    () => import('./components/QuantumInspirationPanel'),
-);
 const AudiencePanelLazy = React.lazy(() => import('./components/AudiencePanel'));
 const EditorsPanelLazy = React.lazy(() => import('./components/Editors/EditorsPanel'));
 const TutorialPanelLazy = React.lazy(() => import('./components/TutorialPanel'));
@@ -367,7 +364,6 @@ export const PANEL_COMPONENTS: Record<string, React.ComponentType<any>> = {
     'google-cache': GoogleCachePanelLazy,
     'gemini-live': GeminiLivePanelLazy,
     'meta-learning': MetaLearningPanelLazy,
-    'quantum-inspiration': QuantumInspirationPanelLazy,
     tutorials: TutorialPanelLazy,
     'team-collaboration': CollaborationPanelLazy,
     'fine-tuning': FineTuningPanelLazy,

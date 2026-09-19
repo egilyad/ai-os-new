@@ -584,12 +584,6 @@ export type {
     LearningSignal,
     LearnedPattern,
 } from './meta-learning';
-export type {
-    IQuantumInspirationService,
-    QuantumOptimizationProblem,
-    QuantumSolution,
-    QuantumSolverType,
-} from './quantum-inspiration';
 
 // ── Gemini Research ─────────────────────────────────────────────
 export type {
