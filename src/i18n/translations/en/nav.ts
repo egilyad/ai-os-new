@@ -21,7 +21,6 @@ const nav: Record<string, string> = {
     'nav.rival_labs': 'Rival Labs',
     'nav.section_google': 'GOOGLE AI',
     'nav.section_fleet': 'FLEET',
-    'nav.section_docs': 'DOCUMENTATION',
     'nav.section_research': 'RESEARCH',
     'nav.section_patterns': 'PATTERNS',
     'nav.section_knowledge_one': 'KNOWLEDGE',

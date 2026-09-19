@@ -296,36 +296,6 @@ export const CONTENT_SECTIONS: NavSection[] = [
         ],
     },
     {
-        // DOCUMENTATION category (menu cleanup). Route ids unchanged.
-        id: 'section-docs',
-        labelKey: 'nav.section_docs',
-        items: [
-            {
-                id: 'arch-review',
-                labelKey: 'nav.architecture_review',
-                icon: Icons.bookText,
-                color: '#10b981',
-                lazy: true,
-                experimental: true,
-            },
-            {
-                id: 'prompt-audit',
-                labelKey: 'nav.prompt_strategy_audit',
-                icon: Icons.terminal,
-                color: '#f59e0b',
-                lazy: true,
-                experimental: true,
-            },
-            {
-                id: 'template-sharing',
-                labelKey: 'nav.template_sharing',
-                icon: Icons.share2,
-                color: '#10b981',
-                lazy: true,
-            },
-        ],
-    },
-    {
         // RESEARCH category (menu cleanup). Route ids unchanged, only grouping changed.
         id: 'section-research',
         labelKey: 'nav.section_research',
@@ -837,6 +807,29 @@ export const CONTENT_SECTIONS: NavSection[] = [
                 labelKey: 'nav.openrouter',
                 icon: Icons.share2,
                 color: '#a855f7',
+                lazy: true,
+            },
+            {
+                id: 'arch-review',
+                labelKey: 'nav.architecture_review',
+                icon: Icons.bookText,
+                color: '#10b981',
+                lazy: true,
+                experimental: true,
+            },
+            {
+                id: 'prompt-audit',
+                labelKey: 'nav.prompt_strategy_audit',
+                icon: Icons.terminal,
+                color: '#f59e0b',
+                lazy: true,
+                experimental: true,
+            },
+            {
+                id: 'template-sharing',
+                labelKey: 'nav.template_sharing',
+                icon: Icons.share2,
+                color: '#10b981',
                 lazy: true,
             },
         ],
