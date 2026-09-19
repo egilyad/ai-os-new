@@ -11,4 +11,12 @@
 
 ## Состав
 
-Заполняется по мере триажа (кандидаты: `00–10*.md`, `events.md`, `DEV_QUICKSTART.md`, `STRUCTURE.md` после правок).
+Активный канон живёт в **корне `docs/`** (не здесь) — так требуют потребители в коде:
+`DocsHealthPanel` (`DOC_FILES`), `DebateResearch`-компоненты, `code-manifest`, `hypothesis-service`
+фетчат пути вида `docs/00-overview.md` на рантайме. Перемещение канона = править все эти
+места в том же коммите.
+
+Канон корня: `00–10` (EN+RU, 22 файла), `events.md`, `STRUCTURE.md`, `SERVICES_RU.md`,
+`SYSTEM_MANIFEST*.md`, `SYSTEM_PASSPORT.md`, `ПОЛНЫЙ_РЕЕСТР.md`, `DEBT_REPORT.md`,
+`COGNITIVE_RUNTIME_SPEC.md`, `PANEL_MAP.md` (автоген), `DEV_QUICKSTART.md`, `README.md`,
+ADR `001–005`. Эта папка (`active/`) — для новых активных документов вне канона.

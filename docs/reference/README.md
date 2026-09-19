@@ -11,4 +11,7 @@
 
 ## Состав
 
-Заполняется по мере триажа (кандидаты: `CAPABILITY_MATRIX.md`, `events.md`, `SERVICES_RU.md`, один UI-реестр, один реестр сервисов).
+- `roadmapp.md` — нормативный док project-контрактов (`IProjectManagerService` ссылается).
+- `CAPABILITY_MATRIX.md` — матрица честности (STATICALLY VERIFIED, статусы A–G).
+- `USER_ACTION_MAP.md`, `USER_CONTROL_MAP.md` — карты действий/контроля пользователя.
+- `COGNITIVE_MODULES_GUIDE.md` — гид по когнитивным модулям.
