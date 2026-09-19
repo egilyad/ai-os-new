@@ -9,8 +9,9 @@ export const taskTriggerService = {
         return rec;
     },
     list(taskId: string) { return getDexieDb().taskTriggers.where('taskId').equals(taskId).toArray() as Promise<TaskTrigger[]>; },
-    async fire(taskId: string, newStatus: AgemsTaskStatus) {
-        const triggers = await getDexieDb().taskTriggers.where({ taskId, onStatus: newStatus } as never).toArray() as unknown as TaskTrigger[];
+    async fire(taskId: string, newStatus: AgemsTaskStatus): Promise<TaskTrigger[]> {
+        // Dexie where() takes an index name, not an object — filter compound condition via and()
+        const triggers = await getDexieDb().taskTriggers.where('taskId').equals(taskId).and((t) => t.onStatus === newStatus).toArray();
         for (const t of triggers.filter(x => x.enabled)) {
             // minimal: log; in prod dispatch action target
             console.log(`[Trigger] ${taskId} ${newStatus} -> ${t.action} ${t.target ?? ''}`);

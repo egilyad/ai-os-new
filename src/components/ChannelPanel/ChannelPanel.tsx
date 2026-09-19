@@ -69,7 +69,7 @@ const ChannelPanel: React.FC = () => {
 
     useEffect(() => {
         if (!selectedId) { setMembers([]); setTyping([]); setPresence([]); return; }
-        const svc = channelService();
+        const svc = channelService;
         svc.getMembers(selectedId).then(setMembers);
         svc.getPresence(selectedId).then(setPresence);
         const interval = setInterval(() => {
@@ -80,7 +80,7 @@ const ChannelPanel: React.FC = () => {
     }, [selectedId, messages]);
 
     const loadThread = useCallback(async (rootId: string) => {
-        const svc = channelService();
+        const svc = channelService;
         const thread = await svc.getThread(rootId);
         setThreadMessages(thread);
         setViewThread(rootId);
@@ -88,7 +88,7 @@ const ChannelPanel: React.FC = () => {
 
     const handleSend = useCallback(async () => {
         if (!input.trim() || !selectedId) return;
-        const svc = channelService();
+        const svc = channelService;
         const mentions = input.match(/@(\w+)/g)?.map((m) => m.slice(1)) || [];
         await svc.sendMessage({
             channelId: selectedId,
@@ -104,7 +104,7 @@ const ChannelPanel: React.FC = () => {
 
     const handleEdit = useCallback(async (msgId: string) => {
         if (!editContent.trim()) return;
-        const svc = channelService();
+        const svc = channelService;
         await svc.editMessage(msgId, editContent, 'human');
         setEditId(null);
         setEditContent('');
@@ -112,13 +112,13 @@ const ChannelPanel: React.FC = () => {
     }, [editContent, refresh]);
 
     const handleDelete = useCallback(async (msgId: string) => {
-        const svc = channelService();
+        const svc = channelService;
         await svc.deleteMessage(msgId, 'human');
         refresh();
     }, [refresh]);
 
     const handleReaction = useCallback(async (msgId: string, emoji: string) => {
-        const svc = channelService();
+        const svc = channelService;
         await svc.addReaction(msgId, 'human', emoji);
         setReactionPickerMsg(null);
         refresh();
@@ -126,7 +126,7 @@ const ChannelPanel: React.FC = () => {
 
     const handleCreate = useCallback(async () => {
         if (!newName.trim()) return;
-        const svc = channelService();
+        const svc = channelService;
         await svc.createChannel({
             name: newName.trim(),
             type: newType,

@@ -4,8 +4,8 @@
  * Pure consumer of project:* events from EventBus; never writes projects directly.
  */
 import { create } from 'zustand';
+import { eventBus, EVENTS } from '../kernel/events/event-bus';
 import type {
-    Project,
     ProjectId,
     ProjectTask,
     ProjectRun,
@@ -62,8 +62,8 @@ export const useProjectStore = create<ProjectStoreState>((set, get) => ({
     loadProjects: async () => {
         set({ loading: true, error: null });
         try {
-            const svc = projectManagerService();
-            const list = await svc.list();
+            // lazyService proxy is the instance itself — not callable
+            const list = await projectManagerService.list();
             const projects = new Map<ProjectId, ProjectView>();
             const order: ProjectId[] = [];
             for (const p of list) {
@@ -117,16 +117,13 @@ export function ensureSubscribed(): void {
     const reload = () => store.refresh?.();
 
     // Listen for project:* events and reload
-    try {
-        const { coreEventBus } = require('../kernel/events/event-bus');
-        _unsubs.push(
-            coreEventBus.onSafe('project:created', reload),
-            coreEventBus.onSafe('project:updated', reload),
-            coreEventBus.onSafe('project:deleted', reload),
-            coreEventBus.onSafe('project:agent:assigned', reload),
-            coreEventBus.onSafe('project:agent:removed', reload),
-        );
-    } catch { /* non-browser */ }
+    _unsubs.push(
+        eventBus.onSafe(EVENTS.PROJECT_CREATED, reload),
+        eventBus.onSafe(EVENTS.PROJECT_UPDATED, reload),
+        eventBus.onSafe(EVENTS.PROJECT_DELETED, reload),
+        eventBus.onSafe(EVENTS.PROJECT_AGENT_ASSIGNED, reload),
+        eventBus.onSafe(EVENTS.PROJECT_AGENT_REMOVED, reload),
+    );
 }
 
 export function destroy(): void {
