@@ -84,6 +84,8 @@ vi.mock('../../kernel/instances', () => {
             (handlers.get(event) ?? []).forEach((cb) => cb(payload));
         },
     };
+    const makeLogger = () => ({ info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn() });
+    const rootLogger = { ...makeLogger(), child: vi.fn(() => makeLogger()) };
     return {
         orchestrator: {
             getActiveTopology: vi.fn(() => ({
@@ -117,6 +119,13 @@ vi.mock('../../kernel/instances', () => {
             archiveDebateSession: vi.fn(),
         },
         eventBus,
+        rootLogger,
+        collaborativeService: {
+            getParticipants: vi.fn(() => []),
+            joinDebate: vi.fn(),
+            leaveDebate: vi.fn(),
+            submitArgument: vi.fn(),
+        },
         EVENTS: {
             NOTIFICATION: 'notification',
             DEBATE_VERDICT_GENERATED: 'debate:verdict_generated',
