@@ -378,9 +378,21 @@ export class SessionManagerService implements ISessionManager {
         LOGGER.warn('SessionManager', 'updateMeta: session not found — skipping', { id });
     }
 
+    private _historyLoadPromise: Promise<void> | null = null;
+
     private async ensureHistoryLoaded(): Promise<void> {
         if (this._historyLoaded) return;
-        this._historyLoaded = true;
+        // M-02: coalesce concurrent callers onto one load; flag is set only on
+        // success so a failed load retries on the next getDebateHistory().
+        if (!this._historyLoadPromise) {
+            this._historyLoadPromise = this.doLoadHistory().finally(() => {
+                this._historyLoadPromise = null;
+            });
+        }
+        return this._historyLoadPromise;
+    }
+
+    private async doLoadHistory(): Promise<void> {
         try {
             this.completedSessions = await loadHistoryList(this.debateStore, this.MAX_HISTORY);
             // Replay any saves that arrived while load was in flight
@@ -396,6 +408,10 @@ export class SessionManagerService implements ISessionManager {
             if (pending.length > 0) {
                 this.persistDebateHistory();
             }
+            this._historyLoaded = true;
+            // M-02: UIs read history synchronously on mount — notify them now that
+            // the first load completed (DebateHistoryPage refreshes on debate:updated).
+            this.eventBus.emit(EVENTS.DEBATE_UPDATED, { source: 'history-loaded' });
         } catch (e) {
             LOGGER.warn('SessionManagerService', 'Failed to load debate history', {
                 error: e instanceof Error ? e.message : String(e),
