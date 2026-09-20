@@ -123,14 +123,61 @@ export class GroqAdapter extends BaseLLMAdapter {
         if (options?.toolChoice) body.tool_choice = options.toolChoice;
 
         try {
+            type GroqToolDelta = {
+                index?: number;
+                id?: string;
+                type?: string;
+                function?: { name?: string; arguments?: string };
+            };
+            type GroqStreamChunk = {
+                choices?: Array<{
+                    delta?: { content?: string; tool_calls?: GroqToolDelta[] };
+                    finish_reason?: string;
+                }>;
+                x_groq?: { usage?: { total_tokens?: number } };
+                usage?: { total_tokens?: number };
+            };
+            let finalFinishReason: string | undefined;
+            let finalTokens: number | undefined;
+            const toolParts = new Map<number, { id?: string; name?: string; args: string }>();
             const stream = (await client.chat.completions.create(body as never, {
                 signal,
-            })) as unknown as AsyncIterable<{ choices?: { delta?: { content?: string } }[] }>;
+            })) as unknown as AsyncIterable<GroqStreamChunk>;
             for await (const chunk of stream) {
-                const delta = chunk.choices?.[0]?.delta;
+                const choice = chunk.choices?.[0];
+                const delta = choice?.delta;
                 if (delta?.content) {
                     onChunk(delta.content);
                 }
+                if (choice?.finish_reason) finalFinishReason = choice.finish_reason;
+                for (const tc of delta?.tool_calls ?? []) {
+                    const idx = tc.index ?? 0;
+                    const part = toolParts.get(idx) ?? { args: '' };
+                    if (tc.id) part.id = tc.id;
+                    if (tc.function?.name) part.name = tc.function.name;
+                    if (tc.function?.arguments) part.args += tc.function.arguments;
+                    toolParts.set(idx, part);
+                }
+                const usage = chunk.x_groq?.usage ?? chunk.usage;
+                if (typeof usage?.total_tokens === 'number') finalTokens = usage.total_tokens;
+            }
+            // H-07: terminal meta chunk — finish_reason/usage/tool_calls, otherwise
+            // budgets count $0 and length-truncation stays invisible.
+            if (finalFinishReason || finalTokens !== undefined || toolParts.size > 0) {
+                onChunk('', {
+                    finishReason: this.normalizeFinishReason(finalFinishReason),
+                    tokens: finalTokens,
+                    toolCalls:
+                        toolParts.size > 0
+                            ? [...toolParts.entries()]
+                                  .sort(([a], [b]) => a - b)
+                                  .map(([, p]): ToolCall => ({
+                                      id: p.id ?? '',
+                                      type: 'function',
+                                      function: { name: p.name ?? '', arguments: p.args },
+                                  }))
+                            : undefined,
+                });
             }
         } catch (e: unknown) {
             throw this.normalizeError(e);

@@ -29,6 +29,7 @@ export interface StreamMeta {
     usage?: Record<string, unknown>;
     reasoning?: string;
     tokens?: number;
+    toolCalls?: ToolCall[];
     safetyRatings?: Array<{
         category: string;
         probability: string;
