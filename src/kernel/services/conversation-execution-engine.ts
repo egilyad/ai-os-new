@@ -99,8 +99,18 @@ export class ChatExecutionEngine implements IExecutionEngine {
                 tokens?: number;
             }) => {
                 if (res.requestId !== requestId) return;
+                // H-01: interim statuses (cached/streaming/queued/loading) carry no
+                // final content — resolve only on terminal statuses.
+                if (
+                    res.status !== 'done' &&
+                    res.status !== 'error' &&
+                    res.status !== 'cancelled' &&
+                    res.status !== 'timeout'
+                ) {
+                    return;
+                }
                 cleanup();
-                if (res.status === 'error' || res.status === 'cancelled') {
+                if (res.status === 'error' || res.status === 'cancelled' || res.status === 'timeout') {
                     resolve({
                         success: false,
                         error: res.error ?? 'Chat error',
