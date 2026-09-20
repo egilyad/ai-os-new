@@ -432,14 +432,6 @@ export const CONTENT_SECTIONS: NavSection[] = [
                 lazy: true,
             },
             {
-                id: 'scheduler',
-                labelKey: 'nav.scheduler',
-                icon: Icons.clock,
-                color: '#3b82f6',
-                lazy: true,
-                experimental: true,
-            },
-            {
                 id: 'tutorials',
                 labelKey: 'nav.tutorials',
                 icon: Icons.sparkles,
@@ -454,24 +446,10 @@ export const CONTENT_SECTIONS: NavSection[] = [
                 lazy: true,
             },
             {
-                id: 'group-chat',
-                labelKey: 'nav.group_chat',
-                icon: Icons.users,
-                color: '#3b82f6',
-                lazy: true,
-            },
-            {
                 id: 'guardrails',
                 labelKey: 'nav.guardrails',
                 icon: Icons.shield,
                 color: '#ef4444',
-                lazy: true,
-            },
-            {
-                id: 'planner',
-                labelKey: 'nav.planner',
-                icon: Icons.clipboardList,
-                color: '#f59e0b',
                 lazy: true,
             },
             {

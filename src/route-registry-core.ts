@@ -162,6 +162,28 @@ export const CORE_SECTIONS: NavSection[] = [
                 color: '#06b6d4',
                 lazy: true,
             },
+            {
+                id: 'group-chat',
+                labelKey: 'nav.group_chat',
+                icon: Icons.users,
+                color: '#3b82f6',
+                lazy: true,
+            },
+            {
+                id: 'scheduler',
+                labelKey: 'nav.scheduler',
+                icon: Icons.clock,
+                color: '#3b82f6',
+                lazy: true,
+                experimental: true,
+            },
+            {
+                id: 'planner',
+                labelKey: 'nav.planner',
+                icon: Icons.clipboardList,
+                color: '#f59e0b',
+                lazy: true,
+            },
         ],
     },
     {
