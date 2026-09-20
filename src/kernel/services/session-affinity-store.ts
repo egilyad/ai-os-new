@@ -54,6 +54,14 @@ export class SessionAffinityStore implements ISessionAffinityStore, ILifecycle {
             }),
         );
         this.unsubs.push(
+            this.eventBus.on(EVENTS.SESSION_DELETED, (raw: unknown) => {
+                // M-04: session deletion must release bindings, otherwise healthy
+                // bindings without TTL accumulate in memory and Dexie forever.
+                const d = raw as { id?: string } | undefined;
+                if (d?.id) this.unbind(d.id);
+            }),
+        );
+        this.unsubs.push(
             this.eventBus.onSafe<{ id: string }>(EVENTS.KEY_REMOVED, (data) => {
                 this.removeKey(data.id);
             }),
@@ -104,6 +112,7 @@ export class SessionAffinityStore implements ISessionAffinityStore, ILifecycle {
 
     private reapExpired(): void {
         const now = Date.now();
+        let deleted = false;
         for (const [k, b] of this.bindings) {
             if (
                 b.pendingEviction &&
@@ -111,6 +120,7 @@ export class SessionAffinityStore implements ISessionAffinityStore, ILifecycle {
                 now - b.pendingEvictionAt > PENDING_TTL
             ) {
                 this.bindings.delete(k);
+                deleted = true;
                 this.eventBus?.emit(EVENTS.SESSION_BINDING_EXPIRED, {
                     sessionId: b.sessionId,
                     keyId: b.keyId,
@@ -122,6 +132,8 @@ export class SessionAffinityStore implements ISessionAffinityStore, ILifecycle {
                 });
             }
         }
+        // M-04: persist after reap — otherwise evicted bindings resurrect on reload.
+        if (deleted) void this.persistBindings();
     }
 
     private key(sessionId: string, participantId?: string): string {
