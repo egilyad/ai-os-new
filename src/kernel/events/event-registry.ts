@@ -202,6 +202,7 @@ export const EVENT_REGISTRY = {
             model: z.string(),
             messages: z.array(z.unknown()),
             requestId: z.string().optional(),
+            sessionId: z.string().optional(),
             strategy: z.string().optional(),
             keyId: z.string().optional(),
             options: z.unknown().optional(),

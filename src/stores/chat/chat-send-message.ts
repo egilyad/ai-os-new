@@ -272,6 +272,7 @@ export function createSendMessageHandler(
             targets.forEach((t, idx) => {
                 eventBus.emit(EVENTS.SEND_MESSAGE, {
                     requestId: loadingResponses[idx]!.requestId,
+                    sessionId,
                     provider: t.provider,
                     model: t.model,
                     keyId: t.keyId,
