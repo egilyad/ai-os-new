@@ -334,14 +334,17 @@ describe('useChatStore', () => {
         resolveLock!({ lock: { token: 't' }, error: null });
         await p1;
         await p2;
-        // First message is sent; the queued second is flushed but guarded while
+        // First message is sent; the queued second is flushed but re-queued while
         // the first request id is still active, so exactly one send occurs.
         expect(emit.mock.calls.filter(([ev]) => ev === E.SEND_MESSAGE)).toHaveLength(1);
-        // Queue must not leak — a fresh send after the first completes works.
+        // STREAM_END frees the sender and drains the queue: 'second' sends automatically.
         const rid = getSendPayload().requestId;
         emit(E.STREAM_END, { requestId: rid, fullContent: 'done', latency: 0 });
-        await useChatStore.getState().sendMessage([{ provider: 'groq', model: 'm' }], 'third');
+        for (let i = 0; i < 10; i++) await Promise.resolve();
         expect(emit.mock.calls.filter(([ev]) => ev === E.SEND_MESSAGE)).toHaveLength(2);
+        // Queue must not leak — a fresh send after the drain works.
+        await useChatStore.getState().sendMessage([{ provider: 'groq', model: 'm' }], 'third');
+        expect(emit.mock.calls.filter(([ev]) => ev === E.SEND_MESSAGE)).toHaveLength(3);
     });
 
     it('sendMessage proceeds without lock and warns on lock failure', async () => {

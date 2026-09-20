@@ -76,10 +76,24 @@ export function createSendMessageHandler(
                 metadata: { textPreview: text.slice(0, 80) },
             });
             if (get().isAnySending()) {
-                LOGGER.warn('ChatStore', 'sendMessage already in progress, ignored');
+                // H-09: never drop user text on a busy sender — queue behind the
+                // in-flight send. Drained on terminal events (chat-event-handlers)
+                // and in finally below. Gate-failures re-queue the same way.
+                const pending = _sendQueue.get(sessionId) ?? [];
+                if (pending.length >= MAX_QUEUE_SIZE) {
+                    LOGGER.warn('ChatStore', 'send queue full, message dropped');
+                    eventBus.emit(EVENTS.NOTIFICATION, {
+                        message: `Send queue full (${MAX_QUEUE_SIZE}) — message dropped`,
+                        type: 'warning',
+                    });
+                    govOp.complete();
+                    return;
+                }
+                pending.push({ targets, text, systemPromptArg, temperature, maxTokens });
+                _sendQueue.set(sessionId, pending);
                 eventBus.emit(EVENTS.NOTIFICATION, {
-                    message: 'Cannot send — another message is still being sent',
-                    type: 'warning',
+                    message: 'Message queued — will send when the current response completes',
+                    type: 'info',
                 });
                 govOp.complete();
                 return;
@@ -306,15 +320,26 @@ export function createSendMessageHandler(
             }
             const q = _sendQueue.get(sessionId);
             if (q && q.length > 0) {
-                const next = q.shift()!;
+                // H-09: drain ALL queued messages — the old code shifted one and
+                // deleted the key, dropping the rest. Recursive sends that hit the
+                // busy gate re-queue safely (see gate above) instead of losing text.
+                const pending = q.splice(0, q.length);
                 _sendQueue.delete(sessionId);
-                get().sendMessage(
-                    next.targets,
-                    next.text,
-                    next.systemPromptArg,
-                    next.temperature,
-                    next.maxTokens,
-                );
+                for (const next of pending) {
+                    void get()
+                        .sendMessage(
+                            next.targets,
+                            next.text,
+                            next.systemPromptArg,
+                            next.temperature,
+                            next.maxTokens,
+                        )
+                        .catch((e: unknown) =>
+                            LOGGER.warn('ChatStore', 'Queued send failed', {
+                                error: e instanceof Error ? e.message : String(e),
+                            }),
+                        );
+                }
             } else {
                 _sendQueue.delete(sessionId);
             }

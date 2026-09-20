@@ -3,6 +3,7 @@ import { eventBus, EVENTS } from './service-deps';
 import { resolveSessionStore } from './store-helpers';
 import type { ChatEntry, ChatSession, ZustandSet, ZustandGet } from './types';
 import { requestEntryMap } from './types';
+import { _sendQueue } from './chat-send-message';
 
 const TERMINAL_STATUSES: ReadonlySet<string> = new Set(['done', 'error', 'cancelled', 'timeout']);
 
@@ -25,6 +26,31 @@ function persistSessionSnapshot(get: ZustandGet, sessionId: string): void {
         });
     } catch (e) {
         console.error('[ChatStore] terminal persist failed', e);
+    }
+}
+
+/**
+ * H-09: fire queued messages once a terminal event frees the sender.
+ * The busy gate in sendMessage re-queues instead of dropping, so firing here
+ * is lossless: if another session still streams, the message re-queues.
+ */
+function drainSendQueue(get: ZustandGet, sessionId: string): void {
+    const q = _sendQueue.get(sessionId);
+    if (!q || q.length === 0) return;
+    const pending = q.splice(0, q.length);
+    if (q.length === 0) _sendQueue.delete(sessionId);
+    for (const next of pending) {
+        get()
+            .sendMessage(
+                next.targets,
+                next.text,
+                next.systemPromptArg,
+                next.temperature,
+                next.maxTokens,
+            )
+            .catch((e: unknown) => {
+                console.error('[ChatStore] Queued send failed', e);
+            });
     }
 }
 
@@ -158,6 +184,7 @@ export function setupChatEventHandlers(set: ZustandSet, get: ZustandGet): Array<
                 };
             });
             persistSessionSnapshot(get, ref.sessionId);
+            drainSendQueue(get, ref.sessionId);
         }),
     );
 
@@ -193,6 +220,7 @@ export function setupChatEventHandlers(set: ZustandSet, get: ZustandGet): Array<
                 };
             });
             persistSessionSnapshot(get, ref.sessionId);
+            drainSendQueue(get, ref.sessionId);
         }),
     );
 
