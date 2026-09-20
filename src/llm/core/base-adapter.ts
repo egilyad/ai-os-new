@@ -32,14 +32,30 @@ export abstract class BaseLLMAdapter implements LLMProviderAdapter {
     ): Record<string, unknown> {
         const body: Record<string, unknown> = {
             model: this.sanitizeModel(model),
-            messages: config?.mapMessages
-                ? messages.map((m) => {
-                      const mapped: Record<string, unknown> = { role: m.role, content: m.content };
-                      if (m.toolCalls) mapped.toolCalls = m.toolCalls;
-                      if (m.toolCallId) mapped.toolCallId = m.toolCallId;
-                      return mapped;
-                  })
-                : messages,
+            // H-04: OpenAI wire format requires snake_case tool_calls/tool_call_id.
+            // Map in BOTH branches: the mapped branch rebuilds the message, the
+            // pass-through branch renames in place (preserving name/inlineData/
+            // reasoningContent which must flow through verbatim).
+            messages: messages.map((m) => {
+                if (config?.mapMessages) {
+                    const mapped: Record<string, unknown> = { role: m.role, content: m.content };
+                    if (m.toolCalls) mapped.tool_calls = m.toolCalls;
+                    if (m.toolCallId) mapped.tool_call_id = m.toolCallId;
+                    return mapped;
+                }
+                const passthrough: Record<string, unknown> = {
+                    ...(m as unknown as Record<string, unknown>),
+                };
+                if (m.toolCalls !== undefined) {
+                    passthrough.tool_calls = m.toolCalls;
+                    delete passthrough.toolCalls;
+                }
+                if (m.toolCallId !== undefined) {
+                    passthrough.tool_call_id = m.toolCallId;
+                    delete passthrough.toolCallId;
+                }
+                return passthrough;
+            }),
         };
         if (stream) body.stream = true;
         if (options) {
