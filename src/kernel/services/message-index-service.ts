@@ -94,9 +94,16 @@ export class MessageIndexService {
         });
         this.unsubChatRewound = _messageIndexEventBus?.on(EVENTS.CHAT_REWOUND, (raw: unknown) => {
             const data = raw as { sessionId: string; messageId: string; truncatedCount: number };
-            this.messages = this.messages.filter((m) => m.sessionId !== data.sessionId);
+            // M-01: truncate only the tail after messageId (was: wiped the whole session).
+            const target = this.messages.find(
+                (m) => m.id === data.messageId && m.sessionId === data.sessionId,
+            );
+            const cutoff = target ? target.timestamp : Date.now();
+            const keep = (m: IndexedMessage): boolean =>
+                m.sessionId !== data.sessionId || m.timestamp <= cutoff;
+            this.messages = this.messages.filter(keep);
             for (const [k, v] of this.byRequestId) {
-                if (v.sessionId === data.sessionId) this.byRequestId.delete(k);
+                if (v.sessionId === data.sessionId && v.timestamp > cutoff) this.byRequestId.delete(k);
             }
             this.notify();
             this.persistDebounced();
