@@ -16,10 +16,13 @@ import {
     requestEntryMap,
 } from './types';
 
-const updateActiveSession =
-    (set: ZustandSet, get: ZustandGet) =>
-    (updater: (history: ChatEntry[]) => ChatEntry[]): void => {
-        const id = get().activeSessionId;
+// M-06: pinned session updater — sessionId is captured BEFORE awaits so
+// post-await writes land in the originating session even if the user switched
+// meanwhile (the old updateActiveSession resolved get().activeSessionId at call
+// time, e.g. clearHistory wiping чужой history).
+const updatePinnedSession =
+    (set: ZustandSet) =>
+    (id: string, updater: (history: ChatEntry[]) => ChatEntry[]): void => {
         set((s) => ({
             sessions: updateSessionInList(s.sessions, id, {
                 history: updater(s.sessions.find((x) => x.id === id)?.history ?? []),
@@ -28,7 +31,7 @@ const updateActiveSession =
     };
 
 export const useChatStore = create<ChatStoreShape>((set, get) => {
-    const uas = updateActiveSession(set, get);
+    const ups = updatePinnedSession(set);
 
     const _unsubs = setupChatEventHandlers(set, get);
 
@@ -200,7 +203,7 @@ export const useChatStore = create<ChatStoreShape>((set, get) => {
                     });
                     return;
                 }
-                uas((prev) =>
+                ups(sessionId, (prev) =>
                     prev.map((e) =>
                         e.id === entryId ? { ...e, text: newText, responses: [] } : e,
                     ),
@@ -249,7 +252,7 @@ export const useChatStore = create<ChatStoreShape>((set, get) => {
                         return;
                     }
                 }
-                uas(() => []);
+                ups(sessionId, () => []);
                 set({ activeRequestIds: new Set() });
             } finally {
                 distLock.release(lockResult.lock).catch((e: unknown) =>
@@ -559,7 +562,7 @@ export const useChatStore = create<ChatStoreShape>((set, get) => {
                     currentModel: model,
                 }),
             }));
-            uas((prev) => [...prev, systemEntry]);
+            ups(sessionId, (prev) => [...prev, systemEntry]);
         },
 
         switchKey: async (keyId) => {
@@ -600,7 +603,7 @@ export const useChatStore = create<ChatStoreShape>((set, get) => {
             set((s) => ({
                 sessions: updateSessionInList(s.sessions, sessionId, { currentKeyId: keyId }),
             }));
-            uas((prev) => [...prev, systemEntry]);
+            ups(sessionId, (prev) => [...prev, systemEntry]);
         },
 
         getSessionConfig: () => {
@@ -652,7 +655,7 @@ export const useChatStore = create<ChatStoreShape>((set, get) => {
                     currentAgentId: agentId ?? undefined,
                 }),
             }));
-            uas((prev) => [...prev, systemEntry]);
+            ups(sessionId, (prev) => [...prev, systemEntry]);
         },
 
         destroy: () => {
