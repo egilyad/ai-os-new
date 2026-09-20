@@ -204,7 +204,8 @@ const ChatPanel: React.FC = () => {
 
     const handleSend = useCallback(
         (text: string) => {
-            sendMessage(
+            // M-07: return the promise so the input can restore text on failure.
+            return sendMessage(
                 selectedKeys.map((id) => ({
                     provider: 'auto',
                     model: selectedModelPerKey[id] || selectedModel,

@@ -11,7 +11,7 @@ interface Props {
     selectedKeys: string[];
     selectedModel: string;
     selectedModelPerKey: Record<string, string>;
-    onSend: (text: string) => void;
+    onSend: (text: string) => Promise<void> | void;
     isSending: boolean;
     onError: (msg: string) => void;
     onKeysChange: (keys: string[]) => void;
@@ -36,25 +36,38 @@ const ChatInputArea: React.FC<Props> = ({
 
     const [input, setInput] = useState('');
 
+    // M-07: clear optimistically but restore the text if the send is rejected
+    // (e.g. write-through persist failure) instead of losing it silently.
+    const doSend = useCallback(
+        (text: string) => {
+            setInput('');
+            void Promise.resolve()
+                .then(() => onSend(text))
+                .catch((e: unknown) => {
+                    setInput(text);
+                    onError(e instanceof Error ? e.message : 'Failed to send message');
+                });
+        },
+        [onSend, onError],
+    );
+
     const handleKeyDown = useCallback(
         (e: React.KeyboardEvent) => {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
                 const text = input.trim();
                 if (!text) return;
-                setInput('');
-                onSend(text);
+                doSend(text);
             }
         },
-        [input, onSend],
+        [input, doSend],
     );
 
     const handleSendClick = useCallback(() => {
         const text = input.trim();
         if (!text) return;
-        setInput('');
-        onSend(text);
-    }, [input, onSend]);
+        doSend(text);
+    }, [input, doSend]);
 
     return (
         <div
