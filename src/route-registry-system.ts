@@ -117,18 +117,6 @@ export const SYSTEM_SECTIONS: NavSection[] = [
         ],
     },
     {
-        id: 'section-connections',
-        labelKey: 'nav.section_connections',
-        items: [
-            {
-                id: 'keys',
-                labelKey: 'nav.providers',
-                icon: Icons.key,
-                color: '#3b82f6',
-            },
-        ],
-    },
-    {
         id: 'section-diagnostics',
         labelKey: 'nav.section_diagnostics',
         items: [
