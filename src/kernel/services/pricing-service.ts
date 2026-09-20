@@ -280,9 +280,10 @@ export class PricingService implements ICostCalculator {
                     const id = model.id.toLowerCase();
                     const p = model.pricing;
                     if (p?.prompt && p?.completion) {
+                        // OpenRouter quotes per-TOKEN USD; internal table is per-1M (see FALLBACK_PRICING)
                         this.pricingData[id] = {
-                            input: parseFloat(p.prompt),
-                            output: parseFloat(p.completion),
+                            input: parseFloat(p.prompt) * 1_000_000,
+                            output: parseFloat(p.completion) * 1_000_000,
                             provider: id.split('/')[0],
                         };
                     }

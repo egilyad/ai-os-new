@@ -184,6 +184,33 @@ describe('PricingService', () => {
         });
     });
 
+    describe('syncFromOpenRouter units (C-04)', () => {
+        it('should store per-1M prices from per-token OpenRouter quotes', async () => {
+            const fetchMock = vi.fn().mockResolvedValue({
+                ok: true,
+                json: () =>
+                    Promise.resolve({
+                        data: [
+                            {
+                                id: 'openai/gpt-4o-mini',
+                                pricing: { prompt: '0.00000015', completion: '0.0000006' },
+                            },
+                        ],
+                    }),
+            });
+            vi.stubGlobal('fetch', fetchMock);
+            try {
+                await svc.syncFromOpenRouter();
+                // 1M input tokens at $0.15/1M ≈ $0.15 (±5%)
+                const cost = svc.calculateCost('openai/gpt-4o-mini', 1_000_000, 0);
+                expect(cost).toBeGreaterThan(0.15 * 0.95);
+                expect(cost).toBeLessThan(0.15 * 1.05);
+            } finally {
+                vi.unstubAllGlobals();
+            }
+        });
+    });
+
     describe('destroy', () => {
         it('should clear cache', () => {
             (svc as unknown as { prefixCache: Map<string, unknown> }).prefixCache.set(
