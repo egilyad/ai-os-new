@@ -66,6 +66,9 @@ function createDbStorage(db: IDatabaseService): NonNullable<ChatBookmarksService
                 }
                 if (await db.setKvCas(STORAGE_KEY, truncated, version)) return;
             }
+            // M-05: never silently give up — callers cache+emit on success, so a
+            // quiet return would create ghost bookmarks lost on reload.
+            throw new Error('ChatBookmarks: CAS save exhausted after 3 attempts');
         },
         async delete(id: string): Promise<void> {
             for (let attempt = 0; attempt < 3; attempt++) {
@@ -80,6 +83,7 @@ function createDbStorage(db: IDatabaseService): NonNullable<ChatBookmarksService
                 )
                     return;
             }
+            throw new Error('ChatBookmarks: CAS delete exhausted after 3 attempts');
         },
         async clear(): Promise<void> {
             await db.setKv(STORAGE_KEY, []);
@@ -116,6 +120,9 @@ export class ChatBookmarksService {
     private cache: Map<string, ChatBookmark> = new Map();
     private initialized = false;
     private unsubs: Array<() => void> = [];
+    // M-05: in-flight add guard — the cache dedup check below can't catch two
+    // concurrent adds of the same message (neither is cached yet).
+    private pendingAdds = new Map<string, Promise<ChatBookmark>>();
 
     constructor(deps: ChatBookmarksServiceDeps) {
         this.deps = deps;
@@ -154,42 +161,56 @@ export class ChatBookmarksService {
             (b) => b.sessionId === input.sessionId && b.messageId === messageId,
         );
         if (existing) return existing;
+        const dedupKey = `${input.sessionId}::${messageId}`;
+        const inFlight = this.pendingAdds.get(dedupKey);
+        if (inFlight) return inFlight;
 
-        const bookmark: ChatBookmark = {
-            id: genId('bm'),
-            sessionId: input.sessionId,
-            messageId,
-            role: input.message.role,
-            content: input.message.content ?? '',
-            note: input.note,
-            tags: input.tags ?? [],
-            createdAt: Date.now(),
-        };
+        const run = (async (): Promise<ChatBookmark> => {
+            const bookmark: ChatBookmark = {
+                id: genId('bm'),
+                sessionId: input.sessionId,
+                messageId,
+                role: input.message.role,
+                content: input.message.content ?? '',
+                note: input.note,
+                tags: input.tags ?? [],
+                createdAt: Date.now(),
+            };
+            try {
+                await this.storage.save(bookmark);
+            } catch (err) {
+                this.deps.logger?.warn('ChatBookmarks', 'persist failed', { error: String(err) });
+                throw err;
+            }
+            this.cache.set(bookmark.id, bookmark);
+            if (this.cache.size > 500) {
+                const sorted = Array.from(this.cache.entries()).sort(
+                    ([, a], [, b]) => b.createdAt - a.createdAt,
+                );
+                const toRemove = sorted.slice(500);
+                for (const [id] of toRemove) this.cache.delete(id);
+            }
+            this.deps.eventBus.emit(EVENTS.CHAT_BOOKMARK_ADDED, bookmark);
+            return bookmark;
+        })();
+        this.pendingAdds.set(dedupKey, run);
         try {
-            await this.storage.save(bookmark);
-        } catch (err) {
-            this.deps.logger?.warn('ChatBookmarks', 'persist failed', { error: String(err) });
-            throw err;
+            return await run;
+        } finally {
+            this.pendingAdds.delete(dedupKey);
         }
-        this.cache.set(bookmark.id, bookmark);
-        if (this.cache.size > 500) {
-            const sorted = Array.from(this.cache.entries()).sort(
-                ([, a], [, b]) => b.createdAt - a.createdAt,
-            );
-            const toRemove = sorted.slice(500);
-            for (const [id] of toRemove) this.cache.delete(id);
-        }
-        this.deps.eventBus.emit(EVENTS.CHAT_BOOKMARK_ADDED, bookmark);
-        return bookmark;
     }
 
     async removeBookmark(id: string): Promise<void> {
-        this.cache.delete(id);
+        // M-05: storage first — the old order (cache.delete, then best-effort
+        // storage) resurrected the row on reload after a failed delete.
         try {
             await this.storage.delete(id);
         } catch (err) {
             this.deps.logger?.warn('ChatBookmarks', 'delete failed', { error: String(err) });
+            return;
         }
+        this.cache.delete(id);
         this.deps.eventBus.emit(EVENTS.CHAT_BOOKMARK_REMOVED, { id });
     }
 
