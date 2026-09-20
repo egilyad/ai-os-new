@@ -70,7 +70,9 @@ vi.mock('../../stores/useChatStore', () => ({
     useActiveSessionHistory: () => [],
 }));
 
-vi.mock('../../kernel/instances', () => ({
+vi.mock('../../kernel/instances', () => {
+    const makeLogger = () => ({ info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn() });
+    return {
     routerService: {
         getRankedProviders: vi.fn(() => []),
     },
@@ -96,7 +98,9 @@ vi.mock('../../kernel/instances', () => ({
     keyService: {
         refreshModels: vi.fn(() => Promise.resolve()),
     },
-}));
+    rootLogger: { ...makeLogger(), child: vi.fn(() => makeLogger()) },
+    };
+});
 
 vi.mock('../../kernel/events/event-bus', () => ({
     eventBus: { emit: vi.fn(), on: vi.fn(() => vi.fn()), off: vi.fn() },
