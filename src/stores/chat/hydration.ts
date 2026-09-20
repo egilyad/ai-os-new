@@ -43,6 +43,9 @@ export function useChatStoreHydration(): void {
         let cancelled = false;
         let syncTimer: ReturnType<typeof setTimeout> | null = null;
         let lastFlushEpoch = 0;
+        let lastSyncedSig = '';
+        const sessionsSig = (sessions: ChatSession[]): string =>
+            `${sessions.length}:${sessions.reduce((m, s) => Math.max(m, s.updatedAt), 0)}`;
 
         const flush = async () => {
             if (syncTimer) {
@@ -55,16 +58,26 @@ export function useChatStoreHydration(): void {
             if (!sStore) return;
             const state = useChatStore.getState();
             const syncedDeletes = [...state.deletedIds];
+            // H-08: skip Dexie writes when nothing changed since last sync
+            const sig = sessionsSig(state.sessions);
+            if (syncedDeletes.length === 0 && sig === lastSyncedSig) return;
             try {
                 await sStore.syncSessions(state.sessions, syncedDeletes);
+                lastSyncedSig = sessionsSig(useChatStore.getState().sessions);
             } catch (e) {
                 console.error('[ChatStore] Failed to sync to Dexie', e);
             } finally {
-                useChatStore.setState((prev) => {
-                    const remaining = new Set(prev.deletedIds);
-                    for (const id of syncedDeletes) remaining.delete(id);
-                    return { deletedIds: remaining };
-                });
+                // H-08: don't allocate a new Set when nothing was deleted —
+                // unconditional setState re-triggers this subscriber forever.
+                // NOTE: setState must be skipped entirely (not called with the
+                // same reference) — zustand notifies on every setState call.
+                if (syncedDeletes.length === 0) return;
+                const prev = useChatStore.getState();
+                const remaining = new Set(prev.deletedIds);
+                for (const id of syncedDeletes) remaining.delete(id);
+                if (remaining.size !== prev.deletedIds.size) {
+                    useChatStore.setState({ deletedIds: remaining });
+                }
             }
         };
 
