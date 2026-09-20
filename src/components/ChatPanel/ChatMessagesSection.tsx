@@ -108,12 +108,13 @@ const ChatMessagesSection: React.FC<Props> = ({
                             <div
                                 key={virtualItem.key}
                                 id={searchRef}
+                                data-index={virtualItem.index}
+                                ref={virtualizer.measureElement}
                                 style={{
                                     position: 'absolute',
                                     top: 0,
                                     left: 0,
                                     width: '100%',
-                                    height: virtualItem.size,
                                     transform: `translateY(${virtualItem.start}px)`,
                                 }}
                             >
