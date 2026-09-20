@@ -127,7 +127,6 @@ export class LLMHttpClient {
             );
             return { signal: ctrl.signal, controller: ctrl, disarm: () => clearTimeout(timer) };
         }
-        }
         // Avoid AbortSignal.any() due to Chrome GC bug:
         // AbortSignal.any() does not release internal onabort handlers
         // from constituent signals when the composed signal is GC'd,
