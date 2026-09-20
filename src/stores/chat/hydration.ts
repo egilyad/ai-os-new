@@ -138,12 +138,14 @@ export function useChatStoreHydration(): void {
                                 restoredId = null;
                             }
                             const ids = new Set(cleaned.map((s) => s.id));
+                            // C-03: on fresh install Dexie is empty — seed the default
+                            // session instead of pointing activeSessionId at a phantom id.
+                            const seeded = cleaned.length > 0 ? cleaned : [{ ...DEFAULT_SESSION }];
                             const activeSessionId =
                                 (restoredId && ids.has(restoredId) && restoredId) ||
-                                cleaned[0]?.id ||
-                                DEFAULT_SESSION.id;
+                                seeded[0]!.id;
                             useChatStore.setState({
-                                sessions: cleaned,
+                                sessions: seeded,
                                 activeSessionId,
                                 hasMoreSessions: total > 100,
                                 isLoaded: true,
