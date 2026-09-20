@@ -114,14 +114,19 @@ export class LLMHttpClient {
         this.#timeoutMs = timeoutMs;
     }
 
-    #withTimeout(signal?: AbortSignal): { signal: AbortSignal; controller: AbortController } {
+    #withTimeout(signal?: AbortSignal): {
+        signal: AbortSignal;
+        controller: AbortController;
+        disarm: () => void;
+    } {
         if (!signal) {
             const ctrl = new AbortController();
-            setTimeout(
+            const timer = setTimeout(
                 () => ctrl.abort(new DOMException('Timeout', 'TimeoutError')),
                 this.#timeoutMs,
             );
-            return { signal: ctrl.signal, controller: ctrl };
+            return { signal: ctrl.signal, controller: ctrl, disarm: () => clearTimeout(timer) };
+        }
         }
         // Avoid AbortSignal.any() due to Chrome GC bug:
         // AbortSignal.any() does not release internal onabort handlers
@@ -148,7 +153,7 @@ export class LLMHttpClient {
                 { once: true },
             );
         }
-        return { signal: controller.signal, controller };
+        return { signal: controller.signal, controller, disarm: () => clearTimeout(timer) };
     }
 
     /** Register an in-flight request and return a dispose function. */
@@ -381,7 +386,7 @@ export class LLMHttpClient {
         signal?: AbortSignal,
     ): Promise<Response> {
         await LLMHttpClient.acquireSlot();
-        const { signal: mergedSignal, controller } = this.#withTimeout(signal);
+        const { signal: mergedSignal, controller, disarm } = this.#withTimeout(signal);
         const done = this.#trackInFlight(controller, path);
         try {
             let res: Response;
@@ -445,6 +450,9 @@ export class LLMHttpClient {
                 );
             }
 
+            // H-06: headers received — disarm the connection timeout so long
+            // streams are not aborted mid-body. Cancellation still works via signal.
+            disarm();
             return res;
         } finally {
             done();

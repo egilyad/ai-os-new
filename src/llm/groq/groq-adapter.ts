@@ -192,6 +192,11 @@ export class GroqAdapter extends BaseLLMAdapter {
 
     private normalizeError(e: unknown): Error {
         const err = e as { status?: number; message?: string; name?: string };
+        // H-05: groq-sdk wraps aborts as APIUserAbortError (plain Error) — re-wrap as
+        // DOMException so executor abort detection (and key health) treats it as cancel.
+        if (err.name === 'APIUserAbortError') {
+            return new DOMException('Aborted', 'AbortError');
+        }
         if (err.status === 401 || err.status === 403) {
             return new AuthError(err.message || '', this.id, err.status);
         }

@@ -575,7 +575,9 @@ export class ChatExecutor {
                         );
 
                         const isAbort =
-                            error instanceof DOMException && error.name === 'AbortError';
+                            (error instanceof DOMException && error.name === 'AbortError') ||
+                            (error as { name?: string } | null)?.name ===
+                                'APIUserAbortError';
                         if (isAbort) {
                             this.deps.eventBus.emit(EVENTS.MESSAGE_RESPONSE, {
                                 id: `err-${Date.now()}-${crypto.randomUUID().slice(0, 8)}`,
