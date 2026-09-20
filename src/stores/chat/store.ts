@@ -273,7 +273,9 @@ export const useChatStore = create<ChatStoreShape>((set, get) => {
                     message: 'Failed to create new chat session',
                     type: 'error',
                 });
-                return '';
+                // M-08: throw instead of returning '' — callers must not switch
+                // the active session to a nonexistent id (phantom session C-03).
+                throw e;
             }
             const newSession: ChatSession = {
                 id,

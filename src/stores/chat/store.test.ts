@@ -485,13 +485,14 @@ describe('useChatStore', () => {
 
     it('createSession handles failure', async () => {
         mockSessionManager.create.mockRejectedValue(new Error('boom'));
-        const id = await useChatStore.getState().createSession();
-        expect(id).toBe('');
+        await expect(useChatStore.getState().createSession()).rejects.toThrow('boom');
         expect(
             emit.mock.calls.some(
                 ([ev, p]) => ev === E.NOTIFICATION && (p as { type: string }).type === 'error',
             ),
         ).toBe(true);
+        // M-08: active session must not switch to a phantom id on failure
+        expect(useChatStore.getState().activeSessionId).toBe('s1');
     });
 
     it('deleteSession removes session and switches active', async () => {
