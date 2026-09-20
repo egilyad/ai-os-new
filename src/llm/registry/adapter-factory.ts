@@ -124,17 +124,19 @@ export class AdapterFactory {
                 adapter = new OpenAiCompatibleAdapter('openai', 'https://api.openai.com/v1', true);
                 break;
             case 'together':
+                // C-01: no /proxy/together route — direct calls (CSP allows api.together.xyz)
                 adapter = new OpenAiCompatibleAdapter(
                     'together',
                     'https://api.together.xyz/v1',
-                    true,
+                    false,
                 );
                 break;
             case 'fireworks':
+                // C-01: no /proxy/fireworks route — direct calls
                 adapter = new OpenAiCompatibleAdapter(
                     'fireworks',
                     'https://api.fireworks.ai/inference/v1',
-                    true,
+                    false,
                 );
                 break;
             case 'deepseek':
@@ -154,52 +156,60 @@ export class AdapterFactory {
                 break;
             case 'blackboxapi':
             case 'blackbox':
-                adapter = new OpenAiCompatibleAdapter('blackbox', 'https://api.blackbox.ai', true);
+                // C-01: no /proxy/blackbox route — direct calls
+                adapter = new OpenAiCompatibleAdapter('blackbox', 'https://api.blackbox.ai', false);
                 break;
             case 'scaleway':
             case 'dedibox':
+                // C-01: no /proxy/scaleway route — direct calls
                 adapter = new OpenAiCompatibleAdapter(
                     'scaleway',
                     'https://api.scaleway.ai/v1',
-                    true,
+                    false,
                 );
                 break;
             case 'cometapi':
+                // C-01: no /proxy/cometapi route — direct calls
                 adapter = new OpenAiCompatibleAdapter(
                     'cometapi',
                     'https://api.cometapi.com/v1',
-                    true,
+                    false,
                 );
                 break;
             case 'github':
+                // C-01: no /proxy/github route — direct calls
                 adapter = new OpenAiCompatibleAdapter(
                     'github',
                     'https://models.inference.ai.azure.com',
-                    true,
+                    false,
                 );
                 break;
             case 'mistral':
-                adapter = new OpenAiCompatibleAdapter('mistral', 'https://api.mistral.ai/v1', true);
+                // C-01: no /proxy/mistral route — direct calls
+                adapter = new OpenAiCompatibleAdapter('mistral', 'https://api.mistral.ai/v1', false);
                 break;
             case 'cohere':
-                adapter = new OpenAiCompatibleAdapter('cohere', 'https://api.cohere.com/v1', true);
+                // C-01: no /proxy/cohere route — direct calls
+                adapter = new OpenAiCompatibleAdapter('cohere', 'https://api.cohere.com/v1', false);
                 break;
             case 'azure':
                 // Azure OpenAI requires {resource}.openai.azure.com — user must configure via proxy/env
                 adapter = new OpenAiCompatibleAdapter('azure', '/proxy/azure', false);
                 break;
             case 'huggingface':
+                // C-01: no /proxy/huggingface route — direct calls
                 adapter = new OpenAiCompatibleAdapter(
                     'huggingface',
                     'https://api-inference.huggingface.co/v1',
-                    true,
+                    false,
                 );
                 break;
             case 'perplexity':
+                // C-01: no /proxy/perplexity route — direct calls
                 adapter = new OpenAiCompatibleAdapter(
                     'perplexity',
                     'https://api.perplexity.ai',
-                    true,
+                    false,
                 );
                 break;
             case 'cerebras':

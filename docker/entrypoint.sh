@@ -16,7 +16,8 @@ set -e
 # CORS proxy (api.allorigins.win) would route ALL fetch tool traffic through a
 # third-party service. Set to /proxy/fetch (self-hosted nginx) or your own proxy.
 : "${PROXY_FETCH:=}"
-: "${PROXY_OPENAI:=https://api.openai.com}"
+# C-02: OpenAI target must include /v1 (adapter baseUrl is .../v1, nginx strips prefix)
+: "${PROXY_OPENAI:=https://api.openai.com/v1}"
 export API_UPSTREAM PROXY_GEMINI PROXY_OPENROUTER PROXY_NVIDIA \
        PROXY_GROQ PROXY_CEREBRAS PROXY_CLOUDFLARE PROXY_FETCH PROXY_OPENAI
 

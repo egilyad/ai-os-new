@@ -111,7 +111,8 @@ export default defineConfig({
                 "script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'; " +
                 "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
                 "font-src 'self' data: https://fonts.gstatic.com; " +
-                "connect-src 'self' https://generativelanguage.googleapis.com https://openrouter.ai https://integrate.api.nvidia.com https://api.groq.com https://api.cerebras.ai https://api.cloudflare.com https://api.openai.com; " +
+                // C-01: direct-call hosts for providers without /proxy/* routes
+                "connect-src 'self' https://generativelanguage.googleapis.com https://openrouter.ai https://integrate.api.nvidia.com https://api.groq.com https://api.cerebras.ai https://api.cloudflare.com https://api.openai.com https://api.together.xyz https://api.fireworks.ai https://api.deepseek.com https://api.moonshot.ai https://api.minimax.io https://dashscope-intl.aliyuncs.com https://api.blackbox.ai https://api.scaleway.ai https://api.cometapi.com https://models.inference.ai.azure.com https://api.mistral.ai https://api.cohere.com https://api-inference.huggingface.co https://api.perplexity.ai; " +
                 "worker-src 'self' blob:; " +
                 "img-src 'self' data: blob:;",
         },
@@ -154,7 +155,9 @@ export default defineConfig({
                 secure: true,
             }),
             '/proxy/openai': withProxyErrorHandler({
-                target: process.env.VITE_PROXY_OPENAI || 'https://api.openai.com',
+                // C-02: target must include /v1 (like groq/cerebras) — the adapter's
+                // baseUrl is https://api.openai.com/v1 and the rewrite strips the prefix.
+                target: process.env.VITE_PROXY_OPENAI || 'https://api.openai.com/v1',
                 changeOrigin: true,
                 rewrite: (path) => path.replace(/^\/proxy\/openai/, ''),
                 secure: true,

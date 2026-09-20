@@ -12,7 +12,7 @@ export const QWEN_DEFAULT_MODEL = 'qwen3-max';
  */
 export class QwenAdapter extends OpenAiCompatibleAdapter {
     constructor() {
-        super('qwen', 'https://dashscope-intl.aliyuncs.com/compatible-mode/v1', true);
+        super('qwen', 'https://dashscope-intl.aliyuncs.com/compatible-mode/v1', false); // C-01: no /proxy/qwen route
     }
 
     protected override sanitizeModel(model: string): string {

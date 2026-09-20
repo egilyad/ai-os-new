@@ -13,7 +13,7 @@ export const KIMI_THINKING_MODEL = 'kimi-k2-thinking';
  */
 export class KimiAdapter extends OpenAiCompatibleAdapter {
     constructor() {
-        super('kimi', 'https://api.moonshot.ai/v1', true);
+        super('kimi', 'https://api.moonshot.ai/v1', false); // C-01: no /proxy/kimi route
     }
 
     protected override sanitizeModel(model: string): string {

@@ -7,7 +7,7 @@ export const MINIMAX_DEFAULT_MODEL = 'MiniMax-M1';
  */
 export class MiniMaxAdapter extends OpenAiCompatibleAdapter {
     constructor() {
-        super('minimax', 'https://api.minimax.io/v1', true);
+        super('minimax', 'https://api.minimax.io/v1', false); // C-01: no /proxy/minimax route
     }
 
     protected override sanitizeModel(model: string): string {

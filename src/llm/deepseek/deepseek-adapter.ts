@@ -20,7 +20,7 @@ export const DEEPSEEK_REASONER_MODEL = 'deepseek-reasoner';
  */
 export class DeepSeekAdapter extends OpenAiCompatibleAdapter {
     constructor() {
-        super('deepseek', 'https://api.deepseek.com/v1', true);
+        super('deepseek', 'https://api.deepseek.com/v1', false); // C-01: no /proxy/deepseek route
     }
 
     protected override sanitizeModel(model: string): string {
