@@ -53,7 +53,9 @@ const ChatPanel: React.FC = () => {
     const systemPrompt = useChatStore((s) => s.systemPrompt);
     const setSystemPrompt = useChatStore((s) => s.setSystemPrompt);
     const isSending = useChatStore((s) => s.activeRequestIds.size > 0);
-    const sessions = useChatStore((s) => s.sessions);
+    // H-10: the deep-link effect below only needs session ids — subscribing to
+    // the full array re-rendered the panel on every chunk set; join keeps it stable.
+    const sessionIds = useChatStore((s) => s.sessions.map((x) => x.id).join('\n'));
     const isLoaded = useChatStore((s) => s.isLoaded);
     const [searchParams, setSearchParams] = useSearchParams();
     // FIX(chat-deep-link): honor ?session=<id> from chat-sessions/session-hub "Open in Chat".
@@ -63,12 +65,12 @@ const ChatPanel: React.FC = () => {
         if (!isLoaded) return;
         const sid = searchParams.get('session');
         if (!sid) return;
-        if (sid !== activeSessionId && sessions.some((s) => s.id === sid)) {
+        if (sid !== activeSessionId && sessionIds.split('\n').includes(sid)) {
             setActiveSessionId(sid);
         }
         setSearchParams({}, { replace: true });
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [searchParams, isLoaded, sessions]);
+    }, [searchParams, isLoaded, sessionIds]);
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const defaultKeyFor = useCallback(
         () => {

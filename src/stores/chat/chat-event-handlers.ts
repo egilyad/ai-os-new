@@ -54,8 +54,48 @@ function drainSendQueue(get: ZustandGet, sessionId: string): void {
     }
 }
 
-function updateEntryInSession(
-    sessions: ChatSession[],
+/**
+ * H-10: coalesce per-token STREAM_CHUNKs before set() — every chunk previously
+ * rebuilt the whole sessions tree and re-rendered all subscribers (hundreds of
+ * full panel re-renders per second on long streams). Buffers flush on rAF
+ * (~60fps); setTimeout fallback outside browsers. Buffers are invalidated on
+ * terminal events so a late flush never appends stale text onto final content.
+ */
+const chunkBuffers = new Map<string, string>();
+let chunkFlushScheduled = false;
+
+function flushChunkBuffers(set: ZustandSet): void {
+    chunkFlushScheduled = false;
+    if (chunkBuffers.size === 0) return;
+    const batch = [...chunkBuffers.entries()];
+    chunkBuffers.clear();
+    set((s) => {
+        let sessions = s.sessions;
+        for (const [requestId, chunk] of batch) {
+            const ref = requestEntryMap.get(requestId);
+            if (!ref) continue;
+            sessions = updateEntryInSession(sessions, ref.sessionId, ref.entryId, (entry) => ({
+                ...entry,
+                responses: entry.responses.map((r) =>
+                    r.requestId === requestId ? { ...r, content: r.content + chunk } : r,
+                ),
+            }));
+        }
+        return { sessions };
+    });
+}
+
+function scheduleChunkFlush(set: ZustandSet): void {
+    if (chunkFlushScheduled) return;
+    chunkFlushScheduled = true;
+    if (typeof requestAnimationFrame === 'function') {
+        requestAnimationFrame(() => flushChunkBuffers(set));
+    } else {
+        setTimeout(() => flushChunkBuffers(set), 16);
+    }
+}
+
+function updateEntryInSession(    sessions: ChatSession[],
     sessionId: string,
     entryId: string,
     entryUpdater: (entry: ChatEntry) => ChatEntry,
@@ -113,6 +153,7 @@ export function setupChatEventHandlers(set: ZustandSet, get: ZustandGet): Array<
                 };
             });
             if (TERMINAL_STATUSES.has(res.status)) {
+                chunkBuffers.delete(res.requestId);
                 persistSessionSnapshot(get, ref.sessionId);
             }
         }),
@@ -139,16 +180,11 @@ export function setupChatEventHandlers(set: ZustandSet, get: ZustandGet): Array<
         eventBus.on(EVENTS.STREAM_CHUNK, (payload) => {
             const ref = requestEntryMap.get(payload.requestId);
             if (!ref) return;
-            set((s) => ({
-                sessions: updateEntryInSession(s.sessions, ref.sessionId, ref.entryId, (entry) => ({
-                    ...entry,
-                    responses: entry.responses.map((r) =>
-                        r.requestId === payload.requestId
-                            ? { ...r, content: r.content + payload.chunk }
-                            : r,
-                    ),
-                })),
-            }));
+            chunkBuffers.set(
+                payload.requestId,
+                (chunkBuffers.get(payload.requestId) ?? '') + (payload.chunk ?? ''),
+            );
+            scheduleChunkFlush(set);
         }),
     );
 
@@ -184,6 +220,7 @@ export function setupChatEventHandlers(set: ZustandSet, get: ZustandGet): Array<
                 };
             });
             persistSessionSnapshot(get, ref.sessionId);
+            chunkBuffers.delete(payload.requestId);
             drainSendQueue(get, ref.sessionId);
         }),
     );
@@ -220,6 +257,7 @@ export function setupChatEventHandlers(set: ZustandSet, get: ZustandGet): Array<
                 };
             });
             persistSessionSnapshot(get, ref.sessionId);
+            chunkBuffers.delete(payload.requestId);
             drainSendQueue(get, ref.sessionId);
         }),
     );

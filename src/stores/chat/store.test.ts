@@ -373,6 +373,8 @@ describe('useChatStore', () => {
         const rid = getSendPayload().requestId;
         emit(E.STREAM_CHUNK, { requestId: rid, provider: 'groq', chunk: 'Hello' });
         emit(E.STREAM_CHUNK, { requestId: rid, provider: 'groq', chunk: ' world' });
+        // H-10: chunks coalesce on rAF (setTimeout fallback outside browsers)
+        await new Promise((r) => setTimeout(r, 30));
         const resp = useChatStore.getState().sessions[0].history[0].responses[0];
         expect(resp.content).toBe('Hello world');
     });
