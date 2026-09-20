@@ -32,6 +32,11 @@ export class ChatExecutionEngine implements IExecutionEngine {
         context: ConversationContext,
         sessionSignal: AbortSignal,
     ): Promise<TurnResult> {
+        // H-02: a signal aborted before we attach the listener never fires —
+        // check upfront so a cancelled turn doesn't run an LLM call to completion.
+        if (sessionSignal.aborted) {
+            return { success: false, error: 'Aborted by session signal' };
+        }
         const requestId = crypto.randomUUID();
 
         // B-seam: resolve the participant to a real agent so the turn is
@@ -143,6 +148,11 @@ export class ChatExecutionEngine implements IExecutionEngine {
                 sessionSignal.removeEventListener('abort', onAbort);
             };
             sessionSignal.addEventListener('abort', onAbort);
+            // H-02: abort landed during setup (before the listener attached).
+            if (sessionSignal.aborted) {
+                onAbort();
+                return;
+            }
 
             this.chatExecutor.handleMessage(req);
         });
