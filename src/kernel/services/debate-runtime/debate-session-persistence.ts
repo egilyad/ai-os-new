@@ -51,7 +51,14 @@ function sessionToRecord(session: DebateSession): DebateSessionRecord {
         metadata: session.metadata ?? {},
         tags: session.tags ?? [],
     });
-    return {
+    // M-03: runtime DebateSession may carry folder/isArchived/isPinned dynamically
+    // (the type lacks them) — carry through so full-put saves don't wipe them.
+    const meta = session as DebateSession & {
+        folder?: string;
+        isArchived?: boolean;
+        isPinned?: boolean;
+    };
+    const record: DebateSessionRecord = {
         id: session.id,
         topic: session.topic,
         topologyType: STRATEGY_MAP[session.strategy] ?? 'roundtable',
@@ -77,7 +84,12 @@ function sessionToRecord(session: DebateSession): DebateSessionRecord {
         startedAt: session.createdAt ?? Date.now(),
         updatedAt: Date.now(),
         createdAt: session.createdAt ?? Date.now(),
+        tags: session.tags ?? [],
+        ...(meta.folder !== undefined ? { folder: meta.folder } : {}),
+        ...(meta.isArchived !== undefined ? { isArchived: meta.isArchived } : {}),
+        ...(meta.isPinned !== undefined ? { isPinned: meta.isPinned } : {}),
     };
+    return record;
 }
 
 function toNum(v: unknown, fallback: number): number {
@@ -119,7 +131,14 @@ function recordToSession(record: DebateSessionRecord): DebateSession {
             parsedArgs = null;
         }
     }
-    return {
+    // M-03: restore tags/folder/isArchived/isPinned (record columns; tags fallback
+    // to the legacy extra.topology JSON for rows written before columns existed).
+    const extraTags = Array.isArray(
+        (savedExtra as Record<string, unknown>).tags,
+    )
+        ? ((savedExtra as Record<string, unknown>).tags as string[])
+        : [];
+    const restoredBase = {
         id: record.id,
         topic: record.topic || '(untitled)',
         status: (record.phase || 'active') as DebateSession['status'],
@@ -141,10 +160,57 @@ function recordToSession(record: DebateSessionRecord): DebateSession {
             timeoutMs: toNum(savedConfig.timeoutMs, 30000),
         },
     };
+    // Meta fields ride dynamically (DebateSession type lacks folder/isArchived/
+    // isPinned, but session-manager filters on them) — attach so the next
+    // sessionToRecord round-trip preserves them instead of wiping the row.
+    const restored = restoredBase as DebateSession & {
+        tags?: string[];
+        folder?: string;
+        isArchived?: boolean;
+        isPinned?: boolean;
+    };
+    restored.tags = record.tags ?? extraTags;
+    if (record.folder !== undefined) restored.folder = record.folder;
+    if (record.isArchived !== undefined) restored.isArchived = record.isArchived;
+    if (record.isPinned !== undefined) restored.isPinned = record.isPinned;
+    return restored;
 }
 
-export async function loadActiveSession(debateStore: DebateStore): Promise<DebateSession | null> {
+/**
+ * M-03: merge-on-save. saveSnapshot does a full-put replace, so saving a session
+ * that never carried tags/folder/isArchived (e.g. a fresh runtime object over a
+ * row created with a folder) would wipe those columns. Fill gaps from storage.
+ */
+export async function saveSnapshotPreservingMeta(
+    debateStore: DebateStore,
+    session: DebateSession,
+): Promise<void> {
+    const record = sessionToRecord(session);
     try {
+        // Merge only the fields DebateSession type lacks (never edited in-memory,
+        // so absence means "unknown", not "cleared"). tags stays authoritative
+        // from the session object (explicit [] = user cleared them).
+        const existing = await debateStore.getSnapshot(record.id);
+        if (existing) {
+            if (record.folder === undefined && existing.folder !== undefined) {
+                record.folder = existing.folder;
+            }
+            if (record.isArchived === undefined && existing.isArchived !== undefined) {
+                record.isArchived = existing.isArchived;
+            }
+            if (record.isPinned === undefined && existing.isPinned !== undefined) {
+                record.isPinned = existing.isPinned;
+            }
+        }
+    } catch (e) {
+        LOGGER.warn('DebateSessionPersistence', 'Meta merge read failed, saving as-is', {
+            error: e instanceof Error ? e.message : String(e),
+        });
+    }
+    await debateStore.saveSnapshot(record);
+}
+
+export async function loadActiveSession(debateStore: DebateStore): Promise<DebateSession | null> {    try {
         let records = await debateStore.listSessions({ status: 'active', limit: 1 });
         if (records.length === 0) {
             records = await debateStore.listSessions({ status: 'paused', limit: 1 });
@@ -162,11 +228,11 @@ export async function loadActiveSession(debateStore: DebateStore): Promise<Debat
                     age: Date.now() - record.updatedAt,
                 });
                 session.consensus = 'Session timed out (zombie detected on reload)';
-                await debateStore.saveSnapshot(sessionToRecord(session));
+                await saveSnapshotPreservingMeta(debateStore, session);
                 return null;
             }
             session.status = 'paused';
-            await debateStore.saveSnapshot(sessionToRecord(session));
+            await saveSnapshotPreservingMeta(debateStore, session);
         }
         if (session.status === 'paused') return session;
     } catch (e) {
@@ -183,7 +249,7 @@ export async function persistActiveSession(
 ): Promise<void> {
     if (!session) return;
     try {
-        await debateStore.saveSnapshot(sessionToRecord(session));
+        await saveSnapshotPreservingMeta(debateStore, session);
     } catch (e) {
         LOGGER.warn('DebateSessionPersistence', 'Failed to persist active session', {
             error: e instanceof Error ? e.message : String(e),
@@ -212,7 +278,7 @@ export async function persistHistoryList(
 ): Promise<void> {
     for (const session of sessions) {
         try {
-            await debateStore.saveSnapshot(sessionToRecord(session));
+            await saveSnapshotPreservingMeta(debateStore, session);
         } catch (e) {
             LOGGER.warn('DebateSessionPersistence', 'Failed to persist history session', {
                 error: e instanceof Error ? e.message : String(e),
