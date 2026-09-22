@@ -652,6 +652,16 @@ export const hypothesisService = lazyService<IHypothesisService>('hypothesisServ
 export { ResearchRunService, type ResearchRun } from '../services/research-run-service';
 export const researchRunService = lazyService<ResearchRunServiceType>('researchRunService');
 
+// ── Investigation Bridge B1 (direct re-export + lazyService) ──
+export {
+    InvestigationBridgeService,
+    type InvestigationBridgeDeps,
+} from '../services/investigation-bridge-service';
+export const investigationBridge =
+    lazyService<import('../services/investigation-bridge-service').InvestigationBridgeService>(
+        'investigationBridge',
+    );
+
 // ── Debate Templates (direct re-export) ──
 export { DEBATE_TEMPLATES, getDebateTemplate } from '../services/debate-runtime/debate-templates';
 export type { DebateTemplate } from '../services/debate-runtime/debate-templates';
