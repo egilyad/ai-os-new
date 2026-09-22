@@ -66,6 +66,7 @@ import { registerPhase65 } from './phase65-council-migration';
 import { registerPhase66 } from './phase66-projects';
 import { registerPhase67 } from './phase67-channels';
 import { registerPhase68 } from './phase68-investigation';
+import { registerPhase69 } from './phase69-approval-execution';
 import type { IContainer } from '../container';
 import type { IEventBus } from '../types/interfaces';
 
@@ -144,6 +145,7 @@ export function registerServices(
     registerPhase66(helpers, ctx);
     registerPhase67(helpers, ctx);
     registerPhase68(helpers, ctx);
+    registerPhase69(helpers, ctx);
 }
 
 export type { PhaseContext, Phase } from './helpers';

@@ -69,4 +69,19 @@ export const approvalAutoService = {
         }
         return { autoApproved, expired };
     },
+
+    // B3: таймер авто-свипа (evaluateAll ожил — раньше вызывателей не было).
+    _timer: null as ReturnType<typeof setInterval> | null,
+    startAutoSweep(intervalMs = 60000): void {
+        if (this._timer) return;
+        this._timer = setInterval(() => {
+            void this.evaluateAll().catch((e) => LOGGER.warn('ApprovalAuto', 'sweep failed', { error: String(e) }));
+        }, Math.max(10000, intervalMs));
+    },
+    stopAutoSweep(): void {
+        if (this._timer) {
+            clearInterval(this._timer);
+            this._timer = null;
+        }
+    },
 };

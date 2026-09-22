@@ -2,7 +2,12 @@ import { getDexieDb } from './dexie-schema';
 import type { ApprovalPolicy, ApprovalRequest, ApprovalPreset } from '../types/agems-approval';
 import { PRESET_DEFAULTS } from '../types/agems-approval';
 
+export interface AgemsApprovalDelegates {
+    onResolved?: (req: ApprovalRequest, status: 'APPROVED' | 'REJECTED') => void;
+}
+
 export class AgemsApprovalService {
+    delegates: AgemsApprovalDelegates = {};
     async getPolicy(agentId: string): Promise<ApprovalPolicy | undefined> {
         return (await getDexieDb().approvalPolicies.where('agentId').equals(agentId).first()) as unknown as ApprovalPolicy | undefined;
     }
@@ -42,7 +47,16 @@ export class AgemsApprovalService {
     }
 
     async resolve(id: number, status: 'APPROVED' | 'REJECTED', reason?: string, resolverId?: string): Promise<void> {
+        const req = (await getDexieDb().approvalRequests.get(id)) as unknown as ApprovalRequest | undefined;
         await getDexieDb().approvalRequests.update(id, { status, rejectionReason: reason, resolvedBy: resolverId, resolvedAt: Date.now() } as never);
+        // B3: живой junction — решение уходит делегату (execution-bridge), best-effort.
+        if (req) {
+            try {
+                this.delegates.onResolved?.({ ...req, status, resolvedBy: resolverId, resolvedAt: Date.now() }, status);
+            } catch {
+                /* delegate must never break resolve */
+            }
+        }
     }
 
     async list(agentId?: string, status?: ApprovalRequest['status']): Promise<ApprovalRequest[]> {

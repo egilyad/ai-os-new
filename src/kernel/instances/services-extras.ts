@@ -662,6 +662,16 @@ export const investigationBridge =
         'investigationBridge',
     );
 
+// ── Approval Execution Bridge B3 (direct re-export + lazyService) ──
+export {
+    ApprovalExecutionBridge,
+    type ApprovalExecutionBridgeDeps,
+} from '../services/approval-execution-bridge-service';
+export const approvalExecutionBridge =
+    lazyService<import('../services/approval-execution-bridge-service').ApprovalExecutionBridge>(
+        'approvalExecutionBridge',
+    );
+
 // ── Debate Templates (direct re-export) ──
 export { DEBATE_TEMPLATES, getDebateTemplate } from '../services/debate-runtime/debate-templates';
 export type { DebateTemplate } from '../services/debate-runtime/debate-templates';
