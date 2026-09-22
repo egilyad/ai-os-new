@@ -6,7 +6,9 @@ import {
     startRun,
     appendRunEvent,
     finishRun,
+    logActivity,
 } from './company-store.mjs';
+import { consumeAutocycleSlot } from './autocycle-guard.mjs';
 
 const DEFAULT_POLL_MS = parseInt(process.env.HEARTBEAT_POLL_MS || '15000', 10);
 const DEFAULT_BATCH = parseInt(process.env.HEARTBEAT_BATCH || '10', 10);
@@ -15,6 +17,27 @@ export function processPendingWakeups({ batch = DEFAULT_BATCH, onEvent } = {}) {
     const pending = listWakeups(true).slice(0, batch);
     const results = [];
     for (const w of pending) {
+        // Фаза 0: автономный путь (schedule) — за kill-switch и лимитом итераций.
+        // Ручные триггеры идут как раньше без гарда.
+        if (w.trigger === 'schedule') {
+            const slot = consumeAutocycleSlot(w.companyId);
+            if (!slot.allowed) {
+                ackWakeup(w.id, 'error', `autocycle blocked: ${slot.reason}`);
+                try {
+                    logActivity(w.companyId, 'autocycle_blocked', `${w.id}: ${slot.reason}`);
+                } catch {
+                    /* trail best-effort */
+                }
+                results.push({ id: w.id, ok: false, reason: slot.reason });
+                onEvent?.({
+                    type: 'wakeup_error',
+                    wakeupId: w.id,
+                    companyId: w.companyId,
+                    reason: `autocycle blocked: ${slot.reason}`,
+                });
+                continue;
+            }
+        }
         // M5.1: каждый wakeup исполняется как run с трейсом шагов протокола.
         let run = null;
         try {
@@ -78,6 +101,11 @@ export function processPendingWakeups({ batch = DEFAULT_BATCH, onEvent } = {}) {
             step('work', `heartbeat #${company.heartbeats}`);
             finishRun(run.id, 'done', `heartbeat #${company.heartbeats}`);
             ackWakeup(w.id, 'done', `heartbeat #${company.heartbeats}`);
+            try {
+                logActivity(w.companyId, 'heartbeat', `#${company.heartbeats} via ${w.trigger} ${w.id}`);
+            } catch {
+                /* trail best-effort */
+            }
             results.push({ id: w.id, ok: true, heartbeats: company.heartbeats, runId: run.id });
             onEvent?.({
                 type: 'wakeup_done',
@@ -94,6 +122,11 @@ export function processPendingWakeups({ batch = DEFAULT_BATCH, onEvent } = {}) {
             }
             ackWakeup(w.id, 'error', e instanceof Error ? e.message : String(e));
             results.push({ id: w.id, ok: false, reason: e instanceof Error ? e.message : String(e), runId: run.id });
+            try {
+                logActivity(w.companyId, 'wakeup_error', `${w.id}: ${e instanceof Error ? e.message : String(e)}`.slice(0, 300));
+            } catch {
+                /* trail best-effort */
+            }
             onEvent?.({ type: 'wakeup_error', wakeupId: w.id, runId: run.id, reason: String(e) });
         }
     }

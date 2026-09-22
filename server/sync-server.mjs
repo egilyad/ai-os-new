@@ -749,6 +749,16 @@ const server = http.createServer(async (req, res) => {
                     return;
                 }
             }
+            // Фаза 0: hard-stop распространяется на research/debate-раны.
+            try {
+                const gate = isOverBudget(runsRoute[1], body.agentId || null);
+                if (gate.over) {
+                    writeJson(res, 402, { error: 'budget exhausted', scope: gate.scope, budget: gate.status });
+                    return;
+                }
+            } catch {
+                /* gate best-effort */
+            }
             try {
                 const run = startRun({
                     companyId: runsRoute[1],

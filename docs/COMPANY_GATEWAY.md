@@ -24,6 +24,14 @@ SYNC_SECRET=<hex> SYNC_PORT=3001 node server/sync-server.mjs
 | `HEARTBEAT_POLL_MS` | `15000` | Тик loop (мин. 1000) |
 | `HEARTBEAT_BATCH` | `10` | Wakeups за тик |
 | `ADAPTERS_ALLOW_PROCESS` | `0` | `1` — разрешить `process`-адаптер (произвольные бинарники) |
+| `AUTOCYCLE_ENABLED` | `0` | `1` — разрешить автономный путь (только `schedule`-wakeups; ручные идут всегда) |
+| `AUTOCYCLE_MAX_ITERATIONS` | `10` | Лимит schedule-итераций в сутки на компанию |
+
+## Фаза 0 (safety)
+
+- Kill-switch + лимит итераций действуют только на `schedule`-триггер; ручной путь не gated.
+- Hard-stop бюджета распространяется и на открытие research-runs (`402` при `over`).
+- Каждый автошаг loop пишет в activity-ленту (`heartbeat`, `wakeup_error`, `autocycle_blocked`).
 
 ## API (все, кроме `/api/health` и `/api/debates`, требуют `Authorization: Bearer`)
 
