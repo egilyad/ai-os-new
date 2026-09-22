@@ -1,0 +1,88 @@
+# ─── SuperAgents OS — Quickstart (M9.3) ────────────────────────
+# Компания за <5 минут: UI + Company Gateway (heartbeat-loop включён).
+#
+# Usage:
+#   1. SYNC_SECRET=$(node -e "console.log(require('crypto').randomBytes(32).toString('hex'))")
+#   2. SYNC_SECRET=<secret> docker compose -f docker-compose.quickstart.yml up --build
+#   3. UI:      http://localhost      (план/панели, company-in-browser)
+#      Gateway: http://localhost:3001/api/health   (company-on-server)
+#   4. node cli/superagents.mjs doctor --url http://localhost:3001
+#
+# SYNC_SECRET обязателен и НЕ имеет дефолта (fail fast, как в sync-server.mjs).
+# SYNC_ORIGINS по умолчанию разрешает UI с http://localhost.
+# Данные gateway лежат в ./data (gitignored) — бэкап: cli db-backup.
+# ────────────────────────────────────────────────────────────────
+
+networks:
+    quick-net:
+        driver: bridge
+
+services:
+    ui:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        image: superagents-os:${TAG:-latest}
+        container_name: superagents-quick-ui
+        restart: unless-stopped
+        networks:
+            - quick-net
+        ports:
+            - '127.0.0.1:80:8080'
+        healthcheck:
+            test: ['CMD', 'wget', '-qO-', 'http://127.0.0.1:8080/']
+            interval: 30s
+            timeout: 3s
+            retries: 3
+            start_period: 20s
+        security_opt:
+            - no-new-privileges:true
+        cap_drop:
+            - ALL
+        read_only: true
+        tmpfs:
+            - /tmp
+            - /var/run
+        logging:
+            driver: json-file
+            options:
+                max-size: '10m'
+                max-file: '3'
+
+    gateway:
+        image: node:22-alpine
+        container_name: superagents-quick-gateway
+        restart: unless-stopped
+        working_dir: /app
+        # Код — read-only, состояние — read-write (./data).
+        volumes:
+            - .:/app:ro
+            - ./data:/app/data:rw
+        command: ['node', 'server/sync-server.mjs']
+        environment:
+            SYNC_SECRET: ${SYNC_SECRET:?set SYNC_SECRET env var (see header)}
+            SYNC_PORT: '3001'
+            SYNC_ORIGINS: ${SYNC_ORIGINS:-http://localhost}
+            HEARTBEAT_LOOP: '1'
+            HEARTBEAT_POLL_MS: ${HEARTBEAT_POLL_MS:-15000}
+        networks:
+            - quick-net
+        ports:
+            - '127.0.0.1:3001:3001'
+        healthcheck:
+            test:
+                - CMD
+                - node
+                - -e
+                - fetch('http://127.0.0.1:3001/api/health').then((r) => { if (!r.ok) process.exit(1); }).catch(() => process.exit(1))
+            interval: 15s
+            timeout: 5s
+            retries: 3
+            start_period: 10s
+        security_opt:
+            - no-new-privileges:true
+        logging:
+            driver: json-file
+            options:
+                max-size: '10m'
+                max-file: '3'

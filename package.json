@@ -29,6 +29,7 @@
     "test:e2e": "playwright test --config=e2e/playwright.config.ts",
     "proxy": "node scripts/cors-proxy.mjs",
     "sync-server": "node server/sync-server.mjs",
+    "superagents": "node cli/superagents.mjs",
     "dev:shared": "node server/run-dev.mjs",
     "preview": "vite preview",
     "check:circular-kernel": "madge --circular --extensions ts --ts-config tsconfig.app.json src/kernel/ 2>&1 | node -e \"let d='';process.stdin.on('data',c=>d+=c);process.stdin.on('end',()=>{console.log(d);if(/Found \\\\d+ circular/.test(d))process.exit(1)})\"",
