@@ -6,6 +6,7 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { Lightbulb, Plus, X, Search } from 'lucide-react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { hypothesisService } from '../../kernel/instances';
+import { autoDebateService as autoDebate } from '../../kernel/instances';
 import { useTranslation } from '../../i18n/useTranslation';
 import { useConfirm } from '../../hooks/useConfirm';
 import FilterBar from './FilterBar';
@@ -108,10 +109,24 @@ const HypothesisGenerator: React.FC = () => {
     };
 
     const startDebate = (hypothesis: ResearchHypothesis) => {
-        const thesis = encodeURIComponent(
-            `${hypothesis.title}: ${hypothesis.description.slice(0, 200)}`,
+        const thesis = `${hypothesis.title}: ${hypothesis.description.slice(0, 200)}`;
+        // B2: programmatic start (fire-and-forget) + link. Ручной путь ниже
+        // сохранён: navigate с hypothesisId, DebatePanel при завершении
+        // перезапишет linkDebate на ручную сессию (latest wins).
+        void (async () => {
+            try {
+                const result = await autoDebate.runAutoDebate({ topic: thesis, maxRounds: 3 });
+                if (result.session?.id) {
+                    await hypothesisService.linkDebate(hypothesis.id, result.session.id);
+                }
+                refresh();
+            } catch {
+                /* auto path best-effort; manual flow below still works */
+            }
+        })();
+        navigate(
+            `/debate?thesis=${encodeURIComponent(thesis)}&hypothesisId=${encodeURIComponent(hypothesis.id)}`,
         );
-        navigate(`/debate?thesis=${thesis}&hypothesisId=${encodeURIComponent(hypothesis.id)}`);
     };
 
     const toggleExpand = (id: string) => {
