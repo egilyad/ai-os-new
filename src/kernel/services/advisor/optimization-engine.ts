@@ -2,9 +2,10 @@ import { EVENTS } from '../../events/event-names';
 import type {
     IOptimizationEngine,
     OptimizationSuggestion,
+    ProposedChange,
     SREAlert,
 } from '../../contracts/advisor';
-
+import { runGatedChange } from '../verify-gate-service';
 export interface OptimizationEngineDeps {
     eventBus: {
         on: (event: string, cb: (...args: unknown[]) => void) => () => void;
@@ -29,6 +30,10 @@ export interface OptimizationEngineDeps {
         };
     };
     freeTierLimits: Record<string, { requestsPerDay: number; tokensPerDay: number }>;
+    verifyFix?: (ctx: { suggestion: OptimizationSuggestion; pressureBefore: number | null }) => {
+        ok: boolean;
+        detail: string;
+    };
 }
 
 export class OptimizationEngine implements IOptimizationEngine {
@@ -80,8 +85,73 @@ export class OptimizationEngine implements IOptimizationEngine {
         const suggestion = this.suggestions.find((s) => s.id === suggestionId);
         if (!suggestion) return;
 
+        // B4: fix идёт через verify-gate. Snapshot — key-статусы (единственное
+        // полностью восстановимое сегодня; router-стратегия фиксируется только
+        // в gate-записи — для её отката нужен getStrategy API, это L4).
+        // Сигнатура sync void сохранена: гейт исполняется fire-and-forget,
+        // внутри runGatedChange ничего не бросает наружу.
+        const keyBefore = new Map(
+            this.deps.keyService.getKeys().map((k) => [k.id, k.status] as const),
+        );
+        const pressureBefore = this.meanPressure();
         const change = suggestion.proposedChange || {};
+        void runGatedChange(
+            {
+                label: `sre-fix:${suggestion.title}`.slice(0, 200),
+                snapshot: () => ({ keyBefore: Array.from(keyBefore.entries()), pressureBefore }),
+                apply: () => {
+                    this.applyFix(change);
+                    this.suggestions = this.suggestions.filter((s) => s.id !== suggestionId);
+                    this.deps.eventBus.emit(EVENTS.ADVISOR_SUGGESTION_EXECUTED, {
+                        id: suggestionId,
+                        estimatedSavings: suggestion.estimatedSavings,
+                    });
+                    this.deps.eventBus.emit(EVENTS.NOTIFICATION, {
+                        type: 'success',
+                        message: `Applied: ${suggestion.title}`,
+                        source: 'Advisor',
+                        savings: suggestion.estimatedSavings,
+                    });
+                },
+                verify: () => {
+                    if (this.deps.verifyFix) return this.deps.verifyFix({ suggestion, pressureBefore });
+                    this.triggerAnalysis();
+                    const after = this.meanPressure();
+                    if (pressureBefore === null || after === null) {
+                        return { ok: true, detail: 'insufficient-data (fail-open)' };
+                    }
+                    const ok = after <= pressureBefore + 0.05;
+                    return {
+                        ok,
+                        detail: `pressure ${pressureBefore.toFixed(3)} -> ${after.toFixed(3)}`,
+                    };
+                },
+                rollback: () => {
+                    for (const [id, status] of keyBefore) {
+                        const cur = this.deps.keyService.getKeys().find((k) => k.id === id);
+                        if (cur && cur.status !== status) this.deps.keyService.updateKeyStatus(id, status);
+                    }
+                    this.deps.eventBus.emit(EVENTS.NOTIFICATION, {
+                        type: 'warning',
+                        message: `Rolled back: ${suggestion.title}`,
+                        source: 'Advisor',
+                    });
+                },
+            },
+        );
+    }
 
+    private meanPressure(): number | null {
+        const vals: number[] = [];
+        for (const hist of Object.values(this.poolPressureHistory)) {
+            const last = hist[hist.length - 1];
+            if (typeof last === 'number') vals.push(last);
+        }
+        if (!vals.length) return null;
+        return vals.reduce((a, b) => a + b, 0) / vals.length;
+    }
+
+    private applyFix(change: ProposedChange) {
         if (change.routing_update === 'cost_optimized' && change.switch_to) return; // B10-64: Conflict: both cost_optimized and switch_to would both run
         if (change.routing_update === 'cost_optimized') {
             this.deps.routerService.setStrategy('cost');
@@ -102,18 +172,6 @@ export class OptimizationEngine implements IOptimizationEngine {
                 type: 'info',
             });
         }
-
-        this.suggestions = this.suggestions.filter((s) => s.id !== suggestionId);
-        this.deps.eventBus.emit(EVENTS.ADVISOR_SUGGESTION_EXECUTED, {
-            id: suggestionId,
-            estimatedSavings: suggestion.estimatedSavings,
-        });
-        this.deps.eventBus.emit(EVENTS.NOTIFICATION, {
-            type: 'success',
-            message: `Applied: ${suggestion.title}`,
-            source: 'Advisor',
-            savings: suggestion.estimatedSavings,
-        });
     }
 
     dismissSuggestion(suggestionId: string) {
