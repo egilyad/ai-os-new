@@ -33,6 +33,12 @@ SYNC_SECRET=<hex> SYNC_PORT=3001 node server/sync-server.mjs
 - Hard-stop бюджета распространяется и на открытие research-runs (`402` при `over`).
 - Каждый автошаг loop пишет в activity-ленту (`heartbeat`, `wakeup_error`, `autocycle_blocked`).
 
+## B5 (первый живой junction)
+
+Approve (`POST /approvals/:id/decide` → `approved`) ставит wakeup с триггером `approval`
+(ответ содержит `wakeupId`; для hire — на нового агента, для override — на субъект,
+для ceo_strategy — на запросчика). Loop исполняет его как run. Rejected wakeup не ставит.
+
 ## API (все, кроме `/api/health` и `/api/debates`, требуют `Authorization: Bearer`)
 
 | Метод | Путь | Модуль |

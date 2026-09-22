@@ -727,6 +727,16 @@ export function decideApproval(approvalId, { decision, by, comment }) {
         });
     }
     if (decision === 'approved') {
+        // B5: первый живой junction — одобрение будит очередь (триггер approval,
+        // ручной путь: гард autocycle его не касается, approval и есть гейт человека).
+        const wake = (agentId) => {
+            try {
+                const w = enqueueWakeup({ companyId: a.companyId, agentId: agentId || '', trigger: 'approval', ref: a.id });
+                a.wakeupId = w.id;
+            } catch {
+                /* wakeup best-effort */
+            }
+        };
         if (a.kind === 'hire_agent') {
             const agent = addAgent(a.companyId, {
                 name: a.payload.name,
@@ -737,6 +747,7 @@ export function decideApproval(approvalId, { decision, by, comment }) {
             });
             a.executedAgentId = agent.id;
             logActivity(a.companyId, 'agent_hired', `${agent.name} via ${a.id}`);
+            wake(agent.id);
         } else if (a.kind === 'override') {
             const { action, agentId, managerId } = a.payload;
             if (action === 'pause') setAgentStatus(a.companyId, agentId, 'paused');
@@ -752,8 +763,10 @@ export function decideApproval(approvalId, { decision, by, comment }) {
                 }
             }
             logActivity(a.companyId, 'override_applied', `${action} ${agentId} via ${a.id}`);
+            wake(agentId);
         } else if (a.kind === 'ceo_strategy') {
             logActivity(a.companyId, 'ceo_strategy', String(a.payload.strategy).slice(0, 500));
+            wake(a.requesterAgentId);
         }
     } else {
         logActivity(a.companyId, 'approval_rejected', `${a.kind} ${a.id}`);
