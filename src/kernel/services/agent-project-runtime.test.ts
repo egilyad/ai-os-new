@@ -16,7 +16,7 @@ let db: SuperAgentsDB;
 let projectService: ProjectService;
 let workspace: ProjectWorkspaceService;
 let runtime: AgentProjectRuntime;
-let mockToolRunner: { runWithTools: ReturnType<typeof vi.fn> };
+let mockToolRunner: { runWithTools: (...args: unknown[]) => Promise<{ output: string; toolCalls?: unknown[] }> };
 const PID = 'test-project';
 
 beforeEach(async () => {

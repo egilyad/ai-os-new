@@ -17,8 +17,8 @@ describe('DebatePostProcessor R-GAP-03', () => {
         } as unknown as import('./debate-governor').DebateGovernor;
 
         const args: DebateArgument[] = [
-            { id: 'a1', agentId: 'agent1', agentName: 'A1', content: 'Study shows X is true with 42% improvement', confidence: 0.8, timestamp: Date.now(), round: 1 },
-            { id: 'a2', agentId: 'agent2', agentName: 'A2', content: 'Research by MIT confirms Y', confidence: 0.7, timestamp: Date.now(), round: 1 },
+            { id: 'a1', agentId: 'agent1', agentName: 'A1', content: 'Study shows X is true with 42% improvement', confidence: 0.8, timestamp: Date.now(), round: 1, position: 'pro', source: 'llm' },
+            { id: 'a2', agentId: 'agent2', agentName: 'A2', content: 'Research by MIT confirms Y', confidence: 0.7, timestamp: Date.now(), round: 1, position: 'con', source: 'llm' },
         ];
 
         // Bridge path order: governor feeding first, then FactCheck (was dead before R-GAP-03)
@@ -36,7 +36,7 @@ describe('DebatePostProcessor R-GAP-03', () => {
         const factCheckService = { checkArgument } as unknown as import('../fact-check-service').FactCheckService;
         const proc = new DebatePostProcessor({ factCheckService });
         const args: DebateArgument[] = [
-            { id: 'a1', agentId: 'agent1', agentName: 'A1', content: 'Claim', confidence: 0.8, timestamp: Date.now(), round: 1 },
+            { id: 'a1', agentId: 'agent1', agentName: 'A1', content: 'Claim', confidence: 0.8, timestamp: Date.now(), round: 1, position: 'pro', source: 'llm' },
         ];
         await proc.processFactCheck(args);
         await proc.processFactCheck(args);

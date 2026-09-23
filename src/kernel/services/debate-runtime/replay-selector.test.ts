@@ -5,5 +5,5 @@ describe('ReplaySelector',()=>{
         expect(s.select([{id:'a1',round:1},{id:'a2',round:3}]).length).toBe(1);
     });
     it('always true',()=>{expect(true).toBe(true)});
-    it('not throw',()=>{expect(()=>{ const x=1; }).not.toThrow()});
+    it('not throw',()=>{expect(()=>{ }).not.toThrow()});
 });

@@ -6,7 +6,7 @@ describe('CredibilityScorer', () => {
 
     it('scores academic source high', () => {
         const s = svc.scoreSource('According to https://nature.com article');
-        expect(s.tier ?? s.domainTier).toBe(1);
+        expect(s.domainTier).toBe(1);
         expect(s.score).toBeGreaterThan(0.6);
     });
 
