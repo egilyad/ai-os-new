@@ -260,9 +260,19 @@ export function buildPipeline(engine: PipelineEngine, isResume: boolean): Debate
 
                             // N4c: fact-check this round's arguments (awaited, sampling unchanged) — ensures getForArgument returns completed results before next round's scoring
                             if (engine.deps.postProcessor) {
-                                const roundArgs = (session.arguments ?? []).filter(
-                                    (a) => a.round === event.round,
-                                );
+                                const roundArgs = (session.arguments ?? [])
+                                    .filter((a) => a.round === event.round)
+                                    .map((a, i) => ({
+                                        id: `${sessionId}-r${a.round}-${i}`,
+                                        agentId: a.agentId,
+                                        agentName: a.agentId,
+                                        content: a.content,
+                                        confidence: a.confidence,
+                                        timestamp: a.timestamp,
+                                        round: a.round,
+                                        position: 'neutral' as const,
+                                        source: 'llm' as const,
+                                    }));
                                 if (roundArgs.length > 0) {
                                     await engine.deps.postProcessor.processFactCheck(roundArgs);
                                 }
@@ -333,8 +343,8 @@ export function buildPipeline(engine: PipelineEngine, isResume: boolean): Debate
                                 const ctx = engine.deps.policyEngine.buildContext(
                                     session.phase,
                                     event.round,
-                                    session.totalTokens ?? 0,
-                                    session.totalCost ?? 0,
+                                    budgetSnap?.tokensUsed ?? 0,
+                                    budgetSnap?.costUsed ?? 0,
                                     interimConfidence,
                                     budgetSnap?.pressure ?? 'low',
                                     agentErrorRates,
