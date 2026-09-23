@@ -22,7 +22,7 @@ const EN_MONTHS: Record<string, number> = {
 
 export class EntityService implements IEntityService {
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('Entity', 'init', {});
     }
 
     async destroy(): Promise<void> {

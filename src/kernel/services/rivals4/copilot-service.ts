@@ -44,7 +44,7 @@ export class CopilotService implements ICopilotService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('Copilot', 'init', {});
     }
 
     async destroy(): Promise<void> {

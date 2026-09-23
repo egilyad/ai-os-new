@@ -57,7 +57,7 @@ export class CxfService implements ICxfService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('CXF', 'init', {});
     }
 
     async destroy(): Promise<void> {

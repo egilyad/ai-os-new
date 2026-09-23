@@ -25,7 +25,7 @@ export class CodeAgentService implements ICodeAgentService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('CodeAgent', 'init', {});
     }
 
     async destroy(): Promise<void> {
@@ -87,7 +87,7 @@ export class CodeAgentService implements ICodeAgentService {
                 );
                 if (!res.error) return res.content;
             } catch (e) {
-                LOGGER.warn('code write failed', { error: e instanceof Error ? e.message : String(e) });
+                LOGGER.warn('CodeAgent', 'code write failed', { error: e instanceof Error ? e.message : String(e) });
             }
         }
         return `Final answer (offline): ${task.slice(0, 300)}`;

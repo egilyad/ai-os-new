@@ -34,7 +34,7 @@ export class EmployeeService implements IEmployeeService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('Employee', 'init', {});
     }
 
     async destroy(): Promise<void> {

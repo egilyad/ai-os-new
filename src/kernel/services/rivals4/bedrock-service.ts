@@ -35,7 +35,7 @@ export class BedrockService implements IBedrockService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('Bedrock', 'init', {});
     }
 
     async destroy(): Promise<void> {
