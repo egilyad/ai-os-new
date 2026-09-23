@@ -9,7 +9,7 @@ import { useRealAgents } from '../../hooks/useRealAgents';
 import { useDebateArguments } from '../../hooks/useDebateArguments';
 
 const TECHNIQUE_ID = 'redundancy';
-const CATEGORY = 'P1';
+const CATEGORY: string = 'P1';
 
 const CONFIDENCE_COLOR: Record<string, string> = {
     very_high: '#22c55e', high: '#86efac', medium: '#facc15', low: '#f97316', none: '#6b7280',
@@ -204,7 +204,7 @@ export const RedundancyPanel: React.FC = () => {
                             {args.slice(0, 20).map((arg) => (
                                 <li key={arg.id} style={{ marginBottom: 6 }}>
                                     <span style={{ color: 'var(--slate-500, #64748b)' }}>{arg.agentId}</span>
-                                    {arg.text ? ': ' + arg.text.slice(0, 160) + (arg.text.length > 160 ? '…' : '') : ''}
+                                    {arg.content ? ': ' + arg.content.slice(0, 160) + (arg.content.length > 160 ? '…' : '') : ''}
                                 </li>
                             ))}
                         </ul>
