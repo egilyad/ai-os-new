@@ -40,7 +40,7 @@ export class RunQueueService implements IRunQueueService {
     }
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('RunQueue', 'init', {});
     }
 
     async destroy(): Promise<void> {
@@ -121,7 +121,7 @@ export class RunQueueService implements IRunQueueService {
         } catch (e) {
             item.status = 'failed';
             item.result = e instanceof Error ? e.message : String(e);
-            LOGGER.warn('queued run failed', { runId: item.id, error: item.result });
+            LOGGER.warn('RunQueue', 'queued run failed', { runId: item.id, error: item.result });
         }
         item.updatedAt = now();
         await this.deps.repo.putQueued(item);

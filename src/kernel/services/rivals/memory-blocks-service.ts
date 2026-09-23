@@ -29,7 +29,7 @@ export class MemoryBlocksService implements IMemoryBlocksService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('MemoryBlocks', 'init', {});
     }
 
     async destroy(): Promise<void> {
