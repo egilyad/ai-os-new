@@ -37,6 +37,7 @@ export default function PlannerPanel() {
 
     useEffect(() => {
         void reloadFilters();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const handlePlan = async () => {

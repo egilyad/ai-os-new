@@ -15,7 +15,7 @@ const GovernancePanel: React.FC = () => {
     const refresh = async () => {
         try { setRoles(await governanceService.rolesOf(userId)); } catch { /* ignore */ }
     };
-    useEffect(() => { void refresh(); }, [userId]);
+    useEffect(() => { void refresh(); /* eslint-disable-line react-hooks/exhaustive-deps */ }, [userId]);
 
     return (
         <div style={{ padding: '1rem' }}>

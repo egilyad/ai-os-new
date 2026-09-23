@@ -5,7 +5,9 @@ import { useProjectStore, ensureSubscribed, destroy } from '../../stores/project
 import { StatusBadge, Button } from '../../components/Common';
 import ActivitiesPanel from './ActivitiesPanel';
 import type { CreateProjectInput } from '../../kernel/types/project-types';
-import type { MemoryEntryType } from '../../kernel/types/project-memory-types';
+import type { MemoryEntryType, ProjectMemoryEntry } from '../../kernel/types/project-memory-types';
+import type { AutonomyGoal } from '../../kernel/types/autonomy-types';
+import type { PythonRun } from '../../kernel/types/python-runtime-types';
 
 const CARD: React.CSSProperties = { margin: '0.5rem 0', padding: '0.6rem 0.75rem', borderRadius: 8, border: '1px solid #2a2a35', background: 'rgba(59,130,246,0.08)', cursor: 'pointer' };
 const INPUT: React.CSSProperties = { padding: '0.4rem 0.6rem', borderRadius: 6, border: '1px solid #2a2a35', background: '#1a1a2e', color: 'inherit', fontSize: '0.85rem', width: '100%', boxSizing: 'border-box' };
@@ -39,9 +41,9 @@ const ProjectsPanel: React.FC = () => {
     const [pipelineStage, setPipelineStage] = useState('');
     const [templateCount, setTemplateCount] = useState(0);
     const [snapshotCount, setSnapshotCount] = useState(0);
-    const [memories, setMemories] = useState<any[]>([]);
-    const [goals, setGoals] = useState<any[]>([]);
-    const [pyHistory, setPyHistory] = useState<any[]>([]);
+    const [memories, setMemories] = useState<ProjectMemoryEntry[]>([]);
+    const [goals, setGoals] = useState<AutonomyGoal[]>([]);
+    const [pyHistory, setPyHistory] = useState<PythonRun[]>([]);
 
     useEffect(() => { ensureSubscribed(); loadProjects(); return () => { destroy(); }; }, [loadProjects]);
 

@@ -38,7 +38,7 @@ export default function GroupChatPanel() {
         } catch {
             return [];
         }
-    }, [chats.length]);
+    }, []);
 
     useEffect(() => {
         let cancelled = false;
@@ -57,7 +57,8 @@ export default function GroupChatPanel() {
             }
         })();
         return () => { cancelled = true; };
-    }, []);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [activeId]);
 
     const filtered = useMemo(() => {
         if (!search.trim()) return chats;

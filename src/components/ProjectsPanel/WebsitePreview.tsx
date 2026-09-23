@@ -72,12 +72,10 @@ const WebsitePreview: React.FC<Props> = ({ project }) => {
             let html = '';
             let css = '';
             let js = '';
-            let fileCount = 0;
 
             for (const filePath of flatFiles) {
                 const file = await projectWorkspaceService.readFile(project.id, filePath);
                 if (!file) continue;
-                fileCount++;
                 const ext = filePath.split('.').pop()?.toLowerCase();
                 if (ext === 'html') html += file.content;
                 else if (ext === 'css') css += `/* ${filePath} */\n${file.content}\n`;
@@ -117,6 +115,7 @@ const WebsitePreview: React.FC<Props> = ({ project }) => {
 
     useEffect(() => {
         generatePreview();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [project.id]);
 
     // Auto-refresh every 5s when enabled
@@ -124,6 +123,7 @@ const WebsitePreview: React.FC<Props> = ({ project }) => {
         if (!autoRefresh) return;
         const interval = setInterval(generatePreview, 5000);
         return () => clearInterval(interval);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [autoRefresh, project.id]);
 
     return (
