@@ -14,7 +14,7 @@ const { controlsStub } = vi.hoisted(() => ({
         abort: vi.fn(),
         reset: vi.fn(),
         loadHistory: vi.fn(),
-        getSession: vi.fn(() => undefined),
+        getSession: vi.fn((): unknown => undefined),
         checkpoint: vi.fn(() => 'cp1'),
         getCheckpoints: vi.fn(() => []),
     },
@@ -253,7 +253,7 @@ describe('RunTab (B5.4c Run UI)', () => {
             injectedDone: 0,
             failed: 0,
             // test stub object — type loosened to satisfy the vi.fn(() => undefined) inference
-        } as any);
+        });
         act(() => {
             useDirectorStore.setState({ status: 'running' });
         });

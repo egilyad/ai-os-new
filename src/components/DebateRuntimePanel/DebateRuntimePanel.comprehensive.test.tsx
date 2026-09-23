@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeAll, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import type { ButtonHTMLAttributes } from 'react';
 
 beforeAll(() => {
     Object.defineProperty(window, 'matchMedia', {
@@ -161,13 +162,13 @@ vi.mock('../ModuleInfo', () => ({
 }));
 
 vi.mock('../Common', () => ({
-    Button: ({ children, onClick, disabled, style, ...props }: any) => (
+    Button: ({ children, onClick, disabled, style, ...props }: ButtonHTMLAttributes<HTMLButtonElement>) => (
         <button onClick={onClick} disabled={disabled} style={style} {...props}>{children}</button>
     ),
 }));
 
 vi.mock('../AgentsPanel/AgentAvatar', () => ({
-    AgentAvatar: ({ name }: any) => <span>{name}</span>,
+    AgentAvatar: ({ name }: { name: string }) => <span>{name}</span>,
 }));
 
 vi.mock('../../hooks/useMediaQuery', () => ({

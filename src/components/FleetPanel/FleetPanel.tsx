@@ -361,7 +361,7 @@ function GraphsTab() {
                                 </button>
                             </>
                         )}
-                        <button style={btn} onClick={() => { const url = `${window.location.pathname}?tab=graphs&run=${r.id}`; window.history.pushState({}, '', url); try { navigator.clipboard.writeText(window.location.href); } catch {} }}>
+                        <button style={btn} onClick={() => { const url = `${window.location.pathname}?tab=graphs&run=${r.id}`; window.history.pushState({}, '', url); try { navigator.clipboard.writeText(window.location.href); } catch { /* clipboard unavailable */ } }}>
                             Open
                         </button>
                     </div>

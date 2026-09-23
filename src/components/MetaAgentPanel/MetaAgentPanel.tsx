@@ -26,9 +26,7 @@ export const MetaAgentPanel: React.FC = () => {
     const { controller, graph } = useMemo(() => {
         const g = new ArgumentGraphService();
         // Seed graph with args for centrality demo
-        for (const a of argList) {
-            try { (g as any).addNode?.({ id: a.id, agentId: a.agentId, agentName: a.agentName, content: a.content, round: a.round }); } catch {}
-        }
+        g.build(argList.map((a, i) => ({ id: a.id, agentId: a.agentId, agentName: a.agentName, content: a.content, round: a.round, timestamp: i + 1, confidence: 0.8 })));
         const c = new MetaAgentController(g);
         return { controller: c, graph: g };
     }, [argList]);

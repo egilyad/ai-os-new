@@ -29,7 +29,7 @@ vi.mock('../kernel/instances', () => ({
 }));
 
 const mockSessionStore = {
-    sessions: [] as any[],
+    sessions: [] as never[],
     selectedSessionId: null as string | null,
     activeSessionId: null as string | null,
     isLoaded: true,
@@ -50,7 +50,7 @@ const mockSessionStore = {
 
 vi.mock('../stores/debate-session-store', () => ({
     useDebateSessionStore: Object.assign(
-        vi.fn((sel?: any) => (sel ? sel(mockSessionStore) : mockSessionStore)),
+        vi.fn((sel?: (store: unknown) => unknown) => (sel ? sel(mockSessionStore) : mockSessionStore)),
         { getState: vi.fn(() => mockSessionStore) },
     ),
 }));

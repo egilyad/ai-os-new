@@ -16,7 +16,7 @@ export const ConsistencyPanel: React.FC = () => {
     const agents = realAgents;
     const { args: liveArgs, sessionId, hasLiveDebate } = useDebateArguments();
     const [loadedArgs, setLoadedArgs] = useState<Arg[] | null>(null);
-    const derivedArgs = loadedArgs ?? [];
+    const derivedArgs = useMemo(() => loadedArgs ?? [], [loadedArgs]);
     const [agentId, setAgentId] = useState<string>(() => agents[0]?.id ?? '');
     useEffect(() => {
         if (!agents.some((a) => a.id === agentId)) setAgentId(agents[0]?.id ?? '');

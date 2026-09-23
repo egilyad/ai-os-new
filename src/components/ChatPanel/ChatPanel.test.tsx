@@ -66,7 +66,7 @@ const mockChatState = {
 
 vi.mock('../../stores/useChatStore', () => ({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    useChatStore: (selector?: any) => (selector ? selector(mockChatState) : mockChatState),
+    useChatStore: (selector?: (store: unknown) => unknown) => (selector ? selector(mockChatState) : mockChatState),
     useActiveSessionHistory: () => [],
 }));
 

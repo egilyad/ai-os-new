@@ -131,7 +131,7 @@ function buildItems(t: (key: TranslationKey) => string): PaletteItem[] {
                 const cur = document.documentElement.getAttribute('data-theme') || 'dark';
                 const next = cur === 'dark' ? 'light' : 'dark';
                 document.documentElement.setAttribute('data-theme', next);
-                try { localStorage.setItem('theme', next); } catch {}
+                try { localStorage.setItem('theme', next); } catch { /* private mode */ }
             },
         },
         {

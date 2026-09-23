@@ -40,11 +40,14 @@ vi.mock('../../i18n/useTranslation', () => ({
 }));
 
 vi.mock('framer-motion', () => ({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     motion: { div: (props: any) => <div {...props} /> },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     AnimatePresence: (props: any) => <div>{props.children}</div>,
 }));
 
 vi.mock('../ModalShell', () => ({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ModalShell: (props: any) => <div>{props.children}</div>,
 }));
 

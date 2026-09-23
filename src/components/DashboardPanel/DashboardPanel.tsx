@@ -333,7 +333,7 @@ const DashboardPanel: React.FC<DashboardPanelProps> = ({ onNavigate }) => {
                             </div>
                         );
                     }
-                } catch {}
+                } catch { /* ignore */ }
                 return null;
             })()}
 

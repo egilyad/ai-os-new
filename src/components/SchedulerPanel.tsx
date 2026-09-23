@@ -82,7 +82,7 @@ export const SchedulerPanel: React.FC = () => {
             setError(null);
             if (schedulerService) {
                 // Ensure service is initialized (loads from DB kv `schedules`)
-                try { await schedulerService.init(); } catch {}
+                try { await schedulerService.init(); } catch { /* already initialized */ }
                 setSchedules(schedulerService.getAll());
             } else {
                 setSchedules([]);
@@ -104,8 +104,8 @@ export const SchedulerPanel: React.FC = () => {
             unsubs.push(eventBus.on(EVENTS.SCHEDULE_UPDATED as never, () => void load()));
             unsubs.push(eventBus.on(EVENTS.SCHEDULE_DELETED as never, () => void load()));
             unsubs.push(eventBus.on(EVENTS.SCHEDULE_TRIGGERED as never, () => void load()));
-        } catch {}
-        return () => { for (const u of unsubs) try { u(); } catch {} };
+        } catch { /* ignore */ }
+        return () => { for (const u of unsubs) try { u(); } catch { /* ignore */ } };
     }, [load]);
 
     const handleCreate = useCallback(async () => {

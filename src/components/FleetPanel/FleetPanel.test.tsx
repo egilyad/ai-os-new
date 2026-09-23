@@ -48,8 +48,8 @@ vi.mock('../../kernel/instances', () => {
 
 vi.mock('../../stores/crewStore', () => ({
     useCrewStore: Object.assign(
-        vi.fn((sel?: any) => {
-            const state = { crews: [] as any[], refresh: vi.fn().mockResolvedValue(undefined) };
+        vi.fn((sel?: (store: unknown) => unknown) => {
+            const state = { crews: [] as never[], refresh: vi.fn().mockResolvedValue(undefined) };
             return sel ? sel(state) : state;
         }),
         { getState: vi.fn(() => ({ crews: [], refresh: vi.fn() })) },
@@ -57,8 +57,8 @@ vi.mock('../../stores/crewStore', () => ({
 }));
 vi.mock('../../stores/councilStore', () => ({
     useCouncilStore: Object.assign(
-        vi.fn((sel?: any) => {
-            const state = { councils: [] as any[], refresh: vi.fn().mockResolvedValue(undefined) };
+        vi.fn((sel?: (store: unknown) => unknown) => {
+            const state = { councils: [] as never[], refresh: vi.fn().mockResolvedValue(undefined) };
             return sel ? sel(state) : state;
         }),
         { getState: vi.fn(() => ({ councils: [] })) },
@@ -66,8 +66,8 @@ vi.mock('../../stores/councilStore', () => ({
 }));
 vi.mock('../../stores/graphStore', () => ({
     useGraphStore: Object.assign(
-        vi.fn((sel?: any) => {
-            const state = { graphs: [] as any[], refresh: vi.fn().mockResolvedValue(undefined) };
+        vi.fn((sel?: (store: unknown) => unknown) => {
+            const state = { graphs: [] as never[], refresh: vi.fn().mockResolvedValue(undefined) };
             return sel ? sel(state) : state;
         }),
         { getState: vi.fn(() => ({ graphs: [] })) },
@@ -75,8 +75,8 @@ vi.mock('../../stores/graphStore', () => ({
 }));
 vi.mock('../../stores/personaStore', () => ({
     usePersonaStore: Object.assign(
-        vi.fn((sel?: any) => {
-            const state = { personas: [] as any[], refresh: vi.fn().mockResolvedValue(undefined) };
+        vi.fn((sel?: (store: unknown) => unknown) => {
+            const state = { personas: [] as never[], refresh: vi.fn().mockResolvedValue(undefined) };
             return sel ? sel(state) : state;
         }),
         { getState: vi.fn(() => ({ personas: [] })) },
@@ -84,8 +84,8 @@ vi.mock('../../stores/personaStore', () => ({
 }));
 vi.mock('../../stores/opsStore', () => ({
     useOpsStore: Object.assign(
-        vi.fn((sel?: any) => {
-            const state = { ops: [] as any[], refresh: vi.fn().mockResolvedValue(undefined) };
+        vi.fn((sel?: (store: unknown) => unknown) => {
+            const state = { ops: [] as never[], refresh: vi.fn().mockResolvedValue(undefined) };
             return sel ? sel(state) : state;
         }),
         { getState: vi.fn(() => ({ ops: [] })) },
@@ -93,8 +93,8 @@ vi.mock('../../stores/opsStore', () => ({
 }));
 vi.mock('../../stores/interopStore', () => ({
     useInteropStore: Object.assign(
-        vi.fn((sel?: any) => {
-            const state = { interop: [] as any[], refresh: vi.fn().mockResolvedValue(undefined) };
+        vi.fn((sel?: (store: unknown) => unknown) => {
+            const state = { interop: [] as never[], refresh: vi.fn().mockResolvedValue(undefined) };
             return sel ? sel(state) : state;
         }),
         { getState: vi.fn(() => ({ interop: [] })) },
@@ -102,8 +102,8 @@ vi.mock('../../stores/interopStore', () => ({
 }));
 vi.mock('../../stores/metaStore', () => ({
     useMetaStore: Object.assign(
-        vi.fn((sel?: any) => {
-            const state = { meta: {} as any, refresh: vi.fn().mockResolvedValue(undefined) };
+        vi.fn((sel?: (store: unknown) => unknown) => {
+            const state = { meta: {} as Record<string, unknown>, refresh: vi.fn().mockResolvedValue(undefined) };
             return sel ? sel(state) : state;
         }),
         { getState: vi.fn(() => ({ meta: {} })) },
@@ -111,8 +111,8 @@ vi.mock('../../stores/metaStore', () => ({
 }));
 vi.mock('../../stores/trustStore', () => ({
     useTrustStore: Object.assign(
-        vi.fn((sel?: any) => {
-            const state = { trust: [] as any[], refresh: vi.fn().mockResolvedValue(undefined) };
+        vi.fn((sel?: (store: unknown) => unknown) => {
+            const state = { trust: [] as never[], refresh: vi.fn().mockResolvedValue(undefined) };
             return sel ? sel(state) : state;
         }),
         { getState: vi.fn(() => ({ trust: [] })) },
@@ -120,8 +120,8 @@ vi.mock('../../stores/trustStore', () => ({
 }));
 vi.mock('../../stores/frontierStore', () => ({
     useFrontierStore: Object.assign(
-        vi.fn((sel?: any) => {
-            const state = { frontier: [] as any[], refresh: vi.fn().mockResolvedValue(undefined) };
+        vi.fn((sel?: (store: unknown) => unknown) => {
+            const state = { frontier: [] as never[], refresh: vi.fn().mockResolvedValue(undefined) };
             return sel ? sel(state) : state;
         }),
         { getState: vi.fn(() => ({ frontier: [] })) },
@@ -129,8 +129,8 @@ vi.mock('../../stores/frontierStore', () => ({
 }));
 vi.mock('../../stores/rivalStore', () => ({
     useRivalStore: Object.assign(
-        vi.fn((sel?: any) => {
-            const state = { rivals: [] as any[], refresh: vi.fn().mockResolvedValue(undefined) };
+        vi.fn((sel?: (store: unknown) => unknown) => {
+            const state = { rivals: [] as never[], refresh: vi.fn().mockResolvedValue(undefined) };
             return sel ? sel(state) : state;
         }),
         { getState: vi.fn(() => ({ rivals: [] })) },
