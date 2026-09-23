@@ -1,7 +1,7 @@
 /**
  * AgentProjectRuntime tests — project-scoped agentic loop.
  */
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, vi, type Mock } from 'vitest';
 import { AgentProjectRuntime } from './agent-project-runtime';
 import { ProjectService } from './project-service';
 import { ProjectWorkspaceService } from './project-workspace-service';
@@ -16,7 +16,7 @@ let db: SuperAgentsDB;
 let projectService: ProjectService;
 let workspace: ProjectWorkspaceService;
 let runtime: AgentProjectRuntime;
-let mockToolRunner: { runWithTools: (...args: unknown[]) => Promise<{ output: string; toolCalls?: unknown[] }> };
+let mockToolRunner: { runWithTools: Mock<(...args: unknown[]) => Promise<{ output: string; toolCalls?: unknown[] }>> };
 const PID = 'test-project';
 
 beforeEach(async () => {

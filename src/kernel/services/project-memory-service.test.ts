@@ -18,6 +18,7 @@ describe('ProjectMemoryService', () => {
     describe('entries', () => {
         it('adds and retrieves entries', () => {
             svc.addEntry('p1', {
+                projectId: 'p1',
                 type: 'note',
                 title: 'Important note',
                 content: 'Remember to test',
@@ -29,20 +30,20 @@ describe('ProjectMemoryService', () => {
         });
 
         it('filters by type', () => {
-            svc.addEntry('p1', { type: 'note', title: 'n1', content: 'c', tags: [] });
-            svc.addEntry('p1', { type: 'lesson', title: 'l1', content: 'c', tags: [] });
+            svc.addEntry('p1', { projectId: 'p1', type: 'note', title: 'n1', content: 'c', tags: [] });
+            svc.addEntry('p1', { projectId: 'p1', type: 'lesson', title: 'l1', content: 'c', tags: [] });
             expect(svc.getEntries('p1', 'note')).toHaveLength(1);
             expect(svc.getEntries('p1', 'lesson')).toHaveLength(1);
         });
 
         it('updates entries', () => {
-            const entry = svc.addEntry('p1', { type: 'note', title: 'old', content: 'c', tags: [] });
+            const entry = svc.addEntry('p1', { projectId: 'p1', type: 'note', title: 'old', content: 'c', tags: [] });
             svc.updateEntry('p1', entry.id, { title: 'new' });
             expect(svc.getEntries('p1')[0].title).toBe('new');
         });
 
         it('deletes entries', () => {
-            const entry = svc.addEntry('p1', { type: 'note', title: 'n', content: 'c', tags: [] });
+            const entry = svc.addEntry('p1', { projectId: 'p1', type: 'note', title: 'n', content: 'c', tags: [] });
             svc.deleteEntry('p1', entry.id);
             expect(svc.getEntries('p1')).toHaveLength(0);
         });
@@ -117,13 +118,13 @@ describe('ProjectMemoryService', () => {
 
     describe('searchEntries', () => {
         it('searches by title', () => {
-            svc.addEntry('p1', { type: 'note', title: 'React patterns', content: 'c', tags: [] });
-            svc.addEntry('p1', { type: 'note', title: 'Vue patterns', content: 'c', tags: [] });
+            svc.addEntry('p1', { projectId: 'p1', type: 'note', title: 'React patterns', content: 'c', tags: [] });
+            svc.addEntry('p1', { projectId: 'p1', type: 'note', title: 'Vue patterns', content: 'c', tags: [] });
             expect(svc.searchEntries('p1', 'React')).toHaveLength(1);
         });
 
         it('searches by tags', () => {
-            svc.addEntry('p1', { type: 'note', title: 'n', content: 'c', tags: ['performance'] });
+            svc.addEntry('p1', { projectId: 'p1', type: 'note', title: 'n', content: 'c', tags: ['performance'] });
             expect(svc.searchEntries('p1', 'performance')).toHaveLength(1);
         });
     });
