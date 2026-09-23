@@ -1949,7 +1949,7 @@ export const EVENT_REGISTRY = {
         z.object({ entries: z.number(), hitRate: z.number() }),
     ),
     FILES_UPLOADED: event('files:uploaded', z.object({ fileId: z.string(), name: z.string() })),
-    PROJECT_CREATED: event('project:created:rivals', z.object({ projectId: z.string(), name: z.string() })),
+    PROJECT_CREATED_RIVALS: event('project:created:rivals', z.object({ projectId: z.string(), name: z.string() })),
     PROJECT_FILE_ADDED: event('project:file:added', z.object({ projectId: z.string(), name: z.string() })),
     ROUTINE_DEFINED: event('routine:defined', z.object({ routineId: z.string(), name: z.string() })),
     ROUTINE_TRIGGERED: event('routine:triggered', z.object({ routineId: z.string() })),

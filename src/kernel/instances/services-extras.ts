@@ -76,7 +76,6 @@ import type { ICouncilService } from '../contracts/council';
 import type { IGraphService } from '../contracts/graph';
 import type {
     ILtMemoryService,
-    IPersonaService,
     ISharedContextService,
 } from '../contracts/persona';
 import type { PersonaRepository } from '../dal/persona-repository';
@@ -381,7 +380,6 @@ export const agentForgeService = lazyService<IAgentForgeService>('agentForgeServ
 export const councilService = lazyService<ICouncilService>('councilService');
 export const graphService = lazyService<IGraphService>('graphService');
 export const ltMemoryService = lazyService<ILtMemoryService>('ltMemoryService');
-export const personaService = lazyService<IPersonaService>('personaService');
 export const sharedContextService = lazyService<ISharedContextService>('sharedContextService');
 export const personaRepository = lazyService<PersonaRepository>('personaRepository');
 export const opsRepository = lazyService<OpsRepository>('opsRepository');

@@ -6,6 +6,7 @@ import type {
     LoadedDoc,
     ModeDef,
     ReactRun,
+    ReactStep,
     ScopedMem,
 } from '../types/rival2-types';
 
@@ -16,6 +17,7 @@ export type {
     LoadedDoc,
     ModeDef,
     ReactRun,
+    ReactStep,
     ScopedMem,
 } from '../types/rival2-types';
 
