@@ -23,7 +23,7 @@ import type { DataAccessLayer } from '../dal/types';
 import type { ILLMClientService } from '../contracts/provider-adapter';
 import type { IKnowledgeService, IToolRunnerService } from '../contracts/parity';
 import type { IRagService } from '../contracts/rivals2';
-import type { IReasoningService, IDatasetService } from '../contracts/rivals3';
+import type { IDatasetService } from '../contracts/rivals3';
 import type { IGraphService } from '../contracts/graph';
 import type { ICrewService } from '../contracts/crew';
 import type { IPersonaService } from '../contracts/persona';

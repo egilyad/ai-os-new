@@ -54,10 +54,13 @@ import type { IIncentiveDetector } from '../contracts/debate-incentives';
 import type { IGoTDeliberation } from '../contracts/debate-got';
 import type { IConceptBlender } from '../contracts/debate-blending';
 import type { IOutcomeForecaster } from '../contracts/debate-forecaster';
-import type { IPrePublishCriticService } from '../contracts/debate-pre-publish-critic';
 
 import { SimilarityMonitor } from '../services/debate-runtime/similarity-monitor';
 import { PersonaDriftDetector } from '../services/debate-runtime/persona-drift-detector';
+
+// Ленивый require для разрыва циклов (как в debate-phase-handler): tsconfig app
+// без node-типов, поэтому декларация локальная, не глобальная.
+declare const require: (id: string) => any;
 import { InsightBus } from '../services/debate-runtime/insight-bus';
 import { LogicalFormExtractor } from '../services/debate-runtime/logical-form-extractor';
 import { JustificationEnforcer } from '../services/debate-runtime/justification-enforcer';
@@ -223,7 +226,7 @@ export const registerPhase3: Phase = (helpers, ctx) => {
     register('weightedJudgeEvaluator', (c) => {
         const { WeightedJudgeEvaluator } = require('../services/council/weighted-judge-evaluator') as typeof import('../services/council/weighted-judge-evaluator');
         const database = c.has('database') ? c.get<import('../services/database-service').DatabaseService>('database') : undefined;
-        const eventBus = c.has('eventBus') ? c.get<import('../../types/interfaces').IEventBus>('eventBus') : undefined;
+        const eventBus = c.has('eventBus') ? c.get<IEventBus>('eventBus') : undefined;
         return new WeightedJudgeEvaluator({ database, eventBus });
     });
     register('debateMemoryExtractor', (_c) => new DebateMemoryExtractor());
