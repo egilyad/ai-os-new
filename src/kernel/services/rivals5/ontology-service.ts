@@ -38,7 +38,7 @@ export class OntologyService implements IOntologyService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('Ontology', 'init', {});
     }
 
     async destroy(): Promise<void> {

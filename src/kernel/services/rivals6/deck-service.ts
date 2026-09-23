@@ -20,7 +20,7 @@ export class DeckService implements IDeckService {
     constructor(private llm?: ILLMClientService) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('Deck', 'init', {});
     }
 
     async destroy(): Promise<void> {
@@ -62,7 +62,7 @@ export class DeckService implements IDeckService {
                     }
                 }
             } catch (e) {
-                LOGGER.warn('deck build failed, fallback structure', {
+                LOGGER.warn('Deck', 'deck build failed, fallback structure', {
                     error: e instanceof Error ? e.message : String(e),
                 });
             }

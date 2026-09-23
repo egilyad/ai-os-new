@@ -17,7 +17,7 @@ export class WriterService implements IWriterService {
     constructor(private dal: DataAccessLayer) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('Writer', 'init', {});
     }
 
     async destroy(): Promise<void> {

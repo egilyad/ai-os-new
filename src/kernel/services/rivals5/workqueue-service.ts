@@ -32,7 +32,7 @@ export class WorkQueueService implements IWorkQueueService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('WorkQueue', 'init', {});
     }
 
     async destroy(): Promise<void> {

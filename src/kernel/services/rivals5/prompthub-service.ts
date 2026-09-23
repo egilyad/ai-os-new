@@ -15,7 +15,7 @@ export class PromptHubService implements IPromptHubService {
     constructor(private dal: DataAccessLayer) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('PromptHub', 'init', {});
     }
 
     async destroy(): Promise<void> {
