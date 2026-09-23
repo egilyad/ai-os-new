@@ -94,7 +94,7 @@ export class LlmCrewExecutor implements ICrewTaskExecutor {
                     if (res.output) return res.output;
                 }
             } catch (e) {
-                LOGGER.warn('crew tool-loop failed, fallback to chat', { error: e instanceof Error ? e.message : String(e) });
+                LOGGER.warn('LlmBridge', 'crew tool-loop failed, fallback to chat', { error: e instanceof Error ? e.message : String(e) });
             }
         }
         try {
@@ -106,7 +106,7 @@ export class LlmCrewExecutor implements ICrewTaskExecutor {
                 input.role.id,
             );
         } catch (e) {
-            LOGGER.warn('crew task llm failed, echo fallback', {
+            LOGGER.warn('LlmBridge', 'crew task llm failed, echo fallback', {
                 error: e instanceof Error ? e.message : String(e),
             });
             return `[${input.role.name}] completed: ${input.task.description}\nExpected: ${input.task.expectedOutput}`;

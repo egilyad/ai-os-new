@@ -51,7 +51,7 @@ export class CoordinationService implements ICoordinationService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('Coordination', 'init', {});
     }
 
     async destroy(): Promise<void> {

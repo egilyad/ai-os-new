@@ -20,7 +20,7 @@ export class McpHarnessService implements IMcpHarnessService {
     constructor(private deps: { mcpService: MCPService; events: IEventBus }) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('McpHarness', 'init', {});
     }
 
     async destroy(): Promise<void> {}
@@ -34,7 +34,7 @@ export class McpHarnessService implements IMcpHarnessService {
             failed = stats.total - stats.connected - reconnected;
         } catch (e) {
             this.lastError = e instanceof Error ? e.message : String(e);
-            LOGGER.warn('reconnectAll failed', { error: this.lastError });
+            LOGGER.warn('McpHarness', 'reconnectAll failed', { error: this.lastError });
             failed = stats.total - stats.connected;
         }
         const out: McpHarnessStats = { total: stats.total, connected: stats.connected + reconnected, reconnected, failed };
@@ -58,7 +58,7 @@ export class McpHarnessService implements IMcpHarnessService {
             } catch (e) {
                 const msg = e instanceof Error ? e.message : String(e);
                 this.lastError = msg;
-                LOGGER.warn('proxyTool auto-reconnect failed, handoff', { serverId, error: msg });
+                LOGGER.warn('McpHarness', 'proxyTool auto-reconnect failed, handoff', { serverId, error: msg });
                 // BLOCKED-RUNTIME handoff — no server live
                 return { handoff: true, serverId, tool, reason: `no connected MCP server ${serverId} (${msg}) — BLOCKED-RUNTIME` };
             }

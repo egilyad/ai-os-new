@@ -28,7 +28,7 @@ export class A2AService implements IA2AService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', { loopback: !this.transport });
+        LOGGER.info('A2A', 'init', { loopback: !this.transport });
     }
 
     async destroy(): Promise<void> {
@@ -112,7 +112,7 @@ export class A2AService implements IA2AService {
             agentId,
             error: a2aError(code, message) as { code?: string },
         });
-        LOGGER.warn('a2a peer error', { agentId, code });
+        LOGGER.warn('A2A', 'a2a peer error', { agentId, code });
     }
 
     private async require(id: string): Promise<A2AAgent> {
