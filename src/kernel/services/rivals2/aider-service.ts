@@ -20,7 +20,7 @@ export class AiderService implements IAiderService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('Aider', 'init', {});
     }
 
     async destroy(): Promise<void> {

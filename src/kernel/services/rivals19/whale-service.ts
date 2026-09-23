@@ -12,7 +12,7 @@ export class CodeWhaleService implements ICodeWhaleService {
         private events?: IEventBus,
         private dal?: DataAccessLayer,
     ) {}
-    async init(){ LOGGER.info('init',{}); } async destroy(){}
+    async init(){ LOGGER.info('Whale', 'init',{}); } async destroy(){}
     async cargoCheck(): Promise<string> {
         let output: string;
         let ok = true;

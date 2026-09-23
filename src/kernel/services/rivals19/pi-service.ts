@@ -9,7 +9,7 @@ export class PiService implements IPiService {
         private dal: DataAccessLayer,
         private events?: IEventBus,
     ) {}
-    async init(){ LOGGER.info('init',{}); } async destroy(){}
+    async init(){ LOGGER.info('Pi', 'init',{}); } async destroy(){}
     async registerTool(name: string, latencyMs=20){ await this.dal.kv.set(`pi-tool/${name.slice(0,80)}`, { latencyMs, at: Date.now() }); }
     async dispatch(tool: string, args: Record<string,unknown> = {}){
         const meta=await this.dal.kv.get<Record<string,number>>(`pi-tool/${tool}`);

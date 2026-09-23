@@ -26,7 +26,7 @@ export class CharacterService implements ICharacterService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('Character', 'init', {});
     }
 
     async destroy(): Promise<void> {

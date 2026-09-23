@@ -12,7 +12,7 @@ export class VoidService implements IVoidService {
         private llm?: ILLMClientService,
         private events?: IEventBus,
     ) {}
-    async init(){ LOGGER.info('init',{}); } async destroy(){}
+    async init(){ LOGGER.info('Void', 'init',{}); } async destroy(){}
     async session(file: string){ const id=genId('void'); await this.dal.kv.set(`void/${id}`, { file: file.slice(0,200), history: [] as string[] }); try{ this.events?.emit(EVENTS.VOID_SESSION, { file: file.slice(0,200) }); }catch{} return id; }
     async assist(sessionId: string, prompt: string){
         const s=await this.dal.kv.get<Record<string,unknown>>(`void/${sessionId}`); if(!s) throw new Error('session not found');
