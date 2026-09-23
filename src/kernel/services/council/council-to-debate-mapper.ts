@@ -53,26 +53,20 @@ function councilToTopology(session: CouncilSession): DebateTopology {
 function councilParticipantsToDebateParticipants(session: CouncilSession): ParticipantConfig[] {
     // D4.3 lenses: real systemPrompt via buildParticipantPrompt (shared lenses lib) — metadata-only propagation not enough
     // We lazily import to avoid circular at top
-    let buildPrompt: ((p: { name: string; kind: string; lensId?: string; polarityId?: string }) => string) | null = null;
+    let buildPrompt: ((p: { name: string; kind: string; lensId?: string; polarityId?: string }) => string) | undefined;
     try {
         // eslint-disable-next-line @typescript-eslint/no-require-imports
         const mod = require('./council-lenses') as typeof import('./council-lenses');
-        buildPrompt = mod.buildParticipantPrompt as unknown as typeof buildPrompt;
+        const fn: unknown = mod.buildParticipantPrompt;
+        if (typeof fn === 'function') {
+            buildPrompt = fn as (p: { name: string; kind: string; lensId?: string; polarityId?: string }) => string;
+        }
     } catch { /* ignore */ }
-    if (!buildPrompt) {
-        return session.participants.map((p) => ({
-            agentId: p.id,
-            nodeId: p.id,
-            role: p.kind,
-            systemPrompt: undefined,
-        }));
-    }
-    const build = buildPrompt;
     return session.participants.map((p) => ({
         agentId: p.id,
         nodeId: p.id,
         role: p.kind,
-        systemPrompt: build({ name: p.name, kind: p.kind, lensId: p.lensId, polarityId: p.polarityId }),
+        systemPrompt: buildPrompt?.({ name: p.name, kind: p.kind, lensId: p.lensId, polarityId: p.polarityId }),
     }));
 }
 

@@ -34,6 +34,9 @@ export interface ScoreChangedPayload {
     posterior: number;
     delta: number;
     dimension: string;
+    consensusConfidence?: number;
+    contradictionDensity?: number;
+    unresolvedCount?: number;
 }
 
 export interface ArgumentFeaturePayload {
