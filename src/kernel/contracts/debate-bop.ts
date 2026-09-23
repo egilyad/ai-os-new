@@ -40,6 +40,9 @@ export interface IBoPTrackerService {
     /** Get the proportion of met burdens for an agent (0-1). */
     getMetRatio(agentId: string): number;
 
+    /** Read-only snapshot of all burden entries. */
+    getAllEntries(): readonly BurdenEntry[];
+
     /** Clear state for a new session. */
     reset(): void;
 }

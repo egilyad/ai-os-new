@@ -81,4 +81,8 @@ export class BoPTrackerService implements IBoPTrackerService {
         this.entries.clear();
         this.burdenAgents.clear();
     }
+
+    getAllEntries(): readonly BurdenEntry[] {
+        return Array.from(this.entries.values());
+    }
 }

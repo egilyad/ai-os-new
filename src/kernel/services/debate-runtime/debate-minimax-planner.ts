@@ -53,6 +53,11 @@ export class MinimaxPlanner implements IMinimaxPlanner {
         return bestMove;
     }
 
+    /** Public candidate list for UI display (wraps internal generation). */
+    getCandidates(agentId: string, currentRound: number): MinimaxMove[] {
+        return this._generateCandidates(agentId, currentRound);
+    }
+
     // ── Candidate generation ──
 
     private _generateCandidates(agentId: string, currentRound: number): MinimaxMove[] {

@@ -207,7 +207,7 @@ const RoomPanel: React.FC = () => {
                                 </option>
                             ))}
                         </select>
-                        <span style={{ fontSize: '0.68rem', opacity: 0.6, marginTop: 2 }}>{t(`room.invoke.where.hint.${where}` as any)}</span>
+                        <span style={{ fontSize: '0.68rem', opacity: 0.6, marginTop: 2 }}>{t(`room.invoke.where.hint.${where}`)}</span>
                     </label>
 
                     <label style={FIELD}>
@@ -222,7 +222,7 @@ const RoomPanel: React.FC = () => {
                                 </option>
                             ))}
                         </select>
-                        <span style={{ fontSize: '0.68rem', opacity: 0.6, marginTop: 2 }}>{t(`room.invoke.mode.hint.${mode}` as any)}</span>
+                        <span style={{ fontSize: '0.68rem', opacity: 0.6, marginTop: 2 }}>{t(`room.invoke.mode.hint.${mode}`)}</span>
                     </label>
                 </div>
 

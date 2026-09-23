@@ -44,7 +44,7 @@ export const ShadowOpponentPanel: React.FC = () => {
         return realAgents.slice(0, 8).map((a) => {
             const r = (() => {
                 try {
-                    return (agentService as any).resolveAgent(a.id);
+                    return agentService.resolveAgent(a.id);
                 } catch {
                     return null;
                 }
@@ -97,7 +97,7 @@ export const ShadowOpponentPanel: React.FC = () => {
                 persona.systemPrompt,
                 agentId,
                 persona.name,
-                adapter as any,
+                adapter,
                 'mock-model',
                 'mock-key',
                 ac.signal,
@@ -199,7 +199,7 @@ export const ShadowOpponentPanel: React.FC = () => {
                     Language
                     <select
                         value={language}
-                        onChange={(e) => setLanguage(e.target.value as any)}
+                        onChange={(e) => setLanguage(e.target.value as 'English' | 'Russian')}
                         style={{
                             padding: '6px 10px',
                             borderRadius: 8,

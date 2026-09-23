@@ -40,7 +40,7 @@ export const StakeholderPanel: React.FC = () => {
                 </label>
                 <label style={{ display: 'flex', flexDirection: 'column', gap: 4, fontSize: 12, color: 'var(--slate-300)' }}>
                     Language
-                    <select value={language} onChange={e => setLanguage(e.target.value as any)} style={{ padding: '6px 10px', borderRadius: 8, background: 'var(--slate-900)', color: 'var(--slate-100)', border: '1px solid rgba(255,255,255,0.1)', fontSize: 13 }}>
+                    <select value={language} onChange={e => setLanguage(e.target.value as 'English' | 'Russian')} style={{ padding: '6px 10px', borderRadius: 8, background: 'var(--slate-900)', color: 'var(--slate-100)', border: '1px solid rgba(255,255,255,0.1)', fontSize: 13 }}>
                         <option value="English">English</option>
                         <option value="Russian">Russian</option>
                     </select>

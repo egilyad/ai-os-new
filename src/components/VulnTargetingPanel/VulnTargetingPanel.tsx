@@ -207,7 +207,7 @@ export const VulnTargetingPanel: React.FC = () => {
                     Language
                     <select
                         value={language}
-                        onChange={(e) => setLanguage(e.target.value as any)}
+                        onChange={(e) => setLanguage(e.target.value as 'English' | 'Russian')}
                         style={{ padding: '6px 10px', borderRadius: 8, background: 'var(--slate-900)', color: 'var(--slate-100)', border: '1px solid rgba(255,255,255,0.1)', fontSize: 13 }}
                     >
                         <option value="English">English</option>

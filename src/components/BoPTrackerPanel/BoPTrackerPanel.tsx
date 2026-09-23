@@ -50,7 +50,7 @@ export const BoPTrackerPanel: React.FC = () => {
         setVersion(v => v + 1);
     };
 
-    const allUnmet = (svc as any).entries ? Array.from((svc as any).entries.values()) as Array<{ claimId: string; agentId: string; agentName: string; claimText: string; round: number; status: string }> : [];
+    const allUnmet = svc.getAllEntries();
     const unmetForSelected = svc.getUnmetForAgent(agentId);
     const ratios = agents.map(a => ({ agentId: a.id, name: a.name, ratio: svc.getMetRatio(a.id), unmet: svc.getUnmetForAgent(a.id).length }));
 

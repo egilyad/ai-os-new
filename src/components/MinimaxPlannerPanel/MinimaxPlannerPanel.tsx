@@ -56,10 +56,10 @@ export const MinimaxPlannerPanel: React.FC = () => {
         const name = agents.find(a => a.id === agentId)?.name ?? agentId;
         const move = planner.plan(agentId, name, round);
         setBest(move);
-        // Generate all candidates for display by calling private method via inspection
+        // Generate all candidates for display
         try {
-            const all = (planner as any)._generateCandidates?.(agentId, round) ?? (move ? [move] : []);
-            setCandidates(all.slice(0, 6));
+            const all = planner.getCandidates(agentId, round);
+            setCandidates(all.length > 0 ? all.slice(0, 6) : (move ? [move] : []));
         } catch {
             setCandidates(move ? [move] : []);
         }
@@ -67,8 +67,8 @@ export const MinimaxPlannerPanel: React.FC = () => {
 
     const graphInfo = useMemo(() => {
         try {
-            const nodes = (graph as any).getAllNodes?.() ?? [];
-            const initialized = (graph as any).initialized ?? nodes.length > 0;
+            const nodes = graph.getAllNodes();
+            const initialized = graph.initialized || nodes.length > 0;
             return { count: nodes.length, initialized };
         } catch {
             return { count: 0, initialized: false };
