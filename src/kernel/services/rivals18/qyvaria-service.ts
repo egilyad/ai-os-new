@@ -9,7 +9,7 @@ export class QyvariaService implements IQyvariaService {
         private dal: DataAccessLayer,
         private events?: IEventBus,
     ) {}
-    async init(){ LOGGER.info('init',{}); } async destroy(){}
+    async init(){ LOGGER.info('Qyvaria', 'init',{}); } async destroy(){}
     async addNode(name: string, neighbors: string[] = []){
         await this.dal.kv.set(`qyvaria/${name.slice(0,80)}`, { neighbors: neighbors.slice(0,10).map(n=>n.slice(0,80)), causal: [] as string[] });
     }

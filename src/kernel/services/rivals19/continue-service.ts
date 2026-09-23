@@ -9,7 +9,7 @@ export class ContinueService implements IContinueService {
         private llm?: ILLMClientService,
         private events?: IEventBus,
     ) {}
-    async init(){ LOGGER.info('init',{}); } async destroy(){}
+    async init(){ LOGGER.info('Continue', 'init',{}); } async destroy(){}
     async autocomplete(prefix: string){
         if (this.llm) { try { const r=await this.llm.chat([{role:'system',content:'Autocomplete code, one line.'},{role:'user',content:prefix.slice(-500)}],{temperature:0.2,maxTokens:40}); if(!r.error) return r.content.trim().slice(0,100); } catch {} }
         return `${prefix} // autocomplete`;

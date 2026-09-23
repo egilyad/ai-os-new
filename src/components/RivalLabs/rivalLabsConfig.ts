@@ -302,7 +302,7 @@ export const RIVAL_PHASES: RivalPhaseDef[] = [
             }),
             def('continue', 'Continue', S.continueService, 'chat', 'a', A(one)),
             def('tabby', 'Tabby', S.tabbyService, 'complete', 'a', A(one)),
-            def('pilot', 'gpt-pilot', S.gptPilotService, 'start', 'a', A(one)),
+            def('pilot', 'gpt-pilot', S.gptPilotService, 'launch', 'a', A(one)),
             def('void', 'Void', S.voidService, 'session', 'a', A(one)),
             def('crush', 'Crush', S.crushService, 'pretty', 'a', A(one)),
             def('whale', 'CodeWhale', S.codeWhaleService, 'cargoCheck', 'none'),

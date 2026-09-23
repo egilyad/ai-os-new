@@ -10,8 +10,8 @@ export class GptPilotService implements IGptPilotService {
         private dal: DataAccessLayer,
         private events?: IEventBus,
     ) {}
-    async init(){ LOGGER.info('init',{}); } async destroy(){}
-    async start(spec: string){
+    async init(){ LOGGER.info('GptPilot', 'init',{}); } async destroy(){}
+    async launch(spec: string){
         const id=genId('pilot'); const phases=['spec','arch','tasks','code','review'];
         await this.dal.kv.set(`pilot/${id}`, { id, spec: spec.slice(0,500), phase: 0, phases });
         try{ this.events?.emit(EVENTS.GOTPILOT_START, { spec: spec.slice(0,200) }); }catch{}
