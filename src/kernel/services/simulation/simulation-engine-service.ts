@@ -12,6 +12,9 @@ import type { IEventBus } from '../../types/interfaces';
 import { rootLogger } from '../logger-service';
 import { EVENTS } from '../../events/event-names';
 
+// Ленивый require для разрыва циклов: tsconfig app без node-типов.
+declare const require: (id: string) => any;
+
 const LOGGER = rootLogger.child('SimEngine');
 
 class StubActPort implements IAgentActPort {
@@ -60,7 +63,7 @@ export class SimulationEngineService implements ISimulationEngineService {
         return new StubActPort();
     }
 
-    async init(): Promise<void> { LOGGER.info('init', {}); }
+    async init(): Promise<void> { LOGGER.info('SimEngine', 'init', {}); }
     async destroy(): Promise<void> { this.running.clear(); }
 
     async status(worldId: string): Promise<{ tick: number; running: boolean } | null> {

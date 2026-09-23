@@ -180,7 +180,7 @@ export class ManusService implements IManusService {
                     return { pass, note: text.slice(0, 300) };
                 }
             } catch (e) {
-                LOGGER.warn('verify failed', { error: e instanceof Error ? e.message : String(e) });
+                LOGGER.warn('Manus', 'verify failed', { error: e instanceof Error ? e.message : String(e) });
             }
         }
         const pass = output.length > 0 && !output.startsWith('(empty');
