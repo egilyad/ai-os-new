@@ -30,7 +30,7 @@ export class PolisService implements IPolisService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('Polis', 'init', {});
     }
 
     async destroy(): Promise<void> {

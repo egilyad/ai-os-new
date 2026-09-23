@@ -46,7 +46,7 @@ export class ManusService implements IManusService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('Manus', 'init', {});
     }
 
     async destroy(): Promise<void> {

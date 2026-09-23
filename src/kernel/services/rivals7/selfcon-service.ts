@@ -24,7 +24,7 @@ export class SelfConsistencyService implements ISelfConsistencyService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('SelfCon', 'init', {});
     }
 
     async destroy(): Promise<void> {

@@ -27,7 +27,7 @@ export class TotService implements ITotService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('ToT', 'init', {});
     }
 
     async destroy(): Promise<void> {
@@ -97,7 +97,7 @@ export class TotService implements ITotService {
                     if (lines.length > 0) return lines;
                 }
             } catch (e) {
-                LOGGER.warn('tot generate failed', { error: e instanceof Error ? e.message : String(e) });
+                LOGGER.warn('ToT', 'tot generate failed', { error: e instanceof Error ? e.message : String(e) });
             }
         }
         return Array.from({ length: n }, (_, i) => `[thought ${i + 1}] ${parent.slice(0, 160)}`);
@@ -118,7 +118,7 @@ export class TotService implements ITotService {
                     if (m) return Math.max(0, Math.min(10, Number(m[1])));
                 }
             } catch (e) {
-                LOGGER.warn('tot evaluate failed', { error: e instanceof Error ? e.message : String(e) });
+                LOGGER.warn('ToT', 'tot evaluate failed', { error: e instanceof Error ? e.message : String(e) });
             }
         }
         // Offline heuristic: longer, task-overlapping thoughts score higher.

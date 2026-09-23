@@ -42,7 +42,7 @@ export class DshService implements IDshService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('DSH', 'init', {});
         // Seed the 4 preset toolkits once (idempotent by name).
         if (this.queue) {
             try {
@@ -55,7 +55,7 @@ export class DshService implements IDshService {
                     }
                 }
             } catch (e) {
-                LOGGER.warn('preset seeding failed', { error: e instanceof Error ? e.message : String(e) });
+                LOGGER.warn('DSH', 'preset seeding failed', { error: e instanceof Error ? e.message : String(e) });
             }
         }
     }
