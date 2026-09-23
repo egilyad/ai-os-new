@@ -53,7 +53,7 @@ const TeamWizard: React.FC<TeamWizardProps> = ({ templates, roles, onSave, onCan
 
     const nextStep = useCallback(() => {
         if (canNext() && step < 6) setStep(step + 1);
-    }, [step, team]);
+    }, [step, team, canNext]);
 
     const prevStep = useCallback(() => {
         if (step > 0) setStep(step - 1);
@@ -103,7 +103,7 @@ const TeamWizard: React.FC<TeamWizardProps> = ({ templates, roles, onSave, onCan
             () => <ConfigStep team={team} setTeam={setTeam} />,
             () => <ReviewStep team={team} setTeam={setTeam} />,
         ],
-        [team, selectedDomain, templates, roles],
+        [team, selectedDomain, templates, roles, onSelectDomain, onSkipTemplate, selectTemplate],
     );
 
     return (

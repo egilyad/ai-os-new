@@ -16,7 +16,7 @@ export const SteelmanPanel: React.FC = () => {
     const agents = realAgents;
     const { args: liveArgs, sessionId, hasLiveDebate } = useDebateArguments();
     const [loadedArgs, setLoadedArgs] = useState<Arg[] | null>(null);
-    const args = loadedArgs ?? [];
+    const args = useMemo(() => loadedArgs ?? [], [loadedArgs]);
     const [agentId, setAgentId] = useState(() => agents[0]?.id ?? '');
     useEffect(() => {
         if (!agents.some(a => a.id === agentId)) setAgentId(agents[0]?.id ?? '');

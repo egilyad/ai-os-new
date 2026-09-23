@@ -18,8 +18,8 @@ beforeAll(() => {
     });
 });
 
-let queue: QueuedRun[] = [];
-let toolkits: Toolkit[] = [];
+const queue: QueuedRun[] = [];
+const toolkits: Toolkit[] = [];
 let queueCounter = 0;
 
 vi.mock('../../kernel/instances/services-extras', () => ({

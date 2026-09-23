@@ -155,6 +155,7 @@ const Row: React.FC<{ k: string; v: string; color?: string }> = ({ k, v, color }
     </div>
 );
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- generated FocusSection takes heterogeneous panel args
 const FocusSection: React.FC<{ mode: string; args: any[]; agents: any[]; t: (k: string) => string }> = ({ mode, args, agents, t }) => {
     if (mode === 'qa') {
         return (
