@@ -24,7 +24,7 @@ export class ReflexionService implements IReflexionService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('Reflexion', 'init', {});
     }
 
     async destroy(): Promise<void> {

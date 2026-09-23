@@ -43,7 +43,7 @@ export class TemporalService implements ITemporalService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('Temporal', 'init', {});
     }
 
     async destroy(): Promise<void> {
