@@ -1,6 +1,5 @@
 import { describe, it, expect, vi, beforeAll, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
-import React from 'react';
 
 beforeAll(() => {
     Object.defineProperty(window, 'matchMedia', {
@@ -243,7 +242,7 @@ describe('JudgeScales', () => {
 // ===== SpeakerNode Tests =====
 describe('SpeakerNode', () => {
     const mockNode = { id: 'agent-1', label: 'Agent A', role: 'pro' as const };
-    const mockAvatar = { emoji: '🤖', color: '#8b5cf6', url: '' };
+    const mockAvatar = { emoji: '🤖', color: '#8b5cf6', url: '', initials: 'AA', seed: 'agent-1' };
     const mockAvatarCSS = { background: '#8b5cf6', borderRadius: '50%' };
 
     it('renders agent name and role', async () => {
@@ -354,7 +353,6 @@ describe('SocratesMascot', () => {
         render(<SocratesMascot />);
         const mascot = screen.getByTitle('Click Socrates!');
         fireEvent.click(mascot);
-        const icons = ['💡', '🎭', '🤔'];
         const currentIcons = screen.queryAllByText(/./u);
         expect(currentIcons.length).toBeGreaterThan(0);
     });

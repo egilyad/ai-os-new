@@ -1,6 +1,5 @@
 import { describe, it, expect, vi, beforeAll, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import React from 'react';
 
 beforeAll(() => {
     Object.defineProperty(window, 'matchMedia', {
@@ -240,11 +239,16 @@ describe('CognitiveMetricsCard', () => {
         render(
             <CognitiveMetricsCard
                 metrics={{
+                    timestamp: 0,
                     debateQuality: 0.75,
                     avgContradictionDensity: 0.3,
                     avgConsensusConfidence: 0.8,
                     avgReasoningCoherence: 0.65,
+                    topologyEffectiveness: {},
                     reasoningCollapseDetected: false,
+                    hallucinationZones: [],
+                    sessionCount: 1,
+                    updatedAt: 0,
                 }}
             />,
         );
@@ -271,8 +275,11 @@ describe('CognitivePressureCard', () => {
                     level: 'high',
                     score: 0.75,
                     activeReasoningChains: 5,
+                    avgChainComplexity: 0.5,
                     contentionScore: 0.6,
+                    memoryPressure: 0.4,
                     complexityScore: 0.8,
+                    timestamp: 0,
                 }}
             />,
         );
