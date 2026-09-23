@@ -24,7 +24,7 @@ export class CouncilServiceFacade implements ICouncilService {
         private old: CouncilService,
         private debateEngine?: IDebateEngine,
         weightedJudge?: WeightedJudgeEvaluator,
-        private database?: import('../services/database-service').DatabaseService,
+        private database?: import('../database-service').DatabaseService,
         private eventBus?: import('../../types/interfaces').IEventBus,
     ) {
         this.weightedJudge = weightedJudge ?? new WeightedJudgeEvaluator();
