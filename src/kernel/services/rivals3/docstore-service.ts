@@ -31,7 +31,7 @@ export class DocStoreService implements IDocStoreService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('DocStore', 'init', {});
     }
 
     async destroy(): Promise<void> {

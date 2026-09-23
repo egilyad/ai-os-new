@@ -52,7 +52,7 @@ export class DialogueService implements IDialogueService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('Dialogue', 'init', {});
     }
 
     async destroy(): Promise<void> {

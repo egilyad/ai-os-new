@@ -26,7 +26,7 @@ export class BotRouterService implements IBotRouterService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('BotRouter', 'init', {});
     }
 
     async destroy(): Promise<void> {
@@ -55,7 +55,7 @@ export class BotRouterService implements IBotRouterService {
                     }
                 }
             } catch (e) {
-                LOGGER.warn('route failed, rotation fallback', {
+                LOGGER.warn('BotRouter', 'route failed, rotation fallback', {
                     error: e instanceof Error ? e.message : String(e),
                 });
             }

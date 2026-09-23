@@ -27,7 +27,7 @@ export class CodePlanService implements ICodePlanService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('CodePlan', 'init', {});
     }
 
     async destroy(): Promise<void> {
@@ -94,7 +94,7 @@ export class CodePlanService implements ICodePlanService {
                     }
                 }
             } catch (e) {
-                LOGGER.warn('draft plan failed', { error: e instanceof Error ? e.message : String(e) });
+                LOGGER.warn('CodePlan', 'draft plan failed', { error: e instanceof Error ? e.message : String(e) });
             }
         }
         return [];

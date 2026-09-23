@@ -81,7 +81,7 @@ export class MiniSweService implements IMiniSweService {
         try {
             this.events?.emit(EVENTS.MINISWE_SOLVED, { issue: issue.slice(0, 200), passed });
         } catch {}
-        L2.info('solve', { issue: issue.slice(0, 60), passed });
+        L2.info('MiniSwe', 'solve', { issue: issue.slice(0, 60), passed });
         return { patch, passed };
     }
 }
