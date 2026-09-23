@@ -958,6 +958,7 @@ export const EVENT_REGISTRY = {
         }),
     ),
     AGENT_RESTARTED: event('agent:restarted', z.object({ id: z.string() })),
+    CLAUDECODE_EXEC: event('claudecode:exec', z.object({ planId: z.string() })),
     AGENT_CREATED: event('agent:created', z.object({ agentId: z.string() })),
     AGENT_EXECUTED: event('agent:executed', z.object({ agentId: z.string() })),
     AGENT_RATE_LIMITED: event(

@@ -4,7 +4,7 @@ import type { IMcpDeepService } from '../../contracts/rivals14';
 import { rootLogger } from '../logger-service';
 const LOGGER = rootLogger.child('McpDeep');
 export class McpDeepService implements IMcpDeepService {
-    constructor(private events: IEventBus, private mcp?: MCPService) {}
+    constructor(_events: IEventBus, private mcp?: MCPService) { void _events; }
     async init(){ LOGGER.info('init',{}); } async destroy(){}
     async discover(serverId: string){
         if (!this.mcp) return { tools: [], resources: [] };

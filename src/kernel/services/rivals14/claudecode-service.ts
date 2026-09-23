@@ -22,12 +22,12 @@ export class ClaudeCodeService implements IClaudeCodeService {
     async approvePlan(planId: string){ const p=await this.dal.kv.get<Record<string,unknown>>(`cc-plan/${planId}`); if(!p) throw new Error('plan not found'); (p as Record<string,unknown>).approved=true; await this.dal.kv.set(`cc-plan/${planId}`, p); }
     async executePlan(planId: string){
         const p=await this.dal.kv.get<Record<string,unknown>>(`cc-plan/${planId}`); if(!p) throw new Error('plan not found'); if(!(p as Record<string,unknown>).approved) throw new Error('plan not approved — use plan mode');
-        const task=(p as Record<string,string>).task;
+        const task=(p as Record<string,string>).task ?? '';
         // hooks pre
         const hooks=(await this.dal.kv.get<string[]>(`cc-hooks/pre`))??[];
         let out=`Executing ${planId}: ${task}\nHooks pre: ${hooks.join(', ')||'none'}\n`;
         if (this.coord) { try { out+=await this.coord.spawnSubCrew(task); } catch {} }
-        this.events.emit(EVENTS.CLAUDECODE_EXEC, { planId } as never);
+        this.events.emit(EVENTS.CLAUDECODE_EXEC, { planId });
         return out.slice(0,4000);
     }
     async addHook(event: string, command: string){ const k=`cc-hooks/${event}`; const list=(await this.dal.kv.get<string[]>(k))??[]; list.push(command.slice(0,200)); await this.dal.kv.set(k, list); }
