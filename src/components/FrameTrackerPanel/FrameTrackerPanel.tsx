@@ -18,14 +18,6 @@ export const FrameTrackerPanel: React.FC = () => {
     const realAgents = useRealAgents();
     const agents = realAgents;
     const { args: liveArgs, sessionId, hasLiveDebate } = useDebateArguments();
-    if (agents.length === 0) {
-        return (
-            <div style={{ padding: 20, maxWidth: 1100, margin: '0 auto' }}>
-                <h2 style={{ margin: 0, fontSize: 18, fontWeight: 700, color: 'var(--slate-50)' }}>Frame Tracker — {t('nav.frame_tracker')}</h2>
-                <div style={{ marginTop: 16, padding: 16, color: 'var(--slate-400)' }}>No agents available</div>
-            </div>
-        );
-    }
     const tracker = useMemo(() => new FrameTracker(), []);
     const [version, setVersion] = useState(0);
     const [agentId, setAgentId] = useState<string>(() => agents[0]?.id ?? '');
@@ -48,8 +40,9 @@ export const FrameTrackerPanel: React.FC = () => {
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     void version;
-    const entries = (tracker as any).entries as Array<{ frame: string; agentId: string; agentName: string; round: number; reasoning: string }>;
+    const entries = tracker.getEntries();
     const counts = useMemo(() => {
+        void version;
         const m = new Map<string, number>();
         for (const e of entries) m.set(e.frame, (m.get(e.frame) ?? 0) + 1);
         return Array.from(m.entries()).sort((a, b) => b[1] - a[1]);
@@ -64,6 +57,15 @@ export const FrameTrackerPanel: React.FC = () => {
         setVersion(v => v + 1);
         setRound(r => r + 1);
     };
+
+    if (agents.length === 0) {
+        return (
+            <div style={{ padding: 20, maxWidth: 1100, margin: '0 auto' }}>
+                <h2 style={{ margin: 0, fontSize: 18, fontWeight: 700, color: 'var(--slate-50)' }}>Frame Tracker — {t('nav.frame_tracker')}</h2>
+                <div style={{ marginTop: 16, padding: 16, color: 'var(--slate-400)' }}>No agents available</div>
+            </div>
+        );
+    }
 
     return (
         <div style={{ padding: 20, maxWidth: 1100, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 16 }}>

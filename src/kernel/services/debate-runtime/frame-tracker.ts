@@ -279,4 +279,8 @@ export class FrameTracker implements IFrameTracker {
     clearSession(): void {
         this.entries = [];
     }
+
+    getEntries(): readonly FrameEntry[] {
+        return this.entries;
+    }
 }

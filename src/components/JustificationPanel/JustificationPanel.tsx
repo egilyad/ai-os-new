@@ -20,14 +20,6 @@ export const JustificationPanel: React.FC = () => {
     const enforcer = useMemo(() => new JustificationEnforcer(), []);
     const realAgents = useRealAgents();
     const agents = realAgents;
-    if (agents.length === 0) {
-        return (
-            <div style={{ padding: 20, maxWidth: 1100, margin: '0 auto' }}>
-                <h2 style={{ margin: 0, fontSize: 18, fontWeight: 700, color: 'var(--slate-50)' }}>Justification — {t('nav.justification')}</h2>
-                <div style={{ marginTop: 16, padding: 16, color: 'var(--slate-400)' }}>No agents available</div>
-            </div>
-        );
-    }
     const [agentId, setAgentId] = useState<string>(() => agents[0]?.id ?? '');
     useEffect(() => {
         if (!agents.some((a) => a.id === agentId)) {
@@ -75,6 +67,15 @@ export const JustificationPanel: React.FC = () => {
         if (!chain || chain.isValid) return null;
         return `### Multi-Hop Justification Required\nYou MUST structure your argument with at least ${minHops} linked steps:\n1. CLAIM — state your position\n2. WARRANT — explain WHY\n3. EVIDENCE — support with data\nSingle-step assertions will be penalized.`;
     }, [chain, minHops]);
+
+    if (agents.length === 0) {
+        return (
+            <div style={{ padding: 20, maxWidth: 1100, margin: '0 auto' }}>
+                <h2 style={{ margin: 0, fontSize: 18, fontWeight: 700, color: 'var(--slate-50)' }}>Justification — {t('nav.justification')}</h2>
+                <div style={{ marginTop: 16, padding: 16, color: 'var(--slate-400)' }}>No agents available</div>
+            </div>
+        );
+    }
 
     return (
         <div style={{ padding: 20, maxWidth: 1100, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 16 }}>

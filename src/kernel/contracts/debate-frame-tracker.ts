@@ -41,4 +41,7 @@ export interface IFrameTracker {
 
     /** Clear all tracking for a session */
     clearSession(): void;
+
+    /** Read-only snapshot of registered frame entries */
+    getEntries(): readonly FrameEntry[];
 }

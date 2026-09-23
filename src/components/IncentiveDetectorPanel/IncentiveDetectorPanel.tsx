@@ -13,14 +13,6 @@ export const IncentiveDetectorPanel: React.FC = () => {
     const realAgents = useRealAgents();
     const { topic: liveTopic, sessionId, hasLiveDebate } = useDebateArguments();
     const agents = realAgents;
-    if (agents.length === 0) {
-        return (
-            <div style={{ padding: 20, maxWidth: 1100, margin: '0 auto' }}>
-                <h2 style={{ margin: 0, fontSize: 18, fontWeight: 700, color: 'var(--slate-50)' }}>Incentive Detector — {t('nav.incentive_detector')}</h2>
-                <div style={{ marginTop: 16, padding: 16, color: 'var(--slate-400)' }}>No agents available</div>
-            </div>
-        );
-    }
     const loadDebate = useCallback(() => { if (liveTopic) setTopic(liveTopic); }, [liveTopic]);
     const [agentId, setAgentId] = useState<string>(() => agents[0]?.id ?? '');
     const [topic, setTopic] = useState('');
@@ -34,6 +26,15 @@ export const IncentiveDetectorPanel: React.FC = () => {
         const res = detector.analyze(agentId, name, text, topic);
         setAnalysis(res);
     };
+
+    if (agents.length === 0) {
+        return (
+            <div style={{ padding: 20, maxWidth: 1100, margin: '0 auto' }}>
+                <h2 style={{ margin: 0, fontSize: 18, fontWeight: 700, color: 'var(--slate-50)' }}>Incentive Detector — {t('nav.incentive_detector')}</h2>
+                <div style={{ marginTop: 16, padding: 16, color: 'var(--slate-400)' }}>No agents available</div>
+            </div>
+        );
+    }
 
     return (
         <div style={{ padding: 20, maxWidth: 1100, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 16 }}>

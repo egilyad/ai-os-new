@@ -19,7 +19,7 @@ export const DriftDetectorPanel: React.FC = () => {
         return realAgents.slice(0, 12).map((a, idx) => {
             let systemPrompt: string | undefined;
             try {
-                systemPrompt = (agentService as any).resolveAgent?.(a.id)?.systemPrompt ?? (agentService as any).resolveAgent?.(a.id)?.prompt;
+                systemPrompt = agentService.resolveAgent(a.id)?.systemPrompt;
             } catch { /* ignore */ }
             const role = (['pro', 'con', 'neutral'] as const)[idx % 3]!;
             return { id: a.id, name: a.name, role, systemPrompt: systemPrompt ?? `You are ${a.name}, ${a.role}.` };

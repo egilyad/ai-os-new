@@ -15,14 +15,6 @@ export const InsightBusPanel: React.FC = () => {
     const realAgents = useRealAgents();
     const agents = realAgents;
     const { args: liveArgs, sessionId, hasLiveDebate } = useDebateArguments();
-    if (agents.length === 0) {
-        return (
-            <div style={{ padding: 20, maxWidth: 1100, margin: '0 auto' }}>
-                <h2 style={{ margin: 0, fontSize: 18, fontWeight: 700, color: 'var(--slate-50)' }}>Insight Bus — {t('nav.insight_bus')}</h2>
-                <div style={{ marginTop: 16, padding: 16, color: 'var(--slate-400)' }}>No agents available</div>
-            </div>
-        );
-    }
     const newRoundArg = { agentId: agents[0]?.id ?? '', agentName: agents[0]?.name ?? '' };
     const bus = useMemo(() => new InsightBus(), []);
     const [version, setVersion] = useState(0);
@@ -57,6 +49,15 @@ export const InsightBusPanel: React.FC = () => {
         setVersion(v => v + 1);
         setRound(r => r + 1);
     };
+
+    if (agents.length === 0) {
+        return (
+            <div style={{ padding: 20, maxWidth: 1100, margin: '0 auto' }}>
+                <h2 style={{ margin: 0, fontSize: 18, fontWeight: 700, color: 'var(--slate-50)' }}>Insight Bus — {t('nav.insight_bus')}</h2>
+                <div style={{ marginTop: 16, padding: 16, color: 'var(--slate-400)' }}>No agents available</div>
+            </div>
+        );
+    }
 
     return (
         <div style={{ padding: 20, maxWidth: 1100, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 16 }}>

@@ -15,14 +15,6 @@ export const EntanglementPanel: React.FC = () => {
     const realAgents = useRealAgents();
     const agents = realAgents;
     const { args: liveArgs, sessionId, hasLiveDebate } = useDebateArguments();
-    if (agents.length === 0) {
-        return (
-            <div style={{ padding: 20, maxWidth: 1100, margin: '0 auto' }}>
-                <h2 style={{ margin: 0, fontSize: 18, fontWeight: 700, color: 'var(--slate-50)' }}>Entanglement — {t('nav.entanglement')}</h2>
-                <div style={{ marginTop: 16, padding: 16, color: 'var(--slate-400)' }}>No agents available</div>
-            </div>
-        );
-    }
     const [argList, setArgList] = useState<Arg[]>([]);
     const [agentId, setAgentId] = useState<string>(() => agents[0]?.id ?? '');
     useEffect(() => {
@@ -54,6 +46,15 @@ export const EntanglementPanel: React.FC = () => {
         const c = engines.ent.getConstraint(agentId, agents.find(a => a.id === agentId)?.name ?? agentId, argList, round);
         setConstraint(c);
     };
+
+    if (agents.length === 0) {
+        return (
+            <div style={{ padding: 20, maxWidth: 1100, margin: '0 auto' }}>
+                <h2 style={{ margin: 0, fontSize: 18, fontWeight: 700, color: 'var(--slate-50)' }}>Entanglement — {t('nav.entanglement')}</h2>
+                <div style={{ marginTop: 16, padding: 16, color: 'var(--slate-400)' }}>No agents available</div>
+            </div>
+        );
+    }
 
     return (
         <div style={{ padding: 20, maxWidth: 1100, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 16 }}>
