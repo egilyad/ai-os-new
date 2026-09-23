@@ -80,7 +80,7 @@ export default function TaskDetailModal({ task, onClose, onUpdate }: TaskDetailM
         setNewTaskLabelIds_on_task((prev) => prev.filter((id) => id !== labelId));
     };
 
-    const [newTaskLabelIds_on_task, setNewTaskLabelIds_on_task] = useState<number[]>(taskLabelIds);
+    const [, setNewTaskLabelIds_on_task] = useState<number[]>(taskLabelIds);
 
     const lock = async () => {
         await agemsTaskService.claimTask(task.id, 'current', 300000);

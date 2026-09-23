@@ -537,7 +537,7 @@ const TasksPanel: React.FC = () => {
                 {showCronPicker && (
                     <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', padding: '8px 0' }}>
                         {getPresets().map((p) => (
-                            <button key={p.key} onClick={() => setNewTaskCron({ kind: 'preset', preset: p.preset })} style={{ padding: '4px 10px', borderRadius: 6, border: '1px solid rgba(255,255,255,0.1)', background: newTaskCron?.kind === 'preset' && newTaskCron.preset === p.preset ? 'rgba(59,130,246,0.2)' : 'rgba(255,255,255,0.05)', color: newTaskCron?.kind === 'preset' && newTaskCron.preset === p.preset ? '#60a5fa' : 'var(--slate-400)', fontSize: 11, cursor: 'pointer' }}>{p.label}</button>
+                            <button key={p.key} onClick={() => setNewTaskCron({ kind: 'preset', preset: p.key as 'DAILY' | 'WEEKDAY' | 'WEEKLY' | 'MONTHLY' | 'HOURLY' })} style={{ padding: '4px 10px', borderRadius: 6, border: '1px solid rgba(255,255,255,0.1)', background: newTaskCron?.kind === 'preset' && newTaskCron.preset === p.key ? 'rgba(59,130,246,0.2)' : 'rgba(255,255,255,0.05)', color: newTaskCron?.kind === 'preset' && newTaskCron.preset === p.key ? '#60a5fa' : 'var(--slate-400)', fontSize: 11, cursor: 'pointer' }}>{p.label}</button>
                         ))}
                         {newTaskCron && (
                             <button onClick={() => setNewTaskCron(undefined)} style={{ padding: '4px 10px', borderRadius: 6, border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(255,255,255,0.05)', color: 'var(--slate-400)', fontSize: 11, cursor: 'pointer' }}>Clear</button>
