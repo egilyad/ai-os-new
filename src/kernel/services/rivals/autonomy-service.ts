@@ -35,7 +35,7 @@ export class AutonomyService implements IAutonomyService {
     constructor(private deps: AutonomyDeps) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('Autonomy', 'init', {});
     }
 
     async destroy(): Promise<void> {
@@ -81,7 +81,7 @@ export class AutonomyService implements IAutonomyService {
             lastCritique = critique;
             loop.updatedAt = now();
             await this.deps.repo.putLoop(loop);
-            this.events.emit(EVENTS.LOOP_ITER, { loopId: loop.id, iteration: loop.iterations });
+            this.deps.events.emit(EVENTS.LOOP_ITER, { loopId: loop.id, iteration: loop.iterations });
 
             if (/^done:/i.test(critique.trim())) {
                 loop.status = 'completed';
@@ -149,7 +149,7 @@ export class AutonomyService implements IAutonomyService {
             loop.log.push(`#${loop.iterations} done: ${next.text} → ${acted.slice(0, 300)}`);
             loop.updatedAt = now();
             await this.deps.repo.putLoop(loop);
-            this.events.emit(EVENTS.LOOP_ITER, { loopId: loop.id, iteration: loop.iterations });
+            this.deps.events.emit(EVENTS.LOOP_ITER, { loopId: loop.id, iteration: loop.iterations });
         }
         if (loop.status === 'running') {
             loop.status = 'failed';
@@ -190,7 +190,7 @@ export class AutonomyService implements IAutonomyService {
                 );
                 if (!res.error) return res.content;
             } catch (e) {
-                LOGGER.warn('autonomy think failed', { error: e instanceof Error ? e.message : String(e) });
+                LOGGER.warn('Autonomy', 'autonomy think failed', { error: e instanceof Error ? e.message : String(e) });
             }
         }
         return `NEXT: continue working (${prompt.slice(0, 80)}…)`;
@@ -202,7 +202,7 @@ export class AutonomyService implements IAutonomyService {
                 const res = await this.deps.tools.runWithTools(task, { agentId: 'autonomy-loop', maxRounds: 2 });
                 return res.output || '(no output)';
             } catch (e) {
-                LOGGER.warn('autonomy act failed', { error: e instanceof Error ? e.message : String(e) });
+                LOGGER.warn('Autonomy', 'autonomy act failed', { error: e instanceof Error ? e.message : String(e) });
             }
         }
         return await this.think(`Execute: ${task}`);

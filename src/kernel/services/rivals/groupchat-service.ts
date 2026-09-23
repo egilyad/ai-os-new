@@ -28,7 +28,7 @@ export class GroupChatService implements IGroupChatService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('GroupChat', 'init', {});
     }
 
     async destroy(): Promise<void> {
@@ -98,7 +98,7 @@ export class GroupChatService implements IGroupChatService {
                 });
                 text = res.error ? `[${who}] (llm error, echo)` : res.content;
             } catch (e) {
-                LOGGER.warn('groupchat llm failed', { error: e instanceof Error ? e.message : String(e) });
+                LOGGER.warn('GroupChat', 'groupchat llm failed', { error: e instanceof Error ? e.message : String(e) });
                 text = `[${who}] acknowledges the discussion.`;
             }
         } else {

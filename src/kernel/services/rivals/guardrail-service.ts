@@ -25,7 +25,7 @@ export class GuardrailService implements IGuardrailService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('Guardrail', 'init', {});
         if (this.dal) {
             try {
                 const saved = await this.dal.kv.get<GuardrailRule[]>(GuardrailService.STORAGE_KEY);
@@ -33,7 +33,7 @@ export class GuardrailService implements IGuardrailService {
                     for (const r of saved) this.rules.set(r.id, r);
                 }
             } catch (e) {
-                LOGGER.warn('guardrail restore failed', { error: e instanceof Error ? e.message : String(e) });
+                LOGGER.warn('Guardrail', 'guardrail restore failed', { error: e instanceof Error ? e.message : String(e) });
             }
         }
     }
@@ -47,7 +47,7 @@ export class GuardrailService implements IGuardrailService {
         try {
             await this.dal.kv.set(GuardrailService.STORAGE_KEY, [...this.rules.values()]);
         } catch (e) {
-            LOGGER.warn('guardrail persist failed', { error: e instanceof Error ? e.message : String(e) });
+            LOGGER.warn('Guardrail', 'guardrail persist failed', { error: e instanceof Error ? e.message : String(e) });
         }
     }
 
