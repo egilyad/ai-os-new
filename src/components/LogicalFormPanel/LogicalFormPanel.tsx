@@ -34,7 +34,7 @@ export const LogicalFormPanel: React.FC = () => {
     }, [agents, agentId]);
     const [round, setRound] = useState<number>(2);
     const [text, setText] = useState<string>('');
-    const [, setForm] = useState<LogicalForm | null>(null);
+    const [form, setForm] = useState<LogicalForm | null>(null);
     const [history, setHistory] = useState<Array<{ agentId: string; round: number; content: string; form: LogicalForm | null }>>([]);
 
     const { args: liveArgs, sessionId, hasLiveDebate } = useDebateArguments();
