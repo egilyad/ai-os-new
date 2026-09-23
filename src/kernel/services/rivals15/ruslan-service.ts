@@ -8,7 +8,7 @@ import { EVENTS } from '../../events/event-names';
 const LOGGER = rootLogger.child('Ruslan');
 export class RuslanService implements IRuslanService {
     constructor(private dal: DataAccessLayer, private events: IEventBus, private llm?: ILLMClientService, private skills?: ISkillMarketService) {}
-    async init(){ LOGGER.info('init',{}); } async destroy(){}
+    async init(){ LOGGER.info('Ruslan', 'init',{}); } async destroy(){}
     async learn(skill: string, example: string){
         await this.dal.kv.set(`ruslan-skill/${skill.slice(0,80)}`, { example: example.slice(0,2000), at: Date.now() });
         // самообучение: успех → новый skill в маркет
@@ -27,7 +27,7 @@ export class RuslanService implements IRuslanService {
                     {role:'user',content:task.slice(0,2000)}
                 ],{temperature:0.5,maxTokens:800});
                 if(!r.error) return r.content;
-            } catch (e){ LOGGER.warn('ruslan use failed',{error:e instanceof Error?e.message:String(e)}); }
+            } catch (e){ LOGGER.warn('Ruslan', 'ruslan use failed',{error:e instanceof Error?e.message:String(e)}); }
         }
         return `[Ruslan:${skill}] ${task.slice(0,200)} (offline)`;
     }

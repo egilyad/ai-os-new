@@ -7,7 +7,7 @@ import { EVENTS } from '../../events/event-names';
 const LOGGER = rootLogger.child('Maestro');
 export class MaestroService implements IMaestroService {
     constructor(private dal: DataAccessLayer, private events: IEventBus) {}
-    async init(){ LOGGER.info('init',{}); } async destroy(){}
+    async init(){ LOGGER.info('Maestro', 'init',{}); } async destroy(){}
     async createEcosystem(name: string, roles: string[]){
         const id=genId('maestro'); await this.dal.kv.set(`maestro/${id}`, { id, name: name.slice(0,120), roles: roles.slice(0,12), tasks: [] as string[], createdAt: Date.now() });
         return id;

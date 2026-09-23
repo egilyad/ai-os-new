@@ -21,7 +21,7 @@ export class GigaStudioService implements IGigaStudioService {
                     if(m){ const parsed=JSON.parse(m[0]) as string[]; if(parsed.length) files=parsed.slice(0,12); }
                     preview=r.content.slice(0,1500);
                 }
-            } catch (e){ LOGGER.warn('gigastudio failed',{error:e instanceof Error?e.message:String(e)}); }
+            } catch (e){ LOGGER.warn('GigaStudio', 'gigastudio failed',{error:e instanceof Error?e.message:String(e)}); }
         }
         this.events.emit(EVENTS.GIGASTUDIO_GEN, { files: files.length } as never);
         return { files, preview };

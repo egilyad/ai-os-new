@@ -7,7 +7,7 @@ import { EVENTS } from '../../events/event-names';
 const LOGGER = rootLogger.child('LocalTriple');
 export class LocalTripleService implements ILocalTripleService {
     constructor(private events: IEventBus, private llm?: ILLMClientService, private tools?: IToolRunnerService) {}
-    async init(){ LOGGER.info('init',{}); } async destroy(){}
+    async init(){ LOGGER.info('LocalTriple', 'init',{}); } async destroy(){}
     async run(task: string){
         const plan=await this.ask(`Ты Planner (Ollama local). Разбей задачу на 3 шага, каждый "- ". Задача: ${task.slice(0,800)}`);
         const result=await this.exec(plan);
@@ -16,7 +16,7 @@ export class LocalTripleService implements ILocalTripleService {
         return { plan, result, critique };
     }
     private async ask(prompt: string){
-        if (this.llm) { try { const r=await this.llm.chat([{role:'system',content:'Ты локальный агент Ollama.'},{role:'user',content:prompt.slice(0,3000)}],{temperature:0.4,maxTokens:600}); if(!r.error) return r.content; } catch (e){ LOGGER.warn('ask failed',{error:e instanceof Error?e.message:String(e)}); } }
+        if (this.llm) { try { const r=await this.llm.chat([{role:'system',content:'Ты локальный агент Ollama.'},{role:'user',content:prompt.slice(0,3000)}],{temperature:0.4,maxTokens:600}); if(!r.error) return r.content; } catch (e){ LOGGER.warn('LocalTriple', 'ask failed',{error:e instanceof Error?e.message:String(e)}); } }
         return `[echo] ${prompt.slice(0,200)}`;
     }
     private async exec(plan: string){

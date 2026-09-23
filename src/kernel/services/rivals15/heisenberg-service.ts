@@ -10,7 +10,7 @@ export class HeisenbergService implements IHeisenbergService {
         private dal: DataAccessLayer,
         private events?: IEventBus,
     ) {}
-    async init(){ LOGGER.info('init',{}); } async destroy(){}
+    async init(){ LOGGER.info('Heisenberg', 'init',{}); } async destroy(){}
     async board(){
         const rows=await this.dal.kv.list('heisenberg/');
         const res = rows.map(r=>{ const v=r.value as Record<string,string>; return { id: r.id, title: v.title as string, status: v.status as string }; }).slice(0,50);
