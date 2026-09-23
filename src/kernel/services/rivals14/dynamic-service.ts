@@ -6,7 +6,7 @@ import { rootLogger } from '../logger-service';
 const LOGGER = rootLogger.child('DynWF');
 export class DynamicWorkflowService implements IDynamicWorkflowService {
     constructor(_events: IEventBus, private queue?: IRunQueueService, private llm?: ILLMClientService) { void _events; }
-    async init(){ LOGGER.info('init',{}); } async destroy(){}
+    async init(){ LOGGER.info('DynWF', 'init',{}); } async destroy(){}
     async run(tasks: string[], checker?: string){
         if (!this.queue) return tasks.map(t=>`echo:${t.slice(0,40)}`);
         const ids: string[] = [];

@@ -12,7 +12,7 @@ export class AnalitikService implements IAnalitikService {
         private llm?: ILLMClientService,
         private events?: IEventBus,
     ) {}
-    async init(){ LOGGER.info('init',{}); } async destroy(){}
+    async init(){ LOGGER.info('Analitik', 'init',{}); } async destroy(){}
     async intake(request: string){
         const id=genId('analitik');
         // GigaChat style: Intake → Supervisor → Proposal

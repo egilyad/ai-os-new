@@ -6,7 +6,7 @@ import { EVENTS } from '../../events/event-names';
 const LOGGER = rootLogger.child('GigaStudio');
 export class GigaStudioService implements IGigaStudioService {
     constructor(private events: IEventBus, private llm?: ILLMClientService) {}
-    async init(){ LOGGER.info('init',{}); } async destroy(){}
+    async init(){ LOGGER.info('GigaStudio', 'init',{}); } async destroy(){}
     async generate(spec: string){
         let files: string[]=['app/page.tsx','app/layout.tsx','components/Header.tsx'];
         let preview=`GigaStudio Next.js for: ${spec.slice(0,80)}`;

@@ -6,7 +6,7 @@ import type { IEventBus } from '../../types/interfaces';
 const LOGGER = rootLogger.child('EvoLab');
 export class EvoLabService implements IEvoLabService {
     constructor(private dal: DataAccessLayer, private events: IEventBus) {}
-    async init(){ LOGGER.info('init',{}); } async destroy(){}
+    async init(){ LOGGER.info('EvoLab', 'init',{}); } async destroy(){}
     async runLab(pattern: string){
         // реюз Frontier eval: прогон паттерна и метрика
         const score=Math.round((Math.random()*0.4+0.6)*100)/100;

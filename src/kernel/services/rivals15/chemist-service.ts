@@ -7,7 +7,7 @@ import { rootLogger } from '../logger-service';
 const LOGGER = rootLogger.child('Chemist');
 export class ChemistService implements IChemistService {
     constructor(private events: IEventBus, private llm?: ILLMClientService, private knowledge?: IKnowledgeService) {}
-    async init(){ LOGGER.info('init',{}); } async destroy(){}
+    async init(){ LOGGER.info('Chemist', 'init',{}); } async destroy(){}
     async ask(question: string){
         let rag='';
         if (this.knowledge) { try { const hits=await this.knowledge.retrieve(question,3); rag=hits.map(h=>`[${h.title}] ${h.chunk.slice(0,400)}`).join('\n'); } catch {} }
@@ -23,7 +23,7 @@ export class ChemistService implements IChemistService {
                     try{ this.events.emit(EVENTS.CHEMIST_ASK, { question: question.slice(0,200), hasRag: rag.length>0 }); }catch{}
                     return out;
                 }
-            } catch (e){ LOGGER.warn('chemist failed',{error:e instanceof Error?e.message:String(e)}); }
+            } catch (e){ LOGGER.warn('Chemist', 'chemist failed',{error:e instanceof Error?e.message:String(e)}); }
         }
         out = `Chemist (offline): ${question.slice(0,200)} — RAG: ${rag.slice(0,300) || 'no data'}`;
         try{ this.events.emit(EVENTS.CHEMIST_ASK, { question: question.slice(0,200), hasRag: rag.length>0 }); }catch{}

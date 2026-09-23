@@ -12,11 +12,13 @@ const CATALOG=[
 ];
 export class AgencyRuService implements IAgencyRuService {
     constructor(
-        private dal: DataAccessLayer,
+        _dal: DataAccessLayer,
         private crews?: ICrewService,
         private events?: IEventBus,
-    ) {}
-    async init(){ LOGGER.info('init',{}); } async destroy(){}
+    ) {
+        void _dal;
+    }
+    async init(){ LOGGER.info('AgencyRU', 'init',{}); } async destroy(){}
     async catalog(){
         const extra=Array.from({length:177},(_,i)=>`RU Agent #${i+11}`);
         const res = [...CATALOG, ...extra];
