@@ -28,7 +28,7 @@ export interface WorkspaceTreeEntry {
     path: string;
     type: 'file' | 'dir';
     size?: number;
-    children?: WorkspaceTreeEntry[];
+    children?: string[];
 }
 
 export interface WorkspaceSearchMatch {
