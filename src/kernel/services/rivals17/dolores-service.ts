@@ -9,7 +9,7 @@ export class DoloresService implements IDoloresService {
         private dal: DataAccessLayer,
         private events?: IEventBus,
     ) {}
-    async init(){ LOGGER.info('init',{}); } async destroy(){}
+    async init(){ LOGGER.info('DOLORES', 'init',{}); } async destroy(){}
     async scaffold(steps: Array<{ do: string; pre?: string; post?: string }>){
           const id=`dolores-${Date.now()}`;
           await this.dal.kv.set(`dolores/${id}`, { steps: steps.slice(0,10), trace: [] as string[] });

@@ -9,7 +9,7 @@ export class BlackboardService implements IBlackboardService {
         private dal: DataAccessLayer,
         private events?: IEventBus,
     ) {}
-    async init(){ LOGGER.info('init',{}); } async destroy(){}
+    async init(){ LOGGER.info('Blackboard', 'init',{}); } async destroy(){}
     async post(expert: string, data: string){ const list=(await this.dal.kv.get<string[]>('bb/board'))??[]; list.push(`${expert}: ${data.slice(0,300)}`); if(list.length>50) list.splice(0,list.length-50); await this.dal.kv.set('bb/board', list); await this.dal.kv.set(`bb/expert/${expert}`, { at: Date.now() }); try{ this.events?.emit(EVENTS.BLACKBOARD_POST, { board: 'bb/board' }); }catch{} }
     async tick(){
         const board=(await this.dal.kv.get<string[]>('bb/board'))??[];

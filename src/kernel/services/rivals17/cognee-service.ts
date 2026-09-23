@@ -11,7 +11,7 @@ export class CogneeService implements ICogneeService {
         private llm?: ILLMClientService,
         private events?: IEventBus,
     ) {}
-    async init(){ LOGGER.info('init',{}); } async destroy(){}
+    async init(){ LOGGER.info('Cognee', 'init',{}); } async destroy(){}
     async ingest(text: string){
         const id=`cognee-${Date.now()}`;
         let entities: string[] = [];

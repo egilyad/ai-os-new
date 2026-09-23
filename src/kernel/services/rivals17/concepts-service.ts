@@ -10,7 +10,7 @@ export class ConceptsService implements IConceptsService {
         private dal: DataAccessLayer,
         private events?: IEventBus,
     ) {}
-    async init(){ LOGGER.info('init',{}); } async destroy(){}
+    async init(){ LOGGER.info('Concepts', 'init',{}); } async destroy(){}
     async define(name: string, vector?: number[]){ const v=vector ?? hv(name); await this.dal.kv.set(`concepts/${name.slice(0,80)}`, v.slice(0,64)); }
     async compose(a: string, b: string){
           const va=await this.dal.kv.get<number[]>(`concepts/${a}`) ?? hv(a);
