@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { MessageCircle, X, Minimize2, Maximize2 } from 'lucide-react';
 import { useChatStore } from '../../stores/useChatStore';
-import { useTranslation } from '../../i18n/useTranslation';
 
 interface DockChat {
     id: string;
@@ -11,9 +10,7 @@ interface DockChat {
 }
 
 export default function ChatDock() {
-    const { t } = useTranslation();
     const sessions = useChatStore((s) => s.sessions);
-    const activeId = useChatStore((s) => s.activeSessionId);
     const [docks, setDocks] = useState<DockChat[]>([]);
     const [open, setOpen] = useState(false);
 

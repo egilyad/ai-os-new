@@ -486,8 +486,9 @@ const ChatPanel: React.FC = () => {
                     onKeysChange={(ids) => {
                         setSelectedKeys(ids);
                         // T2: persist per-chat override (first selected key)
-                        if (ids.length > 0 && ids[0] !== selectedKeys[0]) {
-                            void switchKey(ids[0]).catch(() => {});
+                        const first = ids[0];
+                        if (ids.length > 0 && first !== undefined && first !== selectedKeys[0]) {
+                            void switchKey(first).catch(() => {});
                         }
                     }}
                     onModelChange={(m) => {

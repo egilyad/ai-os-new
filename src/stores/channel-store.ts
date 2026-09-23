@@ -12,6 +12,8 @@ interface ChannelView {
     id: string;
     name: string;
     description?: string;
+    type: string;
+    visibility: string;
     memberCount: number;
     lastMessage?: string;
     updatedAt: number;
@@ -41,6 +43,8 @@ function toView(ch: Channel): ChannelView {
         id: ch.id,
         name: ch.name,
         description: ch.description,
+        type: ch.type,
+        visibility: ch.visibility,
         memberCount: ch.members.length,
         updatedAt: ch.updatedAt,
     };

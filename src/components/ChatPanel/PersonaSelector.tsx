@@ -5,7 +5,6 @@ import type { PersonaEntry } from '../../kernel/contracts/persona-entry';
 // Fallback: data/persona-definitions missing (was deleted) — empty library, count only
 const PERSONA_DEFINITIONS: PersonaEntry[] = [];
 import PersonaPickerPanel from '../PersonaPickerPanel';
-import type { PersonaEntry } from '../../kernel/contracts/persona-entry';
 import type { Persona } from '../../kernel/services/persona-service';
 
 export const PersonaSelector: React.FC = () => {
