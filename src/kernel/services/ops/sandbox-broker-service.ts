@@ -27,7 +27,7 @@ export class SandboxBrokerService implements ISandboxBrokerService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('SandboxBroker', 'init', {});
     }
 
     async destroy(): Promise<void> {

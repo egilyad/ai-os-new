@@ -50,7 +50,7 @@ export class CogMemoryService implements ICogMemoryService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('CogMemory', 'init', {});
     }
 
     async destroy(): Promise<void> {

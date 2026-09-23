@@ -36,7 +36,7 @@ export class AuditService implements IAuditService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('Audit', 'init', {});
     }
 
     async destroy(): Promise<void> {

@@ -49,7 +49,7 @@ export class MobileAccessService implements IMobileAccessService {
     }
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('MobileAccess', 'init', {});
     }
 
     async destroy(): Promise<void> {

@@ -28,11 +28,10 @@ export interface IMultiAgentProjectService {
 export class MultiAgentProjectService implements IMultiAgentProjectService {
     private pipelines = new Map<string, MultiAgentPipeline>();
     private projectManager: IProjectManagerService;
-    private eventBus: IEventBus;
 
-    constructor(projectManager: IProjectManagerService, eventBus: IEventBus) {
+    constructor(projectManager: IProjectManagerService, _eventBus: IEventBus) {
         this.projectManager = projectManager;
-        this.eventBus = eventBus;
+        void _eventBus;
     }
 
     async createPipeline(projectId: string): Promise<MultiAgentPipeline> {

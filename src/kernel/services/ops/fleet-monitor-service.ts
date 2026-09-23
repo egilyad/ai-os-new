@@ -50,7 +50,7 @@ export class FleetMonitorService implements IFleetMonitorService {
                 }),
             );
         }
-        LOGGER.info('init', { watchers: watchers.length });
+        LOGGER.info('FleetMonitor', 'init', { watchers: watchers.length });
     }
 
     async destroy(): Promise<void> {
@@ -106,7 +106,7 @@ export class FleetMonitorService implements IFleetMonitorService {
             existing.updatedAt = now();
             await this.repo.putWatch(existing);
         } catch (e) {
-            LOGGER.warn('touchWatch failed', { error: e instanceof Error ? e.message : String(e) });
+            LOGGER.warn('FleetMonitor', 'touchWatch failed', { error: e instanceof Error ? e.message : String(e) });
         }
     }
 }
