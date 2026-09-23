@@ -2,9 +2,6 @@
  * Cron Builder — AGEMS 2.3
  * Presets + human-readable preview
  */
-import { rootLogger } from './logger-service';
-
-const LOGGER = rootLogger.child('CronBuilder');
 
 const PRESETS: Record<string, { label: string; cron: string; description: string }> = {
     DAILY:  { label: 'Daily',  cron: '0 0 * * *',   description: 'Runs every day at 00:00' },

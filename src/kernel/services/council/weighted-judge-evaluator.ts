@@ -96,7 +96,7 @@ export class WeightedJudgeEvaluator implements IDebateEvaluator {
         if (!m) return;
         const payload = Object.fromEntries(m);
         const checksum = JSON.stringify(payload).length.toString(16);
-        try { await this.deps.database.setKv(`council:audience:${sessionId}`, { votes: payload, checksum, updatedAt: Date.now() }); } catch (e) { LOGGER.warn('persistAudience failed', { error: e instanceof Error ? e.message : String(e) }); }
+        try { await this.deps.database.setKv(`council:audience:${sessionId}`, { votes: payload, checksum, updatedAt: Date.now() }); } catch (e) { LOGGER.warn('WeightedJudge', 'persistAudience failed', { error: e instanceof Error ? e.message : String(e) }); }
         try { this.deps.eventBus?.emit('council:audience:vote' as unknown as string, { sessionId } as unknown as never); } catch { /* ignore */ }
     }
 

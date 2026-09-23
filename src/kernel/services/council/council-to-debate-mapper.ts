@@ -59,11 +59,20 @@ function councilParticipantsToDebateParticipants(session: CouncilSession): Parti
         const mod = require('./council-lenses') as typeof import('./council-lenses');
         buildPrompt = mod.buildParticipantPrompt as unknown as typeof buildPrompt;
     } catch { /* ignore */ }
+    if (!buildPrompt) {
+        return session.participants.map((p) => ({
+            agentId: p.id,
+            nodeId: p.id,
+            role: p.kind,
+            systemPrompt: undefined,
+        }));
+    }
+    const build = buildPrompt;
     return session.participants.map((p) => ({
         agentId: p.id,
         nodeId: p.id,
         role: p.kind,
-        systemPrompt: buildPrompt ? buildPrompt({ name: p.name, kind: p.kind, lensId: p.lensId, polarityId: p.polarityId }) : undefined,
+        systemPrompt: build({ name: p.name, kind: p.kind, lensId: p.lensId, polarityId: p.polarityId }),
     }));
 }
 
