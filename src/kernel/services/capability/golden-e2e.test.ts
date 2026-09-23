@@ -32,15 +32,17 @@ describe('Golden E2E: create → resolve → execute → tool → memory → ret
             chat: vi.fn(async () => ({ content: 'LLM output with tool result', error: undefined })),
         } as never;
 
+        const runWithToolsMock = vi.fn(async () => ({ output: 'tool output: 42', toolCalls: ['math.calc'] }));
         const tools = {
             listTools: () => [{ name: 'math.calc', description: 'calc' }],
-            runWithTools: vi.fn(async () => ({ output: 'tool output: 42', toolCalls: ['math.calc'] })),
+            runWithTools: runWithToolsMock,
             callTool: vi.fn(async () => '42'),
             addTool: () => {},
         } as never;
 
+        const writeMock = vi.fn(async () => ({ id: 'mem1' } as never));
         const memory = {
-            write: vi.fn(async () => ({ id: 'mem1' } as never)),
+            write: writeMock,
             read: vi.fn(async () => [{ id: 'mem1', content: 'task: test → tool output: 42' } as never]),
         } as never;
 
@@ -70,9 +72,9 @@ describe('Golden E2E: create → resolve → execute → tool → memory → ret
         const result = await factory.execute(resolved.definition.id, 'calculate 21*2');
 
         // Assert: real calls happened (not mocked green)
-        expect(tools.runWithTools).toHaveBeenCalledTimes(1);
-        expect(tools.runWithTools).toHaveBeenCalledWith(expect.stringContaining('21*2'), expect.objectContaining({ agentId: resolved.definition.id }));
-        expect(memory.write).toHaveBeenCalledWith(expect.objectContaining({ ownerId: resolved.definition.id, kind: 'episodic' }));
+        expect(runWithToolsMock).toHaveBeenCalledTimes(1);
+        expect(runWithToolsMock).toHaveBeenCalledWith(expect.stringContaining('21*2'), expect.objectContaining({ agentId: resolved.definition.id }));
+        expect(writeMock).toHaveBeenCalledWith(expect.objectContaining({ ownerId: resolved.definition.id, kind: 'episodic' }));
         expect(result.output).toContain('tool output');
         expect(result.toolCalls).toContain('math.calc');
 

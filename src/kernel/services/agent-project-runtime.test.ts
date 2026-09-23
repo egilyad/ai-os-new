@@ -38,7 +38,7 @@ beforeEach(async () => {
     workspace = new ProjectWorkspaceService(db as any);
 
     mockToolRunner = {
-        runWithTools: vi.fn().mockResolvedValue({ output: 'Tool output: done', toolCalls: [] }),
+        runWithTools: vi.fn(async (..._args: unknown[]) => ({ output: 'Tool output: done', toolCalls: [] as unknown[] })),
     };
 
     runtime = new AgentProjectRuntime(projectService, workspace, mockToolRunner);

@@ -67,7 +67,7 @@ describe('ChannelService', () => {
             ],
         });
         const handlerCalls: string[] = [];
-        svc.registerMentionHandler('bot', async (_, msg) => handlerCalls.push(msg.authorId));
+        svc.registerMentionHandler('bot', async (_, msg) => { handlerCalls.push(msg.authorId); });
 
         // Owner mentions → should work
         await svc.sendMessage({ channelId: ch.id, authorId: 'owner', content: '@bot help', mentions: ['bot'] });
@@ -86,7 +86,7 @@ describe('ChannelService', () => {
             ],
         });
         const handlerCalls: string[] = [];
-        svc.registerMentionHandler('bot', async (_, msg) => handlerCalls.push(msg.authorId));
+        svc.registerMentionHandler('bot', async (_, msg) => { handlerCalls.push(msg.authorId); });
 
         await svc.sendMessage({ channelId: ch.id, authorId: 'trusted', content: '@bot go', mentions: ['bot'] });
         expect(handlerCalls).toHaveLength(1);

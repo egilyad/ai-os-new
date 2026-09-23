@@ -72,7 +72,7 @@ describe('Conversation context propagation (3 sequential agents)', () => {
             {
                 participantId: 'synthesizer',
                 objective: {
-                    type: 'SYNTHESIZE',
+                    type: 'SUMMARIZE',
                     description: 'Синтезируйте итоговое решение',
                     constraints: [],
                 },

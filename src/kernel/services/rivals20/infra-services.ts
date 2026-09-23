@@ -20,6 +20,8 @@ export class PortkeyService implements IPortkeyService {
     ) {}
     async init(){} async destroy(){}
     async route(model: string){ const cfg=await this.dal.kv.get<string>(`portkey/${model}`) ?? 'openai'; try{ this.events?.emit(EVENTS.PORTKEY_ROUTE, { model }); }catch{} return cfg; }
+    async setRoute(model: string, primary: string, fallbacks: string[]){ await this.dal.kv.set(`portkey/${model}`, primary); await this.dal.kv.set(`portkey-fb/${model}`, fallbacks); }
+    async fallbacks(model: string){ return (await this.dal.kv.get<string[]>(`portkey-fb/${model}`)) ?? []; }
 }
 export class LiteLlmService implements ILiteLlmService {
     constructor(private events?: IEventBus) {}

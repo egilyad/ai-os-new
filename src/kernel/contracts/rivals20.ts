@@ -5,6 +5,6 @@ export interface IKiloService extends ILifecycle { fanout(prompt: string, models
 export interface IInterpreterService extends ILifecycle { exec(code: string, lang?: string): Promise<string>; }
 export interface IMiniSweService extends ILifecycle { solve(issue: string): Promise<{ patch: string; passed: boolean }>; }
 export interface IHeliconeService extends ILifecycle { log(request: string): Promise<void>; hits(): Promise<number>; }
-export interface IPortkeyService extends ILifecycle { route(model: string): Promise<string>; }
+export interface IPortkeyService extends ILifecycle { route(model: string): Promise<string>; setRoute(model: string, primary: string, fallbacks: string[]): Promise<void>; fallbacks(model: string): Promise<string[]>; }
 export interface ILiteLlmService extends ILifecycle { proxy(model: string, prompt: string): Promise<string>; }
 export interface ILangfuseService extends ILifecycle { trace(name: string, data: string): Promise<void>; eval(dataset: string): Promise<number>; }

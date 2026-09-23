@@ -3,7 +3,7 @@
  */
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { AutonomyOrchestrator } from './autonomy-orchestrator';
-import { nextPhase, PHASE_ORDER } from '../types/autonomy-types';
+import { nextPhase } from '../types/autonomy-types';
 
 vi.mock('./logger-service', () => ({
     rootLogger: { child: () => ({ info: vi.fn(), warn: vi.fn(), error: vi.fn() }) },
