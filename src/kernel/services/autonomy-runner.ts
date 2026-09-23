@@ -181,8 +181,11 @@ export class AutonomyRunner implements IAutonomyRunner {
         // Pattern 3: Create file /path: content (single line or multi-line)
         const createFileRegex = /(?:Create|create|WRITE|write)\s+(?:file\s+)?(\/[^\s:]+):\s*\n?([\s\S]*?)(?=\n(?:Create|create|WRITE|write)\s|$)/g;
         while ((match = createFileRegex.exec(output)) !== null) {
-            const path = match[1].trim();
-            const content = match[2].trim();
+            const rawPath = match[1];
+            const rawContent = match[2];
+            if (!rawPath || rawContent === undefined) continue;
+            const path = rawPath.trim();
+            const content = rawContent.trim();
             if (content.length > 0) {
                 await this.workspace.writeFile(projectId, path, content);
                 filesWritten++;
@@ -198,7 +201,9 @@ export class AutonomyRunner implements IAutonomyRunner {
         const tasks: Array<Omit<DecomposedTask, 'id' | 'goalId' | 'planId' | 'status' | 'revisionCount' | 'createdAt' | 'updatedAt'>> = [];
 
         for (let i = 0; i < lines.length; i++) {
-            const line = lines[i].trim().replace(/^\d+[\.\)]\s*/, '');
+            const rawLine = lines[i];
+            if (!rawLine) continue;
+            const line = rawLine.trim().replace(/^\d+[\.\)]\s*/, '');
             if (line.length < 3) continue;
 
             tasks.push({
@@ -206,7 +211,7 @@ export class AutonomyRunner implements IAutonomyRunner {
                 description: line,
                 requiredCapabilities: [],
                 estimatedDurationMs: 5000,
-                dependencies: i > 0 ? [tasks[i - 1].title] : [],
+                dependencies: i > 0 ? [tasks[i - 1]?.title ?? ''] : [],
                 order: i,
             });
         }

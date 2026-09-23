@@ -12,9 +12,6 @@ import type {
     QAReport,
 } from '../types/qa-types';
 import type { ProjectWorkspaceService } from './project-workspace-service';
-import { rootLogger } from './logger-service';
-
-const LOGGER = rootLogger.child('BrowserInspectorService');
 
 export interface IQABrowserInspector {
     inspect(projectId: string): Promise<QAReport>;
@@ -84,8 +81,11 @@ export class BrowserInspectorService implements IQABrowserInspector {
         let match;
 
         while ((match = linkRegex.exec(html)) !== null) {
-            const url = match[1];
-            const text = match[2].replace(/<[^>]*>/g, '').trim();
+            const rawUrl = match[1];
+            const rawText = match[2];
+            if (!rawUrl || rawText === undefined) continue;
+            const url = rawUrl;
+            const text = rawText.replace(/<[^>]*>/g, '').trim();
 
             // Check for broken anchors
             if (url.startsWith('#')) {
