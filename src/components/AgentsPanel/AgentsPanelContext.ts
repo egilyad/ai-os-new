@@ -1,4 +1,5 @@
 import React, { createContext, useContext } from 'react';
+import type { ApiKey } from '../../types/metrics';
 
 export type TabId =
     | 'profile'
@@ -92,7 +93,7 @@ export interface AgentsPanelContextValue {
     filteredAgents: Agent[];
     availableRoles: { id: string; name: string }[];
     availableTools: { id: string; name: string; description?: string }[];
-    keys: { status: string; provider: string; availableModels?: string[] }[];
+    keys: ApiKey[];
     fileInputRef: React.RefObject<HTMLInputElement | null>;
     searchInputRef: React.RefObject<HTMLInputElement | null>;
     modalRef: React.RefObject<HTMLDivElement | null>;

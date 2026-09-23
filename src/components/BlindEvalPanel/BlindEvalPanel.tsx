@@ -26,20 +26,23 @@ export const BlindEvalPanel: React.FC = () => {
     const AGENT_COLORS: Record<string, string> = useMemo(() => {
         const cols = ['#3b82f6', '#ef4444', '#10b981'];
         const m: Record<string, string> = {};
-        agents.slice(0, 3).forEach((a, i) => (m[a.id] = cols[i % 3]));
+        agents.slice(0, 3).forEach((a, i) => (m[a.id] = cols[i % 3] ?? '#94a3b8'));
         return m;
     }, [agents]);
     // keep useEffect import used (no-op sync) to satisfy lint / future agent sync
     useEffect(() => { if (hasLiveDebate) loadDebate(); /* eslint-disable-next-line react-hooks/exhaustive-deps */ }, [sessionId]);
     const loadDebate = useCallback(() => {
         if (!liveArgs.length) return;
-        setLiveClaims(liveArgs.map((a) => ({ id: a.id, agentId: a.agentId, text: a.content, confidence: 0.8 })));
+        setLiveClaims(liveArgs.map((a) => ({ id: a.id, agentId: a.agentId, text: a.content, confidence: 0.8, round: 0, speaker: a.agentId, role: 'neutral' })));
         setLiveIds(Array.from(new Set(liveArgs.map((a) => a.agentId))));
     }, [liveArgs]);
     const svc = useMemo(() => new BlindEvaluationService(), []);
     const scores = useMemo(() => {
         const map = svc.evaluateBlindly(derivedIds, claims, () => []);
-        return Array.from(map.entries()).map(([agentId, s]) => ({ agentId, ...s }));
+        return Array.from(map.entries()).map(([agentId, s]) => {
+            const { agentId: _omit, ...rest } = s;
+            return { agentId, ...rest };
+        });
     }, [svc, derivedIds, claims]);
 
     // For blind view, hide agentId in claim list

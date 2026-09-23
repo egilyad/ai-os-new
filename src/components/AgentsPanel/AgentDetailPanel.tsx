@@ -488,7 +488,6 @@ function ChatTab({ agentId, agentName }: { agentId: string; agentName: string })
     const send = () => {
         if (!text.trim()) return;
         const store = useChatStore.getState();
-        const target = store.getSessionConfig();
         // Direct message: create or reuse chat session with agent attached
         void store.setAgent(agentId).then(() => {
             const firstKey = store.getSessionConfig()?.keyId;

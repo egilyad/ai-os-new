@@ -10,7 +10,7 @@ import { useDebateArguments } from '../../hooks/useDebateArguments';
 export const BayesianJudgePanel: React.FC = () => {
     const { t } = useTranslation();
     const agents = useRealAgents();
-    const { args: liveArgs, topic: liveTopic, sessionId, hasLiveDebate } = useDebateArguments();
+    const { topic: liveTopic, sessionId, hasLiveDebate } = useDebateArguments();
     const judge = useMemo(() => {
         const j = new BayesianJudge();
         j.reset(agents.map(a => a.id));

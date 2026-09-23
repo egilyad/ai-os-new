@@ -454,6 +454,7 @@ export const codeAgentService = lazyService<ICodeAgentService>('codeAgentService
 export const assistantService = lazyService<IAssistantService>('assistantService');
 export const gumService = lazyService<IGumService>('gumService');
 export const appBuilderService = lazyService<IAppBuilderService>('appBuilderService');
+export const builderAgent = lazyService<import('../contracts/builder').IBuilderAgentService>('builderAgent');
 export const ideService = lazyService<IIdeService>('ideService');
 export const promptHubService = lazyService<IPromptHubService>('promptHubService');
 export const ontologyService = lazyService<IOntologyService>('ontologyService');

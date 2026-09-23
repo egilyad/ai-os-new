@@ -1,4 +1,5 @@
 import type { TabId, Agent } from './AgentsPanelContext';
+import type { ApiKey } from '../../types/metrics';
 
 export interface AgentDetailPanelProps {
     agent: Agent;
@@ -16,7 +17,7 @@ export interface AgentDetailPanelProps {
     >;
     availableRoles: { id: string; name: string }[];
     availableTools: { id: string; name: string; description?: string }[];
-    keys: { status: string; provider: string; availableModels?: string[] }[];
+    keys: ApiKey[];
     onSetActiveTab: (tab: TabId) => void;
     onUpdateAgent: (agentId: string, updates: Record<string, unknown>) => void;
     onApplyRoleToAgent: (agentId: string, roleId: string) => void;

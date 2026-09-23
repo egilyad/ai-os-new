@@ -21,16 +21,6 @@ const AVATAR_EMOJIS = [
     '⚙️',
     '🚀',
 ];
-const AVATAR_COLORS = [
-    '#3b82f6',
-    '#10b981',
-    '#a855f7',
-    '#f59e0b',
-    '#ef4444',
-    '#06b6d4',
-    '#ec4899',
-    '#8b5cf6',
-];
 
 const fieldStyle: React.CSSProperties = {
     background: 'rgba(0,0,0,0.25)',
