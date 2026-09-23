@@ -7,7 +7,7 @@
 import type {
     Channel, ChannelId, ChannelMessage, CreateChannelInput,
     SendMessageInput, AgentId, AgentChannelEvent,
-    TypingIndicator, AgentPresence, Reaction, MessageId,
+    TypingIndicator, AgentPresence, MessageId,
     RespondToMode, ChannelType, ChannelVisibility,
 } from '../types/channel-types';
 

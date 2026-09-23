@@ -1,14 +1,12 @@
 import type { ILifecycle } from './lifecycle';
 import type {
     Benchmark,
-    BenchmarkCase,
     CapabilityMatrixEntry,
     EvalRun,
     IntentPlan,
     ModalCapability,
     OrgCharter,
     RedFinding,
-    SimAgent,
     Simulation,
     SocietyNorm,
 } from '../types/frontier-types';

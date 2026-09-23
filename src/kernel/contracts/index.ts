@@ -274,7 +274,7 @@ export type {
     SequenceStep,
     SequencePrimitive,
     GraphEdgeType,
-    GraphEdge,
+    GraphEdge as StrategyGraphEdge,
     GraphAgentConfig,
     DebateGraphPrimitive,
     CriticLoopPrimitive,
@@ -780,7 +780,7 @@ export type { GoTBranchType, GoTBranch, GoTResult, IGoTDeliberation } from './de
 export type {
     DeadlockSignal,
     BlendedConcept,
-    BlendResult,
+    BlendResult as ConceptBlendResult,
     IConceptBlender,
 } from './debate-blending';
 
