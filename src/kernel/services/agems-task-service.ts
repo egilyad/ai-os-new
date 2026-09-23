@@ -1,5 +1,5 @@
 import { getDexieDb } from './dexie-schema';
-import type { AgemsTask, AgemsTaskStatus, CronSchedule } from '../types/agems-task';
+import type { AgemsTask, AgemsTaskStatus } from '../types/agems-task';
 import { rootLogger } from './logger-service';
 
 const LOGGER = rootLogger.child('AgemsTask');

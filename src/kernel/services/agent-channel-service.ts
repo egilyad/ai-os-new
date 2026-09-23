@@ -40,7 +40,7 @@ export function recordExchange(aId: string, bId: string): void {
     entry.timestamps.push(Date.now());
 }
 
-export function getCrossChannelContext(agentId: string, allMessages: Array<{ channelId: string; text: string }>): string {
+export function getCrossChannelContext(_agentId: string, allMessages: Array<{ channelId: string; text: string }>): string {
     // Inject last 5 messages from other channels
     return allMessages.slice(-5).map((m) => `[${m.channelId}]: ${m.text}`).join('\n');
 }

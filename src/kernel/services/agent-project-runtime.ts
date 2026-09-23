@@ -16,13 +16,10 @@ import type {
     AgentRuntimeEvent,
 } from '../types/runtime-types';
 import type { ProjectId, ProjectTask } from '../types/project-types';
-import type { ProjectManagerService } from './project-service';
+import type { ProjectService } from './project-service';
 import type { ProjectWorkspaceService } from './project-workspace-service';
 import type { IEventBus } from '../types/interfaces';
-import { executeFileTool, FILE_TOOLS } from './file-toolset';
-import { rootLogger } from './logger-service';
-
-const LOGGER = rootLogger.child('AgentProjectRuntime');
+import { FILE_TOOLS } from './file-toolset';
 
 interface ProjectRuntimeState {
     status: RuntimeStatus;
@@ -35,14 +32,14 @@ function genId(prefix: string): string {
 }
 
 export class AgentProjectRuntime implements IAgentProjectRuntime {
-    private projectService: ProjectManagerService;
+    private projectService: ProjectService;
     private workspace: ProjectWorkspaceService;
     private toolRunner: { runWithTools: (prompt: string, opts?: { agentId?: string; system?: string; maxRounds?: number }) => Promise<{ output: string; toolCalls?: unknown[] }> };
     private eventBus?: IEventBus;
     private states = new Map<ProjectId, ProjectRuntimeState>();
 
     constructor(
-        projectService: ProjectManagerService,
+        projectService: ProjectService,
         workspace: ProjectWorkspaceService,
         toolRunner: { runWithTools: (...args: unknown[]) => Promise<{ output: string; toolCalls?: unknown[] }> },
         eventBus?: IEventBus,
@@ -94,7 +91,7 @@ export class AgentProjectRuntime implements IAgentProjectRuntime {
             await this.projectService.updateTaskStatus(taskId, 'running');
 
             // Build system prompt with project context
-            const project = await this.projectService.get(projectId);
+            const _project = await this.projectService.get(projectId);
             const systemPrompt = this.buildSystemPrompt(projectId, agentId, context?.systemPrompt);
 
             // Build task prompt with workspace context

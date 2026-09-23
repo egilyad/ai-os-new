@@ -13,7 +13,7 @@ export interface GatedChange<T> {
     label: string;
     snapshot: () => Promise<unknown> | unknown;
     apply: () => Promise<T> | T;
-    verify: (snap: unknown) => Promise<{ ok: boolean; detail: string }>;
+    verify: (snap: unknown) => Promise<{ ok: boolean; detail: string }> | { ok: boolean; detail: string };
     rollback: (snap: unknown) => Promise<void> | void;
 }
 
