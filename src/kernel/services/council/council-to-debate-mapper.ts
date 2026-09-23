@@ -10,6 +10,9 @@ import type { CouncilSession, CouncilPhase } from '../../types/council-types';
 import type { DebatePhase, DebateTopology, ParticipantConfig } from '../../contracts/debate-runtime';
 import type { DebateSessionSnapshot } from '../../contracts/debate-runtime';
 
+// Ленивый require для разрыва циклов: tsconfig app без node-типов.
+declare const require: (id: string) => any;
+
 function councilPhaseToDebatePhase(phase: CouncilPhase): DebatePhase {
     switch (phase) {
         case 'proposal': return 'created';

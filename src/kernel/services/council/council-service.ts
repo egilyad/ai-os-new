@@ -60,7 +60,7 @@ export class CouncilService implements ICouncilService {
     }
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('CouncilService', 'init', {});
     }
 
     async destroy(): Promise<void> {
@@ -99,7 +99,6 @@ export class CouncilService implements ICouncilService {
             maxRounds: input.config?.maxRounds ?? 3,
             allowAudienceVoting: input.config?.allowAudienceVoting ?? true,
             ...(input.config ?? {}),
-            topic: input.topic,
         };
         const judges = (input.judges ?? [{ name: 'Blind Judge' }]).map((j) => ({
             id: genId('judge'),
@@ -171,9 +170,9 @@ export class CouncilService implements ICouncilService {
         if (this.llm) {
             try {
                 const draft = await this.llm.draftStance({ topic: session.topic, participant: author });
-                LOGGER.debug('llm draft stance (advisory)', { len: draft.length });
+                LOGGER.debug('CouncilService', 'llm draft stance (advisory)', { len: draft.length });
             } catch (e) {
-                LOGGER.warn('llm draftStance failed', { error: e instanceof Error ? e.message : String(e) });
+                LOGGER.warn('CouncilService', 'llm draftStance failed', { error: e instanceof Error ? e.message : String(e) });
             }
         }
         return msg;
@@ -222,7 +221,7 @@ export class CouncilService implements ICouncilService {
                 const sessionNode = await this.provenance.addNode('prompt', `Council:${session.topic.slice(0, 80)}`, sessionId);
                 await this.provenance.link(verdictNode.id, sessionNode.id, 'derived_from');
             } catch (e) {
-                LOGGER.warn('provenance wire failed (D2.3, non-fatal)', { error: e instanceof Error ? e.message : String(e) });
+                LOGGER.warn('CouncilService', 'provenance wire failed (D2.3, non-fatal)', { error: e instanceof Error ? e.message : String(e) });
             }
         }
         this.events.emit(EVENTS.COUNCIL_FACT, {
