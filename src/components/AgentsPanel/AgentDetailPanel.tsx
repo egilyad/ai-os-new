@@ -334,7 +334,7 @@ function ApprovalsTab({ agentId }: { agentId: string }) {
         setPending(list as unknown as typeof pending);
         setSelected([]);
     };
-    useEffect(() => { void load(); }, [agentId]);
+    useEffect(() => { void load(); /* eslint-disable-line react-hooks/exhaustive-deps */ }, [agentId]);
     const toggle = (id: number) => setSelected((p) => (p.includes(id) ? p.filter((x) => x !== id) : [...p, id]));
     const approve = async () => { if (!selected.length) return; await approvalBulkService.bulkApprove(selected); void load(); };
     const reject = async () => { if (!selected.length) return; await approvalBulkService.bulkReject(selected, rejectReason); void load(); };
@@ -446,7 +446,7 @@ function RepositoryTab({ agentId }: { agentId: string }) {
         const list = await agentRepositoryService.listByAgent(agentId);
         setRepos(list);
     };
-    useEffect(() => { void load(); }, [agentId]);
+    useEffect(() => { void load(); /* eslint-disable-line react-hooks/exhaustive-deps */ }, [agentId]);
 
     const handleLink = async () => {
         if (!repoUrl.trim()) return;

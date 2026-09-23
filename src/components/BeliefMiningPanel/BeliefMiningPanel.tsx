@@ -22,7 +22,7 @@ export const BeliefMiningPanel: React.FC = () => {
     const agents = useRealAgents();
     const { args: liveArgs, sessionId, hasLiveDebate } = useDebateArguments();
     const [liveLoadedArgs, setLiveLoadedArgs] = useState<Arg[] | null>(null);
-    const args = liveLoadedArgs ?? [];
+    const args = useMemo(() => liveLoadedArgs ?? [], [liveLoadedArgs]);
 
     const loadDebate = useCallback(() => {
         if (!liveArgs.length) return;

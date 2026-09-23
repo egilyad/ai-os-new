@@ -27,7 +27,7 @@ export const CalibrationPanel: React.FC = () => {
     }, [agents, agentId]);
 
     const result = useMemo(() => svc.scoreClaims(text), [svc, text]);
-    const prompt = useMemo(() => svc.getCalibrationPrompt(agentId, 2, 'English'), [svc, agentId, result]);
+    const prompt = useMemo(() => svc.getCalibrationPrompt(agentId, 2, 'English'), [svc, agentId]);
 
     if (agents.length === 0) {
         return (

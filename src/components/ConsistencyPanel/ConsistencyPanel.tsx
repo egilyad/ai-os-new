@@ -39,7 +39,7 @@ export const ConsistencyPanel: React.FC = () => {
         return svc.checkConsistency(agentId, agentName, currentText, round, derivedArgs);
     }, [svc, agentId, currentText, round, agents, derivedArgs]);
 
-    const ratio = useMemo(() => svc.getConsistencyRatio(agentId), [svc, agentId, result]);
+    const ratio = useMemo(() => svc.getConsistencyRatio(agentId), [svc, agentId]);
 
     if (agents.length === 0) {
         return (

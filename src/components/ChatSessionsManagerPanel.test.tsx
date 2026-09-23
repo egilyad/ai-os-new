@@ -29,7 +29,7 @@ vi.mock('../kernel/instances', () => ({
 }));
 
 const mockChatStore = {
-    sessions: [] as any[],
+    sessions: [] as never[],
     activeSessionId: null as string | null,
     isLoaded: true,
     deleteSession: vi.fn().mockResolvedValue(undefined),
@@ -44,14 +44,14 @@ const mockChatStore = {
 
 vi.mock('../stores/chat/store', () => ({
     useChatStore: Object.assign(
-        vi.fn((sel?: any) => (sel ? sel(mockChatStore) : mockChatStore)),
+        vi.fn((sel?: (store: unknown) => unknown) => (sel ? sel(mockChatStore) : mockChatStore)),
         { getState: vi.fn(() => mockChatStore) },
     ),
 }));
 
 vi.mock('../stores/debate-session-store', () => ({
     useDebateSessionStore: Object.assign(
-        vi.fn((sel?: any) => (sel ? sel({ sessions: [], isLoaded: true }) : { sessions: [], isLoaded: true })),
+        vi.fn((sel?: (store: unknown) => unknown) => (sel ? sel({ sessions: [], isLoaded: true }) : { sessions: [], isLoaded: true })),
         { getState: vi.fn(() => ({ sessions: [], isLoaded: true })) },
     ),
 }));

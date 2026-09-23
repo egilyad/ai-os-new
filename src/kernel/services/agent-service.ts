@@ -513,6 +513,7 @@ export class AgentService implements IAgentResolver {
             child.config = { ...child.config, parentAgentId: parentId };
         } else {
             const { parentAgentId: _omit, ...rest } = child.config as Record<string, unknown>;
+            void _omit;
             child.config = rest as typeof child.config;
         }
         this.deps.orchestrator.mount({ ...top });

@@ -30,7 +30,7 @@ export const BlindEvalPanel: React.FC = () => {
         return m;
     }, [agents]);
     // keep useEffect import used (no-op sync) to satisfy lint / future agent sync
-    useEffect(() => { if (hasLiveDebate) loadDebate(); /* eslint-disable-next-line react-hooks/exhaustive-deps */ }, [sessionId]);
+    useEffect(() => { if (hasLiveDebate) loadDebate(); }, [sessionId]); // eslint-disable-line react-hooks/exhaustive-deps
     const loadDebate = useCallback(() => {
         if (!liveArgs.length) return;
         setLiveClaims(liveArgs.map((a) => ({ id: a.id, agentId: a.agentId, text: a.content, confidence: 0.8, round: 0, speaker: a.agentId, role: 'neutral' })));
@@ -41,6 +41,7 @@ export const BlindEvalPanel: React.FC = () => {
         const map = svc.evaluateBlindly(derivedIds, claims, () => []);
         return Array.from(map.entries()).map(([agentId, s]) => {
             const { agentId: _omit, ...rest } = s;
+            void _omit;
             return { agentId, ...rest };
         });
     }, [svc, derivedIds, claims]);
