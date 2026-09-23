@@ -2,7 +2,7 @@
  * ProjectsPanel smoke tests — render, create, list, select.
  */
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 
 // Mock lazy service instances before importing the component

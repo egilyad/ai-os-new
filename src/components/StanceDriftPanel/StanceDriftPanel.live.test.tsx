@@ -1,5 +1,5 @@
 import { describe, it, expect, afterEach, vi } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import StanceDriftPanel from './StanceDriftPanel';
 import { useActiveDebateStore } from '../../stores/activeDebateStore';
 import type { DebateSession } from '../../kernel/contracts/debate-types';

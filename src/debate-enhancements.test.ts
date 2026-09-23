@@ -13,9 +13,11 @@ function createStubEventBus() {
     const listeners: Array<{ event: string; fn: (data: unknown) => void }> = [];
     return {
         on: vi.fn((event: string, fn: (data: unknown) => void) => { listeners.push({ event, fn }); return () => {}; }),
+        off: vi.fn(),
         onSafe: vi.fn((event: string, fn: (data: unknown) => void) => { listeners.push({ event, fn }); return () => {}; }),
         emit: vi.fn(),
         emitOnce: vi.fn(),
+        subscribeAll: vi.fn(() => () => {}),
         getSubscriptionStats: vi.fn(() => ({ total: 0, active: 0 })),
         _listeners: listeners,
     };

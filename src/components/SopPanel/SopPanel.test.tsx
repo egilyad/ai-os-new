@@ -24,7 +24,7 @@ let loops: AgentLoop[] = [];
 vi.mock('../../kernel/instances/services-extras', () => ({
     sopService: {
         listSops: vi.fn(async () => [...sops]),
-        runSop: vi.fn(async (sopId: string, goal: string) => {
+        runSop: vi.fn(async (_sopId: string, goal: string) => {
             const loop: AgentLoop = {
                 id: `sop-${loops.length + 1}`,
                 kind: 'sop',

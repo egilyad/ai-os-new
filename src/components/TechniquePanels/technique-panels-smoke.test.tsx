@@ -3,9 +3,9 @@
  * Renders every panel from the bundle with mocked dependencies.
  * Verifies: no crash, no white-screen, renders at least some content.
  */
-import React, { Suspense } from 'react';
+import { Suspense } from 'react';
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import {
     TECHNIQUE_PANEL_COMPONENTS,
 } from './technique-panels-bundle';

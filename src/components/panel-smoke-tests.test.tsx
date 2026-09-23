@@ -87,7 +87,7 @@ const noopStub = Object.assign(vi.fn(() => {}), {
     getAllGuardians: () => [], getGuardian: () => undefined,
     getEntries: () => [], getAllTags: () => [], count: () => 0,
     init: () => Promise.resolve(),
-    search: () => [], getEntries: () => [],
+    search: () => [],
     child: () => noopStub,
     info: () => {}, warn: () => {}, error: () => {}, debug: () => {},
 });
