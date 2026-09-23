@@ -45,11 +45,11 @@ export class CouncilServiceFacade implements ICouncilService {
                 const snapshot = councilToDebateSnapshot(session);
                 // D4.3 P0 ID: canonical ID same — use createSessionWithId (minimal extension, no new runtime)
                 const debateId = (this.debateEngine as unknown as { createSessionWithId?: (id: string, t: unknown, topic: string, parts: unknown[], lang?: string) => string }).createSessionWithId
-                    ? (this.debateEngine as unknown as { createSessionWithId: (id: string, t: unknown, topic: string, parts: unknown[], lang?: string) => string }).createSessionWithId(session.id, snapshot.topology, snapshot.topic, snapshot.participants ?? [], snapshot.language)
-                    : this.debateEngine.createSession(snapshot.topology, snapshot.topic, snapshot.participants ?? [], snapshot.language);
-                LOGGER.info('facade: also created Debate snapshot for council (councilMode)', { councilId: session.id, debateId });
+                    ? (this.debateEngine as unknown as { createSessionWithId: (id: string, t: unknown, topic: string, parts: unknown[], lang?: string) => string }).createSessionWithId(session.id, snapshot.topology, snapshot.topic, [...(snapshot.participants ?? [])], snapshot.language)
+                    : this.debateEngine.createSession(snapshot.topology, snapshot.topic, [...(snapshot.participants ?? [])], snapshot.language);
+                LOGGER.info('CouncilFacade', 'facade: also created Debate snapshot for council (councilMode)', { councilId: session.id, debateId });
             } catch (e) {
-                LOGGER.warn('facade: Debate snapshot create failed, fallback to old only (rollback-safe)', { error: e instanceof Error ? e.message : String(e) });
+                LOGGER.warn('CouncilFacade', 'facade: Debate snapshot create failed, fallback to old only (rollback-safe)', { error: e instanceof Error ? e.message : String(e) });
             }
         }
         return session;
@@ -134,12 +134,12 @@ export class CouncilServiceFacade implements ICouncilService {
                         this.debateEngine.saveSnapshot(sessionId).catch(() => {});
                     }
                 } catch (e) {
-                    LOGGER.warn('facade judge persistence best-effort failed', { error: e instanceof Error ? e.message : String(e) });
+                    LOGGER.warn('CouncilFacade', 'facade judge persistence best-effort failed', { error: e instanceof Error ? e.message : String(e) });
                 }
-                LOGGER.info('facade submitJudgeScore → canonical WeightedJudgeEvaluator', { sessionId, judgeId, winnerId });
+                LOGGER.info('CouncilFacade', 'facade submitJudgeScore → canonical WeightedJudgeEvaluator', { sessionId, judgeId, winnerId });
                 return entry;
             } catch (e) {
-                LOGGER.warn('facade submitJudgeScore canonical failed, fallback to old (rollback-safe)', { error: e instanceof Error ? e.message : String(e) });
+                LOGGER.warn('CouncilFacade', 'facade submitJudgeScore canonical failed, fallback to old (rollback-safe)', { error: e instanceof Error ? e.message : String(e) });
             }
         }
         return this.old.submitJudgeScore(sessionId, judgeId, winnerId, scores, rationale);
@@ -167,7 +167,7 @@ export class CouncilServiceFacade implements ICouncilService {
                         this.debateEngine.saveSnapshot(sessionId).catch(() => {});
                     }
                 } catch (e) {
-                    LOGGER.warn('facade audience persistence best-effort failed', { error: e instanceof Error ? e.message : String(e) });
+                    LOGGER.warn('CouncilFacade', 'facade audience persistence best-effort failed', { error: e instanceof Error ? e.message : String(e) });
                 }
                 return vote;
             } catch (e) {
@@ -240,13 +240,20 @@ export class CouncilServiceFacade implements ICouncilService {
                 try {
                     const { EVENTS } = await import('../../events/event-names');
                     const bus = (this.old as unknown as { events: import('../../types/interfaces').IEventBus }).events;
-                    if (bus) bus.emit(EVENTS.COUNCIL_COMPLETED, { sessionId, winnerId, judgeCount: (this.weightedJudge as unknown as { votes: Map<string, unknown> }).votes.get(sessionId)?.size ?? 0, audienceCount: (this.weightedJudge as unknown as { audienceVotes: Map<string, unknown> }).audienceVotes.get(sessionId)?.size ?? 0 });
+                    const countVotes = (v: unknown): number => {
+                        if (v instanceof Map || v instanceof Set) return v.size;
+                        if (Array.isArray(v)) return v.length;
+                        return 0;
+                    };
+                    const votes = (this.weightedJudge as unknown as { votes: Map<string, unknown> }).votes.get(sessionId);
+                    const audienceVotes = (this.weightedJudge as unknown as { audienceVotes: Map<string, unknown> }).audienceVotes.get(sessionId);
+                    if (bus) bus.emit(EVENTS.COUNCIL_COMPLETED, { sessionId, winnerId, judgeCount: countVotes(votes), audienceCount: countVotes(audienceVotes) });
                 } catch { /* ignore */ }
 
-                LOGGER.info('facade conclude → canonical WeightedJudgeEvaluator tally', { sessionId, winnerId });
+                LOGGER.info('CouncilFacade', 'facade conclude → canonical WeightedJudgeEvaluator tally', { sessionId, winnerId });
                 return updated;
             } catch (e) {
-                LOGGER.warn('facade conclude canonical failed, fallback to old (rollback-safe)', { error: e instanceof Error ? e.message : String(e) });
+                LOGGER.warn('CouncilFacade', 'facade conclude canonical failed, fallback to old (rollback-safe)', { error: e instanceof Error ? e.message : String(e) });
             }
         }
         return this.old.conclude(sessionId);
