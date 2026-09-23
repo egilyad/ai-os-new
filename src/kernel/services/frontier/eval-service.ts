@@ -80,7 +80,7 @@ export class EvalService implements IEvalService {
     }
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('Eval', 'init', {});
     }
 
     async destroy(): Promise<void> {
@@ -223,7 +223,7 @@ export class EvalService implements IEvalService {
             try {
                 return await this.executor.execute(task);
             } catch (e) {
-                LOGGER.warn('executor failed, echo fallback', {
+                LOGGER.warn('Eval', 'executor failed, echo fallback', {
                     error: e instanceof Error ? e.message : String(e),
                 });
             }

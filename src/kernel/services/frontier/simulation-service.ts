@@ -32,7 +32,7 @@ export class SimulationService implements ISimulationService {
     constructor(private repo: FrontierRepository) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('Simulation', 'init', {});
     }
 
     async destroy(): Promise<void> {
