@@ -18,7 +18,7 @@ function tok(s: string): string[] {
     return s.toLowerCase().split(/[^a-zа-яё0-9]+/u).filter((t) => t.length > 0);
 }
 
-function stubScore(task: string, output: string, reference?: string): ScorerResult & { reasoning: string } {
+function stubScore(_task: string, output: string, reference?: string): ScorerResult & { reasoning: string } {
     const ref = tok(reference ?? '');
     const out = tok(output);
     if (ref.length === 0) {
@@ -42,7 +42,7 @@ export class LlmJudgeService implements ILlmJudgeService {
     constructor(private deps: { events: IEventBus; llm?: ILLMClientService }) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', { via: this.deps.llm ? 'llm' : 'stub (PROVIDER-PENDING)' });
+        LOGGER.info('LlmJudge', 'init', { via: this.deps.llm ? 'llm' : 'stub (PROVIDER-PENDING)' });
     }
 
     async destroy(): Promise<void> {}
@@ -74,7 +74,7 @@ export class LlmJudgeService implements ILlmJudgeService {
                     }
                 }
             } catch (e) {
-                LOGGER.warn('llm judge failed, fallback stub', { error: e instanceof Error ? e.message : String(e) });
+                LOGGER.warn('LlmJudge', 'llm judge failed, fallback stub', { error: e instanceof Error ? e.message : String(e) });
             }
         }
         const stub = stubScore(task, output, reference);

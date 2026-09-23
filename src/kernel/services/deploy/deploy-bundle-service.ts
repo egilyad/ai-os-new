@@ -51,7 +51,7 @@ export class DeployBundleService implements IDeployBundleService {
     constructor(private deps: { deployService: IDeployService; database: DatabaseService; events: IEventBus }) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('DeployBundle', 'init', {});
         try {
             const idx = await this.deps.database.getKv<string[]>(BUNDLE_INDEX);
             if (idx) {
@@ -61,7 +61,7 @@ export class DeployBundleService implements IDeployBundleService {
                 }
             }
         } catch (e) {
-            LOGGER.warn('init load failed', { error: e instanceof Error ? e.message : String(e) });
+            LOGGER.warn('DeployBundle', 'init load failed', { error: e instanceof Error ? e.message : String(e) });
         }
     }
 
@@ -103,7 +103,7 @@ export class DeployBundleService implements IDeployBundleService {
             idx.push(bundle.id);
             await this.deps.database.setKv(BUNDLE_INDEX, [...new Set(idx)]);
         } catch (e) {
-            LOGGER.warn('persist bundle failed', { error: e instanceof Error ? e.message : String(e) });
+            LOGGER.warn('DeployBundle', 'persist bundle failed', { error: e instanceof Error ? e.message : String(e) });
         }
         try {
             (this.deps.events as unknown as { emit: (n: string, p: unknown) => void }).emit(
@@ -111,7 +111,7 @@ export class DeployBundleService implements IDeployBundleService {
                 { bundleId: bundle.id, configId, target: cfg.target },
             );
         } catch { /* ignore */ }
-        LOGGER.info('bundle built', { bundleId: bundle.id, configId });
+        LOGGER.info('DeployBundle', 'bundle built', { bundleId: bundle.id, configId });
         return bundle;
     }
 
@@ -137,7 +137,7 @@ export class DeployBundleService implements IDeployBundleService {
             const idx = (await this.deps.database.getKv<string[]>(BUNDLE_INDEX)) ?? [];
             await this.deps.database.setKv(BUNDLE_INDEX, idx.filter((x) => x !== id));
         } catch (e) {
-            LOGGER.warn('remove bundle failed', { error: e instanceof Error ? e.message : String(e) });
+            LOGGER.warn('DeployBundle', 'remove bundle failed', { error: e instanceof Error ? e.message : String(e) });
         }
     }
 
