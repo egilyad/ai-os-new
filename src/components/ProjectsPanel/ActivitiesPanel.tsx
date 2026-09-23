@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from '../../i18n/useTranslation';
 import { projectObservabilityService } from '../../kernel/instances/services-extras';
-import { Button, StatusBadge } from '../../components/Common';
+import { Button } from '../../components/Common';
 import type { ActivityEvent, ToolCallRecord, ErrorRecord, FileChangeRecord } from '../../kernel/types/observability-types';
 
 const CARD: React.CSSProperties = { margin: '0.5rem 0', padding: '0.6rem 0.75rem', borderRadius: 8, border: '1px solid #2a2a35', background: 'rgba(59,130,246,0.08)' };
@@ -23,7 +23,7 @@ const ActivitiesPanel: React.FC<ActivitiesPanelProps> = ({ projectId }) => {
     const [fileChanges, setFileChanges] = useState<FileChangeRecord[]>([]);
 
     const load = () => {
-        const svc = projectObservabilityService();
+        const svc = projectObservabilityService;
         setActivity(svc.getActivity(projectId, 50));
         setToolCalls(svc.getToolCalls(projectId, 50));
         setErrors(svc.getErrors(projectId));
@@ -83,7 +83,7 @@ const ActivitiesPanel: React.FC<ActivitiesPanelProps> = ({ projectId }) => {
                             </div>
                             <div style={{ fontSize: '0.8rem', opacity: 0.7, marginTop: '0.2rem' }}>{e.message}</div>
                             {!e.resolved && (
-                                <Button variant="ghost" size="sm" style={{ marginTop: '0.3rem' }} onClick={() => { projectObservabilityService().resolveError(projectId, e.id); load(); }}>
+                                <Button variant="ghost" size="sm" style={{ marginTop: '0.3rem' }} onClick={() => { projectObservabilityService.resolveError(projectId, e.id); load(); }}>
                                     {t('observability.resolve')}
                                 </Button>
                             )}
