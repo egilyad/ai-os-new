@@ -1,9 +1,9 @@
 /**
  * Phase 67 — Agent Channels registration.
  */
-import type { Phase } from './types';
-import type { IContainer } from '../kernel/contracts/container';
-import type { IEventBus } from '../kernel/types/interfaces';
+import type { Phase } from './helpers';
+import type { IContainer } from '../container';
+import type { IEventBus } from '../types/interfaces';
 import { ChannelService } from '../services/channel-service';
 
 export const registerPhase67: Phase = ({ register }) => {

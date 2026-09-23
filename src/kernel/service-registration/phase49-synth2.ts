@@ -3,7 +3,6 @@ import type { IContainer } from '../container';
 import type { DataAccessLayer } from '../dal/types';
 import type { IEventBus } from '../types/interfaces';
 import type { ILLMClientService } from '../contracts/provider-adapter';
-import type { IToolRunnerService } from '../contracts/parity';
 import { RckService } from '../services/rivals17/rck-service';
 import { CogneeService } from '../services/rivals17/cognee-service';
 import { MetanService } from '../services/rivals17/metan-service';

@@ -28,7 +28,6 @@ import type { TraceService } from '../services/trace-service';
 import type { MetricsService } from '../services/metrics-service';
 import type { RouterService } from '../services/provider-router';
 import { RaceExecutor } from '../services/race-executor';
-import { AdvisorService } from '../services/advisor-service';
 import type { AdvisorServiceDeps } from '../services/advisor-service';
 import { SreAgentDefinition } from '../agents/SreAgent';
 import { CapabilityManager } from '../services/capability-manager';

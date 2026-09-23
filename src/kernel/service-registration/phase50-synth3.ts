@@ -3,7 +3,6 @@ import type { IContainer } from '../container';
 import type { DataAccessLayer } from '../dal/types';
 import type { IEventBus } from '../types/interfaces';
 import type { ILLMClientService } from '../contracts/provider-adapter';
-import type { IToolRunnerService } from '../contracts/parity';
 import { MetaKbService } from '../services/rivals18/metakb-service';
 import { ResearchOsService } from '../services/rivals18/researchos-service';
 import { DeepResearch2Service } from '../services/rivals18/deepresearch2-service';

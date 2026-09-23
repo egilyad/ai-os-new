@@ -7,11 +7,12 @@ import type { Phase } from './helpers';
 import { ResearchEngineService } from '../services/research-engine-service';
 import { GeminiAugmentedResearchService } from '../services/gemini-research-service';
 import type { GoogleGenAIService } from '../services/google-genai-service';
+import type { SourceAdapterRegistry } from '../services/research-adapters/source-adapter-registry';
 
 export const registerPhase9: Phase = ({ register }) => {
     register('researchEngine', (c) => {
         const eventBus = c.get<{ emit: (event: string, data?: unknown) => void }>('eventBus');
-        const sourceAdapterRegistry = c.get('sourceAdapterRegistry');
+        const sourceAdapterRegistry = c.get<SourceAdapterRegistry>('sourceAdapterRegistry');
         return new ResearchEngineService({ eventBus, sourceAdapterRegistry });
     });
 
