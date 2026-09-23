@@ -49,7 +49,7 @@ export const ShadowOpponentPanel: React.FC = () => {
                     return null;
                 }
             })();
-            const rolePrompt = r?.systemPrompt ?? r?.prompt ?? `You are ${a.name}`;
+            const rolePrompt = r?.systemPrompt ?? `You are ${a.name}`;
             return { id: a.id, name: a.name, systemPrompt: rolePrompt };
         });
     }, [realAgents]);
