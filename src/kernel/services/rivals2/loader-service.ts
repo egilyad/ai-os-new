@@ -27,7 +27,7 @@ export class LoaderService implements ILoaderService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('Loader', 'init', {});
     }
 
     async destroy(): Promise<void> {
@@ -64,7 +64,7 @@ export class LoaderService implements ILoaderService {
                 clearTimeout(timer);
             }
         } catch (e) {
-            LOGGER.warn('url load failed', { url, error: e instanceof Error ? e.message : String(e) });
+            LOGGER.warn('Loader', 'url load failed', { url, error: e instanceof Error ? e.message : String(e) });
         }
         const doc: LoadedDoc = {
             id: genId('doc'),
@@ -138,7 +138,7 @@ export class LoaderService implements ILoaderService {
                     if (props.length > 0) return props;
                 }
             } catch (e) {
-                LOGGER.warn('agentic chunk failed, fallback split', {
+                LOGGER.warn('Loader', 'agentic chunk failed, fallback split', {
                     error: e instanceof Error ? e.message : String(e),
                 });
             }

@@ -96,7 +96,7 @@ export class AiderService implements IAiderService {
                 );
                 if (!res.error) return res.content.trim().slice(0, 500);
             } catch (e) {
-                LOGGER.warn('commit message failed', { error: e instanceof Error ? e.message : String(e) });
+                LOGGER.warn('Aider', 'commit message failed', { error: e instanceof Error ? e.message : String(e) });
             }
         }
         const plus = diff.split('\n').filter((l) => l.startsWith('+')).length;

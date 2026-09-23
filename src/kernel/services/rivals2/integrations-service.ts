@@ -52,7 +52,7 @@ export class IntegrationsService implements IIntegrationsService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', { apps: APP_CATALOG.length });
+        LOGGER.info('Integrations', 'init', { apps: APP_CATALOG.length });
     }
 
     async destroy(): Promise<void> {
