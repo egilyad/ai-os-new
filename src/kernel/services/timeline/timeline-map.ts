@@ -47,7 +47,7 @@ export const TIMELINE_MAP: Record<
     'request:completed': e('request', (d) => `Request completed ${(d.final_data as Record<string, unknown> | undefined)?.traceId ?? ''}`, 'info', 'traceId'),
 
     // debate / council finer
-    'council:created:legacy': e('fleet', (d) => `Council legacy created`, 'info'),
+    'council:created:legacy': e('fleet', (_d) => `Council legacy created`, 'info'),
     'debate:runtime:session:created': e('fleet', (d) => `Debate created ${String(d.sessionId ?? '')}`, 'info', 'sessionId'),
     'debate:runtime:session:completed': e('fleet', (d) => `Debate completed ${String(d.sessionId ?? '')}`, 'info', 'sessionId'),
     'debate:runtime:session:failed': e('fleet', (d) => `Debate failed ${String(d.error ?? '')}`, 'warning', 'sessionId'),
@@ -77,7 +77,7 @@ export const TIMELINE_MAP: Record<
     'skill:installed': e('tool', (d) => `Skill installed ${String(d.id ?? '')}`, 'info', 'id'),
 
     // memory/persona
-    'persona:changed': e('memory', (d) => `Persona changed`, 'info'),
+    'persona:changed': e('memory', (_d) => `Persona changed`, 'info'),
     'memory:updated': e('memory', (d) => `Memory updated ${(Array.isArray(d) ? d.length : '')}`, 'info'),
     'cog:memory:added': e('memory', (d) => `CogMemory added`, 'info'),
 

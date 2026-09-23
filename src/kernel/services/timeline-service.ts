@@ -1,6 +1,6 @@
 import { CONFIG } from './config-registry';
 import { EVENTS } from '../events/event-names';
-import type { TimelineEvent, TimelineFilter } from '../contracts/observability';
+import type { TimelineEvent, TimelineFilter, TimelineEventType, TimelineCategory } from '../contracts/observability';
 import type { ITimelineContract } from '../contracts/observability';
 
 export interface TimelineServiceDeps {
@@ -136,7 +136,7 @@ export class TimelineService implements ITimelineContract {
         );
 
         // 6.3 timeline mapping — new fleet/mission/meter/error domains (additive, no spam)
-        const fleetMap: Record<string, { type: string; category: string }> = {
+        const fleetMap: Record<string, { type: TimelineEventType; category: TimelineCategory }> = {
             [EVENTS.CREW_CREATED]: { type: 'crew_created', category: 'fleet' },
             [EVENTS.CREW_STARTED]: { type: 'crew_started', category: 'fleet' },
             [EVENTS.CREW_COMPLETED]: { type: 'crew_completed', category: 'fleet' },

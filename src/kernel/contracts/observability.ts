@@ -156,7 +156,20 @@ export type TimelineEventType =
     | 'policy_violation'
     | 'system_event'
     | 'config_change'
-    | 'agent_action';
+    | 'agent_action'
+    | 'crew_created'
+    | 'crew_started'
+    | 'crew_completed'
+    | 'crew_failed'
+    | 'council_created'
+    | 'council_completed'
+    | 'graph_started'
+    | 'graph_completed'
+    | 'graph_failed'
+    | 'meter_alert'
+    | 'error_captured'
+    | 'sop_phase'
+    | 'dyad_done';
 
 export type TimelineCategory =
     | 'request'
@@ -168,7 +181,9 @@ export type TimelineCategory =
     | 'policy'
     | 'system'
     | 'config'
-    | 'agent';
+    | 'agent'
+    | 'fleet'
+    | 'ops';
 
 export interface TimelineFilter {
     categories?: TimelineCategory[];

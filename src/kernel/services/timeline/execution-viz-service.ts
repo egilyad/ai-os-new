@@ -66,7 +66,7 @@ export class ExecutionVizService implements IExecutionVizService {
                 });
                 this.unsubs.push(unsub);
             } catch (e) {
-                LOGGER.warn('subscribe failed', { evt, error: e instanceof Error ? e.message : String(e) });
+                LOGGER.warn('ExecutionViz', 'subscribe failed', { evt, error: e instanceof Error ? e.message : String(e) });
             }
         }
         LOGGER.info('init', { mapped: Object.keys(TIMELINE_MAP).length });
