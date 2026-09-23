@@ -172,144 +172,77 @@ export class ProjectWorkspaceService implements IProjectWorkspaceService {
 
     async listDir(projectId: string, dirPath?: string): Promise<WorkspaceTreeEntry[]> {
         const dir = normalizePath(dirPath ?? '/');
-        const allFiles = await this.db.projectFiles.where('projectId').equals(projectId).toArray();
-        const entries = new Map<string, WorkspaceTreeEntry>();
-
-        // Ensure the target directory exists
-        entries.set(dir, { path: dir, type: 'dir', children: [] });
-
-        for (const record of allFiles) {
-            const filePath = normalizePath(record.path);
-            const fileDir = parentDir(filePath);
-
-            // Ensure parent directories exist
-            let current = fileDir;
-            while (current !== '/') {
-                if (!entries.has(current)) {
-                    entries.set(current, { path: current, type: 'dir', children: [] });
-                }
-                current = parentDir(current);
-            }
-            if (!entries.has('/')) {
-                entries.set('/', { path: '/', type: 'dir', children: [] });
-            }
-
-            // Add file entry to its parent
-            const fileName = filePath.split('/').pop()!;
-            if (fileDir === dir) {
-                entries.get(dir)!.children!.push(fileName);
-            }
-
-            // If the file is in the target dir, add it to results
-            if (filePath.startsWith(dir === '/' ? '/' : dir + '/')) {
-                const relativePath = filePath.substring(dir.length).replace(/^\//, '');
-                // Only show direct children (one level)
-                if (!relativePath.includes('/')) {
-                    entries.set(filePath, {
-                        path: filePath,
-                        type: 'file',
-                        size: record.content.length,
-                    });
-                }
-            }
-        }
-
-        const dirEntry = entries.get(dir);
-        if (!dirEntry) return [];
-
-        const result: WorkspaceTreeEntry[] = [];
-        if (dirEntry.children) {
-            for (const childName of dirEntry.children) {
-                const childPath = dir === '/' ? `/${childName}` : `${dir}/${childName}`;
-                const childEntry = entries.get(childPath);
-                if (childEntry) {
-                    result.push(childEntry);
-                } else {
-                    result.push({ path: childPath, type: 'file' });
-                }
-            }
-        }
-
-        // Also add subdirectories
-        for (const [key, entry] of entries) {
-            if (entry.type === 'dir' && key !== dir) {
-                const rel = key.substring(dir.length).replace(/^\//, '');
-                if (dir === '/' || (key.startsWith(dir + '/') && !rel.includes('/'))) {
-                    if (!result.find((r) => r.path === key)) {
-                        result.push({ ...entry, children: undefined });
-                    }
-                }
-            }
-        }
-
-        return result.sort((a, b) => {
-            if (a.type !== b.type) return a.type === 'dir' ? -1 : 1;
-            return a.path.localeCompare(b.path);
-        });
+        const entries = this.buildEntryMap(
+            (await this.db.projectFiles.where('projectId').equals(projectId).toArray()).map((r) => ({
+                path: normalizePath(r.path),
+                content: r.content,
+            })),
+        );
+        const target = entries.get(dir);
+        if (!target || target.type !== 'dir') return [];
+        // Direct children within the requested scope only
+        return (target.children ?? [])
+            .filter((c) => c.path.startsWith(dir === '/' ? '/' : dir + '/'))
+            .sort((a, b) => {
+                if (a.type !== b.type) return a.type === 'dir' ? -1 : 1;
+                return a.path.localeCompare(b.path);
+            });
     }
 
     // ── Full tree ──
 
+    private buildEntryMap(files: Array<{ path: string; content: string }>): Map<string, WorkspaceTreeEntry> {
+        const entries = new Map<string, WorkspaceTreeEntry>();
+        const ensureDir = (p: string): void => {
+            if (!entries.has(p)) entries.set(p, { path: p, type: 'dir', children: [] });
+        };
+        ensureDir('/');
+        for (const f of files) {
+            let current = parentDir(f.path);
+            while (true) {
+                ensureDir(current);
+                if (current === '/') break;
+                current = parentDir(current);
+            }
+            entries.set(f.path, { path: f.path, type: 'file', size: f.content.length });
+        }
+        for (const [p, e] of entries) {
+            if (e.type !== 'dir') continue;
+            e.children = [...entries.values()]
+                .filter((c) => c.path !== p && parentDir(c.path) === p)
+                .sort((a, b) => {
+                    if (a.type !== b.type) return a.type === 'dir' ? -1 : 1;
+                    return a.path.localeCompare(b.path);
+                });
+        }
+        return entries;
+    }
+
     async getTree(projectId: string, maxDepth = 10): Promise<WorkspaceTreeEntry[]> {
         const allFiles = await this.db.projectFiles.where('projectId').equals(projectId).toArray();
-        const dirs = new Map<string, WorkspaceTreeEntry>();
-
-        dirs.set('/', { path: '/', type: 'dir', children: [] });
-
-        for (const record of allFiles) {
-            const filePath = normalizePath(record.path);
-            const parts = filePath.split('/').filter(Boolean);
-
-            // Ensure all parent dirs exist and are registered
-            let current = '';
-            for (let i = 0; i < parts.length - 1; i++) {
-                current += '/' + parts[i];
-                if (!dirs.has(current)) {
-                    dirs.set(current, { path: current, type: 'dir', children: [] });
-                }
-                // Register this dir as child of its parent
-                const parPath = i === 0 ? '/' : current.substring(0, current.lastIndexOf('/')) || '/';
-                const par = dirs.get(parPath);
-                if (par && par.children && !par.children.includes(parts[i])) {
-                    par.children.push(parts[i]);
-                }
-            }
-
-            // Add file to its parent
-            const parentPath = parentDir(filePath);
-            const parent = dirs.get(parentPath);
-            if (parent && parent.children) {
-                const fileName = parts[parts.length - 1];
-                if (!parent.children.includes(fileName)) {
-                    parent.children.push(fileName);
-                }
-            }
-        }
+        const dirs = this.buildEntryMap(
+            allFiles.map((r) => ({ path: normalizePath(r.path), content: r.content })),
+        );
 
         const buildTree = (dirPath: string, depth: number): WorkspaceTreeEntry[] => {
             if (depth >= maxDepth) return [];
             const dir = dirs.get(dirPath);
             if (!dir || !dir.children) return [];
 
-            return dir.children
-                .sort()
-                .map((name) => {
-                    const childPath = dirPath === '/' ? `/${name}` : `${dirPath}/${name}`;
-                    const childDir = dirs.get(childPath);
-                    if (childDir) {
-                        return {
-                            path: childPath,
-                            type: 'dir' as const,
-                            children: buildTree(childPath, depth + 1),
-                        };
-                    }
-                    const file = allFiles.find((r) => normalizePath(r.path) === childPath);
+            return dir.children.map((child) => {
+                if (child.type === 'dir') {
                     return {
-                        path: childPath,
-                        type: 'file' as const,
-                        size: file?.size,
+                        path: child.path,
+                        type: 'dir' as const,
+                        children: buildTree(child.path, depth + 1),
                     };
-                });
+                }
+                return {
+                    path: child.path,
+                    type: 'file' as const,
+                    size: child.size,
+                };
+            });
         };
 
         return buildTree('/', 0);
@@ -336,7 +269,7 @@ export class ProjectWorkspaceService implements IProjectWorkspaceService {
         for (const record of allFiles) {
             const filePath = normalizePath(record.path);
             if (root !== '/' && !filePath.startsWith(root + '/') && filePath !== root) continue;
-            if (record.size && record.size > 100_000) continue; // skip large files
+            if (record.content && record.content.length > 100_000) continue; // skip large files
 
             const lines = record.content.split('\n');
             for (let i = 0; i < lines.length; i++) {
