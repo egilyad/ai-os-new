@@ -35,7 +35,6 @@ import { autoDebateService as autoDebate } from '../../kernel/instances';
 import { DebateTabContent } from './DebateTabContent';
 import { useChatStore } from '../../stores/chat/store';
 
-import { useMediaQuery } from '../../hooks/useMediaQuery';
 import { useNow } from '../../hooks/useNow';
 import { useDebatePanelSubscriptions } from './useDebatePanelSubscriptions';
 import { resolveAgentIdentity } from '../../kernel/services/agent-identity';
@@ -54,7 +53,6 @@ import {
 const DebatePanel: React.FC = () => {
     const [searchParams] = useSearchParams();
     const pendingHypothesisId = useRef<string | null>(null);
-    const isMobile = useMediaQuery('(max-width: 767px)');
     const [session, setSession] = useState<DebateSession | null>(() => {
         try {
             return debateService.getActiveDebateSession();

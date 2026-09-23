@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import type { DebateSessionStrategy } from '../../kernel/contracts/debate-types';
 import {
     ArrowLeftRight,
     HelpCircle,
@@ -71,8 +71,8 @@ const STRATEGIES: StrategyInfo[] = [
 ];
 
 interface StrategySelectorProps {
-    value: string;
-    onChange: (v: string) => void;
+    value: DebateSessionStrategy;
+    onChange: (v: DebateSessionStrategy) => void;
     t: (key: string) => string;
 }
 
@@ -89,7 +89,7 @@ const StrategySelector: React.FC<StrategySelectorProps> = ({ value, onChange }) 
     return (
         <select
             value={value}
-            onChange={e => onChange(e.target.value)}
+            onChange={e => onChange(e.target.value as DebateSessionStrategy)}
             style={{ width: '100%', padding: '10px 12px', borderRadius: 10, border: '1px solid rgba(100,116,139,0.25)', background: 'rgba(15,23,42,0.6)', color: 'var(--slate-100)', fontSize: '0.9rem', outline: 'none' }}
         >
             {STRATEGIES.map(s => (

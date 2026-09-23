@@ -1,4 +1,4 @@
-import { MessageSquare, Clock, Swords, Brain, ThumbsUp, Eye } from 'lucide-react';
+import { MessageSquare, Clock, Eye } from 'lucide-react';
 import { debateTabBar, debateHistoryCountBadge } from '../../styles/common';
 import { Button } from '../Common';
 
@@ -14,7 +14,6 @@ export const TabBarSection: React.FC<Props> = ({
     viewTab,
     setViewTab,
     historyLength,
-    sessionStatus,
     refreshHistory,
 }) => {
     const tabStyle = (tab: string, color: string): React.CSSProperties => ({

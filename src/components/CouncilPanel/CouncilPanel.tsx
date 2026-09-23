@@ -48,7 +48,7 @@ export const CouncilPanel: React.FC = () => {
     const create = async () => {
         if (!topic.trim()) return;
         await run(async () => {
-            const s = await councilService.createSession({ topic: topic.trim(), config: { doubleBlind: true, factGathering: true } });
+            const s = await councilService.createSession({ topic: topic.trim(), config: { topic: topic.trim(), doubleBlind: true, factGathering: true } });
             select(s.id);
             setTopic('');
         });
