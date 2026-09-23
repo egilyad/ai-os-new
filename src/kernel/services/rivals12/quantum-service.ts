@@ -5,7 +5,7 @@ import { rootLogger } from '../logger-service';
 const LOGGER = rootLogger.child('Quantum');
 export class QuantumDeepService implements IQuantumDeepService {
     constructor(private dal: DataAccessLayer) {}
-    async init(){ LOGGER.info('init',{}); } async destroy(){}
+    async init(){ LOGGER.info('Quantum', 'init',{}); } async destroy(){}
     async defineQubo(vars: string[], couplings: Array<[string,string,number]>){
         const id = genId('qubo');
         await this.dal.kv.set(`qubo/${id}`, { vars: vars.map(v=>v.slice(0,40)).slice(0,12), couplings: couplings.slice(0,30), id });

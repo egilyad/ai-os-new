@@ -3,7 +3,7 @@ import { rootLogger } from '../logger-service';
 const LOGGER = rootLogger.child('Swarm');
 function hash(s:string){ let h=2166136261; for(let i=0;i<s.length;i++){ h^=s.charCodeAt(i); h=Math.imul(h,16777619)>>>0; } return h; }
 export class SwarmService implements ISwarmService {
-    async init(){ LOGGER.info('init',{}); } async destroy(){}
+    async init(){ LOGGER.info('Swarm', 'init',{}); } async destroy(){}
     async aco(nodes: string[], edges: Array<[string,string,number]>){
         if (nodes.length===0) return [];
         const pheromones = new Map<string,number>();
@@ -40,7 +40,7 @@ export class SwarmService implements ISwarmService {
                 const score = p.pos.reduce((s,v)=>s+(v-shift)*(v-shift),0);
                 if (score < p.pscore){ p.pscore=score; p.pbest=[...p.pos]; }
                 if (score < bestScore){ bestScore=score; best=[...p.pos]; }
-                for (let i=0;i<d;i++){ p.vel[i] = 0.5*(p.vel[i]??0) + 0.3*(p.pbest[i]??0 - p.pos[i]??0) + 0.2*(best[i]??0 - p.pos[i]??0); p.pos[i]=(p.pos[i]??0)+ (p.vel[i]??0)*0.5; }
+                for (let i=0;i<d;i++){ const pv = p.pos[i] ?? 0; const bv = best[i] ?? 0; const pbv = p.pbest[i] ?? 0; const vv = p.vel[i] ?? 0; p.vel[i] = 0.5*vv + 0.3*(pbv - pv) + 0.2*(bv - pv); p.pos[i]= pv + (p.vel[i] ?? 0)*0.5; }
             }
         }
         return { best: best.map(v=>Math.round(v*100)/100), score: Math.round(bestScore*100)/100 };
