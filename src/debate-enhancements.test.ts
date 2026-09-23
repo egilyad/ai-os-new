@@ -5,6 +5,7 @@
  * - DebateQualityBenchmarkService (#4)
  */
 import { describe, it, expect, beforeEach, vi } from 'vitest';
+import type { IEventBus } from './kernel/types/interfaces';
 import { CrossDebateMemoryService } from './kernel/services/debate-runtime/cross-debate-memory';
 import { DebateBreakpointService } from './kernel/services/debate-runtime/debate-breakpoint-service';
 import { DebateQualityBenchmarkService } from './kernel/services/debate-runtime/debate-quality-benchmark';
@@ -20,7 +21,7 @@ function createStubEventBus() {
         subscribeAll: vi.fn(() => () => {}),
         getSubscriptionStats: vi.fn(() => ({ total: 0, active: 0 })),
         _listeners: listeners,
-    };
+    } as unknown as IEventBus;
 }
 
 function makeVerdict(overrides: Record<string, unknown> = {}) {

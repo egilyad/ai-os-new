@@ -23,7 +23,7 @@ describe('Phase35 e2e chain (H)', () => {
 
         const session = get<ISessionStateService>('sessionStateService');
         await session.setState('session', 's1', 'k', { v: 1 });
-        expect(await session.getState('session', 's1', 'k')).toBeDefined();
+        expect((await session.getState('session', 's1')).k).toBeDefined();
 
         const dataset = get<IDatasetService>('datasetService');
         expect(Array.isArray(await dataset.listDatasets())).toBe(true);

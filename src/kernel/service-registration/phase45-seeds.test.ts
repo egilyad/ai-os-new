@@ -30,8 +30,8 @@ describe('Phase45 warehouse seeds (S)', () => {
             const tpl = getCrewTemplate(id);
             expect(tpl).toBeDefined();
             const built = tpl!.build();
-            expect(built.roles.length).toBeGreaterThan(0);
-            expect(built.tasks.length).toBeGreaterThan(0);
+            expect((built.roles ?? []).length).toBeGreaterThan(0);
+            expect((built.tasks ?? []).length).toBeGreaterThan(0);
         }
     });
 

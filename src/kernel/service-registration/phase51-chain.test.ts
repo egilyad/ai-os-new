@@ -44,7 +44,7 @@ describe('Phase51 e2e chain (Y)', () => {
         expect(await tabby.complete('function f(){')).toContain('Tabby');
 
         const pilot = get<IGptPilotService>('gptPilotService');
-        const projectId = await pilot.start('blog');
+        const projectId = await pilot.launch('blog');
         expect(await pilot.status(projectId)).toContain('GptPilot');
 
         const voidSvc = get<IVoidService>('voidService');

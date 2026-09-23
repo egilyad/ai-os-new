@@ -30,6 +30,7 @@ export interface IRuslanService extends ILifecycle {
 
 export interface IHeisenbergService extends ILifecycle {
     board(): Promise<Array<{ id: string; title: string; status: string }>>;
+    seedBoard(): Promise<Array<{ id: string; title: string; status: string }>>;
     move(cardId: string, status: 'todo'|'doing'|'done'): Promise<void>;
 }
 
