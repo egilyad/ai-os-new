@@ -9,7 +9,7 @@ export class HeliconeService implements IHeliconeService {
         private dal: DataAccessLayer,
         private events?: IEventBus,
     ) {}
-    async init(){ L.info('init',{}); } async destroy(){}
+    async init(){ L.info('Infra', 'init',{}); } async destroy(){}
     async log(request: string){ await this.dal.kv.set(`helicone/${Date.now()}`, request.slice(0,500)); try{ this.events?.emit(EVENTS.HELICONE_LOG, { request: request.slice(0,200) }); }catch{} }
     async hits(){ const rows=await this.dal.kv.list('helicone/'); return rows.length; }
 }

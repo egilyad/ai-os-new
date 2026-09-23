@@ -28,7 +28,7 @@ export class ReactService implements IReactService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('ReAct', 'init', {});
     }
 
     async destroy(): Promise<void> {

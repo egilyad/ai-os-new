@@ -33,7 +33,7 @@ export class SweService implements ISweService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('SWE', 'init', {});
     }
 
     async destroy(): Promise<void> {

@@ -15,7 +15,7 @@ export class InterpreterService implements IInterpreterService {
         private dal?: DataAccessLayer,
         private codeExec?: ICodeExecService,
     ) {}
-    async init(): Promise<void> { L1.info('init', {}); }
+    async init(): Promise<void> { L1.info('Interpreter', 'init', {}); }
     async destroy(): Promise<void> {}
 
     async exec(code: string, lang = 'python'): Promise<string> {

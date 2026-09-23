@@ -11,7 +11,7 @@ export class CodexService implements ICodexService {
         private llm?: ILLMClientService,
         private events?: IEventBus,
     ) {}
-    async init(){ L1.info('init',{}); } async destroy(){}
+    async init(){ L1.info('Codex', 'init',{}); } async destroy(){}
     async prompt(prompt: string){
         let diff=`--- a/file\n+++ b/file\n+${prompt.slice(0,40)}`;
         if (this.llm) { try { const r=await this.llm.chat([{role:'system',content:'Generate unified diff, 3 lines.'},{role:'user',content:prompt.slice(0,1000)}],{temperature:0.2,maxTokens:300}); if(!r.error) diff=r.content; } catch {} }
@@ -22,10 +22,12 @@ export class CodexService implements ICodexService {
 }
 export class GeminiCliService implements IGeminiCliService {
     constructor(
-        private dal: DataAccessLayer,
+        _dal: DataAccessLayer,
         private llm?: ILLMClientService,
         private events?: IEventBus,
-    ) {}
+    ) {
+        void _dal;
+    }
     async init(){} async destroy(){}
     async chat(message: string){
         let out: string;
