@@ -2,7 +2,6 @@
  * ApprovalService — permission gates, execution limits, sandbox boundaries (roadmapp.md §P10).
  */
 import type {
-    Capability,
     ApprovalGate,
     ExecutionLimit,
     SandboxBoundary,

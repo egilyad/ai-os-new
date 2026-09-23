@@ -90,8 +90,8 @@ export class AgentProjectRuntime implements IAgentProjectRuntime {
             // Update project task status
             await this.projectService.updateTaskStatus(taskId, 'running');
 
-            // Build system prompt with project context
-            const _project = await this.projectService.get(projectId);
+            // Build system prompt with project context (get validates existence)
+            void (await this.projectService.get(projectId));
             const systemPrompt = this.buildSystemPrompt(projectId, agentId, context?.systemPrompt);
 
             // Build task prompt with workspace context
@@ -239,7 +239,7 @@ export class AgentProjectRuntime implements IAgentProjectRuntime {
 
     // ── Helpers ──
 
-    private buildSystemPrompt(projectId: ProjectId, agentId: string, base?: string): string {
+    private buildSystemPrompt(projectId: ProjectId, _agentId: string, base?: string): string {
         const toolList = FILE_TOOLS.map((t) => `- ${t.name}: ${t.description}`).join('\n');
         return [
             base ?? 'You are a capable coding assistant.',

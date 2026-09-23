@@ -77,8 +77,7 @@ export class AutonomyRunner implements IAutonomyRunner {
                 const prompt = this.buildPrompt(task, goal);
 
                 // Run through the real agent runtime
-                const result = await this.runtime.execute(goal.projectId, prompt, {
-                    agentId: 'autonomy-agent',
+                const result = await this.runtime.runPrompt(goal.projectId, 'autonomy-agent', prompt, {
                     maxRounds: 3,
                 });
 
@@ -154,10 +153,13 @@ export class AutonomyRunner implements IAutonomyRunner {
         const fileBlockRegex = /(?:FILE|file|File):\s*([^\n`]+)\n```[\s\S]*?```/g;
         let match;
         while ((match = fileBlockRegex.exec(output)) !== null) {
-            const path = match[1].trim();
+            const rawPath = match[1];
+            if (!rawPath) continue;
+            const path = rawPath.trim();
             const contentMatch = match[0].match(/```\w*\n([\s\S]*?)```/);
-            if (contentMatch && path.startsWith('/')) {
-                await this.workspace.writeFile(projectId, path, contentMatch[1]);
+            const content = contentMatch?.[1];
+            if (content !== undefined && path.startsWith('/')) {
+                await this.workspace.writeFile(projectId, path, content);
                 filesWritten++;
             }
         }
@@ -165,8 +167,11 @@ export class AutonomyRunner implements IAutonomyRunner {
         // Pattern 2: [file: /path] content (until next [file: or end)
         const inlineFileRegex = /\[file:\s*([^\]]+)\]\s*([\s\S]*?)(?=\[file:|$)/g;
         while ((match = inlineFileRegex.exec(output)) !== null) {
-            const path = match[1].trim();
-            const content = match[2].trim();
+            const rawPath = match[1];
+            const rawContent = match[2];
+            if (!rawPath || rawContent === undefined) continue;
+            const path = rawPath.trim();
+            const content = rawContent.trim();
             if (path.startsWith('/') && content.length > 0) {
                 await this.workspace.writeFile(projectId, path, content);
                 filesWritten++;

@@ -44,13 +44,10 @@ export class AutonomyOrchestrator implements IAutonomyOrchestrator {
     private plans = new Map<string, AutonomyPlan>();
     private tasks = new Map<string, DecomposedTask>();
     private runs = new Map<string, AutonomyRun>();
-    private projectManager: IProjectManagerService;
-    private workspace: IProjectWorkspaceService;
-
-    constructor(projectManager: IProjectManagerService, workspace: IProjectWorkspaceService) {
-        this.projectManager = projectManager;
-        this.workspace = workspace;
-    }
+    constructor(
+        private _projectManager: IProjectManagerService,
+        private _workspace: IProjectWorkspaceService,
+    ) {}
 
     createGoal(projectId: string, description: string, criteria: string[] = [], constraints: string[] = []): AutonomyGoal {
         const goal: AutonomyGoal = {
