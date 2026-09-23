@@ -13,7 +13,7 @@ export class StormService implements IStormService {
         private knowledge?: IKnowledgeService,
         private events?: IEventBus,
     ) {}
-    async init(){ LOGGER.info('init',{}); } async destroy(){}
+    async init(){ LOGGER.info('STORM', 'init',{}); } async destroy(){}
     async research(topic: string){
         let perspectives=['technical','economic','ethical'];
         if (this.llm) {

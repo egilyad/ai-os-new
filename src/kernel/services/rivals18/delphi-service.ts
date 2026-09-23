@@ -2,7 +2,7 @@ import type { IDelphiService } from '../../contracts/rivals18';
 import { rootLogger } from '../logger-service';
 const LOGGER = rootLogger.child('Delphi');
 export class DelphiService implements IDelphiService {
-    async init(){ LOGGER.info('init',{}); } async destroy(){}
+    async init(){ LOGGER.info('Delphi', 'init',{}); } async destroy(){}
     async round(estimates: Record<string,number>){
         const vals=Object.values(estimates).sort((a,b)=>a-b);
         if(vals.length===0) return { median: 0, iqr: 0, consensus: true };

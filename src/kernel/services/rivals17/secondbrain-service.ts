@@ -10,7 +10,7 @@ export class SecondBrainService implements ISecondBrainService {
         private dal: DataAccessLayer,
         private events?: IEventBus,
     ) {}
-    async init(){ LOGGER.info('init',{}); for(const r of ROLES) await this.dal.kv.set(`secondbrain-role/${r}`, { role: r }); } async destroy(){}
+    async init(){ LOGGER.info('SecondBrain', 'init',{}); for(const r of ROLES) await this.dal.kv.set(`secondbrain-role/${r}`, { role: r }); } async destroy(){}
     async run(task: string){
         // V-model: worker ≠ verifier
         const worker=ROLES[Math.floor(Math.random()*5) as number] as string;

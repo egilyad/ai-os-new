@@ -9,7 +9,7 @@ export class ParliamentaryService implements IParliamentaryService {
         private dal: DataAccessLayer,
         private events?: IEventBus,
     ) {}
-    async init(){ LOGGER.info('init',{}); } async destroy(){}
+    async init(){ LOGGER.info('Parliament', 'init',{}); } async destroy(){}
     async run(topic: string){
         const teams=['OG','OO','CG','CO'];
         const ranking=[...teams].sort(()=>Math.random()-0.5);

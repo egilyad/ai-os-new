@@ -12,7 +12,7 @@ export class RckService implements IRckService {
         private dal: DataAccessLayer,
         private events?: IEventBus,
     ) {}
-    async init(){ LOGGER.info('init',{}); } async destroy(){}
+    async init(){ LOGGER.info('RCK', 'init',{}); } async destroy(){}
     async bind(a: string, b: string){ const v=bindVec(hv(a),hv(b)); await this.dal.kv.set(`rck/bind/${a}~${b}`, v.slice(0,8)); try{ this.events?.emit(EVENTS.RCK_BIND, { id: `${a}~${b}` }); }catch{} return `bind(${a}·${b})`; }
     async bundle(vectors: string[]){ const vecs=vectors.map(s=>hv(s)); const b=bundleVecs(vecs); await this.dal.kv.set(`rck/bundle/${Date.now()}`, b.slice(0,8)); return `bundle(${vectors.join('+')})`; }
     async infer(chain: string[]){

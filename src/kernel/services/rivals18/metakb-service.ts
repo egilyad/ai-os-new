@@ -9,7 +9,7 @@ export class MetaKbService implements IMetaKbService {
         private dal: DataAccessLayer,
         private events?: IEventBus,
     ) {}
-    async init(){ LOGGER.info('init',{}); } async destroy(){}
+    async init(){ LOGGER.info('MetaKb', 'init',{}); } async destroy(){}
     async put(entry: string, text: string){ await this.dal.kv.set(`metakb/${entry.slice(0,80)}`, text.slice(0,2000)); }
       async query(q: string){
           const rows=await this.dal.kv.list('metakb/');

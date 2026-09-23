@@ -9,7 +9,7 @@ export class FishbowlService implements IFishbowlService {
         private dal: DataAccessLayer,
         private events?: IEventBus,
     ) {}
-    async init(){ LOGGER.info('init',{}); } async destroy(){}
+    async init(){ LOGGER.info('Fishbowl', 'init',{}); } async destroy(){}
     async setBowl(members: string[]){ await this.dal.kv.set('fishbowl/bowl', members.slice(0,4).map(m=>m.slice(0,40))); }
       async rotate(newMember: string){
           const bowl=(await this.dal.kv.get<string[]>('fishbowl/bowl'))??[];

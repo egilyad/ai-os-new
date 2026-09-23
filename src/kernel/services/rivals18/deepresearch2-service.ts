@@ -11,7 +11,7 @@ export class DeepResearch2Service implements IDeepResearch2Service {
         private llm?: ILLMClientService,
         private events?: IEventBus,
     ) {}
-    async init(){ LOGGER.info('init',{}); } async destroy(){}
+    async init(){ LOGGER.info('Deep2', 'init',{}); } async destroy(){}
     async run(topic: string){
         const stages=['Retriever','Enricher','Analyzer','Insight','Report'];
         let context=topic;

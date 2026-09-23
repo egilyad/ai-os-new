@@ -9,7 +9,7 @@ export class MetanService implements IMetanService {
         private dal: DataAccessLayer,
         private events?: IEventBus,
     ) {}
-    async init(){ LOGGER.info('init',{}); } async destroy(){}
+    async init(){ LOGGER.info('Metan', 'init',{}); } async destroy(){}
     async buildHierarchy(root: string, depth=2){
         const d=Math.max(1,Math.min(4,depth));
         let agents=1;
