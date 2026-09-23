@@ -30,7 +30,7 @@ export class SoarService implements ISoarService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('SOAR', 'init', {});
     }
 
     async destroy(): Promise<void> {

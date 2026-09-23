@@ -49,7 +49,7 @@ export class SelfConsistencyService implements ISelfConsistencyService {
                         const m = res.content.match(/ANSWER:\s*([\s\S]+)/i);
                         return (m ? m[1]! : res.content).trim().slice(0, 1000);
                     } catch (e) {
-                        LOGGER.warn('selfcon path failed', { error: e instanceof Error ? e.message : String(e) });
+                        LOGGER.warn('SelfCon', 'selfcon path failed', { error: e instanceof Error ? e.message : String(e) });
                         return '';
                     }
                 }),

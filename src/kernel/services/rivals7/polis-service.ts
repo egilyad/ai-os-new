@@ -111,14 +111,19 @@ export class PolisService implements IPolisService {
             const per = votes[id] ?? {};
             const vals = Object.values(per).map((v) => (v === 'agree' ? 1 : v === 'disagree' ? -1 : 0));
             if (vals.length < 2) continue;
-            const mean = vals.reduce((a, b) => a + b, 0) / vals.length;
+            let meanSum = 0;
+            for (const x of vals) meanSum += x;
+            const mean = meanSum / vals.length;
             // Cross-cluster variance: per-group means must agree in sign.
             const groupMeans = groups.map((g) => {
                 const gv = g.members.map((m) => {
                     const v = per[m];
                     return v === 'agree' ? 1 : v === 'disagree' ? -1 : 0;
                 });
-                return gv.length > 0 ? gv.reduce((a, b) => a + b, 0) / gv.length : 0;
+                if (gv.length === 0) return 0;
+                let gsum = 0;
+                for (const x of gv) gsum += x;
+                return gsum / gv.length;
             });
             const sameSign = groupMeans.every((m) => m >= 0) || groupMeans.every((m) => m <= 0);
             if (mean >= 0.4 && sameSign) {

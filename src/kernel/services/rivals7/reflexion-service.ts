@@ -81,7 +81,7 @@ export class ReflexionService implements IReflexionService {
                 });
                 if (res.output) return res.output;
             } catch (e) {
-                LOGGER.warn('reflexion attempt failed', { error: e instanceof Error ? e.message : String(e) });
+                LOGGER.warn('Reflexion', 'reflexion attempt failed', { error: e instanceof Error ? e.message : String(e) });
             }
         }
         if (this.llm) {
@@ -95,7 +95,7 @@ export class ReflexionService implements IReflexionService {
                 );
                 if (!res.error) return res.content;
             } catch (e) {
-                LOGGER.warn('reflexion llm failed', { error: e instanceof Error ? e.message : String(e) });
+                LOGGER.warn('Reflexion', 'reflexion llm failed', { error: e instanceof Error ? e.message : String(e) });
             }
         }
         return `[echo] ${task}`;
@@ -116,7 +116,7 @@ export class ReflexionService implements IReflexionService {
                     return { ok, note: res.content.trim().slice(0, 300) };
                 }
             } catch (e) {
-                LOGGER.warn('reflexion critique failed', { error: e instanceof Error ? e.message : String(e) });
+                LOGGER.warn('Reflexion', 'reflexion critique failed', { error: e instanceof Error ? e.message : String(e) });
             }
         }
         return { ok: attempt.length > 0 && !attempt.startsWith('[echo]'), note: 'offline heuristic' };
@@ -134,7 +134,7 @@ export class ReflexionService implements IReflexionService {
                 );
                 if (!res.error) return res.content.trim().slice(0, 500);
             } catch (e) {
-                LOGGER.warn('reflexion reflect failed', { error: e instanceof Error ? e.message : String(e) });
+                LOGGER.warn('Reflexion', 'reflexion reflect failed', { error: e instanceof Error ? e.message : String(e) });
             }
         }
         return `Attempt failed (${note}); try a different approach next trial.`;
