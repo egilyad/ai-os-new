@@ -38,7 +38,7 @@ const RolesPanel: React.FC = () => {
     const [filterSource, setFilterSource] = useState<'all' | 'builtin' | 'custom'>('all');
     const [editingRole, setEditingRole] = useState<Role | null>(null);
     const [stats, setStats] = useState<Record<string, RoleUsageStats>>({});
-    const [retireCandidates, setRetireCandidates] = useState<
+    const [, setRetireCandidates] = useState<
         Array<{ id: string; name: string; daysInactive: number }>
     >([]);
     const [error, setError] = useState<string | null>(null);

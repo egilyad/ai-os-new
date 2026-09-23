@@ -2,7 +2,7 @@
  * TaskDetailModal — AGEMS 2.4/2.5/2.6/2.7/2.8
  * Comments, Labels, Locking, Work products, Triggers
  */
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { X, Lock, Unlock, Clock, Tag, MessageSquare, Plus, Paperclip, Zap } from 'lucide-react';
 import { getDexieDb } from '../../kernel/instances';
 import type { AgemsTask, TaskComment, Label, TaskLabel, TaskWorkProduct, TaskTrigger } from '../../kernel/types/agems-task';
@@ -33,7 +33,7 @@ export default function TaskDetailModal({ task, onClose, onUpdate }: TaskDetailM
         const db = getDexieDb();
         void db.taskComments.where('taskId').equals(task.id).toArray().then(setComments);
         void db.labels.toArray().then(setAllLabels);
-        void db.taskLabels.where('taskId').equals(task.id).toArray().then(setTaskLabelIds);
+        void db.taskLabels.where('taskId').equals(task.id).toArray().then((rows) => setTaskLabelIds(rows.map((r) => (r as unknown as TaskLabel).labelId)));
         void taskWorkProductService.list(task.id).then(setWorkProducts);
         void taskTriggerService.list(task.id).then(setTriggers);
     }, [task.id]);

@@ -78,6 +78,10 @@ export const ShadowOpponentPanel: React.FC = () => {
     const handleStrengthen = async () => {
         setError(null);
         setResult(null);
+        if (!persona) {
+            setError('No agents available.');
+            return;
+        }
         if (draft.trim().length < 50) {
             setError('Draft too short — need ≥50 chars (service returns null).');
             return;

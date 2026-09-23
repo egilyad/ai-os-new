@@ -49,19 +49,6 @@ const LOG_ROW: React.CSSProperties = {
     fontSize: '0.78rem',
 };
 
-const AVATAR: React.CSSProperties = {
-    width: 28,
-    height: 28,
-    borderRadius: '50%',
-    flex: '0 0 auto',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    background: 'rgba(34,211,238,0.25)',
-    fontWeight: 600,
-    fontSize: '0.8rem',
-};
-
 const FIELD: React.CSSProperties = {
     display: 'flex',
     flexDirection: 'column',
@@ -171,11 +158,6 @@ const RoomPanel: React.FC = () => {
                 setError(t('room.error.generic'));
             }
         }
-    };
-
-    const displayName = (id?: string): string => {
-        if (!id) return t('room.unknownAgent');
-        return idToName[id] ?? id;
     };
 
     return (
@@ -399,7 +381,16 @@ const RoomPanel: React.FC = () => {
             {activeSessionRef && activeId && (
                 <div style={{ opacity: 0.6, fontSize: '0.72rem', marginBottom: 6 }}>
                     {t('room.feed.scoped', {
-                        name: <AgentDisplay agentId={invocations[activeId]?.agents?.[0]?.id ?? (invocations[activeId]?.target && 'agentId' in invocations[activeId]!.target! ? invocations[activeId]!.target!.agentId : '')} variant="name" />
+                        name: (() => {
+                            const inv = activeId ? invocations[activeId] : undefined;
+                            const tgt = inv?.target;
+                            const aid =
+                                inv?.agents?.[0]?.id ??
+                                (tgt && typeof tgt === 'object' && 'agentId' in tgt
+                                    ? String((tgt as { agentId: unknown }).agentId ?? '')
+                                    : '');
+                            return aid ? (idToName[aid] ?? aid) : t('room.unknownAgent');
+                        })(),
                     })}
                 </div>
             )}
