@@ -35,6 +35,9 @@ class RecordingBus implements IEventBus {
     onSafe(): () => void {
         return () => {};
     }
+    getSubscriptionStats(): { totalCallbacks: number; perEvent: Record<string, number> } {
+        return { totalCallbacks: 0, perEvent: {} };
+    }
     subscribeAll(): () => void {
         return () => {};
     }

@@ -60,11 +60,10 @@ export class DebateBreakpointService {
     private breakpoints = new Map<string, DebateBreakpoint>();
     private hits: BreakpointHit[] = [];
     private feedback: HumanFeedback[] = [];
-    private deps: BreakpointServiceDeps;
     private _idCounter = 0;
 
-    constructor(deps: BreakpointServiceDeps) {
-        this.deps = deps;
+    constructor(_deps: BreakpointServiceDeps) {
+        void _deps;
     }
 
     setBreakpoint(

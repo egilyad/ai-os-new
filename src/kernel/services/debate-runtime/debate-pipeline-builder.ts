@@ -333,8 +333,8 @@ export function buildPipeline(engine: PipelineEngine, isResume: boolean): Debate
                                 const ctx = engine.deps.policyEngine.buildContext(
                                     session.phase,
                                     event.round,
-                                    session.totalTokens,
-                                    session.totalCost,
+                                    session.totalTokens ?? 0,
+                                    session.totalCost ?? 0,
                                     interimConfidence,
                                     budgetSnap?.pressure ?? 'low',
                                     agentErrorRates,
