@@ -153,7 +153,9 @@ export class PythonRunnerService implements IPythonRunnerService {
             const printRegex = /print\s*\(([^)]*)\)/g;
             let match;
             while ((match = printRegex.exec(content)) !== null) {
-                stdout += match[1].replace(/['"]/g, '') + '\n';
+                const expr = match[1];
+                if (expr === undefined) continue;
+                stdout += expr.replace(/['"]/g, '') + '\n';
             }
 
             if (!stdout) {

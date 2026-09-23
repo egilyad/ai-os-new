@@ -33,7 +33,7 @@ function heuristicScore(query: string, chunk: string): number {
 
 export class StubRerankerService implements IRerankerPort {
     async init(): Promise<void> {
-        LOGGER.info('init (stub — NOT production cross-encoder)', {});
+        LOGGER.info('Reranker', 'init (stub — NOT production cross-encoder)', {});
     }
     async destroy(): Promise<void> {}
 
@@ -57,11 +57,11 @@ export class StubRerankerService implements IRerankerPort {
 export class ProviderRerankerService implements IRerankerPort {
     private stub = new StubRerankerService();
     async init(): Promise<void> {
-        LOGGER.warn('ProviderReranker — PROVIDER-PENDING (BLOCKED-RUNTIME): no model wired, fallback to stub', {});
+        LOGGER.warn('Reranker', 'ProviderReranker — PROVIDER-PENDING (BLOCKED-RUNTIME): no model wired, fallback to stub', {});
     }
     async destroy(): Promise<void> {}
     async rerank(query: string, hits: HybridHit[]): Promise<HybridHit[]> {
-        LOGGER.warn('ProviderReranker fallback → StubReranker (BLOCKED-RUNTIME)', {});
+        LOGGER.warn('Reranker', 'ProviderReranker fallback → StubReranker (BLOCKED-RUNTIME)', {});
         return this.stub.rerank(query, hits);
     }
 }

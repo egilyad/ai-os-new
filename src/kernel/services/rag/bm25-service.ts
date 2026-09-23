@@ -31,7 +31,7 @@ export class Bm25Service implements IBM25Port {
     private readonly b = 0.75;
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('Bm25', 'init', {});
     }
 
     async destroy(): Promise<void> {

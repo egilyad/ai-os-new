@@ -273,8 +273,10 @@ export class ProjectWorkspaceService implements IProjectWorkspaceService {
 
             const lines = record.content.split('\n');
             for (let i = 0; i < lines.length; i++) {
-                if (regex.test(lines[i])) {
-                    results.push({ path: filePath, line: i + 1, content: lines[i] });
+                const line = lines[i];
+                if (line === undefined) continue;
+                if (regex.test(line)) {
+                    results.push({ path: filePath, line: i + 1, content: line });
                     if (results.length >= 100) return results;
                 }
             }
