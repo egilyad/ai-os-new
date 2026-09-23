@@ -13,7 +13,7 @@ export class CognitaeService implements ICognitaeService {
         private events?: IEventBus,
     ) {}
     async init(){
-        LOGGER.info('init',{}); 
+        LOGGER.info('Cognitae', 'init',{}); 
         for (const r of ROLES) await this.dal.kv.set(`cognitae-role/${r}`, { role: r, yaml: `role: ${r}\narch: strict` });
     }
     async destroy(){}

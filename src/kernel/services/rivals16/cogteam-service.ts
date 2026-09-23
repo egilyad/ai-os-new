@@ -11,7 +11,7 @@ export class CogTeamService implements ICogTeamService {
         private llm?: ILLMClientService,
         private events?: IEventBus,
     ) {}
-    async init(){ LOGGER.info('init',{}); } async destroy(){}
+    async init(){ LOGGER.info('CogTeam', 'init',{}); } async destroy(){}
     async run(task: string){
         const maestro=`Maestro plans: ${task.slice(0,80)}`;
         const mem=`Memory recalls: prior context for ${task.slice(0,40)}`;

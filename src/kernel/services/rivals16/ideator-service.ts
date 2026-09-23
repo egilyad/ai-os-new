@@ -8,10 +8,12 @@ const LOGGER = rootLogger.child('Ideator');
 export class IdeatorService implements IIdeatorService {
     constructor(
         private dal: DataAccessLayer,
-        private llm?: ILLMClientService,
+        _llm?: ILLMClientService,
         private events?: IEventBus,
-    ) {}
-    async init(){ LOGGER.info('init',{}); } async destroy(){}
+    ) {
+        void _llm;
+    }
+    async init(){ LOGGER.info('Ideator', 'init',{}); } async destroy(){}
     async testDialogues(topic: string){
         const designs=['debate','brainstorm','critique'];
         const scores: Record<string,number>={};

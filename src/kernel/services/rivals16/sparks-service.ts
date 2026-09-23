@@ -11,7 +11,7 @@ export class SparksService implements ISparksService {
         private llm?: ILLMClientService,
         private events?: IEventBus,
     ) {}
-    async init(){ LOGGER.info('init',{}); } async destroy(){}
+    async init(){ LOGGER.info('Sparks', 'init',{}); } async destroy(){}
     async cycle(hypothesis: string){
         let experiment=`Experiment for "${hypothesis.slice(0,80)}": test in sandbox`;
         let principle=`Principle from "${hypothesis.slice(0,40)}": emergent pattern`;

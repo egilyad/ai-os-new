@@ -9,7 +9,7 @@ export class SciAgentsService implements ISciAgentsService {
         private dal: DataAccessLayer,
         private events?: IEventBus,
     ) {}
-    async init(){ LOGGER.info('init',{}); } async destroy(){}
+    async init(){ LOGGER.info('SciAgents', 'init',{}); } async destroy(){}
     async addOntology(term: string, rel: string, to: string){ await this.dal.kv.set(`sci-onto/${term}/${rel}/${to}`, { at: Date.now() }); }
     async hypothesize(topic: string){
         const rows=await this.dal.kv.list('sci-onto/');

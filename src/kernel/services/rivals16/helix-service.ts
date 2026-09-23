@@ -9,7 +9,7 @@ export class HelixService implements IHelixService {
         private dal: DataAccessLayer,
         private events?: IEventBus,
     ) {}
-    async init(){ LOGGER.info('init',{}); } async destroy(){}
+    async init(){ LOGGER.info('Helix', 'init',{}); } async destroy(){}
     async addOnto(term: string, rel: string){ await this.dal.kv.set(`helix-onto/${term}/${rel}`, { at: Date.now() }); }
     async gaps(){
         const rows=await this.dal.kv.list('helix-onto/');
