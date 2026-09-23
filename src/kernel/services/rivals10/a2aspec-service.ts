@@ -41,7 +41,7 @@ export class A2aSpecService implements IA2aSpecService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('A2ASpec', 'init', {});
     }
 
     async destroy(): Promise<void> {

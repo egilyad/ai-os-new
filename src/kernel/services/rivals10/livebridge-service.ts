@@ -29,7 +29,7 @@ export class LiveBridgeService implements ILiveBridgeService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('LiveBridge', 'init', {});
     }
 
     async destroy(): Promise<void> {

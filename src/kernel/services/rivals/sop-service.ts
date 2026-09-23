@@ -31,7 +31,7 @@ export class SopService implements ISopService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('SOP', 'init', {});
         // Built-in SOP: software crew (MetaGPT's signature pipeline).
         if (this.defs.size === 0) {
             await this.defineSop('software-crew', [
@@ -120,7 +120,7 @@ export class SopService implements ISopService {
                 );
                 if (!res.error) return res.content;
             } catch (e) {
-                LOGGER.warn('sop phase llm failed', { error: e instanceof Error ? e.message : String(e) });
+                LOGGER.warn('SOP', 'sop phase llm failed', { error: e instanceof Error ? e.message : String(e) });
             }
         }
         return `[${phase.role}] ${phase.instruction} (echo)`;

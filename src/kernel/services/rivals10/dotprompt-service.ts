@@ -25,7 +25,7 @@ export class DotpromptService implements IDotpromptService {
     constructor(private dal: DataAccessLayer, private promptHub?: { render(name: string, vars?: Record<string,string>): Promise<string> }) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('Dotprompt', 'init', {});
     }
 
     async destroy(): Promise<void> {
