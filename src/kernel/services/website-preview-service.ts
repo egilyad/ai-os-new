@@ -5,9 +5,6 @@
  * that can be rendered in an iframe via srcdoc.
  */
 import type { ProjectWorkspaceService } from './project-workspace-service';
-import { rootLogger } from './logger-service';
-
-const LOGGER = rootLogger.child('WebsitePreviewService');
 
 export interface PreviewResult {
     html: string;

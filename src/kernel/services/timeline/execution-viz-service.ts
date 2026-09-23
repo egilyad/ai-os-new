@@ -69,7 +69,7 @@ export class ExecutionVizService implements IExecutionVizService {
                 LOGGER.warn('ExecutionViz', 'subscribe failed', { evt, error: e instanceof Error ? e.message : String(e) });
             }
         }
-        LOGGER.info('init', { mapped: Object.keys(TIMELINE_MAP).length });
+        LOGGER.info('ExecutionViz', 'init', { mapped: Object.keys(TIMELINE_MAP).length });
     }
 
     async destroy(): Promise<void> {

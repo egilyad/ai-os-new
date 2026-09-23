@@ -61,5 +61,5 @@ export const PHASE_ORDER: AutonomyPhase[] = ['goal', 'planning', 'decomposition'
 export function nextPhase(current: AutonomyPhase): AutonomyPhase | null {
     const idx = PHASE_ORDER.indexOf(current);
     if (idx < 0 || idx >= PHASE_ORDER.length - 1) return null;
-    return PHASE_ORDER[idx + 1];
+    return PHASE_ORDER[idx + 1] ?? null;
 }

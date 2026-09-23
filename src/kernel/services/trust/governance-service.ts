@@ -7,7 +7,8 @@
  */
 import type { IEventBus } from '../../types/interfaces';
 import type { TrustRepository } from '../../dal/trust-repository';
-import type { IAuditService, IGovernanceService } from '../../contracts/trust';
+import type { IGovernanceService } from '../../contracts/trust';
+import type { IAuditService } from '../../contracts/ops';
 import type {
     CapabilityGrant,
     GovAssignment,
@@ -47,7 +48,7 @@ export class GovernanceService implements IGovernanceService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('Governance', 'init', {});
     }
 
     async destroy(): Promise<void> {

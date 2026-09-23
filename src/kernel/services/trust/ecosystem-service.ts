@@ -12,7 +12,8 @@
  */
 import type { IEventBus } from '../../types/interfaces';
 import type { TrustRepository } from '../../dal/trust-repository';
-import type { IAuditService, IEcosystemService } from '../../contracts/trust';
+import type { IEcosystemService } from '../../contracts/trust';
+import type { IAuditService } from '../../contracts/ops';
 import type {
     ExtensionManifest,
     InstallBundle,
@@ -57,7 +58,7 @@ export class EcosystemService implements IEcosystemService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('Ecosystem', 'init', {});
     }
 
     async destroy(): Promise<void> {

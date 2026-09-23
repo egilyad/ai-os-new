@@ -79,7 +79,7 @@ export const TIMELINE_MAP: Record<
     // memory/persona
     'persona:changed': e('memory', (_d) => `Persona changed`, 'info'),
     'memory:updated': e('memory', (d) => `Memory updated ${(Array.isArray(d) ? d.length : '')}`, 'info'),
-    'cog:memory:added': e('memory', (d) => `CogMemory added`, 'info'),
+    'cog:memory:added': e('memory', (_d) => `CogMemory added`, 'info'),
 
     // frontier
     'eval:run:completed': e('ops', (d) => `Eval ${String(d.benchmarkId ?? d.id ?? '')}`, 'info', 'id'),

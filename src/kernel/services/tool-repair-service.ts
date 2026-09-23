@@ -2,7 +2,7 @@
  * Tool Repair — AGEMS Phase 12.4
  * Fixes common LLM mistakes in tool_use before sending back.
  */
-export function repairToolCall(tool: string, input: Record<string, unknown>): Record<string, unknown> {
+export function repairToolCall(_tool: string, input: Record<string, unknown>): Record<string, unknown> {
     const out: Record<string, unknown> = { ...input };
     // Fix missing required fields: coerce undefined → "" for string fields
     for (const [k, v] of Object.entries(out)) {
