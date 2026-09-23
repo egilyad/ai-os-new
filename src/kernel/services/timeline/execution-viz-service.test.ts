@@ -66,7 +66,7 @@ describe('G3 ExecutionVizService (static)', () => {
         const timeline = fakeTimeline();
         const traceSvc = fakeTraceService();
         traceSvc._put({ id: 'run-1', startTime: Date.now(), input: 'hi', status: 'running', steps: [] } as import('../../contracts/observability').ExecutionTrace);
-        timeline.addEvent({ title: 'Graph started run-1', traceId: 'run-1', metadata: { runId: 'run-1', graphId: 'g1' } });
+        timeline.addEvent({ type: 'graph_started', category: 'system', timestamp: Date.now(), title: 'Graph started run-1', traceId: 'run-1', metadata: { runId: 'run-1', graphId: 'g1' } });
 
         const svc = new ExecutionVizService({ events: bus, timeline: timeline as unknown as import('../timeline-service').TimelineService, traceService: traceSvc as unknown as import('../trace-service').TraceService });
         await svc.init();

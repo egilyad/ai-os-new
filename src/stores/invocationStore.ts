@@ -71,10 +71,10 @@ function subscribeInvocationStore(): void {
         useInvocationStore.setState((s) => {
             const existing = s.invocations[id];
             const next: InvocationView = {
-                id,
-                status: 'requested',
                 ...existing,
                 ...patch,
+                id,
+                status: patch.status ?? existing?.status ?? 'requested',
                 updatedAt: Date.now(),
             };
             const order = s.order.includes(id) ? s.order : [...s.order, id];
