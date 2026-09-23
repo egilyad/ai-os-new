@@ -34,7 +34,7 @@ export class SupportService implements ISupportService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('Support', 'init', {});
     }
 
     async destroy(): Promise<void> {

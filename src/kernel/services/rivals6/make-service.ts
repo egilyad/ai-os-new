@@ -46,7 +46,7 @@ export class MakeService implements IMakeService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('Make', 'init', {});
     }
 
     async destroy(): Promise<void> {

@@ -74,7 +74,7 @@ export class N8nService implements IN8nService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('N8n', 'init', {});
     }
 
     async destroy(): Promise<void> {

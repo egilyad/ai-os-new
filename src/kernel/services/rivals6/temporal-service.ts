@@ -71,7 +71,7 @@ export class TemporalService implements ITemporalService {
     }
 
     async signal(runId: string, key: string, value: unknown): Promise<void> {
-        const run = await this.require(runId);
+        await this.require(runId);
         const inbox = (await this.dal.kv.get<Record<string, unknown>>(`durable-inbox/${runId}`)) ?? {};
         inbox[key.slice(0, 80)] = value;
         await this.dal.kv.set(`durable-inbox/${runId}`, inbox);
@@ -141,7 +141,7 @@ export class TemporalService implements ITemporalService {
                 });
             } catch (e) {
                 lastError = e instanceof Error ? e.message : String(e);
-                LOGGER.warn('activity failed, retrying', { step: step.name, attempt: a + 1 });
+                LOGGER.warn('Temporal', 'activity failed, retrying', { step: step.name, attempt: a + 1 });
                 await sleep(Math.min(2000, 200 * (a + 1)));
             }
         }

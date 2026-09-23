@@ -38,7 +38,7 @@ export class VerifyService implements IVerifyService {
     constructor(private dal: DataAccessLayer) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('Verify', 'init', {});
     }
 
     async destroy(): Promise<void> {
