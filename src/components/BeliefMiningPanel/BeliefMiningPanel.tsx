@@ -34,10 +34,8 @@ export const BeliefMiningPanel: React.FC = () => {
     }, [sessionId]);
     const [version, setVersion] = useState(0);
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    void version;
-    const beliefs = useMemo(() => svc.extractBeliefs(args), [svc, args, version]);
-    const conflicts = useMemo(() => svc.mineConflicts(args, 2), [svc, args, version]);
+    const beliefs = useMemo(() => { void version; return svc.extractBeliefs(args); }, [svc, args, version]);
+    const conflicts = useMemo(() => { void version; return svc.mineConflicts(args, 2); }, [svc, args, version]);
 
     const byAgent = useMemo(() => {
         const m = new Map<string, typeof beliefs>();

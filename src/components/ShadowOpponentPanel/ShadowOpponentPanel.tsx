@@ -65,6 +65,7 @@ export const ShadowOpponentPanel: React.FC = () => {
     }, [liveArgs, setDraft]);
     useEffect(() => {
         if (hasLiveDebate) loadDebate();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [sessionId]);
     const [isRunning, setIsRunning] = useState(false);
     const [result, setResult] = useState<ShadowCritique | null>(null);

@@ -5,7 +5,7 @@ import AdversarialSourcePanel from './AdversarialSourcePanel';
 function stubUnrelatedFetch() {
     return vi.stubGlobal(
         'fetch',
-        async (_input: any) =>
+        async (_input: unknown) =>
             new Response(
                 '<html><body>Completely unrelated content about cooking recipes, gardening tips and knitting patterns with no solar mention whatsoever here at all.</body></html>',
                 { status: 200, headers: { 'Content-Type': 'text/html' } },

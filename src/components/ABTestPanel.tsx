@@ -3,6 +3,7 @@
  * A/B test harness — research-grade, not production surface (P1.21).
  */
 import { useState, useEffect, useCallback, useMemo } from 'react';
+// eslint-disable-next-line no-restricted-imports -- ab-test-service is local-only helpers, no kernel instance exists
 import { runABTest, getABTestHistory } from '../kernel/services/ab-test-service';
 import { keyService, rootLogger } from '../kernel/instances';
 const LOGGER = rootLogger.child('ABTestPanel');

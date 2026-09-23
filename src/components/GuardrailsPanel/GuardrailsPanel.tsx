@@ -42,6 +42,7 @@ export default function GuardrailsPanel() {
 
     useEffect(() => {
         void reload();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const needsPattern = kind === 'contains' || kind === 'regex';

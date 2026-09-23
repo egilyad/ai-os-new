@@ -23,7 +23,7 @@ export const PersonaMixerPanel: React.FC = () => {
     const [mix, setMix] = useState<ReturnType<PersonaMixer['getMix']> | null>(null);
     const [history, setHistory] = useState<Array<{ round: number; mix: ReturnType<PersonaMixer['getMix']> }>>([]);
 
-    useEffect(() => { if (hasLiveDebate) loadDebate(); }, [sessionId]);
+    useEffect(() => { if (hasLiveDebate) loadDebate(); }, [sessionId]); // eslint-disable-line react-hooks/exhaustive-deps
 
     const handleMix = () => {
         const others = agents

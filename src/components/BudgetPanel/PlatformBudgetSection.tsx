@@ -34,7 +34,7 @@ export const PlatformBudgetSection: React.FC = () => {
             setIncidents([]);
         }
     };
-    useEffect(() => { void load(); }, []);
+    useEffect(() => { void load(); /* eslint-disable-line react-hooks/exhaustive-deps */ }, []);
 
     const save = async () => {
         await agemsBudgetService.upsertPlatform({

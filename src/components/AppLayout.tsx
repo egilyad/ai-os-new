@@ -47,7 +47,6 @@ export const AppLayout: React.FC = () => {
     const [runtimeStatus, setRuntimeStatus] = useState<'online' | 'degraded' | 'offline'>('online');
     const { isOpen: isPaletteOpen, open: openPalette, close: closePalette } = useCommandPalette();
     const { isDesktop, isMobile } = useResponsive();
-    const [_legacyIsDesktop, _setLegacyIsDesktop] = useState(window.innerWidth >= 768);
     const { theme: storedTheme, setTheme } = useUiPreferences();
     const [currentTheme, setCurrentTheme] = useState(
         () => document.documentElement.getAttribute('data-theme') || storedTheme || 'dark',
@@ -103,20 +102,6 @@ export const AppLayout: React.FC = () => {
         check();
         const unsub = eventBus.on(EVENTS.KEY_STATE_CHANGED, check);
         return () => unsub();
-    }, []);
-
-    // Legacy resize kept as noop — breakpoint now via ResponsiveShell useBreakpoint
-    useEffect(() => {
-        let rafId: number;
-        const onResize = () => {
-            cancelAnimationFrame(rafId);
-            rafId = requestAnimationFrame(() => _setLegacyIsDesktop(window.innerWidth >= 768));
-        };
-        window.addEventListener('resize', onResize);
-        return () => {
-            window.removeEventListener('resize', onResize);
-            cancelAnimationFrame(rafId);
-        };
     }, []);
 
     useEffect(() => {

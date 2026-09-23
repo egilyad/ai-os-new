@@ -19,6 +19,7 @@ export const CalibrationPanel: React.FC = () => {
     }, [liveArgs, setText]);
     useEffect(() => {
         if (hasLiveDebate) loadDebate();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [sessionId]);
     const [agentId, setAgentId] = useState<string>(() => agents[0]?.id ?? '');
     useEffect(() => {

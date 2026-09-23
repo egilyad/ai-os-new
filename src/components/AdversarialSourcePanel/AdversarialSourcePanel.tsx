@@ -13,7 +13,7 @@ const _realFetch: typeof fetch =
     typeof globalThis !== 'undefined' && globalThis.fetch
         ? globalThis.fetch.bind(globalThis)
         : (() => { throw new Error('fetch not available'); }) as typeof fetch;
-let fetchImpl: typeof fetch = (...args: Parameters<typeof fetch>) => _realFetch(...args);
+const fetchImpl: typeof fetch = (...args: Parameters<typeof fetch>) => _realFetch(...args);
 try {
     (globalThis as { fetch?: typeof fetch }).fetch = fetchImpl;
 } catch {
@@ -32,6 +32,7 @@ export const AdversarialSourcePanel: React.FC = () => {
     }, [liveArgs, setText]);
     useEffect(() => {
         if (hasLiveDebate) loadDebate();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [sessionId]);
     const [results, setResults] = useState<SourceVerificationResult[]>([]);
     const [history, setHistory] = useState<HistoryEntry[]>([]);

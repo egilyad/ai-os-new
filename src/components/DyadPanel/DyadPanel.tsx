@@ -40,7 +40,7 @@ export default function DyadPanel() {
         } catch (e) { fail(e); }
     };
 
-    useEffect(() => { void reload(); }, []);
+    useEffect(() => { void reload(); /* eslint-disable-line react-hooks/exhaustive-deps */ }, []);
 
     const pollOnce = async () => {
         try {

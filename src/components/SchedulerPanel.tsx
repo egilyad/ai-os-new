@@ -96,6 +96,7 @@ export const SchedulerPanel: React.FC = () => {
 
     useEffect(() => {
         void load();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         // Live updates via EventBus (additive, existing SchedulerService already emits)
         const unsubs: Array<() => void> = [];
         try {

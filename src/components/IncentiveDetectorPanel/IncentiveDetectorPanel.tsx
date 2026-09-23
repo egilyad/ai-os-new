@@ -27,7 +27,7 @@ export const IncentiveDetectorPanel: React.FC = () => {
     const [text, setText] = useState('');
     const [analysis, setAnalysis] = useState<ReturnType<IncentiveDetector['analyze']> | null>(null);
 
-    useEffect(() => { if (hasLiveDebate) loadDebate(); }, [sessionId]);
+    useEffect(() => { if (hasLiveDebate) loadDebate(); }, [sessionId]); // eslint-disable-line react-hooks/exhaustive-deps
 
     const handleAnalyze = () => {
         const name = agents.find(a => a.id === agentId)?.name ?? agentId;
