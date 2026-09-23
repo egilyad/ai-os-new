@@ -11,7 +11,7 @@ export class AgentViewService implements IAgentViewService {
         private tools?: IToolRunnerService,
         private events?: IEventBus,
     ) {}
-    async init(){ LOGGER.info('init',{}); } async destroy(){}
+    async init(){         LOGGER.info('AgentView', 'init',{}); } async destroy(){}
     async sessions(){
         const rows=await this.dal.kv.list('cc-plan/');
         const res = rows.map(r=>{ const v=r.value as Record<string,string>; return { id: r.id, title: v.task ?? r.id }; }).slice(0,20);

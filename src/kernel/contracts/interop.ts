@@ -94,6 +94,7 @@ export interface ICoordinationService extends ILifecycle {
     handoffExternal(target: string, task: string, context?: Record<string, unknown>): Promise<HandoffRecord>;
     completeHandoff(id: string, result: string): Promise<HandoffRecord>;
     listHandoffs(): Promise<HandoffRecord[]>;
+    spawnSubCrew(goal: string): Promise<string>;
 
     // Market / auction + contract-net (7)
     openListing(task: string, mode?: MarketListing['mode'], askPrice?: number): Promise<MarketListing>;

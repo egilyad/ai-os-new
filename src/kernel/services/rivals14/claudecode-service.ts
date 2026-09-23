@@ -9,7 +9,7 @@ import { EVENTS } from '../../events/event-names';
 const LOGGER = rootLogger.child('ClaudeCode');
 export class ClaudeCodeService implements IClaudeCodeService {
     constructor(private dal: DataAccessLayer, private events: IEventBus, private llm?: ILLMClientService, private coord?: ICoordinationService) {}
-    async init(){ LOGGER.info('init',{}); } async destroy(){}
+    async init(){ LOGGER.info('ClaudeCode', 'init',{}); } async destroy(){}
     async proposePlan(task: string){
         const id=genId('plan');
         let content=`Plan for ${task.slice(0,120)}: 1) analyze 2) edit 3) test`;

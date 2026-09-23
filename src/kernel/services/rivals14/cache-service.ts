@@ -9,7 +9,7 @@ export class CacheControlService implements ICacheControlService {
         private dal: DataAccessLayer,
         private events?: IEventBus,
     ) {}
-    async init(){ LOGGER.info('init',{}); } async destroy(){}
+    async init(){         LOGGER.info('CacheControl', 'init',{}); } async destroy(){}
     async markCacheable(key: string, ttlMs=3600000){
         const cleanKey = key.slice(0, 120);
         await this.dal.kv.set(`cachectrl/${cleanKey}`, { ttlMs, at: Date.now() });
