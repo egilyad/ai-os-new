@@ -126,7 +126,7 @@ const ProjectsPanel: React.FC = () => {
 
     const handleCreateGoal = () => {
         if (!selectedId) return;
-        const goal = autonomyOrchestrator.createGoal(selectedId, 'New goal');
+        autonomyOrchestrator.createGoal(selectedId, 'New goal');
         setGoals(autonomyOrchestrator.listGoals(selectedId));
     };
 
@@ -362,7 +362,7 @@ const ProjectsPanel: React.FC = () => {
                             <h3 style={{ margin: 0 }}>{t('python.title')}</h3>
                             <Button variant="primary" size="sm" onClick={async () => {
                                 await pythonRunnerService.createPythonProject(selectedId);
-                                const run = await pythonRunnerService.run(selectedId);
+                                await pythonRunnerService.run(selectedId);
                                 setPyHistory(pythonRunnerService.getRunHistory(selectedId));
                             }}>{t('python.run')}</Button>
                         </div>

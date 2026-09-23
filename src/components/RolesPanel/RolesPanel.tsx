@@ -1,6 +1,6 @@
 import { genId } from '../../utils/gen-id';
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { Plus, Search, Play, BookOpen, UserCog, AlertTriangle, Archive } from 'lucide-react';
+import { Plus, Search, Play, BookOpen, UserCog, AlertTriangle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { roleService, rootLogger } from '../../kernel/instances';
 const LOGGER = rootLogger.child('RolesPanel');
@@ -13,8 +13,6 @@ import { eventBus, EVENTS } from '../../kernel/instances';
 import { useAutoClearError } from '../../hooks/useAutoClearError';
 import { useTranslation } from '../../i18n/useTranslation';
 import ModuleInfo from '../ModuleInfo';
-import { RoleAnalytics } from './RoleAnalytics';
-import { PermissionMatrix } from './PermissionMatrix';
 import RoleLibrary from './RoleLibrary';
 import { RoleSandbox } from './RoleSandbox';
 import {

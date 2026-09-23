@@ -150,11 +150,11 @@ export const RIVAL_PHASES: RivalPhaseDef[] = [
             def('polis', 'Polis', S.polisService, 'consensus', 'a', A(one)),
             def('reflexion', 'Reflexion', S.reflexionService, 'run', 'a', A(one)),
             def('tot', 'Tree-of-Thought', S.totService, 'search', 'a', A(one)),
-            def('selfcon', 'SelfConsistency', S.selfConsistencyService, 'sample', 'a', A(one)),
+            def('selfcon', 'SelfConsistency', S.selfConService, 'sample', 'a', A(one)),
             def('soar', 'SOAR', S.soarService, 'cycle', 'none'),
             def('atom', 'Atom', S.atomService, 'deduce', 'a', A(one)),
             def('meter', 'Meter', S.meterService, 'gauge', 'ab', A(two)),
-            def('errinbox', 'ErrorInbox', S.errorInboxService, 'capture', 'a', A(one)),
+            def('errinbox', 'ErrorInbox', S.errInboxService, 'capture', 'a', A(one)),
         ],
     },
     {
@@ -218,7 +218,7 @@ export const RIVAL_PHASES: RivalPhaseDef[] = [
             def('computer', 'Computer+', S.computerService, 'act', 'ab', A(two)),
             def('files', 'FilesApi', S.filesApiService, 'list', 'none'),
             def('cache', 'CacheControl', S.cacheControlService, 'stats', 'none'),
-            def('project', 'Project', S.projectService, 'createProject', 'a', A(one)),
+            def('project', 'Project', S.projectManagerService, 'createProject', 'a', A(one)),
             def('dynwf', 'DynamicWorkflow', S.dynamicWorkflowService, 'run', 'a', A((a) => [lines(a)])),
             def(
                 'routine',

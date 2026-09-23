@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useTranslation } from '../../i18n/useTranslation';
-import { projectManagerService, projectWorkspaceService } from '../../kernel/instances/services-extras';
+import { projectWorkspaceService } from '../../kernel/instances/services-extras';
 import { Button } from '../../components/Common';
 import type { Project } from '../../kernel/types/project-types';
 
@@ -66,8 +66,7 @@ const WebsitePreview: React.FC<Props> = ({ project }) => {
     const generatePreview = async () => {
         setLoading(true);
         try {
-            const ws = projectWorkspaceService();
-            const tree = await ws.getTree(project.id);
+            const tree = await projectWorkspaceService.getTree(project.id);
             const flatFiles = flattenTree(tree);
 
             let html = '';
@@ -76,7 +75,7 @@ const WebsitePreview: React.FC<Props> = ({ project }) => {
             let fileCount = 0;
 
             for (const filePath of flatFiles) {
-                const file = await ws.readFile(project.id, filePath);
+                const file = await projectWorkspaceService.readFile(project.id, filePath);
                 if (!file) continue;
                 fileCount++;
                 const ext = filePath.split('.').pop()?.toLowerCase();
