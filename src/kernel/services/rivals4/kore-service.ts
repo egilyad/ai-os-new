@@ -31,7 +31,7 @@ export class KoreService implements IKoreService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('Kore', 'init', {});
     }
 
     async destroy(): Promise<void> {

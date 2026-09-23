@@ -21,7 +21,7 @@ export class IdeService implements IIdeService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('IDE', 'init', {});
     }
 
     async destroy(): Promise<void> {
@@ -48,7 +48,7 @@ export class IdeService implements IIdeService {
             );
             if (!res.error) return res.content;
         } catch (e) {
-            LOGGER.warn('askCodebase failed', { error: e instanceof Error ? e.message : String(e) });
+                LOGGER.warn('IDE', 'askCodebase failed', { error: e instanceof Error ? e.message : String(e) });
         }
         return `Evidence:\n${evidence || '(no matches)'}`;
     }
@@ -83,7 +83,7 @@ export class IdeService implements IIdeService {
                 }
             }
         } catch (e) {
-            LOGGER.warn('editPlan failed', { error: e instanceof Error ? e.message : String(e) });
+                LOGGER.warn('IDE', 'editPlan failed', { error: e instanceof Error ? e.message : String(e) });
         }
         return [{ path: '(unplanned)', change: task.slice(0, 300) }];
     }

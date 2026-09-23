@@ -26,7 +26,7 @@ export class ComputerService implements IComputerService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('Computer', 'init', {});
     }
 
     async destroy(): Promise<void> {

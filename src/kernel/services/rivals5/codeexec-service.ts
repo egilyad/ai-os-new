@@ -71,7 +71,7 @@ export class CodeExecService implements ICodeExecService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('CodeExec', 'init', {});
     }
 
     async destroy(): Promise<void> {

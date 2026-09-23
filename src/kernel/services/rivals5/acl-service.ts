@@ -19,12 +19,14 @@ export class AclService implements IAclService {
     constructor(
         private dal: DataAccessLayer,
         private knowledge?: IKnowledgeService,
-        private workspace?: IWorkspaceService,
+        _workspace?: IWorkspaceService,
         private governance?: IGovernanceService,
-    ) {}
+    ) {
+        void _workspace;
+    }
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('ACL', 'init', {});
     }
 
     async destroy(): Promise<void> {
@@ -46,7 +48,7 @@ export class AclService implements IAclService {
                 const hits = await this.knowledge.retrieve(query, limit * 2);
                 for (const h of hits) out.push({ title: h.title, chunk: h.chunk, sourceId: h.sourceId });
             } catch (e) {
-                LOGGER.warn('acl knowledge failed', { error: e instanceof Error ? e.message : String(e) });
+                LOGGER.warn('ACL', 'acl knowledge failed', { error: e instanceof Error ? e.message : String(e) });
             }
         }
         const allowed: Array<{ title: string; chunk: string }> = [];

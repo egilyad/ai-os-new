@@ -29,7 +29,7 @@ export class AppBuilderService implements IAppBuilderService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('AppBuilder', 'init', {});
     }
 
     async destroy(): Promise<void> {
@@ -58,7 +58,7 @@ export class AppBuilderService implements IAppBuilderService {
                     if (qs.length > 0) return qs;
                 }
             } catch (e) {
-                LOGGER.warn('clarify failed', { error: e instanceof Error ? e.message : String(e) });
+                LOGGER.warn('AppBuilder', 'clarify failed', { error: e instanceof Error ? e.message : String(e) });
             }
         }
         return ['Who are the users?', 'What are the 3 core screens?', 'Any integrations or auth?'];
@@ -102,7 +102,7 @@ export class AppBuilderService implements IAppBuilderService {
                     }
                 }
             } catch (e) {
-                LOGGER.warn('scaffold failed', { error: e instanceof Error ? e.message : String(e) });
+                LOGGER.warn('AppBuilder', 'scaffold failed', { error: e instanceof Error ? e.message : String(e) });
             }
         }
         if (files.length === 0) {
