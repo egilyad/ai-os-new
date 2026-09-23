@@ -44,6 +44,8 @@ describe('InterpreterService live handoff', () => {
     it('hands off to CodeExec tickets and reports the ticket', async () => {
         const calls: Array<[string, string]> = [];
         const svc = new InterpreterService(
+            undefined,
+            undefined,
             fakeCodeExec({
                 submit: async (lang: string, code: string) => {
                     calls.push([lang, code]);
@@ -59,6 +61,8 @@ describe('InterpreterService live handoff', () => {
 
     it('surfaces CodeExec validation as a rejected string (allowlist)', async () => {
         const svc = new InterpreterService(
+            undefined,
+            undefined,
             fakeCodeExec({
                 submit: async () => {
                     throw new Error('Banned identifier in code ticket: eval');
@@ -80,7 +84,7 @@ describe('MiniSweService orchestration', () => {
 
     it('uses the real Codex diff and derives passed from additions', async () => {
         const codex = { prompt: async () => ({ diff: '--- a/f\n+++ b/f\n+ fixed', applied: true }) } as unknown as ICodexService;
-        const svc = new MiniSweService(codex);
+        const svc = new MiniSweService(undefined, undefined, codex);
         const res = await svc.solve('crash on start');
         expect(res.patch).toContain('+ fixed');
         expect(res.passed).toBe(true);
@@ -88,7 +92,7 @@ describe('MiniSweService orchestration', () => {
 
     it('marks passed=false when the Codex diff has no additions', async () => {
         const codex = { prompt: async () => ({ diff: 'no changes', applied: false }) } as unknown as ICodexService;
-        const svc = new MiniSweService(codex);
+        const svc = new MiniSweService(undefined, undefined, codex);
         const res = await svc.solve('nothing to do');
         expect(res.passed).toBe(false);
     });

@@ -52,6 +52,7 @@ describe('ProjectMemoryService', () => {
     describe('decisions', () => {
         it('adds and retrieves decisions', () => {
             svc.addDecision('p1', {
+                projectId: 'p1',
                 title: 'Use React',
                 content: 'Framework choice',
                 tags: ['architecture'],
@@ -69,6 +70,7 @@ describe('ProjectMemoryService', () => {
     describe('issues', () => {
         it('adds and retrieves issues', () => {
             svc.addIssue('p1', {
+                projectId: 'p1',
                 title: 'Memory leak',
                 content: 'Heap grows on long runs',
                 tags: ['performance'],
@@ -82,6 +84,7 @@ describe('ProjectMemoryService', () => {
 
         it('resolves issues', () => {
             const issue = svc.addIssue('p1', {
+                projectId: 'p1',
                 title: 'Bug',
                 content: 'desc',
                 tags: [],
@@ -93,8 +96,8 @@ describe('ProjectMemoryService', () => {
         });
 
         it('filters by status', () => {
-            svc.addIssue('p1', { title: 'a', content: '', tags: [], severity: 'low', status: 'open' });
-            svc.addIssue('p1', { title: 'b', content: '', tags: [], severity: 'low', status: 'resolved' });
+            svc.addIssue('p1', { projectId: 'p1', title: 'a', content: '', tags: [], severity: 'low', status: 'open' });
+            svc.addIssue('p1', { projectId: 'p1', title: 'b', content: '', tags: [], severity: 'low', status: 'resolved' });
             expect(svc.getIssues('p1', 'open')).toHaveLength(1);
             expect(svc.getIssues('p1', 'resolved')).toHaveLength(1);
         });

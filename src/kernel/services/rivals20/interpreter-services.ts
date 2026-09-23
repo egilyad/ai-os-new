@@ -1,4 +1,4 @@
-import type { IInterpreterService, IMiniSweService } from '../../contracts/rivals20';
+import type { IInterpreterService, IMiniSweService, ICodexService } from '../../contracts/rivals20';
 import type { IEventBus } from '../../types/interfaces';
 import type { DataAccessLayer } from '../../dal/types';
 import type { ICodeExecService } from '../../contracts/rivals5';
@@ -63,12 +63,20 @@ export class MiniSweService implements IMiniSweService {
     constructor(
         private events?: IEventBus,
         private dal?: DataAccessLayer,
+        private codex?: ICodexService,
     ) {}
     async init(): Promise<void> {}
     async destroy(): Promise<void> {}
     async solve(issue: string): Promise<{ patch: string; passed: boolean }> {
-        const patch = `--- a/fix\n+++ b/fix\n+ fix for ${issue.slice(0, 80)}\n+ generated at ${new Date().toISOString()}`;
-        const passed = !issue.toLowerCase().includes('fail');
+        let patch = `--- a/fix\n+++ b/fix\n+ fix for ${issue.slice(0, 80)}\n+ generated at ${new Date().toISOString()}`;
+        let passed = !issue.toLowerCase().includes('fail');
+        if (this.codex) {
+            try {
+                const r = await this.codex.prompt(issue);
+                patch = r.diff;
+                passed = r.applied;
+            } catch { /* keep local fallback */ }
+        }
         if (this.dal) {
             try {
                 const hist = (await this.dal.kv.get<Array<{ issue: string; patch: string; passed: boolean; at: number }>>(

@@ -23,7 +23,7 @@ class FakeRepo {
     }
 }
 
-function fakeBus() {
+function fakeBus(): import('../../types/interfaces').IEventBus & { emitted: Array<{ name: string; payload: unknown }> } {
     const emitted: Array<{ name: string; payload: unknown }> = [];
     return {
         emitted,
@@ -32,7 +32,7 @@ function fakeBus() {
         },
         on: () => () => {},
         off: () => {},
-    } as unknown as import('../../types/interfaces').IEventBus;
+    } as unknown as import('../../types/interfaces').IEventBus & { emitted: Array<{ name: string; payload: unknown }> };
 }
 
 describe('G1 HybridRetrievalService (static)', () => {
