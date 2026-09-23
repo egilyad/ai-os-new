@@ -52,7 +52,7 @@ function toView(ch: Channel): ChannelView {
 
 async function reload(set: (partial: Partial<StoreState>) => void) {
     try {
-        const svc = channelService();
+        const svc = channelService;
         const channels = await svc.listChannels();
         const map = new Map<string, ChannelView>();
         const order: string[] = [];
@@ -91,7 +91,7 @@ export const useChannelStore = create<StoreState>((set, get) => ({
 
     loadMessages: async (channelId) => {
         try {
-            const svc = channelService();
+            const svc = channelService;
             const messages = await svc.getMessages(channelId, 100);
             set({ messages });
         } catch (e) {
@@ -101,7 +101,7 @@ export const useChannelStore = create<StoreState>((set, get) => ({
 
     loadEvents: async (channelId) => {
         try {
-            const svc = channelService();
+            const svc = channelService;
             const events = await svc.getEvents(channelId);
             set({ events });
         } catch (e) {

@@ -1,7 +1,7 @@
 /**
  * Agent runtime types (roadmapp.md §P3).
  */
-import type { ProjectId, ProjectTask, ProjectRun } from './project-types';
+import type { ProjectId } from './project-types';
 
 export type RuntimeStatus = 'idle' | 'running' | 'paused' | 'completed' | 'failed';
 

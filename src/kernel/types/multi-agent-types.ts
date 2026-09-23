@@ -27,7 +27,7 @@ export const STAGE_ORDER: PipelineStage[] = ['research', 'design', 'development'
 export function nextStage(current: PipelineStage): PipelineStage | null {
     const idx = STAGE_ORDER.indexOf(current);
     if (idx < 0 || idx >= STAGE_ORDER.length - 1) return null;
-    return STAGE_ORDER[idx + 1];
+    return STAGE_ORDER[idx + 1] ?? null;
 }
 
 export function stageProgress(pipeline: MultiAgentPipeline): { current: number; total: number; percent: number } {
