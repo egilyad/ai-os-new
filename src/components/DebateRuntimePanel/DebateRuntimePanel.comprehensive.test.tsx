@@ -53,18 +53,26 @@ const mockAgentService = {
 
 const mockCognitiveService = {
     getMetrics: vi.fn().mockReturnValue({
+        timestamp: 0,
         debateQuality: 0.75,
         avgContradictionDensity: 0.3,
         avgConsensusConfidence: 0.8,
         avgReasoningCoherence: 0.65,
+        topologyEffectiveness: {},
         reasoningCollapseDetected: false,
+        hallucinationZones: [],
+        sessionCount: 1,
+        updatedAt: 0,
     }),
     getPressure: vi.fn().mockReturnValue({
         level: 'normal',
         score: 0.45,
         activeReasoningChains: 3,
+        avgChainComplexity: 0.4,
         contentionScore: 0.35,
+        memoryPressure: 0.3,
         complexityScore: 0.55,
+        timestamp: 0,
     }),
     getActiveIssues: vi.fn().mockReturnValue([]),
 };
@@ -303,8 +311,8 @@ describe('DiagnosticIssuesPanel', () => {
         render(
             <DiagnosticIssuesPanel
                 issues={[
-                    { message: 'High latency detected', severity: 'critical', source: 'test' },
-                    { message: 'Rate limit warning', severity: 'warning', source: 'test' },
+                    { type: 'budget_pressure', message: 'High latency detected', severity: 'critical', timestamp: 0 },
+                    { type: 'contradiction_spike', message: 'Rate limit warning', severity: 'high', timestamp: 0 },
                 ]}
             />,
         );
@@ -343,6 +351,10 @@ describe('SessionListPanel', () => {
                 agentStates: [{ agentId: 'a1', phase: 'thinking' as const, tokensUsed: 100 }],
                 totalTokens: 500,
                 totalCost: 0.01,
+                version: 1,
+                startedAt: 0,
+                updatedAt: 0,
+                language: 'en',
             },
         ];
         render(<SessionListPanel sessions={sessions} selectedId="s1" onSelect={vi.fn()} t={t} />);
@@ -363,6 +375,14 @@ describe('SessionListPanel', () => {
                 agentStates: [],
                 totalTokens: 0,
                 totalCost: 0,
+            version: 1,
+            startedAt: 0,
+            updatedAt: 0,
+            language: 'en',
+                version: 1,
+                startedAt: 0,
+                updatedAt: 0,
+                language: 'en',
             },
         ];
         render(<SessionListPanel sessions={sessions} selectedId={null} onSelect={onSelect} t={t} />);
@@ -386,6 +406,10 @@ describe('SessionDetailHeader', () => {
             agentStates: [],
             totalTokens: 0,
             totalCost: 0,
+            version: 1,
+            startedAt: 0,
+            updatedAt: 0,
+            language: 'en',
         };
         render(
             <SessionDetailHeader
@@ -416,6 +440,10 @@ describe('SessionDetailHeader', () => {
             agentStates: [],
             totalTokens: 0,
             totalCost: 0,
+            version: 1,
+            startedAt: 0,
+            updatedAt: 0,
+            language: 'en',
         };
         render(
             <SessionDetailHeader
@@ -443,6 +471,10 @@ describe('SessionDetailHeader', () => {
             agentStates: [],
             totalTokens: 0,
             totalCost: 0,
+            version: 1,
+            startedAt: 0,
+            updatedAt: 0,
+            language: 'en',
         };
         render(
             <SessionDetailHeader
@@ -485,6 +517,10 @@ describe('SessionOverviewTab', () => {
             ],
             totalTokens: 500,
             totalCost: 0.02,
+            version: 1,
+            startedAt: 0,
+            updatedAt: 0,
+            language: 'en',
         };
         render(
             <SessionOverviewTab
@@ -512,17 +548,26 @@ describe('SessionOverviewTab', () => {
             agentStates: [],
             totalTokens: 0,
             totalCost: 0,
+            version: 1,
+            startedAt: 0,
+            updatedAt: 0,
+            language: 'en',
         };
         render(
             <SessionOverviewTab
                 selected={session}
                 thinkingAgentId={undefined}
                 cognitiveMetrics={{
+                    timestamp: 0,
                     debateQuality: 0.85,
                     avgContradictionDensity: 0.2,
                     avgConsensusConfidence: 0.9,
                     avgReasoningCoherence: 0.7,
+                    topologyEffectiveness: {},
                     reasoningCollapseDetected: false,
+                    hallucinationZones: [],
+                    sessionCount: 1,
+                    updatedAt: 0,
                 }}
                 cognitivePressure={null}
             />,
@@ -541,17 +586,26 @@ describe('SessionOverviewTab', () => {
             agentStates: [],
             totalTokens: 0,
             totalCost: 0,
+            version: 1,
+            startedAt: 0,
+            updatedAt: 0,
+            language: 'en',
         };
         render(
             <SessionOverviewTab
                 selected={session}
                 thinkingAgentId={undefined}
                 cognitiveMetrics={{
+                    timestamp: 0,
                     debateQuality: 0.3,
                     avgContradictionDensity: 0.8,
                     avgConsensusConfidence: 0.2,
                     avgReasoningCoherence: 0.15,
+                    topologyEffectiveness: {},
                     reasoningCollapseDetected: true,
+                    hallucinationZones: [],
+                    sessionCount: 1,
+                    updatedAt: 0,
                 }}
                 cognitivePressure={null}
             />,
@@ -685,6 +739,14 @@ describe('AgentControlPanel', () => {
                     agentStates: [],
                     totalTokens: 0,
                     totalCost: 0,
+            version: 1,
+            startedAt: 0,
+            updatedAt: 0,
+            language: 'en',
+                version: 1,
+                startedAt: 0,
+                updatedAt: 0,
+                language: 'en',
                 }}
             />,
         );
@@ -739,6 +801,14 @@ describe('AgentControlPanel', () => {
                     agentStates: [{ agentId: 'agent-1', phase: 'idle', tokensUsed: 0 }],
                     totalTokens: 0,
                     totalCost: 0,
+            version: 1,
+            startedAt: 0,
+            updatedAt: 0,
+            language: 'en',
+                version: 1,
+                startedAt: 0,
+                updatedAt: 0,
+                language: 'en',
                 }}
             />,
         );
@@ -755,18 +825,26 @@ describe('DebateRuntimePanel (comprehensive)', () => {
         vi.clearAllMocks();
         mockDebateEngine.getActiveSessions.mockReturnValue([]);
         mockCognitiveService.getMetrics.mockReturnValue({
+            timestamp: 0,
             debateQuality: 0.75,
             avgContradictionDensity: 0.3,
             avgConsensusConfidence: 0.8,
             avgReasoningCoherence: 0.65,
+            topologyEffectiveness: {},
             reasoningCollapseDetected: false,
+            hallucinationZones: [],
+            sessionCount: 1,
+            updatedAt: 0,
         });
         mockCognitiveService.getPressure.mockReturnValue({
             level: 'normal',
             score: 0.45,
             activeReasoningChains: 3,
+            avgChainComplexity: 0.4,
             contentionScore: 0.35,
+            memoryPressure: 0.3,
             complexityScore: 0.55,
+            timestamp: 0,
         });
         mockCognitiveService.getActiveIssues.mockReturnValue([]);
     });
