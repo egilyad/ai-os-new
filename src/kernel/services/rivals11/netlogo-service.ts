@@ -61,7 +61,7 @@ export class NetLogoService implements INetLogoService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('NetLogo', 'init', {});
     }
 
     async destroy(): Promise<void> {

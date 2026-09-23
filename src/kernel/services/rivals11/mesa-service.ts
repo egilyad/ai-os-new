@@ -134,7 +134,7 @@ export class MesaService implements IMesaService {
             await this.addAgents(id, Math.max(1, Math.min(500, Math.floor(p.agents))));
             await this.step(id, Math.max(1, Math.min(100, Math.floor(p.steps))));
             const model = await this.require(id);
-            const pop = model.series.population;
+            const pop = model.series.population ?? [];
             const mean = pop.length > 0 ? pop.reduce((a, b) => a + b, 0) / pop.length : 0;
             out.push({ params: { agents: p.agents, steps: p.steps }, mean: Math.round(mean * 100) / 100 });
         }

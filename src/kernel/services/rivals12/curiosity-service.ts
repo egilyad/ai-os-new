@@ -5,7 +5,7 @@ import { rootLogger } from '../logger-service';
 const LOGGER = rootLogger.child('Curio');
 export class CuriosityService implements ICuriosityService {
     constructor(private dal: DataAccessLayer, private world?: IWorldModelService) {}
-    async init(){ LOGGER.info('init',{}); } async destroy(){}
+    async init(){ LOGGER.info('Curio', 'init',{}); } async destroy(){}
     async bonus(state: string, action: string){
         if (this.world) {
             const pred = await this.world.predict(state, action).catch(()=>null);
