@@ -78,7 +78,7 @@ export class BrowserHarnessService implements IBrowserHarnessService {
     constructor(private deps: { dal: DataAccessLayer; computer: IComputerService; events: IEventBus }) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', { policy: { ...this.policy, blockedPatterns: this.policy.blockedPatterns.map((r) => r.source) } });
+        LOGGER.info('BrowserHarness', 'init', { policy: { ...this.policy, blockedPatterns: this.policy.blockedPatterns.map((r) => r.source) } });
     }
 
     async destroy(): Promise<void> {}

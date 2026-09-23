@@ -151,7 +151,9 @@ export class BrowserInspectorService implements IQABrowserInspector {
         let emptyLinks = 0;
         let linkMatch;
         while ((linkMatch = linkRegex.exec(html)) !== null) {
-            const content = linkMatch[1].replace(/<[^>]*>/g, '').trim();
+            const raw = linkMatch[1];
+            if (raw === undefined) continue;
+            const content = raw.replace(/<[^>]*>/g, '').trim();
             if (!content) emptyLinks++;
         }
 
@@ -159,7 +161,9 @@ export class BrowserInspectorService implements IQABrowserInspector {
         let emptyButtons = 0;
         let btnMatch;
         while ((btnMatch = buttonRegex.exec(html)) !== null) {
-            const content = btnMatch[1].replace(/<[^>]*>/g, '').trim();
+            const raw = btnMatch[1];
+            if (raw === undefined) continue;
+            const content = raw.replace(/<[^>]*>/g, '').trim();
             if (!content) emptyButtons++;
         }
 
