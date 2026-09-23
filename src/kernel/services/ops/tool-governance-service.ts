@@ -34,7 +34,7 @@ export class ToolGovernanceService implements IToolGovernanceService {
     }
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('ToolGovernance', 'init', {});
     }
 
     async destroy(): Promise<void> {

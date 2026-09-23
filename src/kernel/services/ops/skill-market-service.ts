@@ -24,7 +24,7 @@ export class SkillMarketService implements ISkillMarketService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('SkillMarket', 'init', {});
     }
 
     async destroy(): Promise<void> {

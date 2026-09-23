@@ -125,7 +125,7 @@ export class ToolRunnerService implements IToolRunnerService {
     }
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('ToolRunner', 'init', {});
     }
 
     async destroy(): Promise<void> {
