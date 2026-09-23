@@ -96,6 +96,7 @@ export type PlannerStrategy = 'sequential' | 'function_calling' | 'stepwise' | '
 
 export interface IPlannerService extends ILifecycle {
     plan(task: string, strategy?: PlannerStrategy): Promise<string>;
+    planStep(step: string): Promise<string>;
     /** Composable pre/post middleware: audit → policy → trim. */
     addFilter(stage: 'pre' | 'post', name: string): Promise<void>;
     listFilters(): Promise<Array<{ stage: string; name: string }>>;

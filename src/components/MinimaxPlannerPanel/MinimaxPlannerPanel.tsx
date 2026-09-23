@@ -26,7 +26,7 @@ export const MinimaxPlannerPanel: React.FC = () => {
     type Arg = { id: string; agentId: string; agentName: string; content: string; round: number };
     const buildPlanner = (argList: Arg[]) => {
         const g = new ArgumentGraphService();
-        g.build(argList.map((a) => ({ id: a.id, agentId: a.agentId, agentName: a.agentName, content: a.content, round: a.round })));
+        g.build(argList.map((a) => ({ id: a.id, agentId: a.agentId, agentName: a.agentName, content: a.content, round: a.round, timestamp: Date.now(), confidence: 0.8 })));
         return { planner: new MinimaxPlanner(g), graph: g };
     };
     const [services, setServices] = useState(() => buildPlanner([]));
@@ -45,7 +45,7 @@ export const MinimaxPlannerPanel: React.FC = () => {
     const loadDebate = useCallback(() => {
         if (!liveArgs.length) return;
         const g = new ArgumentGraphService();
-        g.build(liveArgs.map((a) => ({ id: a.id, agentId: a.agentId, agentName: a.agentName, content: a.content, round: a.round })));
+        g.build(liveArgs.map((a) => ({ id: a.id, agentId: a.agentId, agentName: a.agentName, content: a.content, round: a.round, timestamp: Date.now(), confidence: 0.8 })));
         setServices({ planner: new MinimaxPlanner(g), graph: g });
     }, [liveArgs]);
     const [round, setRound] = useState(3);

@@ -11,7 +11,7 @@ export const PersonaMixerPanel: React.FC = () => {
     const { t } = useTranslation();
     const mixer = useMemo(() => new PersonaMixer(), []);
     const realAgents = useRealAgents();
-    const { args: liveArgs, topic: liveTopic, sessionId, hasLiveDebate } = useDebateArguments();
+    const { topic: liveTopic, sessionId, hasLiveDebate } = useDebateArguments();
     const agents = realAgents;
     const loadDebate = useCallback(() => { if (liveTopic) setBasePersona(liveTopic); }, [liveTopic]);
     const [agentId, setAgentId] = useState<string>(() => agents[0]?.id ?? '');

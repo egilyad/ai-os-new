@@ -1,5 +1,6 @@
 import { MessageSquare } from 'lucide-react';
 import StrategySelector from './StrategySelector';
+import type { DebateSessionStrategy } from '../../kernel/contracts/debate-types';
 import {
     textCenter,
     stepCardPanel,
@@ -11,8 +12,8 @@ import {
 interface TopicStepProps {
     topic: string;
     onTopicChange: (v: string) => void;
-    strategy: string;
-    onStrategyChange: (v: string) => void;
+    strategy: DebateSessionStrategy;
+    onStrategyChange: (v: DebateSessionStrategy) => void;
     maxRounds: number;
     onMaxRoundsChange: (v: number) => void;
     debateTemperature?: number;
