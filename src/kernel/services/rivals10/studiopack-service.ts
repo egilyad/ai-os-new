@@ -29,7 +29,7 @@ export class StudioPackService implements IStudioPackService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('StudioPack', 'init', {});
     }
 
     async destroy(): Promise<void> {
@@ -60,7 +60,7 @@ export class StudioPackService implements IStudioPackService {
                     samples: [input.prompt],
                 });
             } catch (e) {
-                LOGGER.warn('persona distill failed', { error: e instanceof Error ? e.message : String(e) });
+                LOGGER.warn('StudioPack', 'persona distill failed', { error: e instanceof Error ? e.message : String(e) });
             }
         }
         this.events.emit(EVENTS.STUDIO_PACK, { kind: 'agent', ref: role.id });
@@ -98,7 +98,7 @@ export class StudioPackService implements IStudioPackService {
                 );
                 if (!res.error) return res.content;
             } catch (e) {
-                LOGGER.warn('translate failed', { error: e instanceof Error ? e.message : String(e) });
+                LOGGER.warn('StudioPack', 'translate failed', { error: e instanceof Error ? e.message : String(e) });
             }
         }
         return `${out}\n\n[target: ${targetLang}]`;

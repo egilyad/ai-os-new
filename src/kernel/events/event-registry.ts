@@ -110,6 +110,13 @@ export const EVENT_REGISTRY = {
             resetAt: z.number().optional(),
         }),
     ),
+    QUOTA_BREACH: event(
+        'quota:breached',
+        z.object({
+            keyId: z.string(),
+            used: z.number(),
+        }),
+    ),
     KEY_REPUTATION_THRESHOLD_CROSSED: event(
         'key:reputation:threshold:crossed',
         z.object({ id: z.string(), provider: z.string(), score: z.number() }),

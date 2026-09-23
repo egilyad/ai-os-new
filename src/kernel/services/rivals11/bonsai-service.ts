@@ -46,7 +46,7 @@ export class BonsaiService implements IBonsaiService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('Bonsai', 'init', {});
     }
 
     async destroy(): Promise<void> {
