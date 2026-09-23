@@ -37,7 +37,7 @@ export class MalmoService implements IMalmoService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('Malmo', 'init', {});
     }
 
     async destroy(): Promise<void> {

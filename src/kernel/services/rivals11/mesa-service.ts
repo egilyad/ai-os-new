@@ -54,7 +54,7 @@ export class MesaService implements IMesaService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('Mesa', 'init', {});
     }
 
     async destroy(): Promise<void> {
@@ -110,11 +110,13 @@ export class MesaService implements IMesaService {
                 model.agents.length > 0
                     ? model.agents.reduce((x, a) => x + a.energy, 0) / model.agents.length
                     : 0;
-            model.series.population.push(model.agents.length);
-            model.series.meanEnergy.push(Math.round(mean * 100) / 100);
-            if (model.series.population.length > 1000) {
-                model.series.population.splice(0, model.series.population.length - 1000);
-                model.series.meanEnergy.splice(0, model.series.meanEnergy.length - 1000);
+            const population = model.series.population ?? (model.series.population = []);
+            const meanEnergy = model.series.meanEnergy ?? (model.series.meanEnergy = []);
+            population.push(model.agents.length);
+            meanEnergy.push(Math.round(mean * 100) / 100);
+            if (population.length > 1000) {
+                population.splice(0, population.length - 1000);
+                meanEnergy.splice(0, meanEnergy.length - 1000);
             }
         }
         await this.dal.kv.set(`mesa/${modelId}`, model);
