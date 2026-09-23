@@ -34,7 +34,7 @@ export class AgentforceService implements IAgentforceService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('Agentforce', 'init', {});
     }
 
     async destroy(): Promise<void> {

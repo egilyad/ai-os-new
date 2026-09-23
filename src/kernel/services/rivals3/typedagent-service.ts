@@ -76,7 +76,7 @@ export class TypedAgentService implements ITypedAgentService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('TypedAgent', 'init', {});
     }
 
     async destroy(): Promise<void> {
@@ -145,7 +145,7 @@ export class TypedAgentService implements ITypedAgentService {
                 );
                 if (!res.error) return res.content;
             } catch (e) {
-                LOGGER.warn('typed ask failed', { error: e instanceof Error ? e.message : String(e) });
+                LOGGER.warn('TypedAgent', 'typed ask failed', { error: e instanceof Error ? e.message : String(e) });
             }
         }
         return '{"echo": true}';

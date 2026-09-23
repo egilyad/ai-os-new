@@ -15,7 +15,7 @@ export class PrototypeService implements IPrototypeService {
     constructor(private dal: DataAccessLayer) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('Prototype', 'init', {});
     }
 
     async destroy(): Promise<void> {

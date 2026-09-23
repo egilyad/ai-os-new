@@ -24,7 +24,7 @@ export class SessionStateService implements ISessionStateService {
     ) {}
 
     async init(): Promise<void> {
-        LOGGER.info('init', {});
+        LOGGER.info('SessionState', 'init', {});
     }
 
     async destroy(): Promise<void> {
@@ -93,7 +93,7 @@ export class SessionStateService implements ISessionStateService {
                 );
                 if (!res.error) return res.content;
             } catch (e) {
-                LOGGER.warn('loop body failed', { error: e instanceof Error ? e.message : String(e) });
+                LOGGER.warn('SessionState', 'loop body failed', { error: e instanceof Error ? e.message : String(e) });
             }
         }
         return `[echo] ${prompt.slice(0, 200)}`;
