@@ -49,12 +49,13 @@ jobs:
               run: npx tsc -b --noEmit
 
             - name: ESLint
-              # P0.3: 0 errors, 202 warnings. Warnings are React Compiler strictness
+              # Stage 4: 0 errors. Warnings are React Compiler strictness
               # (set-state-in-effect/refs/purity) + no-restricted-imports +
-              # react-refresh/only-export-components. --max-warnings 0 blocked CI on
-              # these; threshold keeps errors fatal while allowing warnings to trend
-              # down. Re-tighten as warnings are fixed.
-              run: npm run lint -- --max-warnings 250
+              # react-refresh/only-export-components + fa-02 raw colors (~5k
+              # across all panels). Threshold pinned at current count to keep
+              # errors fatal while allowing warnings to trend down.
+              # Re-tighten as warnings are fixed.
+              run: npm run lint -- --max-warnings 5200
 
     build:
         name: Build
