@@ -186,7 +186,7 @@ export class ConversationDirectorService implements IConversationDirectorService
         // during the very first turn has a live signal to fire (B-08).
         this.orchestrator.getAbortSignal(sessionId);
         try {
-            while ((this.phase as any) !== 'paused' && (this.phase as any) !== 'aborted') {
+            while (this.phase !== 'paused' && this.phase !== 'aborted') {
                 const before = recording.results.length;
                 await this.orchestrator.processNextStep(sessionId);
                 if (recording.results.length === before) {

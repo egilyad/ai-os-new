@@ -224,7 +224,7 @@ export class ChannelService implements IChannelService {
         const all = Array.from(this.messages.values())
             .filter((m) => m.channelId === channelId && !m.isDeleted)
             .sort((a, b) => a.createdAt - b.createdAt);
-        let filtered = before ? all.filter((m) => m.createdAt < before) : all;
+        const filtered = before ? all.filter((m) => m.createdAt < before) : all;
         return filtered.slice(-limit);
     }
 

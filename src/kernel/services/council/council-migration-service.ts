@@ -18,7 +18,10 @@ const SNAPSHOT_PREFIX = 'council:rollback:snapshot:';
 function checksumOf(obj: unknown): string {
     const s = JSON.stringify(obj);
     let h = 2166136261;
-    for (let i = 0; i < s.length; i++) h ^= s.charCodeAt(i), h = Math.imul(h, 16777619) >>> 0;
+    for (let i = 0; i < s.length; i++) {
+        h ^= s.charCodeAt(i);
+        h = Math.imul(h, 16777619) >>> 0;
+    }
     return h.toString(16).padStart(8, '0');
 }
 
@@ -111,7 +114,7 @@ export class CouncilMigrationService {
                 if (back.id !== snapshot.id || back.topic !== snapshot.topic) throw new Error('DebateStore round-trip mismatch id/topic');
             } catch (e) {
                 await this.rollback(sessionId);
-                throw new Error(`DebateStore dry-run failed: ${e instanceof Error ? e.message : String(e)}`);
+                throw new Error(`DebateStore dry-run failed: ${e instanceof Error ? e.message : String(e)}`, { cause: e });
             }
         }
 

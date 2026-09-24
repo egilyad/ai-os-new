@@ -74,7 +74,7 @@ export class ToolCatalogService implements IToolCatalogService {
             }
         }
 
-        let mcp: ToolCatalogEntry[] = [];
+        const mcp: ToolCatalogEntry[] = [];
         if (this.deps.mcp?.listServers) {
             try {
                 const servers = await this.deps.mcp.listServers();

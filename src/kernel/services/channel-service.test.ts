@@ -23,7 +23,7 @@ function mockEventBus() {
 let svc: ChannelService;
 
 beforeEach(() => {
-    svc = new ChannelService(mockEventBus() as any);
+    svc = new ChannelService(mockEventBus() as unknown as import('../types/interfaces').IEventBus);
 });
 
 describe('ChannelService', () => {

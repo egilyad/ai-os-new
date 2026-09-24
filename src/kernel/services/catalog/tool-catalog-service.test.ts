@@ -85,7 +85,7 @@ describe('G2 ToolCatalogService (static)', () => {
         const after = await svc.get('skill:yadisk.read');
         expect(after!.installed).toBe(true);
         await svc.uninstall('skill:yadisk.read');
-        let off = await svc.get('skill:yadisk.read');
+        const off = await svc.get('skill:yadisk.read');
         expect(off!.installed).toBe(false);
         await svc.destroy();
     });

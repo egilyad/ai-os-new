@@ -49,7 +49,7 @@ export function cronToExpression(schedule: CronSchedule): string {
 export function isValidCron(expr: string): boolean {
     const parts = expr.trim().split(/\s+/);
     if (parts.length !== 5) return false;
-    return parts.every((p) => p === '*' || /^\d+$/.test(p) || /^[\d,\-\/\*]+$/.test(p));
+    return parts.every((p) => p === '*' || /^\d+$/.test(p) || /^[\d,\-\/*]+$/.test(p));
 }
 
 export type CronSchedule = import('../types/agems-task').CronSchedule;

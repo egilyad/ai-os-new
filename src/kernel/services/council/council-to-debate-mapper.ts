@@ -11,6 +11,7 @@ import type { DebatePhase, DebateTopology, ParticipantConfig } from '../../contr
 import type { DebateSessionSnapshot } from '../../contracts/debate-runtime';
 
 // Ленивый require для разрыва циклов: tsconfig app без node-типов.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- Node require shim for lazy cycle-safe registration
 declare const require: (id: string) => any;
 
 function councilPhaseToDebatePhase(phase: CouncilPhase): DebatePhase {
