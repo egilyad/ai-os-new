@@ -28,7 +28,7 @@ export class AgemsTaskService {
     }
 
     async list(filters?: { status?: AgemsTaskStatus; assigneeId?: string }): Promise<AgemsTask[]> {
-        let col = getDexieDb().agemsTasks.toCollection();
+        const col = getDexieDb().agemsTasks.toCollection();
         const all = (await col.toArray()) as unknown as AgemsTask[];
         let filtered = all;
         if (filters?.status) filtered = filtered.filter((t) => t.status === filters.status);
@@ -39,7 +39,7 @@ export class AgemsTaskService {
     async updateStatus(id: string, status: AgemsTaskStatus): Promise<AgemsTask | undefined> {
         await getDexieDb().agemsTasks.update(id, { status, updatedAt: Date.now() } as never);
         // 2.8 Triggers — fire after status change (lazy import to avoid cycle)
-        try { const { taskTriggerService } = await import('./task-trigger-service'); await taskTriggerService.fire(id, status); } catch {}
+        try { const { taskTriggerService } = await import('./task-trigger-service'); await taskTriggerService.fire(id, status); } catch { /* trigger optional */ }
         return (await getDexieDb().agemsTasks.get(id)) as unknown as AgemsTask | undefined;
     }
 

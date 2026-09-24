@@ -60,7 +60,7 @@ export class AgemsApprovalService {
     }
 
     async list(agentId?: string, status?: ApprovalRequest['status']): Promise<ApprovalRequest[]> {
-        let col = getDexieDb().approvalRequests.toCollection();
+        const col = getDexieDb().approvalRequests.toCollection();
         const all = (await col.toArray()) as unknown as ApprovalRequest[];
         let filtered = all;
         if (agentId) filtered = filtered.filter((r) => r.agentId === agentId);
@@ -76,6 +76,7 @@ export class AgemsApprovalService {
         }
         return this.setPreset(agentId, patch.preset ?? 'SUPERVISED').then(async (pol) => {
             const { preset: _p, ...rest } = patch;
+            void _p;
             if (Object.keys(rest).length) {
                 await getDexieDb().approvalPolicies.update(pol.id as number, { ...rest, updatedAt: Date.now() } as never);
                 return { ...pol, ...rest } as ApprovalPolicy;

@@ -38,17 +38,17 @@ export const registerPhase47: Phase = ({ register }) => {
     void (async () => {
         try {
             if (typeof (globalThis as unknown as { requestAnimationFrame?: unknown }).requestAnimationFrame !== 'undefined') return; // avoid seeding in browser boot twice
-        } catch {}
+        } catch { /* seed guard */ }
         try {
             const c2 = { has: (globalThis as unknown as { __c?: IContainer }).__c?.has?.bind((globalThis as unknown as { __c: IContainer }).__c) } as unknown as IContainer;
             void c2;
-        } catch {}
+        } catch { /* seed guard */ }
         // Seed via lazy after first toolRunner/skillMarket resolve (fire-and-forget, never throws)
         setTimeout(async () => {
             try {
                 const m = await import('../services/parity/tool-runner-service');
                 void m;
-            } catch {}
+            } catch { /* seed guard */ }
             try {
                 // Tools: yadisk/vk/wb/yandex — mock, безопасно (только имена, без секретов)
                 const { toolRunnerService } = await import('../instances/services-extras');
@@ -65,7 +65,7 @@ export const registerPhase47: Phase = ({ register }) => {
                 add('vk.post', 'VK post (mock)');
                 add('wb.price', 'Wildberries price check (mock)');
                 add('yandex.metrica', 'Yandex Metrica stats (mock)');
-            } catch {}
+            } catch { /* seed guard */ }
             try {
                 const { skillMarketService } = await import('../instances/services-extras');
                 const market = skillMarketService as unknown as { list(): Promise<Array<{name:string}>>; publish(p:{name:string;version:string;description:string;permissions?:string[];entry?:string;author?:string}): Promise<unknown> };
@@ -77,7 +77,7 @@ export const registerPhase47: Phase = ({ register }) => {
                     { name: 'GigaChat Analyst', description: 'Аналитик на GigaChat (Analitik Lab).', permissions: [] },
                 ];
                 for (const s of seed) if (!existing.has(s.name)) await market.publish({ name: s.name, version: '1.0.0', description: s.description, permissions: s.permissions, entry: 'ru.ts', author: 'warehouse-ru' });
-            } catch {}
+            } catch { /* seed guard */ }
         }, 0);
     })();
 };

@@ -60,6 +60,7 @@ import { PersonaDriftDetector } from '../services/debate-runtime/persona-drift-d
 
 // Ленивый require для разрыва циклов (как в debate-phase-handler): tsconfig app
 // без node-типов, поэтому декларация локальная, не глобальная.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- Node require shim for lazy cycle-safe registration
 declare const require: (id: string) => any;
 import { InsightBus } from '../services/debate-runtime/insight-bus';
 import { LogicalFormExtractor } from '../services/debate-runtime/logical-form-extractor';
