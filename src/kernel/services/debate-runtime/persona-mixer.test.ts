@@ -4,17 +4,12 @@ import { PersonaMixer } from './persona-mixer';
 describe('PersonaMixer', () => {
     it('mix returns string', () => {
         const m = new PersonaMixer();
-        const fn = (m as any).mix || (m as any).blend || (m as any).combine;
-        if (fn) {
-            const res = fn.call(m, ['scientist', 'philosopher'], 'climate');
-            expect(typeof res === 'string' || typeof res === 'object').toBe(true);
-        } else {
-            expect(m).toBeDefined();
-        }
+        const res = m.getMix({ agentId: 'a', agentName: 'Alice', basePersona: 'scientist philosopher', agentRole: 'pro', round: 1, otherParticipants: [], usedPersonaKeys: [] });
+        expect(typeof res.personaText).toBe('string');
     });
     it('does not throw on empty', () => {
         const m = new PersonaMixer();
-        expect(() => (m as any).mix?.([], '')).not.toThrow();
+        expect(() => m.getMix({ agentId: 'a', agentName: 'Alice', basePersona: '', agentRole: 'pro', round: 1, otherParticipants: [], usedPersonaKeys: [] })).not.toThrow();
     });
     it('instantiable', () => {
         expect(new PersonaMixer()).toBeDefined();
