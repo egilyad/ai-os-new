@@ -19,7 +19,7 @@ export class DarwinService implements IDarwinService {
             if(s>score){ best=mutated.slice(0,500); score=s; }
             await this.dal.kv.set(`darwin/${genId('gen')}`, { best: best.slice(0,100), score });
         }
-        try{ this.events?.emit(EVENTS.DARWIN_EVOLVE, { task: seed.slice(0,200) }); }catch{}
+        try{ this.events?.emit(EVENTS.DARWIN_EVOLVE, { task: seed.slice(0,200) }); }catch{ /* best-effort */ }
         return { best: best.slice(0,300), score };
     }
 }

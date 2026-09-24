@@ -9,7 +9,7 @@ export class PolicyDebateService implements IPolicyDebateService {
     async run(topic: string, plan: string){
           const advantages=[`Advantage of ${plan.slice(0,40)}: solves ${topic.slice(0,30)}`];
           const disadvantages=[`Disadvantage: cost of ${plan.slice(0,30)}`];
-          try{ this.events?.emit(EVENTS.POLICY_ADVANTAGES, { topic: topic.slice(0,200) }); }catch{}
+          try{ this.events?.emit(EVENTS.POLICY_ADVANTAGES, { topic: topic.slice(0,200) }); }catch{ /* best-effort */ }
           return { advantages, disadvantages };
     }
 }

@@ -14,7 +14,7 @@ export class EightStageService implements IEightStageService {
     async run(topic: string){
         const out: string[]=[];
         for (const s of STAGES){ const v=`${s}: ${topic.slice(0,60)}-ok`; out.push(v); await this.dal.kv.set(`eight/${s}/${Date.now()}`, v); }
-        try{ this.events?.emit(EVENTS.EIGHTSTAGE_RUN, { topic: topic.slice(0,200), stages: out.length }); }catch{}
+        try{ this.events?.emit(EVENTS.EIGHTSTAGE_RUN, { topic: topic.slice(0,200), stages: out.length }); }catch{ /* best-effort */ }
         return out;
     }
 }

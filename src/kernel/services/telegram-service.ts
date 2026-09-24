@@ -32,7 +32,7 @@ export class TelegramService {
             try {
                 const obj = JSON.parse(rows[i]!.content) as TelegramBridge & { kind?: string };
                 if (obj.kind === 'telegram' && obj.botToken) return obj;
-            } catch {}
+            } catch { /* best-effort */ }
         }
         return null;
     }

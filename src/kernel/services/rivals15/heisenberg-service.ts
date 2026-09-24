@@ -14,7 +14,7 @@ export class HeisenbergService implements IHeisenbergService {
     async board(){
         const rows=await this.dal.kv.list('heisenberg/');
         const res = rows.map(r=>{ const v=r.value as Record<string,string>; return { id: r.id, title: v.title as string, status: v.status as string }; }).slice(0,50);
-        try{ this.events?.emit(EVENTS.HEISENBERG_BOARD, { count: res.length }); }catch{}
+        try{ this.events?.emit(EVENTS.HEISENBERG_BOARD, { count: res.length }); }catch{ /* best-effort */ }
         return res;
     }
     async move(cardId: string, status: 'todo'|'doing'|'done'){
@@ -24,7 +24,7 @@ export class HeisenbergService implements IHeisenbergService {
         if(!found) throw new Error('card not found');
         (found as Record<string,unknown>).status=status;
         await this.dal.kv.set(key, found);
-        try{ this.events?.emit(EVENTS.HEISENBERG_MOVE, { cardId, status }); }catch{}
+        try{ this.events?.emit(EVENTS.HEISENBERG_MOVE, { cardId, status }); }catch{ /* best-effort */ }
         // auto-seed 8 roles on first board access
         if ((await this.dal.kv.list('heisenberg/')).length===0){
             for (const title of ['Backlog','Research','Design','Build','Review','QA','Deploy','Retro']){

@@ -20,7 +20,7 @@ export class IdeatorService implements IIdeatorService {
         for (const d of designs) scores[d]=Math.round((0.5+Math.random()*0.5)*100)/100;
         const best=Object.entries(scores).sort((a,b)=>b[1]-a[1])[0]?.[0]??'debate';
         await this.dal.kv.set(`ideator/${Date.now()}`, { topic: topic.slice(0,100), best, scores });
-        try{ this.events?.emit(EVENTS.IDEATOR_TEST, { topic: topic.slice(0,200), best }); }catch{}
+        try{ this.events?.emit(EVENTS.IDEATOR_TEST, { topic: topic.slice(0,200), best }); }catch{ /* best-effort */ }
         return { best, scores };
     }
 }

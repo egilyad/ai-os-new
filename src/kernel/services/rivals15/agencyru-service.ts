@@ -22,7 +22,7 @@ export class AgencyRuService implements IAgencyRuService {
     async catalog(){
         const extra=Array.from({length:177},(_,i)=>`RU Agent #${i+11}`);
         const res = [...CATALOG, ...extra];
-        try{ this.events?.emit(EVENTS.AGENCYRU_CATALOG, { count: res.length }); }catch{}
+        try{ this.events?.emit(EVENTS.AGENCYRU_CATALOG, { count: res.length }); }catch{ /* best-effort */ }
         return res;
     }
     async importAgent(name: string){
@@ -39,7 +39,7 @@ export class AgencyRuService implements IAgencyRuService {
             });
             res = crew.id;
         }
-        try{ this.events?.emit(EVENTS.AGENCYRU_IMPORT, { name: name.slice(0,80), queued }); }catch{}
+        try{ this.events?.emit(EVENTS.AGENCYRU_IMPORT, { name: name.slice(0,80), queued }); }catch{ /* best-effort */ }
         return res;
     }
 }

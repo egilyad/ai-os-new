@@ -22,10 +22,10 @@ export class CogTeamService implements ICogTeamService {
             try {
                 const r=await this.llm.chat([{role:'system',content:'You are CogTeam: Maestro/Memory/Critic/Engine. One paragraph each, then final.'},{role:'user',content:task.slice(0,2000)}],{temperature:0.4,maxTokens:800});
                 if(!r.error) out=r.content;
-            } catch {}
+            } catch { /* best-effort */ }
         }
         await this.dal.kv.set(`cogteam/${Date.now()}`, out.slice(0,3000));
-        try{ this.events?.emit(EVENTS.COGTEAM_RUN, { task: task.slice(0,200) }); }catch{}
+        try{ this.events?.emit(EVENTS.COGTEAM_RUN, { task: task.slice(0,200) }); }catch{ /* best-effort */ }
         return out.slice(0,3000);
     }
 }

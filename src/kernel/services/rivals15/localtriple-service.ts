@@ -20,7 +20,7 @@ export class LocalTripleService implements ILocalTripleService {
         return `[echo] ${prompt.slice(0,200)}`;
     }
     private async exec(plan: string){
-        if (this.tools) { try { const r=await this.tools.runWithTools(plan, { agentId: 'local-executor', maxRounds: 2 }); return r.output; } catch {} }
+        if (this.tools) { try { const r=await this.tools.runWithTools(plan, { agentId: 'local-executor', maxRounds: 2 }); return r.output; } catch { /* best-effort */ } }
         return await this.ask(`Исполни план:\n${plan}`);
     }
 }

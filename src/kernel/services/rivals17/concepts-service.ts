@@ -18,7 +18,7 @@ export class ConceptsService implements IConceptsService {
           const vc=va.map((x,i)=> (x+(vb[i]??0))/2);
           const name=`${a}A-${b}`;
           await this.dal.kv.set(`concepts/${name}`, vc);
-          try{ this.events?.emit(EVENTS.CONCEPTS_COMPOSE, { count: 2 }); }catch{}
+          try{ this.events?.emit(EVENTS.CONCEPTS_COMPOSE, { count: 2 }); }catch{ /* best-effort */ }
           return name;
     }
 }

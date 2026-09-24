@@ -14,7 +14,7 @@ export class MetaKbService implements IMetaKbService {
       async query(q: string){
           const rows=await this.dal.kv.list('metakb/');
           const scored=rows.map(r=>{ const t=r.value as string; const score=t.toLowerCase().split(q.toLowerCase().slice(0,20)).length; return { id: r.id, score, text: t }; }).sort((a,b)=>b.score-a.score).slice(0,3);
-          try{ this.events?.emit(EVENTS.METAKB_QUERY, { query: q.slice(0,200) }); }catch{}
+          try{ this.events?.emit(EVENTS.METAKB_QUERY, { query: q.slice(0,200) }); }catch{ /* best-effort */ }
           return scored.map(s=>s.text.slice(0,300));
     }
 }

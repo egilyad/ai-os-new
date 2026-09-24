@@ -13,7 +13,7 @@ export class RuslanService implements IRuslanService {
         await this.dal.kv.set(`ruslan-skill/${skill.slice(0,80)}`, { example: example.slice(0,2000), at: Date.now() });
         // самообучение: успех → новый skill в маркет
         if (this.skills) {
-            try { await this.skills.publish({ name: `ruslan-${skill.slice(0,40)}`, version: '1.0.0', description: `Ruslan learned: ${skill.slice(0,100)}`, permissions: [], entry: 'ruslan.ts', author: 'ruslan' }); } catch {}
+            try { await this.skills.publish({ name: `ruslan-${skill.slice(0,40)}`, version: '1.0.0', description: `Ruslan learned: ${skill.slice(0,100)}`, permissions: [], entry: 'ruslan.ts', author: 'ruslan' }); } catch { /* best-effort */ }
         }
         this.events.emit(EVENTS.RUSLAN_LEARN, { skill } as never);
     }

@@ -16,18 +16,18 @@ export class CogneeService implements ICogneeService {
         const id=`cognee-${Date.now()}`;
         let entities: string[] = [];
         if (this.llm) {
-            try { const r=await this.llm.chat([{role:'system',content:'Extract entities, one per line "- ".'},{role:'user',content:text.slice(0,3000)}],{temperature:0.2,maxTokens:400}); if(!r.error) entities=r.content.split('\n').map(l=>l.replace(/^-\s*/,'').trim()).filter(Boolean).slice(0,8); } catch {}
+            try { const r=await this.llm.chat([{role:'system',content:'Extract entities, one per line "- ".'},{role:'user',content:text.slice(0,3000)}],{temperature:0.2,maxTokens:400}); if(!r.error) entities=r.content.split('\n').map(l=>l.replace(/^-\s*/,'').trim()).filter(Boolean).slice(0,8); } catch { /* best-effort */ }
         }
         if (entities.length===0) entities=text.split(/[^a-zа-яё0-9]+/iu).filter(w=>w.length>4).slice(0,5);
         await this.dal.kv.set(`cognee/${id}`, { text: text.slice(0,2000), entities });
           for (const e of entities) await this.dal.kv.set(`cognee-edge/${id}/${e}`, { at: Date.now() });
-          try{ this.events?.emit(EVENTS.COGNEE_RECALL, { query: text.slice(0,100) }); }catch{}
+          try{ this.events?.emit(EVENTS.COGNEE_RECALL, { query: text.slice(0,100) }); }catch{ /* best-effort */ }
           return id;
     }
       async recall(query: string){
           const rows=await this.dal.kv.list('cognee/');
           const scored=rows.map(r=>{ const v=r.value as {text:string}; const score=v.text.toLowerCase().split(query.toLowerCase().slice(0,20)).length; return { id: r.id, score, text: v.text }; }).sort((a,b)=>b.score-a.score).slice(0,3);
-          try{ this.events?.emit(EVENTS.COGNEE_RECALL, { query: query.slice(0,100) }); }catch{}
+          try{ this.events?.emit(EVENTS.COGNEE_RECALL, { query: query.slice(0,100) }); }catch{ /* best-effort */ }
           return scored.map(s=>s.text.slice(0,400));
     }
 }

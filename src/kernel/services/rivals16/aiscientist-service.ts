@@ -15,21 +15,21 @@ export class AiScientistService implements IAiScientistService {
         private events?: IEventBus,
     ) {}
     async init(){ LOGGER.info('AiScientist', 'init',{}); } async destroy(){}
-    async queueIdea(idea: string){ const id=genId('idea'); await this.dal.kv.set(`ai-sci/${id}`, { id, idea: idea.slice(0,500), status: 'queued' }); try{ this.events?.emit(EVENTS.AISCIENTIST_QUEUED, { ideaId: id }); }catch{} return id; }
+    async queueIdea(idea: string){ const id=genId('idea'); await this.dal.kv.set(`ai-sci/${id}`, { id, idea: idea.slice(0,500), status: 'queued' }); try{ this.events?.emit(EVENTS.AISCIENTIST_QUEUED, { ideaId: id }); }catch{ /* best-effort */ } return id; }
     async runNext(){
         const rows=await this.dal.kv.list('ai-sci/');
         const queued=rows.map(r=>r.value as Record<string,string>).find(r=>r.status==='queued');
         if(!queued) throw new Error('no queued ideas');
         const idea: string = queued.idea ?? '';
         let code='print("experiment")';
-        if (this.llm) { try { const r=await this.llm.chat([{role:'system',content:'Write Python experiment for the idea, code block only.'},{role:'user',content:idea}],{temperature:0.4,maxTokens:800}); if(!r.error) code=r.content; } catch {} }
+        if (this.llm) { try { const r=await this.llm.chat([{role:'system',content:'Write Python experiment for the idea, code block only.'},{role:'user',content:idea}],{temperature:0.4,maxTokens:800}); if(!r.error) code=r.content; } catch { /* best-effort */ } }
         let paper=`# Paper: ${idea.slice(0,80)}\n\nExperiment:\n\`\`\`python\n${code.slice(0,2000)}\n\`\`\`\n\nResult: simulated\n`;
-        if (this.tools) { try { const res=await this.tools.runWithTools(`Write LaTeX abstract for: ${idea}`,{agentId:'ai-scientist',maxRounds:1}); paper+=`\nAbstract: ${res.output.slice(0,500)}`; } catch {} }
+        if (this.tools) { try { const res=await this.tools.runWithTools(`Write LaTeX abstract for: ${idea}`,{agentId:'ai-scientist',maxRounds:1}); paper+=`\nAbstract: ${res.output.slice(0,500)}`; } catch { /* best-effort */ } }
         const score=Math.round((Math.random()*0.3+0.6)*100)/100;
         queued.status='done';
         await this.dal.kv.set(`ai-sci/${queued.id}`, queued);
         await this.dal.kv.set(`ai-sci-paper/${queued.id}`, { paper: paper.slice(0,5000), score });
-        try{ this.events?.emit(EVENTS.AISCIENTIST_RUN, { ideaId: queued.id, score }); }catch{}
+        try{ this.events?.emit(EVENTS.AISCIENTIST_RUN, { ideaId: queued.id, score }); }catch{ /* best-effort */ }
         return { paper: paper.slice(0,5000), score };
     }
 }

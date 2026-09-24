@@ -22,7 +22,7 @@ export class SparksService implements ISparksService {
             } catch (e){ LOGGER.warn('Sparks', 'sparks failed',{error:e instanceof Error?e.message:String(e)}); }
         }
         await this.dal.kv.set(`sparks/${Date.now()}`, { hypothesis: hypothesis.slice(0,300), experiment, principle });
-        try{ this.events?.emit(EVENTS.SPARKS_CYCLE, { hypothesis: hypothesis.slice(0,200) }); }catch{}
+        try{ this.events?.emit(EVENTS.SPARKS_CYCLE, { hypothesis: hypothesis.slice(0,200) }); }catch{ /* best-effort */ }
         return { experiment: experiment.slice(0,500), principle: principle.slice(0,500) };
     }
 }

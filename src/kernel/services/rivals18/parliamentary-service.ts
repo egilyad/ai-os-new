@@ -15,7 +15,7 @@ export class ParliamentaryService implements IParliamentaryService {
         const ranking=[...teams].sort(()=>Math.random()-0.5);
         const pois=Math.floor(Math.random()*5);
           await this.dal.kv.set(`parliament/${Date.now()}`, { topic: topic.slice(0,100), ranking, pois });
-          try{ this.events?.emit(EVENTS.PARLIAMENTARY_RUN, { topic: topic.slice(0,200) }); }catch{}
+          try{ this.events?.emit(EVENTS.PARLIAMENTARY_RUN, { topic: topic.slice(0,200) }); }catch{ /* best-effort */ }
           return { ranking, pois };
     }
 }

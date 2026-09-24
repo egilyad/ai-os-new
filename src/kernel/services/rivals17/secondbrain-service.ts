@@ -18,7 +18,7 @@ export class SecondBrainService implements ISecondBrainService {
         if (verifier===worker) verifier='Verifier';
         const result=`SecondBrain for ${task.slice(0,80)} — worker ${worker} → verifier ${verifier} (V-model)`;
           await this.dal.kv.set(`secondbrain-run/${Date.now()}`, { task: task.slice(0,200), worker, verifier, result });
-          try{ this.events?.emit(EVENTS.SECONDBRAIN_RUN, { input: task.slice(0,200) }); }catch{}
+          try{ this.events?.emit(EVENTS.SECONDBRAIN_RUN, { input: task.slice(0,200) }); }catch{ /* best-effort */ }
           return { result: result.slice(0,500), verifiedBy: verifier };
     }
 }

@@ -15,7 +15,7 @@ export class MetanService implements IMetanService {
         let agents=1;
         for(let i=1;i<=d;i++) agents*=2;
           await this.dal.kv.set(`metan/${root.slice(0,40)}/${Date.now()}`, { root: root.slice(0,100), depth: d, agents });
-          try{ this.events?.emit(EVENTS.METAN_HIERARCHY, { id: root.slice(0,40) }); }catch{}
+          try{ this.events?.emit(EVENTS.METAN_HIERARCHY, { id: root.slice(0,40) }); }catch{ /* best-effort */ }
           return { agents, depth: d };
     }
 }

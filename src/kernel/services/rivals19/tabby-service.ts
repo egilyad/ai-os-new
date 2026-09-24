@@ -15,7 +15,7 @@ export class TabbyService implements ITabbyService {
         const rows=await this.dal.kv.list('tabby-model/');
         const model=rows[0]?.id.replace('tabby-model/','') ?? 'local';
         const res = `${prefix} /* Tabby ${model} */`;
-        try{ this.events?.emit(EVENTS.TABBY_COMPLETE, { prefix: prefix.slice(0,80) }); }catch{}
+        try{ this.events?.emit(EVENTS.TABBY_COMPLETE, { prefix: prefix.slice(0,80) }); }catch{ /* best-effort */ }
         return res;
     }
 }

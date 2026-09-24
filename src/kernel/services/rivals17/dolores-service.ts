@@ -13,13 +13,13 @@ export class DoloresService implements IDoloresService {
     async scaffold(steps: Array<{ do: string; pre?: string; post?: string }>){
           const id=`dolores-${Date.now()}`;
           await this.dal.kv.set(`dolores/${id}`, { steps: steps.slice(0,10), trace: [] as string[] });
-          try{ this.events?.emit(EVENTS.DOLORES_TRACE, { id }); }catch{}
+          try{ this.events?.emit(EVENTS.DOLORES_TRACE, { id }); }catch{ /* best-effort */ }
           return id;
       }
       async trace(){
           const rows=await this.dal.kv.list('dolores/');
           const res = rows.map(r=>r.id).slice(0,10);
-          try{ if(res.length) this.events?.emit(EVENTS.DOLORES_TRACE, { id: res[0]! }); }catch{}
+          try{ if(res.length) this.events?.emit(EVENTS.DOLORES_TRACE, { id: res[0]! }); }catch{ /* best-effort */ }
           return res;
       }
 }

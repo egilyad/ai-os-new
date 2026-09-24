@@ -14,7 +14,7 @@ export class HelixService implements IHelixService {
     async gaps(){
         const rows=await this.dal.kv.list('helix-onto/');
         const res = rows.length<2 ? ['gap: sparse ontology — need more terms'] : rows.slice(0,5).map(r=>`gap near ${r.id}`);
-        try{ this.events?.emit(EVENTS.HELIX_GAPS, { count: res.length }); }catch{}
+        try{ this.events?.emit(EVENTS.HELIX_GAPS, { count: res.length }); }catch{ /* best-effort */ }
         return res;
     }
 }

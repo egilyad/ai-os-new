@@ -14,12 +14,12 @@ export class GptEngineerService implements IGptEngineerService {
     async init(){ LOGGER.info('GptEngineer', 'init',{}); } async destroy(){}
     async run(spec: string){
         let clarify=`Spec: ${spec.slice(0,100)}`;
-        if (this.llm) { try { const r=await this.llm.chat([{role:'system',content:'Ask 2 clarifying questions, "- " each.'},{role:'user',content:spec.slice(0,1000)}],{temperature:0.4,maxTokens:200}); if(!r.error) clarify=r.content; } catch {} }
+        if (this.llm) { try { const r=await this.llm.chat([{role:'system',content:'Ask 2 clarifying questions, "- " each.'},{role:'user',content:spec.slice(0,1000)}],{temperature:0.4,maxTokens:200}); if(!r.error) clarify=r.content; } catch { /* best-effort */ } }
         let files=['README.md'];
         if (this.tools) {
-            try { const r=await this.tools.runWithTools(`Generate files for: ${spec.slice(0,500)}`,{agentId:'gpt-engineer',maxRounds:2}); files=r.output.split('\n').filter(l=>l.includes('.')).slice(0,5); if(files.length===0) files=['app.py']; } catch {}
+            try { const r=await this.tools.runWithTools(`Generate files for: ${spec.slice(0,500)}`,{agentId:'gpt-engineer',maxRounds:2}); files=r.output.split('\n').filter(l=>l.includes('.')).slice(0,5); if(files.length===0) files=['app.py']; } catch { /* best-effort */ }
         }
-        try{ this.events?.emit(EVENTS.GPTENGINEER_RUN, { spec: spec.slice(0,200) }); }catch{}
+        try{ this.events?.emit(EVENTS.GPTENGINEER_RUN, { spec: spec.slice(0,200) }); }catch{ /* best-effort */ }
         return { files, log: clarify.slice(0,500) };
     }
 }

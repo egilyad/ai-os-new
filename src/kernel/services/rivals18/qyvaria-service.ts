@@ -29,7 +29,7 @@ export class QyvariaService implements IQyvariaService {
             const neighs=[...((node as Record<string,unknown>)?.neighbors as string[] ?? []), ...((node as Record<string,unknown>)?.causal as string[] ?? [])];
             for(const n of neighs) if(!visited.has(n)) queue.push(n);
         }
-        try{ this.events?.emit(EVENTS.QYVARIA_QUERY, { query: start.slice(0,200) }); }catch{}
+        try{ this.events?.emit(EVENTS.QYVARIA_QUERY, { query: start.slice(0,200) }); }catch{ /* best-effort */ }
         return out;
     }
 }

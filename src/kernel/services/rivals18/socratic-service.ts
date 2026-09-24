@@ -13,7 +13,7 @@ export class SocraticService implements ISocraticService {
     async ask(question: string){ const q=question.slice(0,300); const list=(await this.dal.kv.get<string[]>('socratic/queue'))??[]; list.push(q); await this.dal.kv.set('socratic/queue', list.slice(-20)); }
       async discuss(topic: string){
           const qs=(await this.dal.kv.get<string[]>('socratic/queue'))??[];
-          try{ this.events?.emit(EVENTS.SOCRATIC_DISCUSS, { topic: topic.slice(0,200) }); }catch{}
+          try{ this.events?.emit(EVENTS.SOCRATIC_DISCUSS, { topic: topic.slice(0,200) }); }catch{ /* best-effort */ }
           return `Socratic seminar on ${topic.slice(0,80)}: ${qs.slice(-3).join(' | ') || 'What is the essence?'}`;
       }
 }

@@ -16,7 +16,7 @@ export class SciAgentsService implements ISciAgentsService {
         const hints=rows.slice(0,3).map(r=>r.id).join(', ');
         const h=`Hypothesis on ${topic.slice(0,80)} via ${hints || 'cross-domain links'} — hidden connection`;
         await this.dal.kv.set(`sci-hypo/${Date.now()}`, { topic: topic.slice(0,200), h });
-        try{ this.events?.emit(EVENTS.SCIAGENTS_HYPOTHESIZE, { topic: topic.slice(0,200) }); }catch{}
+        try{ this.events?.emit(EVENTS.SCIAGENTS_HYPOTHESIZE, { topic: topic.slice(0,200) }); }catch{ /* best-effort */ }
         return h.slice(0,500);
     }
 }

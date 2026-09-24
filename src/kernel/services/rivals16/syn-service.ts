@@ -18,7 +18,7 @@ export class SynService implements ISynService {
             const v=r.value as string;
             if (v.length>200) { await this.dal.kv.set(r.id, v.slice(0,200)+' [compressed]'); compressed++; }
         }
-        try{ this.events?.emit(EVENTS.SYN_SLEEP, { compressed }); }catch{}
+        try{ this.events?.emit(EVENTS.SYN_SLEEP, { compressed }); }catch{ /* best-effort */ }
         return compressed;
     }
     async loop(){

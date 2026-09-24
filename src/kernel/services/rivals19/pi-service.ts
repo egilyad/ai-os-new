@@ -15,7 +15,7 @@ export class PiService implements IPiService {
         const meta=await this.dal.kv.get<Record<string,number>>(`pi-tool/${tool}`);
         const latency=meta?.latencyMs ?? 20;
         const res = `pi:${tool} (${latency}ms) → ${JSON.stringify(args).slice(0,200)}`;
-        try{ this.events?.emit(EVENTS.PI_DISPATCH, { tool: tool.slice(0,80) }); }catch{}
+        try{ this.events?.emit(EVENTS.PI_DISPATCH, { tool: tool.slice(0,80) }); }catch{ /* best-effort */ }
         return res;
     }
 }

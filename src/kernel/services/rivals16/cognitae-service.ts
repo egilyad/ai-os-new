@@ -24,10 +24,10 @@ export class CognitaeService implements ICognitaeService {
             try {
                 const r=await this.llm.chat([{role:'system',content:'You are Cognitae Scholar+Syn+Axis. Synthesize coherently.'},{role:'user',content:task.slice(0,2000)}],{temperature:0.4,maxTokens:800});
                 if(!r.error) out=r.content;
-            } catch {}
+            } catch { /* best-effort */ }
         }
         await this.dal.kv.set(`cognitae-run/${Date.now()}`, out.slice(0,3000));
-        try{ this.events?.emit(EVENTS.COGNITAE_RUN, { task: task.slice(0,200) }); }catch{}
+        try{ this.events?.emit(EVENTS.COGNITAE_RUN, { task: task.slice(0,200) }); }catch{ /* best-effort */ }
         return out.slice(0,3000);
     }
 }

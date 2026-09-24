@@ -10,7 +10,7 @@ export class ChemistService implements IChemistService {
     async init(){ LOGGER.info('Chemist', 'init',{}); } async destroy(){}
     async ask(question: string){
         let rag='';
-        if (this.knowledge) { try { const hits=await this.knowledge.retrieve(question,3); rag=hits.map(h=>`[${h.title}] ${h.chunk.slice(0,400)}`).join('\n'); } catch {} }
+        if (this.knowledge) { try { const hits=await this.knowledge.retrieve(question,3); rag=hits.map(h=>`[${h.title}] ${h.chunk.slice(0,400)}`).join('\n'); } catch { /* best-effort */ } }
         let out: string;
         if (this.llm) {
             try {
@@ -20,13 +20,13 @@ export class ChemistService implements IChemistService {
                 ],{temperature:0.3,maxTokens:800});
                 if(!r.error) {
                     out = r.content;
-                    try{ this.events.emit(EVENTS.CHEMIST_ASK, { question: question.slice(0,200), hasRag: rag.length>0 }); }catch{}
+                    try{ this.events.emit(EVENTS.CHEMIST_ASK, { question: question.slice(0,200), hasRag: rag.length>0 }); }catch{ /* best-effort */ }
                     return out;
                 }
             } catch (e){ LOGGER.warn('Chemist', 'chemist failed',{error:e instanceof Error?e.message:String(e)}); }
         }
         out = `Chemist (offline): ${question.slice(0,200)} — RAG: ${rag.slice(0,300) || 'no data'}`;
-        try{ this.events.emit(EVENTS.CHEMIST_ASK, { question: question.slice(0,200), hasRag: rag.length>0 }); }catch{}
+        try{ this.events.emit(EVENTS.CHEMIST_ASK, { question: question.slice(0,200), hasRag: rag.length>0 }); }catch{ /* best-effort */ }
         return out;
     }
 }

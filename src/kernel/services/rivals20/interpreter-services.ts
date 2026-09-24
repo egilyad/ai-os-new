@@ -50,11 +50,11 @@ export class InterpreterService implements IInterpreterService {
                 )) ?? [];
                 hist.unshift({ lang, code: trimmed.slice(0, 1000), output: output.slice(0, 2000), at: Date.now() });
                 await this.dal.kv.set(InterpreterService.HISTORY_KEY, hist.slice(0, 30));
-            } catch {}
+            } catch { /* best-effort */ }
         }
         try {
             this.events?.emit(EVENTS.INTERPRETER_EXEC, { lang, codeHash: String(trimmed.length), ok });
-        } catch {}
+        } catch { /* best-effort */ }
         return output;
     }
 }
@@ -84,11 +84,11 @@ export class MiniSweService implements IMiniSweService {
                 )) ?? [];
                 hist.unshift({ issue: issue.slice(0, 500), patch: patch.slice(0, 2000), passed, at: Date.now() });
                 await this.dal.kv.set(MiniSweService.HISTORY_KEY, hist.slice(0, 20));
-            } catch {}
+            } catch { /* best-effort */ }
         }
         try {
             this.events?.emit(EVENTS.MINISWE_SOLVED, { issue: issue.slice(0, 200), passed });
-        } catch {}
+        } catch { /* best-effort */ }
         L2.info('MiniSwe', 'solve', { issue: issue.slice(0, 60), passed });
         return { patch, passed };
     }

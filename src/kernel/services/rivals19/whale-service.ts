@@ -34,9 +34,9 @@ export class CodeWhaleService implements ICodeWhaleService {
                 const hist = (await this.dal.kv.get<Array<{ kind: string; output: string; at: number }>>(CodeWhaleService.HISTORY_KEY)) ?? [];
                 hist.unshift({ kind: 'cargoCheck', output: output.slice(0, 2000), at: Date.now() });
                 await this.dal.kv.set(CodeWhaleService.HISTORY_KEY, hist.slice(0, 20));
-            } catch {}
+            } catch { /* best-effort */ }
         }
-        try { this.events?.emit(EVENTS.WHALE_CARGO_CHECK, { ok, output: output.slice(0, 1000) }); } catch {}
+        try { this.events?.emit(EVENTS.WHALE_CARGO_CHECK, { ok, output: output.slice(0, 1000) }); } catch { /* best-effort */ }
         return output;
     }
     async applyPatch(patch: string): Promise<string> {
@@ -47,9 +47,9 @@ export class CodeWhaleService implements ICodeWhaleService {
                 const hist = (await this.dal.kv.get<Array<{ kind: string; output: string; at: number }>>(CodeWhaleService.HISTORY_KEY)) ?? [];
                 hist.unshift({ kind: 'applyPatch', output: result, at: Date.now() });
                 await this.dal.kv.set(CodeWhaleService.HISTORY_KEY, hist.slice(0, 20));
-            } catch {}
+            } catch { /* best-effort */ }
         }
-        try { this.events?.emit(EVENTS.WHALE_PATCH_APPLIED, { lines }); } catch {}
+        try { this.events?.emit(EVENTS.WHALE_PATCH_APPLIED, { lines }); } catch { /* best-effort */ }
         return result;
     }
 }

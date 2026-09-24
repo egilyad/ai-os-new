@@ -16,7 +16,7 @@ export class FishbowlService implements IFishbowlService {
           if(bowl.length>=4) bowl.shift();
           bowl.push(newMember.slice(0,40));
           await this.dal.kv.set('fishbowl/bowl', bowl);
-          try{ this.events?.emit(EVENTS.FISHBOWL_ROTATE, { topic: newMember.slice(0,80) }); }catch{}
+          try{ this.events?.emit(EVENTS.FISHBOWL_ROTATE, { topic: newMember.slice(0,80) }); }catch{ /* best-effort */ }
           return [...bowl];
       }
 }
