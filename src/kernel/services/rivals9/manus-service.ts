@@ -128,8 +128,8 @@ export class ManusService implements IManusService {
     }
 
     async exportRun(kind: 'crew' | 'graph' | 'council', refId: string): Promise<string> {
-        let lines: string[] = [];
-        let title = `${kind}:${refId}`;
+        let lines: string[];
+        let title: string;
         if (kind === 'crew') {
             const crew = await this.crews.getCrew(refId);
             if (!crew) throw new Error(`Crew not found: ${refId}`);

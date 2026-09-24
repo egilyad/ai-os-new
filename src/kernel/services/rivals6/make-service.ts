@@ -58,7 +58,7 @@ export class MakeService implements IMakeService {
         initial?: Record<string, unknown>;
     }): Promise<Record<string, unknown>> {
         if (!this.tools) throw new Error('Tool runner unavailable');
-        let bundle: Record<string, unknown> = { ...(input.initial ?? {}) };
+        const bundle: Record<string, unknown> = { ...(input.initial ?? {}) };
         const byId = new Map(input.modules.map((m) => [m.id, m]));
 
         for (const mod of input.modules) {
@@ -98,7 +98,7 @@ export class MakeService implements IMakeService {
                         }
                     }
                 }
-                throw new Error(`Module ${mod.id} failed: ${msg}`);
+                throw new Error(`Module ${mod.id} failed: ${msg}`, { cause: e });
             }
         }
         this.events.emit(EVENTS.MAKE_RUN, { modules: input.modules.length });

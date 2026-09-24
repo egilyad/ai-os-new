@@ -125,7 +125,7 @@ export class CodeSandboxService implements ICodeSandboxService {
     private async runWithTimeout(ticketId: string, language: string, code: string): Promise<string> {
         const kvKey = `${ARTIFACT_PREFIX}${ticketId}`;
         // Load artifact to get timeoutMs
-        let artifact = (await this.deps.dal.kv.get<CodeArtifact>(kvKey)) ?? {
+        const artifact = (await this.deps.dal.kv.get<CodeArtifact>(kvKey)) ?? {
             ticketId,
             language,
             status: 'queued' as const,
@@ -180,7 +180,7 @@ export class CodeSandboxService implements ICodeSandboxService {
                 completedAt: Date.now(),
             };
             await this.deps.dal.kv.set(kvKey, failed);
-            throw new Error(failed.result ?? msg);
+            throw new Error(failed.result ?? msg, { cause: e });
         }
     }
 }

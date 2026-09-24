@@ -82,7 +82,7 @@ describe('G5 CodeSandboxService (static)', () => {
         let id: string | null = null;
         try {
             id = await svc.submit('javascript', 'while(true){}', { timeoutMs: 50 });
-        } catch (e) {
+        } catch {
             // CodeExec rethrows with timeout message — we still can find artifact by scanning
             // For this test we capture via list
         }

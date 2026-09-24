@@ -47,7 +47,7 @@ export class CodeAgentService implements ICodeAgentService {
                 const m = trimmed.match(CODE_LINE);
                 if (!m) continue;
                 const [, tool, rawArgs] = m as [string, string, string];
-                let args: Record<string, unknown> = {};
+                let args: Record<string, unknown>;
                 try {
                     args = rawArgs.trim() ? (JSON.parse(rawArgs) as Record<string, unknown>) : {};
                 } catch {

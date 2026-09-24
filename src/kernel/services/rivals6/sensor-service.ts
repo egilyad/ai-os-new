@@ -43,7 +43,7 @@ export class SensorService implements ISensorService {
         const expect = input.expect ?? '';
         const deadline = Date.now() + timeout;
         let attempts = 0;
-        let last = '';
+        let last: string;
         for (;;) {
             attempts += 1;
             try {

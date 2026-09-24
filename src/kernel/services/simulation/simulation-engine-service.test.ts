@@ -6,7 +6,7 @@ import { describe, it, expect } from 'vitest';
 import { SimulationEngineService } from './simulation-engine-service';
 
 function fakeWorldState(initial: import('../../contracts/simulation-world').SimulationWorld) {
-    let w = { ...initial, rooms: initial.rooms.map((r) => ({ ...r, agents: [...r.agents] })), relations: [...initial.relations], agentIds: [...initial.agentIds] };
+    const w = { ...initial, rooms: initial.rooms.map((r) => ({ ...r, agents: [...r.agents] })), relations: [...initial.relations], agentIds: [...initial.agentIds] };
     return {
         get: async (id: string) => (id === w.id ? { ...w, rooms: w.rooms.map((r) => ({ ...r, agents: [...r.agents] })) } : null),
         tick: async (id: string) => { if (id !== w.id) throw new Error('not found'); w.globalClock += 1; w.updatedAt = Date.now(); return { ...w }; },
