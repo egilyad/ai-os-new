@@ -66,8 +66,8 @@ export class ConversationDirectorService implements IConversationDirectorService
     private context: ConversationContext | undefined;
     private busUnsubs: Array<() => void> = [];
 
-    /** Read state without TS control-flow narrowing (pause/abort mutate it externally). */
-    private get phase(): DirectorState {
+    /** Fresh read without TS control-flow narrowing (pause/abort mutate it externally). */
+    private readPhase(): DirectorState {
         return this.state;
     }
 
@@ -186,13 +186,13 @@ export class ConversationDirectorService implements IConversationDirectorService
         // during the very first turn has a live signal to fire (B-08).
         this.orchestrator.getAbortSignal(sessionId);
         try {
-            while (this.phase !== 'paused' && this.phase !== 'aborted') {
+            while (this.readPhase() !== 'paused' && this.readPhase() !== 'aborted') {
                 const before = recording.results.length;
                 await this.orchestrator.processNextStep(sessionId);
                 if (recording.results.length === before) {
                     // Nothing executed: either paused/aborted (handled above) or the
                     // policy is exhausted → completion.
-                    if (this.phase === 'paused' || this.phase === 'aborted') break;
+                    if (this.readPhase() === 'paused' || this.readPhase() === 'aborted') break;
                     this.setState('completed');
                     break;
                 }
