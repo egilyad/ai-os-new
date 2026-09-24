@@ -68,7 +68,7 @@ export class Bm25Service implements IBM25Port {
         const scored: Array<{ id: string; score: number }> = [];
         for (const d of this.docs) {
             let score = 0;
-            for (const [term, _qCount] of qtf) {
+            for (const [term] of qtf) {
                 const tf = d.tf.get(term) ?? 0;
                 if (tf === 0) continue;
                 const df = this.df.get(term) ?? 0;

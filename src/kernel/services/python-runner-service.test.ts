@@ -1,6 +1,7 @@
 /**
- * PythonRunnerService tests — Python execution sandbox (roadmapp.md §P7).
+ * PythonRunnerService tests — Python execution sandbox (roadmapp.md A7).
  */
+/* eslint-disable @typescript-eslint/no-explicit-any -- raw Dexie passed where wrapper expected */
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { PythonRunnerService } from './python-runner-service';
 import { ProjectWorkspaceService } from './project-workspace-service';

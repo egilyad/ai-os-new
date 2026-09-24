@@ -142,7 +142,7 @@ export class PlannerService implements IPlannerService {
                     )) ?? [];
                 hist.unshift({ task: task.slice(0, 500), strategy, result: finalOut.slice(0, 4000), at: Date.now() });
                 await this.dal.kv.set(PlannerService.HISTORY_KEY, hist.slice(0, 20));
-            } catch {}
+            } catch { /* history best-effort */ }
         }
         try {
             this.events.emit(EVENTS.PLANNER_PLAN_COMPLETED, {

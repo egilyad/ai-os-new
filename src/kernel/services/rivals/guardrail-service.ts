@@ -84,7 +84,7 @@ export class GuardrailService implements IGuardrailService {
         await this.persist();
         try {
             this.events.emit(EVENTS.GUARDRAIL_RULE_ADDED, { ruleId: rule.id, name: rule.name, kind: rule.kind, tripwire: rule.tripwire });
-        } catch {}
+        } catch { /* events best-effort */ }
         return rule;
     }
 
@@ -97,7 +97,7 @@ export class GuardrailService implements IGuardrailService {
         await this.persist();
         try {
             this.events.emit(EVENTS.GUARDRAIL_RULE_REMOVED, { ruleId: id });
-        } catch {}
+        } catch { /* events best-effort */ }
     }
 
     async check(text: string): Promise<{ ok: boolean; hits: string[] }> {

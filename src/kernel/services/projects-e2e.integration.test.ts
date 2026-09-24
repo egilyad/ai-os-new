@@ -5,6 +5,7 @@
  *
  * Proves: Project → Workspace → Agent Runtime → Files → Preview → QA → Pipeline
  */
+/* eslint-disable @typescript-eslint/no-explicit-any -- integration stubs cast to real types */
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { SuperAgentsDB } from './dexie-schema';
 import { ProjectRepository } from '../dal/project-repository';
