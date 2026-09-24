@@ -1,6 +1,7 @@
 /**
  * ProjectInvocationBridge tests — invoke agent to work on project.
  */
+/* eslint-disable @typescript-eslint/no-explicit-any -- stub services cast to real types */
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { ProjectInvocationBridge } from './project-invocation-bridge';
 import { ProjectWorkspaceService } from './project-workspace-service';

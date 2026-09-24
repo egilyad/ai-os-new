@@ -176,7 +176,7 @@ export class ToolRunnerService implements IToolRunnerService {
                 ok: false,
                 latencyMs: now() - started,
             });
-            throw new Error(`Tool ${name} failed: ${msg}`);
+            throw new Error(`Tool ${name} failed: ${msg}`, { cause: e });
         }
     }
 
@@ -220,7 +220,7 @@ export class ToolRunnerService implements IToolRunnerService {
                 toolCalls: calls.map((c) => ({ id: c.id, type: 'function' as const, function: c.function })),
             });
             for (const call of calls) {
-                let args: Record<string, unknown> = {};
+                let args: Record<string, unknown>;
                 try {
                     args = JSON.parse(call.function.arguments || '{}') as Record<string, unknown>;
                 } catch {

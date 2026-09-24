@@ -43,9 +43,9 @@ export class N8NService {
                 try {
                     const obj = JSON.parse(rows[i]!.content) as { kind?: string; n8nApiUrl?: string; n8nApiKey?: string };
                     if (obj.kind === 'n8n' || obj.n8nApiUrl) return { url: obj.n8nApiUrl, apiKey: obj.n8nApiKey };
-                } catch {}
+                } catch { /* bad row */ }
             }
-        } catch {}
+        } catch { /* no memory */ }
         return {};
     }
 

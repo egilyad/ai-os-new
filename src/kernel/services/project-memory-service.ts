@@ -83,8 +83,9 @@ export class ProjectMemoryService implements IProjectMemoryService {
         this.decisions.set(projectId, list);
 
         // Also add to general entries
-        this.entries.get(projectId)?.push(entry as ProjectMemoryEntry) ||
-            this.entries.set(projectId, [entry as ProjectMemoryEntry]);
+        const existingDecisionEntries = this.entries.get(projectId);
+        if (existingDecisionEntries) existingDecisionEntries.push(entry as ProjectMemoryEntry);
+        else this.entries.set(projectId, [entry as ProjectMemoryEntry]);
 
         return entry;
     }
@@ -106,8 +107,9 @@ export class ProjectMemoryService implements IProjectMemoryService {
         list.push(entry);
         this.issues.set(projectId, list);
 
-        this.entries.get(projectId)?.push(entry as ProjectMemoryEntry) ||
-            this.entries.set(projectId, [entry as ProjectMemoryEntry]);
+        const existingIssueEntries = this.entries.get(projectId);
+        if (existingIssueEntries) existingIssueEntries.push(entry as ProjectMemoryEntry);
+        else this.entries.set(projectId, [entry as ProjectMemoryEntry]);
 
         return entry;
     }

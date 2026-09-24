@@ -1,6 +1,7 @@
 /**
- * MultiAgentProjectService tests — pipeline orchestration (roadmapp.md §P6).
+ * MultiAgentProjectService tests — pipeline orchestration (roadmapp.md A6).
  */
+/* eslint-disable @typescript-eslint/no-explicit-any -- partial PM stub cast to real type */
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { MultiAgentProjectService } from './multi-agent-project-service';
 import { nextStage, stageProgress, STAGE_ORDER } from '../types/multi-agent-types';
