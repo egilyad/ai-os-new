@@ -4,6 +4,7 @@
  * - DebateBreakpointService (#3)
  * - DebateQualityBenchmarkService (#4)
  */
+/* eslint-disable @typescript-eslint/no-explicit-any -- loose factory shapes for benchmark edge cases */
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import type { IEventBus } from './kernel/types/interfaces';
 import { CrossDebateMemoryService } from './kernel/services/debate-runtime/cross-debate-memory';

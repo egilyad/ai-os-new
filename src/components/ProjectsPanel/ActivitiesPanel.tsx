@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from '../../i18n/useTranslation';
 import { projectObservabilityService } from '../../kernel/instances/services-extras';
 import { Button } from '../../components/Common';
@@ -22,15 +22,15 @@ const ActivitiesPanel: React.FC<ActivitiesPanelProps> = ({ projectId }) => {
     const [errors, setErrors] = useState<ErrorRecord[]>([]);
     const [fileChanges, setFileChanges] = useState<FileChangeRecord[]>([]);
 
-    const load = () => {
+    const load = useCallback(() => {
         const svc = projectObservabilityService;
         setActivity(svc.getActivity(projectId, 50));
         setToolCalls(svc.getToolCalls(projectId, 50));
         setErrors(svc.getErrors(projectId));
         setFileChanges(svc.getFileChanges(projectId, 50));
-    };
+    }, [projectId]);
 
-    useEffect(() => { load(); }, [projectId]);
+    useEffect(() => { load(); }, [load]);
 
     return (
         <div>

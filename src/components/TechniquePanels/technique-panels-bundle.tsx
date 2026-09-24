@@ -2,6 +2,7 @@ import React from 'react';
 import { Shield, Zap, Sparkles } from 'lucide-react';
 import type { RouteMeta } from '../../types/routing';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- heterogeneous lazy panel components, same as PANEL_COMPONENTS in route-imports
 export const TECHNIQUE_PANEL_COMPONENTS: Record<string, React.ComponentType<any>> = {
     'cross-examination': React.lazy(() => import('./CrossExaminationPanel')),
     'delta-focusing': React.lazy(() => import('./DeltaFocusingPanel')),
