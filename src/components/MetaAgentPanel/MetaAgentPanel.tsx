@@ -37,15 +37,14 @@ export const MetaAgentPanel: React.FC = () => {
     useEffect(() => {
         setAgentId(prev => (agents.some(a => a.id === prev) ? prev : (agents[0]?.id ?? '')));
     }, [agents]);
-    useEffect(() => {
-        if (hasLiveDebate) loadDebate();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [sessionId]);
-
     const loadDebate = useCallback(() => {
         if (!liveArgs.length) return;
         setArgList(liveArgs.map((a) => ({ id: a.id, agentId: a.agentId, agentName: a.agentName, content: a.content, round: a.round })));
     }, [liveArgs]);
+    useEffect(() => {
+        if (hasLiveDebate) loadDebate();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [sessionId]);
 
     const handleGet = () => {
         const name = agents.find(a => a.id === agentId)?.name ?? agentId;

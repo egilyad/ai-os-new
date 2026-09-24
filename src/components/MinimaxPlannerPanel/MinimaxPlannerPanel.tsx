@@ -37,17 +37,16 @@ export const MinimaxPlannerPanel: React.FC = () => {
     useEffect(() => {
         if (!agents.some(a => a.id === agentId)) setAgentId(agents[0]?.id ?? 'alice');
     }, [agents, agentId]);
-    useEffect(() => {
-        if (hasLiveDebate) loadDebate();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [sessionId]);
-
     const loadDebate = useCallback(() => {
         if (!liveArgs.length) return;
         const g = new ArgumentGraphService();
         g.build(liveArgs.map((a) => ({ id: a.id, agentId: a.agentId, agentName: a.agentName, content: a.content, round: a.round, timestamp: Date.now(), confidence: 0.8 })));
         setServices({ planner: new MinimaxPlanner(g), graph: g });
     }, [liveArgs]);
+    useEffect(() => {
+        if (hasLiveDebate) loadDebate();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [sessionId]);
     const [round, setRound] = useState(3);
     const [best, setBest] = useState<ReturnType<MinimaxPlanner['plan']>>(null);
     const [candidates, setCandidates] = useState<ReturnType<MinimaxPlanner['plan']>[]>([]);

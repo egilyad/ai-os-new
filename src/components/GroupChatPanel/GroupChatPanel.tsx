@@ -32,13 +32,15 @@ export default function GroupChatPanel() {
 
     const active = chats.find((c) => c.id === activeId) ?? null;
 
-    const availableAgents = useMemo(() => {
+    const getAvailableAgents = () => {
         try {
             return orchestrator.getActiveTopology()?.nodes.filter((n) => n.type === 'agent') ?? [];
         } catch {
             return [];
         }
-    }, []);
+    };
+
+    const availableAgents = useMemo(() => getAvailableAgents(), []);
 
     useEffect(() => {
         let cancelled = false;

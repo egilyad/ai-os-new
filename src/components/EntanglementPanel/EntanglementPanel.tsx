@@ -20,15 +20,14 @@ export const EntanglementPanel: React.FC = () => {
     useEffect(() => {
         if (!agents.some((a) => a.id === agentId)) setAgentId(agents[0]?.id ?? '');
     }, [agents, agentId]);
-    useEffect(() => {
-        if (hasLiveDebate) loadDebate();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [sessionId]);
-
     const loadDebate = useCallback(() => {
         if (!liveArgs.length) return;
         setArgList(liveArgs.map((a) => ({ id: a.id, agentId: a.agentId, agentName: a.agentName, content: a.content, round: a.round })));
     }, [liveArgs]);
+    useEffect(() => {
+        if (hasLiveDebate) loadDebate();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [sessionId]);
 
     const [round, setRound] = useState(3);
     const [response, setResponse] = useState('');

@@ -16,6 +16,11 @@ export const AnchoringPanel: React.FC = () => {
     const [args, setArgs] = useState<Arg[]>([]);
     const { args: liveArgs, sessionId, hasLiveDebate } = useDebateArguments();
     const [round, setRound] = useState(4);
+    const loadDebate = useCallback(() => {
+        if (!liveArgs.length) return;
+        setArgs(liveArgs.map((a) => ({ id: a.id, agentId: a.agentId, agentName: a.agentName, content: a.content, round: a.round })));
+        setRound((r) => Math.max(r, ...liveArgs.map((a) => a.round)));
+    }, [liveArgs]);
     useEffect(() => {
         if (hasLiveDebate) loadDebate();
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -34,12 +39,6 @@ export const AnchoringPanel: React.FC = () => {
         const name = agents.find((a) => a.id === agentId)?.name ?? agentId;
         setArgs((a) => [...a, { id: `m${Date.now()}`, agentId, agentName: name, content: text, round }]);
     };
-
-    const loadDebate = useCallback(() => {
-        if (!liveArgs.length) return;
-        setArgs(liveArgs.map((a) => ({ id: a.id, agentId: a.agentId, agentName: a.agentName, content: a.content, round: a.round })));
-        setRound((r) => Math.max(r, ...liveArgs.map((a) => a.round)));
-    }, [liveArgs]);
 
     if (agents.length === 0) {
         return (

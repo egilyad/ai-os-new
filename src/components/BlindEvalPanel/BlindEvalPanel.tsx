@@ -29,13 +29,13 @@ export const BlindEvalPanel: React.FC = () => {
         agents.slice(0, 3).forEach((a, i) => (m[a.id] = cols[i % 3] ?? '#94a3b8'));
         return m;
     }, [agents]);
-    // keep useEffect import used (no-op sync) to satisfy lint / future agent sync
-    useEffect(() => { if (hasLiveDebate) loadDebate(); }, [sessionId]); // eslint-disable-line react-hooks/exhaustive-deps
     const loadDebate = useCallback(() => {
         if (!liveArgs.length) return;
         setLiveClaims(liveArgs.map((a) => ({ id: a.id, agentId: a.agentId, text: a.content, confidence: 0.8, round: 0, speaker: a.agentId, role: 'neutral' })));
         setLiveIds(Array.from(new Set(liveArgs.map((a) => a.agentId))));
     }, [liveArgs]);
+    // keep useEffect import used (no-op sync) to satisfy lint / future agent sync
+    useEffect(() => { if (hasLiveDebate) loadDebate(); }, [sessionId]); // eslint-disable-line react-hooks/exhaustive-deps
     const svc = useMemo(() => new BlindEvaluationService(), []);
     const scores = useMemo(() => {
         const map = svc.evaluateBlindly(derivedIds, claims, () => []);

@@ -5,7 +5,7 @@ import type { AgemsAgentCore } from '../types/agems-agent';
 describe('AgentConfigRevisionService', () => {
     let service: AgentConfigRevisionService;
     let kvStore: Map<string, unknown>;
-    let emitSpy: ReturnType<typeof vi.fn>;
+    let emitSpy: (event: string, data?: unknown) => void;
 
     const sampleAgent: AgemsAgentCore = {
         id: 'agent-1',

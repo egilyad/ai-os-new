@@ -24,17 +24,16 @@ export const FrameTrackerPanel: React.FC = () => {
     useEffect(() => {
         if (!agents.some(a => a.id === agentId)) setAgentId(agents[0]?.id ?? '');
     }, [agents, agentId]);
-    useEffect(() => {
-        if (hasLiveDebate) loadDebate();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [sessionId]);
-
     const loadDebate = useCallback(() => {
         if (!liveArgs.length) return;
         tracker.clearSession();
         liveArgs.forEach((a) => tracker.registerFrame(a.agentId, a.agentName, a.round, a.content));
         setVersion((v) => v + 1);
     }, [liveArgs, tracker]);
+    useEffect(() => {
+        if (hasLiveDebate) loadDebate();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [sessionId]);
     const [round, setRound] = useState(3);
     const [text, setText] = useState('');
 

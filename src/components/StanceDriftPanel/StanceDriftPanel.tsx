@@ -30,13 +30,6 @@ export const StanceDriftPanel: React.FC = () => {
     useEffect(() => {
         if (!agents.some((a) => a.id === agentId)) setAgentId(agents[0]?.id ?? '');
     }, [agents, agentId]);
-    useEffect(() => {
-        if (hasLiveDebate) loadDebate();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [sessionId]);
-    const [round, setRound] = useState(2);
-    const [text, setText] = useState('');
-
     const loadDebate = useCallback(() => {
         if (!liveArgs.length) return;
         const ids = Array.from(new Set(liveArgs.map((a) => a.agentId)));
@@ -45,6 +38,12 @@ export const StanceDriftPanel: React.FC = () => {
         setAgentId(liveArgs[0]?.agentId ?? agentId);
         setVersion((v) => v + 1);
     }, [liveArgs, topic, tracker, agentId]);
+    useEffect(() => {
+        if (hasLiveDebate) loadDebate();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [sessionId]);
+    const [round, setRound] = useState(2);
+    const [text, setText] = useState('');
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     void version;

@@ -299,6 +299,14 @@ const DashboardPanel: React.FC<DashboardPanelProps> = ({ onNavigate }) => {
     const hasProviderErrors =
         providerCounts.error > 0 || (systemState?.violations?.length ?? 0) > 0;
 
+    let showAgentsEmpty = false;
+    try {
+        const agents = agentService.getAgents?.() ?? [];
+        showAgentsEmpty = agents.length === 0;
+    } catch {
+        showAgentsEmpty = false;
+    }
+
     return (
         <div
             style={{
@@ -318,24 +326,16 @@ const DashboardPanel: React.FC<DashboardPanelProps> = ({ onNavigate }) => {
                 onNavigate={onNavigate}
             />
 
-            {(() => {
-                try {
-                    const agents = agentService.getAgents?.() ?? [];
-                    if (agents.length === 0) {
-                        return (
-                            <div style={{ display: 'flex', gap: '1rem', padding: '1.25rem', borderRadius: 14, border: '1px solid rgba(139,92,246,0.25)', background: 'linear-gradient(135deg, rgba(139,92,246,0.12), rgba(59,130,246,0.08))', alignItems: 'center' }}>
-                                <div style={{ width: 44, height: 44, borderRadius: 12, background: 'linear-gradient(135deg, #8b5cf6, #3b82f6)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>🤖</div>
-                                <div style={{ flex: 1 }}>
-                                    <div style={{ fontWeight: 700, color: 'var(--slate-50)', fontSize: '0.95rem' }}>{t('onboarding.agents_get_started_title') ?? 'Create your first agent'}</div>
-                                    <div style={{ fontSize: '0.8rem', color: 'var(--slate-400)', marginTop: 2 }}>{t('onboarding.agents_get_started_body') ?? 'Agents are your AI workforce. Create one to start debates, chats, and tasks.'}</div>
-                                </div>
-                                <button onClick={() => onNavigate('agents')} style={{ padding: '0.55rem 1.1rem', borderRadius: 10, border: 'none', background: 'linear-gradient(135deg, #8b5cf6, #3b82f6)', color: 'white', fontWeight: 700, cursor: 'pointer', fontSize: '0.85rem' }}>{t('onboarding.create_agent') ?? 'Create Agent'}</button>
-                            </div>
-                        );
-                    }
-                } catch { /* ignore */ }
-                return null;
-            })()}
+            {showAgentsEmpty && (
+                <div style={{ display: 'flex', gap: '1rem', padding: '1.25rem', borderRadius: 14, border: '1px solid rgba(139,92,246,0.25)', background: 'linear-gradient(135deg, rgba(139,92,246,0.12), rgba(59,130,246,0.08))', alignItems: 'center' }}>
+                    <div style={{ width: 44, height: 44, borderRadius: 12, background: 'linear-gradient(135deg, #8b5cf6, #3b82f6)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>🤖</div>
+                    <div style={{ flex: 1 }}>
+                        <div style={{ fontWeight: 700, color: 'var(--slate-50)', fontSize: '0.95rem' }}>{t('onboarding.agents_get_started_title') ?? 'Create your first agent'}</div>
+                        <div style={{ fontSize: '0.8rem', color: 'var(--slate-400)', marginTop: 2 }}>{t('onboarding.agents_get_started_body') ?? 'Agents are your AI workforce. Create one to start debates, chats, and tasks.'}</div>
+                    </div>
+                    <button onClick={() => onNavigate('agents')} style={{ padding: '0.55rem 1.1rem', borderRadius: 10, border: 'none', background: 'linear-gradient(135deg, #8b5cf6, #3b82f6)', color: 'white', fontWeight: 700, cursor: 'pointer', fontSize: '0.85rem' }}>{t('onboarding.create_agent') ?? 'Create Agent'}</button>
+                </div>
+            )}
 
             <QuickActionBar onNavigate={onNavigate} />
 
