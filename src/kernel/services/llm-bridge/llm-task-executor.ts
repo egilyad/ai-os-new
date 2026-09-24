@@ -69,7 +69,7 @@ export class LlmCrewExecutor implements ICrewTaskExecutor {
         role: { id: string; name: string; role: string; goal: string; backstory: string };
         context: string;
     }): Promise<string> {
-        let guide = '';
+        let guide: string;
         try {
             guide = (await this.opts.guideFor?.(input.role.role)) ?? '';
         } catch {

@@ -7,7 +7,7 @@ import { describe, it, expect } from 'vitest';
 import { McpHarnessService } from './mcp-harness-service';
 
 function fakeMcp(servers: Array<{ id: string; status: 'connected'|'disconnected'|'error' }>, opts?: { connectShouldFail?: boolean; callResult?: unknown }) {
-    let list = servers.map((s) => ({ ...s, name: s.id, url: 'http://localhost:3001', capabilities: [] as string[] }));
+    const list = servers.map((s) => ({ ...s, name: s.id, url: 'http://localhost:3001', capabilities: [] as string[] }));
     return {
         getServers: () => list,
         getServer: (id: string) => list.find((s) => s.id === id),

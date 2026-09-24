@@ -105,7 +105,7 @@ describe('Dexie schema versioning (P2.19)', () => {
         ];
 
         for (const table of expectedTables) {
-            expect((db as any)[table]).toBeDefined();
+            expect((db as unknown as Record<string, unknown>)[table]).toBeDefined();
         }
     });
 });

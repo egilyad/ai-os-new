@@ -1,6 +1,7 @@
 /**
  * FileToolset tests — agent tools for workspace operations.
  */
+/* eslint-disable @typescript-eslint/no-explicit-any -- raw Dexie + unknown tool results */
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { FILE_TOOLS, executeFileTool } from './file-toolset';
 import { ProjectWorkspaceService } from './project-workspace-service';

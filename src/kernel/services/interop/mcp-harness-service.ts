@@ -28,7 +28,7 @@ export class McpHarnessService implements IMcpHarnessService {
     async reconnectAll(): Promise<McpHarnessStats> {
         const stats = this.deps.mcpService.getConnectionStats();
         let reconnected = 0;
-        let failed = 0;
+        let failed: number;
         try {
             reconnected = await this.deps.mcpService.reconnectAll();
             failed = stats.total - stats.connected - reconnected;

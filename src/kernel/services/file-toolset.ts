@@ -5,6 +5,7 @@
  * workspace_list_dir, workspace_search, workspace_grep as tools for the agentic loop.
  */
 import type { IProjectWorkspaceService } from '../contracts/project-workspace';
+import type { EditKind } from '../types/workspace-types';
 
 export interface FileTool {
     name: string;
@@ -111,7 +112,7 @@ export async function executeFileTool(
 
         case 'workspace_file_edit': {
             const file = await ws.editFile(projectId, args.path as string, [{
-                kind: args.kind as any,
+                kind: args.kind as EditKind,
                 startLine: args.startLine as number,
                 endLine: args.endLine as number | undefined,
                 content: args.content as string | undefined,
