@@ -1,6 +1,7 @@
 /**
  * AutonomyOrchestrator tests — goal → planning → decomposition → assignment → execution → testing → revision → completion.
  */
+/* eslint-disable @typescript-eslint/no-explicit-any -- stub services cast to real types */
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { AutonomyOrchestrator } from './autonomy-orchestrator';
 import { nextPhase } from '../types/autonomy-types';

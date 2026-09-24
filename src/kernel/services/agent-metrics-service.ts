@@ -7,7 +7,7 @@ export class AgentMetricsService {
     }
 
     async list(agentId: string, type?: AgentMetric['metricType']): Promise<AgentMetric[]> {
-        let col = getDexieDb().agentMetrics.where('agentId').equals(agentId);
+        const col = getDexieDb().agentMetrics.where('agentId').equals(agentId);
         const rows = (await col.toArray()) as unknown as AgentMetric[];
         return type ? rows.filter((r) => r.metricType === type) : rows;
     }

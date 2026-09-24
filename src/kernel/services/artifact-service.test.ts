@@ -1,6 +1,7 @@
 /**
  * ArtifactService tests — registry, build, export/import, snapshots.
  */
+/* eslint-disable @typescript-eslint/no-explicit-any -- raw Dexie passed where wrapper expected */
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { ArtifactService } from './artifact-service';
 import { ProjectWorkspaceService } from './project-workspace-service';

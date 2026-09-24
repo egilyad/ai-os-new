@@ -1,6 +1,7 @@
 /**
  * AutonomyRunner tests — wires orchestrator to real runtime.
  */
+/* eslint-disable @typescript-eslint/no-explicit-any -- stub services cast to real types */
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { AutonomyRunner } from './autonomy-runner';
 import { AutonomyOrchestrator } from './autonomy-orchestrator';

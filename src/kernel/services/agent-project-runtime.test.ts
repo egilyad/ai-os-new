@@ -1,6 +1,7 @@
 /**
  * AgentProjectRuntime tests — project-scoped agentic loop.
  */
+/* eslint-disable @typescript-eslint/no-explicit-any -- raw Dexie passed where wrapper expected */
 import { describe, it, expect, beforeEach, vi, type Mock } from 'vitest';
 import { AgentProjectRuntime } from './agent-project-runtime';
 import { ProjectService } from './project-service';
