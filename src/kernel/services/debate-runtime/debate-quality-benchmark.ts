@@ -225,13 +225,22 @@ export class DebateQualityBenchmarkService {
         this.setupEventListeners();
     }
 
+    private unsubs: Array<() => void> = [];
+
     private setupEventListeners(): void {
-        this.deps.eventBus.onSafe<{ sessionId: string; verdict: DebateVerdict }>(
+        this.unsubs.push(this.deps.eventBus.onSafe<{ sessionId: string; verdict: DebateVerdict }>(
             'debate:verdict:generated',
             (data) => {
                 LOGGER.info('QualityBenchmark', 'Auto-scoring debate', { sessionId: data.sessionId });
             },
-        );
+        ));
+    }
+
+    async destroy(): Promise<void> {
+        for (const unsub of this.unsubs) {
+            try { unsub(); } catch { /* ignore */ }
+        }
+        this.unsubs = [];
     }
 
     async load(): Promise<void> {

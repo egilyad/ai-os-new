@@ -21,7 +21,7 @@ describe('BeliefMiningService', () => {
             { id: 'a1', agentId: 'alice', agentName: 'Alice', content: 'Freedom is more important than equality, market drives innovation', round: 1 },
             { id: 'b1', agentId: 'bob', agentName: 'Bob', content: 'Equality is more important than freedom, regulation ensures fairness', round: 1 },
         ]);
-        const conflicts = (svc as any).findConflicts ? (svc as any).findConflicts(beliefs) : [];
+        const conflicts = svc.mineConflicts(beliefs, 2);
         expect(Array.isArray(conflicts)).toBe(true);
     });
 });

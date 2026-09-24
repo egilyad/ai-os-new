@@ -130,15 +130,24 @@ export class CrossDebateMemoryService {
         this.setupEventListeners();
     }
 
+    private unsubs: Array<() => void> = [];
+
     private setupEventListeners(): void {
-        this.deps.eventBus.onSafe<{ sessionId: string; verdict: DebateVerdict }>(
+        this.unsubs.push(this.deps.eventBus.onSafe<{ sessionId: string; verdict: DebateVerdict }>(
             EVENTS.DEBATE_VERDICT_GENERATED,
             (data) => {
                 this.indexVerdict(data.sessionId, data.verdict).catch((e) => {
                     LOGGER.warn('CrossDebateMemory', 'Failed to index verdict', { error: String(e) });
                 });
             },
-        );
+        ));
+    }
+
+    async destroy(): Promise<void> {
+        for (const unsub of this.unsubs) {
+            try { unsub(); } catch { /* ignore */ }
+        }
+        this.unsubs = [];
     }
 
     async loadIndex(): Promise<void> {

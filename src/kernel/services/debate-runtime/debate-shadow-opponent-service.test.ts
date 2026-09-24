@@ -4,13 +4,13 @@ import { ShadowOpponentService } from './debate-shadow-opponent-service';
 describe('ShadowOpponentService', () => {
     it('returns null for short draft', async () => {
         const svc = new ShadowOpponentService();
-        const adapter = { sendMessage: async () => ({ content: 'strengthened' }) } as any;
+        const adapter = { sendMessage: async (): Promise<{ content: string }> => ({ content: 'strengthened' }) };
         const res = await svc.strengthenArgument('short', 'prompt', 'alice', 'Alice', adapter, 'model', 'key', new AbortController().signal);
         expect(res).toBeNull();
     });
     it('returns null when aborted', async () => {
         const svc = new ShadowOpponentService();
-        const adapter = { sendMessage: async () => ({ content: 'x' }) } as any;
+        const adapter = { sendMessage: async (): Promise<{ content: string }> => ({ content: 'x' }) };
         const ac = new AbortController(); ac.abort();
         const res = await svc.strengthenArgument('This is a long enough draft content that exceeds fifty characters for testing purpose.', 'prompt', 'alice', 'Alice', adapter, 'model', 'key', ac.signal);
         expect(res).toBeNull();
