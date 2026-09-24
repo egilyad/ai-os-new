@@ -170,7 +170,7 @@ export const useDirectorStore = create<DirectorStoreState>((set) => {
         ...EMPTY_STATE,
         history: [],
         loadHistory: async () => {
-            let all: ConversationSession[] = [];
+            let all: ConversationSession[];
             try {
                 all = await directorRepository.list();
             } catch {

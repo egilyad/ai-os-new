@@ -51,7 +51,7 @@ export async function runGatedChange<T>(
         await recordGate(store, gate);
         return { result: null, gate };
     }
-    let result: T | null = null;
+    let result: T | null;
     try {
         result = await change.apply();
     } catch (e) {
@@ -65,7 +65,7 @@ export async function runGatedChange<T>(
         await recordGate(store, gate);
         return { result: null, gate };
     }
-    let verdict = { ok: true, detail: 'no-verify' };
+    let verdict: { ok: boolean; detail: string };
     try {
         verdict = await change.verify(snap);
     } catch (e) {

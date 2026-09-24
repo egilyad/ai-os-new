@@ -13,6 +13,7 @@ import { rootLogger } from '../logger-service';
 import { EVENTS } from '../../events/event-names';
 
 // Ленивый require для разрыва циклов: tsconfig app без node-типов.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- Node require shim for lazy cycle-safe registration
 declare const require: (id: string) => any;
 
 const LOGGER = rootLogger.child('SimEngine');

@@ -1,6 +1,7 @@
 /**
  * WebsitePreviewService tests — assembles project files into a preview.
  */
+/* eslint-disable @typescript-eslint/no-explicit-any -- raw Dexie passed where wrapper expected */
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { WebsitePreviewService } from './website-preview-service';
 import { ProjectWorkspaceService } from './project-workspace-service';

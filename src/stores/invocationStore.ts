@@ -256,7 +256,7 @@ export const useInvocationStore = create<InvocationStoreState>((set) => {
             });
         },
         loadCosts: async () => {
-            let costs: Record<string, number> = {};
+            let costs: Record<string, number>;
             try {
                 costs = await invocationCostTracker.getAllCosts();
             } catch {

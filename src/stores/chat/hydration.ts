@@ -71,12 +71,13 @@ export function useChatStoreHydration(): void {
                 // unconditional setState re-triggers this subscriber forever.
                 // NOTE: setState must be skipped entirely (not called with the
                 // same reference) — zustand notifies on every setState call.
-                if (syncedDeletes.length === 0) return;
-                const prev = useChatStore.getState();
-                const remaining = new Set(prev.deletedIds);
-                for (const id of syncedDeletes) remaining.delete(id);
-                if (remaining.size !== prev.deletedIds.size) {
-                    useChatStore.setState({ deletedIds: remaining });
+                if (syncedDeletes.length > 0) {
+                    const prev = useChatStore.getState();
+                    const remaining = new Set(prev.deletedIds);
+                    for (const id of syncedDeletes) remaining.delete(id);
+                    if (remaining.size !== prev.deletedIds.size) {
+                        useChatStore.setState({ deletedIds: remaining });
+                    }
                 }
             }
         };
@@ -142,7 +143,7 @@ export function useChatStoreHydration(): void {
                             // FIX(chat-identity): restore the user's last selected session
                             // instead of always jumping to most-recent. Validate: the saved
                             // id may point to a deleted session.
-                            let restoredId: string | null = null;
+                            let restoredId: string | null;
                             try {
                                 restoredId = BucketStorageAdapter.getItem(
                                     'chat_active_session_id',
