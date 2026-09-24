@@ -18,7 +18,7 @@ function mockEventBus() {
         onSafe: vi.fn().mockReturnValue(vi.fn()),
         subscribeAll: vi.fn().mockReturnValue(vi.fn()),
         getSubscriptionStats: vi.fn(),
-    } as any;
+    } as unknown as import('../types/interfaces').IEventBus;
 }
 
 describe('ProjectObservabilityService', () => {

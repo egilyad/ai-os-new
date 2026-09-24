@@ -1,6 +1,7 @@
 /**
  * ProjectService tests — CRUD, agents, tasks, runs, files, memory.
  */
+/* eslint-disable @typescript-eslint/no-explicit-any -- raw Dexie passed where wrapper expected */
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { ProjectService } from './project-service';
 import { ProjectRepository } from '../dal/project-repository';

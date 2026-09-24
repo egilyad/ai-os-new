@@ -14,6 +14,7 @@ import type {
     WorkspaceFileChange,
 } from '../types/workspace-types';
 import type { DatabaseService } from './database-service';
+import type { ProjectFile } from '../types/project-types';
 import type { IEventBus } from '../types/interfaces';
 
 const MIME_MAP: Record<string, string> = {
@@ -52,16 +53,16 @@ function parentDir(path: string): string {
     return parts.join('/') || '/';
 }
 
-function fileToRecord(file: WorkspaceFile, projectId: string): any {
+function fileToRecord(file: WorkspaceFile, projectId: string): ProjectFile {
     return { ...file, projectId };
 }
 
-function recordToFile(record: any): WorkspaceFile {
+function recordToFile(record: ProjectFile & { mime?: string; size?: number }): WorkspaceFile {
     return {
         path: record.path,
         content: record.content,
-        mime: record.mime,
-        size: record.size,
+        mime: record.mime ?? 'text/plain',
+        size: record.size ?? record.content.length,
         createdAt: record.createdAt,
         updatedAt: record.updatedAt,
     };
@@ -86,7 +87,7 @@ export class ProjectWorkspaceService implements IProjectWorkspaceService {
     async writeFile(projectId: string, path: string, content: string, agentId?: string): Promise<WorkspaceFile> {
         const normalized = normalizePath(path);
         const now = Date.now();
-        const existing = await this.db.projectFiles.get([projectId, normalized] as any);
+        const existing = await this.db.projectFiles.get([projectId, normalized]);
 
         const file: WorkspaceFile = {
             path: normalized,
@@ -106,7 +107,7 @@ export class ProjectWorkspaceService implements IProjectWorkspaceService {
             agentId,
         });
 
-        await this.db.projectFiles.put(fileToRecord(file, projectId) as any);
+        await this.db.projectFiles.put(fileToRecord(file, projectId));
         this.emit('workspace:file:written', { projectId, path: normalized, size: file.size });
         return file;
     }
@@ -115,7 +116,7 @@ export class ProjectWorkspaceService implements IProjectWorkspaceService {
 
     async readFile(projectId: string, path: string): Promise<WorkspaceFile | undefined> {
         const normalized = normalizePath(path);
-        const record = await this.db.projectFiles.get([projectId, normalized] as any);
+        const record = await this.db.projectFiles.get([projectId, normalized]);
         return record ? recordToFile(record) : undefined;
     }
 
@@ -164,7 +165,7 @@ export class ProjectWorkspaceService implements IProjectWorkspaceService {
             timestamp: Date.now(),
         });
 
-        await this.db.projectFiles.delete([projectId, normalized] as any);
+        await this.db.projectFiles.delete([projectId, normalized]);
         this.emit('workspace:file:deleted', { projectId, path: normalized });
     }
 
@@ -290,9 +291,7 @@ export class ProjectWorkspaceService implements IProjectWorkspaceService {
     async getHistory(projectId: string, path?: string): Promise<WorkspaceFileChange[]> {
         try {
             const key = path ? `workspace-history/${projectId}/${normalizePath(path)}` : `workspace-history/${projectId}`;
-            const record = await (this.db as any).kv?.get(key);
-            const changes = (record?.value as WorkspaceFileChange[]) ?? [];
-            return changes;
+            return (await this.db.getKv<WorkspaceFileChange[]>(key)) ?? [];
         } catch {
             return [];
         }
@@ -301,10 +300,9 @@ export class ProjectWorkspaceService implements IProjectWorkspaceService {
     private async recordChange(projectId: string, change: WorkspaceFileChange): Promise<void> {
         try {
             const key = `workspace-history/${projectId}/${change.path}`;
-            const existing = await (this.db as any).kv?.get(key);
-            const changes = ((existing?.value as WorkspaceFileChange[]) ?? []).slice(-99);
+            const changes = ((await this.db.getKv<WorkspaceFileChange[]>(key)) ?? []).slice(-99);
             changes.push(change);
-            await (this.db as any).kv?.set(key, changes);
+            await this.db.setKv(key, changes);
         } catch { /* best-effort */ }
     }
 
@@ -341,7 +339,7 @@ export class ProjectWorkspaceService implements IProjectWorkspaceService {
         for (const record of allFiles) {
             const filePath = normalizePath(record.path);
             if (filePath.startsWith(prefix) || filePath === normalized) {
-                await this.db.projectFiles.delete([projectId, filePath] as any);
+                await this.db.projectFiles.delete([projectId, filePath]);
             }
         }
         this.emit('workspace:dir:deleted', { projectId, path: normalized });

@@ -1,6 +1,7 @@
 /**
  * ProjectWorkspaceService tests — virtual FS on Dexie.
  */
+/* eslint-disable @typescript-eslint/no-explicit-any -- raw Dexie passed where wrapper expected */
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { ProjectWorkspaceService } from './project-workspace-service';
 import { SuperAgentsDB } from './dexie-schema';

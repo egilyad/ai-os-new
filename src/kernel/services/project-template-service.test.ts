@@ -1,6 +1,7 @@
 /**
  * ProjectTemplateService tests — website + Python templates.
  */
+/* eslint-disable @typescript-eslint/no-explicit-any -- raw Dexie passed where wrapper expected */
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { ProjectTemplateService } from './project-template-service';
 import { ProjectWorkspaceService } from './project-workspace-service';
