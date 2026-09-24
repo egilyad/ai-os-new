@@ -22,7 +22,7 @@ import type {
     VoiceProfile,
 } from '../types/persona-types';
 
-export interface VoiceProfileRecord extends VoiceProfile {}
+export type VoiceProfileRecord = VoiceProfile;
 
 export class PersonaRepository {
     constructor(private db: DatabaseService) {}

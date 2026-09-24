@@ -35,7 +35,7 @@ export class ProjectRepository {
     }
 
     async list(status?: ProjectStatus, type?: ProjectType): Promise<Project[]> {
-        let collection = this.db.projects.toCollection();
+        const collection = this.db.projects.toCollection();
         let items = await collection.toArray();
         if (status) items = items.filter((p) => p.status === status);
         if (type) items = items.filter((p) => p.type === type);
@@ -88,7 +88,7 @@ export class ProjectRepository {
     // ── Files ──
 
     async putFile(file: ProjectFile): Promise<void> {
-        await this.db.projectFiles.put(file as any);
+        await this.db.projectFiles.put(file);
     }
 
     async getFile(projectId: string, path: string): Promise<ProjectFile | undefined> {

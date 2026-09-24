@@ -33,7 +33,7 @@ const TeamWizard: React.FC<TeamWizardProps> = ({ templates, roles, onSave, onCan
     });
     const [selectedDomain, setSelectedDomain] = useState<TeamDomain | null>(null);
 
-    const canNext = (): boolean => {
+    const canNext = useCallback((): boolean => {
         switch (step) {
             case 0:
             case 1:
@@ -49,7 +49,7 @@ const TeamWizard: React.FC<TeamWizardProps> = ({ templates, roles, onSave, onCan
             default:
                 return true;
         }
-    };
+    }, [step, team]);
 
     const nextStep = useCallback(() => {
         if (canNext() && step < 6) setStep(step + 1);

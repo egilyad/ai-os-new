@@ -25,7 +25,7 @@ export interface AgentDefinition {
     persona: string;
     tools?: unknown;
     config?: Record<string, unknown>;
-    factory?: (deps: any) => any;
+    factory?: (deps: Record<string, unknown>) => unknown;
     journalHooks?: Record<string, unknown>;
 }
 

@@ -35,9 +35,8 @@ export function useRealAgents(): RealAgent[] {
         try {
             const cb = () => setAgents(readAgents());
             // onSafe is preferred (filters + error isolation)
-            const bus: any = eventBus as any;
-            if (bus?.onSafe) unsub = bus.onSafe(EVENTS.SYSTEM_TOPOLOGY_MOUNTED, cb);
-            else if (bus?.on) unsub = bus.on(EVENTS.SYSTEM_TOPOLOGY_MOUNTED, cb);
+            if (eventBus?.onSafe) unsub = eventBus.onSafe(EVENTS.SYSTEM_TOPOLOGY_MOUNTED, cb);
+            else if (eventBus?.on) unsub = eventBus.on(EVENTS.SYSTEM_TOPOLOGY_MOUNTED, cb);
         } catch {
             // no bus in test harness
         }

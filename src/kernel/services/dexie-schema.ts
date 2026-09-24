@@ -337,7 +337,7 @@ export class SuperAgentsDB extends Dexie {
     projects!: Table<Project>;
     projectTasks!: Table<ProjectTask>;
     projectRuns!: Table<ProjectRun>;
-    projectFiles!: Table<ProjectFile>;
+    projectFiles!: Table<ProjectFile, [string, string]>;
     projectArtifacts!: Table<ProjectArtifact>;
     projectAssignments!: Table<ProjectAgentAssignment>;
 
