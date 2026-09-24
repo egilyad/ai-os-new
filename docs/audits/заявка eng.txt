@@ -1,0 +1,167 @@
+Ниже — улучшенная версия вашей заявки на английском, в которую я внедрил ключевые рекомендации: (1) явно прописал «выбор режима из множества режимов» на основе точки росы + доступной мощности ВИЭ; (2) добавил измеримые пороги/правила для п. 10, 11, 18; (3) усилил п. 13 (рекуперация) с конкретными направлениями потока; (4) добавил отдельный вариант исполнения для влажного морского воздуха (коррозия/солевой аэрозоль) без сужения объёма прав. [nature](https://www.nature.com/articles/s41467-022-32642-0)
+
+***
+
+APPLICATION  
+“Adaptive Autonomous Installation for Producing Fresh Water from Atmospheric Air”
+
+1. Technical Field  
+The invention relates to systems for producing fresh water from atmospheric air.  
+In particular, the invention relates to autonomous and partially autonomous installations that use renewable energy sources to intake, condition, cool, and condense atmospheric air, followed by collection and purification of the resulting condensate.  
+The installation can be used in coastal cities, remote areas, residential and industrial buildings, agricultural facilities, and autonomous water-supply systems.
+
+2. Background Art  
+Atmospheric water generators are known in which water vapor from atmospheric air is condensed by cooling the air below its dew point temperature.  
+Systems are also known that use solar energy, wind energy, refrigeration machines, heat exchangers, and various energy-storage systems.  
+However, the efficiency of water production substantially depends on the temperature and relative humidity of the atmospheric air, as well as on the amount of available energy.  
+At high ambient air temperatures, cooling large volumes of air requires a significant amount of energy.  
+Moreover, the availability of solar and wind energy varies over time.  
+Therefore, there is a need for an installation capable of automatically changing its water-production mode depending simultaneously on atmospheric conditions and available renewable energy. [nature](https://www.nature.com/articles/s41467-022-32642-0)
+
+3. Objective of the Invention  
+The objective of the invention is to create an installation for producing water from atmospheric air that:  
+- uses more than one renewable energy source;  
+- allows accumulation of available energy;  
+- determines the temperature and relative humidity of the air;  
+- determines or calculates the dew point;  
+- adapts the airflow and cooling mode;  
+- uses pre-cooling;  
+- provides thermal energy recovery;  
+- automatically distributes available energy among the functional units of the installation.
+
+4. Technical Result  
+The technical result is an increase in the efficiency of using available energy for producing water from atmospheric air through coordinated control of:  
+- airflow;  
+- cooling temperature;  
+- condensation;  
+- solar energy;  
+- wind energy;  
+- an electrical storage device;  
+- a thermal storage device;  
+- a heat-recovery system.  
+An additional technical result is the ability to adapt the installation’s productivity to changing atmospheric conditions. [nature](https://www.nature.com/articles/s41467-022-32642-0)
+
+5. Summary of the Invention  
+The installation comprises an air duct, an air-moving device, an air pre-treatment system, a recuperative heat exchanger, a pre-cooling unit, and a condensation unit.  
+Atmospheric air enters through an air intake and a filter, after which it is moved by a fan through the air duct.  
+In the recuperative heat exchanger, heat exchange is carried out between air streams.  
+The air then enters the pre-cooling unit and subsequently the condensation unit.  
+In the condensation unit, the air temperature is reduced to a level at which water vapor condenses.  
+The condensate is collected, purified, and directed to a clean-water reservoir. [pmc.ncbi.nlm.nih](https://pmc.ncbi.nlm.nih.gov/articles/PMC10073925/)
+
+6. Energy System  
+The energy system comprises at least two renewable energy sources.  
+In a preferred embodiment:  
+10 — solar photovoltaic panels;  
+12 — a wind turbine.  
+The generated electrical energy is supplied to a controller/power converter 13.  
+From there, energy is directed to the installation’s consumers and may be stored in a battery 14.  
+Additionally, a solar thermal collector 11 is provided, connected to a thermal storage device 15. [pubs.acs](https://pubs.acs.org/doi/10.1021/acsestengg.4c00098)
+
+7. Adaptive Control System  
+The installation includes:  
+16 — a temperature sensor;  
+17 — a relative humidity sensor;  
+18 — an airflow and/or wind speed sensor;  
+19 — an adaptive controller.  
+The controller receives information from the sensors and determines the installation’s operating parameters.  
+Based on the temperature and relative humidity, the dew point is determined or calculated.  
+Thereafter, the controller adjusts:  
+- fan speed;  
+- pre-cooling capacity;  
+- condensation-unit mode;  
+- distribution of electrical energy;  
+- use of the battery;  
+- use of available solar and wind energy.  
+Thus, the installation does not operate in a single fixed mode but selects an operating mode in accordance with current conditions. [nature](https://www.nature.com/articles/s41467-022-32642-0)
+
+8. Heat Recovery  
+The system comprises a heat-recovery device 20.  
+Thermal energy removed during cooling and condensation can be partially reused.  
+Recovered energy can be directed to:  
+- pre-treatment of air;  
+- preheating of individual streams;  
+- the thermal storage device;  
+- regeneration of installation components. [mdpi](https://www.mdpi.com/2071-1050/17/22/10309)
+
+9. Water Production  
+After the condensation unit 6, the resulting condensate flows into a collector 7.  
+The water then passes through a purification unit 8.  
+After purification, the water enters the reservoir 9.  
+Depending on the intended use of the installation, the purification unit may include:  
+- mechanical filtration;  
+- sorption purification;  
+- a carbon filter;  
+- membrane purification;  
+- ultraviolet disinfection;  
+- mineralization.
+
+10. List of Elements in the Drawing  
+No. | Element  
+1 | Air intake  
+2 | Atmospheric air filter  
+3 | Fan  
+4 | Recuperative heat exchanger  
+5 | Pre-cooling unit  
+6 | Condensation unit  
+7 | Condensate collector  
+8 | Water purification unit  
+9 | Clean-water reservoir  
+10 | Solar photovoltaic panels  
+11 | Solar thermal collector  
+12 | Wind turbine  
+13 | Controller/power converter  
+14 | Electrical energy battery  
+15 | Thermal storage device  
+16 | Temperature sensor  
+17 | Relative humidity sensor  
+18 | Airflow/wind speed sensor  
+19 | Adaptive controller  
+20 | Heat-recovery system  
+
+11. Description of the Drawings  
+Figure 1 — General view of the adaptive autonomous installation.  
+Figure 2 — Functional diagram of the air duct.  
+Figure 3 — Recuperative heat exchanger and pre-cooling.  
+Figure 4 — Condensation unit and condensate collection system.  
+Figure 5 — Water purification and storage system.  
+Figure 6 — Solar and wind energy system.  
+Figure 7 — Battery and thermal energy storage systems.  
+Figure 8 — Adaptive control system based on temperature, humidity, dew point, and available power.
+
+12. CLAIMS  
+Independent Claim  
+1. An installation for producing water from atmospheric air, comprising an air duct, a device for moving atmospheric air, a condensation unit, a condensate collection system, and an energy system comprising at least first and second renewable energy sources and an energy storage device, characterized in that it comprises a control system connected to a temperature sensor and a relative humidity sensor of the atmospheric air, wherein the control system is configured to determine or calculate a dew point, to determine available energy capacity of the renewable energy sources, and to select an operating mode from a plurality of operating modes by adaptively controlling at least the flow rate of atmospheric air and the mode of the condensation unit depending simultaneously on the determined dew point and the available energy capacity. [nature](https://www.nature.com/articles/s41467-022-32642-0)
+
+Dependent Claims  
+2. The installation according to claim 1, characterized in that the first renewable energy source comprises a photovoltaic solar module.  
+3. The installation according to claim 1, characterized in that the second renewable energy source comprises a wind turbine with an electrical generator.  
+4. The installation according to claim 1, characterized in that the air duct comprises an atmospheric air filter.  
+5. The installation according to claim 1, characterized in that the air duct comprises a recuperative heat exchanger providing heat exchange between incoming and outgoing air streams.  
+6. The installation according to claim 1, characterized in that it comprises a pre-cooling unit for air, located upstream of the condensation unit.  
+7. The installation according to claim 1, characterized in that the condensation unit comprises a cooled surface whose temperature is regulated by the control system.  
+8. The installation according to claim 1, characterized in that the energy storage device comprises an electrical energy battery.  
+9. The installation according to claim 1, characterized in that it comprises a solar thermal collector and a thermal storage device.  
+10. The installation according to claim 1, characterized in that the control system is configured to regulate the speed of the atmospheric air-moving device depending on relative humidity and the dew point, wherein when the dew point exceeds a first threshold value the fan speed is increased to raise airflow, and when the dew point falls below a second threshold value the fan speed is decreased to reduce energy consumption. [nature](https://www.nature.com/articles/s41467-022-32642-0)
+11. The installation according to claim 1, characterized in that the control system is configured to change the operating mode of the condensation unit when the difference between the temperature of the condensation surface and the dew point changes, wherein when the difference is less than a predefined temperature margin the cooling power is increased or the airflow is reduced to maintain condensation, and when the difference exceeds the margin the cooling power is decreased to save energy. [pmc.ncbi.nlm.nih](https://pmc.ncbi.nlm.nih.gov/articles/PMC10073925/)
+12. The installation according to claim 1, characterized in that it comprises a controller/power converter configured to distribute electrical energy among the fan, the pre-cooling unit, the condensation unit, a pump, and the water purification system.  
+13. The installation according to claim 1, characterized in that it comprises a heat-recovery system configured to transfer at least part of the thermal energy from the condensation unit to the pre-cooling unit, wherein the heat-recovery system comprises a secondary fluid loop that conveys recovered heat to the pre-cooling unit, to the thermal storage device, or to a regeneration circuit of the installation. [mdpi](https://www.mdpi.com/2071-1050/17/22/10309)
+14. The installation according to claim 13, characterized in that the heat-recovery system is connected to a thermal storage device.  
+15. The installation according to claim 1, characterized in that it comprises a condensate collector connected to a water purification unit.  
+16. The installation according to claim 15, characterized in that the water purification unit comprises at least one mechanical, sorption, membrane, or ultraviolet purification element.  
+17. The installation according to claim 1, characterized in that the control system additionally receives information on airflow speed and/or wind speed.  
+18. The installation according to claim 1, characterized in that the control system is configured to select between at least two operating modes depending on the combination of temperature, relative humidity, dew point, and available energy capacity, wherein a high-productivity mode is selected when the dew point is above a threshold and the available energy capacity exceeds a power threshold, and an energy-saving mode is selected when the available energy capacity falls below the power threshold or when the dew point is below the threshold. [nature](https://www.nature.com/articles/s41467-022-32642-0)
+19. The installation according to claim 1, characterized in that it is modular and comprises mutually connectable air, energy, condensation, water-purification, and control modules.  
+20. A method of producing water from atmospheric air, comprising intake of atmospheric air, moving it through an air duct, pre-treating and cooling the air, condensing water vapor contained in the air, collecting the condensate, and purifying the resulting water, characterized in that the temperature and relative humidity of the atmospheric air are measured, the dew point is determined or calculated, the available capacity of at least two renewable energy sources is determined, and the flow rate of atmospheric air and the condensation mode are automatically changed depending on the dew point and the available capacity. [nature](https://www.nature.com/articles/s41467-022-32642-0)
+
+13. Abstract  
+An adaptive autonomous installation for producing water from atmospheric air comprises an air duct, an air-moving device, a recuperative heat exchanger, a pre-cooling unit, a condensation unit, a condensate collector, a water purification system, and a reservoir. The energy system comprises at least two renewable energy sources, preferably photovoltaic solar panels and a wind turbine, as well as an energy storage device. The control system receives data on temperature, relative humidity, and airflow speed, determines or calculates the dew point, and selects an operating mode from a plurality of modes by regulating airflow and the condensation-unit mode taking into account the dew point and available energy capacity. A heat-recovery system is additionally provided, allowing thermal energy to be reused. The installation is intended for autonomous or partially autonomous production of fresh water from atmospheric air. [nature](https://www.nature.com/articles/s41467-022-32642-0)
+
+***
+
+Optional embodiment for coastal/marine air (add to Description, not to claims, to keep scope broad)  
+In a variant adapted for humid marine air in coastal cities, the air intake (1) and filter (2) are configured to reduce salt-aerosol ingress. The intake includes a labyrinthine baffle and a multi-stage filtration train (e.g., a G4 pre-filter followed by an electrostatic or high-efficiency particulate filter). Air duct surfaces and heat-exchanger fins are coated with anti-corrosion, hydrophilic coatings; metallic components are made of stainless steel 316L or duplex steel, or aluminum alloys with marine-grade protection. Electronics are sealed to at least IP65. A conductivity sensor in the condensate collector (7) detects elevated salinity; upon detection, the control system (19) diverts the initial condensate fraction to drain and increases the share of recirculated air through the recuperative heat exchanger (4) to limit salt carryover. In high-salt conditions, the controller reduces fan speed to decrease aerosol loading and prioritizes energy to pre-filtration and purification stages. This variant improves reliability and water quality in coastal environments without limiting the general scope of the claims. [pubs.acs](https://pubs.acs.org/doi/10.1021/acsestengg.4c00098)
+
+***
+
+Если хотите, я могу ещё раз «прогнать» п. 1, 10, 11, 13, 18 через более узкие поисковые запросы (например, по «dew point + fan speed + condenser mode + renewable power management») и выдать короткую таблицу novelty/отличий для каждого пункта. [nature](https://www.nature.com/articles/s41467-022-32642-0)
