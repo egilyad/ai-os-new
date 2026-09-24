@@ -299,13 +299,13 @@ const DashboardPanel: React.FC<DashboardPanelProps> = ({ onNavigate }) => {
     const hasProviderErrors =
         providerCounts.error > 0 || (systemState?.violations?.length ?? 0) > 0;
 
-    let showAgentsEmpty = false;
-    try {
-        const agents = agentService.getAgents?.() ?? [];
-        showAgentsEmpty = agents.length === 0;
-    } catch {
-        showAgentsEmpty = false;
-    }
+    const showAgentsEmpty = (() => {
+        try {
+            return (agentService.getAgents?.() ?? []).length === 0;
+        } catch {
+            return false;
+        }
+    })();
 
     return (
         <div
