@@ -18,8 +18,8 @@ describe('ShadowOpponentService', () => {
     it('strengthens with mock adapter', async () => {
         const svc = new ShadowOpponentService();
         const adapter = {
-            sendMessage: async () => ({ content: '=== CRITIQUE === weak === STRENGTHENED === improved content with more evidence' }),
-        } as any;
+            sendMessage: async (): Promise<{ content: string }> => ({ content: '=== CRITIQUE === weak === STRENGTHENED === improved content with more evidence' }),
+        };
         const draft = 'This is a sufficiently long draft argument about climate policy that needs strengthening and contains enough characters.';
         const res = await svc.strengthenArgument(draft, 'You are Alice, pro climate action', 'alice', 'Alice', adapter, 'model', 'key', new AbortController().signal, 'English');
         if (res) {

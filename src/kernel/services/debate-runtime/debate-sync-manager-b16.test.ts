@@ -1,4 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
+/* eslint-disable @typescript-eslint/no-explicit-any -- white-box test poking privates with partial shapes */
 import { DebateSyncManager, DebateAlreadyActiveError } from './debate-sync-manager';
 
 function fakeEngine() {
