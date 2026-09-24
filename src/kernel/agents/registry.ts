@@ -25,7 +25,9 @@ export interface AgentDefinition {
     persona: string;
     tools?: unknown;
     config?: Record<string, unknown>;
-    factory?: (deps: Record<string, unknown>) => unknown;
+    // Heterogeneous agent factories take specific deps (e.g. AdvisorServiceDeps);
+    // never-param keeps the field typed without forcing a common deps shape.
+    factory?: (deps: never) => unknown;
     journalHooks?: Record<string, unknown>;
 }
 
