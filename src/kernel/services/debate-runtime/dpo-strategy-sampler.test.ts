@@ -4,17 +4,12 @@ import { DpoStrategySampler } from './dpo-strategy-sampler';
 describe('DpoStrategySampler', () => {
     it('sample returns something', () => {
         const s = new DpoStrategySampler();
-        const fn = (s as any).sample || (s as any).select || (s as any).getStrategy;
-        if (fn) {
-            const res = fn.call(s, 'climate topic', []);
-            expect(res === null || typeof res === 'object' || typeof res === 'string').toBe(true);
-        } else {
-            expect(s).toBeDefined();
-        }
+        const res = s.scorePreference('climate action now with strong evidence', 'climate topic', []);
+        expect(typeof res.overall).toBe('number');
     });
     it('does not throw', () => {
         const s = new DpoStrategySampler();
-        expect(() => (s as any).sample?.('test', [])).not.toThrow();
+        expect(() => s.rankByPreference([{ text: 'test argument', agentId: 'a' }], 'test', 1)).not.toThrow();
     });
     it('instantiable', () => {
         expect(new DpoStrategySampler()).toBeDefined();

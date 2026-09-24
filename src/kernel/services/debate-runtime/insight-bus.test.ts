@@ -8,7 +8,7 @@ describe('InsightBus',()=>{
     it('getInsights returns array',()=>{
         const b=new InsightBus();
         b.ingestRound(1, [{agentId:'a', content:'First insight', agentName:'Alice'}]);
-        const ins = (b as any).allInsights ?? (b as any).getInsights?.() ?? [];
+        const ins = b.getActiveInsights();
         expect(Array.isArray(ins)).toBe(true);
     });
     it('instantiable',()=>{expect(new InsightBus()).toBeDefined()});
