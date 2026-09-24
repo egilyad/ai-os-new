@@ -203,7 +203,7 @@ export class AutonomyRunner implements IAutonomyRunner {
         for (let i = 0; i < lines.length; i++) {
             const rawLine = lines[i];
             if (!rawLine) continue;
-            const line = rawLine.trim().replace(/^\d+[\.\)]\s*/, '');
+            const line = rawLine.trim().replace(/^\d+[.)]\s*/, '');
             if (line.length < 3) continue;
 
             tasks.push({

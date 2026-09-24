@@ -101,8 +101,8 @@ export class BrowserHarnessService implements IBrowserHarnessService {
         validate(act, args, this.policy);
 
         const id = `${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
-        let result = '';
-        let status: BrowserArtifact['status'] = 'queued';
+        let result: string;
+        let status: BrowserArtifact['status'];
         let handoffReason: string | undefined;
 
         try {

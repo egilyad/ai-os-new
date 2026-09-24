@@ -15,7 +15,7 @@ export class CapabilityManager implements ICapabilityManager {
         return this.deps.skillService.getSkills();
     }
 
-    async executeTool(toolId: string, input: unknown, signal?: AbortSignal): Promise<any> {
+    async executeTool(toolId: string, input: unknown, signal?: AbortSignal): Promise<unknown> {
         return this.deps.toolService.execute(toolId, input, signal);
     }
 }

@@ -48,12 +48,12 @@ export class AgentFactory implements IAgentFactory {
             try {
                 const r = await this.llm.chat([{role:'system',content:resolved.prompt || 'You are an agent.'},{role:'user',content:task.slice(0,4000)}],{temperature:0.4,maxTokens:800});
                 if(!r.error) output=r.content;
-            } catch {}
+            } catch { /* llm optional */ }
         }
         if (!output) output=`[echo:${resolved.definition.name}] ${task.slice(0,200)}`;
         // PERSIST memory
         if (this.memory) {
-            try { await this.memory.write({ kind:'episodic', scope:'private', ownerId: id, content: `task:${task.slice(0,200)} → ${output.slice(0,300)}`, importance: 0.6 }); } catch {}
+            try { await this.memory.write({ kind:'episodic', scope:'private', ownerId: id, content: `task:${task.slice(0,200)} → ${output.slice(0,300)}`, importance: 0.6 }); } catch { /* memory optional */ }
         }
         await this.dal.kv.set(`agent-run/${id}/${Date.now()}`, { task: task.slice(0,300), output: output.slice(0,2000), toolCalls });
         this.events.emit(EVENTS.AGENT_EXECUTED, { agentId: id });
