@@ -46,7 +46,7 @@ export class SmallvilleService implements ISmallvilleService {
                     { role: 'user', content: recent || 'no prior memories' }
                 ], { temperature: 0.5, maxTokens: 400 });
                 if (!res.error) return res.content.split('\n').map(l=>l.replace(/^-\s*/,'').trim()).filter(Boolean).slice(0,6);
-            } catch {}
+            } catch { /* llm optional */ }
         }
         return [`08:00 observe ${date}`, '12:00 reflect', '16:00 plan', '20:00 rest'];
     }

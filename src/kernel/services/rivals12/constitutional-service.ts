@@ -41,7 +41,7 @@ export class ConstitutionalService implements IConstitutionalService {
                     { role: 'user', content: text.slice(0,4000) }
                 ], { temperature: 0.3, maxTokens: 800 });
                 if (!res.error) { this.events.emit(EVENTS.CONSTIT_REVISE, { ok: true }); return res.content; }
-            } catch {}
+            } catch { /* llm optional */ }
         }
         return `${text}\n[revised to address: ${violations.join('; ').slice(0,200)}]`;
     }

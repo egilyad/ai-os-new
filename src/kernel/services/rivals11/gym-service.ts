@@ -97,8 +97,8 @@ export class GymService implements IGymService {
         const inst = await this.require(instanceId);
         const rand = mulberry(inst.seed * 100003 + inst.steps * 97 + 13);
         inst.steps += 1;
-        let obs = '';
-        let reward = 0;
+        let obs: string;
+        let reward: number;
         let done = false;
         if (inst.kind === 'bandit') {
             const arm = Math.max(0, Math.min(2, Number(action)));

@@ -150,7 +150,7 @@ export class PlannerService implements IPlannerService {
                 strategy,
                 result: finalOut.slice(0, 2000),
             });
-        } catch {}
+        } catch { /* events best-effort */ }
         return finalOut;
     }
 
@@ -159,7 +159,7 @@ export class PlannerService implements IPlannerService {
         const res = this.applyFilters('post', await this.executeStep(this.applyFilters('pre', step)));
         try {
             this.events.emit(EVENTS.PLANNER_STEP, { step: step.slice(0, 500), result: res.slice(0, 2000) });
-        } catch {}
+        } catch { /* events best-effort */ }
         return res;
     }
 

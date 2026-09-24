@@ -22,7 +22,7 @@ export class VoyagerService implements IVoyagerService {
                     { role: 'user', content: context.slice(0,1000) }
                 ], { temperature: 0.6, maxTokens: 120 });
                 if (!res.error) return res.content.trim().slice(0,200);
-            } catch {}
+            } catch { /* llm optional */ }
         }
         return context ? `Explore: ${context.slice(0,80)}` : 'Collect wood';
     }
@@ -32,7 +32,7 @@ export class VoyagerService implements IVoyagerService {
                 const res = await this.tools.runWithTools(`Verify goal "${goal}" with evidence: ${evidence.slice(0,1000)} — reply YES or NO.`, { agentId: 'voyager', maxRounds: 1 });
                 if (/yes/i.test(res.output)) return true;
                 if (/no/i.test(res.output)) return false;
-            } catch {}
+            } catch { /* tools optional */ }
         }
         return evidence.toLowerCase().includes(goal.toLowerCase().split(' ')[0] ?? '');
     }
@@ -40,7 +40,7 @@ export class VoyagerService implements IVoyagerService {
         const goal = await this.proposeGoal();
         let evidence = '(no tools)';
         if (this.tools) {
-            try { const r = await this.tools.runWithTools(goal, { agentId: 'voyager', maxRounds: 2 }); evidence = r.output; } catch {}
+            try { const r = await this.tools.runWithTools(goal, { agentId: 'voyager', maxRounds: 2 }); evidence = r.output; } catch { /* tools optional */ }
         }
         const ok = await this.verify(goal, evidence);
         if (ok && evidence.length > 20) {
