@@ -13,7 +13,7 @@ describe('StanceDriftTracker', () => {
         t.reset(['bob'], 'topic');
         t.registerArgument('bob', 'Bob', 1, 'Nuclear is best for energy future');
         t.registerArgument('bob', 'Bob', 2, 'Solar is actually best, I changed completely');
-        const events = (t as any).driftEvents ?? (t as any).getDriftEvents?.() ?? [];
+        const events = t.getDriftEvents('bob', 1);
         expect(Array.isArray(events)).toBe(true);
     });
     it('does not throw on empty', () => {
