@@ -12,7 +12,7 @@ export class McpDeepService implements IMcpDeepService {
     }
     async connectAll(){
         if (!this.mcp) return 0;
-        let n=0; for (const s of this.mcp.getServers()) { try { await this.mcp.connect(s.id); n++; } catch {} }
+        let n=0; for (const s of this.mcp.getServers()) { try { await this.mcp.connect(s.id); n++; } catch { /* best-effort */ } }
         return n;
     }
 }

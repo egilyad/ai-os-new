@@ -25,7 +25,7 @@ export class AgentViewService implements IAgentViewService {
         } else {
             out = `skill ${skill} via container: ${task.slice(0,100)}`;
         }
-        try{ this.events?.emit(EVENTS.AGENTVIEW_SKILL, { skill, task: task.slice(0,200) }); }catch{}
+        try{ this.events?.emit(EVENTS.AGENTVIEW_SKILL, { skill, task: task.slice(0,200) }); }catch{ /* best-effort */ }
         return out;
     }
 }

@@ -14,7 +14,7 @@ export class DynamicWorkflowService implements IDynamicWorkflowService {
         const done=await this.queue.drain(4);
         // checker verifies
         if (checker && this.llm) {
-            try { const r=await this.llm.chat([{role:'system',content:`Check work for: ${checker}`},{role:'user',content: done.map(d=>d.result??'').join('\n').slice(0,3000)}],{temperature:0.2,maxTokens:300}); if(!r.error && /fail/i.test(r.content)) return done.map(d=>`needs fix:${d.id}`); } catch {}
+            try { const r=await this.llm.chat([{role:'system',content:`Check work for: ${checker}`},{role:'user',content: done.map(d=>d.result??'').join('\n').slice(0,3000)}],{temperature:0.2,maxTokens:300}); if(!r.error && /fail/i.test(r.content)) return done.map(d=>`needs fix:${d.id}`); } catch { /* best-effort */ }
         }
         return done.map(d=>d.result ?? d.id);
     }

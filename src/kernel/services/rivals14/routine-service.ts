@@ -13,12 +13,12 @@ export class RoutineService implements IRoutineService {
     async init(){ LOGGER.info('Routine', 'init',{}); } async destroy(){}
     async define(name: string, trigger: { kind: 'schedule'|'api'|'event'; spec: string }, workflow: string[]){
         const id=genId('routine'); await this.dal.kv.set(`routines/${id}`, { id, name: name.slice(0,80), trigger, workflow: workflow.slice(0,20) });
-        try{ this.events?.emit(EVENTS.ROUTINE_DEFINED, { routineId: id, name: name.slice(0,80) }); }catch{}
+        try{ this.events?.emit(EVENTS.ROUTINE_DEFINED, { routineId: id, name: name.slice(0,80) }); }catch{ /* best-effort */ }
         return id;
     }
     async trigger(routineId: string, payload=''){
         const r=await this.dal.kv.get<Record<string,unknown>>(`routines/${routineId}`); if(!r) throw new Error('routine not found');
-        try{ this.events?.emit(EVENTS.ROUTINE_TRIGGERED, { routineId }); }catch{}
+        try{ this.events?.emit(EVENTS.ROUTINE_TRIGGERED, { routineId }); }catch{ /* best-effort */ }
         return `triggered ${(r as Record<string,string>).name}: ${payload.slice(0,100)} → ${(r as Record<string,unknown>).workflow as string[]}${''}`;
     }
 }

@@ -14,7 +14,7 @@ export class ClaudeCodeService implements IClaudeCodeService {
         const id=genId('plan');
         let content=`Plan for ${task.slice(0,120)}: 1) analyze 2) edit 3) test`;
         if (this.llm) {
-            try { const r=await this.llm.chat([{role:'system',content:'Propose a 3-step plan for the task, one per line.'},{role:'user',content:task.slice(0,2000)}],{temperature:0.3,maxTokens:400}); if(!r.error) content=r.content; } catch {}
+            try { const r=await this.llm.chat([{role:'system',content:'Propose a 3-step plan for the task, one per line.'},{role:'user',content:task.slice(0,2000)}],{temperature:0.3,maxTokens:400}); if(!r.error) content=r.content; } catch { /* best-effort */ }
         }
         await this.dal.kv.set(`cc-plan/${id}`, { id, task: task.slice(0,500), content, approved:false });
         return id;
@@ -26,7 +26,7 @@ export class ClaudeCodeService implements IClaudeCodeService {
         // hooks pre
         const hooks=(await this.dal.kv.get<string[]>(`cc-hooks/pre`))??[];
         let out=`Executing ${planId}: ${task}\nHooks pre: ${hooks.join(', ')||'none'}\n`;
-        if (this.coord) { try { out+=await this.coord.spawnSubCrew(task); } catch {} }
+        if (this.coord) { try { out+=await this.coord.spawnSubCrew(task); } catch { /* best-effort */ } }
         this.events.emit(EVENTS.CLAUDECODE_EXEC, { planId });
         return out.slice(0,4000);
     }

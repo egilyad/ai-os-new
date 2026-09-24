@@ -13,7 +13,7 @@ export class CacheControlService implements ICacheControlService {
     async markCacheable(key: string, ttlMs=3600000){
         const cleanKey = key.slice(0, 120);
         await this.dal.kv.set(`cachectrl/${cleanKey}`, { ttlMs, at: Date.now() });
-        try { this.events?.emit(EVENTS.CACHE_CONTROL_MARKED, { key: cleanKey, ttlMs }); } catch {}
+        try { this.events?.emit(EVENTS.CACHE_CONTROL_MARKED, { key: cleanKey, ttlMs }); } catch { /* best-effort */ }
     }
     async stats(){
         const rows = await this.dal.kv.list('cachectrl/');
@@ -28,7 +28,7 @@ export class CacheControlService implements ICacheControlService {
         // Real hitRate: fraction of entries still within TTL (fresh). 0 if empty.
         const hitRate = entries === 0 ? 0 : fresh / entries;
         const result = { entries, hitRate: Math.round(hitRate * 100) / 100 };
-        try { this.events?.emit(EVENTS.CACHE_CONTROL_STATS, result); } catch {}
+        try { this.events?.emit(EVENTS.CACHE_CONTROL_STATS, result); } catch { /* best-effort */ }
         return result;
     }
 }

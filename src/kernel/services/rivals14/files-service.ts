@@ -11,7 +11,7 @@ export class FilesApiService implements IFilesApiService {
         private events?: IEventBus,
     ) {}
     async init(){ LOGGER.info('FilesApi', 'init',{}); } async destroy(){}
-    async upload(name: string, content: string){ const id=genId('file'); await this.dal.kv.set(`files/${id}`, { id, name: name.slice(0,120), content: content.slice(0,200000) }); try{ this.events?.emit(EVENTS.FILES_UPLOADED, { fileId: id, name: name.slice(0,120) }); }catch{} return id; }
+    async upload(name: string, content: string){ const id=genId('file'); await this.dal.kv.set(`files/${id}`, { id, name: name.slice(0,120), content: content.slice(0,200000) }); try{ this.events?.emit(EVENTS.FILES_UPLOADED, { fileId: id, name: name.slice(0,120) }); }catch{ /* best-effort */ } return id; }
     async get(fileId: string){ const f=await this.dal.kv.get<Record<string,string>>(`files/${fileId}`); if(!f) throw new Error('file not found'); return (f as Record<string,string>).content ?? ''; }
     async list(){ const rows=await this.dal.kv.list('files/'); return rows.map(r=>r.id); }
 }
