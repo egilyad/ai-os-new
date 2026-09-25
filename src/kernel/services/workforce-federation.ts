@@ -1,7 +1,7 @@
 import type { ILifecycle } from '../contracts/lifecycle';
 import type { IEventBus } from '../types/interfaces';
 import { EVENTS } from '../events/event-names';
-import type { AgentService } from './agent-service';
+import type { IAgentServiceRef } from '../types/agent-service-ref';
 
 export interface FederationBridge {
   id: string;
@@ -12,7 +12,7 @@ export interface FederationBridge {
 
 export interface WorkforceFederationDeps {
   eventBus: IEventBus;
-  agentService: AgentService;
+  agentService: IAgentServiceRef;
 }
 
 export class WorkforceFederation implements ILifecycle {

@@ -4,14 +4,14 @@ import { EVENTS } from '../events/event-names';
 import type { OrchestrationService } from './orchestration-service';
 import type { AgentHealthMonitor } from './agent-health-monitor';
 import type { MetricsService } from './metrics-service';
-import type { AgentService } from './agent-service';
+import type { IAgentServiceRef } from '../types/agent-service-ref';
 import type { ISTopology, ISNode, ISEdge } from '../contracts/topology';
 
 export interface TopologyManagerDeps {
     eventBus: IEventBus;
     orchestrator: OrchestrationService;
     agentHealthMonitor: AgentHealthMonitor;
-    agentService: AgentService;
+    agentService: IAgentServiceRef;
     metricsService: MetricsService;
 }
 
