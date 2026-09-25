@@ -46,6 +46,9 @@ vi.mock('../kernel/instances', () => ({
     EVENTS,
     routerService: mockRouterService,
     settingsService: mockSettingsService,
+    rootLogger: {
+        child: () => ({ warn: () => {}, error: () => {}, info: () => {}, debug: () => {} }),
+    },
 }));
 
 import { useRoutingIntelligence } from './useRoutingIntelligence';

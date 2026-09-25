@@ -100,6 +100,7 @@ vi.mock('../../kernel/instances', () => ({
 }));
 
 import { useChatStore } from './store';
+import { _sendQueue } from './chat-send-message';
 import { requestEntryMap } from './types';
 import type { ChatEntry, ChatSession } from './types';
 
@@ -179,6 +180,7 @@ beforeEach(() => {
     mockConfig.featureFlags.memory.autoStore = false;
 
     requestEntryMap.clear();
+    _sendQueue.clear();
     resetState();
 });
 
@@ -306,13 +308,13 @@ describe('useChatStore', () => {
         ).toBe(true);
     });
 
-    it('sendMessage warns and skips when another send is in progress', async () => {
+    it('sendMessage queues when another send is in progress (H-09)', async () => {
         useChatStore.getState().addActiveRequestId('existing');
         await useChatStore.getState().sendMessage([{ provider: 'groq', model: 'm' }], 'nope');
         expect(emit.mock.calls.filter(([ev]) => ev === E.SEND_MESSAGE)).toHaveLength(0);
         expect(
             emit.mock.calls.some(
-                ([ev, p]) => ev === E.NOTIFICATION && (p as { type: string }).type === 'warning',
+                ([ev, p]) => ev === E.NOTIFICATION && (p as { type: string }).type === 'info',
             ),
         ).toBe(true);
     });

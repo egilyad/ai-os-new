@@ -297,6 +297,11 @@ jobs:
               if: steps.playwright-cache.outputs.cache-hit != 'true'
               run: npx playwright install --with-deps chromium
 
+            - name: Build frontend for preview
+              run: npm run build
+              env:
+                  VITE_APP_ORIGIN: https://example.com
+
             - name: Run E2E tests
               run: npm run test:e2e
 

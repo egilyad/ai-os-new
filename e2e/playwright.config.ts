@@ -9,7 +9,7 @@ export default defineConfig({
         headless: true,
     },
     webServer: {
-        command: 'npx vite preview',
+        command: 'npx vite preview --port 5173',
         port: 5173,
         reuseExistingServer: true,
     },

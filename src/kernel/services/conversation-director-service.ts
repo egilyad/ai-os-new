@@ -199,9 +199,10 @@ export class ConversationDirectorService implements IConversationDirectorService
             }
         } catch (e) {
             // An abort-induced throw must be reported as 'aborted', never as a
-            // generic failure (B-01).
+            // generic failure (B-01). Abort resolves normally like pause/completed.
             if (this.orchestrator?.isAborted(sessionId)) {
                 this.setState('aborted');
+                return;
             } else {
                 this.setState('error');
             }

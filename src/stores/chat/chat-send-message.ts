@@ -34,7 +34,7 @@ export function createSendMessageHandler(
     return async (targets, text, systemPromptArg, temperature, maxTokens) => {
         const sessionId = get().activeSessionId;
         const existing = _sendQueue.get(sessionId);
-        if (existing) {
+        if (existing && existing.length > 0) {
             if (existing.length >= MAX_QUEUE_SIZE) {
                 eventBus.emit(EVENTS.NOTIFICATION, {
                     message: `Send queue full (${MAX_QUEUE_SIZE}) — message dropped`,
