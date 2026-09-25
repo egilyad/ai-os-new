@@ -64,10 +64,36 @@ try {
                 );
                 const rootEmpty = !document.getElementById('root')?.children.length;
                 const bodyLen = document.body ? document.body.innerText.length : -1;
-                return { h1s, rootEmpty, bodyLen };
+                // Accessibility-tree visibility probe for the first h1
+                let ax = 'n/a';
+                const h1 = document.querySelector('h1');
+                if (h1) {
+                    const cs = getComputedStyle(h1);
+                    const hiddenAttr = [];
+                    let el = h1;
+                    while (el && el !== document.body) {
+                        if (el.getAttribute('aria-hidden') === 'true') hiddenAttr.push(el.tagName);
+                        if (el.hasAttribute('hidden')) hiddenAttr.push(el.tagName + '[hidden]');
+                        if (el.hasAttribute('inert')) hiddenAttr.push(el.tagName + '[inert]');
+                        el = el.parentElement;
+                    }
+                    const r = h1.getBoundingClientRect();
+                    ax = `display=${cs.display} visibility=${cs.visibility} opacity=${cs.opacity} rect=${Math.round(r.width)}x${Math.round(r.height)} hiddenAncestors=${JSON.stringify(hiddenAttr)}`;
+                }
+                const dialogs = Array.from(document.querySelectorAll('[role="dialog"], [aria-modal="true"]')).map(
+                    (d) => (d.textContent || '').trim().slice(0, 60),
+                );
+                return { h1s, rootEmpty, bodyLen, ax, dialogs };
             });
+            // Same query engine as the failing tests: does the AX tree see it?
+            let axCount = -1;
+            try {
+                axCount = await page.getByRole('heading', { name: /mission control/i }).count();
+            } catch {
+                axCount = -2;
+            }
             note(
-                `ROUTE ${route} t=${waitMs}ms h1=${JSON.stringify(info.h1s)} rootEmpty=${info.rootEmpty} bodyLen=${info.bodyLen}`,
+                `ROUTE ${route} t=${waitMs}ms h1=${JSON.stringify(info.h1s)} axCount=${axCount} rootEmpty=${info.rootEmpty} bodyLen=${info.bodyLen} ax=${info.ax} dialogs=${JSON.stringify(info.dialogs)}`,
             );
         }
     }
