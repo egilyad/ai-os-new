@@ -550,7 +550,7 @@ export class AgentService implements IAgentResolver {
         bus.emit('agent:delegated', { parentId, childId, text: task.text });
         // If autonomyService is registered, try to run as goal loop for child
         try {
-            const autonomy = (await import('../../kernel/instances')).autonomyService as unknown as { runGoal?: (goal: string, max: number) => Promise<{ id: string }> };
+            const autonomy = (await import('../../kernel/instances/services-extras')).autonomyService as unknown as { runGoal?: (goal: string, max: number) => Promise<{ id: string }> };
             if (autonomy?.runGoal) {
                 const loop = await autonomy.runGoal(task.text, task.maxIterations ?? 8);
                 return loop.id;

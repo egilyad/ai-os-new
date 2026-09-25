@@ -11,6 +11,9 @@ export default defineConfig({
         include: ['src/**/*.test.{ts,tsx}'],
         testTimeout: 15000,
         hookTimeout: 15000,
+        // Heavy store tests under v8 coverage can need longer worker teardown
+        // on shared GH runners ("Timeout terminating forks worker").
+        teardownTimeout: 30000,
         coverage: {
             provider: 'v8',
             reporter: ['text', 'lcov', 'html'],

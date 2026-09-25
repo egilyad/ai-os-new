@@ -1,18 +1,7 @@
 import { getDexieDb } from './database-service';
+import type { AuditAction, AuditLog } from '../types/agems-audit';
 
-export type AuditAction = 'CREATE' | 'READ' | 'UPDATE' | 'DELETE' | 'EXECUTE' | 'COMMUNICATE' | 'LOGIN' | 'GRANT_ACCESS' | 'REVOKE_ACCESS' | 'APPROVE' | 'REJECT';
-
-export interface AuditLog {
-    id?: number;
-    actorType: string;
-    actorId: string;
-    action: AuditAction;
-    resourceType: string;
-    resourceId: string;
-    details?: Record<string, unknown>;
-    ipAddress?: string;
-    createdAt: number;
-}
+export type { AuditAction, AuditLog } from '../types/agems-audit';
 
 export class AgemsAuditService {
     async log(entry: Omit<AuditLog, 'id' | 'createdAt'>): Promise<number> {

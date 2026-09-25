@@ -142,6 +142,7 @@ import type { ApprovalPolicy, ApprovalRequest } from '../types/agems-approval';
 import type { PlatformBudget, BudgetIncident } from '../types/agems-budget';
 import type { Meeting, MeetingDecision } from '../types/agems-meeting';
 import type { CatalogAgent } from '../types/agems-catalog';
+import type { AuditLog } from '../types/agems-audit';
 import {
     DebateSessionRecordSchema,
     DebateVerdictRecordSchema,
@@ -249,7 +250,7 @@ export class SuperAgentsDB extends Dexie {
     catalogSkills!: Table<{ id?: number; slug: string; name: string }>;
     catalogTools!: Table<{ id?: number; slug: string; name: string }>;
     // Phase 9 — AGEMS Audit
-    auditLogs!: Table<import('../services/agems-audit-service').AuditLog>;
+    auditLogs!: Table<AuditLog>;
 
     invocations!: Table<InvocationRecord>;
     invocationPolicies!: Table<InvocationPolicyRecord>;
