@@ -88,7 +88,12 @@ const {
 });
 
 vi.mock('../../kernel/runtime', () => ({ runtime: mockRuntime }));
-vi.mock('../../kernel/instances', () => ({ getDexieDb: mockGetDexieDb }));
+vi.mock('../../kernel/instances', () => ({
+    getDexieDb: mockGetDexieDb,
+    rootLogger: {
+        child: () => ({ warn: () => {}, error: () => {}, info: () => {}, debug: () => {} }),
+    },
+}));
 vi.mock('dexie', async (importOriginal) => {
     const actual = (await importOriginal<typeof import('dexie')>()) as Record<string, unknown>;
     return { ...actual, liveQuery: mockLiveQuery };
