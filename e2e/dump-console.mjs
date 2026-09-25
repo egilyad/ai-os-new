@@ -54,25 +54,22 @@ try {
     );
     for (const route of ROUTES) {
         await page.goto(`http://localhost:${PORT}${route}`, { timeout: 30000 });
-        await page.waitForTimeout(6000);
-        const info = await page.evaluate(() => {
-            const h1s = Array.from(document.querySelectorAll('h1')).map((h) =>
-                (h.textContent || '').trim().slice(0, 80),
+        let waited = 0;
+        for (const waitMs of [6000, 15000, 30000]) {
+            await page.waitForTimeout(waitMs - waited);
+            waited = waitMs;
+            const info = await page.evaluate(() => {
+                const h1s = Array.from(document.querySelectorAll('h1')).map((h) =>
+                    (h.textContent || '').trim().slice(0, 80),
+                );
+                const rootEmpty = !document.getElementById('root')?.children.length;
+                const bodyLen = document.body ? document.body.innerText.length : -1;
+                return { h1s, rootEmpty, bodyLen };
+            });
+            note(
+                `ROUTE ${route} t=${waitMs}ms h1=${JSON.stringify(info.h1s)} rootEmpty=${info.rootEmpty} bodyLen=${info.bodyLen}`,
             );
-            const textboxes = document.querySelectorAll(
-                'textarea, input[type="text"], input:not([type]), [contenteditable="true"]',
-            ).length;
-            const btns = Array.from(document.querySelectorAll('button'))
-                .map((b) => (b.textContent || '').trim().slice(0, 40))
-                .filter(Boolean)
-                .slice(0, 12);
-            const bodyLen = document.body ? document.body.innerText.length : -1;
-            const main = (document.querySelector('main')?.innerText || '').slice(0, 300).replace(/\s+/g, ' ');
-            return { h1s, textboxes, btns, bodyLen, main };
-        });
-        note(
-            `ROUTE ${route} h1=${JSON.stringify(info.h1s)} textboxes=${info.textboxes} bodyLen=${info.bodyLen} btns=${JSON.stringify(info.btns)} main=${info.main}`,
-        );
+        }
     }
     note('CONSOLE: ' + (logs.slice(0, 10).join(' | ') || '(no console errors)'));
     await browser.close();
