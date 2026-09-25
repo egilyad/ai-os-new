@@ -1,7 +1,8 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import type { QueuedRequest, ChatResponse } from '../types/chat-types';
+import type { QueuedRequest } from '../types/chat-types';
 
 const mockEmit = vi.fn();
+const mockEmitOnce = vi.fn().mockReturnValue(true);
 
 const mockLogger = vi.hoisted(() => ({
     debug: vi.fn(),
@@ -87,7 +88,7 @@ function createMockDeps(overrides: Partial<ChatServiceDeps> = {}): ChatServiceDe
             on: vi.fn(),
             onSafe: vi.fn(),
             emit: mockEmit,
-            emitOnce: vi.fn().mockReturnValue(true),
+            emitOnce: mockEmitOnce,
         },
         promptSecurityService: {
             scan: vi.fn().mockReturnValue({ safe: true, score: 0, findings: [], summary: '' }),
@@ -273,8 +274,11 @@ describe('ChatExecutor', () => {
             const req = makeRequest({ provider: 'auto' });
             executor.handleMessage(req);
             await vi.waitFor(() => {
-                expect(mockEmit).toHaveBeenCalledWith(
+                // emitError routes through idempotent emitOnce (dedup by
+                // requestId), not plain emit.
+                expect(mockEmitOnce).toHaveBeenCalledWith(
                     'chat:response',
+                    'req-1',
                     expect.objectContaining({
                         status: 'error',
                         error: 'No providers available for auto-routing',
@@ -308,18 +312,17 @@ describe('ChatExecutor', () => {
             });
             executor.handleMessage(makeRequest());
             await vi.waitFor(() => {
-                const calls = mockEmit.mock.calls.filter(
-                    (c: unknown[]) => c[0] === 'chat:response',
+                // emitStatus routes through idempotent emitOnce (dedup by
+                // requestId), the final done response through plain emit.
+                expect(mockEmitOnce).toHaveBeenCalledWith(
+                    'chat:response',
+                    'req-1',
+                    expect.objectContaining({ status: 'cached' }),
                 );
-                expect(calls.length).toBeGreaterThanOrEqual(2);
-                expect(
-                    calls.some((c: unknown[]) => (c[1] as ChatResponse).status === 'cached'),
-                ).toBe(true);
-                expect(
-                    calls.some(
-                        (c: unknown[]) => (c[1] as ChatResponse).content === 'Cached response',
-                    ),
-                ).toBe(true);
+                expect(mockEmit).toHaveBeenCalledWith(
+                    'chat:response',
+                    expect.objectContaining({ status: 'done', content: 'Cached response' }),
+                );
             });
             expect(deps.llmClient.sendMessage).not.toHaveBeenCalled();
         });
@@ -338,7 +341,13 @@ describe('ChatExecutor', () => {
             executor.handleMessage(makeRequest());
             await vi.waitFor(() => {
                 expect(mockEmit).toHaveBeenCalledWith('chat:stream:start', expect.anything());
-                expect(mockEmit).toHaveBeenCalledWith('chat:stream:end', expect.anything());
+                // STREAM_END goes through idempotent emitOnce (dedup by requestId),
+                // not plain emit — see ChatExecutor handleMessage success path.
+                expect(mockEmitOnce).toHaveBeenCalledWith(
+                    'chat:stream:end',
+                    'req-1',
+                    expect.anything(),
+                );
             });
         });
 
