@@ -320,7 +320,7 @@ jobs:
             - name: Publish browser console to annotations on failure
               # Annotations are visible without login, unlike full logs.
               if: failure()
-              run: node -e "const fs=require('fs');const path=require('path');const walk=d=>fs.readdirSync(d,{withFileTypes:true}).flatMap(e=>e.isDirectory()?walk(path.join(d,e.name)):[path.join(d,e.name)]);let files=[];try{files=walk('test-results').filter(f=>f.endsWith('error-context.md')).slice(0,4)}catch(e){console.log('no test-results dir');process.exit(0)};for(const f of files){const t=fs.readFileSync(f,'utf8').slice(0,8000).replace(/%/g,'%25').replace(/\r/g,'%0D').replace(/\n/g,'%0A');console.log('::notice title=e2e-browser-console::'+t)}"
+              run: node -e "const fs=require('fs');const path=require('path');const walk=d=>fs.readdirSync(d,{withFileTypes:true}).flatMap(e=>e.isDirectory()?walk(path.join(d,e.name)):[path.join(d,e.name)]);let files=[];try{files=walk('test-results').filter(f=>f.endsWith('error-context.md'))}catch(e){console.log('no test-results dir');process.exit(0)};files.sort((a,b)=>(a.includes('retry')?1:0)-(b.includes('retry')?1:0));for(const f of files.slice(0,4)){const raw=fs.readFileSync(f,'utf8');const t=raw.slice(-8000).replace(/%/g,'%25').replace(/\r/g,'%0D').replace(/\n/g,'%0A');console.log('::notice title=e2e-console-tail::'+f+'%0A'+t)}"
 
     deploy:
         name: Deploy to GitHub Pages
