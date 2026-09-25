@@ -309,6 +309,19 @@ jobs:
             - name: Run E2E tests
               run: npm run test:e2e
 
+            - name: Upload Playwright report on failure
+              if: failure()
+              uses: actions/upload-artifact@v4
+              with:
+                  name: playwright-report
+                  path: test-results/
+                  retention-days: 7
+
+            - name: Publish browser console to annotations on failure
+              # Annotations are visible without login, unlike full logs.
+              if: failure()
+              run: node -e "const fs=require('fs');const path=require('path');const walk=d=>fs.readdirSync(d,{withFileTypes:true}).flatMap(e=>e.isDirectory()?walk(path.join(d,e.name)):[path.join(d,e.name)]);let files=[];try{files=walk('test-results').filter(f=>f.endsWith('error-context.md')).slice(0,4)}catch(e){console.log('no test-results dir');process.exit(0)};for(const f of files){const t=fs.readFileSync(f,'utf8').slice(0,8000).replace(/%/g,'%25').replace(/\r/g,'%0D').replace(/\n/g,'%0A');console.log('::notice title=e2e-browser-console::'+t)}"
+
     deploy:
         name: Deploy to GitHub Pages
         if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
