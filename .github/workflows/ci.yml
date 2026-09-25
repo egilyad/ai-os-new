@@ -322,6 +322,10 @@ jobs:
               if: failure()
               run: node -e "const fs=require('fs');const path=require('path');const walk=d=>fs.readdirSync(d,{withFileTypes:true}).flatMap(e=>e.isDirectory()?walk(path.join(d,e.name)):[path.join(d,e.name)]);let files=[];try{files=walk('test-results').filter(f=>f.endsWith('error-context.md'))}catch(e){console.log('no test-results dir');process.exit(0)};files.sort((a,b)=>(a.includes('retry')?1:0)-(b.includes('retry')?1:0));for(const f of files.slice(0,4)){const raw=fs.readFileSync(f,'utf8');const t=raw.slice(-8000).replace(/%/g,'%25').replace(/\r/g,'%0D').replace(/\n/g,'%0A');console.log('::notice title=e2e-console-tail::'+f+'%0A'+t)}"
 
+            - name: Dump preview boot diagnostics on failure
+              if: failure()
+              run: node e2e/dump-console.mjs
+
     deploy:
         name: Deploy to GitHub Pages
         if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
