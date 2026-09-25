@@ -1,5 +1,28 @@
 import { test, expect } from '@playwright/test';
 
+test.afterEach(async ({ page }, testInfo) => {
+    if (testInfo.status !== 'passed') {
+        try {
+            const info = await page.evaluate(() => {
+                const h1s = Array.from(document.querySelectorAll('h1')).map((h) =>
+                    (h.textContent || '').trim().slice(0, 60),
+                );
+                return {
+                    url: location.href,
+                    title: document.title,
+                    h1s,
+                    bodyLen: document.body ? document.body.innerText.length : -1,
+                    rootChildren: document.getElementById('root')?.children.length ?? -1,
+                };
+            });
+            const msg = `PAGE-STATE url=${info.url} title=${info.title} h1=${JSON.stringify(info.h1s)} bodyLen=${info.bodyLen} rootChildren=${info.rootChildren}`;
+            console.log('::notice title=e2e-page-state::' + msg.replace(/%/g, '%25').replace(/\r/g, '%0D').replace(/\n/g, '%0A'));
+        } catch {
+            /* page already closed */
+        }
+    }
+});
+
 test.describe('AI-OS Basic Flow', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
