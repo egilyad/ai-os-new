@@ -1,4 +1,4 @@
-import { getDexieDb } from './dexie-schema';
+import { getDexieDb } from './database-service';
 import type { TaskTrigger, AgemsTaskStatus } from '../types/agems-task';
 
 export const taskTriggerService = {

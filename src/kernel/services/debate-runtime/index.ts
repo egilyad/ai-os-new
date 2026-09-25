@@ -10,25 +10,12 @@ export {
     DebateAgentExecutionEngine,
 } from './conversation-backed-debate-orchestrator';
 
-import type { IDebateOrchestrator } from '../../contracts/debate-runtime';
-import { DebateTopologyService } from './debate-topology';
-import { ConversationBackedDebateOrchestrator } from './conversation-backed-debate-orchestrator';
-
 /**
- * Debate orchestrator entry point.
- *
- * Step A is closed: the Debate runtime is now exclusively the
- * ConversationCore-backed orchestrator (`DebatePolicy` + `DebateAgentExecutionEngine`
- * + `ConversationOrchestrator`), reached through the `IDebateOrchestrator`
- * anti-corrosion contract. The legacy `DebateOrchestrator` class is preserved
- * (not deleted) as a regression reference but is no longer wired into any
- * production path.
+ * Debate orchestrator entry point — see ./debate-orchestrator-factory.
+ * (Re-exported here for backward compatibility; import the leaf module
+ * directly from inside debate-runtime to avoid barrel cycles.)
  */
-export function createDebateOrchestrator(
-    topologyService: DebateTopologyService,
-): IDebateOrchestrator {
-    return new ConversationBackedDebateOrchestrator(topologyService);
-}
+export { createDebateOrchestrator } from './debate-orchestrator-factory';
 export { DebateTimeline } from './debate-timeline';
 export { DebateEngine } from './debate-engine';
 export { DebateMemoryExtractor } from './debate-memory-extractor';

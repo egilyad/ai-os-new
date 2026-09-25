@@ -141,7 +141,7 @@ import type { AgemsTask, TaskComment, Label, TaskLabel, TaskWorkProduct, TaskTri
 import type { ApprovalPolicy, ApprovalRequest } from '../types/agems-approval';
 import type { PlatformBudget, BudgetIncident } from '../types/agems-budget';
 import type { Meeting, MeetingDecision } from '../types/agems-meeting';
-import type { CatalogAgent } from '../services/agems-catalog-service';
+import type { CatalogAgent } from '../types/agems-catalog';
 import {
     DebateSessionRecordSchema,
     DebateVerdictRecordSchema,
@@ -3746,6 +3746,4 @@ export class SuperAgentsDB extends Dexie {
         }
     }
 }
-
-export { getDexieDb } from './database-service';
 

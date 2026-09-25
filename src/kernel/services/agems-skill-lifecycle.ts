@@ -1,4 +1,4 @@
-import { getDexieDb } from './dexie-schema';
+import { getDexieDb } from './database-service';
 
 export type SkillState = 'ACTIVE' | 'STALE' | 'ARCHIVED';
 

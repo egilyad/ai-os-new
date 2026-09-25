@@ -1,7 +1,7 @@
 import { DebateConsensusEngine } from './debate-consensus';
 import { DebateTimeline } from './debate-timeline';
 import { DebateConclusionEngine } from './debate-conclusion-engine';
-import { createDebateOrchestrator } from './index';
+import { createDebateOrchestrator } from './debate-orchestrator-factory';
 import type { IDebateOrchestrator } from '../../contracts/debate-runtime';
 import { DebateTopologyService } from './debate-topology';
 

@@ -1,4 +1,4 @@
-import { getDexieDb } from './dexie-schema';
+import { getDexieDb } from './database-service';
 import type { Meeting, MeetingDecision } from '../types/agems-meeting';
 
 export class AgemsMeetingService {

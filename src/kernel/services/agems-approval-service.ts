@@ -1,4 +1,4 @@
-import { getDexieDb } from './dexie-schema';
+import { getDexieDb } from './database-service';
 import type { ApprovalPolicy, ApprovalRequest, ApprovalPreset } from '../types/agems-approval';
 import { PRESET_DEFAULTS } from '../types/agems-approval';
 

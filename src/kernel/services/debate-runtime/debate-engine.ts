@@ -2,7 +2,7 @@ import { genId } from '../../../utils/gen-id';
 import { DebateProviderResolver } from './debate-query-engine';
 import { buildConclusionLlmCall } from './debate-conclusion-engine';
 import { DebateTopologyService } from './debate-topology';
-import { createDebateOrchestrator } from './index';
+import { createDebateOrchestrator } from './debate-orchestrator-factory';
 import { buildPipeline } from './debate-pipeline-builder';
 import type { PipelineEngine, PipelineEngineDeps } from './debate-pipeline-builder';
 import { debateCallLlm, debateGetDefaultPrompt, type LlmCallerDeps } from './debate-llm-caller';

@@ -3,7 +3,7 @@
  * Bulk approve/reject via agemsApprovalService.resolve;
  * review thread stored inline on ApprovalRequest.reviewComments (additive, no migration).
  */
-import { getDexieDb } from './dexie-schema';
+import { getDexieDb } from './database-service';
 import type { ApprovalRequest, ApprovalReviewComment } from '../types/agems-approval';
 import { agemsApprovalService } from './agems-approval-service';
 import { rootLogger } from './logger-service';

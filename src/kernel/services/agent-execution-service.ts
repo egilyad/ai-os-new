@@ -1,4 +1,4 @@
-import { getDexieDb } from './dexie-schema';
+import { getDexieDb } from './database-service';
 import type { AgentExecution } from '../types/agems-agent';
 import { rootLogger } from './logger-service';
 

@@ -1,42 +1,7 @@
-import { getDexieDb } from './dexie-schema';
+import { getDexieDb } from './database-service';
+import type { CatalogAgent, CatalogSkill, CatalogTool } from '../types/agems-catalog';
 
-export interface CatalogAgent {
-    id?: number;
-    slug: string;
-    name: string;
-    description: string;
-    systemPrompt: string;
-    llmProvider: string;
-    llmModel: string;
-    tags: string[];
-    toolSlugs: string[];
-    skillSlugs: string[];
-    authorOrg?: string;
-    downloads: number;
-}
-
-export interface CatalogSkill {
-    id?: number;
-    slug: string;
-    name: string;
-    description: string;
-    content: string;
-    version: string;
-    type: string;
-    tags: string[];
-    downloads: number;
-}
-
-export interface CatalogTool {
-    id?: number;
-    slug: string;
-    name: string;
-    description: string;
-    type: string;
-    configTemplate: Record<string, unknown>;
-    tags: string[];
-    downloads: number;
-}
+export type { CatalogAgent, CatalogSkill, CatalogTool } from '../types/agems-catalog';
 
 export class AgemsCatalogService {
     async listAgents(query?: string): Promise<CatalogAgent[]> {

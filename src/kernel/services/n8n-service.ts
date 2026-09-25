@@ -37,7 +37,7 @@ export class N8NService {
 
     private async resolveConfig(agentId: string): Promise<{ url?: string; apiKey?: string }> {
         try {
-            const { getDexieDb } = await import('./dexie-schema');
+            const { getDexieDb } = await import('./database-service');
             const rows = (await getDexieDb().agentMemory.where('agentId').equals(agentId).toArray()) as Array<{ content: string }>;
             for (let i = rows.length - 1; i >= 0; i--) {
                 try {
@@ -50,7 +50,7 @@ export class N8NService {
     }
 
     async setConfig(agentId: string, url: string, apiKey?: string): Promise<void> {
-        const { getDexieDb } = await import('./dexie-schema');
+        const { getDexieDb } = await import('./database-service');
         await getDexieDb().agentMemory.add({
             agentId,
             type: 'KNOWLEDGE',

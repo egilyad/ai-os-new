@@ -133,6 +133,8 @@ jobs:
               run: npm ci --legacy-peer-deps
 
             - name: Run tests
+              env:
+                  NODE_OPTIONS: --max-old-space-size=6144
               run: npm run test
 
     coverage:
@@ -162,6 +164,8 @@ jobs:
               run: npm ci --legacy-peer-deps
 
             - name: Run tests with coverage
+              env:
+                  NODE_OPTIONS: --max-old-space-size=6144
               # P1.9: coverage is scoped to the covered directories via
               # coverage.include in vitest.config.ts (stores, hooks,
               # kernel/events, kernel/workers, container). Thresholds: 30%

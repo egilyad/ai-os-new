@@ -7,7 +7,7 @@
  *  - expiresAt passed → EXPIRED
  * resolvedBy is tagged 'auto:<rule>' so UI/audit can distinguish human vs auto.
  */
-import { getDexieDb } from './dexie-schema';
+import { getDexieDb } from './database-service';
 import type { ApprovalRequest } from '../types/agems-approval';
 import { agemsApprovalService } from './agems-approval-service';
 import { rootLogger } from './logger-service';

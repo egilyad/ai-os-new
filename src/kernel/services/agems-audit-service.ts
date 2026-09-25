@@ -1,4 +1,4 @@
-import { getDexieDb } from './dexie-schema';
+import { getDexieDb } from './database-service';
 
 export type AuditAction = 'CREATE' | 'READ' | 'UPDATE' | 'DELETE' | 'EXECUTE' | 'COMMUNICATE' | 'LOGIN' | 'GRANT_ACCESS' | 'REVOKE_ACCESS' | 'APPROVE' | 'REJECT';
 

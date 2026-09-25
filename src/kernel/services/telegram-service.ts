@@ -1,4 +1,4 @@
-import { getDexieDb } from './dexie-schema';
+import { getDexieDb } from './database-service';
 import { rootLogger } from './logger-service';
 
 const LOGGER = rootLogger.child('Telegram');

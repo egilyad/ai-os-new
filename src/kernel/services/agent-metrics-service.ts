@@ -1,4 +1,4 @@
-import { getDexieDb } from './dexie-schema';
+import { getDexieDb } from './database-service';
 import type { AgentMetric } from '../types/agems-agent';
 
 export class AgentMetricsService {
