@@ -169,7 +169,7 @@ jobs:
 
             - name: Run tests with coverage
               env:
-                  NODE_OPTIONS: --max-old-space-size=6144
+                  NODE_OPTIONS: --max-old-space-size=10240
               # P1.9: coverage is scoped to the covered directories via
               # coverage.include in vitest.config.ts (stores, hooks,
               # kernel/events, kernel/workers, container). Thresholds: 30%
