@@ -18,7 +18,7 @@ export default defineConfig({
         // NOTE: port pinned + strictPort + no reuse on CI. Previously the
         // tests intermittently hit a server returning an empty document
         // (no #root) while a parallel probe served the app fine.
-        command: `npx vite preview --root ${REPO_ROOT} --port 5199 --strictPort`,
+        command: `npx vite preview ${REPO_ROOT} --port 5199 --strictPort`,
         port: 5199,
         reuseExistingServer: !process.env.CI,
         timeout: 120000,
