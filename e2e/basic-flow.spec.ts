@@ -39,9 +39,24 @@ test.afterEach(async ({ page }, testInfo) => {
 });
 
 test.describe('AI-OS Basic Flow', () => {
-  test.beforeEach(async ({ page }) => {
-    await page.goto('/');
-  });
+    test.beforeEach(async ({ page }) => {
+        await page.goto('/');
+    });
+
+    test('diag: dom state on fresh load', async ({ page }) => {
+        await page.waitForTimeout(8000);
+        const info = await page.evaluate(() => ({
+            url: location.href,
+            h1: document.querySelectorAll('h1').length,
+            bodyLen: document.body ? document.body.innerText.length : -1,
+            root: !!document.getElementById('root'),
+            htmlLen: document.documentElement ? document.documentElement.outerHTML.length : -1,
+        }));
+        fs.mkdirSync('test-results', { recursive: true });
+        fs.appendFileSync('test-results/page-state.log', 'DIAG ' + JSON.stringify(info) + '\n');
+        expect(info.root).toBe(true);
+        expect(info.h1).toBeGreaterThan(0);
+    });
 
   test('should load dashboard', async ({ page }) => {
     await expect(page.getByRole('heading', { name: /mission control/i })).toBeVisible({ timeout: 30000 });
