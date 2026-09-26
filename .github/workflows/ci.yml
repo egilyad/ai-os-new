@@ -322,6 +322,10 @@ jobs:
               if: failure()
               run: node -e "const fs=require('fs');const path=require('path');const walk=d=>fs.readdirSync(d,{withFileTypes:true}).flatMap(e=>e.isDirectory()?walk(path.join(d,e.name)):[path.join(d,e.name)]);let files=[];try{files=walk('test-results').filter(f=>f.endsWith('error-context.md'))}catch(e){console.log('no test-results dir');process.exit(0)};files.sort((a,b)=>(a.includes('retry')?1:0)-(b.includes('retry')?1:0));for(const f of files.slice(0,4)){const raw=fs.readFileSync(f,'utf8');const t=raw.slice(-8000).replace(/%/g,'%25').replace(/\r/g,'%0D').replace(/\n/g,'%0A');console.log('::notice title=e2e-console-tail::'+f+'%0A'+t)}"
 
+            - name: Publish page-state log
+              if: failure()
+              run: node -e "const fs=require('fs');let t='';try{t=fs.readFileSync('test-results/page-state.log','utf8')}catch(e){console.log('no page-state log');process.exit(0)};for(const line of t.split('\n').filter(Boolean).slice(0,8)){console.log('::notice title=e2e-page-state::'+line.slice(0,3000).replace(/%/g,'%25').replace(/\r/g,'%0D'))}"
+
             - name: Dump preview boot diagnostics on failure
               if: failure()
               run: node e2e/dump-console.mjs

@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import fs from 'node:fs';
 
 test.afterEach(async ({ page }, testInfo) => {
     if (testInfo.status !== 'passed') {
@@ -26,8 +27,11 @@ test.afterEach(async ({ page }, testInfo) => {
                     scripts,
                 };
             });
-            const msg = `PAGE-STATE url=${info.url} title=${info.title} h1=${JSON.stringify(info.h1s)} bodyLen=${info.bodyLen} rootChildren=${info.rootChildren} htmlLen=${info.htmlLen} res=${info.resCount} scripts=${JSON.stringify(info.scripts)}`;
-            console.log('::notice title=e2e-page-state::' + msg.replace(/%/g, '%25').replace(/\r/g, '%0D').replace(/\n/g, '%0A'));
+            const msg = `PAGE-STATE [${testInfo.title}] url=${info.url} title=${info.title} h1=${JSON.stringify(info.h1s)} bodyLen=${info.bodyLen} rootChildren=${info.rootChildren} htmlLen=${info.htmlLen} res=${info.resCount} scripts=${JSON.stringify(info.scripts)}`;
+            // console.log is unreliable here (reporter indents it, breaking
+            // ::notice parsing) — write to a file, the CI step publishes it.
+            fs.mkdirSync('test-results', { recursive: true });
+            fs.appendFileSync('test-results/page-state.log', msg + '\n');
         } catch {
             /* page already closed */
         }
