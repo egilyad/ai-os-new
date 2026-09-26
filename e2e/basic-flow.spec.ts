@@ -7,15 +7,26 @@ test.afterEach(async ({ page }, testInfo) => {
                 const h1s = Array.from(document.querySelectorAll('h1')).map((h) =>
                     (h.textContent || '').trim().slice(0, 60),
                 );
+                const htmlLen = document.documentElement ? document.documentElement.outerHTML.length : -1;
+                let resCount = -1;
+                try {
+                    resCount = performance.getEntriesByType('resource').length;
+                } catch {
+                    /* ignore */
+                }
+                const scripts = Array.from(document.scripts).map((s) => s.src.slice(-40));
                 return {
                     url: location.href,
                     title: document.title,
                     h1s,
                     bodyLen: document.body ? document.body.innerText.length : -1,
                     rootChildren: document.getElementById('root')?.children.length ?? -1,
+                    htmlLen,
+                    resCount,
+                    scripts,
                 };
             });
-            const msg = `PAGE-STATE url=${info.url} title=${info.title} h1=${JSON.stringify(info.h1s)} bodyLen=${info.bodyLen} rootChildren=${info.rootChildren}`;
+            const msg = `PAGE-STATE url=${info.url} title=${info.title} h1=${JSON.stringify(info.h1s)} bodyLen=${info.bodyLen} rootChildren=${info.rootChildren} htmlLen=${info.htmlLen} res=${info.resCount} scripts=${JSON.stringify(info.scripts)}`;
             console.log('::notice title=e2e-page-state::' + msg.replace(/%/g, '%25').replace(/\r/g, '%0D').replace(/\n/g, '%0A'));
         } catch {
             /* page already closed */
