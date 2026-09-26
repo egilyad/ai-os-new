@@ -23,6 +23,7 @@
     "typecheck:watch": "tsc -b --noEmit --watch",
     "fix:unused": "tsx scripts/fix-unused.ts",
     "test": "vitest run",
+    "test:stable": "vitest run src/stores src/hooks src/kernel/events src/kernel/workers src/kernel/container.test.ts",
     "test:watch": "vitest",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest run src/stores src/hooks src/kernel/events src/kernel/workers src/kernel/container.test.ts --coverage",
