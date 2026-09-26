@@ -8,7 +8,9 @@ const REPO_ROOT = path.resolve('.');
 
 export default defineConfig({
     testDir: '.',
-    timeout: 60000,
+    // Cold boot (38MB bundle + Dexie migrations) can exceed 60s on shared
+    // runners; the beforeEach boot gate alone may take up to 120s.
+    timeout: 180000,
     retries: 1,
     use: {
         baseURL: 'http://localhost:5199',
