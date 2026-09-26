@@ -319,7 +319,9 @@ export function createSendMessageHandler(
                     );
             }
             const q = _sendQueue.get(sessionId);
-            if (q && q.length > 0) {
+            if (!q || q.length === 0) {
+                _sendQueue.delete(sessionId);
+            } else if (!get().isAnySending()) {
                 // H-09: drain ALL queued messages — the old code shifted one and
                 // deleted the key, dropping the rest. Recursive sends that hit the
                 // busy gate re-queue safely (see gate above) instead of losing text.
@@ -340,9 +342,13 @@ export function createSendMessageHandler(
                             }),
                         );
                 }
-            } else {
-                _sendQueue.delete(sessionId);
             }
+            // else: sender still busy — request ids are freed only by terminal
+            // stream events (STREAM_END/ERROR), which drain via drainSendQueue.
+            // Re-sending here would hit the busy gate, re-queue, and loop
+            // forever allocating promises and notification payloads (worker
+            // OOM). Leave queued. NOTE: no `return` here — a return inside
+            // `finally` would swallow an in-flight exception from try/catch.
         }
     };
 }
