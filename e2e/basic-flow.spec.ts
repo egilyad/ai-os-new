@@ -47,6 +47,18 @@ test.describe('AI-OS Basic Flow', () => {
         await expect(page.getByRole('heading', { name: /mission control/i })).toBeVisible({
             timeout: 120000,
         });
+        // Fresh browsers show an onboarding overlay whose backdrop absorbs
+        // clicks meant for underlying buttons — dismiss it best-effort.
+        const overlayBtn = page
+            .getByRole('button', { name: /dismiss|onboarding skip|get started/i })
+            .first();
+        try {
+            if (await overlayBtn.isVisible({ timeout: 5000 })) {
+                await overlayBtn.click({ timeout: 5000 });
+            }
+        } catch {
+            /* no overlay — proceed */
+        }
     });
 
   test('should load dashboard', async ({ page }) => {
