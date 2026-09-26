@@ -344,9 +344,16 @@ describe('useChatStore', () => {
         emit(E.STREAM_END, { requestId: rid, fullContent: 'done', latency: 0 });
         for (let i = 0; i < 10; i++) await Promise.resolve();
         expect(emit.mock.calls.filter(([ev]) => ev === E.SEND_MESSAGE)).toHaveLength(2);
-        // Queue must not leak — a fresh send after the drain works.
+        // Queue must not leak — a fresh send while the re-sent message still
+        // streams is queued (sender busy with its open request id), not
+        // dropped and not force-sent.
         await useChatStore.getState().sendMessage([{ provider: 'groq', model: 'm' }], 'third');
-        expect(emit.mock.calls.filter(([ev]) => ev === E.SEND_MESSAGE)).toHaveLength(3);
+        expect(emit.mock.calls.filter(([ev]) => ev === E.SEND_MESSAGE)).toHaveLength(2);
+        expect(
+            emit.mock.calls.some(
+                ([ev, p]) => ev === E.NOTIFICATION && (p as { type: string }).type === 'info',
+            ),
+        ).toBe(true);
     });
 
     it('sendMessage proceeds without lock and warns on lock failure', async () => {
