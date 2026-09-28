@@ -23,6 +23,9 @@ export class AutonomyRunner implements IAutonomyRunner {
     private runtime: IAgentProjectRuntime;
     private workspace: IProjectWorkspaceService;
     private eventBus: IEventBus;
+    // In-flight goal runs, aborted by destroy() so shutdown never hangs on
+    // a stuck provider call (ILifecycle).
+    private readonly activeRunControllers = new Set<AbortController>();
 
     constructor(
         orchestrator: IAutonomyOrchestrator,
@@ -112,14 +115,27 @@ export class AutonomyRunner implements IAutonomyRunner {
 
         // Cancellation/timeout: previously the task loop below had neither,
         // so a stuck runPrompt hung the goal forever with no way to stop it.
-        const throwIfAborted = () => {
-            if (opts?.signal?.aborted) {
-                throw new DOMException('Goal run aborted', 'AbortError');
-            }
-            if (opts?.timeoutMs !== undefined && Date.now() - startedAt > opts.timeoutMs) {
-                throw new DOMException('Goal run timed out', 'TimeoutError');
+        // The effective signal also fires on destroy(), aborting in-flight runs.
+        const runController = new AbortController();
+        this.activeRunControllers.add(runController);
+        const forwardAbort = () => {
+            if (!runController.signal.aborted) {
+                runController.abort(
+                    opts?.signal?.reason ?? new DOMException('Goal run aborted', 'AbortError'),
+                );
             }
         };
+        opts?.signal?.addEventListener('abort', forwardAbort, { once: true });
+        const signal = runController.signal;
+        try {
+            const throwIfAborted = () => {
+                if (signal.aborted) {
+                    throw new DOMException('Goal run aborted', 'AbortError');
+                }
+                if (opts?.timeoutMs !== undefined && Date.now() - startedAt > opts.timeoutMs) {
+                    throw new DOMException('Goal run timed out', 'TimeoutError');
+                }
+            };
 
         // Get all tasks for this goal
         const tasks = this.orchestrator.getGoalTasks(goalId);
@@ -147,7 +163,7 @@ export class AutonomyRunner implements IAutonomyRunner {
                         this.runtime.runPrompt(goal.projectId, 'autonomy-agent', prompt, {
                             maxRounds: 3,
                         }),
-                    opts?.signal,
+                    signal,
                     opts?.timeoutMs === undefined
                         ? undefined
                         : Math.max(0, opts.timeoutMs - (Date.now() - startedAt)),
@@ -189,6 +205,21 @@ export class AutonomyRunner implements IAutonomyRunner {
         }
 
         return { completed, failed, durationMs: Date.now() - startedAt };
+        } finally {
+            opts?.signal?.removeEventListener('abort', forwardAbort);
+            this.activeRunControllers.delete(runController);
+        }
+    }
+
+    destroy(): void {
+        for (const controller of this.activeRunControllers) {
+            try {
+                controller.abort(new DOMException('AutonomyRunner destroyed', 'AbortError'));
+            } catch {
+                /* ignore */
+            }
+        }
+        this.activeRunControllers.clear();
     }
 
     private buildPrompt(task: DecomposedTask, goal: AutonomyGoal): string {
