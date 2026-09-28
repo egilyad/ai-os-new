@@ -296,7 +296,10 @@ jobs:
         name: E2E Tests
         runs-on: ubuntu-latest
         timeout-minutes: 40
-        needs: quality
+        needs: [quality, build]
+        permissions:
+            contents: read
+            actions: read
         steps:
             - uses: actions/checkout@v4
 
@@ -328,11 +331,13 @@ jobs:
               if: steps.playwright-cache.outputs.cache-hit != 'true'
               run: npx playwright install --with-deps chromium
 
-            - name: Build frontend for preview
-              run: npm run build
-              env:
-                  VITE_APP_ORIGIN: https://example.com
-                  VITE_BUILD_ID: ${{ github.sha }}
+            - name: Download build artifact
+              # Reuses dist/ from the build job instead of rebuilding: faster
+              # and guarantees e2e runs against the exact shipped bundle.
+              uses: actions/download-artifact@v4
+              with:
+                  name: dist
+                  path: dist/
 
             - name: Run E2E tests
               run: npm run test:e2e

@@ -35,7 +35,13 @@ export function getTranslation(
 ): string {
     const localeText = _loaded[locale]?.[key];
     const enText = _loaded.en?.[key];
+    // i18next-style defaultValue: used only when the key is missing in both
+    // locales (previously such calls rendered the raw key). It is NOT a
+    // substitution variable.
+    const { defaultValue, ...substitutions } =
+        (params ?? {}) as Record<string, string | number> & { defaultValue?: unknown };
     let text = localeText ?? enText ?? key;
+    if (text === key && typeof defaultValue === 'string') text = defaultValue;
 
     // FX-02: surface missing keys instead of silently degrading to English or
     // leaking the raw key string. Warn once per key in dev.
@@ -52,7 +58,7 @@ export function getTranslation(
     }
 
     if (params) {
-        for (const [k, v] of Object.entries(params)) {
+        for (const [k, v] of Object.entries(substitutions)) {
             text = text.replace(`{${k}}`, String(v));
         }
     }
