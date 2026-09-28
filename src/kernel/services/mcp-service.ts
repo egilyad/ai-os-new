@@ -223,11 +223,22 @@ export class MCPService {
             if (this._abortController.signal.aborted)
                 throw new Error('MCPService destroyed during backoff');
             await new Promise<void>((resolve, reject) => {
-                const timer = setTimeout(resolve, backoff + jitter);
-                const onAbort = () => {
+                // NOTE: the abort listener must be removed on the success
+                // path too — `{ once: true }` only fires on abort, so every
+                // reconnect otherwise leaks a listener on the singleton
+                // signal for the service lifetime.
+                const cleanup = () => {
                     clearTimeout(timer);
-                    reject(new Error('MCPService destroyed during backoff'));
+                    this._abortController.signal.removeEventListener('abort', onAbort);
                 };
+                const timer = setTimeout(() => {
+                    cleanup();
+                    resolve();
+                }, backoff + jitter);
+                function onAbort() {
+                    cleanup();
+                    reject(new Error('MCPService destroyed during backoff'));
+                }
                 this._abortController.signal.addEventListener('abort', onAbort, { once: true });
             });
         }

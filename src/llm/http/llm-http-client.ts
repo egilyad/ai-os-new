@@ -192,13 +192,15 @@ export class LLMHttpClient {
         apiKey: string,
         signal?: AbortSignal,
     ): Promise<HttpResult> {
+        // Stringify BEFORE acquiring the slot — a circular body would throw
+        // after acquisition and leak the semaphore forever.
+        const bodyStr = JSON.stringify(body);
         await LLMHttpClient.acquireSlot();
         const start = Date.now();
-        const bodyStr = JSON.stringify(body);
         if (import.meta.env.DEV) {
             console.debug(`[${this.#provider}] POST ${path} size:${bodyStr.length}`);
         }
-        const { signal: mergedSignal, controller } = this.#withTimeout(signal);
+        const { signal: mergedSignal, controller, disarm } = this.#withTimeout(signal);
         const done = this.#trackInFlight(controller, path);
         try {
             let res: Response;
@@ -288,6 +290,7 @@ export class LLMHttpClient {
             const latency = Date.now() - start;
             return { data, latency, response: res };
         } finally {
+            disarm();
             done();
             LLMHttpClient.releaseSlot();
         }
@@ -296,7 +299,7 @@ export class LLMHttpClient {
     async get(path: string, apiKey: string, signal?: AbortSignal): Promise<HttpResult> {
         await LLMHttpClient.acquireSlot();
         const start = Date.now();
-        const { signal: mergedSignal, controller } = this.#withTimeout(signal);
+        const { signal: mergedSignal, controller, disarm } = this.#withTimeout(signal);
         const done = this.#trackInFlight(controller, path);
         try {
             let res: Response;
@@ -373,6 +376,7 @@ export class LLMHttpClient {
             const latency = Date.now() - start;
             return { data, latency, response: res };
         } finally {
+            disarm();
             done();
             LLMHttpClient.releaseSlot();
         }
@@ -384,6 +388,8 @@ export class LLMHttpClient {
         apiKey: string,
         signal?: AbortSignal,
     ): Promise<Response> {
+        // Stringify BEFORE acquiring (see post()).
+        const bodyStr = JSON.stringify(body);
         await LLMHttpClient.acquireSlot();
         const { signal: mergedSignal, controller, disarm } = this.#withTimeout(signal);
         const done = this.#trackInFlight(controller, path);
@@ -397,7 +403,7 @@ export class LLMHttpClient {
                         ...this.#defaultHeaders,
                         [this.#authHeaderName]: apiKey,
                     },
-                    body: JSON.stringify(body),
+                    body: bodyStr,
                     signal: mergedSignal,
                 });
             } catch (err) {
@@ -454,7 +460,15 @@ export class LLMHttpClient {
             disarm();
             return res;
         } finally {
+            // Error paths only: on success the timer is already disarmed
+            // above; disarm() is idempotent (clearTimeout).
+            disarm();
             done();
+            // NOTE: the concurrency slot is released here, at headers — not
+            // when the caller finishes reading the body. Holding it would
+            // require returning a release handle (5 streamPost callers), so
+            // concurrent long streams can briefly exceed the semaphore limit.
+            // Callers tolerate this via retry/backoff; revisit if 429s spike.
             LLMHttpClient.releaseSlot();
         }
     }
