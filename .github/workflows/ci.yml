@@ -384,6 +384,13 @@ jobs:
                   DD_SERVICE: ${{ secrets.DD_SERVICE }}
               run: npm run sourcemaps:upload
 
+            - name: Remove sourcemaps before Pages upload
+              # `sourcemap: 'hidden'` only strips the sourceMappingURL comment —
+              # the .map files would otherwise ship publicly with the bundle
+              # (~392k LOC of sources). Uploaded to Sentry/Datadog above when
+              # configured; never publish to Pages.
+              run: rm -f dist/**/*.map dist/*.map
+
             - name: Upload Pages artifact
               uses: actions/upload-pages-artifact@v3
               with:

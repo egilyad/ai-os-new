@@ -325,7 +325,14 @@ export class ForumService implements IForumService {
     }
 
     private renderBody(text: string): string {
-        const escaped = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        // NOTE: `"` must be escaped too — URLs are interpolated into
+        // double-quoted href="..." below, otherwise `[x](http://a/"onmouseover="...)`
+        // breaks out of the attribute (stored XSS via dangerouslySetInnerHTML).
+        const escaped = text
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;');
         return escaped
             .replace(
                 /\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/g,

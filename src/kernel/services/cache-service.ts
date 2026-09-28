@@ -61,8 +61,17 @@ export class CacheService implements ICacheService {
         }
 
         if (this.deps.eventBus) {
-            this.unsub = this.deps.eventBus.on(EVENTS.CACHE_INVALIDATED, () => {
-                this.clear();
+            // Targeted invalidation only: our own set() emits
+            // CACHE_INVALIDATED with a `section` (eviction/replace). A blind
+            // clear() here wiped the whole cache on every write, keeping it
+            // permanently empty. Full clear only for section-less events.
+            this.unsub = this.deps.eventBus.on(EVENTS.CACHE_INVALIDATED, (payload) => {
+                const section = (payload as { section?: unknown } | undefined)?.section;
+                if (typeof section === 'string' && section.length > 0) {
+                    this.cache.delete(section);
+                } else {
+                    this.clear();
+                }
             });
         }
     }

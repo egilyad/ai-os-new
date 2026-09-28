@@ -526,7 +526,15 @@ export class ChatExecutor {
                         }
 
                         const finishReason = result?.finishReason;
-                        if (finishReason && !['stop', 'length', 'done'].includes(finishReason)) {
+                        // Canon is UPPERCASE (AdapterFinishReason: STOP,
+                        // MAX_TOKENS, SAFETY, ...); adapters normalize via
+                        // normalizeFinishReason(). Lowercase literals here
+                        // never matched, flagging every null-content STOP as
+                        // 'Unexpected finish reason'.
+                        if (
+                            finishReason &&
+                            !['STOP', 'MAX_TOKENS', 'DONE'].includes(finishReason)
+                        ) {
                             LOGGER.warn('ChatExecutor', `Unhandled finishReason: ${finishReason}`, {
                                 provider: currentProvider,
                                 requestId,

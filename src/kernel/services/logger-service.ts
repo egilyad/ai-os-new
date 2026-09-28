@@ -1,5 +1,6 @@
 import { CONFIG } from './config-registry';
 import type { ILogger, LogEntry, LogLevel, ITraceContext } from '../contracts/logger';
+import { sanitizeObject } from '../../shared/utils/sanitize';
 
 const LEVELS: Record<LogLevel, number> = { debug: 0, info: 1, warn: 2, error: 3 };
 
@@ -208,19 +209,24 @@ function formatMeta(meta?: Record<string, unknown>): string {
     const parts: string[] = [];
     for (const [k, v] of Object.entries(meta)) {
         if (v === undefined || v === null) continue;
+        // Scrub API keys / secrets before they reach the in-memory buffer,
+        // IndexedDB persistence and exportLogs(). Errors are sanitized by
+        // message (sanitizeObject would drop their non-enumerable fields).
         let val: string;
         if (v instanceof Error) {
-            val = v.message;
-        } else if (typeof v === 'string') {
-            val = v.length > 200 ? v.slice(0, 200) + '…' : v;
+            val = String(sanitizeObject(v.message));
         } else {
-            try {
-                val = JSON.stringify(v);
-                if (val && val.length > 200) val = val.slice(0, 200) + '…';
-            } catch {
-                val = String(v);
+            const clean = sanitizeObject(v);
+            if (typeof clean === 'string') {
+                val = clean.length > 200 ? clean.slice(0, 200) + '…' : clean;
+            } else {
+                try {
+                    val = JSON.stringify(clean);
+                    if (val && val.length > 200) val = val.slice(0, 200) + '…';
+                } catch {
+                    val = String(clean);
+                }
             }
-        }
         // Single-line: collapse newlines so the log entry stays one line
         val = val.replace(/\s+/g, ' ');
         parts.push(`${k}=${val}`);
