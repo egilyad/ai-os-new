@@ -488,14 +488,18 @@ const ChatPanel: React.FC = () => {
                         // T2: persist per-chat override (first selected key)
                         const first = ids[0];
                         if (ids.length > 0 && first !== undefined && first !== selectedKeys[0]) {
-                            void switchKey(first).catch(() => {});
+                            void switchKey(first).catch(() => {
+                                showStatus('Failed to persist key override', 'error');
+                            });
                         }
                     }}
                     onModelChange={(m) => {
                         setSelectedModel(m);
                         const kid = selectedKeys[0];
                         const provider = activeKeys.find((k) => k.id === kid)?.provider ?? 'auto';
-                        void switchModel(provider, m).catch(() => {});
+                        void switchModel(provider, m).catch(() => {
+                            showStatus('Failed to persist model override', 'error');
+                        });
                     }}
                     onSelectedModelsChange={(models) => {
                         setSelectedModelPerKey(models);
@@ -503,7 +507,9 @@ const ChatPanel: React.FC = () => {
                         const m = kid ? models[kid] : undefined;
                         if (kid && m) {
                             const provider = activeKeys.find((k) => k.id === kid)?.provider ?? 'auto';
-                            void switchModel(provider, m).catch(() => {});
+                            void switchModel(provider, m).catch(() => {
+                                showStatus('Failed to persist model override', 'error');
+                            });
                         }
                     }}
                 />

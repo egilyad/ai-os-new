@@ -176,7 +176,12 @@ const TasksPanel: React.FC = () => {
 
     // AGEMS 2.1: load agemsTasks
     useEffect(() => {
-        void agemsTaskService.list().then(setAgemsTasks).catch(() => {});
+        void agemsTaskService
+            .list()
+            .then(setAgemsTasks)
+            .catch(() => {
+                setError(t('tasks.error_refresh'));
+            });
     }, []);
 
     const handleCreateAgemsTask = async () => {

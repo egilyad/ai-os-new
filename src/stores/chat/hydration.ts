@@ -243,8 +243,10 @@ export function useChatStoreHydration(): void {
                             JSON.stringify(trimmed),
                         );
                     }
-                } catch {
-                    // localStorage quota exceeded — backup silently skipped
+                } catch (e) {
+                    // Backup skipped (usually quota) — log instead of silent
+                    // loss so the next boot can surface it.
+                    LOGGER.warn('ChatHydration', 'beforeunload backup skipped', { error: e });
                 }
             }
         };
