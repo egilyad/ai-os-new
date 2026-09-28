@@ -58,7 +58,6 @@ const CompaniesPanel: React.FC = () => {
                 url.replace(/\/$/, ''),
                 secret,
                 '/api/companies',
-                secret,
             )) as { companies?: GatewayCompany[] };
             const list = Array.isArray(data.companies) ? data.companies : [];
             setCompanies(list);
