@@ -51,13 +51,75 @@ export class AutonomyRunner implements IAutonomyRunner {
         return tasks;
     }
 
-    async runGoal(goalId: string): Promise<{ completed: number; failed: number; durationMs: number }> {
+    /**
+     * Race an LLM-bound promise against caller abort + remaining timeout.
+     * Fast path (no signal/timeout) avoids any extra allocation.
+     */
+    private runPromptCancellable<T>(
+        fn: () => Promise<T>,
+        signal?: AbortSignal,
+        timeoutMs?: number,
+    ): Promise<T> {
+        if (!signal && timeoutMs === undefined) return fn();
+        return new Promise<T>((resolve, reject) => {
+            let timer: ReturnType<typeof setTimeout> | null = null;
+            const cleanup = () => {
+                if (timer) clearTimeout(timer);
+                signal?.removeEventListener('abort', onAbort);
+            };
+            const onAbort = () => {
+                cleanup();
+                reject(
+                    signal?.reason instanceof Error
+                        ? signal.reason
+                        : new DOMException('Goal run aborted', 'AbortError'),
+                );
+            };
+            if (timeoutMs !== undefined) {
+                timer = setTimeout(() => {
+                    cleanup();
+                    reject(new DOMException('Goal run timed out', 'TimeoutError'));
+                }, timeoutMs);
+            }
+            if (signal?.aborted) {
+                onAbort();
+                return;
+            }
+            signal?.addEventListener('abort', onAbort, { once: true });
+            fn().then(
+                (v) => {
+                    cleanup();
+                    resolve(v);
+                },
+                (e) => {
+                    cleanup();
+                    reject(e);
+                },
+            );
+        });
+    }
+
+    async runGoal(
+        goalId: string,
+        opts?: { signal?: AbortSignal; timeoutMs?: number },
+    ): Promise<{ completed: number; failed: number; durationMs: number }> {
         const goal = this.orchestrator.getGoal(goalId);
         if (!goal) throw new Error(`Goal not found: ${goalId}`);
 
         const startedAt = Date.now();
         let completed = 0;
         let failed = 0;
+
+        // Cancellation/timeout: previously the task loop below had neither,
+        // so a stuck runPrompt hung the goal forever with no way to stop it.
+        const throwIfAborted = () => {
+            if (opts?.signal?.aborted) {
+                throw new DOMException('Goal run aborted', 'AbortError');
+            }
+            if (opts?.timeoutMs !== undefined && Date.now() - startedAt > opts.timeoutMs) {
+                throw new DOMException('Goal run timed out', 'TimeoutError');
+            }
+        };
 
         // Get all tasks for this goal
         const tasks = this.orchestrator.getGoalTasks(goalId);
@@ -68,6 +130,7 @@ export class AutonomyRunner implements IAutonomyRunner {
 
         // Execute each task through the real runtime
         for (const task of tasks) {
+            throwIfAborted();
             try {
                 // Assign to a generic agent
                 this.orchestrator.assignTask(task.id, 'autonomy-agent');
@@ -76,10 +139,19 @@ export class AutonomyRunner implements IAutonomyRunner {
                 // Build the prompt from the task
                 const prompt = this.buildPrompt(task, goal);
 
-                // Run through the real agent runtime
-                const result = await this.runtime.runPrompt(goal.projectId, 'autonomy-agent', prompt, {
-                    maxRounds: 3,
-                });
+                // Run through the real agent runtime, raced against
+                // caller abort/timeout so a stuck provider call cannot hang
+                // the whole goal.
+                const result = await this.runPromptCancellable(
+                    () =>
+                        this.runtime.runPrompt(goal.projectId, 'autonomy-agent', prompt, {
+                            maxRounds: 3,
+                        }),
+                    opts?.signal,
+                    opts?.timeoutMs === undefined
+                        ? undefined
+                        : Math.max(0, opts.timeoutMs - (Date.now() - startedAt)),
+                );
 
                 // Parse output for file operations and write to workspace
                 const filesWritten = await this.parseAndWriteFiles(goal.projectId, result.output);
