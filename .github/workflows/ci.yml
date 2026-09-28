@@ -19,6 +19,7 @@ jobs:
     quality:
         name: Type-check & Lint
         runs-on: ubuntu-latest
+        timeout-minutes: 15
         permissions:
             contents: read
         steps:
@@ -60,6 +61,7 @@ jobs:
     build:
         name: Build
         runs-on: ubuntu-latest
+        timeout-minutes: 15
         needs: quality
         permissions:
             contents: read
@@ -110,6 +112,7 @@ jobs:
     test:
         name: Unit Tests
         runs-on: ubuntu-latest
+        timeout-minutes: 20
         needs: quality
         permissions:
             contents: read
@@ -152,6 +155,7 @@ jobs:
     coverage:
         name: Test Coverage
         runs-on: ubuntu-latest
+        timeout-minutes: 20
         needs: quality
         permissions:
             contents: read
@@ -198,6 +202,7 @@ jobs:
     security-audit:
         name: Security Audit
         runs-on: ubuntu-latest
+        timeout-minutes: 10
         permissions:
             contents: read
         steps:
@@ -227,6 +232,7 @@ jobs:
     circular-check:
         name: Circular Dependency Check
         runs-on: ubuntu-latest
+        timeout-minutes: 10
         needs: quality
         permissions:
             contents: read
@@ -256,6 +262,7 @@ jobs:
     dep-graph:
         name: Dependency Graph Check
         runs-on: ubuntu-latest
+        timeout-minutes: 15
         needs: quality
         permissions:
             contents: read
@@ -288,6 +295,7 @@ jobs:
     e2e:
         name: E2E Tests
         runs-on: ubuntu-latest
+        timeout-minutes: 40
         needs: quality
         steps:
             - uses: actions/checkout@v4
@@ -355,6 +363,7 @@ jobs:
         if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
         needs: [build, e2e]
         runs-on: ubuntu-latest
+        timeout-minutes: 10
         permissions:
             contents: read
             pages: write
