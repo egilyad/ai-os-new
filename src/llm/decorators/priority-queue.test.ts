@@ -17,7 +17,7 @@ function deferred<T>() {
 function makeInner() {
     const pending = new Map<string, ReturnType<typeof deferred<{ content: string }>>>();
     const sendMessage = vi.fn(
-        async (messages: ChatMessage[], model: string, _apiKey: string) => {
+        async (_messages: ChatMessage[], model: string, _apiKey: string) => {
             const gate = deferred<{ content: string }>();
             pending.set(model, gate);
             return gate.promise;
