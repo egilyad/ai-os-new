@@ -16,8 +16,11 @@ export class CrystalRepository {
     }
 
     async put(crystal: Crystal): Promise<void> {
-        await this.db.crystals.put(crystal);
-        await this.db.crystalVersions.put(crystal);
+        // Atomic: latest + history row commit together, never torn.
+        await this.db.transaction([this.db.crystals, this.db.crystalVersions], async () => {
+            await this.db.crystals.put(crystal);
+            await this.db.crystalVersions.put(crystal);
+        });
     }
 
     async get(crystalId: CrystalId): Promise<Crystal | undefined> {
@@ -37,12 +40,16 @@ export class CrystalRepository {
     }
 
     async delete(crystalId: CrystalId): Promise<void> {
-        await this.db.crystals.delete(crystalId);
-        await this.db.crystalVersions.where('crystalId').equals(crystalId).delete();
+        await this.db.transaction([this.db.crystals, this.db.crystalVersions], async () => {
+            await this.db.crystals.delete(crystalId);
+            await this.db.crystalVersions.where('crystalId').equals(crystalId).delete();
+        });
     }
 
     async clear(): Promise<void> {
-        await this.db.crystals.clear();
-        await this.db.crystalVersions.clear();
+        await this.db.transaction([this.db.crystals, this.db.crystalVersions], async () => {
+            await this.db.crystals.clear();
+            await this.db.crystalVersions.clear();
+        });
     }
 }

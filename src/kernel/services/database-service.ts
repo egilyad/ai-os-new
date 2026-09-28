@@ -905,6 +905,17 @@ export class DatabaseService implements IDatabaseService {
             }
         });
     }
+
+    /**
+     * Run a callback inside a real Dexie read-write transaction over the
+     * given tables. Repositories must use this for multi-table writes
+     * (put + history, delete + cascade) instead of sequential awaits,
+     * which leave torn state on mid-way failure or interleaved writers.
+     * Table accessors on this service join the running transaction.
+     */
+    async transaction<T>(tables: Array<Table | string>, fn: () => Promise<T>): Promise<T> {
+        return getDexieDb().transaction('rw', tables, fn);
+    }
 }
 
 export const db = new DatabaseService();

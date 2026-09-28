@@ -26,6 +26,7 @@ export interface InvocationCostTrackerDeps {
  */
 export class InvocationCostTracker {
     private unsubs: Array<() => void> = [];
+    private readonly writeChains = new Map<string, Promise<void>>();
 
     constructor(private readonly deps: InvocationCostTrackerDeps) {
         this.subscribe();
@@ -52,6 +53,19 @@ export class InvocationCostTracker {
     }
 
     private async record(invocationId: string, cost: number): Promise<void> {
+        // Serialize writes per invocationId: parallel STREAM_END events for
+        // the same invocation raced get→compute→put and silently lost
+        // increments. A promise chain per key makes them sequential.
+        const prev = this.writeChains.get(invocationId) ?? Promise.resolve();
+        const next = prev.then(() => this.recordInner(invocationId, cost));
+        this.writeChains.set(invocationId, next);
+        void next.finally(() => {
+            if (this.writeChains.get(invocationId) === next) this.writeChains.delete(invocationId);
+        });
+        await next;
+    }
+
+    private async recordInner(invocationId: string, cost: number): Promise<void> {
         try {
             const table = this.deps.database.invocationCosts;
             const existing = await table.get(invocationId);
@@ -100,5 +114,6 @@ export class InvocationCostTracker {
     destroy(): void {
         this.unsubs.forEach((u) => u());
         this.unsubs = [];
+        this.writeChains.clear();
     }
 }
