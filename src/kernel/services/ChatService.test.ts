@@ -11,30 +11,28 @@ describe('ChatExecutor', () => {
         expect(chatService).toBeDefined();
     });
 
-    it.skip(
-        'should respond to SEND_MESSAGE event and emit error for unconfigured provider',
-        () =>
-            new Promise<void>((done, reject) => {
-                const timer = setTimeout(() => {
+    it('should respond to SEND_MESSAGE event and emit error for unconfigured provider', async () => {
+        const response = await new Promise<unknown>((resolve, reject) => {
+            const timer = setTimeout(() => {
+                unsub();
+                reject(new Error('Timed out waiting for MESSAGE_RESPONSE'));
+            }, 5000);
+            const unsub = eventBus.on(EVENTS.MESSAGE_RESPONSE, (res) => {
+                if (res.requestId === 'test-req-1' && res.status === 'error') {
+                    clearTimeout(timer);
                     unsub();
-                    reject(new Error('Timed out waiting for MESSAGE_RESPONSE'));
-                }, 5000);
-                const unsub = eventBus.on(EVENTS.MESSAGE_RESPONSE, (res) => {
-                    if (res.requestId === 'test-req-1' && res.status === 'error') {
-                        clearTimeout(timer);
-                        unsub();
-                        done();
-                    }
-                });
-                eventBus.emit(EVENTS.SEND_MESSAGE, {
-                    provider: 'NonExistentProvider',
-                    model: 'gpt-4',
-                    messages: [{ role: 'user', content: 'hello' }],
-                    requestId: 'test-req-1',
-                });
-            }),
-        10000,
-    );
+                    resolve(res);
+                }
+            });
+            eventBus.emit(EVENTS.SEND_MESSAGE, {
+                provider: 'NonExistentProvider',
+                model: 'gpt-4',
+                messages: [{ role: 'user', content: 'hello' }],
+                requestId: 'test-req-1',
+            });
+        });
+        expect(response).toBeDefined();
+    }, 10000);
 
     it('should respond to CANCEL_MESSAGE event without throwing', async () => {
         expect(() => {

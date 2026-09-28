@@ -46,7 +46,11 @@ export class ChatExecutor {
             const now = Date.now();
             for (const [id, entry] of this.activeRequests) {
                 if (now - entry.timestamp > this.ACTIVE_REQUEST_TTL) {
-                    entry.controller.abort();
+                    // Named reason: a bare abort() would be misclassified
+                    // downstream as a user abort, hiding the stall.
+                    entry.controller.abort(
+                        new DOMException(`Stale request reaped after TTL: ${id}`, 'AbortError'),
+                    );
                     this.activeRequests.delete(id);
                 }
             }
