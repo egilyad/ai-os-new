@@ -1,7 +1,9 @@
 import React, { useEffect, useState, useCallback } from 'react';
+import { shallow } from 'zustand/shallow';
 import { useTranslation } from '../../i18n/useTranslation';
 import { projectManagerService, projectWorkspaceService, websitePreviewService, browserInspectorService, multiAgentProjectService, pythonRunnerService, artifactService, projectTemplateService, autonomyOrchestrator, projectMemoryService } from '../../kernel/instances/services-extras';
 import { useProjectStore, ensureSubscribed, destroy } from '../../stores/project-store';
+import type { ProjectStoreState } from '../../stores/project-store';
 import { StatusBadge, Button } from '../../components/Common';
 import ActivitiesPanel from './ActivitiesPanel';
 import type { CreateProjectInput } from '../../kernel/types/project-types';
@@ -27,7 +29,22 @@ const TABS: Tab[] = ['files', 'preview', 'pipeline', 'qa', 'memory', 'templates'
 
 const ProjectsPanel: React.FC = () => {
     const { t } = useTranslation();
-    const { projects, order, loading, error, loadProjects, select, refresh, selectedProjectId: selectedId } = useProjectStore();
+    // Selective subscription: tasks/runs/files/assignments churn on every
+    // run update — this panel only needs the project list slice.
+    const { projects, order, loading, error, loadProjects, select, refresh, selectedProjectId: selectedId } =
+        useProjectStore(
+            (s: ProjectStoreState) => ({
+                projects: s.projects,
+                order: s.order,
+                loading: s.loading,
+                error: s.error,
+                loadProjects: s.loadProjects,
+                select: s.select,
+                refresh: s.refresh,
+                selectedProjectId: s.selectedProjectId,
+            }),
+            shallow,
+        );
     const [showCreate, setShowCreate] = useState(false);
     const [newName, setNewName] = useState('');
     const [newDesc, setNewDesc] = useState('');

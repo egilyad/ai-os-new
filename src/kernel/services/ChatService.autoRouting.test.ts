@@ -131,10 +131,14 @@ describe('ChatExecutor auto-routing', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     function waitForResponse(timeoutMs = 3000): Promise<any> {
         return new Promise((resolve, reject) => {
-            const timer = setTimeout(
-                () => reject(new Error('Timed out waiting for chat:response')),
-                timeoutMs,
-            );
+            const timer = setTimeout(() => {
+                try {
+                    unsub();
+                } catch {
+                    /* ignore */
+                }
+                reject(new Error('Timed out waiting for chat:response'));
+            }, timeoutMs);
             const unsub = mockEventBus.on(EVENTS.MESSAGE_RESPONSE, (res: unknown) => {
                 clearTimeout(timer);
                 unsub();
