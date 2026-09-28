@@ -40,6 +40,7 @@ export type { InitPhase, BootstrapReport };
 
 export class SystemBootstrap implements IBootstrap {
     private isStarted = false;
+    private _initPromise: Promise<BootstrapReport> | null = null;
     private phase: InitPhase = 'pending';
     private startTime = 0;
     private error: string | null = null;
@@ -66,6 +67,18 @@ export class SystemBootstrap implements IBootstrap {
     }
 
     async init(): Promise<BootstrapReport> {
+        if (this.isStarted) return this.getReport();
+        // Idempotency: concurrent init() calls share one in-flight run
+        // instead of double-registering services and watchdogs.
+        if (!this._initPromise) {
+            this._initPromise = this.doInit().finally(() => {
+                this._initPromise = null;
+            });
+        }
+        return this._initPromise;
+    }
+
+    private async doInit(): Promise<BootstrapReport> {
         if (this.isStarted) return this.getReport();
         this.startTime = Date.now();
         this.lifecycle.clearStatuses();
@@ -142,7 +155,9 @@ export class SystemBootstrap implements IBootstrap {
 
         const servicesOk = await this.initServices();
         if (!servicesOk) {
-            this.isStarted = true;
+            // Do NOT mark started on failure — a retry must re-run init
+            // instead of returning a stale success report.
+            this.phase = 'failed';
             return this.getReport();
         }
 
@@ -203,6 +218,7 @@ export class SystemBootstrap implements IBootstrap {
         this.lifecycle.clearStatuses();
         this.error = null;
         this.isStarted = false;
+        this._initPromise = null;
         this.phase = 'pending';
         this.logger.info('Bootstrap', 'Shutdown complete.');
     }

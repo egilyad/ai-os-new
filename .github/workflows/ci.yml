@@ -88,6 +88,7 @@ jobs:
               run: npm run build
               env:
                   VITE_APP_ORIGIN: https://example.com
+                  VITE_BUILD_ID: ${{ github.sha }}
 
             - name: Check bundle size
               run: |
@@ -323,6 +324,7 @@ jobs:
               run: npm run build
               env:
                   VITE_APP_ORIGIN: https://example.com
+                  VITE_BUILD_ID: ${{ github.sha }}
 
             - name: Run E2E tests
               run: npm run test:e2e

@@ -9,6 +9,9 @@ export function useTranslation() {
         const l = s.language === 'ru' ? 'ru' : 'en';
         setLanguage(l);
         loadLocale(l);
+        // WCAG 3.1.1: keep <html lang> in sync so screen readers pick the
+        // right voice; guard for SSR/test environments without document.
+        if (typeof document !== 'undefined') document.documentElement.lang = l;
         return l;
     });
 
@@ -18,6 +21,7 @@ export function useTranslation() {
             setLang(l);
             setLanguage(l);
             loadLocale(l);
+            if (typeof document !== 'undefined') document.documentElement.lang = l;
         });
         return () => {
             unsub();

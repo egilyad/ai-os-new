@@ -57,7 +57,10 @@ export class EventBus implements IEventBus {
     private emitDepth = 0;
     private hotEmitDepth = 0;
     private staticValidators = new Set<string>(); // N-18: track which validators are static (from EventValidators)
-    private _unsubByCb = new Map<Callback<unknown>, () => void>(); // callback → unsubFn for off() cleanup
+    // (event → unsubFn) per callback for off() cleanup. Keyed by BOTH event
+    // and callback: the same handler subscribed to 2 events used to overwrite
+    // its own entry, leaking the other subscription on reset().
+    private _unsubByCb = new WeakMap<Callback<unknown>, Map<string, () => void>>();
     private logger?: ILogger;
     private emitCount = 0;
     private strictMode: boolean;
@@ -185,7 +188,9 @@ export class EventBus implements IEventBus {
         handlers.push(callback as Callback<unknown>);
         this.listenerMap.set(key, handlers);
         const unsub = () => this.off(event, callback);
-        this._unsubByCb.set(callback as Callback<unknown>, unsub);
+        const perEvent = this._unsubByCb.get(callback as Callback<unknown>) ?? new Map<string, () => void>();
+        perEvent.set(key, unsub);
+        this._unsubByCb.set(callback as Callback<unknown>, perEvent);
         // H-06: Track unsubscribe so reset() can clean up all subscriptions
         // P0-2: warn-only when nearing capacity — never silently prune legitimate subscribers
         if (this.unsubCallbacks.size >= 5000 && !this._unsubWarned) {
@@ -198,7 +203,8 @@ export class EventBus implements IEventBus {
         this.unsubCallbacks.add(unsub);
         return () => {
             this.unsubCallbacks.delete(unsub);
-            this._unsubByCb.delete(callback as Callback<unknown>);
+            const perEvent = this._unsubByCb.get(callback as Callback<unknown>);
+            perEvent?.delete(key);
             unsub();
         };
     }
@@ -210,10 +216,10 @@ export class EventBus implements IEventBus {
         const idx = handlers.indexOf(callback as Callback<unknown>);
         if (idx !== -1) handlers.splice(idx, 1);
         // Also remove from unsubCallbacks to prevent leak when off() is used directly
-        const unsub = this._unsubByCb.get(callback as Callback<unknown>);
+        const unsub = this._unsubByCb.get(callback as Callback<unknown>)?.get(key);
         if (unsub) {
             this.unsubCallbacks.delete(unsub);
-            this._unsubByCb.delete(callback as Callback<unknown>);
+            this._unsubByCb.get(callback as Callback<unknown>)?.delete(key);
         }
     }
 
