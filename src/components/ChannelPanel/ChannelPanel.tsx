@@ -5,6 +5,7 @@
  * Right: message stream with threading, reactions, edit/delete, typing indicators.
  */
 import React, { useEffect, useState, useRef, useCallback } from 'react';
+import { useShallow } from 'zustand/shallow';
 import { useTranslation } from '../../i18n/useTranslation';
 import { channelService } from '../../kernel/instances/services-extras';
 import { useChannelStore, ensureSubscribed, destroy } from '../../stores/channel-store';
@@ -39,7 +40,22 @@ const EMOJI_OPTIONS = ['👍', '❤️', '😂', '🎉', '🚀', '👀', '🔥',
 
 const ChannelPanel: React.FC = () => {
     const { t } = useTranslation();
-    const { channels, order, selectedId, messages, loading, loadChannels, selectChannel, refresh } = useChannelStore();
+    // Selective subscription: the store also carries high-churn `events` /
+    // `error` slices this panel never renders — without useShallow every
+    // stream event re-rendered the whole panel.
+    const { channels, order, selectedId, messages, loading, loadChannels, selectChannel, refresh } =
+        useChannelStore(
+            useShallow((s) => ({
+                channels: s.channels,
+                order: s.order,
+                selectedId: s.selectedId,
+                messages: s.messages,
+                loading: s.loading,
+                loadChannels: s.loadChannels,
+                selectChannel: s.selectChannel,
+                refresh: s.refresh,
+            })),
+        );
     const [input, setInput] = useState('');
     const [replyTo, setReplyTo] = useState<string | null>(null);
     const [editId, setEditId] = useState<string | null>(null);

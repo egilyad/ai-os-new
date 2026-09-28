@@ -95,7 +95,13 @@ export class TransactionContext implements ITransaction {
         for (const { event, data } of this.pendingEmits) {
             eventBus?.emit(event, data);
         }
-        for (const cb of this.commitCbs) cb();
+        for (const cb of this.commitCbs) {
+            try {
+                cb();
+            } catch (e) {
+                LOGGER.error('Transaction', 'commit callback failed', { error: e });
+            }
+        }
     }
 
     async rollback(eventBus?: { emit: (event: string, data?: unknown) => void }): Promise<void> {
@@ -112,15 +118,25 @@ export class TransactionContext implements ITransaction {
                 `rollback from "${this.source}": dropped ${emitCount} deferred emits, ${persistCount} deferred persists`,
             );
             if (eventBus) {
-                eventBus.emit(EVENTS.NOTIFICATION, {
-                    message: `Transaction rollback [${this.source}]: ${emitCount} events, ${persistCount} persists discarded`,
-                    type: 'warning',
-                    source: 'Transaction',
-                });
+                try {
+                    eventBus.emit(EVENTS.NOTIFICATION, {
+                        message: `Transaction rollback [${this.source}]: ${emitCount} events, ${persistCount} persists discarded`,
+                        type: 'warning',
+                        source: 'Transaction',
+                    });
+                } catch {
+                    // Rollback notification must never mask the original error.
+                }
             }
         }
 
-        for (const cb of this.rollbackCbs) cb();
+        for (const cb of this.rollbackCbs) {
+            try {
+                cb();
+            } catch (e) {
+                LOGGER.error('Transaction', 'rollback callback failed', { error: e });
+            }
+        }
         this.pendingEmits = [];
         this.pendingPersists = [];
         this.commitCbs = [];
