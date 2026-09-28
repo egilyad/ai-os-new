@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { RefreshCw, ListChecks, Loader2, AlertTriangle } from 'lucide-react';
 import { useTranslation } from '../i18n/useTranslation';
+import { gatewayApi as api } from './Common';
 
 interface Agent {
     id: string;
@@ -42,21 +43,6 @@ const TRANSITIONS: Record<string, string[]> = {
 };
 
 const GATE_STATUSES = ['in_review', 'done'];
-
-async function api<T>(base: string, secret: string, p: string, init?: RequestInit): Promise<T> {
-    const headers: Record<string, string> = { 'Content-Type': 'application/json' };
-    if (secret) headers['Authorization'] = `Bearer ${secret}`;
-    const r = await fetch(base + p, { ...init, headers: { ...headers, ...(init?.headers || {}) } });
-    const body = (await r.json().catch(() => ({}))) as unknown;
-    if (!r.ok) {
-        const msg = (body as { error?: string }).error || `HTTP ${r.status}`;
-        const err = new Error(msg) as Error & { status?: number; body?: unknown };
-        err.status = r.status;
-        err.body = body;
-        throw err;
-    }
-    return body as T;
-}
 
 const IssuesPanel: React.FC = () => {
     const { t } = useTranslation();

@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { RefreshCw, Server, Users, AlertTriangle, Loader2 } from 'lucide-react';
 import { useTranslation } from '../i18n/useTranslation';
 import { useFrontierStore } from '../stores/frontierStore';
+import { gatewayApi } from './Common';
 
 interface GatewayAgent {
     id: string;
@@ -37,14 +38,6 @@ function loadCfg(): { url: string; secret: string } {
     }
 }
 
-async function fetchJson(url: string, secret: string): Promise<unknown> {
-    const headers: Record<string, string> = { 'Content-Type': 'application/json' };
-    if (secret) headers['Authorization'] = `Bearer ${secret}`;
-    const r = await fetch(url, { headers });
-    if (!r.ok) throw new Error(`HTTP ${r.status}`);
-    return r.json() as Promise<unknown>;
-}
-
 const CompaniesPanel: React.FC = () => {
     const { t } = useTranslation();
     const localOrgs = useFrontierStore((s) => s.orgs);
@@ -61,8 +54,10 @@ const CompaniesPanel: React.FC = () => {
         setLoading(true);
         setError(null);
         try {
-            const data = (await fetchJson(
-                `${url.replace(/\/$/, '')}/api/companies`,
+            const data = (await gatewayApi(
+                url.replace(/\/$/, ''),
+                secret,
+                '/api/companies',
                 secret,
             )) as { companies?: GatewayCompany[] };
             const list = Array.isArray(data.companies) ? data.companies : [];

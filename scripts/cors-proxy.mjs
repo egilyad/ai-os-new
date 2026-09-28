@@ -183,6 +183,10 @@ const server = http.createServer(async (req, res) => {
                 ...proxyHeaders,
                 ...(requestBody.length > 0 ? { 'Content-Length': String(requestBody.length) } : {}),
             },
+            // We connect to the resolved IP (DNS-rebinding fix above), so
+            // SNI must carry the original hostname — otherwise TLS fails
+            // with ERR_TLS_CERT_ALTNAME_INVALID on https upstreams.
+            ...(parsed.protocol === 'https:' ? { servername: parsed.hostname } : {}),
         },
         (proxyRes) => {
             let size = 0;

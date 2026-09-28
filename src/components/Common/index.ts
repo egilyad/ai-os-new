@@ -14,5 +14,6 @@ export * from './EmptyState';
 export { ModalShell } from '../ModalShell';
 export { Button } from './Button';
 export type { ButtonProps, ButtonVariant, ButtonSize } from './Button';
+export { gatewayApi, GATEWAY_TIMEOUT_MS } from './gatewayApi';
 export { AgentDisplay } from './AgentDisplay';
 export * from '../../styles/common';

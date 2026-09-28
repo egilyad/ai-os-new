@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { RefreshCw, Activity, Loader2, AlertTriangle } from 'lucide-react';
 import { useTranslation } from '../i18n/useTranslation';
+import { gatewayApi as api } from './Common';
 
 interface RunEvent {
     t: number;
@@ -27,18 +28,6 @@ interface Company {
 
 const URL_KEY = 'companyGateway.url';
 const SECRET_KEY = 'companyGateway.secret';
-
-async function api<T>(base: string, secret: string, p: string, init?: RequestInit): Promise<T> {
-    const headers: Record<string, string> = { 'Content-Type': 'application/json' };
-    if (secret) headers['Authorization'] = `Bearer ${secret}`;
-    const r = await fetch(base + p, { ...init, headers: { ...headers, ...(init?.headers || {}) } });
-    const body = (await r.json().catch(() => ({}))) as unknown;
-    if (!r.ok) {
-        const msg = (body as { error?: string }).error || `HTTP ${r.status}`;
-        throw new Error(msg);
-    }
-    return body as T;
-}
 
 const RunsPanel: React.FC = () => {
     const { t } = useTranslation();
