@@ -227,6 +227,7 @@ function formatMeta(meta?: Record<string, unknown>): string {
                     val = String(clean);
                 }
             }
+        }
         // Single-line: collapse newlines so the log entry stays one line
         val = val.replace(/\s+/g, ' ');
         parts.push(`${k}=${val}`);

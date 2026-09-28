@@ -1,12 +1,9 @@
 # syntax=docker/dockerfile:1.7
 # ────────────────────────────────────────────────────────────────
 # SuperAgents OS — multi-stage production Dockerfile
-# LABELS: https://github.com/opencontainers/image-spec/blob/main/annotations.md
-LABEL org.opencontainers.image.title="SuperAgents OS"
-LABEL org.opencontainers.image.description="Autonomous multi-agent runtime with cognitive topology DSL"
-LABEL org.opencontainers.image.url="https://github.com/n95887174-source/ai-os-new"
-LABEL org.opencontainers.image.source="https://github.com/n95887174-source/ai-os-new"
-LABEL org.opencontainers.image.licenses="MIT"
+# NOTE: LABELs must live AFTER a FROM (they were silently dropped before
+# the first FROM). They are attached to the runtime stage below, following
+# https://github.com/opencontainers/image-spec/blob/main/annotations.md
 #
 # Stage 1 (build): installs deps with legacy-peer-deps to bypass the
 #                  typescript/madge peer-dep conflict, then runs
@@ -68,9 +65,19 @@ RUN VITE_BASE_PATH=$VITE_BASE_PATH \
 # permission issue that broke the previous Dockerfile.
 FROM nginxinc/nginx-unprivileged:1.28-alpine
 
+LABEL org.opencontainers.image.title="SuperAgents OS"
+LABEL org.opencontainers.image.description="Autonomous multi-agent runtime with cognitive topology DSL"
+LABEL org.opencontainers.image.url="https://github.com/n95887174-source/ai-os-new"
+LABEL org.opencontainers.image.source="https://github.com/n95887174-source/ai-os-new"
+LABEL org.opencontainers.image.licenses="MIT"
+
 ARG NGINX_CONFIG=nginx.conf
 COPY --from=build /app/dist /usr/share/nginx/html
 COPY --chown=nginx:nginx docker/${NGINX_CONFIG} /etc/nginx/conf.d/default.conf.template
+# Seed copy outside any tmpfs mount: compose mounts tmpfs over
+# /etc/nginx/conf.d (read_only rootfs), which would shadow this template —
+# entrypoint restores it from here before rendering.
+COPY --chown=nginx:nginx docker/${NGINX_CONFIG} /usr/share/nginx/template/default.conf.template
 
 # Healthcheck defined in docker-compose.yml (overrides this) — keep single source of truth
 # Image-level HEALTHCHECK so the image is self-describing even without compose.

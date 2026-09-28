@@ -43,6 +43,9 @@ services:
         tmpfs:
             - /tmp
             - /var/run
+            # Writable rendered nginx config (see Dockerfile seed +
+            # entrypoint restore; read_only rootfs shadows the template).
+            - /etc/nginx/conf.d
         logging:
             driver: json-file
             options:

@@ -63,6 +63,10 @@ services:
         tmpfs:
             - /tmp
             - /var/run
+        # Writable rendered nginx config: entrypoint restores the template
+        # seed here (read_only rootfs would shadow the baked template
+        # otherwise) and renders default.conf into it.
+            - /etc/nginx/conf.d
         logging:
             driver: json-file
             options:

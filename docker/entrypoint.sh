@@ -21,7 +21,12 @@ set -e
 export API_UPSTREAM PROXY_GEMINI PROXY_OPENROUTER PROXY_NVIDIA \
        PROXY_GROQ PROXY_CEREBRAS PROXY_CLOUDFLARE PROXY_FETCH PROXY_OPENAI
 
-# BLD-01: envsubst runs against the .template file, output goes to nginx's default.conf
+# BLD-01: envsubst runs against the .template file, output goes to nginx's default.conf.
+# On read_only rootfs compose mounts tmpfs over /etc/nginx/conf.d, shadowing
+# the baked template — restore it from the seed copy first.
+if [ ! -f /etc/nginx/conf.d/default.conf.template ] && [ -f /usr/share/nginx/template/default.conf.template ]; then
+  cp /usr/share/nginx/template/default.conf.template /etc/nginx/conf.d/default.conf.template
+fi
 if [ -f /etc/nginx/conf.d/default.conf.template ]; then
   envsubst \
     '${API_UPSTREAM} ${PROXY_GEMINI} ${PROXY_OPENROUTER} ${PROXY_NVIDIA} \

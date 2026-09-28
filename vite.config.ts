@@ -54,15 +54,26 @@ export default defineConfig({
             output: {
                 manualChunks(id) {
                     if (id.includes('node_modules')) {
+                        // NOTE: specific buckets first — the broad `react`
+                        // substring below also matches @xyflow/react,
+                        // @tiptap/react and @react-aria/*, which used to be
+                        // swallowed into vendor-react leaving their own
+                        // vendor buckets dead.
+                        if (id.includes('@xyflow')) {
+                            return 'vendor-xyflow';
+                        }
+                        if (id.includes('@tiptap')) {
+                            return 'vendor-tiptap';
+                        }
+                        if (id.includes('@react-aria')) {
+                            return 'vendor-aria';
+                        }
                         if (
                             id.includes('react') ||
                             id.includes('react-dom') ||
                             id.includes('react-router')
                         ) {
                             return 'vendor-react';
-                        }
-                        if (id.includes('@xyflow')) {
-                            return 'vendor-xyflow';
                         }
                         if (
                             id.includes('lucide') ||
@@ -78,12 +89,6 @@ export default defineConfig({
                         }
                         if (id.includes('meriyah')) {
                             return 'vendor-ast';
-                        }
-                        if (id.includes('@tiptap')) {
-                            return 'vendor-tiptap';
-                        }
-                        if (id.includes('@react-aria')) {
-                            return 'vendor-aria';
                         }
                         if (id.includes('@orama')) {
                             return 'vendor-orama';

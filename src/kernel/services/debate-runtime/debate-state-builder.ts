@@ -98,9 +98,11 @@ export function buildDebateState(args: DebateArgument[], currentAgentId: string)
         }
     }
 
-    // Detect resolved claims: a claim is resolved when addressed by the other side in a subsequent round
+    // Detect resolved claims: a claim is resolved when addressed by the other side in a subsequent round.
+    // NOTE: iterate the windowed `rounds` (last MAX_CONTEXT_ROUNDS), not all
+    // `roundNumbers` — with >5 rounds rounds[i] would be undefined (TypeError).
     const resolvedClaims: ClaimEntry[] = [];
-    for (let i = 0; i < roundNumbers.length - 1; i++) {
+    for (let i = 0; i < rounds.length - 1; i++) {
         const roundClaims = rounds[i]!.claims;
         const nextRoundClaims = rounds[i + 1]!.claims;
         for (const claim of roundClaims) {
