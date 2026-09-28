@@ -34,10 +34,17 @@ const TracesPanel: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
     const { isMobile } = useResponsive();
     const [showLiveTopology, setShowLiveTopology] = useState(false);
+    // Render cap: hundreds of motion.div rows jank filters on every keystroke.
+    const [visibleCount, setVisibleCount] = useState(100);
 
     const isMountedRef = useRef(true);
     const loadingTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const clearError = useAutoClearError(setError);
+
+    // Reset the render cap whenever the result set changes.
+    useEffect(() => {
+        setVisibleCount(100);
+    }, [filter, searchQuery]);
 
     useEffect(() => {
         isMountedRef.current = true;
@@ -391,7 +398,7 @@ const TracesPanel: React.FC = () => {
 
                 <div style={{ flex: 1, overflowY: 'auto', overflowX: isMobile ? 'auto' : 'visible' }}>
                     <AnimatePresence>
-                        {filteredTraces.map((trace) => (
+                        {filteredTraces.slice(0, visibleCount).map((trace) => (
                             <motion.div
                                 key={trace.id}
                                 initial={{ opacity: 0 }}
@@ -665,6 +672,25 @@ const TracesPanel: React.FC = () => {
                             </motion.div>
                         ))}
                     </AnimatePresence>
+
+                    {!isLoading && filteredTraces.length > visibleCount && (
+                        <div style={{ padding: 12, textAlign: 'center' }}>
+                            <button
+                                onClick={() => setVisibleCount((c) => c + 100)}
+                                style={{
+                                    padding: '0.5rem 1rem',
+                                    borderRadius: 8,
+                                    background: 'rgba(255,255,255,0.05)',
+                                    border: '1px solid rgba(255,255,255,0.1)',
+                                    color: 'var(--slate-300)',
+                                    cursor: 'pointer',
+                                    fontSize: 12,
+                                }}
+                            >
+                                Show more ({filteredTraces.length - visibleCount} remaining)
+                            </button>
+                        </div>
+                    )}
 
                     {isLoading && (
                         <div style={emptyStateFlex}>
