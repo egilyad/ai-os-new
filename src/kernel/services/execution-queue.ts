@@ -24,6 +24,7 @@ export class ExecutionQueue {
     };
     private inFlight = 0;
     private _draining = false;
+    private _destroyed = false;
     private maxConcurrency: number;
     private schedulerTimer: ReturnType<typeof setTimeout> | null = null;
     private processor: (task: QueueTask) => Promise<void>;
@@ -47,6 +48,14 @@ export class ExecutionQueue {
 
     enqueue(priority: QueuePriority, payload: unknown): string {
         const id = `q-${Date.now()}-${crypto.randomUUID().slice(0, 6)}`;
+        // No resurrection: tasks enqueued after destroy are dropped instead
+        // of restarting the scheduler on a dead queue.
+        if (this._destroyed) {
+            LOGGER.warn('ExecutionQueue', 'enqueue after destroy — task dropped', {
+                priority,
+            });
+            return id;
+        }
         this.queues[priority].push({ id, priority, payload, enqueuedAt: Date.now() });
         this.totalEnqueued++;
         this.schedule();
@@ -54,6 +63,7 @@ export class ExecutionQueue {
     }
 
     private schedule() {
+        if (this._destroyed) return;
         if (this.schedulerTimer) return;
         this.schedulerTimer = setTimeout(() => {
             this.schedulerTimer = null;
@@ -62,7 +72,7 @@ export class ExecutionQueue {
     }
 
     private drain() {
-        if (this._draining) return;
+        if (this._draining || this._destroyed) return;
         this._draining = true;
         try {
             while (this.inFlight < this.maxConcurrency) {
@@ -162,6 +172,7 @@ export class ExecutionQueue {
     }
 
     destroy() {
+        this._destroyed = true;
         if (this.schedulerTimer) {
             clearTimeout(this.schedulerTimer);
             this.schedulerTimer = null;

@@ -143,23 +143,62 @@ export class GroqAdapter extends BaseLLMAdapter {
             const stream = (await client.chat.completions.create(body as never, {
                 signal,
             })) as unknown as AsyncIterable<GroqStreamChunk>;
-            for await (const chunk of stream) {
-                const choice = chunk.choices?.[0];
-                const delta = choice?.delta;
-                if (delta?.content) {
-                    onChunk(delta.content);
+            // Idle guard: the SDK has an overall timeout but no per-chunk
+            // stall detection — a silent stream would hang for-await forever
+            // (other adapters use idleTimeoutMs 15-90s). Race each next()
+            // against a 30s timer and close the iterator on stall.
+            const IDLE_TIMEOUT_MS = 30000;
+            const iterator = stream[Symbol.asyncIterator]();
+            try {
+                for (;;) {
+                    let idleTimer: ReturnType<typeof setTimeout> | undefined;
+                    let chunk: GroqStreamChunk;
+                    try {
+                        const result = await Promise.race([
+                            iterator.next(),
+                            new Promise<never>((_, reject) => {
+                                idleTimer = setTimeout(
+                                    () =>
+                                        reject(
+                                            new Error(
+                                                `Groq stream stalled: no chunk for ${IDLE_TIMEOUT_MS}ms`,
+                                            ),
+                                        ),
+                                    IDLE_TIMEOUT_MS,
+                                );
+                            }),
+                        ]);
+                        if (result.done) break;
+                        chunk = result.value;
+                    } finally {
+                        if (idleTimer) clearTimeout(idleTimer);
+                    }
+                    const choice = chunk.choices?.[0];
+                    const delta = choice?.delta;
+                    if (delta?.content) {
+                        onChunk(delta.content);
+                    }
+                    if (choice?.finish_reason) finalFinishReason = choice.finish_reason;
+                    for (const tc of delta?.tool_calls ?? []) {
+                        const idx = tc.index ?? 0;
+                        const part = toolParts.get(idx) ?? { args: '' };
+                        if (tc.id) part.id = tc.id;
+                        if (tc.function?.name) part.name = tc.function.name;
+                        if (tc.function?.arguments) part.args += tc.function.arguments;
+                        toolParts.set(idx, part);
+                    }
+                    const usage = chunk.x_groq?.usage ?? chunk.usage;
+                    if (typeof usage?.total_tokens === 'number') finalTokens = usage.total_tokens;
                 }
-                if (choice?.finish_reason) finalFinishReason = choice.finish_reason;
-                for (const tc of delta?.tool_calls ?? []) {
-                    const idx = tc.index ?? 0;
-                    const part = toolParts.get(idx) ?? { args: '' };
-                    if (tc.id) part.id = tc.id;
-                    if (tc.function?.name) part.name = tc.function.name;
-                    if (tc.function?.arguments) part.args += tc.function.arguments;
-                    toolParts.set(idx, part);
+            } catch (e: unknown) {
+                // Release a stalled iterator, then let the outer catch map
+                // the error (idle timeout included) via normalizeError.
+                try {
+                    await iterator.return?.();
+                } catch {
+                    /* ignore cleanup errors */
                 }
-                const usage = chunk.x_groq?.usage ?? chunk.usage;
-                if (typeof usage?.total_tokens === 'number') finalTokens = usage.total_tokens;
+                throw e;
             }
             // H-07: terminal meta chunk — finish_reason/usage/tool_calls, otherwise
             // budgets count $0 and length-truncation stays invisible.

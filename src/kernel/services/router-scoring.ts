@@ -54,8 +54,10 @@ export function calculateProviderScore(
 
     const ttftScore = Math.max(0, 1 - m.avgTTFT / scoring.ttft.maxMs);
     const tpsScore = Math.min(1, m.avgTPS / scoring.tps.max);
-    const stabilityBonus = (m.stabilityIndex || 1.0) * scoring.stabilityBonus;
-    const reputationBonus = ((m.reputationScore || 100) / 100) * scoring.reputationBonus;
+    // NOTE: `??`, not `||` — 0 is a valid measurement (worst stability /
+    // reputation, free model). `||` promoted the worst values to the best.
+    const stabilityBonus = (m.stabilityIndex ?? 1.0) * scoring.stabilityBonus;
+    const reputationBonus = ((m.reputationScore ?? 100) / 100) * scoring.reputationBonus;
 
     return (
         m.reliability * weights.reliability +
@@ -96,7 +98,7 @@ export function estimateRequestCost(
     const inputTokens = Math.ceil(prompt.length / 4);
     const outputTokens = Math.ceil(inputTokens * outputInputRatio);
     return (
-        (inputTokens / 1_000_000) * (pricing.input || 0.0001) +
-        (outputTokens / 1_000_000) * (pricing.output || 0.0001)
+        (inputTokens / 1_000_000) * (pricing.input ?? 0.0001) +
+        (outputTokens / 1_000_000) * (pricing.output ?? 0.0001)
     );
 }
