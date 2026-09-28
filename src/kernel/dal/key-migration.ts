@@ -155,6 +155,24 @@ export async function runOnce(deps: MigrationDeps): Promise<{ migrated: number; 
             }
             throw e;
         }
+        // Scrub legacy copies now that KeyStore holds everything — leaving
+        // plaintext duplicates in localStorage / sqlite blob defeats the vault.
+        if (localKeys.length > 0 || blobKeys.length > 0) {
+            try {
+                ssrSafeStorage.removeItem(STORAGE_KEY);
+            } catch {
+                /* best-effort */
+            }
+            try {
+                if (blobKeys.length > 0) await deps.db.deleteKv(DB_BLOB_KEY);
+            } catch {
+                /* best-effort */
+            }
+            LOGGER.info('KeyMigration', 'Legacy key copies scrubbed', {
+                localStorage: localKeys.length,
+                sqliteBlob: blobKeys.length,
+            });
+        }
         LOGGER.info('KeyMigration', 'Migration complete', {
             totalSources: allKeys.length,
             afterDedup: deduped.length,

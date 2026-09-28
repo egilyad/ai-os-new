@@ -112,6 +112,8 @@ export interface IEventBus {
 export interface IDatabaseService {
     getKv<T>(id: string): Promise<T | null>;
     setKv<T>(id: string, value: T): Promise<void>;
+    /** Delete a key-value pair (e.g. scrubbing migrated legacy copies). */
+    deleteKv(id: string): Promise<void>;
     /** Read a key-value pair including its version number for CAS. */
     getKvCas<T>(id: string): Promise<{ value: T | null; version: number }>;
     /** Write a key-value pair only if the version matches. Returns false on conflict. */

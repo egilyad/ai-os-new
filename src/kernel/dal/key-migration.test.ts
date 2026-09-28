@@ -118,6 +118,8 @@ describe('runOnce (key migration)', () => {
         expect(stored?.key).toBe('enc:sk-local');
         expect(stored?.isEncrypted).toBe(true);
         expect(security.encrypt).toHaveBeenCalledWith('sk-local');
+        // Legacy plaintext copy must be scrubbed after successful migration.
+        expect(ssrSafeStorage.getItem(STORAGE_KEY)).toBeNull();
     });
 
     it('defers when the vault is locked (skips plaintext, keeps done:false)', async () => {

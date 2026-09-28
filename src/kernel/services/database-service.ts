@@ -623,7 +623,6 @@ export class DatabaseService implements IDatabaseService {
         if (!record) return { value: null, version: 0 };
         return { value: record.value as T, version: record.version ?? 0 };
     }
-
     async setKv<T>(id: string, value: T): Promise<void> {
         const dexie = getDexieDb();
         await dexie.transaction('rw', dexie.keyValue, async () => {
@@ -635,6 +634,10 @@ export class DatabaseService implements IDatabaseService {
                 version: (existing?.version ?? 0) + 1,
             });
         });
+    }
+
+    async deleteKv(id: string): Promise<void> {
+        await getDexieDb().keyValue.delete(id);
     }
 
     async setKvCas<T>(id: string, value: T, expectedVersion: number): Promise<boolean> {
