@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { RefreshCw, ListChecks, Loader2, AlertTriangle } from 'lucide-react';
 import { useTranslation } from '../i18n/useTranslation';
-import { gatewayApi as api } from './Common';
+import { gatewayApi as api, DEFAULT_GATEWAY_URL } from './Common';
 
 interface Agent {
     id: string;
@@ -48,9 +48,9 @@ const IssuesPanel: React.FC = () => {
     const { t } = useTranslation();
     const [url, setUrl] = useState(() => {
         try {
-            return localStorage.getItem(URL_KEY) || 'http://localhost:3001';
+            return localStorage.getItem(URL_KEY) || DEFAULT_GATEWAY_URL;
         } catch {
-            return 'http://localhost:3001';
+            return DEFAULT_GATEWAY_URL;
         }
     });
     const [secret, setSecret] = useState(() => {

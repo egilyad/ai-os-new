@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { RefreshCw, Server, Users, AlertTriangle, Loader2 } from 'lucide-react';
 import { useTranslation } from '../i18n/useTranslation';
 import { useFrontierStore } from '../stores/frontierStore';
-import { gatewayApi } from './Common';
+import { gatewayApi, DEFAULT_GATEWAY_URL as DEFAULT_URL } from './Common';
 
 interface GatewayAgent {
     id: string;
@@ -25,7 +25,6 @@ interface GatewayCompany {
 
 const URL_KEY = 'companyGateway.url';
 const SECRET_KEY = 'companyGateway.secret';
-const DEFAULT_URL = 'http://localhost:3001';
 
 function loadCfg(): { url: string; secret: string } {
     try {

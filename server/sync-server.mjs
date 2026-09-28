@@ -1120,6 +1120,11 @@ wss.on('connection', (ws) => {
     const clientIp = ws._socket?.remoteAddress || 'unknown';
     ws.send(JSON.stringify({ type: 'connected', timestamp: Date.now() }));
     const id = `${clientIp}-${Date.now()}`;
+    // Liveness for dead-TCP detection (see sweeper below).
+    ws.isAlive = true;
+    ws.on('pong', () => {
+        ws.isAlive = true;
+    });
     ws.on('close', (code, reason) => {
         console.log(`[sync-server] WS disconnect: ${id} code=${code} reason=${reason || 'none'}`);
     });
@@ -1128,7 +1133,9 @@ wss.on('connection', (ws) => {
     });
 });
 
-// Clean up disconnected clients every 30s
+// Reap dead connections every 30s: half-open TCP sockets stay OPEN
+// forever without traffic — ping/pong proves liveness, terminate
+// reaps the silent ones. Previously only non-OPEN states were swept.
 setInterval(() => {
     for (const client of wss.clients) {
         if (client.readyState !== 1) {
@@ -1137,6 +1144,21 @@ setInterval(() => {
             } catch {
                 /* ignore */
             }
+            continue;
+        }
+        if (client.isAlive === false) {
+            try {
+                client.terminate();
+            } catch {
+                /* ignore */
+            }
+            continue;
+        }
+        client.isAlive = false;
+        try {
+            client.ping();
+        } catch {
+            /* ignore — next sweep terminates */
         }
     }
 }, 30_000);

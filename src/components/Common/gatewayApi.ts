@@ -8,6 +8,16 @@
  */
 export const GATEWAY_TIMEOUT_MS = 10000;
 
+/**
+ * Default gateway origin. Override per-deployment with
+ * VITE_COMPANY_GATEWAY_URL (e.g. Docker/prod) instead of patching code —
+ * localhost is only the local-dev default.
+ */
+export const DEFAULT_GATEWAY_URL =
+    (typeof import.meta !== 'undefined' &&
+        (import.meta.env?.VITE_COMPANY_GATEWAY_URL as string | undefined)) ||
+    'http://localhost:3001';
+
 export async function gatewayApi<T>(
     base: string,
     secret: string,
