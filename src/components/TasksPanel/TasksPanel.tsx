@@ -182,7 +182,7 @@ const TasksPanel: React.FC = () => {
             .catch(() => {
                 setError(t('tasks.error_refresh'));
             });
-    }, []);
+    }, [t]);
 
     const handleCreateAgemsTask = async () => {
         if (!newTaskTitle.trim()) return;
