@@ -317,6 +317,14 @@ describe('useChatStore', () => {
                 ([ev, p]) => ev === E.NOTIFICATION && (p as { type: string }).type === 'info',
             ),
         ).toBe(true);
+        // Regression: while the sender stays busy the finally-drain must not
+        // re-send (busy-gate re-queue loop OOMed the worker). Flush microtasks
+        // and assert the emission counts are frozen.
+        const sendsBefore = emit.mock.calls.filter(([ev]) => ev === E.SEND_MESSAGE).length;
+        const notesBefore = emit.mock.calls.filter(([ev]) => ev === E.NOTIFICATION).length;
+        for (let i = 0; i < 100; i++) await Promise.resolve();
+        expect(emit.mock.calls.filter(([ev]) => ev === E.SEND_MESSAGE)).toHaveLength(sendsBefore);
+        expect(emit.mock.calls.filter(([ev]) => ev === E.NOTIFICATION)).toHaveLength(notesBefore);
     });
 
     it('queues a message while a send is in flight', async () => {

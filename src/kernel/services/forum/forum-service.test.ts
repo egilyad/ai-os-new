@@ -165,6 +165,19 @@ describe('ForumService', () => {
         expect(post.agentProvenance!.tokensCost).toBeGreaterThan(0);
     });
 
+    it('escapes quotes in link URLs to prevent stored XSS', async () => {
+        const topicId = await service.createTopic({
+            title: 'T',
+            category: 'general',
+            author: human,
+        });
+        await service.postMessage(topicId, human, '[x](http://a/"onmouseover="alert(1))');
+        const thread = await service.getThread(topicId);
+        const html = thread!.posts[0]!.renderedHtml;
+        expect(html).not.toContain('"onmouseover="');
+        expect(html).toContain('&quot;');
+    });
+
     it('rejects posting to unknown or closed topics and empty bodies', async () => {
         const topicId = await service.createTopic({
             title: 'T',

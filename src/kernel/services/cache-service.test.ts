@@ -409,4 +409,54 @@ describe('CacheService', () => {
         const entry = svc.get('k')!;
         expect(entry.ttl).toBeGreaterThan(0);
     });
+
+    it('targeted invalidation drops only the named section', async () => {
+        const handlers: Array<(payload: unknown) => void> = [];
+        const deps = {
+            database: {
+                getKv: vi.fn(async () => null),
+                setKv: vi.fn(async () => {}),
+            },
+            eventBus: {
+                emit: vi.fn(),
+                on: vi.fn((_ev: string, cb: (payload: unknown) => void) => {
+                    handlers.push(cb);
+                    return () => {};
+                }),
+            },
+        } as unknown as CacheServiceDeps;
+        const svc = new CacheService(deps);
+        await svc.init();
+        svc.set('k1', 'r1', 'm', 'p', 1, 1);
+        svc.set('k2', 'r2', 'm', 'p', 1, 1);
+        for (const cb of handlers) cb({ reason: 'update', section: 'k1' });
+        expect(svc.get('k1')).toBeNull();
+        expect(svc.get('k2')).not.toBeNull();
+        await svc.destroy();
+    });
+
+    it('section-less invalidation still clears everything', async () => {
+        const handlers: Array<(payload: unknown) => void> = [];
+        const deps = {
+            database: {
+                getKv: vi.fn(async () => null),
+                setKv: vi.fn(async () => {}),
+            },
+            eventBus: {
+                emit: vi.fn(),
+                on: vi.fn((_ev: string, cb: (payload: unknown) => void) => {
+                    handlers.push(cb);
+                    return () => {};
+                }),
+            },
+        } as unknown as CacheServiceDeps;
+        const svc = new CacheService(deps);
+        await svc.init();
+        svc.set('k1', 'r1', 'm', 'p', 1, 1);
+        svc.set('k2', 'r2', 'm', 'p', 1, 1);
+        for (const cb of handlers) cb({});
+        expect(svc.get('k1')).toBeNull();
+        expect(svc.get('k2')).toBeNull();
+        await svc.destroy();
+    });
 });

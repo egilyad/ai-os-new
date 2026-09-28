@@ -114,6 +114,17 @@ describe('ExecutionQueue', () => {
             expect(queue.active).toBe(0);
         });
 
+        it('should drop enqueues after destroy instead of resurrecting', async () => {
+            queue.enqueue('normal', 'a');
+            await vi.runAllTimersAsync();
+            expect(processor).toHaveBeenCalledTimes(1);
+            queue.destroy();
+            queue.enqueue('normal', 'b');
+            await vi.runAllTimersAsync();
+            expect(processor).toHaveBeenCalledTimes(1);
+            expect(queue.pending).toBe(0);
+        });
+
         it('should be safe to call multiple times', () => {
             queue.destroy();
             expect(() => queue.destroy()).not.toThrow();
