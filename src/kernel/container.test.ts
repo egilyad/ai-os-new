@@ -287,6 +287,16 @@ describe('Container', () => {
             await container.clear();
             expect(container.getServices()).toEqual([]);
         });
+
+        it('destroys a re-registered service exactly once', async () => {
+            const first = { name: 'first', destroy: vi.fn() };
+            const second = { name: 'second', destroy: vi.fn() };
+            container.register('svc', first);
+            container.register('svc', second);
+            await container.clear();
+            expect(first.destroy).not.toHaveBeenCalled();
+            expect(second.destroy).toHaveBeenCalledTimes(1);
+        });
     });
 
     describe('getDependencies', () => {

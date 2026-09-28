@@ -44,7 +44,11 @@ export class Container implements IContainer {
 
     register<T>(id: ServiceIdentifier, instance: T): void {
         this.services.set(id, instance);
-        this.registrationOrder.push(id);
+        // No duplicate order entries: re-registering (e.g. bootstrap retry)
+        // must overwrite the instance, not queue a second destroy() in clear().
+        if (!this.registrationOrder.includes(id)) {
+            this.registrationOrder.push(id);
+        }
     }
 
     registerFactory<T>(id: ServiceIdentifier, factory: (container: IContainer) => T): void {
