@@ -5,10 +5,11 @@
  * Right: message stream with threading, reactions, edit/delete, typing indicators.
  */
 import React, { useEffect, useState, useRef, useCallback } from 'react';
-import { useShallow } from 'zustand/shallow';
+import { shallow } from 'zustand/shallow';
 import { useTranslation } from '../../i18n/useTranslation';
 import { channelService } from '../../kernel/instances/services-extras';
 import { useChannelStore, ensureSubscribed, destroy } from '../../stores/channel-store';
+import type { ChannelStoreState } from '../../stores/channel-store';
 import { Button, StatusBadge } from '../Common';
 import type { ChannelMessage, TypingIndicator, AgentPresence } from '../../kernel/types/channel-types';
 
@@ -41,11 +42,11 @@ const EMOJI_OPTIONS = ['👍', '❤️', '😂', '🎉', '🚀', '👀', '🔥',
 const ChannelPanel: React.FC = () => {
     const { t } = useTranslation();
     // Selective subscription: the store also carries high-churn `events` /
-    // `error` slices this panel never renders — without useShallow every
+    // `error` slices this panel never renders — without shallow compare every
     // stream event re-rendered the whole panel.
     const { channels, order, selectedId, messages, loading, loadChannels, selectChannel, refresh } =
         useChannelStore(
-            useShallow((s) => ({
+            (s: ChannelStoreState) => ({
                 channels: s.channels,
                 order: s.order,
                 selectedId: s.selectedId,
@@ -54,7 +55,8 @@ const ChannelPanel: React.FC = () => {
                 loadChannels: s.loadChannels,
                 selectChannel: s.selectChannel,
                 refresh: s.refresh,
-            })),
+            }),
+            shallow,
         );
     const [input, setInput] = useState('');
     const [replyTo, setReplyTo] = useState<string | null>(null);

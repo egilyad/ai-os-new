@@ -19,7 +19,7 @@ interface ChannelView {
     updatedAt: number;
 }
 
-interface StoreState {
+export interface ChannelStoreState {
     channels: Map<string, ChannelView>;
     order: string[];
     selectedId: string | null;
@@ -50,7 +50,7 @@ function toView(ch: Channel): ChannelView {
     };
 }
 
-async function reload(set: (partial: Partial<StoreState>) => void) {
+async function reload(set: (partial: Partial<ChannelStoreState>) => void) {
     try {
         const svc = channelService;
         const channels = await svc.listChannels();
@@ -66,7 +66,7 @@ async function reload(set: (partial: Partial<StoreState>) => void) {
     }
 }
 
-export const useChannelStore = create<StoreState>((set, get) => ({
+export const useChannelStore = create<ChannelStoreState>((set, get) => ({
     channels: new Map(),
     order: [],
     selectedId: null,
