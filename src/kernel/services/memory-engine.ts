@@ -58,6 +58,7 @@ export class MemoryService implements IMemoryEngine {
     private deps: MemoryServiceDeps;
     private memoryRepo: MemoryRepository;
     private _listenersSetup = false;
+    private _initPromise: Promise<void> | null = null;
 
     private async _withTransaction<T>(
         source: string,
@@ -104,6 +105,22 @@ export class MemoryService implements IMemoryEngine {
     }
 
     async init() {
+        // 4.4: promise-cached init (see CacheService) — concurrent callers
+        // share one listener-setup + load instead of doubling both.
+        if (this._listenersSetup) return;
+        if (!this._initPromise) {
+            this._initPromise = this._doInit();
+            try {
+                await this._initPromise;
+            } finally {
+                this._initPromise = null;
+            }
+        } else {
+            await this._initPromise;
+        }
+    }
+
+    private async _doInit() {
         if (this._listenersSetup) return;
         this.setupListeners();
         this._listenersSetup = true;
