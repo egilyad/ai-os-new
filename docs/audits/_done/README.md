@@ -5,25 +5,39 @@
 Готовый файл переезжает из `docs/audits/` сюда. Постепенно всё готовое
 собирается здесь, в работе остаётся только открытое.
 
-## Статус на 2026-09-28 (ветка fix-debate-text-truncation)
+## Статус на 2026-09-29 (ветка fix-debate-text-truncation, CI зеленый)
 
-| Аудит | Статус | Что закрыто |
-|---|---|---|
-| audit-01-security.md | открыт | forum XSS ✔, логгер-sanitize ✔, честный UI vault ✔, зачистка миграции ✔; остальное открыто |
-| audit-02-lifecycle.md | открыт | execution-queue destroy-флаг ✔; остальное открыто |
-| audit-03-streaming.md | открыт | groq idle-timeout ✔, chat finishReason ✔, emitOnce-контракт ✔; остальное открыто |
-| audit-04-ux-performance.md | открыт | — |
-| audit-05-architecture.md | открыт | циклы БД ✔, manualChunks ✔; остальное открыто |
-| audit-06-error-handling.md | открыт | логгер-sanitize ✔; остальное открыто |
-| audit-07-network-api.md | открыт | cors-proxy SNI ✔, gateway fetch-таймауты ✔; остальное открыто |
-| audit-08-storage-caching.md | открыт | CacheService section-фильтр ✔; остальное открыто |
-| audit-09-testing.md | открыт | моки rootLogger ✔, очередь чата ✔; остальное открыто |
-| audit-10-config-env.md | открыт | sourcemaps rm ✔; остальное открыто |
-| audit-11-a11y-i18n.md | открыт | — |
-| audit-12-build-deploy.md | открыт | Dockerfile LABEL ✔, read_only conf.d ✔, manualChunks ✔; остальное открыто |
-| ai-os-new-audit-report.md | открыт | частично (см. выше) |
-| ai-os-new_Комплексный_аудит_2026-09-25.md | открыт | частично (см. выше) |
-| ai-os-new-audit-report (1).md | открыт | частично: XSS ✔, кэш ✔, логгер ✔, finishReason ✔, debate-state ✔, docker ✔, router ✔, groq ✔, очередь ✔ |
+Закрытые пункты по файлам (проверено по коду, не по тексту отчетов):
 
-Ни один файл пока не закрыт целиком — поэтому папка почти пустая. Это нормально:
-переезд — только по факту 100% готовности.
+- audit-01-security.md — forum XSS ✔, логгер-sanitize ✔, честный UI vault ✔,
+  зачистка миграции ✔, CSP унифицирован ✔; ОТКРЫТО: полное подключение Vault,
+  контраст/певью Decision (дизайн);
+- audit-02-lifecycle.md — bootstrap идемпотентность ✔, event-bus unsub ✔,
+  container guard ✔; ОТКРЫТО: —
+- audit-03-streaming.md — groq idle-timeout ✔, autonomy отмена ✔, reaper reason ✔,
+  emitOnce-контракт ✔, finishReason-канон ✔; ОТКРЫТО: удержание слота на стрим
+  (нужен редизайн API);
+- audit-04-ux-performance.md — Channel/Projects селекторы ✔, Traces cap ✔;
+  ОТКРЫТО: motion bulk (косметика, отложено);
+- audit-05-architecture.md — циклы БД ✔, manualChunks ✔; ОТКРЫТО: monaco
+  self-host (нужен браузер), service-locator DI (большой рефактор);
+- audit-06-error-handling.md — логгер-sanitize ✔, слышимые ошибки ✔, гарды
+  транзакций ✔; ОТКРЫТО: таксономия ошибок (большая);
+- audit-07-network-api.md — gateway fetch-таймауты ✔, SNI ✔, gateway env ✔;
+  ОТКРЫТО: Azure-конфигурируемость (продуктовое решение);
+- audit-08-storage-caching.md — CacheService section-фильтр ✔, quota warn ✔;
+  ОТКРЫТО: Vault по дизайну (см. audit-01);
+- audit-09-testing.md — моки rootLogger ✔, очередь чата ✔, http-client ✔,
+  circuit/retry/rate-limit/fallback/pq/semantic/canary/compress/logging/
+  cost-manager/factory/adapter тесты ✔; ОТКРЫТО: расширение гейта на services/;
+- audit-10-config-env.md — BUILD_ID ✔, мертвые vars ✔; ОТКРЫТО: BASE_PATH
+  (рискованно для e2e), mockServices (wontfix — витрина);
+- audit-11-a11y-i18n.md — lang ✔, defaultValue ✔; ОТКРЫТО: контраст (дизайн),
+  bulk i18n-заглушки;
+- audit-12-build-deploy.md — sourcemaps rm ✔, manualChunks ✔, double-build ✔,
+  timeout-minutes ✔, Dockerfile LABEL ✔, read_only conf.d ✔, dead files ✔;
+  ОТКРЫТО: monaco (см. audit-05), BASE_PATH (см. audit-10).
+
+Ни один файл пока не закрыт целиком — переезд только по факту 100%.
+Ближайшие кандидаты на закрытие: audit-02 (остались мелочи), audit-12
+(monaco + BASE_PATH).
