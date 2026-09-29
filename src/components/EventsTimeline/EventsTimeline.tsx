@@ -52,6 +52,9 @@ const SEVERITY_COLORS = {
 
 const STORAGE_KEY = 'events-timeline';
 const MAX_EVENTS = 500;
+// UX4-04: full render of 500 rows janks on debate-stream bursts — cap initial
+// render like TracesPanel does, with explicit show-more.
+const RENDER_CAP = 200;
 
 const loadEvents = (): TimelineEvent[] => {
     try {
@@ -95,6 +98,7 @@ const EventsTimeline: React.FC = () => {
     const [groupMode, setGroupMode] = useState<GroupMode>('none');
     const [isPaused, setIsPaused] = useState(false);
     const [showScrollToBottom, setShowScrollToBottom] = useState(false);
+    const [visibleCount, setVisibleCount] = useState(RENDER_CAP);
     const scrollRef = useRef<HTMLDivElement>(null);
     const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const latestEventsRef = useRef<TimelineEvent[]>(events);
@@ -178,16 +182,26 @@ const EventsTimeline: React.FC = () => {
         return list;
     }, [events, severityFilter, searchQuery]);
 
+    // Reset the render cap whenever the filter set changes.
+    useEffect(() => {
+        setVisibleCount(RENDER_CAP);
+    }, [severityFilter, searchQuery, groupMode]);
+
+    const visibleEvents = useMemo(
+        () => filteredEvents.slice(0, visibleCount),
+        [filteredEvents, visibleCount],
+    );
+
     const groupedEvents = useMemo(() => {
         if (groupMode === 'none') return null;
         const groups: Record<string, TimelineEvent[]> = {};
-        for (const e of filteredEvents) {
+        for (const e of visibleEvents) {
             const key = groupMode === 'time' ? getTimeGroup(e.timestamp, now) : e.event;
             if (!groups[key]) groups[key] = [];
             groups[key].push(e);
         }
         return groups;
-    }, [filteredEvents, groupMode, now]);
+    }, [visibleEvents, groupMode, now]);
 
     const clearEvents = () => {
         setEvents([]);
@@ -376,7 +390,7 @@ const EventsTimeline: React.FC = () => {
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '1px' }}>
                         {(groupedEvents
                             ? Object.entries(groupedEvents)
-                            : [['', filteredEvents] as [string, TimelineEvent[]]]
+                            : [['', visibleEvents] as [string, TimelineEvent[]]]
                         ).map(([groupName, groupEvents]) => (
                             <div
                                 key={groupName || 'flat'}
@@ -526,6 +540,24 @@ const EventsTimeline: React.FC = () => {
                                 })}
                             </div>
                         ))}
+                        {filteredEvents.length > visibleCount && (
+                            <button
+                                onClick={() => setVisibleCount((c) => c + RENDER_CAP)}
+                                style={{
+                                    marginTop: '0.75rem',
+                                    padding: '0.5rem 1rem',
+                                    borderRadius: 8,
+                                    background: 'rgba(59,130,246,0.15)',
+                                    border: '1px solid rgba(59,130,246,0.3)',
+                                    color: '#60a5fa',
+                                    cursor: 'pointer',
+                                    fontSize: '0.75rem',
+                                    fontWeight: 700,
+                                }}
+                            >
+                                Show more ({filteredEvents.length - visibleCount} remaining)
+                            </button>
+                        )}
                     </div>
                 ) : (
                     <div

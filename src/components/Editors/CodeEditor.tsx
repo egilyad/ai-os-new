@@ -31,12 +31,9 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({
     minimap,
 }) => {
     const [lang, setLang] = React.useState(language);
-    const [isReady, setIsReady] = React.useState(false);
 
-    React.useEffect(() => {
-        const t = setTimeout(() => setIsReady(true), 100);
-        return () => clearTimeout(t);
-    }, []);
+    // UX4-06: no artificial mount delay — Monaco reports readiness via its own
+    // `loading` fallback instead of a fixed 100ms timer.
 
     return (
         <div
@@ -92,39 +89,38 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({
                     </button>
                 )}
             </div>
-            {isReady ? (
-                <Editor
-                    height={height}
-                    language={lang}
-                    value={value}
-                    onChange={(v) => {
-                        if (v !== undefined) onChange(v);
-                    }}
-                    options={{
-                        readOnly: readonly,
-                        minimap: { enabled: minimap ?? false },
-                        fontSize: 13,
-                        lineNumbers: 'on',
-                        scrollBeyondLastLine: false,
-                        wordWrap: 'on',
-                        theme: 'vs-dark',
-                        padding: { top: 8 },
-                    }}
-                />
-            ) : (
-                <div
-                    style={{
-                        height,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        color: 'var(--text-muted)',
-                        fontSize: '0.8rem',
-                    }}
-                >
-                    Loading editor...
-                </div>
-            )}
+            <Editor
+                height={height}
+                language={lang}
+                value={value}
+                loading={
+                    <div
+                        style={{
+                            height,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            color: 'var(--text-muted)',
+                            fontSize: '0.8rem',
+                        }}
+                    >
+                        Loading editor...
+                    </div>
+                }
+                onChange={(v) => {
+                    if (v !== undefined) onChange(v);
+                }}
+                options={{
+                    readOnly: readonly,
+                    minimap: { enabled: minimap ?? false },
+                    fontSize: 13,
+                    lineNumbers: 'on',
+                    scrollBeyondLastLine: false,
+                    wordWrap: 'on',
+                    theme: 'vs-dark',
+                    padding: { top: 8 },
+                }}
+            />
         </div>
     );
 };

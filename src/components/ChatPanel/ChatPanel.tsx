@@ -460,7 +460,7 @@ const ChatPanel: React.FC = () => {
                     </select>
                     {currentAgentId && (
                         <button
-                            onClick={() => void setAgent(null).then(() => showStatus('Agent detached', 'info')).catch(() => {})}
+                            onClick={() => void setAgent(null).then(() => showStatus('Agent detached', 'info')).catch(() => showStatus('Failed to detach agent', 'error'))}
                             style={{
                                 padding: '4px 8px',
                                 borderRadius: 6,
