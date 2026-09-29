@@ -267,18 +267,20 @@ export const DebateQualityPanel: React.FC = () => {
                 <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 8 }}>
                     <Sliders size={22} color="#a855f7" />
                     <h2 style={{ margin: 0, fontSize: 20, fontWeight: 700, color: 'var(--slate-200)' }}>
-                        {t('quality.nav_title') || 'Качество дебатов'}
+                        {t('quality.nav_title', { defaultValue: 'Качество дебатов' })}
                     </h2>
                 </div>
                 <p style={{ margin: '0 0 16px 0', fontSize: 13, color: 'var(--slate-400)' }}>
-                    {t('quality.description') ||
-                        'Включай и отключай 56 техник улучшения качества дебатов. P0 — базовые, P1 — продвинутые, P2 — экспериментальные.'}
+                    {t('quality.description', {
+                        defaultValue:
+                            'Включай и отключай 56 техник улучшения качества дебатов. P0 — базовые, P1 — продвинутые, P2 — экспериментальные.',
+                    })}
                 </p>
 
                 {/* Stats + actions */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
                     <span style={{ fontSize: 13, color: 'var(--slate-400)' }}>
-                        {enabledCount}/{totalCount} {t('quality.active') || 'активно'}
+                        {enabledCount}/{totalCount} {t('quality.active', { defaultValue: 'активно' })}
                     </span>
                     <div style={{ flex: 1 }} />
                     <button
@@ -298,7 +300,7 @@ export const DebateQualityPanel: React.FC = () => {
                             cursor: 'pointer',
                         }}
                     >
-                        <Check size={14} /> {t('quality.enable_all') || 'Включить все'}
+                        <Check size={14} /> {t('quality.enable_all', { defaultValue: 'Включить все' })}
                     </button>
                     <button
                         type="button"
@@ -317,7 +319,7 @@ export const DebateQualityPanel: React.FC = () => {
                             cursor: 'pointer',
                         }}
                     >
-                        <X size={14} /> {t('quality.disable_all') || 'Выключить все'}
+                        <X size={14} /> {t('quality.disable_all', { defaultValue: 'Выключить все' })}
                     </button>
                     <button
                         type="button"
@@ -336,7 +338,7 @@ export const DebateQualityPanel: React.FC = () => {
                             cursor: 'pointer',
                         }}
                     >
-                        <RotateCcw size={14} /> {t('quality.reset') || 'Сброс'}
+                        <RotateCcw size={14} /> {t('quality.reset', { defaultValue: 'Сброс' })}
                     </button>
                 </div>
             </div>
@@ -422,7 +424,7 @@ export const DebateQualityPanel: React.FC = () => {
                                         cursor: 'pointer',
                                     }}
                                 >
-                                    {t('quality.enable') || 'Вкл'}
+                                    {t('quality.enable', { defaultValue: 'Вкл' })}
                                 </button>
                                 <button
                                     type="button"
@@ -441,7 +443,7 @@ export const DebateQualityPanel: React.FC = () => {
                                         cursor: 'pointer',
                                     }}
                                 >
-                                    {t('quality.disable') || 'Выкл'}
+                                    {t('quality.disable', { defaultValue: 'Выкл' })}
                                 </button>
                             </div>
                         </div>
@@ -493,8 +495,10 @@ export const DebateQualityPanel: React.FC = () => {
                     textAlign: 'center',
                 }}
             >
-                {t('quality.footer_info') ||
-                    'Настройки сохраняются автоматически и применяются к новым дебатам. Уже запущенные дебаты используют настройки на момент старта.'}
+                {t('quality.footer_info', {
+                    defaultValue:
+                        'Настройки сохраняются автоматически и применяются к новым дебатам. Уже запущенные дебаты используют настройки на момент старта.',
+                })}
             </div>
         </div>
     );
