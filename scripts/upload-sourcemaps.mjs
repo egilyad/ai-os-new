@@ -14,7 +14,7 @@
 //
 // Usage: node scripts/upload-sourcemaps.mjs
 
-import { execSync } from 'child_process';
+import { execFileSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -54,9 +54,12 @@ function listMaps() {
     return out;
 }
 
-function run(cmd) {
-    console.log(`[sourcemaps] $ ${cmd}`);
-    execSync(cmd, { stdio: 'inherit', cwd: ROOT });
+// 2.12: argv-based exec, no shell — env-derived values (SENTRY_PROJECT,
+// release, service names) are attacker-influenced via repo secrets/env.
+// The old string form wrapped them in double quotes where `$(...)` executes.
+function run(args) {
+    console.log(`[sourcemaps] $ npx ${args.join(' ')}`);
+    execFileSync('npx', args, { stdio: 'inherit', cwd: ROOT });
 }
 
 const maps = listMaps();
@@ -91,23 +94,35 @@ if (hasSentry) {
     console.log(
         `[sourcemaps] Uploading to Sentry org="${sentryOrg}" project="${sentryProject}" release="${release}"`,
     );
-    run(
-        `npx @sentry/cli releases new -p ${JSON.stringify(sentryProject)} ${JSON.stringify(release)}`,
-    );
-    run(
-        `npx @sentry/cli releases files ${JSON.stringify(release)} upload-sourcemaps ${JSON.stringify(DIST)} ` +
-            '--ignore **/*.map.map --ignore **/*.map.js',
-    );
-    run(`npx @sentry/cli releases finalize ${JSON.stringify(release)}`);
+    run(['@sentry/cli', 'releases', 'new', '-p', sentryProject, release]);
+    run([
+        '@sentry/cli',
+        'releases',
+        'files',
+        release,
+        'upload-sourcemaps',
+        DIST,
+        '--ignore',
+        '**/*.map.map',
+        '--ignore',
+        '**/*.map.js',
+    ]);
+    run(['@sentry/cli', 'releases', 'finalize', release]);
 } else if (hasDatadog) {
     console.log(`[sourcemaps] Uploading to Datadog site="${datadogSite}"`);
-    run(
-        `npx datadog-ci sourcemaps upload ${JSON.stringify(DIST)} ` +
-            `--service ${JSON.stringify(process.env.DD_SERVICE || 'ai-os')} ` +
-            `--release-version ${JSON.stringify(resolveVersion())} ` +
-            `--minified-path-prefix ${JSON.stringify(process.env.DD_MINIFIED_PATH_PREFIX || '/assets/')} ` +
-            '--disable-git-metadata-upload',
-    );
+    run([
+        'datadog-ci',
+        'sourcemaps',
+        'upload',
+        DIST,
+        '--service',
+        process.env.DD_SERVICE || 'ai-os',
+        '--release-version',
+        resolveVersion(),
+        '--minified-path-prefix',
+        process.env.DD_MINIFIED_PATH_PREFIX || '/assets/',
+        '--disable-git-metadata-upload',
+    ]);
 }
 
 console.log('[sourcemaps] Done.');
