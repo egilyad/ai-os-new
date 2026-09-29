@@ -33,8 +33,11 @@
   через токены контейнера), AR5-04 fan-out UI→kernel (постепенный перевод
   на фасад), AR5-05 zustand v5 (плановая миграция), AR5-06 google-SDK
   (отдельный PR), AR5-07/08 инфо;
-- audit-06-error-handling.md — логгер-sanitize ✔, слышимые ошибки ✔, гарды
-  транзакций ✔; ОТКРЫТО: таксономия ошибок (большая);
+- audit-06-error-handling.md — ✅ ЗАКРЫТ (файл здесь): логгер-sanitize ✔,
+  слышимые ошибки ✔, гарды транзакций ✔, window.onerror ✔, fallback
+  child-сигнатура ✔, debug-хелперы за DEV ✔; ОТКЛОНЕНО сознательно:
+  EH6-02 таксономия (710 throw — большой проект), EH6-06 console-codemod
+  (80 мест), EH6-07 best-effort-игноры (инфо);
 - audit-07-network-api.md — gateway fetch-таймауты ✔, SNI ✔, gateway env ✔;
   ОТКРЫТО: Azure-конфигурируемость (продуктовое решение);
 - audit-08-storage-caching.md — CacheService section-фильтр ✔, quota warn ✔;
@@ -50,5 +53,5 @@
   timeout-minutes ✔, Dockerfile LABEL ✔, read_only conf.d ✔, dead files ✔;
   ОТКРЫТО: monaco (см. audit-05), BASE_PATH (см. audit-10).
 
-Первый файл переехал. Ближайший кандидат: audit-06
-(проверить таксономию ошибок).
+Первый файл переехал. Ближайший кандидат: audit-07
+(проверить Azure-конфигурируемость).
