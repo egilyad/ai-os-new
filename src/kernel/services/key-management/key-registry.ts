@@ -857,7 +857,16 @@ export class KeyRegistry {
             if (e instanceof Error) throw e;
             throw new Error('Invalid JSON data', { cause: e });
         }
-        const { newKeys, count } = buildImportKeys(result, this.keys);
+        const { newKeys, count, skippedEncrypted } = buildImportKeys(result, this.keys);
+        if (skippedEncrypted > 0) {
+            LOGGER.warn('KeyRegistry', 'skipped vault-encrypted keys on import (unreadable here)', {
+                skippedEncrypted,
+            });
+            this.deps.eventBus.emit(EVENTS.NOTIFICATION, {
+                message: `Skipped ${skippedEncrypted} encrypted key(s) — unlock the source vault and export unlocked first`,
+                type: 'warning',
+            });
+        }
         if (count > 0) {
             this.setKeysInternal('importKeys', newKeys);
             await this.saveKeys();

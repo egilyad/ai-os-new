@@ -103,14 +103,22 @@ export function initExtendedStats(): KeyExtendedStats {
 export function buildImportKeys(
     items: unknown[],
     existingKeys: ApiKey[],
-): { newKeys: ApiKey[]; count: number } {
+): { newKeys: ApiKey[]; count: number; skippedEncrypted: number } {
     let count = 0;
+    let skippedEncrypted = 0;
     const now = Date.now();
     const newKeys = [...existingKeys];
     for (const item of items) {
         const parsed = ImportKeySchema.safeParse(item);
         if (!parsed.success) continue;
         const { id, provider, key, label, isEncrypted, stats, history } = parsed.data;
+        // 2.13: vault-encrypted blobs from another install are unreadable
+        // here (vault locked/unwired) — importing them as-is creates dead
+        // keys with a misleading flag. Skip loudly instead.
+        if (isEncrypted) {
+            skippedEncrypted++;
+            continue;
+        }
         const normalizedProvider = provider.toLowerCase();
         if (!VALID_IMPORT_PROVIDERS.includes(normalizedProvider)) continue;
         const exists = newKeys.some((k) => k.id === id);
@@ -136,7 +144,7 @@ export function buildImportKeys(
             count++;
         }
     }
-    return { newKeys, count };
+    return { newKeys, count, skippedEncrypted };
 }
 
 export async function buildExportData(
