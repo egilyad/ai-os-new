@@ -322,9 +322,16 @@ export class BudgetService implements IBudgetService {
         const thresholds = [50, 80, 90, 100];
 
         for (const key of this.sentAlerts) {
-            const parts = key.split(':');
-            if (parts[0] === type && parts[1] === entity) {
-                const thresholdLevel = parseInt(parts[2]!, 10);
+            // 10.6: entity may itself contain ':' (agent/model ids) — split
+            // from the outside in: level is the trailing numeric segment,
+            // type is the leading one, entity is everything between.
+            const levelSep = key.lastIndexOf(':');
+            const thresholdLevel = parseInt(key.slice(levelSep + 1), 10);
+            if (levelSep < 0 || Number.isNaN(thresholdLevel)) continue;
+            const head = key.slice(0, levelSep);
+            const firstSep = head.indexOf(':');
+            if (firstSep < 0) continue;
+            if (head.slice(0, firstSep) === type && head.slice(firstSep + 1) === entity) {
                 if (pct < thresholdLevel) this.sentAlerts.delete(key);
             }
         }
