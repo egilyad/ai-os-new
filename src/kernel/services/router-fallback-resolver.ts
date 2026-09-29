@@ -67,21 +67,30 @@ export class RouterFallbackResolver {
                 return u.can;
             });
             if (usable.length > 0) {
+                // 10.8: selectWithBurst/selectFromPool pick by their own
+                // policy and can return the just-failed key — accept only a
+                // key from the pre-filtered usable set.
+                const usableIds = new Set(usable.map((k) => k.id));
                 const selectedKey =
                     this.deps.keyService.selectWithBurst?.(link.provider) ??
                     this.deps.keyService.selectFromPool(link.provider);
-                if (!selectedKey) continue;
+                if (!selectedKey || !usableIds.has(selectedKey.id)) continue;
                 return { key: selectedKey, provider: link.provider };
             }
         }
         const allActive = this.deps.keyService.getKeys().filter((k) => k.status === 'active');
         if (allActive.length > 0) {
             for (const k of allActive) {
+                if (excludeKeyId && k.id === excludeKeyId) continue;
                 if (!this.deps.budgetService.canUseProvider(k.provider)) continue;
                 const selected =
                     this.deps.keyService.selectWithBurst?.(k.provider) ??
                     this.deps.keyService.selectFromPool(k.provider);
-                if (selected && this.deps.keyService.canUseKey(selected.id).can) {
+                if (
+                    selected &&
+                    !(excludeKeyId && selected.id === excludeKeyId) &&
+                    this.deps.keyService.canUseKey(selected.id).can
+                ) {
                     return { key: selected, provider: selected.provider };
                 }
             }
