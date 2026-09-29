@@ -134,7 +134,7 @@ export class AgentGenerator {
 
 ${JSON.stringify(currentConfig, null, 2)}
 
-The user wants to make this change: "${instruction}"
+The user wants to make this change: "${sanitizePromptVar(instruction)}"
 
 Respond with ONLY the updated JSON object (same format as before, no markdown, no explanation).`;
 
