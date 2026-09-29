@@ -148,6 +148,7 @@ const settings: Record<string, string> = {
     'settings.no_backends': 'No backends configured',
     'settings.notifications_desc': 'Configure system notifications',
     'settings.purge_confirm': 'Are you sure you want to purge all data?',
+    'settings.purge_title': 'Purge All Data',
     'settings.purge_success_notification': 'Data purged successfully',
     'settings.rag_on_chat': 'RAG on Chat',
     'settings.rag_on_chat_desc': 'Enable retrieval-augmented generation in chat',

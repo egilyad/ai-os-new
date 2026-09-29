@@ -223,7 +223,7 @@ const SettingsPanel: React.FC = () => {
     const handleResetDefaults = useCallback(async () => {
         if (
             !(await confirm({
-                title: 'Reset Settings',
+                title: t('settings.reset_title', { defaultValue: 'Reset Settings' }),
                 message: t('settings.reset_confirm'),
                 variant: 'danger',
             }))
@@ -270,7 +270,7 @@ const SettingsPanel: React.FC = () => {
     const handlePurgeData = useCallback(async () => {
         if (
             !(await confirm({
-                title: 'Purge All Data',
+                title: t('settings.purge_title', { defaultValue: 'Purge All Data' }),
                 message: t('settings.purge_confirm'),
                 variant: 'danger',
             }))

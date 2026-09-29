@@ -159,7 +159,7 @@ const MemoryPanel: React.FC = () => {
     const handleClear = async () => {
         if (
             !(await confirm({
-                title: 'Wipe Memory Index',
+                title: t('memory.wipe_title', { defaultValue: 'Wipe Memory Index' }),
                 message: t('memory.wipe_confirm'),
                 variant: 'danger',
             }))
@@ -184,8 +184,10 @@ const MemoryPanel: React.FC = () => {
         async (id: string) => {
             if (
                 !(await confirm({
-                    title: 'Delete Memory',
-                    message: 'Delete this memory entry?',
+                    title: t('memory.delete_title', { defaultValue: 'Delete Memory' }),
+                    message: t('memory.delete_confirm', {
+                        defaultValue: 'Delete this memory entry?',
+                    }),
                     variant: 'danger',
                 }))
             )

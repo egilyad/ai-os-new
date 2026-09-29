@@ -149,6 +149,7 @@ const settings: Record<string, string> = {
     'settings.no_backends': 'Нет настроенных бэкендов',
     'settings.notifications_desc': 'Настроить системные уведомления',
     'settings.purge_confirm': 'Удалить все данные?',
+    'settings.purge_title': 'Удаление всех данных',
     'settings.purge_success_notification': 'Данные успешно удалены',
     'settings.rag_on_chat': 'RAG в чате',
     'settings.rag_on_chat_desc': 'Включить поиск с дополненной генерацией в чате',

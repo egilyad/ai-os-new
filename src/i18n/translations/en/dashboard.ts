@@ -149,6 +149,7 @@ const dashboard: Record<string, string> = {
     'overview.request_quota': 'Request Quota',
     'overview.requests_used': '{count} requests used',
     'overview.reset_metrics': 'Reset Metrics',
+    'overview.reset_metrics_confirm': 'Are you sure you want to reset metrics for this key?',
     'overview.reset_metrics_aria': 'Reset all metrics',
     'overview.reset_requested': 'Reset requested',
     'overview.reset_success': 'Reset successful',

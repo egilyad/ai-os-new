@@ -254,8 +254,10 @@ const OverviewTab: React.FC<Props> = ({ apiKey }) => {
     const handleResetMetrics = async () => {
         if (
             !(await confirm({
-                title: 'Reset Metrics',
-                message: 'Are you sure you want to reset metrics for this key?',
+                title: t('overview.reset_metrics', { defaultValue: 'Reset Metrics' }),
+                message: t('overview.reset_metrics_confirm', {
+                    defaultValue: 'Are you sure you want to reset metrics for this key?',
+                }),
                 variant: 'danger',
             }))
         )

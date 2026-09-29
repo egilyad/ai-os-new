@@ -149,6 +149,7 @@ const dashboard: Record<string, string> = {
     'overview.request_quota': 'Квота запросов',
     'overview.requests_used': '{count} запросов использовано',
     'overview.reset_metrics': 'Сбросить метрики',
+    'overview.reset_metrics_confirm': 'Вы уверены, что хотите сбросить метрики этого ключа?',
     'overview.reset_metrics_aria': 'Сбросить все метрики',
     'overview.reset_requested': 'Сброс запрошен',
     'overview.reset_success': 'Сброс выполнен',
