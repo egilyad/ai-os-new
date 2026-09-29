@@ -38,8 +38,14 @@
   child-сигнатура ✔, debug-хелперы за DEV ✔; ОТКЛОНЕНО сознательно:
   EH6-02 таксономия (710 throw — большой проект), EH6-06 console-codemod
   (80 мест), EH6-07 best-effort-игноры (инфо);
-- audit-07-network-api.md — gateway fetch-таймауты ✔, SNI ✔, gateway env ✔;
-  ОТКРЫТО: Azure-конфигурируемость (продуктовое решение);
+- audit-07-network-api.md — ✅ ЗАКРЫТ (файл здесь): gateway fetch-таймауты ✔
+  (gatewayApi), SNI servername ✔, gateway env-URL ✔, WS ping/pong ✔,
+  azure env-конфигурируемость ✔ (VITE_AZURE_BASE_URL/VITE_PROXY_AZURE);
+  ОТКЛОНЕНО сознательно: NT7-03 cors-proxy стриминг (dev-скрипт),
+  NT7-05 мягкая zod-валидация (дизайн), NT7-06 XFF-trust (за прокси),
+  NT7-07 abort-в-фолбэк (краевой), NT7-09 cleanup карт (низкий),
+  NT7-10 gemini-дубль-ретрай, NT7-11 groq-Origin, NT7-12 копипаста
+  (покрыто gatewayApi для новых мест);
 - audit-08-storage-caching.md — CacheService section-фильтр ✔, quota warn ✔;
   ОТКРЫТО: Vault по дизайну (см. audit-01);
 - audit-09-testing.md — моки rootLogger ✔, очередь чата ✔, http-client ✔,
@@ -53,5 +59,5 @@
   timeout-minutes ✔, Dockerfile LABEL ✔, read_only conf.d ✔, dead files ✔;
   ОТКРЫТО: monaco (см. audit-05), BASE_PATH (см. audit-10).
 
-Первый файл переехал. Ближайший кандидат: audit-07
-(проверить Azure-конфигурируемость).
+Первый файл переехал. Ближайший кандидат: audit-08
+(проверить Vault по дизайну).
