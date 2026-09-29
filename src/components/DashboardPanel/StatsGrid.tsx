@@ -32,8 +32,7 @@ const StatsGrid: React.FC<StatsGridProps> = ({
             label: t('dashboard.active_llms'),
             value: `${providerCounts.active}/${keysLength}`,
             hint: t('dashboard.active_llms_hint', {
-                error: providerCounts.error,
-                inactive: providerCounts.inactive,
+                count: providerCounts.active,
             }),
             icon: <Server size={22} />,
             color: providerCounts.active > 0 ? '#10b981' : '#f59e0b',

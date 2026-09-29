@@ -169,8 +169,7 @@ const ResponseCard: React.FC<ResponseCardProps> = memo(
                                     borderRadius: 4,
                                 }}
                             >
-                                {res.latency}
-                                {t('chat.latency_ms')}
+                                {t('chat.latency_ms', { ms: res.latency })}
                             </span>
                         )}
                         {res.status === 'done' && (
@@ -318,8 +317,9 @@ const ResponseCard: React.FC<ResponseCardProps> = memo(
                                     }}
                                 >
                                     <span style={flexCenterSmGap}>
-                                        <Zap size={12} color={color} /> {res.ttft ?? res.latency}
-                                        {t('chat.latency_ms')} {t('chat.ttft_label')}
+                                        <Zap size={12} color={color} />{' '}
+                                        {t('chat.latency_ms', { ms: res.ttft ?? res.latency })}{' '}
+                                        {t('chat.ttft_label')}
                                     </span>
                                     <span style={flexCenterSmGap}>
                                         <Activity size={12} color="#a855f7" /> ~
