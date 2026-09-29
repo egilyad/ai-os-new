@@ -64,6 +64,17 @@ const FORBIDDEN_MEMBER_PROPERTIES = new Set([
     'constructor',
     '__proto__',
     'prototype',
+    // 2.8: builtins are shared live references — reflection primitives
+    // below allow reaching Array.prototype etc. despite the ban above
+    // (e.g. Object.getPrototypeOf([]).x = 1 pollutes the worker global).
+    'getPrototypeOf',
+    'setPrototypeOf',
+    'defineProperty',
+    'defineProperties',
+    '__defineGetter__',
+    '__defineSetter__',
+    '__lookupGetter__',
+    '__lookupSetter__',
     'caches',
     'registration',
     'serviceWorker',
