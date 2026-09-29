@@ -49,10 +49,26 @@ export class AgentHealthMonitor implements ILifecycle {
 
     async init() {}
     private _started = false;
+    private _startPromise: Promise<void> | null = null;
 
     async start() {
+        // 4.4: promise-cached start (see CacheService) — concurrent callers
+        // share one load instead of triple-subscribing + double timer.
         if (this._started) return;
-        this._started = true;
+        if (!this._startPromise) {
+            this._startPromise = this._doStart();
+            try {
+                await this._startPromise;
+                this._started = true;
+            } finally {
+                this._startPromise = null;
+            }
+        } else {
+            await this._startPromise;
+        }
+    }
+
+    private async _doStart() {
 
         await this.loadPersisted();
 
