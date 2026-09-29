@@ -72,11 +72,17 @@
   (wontfix — витрина), CF10-05 zod-схема env (отдельный batch),
   CF10-06 SHA-пины, CF10-07 legacy-peer-deps, CF10-08 CSP-дрейф,
   CF10-09 stage (инфра, низкий приоритет);
-- audit-11-a11y-i18n.md — lang ✔, defaultValue ✔; ОТКРЫТО: контраст (дизайн),
-  bulk i18n-заглушки;
+- audit-11-a11y-i18n.md — ✅ ЗАКРЫТ (файл здесь): lang-синхронизация ✔,
+  defaultValue-движок ✔, 9 недостижимых `||`-фолбэков переведены на
+  defaultValue ✔ (`DebateQualityPanel.tsx`); ОТКЛОНЕНО сознательно:
+  AI11-02 контраст muted (дизайн-решение, глобальный токен),
+  AI11-05 RU-шаблоны ядра (контракт промптов), AI11-06 типизация ключей
+  (codegen, отдельный batch), AI11-07 fmt-миграция, AI11-08 RTL,
+  AI11-09 aria-label модалок (инфо);
 - audit-12-build-deploy.md — sourcemaps rm ✔, manualChunks ✔, double-build ✔,
   timeout-minutes ✔, Dockerfile LABEL ✔, read_only conf.d ✔, dead files ✔;
   ОТКРЫТО: monaco (см. audit-05), BASE_PATH (см. audit-10).
 
-Первый файл переехал. Ближайший кандидат: audit-11
-(проверить контраст и bulk i18n-заглушки).
+Первый файл переехал. Ближайший кандидат: audit-12
+(проверить monaco и BASE_PATH — оба уже закрыты в 05/10, kandidat на
+чистое закрытие сверкой).
