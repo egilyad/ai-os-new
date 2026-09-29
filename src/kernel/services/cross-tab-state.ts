@@ -83,7 +83,14 @@ class CrossTabStateSync implements ICrossTabStateSync {
     /** BR-05: Start must be called explicitly after bootstrap is ready — constructor
      *  no longer auto-initializes to prevent event subscriptions and timers
      *  from running before services are ready. */
+    private _started = false;
+
     start(): void {
+        // 4.5: init() is not re-entrant — a second start() duplicated the
+        // BroadcastChannel, both timers, the storage listener and every
+        // EventBus subscription.
+        if (this._started) return;
+        this._started = true;
         this.init();
     }
 
@@ -631,6 +638,7 @@ class CrossTabStateSync implements ICrossTabStateSync {
         this.localRateLimits.clear();
         this.localErrors = [];
         this.localDebateVersions.clear();
+        this._started = false;
         LOGGER.info('CrossTabStateSync', 'Destroyed', { tabId: this.tabId });
     }
 }
