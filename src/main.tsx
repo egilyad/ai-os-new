@@ -30,6 +30,20 @@ const unhandledRejectionHandler = (event: PromiseRejectionEvent) => {
 };
 window.addEventListener('unhandledrejection', unhandledRejectionHandler);
 
+// EH6-04: sync exceptions outside the React tree (timers, raw listeners,
+// workers) bypass ErrorBoundary — report them through the same channel
+// (console + EventBus notification) as async rejections.
+const globalErrorHandler = (event: ErrorEvent) => {
+    if (event.defaultPrevented) return;
+    const message = event.message || 'Unknown sync error';
+    console.error('[UnhandledError]', event.error ?? message);
+    eventBus.emit(EVENTS.NOTIFICATION, {
+        message: `Unhandled error: ${message}`,
+        type: 'error',
+    });
+};
+window.addEventListener('error', globalErrorHandler);
+
 // Memory monitor — logs every 30 seconds (DEV only)
 let memTimer: ReturnType<typeof setInterval> | undefined;
 if (import.meta.env.DEV && typeof window !== 'undefined' && (import.meta.env as unknown as { VITE_DEBUG_MEMORY?: string }).VITE_DEBUG_MEMORY) {
@@ -138,6 +152,7 @@ root.render(
 if (import.meta.hot) {
     import.meta.hot.dispose(() => {
         window.removeEventListener('unhandledrejection', unhandledRejectionHandler);
+        window.removeEventListener('error', globalErrorHandler);
         if (memTimer !== undefined) clearInterval(memTimer);
         (window as unknown as { __cleanupKeyStore?: () => void }).__cleanupKeyStore?.();
         runtime.shutdown();

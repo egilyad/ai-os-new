@@ -36,7 +36,10 @@ export const FALLBACK_LOGGER: ILogger = {
     error(service: string, message: string, meta?: Record<string, unknown>): void {
         formatLog(service, 'error', message, meta);
     },
-    child(): ILogger {
+    // EH6-05: accept the service name like the real LoggerService does.
+    // The fallback logs with an explicit per-call service argument, so the
+    // child simply delegates — but the signature must match ILogger.
+    child(_service: string): ILogger {
         return this;
     },
     getBuffer(): ReadonlyArray<LogEntry> {
