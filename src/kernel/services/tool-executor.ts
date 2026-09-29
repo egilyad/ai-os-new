@@ -566,6 +566,24 @@ export class ToolService {
         const combinedSignal = controller.signal;
         try {
             const response = await fetch(url, { signal: combinedSignal });
+            // 2.4: fetch follows redirects opaquely and browsers offer no
+            // DNS pinning — re-check the FINAL url so a redirect (or rebinding
+            // between check and connect) onto a private host is refused
+            // before any body is read.
+            try {
+                const finalHost = new URL(response.url || url).hostname;
+                if (isPrivateIP(finalHost)) {
+                    response.body?.cancel()?.catch(() => {});
+                    throw toolError(
+                        toolId,
+                        `Redirect target points to private/internal network: ${finalHost}`,
+                        'PRIVATE_IP',
+                    );
+                }
+            } catch (e) {
+                if (e instanceof Error && 'toolId' in e) throw e;
+                // Unparseable final URL — fall through to status handling.
+            }
             if (!response.ok) {
                 response.body?.cancel()?.catch(() => {});
                 throw toolError(
