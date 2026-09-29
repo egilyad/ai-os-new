@@ -56,7 +56,8 @@ function makeRecord(
 export class DistributedLockService implements IDistributedLock {
     private _ownerId: string;
     private _listeners: LockListener[] = [];
-    private _heldLocks = new Set<string>();
+    // 4.6: track TTL per held lock so the auto-heartbeat below can refresh.
+    private _heldLocks = new Map<string, { resourceId: LockResource; ttl: number }>();
     private _heartbeatTimer: ReturnType<typeof setInterval> | null = null;
 
     constructor(ownerId?: string) {
@@ -70,6 +71,41 @@ export class DistributedLockService implements IDistributedLock {
             } catch {
                 /* listener isolation */
             }
+        }
+    }
+
+    // 4.6: the _heartbeatTimer field existed but was never started, so a
+    // live tab holding a lock past its TTL silently lost it to takeover.
+    // Refresh all held locks every 10s (well under the 30s default TTL);
+    // the timer stops itself when nothing is held.
+    private _ensureHeartbeat(): void {
+        if (this._heartbeatTimer) return;
+        this._heartbeatTimer = setInterval(() => {
+            void this._beatAll().catch((e) =>
+                LOGGER.warn('DistributedLock', 'heartbeat sweep failed', { error: e }),
+            );
+        }, 10_000);
+    }
+
+    private async _beatAll(): Promise<void> {
+        if (this._heldLocks.size === 0) {
+            if (this._heartbeatTimer) {
+                clearInterval(this._heartbeatTimer);
+                this._heartbeatTimer = null;
+            }
+            return;
+        }
+        for (const [key, info] of this._heldLocks) {
+            const ok = await this.heartbeat({
+                resourceId: info.resourceId,
+                ownerId: this._ownerId,
+                acquiredAt: 0,
+                ttl: info.ttl,
+                heartbeatAt: 0,
+            });
+            // heartbeat() already drops taken-over locks + notifies; the
+            // extra delete covers paths where it returned false early.
+            if (!ok) this._heldLocks.delete(key);
         }
     }
 
@@ -125,7 +161,7 @@ export class DistributedLockService implements IDistributedLock {
                             ttl: existing.ttl,
                             heartbeatAt: updated.heartbeatAt,
                         };
-                        this._heldLocks.add(key);
+                        this._heldLocks.set(key, { resourceId, ttl: existing.ttl });
                         return { lock };
                     }
 
@@ -149,7 +185,8 @@ export class DistributedLockService implements IDistributedLock {
                     ttl: record.ttl,
                     heartbeatAt: record.heartbeatAt,
                 };
-                this._heldLocks.add(key);
+                this._heldLocks.set(key, { resourceId, ttl });
+                this._ensureHeartbeat();
                 this._notify({
                     resourceId,
                     ownerId: this._ownerId,
@@ -253,7 +290,7 @@ export class DistributedLockService implements IDistributedLock {
             this._heartbeatTimer = null;
         }
         // Release all held locks
-        for (const key of this._heldLocks) {
+        for (const key of this._heldLocks.keys()) {
             const resourceId = key.slice(LOCK_PREFIX.length) as LockResource;
             this._notify({
                 resourceId,
