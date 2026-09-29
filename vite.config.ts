@@ -35,6 +35,12 @@ export default defineConfig({
         'import.meta.env.VITE_APP_VERSION': JSON.stringify(pkg.version),
     },
     plugins: [react()],
+    // 8.11: both workers (sandbox, memory) are constructed with
+    // `{ type: 'module' }` — build them as ES modules so ESM semantics
+    // (top-level await, static imports) hold in prod, not IIFE.
+    worker: {
+        format: 'es',
+    },
     resolve: {
         alias: {
             '@': path.resolve(__dirname, 'src'),
