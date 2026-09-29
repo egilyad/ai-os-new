@@ -280,18 +280,11 @@ export class DebateBudget implements IDebateBudget {
             );
             return;
         }
-        // Don't increment beyond the limit — prevents fencepost where
-        // incrementRound (called at round:start) makes _roundsUsed equal
-        // maxRounds, causing the next reserveAndRecord check to reject
-        // agents in the last allowed round.
-        if (this._roundsUsed >= this.limits.maxRounds) {
-            LOGGER.debug(
-                'DebateBudget',
-                `incrementRound: already at limit ${this.limits.maxRounds}, skipping`,
-                { sessionId, roundsUsed: this._roundsUsed },
-            );
-            return;
-        }
+        // 10.4: the counter must stay truthful — reserveAndRecord rejects
+        // when _roundsUsed > maxRounds, so capping here (as before) froze
+        // the counter AT the limit and the guard never fired: rounds past
+        // maxRounds executed unbounded. Last allowed round is unaffected:
+        // after its increment _roundsUsed == maxRounds, and `>` still passes.
         this._roundsUsed++;
     }
 

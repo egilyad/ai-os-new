@@ -31,13 +31,13 @@ describe('DebateBudget', () => {
         expect(result).toBe(false);
     });
 
-    it('incrementRound stops at maxRounds', () => {
+    it('reserveAndRecord rejects rounds past maxRounds', async () => {
         const budget = new DebateBudget(SESSION_ID, { ...SMALL_LIMITS, maxRounds: 2 });
         budget.incrementRound(SESSION_ID);
         budget.incrementRound(SESSION_ID);
+        expect(await budget.reserveAndRecord(SESSION_ID, 100, 0.1)).toBe(true);
         budget.incrementRound(SESSION_ID);
-        const snap = budget.snapshot();
-        expect(snap.roundsUsed).toBe(2);
+        expect(await budget.reserveAndRecord(SESSION_ID, 100, 0.1)).toBe(false);
     });
 
     it('rejects when sessionId does not match', async () => {
@@ -53,12 +53,12 @@ describe('DebateBudget', () => {
         expect(snap.roundsUsed).toBe(1);
     });
 
-    it('incrementRound does not exceed maxRounds', () => {
+    it('incrementRound counts truthfully past maxRounds (guard rejects)', () => {
         const budget = new DebateBudget(SESSION_ID, { ...SMALL_LIMITS, maxRounds: 1 });
         budget.incrementRound(SESSION_ID);
         budget.incrementRound(SESSION_ID);
         const snap = budget.snapshot();
-        expect(snap.roundsUsed).toBe(1);
+        expect(snap.roundsUsed).toBe(2);
     });
 
     it('incrementRound ignores mismatched sessionId', () => {
