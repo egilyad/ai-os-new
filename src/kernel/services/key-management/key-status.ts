@@ -171,6 +171,10 @@ export class KeyStatusManager {
         this.deps.registry.saveKeys();
         this.deps.notify();
 
+        // 9.5: key compromise is a top-severity security event — it must hit
+        // the log/audit trail, not just the bus + UI refresh.
+        LOGGER.error('KeyStatusManager', 'key compromised', { id, provider, source });
+
         this.deps.eventBus.emitOnce(EVENTS.KEY_COMPROMISED, `${id}:${provider}`, {
             id,
             provider,

@@ -2,8 +2,11 @@ import { CONFIG } from '../config-registry';
 import type { ApiKey } from '../../types/metrics-types';
 import { EVENTS } from '../../events/event-names';
 import { sanitizeError } from '../../../llm/http/llm-http-client';
+import { rootLogger } from '../logger-service';
 import type { IHealthCheckService } from '../../contracts/health-check';
 import type { IAdapterRegistry } from '../../contracts/provider-adapter';
+
+const LOGGER = rootLogger.child('KeyHealth');
 
 export interface KeyHealthDeps {
     eventBus: {
@@ -338,6 +341,13 @@ export class KeyHealth implements IHealthCheckService {
             message: `Key "${key.label}" quarantined due to suspected compromise (${source})`,
             type: 'error',
         });
+        // 9.5: quarantine is a critical security event — log it, not just
+        // alert + notify (never log key material itself).
+        LOGGER.error('KeyHealth', 'key quarantined', {
+            id: key.id,
+            provider: key.provider,
+            source,
+        });
         return true;
     }
 
@@ -366,6 +376,13 @@ export class KeyHealth implements IHealthCheckService {
         this.deps.eventBus.emit(EVENTS.NOTIFICATION, {
             message: `Key "${key.label}" COMPROMISED via ${source} — revoked from all pools`,
             type: 'error',
+        });
+        // 9.5: see quarantine above — compromise must hit the audit trail.
+        LOGGER.error('KeyHealth', 'key compromised', {
+            id: key.id,
+            provider: key.provider,
+            source,
+            previousState: prevStatus,
         });
 
         this.deps.eventBus.emitOnce(
