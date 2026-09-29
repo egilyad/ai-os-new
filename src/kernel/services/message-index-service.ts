@@ -58,6 +58,7 @@ export class MessageIndexService {
     private currentSessionId: string | null = null;
     private sessionUserBuffer = new Map<string, { content: string; timestamp: number }>();
     private _initialized = false;
+    private _initPromise: Promise<void> | null = null;
 
     private async db(): Promise<import('../types/interfaces').IDatabaseService> {
         const { database } = await import('../instances/services-core');
@@ -67,8 +68,23 @@ export class MessageIndexService {
     constructor(private readonly _logger?: ILogger) {}
 
     async init(): Promise<void> {
+        // 4.4: promise-cached init (see CacheService) — concurrent callers
+        // share one load instead of double-subscribing 4 bus listeners.
         if (this._initialized) return;
-        this._initialized = true;
+        if (!this._initPromise) {
+            this._initPromise = this._doInit();
+            try {
+                await this._initPromise;
+                this._initialized = true;
+            } finally {
+                this._initPromise = null;
+            }
+        } else {
+            await this._initPromise;
+        }
+    }
+
+    private async _doInit(): Promise<void> {
         const stored = await (await this.db()).getKv<IndexedMessage[]>(STORAGE_KEY);
         this.messages = stored ?? [];
         for (const m of this.messages) {
