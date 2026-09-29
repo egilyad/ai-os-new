@@ -1,5 +1,11 @@
 import React from 'react';
-import Editor from '@monaco-editor/react';
+import Editor, { loader } from '@monaco-editor/react';
+import * as monaco from 'monaco-editor';
+
+// AR5-01: self-host Monaco instead of the default jsdelivr CDN loader, which
+// is blocked by our own CSP (script-src 'self'). The package is already in
+// deps — wiring it into the loader keeps the editor working in prod builds.
+loader.config({ monaco });
 
 interface CodeEditorProps {
     value: string;

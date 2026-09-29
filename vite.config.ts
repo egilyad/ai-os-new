@@ -68,6 +68,11 @@ export default defineConfig({
                         if (id.includes('@react-aria')) {
                             return 'vendor-aria';
                         }
+                        // AR5-01: monaco is ~2MB — keep it in its own chunk
+                        // instead of the entry chunk.
+                        if (id.includes('monaco-editor')) {
+                            return 'vendor-monaco';
+                        }
                         if (
                             id.includes('react') ||
                             id.includes('react-dom') ||
