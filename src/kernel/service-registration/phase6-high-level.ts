@@ -298,6 +298,7 @@ export const registerPhase6: Phase = (helpers, ctx) => {
         svc.setBudgetService(
             c.get<import('../services/budget-service').BudgetService>('budgetService'),
         );
+        svc.setEventBus(c.get<IEventBus>('eventBus'));
         return svc;
     });
     // ── Topology Template Service ─────────────────────────

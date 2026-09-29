@@ -1,4 +1,5 @@
 import { rootLogger } from './logger-service';
+import { EVENTS } from '../events/event-names';
 import type {
     IBudgetAlertService,
     BudgetAlertRule,
@@ -45,9 +46,15 @@ export class BudgetAlertService implements IBudgetAlertService {
     private rules: BudgetAlertRule[] = [];
     private history: BudgetAlertEvent[] = [];
     private budgetService: IBudgetService | null = null;
+    private eventBus: { emit: (event: string, data?: unknown) => void } | null = null;
+    private evalTimer: ReturnType<typeof setInterval> | null = null;
 
     setBudgetService(svc: IBudgetService): void {
         this.budgetService = svc;
+    }
+
+    setEventBus(bus: { emit: (event: string, data?: unknown) => void }): void {
+        this.eventBus = bus;
     }
 
     async init(): Promise<void> {
@@ -70,10 +77,34 @@ export class BudgetAlertService implements IBudgetAlertService {
     }
 
     start(): Promise<void> {
+        // 9.8: user-configured rules never fired — nothing invoked
+        // evaluate() in production. Evaluate every 5 minutes and surface
+        // hits as user notifications (history persists inside evaluate()).
+        if (this.evalTimer) return Promise.resolve();
+        this.evalTimer = setInterval(() => {
+            try {
+                const events = this.evaluate();
+                for (const ev of events) {
+                    this.eventBus?.emit(EVENTS.NOTIFICATION, {
+                        message: ev.message,
+                        type: ev.severity === 'critical' ? 'error' : 'warning',
+                        source: 'BudgetAlerts',
+                    });
+                }
+            } catch (err) {
+                LOGGER.warn('BudgetAlertService', 'scheduled evaluate failed', {
+                    error: String(err),
+                });
+            }
+        }, 5 * 60 * 1000);
         return Promise.resolve();
     }
 
     destroy(): void {
+        if (this.evalTimer) {
+            clearInterval(this.evalTimer);
+            this.evalTimer = null;
+        }
         this.rules = [];
         this.history = [];
     }
