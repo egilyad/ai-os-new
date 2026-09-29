@@ -33,8 +33,6 @@ services:
                 VITE_PROXY_CEREBRAS: ${VITE_PROXY_CEREBRAS:-}
                 VITE_PROXY_CLOUDFLARE: ${VITE_PROXY_CLOUDFLARE:-}
                 VITE_PROXY_OPENAI: ${VITE_PROXY_OPENAI:-}
-                VITE_DISABLE_TELEMETRY: ${VITE_DISABLE_TELEMETRY:-}
-                VITE_LOG_LEVEL: ${VITE_LOG_LEVEL:-}
         image: superagents-os:${TAG:-latest}
         container_name: superagents-os
         labels:
