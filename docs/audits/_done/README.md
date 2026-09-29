@@ -56,9 +56,15 @@
   ST8-01 Vault (by design, scope audit-01), ST8-04 gateway-токены
   (там же), ST8-07 миграции-без-хуков (additive, большой рефактор),
   ST8-10/11/12 (низкие/инфо);
-- audit-09-testing.md — моки rootLogger ✔, очередь чата ✔, http-client ✔,
+- audit-09-testing.md — ✅ ЗАКРЫТ (файл здесь): CI-триггеры ✔, моки
+  rootLogger ✔, очередь чата ✔, http-client ✔,
   circuit/retry/rate-limit/fallback/pq/semantic/canary/compress/logging/
-  cost-manager/factory/adapter тесты ✔; ОТКРЫТО: расширение гейта на services/;
+  cost-manager/factory/adapter тесты ✔, test_map удалён ✔, мёртвый
+  setup.ts с полным runtime-bootstrap удалён ✔ (`a9684d5`);
+  ОТКЛОНЕНО сознательно: TS9-02 расширение гейта на services/ (нужны
+  P1.3–P1.7 тесты сервисов + замер, отдельный batch), TS9-04 e2e-сценарии
+  с данными, TS9-05 хвосты покрытия (по risk-матрице), TS9-06 skip-тест,
+  TS9-09 sleep-таймеры;
 - audit-10-config-env.md — BUILD_ID ✔, мертвые vars ✔; ОТКРЫТО: BASE_PATH
   (рискованно для e2e), mockServices (wontfix — витрина);
 - audit-11-a11y-i18n.md — lang ✔, defaultValue ✔; ОТКРЫТО: контраст (дизайн),
@@ -67,5 +73,5 @@
   timeout-minutes ✔, Dockerfile LABEL ✔, read_only conf.d ✔, dead files ✔;
   ОТКРЫТО: monaco (см. audit-05), BASE_PATH (см. audit-10).
 
-Первый файл переехал. Ближайший кандидат: audit-09
-(проверить расширение гейта на services/).
+Первый файл переехал. Ближайший кандидат: audit-10
+(проверить BASE_PATH и mockServices).
