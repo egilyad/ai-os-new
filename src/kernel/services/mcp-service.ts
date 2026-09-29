@@ -213,8 +213,21 @@ export class MCPService {
             response.body?.cancel()?.catch(() => {});
             throw new Error(`MCP ${server.name} returned ${response.status}`);
         }
-        const data: JSONRPCResponse = await response.json();
-        if (data.error) throw new Error(`MCP ${server.name} error: ${data.error.message}`);
+        const raw: unknown = await response.json();
+        // 5.8: external servers answer with anything (null, arrays, HTML
+        // error pages parsed as strings) — property access below must not
+        // throw bare TypeErrors.
+        if (!raw || typeof raw !== 'object' || Array.isArray(raw)) {
+            throw new Error(`MCP ${server.name} returned malformed JSON-RPC response`);
+        }
+        const data = raw as JSONRPCResponse;
+        if (data.error) {
+            const detail =
+                typeof data.error === 'object' && data.error !== null
+                    ? (data.error as { message?: unknown }).message
+                    : data.error;
+            throw new Error(`MCP ${server.name} error: ${String(detail)}`);
+        }
         return data.result;
     }
 
