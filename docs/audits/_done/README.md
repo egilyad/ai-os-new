@@ -65,13 +65,18 @@
   P1.3–P1.7 тесты сервисов + замер, отдельный batch), TS9-04 e2e-сценарии
   с данными, TS9-05 хвосты покрытия (по risk-матрице), TS9-06 skip-тест,
   TS9-09 sleep-таймеры;
-- audit-10-config-env.md — BUILD_ID ✔, мертвые vars ✔; ОТКРЫТО: BASE_PATH
-  (рискованно для e2e), mockServices (wontfix — витрина);
+- audit-10-config-env.md — ✅ ЗАКРЫТ (файл здесь): BUILD_ID ✔
+  (`ci.yml:93`), мертвые vars удалены ✔, debug-флаги и Azure-URL
+  задокументированы ✔ (`.env.example`); ОТКЛОНЕНО сознательно:
+  CF10-02 BASE_PATH (рискованно для e2e), CF10-03 mockServices
+  (wontfix — витрина), CF10-05 zod-схема env (отдельный batch),
+  CF10-06 SHA-пины, CF10-07 legacy-peer-deps, CF10-08 CSP-дрейф,
+  CF10-09 stage (инфра, низкий приоритет);
 - audit-11-a11y-i18n.md — lang ✔, defaultValue ✔; ОТКРЫТО: контраст (дизайн),
   bulk i18n-заглушки;
 - audit-12-build-deploy.md — sourcemaps rm ✔, manualChunks ✔, double-build ✔,
   timeout-minutes ✔, Dockerfile LABEL ✔, read_only conf.d ✔, dead files ✔;
   ОТКРЫТО: monaco (см. audit-05), BASE_PATH (см. audit-10).
 
-Первый файл переехал. Ближайший кандидат: audit-10
-(проверить BASE_PATH и mockServices).
+Первый файл переехал. Ближайший кандидат: audit-11
+(проверить контраст и bulk i18n-заглушки).
