@@ -26,8 +26,13 @@
   UX4-02 motion bulk (косметика, 500+ мест — отдельный batch),
   UX4-05 memo bulk (архитектурный, панели-монолиты),
   UX4-08 secret-localStorage (scope audit-01/Vault);
-- audit-05-architecture.md — циклы БД ✔, manualChunks ✔; ОТКРЫТО: monaco
-  self-host (нужен браузер), service-locator DI (большой рефактор);
+- audit-05-architecture.md — ✅ ЗАКРЫТ (файл здесь): циклы БД ✔,
+  manualChunks-порядок ✔ (specific-first), monaco self-host ✔
+  (loader.config + vendor-monaco чанк); ОТКЛОНЕНО сознательно:
+  AR5-03 service-locator DI (520 мест — большой рефактор, новые сервисы —
+  через токены контейнера), AR5-04 fan-out UI→kernel (постепенный перевод
+  на фасад), AR5-05 zustand v5 (плановая миграция), AR5-06 google-SDK
+  (отдельный PR), AR5-07/08 инфо;
 - audit-06-error-handling.md — логгер-sanitize ✔, слышимые ошибки ✔, гарды
   транзакций ✔; ОТКРЫТО: таксономия ошибок (большая);
 - audit-07-network-api.md — gateway fetch-таймауты ✔, SNI ✔, gateway env ✔;
@@ -45,5 +50,5 @@
   timeout-minutes ✔, Dockerfile LABEL ✔, read_only conf.d ✔, dead files ✔;
   ОТКРЫТО: monaco (см. audit-05), BASE_PATH (см. audit-10).
 
-Первый файл переехал. Ближайший кандидат: audit-05
-(проверить monaco self-host + service-locator DI).
+Первый файл переехал. Ближайший кандидат: audit-06
+(проверить таксономию ошибок).
