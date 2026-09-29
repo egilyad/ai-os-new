@@ -12,8 +12,9 @@
 - audit-01-security.md — forum XSS ✔, логгер-sanitize ✔, честный UI vault ✔,
   зачистка миграции ✔, CSP унифицирован ✔; ОТКРЫТО: полное подключение Vault,
   контраст/певью Decision (дизайн);
-- audit-02-lifecycle.md — bootstrap идемпотентность ✔, event-bus unsub ✔,
-  container guard ✔; ОТКРЫТО: —
+- audit-02-lifecycle.md — ✅ ЗАКРЫТ (файл здесь): LC2-01/02/03 + LC2-04/06/08
+  починены; LC2-05 (ретраи) и LC2-07 (симуляция) отклонены сознательно
+  (дизайн/продукт);
 - audit-03-streaming.md — groq idle-timeout ✔, autonomy отмена ✔, reaper reason ✔,
   emitOnce-контракт ✔, finishReason-канон ✔; ОТКРЫТО: удержание слота на стрим
   (нужен редизайн API);
@@ -38,6 +39,5 @@
   timeout-minutes ✔, Dockerfile LABEL ✔, read_only conf.d ✔, dead files ✔;
   ОТКРЫТО: monaco (см. audit-05), BASE_PATH (см. audit-10).
 
-Ни один файл пока не закрыт целиком — переезд только по факту 100%.
-Ближайшие кандидаты на закрытие: audit-02 (остались мелочи), audit-12
+Первый файл переехал. Ближайший кандидат: audit-12
 (monaco + BASE_PATH).
