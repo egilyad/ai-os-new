@@ -73,11 +73,13 @@ const ChatSearchBar: React.FC<Props> = ({
                 <button onClick={onNext} style={iconBtnMuted} aria-label={t('chat.next_match')}>
                     <ChevronRight size={14} />
                 </button>
-                <button onClick={onClose} style={iconBtnMuted} aria-label={t('common.close')}>
-                    <X size={14} />
-                </button>
             </div>
         )}
+        {/* 7.13: close stays reachable with zero results — previously the
+            only close button lived inside the resultCount > 0 block. */}
+        <button onClick={onClose} style={iconBtnMuted} aria-label={t('common.close')}>
+            <X size={14} />
+        </button>
     </div>
 );
 
