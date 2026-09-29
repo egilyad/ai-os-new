@@ -1,6 +1,7 @@
 import { CONFIG } from './config-registry';
 import type { ILogger, LogEntry, LogLevel, ITraceContext } from '../contracts/logger';
 import { sanitizeObject } from '../../shared/utils/sanitize';
+import { TraceContext } from './trace-context';
 
 const LEVELS: Record<LogLevel, number> = { debug: 0, info: 1, warn: 2, error: 3 };
 
@@ -83,7 +84,14 @@ export class LoggerService implements ILogger {
     }
 
     child(service: string): ILogger {
-        return new LoggerService(service, this.minLevelName, { buffer: this.state.buffer, seq: 0 });
+        // 9.2: inherit the ambient trace — otherwise every child logger
+        // permanently logs traceId: undefined even inside a traced scope.
+        // Buffer stays shared; seq restarts per child (pre-existing behavior).
+        return new LoggerService(service, this.minLevelName, {
+            buffer: this.state.buffer,
+            seq: 0,
+            currentTrace: this.state.currentTrace,
+        });
     }
 
     debug(service: string, message: string, meta?: Record<string, unknown>): void {
@@ -117,10 +125,18 @@ export class LoggerService implements ILogger {
             service,
             timestamp: Date.now(),
             seq: this.state.seq++,
-            traceId: this.state.currentTrace?.traceId ?? (meta?.traceId as string | undefined),
+            // 9.1: fall back to the ambient TraceContext scope so logs inside
+            // run()/runAsync()/enter() correlate even when no explicit
+            // setTraceContext() call was made.
+            traceId:
+                this.state.currentTrace?.traceId ??
+                (meta?.traceId as string | undefined) ??
+                TraceContext.getCurrentTraceId() ??
+                undefined,
             correlationId:
                 this.state.currentTrace?.correlationId ??
-                (meta?.correlationId as string | undefined),
+                (meta?.correlationId as string | undefined) ??
+                TraceContext.current?.correlationId,
             latency: meta?.latency as number | undefined,
             error: err,
             meta,
