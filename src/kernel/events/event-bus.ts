@@ -99,9 +99,13 @@ export class EventBus implements IEventBus {
         this.logger = logger;
         this.strictMode = strictMode;
         this.registerAllValidators();
-        // NOTE: no internal subscriptions here on purpose — clearAllSubscriptions()
-        // would drop them with no recovery (LC2-06). The runtime subscribes its
-        // own EVENTBUS_BACKPRESSURE handler on every start() (runtime.ts).
+        this.on(EVENTS.EVENTBUS_BACKPRESSURE, (data) => {
+            const info = data as { event: string; depth: number; pending: number };
+            getLogger().warn(
+                'EventBus',
+                `Backpressure on ${info.event} (depth=${info.depth}, pending=${info.pending})`,
+            );
+        });
     }
 
     registerValidator(event: string, validator: Validator): void {

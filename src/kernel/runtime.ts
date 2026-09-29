@@ -84,16 +84,8 @@ export class RuntimeManager {
                 this.phase = report.phase === 'ready' ? 'ready' : 'degraded';
                 this.initialized = true;
                 this.lastError = report.error;
-                // B-033: Subscribe EVENTBUS_BACKPRESSURE — degrade runtime on event bus overload.
-                // (Also carries the log line the bus itself must not own: its
-                // constructor subscription would be wiped by clearAllSubscriptions
-                // with no recovery. Runtime re-subscribes on every start().)
-                coreEventBus.on(EVENTS.EVENTBUS_BACKPRESSURE, (data) => {
-                    const info = data as { event: string; depth: number; pending: number };
-                    getLogger()?.warn(
-                        'Runtime',
-                        `EventBus backpressure on ${info.event} (depth=${info.depth}, pending=${info.pending})`,
-                    );
+                // B-033: Subscribe EVENTBUS_BACKPRESSURE — degrade runtime on event bus overload
+                coreEventBus.on(EVENTS.EVENTBUS_BACKPRESSURE, () => {
                     if (this.phase === 'ready') this.phase = 'degraded';
                 });
                 this.startHealthChecks();
