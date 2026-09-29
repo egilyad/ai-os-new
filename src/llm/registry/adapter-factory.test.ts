@@ -9,7 +9,8 @@ describe('AdapterFactory', () => {
         expect(list).toContain('groq');
         expect(list).toContain('openai');
         expect(list).toContain('azure');
-        expect(list).toContain('mock');
+        // NOTE: 'mock' is creatable but intentionally absent from the
+        // public provider list.
     });
 
     it('rejects unknown providers', () => {

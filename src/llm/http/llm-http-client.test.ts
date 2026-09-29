@@ -17,7 +17,8 @@ afterEach(() => {
 describe('parseRetryAfterHeader', () => {
     it('converts seconds to milliseconds', () => {
         expect(parseRetryAfterHeader('120')).toBe(120000);
-        expect(parseRetryAfterHeader('0')).toBeUndefined();
+        // Zero means "retry immediately", not "missing".
+        expect(parseRetryAfterHeader('0')).toBe(0);
     });
 
     it('returns undefined for missing or garbage values', () => {
