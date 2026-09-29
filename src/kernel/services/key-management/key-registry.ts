@@ -717,16 +717,29 @@ export class KeyRegistry {
             // saveKeys() upserts via bulkPut but doesn't delete stale keys if
             // stale computation was skipped. This direct delete is the final
             // guarantee that the key is gone from Dexie.
-            await this.deps.keyStore
-                .deleteKey(id)
-                .catch((err) =>
+            // 3.4: a failed delete resurrects the key on reload. Dexie can
+            // throw on transient lock contention, so retry once; if it still
+            // fails, tell the user instead of staying silent (the stale copy
+            // is still cleaned by the next saveKeys() stale sweep).
+            try {
+                await this.deps.keyStore.deleteKey(id);
+            } catch {
+                try {
+                    await this.deps.keyStore.deleteKey(id);
+                } catch (err) {
                     LOGGER.error(
                         'KeyRegistry',
-                        'deleteKey failed — stale key may remain in Dexie',
+                        'deleteKey failed twice — stale key may remain in Dexie until next save',
                         { id },
                         err,
-                    ),
-                );
+                    );
+                    this.deps.eventBus.emit(EVENTS.NOTIFICATION, {
+                        message:
+                            'Key removed but a stale copy may remain in local storage — it will be cleaned on next save',
+                        type: 'warning',
+                    });
+                }
+            }
         } catch (e) {
             // Rollback in-memory state on persist failure
             this.keys = preRemoveSnapshot;
