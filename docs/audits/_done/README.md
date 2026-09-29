@@ -46,8 +46,16 @@
   NT7-07 abort-в-фолбэк (краевой), NT7-09 cleanup карт (низкий),
   NT7-10 gemini-дубль-ретрай, NT7-11 groq-Origin, NT7-12 копипаста
   (покрыто gatewayApi для новых мест);
-- audit-08-storage-caching.md — CacheService section-фильтр ✔, quota warn ✔;
-  ОТКРЫТО: Vault по дизайну (см. audit-01);
+- audit-08-storage-caching.md — ✅ ЗАКРЫТ (файл здесь, без кода — всё
+  сверено): CacheService section-фильтр ✔ (`cache-service.ts:68-71`),
+  quota warn ✔, memories-индексы исправлены ✔
+  (`dexie-schema.ts:350` — корректные `[metadata.*]`, запросы по
+  `[metadata.timestamp]` в `memory-repository.ts:41,189`), debate-snapshot
+  хранит только метаданные ✔ (`debate-engine.ts:170-185`), XOR-legacy
+  только чтение ✔ (обе копии пишут plaintext); ОТКЛОНЕНО сознательно:
+  ST8-01 Vault (by design, scope audit-01), ST8-04 gateway-токены
+  (там же), ST8-07 миграции-без-хуков (additive, большой рефактор),
+  ST8-10/11/12 (низкие/инфо);
 - audit-09-testing.md — моки rootLogger ✔, очередь чата ✔, http-client ✔,
   circuit/retry/rate-limit/fallback/pq/semantic/canary/compress/logging/
   cost-manager/factory/adapter тесты ✔; ОТКРЫТО: расширение гейта на services/;
@@ -59,5 +67,5 @@
   timeout-minutes ✔, Dockerfile LABEL ✔, read_only conf.d ✔, dead files ✔;
   ОТКРЫТО: monaco (см. audit-05), BASE_PATH (см. audit-10).
 
-Первый файл переехал. Ближайший кандидат: audit-08
-(проверить Vault по дизайну).
+Первый файл переехал. Ближайший кандидат: audit-09
+(проверить расширение гейта на services/).
