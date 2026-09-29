@@ -212,6 +212,9 @@ export const rawConfig: ConfigRegistry = {
 
     pricing: {
         defaultMonthlyBudget: 50,
+        // 10.14: monthly request-count quota gate (was hardcoded 10000
+        // inside usage-tracker, diverging from BudgetService policy).
+        maxRequestsPerMonth: 10000,
         cacheTTLMs: 3600000,
         prefixCacheMaxSize: 500,
         perTokenDivisor: 1000000,

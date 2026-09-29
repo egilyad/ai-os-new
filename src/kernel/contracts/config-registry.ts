@@ -209,6 +209,8 @@ export interface PressureConfigSection {
 
 export interface PricingConfigSection {
     defaultMonthlyBudget: number;
+    /** 10.14: monthly request-count quota gate for usage-tracker. */
+    maxRequestsPerMonth: number;
     cacheTTLMs: number;
     prefixCacheMaxSize: number;
     perTokenDivisor: number;

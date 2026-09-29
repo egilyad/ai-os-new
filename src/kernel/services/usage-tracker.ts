@@ -135,7 +135,7 @@ export class UsageTracker implements IUsageTracker {
         const totalCost = recentRecords.reduce((sum, r) => sum + r.cost, 0);
         const totalRequests = recentRecords.length;
         const monthlyBudget = CONFIG?.pricing?.defaultMonthlyBudget ?? 50;
-        const maxRequests = 10000;
+        const maxRequests = CONFIG?.pricing?.maxRequestsPerMonth ?? 10000;
         if (totalCost >= monthlyBudget) {
             return fail({
                 type: 'quota',
