@@ -21,7 +21,39 @@ if (CORS_ORIGIN === '*') {
 }
 const MAX_SIZE = 100 * 1024 * 1024; // 100MB limit — N-08
 
-function isPrivateIP(ip) {
+// 2.11: normalize exotic-but-valid IP forms before classification.
+// Without this, `::ffff:127.0.0.1`, `2130706433` (=127.0.0.1) or
+// `0x7f000001` bypass isPrivateIP and reach private targets.
+function normalizeIP(ip) {
+    // IPv4-mapped IPv6: ::ffff:127.0.0.1 or ::ffff:7f00:1
+    const mapped = ip.match(/^::ffff:([^:]+(?::[^:]+)*)$/i);
+    if (mapped) {
+        const suffix = mapped[1];
+        if (/^\d+\.\d+\.\d+\.\d+$/.test(suffix)) return suffix;
+        const groups = suffix.split(':');
+        if (groups.length > 0 && groups.every((g) => /^[0-9a-fA-F]{1,4}$/.test(g))) {
+            const nums = groups.map((g) => parseInt(g, 16));
+            const low32 =
+                nums.length === 1
+                    ? nums[0]
+                    : ((nums[nums.length - 2] ?? 0) << 16) | (nums[nums.length - 1] ?? 0);
+            return [(low32 >>> 24) & 255, (low32 >>> 16) & 255, (low32 >>> 8) & 255, low32 & 255].join('.');
+        }
+        return ip;
+    }
+    // Single-number IPv4 forms: decimal (2130706433), hex (0x7f000001).
+    // Number() handles 0x/decimal; dotted forms are NaN and fall through.
+    if (/^[0-9a-fA-FxX]+$/.test(ip) && !net.isIP(ip)) {
+        const num = Number(ip);
+        if (Number.isInteger(num) && num >= 0 && num <= 0xffffffff) {
+            return [(num >>> 24) & 255, (num >>> 16) & 255, (num >>> 8) & 255, num & 255].join('.');
+        }
+    }
+    return ip;
+}
+
+function isPrivateIP(rawIp) {
+    const ip = normalizeIP(rawIp);
     if (ip.includes(':')) {
         if (ip === '::1' || ip === '0:0:0:0:0:0:0:1') return true;
         if (ip.startsWith('fe80:') || ip.startsWith('fd') || ip.startsWith('fc')) return true;
