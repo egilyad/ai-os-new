@@ -141,6 +141,13 @@ export class EloRatingService {
         return this.profiles.get(agentId);
     }
 
+    /**
+     * Updates ratings for a finished debate.
+     *
+     * Contract (10.3): `result` is expressed from `winnerId`'s perspective —
+     * 'win' means winnerId won, 'loss' means winnerId lost (loserId won),
+     * 'draw' is even. The parameter names are role slots, not outcomes.
+     */
     updateRatings(
         winnerId: string,
         loserId: string,
@@ -168,6 +175,12 @@ export class EloRatingService {
                 winnerActual = 0.5;
                 loserActual = 0.5;
                 break;
+            default:
+                // 10.3: without this, a runtime-invalid result string leaves
+                // winnerActual undefined → NaN ratings propagate into profiles
+                // and history. Fail loud: the type system prevents this, so
+                // reaching here is always a programming error.
+                throw new Error(`EloRatingService.updateRatings: unknown result "${result}"`);
         }
 
         const winnerK = this.getKFactor(winner.gamesPlayed);
