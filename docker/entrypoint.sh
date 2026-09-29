@@ -35,6 +35,14 @@ if [ -f /etc/nginx/conf.d/default.conf.template ]; then
     > /etc/nginx/conf.d/default.conf
 fi
 
+# 8.5: empty PROXY_FETCH renders `proxy_pass /;` — a self-recursion loop,
+# not fail-closed. Replace with an explicit 501 so the fetch tool reports
+# "disabled" instead of hanging/looping. Set PROXY_FETCH to enable it.
+if [ -z "$PROXY_FETCH" ] && [ -f /etc/nginx/conf.d/default.conf ]; then
+  echo "WARN: PROXY_FETCH is not set — /proxy/fetch/ will return 501 (fetch tool disabled)"
+  sed -i 's|proxy_pass /;|return 501;  # PROXY_FETCH unset: fetch tool disabled (8.5 fail-closed)|' /etc/nginx/conf.d/default.conf
+fi
+
 # BLD-C5: Verify TLS certs exist if SSL config is in use
 # C-99: NGINX_CONFIG is a Docker build arg — not available at runtime.
 # Detect SSL config by checking if the rendered template contains "listen.*ssl".
