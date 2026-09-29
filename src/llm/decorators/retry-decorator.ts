@@ -29,6 +29,10 @@ export class RetryDecorator extends BaseDecorator {
     }
 
     private shouldRetry(e: unknown, currentSignal?: AbortSignal): boolean {
+        // Aborted caller first: never burn retries on a dead request, and do
+        // it before the TypeError branch below (an abort surfaces as DOMException,
+        // but guards must not depend on that).
+        if (currentSignal?.aborted) return false;
         // Don't retry 429 — CircuitBreaker handles rate limit backoff by opening the circuit.
         // Retrying 429 inflates memory: 4× HTTP calls per rate-limited provider per request.
         if (e instanceof RetryableError && e.statusCode === 429) return false;
@@ -40,7 +44,14 @@ export class RetryDecorator extends BaseDecorator {
         )
             return false;
         if (e instanceof RetryableError) return true;
-        if (e instanceof TypeError) return true;
+        // Only network-level TypeErrors (fetch failed, socket hangup) — not
+        // programming errors like TypeError from bad input shapes.
+        if (e instanceof TypeError) {
+            const msg = e.message || '';
+            return /fetch failed|network|socket|hang up|econn|etimedout|enotfound|failed to fetch/i.test(
+                msg,
+            );
+        }
 
         if (e instanceof DOMException && e.name === 'AbortError') {
             return !currentSignal?.aborted;

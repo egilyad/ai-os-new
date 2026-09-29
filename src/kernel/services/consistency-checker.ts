@@ -656,13 +656,20 @@ export class ConsistencyChecker implements IConsistencyChecker, IConsistencyHeal
             }
             const timeoutController = new AbortController();
             let timer: ReturnType<typeof setTimeout> | undefined;
+            // Manual composition (no AbortSignal.any): the composed signal
+            // pins onabort closures past GC.
+            const onAbort = () => {
+                if (timer !== undefined) clearTimeout(timer);
+                timeoutController.abort(
+                    signal?.reason instanceof Error
+                        ? signal.reason
+                        : new DOMException('Aborted', 'AbortError'),
+                );
+            };
+            signal?.addEventListener('abort', onAbort, { once: true });
             try {
                 timer = setTimeout(() => timeoutController.abort(), timeout);
-                const combinedSignal = signal
-                    ? (AbortSignal.any?.([timeoutController.signal, signal]) ??
-                      timeoutController.signal)
-                    : timeoutController.signal;
-                const resp = await fetch(`/${file}`, { signal: combinedSignal });
+                const resp = await fetch(`/${file}`, { signal: timeoutController.signal });
                 clearTimeout(timer);
                 if (resp.ok) {
                     contents[file] = await resp.text();
@@ -672,6 +679,8 @@ export class ConsistencyChecker implements IConsistencyChecker, IConsistencyHeal
             } catch {
                 if (timer !== undefined) clearTimeout(timer);
                 /* skip unavailable docs */
+            } finally {
+                signal?.removeEventListener('abort', onAbort);
             }
         }
         return contents;

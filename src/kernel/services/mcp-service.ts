@@ -177,18 +177,27 @@ export class MCPService {
     }
 
     private async safeFetch(url: string, init?: RequestInit): Promise<Response> {
+        // Manual composition (no AbortSignal.any): the composed signal pins
+        // onabort closures past GC, keeping response bodies alive.
         const controller = new AbortController();
         const timeout = setTimeout(
-            () => controller.abort(),
+            () => controller.abort(new DOMException('Timeout', 'TimeoutError')),
             CONFIG?.services?.mcp?.safeFetchTimeoutMs ?? 5000,
         );
-        const combinedSignal = init?.signal
-            ? (AbortSignal.any?.([init.signal, controller.signal]) ?? init.signal)
-            : controller.signal;
+        const onAbort = () => {
+            clearTimeout(timeout);
+            controller.abort(
+                init?.signal?.reason instanceof Error
+                    ? init.signal.reason
+                    : new DOMException('Aborted', 'AbortError'),
+            );
+        };
+        init?.signal?.addEventListener('abort', onAbort, { once: true });
         try {
-            return await fetch(url, { ...init, signal: combinedSignal });
+            return await fetch(url, { ...init, signal: controller.signal });
         } finally {
             clearTimeout(timeout);
+            init?.signal?.removeEventListener('abort', onAbort);
         }
     }
 

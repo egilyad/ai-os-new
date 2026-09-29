@@ -78,17 +78,20 @@ export class AdversarialSourceService implements IAdversarialSourceService {
     }
 
     private async _fetchSource(url: string, signal?: AbortSignal): Promise<string | null> {
+        // Manual composition (no AbortSignal.any): the composed signal pins
+        // onabort closures past GC. Caller abort forwards into our timeout
+        // controller; both paths clean up in finally.
+        const ctrl = new AbortController();
+        const timer = setTimeout(() => ctrl.abort(new Error('FetchTimeout')), FETCH_TIMEOUT_MS);
+        const onAbort = () => {
+            clearTimeout(timer);
+            ctrl.abort(
+                signal?.reason instanceof Error ? signal.reason : new DOMException('Aborted', 'AbortError'),
+            );
+        };
+        signal?.addEventListener('abort', onAbort, { once: true });
         try {
-            const ctrl = new AbortController();
-            const timer = setTimeout(() => ctrl.abort(new Error('FetchTimeout')), FETCH_TIMEOUT_MS);
-
-            const mergedSignal = signal
-                ? AbortSignal.any
-                    ? AbortSignal.any([signal, ctrl.signal])
-                    : ctrl.signal
-                : ctrl.signal;
-
-            const res = await fetch(url, { signal: mergedSignal });
+            const res = await fetch(url, { signal: ctrl.signal });
             clearTimeout(timer);
 
             if (!res.ok) return null;
@@ -98,6 +101,9 @@ export class AdversarialSourceService implements IAdversarialSourceService {
             return text || null;
         } catch {
             return null;
+        } finally {
+            clearTimeout(timer);
+            signal?.removeEventListener('abort', onAbort);
         }
     }
 

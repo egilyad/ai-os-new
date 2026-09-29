@@ -547,9 +547,23 @@ export class ToolService {
                 );
             }
         }
-        const combinedSignal = signal
-            ? (AbortSignal.any?.([signal, AbortSignal.timeout(timeoutMs)]) ?? signal)
-            : AbortSignal.timeout(timeoutMs);
+        // Manual signal composition (no AbortSignal.any): the composed signal
+        // pins onabort closures past GC, keeping response bodies alive.
+        const controller = new AbortController();
+        const timer = setTimeout(
+            () => controller.abort(new DOMException('Timeout', 'TimeoutError')),
+            timeoutMs,
+        );
+        const onAbort = () => {
+            clearTimeout(timer);
+            controller.abort(
+                signal?.reason instanceof Error
+                    ? signal.reason
+                    : new DOMException('Aborted', 'AbortError'),
+            );
+        };
+        signal?.addEventListener('abort', onAbort, { once: true });
+        const combinedSignal = controller.signal;
         try {
             const response = await fetch(url, { signal: combinedSignal });
             if (!response.ok) {
@@ -635,6 +649,9 @@ export class ToolService {
                     'FETCH_FAILED',
                 );
             }
+        } finally {
+            clearTimeout(timer);
+            signal?.removeEventListener('abort', onAbort);
         }
     }
 

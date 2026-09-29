@@ -311,16 +311,14 @@ class CrossTabStateSync implements ICrossTabStateSync {
                 break;
             case 'key-update': {
                 LOGGER.debug('CrossTabStateSync', 'Cross-tab key update, refreshing local state');
+                // NOTE: plain emit, not emitOnce — the constant dedup key used
+                // to drop repeat syncs within the idempotency TTL, losing updates.
                 if (message.payload == null) {
-                    this._eventBus.emitOnce(EVENTS.KEY_UPDATED, 'cross-tab:key-update', []);
+                    this._eventBus.emit(EVENTS.KEY_UPDATED, []);
                 } else {
                     const keyPayload = z.array(ApiKeySchema).safeParse(message.payload);
                     if (keyPayload.success)
-                        this._eventBus.emitOnce(
-                            EVENTS.KEY_UPDATED,
-                            'cross-tab:key-update',
-                            keyPayload.data,
-                        );
+                        this._eventBus.emit(EVENTS.KEY_UPDATED, keyPayload.data);
                     else
                         LOGGER.warn('CrossTabStateSync', 'malformed key-update payload', {
                             issues: keyPayload.error.issues,
@@ -334,15 +332,11 @@ class CrossTabStateSync implements ICrossTabStateSync {
                     'Cross-tab kernel update, refreshing local state',
                 );
                 if (message.payload == null) {
-                    this._eventBus.emitOnce(EVENTS.KERNEL_UPDATED, 'cross-tab:kernel-update', {});
+                    this._eventBus.emit(EVENTS.KERNEL_UPDATED, {});
                 } else {
                     const kernelPayload = SystemStateSchema.safeParse(message.payload);
                     if (kernelPayload.success)
-                        this._eventBus.emitOnce(
-                            EVENTS.KERNEL_UPDATED,
-                            'cross-tab:kernel-update',
-                            kernelPayload.data,
-                        );
+                        this._eventBus.emit(EVENTS.KERNEL_UPDATED, kernelPayload.data);
                     else
                         LOGGER.warn('CrossTabStateSync', 'malformed kernel-state-update payload', {
                             issues: kernelPayload.error.issues,
@@ -355,11 +349,7 @@ class CrossTabStateSync implements ICrossTabStateSync {
                     'CrossTabStateSync',
                     'Cross-tab chat session update, refreshing local state',
                 );
-                this._eventBus.emitOnce(
-                    EVENTS.CHAT_FORKED,
-                    'cross-tab:chat-forked',
-                    message.payload,
-                );
+                this._eventBus.emit(EVENTS.CHAT_FORKED, message.payload);
                 break;
             case 'settings-update': {
                 LOGGER.debug(
