@@ -58,15 +58,24 @@ self.onmessage = async (event: MessageEvent) => {
 
     try {
         const execPromise = runSandboxCode(code, data, os);
+        let timeout: ReturnType<typeof setTimeout> | undefined;
         const timeoutPromise = new Promise((_, reject) => {
-            setTimeout(
+            timeout = setTimeout(
                 () => reject(new Error(`Execution timed out after ${EXEC_TIMEOUT}ms`)),
                 EXEC_TIMEOUT,
             );
         });
 
-        const result = await Promise.race([execPromise, timeoutPromise]);
-        self.postMessage({ result });
+        try {
+            const result = await Promise.race([execPromise, timeoutPromise]);
+            self.postMessage({ result });
+        } finally {
+            // Don't leave the timer handle dangling on the fast path.
+            // (A timed-out run itself is stopped from the main side via
+            // worker.terminate(); the in-worker interpreter is synchronous
+            // and cannot self-interrupt mid-race.)
+            if (timeout !== undefined) clearTimeout(timeout);
+        }
     } catch (e) {
         self.postMessage({ error: (e as Error).message });
     }

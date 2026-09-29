@@ -150,11 +150,12 @@ export class Container implements IContainer {
         for (const id of this.registrationOrder.slice().reverse()) {
             const service = this.services.get(id);
             if (service && typeof (service as Record<string, unknown>).destroy === 'function') {
+                let timer: ReturnType<typeof setTimeout> | undefined;
                 try {
                     await Promise.race([
                         (service as { destroy: () => Promise<void> | void }).destroy(),
-                        new Promise<never>((_, reject) =>
-                            setTimeout(
+                        new Promise<never>((_, reject) => {
+                            timer = setTimeout(
                                 () =>
                                     reject(
                                         new Error(
@@ -162,8 +163,8 @@ export class Container implements IContainer {
                                         ),
                                     ),
                                 DESTROY_TIMEOUT_MS,
-                            ),
-                        ),
+                            );
+                        }),
                     ]);
                 } catch (e) {
                     errors.push({ service: String(id), error: e });
@@ -171,6 +172,8 @@ export class Container implements IContainer {
                         service: String(id),
                         error: e,
                     });
+                } finally {
+                    if (timer !== undefined) clearTimeout(timer);
                 }
             }
         }

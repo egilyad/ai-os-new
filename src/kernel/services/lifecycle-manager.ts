@@ -82,20 +82,25 @@ export class LifecycleManager {
                     continue;
                 }
                 try {
-                    await Promise.race([
-                        entry.service.destroy(),
-                        new Promise<never>((_, reject) =>
-                            setTimeout(
-                                () =>
-                                    reject(
-                                        new Error(
-                                            `destroy timed out after ${DESTROY_TIMEOUT_MS}ms`,
+                    let timer: ReturnType<typeof setTimeout> | undefined;
+                    try {
+                        await Promise.race([
+                            entry.service.destroy(),
+                            new Promise<never>((_, reject) => {
+                                timer = setTimeout(
+                                    () =>
+                                        reject(
+                                            new Error(
+                                                `destroy timed out after ${DESTROY_TIMEOUT_MS}ms`,
+                                            ),
                                         ),
-                                    ),
-                                DESTROY_TIMEOUT_MS,
-                            ),
-                        ),
-                    ]);
+                                    DESTROY_TIMEOUT_MS,
+                                );
+                            }),
+                        ]);
+                    } finally {
+                        if (timer !== undefined) clearTimeout(timer);
+                    }
                 } catch (e) {
                     LOGGER.error('LifecycleManager', `Error destroying ${entry.name}`, {
                         error: e,

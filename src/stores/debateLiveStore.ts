@@ -175,32 +175,38 @@ export const useDebateLiveStore = create<DebateLiveState>((set, get) => {
     };
 
     const startIntervals = (): void => {
-        if (metricsInterval !== null || countdownInterval !== null) return;
-        metricsInterval = setInterval(() => {
-            const s = get();
-            // skip when no data вЂ” no component is observing a live debate
-            if (s.agentEvents.length === 0 && s.roundEvents.length === 0) return;
-            const errorCount = s.agentEvents.filter((e) => e.status === 'error').length;
-            const timeoutCount = s.agentEvents.filter((e) => e.status === 'timeout').length;
-            const fallbackCount = s.agentEvents.filter((e) => e.status === 'fallback').length;
-            eventBus.emit(EVENTS.DEBATE_UPDATED, {
-                sessionId: '',
-                type: 'store_metrics',
-                agentEventCount: s.agentEvents.length,
-                errorCount,
-                timeoutCount,
-                fallbackCount,
-                roundCount: s.roundEvents.length,
-            });
-        }, METRICS_INTERVAL_MS);
+        // Started independently: either ticker may stop on its own when its
+        // data runs out, and the next live event restarts just that one.
+        if (metricsInterval === null) {
+            metricsInterval = setInterval(() => {
+                const s = get();
+                // skip when no data — no component is observing a live debate
+                if (s.agentEvents.length === 0 && s.roundEvents.length === 0) return;
+                const errorCount = s.agentEvents.filter((e) => e.status === 'error').length;
+                const timeoutCount = s.agentEvents.filter((e) => e.status === 'timeout').length;
+                const fallbackCount = s.agentEvents.filter((e) => e.status === 'fallback').length;
+                eventBus.emit(EVENTS.DEBATE_UPDATED, {
+                    sessionId: '',
+                    type: 'store_metrics',
+                    agentEventCount: s.agentEvents.length,
+                    errorCount,
+                    timeoutCount,
+                    fallbackCount,
+                    roundCount: s.roundEvents.length,
+                });
+            }, METRICS_INTERVAL_MS);
+        }
 
+        if (countdownInterval !== null) return;
         countdownInterval = setInterval(() => {
             const s = get();
-            if (
-                s.agentCountdowns.size === 0 &&
-                s.agentEvents.length === 0 &&
-                s.roundEvents.length === 0
-            ) {
+            if (s.agentCountdowns.size === 0) {
+                // Nothing to count down — stop this ticker (events alone
+                // don't need it). Restarts via startIntervals on next event.
+                if (countdownInterval !== null) {
+                    clearInterval(countdownInterval);
+                    countdownInterval = null;
+                }
                 return;
             }
             set((st) => {
