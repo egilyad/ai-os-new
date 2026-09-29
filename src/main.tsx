@@ -144,13 +144,15 @@ if (import.meta.hot) {
     });
 }
 
-// Console helpers
+// Console helpers — dev only. In production these globals would expose
+// kernel internals (including key counts) to any script on the page.
 interface WindowDebug {
     __getState: () => Promise<Record<string, unknown>>;
     __checkConsistency: () => Promise<unknown>;
     __probeAll: () => Promise<unknown>;
 }
-const w = window as unknown as WindowDebug;
+if (import.meta.env.DEV) {
+    const w = window as unknown as WindowDebug;
 w.__getState = async () => {
     const { kernel, keyService } = await import('./kernel/instances');
     const kState = kernel?.getState();
@@ -190,3 +192,4 @@ w.__probeAll = async () => {
     LOGGER.warn('Main', '[Probe] probeService not available');
     return null;
 };
+} // end dev-only console helpers

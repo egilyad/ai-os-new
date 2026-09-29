@@ -478,13 +478,9 @@ export class SystemBootstrap implements IBootstrap {
                         `Cancelled ${count} in-flight HTTP requests under memory pressure`,
                     );
                 }
-                // Force GC: allocate+free 64MB buffer to encourage V8 mark-sweep
-                try {
-                    const buf = new ArrayBuffer(64 * 1024 * 1024);
-                    buf.toString(); // touch
-                } catch {
-                    // best-effort GC hint
-                }
+                // NOTE: no ArrayBuffer "GC hint" here — allocating 64MB under
+                // pressure only raises the peak toward OOM with no guarantee
+                // V8 collects. Cache clears + cancelAll above are the relief.
             });
             this.logger.info('Bootstrap', 'MemoryWatchdog pressure callbacks registered');
         } catch (e) {
