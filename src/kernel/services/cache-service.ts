@@ -37,14 +37,31 @@ export class CacheService implements ICacheService {
     private _persistPromise: Promise<void> | null = null;
     private unsub?: () => void;
     private _initialized = false;
+    private _initPromise: Promise<void> | null = null;
 
     constructor(deps: CacheServiceDeps) {
         this.deps = deps;
     }
 
-    async init() {
+    async init(): Promise<void> {
+        // 4.4: promise-cached init — concurrent callers (StrictMode double
+        // mount, racing bootstraps) share one load instead of each seeing
+        // an empty cache and double-subscribing timers/listeners.
         if (this._initialized) return;
-        this._initialized = true;
+        if (!this._initPromise) {
+            this._initPromise = this._doInit();
+            try {
+                await this._initPromise;
+                this._initialized = true;
+            } finally {
+                this._initPromise = null;
+            }
+        } else {
+            await this._initPromise;
+        }
+    }
+
+    private async _doInit(): Promise<void> {
         this.evictionTimer = setInterval(() => this.evictExpired(), 60000);
         try {
             const entries = await this.deps.database.getKv<CacheEntry[]>('super_agents_llm_cache');
