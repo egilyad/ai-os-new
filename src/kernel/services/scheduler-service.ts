@@ -387,7 +387,10 @@ export class SchedulerService {
 
                     if (!this.cronMatchesField(candidate.getDate(), parts.dayOfMonth)) continue;
                     if (!this.cronMatchesField(candidate.getMonth() + 1, parts.month)) continue;
-                    if (!this.cronMatchesField(candidate.getDay(), parts.dayOfWeek)) continue;
+                    // 10.9: standard cron treats dow 7 as Sunday, but
+                    // Date.getDay() returns 0-6 — normalize before matching.
+                    if (!this.cronMatchesField(candidate.getDay(), this.normalizeDow(parts.dayOfWeek)))
+                        continue;
 
                     if (candidate.getTime() > now.getTime()) return candidate.getTime();
                 }
@@ -399,6 +402,23 @@ export class SchedulerService {
         next.setMinutes(0, 0, 0);
         next.setHours(next.getHours() + 1);
         return next.getTime();
+    }
+
+    /**
+     * Maps standard-cron Sunday-as-7 to Date.getDay() Sunday-as-0.
+     * Plain `7` becomes `0`; ranges ending in 7 (`5-7`) become `5-6,0`.
+     * Steps (`*\/7`) already match 0 via modulo and pass through.
+     */
+    private normalizeDow(pattern: string): string {
+        return pattern
+            .split(',')
+            .map((part) => {
+                if (part === '7') return '0';
+                const range = part.match(/^(\d+)-(\d+)$/);
+                if (range && range[2] === '7') return `${range[1]}-6,0`;
+                return part;
+            })
+            .join(',');
     }
 
     private cronMatchesField(value: number, pattern: string): boolean {
