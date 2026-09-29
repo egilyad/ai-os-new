@@ -79,10 +79,14 @@
   AI11-05 RU-шаблоны ядра (контракт промптов), AI11-06 типизация ключей
   (codegen, отдельный batch), AI11-07 fmt-миграция, AI11-08 RTL,
   AI11-09 aria-label модалок (инфо);
-- audit-12-build-deploy.md — sourcemaps rm ✔, manualChunks ✔, double-build ✔,
-  timeout-minutes ✔, Dockerfile LABEL ✔, read_only conf.d ✔, dead files ✔;
-  ОТКРЫТО: monaco (см. audit-05), BASE_PATH (см. audit-10).
+- audit-12-build-deploy.md — ✅ ЗАКРЫТ (файл здесь, сверка без кода):
+  sourcemaps rm ✔ (`ci.yml:408`), manualChunks specific-first ✔,
+  double-build убран ✔ (`ci.yml:337` download-artifact), timeout-minutes
+  везде ✔, Dockerfile LABEL ✔; monaco/BASE_PATH — см. audit-05/10;
+  ОТКЛОНЕНО сознательно: BD12-06 fonts double-load, BD12-07
+  index.html Cache-Control, BD12-08 brotli, BD12-09 npm-кэш,
+  BD12-10/11/12 инфо;
 
-Первый файл переехал. Ближайший кандидат: audit-12
-(проверить monaco и BASE_PATH — оба уже закрыты в 05/10, kandidat на
-чистое закрытие сверкой).
+Аудиты 01–12 закрыты. Остаток серии: audit-01 (Vault, контраст —
+  продуктовые решения). Отдельно: серия 13–15+ (файлов нет в репо,
+  только коммиты).
