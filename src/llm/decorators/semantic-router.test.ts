@@ -38,7 +38,7 @@ describe('SemanticRouterDecorator', () => {
     });
 
     it('routes long prompts to the powerful adapter', async () => {
-        const { router, fast, powerful } = makeRouter();
+        const { router, fast } = makeRouter();
         const res = await router.sendMessage(msg('x'.repeat(500)), 'auto', 'sk-1');
         expect(res.content).toBe('from-pro-llm-pro-model');
         expect(vi.mocked(fast.sendMessage)).not.toHaveBeenCalled();
