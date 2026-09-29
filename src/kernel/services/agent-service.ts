@@ -888,7 +888,13 @@ export class AgentService implements IAgentResolver {
             return stats
                 ? `[${node.label}] completed (${stats.calls} calls)`
                 : `[${node.label}] no output`;
-        } catch {
+        } catch (e) {
+            // 9.6: the error string below reaches the group result, but the
+            // root cause never reached logs/metrics — now it does.
+            LOGGER.error('AgentService', 'group node execution failed', {
+                node: node.label,
+                error: e instanceof Error ? e.message : String(e),
+            });
             return `[${node.label}] error`;
         }
     }
