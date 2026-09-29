@@ -15,9 +15,9 @@
 - audit-02-lifecycle.md — ✅ ЗАКРЫТ (файл здесь): LC2-01/02/03 + LC2-04/06/08
   починены; LC2-05 (ретраи) и LC2-07 (симуляция) отклонены сознательно
   (дизайн/продукт);
-- audit-03-streaming.md — groq idle-timeout ✔, autonomy отмена ✔, reaper reason ✔,
-  emitOnce-контракт ✔, finishReason-канон ✔; ОТКРЫТО: удержание слота на стрим
-  (нужен редизайн API);
+- audit-03-streaming.md — ✅ ЗАКРЫТ (файл здесь): TM3-01/02/05 + TM3-03/06/07
+  починены; TM3-04 (потолок стрима) отклонен сознательно — осознанный
+  трейдофф с idle-таймаутами, задокументирован в коде;
 - audit-04-ux-performance.md — Channel/Projects селекторы ✔, Traces cap ✔;
   ОТКРЫТО: motion bulk (косметика, отложено);
 - audit-05-architecture.md — циклы БД ✔, manualChunks ✔; ОТКРЫТО: monaco
