@@ -38,6 +38,26 @@ import { sanitizePromptVar } from '../utils/sanitize';
 
 const SERVERS_KEY = 'super_agents_mcp_servers';
 
+const MCP_STATUSES = new Set(['connected', 'disconnected', 'error']);
+
+// 5.9: persisted server configs are external input (user-editable KV) —
+// validate shape on load instead of trusting it into .url/.status accesses.
+function isMCPServerConfig(raw: unknown): raw is MCPServerConfig {
+    if (!raw || typeof raw !== 'object') return false;
+    const r = raw as Record<string, unknown>;
+    if (typeof r.id !== 'string' || r.id.length === 0) return false;
+    if (typeof r.name !== 'string' || typeof r.url !== 'string') return false;
+    try {
+        const parsed = new URL(r.url);
+        if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') return false;
+    } catch {
+        return false;
+    }
+    if (r.status !== undefined && !MCP_STATUSES.has(r.status as string)) return false;
+    if (r.capabilities !== undefined && !Array.isArray(r.capabilities)) return false;
+    return true;
+}
+
 function sanitizeExternalString(input: string): string {
     return sanitizePromptVar(input)
         .replace(/<\|[^|]*\|>/g, '')
@@ -102,9 +122,17 @@ export class MCPService {
 
     private async load() {
         try {
-            const saved = await this.deps.database.getKv<MCPServerConfig[]>(SERVERS_KEY);
-            if (saved && saved.length > 0) {
-                this.servers = saved;
+            const saved = await this.deps.database.getKv<unknown>(SERVERS_KEY);
+            if (Array.isArray(saved) && saved.length > 0) {
+                const valid = saved.filter(isMCPServerConfig);
+                if (valid.length < saved.length) {
+                    LOGGER.warn('MCPService', 'dropped invalid persisted server configs', {
+                        dropped: saved.length - valid.length,
+                    });
+                }
+                // Forced to disconnected: a stored 'connected' status is a
+                // lie after restart (no live socket exists).
+                this.servers = valid.map((s) => ({ ...s, status: 'disconnected' as const }));
             } else {
                 this.servers = [
                     {
