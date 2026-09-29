@@ -84,6 +84,16 @@ export class OpenAiCompatibleAdapter extends BaseLLMAdapter {
         }
         const safe = parsed.success ? parsed.data : data;
         const choice = (safe.choices as Array<Record<string, unknown>> | undefined)?.[0];
+        // 5.4: a missing first choice is not a lenient variant — without it
+        // there is no content at all. Fail loudly instead of cascading
+        // `content: ''` / `tokens: 0` downstream.
+        if (!choice) {
+            throw new LLMError(
+                `[${this.id}] Provider response has no choices[0]`,
+                this.id,
+                undefined,
+            );
+        }
         const msg = choice?.message as Record<string, unknown> | undefined;
         return {
             content: (msg?.content as string) ?? '',
