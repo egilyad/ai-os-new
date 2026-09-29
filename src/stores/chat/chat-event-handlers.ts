@@ -67,8 +67,12 @@ let chunkFlushScheduled = false;
 function flushChunkBuffers(set: ZustandSet): void {
     chunkFlushScheduled = false;
     if (chunkBuffers.size === 0) return;
-    const batch = [...chunkBuffers.entries()];
+    // 6.1: drop chunks whose request finished between buffering and flush —
+    // without this the set() below runs a full sessions-tree pass that
+    // notifies every subscriber yet changes nothing.
+    const batch = [...chunkBuffers.entries()].filter(([requestId]) => requestEntryMap.has(requestId));
     chunkBuffers.clear();
+    if (batch.length === 0) return;
     set((s) => {
         let sessions = s.sessions;
         for (const [requestId, chunk] of batch) {
