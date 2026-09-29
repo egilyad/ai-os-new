@@ -263,11 +263,12 @@ export class LLMHttpClient {
                     res.body?.cancel()?.catch(() => {});
                     return '';
                 });
-                if (import.meta.env.DEV) {
-                    LOGGER.warn('LlmHttpClient', `[${this.#provider}] POST ${res.status} body`, {
-                        body: errorBody.slice(0, 500),
-                    });
-                }
+                // 9.4: always log provider HTTP errors, not just in DEV —
+                // prod 4xx/5xx were invisible in logs (meta is sanitized
+                // by LoggerService, so the sliced body is safe to log).
+                LOGGER.warn('LlmHttpClient', `[${this.#provider}] POST ${res.status} body`, {
+                    body: errorBody.slice(0, 500),
+                });
                 throw new LLMError(
                     `HTTP ${res.status}: ${errorBody.slice(0, 200)}`,
                     this.#provider,
@@ -349,11 +350,10 @@ export class LLMHttpClient {
                     res.body?.cancel()?.catch(() => {});
                     return '';
                 });
-                if (import.meta.env.DEV) {
-                    LOGGER.warn('LlmHttpClient', `[${this.#provider}] GET ${res.status} body`, {
-                        body: errorBody.slice(0, 500),
-                    });
-                }
+                // 9.4: always log (see POST above).
+                LOGGER.warn('LlmHttpClient', `[${this.#provider}] GET ${res.status} body`, {
+                    body: errorBody.slice(0, 500),
+                });
                 throw new LLMError(
                     `HTTP ${res.status}: ${errorBody.slice(0, 200)}`,
                     this.#provider,
@@ -443,11 +443,10 @@ export class LLMHttpClient {
                     res.body?.cancel()?.catch(() => {});
                     return '';
                 });
-                if (import.meta.env.DEV) {
-                    LOGGER.warn('LlmHttpClient', `[${this.#provider}] STREAM ${res.status} body`, {
-                        body: errorBody.slice(0, 500),
-                    });
-                }
+                // 9.4: always log (see POST above).
+                LOGGER.warn('LlmHttpClient', `[${this.#provider}] STREAM ${res.status} body`, {
+                    body: errorBody.slice(0, 500),
+                });
                 throw new LLMError(
                     `HTTP ${res.status}: ${errorBody.slice(0, 200)}`,
                     this.#provider,
