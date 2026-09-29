@@ -403,6 +403,10 @@ export class RouterRankingService {
                 );
                 return {
                     key,
+                    // 10.13: providers without metrics are last-resort only —
+                    // their flat 0.2 baseline plus exploration/reputation
+                    // bonuses could otherwise outrank known-degraded providers.
+                    unknownProvider: !m,
                     score:
                         rawScore +
                         explorationBonus +
@@ -426,12 +430,16 @@ export class RouterRankingService {
                     },
                 };
             })
-            .filter((item) => item.score > 0)
-            .sort((a, b) => b.score - a.score);
+            .filter((item) => item.score > 0);
+        // 10.13 (cont.): prefer providers with real metrics; unknown ones
+        // compete only when no known provider qualifies.
+        const knownItems = rankedItems.filter((item) => !item.unknownProvider);
+        const pool = knownItems.length > 0 ? knownItems : rankedItems;
+        pool.sort((a, b) => b.score - a.score);
 
         const decisionOrigin = origin ?? 'live';
 
-        if (rankedItems.length > 0) {
+        if (pool.length > 0) {
             const blockedSteps: PipelineStep[] = [];
             for (const s of skipped) {
                 if (
@@ -483,12 +491,12 @@ export class RouterRankingService {
                     detail: `Scanned ${allKeys.length} keys`,
                 },
                 ...blockedSteps,
-                { name: 'scoring', status: 'passed', detail: `${rankedItems.length} keys scored` },
+                { name: 'scoring', status: 'passed', detail: `${pool.length} keys scored` },
                 {
                     name: 'selection',
                     status: 'passed',
-                    provider: rankedItems[0]!.key.provider,
-                    detail: `Score: ${rankedItems[0]!.score.toFixed(3)}`,
+                    provider: pool[0]!.key.provider,
+                    detail: `Score: ${pool[0]!.score.toFixed(3)}`,
                 },
             ];
 
@@ -497,9 +505,9 @@ export class RouterRankingService {
                 strategy,
                 classification: cls,
                 weights,
-                selected: rankedItems[0]!.key.provider,
-                secondBest: rankedItems[1]?.key.provider || null,
-                scores: rankedItems.slice(0, 3).map((i) => ({
+                selected: pool[0]!.key.provider,
+                secondBest: pool[1]?.key.provider || null,
+                scores: pool.slice(0, 3).map((i) => ({
                     provider: i.key.provider,
                     score: i.score,
                     components: i.components,
@@ -508,7 +516,7 @@ export class RouterRankingService {
                 steps,
                 timestamp: Date.now(),
                 promptLength: prompt.length,
-                estimatedCost: estimateRequestCost(rankedItems[0]!.key, prompt, (model) =>
+                estimatedCost: estimateRequestCost(pool[0]!.key, prompt, (model) =>
                     this.deps.pricingService.getPricingForModel(model),
                 ),
                 origin: decisionOrigin,
@@ -552,8 +560,8 @@ export class RouterRankingService {
         }
 
         // Shadow mode: compare with KeyStateStore routing (live only)
-        if (decisionOrigin === 'live' && this.deps.keyStateStore && rankedItems.length > 0) {
-            const selectedKey = rankedItems[0]!.key;
+        if (decisionOrigin === 'live' && this.deps.keyStateStore && pool.length > 0) {
+            const selectedKey = pool[0]!.key;
             const shadow = this.deps.keyStateStore.getForRouting();
             const shadowTop = shadow[0];
             if (
@@ -569,17 +577,12 @@ export class RouterRankingService {
         }
 
         // Initial session-key binding: create on first key selection
-        if (
-            sessionId &&
-            this.deps.sessionAffinityStore &&
-            !hadExistingBinding &&
-            rankedItems.length > 0
-        ) {
-            const topKey = rankedItems[0]!.key;
+        if (sessionId && this.deps.sessionAffinityStore && !hadExistingBinding && pool.length > 0) {
+            const topKey = pool[0]!.key;
             this.deps.sessionAffinityStore.bind(sessionId, topKey.id, topKey.provider);
         }
 
-        return rankedItems.map((item) => item.key);
+        return pool.map((item) => item.key);
     }
 
     // C-78: removed deduplicateCandidates — return ALL usable keys ranked by score
