@@ -215,18 +215,6 @@ export const EVENT_REGISTRY = {
             options: z.unknown().optional(),
         }),
     ),
-    CHAT_SEND_MESSAGE: event(
-        'chat:send',
-        z.object({
-            provider: z.string(),
-            model: z.string(),
-            messages: z.array(z.unknown()),
-            requestId: z.string().optional(),
-            strategy: z.string().optional(),
-            keyId: z.string().optional(),
-            options: z.unknown().optional(),
-        }),
-    ),
     CANCEL_MESSAGE: event('chat:cancel', z.object({ requestId: z.string() })),
     CHAT_CANCEL_MESSAGE: event('chat:cancel', z.object({ requestId: z.string() })),
     MESSAGE_RESPONSE: event('chat:response', ChatResponseSchema),
