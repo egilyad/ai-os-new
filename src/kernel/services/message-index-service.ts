@@ -1,6 +1,9 @@
 import { EVENTS } from '../events/event-names';
 import type { IEventBus } from '../types/interfaces';
 import type { ILogger } from '../contracts/logger';
+import { rootLogger } from './logger-service';
+
+const LOGGER = rootLogger.child('MessageIndex');
 
 let _messageIndexEventBus: IEventBus | null = null;
 
@@ -61,7 +64,7 @@ export class MessageIndexService {
         return database;
     }
 
-    constructor(_logger?: ILogger) {}
+    constructor(private readonly _logger?: ILogger) {}
 
     async init(): Promise<void> {
         if (this._initialized) return;
@@ -219,12 +222,27 @@ export class MessageIndexService {
                     : this.messages;
             try {
                 const db = await this.db();
+                let saved = false;
                 for (let attempt = 0; attempt < 3; attempt++) {
                     const { version } = await db.getKvCas(STORAGE_KEY);
-                    if (await db.setKvCas(STORAGE_KEY, trimmed, version)) break;
+                    if (await db.setKvCas(STORAGE_KEY, trimmed, version)) {
+                        saved = true;
+                        break;
+                    }
                 }
-            } catch {
-                /* noop */
+                // 9.7: CAS contention across tabs can exhaust all attempts
+                // without throwing — previously also silent. Either way the
+                // in-memory index survives; only the persisted copy lags.
+                if (!saved) {
+                    (this._logger ?? LOGGER).warn('MessageIndex', 'persist dropped after 3 CAS attempts', {
+                        messages: trimmed.length,
+                    });
+                }
+            } catch (e) {
+                (this._logger ?? LOGGER).warn('MessageIndex', 'persist failed', {
+                    error: e instanceof Error ? e.message : String(e),
+                    messages: trimmed.length,
+                });
             }
         }, 1000);
     }
