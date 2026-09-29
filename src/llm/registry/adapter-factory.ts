@@ -193,8 +193,17 @@ export class AdapterFactory {
                 adapter = new OpenAiCompatibleAdapter('cohere', 'https://api.cohere.com/v1', false);
                 break;
             case 'azure':
-                // Azure OpenAI requires {resource}.openai.azure.com — user must configure via proxy/env
-                adapter = new OpenAiCompatibleAdapter('azure', '/proxy/azure', false);
+                // NT7-04: no /proxy/azure route exists (vite + nginx deny
+                // unknown /proxy/*). Honor env config when provided so the
+                // provider is usable without code changes; otherwise keep
+                // the legacy path (will 403 until a route is added).
+                adapter = new OpenAiCompatibleAdapter(
+                    'azure',
+                    import.meta.env.VITE_AZURE_BASE_URL ??
+                        import.meta.env.VITE_PROXY_AZURE ??
+                        '/proxy/azure',
+                    false,
+                );
                 break;
             case 'huggingface':
                 // C-01: no /proxy/huggingface route — direct calls
