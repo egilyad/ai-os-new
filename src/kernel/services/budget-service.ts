@@ -215,9 +215,14 @@ export class BudgetService implements IBudgetService {
                     timestamp: now,
                     agentId: d.agentId,
                     invocationId: d.invocationId,
+                    requestId: d.requestId,
                 });
                 this._invalidateMonthFiltered();
-                // Prune dedupSet when it exceeds costHistory or grows past 15000
+                // Prune dedupSet when it exceeds costHistory or grows past 15000.
+                // 10.5: rebuild keys with the SAME formula as insert above
+                // (requestId preferred, timestamp-model fallback) — the old
+                // timestamp-model-provider format never matched, silently
+                // disabling dedup after the first prune.
                 if (
                     this.costHistory.length > 10000 ||
                     (this._costDedupSet && this._costDedupSet.size > 15000)
@@ -226,7 +231,7 @@ export class BudgetService implements IBudgetService {
                     this._invalidateMonthFiltered();
                     this._costDedupSet = new Set(
                         this.costHistory.map(
-                            (e) => `stream:${e.timestamp}-${e.model}-${e.provider}`,
+                            (e) => `stream:${e.requestId ?? `${e.timestamp}-${e.model}`}`,
                         ),
                     );
                 }

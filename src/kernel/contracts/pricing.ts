@@ -12,6 +12,8 @@ export interface CostEstimate {
     readonly timestamp: number;
     readonly agentId?: string;
     readonly invocationId?: string;
+    // 10.5: stream request id for cost-dedup rebuild after prune.
+    readonly requestId?: string;
 }
 
 export interface ProviderBudget {
