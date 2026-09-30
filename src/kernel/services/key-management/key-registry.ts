@@ -138,6 +138,8 @@ export class KeyRegistry {
 
     private loadingKeys = false;
     private saveQueue = Promise.resolve();
+    private saveInFlight = false;
+    private pendingSnapshot: ApiKey[] | null = null;
     private addKeyLock: Promise<ApiKey | null> = Promise.resolve(null);
 
     /** One-time migration: detect old vault-encrypted keys and clear them.
@@ -568,11 +570,16 @@ export class KeyRegistry {
     }
 
     async saveKeys(): Promise<void> {
-        const snapshot = [...this.keys];
+        // 6.4: coalesce bursts — every LLM response queued a full
+        // encrypt + bulkPut + listKeys. Only the latest snapshot matters,
+        // so a save arriving while one is in flight just refreshes the
+        // pending snapshot; the running drain persists it.
+        this.pendingSnapshot = [...this.keys];
+        if (this.saveInFlight) return this.saveQueue;
         return new Promise<void>((resolve, reject) => {
             this.saveQueue = this.saveQueue
-                .then(() => this.doSaveKeysWithSnapshot(snapshot))
-                .then(resolve)
+                .then(() => this.drainPendingSaves())
+                .then(() => resolve())
                 .catch((err) => {
                     LOGGER.error('KeyRegistry', 'saveKeys failed, resetting queue:', {
                         error: err,
@@ -581,6 +588,19 @@ export class KeyRegistry {
                     reject(err);
                 });
         });
+    }
+
+    private async drainPendingSaves(): Promise<void> {
+        this.saveInFlight = true;
+        try {
+            while (this.pendingSnapshot) {
+                const snap = this.pendingSnapshot;
+                this.pendingSnapshot = null;
+                await this.doSaveKeysWithSnapshot(snap);
+            }
+        } finally {
+            this.saveInFlight = false;
+        }
     }
 
     private async doSaveKeysWithSnapshot(snapshot: ApiKey[]): Promise<void> {
