@@ -33,6 +33,14 @@ export class RouterDecisionRecorder {
 
     constructor(private deps: DecisionRecorderDeps) {}
 
+    /** Clear the debounced persist timer (ILifecycle). */
+    destroy(): void {
+        if (this.persistTimer) {
+            clearTimeout(this.persistTimer);
+            this.persistTimer = null;
+        }
+    }
+
     /** Restore the ring after restart (best-effort, never throws). */
     async restore(): Promise<void> {
         if (!this.deps.database) return;

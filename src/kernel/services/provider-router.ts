@@ -301,6 +301,7 @@ export class RouterService {
 
     destroy(): void {
         this.latencyMonitor.stopMonitoring();
+        this.decisionRecorder.destroy();
     }
 
     getProviderAvgLatency(provider: string): number {
