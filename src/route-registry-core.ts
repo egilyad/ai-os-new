@@ -252,6 +252,13 @@ export const CORE_SECTIONS: NavSection[] = [
                 color: '#8b5cf6',
                 lazy: true,
             },
+            {
+                id: 'bookmarks',
+                labelKey: 'nav.bookmarks',
+                icon: Icons.bookmark,
+                color: '#f59e0b',
+                lazy: true,
+            },
         ],
     },
     {
@@ -362,6 +369,14 @@ export const CORE_SECTIONS: NavSection[] = [
                 icon: Icons.barChart3,
                 color: '#06b6d4',
                 lazy: true,
+            },
+            {
+                id: 'experimental',
+                labelKey: 'nav.experimental',
+                icon: Icons.flaskConical,
+                color: '#a855f7',
+                lazy: true,
+                experimental: true,
             },
         ],
     },
