@@ -118,8 +118,14 @@ export class RoleVersionService {
         for (const list of this.versions.values()) all.push(...list);
         try {
             this.storage?.setItem(STORAGE_KEY, JSON.stringify(all));
-        } catch {
-            /* full */
+        } catch (e) {
+            // 3.11: quota/private-mode failures silently dropped role
+            // history. In-memory versions survive; only the persisted copy
+            // lags — but it must be audible.
+            LOGGER.warn('RoleVersionService', 'persist failed, history kept in memory only', {
+                versions: all.length,
+                error: e instanceof Error ? e.message : String(e),
+            });
         }
     }
 }
