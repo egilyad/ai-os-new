@@ -22,6 +22,12 @@ interface ReconnectionState {
     timer: ReturnType<typeof setTimeout> | null;
     destroyed: boolean;
     startedAt: number;
+    // 4.8: set when an in-flight onReconnect settles — lets the success
+    // path distinguish "giveUp already ran" from "cancelled".
+    settled: boolean;
+    // 4.8: set only by the 30s attempt-timeout giveUp (not by cancel()) —
+    // only then may a late success re-register the stream.
+    timedOut: boolean;
 }
 
 export class ReconnectionService {
@@ -40,6 +46,8 @@ export class ReconnectionService {
             timer: null,
             destroyed: false,
             startedAt: Date.now(),
+            settled: false,
+            timedOut: false,
         };
         this.streams.set(config.streamId, state);
         this.scheduleRetry(state);
@@ -123,6 +131,7 @@ export class ReconnectionService {
                 // subsequent ownership check always fail, silencing onGiveUp.
                 if (this.streams.get(state.config.streamId) !== state) return;
                 state.destroyed = true;
+                state.timedOut = true;
                 state.config.onGiveUp(state.config.streamId, state.config.provider);
                 this.streams.delete(state.config.streamId);
             }, 30000);
@@ -131,8 +140,34 @@ export class ReconnectionService {
                     state.config.streamId,
                     state.config.provider,
                 );
+                state.settled = true;
                 clearTimeout(reconnectTimeout);
-                if (state.destroyed) return;
+                if (state.destroyed) {
+                    // 4.8: the 30s timeout already ran giveUp while this
+                    // attempt was in flight — but the stream IS alive now.
+                    // Dropping it orphans a live stream; re-register for
+                    // tracking unless something newer took the slot. Cancelled
+                    // states (timedOut === false) stay dead.
+                    if (success && state.timedOut && this.streams.get(state.config.streamId) !== state) {
+                        if (!this.streams.has(state.config.streamId)) {
+                            state.destroyed = false;
+                            state.settled = false;
+                            state.timedOut = false;
+                            state.startedAt = Date.now();
+                            this.streams.set(state.config.streamId, state);
+                            LOGGER.warn(
+                                'ReconnectionService',
+                                `late success after giveUp for stream ${state.config.streamId} — re-registered`,
+                            );
+                        } else {
+                            LOGGER.warn(
+                                'ReconnectionService',
+                                `late success after giveUp for stream ${state.config.streamId} — newer state wins`,
+                            );
+                        }
+                    }
+                    return;
+                }
                 if (success) {
                     LOGGER.info(
                         'ReconnectionService',
