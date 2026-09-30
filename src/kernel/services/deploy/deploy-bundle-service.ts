@@ -79,7 +79,7 @@ export class DeployBundleService implements IDeployBundleService {
         const startScript = startScriptFor(cfg.target, cfg.envVars ?? {}, cfg.buildCommand, cfg.outputDir);
         const manifestStr = JSON.stringify({ name: cfg.name, target: cfg.target, env: envManifest, version: 1 });
         const bundle: DeployBundle = {
-            id: `${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+            id: `${Date.now()}-${crypto.randomUUID().slice(0, 6)}`,
             configId,
             name: cfg.name,
             target: cfg.target,

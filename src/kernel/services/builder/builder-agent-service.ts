@@ -56,7 +56,7 @@ const OUTPUT_EVENTS: Record<WorkflowNodeType, string> = {
 };
 
 function genId(): string {
-    return `wf_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+    return `wf_${Date.now()}_${crypto.randomUUID().slice(0, 8)}`;
 }
 
 function generateFromPrompt(prompt: string): WorkflowManifest {

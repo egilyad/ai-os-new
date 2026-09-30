@@ -41,7 +41,7 @@ export class ExecutionVizService implements IExecutionVizService {
                     const map = TIMELINE_MAP[evt];
                     if (!map) return;
                     const span = {
-                        id: `ev-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+                        id: `ev-${Date.now()}-${crypto.randomUUID().slice(0, 6)}`,
                         type: evt as unknown as import('../../contracts/observability').TimelineEventType,
                         category: map.category as unknown as import('../../contracts/observability').TimelineCategory,
                         timestamp: Date.now(),

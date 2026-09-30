@@ -26,7 +26,7 @@ import { rootLogger } from './logger-service';
 const LOGGER = rootLogger.child('ProjectService');
 
 function genId(prefix: string): string {
-    return `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+    return `${prefix}-${Date.now()}-${crypto.randomUUID().slice(0, 8)}`;
 }
 
 function emptyMemory(): ProjectMemory {

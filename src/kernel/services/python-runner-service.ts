@@ -117,7 +117,7 @@ export class PythonRunnerService implements IPythonRunnerService {
         if (!project) throw new Error(`Python project not found: ${projectId}`);
 
         const cmd = command || `python ${project.entryPoint}`;
-        const runId = `run-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
+        const runId = `run-${Date.now()}-${crypto.randomUUID().slice(0, 6)}`;
 
         // Validate the entry point
         const validation = await this.validateFile(projectId, project.entryPoint);

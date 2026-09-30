@@ -5,7 +5,7 @@ const STORAGE_KEY = 'prompt_library';
 let nextId = Date.now();
 
 function generateId(): string {
-    return `prompt-${nextId++}-${Math.random().toString(36).slice(2, 8)}`;
+    return `prompt-${nextId++}-${crypto.randomUUID().slice(0, 8)}`;
 }
 
 export class PromptLibraryService {

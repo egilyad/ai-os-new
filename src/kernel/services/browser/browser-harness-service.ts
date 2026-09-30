@@ -100,7 +100,7 @@ export class BrowserHarnessService implements IBrowserHarnessService {
         const act = action as BrowserAction;
         validate(act, args, this.policy);
 
-        const id = `${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
+        const id = `${Date.now()}-${crypto.randomUUID().slice(0, 6)}`;
         let result: string;
         let status: BrowserArtifact['status'];
         let handoffReason: string | undefined;

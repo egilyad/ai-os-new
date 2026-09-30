@@ -10,7 +10,7 @@ const MAX_HISTORY = 50;
 
 let nextId = Date.now();
 function uid(): string {
-    return `ab-${nextId++}-${Math.random().toString(36).slice(2, 8)}`;
+    return `ab-${nextId++}-${crypto.randomUUID().slice(0, 8)}`;
 }
 
 function jaccardSimilarity(a: string, b: string): number {

@@ -2,7 +2,7 @@ const STORAGE_KEY = 'batch_jobs';
 
 let nextJobId = Date.now();
 function generateJobId(): string {
-    return `batch-${nextJobId++}-${Math.random().toString(36).slice(2, 8)}`;
+    return `batch-${nextJobId++}-${crypto.randomUUID().slice(0, 8)}`;
 }
 
 export interface BatchTask {

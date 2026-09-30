@@ -11,7 +11,7 @@ const MD_LOGGER = rootLogger.child('DistillationService');
 const STORAGE_KEY = 'distillation_data';
 
 function id(): string {
-    return `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+    return `${Date.now()}-${crypto.randomUUID().slice(0, 8)}`;
 }
 
 interface Persisted {

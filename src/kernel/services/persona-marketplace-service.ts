@@ -240,7 +240,7 @@ export class PersonaMarketplaceService implements IPersonaMarketplaceService {
         this.#load();
         const entry: PersonaListing = {
             ...listing,
-            id: `pm-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+            id: `pm-${Date.now()}-${crypto.randomUUID().slice(0, 8)}`,
             createdAt: Date.now(),
             installed: false,
             downloads: 0,

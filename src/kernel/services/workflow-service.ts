@@ -13,7 +13,7 @@ const MAX_RUNS = 50;
 
 let nextId = Date.now();
 function uid(): string {
-    return `${nextId++}-${Math.random().toString(36).slice(2, 8)}`;
+    return `${nextId++}-${crypto.randomUUID().slice(0, 8)}`;
 }
 
 function resolveVariable(

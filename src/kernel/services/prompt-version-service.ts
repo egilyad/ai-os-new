@@ -9,7 +9,7 @@ const STORAGE_KEY = 'prompt_version_data';
 const MAX_VERSIONS_PER_PROMPT = 50;
 
 function id(): string {
-    return `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+    return `${Date.now()}-${crypto.randomUUID().slice(0, 8)}`;
 }
 
 interface PersistedData {
