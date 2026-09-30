@@ -144,6 +144,13 @@ export const AgentWizard: React.FC<AgentWizardProps> = ({ isOpen, onClose, onAge
         exit={{ opacity: 0 }}
         style={{ position: 'fixed', inset: 0, zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)' }}
         onClick={onClose}
+        onKeyDown={(e) => {
+          // 7.7: keyboard users had no way to dismiss the wizard.
+          if (e.key === 'Escape') {
+            e.stopPropagation();
+            onClose();
+          }
+        }}
       >
         <FocusScope contain restoreFocus autoFocus>
           <motion.div
