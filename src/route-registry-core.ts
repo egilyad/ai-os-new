@@ -218,6 +218,13 @@ export const CORE_SECTIONS: NavSection[] = [
                 color: '#f97316',
                 lazy: true,
             },
+            {
+                id: 'costs',
+                labelKey: 'nav.costs',
+                icon: Icons.dollarSign,
+                color: '#10b981',
+                lazy: true,
+            },
         ],
     },
     {

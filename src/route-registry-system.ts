@@ -225,6 +225,14 @@ export const SYSTEM_SECTIONS: NavSection[] = [
                 lazy: true,
                 experimental: true,
             },
+            {
+                id: 'obs-gaps',
+                labelKey: 'nav.observability_gaps_scanner',
+                icon: Icons.crosshair,
+                color: '#f97316',
+                lazy: true,
+                experimental: true,
+            },
         ],
     },
 ];
