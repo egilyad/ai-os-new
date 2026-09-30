@@ -363,8 +363,11 @@ class CrossTabStateSync implements ICrossTabStateSync {
                     'CrossTabStateSync',
                     'Cross-tab settings update, refreshing local state',
                 );
+                // 4.9: plain emit, not emitOnce — the constant dedup key
+                // collapsed distinct updates <30s apart (same fix as
+                // key-update above; cross-tab messages are already distinct).
                 if (message.payload == null) {
-                    this._eventBus.emitOnce(EVENTS.SETTINGS_UPDATED, 'cross-tab:settings-update', {
+                    this._eventBus.emit(EVENTS.SETTINGS_UPDATED, {
                         settings: {},
                         changes: {},
                     });
@@ -372,11 +375,7 @@ class CrossTabStateSync implements ICrossTabStateSync {
                     const settingsSchema = EVENT_REGISTRY.SETTINGS_UPDATED.schema;
                     const settingsPayload = settingsSchema.safeParse(message.payload);
                     if (settingsPayload.success)
-                        this._eventBus.emitOnce(
-                            EVENTS.SETTINGS_UPDATED,
-                            'cross-tab:settings-update',
-                            settingsPayload.data,
-                        );
+                        this._eventBus.emit(EVENTS.SETTINGS_UPDATED, settingsPayload.data);
                     else
                         LOGGER.warn('CrossTabStateSync', 'malformed settings-update payload', {
                             issues: settingsPayload.error.issues,
