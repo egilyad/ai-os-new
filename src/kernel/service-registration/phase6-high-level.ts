@@ -14,6 +14,7 @@ import type { ICostCalculator } from '../contracts/pricing';
 import type { IMemoryEngine } from '../contracts/memory';
 import type { IResearchEngine } from '../contracts/research-engine';
 import type { LoggerService } from '../services/logger-service';
+import { rootLogger } from '../services/logger-service';
 import type { DataAccessLayer } from '../dal';
 import type { KeyService } from '../services/key-management/key-service';
 import type { ProviderAdapterRegistry } from '../services/provider-adapter-registry';
@@ -95,6 +96,8 @@ import { AgentAvatarService } from '../services/agent-avatar-service';
 
 export const registerPhase6: Phase = (helpers, ctx) => {
     const { register, asDeps } = helpers;
+    // 9.11: fire-and-forget init failures must reach the in-app log.
+    const PhaseLOGGER = rootLogger.child('Phase6');
 
     register(
         'chatService',
@@ -236,7 +239,7 @@ export const registerPhase6: Phase = (helpers, ctx) => {
             eventBus: c.get<IEventBus>('eventBus'),
             database: c.get<IDatabaseService>('database'),
         });
-        void svc.init().catch((e) => console.error('[AgentMarketplace] init() failed', e));
+        void svc.init().catch((e) => PhaseLOGGER.error('Phase6', 'AgentMarketplace init failed', { error: String(e) }));
         return svc;
     });
 
@@ -274,7 +277,7 @@ export const registerPhase6: Phase = (helpers, ctx) => {
             c.get<IDatabaseService>('database'),
             c.get<IEventBus>('eventBus'),
         );
-        void svc.init().catch((e) => console.error('[PersonaService] init() failed', e));
+        void svc.init().catch((e) => PhaseLOGGER.error('Phase6', 'PersonaService init failed', { error: String(e) }));
         return svc;
     });
 
