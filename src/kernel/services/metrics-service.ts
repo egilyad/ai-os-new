@@ -86,6 +86,10 @@ export class MetricsService {
     private captureInterval: ReturnType<typeof setInterval> | null = null;
     private deps: MetricsServiceDeps;
     private recentLatencies: Map<string, number[]> = new Map();
+    // 9.10: central counters/gauges (blocks, denials, trips, retries…) —
+    // previously only latency/throughput had a push API.
+    private counters = new Map<string, number>();
+    private gauges = new Map<string, number>();
     private throughput: Map<string, { count: number; windowStart: number }> = new Map();
     private readonly MAX_RECENT = 100;
     private readonly THROUGHPUT_WINDOW = 60000;
@@ -424,5 +428,25 @@ export class MetricsService {
         if (!entry) return 0;
         const elapsed = (Date.now() - entry.windowStart) / 1000;
         return elapsed > 0 ? entry.count / elapsed : 0;
+    }
+
+    incrementCounter(name: string, by = 1): void {
+        this.counters.set(name, (this.counters.get(name) ?? 0) + by);
+    }
+
+    getCounter(name: string): number {
+        return this.counters.get(name) ?? 0;
+    }
+
+    getAllCounters(): Record<string, number> {
+        return Object.fromEntries(this.counters);
+    }
+
+    recordGauge(name: string, value: number): void {
+        this.gauges.set(name, value);
+    }
+
+    getGauge(name: string): number | undefined {
+        return this.gauges.get(name);
     }
 }
