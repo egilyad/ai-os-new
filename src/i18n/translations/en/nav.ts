@@ -2,6 +2,12 @@
 const nav: Record<string, string> = {
     'nav.section_dashboard': 'DASHBOARD',
     'nav.section_budget': 'BUDGET AI',
+    'nav.section_ai_providers': 'AI PROVIDERS & KEYS',
+    'nav.section_system': 'SYSTEM SERVICES',
+    'nav.section_security': 'SECURITY & RULES',
+    'nav.section_memory': 'SYSTEM MEMORY',
+    'nav.section_lab': 'LAB',
+    'nav.section_other': 'OTHER',
     'nav.section_chat': 'CHAT',
     'nav.section_debates': 'DEBATES',
     'nav.section_techniques': 'TECHNIQUES',

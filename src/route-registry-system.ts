@@ -96,24 +96,6 @@ export const SYSTEM_SECTIONS: NavSection[] = [
                 icon: Icons.gitMerge,
                 color: '#f59e0b',
             },
-            {
-                id: 'tools',
-                labelKey: 'nav.tools',
-                icon: Icons.wrench,
-                color: '#f59e0b',
-            },
-            {
-                id: 'connectors',
-                labelKey: 'nav.connectors',
-                icon: Icons.share2,
-                color: '#3b82f6',
-            },
-            {
-                id: 'mcp',
-                labelKey: 'nav.mcp_servers',
-                icon: Icons.server,
-                color: '#a855f7',
-            },
         ],
     },
     {
@@ -147,14 +129,6 @@ export const SYSTEM_SECTIONS: NavSection[] = [
                 icon: Icons.database,
                 color: '#a855f7',
                 lazy: true,
-            },
-            {
-                id: 'memory-palace',
-                labelKey: 'nav.memory_palace',
-                icon: Icons.database,
-                color: '#8b5cf6',
-                lazy: true,
-                experimental: true,
             },
             {
                 id: 'health',
