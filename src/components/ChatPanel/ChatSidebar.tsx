@@ -197,11 +197,25 @@ const ChatSidebar: React.FC<Props> = ({
                                 </div>
                             </div>
 
-                            <div style={{ flex: 1, overflow: 'auto', padding: '0.5rem' }}>
+                            <div
+                                role="listbox"
+                                aria-label={t('chat.sessions')}
+                                style={{ flex: 1, overflow: 'auto', padding: '0.5rem' }}
+                            >
                                 {sessionGroups.map((group) => (
                                     <div key={group.label} style={{ marginBottom: '0.75rem' }}>
                                         <div
+                                            role="button"
+                                            tabIndex={0}
+                                            aria-expanded={!collapsedGroups.has(group.label)}
                                             onClick={() => toggleGroup(group.label)}
+                                            onKeyDown={(e) => {
+                                                // 7.8: group headers were mouse-only.
+                                                if (e.key === 'Enter' || e.key === ' ') {
+                                                    e.preventDefault();
+                                                    toggleGroup(group.label);
+                                                }
+                                            }}
                                             style={{
                                                 display: 'flex',
                                                 alignItems: 'center',
@@ -242,7 +256,17 @@ const ChatSidebar: React.FC<Props> = ({
                                                 return (
                                                     <div
                                                         key={s.id}
+                                                        role="option"
+                                                        aria-selected={isActive}
+                                                        tabIndex={0}
                                                         onClick={() => onSessionClick(s.id)}
+                                                        onKeyDown={(e) => {
+                                                            // 7.8: session rows were mouse-only.
+                                                            if (e.key === 'Enter' || e.key === ' ') {
+                                                                e.preventDefault();
+                                                                onSessionClick(s.id);
+                                                            }
+                                                        }}
                                                         style={{
                                                             display: 'flex',
                                                             alignItems: 'center',
