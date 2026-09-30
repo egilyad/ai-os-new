@@ -810,6 +810,7 @@ export class ChatExecutor {
         this.deps.eventBus.emit(EVENTS.STREAM_ERROR, {
             requestId: req.requestId,
             provider: req.provider,
+            model: req.model,
             keyId: req.keyId,
             error,
         });

@@ -302,6 +302,10 @@ export interface ProviderState {
     totalTokens?: number;
     currentConcurrent?: number;
     status: 'healthy' | 'degraded' | 'offline' | 'unknown';
+    // 9.9: per-model error breakdown + last error attribution (additive,
+    // backfilled as errors arrive — old persisted records simply lack them).
+    modelErrors?: Record<string, number>;
+    lastError?: { model?: string; keyId?: string; at: number };
 }
 
 export type ProviderMetrics = ProviderState;

@@ -187,7 +187,7 @@ export class ProviderTracker implements IProviderTracker {
         this.persistMetrics();
     }
 
-    private handleErrorUpdate(data: { provider: string }): void {
+    private handleErrorUpdate(data: { provider: string; model?: string; keyId?: string }): void {
         const p = data.provider.toLowerCase();
         const base = this._metrics.get(p) ?? this.getDefaultProvider(p);
         const prev = { ...base };
@@ -195,6 +195,17 @@ export class ProviderTracker implements IProviderTracker {
         prev.stabilityIndex = Math.max(0, ALPHA * 0 + (1 - ALPHA) * prev.stabilityIndex);
         prev.reputationScore = Math.max(0, ALPHA * 0 + (1 - ALPHA) * prev.reputationScore);
         prev.totalRequests++;
+        // 9.9: attribute the failure to model/key instead of averaging it
+        // away at provider level.
+        if (data.model) {
+            const modelErrors = { ...(prev.modelErrors ?? {}) };
+            const m = data.model.toLowerCase();
+            modelErrors[m] = (modelErrors[m] ?? 0) + 1;
+            prev.modelErrors = modelErrors;
+        }
+        if (data.model || data.keyId) {
+            prev.lastError = { model: data.model, keyId: data.keyId, at: Date.now() };
+        }
         this._metrics.set(p, prev);
         this.detectErrorBurst(p, prev);
         this.detectStatusChange(p, base.status, prev.status);

@@ -320,6 +320,7 @@ export const EVENT_REGISTRY = {
         z.object({
             requestId: z.string(),
             provider: z.string(),
+            model: z.string().optional(),
             error: z.string(),
             keyId: z.string().optional(),
         }),
@@ -329,6 +330,7 @@ export const EVENT_REGISTRY = {
         z.object({
             requestId: z.string(),
             provider: z.string(),
+            model: z.string().optional(),
             error: z.string(),
             keyId: z.string().optional(),
         }),
