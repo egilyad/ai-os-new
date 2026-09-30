@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { HealthSlaService } from './health-sla-service';
 import type { HealthSlaServiceDeps } from './health-sla-service';
+import { ssrSafeStorage } from '../utils/ssr-storage';
 
 function makeDeps(overrides: Partial<HealthSlaServiceDeps> = {}): HealthSlaServiceDeps {
     return {
@@ -26,6 +27,8 @@ describe('HealthSlaService', () => {
     let deps: HealthSlaServiceDeps;
 
     beforeEach(() => {
+        // Profiles persist across instances — isolate tests.
+        ssrSafeStorage.removeItem('health_sla_profiles');
         deps = makeDeps();
         svc = new HealthSlaService(deps);
     });

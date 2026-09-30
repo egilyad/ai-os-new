@@ -1,7 +1,10 @@
 import type { IHealthSlaService, SlaProfile, SlaRule } from '../contracts/health-sla';
 import type { IProviderTracker } from '../types/interfaces';
 import { rootLogger } from './logger-service';
+import { ssrSafeStorage } from '../utils/ssr-storage';
 const HS_LOGGER = rootLogger.child('HealthSlaService');
+
+const PROFILES_KEY = 'health_sla_profiles';
 
 const genId = () => crypto.randomUUID();
 const genRuleId = () => crypto.randomUUID();
@@ -90,6 +93,24 @@ export class HealthSlaService implements IHealthSlaService {
 
     constructor(deps: HealthSlaServiceDeps) {
         this.deps = deps;
+        // 9.12: user profiles were lost on every restart (in-memory only).
+        try {
+            const raw = ssrSafeStorage.getItem(PROFILES_KEY);
+            if (raw) {
+                const saved = JSON.parse(raw) as SlaProfile[];
+                if (Array.isArray(saved) && saved.length > 0) this.profiles = saved;
+            }
+        } catch {
+            /* presets stand in */
+        }
+    }
+
+    private persistProfiles(): void {
+        try {
+            ssrSafeStorage.setItem(PROFILES_KEY, JSON.stringify(this.profiles));
+        } catch (e) {
+            HS_LOGGER.warn('HealthSlaService', 'persist profiles failed', { error: String(e) });
+        }
     }
 
     getProfiles(): SlaProfile[] {
@@ -111,6 +132,7 @@ export class HealthSlaService implements IHealthSlaService {
             updatedAt: Date.now(),
         };
         this.profiles.push(profile);
+        this.persistProfiles();
         return profile;
     }
 
@@ -122,11 +144,13 @@ export class HealthSlaService implements IHealthSlaService {
             ...updates,
             updatedAt: Date.now(),
         } as SlaProfile;
+        this.persistProfiles();
         return { ...this.profiles[idx]! };
     }
 
     deleteProfile(id: string): void {
         this.profiles = this.profiles.filter((p) => p.id !== id);
+        this.persistProfiles();
     }
 
     addRule(profileId: string, rule: Omit<SlaRule, 'id'>): SlaRule {
@@ -135,6 +159,7 @@ export class HealthSlaService implements IHealthSlaService {
         const newRule: SlaRule = { ...rule, id: genRuleId() };
         profile.rules.push(newRule);
         profile.updatedAt = Date.now();
+        this.persistProfiles();
         return newRule;
     }
 
@@ -145,6 +170,7 @@ export class HealthSlaService implements IHealthSlaService {
         if (!rule) throw new Error(`Rule ${ruleId} not found`);
         Object.assign(rule, updates);
         profile.updatedAt = Date.now();
+        this.persistProfiles();
     }
 
     removeRule(profileId: string, ruleId: string): void {
@@ -152,16 +178,18 @@ export class HealthSlaService implements IHealthSlaService {
         if (!profile) throw new Error(`Profile ${profileId} not found`);
         profile.rules = profile.rules.filter((r) => r.id !== ruleId);
         profile.updatedAt = Date.now();
+        this.persistProfiles();
     }
 
     evaluateProfile(profileId: string): { ruleId: string; passed: boolean; actual: number }[] {
         const profile = this.profiles.find((p) => p.id === profileId);
         if (!profile) throw new Error(`Profile ${profileId} not found`);
-        HS_LOGGER.warn(
-            'HealthSlaService',
-            'evaluateProfile uses @deprecated MOCK backend — metrics are simulated',
-            { profileId, profileName: profile.name },
-        );
+        // 9.12: the old warn claimed metrics are simulated — they are not
+        // (live providerTracker below). A per-call warn also trained
+        // operators to ignore warnings; debug is enough.
+        HS_LOGGER.debug('HealthSlaService', 'evaluateProfile against live tracker metrics', {
+            profileId,
+        });
         return profile.rules.map((rule) => {
             let actual: number;
             let hasData = false;
