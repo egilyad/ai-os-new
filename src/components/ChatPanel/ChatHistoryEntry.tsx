@@ -184,7 +184,16 @@ const ChatHistoryEntry: React.FC<ChatHistoryEntryProps> = memo(
                                     position: 'relative',
                                     cursor: 'pointer',
                                 }}
-                                onClick={() => onStartEdit(entry.id, entry.text)}
+                                onClick={() => {
+                                    // 7.12: a click that ends a text selection
+                                    // must not flip the bubble into edit mode.
+                                    const sel =
+                                        typeof window !== 'undefined'
+                                            ? window.getSelection()?.toString()
+                                            : '';
+                                    if (sel && sel.length > 0) return;
+                                    onStartEdit(entry.id, entry.text);
+                                }}
                                 title={t('chat.click_to_edit')}
                             >
                                 <MarkdownRenderer content={entry.text} />
