@@ -39,7 +39,11 @@ const DEFAULT_RULES: SecurityScanRule[] = [
         id: 'inj-3',
         name: 'Delimiter Break',
         category: 'injection',
-        pattern: 'forget|disregard|unset|clear\\s+context',
+        // 2.9: was 4 bare verbs, trivially paraphrased around. Added
+        // context-reset phrases + common jailbreak markers (still
+        // heuristic — defense in depth, not a guarantee).
+        pattern:
+            'forget|disregard|unset|clear\\s+context|wipe\\s+memory|start\\s+over|new\\s+conversation|ignore\\s+previous|disregard\\s+previous|jailbreak|do\\s+anything\\s+now|developer\\s+mode|reveal\\s+(your\\s+)?(system\\s+)?prompt|repeat\\s+(your\\s+)?instructions',
         severity: 'medium',
         enabled: true,
         description: 'Attempts to reset conversation context',
