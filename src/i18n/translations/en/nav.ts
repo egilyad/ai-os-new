@@ -10,6 +10,7 @@ const nav: Record<string, string> = {
     'nav.section_other': 'OTHER',
     'nav.section_chat': 'CHAT',
     'nav.section_debates': 'DEBATES',
+    'nav.section_debate_strategy': 'DEBATE STRATEGY & ANALYSIS',
     'nav.section_techniques': 'TECHNIQUES',
     'nav.section_agents': 'AGENTS',
     'nav.section_diagnostics': 'DIAGNOSTICS',

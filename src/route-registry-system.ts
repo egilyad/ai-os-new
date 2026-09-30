@@ -103,6 +103,13 @@ export const SYSTEM_SECTIONS: NavSection[] = [
                 color: '#f59e0b',
                 lazy: true,
             },
+            {
+                id: 'meta-agent',
+                labelKey: 'nav.meta_agent',
+                icon: Icons.bot,
+                color: '#8b5cf6',
+                lazy: true,
+            },
         ],
     },
     {

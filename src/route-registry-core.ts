@@ -378,6 +378,47 @@ export const CORE_SECTIONS: NavSection[] = [
                 lazy: true,
                 experimental: true,
             },
+            {
+                id: 'scratchpad',
+                labelKey: 'nav.scratchpad',
+                icon: Icons.stickyNote,
+                color: '#6366f1',
+                lazy: true,
+            },
+        ],
+    },
+    {
+        id: 'section-debate-strategy',
+        labelKey: 'nav.section_debate_strategy',
+        items: [
+            {
+                id: 'outcome-forecaster',
+                labelKey: 'nav.outcome_forecaster',
+                icon: Icons.trendingUp,
+                color: '#06b6d4',
+                lazy: true,
+            },
+            {
+                id: 'minimax-planner',
+                labelKey: 'nav.minimax_planner',
+                icon: Icons.gitMerge,
+                color: '#f97316',
+                lazy: true,
+            },
+            {
+                id: 'similarity',
+                labelKey: 'nav.similarity',
+                icon: Icons.gitCompare,
+                color: '#7c3aed',
+                lazy: true,
+            },
+            {
+                id: 'drift-detector',
+                labelKey: 'nav.drift_detector',
+                icon: Icons.thermometer,
+                color: '#ef4444',
+                lazy: true,
+            },
         ],
     },
     {
@@ -465,20 +506,6 @@ export const CORE_SECTIONS: NavSection[] = [
                 lazy: true,
             },
             {
-                id: 'meta-agent',
-                labelKey: 'nav.meta_agent',
-                icon: Icons.bot,
-                color: '#8b5cf6',
-                lazy: true,
-            },
-            {
-                id: 'outcome-forecaster',
-                labelKey: 'nav.outcome_forecaster',
-                icon: Icons.trendingUp,
-                color: '#06b6d4',
-                lazy: true,
-            },
-            {
                 id: 'concept-blender',
                 labelKey: 'nav.concept_blender',
                 icon: Icons.flaskConical,
@@ -490,13 +517,6 @@ export const CORE_SECTIONS: NavSection[] = [
                 labelKey: 'nav.belief_mining',
                 icon: Icons.search,
                 color: '#6366f1',
-                lazy: true,
-            },
-            {
-                id: 'minimax-planner',
-                labelKey: 'nav.minimax_planner',
-                icon: Icons.gitMerge,
-                color: '#f97316',
                 lazy: true,
             },
             {
@@ -535,13 +555,6 @@ export const CORE_SECTIONS: NavSection[] = [
                 lazy: true,
             },
             {
-                id: 'scratchpad',
-                labelKey: 'nav.scratchpad',
-                icon: Icons.stickyNote,
-                color: '#6366f1',
-                lazy: true,
-            },
-            {
                 id: 'persona-mixer',
                 labelKey: 'nav.persona_mixer',
                 icon: Icons.shuffle,
@@ -560,20 +573,6 @@ export const CORE_SECTIONS: NavSection[] = [
                 labelKey: 'nav.got_deliberation',
                 icon: Icons.gitCommit,
                 color: '#a855f7',
-                lazy: true,
-            },
-            {
-                id: 'similarity',
-                labelKey: 'nav.similarity',
-                icon: Icons.gitCompare,
-                color: '#7c3aed',
-                lazy: true,
-            },
-            {
-                id: 'drift-detector',
-                labelKey: 'nav.drift_detector',
-                icon: Icons.thermometer,
-                color: '#ef4444',
                 lazy: true,
             },
             {
