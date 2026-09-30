@@ -17,13 +17,47 @@ export interface DecisionRecorderDeps {
         getKey: (id: string) => ApiKey | undefined;
     };
     getActiveProfile: () => WeightProfile;
+    // 9.13: optional KV for history survival across restarts.
+    database?: {
+        getKv: <T>(id: string) => Promise<T | null>;
+        setKv: <T>(id: string, value: T) => Promise<void>;
+    };
 }
+
+const HISTORY_KEY = 'router_decision_history';
 
 export class RouterDecisionRecorder {
     private lastDecisions: RouterDecision[] = [];
     private readonly MAX_DECISIONS = 30;
+    private persistTimer: ReturnType<typeof setTimeout> | null = null;
 
     constructor(private deps: DecisionRecorderDeps) {}
+
+    /** Restore the ring after restart (best-effort, never throws). */
+    async restore(): Promise<void> {
+        if (!this.deps.database) return;
+        try {
+            const saved = await this.deps.database.getKv<RouterDecision[]>(HISTORY_KEY);
+            if (Array.isArray(saved) && saved.length > 0) {
+                this.lastDecisions = saved.slice(0, this.MAX_DECISIONS);
+            }
+        } catch {
+            /* corrupted entry — start fresh */
+        }
+    }
+
+    private schedulePersist(): void {
+        if (!this.deps.database) return;
+        if (this.persistTimer) clearTimeout(this.persistTimer);
+        this.persistTimer = setTimeout(() => {
+            this.persistTimer = null;
+            this.deps
+                .database!.setKv(HISTORY_KEY, this.lastDecisions)
+                .catch(() => {
+                    /* quota loss — memory ring survives */
+                });
+        }, 2000);
+    }
 
     getSelectionTrace(keyId?: string): readonly RouterDecision[] {
         if (!keyId) return this.lastDecisions;
@@ -78,6 +112,7 @@ export class RouterDecisionRecorder {
             promptLength: 0,
             origin: 'live',
         });
+        this.schedulePersist();
     }
 
     recordDecision(opts: {
@@ -122,5 +157,6 @@ export class RouterDecisionRecorder {
             origin: 'live',
         });
         if (this.lastDecisions.length > this.MAX_DECISIONS) this.lastDecisions.pop();
+        this.schedulePersist();
     }
 }

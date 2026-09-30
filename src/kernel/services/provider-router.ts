@@ -144,6 +144,7 @@ export class RouterService {
             kernel: deps.kernel,
             keyService: deps.keyService,
             getActiveProfile: () => this.getActiveProfile(),
+            database: deps.database,
         });
         this.latencyMonitor = new RouterLatencyMonitor({
             eventBus: deps.eventBus,
@@ -188,6 +189,7 @@ export class RouterService {
         this._initialized = true;
         await this.configManager.init();
         this.config = this.configManager.raw;
+        await this.decisionRecorder.restore();
         this.latencyMonitor.startMonitoring(this.config);
     }
 
