@@ -29,33 +29,59 @@ const ABSOLUTE_PATTERN =
 const HEDGE_PATTERN =
     /\b(i think|i believe|i feel|maybe|perhaps|possibly|might|could|may|seems?|appears?|arguably|presumably|in my opinion)\b/gi;
 
-// P1.27 uncertainty markers — extract stated confidence
-const CERTAIN_PATTERN = /\b(certain|certainly|undoubtedly|definitely|absolutely)\s/gi;
-const LIKELY_PATTERN = /\b(likely|probably|expected|presumably)\s/gi;
-const POSSIBLE_PATTERN = /\b(possible|perhaps|maybe|might|could|may)\s/gi;
-const UNLIKELY_PATTERN = /\b(unlikely|improbable|doubtful|unexpected)\s/gi;
-const IMPOSSIBLE_PATTERN = /\b(impossible|no way|cannot be|couldn't possibly)\s/gi;
+// P1.27 uncertainty markers — extract stated confidence.
+// 10.15: trailing \b (not \s) so end-of-sentence markers match too.
+const CERTAIN_PATTERN = /\b(certain|certainly|undoubtedly|definitely|absolutely)\b/gi;
+const LIKELY_PATTERN = /\b(likely|probably|expected|presumably)\b/gi;
+const POSSIBLE_PATTERN = /\b(possible|perhaps|maybe|might|could|may)\b/gi;
+const UNLIKELY_PATTERN = /\b(unlikely|improbable|doubtful|unexpected)\b/gi;
+const IMPOSSIBLE_PATTERN = /\b(impossible|no way|cannot be|couldn't possibly)\b/gi;
 
 const CLAIM_SEPARATOR = /[.!?]\s+/g;
 
 const MAX_HISTORY = 20;
 
+// All patterns above carry the /g flag but are only used with .test() —
+// without resetting lastIndex, matches depend on previous calls (a match
+// alternates true/false across invocations). Always go through here.
+function testFresh(re: RegExp, text: string): boolean {
+    re.lastIndex = 0;
+    return re.test(text);
+}
+
+// Negation within a few words before a confidence marker inverts it
+// ("not impossible" ≈ certain, "not certain" ≈ impossible).
+const NEGATION_PATTERN = /\b(not|no|never|n't|hardly|barely|scarcely|without)\b/i;
+
 function extractStatedConfidence(text: string): number {
-    if (IMPOSSIBLE_PATTERN.test(text)) return 0.05;
-    if (UNLIKELY_PATTERN.test(text)) return 0.3;
-    if (CERTAIN_PATTERN.test(text)) return 0.95;
-    if (LIKELY_PATTERN.test(text)) return 0.7;
-    if (POSSIBLE_PATTERN.test(text)) return 0.5;
-    return -1;
+    const cands: Array<{ re: RegExp; score: number }> = [
+        { re: IMPOSSIBLE_PATTERN, score: 0.05 },
+        { re: UNLIKELY_PATTERN, score: 0.3 },
+        { re: CERTAIN_PATTERN, score: 0.95 },
+        { re: LIKELY_PATTERN, score: 0.7 },
+        { re: POSSIBLE_PATTERN, score: 0.5 },
+    ];
+    // 10.15: earliest match wins (not fixed priority order), so "certain
+    // … unlikely" scores by position; a preceding negation flips the scale.
+    let best: { index: number; score: number } | null = null;
+    for (const { re, score } of cands) {
+        re.lastIndex = 0;
+        const m = re.exec(text);
+        if (m && (best === null || m.index < best.index)) best = { index: m.index, score };
+    }
+    if (!best) return -1;
+    const before = text.slice(Math.max(0, best.index - 24), best.index);
+    if (testFresh(NEGATION_PATTERN, before)) return Math.round((1 - best.score) * 100) / 100;
+    return best.score;
 }
 
 function scoreSingleClaim(
     text: string,
 ): Omit<ClaimScore, 'claimText'> & { violationType?: 'overconfident' | 'underconfident' } {
-    const hasCitation = CITATION_PATTERN.test(text);
-    const hasData = DATA_PATTERN.test(text);
-    const hasAbsoluteLanguage = ABSOLUTE_PATTERN.test(text);
-    const hasHedge = HEDGE_PATTERN.test(text);
+    const hasCitation = testFresh(CITATION_PATTERN, text);
+    const hasData = testFresh(DATA_PATTERN, text);
+    const hasAbsoluteLanguage = testFresh(ABSOLUTE_PATTERN, text);
+    const hasHedge = testFresh(HEDGE_PATTERN, text);
     const statedConfidence = extractStatedConfidence(text);
 
     // Heuristic scoring
