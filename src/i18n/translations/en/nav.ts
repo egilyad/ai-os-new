@@ -1,6 +1,7 @@
 // nav.* — English translations
 const nav: Record<string, string> = {
     'nav.section_dashboard': 'DASHBOARD',
+    'nav.section_budget': 'BUDGET AI',
     'nav.section_chat': 'CHAT',
     'nav.section_debates': 'DEBATES',
     'nav.section_techniques': 'TECHNIQUES',
