@@ -1163,9 +1163,19 @@ setInterval(() => {
     }
 }, 30_000);
 
-server.listen(PORT, () => {
-    console.log(`[SyncServer] running on http://localhost:${PORT}`);
+// 2.7: plain HTTP, Bearer in the clear — bind loopback by default so a
+// bare `node sync-server.mjs` never exposes the token API to the LAN.
+// Set SYNC_HOST=0.0.0.0 only behind a TLS-terminating proxy.
+const SYNC_HOST = process.env.SYNC_HOST || '127.0.0.1';
+server.listen(PORT, SYNC_HOST, () => {
+    console.log(`[SyncServer] running on http://${SYNC_HOST}:${PORT}`);
     console.log(`[SyncServer] storing DB at ${DB_FILE}`);
+    if (SYNC_HOST !== '127.0.0.1' && SYNC_HOST !== 'localhost' && SYNC_HOST !== '::1') {
+        console.warn(
+            '[SyncServer] WARNING: listening on a non-loopback interface without TLS — ' +
+                'Bearer tokens cross the network in plaintext. Put a TLS proxy in front.',
+        );
+    }
     // M1.2: heartbeat-loop — обрабатывает pending wakeups в heartbeat'ы.
     // Отключается через HEARTBEAT_LOOP=0. Без pending-очереди — no-op.
     if (process.env.HEARTBEAT_LOOP !== '0') {
