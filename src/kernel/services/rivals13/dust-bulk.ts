@@ -19,10 +19,12 @@ export class BulkService {
     async init(){} async destroy(){}
     async runBulk(csv: string, prompt: string){
         const id=genId('bulk'); const lines=csv.split('\n').filter(Boolean).slice(0,100); await this.dal.kv.set(`bulk/${id}`, { id, lines: lines.length, prompt: prompt.slice(0,200), status: 'queued' });
-        // simulate immediate processing: store results as csv with prompt applied note
+        // Audit #11: showcase stub, NOT real batch processing — results are
+        // deterministic placeholders. Flagged as simulated so no consumer
+        // mistakes them for LLM output. (Real LLM batch = separate feature.)
         const results=lines.map((l,i)=>`${l},result_${i}_${prompt.slice(0,20)}`).join('\n');
         await this.dal.kv.set(`bulk-result/${id}`, results);
-        await this.dal.kv.set(`bulk/${id}`, { id, lines: lines.length, prompt: prompt.slice(0,200), status: 'done' });
+        await this.dal.kv.set(`bulk/${id}`, { id, lines: lines.length, prompt: prompt.slice(0,200), status: 'done', simulated: true });
         this.events.emit(EVENTS.QUEUE_ENQUEUED, { runId: id, kind: 'bulk' } as never);
         return id;
     }

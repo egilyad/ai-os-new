@@ -17,7 +17,18 @@ export class VoidService implements IVoidService {
     async assist(sessionId: string, prompt: string){
         const s=await this.dal.kv.get<Record<string,unknown>>(`void/${sessionId}`); if(!s) throw new Error('session not found');
         let out=`Void assist for ${prompt.slice(0,80)}`;
-        if (this.llm) { try { const r=await this.llm.chat([{role:'system',content:'You are Void editor assistant.'},{role:'user',content:prompt.slice(0,1000)}],{temperature:0.4,maxTokens:500}); if(!r.error) out=r.content; } catch { /* best-effort */ } }
+        // Audit #10: a failed LLM call used to vanish into an empty catch,
+        // leaving the placeholder above to pose as the model's answer.
+        if (this.llm) {
+            try {
+                const r=await this.llm.chat([{role:'system',content:'You are Void editor assistant.'},{role:'user',content:prompt.slice(0,1000)}],{temperature:0.4,maxTokens:500});
+                if(!r.error) out=r.content;
+                else throw new Error(r.error);
+            } catch (e) {
+                LOGGER.warn('Void', 'LLM assist failed — returning placeholder', { error: String(e) });
+                try { this.events?.emit(EVENTS.NOTIFICATION, { message: 'Void assist: LLM failed, showing placeholder', type: 'warning' }); } catch { /* best-effort */ }
+            }
+        }
         const hist=(s as Record<string,unknown>).history as string[]; hist.push(prompt.slice(0,100)); await this.dal.kv.set(`void/${sessionId}`, s);
         return out.slice(0,2000);
     }
