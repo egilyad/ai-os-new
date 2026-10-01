@@ -115,10 +115,13 @@ export class GuardrailService implements IGuardrailService {
 
     private violated(rule: GuardrailRule, text: string): boolean {
         switch (rule.kind) {
+            // Audit #1: contains/regex were negated (blocked clean text,
+            // passed matches). minLength/maxLength were already correct
+            // (violated when the bound is broken).
             case 'contains':
-                return !text.toLowerCase().includes((rule.pattern ?? '').toLowerCase());
+                return text.toLowerCase().includes((rule.pattern ?? '').toLowerCase());
             case 'regex':
-                return !new RegExp(rule.pattern as string).test(text);
+                return new RegExp(rule.pattern as string).test(text);
             case 'minLength':
                 return text.length < (rule.value ?? 0);
             case 'maxLength':
