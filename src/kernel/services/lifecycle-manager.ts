@@ -115,6 +115,12 @@ export class LifecycleManager {
     }
 
     async tryInit(name: string, fn: () => Promise<void> | void, retries = 3): Promise<boolean> {
+        // Audit #6: no idempotency guard — bootstrap calls tryInit for the
+        // same service twice (configService), re-running init. Services with
+        // self-guards survive, others double-subscribe. Skip when already ok.
+        if (this.statuses.some((s) => s.name === name && s.status === 'ok')) {
+            return true;
+        }
         const maxAttempts = 1 + retries;
         for (let attempt = 1; attempt <= maxAttempts; attempt++) {
             try {

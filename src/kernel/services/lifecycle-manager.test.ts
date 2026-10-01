@@ -88,6 +88,13 @@ describe('LifecycleManager', () => {
             expect(ok).toBe(false);
             expect(fn).toHaveBeenCalledTimes(3);
         });
+
+        it('should not re-run init for an already-ok service (audit #6)', async () => {
+            const fn = vi.fn().mockResolvedValue(undefined);
+            expect(await mgr.tryInit('cfg', fn, 2)).toBe(true);
+            expect(await mgr.tryInit('cfg', fn, 2)).toBe(true);
+            expect(fn).toHaveBeenCalledTimes(1);
+        });
     });
 
     describe('tryInitIfPresent', () => {
