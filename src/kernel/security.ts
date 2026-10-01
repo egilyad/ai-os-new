@@ -7,7 +7,15 @@ const SALT_LENGTH = 16;
 const IV_LENGTH = 12;
 
 function base64Encode(buf: ArrayBuffer): string {
-    return btoa(String.fromCharCode(...new Uint8Array(buf)));
+    // Audit #3: spread into fromCharCode throws RangeError past ~65k args —
+    // chunk the conversion so >100KB payloads survive.
+    const bytes = new Uint8Array(buf);
+    let s = '';
+    const CHUNK = 8192;
+    for (let i = 0; i < bytes.length; i += CHUNK) {
+        s += String.fromCharCode(...bytes.subarray(i, i + CHUNK));
+    }
+    return btoa(s);
 }
 
 function base64Decode(str: string): Uint8Array {
@@ -47,12 +55,13 @@ export class SecurityService implements ISecurityService {
     ): Promise<boolean> {
         if (!this._key || !this._salt) return false;
         try {
-            const oldSalt = this._salt;
-            const oldKey = await this._deriveKey(oldPassword, oldSalt);
+            const prevSalt = this._salt;
+            const prevKey = this._key;
+            const oldKey = await this._deriveKey(oldPassword, prevSalt);
             const oldKeyBytes = await crypto.subtle.exportKey('raw', oldKey);
-            const newKeyBytes = await crypto.subtle.exportKey('raw', this._key);
+            const curKeyBytes = await crypto.subtle.exportKey('raw', prevKey);
 
-            if (base64Encode(oldKeyBytes) !== base64Encode(newKeyBytes)) {
+            if (base64Encode(oldKeyBytes) !== base64Encode(curKeyBytes)) {
                 return false;
             }
 
@@ -62,7 +71,24 @@ export class SecurityService implements ISecurityService {
             this._key = newKey;
 
             if (reEncrypt) {
-                return reEncrypt(async (plain: string) => this.encrypt(plain));
+                const ok = await reEncrypt(async (plain: string) => this.encrypt(plain));
+                if (!ok) {
+                    // Audit #2: swap happened BEFORE re-encrypt — a failure
+                    // here orphaned every secret under an unrecoverable key.
+                    // Restore so the old password keeps working.
+                    this._salt = prevSalt;
+                    this._key = prevKey;
+                    return false;
+                }
+            }
+            // Persist the new salt — without this, reload derives a
+            // different key from the stale stored salt and all data is lost.
+            try {
+                localStorage.setItem('security_salt', base64Encode(newSalt.buffer as ArrayBuffer));
+            } catch {
+                this._salt = prevSalt;
+                this._key = prevKey;
+                return false;
             }
             return true;
         } catch {
