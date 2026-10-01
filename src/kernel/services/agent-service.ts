@@ -590,15 +590,18 @@ export class AgentService implements IAgentResolver {
         this._trimStats();
         this.deps.orchestrator.setNodeDisabled(agentId, false);
         await new Promise<void>((resolve, reject) => {
-            const timer = setTimeout(resolve, 500);
-            signal?.addEventListener(
-                'abort',
-                () => {
-                    clearTimeout(timer);
-                    reject(new DOMException('Aborted', 'AbortError'));
-                },
-                { once: true },
-            );
+            const timer = setTimeout(() => {
+                // 1.5: remove the abort listener on the success path too —
+                // { once: true } only fires on abort, so every restart
+                // pinned a closure on the caller session signal.
+                if (signal) signal.removeEventListener('abort', onAbort);
+                resolve();
+            }, 500);
+            function onAbort(): void {
+                clearTimeout(timer);
+                reject(new DOMException('Aborted', 'AbortError'));
+            }
+            signal?.addEventListener('abort', onAbort, { once: true });
         }).catch((err) =>
             LOGGER.debug('AgentService', 'restartAgent delayed promise', { error: String(err) }),
         );
