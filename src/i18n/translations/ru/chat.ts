@@ -92,7 +92,7 @@ const chat: Record<string, string> = {
     'chat.forked_from': 'Форк от',
     'chat.helpful': 'Полезно',
     'chat.helpful_aria': 'Полезно',
-    'chat.knowledge_recall_label': 'Воспроизведение знаний',
+    'chat.knowledge_recall_label': 'Вспомнено: {0}',
     'chat.latency_ms': 'Задержка: {ms} мс',
     'chat.live': 'Live',
     'chat.load_more': 'Загрузить ещё',

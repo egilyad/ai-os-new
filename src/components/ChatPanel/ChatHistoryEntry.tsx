@@ -252,10 +252,9 @@ const ChatHistoryEntry: React.FC<ChatHistoryEntryProps> = memo(
                                     >
                                         <Bookmark size={10} aria-hidden="true" />
                                         <span>
-                                            {t('chat.knowledge_recall_label').replace(
-                                                '{0}',
-                                                m.content.substring(0, 30),
-                                            )}
+                                            {t('chat.knowledge_recall_label', {
+                                                '0': m.content.substring(0, 30),
+                                            })}
                                         </span>
                                     </div>
                                 ))}

@@ -90,7 +90,7 @@ const chat: Record<string, string> = {
     'chat.forked_from': 'Forked from',
     'chat.helpful': 'Helpful',
     'chat.helpful_aria': 'Mark as helpful',
-    'chat.knowledge_recall_label': 'Knowledge Recall',
+    'chat.knowledge_recall_label': 'Recall: {0}',
     'chat.latency_ms': '{ms}ms',
     'chat.live': 'Live',
     'chat.load_more': 'Load More',
