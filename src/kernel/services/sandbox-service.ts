@@ -158,6 +158,11 @@ export class SandboxService {
 
                     if (method === 'executeTool') {
                         if (!allowedTools.includes('*') && !allowedTools.includes(params.toolId)) {
+                            // 9.20: security-boundary denials were only
+                            // postMessaged back — now also in the host log.
+                            LOGGER.warn('SandboxService', 'tool execution denied', {
+                                toolId: params.toolId,
+                            });
                             worker.postMessage({
                                 type: 'cap_response',
                                 requestId,
@@ -168,6 +173,10 @@ export class SandboxService {
 
                         toolExecutionCount++;
                         if (toolExecutionCount > MAX_TOOL_EXECUTIONS) {
+                            LOGGER.warn('SandboxService', 'sandbox tool rate limit hit', {
+                                toolId: params.toolId,
+                                count: toolExecutionCount,
+                            });
                             worker.postMessage({
                                 type: 'cap_response',
                                 requestId,
@@ -208,6 +217,10 @@ export class SandboxService {
             worker.onerror = (e: ErrorEvent) => {
                 clearTimeout(timeout);
                 cleanup();
+                // 9.20: worker errors previously only rejected — now logged.
+                LOGGER.error('SandboxService', 'worker error', {
+                    error: e.message || 'Worker error',
+                });
                 reject(new Error(e.message || 'Worker error'));
             };
 
