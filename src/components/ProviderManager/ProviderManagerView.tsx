@@ -1,5 +1,6 @@
 import { useTranslation } from '../../i18n/useTranslation';
 import { formatCost as sharedFormatCost } from '../../shared/utils/format-cost';
+import { settingsService } from '../../kernel/instances';
 import {
     Plus,
     RefreshCw,
@@ -43,7 +44,14 @@ export const itemVariants = {
 };
 
 export function formatCost(cost: number): string {
-    return sharedFormatCost(cost, 'en');
+    // 7.11: was hardcoded 'en' — RU users got $1,234.56 grouping.
+    let lang: 'en' | 'ru' = 'en';
+    try {
+        lang = settingsService.getSettings().language === 'ru' ? 'ru' : 'en';
+    } catch {
+        /* settings unavailable (tests) — default en */
+    }
+    return sharedFormatCost(cost, lang);
 }
 
 export interface ProviderManagerViewProps {
