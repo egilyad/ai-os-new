@@ -547,6 +547,13 @@ export class TraceService {
                 count++;
             }
         }
+        // 1.8: bulk import bypassed the maxEntries cap (addTrace slices) —
+        // unbounded in-memory growth + downstream re-render storms.
+        if (this.traces.length > CONFIG.traces.maxEntries) {
+            this.traces = [...this.traces]
+                .sort((a, b) => (b.startTime ?? 0) - (a.startTime ?? 0))
+                .slice(0, CONFIG.traces.maxEntries);
+        }
         this.emitTraces();
         return count;
     }
