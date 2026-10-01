@@ -83,7 +83,15 @@ export class LLMHttpClient {
         return false;
     }
 
-    /** Cancel ALL in-flight requests. */
+    /** Cancel ALL in-flight requests.
+     *
+     * Audit #7 scope note: the registry only ever holds requests made
+     * through LLMHttpClient, and every production construction site is an
+     * LLM provider adapter (openrouter/openai-compatible/nvidia/gemini/
+     * cloudflare) — so today this cancels LLM traffic only. Do NOT reuse
+     * this class for non-LLM APIs: a future caller would silently join the
+     * blast radius of memory-pressure cancellation. Needs its own client.
+     */
     static cancelAll(): number {
         const count = LLMHttpClient._inflight.size;
         for (const [, entry] of LLMHttpClient._inflight) {
