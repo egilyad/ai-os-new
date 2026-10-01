@@ -123,14 +123,14 @@ const ROUTE_PREDICTIONS: Record<string, Prediction[]> = {
         {
             id: 'appearance',
             label: 'nav.appearance',
-            path: '/settings',
+            path: '/settings?tab=appearance',
             reason: 'prediction.appearance',
             icon: '🎨',
         },
         {
             id: 'notifications',
             label: 'nav.notifications',
-            path: '/settings',
+            path: '/settings?tab=notifications',
             reason: 'prediction.notifications',
             icon: '🔔',
         },

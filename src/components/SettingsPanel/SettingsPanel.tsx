@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     Settings,
@@ -64,10 +65,33 @@ function AiModulesTab() {
     );
 }
 
+const VALID_TABS: ReadonlySet<string> = new Set([
+    'general',
+    'writing',
+    'reading',
+    'alerts',
+    'prompts',
+    'advanced',
+    'notifications',
+    'appearance',
+    'llmKeys',
+    'platform',
+    'aiModules',
+    'systemPrompts',
+    'n8n',
+    'system',
+]);
+
 const SettingsPanel: React.FC = () => {
     const { t } = useTranslation();
     const { confirm, ConfirmDialog } = useConfirm();
-    const [activeTab, setActiveTab] = useState<SettingsTab>('general');
+    const [searchParams] = useSearchParams();
+    // 7.15: deep-link support (?tab=appearance) for predictions/links.
+    // One-way initial value — tab switches afterwards stay local.
+    const [activeTab, setActiveTab] = useState<SettingsTab>(() => {
+        const tab = searchParams.get('tab');
+        return tab && VALID_TABS.has(tab) ? (tab as SettingsTab) : 'general';
+    });
     const [settings, setSettings] = useState<SystemSettings>(() => {
         try {
             return settingsService.getSettings();
