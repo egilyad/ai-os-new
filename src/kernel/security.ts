@@ -57,13 +57,31 @@ export class SecurityService implements ISecurityService {
         try {
             const prevSalt = this._salt;
             const prevKey = this._key;
+            // Verify the old password WITHOUT exportKey: derived keys are
+            // non-extractable on purpose (export would defeat that), so
+            // prove equality with an encrypt/decrypt round-trip instead.
+            // Wrong password → AES-GCM auth fails → null.
             const oldKey = await this._deriveKey(oldPassword, prevSalt);
-            const oldKeyBytes = await crypto.subtle.exportKey('raw', oldKey);
-            const curKeyBytes = await crypto.subtle.exportKey('raw', prevKey);
-
-            if (base64Encode(oldKeyBytes) !== base64Encode(curKeyBytes)) {
-                return false;
+            const probe = new TextEncoder().encode('password-check');
+            const probeIv = crypto.getRandomValues(new Uint8Array(IV_LENGTH));
+            let oldOk = false;
+            try {
+                const ct = await crypto.subtle.encrypt(
+                    { name: ALGORITHM, iv: probeIv },
+                    oldKey,
+                    probe,
+                );
+                const pt = await crypto.subtle.decrypt(
+                    { name: ALGORITHM, iv: probeIv },
+                    prevKey,
+                    ct,
+                );
+                const a = new Uint8Array(pt);
+                oldOk = a.length === probe.length && a.every((b, i) => b === probe[i]);
+            } catch {
+                oldOk = false;
             }
+            if (!oldOk) return false;
 
             const newSalt = crypto.getRandomValues(new Uint8Array(SALT_LENGTH));
             const newKey = await this._deriveKey(newPassword, newSalt);
