@@ -33,6 +33,7 @@ export class BudgetService implements IBudgetService {
     private _initialized = false;
 
     private monthlyBudget: number = 50;
+    private warnedUnbounded = new Set<string>();
     private providerBudgets: Record<string, number> = {};
     private costHistory: CostEstimate[] = [];
     private _costDedupSet?: Set<string>;
@@ -406,7 +407,20 @@ export class BudgetService implements IBudgetService {
 
     canUseProvider(provider: string, estimatedCost: number = 0): boolean {
         const providerBudget = this.providerBudgets[provider.toLowerCase()];
-        if (!providerBudget || providerBudget <= 0) return true;
+        if (!providerBudget || providerBudget <= 0) {
+            // 9.19: an unbounded provider bypasses all gates and later hits
+            // the global cap with zero warning. Behavior stays permissive
+            // (a global fallback here would suddenly block default setups),
+            // but the unbounded state is now said out loud, once per provider.
+            const key = provider.toLowerCase();
+            if (!this.warnedUnbounded.has(key)) {
+                this.warnedUnbounded.add(key);
+                LOGGER.warn('BudgetService', 'provider has no budget limit — spend is unbounded', {
+                    provider: key,
+                });
+            }
+            return true;
+        }
         const pSpent = this.computeProviderSpend(provider);
         return pSpent + estimatedCost <= providerBudget;
     }
