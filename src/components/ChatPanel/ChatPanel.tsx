@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useSearchParams } from 'react-router-dom';
 import { useKeyList } from '../../stores/useKeyStore';
 import { useChatStore } from '../../stores/useChatStore';
+import { useUiPreferences } from '../../stores/uiPreferencesStore';
 import MessageSearchPanel from '../MessageSearchPanel';
 import { useTranslation } from '../../i18n/useTranslation';
 import ChatSidebar from './ChatSidebar';
@@ -150,10 +151,14 @@ const ChatPanel: React.FC = () => {
     // Re-enable with debounced single-shot if needed.
 
     const { t } = useTranslation();
-    const [showSidebar, setShowSidebar] = useState(true);
+    // 7.9: view prefs survive navigation via persisted ui store (keys and
+    // model already restore from global defaults + per-chat overrides).
+    const showSidebar = useUiPreferences((s) => s.chatShowSidebar);
+    const setShowSidebar = useUiPreferences((s) => s.setChatShowSidebar);
+    const displayMode = useUiPreferences((s) => s.chatDisplayMode);
+    const setDisplayMode = useUiPreferences((s) => s.setChatDisplayMode);
     const [editingEntryId, setEditingEntryId] = useState<string | null>(null);
     const [editingText, setEditingText] = useState('');
-    const [displayMode, setDisplayMode] = useState<'standard' | 'technical'>('standard');
     const [isSplitView, setIsSplitView] = useState(
         () => storageAdapter.getItem('chat-split-view') === 'true',
     );
@@ -341,7 +346,7 @@ const ChatPanel: React.FC = () => {
                     }}
                     displayMode={displayMode}
                     onToggleDisplayMode={() =>
-                        setDisplayMode((d) => (d === 'standard' ? 'technical' : 'standard'))
+                        setDisplayMode(displayMode === 'standard' ? 'technical' : 'standard')
                     }
                     isSplitView={isSplitView}
                     onToggleSplitView={() => {

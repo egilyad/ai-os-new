@@ -13,6 +13,9 @@ export interface UiPreferencesState {
     pinnedSidebar: string[];
     recentCommands: string[];
     designTokenOverrides: Record<string, string>;
+    // 7.9: chat view prefs lost on every navigation (local useState).
+    chatShowSidebar: boolean;
+    chatDisplayMode: 'standard' | 'technical';
 }
 
 export interface UiPreferencesActions {
@@ -26,6 +29,8 @@ export interface UiPreferencesActions {
     getRecentCommands: () => string[];
     setDesignTokenOverrides: (overrides: Record<string, string>) => void;
     clearDesignTokenOverrides: () => void;
+    setChatShowSidebar: (v: boolean) => void;
+    setChatDisplayMode: (mode: 'standard' | 'technical') => void;
 }
 
 const MAX_RECENT = 8;
@@ -41,6 +46,8 @@ export const useUiPreferences = create<UiPreferencesState & UiPreferencesActions
             pinnedSidebar: [],
             recentCommands: [],
             designTokenOverrides: {},
+            chatShowSidebar: true,
+            chatDisplayMode: 'standard',
 
             setOnboardingCompleted: (v) => set({ onboardingCompleted: v }),
 
@@ -85,10 +92,14 @@ export const useUiPreferences = create<UiPreferencesState & UiPreferencesActions
             setDesignTokenOverrides: (overrides) => set({ designTokenOverrides: overrides }),
 
             clearDesignTokenOverrides: () => set({ designTokenOverrides: {} }),
+
+            setChatShowSidebar: (chatShowSidebar) => set({ chatShowSidebar }),
+
+            setChatDisplayMode: (chatDisplayMode) => set({ chatDisplayMode }),
         }),
         {
             name: 'super-agents-ui-prefs',
-            version: 2,
+            version: 3,
             migrate: (persisted: unknown, version: number) => {
                 if (version === 0) {
                     const v0 = persisted as Partial<UiPreferencesState>;
@@ -101,6 +112,16 @@ export const useUiPreferences = create<UiPreferencesState & UiPreferencesActions
                         pinnedSidebar: v0.pinnedSidebar ?? [],
                         recentCommands: v0.recentCommands ?? [],
                         designTokenOverrides: v0.designTokenOverrides ?? {},
+                        chatShowSidebar: true,
+                        chatDisplayMode: 'standard' as const,
+                    } as UiPreferencesState;
+                }
+                if (version < 3) {
+                    const v2 = persisted as Partial<UiPreferencesState>;
+                    return {
+                        ...(v2 as object),
+                        chatShowSidebar: v2.chatShowSidebar ?? true,
+                        chatDisplayMode: v2.chatDisplayMode ?? 'standard',
                     } as UiPreferencesState;
                 }
                 return persisted as UiPreferencesState;
@@ -114,6 +135,8 @@ export const useUiPreferences = create<UiPreferencesState & UiPreferencesActions
                 pinnedSidebar: state.pinnedSidebar,
                 recentCommands: state.recentCommands,
                 designTokenOverrides: state.designTokenOverrides,
+                chatShowSidebar: state.chatShowSidebar,
+                chatDisplayMode: state.chatDisplayMode,
             }),
         },
     ),
