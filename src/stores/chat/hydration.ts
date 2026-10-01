@@ -113,7 +113,13 @@ export function useChatStoreHydration(): void {
                 if (parsed.length > 0) {
                     for (const session of parsed) {
                         const existing = await sStore.getSession(session.id);
+                        // 3.9: the backup is newer than Dexie when the 1s
+                        // debounced flush didn't survive unload — newer wins,
+                        // otherwise ≤1s of tail edits are silently lost.
                         if (!existing) await sStore.put(session);
+                        else if ((session.updatedAt ?? 0) > (existing.updatedAt ?? 0)) {
+                            await sStore.put(session);
+                        }
                     }
                 }
             } catch (err) {
