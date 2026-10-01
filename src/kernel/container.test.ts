@@ -199,7 +199,7 @@ describe('Container', () => {
             vi.useRealTimers();
         });
 
-        it('caches factory failure for 60s and re-throws', () => {
+        it('caches factory failure for 5s and re-throws', () => {
             const factory = vi.fn(() => {
                 throw new Error('factory error');
             });
@@ -210,7 +210,7 @@ describe('Container', () => {
             expect(factory).toHaveBeenCalledTimes(1);
         });
 
-        it('retries after 60s TTL expires', () => {
+        it('retries after 5s TTL expires', () => {
             let attempt = 0;
             container.registerFactory('svc', () => {
                 attempt++;
@@ -218,7 +218,7 @@ describe('Container', () => {
                 return makeService({ name: 'recovered' });
             });
             expect(() => container.get('svc')).toThrow('fail');
-            vi.advanceTimersByTime(60_001);
+            vi.advanceTimersByTime(5_001);
             expect(container.get<MockService>('svc').name).toBe('recovered');
         });
     });

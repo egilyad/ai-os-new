@@ -38,7 +38,10 @@ export class Container implements IContainer {
     private activeFactoryId: ServiceIdentifier | null = null;
     private transientFactories = new Map<ServiceIdentifier, (container: IContainer) => unknown>();
     private failedFactories = new Map<ServiceIdentifier, { error: unknown; timestamp: number }>();
-    private static readonly FACTORY_FAILURE_TTL = 60_000;
+    // Audit #8: was 60s — a transient failure at boot (e.g. IndexedDB not
+    // ready yet) blocked every service for a full minute. 5s keeps the
+    // hot-loop protection without the boot deadlock.
+    private static readonly FACTORY_FAILURE_TTL = 5_000;
     private registrationOrder: ServiceIdentifier[] = [];
     private resolving = new Set<ServiceIdentifier>();
 
