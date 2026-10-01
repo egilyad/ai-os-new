@@ -134,11 +134,15 @@ export class RouterDebateSelector {
                 return `${k.provider}:${k.id.slice(0, 8)} health=${ks?.healthScore ?? 'N/A'} auth=${!ks?.flags.authFailed}`;
             }),
         });
-        const uniqueProviders = new Map<string, ApiKey>();
+        // Audit R1: was collapse-to-1-key-per-provider — the other 16 keys
+        // of a 20-key fleet only surfaced in last-resort brute-force.
+        // Keep up to 3 keys per provider so Step 4 failover has depth;
+        // provider-diversity ordering (PRIORITY sort) is preserved.
+        const byProvider = new Map<string, ApiKey[]>();
         for (const k of activeKeys) {
-            if (!uniqueProviders.has(k.provider)) {
-                uniqueProviders.set(k.provider, k);
-            }
+            const arr = byProvider.get(k.provider) ?? [];
+            if (arr.length < 3) arr.push(k);
+            byProvider.set(k.provider, arr);
         }
         const PRIORITY = [
             'groq',
@@ -154,14 +158,14 @@ export class RouterDebateSelector {
             'blackbox',
             'cometapi',
         ];
-        const sorted = Array.from(uniqueProviders.entries()).sort(([a], [b]) => {
+        const sorted = Array.from(byProvider.entries()).sort(([a], [b]) => {
             const ia = PRIORITY.indexOf(a);
             const ib = PRIORITY.indexOf(b);
             return (ia === -1 ? 999 : ia) - (ib === -1 ? 999 : ib);
         });
         return sorted
             .slice(0, Math.min(count, sorted.length))
-            .map(([provider, key]) => ({ provider, key }));
+            .flatMap(([provider, keys]) => keys.map((key) => ({ provider, key })));
     }
 
     getProviderStats() {
