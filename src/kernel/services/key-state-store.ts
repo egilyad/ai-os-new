@@ -501,9 +501,18 @@ export class KeyStateStore implements IKeyStateStore, ILifecycle {
         if (elapsedMin <= 0 || state.healthScore >= 100) return state;
         const recovered = Math.min(100, state.healthScore + RECOVERY_RATE_PER_MIN * elapsedMin);
         const hs = recovered;
+        // Clear rateLimited flag after 30min (must outlast probe interval 300s to avoid
+        // probing rate-limited keys every cycle). Rate limits typically reset in seconds;
+        // after 30min a fresh probe will correctly re-evaluate status.
+        // R3: same for the authFailed latch — probes skip flagged keys, so
+        // without expiry one 401/402 killed the key forever. A genuinely
+        // dead key re-latches on the next real 401.
+        let flags = state.flags;
+        if (flags.rateLimited && elapsedMin >= 30) flags = { ...flags, rateLimited: false };
+        if (flags.authFailed && elapsedMin >= 30) flags = { ...flags, authFailed: false };
         let weight = hs >= 75 ? 1 : hs >= 50 ? 0.5 : hs >= 25 ? 0.25 : hs >= 10 ? 0.1 : 0;
         if (state.health.consecutiveErrors > 3) weight *= 0.5;
-        if (state.flags.authFailed) weight = 0;
+        if (flags.authFailed) weight = 0;
 
         const lifecycleMultiplier =
             state.lifecycleState === 'active'
@@ -519,13 +528,6 @@ export class KeyStateStore implements IKeyStateStore, ILifecycle {
                         : 1;
         weight *= lifecycleMultiplier;
 
-        // Clear rateLimited flag after 30min (must outlast probe interval 300s to avoid
-        // probing rate-limited keys every cycle). Rate limits typically reset in seconds;
-        // after 30min a fresh probe will correctly re-evaluate status.
-        const flags =
-            state.flags.rateLimited && elapsedMin >= 30
-                ? { ...state.flags, rateLimited: false }
-                : state.flags;
         const hasWorkingModel =
             state.modelHealth && Object.values(state.modelHealth).some((v) => v === 'ok');
         if (hs < 25 && hasWorkingModel) weight = Math.max(weight, 0.25);
