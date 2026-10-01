@@ -442,13 +442,25 @@ export class KeyStateStore implements IKeyStateStore, ILifecycle {
                 remaining: number;
                 resetAt: number;
             }>(EVENTS.PROVIDER_RATE_LIMIT_SYNCED, (payload) => {
-                for (const [id, state] of this.states) {
-                    if (state.provider.toLowerCase() === payload.provider.toLowerCase()) {
-                        this.update(id, {
-                            flags: { ...state.flags, rateLimited: payload.remaining <= 0 },
-                        });
-                        this.recomputeRouting(id);
-                    }
+                // Audit R4: was fanned out to EVERY key of the provider —
+                // one key's 429 banned its 5 siblings. Scope to the key when
+                // the event carries one (it does); provider-wide only as
+                // fallback for legacy payloads without keyId.
+                const targets =
+                    payload.keyId && this.states.has(payload.keyId)
+                        ? [payload.keyId]
+                        : [...this.states].filter(
+                                ([, s]) =>
+                                    s.provider.toLowerCase() ===
+                                    payload.provider.toLowerCase(),
+                            ).map(([id]) => id);
+                for (const id of targets) {
+                    const state = this.states.get(id);
+                    if (!state) continue;
+                    this.update(id, {
+                        flags: { ...state.flags, rateLimited: payload.remaining <= 0 },
+                    });
+                    this.recomputeRouting(id);
                 }
             }),
         );
@@ -461,18 +473,28 @@ export class KeyStateStore implements IKeyStateStore, ILifecycle {
                 timestamp: number;
                 statusCode?: number;
             }>(EVENTS.PROVIDER_ERROR_SYNCED, (payload) => {
-                for (const [id, state] of this.states) {
-                    if (state.provider.toLowerCase() === payload.provider.toLowerCase()) {
-                        const ce = (state.health.consecutiveErrors ?? 0) + 1;
-                        this.update(id, {
-                            health: {
-                                ...state.health,
-                                consecutiveErrors: ce,
-                                errorRate: Math.min(1, ce / 10),
-                            },
-                        });
-                        this.recomputeRouting(id);
-                    }
+                // Audit R4: same scoping as rate-limit above — a single
+                // key's error must not poison its siblings' error counters.
+                const targets =
+                    payload.keyId && this.states.has(payload.keyId)
+                        ? [payload.keyId]
+                        : [...this.states].filter(
+                                ([, s]) =>
+                                    s.provider.toLowerCase() ===
+                                    payload.provider.toLowerCase(),
+                            ).map(([id]) => id;
+                for (const id of targets) {
+                    const state = this.states.get(id);
+                    if (!state) continue;
+                    const ce = (state.health.consecutiveErrors ?? 0) + 1;
+                    this.update(id, {
+                        health: {
+                            ...state.health,
+                            consecutiveErrors: ce,
+                            errorRate: Math.min(1, ce / 10),
+                        },
+                    });
+                    this.recomputeRouting(id);
                 }
             }),
         );
