@@ -289,14 +289,14 @@ const ChatPanel: React.FC = () => {
         } catch {
             // session creation failed — error logged by createSession
         }
-    }, [createSession, setActiveSessionId]);
+    }, [createSession, setActiveSessionId, setShowSidebar]);
 
     const handleSidebarSessionClick = useCallback(
         (id: string) => {
             setActiveSessionId(id);
             setShowSidebar(false);
         },
-        [setActiveSessionId],
+        [setActiveSessionId, setShowSidebar],
     );
 
     useEffect(() => {
