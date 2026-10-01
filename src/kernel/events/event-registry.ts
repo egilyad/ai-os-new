@@ -365,6 +365,11 @@ export const EVENT_REGISTRY = {
                 .optional(),
         }),
     ),
+    // 5.1: WIRE ENCODING — intentionally NOT RouterDecision-shaped.
+    // scores use compact {p, s, c} (provider, score.toFixed(3) STRING,
+    // components) to keep bus payloads small. Consumers must read p/s/c,
+    // never RouterDecision's {provider, score: number}. The SYSTEM_DECISION
+    // alias below MUST stay structurally identical (drift test enforces).
     DECISION: event(
         'system:decision',
         z.object({
