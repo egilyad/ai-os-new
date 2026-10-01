@@ -50,7 +50,14 @@ export function recalculateEffectiveWeights(state: SystemState): void {
 }
 
 export function setSLAMode(state: SystemState, mode: string): void {
-    if (!VALID_SLA_MODES.includes(mode)) return;
+    // Audit #9: was silent `return` — a typo'd mode left the router on the
+    // previous preset with zero signal. Fail loud (setBaseWeights below
+    // already throws on bad input — same contract).
+    if (!VALID_SLA_MODES.includes(mode)) {
+        throw new Error(
+            `Unknown SLA mode "${mode}". Valid: ${VALID_SLA_MODES.join(', ')}`,
+        );
+    }
     state.activeSLA = mode as SLAMode;
 
     const weights: Record<string, { ttft: number; tps: number; reliability: number }> = {
