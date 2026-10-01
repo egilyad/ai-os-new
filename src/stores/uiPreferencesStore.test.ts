@@ -134,7 +134,7 @@ describe('useUiPreferences', () => {
         expect(raw).toBeTruthy();
         const parsed = JSON.parse(raw as string);
         expect(parsed.state.theme).toBe('light');
-        expect(parsed.version).toBe(2);
+        expect(parsed.version).toBe(3);
     });
 });
 
