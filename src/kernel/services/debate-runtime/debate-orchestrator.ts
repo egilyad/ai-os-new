@@ -28,17 +28,22 @@ export class DebateOrchestrator implements IDebateOrchestrator {
     private aborted = new Set<string>();
     private abortControllers = new Map<string, AbortController>();
     private executor: AgentExecutor | undefined;
-    // P2.24: Track agent participation for adaptive speaking order
+    // P2.24: Track agent participation for adaptive speaking order.
+    // Audit #4: keyed by `${sessionId}:${agentId}` — plain agentIds
+    // collided across concurrent sessions AND destroy(sessionId) deleted
+    // nothing (keys were agent ids, not session ids).
     private participationCount = new Map<string, number>();
-    // Track which agent each agent last responded to (for responsive ordering in later rounds)
-    private lastInteraction = new Map<string, string>();
-    // P2.13: Bidding for Speaking Time — agents bid relevance for the floor
     private bidScores = new Map<string, number>();
+
+    private pkey(sessionId: string, agentId: string): string {
+        return `${sessionId}:${agentId}`;
+    }
 
     constructor(private topologyService: DebateTopologyService) {}
 
     // P2.13: Compute bid score for an agent based on role relevance to last argument
     private computeBid(
+        sessionId: string,
         agentId: string,
         role: string | undefined,
         lastArgRole: string | undefined,
@@ -55,7 +60,7 @@ export class DebateOrchestrator implements IDebateOrchestrator {
         }
 
         // Participation balance: agents who spoke less bid higher
-        const count = this.participationCount.get(agentId) ?? 0;
+        const count = this.participationCount.get(this.pkey(sessionId, agentId)) ?? 0;
         score += Math.max(0, 0.2 - count * 0.05);
 
         // Random jitter for variety (deterministic based on agentId + round)
@@ -139,21 +144,18 @@ export class DebateOrchestrator implements IDebateOrchestrator {
 
             // P2.24: Adaptive Speaking Order — reorder agents based on
             // participation balance. Early rounds: quiet agents go first.
-            // Later rounds: prioritize recently-challenged agents.
+            // (Responsive ordering via lastInteraction lives in
+            // debate-policy; the orchestrator-local map was write-never.)
             const orderedNodes = [...nodeGroup].sort((a, b) => {
-                const countA = this.participationCount.get(a.id) ?? 0;
-                const countB = this.participationCount.get(b.id) ?? 0;
+                const countA = this.participationCount.get(this.pkey(sessionId, a.id)) ?? 0;
+                const countB = this.participationCount.get(this.pkey(sessionId, b.id)) ?? 0;
                 if (roundNum <= 3) {
                     // Early rounds: balance participation — prioritize agents
                     // who have spoken less
                     if (countA !== countB) return countA - countB;
                 } else {
-                    // Later rounds: responsive ordering — agents who were
-                    // recently targeted get priority
-                    const interactionDiff =
-                        (this.lastInteraction.get(b.id) ? 1 : 0) -
-                        (this.lastInteraction.get(a.id) ? 1 : 0);
-                    if (interactionDiff !== 0) return interactionDiff;
+                    // Later rounds: responsive ordering data lives in
+                    // debate-policy; fall back to participation balance.
                     // Fall back to participation balance
                     if (countA !== countB) return countA - countB;
                 }
@@ -172,13 +174,14 @@ export class DebateOrchestrator implements IDebateOrchestrator {
             const remainingNodes = [...orderedNodes];
             for (let i = 0; i < remainingNodes.length; i++) {
                 const bid = this.computeBid(
+                    sessionId,
                     remainingNodes[i]!.id,
                     remainingNodes[i]!.label,
                     undefined,
                     '',
                     roundNum,
                 );
-                this.bidScores.set(remainingNodes[i]!.id, bid);
+                this.bidScores.set(this.pkey(sessionId, remainingNodes[i]!.id), bid);
             }
 
             for (let ni = 0; ni < remainingNodes.length; ni++) {
@@ -217,31 +220,38 @@ export class DebateOrchestrator implements IDebateOrchestrator {
 
                     if (result.success) {
                         // P2.24: Track participation for adaptive ordering
+                        const pkey = this.pkey(sessionId, node.id);
                         this.participationCount.set(
-                            node.id,
-                            (this.participationCount.get(node.id) ?? 0) + 1,
+                            pkey,
+                            (this.participationCount.get(pkey) ?? 0) + 1,
                         );
                         // P2.13: Update last argument context for bidding relevance
-                        lastArgRole = node.id;
+                        // Audit #3: computeBid compares ROLE labels — storing
+                        // node.id here made the equality branch dead (label
+                        // never equals id), so rebuttal priority never applied.
+                        lastArgRole = node.label ?? node.id;
                         lastArgContent = result.content || '';
                         // Recompute bids for remaining agents based on new last argument
                         if (roundNum >= 2) {
                             for (let ri = ni + 1; ri < remainingNodes.length; ri++) {
                                 const rem = remainingNodes[ri]!;
                                 const bid = this.computeBid(
+                                    sessionId,
                                     rem.id,
                                     rem.label,
                                     lastArgRole,
                                     lastArgContent,
                                     roundNum,
                                 );
-                                this.bidScores.set(rem.id, bid);
+                                this.bidScores.set(this.pkey(sessionId, rem.id), bid);
                             }
                             // Re-sort remaining nodes by bid score descending
                             const nextNodes = remainingNodes.slice(ni + 1);
                             nextNodes.sort((a, b) => {
-                                const scoreA = this.bidScores.get(a.id) ?? 0;
-                                const scoreB = this.bidScores.get(b.id) ?? 0;
+                                const scoreA =
+                                    this.bidScores.get(this.pkey(sessionId, a.id)) ?? 0;
+                                const scoreB =
+                                    this.bidScores.get(this.pkey(sessionId, b.id)) ?? 0;
                                 if (scoreA !== scoreB) return scoreB - scoreA;
                                 return a.id.localeCompare(b.id);
                             });
@@ -306,16 +316,20 @@ export class DebateOrchestrator implements IDebateOrchestrator {
             } else {
                 this.aborted.delete(sessionId);
             }
-            this.participationCount.delete(sessionId);
-            this.lastInteraction.delete(sessionId);
-            this.bidScores.delete(sessionId);
+            // Audit #4: maps are keyed `${sessionId}:${agentId}` — sweep by
+            // prefix (the old per-key delete(sessionId) never matched).
+            const prefix = `${sessionId}:`;
+            for (const m of [this.participationCount, this.bidScores]) {
+                for (const k of [...m.keys()]) {
+                    if (k.startsWith(prefix)) m.delete(k);
+                }
+            }
         } else {
             if (this.conversationOrchestrator) {
                 this.conversationOrchestrator.clearAbortAll();
             }
             this.aborted.clear();
             this.participationCount.clear();
-            this.lastInteraction.clear();
             this.bidScores.clear();
         }
     }
