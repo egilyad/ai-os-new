@@ -26,18 +26,37 @@ interface JudgeResult {
     reasoning: string;
 }
 
-function combineSignals(...signals: AbortSignal[]): AbortSignal {
+function combineSignals(...signals: AbortSignal[]): { signal: AbortSignal; dispose: () => void } {
     const controller = new AbortController();
+    const cleanups: Array<() => void> = [];
+    let preAborted = false;
     for (const sig of signals) {
         if (sig.aborted) {
-            controller.abort(new Error('CombinedSignalAlreadyAborted'));
-            return controller.signal;
+            preAborted = true;
+            continue;
         }
-        sig.addEventListener('abort', () => controller.abort(new Error('CombinedSignalAborted')), {
-            once: true,
-        });
+        // 1.4: named handler (not inline) so it can be removed — inline
+        // once:true listeners accumulated on the long-lived session signal
+        // on every verdict regeneration.
+        const onAbort = () => {
+            dispose();
+            controller.abort(new Error('CombinedSignalAborted'));
+        };
+        sig.addEventListener('abort', onAbort, { once: true });
+        cleanups.push(() => sig.removeEventListener('abort', onAbort));
     }
-    return controller.signal;
+    function dispose(): void {
+        for (const c of cleanups.splice(0)) {
+            try {
+                c();
+            } catch {
+                /* already removed */
+            }
+        }
+    }
+    controller.signal.addEventListener('abort', dispose, { once: true });
+    if (preAborted) controller.abort(new Error('CombinedSignalAlreadyAborted'));
+    return { signal: controller.signal, dispose };
 }
 
 const MAX_ENHANCED_SESSIONS = 500;
@@ -291,9 +310,10 @@ export class DebateConclusionEngine {
                     () => judgeController.abort(new Error(`${perspective.label}TimedOut`)),
                     perJudgeTimeoutMs,
                 );
-                const combinedSig = signal
+                const combined = signal
                     ? combineSignals(signal, judgeController.signal)
-                    : judgeController.signal;
+                    : null;
+                const combinedSig = combined ? combined.signal : judgeController.signal;
 
                 try {
                     const prompt = this.buildLLMPrompt(
@@ -305,6 +325,7 @@ export class DebateConclusionEngine {
                     );
                     const response = await this.llmCall(prompt, combinedSig);
                     clearTimeout(judgeTimer);
+                    combined?.dispose();
                     const parsed = this.parseJudgeResponse(response);
                     judgeResults.push({
                         label: perspective.label,
@@ -314,6 +335,7 @@ export class DebateConclusionEngine {
                     });
                 } catch {
                     clearTimeout(judgeTimer);
+                    combined?.dispose();
                     judgeResults.push({
                         label: perspective.label,
                         summary: `[${perspective.label}] Judge deliberation failed`,
