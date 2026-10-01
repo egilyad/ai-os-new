@@ -191,6 +191,20 @@ export class DebateProviderResolver {
         return state?.flags.authFailed === true;
     }
 
+    /**
+     * Audit R2: the resolver filtered only by active/auth/tried — a key
+     * mid rate-limit or with an open circuit was picked, burned a retry,
+     * and only then skipped. Cooling-down keys are now filtered up front.
+     * healthScore is deliberately NOT a hard gate here (soft signal —
+     * gating on it could starve debates when all scores are low).
+     */
+    isKeyCoolingDown(keyId: string): boolean {
+        const kss = this.deps.getKeyStateStore?.();
+        if (!kss) return false;
+        const state = kss.get(keyId);
+        return state?.flags.rateLimited === true || state?.flags.circuitOpen === true;
+    }
+
     private isCircuitOpen(provider: string): boolean {
         try {
             const registry = this.deps.adapterRegistry;
@@ -296,6 +310,7 @@ export class DebateProviderResolver {
                     k.provider === participant.provider &&
                     k.status === 'active' &&
                     !this.isKeyAuthFailed(k.id) &&
+                    !this.isKeyCoolingDown(k.id) &&
                     !triedKeys.has(k.id) &&
                     hasAnyUntriedModel(k.provider, k.availableModels),
             );
@@ -310,6 +325,7 @@ export class DebateProviderResolver {
                         k.provider === cachedProvider &&
                         k.status === 'active' &&
                         !this.isKeyAuthFailed(k.id) &&
+                        !this.isKeyCoolingDown(k.id) &&
                         !triedKeys.has(k.id) &&
                         hasAnyUntriedModel(k.provider, k.availableModels),
                 );
@@ -326,6 +342,7 @@ export class DebateProviderResolver {
                     if (!this.providerCanBeUsed(k.provider, session)) return false;
                     if (k.status !== 'active') return false;
                     if (this.isKeyAuthFailed(k.id)) return false;
+                    if (this.isKeyCoolingDown(k.id)) return false;
                     if (!hasAnyUntriedModel(k.provider, k.availableModels)) return false;
                     // Check if this provider can handle the requested model
                     if (isModelCompatibleWithProvider(participant.modelId!, k.provider)) {
@@ -359,6 +376,7 @@ export class DebateProviderResolver {
                     this.providerCanBeUsed(pk.key.provider, session) &&
                     pk.key.status === 'active' &&
                     !this.isKeyAuthFailed(pk.key.id) &&
+                    !this.isKeyCoolingDown(pk.key.id) &&
                     !triedKeys.has(pk.key.id) &&
                     hasAnyUntriedModel(pk.key.provider, pk.key.availableModels),
             );
@@ -392,7 +410,11 @@ export class DebateProviderResolver {
                 if (triedKeys.has(k.id)) return false;
                 if (!hasAnyUntriedModel(k.provider, k.availableModels)) return false;
                 const key = allKeys.find((key) => key.id === k.id);
-                return key?.status === 'active' && !this.isKeyAuthFailed(k.id);
+                return (
+                    key?.status === 'active' &&
+                    !this.isKeyAuthFailed(k.id) &&
+                    !this.isKeyCoolingDown(k.id)
+                );
             });
             if (available) resolvedKey = available;
         }
