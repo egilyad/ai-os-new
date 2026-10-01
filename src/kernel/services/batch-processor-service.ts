@@ -206,22 +206,24 @@ export class BatchProcessorService implements ILifecycle {
             const tasks = job.tasks.slice();
             for (let i = 0; i < tasks.length && !abortController.signal.aborted; i += CONCURRENCY) {
                 const chunk = tasks.slice(i, i + CONCURRENCY);
+                // 1.6: named handler removed when the chunk settles — the
+                // inline once:true version accumulated one listener per
+                // chunk on the job signal for the whole job lifetime.
+                let onAbort: (() => void) | null = null;
                 const timeout = new Promise<BatchResult>((_, reject) => {
                     const t = setTimeout(() => reject(new Error('Task timeout')), TASK_TIMEOUT_MS);
-                    abortController.signal.addEventListener(
-                        'abort',
-                        () => {
-                            clearTimeout(t);
-                            reject(new Error('Cancelled'));
-                        },
-                        { once: true },
-                    );
+                    onAbort = () => {
+                        clearTimeout(t);
+                        reject(new Error('Cancelled'));
+                    };
+                    abortController.signal.addEventListener('abort', onAbort, { once: true });
                 });
                 const chunkResults = await Promise.allSettled(
                     chunk.map((task) =>
                         Promise.race([processTask(task, abortController.signal), timeout]),
                     ),
                 );
+                if (onAbort) abortController.signal.removeEventListener('abort', onAbort);
                 for (const r of chunkResults) {
                     if (r.status === 'fulfilled') {
                         job.results.push(r.value);
