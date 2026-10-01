@@ -489,7 +489,9 @@ export class SystemBootstrap implements IBootstrap {
             });
         }
 
-        // Auto-resume interrupted debates
+        // Audit #4: interrupted debates are marked failed, NOT resumed —
+        // true resume (rehydrate + continue mid-phase) doesn't exist.
+        // Sessions stay in history and can be reopened manually.
         try {
             const allSessions = await getDexieDb().debateSessions.toArray();
             let interruptedCount = 0;
@@ -498,7 +500,7 @@ export class SystemBootstrap implements IBootstrap {
                     if (!s.id || !s.topic) {
                         this.logger.warn(
                             'Bootstrap',
-                            'Skipping invalid debate session during auto-resume',
+                            'Skipping invalid debate session during interrupted check',
                             { id: s.id },
                         );
                         continue;
@@ -515,11 +517,11 @@ export class SystemBootstrap implements IBootstrap {
             if (interruptedCount > 0) {
                 this.logger.info(
                     'Bootstrap',
-                    `Marked ${interruptedCount} debate(s) as interrupted`,
+                    `Marked ${interruptedCount} interrupted debate(s) as failed (reopen from history to retry)`,
                 );
             }
         } catch (e) {
-            this.logger.warn('Bootstrap', 'Auto-resume debate check failed (non-critical)', {
+            this.logger.warn('Bootstrap', 'Interrupted debate check failed (non-critical)', {
                 error: e,
             });
         }
