@@ -11,6 +11,7 @@ import {
 import { eventBus, EVENTS } from '../../kernel/instances';
 import { DebateRuntimeEvents } from '../../kernel/events/debate-runtime-events';
 import { useTranslation } from '../../i18n/useTranslation';
+import { useUiPreferences } from '../../stores/uiPreferencesStore';
 import ModuleInfo from '../ModuleInfo';
 import type {
     DebateSessionSnapshot,
@@ -54,7 +55,15 @@ const DebateRuntimePanel: React.FC = () => {
     const navigate = useNavigate();
     const isMobile = useMediaQuery('(max-width: 767px)');
     const [sessions, setSessions] = useState<DebateSessionSnapshot[]>([]);
-    const [selectedId, setSelectedId] = useState<string | null>(null);
+    // Reset audit H2: selection died on every remount (tab switch, suspense,
+    // navigation) while the engine kept running. Persisted in ui-prefs.
+    const [selectedId, setSelectedIdState] = useState<string | null>(
+        () => useUiPreferences.getState().debateSelectedId ?? null,
+    );
+    const setSelectedId = useCallback((id: string | null) => {
+        setSelectedIdState(id);
+        useUiPreferences.getState().setDebateSelectedId(id);
+    }, []);
     const [topic, setTopic] = useState('');
     const [topologyType, setTopologyType] = useState<TopologyType>('roundtable');
     const [error, setError] = useState<string | null>(null);

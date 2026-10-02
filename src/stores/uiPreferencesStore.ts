@@ -16,6 +16,8 @@ export interface UiPreferencesState {
     // 7.9: chat view prefs lost on every navigation (local useState).
     chatShowSidebar: boolean;
     chatDisplayMode: 'standard' | 'technical';
+    // Reset audit H2: runtime panel selection died on every remount.
+    debateSelectedId: string | null;
 }
 
 export interface UiPreferencesActions {
@@ -31,6 +33,7 @@ export interface UiPreferencesActions {
     clearDesignTokenOverrides: () => void;
     setChatShowSidebar: (v: boolean) => void;
     setChatDisplayMode: (mode: 'standard' | 'technical') => void;
+    setDebateSelectedId: (id: string | null) => void;
 }
 
 const MAX_RECENT = 8;
@@ -48,6 +51,7 @@ export const useUiPreferences = create<UiPreferencesState & UiPreferencesActions
             designTokenOverrides: {},
             chatShowSidebar: true,
             chatDisplayMode: 'standard',
+            debateSelectedId: null,
 
             setOnboardingCompleted: (v) => set({ onboardingCompleted: v }),
 
@@ -96,10 +100,12 @@ export const useUiPreferences = create<UiPreferencesState & UiPreferencesActions
             setChatShowSidebar: (chatShowSidebar) => set({ chatShowSidebar }),
 
             setChatDisplayMode: (chatDisplayMode) => set({ chatDisplayMode }),
+
+            setDebateSelectedId: (debateSelectedId) => set({ debateSelectedId }),
         }),
         {
             name: 'super-agents-ui-prefs',
-            version: 3,
+            version: 4,
             migrate: (persisted: unknown, version: number) => {
                 if (version === 0) {
                     const v0 = persisted as Partial<UiPreferencesState>;
@@ -114,6 +120,7 @@ export const useUiPreferences = create<UiPreferencesState & UiPreferencesActions
                         designTokenOverrides: v0.designTokenOverrides ?? {},
                         chatShowSidebar: true,
                         chatDisplayMode: 'standard' as const,
+                        debateSelectedId: null,
                     } as UiPreferencesState;
                 }
                 if (version < 3) {
@@ -122,6 +129,15 @@ export const useUiPreferences = create<UiPreferencesState & UiPreferencesActions
                         ...(v2 as object),
                         chatShowSidebar: v2.chatShowSidebar ?? true,
                         chatDisplayMode: v2.chatDisplayMode ?? 'standard',
+                        debateSelectedId: null,
+                    } as UiPreferencesState;
+                }
+                if (version < 4) {
+                    const v3 = persisted as Partial<UiPreferencesState>;
+                    return {
+                        ...(v3 as object),
+                        debateSelectedId: (v3 as { debateSelectedId?: string | null })
+                            .debateSelectedId ?? null,
                     } as UiPreferencesState;
                 }
                 return persisted as UiPreferencesState;
@@ -137,6 +153,7 @@ export const useUiPreferences = create<UiPreferencesState & UiPreferencesActions
                 designTokenOverrides: state.designTokenOverrides,
                 chatShowSidebar: state.chatShowSidebar,
                 chatDisplayMode: state.chatDisplayMode,
+                debateSelectedId: state.debateSelectedId,
             }),
         },
     ),
