@@ -231,18 +231,20 @@ export async function handleDebateCallError(
         }
 
         // DEATH SPIRAL GUARD: HALF-OPEN circuit breaker means the entire provider
-        // is degraded — only 1 concurrent test request allowed. Don't waste time
-        // trying model fallbacks or alt keys for the same provider; skip it now.
+        // is degraded — only 1 concurrent test request allowed.
+        // Audit R5: do NOT markProviderFailed here — that banned the provider
+        // for the whole session on a single slow-5xx probe. The circuit
+        // itself serializes test traffic; a recovered circuit re-admits
+        // automatically. Just skip this attempt and let others compete.
         if (error.includes('HALF-OPEN')) {
             LOGGER.warn(
                 'DebateLlmErrorHandler',
-                `Provider circuit HALF-OPEN — skipping: ${state.resolvedKey.provider}`,
+                `Provider circuit HALF-OPEN — skipping attempt, provider NOT banned: ${state.resolvedKey.provider}`,
                 {
                     agentId: participant.agentId,
                     model: state.modelId,
                 },
             );
-            session.markProviderFailed(state.resolvedKey.provider);
             deps.sessionAbortControllers.get(sessionId)?.delete(participant.agentId);
             return { kind: 'continue' };
         }
@@ -393,8 +395,15 @@ export async function handleDebateCallError(
             deps.sessionAbortControllers.get(sessionId)?.delete(participant.agentId);
             return { kind: 'continue' };
         }
-        session.markProviderFailed(state.resolvedKey.provider);
-        LOGGER.warn('DebateLlmErrorHandler', `Provider failed: ${state.resolvedKey.provider}`, {
+        // Audit R6: reached only for errors no branch above classified as
+        // fatal-for-provider (auth/402 handled earlier with key flags;
+        // 429/timeout/content handled without bans). A single UNKNOWN,
+        // network or parse error must NOT session-ban the whole provider —
+        // 4 such blips used to read as "ALL providers dead" and abort the
+        // debate. Retry machinery + circuit breaker govern these; the
+        // ALL-dead check below still fires on genuinely exhausted pools
+        // (auth marks accumulate there).
+        LOGGER.warn('DebateLlmErrorHandler', `Provider error (not banning): ${state.resolvedKey.provider}`, {
             agentId: participant.agentId,
             model: state.modelId,
             error: String(e).slice(0, 100),
