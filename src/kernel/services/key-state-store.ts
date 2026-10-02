@@ -449,11 +449,13 @@ export class KeyStateStore implements IKeyStateStore, ILifecycle {
                 const targets =
                     payload.keyId && this.states.has(payload.keyId)
                         ? [payload.keyId]
-                        : [...this.states].filter(
-                                ([, s]) =>
-                                    s.provider.toLowerCase() ===
-                                    payload.provider.toLowerCase(),
-                            ).map(([id]) => id);
+                        : [...this.states]
+                                .filter(
+                                    ([, s]) =>
+                                        s.provider.toLowerCase() ===
+                                        payload.provider.toLowerCase(),
+                                )
+                                .map(([id]) => id);
                 for (const id of targets) {
                     const state = this.states.get(id);
                     if (!state) continue;
@@ -478,11 +480,13 @@ export class KeyStateStore implements IKeyStateStore, ILifecycle {
                 const targets =
                     payload.keyId && this.states.has(payload.keyId)
                         ? [payload.keyId]
-                        : [...this.states].filter(
-                                ([, s]) =>
-                                    s.provider.toLowerCase() ===
-                                    payload.provider.toLowerCase(),
-                            ).map(([id]) => id;
+                        : [...this.states]
+                                .filter(
+                                    ([, s]) =>
+                                        s.provider.toLowerCase() ===
+                                        payload.provider.toLowerCase(),
+                                )
+                                .map(([id]) => id);
                 for (const id of targets) {
                     const state = this.states.get(id);
                     if (!state) continue;
