@@ -22,6 +22,7 @@ import type { DebateSessionContext } from './debate-session-context';
 import type { DebatePostProcessor } from './debate-post-processor';
 import { DebateProviderResolver } from './debate-query-engine';
 import { validateAndSaveVerdict } from './debate-conclusion-engine';
+import { buildHeuristicVerdict } from './debate-heuristic-verdict';
 import type { DebateSessionSnapshot } from '../../contracts/debate-runtime';
 const LOGGER = rootLogger.child('DebatePipelineBuilder');
 
@@ -461,11 +462,67 @@ export function buildPipeline(engine: PipelineEngine, isResume: boolean): Debate
                         });
                     } catch (ve) {
                         clearTimeout(verdictTimer);
-                        LOGGER.warn(
-                            'DebatePipeline',
-                            'LLM-enhanced verdict failed, using heuristic',
-                            { error: ve, sessionId },
-                        );
+                        // Audit R11: this used to only log "using heuristic"
+                        // while emitting NOTHING. Build the real heuristic
+                        // verdict from gathered arguments so completed
+                        // sessions always carry one.
+                        try {
+                            const fbArgs = gatherClaims(
+                                sessionId,
+                                session.participants,
+                                (sid) => engine.getMemory(sid),
+                                session.round,
+                            );
+                            const heuristic = buildHeuristicVerdict(
+                                {
+                                    id: sessionId,
+                                    topic: session.topic,
+                                    participants: session.participants.map((p) => ({
+                                        id: p.agentId,
+                                    })),
+                                    args: fbArgs.map((c) => ({
+                                        agentId: c.agentId,
+                                        content: c.text,
+                                        confidence: c.confidence,
+                                    })),
+                                    currentRound: session.round,
+                                },
+                                'LLM verdict failed',
+                            );
+                            const debateStore = (engine as unknown as Record<string, unknown>)
+                                .debateStore as
+                                | import('../../contracts/storage/debate-store').DebateStore
+                                | undefined;
+                            if (debateStore) {
+                                await validateAndSaveVerdict(debateStore, {
+                                    sessionId: heuristic.sessionId,
+                                    topic: heuristic.topic,
+                                    summary: heuristic.summary,
+                                    conclusionType: heuristic.conclusionType,
+                                    stanceResult: heuristic.stanceResult,
+                                    keyArguments: JSON.stringify(heuristic.keyArguments),
+                                    reasoning: heuristic.reasoning,
+                                    confidence: heuristic.confidence,
+                                    generatedAt: heuristic.generatedAt,
+                                    roundsTotal: heuristic.roundsTotal,
+                                    totalTokens: heuristic.totalTokens,
+                                }).catch((se) =>
+                                    LOGGER.warn('DebatePipeline', 'heuristic verdict save failed', {
+                                        error: se,
+                                        sessionId,
+                                    }),
+                                );
+                            }
+                            engine.deps.eventBus.emitOnce(EVENTS.DEBATE_VERDICT_GENERATED, sessionId, {
+                                sessionId,
+                                verdict: heuristic,
+                            });
+                        } catch (he) {
+                            LOGGER.warn('DebatePipeline', 'heuristic verdict fallback failed', {
+                                error: he,
+                                sessionId,
+                            });
+                        }
                     }
                 }
 

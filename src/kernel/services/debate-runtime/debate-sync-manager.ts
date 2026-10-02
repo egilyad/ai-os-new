@@ -1,4 +1,5 @@
 import { EVENTS } from '../../events/event-names';
+import { buildHeuristicVerdict } from './debate-heuristic-verdict';
 import { CONFIG } from '../config-registry';
 import { DebateGovernor } from './debate-governor';
 import { DebateInterpreter } from './debate-interpreter';
@@ -9,9 +10,6 @@ import type {
     DebateSession,
     DebateStrategy,
     DebateVerdict,
-    VerdictKeyArgument,
-    ConclusionType,
-    StanceResult,
 } from '../../contracts/debate-types';
 import type { DebateServiceDeps } from '../../contracts/debate-service-deps';
 import type { IDebateEngine, DebateTopology } from '../../contracts/debate-runtime';
@@ -548,81 +546,23 @@ export class DebateSyncManager {
     }
 
     private _emitHeuristicVerdict(session: DebateSession): void {
-        const participantNameById = new Map(session.participants.map((p) => [p.id, p.name]));
-        const agentScores = new Map<
-            string,
-            { count: number; totalWords: number; totalConfidence: number }
-        >();
-        for (const arg of session.arguments ?? []) {
-            if (!arg.agentId || arg.agentId === 'human') continue;
-            const entry = agentScores.get(arg.agentId) ?? {
-                count: 0,
-                totalWords: 0,
-                totalConfidence: 0,
-            };
-            entry.count++;
-            entry.totalWords += (arg.content ?? '').split(/\s+/).filter(Boolean).length;
-            entry.totalConfidence += arg.confidence ?? 0.7;
-            agentScores.set(arg.agentId, entry);
-        }
-
-        const allArgs = session.arguments ?? [];
-        const keyArguments: VerdictKeyArgument[] = allArgs.slice(-5).map((a) => ({
-            agentId: a.agentId ?? 'unknown',
-            agentName: a.agentName ?? a.agentId ?? 'unknown',
-            content: (a.content ?? '').slice(0, 500),
-            stance: (a.position as 'pro' | 'con' | 'neutral') ?? 'neutral',
-            strength: a.confidence ?? 0.7,
-        }));
-
-        let bestAgentId = '';
-        let bestScore = -1;
-        for (const [agentId, s] of agentScores) {
-            const score =
-                s.count * 1_000_000 +
-                Math.min(s.totalWords, 999_999) +
-                Math.min(Math.round(s.totalConfidence * 100), 999);
-            if (score > bestScore) {
-                bestScore = score;
-                bestAgentId = agentId;
-            }
-        }
-
-        const convergenceScore = session.convergenceScore ?? 0;
-        let conclusionType: ConclusionType;
-        let stanceResult: StanceResult;
-        if (convergenceScore > 75) {
-            conclusionType = 'consensus';
-            stanceResult = 'balanced';
-        } else if (bestAgentId && agentScores.size > 1) {
-            const bestEntry = agentScores.get(bestAgentId)!;
-            if (bestEntry.count > allArgs.length * 0.4) {
-                conclusionType = 'dominance';
-                stanceResult = 'pro_wins';
-            } else {
-                conclusionType = 'partial_agreement';
-                stanceResult = 'no_clear_winner';
-            }
-        } else {
-            conclusionType = 'inconclusive';
-            stanceResult = 'no_clear_winner';
-        }
-
-        const verdict: DebateVerdict = {
-            sessionId: session.id,
-            topic: session.topic,
-            summary:
-                session.consensus ??
-                `Debate concluded after ${session.currentRound ?? 0} rounds with ${allArgs.length} total arguments.`,
-            conclusionType,
-            stanceResult,
-            keyArguments,
-            reasoning: `Heuristic verdict (governor stop). ${bestAgentId ? `Leading participant: ${participantNameById.get(bestAgentId) || bestAgentId}` : 'No clear leader.'}`,
-            confidence: Math.min(0.7, 0.3 + allArgs.length * 0.02),
-            generatedAt: Date.now(),
-            roundsTotal: session.currentRound ?? 0,
-            totalTokens: 0,
-        };
+        // Scoring lives in debate-heuristic-verdict (shared with the engine
+        // pipeline) — this stays a thin emit wrapper.
+        const verdict = buildHeuristicVerdict(
+            {
+                id: session.id,
+                topic: session.topic,
+                participants: (session.participants ?? []).map((p) => ({
+                    id: p.id,
+                    name: p.name,
+                })),
+                args: session.arguments ?? [],
+                consensus: session.consensus,
+                currentRound: session.currentRound,
+                convergenceScore: session.convergenceScore,
+            },
+            'governor stop',
+        );
 
         this._setCachedVerdict(session.id, verdict);
         this.deps!.eventBus.emitOnce(EVENTS.DEBATE_VERDICT_GENERATED, session.id, {
