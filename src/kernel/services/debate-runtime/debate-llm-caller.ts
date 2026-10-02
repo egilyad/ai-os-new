@@ -69,6 +69,12 @@ async function buildDebateCallContext(args: {
     const currentName = participantNameMap.get(participant.agentId) || participant.agentId;
 
     const recentSteps = deps.getMemory(sessionId).getRecentSteps(2);
+    // Audit R10: speaker labels use [Name (self/opponent)] — if raw content
+    // keeps ASCII brackets, the model copies the pattern ([X (opponent)],
+    // ### headers) into its own output. Fullwidth brackets read the same
+    // but don't parse as labels. Roles alternating is provider-required.
+    const escapeHistoryContent = (s: string): string =>
+        sanitizePromptVar(s).replace(/\[/g, '［').replace(/\]/g, '］').slice(0, 800);
     const historyMessages: Array<{ role: 'system' | 'user' | 'assistant'; content: string }> =
         recentSteps.map((s, i) => ({
             // HIGH-4.1e: Alternate user/assistant roles to prevent 4-agent debate
@@ -80,7 +86,7 @@ async function buildDebateCallContext(args: {
                     : i % 2 === 0
                       ? ('user' as const)
                       : ('assistant' as const),
-            content: `[${participantNameMap.get(s.agentId) || s.agentId} (${s.agentId === participant.agentId ? 'self' : 'opponent'})]: ${sanitizePromptVar(s.content).slice(0, 800)}`,
+            content: `[${participantNameMap.get(s.agentId) || s.agentId} (${s.agentId === participant.agentId ? 'self' : 'opponent'})]: ${escapeHistoryContent(s.content)}`,
         }));
 
     const mem = deps.getMemory(sessionId);
