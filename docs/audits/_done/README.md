@@ -93,5 +93,39 @@
   index.html Cache-Control, BD12-08 brotli, BD12-09 npm-кэш,
   BD12-10/11/12 инфо;
 
-Аудиты 01–12 закрыты полностью. Отдельно: серия 13–15+ (файлов нет в
-репо, только коммиты фиксов) — требует реконструкции списка.
+Аудиты 01–12 закрыты полностью.
+
+## Серия 13–17 (кодовые аудиты, 2026-09-30 — 2026-10-02)
+
+Правило серии: только Critical/High, medium/low не трогаем.
+
+- audit-13-code-147.md (147 находок, 10 категорий) — ✅ ЗАКРЫТ по
+  критам/хаям: 5.2 chat:send-дивергенция ✔ + drift-тест, 3.4 ghost-key
+  ретрай ✔, 9.1/9.2 trace-наследование ✔, 10.3 ELO-guard ✔ (инверсия
+  опровергнута), 2.11 cors IP-нормализация ✔, 10.9 cron dow ✔, 10.5
+  cost-dedup ✔, 10.6 colon-парсинг ✔, 9.4 prod-логи ✔, 10.8 fallback ✔,
+  4.6 lock-heartbeat ✔, 6.1 stale-flush ✔, 2.4 redirect-check ✔, 9.6/9.7
+  audible ✔, 4.4 promise-init ×4 ✔, 4.5 idempotent start ✔, 10.4
+  round-лимит ✔, 10.13 last-resort ✔, 2.12 без shell ✔, 2.10 sanitize ✔,
+  10.14 квота в конфиг ✔, 5.4 choices-guards ✔, 2.13 skip-encrypted ✔,
+  5.8/5.9 MCP-валидация ✔, 2.8 sandbox-примитивы ✔, 9.8 eval-расписание ✔,
+  9.5 compromise-логи ✔, 8.11 worker-es ✔, 8.3 Connection ✔, 7.2–7.9/7.11–7.15
+  i18n+a11y ✔, 9.10 счётчики ✔, 9.11 init-логи ✔, 9.12 SLA-персист ✔,
+  9.13 decision-персист ✔, 9.19 unbounded-warn ✔, 9.20 sandbox-логи ✔,
+  4.8 late-reconnect ✔, 3.10 crypto-ID ✔, 3.11 persist-warn ✔, 4.9 emit ✔,
+  6.4 save-коалесцинг ✔, 9.9 model-атрибуция ✔, 3.9 newer-wins ✔, 3.6
+  (stale — кросс-таб форвардинг есть) ✔, 6.3/8.12/7.10/3.5/6.2 (wontfix
+  с обоснованием) ✔; ОТЛОЖЕНО: 3.1 WAL, 10.2 Vault, 4.2 release-handle
+  рефактор, R8 maxTokens-plumbing, custom-weights слой, scoped-токены;
+- audit-14-mavis.md — ✅ ЗАКРЫТ по критам/хаям: guardrail-инверсия ✔ +
+  гейт, base64-чанки ✔, changePassword (round-trip + откат + salt) ✔,
+  auto-resume-враньё ✔, GC-буфер (уже) ✔, tryInit-идемпотентность ✔,
+  cancelAll-контракт ✔, failure-TTL 5с ✔, SLA-throw ✔;
+- audit-15-debate-runtime.md + audit-16-debate-deep.md — ✅ ЗАКРЫТЫ по
+  красным: R1 глубина 3 ключа ✔, R2 cooling-фильтр ✔, R3 auth-latch TTL ✔,
+  R4 key-скоуп ✔, R5/R6 без банов ✔, R7 large-паттерны ✔, R9-trim (design),
+  R10 escape ✔, R11–R13 heuristic-вердикт (общий билдер + finalize +
+  roundLoop) ✔, bidding-role ✔, session-maps ✔; ОТЛОЖЕНО: R8
+  maxTokens-plumbing;
+- audit-17-debate-reset.md — ✅ ЗАКРЫТ: H2 selection-персист ✔ (H1 —
+  корректное поведение, H3–H7 — медиумы, скип).
