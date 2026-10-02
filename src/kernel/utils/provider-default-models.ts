@@ -1,15 +1,18 @@
 /** Single source of truth for per-provider default model names.
  *  All production code should import from here instead of hardcoding model strings. */
 export const PROVIDER_DEFAULT_MODELS: Record<string, string> = {
-    // Groq: use stable Llama 3.3 (Llama 4 EOL 2026-07, 410/404)
-    groq: 'llama-3.3-70b-versatile',
+    // Groq Oct-2026: production pins are openai/gpt-oss-120b + 20b
+    // (llama-3.3-70b/3.1-8b deprecated for free/dev 2026-08-16; Llama 4
+    // Maverick/Scout never listed publicly). Verified 2026-10-02.
+    groq: 'openai/gpt-oss-120b',
     gemini: 'gemini-3.1-flash-lite',
     gemini_flash: 'gemini-3.1-flash-lite',
     gemini_pro: 'gemini-3.1-pro',
     anthropic: 'claude-3-5-sonnet',
     openrouter: 'meta-llama/llama-3.1-8b-instruct',
-    // NVIDIA NIM: Llama 4 EOL 410 — fall back to 3.1
-    nvidia: 'meta/llama-3.1-8b-instruct',
+    // NVIDIA NIM Oct-2026: gpt-oss served on the API (llama-4-maverick
+    // 410). Verified 2026-10-02.
+    nvidia: 'openai/gpt-oss-120b',
     openai: 'gpt-4o',
     cerebras: 'cerebras-gpt-3.5',
     cloudflare: '@cf/meta/llama-3.1-8b-instruct',
@@ -21,11 +24,11 @@ export const PROVIDER_DEFAULT_MODELS: Record<string, string> = {
 
 /** Preferred models for each provider (ordered by quality). */
 export const PROVIDER_PREFERRED_MODELS: Record<string, string[]> = {
-    groq: ['llama-3.3-70b-versatile', 'llama-3.1-8b-instant'],
+    groq: ['openai/gpt-oss-120b', 'openai/gpt-oss-20b'],
     gemini: ['gemini-3.1-flash-lite', 'gemini-3.1-pro'],
     anthropic: ['claude-3-5-sonnet', 'claude-3-haiku', 'claude-3-opus'],
-    nvidia: ['meta/llama-3.1-8b-instruct', 'meta/llama-3.1-70b-instruct'],
-    'nvidia-nim': ['meta/llama-3.1-8b-instruct', 'meta/llama-3.1-70b-instruct'],
+    nvidia: ['openai/gpt-oss-120b', 'openai/gpt-oss-20b'],
+    'nvidia-nim': ['openai/gpt-oss-120b', 'openai/gpt-oss-20b'],
     deepseek: ['deepseek-chat', 'deepseek-reasoner'],
     kimi: ['kimi-k2', 'kimi-k2-thinking'],
     minimax: ['MiniMax-M1'],

@@ -32,11 +32,13 @@ export function isLargeModel(model: string): boolean {
 export const DEBATE_MODEL_PRIORITY: Record<string, string[]> = {
     // gemini-3.1-flash 404s via the v1beta generateContent API — flash-lite only.
     gemini: ['gemini-3.1-flash-lite'],
-    // Aug-2026: Groq decommissioned llama-3.3-70b-versatile / llama-3.1-8b-instant — use Llama 4
-    groq: ['meta-llama/llama-4-maverick-17b-128e-instruct', 'meta-llama/llama-4-scout-17b-16e-instruct'],
+    // Oct-2026: Groq+NVIDIA production pins are openai/gpt-oss-120b/20b
+    // (verified 2026-10-02). Llama 3.3/3.1 dead for free/dev, Maverick/Scout
+    // unlisted — the old pins 404/410 on every debate call.
+    groq: ['openai/gpt-oss-120b', 'openai/gpt-oss-20b'],
     openrouter: [PROVIDER_DEFAULT_MODELS.openrouter!, 'openrouter/free'],
     // Aug-2026: NIM EOL'd llama-3.1-8b-instruct / llama-3.3-70b-instruct (410) — use Llama 4
-    nvidia: ['meta/llama-4-maverick-17b-128e-instruct', 'meta/llama-4-scout-17b-16e-instruct'],
+    nvidia: ['openai/gpt-oss-120b', 'openai/gpt-oss-20b'],
 };
 
 export function isChatModel(model: string): boolean {
@@ -68,13 +70,18 @@ export function isModelCompatibleWithProvider(model: string, provider: string): 
     const p = provider.toLowerCase();
     // Prefix-guarded providers: model MUST use the correct prefix or be bare
     if (p === 'openrouter' && !model.startsWith('openrouter/')) return false;
-    if (p === 'nvidia' && !model.startsWith('meta/')) return false;
+    // Oct-2026: nvidia serves meta/* plus openai/gpt-oss-* (NIM API).
+    if (p === 'nvidia' && !(model.startsWith('meta/') || model.startsWith('openai/gpt-oss')))
+        return false;
     // Reverse guards: model with known provider prefix must only go to matching provider
     if (model.startsWith('openrouter/')) return p === 'openrouter';
     if (model.startsWith('meta/')) return p === 'nvidia';
     // Bare model format: reject provider-prefixed model strings sent to native providers
     // Gemini native models: can be gemini-X (hyphen) or gemini/X (slash format)
     if (model.startsWith('gemini-') || model.startsWith('gemini/')) return p === 'gemini';
+    // Oct-2026: gpt-oss served by openai, openrouter, groq AND nvidia.
+    if (model.startsWith('openai/gpt-oss'))
+        return p === 'openai' || p === 'openrouter' || p === 'groq' || p === 'nvidia';
     if (model.startsWith('openai/')) return p === 'openai' || p === 'openrouter';
     if (model.startsWith('anthropic/')) return false; // not supported in debates
     if (model.startsWith('groq/')) return p === 'groq';
