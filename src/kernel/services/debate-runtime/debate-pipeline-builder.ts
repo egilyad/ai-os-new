@@ -494,7 +494,7 @@ export function buildPipeline(engine: PipelineEngine, isResume: boolean): Debate
                             sessionId,
                             verdict,
                         });
-                    } catch (ve) {
+                    } catch {
                         clearTimeout(verdictTimer);
                         // Audit R11: this used to only log "using heuristic"
                         // while emitting NOTHING. Build the real heuristic
