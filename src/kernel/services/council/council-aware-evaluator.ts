@@ -30,7 +30,10 @@ export class CouncilAwareEvaluator implements IDebateEvaluator {
         if (!sid) return false;
         const snap = this.getSession(sid);
         const nodes = snap?.topology?.nodes as Array<{ config?: Record<string, unknown> }> | undefined;
-        return Boolean(nodes?.[0]?.config?.councilMode);
+        // Audit TS-1: was nodes[0]-only — fragile for empty topologies and
+        // hand-built ones. Mapper sets the flag on every node; any-match
+        // covers both.
+        return Boolean(nodes?.some((n) => n.config?.councilMode === true));
     }
 
     scoreArguments(agentId: string, claims: Claim[], chain: ReasoningChain[]): AgentScore {
