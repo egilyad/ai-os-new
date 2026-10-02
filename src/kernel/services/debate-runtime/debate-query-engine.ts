@@ -19,8 +19,11 @@ const NON_CHAT_PREFIXES = [
 
 const NON_CHAT_PATTERNS = [/^gpt-3\.5-turbo-instruct/, /^text-davinci/, /^code-davinci/];
 
-// Models matching these patterns are considered "large" and get longer timeouts
-const LARGE_MODEL_PATTERNS = [/70b/i, /120b/i, /180b/i, /405b/i, /671b/i];
+// Models matching these patterns are considered "large" and get longer timeouts.
+// Audit R7: legacy llama-3.x patterns never matched the current fleet
+// (Llama 4 Maverick/Scout, Gemini Flash-Lite) — the 90s branch was dead.
+// Maverick is a 400B-MoE and slow; Scout/Flash-Lite stay on the fast tier.
+const LARGE_MODEL_PATTERNS = [/70b/i, /120b/i, /180b/i, /405b/i, /671b/i, /maverick/i, /128e/i];
 
 export function isLargeModel(model: string): boolean {
     return LARGE_MODEL_PATTERNS.some((re) => re.test(model));
