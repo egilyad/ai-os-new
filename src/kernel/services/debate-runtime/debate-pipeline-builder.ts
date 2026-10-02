@@ -374,6 +374,40 @@ export function buildPipeline(engine: PipelineEngine, isResume: boolean): Debate
                 }
             } catch (e) {
                 session.transition('failed');
+                // Audit R11: a throw here used to mean "failed with no
+                // verdict at all". Emit a heuristic verdict from whatever
+                // arguments survived so the failure still carries a result.
+                // (No DB save — saveSnapshot skips failed sessions by design.)
+                try {
+                    const fbArgs = session.arguments ?? [];
+                    if (fbArgs.length > 0) {
+                        const heuristic = buildHeuristicVerdict(
+                            {
+                                id: sessionId,
+                                topic: session.topic,
+                                participants: session.participants.map((p) => ({
+                                    id: p.agentId,
+                                })),
+                                args: fbArgs.map((a) => ({
+                                    agentId: a.agentId,
+                                    content: a.content,
+                                    confidence: a.confidence,
+                                })),
+                                currentRound: session.round,
+                            },
+                            'round loop failed',
+                        );
+                        engine.deps.eventBus.emitOnce(EVENTS.DEBATE_VERDICT_GENERATED, sessionId, {
+                            sessionId,
+                            verdict: heuristic,
+                        });
+                    }
+                } catch (he) {
+                    LOGGER.warn('DebatePipeline', 'heuristic verdict on failure failed', {
+                        error: he,
+                        sessionId,
+                    });
+                }
                 engine.deps.eventBus.emitOnce(EVENTS.DEBATE_SESSION_FAILED, sessionId, {
                     sessionId,
                     error: String(e),
