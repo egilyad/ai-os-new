@@ -115,17 +115,41 @@ export class DebateMemoryExtractor {
   }
 
   extractClaims(units: MemoryUnit[]): Claim[] {
+    // Audit EV-1: evidence/citations were dropped here, so downstream
+    // scoring never saw them. Attach same-round evidence snippets.
+    const evidenceByRound = new Map<number, string[]>();
+    for (const u of units) {
+      if (u.type !== 'evidence') continue;
+      const arr = evidenceByRound.get(u.round) ?? [];
+      arr.push(u.content.slice(0, 300));
+      evidenceByRound.set(u.round, arr);
+    }
     return units
       .filter(u => u.type === 'argument' || u.type === 'evidence')
-      .map(u => ({
-        id: u.id,
-        text: u.content,
-        agentId: u.agentId,
-        round: u.round,
-        confidence: u.confidence,
-        speaker: u.agentId,
-        role: '',
-      }));
+      .map(u => {
+        const metaSources = (u.metadata?.sources ?? u.metadata?.citations) as unknown;
+        const citations = Array.isArray(metaSources)
+          ? metaSources.filter((s): s is string => typeof s === 'string').slice(0, 5)
+          : undefined;
+        const roundEvidence = u.type === 'argument' ? (evidenceByRound.get(u.round) ?? []) : [];
+        const evidence =
+          roundEvidence.length > 0
+            ? roundEvidence.slice(0, 3).join(' ‖ ')
+            : u.type === 'evidence'
+              ? u.content.slice(0, 300)
+              : undefined;
+        return {
+          id: u.id,
+          text: u.content,
+          agentId: u.agentId,
+          round: u.round,
+          confidence: u.confidence,
+          speaker: u.agentId,
+          role: '',
+          ...(evidence !== undefined ? { evidence } : {}),
+          ...(citations !== undefined ? { citations } : {}),
+        };
+      });
   }
 
   private analyzeContent(content: string, agentId: string, round: number): PatternMatch[] {
