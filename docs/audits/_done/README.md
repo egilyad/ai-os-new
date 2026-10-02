@@ -128,4 +128,8 @@
   roundLoop) ✔, bidding-role ✔, session-maps ✔; ОТЛОЖЕНО: R8
   maxTokens-plumbing;
 - audit-17-debate-reset.md — ✅ ЗАКРЫТ: H2 selection-персист ✔ (H1 —
-  корректное поведение, H3–H7 — медиумы, скип).
+  корректное поведение, H3–H7 — медиумы, скип);
+- audit-18-debate-engine-gap.md — ✅ ЗАКРЫТ по критам/узким P1: AT-1 мост
+  на скоринг-движок ✔, EV-1 evidence в экстракторе ✔, TS-1 any-node ✔;
+  ОТЛОЖЕНО (архитектура): J-1 вселенные скоринга, AT-3/4/5/6, EV-3/5/6,
+  J-2/4/5/6/7 wiring и персисты оценок.
