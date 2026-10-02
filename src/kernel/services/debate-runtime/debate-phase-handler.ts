@@ -104,13 +104,29 @@ export function createPhaseChangeHandler(
                         );
 
                         if (deps.evaluator) {
-                            // N1: ArgTech → Consensus wiring (existing bridge, no new runtime) — fire-and-forget bounded
-                            if (deps.argTech) {
-                                try {
-                                    const { applyArgTechToConsensus } = require('../debateplus/argtech-consensus-bridge') as typeof import('../debateplus/argtech-consensus-bridge');
-                                    // Fire-and-forget: sets setArgTechBonus on DebateConsensusEngine (cache invalidated) for this evaluate
-                                    void applyArgTechToConsensus(deps.evaluator as unknown as import('./debate-consensus').DebateConsensusEngine, deps.argTech).catch(() => {});
-                                } catch { /* bridge optional */ }
+                            // Audit AT-1: the bridge targeted deps.evaluator
+                            // (DebateEvaluator/CouncilAware — NO setArgTechBonus
+                            // method), so every call died in TypeError inside a
+                            // silent .catch. Target the consensus engine that
+                            // actually scores (line ~270), log failures.
+                            // Fire-and-forget stays (sync hook): the bonus
+                            // persists on the engine for subsequent evaluates.
+                            if (deps.argTech && deps.consensusEngine) {
+                                void import(
+                                    '../debateplus/argtech-consensus-bridge'
+                                )
+                                    .then(({ applyArgTechToConsensus }) =>
+                                        applyArgTechToConsensus(
+                                            deps.consensusEngine!,
+                                            deps.argTech!,
+                                        ),
+                                    )
+                                    .catch((e) =>
+                                        LOGGER.warn('DebatePhaseHandler', 'argtech bridge failed', {
+                                            error: String(e),
+                                            sessionId,
+                                        }),
+                                    );
                             }
                             // N4a: explicit sessionId — no globalThis (J-3 fix)
                             (deps.evaluator as unknown as { setCurrentSessionId?: (id: string | null) => void }).setCurrentSessionId?.(sessionId);
