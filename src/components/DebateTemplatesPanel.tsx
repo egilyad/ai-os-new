@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FileText, Search, Users, MessageCircle, Thermometer, ArrowUpRight } from 'lucide-react';
 import PanelLoader from './PanelLoader';
+import { useTranslation } from '../i18n/useTranslation';
 import { DEBATE_TEMPLATES } from '../kernel/instances';
 
 const STRATEGY_COLORS: Record<string, string> = {
@@ -16,13 +17,14 @@ const STRATEGY_COLORS: Record<string, string> = {
 
 const DebateTemplatesPanelContent: React.FC = () => {
     const navigate = useNavigate();
+    const { t } = useTranslation();
     const [search, setSearch] = useState('');
 
     const filtered = DEBATE_TEMPLATES.filter(
-        (t) =>
-            t.name.toLowerCase().includes(search.toLowerCase()) ||
-            t.description.toLowerCase().includes(search.toLowerCase()) ||
-            t.topic.toLowerCase().includes(search.toLowerCase()),
+        (tmpl) =>
+            tmpl.name.toLowerCase().includes(search.toLowerCase()) ||
+            tmpl.description.toLowerCase().includes(search.toLowerCase()) ||
+            tmpl.topic.toLowerCase().includes(search.toLowerCase()),
     );
 
     return (
@@ -38,10 +40,10 @@ const DebateTemplatesPanelContent: React.FC = () => {
                         gap: 8,
                     }}
                 >
-                    <FileText size={20} color="#06b6d4" /> Debate Templates Library
+                    <FileText size={20} color="#06b6d4" /> {t('debate.templates_library_title')}
                 </h2>
                 <p style={{ margin: '0 0 16px', fontSize: 13, color: 'var(--slate-400)' }}>
-                    Pre-built debate templates to quickly start structured discussions
+                    {t('debate.templates_library_subtitle')}
                 </p>
                 <div
                     style={{
@@ -55,7 +57,7 @@ const DebateTemplatesPanelContent: React.FC = () => {
                 >
                     <Search size={16} color="#64748b" />
                     <input
-                        placeholder="Search templates..."
+                        placeholder={t('debate.templates_search')}
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                         style={{
@@ -68,7 +70,7 @@ const DebateTemplatesPanelContent: React.FC = () => {
                         }}
                     />
                     <span style={{ fontSize: 11, color: 'var(--slate-600)' }}>
-                        {filtered.length} templates
+                        {t('debate.templates_count', { n: filtered.length })}
                     </span>
                 </div>
             </div>
@@ -102,10 +104,14 @@ const DebateTemplatesPanelContent: React.FC = () => {
                         >
                             <div>
                                 <div style={{ fontWeight: 700, fontSize: 14, color: 'var(--slate-200)' }}>
-                                    {tmpl.name}
+                                    {t(`debate.template.${tmpl.id}`, {
+                                        defaultValue: tmpl.name,
+                                    })}
                                 </div>
                                 <div style={{ fontSize: 12, color: 'var(--slate-500)', marginTop: 2 }}>
-                                    {tmpl.description}
+                                    {t(`debate.template.${tmpl.id}_desc`, {
+                                        defaultValue: tmpl.description,
+                                    })}
                                 </div>
                             </div>
                             <div
@@ -141,10 +147,12 @@ const DebateTemplatesPanelContent: React.FC = () => {
 
                         <div style={{ display: 'flex', gap: 12, fontSize: 12, color: 'var(--slate-400)' }}>
                             <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                                <Users size={12} /> {tmpl.minAgents}+ agents
+                                <Users size={12} />{' '}
+                                {t('debate.templates_agents', { n: tmpl.minAgents })}
                             </span>
                             <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                                <MessageCircle size={12} /> {tmpl.maxRounds} rounds
+                                <MessageCircle size={12} />{' '}
+                                {t('debate.templates_rounds', { n: tmpl.maxRounds })}
                             </span>
                             <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
                                 <Thermometer size={12} /> {tmpl.debateTemperature}
@@ -169,7 +177,7 @@ const DebateTemplatesPanelContent: React.FC = () => {
                             }}
                             onClick={() => navigate(`/debate?template=${tmpl.id}`)}
                         >
-                            <ArrowUpRight size={14} /> Use Template
+                            <ArrowUpRight size={14} /> {t('debate.templates_use')}
                         </button>
                     </div>
                 ))}
@@ -178,7 +186,7 @@ const DebateTemplatesPanelContent: React.FC = () => {
             {filtered.length === 0 && (
                 <div style={{ textAlign: 'center', padding: 40, color: 'var(--slate-500)' }}>
                     <FileText size={32} style={{ opacity: 0.3, marginBottom: 8 }} />
-                    <div style={{ fontSize: 14 }}>No templates match your search</div>
+                    <div style={{ fontSize: 14 }}>{t('debate.templates_empty')}</div>
                 </div>
             )}
         </div>

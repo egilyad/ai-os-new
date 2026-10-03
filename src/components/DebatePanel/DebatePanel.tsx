@@ -8,6 +8,7 @@ import {
     hypothesisService,
     debateWorkspace,
     getAllSettings,
+    getDebateTemplate,
 } from '../../kernel/instances';
 import type {
     DebateSession,
@@ -197,12 +198,24 @@ const DebatePanel: React.FC = () => {
         const hypothesisId = searchParams.get('hypothesisId');
         const roomId = searchParams.get('roomId');
         const sessionId = searchParams.get('sessionId');
+        const templateId = searchParams.get('template');
         // eslint-disable-next-line react-hooks/set-state-in-effect
         if (thesis) setTopic(decodeURIComponent(thesis));
         if (hypothesisId) pendingHypothesisId.current = hypothesisId;
         if (roomId) {
             const room = debateWorkspace.getRoomEntry(roomId);
             if (room) setTopic(room.topic);
+        }
+        // Templates library (?template=<id>): prefill a fresh setup form.
+        // Skipped when a live session is open — never clobber running state.
+        if (templateId && !sessionRef.current) {
+            const tmpl = getDebateTemplate(templateId);
+            if (tmpl) {
+                setTopic(tmpl.topic);
+                setStrategy(tmpl.strategy as DebateSessionStrategy);
+                setMaxRounds(tmpl.maxRounds);
+                setDebateTemperature(Math.round(tmpl.debateTemperature * 10));
+            }
         }
         if (sessionId) {
             // Open a saved debate (e.g. from debates-manager) in classic Debate Arena
@@ -233,7 +246,7 @@ const DebatePanel: React.FC = () => {
                     });
             }
         }
-        if (thesis || hypothesisId || roomId || sessionId) {
+        if (thesis || hypothesisId || roomId || sessionId || templateId) {
             window.history.replaceState({}, '', '/debate');
         }
     }, [searchParams]);
