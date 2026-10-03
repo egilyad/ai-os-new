@@ -59,62 +59,49 @@ export async function dismissOverlay(page: Page) {
     await dismissWizard(page);
 }
 
-/** Raw IndexedDB put into the app's Dexie database (no app code involved). */
+/**
+ * Raw IndexedDB put into the app's Dexie database (no app code involved).
+ *
+ * Done from a sidecar page (same origin, static asset, no SPA) instead of
+ * the app page: right after boot the SPA commits same-document history
+ * navigations (router settling), and `page.evaluate` on the app page
+ * chronically loses that race on CI ("execution context was destroyed").
+ * The sidecar document never navigates, so its context is stable.
+ */
 export async function idbPut(
     page: Page,
     store: 'apiKeys' | 'sessions',
     row: Record<string, unknown>,
 ): Promise<number> {
-    // The SPA can navigate under us (deep-link handling, redirects) right
-    // after boot, killing the execution context. Retry with a re-gate.
-    let lastError: unknown;
-    for (let attempt = 1; attempt <= 3; attempt++) {
-        try {
-            return await idbPutOnce(page, store, row);
-        } catch (e) {
-            lastError = e;
-            if (!/destroyed|navigation|crashed|closed/i.test(String(e))) throw e;
-            try {
-                await page.waitForLoadState('domcontentloaded', { timeout: 15000 });
-                await expect(
-                    page.getByRole('heading', { name: /mission control/i }),
-                ).toBeVisible({ timeout: 60000 });
-            } catch {
-                /* re-gate failed — retry will surface it */
-            }
-        }
-    }
-    throw lastError;
-}
-
-async function idbPutOnce(
-    page: Page,
-    store: 'apiKeys' | 'sessions',
-    row: Record<string, unknown>,
-): Promise<number> {
-    return page.evaluate(
-        ({ dbName, store, row }) =>
-            new Promise<number>((resolve, reject) => {
-                const req = indexedDB.open(dbName);
-                req.onerror = () => reject(req.error);
-                req.onsuccess = () => {
-                    const db = req.result;
-                    if (!db.objectStoreNames.contains(store)) {
-                        reject(new Error(`store ${store} missing`));
-                        return;
-                    }
-                    const tx = db.transaction(store, 'readwrite');
-                    tx.oncomplete = () => {
-                        const count = tx.objectStore(store).count();
-                        count.onsuccess = () => resolve(count.result as number);
-                        count.onerror = () => reject(count.error);
+    const sidecar = await page.context().newPage();
+    try {
+        await sidecar.goto('/favicon.svg');
+        return await sidecar.evaluate(
+            ({ dbName, store, row }) =>
+                new Promise<number>((resolve, reject) => {
+                    const req = indexedDB.open(dbName);
+                    req.onerror = () => reject(req.error);
+                    req.onsuccess = () => {
+                        const db = req.result;
+                        if (!db.objectStoreNames.contains(store)) {
+                            reject(new Error(`store ${store} missing`));
+                            return;
+                        }
+                        const tx = db.transaction(store, 'readwrite');
+                        tx.oncomplete = () => {
+                            const count = tx.objectStore(store).count();
+                            count.onsuccess = () => resolve(count.result as number);
+                            count.onerror = () => reject(count.error);
+                        };
+                        tx.onerror = () => reject(tx.error);
+                        tx.objectStore(store).put(row as never);
                     };
-                    tx.onerror = () => reject(tx.error);
-                    tx.objectStore(store).put(row as never);
-                };
-            }),
-        { dbName: DB_NAME, store, row },
-    );
+                }),
+            { dbName: DB_NAME, store, row },
+        );
+    } finally {
+        await sidecar.close();
+    }
 }
 
 function stubModels(route: Route) {
