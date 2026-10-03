@@ -144,4 +144,7 @@
 - audit-21-frontend-review.md — ✅ ЗАКРЫТ: FA-01 дубль builder (нет) ✔,
   FA-05/FA-06 капы/таймеры ✔ (уже), FX/i18n — см. audit-11;
   ОТЛОЖЕНО (системные миграции): FA-02 inline-стили (9k+ мест),
-  FA-03 дедуп компонентов; медиумы — скип.
+  FA-03 дедуп компонентов; медиумы — скип;
+- audit-22-migration-safety.md — ✅ ЗАКРЫТ как вердикт: single-migration
+  уже есть (`council-migration-service`, phase65, checksum+rollback);
+  bulk-historic и полный SSOT-cutover — программа миграции, не баги.
