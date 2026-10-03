@@ -18,25 +18,76 @@ export async function boot(page: Page) {
     await expect(page.getByRole('heading', { name: /mission control/i })).toBeVisible({
         timeout: 120000,
     });
-    await dismissOverlay(page);
+    await dismissWizard(page);
 }
 
-/** Fresh browsers show an onboarding overlay whose backdrop absorbs clicks. */
-export async function dismissOverlay(page: Page) {
-    const overlayBtn = page
-        .getByRole('button', { name: /dismiss|onboarding skip|get started/i })
-        .first();
-    try {
-        if (await overlayBtn.isVisible({ timeout: 5000 })) {
-            await overlayBtn.click({ timeout: 5000 });
+/**
+ * Close the onboarding wizard if open. Scoped to the wizard dialog:
+ * a bare /dismiss/i selector can hit unrelated Dismiss buttons
+ * (toasts, banners) while the wizard backdrop keeps covering the page.
+ * The wizard can pop up AFTER hydration (post-keystore-load), so call
+ * this right before any click, not just after boot.
+ */
+export async function dismissWizard(page: Page) {
+    for (let i = 0; i < 3; i++) {
+        const skip = page
+            .getByRole('dialog')
+            .getByRole('button', { name: /onboarding skip/i });
+        let visible = false;
+        try {
+            visible = await skip.isVisible({ timeout: 3000 });
+        } catch {
+            return;
         }
-    } catch {
-        /* no overlay — proceed */
+        if (!visible) return;
+        try {
+            await skip.click({ timeout: 10000 });
+        } catch {
+            /* animation race — re-check below */
+        }
+        try {
+            await page.getByRole('dialog').waitFor({ state: 'hidden', timeout: 10000 });
+            return;
+        } catch {
+            /* still open — retry */
+        }
     }
+}
+
+/** Legacy best-effort overlay dismiss (kept for compatibility). */
+export async function dismissOverlay(page: Page) {
+    await dismissWizard(page);
 }
 
 /** Raw IndexedDB put into the app's Dexie database (no app code involved). */
 export async function idbPut(
+    page: Page,
+    store: 'apiKeys' | 'sessions',
+    row: Record<string, unknown>,
+): Promise<number> {
+    // The SPA can navigate under us (deep-link handling, redirects) right
+    // after boot, killing the execution context. Retry with a re-gate.
+    let lastError: unknown;
+    for (let attempt = 1; attempt <= 3; attempt++) {
+        try {
+            return await idbPutOnce(page, store, row);
+        } catch (e) {
+            lastError = e;
+            if (!/destroyed|navigation|crashed|closed/i.test(String(e))) throw e;
+            try {
+                await page.waitForLoadState('domcontentloaded', { timeout: 15000 });
+                await expect(
+                    page.getByRole('heading', { name: /mission control/i }),
+                ).toBeVisible({ timeout: 60000 });
+            } catch {
+                /* re-gate failed — retry will surface it */
+            }
+        }
+    }
+    throw lastError;
+}
+
+async function idbPutOnce(
     page: Page,
     store: 'apiKeys' | 'sessions',
     row: Record<string, unknown>,

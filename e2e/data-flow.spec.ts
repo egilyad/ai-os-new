@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import {
     boot,
-    dismissOverlay,
+    dismissWizard,
     idbPut,
     stubOpenRouter,
     STUB_MODEL,
@@ -22,18 +22,27 @@ import {
 //   `stream:true` when streaming, else plain JSON.
 
 test.describe('AI-OS Data Flow', () => {
+    // Boot + reload + reboot per test can exceed the 180s suite default.
+    test.describe.configure({ timeout: 300000 });
+
     test.beforeEach(async ({ page }) => {
         await boot(page);
     });
 
     test('key created via UI persists across reload', async ({ page }) => {
         await page.goto('/keys');
-        await dismissOverlay(page);
+        await dismissWizard(page);
         await expect(
             page.getByRole('button', { name: /add custom provider/i }),
         ).toBeVisible({ timeout: 30000 });
 
-        await page.getByRole('button', { name: /add custom provider/i }).click();
+        // The wizard can pop up after hydration — dismiss again right
+        // before clicking, and bound the click so a covered button fails
+        // fast instead of burning the whole test timeout on retries.
+        await dismissWizard(page);
+        await page
+            .getByRole('button', { name: /add custom provider/i })
+            .click({ timeout: 60000 });
         const dialog = page.getByRole('dialog');
         await expect(dialog).toBeVisible({ timeout: 15000 });
 
@@ -58,7 +67,7 @@ test.describe('AI-OS Data Flow', () => {
         await page.reload();
         await boot(page);
         await page.goto('/keys');
-        await dismissOverlay(page);
+        await dismissWizard(page);
         await expect(page.getByText(label).first()).toBeVisible({ timeout: 30000 });
     });
 
@@ -77,7 +86,7 @@ test.describe('AI-OS Data Flow', () => {
         await page.reload();
         await boot(page);
         await page.goto('/keys');
-        await dismissOverlay(page);
+        await dismissWizard(page);
         await expect(page.getByText('e2e-openrouter-01').first()).toBeVisible({
             timeout: 30000,
         });
@@ -97,7 +106,7 @@ test.describe('AI-OS Data Flow', () => {
         await page.reload();
         await boot(page);
         await page.goto('/keys');
-        await dismissOverlay(page);
+        await dismissWizard(page);
 
         const row = page.locator('tr:has-text("e2e-pending-01")');
         await expect(row).toBeVisible({ timeout: 30000 });
@@ -108,7 +117,7 @@ test.describe('AI-OS Data Flow', () => {
         await page.reload();
         await boot(page);
         await page.goto('/keys');
-        await dismissOverlay(page);
+        await dismissWizard(page);
         const rowAfter = page.locator('tr:has-text("e2e-pending-01")');
         await expect(rowAfter).toBeVisible({ timeout: 30000 });
         await expect(rowAfter.getByTitle('Disable')).toBeVisible({ timeout: 15000 });
@@ -129,7 +138,7 @@ test.describe('AI-OS Data Flow', () => {
         await page.reload();
         await boot(page);
         await page.goto('/chat');
-        await dismissOverlay(page);
+        await dismissWizard(page);
 
         // Textarea is enabled only when a key is auto-selected.
         const box = page.getByPlaceholder('Type a message...');
@@ -142,7 +151,7 @@ test.describe('AI-OS Data Flow', () => {
         await page.reload();
         await boot(page);
         await page.goto('/chat');
-        await dismissOverlay(page);
+        await dismissWizard(page);
         await expect(page.getByText('e2e ping 42').first()).toBeVisible({
             timeout: 30000,
         });
