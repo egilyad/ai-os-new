@@ -630,6 +630,12 @@ export const PermissionMatrix: React.FC<PermissionMatrixProps> = ({ roles, onUpd
                                                                 alignItems: 'center',
                                                                 gap: '0.5rem',
                                                                 borderLeft: `3px solid ${permColor(perm)}`,
+                                                                // MOBILE audit: sticky first column so
+                                                                // permission names stay visible on narrow screens.
+                                                                position: 'sticky',
+                                                                left: 0,
+                                                                zIndex: 1,
+                                                                background: 'rgba(15,23,42,0.97)',
                                                             }}
                                                         >
                                                             <span
