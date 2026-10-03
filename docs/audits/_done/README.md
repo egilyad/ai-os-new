@@ -153,3 +153,34 @@
   отдельно;
 - audit-24-baseline-0918.md — ✅ ЗАКРЫТ как устаревший: CI-триггер,
   tsc-ошибки, MemoryPanel, циклы — всё починено, CI зелёный.
+
+## Исторический дроп 2026-09-14 — 2026-09-18 (перенесено в _done, не верифицировать как текущее)
+
+Перенесено из `docs/audits/` как superseded материалом audit-01…24. Не является
+источником текущего состояния, хранить только как историю:
+
+- ACTUAL_SYSTEM_AUDIT.md, FULL_FUNCTIONALITY_AUDIT.md, SuperAgents-OS-Audit-Report.md,
+  PROJECTS_RUNTIME_AUDIT.md, SIMULATION_AUDIT.md, TINYTROUPE_AUDIT.md,
+  MODEL_DEFAULTS_POST_AUDIT.md, MOBILE_READINESS_AUDIT.md, CHAT_ARCHAEOLOGY.md,
+  STATIC_GAP_CLOSURE_PLAN.md, OPPORTUNITIES_CHECKLIST.md,
+  AUDIT_DEMO_MOCK_STUB_2026-09-16.md — baseline-серия 2026-09-14/16,
+  superseded закрытием audit-01…24;
+- au4.md, ua22.md (ветка fix-debate-text-truncation, 2026-09-17/18) — панельные
+  оценки 5–8/10, DebatePanel truncation-риски отмечены; superseded текущим
+  i18n-фиксом TournamentPanel + audit-11/15/16;
+- typecheackerror.md (607→0 ошибок) — историческая чистка tsc; цитировать только
+  с оговоркой README (не воспроизведено в этой ветке), superseded audit-24;
+- SuperAgents_OS_Audit_Report_2026-09-18.docx, SuperAgents_OS_Roadmap_10of10_2026-09-18.docx/.md,
+  SuperAgents_OS_vs_Paperclip_Gap_Plan_2026-09-18.md, SuperAgents_OS_аудит_панелей.md/.xlsx,
+  SuperAgents_OS_аудит_чата_роадмап.md/.xlsx, Аудит_готовности_панелей_AI-OS.md,
+  Аудит_документации_.md — дроп 2026-09-18, superseded audit-01…24;
+- OPEN_GAPS.md — НЕ тронут (по решению владельца: уже готов, скип).
+
+## Baseline audits-2026-07 (перенесен в _done по решению владельца)
+
+`_done/audits-2026-07/au1.md + audit2/` (8 файлов, 2026-07-30, ~457КБ) — самый старый
+baseline: оценка 5.5/10, P0 про plaintext-ключи и красный CI. Проверено по коду:
+P0-ключи закрыт как by-design в audit-01 (`key-vault.ts:33-34` — plaintext by design,
+passphrase-Vault отложен как отдельная фича), CI закрыт в audit-24 (зелёный).
+Demo-заглушки дебат-панелей покрыты audit-15/16/18. Хранить как историю, не как
+источник текущего состояния.

@@ -2,9 +2,11 @@ import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { autoDebateService } from '../kernel/instances';
 import PanelLoader from './PanelLoader';
+import { useTranslation } from '../i18n/useTranslation';
 import type { TournamentResult } from '../kernel/contracts/auto-debate';
 
 const TournamentPanel: React.FC = () => {
+    const { t } = useTranslation();
     const [topic, setTopic] = useState('');
     const [participantCount, setParticipantCount] = useState(6);
     const [running, setRunning] = useState(false);
@@ -21,10 +23,10 @@ const TournamentPanel: React.FC = () => {
     const run = useCallback(async () => {
         setRunning(true);
         setResult(null);
-        setProgress('Creating participants...');
+        setProgress(t('debate.tournament_creating'));
         try {
-            const t = topic.trim() || 'Should AI be regulated?';
-            const r = await autoDebateService.runTournament(t, participantCount);
+            const tpc = topic.trim() || 'Should AI be regulated?';
+            const r = await autoDebateService.runTournament(tpc, participantCount);
             if (!mountedRef.current) return;
             setResult(r);
             setProgress('');
@@ -34,10 +36,10 @@ const TournamentPanel: React.FC = () => {
         } finally {
             if (mountedRef.current) setRunning(false);
         }
-    }, [topic, participantCount]);
+    }, [topic, participantCount, t]);
 
     return (
-        <PanelLoader title="Debate Tournament">
+        <PanelLoader title={t('debate.tournament_title')}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', maxWidth: 800 }}>
                 <div
                     style={{
@@ -55,12 +57,12 @@ const TournamentPanel: React.FC = () => {
                                 marginBottom: '0.25rem',
                             }}
                         >
-                            Topic
+                            {t('debate.tournament_topic')}
                         </div>
                         <input
                             value={topic}
                             onChange={(e) => setTopic(e.target.value)}
-                            placeholder="Leave empty for random topic"
+                            placeholder={t('debate.tournament_topic_ph')}
                             style={{
                                 width: '100%',
                                 padding: '0.4rem 0.6rem',
@@ -80,7 +82,7 @@ const TournamentPanel: React.FC = () => {
                                 marginBottom: '0.25rem',
                             }}
                         >
-                            Participants
+                            {t('debate.tournament_participants')}
                         </div>
                         <input
                             type="number"
@@ -117,7 +119,7 @@ const TournamentPanel: React.FC = () => {
                             fontWeight: 600,
                         }}
                     >
-                        {running ? 'Running...' : 'Start Tournament'}
+                        {running ? t('debate.tournament_running') : t('debate.tournament_start')}
                     </button>
                 </div>
 
@@ -140,7 +142,7 @@ const TournamentPanel: React.FC = () => {
                                 color: 'var(--text-primary)',
                             }}
                         >
-                            Tournament Results
+                            {t('debate.tournament_results')}
                             <span
                                 style={{
                                     fontSize: '0.7rem',
@@ -149,8 +151,11 @@ const TournamentPanel: React.FC = () => {
                                     marginLeft: '0.5rem',
                                 }}
                             >
-                                {result.participants.length} participants · {result.matches.length}{' '}
-                                matches · {(result.durationMs / 1000).toFixed(1)}s
+                                {t('debate.tournament_meta', {
+                                    p: result.participants.length,
+                                    m: result.matches.length,
+                                    s: (result.durationMs / 1000).toFixed(1),
+                                })}
                             </span>
                         </div>
 
@@ -161,7 +166,7 @@ const TournamentPanel: React.FC = () => {
                                 marginBottom: '0.5rem',
                             }}
                         >
-                            Topic: {result.topic}
+                            {t('debate.tournament_topic_label', { topic: result.topic })}
                         </div>
 
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
@@ -172,7 +177,7 @@ const TournamentPanel: React.FC = () => {
                                     color: 'var(--text-primary)',
                                 }}
                             >
-                                Rankings
+                                {t('debate.tournament_rankings')}
                             </div>
                             {result.rankings.map((r, i) => (
                                 <div
@@ -224,16 +229,17 @@ const TournamentPanel: React.FC = () => {
                                         {r.name}
                                     </span>
                                     <span style={{ fontSize: '0.7rem', color: 'var(--success)' }}>
-                                        {r.wins}W
+                                        {t('debate.tournament_wins', { n: r.wins })}
                                     </span>
                                     <span style={{ fontSize: '0.7rem', color: 'var(--error)' }}>
-                                        {r.losses}L
+                                        {t('debate.tournament_losses', { n: r.losses })}
                                     </span>
                                     <span
                                         style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}
                                     >
-                                        score: {r.score > 0 ? '+' : ''}
-                                        {r.score}
+                                        {t('debate.tournament_score', {
+                                            s: `${r.score > 0 ? '+' : ''}${r.score}`,
+                                        })}
                                     </span>
                                     <div
                                         style={{
@@ -264,7 +270,7 @@ const TournamentPanel: React.FC = () => {
                                 marginTop: '0.5rem',
                             }}
                         >
-                            Matches
+                            {t('debate.tournament_matches')}
                         </div>
                         {result.matches.map((m) => (
                             <div
@@ -309,7 +315,7 @@ const TournamentPanel: React.FC = () => {
                                                 fontSize: '0.65rem',
                                             }}
                                         >
-                                            vs
+                                            {t('debate.tournament_vs')}
                                         </span>
                                         <span
                                             style={{
@@ -336,22 +342,22 @@ const TournamentPanel: React.FC = () => {
                                                 <span
                                                     style={{ color: 'var(--success)', fontSize: '0.7rem' }}
                                                 >
-                                                    Winner: {m.winner}
+                                                    {t('debate.tournament_winner', { name: m.winner })}
                                                 </span>
                                             ) : m.draw ? (
                                                 <span
                                                     style={{ color: 'var(--warning)', fontSize: '0.7rem' }}
                                                 >
-                                                    Draw
+                                                    {t('debate.tournament_draw')}
                                                 </span>
                                             ) : null
                                         ) : m.sessionStatus === 'cancelled' ? (
                                             <span style={{ color: 'var(--warning)', fontSize: '0.7rem' }}>
-                                                Cancelled
+                                                {t('debate.tournament_cancelled')}
                                             </span>
                                         ) : (
                                             <span style={{ color: 'var(--error)', fontSize: '0.7rem' }}>
-                                                Failed
+                                                {t('debate.tournament_failed')}
                                             </span>
                                         )}
                                         <span
@@ -360,7 +366,9 @@ const TournamentPanel: React.FC = () => {
                                                 fontSize: '0.65rem',
                                             }}
                                         >
-                                            {(m.durationMs / 1000).toFixed(1)}s
+                                            {t('debate.tournament_secs', {
+                                                s: (m.durationMs / 1000).toFixed(1),
+                                            })}
                                         </span>
                                     </div>
                                 </div>
