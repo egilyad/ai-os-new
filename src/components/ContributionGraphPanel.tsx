@@ -1,35 +1,28 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { GitCommit, TrendingUp, Flame } from 'lucide-react';
 import PanelLoader from './PanelLoader';
+import { useTranslation } from '../i18n/useTranslation';
 import { contributionService } from '../kernel/instances/services-extras';
 import { eventBus, EVENTS } from '../kernel/instances/events';
 
 const LEVEL_COLORS = ['#1e293b', '#0e4429', '#006d32', '#26a641', '#39d353'];
 
 const ContributionGraphPanelContent: React.FC = () => {
+    const { t, lang } = useTranslation();
     const isMounted = useRef(true);
     const [graph, setGraph] = useState(() => contributionService.getGraph());
     const [streak, setStreak] = useState(() => contributionService.getStreak());
+    // Month labels follow the UI locale (were hardcoded English).
     const [months] = useState(() => {
-        const m = [
-            'Jan',
-            'Feb',
-            'Mar',
-            'Apr',
-            'May',
-            'Jun',
-            'Jul',
-            'Aug',
-            'Sep',
-            'Oct',
-            'Nov',
-            'Dec',
-        ];
+        const fmt = new Intl.DateTimeFormat(lang === 'ru' ? 'ru-RU' : 'en-US', {
+            month: 'short',
+        });
         const now = new Date();
         const result: { label: string; index: number }[] = [];
         for (let i = 0; i < 12; i++) {
-            const idx = (now.getMonth() - 11 + i + 12) % 12;
-            if (i % 2 === 0 || i === 11) result.push({ label: m[idx]!, index: i });
+            const d = new Date(now.getFullYear(), now.getMonth() - 11 + i, 1);
+            if (i % 2 === 0 || i === 11)
+                result.push({ label: fmt.format(d).replace('.', ''), index: i });
         }
         return result;
     });
@@ -64,10 +57,10 @@ const ContributionGraphPanelContent: React.FC = () => {
                     gap: 8,
                 }}
             >
-                <GitCommit size={20} color="#10b981" /> Contribution Graph
+                <GitCommit size={20} color="#10b981" /> {t('contrib.title')}
             </h2>
             <p style={{ margin: '0 0 16px', fontSize: 13, color: 'var(--slate-400)' }}>
-                Your activity across the platform
+                {t('contrib.subtitle')}
             </p>
 
             <div style={{ display: 'flex', gap: 16, marginBottom: 16 }}>
@@ -93,7 +86,7 @@ const ContributionGraphPanelContent: React.FC = () => {
                             gap: 4,
                         }}
                     >
-                        <TrendingUp size={12} /> Total Contributions
+                        <TrendingUp size={12} /> {t('contrib.total')}
                     </div>
                 </div>
                 <div
@@ -118,7 +111,7 @@ const ContributionGraphPanelContent: React.FC = () => {
                             gap: 4,
                         }}
                     >
-                        <Flame size={12} /> Current Streak
+                        <Flame size={12} /> {t('contrib.streak')}
                     </div>
                 </div>
                 <div
@@ -143,7 +136,7 @@ const ContributionGraphPanelContent: React.FC = () => {
                             gap: 4,
                         }}
                     >
-                        <Flame size={12} /> Longest Streak
+                        <Flame size={12} /> {t('contrib.longest')}
                     </div>
                 </div>
             </div>
@@ -171,7 +164,10 @@ const ContributionGraphPanelContent: React.FC = () => {
                             {week.days.map((day, di) => (
                                 <div
                                     key={di}
-                                    title={`${day.date}: ${day.count} contributions`}
+                                        title={t('contrib.dayTitle', {
+                                            date: day.date,
+                                            n: day.count,
+                                        })}
                                     style={{
                                         width: 12,
                                         height: 12,
@@ -202,14 +198,14 @@ const ContributionGraphPanelContent: React.FC = () => {
                         color: 'var(--slate-500)',
                     }}
                 >
-                    Less
+                    {t('contrib.less')}
                     {LEVEL_COLORS.map((c, i) => (
                         <div
                             key={i}
                             style={{ width: 10, height: 10, borderRadius: 2, background: c }}
                         />
                     ))}
-                    More
+                    {t('contrib.more')}
                 </div>
             </div>
         </div>

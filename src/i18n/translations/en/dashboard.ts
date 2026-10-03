@@ -177,6 +177,15 @@ const dashboard: Record<string, string> = {
     'system_health.area.synced': 'Synced',
     'system_health.area.stale': 'Stale',
     'system_health.area.unavailable': 'Unavailable',
+    'contrib.title': 'Contribution Graph',
+    'contrib.subtitle': 'Your activity across the platform',
+    'contrib.total': 'Total Contributions',
+    'contrib.streak': 'Current Streak',
+    'contrib.streakDays': '{n} days',
+    'contrib.longest': 'Longest Streak',
+    'contrib.less': 'Less',
+    'contrib.more': 'More',
+    'contrib.dayTitle': '{date}: {n} contributions',
 };
 
 export { dashboard };

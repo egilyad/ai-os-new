@@ -177,6 +177,15 @@ const dashboard: Record<string, string> = {
     'system_health.area.synced': 'Синхронизирован',
     'system_health.area.stale': 'Устарел',
     'system_health.area.unavailable': 'Недоступен',
+    'contrib.title': 'Граф вклада',
+    'contrib.subtitle': 'Ваша активность на платформе',
+    'contrib.total': 'Всего вкладов',
+    'contrib.streak': 'Текущая серия',
+    'contrib.streakDays': '{n} дн.',
+    'contrib.longest': 'Рекордная серия',
+    'contrib.less': 'Меньше',
+    'contrib.more': 'Больше',
+    'contrib.dayTitle': '{date}: {n} вкладов',
 };
 
 export { dashboard };
