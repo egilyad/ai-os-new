@@ -816,6 +816,22 @@ const analytics: Record<string, string> = {
     'scheduler.system': 'system',
     'scheduler.footer':
         'Scheduler — core service. Uses Dexie for schedule persistence. The cron parser supports standard 5-field expressions.',
+    'keyUsage.title': 'Key Usage Analytics',
+    'keyUsage.subtitle': 'Usage statistics across all providers and keys',
+    'keyUsage.totalKeys': 'Total Keys',
+    'keyUsage.activeKeys': 'Active Keys',
+    'keyUsage.totalRequests': 'Total Requests',
+    'keyUsage.totalTokens': 'Total Tokens',
+    'keyUsage.totalCost': 'Total Cost',
+    'keyUsage.avgLatency': 'Avg Latency',
+    'keyUsage.breakdown': 'Per-Provider Breakdown',
+    'keyUsage.trend': '7-Day Usage Trend',
+    'keyUsage.empty': 'No usage recorded yet',
+    'keyUsage.emptyHint': 'Send a chat message or run a debate to populate statistics.',
+    'keyUsage.rowRequests': '{n} requests',
+    'keyUsage.rowTokens': '{n}M tokens',
+    'keyUsage.rowLatency': '{n}ms avg',
+    'keyUsage.rowErrors': '{n}% errors',
 };
 
 export { analytics };

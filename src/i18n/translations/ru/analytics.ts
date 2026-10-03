@@ -814,7 +814,23 @@ const analytics: Record<string, string> = {
     'scheduler.next_run_label': 'След. запуск',
     'scheduler.system': 'система',
     'scheduler.footer':
-        'Scheduler — core сервис. Использует Dexie для персистенции расписаний. Cron-парсер поддерживает стандартные 5-польные выражения.',
+        'Scheduler — core сервис. Использует Dexie для персистентности расписаний. Cron-парсер поддерживает стандартные 5-полевые выражения.',
+    'keyUsage.title': 'Аналитика использования ключей',
+    'keyUsage.subtitle': 'Статистика использования по всем провайдерам и ключам',
+    'keyUsage.totalKeys': 'Всего ключей',
+    'keyUsage.activeKeys': 'Активных ключей',
+    'keyUsage.totalRequests': 'Всего запросов',
+    'keyUsage.totalTokens': 'Всего токенов',
+    'keyUsage.totalCost': 'Общая стоимость',
+    'keyUsage.avgLatency': 'Средняя задержка',
+    'keyUsage.breakdown': 'По провайдерам',
+    'keyUsage.trend': 'Тренд за 7 дней',
+    'keyUsage.empty': 'Пока нет статистики',
+    'keyUsage.emptyHint': 'Отправьте сообщение в чат или запустите дебаты.',
+    'keyUsage.rowRequests': '{n} запросов',
+    'keyUsage.rowTokens': '{n}M токенов',
+    'keyUsage.rowLatency': '{n}мс сред.',
+    'keyUsage.rowErrors': '{n}% ошибок',
 };
 
 export { analytics };

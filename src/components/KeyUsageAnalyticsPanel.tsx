@@ -1,6 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import { BarChart3, DollarSign, Activity, Zap, Clock, Server } from 'lucide-react';
+import React, { useEffect, useState, useCallback } from 'react';
+import { BarChart3, DollarSign, Activity, Zap, Clock, Server, Key } from 'lucide-react';
 import PanelLoader from './PanelLoader';
+import { usePolling } from './Common/usePolling';
+import { useTranslation } from '../i18n/useTranslation';
 import { keyUsageAnalyticsService } from '../kernel/instances';
 import type {
     KeyUsageSummary,
@@ -54,27 +56,61 @@ const StatCard: React.FC<{
 );
 
 const KeyUsageAnalyticsContent: React.FC = () => {
+    const { t } = useTranslation();
     const [summary, setSummary] = useState<KeyUsageSummary | null>(null);
     const [breakdown, setBreakdown] = useState<ProviderUsageBreakdown[]>([]);
     const [trends, setTrends] = useState<UsageTrend[]>([]);
 
-    useEffect(() => {
-        setSummary(keyUsageAnalyticsService.getSummary());
-        setBreakdown(keyUsageAnalyticsService.getProviderBreakdown());
-        setTrends(keyUsageAnalyticsService.getTrends(7));
+    const refresh = useCallback(() => {
+        try {
+            setSummary(keyUsageAnalyticsService.getSummary());
+            setBreakdown(keyUsageAnalyticsService.getProviderBreakdown());
+            setTrends(keyUsageAnalyticsService.getTrends(7));
+        } catch {
+            /* service not ready — keep previous snapshot */
+        }
     }, []);
 
+    useEffect(() => {
+        refresh();
+    }, [refresh]);
+    // Live snapshot: usage accrues from chat/debates at any moment.
+    usePolling(refresh, 10000);
+
     if (!summary) return null;
+
+    if (summary.totalRequests === 0 && breakdown.length === 0) {
+        return (
+            <div
+                style={{
+                    padding: 32,
+                    height: '100%',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: 8,
+                    textAlign: 'center',
+                }}
+            >
+                <BarChart3 size={32} style={{ opacity: 0.3 }} />
+                <div style={{ fontSize: 15, fontWeight: 600 }}>{t('keyUsage.empty')}</div>
+                <div style={{ fontSize: 13, color: 'var(--slate-400)' }}>
+                    {t('keyUsage.emptyHint')}
+                </div>
+            </div>
+        );
+    }
 
     const maxCost = Math.max(...breakdown.map((b) => b.cost), 1);
 
     return (
         <div style={{ padding: 16, height: '100%', overflowY: 'auto' }}>
             <h2 style={{ margin: '0 0 4px', fontSize: 18, fontWeight: 600 }}>
-                Key Usage Analytics
+                {t('keyUsage.title')}
             </h2>
             <p style={{ margin: '0 0 16px', fontSize: 13, color: 'var(--slate-400)' }}>
-                Usage statistics across all providers and keys
+                {t('keyUsage.subtitle')}
             </p>
 
             <div
@@ -86,37 +122,37 @@ const KeyUsageAnalyticsContent: React.FC = () => {
                 }}
             >
                 <StatCard
-                    label="Total Keys"
+                    label={t('keyUsage.totalKeys')}
                     value={`${summary.totalKeys}`}
-                    icon={<KeyIcon />}
+                    icon={<Key size={18} />}
                     color="#3b82f6"
                 />
                 <StatCard
-                    label="Active Keys"
+                    label={t('keyUsage.activeKeys')}
                     value={`${summary.activeKeys}`}
                     icon={<Zap size={18} />}
                     color="#22c55e"
                 />
                 <StatCard
-                    label="Total Requests"
+                    label={t('keyUsage.totalRequests')}
                     value={`${(summary.totalRequests / 1000).toFixed(1)}K`}
                     icon={<Activity size={18} />}
                     color="#a855f7"
                 />
                 <StatCard
-                    label="Total Tokens"
+                    label={t('keyUsage.totalTokens')}
                     value={`${(summary.totalTokens / 1000000).toFixed(1)}M`}
                     icon={<BarChart3 size={18} />}
                     color="#f59e0b"
                 />
                 <StatCard
-                    label="Total Cost"
+                    label={t('keyUsage.totalCost')}
                     value={`$${summary.totalCost.toFixed(2)}`}
                     icon={<DollarSign size={18} />}
                     color="#10b981"
                 />
                 <StatCard
-                    label="Avg Latency"
+                    label={t('keyUsage.avgLatency')}
                     value={`${summary.avgLatency}ms`}
                     icon={<Clock size={18} />}
                     color="#f97316"
@@ -124,7 +160,7 @@ const KeyUsageAnalyticsContent: React.FC = () => {
             </div>
 
             <h3 style={{ margin: '0 0 8px', fontSize: 14, fontWeight: 600, color: 'var(--slate-400)' }}>
-                Per-Provider Breakdown
+                {t('keyUsage.breakdown')}
             </h3>
             <div style={{ marginBottom: 20 }}>
                 {breakdown.map((b) => (
@@ -181,11 +217,19 @@ const KeyUsageAnalyticsContent: React.FC = () => {
                             />
                         </div>
                         <div style={{ display: 'flex', gap: 16, fontSize: 11, color: 'var(--slate-500)' }}>
-                            <span>{b.requestCount.toLocaleString()} requests</span>
-                            <span>{(b.tokenCount / 1000000).toFixed(1)}M tokens</span>
-                            <span>{b.avgLatency}ms avg</span>
+                            <span>
+                                {t('keyUsage.rowRequests', {
+                                    n: b.requestCount.toLocaleString(),
+                                })}
+                            </span>
+                            <span>
+                                {t('keyUsage.rowTokens', {
+                                    n: (b.tokenCount / 1000000).toFixed(1),
+                                })}
+                            </span>
+                            <span>{t('keyUsage.rowLatency', { n: b.avgLatency })}</span>
                             <span style={{ color: b.errorRate > 3 ? '#ef4444' : '#22c55e' }}>
-                                {b.errorRate}% errors
+                                {t('keyUsage.rowErrors', { n: b.errorRate })}
                             </span>
                         </div>
                     </div>
@@ -193,7 +237,7 @@ const KeyUsageAnalyticsContent: React.FC = () => {
             </div>
 
             <h3 style={{ margin: '0 0 8px', fontSize: 14, fontWeight: 600, color: 'var(--slate-400)' }}>
-                7-Day Usage Trend
+                {t('keyUsage.trend')}
             </h3>
             <div
                 style={{
@@ -244,23 +288,6 @@ const KeyUsageAnalyticsContent: React.FC = () => {
         </div>
     );
 };
-
-const KeyIcon: React.FC = () => (
-    <svg
-        width="18"
-        height="18"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-    >
-        <circle cx="9" cy="9" r="7" />
-        <path d="M14 14l6 6" />
-        <path d="M14 10h4" />
-    </svg>
-);
 
 const KeyUsageAnalyticsPanel: React.FC = () => (
     <PanelLoader>
