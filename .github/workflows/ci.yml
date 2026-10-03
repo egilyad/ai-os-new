@@ -295,7 +295,10 @@ jobs:
     e2e:
         name: E2E Tests
         runs-on: ubuntu-latest
-        timeout-minutes: 40
+        # 30 specs (basic 4 + data-flow 4 + routes 22) with cold-boot gates:
+        # ~1.5-2 min per test on shared runners. Raised from 40 when the
+        # route-spine suite landed.
+        timeout-minutes: 70
         needs: [quality, build]
         permissions:
             contents: read
