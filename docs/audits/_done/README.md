@@ -147,4 +147,7 @@
   FA-03 дедуп компонентов; медиумы — скип;
 - audit-22-migration-safety.md — ✅ ЗАКРЫТ как вердикт: single-migration
   уже есть (`council-migration-service`, phase65, checksum+rollback);
-  bulk-historic и полный SSOT-cutover — программа миграции, не баги.
+  bulk-historic и полный SSOT-cutover — программа миграции, не баги;
+- audit-23-mobile-phase1.md — ✅ ЗАКРЫТ по сломанному: Simulation SVG ✔
+  (уже), PermissionMatrix sticky-col ✔; ~30 панелей rework — системно,
+  отдельно.
