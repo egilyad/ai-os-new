@@ -296,9 +296,10 @@ jobs:
         name: E2E Tests (${{ matrix.name }})
         runs-on: ubuntu-latest
         # 30 specs (basic 4 + data 4 + routes 22) with cold-boot gates.
-        # Explicit file groups (not --shard order): the 4 double-boot data
-        # tests must not land in one shard, or it exceeds the job timeout.
-        # Each shard boots its own preview server.
+        # Explicit file groups: the 4 double-boot data tests are the heavy
+        # ones — routes-b-keys used to pair 2 of them with 11 route tests
+        # (CI-H-1). Now all 4 heavies share one shard, route shards are
+        # light-only. Each shard boots its own preview server.
         timeout-minutes: 40
         needs: [quality, build]
         strategy:
@@ -307,10 +308,10 @@ jobs:
                 include:
                     - name: basic-routes-a
                       spec: 'e2e/basic-flow.spec.ts e2e/routes-a-flow.spec.ts'
-                    - name: routes-b-keys
-                      spec: 'e2e/routes-b-flow.spec.ts e2e/data-keys.spec.ts'
-                    - name: health-chat
-                      spec: 'e2e/data-health.spec.ts e2e/data-chat.spec.ts'
+                    - name: routes-b
+                      spec: 'e2e/routes-b-flow.spec.ts'
+                    - name: health-chat-keys
+                      spec: 'e2e/data-health.spec.ts e2e/data-chat.spec.ts e2e/data-keys.spec.ts'
         permissions:
             contents: read
             actions: read
@@ -391,6 +392,12 @@ jobs:
             name: github-pages
             url: ${{ steps.deployment.outputs.page_url }}
         steps:
+            # CI-C-1: the sourcemaps upload script lives in the repo —
+            # without checkout it would fail with ENOENT as soon as
+            # SENTRY/DATADOG secrets are configured. (node itself is
+            # preinstalled on the runner; no npm ci needed: the script
+            # uses stdlib only.)
+            - uses: actions/checkout@v4
             - name: Download build artifact
               uses: actions/download-artifact@v4
               with:
@@ -419,7 +426,10 @@ jobs:
               # the .map files would otherwise ship publicly with the bundle
               # (~392k LOC of sources). Uploaded to Sentry/Datadog above when
               # configured; never publish to Pages.
-              run: rm -f dist/**/*.map dist/*.map
+              # CI-C-2: `rm dist/**/*.map` does NOT recurse without
+              # `shopt -s globstar` (`**` degrades to `*`), so nested maps
+              # (dist/assets/chunks/*.map) would leak. `find` is exact.
+              run: find dist -name '*.map' -delete
 
             - name: Upload Pages artifact
               uses: actions/upload-pages-artifact@v3
