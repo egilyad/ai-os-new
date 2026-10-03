@@ -140,4 +140,8 @@
 - audit-20-backend-review.md — ✅ ЗАКРЫТ по коду: B-01/08/09 director ✔
   (уже), B-02 constant-emitOnce (пусто) ✔, B-05 static-emit (пусто) ✔,
   B-11/B-12 декомпозиция+классификатор ✔ (уже); ОТЛОЖЕНО (архитектура):
-  B-03 lossy-bus, B-04/B-06/B-07 DI-глобалы, B-10 single-reducer.
+  B-03 lossy-bus, B-04/B-06/B-07 DI-глобалы, B-10 single-reducer;
+- audit-21-frontend-review.md — ✅ ЗАКРЫТ: FA-01 дубль builder (нет) ✔,
+  FA-05/FA-06 капы/таймеры ✔ (уже), FX/i18n — см. audit-11;
+  ОТЛОЖЕНО (системные миграции): FA-02 inline-стили (9k+ мест),
+  FA-03 дедуп компонентов; медиумы — скип.
