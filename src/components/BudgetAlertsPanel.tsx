@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { usePolling } from './Common/usePolling';
+import { useTranslation } from '../i18n/useTranslation';
 import {
     Bell,
     Plus,
@@ -19,19 +20,19 @@ import type {
     BudgetAlertAction,
 } from '../kernel/contracts/budget-alert';
 
-const CONDITION_LABELS: Record<BudgetAlertCondition, string> = {
-    above_threshold: 'Above Threshold',
-    below_threshold: 'Below Threshold',
-    near_limit: 'Near Limit',
-    trending_up: 'Trending Up',
-    trending_down: 'Trending Down',
+const CONDITION_KEYS: Record<BudgetAlertCondition, string> = {
+    above_threshold: 'budgetAlerts.cond_above_threshold',
+    below_threshold: 'budgetAlerts.cond_below_threshold',
+    near_limit: 'budgetAlerts.cond_near_limit',
+    trending_up: 'budgetAlerts.cond_trending_up',
+    trending_down: 'budgetAlerts.cond_trending_down',
 };
 
-const ACTION_LABELS: Record<BudgetAlertAction, string> = {
-    notification: 'Notification',
-    block_usage: 'Block Usage',
-    switch_provider: 'Switch Provider',
-    warn_user: 'Warn User',
+const ACTION_KEYS: Record<BudgetAlertAction, string> = {
+    notification: 'budgetAlerts.act_notification',
+    block_usage: 'budgetAlerts.act_block_usage',
+    switch_provider: 'budgetAlerts.act_switch_provider',
+    warn_user: 'budgetAlerts.act_warn_user',
 };
 
 const SEVERITY_COLORS: Record<string, string> = {
@@ -46,6 +47,7 @@ const SEVERITY_ICONS: Record<string, React.ReactNode> = {
 };
 
 const BudgetAlertsPanelContent: React.FC = () => {
+    const { t } = useTranslation();
     const [rules, setRules] = useState<BudgetAlertRule[]>([]);
     const [history, setHistory] = useState<BudgetAlertEvent[]>([]);
     const [showForm, setShowForm] = useState(false);
@@ -87,9 +89,9 @@ const BudgetAlertsPanelContent: React.FC = () => {
                 }}
             >
                 <div>
-                    <h2 style={{ margin: 0, fontSize: 18, fontWeight: 600 }}>Budget Alert Rules</h2>
+                    <h2 style={{ margin: 0, fontSize: 18, fontWeight: 600 }}>{t('budgetAlerts.title')}</h2>
                     <p style={{ margin: '4px 0 0', fontSize: 13, color: 'var(--slate-400)' }}>
-                        Configure when and how to get alerted about budget usage
+                        {t('budgetAlerts.subtitle')}
                     </p>
                 </div>
                 <button
@@ -108,7 +110,7 @@ const BudgetAlertsPanelContent: React.FC = () => {
                         fontWeight: 500,
                     }}
                 >
-                    <Plus size={16} /> Add Rule
+                    <Plus size={16} /> {t('budgetAlerts.addRule')}
                 </button>
             </div>
 
@@ -127,7 +129,7 @@ const BudgetAlertsPanelContent: React.FC = () => {
                     <input
                         value={name}
                         onChange={(e) => setName(e.target.value)}
-                        placeholder="Rule name"
+                        placeholder={t('budgetAlerts.ruleName')}
                         style={inputStyle}
                     />
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8 }}>
@@ -136,16 +138,16 @@ const BudgetAlertsPanelContent: React.FC = () => {
                             onChange={(e) => setCondition(e.target.value as BudgetAlertCondition)}
                             style={inputStyle}
                         >
-                            {Object.entries(CONDITION_LABELS).map(([k, v]) => (
+                            {Object.entries(CONDITION_KEYS).map(([k, key]) => (
                                 <option key={k} value={k}>
-                                    {v}
+                                    {t(key)}
                                 </option>
                             ))}
                         </select>
                         <input
                             value={threshold}
                             onChange={(e) => setThreshold(e.target.value)}
-                            placeholder="Threshold %"
+                            placeholder={t('budgetAlerts.threshold')}
                             type="number"
                             style={inputStyle}
                         />
@@ -154,9 +156,9 @@ const BudgetAlertsPanelContent: React.FC = () => {
                             onChange={(e) => setAction(e.target.value as BudgetAlertAction)}
                             style={inputStyle}
                         >
-                            {Object.entries(ACTION_LABELS).map(([k, v]) => (
+                            {Object.entries(ACTION_KEYS).map(([k, key]) => (
                                 <option key={k} value={k}>
-                                    {v}
+                                    {t(key)}
                                 </option>
                             ))}
                         </select>
@@ -175,7 +177,7 @@ const BudgetAlertsPanelContent: React.FC = () => {
                             alignSelf: 'flex-start',
                         }}
                     >
-                        Create Rule
+                        {t('budgetAlerts.createRule')}
                     </button>
                 </div>
             )}
@@ -186,7 +188,7 @@ const BudgetAlertsPanelContent: React.FC = () => {
                         style={{ textAlign: 'center', padding: 32, color: 'var(--slate-500)', fontSize: 13 }}
                     >
                         <Bell size={32} style={{ opacity: 0.3, marginBottom: 8 }} />
-                        <p>No alert rules configured.</p>
+                        <p>{t('budgetAlerts.noRules')}</p>
                     </div>
                 )}
                 {rules.map((rule) => (
@@ -213,11 +215,11 @@ const BudgetAlertsPanelContent: React.FC = () => {
                                     marginTop: 2,
                                 }}
                             >
-                                <span>{CONDITION_LABELS[rule.condition]}</span>
+                                <span>{t(CONDITION_KEYS[rule.condition])}</span>
                                 <span>·</span>
                                 <span>{rule.threshold}%</span>
                                 <span>·</span>
-                                <span>{ACTION_LABELS[rule.action]}</span>
+                                <span>{t(ACTION_KEYS[rule.action])}</span>
                             </div>
                         </div>
                         <button
@@ -255,11 +257,11 @@ const BudgetAlertsPanelContent: React.FC = () => {
             </div>
 
             <h3 style={{ margin: '0 0 8px', fontSize: 14, fontWeight: 600, color: 'var(--slate-400)' }}>
-                Alert History
+                {t('budgetAlerts.history')}
             </h3>
             {history.length === 0 && (
                 <div style={{ textAlign: 'center', padding: 24, color: 'var(--slate-500)', fontSize: 13 }}>
-                    <p>No alerts triggered yet.</p>
+                    <p>{t('budgetAlerts.noHistory')}</p>
                 </div>
             )}
             {history
