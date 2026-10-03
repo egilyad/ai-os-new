@@ -293,13 +293,18 @@ jobs:
               run: npm run check:deps
 
     e2e:
-        name: E2E Tests
+        name: E2E Tests (shard ${{ matrix.shardIndex }}/3)
         runs-on: ubuntu-latest
         # 30 specs (basic 4 + data-flow 4 + routes 22) with cold-boot gates:
-        # ~1.5-2 min per test on shared runners. Raised from 40 when the
-        # route-spine suite landed.
-        timeout-minutes: 70
+        # ~1.5-2 min per test on shared runners — a single job runs ~35+ min.
+        # Sharded x3 so wall time stays ~15 min. Playwright --shard splits
+        # the 30 tests evenly; each shard boots its own preview server.
+        timeout-minutes: 40
         needs: [quality, build]
+        strategy:
+            fail-fast: false
+            matrix:
+                shardIndex: [1, 2, 3]
         permissions:
             contents: read
             actions: read
@@ -343,13 +348,13 @@ jobs:
                   path: dist/
 
             - name: Run E2E tests
-              run: npm run test:e2e
+              run: npm run test:e2e -- --shard=${{ matrix.shardIndex }}/3
 
             - name: Upload Playwright report on failure
               if: failure()
               uses: actions/upload-artifact@v4
               with:
-                  name: playwright-report
+                  name: playwright-report-shard-${{ matrix.shardIndex }}
                   path: test-results/
                   retention-days: 7
 
