@@ -150,4 +150,6 @@
   bulk-historic и полный SSOT-cutover — программа миграции, не баги;
 - audit-23-mobile-phase1.md — ✅ ЗАКРЫТ по сломанному: Simulation SVG ✔
   (уже), PermissionMatrix sticky-col ✔; ~30 панелей rework — системно,
-  отдельно.
+  отдельно;
+- audit-24-baseline-0918.md — ✅ ЗАКРЫТ как устаревший: CI-триггер,
+  tsc-ошибки, MemoryPanel, циклы — всё починено, CI зелёный.
