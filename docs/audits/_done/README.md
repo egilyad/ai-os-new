@@ -136,4 +136,8 @@
 - audit-19-chat-failures.md — ✅ ЗАКРЫТ: приоритеты 1–5 кодом ✔
   (deep-link, error-префикс, terminal-персист, activeSession-персист,
   маркеры вне контекста); 6/7/9 — stale (Tier5, наблюдатели, контракт
-  актуален); 8 agent-attach — фича/дизайн; 10 — второй эшелон.
+  актуален); 8 agent-attach — фича/дизайн; 10 — второй эшелон;
+- audit-20-backend-review.md — ✅ ЗАКРЫТ по коду: B-01/08/09 director ✔
+  (уже), B-02 constant-emitOnce (пусто) ✔, B-05 static-emit (пусто) ✔,
+  B-11/B-12 декомпозиция+классификатор ✔ (уже); ОТЛОЖЕНО (архитектура):
+  B-03 lossy-bus, B-04/B-06/B-07 DI-глобалы, B-10 single-reducer.
