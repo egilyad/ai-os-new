@@ -37,3 +37,16 @@ updates:
       labels:
           - ci
           - dependencies
+
+    # L-3: Dockerfile base images are digest-pinned; this keeps them fresh.
+    - package-ecosystem: docker
+      directory: /
+      schedule:
+          interval: weekly
+          day: monday
+          time: '08:00'
+          timezone: Etc/UTC
+      open-pull-requests-limit: 5
+      labels:
+          - dependencies
+          - security
