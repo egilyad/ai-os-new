@@ -60,7 +60,9 @@ describe('N8NService config validation (C-3)', () => {
                 n8nApiKey: 'evil-key',
             }),
         });
-        const fetchMock = vi.fn(async () => ({ ok: true, json: async () => ({}) }));
+        const fetchMock = vi.fn(
+            async (_url: string, _init?: RequestInit) => ({ ok: true, json: async () => ({}) }),
+        );
         vi.stubGlobal('fetch', fetchMock);
         await n8nService.trigger('a1', 'wf1', { x: 1 });
         expect(fetchMock).toHaveBeenCalledTimes(1);
@@ -80,7 +82,9 @@ describe('N8NService config validation (C-3)', () => {
                 n8nApiKey: 'k',
             }),
         });
-        const fetchMock = vi.fn(async () => ({ ok: true, json: async () => ({}) }));
+        const fetchMock = vi.fn(
+            async (_url: string, _init?: RequestInit) => ({ ok: true, json: async () => ({}) }),
+        );
         vi.stubGlobal('fetch', fetchMock);
         await expect(n8nService.trigger('a1', 'wf1', {})).rejects.toThrow(/no n8n url/i);
         expect(fetchMock).not.toHaveBeenCalled();
@@ -88,7 +92,9 @@ describe('N8NService config validation (C-3)', () => {
 
     it('skips rows with non-string urls', async () => {
         rows.push({ content: JSON.stringify({ kind: 'n8n', n8nApiUrl: 42 }) });
-        const fetchMock = vi.fn(async () => ({ ok: true, json: async () => ({}) }));
+        const fetchMock = vi.fn(
+            async (_url: string, _init?: RequestInit) => ({ ok: true, json: async () => ({}) }),
+        );
         vi.stubGlobal('fetch', fetchMock);
         await expect(n8nService.trigger('a1', 'wf1', {})).rejects.toThrow(/no n8n url/i);
         expect(fetchMock).not.toHaveBeenCalled();

@@ -340,7 +340,7 @@ export class AdapterFactory {
                     adapter &&
                     typeof (adapter as { destroy?: () => void }).destroy === 'function'
                 ) {
-                    (adapter as { destroy?: () => void }).destroy();
+                    (adapter as { destroy: () => void }).destroy();
                 }
                 this.adapters.delete(k);
             }
