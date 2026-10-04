@@ -17,6 +17,7 @@ import type { DebateSyncManager } from '../debate-runtime/debate-sync-manager';
 import type { IToolRunnerService, ToolRunResult } from '../../contracts/parity';
 import { rootLogger } from '../logger-service';
 import { EVENTS } from '../../events/event-names';
+import { isPrivateIP } from '../../utils/network';
 
 const LOGGER = rootLogger.child('ToolRunner');
 
@@ -91,16 +92,16 @@ function httpGuard(url: string): void {
     if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
         throw new Error('Only http(s) URLs are allowed');
     }
-    const host = parsed.hostname.toLowerCase();
-    if (
-        host === 'localhost' ||
-        host.endsWith('.local') ||
-        /^127\./.test(host) ||
-        /^10\./.test(host) ||
-        /^192\.168\./.test(host) ||
-        /^172\.(1[6-9]|2\d|3[01])\./.test(host) ||
-        host === '0.0.0.0'
-    ) {
+    if (parsed.username || parsed.password) {
+        throw new Error('Credentials embedded in URL are blocked');
+    }
+    // C-4: http.fetch is LLM-reachable (prompt-injection surface), so fail
+    // closed on any private/loopback/link-local/metadata host, including
+    // obfuscated forms (decimal/octal/hex, IPv4-mapped IPv6), via the shared
+    // isPrivateIP implementation. NOTE: this deliberately also blocks
+    // RFC1918 LAN, unlike validateIntegrationUrl (user-configured n8n):
+    // agent-chosen URLs get no LAN trust.
+    if (isPrivateIP(parsed.hostname)) {
         throw new Error('Private/local hosts are blocked');
     }
 }
