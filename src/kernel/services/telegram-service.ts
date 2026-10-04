@@ -63,7 +63,9 @@ export class TelegramService {
                 body: JSON.stringify({ chat_id: target, text: text.slice(0, 4096) }),
             });
         } catch (e) {
-            throw new Error(`Telegram send failed: ${e instanceof Error ? e.message : String(e)}`);
+            throw new Error(`Telegram send failed: ${e instanceof Error ? e.message : String(e)}`, {
+                cause: e,
+            });
         }
         if (!res.ok) {
             throw new Error(`Telegram send failed: HTTP ${res.status}`);

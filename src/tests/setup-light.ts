@@ -34,14 +34,11 @@ export function makeWorkerMock(
     return class ConfigurableWorkerMock {
         onmessage: ((event: MessageEvent) => void) | null = null;
         constructor(public url: string) {}
-        postMessage(msg: unknown) {
-            const self = this;
+        postMessage = (msg: unknown) => {
             setTimeout(() => {
-                if (self.onmessage) {
-                    self.onmessage({ data: handler(msg) } as MessageEvent);
-                }
+                this.onmessage?.({ data: handler(msg) } as MessageEvent);
             }, 0);
-        }
+        };
         terminate() {}
         addEventListener() {}
         removeEventListener() {}
