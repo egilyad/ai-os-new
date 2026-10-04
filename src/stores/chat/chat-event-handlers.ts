@@ -64,6 +64,16 @@ function drainSendQueue(get: ZustandGet, sessionId: string): void {
 const chunkBuffers = new Map<string, string>();
 let chunkFlushScheduled = false;
 
+/**
+ * L-18: drop buffered chunks for cancelled requests immediately. The flush
+ * loop only filters by requestEntryMap membership, so without this a flush
+ * racing between the Cancel click and the terminal event appends stale
+ * tokens onto an already-cancelled response.
+ */
+export function dropChunkBuffer(requestId: string): void {
+    chunkBuffers.delete(requestId);
+}
+
 function flushChunkBuffers(set: ZustandSet): void {
     chunkFlushScheduled = false;
     if (chunkBuffers.size === 0) return;

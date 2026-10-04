@@ -44,4 +44,25 @@ describe('RateLimitDecorator', () => {
         await rl.sendMessage(MESSAGES, 'm', 'sk-1');
         expect(rl.canSend()).toBe(false);
     });
+
+    it('keyed canSend reflects individual buckets, keyless is conservative (L-16)', async () => {
+        const inner = makeInner();
+        const rl = new RateLimitDecorator(inner, 1, 0, 60000);
+        expect(rl.canSend('sk-new')).toBe(true);
+        await rl.sendMessage(MESSAGES, 'm', 'sk-1');
+        expect(rl.canSend('sk-1')).toBe(false);
+        // No-key check reports limited when ANY bucket is exhausted.
+        expect(rl.canSend()).toBe(false);
+    });
+});
+
+    it('keyed canSend reflects individual buckets, keyless is conservative (L-16)', async () => {
+        const inner = makeInner();
+        const rl = new RateLimitDecorator(inner, 1, 0, 60000);
+        expect(rl.canSend('sk-new')).toBe(true);
+        await rl.sendMessage(MESSAGES, 'm', 'sk-1');
+        expect(rl.canSend('sk-1')).toBe(false);
+        // No-key check reports limited when ANY bucket is exhausted.
+        expect(rl.canSend()).toBe(false);
+    });
 });

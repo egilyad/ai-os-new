@@ -156,6 +156,16 @@ export class SecurityService implements ISecurityService {
         return this._key === null;
     }
 
+    /**
+     * L-15: TS `private` is compile-time only — without this, JSON.stringify
+     * (logging, structured clone, postMessage, IndexedDB-put) would serialize
+     * the raw salt alongside. The CryptoKey itself is non-extractable and
+     * stringifies to {}.
+     */
+    toJSON(): { redacted: true } {
+        return { redacted: true };
+    }
+
     lock(): void {
         this._key = null;
         this._salt = null;

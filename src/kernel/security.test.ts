@@ -49,4 +49,13 @@ describe('SecurityService (audit fixes)', () => {
         expect(s.isLocked()).toBe(false);
         expect(await s.decrypt(enc)).toBe('keep me');
     });
+
+    it('toJSON never leaks key material (L-15)', async () => {
+        const s = new SecurityService();
+        await s.initialize('pw1');
+        const json = JSON.stringify(s);
+        expect(json).toBe('{"redacted":true}');
+        expect(json).not.toContain('salt');
+        expect(s.toJSON()).toEqual({ redacted: true });
+    });
 });

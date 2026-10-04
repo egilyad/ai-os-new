@@ -41,6 +41,12 @@ fi
 if [ -z "$PROXY_FETCH" ] && [ -f /etc/nginx/conf.d/default.conf ]; then
   echo "WARN: PROXY_FETCH is not set — /proxy/fetch/ will return 501 (fetch tool disabled)"
   sed -i 's|proxy_pass /;|return 501;  # PROXY_FETCH unset: fetch tool disabled (8.5 fail-closed)|' /etc/nginx/conf.d/default.conf
+  # L-10: the sed above is brittle against template drift — verify it matched,
+  # otherwise fail the container instead of serving a self-recursing proxy.
+  if grep -q 'proxy_pass /;' /etc/nginx/conf.d/default.conf; then
+    echo "ERROR: PROXY_FETCH fallback sed did not match — refusing to serve a self-loop"
+    exit 1
+  fi
 fi
 
 # BLD-C5: Verify TLS certs exist if SSL config is in use

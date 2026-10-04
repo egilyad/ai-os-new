@@ -3,7 +3,7 @@ import { rootLogger } from '../../kernel/instances';
 const LOGGER = rootLogger.child('ChatStore');
 import { BucketStorageAdapter } from '../../kernel/storage-adapter-instance';
 import { eventBus, EVENTS, sessionManager, getDistributedLock } from './service-deps';
-import { setupChatEventHandlers } from './chat-event-handlers';
+import { setupChatEventHandlers, dropChunkBuffer } from './chat-event-handlers';
 import { createSendMessageHandler, _sendQueue, _historyLimitWarned } from './chat-send-message';
 import { resolveSessionStore, updateSessionInList } from './store-helpers';
 import type { ChatStoreShape, ChatEntry, ChatSession, ZustandSet } from './types';
@@ -114,8 +114,12 @@ export const useChatStore = create<ChatStoreShape>((set, get) => {
                 return;
             }
             for (const req of allLoadingReqs) {
-                if (req.requestId)
+                if (req.requestId) {
                     eventBus.emit(EVENTS.CANCEL_MESSAGE, { requestId: req.requestId });
+                    // L-18: drop buffered chunks now — the terminal event
+                    // arrives async and a flush in between would stale-append.
+                    dropChunkBuffer(req.requestId);
+                }
             }
             const sessionIdsToUpdate = new Set(allLoadingReqs.map((r) => r.sessionId));
             set((s) => {
@@ -148,6 +152,7 @@ export const useChatStore = create<ChatStoreShape>((set, get) => {
         },
 
         cancelMessage: (requestId) => {
+            dropChunkBuffer(requestId);
             eventBus.emit(EVENTS.CANCEL_MESSAGE, { requestId });
         },
 

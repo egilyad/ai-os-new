@@ -76,6 +76,10 @@ services:
         command: ['node', 'server/sync-server.mjs']
         environment:
             SYNC_SECRET: ${SYNC_SECRET:?set SYNC_SECRET env var (see header)}
+            # L-7: prefer a secret file over env (invisible to `docker inspect`):
+            # SYNC_SECRET_FILE: /run/secrets/sync_secret
+            # secrets:
+            #     - sync_secret
             SYNC_PORT: '3001'
             SYNC_ORIGINS: ${SYNC_ORIGINS:-http://localhost}
             HEARTBEAT_LOOP: '1'

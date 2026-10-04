@@ -8,6 +8,16 @@ function withProxyErrorHandler(opts: ProxyOptions): ProxyOptions {
     return {
         ...opts,
         configure: (proxy) => {
+            // L-12: dev proxies forward *any* HTTP method by default — a
+            // malicious localhost page could burn provider quota with e.g.
+            // DELETE/PUT through /proxy/* (CORS blocks reading the response
+            // but not sending the request). Allow only what LLM APIs use.
+            proxy.on('proxyReq', (proxyReq) => {
+                const method = proxyReq.method || '';
+                if (method !== 'GET' && method !== 'POST' && method !== 'OPTIONS') {
+                    proxyReq.destroy(new Error(`blocked proxy method: ${method}`));
+                }
+            });
             proxy.on('error', (err, _req, res) => {
                 if ('writeHead' in res && !res.headersSent) {
                     try {
@@ -122,6 +132,10 @@ export default defineConfig({
     },
     server: {
         headers: {
+            // L-13: dev CSP intentionally diverges from production (nginx):
+            // 'unsafe-inline' scripts exist here only for Vite HMR. XSS
+            // testing in dev therefore under-reports vs production — verify
+            // findings against the nginx CSP before dismissing them.
             'Content-Security-Policy':
                 "default-src 'self'; " +
                 "script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'; " +
@@ -181,11 +195,11 @@ export default defineConfig({
             // SEC-07: Fetch proxy for sandboxed URL fetching.
             // Default to the local CORS proxy (npm run proxy → :3002).
             // api.allorigins.win was removed as default — it's a privacy leak.
-            '/proxy/fetch': {
+            '/proxy/fetch': withProxyErrorHandler({
                 target: process.env.VITE_PROXY_FETCH || 'http://localhost:3002/fetch',
                 changeOrigin: true,
                 secure: false,
-            },
+            }),
             '/api': {
                 target: process.env.VITE_API_UPSTREAM || 'https://api.openrouter.ai',
                 changeOrigin: true,

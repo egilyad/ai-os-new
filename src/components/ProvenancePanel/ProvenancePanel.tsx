@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import DOMPurify from 'dompurify';
 import { useTranslation } from '../../i18n/useTranslation';
 import { provenanceService, graphVizService } from '../../kernel/instances/services-extras';
 
@@ -15,7 +16,14 @@ const ProvenancePanel: React.FC = () => {
             const { nodes, edges } = await provenanceService.trace(decisionId, 4);
             const ids = nodes.map(n => n.id);
             const pairs = edges.map(e => [e.fromId, e.toId] as [string,string]);
-            setSvg(graphVizService.svg(ids, pairs, 'layered'));
+            // L-2: sanitize the generated SVG before injection — node ids are
+            // user-typed, so this must not depend on the esc() implementation
+            // detail of never emitting single-quoted attributes.
+            setSvg(
+                DOMPurify.sanitize(graphVizService.svg(ids, pairs, 'layered'), {
+                    USE_PROFILES: { svg: true },
+                }),
+            );
             setMsg(`${nodes.length} nodes, ${edges.length} edges`);
         } catch (e) { setMsg(e instanceof Error ? e.message : String(e)); }
     };

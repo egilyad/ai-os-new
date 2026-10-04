@@ -53,7 +53,22 @@ const DB_FILE = path.join(DATA_DIR, 'shared-db.bin');
 
 // BLD-10: SYNC_SECRET is required — fail fast at startup. No fallback to empty string.
 // In Docker, pass via: docker run -e SYNC_SECRET=<strong-random-token>
-const AUTH_TOKEN = process.env.SYNC_SECRET;
+// L-7: SYNC_SECRET_FILE (path to a file holding the secret) is preferred over
+// the env var — env values stay visible in `docker inspect` / process listings
+// to any host user, a file can be a tmpfs/docker-secret mount instead.
+function readSecret() {
+    const file = process.env.SYNC_SECRET_FILE;
+    if (file) {
+        try {
+            return fs.readFileSync(file, 'utf8').trim() || undefined;
+        } catch (e) {
+            console.error(`[sync-server] FATAL: cannot read SYNC_SECRET_FILE=${file}:`, e);
+            process.exit(1);
+        }
+    }
+    return process.env.SYNC_SECRET;
+}
+const AUTH_TOKEN = readSecret();
 if (!AUTH_TOKEN) {
     console.error('[sync-server] FATAL: SYNC_SECRET environment variable is required.');
     console.error('[sync-server] Set via: SYNC_SECRET=<your-secret> node sync-server.mjs');

@@ -71,4 +71,20 @@ describe('CostManagerDecorator', () => {
         await cm.sendMessage(MESSAGES, 'test-model', 'sk-1');
         expect(vi.mocked(inner.sendMessage)).toHaveBeenCalledTimes(2);
     });
+
+    it('distrusts underreported provider token counts (L-17)', async () => {
+        const longContent = 'word '.repeat(500);
+        const inner = {
+            id: 'test',
+            sendMessage: vi.fn(async () => ({ content: longContent, tokens: 2 })),
+            checkHealth: vi.fn(async () => ({ status: 'active', latency: 1, models: [] })),
+            getAvailableModels: vi.fn(async () => []),
+        } as unknown as LLMProviderAdapter;
+        const cm = new CostManagerDecorator(inner, { pricing: PRICING, logCosts: false });
+        await cm.sendMessage(MESSAGES, 'test-model', 'sk-1');
+        const summary = cm.getCosts();
+        // Reported total (2) is far below the local estimate (~hundreds):
+        // cost must be computed from the estimate, not from 2-1=1.
+        expect(summary.totalOutputTokens).toBeGreaterThan(100);
+    });
 });

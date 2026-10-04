@@ -1,4 +1,5 @@
 import React from 'react';
+import DOMPurify from 'dompurify';
 import { useTranslation } from '../../i18n/useTranslation';
 import { eventBus, EVENTS } from '../../kernel/instances';
 import { useDebateSessionStore } from '../../stores/debate-session-store';
@@ -134,7 +135,15 @@ const PostCard: React.FC<{
             </div>
             <div
                 className="forum-post-body"
-                dangerouslySetInnerHTML={{ __html: post.renderedHtml }}
+                // L-1: defense-in-depth over the service-side escaping — any
+                // future markdown feature with a sloppy regex must not become
+                // stored XSS through this injection point.
+                dangerouslySetInnerHTML={{
+                    __html: DOMPurify.sanitize(post.renderedHtml, {
+                        ALLOWED_TAGS: ['a', 'strong', 'em', 'code', 'br'],
+                        ALLOWED_ATTR: ['href', 'target', 'rel'],
+                    }),
+                }}
                 style={{ fontSize: '0.75rem', color: 'var(--slate-300)', marginTop: 6, lineHeight: 1.5 }}
             />
         </div>

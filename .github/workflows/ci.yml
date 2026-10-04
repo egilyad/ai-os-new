@@ -24,6 +24,9 @@ jobs:
             contents: read
         steps:
             - uses: actions/checkout@v4
+              with:
+                # L-9: do not persist GITHUB_TOKEN in .git/config for later steps.
+                persist-credentials: false
 
             - name: Setup Node.js
               uses: actions/setup-node@v4
@@ -68,6 +71,9 @@ jobs:
             actions: read
         steps:
             - uses: actions/checkout@v4
+              with:
+                # L-9: do not persist GITHUB_TOKEN in .git/config for later steps.
+                persist-credentials: false
 
             - name: Setup Node.js
               uses: actions/setup-node@v4
@@ -118,6 +124,9 @@ jobs:
             contents: read
         steps:
             - uses: actions/checkout@v4
+              with:
+                # L-9: do not persist GITHUB_TOKEN in .git/config for later steps.
+                persist-credentials: false
 
             - name: Setup Node.js
               uses: actions/setup-node@v4
@@ -166,6 +175,9 @@ jobs:
             contents: read
         steps:
             - uses: actions/checkout@v4
+              with:
+                # L-9: do not persist GITHUB_TOKEN in .git/config for later steps.
+                persist-credentials: false
 
             - name: Setup Node.js
               uses: actions/setup-node@v4
@@ -212,6 +224,9 @@ jobs:
             contents: read
         steps:
             - uses: actions/checkout@v4
+              with:
+                # L-9: do not persist GITHUB_TOKEN in .git/config for later steps.
+                persist-credentials: false
             - name: Setup Node.js
               uses: actions/setup-node@v4
               with:
@@ -243,6 +258,9 @@ jobs:
             contents: read
         steps:
             - uses: actions/checkout@v4
+              with:
+                # L-9: do not persist GITHUB_TOKEN in .git/config for later steps.
+                persist-credentials: false
 
             - name: Setup Node.js
               uses: actions/setup-node@v4
@@ -273,6 +291,9 @@ jobs:
             contents: read
         steps:
             - uses: actions/checkout@v4
+              with:
+                # L-9: do not persist GITHUB_TOKEN in .git/config for later steps.
+                persist-credentials: false
 
             - name: Setup Node.js
               uses: actions/setup-node@v4
@@ -322,6 +343,9 @@ jobs:
             actions: read
         steps:
             - uses: actions/checkout@v4
+              with:
+                # L-9: do not persist GITHUB_TOKEN in .git/config for later steps.
+                persist-credentials: false
 
             - name: Setup Node.js
               uses: actions/setup-node@v4
@@ -403,6 +427,9 @@ jobs:
             # preinstalled on the runner; no npm ci needed: the script
             # uses stdlib only.)
             - uses: actions/checkout@v4
+              with:
+                # L-9: do not persist GITHUB_TOKEN in .git/config for later steps.
+                persist-credentials: false
             - name: Download build artifact
               uses: actions/download-artifact@v4
               with:

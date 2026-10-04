@@ -35,6 +35,10 @@ RUN npm ci --legacy-peer-deps --no-fund
 
 COPY . .
 # M3 (3c): Allow VITE_* env overrides at build time via --build-arg
+# L-4: VITE_* values are inlined into the client bundle AND persist in image
+# history (`docker history`) — never pass credentials here (e.g. no
+# `?key=` in VITE_PROXY_* URLs). Auth-bearing proxy URLs belong in runtime
+# env (compose `environment:`), never in build args.
 ARG VITE_BASE_PATH=/
 ARG VITE_SANDBOX_ENABLED=
 ARG VITE_PROXY_GEMINI=

@@ -195,7 +195,22 @@ export class CostManagerDecorator extends BaseDecorator {
         const inputTokens = messages.reduce((s, m) => s + estimateTokenCount(m.content), 0);
 
         const res = await this.inner.sendMessage(messages, resolvedModel, apiKey, signal, options);
-        const outputTokens = Math.max(0, (res.tokens ?? 0) - inputTokens);
+        // L-17: don't trust provider-reported totals blindly — an
+        // underreporting (buggy/malicious) provider would silently bypass
+        // budget trips. Fall back to the local estimate when reported
+        // usage is less than half of it.
+        const estimatedTotal = inputTokens + estimateTokenCount(res.content ?? '');
+        const reportedTotal = res.tokens ?? 0;
+        const totalTokens =
+            reportedTotal < estimatedTotal * 0.5 ? estimatedTotal : reportedTotal;
+        if (totalTokens !== reportedTotal) {
+            LOGGER.warn('CostManagerDecorator', 'Provider token count distrusted, using estimate', {
+                model: resolvedModel,
+                reported: reportedTotal,
+                estimated: estimatedTotal,
+            });
+        }
+        const outputTokens = Math.max(0, totalTokens - inputTokens);
         const actualCost = this.calculateCost(resolvedModel, inputTokens, outputTokens);
 
         this.records.push({
