@@ -72,7 +72,16 @@ export class ExternalSecretsService {
 
     async activateBackend(type: BackendType, config: SecretStoreConfig): Promise<boolean> {
         const factory = this.deps.storeFactories?.[type];
-        if (!factory) return false;
+        if (!factory) {
+            // P-CRIT-2: previously a silent `false` — the Settings UI showed
+            // nothing while the backend never activated. Surface the reason.
+            LOGGER.warn('ExternalSecretsService', 'No factory for backend', { type });
+            this.deps.eventBus.emit(EVENTS.NOTIFICATION, {
+                message: `Secret store backend "${type}" is not available in this build`,
+                type: 'error',
+            });
+            return false;
+        }
 
         const store = factory();
         const ok = await store.init(config);

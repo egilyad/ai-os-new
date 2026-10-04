@@ -25,6 +25,7 @@ import { PolicyService } from '../services/policy-service';
 import { ToolService } from '../services/tool-executor';
 import { MemoryService } from '../services/memory-engine';
 import { ExternalSecretsService } from '../services/external-secrets-service';
+import { LocalSecretStore } from '../services/local-secret-store';
 import { BlackboardService } from '../services/blackboard-service';
 import { CognitiveService, type CognitiveServiceDeps } from '../services/cognitive-service';
 import type { StorageLayer } from '../contracts/storage/storage-layer';
@@ -123,11 +124,19 @@ export const registerPhase2: Phase = (helpers, ctx) => {
 
     register(
         'externalSecretsService',
-        (c) =>
-            new ExternalSecretsService({
+        (c) => {
+            const database = c.get<IDatabaseService>('database');
+            // P-CRIT-2: wire the working `local` backend so init/activate
+            // actually function. Cloud backends (vault/aws/gcp) remain
+            // unwired by design until their credentials UX exists.
+            return new ExternalSecretsService({
                 database: c.get<IDatabaseService>('database'),
                 eventBus: c.get<IEventBus>('eventBus'),
-            }),
+                storeFactories: {
+                    local: () => new LocalSecretStore(database),
+                },
+            });
+        },
     );
 
     // A-04: blackboardService created inside factory so it can be passed to cognitiveService

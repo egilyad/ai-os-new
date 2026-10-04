@@ -174,4 +174,17 @@ describe('ExternalSecretsService', () => {
         expect(svc.isInitialized()).toBe(false);
         expect(svc.getActiveBackend()).toBe('local');
     });
+
+    it('should notify loudly when no factory exists (P-CRIT-2, was silent false)', async () => {
+        const deps = makeDeps();
+        delete deps.storeFactories!.vault;
+        const svc = new ExternalSecretsService(deps);
+        await svc.init();
+        const ok = await svc.activateBackend('vault', { type: 'vault', label: 'Vault' });
+        expect(ok).toBe(false);
+        expect(deps.eventBus.emit).toHaveBeenCalledWith(
+            expect.anything(),
+            expect.objectContaining({ type: 'error' }),
+        );
+    });
 });

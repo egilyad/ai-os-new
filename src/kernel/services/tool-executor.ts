@@ -460,7 +460,15 @@ export class ToolService {
                 }
                 resultData = wrapExternalData(mcpResult);
             } else {
-                resultData = `Output for ${tool.name}: Successful execution.`;
+                // P-CRIT-4: fail LOUD. This branch previously returned a
+                // fabricated "Successful execution" string, letting the LLM
+                // hallucinate follow-up reasoning on invented data. An
+                // explicit error surfaces in the result instead.
+                throw toolError(
+                    toolId,
+                    `Tool ${tool.name} is not implemented`,
+                    'NOT_IMPLEMENTED',
+                );
             }
 
             const duration = Math.round(performance.now() - startTime);

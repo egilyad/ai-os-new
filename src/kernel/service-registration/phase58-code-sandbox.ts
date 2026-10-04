@@ -5,6 +5,13 @@
  *   - codeSandboxService (policy + timeout + artifact over CodeExecService)
  *
  * Real E2B execution = BLOCKED-RUNTIME (stub executor).
+ *
+ * P-CRIT-3, documented, not wired: the real worker executor lives in
+ * SandboxService (src/kernel/services/sandbox-service.ts, NOT
+ * services/sandbox/) behind the intentional VITE_SANDBOX_ENABLED prod gate,
+ * and nothing resolves codeSandboxService from the container today.
+ * Wiring setExecutor() to it (or deleting the service) is a product call:
+ * enabling agent code execution in production expands the threat model.
  */
 
 import type { Phase } from './helpers';

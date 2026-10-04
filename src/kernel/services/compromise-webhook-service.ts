@@ -24,6 +24,15 @@ export interface CompromiseWebhookServiceDeps {
     keyService: { compromiseByFingerprint: (keyIdOrLabel: string, source: string) => boolean };
 }
 
+/**
+ * P-CRIT-1, documented as manual-only: onWebhookRequest() has NO HTTP entry
+ * point in production (browser SPA + sync-server has no webhook route), so
+ * automatic GitHub/Sentry compromise intake does not run. The live path is
+ * keyService.manuallyCompromise() via UI. Wiring a server-side receiver
+ * (signature verify + alert persistence for UI pickup) is a product decision
+ * with new attack surface — tracked, not silently assumed working.
+ */
+
 export class CompromiseWebhookService {
     private deps: CompromiseWebhookServiceDeps;
 
