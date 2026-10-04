@@ -131,10 +131,14 @@ function stubModels(route: Route) {
 
 async function stubCompletions(route: Route) {
     const body = route.request().postDataJSON() as { stream?: boolean } | null;
+    console.log(`STUB-HIT completions stream=${body?.stream} url=${route.request().url()}`);
     if (body?.stream) {
+        // Minimal single-event SSE: one delta chunk, then DONE. (A second
+        // content-bearing event before DONE confused the app's accumulator
+        // handling in e2e and produced empty replies.)
         const sse = [
-            `data: {"choices":[{"delta":{"content":"${STUB_REPLY}"},"finish_reason":null}]}`,
-            'data: {"choices":[{"delta":{},"finish_reason":"stop"}]}',
+            `data: {"choices":[{"delta":{"content":"SSE-PATH-42"}}]}`,
+            '',
             'data: [DONE]',
             '',
             '',
@@ -153,7 +157,7 @@ async function stubCompletions(route: Route) {
             choices: [
                 {
                     index: 0,
-                    message: { role: 'assistant', content: STUB_REPLY },
+                    message: { role: 'assistant', content: 'JSON-PATH-42' },
                     finish_reason: 'stop',
                 },
             ],

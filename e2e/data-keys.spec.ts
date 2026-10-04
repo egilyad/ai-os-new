@@ -63,6 +63,16 @@ test.describe('AI-OS Data Keys', () => {
             label: 'e2e-openrouter-01',
             status: 'active',
             availableModels: [STUB_MODEL],
+            // Required by ApiKeySchema — rows without stats are quarantined
+            // by the startup integrity scan and invisible to services.
+            stats: {
+                successCount: 0,
+                errorCount: 0,
+                totalTokens: 0,
+                avgLatency: 0,
+                minLatency: 0,
+                maxLatency: 0,
+            },
             createdAt: Date.now(),
         });
         expect(count).toBeGreaterThanOrEqual(1);

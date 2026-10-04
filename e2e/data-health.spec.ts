@@ -19,6 +19,16 @@ test.describe('AI-OS Data Health', () => {
             key: 'sk-or-e2e-test-key-002',
             label: 'e2e-pending-01',
             status: 'pending',
+            // Required by ApiKeySchema — rows without stats are quarantined
+            // by the startup integrity scan and invisible to services.
+            stats: {
+                successCount: 0,
+                errorCount: 0,
+                totalTokens: 0,
+                avgLatency: 0,
+                minLatency: 0,
+                maxLatency: 0,
+            },
             createdAt: Date.now(),
         });
         await stubOpenRouter(page);
