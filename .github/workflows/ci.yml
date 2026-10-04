@@ -147,6 +147,11 @@ jobs:
                   set -o pipefail
                   npm run test:stable 2>&1 | tee test-output.log
 
+            - name: Run server tests (node:test, C-5/C-6)
+              # Plain node, no workers: company-store atomicity + write-queue
+              # recovery against a temp COMPANY_DATA_DIR. Fast (<5s).
+              run: npm run test:server
+
             - name: Publish test tail on failure
               # Annotations are visible without login, unlike full logs.
               if: failure()

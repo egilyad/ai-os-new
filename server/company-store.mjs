@@ -4,7 +4,11 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const DATA_DIR = path.resolve(__dirname, '..', 'data');
+// COMPANY_DATA_DIR override exists for tests (node --test) so suites never
+// touch the real ./data directory.
+const DATA_DIR = process.env.COMPANY_DATA_DIR
+    ? path.resolve(process.env.COMPANY_DATA_DIR)
+    : path.resolve(__dirname, '..', 'data');
 const COMPANIES_FILE = path.join(DATA_DIR, 'companies.json');
 const WAKEUPS_FILE = path.join(DATA_DIR, 'wakeups.json');
 const COSTS_FILE = path.join(DATA_DIR, 'costs.json');
@@ -727,17 +731,45 @@ export function decideApproval(approvalId, { decision, by, comment }) {
         });
     }
     if (decision === 'approved') {
-        // B5: первый живой junction — одобрение будит очередь (триггер approval,
-        // ручной путь: гард autocycle его не касается, approval и есть гейт человека).
-        const wake = (agentId) => {
-            try {
-                const w = enqueueWakeup({ companyId: a.companyId, agentId: agentId || '', trigger: 'approval', ref: a.id });
-                a.wakeupId = w.id;
-            } catch {
-                /* wakeup best-effort */
-            }
-        };
-        if (a.kind === 'hire_agent') {
+        // C-5: persist the DECISION first, before any side-effect touches
+        // other files. A crash after this point leaves a recoverable
+        // approved-without-executedAt record instead of a silent pending
+        // that could be approved (and executed) twice.
+        saveApprovals(all);
+        runApprovalSideEffects(all, a);
+        a.executedAt = Date.now();
+        saveApprovals(all);
+    } else {
+        logActivity(a.companyId, 'approval_rejected', `${a.kind} ${a.id}`);
+        a.executedAt = Date.now();
+        saveApprovals(all);
+    }
+    logActivity(a.companyId, `approval_${decision}`, `${a.kind} ${a.id}`);
+    return a;
+}
+
+/**
+ * C-5: kind-specific side-effects of an approved approval, shared by
+ * decideApproval() and recoverApprovals(). hire_agent creation is guarded
+ * by the executedAgentId checkpoint: a crash between creation and marking
+ * must not hire twice on recovery. logActivity/wakeups are append-only
+ * history and safe to re-emit.
+ */
+function runApprovalSideEffects(all, a) {
+    // B5: первый живой junction — одобрение будит очередь (триггер approval,
+    // ручной путь: гард autocycle его не касается, approval и есть гейт человека).
+    const wake = (agentId) => {
+        try {
+            const w = enqueueWakeup({ companyId: a.companyId, agentId: agentId || '', trigger: 'approval', ref: a.id });
+            a.wakeupId = w.id;
+        } catch {
+            /* wakeup best-effort */
+        }
+    };
+    if (a.kind === 'hire_agent') {
+        let agentId = a.executedAgentId || null;
+        let agentName = null;
+        if (!agentId) {
             const agent = addAgent(a.companyId, {
                 name: a.payload.name,
                 title: a.payload.title,
@@ -745,35 +777,61 @@ export function decideApproval(approvalId, { decision, by, comment }) {
                 monthlyBudgetCents: a.payload.monthlyBudgetCents,
                 status: 'active',
             });
+            agentId = agent.id;
+            agentName = agent.name;
+            // Checkpoint BEFORE any further side-effect: from here on the
+            // agent exists on disk and must never be re-created.
             a.executedAgentId = agent.id;
-            logActivity(a.companyId, 'agent_hired', `${agent.name} via ${a.id}`);
-            wake(agent.id);
-        } else if (a.kind === 'override') {
-            const { action, agentId, managerId } = a.payload;
-            if (action === 'pause') setAgentStatus(a.companyId, agentId, 'paused');
-            if (action === 'terminate') setAgentStatus(a.companyId, agentId, 'terminated');
-            if (action === 'reassign' && managerId) {
-                const companies = listCompanies();
-                const org = companies.find((c) => c.id === a.companyId);
-                const agent = org?.agents?.find((x) => x.id === agentId);
-                if (agent) {
-                    agent.managerId = String(managerId);
-                    org.updatedAt = Date.now();
-                    saveCompanies(companies);
-                }
-            }
-            logActivity(a.companyId, 'override_applied', `${action} ${agentId} via ${a.id}`);
-            wake(agentId);
-        } else if (a.kind === 'ceo_strategy') {
-            logActivity(a.companyId, 'ceo_strategy', String(a.payload.strategy).slice(0, 500));
-            wake(a.requesterAgentId);
+            saveApprovals(all);
+        } else {
+            const org = listCompanies().find((c) => c.id === a.companyId);
+            agentName = org?.agents?.find((x) => x.id === agentId)?.name ?? agentId;
         }
-    } else {
-        logActivity(a.companyId, 'approval_rejected', `${a.kind} ${a.id}`);
+        logActivity(a.companyId, 'agent_hired', `${agentName} via ${a.id}`);
+        wake(agentId);
+    } else if (a.kind === 'override') {
+        const { action, agentId, managerId } = a.payload;
+        if (action === 'pause') setAgentStatus(a.companyId, agentId, 'paused');
+        if (action === 'terminate') setAgentStatus(a.companyId, agentId, 'terminated');
+        if (action === 'reassign' && managerId) {
+            const companies = listCompanies();
+            const org = companies.find((c) => c.id === a.companyId);
+            const agent = org?.agents?.find((x) => x.id === agentId);
+            if (agent) {
+                agent.managerId = String(managerId);
+                org.updatedAt = Date.now();
+                saveCompanies(companies);
+            }
+        }
+        logActivity(a.companyId, 'override_applied', `${action} ${agentId} via ${a.id}`);
+        wake(agentId);
+    } else if (a.kind === 'ceo_strategy') {
+        logActivity(a.companyId, 'ceo_strategy', String(a.payload.strategy).slice(0, 500));
+        wake(a.requesterAgentId);
     }
-    saveApprovals(all);
-    logActivity(a.companyId, `approval_${decision}`, `${a.kind} ${a.id}`);
-    return a;
+}
+
+/**
+ * C-5: startup recovery. Finds approvals stuck as approved-without-executedAt
+ * (crash between decision-persist and side-effect completion) and completes
+ * them. hire_agent creation is deduplicated via the executedAgentId
+ * checkpoint. Returns the number of recovered approvals.
+ */
+export function recoverApprovals() {
+    const all = readApprovals();
+    let recovered = 0;
+    for (const a of all) {
+        if (a.status !== 'approved' || a.executedAt) continue;
+        try {
+            runApprovalSideEffects(all, a);
+            a.executedAt = Date.now();
+            recovered++;
+        } catch (e) {
+            console.error('[company-store] recoverApprovals failed for', a.id, e);
+        }
+    }
+    if (recovered > 0) saveApprovals(all);
+    return recovered;
 }
 
 // ── M8.1: portability — export/import манифеста с ремаппингом ID ──

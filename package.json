@@ -36,7 +36,8 @@
     "check:circular-kernel": "madge --circular --extensions ts --ts-config tsconfig.app.json src/kernel/ 2>&1 | node -e \"let d='';process.stdin.on('data',c=>d+=c);process.stdin.on('end',()=>{console.log(d);if(/Found \\\\d+ circular/.test(d))process.exit(1)})\"",
     "check:deps": "depcruise --config .dependency-cruiser.cjs src",
     "check:deps:graph": "depcruise --config .dependency-cruiser.cjs --output-type dot src | dot -T svg > dependency-graph.svg",
-    "prepare": "husky"
+    "prepare": "husky",
+    "test:server": "node --test server/tests/write-queue.test.mjs server/tests/decide-approval.test.mjs"
   },
   "lint-staged": {
     "*.{ts,tsx}": [

@@ -35,6 +35,7 @@ import {
     getApproval,
     commentApproval,
     decideApproval,
+    recoverApprovals,
     listActivity,
     logActivity,
     exportCompany,
@@ -42,6 +43,7 @@ import {
 } from './company-store.mjs';
 import { listAdapters, getAdapter, parseStdout } from './adapters.mjs';
 import { startHeartbeatLoop } from './heartbeat-loop.mjs';
+import { enqueueDbWrite } from './write-queue.mjs';
 
 const PORT = parseInt(process.env.SYNC_PORT || '3001', 10);
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -172,8 +174,7 @@ if (!fs.existsSync(DATA_DIR)) {
     fs.mkdirSync(DATA_DIR, { recursive: true });
 }
 
-// Serialize writes to the file
-let writeQueue = Promise.resolve();
+// Serialize writes to the file (C-6: self-healing chain lives in write-queue.mjs)
 
 // H-14: Track WebSocket connection rate per IP (separate from HTTP rate limit bucket)
 const WS_RATE_LIMIT_WINDOW_MS = 60_000;
@@ -274,7 +275,8 @@ const server = http.createServer(async (req, res) => {
             const chunks = [];
             req.on('data', (chunk) => chunks.push(chunk));
             req.on('end', () => {
-                writeQueue = writeQueue.then(() => {
+                // C-6: guarded chain — one failed write must not wedge later ones.
+                enqueueDbWrite(async () => {
                     try {
                         const tmpFile = DB_FILE + '.tmp.' + Date.now();
                         fs.writeFileSync(tmpFile, Buffer.concat(chunks));
@@ -1170,6 +1172,14 @@ const SYNC_HOST = process.env.SYNC_HOST || '127.0.0.1';
 server.listen(PORT, SYNC_HOST, () => {
     console.log(`[SyncServer] running on http://${SYNC_HOST}:${PORT}`);
     console.log(`[SyncServer] storing DB at ${DB_FILE}`);
+    // C-5: complete approvals stuck as approved-without-executedAt by a
+    // crash between decision-persist and side-effect completion.
+    try {
+        const recovered = recoverApprovals();
+        if (recovered > 0) console.log(`[SyncServer] recovered ${recovered} approval(s)`);
+    } catch (e) {
+        console.error('[SyncServer] approval recovery failed', e);
+    }
     if (SYNC_HOST !== '127.0.0.1' && SYNC_HOST !== 'localhost' && SYNC_HOST !== '::1') {
         console.warn(
             '[SyncServer] WARNING: listening on a non-loopback interface without TLS — ' +
