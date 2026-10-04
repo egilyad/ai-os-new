@@ -7,6 +7,7 @@ import {
     appendRunEvent,
     finishRun,
     logActivity,
+    reapStaleRuns,
 } from './company-store.mjs';
 import { consumeAutocycleSlot } from './autocycle-guard.mjs';
 
@@ -14,6 +15,13 @@ const DEFAULT_POLL_MS = parseInt(process.env.HEARTBEAT_POLL_MS || '15000', 10);
 const DEFAULT_BATCH = parseInt(process.env.HEARTBEAT_BATCH || '10', 10);
 
 export function processPendingWakeups({ batch = DEFAULT_BATCH, onEvent } = {}) {
+    // P-HIGH-3: reap runs stuck in `running` (execute never arrived) before
+    // processing — otherwise they accumulate forever and evict real history.
+    try {
+        reapStaleRuns();
+    } catch {
+        /* reaper best-effort; wakeup processing continues */
+    }
     const pending = listWakeups(true).slice(0, batch);
     const results = [];
     for (const w of pending) {

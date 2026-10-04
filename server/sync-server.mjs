@@ -36,6 +36,7 @@ import {
     commentApproval,
     decideApproval,
     recoverApprovals,
+    checkRunBudgetGate,
     listActivity,
     logActivity,
     exportCompany,
@@ -1015,6 +1016,17 @@ const server = http.createServer(async (req, res) => {
             }
             if (run.status !== 'running') {
                 writeJson(res, 400, { error: `run is ${run.status}, execute needs running run` });
+                return;
+            }
+            // P-HIGH-1: budget gate before any adapter execution spends money.
+            // checkRunBudgetGate closes the run as error when over budget so
+            // it cannot linger as a phantom-running run (see P-HIGH-3).
+            const gate = checkRunBudgetGate(run);
+            if (gate.over) {
+                writeJson(res, 402, {
+                    error: 'budget exhausted',
+                    scope: gate.scope,
+                });
                 return;
             }
             const adapter = getAdapter(body.adapter);

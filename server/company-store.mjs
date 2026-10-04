@@ -580,6 +580,51 @@ export function getRun(runId) {
     return readRuns().find((r) => r.id === runId) || null;
 }
 
+/**
+ * P-HIGH-1: budget gate for run execution. Returns { over, scope } and, when
+ * over budget, closes the run as error so it cannot be retried into a
+ * phantom-running state (see P-HIGH-3). The /api/runs/:id/execute handler
+ * must call this before adapter.execute().
+ */
+export function checkRunBudgetGate(run) {
+    const gate = isOverBudget(run.companyId, run.agentId || null);
+    if (gate.over) {
+        try {
+            finishRun(run.id, 'error', 'budget exhausted');
+        } catch {
+            /* run may have been reaped concurrently */
+        }
+    }
+    return gate;
+}
+
+/** P-HIGH-3: runs older than this with no execute/finish are considered stale. */
+export const STALE_RUN_TIMEOUT_MS = 30 * 60 * 1000;
+
+/**
+ * P-HIGH-3: reap runs stuck in `running` (execute never arrived: client
+ * crash, network drop). Without this they accumulate forever, evict real
+ * history under MAX_RUNS and inflate in-flight metrics. Returns reaped count.
+ */
+export function reapStaleRuns(now = Date.now(), timeoutMs = STALE_RUN_TIMEOUT_MS) {
+    const all = readRuns();
+    let reaped = 0;
+    for (const r of all) {
+        if (
+            r.status === 'running' &&
+            typeof r.createdAt === 'number' &&
+            now - r.createdAt > timeoutMs
+        ) {
+            r.status = 'error';
+            r.finishedAt = now;
+            r.events.push({ t: now, step: 'report', detail: 'reaped: stale running run (timeout)' });
+            reaped++;
+        }
+    }
+    if (reaped > 0) saveRuns(all);
+    return reaped;
+}
+
 // ── M6.1: governance — approvals + единая лента activity ──
 const APPROVAL_KINDS = ['hire_agent', 'ceo_strategy', 'override'];
 const APPROVAL_STATUS = ['pending', 'approved', 'rejected'];
@@ -697,6 +742,11 @@ export function commentApproval(approvalId, { author, text }) {
 }
 
 export function setAgentStatus(companyId, agentId, status) {
+    // P-HIGH-2 leftover: validate against AGENT_STATUS (previously any
+    // string was persisted, corrupting escalation/ledger reads).
+    if (!AGENT_STATUS.includes(status)) {
+        throw new Error(`status must be one of ${AGENT_STATUS.join(',')}`);
+    }
     const all = listCompanies();
     const org = all.find((c) => c.id === companyId);
     if (!org) return null;
@@ -798,6 +848,11 @@ function runApprovalSideEffects(all, a) {
             const org = companies.find((c) => c.id === a.companyId);
             const agent = org?.agents?.find((x) => x.id === agentId);
             if (agent) {
+                // P-HIGH-2 leftover: same createsCycle guard as addAgent —
+                // a crafted approval must not corrupt the escalation chain.
+                if (createsCycle(org.agents, agentId, String(managerId))) {
+                    throw new Error('manager chain would create a cycle');
+                }
                 agent.managerId = String(managerId);
                 org.updatedAt = Date.now();
                 saveCompanies(companies);
