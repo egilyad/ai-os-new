@@ -3,6 +3,7 @@ import { Play, Terminal, X } from 'lucide-react';
 import { useConfirm } from '../../hooks/useConfirm';
 import DOMPurify from 'dompurify';
 import { rootLogger } from '../../kernel/instances';
+import { escapeForScriptContent, escapeForStyleContent } from './code-escape';
 const LOGGER = rootLogger.child('CodeRunner');
 
 const EXECUTABLE_LANGS = new Set(['js', 'javascript', 'ts', 'typescript', 'html', 'css']);
@@ -52,11 +53,6 @@ const ALLOWED_TAGS = new Set([
 function htmlToBlobUrl(html: string): string {
     const blob = new Blob([html], { type: 'text/html' });
     return URL.createObjectURL(blob);
-}
-
-function escapeForStyleContent(s: string): string {
-    // Prevent breaking out of <style> tag — neutralize </style> and </script> closers
-    return s.replace(/<\/\s*(style|script)\s*>/gi, '\\x3c/$1>');
 }
 
 function sanitizeAllowedHtml(s: string): string {
@@ -290,7 +286,7 @@ try {
   `
           : `
     (async function() {
-      ${code}
+      ${escapeForScriptContent(code)}
       parent.postMessage({ type: 'sandbox-result' }, _targetOrigin);
     })();
   `

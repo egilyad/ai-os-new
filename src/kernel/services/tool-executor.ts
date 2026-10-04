@@ -195,8 +195,14 @@ export class ToolService {
             name: 'Web Scraper',
             type: 'api',
             category: 'web',
-            description: 'Fetches content from any URL for analysis.',
+            description:
+                'Fetches content from allow-listed https URLs. Configure allowedDomains via updateTool/importTools — empty by default (deny-all).',
             enabled: true,
+            // M-3: default-deny. An LLM-reachable fetcher with no domain
+            // bounds lets prompt-injected agents exfiltrate data to arbitrary
+            // hosts (incl. via the proxy fallback). [] means "no external
+            // requests until hosts are explicitly allowed".
+            allowedDomains: [],
         },
         {
             id: 't-mcp',

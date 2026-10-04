@@ -309,6 +309,12 @@ function buildConfigDefaults(): Readonly<ConfigRegistry> {
     // (single-user local-first app — it was only JS-heap obfuscation, not real auth)
     const adminToken = clone.security.adminToken || crypto.randomUUID();
     let webhookSecret = clone.security.webhookSecret;
+    // M-2, documented, not migrated: this secret lives in localStorage
+    // cleartext. Moving it (sessionStorage/IndexedDB) is theater today —
+    // compromise intake is manual-only (see P-CRIT-1: onWebhookRequest has
+    // no HTTP entry), so nothing automated consumes or verifies it, and an
+    // XSS attacker game-overs localStorage regardless. When a server-side
+    // webhook receiver lands, the secret must move to server env.
     if (!webhookSecret) {
         const STORAGE_KEY = 'superagents_webhook_secret';
         try {

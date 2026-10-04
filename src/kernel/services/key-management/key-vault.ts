@@ -5,7 +5,9 @@ import { ssrSafeStorage } from '../../utils/ssr-storage';
 const ALGORITHM = 'AES-GCM';
 const KEY_USAGE: KeyUsage[] = ['encrypt', 'decrypt'];
 const KEY_LENGTH = 256;
-const ITERATIONS = 100_000;
+// M-5: OWASP 2023 recommends 600k PBKDF2-HMAC-SHA-256 iterations (was 100k).
+// No live ciphertext exists (vault unwired by design), so no migration needed.
+const ITERATIONS = 600_000;
 const SALT_LENGTH = 16;
 const IV_LENGTH = 12;
 

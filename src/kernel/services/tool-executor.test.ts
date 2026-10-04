@@ -30,8 +30,14 @@ describe('ToolService unimplemented tools (P-CRIT-4)', () => {
         },
     );
 
-    it('does not emit success events for unimplemented tools', async () => {
-        const emit = vi.fn();
+    it('t-web denies by default until domains are allow-listed (M-3)', async () => {
+        const svc = makeService();
+        const res = await svc.execute('t-web', { url: 'https://example.com/data' });
+        expect(res.status).toBe('error');
+        expect(res.error).toMatch(/no allowed domains/i);
+    });
+
+    it('does not emit success events for unimplemented tools', async () => {        const emit = vi.fn();
         const svc = new ToolService({
             eventBus: { emit, emitOnce: vi.fn(() => true) },
             database: {
