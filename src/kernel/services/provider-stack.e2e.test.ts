@@ -114,6 +114,7 @@ function mockRegistry(adapter?: IProviderAdapter): IAdapterRegistry {
         resetCircuitBreaker: vi.fn(),
         syncCircuitBreakerState: vi.fn(),
         syncRateLimitState: vi.fn(),
+        invalidateCache: vi.fn(),
         clearAllCaches: vi.fn(),
     };
 }
