@@ -70,38 +70,57 @@ export async function dismissOverlay(page: Page) {
  */
 export async function idbPut(
     page: Page,
-    store: 'apiKeys' | 'sessions',
+    store: 'apiKeys' | 'sessions' | 'debateSessions',
     row: Record<string, unknown>,
 ): Promise<number> {
-    const sidecar = await page.context().newPage();
-    try {
-        await sidecar.goto('/favicon.svg');
-        return await sidecar.evaluate(
-            ({ dbName, store, row }) =>
-                new Promise<number>((resolve, reject) => {
-                    const req = indexedDB.open(dbName);
-                    req.onerror = () => reject(req.error);
-                    req.onsuccess = () => {
-                        const db = req.result;
-                        if (!db.objectStoreNames.contains(store)) {
-                            reject(new Error(`store ${store} missing`));
-                            return;
-                        }
-                        const tx = db.transaction(store, 'readwrite');
-                        tx.oncomplete = () => {
-                            const count = tx.objectStore(store).count();
-                            count.onsuccess = () => resolve(count.result as number);
-                            count.onerror = () => reject(count.error);
+    let lastError: unknown;
+    for (let attempt = 1; attempt <= 3; attempt++) {
+        const sidecar = await page.context().newPage();
+        try {
+            console.log(`DIAG idbPut newPage ok mainUrl=${page.url()}`);
+            await sidecar.goto('/favicon.svg');
+            console.log(`DIAG idbPut goto ok sidecarUrl=${sidecar.url()}`);
+            return await sidecar.evaluate(
+                ({ dbName, store, row }) =>
+                    new Promise<number>((resolve, reject) => {
+                        const req = indexedDB.open(dbName);
+                        req.onerror = () => reject(req.error);
+                        req.onsuccess = () => {
+                            const db = req.result;
+                            if (!db.objectStoreNames.contains(store)) {
+                                reject(new Error(`store ${store} missing`));
+                                return;
+                            }
+                            try {
+                                const tx = db.transaction(store, 'readwrite');
+                                const os = tx.objectStore(store);
+                                os.put(row as never);
+                                // Count inside the SAME transaction: issuing a
+                                // request in oncomplete throws (inactive tx)
+                                // and leaves the promise hanging forever.
+                                const countReq = os.count();
+                                countReq.onsuccess = () =>
+                                    resolve(countReq.result as number);
+                                countReq.onerror = () => reject(countReq.error);
+                                tx.onerror = () => reject(tx.error);
+                                tx.onabort = () => reject(tx.error);
+                            } catch (e) {
+                                reject(e);
+                            }
                         };
-                        tx.onerror = () => reject(tx.error);
-                        tx.objectStore(store).put(row as never);
-                    };
-                }),
-            { dbName: DB_NAME, store, row },
-        );
-    } finally {
-        await sidecar.close();
+                    }),
+                { dbName: DB_NAME, store, row },
+            );
+        } catch (e) {
+            lastError = e;
+            console.log(
+                `DIAG idbPut attempt ${attempt} failed url=${sidecar.url()} err=${String(e).split('\n')[0]}`,
+            );
+        } finally {
+            await sidecar.close().catch(() => {});
+        }
     }
+    throw lastError;
 }
 
 function stubModels(route: Route) {

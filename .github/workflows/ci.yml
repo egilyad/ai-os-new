@@ -338,6 +338,8 @@ jobs:
                       spec: 'e2e/routes-b-flow.spec.ts'
                     - name: health-chat-sync
                       spec: 'e2e/data-health.spec.ts e2e/data-chat.spec.ts e2e/data-keys.spec.ts e2e/data-sync.spec.ts'
+                    - name: debate
+                      spec: 'e2e/data-debate.spec.ts'
         permissions:
             # CI-M-3: download-artifact within the same run needs no actions scope.
             contents: read
