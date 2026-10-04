@@ -259,8 +259,36 @@ class DexieTraceStore implements TraceStore {
     }
 }
 
-class DexieSessionStore implements SessionStore {
-    async saveSession(session: ChatSession): Promise<void> {
+/**
+ * Stale-write guard for chat sessions, shared by put/bulkPut/syncSessions.
+ *
+ * Version numbers are bumped on write but never synced back into the
+ * in-memory snapshots, so after enough writes EVERYTHING looks stale and
+ * fresh messages get silently dropped forever. Fall back to wall-clock:
+ * strictly-older snapshots still drop (cross-tab protection),
+ * same-or-newer always wins. Drops are logged (the silent drop was the bug).
+ */
+function isStaleSessionWrite(
+    session: { id?: string; version?: number; updatedAt?: number },
+    current: { version?: number; updatedAt?: number } | undefined,
+): boolean {
+    const currentVersion = current?.version ?? 0;
+    const incomingVersion = session?.version ?? 0;
+    if (!(incomingVersion > 0 && incomingVersion < currentVersion)) return false;
+    const incomingTs = session?.updatedAt ?? 0;
+    const currentTs = current?.updatedAt ?? 0;
+    if (incomingTs < currentTs) {
+        LOGGER.warn('DexieSessionStore', 'dropping stale session write', {
+            id: session?.id,
+            incomingVersion,
+            currentVersion,
+        });
+        return true;
+    }
+    return false;
+}
+
+class DexieSessionStore implements SessionStore {    async saveSession(session: ChatSession): Promise<void> {
         await this.put(session);
     }
 
@@ -268,9 +296,9 @@ class DexieSessionStore implements SessionStore {
         const db = getDexieDb();
         await db.transaction('rw', db.sessions, async () => {
             const current = await db.sessions.get(session.id);
+            if (isStaleSessionWrite(session, current)) return;
             const currentVersion = (current as { version?: number })?.version ?? 0;
             const incomingVersion = (session as { version?: number })?.version ?? 0;
-            if (incomingVersion > 0 && incomingVersion < currentVersion) return;
             const newVersion = Math.max(currentVersion, incomingVersion) + 1;
             await db.sessions.put({ ...session, version: newVersion });
         });
@@ -312,9 +340,9 @@ class DexieSessionStore implements SessionStore {
         await db.transaction('rw', db.sessions, async () => {
             for (const session of sessions) {
                 const current = await db.sessions.get(session.id);
+                if (isStaleSessionWrite(session, current)) continue;
                 const currentVersion = (current as { version?: number })?.version ?? 0;
                 const incomingVersion = (session as { version?: number })?.version ?? 0;
-                if (incomingVersion > 0 && incomingVersion < currentVersion) continue;
                 const newVersion = Math.max(currentVersion, incomingVersion) + 1;
                 await db.sessions.put({ ...session, version: newVersion });
             }
@@ -330,9 +358,9 @@ class DexieSessionStore implements SessionStore {
         await db.transaction('rw', db.sessions, async () => {
             for (const session of sessions) {
                 const current = await db.sessions.get(session.id);
+                if (isStaleSessionWrite(session, current)) continue;
                 const currentVersion = (current as { version?: number })?.version ?? 0;
                 const incomingVersion = (session as { version?: number })?.version ?? 0;
-                if (incomingVersion > 0 && incomingVersion < currentVersion) continue;
                 const newVersion = Math.max(currentVersion, incomingVersion) + 1;
                 await db.sessions.put({ ...session, version: newVersion });
             }
