@@ -111,7 +111,11 @@ export const useKeyStore = create<Store>((set, get) => {
                     await keyService.updateKey(k.id, {
                         status: 'active',
                         stats: {
-                            ...k.stats,
+                            // H-7: re-read fresh state — k.stats is a snapshot
+                            // from loop start; concurrent writers (health
+                            // checks bumping errorCount, completions updating
+                            // usage) must not be clobbered.
+                            ...get().keys.find((x) => x.id === k.id)?.stats,
                             errorCount: 0,
                             lastError: undefined,
                         },

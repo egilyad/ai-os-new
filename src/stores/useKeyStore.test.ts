@@ -336,4 +336,34 @@ describe('useKeyStore', () => {
         emit(EVENTS.NOTIFICATION, { type: 'info', title: 'x' });
         expect(keyService.getAlerts).toHaveBeenCalledTimes(4);
     });
+
+    it('enableAllKeys preserves concurrent stats writes (H-7)', async () => {
+        useKeyStore.setState({
+            keys: [
+                makeKey({
+                    id: 'k1',
+                    status: 'inactive',
+                    stats: { successCount: 3, errorCount: 5, totalTokens: 10, avgLatency: 1, minLatency: 1, maxLatency: 1 },
+                }),
+            ],
+            activeKeys: [],
+        });
+        // Simulate a concurrent writer (health check) landing between
+        // syncKeyStatus and updateKey.
+        groupManager.syncKeyStatus.mockImplementationOnce(async () => {
+            useKeyStore.setState((s) => ({
+                keys: s.keys.map((k) =>
+                    k.id === 'k1' ? { ...k, stats: { ...k.stats, totalTokens: 11 } } : k,
+                ),
+            }));
+        });
+        await useKeyStore.getState().enableAllKeys();
+        expect(keyService.updateKey).toHaveBeenCalledTimes(1);
+        const written = keyService.updateKey.mock.calls[0]?.[1] as {
+            stats: Record<string, number>;
+        };
+        expect(written.stats.totalTokens).toBe(11);
+        expect(written.stats.errorCount).toBe(0);
+        expect(written.stats.successCount).toBe(3);
+    });
 });

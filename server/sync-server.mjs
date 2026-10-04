@@ -267,9 +267,19 @@ const server = http.createServer(async (req, res) => {
                 return;
             }
             let contentLength = 0;
+            let tooLarge = false;
             req.on('data', (chunk) => {
                 contentLength += chunk.length;
-                if (contentLength > 50 * 1024 * 1024) {
+                if (!tooLarge && contentLength > 50 * 1024 * 1024) {
+                    // H-3: answer 413 BEFORE destroying the socket — a bare
+                    // destroy() leaves the client hanging till socket-timeout
+                    // with no signal it was rejected.
+                    tooLarge = true;
+                    try {
+                        writeJson(res, 413, { error: 'Payload too large' });
+                    } catch {
+                        /* socket already gone */
+                    }
                     req.destroy(new Error('Payload too large'));
                 }
             });

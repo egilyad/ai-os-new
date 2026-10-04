@@ -56,11 +56,23 @@ services:
         image: node:22-alpine
         container_name: superagents-quick-gateway
         restart: unless-stopped
+        # H-4: same hardening as ui (was root + uncapped). ./data stays
+        # writable via the explicit rw bind below despite read_only rootfs.
+        user: 'node'
         working_dir: /app
         # Код — read-only, состояние — read-write (./data).
         volumes:
             - .:/app:ro
             - ./data:/app/data:rw
+        read_only: true
+        tmpfs:
+            - /tmp
+        cap_drop:
+            - ALL
+        deploy:
+            resources:
+                limits:
+                    memory: 1G
         command: ['node', 'server/sync-server.mjs']
         environment:
             SYNC_SECRET: ${SYNC_SECRET:?set SYNC_SECRET env var (see header)}
