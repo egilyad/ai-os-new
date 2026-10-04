@@ -332,11 +332,18 @@ export class AdapterFactory {
     invalidateCache(provider?: string): void {
         if (provider) {
             const key = provider.toLowerCase();
-            const adapter = this.adapters.get(key);
-            if (adapter && typeof (adapter as { destroy?: () => void }).destroy === 'function') {
-                (adapter as { destroy: () => void }).destroy();
+            // Keyed fallback composites (C-2) live under `${pair}#keyed` —
+            // invalidate both variants.
+            for (const k of [key, `${key}#keyed`]) {
+                const adapter = this.adapters.get(k);
+                if (
+                    adapter &&
+                    typeof (adapter as { destroy?: () => void }).destroy === 'function'
+                ) {
+                    (adapter as { destroy?: () => void }).destroy();
+                }
+                this.adapters.delete(k);
             }
-            this.adapters.delete(key);
             this.#rateLimiters.delete(key);
             this.#circuitBreakers.delete(key);
         } else {

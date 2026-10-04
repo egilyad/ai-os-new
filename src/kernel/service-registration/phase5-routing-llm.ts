@@ -165,12 +165,17 @@ export const registerPhase5: Phase = (helpers) => {
 
     register('llmClientService', (c) => {
         const keySvc = c.get<KeyService>('keyService');
+        const resolveApiKey = (provider: string) => {
+            const key = keySvc.selectWithBurst(provider) ?? keySvc.selectFromPool(provider);
+            return key?.key;
+        };
+        // C-2 wiring: fallback chains resolve each provider's own key.
+        c.get<ProviderAdapterRegistry>('providerAdapterRegistry').setKeyResolver(
+            resolveApiKey,
+        );
         return new LLMClientService(
             {
-                resolveApiKey: (provider: string) => {
-                    const key = keySvc.selectWithBurst(provider) ?? keySvc.selectFromPool(provider);
-                    return key?.key;
-                },
+                resolveApiKey,
             },
             c.get<ProviderAdapterRegistry>('providerAdapterRegistry'),
         );

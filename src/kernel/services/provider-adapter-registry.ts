@@ -11,6 +11,9 @@ export interface ProviderRuntimeStatus {
 export class ProviderAdapterRegistry implements IAdapterRegistry {
     private factory: AdapterFactory;
     private adapters = new Map<string, IProviderAdapter>();
+    /** Per-provider key resolver for fallback chains (C-2). Set post-DI to
+     * avoid a registration cycle: keyService itself depends on this registry. */
+    private keyResolver?: (providerId: string) => string | undefined;
     /** Event-bus subscriptions owned by the registry — cleaned up in destroy() */
     private _unsubs: Array<() => void> = [];
 
@@ -75,11 +78,21 @@ export class ProviderAdapterRegistry implements IAdapterRegistry {
         fallback: string,
         keyResolver?: (providerId: string) => string | undefined,
     ): IProviderAdapter {
-        const key = keyResolver ? `${primary}+${fallback}#keyed` : `${primary}+${fallback}`;
+        const resolver = keyResolver ?? this.keyResolver;
+        const key = resolver ? `${primary}+${fallback}#keyed` : `${primary}+${fallback}`;
         if (this.adapters.has(key)) return this.adapters.get(key)!;
-        const adapter = this.factory.createWithFallback(primary, fallback, keyResolver);
+        const adapter = this.factory.createWithFallback(primary, fallback, resolver);
         this.adapters.set(key, adapter);
         return adapter;
+    }
+
+    /**
+     * Wire per-provider key resolution for fallback chains (C-2: never send
+     * the primary key to a different provider). Called once keyService
+     * exists; explicit per-call resolvers still take precedence.
+     */
+    setKeyResolver(fn: (providerId: string) => string | undefined): void {
+        this.keyResolver = fn;
     }
 
     getAllProviders(): string[] {

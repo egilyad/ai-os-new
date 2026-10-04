@@ -57,4 +57,20 @@ describe('AdapterFactory', () => {
         factory.invalidateCache('mock+groq');
         expect(factory.createWithFallback('mock', 'groq')).not.toBe(fb);
     });
+
+    it('memoizes keyed fallback composites separately (C-2)', () => {
+        const factory = new AdapterFactory();
+        const plain = factory.createWithFallback('mock', 'groq');
+        const keyed = factory.createWithFallback('mock', 'groq', () => 'sk-x');
+        // Different cache entry: the resolver changes which key reaches
+        // the fallback provider, so it must not share the instance.
+        expect(keyed).not.toBe(plain);
+        // Same pair + resolver presence memoizes (first registration wins).
+        expect(factory.createWithFallback('mock', 'groq', () => 'sk-y')).toBe(keyed);
+        expect(factory.createWithFallback('mock', 'groq')).toBe(plain);
+        // Invalidation clears both variants.
+        factory.invalidateCache('mock+groq');
+        expect(factory.createWithFallback('mock', 'groq')).not.toBe(plain);
+        expect(factory.createWithFallback('mock', 'groq', () => 'sk-y')).not.toBe(keyed);
+    });
 });
