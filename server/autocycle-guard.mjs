@@ -4,7 +4,10 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const DATA_DIR = path.resolve(__dirname, '..', 'data');
+// Same COMPANY_DATA_DIR test override as company-store.mjs.
+const DATA_DIR = process.env.COMPANY_DATA_DIR
+    ? path.resolve(process.env.COMPANY_DATA_DIR)
+    : path.resolve(__dirname, '..', 'data');
 const AUTOCYCLE_FILE = path.join(DATA_DIR, 'autocycle.json');
 
 // Фаза 0: страховочная инфраструктура автоцикла.
@@ -66,4 +69,20 @@ export function consumeAutocycleSlot(companyId) {
     state.counts[String(companyId)] = { day, used: used + 1 };
     saveState(state);
     return { allowed: true, used: used + 1, max };
+}
+
+/**
+ * P-LOW-6: return a consumed slot when processing later fails (budget
+ * exhausted, company gone, exception). Without this, failed attempts burn
+ * daily quota and 10 consecutive transient failures lock the company out
+ * for the rest of the day with zero real work done. Returns remaining used.
+ */
+export function releaseAutocycleSlot(companyId) {
+    const day = todayKey();
+    const state = readState();
+    const rec = state.counts[String(companyId)];
+    if (!rec || rec.day !== day || !(Number(rec.used) > 0)) return 0;
+    rec.used = Number(rec.used) - 1;
+    saveState(state);
+    return rec.used;
 }

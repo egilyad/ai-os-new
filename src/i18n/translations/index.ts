@@ -13,7 +13,27 @@ export async function loadLocale(locale: Locale): Promise<Record<string, string>
         const mod = await import('./en');
         _loaded.en = { ...mod.en, ...techniqueNavEn };
     }
+    // P-LOW-5: notify subscribers (useTranslation re-renders) — first paint
+    // after reload otherwise shows raw keys until some unrelated update.
+    for (const cb of [...localeListeners]) {
+        try {
+            cb();
+        } catch {
+            /* listener isolation */
+        }
+    }
     return _loaded[locale]!;
+}
+
+type LocaleListener = () => void;
+const localeListeners = new Set<LocaleListener>();
+
+/** Subscribe to locale-load completion. Returns an unsubscribe function. */
+export function onLocaleLoaded(cb: LocaleListener): () => void {
+    localeListeners.add(cb);
+    return () => {
+        localeListeners.delete(cb);
+    };
 }
 
 export const translations = new Proxy({} as Record<Locale, Record<string, string>>, {

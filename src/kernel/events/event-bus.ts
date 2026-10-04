@@ -324,6 +324,12 @@ export class EventBus implements IEventBus {
     }
 
     private pushDeadLetter(event: string, data: unknown, reason: string): void {
+        // P-LOW-1, documented as diagnostic-by-design: the DLQ is a bounded
+        // (MAX_DEAD_LETTER) forensic snapshot with a drain API for supervisors
+        // (drainDeadLetterQueue), not a delivery queue — dropped events are by
+        // definition undeliverable at drop time (no subscribers / recursion
+        // guard tripped). A periodic re-emit poll would resurrect them into
+        // the same condition.
         this.deadLetterQueue.push({ event, data, reason, at: Date.now() });
         if (this.deadLetterQueue.length > EventBus.MAX_DEAD_LETTER) {
             this.deadLetterQueue.shift();

@@ -9,7 +9,7 @@ import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const REPO = path.resolve(__dirname, '..');
-const SERVER_FILES = ['server/sync-server.mjs', 'server/company-store.mjs', 'server/heartbeat-loop.mjs', 'server/adapters.mjs'];
+const SERVER_FILES = ['server/sync-server.mjs', 'server/company-store.mjs', 'server/heartbeat-loop.mjs', 'server/adapters.mjs', 'server/autocycle-guard.mjs'];
 
 function args(argv) {
     const out = { _: [] };
@@ -148,8 +148,9 @@ async function cmdRun(cli) {
     const deadline = Date.now() + 90_000;
     for (;;) {
         await new Promise((r) => setTimeout(r, 2000));
-        const cur = await api(url, secret, '/api/wakeups');
-        const item = (cur.body.wakeups || []).find((w) => w.id === wid);
+        // P-LOW-7: direct lookup instead of pulling the full wakeup list.
+        const cur = await api(url, secret, `/api/wakeups?id=${encodeURIComponent(wid)}`);
+        const item = cur.body.wakeup;
         if (!item) fail('wakeup lost');
         console.log(`... ${item.status}`);
         if (item.status !== 'pending') {

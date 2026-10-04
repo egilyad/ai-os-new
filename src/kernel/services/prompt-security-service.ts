@@ -192,6 +192,16 @@ export class PromptSecurityService implements IPromptSecurityService {
         }
     }
 
+    /**
+     * P-LOW-3: kick off config load at boot (called once from DI
+     * registration, fire-and-forget). scan() itself stays sync by design
+     * (hot path); without this, the first prompt after reload runs against
+     * DEFAULT_CONFIG while _doLoad is still in flight.
+     */
+    preload(): Promise<void> {
+        return this.ensureLoaded();
+    }
+
     private async _doLoad(): Promise<void> {
         const d = await this.db();
         const [savedConfig, savedHistory] = await Promise.all([

@@ -9,7 +9,7 @@ import {
     logActivity,
     reapStaleRuns,
 } from './company-store.mjs';
-import { consumeAutocycleSlot } from './autocycle-guard.mjs';
+import { consumeAutocycleSlot, releaseAutocycleSlot } from './autocycle-guard.mjs';
 
 const DEFAULT_POLL_MS = parseInt(process.env.HEARTBEAT_POLL_MS || '15000', 10);
 const DEFAULT_BATCH = parseInt(process.env.HEARTBEAT_BATCH || '10', 10);
@@ -47,6 +47,16 @@ export function processPendingWakeups({ batch = DEFAULT_BATCH, onEvent } = {}) {
             }
         }
         // M5.1: каждый wakeup исполняется как run с трейсом шагов протокола.
+        // P-LOW-6: a consumed autocycle slot is returned on every failure
+        // exit below, so transient failures don't burn the daily quota.
+        const releaseSlot = () => {
+            if (w.trigger !== 'schedule') return;
+            try {
+                releaseAutocycleSlot(w.companyId);
+            } catch {
+                /* quota bookkeeping best-effort */
+            }
+        };
         let run = null;
         try {
             run = startRun({
@@ -57,6 +67,7 @@ export function processPendingWakeups({ batch = DEFAULT_BATCH, onEvent } = {}) {
                 wakeupId: w.id,
             });
         } catch (e) {
+            releaseSlot();
             ackWakeup(w.id, 'error', e instanceof Error ? e.message : String(e));
             results.push({ id: w.id, ok: false, reason: e instanceof Error ? e.message : String(e) });
             onEvent?.({ type: 'wakeup_error', wakeupId: w.id, reason: String(e) });
@@ -77,6 +88,7 @@ export function processPendingWakeups({ batch = DEFAULT_BATCH, onEvent } = {}) {
             if (gate.over) {
                 step('checkout', 'blocked: budget gate');
                 finishRun(run.id, 'error', `budget exhausted (${gate.scope})`);
+                releaseSlot();
                 ackWakeup(w.id, 'error', `budget exhausted (${gate.scope})`);
                 results.push({
                     id: w.id,
@@ -101,6 +113,7 @@ export function processPendingWakeups({ batch = DEFAULT_BATCH, onEvent } = {}) {
             );
             if (!company) {
                 finishRun(run.id, 'error', 'company not found');
+                releaseSlot();
                 ackWakeup(w.id, 'error', 'company not found');
                 results.push({ id: w.id, ok: false, reason: 'company not found', runId: run.id });
                 onEvent?.({ type: 'wakeup_error', wakeupId: w.id, runId: run.id, reason: 'company not found' });
@@ -128,6 +141,7 @@ export function processPendingWakeups({ batch = DEFAULT_BATCH, onEvent } = {}) {
             } catch {
                 /* ignore */
             }
+            releaseSlot();
             ackWakeup(w.id, 'error', e instanceof Error ? e.message : String(e));
             results.push({ id: w.id, ok: false, reason: e instanceof Error ? e.message : String(e), runId: run.id });
             try {

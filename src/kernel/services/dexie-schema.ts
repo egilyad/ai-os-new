@@ -345,6 +345,11 @@ export class SuperAgentsDB extends Dexie {
     constructor() {
         super('super_agents_os_v4');
 
+        // P-LOW-4, documented: pre-v5 databases under the old DB name are
+        // NOT migrated into this schema (only API keys travel via
+        // key-migration.ts). Sessions/memories/notes from the old DB stay
+        // orphaned in the browser profile. A full migration is a product
+        // decision (one-shot importer UI), not a silent background copy.
         this.version(5).stores({
             notes: 'id, keyId, type, timestamp',
             memories: 'id, content, [metadata.source], [metadata.type], [metadata.timestamp]',

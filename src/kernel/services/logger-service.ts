@@ -121,7 +121,10 @@ export class LoggerService implements ILogger {
 
         const entry: LogEntry = {
             level,
-            message,
+            // P-LOW-2: scrub the message itself, not just meta — callers
+            // interpolate secrets into messages (`key=${apiKey}`), which
+            // otherwise land raw in the buffer and IndexedDB persistence.
+            message: String(sanitizeObject(message)),
             service,
             timestamp: Date.now(),
             seq: this.state.seq++,

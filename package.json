@@ -37,7 +37,7 @@
     "check:deps": "depcruise --config .dependency-cruiser.cjs src",
     "check:deps:graph": "depcruise --config .dependency-cruiser.cjs --output-type dot src | dot -T svg > dependency-graph.svg",
     "prepare": "husky",
-    "test:server": "node --test server/tests/write-queue.test.mjs server/tests/decide-approval.test.mjs server/tests/run-integrity.test.mjs server/tests/wakeup-issue.test.mjs"
+    "test:server": "node --test server/tests/write-queue.test.mjs server/tests/decide-approval.test.mjs server/tests/run-integrity.test.mjs server/tests/wakeup-issue.test.mjs server/tests/autocycle.test.mjs"
   },
   "lint-staged": {
     "*.{ts,tsx}": [

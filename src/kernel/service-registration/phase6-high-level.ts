@@ -382,7 +382,13 @@ export const registerPhase6: Phase = (helpers, ctx) => {
         (c) => new ContributionService({ eventBus: c.get<IEventBus>('eventBus') }),
     );
     // ── Prompt Security Service ─────────────────────────
-    register('promptSecurityService', (_c) => new PromptSecurityService());
+    register('promptSecurityService', (_c) => {
+        const svc = new PromptSecurityService();
+        // P-LOW-3: warm the persisted config at boot so the first scan
+        // doesn't run against defaults while storage loads.
+        void svc.preload().catch(() => {});
+        return svc;
+    });
     // ── Google GenAI Service ───────────────────────────
     register('googleGenAIService', (_c) => new GoogleGenAIService());
     // ── Workflow Service ───────────────────────────────

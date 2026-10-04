@@ -1,7 +1,7 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useReducer } from 'react';
 import { settingsService } from '../kernel/instances';
 import { t as translate, setLanguage } from './translations';
-import { loadLocale } from './translations/index';
+import { loadLocale, onLocaleLoaded } from './translations/index';
 
 export function useTranslation() {
     const [lang, setLang] = useState<'en' | 'ru'>(() => {
@@ -15,6 +15,8 @@ export function useTranslation() {
         return l;
     });
 
+    const [, forceRender] = useReducer((x: number) => x + 1, 0);
+
     useEffect(() => {
         const unsub = settingsService.subscribe((settings) => {
             const l = settings.language === 'ru' ? 'ru' : 'en';
@@ -23,8 +25,12 @@ export function useTranslation() {
             loadLocale(l);
             if (typeof document !== 'undefined') document.documentElement.lang = l;
         });
+        // P-LOW-5: re-render when the async locale bundle lands — otherwise
+        // first paint after reload shows raw keys until an unrelated update.
+        const unsubLocale = onLocaleLoaded(() => forceRender((x) => x + 1));
         return () => {
             unsub();
+            unsubLocale();
         };
     }, []);
 

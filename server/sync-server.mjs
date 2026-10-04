@@ -414,6 +414,18 @@ const server = http.createServer(async (req, res) => {
             }
             if (req.method === 'GET') {
                 const pendingOnly = parsed.searchParams.get('pending') === '1';
+                // P-LOW-7: direct lookup so watchers don't pull the full
+                // list (up to 5000 entries) every 2s to find one wakeup.
+                const id = parsed.searchParams.get('id');
+                if (id) {
+                    const item = listWakeups(false).find((w) => w.id === id) || null;
+                    if (!item) {
+                        writeJson(res, 404, { error: 'Wakeup not found' });
+                        return;
+                    }
+                    writeJson(res, 200, { wakeup: item });
+                    return;
+                }
                 writeJson(res, 200, { wakeups: listWakeups(pendingOnly) });
                 return;
             }
