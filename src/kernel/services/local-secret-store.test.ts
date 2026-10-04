@@ -1,13 +1,14 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { LocalSecretStore } from './local-secret-store';
 
 function makeDb() {
     const kv = new Map<string, unknown>();
     return {
-        getKv: vi.fn(async <T,>(id: string): Promise<T | null> => (kv.has(id) ? (kv.get(id) as T) : null)),
-        setKv: vi.fn(async <T,>(id: string, value: T): Promise<void> => {
+        getKv: async <T,>(id: string): Promise<T | null> =>
+            (kv.has(id) ? (kv.get(id) as T) : null),
+        setKv: async <T,>(id: string, value: T): Promise<void> => {
             kv.set(id, value);
-        }),
+        },
     };
 }
 

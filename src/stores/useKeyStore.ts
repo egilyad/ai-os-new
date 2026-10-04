@@ -114,8 +114,9 @@ export const useKeyStore = create<Store>((set, get) => {
                             // H-7: re-read fresh state — k.stats is a snapshot
                             // from loop start; concurrent writers (health
                             // checks bumping errorCount, completions updating
-                            // usage) must not be clobbered.
-                            ...get().keys.find((x) => x.id === k.id)?.stats,
+                            // usage) must not be clobbered. The ?? keeps the
+                            // exact legacy shape for the type-checker.
+                            ...(get().keys.find((x) => x.id === k.id)?.stats ?? k.stats),
                             errorCount: 0,
                             lastError: undefined,
                         },

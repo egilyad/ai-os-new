@@ -28,7 +28,7 @@ const { keyService, groupManager, keyStateStore, mockDb } = vi.hoisted(() => {
         isKeyInBackoff: vi.fn(() => ({ backoff: false, remainingMs: 0 })),
         getKey: vi.fn(() => undefined),
         exportKeys: vi.fn(async () => '[]'),
-        updateKey: vi.fn(async () => {}),
+        updateKey: vi.fn(async (_id: string, _data?: unknown) => {}),
         resolveAlert: vi.fn(() => {}),
     };
     const groupManager = {
@@ -359,7 +359,7 @@ describe('useKeyStore', () => {
         });
         await useKeyStore.getState().enableAllKeys();
         expect(keyService.updateKey).toHaveBeenCalledTimes(1);
-        const written = keyService.updateKey.mock.calls[0]?.[1] as {
+        const written = keyService.updateKey.mock.calls[0]?.[1] as unknown as {
             stats: Record<string, number>;
         };
         expect(written.stats.totalTokens).toBe(11);

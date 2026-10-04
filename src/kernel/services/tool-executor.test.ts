@@ -10,10 +10,11 @@ function makeService() {
             emitOnce: vi.fn(() => true),
         },
         database: {
-            getKv: vi.fn(async (id: string) => kv.get(id) ?? null),
-            setKv: vi.fn(async (id: string, value: unknown) => {
+            getKv: async <T,>(id: string): Promise<T | null> =>
+                (kv.has(id) ? (kv.get(id) as T) : null),
+            setKv: async <T,>(id: string, value: T): Promise<void> => {
                 kv.set(id, value);
-            }),
+            },
         },
     });
 }
@@ -34,8 +35,8 @@ describe('ToolService unimplemented tools (P-CRIT-4)', () => {
         const svc = new ToolService({
             eventBus: { emit, emitOnce: vi.fn(() => true) },
             database: {
-                getKv: vi.fn(async () => null),
-                setKv: vi.fn(async () => {}),
+                getKv: async <T,>(): Promise<T | null> => null,
+                setKv: async <T,>(): Promise<void> => {},
             },
         });
         const res = await svc.execute('t-read-file', {});
