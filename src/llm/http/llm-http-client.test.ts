@@ -100,12 +100,17 @@ describe('LLMHttpClient.streamPost (T-H-4)', () => {
         });
     }
 
-    it('returns the response for body consumption and clears tracking', async () => {
+    it('returns a handle; entry stays visible until release (H-5)', async () => {
         vi.stubGlobal('fetch', vi.fn(async () => sseResponse()));
-        const res = await streamClient().streamPost('/v1/chat', { stream: true }, 'sk-test');
-        expect(res.ok).toBe(true);
-        const text = await res.text();
+        const handle = await streamClient().streamPost('/v1/chat', { stream: true }, 'sk-test');
+        // Still registered: cancelAll can abort an active body read.
+        expect(LLMHttpClient.getInFlightCount()).toBe(1);
+        const text = await handle.response.text();
         expect(text).toContain('hi');
+        handle.release();
+        expect(LLMHttpClient.getInFlightCount()).toBe(0);
+        // Idempotent — double release neither throws nor corrupts counts.
+        handle.release();
         expect(LLMHttpClient.getInFlightCount()).toBe(0);
     });
 
@@ -126,6 +131,34 @@ describe('LLMHttpClient.streamPost (T-H-4)', () => {
         expect(LLMHttpClient.getInFlightCount()).toBeGreaterThan(0);
         expect(LLMHttpClient.cancelAll()).toBeGreaterThan(0);
         await expect(pending).rejects.toThrow();
+        expect(LLMHttpClient.getInFlightCount()).toBe(0);
+    });
+
+    it('cancelAll aborts an actively-reading stream, release settles tracking', async () => {
+        vi.stubGlobal(
+            'fetch',
+            vi.fn(async (_url: string, init?: RequestInit) => {
+                const signal = init?.signal;
+                const stream = new ReadableStream({
+                    start(controller) {
+                        controller.enqueue(new TextEncoder().encode('data: {"a":1}\n\n'));
+                        signal?.addEventListener('abort', () => {
+                            controller.error(new DOMException('aborted', 'AbortError'));
+                        });
+                    },
+                });
+                return new Response(stream, {
+                    status: 200,
+                    headers: { 'Content-Type': 'text/event-stream' },
+                });
+            }),
+        );
+        const handle = await streamClient().streamPost('/v1/chat', {}, 'sk-test');
+        expect(LLMHttpClient.getInFlightCount()).toBe(1);
+        const reading = handle.response.text();
+        expect(LLMHttpClient.cancelAll()).toBe(1);
+        await expect(reading).rejects.toThrow();
+        handle.release();
         expect(LLMHttpClient.getInFlightCount()).toBe(0);
     });
 

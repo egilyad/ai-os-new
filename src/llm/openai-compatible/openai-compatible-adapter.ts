@@ -137,41 +137,46 @@ export class OpenAiCompatibleAdapter extends BaseLLMAdapter {
         }
 
         const body = this.buildBody(model, messages, true, options);
-        const res = await this.httpClient.streamPost(
+        const { response: res, release } = await this.httpClient.streamPost(
             '/chat/completions',
             body,
             `Bearer ${apiKey}`,
             signal,
         );
 
-        let finalFinishReason: string | undefined;
-        let finalUsage: { total_tokens?: number } | undefined;
-        let finalReasoning: string | undefined;
+        try {
+            let finalFinishReason: string | undefined;
+            let finalUsage: { total_tokens?: number } | undefined;
+            let finalReasoning: string | undefined;
 
-        await parseSSEStream(
-            res,
-            (chunk) => onChunk(chunk),
-            (parsed) => {
-                const choices = parsed.choices as Array<Record<string, unknown>> | undefined;
-                const choice = choices?.[0];
-                const delta = choice?.delta as
-                    { content?: string; reasoning_content?: string } | undefined;
-                if (choice?.finish_reason) finalFinishReason = choice.finish_reason as string;
-                if (parsed.usage) finalUsage = parsed.usage as { total_tokens?: number };
-                if (delta?.reasoning_content)
-                    finalReasoning = (finalReasoning || '') + delta.reasoning_content;
-                return delta?.content;
-            },
-            undefined,
-            { signal, idleTimeoutMs: 30000 },
-        );
+            await parseSSEStream(
+                res,
+                (chunk) => onChunk(chunk),
+                (parsed) => {
+                    const choices = parsed.choices as Array<Record<string, unknown>> | undefined;
+                    const choice = choices?.[0];
+                    const delta = choice?.delta as
+                        { content?: string; reasoning_content?: string } | undefined;
+                    if (choice?.finish_reason) finalFinishReason = choice.finish_reason as string;
+                    if (parsed.usage) finalUsage = parsed.usage as { total_tokens?: number };
+                    if (delta?.reasoning_content)
+                        finalReasoning = (finalReasoning || '') + delta.reasoning_content;
+                    return delta?.content;
+                },
+                undefined,
+                { signal, idleTimeoutMs: 30000 },
+            );
 
-        if (finalFinishReason || finalUsage || finalReasoning) {
-            onChunk('', {
-                finishReason: normalizeFinishReason(finalFinishReason),
-                tokens: finalUsage?.total_tokens,
-                reasoning: finalReasoning,
-            });
+            if (finalFinishReason || finalUsage || finalReasoning) {
+                onChunk('', {
+                    finishReason: normalizeFinishReason(finalFinishReason),
+                    tokens: finalUsage?.total_tokens,
+                    reasoning: finalReasoning,
+                });
+            }
+        } finally {
+            // H-5: unregister from cancelAll + free the slot when body done.
+            release();
         }
     }
 

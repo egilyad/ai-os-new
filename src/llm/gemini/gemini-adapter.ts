@@ -113,7 +113,7 @@ export class GeminiAdapter extends BaseLLMAdapter {
         try {
             const safeModel = await validateModel(model, apiKey);
             const body = GeminiRequestBuilder.build(messages, options);
-            const res = await with429Retry(() =>
+            const { response: res, release } = await with429Retry(() =>
                 this.#httpClient.streamPost(
                     `/v1beta/models/${encodeURIComponent(safeModel)}:streamGenerateContent?alt=sse`,
                     body,
@@ -121,7 +121,12 @@ export class GeminiAdapter extends BaseLLMAdapter {
                     signal,
                 ),
             );
-            await GeminiStreamParser.parse(res, onChunk, signal);
+            try {
+                await GeminiStreamParser.parse(res, onChunk, signal);
+            } finally {
+                // H-5: unregister from cancelAll + free the slot when body done.
+                release();
+            }
         } catch (e) {
             if (this.isAuthError(e)) modelCache.markFailed(apiKey);
             throw e;

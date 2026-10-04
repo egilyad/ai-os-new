@@ -97,3 +97,18 @@ Approve (`POST /approvals/:id/decide` → `approved`) ставит wakeup с т�
 m12 (loop), m31 (дерево), m71 (бюджет), m41 (issues), m51 (runs), m21 (адаптеры),
 m61 (governance), m81 (portability), m91 (гейт), m92 (CLI), m93 (quickstart YAML).
 Каждый: `node --check` затронутых файлов + HTTP-прогон + регресс соседних модулей.
+
+## Trust model (H-2, зафиксировано решением)
+
+- **Single-tenant**: один `SYNC_SECRET` открывает полный read/write всех компаний.
+  Per-company токенов и row-level изоляции нет — не давать секрет чужим.
+- **Энтропия**: `SYNC_SECRET` — минимум 32 случайных байта (hex). Слабые
+  человекочитаемые секреты брутфорсятся (rate-limit 30/min даёт ~43k попыток/сутки).
+- **Файл вместо env**: `SYNC_SECRET_FILE` предпочтительнее `SYNC_SECRET`
+  (env виден в `docker inspect`).
+- **Только за TLS** вне loopback: Bearer в открытом виде по сети не возить.
+- **WebSocket**: static-secret auth + origin/rate-limit gates. Short-lived
+  session-токены (H-1) отложены сознательно — in-app WS-клиентов нет
+  (проверено grep: ни одного `new WebSocket` в `src/`), эндпойнт обслуживает
+  только внешние/CLI-интеграции; вводить token-issuance раньше первого
+  клиента — инфраструктура без потребителя.

@@ -196,42 +196,47 @@ export class OpenRouterAdapter extends BaseLLMAdapter {
     ): Promise<void> {
         const body = this.buildBody(messages, model, true, options);
 
-        const res = await this.httpClient.streamPost(
+        const { response: res, release } = await this.httpClient.streamPost(
             '/chat/completions',
             body,
             `Bearer ${apiKey}`,
             signal,
         );
 
-        let finalFinishReason: string | undefined;
-        let finalUsage: OpenRouterUsage | undefined;
-        let finalReasoning: string | undefined;
+        try {
+            let finalFinishReason: string | undefined;
+            let finalUsage: OpenRouterUsage | undefined;
+            let finalReasoning: string | undefined;
 
-        await parseSSEStream(
-            res,
-            (text) => onChunk(text),
-            (parsed: Record<string, unknown>) => {
-                const choices = parsed.choices as Array<Record<string, unknown>> | undefined;
-                const choice = choices?.[0];
-                const delta = choice?.delta as { content?: string; reasoning?: string } | undefined;
-                if (choice?.finish_reason) finalFinishReason = choice.finish_reason as string;
-                if (parsed.usage) finalUsage = parsed.usage as OpenRouterUsage;
-                if (delta?.reasoning) finalReasoning = (finalReasoning || '') + delta.reasoning;
-                return delta?.content;
-            },
-            undefined,
-            { signal, idleTimeoutMs: 30000 },
-        );
+            await parseSSEStream(
+                res,
+                (text) => onChunk(text),
+                (parsed: Record<string, unknown>) => {
+                    const choices = parsed.choices as Array<Record<string, unknown>> | undefined;
+                    const choice = choices?.[0];
+                    const delta = choice?.delta as { content?: string; reasoning?: string } | undefined;
+                    if (choice?.finish_reason) finalFinishReason = choice.finish_reason as string;
+                    if (parsed.usage) finalUsage = parsed.usage as OpenRouterUsage;
+                    if (delta?.reasoning) finalReasoning = (finalReasoning || '') + delta.reasoning;
+                    return delta?.content;
+                },
+                undefined,
+                { signal, idleTimeoutMs: 30000 },
+            );
 
-        const normalizedFinishReason = finalFinishReason
-            ? normalizeFinishReason(finalFinishReason)
-            : undefined;
-        if (finalFinishReason || finalUsage || finalReasoning) {
-            onChunk('', {
-                finishReason: normalizedFinishReason,
-                usage: finalUsage as Record<string, unknown> | undefined,
-                reasoning: finalReasoning,
-            });
+            const normalizedFinishReason = finalFinishReason
+                ? normalizeFinishReason(finalFinishReason)
+                : undefined;
+            if (finalFinishReason || finalUsage || finalReasoning) {
+                onChunk('', {
+                    finishReason: normalizedFinishReason,
+                    usage: finalUsage as Record<string, unknown> | undefined,
+                    reasoning: finalReasoning,
+                });
+            }
+        } finally {
+            // H-5: unregister from cancelAll + free the slot when body done.
+            release();
         }
     }
 

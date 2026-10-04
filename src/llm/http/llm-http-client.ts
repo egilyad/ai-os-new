@@ -11,6 +11,17 @@ export interface HttpResult {
 }
 
 /**
+ * H-5: streaming response handle. The request stays registered in
+ * _inflight (visible to cancelAll/cancelLongestRunning) AND holds its
+ * concurrency slot until release() — call it in a finally around body
+ * consumption. Forgetting release() pins a slot and an inflight entry.
+ */
+export interface StreamHandle {
+    response: Response;
+    release: () => void;
+}
+
+/**
  * Max HTTP-layer timeout for provider calls. Must exceed the debate caller's
  * large-model window (90s), otherwise the HTTP-layer timer fires first with a
  * bare AbortError that the caller classifies as a no-retry user-abort → the
@@ -395,12 +406,23 @@ export class LLMHttpClient {
         body: unknown,
         apiKey: string,
         signal?: AbortSignal,
-    ): Promise<Response> {
+    ): Promise<StreamHandle> {
         // Stringify BEFORE acquiring (see post()).
         const bodyStr = JSON.stringify(body);
         await LLMHttpClient.acquireSlot();
         const { signal: mergedSignal, controller, disarm } = this.#withTimeout(signal);
         const done = this.#trackInFlight(controller, path);
+        // H-5: release exactly once — unregisters from _inflight (cancelAll
+        // visibility) and frees the concurrency slot. Idempotent, so every
+        // error path below and every caller finally-block is safe.
+        let released = false;
+        const release = () => {
+            if (released) return;
+            released = true;
+            disarm();
+            done();
+            LLMHttpClient.releaseSlot();
+        };
         try {
             let res: Response;
             try {
@@ -464,19 +486,13 @@ export class LLMHttpClient {
 
             // H-06: headers received — disarm the connection timeout so long
             // streams are not aborted mid-body. Cancellation still works via signal.
+            // H-5: the _inflight entry STAYS registered until release() so
+            // cancelAll()/cancelLongestRunning() can abort an active body read.
             disarm();
-            return res;
-        } finally {
-            // Error paths only: on success the timer is already disarmed
-            // above; disarm() is idempotent (clearTimeout).
-            disarm();
-            done();
-            // NOTE: the concurrency slot is released here, at headers — not
-            // when the caller finishes reading the body. Holding it would
-            // require returning a release handle (5 streamPost callers), so
-            // concurrent long streams can briefly exceed the semaphore limit.
-            // Callers tolerate this via retry/backoff; revisit if 429s spike.
-            LLMHttpClient.releaseSlot();
+            return { response: res, release };
+        } catch (e) {
+            release();
+            throw e;
         }
     }
 }

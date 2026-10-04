@@ -97,26 +97,36 @@ export class CloudflareAdapter extends BaseLLMAdapter {
         const body = this.buildBody(model, messages, true, options);
         const url = this.getUrl(apiKey, '/chat/completions');
 
-        const res = await this.httpClient.streamPost(url, body, `Bearer ${token}`, signal);
-
-        let finalFinishReason: string | undefined;
-
-        await parseSSEStream(
-            res,
-            (chunk) => onChunk(chunk),
-            (parsed) => {
-                const choices = parsed.choices as Array<Record<string, unknown>> | undefined;
-                const choice = choices?.[0];
-                const delta = choice?.delta as { content?: string } | undefined;
-                if (choice?.finish_reason) finalFinishReason = choice.finish_reason as string;
-                return delta?.content ?? (parsed.response as string) ?? undefined;
-            },
-            undefined,
-            { idleTimeoutMs: 30000, signal },
+        const { response: res, release } = await this.httpClient.streamPost(
+            url,
+            body,
+            `Bearer ${token}`,
+            signal,
         );
 
-        if (finalFinishReason) {
-            onChunk('', { finishReason: finalFinishReason });
+        try {
+            let finalFinishReason: string | undefined;
+
+            await parseSSEStream(
+                res,
+                (chunk) => onChunk(chunk),
+                (parsed) => {
+                    const choices = parsed.choices as Array<Record<string, unknown>> | undefined;
+                    const choice = choices?.[0];
+                    const delta = choice?.delta as { content?: string } | undefined;
+                    if (choice?.finish_reason) finalFinishReason = choice.finish_reason as string;
+                    return delta?.content ?? (parsed.response as string) ?? undefined;
+                },
+                undefined,
+                { idleTimeoutMs: 30000, signal },
+            );
+
+            if (finalFinishReason) {
+                onChunk('', { finishReason: finalFinishReason });
+            }
+        } finally {
+            // H-5: unregister from cancelAll + free the slot when body done.
+            release();
         }
     }
 
