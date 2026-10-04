@@ -53,6 +53,14 @@ describe('isPrivateIP', () => {
         expect(isPrivateIP('0x7f.0.0.1')).toBe(true); // 127.0.0.1 dotted-hex
         expect(isPrivateIP('0177.0.0.1')).toBe(true); // 127.0.0.1 octal
     });
+
+    it('rejects IPv4-mapped IPv6 in dotted and hex-group forms', () => {
+        // WHATWG URL parsing rewrites [::ffff:127.0.0.1] to [::ffff:7f00:1]
+        // before guards ever see the hostname — both must resolve to loopback.
+        expect(isPrivateIP('::ffff:127.0.0.1')).toBe(true);
+        expect(isPrivateIP('::ffff:7f00:1')).toBe(true);
+        expect(isPrivateIP('[::ffff:7f00:1]')).toBe(true);
+    });
 });
 
 describe('isValidWebhookUrl', () => {

@@ -7,6 +7,27 @@ const HEX_IP_RE = /^0x[0-9a-f]+\.[0-9a-f]+\.[0-9a-f]+\.[0-9a-f]+$/i;
 const DECIMAL_IP_RE = /^\d{1,10}$/;
 
 function normalizeIp(h: string): string {
+    // IPv4-mapped IPv6, including the hex-group form that WHATWG URL parsing
+    // produces ([::ffff:127.0.0.1] arrives as [::ffff:7f00:1] — brackets
+    // already stripped by the caller). Without this, mapped loopback slips
+    // through as an opaque IPv6 literal.
+    const mapped = h.match(/^::ffff:([^:]+(?::[^:]+)*)$/i);
+    if (mapped) {
+        const suffix = mapped[1] ?? '';
+        if (/^\d+\.\d+\.\d+\.\d+$/.test(suffix)) return suffix;
+        const groups = suffix.split(':');
+        if (groups.length > 0 && groups.every((g) => /^[0-9a-fA-F]{1,4}$/.test(g))) {
+            const nums = groups.map((g) => parseInt(g, 16));
+            const low32 =
+                nums.length === 1
+                    ? (nums[0] ?? 0)
+                    : ((nums[nums.length - 2] ?? 0) << 16) | (nums[nums.length - 1] ?? 0);
+            return [(low32 >>> 24) & 255, (low32 >>> 16) & 255, (low32 >>> 8) & 255, low32 & 255].join(
+                '.',
+            );
+        }
+        return h;
+    }
     // B10-168: Convert obfuscated IPs to standard format for checking
     if (DECIMAL_IP_RE.test(h)) {
         const n = parseInt(h, 10);

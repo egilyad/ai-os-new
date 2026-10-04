@@ -6,8 +6,12 @@ const rows: Row[] = [];
 vi.mock('./database-service', () => ({
     getDexieDb: () => ({
         agentMemory: {
+            // Mirrors the Dexie chain used in the service:
+            // where().equals().toArray().
             where: () => ({
-                equals: async () => rows,
+                equals: () => ({
+                    toArray: async () => rows,
+                }),
             }),
             add: async (row: Row) => {
                 rows.push(row);
