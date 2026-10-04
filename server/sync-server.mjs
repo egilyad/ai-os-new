@@ -45,6 +45,7 @@ import {
 import { listAdapters, getAdapter, parseStdout } from './adapters.mjs';
 import { startHeartbeatLoop } from './heartbeat-loop.mjs';
 import { enqueueDbWrite } from './write-queue.mjs';
+import { timingSafeEqual, verifyWsUpgrade } from './ws-auth.mjs';
 
 const PORT = parseInt(process.env.SYNC_PORT || '3001', 10);
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -110,22 +111,12 @@ function checkRateLimit(ip) {
     return true;
 }
 
-function timingSafeEqual(a, b) {
-    const bufA = Buffer.from(String(a));
-    const bufB = Buffer.from(String(b));
-    if (bufA.length !== bufB.length) {
-        // Compare against a same-length buffer to prevent length leak
-        crypto.timingSafeEqual(bufA, bufA);
-        return false;
-    }
-    return crypto.timingSafeEqual(bufA, bufB);
-}
-
 function hasAuth(req) {
     const header = req.headers['authorization'] || '';
     if (!header.startsWith('Bearer ')) return false;
     return timingSafeEqual(header.slice(7), AUTH_TOKEN);
 }
+// timingSafeEqual lives in ws-auth.mjs (shared with upgrade auth).
 
 function writeJson(res, status, data) {
     res.writeHead(status, { 'Content-Type': 'application/json' });
@@ -1137,36 +1128,29 @@ const wss = new WebSocketServer({
 
         // SECURITY FIX: Check Sec-WebSocket-Protocol header first (preferred), then Authorization, then query param (deprecated fallback)
         // Sec-WebSocket-Protocol: first value is subprotocol name, second (if any) is the token
-        const protocols = info.req.headers['sec-websocket-protocol'];
-        if (protocols) {
-            const parts = protocols.split(',').map((p) => p.trim());
-            // Format: "sync-token,<token>" or just "sync-token" without token
-            if (parts[0] === 'sync-token' && parts[1]) {
-                if (timingSafeEqual(parts[1], SYNC_SECRET)) {
-                    callback(true);
-                    return;
-                }
-                callback(false, 4001, 'Invalid token');
-                return;
-            }
-            // If no token provided, reject (no anonymous connections)
-            if (parts[0] === 'sync-token' && !parts[1]) {
-                callback(false, 4001, 'Authentication required');
-                return;
-            }
-        }
-        // Fallback: Authorization header for HTTP API clients
-        const auth = info.req.headers['authorization'];
-        if (auth && auth.startsWith('Bearer ')) {
-            if (timingSafeEqual(auth.slice(7), SYNC_SECRET)) {
+        // T-H-6: verdict logic lives in ws-auth.mjs (unit-tested); here we
+        // only map it onto the verifyClient callback, echoing the selected
+        // subprotocol so browser handshakes complete with it negotiated.
+        const verdict = verifyWsUpgrade(
+            {
+                protocols: info.req.headers['sec-websocket-protocol'],
+                authorization: info.req.headers['authorization'],
+            },
+            SYNC_SECRET,
+        );
+        if (verdict.ok) {
+            if (verdict.protocol) {
+                callback(true, undefined, undefined, {
+                    'Sec-WebSocket-Protocol': verdict.protocol,
+                });
+            } else {
                 callback(true);
-                return;
             }
-            callback(false, 4001, 'Invalid token');
             return;
         }
+        callback(false, verdict.code, verdict.message);
+        return;
         // P1-16: ?token= query param removed — use Sec-WebSocket-Protocol or Authorization header only
-        callback(false, 401, 'Unauthorized');
     },
 });
 

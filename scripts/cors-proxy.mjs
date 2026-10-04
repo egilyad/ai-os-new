@@ -1,8 +1,7 @@
 import http from 'http';
 import https from 'https';
 import { URL } from 'url';
-import net from 'net';
-import dns from 'dns';
+import { resolveAndCheckHost } from './net-guard.mjs';
 
 const PORT = 3002;
 // BLD-21: Allow CORS origin to be configured via env var (defaults to localhost:5173 for dev)
@@ -21,78 +20,7 @@ if (CORS_ORIGIN === '*') {
 }
 const MAX_SIZE = 100 * 1024 * 1024; // 100MB limit — N-08
 
-// 2.11: normalize exotic-but-valid IP forms before classification.
-// Without this, `::ffff:127.0.0.1`, `2130706433` (=127.0.0.1) or
-// `0x7f000001` bypass isPrivateIP and reach private targets.
-function normalizeIP(ip) {
-    // IPv4-mapped IPv6: ::ffff:127.0.0.1 or ::ffff:7f00:1
-    const mapped = ip.match(/^::ffff:([^:]+(?::[^:]+)*)$/i);
-    if (mapped) {
-        const suffix = mapped[1];
-        if (/^\d+\.\d+\.\d+\.\d+$/.test(suffix)) return suffix;
-        const groups = suffix.split(':');
-        if (groups.length > 0 && groups.every((g) => /^[0-9a-fA-F]{1,4}$/.test(g))) {
-            const nums = groups.map((g) => parseInt(g, 16));
-            const low32 =
-                nums.length === 1
-                    ? nums[0]
-                    : ((nums[nums.length - 2] ?? 0) << 16) | (nums[nums.length - 1] ?? 0);
-            return [(low32 >>> 24) & 255, (low32 >>> 16) & 255, (low32 >>> 8) & 255, low32 & 255].join('.');
-        }
-        return ip;
-    }
-    // Single-number IPv4 forms: decimal (2130706433), hex (0x7f000001).
-    // Number() handles 0x/decimal; dotted forms are NaN and fall through.
-    if (/^[0-9a-fA-FxX]+$/.test(ip) && !net.isIP(ip)) {
-        const num = Number(ip);
-        if (Number.isInteger(num) && num >= 0 && num <= 0xffffffff) {
-            return [(num >>> 24) & 255, (num >>> 16) & 255, (num >>> 8) & 255, num & 255].join('.');
-        }
-    }
-    return ip;
-}
-
-function isPrivateIP(rawIp) {
-    const ip = normalizeIP(rawIp);
-    if (ip.includes(':')) {
-        if (ip === '::1' || ip === '0:0:0:0:0:0:0:1') return true;
-        if (ip.startsWith('fe80:') || ip.startsWith('fd') || ip.startsWith('fc')) return true;
-        return false;
-    }
-    if (ip.startsWith('127.') || ip.startsWith('10.') || ip.startsWith('192.168.')) return true;
-    if (ip.startsWith('169.254.')) return true;
-    if (ip.startsWith('172.')) {
-        const secondOctet = parseInt(ip.split('.')[1], 10);
-        if (secondOctet >= 16 && secondOctet <= 31) return true;
-    }
-    if (ip.startsWith('100.')) {
-        const secondOctet = parseInt(ip.split('.')[1], 10);
-        if (secondOctet >= 64 && secondOctet <= 127) return true;
-    }
-    return ip === '0.0.0.0';
-}
-
-async function resolveAndCheckHost(hostname) {
-    const parsed = new URL(`http://${hostname}`);
-    const h = parsed.hostname;
-    if (net.isIP(h)) {
-        if (isPrivateIP(h)) return { blocked: true, ip: h };
-        return { blocked: false, ip: h };
-    }
-    if (h === 'localhost' || h === '127.0.0.1' || h.endsWith('.local') || h.endsWith('.internal')) {
-        return { blocked: true, ip: h };
-    }
-    let addresses;
-    try {
-        addresses = await dns.promises.resolve4(h);
-    } catch {
-        return { blocked: true, ip: h };
-    }
-    for (const addr of addresses) {
-        if (isPrivateIP(addr)) return { blocked: true, ip: addr };
-    }
-    return { blocked: false, ip: addresses[0] };
-}
+// SSRF guards live in ./net-guard.mjs (unit-tested) — see T-H-5.
 // BLD-39: Keep only one isPrivateIP definition (duplicate removed)
 const ALLOWED_DOMAINS = [
     'openrouter.ai',

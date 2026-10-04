@@ -80,3 +80,61 @@ describe('LLMHttpClient.post', () => {
         expect(LLMHttpClient.getInFlightCount()).toBe(0);
     });
 });
+
+describe('LLMHttpClient.streamPost (T-H-4)', () => {
+    function streamClient(): LLMHttpClient {
+        return new LLMHttpClient('https://x.test', {}, 'x-api-key', 'test', 5000);
+    }
+
+    function sseResponse(): Response {
+        const body = [
+            'data: {"choices":[{"delta":{"content":"hi"}}]}',
+            '',
+            'data: [DONE]',
+            '',
+            '',
+        ].join('\n');
+        return new Response(body, {
+            status: 200,
+            headers: { 'Content-Type': 'text/event-stream' },
+        });
+    }
+
+    it('returns the response for body consumption and clears tracking', async () => {
+        vi.stubGlobal('fetch', vi.fn(async () => sseResponse()));
+        const res = await streamClient().streamPost('/v1/chat', { stream: true }, 'sk-test');
+        expect(res.ok).toBe(true);
+        const text = await res.text();
+        expect(text).toContain('hi');
+        expect(LLMHttpClient.getInFlightCount()).toBe(0);
+    });
+
+    it('cancelAll aborts a headers-pending stream', async () => {
+        vi.stubGlobal(
+            'fetch',
+            vi.fn(
+                (_url: string, init?: RequestInit) =>
+                    new Promise<Response>((_resolve, reject) => {
+                        init?.signal?.addEventListener('abort', () => {
+                            reject(new DOMException('aborted', 'AbortError'));
+                        });
+                    }),
+            ),
+        );
+        const pending = streamClient().streamPost('/v1/chat', {}, 'sk-test');
+        await new Promise((r) => setTimeout(r, 50));
+        expect(LLMHttpClient.getInFlightCount()).toBeGreaterThan(0);
+        expect(LLMHttpClient.cancelAll()).toBeGreaterThan(0);
+        await expect(pending).rejects.toThrow();
+        expect(LLMHttpClient.getInFlightCount()).toBe(0);
+    });
+
+    it('maps 401 to AuthError', async () => {
+        vi.stubGlobal('fetch', vi.fn(async () => jsonResponse({}, 401)));
+        const err = await streamClient()
+            .streamPost('/v1/chat', {}, 'sk-test')
+            .catch((e: unknown) => e);
+        expect(err).toBeInstanceOf(AuthError);
+        expect(LLMHttpClient.getInFlightCount()).toBe(0);
+    });
+});
