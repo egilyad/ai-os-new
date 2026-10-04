@@ -8,15 +8,9 @@ import {
 } from './helpers';
 
 // Chat data-flow: send via stubbed /proxy/openrouter/* (SSE or JSON,
-// inspected from the request body) and verify the reply renders.
-//
-// KNOWN DEFECT (found by this spec, not worked around): the sent exchange
-// does NOT survive reload — Dexie `sessions` still holds only the empty
-// `default` row 45s after a successful send (usage counters DO increment,
-// terminal persist visibly runs with history, yet nothing lands). Suspect:
-// write-through/persist racing the hydration flush, or a dual store
-// instance. History persistence IS covered for pre-existing rows by the
-// seeded-session test in data-debate.spec.ts.
+// inspected from the request body), verify the reply renders, and verify
+// history survives reload (covers the persist path fixed alongside the
+// version-guard defect).
 // Chat auto-selects the first `active` key; `OpenRouter` falls back to
 // `openai/gpt-4o` without discovery.
 
@@ -28,8 +22,7 @@ test.describe('AI-OS Data Chat', () => {
         await boot(page);
     });
 
-    test('chat send via mocked provider renders reply', async ({ page }) => {
-        await idbPut(page, 'apiKeys', {
+    test('chat send via mocked provider persists history', async ({ page }) => {        await idbPut(page, 'apiKeys', {
             id: 'e2e-or-chat',
             provider: 'OpenRouter',
             key: 'sk-or-e2e-test-key-003',
@@ -64,5 +57,13 @@ test.describe('AI-OS Data Chat', () => {
         // Either transport marker proves the mocked provider reply rendered
         // (SSE-PATH-42 via streaming, JSON-PATH-42 via plain JSON).
         await expect(page.getByText(/-PATH-42/).first()).toBeVisible({ timeout: 60000 });
+
+        await page.reload();
+        await boot(page);
+        await page.goto('/chat');
+        await dismissWizard(page);
+        await expect(page.getByText('e2e ping 42').first()).toBeVisible({
+            timeout: 30000,
+        });
     });
 });
