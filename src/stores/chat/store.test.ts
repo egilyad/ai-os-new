@@ -439,6 +439,22 @@ describe('useChatStore', () => {
         expect(s.activeRequestIds.has(rid)).toBe(false);
     });
 
+    it('terminal responses release the request-entry ref (state-leak guard)', async () => {
+        await useChatStore.getState().sendMessage([{ provider: 'groq', model: 'm' }], 'hi');
+        const rid = getSendPayload().requestId;
+        expect(requestEntryMap.has(rid)).toBe(true);
+        emit(E.MESSAGE_RESPONSE, {
+            id: 'r1',
+            requestId: rid,
+            provider: 'groq',
+            model: 'm',
+            content: 'answer',
+            latency: 5,
+            status: 'done',
+        });
+        expect(requestEntryMap.has(rid)).toBe(false);
+    });
+
     it('cancelSending emits CANCEL_MESSAGE and marks responses cancelled', async () => {
         await useChatStore.getState().sendMessage([{ provider: 'groq', model: 'm' }], 'hi');
         const rid = getSendPayload().requestId;

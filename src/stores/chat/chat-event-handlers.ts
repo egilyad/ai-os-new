@@ -158,6 +158,11 @@ export function setupChatEventHandlers(set: ZustandSet, get: ZustandGet): Array<
             });
             if (TERMINAL_STATUSES.has(res.status)) {
                 chunkBuffers.delete(res.requestId);
+                // State-leak fix: the map is otherwise only pruned on
+                // session delete, so every request would pin its ref for the
+                // whole tab lifetime (cancel/retry cycles accumulate).
+                // Post-terminal lookups safely miss (handlers return early).
+                requestEntryMap.delete(res.requestId);
                 persistSessionSnapshot(get, ref.sessionId);
             }
         }),

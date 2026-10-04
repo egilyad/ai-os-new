@@ -1176,6 +1176,15 @@ wss.on('connection', (ws) => {
 // forever without traffic — ping/pong proves liveness, terminate
 // reaps the silent ones. Previously only non-OPEN states were swept.
 setInterval(() => {
+    // State-leak sweep: rate-limit windows persist per IP forever after the
+    // first request. Drop expired windows (same cadence as the WS reaper).
+    const now = Date.now();
+    for (const [ip, entry] of rateLimits) {
+        if (now - entry.windowStart > RATE_LIMIT_WINDOW_MS) rateLimits.delete(ip);
+    }
+    for (const [ip, entry] of wsRateLimits) {
+        if (now - entry.windowStart > WS_RATE_LIMIT_WINDOW_MS) wsRateLimits.delete(ip);
+    }
     for (const client of wss.clients) {
         if (client.readyState !== 1) {
             try {
