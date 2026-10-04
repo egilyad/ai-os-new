@@ -15,8 +15,20 @@ export interface TelegramBridge {
  * and provides send/receive hooks via EventBus. Real polling/webhook to be added with
  * MTProto/Telethon-style sessionString (AGEMS telegramConfig).
  */
+
+// C-3: BotFather tokens look like `123456:ABC-DEF...` (digits, colon, 35-char
+// secret). Memory rows are attacker-writable, so shape-check on write AND on
+// read; malformed rows are skipped, never used.
+const BOT_TOKEN_RE = /^\d{5,}:[A-Za-z0-9_-]{20,}$/;
+
+export function isValidBotToken(token: unknown): token is string {
+    return typeof token === 'string' && BOT_TOKEN_RE.test(token.trim());
+}
 export class TelegramService {
     async setBot(agentId: string, cfg: { botToken: string; allowedChatIds?: number[]; channelId?: string }): Promise<void> {
+        if (!isValidBotToken(cfg.botToken)) {
+            throw new Error('Invalid Telegram bot token shape');
+        }
         await getDexieDb().agentMemory.add({
             agentId,
             type: 'KNOWLEDGE',
@@ -31,7 +43,7 @@ export class TelegramService {
         for (let i = rows.length - 1; i >= 0; i--) {
             try {
                 const obj = JSON.parse(rows[i]!.content) as TelegramBridge & { kind?: string };
-                if (obj.kind === 'telegram' && obj.botToken) return obj;
+                if (obj.kind === 'telegram' && isValidBotToken(obj.botToken)) return obj;
             } catch { /* best-effort */ }
         }
         return null;

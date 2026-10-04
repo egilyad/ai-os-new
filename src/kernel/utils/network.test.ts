@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { isPrivateIP, isValidWebhookUrl } from './network';
+import { isPrivateIP, isValidWebhookUrl, validateIntegrationUrl } from './network';
 
 describe('isPrivateIP', () => {
     it('rejects IPv4 private ranges', () => {
@@ -67,5 +67,42 @@ describe('isValidWebhookUrl', () => {
     it('accepts public https hosts', () => {
         expect(isValidWebhookUrl('https://example.com/hook')).toBe(true);
         expect(isValidWebhookUrl('https://hooks.slack.com/services/abc/def')).toBe(true);
+    });
+});
+
+describe('validateIntegrationUrl (C-3)', () => {
+    const ok = (url: string) => expect(validateIntegrationUrl(url)).toEqual({ ok: true });
+    const bad = (url: string) =>
+        expect(validateIntegrationUrl(url).ok).toBe(false);
+
+    it('accepts public https and self-hosted http hosts', () => {
+        ok('https://n8n.example.com/');
+        ok('http://n8n.example.com:5678/');
+        // RFC1918 LAN is the primary self-hosted case — allowed by design.
+        ok('http://192.168.1.10:5678/');
+        ok('http://10.0.0.5:5678/');
+    });
+
+    it('rejects non-http schemes, creds and garbage', () => {
+        bad('javascript:alert(1)');
+        bad('file:///etc/passwd');
+        bad('ftp://n8n.example.com/');
+        bad('not a url');
+        bad('');
+        bad('https://user:pass@n8n.example.com/');
+    });
+
+    it('rejects loopback, metadata and obfuscated forms', () => {
+        bad('http://127.0.0.1:5678/');
+        bad('http://localhost:5678/');
+        bad('http://[::1]:5678/');
+        bad('http://0.0.0.0:5678/');
+        bad('http://169.254.169.254/latest/meta-data/');
+        bad('http://169.254.10.20/');
+        bad('http://2130706433/'); // 127.0.0.1 decimal
+        bad('http://0x7f.0.0.1/'); // 127.0.0.1 dotted-hex
+        bad('http://0177.0.0.1/'); // 127.0.0.1 octal
+        bad('http://[::ffff:127.0.0.1]/');
+        bad('http://evil.localhost/');
     });
 });

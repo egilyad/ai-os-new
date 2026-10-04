@@ -1,4 +1,5 @@
 import { rootLogger } from './logger-service';
+import { validateIntegrationUrl } from '../utils/network';
 
 const LOGGER = rootLogger.child('N8N');
 
@@ -42,7 +43,25 @@ export class N8NService {
             for (let i = rows.length - 1; i >= 0; i--) {
                 try {
                     const obj = JSON.parse(rows[i]!.content) as { kind?: string; n8nApiUrl?: string; n8nApiKey?: string };
-                    if (obj.kind === 'n8n' || obj.n8nApiUrl) return { url: obj.n8nApiUrl, apiKey: obj.n8nApiKey };
+                    if (obj.kind === 'n8n' || obj.n8nApiUrl) {
+                        if (obj.n8nApiUrl !== undefined && typeof obj.n8nApiUrl !== 'string') {
+                            continue;
+                        }
+                        // C-3: memory rows are attacker-writable (UI free-text,
+                        // imports, prompt injection). Re-validate on every read:
+                        // a poisoned URL never reaches fetch with credentials.
+                        if (typeof obj.n8nApiUrl === 'string') {
+                            const check = validateIntegrationUrl(obj.n8nApiUrl);
+                            if (!check.ok) {
+                                LOGGER.warn('N8N', 'rejecting stored n8n URL', {
+                                    agentId,
+                                    reason: check.reason,
+                                });
+                                continue;
+                            }
+                        }
+                        return { url: obj.n8nApiUrl, apiKey: obj.n8nApiKey };
+                    }
                 } catch { /* bad row */ }
             }
         } catch { /* no memory */ }
@@ -50,6 +69,9 @@ export class N8NService {
     }
 
     async setConfig(agentId: string, url: string, apiKey?: string): Promise<void> {
+        // C-3: fail fast on write — invalid URLs never enter memory.
+        const check = validateIntegrationUrl(url);
+        if (!check.ok) throw new Error(`Invalid N8N URL: ${check.reason}`);
         const { getDexieDb } = await import('./database-service');
         await getDexieDb().agentMemory.add({
             agentId,

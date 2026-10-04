@@ -55,3 +55,53 @@ export function isValidWebhookUrl(url: string): boolean {
         return false;
     }
 }
+
+/**
+ * C-3: validator for self-hosted integration URLs (n8n and alike) that are
+ * stored in agentMemory and later fetched with credentials attached.
+ *
+ * Unlike isValidWebhookUrl (HTTPS-only, no private IPs), this allows HTTP
+ * and RFC1918 LAN hosts: self-hosted n8n overwhelmingly lives on the LAN
+ * (http://192.168.x:5678), and a browser fetch cannot reach cloud metadata
+ * or cause server-side SSRF. What IS blocked: non-http(s) schemes,
+ * credentials embedded in the URL, loopback, link-local/metadata
+ * (169.254/16 incl. the AWS endpoint), and obfuscated forms of those
+ * (decimal/octal/hex, ::ffff: mapped) via normalizeIp.
+ *
+ * Returns { ok: true } or { ok: false, reason } — never throws.
+ */
+export function validateIntegrationUrl(url: string): { ok: true } | { ok: false; reason: string } {
+    let parsed: URL;
+    try {
+        parsed = new URL(url);
+    } catch {
+        return { ok: false, reason: 'not a valid URL' };
+    }
+    if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
+        return { ok: false, reason: `scheme ${parsed.protocol} not allowed` };
+    }
+    if (parsed.username || parsed.password) {
+        return { ok: false, reason: 'credentials embedded in URL' };
+    }
+    const rawHost = parsed.hostname.replace(/^\[|\]$/g, '').toLowerCase();
+    if (!rawHost) return { ok: false, reason: 'empty hostname' };
+    if (/[\s<>\\^`]/.test(rawHost)) return { ok: false, reason: 'invalid hostname' };
+    const h = normalizeIp(rawHost);
+    if (
+        h === 'localhost' ||
+        h === '::1' ||
+        h === '::' ||
+        h === '0.0.0.0' ||
+        h === '169.254.169.254' ||
+        h.startsWith('169.254.') ||
+        h.startsWith('127.') ||
+        h.startsWith('::ffff:127.') ||
+        h.startsWith('fe80:')
+    ) {
+        return { ok: false, reason: 'loopback/link-local/metadata host' };
+    }
+    if (h.endsWith('.localhost')) {
+        return { ok: false, reason: 'localhost subdomain' };
+    }
+    return { ok: true };
+}
