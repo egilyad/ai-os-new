@@ -129,8 +129,12 @@ describe('ConnectorsPanel', () => {
 
     it('has role="alert" on error message', async () => {
         render(<ConnectorsPanel />);
-        // render normally — no error by default
-        // the component only shows error from state
+        // Trigger the name-required validation: open the register form and
+        // submit with an empty name.
+        fireEvent.click(await screen.findByText('Register Custom Service'));
+        fireEvent.click(await screen.findByText('Deploy Connector'));
+        const alert = await screen.findByRole('alert');
+        expect(alert).toHaveTextContent('Name is required');
     });
 
     it('renders Connect buttons for disconnected connectors', async () => {

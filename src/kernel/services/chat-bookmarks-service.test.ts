@@ -165,6 +165,7 @@ describe('ChatBookmarksService', () => {
 
         it('should not throw when removing non-existent', async () => {
             await expect(svc.removeBookmark('nonexistent')).resolves.not.toThrow();
+            expect(svc.count()).toBe(0);
         });
     });
 

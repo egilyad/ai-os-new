@@ -184,26 +184,37 @@ describe('DebateOrchestrator', () => {
     it('abort and clearAbort work correctly', () => {
         const topologyService = new DebateTopologyService();
         const orch = new DebateOrchestrator(topologyService);
+        const aborted = (orch as unknown as { aborted: Set<string> }).aborted;
         orch.abort('session-1');
+        expect(aborted.has('session-1')).toBe(true);
         orch.clearAbort('session-1');
-        // Should not throw — allows restarting a session
+        // Allows restarting a session: the flag is gone, re-abort works.
+        expect(aborted.has('session-1')).toBe(false);
+        orch.abort('session-1');
+        expect(aborted.has('session-1')).toBe(true);
     });
 
     it('destroy clears state for specific session', () => {
         const topologyService = new DebateTopologyService();
         const orch = new DebateOrchestrator(topologyService);
+        const aborted = (orch as unknown as { aborted: Set<string> }).aborted;
         orch.abort('session-1');
         orch.destroy('session-1');
+        expect(aborted.has('session-1')).toBe(false);
         // Session should be removed from aborted set
         orch.abort('session-1'); // re-abort should work after clear
+        expect(aborted.has('session-1')).toBe(true);
     });
 
     it('destroy without sessionId clears all state', () => {
         const topologyService = new DebateTopologyService();
         const orch = new DebateOrchestrator(topologyService);
+        const aborted = (orch as unknown as { aborted: Set<string> }).aborted;
         orch.abort('session-1');
         orch.abort('session-2');
+        expect(aborted.size).toBe(2);
         orch.destroy();
+        expect(aborted.size).toBe(0);
     });
 
     it('yields agent:error when no executor is set', async () => {

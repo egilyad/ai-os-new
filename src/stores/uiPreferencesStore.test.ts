@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { useUiPreferences, type LayoutMode } from './uiPreferencesStore';
 
 const STORAGE_KEY = 'super-agents-ui-prefs';
@@ -139,6 +139,11 @@ describe('useUiPreferences', () => {
 });
 
 describe('useUiPreferences migration', () => {
+    // T-L-2: clear seeded storage even if an assertion above throws, so a
+    // mid-test failure cannot leak into the next test file.
+    afterEach(() => {
+        localStorage.clear();
+    });
     it('migrates version 0 persisted state', async () => {
         localStorage.setItem(
             STORAGE_KEY,

@@ -14,6 +14,7 @@ describe('AdversarialSourceService', () => {
     });
     it('does not throw on empty', async () => {
         const svc = new AdversarialSourceService();
-        await expect(svc.verifyClaims('', new AbortController().signal)).resolves.toBeDefined();
+        const res = await svc.verifyClaims('', new AbortController().signal);
+        expect(Array.isArray(res)).toBe(true);
     });
 });

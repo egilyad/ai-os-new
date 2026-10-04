@@ -67,8 +67,8 @@ jobs:
         timeout-minutes: 15
         needs: quality
         permissions:
+            # CI-M-3: least privilege — build uses no actions API.
             contents: read
-            actions: read
         steps:
             - uses: actions/checkout@v4
               with:
@@ -113,7 +113,8 @@ jobs:
               with:
                   name: dist
                   path: dist/
-                  retention-days: 7
+                  # CI-L-2: keep the exact shipped bundle for post-prod forensics.
+                  retention-days: 30
 
     test:
         name: Unit Tests
@@ -164,7 +165,7 @@ jobs:
             - name: Publish test tail on failure
               # Annotations are visible without login, unlike full logs.
               if: failure()
-              run: node -e "const fs=require('fs');let t='';try{t=fs.readFileSync('test-output.log','utf8')}catch(e){console.log('no test-output log');process.exit(0)};const tail=t.split('\n').slice(-40).join('\n').slice(-6000).replace(/%/g,'%25').replace(/\r/g,'%0D').replace(/\n/g,'%0A');console.log('::notice title=test-tail::'+tail)"
+              run: node -e "const fs=require('fs');let t='';try{t=fs.readFileSync('test-output.log','utf8')}catch(e){console.log('no test-output log');process.exit(0)};const tail=t.split('\n').slice(-40).join('\n').slice(-4000).replace(/%/g,'%25').replace(/\r/g,'%0D').replace(/\n/g,'%0A');console.log('::notice title=test-tail::'+tail)"
 
     coverage:
         name: Test Coverage
@@ -214,7 +215,7 @@ jobs:
             - name: Publish coverage tail on failure
               # Annotations are visible without login, unlike full logs.
               if: failure()
-              run: node -e "const fs=require('fs');let t='';try{t=fs.readFileSync('coverage-output.log','utf8')}catch(e){console.log('no coverage-output log');process.exit(0)};const tail=t.split('\n').slice(-40).join('\n').slice(-6000).replace(/%/g,'%25').replace(/\r/g,'%0D').replace(/\n/g,'%0A');console.log('::notice title=coverage-tail::'+tail)"
+              run: node -e "const fs=require('fs');let t='';try{t=fs.readFileSync('coverage-output.log','utf8')}catch(e){console.log('no coverage-output log');process.exit(0)};const tail=t.split('\n').slice(-40).join('\n').slice(-4000).replace(/%/g,'%25').replace(/\r/g,'%0D').replace(/\n/g,'%0A');console.log('::notice title=coverage-tail::'+tail)"
 
     security-audit:
         name: Security Audit
@@ -248,6 +249,11 @@ jobs:
               # offered fix is a breaking downgrade to 7.11.0. Re-enable --audit-level=high
               # once react-router ships a patched 7.x.
               run: npm audit --audit-level=critical
+            - name: Advisory dev-dependency audit (non-blocking)
+              # CI-L-1: dev CVEs execute on CI runners holding secrets, so
+              # track them as advisory noise without blocking ship velocity.
+              continue-on-error: true
+              run: npm audit --audit-level=high
 
     circular-check:
         name: Circular Dependency Check
@@ -339,8 +345,8 @@ jobs:
                     - name: health-chat-keys
                       spec: 'e2e/data-health.spec.ts e2e/data-chat.spec.ts e2e/data-keys.spec.ts'
         permissions:
+            # CI-M-3: download-artifact within the same run needs no actions scope.
             contents: read
-            actions: read
         steps:
             - uses: actions/checkout@v4
               with:
@@ -372,7 +378,9 @@ jobs:
                   key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
 
             - name: Install Playwright browsers
-              if: steps.playwright-cache.outputs.cache-hit != 'true'
+              # CI-M-2: always reinstall (idempotent, ~10s on cache hit) —
+              # a cache HIT used to skip OS-package install, so a runner-image
+              # bump dropping a system lib surfaced as a test failure.
               run: npx playwright install --with-deps chromium
 
             - name: Download build artifact
@@ -392,7 +400,8 @@ jobs:
               with:
                   name: playwright-report-${{ matrix.name }}
                   path: test-results/
-                  retention-days: 7
+                  # CI-L-2: keep failure diagnostics past the weekly flake window.
+                  retention-days: 14
 
             - name: Publish browser console to annotations on failure
               # Annotations are visible without login, unlike full logs.

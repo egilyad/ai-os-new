@@ -18,6 +18,7 @@ describe('GoTDeliberation', () => {
     });
     it('does not throw', async () => {
         const svc = new GoTDeliberation();
-        await expect(svc.deliberate('', '', [])).resolves.toBeDefined();
+        const res = await svc.deliberate('', '', []);
+        expect(res === null || typeof res === 'object').toBe(true);
     });
 });

@@ -123,8 +123,8 @@ vi.mock('../../kernel/instances/services-extras', () => ({
 describe('P2.17 Smoke — BudgetPanel', () => {
     it('renders without crashing', async () => {
         const { default: Panel } = await import('./BudgetPanel');
-        const { unmount } = render(<Panel />);
-        expect(document.body).toBeTruthy();
+        const { container, unmount } = render(<Panel />);
+        expect(container.firstChild).not.toBeNull();
         unmount();
     });
 });
@@ -132,8 +132,8 @@ describe('P2.17 Smoke — BudgetPanel', () => {
 describe('P2.17 Smoke — CostOptimizationPanel', () => {
     it('renders without crashing', async () => {
         const { default: Panel } = await import('./CostOptimizationPanel');
-        const { unmount } = render(<Panel />);
-        expect(document.body).toBeTruthy();
+        const { container, unmount } = render(<Panel />);
+        expect(container.firstChild).not.toBeNull();
         unmount();
     });
 });
@@ -141,8 +141,8 @@ describe('P2.17 Smoke — CostOptimizationPanel', () => {
 describe('P2.17 Smoke — DebateAnalysisPanel', () => {
     it('renders without crashing', async () => {
         const { default: Panel } = await import('./DebateAnalysisPanel');
-        const { unmount } = render(<Panel />);
-        expect(document.body).toBeTruthy();
+        const { container, unmount } = render(<Panel />);
+        expect(container.firstChild).not.toBeNull();
         unmount();
     });
 });
@@ -150,8 +150,8 @@ describe('P2.17 Smoke — DebateAnalysisPanel', () => {
 describe('P2.17 Smoke — RotationsPanel', () => {
     it('renders without crashing', async () => {
         const { default: Panel } = await import('./RotationsPanel');
-        const { unmount } = render(<Panel />);
-        expect(document.body).toBeTruthy();
+        const { container, unmount } = render(<Panel />);
+        expect(container.firstChild).not.toBeNull();
         unmount();
     });
 });
@@ -159,8 +159,8 @@ describe('P2.17 Smoke — RotationsPanel', () => {
 describe('P2.17 Smoke — WebhooksPanel', () => {
     it('renders without crashing', async () => {
         const { default: Panel } = await import('./WebhooksPanel');
-        const { unmount } = render(<Panel />);
-        expect(document.body).toBeTruthy();
+        const { container, unmount } = render(<Panel />);
+        expect(container.firstChild).not.toBeNull();
         unmount();
     });
 });
@@ -168,8 +168,8 @@ describe('P2.17 Smoke — WebhooksPanel', () => {
 describe('P2.17 Smoke — DecisionLogPanel', () => {
     it('renders without crashing', async () => {
         const { default: Panel } = await import('./DecisionLogPanel');
-        const { unmount } = render(<Panel />);
-        expect(document.body).toBeTruthy();
+        const { container, unmount } = render(<Panel />);
+        expect(container.firstChild).not.toBeNull();
         unmount();
     });
 });
