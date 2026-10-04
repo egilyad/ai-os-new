@@ -41,7 +41,18 @@ function writeJsonAtomic(file, data) {
     ensureDataDir();
     const tmp = `${file}.tmp.${Date.now()}.${crypto.randomBytes(4).toString('hex')}`;
     fs.writeFileSync(tmp, JSON.stringify(data, null, 2));
-    fs.renameSync(tmp, file);
+    // P-MED-5: clean the tmp file when rename fails (EXDEV/EPERM), or
+    // data/*.tmp.* orphans accumulate and get swept into db backups.
+    try {
+        fs.renameSync(tmp, file);
+    } catch (e) {
+        try {
+            fs.unlinkSync(tmp);
+        } catch {
+            /* best-effort */
+        }
+        throw e;
+    }
 }
 
 function genId(prefix) {
@@ -208,7 +219,13 @@ export function enqueueWakeup({ companyId, agentId, trigger, ref }) {
     };
     const all = listWakeups(false);
     all.push(item);
-    if (all.length > 5000) all.splice(0, all.length - 5000);
+    // P-MED-4: never evict unacked work. When over cap, drop the oldest
+    // ACKED (done/error) entries first; only if the queue is all-pending
+    // (true overload) fall back to dropping oldest overall.
+    while (all.length > 5000) {
+        const ackedIdx = all.findIndex((w) => w.status !== 'pending');
+        all.splice(ackedIdx >= 0 ? ackedIdx : 0, 1);
+    }
     saveWakeups(all);
     return item;
 }
@@ -331,7 +348,10 @@ export function isOverBudget(companyId, agentId = null) {
 // ── M4.1: issues как единица работы (иерархия + atomic checkout) ──
 const ISSUE_STATUS = ['backlog', 'todo', 'in_progress', 'in_review', 'done', 'blocked', 'cancelled'];
 const ISSUE_TRANSITIONS = {
-    backlog: ['todo', 'cancelled'],
+    // P-MED-3: backlog includes in_progress — checkoutIssue (claim + start
+    // work in one step) performs exactly this transition, and the matrix
+    // must describe reality rather than flag it as a violation.
+    backlog: ['todo', 'in_progress', 'cancelled'],
     todo: ['in_progress', 'blocked', 'cancelled'],
     in_progress: ['in_review', 'blocked', 'cancelled'],
     in_review: ['done', 'in_progress', 'blocked'],

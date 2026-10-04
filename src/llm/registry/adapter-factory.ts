@@ -331,10 +331,17 @@ export class AdapterFactory {
 
     invalidateCache(provider?: string): void {
         if (provider) {
-            const key = provider.toLowerCase();
-            // Keyed fallback composites (C-2) live under `${pair}#keyed` —
-            // invalidate both variants.
-            for (const k of [key, `${key}#keyed`]) {
+            const n = provider.toLowerCase();
+            // Keyed fallback composites (C-2) live under `${pair}#keyed`;
+            // pair composites involve the provider on either side.
+            // Invalidate the exact entry plus any pair containing it.
+            const targets = [...this.adapters.keys()].filter((k) => {
+                const base = k.replace(/#keyed$/, '');
+                if (base.toLowerCase() === n) return true;
+                const [p, f] = base.split('+');
+                return p?.toLowerCase() === n || f?.toLowerCase() === n;
+            });
+            for (const k of targets.length > 0 ? targets : [n, `${n}#keyed`]) {
                 const adapter = this.adapters.get(k);
                 if (
                     adapter &&
@@ -344,8 +351,8 @@ export class AdapterFactory {
                 }
                 this.adapters.delete(k);
             }
-            this.#rateLimiters.delete(key);
-            this.#circuitBreakers.delete(key);
+            this.#rateLimiters.delete(n);
+            this.#circuitBreakers.delete(n);
         } else {
             for (const adapter of this.adapters.values()) {
                 if (typeof (adapter as { destroy?: () => void }).destroy === 'function') {

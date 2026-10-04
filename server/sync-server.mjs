@@ -292,12 +292,9 @@ const server = http.createServer(async (req, res) => {
                         const tmpFile = DB_FILE + '.tmp.' + Date.now();
                         fs.writeFileSync(tmpFile, Buffer.concat(chunks));
                         fs.renameSync(tmpFile, DB_FILE);
-                        const msg = JSON.stringify({ type: 'db_changed', timestamp: Date.now() });
-                        for (const client of wss.clients) {
-                            if (client.readyState === 1) {
-                                client.send(msg);
-                            }
-                        }
+                        // P-MED-1: broadcastLive reaches WS *and* SSE clients;
+                        // the old raw wss loop left SSE tabs diverged.
+                        broadcastLive('db_changed', {});
                         writeJson(res, 200, { status: 'ok' });
                     } catch (err) {
                         // C-8: Never expose raw Error objects to client
@@ -873,6 +870,12 @@ const server = http.createServer(async (req, res) => {
                     writeJson(res, 404, { error: 'Approval not found' });
                     return;
                 }
+                // P-MED-2: every other mutating approval route broadcasts —
+                // comments must reach live dashboards too.
+                broadcastLive('approval_commented', {
+                    approvalId: approval.id,
+                    companyId: approval.companyId,
+                });
                 writeJson(res, 201, { approval });
             } catch (e) {
                 writeJson(res, 400, { error: e instanceof Error ? e.message : 'Bad request' });
@@ -1210,12 +1213,26 @@ server.listen(PORT, SYNC_HOST, () => {
     }
     // M1.2: heartbeat-loop — обрабатывает pending wakeups в heartbeat'ы.
     // Отключается через HEARTBEAT_LOOP=0. Без pending-очереди — no-op.
+    // P-MED-6: keep the stop handle — SIGINT/SIGTERM stops the loop before
+    // closing the server so a tick is never cut mid-write.
+    let stopHeartbeat = null;
     if (process.env.HEARTBEAT_LOOP !== '0') {
-        startHeartbeatLoop({
+        const loop = startHeartbeatLoop({
             onEvent: (e) => broadcastLive(e.type, e),
         });
+        stopHeartbeat = () => loop.stop();
         console.log('[SyncServer] heartbeat-loop enabled');
     } else {
         console.log('[SyncServer] heartbeat-loop disabled (HEARTBEAT_LOOP=0)');
     }
+    const shutdown = () => {
+        try {
+            if (stopHeartbeat) stopHeartbeat();
+        } catch {
+            /* ignore */
+        }
+        server.close();
+    };
+    process.on('SIGTERM', shutdown);
+    process.on('SIGINT', shutdown);
 });

@@ -103,6 +103,8 @@ export interface IAdapterRegistry {
     resetCircuitBreaker(provider: string): void;
     syncCircuitBreakerState(provider: string, status: string): void;
     syncRateLimitState(provider: string, remaining: number): void;
+    /** Drop cached adapter (and its circuit/rate-limit state) for a provider */
+    invalidateCache(provider?: string): void;
     /** Walk the decorator chain of all adapters and clear CacheDecorator caches */
     clearAllCaches(): void;
 }

@@ -123,6 +123,29 @@ export class ProviderAdapterRegistry implements IAdapterRegistry {
         this.factory.syncRateLimitState(provider, remaining);
     }
 
+    invalidateCache(provider?: string): void {
+        this.factory.invalidateCache(provider);
+        // Drop this registry's own references (instances are owned and
+        // destroyed by the factory; never destroy here — pair composites
+        // share inner singleton adapters). Match pairs on either side.
+        if (provider) {
+            const n = provider.toLowerCase();
+            for (const k of [...this.adapters.keys()]) {
+                const base = k.replace(/#keyed$/, '');
+                const [p, f] = base.split('+');
+                if (
+                    k.toLowerCase() === n ||
+                    p?.toLowerCase() === n ||
+                    f?.toLowerCase() === n
+                ) {
+                    this.adapters.delete(k);
+                }
+            }
+        } else {
+            this.adapters.clear();
+        }
+    }
+
     clearAllCaches(): void {
         for (const [, adapter] of this.adapters) {
             let current: unknown = adapter;

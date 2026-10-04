@@ -535,6 +535,11 @@ export class KeyService implements IKeyRotationManager {
     }
 
     async removeKey(id: string) {
+        // P-MED-7: capture provider first — after removal we drop cached
+        // adapter/circuit state only when no keys remain for it, so deleted
+        // keys stop accumulating stale circuit-breaker entries while live
+        // providers keep theirs.
+        const provider = this.registry.getKey(id)?.provider;
         try {
             await this.registry.removeKey(id);
         } finally {
@@ -547,6 +552,16 @@ export class KeyService implements IKeyRotationManager {
             }
             try {
                 this.lifecycle.cleanupKey(id);
+            } catch {
+                /* best-effort */
+            }
+            try {
+                if (
+                    provider &&
+                    !this.registry.getKeys().some((k) => k.provider === provider)
+                ) {
+                    this.deps.providerAdapterRegistry?.invalidateCache(provider);
+                }
             } catch {
                 /* best-effort */
             }

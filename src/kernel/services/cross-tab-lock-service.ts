@@ -59,9 +59,53 @@ export class DistributedLockService implements IDistributedLock {
     // 4.6: track TTL per held lock so the auto-heartbeat below can refresh.
     private _heldLocks = new Map<string, { resourceId: LockResource; ttl: number }>();
     private _heartbeatTimer: ReturnType<typeof setInterval> | null = null;
+    private _unloadHandler: (() => void) | null = null;
 
     constructor(ownerId?: string) {
         this._ownerId = ownerId ?? `tab-${crypto.randomUUID().slice(0, 8)}`;
+        this._ensureUnloadRelease();
+    }
+
+    /**
+     * P-MED-8: release held locks on tab close. Best-effort — an unload
+     * handler cannot await IndexedDB, so the 30s TTL expiry remains the
+     * backstop; this just frees peer tabs immediately in the common case
+     * instead of leaving "Failed to acquire chat lock" for up to 30s.
+     * Guarded for SSR/test environments without window.
+     */
+    private _ensureUnloadRelease(): void {
+        if (
+            this._unloadHandler ||
+            typeof window === 'undefined' ||
+            typeof window.addEventListener !== 'function'
+        ) {
+            return;
+        }
+        this._unloadHandler = () => {
+            void this._releaseAllOwned().catch(() => {});
+        };
+        window.addEventListener('beforeunload', this._unloadHandler);
+    }
+
+    private async _releaseAllOwned(): Promise<void> {
+        const db = getDexieDb();
+        for (const [key, info] of [...this._heldLocks]) {
+            try {
+                const raw = await db.keyValue.get(key);
+                const existing = parseLockRecord(raw?.value);
+                if (existing && existing.ownerId === this._ownerId) {
+                    await db.keyValue.delete(key);
+                }
+            } catch {
+                /* best-effort on unload */
+            }
+            this._heldLocks.delete(key);
+            this._notify({
+                resourceId: info.resourceId,
+                ownerId: this._ownerId,
+                action: 'released',
+            });
+        }
     }
 
     private _notify(event: ILockEvent): void {
@@ -288,6 +332,10 @@ export class DistributedLockService implements IDistributedLock {
         if (this._heartbeatTimer) {
             clearInterval(this._heartbeatTimer);
             this._heartbeatTimer = null;
+        }
+        if (this._unloadHandler && typeof window !== 'undefined') {
+            window.removeEventListener('beforeunload', this._unloadHandler);
+            this._unloadHandler = null;
         }
         // Release all held locks
         for (const key of this._heldLocks.keys()) {
