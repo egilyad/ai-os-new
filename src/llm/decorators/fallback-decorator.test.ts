@@ -147,3 +147,114 @@ describe('FallbackDecorator', () => {
         expect(res.status).toBe('active');
     });
 });
+
+describe('FallbackDecorator key routing (C-2)', () => {
+    const resolver = (keys: Record<string, string>) =>
+        vi.fn((providerId: string) => keys[providerId.toLowerCase()]);
+
+    it('sendMessage passes the fallback provider its own key', async () => {
+        const primary = makeAdapter('openai', {
+            sendMessage: async () => {
+                throw new Error('boom');
+            },
+        });
+        const fallback = makeAdapter('anthropic');
+        const resolve = resolver({ anthropic: 'sk-fallback' });
+        const fb = new FallbackDecorator(primary.adapter, fallback.adapter, resolve);
+        const res = await fb.sendMessage(MESSAGES, 'm', 'sk-primary');
+        expect(res.content).toBe('from-anthropic');
+        expect(fallback.sendMessage).toHaveBeenCalledTimes(1);
+        expect(fallback.sendMessage.mock.calls[0]?.[2]).toBe('sk-fallback');
+        expect(resolve).toHaveBeenCalledWith('anthropic');
+    });
+
+    it('streamMessage passes the fallback provider its own key', async () => {
+        const primary = makeAdapter('openai', {
+            streamMessage: async () => {
+                throw new Error('boom');
+            },
+        });
+        const fallback = makeAdapter('anthropic');
+        const fb = new FallbackDecorator(
+            primary.adapter,
+            fallback.adapter,
+            resolver({ anthropic: 'sk-fallback' }),
+        );
+        const chunks: string[] = [];
+        await fb.streamMessage(MESSAGES, 'm', 'sk-primary', (c) => chunks.push(c));
+        expect(chunks).toEqual(['chunk-anthropic']);
+        expect(fallback.streamMessage.mock.calls[0]?.[2]).toBe('sk-fallback');
+    });
+
+    it('checkHealth and getAvailableModels use the fallback key', async () => {
+        const dead = makeAdapter('openai', {});
+        dead.adapter.checkHealth = vi.fn(async () => ({
+            status: 'error' as const,
+            latency: 0,
+            models: [] as string[],
+        }));
+        dead.adapter.getAvailableModels = vi.fn(async () => []);
+        const fallback = makeAdapter('anthropic');
+        const fb = new FallbackDecorator(
+            dead.adapter,
+            fallback.adapter,
+            resolver({ anthropic: 'sk-fallback' }),
+        );
+        await fb.checkHealth('sk-primary');
+        expect(
+            (fallback.adapter.checkHealth as ReturnType<typeof vi.fn>).mock.calls[0]?.[0],
+        ).toBe('sk-fallback');
+        await fb.getAvailableModels('sk-primary');
+        expect(
+            (fallback.adapter.getAvailableModels as ReturnType<typeof vi.fn>).mock
+                .calls[0]?.[0],
+        ).toBe('sk-fallback');
+    });
+
+    it('fails closed when the fallback key cannot be resolved', async () => {
+        const primary = makeAdapter('openai', {
+            sendMessage: async () => {
+                throw new Error('boom');
+            },
+        });
+        const fallback = makeAdapter('anthropic');
+        const fb = new FallbackDecorator(
+            primary.adapter,
+            fallback.adapter,
+            resolver({}),
+        );
+        await expect(fb.sendMessage(MESSAGES, 'm', 'sk-primary')).rejects.toThrow(
+            /no api key configured for fallback/i,
+        );
+        expect(fallback.sendMessage).not.toHaveBeenCalled();
+    });
+
+    it('without a resolver keeps legacy pass-through (explicit)', async () => {
+        const primary = makeAdapter('openai', {
+            sendMessage: async () => {
+                throw new Error('boom');
+            },
+        });
+        const fallback = makeAdapter('anthropic');
+        const fb = new FallbackDecorator(primary.adapter, fallback.adapter);
+        await fb.sendMessage(MESSAGES, 'm', 'sk-primary');
+        expect(fallback.sendMessage.mock.calls[0]?.[2]).toBe('sk-primary');
+    });
+
+    it('same provider reuses the primary key without consulting the resolver', async () => {
+        const primary = makeAdapter('groq', {
+            streamMessage: async () => {
+                throw new Error('boom');
+            },
+        });
+        // Same-provider short-circuit throws before any fallback attempt.
+        const fallback = makeAdapter('groq-backup');
+        const resolve = resolver({ groq: 'sk-other' });
+        const fb = new FallbackDecorator(primary.adapter, fallback.adapter, resolve);
+        await expect(
+            fb.streamMessage(MESSAGES, 'm', 'sk-primary', () => {}),
+        ).rejects.toThrow('boom');
+        expect(fallback.streamMessage).not.toHaveBeenCalled();
+        expect(resolve).not.toHaveBeenCalled();
+    });
+});

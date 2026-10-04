@@ -293,11 +293,22 @@ export class AdapterFactory {
         return adapter;
     }
 
-    createWithFallback(primary: string, fallback: string): LLMProviderAdapter {
-        const key = `${primary}+${fallback}`;
+    createWithFallback(
+        primary: string,
+        fallback: string,
+        keyResolver?: (providerId: string) => string | undefined,
+    ): LLMProviderAdapter {
+        // Keyed adapters are memoized separately: a resolver changes which
+        // key reaches the fallback provider (C-2), so it must not share
+        // the cache entry with the legacy pass-through instance.
+        const key = keyResolver ? `${primary}+${fallback}#keyed` : `${primary}+${fallback}`;
         if (this.adapters.has(key)) return this.adapters.get(key)!;
 
-        const adapter = new FallbackDecorator(this.create(primary), this.create(fallback));
+        const adapter = new FallbackDecorator(
+            this.create(primary),
+            this.create(fallback),
+            keyResolver,
+        );
         this.adapters.set(key, adapter);
         return adapter;
     }

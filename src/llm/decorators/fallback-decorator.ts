@@ -14,11 +14,17 @@ const LOGGER = FALLBACK_LOGGER.child('FallbackDecorator');
 export class FallbackDecorator extends BaseDecorator {
     readonly #primary: LLMProviderAdapter;
     readonly #fallback: LLMProviderAdapter;
+    readonly #keyResolver?: (providerId: string) => string | undefined;
 
-    constructor(primary: LLMProviderAdapter, fallback: LLMProviderAdapter) {
+    constructor(
+        primary: LLMProviderAdapter,
+        fallback: LLMProviderAdapter,
+        keyResolver?: (providerId: string) => string | undefined,
+    ) {
         super(primary);
         this.#primary = primary;
         this.#fallback = fallback;
+        this.#keyResolver = keyResolver;
     }
 
     private extractProviderName(id: string): string {
@@ -47,6 +53,30 @@ export class FallbackDecorator extends BaseDecorator {
         return false;
     }
 
+    /**
+     * C-2: never send the primary provider's key to a different provider.
+     * When a keyResolver is wired, the fallback call uses the fallback
+     * provider's own key; when it cannot be resolved we fail closed instead
+     * of leaking the primary key cross-provider. Without a resolver the
+     * legacy pass-through applies (callers own key routing).
+     */
+    private keyForFallback(primaryKey: string): string {
+        if (this.isSameProvider() || !this.#keyResolver) return primaryKey;
+        const fallbackProvider = this.extractProviderName(this.#fallback.id);
+        const resolved = this.#keyResolver(fallbackProvider);
+        if (!resolved) {
+            LOGGER.warn('FallbackDecorator', 'No key for fallback provider, failing closed', {
+                primary: this.#primary.id,
+                fallback: this.#fallback.id,
+            });
+            throw new AuthError(
+                `No API key configured for fallback provider "${fallbackProvider}" — refusing to reuse the primary key`,
+                fallbackProvider,
+            );
+        }
+        return resolved;
+    }
+
     async sendMessage(
         messages: ChatMessage[],
         model: string,
@@ -67,7 +97,13 @@ export class FallbackDecorator extends BaseDecorator {
                 fallback: this.#fallback.id,
                 error: (e as Error).message,
             });
-            return this.#fallback.sendMessage(messages, model, apiKey, signal, options);
+            return this.#fallback.sendMessage(
+                messages,
+                model,
+                this.keyForFallback(apiKey),
+                signal,
+                options,
+            );
         }
     }
 
@@ -114,20 +150,27 @@ export class FallbackDecorator extends BaseDecorator {
                 fallback: this.#fallback.id,
                 error: (e as Error).message,
             });
-            await this.#fallback.streamMessage(messages, model, apiKey, onChunk, signal, options);
+            await this.#fallback.streamMessage(
+                messages,
+                model,
+                this.keyForFallback(apiKey),
+                onChunk,
+                signal,
+                options,
+            );
         }
     }
 
     async checkHealth(apiKey: string): Promise<HealthCheckResult> {
         const primary = await this.#primary.checkHealth(apiKey);
         if (primary.status === 'active') return primary;
-        return this.#fallback.checkHealth(apiKey);
+        return this.#fallback.checkHealth(this.keyForFallback(apiKey));
     }
 
     async getAvailableModels(apiKey: string, signal?: AbortSignal): Promise<string[]> {
         const primary = await this.#primary.getAvailableModels(apiKey, signal);
         if (primary.length > 0) return primary;
-        return this.#fallback.getAvailableModels(apiKey, signal);
+        return this.#fallback.getAvailableModels(this.keyForFallback(apiKey), signal);
     }
 
     destroy(): void {

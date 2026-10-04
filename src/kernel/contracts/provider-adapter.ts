@@ -92,7 +92,11 @@ export interface ProviderRuntimeStatus {
 export interface IAdapterRegistry {
     getAdapter(provider: string): IProviderAdapter | undefined;
     hasAdapter(provider: string): boolean;
-    getOrCreateWithFallback(primary: string, fallback: string): IProviderAdapter;
+    getOrCreateWithFallback(
+        primary: string,
+        fallback: string,
+        keyResolver?: (providerId: string) => string | undefined,
+    ): IProviderAdapter;
     getAllProviders(): string[];
     getProviderRuntimeStatus(provider: string): ProviderRuntimeStatus;
     getCircuitBreakerState(provider: string): 'closed' | 'open' | 'half-open';

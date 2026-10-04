@@ -70,10 +70,14 @@ export class ProviderAdapterRegistry implements IAdapterRegistry {
         return this.factory.isSupported(normalized);
     }
 
-    getOrCreateWithFallback(primary: string, fallback: string): IProviderAdapter {
-        const key = `${primary}+${fallback}`;
+    getOrCreateWithFallback(
+        primary: string,
+        fallback: string,
+        keyResolver?: (providerId: string) => string | undefined,
+    ): IProviderAdapter {
+        const key = keyResolver ? `${primary}+${fallback}#keyed` : `${primary}+${fallback}`;
         if (this.adapters.has(key)) return this.adapters.get(key)!;
-        const adapter = this.factory.createWithFallback(primary, fallback);
+        const adapter = this.factory.createWithFallback(primary, fallback, keyResolver);
         this.adapters.set(key, adapter);
         return adapter;
     }
