@@ -35,8 +35,8 @@ describe('ToolService unimplemented tools (P-CRIT-4)', () => {
         const svc = new ToolService({
             eventBus: { emit, emitOnce: vi.fn(() => true) },
             database: {
-                getKv: async <T,>(): Promise<T | null> => null,
-                setKv: async <T,>(): Promise<void> => {},
+                getKv: async (): Promise<null> => null,
+                setKv: async (): Promise<void> => {},
             },
         });
         const res = await svc.execute('t-read-file', {});
