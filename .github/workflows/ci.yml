@@ -243,16 +243,10 @@ jobs:
               if: steps.audit-npm-cache.outputs.cache-hit != 'true'
               run: npm ci --legacy-peer-deps
             - name: Run npm audit
-              # P0.3: --audit-level=high would fail on react-router 7.12-8.2
-              # (GHSA-qwww-vcr4-c8h2, RSC-mode CSRF). This is a client-only SPA
-              # (no RSC/server), the vuln is not exploitable here, and the only
-              # offered fix is a breaking downgrade to 7.11.0. Re-enable --audit-level=high
-              # once react-router ships a patched 7.x.
-              run: npm audit --audit-level=critical
-            - name: Advisory dev-dependency audit (non-blocking)
-              # CI-L-1: dev CVEs execute on CI runners holding secrets, so
-              # track them as advisory noise without blocking ship velocity.
-              continue-on-error: true
+              # H-6 CLOSED 2026-10-04: tree verified clean (0 vulns) via
+              # `npm audit fix` + OSV cross-check — including react-router
+              # 7.18.2 (GHSA-qwww-vcr4-c8h2 does not affect it) and zod 4.4.3.
+              # Gate restored to high: any new high/critical fails the build.
               run: npm audit --audit-level=high
 
     circular-check:

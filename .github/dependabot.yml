@@ -10,13 +10,12 @@ updates:
           time: '08:00'
           timezone: Etc/UTC
       open-pull-requests-limit: 10
-      # Suppress updates for major/breaking upgrades that require manual work:
-      # react-router is pinned because 7.12-8.2 has an unpatched RSC-CSRF
-      # advisory (GHSA-qwww-vcr4-c8h2) and the only fix is a breaking downgrade.
+      # Suppress updates for major/breaking upgrades that require manual work.
+      # 2026-10-04: react-router + zod ignores REMOVED — both verified clean
+      # (7.18.2 / 4.4.3, OSV + npm audit) and security patches for them must
+      # arrive as PRs. typescript stays ignored: the repo deliberately pins
+      # TS ~6.0.2 (madge@8 wants ^5.4.4, see .npmrc) — majors need manual work.
       ignore:
-          - dependency-name: react-router
-          - dependency-name: react-router-dom
-          - dependency-name: zod
           - dependency-name: typescript
       labels:
           - dependencies
