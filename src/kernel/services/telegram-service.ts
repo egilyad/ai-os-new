@@ -11,9 +11,8 @@ export interface TelegramBridge {
 }
 
 /**
- * Minimal Telegram per-agent bridge — stores botToken in Dexie agentMemory (type TELEGRAM)
- * and provides send/receive hooks via EventBus. Real polling/webhook to be added with
- * MTProto/Telethon-style sessionString (AGEMS telegramConfig).
+ * Minimal Telegram per-agent bridge — stores botToken in Dexie agentMemory
+ * and delivers via Bot API sendMessage.
  */
 
 // C-3: BotFather tokens look like `123456:ABC-DEF...` (digits, colon, 35-char
@@ -53,7 +52,22 @@ export class TelegramService {
         const bot = await this.getBot(agentId);
         if (!bot) throw new Error(`No bot for agent ${agentId}`);
         if (bot.allowedChatIds && !bot.allowedChatIds.includes(chatId)) throw new Error(`Chat ${chatId} not whitelisted`);
-        // Stub: in prod would POST to https://api.telegram.org/bot${bot.botToken}/sendMessage
+        // P-HIGH-6: real delivery (was a log-only stub). The token was
+        // shape-validated on write and re-validated on read in getBot().
+        const target = bot.channelId ?? String(chatId);
+        let res: Response;
+        try {
+            res = await fetch(`https://api.telegram.org/bot${bot.botToken}/sendMessage`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ chat_id: target, text: text.slice(0, 4096) }),
+            });
+        } catch (e) {
+            throw new Error(`Telegram send failed: ${e instanceof Error ? e.message : String(e)}`);
+        }
+        if (!res.ok) {
+            throw new Error(`Telegram send failed: HTTP ${res.status}`);
+        }
         LOGGER.info('Telegram', 'bridge send', { agentId, chatId, len: text.length });
     }
 }

@@ -245,6 +245,12 @@ export class AdapterFactory {
         let rlRef: RateLimitDecorator | undefined;
         let cbRef: CircuitBreakerDecorator | undefined;
 
+        // P-HIGH-5, documented as opt-in architecture: SemanticRouter,
+        // CanaryRouter and CompressRoute decorators are exported, tested and
+        // available for explicit composition, but NOT in this default chain —
+        // each needs product configuration (fast/powerful targets, canary
+        // policy, compression rules) that has no sane global default.
+        // Auto-wiring them would change routing for every request.
         if (this.#config.rateLimit) {
             rlRef = new RateLimitDecorator(
                 adapter,

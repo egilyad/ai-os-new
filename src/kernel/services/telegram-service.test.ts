@@ -63,3 +63,56 @@ describe('TelegramService bot storage (C-3)', () => {
         await expect(telegramService.getBot('a1')).resolves.toBeNull();
     });
 });
+
+describe('TelegramService bridgeMessage (P-HIGH-6)', () => {
+    beforeEach(() => {
+        rows.length = 0;
+        vi.unstubAllGlobals();
+    });
+
+    async function seedBot(overrides = {}) {
+        rows.push({
+            content: JSON.stringify({ kind: 'telegram', botToken: GOOD_TOKEN, ...overrides }),
+        });
+    }
+
+    it('POSTs to Bot API with the configured token', async () => {
+        await seedBot();
+        const fetchMock = vi.fn(async (_url: string, _init?: RequestInit) => ({
+            ok: true,
+            json: async () => ({ ok: true }),
+        }));
+        vi.stubGlobal('fetch', fetchMock);
+        await telegramService.bridgeMessage('a1', 'hello', 42);
+        expect(fetchMock).toHaveBeenCalledTimes(1);
+        expect(String(fetchMock.mock.calls[0]?.[0])).toBe(
+            `https://api.telegram.org/bot${GOOD_TOKEN}/sendMessage`,
+        );
+        expect(JSON.parse(String((fetchMock.mock.calls[0]?.[1] as RequestInit)?.body))).toMatchObject({
+            chat_id: '42',
+            text: 'hello',
+        });
+    });
+
+    it('throws on HTTP error and on network failure', async () => {
+        await seedBot();
+        vi.stubGlobal('fetch', vi.fn(async () => ({ ok: false, status: 401 })));
+        await expect(telegramService.bridgeMessage('a1', 'hi', 1)).rejects.toThrow(/HTTP 401/);
+        vi.stubGlobal(
+            'fetch',
+            vi.fn(async () => {
+                throw new Error('down');
+            }),
+        );
+        await expect(telegramService.bridgeMessage('a1', 'hi', 1)).rejects.toThrow(/send failed/);
+    });
+
+    it('throws without fetching when no bot or chat not whitelisted', async () => {
+        const fetchMock = vi.fn(async () => ({ ok: true, json: async () => ({}) }));
+        vi.stubGlobal('fetch', fetchMock);
+        await expect(telegramService.bridgeMessage('nobody', 'hi', 1)).rejects.toThrow(/no bot/i);
+        await seedBot({ allowedChatIds: [7] });
+        await expect(telegramService.bridgeMessage('a1', 'hi', 8)).rejects.toThrow(/whitelist/);
+        expect(fetchMock).not.toHaveBeenCalled();
+    });
+});
