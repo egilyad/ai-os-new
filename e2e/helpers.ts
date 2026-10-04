@@ -22,31 +22,29 @@ export async function boot(page: Page) {
 }
 
 /**
- * Close the onboarding wizard if open. Scoped to the wizard dialog:
- * a bare /dismiss/i selector can hit unrelated Dismiss buttons
- * (toasts, banners) while the wizard backdrop keeps covering the page.
- * The wizard can pop up AFTER hydration (post-keystore-load), so call
- * this right before any click, not just after boot.
+ * Close the onboarding wizard if open. Matched by its exact button text
+ * WITHOUT a dialog scope: the wizard backdrop has no role=dialog, so a
+ * scoped lookup never finds it while its overlay keeps covering the page
+ * (every click then dies with "intercepts pointer events"). The phrase is
+ * unique to the wizard, so an unscoped match is safe.
  */
 export async function dismissWizard(page: Page) {
     for (let i = 0; i < 3; i++) {
-        const skip = page
-            .getByRole('dialog')
-            .getByRole('button', { name: /onboarding skip/i });
+        const skip = page.getByRole('button', { name: /onboarding skip/i });
         let visible = false;
         try {
-            visible = await skip.isVisible({ timeout: 3000 });
+            visible = await skip.first().isVisible({ timeout: 3000 });
         } catch {
             return;
         }
         if (!visible) return;
         try {
-            await skip.click({ timeout: 10000 });
+            await skip.first().click({ timeout: 10000 });
         } catch {
             /* animation race — re-check below */
         }
         try {
-            await page.getByRole('dialog').waitFor({ state: 'hidden', timeout: 10000 });
+            await skip.waitFor({ state: 'hidden', timeout: 10000 });
             return;
         } catch {
             /* still open — retry */
