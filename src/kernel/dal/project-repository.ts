@@ -17,13 +17,26 @@ import type {
 } from '../types/project-types';
 import type { DatabaseService } from '../services/database-service';
 
+/**
+ * Canonical file-path form, shared with ProjectWorkspaceService: project-
+ * relative with a leading slash ('/src/index.html'). The workspace service
+ * always normalized while this repository stored paths raw, so rows written
+ * through ProjectService.writeFile were invisible to workspace reads
+ * (preview/QA scored the fallback template). New writes are normalized;
+ * reads fall back to the raw form for pre-existing rows.
+ */
+export function normalizeProjectPath(p: string): string {
+    if (!p.startsWith('/')) p = '/' + p;
+    if (p.length > 1 && p.endsWith('/')) p = p.slice(0, -1);
+    return p.replace(/\/+/g, '/');
+}
+
 export class ProjectRepository {
     private db: DatabaseService;
 
     constructor(db: DatabaseService) {
         this.db = db;
     }
-
     // ── Projects ──
 
     async put(project: Project): Promise<void> {
@@ -88,10 +101,16 @@ export class ProjectRepository {
     // ── Files ──
 
     async putFile(file: ProjectFile): Promise<void> {
-        await this.db.projectFiles.put(file);
+        await this.db.projectFiles.put({ ...file, path: normalizeProjectPath(file.path) });
     }
 
     async getFile(projectId: string, path: string): Promise<ProjectFile | undefined> {
+        const normalized = await this.db.projectFiles.get([
+            projectId,
+            normalizeProjectPath(path),
+        ]);
+        if (normalized) return normalized;
+        // Tolerance for rows written before path normalization.
         return this.db.projectFiles.get([projectId, path]);
     }
 
@@ -100,6 +119,7 @@ export class ProjectRepository {
     }
 
     async deleteFile(projectId: string, path: string): Promise<void> {
+        await this.db.projectFiles.delete([projectId, normalizeProjectPath(path)]);
         await this.db.projectFiles.delete([projectId, path]);
     }
 

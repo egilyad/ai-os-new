@@ -91,6 +91,41 @@ export async function seedProjectDemo(service: IProjectManagerService): Promise<
         scaffold.id,
     );
 
+    // A valid landing page so the QA inspector (headings, viewport, charset,
+    // title, meta description, alt texts, anchors) scores the demo 100%.
+    await service.writeFile(
+        project.id,
+        'index.html',
+        [
+            '<!DOCTYPE html>',
+            '<html lang="ru">',
+            '<head>',
+            '<meta charset="UTF-8">',
+            '<meta name="viewport" content="width=device-width, initial-scale=1.0">',
+            '<title>Бот-напоминалка — демо-проект агентов</title>',
+            '<meta name="description" content="Демо-проект трёх агентов: бот, который собирает задачи дня и вежливо напоминает о дедлайнах.">',
+            '</head>',
+            '<body>',
+            '<h1>Бот-напоминалка ☕</h1>',
+            '<p>Собирает задачи дня и напоминает о дедлайнах. Не беспокоит с 23:00 до 7:00.</p>',
+            '<h2 id="features">Возможности</h2>',
+            '<ul>',
+            '<li>Утренний дайджест задач</li>',
+            '<li>Напоминания о дедлайнах</li>',
+            '<li>Режим «не беспокоить» ночью</li>',
+            '</ul>',
+            '<h2>Команда</h2>',
+            '<p>Маркус строит, Рафаэль считает риски, Элена следит за вежливостью.</p>',
+            '<p><a href="#features">Смотреть возможности</a></p>',
+            '<button type="button" onclick="alert(\'Скоро!\')">Попробовать демо</button>',
+            '</body>',
+            '</html>',
+            '',
+        ].join('\n'),
+        'agent-architect',
+        scaffold.id,
+    );
+
     await service.updateMemory(project.id, {
         goals: ['Напоминать о задачах дня без спама'],
         decisions: ['Вето на ночные уведомления с 23:00 до 7:00'],

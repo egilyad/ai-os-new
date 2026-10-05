@@ -5,6 +5,8 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { ProjectService } from './project-service';
 import { ProjectRepository } from '../dal/project-repository';
+import { ProjectWorkspaceService } from './project-workspace-service';
+import { BrowserInspectorService } from './browser-inspector-service';
 import { SuperAgentsDB } from './dexie-schema';
 import { seedProjectDemo, DEMO_PROJECT_MARKER } from './project-demo-seed';
 
@@ -56,6 +58,14 @@ describe('seedProjectDemo', () => {
         const readme = await service.readFile(id, 'README.md');
         expect(readme?.content).toContain('Бот-напоминалка');
 
+        // Landing page keeps the QA inspector green (headings, meta, anchors).
+        const index = await service.readFile(id, 'index.html');
+        expect(index?.content).toContain('<title>Бот-напоминалка');
+        expect(index?.content).toContain('viewport');
+        expect(index?.content).toContain('charset');
+        expect(index?.content).toContain('name="description"');
+        expect(index?.content).toContain('id="features"');
+
         const memory = await service.getMemory(id);
         expect(memory.goals.length).toBeGreaterThan(0);
         expect(memory.decisions.length).toBeGreaterThan(0);
@@ -67,5 +77,15 @@ describe('seedProjectDemo', () => {
         expect(second).toBe(first);
         expect(await service.listTasks(first)).toHaveLength(3);
         expect((await service.list()).filter((p) => p.name.includes('Демо'))).toHaveLength(1);
+    });
+
+    it('seeded landing passes the QA inspector at 100', async () => {
+        const id = await seedProjectDemo(service);
+        const report = await new BrowserInspectorService(
+            new ProjectWorkspaceService(db as any),
+        ).inspect(id);
+        expect(report.issues).toEqual([]);
+        expect(report.score).toBe(100);
+        expect(report.passed).toBe(true);
     });
 });
