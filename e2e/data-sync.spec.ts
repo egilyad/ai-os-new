@@ -5,7 +5,18 @@ import { boot } from './helpers';
 // Sync data-flow (T-H-7): auth + broadcast against a live sync-server
 // (second webServer in playwright.config.ts, test-only secret).
 // Covers: bad token -> 401, valid PUT -> 200, PUT -> WS db_changed
-// broadcast (the P-MED-1 path end to end).
+// broadcast (the P-MED-1 path end to end), plus negative paths:
+// disallowed Origin -> 403, wrong content-type -> 400, >50MB -> 413.
+//
+// T-H-7 remainder (documented, not worked around): chat-driven security
+// flows are not e2e-coverable through the UI — there is no affordance to
+// force a tool call, an n8n trigger, a primary-provider failure, or an
+// SSRF URL from chat. They stay covered at unit level, all in CI gates:
+//   fallback path ......... src/llm/decorators/fallback-decorator.test.ts
+//   httpGuard/SSRF ........ src/kernel/utils/network.test.ts
+//   tool runner ........... src/kernel/services/parity/tool-runner-service.test.ts
+//   sandbox ............... sandbox-interpreter.test.ts, code-sandbox-service.test.ts
+//   n8n trigger ........... src/kernel/services/n8n-service.test.ts
 
 const SYNC_URL = 'http://localhost:3001';
 const SECRET = 'e2e-test-secret';
@@ -28,6 +39,45 @@ test.describe('AI-OS Data Sync', () => {
             data: Buffer.from('{"x":1}'),
         });
         expect(res.status()).toBe(401);
+    });
+
+    test('PUT /api/db from a disallowed Origin is rejected with 403', async ({ request }) => {
+        const res = await request.put(`${SYNC_URL}/api/db`, {
+            headers: {
+                Origin: 'http://evil.example',
+                'Content-Type': 'application/octet-stream',
+                Authorization: `Bearer ${SECRET}`,
+            },
+            data: Buffer.from('{"x":1}'),
+        });
+        expect(res.status()).toBe(403);
+    });
+
+    test('PUT /api/db with a wrong content-type is rejected with 400', async ({
+        request,
+    }) => {
+        const res = await request.put(`${SYNC_URL}/api/db`, {
+            headers: {
+                ...ORIGIN_HEADERS,
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${SECRET}`,
+            },
+            data: Buffer.from('{"x":1}'),
+        });
+        expect(res.status()).toBe(400);
+    });
+
+    test('PUT /api/db over 50MB is rejected with 413', async ({ request }) => {
+        const res = await request.put(`${SYNC_URL}/api/db`, {
+            headers: {
+                ...ORIGIN_HEADERS,
+                'Content-Type': 'application/octet-stream',
+                Authorization: `Bearer ${SECRET}`,
+            },
+            data: Buffer.alloc(51 * 1024 * 1024, 0x61),
+            timeout: 120000,
+        });
+        expect(res.status()).toBe(413);
     });
 
     test('valid PUT persists and broadcasts db_changed over WS', async ({ page, request }) => {
