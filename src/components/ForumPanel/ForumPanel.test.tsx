@@ -2,11 +2,13 @@ import { describe, it, expect, vi, beforeAll, afterEach } from 'vitest';
 import { render, screen, fireEvent, waitFor, cleanup } from '@testing-library/react';
 import type { Topic, ForumThread } from '../../kernel/types/forum-types';
 
-// ForumPanel pulls in the real kernel `instances` entrypoint (eventBus) which bootstraps the
-// Dexie/DatabaseService singleton. Opening + migrating that DB is slow under a worker shared
-// with other suites, so these tests get a generous per-test timeout. They pass in isolation
-// well within 15s; the margin only guards combined-run contention.
-const TEST_TIMEOUT = 30000;
+// ForumPanel's transitive graph (debate-session-store et al. via the real
+// kernel `instances` entrypoint) costs ~25s of Vite transform in a worker,
+// and the lazy eventBus proxy has nothing registered here — so the suite
+// stubs `eventBus`/`EVENTS` via a partial mock (importOriginal spread)
+// instead of importing the world. The timeout guards transform contention,
+// not test logic (tests run in seconds once imported).
+const TEST_TIMEOUT = 120000;
 
 beforeAll(() => {
     Object.defineProperty(window, 'matchMedia', {
@@ -48,6 +50,23 @@ const postMessage = vi.fn(async () => undefined);
 const moderatePost = vi.fn(async () => undefined);
 const votePost = vi.fn(async () => undefined);
 const pinTopic = vi.fn(async () => undefined);
+
+vi.mock('../../kernel/instances', async (importOriginal) => {
+    const actual = (await importOriginal()) as Record<string, unknown>;
+    return {
+        ...actual,
+        eventBus: {
+            on: () => () => undefined,
+            onSafe: () => () => undefined,
+            emit: () => {},
+            emitOnce: () => true,
+        },
+        EVENTS: {
+            FORUM_TOPIC_CREATED: 'forum:topic-created',
+            FORUM_POST_ADDED: 'forum:post-added',
+        },
+    };
+});
 
 vi.mock('../../kernel/instances/services-extras', () => ({
     forumService: {
@@ -112,7 +131,12 @@ describe('ForumPanel (FT-02)', () => {
             });
             fireEvent.click(screen.getByText('forum.post'));
             await waitFor(() =>
-                expect(postMessage).toHaveBeenCalledWith('t1', expect.anything(), 'hello world'),
+                expect(postMessage).toHaveBeenCalledWith(
+                    't1',
+                    expect.anything(),
+                    'hello world',
+                    undefined,
+                ),
             );
         },
         TEST_TIMEOUT,
