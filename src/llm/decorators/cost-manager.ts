@@ -1,3 +1,17 @@
+/**
+ * Client-side per-request cost calculation + debug logging. Deliberately has
+ * NO server persistence — this is not the spend ledger.
+ *
+ * P-HIGH-4 (refuted, verified in code): the audit claimed the Costs panel
+ * reads BudgetService and therefore misses non-race requests. Both premises
+ * are wrong: (1) cost-optimization-service.getSummary() aggregates
+ * ProviderTracker rankings x PricingService rates, never BudgetService;
+ * (2) per-key cost attribution DOES run on every path via
+ * keyService.recordUsage -> key-analytics (pricingService.calculateCost into
+ * ext.estimatedCost/today/monthly) — chat-executor non-race (:490) and race
+ * (:760), probes, debate callers. Server run-budget (company-store gate,
+ * P-HIGH-1) is a separate contour by design, not a missing wire.
+ */
 import type { ChatMessage, ProviderResponse, SendMessageOptions, StreamMeta } from '../core/types';
 import { BaseDecorator } from '../core/base-decorator';
 import { LLMError } from '../core/errors';
