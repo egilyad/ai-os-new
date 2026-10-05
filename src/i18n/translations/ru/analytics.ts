@@ -570,6 +570,7 @@ const analytics: Record<string, string> = {
     'fleet.refresh': 'Обновить',
     'fleet.run': 'Запустить',
     'fleet.create': 'Создать',
+    'fleet.seed_demo': 'Загрузить демо',
     'fleet.advance': 'Дальше',
     'fleet.conclude': 'Завершить',
     'fleet.approve': 'Одобрить',

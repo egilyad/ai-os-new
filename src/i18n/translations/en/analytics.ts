@@ -571,6 +571,7 @@ const analytics: Record<string, string> = {
     'fleet.refresh': 'Refresh',
     'fleet.run': 'Run',
     'fleet.create': 'Create',
+    'fleet.seed_demo': 'Load demo',
     'fleet.advance': 'Advance',
     'fleet.conclude': 'Conclude',
     'fleet.approve': 'Approve',

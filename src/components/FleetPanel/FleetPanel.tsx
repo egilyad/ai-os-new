@@ -54,6 +54,10 @@ import {
     totService,
 } from '../../kernel/instances/services-extras';
 import type { DebateFormatId } from '../../kernel/contracts/debateplus';
+import { seedCrewsDemo } from '../../kernel/services/crew/crews-demo-seed';
+import { seedPersonaDemo } from '../../kernel/services/persona/persona-demo-seed';
+import { seedInteropDemo } from '../../kernel/services/interop/interop-demo-seed';
+import { seedFrontierDemo } from '../../kernel/services/frontier/frontier-demo-seed';
 
 type FleetTab =
     | 'crews'
@@ -132,6 +136,7 @@ function CrewsTab() {
     const refresh = useCrewStore((s) => s.refresh);
     const [goal, setGoal] = useState('');
     const [busy, setBusy] = useState(false);
+    const [seeding, setSeeding] = useState(false);
     const [error, onError, clearError] = useAsyncError();
 
     useEffect(() => {
@@ -148,6 +153,20 @@ function CrewsTab() {
             onError(e);
         } finally {
             setBusy(false);
+        }
+    };
+
+    const seedDemo = async () => {
+        if (seeding) return;
+        setSeeding(true);
+        clearError();
+        try {
+            await seedCrewsDemo(crewService);
+            await refresh();
+        } catch (e) {
+            onError(e);
+        } finally {
+            setSeeding(false);
         }
     };
 
@@ -200,6 +219,15 @@ function CrewsTab() {
                 ))}
                 <button style={btn} onClick={() => void refresh()}>
                     {t('fleet.refresh')}
+                </button>
+                <button
+                    style={btn}
+                    onClick={() => void seedDemo()}
+                    disabled={seeding}
+                    title={t('fleet.seed_demo')}
+                    aria-label={t('fleet.seed_demo')}
+                >
+                    ☕
                 </button>
             </Section>
         </div>
@@ -378,11 +406,26 @@ function PersonaTab() {
     const refresh = usePersonaStore((s) => s.refresh);
     const [name, setName] = useState('');
     const [busy, setBusy] = useState(false);
+    const [seeding, setSeeding] = useState(false);
     const [error, onError, clearError] = useAsyncError();
 
     useEffect(() => {
         void refresh();
     }, [refresh]);
+
+    const seedDemo = async () => {
+        if (seeding) return;
+        setSeeding(true);
+        clearError();
+        try {
+            await seedPersonaDemo(sharedContextService);
+            await refresh();
+        } catch (e) {
+            onError(e);
+        } finally {
+            setSeeding(false);
+        }
+    };
 
     return (
         <div>
@@ -411,6 +454,15 @@ function PersonaTab() {
                     }}
                 >
                     {t('fleet.create')}
+                </button>
+                <button
+                    style={btn}
+                    onClick={() => void seedDemo()}
+                    disabled={seeding}
+                    title={t('fleet.seed_demo')}
+                    aria-label={t('fleet.seed_demo')}
+                >
+                    ☕
                 </button>
             </div>
             <Section title={t('fleet.contexts_title')}>
@@ -510,11 +562,26 @@ function InteropTab() {
     const refresh = useInteropStore((s) => s.refresh);
     const [peerName, setPeerName] = useState('');
     const [busy, setBusy] = useState(false);
+    const [seeding, setSeeding] = useState(false);
     const [error, onError, clearError] = useAsyncError();
 
     useEffect(() => {
         void refresh();
     }, [refresh]);
+
+    const seedDemoInterop = async () => {
+        if (seeding) return;
+        setSeeding(true);
+        clearError();
+        try {
+            await seedInteropDemo(federationService);
+            await refresh();
+        } catch (e) {
+            onError(e);
+        } finally {
+            setSeeding(false);
+        }
+    };
 
     return (
         <div>
@@ -543,6 +610,15 @@ function InteropTab() {
                     }}
                 >
                     {t('fleet.add_peer')}
+                </button>
+                <button
+                    style={btn}
+                    onClick={() => void seedDemoInterop()}
+                    disabled={seeding}
+                    title={t('fleet.seed_demo')}
+                    aria-label={t('fleet.seed_demo')}
+                >
+                    ☕
                 </button>
             </div>
             {peers.map((p) => (
@@ -696,6 +772,7 @@ function FrontierTab() {
     const refresh = useFrontierStore((s) => s.refresh);
     const [task, setTask] = useState('');
     const [busy, setBusy] = useState(false);
+    const [seeding, setSeeding] = useState(false);
     const [error, onError, clearError] = useAsyncError();
 
     useEffect(() => {
@@ -712,6 +789,20 @@ function FrontierTab() {
             onError(e);
         } finally {
             setBusy(false);
+        }
+    };
+
+    const seedDemoFrontier = async () => {
+        if (seeding) return;
+        setSeeding(true);
+        clearError();
+        try {
+            await seedFrontierDemo(evalService);
+            await refresh();
+        } catch (e) {
+            onError(e);
+        } finally {
+            setSeeding(false);
         }
     };
 
@@ -740,6 +831,15 @@ function FrontierTab() {
                     }
                 >
                     {t('fleet.run_bench')}
+                </button>
+                <button
+                    style={btn}
+                    onClick={() => void seedDemoFrontier()}
+                    disabled={seeding}
+                    title={t('fleet.seed_demo')}
+                    aria-label={t('fleet.seed_demo')}
+                >
+                    ☕
                 </button>
             </div>
             {runs.slice(0, 10).map((r) => (
