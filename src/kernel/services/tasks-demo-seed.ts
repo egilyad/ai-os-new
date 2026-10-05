@@ -1,4 +1,4 @@
-import { AgemsTaskService } from './agems-task-service';
+import { AgemsTaskService, agemsTaskService } from './agems-task-service';
 import type { AgemsTask } from '../types/agems-task';
 
 /**

@@ -1,5 +1,5 @@
-import type { IProjectManagerService } from '../../contracts/project';
-import type { ProjectId } from '../../types/project-types';
+import type { IProjectManagerService } from '../contracts/project';
+import type { ProjectId } from '../types/project-types';
 
 /**
  * Demo seed for Projects: one automation project built by three different
