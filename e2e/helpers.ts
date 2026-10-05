@@ -75,9 +75,7 @@ export async function idbPut(
     for (let attempt = 1; attempt <= 3; attempt++) {
         const sidecar = await page.context().newPage();
         try {
-            console.log(`DIAG idbPut newPage ok mainUrl=${page.url()}`);
             await sidecar.goto('/favicon.svg');
-            console.log(`DIAG idbPut goto ok sidecarUrl=${sidecar.url()}`);
             return await sidecar.evaluate(
                 ({ dbName, store, row }) =>
                     new Promise<number>((resolve, reject) => {
@@ -111,9 +109,6 @@ export async function idbPut(
             );
         } catch (e) {
             lastError = e;
-            console.log(
-                `DIAG idbPut attempt ${attempt} failed url=${sidecar.url()} err=${String(e).split('\n')[0]}`,
-            );
         } finally {
             await sidecar.close().catch(() => {});
         }
