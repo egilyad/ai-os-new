@@ -69,4 +69,39 @@ describe('parseSSEStream', () => {
 
         await expect(parsePromise).rejects.toMatchObject({ name: 'AbortError' });
     });
+
+    it('hang-class: resolves (zero chunks) on a non-SSE body instead of stalling', async () => {
+        // A pull() that reads bytes but enqueues nothing was never re-invoked:
+        // single-line JSON bodies hung forever with idleTimeout=0 and burned
+        // the full idle budget otherwise (debate stream branch, 30s turn
+        // timeouts with instant-200 responses). Must resolve fast.
+        const json = JSON.stringify({
+            choices: [
+                { message: { content: 'not-an-sse-event' }, finish_reason: 'stop' },
+            ],
+        });
+        const chunks: string[] = [];
+        await parseSSEStream(
+            new Response(json, { headers: { 'content-type': 'application/json' } }),
+            (c) => chunks.push(c),
+            textExtractor,
+            undefined,
+            { idleTimeoutMs: 0 },
+        );
+        expect(chunks).toEqual([]);
+    });
+
+    it('hang-class: resolves a single-event SSE body delivered in one read', async () => {
+        const chunks: string[] = [];
+        await parseSSEStream(
+            new Response('data: {"text":"one-shot"}\n\ndata: [DONE]\n\n', {
+                headers: { 'content-type': 'text/event-stream' },
+            }),
+            (c) => chunks.push(c),
+            textExtractor,
+            undefined,
+            { idleTimeoutMs: 30000 },
+        );
+        expect(chunks).toEqual(['one-shot']);
+    });
 });

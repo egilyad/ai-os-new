@@ -101,24 +101,33 @@ test.describe('AI-OS Data Debate History', () => {
         await page.goto('/debate');
         await dismissWizard(page);
 
-        // Setup wizard: topic + pre-selected agents, 2 rounds to bound runtime.
+        // Setup wizard: topic + 2 agents (trim the 10 pre-selected for
+        // speed) + 2 rounds to bound runtime.
         const topic = page.getByPlaceholder('Enter the topic or question to debate...');
         await expect(topic).toBeVisible({ timeout: 60000 });
         await topic.fill('e2e debate topic 7');
+        for (let i = 0; i < 8; i++) {
+            const remove = page.locator('main button[aria-label^="Remove "]');
+            if ((await remove.count()) <= 2) break;
+            await remove.last().click();
+        }
         await page.locator('main input[type="number"]').fill('2');
         const start = page.getByRole('button', { name: /start debate/i });
         await expect(start).toBeEnabled({ timeout: 30000 });
         await start.click();
 
         // Wizard unmounts into the live session view: thesis + participants.
-        // KNOWN DEFECT (found by this spec, not worked around): agent turns
-        // then fail engine-side ("All agents failed to respond", 0 args,
-        // status CREATED) while the stubbed transport returns valid 200s —
-        // chat and room go green on the identical stub, and byte-unique
-        // argument-shaped replies fail too, so this is not content
-        // validation or cross-agent dedup: suspect the adapter/sendMessage
-        // error path in debate-llm-caller. Rounds coverage stays here as a
-        // start-circuit until the engine defect is fixed.
+        // KNOWN DEFECT (found by this spec, narrowed but still open): agent
+        // turns fire stubbed HTTP (2 agents x 2 rounds observed) yet neither
+        // arguments nor errors ever materialize and the session sits in
+        // CREATED. Ruled out so far: transport (instant stubbed 200s),
+        // provider preflight (fixed: case-insensitive), content validation
+        // and cross-agent dedup (short stubs pass both), and the SSE-parser
+        // hang on non-SSE bodies (fixed: pull loops until progress —
+        // previously a JSON body stalled the stream branch for the full
+        // 30s turn budget with the cryptic bare-`Aborted` cascade).
+        // Remaining suspects are post-adapter: enrichment/bridge/round
+        // advancement swallowing completed turns silently.
         await expect(start).toBeHidden({ timeout: 60000 });
         await expect(page.getByText('e2e debate topic 7').first()).toBeVisible({
             timeout: 60000,

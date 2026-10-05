@@ -445,8 +445,8 @@ export async function debateCallLlm(
                     govOp?.fail(e instanceof Error ? e : new Error(String(e)));
                     throw e;
                 }
-                govOp?.complete();
-                cleanupGov?.();
+                    govOp?.complete();
+                    cleanupGov?.();
 
                 // Strip speaker label prefix — agents sometimes copy the history
                 // format `[Name (self/opponent)]: content` with wrong speaker name.

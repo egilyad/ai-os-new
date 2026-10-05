@@ -57,8 +57,18 @@ export async function parseSSEStream(
 
             // H-14: Idle timer tracks wall-clock time since last DATA, not last pull
 
+            // Hang-class fix: loop inside pull() until this pull produces a
+            // chunk or the stream ends. A pull() that reads bytes but enqueues
+            // nothing (e.g. a non-SSE body with no `data:` lines, or a partial
+            // multi-read event) is NEVER re-invoked by the stream machinery —
+            // the outer reader waits forever (proven: single-line JSON body
+            // hangs with idleTimeout=0 and burns the full idle budget
+            // otherwise). Looping here preserves backpressure (we still return
+            // after the first productive read) while guaranteeing progress.
             try {
-                let readResult: ReadableStreamReadResult<Uint8Array>;
+                for (;;) {
+                    let enqueued = false;
+                    let readResult: ReadableStreamReadResult<Uint8Array>;
 
                 if (idleTimeout > 0) {
                     // L9-02: Race read() against an abortable sleep so idle timeout fires
@@ -95,9 +105,12 @@ export async function parseSSEStream(
                                 string,
                                 unknown
                             >;
-                            const chunk = extractor(parsed);
-                            onLine?.(parsed);
-                            if (chunk) controller.enqueue(chunk);
+                                const chunk = extractor(parsed);
+                                onLine?.(parsed);
+                                if (chunk) {
+                                    controller.enqueue(chunk);
+                                    enqueued = true;
+                                }
                         } catch (e) {
                             LOGGER.warn('SSEParser', 'Failed to parse end-of-stream accumulator', {
                                 error: (e as Error).message,
@@ -160,7 +173,10 @@ export async function parseSSEStream(
                                 >;
                                 const chunk = extractor(parsed);
                                 onLine?.(parsed);
-                                if (chunk) controller.enqueue(chunk);
+                                if (chunk) {
+                                    controller.enqueue(chunk);
+                                    enqueued = true;
+                                }
                             } catch (e) {
                                 LOGGER.warn('SSEParser', 'Failed to parse [DONE] accumulator', {
                                     error: (e as Error).message,
@@ -185,6 +201,12 @@ export async function parseSSEStream(
                 // The accumulator should only be flushed at empty-line event boundaries (above)
                 // or when the stream ends (done branch). Flushing here destroys SSE events
                 // that cross read() boundaries.
+                // Hang-class fix (loop exit): this pull produced output — return
+                // so the consumer can drain it; pull() is re-invoked on demand.
+                // Without output we loop for the next read instead of returning
+                // to an empty queue (which the stream never re-pulls).
+                if (enqueued) return;
+                }
             } catch (e) {
                 // G-03: Error the wrapper stream FIRST and synchronously — do NOT
                 // await bodyReader.cancel() before controller.error(). A cancel()
