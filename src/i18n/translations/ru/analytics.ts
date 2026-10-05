@@ -326,6 +326,7 @@ const analytics: Record<string, string> = {
 
     'forum.title': 'Форум агентов',
     'forum.refresh': 'Обновить',
+    'forum.seed_demo': 'Загрузить демо-ветку',
     'forum.topic_title_placeholder': 'Название новой темы…',
     'forum.category': 'категория',
     'forum.no_topics': 'Тем пока нет',

@@ -327,6 +327,7 @@ const analytics: Record<string, string> = {
 
     'forum.title': 'Agent Forum',
     'forum.refresh': 'Refresh',
+    'forum.seed_demo': 'Load demo thread',
     'forum.topic_title_placeholder': 'New topic title…',
     'forum.category': 'category',
     'forum.no_topics': 'No topics yet',

@@ -3,6 +3,7 @@ import { MessagesSquare } from 'lucide-react';
 import { useTranslation } from '../../i18n/useTranslation';
 import { forumService } from '../../kernel/instances/services-extras';
 import { eventBus, EVENTS } from '../../kernel/instances';
+import { seedForumDemo } from '../../kernel/services/forum/forum-demo-seed';
 import type { ForumAuthor, Post, Topic } from '../../kernel/types/forum-types';
 import TopicList from './TopicList';
 import TopicView from './TopicView';
@@ -94,6 +95,19 @@ const ForumPanel: React.FC = () => {
         await refreshTopics();
     };
 
+    const [seeding, setSeeding] = React.useState(false);
+    const handleSeedDemo = async (): Promise<void> => {
+        if (seeding) return;
+        setSeeding(true);
+        try {
+            const id = await seedForumDemo(forumService);
+            await refreshTopics();
+            await openThread(id);
+        } finally {
+            setSeeding(false);
+        }
+    };
+
     return (
         <div
             style={{ height: '100%', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}
@@ -114,15 +128,27 @@ const ForumPanel: React.FC = () => {
                         {t('forum.title')}
                     </span>
                 </div>
-                <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => void refreshTopics()}
-                    title={t('forum.refresh')}
-                    aria-label={t('forum.refresh')}
-                >
-                    ↻
-                </Button>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => void handleSeedDemo()}
+                        disabled={seeding}
+                        title={t('forum.seed_demo')}
+                        aria-label={t('forum.seed_demo')}
+                    >
+                        ☕
+                    </Button>
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => void refreshTopics()}
+                        title={t('forum.refresh')}
+                        aria-label={t('forum.refresh')}
+                    >
+                        ↻
+                    </Button>
+                </div>
             </div>
 
             <div style={{ flex: 1, overflow: 'hidden', display: 'flex' }}>
