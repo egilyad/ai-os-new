@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { Waypoints, RefreshCw, Radar } from 'lucide-react';
 import { useTranslation } from '../../i18n/useTranslation';
 import { junctionEngine } from '../../kernel/instances';
+import { seedJunctionDemo } from '../../kernel/services/junction-engine/junction-demo-seed';
 import type { Junction } from '../../kernel/types/junction-types';
 import type { JunctionSourceView } from '../../kernel/contracts/junction-engine';
 import JunctionList from './JunctionList';
@@ -15,6 +16,7 @@ const JunctionPanel: React.FC = () => {
     const [junctions, setJunctions] = useState<Junction[]>([]);
     const [sources, setSources] = useState<JunctionSourceView[]>([]);
     const [detecting, setDetecting] = useState(false);
+    const [seedingDemo, setSeedingDemo] = useState(false);
     const [message, setMessage] = useState<string | null>(null);
 
     const refresh = useCallback(async () => {
@@ -25,6 +27,17 @@ const JunctionPanel: React.FC = () => {
     useEffect(() => {
         void refresh();
     }, [refresh]);
+
+    const handleSeedDemo = async () => {
+        if (seedingDemo) return;
+        setSeedingDemo(true);
+        try {
+            await seedJunctionDemo();
+            await refresh();
+        } finally {
+            setSeedingDemo(false);
+        }
+    };
 
     const handleDetect = async () => {
         setDetecting(true);
@@ -71,6 +84,25 @@ const JunctionPanel: React.FC = () => {
                     </span>
                 </div>
                 <div style={{ display: 'flex', gap: 6 }}>
+                    <button
+                        onClick={() => void handleSeedDemo()}
+                        disabled={seedingDemo}
+                        title={t('junctions.seed_demo')}
+                        aria-label={t('junctions.seed_demo')}
+                        style={{
+                            padding: '0.45rem 0.8rem',
+                            borderRadius: 7,
+                            border: '1px solid rgba(255,255,255,0.1)',
+                            background: 'transparent',
+                            color: 'var(--slate-400)',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                        }}
+                    >
+                        ☕
+                    </button>
                     <button
                         onClick={() => void refresh()}
                         title={t('junctions.refresh')}

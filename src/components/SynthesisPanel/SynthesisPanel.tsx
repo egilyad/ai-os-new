@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { useTranslation } from '../../i18n/useTranslation';
 import { synthesisEngine } from '../../kernel/instances';
+import { seedSynthesisDemo } from '../../kernel/services/synthesis/synthesis-demo-seed';
 import type { Synthesis, SynthesisInput } from '../../kernel/types/synthesis-types';
 import SynthesisComposer from './SynthesisComposer';
 import SynthesisZonesView from './SynthesisZonesView';
@@ -23,6 +24,7 @@ const SynthesisPanel: React.FC = () => {
     const { t } = useTranslation();
     const [syntheses, setSyntheses] = useState<Synthesis[]>([]);
     const [synthesizing, setSynthesizing] = useState(false);
+    const [seedingDemo, setSeedingDemo] = useState(false);
     const [message, setMessage] = useState<string | null>(null);
     const [expanded, setExpanded] = useState<Set<string>>(new Set());
     const [feedback, setFeedback] = useState<Record<string, string>>({});
@@ -34,6 +36,17 @@ const SynthesisPanel: React.FC = () => {
     useEffect(() => {
         void refresh();
     }, [refresh]);
+
+    const handleSeedDemo = async (): Promise<void> => {
+        if (seedingDemo) return;
+        setSeedingDemo(true);
+        try {
+            await seedSynthesisDemo(synthesisEngine);
+            await refresh();
+        } finally {
+            setSeedingDemo(false);
+        }
+    };
 
     const handleSynthesize = async (input: SynthesisInput): Promise<void> => {
         setSynthesizing(true);
@@ -98,23 +111,44 @@ const SynthesisPanel: React.FC = () => {
                         {syntheses.length} {t('synthesis.total')}
                     </span>
                 </div>
-                <button
-                    onClick={() => void refresh()}
-                    title={t('synthesis.refresh')}
-                    style={{
-                        padding: '0.45rem 0.8rem',
-                        borderRadius: 7,
-                        border: '1px solid rgba(255,255,255,0.1)',
-                        background: 'transparent',
-                        color: 'var(--slate-400)',
-                        cursor: 'pointer',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                    }}
-                >
-                    <RefreshCw size={13} />
-                </button>
+                <div style={{ display: 'flex', gap: 6 }}>
+                    <button
+                        onClick={() => void handleSeedDemo()}
+                        disabled={seedingDemo}
+                        title={t('synthesis.seed_demo')}
+                        aria-label={t('synthesis.seed_demo')}
+                        style={{
+                            padding: '0.45rem 0.8rem',
+                            borderRadius: 7,
+                            border: '1px solid rgba(255,255,255,0.1)',
+                            background: 'transparent',
+                            color: 'var(--slate-400)',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                        }}
+                    >
+                        ☕
+                    </button>
+                    <button
+                        onClick={() => void refresh()}
+                        title={t('synthesis.refresh')}
+                        style={{
+                            padding: '0.45rem 0.8rem',
+                            borderRadius: 7,
+                            border: '1px solid rgba(255,255,255,0.1)',
+                            background: 'transparent',
+                            color: 'var(--slate-400)',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                        }}
+                    >
+                        <RefreshCw size={13} />
+                    </button>
+                </div>
             </div>
 
             <div style={{ flex: 1, overflowY: 'auto', padding: '0.9rem 1rem' }}>

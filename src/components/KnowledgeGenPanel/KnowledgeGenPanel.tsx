@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { Lightbulb } from 'lucide-react';
 import { useTranslation } from '../../i18n/useTranslation';
 import { knowledgeGenerator } from '../../kernel/instances';
+import { seedGeneratorDemo } from '../../kernel/services/knowledge-generator/generator-demo-seed';
 import type { GenerationJob, GenerationTrigger } from '../../kernel/types/generator-types';
 import TriggerConfig from './TriggerConfig';
 import GeneratorDashboard from './GeneratorDashboard';
@@ -15,6 +16,7 @@ const KnowledgeGenPanel: React.FC = () => {
     const { t } = useTranslation();
     const [jobs, setJobs] = useState<GenerationJob[]>([]);
     const [running, setRunning] = useState(false);
+    const [seedingDemo, setSeedingDemo] = useState(false);
     const [message, setMessage] = useState<string | null>(null);
 
     const refresh = useCallback(async () => {
@@ -44,6 +46,17 @@ const KnowledgeGenPanel: React.FC = () => {
         await refresh();
     };
 
+    const handleSeedDemo = async (): Promise<void> => {
+        if (seedingDemo) return;
+        setSeedingDemo(true);
+        try {
+            const job = await seedGeneratorDemo(knowledgeGenerator);
+            setJobs((prev) => mergeJobs([job], prev));
+        } finally {
+            setSeedingDemo(false);
+        }
+    };
+
     return (
         <div
             style={{ height: '100%', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}
@@ -67,9 +80,29 @@ const KnowledgeGenPanel: React.FC = () => {
                         {jobs.length} {t('generator.jobs_active')}
                     </span>
                 </div>
-                <button
-                    onClick={() => void refresh()}
-                    title={t('generator.refresh')}
+                <div style={{ display: 'flex', gap: 6 }}>
+                    <button
+                        onClick={() => void handleSeedDemo()}
+                        disabled={seedingDemo}
+                        title={t('generator.seed_demo')}
+                        aria-label={t('generator.seed_demo')}
+                        style={{
+                            padding: '0.45rem 0.8rem',
+                            borderRadius: 7,
+                            border: '1px solid rgba(255,255,255,0.1)',
+                            background: 'transparent',
+                            color: 'var(--slate-400)',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                        }}
+                    >
+                        ☕
+                    </button>
+                    <button
+                        onClick={() => void refresh()}
+                        title={t('generator.refresh')}
                     style={{
                         padding: '0.45rem 0.8rem',
                         borderRadius: 7,
@@ -102,7 +135,8 @@ const KnowledgeGenPanel: React.FC = () => {
                             strokeLinejoin="round"
                         />
                     </svg>
-                </button>
+                    </button>
+                </div>
             </div>
 
             <div style={{ flex: 1, overflowY: 'auto', padding: '0.9rem 1rem' }}>

@@ -350,6 +350,8 @@ jobs:
                       spec: 'e2e/data-dialogs.spec.ts'
                     - name: knowledge
                       spec: 'e2e/data-knowledge.spec.ts'
+                    - name: research
+                      spec: 'e2e/data-research.spec.ts'
         permissions:
             # CI-M-3: download-artifact within the same run needs no actions scope.
             contents: read
