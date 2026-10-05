@@ -5,6 +5,7 @@ import { projectManagerService, projectWorkspaceService, websitePreviewService, 
 import { useProjectStore, ensureSubscribed, destroy } from '../../stores/project-store';
 import type { ProjectStoreState } from '../../stores/project-store';
 import { StatusBadge, Button } from '../../components/Common';
+import { seedProjectDemo } from '../../kernel/services/project-demo-seed';
 import ActivitiesPanel from './ActivitiesPanel';
 import type { CreateProjectInput } from '../../kernel/types/project-types';
 import type { MemoryEntryType, ProjectMemoryEntry } from '../../kernel/types/project-memory-types';
@@ -50,6 +51,7 @@ const ProjectsPanel: React.FC = () => {
     const [newDesc, setNewDesc] = useState('');
     const [newType, setNewType] = useState<string>('website');
     const [creating, setCreating] = useState(false);
+    const [seeding, setSeeding] = useState(false);
     const [activeTab, setActiveTab] = useState<Tab>('files');
     const [files, setFiles] = useState<string[]>([]);
     const [previewHtml, setPreviewHtml] = useState('');
@@ -107,6 +109,16 @@ const ProjectsPanel: React.FC = () => {
         } finally { setCreating(false); }
     };
 
+    const handleSeedDemo = async () => {
+        if (seeding) return;
+        setSeeding(true);
+        try {
+            const id = await seedProjectDemo(projectManagerService);
+            await refresh();
+            select(id);
+        } finally { setSeeding(false); }
+    };
+
     const handleApplyTemplate = async (templateId: string) => {
         if (!selectedId) return;
         await projectTemplateService.applyTemplate(templateId, selectedId);
@@ -158,7 +170,10 @@ const ProjectsPanel: React.FC = () => {
                         <h2 style={{ margin: 0, fontSize: '1.1rem' }}>{t('projects.title')}</h2>
                         <p style={{ margin: '0.25rem 0 0', fontSize: '0.8rem', opacity: 0.7 }}>{t('projects.subtitle')}</p>
                     </div>
-                    <Button variant="primary" size="sm" onClick={() => setShowCreate(!showCreate)}>{showCreate ? t('projects.cancel') : t('projects.new')}</Button>
+                    <div style={{ display: 'flex', gap: 8 }}>
+                        <Button variant="ghost" size="sm" onClick={() => void handleSeedDemo()} disabled={seeding} title={t('projects.seed_demo')} aria-label={t('projects.seed_demo')}>☕</Button>
+                        <Button variant="primary" size="sm" onClick={() => setShowCreate(!showCreate)}>{showCreate ? t('projects.cancel') : t('projects.new')}</Button>
+                    </div>
                 </div>
                 {showCreate && (
                     <div style={{ padding: '0.75rem 1rem', borderBottom: '1px solid #2a2a35', background: 'rgba(59,130,246,0.05)' }}>

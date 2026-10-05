@@ -342,6 +342,8 @@ jobs:
                       spec: 'e2e/data-debate.spec.ts'
                     - name: forum
                       spec: 'e2e/data-forum.spec.ts'
+                    - name: projects
+                      spec: 'e2e/data-projects.spec.ts'
         permissions:
             # CI-M-3: download-artifact within the same run needs no actions scope.
             contents: read

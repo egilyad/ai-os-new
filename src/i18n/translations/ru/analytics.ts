@@ -426,6 +426,7 @@ const analytics: Record<string, string> = {
     'projects.title': 'Проекты',
     'projects.subtitle': 'Создавайте и управляйте проектами агентов',
     'projects.new': 'Новый проект',
+    'projects.seed_demo': 'Загрузить демо-проект',
     'projects.cancel': 'Отмена',
     'projects.name': 'Название',
     'projects.namePlaceholder': 'Мой проект',
