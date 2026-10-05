@@ -220,6 +220,7 @@ const workspace: Record<string, string> = {
     'tasks.loading': 'Loading',
     'tasks.loading_aria': 'Loading Aria',
     'tasks.queued': 'Queued',
+    'tasks.seed_demo': 'Load demo tasks',
     'tasks.search_placeholder': 'Search Placeholder',
     'tasks.subtitle': 'Subtitle',
     'tasks.succeeded': 'Succeeded',

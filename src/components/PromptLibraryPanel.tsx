@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { promptLibraryService } from '../kernel/instances';
+import { seedPromptsDemo } from '../kernel/services/prompts-demo-seed';
 import { eventBus } from '../kernel/instances';
 import { EVENTS } from '../kernel/events/event-names';
 import { useTranslation } from '../i18n/useTranslation';
@@ -37,6 +38,7 @@ const PromptLibraryPanel: React.FC = () => {
     const [formCategory, setFormCategory] = useState('general');
     const [formTags, setFormTags] = useState('');
     const [copiedId, setCopiedId] = useState<string | null>(null);
+    const [seedingDemo, setSeedingDemo] = useState(false);
     const focusTrapRef = useFocusTrap(showModal);
 
     const loadPrompts = useCallback(async () => {
@@ -88,6 +90,17 @@ const PromptLibraryPanel: React.FC = () => {
         if (prompt.isBuiltIn) return;
         await promptLibraryService.remove(prompt.id);
         await loadPrompts();
+    };
+
+    const handleSeedDemo = async () => {
+        if (seedingDemo) return;
+        setSeedingDemo(true);
+        try {
+            await seedPromptsDemo(promptLibraryService);
+            await loadPrompts();
+        } finally {
+            setSeedingDemo(false);
+        }
     };
 
     const openCreateModal = () => {
@@ -164,24 +177,46 @@ const PromptLibraryPanel: React.FC = () => {
                         {t('prompts.subtitle')}
                     </p>
                 </div>
-                <button
-                    onClick={openCreateModal}
-                    style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 6,
-                        padding: '8px 16px',
-                        borderRadius: 8,
-                        background: 'linear-gradient(135deg, #06b6d4, #0891b2)',
-                        color: '#fff',
-                        border: 'none',
-                        cursor: 'pointer',
-                        fontSize: '0.85rem',
-                        fontWeight: 600,
-                    }}
-                >
-                    <Plus size={16} /> {t('prompts.create')}
-                </button>
+                <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                    <button
+                        onClick={() => void handleSeedDemo()}
+                        disabled={seedingDemo}
+                        title={t('prompts.seed_demo')}
+                        aria-label={t('prompts.seed_demo')}
+                        style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            padding: '8px 12px',
+                            borderRadius: 8,
+                            background: 'rgba(255,255,255,0.05)',
+                            border: '1px solid rgba(255,255,255,0.1)',
+                            color: 'var(--slate-300)',
+                            cursor: 'pointer',
+                            fontSize: '0.85rem',
+                            fontWeight: 600,
+                        }}
+                    >
+                        ☕
+                    </button>
+                    <button
+                        onClick={openCreateModal}
+                        style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 6,
+                            padding: '8px 16px',
+                            borderRadius: 8,
+                            background: 'linear-gradient(135deg, #06b6d4, #0891b2)',
+                            color: '#fff',
+                            border: 'none',
+                            cursor: 'pointer',
+                            fontSize: '0.85rem',
+                            fontWeight: 600,
+                        }}
+                    >
+                        <Plus size={16} /> {t('prompts.create')}
+                    </button>
+                </div>
             </div>
 
             <div

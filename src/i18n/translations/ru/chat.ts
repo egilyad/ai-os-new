@@ -15,6 +15,7 @@ const chat: Record<string, string> = {
     'prompts.subtitle': 'Сохраняйте и переиспользуйте шаблоны промптов для чата, дебатов и анализа',
     'prompts.search_placeholder': 'Поиск промптов по названию, содержимому или тегам...',
     'prompts.create': 'Новый промпт',
+    'prompts.seed_demo': 'Загрузить демо-промпты',
     'prompts.edit': 'Редактировать',
     'prompts.delete': 'Удалить',
     'prompts.use_in_chat': 'Использовать в чате',

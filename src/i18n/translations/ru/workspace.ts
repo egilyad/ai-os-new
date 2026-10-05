@@ -219,6 +219,7 @@ const workspace: Record<string, string> = {
     'tasks.loading': 'Загрузка…',
     'tasks.loading_aria': 'Загрузка',
     'tasks.queued': 'В очереди',
+    'tasks.seed_demo': 'Загрузить демо-задачи',
     'tasks.search_placeholder': 'Поиск…',
     'tasks.subtitle': 'Подзаголовок',
     'tasks.succeeded': 'Успешно',

@@ -808,6 +808,7 @@ const analytics: Record<string, string> = {
     'scheduler.card.manage_desc':
         'Schedules can be enabled/disabled, edited, deleted. Run history is tracked.',
     'scheduler.demo_title': 'Demo: schedules',
+    'scheduler.seed_demo': 'Load demo schedules',
     'scheduler.no_schedules': 'No schedules configured yet — connect a scheduling service or add one to see it here.',
     'scheduler.available_agents': 'Available agents',
     'scheduler.active_count': 'active',

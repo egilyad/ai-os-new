@@ -807,6 +807,7 @@ const analytics: Record<string, string> = {
     'scheduler.card.manage_desc':
         'Расписания можно включать/отключать, редактировать, удалять. История запусков отслеживается.',
     'scheduler.demo_title': 'Демо: расписания',
+    'scheduler.seed_demo': 'Загрузить демо-расписания',
     'scheduler.no_schedules': 'Расписания ещё не настроены — подключите сервис расписаний или добавьте его, чтобы увидеть здесь.',
     'scheduler.available_agents': 'Доступные агенты',
     'scheduler.active_count': 'активных',

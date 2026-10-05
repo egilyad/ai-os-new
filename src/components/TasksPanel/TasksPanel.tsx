@@ -21,6 +21,7 @@ import { useAutoClearError } from '../../hooks/useAutoClearError';
 import { useTranslation } from '../../i18n/useTranslation';
 import { getStatusColor } from '../Common/status-vocabulary';
 import { agemsTaskService } from '../../kernel/services/agems-task-service';
+import { seedTasksDemo } from '../../kernel/services/tasks-demo-seed';
 import { KANBAN_COLUMNS } from '../../kernel/types/agems-task';
 import type { AgemsTask, AgemsTaskStatus, CronSchedule } from '../../kernel/types/agems-task';
 import { getPresets, formatCronPreview } from '../../kernel/services/cron-builder-service';
@@ -90,6 +91,7 @@ const TasksPanel: React.FC = () => {
     const [newTaskCron, setNewTaskCron] = useState<CronSchedule | undefined>(undefined);
     const [showCronPicker, setShowCronPicker] = useState(false);
     const [selectedTask, setSelectedTask] = useState<AgemsTask | null>(null);
+    const [seedingDemo, setSeedingDemo] = useState(false);
 
     const { t } = useTranslation();
     const isMountedRef = useRef(true);
@@ -183,6 +185,17 @@ const TasksPanel: React.FC = () => {
                 setError(t('tasks.error_refresh'));
             });
     }, [t]);
+
+    const handleSeedDemo = async () => {
+        if (seedingDemo) return;
+        setSeedingDemo(true);
+        try {
+            await seedTasksDemo(agemsTaskService);
+            setAgemsTasks(await agemsTaskService.list());
+        } finally {
+            setSeedingDemo(false);
+        }
+    };
 
     const handleCreateAgemsTask = async () => {
         if (!newTaskTitle.trim()) return;
@@ -489,6 +502,7 @@ const TasksPanel: React.FC = () => {
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
                     <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--slate-500)', letterSpacing: 0.5, textTransform: 'uppercase' }}>AGEMS Kanban · {agemsTasks.length} tasks</span>
                     <div style={{ display: 'flex', gap: 4, marginLeft: 'auto' }}>
+                        <button onClick={() => void handleSeedDemo()} disabled={seedingDemo} title={t('tasks.seed_demo')} aria-label={t('tasks.seed_demo')} style={{ padding: '4px 8px', borderRadius: 6, fontSize: 11, fontWeight: 600, border: '1px solid rgba(255,255,255,0.08)', background: 'transparent', color: 'var(--slate-500)', cursor: 'pointer' }}>☕</button>
                         <button onClick={() => setKanbanView('board')} style={{ padding: '4px 8px', borderRadius: 6, fontSize: 11, fontWeight: 600, border: kanbanView === 'board' ? '1px solid #3b82f6' : '1px solid rgba(255,255,255,0.08)', background: kanbanView === 'board' ? 'rgba(59,130,246,0.12)' : 'transparent', color: kanbanView === 'board' ? '#60a5fa' : 'var(--slate-500)', cursor: 'pointer' }}>Board</button>
                         <button onClick={() => setKanbanView('list')} style={{ padding: '4px 8px', borderRadius: 6, fontSize: 11, fontWeight: 600, border: kanbanView === 'list' ? '1px solid #3b82f6' : '1px solid rgba(255,255,255,0.08)', background: kanbanView === 'list' ? 'rgba(59,130,246,0.12)' : 'transparent', color: kanbanView === 'list' ? '#60a5fa' : 'var(--slate-500)', cursor: 'pointer' }}>List</button>
                     </div>

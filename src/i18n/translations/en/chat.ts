@@ -15,6 +15,7 @@ const chat: Record<string, string> = {
     'prompts.subtitle': 'Save, browse, and reuse prompt templates for chat, debates, and analysis',
     'prompts.search_placeholder': 'Search prompts by title, content, or tags...',
     'prompts.create': 'New Prompt',
+    'prompts.seed_demo': 'Load demo prompts',
     'prompts.edit': 'Edit',
     'prompts.delete': 'Delete',
     'prompts.use_in_chat': 'Use in Chat',

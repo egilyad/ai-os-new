@@ -344,6 +344,8 @@ jobs:
                       spec: 'e2e/data-forum.spec.ts'
                     - name: projects
                       spec: 'e2e/data-projects.spec.ts'
+                    - name: organizer
+                      spec: 'e2e/data-organizer.spec.ts'
         permissions:
             # CI-M-3: download-artifact within the same run needs no actions scope.
             contents: read

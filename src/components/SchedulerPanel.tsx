@@ -5,6 +5,7 @@ import type { QualityTechnique } from '../kernel/contracts/debate-quality-settin
 import { useTranslation } from '../i18n/useTranslation';
 import { useRealAgents } from '../hooks/useRealAgents';
 import { schedulerService } from '../kernel/services/scheduler-service';
+import { seedSchedulerDemo } from '../kernel/services/scheduler-demo-seed';
 import type { Schedule, ScheduleFrequency } from '../kernel/services/scheduler-service';
 import { eventBus } from '../kernel/events/event-bus';
 import { EVENTS } from '../kernel/events/event-registry';
@@ -70,6 +71,7 @@ export const SchedulerPanel: React.FC = () => {
     const [cronExpression, setCronExpression] = useState('');
     const [taskPrompt, setTaskPrompt] = useState('');
     const [busy, setBusy] = useState(false);
+    const [seedingDemo, setSeedingDemo] = useState(false);
 
     const handleToggle = useCallback(() => {
         const next = !enabled;
@@ -144,6 +146,19 @@ export const SchedulerPanel: React.FC = () => {
             setBusy(false);
         }
     }, [name, agentId, frequency, cronExpression, taskPrompt, agents, load, t]);
+
+    const handleSeedDemo = useCallback(async () => {
+        if (!schedulerService || seedingDemo) return;
+        setSeedingDemo(true);
+        try {
+            await seedSchedulerDemo(schedulerService);
+            await load();
+        } catch (e) {
+            setError(e instanceof Error ? e.message : String(e));
+        } finally {
+            setSeedingDemo(false);
+        }
+    }, [seedingDemo, load]);
 
     const handleToggleSchedule = useCallback(async (id: string, next: boolean) => {
         if (!schedulerService) return;
@@ -298,6 +313,15 @@ export const SchedulerPanel: React.FC = () => {
                     <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 4, background: 'rgba(34,197,94,0.15)', color: 'var(--success)', fontWeight: 500 }}>
                         {schedules.filter(s => s.enabled).length} / {schedules.length} {t('scheduler.active_count') ?? 'active'}
                     </span>
+                    <button
+                        onClick={() => void handleSeedDemo()}
+                        disabled={seedingDemo}
+                        title={t('scheduler.seed_demo') ?? 'Load demo schedules'}
+                        aria-label={t('scheduler.seed_demo') ?? 'Load demo schedules'}
+                        style={{ padding: 6, borderRadius: 6, border: '1px solid rgba(255,255,255,0.1)', background: 'transparent', cursor: 'pointer', color: 'var(--slate-400)' }}
+                    >
+                        ☕
+                    </button>
                     <button
                         onClick={() => void load()}
                         title="Refresh"
