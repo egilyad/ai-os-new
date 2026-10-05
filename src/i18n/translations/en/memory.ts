@@ -117,6 +117,7 @@ const memory: Record<string, string> = {
     'memory.view_embeddings': 'View Embeddings',
     'memory.delete_vector': 'Delete Vector',
     'memory.wipe_index': 'Wipe Vector Index',
+    'memory.seed_demo': 'Load demo memories',
     'memory.wipe_confirm': 'Are you sure? This cannot be undone.',
     'memory.wipe_title': 'Wipe Memory Index',
     'memory.delete_title': 'Delete Memory',

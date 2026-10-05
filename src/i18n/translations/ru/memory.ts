@@ -140,6 +140,7 @@ const memory: Record<string, string> = {
     'memory.delete_title': 'Удаление записи',
     'memory.delete_confirm': 'Удалить эту запись?',
     'memory.wipe_index': 'Очистить индекс',
+    'memory.seed_demo': 'Загрузить демо-воспоминания',
     'message_search.any_model': 'Любая модель',
     'message_search.any_provider': 'Любой провайдер',
     'message_search.any_role': 'Любая роль',

@@ -1,6 +1,7 @@
 // chat.* — Russian translations
 const chat: Record<string, string> = {
     'bookmarks.title': 'Закладки',
+    'bookmarks.seed_demo': 'Загрузить демо-закладку',
     'bookmarks.subtitle': '{count} закладок',
     'bookmarks.search_placeholder': 'Поиск по закладкам...',
     'bookmarks.clear_all': 'Очистить всё',

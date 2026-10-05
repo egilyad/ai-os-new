@@ -348,6 +348,8 @@ jobs:
                       spec: 'e2e/data-organizer.spec.ts'
                     - name: dialogs
                       spec: 'e2e/data-dialogs.spec.ts'
+                    - name: knowledge
+                      spec: 'e2e/data-knowledge.spec.ts'
         permissions:
             # CI-M-3: download-artifact within the same run needs no actions scope.
             contents: read

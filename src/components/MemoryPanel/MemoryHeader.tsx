@@ -10,9 +10,10 @@ import {
 interface MemoryHeaderProps {
     onWipe: () => void;
     onExport: () => void;
+    onSeedDemo?: () => void;
 }
 
-const MemoryHeader: React.FC<MemoryHeaderProps> = ({ onWipe, onExport }) => {
+const MemoryHeader: React.FC<MemoryHeaderProps> = ({ onWipe, onExport, onSeedDemo }) => {
     const { t } = useTranslation();
     return (
         <div style={sectionHeaderBottom}>
@@ -23,6 +24,21 @@ const MemoryHeader: React.FC<MemoryHeaderProps> = ({ onWipe, onExport }) => {
                 <p style={pageSubtitleMuted}>{t('memory.subtitle')}</p>
             </div>
             <div style={flexGap3}>
+                {onSeedDemo && (
+                    <button
+                        onClick={onSeedDemo}
+                        className="btn-secondary"
+                        style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 8,
+                        }}
+                        aria-label={t('memory.seed_demo')}
+                        title={t('memory.seed_demo')}
+                    >
+                        ☕
+                    </button>
+                )}
                 <button
                     onClick={onWipe}
                     className="btn-secondary"

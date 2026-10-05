@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Gem, Plus, Search, RefreshCw } from 'lucide-react';
 import { useTranslation } from '../../i18n/useTranslation';
 import { crystalVault } from '../../kernel/instances';
+import { seedCrystalsDemo } from '../../kernel/services/crystal-vault/crystals-demo-seed';
 import type { Crystal } from '../../kernel/types/crystal-types';
 import CrystalCard from './CrystalCard';
 import CrystalProposeModal from './CrystalProposeModal';
@@ -16,12 +17,23 @@ const CrystalVaultPanel: React.FC = () => {
     const [statusFilter, setStatusFilter] = useState<(typeof STATUS_FILTERS)[number]>('all');
     const [search, setSearch] = useState('');
     const [showPropose, setShowPropose] = useState(false);
+    const [seedingDemo, setSeedingDemo] = useState(false);
     const [superseding, setSuperseding] = useState<Crystal | null>(null);
 
     const refresh = useCallback(async () => {
         setCrystals(await crystalVault.list());
     }, []);
 
+    const handleSeedDemo = useCallback(async () => {
+        if (seedingDemo) return;
+        setSeedingDemo(true);
+        try {
+            await seedCrystalsDemo(crystalVault);
+            await refresh();
+        } finally {
+            setSeedingDemo(false);
+        }
+    }, [seedingDemo, refresh]);
     useEffect(() => {
         void refresh();
     }, [refresh]);
@@ -112,6 +124,25 @@ const CrystalVaultPanel: React.FC = () => {
                     </span>
                 </div>
                 <div style={{ display: 'flex', gap: 6 }}>
+                    <button
+                        onClick={() => void handleSeedDemo()}
+                        disabled={seedingDemo}
+                        title={t('lenses_crystal.seed_demo')}
+                        aria-label={t('lenses_crystal.seed_demo')}
+                        style={{
+                            padding: '0.45rem 0.8rem',
+                            borderRadius: 7,
+                            border: '1px solid rgba(255,255,255,0.1)',
+                            background: 'transparent',
+                            color: 'var(--slate-400)',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                        }}
+                    >
+                        ☕
+                    </button>
                     <button
                         onClick={() => void refresh()}
                         title={t('lenses_crystal.refresh')}

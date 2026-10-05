@@ -214,6 +214,7 @@ const analytics: Record<string, string> = {
     'lenses_crystal.title': 'Crystal Vault',
     'lenses_crystal.total': 'crystals',
     'lenses_crystal.propose': 'Propose',
+    'lenses_crystal.seed_demo': 'Load demo crystal',
     'lenses_crystal.refresh': 'Refresh',
     'lenses_crystal.search': 'Search crystals...',
     'lenses_crystal.empty': 'No crystals yet — propose the first one',

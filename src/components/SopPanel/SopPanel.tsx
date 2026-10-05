@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from '../../i18n/useTranslation';
 import { sopService, autonomyService } from '../../kernel/instances/services-extras';
+import { seedSopDemo } from '../../kernel/services/rivals/sop-demo-seed';
 import type { AgentLoop, SopDefinition } from '../../kernel/contracts/rivals';
 import { Button, StatusBadge } from '../../components/Common';
 
@@ -53,6 +54,15 @@ export default function SopPanel() {
         } catch (e) { fail(e); }
     };
 
+    const handleSeedDemo = async () => {
+        setError(null);
+        try {
+            const def = await seedSopDemo(sopService);
+            await reload();
+            setSelectedSop(def.id);
+        } catch (e) { fail(e); }
+    };
+
     const handleRun = () => {
         setError(null); setNotice(null);
         if (!selectedSop) { setNotice(t('sop.validation.noSop')); return; }
@@ -87,6 +97,7 @@ export default function SopPanel() {
                 <div style={{ padding: '14px 16px', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
                     <div style={{ fontSize: 16, fontWeight: 800 }}>{t('sop.title')}</div>
                     <div style={{ fontSize: 12, color: 'var(--slate-500)', marginTop: 4 }}>{t('sop.subtitle')}</div>
+                    <button onClick={() => void handleSeedDemo()} disabled={busy} title="Load demo SOP" aria-label="Load demo SOP" style={{ marginTop: 8, padding: '6px 12px', borderRadius: 8, border: '1px solid rgba(255,255,255,0.1)', background: 'transparent', color: 'var(--slate-300)', cursor: 'pointer', fontSize: 12, fontWeight: 600 }}>☕ Load demo SOP</button>
                     {error && <div style={{ marginTop: 8, color: 'var(--error)', fontSize: 12 }}>{error}</div>}
                     {notice && <div style={{ marginTop: 8, color: '#f59e0b', fontSize: 12 }}>{notice}</div>}
                 </div>

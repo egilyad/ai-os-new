@@ -4,6 +4,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { eventBus, EVENTS } from '../../kernel/instances';
 import { useTranslation } from '../../i18n/useTranslation';
 import { chatBookmarksService } from '../../kernel/instances';
+import { seedBookmarksDemo } from '../../kernel/services/bookmarks-demo-seed';
+import { resolveSessionStore } from '../../stores/chat/store-helpers';
 import type { ChatBookmark } from '../../kernel/services/chat-bookmarks-service';
 import { errorContainer, dismissBtnRed, textMutedXs } from '../../styles/common';
 import { useAutoClearError } from '../../hooks/useAutoClearError';
@@ -20,6 +22,7 @@ const BookmarksPanel: React.FC = () => {
     const [search, setSearch] = useState('');
     const [activeTag, setActiveTag] = useState<string | null>(null);
     const [copiedId, setCopiedId] = useState<string | null>(null);
+    const [seedingDemo, setSeedingDemo] = useState(false);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const { t } = useTranslation();
@@ -31,6 +34,19 @@ const BookmarksPanel: React.FC = () => {
         const filtered = activeTag ? list.filter((b) => b.tags.includes(activeTag)) : list;
         setBookmarks(filtered);
     }, [search, activeTag]);
+
+    const handleSeedDemo = async () => {
+        if (seedingDemo) return;
+        const sessions = resolveSessionStore();
+        if (!sessions) return;
+        setSeedingDemo(true);
+        try {
+            await seedBookmarksDemo(bookmarksService, sessions);
+            refresh();
+        } finally {
+            setSeedingDemo(false);
+        }
+    };
 
     useEffect(() => {
         isMountedRef.current = true;
@@ -160,7 +176,24 @@ const BookmarksPanel: React.FC = () => {
                     </p>
                 </div>
                 <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-                    <div
+                    <button
+                        onClick={() => void handleSeedDemo()}
+                        disabled={seedingDemo}
+                        title={t('bookmarks.seed_demo')}
+                        aria-label={t('bookmarks.seed_demo')}
+                        style={{
+                            padding: '0.5rem 0.9rem',
+                            borderRadius: 8,
+                            border: '1px solid rgba(255,255,255,0.1)',
+                            background: 'transparent',
+                            color: 'var(--slate-300)',
+                            cursor: 'pointer',
+                            fontWeight: 600,
+                            fontSize: '0.8rem',
+                        }}
+                    >
+                        ☕
+                    </button>                    <div
                         style={{
                             display: 'flex',
                             gap: '0.3rem',

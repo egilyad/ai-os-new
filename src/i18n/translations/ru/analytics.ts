@@ -213,6 +213,7 @@ const analytics: Record<string, string> = {
     'lenses_crystal.title': 'Хранилище кристаллов',
     'lenses_crystal.total': 'кристаллов',
     'lenses_crystal.propose': 'Предложить',
+    'lenses_crystal.seed_demo': 'Загрузить демо-кристалл',
     'lenses_crystal.refresh': 'Обновить',
     'lenses_crystal.search': 'Поиск кристаллов...',
     'lenses_crystal.empty': 'Кристаллов пока нет — предложите первый',

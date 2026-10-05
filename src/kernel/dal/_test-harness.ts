@@ -339,6 +339,37 @@ export async function createTestDb(): Promise<TestDb> {
                 });
             });
         },
+        // Transaction + CAS parity with DatabaseService: repositories gained
+        // transactional writes (e.g. CrystalRepository) while the harness
+        // lagged behind, failing every suite that touched them.
+        async transaction<T>(tables: unknown, fn: () => Promise<T>): Promise<T> {
+            return dexie!.transaction('rw', tables as never, fn);
+        },
+        async getKvCas<T>(id: string): Promise<{ value: T | null; version: number }> {
+            const record = await dexie!.keyValue.get(id);
+            if (!record) return { value: null, version: 0 };
+            return { value: record.value as T, version: record.version ?? 0 };
+        },
+        async setKvCas<T>(id: string, value: T, expectedVersion: number): Promise<boolean> {
+            try {
+                await dexie!.transaction('rw', dexie!.keyValue, async () => {
+                    const existing = await dexie!.keyValue.get(id);
+                    const currentVersion = existing?.version ?? 0;
+                    if (currentVersion !== expectedVersion) {
+                        throw new Error('Version conflict');
+                    }
+                    await dexie!.keyValue.put({
+                        id,
+                        value,
+                        createdAt: existing?.createdAt ?? Date.now(),
+                        version: currentVersion + 1,
+                    });
+                });
+                return true;
+            } catch {
+                return false;
+            }
+        },
     } as unknown as DatabaseService;
 
     const clearAll = async (): Promise<void> => {

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { memoryService, rootLogger } from '../../kernel/instances';
+import { seedMemoryDemo } from '../../kernel/services/memory-demo-seed';
 const LOGGER = rootLogger.child('MemoryPanel');
 import type { MemoryEntry } from '../../types/memory';
 import { eventBus, EVENTS } from '../../kernel/instances';
@@ -209,6 +210,18 @@ const MemoryPanel: React.FC = () => {
         [confirm, clearError, t],
     );
 
+    const handleSeedDemo = async () => {
+        try {
+            await seedMemoryDemo(memoryService);
+            if (isMountedRef.current) {
+                setMemories(memoryService.getMemories());
+                setError(null);
+            }
+        } catch (err) {
+            LOGGER.warn('Failed to seed demo memories', String(err));
+        }
+    };
+
     const handleExportVectors = async () => {
         try {
             const exportData = JSON.stringify(memories, null, 2);
@@ -264,7 +277,7 @@ const MemoryPanel: React.FC = () => {
                 overflowY: 'auto',
             }}
         >
-            <MemoryHeader onWipe={handleClear} onExport={handleExportVectors} />
+            <MemoryHeader onWipe={handleClear} onExport={handleExportVectors} onSeedDemo={() => void handleSeedDemo()} />
             <MemoryErrorAlert error={error} onDismiss={() => setError(null)} />
 
             <div
