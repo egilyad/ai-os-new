@@ -63,7 +63,7 @@ RUN VITE_BASE_PATH=$VITE_BASE_PATH \
 # nginx-unprivileged listens on 8080 by default; docker-compose maps
 # it to host ports 80/443.  Running as non-root avoids the bind-to-80
 # permission issue that broke the previous Dockerfile.
-FROM nginxinc/nginx-unprivileged:1.28-alpine@sha256:7377697a821c131a924a7105fafbe7414db4e9fcc77a6f08f776f33f141ec3f8
+FROM nginxinc/nginx-unprivileged:1.29-alpine@sha256:0c79d56aee561a1d81c63f00eee5fb5fe29279560cdc55e91425133104c7fbe6
 
 LABEL org.opencontainers.image.title="SuperAgents OS"
 LABEL org.opencontainers.image.description="Autonomous multi-agent runtime with cognitive topology DSL"
