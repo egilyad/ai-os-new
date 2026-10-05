@@ -92,7 +92,7 @@ test.describe('AI-OS Data Debate History', () => {
         });
     });
 
-    test('live debate start opens a live session', async ({ page }) => {
+    test('live debate start renders stubbed arguments', async ({ page }) => {
         await seedChatKey(page);
         await stubOpenRouter(page);
 
@@ -116,24 +116,14 @@ test.describe('AI-OS Data Debate History', () => {
         await expect(start).toBeEnabled({ timeout: 30000 });
         await start.click();
 
-        // Wizard unmounts into the live session view: thesis + participants.
-        // KNOWN DEFECT (found by this spec, narrowed but still open): agent
-        // turns fire stubbed HTTP (2 agents x 2 rounds observed) yet neither
-        // arguments nor errors ever materialize and the session sits in
-        // CREATED. Ruled out so far: transport (instant stubbed 200s),
-        // provider preflight (fixed: case-insensitive), content validation
-        // and cross-agent dedup (short stubs pass both), and the SSE-parser
-        // hang on non-SSE bodies (fixed: pull loops until progress —
-        // previously a JSON body stalled the stream branch for the full
-        // 30s turn budget with the cryptic bare-`Aborted` cascade).
-        // Remaining suspects are post-adapter: enrichment/bridge/round
-        // advancement swallowing completed turns silently.
+        // Wizard unmounts into the live session; the first stubbed argument
+        // proves the full circuit (start -> rounds -> render) end to end.
         await expect(start).toBeHidden({ timeout: 60000 });
         await expect(page.getByText('e2e debate topic 7').first()).toBeVisible({
             timeout: 60000,
         });
-        await expect(page.getByText(/active participants/i).first()).toBeVisible({
-            timeout: 60000,
+        await expect(page.getByText(/-PATH-42/).first()).toBeVisible({
+            timeout: 240000,
         });
     });
 });

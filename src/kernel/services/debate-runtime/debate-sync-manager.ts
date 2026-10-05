@@ -690,7 +690,14 @@ export class DebateSyncManager {
                     argument: arg,
                 });
             }
-            this.deps!.eventBus.emitOnce(EVENTS.DEBATE_UPDATED, session.id, session);
+            // Progress updates must reach the UI: key the idempotency cache by
+            // session + status + argument count, not by session alone. A bare
+            // session key with a 30s TTL swallowed every update of debates
+            // finishing faster than the window (proven: UI froze at CREATED
+            // with 0 args while rounds, verdict and completion all succeeded).
+            // Identical repeats are still deduped.
+            const progressKey = `${session.id}:${session.status}:${session.arguments.length}`;
+            this.deps!.eventBus.emitOnce(EVENTS.DEBATE_UPDATED, progressKey, session);
         } finally {
             entry.syncing = false;
         }
