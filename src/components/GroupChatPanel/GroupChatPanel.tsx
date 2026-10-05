@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from '../../i18n/useTranslation';
 import { groupChatService } from '../../kernel/instances/services-extras';
+import { seedGroupChatDemo } from '../../kernel/services/rivals/groupchat-demo-seed';
 import { orchestrator } from '../../kernel/instances';
 import type { GroupChat, SpeakerSelection } from '../../kernel/contracts/rivals';
 import { Button, StatusBadge } from '../../components/Common';
@@ -27,6 +28,7 @@ export default function GroupChatPanel() {
     const [postSpeaker, setPostSpeaker] = useState('');
     const [postText, setPostText] = useState('');
     const [nestTopic, setNestTopic] = useState('');
+    const [seedingDemo, setSeedingDemo] = useState(false);
     const [summary, setSummary] = useState<string | null>(null);
     const [showCreate, setShowCreate] = useState(false);
 
@@ -80,6 +82,27 @@ export default function GroupChatPanel() {
                 const rest = prev.filter((c) => c.id !== id);
                 return [...rest, chat].sort((a, b) => b.updatedAt - a.updatedAt);
             });
+        }
+    };
+
+    const handleSeedDemo = async () => {
+        if (seedingDemo) return;
+        setSeedingDemo(true);
+        setError(null);
+        try {
+            const chat = await seedGroupChatDemo(groupChatService);
+            setChats((prev) =>
+                [...prev.filter((c) => c.id !== chat.id), chat].sort(
+                    (a, b) => b.updatedAt - a.updatedAt,
+                ),
+            );
+            setActiveId(chat.id);
+            setPostSpeaker(chat.members[0] ?? '');
+            setSummary(null);
+        } catch (e) {
+            fail(e);
+        } finally {
+            setSeedingDemo(false);
         }
     };
 
@@ -194,6 +217,7 @@ export default function GroupChatPanel() {
                         onChange={(e) => setSearch(e.target.value)}
                         style={{ flex: 1, padding: '7px 10px', borderRadius: 8, border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(255,255,255,0.05)', color: 'inherit', fontSize: 12 }}
                     />
+                    <Button variant="ghost" size="sm" onClick={() => void handleSeedDemo()} disabled={seedingDemo} title={t('groupChat.seed_demo')} aria-label={t('groupChat.seed_demo')}>☕</Button>
                     <Button variant="primary" size="sm" onClick={() => setShowCreate((v) => !v)}>{showCreate ? '−' : '+ New'}</Button>
                 </div>
 

@@ -11,6 +11,7 @@ import { useCouncilStore } from '../../stores/councilStore';
 import { useResponsive } from '../Layout/ResponsiveShell';
 import { lazyService } from '../../kernel/service-helper';
 import type { ICouncilService } from '../../kernel/contracts/council';
+import { seedCouncilDemo } from '../../kernel/services/council/council-demo-seed';
 import type { CouncilSession } from '../../kernel/types/council-types';
 
 const councilService = lazyService<ICouncilService>('councilService');
@@ -54,6 +55,13 @@ export const CouncilPanel: React.FC = () => {
         });
     };
 
+    const seedDemo = async () => {
+        await run(async () => {
+            const s = await seedCouncilDemo(councilService);
+            select(s.id);
+        });
+    };
+
     return (
         <div style={{ height: '100%', display: 'flex', flexDirection: 'column', gap: '0.75rem', overflow: 'hidden', padding: '0.75rem 0' }}>
             <div>
@@ -63,6 +71,7 @@ export const CouncilPanel: React.FC = () => {
 
             <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
                 <input style={{ ...inputStyle, flex: '1 1 260px' }} placeholder="Topic — e.g. Should we prioritize X?" value={topic} onChange={(e) => setTopic(e.target.value)} />
+                <button style={btn} disabled={busy} onClick={() => void seedDemo()} title="Load demo council" aria-label="Load demo council">☕</button>
                 <button style={primaryBtn} disabled={busy || !topic.trim()} onClick={() => void create()}>Create Council</button>
                 <button style={btn} disabled={busy} onClick={() => void refresh()}>Refresh</button>
             </div>

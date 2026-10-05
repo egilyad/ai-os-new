@@ -119,6 +119,7 @@ const chat: Record<string, string> = {
     'chat.search_messages': 'Поиск сообщений',
     'chat.search_placeholder': 'Поиск…',
     'chat.search_sessions': 'Поиск сессий',
+    'chat.seed_demo': 'Загрузить демо-чат',
     'chat.send': 'Отправить',
     'chat.sending': 'Отправка…',
     'chat.session_group_earlier': 'Ранее',

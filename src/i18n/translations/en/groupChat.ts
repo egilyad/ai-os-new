@@ -13,6 +13,7 @@ const groupChat: Record<string, string> = {
     'groupChat.selection.manual': 'manual',
     'groupChat.maxRounds': 'Max rounds',
     'groupChat.create.submit': 'Create',
+    'groupChat.seed_demo': 'Load demo chat',
     'groupChat.validation.members': 'Enter a name and at least 2 members',
     'groupChat.list.heading': 'Chats',
     'groupChat.list.empty': 'No group chats yet — create one above',

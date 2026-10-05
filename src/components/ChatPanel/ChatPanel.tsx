@@ -6,6 +6,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useSearchParams } from 'react-router-dom';
 import { useKeyList } from '../../stores/useKeyStore';
 import { useChatStore } from '../../stores/useChatStore';
+import { seedChatDemo } from '../../stores/chat/chat-demo-seed';
+import { resolveSessionStore } from '../../stores/chat/store-helpers';
 import { useUiPreferences } from '../../stores/uiPreferencesStore';
 import MessageSearchPanel from '../MessageSearchPanel';
 import { useTranslation } from '../../i18n/useTranslation';
@@ -30,6 +32,7 @@ const ChatPanel: React.FC = () => {
     const sendMessage = useChatStore((s) => s.sendMessage);
     const activeSessionId = useChatStore((s) => s.activeSessionId);
     const setActiveSessionId = useChatStore((s) => s.setActiveSessionId);
+const setSessions = useChatStore((s) => s.setSessions);
     const createSession = useChatStore((s) => s.createSession);
     const forkSession = useChatStore((s) => s.forkSession);
     const editEntry = useChatStore((s) => s.editEntry);
@@ -299,6 +302,18 @@ const ChatPanel: React.FC = () => {
         [setActiveSessionId, setShowSidebar],
     );
 
+    const handleSeedDemo = useCallback(async () => {
+        const store = resolveSessionStore();
+        if (!store) return;
+        const id = await seedChatDemo(store);
+        const session = await store.getSession(id);
+        if (session) {
+            setSessions((prev) => [session, ...prev.filter((s) => s.id !== id)]);
+            setActiveSessionId(id);
+            setShowSidebar(false);
+        }
+    }, [setSessions, setActiveSessionId, setShowSidebar]);
+
     useEffect(() => {
         const timer = setTimeout(() => {
             const currentHistory = useChatStore
@@ -330,6 +345,7 @@ const ChatPanel: React.FC = () => {
                 sidebarWidth={sidebarWidth}
                 sidebarRef={sidebarRef}
                 onNewChat={handleNewChat}
+                onSeedDemo={handleSeedDemo}
                 onSessionClick={handleSidebarSessionClick}
             />
 

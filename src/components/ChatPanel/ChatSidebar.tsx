@@ -14,6 +14,7 @@ interface Props {
     sidebarWidth: number;
     sidebarRef: React.RefObject<HTMLDivElement | null>;
     onNewChat: () => void;
+    onSeedDemo?: () => void;
     onSessionClick: (id: string) => void;
 }
 
@@ -22,6 +23,7 @@ const ChatSidebar: React.FC<Props> = ({
     sidebarWidth,
     sidebarRef,
     onNewChat,
+    onSeedDemo,
     onSessionClick,
 }) => {
     const { t } = useTranslation();
@@ -147,6 +149,23 @@ const ChatSidebar: React.FC<Props> = ({
                                         {t('chat.sessions_label')}
                                     </span>
                                     <div style={{ display: 'flex', gap: '0.35rem' }}>
+                                        {onSeedDemo && (
+                                            <button
+                                                onClick={onSeedDemo}
+                                                style={{
+                                                    padding: '0.4rem',
+                                                    borderRadius: 8,
+                                                    background: 'transparent',
+                                                    border: '1px solid rgba(255,255,255,0.1)',
+                                                    color: 'var(--text-muted)',
+                                                    cursor: 'pointer',
+                                                }}
+                                                title={t('chat.seed_demo')}
+                                                aria-label={t('chat.seed_demo')}
+                                            >
+                                                ☕
+                                            </button>
+                                        )}
                                         <button
                                             onClick={onNewChat}
                                             style={{
