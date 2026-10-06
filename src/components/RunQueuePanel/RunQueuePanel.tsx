@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from '../../i18n/useTranslation';
 import { runQueueService } from '../../kernel/instances/services-extras';
+import { seedRunQueueDemo } from '../../kernel/services/rivals/runqueue-demo-seed';
 import type { QueuedRun, Toolkit } from '../../kernel/contracts/rivals';
 import { Button, StatusBadge } from '../../components/Common';
 
@@ -61,6 +62,15 @@ export default function RunQueuePanel() {
             setActiveId(item.id);
             setRefId(''); setInputJson('');
         } catch (e) { fail(e); } finally { setBusy(false); }
+    };
+
+    const handleSeedDemo = async () => {
+        setError(null);
+        try {
+            const item = await seedRunQueueDemo();
+            setRuns((prev) => [item, ...prev.filter((r) => r.id !== item.id)]);
+            setActiveId(item.id);
+        } catch (e) { fail(e); }
     };
 
     const handleDrain = async () => {
@@ -153,6 +163,7 @@ export default function RunQueuePanel() {
                     <textarea placeholder={t('runQueue.inputJsonPlaceholder')} value={inputJson} onChange={(e) => setInputJson(e.target.value)} rows={2} style={{ width: '100%', padding: '8px 10px', borderRadius: 8, border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(0,0,0,0.2)', color: 'inherit', fontSize: 11, resize: 'vertical', marginBottom: 8, fontFamily: 'monospace' }} />
                     <div style={{ display: 'flex', gap: 8 }}>
                         <Button variant="primary" size="sm" disabled={busy || !refId.trim()} onClick={() => void handleEnqueue()}>{t('runQueue.enqueue.submit')}</Button>
+                        <Button variant="ghost" size="sm" disabled={busy} onClick={() => void handleSeedDemo()} title="Load demo queue item" aria-label="Load demo queue item">☕</Button>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginLeft: 'auto' }}>
                             <span style={{ fontSize: 11, color: 'var(--slate-500)' }}>{t('runQueue.drain.concurrency')}</span>
                             <input type="number" min={1} max={4} value={drainConcurrency} onChange={(e) => setDrainConcurrency(e.target.value)} style={{ width: 60, padding: '6px 8px', borderRadius: 8, border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(0,0,0,0.2)', color: 'inherit', fontSize: 11 }} />

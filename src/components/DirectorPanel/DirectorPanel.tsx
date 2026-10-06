@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useTranslation } from '../../i18n/useTranslation';
 import type { ConversationScenario } from '../../kernel/contracts/conversation/scenario';
+import { scenarioRepository } from '../../kernel/instances/services-extras';
+import { seedDirectorDemo } from '../../kernel/services/director-demo-seed';
 import ConfigureTab from './ConfigureTab';
 import LibraryTab from './LibraryTab';
 import RunTab from './RunTab';
@@ -13,16 +15,39 @@ const DirectorPanel: React.FC = () => {
     const { t } = useTranslation();
     const [activeTab, setActiveTab] = useState<DirectorTab>('configure');
     const [selectedScenario, setSelectedScenario] = useState<ConversationScenario | null>(null);
+    const [seedingDemo, setSeedingDemo] = useState(false);
+
+    const handleSeedDemo = async () => {
+        if (seedingDemo) return;
+        setSeedingDemo(true);
+        try {
+            await seedDirectorDemo(scenarioRepository);
+            setActiveTab('library');
+        } finally {
+            setSeedingDemo(false);
+        }
+    };
 
     return (
         <div
             style={{ height: '100%', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}
         >
-            <div style={{ padding: '0.75rem 1rem', borderBottom: '1px solid #2a2a35' }}>
-                <h2 style={{ margin: 0, fontSize: '1.1rem' }}>{t('director.title')}</h2>
-                <p style={{ margin: '0.25rem 0 0', fontSize: '0.8rem', opacity: 0.7 }}>
-                    {t('director.subtitle')}
-                </p>
+            <div style={{ padding: '0.75rem 1rem', borderBottom: '1px solid #2a2a35', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '0.75rem' }}>
+                <div>
+                    <h2 style={{ margin: 0, fontSize: '1.1rem' }}>{t('director.title')}</h2>
+                    <p style={{ margin: '0.25rem 0 0', fontSize: '0.8rem', opacity: 0.7 }}>
+                        {t('director.subtitle')}
+                    </p>
+                </div>
+                <button
+                    onClick={() => void handleSeedDemo()}
+                    disabled={seedingDemo}
+                    title={t('director.seed_demo')}
+                    aria-label={t('director.seed_demo')}
+                    style={{ padding: '0.4rem 0.8rem', borderRadius: 6, cursor: 'pointer', border: '1px solid #2a2a35', background: 'transparent', color: 'inherit', fontSize: '0.85rem' }}
+                >
+                    ☕
+                </button>
             </div>
             <div
                 style={{

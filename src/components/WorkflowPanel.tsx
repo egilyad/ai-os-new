@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { workflowService } from '../kernel/instances';
+import { seedWorkflowsDemo } from '../kernel/services/workflows-demo-seed';
 import { useTranslation } from '../i18n/useTranslation';
 import {
     Play,
@@ -44,6 +45,7 @@ const WorkflowPanel: React.FC = () => {
     const [running, setRunning] = useState(false);
     const [currentRun, setCurrentRun] = useState<WorkflowRun | null>(null);
     const [showCreate, setShowCreate] = useState(false);
+    const [seedingDemo, setSeedingDemo] = useState(false);
     const [formTitle, setFormTitle] = useState('');
     const [formDesc, setFormDesc] = useState('');
 
@@ -52,6 +54,16 @@ const WorkflowPanel: React.FC = () => {
         setWorkflows([...BUILT_IN_WORKFLOWS, ...w]);
         setRuns(r);
     }, []);
+
+    const handleSeedDemo = useCallback(async () => {
+        setSeedingDemo(true);
+        try {
+            await seedWorkflowsDemo(workflowService);
+            await load();
+        } finally {
+            setSeedingDemo(false);
+        }
+    }, [load]);
 
     useEffect(() => {
         load();
@@ -111,6 +123,24 @@ const WorkflowPanel: React.FC = () => {
                     >
                         {t('workflows.title')}
                     </h2>
+                    <div style={{ display: 'flex', gap: 6 }}>
+                    <button
+                        onClick={() => void handleSeedDemo()}
+                        disabled={seedingDemo}
+                        title={t('workflows.seed_demo')}
+                        aria-label={t('workflows.seed_demo')}
+                        style={{
+                            padding: 6,
+                            borderRadius: 8,
+                            background: 'transparent',
+                            border: '1px solid rgba(255,255,255,0.1)',
+                            color: 'var(--slate-400)',
+                            cursor: 'pointer',
+                            display: 'flex',
+                        }}
+                    >
+                        ☕
+                    </button>
                     <button
                         onClick={() => setShowCreate(true)}
                         style={{
@@ -125,6 +155,7 @@ const WorkflowPanel: React.FC = () => {
                     >
                         <Plus size={16} />
                     </button>
+                    </div>
                 </div>
                 <p style={{ margin: 0, fontSize: '0.78rem', color: 'var(--slate-500)' }}>
                     {t('workflows.subtitle')}

@@ -8,6 +8,7 @@ import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { shallow } from 'zustand/shallow';
 import { useTranslation } from '../../i18n/useTranslation';
 import { channelService } from '../../kernel/instances/services-extras';
+import { seedChannelsDemo } from '../../kernel/services/channels-demo-seed';
 import { useChannelStore, ensureSubscribed, destroy } from '../../stores/channel-store';
 import type { ChannelStoreState } from '../../stores/channel-store';
 import { Button, StatusBadge } from '../Common';
@@ -141,6 +142,16 @@ const ChannelPanel: React.FC = () => {
         refresh();
     }, [refresh]);
 
+    const handleSeedDemo = async () => {
+        try {
+            const { channel } = await seedChannelsDemo(channelService);
+            refresh();
+            selectChannel(channel.id);
+        } catch (e) {
+            console.error('[ChannelPanel] demo seed failed', e);
+        }
+    };
+
     const handleCreate = useCallback(async () => {
         if (!newName.trim()) return;
         const svc = channelService;
@@ -160,9 +171,12 @@ const ChannelPanel: React.FC = () => {
             <div style={SIDEBAR}>
                 <div style={SIDEBAR_HEADER}>
                     <span style={{ fontWeight: 600, fontSize: '0.9rem' }}>{t('channels.title')}</span>
+                    <div style={{ display: 'flex', gap: 6 }}>
+                    <Button variant="ghost" size="sm" onClick={() => void handleSeedDemo()} title={t('channels.seed_demo')} aria-label={t('channels.seed_demo')}>☕</Button>
                     <Button variant="ghost" size="sm" onClick={() => setShowCreate(!showCreate)}>
                         {showCreate ? '✕' : '+'}
                     </Button>
+                    </div>
                 </div>
 
                 {showCreate && (

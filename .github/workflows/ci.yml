@@ -354,6 +354,8 @@ jobs:
                       spec: 'e2e/data-research.spec.ts'
                     - name: fleet
                       spec: 'e2e/data-fleet.spec.ts'
+                    - name: runtime
+                      spec: 'e2e/data-runtime.spec.ts'
         permissions:
             # CI-M-3: download-artifact within the same run needs no actions scope.
             contents: read

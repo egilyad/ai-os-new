@@ -23,6 +23,7 @@ const workspace: Record<string, string> = {
     'batch.col_tokens': 'Tokens',
     'batch.col_response': 'Response',
     'workflows.title': 'Workflows',
+    'workflows.seed_demo': 'Load demo workflow',
     'workflows.subtitle': 'Multi-step LLM pipelines with variable chaining',
     'workflows.select_workflow': 'Select a workflow from the sidebar to start',
     'workflows.input_label': 'Input',

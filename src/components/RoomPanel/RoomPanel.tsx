@@ -7,7 +7,8 @@ import type {
     InvocationContext,
     InvocationRequest,
 } from '../../kernel/contracts/invocation';
-import { invocationEngine } from '../../kernel/instances/services-extras';
+import { invocationEngine, invocationRepository } from '../../kernel/instances/services-extras';
+import { seedRoomsDemo } from '../../kernel/services/rooms-demo-seed';
 import { agentService } from '../../kernel/instances/services-core';
 import { useInvocationStore } from '../../stores/invocationStore';
 import { StatusBadge, Button, AgentDisplay } from '../../components/Common';
@@ -96,6 +97,7 @@ const RoomPanel: React.FC = () => {
     const [where, setWhere] = useState<InvocationContext['type']>('room');
     const [mode, setMode] = useState<ExecutionMode>('chat');
     const [task, setTask] = useState('');
+    const [seedingDemo, setSeedingDemo] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [meta, setMeta] = useState<Record<string, { task?: string }>>({});
     const [openDetails, setOpenDetails] = useState<Record<string, boolean>>({});
@@ -131,6 +133,20 @@ const RoomPanel: React.FC = () => {
     const scopedFeed = activeSessionRef
         ? feed.filter((e) => e.sessionId === activeSessionRef.ref)
         : feed;
+
+    const handleSeedDemo = async () => {
+        if (seedingDemo) return;
+        setSeedingDemo(true);
+        setError(null);
+        try {
+            await seedRoomsDemo(invocationRepository);
+            await useInvocationStore.getState().loadHistory();
+        } catch (e) {
+            console.error('RoomPanel: demo seed failed', e);
+        } finally {
+            setSeedingDemo(false);
+        }
+    };
 
     const handleInvoke = async () => {
         setError(null);
@@ -237,9 +253,19 @@ const RoomPanel: React.FC = () => {
                     />
                 </label>
 
-                <div style={{ marginTop: 10 }}>
+                <div style={{ marginTop: 10, display: 'flex', gap: 8 }}>
                     <Button variant="primary" onClick={handleInvoke}>
                         {t('room.invoke.submit')}
+                    </Button>
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => void handleSeedDemo()}
+                        disabled={seedingDemo}
+                        title={t('room.seed_demo')}
+                        aria-label={t('room.seed_demo')}
+                    >
+                        ☕
                     </Button>
                 </div>
                 {error && (

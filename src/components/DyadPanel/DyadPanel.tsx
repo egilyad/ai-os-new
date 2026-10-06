@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from '../../i18n/useTranslation';
 import { dyadService } from '../../kernel/instances/services-extras';
+import { seedDyadDemo } from '../../kernel/services/rivals/dyad-demo-seed';
 import type { AgentLoop } from '../../kernel/contracts/rivals';
 import { Button, StatusBadge } from '../../components/Common';
 
@@ -66,6 +67,13 @@ export default function DyadPanel() {
         );
     };
 
+    const handleSeedDemo = async () => {
+        try {
+            const loop = await seedDyadDemo();
+            await reload(loop.id);
+        } catch (e) { fail(e); }
+    };
+
     const handleOpen = async () => {
         setError(null); setNotice(null);
         const id = openId.trim(); if (!id) return;
@@ -84,6 +92,7 @@ export default function DyadPanel() {
                 <div style={{ padding: '14px 16px', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
                     <div style={{ fontSize: 16, fontWeight: 800 }}>{t('dyad.title')}</div>
                     <div style={{ fontSize: 12, color: 'var(--slate-500)', marginTop: 4 }}>{t('dyad.subtitle')}</div>
+                    <button onClick={() => void handleSeedDemo()} title="Load demo dyad" aria-label="Load demo dyad" style={{ marginTop: 8, padding: '6px 12px', borderRadius: 8, border: '1px solid rgba(255,255,255,0.1)', background: 'transparent', color: 'var(--slate-300)', cursor: 'pointer', fontSize: 12, fontWeight: 600 }}>☕ Load demo dyad</button>
                     {error && <div style={{ marginTop: 8, color: 'var(--error)', fontSize: 12 }}>{error}</div>}
                     {notice && <div style={{ marginTop: 8, color: '#f59e0b', fontSize: 12 }}>{notice}</div>}
                 </div>

@@ -23,6 +23,7 @@ const workspace: Record<string, string> = {
     'batch.col_tokens': 'колонка: токены',
     'batch.col_response': 'Ответ',
     'workflows.title': 'Заголовок',
+    'workflows.seed_demo': 'Загрузить демо-процесс',
     'workflows.subtitle': 'Подзаголовок',
     'workflows.select_workflow': 'Выбрать рабочий процесс',
     'workflows.input_label': 'Ввод Метка',
