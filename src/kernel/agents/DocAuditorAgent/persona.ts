@@ -8,8 +8,8 @@ export const DOC_AUDITOR_METADATA = {
     displayName: 'Felix Moreau',
     baseRole: 'Documentation Auditor',
     avatar: { emoji: '🔍', color: '#ec4899' },
-    provider: 'nvidia',
-    model: 'meta/llama-3.3-70b-instruct',
+    provider: 'gemini',
+    model: 'gemini-3.1-flash-lite',
     specializations: ['Compliance', 'Review', 'Accuracy'] as string[],
     lensIds: [] as string[],
 };

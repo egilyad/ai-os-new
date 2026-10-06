@@ -144,9 +144,10 @@ export class RouterDebateSelector {
             if (arr.length < 3) arr.push(k);
             byProvider.set(k.provider, arr);
         }
+        // P4: provider-diversity ordering — google (gemini) first, then the rest.
         const PRIORITY = [
-            'groq',
             'gemini',
+            'groq',
             'openrouter',
             'nvidia',
             'cerebras',

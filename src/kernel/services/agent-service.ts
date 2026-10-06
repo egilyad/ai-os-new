@@ -1,4 +1,4 @@
-import type { ISTopology, AgentLifecycleState, ISNode } from '../contracts/topology';
+import type { ISTopology, AgentLifecycleState, ISNode, ISEdge } from '../contracts/topology';
 import type {
     IAgentResolver,
     ResolvedAgent,
@@ -67,6 +67,18 @@ export interface AgentServiceDeps {
 
 const STATS_KEY = 'super_agents_agent_stats';
 const GROUPS_KEY = 'super_agents_agent_groups';
+// P0: user agent customizations, surviving reboot. Registry nodes keep only
+// touched overrides ({label, full config snapshot}); spawned/imported agents
+// are stored whole (nodes + their edges); registry agents the user deleted
+// are recorded so boot does not resurrect them.
+const TOPOLOGY_OVERRIDES_KEY = 'super_agents_agent_topology';
+
+export interface StoredAgentTopology {
+    overrides: Record<string, { label?: string; config: Record<string, unknown> }>;
+    customNodes: ISNode[];
+    customEdges: ISEdge[];
+    deletedIds: string[];
+}
 
 export class AgentService implements IAgentResolver {
     private readonly MAX_AGENT_STATS = 500;
@@ -98,10 +110,12 @@ export class AgentService implements IAgentResolver {
         this.setupListeners();
         await this.load();
         await this.loadGroups();
+        await this.loadTopologyOverrides();
         if (typeof window !== 'undefined') {
             this._onUnload = () => {
                 this.deps.database.setKv(STATS_KEY, Object.fromEntries(this.stats));
                 this.deps.database.setKv(GROUPS_KEY, this.groups);
+                this.persistTopology(true);
             };
             window.addEventListener('beforeunload', this._onUnload);
         }
@@ -114,6 +128,11 @@ export class AgentService implements IAgentResolver {
             clearTimeout(this.persistDebounceTimer);
             this.persistDebounceTimer = null;
         }
+        if (this.topoPersistTimer) {
+            clearTimeout(this.topoPersistTimer);
+            this.topoPersistTimer = null;
+        }
+        this.persistTopology(true);
         if (this._onUnload && typeof window !== 'undefined') {
             window.removeEventListener('beforeunload', this._onUnload);
             this._onUnload = null;
@@ -153,7 +172,156 @@ export class AgentService implements IAgentResolver {
         }
     }
 
+    // ── P0: topology overrides persistence ──────────────────────────────
+
+    private async loadTopologyOverrides(): Promise<void> {
+        try {
+            const parsed =
+                await this.deps.database.getKv<StoredAgentTopology>(TOPOLOGY_OVERRIDES_KEY);
+            if (!parsed) return;
+            this.topologyOverrides = parsed.overrides ?? {};
+            for (const id of Object.keys(this.topologyOverrides)) this.touchedIds.add(id);
+            this.storedCustomNodes = parsed.customNodes ?? [];
+            this.storedCustomEdges = parsed.customEdges ?? [];
+            for (const n of this.storedCustomNodes) this.customIds.add(n.id);
+            for (const id of parsed.deletedIds ?? []) {
+                if (!this.customIds.has(id)) this.deletedIds.add(id);
+            }
+        } catch (e) {
+            LOGGER.error('AgentService', 'Failed to load topology overrides', { error: e });
+        }
+    }
+
+    /** Rebuild the persisted snapshot from live topology + tracked sets. */
+    private snapshotTopology(): StoredAgentTopology {
+        const top = this.deps.orchestrator.getActiveTopology();
+        const overrides: StoredAgentTopology['overrides'] = {};
+        const customNodes: ISNode[] = [];
+        const customEdges: ISEdge[] = [];
+        if (top) {
+            for (const n of top.nodes) {
+                if (n.type !== 'agent' && n.type !== 'router') continue;
+                if (this.customIds.has(n.id)) {
+                    customNodes.push(structuredClone(n));
+                } else if (this.touchedIds.has(n.id)) {
+                    overrides[n.id] = {
+                        label: n.label,
+                        config: structuredClone(
+                            (n.config ?? {}) as Record<string, unknown>,
+                        ),
+                    };
+                }
+            }
+            for (const e of top.edges ?? []) {
+                const edge = e as unknown as { from?: string; to?: string };
+                if (
+                    typeof edge.from === 'string' &&
+                    typeof edge.to === 'string' &&
+                    (this.customIds.has(edge.from) || this.customIds.has(edge.to))
+                ) {
+                    customEdges.push(structuredClone(e as unknown as ISEdge));
+                }
+            }
+        }
+        return {
+            overrides,
+            customNodes,
+            customEdges,
+            deletedIds: [...this.deletedIds],
+        };
+    }
+
+    private persistTopology(immediate = false): void {
+        const write = () => {
+            this.topoPersistTimer = null;
+            const snap = this.snapshotTopology();
+            // Keep the in-memory source of truth fresh for later mounts.
+            this.storedCustomNodes = snap.customNodes;
+            this.storedCustomEdges = snap.customEdges;
+            this.deps.database
+                .setKv(TOPOLOGY_OVERRIDES_KEY, snap)
+                .catch((e) =>
+                    LOGGER.error('AgentService', 'Failed to persist topology overrides:', {
+                        error: e,
+                    }),
+                );
+        };
+        if (immediate) {
+            if (this.topoPersistTimer) clearTimeout(this.topoPersistTimer);
+            write();
+            return;
+        }
+        if (this.topoPersistTimer) clearTimeout(this.topoPersistTimer);
+        this.topoPersistTimer = setTimeout(write, 2000);
+    }
+
+    /**
+     * Apply stored user customizations onto a freshly mounted topology.
+     * Runs on every SYSTEM_TOPOLOGY_MOUNTED (boot + snapshot restores):
+     * mutates nodes in place, never re-mounts, so no event loop.
+     */
+    applyStoredTopologyOverrides(): void {
+        const top = this.deps.orchestrator.getActiveTopology();
+        if (!top) return;
+        const hasOverrides = Object.keys(this.topologyOverrides).length > 0;
+        if (
+            !hasOverrides &&
+            this.customIds.size === 0 &&
+            this.deletedIds.size === 0
+        )
+            return;
+        const byId = new Map(top.nodes.map((n) => [n.id, n]));
+        // 1. Drop registry nodes the user deleted (custom nodes are never in deletedIds).
+        if (this.deletedIds.size > 0) {
+            top.nodes = top.nodes.filter((n) => !this.deletedIds.has(n.id));
+            top.edges = (top.edges ?? []).filter((e) => {
+                const edge = e as unknown as { from?: string; to?: string };
+                return !this.deletedIds.has(edge.from ?? '') && !this.deletedIds.has(edge.to ?? '');
+            });
+        }
+        // 2. Re-apply touched overrides onto registry nodes.
+        for (const [id, patch] of Object.entries(this.topologyOverrides)) {
+            const node = byId.get(id);
+            if (!node || node.type === 'router') continue;
+            node.config = { ...(node.config ?? {}), ...patch.config };
+            if (patch.label) node.label = patch.label;
+        }
+        // 3. Re-attach custom (spawned/imported) nodes + edges missing from this mount.
+        const liveIds = new Set(top.nodes.map((n) => n.id));
+        for (const n of this.storedCustomNodes) {
+            if (!liveIds.has(n.id)) {
+                top.nodes.push(structuredClone(n));
+                liveIds.add(n.id);
+            }
+        }
+        const liveEdges = new Set(
+            (top.edges ?? []).map((e) => {
+                const edge = e as unknown as { id?: string; from?: string; to?: string };
+                return edge.id ?? `${edge.from}->${edge.to}`;
+            }),
+        );
+        for (const e of this.storedCustomEdges) {
+            const edge = e as unknown as { id?: string; from?: string; to?: string };
+            const key = edge.id ?? `${edge.from}->${edge.to}`;
+            if (!liveEdges.has(key)) {
+                (top.edges ??= []).push(structuredClone(e));
+                liveEdges.add(key);
+            }
+        }
+    }
+
     private persistDebounceTimer: ReturnType<typeof setTimeout> | null = null;
+
+    // P0: ids touched by the user (overrides) + spawned/imported node ids.
+    private touchedIds = new Set<string>();
+    private customIds = new Set<string>();
+    private deletedIds = new Set<string>();
+    private topologyOverrides: StoredAgentTopology['overrides'] = {};
+    // Custom nodes/edges as loaded from storage (source of truth until the
+    // first persist rewrites them from live topology).
+    private storedCustomNodes: ISNode[] = [];
+    private storedCustomEdges: ISEdge[] = [];
+    private topoPersistTimer: ReturnType<typeof setTimeout> | null = null;
 
     private persist() {
         if (this.persistDebounceTimer) clearTimeout(this.persistDebounceTimer);
@@ -174,6 +342,17 @@ export class AgentService implements IAgentResolver {
 
     private setupListeners() {
         this.unsubs.push(
+            // P0: re-apply stored user customizations on every mount (boot +
+            // snapshot restores). Mutates in place, never re-mounts.
+            this.deps.eventBus.onSafe<{ topologyId?: string }>(EVENTS.SYSTEM_TOPOLOGY_MOUNTED, () => {
+                try {
+                    this.applyStoredTopologyOverrides();
+                } catch (e) {
+                    LOGGER.error('AgentService', 'Failed to apply topology overrides', {
+                        error: e,
+                    });
+                }
+            }),
             this.deps.eventBus.onSafe<{
                 nodeId: string;
                 duration?: number;
@@ -417,7 +596,7 @@ export class AgentService implements IAgentResolver {
         });
         const entry = top.nodes.find((n) => n.type === 'router' || n.id === 'entry');
         if (entry)
-            top.edges.push({
+            (top.edges ??= []).push({
                 id: `edge-${crypto.randomUUID()}`,
                 from: entry.id,
                 to: newId,
@@ -426,6 +605,10 @@ export class AgentService implements IAgentResolver {
         this.deps.orchestrator.mount({ ...top });
         this.transitionLifecycle(newId, 'initializing', 'ready');
         this.deps.eventBus.emit(EVENTS.SYSTEM_NODE_SPAWN, { nodeId: newId, type: name });
+        // P0: track + persist the spawned node.
+        this.customIds.add(newId);
+        this.deletedIds.delete(newId);
+        this.persistTopology();
         return newId;
     }
 
@@ -438,6 +621,9 @@ export class AgentService implements IAgentResolver {
         node.config = { ...node.config, ...configUpdates };
         if (label) node.label = label as string;
         this.deps.orchestrator.mount({ ...top });
+        // P0: remember the touch so it survives reboot.
+        if (!this.customIds.has(agentId)) this.touchedIds.add(agentId);
+        this.persistTopology();
     }
 
     deleteAgent(agentId: string) {
@@ -451,7 +637,15 @@ export class AgentService implements IAgentResolver {
         for (const group of this.groups) {
             group.agentIds = group.agentIds.filter((id) => id !== agentId);
         }
+        // P0: forget custom/override data; remember registry deletions.
+        this.touchedIds.delete(agentId);
+        if (this.customIds.has(agentId)) {
+            this.customIds.delete(agentId);
+        } else {
+            this.deletedIds.add(agentId);
+        }
         this.persist();
+        this.persistTopology();
         this.deps.eventBus.emit(EVENTS.SYSTEM_NODE_REMOVED, { id: agentId });
         this.stats.delete(agentId);
         this.autoCloneIds.delete(agentId);
@@ -518,6 +712,9 @@ export class AgentService implements IAgentResolver {
         }
         this.deps.orchestrator.mount({ ...top });
         this.deps.eventBus.emit('agent:parentChanged', { childId, parentId });
+        // P0: parent linkage lives in node config — persist the touch.
+        if (!this.customIds.has(childId)) this.touchedIds.add(childId);
+        this.persistTopology();
     }
 
     removeParent(childId: string): void {
@@ -654,6 +851,7 @@ export class AgentService implements IAgentResolver {
             let count = 0;
             let toolsLinked = 0;
             let skillsLinked = 0;
+            const importedIds = new Set<string>();
             for (const item of imported as Array<Record<string, unknown>>) {
                 if (typeof item.id !== 'string' || typeof item.type !== 'string') continue;
                 if (!ALLOWED_NODE_TYPES.includes(item.type as string)) continue;
@@ -685,10 +883,17 @@ export class AgentService implements IAgentResolver {
                         label: (item.label as string) ?? '',
                         config: sanitizedConfig,
                     });
+                    importedIds.add(newId);
                     count++;
                 }
             }
             this.deps.orchestrator.mount({ ...top });
+            // P0: only imported ids become custom (pre-existing registry
+            // nodes stay registry-managed so code defaults keep flowing).
+            for (const n of top.nodes) {
+                if (importedIds.has(n.id)) this.customIds.add(n.id);
+            }
+            this.persistTopology();
             LOGGER.info('AgentService', 'imported', { count, toolsLinked, skillsLinked });
             return count;
         } catch (e) {

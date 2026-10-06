@@ -183,7 +183,8 @@ export class FactCheckService {
         const cached = this.apiKeyCache.get('default');
         if (cached && cached.key) return cached;
 
-        for (const provider of ['groq', 'gemini', 'openrouter'] as const) {
+        // P4: default key lookup prefers google (gemini) first.
+        for (const provider of ['gemini', 'groq', 'openrouter'] as const) {
             const key = this.deps.getApiKey(provider);
             if (key) {
                 const entry = { key, provider };

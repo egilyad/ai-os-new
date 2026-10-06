@@ -8,8 +8,8 @@ export const SRE_AGENT_METADATA = {
     displayName: 'Alex Reed',
     baseRole: 'Site Reliability Engineer',
     avatar: { emoji: '🛠️', color: '#0ea5e9' },
-    provider: 'groq',
-    model: 'llama-3.3-70b-versatile',
+    provider: 'gemini',
+    model: 'gemini-3.1-flash-lite',
     specializations: ['Reliability', 'Incident Response', 'Observability'] as string[],
     lensIds: [] as string[],
 };

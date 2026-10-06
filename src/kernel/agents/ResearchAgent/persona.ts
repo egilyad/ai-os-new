@@ -8,8 +8,8 @@ export const RESEARCH_METADATA = {
     displayName: 'Mira Castellan',
     baseRole: 'Research Analyst',
     avatar: { emoji: '🧪', color: '#6366f1' },
-    provider: 'openrouter',
-    model: 'openrouter/meta-llama/llama-3.3-70b-instruct',
+    provider: 'gemini',
+    model: 'gemini-3.1-flash-lite',
     specializations: ['Literature Review', 'Synthesis', 'Citations'] as string[],
     lensIds: [] as string[],
 };

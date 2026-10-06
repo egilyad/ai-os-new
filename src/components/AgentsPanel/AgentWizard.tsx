@@ -50,7 +50,8 @@ export const AgentWizard: React.FC<AgentWizardProps> = ({ isOpen, onClose, onAge
 
   const generator = React.useMemo(() => new AgentGenerator({
     sendMessage: async (messages, model, apiKey) => {
-      const providers = ['groq', 'gemini', 'openrouter'];
+      // P4: try google (gemini) first, then the rest.
+      const providers = ['gemini', 'groq', 'openrouter'];
       let adapter = null;
       for (const p of providers) {
         adapter = adapterRegistry.getAdapter(p);

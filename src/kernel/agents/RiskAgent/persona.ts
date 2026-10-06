@@ -8,8 +8,8 @@ export const RISK_METADATA = {
     displayName: 'Rafael Stone',
     baseRole: 'Risk Analyst',
     avatar: { emoji: '📊', color: '#ef4444' },
-    provider: 'openrouter',
-    model: 'openrouter/meta-llama/llama-3.3-70b-instruct',
+    provider: 'gemini',
+    model: 'gemini-3.1-flash-lite',
     specializations: ['Risk Modeling', 'Monte Carlo', 'Compliance'] as string[],
     lensIds: [] as string[],
 };

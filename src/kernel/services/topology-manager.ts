@@ -127,7 +127,8 @@ export class TopologyManager implements ILifecycle {
             const usedProviders = new Set(
                 agents.map((a) => (a.config.provider as string) || 'auto'),
             );
-            const fallbackProvider = ['groq', 'gemini', 'openrouter', 'nvidia'].find(
+            // P4: diversity fallback prefers google (gemini) first.
+            const fallbackProvider = ['gemini', 'groq', 'openrouter', 'nvidia'].find(
                 (p) => !usedProviders.has(p),
             );
             if (!fallbackProvider) return false;

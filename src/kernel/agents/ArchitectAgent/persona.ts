@@ -8,8 +8,8 @@ export const ARCHITECT_METADATA = {
     displayName: 'Marcus Hale',
     baseRole: 'System Architect',
     avatar: { emoji: '🏗️', color: '#8b5cf6' },
-    provider: 'groq',
-    model: 'llama-3.3-70b-versatile',
+    provider: 'gemini',
+    model: 'gemini-3.1-flash-lite',
     specializations: ['Distributed Systems', 'Event-Driven', 'Scalability'] as string[],
     lensIds: [] as string[],
 };

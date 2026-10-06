@@ -9,7 +9,7 @@ export function checkDebatePreflight(
     const activeKeys = deps.keyService.getActiveKeys();
     if (activeKeys.length === 0) throw new Error('No active API keys available');
     const availableProviders = new Set(activeKeys.map((k) => k.provider.toLowerCase()));
-    const DEBATE_PROVIDERS = ['groq', 'gemini', 'openrouter', 'nvidia'];
+    const DEBATE_PROVIDERS = ['gemini', 'groq', 'openrouter', 'nvidia'];
     const hasDebateProvider = DEBATE_PROVIDERS.some((p) => availableProviders.has(p));
     if (!hasDebateProvider) {
         throw new Error(

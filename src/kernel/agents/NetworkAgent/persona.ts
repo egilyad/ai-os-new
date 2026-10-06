@@ -8,8 +8,8 @@ export const NETWORK_METADATA = {
     displayName: 'Nadia Volkov',
     baseRole: 'Network Engineer',
     avatar: { emoji: '🌐', color: '#06b6d4' },
-    provider: 'groq',
-    model: 'llama-3.3-70b-versatile',
+    provider: 'gemini',
+    model: 'gemini-3.1-flash-lite',
     specializations: ['TCP/IP', 'SDN', 'Latency Optimization'] as string[],
     lensIds: [] as string[],
 };
