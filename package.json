@@ -63,7 +63,7 @@
     "framer-motion": "^12.38.0",
     "groq-sdk": "^1.4.0",
     "lucide-react": "^1.14.0",
-    "meriyah": "^7.1.0",
+    "meriyah": "^7.3.3",
     "monaco-editor": "^0.52.2",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
