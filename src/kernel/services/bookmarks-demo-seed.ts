@@ -1,6 +1,6 @@
 import type { ChatBookmarksService, ChatBookmark } from './chat-bookmarks-service';
 import type { SessionStore } from '../contracts/storage/session-store';
-import { seedChatDemo } from '../../stores/chat/chat-demo-seed';
+import { seedChatDemo } from './chat-demo-seed';
 
 /**
  * Demo seed for Bookmarks: bookmarks the first assistant reply of the demo

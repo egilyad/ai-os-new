@@ -1,5 +1,5 @@
-import { createTestDb, type TestDb } from '../../kernel/dal/_test-harness';
-import { createDexieStorage, resetDexieStorage } from '../../kernel/services/storage/dexie-storage';
+import { createTestDb, type TestDb } from '../dal/_test-harness';
+import { createDexieStorage, resetDexieStorage } from './storage/dexie-storage';
 import { seedChatDemo, DEMO_CHAT_ID, DEMO_CHAT_TITLE } from './chat-demo-seed';
 
 describe('chat-demo-seed', () => {

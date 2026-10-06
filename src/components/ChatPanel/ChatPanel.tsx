@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useSearchParams } from 'react-router-dom';
 import { useKeyList } from '../../stores/useKeyStore';
 import { useChatStore } from '../../stores/useChatStore';
-import { seedChatDemo } from '../../stores/chat/chat-demo-seed';
+import { seedChatDemo } from '../../kernel/services/chat-demo-seed';
 import { resolveSessionStore } from '../../stores/chat/store-helpers';
 import { useUiPreferences } from '../../stores/uiPreferencesStore';
 import MessageSearchPanel from '../MessageSearchPanel';

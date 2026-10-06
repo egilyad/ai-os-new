@@ -1,5 +1,5 @@
-import type { ChatResponse } from '../../kernel/types/chat-types';
-import type { ChatEntry, ChatSession, SessionStore } from '../../kernel/contracts/storage/session-store';
+import type { ChatResponse } from '../types/chat-types';
+import type { ChatEntry, ChatSession, SessionStore } from '../contracts/storage/session-store';
 
 /**
  * Demo seed for Chat: one completed session with a finished user → assistant
