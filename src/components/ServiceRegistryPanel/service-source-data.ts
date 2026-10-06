@@ -3,17 +3,24 @@
 // has already emitted chunks for every matched file, so filtering must
 // happen here, at glob level — otherwise vitest leaks into the prod bundle
 // and crashes boot (runner.config undefined).
-const SERVICE_GLOB_PATTERNS = [
-    '/src/kernel/services/**/*.ts',
-    '!/src/kernel/services/**/*.test.ts',
-    '!/src/kernel/services/**/*.spec.ts',
-    '!/src/kernel/services/**/*.d.ts',
-    '!/src/kernel/services/**/node_modules/**',
-];
+// NOTE: patterns must be inline literals — Vite rejects variables here
+// ("Invalid glob import syntax: Could only use literals").
+function serviceGlob(): Record<string, () => Promise<unknown>> {
+    return import.meta.glob(
+        [
+            '/src/kernel/services/**/*.ts',
+            '!/src/kernel/services/**/*.test.ts',
+            '!/src/kernel/services/**/*.spec.ts',
+            '!/src/kernel/services/**/*.d.ts',
+            '!/src/kernel/services/**/node_modules/**',
+        ],
+        { eager: false },
+    );
+}
 
 export const serviceSourceFiles: string[] = (() => {
     try {
-        const glob = import.meta.glob(SERVICE_GLOB_PATTERNS, { eager: false });
+        const glob = serviceGlob();
         return Object.keys(glob)
             .filter(
                 (p) =>
@@ -31,7 +38,7 @@ export const serviceSourceFiles: string[] = (() => {
 
 export const serviceSourcePaths: Record<string, string> = (() => {
     try {
-        const glob = import.meta.glob(SERVICE_GLOB_PATTERNS, { eager: false });
+        const glob = serviceGlob();
         const map: Record<string, string> = {};
         for (const p of Object.keys(glob)) {
             if (
