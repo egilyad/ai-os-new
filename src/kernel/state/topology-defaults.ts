@@ -480,6 +480,38 @@ const NODES = normalizeAgentIdentity(
             { id: 'agent-ecologist', type: 'agent', label: 'Эколог', config: { roleName: 'Эколог', prompt: 'Ты — Эколог.', temperature: 0.3, tools: [], model: 'auto' } },
             { id: 'agent-statistician', type: 'agent', label: 'Статистик', config: { roleName: 'Статистик / Дата-сайентист', prompt: 'Ты — Статистик.', temperature: 0.2, tools: [], model: 'auto' } },
             { id: 'agent-security-ru', type: 'agent', label: 'Безопасник', config: { roleName: 'Специалист по безопасности / Криптограф', prompt: 'Ты — Безопасник.', temperature: 0.2, tools: [], model: 'auto' } },
+
+            // ═══ Patent bureau (5) — registry-canonical definitions
+            {
+                id: 'agent-thermodynamics',
+                type: 'agent',
+                label: AGENT_REGISTRY['agent-thermodynamics']!.metadata.name,
+                config: AGENT_REGISTRY['agent-thermodynamics']!.config! as ISNode['config'],
+            },
+            {
+                id: 'agent-materials',
+                type: 'agent',
+                label: AGENT_REGISTRY['agent-materials']!.metadata.name,
+                config: AGENT_REGISTRY['agent-materials']!.config! as ISNode['config'],
+            },
+            {
+                id: 'agent-schematics',
+                type: 'agent',
+                label: AGENT_REGISTRY['agent-schematics']!.metadata.name,
+                config: AGENT_REGISTRY['agent-schematics']!.config! as ISNode['config'],
+            },
+            {
+                id: 'agent-ai-architect',
+                type: 'agent',
+                label: AGENT_REGISTRY['agent-ai-architect']!.metadata.name,
+                config: AGENT_REGISTRY['agent-ai-architect']!.config! as ISNode['config'],
+            },
+            {
+                id: 'agent-patent',
+                type: 'agent',
+                label: AGENT_REGISTRY['agent-patent']!.metadata.name,
+                config: AGENT_REGISTRY['agent-patent']!.config! as ISNode['config'],
+            },
         ]),
     ),
 );
@@ -488,7 +520,7 @@ export const AuditorTopology: ISTopology = {
     version: '2.0.0',
     name: 'Agent Workforce',
     description:
-        '53 specialized agents across technical, analytical, creative, management, specialized, and documentation domains. Router dispatches to relevant agents; aggregator synthesizes results.',
+        '58 specialized agents across technical, analytical, creative, management, specialized, and documentation domains. Router dispatches to relevant agents; aggregator synthesizes results.',
     nodes: NODES,
     edges: [
         { id: 'e-router-architect', from: 'router', to: 'agent-architect', trigger: 'data_flow' },
@@ -649,6 +681,11 @@ export const AuditorTopology: ISTopology = {
         { id: 'e-router-ecologist', from: 'router', to: 'agent-ecologist', trigger: 'data_flow' },
         { id: 'e-router-statistician', from: 'router', to: 'agent-statistician', trigger: 'data_flow' },
         { id: 'e-router-security-ru', from: 'router', to: 'agent-security-ru', trigger: 'data_flow' },
+        { id: 'e-router-thermodynamics', from: 'router', to: 'agent-thermodynamics', trigger: 'data_flow' },
+        { id: 'e-router-materials', from: 'router', to: 'agent-materials', trigger: 'data_flow' },
+        { id: 'e-router-schematics', from: 'router', to: 'agent-schematics', trigger: 'data_flow' },
+        { id: 'e-router-ai-architect', from: 'router', to: 'agent-ai-architect', trigger: 'data_flow' },
+        { id: 'e-router-patent', from: 'router', to: 'agent-patent', trigger: 'data_flow' },
     ],
     policies: [],
 };

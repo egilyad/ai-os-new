@@ -1,5 +1,5 @@
 /**
- * Curated canonical identities for the 25 seeded workforce agents.
+ * Curated canonical identities for the 58 seeded workforce agents.
  *
  * The user explicitly requested fully fleshed-out agent personas (first name,
  * last name, base role / profession, avatar, model, specializations) — these
@@ -562,5 +562,57 @@ export const AGENT_PROFILES: Record<string, CuratedAgentIdentity> = {
         provider: 'gemini',
         model: 'gemini-3.1-flash-lite',
         specializations: ['Security', 'Cryptography', 'Threat Model'],
+    },
+    // Legacy duplicates of the registry-canonical patent bureau (same scheme
+    // as the migrated six above): keep in sync with src/kernel/agents/*/.
+    'agent-thermodynamics': {
+        firstName: 'Пётр',
+        lastName: 'Кирхгоф',
+        displayName: 'Пётр Кирхгоф',
+        baseRole: 'Физик-Термодинамик',
+        avatar: { emoji: '🧪', color: '#22d3ee' },
+        provider: 'gemini',
+        model: 'gemini-3.1-flash-lite',
+        specializations: ['Термодинамика', 'Тепломассообмен', 'Фазовые переходы'],
+    },
+    'agent-materials': {
+        firstName: 'Анна',
+        lastName: 'Ковалева',
+        displayName: 'Анна Ковалева',
+        baseRole: 'Материаловед',
+        avatar: { emoji: '🧬', color: '#4ade80' },
+        provider: 'gemini',
+        model: 'gemini-3.1-flash-lite',
+        specializations: ['MOF-сорбенты', 'Нанопокрытия', 'Композиты'],
+    },
+    'agent-schematics': {
+        firstName: 'Игорь',
+        lastName: 'Пайкин',
+        displayName: 'Игорь Пайкин',
+        baseRole: 'Инженер-Схемотехник',
+        avatar: { emoji: '🤖', color: '#f59e0b' },
+        provider: 'gemini',
+        model: 'gemini-3.1-flash-lite',
+        specializations: ['Силовая электроника', 'Датчики', 'Гибридные контуры'],
+    },
+    'agent-ai-architect': {
+        firstName: 'Алекс',
+        lastName: 'Нейманов',
+        displayName: 'Алекс Нейманов',
+        baseRole: 'Архитектор ИИ-систем',
+        avatar: { emoji: '🧠', color: '#a78bfa' },
+        provider: 'gemini',
+        model: 'gemini-3.1-flash-lite',
+        specializations: ['Предиктивные модели', 'Цифровые двойники', 'Роевое управление'],
+    },
+    'agent-patent': {
+        firstName: 'Ольга',
+        lastName: 'Формулина',
+        displayName: 'Ольга Формулина',
+        baseRole: 'Патентный поверенный',
+        avatar: { emoji: '⚖️', color: '#eab308' },
+        provider: 'gemini',
+        model: 'gemini-3.1-flash-lite',
+        specializations: ['Формула изобретения', 'Зависимые пункты', 'Объем охраны'],
     },
 };
