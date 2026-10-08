@@ -10,6 +10,7 @@ import React, { useEffect, useState } from 'react';
 import { useCouncilStore } from '../../stores/councilStore';
 import { useResponsive } from '../Layout/ResponsiveShell';
 import { lazyService } from '../../kernel/service-helper';
+import { invalidateLazyServiceNotFound } from '../../kernel/service-helper';
 import type { ICouncilService } from '../../kernel/contracts/council';
 import { seedCouncilDemo } from '../../kernel/services/council/council-demo-seed';
 import type { CouncilSession } from '../../kernel/types/council-types';
@@ -57,8 +58,25 @@ export const CouncilPanel: React.FC = () => {
 
     const seedDemo = async () => {
         await run(async () => {
-            const s = await seedCouncilDemo(councilService);
-            select(s.id);
+            // The councilService lazy proxy can throw ServiceNotRegisteredError
+            // if the first resolution attempt raced container init (dev HMR /
+            // slow boot): drop the negative cache and retry — the factory
+            // itself is unconditional, so a retry resolves it.
+            let lastError: unknown = null;
+            for (let attempt = 0; attempt < 3; attempt++) {
+                try {
+                    invalidateLazyServiceNotFound('councilService');
+                    const s = await seedCouncilDemo(councilService);
+                    select(s.id);
+                    return;
+                } catch (e) {
+                    lastError = e;
+                    const msg = e instanceof Error ? e.message : String(e);
+                    if (!msg.includes('ServiceNotRegisteredError')) throw e;
+                    await new Promise((r) => setTimeout(r, 500));
+                }
+            }
+            throw lastError;
         });
     };
 
