@@ -218,7 +218,10 @@ export class ToolRunnerService implements IToolRunnerService {
             messages.push({
                 role: 'assistant',
                 content: res.content,
-                toolCalls: calls.map((c) => ({ id: c.id, type: 'function' as const, function: c.function })),
+                // Phase 70, трасса B: сохраняем исходный тип вызова —
+                // Anthropic computer_use (`computer_20250124`) обязан вернуться
+                // провайдеру как tool_use, а не как function-call.
+                toolCalls: calls.map((c) => ({ id: c.id, type: c.type, function: c.function })),
             });
             for (const call of calls) {
                 let args: Record<string, unknown>;

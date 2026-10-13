@@ -1,7 +1,9 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { RefreshCw, ShieldCheck, Loader2, AlertTriangle } from 'lucide-react';
+import { RefreshCw, ShieldCheck, Loader2, AlertTriangle, MonitorPlay } from 'lucide-react';
 import { useTranslation } from '../i18n/useTranslation';
 import { gatewayApi as api, DEFAULT_GATEWAY_URL } from './Common';
+import { agemsApprovalService } from '../kernel/services/agems-approval-service';
+import type { ApprovalRequest } from '../kernel/types/agems-approval';
 
 interface ApprovalComment {
     author: string | null;
@@ -205,6 +207,7 @@ const ApprovalsPanel: React.FC = () => {
                     ))}
                     {approvals.length === 0 && <li>{t('approvals.empty')}</li>}
                 </ul>
+
                 {selected && (
                     <div style={{ flex: '2 1 400px', border: '1px solid #e2e8f0', borderRadius: 8, padding: '1rem' }}>
                         <h3 style={{ marginTop: 0 }}>
@@ -254,8 +257,167 @@ const ApprovalsPanel: React.FC = () => {
                     </div>
                 )}
             </div>
+
+            <LocalAgentApprovals />
+            <BrowserUseConfig />
         </div>
     );
 };
+
+/**
+ * Phase 70 — локальные agent→tool approval-запросы (Dexie `approvalRequests`).
+ *
+ * Gateway-секция выше показывает серверные approvals компании; здесь —
+ * локальный HITL-контур ядра (AgemsApprovalService + ApprovalExecutionBridge),
+ * через который идёт `browser.act` (risk=high). Без этой секции PENDING-запросы
+ * browser-use было негде подтвердить, кроме per-agent таба (ro2 §1.7).
+ */
+function LocalAgentApprovals(): React.JSX.Element {
+    const [items, setItems] = useState<ApprovalRequest[]>([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+
+    const load = useCallback(async () => {
+        setLoading(true);
+        setError(null);
+        try {
+            setItems(await agemsApprovalService.list(undefined, 'PENDING'));
+        } catch (e) {
+            setError(e instanceof Error ? e.message : String(e));
+        } finally {
+            setLoading(false);
+        }
+    }, []);
+
+    useEffect(() => {
+        void load();
+        const timer = setInterval(() => void load(), 5000);
+        return () => clearInterval(timer);
+    }, [load]);
+
+    async function decide(id: number | undefined, status: 'APPROVED' | 'REJECTED'): Promise<void> {
+        if (id === undefined) return;
+        setError(null);
+        try {
+            await agemsApprovalService.resolve(id, status, undefined, 'ui:approvals-panel');
+            await load();
+        } catch (e) {
+            setError(e instanceof Error ? e.message : String(e));
+        }
+    }
+
+    return (
+        <div style={{ marginTop: '2rem', borderTop: '1px solid #e2e8f0', paddingTop: '1rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
+                <ShieldCheck size={18} />
+                <h3 style={{ margin: 0 }}>Local agent approvals (browser.act HITL)</h3>
+                <button onClick={() => void load()} disabled={loading} style={{ marginLeft: 'auto' }}>
+                    {loading ? <Loader2 size={14} /> : <RefreshCw size={14} />} Refresh
+                </button>
+            </div>
+            {error && <div style={{ color: '#dc2626', marginBottom: '0.5rem' }}>{error}</div>}
+            {items.length === 0 && <div style={{ color: '#64748b' }}>No pending local approvals.</div>}
+            <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 8 }}>
+                {items.map((r) => (
+                    <li key={r.id} style={{ border: '1px solid #e2e8f0', borderRadius: 8, padding: '0.75rem' }}>
+                        <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
+                            <strong>{r.toolName}</strong>
+                            <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 6, background: r.riskLevel === 'high' ? 'rgba(239,68,68,0.12)' : 'rgba(245,158,11,0.12)', color: r.riskLevel === 'high' ? '#dc2626' : '#b45309' }}>
+                                {r.riskLevel}
+                            </span>
+                            <span style={{ fontSize: 11, color: '#64748b' }}>{r.agentId} · {r.category}</span>
+                            <span style={{ marginLeft: 'auto', display: 'flex', gap: 6 }}>
+                                <button onClick={() => void decide(r.id, 'APPROVED')}>Approve</button>
+                                <button onClick={() => void decide(r.id, 'REJECTED')}>Reject</button>
+                            </span>
+                        </div>
+                        {r.description && <div style={{ fontSize: 12, color: '#475569', marginTop: 4 }}>{r.description}</div>}
+                        <pre style={{ background: '#f8fafc', padding: 8, overflowX: 'auto', marginTop: 6, marginBottom: 0 }}>
+                            {JSON.stringify(r.toolInput, null, 2)?.slice(0, 1500)}
+                        </pre>
+                    </li>
+                ))}
+            </ul>
+        </div>
+    );
+}
+
+/** Phase 70 — настройка browser-use executor (direct sidecar / gateway). */
+function BrowserUseConfig(): React.JSX.Element {
+    const [sidecarUrl, setSidecarUrl] = useState(() => {
+        try {
+            return localStorage.getItem('browserUse.sidecarUrl') || 'http://localhost:3100/execute';
+        } catch {
+            return 'http://localhost:3100/execute';
+        }
+    });
+    const [companyId, setCompanyId] = useState(() => {
+        try {
+            return localStorage.getItem('browserUse.companyId') || '';
+        } catch {
+            return '';
+        }
+    });
+    const [actUrl, setActUrl] = useState(() => {
+        try {
+            return localStorage.getItem('browserUse.actUrl') || 'http://localhost:3100/act';
+        } catch {
+            return 'http://localhost:3100/act';
+        }
+    });
+    const [saved, setSaved] = useState(false);
+
+    function save(): void {
+        try {
+            if (sidecarUrl.trim()) localStorage.setItem('browserUse.sidecarUrl', sidecarUrl.trim());
+            else localStorage.removeItem('browserUse.sidecarUrl');
+            if (companyId.trim()) localStorage.setItem('browserUse.companyId', companyId.trim());
+            else localStorage.removeItem('browserUse.companyId');
+            if (actUrl.trim()) localStorage.setItem('browserUse.actUrl', actUrl.trim());
+            else localStorage.removeItem('browserUse.actUrl');
+            setSaved(true);
+            setTimeout(() => setSaved(false), 2000);
+        } catch {
+            /* private mode */
+        }
+    }
+
+    return (
+        <div style={{ marginTop: '2rem', borderTop: '1px solid #e2e8f0', paddingTop: '1rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
+                <MonitorPlay size={18} />
+                <h3 style={{ margin: 0 }}>Browser-use executor</h3>
+            </div>
+            <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                <input
+                    value={sidecarUrl}
+                    onChange={(e) => setSidecarUrl(e.target.value)}
+                    placeholder="Sidecar URL (direct mode), e.g. http://localhost:3100/execute"
+                    style={{ flex: '2 1 280px' }}
+                />
+                <input
+                    value={companyId}
+                    onChange={(e) => setCompanyId(e.target.value)}
+                    placeholder="Company id (gateway mode)"
+                    style={{ flex: '1 1 200px' }}
+                />
+                <input
+                    value={actUrl}
+                    onChange={(e) => setActUrl(e.target.value)}
+                    placeholder="Actuator URL (computer-use loop), e.g. http://localhost:3100/act"
+                    style={{ flex: '2 1 280px' }}
+                />
+                <button onClick={save}>Save</button>
+                {saved && <span style={{ color: '#059669' }}>Saved</span>}
+            </div>
+            <div style={{ fontSize: 12, color: '#64748b', marginTop: 6 }}>
+                Direct mode: browser calls the sidecar URL itself. Gateway mode: browser creates a run and calls
+                `/api/runs/:id/execute` with adapter `browser-use` (needs companyGateway.url/secret above + company id
+                here). Server side requires `ADAPTERS_ALLOW_BROWSER_USE=1`. Unused field can stay empty.
+                See `approvalBulkService` for bulk actions from the agent view.
+            </div>
+        </div>
+    );
+}
 
 export default ApprovalsPanel;

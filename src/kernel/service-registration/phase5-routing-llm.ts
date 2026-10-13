@@ -166,7 +166,10 @@ export const registerPhase5: Phase = (helpers) => {
     register('llmClientService', (c) => {
         const keySvc = c.get<KeyService>('keyService');
         const resolveApiKey = (provider: string) => {
-            const key = keySvc.selectWithBurst(provider) ?? keySvc.selectFromPool(provider);
+            // gemini-computer — тот же Google-ключ, что gemini (отдельного
+            // пула нет; Interactions API авторизуется x-goog-api-key).
+            const pool = provider === 'gemini-computer' ? 'gemini' : provider;
+            const key = keySvc.selectWithBurst(pool) ?? keySvc.selectFromPool(pool);
             return key?.key;
         };
         // C-2 wiring: fallback chains resolve each provider's own key.

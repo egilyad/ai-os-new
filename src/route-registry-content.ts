@@ -79,6 +79,13 @@ export const CONTENT_SECTIONS: NavSection[] = [
                 lazy: true,
             },
             {
+                id: 'agent-tasks',
+                labelKey: 'nav.agent_tasks',
+                icon: Icons.crosshair,
+                color: '#10b981',
+                lazy: true,
+            },
+            {
                 id: 'provenance',
                 labelKey: 'nav.provenance',
                 icon: Icons.gitBranch,

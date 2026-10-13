@@ -187,10 +187,310 @@ const processAdapter = {
     },
 };
 
+// ── browser-use: web-автоматизация через внешний sidecar ──
+// Включается только через ADAPTERS_ALLOW_BROWSER_USE=1 осознанно оператором.
+// Gateway НЕ запускает браузер сам (node:22-alpine + cap_drop: ALL +
+// read_only rootfs) — он форвардит задачу на sidecar-контейнер
+// (mcr.microsoft.com/playwright/python + FastAPI, см. docker/browser-use-sidecar/).
+// Sidecar исполняет task через browser-use lib и возвращает
+// { screenshots, finalState, actions }. Здесь только валидация конфига,
+// таймаут/abort и обрезка вывода — по образцу httpAdapter/processAdapter.
+const BROWSER_USE_MAX_STEPS = 50;
+const BROWSER_USE_MAX_TASK_CHARS = 8000;
+
+function browserUseHealthUrl(sidecarUrl) {
+    const base = String(sidecarUrl).replace(/\/$/, '');
+    if (/\/execute\/?$/.test(base)) return `${base.replace(/\/execute\/?$/, '')}/health`;
+    return `${base}/health`;
+}
+
+const browserUseAdapter = {
+    typeKey: 'browser-use',
+    enabled() {
+        return process.env.ADAPTERS_ALLOW_BROWSER_USE === '1';
+    },
+    validateConfig(cfg) {
+        if (!cfg || typeof cfg.sidecarUrl !== 'string' || !cfg.sidecarUrl.trim()) {
+            return { ok: false, error: 'sidecarUrl is required' };
+        }
+        let u;
+        try {
+            u = new URL(String(cfg.sidecarUrl));
+        } catch {
+            return { ok: false, error: 'sidecarUrl must be a valid URL' };
+        }
+        if (u.protocol !== 'http:' && u.protocol !== 'https:') {
+            return { ok: false, error: 'sidecarUrl must be http(s)' };
+        }
+        if (u.username || u.password) {
+            return { ok: false, error: 'sidecarUrl must not embed credentials' };
+        }
+        if (cfg.maxSteps !== undefined) {
+            const n = Number(cfg.maxSteps);
+            if (!Number.isFinite(n) || n < 1 || n > BROWSER_USE_MAX_STEPS) {
+                return { ok: false, error: `maxSteps must be 1..${BROWSER_USE_MAX_STEPS}` };
+            }
+        }
+        if (cfg.allowedDomains !== undefined) {
+            if (!Array.isArray(cfg.allowedDomains)) {
+                return { ok: false, error: 'allowedDomains must be an array of hostnames' };
+            }
+            for (const d of cfg.allowedDomains) {
+                if (typeof d !== 'string' || !d.trim() || /[\s/:]/.test(d)) {
+                    return { ok: false, error: `bad allowedDomains entry: ${String(d).slice(0, 80)}` };
+                }
+            }
+        }
+        return { ok: true };
+    },
+    async execute(ctx, cfg) {
+        const input = ctx?.input ?? {};
+        const task = typeof input.task === 'string' ? input.task : typeof input.text === 'string' ? input.text : '';
+        if (!task.trim()) {
+            const err = new Error('browser-use input.task is required');
+            err.code = 'ADAPTER';
+            throw err;
+        }
+        if (task.length > BROWSER_USE_MAX_TASK_CHARS) {
+            const err = new Error(`browser-use task too long (${task.length} > ${BROWSER_USE_MAX_TASK_CHARS})`);
+            err.code = 'ADAPTER';
+            throw err;
+        }
+        const sidecarUrl = String(cfg.sidecarUrl).replace(/\/$/, '');
+        const timeoutMs = clampTimeout(cfg?.timeoutMs ?? 90_000);
+        const payload = {
+            task: task.slice(0, BROWSER_USE_MAX_TASK_CHARS),
+            ticketId: typeof input.ticketId === 'string' ? input.ticketId.slice(0, 120) : undefined,
+            maxSteps:
+                cfg.maxSteps !== undefined
+                    ? Math.max(1, Math.min(BROWSER_USE_MAX_STEPS, Number(cfg.maxSteps)))
+                    : undefined,
+            allowedDomains: Array.isArray(cfg.allowedDomains) ? cfg.allowedDomains : undefined,
+        };
+        const ctl = new AbortController();
+        const timer = setTimeout(() => ctl.abort(), timeoutMs);
+        try {
+            const res = await fetch(sidecarUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload),
+                signal: ctl.signal,
+                // Не следуем редиректам автоматически: sidecar не должен
+                // уводить gateway на произвольные хосты.
+                redirect: 'manual',
+            });
+            if (res.status >= 300 && res.status < 400) {
+                const err = new Error(`browser-use sidecar refused redirect (HTTP ${res.status})`);
+                err.code = 'ADAPTER';
+                throw err;
+            }
+            const buf = Buffer.from(await res.arrayBuffer());
+            const text = truncate(buf).toString('utf8');
+            if (!res.ok) {
+                const err = new Error(`browser-use sidecar HTTP ${res.status}: ${text.slice(0, 300)}`);
+                err.code = 'ADAPTER';
+                throw err;
+            }
+            return {
+                stdout: text,
+                usage: { httpStatus: res.status },
+                costCents: 0,
+            };
+        } catch (e) {
+            if (e && e.code === 'ADAPTER') throw e;
+            const err = new Error(`browser-use adapter failed: ${e instanceof Error ? e.message : String(e)}`);
+            err.code = 'ADAPTER';
+            throw err;
+        } finally {
+            clearTimeout(timer);
+        }
+    },
+    async testEnvironment(cfg) {
+        if (!cfg) return { ok: false, detail: 'config required' };
+        const v = browserUseAdapter.validateConfig(cfg);
+        if (!v.ok) return { ok: false, detail: v.error };
+        const timeoutMs = Math.min(clampTimeout(cfg?.timeoutMs), 10_000);
+        const ctl = new AbortController();
+        const timer = setTimeout(() => ctl.abort(), timeoutMs);
+        try {
+            const res = await fetch(browserUseHealthUrl(cfg.sidecarUrl), {
+                signal: ctl.signal,
+                redirect: 'manual',
+            });
+            if (!res.ok) return { ok: false, detail: `sidecar health HTTP ${res.status}` };
+            return { ok: true, detail: 'sidecar reachable' };
+        } catch (e) {
+            return { ok: false, detail: e instanceof Error ? e.message : String(e) };
+        } finally {
+            clearTimeout(timer);
+        }
+    },
+};
+
+// ── computer-act: одно CUA-действие через sidecar /act ──
+// Пара к browser-use, но action-level (для ComputerUseLoopService):
+// loop выполняет до 30 ходов, каждый — отдельным gateway run'ом
+// (endpoint /execute закрывает run после каждого вызова).
+// Kill-switch: ADAPTERS_ALLOW_COMPUTER_ACT=1.
+// sidecarUrl берётся из конфига запроса, иначе из env gateway
+// BROWSER_USE_ACT_URL (в compose — docker-имя sidecar; локально —
+// http://localhost:3100/act), иначе запрос невалиден.
+const COMPUTER_ACT_ACTIONS = new Set([
+    'screenshot',
+    'mouse_move',
+    'left_click',
+    'right_click',
+    'middle_click',
+    'double_click',
+    'triple_click',
+    'left_click_drag',
+    'left_mouse_down',
+    'left_mouse_up',
+    'scroll',
+    'type',
+    'key',
+    'hold_key',
+    'wait',
+    'goto',
+    'go_forward',
+    'go_back',
+]);
+
+function computerActHealthUrl(actUrl) {
+    const base = String(actUrl).replace(/\/$/, '');
+    if (/\/act\/?$/.test(base)) return `${base.replace(/\/act\/?$/, '')}/health`;
+    return `${base}/health`;
+}
+
+function resolveActUrl(cfg) {
+    const raw = typeof cfg?.sidecarUrl === 'string' && cfg.sidecarUrl.trim()
+        ? cfg.sidecarUrl
+        : process.env.BROWSER_USE_ACT_URL || '';
+    return String(raw).trim().replace(/\/$/, '');
+}
+
+const computerActAdapter = {
+    typeKey: 'computer-act',
+    enabled() {
+        return process.env.ADAPTERS_ALLOW_COMPUTER_ACT === '1';
+    },
+    validateConfig(cfg) {
+        const sidecarUrl = resolveActUrl(cfg);
+        if (!sidecarUrl) {
+            return { ok: false, error: 'sidecarUrl is required (or BROWSER_USE_ACT_URL on gateway)' };
+        }
+        let u;
+        try {
+            u = new URL(sidecarUrl);
+        } catch {
+            return { ok: false, error: 'sidecarUrl must be a valid URL' };
+        }
+        if (u.protocol !== 'http:' && u.protocol !== 'https:') {
+            return { ok: false, error: 'sidecarUrl must be http(s)' };
+        }
+        if (u.username || u.password) {
+            return { ok: false, error: 'sidecarUrl must not embed credentials' };
+        }
+        if (cfg?.allowedDomains !== undefined) {
+            if (!Array.isArray(cfg.allowedDomains)) {
+                return { ok: false, error: 'allowedDomains must be an array of hostnames' };
+            }
+            for (const d of cfg.allowedDomains) {
+                if (typeof d !== 'string' || !d.trim() || /[\s/:]/.test(d)) {
+                    return { ok: false, error: `bad allowedDomains entry: ${String(d).slice(0, 80)}` };
+                }
+            }
+        }
+        return { ok: true };
+    },
+    async execute(ctx, cfg) {
+        const input = ctx?.input ?? {};
+        const action = typeof input.action === 'string' ? input.action.trim().toLowerCase() : '';
+        if (!action) {
+            const err = new Error('computer-act input.action is required');
+            err.code = 'ADAPTER';
+            throw err;
+        }
+        // Defense in depth: шлюз знает допустимый набор (дубль sidecar,
+        // чтобы послабление там не открыло произвольный passthrough здесь).
+        if (!COMPUTER_ACT_ACTIONS.has(action)) {
+            const err = new Error(`computer-act unknown action: ${action.slice(0, 64)}`);
+            err.code = 'ADAPTER';
+            throw err;
+        }
+        const sidecarUrl = resolveActUrl(cfg);
+        const timeoutMs = clampTimeout(cfg?.timeoutMs ?? 60_000);
+        const { action: _drop, ticketId: _dropTicket, ...params } = input;
+        const payload = {
+            action,
+            ...params,
+            ticketId: typeof input.ticketId === 'string' ? input.ticketId.slice(0, 120) : undefined,
+            allowedDomains: Array.isArray(cfg?.allowedDomains) ? cfg.allowedDomains : undefined,
+        };
+        const ctl = new AbortController();
+        const timer = setTimeout(() => ctl.abort(), timeoutMs);
+        try {
+            const res = await fetch(sidecarUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload),
+                signal: ctl.signal,
+                redirect: 'manual',
+            });
+            if (res.status >= 300 && res.status < 400) {
+                const err = new Error(`computer-act sidecar refused redirect (HTTP ${res.status})`);
+                err.code = 'ADAPTER';
+                throw err;
+            }
+            const buf = Buffer.from(await res.arrayBuffer());
+            const text = truncate(buf).toString('utf8');
+            if (!res.ok) {
+                const err = new Error(`computer-act sidecar HTTP ${res.status}: ${text.slice(0, 300)}`);
+                err.code = 'ADAPTER';
+                throw err;
+            }
+            return {
+                stdout: text,
+                usage: { httpStatus: res.status },
+                costCents: 0,
+            };
+        } catch (e) {
+            if (e && e.code === 'ADAPTER') throw e;
+            const err = new Error(`computer-act adapter failed: ${e instanceof Error ? e.message : String(e)}`);
+            err.code = 'ADAPTER';
+            throw err;
+        } finally {
+            clearTimeout(timer);
+        }
+    },
+    async testEnvironment(cfg) {
+        if (!cfg && !process.env.BROWSER_USE_ACT_URL) return { ok: false, detail: 'config required' };
+        const v = computerActAdapter.validateConfig(cfg ?? {});
+        if (!v.ok) return { ok: false, detail: v.error };
+        const timeoutMs = Math.min(clampTimeout(cfg?.timeoutMs), 10_000);
+        const ctl = new AbortController();
+        const timer = setTimeout(() => ctl.abort(), timeoutMs);
+        try {
+            const res = await fetch(computerActHealthUrl(resolveActUrl(cfg ?? {})), {
+                signal: ctl.signal,
+                redirect: 'manual',
+            });
+            if (!res.ok) return { ok: false, detail: `sidecar health HTTP ${res.status}` };
+            return { ok: true, detail: 'sidecar reachable' };
+        } catch (e) {
+            return { ok: false, detail: e instanceof Error ? e.message : String(e) };
+        } finally {
+            clearTimeout(timer);
+        }
+    },
+};
+
 const REGISTRY = new Map([
     ['echo', echoAdapter],
     ['http', httpAdapter],
     ['process', processAdapter],
+    ['browser-use', browserUseAdapter],
+    ['computer-act', computerActAdapter],
 ]);
 
 export function listAdapters() {

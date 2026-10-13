@@ -13,6 +13,24 @@ describe('AdapterFactory', () => {
         // public provider list.
     });
 
+    it('creates the gemini-computer adapter (Google Computer Use)', async () => {
+        const factory = new AdapterFactory();
+        expect(factory.getSupportedProviders()).toContain('gemini-computer');
+        expect(factory.isSupported('gemini-computer')).toBe(true);
+        const { GeminiComputerAdapter } = await import('../gemini-computer/gemini-computer-adapter');
+        expect(factory.create('gemini-computer')).toBeInstanceOf(GeminiComputerAdapter);
+    });
+
+    it('creates the anthropic adapter (Phase 70, трасса B)', async () => {
+        const factory = new AdapterFactory();
+        expect(factory.getSupportedProviders()).toContain('anthropic');
+        expect(factory.isSupported('anthropic')).toBe(true);
+        expect(factory.isSupported('claude')).toBe(true);
+        const { AnthropicAdapter } = await import('../anthropic/anthropic-adapter');
+        expect(factory.create('anthropic')).toBeInstanceOf(AnthropicAdapter);
+        expect(factory.create('ANTHROPIC')).toBe(factory.create('anthropic'));
+    });
+
     it('rejects unknown providers', () => {
         const factory = new AdapterFactory();
         expect(() => factory.create('nope')).toThrow(/Unknown provider/);

@@ -87,6 +87,11 @@ export const PROVIDER_META: Record<string, { name: string; desc: string; docsUrl
             desc: 'Fast search-augmented models',
             docsUrl: 'https://www.perplexity.ai/settings/api',
         },
+        Anthropic: {
+            name: 'Anthropic Claude',
+            desc: 'Claude models + computer-use (browser/desktop automation)',
+            docsUrl: 'https://console.anthropic.com/settings/keys',
+        },
         Custom: {
             name: 'Custom / Proxy',
             desc: 'Your own server or alternative API',

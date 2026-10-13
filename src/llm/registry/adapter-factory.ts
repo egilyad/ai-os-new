@@ -19,6 +19,8 @@ import { DeepSeekAdapter } from '../deepseek/deepseek-adapter';
 import { KimiAdapter } from '../kimi/kimi-adapter';
 import { MiniMaxAdapter } from '../minimax/minimax-adapter';
 import { QwenAdapter } from '../qwen/qwen-adapter';
+import { AnthropicAdapter } from '../anthropic/anthropic-adapter';
+import { GeminiComputerAdapter } from '../gemini-computer/gemini-computer-adapter';
 import type { LLMProviderAdapter } from '../core/types';
 import type { LLMContext } from '../../kernel/contracts/llm-context';
 
@@ -77,6 +79,8 @@ export class AdapterFactory {
         'kimi',
         'minimax',
         'qwen',
+        'anthropic',
+        'gemini-computer',
     ];
 
     constructor(config: AdapterFactoryConfig = {}, llmContext?: LLMContext) {
@@ -153,6 +157,17 @@ export class AdapterFactory {
             case 'dashscope':
             case 'alibaba':
                 adapter = new QwenAdapter();
+                break;
+            case 'anthropic':
+            case 'claude':
+                // C-01: no /proxy/anthropic route — direct calls
+                // (browser CORS via anthropic-dangerous-direct-browser-access).
+                adapter = new AnthropicAdapter();
+                break;
+            case 'gemini-computer':
+                // C-01: no /proxy/... route for interactions — direct calls
+                // with the regular Gemini key (x-goog-api-key).
+                adapter = new GeminiComputerAdapter();
                 break;
             case 'blackboxapi':
             case 'blackbox':

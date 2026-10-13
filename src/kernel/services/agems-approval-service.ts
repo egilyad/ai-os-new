@@ -48,6 +48,16 @@ export class AgemsApprovalService {
 
     async resolve(id: number, status: 'APPROVED' | 'REJECTED', reason?: string, resolverId?: string): Promise<void> {
         const req = (await getDexieDb().approvalRequests.get(id)) as unknown as ApprovalRequest | undefined;
+        if (!req) throw new Error(`Approval request not found: ${id}`);
+        // ro2 §5.1: защита от replay — повторный resolve уже решённой
+        // заявки молча перезаписывал статус (APPROVED→REJECTED и наоборот).
+        if (req.status !== 'PENDING') throw new Error(`Approval request ${id} is already ${req.status}`);
+        // ro2 §5.1: TTL — просроченная заявка переходит в EXPIRED
+        // вместо исполнения по устаревшему решению человека.
+        if (typeof req.expiresAt === 'number' && Date.now() > req.expiresAt) {
+            await getDexieDb().approvalRequests.update(id, { status: 'EXPIRED', resolvedAt: Date.now() } as never);
+            throw new Error(`Approval request ${id} expired`);
+        }
         await getDexieDb().approvalRequests.update(id, { status, rejectionReason: reason, resolvedBy: resolverId, resolvedAt: Date.now() } as never);
         // B3: живой junction — решение уходит делегату (execution-bridge), best-effort.
         if (req) {
@@ -57,6 +67,21 @@ export class AgemsApprovalService {
                 /* delegate must never break resolve */
             }
         }
+    }
+
+    /**
+     * Phase 73: claim одноразового approve (защита от повторного USE).
+     * resolve() запрещает повторный RESOLVE, claim — повторный ЗАПУСК:
+     * computer.use помечает заявку CONSUMED сразу после проверки, до loop.
+     * Повторный claim/вызов падает (`already CONSUMED`), новый запуск
+     * требует нового человеческого approve.
+     */
+    async claim(id: number): Promise<ApprovalRequest> {
+        const req = (await getDexieDb().approvalRequests.get(id)) as unknown as ApprovalRequest | undefined;
+        if (!req) throw new Error(`Approval request not found: ${id}`);
+        if (req.status !== 'APPROVED') throw new Error(`Approval request ${id} is already ${req.status}`);
+        await getDexieDb().approvalRequests.update(id, { status: 'CONSUMED', resolvedAt: Date.now() } as never);
+        return { ...req, status: 'CONSUMED' as const, resolvedAt: Date.now() };
     }
 
     async list(agentId?: string, status?: ApprovalRequest['status']): Promise<ApprovalRequest[]> {
@@ -86,7 +111,15 @@ export class AgemsApprovalService {
     }
 
     async bulkResolve(ids: number[], status: 'APPROVED' | 'REJECTED'): Promise<void> {
-        for (const id of ids) await this.resolve(id, status);
+        // Best-effort: уже решённые/просроченные заявки пропускаем,
+        // чтобы один settled id не абортил весь батч.
+        for (const id of ids) {
+            try {
+                await this.resolve(id, status);
+            } catch {
+                /* settled/expired — skip */
+            }
+        }
     }
 }
 

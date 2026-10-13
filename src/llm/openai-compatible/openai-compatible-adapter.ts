@@ -148,6 +148,11 @@ export class OpenAiCompatibleAdapter extends BaseLLMAdapter {
             let finalFinishReason: string | undefined;
             let finalUsage: { total_tokens?: number } | undefined;
             let finalReasoning: string | undefined;
+            // Phase 70, трасса B-3: склейка chunked tool_calls по индексу
+            // (delta.tool_calls[]: [{ index, id?, function: { name?, arguments? } }]).
+            // Без этого streaming-режим терял tool_calls — runWithTools через
+            // onChunk видел только текст (ro2 §1.3).
+            const streamedTools = new Map<number, { id: string; name: string; args: string }>();
 
             await parseSSEStream(
                 res,
@@ -156,22 +161,51 @@ export class OpenAiCompatibleAdapter extends BaseLLMAdapter {
                     const choices = parsed.choices as Array<Record<string, unknown>> | undefined;
                     const choice = choices?.[0];
                     const delta = choice?.delta as
-                        { content?: string; reasoning_content?: string } | undefined;
+                        | {
+                              content?: string;
+                              reasoning_content?: string;
+                              tool_calls?: Array<{
+                                  index?: number;
+                                  id?: string;
+                                  function?: { name?: string; arguments?: string };
+                              }>;
+                          }
+                        | undefined;
                     if (choice?.finish_reason) finalFinishReason = choice.finish_reason as string;
                     if (parsed.usage) finalUsage = parsed.usage as { total_tokens?: number };
                     if (delta?.reasoning_content)
                         finalReasoning = (finalReasoning || '') + delta.reasoning_content;
+                    for (const tc of delta?.tool_calls ?? []) {
+                        const index = typeof tc.index === 'number' ? tc.index : 0;
+                        const entry = streamedTools.get(index) ?? { id: '', name: '', args: '' };
+                        if (tc.id) entry.id = tc.id;
+                        if (tc.function?.name) entry.name += tc.function.name;
+                        if (tc.function?.arguments) entry.args += tc.function.arguments;
+                        streamedTools.set(index, entry);
+                    }
                     return delta?.content;
                 },
                 undefined,
                 { signal, idleTimeoutMs: 30000 },
             );
 
-            if (finalFinishReason || finalUsage || finalReasoning) {
+            const streamedToolCalls: ToolCall[] | undefined =
+                streamedTools.size > 0
+                    ? [...streamedTools.entries()]
+                          .sort(([a], [b]) => a - b)
+                          .filter(([, e]) => e.name)
+                          .map(([, e]) => ({
+                              id: e.id,
+                              type: 'function' as const,
+                              function: { name: e.name, arguments: e.args || '{}' },
+                          }))
+                    : undefined;
+            if (finalFinishReason || finalUsage || finalReasoning || streamedToolCalls) {
                 onChunk('', {
                     finishReason: normalizeFinishReason(finalFinishReason),
                     tokens: finalUsage?.total_tokens,
                     reasoning: finalReasoning,
+                    toolCalls: streamedToolCalls,
                 });
             }
         } finally {

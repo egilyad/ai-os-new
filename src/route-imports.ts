@@ -175,6 +175,7 @@ const IssuesPanelLazy = React.lazy(() => import('./components/IssuesPanel'));
 const ApprovalsPanelLazy = React.lazy(() => import('./components/ApprovalsPanel'));
 const CostsPanelLazy = React.lazy(() => import('./components/CostsPanel'));
 const RunsPanelLazy = React.lazy(() => import('./components/RunsPanel'));
+const AgentTasksPanelLazy = React.lazy(() => import('./components/AgentTasksPanel/AgentTasksPanel'));
 const AdaptersPanelLazy = React.lazy(() => import('./components/AdaptersPanel'));
 const PortabilityPanelLazy = React.lazy(() => import('./components/PortabilityPanel'));
 const SimulationPanelLazy = React.lazy(() => import('./components/SimulationPanel/SimulationPanel'));
@@ -406,6 +407,7 @@ export const PANEL_COMPONENTS: Record<string, React.ComponentType<any>> = {
     approvals: ApprovalsPanelLazy,
     costs: CostsPanelLazy,
     runs: RunsPanelLazy,
+    'agent-tasks': AgentTasksPanelLazy,
     adapters: AdaptersPanelLazy,
     portability: PortabilityPanelLazy,
     simulation: SimulationPanelLazy,

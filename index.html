@@ -14,10 +14,12 @@
              docker/nginx-ssl.conf and vite.config.ts dev headers.
              The meta-tag CSP applies in dev (Vite strips it per vite.config.ts overrides).
              The nginx add_header applies in production.
-             All must allow the same connect-src origins for provider APIs. -->
+             All must allow the same connect-src origins for provider APIs
+             plus the local browser-use sidecar (http://localhost:3100,
+             http://127.0.0.1:3100 — loopback only, the sidecar binds 127.0.0.1). -->
         <meta
             http-equiv="Content-Security-Policy"
-            content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https:; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' https://*.openrouter.ai https://*.openai.com https://*.anthropic.com https://generativelanguage.googleapis.com https://*.cloudflare.com https://*.cerebras.ai https://*.groq.com https://*.nvidia.com https://api.together.xyz https://api.fireworks.ai https://api.deepseek.com https://api.moonshot.ai https://api.minimax.io https://dashscope-intl.aliyuncs.com https://api.blackbox.ai https://api.scaleway.ai https://api.cometapi.com https://models.inference.ai.azure.com https://api.mistral.ai https://api.cohere.com https://api-inference.huggingface.co https://api.perplexity.ai; frame-src 'self' blob:; object-src 'none'; base-uri 'self'; worker-src 'self' blob:; child-src 'self' blob:; form-action 'self'; upgrade-insecure-requests"
+            content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https:; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' http://localhost:3100 http://127.0.0.1:3100 https://*.openrouter.ai https://*.openai.com https://*.anthropic.com https://generativelanguage.googleapis.com https://*.cloudflare.com https://*.cerebras.ai https://*.groq.com https://*.nvidia.com https://api.together.xyz https://api.fireworks.ai https://api.deepseek.com https://api.moonshot.ai https://api.minimax.io https://dashscope-intl.aliyuncs.com https://api.blackbox.ai https://api.scaleway.ai https://api.cometapi.com https://models.inference.ai.azure.com https://api.mistral.ai https://api.cohere.com https://api-inference.huggingface.co https://api.perplexity.ai; frame-src 'self' blob:; object-src 'none'; base-uri 'self'; worker-src 'self' blob:; child-src 'self' blob:; form-action 'self'; upgrade-insecure-requests"
         />
         <title>SuperAgents OS</title>
     </head>

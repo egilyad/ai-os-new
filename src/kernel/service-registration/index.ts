@@ -67,6 +67,8 @@ import { registerPhase66 } from './phase66-projects';
 import { registerPhase67 } from './phase67-channels';
 import { registerPhase68 } from './phase68-investigation';
 import { registerPhase69 } from './phase69-approval-execution';
+import { registerPhase70 } from './phase70-browser-use';
+import { registerPhase71 } from './phase71-computer-use-loop';
 import type { IContainer } from '../container';
 import type { IEventBus } from '../types/interfaces';
 
@@ -146,6 +148,8 @@ export function registerServices(
     registerPhase67(helpers, ctx);
     registerPhase68(helpers, ctx);
     registerPhase69(helpers, ctx);
+    registerPhase70(helpers, ctx);
+    registerPhase71(helpers, ctx);
 }
 
 export type { PhaseContext, Phase } from './helpers';

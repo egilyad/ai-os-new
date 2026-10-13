@@ -84,6 +84,13 @@ services:
             SYNC_ORIGINS: ${SYNC_ORIGINS:-http://localhost}
             HEARTBEAT_LOOP: '1'
             HEARTBEAT_POLL_MS: ${HEARTBEAT_POLL_MS:-15000}
+            # Phase 70: kill-switch browser-use адаптера (server/adapters.mjs).
+            ADAPTERS_ALLOW_BROWSER_USE: ${ADAPTERS_ALLOW_BROWSER_USE:-0}
+            # Loop gateway-режим (adapter computer-act → sidecar /act).
+            # Docker-имя sidecar (браузер шлёт запросы без sidecarUrl — шлюз
+            # подставляет это значение сам).
+            ADAPTERS_ALLOW_COMPUTER_ACT: ${ADAPTERS_ALLOW_COMPUTER_ACT:-0}
+            BROWSER_USE_ACT_URL: ${BROWSER_USE_ACT_URL:-http://browser-use-sidecar:3100/act}
         networks:
             - quick-net
         ports:
@@ -98,6 +105,48 @@ services:
             timeout: 5s
             retries: 3
             start_period: 10s
+        security_opt:
+            - no-new-privileges:true
+        logging:
+            driver: json-file
+            options:
+                max-size: '10m'
+                max-file: '3'
+
+    # ── Phase 70: browser-use sidecar (OPT-IN via --profile browser) ──
+    # Gateway-образ не умеет запускать Chromium (node:22-alpine + cap_drop
+    # ALL + read_only), поэтому исполнение browser-задач живёт здесь:
+    # playwright/python + FastAPI-мост (docker/browser-use-sidecar/server.py).
+    # Start:  SYNC_SECRET=... ADAPTERS_ALLOW_BROWSER_USE=1 docker compose
+    #           -f docker-compose.quickstart.yml --profile browser up --build
+    # Health: curl http://localhost:3100/health
+    # Без LLM-ключа sidecar работает в fallback-режиме (navigate+screenshot);
+    # full-agent режим: BROWSER_USE_LLM_API_KEY (+ PROVIDER/MODEL).
+    browser-use-sidecar:
+        build:
+            context: .
+            dockerfile: docker/browser-use-sidecar/Dockerfile
+        image: superagents-browser-use:${TAG:-latest}
+        container_name: superagents-browser-use
+        restart: unless-stopped
+        profiles:
+            - browser
+        networks:
+            - quick-net
+        ports:
+            - '127.0.0.1:3100:3100'
+        environment:
+            BROWSER_USE_ALLOWED_DOMAINS: ${BROWSER_USE_ALLOWED_DOMAINS:-}
+            BROWSER_USE_LLM_API_KEY: ${BROWSER_USE_LLM_API_KEY:-}
+            BROWSER_USE_LLM_PROVIDER: ${BROWSER_USE_LLM_PROVIDER:-openai}
+            BROWSER_USE_LLM_MODEL: ${BROWSER_USE_LLM_MODEL:-gpt-4o-mini}
+            BROWSER_USE_LLM_BASE_URL: ${BROWSER_USE_LLM_BASE_URL:-}
+        healthcheck:
+            test: ['CMD', 'python', '-c', "import urllib.request; urllib.request.urlopen('http://127.0.0.1:3100/health')"]
+            interval: 30s
+            timeout: 5s
+            retries: 3
+            start_period: 60s
         security_opt:
             - no-new-privileges:true
         logging:

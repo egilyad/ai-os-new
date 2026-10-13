@@ -126,6 +126,8 @@ export interface ILLMClientChatOptions {
     apiKeyOverride?: string;
     stopSequences?: string[];
     tools?: Record<string, unknown>[];
+    /** Phase 70, трасса B: прокидывается в SendMessageOptions.computerUse. */
+    computerUse?: { displayWidthPx: number; displayHeightPx: number };
     toolChoice?: string | { type: 'function'; function: { name: string } };
     responseFormat?: { type: 'text' | 'json_object' };
     /** B-20: scopes the response cache by agent/session/role to avoid cross-agent contamination. */

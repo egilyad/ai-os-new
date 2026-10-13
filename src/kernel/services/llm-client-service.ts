@@ -53,6 +53,7 @@ export class LLMClientService implements ILLMClientService {
             sendMessageOpts.tools =
                 options.tools as import('../../kernel/types/llm-types').SendMessageOptions['tools'];
         if (options?.toolChoice !== undefined) sendMessageOpts.toolChoice = options.toolChoice;
+        if (options?.computerUse !== undefined) sendMessageOpts.computerUse = options.computerUse;
         if (options?.responseFormat !== undefined)
             sendMessageOpts.responseFormat = options.responseFormat;
         if (options?.cacheScope !== undefined) sendMessageOpts.cacheScope = options.cacheScope;

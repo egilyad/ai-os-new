@@ -12,14 +12,30 @@ const LOGGER = rootLogger.child('ApprovalBulk');
 
 export const approvalBulkService = {
     async bulkApprove(ids: number[], resolverId = 'current'): Promise<number> {
-        for (const id of ids) await agemsApprovalService.resolve(id, 'APPROVED', undefined, resolverId);
-        LOGGER.info('ApprovalBulk', 'approved', { count: ids.length });
-        return ids.length;
+        let done = 0;
+        for (const id of ids) {
+            try {
+                await agemsApprovalService.resolve(id, 'APPROVED', undefined, resolverId);
+                done++;
+            } catch {
+                /* settled/expired — skip, не абортим батч */
+            }
+        }
+        LOGGER.info('ApprovalBulk', 'approved', { count: done, skipped: ids.length - done });
+        return done;
     },
     async bulkReject(ids: number[], reason: string, resolverId = 'current'): Promise<number> {
-        for (const id of ids) await agemsApprovalService.resolve(id, 'REJECTED', reason, resolverId);
-        LOGGER.info('ApprovalBulk', 'rejected', { count: ids.length });
-        return ids.length;
+        let done = 0;
+        for (const id of ids) {
+            try {
+                await agemsApprovalService.resolve(id, 'REJECTED', reason, resolverId);
+                done++;
+            } catch {
+                /* settled/expired — skip */
+            }
+        }
+        LOGGER.info('ApprovalBulk', 'rejected', { count: done, skipped: ids.length - done });
+        return done;
     },
     async addComment(requestId: number, authorId: string, text: string): Promise<number> {
         const db = getDexieDb();

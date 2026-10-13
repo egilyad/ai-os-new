@@ -59,3 +59,9 @@ prompt-vault
 scripts/dev-only
 *.bak
 *.tmp
+
+# Python bytecode / venvs (sidecar verification artifacts)
+__pycache__
+*.py[cod]
+.pyvenv
+venv/

@@ -1,6 +1,16 @@
+/**
+ * Phase 70, трасса B (Anthropic Computer Use).
+ * `'function'` — обычный OpenAI function-calling вызов.
+ * `'computer_20250124'` — Anthropic computer-use tool_use (`name: 'computer'`,
+ * `input: { action, coordinate, ... }`); `function.arguments` при этом хранит
+ * JSON-строку raw input, чтобы существующие потребители
+ * (`call.function.name/arguments`) продолжали работать без ветвлений.
+ */
+export type ToolCallType = 'function' | 'computer_20250124';
+
 export interface ToolCall {
     id: string;
-    type: 'function';
+    type: ToolCallType;
     function: {
         name: string;
         arguments: string;
@@ -18,7 +28,14 @@ export interface ChatMessage {
     name?: string;
     toolCallId?: string;
     toolCalls?: ToolCall[];
-    /** Multimodal inline data (images, audio, video) attached to this message */
+    /**
+     * Multimodal inline data (images, audio, video) attached to this message.
+     * Phase 70, трасса B: AnthropicAdapter маппит image-части в
+     * `content: [{ type: 'image', source: { type: 'base64', ... } }]`
+     * (включая скриншоты в `tool_result` для computer-use loop).
+     * На role:'tool' сообщениях с toolCallId inlineData уходит как
+     * image-content внутри `tool_result` с `tool_use_id`.
+     */
     inlineData?: InlineDataPart[];
     /**
      * N.1 DeepSeek-style reasoning passthrough: assistant reasoning content
@@ -93,6 +110,16 @@ export interface Tool {
         description?: string;
         parameters?: Record<string, unknown>;
     };
+    /**
+     * Phase 70, трасса B: параметры Anthropic computer-use инструмента.
+     * Когда `type === 'computer_20250124'`, AnthropicAdapter строит
+     * `{ type: 'computer_20250124', name: 'computer', display_width_px,
+     * display_height_px }` из этого поля.
+     */
+    computer?: {
+        displayWidthPx: number;
+        displayHeightPx: number;
+    };
 }
 
 export interface SendMessageOptions {
@@ -100,6 +127,15 @@ export interface SendMessageOptions {
     maxOutputTokens?: number;
     stopSequences?: string[];
     tools?: Tool[];
+    /**
+     * Phase 70, трасса B: включить Anthropic computer-use инструмент
+     * (`computer_20250124`) с размерами экрана. Не зависит от `tools` —
+     * computer-инструмент не является function-tool и добавляется отдельно.
+     */
+    computerUse?: {
+        displayWidthPx: number;
+        displayHeightPx: number;
+    };
     toolChoice?: unknown;
     responseFormat?: { type: 'text' | 'json_object'; schema?: unknown };
     safetySettings?: Array<{ category: string; threshold: string }>;

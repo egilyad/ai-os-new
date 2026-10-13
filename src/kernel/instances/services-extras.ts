@@ -462,6 +462,14 @@ export const writerService = lazyService<IWriterService>('writerService');
 export const computerService = lazyService<IComputerService>('computerService');
 export const searchService = lazyService<ISearchService>('searchService');
 export const codeExecService = lazyService<ICodeExecService>('codeExecService');
+export const browserHarnessService =
+    lazyService<import('../contracts/browser-harness').IBrowserHarnessService>('browserHarnessService');
+export const browserUseService =
+    lazyService<import('../services/browser/browser-use-service').BrowserUseService>('browserUseService');
+export const computerUseLoopService =
+    lazyService<import('../services/computer/computer-use-loop-service').ComputerUseLoopService>(
+        'computerUseLoopService',
+    );
 export const n8nService = lazyService<IN8nService>('n8nService');
 export const makeService = lazyService<IMakeService>('makeService');
 export const zapierService = lazyService<IZapierService>('zapierService');

@@ -54,10 +54,21 @@ export class ApprovalExecutionBridge implements ILifecycle {
     private async onResolved(req: ApprovalRequest, status: 'APPROVED' | 'REJECTED'): Promise<void> {
         if (status !== 'APPROVED' || !this.isEnabled()) return;
         if (req.resolvedBy && req.resolvedBy.startsWith('auto:')) return;
+        // Tasks-панель исполняет синхронно сама и показывает результат —
+        // повторный запуск из моста был бы двойным исполнением.
+        // Конвенция: резолвы с префиксом 'ui:direct:' мост игнорирует.
+        if (req.resolvedBy && req.resolvedBy.startsWith('ui:direct:')) return;
         const args =
             req.toolInput && typeof req.toolInput === 'object'
-                ? (req.toolInput as Record<string, unknown>)
+                ? { ...(req.toolInput as Record<string, unknown>) }
                 : {};
+        // Phase 73: computer.use исполняется loop'ом, которому нужен id
+        // заявки для привязки (agent+tool+task). Прокидываем его здесь —
+        // на момент resolve id уже известен (в toolInput его быть не могло).
+        // Остальные tools получают args без изменений.
+        if (req.toolName === 'computer.use' && req.id !== undefined) {
+            args.approvedRequestId = req.id;
+        }
         try {
             const out = await this.deps.toolRunner.callTool(req.agentId, req.toolName, args);
             LOGGER.info('exec', 'approved tool executed', {

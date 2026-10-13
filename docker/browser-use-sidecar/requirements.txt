@@ -1,0 +1,18 @@
+# Проверенный набор (Windows, Python 3.14, нативный запуск — валидировано
+# импортами, конструкторами Agent/LLM и 34 проверками verify-act.py):
+fastapi==0.143.0
+uvicorn[standard]==0.54.0
+# playwright НЕ пинится точной версией: 1.49.1 тянет greenlet==3.1.1 без whl
+# под Python 3.14 (сборка из исходников без компилятора падает).
+# Нужен свежий (>=1.63, едет с greenlet>=3.2 whl).
+playwright>=1.63
+# browser-use ПИНИМ: server.py проверен против API 0.13.11
+# (Agent.__init__/AgentHistoryList.screenshots()/browser_use.llm.*).
+browser-use==0.13.11
+# LLM-провайдеры для _make_llm (server.py) — НАТИВНЫЕ классы browser-use
+# (browser_use.llm.*: Agent НЕ принимает langchain-объекты, проверено):
+# gemini/google → ChatGoogle (нужен google-genai),
+# openai/anthropic → ChatLiteLLM (нужен litellm; base_url — для прокси).
+# BROWSER_USE_LLM_PROVIDER=gemini + Google AI Studio key = full-agent на Google.
+google-genai==1.75.0
+litellm==1.105.0

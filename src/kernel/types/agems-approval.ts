@@ -1,6 +1,6 @@
 export type ApprovalPreset = 'FULL_CONTROL' | 'SUPERVISED' | 'GUIDED' | 'AUTOPILOT';
 export type ToolApprovalMode = 'FREE' | 'REQUIRES_APPROVAL' | 'BLOCKED';
-export type ApprovalStatus = 'PENDING' | 'APPROVED' | 'REJECTED' | 'EXPIRED' | 'AUTO_APPROVED';
+export type ApprovalStatus = 'PENDING' | 'APPROVED' | 'REJECTED' | 'EXPIRED' | 'AUTO_APPROVED' | 'CONSUMED';
 
 export interface ApprovalPolicy {
     id?: number;
