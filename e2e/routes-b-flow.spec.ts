@@ -14,6 +14,7 @@ const ROUTES: Array<[string, string]> = [
     ['groups', '/groups'],
     ['projects', '/projects'],
     ['tasks', '/tasks'],
+    ['agent-tasks', '/agent-tasks'],
     ['playground', '/playground'],
 ];
 
