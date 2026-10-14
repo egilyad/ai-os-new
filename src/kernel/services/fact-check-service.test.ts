@@ -341,4 +341,62 @@ describe('FactCheckService', () => {
             expect(service.getAll()).toEqual([]);
         });
     });
+
+    describe('P3 cross-namespace lookup by content hash', () => {
+        const content =
+            'The study shows 85% of users prefer option A, according to research published in 2024.';
+
+        async function checkedService(): Promise<InstanceType<typeof FactCheckService>> {
+            const d = createDeps({
+                sendMessage: vi.fn(async () => ({
+                    content: 'CLAIM: test | VERDICT: verified | CONFIDENCE: 0.9 | REASON: known',
+                })),
+            });
+            const s = new FactCheckService(d as never);
+            s.setLevel('all');
+            // Stored under a pipeline r-format id, as round:end does.
+            await s.checkArgument({
+                id: 'sess-r1-0',
+                agentId: 'ag1',
+                agentName: 'Agent 1',
+                content,
+                position: 'pro',
+                round: 1,
+                confidence: 0.8,
+                timestamp: 1000,
+                source: 'llm',
+            });
+            return s;
+        }
+
+        it('hits by exact id (unchanged behavior)', async () => {
+            const s = await checkedService();
+            expect(s.getForArgument('sess-r1-0')?.argumentId).toBe('sess-r1-0');
+            s.destroy();
+        });
+
+        it('hits by content under a foreign prompt-context id', async () => {
+            const s = await checkedService();
+            const fc = s.getForArgument('sess-ag1-3', content);
+            expect(fc).toBeDefined();
+            expect(fc!.argumentId).toBe('sess-r1-0');
+            s.destroy();
+        });
+
+        it('hits by single-claim text (evaluator path)', async () => {
+            const s = await checkedService();
+            const claim = s.extractClaims(content)[0]!;
+            const fc = s.getForArgument('c9-random-claim-id', claim);
+            expect(fc).toBeDefined();
+            expect(fc!.argumentId).toBe('sess-r1-0');
+            s.destroy();
+        });
+
+        it('returns undefined for unknown id without content (no masquerade)', async () => {
+            const s = await checkedService();
+            expect(s.getForArgument('nope')).toBeUndefined();
+            expect(s.getForArgument('nope', 'unrelated text never checked')).toBeUndefined();
+            s.destroy();
+        });
+    });
 });

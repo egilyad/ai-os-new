@@ -609,7 +609,9 @@ export async function buildDebateSystemContent(
             const prevArgs = previousArguments.filter((a) => a.round === session.round - 1);
             const warnings: string[] = [];
             for (const a of prevArgs) {
-                const fc = deps.factCheckService.getForArgument(a.id);
+                // P3: pass content for cross-namespace lookup (pipeline r-ids
+                // differ from prompt-context agent-ids for the same argument).
+                const fc = deps.factCheckService.getForArgument(a.id, a.content);
                 if (!fc || fc.results.length === 0) continue;
                 const bad = fc.results.filter(
                     (r) => r.verdict === 'false' || r.verdict === 'disputed',

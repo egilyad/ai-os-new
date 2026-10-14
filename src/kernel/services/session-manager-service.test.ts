@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { SessionManagerService } from './session-manager-service';
+import type { DebateSession } from '../contracts/debate-types';
 import type { DebateStore } from '../contracts/storage/debate-store';
 import type { SessionStore } from '../contracts/storage/session-store';
 import type { DebateTimelineRepository } from '../dal/debate-timeline-repository';
@@ -107,6 +108,78 @@ describe('SessionManagerService', () => {
     beforeEach(() => {
         vi.clearAllMocks();
         ctx = createService();
+    });
+
+    function terminalSession(
+        over: Partial<DebateSession> & { id: string; status: DebateSession['status'] },
+    ): DebateSession {
+        return {
+            topic: 't',
+            strategy: 'round_robin',
+            currentRound: 2,
+            participants: [],
+            arguments: [
+                {
+                    id: 'a1',
+                    agentId: 'ag1',
+                    agentName: 'Agent 1',
+                    content: 'surviving evidence',
+                    round: 1,
+                    timestamp: 1000,
+                } as never,
+            ],
+            createdAt: 1000,
+            ...over,
+        } as DebateSession;
+    }
+
+    describe('P3 terminal history (failed/cancelled)', () => {
+        it('persists a failed session with its arguments', () => {
+            ctx.service.saveTerminalSession(
+                terminalSession({ id: 's-failed', status: 'failed' }),
+            );
+            expect(ctx.debateStore.saveSnapshot).toHaveBeenCalledTimes(1);
+            const rec = (ctx.debateStore.saveSnapshot as ReturnType<typeof vi.fn>).mock
+                .calls[0]![0] as { phase: string; arguments: string };
+            expect(rec.phase).toBe('failed');
+            expect(rec.arguments).toContain('surviving evidence');
+        });
+
+        it('ignores completed and active sessions', () => {
+            ctx.service.saveTerminalSession(
+                terminalSession({ id: 's-done', status: 'completed' }),
+            );
+            ctx.service.saveTerminalSession(
+                terminalSession({ id: 's-live', status: 'active' }),
+            );
+            expect(ctx.debateStore.saveSnapshot).not.toHaveBeenCalled();
+        });
+
+        it('getTerminalHistory returns failed/cancelled newest-first, not completed', async () => {
+            ctx.service.saveTerminalSession(
+                terminalSession({ id: 's-old', status: 'failed' }),
+            );
+            ctx.service.saveTerminalSession(
+                terminalSession({ id: 's-new', status: 'cancelled' }),
+            );
+            ctx.service.saveToDebateHistory(
+                terminalSession({ id: 's-done', status: 'completed' }),
+            );
+            // Flush the fire-and-forget terminal writes.
+            await new Promise((r) => setTimeout(r, 10));
+            const hist = await ctx.service.getTerminalHistory();
+            expect(hist.map((s) => s.id).sort()).toEqual(['s-new', 's-old']);
+            expect(hist.every((s) => s.status === 'failed' || s.status === 'cancelled')).toBe(
+                true,
+            );
+            expect(hist.find((s) => s.id === 's-old')!.arguments[0]!.content).toBe(
+                'surviving evidence',
+            );
+        });
+
+        it('getTerminalHistory is empty when nothing terminal was saved', async () => {
+            await expect(ctx.service.getTerminalHistory()).resolves.toEqual([]);
+        });
     });
 
     describe('create', () => {

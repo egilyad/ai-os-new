@@ -41,7 +41,10 @@ import type { DebateMemory } from './debate-memory';
 
 /** Minimal fact-check accessor for prompt-time claim verification (P1.2). */
 export interface FactCheckAccessor {
-    getForArgument(argumentId: string):
+    getForArgument(
+        argumentId: string,
+        content?: string,
+    ):
         | {
               overallScore: number;
               results: Array<{ verdict: string; claim: string; reasoning: string }>;

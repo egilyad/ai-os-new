@@ -43,7 +43,7 @@ const STRATEGY_MAP: Record<string, import('../../contracts/debate-runtime').Topo
     jury_trial: 'judge',
 };
 
-function sessionToRecord(session: DebateSession): DebateSessionRecord {
+export function sessionToRecord(session: DebateSession): DebateSessionRecord {
     const extra = JSON.stringify({
         config: session.config || {},
         convergenceScore: session.convergenceScore ?? 0,
@@ -103,7 +103,7 @@ function toBool(v: unknown, fallback: boolean): boolean {
     return fallback;
 }
 
-function recordToSession(record: DebateSessionRecord): DebateSession {
+export function recordToSession(record: DebateSessionRecord): DebateSession {
     const savedExtra: Record<string, unknown> =
         ((record.topology ? safeJsonParse(record.topology) : {}) as Record<string, unknown>) ?? {};
     const savedConfig =

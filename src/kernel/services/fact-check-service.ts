@@ -60,9 +60,25 @@ Claims to check:`;
 const MAX_CACHE = 200;
 const MAX_ARG_RESULTS = 200;
 
+/**
+ * P3 stable join: argument ids have three namespaces (pipeline r-format,
+ * prompt-context agent-format, governor claim-ids) for the same content.
+ * The content hash lets lookups hit regardless of which id the caller has.
+ */
+export function hashArgumentContent(content: string): string {
+    const norm = content.trim().replace(/\s+/g, ' ');
+    let h = 0x811c9dc5;
+    for (let i = 0; i < norm.length; i++) {
+        h ^= norm.charCodeAt(i);
+        h = Math.imul(h, 0x01000193) >>> 0;
+    }
+    return h.toString(16);
+}
+
 export class FactCheckService {
     private cache = new Map<string, FactCheckResult>();
     private argumentResults = new Map<string, ArgumentFactCheck>();
+    private argumentHashIndex = new Map<string, string>();
     private level: FactCheckLevel = 'sampled';
     private checkInterval = 0.2;
     private deps: FactCheckServiceDeps;
@@ -143,6 +159,9 @@ export class FactCheckService {
             };
 
             this.argumentResults.set(arg.id, factCheck);
+            this.indexHash(hashArgumentContent(arg.content), arg.id);
+            // Evaluator looks up by single-claim text, not full content.
+            for (const claim of claims) this.indexHash(hashArgumentContent(claim), arg.id);
             if (this.argumentResults.size > MAX_ARG_RESULTS) {
                 const oldest = this.argumentResults.keys().next().value;
                 if (oldest !== undefined) this.argumentResults.delete(oldest);
@@ -284,8 +303,23 @@ export class FactCheckService {
         };
     }
 
-    getForArgument(argumentId: string): ArgumentFactCheck | undefined {
-        return this.argumentResults.get(argumentId);
+    private indexHash(hash: string, id: string): void {
+        this.argumentHashIndex.set(hash, id);
+        if (this.argumentHashIndex.size > MAX_ARG_RESULTS * 2) {
+            const oldestHash = this.argumentHashIndex.keys().next().value;
+            if (oldestHash !== undefined) this.argumentHashIndex.delete(oldestHash);
+        }
+    }
+
+    getForArgument(argumentId: string, content?: string): ArgumentFactCheck | undefined {
+        const direct = this.argumentResults.get(argumentId);
+        if (direct) return direct;
+        // Cross-namespace fallback: same content checked under another id.
+        if (content !== undefined) {
+            const id = this.argumentHashIndex.get(hashArgumentContent(content));
+            if (id !== undefined) return this.argumentResults.get(id);
+        }
+        return undefined;
     }
 
     getAll(): ArgumentFactCheck[] {
@@ -302,5 +336,6 @@ export class FactCheckService {
         this._abortController.abort();
         this.cache.clear();
         this.argumentResults.clear();
+        this.argumentHashIndex.clear();
     }
 }

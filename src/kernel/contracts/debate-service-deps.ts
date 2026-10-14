@@ -60,6 +60,7 @@ export interface DebateServiceDeps {
         updateMeta: (id: string, updates: Record<string, unknown>) => Promise<void>;
         getDebateHistory: () => DebateSession[];
         saveToDebateHistory: (session: DebateSession) => void;
+        saveTerminalSession: (session: DebateSession) => void;
         restoreDebateSession: (id: string) => DebateSession | null;
         archiveDebateSession: (id: string) => boolean;
         deleteDebateHistory: (id: string) => boolean;

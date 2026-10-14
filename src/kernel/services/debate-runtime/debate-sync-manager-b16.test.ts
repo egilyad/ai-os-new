@@ -99,6 +99,13 @@ function makeEntry(sessionId: string, owner: string | null) {
 }
 
 function makeManager(engine: any) {
+    const sessionManagerMock = {
+        link: vi.fn(async () => {}),
+        updateMeta: vi.fn(async () => {}),
+        saveToDebateHistory: vi.fn(),
+        saveTerminalSession: vi.fn(),
+        getDebateHistory: vi.fn(() => []),
+    };
     const store = inMemoryStore();
     const postProcessor: any = {
         factCheckService: {},
@@ -123,12 +130,7 @@ function makeManager(engine: any) {
         activeDebateStore: store,
         debateLiveStore: { clearAll: vi.fn(), clearSession: vi.fn() } as never,
         debateStore: {} as never,
-        sessionManager: {
-            link: vi.fn(async () => {}),
-            updateMeta: vi.fn(async () => {}),
-            saveToDebateHistory: vi.fn(),
-            getDebateHistory: vi.fn(() => []),
-        } as never,
+        sessionManager: sessionManagerMock as never,
         adapterRegistry: { resetCircuitBreaker: vi.fn() } as never,
         keyService: {
             getActiveKeys: () => [{ provider: 'groq' }, { provider: 'openrouter' }],
@@ -136,6 +138,7 @@ function makeManager(engine: any) {
     } as never);
     // Bypass the restart cooldown so the guard (not throttling) is what we test.
     (mgr as any)._lastStartTime = 0;
+    (mgr as any).__sessionManagerMock = sessionManagerMock;
     return mgr;
 }
 
@@ -238,6 +241,28 @@ describe('DebateSyncManager — B-16 multi-session (no single-active-debate assu
         expect((mgr as any)._entries.get('a').finalized).toBe(false);
         expect(engine.cancelSession).toHaveBeenCalledWith('b');
         expect(engine.cancelSession).not.toHaveBeenCalledWith('a');
+    });
+
+    it('P3: finalizing a cancelled session persists it via saveTerminalSession', () => {
+        const engine = fakeEngine();
+        const mgr = makeManager(engine);
+        const b = makeEntry('b', null);
+        b.activeSession = {
+            id: 'b',
+            status: 'cancelled',
+            arguments: [{ id: 'a1', content: 'evidence kept' }],
+        } as any;
+        b.runtimeSessionId = 'b';
+        (mgr as any)._entries.set('b', b);
+        (mgr as any)._activeSessionId = 'b';
+
+        mgr.stopDebate('b');
+
+        const mock = (mgr as any).__sessionManagerMock;
+        expect(mock.saveTerminalSession).toHaveBeenCalledTimes(1);
+        expect(mock.saveTerminalSession.mock.calls[0]![0].id).toBe('b');
+        expect(mock.saveToDebateHistory).not.toHaveBeenCalled();
+        expect(b.finalized).toBe(true);
     });
 
     it('setActiveSessionId switches the viewed session', () => {

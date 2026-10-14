@@ -131,7 +131,10 @@ export interface DebateEngineDeps {
     scratchpadService?: IScratchpadService;
     blindEval?: IBlindEvaluationService;
     factCheckService?: {
-        getForArgument(argumentId: string):
+        getForArgument(
+            argumentId: string,
+            content?: string,
+        ):
             | {
                   overallScore: number;
                   results: Array<{ verdict: string; claim: string; reasoning: string }>;

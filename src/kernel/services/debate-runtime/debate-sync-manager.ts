@@ -754,6 +754,16 @@ export class DebateSyncManager {
         const session = entry.activeSession;
         if (session && (session.status === 'cancelled' || session.status === 'failed')) {
             this._clearTimers(entry);
+            // P3: persist the terminal row (arguments accumulated so far) so
+            // failed/cancelled debates stay recoverable — completed history untouched.
+            try {
+                this.deps!.sessionManager.saveTerminalSession(session);
+            } catch (e) {
+                LOGGER.warn('DebateSyncManager', 'saveTerminalSession failed', {
+                    error: e instanceof Error ? e.message : String(e),
+                    sessionId: entry.sessionId,
+                });
+            }
             // Emit events even for failed/cancelled sessions — the session may have
             // accumulated arguments before the failure, and listeners like
             // DebateKnowledgeSyncService need them for memory sync.

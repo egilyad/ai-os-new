@@ -64,15 +64,15 @@ function computeSteelmanQuality(claims: Claim[], agentId: string): number {
 export class DebateEvaluator implements IDebateEvaluator {
     constructor(
         private dpoSampler?: IDpoStrategySampler,
-        private factCheckService?: { getForArgument: (id: string) => { overallScore: number } | undefined; getAll: () => Array<{ overallScore: number }> } | (() => { getForArgument: (id: string) => { overallScore: number } | undefined; getAll: () => Array<{ overallScore: number }> } | undefined),
+        private factCheckService?: { getForArgument: (id: string, content?: string) => { overallScore: number } | undefined; getAll: () => Array<{ overallScore: number }> } | (() => { getForArgument: (id: string, content?: string) => { overallScore: number } | undefined; getAll: () => Array<{ overallScore: number }> } | undefined),
     ) {}
 
-    private getFactCheck(): { getForArgument: (id: string) => { overallScore: number } | undefined; getAll: () => Array<{ overallScore: number }> } | undefined {
+    private getFactCheck(): { getForArgument: (id: string, content?: string) => { overallScore: number } | undefined; getAll: () => Array<{ overallScore: number }> } | undefined {
         if (!this.factCheckService) return undefined;
         if (typeof this.factCheckService === 'function') {
-            try { return (this.factCheckService as unknown as () => unknown)() as { getForArgument: (id: string) => { overallScore: number } | undefined; getAll: () => Array<{ overallScore: number }> } | undefined; } catch { return undefined; }
+            try { return (this.factCheckService as unknown as () => unknown)() as { getForArgument: (id: string, content?: string) => { overallScore: number } | undefined; getAll: () => Array<{ overallScore: number }> } | undefined; } catch { return undefined; }
         }
-        return this.factCheckService as { getForArgument: (id: string) => { overallScore: number } | undefined; getAll: () => Array<{ overallScore: number }> };
+        return this.factCheckService as { getForArgument: (id: string, content?: string) => { overallScore: number } | undefined; getAll: () => Array<{ overallScore: number }> };
     }
 
     scoreArguments(agentId: string, claims: Claim[], chain: ReasoningChain[]): AgentScore {
@@ -108,7 +108,9 @@ export class DebateEvaluator implements IDebateEvaluator {
             const agentClaims = claims.filter((c) => c.agentId === agentId);
             const scores: number[] = [];
             for (const cl of agentClaims) {
-                const fc = fcSvc.getForArgument(cl.id);
+                // P3: claims carry governor ids, checks are stored under
+                // pipeline ids — look up by content as fallback.
+                const fc = fcSvc.getForArgument(cl.id, cl.text);
                 if (fc && typeof fc.overallScore === 'number') scores.push(fc.overallScore);
             }
             if (scores.length > 0) {

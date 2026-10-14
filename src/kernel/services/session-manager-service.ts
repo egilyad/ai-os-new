@@ -13,7 +13,12 @@ import type { DebateSessionRecord, DebateStore } from '../contracts/storage/deba
 import type { ChatSession, SessionStore } from '../contracts/storage/session-store';
 import type { IEventBus } from '../types/interfaces';
 import { EVENTS } from '../events/event-names';
-import { loadHistoryList, persistHistoryList } from './debate-runtime/debate-session-persistence';
+import {
+    loadHistoryList,
+    persistHistoryList,
+    recordToSession,
+    sessionToRecord,
+} from './debate-runtime/debate-session-persistence';
 import { DebateTimelineRepository } from '../dal/debate-timeline-repository';
 import { DebateOverrideRepository } from '../dal/debate-override-repository';
 import { SessionLinkRepository } from '../dal/session-link-repository';
@@ -24,6 +29,7 @@ const LOGGER = rootLogger.child('SessionManagerService');
 export class SessionManagerService implements ISessionManager {
     private completedSessions: DebateSession[] = [];
     private readonly MAX_HISTORY = 5;
+    private readonly MAX_TERMINAL_HISTORY = 5;
     private _historyLoaded = false;
     private _pendingHistorySaves: DebateSession[] = [];
 
@@ -434,6 +440,52 @@ export class SessionManagerService implements ISessionManager {
     getDebateHistory(): DebateSession[] {
         void this.ensureHistoryLoaded();
         return [...this.completedSessions];
+    }
+
+    /**
+     * P3 terminal history: failed/cancelled sessions never reach the completed
+     * list, but their arguments are still evidence. Persists the terminal row
+     * directly — deliberately NOT via session.snapshot(), which touches
+     * structures already cleaned up on terminal transitions.
+     */
+    saveTerminalSession(session: DebateSession): void {
+        if (session.status !== 'cancelled' && session.status !== 'failed') return;
+        try {
+            const record = sessionToRecord(session);
+            void this.debateStore
+                .saveSnapshot(record)
+                .catch((e: unknown) => {
+                    LOGGER.warn('SessionManagerService', 'Failed to persist terminal session', {
+                        error: e instanceof Error ? e.message : String(e),
+                        sessionId: session.id,
+                    });
+                });
+        } catch (e) {
+            LOGGER.warn('SessionManagerService', 'Failed to build terminal record', {
+                error: e instanceof Error ? e.message : String(e),
+                sessionId: session.id,
+            });
+        }
+    }
+
+    /**
+     * Terminal sessions, newest first. Reads live rows (reload-honest by
+     * construction); completed history is untouched by this path.
+     */
+    async getTerminalHistory(limit?: number): Promise<DebateSession[]> {
+        try {
+            const rows = await this.debateStore.listAllSessions();
+            return rows
+                .filter((r) => r.phase === 'cancelled' || r.phase === 'failed')
+                .sort((a, b) => (b.updatedAt ?? 0) - (a.updatedAt ?? 0))
+                .slice(0, limit ?? this.MAX_TERMINAL_HISTORY)
+                .map((r) => recordToSession(r));
+        } catch (e) {
+            LOGGER.warn('SessionManagerService', 'Failed to load terminal history', {
+                error: e instanceof Error ? e.message : String(e),
+            });
+            return [];
+        }
     }
 
     saveToDebateHistory(session: DebateSession): void {
