@@ -25,6 +25,42 @@ export { estimateConfidence } from './debate-llm-utils';
 
 const LOGGER = rootLogger.child('DebateLlmCaller');
 
+/** History window: covers a full speaking round for up to 6 participants. */
+export const DEBATE_HISTORY_WINDOW = 6;
+
+export interface HistoryStepLike {
+    agentId: string;
+    content: string;
+}
+
+/**
+ * Pick history texts for the prompt: prefer full-text timeline responses
+ * (memory steps beyond the last 8 are content-stripped by trimContent),
+ * fall back to memory steps when the timeline accessor is absent/empty
+ * (keeps legacy behavior for older callers and unit tests).
+ */
+export function selectHistorySteps(
+    memSteps: HistoryStepLike[],
+    timelineSteps: HistoryStepLike[] | undefined,
+    count: number,
+): HistoryStepLike[] {
+    if (count <= 0) return [];
+    const live = (timelineSteps ?? []).filter((s) => s.content.trim().length > 0);
+    if (live.length > 0) return live.slice(-count);
+    return memSteps.slice(-count);
+}
+
+/**
+ * Corpus for cross-agent duplicate checks: drops emptied records so
+ * trimmed memory can neither match nor dilute the comparison.
+ * Self-filtering stays inside isCrossAgentDuplicate (unchanged).
+ */
+export function opponentCorpusForCheck(
+    steps: HistoryStepLike[],
+): HistoryStepLike[] {
+    return steps.filter((s) => s.content.trim().length > 0);
+}
+
 /**
  * B-11: assemble the per-call prompt context (participant display-name map,
  * role-alternating history, prior arguments, and the rich system prompt) so the
@@ -39,7 +75,7 @@ type DebateCallContext = {
     entanglementConstraint: Awaited<
         ReturnType<typeof buildDebateSystemContent>
     >['entanglementConstraint'];
-    recentSteps: ReturnType<ReturnType<LlmCallerDeps['getMemory']>['getRecentSteps']>;
+    duplicateCorpus: HistoryStepLike[];
 };
 
 async function buildDebateCallContext(args: {
@@ -68,7 +104,20 @@ async function buildDebateCallContext(args: {
     );
     const currentName = participantNameMap.get(participant.agentId) || participant.agentId;
 
-    const recentSteps = deps.getMemory(sessionId).getRecentSteps(2);
+    const mem = deps.getMemory(sessionId);
+    // A2: full-text timeline first (memory beyond last 8 steps is stripped
+    // by trimContent); legacy memory path when the accessor is absent.
+    let timelineSteps: HistoryStepLike[];
+    try {
+        timelineSteps = deps.getTimelineResponses?.(sessionId) ?? [];
+    } catch {
+        timelineSteps = [];
+    }
+    const historySource = selectHistorySteps(
+        mem.getAllSteps().map((s) => ({ agentId: s.agentId, content: s.content })),
+        timelineSteps,
+        DEBATE_HISTORY_WINDOW,
+    );
     // Audit R10: speaker labels use [Name (self/opponent)] — if raw content
     // keeps ASCII brackets, the model copies the pattern ([X (opponent)],
     // ### headers) into its own output. Fullwidth brackets read the same
@@ -76,7 +125,7 @@ async function buildDebateCallContext(args: {
     const escapeHistoryContent = (s: string): string =>
         sanitizePromptVar(s).replace(/\[/g, '［').replace(/\]/g, '］').slice(0, 800);
     const historyMessages: Array<{ role: 'system' | 'user' | 'assistant'; content: string }> =
-        recentSteps.map((s, i) => ({
+        historySource.map((s, i) => ({
             // HIGH-4.1e: Alternate user/assistant roles to prevent 4-agent debate
             // collapsing to 2-party format. Each agent gets its own label in the
             // content prefix, and roles alternate to help the LLM distinguish speakers.
@@ -88,8 +137,6 @@ async function buildDebateCallContext(args: {
                       : ('assistant' as const),
             content: `[${participantNameMap.get(s.agentId) || s.agentId} (${s.agentId === participant.agentId ? 'self' : 'opponent'})]: ${escapeHistoryContent(s.content)}`,
         }));
-
-    const mem = deps.getMemory(sessionId);
 
     // Convert memory steps to DebateArguments for the rich prompt builder
     // Limit to last 50 steps to prevent unbounded memory growth (~50KB per 10 agents × 5 rounds)
@@ -136,7 +183,15 @@ async function buildDebateCallContext(args: {
         ...historyMessages,
     ];
 
-    return { messages, currentName, systemContent, entanglementConstraint, recentSteps };
+    // A3: duplicate-check corpus from full-text timeline (not the 2-step
+    // window); falls back to memory arguments when the accessor is absent.
+    const duplicateCorpus = opponentCorpusForCheck(
+        timelineSteps.length > 0
+            ? timelineSteps
+            : previousArguments.map((a) => ({ agentId: a.agentId, content: a.content })),
+    );
+
+    return { messages, currentName, systemContent, entanglementConstraint, duplicateCorpus };
 }
 
 export async function debateCallLlm(
@@ -318,7 +373,7 @@ export async function debateCallLlm(
                     currentName,
                     systemContent,
                     entanglementConstraint,
-                    recentSteps,
+                    duplicateCorpus,
                 } = await buildDebateCallContext({
                     session,
                     participant,
@@ -454,8 +509,9 @@ export async function debateCallLlm(
                 let content = filtered || response.content;
 
                 // Cross-agent duplicate check — reject content copied verbatim
-                // from other agents' recent responses.
-                if (isCrossAgentDuplicate(content, recentSteps, participant.agentId)) {
+                // from other agents' responses across the whole debate
+                // (previously: only the last 2 steps, blind past round N-2).
+                if (isCrossAgentDuplicate(content, duplicateCorpus, participant.agentId)) {
                     duplicateRejectCount++;
                     LOGGER.warn('DebateLlmCaller', 'Response rejected — cross-agent duplicate', {
                         agentId: participant.agentId,

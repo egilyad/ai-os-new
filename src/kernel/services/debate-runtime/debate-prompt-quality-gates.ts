@@ -419,6 +419,27 @@ Repeating what you already said is PROHIBITED. Your opponents and the judge have
     return `\n\n${langIntro}`;
 }
 
+/**
+ * Pre-prompt repetition gate: the participant's own last full-text argument
+ * already duplicates an earlier one (own or opponent's). Points at the
+ * matched author/round so the model advances instead of restating.
+ */
+export function buildRepetitionWarningPrompt(
+    matchedAgentName: string,
+    matchedRound: number,
+    language: string,
+): string {
+    const langIntro =
+        language === 'Russian'
+            ? `### ⚠️ ПОВТОР ОБНАРУЖЁН ДО ТВОЕГО ХОДА
+Твой последний довод почти дословно повторяет уже прозвучавшее (${matchedAgentName}, раунд ${matchedRound}).
+Не повторяй его снова: либо приведи НОВЫЙ довод или контраргумент, либо честно признай сильный пункт оппонента.`
+            : `### ⚠️ REPETITION DETECTED BEFORE YOUR TURN
+Your last argument closely restates what was already said (${matchedAgentName}, round ${matchedRound}).
+Do not restate it: either advance with a NEW argument or rebuttal, or honestly concede the opponent's strong point.`;
+    return `\n\n${langIntro}`;
+}
+
 export function buildCrossExaminationPrompt(_language = DEFAULT_LANGUAGE): string {
     return (
         '\n\n### Cross-Examination Mode\n' +

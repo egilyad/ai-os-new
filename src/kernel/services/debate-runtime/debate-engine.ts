@@ -503,6 +503,22 @@ export class DebateEngine implements IDebateEngine, ILifecycle {
             getExecutionGovernor: this.deps.getExecutionGovernor,
             providerResolver: this.providerResolver,
             getMemory: (id) => this.getMemory(id),
+            getTimelineResponses: (id) =>
+                this.getTimeline(id)
+                    .filter((e) => e.type === 'agent:responded')
+                    .map((e) => {
+                        const p = (e.payload ?? {}) as {
+                            agentId?: string;
+                            content?: string;
+                            round?: number;
+                        };
+                        return {
+                            agentId: p.agentId ?? 'unknown',
+                            content: p.content ?? '',
+                            round: p.round ?? 1,
+                            timestamp: e.timestamp,
+                        };
+                    }),
             getDefaultPrompt: (nodeId, s) => this.getDefaultPrompt(nodeId, s),
             sessionAbortControllers: this.sessionAbortControllers,
             ragRetriever: this.deps.ragRetriever,

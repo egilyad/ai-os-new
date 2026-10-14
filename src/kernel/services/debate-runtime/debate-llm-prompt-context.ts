@@ -6,6 +6,8 @@ import {
 } from './debate-llm-session-maps';
 import { buildPersonaMemory, DebateMemory } from './debate-memory';
 import { buildArgumentPrompt } from './debate-prompt-builder';
+import { isDuplicateArgument } from './debate-duplicate-detection';
+import { buildRepetitionWarningPrompt } from './debate-prompt-quality-gates';
 import type { IDebateSession, ParticipantConfig } from '../../contracts/debate-runtime';
 import type { DebateArgument, DebateParticipant } from '../../contracts/debate-types';
 import type { EntanglementConstraint } from '../../contracts/debate-entanglement';
@@ -443,6 +445,35 @@ export async function buildDebateSystemContent(
             if (prevRedundancy) redundancyScore = prevRedundancy.similarityScore;
         } catch {
             LOGGER.warn('DebateLlmCaller', 'Redundancy check error', { sessionId });
+        }
+    }
+
+    // Repetition gate (pre-prompt): warn when the participant's own last
+    // full-text argument duplicates an earlier one. Reuses the existing
+    // detector + default threshold (0.6, unchanged); empty (trimmed) records
+    // are skipped by the detector itself. Gated by quality flag like others.
+    let duplicateWarningText = '';
+    if (isQ('repetition-gate')) {
+        try {
+            const ownFull = previousArguments.filter(
+                (a) => a.agentId === participant.agentId && a.content.trim().length > 0,
+            );
+            const lastOwn = ownFull[ownFull.length - 1];
+            if (lastOwn) {
+                const corpus = previousArguments.filter(
+                    (a) => a.content.trim().length > 0 && a !== lastOwn,
+                );
+                const hit = isDuplicateArgument(lastOwn.content, corpus);
+                if (hit.isDuplicate && hit.match) {
+                    duplicateWarningText = buildRepetitionWarningPrompt(
+                        hit.match.agentName || hit.match.agentId,
+                        hit.match.round ?? session.round,
+                        session.language,
+                    );
+                }
+            }
+        } catch {
+            LOGGER.warn('DebateLlmCaller', 'Repetition gate error', { sessionId });
         }
     }
 
@@ -1264,6 +1295,10 @@ export async function buildDebateSystemContent(
         const personaBlock = buildPersonaMemory(mem, participant.agentId);
         if (personaBlock) systemContent += personaBlock;
     }
+
+    // Repetition gate output: per-participant by construction (this function
+    // runs once per participant turn with their own last argument).
+    if (duplicateWarningText) systemContent += duplicateWarningText;
 
     // RAG: inject relevant memory from past debates
     if (deps.ragRetriever) {

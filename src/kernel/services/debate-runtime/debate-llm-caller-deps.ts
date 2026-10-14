@@ -95,6 +95,19 @@ export interface LlmCallerDeps {
     };
     providerResolver: DebateProviderResolver;
     getMemory(sessionId: string): DebateMemory;
+    /**
+     * Full-text history source (timeline `agent:responded` payloads).
+     * Memory steps beyond the last 8 are content-stripped by trimContent,
+     * so prompt/duplicate paths prefer this accessor when present.
+     * Optional: callers without it (incl. existing tests) keep legacy
+     * memory-only behavior via fallbacks.
+     */
+    getTimelineResponses?: (sessionId: string) => Array<{
+        agentId: string;
+        content: string;
+        round: number;
+        timestamp: number;
+    }>;
     getDefaultPrompt(nodeId: string, session: IDebateSession): Promise<string>;
     sessionAbortControllers: Map<string, Map<string, AbortController>>;
     ragRetriever?: DebateRAGRetriever;
