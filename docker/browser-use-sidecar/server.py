@@ -191,6 +191,92 @@ async def execute(req: ExecuteRequest) -> dict[str, Any]:
     return await _run_playwright_fallback(req, allowed)
 
 
+_agent_browser_proc = None
+_agent_browser_lock = asyncio.Lock()
+
+_EDGE_BINARIES = [
+    r"C:\Program Files\Microsoft\Edge\Application\msedge.exe",
+    r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe",
+    "/usr/bin/google-chrome",
+    "/usr/bin/chromium",
+    "/usr/bin/chromium-browser",
+]
+
+
+def _find_edge_binary() -> Optional[str]:
+    explicit = os.environ.get("BROWSER_USE_EDGE_BINARY", "").strip()
+    if explicit and os.path.isfile(explicit):
+        return explicit
+    for cand in _EDGE_BINARIES:
+        if os.path.isfile(cand):
+            return cand
+    return None
+
+
+def _cdp_alive(cdp_base: str, timeout: float = 3.0) -> bool:
+    import urllib.request
+
+    try:
+        with urllib.request.urlopen(f"{cdp_base}/json/version", timeout=timeout) as r:
+            return r.status == 200
+    except Exception:
+        return False
+
+
+async def _ensure_agent_browser() -> Optional[str]:
+    """Локальный браузер с CDP для Agent (native-запуск без скачивания).
+
+    Возвращает cdp base URL или None (тогда Agent сам provision'ит
+    браузер — docker-путь без изменений). Процесс Edge держится один на
+    всё время жизни sidecar (отдельный temp-профиль, системный профиль
+    пользователя НЕ трогаем). Явный BROWSER_USE_CDP_URL — приоритет.
+    """
+    explicit = os.environ.get("BROWSER_USE_CDP_URL", "").strip().rstrip("/")
+    if explicit:
+        return explicit
+    port = int(os.environ.get("BROWSER_USE_CDP_PORT", "9222") or 9222)
+    base = f"http://127.0.0.1:{port}"
+    if _cdp_alive(base):
+        return base
+    binary = _find_edge_binary()
+    if not binary:
+        return None
+    global _agent_browser_proc
+    async with _agent_browser_lock:
+        if _agent_browser_proc is not None and _agent_browser_proc.poll() is None and _cdp_alive(base):
+            return base
+        import subprocess
+        import tempfile as _tf
+
+        profile = os.path.join(_tf.gettempdir(), "browser-use-sidecar-edge-profile")
+        os.makedirs(profile, exist_ok=True)
+        try:
+            _agent_browser_proc = subprocess.Popen(
+                [
+                    binary,
+                    "--headless=new",
+                    f"--remote-debugging-port={port}",
+                    "--no-first-run",
+                    "--no-default-browser-check",
+                    f"--user-data-dir={profile}",
+                    "about:blank",
+                ],
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+            )
+        except OSError:
+            _agent_browser_proc = None
+            return None
+        for _ in range(90):
+            await asyncio.sleep(0.5)
+            if _agent_browser_proc.poll() is not None:
+                _agent_browser_proc = None
+                return None
+            if _cdp_alive(base):
+                return base
+        return None
+
+
 async def _run_agent(req: ExecuteRequest, allowed: Optional[list[str]]) -> dict[str, Any]:
     """Full-agent режим через библиотеку browser-use."""
     try:
@@ -205,7 +291,17 @@ async def _run_agent(req: ExecuteRequest, allowed: Optional[list[str]]) -> dict[
     llm = _make_llm(provider, model)
     steps = req.maxSteps or 15
     try:
-        agent = Agent(task=req.task, llm=llm, max_actions_per_step=5)
+        # Локальный браузер по CDP (native Windows: системный Edge, иначе
+        # Agent 30с ждёт свой и падает BrowserStartEvent timeout). В docker
+        # бинарника нет → None → старое поведение (Agent provision'ит сам).
+        cdp = await _ensure_agent_browser()
+        if cdp:
+            from browser_use.browser.session import BrowserSession
+
+            session = BrowserSession(cdp_url=cdp, is_local=cdp.startswith("http://127.0.0.1"))
+            agent = Agent(task=req.task, llm=llm, max_actions_per_step=5, browser_session=session)
+        else:
+            agent = Agent(task=req.task, llm=llm, max_actions_per_step=5)
         history = await agent.run(max_steps=steps)
     except Exception as e:
         raise HTTPException(status_code=502, detail=f"browser-use agent failed: {str(e)[:500]}")
