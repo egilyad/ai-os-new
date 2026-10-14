@@ -311,11 +311,19 @@ export function buildCredibilityPrompt(
             ? `### 📊 Достоверность источников
 Приведённые ниже источники имеют следующие оценки достоверности.
 Учитывай эти оценки при цитировании — источники с низким баллом требуют
-дополнительной верификации или более слабой опоры на них.\n${table}`
+дополнительной верификации или более слабой опоры на них.
+Как цитировать: называй источник точным названием в кавычках. Оформляй
+ссылкой [название](url) ТОЛЬКО если URL явно дан в контексте выше.
+НИКОГДА не выдумывай URL, ссылки и картинки: несуществующий адрес
+хуже, чем его отсутствие.\n${table}`
             : `### 📊 Source Credibility
 The following sources have these credibility ratings.
 Factor these scores into your citation weighting — low-scoring sources need
-additional verification or weaker reliance.\n${table}`;
+additional verification or weaker reliance.
+How to cite: reference each source by its exact quoted title. Use a
+[title](url) link ONLY when the URL was explicitly given in the context above.
+NEVER invent URLs, links, or images: a non-existent address is worse
+than none at all.\n${table}`;
 
     return `\n\n${langIntro}`;
 }
