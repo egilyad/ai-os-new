@@ -3,6 +3,7 @@ import type { DiversityState } from '../../agent-diversity/types';
 import { createClaimGraph, addClaimsToGraph } from './claim-graph';
 import { detectContradictions, hasOpenContradictions } from './contradiction-detector';
 import { extractClaims } from './claim-extractor';
+import { validateOutcome, type OutcomeValidation } from './outcome-validator';
 import { DiversityScorer } from '../../agent-diversity/diversity-scorer';
 
 export class DebateGovernor {
@@ -280,6 +281,14 @@ export class DebateGovernor {
         const phase = contradictions.length > 0 ? 'irreconcilable' : 'consensus';
 
         return { consensus, coreDisagreement, resolvedPoints, unresolvedPoints, phase };
+    }
+
+    /**
+     * Optional post-pass over a synthesis result (track C). Returns a report;
+     * never blocks or alters the debate. Callers decide what to do with issues.
+     */
+    validateSynthesis(synthesis: SynthesisResult): OutcomeValidation {
+        return validateOutcome(this.state, synthesis);
     }
 
     reset(): void {
