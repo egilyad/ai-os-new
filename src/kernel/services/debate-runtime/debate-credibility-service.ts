@@ -74,6 +74,32 @@ const TIER_BASE_SCORES: Record<number, number> = {
     5: 0.2,
 };
 
+const SOURCE_URL_PATTERN = /https?:\/\/[^\s)]+/i;
+const MAX_URL_LENGTH = 500;
+
+/**
+ * Pull the first URL out of a citation string (full text, before display
+ * truncation), stripping sentence punctuation and unbalanced trailing
+ * parens from wrapped citations like "(see https://…)".
+ */
+function extractSourceUrl(source: string): string | undefined {
+    const m = source.match(SOURCE_URL_PATTERN);
+    if (!m) return undefined;
+    let url = m[0]!.replace(/[.,;:!?]+$/u, '');
+    let opens = 0;
+    let closes = 0;
+    for (const ch of url) {
+        if (ch === '(') opens++;
+        else if (ch === ')') closes++;
+    }
+    while (closes > opens && url.endsWith(')')) {
+        url = url.slice(0, -1);
+        closes--;
+    }
+    if (url.length === 0 || url.length > MAX_URL_LENGTH) return undefined;
+    return url;
+}
+
 export class CredibilityScorer implements ICredibilityScorer {
     scoreSource(source: string): SourceCredibility {
         const sourceLower = source.slice(0, 200).toLowerCase();
@@ -111,11 +137,13 @@ export class CredibilityScorer implements ICredibilityScorer {
             score += 0.1;
         }
 
+        const url = extractSourceUrl(source);
         return {
             source: source.slice(0, 100),
             domainTier,
             domainLabel,
             score: Math.max(0, Math.min(1, score)),
+            ...(url ? { url } : {}),
         };
     }
 

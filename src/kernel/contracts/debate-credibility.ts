@@ -7,6 +7,8 @@ export interface SourceCredibility {
     readonly domainTier: number; // 1=high (journals), 5=low (blogs/forums)
     readonly domainLabel: string;
     readonly score: number; // 0-1
+    /** Verified URL extracted from the citation text (cleaned, capped). Safe to render as a link. Absent for quote-only citations. */
+    readonly url?: string;
 }
 
 export interface ICredibilityScorer {

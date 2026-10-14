@@ -22,4 +22,26 @@ describe('CredibilityScorer', () => {
         expect(res.average).toBeLessThanOrEqual(1);
         expect(typeof res.lowestTier).toBe('number');
     });
+
+    it('extracts a clean url from a URL citation', () => {
+        const s = svc.scoreSource('See https://nature.com/articles/xyz123.');
+        expect(s.url).toBe('https://nature.com/articles/xyz123');
+        expect(s.domainTier).toBe(1);
+    });
+
+    it('strips a wrapping paren from the extracted url', () => {
+        const s = svc.scoreSource('(see https://reuters.com/news/today)');
+        expect(s.url).toBe('https://reuters.com/news/today');
+    });
+
+    it('leaves url undefined for quote-only citations', () => {
+        const s = svc.scoreSource('"According to leading experts"');
+        expect(s.url).toBeUndefined();
+        expect(s.source).toContain('According to');
+    });
+
+    it('drops absurdly long urls instead of bloating the prompt', () => {
+        const s = svc.scoreSource(`see https://example.com/${'a'.repeat(600)}`);
+        expect(s.url).toBeUndefined();
+    });
 });

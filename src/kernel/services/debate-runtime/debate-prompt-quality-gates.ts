@@ -296,14 +296,22 @@ Your job is to keep the debate honest and focused.`;
 }
 
 export function buildCredibilityPrompt(
-    scores: { source: string; score: number; domainTier: number; domainLabel: string }[],
+    scores: {
+        source: string;
+        score: number;
+        domainTier: number;
+        domainLabel: string;
+        url?: string;
+    }[],
     language: string,
 ): string {
     const table = scores
-        .map(
-            (s) =>
-                `- "${s.source.slice(0, 80)}" → ${(s.score * 10).toFixed(0)}/10 (tier ${s.domainTier}: ${s.domainLabel})`,
-        )
+        .map((s) => {
+            // Brackets would break out of [title](url); strip them from the label.
+            const label = s.source.slice(0, 80).replace(/[[\]]/g, '');
+            const cited = s.url ? `[${label}](${s.url})` : `"${label}"`;
+            return `- ${cited} → ${(s.score * 10).toFixed(0)}/10 (tier ${s.domainTier}: ${s.domainLabel})`;
+        })
         .join('\n');
 
     const langIntro =
