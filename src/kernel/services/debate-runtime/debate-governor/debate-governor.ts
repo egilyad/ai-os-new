@@ -198,6 +198,11 @@ export class DebateGovernor {
         // Never stop before at least 1 full round after opening statements
         if (this.state.round < 2) return false;
         if (this.maxRounds > 0 && this.state.round >= this.maxRounds) return true;
+        // Soft-stop floor: a requested long debate stays alive until its
+        // second half, so early staleness alone cannot end it.
+        const softStopFloor =
+            this.maxRounds > 0 ? Math.max(2, Math.floor(this.maxRounds / 2)) : 2;
+        if (this.state.round < softStopFloor) return false;
         if (this.hasNoNovelClaims()) return true;
         if (this.isConvergencePlateau()) return true;
         if (

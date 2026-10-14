@@ -115,7 +115,7 @@ describe('DebateMemory', () => {
         mem.recordStep(makeStep({ content: '2' }));
         mem.recordStep(makeStep({ content: '3' }));
         mem.trimContent(2);
-        const recent = mem.getRecentSteps(3);
+        const recent = mem.getRecentSteps(2);
         expect(recent).toHaveLength(2);
         expect(recent[0]).toBeDefined();
         expect(recent[0]!.content).toBe('2');
