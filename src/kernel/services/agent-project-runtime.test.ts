@@ -172,4 +172,111 @@ describe('AgentProjectRuntime', () => {
             expect(events.some((e) => e.type === 'task:complete')).toBe(true);
         });
     });
+
+    describe('P2 task → run → toolCalls → result', () => {
+        it('stores the run row with tool names joined by runId', async () => {
+            mockToolRunner.runWithTools.mockResolvedValueOnce({
+                output: 'done',
+                toolCalls: ['math.calc'],
+            });
+            await runtime.init(PID);
+            const task = await projectService.createTask(PID, 'agent-1', 'T1', 'd1');
+
+            const result = await runtime.runTask(PID, task.id, 'agent-1', task);
+
+            expect(result.status).toBe('completed');
+            const runs = await projectService.listRuns(PID);
+            expect(runs).toHaveLength(1);
+            expect(runs[0]!.id).toBe(result.runId);
+            expect(runs[0]!.taskId).toBe(task.id);
+            expect(runs[0]!.status).toBe('completed');
+            expect(runs[0]!.toolCalls.map((c) => c.tool)).toEqual(['math.calc']);
+            const updatedTask = await projectService.getTask(task.id);
+            expect(updatedTask!.status).toBe('completed');
+            expect(updatedTask!.result).toBe('done');
+        });
+
+        it('failed runs keep the verbatim error on run and task', async () => {
+            mockToolRunner.runWithTools.mockRejectedValueOnce(new Error('LLM exploded: 503'));
+            await runtime.init(PID);
+            const task = await projectService.createTask(PID, 'agent-1', 'T1', 'd1');
+
+            const result = await runtime.runTask(PID, task.id, 'agent-1', task);
+
+            expect(result.status).toBe('failed');
+            const runs = await projectService.listRuns(PID);
+            expect(runs).toHaveLength(1);
+            expect(runs[0]!.id).toBe(result.runId);
+            expect(runs[0]!.status).toBe('failed');
+            expect(runs[0]!.error).toContain('LLM exploded: 503');
+            const updatedTask = await projectService.getTask(task.id);
+            expect(updatedTask!.status).toBe('failed');
+            expect(updatedTask!.result).toContain('LLM exploded: 503');
+        });
+
+        it('recovers the full chain after reload with fresh instances', async () => {
+            mockToolRunner.runWithTools.mockResolvedValueOnce({
+                output: 'done',
+                toolCalls: ['math.calc'],
+            });
+            await runtime.init(PID);
+            const task = await projectService.createTask(PID, 'agent-1', 'T1', 'd1');
+            const result = await runtime.runTask(PID, task.id, 'agent-1', task);
+
+            // Simulate restart: brand-new service instances over the same DB.
+            const { ProjectRepository: Repo2 } = await import('../dal/project-repository');
+            const { ProjectService: Svc2 } = await import('./project-service');
+            const repo2 = new Repo2(db as any);
+            const svc2 = new Svc2(repo2);
+            const recoveredRuns = await svc2.listRuns(PID);
+            const recoveredRun = recoveredRuns.find((r) => r.id === result.runId);
+            expect(recoveredRun).toBeDefined();
+            expect(recoveredRun!.status).toBe('completed');
+            expect(recoveredRun!.toolCalls.map((c) => c.tool)).toEqual(['math.calc']);
+            const recoveredTask = await svc2.getTask(task.id);
+            expect(recoveredTask!.status).toBe('completed');
+            expect(recoveredTask!.result).toBe('done');
+        });
+
+        it('fails stale running runs on init (zombie sweep)', async () => {
+            await runtime.init(PID);
+            const task = await projectService.createTask(PID, 'agent-1', 'T1', 'd1');
+            const run = await projectService.startRun(task.id, 'agent-1');
+            await db.projectRuns.update(run.id, { startedAt: Date.now() - 10 * 60 * 1000 });
+
+            await runtime.init(PID);
+
+            const swept = (await projectService.listRuns(PID)).find((r) => r.id === run.id);
+            expect(swept!.status).toBe('failed');
+            expect(swept!.error).toContain('interrupted by reload');
+        });
+
+        it('init skips the sweep while this instance has a live run', async () => {
+            mockToolRunner.runWithTools.mockImplementation(() => new Promise(() => {}));
+            await runtime.init(PID);
+            const task = await projectService.createTask(PID, 'agent-1', 'T1', 'd1');
+            runtime.runTask(PID, task.id, 'agent-1', task).catch(() => {});
+            await new Promise((r) => setTimeout(r, 50));
+
+            // Re-init with a live run in flight must not kill it, even if old.
+            const live = (await projectService.listRuns(PID))[0]!;
+            await db.projectRuns.update(live.id, { startedAt: Date.now() - 10 * 60 * 1000 });
+            await runtime.init(PID);
+
+            const kept = (await projectService.listRuns(PID)).find((r) => r.id === live.id);
+            expect(kept!.status).toBe('running');
+        });
+
+        it('empty toolCalls stays empty without faking success detail', async () => {
+            await runtime.init(PID);
+            const task = await projectService.createTask(PID, 'agent-1', 'T1', 'd1');
+
+            const result = await runtime.runTask(PID, task.id, 'agent-1', task);
+
+            expect(result.status).toBe('completed');
+            expect(result.toolCalls).toEqual([]);
+            const runs = await projectService.listRuns(PID);
+            expect(runs[0]!.toolCalls).toEqual([]);
+        });
+    });
 });

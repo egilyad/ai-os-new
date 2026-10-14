@@ -159,6 +159,29 @@ describe('ProjectService', () => {
             const runs = await service.listRuns(p.id);
             expect(runs.length).toBe(1);
         });
+
+        it('completeRun stores toolCalls and keeps error verbatim', async () => {
+            const p = await service.create({ name: 'P', description: '', type: 'website' });
+            const t = await service.createTask(p.id, 'a1', 'T1', 'd1');
+            const run = await service.startRun(t.id, 'a1');
+            const calls = [{ tool: 'math.calc', args: { expr: '2+2' }, result: '4', timestamp: Date.now() }];
+            const done = await service.completeRun(run.id, 'completed', undefined, calls);
+            expect(done.status).toBe('completed');
+            expect(done.toolCalls).toHaveLength(1);
+            expect(done.toolCalls[0]!.tool).toBe('math.calc');
+            expect(done.completedAt).toBeDefined();
+
+            const run2 = await service.startRun(t.id, 'a1');
+            const failed = await service.completeRun(run2.id, 'failed', 'boom: exact message');
+            expect(failed.status).toBe('failed');
+            expect(failed.error).toBe('boom: exact message');
+        });
+
+        it('completeRun on unknown run throws instead of faking a row', async () => {
+            await expect(service.completeRun('run-missing', 'completed')).rejects.toThrow(
+                /run not found/i,
+            );
+        });
     });
 
     describe('Files', () => {

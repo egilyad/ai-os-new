@@ -12,6 +12,7 @@ import type {
     ProjectStatus,
     ProjectTask,
     ProjectRun,
+    ToolCallRecord,
     ProjectFile,
     ProjectMemory,
     ProjectAgentAssignment,
@@ -183,13 +184,19 @@ export class ProjectService implements IProjectManagerService {
         return run;
     }
 
-    async completeRun(runId: string, status: RunStatus, error?: string): Promise<ProjectRun> {
+    async completeRun(
+        runId: string,
+        status: RunStatus,
+        error?: string,
+        toolCalls?: ToolCallRecord[],
+    ): Promise<ProjectRun> {
         const run = await this.repo.getRun(runId);
         if (!run) throw new Error(`Run not found: ${runId}`);
         const updated: ProjectRun = {
             ...run,
             status,
             error,
+            ...(toolCalls ? { toolCalls } : {}),
             completedAt: Date.now(),
         };
         await this.repo.putRun(updated);

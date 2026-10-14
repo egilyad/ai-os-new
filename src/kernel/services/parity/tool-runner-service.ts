@@ -15,7 +15,7 @@ import type { IWorkspaceService } from '../../contracts/workspace';
 import type { MCPService } from '../mcp-service';
 import type { DebateSyncManager } from '../debate-runtime/debate-sync-manager';
 import type { IToolRunnerService, ToolRunResult } from '../../contracts/parity';
-import type { ExternalToolRecord } from '../tool-executor';
+import type { ExternalToolRecord, ToolExecutionLink } from '../tool-executor';
 import { rootLogger } from '../logger-service';
 import { EVENTS } from '../../events/event-names';
 import { isPrivateIP } from '../../utils/network';
@@ -169,7 +169,14 @@ export class ToolRunnerService implements IToolRunnerService {
         }
     }
 
-    async callTool(agentId: string, name: string, args: Record<string, unknown> = {}): Promise<string> {
+    async callTool(
+        agentId: string,
+        name: string,
+        args: Record<string, unknown> = {},
+        link?: Omit<ToolExecutionLink, 'agentId'>,
+    ): Promise<string> {
+        // P2 join: runId/taskId flow down from the runtime; agentId always set here.
+        const trailLink: ToolExecutionLink = { agentId, ...link };
         const tool = this.tools.get(name);
         if (!tool) {
             await this.trail({
@@ -177,7 +184,7 @@ export class ToolRunnerService implements IToolRunnerService {
                 input: args,
                 status: 'error',
                 reason: `Unknown tool: ${name}`,
-                link: { agentId },
+                link: trailLink,
             });
             throw new Error(`Unknown tool: ${name}`);
         }
@@ -189,7 +196,7 @@ export class ToolRunnerService implements IToolRunnerService {
                     input: args,
                     status: 'denied',
                     reason: `Tool ${name} denied for ${agentId} by policy`,
-                    link: { agentId },
+                    link: trailLink,
                 });
                 throw new Error(`Tool ${name} denied for ${agentId} by policy`);
             }
@@ -208,7 +215,7 @@ export class ToolRunnerService implements IToolRunnerService {
                 input: args,
                 output: out,
                 status: 'success',
-                link: { agentId },
+                link: trailLink,
                 duration: now() - started,
             });
             return out;
@@ -226,7 +233,7 @@ export class ToolRunnerService implements IToolRunnerService {
                 output: msg,
                 status: 'error',
                 reason: msg.slice(0, 500),
-                link: { agentId },
+                link: trailLink,
                 duration: now() - started,
             });
             throw new Error(`Tool ${name} failed: ${msg}`, { cause: e });
@@ -235,7 +242,14 @@ export class ToolRunnerService implements IToolRunnerService {
 
     async runWithTools(
         prompt: string,
-        opts: { agentId?: string; system?: string; maxRounds?: number; model?: string } = {},
+        opts: {
+            agentId?: string;
+            system?: string;
+            maxRounds?: number;
+            model?: string;
+            /** P2 join keys (runId/taskId) carried into every trail record. */
+            link?: Omit<ToolExecutionLink, 'agentId'>;
+        } = {},
     ): Promise<ToolRunResult> {
         const agentId = opts.agentId ?? 'tool-runner';
         const messages: AdapterMessage[] = [
@@ -284,7 +298,7 @@ export class ToolRunnerService implements IToolRunnerService {
                 }
                 let result: string;
                 try {
-                    result = await this.callTool(agentId, call.function.name, args);
+                    result = await this.callTool(agentId, call.function.name, args, opts.link);
                 } catch (e) {
                     result = `ERROR: ${e instanceof Error ? e.message : String(e)}`;
                 }

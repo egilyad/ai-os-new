@@ -20,6 +20,9 @@ import type { ProjectService } from './project-service';
 import type { ProjectWorkspaceService } from './project-workspace-service';
 import type { IEventBus } from '../types/interfaces';
 import { FILE_TOOLS } from './file-toolset';
+import { rootLogger } from './logger-service';
+
+const LOGGER = rootLogger.child('AgentProjectRuntime');
 
 interface ProjectRuntimeState {
     status: RuntimeStatus;
@@ -31,10 +34,29 @@ function genId(prefix: string): string {
     return `${prefix}-${Date.now()}-${crypto.randomUUID().slice(0, 8)}`;
 }
 
+/** Runs interrupted by a reload (same 5-minute zombie rule as debates). */
+const STALE_RUN_MS = 5 * 60 * 1000;
+
+/**
+ * P2 join: runWithTools returns tool NAMES only; full args/results/errors
+ * live in the P1 trail under the same runId. Names land on the run row.
+ */
+function toToolCallRecords(toolCalls: unknown): Array<{
+    tool: string;
+    args: Record<string, unknown>;
+    timestamp: number;
+}> {
+    if (!Array.isArray(toolCalls)) return [];
+    const now = Date.now();
+    return toolCalls
+        .filter((t): t is string => typeof t === 'string')
+        .map((tool) => ({ tool, args: {}, timestamp: now }));
+}
+
 export class AgentProjectRuntime implements IAgentProjectRuntime {
     private projectService: ProjectService;
     private workspace: ProjectWorkspaceService;
-    private toolRunner: { runWithTools: (prompt: string, opts?: { agentId?: string; system?: string; maxRounds?: number }) => Promise<{ output: string; toolCalls?: unknown[] }> };
+    private toolRunner: { runWithTools: (prompt: string, opts?: { agentId?: string; system?: string; maxRounds?: number; link?: { runId?: string; taskId?: string } }) => Promise<{ output: string; toolCalls?: unknown[] }> };
     private eventBus?: IEventBus;
     private states = new Map<ProjectId, ProjectRuntimeState>();
 
@@ -61,9 +83,40 @@ export class AgentProjectRuntime implements IAgentProjectRuntime {
 
     async init(projectId: ProjectId): Promise<void> {
         const state = this.getState(projectId);
+        // Capture liveness BEFORE reset: a live run in this instance is slow,
+        // not a zombie — the sweep below must not kill it.
+        const hadLiveRun = state.status === 'running';
         state.status = 'idle';
         state.events = [];
         await this.workspace.init(projectId);
+        // P2 recovery: runs left 'running' by a reload can never complete —
+        // fail them loudly instead of leaving zombies behind. Cross-tab races
+        // (two live tabs) are out of scope: the second tab to init wins;
+        // same single-tab rule as debate sessions.
+        if (!hadLiveRun) {
+            try {
+                const runs = await this.projectService.listRuns(projectId);
+                const cutoff = Date.now() - STALE_RUN_MS;
+                for (const run of runs) {
+                    if (run.status === 'running' && run.startedAt < cutoff) {
+                        await this.projectService
+                            .completeRun(run.id, 'failed', 'interrupted by reload')
+                            .catch((e: unknown) => {
+                                LOGGER.warn('AgentProjectRuntime', 'zombie sweep failed', {
+                                    runId: run.id,
+                                    error: e instanceof Error ? e.message : String(e),
+                                });
+                            });
+                    }
+                }
+            } catch (e) {
+                // observability only — init must not fail because of the sweep
+                LOGGER.warn('AgentProjectRuntime', 'zombie sweep failed', {
+                    projectId,
+                    error: e instanceof Error ? e.message : String(e),
+                });
+            }
+        }
         this.emitEvent({ type: 'runtime:status', agentId: 'system', projectId, message: 'initialized', timestamp: Date.now() });
     }
 
@@ -82,9 +135,11 @@ export class AgentProjectRuntime implements IAgentProjectRuntime {
         state.status = 'running';
         state.abortController = new AbortController();
         const startTime = Date.now();
-        const toolCalls: RuntimeRunResult['toolCalls'] = [];
 
         this.emitEvent({ type: 'task:start', agentId, projectId, taskId, message: task.title, timestamp: startTime });
+
+        // P2: the run row comes FIRST — its id joins every P1 trail record below.
+        const run = await this.projectService.startRun(taskId, agentId);
 
         try {
             // Update project task status
@@ -104,22 +159,25 @@ export class AgentProjectRuntime implements IAgentProjectRuntime {
                 agentId,
                 system: systemPrompt,
                 maxRounds: context?.maxRounds ?? 5,
+                link: { runId: run.id, taskId },
             });
 
             this.emitEvent({ type: 'llm:complete', agentId, projectId, taskId, message: result.output.slice(0, 200), timestamp: Date.now() });
 
-            // Complete task
+            // Complete task + run (names here, full args/results in the P1 trail under run.id)
+            const toolCallRecords = toToolCallRecords(result.toolCalls);
             await this.projectService.updateTaskStatus(taskId, 'completed', result.output);
+            await this.projectService.completeRun(run.id, 'completed', undefined, toolCallRecords);
 
             const duration = Date.now() - startTime;
             state.status = 'idle';
 
             const runResult: RuntimeRunResult = {
-                runId: genId('run'),
+                runId: run.id,
                 taskId,
                 status: 'completed',
                 output: result.output,
-                toolCalls,
+                toolCalls: toolCallRecords,
                 duration,
             };
 
@@ -130,16 +188,34 @@ export class AgentProjectRuntime implements IAgentProjectRuntime {
             const msg = e instanceof Error ? e.message : String(e);
             const duration = Date.now() - startTime;
 
-            await this.projectService.updateTaskStatus(taskId, 'failed', msg).catch(() => {});
+            // Finalization failures are diagnosable (warn) but never replace
+            // the original task error in the returned result.
+            await this.projectService
+                .completeRun(run.id, 'failed', msg)
+                .catch((e: unknown) => {
+                    LOGGER.warn('AgentProjectRuntime', 'completeRun failed', {
+                        runId: run.id,
+                        taskId,
+                        error: e instanceof Error ? e.message : String(e),
+                    });
+                });
+            await this.projectService
+                .updateTaskStatus(taskId, 'failed', msg)
+                .catch((e: unknown) => {
+                    LOGGER.warn('AgentProjectRuntime', 'updateTaskStatus failed', {
+                        taskId,
+                        error: e instanceof Error ? e.message : String(e),
+                    });
+                });
             state.status = 'failed';
             this.emitEvent({ type: 'task:error', agentId, projectId, taskId, message: msg, timestamp: Date.now() });
 
             return {
-                runId: genId('run'),
+                runId: run.id,
                 taskId,
                 status: 'failed',
                 output: '',
-                toolCalls,
+                toolCalls: [],
                 error: msg,
                 duration,
             };

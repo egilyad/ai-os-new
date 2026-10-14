@@ -120,3 +120,49 @@ describe('callTool P1 durable trail', () => {
         expect(trail[0]!['reason']).toMatch(/kaput/);
     });
 });
+
+describe('runWithTools P2 link passthrough', () => {
+    it('carries runId/taskId into every trail record', async () => {
+        const trail: Array<Record<string, unknown>> = [];
+        let calls = 0;
+        const llm = {
+            chat: vi.fn(async () => {
+                calls++;
+                if (calls === 1) {
+                    return {
+                        content: '',
+                        toolCalls: [
+                            {
+                                id: 'c1',
+                                type: 'function',
+                                function: { name: 'echo', arguments: '{"x":1}' },
+                            },
+                        ],
+                    };
+                }
+                return { content: 'done', toolCalls: [] };
+            }),
+        };
+        const svc = new ToolRunnerService({
+            events: { emit: vi.fn() } as never,
+            llm: llm as never,
+            toolTrail: {
+                record: async (entry: unknown) => {
+                    trail.push(entry as Record<string, unknown>);
+                },
+            },
+        });
+        svc.addTool({ name: 'echo', description: 'echo', run: async () => 'hi' });
+
+        const res = await svc.runWithTools('do it', {
+            agentId: 'a9',
+            link: { runId: 'run-1', taskId: 'task-1' },
+        });
+
+        expect(res.toolCalls).toEqual(['echo']);
+        expect(res.output).toBe('done');
+        expect(trail).toHaveLength(1);
+        expect(trail[0]!['status']).toBe('success');
+        expect(trail[0]!['link']).toMatchObject({ agentId: 'a9', runId: 'run-1', taskId: 'task-1' });
+    });
+});
