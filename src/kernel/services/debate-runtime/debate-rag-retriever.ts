@@ -1,4 +1,8 @@
-import type { DebateEmbeddingPipeline, EmbeddingChunk } from './debate-embedding-pipeline';
+import type {
+    DebateEmbeddingPipeline,
+    EmbeddingChunk,
+} from './debate-embedding-pipeline';
+import type { MemoryUnit } from './debate-memory-extractor';
 
 // ── Types ──────────────────────────────────────────────────────────
 
@@ -72,6 +76,16 @@ export class DebateRAGRetriever {
             sessionId: currentSessionId,
             query,
         };
+    }
+
+    /**
+     * P4: index extracted units so retrieveRelevantDebates has something to
+     * find. Returns ingested chunk count. The pipeline owns persistence.
+     */
+    async indexUnits(sessionId: string, units: MemoryUnit[]): Promise<number> {
+        if (units.length === 0) return 0;
+        const chunks = await this.deps.embeddingPipeline.processMemoryUnits(sessionId, units);
+        return chunks.length;
     }
 
     async injectMemoryIntoDebate(

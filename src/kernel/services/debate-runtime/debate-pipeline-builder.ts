@@ -254,10 +254,9 @@ export function buildPipeline(engine: PipelineEngine, isResume: boolean): Debate
                                 round: event.round,
                             });
 
-                            // Trim old step content after each round to cap memory.
-                            // Keep last 8 steps with full content for LLM context;
-                            // older steps retain structure but get empty content strings.
-                            engine.getMemory(sessionId).trimContent(8);
+                            // P4: no per-round trimContent here anymore — live memory
+                            // keeps full content (bounded by MAX_STEPS cap); only the
+                            // persisted copy is pruned at save time (persistence-manager).
 
                             // N4c: fact-check this round's arguments (awaited, sampling unchanged) — ensures getForArgument returns completed results before next round's scoring
                             if (engine.deps.postProcessor) {
@@ -277,6 +276,41 @@ export function buildPipeline(engine: PipelineEngine, isResume: boolean): Debate
                                 if (roundArgs.length > 0) {
                                     await engine.deps.postProcessor.processFactCheck(roundArgs);
                                 }
+                            }
+
+                            // P4: feed the RAG index from this round's timeline so
+                            // retrieveRelevantDebates stops searching an empty index.
+                            // Best-effort: indexing must never break the debate.
+                            try {
+                                const extractor = engine.deps.memoryExtractor;
+                                const retriever = engine.deps.ragRetriever;
+                                if (extractor && retriever) {
+                                    const roundEntries = engine
+                                        .getContext(sessionId)
+                                        .timeline.getEntries(sessionId)
+                                        .filter(
+                                            (e) =>
+                                                (e.payload as { round?: number })?.round ===
+                                                event.round,
+                                        );
+                                    if (roundEntries.length > 0) {
+                                        const extracted = extractor.extractFromTimeline(
+                                            sessionId,
+                                            roundEntries,
+                                        );
+                                        if (extracted.units.length > 0) {
+                                            await retriever.indexUnits(
+                                                sessionId,
+                                                extracted.units,
+                                            );
+                                        }
+                                    }
+                                }
+                            } catch (e) {
+                                LOGGER.warn('DebatePipeline', 'RAG indexing skipped', {
+                                    sessionId,
+                                    error: e instanceof Error ? e.message : String(e),
+                                });
                             }
 
                             if (event.allErrored) {

@@ -120,12 +120,19 @@ export class DebateMemory implements IDebateMemory {
 
         const existing = this.chains.get(step.agentId) || [];
         const lastChain = existing[existing.length - 1];
+        // P4: a synthesis step concludes its chain — without this,
+        // getWinningStrategies() (and persona memory built on it) is dead.
+        // The conclusion belongs to the chain the synthesis step lands in;
+        // it must never leak into a fresh chain started afterwards.
+        const stepConclusion =
+            step.type === 'synthesis' ? step.content.slice(0, 500) : undefined;
         if (lastChain && !lastChain.conclusion && lastChain.steps.length < MAX_STEPS_PER_CHAIN) {
             const newSteps = [...lastChain.steps, step];
             existing[existing.length - 1] = {
                 ...lastChain,
                 steps: newSteps,
                 coherence: this.calculateCoherence(newSteps),
+                ...(stepConclusion !== undefined ? { conclusion: stepConclusion } : {}),
             };
         } else {
             existing.push({
@@ -133,6 +140,7 @@ export class DebateMemory implements IDebateMemory {
                 topic: '',
                 steps: [step],
                 coherence: 1.0,
+                ...(stepConclusion !== undefined ? { conclusion: stepConclusion } : {}),
             });
             if (existing.length > MAX_CHAINS_PER_AGENT) {
                 this.chains.set(step.agentId, existing.slice(-MAX_CHAINS_PER_AGENT));

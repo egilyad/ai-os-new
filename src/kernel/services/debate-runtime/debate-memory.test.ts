@@ -87,15 +87,21 @@ describe('DebateMemory', () => {
     it('starts new chain when previous has conclusion', () => {
         const mem = new DebateMemory();
         mem.recordStep(makeStep({ agentId: 'agent-1', type: 'claim', confidence: 0.9 }));
-        mem.recordStep(makeStep({ agentId: 'agent-1', type: 'synthesis', confidence: 1.0 }));
+        // P4: a synthesis step concludes its chain.
+        mem.recordStep(
+            makeStep({ agentId: 'agent-1', type: 'synthesis', confidence: 1.0, content: 'done' }),
+        );
 
         const chains = mem.getChain('agent-1');
         const before = chains[0];
         expect(before).toBeDefined();
         expect(before!.steps).toHaveLength(2);
+        expect(before!.conclusion).toBe('done');
 
         mem.recordStep(makeStep({ agentId: 'agent-1', type: 'claim', confidence: 0.7 }));
-        expect(mem.getChain('agent-1')).toHaveLength(1);
+        const after = mem.getChain('agent-1');
+        expect(after).toHaveLength(2);
+        expect(after[1]!.conclusion).toBeUndefined();
     });
 
     it('records claims and filters by topic', () => {
@@ -155,7 +161,39 @@ describe('DebateMemory', () => {
         mem.recordStep(makeStep({ agentId: 'w2', type: 'synthesis', confidence: 0.3 }));
 
         const winners = mem.getWinningStrategies();
-        expect(winners.length).toBeGreaterThanOrEqual(0);
+        // P4: synthesis-concluded coherent chains are winners (persona memory alive).
+        expect(winners.length).toBeGreaterThanOrEqual(1);
+        expect(winners.some((w) => w.agentId === 'w1')).toBe(true);
+    });
+
+    it('buildPersonaMemory returns content once a chain concludes (P4)', () => {
+        const mem = new DebateMemory();
+        mem.recordStep(
+            makeStep({
+                agentId: 'a1',
+                type: 'claim',
+                confidence: 0.9,
+                content: 'Economic framework analysis shows clear results',
+            }),
+        );
+        mem.recordStep(
+            makeStep({
+                agentId: 'a1',
+                type: 'evidence',
+                confidence: 0.8,
+                content: 'Economic framework analysis confirms the results',
+            }),
+        );
+        mem.recordStep(
+            makeStep({
+                agentId: 'a1',
+                type: 'synthesis',
+                confidence: 1.0,
+                content: 'Economic framework analysis concludes the debate',
+            }),
+        );
+        const persona = buildPersonaMemory(mem, 'a1');
+        expect(persona).toContain('Persona Memory');
     });
 
     it('serializes and restores state', () => {

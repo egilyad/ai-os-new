@@ -35,9 +35,10 @@ export interface HistoryStepLike {
 
 /**
  * Pick history texts for the prompt: prefer full-text timeline responses
- * (memory steps beyond the last 8 are content-stripped by trimContent),
- * fall back to memory steps when the timeline accessor is absent/empty
- * (keeps legacy behavior for older callers and unit tests).
+ * (persisted memory copies are content-pruned beyond the last 8 steps;
+ * live memory keeps full content), fall back to memory steps when the
+ * timeline accessor is absent/empty (keeps legacy behavior for older
+ * callers and unit tests).
  */
 export function selectHistorySteps(
     memSteps: HistoryStepLike[],
@@ -105,8 +106,8 @@ async function buildDebateCallContext(args: {
     const currentName = participantNameMap.get(participant.agentId) || participant.agentId;
 
     const mem = deps.getMemory(sessionId);
-    // A2: full-text timeline first (memory beyond last 8 steps is stripped
-    // by trimContent); legacy memory path when the accessor is absent.
+    // A2: full-text timeline first (persisted memory copies are pruned;
+    // live memory is full); legacy memory path when the accessor is absent.
     let timelineSteps: HistoryStepLike[];
     try {
         timelineSteps = deps.getTimelineResponses?.(sessionId) ?? [];

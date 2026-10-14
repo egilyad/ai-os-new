@@ -28,6 +28,17 @@ const HEAP_HIGH_MB = 150;
 const HEAP_CRITICAL_MB = 300;
 const PRUNE_KEEP_ROUNDS = 3;
 const MINIMAL_MEMORY_ITEMS = 50;
+/**
+ * P4: live memory keeps full content (per-round trimContent removed);
+ * only the persisted copy is pruned to the last N full steps.
+ */
+const SAVE_KEEP_FULL_STEPS = 8;
+
+function pruneStepsForSave<T extends { content: string }>(steps: T[]): T[] {
+    if (steps.length <= SAVE_KEEP_FULL_STEPS) return steps;
+    const keepFrom = steps.length - SAVE_KEEP_FULL_STEPS;
+    return steps.map((s, i) => (i < keepFrom ? { ...s, content: '' } : s));
+}
 
 export interface PersistenceEngineState {
     sessions: Map<string, IDebateSession>;
@@ -206,11 +217,20 @@ export class DebatePersistenceManager {
         const prunedArgs = heapMB >= HEAP_HIGH_MB ? this.pruneArgumentsForSave(args, heapMB) : args;
         const memJson = (() => {
             const raw = this.getMemory(sessionId).toJSON();
-            if (heapMB < HEAP_CRITICAL_MB) return JSON.stringify(raw);
+            if (heapMB >= HEAP_CRITICAL_MB)
+                return JSON.stringify({
+                    claims: raw.claims.slice(-MINIMAL_MEMORY_ITEMS),
+                    steps: raw.steps.slice(-MINIMAL_MEMORY_ITEMS),
+                    chains: raw.chains.slice(-MINIMAL_MEMORY_ITEMS),
+                });
+            // P4: prune the COPY, never live memory.
             return JSON.stringify({
-                claims: raw.claims.slice(-MINIMAL_MEMORY_ITEMS),
-                steps: raw.steps.slice(-MINIMAL_MEMORY_ITEMS),
-                chains: raw.chains.slice(-MINIMAL_MEMORY_ITEMS),
+                ...raw,
+                steps: pruneStepsForSave(raw.steps),
+                chains: raw.chains.map((c) => ({
+                    ...c,
+                    steps: pruneStepsForSave(c.steps),
+                })),
             });
         })();
 

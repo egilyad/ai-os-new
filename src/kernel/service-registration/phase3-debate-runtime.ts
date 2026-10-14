@@ -216,10 +216,31 @@ export const registerPhase3: Phase = (helpers, ctx) => {
     const storageLayer = ctx.container.get<StorageLayer>('storageLayer');
 
     // Lazy factory registrations — services created on first container.get().
-    register(
-        'debateEmbeddingPipeline',
-        (_c) => new DebateEmbeddingPipeline({ embedText: simpleEmbedText }),
-    );
+    register('debateEmbeddingPipeline', (c) => {
+        // P4: persist chunks across reloads via the database KV (graceful
+        // memory-only fallback when the database service is unavailable).
+        let store: { config: { get<T>(key: string): Promise<T | null>; set<T>(key: string, value: T): Promise<void> } } | undefined;
+        try {
+            if (c.has('database')) {
+                const database = c.get<{
+                    getKv<T>(id: string): Promise<T | null>;
+                    setKv<T>(id: string, value: T): Promise<void>;
+                }>('database');
+                store = {
+                    config: {
+                        get: (key) => database.getKv(key),
+                        set: (key, value) => database.setKv(key, value),
+                    },
+                };
+            }
+        } catch {
+            store = undefined;
+        }
+        return new DebateEmbeddingPipeline({
+            embedText: simpleEmbedText,
+            ...(store ? { store } : {}),
+        });
+    });
     register('debateEvaluator', (c) => new DebateEvaluator(new DpoStrategySampler(), () => {
         try { return c.get<import('../services/fact-check-service').FactCheckService>('factCheckService') as unknown as { getForArgument: (id: string) => { overallScore: number } | undefined; getAll: () => Array<{ overallScore: number }> }; } catch { return undefined; }
     }));
