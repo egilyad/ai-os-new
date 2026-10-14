@@ -4,6 +4,7 @@ import { CopyButton } from './CopyButton';
 import { highlightCode } from './highlight-utils';
 import { inlineMarkdown } from './inline-markdown';
 import { parseTable } from './markdown-parser';
+import { MermaidDiagram } from './MermaidDiagram';
 
 interface MarkdownRendererProps {
     content: string;
@@ -39,6 +40,13 @@ const MarkdownRendererImpl: React.FC<MarkdownRendererProps> = ({ content, isStre
 
         if (line.startsWith('```')) {
             if (inCodeBlock) {
+                if (codeBlockLang.toLowerCase() === 'mermaid') {
+                    elements.push(<MermaidDiagram key={`mmd-${i}`} code={codeBlockContent} />);
+                    codeBlockContent = '';
+                    codeBlockLang = '';
+                    inCodeBlock = false;
+                    continue;
+                }
                 const highlighted = codeBlockLang
                     ? highlightCode(codeBlockContent, codeBlockLang)
                     : codeBlockContent;

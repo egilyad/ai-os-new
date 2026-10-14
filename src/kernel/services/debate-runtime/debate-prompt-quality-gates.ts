@@ -383,6 +383,25 @@ resilient to errors in individual sources.`;
     return `\n\n${langIntro}`;
 }
 
+export function buildDiagramPrompt(language: string): string {
+    const langIntro =
+        language === 'Russian'
+            ? `### 📐 Схема (по желанию)
+Если объясняешь механизм, процесс или структуру — можешь добавить ОДНУ
+схему блоком \`\`\`mermaid (flowchart или graph, до 15 узлов). Она будет
+отрисована автоматически. Не уверен в синтаксисе — пропусти схему, текст
+важнее. Картинки вставляй только как ![описание](url) для URL из контекста
+выше; никогда не выдумывай адреса изображений.`
+            : `### 📐 Diagram (optional)
+When explaining a mechanism, process, or structure, you may add ONE
+\`\`\`mermaid scheme (flowchart or graph, up to 15 nodes). It will be
+rendered automatically. Unsure about the syntax — skip the diagram, the
+text matters more. Embed images only as ![description](url) for URLs from
+the context above; never invent image addresses.`;
+
+    return `\n\n${langIntro}`;
+}
+
 export function buildDriftCorrectionPrompt(score: number, language: string): string {
     const intensity = score >= 0.8 ? 'STRONG' : score >= 0.65 ? 'MODERATE' : 'MILD';
     if (language.startsWith('ru')) {

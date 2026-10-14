@@ -35,6 +35,7 @@ import type { IIncentiveDetector } from '../../contracts/debate-incentives';
 import type { IGoTDeliberation } from '../../contracts/debate-got';
 import type { IConceptBlender } from '../../contracts/debate-blending';
 import type { IOutcomeForecaster } from '../../contracts/debate-forecaster';
+import type { IGeminiResearchService } from '../../contracts/gemini-research';
 import type { DebateProviderResolver } from './debate-query-engine';
 import type { DebateMemory } from './debate-memory';
 
@@ -147,4 +148,6 @@ export interface LlmCallerDeps {
     gotDeliberation?: IGoTDeliberation;
     conceptBlender?: IConceptBlender;
     outcomeForecaster?: IOutcomeForecaster;
+    /** Live grounded web search (one query per round, shared via cache). Absent/unavailable → debates run unchanged. */
+    liveResearch?: IGeminiResearchService;
 }

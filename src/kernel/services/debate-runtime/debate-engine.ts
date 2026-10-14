@@ -557,6 +557,7 @@ export class DebateEngine implements IDebateEngine, ILifecycle {
             gotDeliberation: this.deps.gotDeliberation,
             conceptBlender: this.deps.conceptBlender,
             outcomeForecaster: this.deps.outcomeForecaster,
+            liveResearch: this.deps.liveResearch,
         };
 
         // P2.4: Best-of-N — generate N responses and pick the best.

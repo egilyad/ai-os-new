@@ -8,6 +8,7 @@ import { buildPersonaMemory, DebateMemory } from './debate-memory';
 import { buildArgumentPrompt } from './debate-prompt-builder';
 import { isDuplicateArgument } from './debate-duplicate-detection';
 import { buildRepetitionWarningPrompt } from './debate-prompt-quality-gates';
+import { getLiveResearchText } from './debate-live-research';
 import type { IDebateSession, ParticipantConfig } from '../../contracts/debate-runtime';
 import type { DebateArgument, DebateParticipant } from '../../contracts/debate-types';
 import type { EntanglementConstraint } from '../../contracts/debate-entanglement';
@@ -1221,6 +1222,27 @@ export async function buildDebateSystemContent(
         }
     }
 
+    // Live web research — one grounded search per round, shared by all
+    // participants via cache. Silent skip keeps the debate unaffected.
+    let liveResearchText: string | undefined;
+    if (isQ('live-research') && deps.liveResearch && session.round >= 1) {
+        try {
+            const opponentSnippets = previousArguments
+                .filter((a) => a.agentId !== participant.agentId)
+                .slice(-2)
+                .map((a) => a.content.slice(0, 150));
+            liveResearchText = await getLiveResearchText(deps.liveResearch, {
+                sessionId,
+                round: session.round,
+                topic: session.topic,
+                opponentSnippets,
+                language: session.language,
+            });
+        } catch {
+            LOGGER.warn('DebateLlmCaller', 'LiveResearch error', { sessionId });
+        }
+    }
+
     // Use the rich prompt builder instead of the simple inline prompt
     let systemContent = buildArgumentPrompt(
         {
@@ -1288,6 +1310,7 @@ export async function buildDebateSystemContent(
         blendingText,
         forecasterText,
         session.qualitySettings,
+        liveResearchText,
     );
 
     // Append persona memory block (from past debates — adds 3+ step history)

@@ -644,6 +644,7 @@ export const registerPhase3: Phase = (helpers, ctx) => {
             gotDeliberation: c.get<IGoTDeliberation>('gotDeliberation'),
             conceptBlender: c.get<IConceptBlender>('conceptBlender'),
             outcomeForecaster: c.get<IOutcomeForecaster>('outcomeForecaster'),
+            liveResearch: (() => { try { return c.get<import('../contracts/gemini-research').IGeminiResearchService>('geminiResearchService'); } catch { return undefined; } })() as unknown as import('../contracts/gemini-research').IGeminiResearchService | undefined,
             deadLetterQueue:
                 c.get<import('../contracts/dead-letter-queue').IDeadLetterQueue>('deadLetterQueue'),
             distributedLock:

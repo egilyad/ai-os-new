@@ -37,6 +37,7 @@ import type { IIncentiveDetector } from '../../contracts/debate-incentives';
 import type { IGoTDeliberation } from '../../contracts/debate-got';
 import type { IConceptBlender } from '../../contracts/debate-blending';
 import type { IOutcomeForecaster } from '../../contracts/debate-forecaster';
+import type { IGeminiResearchService } from '../../contracts/gemini-research';
 import type { IEventBus } from '../../types/interfaces';
 import type { IAdapterRegistry } from '../../contracts/provider-adapter';
 import type { IDistributedLock } from '../../contracts/cross-tab-lock';
@@ -146,6 +147,7 @@ export interface DebateEngineDeps {
     gotDeliberation?: IGoTDeliberation;
     conceptBlender?: IConceptBlender;
     outcomeForecaster?: IOutcomeForecaster;
+    liveResearch?: IGeminiResearchService;
     argTech?: import('../../contracts/debateplus').IArgTechService;
     deadLetterQueue?: import('../../contracts/dead-letter-queue').IDeadLetterQueue;
     distributedLock?: IDistributedLock;
