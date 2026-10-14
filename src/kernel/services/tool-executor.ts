@@ -109,14 +109,72 @@ async function validateToolCode(code: string): Promise<string | null> {
     }
 }
 
+/** Join keys to the run that requested the tool. All optional: filled where available (P2 completes task linkage). */
+export interface ToolExecutionLink {
+    runId?: string;
+    taskId?: string;
+    agentId?: string;
+    invocationId?: string;
+    sessionId?: string;
+}
+
 export interface ToolExecution {
     id: string;
     toolId: string;
     input: unknown;
     output: unknown;
-    status: 'success' | 'error';
+    status: 'success' | 'error' | 'denied';
+    /** Machine-readable detail for error/denied (e.g. NOT_FOUND, rate-limited, policy). */
+    reason?: string;
+    link?: ToolExecutionLink;
     duration: number;
     timestamp: number;
+}
+
+/** Input for cross-service records (ToolRunner, computer loop) into the same trail. */
+export interface ExternalToolRecord {
+    toolId: string;
+    input?: unknown;
+    output?: unknown;
+    status: 'success' | 'error' | 'denied';
+    reason?: string;
+    link?: ToolExecutionLink;
+    duration?: number;
+}
+
+// Random seed: two processes writing the same KV row in the same millisecond
+// must not mint the same id after a reload (counter alone would restart at 0).
+let execSeq = Math.floor(Math.random() * 1296);
+
+function nextExecId(): string {
+    return `exec-${Date.now()}-${(execSeq++ % 1296).toString(36)}`;
+}
+
+const MAX_TRAIL_INPUT_CHARS = 2000;
+const MAX_TRAIL_OUTPUT_CHARS = 8000;
+
+/** Merge persisted rows under live ones (dedupe by id, newest-first, capped). */
+function mergeTrail(current: ToolExecution[], loaded: ToolExecution[]): ToolExecution[] {
+    if (current.length === 0) return loaded;
+    const seen = new Set(loaded.map((e) => e.id));
+    return [...current.filter((e) => !seen.has(e.id)), ...loaded].slice(
+        0,
+        getMaxExecutionHistory(),
+    );
+}
+
+/** Cap stored payloads so one base64-heavy record cannot blow up the KV row. */
+function capTrailValue(v: unknown, max: number): unknown {
+    if (typeof v === 'string') {
+        return v.length > max ? `${v.slice(0, max)}…[truncated ${v.length - max} chars]` : v;
+    }
+    try {
+        const s = JSON.stringify(v);
+        if (s && s.length > max) return `${s.slice(0, max)}…[truncated]`;
+    } catch {
+        // non-serializable — keep as-is, persist() failure is caught downstream
+    }
+    return v;
 }
 
 import { CONFIG } from './config-registry';
@@ -298,7 +356,10 @@ export class ToolService {
                         return saved ? { ...defaultTool, ...saved } : defaultTool;
                     });
                 }
-                if (parsed.history) this.executionHistory = parsed.history;
+                // Merge, don't overwrite: a second instance (HMR, double-init)
+                // must not clobber rows recorded after its own load.
+                if (parsed.history)
+                    this.executionHistory = mergeTrail(this.executionHistory, parsed.history);
             }
         } catch (e) {
             LOGGER.error('ToolService', 'Failed to load tools', { error: e });
@@ -314,6 +375,40 @@ export class ToolService {
             .catch((e) => {
                 LOGGER.error('ToolService', 'Failed to persist tools', { error: e });
             });
+    }
+
+    private async pushHistory(entry: Omit<ToolExecution, 'id' | 'timestamp'>): Promise<void> {
+        this.executionHistory.unshift({ ...entry, id: nextExecId(), timestamp: Date.now() });
+        if (this.executionHistory.length > getMaxExecutionHistory())
+            this.executionHistory.pop();
+        await this.persist();
+    }
+
+    /**
+     * P1 durable trail sink: other runners (ToolRunner, computer loop) record
+     * here instead of starting a parallel journal. Same KV row, same cap,
+     * same restore path. Never throws, never emits (callers emit their own events).
+     *
+     * Single-writer contract: the canonical deployment holds ONE ToolService
+     * instance, so same-process concurrent records cannot race (sync mutation,
+     * persist re-reads). Two independent live instances may clobber each
+     * other's rows — mergeTrail() only covers the init boundary. A true
+     * multi-writer journal needs its own table (out of P1 scope).
+     */
+    async recordExternalExecution(entry: ExternalToolRecord): Promise<void> {
+        try {
+            await this.pushHistory({
+                toolId: entry.toolId,
+                input: capTrailValue(entry.input, MAX_TRAIL_INPUT_CHARS),
+                output: capTrailValue(entry.output, MAX_TRAIL_OUTPUT_CHARS),
+                status: entry.status,
+                ...(entry.reason ? { reason: entry.reason } : {}),
+                ...(entry.link ? { link: entry.link } : {}),
+                duration: entry.duration ?? 0,
+            });
+        } catch (e) {
+            LOGGER.error('ToolService', 'Failed to record external execution', { error: e });
+        }
     }
 
     getTools() {
@@ -393,6 +488,7 @@ export class ToolService {
         toolId: string,
         input: unknown,
         signal?: AbortSignal,
+        link?: ToolExecutionLink,
     ): Promise<{
         status: string;
         data?: unknown;
@@ -402,13 +498,37 @@ export class ToolService {
     }> {
         const tool = this.tools.find((t) => t.id === toolId);
         const pluginTool = this.deps.pluginRegistry?.getTool(toolId);
-        if (!tool && !pluginTool) throw toolError(toolId, `Tool ${toolId} not found`, 'NOT_FOUND');
-        if (tool && tool.enabled === false)
+        if (!tool && !pluginTool) {
+            await this.recordExternalExecution({
+                toolId,
+                input,
+                status: 'error',
+                reason: 'NOT_FOUND',
+                ...(link ? { link } : {}),
+            });
+            throw toolError(toolId, `Tool ${toolId} not found`, 'NOT_FOUND');
+        }
+        if (tool && tool.enabled === false) {
+            await this.recordExternalExecution({
+                toolId,
+                input,
+                status: 'denied',
+                reason: `Tool ${tool.name} is currently disabled`,
+                ...(link ? { link } : {}),
+            });
             throw toolError(toolId, `Tool ${tool.name} is currently disabled`);
+        }
 
         signal?.throwIfAborted();
 
         if (tool && !this.checkRateLimit(toolId)) {
+            await this.recordExternalExecution({
+                toolId,
+                input,
+                status: 'denied',
+                reason: `Rate limit exceeded for ${tool.name}`,
+                ...(link ? { link } : {}),
+            });
             return {
                 status: 'error',
                 error: `Rate limit exceeded for ${tool.name}`,
@@ -479,18 +599,14 @@ export class ToolService {
 
             const duration = Math.round(performance.now() - startTime);
             const result = { status: 'success', data: resultData, timestamp: Date.now(), duration };
-            this.executionHistory.unshift({
-                id: `exec-${Date.now()}`,
+            await this.pushHistory({
                 toolId,
                 input,
                 output: resultData,
                 status: 'success',
+                ...(link ? { link } : {}),
                 duration,
-                timestamp: Date.now(),
             });
-            if (this.executionHistory.length > getMaxExecutionHistory())
-                this.executionHistory.pop();
-            await this.persist();
             this.deps.eventBus.emit(EVENTS.TOOL_EXECUTION_SUCCESS, { toolId, output: result });
             return result;
         } catch (e: unknown) {
@@ -502,18 +618,15 @@ export class ToolService {
                 timestamp: Date.now(),
                 duration,
             };
-            this.executionHistory.unshift({
-                id: `exec-${Date.now()}`,
+            await this.pushHistory({
                 toolId,
                 input,
                 output: errorMessage,
                 status: 'error',
+                reason: errorMessage.slice(0, 500),
+                ...(link ? { link } : {}),
                 duration,
-                timestamp: Date.now(),
             });
-            if (this.executionHistory.length > getMaxExecutionHistory())
-                this.executionHistory.pop();
-            await this.persist();
             this.deps.eventBus.emit(EVENTS.TOOL_EXECUTION_ERROR, { toolId, error: errorMessage });
             return result;
         }

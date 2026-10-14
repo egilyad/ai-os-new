@@ -15,6 +15,7 @@ import type { IWorkspaceService } from '../../contracts/workspace';
 import type { MCPService } from '../mcp-service';
 import type { DebateSyncManager } from '../debate-runtime/debate-sync-manager';
 import type { IToolRunnerService, ToolRunResult } from '../../contracts/parity';
+import type { ExternalToolRecord } from '../tool-executor';
 import { rootLogger } from '../logger-service';
 import { EVENTS } from '../../events/event-names';
 import { isPrivateIP } from '../../utils/network';
@@ -109,6 +110,8 @@ function httpGuard(url: string): void {
 export interface ToolRunnerDeps {
     events: IEventBus;
     llm: ILLMClientService;
+    /** P1 durable trail sink (ToolService.recordExternalExecution). Absent → events only, as before. */
+    toolTrail?: { record(entry: ExternalToolRecord): Promise<void> };
     governance?: IToolGovernanceService;
     workspace?: IWorkspaceService;
     mcp?: MCPService;
@@ -152,12 +155,44 @@ export class ToolRunnerService implements IToolRunnerService {
         });
     }
 
+    private async trail(entry: ExternalToolRecord): Promise<void> {
+        // Best-effort: the trail must never change callTool's throw contract,
+        // but a failed write is diagnosable (warn), never silent.
+        try {
+            await this.deps.toolTrail?.record(entry);
+        } catch (e) {
+            LOGGER.warn('ToolRunner', 'trail write failed', {
+                toolId: entry.toolId,
+                status: entry.status,
+                error: e instanceof Error ? e.message : String(e),
+            });
+        }
+    }
+
     async callTool(agentId: string, name: string, args: Record<string, unknown> = {}): Promise<string> {
         const tool = this.tools.get(name);
-        if (!tool) throw new Error(`Unknown tool: ${name}`);
+        if (!tool) {
+            await this.trail({
+                toolId: name,
+                input: args,
+                status: 'error',
+                reason: `Unknown tool: ${name}`,
+                link: { agentId },
+            });
+            throw new Error(`Unknown tool: ${name}`);
+        }
         if (this.deps.governance) {
             const allowed = await this.deps.governance.check(agentId, `tool:${name}`);
-            if (!allowed) throw new Error(`Tool ${name} denied for ${agentId} by policy`);
+            if (!allowed) {
+                await this.trail({
+                    toolId: name,
+                    input: args,
+                    status: 'denied',
+                    reason: `Tool ${name} denied for ${agentId} by policy`,
+                    link: { agentId },
+                });
+                throw new Error(`Tool ${name} denied for ${agentId} by policy`);
+            }
         }
         const started = now();
         try {
@@ -168,6 +203,14 @@ export class ToolRunnerService implements IToolRunnerService {
                 ok: true,
                 latencyMs: now() - started,
             });
+            await this.trail({
+                toolId: name,
+                input: args,
+                output: out,
+                status: 'success',
+                link: { agentId },
+                duration: now() - started,
+            });
             return out;
         } catch (e) {
             const msg = e instanceof Error ? e.message : String(e);
@@ -176,6 +219,15 @@ export class ToolRunnerService implements IToolRunnerService {
                 tool: name,
                 ok: false,
                 latencyMs: now() - started,
+            });
+            await this.trail({
+                toolId: name,
+                input: args,
+                output: msg,
+                status: 'error',
+                reason: msg.slice(0, 500),
+                link: { agentId },
+                duration: now() - started,
             });
             throw new Error(`Tool ${name} failed: ${msg}`, { cause: e });
         }

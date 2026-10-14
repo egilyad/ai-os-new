@@ -39,6 +39,7 @@ import type { IEventBus } from '../../types/interfaces';
 import type { ILLMClientService, AdapterMessage } from '../../contracts/provider-adapter';
 import type { ApprovalRequest, ApprovalPolicy, ApprovalPreset } from '../../types/agems-approval';
 import { agemsApprovalService } from '../agems-approval-service';
+import type { ExternalToolRecord } from '../tool-executor';
 import { EVENTS } from '../../events/event-names';
 import { rootLogger } from '../logger-service';
 
@@ -116,6 +117,8 @@ export interface ComputerUseLoopDeps {
     llm: ILLMClientService;
     executor: ComputerExecutor;
     approval?: Pick<typeof agemsApprovalService, 'list' | 'getPolicy' | 'claim' | 'requestApproval'>;
+    /** P1 durable trail sink (ToolService.recordExternalExecution). Absent → events only, as before. */
+    toolTrail?: { record(entry: ExternalToolRecord): Promise<void> };
 }
 
 export const REQUEST_AND_RUN_POLL_MS = 1000;
@@ -162,6 +165,19 @@ export class ComputerUseLoopService {
 
     async init(): Promise<void> {
         LOGGER.info('ComputerUseLoop', 'init', {});
+    }
+
+    private async trail(entry: ExternalToolRecord): Promise<void> {
+        // Best-effort: the trail must never change the loop's throw contract,
+        // but a failed write is diagnosable (warn), never silent.
+        try {
+            await this.deps.toolTrail?.record(entry);
+        } catch (e) {
+            LOGGER.warn('ComputerUseLoop', 'trail write failed', {
+                status: entry.status,
+                error: e instanceof Error ? e.message : String(e),
+            });
+        }
     }
 
     async destroy(): Promise<void> {
@@ -248,12 +264,26 @@ export class ComputerUseLoopService {
     }): Promise<ComputerUseLoopResult> {
         const { approvedRequestId } = input;
         if (approvedRequestId === undefined) {
+            await this.trail({
+                toolId: 'computer.use',
+                input: { task: input.task },
+                status: 'denied',
+                reason: 'computer.use: HITL approval required',
+            });
             throw new Error('computer.use: HITL approval required (pass approvedRequestId of an APPROVED request)');
         }
         const approval = this.deps.approval ?? agemsApprovalService;
         const all = (await approval.list()) as ApprovalRequest[];
         const req = all.find((r) => r.id === approvedRequestId);
-        if (!req) throw new Error(`computer.use: approval request ${approvedRequestId} not found`);
+        if (!req) {
+            await this.trail({
+                toolId: 'computer.use',
+                input: { task: input.task },
+                status: 'denied',
+                reason: `computer.use: approval request ${approvedRequestId} not found`,
+            });
+            throw new Error(`computer.use: approval request ${approvedRequestId} not found`);
+        }
         return this.run({
             agentId: req.agentId,
             task: input.task,
@@ -290,6 +320,13 @@ export class ComputerUseLoopService {
         }
         const mode = resolveComputerMode(policy);
         if (mode === 'BLOCKED') {
+            await this.trail({
+                toolId: 'computer.use',
+                input: { task },
+                status: 'denied',
+                reason: `computer.use: blocked by approval policy for ${agentId}`,
+                link: { agentId },
+            });
             throw new Error(`computer.use: blocked by approval policy for ${agentId}`);
         }
         const maxTurns = Math.max(
@@ -307,15 +344,27 @@ export class ComputerUseLoopService {
         // ответственность вызывающего (например, bridge уже проверил).
         const needCheck = opts.requireApproval ?? mode === 'REQUIRES_APPROVAL';
         if (needCheck) {
-            await this.checkApproval(agentId, opts.approvedRequestId, {
-                toolName: 'computer.use',
-                task,
-                provider: opts.provider ?? 'anthropic',
-            });
-            // Claim ДО loop — один approve = один запуск.
-            // Транзиентный сбой loop сжигает approve (новый — новым запросом),
-            // зато исключён повторный USE без человека.
-            await (this.deps.approval ?? agemsApprovalService).claim(opts.approvedRequestId as number);
+            try {
+                await this.checkApproval(agentId, opts.approvedRequestId, {
+                    toolName: 'computer.use',
+                    task,
+                    provider: opts.provider ?? 'anthropic',
+                });
+                // Claim ДО loop — один approve = один запуск.
+                // Транзиентный сбой loop сжигает approve (новый — новым запросом),
+                // зато исключён повторный USE без человека.
+                await (this.deps.approval ?? agemsApprovalService).claim(opts.approvedRequestId as number);
+            } catch (e) {
+                const msg = e instanceof Error ? e.message : String(e);
+                await this.trail({
+                    toolId: 'computer.use',
+                    input: { task },
+                    status: 'denied',
+                    reason: msg.slice(0, 500),
+                    link: { agentId },
+                });
+                throw e;
+            }
         }
 
         const messages: AdapterMessage[] = [
@@ -365,7 +414,15 @@ export class ComputerUseLoopService {
             // Выходим только когда вызовов нет вообще: ответы-ошибки на
             // function-tools модель должна увидеть следующим ходом.
             if (computer.length === 0 && functions.length === 0) {
-                return { stopReason: 'done', turns: turn + 1, output: res.content, computerCalls, lastScreenshot, maxTurnsApplied: maxTurns };
+                const done = { stopReason: 'done' as const, turns: turn + 1, output: res.content, computerCalls, lastScreenshot, maxTurnsApplied: maxTurns };
+                await this.trail({
+                    toolId: 'computer.use',
+                    input: { task },
+                    output: res.content.slice(0, 2000),
+                    status: 'success',
+                    link: { agentId, runId: sessionId },
+                });
+                return done;
             }
 
             for (const call of computer) {
@@ -391,14 +448,23 @@ export class ComputerUseLoopService {
                     // Транспорт мёртв — жечь оставшиеся turns бессмысленно.
                     const msg = e instanceof Error ? e.message : String(e);
                     LOGGER.warn('ComputerUseLoop', 'executor transport failed', { action: input.action, error: msg });
-                    return {
-                        stopReason: 'executor_error',
+                    const failed = {
+                        stopReason: 'executor_error' as const,
                         turns: turn + 1,
                         output: `executor transport failed: ${msg}`,
                         computerCalls,
                         lastScreenshot,
                         maxTurnsApplied: maxTurns,
                     };
+                    await this.trail({
+                        toolId: 'computer.use',
+                        input: { task },
+                        output: failed.output,
+                        status: 'error',
+                        reason: `executor transport failed: ${msg}`.slice(0, 500),
+                        link: { agentId, runId: sessionId },
+                    });
+                    return failed;
                 }
                 computerCalls++;
                 if (result.screenshotBase64) lastScreenshot = result.screenshotBase64;
@@ -421,7 +487,16 @@ export class ComputerUseLoopService {
             }
         }
 
-        return { stopReason: 'max_turns', turns: maxTurns, output: 'max turns reached', computerCalls, lastScreenshot, maxTurnsApplied: maxTurns };
+        const capped = { stopReason: 'max_turns' as const, turns: maxTurns, output: 'max turns reached', computerCalls, lastScreenshot, maxTurnsApplied: maxTurns };
+        await this.trail({
+            toolId: 'computer.use',
+            input: { task },
+            output: capped.output,
+            status: 'error',
+            reason: 'max turns reached',
+            link: { agentId, runId: sessionId },
+        });
+        return capped;
     }
 
     /**

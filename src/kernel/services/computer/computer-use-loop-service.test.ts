@@ -655,3 +655,70 @@ describe('ComputerUseLoopService (phase71)', () => {
         expect(res.stopReason).toBe('done');
     });
 });
+
+describe('ComputerUseLoopService P1 durable trail (run-level)', () => {
+    function makeTrailedService(over: Record<string, unknown> = {}) {
+        const trail: Array<Record<string, unknown>> = [];
+        const llm = scriptedLlm([{ content: 'nothing to do', latency: 1, tokens: 5 } as AdapterResponse]);
+        const svc = new ComputerUseLoopService({
+            events: { emit: vi.fn() } as never,
+            llm: llm as never,
+            executor: okExecutor() as never,
+            toolTrail: {
+                record: async (entry: unknown) => {
+                    trail.push(entry as Record<string, unknown>);
+                },
+            },
+            ...over,
+        } as never);
+        return { svc, trail };
+    }
+
+    it('records BLOCKED-policy runs as denied', async () => {
+        const { svc, trail } = makeTrailedService({
+            approval: {
+                getPolicy: async () => ({ toolOverrides: { 'computer.use': 'BLOCKED' } }),
+                list: vi.fn(async () => []),
+            },
+        });
+        await expect(svc.run(baseOpts({ requireApproval: false }))).rejects.toThrow(/blocked by approval policy/);
+        expect(trail).toHaveLength(1);
+        expect(trail[0]!['toolId']).toBe('computer.use');
+        expect(trail[0]!['status']).toBe('denied');
+        expect(trail[0]!['link']).toMatchObject({ agentId: 'a1' });
+    });
+
+    it('records missing-approval runs as denied', async () => {
+        const { svc, trail } = makeTrailedService({
+            approval: { list: vi.fn(async () => []) },
+        });
+        await expect(svc.run(baseOpts({ requireApproval: true }))).rejects.toThrow(
+            /not found|approval required/i,
+        );
+        expect(trail).toHaveLength(1);
+        expect(trail[0]!['status']).toBe('denied');
+    });
+
+    it('records completed runs as success with a run id', async () => {
+        const { svc, trail } = makeTrailedService();
+        const res = await svc.run(baseOpts());
+        expect(res.stopReason).toBe('done');
+        expect(trail).toHaveLength(1);
+        expect(trail[0]!['status']).toBe('success');
+        expect(trail[0]!['output']).toBe('nothing to do');
+        const link = trail[0]!['link'] as Record<string, unknown>;
+        expect(link['agentId']).toBe('a1');
+        expect(typeof link['runId']).toBe('string');
+    });
+
+    it('records runApproved with unknown request as denied', async () => {
+        const { svc, trail } = makeTrailedService({
+            approval: { list: vi.fn(async () => []) },
+        });
+        await expect(svc.runApproved({ task: 'do it', approvedRequestId: 999 })).rejects.toThrow(
+            /not found/,
+        );
+        expect(trail).toHaveLength(1);
+        expect(trail[0]!['status']).toBe('denied');
+    });
+});

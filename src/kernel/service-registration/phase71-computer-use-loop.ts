@@ -21,6 +21,8 @@ import type { ILLMClientService } from '../contracts/provider-adapter';
 import type { IToolRunnerService } from '../contracts/parity';
 import { ComputerUseLoopService } from '../services/computer/computer-use-loop-service';
 import { SidecarComputerExecutor } from '../services/computer/sidecar-computer-executor';
+import type { ToolService } from '../services/tool-executor';
+import type { ExternalToolRecord } from '../services/tool-executor';
 
 function str(v: unknown): string {
     return typeof v === 'string' ? v : '';
@@ -28,10 +30,18 @@ function str(v: unknown): string {
 
 export const registerPhase71: Phase = ({ register }) => {
     register('computerUseLoopService', (c: IContainer) => {
+        // P1 durable trail: loop records run outcomes into the ToolService KV journal.
+        const toolSvc = c.has('toolService') ? c.get<ToolService>('toolService') : undefined;
         const svc = new ComputerUseLoopService({
             events: c.get<IEventBus>('eventBus'),
             llm: c.get<ILLMClientService>('llmClientService'),
             executor: new SidecarComputerExecutor(),
+            toolTrail: toolSvc
+                ? {
+                      record: (entry: ExternalToolRecord) =>
+                          toolSvc.recordExternalExecution(entry),
+                  }
+                : undefined,
         });
 
         // computer.use виден LLM/bridge здесь же (паттерн phase33/phase70):

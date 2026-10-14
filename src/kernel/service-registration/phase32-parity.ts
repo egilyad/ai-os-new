@@ -22,6 +22,8 @@ import type { MCPService } from '../services/mcp-service';
 import type { DebateSyncManager } from '../services/debate-runtime/debate-sync-manager';
 import { ParityRepository } from '../dal/parity-repository';
 import { ToolRunnerService } from '../services/parity/tool-runner-service';
+import type { ToolService } from '../services/tool-executor';
+import type { ExternalToolRecord } from '../services/tool-executor';
 import { KnowledgeService } from '../services/parity/knowledge-service';
 import { TrainingService } from '../services/parity/training-service';
 import { DefaultEmbeddingService } from '../services/parity/default-embedding-service';
@@ -45,9 +47,17 @@ export const registerPhase32: Phase = ({ register }) => {
         const knowledge = c.has('knowledgeService')
             ? c.get<KnowledgeService>('knowledgeService')
             : undefined;
+        // P1 durable trail: runner records into the ToolService KV journal.
+        const toolSvc = c.has('toolService') ? c.get<ToolService>('toolService') : undefined;
         return new ToolRunnerService({
             events: c.get<IEventBus>('eventBus'),
             llm: c.get<ILLMClientService>('llmClientService'),
+            toolTrail: toolSvc
+                ? {
+                      record: (entry: ExternalToolRecord) =>
+                          toolSvc.recordExternalExecution(entry),
+                  }
+                : undefined,
             governance: c.has('toolGovernanceService')
                 ? c.get<IToolGovernanceService>('toolGovernanceService')
                 : undefined,
