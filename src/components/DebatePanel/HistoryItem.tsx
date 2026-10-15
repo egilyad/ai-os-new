@@ -50,7 +50,6 @@ interface HistoryItemProps {
     isExpanded: boolean;
     onToggleExpand: () => void;
     onRestore: (id: string) => void;
-    onArchive: (id: string) => void;
     onDelete: (id: string) => void;
     onRefresh: () => void;
     sessionManager: { archiveDebateSession: (id: string) => void };

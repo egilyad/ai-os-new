@@ -30,7 +30,7 @@ const EmptyHistoryState: React.FC<EmptyHistoryStateProps> = ({ t }) => (
                 gap: 10,
             }}
         >
-            <Clock size={20} color="#3b82f6" /> {t('debate_runtime.title')}
+            <Clock size={20} color="#3b82f6" /> {t('debate.history_title')}
         </h3>
         <div
             style={{

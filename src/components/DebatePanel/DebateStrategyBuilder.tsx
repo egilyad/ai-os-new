@@ -25,9 +25,21 @@ const DebateStrategyBuilder: React.FC = () => {
     const [toast, setToast] = useState<{ msg: string; ok: boolean } | null>(null);
     const [loadingBuiltins, setLoadingBuiltins] = useState(false);
 
+    const toastTimer = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+    React.useEffect(
+        () => () => {
+            if (toastTimer.current) clearTimeout(toastTimer.current);
+        },
+        [],
+    );
+
     const showToast = useCallback((msg: string, ok = true) => {
         setToast({ msg, ok });
-        setTimeout(() => setToast(null), 3000);
+        if (toastTimer.current) clearTimeout(toastTimer.current);
+        toastTimer.current = setTimeout(() => {
+            setToast(null);
+            toastTimer.current = null;
+        }, 3000);
     }, []);
 
     const addPrimitive = useCallback((type: string) => {
@@ -150,7 +162,10 @@ const DebateStrategyBuilder: React.FC = () => {
                 showToast('Cannot deploy: validation errors', false);
                 return;
             }
-            showToast(`Deployed: "${def.name}" — ready for debate`);
+            // Deploy = validate + register (same as Save): the button must
+            // do what it claims instead of only toasting.
+            strategyRegistry.register(def, false);
+            showToast(`Deployed: "${def.name}" — registered for debate`);
         } catch (e) {
             showToast(`Deploy failed: ${e}`, false);
         }

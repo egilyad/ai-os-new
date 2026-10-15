@@ -154,7 +154,9 @@ export function useDebatePanelSubscriptions(args: UseDebatePanelSubscriptionsArg
         };
     }, [session?.id, session?.status, setVerdict, getCachedVerdict]);
 
-    // Terminal events (cancelled/failed) → clear session state
+    // Terminal events (cancelled/failed) → message + history refresh.
+    // The session is persisted as a terminal row (P3), so the user can
+    // reopen it from History instead of staring at a silent empty wizard.
     useEffect(() => {
         const unsubCancel = eventBus.on(EVENTS.DEBATE_SESSION_CANCELLED, (payload) => {
             if (!isMountedRef.current) return;
@@ -162,8 +164,9 @@ export function useDebatePanelSubscriptions(args: UseDebatePanelSubscriptionsArg
             if (sessionRef.current?.id && p.sessionId !== sessionRef.current.id) return;
             setSession(null);
             setIsLoading(false);
-            setError(null);
+            setError(t('debate.session_cancelled'));
             setActionLoading(null);
+            refreshHistory();
         });
         const unsubFail = eventBus.on(EVENTS.DEBATE_SESSION_FAILED, (payload) => {
             if (!isMountedRef.current) return;
@@ -171,14 +174,15 @@ export function useDebatePanelSubscriptions(args: UseDebatePanelSubscriptionsArg
             if (sessionRef.current?.id && p.sessionId !== sessionRef.current.id) return;
             setSession(null);
             setIsLoading(false);
-            setError(null);
+            setError(t('debate.session_failed'));
             setActionLoading(null);
+            refreshHistory();
         });
         return () => {
             unsubCancel();
             unsubFail();
         };
-    }, [isMountedRef, sessionRef, setSession, setIsLoading, setError, setActionLoading]);
+    }, [isMountedRef, sessionRef, setSession, setIsLoading, setError, setActionLoading, refreshHistory, t]);
 }
 
 export type { DebateVerdict, HumanVote };

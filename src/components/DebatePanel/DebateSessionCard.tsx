@@ -168,7 +168,7 @@ const DebateSessionCard: React.FC<Props> = ({ session, isExpanded, onToggle }) =
                         <Badge>
                             Rounds: {session.currentRound}/{session.maxRounds}
                         </Badge>
-                        <Badge>Convergence: {Math.round(session.convergenceScore * 100)}%</Badge>
+                        <Badge>Convergence: {Math.round(session.convergenceScore)}%</Badge>
                         <Badge>Participants: {session.participants?.length ?? 0}</Badge>
                     </div>
                 </div>

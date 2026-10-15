@@ -67,7 +67,7 @@ const HistoryHeader: React.FC<HistoryHeaderProps> = ({
                     gap: 10,
                 }}
             >
-                <Clock size={20} color="#3b82f6" /> {t('debate_runtime.title')}{' '}
+                <Clock size={20} color="#3b82f6" /> {t('debate.history_title')}{' '}
                 <span style={{ fontSize: '0.85rem', color: 'var(--slate-500)', fontWeight: 600 }}>
                     ({filteredCount})
                 </span>

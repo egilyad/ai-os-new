@@ -4,9 +4,7 @@ import DebateSetupWizard from './DebateSetupWizard';
 import DebateHistoryPanel from './DebateHistoryPanel';
 import DebateAnalytics from './DebateAnalytics';
 import CollabDebatePanel from './CollabDebatePanel';
-import { TournamentBracketView } from './TournamentBracketView';
 import { DebateVerdictPanel } from './DebateVerdictPanel';
-import { DebateMemoryPanel } from './DebateMemoryPanel';
 import DebateSidebar from './DebateSidebar';
 import DebateChat from './DebateChat';
 import ErrorBoundary from '../Common/ErrorBoundary';
@@ -174,15 +172,7 @@ export function DebateTabContent({
                     />
                 )}
 
-                {viewTab === 'tournament' ? (
-                    <div style={{ flex: 1, overflow: 'auto' }}>
-                        <TournamentBracketView />
-                    </div>
-                ) : viewTab === 'memory' ? (
-                    <div style={{ flex: 1, overflow: 'auto' }}>
-                        <DebateMemoryPanel />
-                    </div>
-                ) : viewTab === 'history' ? (
+                {viewTab === 'history' ? (
                     <DebateHistoryPanel
                         history={history}
                         expandedHistory={expandedHistory}
@@ -197,15 +187,23 @@ export function DebateTabContent({
                         onRefresh={refreshHistory}
                         t={t}
                     />
-                ) : viewTab === 'verdict' && verdict ? (
+                ) : viewTab === 'verdict' ? (
                     <div style={{ flex: 1, overflow: 'auto', padding: '1rem' }}>
-                        <DebateVerdictPanel verdict={verdict} sessionId={session?.id ?? ''} />
-                        <VerdictActionButtons
-                            session={session}
-                            t={t}
-                            onViewAnalysis={() => setViewTab('active')}
-                            onReplay={replay}
-                        />
+                        {verdict ? (
+                            <>
+                                <DebateVerdictPanel verdict={verdict} sessionId={session?.id ?? ''} />
+                                <VerdictActionButtons
+                                    session={session}
+                                    t={t}
+                                    onViewAnalysis={() => setViewTab('active')}
+                                    onReplay={replay}
+                                />
+                            </>
+                        ) : (
+                            <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)' }}>
+                                Verdict is being prepared…
+                            </div>
+                        )}
                     </div>
                 ) : (
                     <div

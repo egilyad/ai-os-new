@@ -31,6 +31,7 @@ const VotePanelSection: React.FC<Props> = ({
     setShowVotePanel,
 }) => {
     if (showVotePanel === null || sessionStatus !== 'active') return null;
+    const participants = getRoundParticipants(showVotePanel);
 
     return (
         <div style={debateVotePanel}>
@@ -39,9 +40,22 @@ const VotePanelSection: React.FC<Props> = ({
                 <span style={debateVoteStatusText}>
                     Round {showVotePanel} — Who made the best argument?
                 </span>
+                {participants.length === 0 && (
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setShowVotePanel(null)}
+                        style={{ marginLeft: 'auto' }}
+                    >
+                        Dismiss
+                    </Button>
+                )}
             </div>
+            {participants.length === 0 && (
+                <div style={debateVoteStatusText}>Waiting for arguments…</div>
+            )}
             <div style={debateVoteChoices}>
-                {getRoundParticipants(showVotePanel).map((agentId) => {
+                {participants.map((agentId) => {
                     const isBest = humanVotes.some(
                         (v) =>
                             v.round === showVotePanel &&

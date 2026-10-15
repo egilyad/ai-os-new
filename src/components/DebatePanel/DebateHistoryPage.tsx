@@ -78,7 +78,7 @@ const DebateHistoryPage: React.FC = () => {
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                     <Clock size={20} color="#3b82f6" />
                     <span style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--slate-50)' }}>
-                        {t('debate_runtime.title')}
+                        {t('debate.history_title')}
                     </span>
                 </div>
             </div>

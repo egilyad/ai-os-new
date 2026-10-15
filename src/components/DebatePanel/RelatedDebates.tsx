@@ -59,7 +59,8 @@ const RelatedDebates: React.FC<Props> = ({
                             borderRadius: 8,
                             background: 'rgba(139,92,246,0.06)',
                             border: '1px solid rgba(139,92,246,0.15)',
-                            cursor: 'pointer',
+                            // No-op when the parent passes no handler: don't promise action.
+                            cursor: onSelectSession ? 'pointer' : 'default',
                             fontSize: '0.75rem',
                             color: 'var(--text-main)',
                             display: 'flex',

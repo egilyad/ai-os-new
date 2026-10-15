@@ -50,11 +50,14 @@ const DebateSetupWizard: React.FC<DebateSetupWizardProps> = ({
     selectedAgents,
     onToggleAgent,
     availableAgents,
+    selectedHistoricalCount,
+    onOpenHistoricalFigures,
     actionLoading,
     onStart,
     t,
 }) => {
-    const canStart = topic.trim().length > 0 && selectedAgents.length >= 2 && actionLoading !== 'start';
+    const totalParticipants = selectedAgents.length + (selectedHistoricalCount ?? 0);
+    const canStart = topic.trim().length > 0 && totalParticipants >= 2 && actionLoading !== 'start';
 
     return (
         <div style={{ display: 'block', padding: '1.5rem', overflow: 'visible' }}>
@@ -112,6 +115,15 @@ const DebateSetupWizard: React.FC<DebateSetupWizardProps> = ({
                                 })}
                             </div>
                             {selectedAgents.length === 0 && availableAgents.length === 0 && <div style={{ fontSize: '0.8rem', color: 'var(--slate-500)' }}>{t('debate.no_agents')}</div>}
+                            {onOpenHistoricalFigures && (
+                                <button
+                                    type="button"
+                                    onClick={onOpenHistoricalFigures}
+                                    style={{ marginTop: 4, alignSelf: 'flex-start', padding: '6px 12px', borderRadius: 999, border: '1px solid rgba(168,85,247,0.4)', background: 'transparent', color: '#e9d5ff', fontSize: '0.8rem', fontWeight: 600, cursor: 'pointer' }}
+                                >
+                                    Historical figures{(selectedHistoricalCount ?? 0) > 0 ? ` (${selectedHistoricalCount})` : ''}
+                                </button>
+                            )}
                         </div>
 
                         {/* 4. Rounds */}
@@ -141,7 +153,7 @@ const DebateSetupWizard: React.FC<DebateSetupWizardProps> = ({
                         >
                             {actionLoading === 'start' ? 'Starting...' : `5. ${t('debate.initialize')}`}
                         </button>
-                        {!canStart && <div style={{ fontSize: '0.75rem', color: 'var(--slate-500)', textAlign: 'center' }}>{!topic.trim() ? 'Enter topic' : selectedAgents.length < 2 ? 'Select at least 2 agents' : ''}</div>}
+                        {!canStart && <div style={{ fontSize: '0.75rem', color: 'var(--slate-500)', textAlign: 'center' }}>{!topic.trim() ? 'Enter topic' : totalParticipants < 2 ? 'Select at least 2 agents' : ''}</div>}
                     </div>
                 </div>
             </div>

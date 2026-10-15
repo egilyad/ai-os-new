@@ -107,7 +107,6 @@ const DebateHistoryPanel: React.FC<DebateHistoryPanelProps> = ({
                             isExpanded={expandedHistory.has(h.id)}
                             onToggleExpand={() => onToggleExpand(h.id)}
                             onRestore={handleRestore}
-                            onArchive={() => {}}
                             onDelete={handleDelete}
                             onRefresh={onRefresh}
                             sessionManager={sessionManager}

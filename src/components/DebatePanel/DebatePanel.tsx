@@ -138,6 +138,21 @@ const DebatePanel: React.FC = () => {
 
     const refreshHistory = useCallback(() => {
         setHistory(sessionManager.getDebateHistory());
+        // P3 terminal rows (failed/cancelled) live outside the completed
+        // list — merge them so History shows the full past, not just wins.
+        sessionManager
+            .getTerminalHistory()
+            .then((terminal) => {
+                if (terminal.length === 0) return;
+                setHistory((prev) => {
+                    const ids = new Set(prev.map((s) => s.id));
+                    const fresh = terminal.filter((s) => !ids.has(s.id));
+                    return fresh.length > 0 ? [...prev, ...fresh] : prev;
+                });
+            })
+            .catch(() => {
+                // completed history above is unaffected
+            });
     }, []);
 
     const refreshAuto = useCallback(() => {

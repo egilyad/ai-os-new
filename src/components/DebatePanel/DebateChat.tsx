@@ -90,6 +90,17 @@ const DebateChat: React.FC<DebateChatProps> = ({
                         </div>
                     </motion.div>
                 )}
+                {!allFailed && args.length === 0 && (
+                    <div
+                        style={{
+                            padding: '2rem',
+                            textAlign: 'center',
+                            color: 'var(--text-muted)',
+                        }}
+                    >
+                        Waiting for the first argument…
+                    </div>
+                )}
                 {args.map((arg, _i) => {
                     const isStreaming = streamingArgIds?.has(arg.id);
                     const isUser = arg.source === 'human' || arg.agentId === 'User (Human-in-loop)';

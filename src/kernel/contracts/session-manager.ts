@@ -89,6 +89,10 @@ export interface ISessionManager {
     getDebateHistory(): DebateSession[];
     /** Add a completed debate session to history */
     saveToDebateHistory(session: DebateSession): void;
+    /** Persist a failed/cancelled session as a terminal row (P3, no snapshot()) */
+    saveTerminalSession(session: DebateSession): void;
+    /** Failed/cancelled sessions, newest first (P3, live Dexie rows) */
+    getTerminalHistory(limit?: number): Promise<DebateSession[]>;
     /** Restore a completed session (removes from history, returns clone with active status) */
     restoreDebateSession(id: string): DebateSession | null;
     /** Archive a completed session */

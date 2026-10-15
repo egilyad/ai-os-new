@@ -81,8 +81,11 @@ export function findRelated(activeIndex: number, allSessions: DebateSession[]) {
 }
 
 export function getConclusionType(score: number | undefined): string {
+    // Convergence scores are 0..100 (governor scale), same bands as
+    // HistoryItem/DebateAnalytics colors. (Previously 0..1 thresholds here
+    // marked nearly every debate 'consensus'.)
     if (!score) return 'inconclusive';
-    if (score > 0.7) return 'consensus';
-    if (score > 0.4) return 'dominance';
+    if (score > 75) return 'consensus';
+    if (score > 40) return 'dominance';
     return 'inconclusive';
 }
