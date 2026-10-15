@@ -24,6 +24,15 @@ function SafeImage({ src, alt }: { src: string; alt: string }): React.ReactNode 
     );
 }
 
+/** True for absolute https: URLs; anything else (incl. malformed) degrades to caption. */
+function isHttpsUrl(value: string): boolean {
+    try {
+        return new URL(value).protocol === 'https:';
+    } catch {
+        return false;
+    }
+}
+
 /** Strip sentence punctuation from the end of a bare URL, keeping balanced parens (e.g. Wikipedia links). */
 function cleanBareUrl(raw: string): string {
     let url = raw.replace(/[.,;:!?]+$/u, '');
@@ -103,13 +112,7 @@ export function inlineMarkdown(text: string): React.ReactNode {
             );
         } else if (match[3] !== undefined) {
             const imgSrc = match[4]!;
-            let renderable = false;
-            try {
-                renderable = new URL(imgSrc).protocol === 'https:';
-            } catch {
-                renderable = false;
-            }
-            if (renderable) {
+            if (isHttpsUrl(imgSrc)) {
                 parts.push(<SafeImage key={`img-${idx++}`} src={imgSrc} alt={match[3]} />);
             } else {
                 parts.push(
