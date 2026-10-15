@@ -30,6 +30,7 @@ const mockedLoop = vi.mocked(computerUseLoopService);
 describe('AgentTasksPanel', () => {
     beforeEach(() => {
         vi.clearAllMocks();
+        localStorage.clear();
         mockedApproval.requestApproval.mockImplementation(
             async (input: Omit<ApprovalRequest, 'id' | 'status' | 'createdAt'>) =>
                 ({ id: 41, status: 'PENDING', ...input }) as never,
@@ -110,5 +111,23 @@ describe('AgentTasksPanel', () => {
         fireEvent.change(screen.getByPlaceholderText('tasks.task_ph'), { target: { value: 'do it' } });
         fireEvent.click(screen.getByText('tasks.run'));
         await waitFor(() => expect(screen.getAllByText(/sidecar down/).length).toBeGreaterThan(0));
+    });
+
+    it('shows the applied turn cap instead of clamping silently', () => {
+        render(<AgentTasksPanel />);
+        expect(screen.getByText(/applied: 10/)).toBeDefined();
+        fireEvent.change(screen.getByPlaceholderText('tasks.turns_ph'), { target: { value: '999' } });
+        expect(screen.getByText(/applied: 50/)).toBeDefined();
+    });
+
+    it('restores text history after remount (screenshots stay in-memory)', async () => {
+        mockedBrowser.execute.mockImplementation(async () => ({ ok: true, via: 'sidecar', stdout: 'shot done' }) as never);
+        const first = render(<AgentTasksPanel />);
+        fireEvent.change(screen.getByPlaceholderText('tasks.task_ph'), { target: { value: 'open https://example.com' } });
+        fireEvent.click(screen.getByText('tasks.run'));
+        await waitFor(() => expect(screen.getByText(/shot done/)).toBeDefined());
+        first.unmount();
+        render(<AgentTasksPanel />);
+        expect(await screen.findByText('open https://example.com')).toBeDefined();
     });
 });

@@ -13,6 +13,7 @@ const agents: Record<string, string> = {
     'agents.agent_workforce': 'Команда агентов',
     'agents.confirm_reset_all': 'Подтвердить Сброс Все',
     'agents.create_group': 'Создать Группа',
+    'agents.clear_search': 'Очистить поиск',
     'agents.empty_no_topology': 'Нет топологии для очистки',
     'agents.empty_search': 'Опустошить Поиск',
     'agents.empty_title': 'Опустошить Заголовок',

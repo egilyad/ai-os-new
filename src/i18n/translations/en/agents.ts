@@ -15,6 +15,7 @@ const agents: Record<string, string> = {
     'agents.agent_workforce': 'Agent Workforce',
     'agents.confirm_reset_all': 'Confirm Reset All',
     'agents.create_group': 'Create Group',
+    'agents.clear_search': 'Clear search',
     'agents.empty_no_topology': 'Empty No Topology',
     'agents.empty_search': 'Empty Search',
     'agents.empty_title': 'Empty Title',

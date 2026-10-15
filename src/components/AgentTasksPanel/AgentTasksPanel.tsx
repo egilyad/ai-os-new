@@ -1,10 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { MonitorPlay, Loader2, AlertTriangle, SquareTerminal, Crosshair } from 'lucide-react';
 import { useTranslation } from '../../i18n/useTranslation';
 import { agemsApprovalService } from '../../kernel/services/agems-approval-service';
 import { browserUseService } from '../../kernel/instances/services-extras';
 import { computerUseLoopService } from '../../kernel/instances/services-extras';
 import type { ComputerUseProvider } from '../../kernel/services/computer/computer-use-loop-service';
+
+const HISTORY_KEY = 'agent-tasks:history:v1';
+const HISTORY_CAP = 20;
+
+function loadHistory(): RunRecord[] {
+    try {
+        const raw = localStorage.getItem(HISTORY_KEY);
+        if (!raw) return [];
+        const parsed = JSON.parse(raw) as RunRecord[];
+        return Array.isArray(parsed) ? parsed.slice(0, HISTORY_CAP) : [];
+    } catch {
+        return [];
+    }
+}
 
 type Capability = 'browser' | 'computer';
 
@@ -46,7 +60,21 @@ const AgentTasksPanel: React.FC = () => {
     const [maxTurns, setMaxTurns] = useState('10');
     const [running, setRunning] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const [history, setHistory] = useState<RunRecord[]>([]);
+    const [history, setHistory] = useState<RunRecord[]>(loadHistory);
+    const appliedTurns = Math.max(1, Math.min(50, Math.floor(Number(maxTurns) || 10)));
+
+    // Persist text-only history across reloads (screenshots stay in-memory:
+    // base64 would blow the 5MB localStorage budget on the first run).
+    useEffect(() => {
+        try {
+            const slim = history
+                .slice(0, HISTORY_CAP)
+                .map(({ screenshot: _screenshot, ...rest }) => rest);
+            localStorage.setItem(HISTORY_KEY, JSON.stringify(slim));
+        } catch {
+            // Quota or privacy mode — in-memory history still works.
+        }
+    }, [history]);
 
     function pushHistory(patch: Partial<RunRecord> & { id: number }) {
         setHistory((prev) => prev.map((r) => (r.id === patch.id ? { ...r, ...patch } : r)));
@@ -169,7 +197,11 @@ const AgentTasksPanel: React.FC = () => {
                         placeholder={t('tasks.turns_ph')}
                         style={{ width: 90 }}
                         inputMode="numeric"
+                        title="Clamped to 1–50"
                     />
+                    <span style={{ fontSize: 11, color: 'var(--slate-400)', alignSelf: 'center' }}>
+                        1–50 · applied: {appliedTurns}
+                    </span>
                 </div>
                 <textarea
                     value={task}

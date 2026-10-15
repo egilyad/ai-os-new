@@ -24,6 +24,7 @@ export const QuickCreateAgentModal: React.FC<QuickCreateAgentModalProps> = ({ op
     // to the detail editor).
     const [provider, setProvider] = useState('auto');
     const [avatar, setAvatar] = useState('🧠');
+    const [createError, setCreateError] = useState<string | null>(null);
 
     const handleRoleChange = (val: string) => {
         const found = availableRoles.find(r => r.name === val || r.id === val);
@@ -41,15 +42,23 @@ export const QuickCreateAgentModal: React.FC<QuickCreateAgentModalProps> = ({ op
     const handleCreate = () => {
         const trimmed = name.trim();
         if (!trimmed) return;
-        onCreate({
-            name: trimmed,
-            roleName: roleName.trim() || 'General Assistant',
-            roleId,
-            model: 'auto',
-            provider: provider === 'auto' ? undefined : provider,
-            keyId: undefined,
-            avatar,
-        });
+        // Stay open with an inline error on failure — closing silently
+        // while nothing was created is worse than an error message.
+        try {
+            onCreate({
+                name: trimmed,
+                roleName: roleName.trim() || 'General Assistant',
+                roleId,
+                model: 'auto',
+                provider: provider === 'auto' ? undefined : provider,
+                keyId: undefined,
+                avatar,
+            });
+        } catch (e) {
+            setCreateError(e instanceof Error ? e.message : 'Failed to create agent');
+            return;
+        }
+        setCreateError(null);
         // reset for next open but keep values for UX
         onClose();
     };
@@ -129,6 +138,11 @@ export const QuickCreateAgentModal: React.FC<QuickCreateAgentModalProps> = ({ op
                     </div>
                 </div>
 
+                {createError && (
+                    <div style={{ fontSize: '0.8rem', color: '#fca5a5' }}>
+                        {createError}
+                    </div>
+                )}
                 <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end', marginTop: 8 }}>
                     <button onClick={handleClose} style={{ padding: '10px 16px', borderRadius: 8, border: '1px solid rgba(100,116,139,0.3)', background: 'transparent', color: 'var(--slate-300)', fontWeight: 600, cursor: 'pointer' }}>
                         Cancel

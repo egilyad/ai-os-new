@@ -27,7 +27,9 @@ export default function AutonomyPanel() {
 
     const fail = (e: unknown) => {
         console.error('[AutonomyPanel]', e);
-        setError(t('autonomy.error.generic'));
+        // Keep the real message: a generic banner alone cannot be diagnosed.
+        const detail = e instanceof Error ? e.message : String(e);
+        setError(`${t('autonomy.error.generic')}: ${detail}`.slice(0, 300));
     };
 
     const reload = async (selectId?: string) => {

@@ -329,6 +329,15 @@ function GraphsTab() {
     const [topic, setTopic] = useState('');
     const [busy, setBusy] = useState(false);
     const [error, onError, clearError] = useAsyncError();
+    // Deep-link highlight (?tab=graphs&run=xxx from the Open button).
+    // The parent only restores `tab` — the run param is honored here.
+    const [highlightRunId] = useState<string | null>(() => {
+        try {
+            return new URLSearchParams(window.location.search).get('run');
+        } catch {
+            return null;
+        }
+    });
 
     useEffect(() => {
         void refresh();
@@ -373,7 +382,14 @@ function GraphsTab() {
             </div>
             {runs.length === 0 && <p style={{ opacity: 0.6 }}>{t('fleet.empty')}</p>}
             {runs.map((r) => (
-                <div key={r.id} style={card}>
+                <div
+                    key={r.id}
+                    style={
+                        highlightRunId !== null && r.id === highlightRunId
+                            ? { ...card, border: '1px solid #60a5fa' }
+                            : card
+                    }
+                >
                     <div style={{ fontWeight: 600 }}>{r.graphId.slice(0, 18)}…</div>
                     <div style={{ fontSize: '0.8rem', opacity: 0.7 }}>
                         {r.status} · {r.stepCount} steps · {r.visited.length} visited

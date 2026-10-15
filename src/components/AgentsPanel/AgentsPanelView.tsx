@@ -15,6 +15,7 @@ import { AgentCard } from './AgentCard';
 const AgentsPanelView: React.FC = () => {
     const { t } = useTranslation();
     const {
+        agents,
         agentStats,
         viewMode,
         searchQuery,
@@ -50,12 +51,22 @@ const AgentsPanelView: React.FC = () => {
     const [deleteConfirmAgent, setDeleteConfirmAgent] = useState<{ id: string; name: string } | null>(null);
 
     const handleDeleteAgent = (id: string) => {
-        agentService.deleteAgent(id);
-        setDeleteConfirmAgent(null);
-        window.dispatchEvent(new CustomEvent('agents:updated'));
+        try {
+            agentService.deleteAgent(id);
+            onSetSelectedAgentId(null);
+            setDeleteConfirmAgent(null);
+            window.dispatchEvent(new CustomEvent('agents:updated'));
+        } catch (e) {
+            onSetError(e instanceof Error ? e.message : 'Failed to delete agent');
+        }
     };
 
-    const total = filteredAgents.length;
+    // Badge shows the workforce size; filtered/total when a filter is active.
+    const total = agents.length;
+    const badge =
+        filteredAgents.length === total
+            ? `${total}`
+            : `${filteredAgents.length}/${total}`;
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 16, padding: '16px 20px', minHeight: 0 }}>
@@ -68,7 +79,7 @@ const AgentsPanelView: React.FC = () => {
                     <div style={{ minWidth: 0 }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                             <h2 style={{ margin: 0, fontSize: '1.05rem', fontWeight: 700, color: 'var(--slate-100)' }}>{t('agents.agent_workforce')}</h2>
-                            <span style={{ padding: '2px 8px', borderRadius: 999, background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.08)', fontSize: '0.7rem', color: 'var(--slate-400)', fontWeight: 600 }}>{total}</span>
+                            <span style={{ padding: '2px 8px', borderRadius: 999, background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.08)', fontSize: '0.7rem', color: 'var(--slate-400)', fontWeight: 600 }}>{badge}</span>
                         </div>
                         <p style={{ margin: '2px 0 0', fontSize: '0.78rem', color: 'var(--slate-400)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{t('agents.header_subtitle')}</p>
                     </div>
@@ -160,7 +171,9 @@ const AgentsPanelView: React.FC = () => {
                         <Bot size={28} style={{ color: 'var(--slate-500)', marginBottom: 8 }} />
                         <div style={{ fontWeight: 600, color: 'var(--slate-200)', marginBottom: 4 }}>{t('agents.empty_title')}</div>
                         <div style={{ fontSize: '0.85rem', color: 'var(--slate-400)', marginBottom: 12 }}>{searchQuery ? t('agents.empty_search') : t('agents.empty_no_topology')}</div>
-                        {!searchQuery && (
+                        {searchQuery ? (
+                            <button onClick={() => onSetSearchQuery('')} style={{ padding: '8px 14px', borderRadius: 10, border: '1px solid rgba(255,255,255,0.12)', background: 'transparent', color: 'var(--slate-300)', fontWeight: 600, cursor: 'pointer' }}>{t('agents.clear_search')}</button>
+                        ) : (
                             <button onClick={onNavigateBuilder} style={{ padding: '8px 14px', borderRadius: 10, border: 'none', background: '#3b82f6', color: 'white', fontWeight: 600, cursor: 'pointer' }}>{t('agents.open_builder')}</button>
                         )}
                     </div>
@@ -217,7 +230,16 @@ const AgentsPanelView: React.FC = () => {
                 )}
             </ModalShell>
 
-            <AgentWizard isOpen={showWizard} onClose={() => setShowWizard(false)} onAgentCreated={() => {}} />
+            <AgentWizard
+                isOpen={showWizard}
+                onClose={() => setShowWizard(false)}
+                onAgentCreated={(id) => {
+                    // Select the new agent so creation is visible (detail opens),
+                    // and nudge list refresh like the other create paths.
+                    onSetSelectedAgentId(id);
+                    window.dispatchEvent(new CustomEvent('agents:updated'));
+                }}
+            />
             <QuickCreateAgentModal
                 open={showQuickCreate}
                 onClose={() => setShowQuickCreate(false)}
@@ -229,7 +251,10 @@ const AgentsPanelView: React.FC = () => {
                     // T1.3: pinned binding lands in node.config; runtime honors it, rotation stays default
                     if (provider) config.provider = provider;
                     if (keyId) config.keyId = keyId;
-                    agentService.spawnAgent(name, roleId, config);
+                    // spawnAgent returns null (not throw) without topology —
+                    // surface it so the modal can stay open with an error.
+                    const id = agentService.spawnAgent(name, roleId, config);
+                    if (!id) throw new Error('No active topology — mount a topology first');
                     window.dispatchEvent(new CustomEvent('agents:updated'));
                 }}
             />

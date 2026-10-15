@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Copy, BookOpen, RefreshCw, Trash2, Pause, Play, X } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { templateService, agentService } from '../../kernel/instances';
 import type { ISNode } from '../../kernel/contracts/topology';
@@ -421,6 +422,7 @@ function ResponsibilitiesTab({ agentId }: { agentId: string }) {
 
 function BudgetTab({ agentId }: { agentId: string }) {
     const [budget, setBudget] = useState<{ monthlyLimitUsd: number; currentSpendUsd: number } | null>(null);
+    const navigate = useNavigate();
     useEffect(() => { getDexieDb().agentBudgets.where('agentId').equals(agentId).first().then((b) => setBudget(b as unknown as { monthlyLimitUsd: number; currentSpendUsd: number } | null)); }, [agentId]);
     return (
         <div style={{ padding: '1rem', display: 'flex', flexDirection: 'column', gap: 12 }}>
@@ -431,7 +433,15 @@ function BudgetTab({ agentId }: { agentId: string }) {
                     <div style={{ height: 6, borderRadius: 6, background: 'rgba(0,0,0,0.2)', marginTop: 8 }}><div style={{ width: `${Math.min(100, budget.currentSpendUsd / budget.monthlyLimitUsd * 100)}%`, height: '100%', borderRadius: 6, background: '#10b981' }} /></div>
                 </div>
             ) : (
-                <div style={{ padding: '12px 14px', borderRadius: 10, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', fontSize: 12, color: 'var(--slate-500)' }}>No budget set — default hardStop at $100/mo (soft alert 80%). Create via BudgetPanel or set monthlyLimitUsd in agent config.</div>
+                <div style={{ padding: '12px 14px', borderRadius: 10, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', fontSize: 12, color: 'var(--slate-500)' }}>
+                    <div>No budget set — default hardStop at $100/mo (soft alert 80%).</div>
+                    <button
+                        onClick={() => navigate('/budget')}
+                        style={{ marginTop: 8, padding: '6px 12px', borderRadius: 8, border: '1px solid rgba(59,130,246,0.4)', background: 'rgba(59,130,246,0.1)', color: '#60a5fa', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}
+                    >
+                        Open BudgetPanel
+                    </button>
+                </div>
             )}
         </div>
     );

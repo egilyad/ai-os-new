@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { Users, Trash2, Play, BarChart3, MessageSquare, Zap } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import type { RoleTeam, TeamExecution, TeamTemplate } from '../../kernel/contracts/role-team';
 import type { UnifiedRoleEntry } from '../../kernel/contracts/unified-role';
 import type { IRoleTeamService } from '../../kernel/contracts/role-team';
@@ -25,17 +26,30 @@ const TeamsTab: React.FC<TeamsTabProps> = ({ teamSvc, teams, setTeams, roles, te
     const [selectedTeam, setSelectedTeam] = useState<RoleTeam | null>(null);
     const [chatTeam, setChatTeam] = useState<RoleTeam | null>(null);
     const [teamsView, setTeamsView] = useState<'my-teams' | 'marketplace'>('my-teams');
+    const [execErrors, setExecErrors] = useState<Record<string, string>>({});
+    const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+    const navigate = useNavigate();
 
     const executeTeam = useCallback(
         async (teamId: string) => {
             const task = taskInputs[teamId]?.trim();
             if (!task) return;
             setExecutingTeams((prev) => new Set(prev).add(teamId));
+            setExecErrors((prev) => {
+                if (!(teamId in prev)) return prev;
+                const next = { ...prev };
+                delete next[teamId];
+                return next;
+            });
             try {
                 const result = await teamSvc.executeTeam(teamId, task);
                 setExecResults((prev) => ({ ...prev, [teamId]: result }));
             } catch (e) {
-                console.error('Team execution failed:', e);
+                // Failures used to vanish into console.error — show them inline.
+                setExecErrors((prev) => ({
+                    ...prev,
+                    [teamId]: e instanceof Error ? e.message : String(e),
+                }));
             }
             setExecutingTeams((prev) => {
                 const next = new Set(prev);
@@ -48,30 +62,49 @@ const TeamsTab: React.FC<TeamsTabProps> = ({ teamSvc, teams, setTeams, roles, te
 
     const handleDeleteTeam = useCallback(
         (id: string) => {
-            teamSvc.deleteTeam(id);
-            setTeams(teamSvc.listTeams());
+            // Two-step confirm: one-click destroy with no undo is unacceptable.
+            if (confirmDeleteId !== id) {
+                setConfirmDeleteId(id);
+                return;
+            }
+            setConfirmDeleteId(null);
+            try {
+                teamSvc.deleteTeam(id);
+                setTeams(teamSvc.listTeams());
+            } catch (e) {
+                setExecErrors((prev) => ({
+                    ...prev,
+                    [id]: e instanceof Error ? e.message : String(e),
+                }));
+            }
         },
-        [teamSvc, setTeams],
+        [teamSvc, setTeams, confirmDeleteId],
     );
 
-    const handleTeamToDebate = useCallback((team: RoleTeam) => {
-        const participantRoles = team.roleIds.slice(0, 8);
-        const strategyMap: Record<string, string> = {
-            parallel: 'round-robin',
-            sequential: 'round-robin',
-            pipeline: 'round-robin',
-            debate: 'socratic',
-            consensus: 'consensus',
-            hierarchical: 'moderated',
-            swarm: 'free-for-all',
-            tournament: 'tournament',
-            'round-robin': 'round-robin',
-            review: 'moderated',
-        };
-        const strategy = strategyMap[team.coordinationStrategy] || 'round-robin';
-        const roles = encodeURIComponent(participantRoles.join(','));
-        window.location.href = `/debate?strategy=${strategy}&roles=${roles}&team=${encodeURIComponent(team.name)}`;
-    }, []);
+    const handleTeamToDebate = useCallback(
+        (team: RoleTeam) => {
+            const participantRoles = team.roleIds.slice(0, 8);
+            const strategyMap: Record<string, string> = {
+                parallel: 'round-robin',
+                sequential: 'round-robin',
+                pipeline: 'round-robin',
+                debate: 'socratic',
+                consensus: 'consensus',
+                hierarchical: 'moderated',
+                swarm: 'free-for-all',
+                tournament: 'tournament',
+                'round-robin': 'round-robin',
+                review: 'moderated',
+            };
+            const strategy = strategyMap[team.coordinationStrategy] || 'round-robin';
+            const roles = encodeURIComponent(participantRoles.join(','));
+            // SPA navigation — window.location.href would wipe all panel state.
+            navigate(
+                `/debate?strategy=${strategy}&roles=${roles}&team=${encodeURIComponent(team.name)}`,
+            );
+        },
+        [navigate],
+    );
 
     const refreshTeams = useCallback(() => setTeams(teamSvc.listTeams()), [teamSvc, setTeams]);
 
@@ -217,7 +250,6 @@ const TeamsTab: React.FC<TeamsTabProps> = ({ teamSvc, teams, setTeams, roles, te
                 })}
             </div>
 
-            {teams.length > 0 && (
                 <div style={{ marginTop: 24 }}>
                     <div
                         style={{
@@ -272,6 +304,22 @@ const TeamsTab: React.FC<TeamsTabProps> = ({ teamSvc, teams, setTeams, roles, te
                                 Marketplace ({teamTemplates.length})
                             </button>
                         </div>
+                        <button
+                            onClick={() => setShowWizard(true)}
+                            style={{
+                                padding: '5px 12px',
+                                borderRadius: 6,
+                                border: '1px solid rgba(16,185,129,0.4)',
+                                background: 'rgba(16,185,129,0.12)',
+                                color: '#34d399',
+                                cursor: 'pointer',
+                                fontSize: '0.78rem',
+                                fontWeight: 700,
+                                marginLeft: 'auto',
+                            }}
+                        >
+                            + New team
+                        </button>
                     </div>
 
                     {teamsView === 'my-teams' && teams.length === 0 && (
@@ -345,16 +393,33 @@ const TeamsTab: React.FC<TeamsTabProps> = ({ teamSvc, teams, setTeams, roles, te
                                         </div>
                                         <button
                                             onClick={() => handleDeleteTeam(tm.id)}
+                                            title={
+                                                confirmDeleteId === tm.id
+                                                    ? 'Click again to confirm deletion'
+                                                    : 'Delete team'
+                                            }
                                             style={{
                                                 padding: '4px 8px',
                                                 borderRadius: 6,
-                                                border: 'none',
-                                                background: 'var(--error-tint)',
+                                                border:
+                                                    confirmDeleteId === tm.id
+                                                        ? '1px solid rgba(239,68,68,0.6)'
+                                                        : 'none',
+                                                background:
+                                                    confirmDeleteId === tm.id
+                                                        ? 'rgba(239,68,68,0.25)'
+                                                        : 'var(--error-tint)',
                                                 color: 'var(--error)',
                                                 cursor: 'pointer',
+                                                fontSize: '0.65rem',
+                                                fontWeight: 700,
                                             }}
                                         >
-                                            <Trash2 size={14} />
+                                            {confirmDeleteId === tm.id ? (
+                                                'Sure?'
+                                            ) : (
+                                                <Trash2 size={14} />
+                                            )}
                                         </button>
                                     </div>
                                     <div
@@ -403,7 +468,8 @@ const TeamsTab: React.FC<TeamsTabProps> = ({ teamSvc, teams, setTeams, roles, te
                                         }}
                                     >
                                         <button
-                                            onClick={() => setSelectedTeam(tm)}
+                                            onClick={() => handleDeleteTeam(tm.id)}
+                                            aria-label={`Delete team ${tm.name}`}
                                             style={{
                                                 padding: '4px 10px',
                                                 borderRadius: 6,
@@ -507,6 +573,17 @@ const TeamsTab: React.FC<TeamsTabProps> = ({ teamSvc, teams, setTeams, roles, te
                                             <Play size={12} /> Run
                                         </button>
                                     </div>
+                                    {execErrors[tm.id] && (
+                                        <div
+                                            style={{
+                                                fontSize: '0.72rem',
+                                                color: '#fca5a5',
+                                                marginTop: 6,
+                                            }}
+                                        >
+                                            Run failed: {execErrors[tm.id]!.slice(0, 200)}
+                                        </div>
+                                    )}
                                     {execResults[tm.id] &&
                                         (() => {
                                             const execData = execResults[tm.id]!;
@@ -522,7 +599,6 @@ const TeamsTab: React.FC<TeamsTabProps> = ({ teamSvc, teams, setTeams, roles, te
                         </div>
                     )}
                 </div>
-            )}
 
             {selectedTeam && (
                 <TeamDetailsPanel

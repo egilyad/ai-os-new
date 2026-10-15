@@ -77,6 +77,16 @@ export const AgentHistoryTab: React.FC<{ agentId: string }> = ({ agentId }) => {
                                         message: `Rollback to v${versions.length - i} — config keys: ${Object.keys(cfg).join(', ')}`,
                                         type: 'info',
                                     });
+                                    // Reload so the list reflects the rollback
+                                    // instead of looking unchanged.
+                                    agentVersionService
+                                        .getVersions(agentId)
+                                        .then(setVersions)
+                                        .catch((err) => {
+                                            LOGGER.warn('AgentHistoryTab', 'Failed to reload versions', {
+                                                error: err,
+                                            });
+                                        });
                                 }
                             }}
                             style={{
