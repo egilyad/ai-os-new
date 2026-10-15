@@ -107,4 +107,35 @@ describe('EventsTimeline', () => {
         render(<EventsTimeline />);
         expect(await screen.findByText('No events yet')).toBeDefined();
     });
+
+    it('ignores non-array payloads from storage', async () => {
+        const getItem = (await import('../../kernel/instances')).storageAdapter
+            .getItem as ReturnType<typeof vi.fn>;
+        getItem.mockReturnValueOnce(JSON.stringify({ not: 'an array' }));
+        const EventsTimeline = (await import('./EventsTimeline')).default;
+        render(<EventsTimeline />);
+        expect(await screen.findByText('No events yet')).toBeDefined();
+    });
+
+    it('drops stored items without numeric ids and renders the rest', async () => {
+        const getItem = (await import('../../kernel/instances')).storageAdapter
+            .getItem as ReturnType<typeof vi.fn>;
+        getItem.mockReturnValueOnce(
+            JSON.stringify([
+                {
+                    id: 7,
+                    time: '12:00:02',
+                    timestamp: Date.now(),
+                    event: 'legacy:weird',
+                    summary: 'Unknown severity payload',
+                    severity: 'critical',
+                },
+                { id: 'bad', event: 'broken:item' },
+            ]),
+        );
+        const EventsTimeline = (await import('./EventsTimeline')).default;
+        render(<EventsTimeline />);
+        expect(await screen.findByText('legacy:weird')).toBeDefined();
+        expect(screen.queryByText('broken:item')).toBeNull();
+    });
 });

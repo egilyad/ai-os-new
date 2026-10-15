@@ -26,7 +26,14 @@ function traceMatchesDiagnostic(trace: CognitiveTrace, q: string): boolean {
 
 const TracesPanel: React.FC = () => {
     const { t } = useTranslation();
-    const [traces, setTraces] = useState<CognitiveTrace[]>(cognitiveService.getTraces());
+    const [traces, setTraces] = useState<CognitiveTrace[]>(() => {
+        try {
+            const initial = cognitiveService.getTraces();
+            return Array.isArray(initial) ? initial : [];
+        } catch {
+            return [];
+        }
+    });
     const [selectedTrace, setSelectedTrace] = useState<CognitiveTrace | null>(null);
     const [filter, setFilter] = useState('all');
     const [searchQuery, setSearchQuery] = useState('');
@@ -50,7 +57,7 @@ const TracesPanel: React.FC = () => {
         isMountedRef.current = true;
         const sub = eventBus.onSafe<CognitiveTrace[]>('trace:updated', (data) => {
             if (!isMountedRef.current) return;
-            setTraces(data);
+            setTraces(Array.isArray(data) ? data : []);
             setIsLoading(false);
             setError(null);
         });
@@ -70,7 +77,9 @@ const TracesPanel: React.FC = () => {
         const failed = traces.filter((t) => t.status === 'failed').length;
         const running = traces.filter((t) => t.status === 'running').length;
         const avgConfidence =
-            total > 0 ? traces.reduce((s, t) => s + t.semanticConfidence, 0) / total : 0;
+            total > 0
+                ? traces.reduce((s, t) => s + (t.semanticConfidence ?? 0), 0) / total
+                : 0;
         return { total, completed, failed, running, avgConfidence };
     }, [traces]);
 
@@ -78,20 +87,20 @@ const TracesPanel: React.FC = () => {
         (id: string) => {
             try {
                 cognitiveService.deleteTrace(id);
-                const updated = traces.filter((t) => t.id !== id);
+                // Functional update: never clobber a newer trace:updated payload.
                 if (isMountedRef.current) {
-                    setTraces(updated);
+                    setTraces((prev) => prev.filter((t) => t.id !== id));
                     setError(null);
                 }
             } catch (err) {
                 console.warn('[TracesPanel] Failed to delete trace:', err);
                 if (isMountedRef.current) {
-                    setError('Failed to delete trace');
+                    setError(t('traces.error_delete_trace') ?? 'Failed to delete trace');
                     clearError();
                 }
             }
         },
-        [traces, clearError],
+        [t, clearError],
     );
 
     const handleSelectTrace = useCallback((trace: CognitiveTrace) => {
@@ -104,7 +113,8 @@ const TracesPanel: React.FC = () => {
         if (searchQuery) {
             const q = searchQuery.toLowerCase();
             const baseMatch =
-                t.input.toLowerCase().includes(q) || t.traceId.toLowerCase().includes(q);
+                (t.input ?? '').toLowerCase().includes(q) ||
+                (t.traceId ?? '').toLowerCase().includes(q);
             if (!baseMatch && !traceMatchesDiagnostic(t, q)) return false;
         }
         return true;
@@ -398,7 +408,9 @@ const TracesPanel: React.FC = () => {
 
                 <div style={{ flex: 1, overflowY: 'auto', overflowX: isMobile ? 'auto' : 'visible' }}>
                     <AnimatePresence>
-                        {filteredTraces.slice(0, visibleCount).map((trace) => (
+                        {filteredTraces.slice(0, visibleCount).map((trace) => {
+                            const confidence = trace.semanticConfidence ?? 0;
+                            return (
                             <motion.div
                                 key={trace.id}
                                 initial={{ opacity: 0 }}
@@ -462,8 +474,13 @@ const TracesPanel: React.FC = () => {
                                         }}
                                     >
                                         <Clock size={14} aria-hidden="true" />{' '}
-                                        {new Date(trace.startTime).toLocaleTimeString()} •{' '}
-                                        {trace.totalLatency}ms
+                                        {trace.startTime
+                                            ? new Date(trace.startTime).toLocaleTimeString()
+                                            : '—'}{' '}
+                                        •{' '}
+                                        {typeof trace.totalLatency === 'number'
+                                            ? `${trace.totalLatency}ms`
+                                            : '—'}
                                         {trace.dataQuality?.tokenCount?.source === 'estimated' && (
                                             <span
                                                 title={`Token count estimated by content length / ${trace.dataQuality.tokenCount.divisor ?? 4}; in-memory retention keeps newest ${trace.dataQuality.retention?.inMemoryLimit ?? 200} traces.`}
@@ -544,7 +561,7 @@ const TracesPanel: React.FC = () => {
                                         }}
                                     >
                                         <Cpu size={16} color="#64748b" aria-hidden="true" />{' '}
-                                        {trace.steps.length}
+                                        {(trace.steps ?? []).length}
                                     </div>
                                     {(() => {
                                         const diag = trace.metadata?.diagnostics as
@@ -597,14 +614,14 @@ const TracesPanel: React.FC = () => {
                                         <span
                                             style={{
                                                 color:
-                                                    trace.semanticConfidence > 0.8
+                                                    confidence > 0.8
                                                         ? '#10b981'
-                                                        : trace.semanticConfidence > 0.4
+                                                        : confidence > 0.4
                                                           ? '#f59e0b'
                                                           : '#ef4444',
                                             }}
                                         >
-                                            {Math.round(trace.semanticConfidence * 100)}%
+                                            {Math.round(confidence * 100)}%
                                         </span>
                                     </div>
                                     <div
@@ -617,12 +634,12 @@ const TracesPanel: React.FC = () => {
                                     >
                                         <div
                                             style={{
-                                                width: `${trace.semanticConfidence * 100}%`,
+                                                width: `${confidence * 100}%`,
                                                 height: '100%',
                                                 background:
-                                                    trace.semanticConfidence > 0.8
+                                                    confidence > 0.8
                                                         ? '#10b981'
-                                                        : trace.semanticConfidence > 0.4
+                                                        : confidence > 0.4
                                                           ? '#f59e0b'
                                                           : '#ef4444',
                                                 borderRadius: 3,
@@ -670,7 +687,8 @@ const TracesPanel: React.FC = () => {
                                     </button>
                                 </div>
                             </motion.div>
-                        ))}
+                            );
+                        })}
                     </AnimatePresence>
 
                     {!isLoading && filteredTraces.length > visibleCount && (
@@ -687,7 +705,9 @@ const TracesPanel: React.FC = () => {
                                     fontSize: 12,
                                 }}
                             >
-                                Show more ({filteredTraces.length - visibleCount} remaining)
+                                {t('traces.show_more', {
+                                    remaining: filteredTraces.length - visibleCount,
+                                }) ?? `Show more (${filteredTraces.length - visibleCount} remaining)`}
                             </button>
                         </div>
                     )}

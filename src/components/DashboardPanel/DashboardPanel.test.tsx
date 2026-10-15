@@ -27,6 +27,14 @@ vi.mock('../../stores/useKeyStore', () => ({
         selector ? selector(mockKeyStoreState) : mockKeyStoreState,
 }));
 
+// services-core pulls the real DI container at import (hangs the worker);
+// DashboardPanel only needs agentService.getAgents.
+vi.mock('../../kernel/instances/services-core', () => ({
+    agentService: {
+        getAgents: vi.fn(() => []),
+    },
+}));
+
 vi.mock('../../core/Kernel', () => ({
     kernel: {
         getState: vi.fn(() => ({
@@ -92,7 +100,7 @@ vi.mock('../../i18n/useTranslation', () => ({
                 'dashboard.inspect_aria': 'Inspect',
                 'dashboard.no_routing_decisions': 'No routing decisions',
                 'dashboard.real_time_metrics': 'Real-Time Metrics',
-                'dashboard.rps': 'RPS',
+                'dashboard.rps': 'Req/min',
                 'dashboard.latency_p50': 'P50 Latency',
                 'dashboard.today_reqs': "Today's Requests",
                 'dashboard.cost_today': "Today's Cost",
@@ -120,7 +128,7 @@ vi.mock('../../i18n/useTranslation', () => ({
                 'onboarding.dashboard_explore': 'Explore',
                 'onboarding.dashboard_add_key': 'Add Key',
                 'chat.latency_ms': 'ms',
-                'dashboard.rps_hint': 'Requests per second',
+                'dashboard.rps_hint': 'Requests in the last minute',
                 'dashboard.alert_provider_errors': 'Provider errors detected',
             };
             return labels[key] || key;
@@ -129,6 +137,14 @@ vi.mock('../../i18n/useTranslation', () => ({
 }));
 
 vi.mock('../../kernel/instances', () => ({
+    rootLogger: {
+        child: vi.fn(() => ({
+            debug: vi.fn(),
+            info: vi.fn(),
+            warn: vi.fn(),
+            error: vi.fn(),
+        })),
+    },
     eventBus: {
         emit: vi.fn(),
         on: vi.fn(() => vi.fn()),
@@ -279,5 +295,30 @@ describe('DashboardPanel', () => {
         const addBtn = screen.getByText('Add Provider');
         fireEvent.click(addBtn);
         expect(mockNavigate).toHaveBeenCalledWith('keys');
+    });
+
+    it('shows daily average cost, never month spend, under the today label', async () => {
+        const { budgetService } = await import('../../kernel/instances');
+        vi.mocked(budgetService.getBudgetInfo).mockReturnValueOnce({
+            spentThisMonth: 9.99,
+            dailyAverage: 0.33,
+        } as ReturnType<typeof budgetService.getBudgetInfo>);
+        const DashboardPanel = (await import('./DashboardPanel')).default;
+        render(<DashboardPanel onNavigate={mockNavigate} />);
+        expect(await screen.findAllByText('$0.3300')).toBeDefined();
+        expect(screen.queryByText('$9.9900')).toBeNull();
+    });
+
+    it('windows token burn to the last 24h', async () => {
+        const { cognitiveService } = await import('../../kernel/instances');
+        vi.mocked(cognitiveService.getTraces).mockReturnValueOnce([
+            { id: 'old', startTime: Date.now() - 48 * 60 * 60 * 1000, totalTokens: 100000 },
+            { id: 'fresh', startTime: Date.now() - 1000, totalTokens: 100 },
+        ] as unknown as ReturnType<typeof cognitiveService.getTraces>);
+        const DashboardPanel = (await import('./DashboardPanel')).default;
+        render(<DashboardPanel onNavigate={mockNavigate} />);
+        expect(await screen.findByText('Token Burn')).toBeDefined();
+        expect(screen.getByText('100')).toBeDefined();
+        expect(screen.queryByText('100.1k')).toBeNull();
     });
 });

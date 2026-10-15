@@ -39,7 +39,9 @@ const HealthPanel: React.FC = () => {
     const keys = useKeyStore((s) => s.keys);
     const [health, setHealth] = useState(() => {
         try {
-            return adminService.getSystemHealth();
+            const initial = adminService.getSystemHealth();
+            // A Promise must never land in state (render would crash on .vitals access).
+            return initial instanceof Promise ? null : initial;
         } catch {
             return null;
         }
@@ -52,6 +54,7 @@ const HealthPanel: React.FC = () => {
     };
     const [isRefreshing, setIsRefreshing] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [probeError, setProbeError] = useState<string | null>(null);
     const [kernelId] = useState(generateId().slice(0, 8));
     const [now, setNow] = useState(() => Date.now());
     useEffect(() => {
@@ -60,6 +63,9 @@ const HealthPanel: React.FC = () => {
     }, []);
 
     const clearError = useAutoClearError(setError);
+    const clearProbeError = useAutoClearError(setProbeError);
+    const hasHealthIssue =
+        keys.some((k) => k.status !== 'active') || error !== null || probeError !== null;
     const totalActive =
         (health as { runtime?: { totalActive?: number } })?.runtime?.totalActive ?? 0;
 
@@ -77,12 +83,20 @@ const HealthPanel: React.FC = () => {
         try {
             const result = adminService.getSystemHealth();
             if (result instanceof Promise) {
-                result.catch(() => {
-                    setError(t('health.error_refresh'));
-                    clearError();
-                });
+                // Defensive: the contract is sync, but a Promise must never
+                // land in state (render would crash on .vitals access).
+                result.then(
+                    (r) => {
+                        setHealth(r);
+                    },
+                    () => {
+                        setError(t('health.error_refresh'));
+                        clearError();
+                    },
+                );
+            } else {
+                setHealth(result);
             }
-            setHealth(result);
         } catch {
             setError(t('health.error_refresh'));
             clearError();
@@ -269,22 +283,34 @@ const HealthPanel: React.FC = () => {
                             alignItems: 'center',
                             gap: 8,
                             padding: '0.5rem 1rem',
-                            background: 'var(--success-tint)',
-                            border: '1px solid rgba(16,185,129,0.2)',
+                            background: hasHealthIssue
+                                ? 'var(--warning-tint)'
+                                : 'var(--success-tint)',
+                            border: hasHealthIssue
+                                ? '1px solid rgba(245,158,11,0.25)'
+                                : '1px solid rgba(16,185,129,0.2)',
                             borderRadius: 12,
                         }}
                     >
-                        <div style={statusDot} aria-hidden="true" />
+                        <div
+                            style={{
+                                ...statusDot,
+                                background: hasHealthIssue ? 'var(--warning)' : 'var(--success)',
+                            }}
+                            aria-hidden="true"
+                        />
                         <span
                             style={{
                                 fontSize: '0.75rem',
                                 fontWeight: 800,
-                                color: 'var(--success)',
+                                color: hasHealthIssue ? 'var(--warning)' : 'var(--success)',
                                 textTransform: 'uppercase',
                                 letterSpacing: '0.05em',
                             }}
                         >
-                            {t('health.all_systems_operational')}
+                            {hasHealthIssue
+                                ? t('health.degraded')
+                                : t('health.all_systems_operational')}
                         </span>
                     </div>
                     <button
@@ -296,6 +322,9 @@ const HealthPanel: React.FC = () => {
                                 const map = new Map<string, ProbeResult>();
                                 for (const r of results) map.set(r.keyId, r);
                                 setProbeResults(map);
+                            } catch {
+                                setProbeError(t('health.error_probe_all') ?? 'Probe failed');
+                                clearProbeError();
                             } finally {
                                 setProbeLoading(false);
                             }
@@ -353,7 +382,7 @@ const HealthPanel: React.FC = () => {
                 </div>
             </div>
 
-            {error && (
+            {(error ?? probeError) && (
                 <div
                     style={{
                         position: 'relative',
@@ -370,9 +399,12 @@ const HealthPanel: React.FC = () => {
                     }}
                     role="alert"
                 >
-                    <AlertTriangle size={14} aria-hidden="true" /> {error}
+                    <AlertTriangle size={14} aria-hidden="true" /> {error ?? probeError}
                     <button
-                        onClick={() => setError(null)}
+                        onClick={() => {
+                            setError(null);
+                            setProbeError(null);
+                        }}
                         style={dismissBtn}
                         aria-label={t('common.dismiss_error')}
                     >

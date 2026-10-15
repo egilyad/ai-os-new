@@ -46,6 +46,7 @@ const mockTraces = [
 vi.mock('../../kernel/instances', () => ({
     cognitiveService: {
         getTraces: vi.fn(() => mockTraces),
+        deleteTrace: vi.fn(),
     },
     settingsService: {
         getSettings: vi.fn(() => ({ language: 'en' })),
@@ -87,6 +88,7 @@ vi.mock('../../i18n/useTranslation', () => {
         'traces.delete_aria': 'Delete Trace',
         'traces.loading': 'Loading traces...',
         'traces.empty': 'No traces found matching your criteria.',
+        'traces.error_delete_trace': 'Failed to delete trace',
     };
     return {
         useTranslation: () => ({
@@ -212,5 +214,41 @@ describe('TracesPanel', () => {
         await screen.findByText('Test request');
         fireEvent.click(screen.getByText('Test request'));
         expect(await screen.findByText('Trace Debugger (Live Replay)')).toBeDefined();
+    });
+
+    it('renders 0% confidence for legacy traces missing the field', async () => {
+        const { cognitiveService } = await import('../../kernel/instances');
+        vi.mocked(cognitiveService.getTraces).mockReturnValueOnce([
+            {
+                id: 'legacy-1',
+                traceId: 'legacy-1',
+                startTime: Date.now() - 1000,
+                input: 'Legacy request',
+                status: 'completed',
+                steps: undefined,
+                decisionGraph: { nodes: [], edges: [] },
+                totalLatency: undefined,
+                totalTokens: 0,
+                estimatedCost: 0,
+                semanticConfidence: undefined,
+            },
+        ] as unknown as ReturnType<typeof cognitiveService.getTraces>);
+        const TracesPanel = (await import('./TracesPanel')).default;
+        render(<TracesPanel />);
+        expect(await screen.findByText('Legacy request')).toBeDefined();
+        expect(screen.getAllByText('0%').length).toBeGreaterThanOrEqual(1);
+        expect(screen.queryByText('NaN%')).toBeNull();
+    });
+
+    it('shows an error when deleting a trace fails', async () => {
+        const { cognitiveService } = await import('../../kernel/instances');
+        vi.mocked(cognitiveService.deleteTrace).mockImplementationOnce(() => {
+            throw new Error('db locked');
+        });
+        const TracesPanel = (await import('./TracesPanel')).default;
+        render(<TracesPanel />);
+        await screen.findByText('Test request');
+        fireEvent.click(screen.getAllByLabelText('Delete Trace')[0]);
+        expect(await screen.findByText('Failed to delete trace')).toBeDefined();
     });
 });

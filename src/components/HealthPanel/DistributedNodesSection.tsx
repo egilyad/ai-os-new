@@ -153,7 +153,7 @@ export const DistributedNodesSection: React.FC<DistributedNodesSectionProps> = (
                                     {key.latency
                                         ? `${key.latency}ms`
                                         : isOnline
-                                          ? t('health.sub_10ms')
+                                          ? '—'
                                           : t('health.offline')}
                                 </div>
                                 <div

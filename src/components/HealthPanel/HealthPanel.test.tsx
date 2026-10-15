@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { adminService } from '../../kernel/instances';
 
 vi.mock('../../i18n/useTranslation', () => ({
     useTranslation: () => ({
@@ -8,6 +9,8 @@ vi.mock('../../i18n/useTranslation', () => ({
                 'health.system_health_matrix': 'System Health Matrix',
                 'health.subtitle': 'System Health Overview',
                 'health.all_systems_operational': 'ALL SYSTEMS OPERATIONAL',
+                'health.degraded': 'DEGRADED',
+                'health.error_probe_all': 'Probe run failed',
                 'health.quick_test_aria': 'Quick Test All',
                 'health.quick_test_all': 'Quick Test All',
                 'health.refresh_aria': 'Refresh Status',
@@ -62,12 +65,19 @@ const mockKeys = [
 ];
 
 vi.mock('../../stores/useKeyStore', () => ({
-    useKeyStore: () => ({
-        keys: mockKeys,
-    }),
+    useKeyStore: (selector: (s: { keys: typeof mockKeys }) => unknown) =>
+        selector({ keys: mockKeys }),
 }));
 
 vi.mock('../../kernel/instances', () => ({
+    rootLogger: {
+        child: vi.fn(() => ({
+            debug: vi.fn(),
+            info: vi.fn(),
+            warn: vi.fn(),
+            error: vi.fn(),
+        })),
+    },
     adminService: {
         getSystemHealth: vi.fn(() => ({
             status: 'healthy',
@@ -131,10 +141,43 @@ describe('HealthPanel', () => {
         expect(screen.getByText('System Health Matrix')).toBeDefined();
     });
 
-    it('shows all systems operational', async () => {
+    it('shows degraded badge when a key is inactive', async () => {
         const HealthPanel = (await import('./HealthPanel')).default;
         render(<HealthPanel />);
-        expect(screen.getByText('ALL SYSTEMS OPERATIONAL')).toBeDefined();
+        expect(screen.getByText('DEGRADED')).toBeDefined();
+    });
+
+    it('never stores a Promise in health state on refresh', async () => {
+        const HealthPanel = (await import('./HealthPanel')).default;
+        render(<HealthPanel />);
+        vi.mocked(adminService.getSystemHealth).mockReturnValueOnce(
+            Promise.resolve({
+                status: 'healthy',
+                version: '2.4.0',
+                uptime: 3600,
+                vitals: {
+                    cpu: 45,
+                    memory: 512,
+                    throughput: 120,
+                    totalRequests: 1000,
+                    totalTokens: 50000,
+                },
+                services: [],
+            }) as unknown as ReturnType<typeof adminService.getSystemHealth>,
+        );
+        fireEvent.click(screen.getByLabelText('Refresh Status'));
+        await waitFor(() => expect(screen.getByText('45.0%')).toBeDefined());
+    });
+
+    it('renders fallback when initial health resolves async', async () => {
+        const HealthPanel = (await import('./HealthPanel')).default;
+        vi.mocked(adminService.getSystemHealth).mockReturnValueOnce(
+            new Promise(
+                () => {},
+            ) as unknown as ReturnType<typeof adminService.getSystemHealth>,
+        );
+        render(<HealthPanel />);
+        expect(screen.getByText('0.0%')).toBeDefined();
     });
 
     it('displays CPU vitals', async () => {

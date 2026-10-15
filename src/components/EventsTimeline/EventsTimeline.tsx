@@ -59,7 +59,17 @@ const RENDER_CAP = 200;
 const loadEvents = (): TimelineEvent[] => {
     try {
         const raw = storageAdapter.getItem(STORAGE_KEY);
-        const events = raw ? (safeJsonParse(raw) as TimelineEvent[]) : [];
+        const parsed = raw ? safeJsonParse(raw) : [];
+        // Storage may hold a non-array or legacy items without numeric ids —
+        // never let them crash reduce/render or collide React keys.
+        const events = (
+            Array.isArray(parsed) ? parsed : []
+        ).filter(
+            (e): e is TimelineEvent =>
+                typeof e === 'object' &&
+                e !== null &&
+                typeof (e as TimelineEvent).id === 'number',
+        );
         // G-03: eventIdCounter is module-level and resets to 0 on reload, but events
         // are persisted to localStorage. Without advancing the counter past the max
         // loaded id, new events collide with persisted ids (e.g. keys `4` duplicated)
@@ -176,7 +186,9 @@ const EventsTimeline: React.FC = () => {
         if (searchQuery.trim()) {
             const q = searchQuery.toLowerCase();
             list = list.filter(
-                (e) => e.event.toLowerCase().includes(q) || e.summary.toLowerCase().includes(q),
+                (e) =>
+                    (e.event ?? '').toLowerCase().includes(q) ||
+                    (e.summary ?? '').toLowerCase().includes(q),
             );
         }
         return list;
@@ -431,7 +443,12 @@ const EventsTimeline: React.FC = () => {
                                     </div>
                                 )}
                                 {groupEvents.map((evt, i) => {
-                                    const colors = SEVERITY_COLORS[evt.severity];
+                                    // Unknown severities (e.g. from older stored payloads)
+                                    // fall back to info instead of crashing on .bg access.
+                                    const colors =
+                                        SEVERITY_COLORS[evt.severity] ?? SEVERITY_COLORS.info;
+                                    const icon =
+                                        SEVERITY_ICONS[evt.severity] ?? SEVERITY_ICONS.info;
                                     const isLast = i === groupEvents.length - 1;
                                     return (
                                         <div
@@ -448,10 +465,10 @@ const EventsTimeline: React.FC = () => {
                                                 transition: 'all 0.2s',
                                             }}
                                             onMouseEnter={(e) => {
-                                                e.currentTarget.style.background = `${colors.bg.replace('0.1)', '0.15)')}`;
+                                                e.currentTarget.style.filter = 'brightness(1.25)';
                                             }}
                                             onMouseLeave={(e) => {
-                                                e.currentTarget.style.background = colors.bg;
+                                                e.currentTarget.style.filter = '';
                                             }}
                                         >
                                             <div
@@ -520,7 +537,7 @@ const EventsTimeline: React.FC = () => {
                                                             flexShrink: 0,
                                                         }}
                                                     >
-                                                        {SEVERITY_ICONS[evt.severity]}
+                                                        {icon}
                                                     </span>
                                                 </div>
                                                 <div

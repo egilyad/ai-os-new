@@ -141,7 +141,7 @@ const DashboardPanel: React.FC<DashboardPanelProps> = ({ onNavigate }) => {
             (newTraces) => {
                 if (!isMountedRef.current) return;
                 try {
-                    setTraces([...newTraces]);
+                    setTraces(Array.isArray(newTraces) ? [...newTraces] : []);
                     setError(null);
                 } catch (e) {
                     LOGGER.warn('DashboardPanel', 'Failed to update traces', { error: e });
@@ -243,15 +243,28 @@ const DashboardPanel: React.FC<DashboardPanelProps> = ({ onNavigate }) => {
         [traces, currentTime],
     );
 
+    // Windowed to 24h to match the "today" labels downstream (Token Burn,
+    // Calculated Cost). Summing all retained traces would overstate daily use.
     const totalTokens = useMemo(
-        () => safeTraces.reduce((sum, t) => sum + (t.totalTokens || 0), 0),
-        [safeTraces],
+        () =>
+            safeTraces
+                .filter((t) => t.startTime > currentTime - 24 * 60 * 60 * 1000)
+                .reduce((sum, t) => sum + (t.totalTokens || 0), 0),
+        [safeTraces, currentTime],
     );
 
-    const estimatedCost = useMemo(
-        () => budgetService.getBudgetInfo()?.spentThisMonth ?? (totalTokens / 1000) * 0.01,
-        [totalTokens],
-    );
+    const estimatedCost = useMemo(() => {
+        // getBudgetInfo().spentThisMonth is MONTH spend — never show it under
+        // the "today" labels. Prefer the measured daily average, else a
+        // trace-derived estimate at the documented fallback rate.
+        try {
+            const dailyAverage = budgetService.getBudgetInfo()?.dailyAverage;
+            if (typeof dailyAverage === 'number' && dailyAverage > 0) return dailyAverage;
+        } catch {
+            /* budget service unavailable — fall through to trace estimate */
+        }
+        return (totalTokens / 1000) * 0.01;
+    }, [totalTokens]);
 
     const activeDebates = useMemo(() => {
         try {
