@@ -80,6 +80,15 @@ const ProviderManagerContainer: React.FC = () => {
                 message: 'Providers exported successfully',
                 type: 'success',
             });
+        } catch (err) {
+            // Export failure used to vanish silently — notify like the success path does.
+            eventBus.emit(EVENTS.NOTIFICATION, {
+                message: `Providers export failed: ${err instanceof Error ? err.message : String(err)}`.slice(
+                    0,
+                    200,
+                ),
+                type: 'error',
+            });
         } finally {
             setExporting(false);
         }

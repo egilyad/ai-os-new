@@ -42,6 +42,7 @@ const ProviderCard: React.FC<ProviderCardProps> = ({
     const [confirmRemove, setConfirmRemove] = useState(false);
     const [probeResult, setProbeResult] = useState<ProbeResult | null>(null);
     const [probeLoading, setProbeLoading] = useState(false);
+    const [probeError, setProbeError] = useState<string | null>(null);
     const status = statusBadge(apiKey.status);
     const reputation = apiKey.stats?.extended?.reputationScore || 0;
     const modelCount = apiKey.availableModels?.length || 0;
@@ -64,11 +65,18 @@ const ProviderCard: React.FC<ProviderCardProps> = ({
         e.stopPropagation();
         setProbeLoading(true);
         setProbeResult(null);
+        setProbeError(null);
         try {
             const results = await probeService.probeForDebate([
                 { id: apiKey.id, provider: apiKey.provider, modelId: apiKey.model },
             ]);
             if (isMounted.current) setProbeResult(results.get(apiKey.id) || null);
+        } catch (err) {
+            // Probe transport failure used to vanish silently (spinner just
+            // stopped). Surface it next to the probe button instead.
+            if (isMounted.current) {
+                setProbeError(err instanceof Error ? err.message : String(err));
+            }
         } finally {
             if (isMounted.current) setProbeLoading(false);
         }
@@ -407,6 +415,17 @@ const ProviderCard: React.FC<ProviderCardProps> = ({
                     onCancel={() => setConfirmRemove(false)}
                     onConfirm={() => onRemoveKey(apiKey.id)}
                 />
+            )}
+            {probeError && (
+                <div
+                    style={{
+                        marginTop: '0.5rem',
+                        fontSize: '0.72rem',
+                        color: '#fca5a5',
+                    }}
+                >
+                    Probe failed: {probeError.slice(0, 160)}
+                </div>
             )}
             {probeResult && <ProbeResultSection probeResult={probeResult} />}
             <QuickTestSection apiKey={apiKey} />

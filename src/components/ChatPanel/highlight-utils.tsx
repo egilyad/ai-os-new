@@ -244,7 +244,9 @@ export function highlightCode(code: string, lang: string): React.ReactNode {
         .toLowerCase()
         .replace(/^node/i, 'js')
         .replace(/^javascript/i, 'js')
-        .replace(/^typescript/i, 'ts');
+        .replace(/^typescript/i, 'ts')
+        // ```py fences hold Python code, but the keyword table is keyed 'python'.
+        .replace(/^py$/i, 'python');
     const kw = HIGHLIGHT_KEYWORDS[langLower] || HIGHLIGHT_KEYWORDS['ts']!;
     const parts: React.ReactNode[] = [];
 

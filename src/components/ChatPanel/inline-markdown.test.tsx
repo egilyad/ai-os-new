@@ -75,8 +75,13 @@ describe('inlineMarkdown rich content (debate/chat answers)', () => {
     });
 
     it('keeps bold/italic working (no regression)', () => {
-        show('this is **bold** and _italic_');
+        show('this is **bold** and *italic*');
         expect(screen.getByText('bold').textContent).toBe('bold');
         expect(screen.getByText('italic').textContent).toBe('italic');
+    });
+
+    it('leaves snake_case untouched (single _ is literal)', () => {
+        show('use foo_bar_baz here');
+        expect(screen.getByText('use foo_bar_baz here')).toBeDefined();
     });
 });

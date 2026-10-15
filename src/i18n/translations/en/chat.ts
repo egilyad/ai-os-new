@@ -104,6 +104,7 @@ const chat: Record<string, string> = {
     'chat.new_session': 'New Session',
     'chat.next_match': 'Next match',
     'chat.no_keys_selected': 'No keys selected',
+    'chat.add_provider_key': 'Add a provider key to start chatting',
     'chat.no_models': 'No models available',
     'chat.no_search_results': 'No search results',
     'chat.no_session': 'No session selected',

@@ -106,6 +106,7 @@ const chat: Record<string, string> = {
     'chat.new_session': 'Новая сессия',
     'chat.next_match': 'Следующее совпадение',
     'chat.no_keys_selected': 'Ключи не выбраны',
+    'chat.add_provider_key': 'Добавь ключ провайдера, чтобы начать общение',
     'chat.no_models': 'Нет моделей',
     'chat.no_search_results': 'Ничего не найдено',
     'chat.no_session': 'Нет сессии',

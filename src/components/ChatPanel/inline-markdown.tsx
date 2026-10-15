@@ -86,7 +86,7 @@ export function inlineMarkdown(text: string): React.ReactNode {
     const parts: React.ReactNode[] = [];
     let idx = 0;
     const inlineRegex =
-        /(`{1,2})([^`]+)\1|!\[([^\]]*)\]\(([^)]+)\)|(\*\*\*?|___?)(.+?)\5|\[([^\]]+)\]\(([^)]+)\)|(https?:\/\/[^\s<>"'\]]+)/g;
+        /(`{1,2})([^`]+)\1|!\[([^\]]*)\]\(([^)]+)\)|(\*\*\*?|\*|___?)(.+?)\5|\[([^\]]+)\]\(([^)]+)\)|(https?:\/\/[^\s<>"'\]]+)/g;
     let lastIndex = 0;
     let match: RegExpExecArray | null;
 

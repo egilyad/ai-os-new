@@ -68,6 +68,7 @@ const InstalledProvidersView: React.FC<InstalledProvidersViewProps> = React.memo
             null,
         );
         const [batchProbeLoading, setBatchProbeLoading] = useState(false);
+        const [batchProbeError, setBatchProbeError] = useState<string | null>(null);
         const [expandedBatchProbe, setExpandedBatchProbe] = useState<string | null>(null);
 
         useEffect(() => {
@@ -207,11 +208,16 @@ const InstalledProvidersView: React.FC<InstalledProvidersViewProps> = React.memo
                                 onClick={async () => {
                                     setBatchProbeLoading(true);
                                     setBatchProbeResults(null);
+                                    setBatchProbeError(null);
                                     try {
                                         const results = await probeService.probeAll();
                                         const map = new Map<string, ProbeResult>();
                                         for (const r of results) map.set(r.keyId, r);
                                         setBatchProbeResults(map);
+                                    } catch (err) {
+                                        setBatchProbeError(
+                                            err instanceof Error ? err.message : String(err),
+                                        );
                                     } finally {
                                         setBatchProbeLoading(false);
                                     }
@@ -227,6 +233,11 @@ const InstalledProvidersView: React.FC<InstalledProvidersViewProps> = React.memo
                                 )}
                                 {t('provider.quick_test_all')}
                             </button>
+                            {batchProbeError && (
+                                <span style={{ fontSize: '0.72rem', color: '#fca5a5' }}>
+                                    Probe all failed: {batchProbeError.slice(0, 160)}
+                                </span>
+                            )}
                             <button onClick={onEnableAll} className="btn-secondary">
                                 <Power size={16} /> {t('provider.enable_all')}
                             </button>

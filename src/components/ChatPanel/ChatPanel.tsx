@@ -171,7 +171,6 @@ const setSessions = useChatStore((s) => s.setSessions);
 
     const autoExpandedGroupRef = useRef(false);
     const [showSystemPromptInput, setShowSystemPromptInput] = useState(false);
-    const [showModelConfig, setShowModelConfig] = useState<string | null>(null);
     const [statusMessage, setStatusMessage] = useState<{
         text: string;
         type: 'success' | 'error' | 'info';
@@ -289,10 +288,14 @@ const setSessions = useChatStore((s) => s.setSessions);
             setEditingEntryId(null);
             setShowSidebar(true);
             autoExpandedGroupRef.current = true;
-        } catch {
-            // session creation failed — error logged by createSession
+        } catch (e) {
+            // Surface instead of swallowing: a dead button is worse than an error.
+            showStatus(
+                `Failed to create chat: ${e instanceof Error ? e.message : String(e)}`.slice(0, 200),
+                'error',
+            );
         }
-    }, [createSession, setActiveSessionId, setShowSidebar]);
+    }, [createSession, setActiveSessionId, setShowSidebar, showStatus]);
 
     const handleSidebarSessionClick = useCallback(
         (id: string) => {
@@ -433,8 +436,6 @@ const setSessions = useChatStore((s) => s.setSessions);
                     messagesContainerRef={messagesContainerRef}
                     onScroll={handleScroll}
                     messagesEndRef={messagesEndRef}
-                    showModelConfig={showModelConfig}
-                    onToggleModelConfig={setShowModelConfig}
                 />
 
                 {/* FIX(chat-agent): optional Agent attach — Poe-style continuation state (above input, always clickable) */}

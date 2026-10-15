@@ -14,6 +14,7 @@ interface SpeedRecord {
 
 interface GroqKey {
     provider: string;
+    status?: string;
     stats?: {
         avgLatency?: number;
         extended?: {
@@ -117,7 +118,7 @@ export default function GroqSpeedDashboard() {
                     value={`${Math.round(avgTtft)}ms`}
                     color="#8b5cf6"
                 />
-                <StatCard icon="🔑" label="Active Keys" value={`${keys.length}`} color="#3b82f6" />
+                <StatCard icon="🔑" label="Active Keys" value={`${keys.filter((k) => k.status === 'active').length}`} color="#3b82f6" />
                 <StatCard
                     icon="📊"
                     label="Avg Latency"

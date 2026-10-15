@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from 'react';
-import { Send, Square } from 'lucide-react';
+import { Send, Square, KeyRound } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { useKeyList } from '../../stores/useKeyStore';
 import { useChatStore } from '../../stores/useChatStore';
 import { useTranslation } from '../../i18n/useTranslation';
@@ -33,6 +34,7 @@ const ChatInputArea: React.FC<Props> = ({
     const { t } = useTranslation();
     const { activeKeys } = useKeyList();
     const cancelSending = useChatStore((s) => s.cancelSending);
+    const navigate = useNavigate();
 
     const [input, setInput] = useState('');
 
@@ -193,6 +195,33 @@ const ChatInputArea: React.FC<Props> = ({
                         );
                     })}
                 </div>
+            )}
+
+            {/* Zero-keys dead end: point at Providers instead of a disabled box */}
+            {activeKeys.length === 0 && (
+                <button
+                    type="button"
+                    onClick={() => navigate('/keys')}
+                    style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.5rem',
+                        marginBottom: '0.75rem',
+                        padding: '0.55rem 0.9rem',
+                        borderRadius: 10,
+                        border: '1px dashed rgba(59,130,246,0.4)',
+                        background: 'rgba(59,130,246,0.07)',
+                        color: '#60a5fa',
+                        fontSize: '0.82rem',
+                        fontWeight: 600,
+                        cursor: 'pointer',
+                        width: '100%',
+                        justifyContent: 'center',
+                    }}
+                >
+                    <KeyRound size={14} aria-hidden="true" />
+                    {t('chat.add_provider_key')}
+                </button>
             )}
 
             {/* Textarea + Send */}

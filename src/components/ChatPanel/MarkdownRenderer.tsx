@@ -35,8 +35,9 @@ const MarkdownRendererImpl: React.FC<MarkdownRendererProps> = ({ content, isStre
     let codeBlockLang = '';
 
     for (let i = 0; i < lines.length; i++) {
-        const line = lines[i];
-        if (!line) continue;
+        // NOTE: no `if (!line) continue` here — empty lines must reach the
+        // `line.trim() === ''` branch below and render as <br/>.
+        const line = lines[i] ?? '';
 
         if (line.startsWith('```')) {
             if (inCodeBlock) {
