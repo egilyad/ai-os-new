@@ -160,7 +160,7 @@ Visual workflow builder for creating multi-node cognitive pipelines using React 
 Multi-agent debate system with configurable strategies and comprehensive metrics:
 
 - **3 positions**: Pro, Con, Neutral
-- **13 strategies** (33 built-in presets): Round-robin, Moderated, Free-for-all, Socratic Method, Argument Tree, Constrained Debates
+- **33 built-in strategies** (full tables below): Round-robin, Moderated, Free-for-all, Socratic Method, Argument Tree, Constrained Debates, …
 - **25 agent workforce**: Distinct roles, prompts, temperatures, tools, models
 - **Debate temperature slider**: Pure Logic → Balanced → Pure Emotion tone control
 - **Structural graph metrics**: Depth, branching, orphan rate, challenge/refinement density
@@ -177,6 +177,144 @@ Multi-agent debate system with configurable strategies and comprehensive metrics
 - **Repetition gate & outcome validator**: Cross-agent duplicate detection with pre-prompt warning; synthesis groundedness + contradiction-consistency checks
 - **Source credibility & triangulation**: Tiered source scoring, real-URL citation plumbing, never-invent-URLs rule
 - **Recoverable history**: Failed/cancelled debates persist with arguments; fact-check joins work across id namespaces; reload-verified snapshots
+
+<!-- README-MAPS:STRATEGIES:BEGIN -->
+_Generated from code on 2026-10-15 by `node scripts/gen-readme-maps.mjs` — do not hand-edit, re-run the script._
+
+<details>
+<summary><b>All 33 built-in debate strategies (from code)</b></summary>
+
+| Strategy | ID | What it does |
+| -------- | -- | ----------- |
+| **Round Robin** | `builtin.round_robin` | Classic sequential round-robin where each agent speaks once per round |
+| **Socratic Method** | `builtin.socratic` | Question-driven inquiry that probes assumptions through iterative questioning |
+| **Argument Tree** | `builtin.argument_tree` | Tree-structured argumentation with challenges and refinements |
+| **Constrained Debate** | `builtin.constrained` | Debate with specific constraints on argument structure and evidence requirements |
+| **Moderated Debate** | `builtin.moderated` | Debate with a neutral moderator controlling flow and enforcing rules |
+| **Free-for-All** | `builtin.free_for_all` | Multiple agents debate simultaneously without turn ordering |
+| **Jury Trial** | `builtin.jury_trial` | Adversarial format with prosecution, defense, witnesses, and jury |
+| **Brainstorming** | `builtin.brainstorming` | Free-form idea generation without critique, followed by clustering |
+| **Delphi Method** | `builtin.delphi` | Iterative anonymous consensus-building with controlled feedback |
+| **Debate-athon** | `builtin.debate_athon` | Extended marathon format with multiple rounds, breaks, and endurance scoring |
+| **Meta-Debate** | `builtin.meta_debate` | Debate about the debate itself — rules, framing, methodology |
+| **Post-Mortem / Autopsy** | `builtin.autopsy` | Retrospective analysis of a past event, decision, or failure |
+| **Simulated Negotiation** | `builtin.simulated_negotiation` | Role-play negotiation between parties with competing interests |
+| **Premortem** | `builtin.premortem` | Assume a project has failed and work backwards to identify what went wrong |
+| **Red Teaming** | `builtin.red_teaming` | Adversarial testing where one team attacks and another defends |
+| **Rhetorical Triangle** | `builtin.rhetorical_triangle` | Analyze arguments through ethos, pathos, and logos lenses |
+| **Evidence-Based Policy Debate** | `builtin.evidence_based_policy` | Policy debate requiring cited evidence for each claim |
+| **Principle-Based Negotiation** | `builtin.principle_based_negotiation` | Harvard-style principled negotiation focusing on interests not positions |
+| **Uncertainty Quantification** | `builtin.uncertainty_quantification` | Systematically identify and quantify uncertainties in arguments |
+| **Multi-Criteria Decision Analysis** | `builtin.multi_criteria` | Evaluate options against multiple weighted criteria |
+| **Stakeholder Mapping** | `builtin.stakeholder_mapping` | Identify and analyze stakeholders, their interests, and influence |
+| **Cross-Examination** | `builtin.cross_examination` | Intense back-and-forth questioning between two parties |
+| **Trial by Argument** | `builtin.trial` | Full trial format with opening, evidence, witnesses, closing, and verdict |
+| **Parliamentary Debate** | `builtin.parliamentary` | Formal debate with government and opposition teams following parliamentary procedure |
+| **Oxford Union Debate** | `builtin.oxford_union` | Traditional Oxford Union format with proposition, opposition, and floor votes |
+| **Lincoln-Douglas Debate** | `builtin.lincoln_douglas` | Values-based one-on-one debate with structured case construction |
+| **Spontaneous Argumentation** | `builtin.spontaneous_argumentation` | Impromptu arguments with minimal preparation, testing quick thinking |
+| **Asynchronous Marathon** | `builtin.asynchronous_marathon` | Extended multi-day debate where agents respond at their own pace |
+| **Flash Debate** | `builtin.flash_debate` | Ultra-fast debate with very short response times and limited characters |
+| **Collaborative Consensus** | `builtin.collaborative_consensus` | Non-adversarial format focused on finding common ground and shared understanding |
+| **Scenario Testing** | `builtin.scenario_testing` | Test assumptions by exploring multiple hypothetical scenarios |
+| **Hypothesis Testing** | `builtin.hypothesis_testing` | Scientific method approach: hypothesis, test, evidence evaluation, conclusion |
+| **Contest Mode** | `builtin.contest_mode` | Competitive format with judges scoring each round, winner declared at end |
+
+</details>
+<!-- README-MAPS:STRATEGIES:END -->
+
+<!-- README-MAPS:TECHNIQUES:BEGIN -->
+_Generated from code on 2026-10-15 by `node scripts/gen-readme-maps.mjs` — do not hand-edit, re-run the script._
+
+<details>
+<summary><b>All 75 debate quality techniques (from code)</b></summary>
+
+**P0** (18)
+
+- **Cross-Examination** (`cross-examination`) — Directly question opponent claims, demand missing evidence
+- **Delta-Focusing** (`delta-focusing`) — Highlight only points of disagreement, skip consensus
+- **Shadow Opponent** (`shadow-opponent`) — Anticipate and pre-rebut unspoken counter-arguments
+- **Adversarial Source** (`adversarial-source`) — Verify factual claims against source URLs, flag fabrications
+- **Vulnerability Targeting** (`vulnerability-targeting`) — Identify and attack weakest claims in opponent argument graph
+- **Agreement Anchoring** (`agreement-anchoring`) — Start from shared premises, then reveal logical inconsistencies
+- **Belief Mining** (`belief-mining`) — Detect contradictions between stated positions and earlier claims
+- **Graph Minimax** (`graph-minimax`) — Plan argument moves several steps ahead using argument graph
+- **Meta-Agent** (`meta-agent`) — Tactical directives: when to attack, defend, pivot, or concede
+- **Steelman** (`steelman`) — Strengthen opponent position before refuting — steelman fallacies
+- **Burden of Proof** (`burden-of-proof`) — Track which claims remain unsupported; demand evidence
+- **Entanglement** (`entanglement`) — Force opponent to defend two incompatible positions simultaneously
+- **Consistency Check** (`consistency-check`) — Detect self-contradictions across rounds
+- **Credibility Scoring** (`credibility-scoring`) — Track source reliability of each participant
+- **Causal Loop Mapping** (`causal-graph`) — Force systems thinking: detect feedback loops and second-order effects
+- **Objection Anticipation Slot** (`objection-anticipation`) — Dedicate a thinking slot to pre-rebut unspoken counter-arguments
+- **Evidence Triangulation Requirement** (`evidence-triangulation`) — Require cross-referencing claims against multiple independent sources
+- **Executable Evidence** (`executable-evidence`) — Write executable code (Python/JS) to numerically verify factual claims
+
+**P1** (33)
+
+- **Pre-Publish Critic** (`pre-publish-critic`) — Internal critic evaluates argument before release
+- **Fact-Checking** (`fact-checking`) — Verify factual claims in real-time against knowledge base
+- **Epistemic Calibration** (`epistemic-calibration`) — Enforce confidence calibration: penalize over/under-confidence
+- **Socratic Pivot** (`socratic-pivot`) — Switch from arguing to questioning when opponent is inconsistent
+- **Concession Engine** (`concession-engine`) — Monitor concession opportunities based on argument strength shift
+- **Bayesian Judges** (`bayesian-judges`) — Reward acknowledging uncertainty and limitations
+- **Stance Drift** (`stance-drift`) — Detect when agent silently changes position across rounds
+- **Persona Mixer** (`persona-mixer`) — Blend multiple persona archetypes for richer argumentation
+- **DPO Sampler** (`dpo-sampler`) — Sample argument styles from high-win-rate past debates
+- **Self-Critic** (`critic`) — Pre-validate own argument before submission
+- **Pivot Strategy** (`pivot`) — Change argument direction when current approach is failing
+- **Strategic Concession** (`concession`) — Concede minor points to gain credibility on major ones
+- **Counterfactual Analysis** (`counterfactual`) — Explore "what if" scenarios to test opponent logic
+- **Synthesis Engine** (`synthesis`) — Combine best arguments from both sides into coherent whole
+- **Triangulation** (`triangulation`) — Cross-reference claims against multiple independent sources
+- **Empathy Mirroring** (`empathy`) — Acknowledge opponent perspective before refuting
+- **Heat Detection** (`heat`) — Detect emotional escalation, adjust tone accordingly
+- **Argument Sentinel** (`sentinel`) — Monitor for abandoned claims and re-introduce them
+- **Redundancy Detector** (`redundancy`) — Penalize repeating same evidence or reasoning
+- **Insight Bus** (`insight-bus`) — Broadcast cross-argument patterns to all agents
+- **Replay Selector** (`replay`) — Re-engage with strongest unresolved points from earlier rounds
+- **Enthymeme Attack** (`enthymeme`) — Target hidden premises in opponent arguments
+- **Multi-Hop Reasoning** (`multi-hop`) — Require multi-step justification for complex claims
+- **Bias Exploitation** (`bias-exploit`) — Identify and exploit opponent cognitive biases
+- **Clarification Interrupt** (`interrupt`) — Send targeted clarification requests to ambiguous claims
+- **Stakeholder Mapper** (`stakeholder`) — Map which groups are affected by each position
+- **Frame Tracker** (`frame`) — Track how each side frames the issue, reframe strategically
+- **Expert Witness** (`expert-witness`) — Cite relevant domain experts and their credibility scores
+- **Hegelian Dialectical Synthesis** (`hegelian-synthesis`) — Push agents to synthesize thesis + antithesis into coherent resolution
+- **Uncertainty Propagation** (`uncertainty-propagation`) — Explicitly propagate confidence levels through multi-step reasoning chains
+- **Hidden Incentives Mining** (`hidden-incentives`) — Generate 3 reasoning branches, synthesize strongest into public argument
+- **Semantic Concept Blending** (`semantic-blending`) — When deadlocked, invent new frameworks combining opposing concepts
+- **Outcome Forecaster** (`outcome-forecaster`) — 
+
+**P2** (24)
+
+- **Rhetorical Device** (`rhetorical-device`) — Inject rhetorical devices (anaphora, tricolon, chiasmus)
+- **Hidden Scratchpad** (`scratchpad`) — Internal deliberation before public response
+- **Narrative Arc** (`narrative-arc`) — Structure arguments as story arcs (hero journey, mystery, etc.)
+- **Abstraction Ladder** (`abstraction-ladder`) — Switch between concrete evidence and abstract principles
+- **Role-Reversal** (`role-reversal`) — Occasionally argue from opponent perspective
+- **Fog of War** (`fog-of-war`) — Limit information available to each agent
+- **Evidence Revelation** (`evidence-revelation`) — Stage evidence release by round
+- **Humor Injection** (`humor`) — Inject wit, irony, or analogy where appropriate
+- **Status Dynamics** (`status-dynamics`) — Assign social status levels that affect persuasiveness
+- **Style Matching** (`style-matching`) — Mirror opponent communication style
+- **Dynamic Persona** (`dynamic-persona`) — Topic-matched persona variant selection
+- **Strategist** (`strategist`) — Adaptive strategic directives (flank, fortify, probe, etc.)
+- **Whisper Channels** (`whisper-channels`) — Private coordination signals between allied agents
+- **Audience Sentiment** (`audience`) — Simulate audience reactions to each argument
+- **Dynamic Alliance** (`alliance`) — Form and leverage coalitions between agents
+- **Prediction Market** (`prediction-market`) — Agents predict debate trajectory, reputation on the line
+- **Theory of Mind** (`rtom`) — Model other agents beliefs about the debate state
+- **Strategy Fingerprinting** (`strategy-fingerprint`) — Detect and counter opponent debate strategies
+- **Rhetoric Safety Layer** (`rhetoric-safety`) — Monitor for ad hominem, inflammatory language, and rhetorical manipulation
+- **Blind Evaluation** (`blind-evaluation`) — Judge arguments without knowing which agent made them
+- **Bidding for Speaking Time** (`bidding-time`) — Agents bid for speaking time — concise, high-impact arguments win the floor
+- **Adaptive Speaking Order** (`adaptive-order`) — Shuffle speaking order dynamically based on argument patterns
+- **Judge Deliberation** (`judge-deliberation`) — 
+- **Best-of-N Selection** (`best-of-n`) — 
+
+</details>
+<!-- README-MAPS:TECHNIQUES:END -->
 
 ### Execution Trail (team supervision)
 
@@ -320,6 +458,233 @@ src/
 ├── routes.tsx            # ~70 routes across 9 nav sections
 └── tests/               # Test setup and config
 ```
+
+<!-- README-MAPS:PANELS:BEGIN -->
+_Generated from code on 2026-10-15 by `node scripts/gen-readme-maps.mjs` — do not hand-edit, re-run the script._
+
+<details>
+<summary><b>All 165 statically-wired nav panels by section (from code)</b></summary>
+
+**DASHBOARD** (`section-dashboard`, 22)
+
+- Overview (`dashboard`)
+- Providers (`keys`)
+- Knowledge (`knowledge`)
+- Project OS Explorer (`project-os`)
+- Cognitive Lenses (`lenses`)
+- Crystal Vault (`crystals`)
+- Junction Engine (`junctions`)
+- Synthesis Engine (`synthesis`)
+- Knowledge Generator (`knowledge-generator`)
+- Agent Forum (`forum`)
+- Workflows (`builder`)
+- Conversation Director (`director`)
+- Agent Rooms (`room`)
+- Projects (`projects`)
+- Channels (`channels`)
+- Group Chat (`group-chat`)
+- Scheduler (`scheduler`)
+- Planner (`planner`)
+- Autonomy (`autonomy`)
+- Dyad (`dyad`)
+- SOP (`sop`)
+- Run Queue (`run-queue`)
+
+**BUDGET AI** (`section-budget`, 7)
+
+- Analytics (`analytics`)
+- Economics (`pricing`)
+- Budget (`budget`)
+- Cost Analytics (`cost-analytics`)
+- Cost Optimization (`cost-optimization`)
+- Budget Alerts (`budget-alerts`)
+- Company Costs (`costs`)
+
+**CHAT** (`section-chat`, 4)
+
+- Chat (`chat`)
+- Chat Sessions (`chat-sessions`)
+- Session Hub (`session-hub`)
+- Bookmarks (`bookmarks`)
+
+**DEBATES** (`section-debates`, 17)
+
+- Debate Arena (`debate`)
+- Debate Live (`debate-live`)
+- Debate Rooms (`debate-workspace`)
+- Debate Replay (`debate-replay`)
+- Tournament (`debate-tournament`)
+- Audience (`audience`)
+- Argument Graph (`argument-graph`)
+- Strategy Builder (`strategy-builder`)
+- Debate Analysis (`debate-analysis`)
+- Debate History (`debate-history`)
+- Debates Manager (`debates-manager`)
+- Topics (`topics`)
+- Debate Templates (`debate-templates`)
+- Debate Quality (`debate-quality`)
+- Quality Impact (`quality-impact`)
+- Experimental (`experimental`)
+- Scratchpad (`scratchpad`)
+
+**DEBATE STRATEGY & ANALYSIS** (`section-debate-strategy`, 4)
+
+- Outcome Forecaster (`outcome-forecaster`)
+- Minimax Planner (`minimax-planner`)
+- Similarity (`similarity`)
+- Drift Detector (`drift-detector`)
+
+**TECHNIQUES** (`section-techniques`, 26)
+
+- Steelman (`steelman`)
+- Bayesian Judge (`bayesian-judge`)
+- Blind Eval (`blind-eval`)
+- Credibility (`credibility`)
+- Calibration (`calibration`)
+- Consistency (`consistency`)
+- Frame Tracker (`frame-tracker`)
+- Stance Drift (`stance-drift`)
+- Insight Bus (`insight-bus`)
+- Entanglement (`entanglement`)
+- Anchoring (`anchoring`)
+- Concept Blender (`concept-blender`)
+- Belief Mining (`belief-mining`)
+- Expert Witness (`expert-witness`)
+- Rhetoric (`rhetoric`)
+- Bias Profiler (`bias-profiler`)
+- Incentive Detector (`incentive-detector`)
+- Stakeholder (`stakeholder`)
+- Persona Mixer (`persona-mixer`)
+- BoP Tracker (`bop-tracker`)
+- GoT Deliberation (`got-deliberation`)
+- Shadow Opponent (`shadow-opponent`)
+- Adversarial Source (`adversarial-source`)
+- Vuln Targeting (`vuln-targeting`)
+- Justification (`justification`)
+- Logical Form (`logical-form`)
+
+**FLEET** (`section-fleet`, 12)
+
+- Fleet Console (`fleet`)
+- Fleet — Crews (`fleet-crews`)
+- Fleet — Councils (`fleet-councils`)
+- Fleet — Graphs (`fleet-graphs`)
+- Fleet — Persona (`fleet-persona`)
+- Fleet — Interop (`fleet-interop`)
+- Fleet — Frontier (`fleet-frontier`)
+- Companies (`companies`)
+- Issues (`issues`)
+- Heartbeat Runs (`runs`)
+- Agent Tasks (`agent-tasks`)
+- Provenance Graph (`provenance`)
+
+**GOOGLE AI** (`section-google`, 4)
+
+- Google Studio (`google-studio`)
+- Google Cache (`google-cache`)
+- Gemini Live (`gemini-live`)
+- Research: Gemini AI (`research-gemini`)
+
+**RESEARCH** (`section-research`, 7)
+
+- Research Engine (`research-engine`)
+- Debate System Research (`debate-system-research`)
+- Research Reports (`research-reports`)
+- Research: Advanced (`research-advanced`)
+- Hypothesis Generator (`hypothesis-gen`)
+- Rival Labs (`rival-labs`)
+- Rivals Projects (`rivals-catalog`)
+
+**INTEGRATIONS** (`section-integrations`, 1)
+
+- Workflows (`workflows`)
+
+**RANDOMS** (`section-randoms`, 2)
+
+- Tutorials (`tutorials`)
+- Template Sharing (`template-sharing`)
+
+**AI PROVIDERS & KEYS** (`section-ai-providers`, 13)
+
+- Key Pools (`pools`)
+- Key Groups (`groups`)
+- Key Notes (`key-notes`)
+- Rotations (`rotations`)
+- Session Bindings (`session-bindings`)
+- Smart Routing 🧭 (`smart-routing`)
+- Routing AI (`routing`)
+- Provider Dashboard (`provider-dashboard`)
+- Provider Marketplace (`provider-marketplace`)
+- Key Usage Analytics (`key-usage-analytics`)
+- Groq Speed ⚡ (`groq-speed`)
+- NVIDIA Enterprise 🏢 (`nvidia-enterprise`)
+- OpenRouter ◈ (`openrouter`)
+
+**SYSTEM SERVICES** (`section-system`, 11)
+
+- Tools (`tools`)
+- Connectors (`connectors`)
+- MCP Servers (`mcp`)
+- Service Registry (`service-registry`)
+- Topology Templates (`topology-templates`)
+- Cache (`cache`)
+- Webhooks (`webhooks`)
+- Plugin SDK (`plugin-sdk`)
+- Bridge-Keepers (`guardians`)
+- Agent Adapters (`adapters`)
+- Portability (`portability`)
+
+**SECURITY & RULES** (`section-security`, 11)
+
+- Settings (`settings`)
+- Policies (`policies`)
+- Policy Rules Engine (`policy-editor`)
+- Audit Log (`audit`)
+- Config History (`history`)
+- Export / Import (`export-import`)
+- Time Machine (`time-machine`)
+- Governance / RBAC (`governance`)
+- Guardrails (`guardrails`)
+- Security Scan (`security`)
+- Approvals (`approvals`)
+
+**SYSTEM MEMORY** (`section-memory`, 3)
+
+- Memory Palace (`memory-palace`)
+- Federated Memory (`federated-memory`)
+- Memory Export/Import (`memory-export-import`)
+
+**LAB** (`section-lab`, 8)
+
+- Eval Datasets (`eval-datasets`)
+- Model Routing Experiments (`routing-experiments`)
+- Model Playground (`playground`)
+- A/B Testing (`ab-testing`)
+- Architecture Review (`arch-review`)
+- Prompt & Strategy Audit (`prompt-audit`)
+- Simulation Lab (`simulation`)
+- Governance Stress-Test (`gov-stress-test`)
+
+**OTHER** (`section-other`, 13)
+
+- Editors (`editors`)
+- Prompt Library (`prompts`)
+- Prompt Versions (`prompt-versions`)
+- Batch Processing (`batch`)
+- Team Collaboration (`team-collaboration`)
+- Community Hub (`community-hub`)
+- Model Distillation (`model-distillation`)
+- Deploy to Production (`deploy`)
+- Voice & Multimodal (`voice-input`)
+- Aquarium (`aquarium`)
+- Contribution Graph (`contribution-graph`)
+- Tasks (`tasks`)
+- Files (`files`)
+
+> Technique panels under Debate Techniques are generated at build time
+> by `node scripts/gen-technique-panels.mjs` from the quality-technique catalog.
+</details>
+<!-- README-MAPS:PANELS:END -->
 
 ---
 
