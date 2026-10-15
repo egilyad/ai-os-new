@@ -23,6 +23,7 @@ SuperAgents OS is an event-driven platform for orchestrating distributed intelli
   - [Memory Mesh](#memory-mesh)
   - [Cognitive Builder](#cognitive-builder)
   - [Debate Arena](#debate-arena)
+  - [Execution Trail](#execution-trail-team-supervision)
   - [Telemetry & Monitoring](#telemetry--monitoring)
 - [Tech Stack](#tech-stack)
 - [Getting Started](#getting-started)
@@ -101,7 +102,7 @@ Connect any LLM provider through API keys. Keys are stored in IndexedDB (browser
 | **Cerebras** (via OpenAI-compatible)               | ✅                 | ✅           | Partial         |
 | **Cloudflare** (via OpenAI-compatible)             | ✅                 | ✅           | Partial         |
 | **Azure** (via OpenAI-compatible, user-configured) | ✅                 | ✅           | —               |
-| **Anthropic**                                      | ❌ not implemented | —            | —               |
+| **Anthropic**                                      | ✅ (SSE + vision, computer-use loop) | ✅ | — |
 | **Custom**                                         | Depends            | Depends      | —               |
 
 Each provider adapter wraps the vendor API through a decorator chain:
@@ -140,6 +141,7 @@ Hybrid search combining keyword and semantic retrieval:
 - **Cosine similarity** scoring for semantic results
 - **Hybrid mode**: auto-selects between BM25 and embeddings based on query
 - **Automatic storage**: every cognitive step is logged and indexed
+- **Debate RAG**: round arguments indexed every round, chunks persisted across reloads
 
 ### Cognitive Builder
 
@@ -170,6 +172,19 @@ Multi-agent debate system with configurable strategies and comprehensive metrics
 - **Convergence scoring**: Semantic similarity (Transformers.js) with Jaccard fallback
 - **Human-in-the-loop**: Inject arguments mid-debate
 - **Circuit breaker** for LLM calls
+- **Rich answers**: Markdown rendering — links (incl. bare URLs), images with graceful fallback, code highlight + run, tables, Mermaid diagrams
+- **Live web research**: Grounded search once per round, shared by all participants, cited as clickable sources
+- **Repetition gate & outcome validator**: Cross-agent duplicate detection with pre-prompt warning; synthesis groundedness + contradiction-consistency checks
+- **Source credibility & triangulation**: Tiered source scoring, real-URL citation plumbing, never-invent-URLs rule
+- **Recoverable history**: Failed/cancelled debates persist with arguments; fact-check joins work across id namespaces; reload-verified snapshots
+
+### Execution Trail (team supervision)
+
+Durable record of what agents actually did — the foundation for a manager that diagnoses from facts, not messages:
+
+- **Tool journal**: Every tool call (ToolService, ToolRunner, computer-use loop) lands in one persistent KV trail — success, error, and denied outcomes with run linkage (`runId`/`taskId`/`agentId`)
+- **Real ProjectRun chain**: Run row first (`startRun`), tool names stored on completion, stale running runs failed loudly after 5 min (zombie sweep)
+- **Memory that works**: Synthesis steps conclude reasoning chains (persona memory alive), snapshots prune only the saved copy, debate RAG index fed every round and persisted
 
 ### Telemetry & Monitoring
 
@@ -198,6 +213,7 @@ Multi-agent debate system with configurable strategies and comprehensive metrics
 | **Animation**    | Framer Motion 12.x                                 |
 | **Icons**        | Lucide React                                       |
 | **Validation**   | Zod 4.x                                            |
+| **Diagrams**     | Mermaid 12.x (rendered from fenced code blocks)    |
 | **Testing**      | Vitest + React Testing Library                     |
 | **Charts**       | Custom SVG + Recharts                              |
 
@@ -215,7 +231,7 @@ Multi-agent debate system with configurable strategies and comprehensive metrics
 
 ```bash
 # Clone the repository
-git clone https://github.com/n95887174-source/ai-os-new
+git clone https://github.com/egilyad/ai-os-new
 cd ai-os-new
 
 # Install dependencies
@@ -347,6 +363,8 @@ Adjust routing behavior in **Settings → SLA Mode**:
 | `npm run test`                  | Run all tests (Vitest)                                                       |
 | `npm run test:ui`               | Run tests with UI dashboard                                                  |
 | `npm run test:e2e`              | Run Playwright e2e tests                                                     |
+| `npm run test:stable`           | Stable subset (stores, hooks, kernel, llm, tools)                            |
+| `npm run test:server`           | Gateway/sidecar contract tests (node:test)                                   |
 | `npm run lint`                  | ESLint check                                                                 |
 | `npm run typecheck`             | TypeScript check (no emit)                                                   |
 | `npm run lint:staged`           | Lint staged files                                                            |
