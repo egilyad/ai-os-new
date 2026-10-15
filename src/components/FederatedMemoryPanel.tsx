@@ -32,6 +32,12 @@ const FederatedMemoryPanelContent: React.FC = () => {
     const [nodes, setNodes] = useState<FederatedNode[]>(() => federatedMemoryService.getNodes());
     const [syncHistory, setSyncHistory] = useState(() => federatedMemoryService.getSyncHistory());
     const [syncing, setSyncing] = useState(false);
+    const [syncError, setSyncError] = useState<string | null>(null);
+
+    function formatLastSync(lastSync: number | undefined): string {
+        if (!lastSync) return 'never';
+        return `${Math.max(0, Math.round((Date.now() - lastSync) / 60000))}m ago`;
+    }
     const [showAdd, setShowAdd] = useState(false);
     const [nodeId, setNodeId] = useState('');
     const [nodeName, setNodeName] = useState('');
@@ -46,16 +52,29 @@ const FederatedMemoryPanelContent: React.FC = () => {
 
     const handleSyncAll = async () => {
         setSyncing(true);
-        await federatedMemoryService.syncAll();
-        refresh();
-        setSyncing(false);
+        setSyncError(null);
+        try {
+            await federatedMemoryService.syncAll();
+            refresh();
+        } catch (e) {
+            // Without this the button stays disabled with a stuck spinner.
+            setSyncError(e instanceof Error ? e.message : String(e));
+        } finally {
+            setSyncing(false);
+        }
     };
 
     const handleSyncNode = async (id: string) => {
         setSyncing(true);
-        await federatedMemoryService.syncNode(id);
-        refresh();
-        setSyncing(false);
+        setSyncError(null);
+        try {
+            await federatedMemoryService.syncNode(id);
+            refresh();
+        } catch (e) {
+            setSyncError(e instanceof Error ? e.message : String(e));
+        } finally {
+            setSyncing(false);
+        }
     };
 
     const handleDisconnect = (id: string) => {
@@ -143,6 +162,11 @@ const FederatedMemoryPanelContent: React.FC = () => {
                     </button>
                 </div>
             </div>
+            {syncError && (
+                <div style={{ fontSize: 12, color: '#fca5a5', marginBottom: 12 }}>
+                    Sync failed: {syncError.slice(0, 200)}
+                </div>
+            )}
 
             {showAdd && (
                 <div
@@ -333,8 +357,7 @@ const FederatedMemoryPanelContent: React.FC = () => {
                                     }}
                                 >
                                     <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                                        <Clock size={10} />{' '}
-                                        {Math.round((Date.now() - n.lastSync) / 60000)}m ago
+                                        <Clock size={10} /> {formatLastSync(n.lastSync)}
                                     </span>
                                     <div style={{ display: 'flex', gap: 4 }}>
                                         <button

@@ -31,6 +31,7 @@ const MemoryTransferPanelContent: React.FC = () => {
     const [importData, setImportData] = useState('');
     const [importFormat, setImportFormat] = useState<ExportFormat>('json');
     const [preview, setPreview] = useState<{ sections: string[]; entries: number } | null>(null);
+    const [importError, setImportError] = useState<string | null>(null);
 
     const handleExport = () => {
         const result = memoryTransferService.export(format, selectedSections);
@@ -51,7 +52,14 @@ const MemoryTransferPanelContent: React.FC = () => {
 
     const handleImport = async () => {
         if (!importData.trim()) return;
-        await memoryTransferService.import(importData, importFormat);
+        // Failures used to vanish silently, leaving input and histories unchanged.
+        try {
+            await memoryTransferService.import(importData, importFormat);
+            setImportError(null);
+        } catch (e) {
+            setImportError(e instanceof Error ? e.message : String(e));
+            return;
+        }
         setImports(memoryTransferService.getImportHistory());
         setImportData('');
         setPreview(null);
@@ -340,6 +348,12 @@ const MemoryTransferPanelContent: React.FC = () => {
                             }}
                         >
                             Sections: {preview.sections.join(', ')} · Entries: {preview.entries}
+                            {preview.entries === 0 && ' — nothing importable found'}
+                        </div>
+                    )}
+                    {importError && (
+                        <div style={{ marginTop: 8, fontSize: 11, color: '#fca5a5' }}>
+                            Import failed: {importError.slice(0, 200)}
                         </div>
                     )}
                 </div>
@@ -359,9 +373,9 @@ const MemoryTransferPanelContent: React.FC = () => {
                     >
                         Export History ({exports.length})
                     </h3>
-                    {exports.map((e) => (
+                    {exports.map((e, i) => (
                         <div
-                            key={e.createdAt}
+                            key={`${e.createdAt}-${i}`}
                             style={{
                                 padding: '8px 10px',
                                 borderRadius: 6,

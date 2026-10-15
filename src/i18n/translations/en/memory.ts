@@ -127,6 +127,7 @@ const memory: Record<string, string> = {
     'memory.error_wipe': 'Failed to wipe index',
     'memory.error_delete': 'Failed to delete entry',
     'memory.error_export': 'Failed to export vectors',
+    'memory.error_seed': 'Failed to seed demo memories',
     'memory.fragments_added': 'Fragments',
     'memory.knowledge_desc': 'Knowledge fragments extracted from this memory',
     'memory.knowledge_growth': 'Knowledge Growth',

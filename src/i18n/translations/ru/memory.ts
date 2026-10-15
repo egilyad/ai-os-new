@@ -117,6 +117,7 @@ const memory: Record<string, string> = {
     'memory.entries_label': 'Записи',
     'memory.error_delete': 'Не удалось удалить',
     'memory.error_export': 'Не удалось экспортировать',
+    'memory.error_seed': 'Не удалось загрузить демо-память',
     'memory.error_search': 'Не удалось выполнить поиск',
     'memory.error_wipe': 'Не удалось стереть',
     'memory.export_vectors': 'Экспорт векторов',

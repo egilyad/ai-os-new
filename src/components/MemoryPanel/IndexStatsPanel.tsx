@@ -25,8 +25,10 @@ const IndexStatsPanel: React.FC<IndexStatsPanelProps> = ({
                       100,
               )
             : 0;
-    const dimensions =
-        memories[0]?.vector?.length || memories[0]?.metadata?.vectorData?.dimensions || 1536;
+    const dimNumber =
+        memories[0]?.vector?.length || memories[0]?.metadata?.vectorData?.dimensions;
+    // No data, no number: the old 1536 fallback pretended knowledge.
+    const dimensions = dimNumber && dimNumber > 0 ? dimNumber : '—';
 
     return (
         <div

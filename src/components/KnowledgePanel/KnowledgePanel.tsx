@@ -158,6 +158,7 @@ const KnowledgePanel: React.FC = () => {
                 } else {
                     setSelectedNode(null);
                 }
+                setIsEditing(false);
                 setError(null);
             }
         } catch (e) {
@@ -255,7 +256,12 @@ const KnowledgePanel: React.FC = () => {
                     isSaving={isSaving}
                     edges={edges}
                     onEditContentChange={setEditContent}
-                    onStartEdit={() => setIsEditing(true)}
+                    onStartEdit={() => {
+                        // Enter edit mode with the actual node text: otherwise the
+                        // textarea opens empty/stale and Save silently no-ops.
+                        if (selectedNode) setEditContent(selectedNode.fullContent ?? '');
+                        setIsEditing(true);
+                    }}
                     onCancelEdit={() => {
                         setIsEditing(false);
                         if (selectedNode) setEditContent(selectedNode.fullContent ?? '');

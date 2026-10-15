@@ -300,10 +300,10 @@ const KnowledgeGraph: React.FC<KnowledgeGraphProps> = ({
                 <div style={{ fontSize: '0.75rem', color: 'var(--slate-400)', lineHeight: 1.5 }}>
                     Mapped <strong style={{ color: 'white' }}>{entityCount}</strong> cognitive
                     entities with <strong style={{ color: 'white' }}>{edges.length}</strong>{' '}
-                    semantic relationships
+                    connections
                     {entityCount < totalMemories &&
                         ` (${totalMemories - entityCount} filtered out)`}
-                    .
+                    {nodes.length < entityCount && ` (showing first ${nodes.length})`}.
                 </div>
             </div>
         </>

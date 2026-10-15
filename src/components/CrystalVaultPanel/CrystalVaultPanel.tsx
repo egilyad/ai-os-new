@@ -19,9 +19,19 @@ const CrystalVaultPanel: React.FC = () => {
     const [showPropose, setShowPropose] = useState(false);
     const [seedingDemo, setSeedingDemo] = useState(false);
     const [superseding, setSuperseding] = useState<Crystal | null>(null);
+    const [error, setError] = useState<string | null>(null);
+
+    const fail = (e: unknown) => {
+        setError(e instanceof Error ? e.message : String(e));
+    };
 
     const refresh = useCallback(async () => {
-        setCrystals(await crystalVault.list());
+        try {
+            setCrystals(await crystalVault.list());
+            setError(null);
+        } catch (e) {
+            fail(e);
+        }
     }, []);
 
     const handleSeedDemo = useCallback(async () => {
@@ -30,6 +40,8 @@ const CrystalVaultPanel: React.FC = () => {
         try {
             await seedCrystalsDemo(crystalVault);
             await refresh();
+        } catch (e) {
+            fail(e);
         } finally {
             setSeedingDemo(false);
         }
@@ -42,8 +54,12 @@ const CrystalVaultPanel: React.FC = () => {
         let list = crystals;
         if (statusFilter !== 'all') list = list.filter((c) => c.status === statusFilter);
         if (search.trim()) {
+            const q = search.toLowerCase();
             list = list.filter((c) =>
-                c.content.statement.toLowerCase().includes(search.toLowerCase()),
+                [c.content.statement, c.content.elaboration ?? '', ...(c.content.evidence ?? [])]
+                    .join('\n')
+                    .toLowerCase()
+                    .includes(q),
             );
         }
         return [...list].sort((a, b) => b.createdAt - a.createdAt);
@@ -59,8 +75,12 @@ const CrystalVaultPanel: React.FC = () => {
     }, [crystals]);
 
     const handleCrystallize = async (id: string) => {
-        await crystalVault.crystallize(id);
-        await refresh();
+        try {
+            await crystalVault.crystallize(id);
+            await refresh();
+        } catch (e) {
+            fail(e);
+        }
     };
 
     const handleRefute = async (id: string) => {
@@ -72,15 +92,23 @@ const CrystalVaultPanel: React.FC = () => {
             }))
         )
             return;
-        await crystalVault.refute(id, 'manually refuted by user');
-        await refresh();
+        try {
+            await crystalVault.refute(id, 'manually refuted by user');
+            await refresh();
+        } catch (e) {
+            fail(e);
+        }
     };
 
     const handleSupersede = async (statement: string) => {
         if (!superseding) return;
-        await crystalVault.supersede(superseding.crystalId, { statement }, 'manual supersede');
-        setSuperseding(null);
-        await refresh();
+        try {
+            await crystalVault.supersede(superseding.crystalId, { statement }, 'manual supersede');
+            setSuperseding(null);
+            await refresh();
+        } catch (e) {
+            fail(e);
+        }
     };
 
     const handlePropose = async (input: {
@@ -96,8 +124,12 @@ const CrystalVaultPanel: React.FC = () => {
         applicableDomain?:
             'arch' | 'prompt' | 'routing' | 'gov' | 'llm' | 'security' | 'economics' | 'general';
     }) => {
-        await crystalVault.propose(input);
-        await refresh();
+        try {
+            await crystalVault.propose(input);
+            await refresh();
+        } catch (e) {
+            fail(e);
+        }
     };
 
     return (
@@ -253,6 +285,22 @@ const CrystalVaultPanel: React.FC = () => {
                     />
                 </div>
             </div>
+
+            {error && (
+                <div
+                    style={{
+                        margin: '0.5rem 1rem 0',
+                        padding: '0.5rem 0.75rem',
+                        borderRadius: 8,
+                        background: 'rgba(239,68,68,0.08)',
+                        border: '1px solid rgba(239,68,68,0.25)',
+                        fontSize: '0.75rem',
+                        color: '#fca5a5',
+                    }}
+                >
+                    {error.slice(0, 200)}
+                </div>
+            )}
 
             {/* List */}
             <div style={{ flex: 1, overflowY: 'auto', padding: '0.75rem 1rem' }}>

@@ -18,10 +18,19 @@ const KnowledgeGenPanel: React.FC = () => {
     const [running, setRunning] = useState(false);
     const [seedingDemo, setSeedingDemo] = useState(false);
     const [message, setMessage] = useState<string | null>(null);
+    const [error, setError] = useState<string | null>(null);
+
+    const fail = (e: unknown) => {
+        setError(e instanceof Error ? e.message : String(e));
+    };
 
     const refresh = useCallback(async () => {
-        const active = await knowledgeGenerator.listActiveJobs();
-        setJobs((prev) => mergeJobs(active, prev));
+        try {
+            const active = await knowledgeGenerator.listActiveJobs();
+            setJobs((prev) => mergeJobs(active, prev));
+        } catch (e) {
+            fail(e);
+        }
     }, []);
 
     useEffect(() => {
@@ -31,27 +40,37 @@ const KnowledgeGenPanel: React.FC = () => {
     const handleTrigger = async (trigger: GenerationTrigger): Promise<void> => {
         setRunning(true);
         setMessage(null);
+        setError(null);
         try {
             const id = await knowledgeGenerator.generateFromTrigger(trigger);
             const job = await knowledgeGenerator.getStatus(id);
             if (job) setJobs((prev) => mergeJobs([job], prev));
+        } catch (e) {
+            fail(e);
         } finally {
             setRunning(false);
         }
     };
 
     const handleCancel = async (id: string): Promise<void> => {
-        await knowledgeGenerator.cancel(id);
-        setMessage(t('generator.cancelled_msg'));
-        await refresh();
+        try {
+            await knowledgeGenerator.cancel(id);
+            setMessage(t('generator.cancelled_msg'));
+            await refresh();
+        } catch (e) {
+            fail(e);
+        }
     };
 
     const handleSeedDemo = async (): Promise<void> => {
         if (seedingDemo) return;
         setSeedingDemo(true);
+        setError(null);
         try {
             const job = await seedGeneratorDemo(knowledgeGenerator);
             setJobs((prev) => mergeJobs([job], prev));
+        } catch (e) {
+            fail(e);
         } finally {
             setSeedingDemo(false);
         }
@@ -145,6 +164,11 @@ const KnowledgeGenPanel: React.FC = () => {
                 {message && (
                     <div style={{ fontSize: '0.72rem', color: 'var(--success)', marginBottom: 8 }}>
                         {message}
+                    </div>
+                )}
+                {error && (
+                    <div style={{ fontSize: '0.72rem', color: '#fca5a5', marginBottom: 8 }}>
+                        {error.slice(0, 200)}
                     </div>
                 )}
 

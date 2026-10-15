@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import KnowledgePanel from './KnowledgePanel';
 
 const mockMemories = [
@@ -25,8 +25,11 @@ const mockMemories = [
     },
 ];
 
-vi.mock('../../kernel/instances', () => ({
-    memoryService: {
+vi.mock('../../kernel/instances', () => {
+    const makeLogger = () => ({ error: () => {}, info: () => {}, warn: () => {}, debug: () => {} });
+    return {
+        rootLogger: { ...makeLogger(), child: () => makeLogger() },
+        memoryService: {
         getMemories: vi.fn(() => mockMemories),
         deleteMemory: vi.fn(() => Promise.resolve()),
         updateMemory: vi.fn(() => Promise.resolve()),
@@ -34,7 +37,8 @@ vi.mock('../../kernel/instances', () => ({
     eventBus: { emit: vi.fn(), on: vi.fn(() => vi.fn()), off: vi.fn() },
     EVENTS: { MEMORY_UPDATED: 'memory:updated' },
     settingsService: { getSettings: () => ({ language: 'en' }), subscribe: () => () => {} },
-}));
+    };
+});
 
 vi.mock('../../i18n/translations', () => ({
     t: (key: string) => {
@@ -132,5 +136,20 @@ describe('KnowledgePanel', () => {
     it('renders connection density bar', async () => {
         render(<KnowledgePanel />);
         expect(await screen.findByText('Connection Density')).toBeDefined();
+    });
+
+    it('leaves edit mode after a successful save (Zone 4)', async () => {
+        const { memoryService } = await import('../../kernel/instances');
+        render(<KnowledgePanel />);
+        await screen.findByText('Semantic Knowledge Graph');
+        const nodes = await screen.findAllByLabelText(/^Node /);
+        fireEvent.click(nodes[0]!);
+        fireEvent.click(screen.getByText('AI is transforming the world of software engineering.'));
+        fireEvent.click(screen.getByLabelText('Save edits'));
+        expect(vi.mocked(memoryService.updateMemory)).toHaveBeenCalled();
+        await waitFor(
+            () => expect(screen.queryByLabelText('Edit memory content')).toBeNull(),
+            { timeout: 3000 },
+        );
     });
 });

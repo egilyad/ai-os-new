@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React, { memo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Clock, Tag, Target, Code, Trash2 } from 'lucide-react';
 import { useTranslation } from '../../i18n/useTranslation';
@@ -16,6 +16,8 @@ const MemoryCard: React.FC<MemoryCardProps> = memo(
     ({ memory, index, searchQuery, isSearching, onDelete }) => {
         const { t } = useTranslation();
         const isCode = (memory.metadata as Record<string, unknown>).type === 'code';
+        const [showVector, setShowVector] = useState(false);
+        const vector = memory.vector ?? memory.embedding;
 
         return (
             <motion.div
@@ -189,6 +191,8 @@ const MemoryCard: React.FC<MemoryCardProps> = memo(
                             style={{ padding: '0.4rem', borderRadius: 8 }}
                             title={t('memory.view_embeddings')}
                             aria-label="View embedding details"
+                            aria-expanded={showVector}
+                            onClick={() => setShowVector((v) => !v)}
                         >
                             <Code size={16} color="#64748b" aria-hidden="true" />
                         </button>
@@ -203,6 +207,26 @@ const MemoryCard: React.FC<MemoryCardProps> = memo(
                         </button>
                     </div>
                 </div>
+                {showVector && (
+                    <div
+                        style={{
+                            fontSize: '0.7rem',
+                            color: 'var(--slate-400)',
+                            fontFamily: 'monospace',
+                            wordBreak: 'break-all',
+                            background: 'rgba(0,0,0,0.2)',
+                            borderRadius: 8,
+                            padding: '0.5rem 0.75rem',
+                        }}
+                    >
+                        {vector && vector.length > 0
+                            ? `dims: ${vector.length} · [${vector
+                                  .slice(0, 8)
+                                  .map((v) => Number(v).toFixed(3))
+                                  .join(', ')}${vector.length > 8 ? ', …' : ''}]`
+                            : 'No embedding stored for this entry.'}
+                    </div>
+                )}
             </motion.div>
         );
     },

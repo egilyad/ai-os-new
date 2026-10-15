@@ -27,6 +27,9 @@ const MemoryPanel: React.FC = () => {
     const { confirm, ConfirmDialog } = useConfirm();
     const [memories, setMemories] = useState<MemoryEntry[]>(() => memoryService.getMemories());
     const [searchQuery, setSearchQuery] = useState('');
+    // Search results live apart from the full index: searching used to
+    // overwrite `memories`, so export/stats/heatmap silently shrank to 5 hits.
+    const [searchResults, setSearchResults] = useState<MemoryEntry[] | null>(null);
     const [isSearching, setIsSearching] = useState(false);
     const [activeCollection, setActiveCollection] = useState<
         'long_term' | 'ephemeral' | 'rag_sources'
@@ -100,7 +103,7 @@ const MemoryPanel: React.FC = () => {
             if (!isMountedRef.current) return;
             const query = searchQuery.trim();
             if (!query) {
-                setMemories(memoryService.getMemories());
+                setSearchResults(null);
                 setIsSearching(false);
                 return;
             }
@@ -132,7 +135,7 @@ const MemoryPanel: React.FC = () => {
                             retrievalSamples.current.length,
                     ),
                 );
-                setMemories(results.map((r) => r.entry));
+                setSearchResults(results.map((r) => r.entry));
             } catch (err) {
                 if (err instanceof Error && err.name === 'AbortError') return;
                 if (isMountedRef.current) {
@@ -219,12 +222,19 @@ const MemoryPanel: React.FC = () => {
             }
         } catch (err) {
             LOGGER.warn('Failed to seed demo memories', String(err));
+            if (isMountedRef.current) {
+                setError(t('memory.error_seed'));
+                clearError();
+            }
         }
     };
 
     const handleExportVectors = async () => {
         try {
-            const exportData = JSON.stringify(memories, null, 2);
+            // Full index, never the search view: exporting 5 hits as
+            // "vectors" was the lie this fixes.
+            const full = memoryService.getMemories();
+            const exportData = JSON.stringify(full, null, 2);
             const blob = new Blob([exportData], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -233,7 +243,7 @@ const MemoryPanel: React.FC = () => {
             a.click();
             URL.revokeObjectURL(url);
             eventBus.emit(EVENTS.NOTIFICATION, {
-                message: 'Memory vectors exported',
+                message: `Memory vectors exported (${full.length} entries)`,
                 type: 'success',
             });
         } catch (err) {
@@ -245,16 +255,18 @@ const MemoryPanel: React.FC = () => {
         }
     };
 
+    const searching = searchQuery.trim().length > 0;
+    const baseMemories = searching ? (searchResults ?? []) : memories;
     const filteredMemories = useMemo(
         () =>
-            memories.filter(
+            baseMemories.filter(
                 (m) =>
                     (m.metadata.collection ?? 'long_term') === activeCollection &&
                     (m.metadata.importance ?? 0) >= importanceFilter,
             ),
-        [memories, activeCollection, importanceFilter],
+        [baseMemories, activeCollection, importanceFilter],
     );
-    const totalEntries = filteredMemories.length;
+    const totalEntries = memories.length;
 
     const toggleSemantic = () => {
         const next = !semanticMode;
@@ -321,6 +333,11 @@ const MemoryPanel: React.FC = () => {
                             semanticMode={semanticMode}
                             onToggleSemantic={toggleSemantic}
                         />
+                        {searching && (
+                            <div style={{ fontSize: '0.7rem', color: 'var(--slate-500)' }}>
+                                Top 5 matches — refine the query for more
+                            </div>
+                        )}
                         <div
                             style={{
                                 display: 'flex',
