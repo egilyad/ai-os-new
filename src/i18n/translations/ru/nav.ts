@@ -17,6 +17,8 @@ const nav: Record<string, string> = {
     'nav.section_knowledge': 'Знания',
     'nav.section_integrations': 'Интеграции',
     'nav.section_randoms': 'Рандомс',
+    'nav.section_wiki': 'Вики',
+    'nav.wiki': 'Вики',
     'nav.rivals_catalog': 'Проекты Rivals',
     'nav.group_chat': 'Групповой чат',
     'nav.guardrails': 'Ограничения',

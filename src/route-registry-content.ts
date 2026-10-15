@@ -3,6 +3,20 @@ import type { NavSection } from './types/routing';
 
 export const CONTENT_SECTIONS: NavSection[] = [
     {
+        // In-app Wiki portal: home, map, guide, panel encyclopedia, links, news.
+        id: 'section-wiki',
+        labelKey: 'nav.section_wiki',
+        items: [
+            {
+                id: 'wiki',
+                labelKey: 'nav.wiki',
+                icon: Icons.bookOpen,
+                color: '#10b981',
+                lazy: true,
+            },
+        ],
+    },
+    {
         // FLEET + GOVERNANCE category (menu cleanup). Route ids unchanged, only grouping changed.
         id: 'section-fleet',
         labelKey: 'nav.section_fleet',

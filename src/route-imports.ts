@@ -179,6 +179,7 @@ const AgentTasksPanelLazy = React.lazy(() => import('./components/AgentTasksPane
 const AdaptersPanelLazy = React.lazy(() => import('./components/AdaptersPanel'));
 const PortabilityPanelLazy = React.lazy(() => import('./components/PortabilityPanel'));
 const SimulationPanelLazy = React.lazy(() => import('./components/SimulationPanel/SimulationPanel'));
+const WikiPanelLazy = React.lazy(() => import('./components/WikiPanel/WikiPanel'));
 
 // ── Section 11 P2+P3 Lazy Imports ─────────────────────────────────────────────
 const FederatedMemoryPanelLazy = React.lazy(() => import('./components/FederatedMemoryPanel'));
@@ -347,6 +348,7 @@ export const PANEL_COMPONENTS: Record<string, React.ComponentType<any>> = {
     'prompt-audit': PromptAudit,
     'routing-experiments': RoutingExperiments,
     'gov-stress-test': GovStressTest,
+    wiki: WikiPanelLazy,
     'obs-gaps': ObsGaps,
     'debate-system-research': DebateSystemResearch,
     'research-engine': ResearchEnginePanelLazy,
