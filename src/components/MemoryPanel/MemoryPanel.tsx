@@ -256,15 +256,14 @@ const MemoryPanel: React.FC = () => {
     };
 
     const searching = searchQuery.trim().length > 0;
-    const baseMemories = searching ? (searchResults ?? []) : memories;
     const filteredMemories = useMemo(
         () =>
-            baseMemories.filter(
+            (searching ? (searchResults ?? []) : memories).filter(
                 (m) =>
                     (m.metadata.collection ?? 'long_term') === activeCollection &&
                     (m.metadata.importance ?? 0) >= importanceFilter,
             ),
-        [baseMemories, activeCollection, importanceFilter],
+        [searching, searchResults, memories, activeCollection, importanceFilter],
     );
     const totalEntries = memories.length;
 
