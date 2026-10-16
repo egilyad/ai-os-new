@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeAll } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 
 beforeAll(() => {
     Object.defineProperty(window, 'matchMedia', {
@@ -32,7 +32,8 @@ vi.mock('../../kernel/instances', () => ({
 }));
 
 vi.mock('../../hooks/useAutoClearError', () => ({
-    useAutoClearError: () => ({ error: null, setError: vi.fn(), clearError: vi.fn() }),
+    // The component uses the return value as a callable clearError().
+    useAutoClearError: () => vi.fn(),
 }));
 
 vi.mock('../../i18n/useTranslation', () => ({
@@ -56,5 +57,29 @@ describe('PolicyPanel (smoke)', () => {
         const { default: PolicyPanel } = await import('./PolicyPanel');
         render(<PolicyPanel />);
         expect(await screen.findByText('policy.title')).toBeDefined();
+    });
+
+    it('shows a fetch error instead of crashing the mount', async () => {
+        const { policyService } = await import('../../kernel/instances');
+        vi.mocked(policyService.getPolicies).mockImplementationOnce(() => {
+            throw new Error('store down');
+        });
+        const { default: PolicyPanel } = await import('./PolicyPanel');
+        render(<PolicyPanel />);
+        expect(await screen.findByText('policy.error_fetch')).toBeDefined();
+    });
+
+    it('search tolerates legacy policies without type or id', async () => {
+        const { policyService } = await import('../../kernel/instances');
+        vi.mocked(policyService.getPolicies).mockReturnValueOnce([
+            { value: 1 } as never,
+        ]);
+        const { default: PolicyPanel } = await import('./PolicyPanel');
+        render(<PolicyPanel />);
+        expect(await screen.findByText('policy.title')).toBeDefined();
+        fireEvent.change(screen.getByPlaceholderText('policy.search_placeholder'), {
+            target: { value: 'zzz' },
+        });
+        expect(await screen.findByText('policy.empty_search')).toBeDefined();
     });
 });

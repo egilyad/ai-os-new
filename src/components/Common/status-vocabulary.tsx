@@ -53,7 +53,7 @@ export function getPressureLevelColor(level: string): string {
         high: '#f97316',
         critical: '#ef4444',
     };
-    return map[level.toLowerCase()] ?? '#64748b';
+    return map[(level ?? '').toLowerCase()] ?? '#64748b';
 }
 
 // ── Policy dimension colors ──────────────────────────────────────
@@ -71,11 +71,11 @@ export function getPolicyDimensionColor(dim: string): string {
         throttle: '#a855f7',
         mask: '#06b6d4',
     };
-    return map[dim.toLowerCase()] ?? '#64748b';
+    return map[(dim ?? '').toLowerCase()] ?? '#64748b';
 }
 
 export function getStatusColor(status: string): string {
-    return STATUS_COLORS[status.toLowerCase()] ?? STATUS_COLORS.default!;
+    return STATUS_COLORS[(status ?? '').toLowerCase()] ?? STATUS_COLORS.default!;
 }
 
 // ── Threshold-based colors (3-tier: healthy / warning / critical) ─

@@ -403,11 +403,142 @@ Health-панели провайдеров, трейсы и timeline, DLQ (dead-
 
 ## Зона 5: отложено, требует проверки
 
-- DashboardPanel.test.tsx висит в этом окружении: доказано stash-прогоном HEAD (сборка ~10с при скипе, рендер висит). Моки чинены (rootLogger, services-core), CI перепроверит.
+- DashboardPanel.test.tsx вис в этом окружении (stash-прогон HEAD: сборка ~10с при скипе, рендер висит). Причина найдена в Зоне 7: петля «эффект от нестабильного t + setState». Лечится стабильным t в моке — 11/11, см. Зону 7.
 - EventsTimeline полностью на английском без useTranslation — i18n-ретрофит не делался.
 - HealthPanel VitalCard uptime fill=100 всегда (естественной шкалы нет) — оставлено сознательно.
 - tsc -b не влезает в 10-минутные окна инструмента; типы покрыты eslint (0 errors) + vitest; CI — гейт.
 - Сабпанели дашборда (PressureMap, InferenceMesh и др.) — только поверхностный проход, глубокий аудит цифр не делался.
+
+## Зона 6: governance и политики (проверено, исправлено)
+
+- GuardrailsPanel и SopPanel говорили сырыми key-id (guardrails.*, sop.* ключей не было ни в одной локали): добавлен полный набор ключей en+ru, захардкоженные строки переведены на ключи.
+- GuardrailsPanel: reload терпит не-массив, поиск терпит legacy-правила без имени.
+- SopPanel: reload/poll терпят не-массивы; поиск терпит legacy без name/goal; phases/log/goal — guards (краш на legacy-SOP закрыт).
+- SopPanel: синхронный throw runSop больше не вешает busy навсегда и не течёт интервалом (try/catch + done()).
+- PolicyPanel: загрузка и refresh — единая точка с баннером вместо краша/тишины; clear violations — через useConfirm с i18n (был нативный window.confirm на английском).
+- PolicyPanel: поиск терпит legacy без type/id; lastViolation валидируется (был Invalid Date); мок useAutoClearError чинен (возвращал объект вместо функции).
+- GovernancePanel: assign/rolesOf с ошибками — баннером (было молча/UNHANDLED); пустой список больше не врёт при ошибке загрузки; свой ключ empty_roles вместо чужого fleet.empty.
+- Common status-vocabulary: normalizeLevel/getPolicyDimensionColor терпят undefined (был краш на .toLowerCase).
+- ErrorBoundary.test: протухший мок добит (onLocaleLoaded) — 6/6.
+
+## Зона 6: отложено, требует проверки
+
+- Enforcement-путь политик/гардрэйлов (что реально блокирует рантайм, а что только UI) — не аудировался, только панели.
+- GovernancePanel: индексные key={i}, нет confirm на assign, scope ролей не показан.
+- SopPanel: интервал поллинга живёт до конца runSop даже при размонтировании (done только по завершению).
+- Policy value/types без схемной валидации — движок может отвергнуть то, что UI сохранил.
+
+## Зона 7: инструменты и MCP (проверено, исправлено)
+
+- ToolsPanel Register был плацебо (тост «Capability Registry Wizard opening...», визарда нет в коде): теперь открывает модалку и реально регистрирует через toolService.addTool (валидация имени, success/error).
+- SkillsPanel «Fine-tune Pipeline» был плацебо (тост, ничего не открывает, бэкенда нет): кнопка удалена, счётчик Executions остался.
+- SkillsPanel: таб «Installed» молча терял счётчик (ключ без {count}, .replace никуда): теперь Installed ({count}) через params.
+- ToolsPanel: tools:updated терпит не-массив; поиск терпит legacy без name/description; execute терпит malformed result.
+- MCPPanel: mount и все хендлеры через refreshServers с баннером (были голые getServers); поиск терпит legacy; confirm удаления и тост reconnect — через i18n.
+- SkillsPanel: SKILLS_UPDATED терпит не-массив; поиск терпит legacy; toolsUsed терпит undefined (пустой бокс скрыт); executionCount — «0 Executions» вместо undefined.
+- Common getStatusColor терпит undefined (краш найден тестом MCP-панели на legacy-сервере).
+- Тосты экспорта/импорта/тоггла/установки — все через i18n-ключи en+ru; hub-empty и perf-notice — ключи вместо хардкода.
+- Тесты: ToolsPanel 14/14 (+3, мок добит rootLogger), SkillsPanel 12/12 (+3), MCPPanel 5/5 (новый файл).
+- Найдена и убита петля рендера: эффект в зависимости от нестабильного t (мок) + setState. Фикс: mount-эффекты с [] (MCPPanel), стабильный t в моках (DashboardPanel.test — вис Зоны 5 закрыт, 11/11).
+
+## Зона 7: отложено, требует проверки
+
+- ToolInspector sandbox/security/schema табы — глубокий аудит не делался (только панель списка и register).
+- MCPEditorModal add/edit-пути — только поверхностно (карточки + expand покрыты тестами).
+- Marketplace-скиллы: что реально ставит installSkill (зависимости?) — не проверялось, только UI-путь.
+- Резолв Zone5-hang применён и к DashboardPanel.test, но полный прогон всего репо в этом окружении по-прежнему не влезает в таймауты — CI остаётся гейтом.
+
+## Зона 8: роутер и маршрутизация (проверено, исправлено)
+
+- Fallback/downgrade-редакторы — честный draft-then-save (локальные правки + явный Save в сервис), не плацебо: проверено по проводам до routerService.
+- routing-utils закалены против legacy-решений: providerColor терпит undefined, scoreBreakdown — отсутствующие components (нули вместо краша всех таблиц), getExplanation — без weights/promptLength.
+- HistoryTab: scores/timestamp/score — guards («—» вместо краша/Invalid Date).
+- DecisionTreeTab: weights/scores/promptLength — guards («Unknown», нули вместо краша дерева).
+- RouterTraceView: своя копия providerColor закалена так же.
+- PressureMap: MiniBar/TrendChart терпят не-финитные значения (пустой бар вместо NaN%-ширины).
+- Тесты: RoutingIntelligence 7/7 (мок добит rootLogger + 2 legacy-кейса), routing-utils 3/3 (новый юнит).
+
+## Зона 8: отложено, требует проверки
+
+- Персистентность setFallbackChain/setDowngradeChain за пределами сессии (resolver in-memory?) — UI честно жмёт Save, но переживёт ли reload — не проверено.
+- ABTestPanel start/stop — только по проводам, живой A/B-прогон не гонялся.
+- PressureMapPanel acknowledgeAlert/stats — только чтение кода, рендер-тестов нет.
+- Веса/профили (WeightTunerInner, WeightProfilesSection) — правки пишут в сервис, визуальной верификации нет.
+
+## Зона 9: настройки (проверено, исправлено)
+
+- AI Modules удалена целиком: слайдеры двигали только локальный useState, а подпись «Persisted via settingsService per-module» была ложью (такого API нет).
+- System Prompts: мёртвый textarea (правки уходили в никуда) заменён редиректом на настоящий редактор Prompts.
+- N8N: мёртвые инпуты URL/ключа (ничего не сохраняли, неверная scope — n8n реально per-agent) заменены честной подписью и ссылкой на Agents.
+- OnboardingWizard проверен — честный: валидация + реальный keyService.addKey + ошибки.
+- Тесты: SettingsPanel 14/14 — файл был мёртв целиком (rootLogger → Dexie-бутстрап → useKeyList, три слоя протухших/отсутствующих моков), все починены + 3 новых кейса Зоны 9.
+
+## Зона 9: отложено, требует проверки
+
+- Остальные табы настроек (General/Writing/Reading/Alerts/Appearance/Advanced) — только регресс существующими тестами, аудита привязок каждого контрола к сервису не было.
+- llmKeys/platform — статичные инфо-блоки, ок; system-таб Reset/Purge — по коду с confirm, живьём не гонялись.
+
+## Зона 10: логи и инспекции (проверено, исправлено)
+
+- LogsPanel: formatTime больше не бросает RangeError на битых timestamp (toISOString строже toLocale); getBuffer в try/catch; поиск терпит legacy-записи.
+- LogsPanel: autoScroll чинится по-настоящему — был вызов scrollToOffset(count) вместо scrollToIndex (пиксели вместо индекса, низ списка недостижим).
+- LogsPanel: пустой экспорт теперь говорит тостом (было молчаливое ничто); Export/заголовок/подпись счётчика — ключи en+ru (logs.subtitle вообще отсутствовал).
+- DecisionCard: guards на promptPreview/estimatedCost/policyApplied/scoring/rejectedKeys/timestamp/latency («—» вместо краша).
+- ScoreRow: тип value расширен до undefined, не-финитное — пустой бар + «—» вместо NaN%.
+- Тесты: LogsPanel 4/4 (новый; виртуализатор замокирован — в jsdom без layout он рендерит 0 строк), DecisionCard 2/2 (новый, legacy-запись).
+- StateInspectorPanel проверен чтением — честный (снапшот с try/catch, ошибки баннером), правок не потребовал.
+
+## Зона 10: отложено, требует проверки
+
+- DecisionLogPanel.tsx (контейнер: загрузка/сохранение стореджа, фильтры) — только чтение, рендер-тестов контейнера нет (есть smoke P2.17).
+- StateInspector TreeNode/StatBox на глубоких/циклических состояниях — JSON.stringify циклику бросит в ошибку (поймается баннером, но стоит проверить).
+- logs.*-ключи в массе — автостабы Title Case («Title», «Col Level»): не ложь, но позор; полный рерайт en+ru — отдельная задача.
+
+## Зона 11: workspace и проекты (проверено, исправлено)
+
+- ProjectsPanel: все мутации и загрузки табов идут через runGuarded с баннером + Retry (были голые await'ы и console.error — build/snapshot/apply/pipeline/memory/goals падали молча).
+- ProjectsPanel: превью-изолят — iframe без sandbox выполнял скрипты с origin приложения (XSS от контента проекта): теперь sandbox="allow-scripts" (опaque origin).
+- ProjectsPanel: advance больше не фабрикует 'done' при пустом refresh (держится последний известный стейдж); agentIds/createdAt — guards; QA-хинт — ключ.
+- WorkspacePanel: ошибки дерева/аттача/поиска — видимые (отмена пикера молча, как и должно); stale-preview race закрыт генерацией запросов; listTree/search — Array-гарды.
+- ScratchpadPanel: analyze в try/catch с баннером; content — guard.
+- Тесты: ProjectsPanel 5/5 (+2, стабильный t через vi.hoisted), WorkspacePanel 3/3 (новый), ScratchpadPanel 3/3 (без изменений, реальные сервисы).
+
+## Зона 11: отложено, требует проверки
+
+- WebsitePreview generatePreview — что за HTML и откуда (доверенный генератор vs пользовательский контент) — влияет на строгость sandbox.
+- projectTemplateService.applyTemplate поверх существующих файлов (перезапись/мёрдж?) — поведение не проверено.
+- keyService.clearAllData за Purge — живьём не гонялся (только код с confirm).
+- ActivitiesPanel проектный — не покрыт.
+
+## Зона 12: качество (проверено, исправлено)
+
+- ImpactTab: знаменатель «N/70» был зашит stale-литералом (в реестре ~77) — теперь из getTechniques(); сортировка/агрегаты терпят legacy без полей.
+- quality-impact-shared: formatPct — «—» вместо NaN%; deltaStyle — нейтральный серый вместо красного по умолчанию для отсутствующих данных.
+- debate-consistency-service: jaccardText и слайсы терпят undefined content (краш useMemo-панели).
+- ConsistencyPanel: content-slice — guard.
+- CalibrationPanel проверен — честен по дизайну (эвристика подписана, формула в UI, NaN-путей нет), правок не потребовал.
+- Тесты: ImpactTab 3/3 (новый), ConsistencyPanel 5/5 (+1 legacy), CalibrationPanel 3/3 (без изменений).
+
+## Зона 12: отложено, требует проверки
+
+- ExperimentsTab (A/B Liu) — только чтение, живой эксперимент не гонялся.
+- quality_impact.*-ключи — с ?? 'English' фолбэками в коде; есть ли реальные переводы — не сверялось.
+- Calibration/Consistency useMemo на живых дебатах с больными данными — только legacy-юнит, живого прогона нет.
+
+## Зона 13: коммуникации (проверено, исправлено)
+
+- GroupChatPanel: списки/сортировки/поиск/карточки/тёрны — guards на legacy без members/turns/speaker/createdAt; сортировка по ?? 0; статус-бейдж с фолбэком.
+- ForumPanel: все 8 сервисных вызовов были голыми (unhandled + молчаливый stale UI) — теперь runGuarded с баннером; топики/heatmap терпят не-массив и NaN postCount.
+- ChannelPanel: send/edit/delete/reaction/create/seed/thread — все через runGuarded с баннером; поллинг members/presence/typing глушит rejections и терпит не-массивы.
+- ChannelPanel: legacy-сообщения без content/reactions/createdAt — рендер без краша («—» вместо Invalid Date).
+- Ключи: groupChat.history.hint, forum.error.generic, channels.error.generic (en+ru).
+- Тесты: GroupChatPanel.test переписан под текущий UI (был мёртв целиком — чипы вместо текстового membersPlaceholder, listitem'ов нет): 4/4. ForumPanel 5/5 (+2). ChannelPanel 5/5 (мок в instance-форму + 2 новых).
+
+## Зона 13: отложено, требует проверки
+
+- TopicView/TopicList/PostComposer/ModerationQueue/ForumHeatmap — только через интеграционные тесты панели, прямых юнитов нет.
+- groupChatService/select-логика nextTurn (speaker auto-pick) — живьём не гонялась, только моки.
+- Channel thread-панель и реакции — рендер есть, живого multi-user сценария нет.
 
 ## Зона 3: отложено, требует проверки
 

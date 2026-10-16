@@ -116,4 +116,33 @@ describe('SopPanel', () => {
         fireEvent.click(screen.getByRole('button', { name: 'sop.run.start' }));
         expect(await screen.findByText('sop.validation.goal')).toBeDefined();
     });
+
+    it('recovers when runSop throws synchronously', async () => {
+        const { sopService } = await import('../../kernel/instances/services-extras');
+        vi.mocked(sopService.runSop).mockImplementationOnce(() => {
+            throw new Error('sync boom');
+        });
+        const Panel = (await import('./SopPanel')).default;
+        render(<Panel />);
+        await waitFor(() => expect(sopService.listSops).toHaveBeenCalled());
+        fireEvent.change(screen.getByPlaceholderText('sop.goalPlaceholder'), {
+            target: { value: 'Build a chat app' },
+        });
+        fireEvent.click(screen.getByRole('button', { name: 'sop.run.start' }));
+        expect(await screen.findByText('sop.error.generic')).toBeDefined();
+        // Busy flag resets — the Run button is enabled again.
+        await waitFor(() =>
+            expect(screen.getByRole('button', { name: 'sop.run.start' })).not.toBeDisabled(),
+        );
+    });
+
+    it('tolerates non-array payloads from listSops', async () => {
+        const { sopService } = await import('../../kernel/instances/services-extras');
+        vi.mocked(sopService.listSops).mockResolvedValueOnce(
+            null as unknown as SopDefinition[],
+        );
+        const Panel = (await import('./SopPanel')).default;
+        render(<Panel />);
+        expect(await screen.findByText('sop.definitions.empty')).toBeDefined();
+    });
 });

@@ -110,4 +110,36 @@ describe('GuardrailsPanel', () => {
         fireEvent.click(screen.getByRole('button', { name: 'guardrails.add.submit' }));
         expect(await screen.findByText('guardrails.validation.rule')).toBeDefined();
     });
+
+    it('shows a load error instead of an empty list', async () => {
+        const { guardrailService } = await import('../../kernel/instances/services-extras');
+        vi.mocked(guardrailService.listRules).mockRejectedValueOnce(new Error('db down'));
+        const Panel = (await import('./GuardrailsPanel')).default;
+        render(<Panel />);
+        expect(await screen.findByText('guardrails.error.generic')).toBeDefined();
+    });
+
+    it('tolerates a non-array payload from listRules', async () => {
+        const { guardrailService } = await import('../../kernel/instances/services-extras');
+        vi.mocked(guardrailService.listRules).mockResolvedValueOnce(
+            null as unknown as GuardrailRule[],
+        );
+        const Panel = (await import('./GuardrailsPanel')).default;
+        render(<Panel />);
+        expect(await screen.findByText('guardrails.rules.empty')).toBeDefined();
+    });
+
+    it('search tolerates legacy rules without a name', async () => {
+        const { guardrailService } = await import('../../kernel/instances/services-extras');
+        vi.mocked(guardrailService.listRules).mockResolvedValueOnce([
+            { id: 'legacy', kind: 'contains', tripwire: 'flag', createdAt: 2 } as GuardrailRule,
+        ]);
+        const Panel = (await import('./GuardrailsPanel')).default;
+        render(<Panel />);
+        await waitFor(() => expect(guardrailService.listRules).toHaveBeenCalled());
+        fireEvent.change(screen.getByPlaceholderText('common.search'), {
+            target: { value: 'zzz' },
+        });
+        expect(await screen.findByText('guardrails.rules.no_matches')).toBeDefined();
+    });
 });

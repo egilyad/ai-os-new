@@ -33,12 +33,13 @@ export default function SopPanel() {
     const reload = async (selectId?: string) => {
         try {
             const [defs, loops] = await Promise.all([sopService.listSops(), autonomyService.listLoops()]);
-            setSops(defs);
-            const sopRuns = [...loops].filter((l) => l.kind === 'sop').sort(byNewest);
+            const safeDefs = Array.isArray(defs) ? defs : [];
+            setSops(safeDefs);
+            const sopRuns = [...(Array.isArray(loops) ? loops : [])].filter((l) => l.kind === 'sop').sort(byNewest);
             setRuns(sopRuns);
             if (selectId) setActiveId(selectId);
             else if (activeId === null && sopRuns.length > 0) setActiveId(sopRuns[0]!.id);
-            if (defs.length > 0 && !selectedSop) setSelectedSop(defs[0]!.id);
+            if (safeDefs.length > 0 && !selectedSop) setSelectedSop(safeDefs[0]!.id);
         } catch (e) { fail(e); }
     };
 
@@ -47,7 +48,7 @@ export default function SopPanel() {
     const pollOnce = async () => {
         try {
             const loops = await autonomyService.listLoops();
-            const sopRuns = [...loops].filter((l) => l.kind === 'sop').sort(byNewest);
+            const sopRuns = [...(Array.isArray(loops) ? loops : [])].filter((l) => l.kind === 'sop').sort(byNewest);
             setRuns(sopRuns);
             const running = sopRuns.find((l) => l.status === 'running') ?? null;
             if (running) setActiveId(running.id);
@@ -63,7 +64,7 @@ export default function SopPanel() {
         } catch (e) { fail(e); }
     };
 
-    const handleRun = () => {
+    const handleRun = async () => {
         setError(null); setNotice(null);
         if (!selectedSop) { setNotice(t('sop.validation.noSop')); return; }
         if (!goal.trim()) { setNotice(t('sop.validation.goal')); return; }
@@ -71,10 +72,14 @@ export default function SopPanel() {
         setBusy(true);
         const timer = window.setInterval(() => { if (busyRef.current) void pollOnce(); }, 2000);
         const done = () => { window.clearInterval(timer); setBusy(false); };
-        sopService.runSop(selectedSop, text).then(
-            (loop) => { done(); void reload(loop.id); setGoal(''); },
-            (e) => { done(); fail(e); },
-        );
+        // runSop may throw synchronously (not just reject) — without this the
+        // panel stays busy forever and the poll interval leaks.
+        try {
+            await sopService.runSop(selectedSop, text).then(
+                (loop) => { done(); void reload(loop.id); setGoal(''); },
+                (e) => { done(); fail(e); },
+            );
+        } catch (e) { done(); fail(e); }
     };
 
     const handleOpen = async () => {
@@ -88,8 +93,8 @@ export default function SopPanel() {
     };
 
     const activeDef = sops.find((s) => s.id === selectedSop) ?? null;
-    const filteredSops = search.trim() ? sops.filter((s) => s.name.toLowerCase().includes(search.toLowerCase())) : sops;
-    const filteredRuns = search.trim() ? runs.filter((r) => r.goal.toLowerCase().includes(search.toLowerCase())) : runs;
+    const filteredSops = search.trim() ? sops.filter((s) => (s.name ?? '').toLowerCase().includes(search.toLowerCase())) : sops;
+    const filteredRuns = search.trim() ? runs.filter((r) => (r.goal ?? '').toLowerCase().includes(search.toLowerCase())) : runs;
 
     return (
         <div style={{ display: 'flex', height: '100%', background: 'var(--slate-900)', color: 'var(--slate-200)' }}>
@@ -97,7 +102,7 @@ export default function SopPanel() {
                 <div style={{ padding: '14px 16px', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
                     <div style={{ fontSize: 16, fontWeight: 800 }}>{t('sop.title')}</div>
                     <div style={{ fontSize: 12, color: 'var(--slate-500)', marginTop: 4 }}>{t('sop.subtitle')}</div>
-                    <button onClick={() => void handleSeedDemo()} disabled={busy} title="Load demo SOP" aria-label="Load demo SOP" style={{ marginTop: 8, padding: '6px 12px', borderRadius: 8, border: '1px solid rgba(255,255,255,0.1)', background: 'transparent', color: 'var(--slate-300)', cursor: 'pointer', fontSize: 12, fontWeight: 600 }}>☕ Load demo SOP</button>
+                    <button onClick={() => void handleSeedDemo()} disabled={busy} title={t('sop.seed_demo')} aria-label={t('sop.seed_demo')} style={{ marginTop: 8, padding: '6px 12px', borderRadius: 8, border: '1px solid rgba(255,255,255,0.1)', background: 'transparent', color: 'var(--slate-300)', cursor: 'pointer', fontSize: 12, fontWeight: 600 }}>☕ {t('sop.seed_demo')}</button>
                     {error && <div style={{ marginTop: 8, color: 'var(--error)', fontSize: 12 }}>{error}</div>}
                     {notice && <div style={{ marginTop: 8, color: '#f59e0b', fontSize: 12 }}>{notice}</div>}
                 </div>
@@ -116,10 +121,10 @@ export default function SopPanel() {
                                 {filteredSops.map((s) => (
                                     <div key={s.id} onClick={() => setSelectedSop(s.id)} style={{ padding: '10px 12px', borderRadius: 10, cursor: 'pointer', background: s.id === selectedSop ? 'rgba(168,85,247,0.12)' : 'rgba(255,255,255,0.03)', borderLeft: s.id === selectedSop ? '3px solid #a855f7' : '3px solid transparent', border: '1px solid rgba(255,255,255,0.06)' }}>
                                         <div style={{ fontWeight: 700, fontSize: 12 }}>{s.name}</div>
-                                        <div style={{ fontSize: 11, color: 'var(--slate-500)', marginTop: 4 }}>{s.phases.length} phases</div>
+                                        <div style={{ fontSize: 11, color: 'var(--slate-500)', marginTop: 4 }}>{t('sop.phases.count', { count: (s.phases ?? []).length })}</div>
                                         <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap', marginTop: 6 }}>
-                                            {s.phases.slice(0, 3).map((p) => <span key={p.name} style={{ fontSize: 10, padding: '2px 6px', borderRadius: 6, background: 'rgba(255,255,255,0.06)', color: 'var(--slate-400)' }}>{p.role}</span>)}
-                                            {s.phases.length > 3 && <span style={{ fontSize: 10, color: 'var(--slate-500)' }}>+{s.phases.length - 3}</span>}
+                                            {(s.phases ?? []).slice(0, 3).map((p) => <span key={p.name} style={{ fontSize: 10, padding: '2px 6px', borderRadius: 6, background: 'rgba(255,255,255,0.06)', color: 'var(--slate-400)' }}>{p.role}</span>)}
+                                            {(s.phases ?? []).length > 3 && <span style={{ fontSize: 10, color: 'var(--slate-500)' }}>+{(s.phases ?? []).length - 3}</span>}
                                         </div>
                                     </div>
                                 ))}
@@ -135,9 +140,9 @@ export default function SopPanel() {
                             <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                                 {filteredRuns.map((r) => (
                                     <div key={r.id} onClick={() => setActiveId(r.id)} style={{ padding: '10px 12px', borderRadius: 10, cursor: 'pointer', background: r.id === activeId ? 'rgba(59,130,246,0.12)' : 'rgba(255,255,255,0.03)', borderLeft: r.id === activeId ? '3px solid #3b82f6' : '3px solid transparent', border: '1px solid rgba(255,255,255,0.06)' }}>
-                                        <div style={{ fontSize: 12, fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{r.goal.slice(0, 60)}</div>
+                                        <div style={{ fontSize: 12, fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{(r.goal ?? '').slice(0, 60)}</div>
                                         <div style={{ display: 'flex', gap: 6, marginTop: 6, alignItems: 'center' }}>
-                                            <StatusBadge status={r.status} label={t(`sop.status.${r.status}`)} />
+                                            <StatusBadge status={r.status} label={t(`sop.status.${r.status}`) ?? r.status} />
                                             <span style={{ fontSize: 11, color: 'var(--slate-500)' }}>{r.iterations}/{r.maxIterations}</span>
                                         </div>
                                     </div>
@@ -179,17 +184,17 @@ export default function SopPanel() {
                 {!active ? (
                     <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--slate-500)', flexDirection: 'column', gap: 8 }}>
                         <div style={{ fontSize: 32, opacity: 0.2 }}>📋</div>
-                        <div style={{ fontSize: 12, maxWidth: 360, textAlign: 'center' }}>Pick an SOP on the left, enter a goal above, and run. Phases execute as an autonomous loop.</div>
+                        <div style={{ fontSize: 12, maxWidth: 360, textAlign: 'center' }}>{t('sop.helper.pick')}</div>
                     </div>
                 ) : (
                     <div style={{ flex: 1, overflowY: 'auto', padding: '16px 20px' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
-                            <span style={{ fontWeight: 800, fontSize: 14 }}>{active.goal.slice(0, 100)}</span>
-                            <StatusBadge status={active.status} label={t(`sop.status.${active.status}`)} />
-                            <span style={{ fontSize: 11, color: 'var(--slate-500)' }}>Phase {active.iterations}/{active.maxIterations}</span>
-                        </div>
-                        <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--slate-500)', letterSpacing: 0.5, textTransform: 'uppercase', marginBottom: 8 }}>{t('sop.log.heading')} · {active.log.length}</div>
-                        {active.log.length === 0 ? (
+                                            <span style={{ fontWeight: 800, fontSize: 14 }}>{(active.goal ?? '').slice(0, 100)}</span>
+                                            <StatusBadge status={active.status} label={t(`sop.status.${active.status}`) ?? active.status} />
+                                            <span style={{ fontSize: 11, color: 'var(--slate-500)' }}>{t('sop.phase.progress', { done: active.iterations, total: active.maxIterations })}</span>
+                                        </div>
+                                        <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--slate-500)', letterSpacing: 0.5, textTransform: 'uppercase', marginBottom: 8 }}>{t('sop.log.heading')} · {(active.log ?? []).length}</div>
+                                        {(active.log ?? []).length === 0 ? (
                             <div style={{ textAlign: 'center', padding: 16, color: 'var(--slate-500)', fontSize: 12, border: '1px dashed rgba(255,255,255,0.08)', borderRadius: 10 }}>{t('sop.log.empty')}</div>
                         ) : (
                             <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>

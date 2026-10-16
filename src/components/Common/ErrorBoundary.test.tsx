@@ -35,6 +35,7 @@ vi.mock('../../i18n/translations', () => ({
 
 vi.mock('../../i18n/translations/index', () => ({
     loadLocale: () => Promise.resolve({}),
+    onLocaleLoaded: () => () => {},
 }));
 
 const CrashChild = () => {

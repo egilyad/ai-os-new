@@ -82,23 +82,34 @@ const PolicyPanel: React.FC = () => {
 
     useEffect(() => {
         isMountedRef.current = true;
-        const load = () => {
+        // Same guards as refresh(): a throwing service must not crash the mount.
+        try {
             setPolicies(policyService.getPolicies());
             setPatterns(policyService.getPatterns());
             setViolations(policyService.getViolations(false, 100));
             setStats(policyService.getStats());
-        };
-        load();
+        } catch {
+            setError(t('policy.error_fetch'));
+            clearError();
+        }
         return () => {
             isMountedRef.current = false;
         };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const refresh = () => {
-        setPolicies(policyService.getPolicies());
-        setPatterns(policyService.getPatterns());
-        setViolations(policyService.getViolations(false, 100));
-        setStats(policyService.getStats());
+        // Single choke point: every mutating handler funnels through here, so a
+        // throwing service surfaces as a banner instead of an unhandled error.
+        try {
+            setPolicies(policyService.getPolicies());
+            setPatterns(policyService.getPatterns());
+            setViolations(policyService.getViolations(false, 100));
+            setStats(policyService.getStats());
+        } catch {
+            setError(t('policy.error_fetch'));
+            clearError();
+        }
     };
 
     const handleSave = () => {
@@ -166,8 +177,8 @@ const PolicyPanel: React.FC = () => {
 
     const filteredPolicies = policies.filter(
         (p) =>
-            p.type.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            p.id.toLowerCase().includes(searchQuery.toLowerCase()),
+            (p.type ?? '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+            (p.id ?? '').toLowerCase().includes(searchQuery.toLowerCase()),
     );
 
     const createNew = () => {
@@ -328,9 +339,11 @@ const PolicyPanel: React.FC = () => {
                     },
                     {
                         label: t('policy.stats.last_violation'),
-                        value: stats?.lastViolation
-                            ? new Date(stats.lastViolation).toLocaleTimeString()
-                            : t('policy.stats.none'),
+                        value:
+                            typeof stats?.lastViolation === 'number' &&
+                            !Number.isNaN(new Date(stats.lastViolation).getTime())
+                                ? new Date(stats.lastViolation).toLocaleTimeString()
+                                : t('policy.stats.none'),
                         color: 'var(--accent)',
                         icon: <Clock size={20} />,
                     },
@@ -429,11 +442,13 @@ const PolicyPanel: React.FC = () => {
                 </button>
                 {violations.length > 0 && (
                     <button
-                        onClick={() => {
+                        onClick={async () => {
                             if (
-                                !window.confirm(
-                                    'Are you sure you want to clear all policy violations?',
-                                )
+                                !(await confirm({
+                                    title: t('policy.confirm_clear_title'),
+                                    message: t('policy.confirm_clear_message'),
+                                    variant: 'danger',
+                                }))
                             )
                                 return;
                             policyService.clearViolations();

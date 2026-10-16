@@ -34,7 +34,8 @@ export default function GuardrailsPanel() {
 
     const reload = async () => {
         try {
-            setRules(await guardrailService.listRules());
+            const loaded = await guardrailService.listRules();
+            setRules(Array.isArray(loaded) ? loaded : []);
         } catch (e) {
             fail(e);
         }
@@ -101,7 +102,11 @@ export default function GuardrailsPanel() {
     };
 
     const filtered = search.trim()
-        ? rules.filter((r) => r.name.toLowerCase().includes(search.toLowerCase()) || (r.pattern ?? '').toLowerCase().includes(search.toLowerCase()))
+        ? rules.filter(
+              (r) =>
+                  (r.name ?? '').toLowerCase().includes(search.toLowerCase()) ||
+                  (r.pattern ?? '').toLowerCase().includes(search.toLowerCase()),
+          )
         : rules;
 
     const kindColor: Record<string, string> = { contains: '#3b82f6', regex: '#a855f7', minLength: '#f59e0b', maxLength: '#ef4444' };
@@ -119,12 +124,12 @@ export default function GuardrailsPanel() {
 
                 <div style={{ padding: '10px 14px', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
                     <input placeholder={t('common.search') ?? 'Search rules…'} value={search} onChange={(e) => setSearch(e.target.value)} style={{ width: '100%', padding: '7px 10px', borderRadius: 8, border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(255,255,255,0.05)', color: 'inherit', fontSize: 12 }} />
-                    <div style={{ fontSize: 11, color: 'var(--slate-500)', marginTop: 6 }}>{filtered.length} / {rules.length} rules</div>
+                    <div style={{ fontSize: 11, color: 'var(--slate-500)', marginTop: 6 }}>{t('guardrails.rules.count', { shown: filtered.length, total: rules.length })}</div>
                 </div>
 
                 <div style={{ flex: 1, overflowY: 'auto', padding: '8px 10px' }}>
                     {filtered.length === 0 ? (
-                        <div style={{ textAlign: 'center', padding: 20, color: 'var(--slate-500)', fontSize: 12, border: '1px dashed rgba(255,255,255,0.08)', borderRadius: 10 }}>{rules.length === 0 ? t('guardrails.rules.empty') : 'No matches'}</div>
+                        <div style={{ textAlign: 'center', padding: 20, color: 'var(--slate-500)', fontSize: 12, border: '1px dashed rgba(255,255,255,0.08)', borderRadius: 10 }}>{rules.length === 0 ? t('guardrails.rules.empty') : t('guardrails.rules.no_matches')}</div>
                     ) : (
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                             {filtered.map((r) => (
@@ -179,13 +184,13 @@ export default function GuardrailsPanel() {
                                     ))}
                                 </div>
                             ) : (
-                                <div style={{ marginTop: 8, fontSize: 11, color: 'var(--slate-500)' }}>No hits — clean</div>
+                                <div style={{ marginTop: 8, fontSize: 11, color: 'var(--slate-500)' }}>{t('guardrails.verdict.no_hits')}</div>
                             )}
                         </div>
                     )}
 
                     {verdict === null && (
-                        <div style={{ marginTop: 16, textAlign: 'center', padding: 24, color: 'var(--slate-500)', border: '1px dashed rgba(255,255,255,0.08)', borderRadius: 12, fontSize: 12 }}>Paste text above and check against {rules.length} guardrail{rules.length !== 1 ? 's' : ''}</div>
+                        <div style={{ marginTop: 16, textAlign: 'center', padding: 24, color: 'var(--slate-500)', border: '1px dashed rgba(255,255,255,0.08)', borderRadius: 12, fontSize: 12 }}>{t('guardrails.check.empty_hint', { count: rules.length })}</div>
                     )}
                 </div>
             </div>
