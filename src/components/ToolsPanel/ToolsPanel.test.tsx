@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import type { ReactNode } from 'react';
 
 vi.hoisted(() => {
     (globalThis as Record<string, unknown>).Blocks = () => null;
@@ -46,8 +47,24 @@ vi.mock('../../i18n/useTranslation', () => ({
                 'common.unknown_error': 'An unknown error occurred',
                 'common.active': 'Active',
                 'common.not_available': 'N/A',
+                'tools.register_title': 'Register Tool',
+                'tools.register_name': 'Name',
+                'tools.register_type': 'Type',
+                'tools.register_description': 'Description',
+                'tools.register_cancel': 'Cancel',
+                'tools.register_create': 'Register',
+                'tools.register_error_name': 'Enter a tool name',
+                'tools.register_success': 'Tool registered',
+                'tools.register_failed': 'Failed to register tool',
+                'tools.notif_exported': 'Tools exported successfully',
+                'tools.notif_imported': 'Imported',
             })[key] ?? key,
     }),
+}));
+
+vi.mock('../ModalShell', () => ({
+    ModalShell: (props: { open: boolean; children: ReactNode }) =>
+        props.open ? <div>{props.children}</div> : null,
 }));
 
 const mockTools = [
@@ -78,12 +95,21 @@ const mockTools = [
 ];
 
 vi.mock('../../kernel/instances', () => ({
+    rootLogger: {
+        child: vi.fn(() => ({
+            debug: vi.fn(),
+            info: vi.fn(),
+            warn: vi.fn(),
+            error: vi.fn(),
+        })),
+    },
     toolService: {
         getTools: vi.fn(() => mockTools),
         exportTools: vi.fn(() => '[]'),
         importTools: vi.fn(() => 2),
         execute: vi.fn(() => Promise.resolve({ status: 'success', data: { result: 'ok' } })),
         toggleTool: vi.fn(),
+        addTool: vi.fn(() => Promise.resolve()),
     },
     settingsService: {
         getSettings: vi.fn(() => ({ language: 'en' })),
@@ -209,5 +235,48 @@ describe('ToolsPanel', () => {
         fireEvent.click(screen.getByText('Web Search'));
         await screen.findByText('Sandbox');
         expect(screen.getByText('Run Capability Test')).toBeDefined();
+    });
+
+    it('Register opens a working modal that calls addTool', async () => {
+        const { toolService } = await import('../../kernel/instances');
+        const ToolsPanel = (await import('./ToolsPanel')).default;
+        render(<ToolsPanel />);
+        await screen.findByText('Web Search');
+        fireEvent.click(screen.getByText('Register Capability'));
+        expect(await screen.findByText('Register Tool')).toBeDefined();
+        fireEvent.change(screen.getByLabelText('Name'), { target: { value: 'My Tool' } });
+        fireEvent.click(screen.getByText('Register'));
+        await waitFor(() =>
+            expect(toolService.addTool).toHaveBeenCalledWith(
+                expect.objectContaining({ name: 'My Tool', type: 'api' }),
+            ),
+        );
+    });
+
+    it('Register validates the name instead of calling addTool', async () => {
+        const { toolService } = await import('../../kernel/instances');
+        const ToolsPanel = (await import('./ToolsPanel')).default;
+        render(<ToolsPanel />);
+        await screen.findByText('Web Search');
+        fireEvent.click(screen.getByText('Register Capability'));
+        await screen.findByText('Register Tool');
+        fireEvent.click(screen.getByText('Register'));
+        expect(await screen.findByText('Enter a tool name')).toBeDefined();
+        expect(toolService.addTool).not.toHaveBeenCalled();
+    });
+
+    it('search tolerates legacy tools without name or description', async () => {
+        const { toolService } = await import('../../kernel/instances');
+        vi.mocked(toolService.getTools).mockReturnValueOnce([
+            { id: 'legacy', type: 'api' },
+        ] as never);
+        const ToolsPanel = (await import('./ToolsPanel')).default;
+        render(<ToolsPanel />);
+        await screen.findByText('Tool & Capability Registry');
+        const search = document.querySelector(
+            'input[placeholder*="Search tools"]',
+        ) as HTMLInputElement;
+        fireEvent.change(search, { target: { value: 'zzz' } });
+        expect(screen.getByText('No tools match current filters')).toBeDefined();
     });
 });

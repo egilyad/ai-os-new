@@ -56,29 +56,50 @@ vi.mock('../../kernel/instances', () => ({
 
 vi.mock('../../i18n/useTranslation', () => ({
     useTranslation: () => ({
-        t: (key: string) => {
+        t: (key: string, params?: Record<string, string | number>) => {
             const map: Record<string, string> = {
                 'skills.title': 'Cognitive Skills',
                 'skills.subtitle': 'Extend agent capabilities with modular cognitive modules',
                 'skills.hub': 'Extension Hub',
-                'skills.installed': 'Installed ({0})',
+                'skills.installed': 'Installed ({count})',
                 'skills.search_placeholder': 'Search extension hub...',
                 'skills.empty_installed': 'No cognitive skills installed',
                 'skills.empty_search': 'No skills match your search',
+                'skills.empty_hub': 'No skills available in the extension hub',
+                'skills.hub_hint_installed': 'Install skills from the Extension Hub to get started',
+                'skills.hub_hint_search': 'Try a different search term or category',
+                'skills.hub_hint_all': 'All skills are currently installed',
+                'skills.toolchains': 'Required Toolchains',
+                'skills.executions': '{count} Executions',
                 'skills.install': 'Install',
                 'skills.active': 'Active',
                 'skills.inactive': 'Inactive',
                 'skills.popular': 'Popular',
                 'skills.clear': 'Clear',
+                'skills.view_label': 'Skills view',
+                'skills.perf_notice_title': 'Performance Notice',
+                'skills.perf_notice_body': 'Skills consume context tokens.',
                 'skills.error_export': 'Failed to export skills',
                 'skills.error_import': 'Failed to import skills',
                 'skills.error_toggle': 'Failed to toggle skill',
                 'skills.error_install': 'Failed to install skill',
+                'skills.notif_exported': 'Skills exported successfully',
+                'skills.notif_imported': 'Imported',
+                'skills.notif_import_failed': 'Failed to import skills',
+                'skills.notif_toggled': 'Toggled',
+                'skills.notif_installing': 'Installing...',
+                'skills.notif_installed': 'Installed',
+                'skills.toggle_aria': 'Toggle skill',
+                'skills.install_aria': 'Install skill',
                 'common.export': 'Export',
                 'common.import': 'Import',
                 'common.dismiss_error': 'Dismiss error',
             };
-            return map[key] ?? key;
+            let text = map[key] ?? key;
+            for (const [k, v] of Object.entries(params ?? {})) {
+                text = text.replace(`{${k}}`, String(v));
+            }
+            return text;
         },
     }),
 }));
@@ -165,5 +186,36 @@ describe('SkillsPanel', () => {
         fireEvent.click(screen.getByText('Extension Hub'));
         await screen.findByText('Social Media Manager');
         expect(screen.getByText('Install')).toBeDefined();
+    });
+
+    it('shows the installed count on the tab', async () => {
+        const SkillsPanel = (await import('./SkillsPanel')).default;
+        render(<SkillsPanel />);
+        expect(await screen.findByText('Installed (2)')).toBeDefined();
+    });
+
+    it('renders 0 executions for legacy skills without a count', async () => {
+        mockGetSkills.mockReturnValue([
+            {
+                id: 'legacy',
+                name: 'Legacy Skill',
+                description: 'Old record',
+                category: 'analysis',
+                status: 'active',
+                version: '0.1',
+            },
+        ]);
+        const SkillsPanel = (await import('./SkillsPanel')).default;
+        render(<SkillsPanel />);
+        expect(await screen.findByText('Legacy Skill')).toBeDefined();
+        expect(screen.getByText('0 Executions')).toBeDefined();
+        expect(screen.queryByText('Required Toolchains')).toBeNull();
+    });
+
+    it('has no fake Fine-tune Pipeline button', async () => {
+        const SkillsPanel = (await import('./SkillsPanel')).default;
+        render(<SkillsPanel />);
+        await screen.findByText('Deep Web Researcher');
+        expect(screen.queryByText('Fine-tune Pipeline')).toBeNull();
     });
 });

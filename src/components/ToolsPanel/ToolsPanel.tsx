@@ -11,6 +11,7 @@ import { useTranslation } from '../../i18n/useTranslation';
 import ModuleInfo from '../ModuleInfo';
 import { ToolCard } from './ToolCard';
 import { ToolInspectorPanel } from './ToolInspectorPanel';
+import { ModalShell } from '../ModalShell';
 import { safeJsonParse } from '../../kernel/utils/safe-json';
 import { useResponsive } from '../Layout/ResponsiveShell';
 import { Button } from '../Common';
@@ -19,6 +20,8 @@ import {
     errorBannerLg,
     flexGap3,
     glassPanelColRounded24,
+    modalFormSelect,
+    modalLabelUppercase,
     pageSubtitleMuted,
     pageTitleLarge,
     positionRelativeFlex1,
@@ -46,6 +49,10 @@ const ToolsPanel: React.FC = () => {
     const [typeFilter, setTypeFilter] = useState<ToolTypeFilter>('all');
     const [activeTab, setActiveTab] = useState<'sandbox' | 'schema' | 'security'>('sandbox');
     const [testParams, setTestParams] = useState<string>('{\n  "query": "test"\n}');
+    const [showRegister, setShowRegister] = useState(false);
+    const [regName, setRegName] = useState('');
+    const [regType, setRegType] = useState<'api' | 'script' | 'database'>('api');
+    const [regDesc, setRegDesc] = useState('');
     const { t } = useTranslation();
     const { isMobile } = useResponsive();
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -75,9 +82,10 @@ const ToolsPanel: React.FC = () => {
         isMountedRef.current = true;
         const sub = eventBus.onSafe<ToolDefinition[]>('tools:updated', (data) => {
             if (!isMountedRef.current) return;
-            setTools(data);
+            const list = Array.isArray(data) ? data : [];
+            setTools(list);
             if (selectedTool) {
-                setSelectedTool(data.find((t: ToolDefinition) => t.id === selectedTool.id) || null);
+                setSelectedTool(list.find((t: ToolDefinition) => t.id === selectedTool.id) || null);
             }
         });
         return () => {
@@ -97,7 +105,7 @@ const ToolsPanel: React.FC = () => {
             a.click();
             URL.revokeObjectURL(url);
             eventBus.emit(EVENTS.NOTIFICATION as keyof EventMap, {
-                message: 'Tools exported successfully',
+                message: t('tools.notif_exported'),
                 type: 'success',
             });
             if (isMountedRef.current) setError(null);
@@ -120,7 +128,7 @@ const ToolsPanel: React.FC = () => {
                 if (isMountedRef.current) {
                     setTools(toolService.getTools());
                     eventBus.emit(EVENTS.NOTIFICATION as keyof EventMap, {
-                        message: `Successfully imported ${count} tool(s)`,
+                        message: t('tools.notif_imported', { count }),
                         type: 'success',
                     });
                     setError(null);
@@ -145,12 +153,52 @@ const ToolsPanel: React.FC = () => {
         if (typeFilter !== 'all' && t.type !== typeFilter) return false;
         if (
             searchQuery &&
-            !t.name.toLowerCase().includes(searchQuery.toLowerCase()) &&
-            !t.description.toLowerCase().includes(searchQuery.toLowerCase())
+            !(t.name ?? '').toLowerCase().includes(searchQuery.toLowerCase()) &&
+            !(t.description ?? '').toLowerCase().includes(searchQuery.toLowerCase())
         )
             return false;
         return true;
     });
+
+    const handleRegisterTool = async () => {
+        const name = regName.trim();
+        if (!name) {
+            setError(t('tools.register_error_name'));
+            clearError();
+            return;
+        }
+        try {
+            const slug =
+                name
+                    .toLowerCase()
+                    .replace(/[^a-z0-9]+/g, '-')
+                    .replace(/^-+|-+$/g, '')
+                    .slice(0, 40) || 'tool';
+            await toolService.addTool({
+                id: `${slug}-${Date.now().toString(36)}`,
+                name,
+                description: regDesc.trim() || name,
+                type: regType,
+            });
+            if (isMountedRef.current) {
+                setTools(toolService.getTools());
+                setShowRegister(false);
+                setRegName('');
+                setRegDesc('');
+                setError(null);
+                eventBus.emit(EVENTS.NOTIFICATION as keyof EventMap, {
+                    message: t('tools.register_success', { name }),
+                    type: 'success',
+                });
+            }
+        } catch (err) {
+            LOGGER.warn('ToolsPanel', 'Failed to register tool', { error: err });
+            if (isMountedRef.current) {
+                setError(t('tools.register_failed'));
+                clearError();
+            }
+        }
+    };
 
     const handleRunTest = async () => {
         if (!selectedTool) return;
@@ -173,7 +221,7 @@ const ToolsPanel: React.FC = () => {
             if (!isMountedRef.current) return;
             const latency = Date.now() - startTime;
 
-            const formattedOutput = `Execution completed in ${latency}ms\nStatus: ${result.status.toUpperCase()}\n\nResult:\n${JSON.stringify(result.data || result.error, null, 2)}`;
+            const formattedOutput = `Execution completed in ${latency}ms\nStatus: ${(result?.status ?? 'unknown').toUpperCase()}\n\nResult:\n${JSON.stringify(result?.data ?? result?.error ?? result, null, 2)}`;
             setTestOutput(formattedOutput);
         } catch (execErr) {
             LOGGER.warn('ToolsPanel', 'Tool execution failed', { error: execErr });
@@ -221,12 +269,11 @@ const ToolsPanel: React.FC = () => {
                         <Upload size={16} aria-hidden="true" /> {t('common.import')}
                     </Button>
                     <button
-                        onClick={() =>
-                            eventBus.emit(EVENTS.NOTIFICATION, {
-                                message: 'Capability Registry Wizard opening...',
-                                type: 'info',
-                            })
-                        }
+                        onClick={() => {
+                            setRegName('');
+                            setRegDesc('');
+                            setShowRegister(true);
+                        }}
                         style={{
                             padding: '0.75rem 1.5rem',
                             display: 'flex',
@@ -404,6 +451,75 @@ const ToolsPanel: React.FC = () => {
                 onChange={handleImportTools}
                 aria-hidden="true"
             />
+            <ModalShell open={showRegister} onClose={() => setShowRegister(false)}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', padding: '2rem' }}>
+                    <h3 style={{ fontSize: '1.25rem', fontWeight: 800, margin: 0, color: 'var(--slate-50)' }}>
+                        {t('tools.register_title')}
+                    </h3>
+                    <div>
+                        <label style={modalLabelUppercase}>{t('tools.register_name')}</label>
+                        <input
+                            type="text"
+                            value={regName}
+                            onChange={(e) => setRegName(e.target.value)}
+                            style={modalFormSelect}
+                            aria-label={t('tools.register_name')}
+                        />
+                    </div>
+                    <div>
+                        <label style={modalLabelUppercase}>{t('tools.register_type')}</label>
+                        <select
+                            value={regType}
+                            onChange={(e) => setRegType(e.target.value as 'api' | 'script' | 'database')}
+                            style={modalFormSelect}
+                        >
+                            <option value="api">{t('tools.filter.rest')}</option>
+                            <option value="script">{t('tools.filter.scripts')}</option>
+                            <option value="database">{t('tools.filter.db')}</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style={modalLabelUppercase}>{t('tools.register_description')}</label>
+                        <input
+                            type="text"
+                            value={regDesc}
+                            onChange={(e) => setRegDesc(e.target.value)}
+                            style={modalFormSelect}
+                            aria-label={t('tools.register_description')}
+                        />
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem' }}>
+                        <button
+                            onClick={() => setShowRegister(false)}
+                            style={{
+                                padding: '0.8rem 1.5rem',
+                                borderRadius: 12,
+                                fontWeight: 700,
+                                background: 'rgba(255,255,255,0.05)',
+                                border: '1px solid rgba(255,255,255,0.1)',
+                                color: 'var(--slate-200)',
+                                cursor: 'pointer',
+                            }}
+                        >
+                            {t('tools.register_cancel')}
+                        </button>
+                        <button
+                            onClick={handleRegisterTool}
+                            style={{
+                                padding: '0.8rem 2rem',
+                                borderRadius: 12,
+                                fontWeight: 800,
+                                background: 'linear-gradient(90deg, #f59e0b, #d97706)',
+                                border: 'none',
+                                color: 'white',
+                                cursor: 'pointer',
+                            }}
+                        >
+                            {t('tools.register_create')}
+                        </button>
+                    </div>
+                </div>
+            </ModalShell>
             <ModuleInfo moduleKey="tools" />
         </div>
     );

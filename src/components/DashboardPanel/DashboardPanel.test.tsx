@@ -58,9 +58,9 @@ vi.mock('../../core/Kernel', () => ({
     },
 }));
 
-vi.mock('../../i18n/useTranslation', () => ({
-    useTranslation: () => ({
-        t: (key: string) => {
+// Stable across renders: DashboardPanel's subscription effect depends on t,
+// and a fresh closure every render would re-fire the effect into a loop.
+const stableDashboardT = (key: string, params?: Record<string, string | number>) => {
             const labels: Record<string, string> = {
                 'dashboard.mission_control': 'Mission Control',
                 'dashboard.system_online': 'System Online',
@@ -131,8 +131,16 @@ vi.mock('../../i18n/useTranslation', () => ({
                 'dashboard.rps_hint': 'Requests in the last minute',
                 'dashboard.alert_provider_errors': 'Provider errors detected',
             };
-            return labels[key] || key;
-        },
+            let text = labels[key] || key;
+            for (const [k, v] of Object.entries(params ?? {})) {
+                text = text.replace(`{${k}}`, String(v));
+            }
+            return text;
+};
+
+vi.mock('../../i18n/useTranslation', () => ({
+    useTranslation: () => ({
+        t: stableDashboardT,
     }),
 }));
 

@@ -31,12 +31,31 @@ const MCPPanel: React.FC = () => {
     const isMountedRef = useRef(true);
     const clearError = useAutoClearError(setError);
 
+    // useCallback-stable in prod (t/clearError are stable). The mount effect
+    // below deliberately does NOT depend on it: with an unstable t (tests,
+    // locale mocks) a chained effect re-fires every render and loops.
+    const refreshServers = useCallback(() => {
+        // Single choke point: a throwing service surfaces as a banner,
+        // never as a mount crash or an unhandled rejection.
+        try {
+            const list = mcpService.getServers() ?? [];
+            if (isMountedRef.current) setServers(Array.isArray(list) ? list : []);
+        } catch (err) {
+            LOGGER.warn('MCPPanel', 'Failed to load servers', { error: err });
+            if (isMountedRef.current) {
+                setError(t('mcp.error_load'));
+                clearError();
+            }
+        }
+    }, [clearError, t]);
+
     useEffect(() => {
         isMountedRef.current = true;
-        setServers(mcpService.getServers() ?? []);
+        refreshServers();
         return () => {
             isMountedRef.current = false;
         };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const stats = (() => {
@@ -52,58 +71,60 @@ const MCPPanel: React.FC = () => {
             setConnectingId(id);
             try {
                 await mcpService.connect(id);
-                setServers(mcpService.getServers());
             } catch (err) {
-                setServers(mcpService.getServers());
                 setError(
                     `${t('mcp.error_connect')}: ${err instanceof Error ? err.message : String(err)}`,
                 );
                 clearError();
             } finally {
+                refreshServers();
                 setConnectingId(null);
             }
         },
-        [clearError, t],
+        [clearError, refreshServers, t],
     );
 
-    const handleDisconnect = useCallback(async (id: string) => {
-        setConnectingId(id);
-        try {
-            await mcpService.disconnect(id);
-            setServers(mcpService.getServers());
-        } finally {
-            setConnectingId(null);
-        }
-    }, []);
+    const handleDisconnect = useCallback(
+        async (id: string) => {
+            setConnectingId(id);
+            try {
+                await mcpService.disconnect(id);
+            } finally {
+                refreshServers();
+                setConnectingId(null);
+            }
+        },
+        [refreshServers],
+    );
 
     const handleReconnectAll = useCallback(async () => {
         try {
             const count = await mcpService.reconnectAll();
-            setServers(mcpService.getServers());
+            refreshServers();
             eventBus.emit(EVENTS.NOTIFICATION, {
-                message: `Reconnected ${count} server(s)`,
+                message: t('mcp.notif_reconnected', { count }),
                 type: 'success',
             });
         } catch {
             setError(t('mcp.error_reconnect'));
             clearError();
         }
-    }, [clearError, t]);
+    }, [clearError, refreshServers, t]);
 
     const handleRemoveServer = useCallback(
         async (server: MCPServerConfig) => {
             if (
                 !(await confirm({
-                    title: 'Remove Server',
-                    message: `Remove server "${server.name}"?`,
+                    title: t('mcp.confirm_remove_title'),
+                    message: t('mcp.confirm_remove_message', { name: server.name }),
                     variant: 'danger',
                 }))
             )
                 return;
             mcpService.removeServer(server.id);
-            setServers(mcpService.getServers());
+            refreshServers();
         },
-        [confirm],
+        [confirm, refreshServers, t],
     );
 
     const toggleExpand = useCallback(
@@ -144,8 +165,8 @@ const MCPPanel: React.FC = () => {
 
     const filteredServers = (servers ?? []).filter(
         (s) =>
-            s.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            s.url.toLowerCase().includes(searchQuery.toLowerCase()),
+            (s.name ?? '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+            (s.url ?? '').toLowerCase().includes(searchQuery.toLowerCase()),
     );
 
     return (
@@ -410,7 +431,7 @@ const MCPPanel: React.FC = () => {
             <MCPEditorModal
                 server={editingServer}
                 onClose={() => setEditingServer(null)}
-                onSaved={() => setServers(mcpService.getServers())}
+                onSaved={refreshServers}
             />
             <ModuleInfo moduleKey="mcp" />
             <ConfirmDialog />

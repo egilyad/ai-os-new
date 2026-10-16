@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-    Settings,
     Layers,
     Activity,
     Search,
@@ -59,7 +58,7 @@ const SkillsPanel: React.FC = () => {
         isMountedRef.current = true;
         const unsub = eventBus.on(EVENTS.SKILLS_UPDATED, (data: CognitiveSkill[]) => {
             if (!isMountedRef.current) return;
-            setSkills([...data]);
+            setSkills(Array.isArray(data) ? [...data] : []);
         });
         return () => {
             isMountedRef.current = false;
@@ -78,7 +77,7 @@ const SkillsPanel: React.FC = () => {
             a.click();
             URL.revokeObjectURL(url);
             eventBus.emit(EVENTS.NOTIFICATION as keyof EventMap, {
-                message: 'Skills exported successfully',
+                message: t('skills.notif_exported'),
                 type: 'success',
             });
             if (isMountedRef.current) setError(null);
@@ -101,7 +100,7 @@ const SkillsPanel: React.FC = () => {
                 if (isMountedRef.current) {
                     setSkills(skillService.getSkills());
                     eventBus.emit(EVENTS.NOTIFICATION as keyof EventMap, {
-                        message: `Successfully imported ${count} skill(s)`,
+                        message: t('skills.notif_imported', { count }),
                         type: 'success',
                     });
                     setError(null);
@@ -113,7 +112,7 @@ const SkillsPanel: React.FC = () => {
                     clearError();
                 }
                 eventBus.emit(EVENTS.NOTIFICATION as keyof EventMap, {
-                    message: 'Failed to import skills',
+                    message: t('skills.notif_import_failed'),
                     type: 'error',
                 });
             }
@@ -130,7 +129,10 @@ const SkillsPanel: React.FC = () => {
             skillService.toggleActive(id);
             if (isMountedRef.current) setSkills(skillService.getSkills());
             eventBus.emit(EVENTS.NOTIFICATION, {
-                message: `Cognitive Skill '${s.name}' is now ${nextStatus.toUpperCase()}`,
+                message: t('skills.notif_toggled', {
+                    name: s.name,
+                    status: nextStatus.toUpperCase(),
+                }),
                 type: nextStatus === 'active' ? 'success' : 'info',
             });
             if (isMountedRef.current) setError(null);
@@ -148,12 +150,12 @@ const SkillsPanel: React.FC = () => {
             const s = skills.find((x) => x.id === id);
             if (!s) return;
             eventBus.emit(EVENTS.NOTIFICATION, {
-                message: `Installing ${s.name} dependencies...`,
+                message: t('skills.notif_installing', { name: s.name }),
                 type: 'info',
             });
             skillService.installSkill(id);
             eventBus.emit(EVENTS.NOTIFICATION, {
-                message: `${s.name} installed successfully.`,
+                message: t('skills.notif_installed', { name: s.name }),
                 type: 'success',
             });
             if (isMountedRef.current) setError(null);
@@ -191,8 +193,10 @@ const SkillsPanel: React.FC = () => {
                   .filter(
                       (s) =>
                           !hubSearch ||
-                          s.name.toLowerCase().includes(hubSearch.toLowerCase()) ||
-                          s.description.toLowerCase().includes(hubSearch.toLowerCase()),
+                          (s.name ?? '').toLowerCase().includes(hubSearch.toLowerCase()) ||
+                          (s.description ?? '')
+                              .toLowerCase()
+                              .includes(hubSearch.toLowerCase()),
                   );
 
     const installedCount = skills.filter((s) => s.status !== 'not_installed').length;
@@ -241,7 +245,7 @@ const SkillsPanel: React.FC = () => {
                             border: '1px solid rgba(255,255,255,0.05)',
                         }}
                         role="tablist"
-                        aria-label="Skills view"
+                        aria-label={t('skills.view_label')}
                     >
                         <button
                             onClick={() => setActiveTab('installed')}
@@ -263,7 +267,7 @@ const SkillsPanel: React.FC = () => {
                                 color: activeTab === 'installed' ? '#60a5fa' : '#64748b',
                             }}
                         >
-                            {t('skills.installed').replace('{0}', String(installedCount))}
+                            {t('skills.installed', { count: installedCount })}
                         </button>
                         <button
                             onClick={() => setActiveTab('marketplace')}
@@ -343,7 +347,7 @@ const SkillsPanel: React.FC = () => {
                                     fontSize: '0.9rem',
                                     outline: 'none',
                                 }}
-                                aria-label="Search skills in hub"
+                                aria-label={t('skills.search_placeholder')}
                             />
                         </div>
                         <div style={flexWrapGap2}>
@@ -427,7 +431,7 @@ const SkillsPanel: React.FC = () => {
                                     ? t('skills.empty_installed')
                                     : hubSearch
                                       ? t('skills.empty_search')
-                                      : 'No skills available in the extension hub'}
+                                      : t('skills.empty_hub')}
                             </p>
                             <p
                                 style={{
@@ -437,10 +441,10 @@ const SkillsPanel: React.FC = () => {
                                 }}
                             >
                                 {activeTab === 'installed'
-                                    ? 'Install skills from the Extension Hub to get started'
+                                    ? t('skills.hub_hint_installed')
                                     : hubSearch
-                                      ? 'Try a different search term or category'
-                                      : 'All skills are currently installed'}
+                                      ? t('skills.hub_hint_search')
+                                      : t('skills.hub_hint_all')}
                             </p>
                         </div>
                     ) : (
@@ -573,7 +577,7 @@ const SkillsPanel: React.FC = () => {
                                                                     : 'none',
                                                             border: 'none',
                                                         }}
-                                                        aria-label={`Toggle ${skill.name} skill`}
+                                                        aria-label={t('skills.toggle_aria', { name: skill.name })}
                                                     >
                                                         <motion.div
                                                             animate={{
@@ -628,7 +632,7 @@ const SkillsPanel: React.FC = () => {
                                                             color: 'white',
                                                             cursor: 'pointer',
                                                         }}
-                                                        aria-label={`Install ${skill.name} skill`}
+                                                        aria-label={t('skills.install_aria', { name: skill.name })}
                                                     >
                                                         <DownloadCloud
                                                             size={16}
@@ -651,6 +655,7 @@ const SkillsPanel: React.FC = () => {
                                             {skill.description}
                                         </p>
 
+                                        {(skill.toolsUsed ?? []).length > 0 && (
                                         <div style={statBox}>
                                             <div
                                                 style={{
@@ -662,10 +667,10 @@ const SkillsPanel: React.FC = () => {
                                                     letterSpacing: '0.05em',
                                                 }}
                                             >
-                                                Required Toolchains
+                                                {t('skills.toolchains')}
                                             </div>
                                             <div style={flexWrapGap2}>
-                                                {skill.toolsUsed.map((tool, _idx) => (
+                                                {(skill.toolsUsed ?? []).map((tool, _idx) => (
                                                     <span
                                                         key={tool}
                                                         style={{
@@ -682,41 +687,19 @@ const SkillsPanel: React.FC = () => {
                                                 ))}
                                             </div>
                                         </div>
+                                        )}
 
                                         {activeTab === 'installed' && (
                                             <div
                                                 style={{
                                                     display: 'flex',
-                                                    justifyContent: 'space-between',
+                                                    justifyContent: 'flex-end',
                                                     alignItems: 'center',
                                                     marginTop: 'auto',
                                                     paddingTop: '1rem',
                                                     borderTop: '1px solid rgba(255,255,255,0.05)',
                                                 }}
                                             >
-                                                <button
-                                                    onClick={() =>
-                                                        eventBus.emit(EVENTS.NOTIFICATION, {
-                                                            message: `Opening advanced configuration for ${skill.name}...`,
-                                                            type: 'info',
-                                                        })
-                                                    }
-                                                    style={{
-                                                        background: 'none',
-                                                        border: 'none',
-                                                        color: catColor,
-                                                        fontSize: '0.85rem',
-                                                        fontWeight: 700,
-                                                        cursor: 'pointer',
-                                                        display: 'flex',
-                                                        alignItems: 'center',
-                                                        gap: '0.4rem',
-                                                    }}
-                                                    aria-label={`Configure ${skill.name}`}
-                                                >
-                                                    <Settings size={16} aria-hidden="true" />{' '}
-                                                    Fine-tune Pipeline
-                                                </button>
                                                 <span
                                                     style={{
                                                         fontSize: '0.75rem',
@@ -732,7 +715,9 @@ const SkillsPanel: React.FC = () => {
                                                         color="#10b981"
                                                         aria-hidden="true"
                                                     />{' '}
-                                                    {skill.executionCount} Executions
+                                                    {t('skills.executions', {
+                                                        count: skill.executionCount ?? 0,
+                                                    })}
                                                 </span>
                                             </div>
                                         )}
@@ -770,9 +755,8 @@ const SkillsPanel: React.FC = () => {
                     />
                 </div>
                 <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--slate-300)', lineHeight: 1.6 }}>
-                    <strong>Performance Notice:</strong> Cognitive Skills consume significantly more
-                    context window tokens than basic tools. Enable them selectively based on the
-                    agent's assigned role in the topology to prevent context starvation.
+                    <strong>{t('skills.perf_notice_title')}:</strong>{' '}
+                    {t('skills.perf_notice_body')}
                 </p>
             </div>
 
