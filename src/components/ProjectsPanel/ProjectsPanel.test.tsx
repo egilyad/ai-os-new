@@ -15,6 +15,9 @@ vi.mock('../../kernel/instances/services-extras', () => ({
         create: mockCreate,
         get: vi.fn(),
     }),
+    projectWorkspaceService: {
+        getTree: vi.fn(() => Promise.reject(new Error('workspace down'))),
+    },
 }));
 
 vi.mock('../../stores/project-store', () => {
@@ -46,9 +49,16 @@ vi.mock('../../stores/project-store', () => {
     };
 });
 
+// Stable across renders: loadTab depends on t, and a fresh closure every
+// render would re-fire its effect into a loop (Zone 7 hazard).
+// vi.hoisted because the component is statically imported below.
+const { stableProjectsT } = vi.hoisted(() => ({
+    stableProjectsT: (key: string) => key,
+}));
+
 vi.mock('../../i18n/useTranslation', () => ({
     useTranslation: () => ({
-        t: (key: string) => key,
+        t: stableProjectsT,
         lang: 'en',
     }),
 }));
@@ -77,5 +87,39 @@ describe('ProjectsPanel', () => {
     it('shows new project button', () => {
         render(<ProjectsPanel />, { wrapper: Wrapper });
         expect(screen.getByText('projects.new')).toBeTruthy();
+    });
+
+    it('renders legacy projects without agentIds', async () => {
+        const { useProjectStore } = await import('../../stores/project-store');
+        useProjectStore.setState({
+            projects: new Map([
+                ['p9', { id: 'p9', name: 'Legacy', description: '', type: 'website', status: 'draft' }],
+            ]),
+            order: ['p9'],
+            selectedProjectId: null,
+        });
+        try {
+            render(<ProjectsPanel />, { wrapper: Wrapper });
+            expect(await screen.findByText('Legacy')).toBeTruthy();
+        } finally {
+            useProjectStore.setState({ projects: new Map(), order: [], selectedProjectId: null });
+        }
+    });
+
+    it('shows a tab error banner when tab loading fails', async () => {
+        const { useProjectStore } = await import('../../stores/project-store');
+        useProjectStore.setState({
+            projects: new Map([
+                ['p1', { id: 'p1', name: 'P1', description: '', type: 'website', status: 'draft', agentIds: [] }],
+            ]),
+            order: ['p1'],
+            selectedProjectId: 'p1',
+        });
+        try {
+            render(<ProjectsPanel />, { wrapper: Wrapper });
+            expect(await screen.findByText('projects.error_load_tab')).toBeTruthy();
+        } finally {
+            useProjectStore.setState({ projects: new Map(), order: [], selectedProjectId: null });
+        }
     });
 });

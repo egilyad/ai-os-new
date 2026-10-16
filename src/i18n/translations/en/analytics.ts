@@ -331,6 +331,7 @@ const analytics: Record<string, string> = {
 
     'forum.title': 'Agent Forum',
     'forum.refresh': 'Refresh',
+    'forum.error.generic': 'Forum request failed',
     'forum.seed_demo': 'Load demo thread',
     'forum.topic_title_placeholder': 'New topic title…',
     'forum.category': 'category',
@@ -416,6 +417,7 @@ const analytics: Record<string, string> = {
     'room.error.generic': 'Invocation failed. Check the console for details.',
     // ── Channels (mIRC-like) ──
     'channels.title': 'Channels',
+    'channels.error.generic': 'Channel request failed',
     'channels.namePlaceholder': 'channel-name',
     'channels.descPlaceholder': 'What is this channel about?',
     'channels.create': 'Create Channel',
@@ -445,6 +447,10 @@ const analytics: Record<string, string> = {
     'projects.creating': 'Creating...',
     'projects.loading': 'Loading projects...',
     'projects.empty': 'No projects yet. Create one to get started.',
+    'projects.error_load_tab': 'Failed to load this tab',
+    'projects.error_action': 'Action failed',
+    'projects.retry': 'Retry',
+    'projects.qa_hint_refresh': 'Click refresh to inspect',
     'projects.noDescription': 'No description',
     'projects.typeLabel': 'Type',
     'projects.agents': 'agents',

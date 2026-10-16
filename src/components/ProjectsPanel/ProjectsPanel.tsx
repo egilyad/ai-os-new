@@ -63,39 +63,48 @@ const ProjectsPanel: React.FC = () => {
     const [memories, setMemories] = useState<ProjectMemoryEntry[]>([]);
     const [goals, setGoals] = useState<AutonomyGoal[]>([]);
     const [pyHistory, setPyHistory] = useState<PythonRun[]>([]);
+    const [tabError, setTabError] = useState<string | null>(null);
 
     useEffect(() => { ensureSubscribed(); loadProjects(); return () => { destroy(); }; }, [loadProjects]);
 
     const loadTab = useCallback(async () => {
         if (!selectedId) return;
         try {
+            setTabError(null);
             if (activeTab === 'files') {
                 const tree = await projectWorkspaceService.getTree(selectedId);
-                setFiles(tree.map((e) => e.path));
+                setFiles(Array.isArray(tree) ? tree.map((e) => e.path) : []);
             } else if (activeTab === 'preview') {
                 const r = await websitePreviewService.generatePreview(selectedId);
-                setPreviewHtml(r.html);
+                setPreviewHtml(r?.html ?? '');
             } else if (activeTab === 'qa') {
                 const r = await browserInspectorService.inspect(selectedId);
-                setQaScore(r.score);
-                setQaIssues(r.issues);
+                setQaScore(typeof r?.score === 'number' ? r.score : null);
+                setQaIssues(Array.isArray(r?.issues) ? r.issues : []);
             } else if (activeTab === 'pipeline') {
                 let pipe = await multiAgentProjectService.getPipeline(selectedId);
                 if (!pipe) pipe = await multiAgentProjectService.createPipeline(selectedId);
-                setPipelineStage(pipe.currentStage);
+                setPipelineStage(pipe?.currentStage ?? '');
             } else if (activeTab === 'templates') {
                 setTemplateCount(projectTemplateService.listTemplates().length);
             } else if (activeTab === 'artifacts') {
                 setSnapshotCount(artifactService.listSnapshots(selectedId).length);
             } else if (activeTab === 'memory') {
-                setMemories(projectMemoryService.getEntries(selectedId));
+                const entries = projectMemoryService.getEntries(selectedId);
+                setMemories(Array.isArray(entries) ? entries : []);
             } else if (activeTab === 'autonomy') {
-                setGoals(autonomyOrchestrator.listGoals(selectedId));
+                const list = autonomyOrchestrator.listGoals(selectedId);
+                setGoals(Array.isArray(list) ? list : []);
             } else if (activeTab === 'python') {
-                setPyHistory(pythonRunnerService.getRunHistory(selectedId));
+                const hist = pythonRunnerService.getRunHistory(selectedId);
+                setPyHistory(Array.isArray(hist) ? hist : []);
             }
-        } catch (e) { console.error('[ProjectsPanel] loadTab error', e); }
-    }, [selectedId, activeTab]);
+        } catch (e) {
+            console.error('[ProjectsPanel] loadTab error', e);
+            // Stale/empty tabs must not masquerade as "no data".
+            setTabError(t('projects.error_load_tab'));
+        }
+    }, [selectedId, activeTab, t]);
 
     useEffect(() => { loadTab(); }, [loadTab]);
 
@@ -119,46 +128,75 @@ const ProjectsPanel: React.FC = () => {
         } finally { setSeeding(false); }
     };
 
+    // Every mutating action funnels through here so failures surface in the
+    // tab banner instead of failing silent (or pretending success).
+    const runGuarded = async (fn: () => void | Promise<void>) => {
+        setTabError(null);
+        try {
+            await fn();
+        } catch (e) {
+            console.error('[ProjectsPanel] action failed', e);
+            setTabError(t('projects.error_action'));
+        }
+    };
+
     const handleApplyTemplate = async (templateId: string) => {
         if (!selectedId) return;
-        await projectTemplateService.applyTemplate(templateId, selectedId);
-        setFiles((await projectWorkspaceService.getTree(selectedId)).map((e) => e.path));
-        setActiveTab('files');
+        await runGuarded(async () => {
+            await projectTemplateService.applyTemplate(templateId, selectedId);
+            const tree = await projectWorkspaceService.getTree(selectedId);
+            setFiles(Array.isArray(tree) ? tree.map((e) => e.path) : []);
+            setActiveTab('files');
+        });
     };
 
     const handleBuild = async () => {
         if (!selectedId) return;
-        await artifactService.build(selectedId, `Build ${Date.now()}`);
-        setSnapshotCount(artifactService.listSnapshots(selectedId).length);
+        await runGuarded(async () => {
+            await artifactService.build(selectedId, `Build ${Date.now()}`);
+            setSnapshotCount(artifactService.listSnapshots(selectedId).length);
+        });
     };
 
     const handleSnapshot = async () => {
         if (!selectedId) return;
-        await artifactService.createSnapshot(selectedId, `Snapshot ${Date.now()}`);
-        setSnapshotCount(artifactService.listSnapshots(selectedId).length);
+        await runGuarded(async () => {
+            await artifactService.createSnapshot(selectedId, `Snapshot ${Date.now()}`);
+            setSnapshotCount(artifactService.listSnapshots(selectedId).length);
+        });
     };
 
     const handleAdvancePipeline = async () => {
         if (!selectedId) return;
-        const pipe = await multiAgentProjectService.getPipeline(selectedId);
-        if (pipe) {
-            await multiAgentProjectService.completeStage(selectedId, pipe.currentStage, 'Done');
-            await multiAgentProjectService.advancePipeline(selectedId);
-            const updated = await multiAgentProjectService.getPipeline(selectedId);
-            setPipelineStage(updated?.currentStage || 'done');
-        }
+        await runGuarded(async () => {
+            const pipe = await multiAgentProjectService.getPipeline(selectedId);
+            if (pipe) {
+                await multiAgentProjectService.completeStage(selectedId, pipe.currentStage, 'Done');
+                await multiAgentProjectService.advancePipeline(selectedId);
+                const updated = await multiAgentProjectService.getPipeline(selectedId);
+                // Never fabricate a terminal state: if the refresh comes back
+                // empty, keep showing the last known stage.
+                setPipelineStage((prev) => updated?.currentStage ?? prev);
+            }
+        });
     };
 
     const handleAddMemory = (type: MemoryEntryType) => {
         if (!selectedId) return;
-        projectMemoryService.addEntry(selectedId, { projectId: selectedId, type, title: `New ${type}`, content: '', tags: [] });
-        setMemories(projectMemoryService.getEntries(selectedId));
+        void runGuarded(() => {
+            projectMemoryService.addEntry(selectedId, { projectId: selectedId, type, title: `New ${type}`, content: '', tags: [] });
+            const entries = projectMemoryService.getEntries(selectedId);
+            setMemories(Array.isArray(entries) ? entries : []);
+        });
     };
 
     const handleCreateGoal = () => {
         if (!selectedId) return;
-        autonomyOrchestrator.createGoal(selectedId, 'New goal');
-        setGoals(autonomyOrchestrator.listGoals(selectedId));
+        void runGuarded(() => {
+            autonomyOrchestrator.createGoal(selectedId, 'New goal');
+            const list = autonomyOrchestrator.listGoals(selectedId);
+            setGoals(Array.isArray(list) ? list : []);
+        });
     };
 
     // ── Project list view ──
@@ -201,7 +239,7 @@ const ProjectsPanel: React.FC = () => {
                                 <div style={{ fontSize: '0.8rem', opacity: 0.7, marginTop: '0.25rem' }}>{p.description || t('projects.noDescription')}</div>
                                 <div style={{ fontSize: '0.75rem', opacity: 0.5, marginTop: '0.2rem', display: 'flex', gap: '0.75rem' }}>
                                     <span>{t('projects.typeLabel')}: {p.type}</span>
-                                    <span>{p.agentIds.length} {t('projects.agents')}</span>
+                                    <span>{(p.agentIds ?? []).length} {t('projects.agents')}</span>
                                 </div>
                             </div>
                         );
@@ -231,6 +269,43 @@ const ProjectsPanel: React.FC = () => {
             </div>
 
             <div style={{ flex: 1, overflowY: 'auto', padding: '0.75rem 1rem' }}>
+                {tabError && (
+                    <div
+                        role="alert"
+                        style={{
+                            padding: '0.5rem 0.75rem',
+                            borderRadius: 8,
+                            background: 'rgba(239,68,68,0.08)',
+                            border: '1px solid rgba(239,68,68,0.2)',
+                            color: '#fca5a5',
+                            fontSize: '0.8rem',
+                            marginBottom: '0.5rem',
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
+                            gap: 8,
+                        }}
+                    >
+                        <span>{tabError}</span>
+                        <button
+                            onClick={() => {
+                                setTabError(null);
+                                void loadTab();
+                            }}
+                            style={{
+                                background: 'none',
+                                border: '1px solid rgba(239,68,68,0.3)',
+                                color: '#fca5a5',
+                                borderRadius: 6,
+                                fontSize: '0.75rem',
+                                padding: '0.2rem 0.6rem',
+                                cursor: 'pointer',
+                            }}
+                        >
+                            {t('projects.retry')}
+                        </button>
+                    </div>
+                )}
                 {/* ── Files Tab ── */}
                 {activeTab === 'files' && (
                     <div>
@@ -250,7 +325,14 @@ const ProjectsPanel: React.FC = () => {
                             <Button variant="ghost" size="sm" onClick={loadTab}>{t('preview.refresh')}</Button>
                         </div>
                         {previewHtml ? (
-                            <iframe srcDoc={previewHtml} style={PREVIEW_IFRAME} title="Preview" />
+                            // sandbox without allow-same-origin: generated site scripts
+                            // may run, but in an opaque origin that cannot touch the app.
+                            <iframe
+                                srcDoc={previewHtml}
+                                sandbox="allow-scripts"
+                                style={PREVIEW_IFRAME}
+                                title="Preview"
+                            />
                         ) : (
                             <p style={{ opacity: 0.5 }}>{t('preview.noFiles')}</p>
                         )}
@@ -290,7 +372,7 @@ const ProjectsPanel: React.FC = () => {
                                     </div>
                                 )}
                             </div>
-                        ) : <p style={{ opacity: 0.5 }}>Click refresh to inspect</p>}
+                        ) : <p style={{ opacity: 0.5 }}>{t('projects.qa_hint_refresh')}</p>}
                     </div>
                 )}
 
@@ -374,7 +456,7 @@ const ProjectsPanel: React.FC = () => {
                                     <StatusBadge status={g.status} label={g.status} />
                                 </div>
                                 <div style={{ fontSize: '0.75rem', opacity: 0.7, marginTop: '0.2rem' }}>
-                                    Priority: {g.priority} | Created: {new Date(g.createdAt).toLocaleDateString()}
+                                    Priority: {g.priority} | Created: {g.createdAt ? new Date(g.createdAt).toLocaleDateString() : '—'}
                                 </div>
                             </div>
                         ))}
@@ -394,11 +476,12 @@ const ProjectsPanel: React.FC = () => {
                     <div>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
                             <h3 style={{ margin: 0 }}>{t('python.title')}</h3>
-                            <Button variant="primary" size="sm" onClick={async () => {
+                            <Button variant="primary" size="sm" onClick={() => void runGuarded(async () => {
                                 await pythonRunnerService.createPythonProject(selectedId);
                                 await pythonRunnerService.run(selectedId);
-                                setPyHistory(pythonRunnerService.getRunHistory(selectedId));
-                            }}>{t('python.run')}</Button>
+                                const hist = pythonRunnerService.getRunHistory(selectedId);
+                                setPyHistory(Array.isArray(hist) ? hist : []);
+                            })}>{t('python.run')}</Button>
                         </div>
                         {pyHistory.length === 0 && <p style={{ opacity: 0.5 }}>No runs yet. Write a main.py via agent, then run.</p>}
                         {pyHistory.map((run) => (

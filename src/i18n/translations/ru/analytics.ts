@@ -330,6 +330,7 @@ const analytics: Record<string, string> = {
 
     'forum.title': 'Форум агентов',
     'forum.refresh': 'Обновить',
+    'forum.error.generic': 'Ошибка запроса форума',
     'forum.seed_demo': 'Загрузить демо-ветку',
     'forum.topic_title_placeholder': 'Название новой темы…',
     'forum.category': 'категория',
@@ -415,6 +416,7 @@ const analytics: Record<string, string> = {
     'room.error.generic': 'Вызов не удался. Подробности в консоли.',
     // ── Каналы (mIRC-подобные) ──
     'channels.title': 'Каналы',
+    'channels.error.generic': 'Ошибка запроса канала',
     'channels.namePlaceholder': 'имя-канала',
     'channels.descPlaceholder': 'О чём этот канал?',
     'channels.create': 'Создать канал',
@@ -444,6 +446,10 @@ const analytics: Record<string, string> = {
     'projects.creating': 'Создание...',
     'projects.loading': 'Загрузка проектов...',
     'projects.empty': 'Проектов пока нет. Создайте первый.',
+    'projects.error_load_tab': 'Не удалось загрузить вкладку',
+    'projects.error_action': 'Действие не выполнено',
+    'projects.retry': 'Повторить',
+    'projects.qa_hint_refresh': 'Нажмите «обновить» для проверки',
     'projects.noDescription': 'Без описания',
     'projects.typeLabel': 'Тип',
     'projects.agents': 'агентов',

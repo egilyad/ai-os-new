@@ -6,7 +6,7 @@
  * read project files during chats and debates. Binary files and files over
  * 5 MB are excluded from preview.
  */
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import {
     FolderOpen,
     FolderClosed,
@@ -124,25 +124,39 @@ const WorkspacePanel: React.FC = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [searchResults, setSearchResults] = useState<string[]>([]);
     const [searching, setSearching] = useState(false);
+    const [treeError, setTreeError] = useState<string | null>(null);
+    const [attachError, setAttachError] = useState<string | null>(null);
+    const [searchError, setSearchError] = useState<string | null>(null);
+    // Stale-preview guard: rapid file clicks resolve out of order — only the
+    // latest request may write preview state.
+    const previewReqRef = useRef(0);
 
     const refreshTree = useCallback(async () => {
         setTreeLoading(true);
+        setTreeError(null);
         try {
             const nodes = await workspaceService.listTree();
-            setTree(nodes);
+            setTree(Array.isArray(nodes) ? nodes : []);
+        } catch (e) {
+            setTree([]);
+            setTreeError(e instanceof Error ? e.message : 'Failed to load file tree');
         } finally {
             setTreeLoading(false);
         }
     }, []);
 
     const handleAttach = async () => {
+        setAttachError(null);
         try {
             await workspaceService.attachDirectory();
             setAttached(true);
             setWorkspaceName(workspaceService.getWorkspaceName());
             await refreshTree();
-        } catch {
-            console.warn('[WorkspacePanel] Failed to load workspace');
+        } catch (e) {
+            // Picker cancellation is benign — only real failures surface.
+            if ((e as Error)?.name !== 'AbortError') {
+                setAttachError(e instanceof Error ? e.message : 'Failed to attach workspace');
+            }
         }
     };
 
@@ -169,33 +183,39 @@ const WorkspacePanel: React.FC = () => {
     };
 
     const handleSelectFile = async (path: string) => {
+        const req = ++previewReqRef.current;
         setSelectedPath(path);
         setPreviewLoading(true);
         setPreviewError(null);
         setPreviewContent(null);
         try {
             if (isBinaryFile(path)) {
-                setPreviewError('Binary file — preview not available.');
+                if (previewReqRef.current === req) setPreviewError('Binary file — preview not available.');
                 return;
             }
             const node = findFileNode(tree, path);
             if (node?.size != null && node.size > MAX_FILE_SIZE) {
-                setPreviewError(
-                    `File too large (${formatSize(node.size)}). Maximum preview size is ${formatSize(MAX_FILE_SIZE)}.`,
-                );
+                if (previewReqRef.current === req) {
+                    setPreviewError(
+                        `File too large (${formatSize(node.size)}). Maximum preview size is ${formatSize(MAX_FILE_SIZE)}.`,
+                    );
+                }
                 return;
             }
             const content = await workspaceService.readFile(path);
-            setPreviewContent(content);
+            if (previewReqRef.current === req) setPreviewContent(content);
         } catch (e) {
-            setPreviewError(e instanceof Error ? e.message : 'Failed to read file');
+            if (previewReqRef.current === req) {
+                setPreviewError(e instanceof Error ? e.message : 'Failed to read file');
+            }
         } finally {
-            setPreviewLoading(false);
+            if (previewReqRef.current === req) setPreviewLoading(false);
         }
     };
 
     const handleSearch = useCallback(async (query: string) => {
         setSearchQuery(query);
+        setSearchError(null);
         if (!query.trim()) {
             setSearchResults([]);
             return;
@@ -203,7 +223,11 @@ const WorkspacePanel: React.FC = () => {
         setSearching(true);
         try {
             const results = await workspaceService.search(query);
-            setSearchResults(results);
+            setSearchResults(Array.isArray(results) ? results : []);
+        } catch (e) {
+            // A failed search must not masquerade as "no matching files".
+            setSearchResults([]);
+            setSearchError(e instanceof Error ? e.message : 'Search failed');
         } finally {
             setSearching(false);
         }
@@ -387,6 +411,11 @@ const WorkspacePanel: React.FC = () => {
                     >
                         <FolderOpen size={18} /> Attach Folder
                     </button>
+                    {attachError && (
+                        <span role="alert" style={{ fontSize: '0.82rem', color: 'var(--error)', maxWidth: 300, textAlign: 'center' }}>
+                            {attachError}
+                        </span>
+                    )}
                 </div>
             ) : (
                 <>
@@ -480,17 +509,52 @@ const WorkspacePanel: React.FC = () => {
 
                     {/* Content: tree or search results */}
                     <div style={{ flex: 1, overflowY: 'auto', padding: '0 0.5rem 0.5rem' }}>
+                        {treeError && !searchQuery && (
+                            <div
+                                role="alert"
+                                style={{
+                                    margin: '0.5rem',
+                                    padding: '0.6rem 0.8rem',
+                                    borderRadius: 8,
+                                    background: 'rgba(239,68,68,0.08)',
+                                    border: '1px solid rgba(239,68,68,0.2)',
+                                    color: 'var(--error)',
+                                    fontSize: '0.8rem',
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                    alignItems: 'center',
+                                    gap: 8,
+                                }}
+                            >
+                                <span>{treeError}</span>
+                                <button
+                                    onClick={refreshTree}
+                                    style={{
+                                        background: 'none',
+                                        border: '1px solid rgba(239,68,68,0.3)',
+                                        color: 'var(--error)',
+                                        borderRadius: 6,
+                                        fontSize: '0.72rem',
+                                        padding: '0.2rem 0.6rem',
+                                        cursor: 'pointer',
+                                        flexShrink: 0,
+                                    }}
+                                >
+                                    Retry
+                                </button>
+                            </div>
+                        )}
                         {searchQuery ? (
                             searchResults.length === 0 ? (
                                 <div
                                     style={{
                                         padding: '2rem',
                                         textAlign: 'center',
-                                        color: 'var(--slate-600)',
+                                        color: searchError ? 'var(--error)' : 'var(--slate-600)',
                                         fontSize: '0.82rem',
                                     }}
                                 >
-                                    {searching ? 'Searching...' : 'No matching files'}
+                                    {searching ? 'Searching...' : (searchError ?? 'No matching files')}
                                 </div>
                             ) : (
                                 <div>

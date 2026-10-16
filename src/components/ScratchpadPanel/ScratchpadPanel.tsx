@@ -34,11 +34,18 @@ export const ScratchpadPanel: React.FC = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [sessionId]);
     const [analysis, setAnalysis] = useState<ReturnType<ScratchpadService['analyze']> | null>(null);
+    const [error, setError] = useState<string | null>(null);
 
     const handleAnalyze = () => {
-        const role = agents.find(a => a.id === agentId)?.role ?? 'neutral';
-        const res = svc.analyze(agentId, role, round, args, topic, 'English');
-        setAnalysis(res);
+        setError(null);
+        try {
+            const role = agents.find(a => a.id === agentId)?.role ?? 'neutral';
+            const res = svc.analyze(agentId, role, round, args, topic, 'English');
+            setAnalysis(res);
+        } catch (e) {
+            setAnalysis(null);
+            setError(e instanceof Error ? e.message : 'Analysis failed');
+        }
     };
 
     return (
@@ -56,6 +63,13 @@ export const ScratchpadPanel: React.FC = () => {
             {agents.length === 0 && (
                 <div style={{ padding: 10, borderRadius: 8, background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)', fontSize: 13, color: '#f87171' }}>
                     No agents available
+                </div>
+            )}
+
+            {error && (
+                <div role="alert" style={{ padding: 10, borderRadius: 8, background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)', fontSize: 13, color: '#f87171', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8 }}>
+                    <span>{error}</span>
+                    <button onClick={() => setError(null)} style={{ background: 'none', border: 'none', color: 'inherit', cursor: 'pointer', fontSize: 13 }} aria-label="Dismiss error">✕</button>
                 </div>
             )}
 
@@ -89,7 +103,7 @@ export const ScratchpadPanel: React.FC = () => {
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 6, maxHeight: 260, overflowY: 'auto' }}>
                             {args.map(a => (
                                 <div key={a.id} style={{ padding: '6px 8px', borderRadius: 6, background: a.agentId === agentId ? 'rgba(99,102,241,0.08)' : 'rgba(255,255,255,0.03)', border: `1px solid ${a.agentId === agentId ? 'rgba(99,102,241,0.15)' : 'rgba(255,255,255,0.06)'}`, fontSize: 12, color: 'var(--slate-300)' }}>
-                                    <span style={{ fontWeight: 700, color: a.agentId === agentId ? '#a78bfa' : 'var(--slate-400)' }}>{a.agentName} r{a.round}</span> — {a.content.slice(0, 80)}
+                                    <span style={{ fontWeight: 700, color: a.agentId === agentId ? '#a78bfa' : 'var(--slate-400)' }}>{a.agentName} r{a.round}</span> — {(a.content ?? '').slice(0, 80)}
                                 </div>
                             ))}
                         </div>
