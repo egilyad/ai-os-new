@@ -14,7 +14,6 @@ import {
     Palette,
     Key,
     Globe,
-    Brain,
     FileText,
     Network,
     HardDrive,
@@ -49,22 +48,9 @@ import AppearanceTab from './AppearanceTab';
 import { errorBannerLg, flexJustifyBetween } from '../../styles/common';
 import { useConfirm } from '../../hooks/useConfirm';
 
-function AiModulesTab() {
-    const [activity, setActivity] = useState(3);
-    const [autonomy, setAutonomy] = useState(3);
-    return (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-            <h3 style={{ margin: 0, fontWeight: 800 }}>AI Modules</h3>
-            <p style={{ color: 'var(--slate-400)', fontSize: '0.85rem' }}>Per-module activity (1-5) and autonomy (1-5). Persisted via settingsService per-module.</p>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                <label style={{ fontSize: 12, color: 'var(--slate-300)' }}>Activity Level: {activity} <input type="range" min={1} max={5} value={activity} onChange={(e) => setActivity(Number(e.target.value))} style={{ width: '100%' }} /></label>
-                <label style={{ fontSize: 12, color: 'var(--slate-300)' }}>Autonomy Level: {autonomy} <input type="range" min={1} max={5} value={autonomy} onChange={(e) => setAutonomy(Number(e.target.value))} style={{ width: '100%' }} /></label>
-                <div style={{ fontSize: 11, color: 'var(--slate-500)' }}>Modules: Planner · Guardrails · Autonomy · Dyad · SOP · RunQueue — each can be tuned separately.</div>
-            </div>
-        </div>
-    );
-}
-
+// AiModulesTab removed (Zone 9): its sliders only moved local useState and the
+// "Persisted via settingsService per-module" claim was false — settingsService
+// has no per-module activity/autonomy API. Dead controls out.
 const VALID_TABS: ReadonlySet<string> = new Set([
     'general',
     'writing',
@@ -76,7 +62,6 @@ const VALID_TABS: ReadonlySet<string> = new Set([
     'appearance',
     'llmKeys',
     'platform',
-    'aiModules',
     'systemPrompts',
     'n8n',
     'system',
@@ -389,22 +374,25 @@ const SettingsPanel: React.FC = () => {
                         <div style={{ padding: '12px 14px', borderRadius: 10, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', fontSize: 12 }}>Platform budget via <code>agems-budget-service</code> · org-wide limits hourly/daily/monthly</div>
                     </div>
                 );
-            case 'aiModules':
-                return <AiModulesTab />;
             case 'systemPrompts':
+                // Zone 9: the old dead textarea (edits went nowhere) is replaced
+                // by a redirect to the real Prompts editor tab.
                 return (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
                         <h3 style={{ margin: 0, fontWeight: 800 }}>System Prompts</h3>
-                        <p style={{ color: 'var(--slate-400)', fontSize: '0.85rem' }}>Edit global system prompts and per-agent prompts. Stored in ISNode.config.prompt / agentSystemPrompt.</p>
-                        <textarea placeholder="Global system prompt…" rows={6} style={{ width: '100%', padding: '10px 12px', borderRadius: 10, border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(0,0,0,0.2)', color: 'inherit', fontSize: 12 }} />
+                        <p style={{ color: 'var(--slate-400)', fontSize: '0.85rem' }}>Global and per-agent system prompts live in the Prompts editor (autosaved per role).</p>
+                        <div style={{ display: 'flex', gap: 8 }}><button onClick={() => setActiveTab('prompts')} style={{ padding: '8px 14px', borderRadius: 8, background: '#3b82f6', color: 'white', border: 'none', fontWeight: 600, fontSize: 12, cursor: 'pointer' }}>Open Prompts Editor</button></div>
                     </div>
                 );
             case 'n8n':
+                // Zone 9: the old URL/key inputs never saved anywhere. n8n is
+                // genuinely per-agent (n8n-service reads RuntimeConfig per agent),
+                // so this tab now says so and links to Agents instead of faking a form.
                 return (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
                         <h3 style={{ margin: 0, fontWeight: 800 }}>N8N</h3>
-                        <p style={{ color: 'var(--slate-400)', fontSize: '0.85rem' }}>N8N API URL + key for workflow triggers. Stored per-agent in RuntimeConfig.n8nApiUrl/n8nApiKey.</p>
-                        <div style={{ display: 'flex', gap: 8 }}><input placeholder="https://n8n.example.com/api/v1" style={{ flex: 1, padding: '8px 10px', borderRadius: 8, border: '1px solid var(--border)', background: 'rgba(0,0,0,0.2)', fontSize: 12 }} /><input placeholder="API Key" type="password" style={{ flex: 1, padding: '8px 10px', borderRadius: 8, border: '1px solid var(--border)', background: 'rgba(0,0,0,0.2)', fontSize: 12 }} /></div>
+                        <p style={{ color: 'var(--slate-400)', fontSize: '0.85rem' }}>N8N API URL + key are configured per-agent (RuntimeConfig.n8nApiUrl/n8nApiKey) — there is no global n8n credential. Open an agent to set it up.</p>
+                        <div style={{ display: 'flex', gap: 8 }}><a href="#/agents" style={{ padding: '8px 14px', borderRadius: 8, background: '#3b82f6', color: 'white', textDecoration: 'none', fontWeight: 600, fontSize: 12 }}>Open Agents</a></div>
                     </div>
                 );
             case 'system':
@@ -578,11 +566,6 @@ const SettingsPanel: React.FC = () => {
                                 id: 'platform',
                                 label: 'Platform',
                                 icon: <Globe size={18} aria-hidden="true" />,
-                            },
-                            {
-                                id: 'aiModules',
-                                label: 'AI Modules',
-                                icon: <Brain size={18} aria-hidden="true" />,
                             },
                             {
                                 id: 'systemPrompts',

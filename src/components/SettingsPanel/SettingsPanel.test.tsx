@@ -41,7 +41,29 @@ const mockCONFIG = {
     },
 };
 
+vi.mock('react-router-dom', () => ({
+    useSearchParams: () => [new URLSearchParams()],
+}));
+
+// The real store boots Dexie at import (throws in this env) — some settings
+// tabs consume it, so stub the selector surface.
+vi.mock('../../stores/useKeyStore', () => ({
+    useKeyStore: (selector?: (s: Record<string, unknown>) => unknown) =>
+        selector
+            ? selector({ keys: [], checkAllHealth: vi.fn() })
+            : { keys: [], checkAllHealth: vi.fn() },
+    useKeyList: () => ({ keys: [], activeKeys: [] }),
+}));
+
 vi.mock('../../kernel/instances', () => ({
+    rootLogger: {
+        child: vi.fn(() => ({
+            debug: vi.fn(),
+            info: vi.fn(),
+            warn: vi.fn(),
+            error: vi.fn(),
+        })),
+    },
     eventBus: { emit: vi.fn(), on: vi.fn(() => vi.fn()), off: vi.fn() },
     EVENTS: { NOTIFICATION: 'notification' },
     CONFIG: mockCONFIG,
@@ -361,5 +383,37 @@ describe('SettingsPanel', () => {
         expect(await screen.findByText(/v0\.0\.0/, {}, { timeout: 10000 })).toBeDefined();
         expect(screen.getByText('dev')).toBeDefined();
         expect(screen.getByText('HEALTHY')).toBeDefined();
+    }, 15000);
+
+    it('has no dead AI Modules tab', async () => {
+        const SettingsPanel = (await import('./SettingsPanel')).default;
+        render(<SettingsPanel />);
+        await screen.findByRole('tab', { name: /General Preferences/i }, { timeout: 10000 });
+        expect(screen.queryByRole('tab', { name: 'AI Modules' })).toBeNull();
+    }, 15000);
+
+    it('System Prompts tab redirects to the real Prompts editor', async () => {
+        const SettingsPanel = (await import('./SettingsPanel')).default;
+        render(<SettingsPanel />);
+        await screen.findByRole('tab', { name: /General Preferences/i }, { timeout: 10000 });
+        fireEvent.click(getTab('System Prompts'));
+        expect(await screen.findByText('Open Prompts Editor')).toBeDefined();
+        // The dead textarea is gone — no uncontrolled inputs in this tab.
+        const panel = document.getElementById('settings-tab-systemPrompts');
+        expect(panel?.querySelectorAll('textarea').length ?? 0).toBe(0);
+        fireEvent.click(screen.getByText('Open Prompts Editor'));
+        expect(
+            screen.getByRole('tab', { name: 'Prompts' }).getAttribute('aria-selected'),
+        ).toBe('true');
+    }, 15000);
+
+    it('N8N tab has no fake credential form', async () => {
+        const SettingsPanel = (await import('./SettingsPanel')).default;
+        render(<SettingsPanel />);
+        await screen.findByRole('tab', { name: /General Preferences/i }, { timeout: 10000 });
+        fireEvent.click(getTab('N8N'));
+        expect(await screen.findByText('Open Agents')).toBeDefined();
+        const panel = document.getElementById('settings-tab-n8n');
+        expect(panel?.querySelectorAll('input').length ?? 0).toBe(0);
     }, 15000);
 });
