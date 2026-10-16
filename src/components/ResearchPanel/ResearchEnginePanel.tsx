@@ -21,11 +21,23 @@ const ResearchEnginePanel: React.FC = () => {
     const [newQuestion, setNewQuestion] = useState('');
     const [showForm, setShowForm] = useState(false);
     const [showSourceConfig, setShowSourceConfig] = useState(false);
-    const [enabledSources, setEnabledSources] = useState<SourceType[]>(
-        sourceAdapterRegistry.getConfig().enabledSources,
-    );
+    const [enabledSources, setEnabledSources] = useState<SourceType[]>(() => {
+        try {
+            return sourceAdapterRegistry.getConfig()?.enabledSources ?? [];
+        } catch {
+            return [];
+        }
+    });
+    const [error, setError] = useState<string | null>(null);
     const refresh = useCallback(() => {
-        setSessions(researchEngine.getAllSessions());
+        try {
+            const all = researchEngine.getAllSessions();
+            setSessions(Array.isArray(all) ? all : []);
+        } catch (e) {
+            console.error('[ResearchEnginePanel] refresh failed', e);
+            setError(t('research_engine.error_refresh'));
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {
@@ -35,31 +47,41 @@ const ResearchEnginePanel: React.FC = () => {
 
     const handleCreate = async () => {
         if (!newTitle.trim() || !newQuestion.trim()) return;
+        setError(null);
         try {
             await researchEngine.startSession(newTitle.trim(), newQuestion.trim());
             setNewTitle('');
             setNewQuestion('');
             setShowForm(false);
             refresh();
-        } catch {
-            /**/
+        } catch (e) {
+            console.error('[ResearchEnginePanel] create failed', e);
+            setError(t('research_engine.error_create'));
         }
     };
 
     const handleRun = async (id: string) => {
+        setError(null);
         try {
             await researchEngine.runLoop(id);
-        } catch {
-            /* non-critical — run loop failed */
+        } catch (e) {
+            console.error('[ResearchEnginePanel] run failed', e);
+            setError(t('research_engine.error_run'));
         } finally {
             refresh();
         }
     };
 
     const handleDelete = (id: string) => {
-        researchEngine.deleteSession(id);
-        if (expandedId === id) setExpandedId(null);
-        refresh();
+        setError(null);
+        try {
+            researchEngine.deleteSession(id);
+            if (expandedId === id) setExpandedId(null);
+            refresh();
+        } catch (e) {
+            console.error('[ResearchEnginePanel] delete failed', e);
+            setError(t('research_engine.error_delete'));
+        }
     };
 
     const toggleSource = (name: SourceType) => {
@@ -67,10 +89,22 @@ const ResearchEnginePanel: React.FC = () => {
             ? enabledSources.filter((s) => s !== name)
             : [...enabledSources, name];
         setEnabledSources(next);
-        sourceAdapterRegistry.updateConfig({ enabledSources: next });
+        try {
+            sourceAdapterRegistry.updateConfig({ enabledSources: next });
+        } catch (e) {
+            console.error('[ResearchEnginePanel] source toggle failed', e);
+            setError(t('research_engine.error_refresh'));
+        }
     };
 
-    const allAdapters = sourceAdapterRegistry.getAllAdapters();
+    const allAdapters = (() => {
+        try {
+            const list = sourceAdapterRegistry.getAllAdapters();
+            return Array.isArray(list) ? list : [];
+        } catch {
+            return [];
+        }
+    })();
     const sourceStats = { total: allAdapters.length, enabled: enabledSources.length };
 
     return (
@@ -141,6 +175,41 @@ const ResearchEnginePanel: React.FC = () => {
                     </button>
                 </div>
             </div>
+
+            {error && (
+                <div
+                    role="alert"
+                    style={{
+                        padding: '0.6rem 0.9rem',
+                        borderRadius: 10,
+                        background: 'rgba(239,68,68,0.08)',
+                        border: '1px solid rgba(239,68,68,0.2)',
+                        color: '#fca5a5',
+                        fontSize: '0.82rem',
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        gap: 8,
+                        marginBottom: '1rem',
+                    }}
+                >
+                    <span>{error}</span>
+                    <button
+                        onClick={() => setError(null)}
+                        style={{
+                            background: 'none',
+                            border: 'none',
+                            color: 'inherit',
+                            cursor: 'pointer',
+                            fontSize: '0.85rem',
+                            flexShrink: 0,
+                        }}
+                        aria-label={t('common.dismiss_error')}
+                    >
+                        ✕
+                    </button>
+                </div>
+            )}
 
             <AnimatePresence>
                 {showSourceConfig && (

@@ -43,13 +43,23 @@ const GeminiResearchPanel: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        if (researchEngine) {
-            setSessions(researchEngine.getAllSessions());
+        if (!researchEngine) return;
+        try {
+            const all = researchEngine.getAllSessions();
+            setSessions(Array.isArray(all) ? all : []);
+        } catch {
+            setError('Failed to load research sessions');
         }
     }, []);
 
     usePolling(() => {
-        if (researchEngine) setSessions(researchEngine.getAllSessions());
+        if (!researchEngine) return;
+        try {
+            const all = researchEngine.getAllSessions();
+            setSessions(Array.isArray(all) ? all : []);
+        } catch {
+            /* keep last known sessions on poll failures */
+        }
     }, 15000);
 
     const renderTab = () => {
@@ -187,7 +197,7 @@ const GeminiResearchPanel: React.FC = () => {
                         <option value="">Select a session...</option>
                         {sessions.map((s) => (
                             <option key={s.id} value={s.id}>
-                                {s.title} ({s.loops.length} loops)
+                                {s.title} ({(s.loops ?? []).length} loops)
                             </option>
                         ))}
                     </select>
