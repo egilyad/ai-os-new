@@ -42,4 +42,12 @@ describe('ConsistencyPanel', () => {
         expect(screen.queryByText(/Bob/i)).toBeNull();
         expect(screen.getAllByText(/Agent One/).length).toBeGreaterThan(0);
     });
+    it('tolerates legacy args without content', () => {
+        useActiveDebateStore.getState().setSession({ id: 's9', topic: 't', arguments: [
+            { id: 'legacy', agentId: 'agent-1', round: 1 },
+        ] } as never);
+        render(<ConsistencyPanel />);
+        expect(screen.getAllByText(/Consistency/i).length).toBeGreaterThan(0);
+        expect(document.body.textContent).not.toContain('NaN');
+    });
 });

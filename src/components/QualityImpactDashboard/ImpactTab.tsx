@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { qualityImpactCollector } from '../../kernel/instances';
+import { getTechniques } from '../../kernel/services/debate-runtime/quality-settings-store';
 import type { TechniqueImpactMetrics } from '../../kernel/contracts/quality-impact';
 import { useTranslation } from '../../i18n/useTranslation';
 import {
@@ -32,11 +33,22 @@ const ImpactTab: React.FC = () => {
     const refresh = useCallback(() => {
         try {
             const all = qualityImpactCollector.getAllMetrics();
-            setMetrics(all ?? []);
+            setMetrics(Array.isArray(all) ? all : []);
         } catch {
             /* not initialized */
         }
     }, []);
+
+    // The "/N" denominator was a hardcoded 70 while the registry holds ~77 —
+    // derive it from the actual technique store instead of a stale literal.
+    const totalTechniques = (() => {
+        try {
+            const all = getTechniques();
+            return Array.isArray(all) && all.length > 0 ? all.length : null;
+        } catch {
+            return null;
+        }
+    })();
 
     useEffect(() => {
         refresh();
@@ -52,18 +64,20 @@ const ImpactTab: React.FC = () => {
         }
     };
 
+    const num = (v: unknown) => (typeof v === 'number' && Number.isFinite(v) ? v : 0);
     const sorted = [...metrics].sort((a, b) => {
         let cmp: number;
-        if (sortKey === 'techniqueId') cmp = a.techniqueId.localeCompare(b.techniqueId);
+        if (sortKey === 'techniqueId')
+            cmp = (a.techniqueId ?? '').localeCompare(b.techniqueId ?? '');
         else if (sortKey === 'confidence')
             cmp = (CONFIDENCE_ORDER[a.confidence] ?? 0) - (CONFIDENCE_ORDER[b.confidence] ?? 0);
-        else if (sortKey === 'totalActivations') cmp = a.totalActivations - b.totalActivations;
-        else cmp = a.avgJudgeScoreDelta - b.avgJudgeScoreDelta;
+        else if (sortKey === 'totalActivations') cmp = num(a.totalActivations) - num(b.totalActivations);
+        else cmp = num(a.avgJudgeScoreDelta) - num(b.avgJudgeScoreDelta);
         return sortDir === 'desc' ? -cmp : cmp;
     });
 
-    const totalSessions = metrics.reduce((s, m) => Math.max(s, m.totalSessions), 0);
-    const totalActivations = metrics.reduce((s, m) => s + m.totalActivations, 0);
+    const totalSessions = metrics.reduce((s, m) => Math.max(s, num(m.totalSessions)), 0);
+    const totalActivations = metrics.reduce((s, m) => s + num(m.totalActivations), 0);
     const sortArrow = (key: SortKey): string =>
         sortKey === key ? (sortDir === 'desc' ? ' ▼' : ' ▲') : '';
 
@@ -75,7 +89,9 @@ const ImpactTab: React.FC = () => {
                     <div style={statLabelStyle}>{t('quality_impact.sessions') ?? 'Sessions'}</div>
                 </div>
                 <div style={statCardStyle}>
-                    <div style={statValueStyle}>{metrics.length}/70</div>
+                    <div style={statValueStyle}>
+                        {totalTechniques === null ? metrics.length : `${metrics.length}/${totalTechniques}`}
+                    </div>
                     <div style={statLabelStyle}>
                         {t('quality_impact.techniques') ?? 'Techniques'}
                     </div>
@@ -201,10 +217,10 @@ const ImpactTab: React.FC = () => {
                                 {m.techniqueId}
                             </span>
                             <span style={deltaStyle(m.avgJudgeScoreDelta)}>
-                                {m.avgJudgeScoreDelta >= 0 ? '+' : ''}
+                                {typeof m.avgJudgeScoreDelta === 'number' && m.avgJudgeScoreDelta >= 0 ? '+' : ''}
                                 {formatPct(m.avgJudgeScoreDelta)}
                             </span>
-                            <span style={{ color: 'var(--slate-400)' }}>{m.totalActivations}</span>
+                            <span style={{ color: 'var(--slate-400)' }}>{num(m.totalActivations)}</span>
                             <span>
                                 <span
                                     style={badgeStyle(CONFIDENCE_COLOR[m.confidence] ?? '#6b7280')}
@@ -212,7 +228,7 @@ const ImpactTab: React.FC = () => {
                                     {PRETTY_CONFIDENCE[m.confidence] ?? m.confidence}
                                 </span>
                             </span>
-                            <span style={{ color: 'var(--slate-400)' }}>{m.totalSessions}</span>
+                            <span style={{ color: 'var(--slate-400)' }}>{num(m.totalSessions)}</span>
                             <span style={{ color: 'var(--slate-500)', fontSize: '16px' }}>
                                 {expandedId === m.techniqueId ? '−' : '+'}
                             </span>

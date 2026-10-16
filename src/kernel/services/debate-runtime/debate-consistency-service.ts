@@ -2,9 +2,10 @@ import type { IConsistencyService, Contradiction } from '../../contracts/debate-
 
 // Jaccard similarity of word sets between two texts
 function jaccardText(a: string, b: string): number {
+    // Legacy args may carry undefined content — treat as empty, never crash.
     const norm = (t: string) =>
         new Set(
-            t
+            (t ?? '')
                 .toLowerCase()
                 .replace(/[^a-zа-яё0-9\s]/g, '')
                 .split(/\s+/)
@@ -89,9 +90,9 @@ export class ConsistencyService implements IConsistencyService {
                 if (hasDirectContradiction && !hasIdentityBinding) {
                     result.push({
                         earlierClaimId: past.id,
-                        earlierClaimText: past.content.slice(0, 300),
+                        earlierClaimText: (past.content ?? '').slice(0, 300),
                         earlierRound: past.round,
-                        currentClaimText: currentText.slice(0, 300),
+                        currentClaimText: (currentText ?? '').slice(0, 300),
                         similarity: Math.round(sim * 100) / 100,
                         isDirectContradiction: true,
                     });

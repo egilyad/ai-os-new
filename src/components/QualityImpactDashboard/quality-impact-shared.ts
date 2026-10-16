@@ -158,10 +158,18 @@ export const badgeStyle = (color: string): React.CSSProperties => ({
 
 export const deltaStyle = (value: number): React.CSSProperties => ({
     fontWeight: 600,
-    color: value >= 0 ? '#22c55e' : '#ef4444',
+    // Missing deltas render neutral, never red-as-a-default for no data.
+    color:
+        typeof value !== 'number' || !Number.isFinite(value)
+            ? '#64748b'
+            : value >= 0
+              ? '#22c55e'
+              : '#ef4444',
 });
 
 export const formatPct = (v: number): string => {
+    // Non-finite deltas (missing collector fields) render as a dash, never NaN%.
+    if (typeof v !== 'number' || !Number.isFinite(v)) return '—';
     if (v === 0) return '0%';
     const abs = Math.abs(v);
     if (abs < 0.001) return '<0.1%';

@@ -83,7 +83,7 @@ export const ConsistencyPanel: React.FC = () => {
                     <div style={{ marginTop: 10, padding: '8px 10px', borderRadius: 8, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', fontSize: 12, color: 'var(--slate-400)' }}>
                         Past claims for <strong style={{ color: 'var(--slate-200)' }}>{agents.find(a => a.id === agentId)?.name}</strong> (r &lt; {round}):
                         <ul style={{ margin: '6px 0 0 16px', padding: 0 }}>
-                            {derivedArgs.filter(a => a.agentId === agentId && a.round < round).map(a => <li key={a.id} style={{ marginBottom: 4 }}>{a.content.slice(0, 90)}… <span style={{ color: 'var(--slate-500)' }}>r{a.round}</span></li>)}
+                            {derivedArgs.filter(a => a.agentId === agentId && a.round < round).map(a => <li key={a.id} style={{ marginBottom: 4 }}>{(a.content ?? '').slice(0, 90)}… <span style={{ color: 'var(--slate-500)' }}>r{a.round}</span></li>)}
                             {derivedArgs.filter(a => a.agentId === agentId && a.round < round).length === 0 && <li style={{ color: 'var(--slate-500)' }}>No prior claims — cannot contradict.</li>}
                         </ul>
                     </div>
