@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react'
 import { usePolling } from '../Common/usePolling';
 import { Terminal, Search, Filter, Trash2, Download } from 'lucide-react';
 import { useVirtualizer } from '@tanstack/react-virtual';
-import { rootLogger } from '../../kernel/instances';
+import { rootLogger, eventBus, EVENTS } from '../../kernel/instances';
 import type { LogEntry, LogLevel } from '../../kernel/contracts/logger';
 import { useTranslation } from '../../i18n/useTranslation';
 
@@ -16,7 +16,10 @@ const LEVEL_CONFIG: Record<LogLevel, { color: string; bg: string }> = {
 };
 
 function formatTime(ts: number): string {
-    return new Date(ts).toISOString().slice(11, 23);
+    // toISOString THROWS on invalid dates (unlike toLocaleTimeString) —
+    // never let a legacy entry crash the whole list.
+    const t = new Date(ts).getTime();
+    return Number.isNaN(t) ? '—' : new Date(t).toISOString().slice(11, 23);
 }
 
 export const LogsPanel: React.FC = () => {
@@ -29,9 +32,13 @@ export const LogsPanel: React.FC = () => {
     const parentRef = useRef<HTMLDivElement>(null);
 
     usePolling(() => {
-        const buf = rootLogger.getBuffer();
-        const bufLen = buf.length;
-        setEntries(bufLen > 0 ? buf.slice() : []);
+        try {
+            const buf = rootLogger.getBuffer();
+            const bufLen = Array.isArray(buf) ? buf.length : 0;
+            setEntries(bufLen > 0 ? buf.slice() : []);
+        } catch {
+            /* logger backend unavailable — keep last known entries */
+        }
     }, 1000);
 
     const services = useMemo(() => {
@@ -54,9 +61,9 @@ export const LogsPanel: React.FC = () => {
             const q = searchQuery.toLowerCase();
             result = result.filter(
                 (e) =>
-                    e.message.toLowerCase().includes(q) ||
+                    (e.message ?? '').toLowerCase().includes(q) ||
                     (e.traceId && e.traceId.toLowerCase().includes(q)) ||
-                    e.service.toLowerCase().includes(q),
+                    (e.service ?? '').toLowerCase().includes(q),
             );
         }
         return result.reverse();
@@ -71,7 +78,9 @@ export const LogsPanel: React.FC = () => {
 
     useEffect(() => {
         if (autoScroll && filtered.length > 0) {
-            virtualizer.scrollToOffset(filtered.length - 1);
+            // scrollToOffset takes PIXELS — an item count only reaches the top.
+            // scrollToIndex actually lands on the last row.
+            virtualizer.scrollToIndex(filtered.length - 1, { align: 'end' });
         }
     }, [entries, autoScroll, virtualizer, filtered.length]);
 
@@ -84,7 +93,15 @@ export const LogsPanel: React.FC = () => {
                 : {}),
             ...(serviceFilter !== 'all' ? { service: serviceFilter } : {}),
         });
-        if (!content) return;
+        // Silent no-op exports are indistinguishable from a broken button —
+        // say out loud that there is nothing to export.
+        if (!content) {
+            eventBus.emit(EVENTS.NOTIFICATION, {
+                message: t('logs.exported_empty'),
+                type: 'info',
+            });
+            return;
+        }
         const blob = new Blob([content], { type: 'text/plain' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -92,7 +109,7 @@ export const LogsPanel: React.FC = () => {
         a.download = `logs-${new Date().toISOString().slice(0, 10)}.${exportFormat}`;
         a.click();
         URL.revokeObjectURL(url);
-    }, [exportFormat, levelFilter, serviceFilter]);
+    }, [exportFormat, levelFilter, serviceFilter, t]);
 
     const handleClear = useCallback(() => {
         rootLogger.clear();
@@ -278,7 +295,7 @@ export const LogsPanel: React.FC = () => {
                     </select>
                     <button
                         onClick={handleExport}
-                        title="Export logs"
+                        title={t('logs.export_title')}
                         style={{
                             display: 'flex',
                             alignItems: 'center',
@@ -293,7 +310,7 @@ export const LogsPanel: React.FC = () => {
                             fontWeight: 600,
                         }}
                     >
-                        <Download size={14} /> Export
+                        <Download size={14} /> {t('logs.export')}
                     </button>
                     <label
                         style={{

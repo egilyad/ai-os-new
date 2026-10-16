@@ -57,15 +57,19 @@ export const DecisionCard: React.FC<DecisionCardProps> = ({ entry: d, isExpanded
                         <span style={textWhiteXs}>{d.chosenModel}</span>
                     </div>
                     <div style={{ ...textMutedXs, marginTop: 2 }}>
-                        {d.promptPreview.slice(0, 80)}
-                        {d.promptPreview.length > 80 ? '...' : ''}
+                        {(d.promptPreview ?? '').slice(0, 80)}
+                        {(d.promptPreview ?? '').length > 80 ? '...' : ''}
                     </div>
                 </div>
-                <span style={textMutedXs}>{d.latencyMs}ms</span>
-                <span style={{ ...textSecondaryXs, color: 'var(--warning)' }}>
-                    ${d.estimatedCost.toFixed(4)}
+                <span style={textMutedXs}>
+                    {typeof d.latencyMs === 'number' ? `${d.latencyMs}ms` : '—'}
                 </span>
-                <span style={textMutedXs}>{new Date(d.timestamp).toLocaleTimeString()}</span>
+                <span style={{ ...textSecondaryXs, color: 'var(--warning)' }}>
+                    ${typeof d.estimatedCost === 'number' ? d.estimatedCost.toFixed(4) : '—'}
+                </span>
+                <span style={textMutedXs}>
+                    {d.timestamp ? new Date(d.timestamp).toLocaleTimeString() : '—'}
+                </span>
             </div>
             <AnimatePresence>
                 {isExpanded && (
@@ -91,7 +95,7 @@ export const DecisionCard: React.FC<DecisionCardProps> = ({ entry: d, isExpanded
                                 <div style={{ ...textWhiteXs, fontSize: '0.85rem', marginTop: 4 }}>
                                     {d.reason}
                                 </div>
-                                {d.policyApplied.length > 0 && (
+                                {(d.policyApplied ?? []).length > 0 && (
                                     <>
                                         <div style={{ ...textSecondaryXs, marginTop: 12 }}>
                                             {t('decision_log.policies')}
@@ -104,7 +108,7 @@ export const DecisionCard: React.FC<DecisionCardProps> = ({ entry: d, isExpanded
                                                 marginTop: 4,
                                             }}
                                         >
-                                            {d.policyApplied.map((p) => (
+                                            {(d.policyApplied ?? []).map((p) => (
                                                 <span
                                                     key={p}
                                                     style={{
@@ -132,18 +136,18 @@ export const DecisionCard: React.FC<DecisionCardProps> = ({ entry: d, isExpanded
                                         marginTop: 4,
                                     }}
                                 >
-                                    <ScoreRow label="reliability" value={d.scoring.reliability} />
-                                    <ScoreRow label="latency" value={d.scoring.latency} />
-                                    <ScoreRow label="cost" value={d.scoring.cost} />
-                                    <ScoreRow label="ttft" value={d.scoring.ttft} />
-                                    <ScoreRow label="tps" value={d.scoring.tps} />
+                                    <ScoreRow label="reliability" value={d.scoring?.reliability} />
+                                    <ScoreRow label="latency" value={d.scoring?.latency} />
+                                    <ScoreRow label="cost" value={d.scoring?.cost} />
+                                    <ScoreRow label="ttft" value={d.scoring?.ttft} />
+                                    <ScoreRow label="tps" value={d.scoring?.tps} />
                                 </div>
                             </div>
                             <div>
                                 <div style={textSecondaryXs}>
-                                    {t('decision_log.rejected', { count: d.rejectedKeys.length })}
+                                    {t('decision_log.rejected', { count: (d.rejectedKeys ?? []).length })}
                                 </div>
-                                {d.rejectedKeys.length === 0 ? (
+                                {(d.rejectedKeys ?? []).length === 0 ? (
                                     <div style={textMutedXs}>{t('decision_log.no_rejections')}</div>
                                 ) : (
                                     <div
@@ -156,7 +160,7 @@ export const DecisionCard: React.FC<DecisionCardProps> = ({ entry: d, isExpanded
                                             overflow: 'auto',
                                         }}
                                     >
-                                        {d.rejectedKeys.map((r) => (
+                                        {(d.rejectedKeys ?? []).map((r) => (
                                             <div
                                                 key={`${r.provider}-${r.model}`}
                                                 style={{
