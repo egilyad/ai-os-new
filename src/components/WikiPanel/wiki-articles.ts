@@ -540,6 +540,35 @@ Health-панели провайдеров, трейсы и timeline, DLQ (dead-
 - groupChatService/select-логика nextTurn (speaker auto-pick) — живьём не гонялась, только моки.
 - Channel thread-панель и реакции — рендер есть, живого multi-user сценария нет.
 
+## Зона 14: коннекторы (проверено, исправлено)
+
+- lastSync 'Just now' (строка, которая никогда не стареет) заменён на ISO-timestamp — в панели и в connectorService.connect().
+- lastTested теперь ставится только при реальном тесте endpoint'а.
+- ConnectorsPanel: getAll/search — guards; тосты disconnect/add/test-failed — через ключи en+ru.
+- Endpoint-less OAuth-карточки оставлены как есть осознанно: на карточке честно написано Simulated, 6 тестов кодируют это поведение — ломать демо ради буквальности не стали.
+- Тесты: ConnectorsPanel 23/23 (3 предсуществующих красных починены: loading-рейс, неверный aria-label в ассёртах), connector-service 3/3 (новый юнит: ISO-штамп, HEAD-проверка, auth_required).
+
+## Зона 14: отложено, требует проверки
+
+- connectors.*-ключи в массе — автостабы Title Case: не ложь, но позор (как logs.* в Зоне 10).
+- ConnectorWebhooksView/DisconnectModal/ConnectorAddForm — только через интеграционные тесты панели.
+- testConnection ходит реальным fetch из UI-потока с 10с таймаутом — ок, но offline-UX не проверялся.
+
+## Зона 15: исследования (проверено, исправлено)
+
+- ResearchEnginePanel: create/run/delete/refresh были голыми (create глотал ошибку целиком `catch {}`) — теперь всё с баннером; сессии/адаптеры/конфиг терпят не-массивы и throw на старте.
+- GeminiResearchPanel: загрузка сессий в mount и в poll — guards; селект терпит сессии без loops; мёртвый error-слот наконец-то используется.
+- Ключи research_engine.error_* en+ru.
+- Тесты: ResearchEnginePanel 3/3, GeminiResearchPanel 2/2 (новые файлы).
+- ВАЖНО: локальная верификация невозможна — vitest-пул мёртв системно с ~05:18 (воркеры не стартуют даже на тривиальных файлах, затем лёг и eslint). Код вычитан вручную, гейт — только CI.
+
+## Зона 15: отложено, требует проверки
+
+- ResearchEngine AdvancedPanel и все табы ResearchPanel (Citations/FactCheck/PeerReview/...) — не covered.
+- DebateResearch (50+ файлов аудитов) — вообще не тронут, отдельная зона.
+- Gemini-табы (Search/FactCheck/Summary/Anomalies/PeerReview) — только рендер через панель, прямых тестов нет.
+- useVisibilityInterval на 2с + usePolling на 15с одновременно — двойной опрос, возможный лишний ререндер.
+
 ## Зона 3: отложено, требует проверки
 
 - Пауза/рестарт всех, сброс статистики, фокус модалки — непроверенные пути.

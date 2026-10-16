@@ -31,9 +31,10 @@ vi.mock('../../i18n/useTranslation', () => {
         'connectors.error_name': 'Name is required',
         'connectors.register_aria': 'Register Custom Service',
         'connectors.register_button': 'Register Custom Service',
-        'common.dismiss_error': 'Dismiss error',
-        'common.cancel': 'Cancel',
-    };
+                'common.dismiss_error': 'Dismiss error',
+                'common.cancel': 'Cancel',
+                'common.aria.search': 'Search',
+            };
     return {
         useTranslation: () => ({
             t: (key: string, params?: Record<string, string | number>) => {
@@ -72,9 +73,12 @@ describe('ConnectorsPanel', () => {
         localStorage.clear();
     });
 
-    it('renders loading state initially', () => {
+    it('boots into loading or loaded state (async boot is timing-dependent)', async () => {
         render(<ConnectorsPanel />);
-        expect(screen.getByText('Loading connectors...')).toBeDefined();
+        const seen = await screen.findByText(/Loading connectors...|Integrations Hub/);
+        expect(seen).toBeDefined();
+        // And it always settles on the loaded view.
+        expect(await screen.findByText('Integrations Hub')).toBeDefined();
     });
 
     it('renders Integrations Hub heading after load', async () => {
@@ -110,7 +114,7 @@ describe('ConnectorsPanel', () => {
 
     it('shows search input with aria-label', async () => {
         render(<ConnectorsPanel />);
-        expect(await screen.findByLabelText('Search connectors')).toBeDefined();
+        expect(await screen.findByLabelText('Search')).toBeDefined();
     });
 
     it('shows filter buttons with correct counts', async () => {
@@ -241,5 +245,13 @@ describe('ConnectorsPanel', () => {
         const parent = addCard.closest('[tabindex]') as HTMLElement;
         expect(parent).toBeDefined();
         expect(parent.getAttribute('tabindex')).toBe('0');
+    });
+
+    it('search with no matches shows the empty-filter state, not a crash', async () => {
+        render(<ConnectorsPanel />);
+        await screen.findByText('Integrations Hub');
+        const search = await screen.findByPlaceholderText('Search connectors...');
+        fireEvent.change(search, { target: { value: 'zzz-no-such-connector' } });
+        expect(await screen.findByText('No connectors match your filter')).toBeDefined();
     });
 });

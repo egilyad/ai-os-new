@@ -76,7 +76,8 @@ export class ConnectorService {
         connector = {
             ...connector,
             status,
-            lastSync: status === 'connected' ? 'Just now' : undefined,
+            // Real timestamp, not a display string that never ages.
+            lastSync: status === 'connected' ? new Date().toISOString() : undefined,
             endpoint,
             lastTested: endpoint ? Date.now() : undefined,
         };

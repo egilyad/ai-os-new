@@ -40,7 +40,8 @@ const ConnectorsPanel: React.FC = () => {
         isMountedRef.current = true;
         const load = async () => {
             try {
-                const allConns = await connectorService.getAll();
+                const loaded = await connectorService.getAll();
+                const allConns = Array.isArray(loaded) ? loaded : [];
                 if (allConns.length === 0) {
                     await connectorService.saveAll(DEFAULT_CONNECTORS);
                     setConnectors(DEFAULT_CONNECTORS);
@@ -86,8 +87,8 @@ const ConnectorsPanel: React.FC = () => {
             connectors.filter((c) => {
                 if (
                     searchQuery &&
-                    !c.name.toLowerCase().includes(searchQuery.toLowerCase()) &&
-                    !c.type.toLowerCase().includes(searchQuery.toLowerCase())
+                    !(c.name ?? '').toLowerCase().includes(searchQuery.toLowerCase()) &&
+                    !(c.type ?? '').toLowerCase().includes(searchQuery.toLowerCase())
                 )
                     return false;
                 if (statusFilter !== 'all' && c.status !== statusFilter) return false;
@@ -104,30 +105,41 @@ const ConnectorsPanel: React.FC = () => {
             const connector = connectors.find((c) => c.id === id);
             if (!connector) return;
 
+            // Endpoint-less connectors (OAuth-style demo cards, openly labeled
+            // "Simulated" on the card) connect without a network test; custom
+            // endpoints get a real HEAD-request verification below.
             let updated: Connector;
-            if (connector.endpoint) {
+            if (!connector.endpoint) {
+                updated = {
+                    ...connector,
+                    status: 'connected' as const,
+                    lastSync: new Date().toISOString(),
+                };
+            } else {
                 const result = await connectorService.testConnection(connector.endpoint);
                 const status = result.ok ? ('connected' as const) : ('auth_required' as const);
+                // Store a real timestamp, not a display string that never ages.
                 updated = {
                     ...connector,
                     status,
-                    lastSync: result.ok ? 'Just now' : undefined,
+                    lastSync: result.ok ? new Date().toISOString() : undefined,
                     lastTested: Date.now(),
                 };
                 if (!result.ok) {
                     eventBus.emit(EVENTS.NOTIFICATION, {
-                        message: `Connection test failed for ${connector.name}: ${result.error}`,
+                        message: t('connectors.notif_test_failed', {
+                            name: connector.name,
+                            error: result.error,
+                        }),
                         type: 'warning',
                     });
                 }
-            } else {
-                updated = { ...connector, status: 'connected' as const, lastSync: 'Just now' };
             }
 
             setConnectors((prev) => prev.map((c) => (c.id === id ? updated : c)));
             persist(connectors.map((c) => (c.id === id ? updated : c)));
         },
-        [connectors, persist],
+        [connectors, persist, t],
     );
 
     const handleDisconnect = useCallback(
@@ -144,11 +156,11 @@ const ConnectorsPanel: React.FC = () => {
             });
             setConfirmDisconnect(null);
             eventBus.emit(EVENTS.NOTIFICATION, {
-                message: `Disconnected from ${id}.`,
+                message: t('connectors.notif_disconnected', { id }),
                 type: 'info',
             });
         },
-        [persist],
+        [persist, t],
     );
 
     const handleAddCustom = useCallback(() => {
@@ -176,7 +188,7 @@ const ConnectorsPanel: React.FC = () => {
         setNewType('');
         setShowAddForm(false);
         eventBus.emit(EVENTS.NOTIFICATION, {
-            message: `Connector ${nc.name} added.`,
+            message: t('connectors.notif_added', { name: nc.name }),
             type: 'success',
         });
     }, [newName, newType, persist, clearErrorAfterDelay, t]);
