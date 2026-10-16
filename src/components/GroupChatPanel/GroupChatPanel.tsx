@@ -48,12 +48,13 @@ export default function GroupChatPanel() {
         let cancelled = false;
         (async () => {
             try {
-                const list = await groupChatService.listChats();
+                const loaded = await groupChatService.listChats();
+                const list = Array.isArray(loaded) ? loaded : [];
                 if (!cancelled) {
-                    setChats(list.sort((a, b) => b.updatedAt - a.updatedAt));
+                    setChats(list.sort((a, b) => (b.updatedAt ?? 0) - (a.updatedAt ?? 0)));
                     if (list.length > 0 && !activeId) {
                         setActiveId(list[0]!.id);
-                        setPostSpeaker(list[0]!.members[0] ?? '');
+                        setPostSpeaker((list[0]!.members ?? [])[0] ?? '');
                     }
                 }
             } catch (e) {
@@ -67,7 +68,11 @@ export default function GroupChatPanel() {
     const filtered = useMemo(() => {
         if (!search.trim()) return chats;
         const q = search.toLowerCase();
-        return chats.filter((c) => c.name.toLowerCase().includes(q) || c.members.some((m) => m.toLowerCase().includes(q)));
+        return chats.filter(
+            (c) =>
+                (c.name ?? '').toLowerCase().includes(q) ||
+                (c.members ?? []).some((m) => (m ?? '').toLowerCase().includes(q)),
+        );
     }, [chats, search]);
 
     const fail = (e: unknown) => {
@@ -80,7 +85,7 @@ export default function GroupChatPanel() {
         if (chat) {
             setChats((prev) => {
                 const rest = prev.filter((c) => c.id !== id);
-                return [...rest, chat].sort((a, b) => b.updatedAt - a.updatedAt);
+                return [...rest, chat].sort((a, b) => (b.updatedAt ?? 0) - (a.updatedAt ?? 0));
             });
         }
     };
@@ -260,13 +265,13 @@ export default function GroupChatPanel() {
                         <div style={{ textAlign: 'center', padding: 24, color: 'var(--slate-500)', fontSize: 12 }}>{t('groupChat.list.empty')}</div>
                     ) : (
                         filtered.map((c) => (
-                            <div key={c.id} onClick={() => { setActiveId(c.id); setPostSpeaker(c.members[0] ?? ''); setSummary(null); }} style={{ padding: '10px 12px', borderRadius: 10, cursor: 'pointer', marginBottom: 6, background: c.id === activeId ? 'rgba(59,130,246,0.12)' : 'rgba(255,255,255,0.03)', borderLeft: c.id === activeId ? '3px solid #3b82f6' : '3px solid transparent', border: '1px solid rgba(255,255,255,0.06)' }}>
+                            <div key={c.id} onClick={() => { setActiveId(c.id); setPostSpeaker((c.members ?? [])[0] ?? ''); setSummary(null); }} style={{ padding: '10px 12px', borderRadius: 10, cursor: 'pointer', marginBottom: 6, background: c.id === activeId ? 'rgba(59,130,246,0.12)' : 'rgba(255,255,255,0.03)', borderLeft: c.id === activeId ? '3px solid #3b82f6' : '3px solid transparent', border: '1px solid rgba(255,255,255,0.06)' }}>
                                 <div style={{ fontSize: 13, fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{c.name}</div>
                                 <div style={{ display: 'flex', gap: 6, alignItems: 'center', marginTop: 4, flexWrap: 'wrap' }}>
-                                    <StatusBadge status={c.status} label={t(`groupChat.status.${c.status}`)} />
-                                    <span style={{ fontSize: 11, color: 'var(--slate-500)' }}>{c.members.length} members · {c.turns.length} turns · R{Math.floor(c.turns.length / Math.max(1, c.members.length)) + 1}/{c.maxRounds}</span>
+                                    <StatusBadge status={c.status} label={t(`groupChat.status.${c.status}`) ?? c.status} />
+                                    <span style={{ fontSize: 11, color: 'var(--slate-500)' }}>{(c.members ?? []).length} members · {(c.turns ?? []).length} turns · R{Math.floor((c.turns ?? []).length / Math.max(1, (c.members ?? []).length)) + 1}/{c.maxRounds}</span>
                                 </div>
-                                <div style={{ fontSize: 11, color: 'var(--slate-500)', marginTop: 4, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{c.members.join(', ')}</div>
+                                <div style={{ fontSize: 11, color: 'var(--slate-500)', marginTop: 4, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{(c.members ?? []).join(', ')}</div>
                             </div>
                         ))
                     )}
@@ -292,29 +297,29 @@ export default function GroupChatPanel() {
                             <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
                                 <span style={{ fontWeight: 800, fontSize: 15 }}>{active.name}</span>
                                 <StatusBadge status={active.status} label={t(`groupChat.status.${active.status}`)} />
-                                <span style={{ fontSize: 11, color: 'var(--slate-500)' }}>R{Math.floor(active.turns.length / Math.max(1, active.members.length)) + 1}/{active.maxRounds} · {active.selection}</span>
+                                <span style={{ fontSize: 11, color: 'var(--slate-500)' }}>R{Math.floor((active.turns ?? []).length / Math.max(1, (active.members ?? []).length)) + 1}/{active.maxRounds} · {active.selection}</span>
                             </div>
                             <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginTop: 8 }}>
-                                {active.members.map((m) => (
+                                {(active.members ?? []).map((m) => (
                                     <span key={m} style={{ padding: '3px 9px', borderRadius: 20, background: 'rgba(168,85,247,0.15)', color: '#c4b5fd', fontSize: 11, fontWeight: 600 }}>{m}</span>
                                 ))}
                             </div>
                         </div>
 
                         <div style={{ flex: 1, overflowY: 'auto', padding: '14px 16px', display: 'flex', flexDirection: 'column', gap: 10 }}>
-                            {active.turns.length === 0 ? (
-                                <div style={{ textAlign: 'center', padding: 24, color: 'var(--slate-500)', fontSize: 12, border: '1px dashed rgba(255,255,255,0.08)', borderRadius: 12 }}>{t('groupChat.history.empty')} — press “Next turn” to start or post manually.</div>
+                            {(active.turns ?? []).length === 0 ? (
+                                <div style={{ textAlign: 'center', padding: 24, color: 'var(--slate-500)', fontSize: 12, border: '1px dashed rgba(255,255,255,0.08)', borderRadius: 12 }}>{t('groupChat.history.empty')} — {t('groupChat.history.hint')}.</div>
                             ) : (
-                                active.turns.map((turn, i) => {
+                                (active.turns ?? []).map((turn, i) => {
                                     const isSystem = turn.speaker === 'system';
                                     return (
                                         <div key={`${turn.createdAt}-${i}`} style={{ display: 'flex', gap: 10, padding: '10px 12px', borderRadius: 12, background: isSystem ? 'rgba(245,158,11,0.08)' : 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', alignItems: 'flex-start' }}>
-                                            <div style={{ width: 28, height: 28, borderRadius: 8, background: isSystem ? 'rgba(245,158,11,0.2)' : 'rgba(59,130,246,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 800, color: isSystem ? '#f59e0b' : '#60a5fa', flexShrink: 0 }}>{isSystem ? '◎' : turn.speaker.slice(0, 2).toUpperCase()}</div>
+                                            <div style={{ width: 28, height: 28, borderRadius: 8, background: isSystem ? 'rgba(245,158,11,0.2)' : 'rgba(59,130,246,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 800, color: isSystem ? '#f59e0b' : '#60a5fa', flexShrink: 0 }}>{isSystem ? '◎' : (turn.speaker ?? '?').slice(0, 2).toUpperCase()}</div>
                                             <div style={{ flex: 1, minWidth: 0 }}>
                                                 <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 4, flexWrap: 'wrap' }}>
                                                     <span style={{ fontWeight: 700, fontSize: 12, color: isSystem ? '#f59e0b' : 'var(--slate-200)' }}>{turn.speaker}</span>
                                                     <span style={{ fontSize: 10, padding: '2px 6px', borderRadius: 6, background: 'rgba(255,255,255,0.06)', color: 'var(--slate-400)' }}>R{turn.round}</span>
-                                                    <span style={{ fontSize: 10, color: 'var(--slate-500)' }}>{new Date(turn.createdAt).toLocaleTimeString()}</span>
+                                                    <span style={{ fontSize: 10, color: 'var(--slate-500)' }}>{turn.createdAt ? new Date(turn.createdAt).toLocaleTimeString() : '—'}</span>
                                                 </div>
                                                 <div style={{ fontSize: 13, lineHeight: 1.5, whiteSpace: 'pre-wrap', wordBreak: 'break-word', color: 'var(--slate-300)' }}>{turn.text}</div>
                                             </div>
@@ -334,16 +339,16 @@ export default function GroupChatPanel() {
                             <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
                                 <select value={speaker} onChange={(e) => setSpeaker(e.target.value)} style={{ padding: '7px 8px', borderRadius: 8, border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(0,0,0,0.3)', color: 'inherit', fontSize: 11, minWidth: 140 }}>
                                     <option value="">{t('groupChat.speakerOptional')} (auto)</option>
-                                    {active.members.map((m) => <option key={m} value={m}>{m}</option>)}
+                                    {(active.members ?? []).map((m) => <option key={m} value={m}>{m}</option>)}
                                 </select>
                                 <Button variant="primary" size="sm" disabled={busy || active.status !== 'running'} onClick={() => void act((id) => groupChatService.nextTurn(id, speaker.trim() || undefined))}>{t('groupChat.nextTurn')}</Button>
                                 <Button variant="secondary" size="sm" disabled={busy} onClick={() => void handleSummarize()}>{t('groupChat.summarize')}</Button>
-                                <span style={{ fontSize: 10, color: 'var(--slate-500)' }}>{active.turns.length} turns</span>
+                                <span style={{ fontSize: 10, color: 'var(--slate-500)' }}>{(active.turns ?? []).length} turns</span>
                             </div>
 
                             <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
                                 <select value={postSpeaker} onChange={(e) => setPostSpeaker(e.target.value)} style={{ padding: '7px 8px', borderRadius: 8, border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(0,0,0,0.3)', color: 'inherit', fontSize: 11, minWidth: 120 }}>
-                                    {active.members.map((m) => <option key={m} value={m}>{m}</option>)}
+                                    {(active.members ?? []).map((m) => <option key={m} value={m}>{m}</option>)}
                                 </select>
                                 <input placeholder={t('groupChat.post.textPlaceholder')} value={postText} onChange={(e) => setPostText(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter' && postText.trim() && active.status === 'running') void act((id) => { const text = postText; setPostText(''); return groupChatService.postTurn(id, postSpeaker, text); }); }} style={{ flex: 1, padding: '7px 10px', borderRadius: 8, border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(255,255,255,0.05)', color: 'inherit', fontSize: 12 }} />
                                 <Button variant="secondary" size="sm" disabled={busy || !postText.trim() || active.status !== 'running'} onClick={() => void act((id) => { const text = postText; setPostText(''); return groupChatService.postTurn(id, postSpeaker, text); })}>{t('groupChat.post.submit')}</Button>

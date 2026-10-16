@@ -27,6 +27,7 @@ const groupChat: Record<string, string> = {
     'groupChat.status.paused': 'пауза',
     'groupChat.history.heading': 'История',
     'groupChat.history.empty': 'Пока нет ходов',
+    'groupChat.history.hint': 'нажмите «След. ход» или напишите вручную',
     'groupChat.round': 'Раунд {round}',
     'groupChat.speakerOptional': 'Спикер (необязательно)',
     'groupChat.speakerPlaceholder': 'Пусто — автовыбор',

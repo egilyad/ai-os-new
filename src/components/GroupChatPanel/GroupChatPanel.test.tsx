@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeAll } from 'vitest';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { describe, it, expect, vi, beforeAll, beforeEach, afterEach } from 'vitest';
+import { render, screen, fireEvent, waitFor, cleanup } from '@testing-library/react';
 import type { GroupChat } from '../../kernel/contracts/rivals';
 
 beforeAll(() => {
@@ -22,6 +22,7 @@ const store = new Map<string, GroupChat>();
 
 vi.mock('../../kernel/instances/services-extras', () => ({
     groupChatService: {
+        listChats: vi.fn(async () => [...store.values()]),
         createChat: vi.fn(async (input: { name: string; members: string[] }) => {
             const chat: GroupChat = {
                 id: 'chat-1',
@@ -66,18 +67,34 @@ vi.mock('../../i18n/useTranslation', () => ({
     useTranslation: () => ({ t: (key: string) => key }),
 }));
 
+async function openCreateForm() {
+    const Panel = (await import('./GroupChatPanel')).default;
+    render(<Panel />);
+    await waitFor(() => expect(screen.getByText('+ New')).toBeDefined());
+    fireEvent.click(screen.getByText('+ New'));
+    fireEvent.change(screen.getByPlaceholderText('groupChat.namePlaceholder'), {
+        target: { value: 'Demo' },
+    });
+    const custom = screen.getByPlaceholderText('Custom member + Enter');
+    fireEvent.change(custom, { target: { value: 'alice' } });
+    fireEvent.keyDown(custom, { key: 'Enter' });
+    fireEvent.change(custom, { target: { value: 'bob' } });
+    fireEvent.keyDown(custom, { key: 'Enter' });
+}
+
 describe('GroupChatPanel', () => {
+    beforeEach(() => {
+        store.clear();
+        vi.clearAllMocks();
+    });
+
+    afterEach(() => {
+        cleanup();
+    });
+
     it('creates a chat from name + members and selects it', async () => {
         const { groupChatService } = await import('../../kernel/instances/services-extras');
-        const Panel = (await import('./GroupChatPanel')).default;
-        render(<Panel />);
-
-        fireEvent.change(screen.getByPlaceholderText('groupChat.namePlaceholder'), {
-            target: { value: 'Demo' },
-        });
-        fireEvent.change(screen.getByPlaceholderText('groupChat.membersPlaceholder'), {
-            target: { value: 'alice, bob' },
-        });
+        await openCreateForm();
         fireEvent.click(screen.getByRole('button', { name: 'groupChat.create.submit' }));
 
         await waitFor(() => expect(groupChatService.createChat).toHaveBeenCalledTimes(1));
@@ -88,33 +105,42 @@ describe('GroupChatPanel', () => {
     });
 
     it('runs next turn and appends history', async () => {
-        const Panel = (await import('./GroupChatPanel')).default;
-        render(<Panel />);
-        fireEvent.change(screen.getByPlaceholderText('groupChat.namePlaceholder'), {
-            target: { value: 'Demo' },
-        });
-        fireEvent.change(screen.getByPlaceholderText('groupChat.membersPlaceholder'), {
-            target: { value: 'alice, bob' },
-        });
+        await openCreateForm();
         fireEvent.click(screen.getByRole('button', { name: 'groupChat.create.submit' }));
         fireEvent.click(await screen.findByRole('button', { name: 'groupChat.nextTurn' }));
         await waitFor(() => {
-            const items = screen.getAllByRole('listitem');
-            expect(items.some((li) => li.textContent?.includes('fake turn'))).toBe(true);
+            expect(screen.getByText('fake turn')).toBeDefined();
         });
     });
 
-    it('shows validation when members are fewer than two', async () => {
+    it('keeps Create disabled with fewer than two members', async () => {
         const Panel = (await import('./GroupChatPanel')).default;
         render(<Panel />);
-        fireEvent.change(screen.getAllByPlaceholderText('groupChat.namePlaceholder')[0]!, {
+        await waitFor(() => expect(screen.getByText('+ New')).toBeDefined());
+        fireEvent.click(screen.getByText('+ New'));
+        fireEvent.change(screen.getByPlaceholderText('groupChat.namePlaceholder'), {
             target: { value: 'Solo' },
         });
-        fireEvent.change(screen.getAllByPlaceholderText('groupChat.membersPlaceholder')[0]!, {
-            target: { value: 'alice' },
-        });
-        const buttons = screen.getAllByRole('button', { name: 'groupChat.create.submit' });
-        fireEvent.click(buttons[0]!);
-        expect(await screen.findByText('groupChat.validation.members')).toBeDefined();
+        const custom = screen.getByPlaceholderText('Custom member + Enter');
+        fireEvent.change(custom, { target: { value: 'alice' } });
+        fireEvent.keyDown(custom, { key: 'Enter' });
+        // The guard lives on the button: single-member chats cannot be submitted.
+        expect(screen.getByRole('button', { name: 'groupChat.create.submit' })).toBeDisabled();
+    });
+
+    it('renders legacy chats without members or turns', async () => {
+        const { groupChatService } = await import('../../kernel/instances/services-extras');
+        vi.mocked(groupChatService.listChats).mockResolvedValue([
+            { id: 'legacy', name: 'Legacy', status: 'running', maxRounds: 6 },
+        ] as never);
+        const Panel = (await import('./GroupChatPanel')).default;
+        render(<Panel />);
+        // Sidebar row and (after select) the main header share the name.
+        const rows = await screen.findAllByText('Legacy');
+        expect(rows.length).toBeGreaterThanOrEqual(1);
+        fireEvent.click(rows[0]!);
+        // The empty-history line is split across text nodes (key + hint).
+        const empties = await screen.findAllByText(/groupChat\.history\.empty/);
+        expect(empties.length).toBeGreaterThanOrEqual(1);
     });
 });

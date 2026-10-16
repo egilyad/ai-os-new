@@ -27,6 +27,7 @@ const groupChat: Record<string, string> = {
     'groupChat.status.paused': 'paused',
     'groupChat.history.heading': 'History',
     'groupChat.history.empty': 'No turns yet',
+    'groupChat.history.hint': 'press "Next turn" to start or post manually',
     'groupChat.round': 'Round {round}',
     'groupChat.speakerOptional': 'Speaker (optional)',
     'groupChat.speakerPlaceholder': 'Leave empty for auto-pick',

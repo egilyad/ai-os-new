@@ -73,7 +73,20 @@ const ChannelPanel: React.FC = () => {
     const [reactionPickerMsg, setReactionPickerMsg] = useState<string | null>(null);
     const [viewThread, setViewThread] = useState<string | null>(null);
     const [threadMessages, setThreadMessages] = useState<ChannelMessage[]>([]);
+    const [error, setError] = useState<string | null>(null);
     const messagesEndRef = useRef<HTMLDivElement>(null);
+
+    // Every mutation funnels through here: channel failures used to vanish
+    // into unhandled rejections while the UI pretended everything sent.
+    const runGuarded = async (fn: () => Promise<void>) => {
+        setError(null);
+        try {
+            await fn();
+        } catch (e) {
+            console.error('[ChannelPanel]', e);
+            setError(t('channels.error.generic'));
+        }
+    };
 
     useEffect(() => {
         ensureSubscribed();
@@ -88,81 +101,103 @@ const ChannelPanel: React.FC = () => {
     useEffect(() => {
         if (!selectedId) { setMembers([]); setTyping([]); setPresence([]); return; }
         const svc = channelService;
-        svc.getMembers(selectedId).then(setMembers);
-        svc.getPresence(selectedId).then(setPresence);
+        // Poll noise must never become unhandled rejections every 2s, and
+        // non-array payloads must never reach .map below.
+        const safeArray = <T,>(p: Promise<T[]>) =>
+            p.then((v) => (Array.isArray(v) ? v : [])).catch(() => []);
+        svc.getMembers(selectedId).then((v) => setMembers(Array.isArray(v) ? v : [])).catch(() => setMembers([]));
+        svc.getPresence(selectedId).then((v) => setPresence(Array.isArray(v) ? v : [])).catch(() => setPresence([]));
         const interval = setInterval(() => {
-            svc.getTyping(selectedId).then(setTyping);
-            svc.getPresence(selectedId).then(setPresence);
+            safeArray(svc.getTyping(selectedId)).then(setTyping);
+            safeArray(svc.getPresence(selectedId)).then(setPresence);
         }, 2000);
         return () => clearInterval(interval);
     }, [selectedId, messages]);
 
     const loadThread = useCallback(async (rootId: string) => {
         const svc = channelService;
-        const thread = await svc.getThread(rootId);
-        setThreadMessages(thread);
-        setViewThread(rootId);
-    }, []);
+        try {
+            const thread = await svc.getThread(rootId);
+            setThreadMessages(Array.isArray(thread) ? thread : []);
+            setViewThread(rootId);
+        } catch (e) {
+            console.error('[ChannelPanel] load thread failed', e);
+            setError(t('channels.error.generic'));
+        }
+    }, [t]);
 
     const handleSend = useCallback(async () => {
         if (!input.trim() || !selectedId) return;
         const svc = channelService;
-        const mentions = input.match(/@(\w+)/g)?.map((m) => m.slice(1)) || [];
-        await svc.sendMessage({
-            channelId: selectedId,
-            authorId: 'human',
-            content: input.trim(),
-            mentions: mentions.length > 0 ? mentions : undefined,
-            replyTo: replyTo || undefined,
+        await runGuarded(async () => {
+            const mentions = input.match(/@(\w+)/g)?.map((m) => m.slice(1)) || [];
+            await svc.sendMessage({
+                channelId: selectedId,
+                authorId: 'human',
+                content: input.trim(),
+                mentions: mentions.length > 0 ? mentions : undefined,
+                replyTo: replyTo || undefined,
+            });
+            setInput('');
+            setReplyTo(null);
+            refresh();
         });
-        setInput('');
-        setReplyTo(null);
-        refresh();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [input, selectedId, replyTo, refresh]);
 
     const handleEdit = useCallback(async (msgId: string) => {
         if (!editContent.trim()) return;
         const svc = channelService;
-        await svc.editMessage(msgId, editContent, 'human');
-        setEditId(null);
-        setEditContent('');
-        refresh();
+        await runGuarded(async () => {
+            await svc.editMessage(msgId, editContent, 'human');
+            setEditId(null);
+            setEditContent('');
+            refresh();
+        });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [editContent, refresh]);
 
     const handleDelete = useCallback(async (msgId: string) => {
         const svc = channelService;
-        await svc.deleteMessage(msgId, 'human');
-        refresh();
+        await runGuarded(async () => {
+            await svc.deleteMessage(msgId, 'human');
+            refresh();
+        });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [refresh]);
 
     const handleReaction = useCallback(async (msgId: string, emoji: string) => {
         const svc = channelService;
-        await svc.addReaction(msgId, 'human', emoji);
-        setReactionPickerMsg(null);
-        refresh();
+        await runGuarded(async () => {
+            await svc.addReaction(msgId, 'human', emoji);
+            setReactionPickerMsg(null);
+            refresh();
+        });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [refresh]);
 
     const handleSeedDemo = async () => {
-        try {
+        await runGuarded(async () => {
             const { channel } = await seedChannelsDemo(channelService);
             refresh();
             selectChannel(channel.id);
-        } catch (e) {
-            console.error('[ChannelPanel] demo seed failed', e);
-        }
+        });
     };
 
     const handleCreate = useCallback(async () => {
         if (!newName.trim()) return;
         const svc = channelService;
-        await svc.createChannel({
-            name: newName.trim(),
-            type: newType,
-            visibility: newVisibility,
+        await runGuarded(async () => {
+            await svc.createChannel({
+                name: newName.trim(),
+                type: newType,
+                visibility: newVisibility,
+            });
+            setNewName('');
+            setShowCreate(false);
+            refresh();
         });
-        setNewName('');
-        setShowCreate(false);
-        refresh();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [newName, newType, newVisibility, refresh]);
 
     return (
@@ -209,7 +244,7 @@ const ChannelPanel: React.FC = () => {
                                     {ch.visibility === 'private' && ' 🔒'}
                                 </div>
                                 <div style={{ fontSize: '0.7rem', opacity: 0.6 }}>
-                                    {ch.memberCount} agent{ch.memberCount !== 1 ? 's' : ''}
+                                    {(ch.memberCount ?? 0)} agent{(ch.memberCount ?? 0) !== 1 ? 's' : ''}
                                 </div>
                             </div>
                         );
@@ -219,6 +254,40 @@ const ChannelPanel: React.FC = () => {
 
             {/* Main area */}
             <div style={MAIN}>
+                {error && (
+                    <div
+                        role="alert"
+                        style={{
+                            margin: '0.5rem',
+                            padding: '0.5rem 0.75rem',
+                            borderRadius: 8,
+                            background: 'rgba(239,68,68,0.08)',
+                            border: '1px solid rgba(239,68,68,0.2)',
+                            color: '#fca5a5',
+                            fontSize: '0.8rem',
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
+                            gap: 8,
+                        }}
+                    >
+                        <span>{error}</span>
+                        <button
+                            onClick={() => setError(null)}
+                            style={{
+                                background: 'none',
+                                border: 'none',
+                                color: 'inherit',
+                                cursor: 'pointer',
+                                fontSize: '0.8rem',
+                                flexShrink: 0,
+                            }}
+                            aria-label={t('common.dismiss_error')}
+                        >
+                            ✕
+                        </button>
+                    </div>
+                )}
                 {selectedId ? (
                     <>
                         {/* Members bar */}
@@ -233,7 +302,7 @@ const ChannelPanel: React.FC = () => {
 
                         {/* Messages */}
                         <div style={MESSAGES}>
-                            {messages.map((msg) => (
+                            {(messages ?? []).map((msg) => (
                                 <div key={msg.id} style={{ ...MSG, ...MSG_HOVER }}>
                                     {msg.kind === 'system' ? (
                                         <div style={MSG_SYSTEM}>{msg.content}</div>
@@ -243,19 +312,19 @@ const ChannelPanel: React.FC = () => {
                                         <>
                                             {replyTo === msg.id && (
                                                 <div style={{ fontSize: '0.7rem', color: 'var(--accent)', marginBottom: '0.2rem' }}>
-                                                    ↩ {t('channels.replyingTo')} {msg.authorId}: {msg.content.slice(0, 50)}...
+                                                    ↩ {t('channels.replyingTo')} {msg.authorId}: {(msg.content ?? '').slice(0, 50)}...
                                                     <span style={{ cursor: 'pointer', marginLeft: '0.5rem' }} onClick={() => setReplyTo(null)}>✕</span>
                                                 </div>
                                             )}
                                             <div>
                                                 <span style={MSG_AUTHOR}>{msg.authorId}</span>
-                                                <span style={MSG_TIME}>{new Date(msg.createdAt).toLocaleTimeString()}</span>
+                                                <span style={MSG_TIME}>{msg.createdAt ? new Date(msg.createdAt).toLocaleTimeString() : '—'}</span>
                                                 {msg.updatedAt && <span style={{ ...MSG_TIME, fontStyle: 'italic' }}> (edited)</span>}
                                             </div>
                                             <div>{msg.editedContent || msg.content}</div>
 
                                             {/* Reactions */}
-                                            {msg.reactions.length > 0 && (
+                                            {(msg.reactions ?? []).length > 0 && (
                                                 <div style={{ display: 'flex', flexWrap: 'wrap', marginTop: '0.2rem' }}>
                                                     {Object.entries(msg.reactions.reduce((acc, r) => { acc[r.emoji] = (acc[r.emoji] || 0) + 1; return acc; }, {} as Record<string, number>)).map(([emoji, count]) => (
                                                         <span key={emoji} style={REACTION} onClick={() => handleReaction(msg.id, emoji)}>
@@ -266,7 +335,7 @@ const ChannelPanel: React.FC = () => {
                                             )}
 
                                             {/* Thread link */}
-                                            {msg.replyCount > 0 && (
+                                            {(msg.replyCount ?? 0) > 0 && (
                                                 <div style={THREAD_COUNT} onClick={() => loadThread(msg.threadRootId || msg.id)}>
                                                     💬 {msg.replyCount} {t('channels.replies')}
                                                 </div>
@@ -306,8 +375,8 @@ const ChannelPanel: React.FC = () => {
 
                         {/* Typing indicator */}
                         <div style={TYPING_BAR}>
-                            {typing.length > 0 && (
-                                <span>{typing.map((t) => t.agentId).join(', ')} {t('channels.typing')}</span>
+                            {(typing ?? []).length > 0 && (
+                                <span>{(typing ?? []).map((t) => t.agentId).join(', ')} {t('channels.typing')}</span>
                             )}
                         </div>
 

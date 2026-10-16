@@ -141,4 +141,28 @@ describe('ForumPanel (FT-02)', () => {
         },
         TEST_TIMEOUT,
     );
+
+    it(
+        'banners a topic-list failure instead of going silently stale',
+        async () => {
+            listTopics.mockImplementationOnce(() => Promise.reject(new Error('db down')));
+            const ForumPanel = (await import('./ForumPanel')).default;
+            render(<ForumPanel />);
+            expect(await screen.findByText('forum.error.generic')).toBeDefined();
+        },
+        TEST_TIMEOUT,
+    );
+
+    it(
+        'tolerates a non-array topic payload and NaN post counts',
+        async () => {
+            listTopics.mockImplementationOnce(() =>
+                Promise.resolve({ items: [{ id: 'x', title: 'Odd', category: 'general' }] }),
+            );
+            const ForumPanel = (await import('./ForumPanel')).default;
+            render(<ForumPanel />);
+            expect(await screen.findByText('Odd')).toBeDefined();
+        },
+        TEST_TIMEOUT,
+    );
 });

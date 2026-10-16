@@ -22,6 +22,7 @@ const ForumPanel: React.FC = () => {
     const [thread, setThread] = React.useState<{ topic: Topic; posts: Post[] } | null>(null);
     const [consensus, setConsensus] = React.useState<string | null>(null);
     const [heatmap, setHeatmap] = React.useState<Array<{ category: string; count: number }>>([]);
+    const [error, setError] = React.useState<string | null>(null);
 
     const currentAuthor: ForumAuthor = {
         kind: 'human',
@@ -31,14 +32,34 @@ const ForumPanel: React.FC = () => {
 
     const [page, setPage] = React.useState(0);
 
-    const refreshTopics = React.useCallback(async () => {
-        const pageData = await forumService.listTopics({ page, pageSize: 50 });
-        setTopics(pageData.items);
-        const counts = new Map<string, number>();
-        for (const tp of pageData.items) {
-            counts.set(tp.category, (counts.get(tp.category) ?? 0) + tp.postCount);
+    // Every service call funnels through here: forum failures used to be
+    // unhandled rejections with a silently stale UI. Now they banner.
+    const runGuarded = async (fn: () => Promise<void>) => {
+        setError(null);
+        try {
+            await fn();
+        } catch (e) {
+            console.error('[ForumPanel]', e);
+            setError(t('forum.error.generic'));
         }
-        setHeatmap([...counts.entries()].map(([category, count]) => ({ category, count })));
+    };
+
+    const refreshTopics = React.useCallback(async () => {
+        await runGuarded(async () => {
+            const pageData = await forumService.listTopics({ page, pageSize: 50 });
+            const items = Array.isArray(pageData?.items) ? pageData.items : [];
+            setTopics(items);
+            const counts = new Map<string, number>();
+            for (const tp of items) {
+                const cat = tp.category ?? 'uncategorized';
+                const n = typeof tp.postCount === 'number' ? tp.postCount : 0;
+                counts.set(cat, (counts.get(cat) ?? 0) + n);
+            }
+            setHeatmap([...counts.entries()].map(([category, count]) => ({ category, count })));
+        });
+        // runGuarded is intentionally excluded: it is re-created every render
+        // and chaining it here would re-fire the subscription effect in a loop.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [page]);
 
     // Combined Effect for lifecycle + real-time
@@ -52,47 +73,59 @@ const ForumPanel: React.FC = () => {
     }, [refreshTopics]);
 
     const openThread = async (id: string): Promise<void> => {
-        setSelectedId(id);
-        const th = await forumService.getThread(id);
-        setThread(th);
-        const cv = await forumService.getConsensus(id);
-        setConsensus(cv?.status ?? null);
+        await runGuarded(async () => {
+            setSelectedId(id);
+            const th = await forumService.getThread(id);
+            setThread(th ?? null);
+            const cv = await forumService.getConsensus(id);
+            setConsensus(cv?.status ?? null);
+        });
     };
 
     const handleCreate = async (title: string, category: string): Promise<void> => {
-        const id = await forumService.createTopic({ title, category, author: currentAuthor });
-        await refreshTopics();
-        await openThread(id);
+        await runGuarded(async () => {
+            const id = await forumService.createTopic({ title, category, author: currentAuthor });
+            await refreshTopics();
+            await openThread(id);
+        });
     };
 
     const [replyTo, setReplyTo] = React.useState<string | null>(null);
     const handleCompose = async (body: string): Promise<void> => {
         if (!selectedId) return;
-        await forumService.postMessage(selectedId, currentAuthor, body, replyTo ?? undefined);
-        setReplyTo(null);
-        await openThread(selectedId);
-        await refreshTopics();
+        await runGuarded(async () => {
+            await forumService.postMessage(selectedId, currentAuthor, body, replyTo ?? undefined);
+            setReplyTo(null);
+            await openThread(selectedId);
+            await refreshTopics();
+        });
     };
 
     const handleModerate = async (postId: string, action: string): Promise<void> => {
         if (!selectedId) return;
-        await forumService.moderatePost(
-            postId,
-            action as 'hide' | 'remove' | 'warn',
-            t('forum.moderation_reason'),
-        );
-        await openThread(selectedId);
+        await runGuarded(async () => {
+            await forumService.moderatePost(
+                postId,
+                action as 'hide' | 'remove' | 'warn',
+                t('forum.moderation_reason'),
+            );
+            await openThread(selectedId);
+        });
     };
 
     const handleVote = async (postId: string, vote: 'up' | 'down'): Promise<void> => {
         if (!selectedId) return;
-        await forumService.votePost(postId, currentAuthor, vote);
-        await openThread(selectedId);
+        await runGuarded(async () => {
+            await forumService.votePost(postId, currentAuthor, vote);
+            await openThread(selectedId);
+        });
     };
 
     const handlePin = async (topicId: string, pinned: boolean): Promise<void> => {
-        await forumService.pinTopic(topicId, !pinned);
-        await refreshTopics();
+        await runGuarded(async () => {
+            await forumService.pinTopic(topicId, !pinned);
+            await refreshTopics();
+        });
     };
 
     const [seeding, setSeeding] = React.useState(false);
@@ -100,9 +133,11 @@ const ForumPanel: React.FC = () => {
         if (seeding) return;
         setSeeding(true);
         try {
-            const id = await seedForumDemo(forumService);
-            await refreshTopics();
-            await openThread(id);
+            await runGuarded(async () => {
+                const id = await seedForumDemo(forumService);
+                await refreshTopics();
+                await openThread(id);
+            });
         } finally {
             setSeeding(false);
         }
@@ -150,6 +185,41 @@ const ForumPanel: React.FC = () => {
                     </Button>
                 </div>
             </div>
+
+            {error && (
+                <div
+                    role="alert"
+                    style={{
+                        margin: '0.5rem 1.25rem 0',
+                        padding: '0.5rem 0.75rem',
+                        borderRadius: 8,
+                        background: 'rgba(239,68,68,0.08)',
+                        border: '1px solid rgba(239,68,68,0.2)',
+                        color: '#fca5a5',
+                        fontSize: '0.8rem',
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        gap: 8,
+                    }}
+                >
+                    <span>{error}</span>
+                    <button
+                        onClick={() => setError(null)}
+                        style={{
+                            background: 'none',
+                            border: 'none',
+                            color: 'inherit',
+                            cursor: 'pointer',
+                            fontSize: '0.8rem',
+                            flexShrink: 0,
+                        }}
+                        aria-label={t('common.dismiss_error')}
+                    >
+                        ✕
+                    </button>
+                </div>
+            )}
 
             <div style={{ flex: 1, overflow: 'hidden', display: 'flex' }}>
                 {/* Left: topics */}
