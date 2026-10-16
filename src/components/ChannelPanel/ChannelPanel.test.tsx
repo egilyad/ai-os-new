@@ -89,7 +89,7 @@ describe('ChannelPanel', () => {
         };
         svc.sendMessage.mockRejectedValueOnce(new Error('offline'));
         useChannelStore.setState({
-            channels: new Map([['c1', { id: 'c1', name: 'general', type: 'stream', visibility: 'public' }]]),
+            channels: new Map([['c1', { id: 'c1', name: 'general', type: 'stream', visibility: 'public' }]]) as never,
             order: ['c1'],
             selectedId: 'c1',
             messages: [],
@@ -115,10 +115,10 @@ describe('ChannelPanel', () => {
     it('renders legacy messages without content or reactions', async () => {
         const { useChannelStore } = await import('../../stores/channel-store');
         useChannelStore.setState({
-            channels: new Map([['c1', { id: 'c1', name: 'general', type: 'stream', visibility: 'public' }]]),
+            channels: new Map([['c1', { id: 'c1', name: 'general', type: 'stream', visibility: 'public' }]]) as never,
             order: ['c1'],
             selectedId: 'c1',
-            messages: [{ id: 'm9', authorId: 'alice' }],
+            messages: [{ id: 'm9', authorId: 'alice' }] as never,
         });
         try {
             render(<ChannelPanel />);

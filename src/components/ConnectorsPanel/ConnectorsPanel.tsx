@@ -129,7 +129,7 @@ const ConnectorsPanel: React.FC = () => {
                     eventBus.emit(EVENTS.NOTIFICATION, {
                         message: t('connectors.notif_test_failed', {
                             name: connector.name,
-                            error: result.error,
+                            error: result.error ?? t('common.unknown_error'),
                         }),
                         type: 'warning',
                     });

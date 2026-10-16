@@ -96,7 +96,9 @@ const SkillsPanel: React.FC = () => {
         const reader = new FileReader();
         reader.onload = async (event) => {
             try {
-                const count = skillService.importSkills(event.target?.result as string);
+                // importSkills is async — the old code interpolated the Promise
+                // itself ("[object Promise]") into the toast. Await the count.
+                const count = await skillService.importSkills(event.target?.result as string);
                 if (isMountedRef.current) {
                     setSkills(skillService.getSkills());
                     eventBus.emit(EVENTS.NOTIFICATION as keyof EventMap, {

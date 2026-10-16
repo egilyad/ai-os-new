@@ -94,7 +94,7 @@ describe('ProjectsPanel', () => {
         useProjectStore.setState({
             projects: new Map([
                 ['p9', { id: 'p9', name: 'Legacy', description: '', type: 'website', status: 'draft' }],
-            ]),
+            ]) as never,
             order: ['p9'],
             selectedProjectId: null,
         });
@@ -111,7 +111,7 @@ describe('ProjectsPanel', () => {
         useProjectStore.setState({
             projects: new Map([
                 ['p1', { id: 'p1', name: 'P1', description: '', type: 'website', status: 'draft', agentIds: [] }],
-            ]),
+            ]) as never,
             order: ['p1'],
             selectedProjectId: 'p1',
         });

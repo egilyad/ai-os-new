@@ -157,7 +157,7 @@ describe('ForumPanel (FT-02)', () => {
         'tolerates a non-array topic payload and NaN post counts',
         async () => {
             listTopics.mockImplementationOnce(() =>
-                Promise.resolve({ items: [{ id: 'x', title: 'Odd', category: 'general' }] }),
+                Promise.resolve({ items: [{ id: 'x', title: 'Odd', category: 'general' }] }) as never,
             );
             const ForumPanel = (await import('./ForumPanel')).default;
             render(<ForumPanel />);
