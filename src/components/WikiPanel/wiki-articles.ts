@@ -556,7 +556,7 @@ Health-панели провайдеров, трейсы и timeline, DLQ (dead-
 
 ## Зона 15: исследования (проверено, исправлено)
 
-- ResearchEnginePanel: create/run/delete/refresh были голыми (create глотал ошибку целиком `catch {}`) — теперь всё с баннером; сессии/адаптеры/конфиг терпят не-массивы и throw на старте.
+- ResearchEnginePanel: create/run/delete/refresh были голыми (create глотал ошибку целиком пустым catch) — теперь всё с баннером; сессии/адаптеры/конфиг терпят не-массивы и throw на старте.
 - GeminiResearchPanel: загрузка сессий в mount и в poll — guards; селект терпит сессии без loops; мёртвый error-слот наконец-то используется.
 - Ключи research_engine.error_* en+ru.
 - Тесты: ResearchEnginePanel 3/3, GeminiResearchPanel 2/2 (новые файлы).
