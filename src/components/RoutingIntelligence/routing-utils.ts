@@ -18,34 +18,36 @@ export function providerColor(provider: string): string {
         openrouter: '#3b82f6',
         nvidia: '#f59e0b',
     };
-    return colors[provider.toLowerCase()] || '#94a3b8';
+    return colors[(provider ?? '').toLowerCase()] || '#94a3b8';
 }
 
-export function scoreBreakdown(score: RouterDecision['scores'][number]) {
+export function scoreBreakdown(score: RouterDecision['scores'][number] | undefined) {
+    // Legacy decisions may lack components entirely — default to zeros
+    // instead of crashing every scores table.
+    const c = (score?.components ?? {}) as Partial<Record<string, unknown>>;
+    const num = (v: unknown) => (typeof v === 'number' ? v : 0);
     return {
-        ttft: Math.max(0, 1 - score.components.latencyPenalty),
-        tps: score.components.raw,
-        reliability: Math.max(
-            0,
-            score.components.stabilityBonus +
-                score.components.reputationBonus +
-                score.components.keyReputationBonus,
-        ),
-        cost: score.components.costPenalty,
+        ttft: Math.max(0, 1 - num(c['latencyPenalty'])),
+        tps: num(c['raw']),
+        reliability: Math.max(0, num(c['stabilityBonus']) + num(c['reputationBonus']) + num(c['keyReputationBonus'])),
+        cost: num(c['costPenalty']),
     };
 }
 
 export function getExplanation(d: RouterDecision): string[] {
     const lines: string[] = [];
-    const top = d.scores[0];
+    const top = (d.scores ?? [])[0];
     if (!top) return [];
 
     lines.push(`Strategy: ${STRATEGY_LABELS[d.strategy] || d.strategy}`);
     lines.push(
-        `Classified: ${d.promptLength > 2000 ? 'long' : d.promptLength > 500 ? 'medium' : 'short'} request (${d.promptLength} chars)`,
+        typeof d.promptLength === 'number'
+            ? `Classified: ${d.promptLength > 2000 ? 'long' : d.promptLength > 500 ? 'medium' : 'short'} request (${d.promptLength} chars)`
+            : 'Classified: unknown length',
     );
+    const w = d.weights ?? { ttft: 0, tps: 0, reliability: 0 };
     lines.push(
-        `Weights: TTFT ${(d.weights.ttft * 100).toFixed(0)}% / TPS ${(d.weights.tps * 100).toFixed(0)}% / Reliability ${(d.weights.reliability * 100).toFixed(0)}%`,
+        `Weights: TTFT ${(w.ttft * 100).toFixed(0)}% / TPS ${(w.tps * 100).toFixed(0)}% / Reliability ${(w.reliability * 100).toFixed(0)}%`,
     );
 
     const topBreakdown = scoreBreakdown(top);

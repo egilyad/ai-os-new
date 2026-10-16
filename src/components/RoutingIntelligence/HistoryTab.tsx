@@ -120,7 +120,7 @@ function HistoryTab({ decisions, selected, onSelect }: Props) {
                     })()}
                 <div style={flexColGap2}>
                     {decisions.map((d, i) => {
-                        const top = d.scores[0];
+                        const top = (d.scores ?? [])[0];
                         return (
                             <div
                                 key={`${d.requestId}-${i}`}
@@ -153,7 +153,9 @@ function HistoryTab({ decisions, selected, onSelect }: Props) {
                                             fontFamily: 'monospace',
                                         }}
                                     >
-                                        {new Date(d.timestamp).toLocaleTimeString()}
+                                        {d.timestamp
+                                            ? new Date(d.timestamp).toLocaleTimeString()
+                                            : '—'}
                                     </span>
                                     <span
                                         style={{
@@ -191,7 +193,7 @@ function HistoryTab({ decisions, selected, onSelect }: Props) {
                                     )}
                                 </div>
 
-                                {top && (
+                                {top && typeof top.score === 'number' && (
                                     <div
                                         style={{
                                             display: 'flex',
@@ -364,7 +366,7 @@ function HistoryTab({ decisions, selected, onSelect }: Props) {
                                 </tr>
                             </thead>
                             <tbody>
-                                {selected.scores.map((s, i) => {
+                                {(selected.scores ?? []).map((s, i) => {
                                     const breakdown = scoreBreakdown(s);
                                     return (
                                         <tr
@@ -393,7 +395,7 @@ function HistoryTab({ decisions, selected, onSelect }: Props) {
                                                     fontWeight: 700,
                                                 }}
                                             >
-                                                {s.score.toFixed(3)}
+                                                {typeof s.score === 'number' ? s.score.toFixed(3) : '—'}
                                             </td>
                                             <td style={{ padding: '0.5rem', textAlign: 'right' }}>
                                                 {(breakdown.ttft * 100).toFixed(0)}%

@@ -2,6 +2,14 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 
 vi.mock('../../kernel/instances', () => ({
+    rootLogger: {
+        child: vi.fn(() => ({
+            debug: vi.fn(),
+            info: vi.fn(),
+            warn: vi.fn(),
+            error: vi.fn(),
+        })),
+    },
     eventBus: {
         emit: vi.fn(),
         on: vi.fn(() => vi.fn()),
@@ -106,5 +114,30 @@ describe('RoutingIntelligence', () => {
         fireEvent.click(screen.getByText('Advanced Control'));
         expect(await screen.findByText('Fallback Chains')).toBeDefined();
         expect(screen.getByText('Model Downgrade Map')).toBeDefined();
+    });
+
+    it('renders legacy decisions without scores or weights', async () => {
+        const { routerService } = await import('../../kernel/instances');
+        vi.mocked(routerService.getDecisionHistory).mockReturnValueOnce([
+            { requestId: 'legacy-1', strategy: 'auto' },
+        ] as never);
+        const RoutingIntelligence = (await import('./RoutingIntelligence')).default;
+        render(<RoutingIntelligence />);
+        expect(await screen.findByText('Last 1 routing decisions')).toBeDefined();
+        expect(screen.queryByText('NaN%')).toBeNull();
+        fireEvent.click(screen.getByText('Decision Tree'));
+        expect(await screen.findByText('Incoming Request')).toBeDefined();
+    });
+
+    it('shows a dash instead of Invalid Date for missing timestamps', async () => {
+        const { routerService } = await import('../../kernel/instances');
+        vi.mocked(routerService.getDecisionHistory).mockReturnValueOnce([
+            { requestId: 'legacy-2', strategy: 'auto', selected: 'groq', scores: [] },
+        ] as never);
+        const RoutingIntelligence = (await import('./RoutingIntelligence')).default;
+        render(<RoutingIntelligence />);
+        await screen.findByText('Last 1 routing decisions');
+        expect(screen.getByText('—')).toBeDefined();
+        expect(screen.queryByText('Invalid Date')).toBeNull();
     });
 });

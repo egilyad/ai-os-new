@@ -4,6 +4,8 @@ interface Props {
     color: string;
 }
 
+// Non-finite pressure (missing snapshot fields) renders as an empty bar,
+// never as a NaN% width that silently drops the fill.
 const MiniBar: React.FC<Props> = ({ pct, color }) => (
     <div
         style={{
@@ -16,7 +18,7 @@ const MiniBar: React.FC<Props> = ({ pct, color }) => (
     >
         <div
             style={{
-                width: `${Math.min(100, pct * 100)}%`,
+                width: `${Math.min(100, (Number.isFinite(pct) ? pct : 0) * 100)}%`,
                 height: '100%',
                 background: color,
                 borderRadius: 2,

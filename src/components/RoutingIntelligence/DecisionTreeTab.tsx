@@ -112,16 +112,20 @@ function DecisionTreeTab({ decisions }: Props) {
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
                     {(() => {
                         const d = decisions[0]!;
+                        const promptLength = d.promptLength;
                         const classification =
-                            d.promptLength > 2000
-                                ? 'Long'
-                                : d.promptLength > 500
-                                  ? 'Medium'
-                                  : 'Short';
+                            typeof promptLength !== 'number'
+                                ? 'Unknown'
+                                : promptLength > 2000
+                                  ? 'Long'
+                                  : promptLength > 500
+                                    ? 'Medium'
+                                    : 'Short';
+                        const w = d.weights ?? { ttft: 0, tps: 0, reliability: 0 };
                         const treeNodes: TreeNode[] = [
                             {
                                 label: 'Incoming Request',
-                                sub: `${d.promptLength} chars`,
+                                sub: typeof promptLength === 'number' ? `${promptLength} chars` : 'unknown length',
                                 color: 'var(--purple)',
                                 children: [
                                     {
@@ -135,13 +139,13 @@ function DecisionTreeTab({ decisions }: Props) {
                                                 color: 'var(--warning)',
                                                 children: [
                                                     {
-                                                        label: `Weights: TTFT ${(d.weights.ttft * 100).toFixed(0)}% / TPS ${(d.weights.tps * 100).toFixed(0)}% / Reliability ${(d.weights.reliability * 100).toFixed(0)}%`,
+                                                        label: `Weights: TTFT ${(w.ttft * 100).toFixed(0)}% / TPS ${(w.tps * 100).toFixed(0)}% / Reliability ${(w.reliability * 100).toFixed(0)}%`,
                                                         sub: 'Balanced for request type',
                                                         color: 'var(--success)',
-                                                        children: d.scores.slice(0, 3).map((s) => {
+                                                        children: (d.scores ?? []).slice(0, 3).map((s) => {
                                                             const breakdown = scoreBreakdown(s);
                                                             return {
-                                                                label: `${s.provider} — score: ${s.score.toFixed(3)}`,
+                                                                label: `${s.provider} — score: ${typeof s.score === 'number' ? s.score.toFixed(3) : '—'}`,
                                                                 sub: `TTFT ${(breakdown.ttft * 100).toFixed(0)}% · TPS ${(breakdown.tps * 100).toFixed(0)}% · Reliability ${(breakdown.reliability * 100).toFixed(0)}% · Cost ${breakdown.cost.toFixed(4)}`,
                                                                 color:
                                                                     s.provider === d.selected

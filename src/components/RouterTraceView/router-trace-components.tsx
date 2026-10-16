@@ -11,7 +11,7 @@ export const providerColor = (provider: string): string => {
         nvidia: '#f59e0b',
         openai: '#10b981',
     };
-    return colors[provider.toLowerCase()] || '#94a3b8';
+    return colors[(provider ?? '').toLowerCase()] || '#94a3b8';
 };
 
 export const ScoreBar: React.FC<{
