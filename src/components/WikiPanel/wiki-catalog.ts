@@ -1,4 +1,4 @@
-import type { WikiArticle } from './wiki-articles';
+import type { WikiArticle } from './wiki-types';
 import { CATALOG_MARKDOWN } from '../../generated/wiki-component-catalog';
 import { PANEL_CATALOG_MARKDOWN } from '../../generated/wiki-panel-catalog';
 import { DOCS_HEALTH_MARKDOWN } from '../../generated/wiki-docs-health';

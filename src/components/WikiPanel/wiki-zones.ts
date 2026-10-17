@@ -1,4 +1,4 @@
-import type { WikiArticle } from './wiki-articles';
+import type { WikiArticle } from './wiki-types';
 
 export const ZONE_ARTICLES: WikiArticle[] = [
     {

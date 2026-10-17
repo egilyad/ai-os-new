@@ -1,4 +1,4 @@
-import type { WikiArticle } from './wiki-articles';
+import type { WikiArticle } from './wiki-types';
 import { EVENT_CATALOG_MARKDOWN } from '../../generated/wiki-event-catalog';
 
 // Auto-maintained catalog of every bus event (source: event-registry.ts).

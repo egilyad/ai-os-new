@@ -11,23 +11,9 @@ import { SERVICE_MAP_ARTICLES } from './wiki-service-map';
 import { CONTRACT_ARTICLES } from './wiki-contracts';
 import { LAYER_ARTICLES } from './wiki-layers';
 import { TOOLING_ARTICLES } from './wiki-tooling';
-export type WikiFreshness = 'verified' | 'documented' | 'needs-check' | 'not-implemented';
+import type { WikiArticle, WikiFreshness, WikiSection } from './wiki-types';
 
-export interface WikiSection {
-    id: string;
-    title: string;
-}
-
-export interface WikiArticle {
-    slug: string;
-    title: string;
-    section: string;
-    tags: string[];
-    freshness: WikiFreshness;
-    sources: string[];
-    related: string[];
-    body: string;
-}
+export type { WikiArticle, WikiFreshness, WikiSection } from './wiki-types';
 
 export const WIKI_SECTIONS: WikiSection[] = [
     { id: 'guide', title: 'Руководство' },

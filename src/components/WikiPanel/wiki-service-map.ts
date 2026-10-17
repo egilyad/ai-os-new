@@ -1,4 +1,4 @@
-import type { WikiArticle } from './wiki-articles';
+import type { WikiArticle } from './wiki-types';
 import { DEP_MAP_MARKDOWN } from '../../generated/wiki-dep-map';
 
 // Kernel DI dependency map, embedded from DEPENDENCY_MAP.md via scripts/gen-wiki-depmap.mjs.

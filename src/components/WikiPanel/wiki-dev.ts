@@ -1,4 +1,4 @@
-import type { WikiArticle } from './wiki-articles';
+import type { WikiArticle } from './wiki-types';
 
 // Development handbook — how the OS is built, wired and shipped.
 // Bodies are template literals: escape inline backticks as \` , never use ${.

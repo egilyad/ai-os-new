@@ -1,4 +1,4 @@
-import type { WikiArticle } from './wiki-articles';
+import type { WikiArticle } from './wiki-types';
 import { STORES_MARKDOWN } from '../../generated/wiki-stores';
 import { I18N_MARKDOWN } from '../../generated/wiki-i18n';
 

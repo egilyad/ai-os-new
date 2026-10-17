@@ -1,4 +1,4 @@
-import type { WikiArticle } from './wiki-articles';
+import type { WikiArticle } from './wiki-types';
 import { SCRIPTS_MARKDOWN } from '../../generated/wiki-scripts';
 import { TESTS_MARKDOWN } from '../../generated/wiki-tests';
 

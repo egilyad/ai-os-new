@@ -1,4 +1,4 @@
-import type { WikiArticle } from './wiki-articles';
+import type { WikiArticle } from './wiki-types';
 import { CONTRACTS_MARKDOWN } from '../../generated/wiki-contracts';
 
 // Auto-maintained catalog of kernel contracts (interfaces/types) and their implementers.
