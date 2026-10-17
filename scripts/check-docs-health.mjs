@@ -3,7 +3,7 @@
 // Exits non-zero when hard problems are found (broken source refs, broken
 // internal links, duplicate slugs). Soft metrics (incomplete articles,
 // undocumented panels) are reported but do not fail the run.
-import { readFileSync, readdirSync, existsSync, statSync } from 'fs';
+import { readFileSync, readdirSync, existsSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, resolve, basename } from 'path';
 import { parseNavSections } from './lib/route-nav.mjs';
@@ -111,6 +111,29 @@ const allPanels = sections.flatMap((s) => s.items.map((it) => ({ ...it, section:
 const techniquePanels = allPanels.filter((p) => p.section === 'techniques');
 const undocumented = allPanels.filter((p) => p.section !== 'techniques' && !mapped.has(p.id));
 
+// --- manifest cross-check (entity references must resolve) ---
+// Soft: only run when the manifest exists. Hard problems counted separately.
+const manifestPath = resolve(root, 'docs/manifest.json');
+const manifestProblems = [];
+if (existsSync(manifestPath)) {
+    let manifest = null;
+    try {
+        manifest = JSON.parse(readFileSync(manifestPath, 'utf8'));
+    } catch (e) {
+        manifestProblems.push(`manifest.json is not valid JSON: ${e.message}`);
+    }
+    if (manifest) {
+        for (const p of manifest.panels ?? []) {
+            if (p.article && !slugs.has(p.article)) manifestProblems.push(`panel ${p.panelId} -> missing article ${p.article}`);
+            if (p.component && !resolveModule(p.component)) manifestProblems.push(`panel ${p.panelId} -> missing component ${p.component}`);
+        }
+        for (const a of manifest.articles ?? []) {
+            if (!slugs.has(a.slug)) manifestProblems.push(`article ${a.id} has no page (${a.slug}.md)`);
+            for (const r of a.related ?? []) if (!slugs.has(r)) manifestProblems.push(`article ${a.slug} -> dead related ${r}`);
+        }
+    }
+}
+
 // --- report ---
 const lines = [];
 lines.push('Documentation Health', '');
@@ -121,6 +144,7 @@ lines.push(`incomplete articles:      ${incomplete.length}`);
 lines.push(`articles without sources: ${noSources.length}`);
 lines.push(`panels:                   ${mapped.size}/${allPanels.length} mapped to an article`);
 lines.push(`  technique auto-panels:  ${techniquePanels.length} (covered by panels-catalog)`);
+lines.push(`manifest problems:        ${manifestProblems.length}`);
 lines.push('');
 const cap = (arr) => (arr.length > 20 ? [...arr.slice(0, 20), `… +${arr.length - 20} more`] : arr);
 if (brokenSources.length) {
@@ -143,9 +167,14 @@ if (undocumented.length) {
     for (const p of cap(undocumented)) lines.push(`  - ${typeof p === 'string' ? p : `${p.id} (${p.section})`}`);
     lines.push('');
 }
+if (manifestProblems.length) {
+    lines.push('Manifest problems:');
+    for (const b of cap(manifestProblems)) lines.push(`  - ${b}`);
+    lines.push('');
+}
 console.log(lines.join('\n'));
 
-const hardErrors = brokenSources.length + brokenLinks.length;
+const hardErrors = brokenSources.length + brokenLinks.length + manifestProblems.length;
 if (hardErrors > 0) {
     console.error(`docs-health: FAILED (${hardErrors} hard problem(s))`);
     process.exit(1);

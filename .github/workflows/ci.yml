@@ -64,11 +64,13 @@ jobs:
             - name: Wiki docs in sync
               # docs/wiki is generated from the Wiki corpus
               # (src/components/WikiPanel) so GitHub renders the whole wiki
-              # without the app. Fail if the corpus changed but the mirror was
-              # not regenerated (keeps the committed docs truthful).
+              # without the app. docs/manifest.json is the machine-readable
+              # index derived from the same corpus + route registries. Fail if
+              # either is stale relative to the source.
               run: |
                   npm run gen:wiki-docs
-                  git diff --exit-code -- docs/wiki
+                  npm run gen:wiki-manifest
+                  git diff --exit-code -- docs/wiki docs/manifest.json
 
             - name: Documentation health
               # Objective checks over the committed wiki mirror: declared source

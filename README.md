@@ -191,6 +191,7 @@ docs/wiki/           # markdown-зеркало вики (этот портал)
 | `npm run lint` | ESLint |
 | `npm run typecheck` | TypeScript без emit |
 | `npm run gen:wiki-docs` | пересобрать markdown-зеркало вики |
+| `npm run gen:wiki-manifest` | пересобрать машиночитаемый индекс (docs/manifest.json) |
 | `npm run gen:wiki-panel-catalog` | пересобрать каталог панелей |
 | `npm run gen:wiki-site` | собрать статический сайт вики (для GitHub Pages) |
 | `npm run gen:readme-maps` | пересобрать таблицы README из кода |
@@ -206,6 +207,7 @@ docs/wiki/           # markdown-зеркало вики (этот портал)
 | Документ | О чём |
 | --- | --- |
 | [Вики (RU)](./docs/wiki/README.md) | Вся система: панели, домены, диагностика, история, руководства |
+| [manifest.json](./docs/manifest.json) | Машиночитаемый индекс: разделы, статьи (источники, тесты, связи), панели (маршрут, компонент, статья) |
 | [System Manifest](./docs/SYSTEM_MANIFEST.md) | Принципы архитектуры |
 | [Полный реестр (RU)](./docs/ПОЛНЫЙ_РЕЕСТР.md) | Паспорт системы |
 | [Каталог сервисов (RU)](./docs/SERVICES_RU.md) | DI-сервисы |
@@ -691,6 +693,7 @@ _Сгенерировано из кода 2026-10-17, скрипт `npm run gen:
 
 - **На GitHub** — открой [docs/wiki/README.md](./docs/wiki/README.md); каждая статья это отдельный markdown-файл с диаграммами (mermaid рендерится GitHub).
 - **На сайте** — статическая вика на GitHub Pages (под `/wiki/`): меню разделов, поиск по всем статьям, mermaid. Собирается из этого же зеркала: `npm run gen:wiki-site`.
+- **Для агентов** — [docs/manifest.json](./docs/manifest.json): стабильные ID, типы, статусы, источники, тесты и связи. Копия доступна на сайте: `/wiki/manifest.json`.
 - **В приложении** — панель **Wiki**: поиск (BM25), карта ОС, покрытие документации, авто-каталоги и новости.
 
 ---

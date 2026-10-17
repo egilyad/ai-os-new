@@ -1,0 +1,5908 @@
+{
+  "version": 1,
+  "source": "scripts/gen-wiki-manifest.mjs",
+  "sections": [
+    {
+      "id": "guide",
+      "title": "Руководство",
+      "articles": 3
+    },
+    {
+      "id": "panels",
+      "title": "Панели",
+      "articles": 74
+    },
+    {
+      "id": "agents",
+      "title": "Агенты",
+      "articles": 1
+    },
+    {
+      "id": "debates",
+      "title": "Дебаты",
+      "articles": 1
+    },
+    {
+      "id": "memory",
+      "title": "Знания и память",
+      "articles": 2
+    },
+    {
+      "id": "providers",
+      "title": "Провайдеры",
+      "articles": 1
+    },
+    {
+      "id": "diagnostics",
+      "title": "Диагностика",
+      "articles": 1
+    },
+    {
+      "id": "history",
+      "title": "История разработки",
+      "articles": 26
+    },
+    {
+      "id": "architecture",
+      "title": "Архитектура",
+      "articles": 1
+    },
+    {
+      "id": "notes",
+      "title": "Заметки",
+      "articles": 1
+    },
+    {
+      "id": "dev",
+      "title": "Разработчикам",
+      "articles": 24
+    }
+  ],
+  "articles": [
+    {
+      "id": "wiki:what-is",
+      "type": "article",
+      "slug": "what-is",
+      "title": "Что такое SuperAgents OS",
+      "section": "guide",
+      "status": "documented",
+      "tags": [
+        "обзор",
+        "философия",
+        "local-first"
+      ],
+      "sources": [
+        "README_EN.md",
+        "docs/SYSTEM_MANIFEST_RU.md"
+      ],
+      "related": [
+        "capabilities",
+        "architecture",
+        "providers"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:capabilities",
+      "type": "article",
+      "slug": "capabilities",
+      "title": "Возможности ОС",
+      "section": "guide",
+      "status": "documented",
+      "tags": [
+        "обзор",
+        "функции"
+      ],
+      "sources": [
+        "README_EN.md"
+      ],
+      "related": [
+        "what-is",
+        "debates",
+        "agents",
+        "providers",
+        "memory"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:panels-guide",
+      "type": "article",
+      "slug": "panels-guide",
+      "title": "Как пользоваться панелями",
+      "section": "guide",
+      "status": "verified",
+      "tags": [
+        "инструкция",
+        "навигация"
+      ],
+      "sources": [
+        "src/route-registry-core.ts",
+        "src/route-registry-content.ts",
+        "src/routes.tsx"
+      ],
+      "related": [
+        "panel-chat",
+        "panel-providers",
+        "panel-agent-tasks"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:panel-chat",
+      "type": "article",
+      "slug": "panel-chat",
+      "title": "Панель: Чат",
+      "section": "panels",
+      "status": "verified",
+      "tags": [
+        "панель",
+        "чат",
+        "инструкция"
+      ],
+      "sources": [
+        "src/components/ChatPanel/ChatPanel.tsx",
+        "src/components/ChatPanel/MarkdownRenderer.tsx"
+      ],
+      "related": [
+        "providers",
+        "panel-providers",
+        "memory",
+        "zone-1"
+      ],
+      "tests": [
+        "src/components/ChatPanel/ChatPanel.test.tsx",
+        "src/components/ChatPanel/MarkdownRenderer.test.tsx"
+      ]
+    },
+    {
+      "id": "wiki:panel-providers",
+      "type": "article",
+      "slug": "panel-providers",
+      "title": "Панель: Провайдеры и ключи",
+      "section": "panels",
+      "status": "verified",
+      "tags": [
+        "панель",
+        "ключи",
+        "инструкция",
+        "безопасность"
+      ],
+      "sources": [
+        "src/components/ProviderManager/",
+        "src/kernel/services/key-management/key-service.ts"
+      ],
+      "related": [
+        "providers",
+        "panel-chat",
+        "diagnostics",
+        "zone-1"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:panel-agent-tasks",
+      "type": "article",
+      "slug": "panel-agent-tasks",
+      "title": "Панель: Задачи агентов",
+      "section": "panels",
+      "status": "verified",
+      "tags": [
+        "панель",
+        "задачи",
+        "инструкция"
+      ],
+      "sources": [
+        "src/components/AgentTasksPanel/AgentTasksPanel.tsx"
+      ],
+      "related": [
+        "agents",
+        "execution-trail",
+        "zone-3"
+      ],
+      "tests": [
+        "src/components/AgentTasksPanel/AgentTasksPanel.test.tsx"
+      ]
+    },
+    {
+      "id": "wiki:panel-settings",
+      "type": "article",
+      "slug": "panel-settings",
+      "title": "Панель: Настройки",
+      "section": "panels",
+      "status": "verified",
+      "tags": [
+        "панель",
+        "настройки",
+        "конфиг",
+        "инструкция"
+      ],
+      "sources": [
+        "src/components/SettingsPanel/SettingsPanel.tsx",
+        "src/i18n/translations/en/settings.ts"
+      ],
+      "related": [
+        "providers",
+        "diagnostics",
+        "dev-i18n-catalog",
+        "panel-providers",
+        "zone-9"
+      ],
+      "tests": [
+        "src/components/SettingsPanel/SettingsPanel.test.tsx"
+      ]
+    },
+    {
+      "id": "wiki:panel-governance",
+      "type": "article",
+      "slug": "panel-governance",
+      "title": "Панель: Governance и безопасность",
+      "section": "panels",
+      "status": "verified",
+      "tags": [
+        "панель",
+        "governance",
+        "политики",
+        "guardrails",
+        "инструкция"
+      ],
+      "sources": [
+        "src/components/GovernancePanel/GovernancePanel.tsx",
+        "src/components/PolicyPanel/PolicyPanel.tsx",
+        "src/components/GuardrailsPanel/GuardrailsPanel.tsx",
+        "src/components/SopPanel/SopPanel.tsx",
+        "src/components/PromptSecurityPanel.tsx"
+      ],
+      "related": [
+        "agents",
+        "diagnostics",
+        "providers",
+        "dev-component-catalog",
+        "zone-6"
+      ],
+      "tests": [
+        "src/components/GovernancePanel/GovernancePanel.test.tsx",
+        "src/components/PolicyPanel/PolicyPanel.test.tsx",
+        "src/components/GuardrailsPanel/GuardrailsPanel.test.tsx",
+        "src/components/SopPanel/SopPanel.test.tsx"
+      ]
+    },
+    {
+      "id": "wiki:panel-knowledge",
+      "type": "article",
+      "slug": "panel-knowledge",
+      "title": "Панель: База знаний (RAG)",
+      "section": "panels",
+      "status": "verified",
+      "tags": [
+        "панель",
+        "знания",
+        "RAG",
+        "поиск",
+        "инструкция"
+      ],
+      "sources": [
+        "src/components/KnowledgePanel/KnowledgePanel.tsx",
+        "src/i18n/translations/en/memory.ts"
+      ],
+      "related": [
+        "memory",
+        "panel-governance",
+        "dev-component-catalog",
+        "zone-4"
+      ],
+      "tests": [
+        "src/components/KnowledgePanel/KnowledgePanel.test.tsx"
+      ]
+    },
+    {
+      "id": "wiki:panel-sre",
+      "type": "article",
+      "slug": "panel-sre",
+      "title": "Панель: SRE-агент",
+      "section": "panels",
+      "status": "verified",
+      "tags": [
+        "панель",
+        "SRE",
+        "метрики",
+        "алерты",
+        "инструкция"
+      ],
+      "sources": [
+        "src/components/SREAgentPanel/SREAgentPanel.tsx",
+        "src/i18n/translations/en/observability.ts"
+      ],
+      "related": [
+        "diagnostics",
+        "execution-trail",
+        "dev-component-catalog",
+        "zone-18"
+      ],
+      "tests": [
+        "src/components/SREAgentPanel/SREAgentPanel.test.tsx"
+      ]
+    },
+    {
+      "id": "wiki:panel-observability",
+      "type": "article",
+      "slug": "panel-observability",
+      "title": "Панель: Наблюдаемость (логи, трейсы, здоровье)",
+      "section": "panels",
+      "status": "verified",
+      "tags": [
+        "панель",
+        "логи",
+        "трейсы",
+        "health",
+        "инструкция"
+      ],
+      "sources": [
+        "src/i18n/translations/en/observability.ts",
+        "src/components/LogsPanel/LogsPanel.tsx",
+        "src/components/RouterTraceView/RouterTraceView.tsx",
+        "src/components/TracesPanel/TracesPanel.tsx"
+      ],
+      "related": [
+        "diagnostics",
+        "panel-sre",
+        "dev-component-catalog",
+        "zone-5"
+      ],
+      "tests": [
+        "src/components/LogsPanel/LogsPanel.test.tsx",
+        "src/components/TracesPanel/TracesPanel.test.tsx"
+      ]
+    },
+    {
+      "id": "wiki:panel-budget",
+      "type": "article",
+      "slug": "panel-budget",
+      "title": "Панель: Бюджет и затраты",
+      "section": "panels",
+      "status": "verified",
+      "tags": [
+        "панель",
+        "бюджет",
+        "затраты",
+        "pricing",
+        "инструкция"
+      ],
+      "sources": [
+        "src/i18n/translations/en/budget.ts",
+        "src/components/BudgetPanel/"
+      ],
+      "related": [
+        "providers",
+        "diagnostics",
+        "panel-settings",
+        "dev-component-catalog"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:panel-integrations",
+      "type": "article",
+      "slug": "panel-integrations",
+      "title": "Панели: Интеграции (MCP, коннекторы, навыки, инструменты, вебхуки)",
+      "section": "panels",
+      "status": "verified",
+      "tags": [
+        "панель",
+        "интеграции",
+        "mcp",
+        "коннекторы",
+        "навыки",
+        "инструменты",
+        "вебхуки",
+        "инструкция"
+      ],
+      "sources": [
+        "src/i18n/translations/en/integrations.ts",
+        "src/components/MCPPanel/MCPPanel.tsx",
+        "src/components/ConnectorsPanel/ConnectorsPanel.tsx",
+        "src/components/SkillsPanel/SkillsPanel.tsx",
+        "src/components/ToolsPanel/ToolsPanel.tsx"
+      ],
+      "related": [
+        "providers",
+        "panel-governance",
+        "dev-component-catalog",
+        "zone-7"
+      ],
+      "tests": [
+        "src/components/MCPPanel/MCPPanel.test.tsx",
+        "src/components/ConnectorsPanel/ConnectorsPanel.test.tsx",
+        "src/components/SkillsPanel/SkillsPanel.test.tsx",
+        "src/components/ToolsPanel/ToolsPanel.test.tsx"
+      ]
+    },
+    {
+      "id": "wiki:panel-aquarium",
+      "type": "article",
+      "slug": "panel-aquarium",
+      "title": "Панель: Аквариум агентов",
+      "section": "panels",
+      "status": "verified",
+      "tags": [
+        "панель",
+        "аквариум",
+        "агенты",
+        "экосистема",
+        "инструкция"
+      ],
+      "sources": [
+        "src/i18n/translations/en/workspace.ts",
+        "src/components/AquariumPanel/AquariumPanel.tsx"
+      ],
+      "related": [
+        "agents",
+        "dev-component-catalog"
+      ],
+      "tests": [
+        "src/components/AquariumPanel/AquariumPanel.test.tsx"
+      ]
+    },
+    {
+      "id": "wiki:panel-tasks",
+      "type": "article",
+      "slug": "panel-tasks",
+      "title": "Панель: Задачи и пайплайны",
+      "section": "panels",
+      "status": "verified",
+      "tags": [
+        "панель",
+        "задачи",
+        "пайплайны",
+        "инструкция"
+      ],
+      "sources": [
+        "src/i18n/translations/en/workspace.ts",
+        "src/components/TasksPanel/TasksPanel.tsx"
+      ],
+      "related": [
+        "execution-trail",
+        "panel-agent-tasks",
+        "dev-component-catalog",
+        "zone-3"
+      ],
+      "tests": [
+        "src/components/TasksPanel/TasksPanel.test.tsx"
+      ]
+    },
+    {
+      "id": "wiki:panel-playground",
+      "type": "article",
+      "slug": "panel-playground",
+      "title": "Панель: Песочница сравнения моделей",
+      "section": "panels",
+      "status": "verified",
+      "tags": [
+        "панель",
+        "песочница",
+        "сравнение",
+        "модели",
+        "инструкция"
+      ],
+      "sources": [
+        "src/i18n/translations/en/workspace.ts",
+        "src/components/ModelComparePanel/"
+      ],
+      "related": [
+        "providers",
+        "debates",
+        "dev-component-catalog"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:panel-batch",
+      "type": "article",
+      "slug": "panel-batch",
+      "title": "Панель: Пакетная обработка",
+      "section": "panels",
+      "status": "verified",
+      "tags": [
+        "панель",
+        "батч",
+        "пакетная обработка",
+        "инструкция"
+      ],
+      "sources": [
+        "src/i18n/translations/en/workspace.ts",
+        "src/components/BatchProcessingPanel/"
+      ],
+      "related": [
+        "panel-playground",
+        "panel-budget",
+        "dev-component-catalog"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:panel-workflows",
+      "type": "article",
+      "slug": "panel-workflows",
+      "title": "Панель: Потоки (workflows)",
+      "section": "panels",
+      "status": "verified",
+      "tags": [
+        "панель",
+        "workflows",
+        "потоки",
+        "инструкция"
+      ],
+      "sources": [
+        "src/i18n/translations/en/workspace.ts",
+        "src/components/WorkflowPanel/"
+      ],
+      "related": [
+        "panel-builder",
+        "panel-tasks",
+        "dev-component-catalog"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:panel-pressure",
+      "type": "article",
+      "slug": "panel-pressure",
+      "title": "Панель: Карта давления",
+      "section": "panels",
+      "status": "verified",
+      "tags": [
+        "панель",
+        "pressure",
+        "давление",
+        "мониторинг",
+        "инструкция"
+      ],
+      "sources": [
+        "src/i18n/translations/en/workspace.ts",
+        "src/components/PressureMapPanel/PressureMapPanel.tsx"
+      ],
+      "related": [
+        "panel-observability",
+        "panel-sre",
+        "dev-component-catalog"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:panel-builder",
+      "type": "article",
+      "slug": "panel-builder",
+      "title": "Панель: Конструктор агентов",
+      "section": "panels",
+      "status": "verified",
+      "tags": [
+        "панель",
+        "конструктор",
+        "builder",
+        "агенты",
+        "инструкция"
+      ],
+      "sources": [
+        "src/i18n/translations/en/workspace.ts",
+        "src/components/BuilderPanel/"
+      ],
+      "related": [
+        "agents",
+        "panel-workflows",
+        "dev-component-catalog",
+        "zone-25"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:panel-analytics",
+      "type": "article",
+      "slug": "panel-analytics",
+      "title": "Панели: Аналитика, затраты и ключи",
+      "section": "panels",
+      "status": "verified",
+      "tags": [
+        "панель",
+        "аналитика",
+        "затраты",
+        "ключи",
+        "метрики",
+        "инструкция"
+      ],
+      "sources": [
+        "src/i18n/translations/en/analytics.ts",
+        "src/components/AnalyticsPanel/AnalyticsPanel.tsx",
+        "src/components/CostAnalyticsPanel/",
+        "src/components/KeyUsageAnalyticsPanel/"
+      ],
+      "related": [
+        "panel-budget",
+        "panel-observability",
+        "dev-component-catalog"
+      ],
+      "tests": [
+        "src/components/AnalyticsPanel/AnalyticsPanel.test.tsx"
+      ]
+    },
+    {
+      "id": "wiki:panel-ab-testing",
+      "type": "article",
+      "slug": "panel-ab-testing",
+      "title": "Панель: A/B-тест промптов",
+      "section": "panels",
+      "status": "verified",
+      "tags": [
+        "панель",
+        "a/b",
+        "эксперимент",
+        "инструкция"
+      ],
+      "sources": [
+        "src/i18n/translations/en/analytics.ts",
+        "src/components/ABTestPanel/"
+      ],
+      "related": [
+        "panel-playground",
+        "panel-batch",
+        "dev-component-catalog"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:panel-roles",
+      "type": "article",
+      "slug": "panel-roles",
+      "title": "Панель: Роли и консорциумы",
+      "section": "panels",
+      "status": "verified",
+      "tags": [
+        "панель",
+        "роли",
+        "консорциум",
+        "инструкция"
+      ],
+      "sources": [
+        "src/i18n/translations/en/agents.ts",
+        "src/components/RolesPanel/RolesPanel.tsx",
+        "src/components/RolesPanel/RolesConsortiaPanel.tsx"
+      ],
+      "related": [
+        "agents",
+        "panel-governance",
+        "dev-component-catalog"
+      ],
+      "tests": [
+        "src/components/RolesPanel/RolesPanel.test.tsx"
+      ]
+    },
+    {
+      "id": "wiki:panel-projects",
+      "type": "article",
+      "slug": "panel-projects",
+      "title": "Панель: Проекты",
+      "section": "panels",
+      "status": "verified",
+      "tags": [
+        "панель",
+        "проекты",
+        "инструкция"
+      ],
+      "sources": [
+        "src/i18n/translations/en/analytics.ts",
+        "src/components/ProjectsPanel/ProjectsPanel.tsx"
+      ],
+      "related": [
+        "panel-tasks",
+        "panel-workflows",
+        "dev-component-catalog",
+        "zone-11"
+      ],
+      "tests": [
+        "src/components/ProjectsPanel/ProjectsPanel.test.tsx"
+      ]
+    },
+    {
+      "id": "wiki:panel-research",
+      "type": "article",
+      "slug": "panel-research",
+      "title": "Панель: Исследовательский движок",
+      "section": "panels",
+      "status": "verified",
+      "tags": [
+        "панель",
+        "исследование",
+        "research",
+        "инструкция"
+      ],
+      "sources": [
+        "src/i18n/translations/en/analytics.ts",
+        "src/components/ResearchPanel/ResearchEnginePanel.tsx"
+      ],
+      "related": [
+        "panel-synthesis",
+        "panel-forum",
+        "debates",
+        "zone-15"
+      ],
+      "tests": [
+        "src/components/ResearchPanel/ResearchEnginePanel.test.tsx"
+      ]
+    },
+    {
+      "id": "wiki:panel-synthesis",
+      "type": "article",
+      "slug": "panel-synthesis",
+      "title": "Панель: Синтез мнений",
+      "section": "panels",
+      "status": "verified",
+      "tags": [
+        "панель",
+        "синтез",
+        "консенсус",
+        "инструкция"
+      ],
+      "sources": [
+        "src/i18n/translations/en/analytics.ts",
+        "src/components/SynthesisPanel/SynthesisPanel.tsx"
+      ],
+      "related": [
+        "debates",
+        "panel-research",
+        "dev-component-catalog"
+      ],
+      "tests": [
+        "src/components/SynthesisPanel/SynthesisPanel.test.tsx"
+      ]
+    },
+    {
+      "id": "wiki:panel-scheduler",
+      "type": "article",
+      "slug": "panel-scheduler",
+      "title": "Панель: Планировщик",
+      "section": "panels",
+      "status": "verified",
+      "tags": [
+        "панель",
+        "планировщик",
+        "расписание",
+        "инструкция"
+      ],
+      "sources": [
+        "src/i18n/translations/en/analytics.ts",
+        "src/components/SchedulerPanel/"
+      ],
+      "related": [
+        "panel-tasks",
+        "agents",
+        "dev-component-catalog"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:panel-director",
+      "type": "article",
+      "slug": "panel-director",
+      "title": "Панель: Режиссёр",
+      "section": "panels",
+      "status": "verified",
+      "tags": [
+        "панель",
+        "режиссёр",
+        "director",
+        "сценарии",
+        "инструкция"
+      ],
+      "sources": [
+        "src/i18n/translations/en/analytics.ts",
+        "src/components/DirectorPanel/DirectorPanel.tsx"
+      ],
+      "related": [
+        "debates",
+        "panel-synthesis",
+        "dev-component-catalog"
+      ],
+      "tests": [
+        "src/components/DirectorPanel/DirectorPanel.test.tsx"
+      ]
+    },
+    {
+      "id": "wiki:panel-forum",
+      "type": "article",
+      "slug": "panel-forum",
+      "title": "Панель: Форум",
+      "section": "panels",
+      "status": "verified",
+      "tags": [
+        "панель",
+        "форум",
+        "обсуждения",
+        "инструкция"
+      ],
+      "sources": [
+        "src/i18n/translations/en/analytics.ts",
+        "src/components/ForumPanel/ForumPanel.tsx"
+      ],
+      "related": [
+        "debates",
+        "panel-research",
+        "dev-component-catalog",
+        "zone-13"
+      ],
+      "tests": [
+        "src/components/ForumPanel/ForumPanel.test.tsx"
+      ]
+    },
+    {
+      "id": "wiki:panel-gateway",
+      "type": "article",
+      "slug": "panel-gateway",
+      "title": "Панели: Компании и корпоративный gateway",
+      "section": "panels",
+      "status": "verified",
+      "tags": [
+        "панель",
+        "gateway",
+        "компании",
+        "задачи",
+        "согласования",
+        "инструкция"
+      ],
+      "sources": [
+        "src/i18n/translations/en/nav.ts",
+        "src/components/IssuesPanel/",
+        "src/components/ApprovalsPanel/",
+        "src/components/ExportImportPanel/",
+        "src/components/AdaptersPanel.tsx"
+      ],
+      "related": [
+        "panel-governance",
+        "agents",
+        "panel-observability",
+        "zone-16"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:panel-dyad",
+      "type": "article",
+      "slug": "panel-dyad",
+      "title": "Панель: Диада",
+      "section": "panels",
+      "status": "verified",
+      "tags": [
+        "панель",
+        "диада",
+        "дебаты",
+        "инструкция"
+      ],
+      "sources": [
+        "src/i18n/translations/en/dyad.ts",
+        "src/components/DyadPanel/DyadPanel.tsx"
+      ],
+      "related": [
+        "debates",
+        "panel-group-chat",
+        "dev-component-catalog"
+      ],
+      "tests": [
+        "src/components/DyadPanel/DyadPanel.test.tsx"
+      ]
+    },
+    {
+      "id": "wiki:panel-group-chat",
+      "type": "article",
+      "slug": "panel-group-chat",
+      "title": "Панель: Групповой чат",
+      "section": "panels",
+      "status": "verified",
+      "tags": [
+        "панель",
+        "групповой чат",
+        "агенты",
+        "инструкция"
+      ],
+      "sources": [
+        "src/i18n/translations/en/groupChat.ts",
+        "src/components/GroupChatPanel/GroupChatPanel.tsx"
+      ],
+      "related": [
+        "debates",
+        "panel-dyad",
+        "agents"
+      ],
+      "tests": [
+        "src/components/GroupChatPanel/GroupChatPanel.test.tsx"
+      ]
+    },
+    {
+      "id": "wiki:panel-bookmarks",
+      "type": "article",
+      "slug": "panel-bookmarks",
+      "title": "Панель: Закладки",
+      "section": "panels",
+      "status": "verified",
+      "tags": [
+        "панель",
+        "закладки",
+        "инструкция"
+      ],
+      "sources": [
+        "src/i18n/translations/en/chat.ts",
+        "src/components/BookmarksPanel/BookmarksPanel.tsx"
+      ],
+      "related": [
+        "panel-prompt-library",
+        "panel-chat",
+        "dev-component-catalog"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:panel-prompt-library",
+      "type": "article",
+      "slug": "panel-prompt-library",
+      "title": "Панель: Библиотека промптов",
+      "section": "panels",
+      "status": "verified",
+      "tags": [
+        "панель",
+        "промпты",
+        "библиотека",
+        "инструкция"
+      ],
+      "sources": [
+        "src/i18n/translations/en/chat.ts",
+        "src/components/PromptLibraryPanel/"
+      ],
+      "related": [
+        "panel-chat",
+        "panel-bookmarks",
+        "panel-playground"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:panel-autonomy",
+      "type": "article",
+      "slug": "panel-autonomy",
+      "title": "Панель: Автономия",
+      "section": "panels",
+      "status": "verified",
+      "tags": [
+        "панель",
+        "автономия",
+        "планирование",
+        "инструкция"
+      ],
+      "sources": [
+        "src/i18n/translations/en/analytics.ts",
+        "src/components/AutonomyPanel/AutonomyPanel.tsx"
+      ],
+      "related": [
+        "agents",
+        "panel-tasks",
+        "dev-component-catalog"
+      ],
+      "tests": [
+        "src/components/AutonomyPanel/AutonomyPanel.test.tsx"
+      ]
+    },
+    {
+      "id": "wiki:panel-routing",
+      "type": "article",
+      "slug": "panel-routing",
+      "title": "Панели: Умная маршрутизация",
+      "section": "panels",
+      "status": "verified",
+      "tags": [
+        "панель",
+        "маршрутизация",
+        "routing",
+        "веса",
+        "инструкция"
+      ],
+      "sources": [
+        "src/i18n/translations/en/providers.ts",
+        "src/components/RoutingIntelligence/RoutingIntelligence"
+      ],
+      "related": [
+        "panel-providers",
+        "panel-settings",
+        "panel-budget",
+        "zone-8"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:panel-pools",
+      "type": "article",
+      "slug": "panel-pools",
+      "title": "Панель: Пул ключей провайдеров",
+      "section": "panels",
+      "status": "verified",
+      "tags": [
+        "панель",
+        "пул",
+        "ключи",
+        "квоты",
+        "инструкция"
+      ],
+      "sources": [
+        "src/i18n/translations/en/providers.ts",
+        "src/components/PoolStatusPanel/PoolStatusPanel.tsx"
+      ],
+      "related": [
+        "panel-providers",
+        "panel-routing",
+        "panel-budget",
+        "zone-18"
+      ],
+      "tests": [
+        "src/components/PoolStatusPanel/PoolStatusPanel.test.tsx"
+      ]
+    },
+    {
+      "id": "wiki:panel-custom-metrics",
+      "type": "article",
+      "slug": "panel-custom-metrics",
+      "title": "Панель: Пользовательские метрики",
+      "section": "panels",
+      "status": "verified",
+      "tags": [
+        "панель",
+        "метрики",
+        "дашборды",
+        "инструкция"
+      ],
+      "sources": [
+        "src/i18n/translations/en/analytics.ts",
+        "src/components/CustomMetricsPanel/"
+      ],
+      "related": [
+        "panel-observability",
+        "panel-analytics",
+        "dev-component-catalog"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:panel-debate-live",
+      "type": "article",
+      "slug": "panel-debate-live",
+      "title": "Панель: Живые дебаты",
+      "section": "panels",
+      "status": "verified",
+      "tags": [
+        "панель",
+        "дебаты",
+        "live",
+        "инструкция"
+      ],
+      "sources": [
+        "src/i18n/translations/en/debate.ts",
+        "src/components/DebateLive/DebateLivePanel"
+      ],
+      "related": [
+        "debates",
+        "panel-debate-history",
+        "panel-debate-analysis"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:panel-debate-analysis",
+      "type": "article",
+      "slug": "panel-debate-analysis",
+      "title": "Панель: Анализ дебатов",
+      "section": "panels",
+      "status": "verified",
+      "tags": [
+        "панель",
+        "дебаты",
+        "анализ",
+        "инструкция"
+      ],
+      "sources": [
+        "src/i18n/translations/en/debate.ts",
+        "src/components/DebateAnalysisPanel/"
+      ],
+      "related": [
+        "debates",
+        "panel-debate-toolkit",
+        "panel-debate-quality",
+        "zone-21"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:panel-debate-quality",
+      "type": "article",
+      "slug": "panel-debate-quality",
+      "title": "Панель: Качество дебатов",
+      "section": "panels",
+      "status": "verified",
+      "tags": [
+        "панель",
+        "дебаты",
+        "качество",
+        "правила",
+        "инструкция"
+      ],
+      "sources": [
+        "src/i18n/translations/en/quality.ts",
+        "src/components/DebateQualityPanel/"
+      ],
+      "related": [
+        "debates",
+        "panel-debate-analysis",
+        "panel-governance"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:panel-debate-tournament",
+      "type": "article",
+      "slug": "panel-debate-tournament",
+      "title": "Панель: Турнир дебатов",
+      "section": "panels",
+      "status": "verified",
+      "tags": [
+        "панель",
+        "дебаты",
+        "турнир",
+        "инструкция"
+      ],
+      "sources": [
+        "src/i18n/translations/en/debate.ts",
+        "src/components/TournamentPanel/"
+      ],
+      "related": [
+        "debates",
+        "panel-debate-analysis",
+        "panel-debate-templates"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:panel-debate-history",
+      "type": "article",
+      "slug": "panel-debate-history",
+      "title": "Панели: История дебатов и повтор",
+      "section": "panels",
+      "status": "verified",
+      "tags": [
+        "панель",
+        "дебаты",
+        "история",
+        "replay",
+        "инструкция"
+      ],
+      "sources": [
+        "src/i18n/translations/en/debate.ts",
+        "src/components/DebatePanel/DebateHistoryPage",
+        "src/components/DebateReplayPanel"
+      ],
+      "related": [
+        "debates",
+        "panel-debate-live",
+        "panel-debate-analysis"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:panel-debate-templates",
+      "type": "article",
+      "slug": "panel-debate-templates",
+      "title": "Панель: Шаблоны дебатов",
+      "section": "panels",
+      "status": "verified",
+      "tags": [
+        "панель",
+        "дебаты",
+        "шаблоны",
+        "инструкция"
+      ],
+      "sources": [
+        "src/i18n/translations/en/debate.ts",
+        "src/components/DebateTemplatesPanel/",
+        "src/components/DebatePanel/DebateWorkspacePanel"
+      ],
+      "related": [
+        "debates",
+        "panel-debate-tournament",
+        "dev-component-catalog"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:panel-debate-toolkit",
+      "type": "article",
+      "slug": "panel-debate-toolkit",
+      "title": "Инструменты анализа дебатов",
+      "section": "panels",
+      "status": "documented",
+      "tags": [
+        "панель",
+        "дебаты",
+        "анализ",
+        "аргументация",
+        "инструкция"
+      ],
+      "sources": [
+        "src/i18n/translations/en/nav.ts",
+        "src/components/LogicalFormPanel/",
+        "src/components/SteelmanPanel/",
+        "src/components/BayesianJudgePanel/"
+      ],
+      "related": [
+        "debates",
+        "panel-debate-analysis",
+        "panel-synthesis"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:panel-fleet",
+      "type": "article",
+      "slug": "panel-fleet",
+      "title": "Панель: Флот (Fleet Console)",
+      "section": "panels",
+      "status": "verified",
+      "tags": [
+        "панель",
+        "флот",
+        "fleet",
+        "агенты",
+        "инструкция"
+      ],
+      "sources": [
+        "src/i18n/translations/en/analytics.ts",
+        "src/components/FleetPanel/FleetPanel.tsx",
+        "src/components/FleetPanels/"
+      ],
+      "related": [
+        "agents",
+        "panel-debate-toolkit",
+        "panel-persona"
+      ],
+      "tests": [
+        "src/components/FleetPanel/FleetPanel.test.tsx"
+      ]
+    },
+    {
+      "id": "wiki:panel-persona",
+      "type": "article",
+      "slug": "panel-persona",
+      "title": "Панели: Персоны агентов",
+      "section": "panels",
+      "status": "verified",
+      "tags": [
+        "панель",
+        "персоны",
+        "persona",
+        "инструкция"
+      ],
+      "sources": [
+        "src/i18n/translations/en/nav.ts",
+        "src/components/PersonaPickerPanel/",
+        "src/components/PersonaMixerPanel/PersonaMixerPanel.tsx",
+        "src/components/PersonaMarketplacePanel/"
+      ],
+      "related": [
+        "agents",
+        "panel-fleet",
+        "dev-component-catalog"
+      ],
+      "tests": [
+        "src/components/PersonaMixerPanel/PersonaMixerPanel.test.tsx"
+      ]
+    },
+    {
+      "id": "wiki:panel-channels",
+      "type": "article",
+      "slug": "panel-channels",
+      "title": "Панель: Каналы",
+      "section": "panels",
+      "status": "verified",
+      "tags": [
+        "панель",
+        "каналы",
+        "чат",
+        "инструкция"
+      ],
+      "sources": [
+        "src/i18n/translations/en/analytics.ts",
+        "src/components/ChannelPanel/ChannelPanel.tsx"
+      ],
+      "related": [
+        "panel-chat",
+        "panel-group-chat",
+        "dev-component-catalog",
+        "zone-13"
+      ],
+      "tests": [
+        "src/components/ChannelPanel/ChannelPanel.test.tsx"
+      ]
+    },
+    {
+      "id": "wiki:panel-room",
+      "type": "article",
+      "slug": "panel-room",
+      "title": "Панель: Комната (Room)",
+      "section": "panels",
+      "status": "verified",
+      "tags": [
+        "панель",
+        "комната",
+        "вызовы",
+        "агенты",
+        "инструкция"
+      ],
+      "sources": [
+        "src/i18n/translations/en/analytics.ts",
+        "src/components/RoomPanel/RoomPanel.tsx"
+      ],
+      "related": [
+        "agents",
+        "panel-forum",
+        "panel-debate-live"
+      ],
+      "tests": [
+        "src/components/RoomPanel/RoomPanel.test.tsx"
+      ]
+    },
+    {
+      "id": "wiki:panel-rotations",
+      "type": "article",
+      "slug": "panel-rotations",
+      "title": "Панель: Ротация ключей",
+      "section": "panels",
+      "status": "verified",
+      "tags": [
+        "панель",
+        "ротация",
+        "ключи",
+        "инструкция"
+      ],
+      "sources": [
+        "src/i18n/translations/en/providers.ts",
+        "src/components/RotationsPanel/"
+      ],
+      "related": [
+        "panel-pools",
+        "panel-providers",
+        "panel-settings"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:panel-sessions",
+      "type": "article",
+      "slug": "panel-sessions",
+      "title": "Панели: Сессии и привязки",
+      "section": "panels",
+      "status": "verified",
+      "tags": [
+        "панель",
+        "сессии",
+        "привязки",
+        "инструкция"
+      ],
+      "sources": [
+        "src/i18n/translations/en/workspace.ts",
+        "src/components/SessionBindingsPanel/",
+        "src/components/SessionHubPanel/",
+        "src/components/ChatSessionsManagerPanel"
+      ],
+      "related": [
+        "panel-chat",
+        "panel-room",
+        "dev-component-catalog"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:panel-lenses-crystals",
+      "type": "article",
+      "slug": "panel-lenses-crystals",
+      "title": "Панели: Линзы и кристаллы",
+      "section": "panels",
+      "status": "verified",
+      "tags": [
+        "панель",
+        "линзы",
+        "кристаллы",
+        "знания",
+        "инструкция"
+      ],
+      "sources": [
+        "src/i18n/translations/en/analytics.ts",
+        "src/components/LensesPanel/LensesPanel.tsx",
+        "src/components/CrystalVaultPanel/CrystalVaultPanel.tsx"
+      ],
+      "related": [
+        "memory",
+        "panel-synthesis",
+        "panel-debate-toolkit"
+      ],
+      "tests": [
+        "src/components/LensesPanel/LensesPanel.test.tsx",
+        "src/components/CrystalVaultPanel/CrystalVaultPanel.test.tsx"
+      ]
+    },
+    {
+      "id": "wiki:panel-eval",
+      "type": "article",
+      "slug": "panel-eval",
+      "title": "Панель: Датасеты оценки",
+      "section": "panels",
+      "status": "verified",
+      "tags": [
+        "панель",
+        "eval",
+        "датасеты",
+        "оценка",
+        "инструкция"
+      ],
+      "sources": [
+        "src/i18n/translations/en/analytics.ts",
+        "src/components/EvalDatasetPanel/"
+      ],
+      "related": [
+        "panel-quality-impact",
+        "panel-debate-quality",
+        "dev-component-catalog"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:panel-quality-impact",
+      "type": "article",
+      "slug": "panel-quality-impact",
+      "title": "Панель: Влияние техник",
+      "section": "panels",
+      "status": "verified",
+      "tags": [
+        "панель",
+        "качество",
+        "эксперименты",
+        "экспорт",
+        "инструкция"
+      ],
+      "sources": [
+        "src/i18n/translations/en/quality.ts",
+        "src/components/QualityImpactDashboard/QualityImpactDashboardPanel"
+      ],
+      "related": [
+        "panel-eval",
+        "panel-debate-quality",
+        "panel-analytics",
+        "zone-12"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:panel-groups",
+      "type": "article",
+      "slug": "panel-groups",
+      "title": "Панель: Группы ключей",
+      "section": "panels",
+      "status": "verified",
+      "tags": [
+        "панель",
+        "группы",
+        "ключи",
+        "инструкция"
+      ],
+      "sources": [
+        "src/i18n/translations/en/providers.ts",
+        "src/components/GroupsPanel/GroupsPanel.tsx"
+      ],
+      "related": [
+        "panel-pools",
+        "panel-rotations",
+        "panel-providers"
+      ],
+      "tests": [
+        "src/components/GroupsPanel/GroupsPanel.test.tsx"
+      ]
+    },
+    {
+      "id": "wiki:panel-guardians",
+      "type": "article",
+      "slug": "panel-guardians",
+      "title": "Панель: Хранители (Guardians)",
+      "section": "panels",
+      "status": "verified",
+      "tags": [
+        "панель",
+        "хранители",
+        "политики",
+        "инструкция"
+      ],
+      "sources": [
+        "src/i18n/translations/en/analytics.ts",
+        "src/components/GuardiansPanel/"
+      ],
+      "related": [
+        "panel-providers",
+        "panel-routing",
+        "panel-governance"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:panel-memory-palace",
+      "type": "article",
+      "slug": "panel-memory-palace",
+      "title": "Панель: Дворец памяти",
+      "section": "panels",
+      "status": "verified",
+      "tags": [
+        "панель",
+        "память",
+        "дворец",
+        "инструкция"
+      ],
+      "sources": [
+        "src/i18n/translations/en/memory.ts",
+        "src/components/MemoryPanel/MemoryPalacePanel.tsx"
+      ],
+      "related": [
+        "memory",
+        "panel-knowledge",
+        "panel-lenses-crystals"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:panel-topics",
+      "type": "article",
+      "slug": "panel-topics",
+      "title": "Панель: Генератор тем",
+      "section": "panels",
+      "status": "verified",
+      "tags": [
+        "панель",
+        "темы",
+        "генератор",
+        "инструкция"
+      ],
+      "sources": [
+        "src/i18n/translations/en/debate.ts",
+        "src/components/TopicSuggesterPanel/"
+      ],
+      "related": [
+        "debates",
+        "panel-debate-templates",
+        "dev-component-catalog"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:panel-knowledge-generator",
+      "type": "article",
+      "slug": "panel-knowledge-generator",
+      "title": "Панель: Генератор знаний",
+      "section": "panels",
+      "status": "verified",
+      "tags": [
+        "панель",
+        "генератор",
+        "знания",
+        "инструкция"
+      ],
+      "sources": [
+        "src/i18n/translations/en/analytics.ts",
+        "src/components/KnowledgeGenPanel/KnowledgeGenPanel.tsx"
+      ],
+      "related": [
+        "panel-knowledge",
+        "panel-lenses-crystals",
+        "memory"
+      ],
+      "tests": [
+        "src/components/KnowledgeGenPanel/KnowledgeGenPanel.test.tsx"
+      ]
+    },
+    {
+      "id": "wiki:panel-providers-extra",
+      "type": "article",
+      "slug": "panel-providers-extra",
+      "title": "Панели: Провайдерские дополнения",
+      "section": "panels",
+      "status": "verified",
+      "tags": [
+        "панель",
+        "провайдеры",
+        "маркетплейс",
+        "инструкция"
+      ],
+      "sources": [
+        "src/i18n/translations/en/providers.ts",
+        "src/components/ProviderDashboard",
+        "src/components/ProviderMarketplace"
+      ],
+      "related": [
+        "panel-providers",
+        "panel-routing",
+        "panel-pools"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:panel-contribution",
+      "type": "article",
+      "slug": "panel-contribution",
+      "title": "Панели: Вклад и сообщество",
+      "section": "panels",
+      "status": "verified",
+      "tags": [
+        "панель",
+        "сообщество",
+        "вклад",
+        "лидерборд",
+        "инструкция"
+      ],
+      "sources": [
+        "src/i18n/translations/en/dashboard.ts",
+        "src/components/ContributionGraphPanel/",
+        "src/components/SocialLeaderboardPanel"
+      ],
+      "related": [
+        "agents",
+        "panel-scheduler",
+        "dev-component-catalog"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:panel-costs",
+      "type": "article",
+      "slug": "panel-costs",
+      "title": "Панель: Бюджеты компании (gateway)",
+      "section": "panels",
+      "status": "verified",
+      "tags": [
+        "панель",
+        "бюджет",
+        "gateway",
+        "стоимость",
+        "инструкция"
+      ],
+      "sources": [
+        "src/i18n/translations/en/nav.ts",
+        "src/components/CostsPanel/"
+      ],
+      "related": [
+        "panel-budget",
+        "panel-gateway",
+        "panel-providers"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:panel-key-notes",
+      "type": "article",
+      "slug": "panel-key-notes",
+      "title": "Панель: Заметки к ключам",
+      "section": "panels",
+      "status": "verified",
+      "tags": [
+        "панель",
+        "ключи",
+        "заметки",
+        "инструкция"
+      ],
+      "sources": [
+        "src/i18n/translations/en/memory.ts",
+        "src/components/KeyNotesPanel/"
+      ],
+      "related": [
+        "panel-providers",
+        "panel-pools",
+        "dev-component-catalog"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:panel-debate-research",
+      "type": "article",
+      "slug": "panel-debate-research",
+      "title": "Панели: Исследования системы дебатов",
+      "section": "panels",
+      "status": "documented",
+      "tags": [
+        "панель",
+        "дебаты",
+        "исследование",
+        "эксперименты",
+        "инструкция"
+      ],
+      "sources": [
+        "src/i18n/translations/en/debate.ts",
+        "src/components/DebateResearch/"
+      ],
+      "related": [
+        "debates",
+        "panel-debate-analysis",
+        "panel-eval-extra",
+        "zone-17"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:panel-eval-extra",
+      "type": "article",
+      "slug": "panel-eval-extra",
+      "title": "Панели: Метрики-анализаторы",
+      "section": "panels",
+      "status": "documented",
+      "tags": [
+        "панель",
+        "анализ",
+        "оценка",
+        "метрики",
+        "инструкция"
+      ],
+      "sources": [
+        "src/i18n/translations/en/nav.ts",
+        "src/components/BlindEvalPanel/",
+        "src/components/CalibrationPanel/"
+      ],
+      "related": [
+        "panel-debate-quality",
+        "panel-debate-toolkit",
+        "panel-analytics"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:panel-planning",
+      "type": "article",
+      "slug": "panel-planning",
+      "title": "Панели: Планирование и миссии",
+      "section": "panels",
+      "status": "documented",
+      "tags": [
+        "панель",
+        "планирование",
+        "миссия",
+        "инструкция"
+      ],
+      "sources": [
+        "src/i18n/translations/en/nav.ts",
+        "src/components/PlannerPanel/",
+        "src/components/MetaAgentPanel/MetaAgentPanel.tsx"
+      ],
+      "related": [
+        "agents",
+        "panel-autonomy",
+        "panel-simulation"
+      ],
+      "tests": [
+        "src/components/MetaAgentPanel/MetaAgentPanel.test.tsx"
+      ]
+    },
+    {
+      "id": "wiki:panel-simulation",
+      "type": "article",
+      "slug": "panel-simulation",
+      "title": "Панели: Симуляция и контрфакты",
+      "section": "panels",
+      "status": "documented",
+      "tags": [
+        "панель",
+        "симуляция",
+        "контрфакт",
+        "инструкция"
+      ],
+      "sources": [
+        "src/i18n/translations/en/nav.ts",
+        "src/components/SimulationPanel/SimulationPanel.tsx",
+        "src/components/WhatIfPanel/WhatIfPanel"
+      ],
+      "related": [
+        "panel-planning",
+        "panel-shadow",
+        "panel-observability",
+        "zone-19"
+      ],
+      "tests": [
+        "src/components/SimulationPanel/SimulationPanel.test.tsx"
+      ]
+    },
+    {
+      "id": "wiki:panel-shadow",
+      "type": "article",
+      "slug": "panel-shadow",
+      "title": "Панели: Теневые прогоны и стратегия",
+      "section": "panels",
+      "status": "documented",
+      "tags": [
+        "панель",
+        "shadow",
+        "стратегия",
+        "инструкция"
+      ],
+      "sources": [
+        "src/i18n/translations/en/nav.ts",
+        "src/components/ShadowPanel/ShadowPanel.tsx",
+        "src/components/ShadowOpponentPanel/ShadowOpponentPanel.tsx"
+      ],
+      "related": [
+        "debates",
+        "panel-simulation",
+        "panel-debate-analysis"
+      ],
+      "tests": [
+        "src/components/ShadowOpponentPanel/ShadowOpponentPanel.test.tsx"
+      ]
+    },
+    {
+      "id": "wiki:panel-agents-market",
+      "type": "article",
+      "slug": "panel-agents-market",
+      "title": "Панели: Агенты — маркетплейс и протокол",
+      "section": "panels",
+      "status": "documented",
+      "tags": [
+        "панель",
+        "агенты",
+        "маркетплейс",
+        "протокол",
+        "инструкция"
+      ],
+      "sources": [
+        "src/i18n/translations/en/nav.ts",
+        "src/components/AgentMarketplacePanel",
+        "src/components/AgentComparisonPanel"
+      ],
+      "related": [
+        "agents",
+        "panel-fleet",
+        "panel-persona"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:panel-memory-extra",
+      "type": "article",
+      "slug": "panel-memory-extra",
+      "title": "Панели: Федеративная память и перенос",
+      "section": "panels",
+      "status": "documented",
+      "tags": [
+        "панель",
+        "память",
+        "экспорт",
+        "инструкция"
+      ],
+      "sources": [
+        "src/i18n/translations/en/memory.ts",
+        "src/components/FederatedMemoryPanel",
+        "src/components/MemoryTransferPanel"
+      ],
+      "related": [
+        "memory",
+        "panel-memory-palace",
+        "panel-knowledge"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:panel-files-editors",
+      "type": "article",
+      "slug": "panel-files-editors",
+      "title": "Панели: Файлы, редакторы, обучение, голос",
+      "section": "panels",
+      "status": "documented",
+      "tags": [
+        "панель",
+        "файлы",
+        "редакторы",
+        "обучение",
+        "голос",
+        "инструкция"
+      ],
+      "sources": [
+        "src/i18n/translations/en/nav.ts",
+        "src/components/WorkspacePanel/WorkspacePanel.tsx",
+        "src/components/Editors/EditorsPanel"
+      ],
+      "related": [
+        "panel-chat",
+        "panel-prompt-library",
+        "dev-component-catalog"
+      ],
+      "tests": [
+        "src/components/WorkspacePanel/WorkspacePanel.test.tsx"
+      ]
+    },
+    {
+      "id": "wiki:panel-history-audit",
+      "type": "article",
+      "slug": "panel-history-audit",
+      "title": "Панели: История, аудит, версии, деплой",
+      "section": "panels",
+      "status": "documented",
+      "tags": [
+        "панель",
+        "история",
+        "аудит",
+        "версии",
+        "деплой",
+        "инструкция"
+      ],
+      "sources": [
+        "src/i18n/translations/en/nav.ts",
+        "src/components/AuditLogView",
+        "src/components/TimeMachinePanel",
+        "src/components/ConfigHistoryView"
+      ],
+      "related": [
+        "panel-observability",
+        "panel-governance",
+        "panel-settings"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:panel-infra-meta",
+      "type": "article",
+      "slug": "panel-infra-meta",
+      "title": "Панели: Инфраструктура и платформа",
+      "section": "panels",
+      "status": "documented",
+      "tags": [
+        "панель",
+        "инфраструктура",
+        "плагины",
+        "инструкция"
+      ],
+      "sources": [
+        "src/i18n/translations/en/nav.ts",
+        "src/components/ServiceRegistryPanel/ServiceRegistryPanel.tsx",
+        "src/components/PluginSdkPanel"
+      ],
+      "related": [
+        "panel-observability",
+        "dev-service-map",
+        "dev-component-catalog"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:panel-research-extra",
+      "type": "article",
+      "slug": "panel-research-extra",
+      "title": "Панели: Исследование (расширенное и Gemini)",
+      "section": "panels",
+      "status": "documented",
+      "tags": [
+        "панель",
+        "исследование",
+        "gemini",
+        "инструкция"
+      ],
+      "sources": [
+        "src/i18n/translations/en/nav.ts",
+        "src/components/ResearchPanel/ResearchEngineAdvancedPanel",
+        "src/components/GeminiResearch/GeminiResearchPanel"
+      ],
+      "related": [
+        "panel-research",
+        "panel-topics",
+        "dev-component-catalog"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:panel-provenance-junctions",
+      "type": "article",
+      "slug": "panel-provenance-junctions",
+      "title": "Панели: Связи, происхождение, очередь",
+      "section": "panels",
+      "status": "verified",
+      "tags": [
+        "панель",
+        "связи",
+        "происхождение",
+        "очередь",
+        "инструкция"
+      ],
+      "sources": [
+        "src/i18n/translations/en/analytics.ts",
+        "src/components/JunctionPanel/JunctionPanel.tsx",
+        "src/components/ProvenancePanel/ProvenancePanel.tsx",
+        "src/components/InsightBusPanel/InsightBusPanel.tsx"
+      ],
+      "related": [
+        "panel-lenses-crystals",
+        "panel-knowledge-generator",
+        "panel-tasks"
+      ],
+      "tests": [
+        "src/components/JunctionPanel/JunctionPanel.test.tsx",
+        "src/components/ProvenancePanel/ProvenancePanel.test.tsx",
+        "src/components/InsightBusPanel/InsightBusPanel.test.tsx"
+      ]
+    },
+    {
+      "id": "wiki:panel-wiki",
+      "type": "article",
+      "slug": "panel-wiki",
+      "title": "Панель: Wiki",
+      "section": "panels",
+      "status": "verified",
+      "tags": [
+        "панель",
+        "wiki",
+        "документация",
+        "инструкция"
+      ],
+      "sources": [
+        "src/components/WikiPanel/WikiPanel.tsx",
+        "src/components/WikiPanel/wiki-articles.ts"
+      ],
+      "related": [
+        "for-developers",
+        "dev-overview",
+        "dev-component-catalog"
+      ],
+      "tests": [
+        "src/components/WikiPanel/WikiPanel.test.tsx"
+      ]
+    },
+    {
+      "id": "wiki:agents",
+      "type": "article",
+      "slug": "agents",
+      "title": "Агенты: устройство и управление",
+      "section": "agents",
+      "status": "documented",
+      "tags": [
+        "агенты",
+        "персоны",
+        "политики"
+      ],
+      "sources": [
+        "docs/audits/agent-team-audit-memory-history-management.md",
+        "src/kernel/agents/registry.ts",
+        "src/kernel/services/agent-service.ts"
+      ],
+      "related": [
+        "panel-agent-tasks",
+        "providers",
+        "execution-trail",
+        "diagnostics"
+      ],
+      "tests": [
+        "src/kernel/services/agent-service.test.ts"
+      ]
+    },
+    {
+      "id": "wiki:providers",
+      "type": "article",
+      "slug": "providers",
+      "title": "Провайдеры и маршрутизация",
+      "section": "providers",
+      "status": "verified",
+      "tags": [
+        "модели",
+        "ключи",
+        "роутер"
+      ],
+      "sources": [
+        "src/kernel/services/provider-router.ts",
+        "src/llm/anthropic/anthropic-adapter.ts"
+      ],
+      "related": [
+        "panel-providers",
+        "panel-chat",
+        "diagnostics"
+      ],
+      "tests": [
+        "src/llm/anthropic/anthropic-adapter.test.ts"
+      ]
+    },
+    {
+      "id": "wiki:debates",
+      "type": "article",
+      "slug": "debates",
+      "title": "Дебаты: режимы и механика",
+      "section": "debates",
+      "status": "verified",
+      "tags": [
+        "дебаты",
+        "стратегии",
+        "проверки"
+      ],
+      "sources": [
+        "src/kernel/services/debate-runtime/debate-strategy-definitions.ts",
+        "src/kernel/services/debate-runtime/"
+      ],
+      "related": [
+        "memory",
+        "providers"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:memory",
+      "type": "article",
+      "slug": "memory",
+      "title": "Знания и память",
+      "section": "memory",
+      "status": "verified",
+      "tags": [
+        "память",
+        "RAG",
+        "персоны"
+      ],
+      "sources": [
+        "src/kernel/services/debate-runtime/debate-memory.ts",
+        "docs/audits/agent-team-audit-memory-history-management.md"
+      ],
+      "related": [
+        "execution-trail",
+        "debates",
+        "architecture"
+      ],
+      "tests": [
+        "src/kernel/services/debate-runtime/debate-memory.test.ts"
+      ]
+    },
+    {
+      "id": "wiki:execution-trail",
+      "type": "article",
+      "slug": "execution-trail",
+      "title": "След исполнения: журнал, раны, зомби",
+      "section": "memory",
+      "status": "verified",
+      "tags": [
+        "история",
+        "P1",
+        "P2",
+        "инструменты"
+      ],
+      "sources": [
+        "src/kernel/services/tool-executor.ts",
+        "src/kernel/services/agent-project-runtime.ts",
+        "docs/audits/agent-team-audit-memory-history-management.md"
+      ],
+      "related": [
+        "agents",
+        "panel-agent-tasks",
+        "diagnostics"
+      ],
+      "tests": [
+        "src/kernel/services/tool-executor.test.ts",
+        "src/kernel/services/agent-project-runtime.test.ts"
+      ]
+    },
+    {
+      "id": "wiki:architecture",
+      "type": "article",
+      "slug": "architecture",
+      "title": "Архитектура и связи",
+      "section": "architecture",
+      "status": "documented",
+      "tags": [
+        "слои",
+        "шина",
+        "DI"
+      ],
+      "sources": [
+        "docs/SYSTEM_MANIFEST_RU.md",
+        "README_EN.md"
+      ],
+      "related": [
+        "memory",
+        "execution-trail",
+        "for-developers",
+        "diagnostics"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:diagnostics",
+      "type": "article",
+      "slug": "diagnostics",
+      "title": "Диагностика и известные проблемы",
+      "section": "diagnostics",
+      "status": "documented",
+      "tags": [
+        "мониторинг",
+        "проблемы",
+        "ограничения"
+      ],
+      "sources": [
+        "docs/audits/agent-team-audit-memory-history-management.md"
+      ],
+      "related": [
+        "providers",
+        "execution-trail",
+        "panel-governance"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:roadmap-notes",
+      "type": "article",
+      "slug": "roadmap-notes",
+      "title": "Планы и направления",
+      "section": "notes",
+      "status": "needs-check",
+      "tags": [
+        "планы",
+        "P5"
+      ],
+      "sources": [
+        "docs/roadmap/README.md"
+      ],
+      "related": [
+        "agents",
+        "execution-trail",
+        "memory"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:for-developers",
+      "type": "article",
+      "slug": "for-developers",
+      "title": "Разработчикам: структура и ворота",
+      "section": "dev",
+      "status": "verified",
+      "tags": [
+        "код",
+        "контракты",
+        "CI"
+      ],
+      "sources": [
+        "README_EN.md",
+        ".github/workflows/ci.yml",
+        "package.json"
+      ],
+      "related": [
+        "dev-overview",
+        "dev-boot",
+        "dev-ci",
+        "architecture"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:zone-1",
+      "type": "article",
+      "slug": "zone-1",
+      "title": "Зона 1: панели провайдеров и чата",
+      "section": "history",
+      "status": "verified",
+      "tags": [
+        "аудит",
+        "зона 1"
+      ],
+      "sources": [],
+      "related": [
+        "diagnostics"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:zone-2",
+      "type": "article",
+      "slug": "zone-2",
+      "title": "Зона 2: дебаты",
+      "section": "history",
+      "status": "verified",
+      "tags": [
+        "аудит",
+        "зона 2"
+      ],
+      "sources": [],
+      "related": [
+        "diagnostics"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:zone-3",
+      "type": "article",
+      "slug": "zone-3",
+      "title": "Зона 3: агенты и задачи",
+      "section": "history",
+      "status": "verified",
+      "tags": [
+        "аудит",
+        "зона 3"
+      ],
+      "sources": [],
+      "related": [
+        "diagnostics"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:zone-4",
+      "type": "article",
+      "slug": "zone-4",
+      "title": "Зона 4: память и знания",
+      "section": "history",
+      "status": "verified",
+      "tags": [
+        "аудит",
+        "зона 4"
+      ],
+      "sources": [],
+      "related": [
+        "diagnostics"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:zone-5",
+      "type": "article",
+      "slug": "zone-5",
+      "title": "Зона 5: система и мониторинг",
+      "section": "history",
+      "status": "verified",
+      "tags": [
+        "аудит",
+        "зона 5"
+      ],
+      "sources": [],
+      "related": [
+        "diagnostics"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:zone-6",
+      "type": "article",
+      "slug": "zone-6",
+      "title": "Зона 6: governance и политики",
+      "section": "history",
+      "status": "verified",
+      "tags": [
+        "аудит",
+        "зона 6"
+      ],
+      "sources": [],
+      "related": [
+        "diagnostics"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:zone-7",
+      "type": "article",
+      "slug": "zone-7",
+      "title": "Зона 7: инструменты и MCP",
+      "section": "history",
+      "status": "verified",
+      "tags": [
+        "аудит",
+        "зона 7"
+      ],
+      "sources": [],
+      "related": [
+        "diagnostics"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:zone-8",
+      "type": "article",
+      "slug": "zone-8",
+      "title": "Зона 8: роутер и маршрутизация",
+      "section": "history",
+      "status": "verified",
+      "tags": [
+        "аудит",
+        "зона 8"
+      ],
+      "sources": [],
+      "related": [
+        "diagnostics"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:zone-9",
+      "type": "article",
+      "slug": "zone-9",
+      "title": "Зона 9: настройки",
+      "section": "history",
+      "status": "verified",
+      "tags": [
+        "аудит",
+        "зона 9"
+      ],
+      "sources": [],
+      "related": [
+        "diagnostics"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:zone-10",
+      "type": "article",
+      "slug": "zone-10",
+      "title": "Зона 10: логи и инспекции",
+      "section": "history",
+      "status": "verified",
+      "tags": [
+        "аудит",
+        "зона 10"
+      ],
+      "sources": [],
+      "related": [
+        "diagnostics"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:zone-11",
+      "type": "article",
+      "slug": "zone-11",
+      "title": "Зона 11: workspace и проекты",
+      "section": "history",
+      "status": "verified",
+      "tags": [
+        "аудит",
+        "зона 11"
+      ],
+      "sources": [],
+      "related": [
+        "diagnostics"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:zone-12",
+      "type": "article",
+      "slug": "zone-12",
+      "title": "Зона 12: качество",
+      "section": "history",
+      "status": "verified",
+      "tags": [
+        "аудит",
+        "зона 12"
+      ],
+      "sources": [],
+      "related": [
+        "diagnostics"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:zone-13",
+      "type": "article",
+      "slug": "zone-13",
+      "title": "Зона 13: коммуникации",
+      "section": "history",
+      "status": "verified",
+      "tags": [
+        "аудит",
+        "зона 13"
+      ],
+      "sources": [],
+      "related": [
+        "diagnostics"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:zone-14",
+      "type": "article",
+      "slug": "zone-14",
+      "title": "Зона 14: коннекторы",
+      "section": "history",
+      "status": "verified",
+      "tags": [
+        "аудит",
+        "зона 14"
+      ],
+      "sources": [],
+      "related": [
+        "diagnostics"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:zone-15",
+      "type": "article",
+      "slug": "zone-15",
+      "title": "Зона 15: исследования",
+      "section": "history",
+      "status": "verified",
+      "tags": [
+        "аудит",
+        "зона 15"
+      ],
+      "sources": [],
+      "related": [
+        "diagnostics"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:zone-16",
+      "type": "article",
+      "slug": "zone-16",
+      "title": "Зона 16: company gateway",
+      "section": "history",
+      "status": "verified",
+      "tags": [
+        "аудит",
+        "зона 16"
+      ],
+      "sources": [],
+      "related": [
+        "diagnostics"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:zone-17",
+      "type": "article",
+      "slug": "zone-17",
+      "title": "Зона 17: debate research",
+      "section": "history",
+      "status": "verified",
+      "tags": [
+        "аудит",
+        "зона 17"
+      ],
+      "sources": [],
+      "related": [
+        "diagnostics"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:zone-18",
+      "type": "article",
+      "slug": "zone-18",
+      "title": "Зона 18: SRE и пулы",
+      "section": "history",
+      "status": "verified",
+      "tags": [
+        "аудит",
+        "зона 18"
+      ],
+      "sources": [],
+      "related": [
+        "diagnostics"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:zone-19",
+      "type": "article",
+      "slug": "zone-19",
+      "title": "Зона 19: прогнозы и симуляции",
+      "section": "history",
+      "status": "verified",
+      "tags": [
+        "аудит",
+        "зона 19"
+      ],
+      "sources": [],
+      "related": [
+        "diagnostics"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:zone-20",
+      "type": "article",
+      "slug": "zone-20",
+      "title": "Зона 20: управление дебатами",
+      "section": "history",
+      "status": "verified",
+      "tags": [
+        "аудит",
+        "зона 20"
+      ],
+      "sources": [],
+      "related": [
+        "diagnostics"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:zone-21",
+      "type": "article",
+      "slug": "zone-21",
+      "title": "Зона 21: качество аргументов",
+      "section": "history",
+      "status": "verified",
+      "tags": [
+        "аудит",
+        "зона 21"
+      ],
+      "sources": [],
+      "related": [
+        "diagnostics"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:zone-22",
+      "type": "article",
+      "slug": "zone-22",
+      "title": "Зона 22: смещения и доверие",
+      "section": "history",
+      "status": "verified",
+      "tags": [
+        "аудит",
+        "зона 22"
+      ],
+      "sources": [],
+      "related": [
+        "diagnostics"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:zone-23",
+      "type": "article",
+      "slug": "zone-23",
+      "title": "Зона 23: коммуникации-2",
+      "section": "history",
+      "status": "verified",
+      "tags": [
+        "аудит",
+        "зона 23"
+      ],
+      "sources": [],
+      "related": [
+        "diagnostics"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:zone-24",
+      "type": "article",
+      "slug": "zone-24",
+      "title": "Зона 24: знания-2",
+      "section": "history",
+      "status": "verified",
+      "tags": [
+        "аудит",
+        "зона 24"
+      ],
+      "sources": [],
+      "related": [
+        "diagnostics"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:zone-25",
+      "type": "article",
+      "slug": "zone-25",
+      "title": "Зона 25: конструкторы",
+      "section": "history",
+      "status": "verified",
+      "tags": [
+        "аудит",
+        "зона 25"
+      ],
+      "sources": [],
+      "related": [
+        "diagnostics"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:zone-26",
+      "type": "article",
+      "slug": "zone-26",
+      "title": "Зона 26: остатки",
+      "section": "history",
+      "status": "verified",
+      "tags": [
+        "аудит",
+        "зона 26"
+      ],
+      "sources": [],
+      "related": [
+        "diagnostics"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:dev-overview",
+      "type": "article",
+      "slug": "dev-overview",
+      "title": "Разработчикам: обзор и слои",
+      "section": "dev",
+      "status": "verified",
+      "tags": [
+        "dev",
+        "архитектура",
+        "слои"
+      ],
+      "sources": [
+        ".dependency-cruiser.cjs",
+        "src/kernel/DEPENDENCY_MAP.md"
+      ],
+      "related": [
+        "for-developers",
+        "architecture",
+        "dev-layout",
+        "dev-boot"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:dev-layout",
+      "type": "article",
+      "slug": "dev-layout",
+      "title": "Разработчикам: карта каталогов",
+      "section": "dev",
+      "status": "verified",
+      "tags": [
+        "dev",
+        "структура"
+      ],
+      "sources": [
+        "package.json",
+        "src/"
+      ],
+      "related": [
+        "dev-overview",
+        "dev-components",
+        "dev-generators"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:dev-boot",
+      "type": "article",
+      "slug": "dev-boot",
+      "title": "Разработчикам: boot, DI и контейнер",
+      "section": "dev",
+      "status": "verified",
+      "tags": [
+        "dev",
+        "bootstrap",
+        "DI"
+      ],
+      "sources": [
+        "src/kernel/bootstrap.ts",
+        "src/kernel/bootstrap-phases.ts",
+        "src/kernel/container.ts"
+      ],
+      "related": [
+        "dev-services",
+        "dev-events",
+        "dev-overview"
+      ],
+      "tests": [
+        "src/kernel/container.test.ts"
+      ]
+    },
+    {
+      "id": "wiki:dev-events",
+      "type": "article",
+      "slug": "dev-events",
+      "title": "Разработчикам: шина событий",
+      "section": "dev",
+      "status": "verified",
+      "tags": [
+        "dev",
+        "события",
+        "шина"
+      ],
+      "sources": [
+        "src/kernel/events/event-bus.ts",
+        "src/kernel/events/event-names.ts",
+        "src/kernel/events/event-registry.ts"
+      ],
+      "related": [
+        "dev-event-catalog",
+        "dev-services",
+        "dev-boot"
+      ],
+      "tests": [
+        "src/kernel/events/event-bus.test.ts",
+        "src/kernel/events/event-registry.test.ts"
+      ]
+    },
+    {
+      "id": "wiki:dev-services",
+      "type": "article",
+      "slug": "dev-services",
+      "title": "Разработчикам: сервисы и lazyService",
+      "section": "dev",
+      "status": "verified",
+      "tags": [
+        "dev",
+        "сервисы",
+        "DI",
+        "lazyService"
+      ],
+      "sources": [
+        "src/kernel/service-helper.ts",
+        "src/kernel/instances/"
+      ],
+      "related": [
+        "dev-service-map",
+        "dev-boot",
+        "dev-events",
+        "dev-components"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:dev-components",
+      "type": "article",
+      "slug": "dev-components",
+      "title": "Разработчикам: компоненты и панели",
+      "section": "dev",
+      "status": "verified",
+      "tags": [
+        "dev",
+        "компоненты",
+        "панели"
+      ],
+      "sources": [
+        "src/components/",
+        "src/components/ChatPanel/MarkdownRenderer.tsx"
+      ],
+      "related": [
+        "dev-routing",
+        "dev-i18n",
+        "dev-conventions",
+        "panel-chat"
+      ],
+      "tests": [
+        "src/components/ChatPanel/MarkdownRenderer.test.tsx"
+      ]
+    },
+    {
+      "id": "wiki:dev-routing",
+      "type": "article",
+      "slug": "dev-routing",
+      "title": "Разработчикам: маршруты и добавление панели",
+      "section": "dev",
+      "status": "verified",
+      "tags": [
+        "dev",
+        "роутинг",
+        "панель"
+      ],
+      "sources": [
+        "src/route-registry-core.ts",
+        "src/route-registry-content.ts",
+        "src/route-registry-system.ts",
+        "src/route-imports.ts"
+      ],
+      "related": [
+        "dev-components",
+        "dev-i18n"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:dev-stores",
+      "type": "article",
+      "slug": "dev-stores",
+      "title": "Разработчикам: состояние (stores) и хуки",
+      "section": "dev",
+      "status": "verified",
+      "tags": [
+        "dev",
+        "stores",
+        "состояние"
+      ],
+      "sources": [
+        "src/stores/",
+        "src/hooks/"
+      ],
+      "related": [
+        "dev-store-catalog",
+        "dev-components",
+        "dev-services"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:dev-i18n",
+      "type": "article",
+      "slug": "dev-i18n",
+      "title": "Разработчикам: локализация (i18n)",
+      "section": "dev",
+      "status": "verified",
+      "tags": [
+        "dev",
+        "i18n",
+        "локали"
+      ],
+      "sources": [
+        "src/i18n/",
+        "src/i18n/i18n-keys.test.ts"
+      ],
+      "related": [
+        "dev-i18n-catalog",
+        "dev-components",
+        "dev-routing"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:dev-testing",
+      "type": "article",
+      "slug": "dev-testing",
+      "title": "Разработчикам: тесты",
+      "section": "dev",
+      "status": "verified",
+      "tags": [
+        "dev",
+        "тесты",
+        "vitest",
+        "playwright"
+      ],
+      "sources": [
+        "vitest.config.ts",
+        "package.json",
+        "e2e/"
+      ],
+      "related": [
+        "dev-tests-catalog",
+        "dev-ci",
+        "dev-conventions"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:dev-ci",
+      "type": "article",
+      "slug": "dev-ci",
+      "title": "Разработчикам: ворота качества и CI",
+      "section": "dev",
+      "status": "verified",
+      "tags": [
+        "dev",
+        "CI",
+        "гейт",
+        "сборка"
+      ],
+      "sources": [
+        ".github/workflows/ci.yml",
+        "package.json"
+      ],
+      "related": [
+        "dev-testing",
+        "dev-generators",
+        "dev-scripts",
+        "dev-tests-catalog",
+        "for-developers"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:dev-generators",
+      "type": "article",
+      "slug": "dev-generators",
+      "title": "Разработчикам: генераторы и сгенерированные файлы",
+      "section": "dev",
+      "status": "verified",
+      "tags": [
+        "dev",
+        "генераторы",
+        "scripts"
+      ],
+      "sources": [
+        "scripts/",
+        "src/generated/"
+      ],
+      "related": [
+        "dev-ci",
+        "dev-routing",
+        "dev-layout",
+        "dev-scripts"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:dev-conventions",
+      "type": "article",
+      "slug": "dev-conventions",
+      "title": "Разработчикам: конвенции кода",
+      "section": "dev",
+      "status": "verified",
+      "tags": [
+        "dev",
+        "стиль",
+        "конвенции"
+      ],
+      "sources": [
+        "eslint.config.js",
+        ".dependency-cruiser.cjs"
+      ],
+      "related": [
+        "dev-components",
+        "dev-services",
+        "dev-testing"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:dev-glossary",
+      "type": "article",
+      "slug": "dev-glossary",
+      "title": "Разработчикам: глоссарий",
+      "section": "dev",
+      "status": "verified",
+      "tags": [
+        "dev",
+        "глоссарий",
+        "термины"
+      ],
+      "sources": [
+        "src/kernel/",
+        "src/components/"
+      ],
+      "related": [
+        "dev-overview",
+        "dev-services"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:dev-cookbook",
+      "type": "article",
+      "slug": "dev-cookbook",
+      "title": "Рецепты: типовые задачи",
+      "section": "dev",
+      "status": "verified",
+      "tags": [
+        "dev",
+        "рецепты",
+        "how-to"
+      ],
+      "sources": [
+        "src/route-registry-*.ts",
+        "src/kernel/",
+        "src/i18n/"
+      ],
+      "related": [
+        "dev-routing",
+        "dev-services",
+        "dev-events",
+        "dev-i18n",
+        "dev-testing",
+        "dev-conventions",
+        "dev-generators"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:dev-component-catalog",
+      "type": "article",
+      "slug": "dev-component-catalog",
+      "title": "Каталог компонентов OS",
+      "section": "dev",
+      "status": "verified",
+      "tags": [
+        "dev",
+        "каталог",
+        "компоненты",
+        "связи"
+      ],
+      "sources": [
+        "scripts/gen-wiki-catalog.mjs",
+        "src/generated/wiki-component-catalog.ts"
+      ],
+      "related": [
+        "dev-components",
+        "dev-services",
+        "dev-routing",
+        "dev-layout"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:panels-catalog",
+      "type": "article",
+      "slug": "panels-catalog",
+      "title": "Каталог панелей: раздел → маршрут → компонент → статья",
+      "section": "panels",
+      "status": "verified",
+      "tags": [
+        "панели",
+        "каталог",
+        "маршруты",
+        "компоненты"
+      ],
+      "sources": [
+        "scripts/gen-wiki-panel-catalog.mjs",
+        "src/generated/wiki-panel-catalog.ts",
+        "src/route-registry-core.ts",
+        "src/route-registry-system.ts",
+        "src/route-registry-content.ts",
+        "src/route-imports.ts"
+      ],
+      "related": [
+        "panels-guide",
+        "dev-routing",
+        "dev-layout",
+        "dev-component-catalog"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:dev-event-catalog",
+      "type": "article",
+      "slug": "dev-event-catalog",
+      "title": "Каталог событий шины",
+      "section": "dev",
+      "status": "verified",
+      "tags": [
+        "dev",
+        "события",
+        "каталог",
+        "шина"
+      ],
+      "sources": [
+        "scripts/gen-wiki-events.mjs",
+        "src/kernel/events/event-registry.ts"
+      ],
+      "related": [
+        "dev-events",
+        "dev-services",
+        "dev-overview"
+      ],
+      "tests": [
+        "src/kernel/events/event-registry.test.ts"
+      ]
+    },
+    {
+      "id": "wiki:dev-service-map",
+      "type": "article",
+      "slug": "dev-service-map",
+      "title": "Карта зависимостей ядра (DI)",
+      "section": "dev",
+      "status": "verified",
+      "tags": [
+        "dev",
+        "DI",
+        "сервисы",
+        "карта"
+      ],
+      "sources": [
+        "src/kernel/DEPENDENCY_MAP.md",
+        "scripts/gen-wiki-depmap.mjs"
+      ],
+      "related": [
+        "dev-services",
+        "dev-boot",
+        "dev-event-catalog",
+        "dev-component-catalog"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:dev-contracts",
+      "type": "article",
+      "slug": "dev-contracts",
+      "title": "Контракты ядра",
+      "section": "dev",
+      "status": "verified",
+      "tags": [
+        "dev",
+        "контракты",
+        "интерфейсы",
+        "каталог"
+      ],
+      "sources": [
+        "scripts/gen-wiki-contracts.mjs",
+        "src/kernel/contracts/"
+      ],
+      "related": [
+        "dev-services",
+        "dev-service-map",
+        "dev-component-catalog",
+        "dev-overview"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:dev-store-catalog",
+      "type": "article",
+      "slug": "dev-store-catalog",
+      "title": "Каталог сторов",
+      "section": "dev",
+      "status": "verified",
+      "tags": [
+        "dev",
+        "сторы",
+        "состояние",
+        "каталог"
+      ],
+      "sources": [
+        "scripts/gen-wiki-stores.mjs",
+        "src/stores/"
+      ],
+      "related": [
+        "dev-stores",
+        "dev-services",
+        "dev-contracts",
+        "dev-overview"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:dev-i18n-catalog",
+      "type": "article",
+      "slug": "dev-i18n-catalog",
+      "title": "Каталог локализации",
+      "section": "dev",
+      "status": "verified",
+      "tags": [
+        "dev",
+        "i18n",
+        "локали",
+        "каталог"
+      ],
+      "sources": [
+        "scripts/gen-wiki-i18n.mjs",
+        "src/i18n/translations/"
+      ],
+      "related": [
+        "dev-i18n",
+        "dev-components",
+        "dev-overview"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:dev-scripts",
+      "type": "article",
+      "slug": "dev-scripts",
+      "title": "Скрипты и CLI",
+      "section": "dev",
+      "status": "verified",
+      "tags": [
+        "dev",
+        "скрипты",
+        "cli",
+        "команды"
+      ],
+      "sources": [
+        "scripts/gen-wiki-scripts.mjs",
+        "package.json"
+      ],
+      "related": [
+        "dev-ci",
+        "dev-generators",
+        "dev-testing",
+        "dev-overview"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:dev-tests-catalog",
+      "type": "article",
+      "slug": "dev-tests-catalog",
+      "title": "Каталог тестов",
+      "section": "dev",
+      "status": "verified",
+      "tags": [
+        "dev",
+        "тесты",
+        "каталог",
+        "CI"
+      ],
+      "sources": [
+        "scripts/gen-wiki-tests.mjs",
+        "package.json"
+      ],
+      "related": [
+        "dev-testing",
+        "dev-ci",
+        "dev-scripts",
+        "dev-overview"
+      ],
+      "tests": []
+    }
+  ],
+  "panels": [
+    {
+      "id": "panel:dashboard",
+      "type": "panel",
+      "panelId": "dashboard",
+      "section": "dashboard",
+      "route": "/dashboard",
+      "component": null,
+      "article": null,
+      "status": "live"
+    },
+    {
+      "id": "panel:keys",
+      "type": "panel",
+      "panelId": "keys",
+      "section": "dashboard",
+      "route": "/keys",
+      "component": "src/components/ProviderManager/ProviderManager",
+      "article": "panel-providers",
+      "status": "live"
+    },
+    {
+      "id": "panel:knowledge",
+      "type": "panel",
+      "panelId": "knowledge",
+      "section": "dashboard",
+      "route": "/knowledge",
+      "component": "src/components/KnowledgePanel/KnowledgePanel",
+      "article": "panel-knowledge",
+      "status": "live"
+    },
+    {
+      "id": "panel:project-os",
+      "type": "panel",
+      "panelId": "project-os",
+      "section": "dashboard",
+      "route": "/project-os",
+      "component": "src/components/DebateResearch/ProjectOsExplorer",
+      "article": "panel-projects",
+      "status": "live"
+    },
+    {
+      "id": "panel:lenses",
+      "type": "panel",
+      "panelId": "lenses",
+      "section": "dashboard",
+      "route": "/lenses",
+      "component": "src/components/LensesPanel/LensesPanel",
+      "article": "panel-lenses-crystals",
+      "status": "live"
+    },
+    {
+      "id": "panel:crystals",
+      "type": "panel",
+      "panelId": "crystals",
+      "section": "dashboard",
+      "route": "/crystals",
+      "component": "src/components/CrystalVaultPanel/CrystalVaultPanel",
+      "article": "panel-lenses-crystals",
+      "status": "live"
+    },
+    {
+      "id": "panel:junctions",
+      "type": "panel",
+      "panelId": "junctions",
+      "section": "dashboard",
+      "route": "/junctions",
+      "component": "src/components/JunctionPanel/JunctionPanel",
+      "article": "panel-provenance-junctions",
+      "status": "live"
+    },
+    {
+      "id": "panel:synthesis",
+      "type": "panel",
+      "panelId": "synthesis",
+      "section": "dashboard",
+      "route": "/synthesis",
+      "component": "src/components/SynthesisPanel/SynthesisPanel",
+      "article": "panel-synthesis",
+      "status": "live"
+    },
+    {
+      "id": "panel:knowledge-generator",
+      "type": "panel",
+      "panelId": "knowledge-generator",
+      "section": "dashboard",
+      "route": "/knowledge-generator",
+      "component": "src/components/KnowledgeGenPanel/KnowledgeGenPanel",
+      "article": "panel-knowledge-generator",
+      "status": "live"
+    },
+    {
+      "id": "panel:forum",
+      "type": "panel",
+      "panelId": "forum",
+      "section": "dashboard",
+      "route": "/forum",
+      "component": "src/components/ForumPanel/ForumPanel",
+      "article": "panel-forum",
+      "status": "live"
+    },
+    {
+      "id": "panel:builder",
+      "type": "panel",
+      "panelId": "builder",
+      "section": "dashboard",
+      "route": "/builder",
+      "component": "src/components/BuilderPanel/CognitiveBuilder",
+      "article": "panel-builder",
+      "status": "live"
+    },
+    {
+      "id": "panel:director",
+      "type": "panel",
+      "panelId": "director",
+      "section": "dashboard",
+      "route": "/director",
+      "component": "src/components/DirectorPanel/DirectorPanel",
+      "article": "panel-director",
+      "status": "live"
+    },
+    {
+      "id": "panel:room",
+      "type": "panel",
+      "panelId": "room",
+      "section": "dashboard",
+      "route": "/room",
+      "component": "src/components/RoomPanel/RoomPanel",
+      "article": "panel-room",
+      "status": "live"
+    },
+    {
+      "id": "panel:projects",
+      "type": "panel",
+      "panelId": "projects",
+      "section": "dashboard",
+      "route": "/projects",
+      "component": "src/components/ProjectsPanel/ProjectsPanel",
+      "article": "panel-projects",
+      "status": "live"
+    },
+    {
+      "id": "panel:channels",
+      "type": "panel",
+      "panelId": "channels",
+      "section": "dashboard",
+      "route": "/channels",
+      "component": "src/components/ChannelPanel/ChannelPanel",
+      "article": "panel-channels",
+      "status": "live"
+    },
+    {
+      "id": "panel:group-chat",
+      "type": "panel",
+      "panelId": "group-chat",
+      "section": "dashboard",
+      "route": "/group-chat",
+      "component": "src/components/GroupChatPanel/GroupChatPanel",
+      "article": "panel-group-chat",
+      "status": "live"
+    },
+    {
+      "id": "panel:scheduler",
+      "type": "panel",
+      "panelId": "scheduler",
+      "section": "dashboard",
+      "route": "/scheduler",
+      "component": "src/components/SchedulerPanel",
+      "article": "panel-scheduler",
+      "status": "live"
+    },
+    {
+      "id": "panel:planner",
+      "type": "panel",
+      "panelId": "planner",
+      "section": "dashboard",
+      "route": "/planner",
+      "component": "src/components/PlannerPanel/PlannerPanel",
+      "article": "panel-planning",
+      "status": "live"
+    },
+    {
+      "id": "panel:autonomy",
+      "type": "panel",
+      "panelId": "autonomy",
+      "section": "dashboard",
+      "route": "/autonomy",
+      "component": "src/components/AutonomyPanel/AutonomyPanel",
+      "article": "panel-autonomy",
+      "status": "live"
+    },
+    {
+      "id": "panel:dyad",
+      "type": "panel",
+      "panelId": "dyad",
+      "section": "dashboard",
+      "route": "/dyad",
+      "component": "src/components/DyadPanel/DyadPanel",
+      "article": "panel-dyad",
+      "status": "live"
+    },
+    {
+      "id": "panel:sop",
+      "type": "panel",
+      "panelId": "sop",
+      "section": "dashboard",
+      "route": "/sop",
+      "component": "src/components/SopPanel/SopPanel",
+      "article": "panel-governance",
+      "status": "live"
+    },
+    {
+      "id": "panel:run-queue",
+      "type": "panel",
+      "panelId": "run-queue",
+      "section": "dashboard",
+      "route": "/run-queue",
+      "component": "src/components/RunQueuePanel/RunQueuePanel",
+      "article": "panel-provenance-junctions",
+      "status": "live"
+    },
+    {
+      "id": "panel:analytics",
+      "type": "panel",
+      "panelId": "analytics",
+      "section": "budget",
+      "route": "/analytics",
+      "component": "src/components/AnalyticsPanel/AnalyticsPanel",
+      "article": "panel-analytics",
+      "status": "live"
+    },
+    {
+      "id": "panel:pricing",
+      "type": "panel",
+      "panelId": "pricing",
+      "section": "budget",
+      "route": "/pricing",
+      "component": "src/components/AnalyticsPanel/PricingPanel",
+      "article": "panel-budget",
+      "status": "live"
+    },
+    {
+      "id": "panel:budget",
+      "type": "panel",
+      "panelId": "budget",
+      "section": "budget",
+      "route": "/budget",
+      "component": "src/components/BudgetPanel",
+      "article": "panel-budget",
+      "status": "live"
+    },
+    {
+      "id": "panel:cost-analytics",
+      "type": "panel",
+      "panelId": "cost-analytics",
+      "section": "budget",
+      "route": "/cost-analytics",
+      "component": "src/components/CostAnalyticsPanel",
+      "article": "panel-analytics",
+      "status": "live"
+    },
+    {
+      "id": "panel:cost-optimization",
+      "type": "panel",
+      "panelId": "cost-optimization",
+      "section": "budget",
+      "route": "/cost-optimization",
+      "component": "src/components/CostOptimizationPanel",
+      "article": "panel-budget",
+      "status": "live"
+    },
+    {
+      "id": "panel:budget-alerts",
+      "type": "panel",
+      "panelId": "budget-alerts",
+      "section": "budget",
+      "route": "/budget-alerts",
+      "component": "src/components/BudgetAlertsPanel",
+      "article": "panel-budget",
+      "status": "live"
+    },
+    {
+      "id": "panel:costs",
+      "type": "panel",
+      "panelId": "costs",
+      "section": "budget",
+      "route": "/costs",
+      "component": "src/components/CostsPanel",
+      "article": "panel-costs",
+      "status": "live"
+    },
+    {
+      "id": "panel:chat",
+      "type": "panel",
+      "panelId": "chat",
+      "section": "chat",
+      "route": "/chat",
+      "component": "src/components/ChatPanel/ChatPanel",
+      "article": "panel-chat",
+      "status": "live"
+    },
+    {
+      "id": "panel:chat-sessions",
+      "type": "panel",
+      "panelId": "chat-sessions",
+      "section": "chat",
+      "route": "/chat-sessions",
+      "component": "src/components/ChatSessionsManagerPanel",
+      "article": "panel-sessions",
+      "status": "live"
+    },
+    {
+      "id": "panel:session-hub",
+      "type": "panel",
+      "panelId": "session-hub",
+      "section": "chat",
+      "route": "/session-hub",
+      "component": "src/components/SessionHubPanel",
+      "article": "panel-sessions",
+      "status": "live"
+    },
+    {
+      "id": "panel:bookmarks",
+      "type": "panel",
+      "panelId": "bookmarks",
+      "section": "chat",
+      "route": "/bookmarks",
+      "component": "src/components/BookmarksPanel/BookmarksPanel",
+      "article": "panel-bookmarks",
+      "status": "live"
+    },
+    {
+      "id": "panel:debate",
+      "type": "panel",
+      "panelId": "debate",
+      "section": "debates",
+      "route": "/debate",
+      "component": "src/components/DebateArena",
+      "article": "debates",
+      "status": "live"
+    },
+    {
+      "id": "panel:debate-live",
+      "type": "panel",
+      "panelId": "debate-live",
+      "section": "debates",
+      "route": "/debate-live",
+      "component": "src/components/DebateLive/DebateLivePanel",
+      "article": "panel-debate-live",
+      "status": "live"
+    },
+    {
+      "id": "panel:debate-workspace",
+      "type": "panel",
+      "panelId": "debate-workspace",
+      "section": "debates",
+      "route": "/debate-workspace",
+      "component": "src/components/DebatePanel/DebateWorkspacePanel",
+      "article": "panel-debate-templates",
+      "status": "live"
+    },
+    {
+      "id": "panel:debate-replay",
+      "type": "panel",
+      "panelId": "debate-replay",
+      "section": "debates",
+      "route": "/debate-replay",
+      "component": "src/components/DebateReplayPanel",
+      "article": "panel-debate-history",
+      "status": "live"
+    },
+    {
+      "id": "panel:debate-tournament",
+      "type": "panel",
+      "panelId": "debate-tournament",
+      "section": "debates",
+      "route": "/debate-tournament",
+      "component": "src/components/TournamentPanel",
+      "article": "panel-debate-tournament",
+      "status": "live"
+    },
+    {
+      "id": "panel:audience",
+      "type": "panel",
+      "panelId": "audience",
+      "section": "debates",
+      "route": "/audience",
+      "component": "src/components/AudiencePanel",
+      "article": "panel-shadow",
+      "status": "live"
+    },
+    {
+      "id": "panel:argument-graph",
+      "type": "panel",
+      "panelId": "argument-graph",
+      "section": "debates",
+      "route": "/argument-graph",
+      "component": "src/components/ArgumentGraphPanel/ArgumentGraphPanel",
+      "article": "panel-debate-toolkit",
+      "status": "live"
+    },
+    {
+      "id": "panel:strategy-builder",
+      "type": "panel",
+      "panelId": "strategy-builder",
+      "section": "debates",
+      "route": "/strategy-builder",
+      "component": "src/components/DebatePanel/DebateStrategyBuilder",
+      "article": "panel-shadow",
+      "status": "live"
+    },
+    {
+      "id": "panel:debate-analysis",
+      "type": "panel",
+      "panelId": "debate-analysis",
+      "section": "debates",
+      "route": "/debate-analysis",
+      "component": "src/components/DebateAnalysisPanel",
+      "article": "panel-debate-analysis",
+      "status": "live"
+    },
+    {
+      "id": "panel:debate-history",
+      "type": "panel",
+      "panelId": "debate-history",
+      "section": "debates",
+      "route": "/debate-history",
+      "component": "src/components/DebatePanel/DebateHistoryPage",
+      "article": "panel-debate-history",
+      "status": "live"
+    },
+    {
+      "id": "panel:debates-manager",
+      "type": "panel",
+      "panelId": "debates-manager",
+      "section": "debates",
+      "route": "/debates-manager",
+      "component": "src/components/DebatesManagerPanel",
+      "article": "panel-debate-history",
+      "status": "live"
+    },
+    {
+      "id": "panel:topics",
+      "type": "panel",
+      "panelId": "topics",
+      "section": "debates",
+      "route": "/topics",
+      "component": "src/components/TopicSuggesterPanel",
+      "article": "panel-topics",
+      "status": "live"
+    },
+    {
+      "id": "panel:debate-templates",
+      "type": "panel",
+      "panelId": "debate-templates",
+      "section": "debates",
+      "route": "/debate-templates",
+      "component": "src/components/DebateTemplatesPanel",
+      "article": "panel-debate-templates",
+      "status": "live"
+    },
+    {
+      "id": "panel:debate-quality",
+      "type": "panel",
+      "panelId": "debate-quality",
+      "section": "debates",
+      "route": "/debate-quality",
+      "component": "src/components/DebateQualityPanel",
+      "article": "panel-debate-quality",
+      "status": "live"
+    },
+    {
+      "id": "panel:quality-impact",
+      "type": "panel",
+      "panelId": "quality-impact",
+      "section": "debates",
+      "route": "/quality-impact",
+      "component": "src/components/QualityImpactDashboard/QualityImpactDashboardPanel",
+      "article": "panel-quality-impact",
+      "status": "live"
+    },
+    {
+      "id": "panel:experimental",
+      "type": "panel",
+      "panelId": "experimental",
+      "section": "debates",
+      "route": "/experimental",
+      "component": "src/components/ExperimentalPanel",
+      "article": "panel-infra-meta",
+      "status": "live"
+    },
+    {
+      "id": "panel:scratchpad",
+      "type": "panel",
+      "panelId": "scratchpad",
+      "section": "debates",
+      "route": "/scratchpad",
+      "component": "src/components/ScratchpadPanel/ScratchpadPanel",
+      "article": "panel-planning",
+      "status": "live"
+    },
+    {
+      "id": "panel:outcome-forecaster",
+      "type": "panel",
+      "panelId": "outcome-forecaster",
+      "section": "debate-strategy",
+      "route": "/outcome-forecaster",
+      "component": "src/components/OutcomeForecasterPanel/OutcomeForecasterPanel",
+      "article": "panel-eval-extra",
+      "status": "live"
+    },
+    {
+      "id": "panel:minimax-planner",
+      "type": "panel",
+      "panelId": "minimax-planner",
+      "section": "debate-strategy",
+      "route": "/minimax-planner",
+      "component": "src/components/MinimaxPlannerPanel/MinimaxPlannerPanel",
+      "article": "panel-planning",
+      "status": "live"
+    },
+    {
+      "id": "panel:similarity",
+      "type": "panel",
+      "panelId": "similarity",
+      "section": "debate-strategy",
+      "route": "/similarity",
+      "component": "src/components/SimilarityPanel/SimilarityPanel",
+      "article": "panel-eval-extra",
+      "status": "live"
+    },
+    {
+      "id": "panel:drift-detector",
+      "type": "panel",
+      "panelId": "drift-detector",
+      "section": "debate-strategy",
+      "route": "/drift-detector",
+      "component": "src/components/DriftDetectorPanel/DriftDetectorPanel",
+      "article": "panel-eval-extra",
+      "status": "live"
+    },
+    {
+      "id": "panel:steelman",
+      "type": "panel",
+      "panelId": "steelman",
+      "section": "techniques",
+      "route": "/steelman",
+      "component": "src/components/SteelmanPanel/SteelmanPanel",
+      "article": "panel-debate-toolkit",
+      "status": "live"
+    },
+    {
+      "id": "panel:bayesian-judge",
+      "type": "panel",
+      "panelId": "bayesian-judge",
+      "section": "techniques",
+      "route": "/bayesian-judge",
+      "component": "src/components/BayesianJudgePanel/BayesianJudgePanel",
+      "article": "panel-debate-toolkit",
+      "status": "live"
+    },
+    {
+      "id": "panel:blind-eval",
+      "type": "panel",
+      "panelId": "blind-eval",
+      "section": "techniques",
+      "route": "/blind-eval",
+      "component": "src/components/BlindEvalPanel/BlindEvalPanel",
+      "article": "panel-eval-extra",
+      "status": "live"
+    },
+    {
+      "id": "panel:credibility",
+      "type": "panel",
+      "panelId": "credibility",
+      "section": "techniques",
+      "route": "/credibility",
+      "component": "src/components/CredibilityPanel/CredibilityPanel",
+      "article": "panel-debate-toolkit",
+      "status": "live"
+    },
+    {
+      "id": "panel:calibration",
+      "type": "panel",
+      "panelId": "calibration",
+      "section": "techniques",
+      "route": "/calibration",
+      "component": "src/components/CalibrationPanel/CalibrationPanel",
+      "article": "panel-eval-extra",
+      "status": "live"
+    },
+    {
+      "id": "panel:consistency",
+      "type": "panel",
+      "panelId": "consistency",
+      "section": "techniques",
+      "route": "/consistency",
+      "component": "src/components/ConsistencyPanel/ConsistencyPanel",
+      "article": "panel-eval-extra",
+      "status": "live"
+    },
+    {
+      "id": "panel:frame-tracker",
+      "type": "panel",
+      "panelId": "frame-tracker",
+      "section": "techniques",
+      "route": "/frame-tracker",
+      "component": "src/components/FrameTrackerPanel/FrameTrackerPanel",
+      "article": "panel-debate-toolkit",
+      "status": "live"
+    },
+    {
+      "id": "panel:stance-drift",
+      "type": "panel",
+      "panelId": "stance-drift",
+      "section": "techniques",
+      "route": "/stance-drift",
+      "component": "src/components/StanceDriftPanel/StanceDriftPanel",
+      "article": "panel-debate-toolkit",
+      "status": "live"
+    },
+    {
+      "id": "panel:insight-bus",
+      "type": "panel",
+      "panelId": "insight-bus",
+      "section": "techniques",
+      "route": "/insight-bus",
+      "component": "src/components/InsightBusPanel/InsightBusPanel",
+      "article": "panel-provenance-junctions",
+      "status": "live"
+    },
+    {
+      "id": "panel:entanglement",
+      "type": "panel",
+      "panelId": "entanglement",
+      "section": "techniques",
+      "route": "/entanglement",
+      "component": "src/components/EntanglementPanel/EntanglementPanel",
+      "article": "panel-eval-extra",
+      "status": "planned"
+    },
+    {
+      "id": "panel:anchoring",
+      "type": "panel",
+      "panelId": "anchoring",
+      "section": "techniques",
+      "route": "/anchoring",
+      "component": "src/components/AnchoringPanel/AnchoringPanel",
+      "article": "panel-debate-toolkit",
+      "status": "live"
+    },
+    {
+      "id": "panel:concept-blender",
+      "type": "panel",
+      "panelId": "concept-blender",
+      "section": "techniques",
+      "route": "/concept-blender",
+      "component": "src/components/ConceptBlenderPanel/ConceptBlenderPanel",
+      "article": "panel-debate-toolkit",
+      "status": "live"
+    },
+    {
+      "id": "panel:belief-mining",
+      "type": "panel",
+      "panelId": "belief-mining",
+      "section": "techniques",
+      "route": "/belief-mining",
+      "component": "src/components/BeliefMiningPanel/BeliefMiningPanel",
+      "article": "panel-debate-toolkit",
+      "status": "live"
+    },
+    {
+      "id": "panel:expert-witness",
+      "type": "panel",
+      "panelId": "expert-witness",
+      "section": "techniques",
+      "route": "/expert-witness",
+      "component": "src/components/ExpertWitnessPanel/ExpertWitnessPanel",
+      "article": "panel-debate-toolkit",
+      "status": "live"
+    },
+    {
+      "id": "panel:rhetoric",
+      "type": "panel",
+      "panelId": "rhetoric",
+      "section": "techniques",
+      "route": "/rhetoric",
+      "component": "src/components/RhetoricPanel/RhetoricPanel",
+      "article": "panel-debate-toolkit",
+      "status": "live"
+    },
+    {
+      "id": "panel:bias-profiler",
+      "type": "panel",
+      "panelId": "bias-profiler",
+      "section": "techniques",
+      "route": "/bias-profiler",
+      "component": "src/components/BiasProfilerPanel/BiasProfilerPanel",
+      "article": "panel-debate-toolkit",
+      "status": "live"
+    },
+    {
+      "id": "panel:incentive-detector",
+      "type": "panel",
+      "panelId": "incentive-detector",
+      "section": "techniques",
+      "route": "/incentive-detector",
+      "component": "src/components/IncentiveDetectorPanel/IncentiveDetectorPanel",
+      "article": "panel-debate-toolkit",
+      "status": "live"
+    },
+    {
+      "id": "panel:stakeholder",
+      "type": "panel",
+      "panelId": "stakeholder",
+      "section": "techniques",
+      "route": "/stakeholder",
+      "component": "src/components/StakeholderPanel/StakeholderPanel",
+      "article": "panel-debate-toolkit",
+      "status": "live"
+    },
+    {
+      "id": "panel:persona-mixer",
+      "type": "panel",
+      "panelId": "persona-mixer",
+      "section": "techniques",
+      "route": "/persona-mixer",
+      "component": "src/components/PersonaMixerPanel/PersonaMixerPanel",
+      "article": "panel-persona",
+      "status": "live"
+    },
+    {
+      "id": "panel:bop-tracker",
+      "type": "panel",
+      "panelId": "bop-tracker",
+      "section": "techniques",
+      "route": "/bop-tracker",
+      "component": "src/components/BoPTrackerPanel/BoPTrackerPanel",
+      "article": "panel-eval-extra",
+      "status": "live"
+    },
+    {
+      "id": "panel:got-deliberation",
+      "type": "panel",
+      "panelId": "got-deliberation",
+      "section": "techniques",
+      "route": "/got-deliberation",
+      "component": "src/components/GoTDeliberationPanel/GoTDeliberationPanel",
+      "article": "panel-debate-toolkit",
+      "status": "live"
+    },
+    {
+      "id": "panel:shadow-opponent",
+      "type": "panel",
+      "panelId": "shadow-opponent",
+      "section": "techniques",
+      "route": "/shadow-opponent",
+      "component": "src/components/ShadowOpponentPanel/ShadowOpponentPanel",
+      "article": "panel-shadow",
+      "status": "live"
+    },
+    {
+      "id": "panel:adversarial-source",
+      "type": "panel",
+      "panelId": "adversarial-source",
+      "section": "techniques",
+      "route": "/adversarial-source",
+      "component": "src/components/AdversarialSourcePanel/AdversarialSourcePanel",
+      "article": "panel-debate-toolkit",
+      "status": "live"
+    },
+    {
+      "id": "panel:vuln-targeting",
+      "type": "panel",
+      "panelId": "vuln-targeting",
+      "section": "techniques",
+      "route": "/vuln-targeting",
+      "component": "src/components/VulnTargetingPanel/VulnTargetingPanel",
+      "article": "panel-debate-toolkit",
+      "status": "live"
+    },
+    {
+      "id": "panel:justification",
+      "type": "panel",
+      "panelId": "justification",
+      "section": "techniques",
+      "route": "/justification",
+      "component": "src/components/JustificationPanel/JustificationPanel",
+      "article": "panel-debate-toolkit",
+      "status": "live"
+    },
+    {
+      "id": "panel:logical-form",
+      "type": "panel",
+      "panelId": "logical-form",
+      "section": "techniques",
+      "route": "/logical-form",
+      "component": "src/components/LogicalFormPanel/LogicalFormPanel",
+      "article": "panel-debate-toolkit",
+      "status": "live"
+    },
+    {
+      "id": "panel:cross-examination",
+      "type": "panel",
+      "panelId": "cross-examination",
+      "section": "techniques",
+      "route": "/cross-examination",
+      "component": "src/components/TechniquePanels/CrossExaminationPanel",
+      "article": null,
+      "status": "live"
+    },
+    {
+      "id": "panel:delta-focusing",
+      "type": "panel",
+      "panelId": "delta-focusing",
+      "section": "techniques",
+      "route": "/delta-focusing",
+      "component": "src/components/TechniquePanels/DeltaFocusingPanel",
+      "article": null,
+      "status": "live"
+    },
+    {
+      "id": "panel:vulnerability-targeting",
+      "type": "panel",
+      "panelId": "vulnerability-targeting",
+      "section": "techniques",
+      "route": "/vulnerability-targeting",
+      "component": "src/components/TechniquePanels/VulnerabilityTargetingPanel",
+      "article": null,
+      "status": "live"
+    },
+    {
+      "id": "panel:agreement-anchoring",
+      "type": "panel",
+      "panelId": "agreement-anchoring",
+      "section": "techniques",
+      "route": "/agreement-anchoring",
+      "component": "src/components/TechniquePanels/AgreementAnchoringPanel",
+      "article": null,
+      "status": "live"
+    },
+    {
+      "id": "panel:graph-minimax",
+      "type": "panel",
+      "panelId": "graph-minimax",
+      "section": "techniques",
+      "route": "/graph-minimax",
+      "component": "src/components/TechniquePanels/GraphMinimaxPanel",
+      "article": null,
+      "status": "live"
+    },
+    {
+      "id": "panel:burden-of-proof",
+      "type": "panel",
+      "panelId": "burden-of-proof",
+      "section": "techniques",
+      "route": "/burden-of-proof",
+      "component": "src/components/TechniquePanels/BurdenOfProofPanel",
+      "article": null,
+      "status": "live"
+    },
+    {
+      "id": "panel:consistency-check",
+      "type": "panel",
+      "panelId": "consistency-check",
+      "section": "techniques",
+      "route": "/consistency-check",
+      "component": "src/components/TechniquePanels/ConsistencyCheckPanel",
+      "article": null,
+      "status": "live"
+    },
+    {
+      "id": "panel:credibility-scoring",
+      "type": "panel",
+      "panelId": "credibility-scoring",
+      "section": "techniques",
+      "route": "/credibility-scoring",
+      "component": "src/components/TechniquePanels/CredibilityScoringPanel",
+      "article": null,
+      "status": "live"
+    },
+    {
+      "id": "panel:causal-graph",
+      "type": "panel",
+      "panelId": "causal-graph",
+      "section": "techniques",
+      "route": "/causal-graph",
+      "component": "src/components/TechniquePanels/CausalGraphPanel",
+      "article": null,
+      "status": "live"
+    },
+    {
+      "id": "panel:pre-publish-critic",
+      "type": "panel",
+      "panelId": "pre-publish-critic",
+      "section": "techniques",
+      "route": "/pre-publish-critic",
+      "component": "src/components/TechniquePanels/PrePublishCriticPanel",
+      "article": null,
+      "status": "live"
+    },
+    {
+      "id": "panel:fact-checking",
+      "type": "panel",
+      "panelId": "fact-checking",
+      "section": "techniques",
+      "route": "/fact-checking",
+      "component": "src/components/TechniquePanels/FactCheckingPanel",
+      "article": null,
+      "status": "live"
+    },
+    {
+      "id": "panel:epistemic-calibration",
+      "type": "panel",
+      "panelId": "epistemic-calibration",
+      "section": "techniques",
+      "route": "/epistemic-calibration",
+      "component": "src/components/TechniquePanels/EpistemicCalibrationPanel",
+      "article": null,
+      "status": "live"
+    },
+    {
+      "id": "panel:socratic-pivot",
+      "type": "panel",
+      "panelId": "socratic-pivot",
+      "section": "techniques",
+      "route": "/socratic-pivot",
+      "component": "src/components/TechniquePanels/SocraticPivotPanel",
+      "article": null,
+      "status": "live"
+    },
+    {
+      "id": "panel:concession-engine",
+      "type": "panel",
+      "panelId": "concession-engine",
+      "section": "techniques",
+      "route": "/concession-engine",
+      "component": "src/components/TechniquePanels/ConcessionEnginePanel",
+      "article": null,
+      "status": "live"
+    },
+    {
+      "id": "panel:bayesian-judges",
+      "type": "panel",
+      "panelId": "bayesian-judges",
+      "section": "techniques",
+      "route": "/bayesian-judges",
+      "component": "src/components/TechniquePanels/BayesianJudgesPanel",
+      "article": null,
+      "status": "live"
+    },
+    {
+      "id": "panel:dpo-sampler",
+      "type": "panel",
+      "panelId": "dpo-sampler",
+      "section": "techniques",
+      "route": "/dpo-sampler",
+      "component": "src/components/TechniquePanels/DpoSamplerPanel",
+      "article": null,
+      "status": "live"
+    },
+    {
+      "id": "panel:critic",
+      "type": "panel",
+      "panelId": "critic",
+      "section": "techniques",
+      "route": "/critic",
+      "component": "src/components/TechniquePanels/CriticPanel",
+      "article": null,
+      "status": "live"
+    },
+    {
+      "id": "panel:pivot",
+      "type": "panel",
+      "panelId": "pivot",
+      "section": "techniques",
+      "route": "/pivot",
+      "component": "src/components/TechniquePanels/PivotPanel",
+      "article": null,
+      "status": "live"
+    },
+    {
+      "id": "panel:concession",
+      "type": "panel",
+      "panelId": "concession",
+      "section": "techniques",
+      "route": "/concession",
+      "component": "src/components/TechniquePanels/ConcessionPanel",
+      "article": null,
+      "status": "live"
+    },
+    {
+      "id": "panel:triangulation",
+      "type": "panel",
+      "panelId": "triangulation",
+      "section": "techniques",
+      "route": "/triangulation",
+      "component": "src/components/TechniquePanels/TriangulationPanel",
+      "article": null,
+      "status": "live"
+    },
+    {
+      "id": "panel:empathy",
+      "type": "panel",
+      "panelId": "empathy",
+      "section": "techniques",
+      "route": "/empathy",
+      "component": "src/components/TechniquePanels/EmpathyPanel",
+      "article": null,
+      "status": "live"
+    },
+    {
+      "id": "panel:heat",
+      "type": "panel",
+      "panelId": "heat",
+      "section": "techniques",
+      "route": "/heat",
+      "component": "src/components/TechniquePanels/HeatPanel",
+      "article": null,
+      "status": "live"
+    },
+    {
+      "id": "panel:sentinel",
+      "type": "panel",
+      "panelId": "sentinel",
+      "section": "techniques",
+      "route": "/sentinel",
+      "component": "src/components/TechniquePanels/SentinelPanel",
+      "article": null,
+      "status": "live"
+    },
+    {
+      "id": "panel:redundancy",
+      "type": "panel",
+      "panelId": "redundancy",
+      "section": "techniques",
+      "route": "/redundancy",
+      "component": "src/components/TechniquePanels/RedundancyPanel",
+      "article": null,
+      "status": "live"
+    },
+    {
+      "id": "panel:replay",
+      "type": "panel",
+      "panelId": "replay",
+      "section": "techniques",
+      "route": "/replay",
+      "component": "src/components/TechniquePanels/ReplayPanel",
+      "article": null,
+      "status": "live"
+    },
+    {
+      "id": "panel:enthymeme",
+      "type": "panel",
+      "panelId": "enthymeme",
+      "section": "techniques",
+      "route": "/enthymeme",
+      "component": "src/components/TechniquePanels/EnthymemePanel",
+      "article": null,
+      "status": "live"
+    },
+    {
+      "id": "panel:multi-hop",
+      "type": "panel",
+      "panelId": "multi-hop",
+      "section": "techniques",
+      "route": "/multi-hop",
+      "component": "src/components/TechniquePanels/MultiHopPanel",
+      "article": null,
+      "status": "live"
+    },
+    {
+      "id": "panel:bias-exploit",
+      "type": "panel",
+      "panelId": "bias-exploit",
+      "section": "techniques",
+      "route": "/bias-exploit",
+      "component": "src/components/TechniquePanels/BiasExploitPanel",
+      "article": null,
+      "status": "live"
+    },
+    {
+      "id": "panel:interrupt",
+      "type": "panel",
+      "panelId": "interrupt",
+      "section": "techniques",
+      "route": "/interrupt",
+      "component": "src/components/TechniquePanels/InterruptPanel",
+      "article": null,
+      "status": "live"
+    },
+    {
+      "id": "panel:frame",
+      "type": "panel",
+      "panelId": "frame",
+      "section": "techniques",
+      "route": "/frame",
+      "component": "src/components/TechniquePanels/FramePanel",
+      "article": null,
+      "status": "live"
+    },
+    {
+      "id": "panel:rhetorical-device",
+      "type": "panel",
+      "panelId": "rhetorical-device",
+      "section": "techniques",
+      "route": "/rhetorical-device",
+      "component": "src/components/TechniquePanels/RhetoricalDevicePanel",
+      "article": null,
+      "status": "live"
+    },
+    {
+      "id": "panel:narrative-arc",
+      "type": "panel",
+      "panelId": "narrative-arc",
+      "section": "techniques",
+      "route": "/narrative-arc",
+      "component": "src/components/TechniquePanels/NarrativeArcPanel",
+      "article": null,
+      "status": "live"
+    },
+    {
+      "id": "panel:abstraction-ladder",
+      "type": "panel",
+      "panelId": "abstraction-ladder",
+      "section": "techniques",
+      "route": "/abstraction-ladder",
+      "component": "src/components/TechniquePanels/AbstractionLadderPanel",
+      "article": null,
+      "status": "live"
+    },
+    {
+      "id": "panel:role-reversal",
+      "type": "panel",
+      "panelId": "role-reversal",
+      "section": "techniques",
+      "route": "/role-reversal",
+      "component": "src/components/TechniquePanels/RoleReversalPanel",
+      "article": null,
+      "status": "live"
+    },
+    {
+      "id": "panel:fog-of-war",
+      "type": "panel",
+      "panelId": "fog-of-war",
+      "section": "techniques",
+      "route": "/fog-of-war",
+      "component": "src/components/TechniquePanels/FogOfWarPanel",
+      "article": null,
+      "status": "live"
+    },
+    {
+      "id": "panel:evidence-revelation",
+      "type": "panel",
+      "panelId": "evidence-revelation",
+      "section": "techniques",
+      "route": "/evidence-revelation",
+      "component": "src/components/TechniquePanels/EvidenceRevelationPanel",
+      "article": null,
+      "status": "live"
+    },
+    {
+      "id": "panel:humor",
+      "type": "panel",
+      "panelId": "humor",
+      "section": "techniques",
+      "route": "/humor",
+      "component": "src/components/TechniquePanels/HumorPanel",
+      "article": null,
+      "status": "live"
+    },
+    {
+      "id": "panel:status-dynamics",
+      "type": "panel",
+      "panelId": "status-dynamics",
+      "section": "techniques",
+      "route": "/status-dynamics",
+      "component": "src/components/TechniquePanels/StatusDynamicsPanel",
+      "article": null,
+      "status": "live"
+    },
+    {
+      "id": "panel:style-matching",
+      "type": "panel",
+      "panelId": "style-matching",
+      "section": "techniques",
+      "route": "/style-matching",
+      "component": "src/components/TechniquePanels/StyleMatchingPanel",
+      "article": null,
+      "status": "live"
+    },
+    {
+      "id": "panel:dynamic-persona",
+      "type": "panel",
+      "panelId": "dynamic-persona",
+      "section": "techniques",
+      "route": "/dynamic-persona",
+      "component": "src/components/TechniquePanels/DynamicPersonaPanel",
+      "article": null,
+      "status": "live"
+    },
+    {
+      "id": "panel:strategist",
+      "type": "panel",
+      "panelId": "strategist",
+      "section": "techniques",
+      "route": "/strategist",
+      "component": "src/components/TechniquePanels/StrategistPanel",
+      "article": null,
+      "status": "live"
+    },
+    {
+      "id": "panel:whisper-channels",
+      "type": "panel",
+      "panelId": "whisper-channels",
+      "section": "techniques",
+      "route": "/whisper-channels",
+      "component": "src/components/TechniquePanels/WhisperChannelsPanel",
+      "article": null,
+      "status": "live"
+    },
+    {
+      "id": "panel:alliance",
+      "type": "panel",
+      "panelId": "alliance",
+      "section": "techniques",
+      "route": "/alliance",
+      "component": "src/components/TechniquePanels/AlliancePanel",
+      "article": null,
+      "status": "live"
+    },
+    {
+      "id": "panel:prediction-market",
+      "type": "panel",
+      "panelId": "prediction-market",
+      "section": "techniques",
+      "route": "/prediction-market",
+      "component": "src/components/TechniquePanels/PredictionMarketPanel",
+      "article": null,
+      "status": "live"
+    },
+    {
+      "id": "panel:rtom",
+      "type": "panel",
+      "panelId": "rtom",
+      "section": "techniques",
+      "route": "/rtom",
+      "component": "src/components/TechniquePanels/RtomPanel",
+      "article": null,
+      "status": "live"
+    },
+    {
+      "id": "panel:strategy-fingerprint",
+      "type": "panel",
+      "panelId": "strategy-fingerprint",
+      "section": "techniques",
+      "route": "/strategy-fingerprint",
+      "component": "src/components/TechniquePanels/StrategyFingerprintPanel",
+      "article": null,
+      "status": "live"
+    },
+    {
+      "id": "panel:objection-anticipation",
+      "type": "panel",
+      "panelId": "objection-anticipation",
+      "section": "techniques",
+      "route": "/objection-anticipation",
+      "component": "src/components/TechniquePanels/ObjectionAnticipationPanel",
+      "article": null,
+      "status": "live"
+    },
+    {
+      "id": "panel:evidence-triangulation",
+      "type": "panel",
+      "panelId": "evidence-triangulation",
+      "section": "techniques",
+      "route": "/evidence-triangulation",
+      "component": "src/components/TechniquePanels/EvidenceTriangulationPanel",
+      "article": null,
+      "status": "live"
+    },
+    {
+      "id": "panel:hegelian-synthesis",
+      "type": "panel",
+      "panelId": "hegelian-synthesis",
+      "section": "techniques",
+      "route": "/hegelian-synthesis",
+      "component": "src/components/TechniquePanels/HegelianSynthesisPanel",
+      "article": null,
+      "status": "live"
+    },
+    {
+      "id": "panel:uncertainty-propagation",
+      "type": "panel",
+      "panelId": "uncertainty-propagation",
+      "section": "techniques",
+      "route": "/uncertainty-propagation",
+      "component": "src/components/TechniquePanels/UncertaintyPropagationPanel",
+      "article": null,
+      "status": "live"
+    },
+    {
+      "id": "panel:rhetoric-safety",
+      "type": "panel",
+      "panelId": "rhetoric-safety",
+      "section": "techniques",
+      "route": "/rhetoric-safety",
+      "component": "src/components/TechniquePanels/RhetoricSafetyPanel",
+      "article": null,
+      "status": "live"
+    },
+    {
+      "id": "panel:blind-evaluation",
+      "type": "panel",
+      "panelId": "blind-evaluation",
+      "section": "techniques",
+      "route": "/blind-evaluation",
+      "component": "src/components/TechniquePanels/BlindEvaluationPanel",
+      "article": null,
+      "status": "live"
+    },
+    {
+      "id": "panel:bidding-time",
+      "type": "panel",
+      "panelId": "bidding-time",
+      "section": "techniques",
+      "route": "/bidding-time",
+      "component": "src/components/TechniquePanels/BiddingTimePanel",
+      "article": null,
+      "status": "live"
+    },
+    {
+      "id": "panel:adaptive-order",
+      "type": "panel",
+      "panelId": "adaptive-order",
+      "section": "techniques",
+      "route": "/adaptive-order",
+      "component": "src/components/TechniquePanels/AdaptiveOrderPanel",
+      "article": null,
+      "status": "live"
+    },
+    {
+      "id": "panel:executable-evidence",
+      "type": "panel",
+      "panelId": "executable-evidence",
+      "section": "techniques",
+      "route": "/executable-evidence",
+      "component": "src/components/TechniquePanels/ExecutableEvidencePanel",
+      "article": null,
+      "status": "live"
+    },
+    {
+      "id": "panel:hidden-incentives",
+      "type": "panel",
+      "panelId": "hidden-incentives",
+      "section": "techniques",
+      "route": "/hidden-incentives",
+      "component": "src/components/TechniquePanels/HiddenIncentivesPanel",
+      "article": null,
+      "status": "live"
+    },
+    {
+      "id": "panel:semantic-blending",
+      "type": "panel",
+      "panelId": "semantic-blending",
+      "section": "techniques",
+      "route": "/semantic-blending",
+      "component": "src/components/TechniquePanels/SemanticBlendingPanel",
+      "article": null,
+      "status": "live"
+    },
+    {
+      "id": "panel:judge-deliberation",
+      "type": "panel",
+      "panelId": "judge-deliberation",
+      "section": "techniques",
+      "route": "/judge-deliberation",
+      "component": "src/components/TechniquePanels/JudgeDeliberationPanel",
+      "article": null,
+      "status": "live"
+    },
+    {
+      "id": "panel:agents",
+      "type": "panel",
+      "panelId": "agents",
+      "section": "agents",
+      "route": "/agents",
+      "component": "src/components/AgentsPanel/AgentsPanel",
+      "article": "agents",
+      "status": "live"
+    },
+    {
+      "id": "panel:roles",
+      "type": "panel",
+      "panelId": "roles",
+      "section": "agents",
+      "route": "/roles",
+      "component": "src/components/RolesPanel/RolesPanel",
+      "article": "panel-roles",
+      "status": "live"
+    },
+    {
+      "id": "panel:roles-consortia",
+      "type": "panel",
+      "panelId": "roles-consortia",
+      "section": "agents",
+      "route": "/roles-consortia",
+      "component": "src/components/RolesPanel/RolesConsortiaPanel",
+      "article": "panel-roles",
+      "status": "live"
+    },
+    {
+      "id": "panel:sre",
+      "type": "panel",
+      "panelId": "sre",
+      "section": "agents",
+      "route": "/sre",
+      "component": "src/components/SREAgentPanel/SREAgentPanel",
+      "article": "panel-sre",
+      "status": "live"
+    },
+    {
+      "id": "panel:agent-journal",
+      "type": "panel",
+      "panelId": "agent-journal",
+      "section": "agents",
+      "route": "/agent-journal",
+      "component": "src/components/AgentJournalPanel",
+      "article": "execution-trail",
+      "status": "live"
+    },
+    {
+      "id": "panel:mission",
+      "type": "panel",
+      "panelId": "mission",
+      "section": "agents",
+      "route": "/mission",
+      "component": "src/components/LiveCognition/MissionControl",
+      "article": "panel-planning",
+      "status": "live"
+    },
+    {
+      "id": "panel:live",
+      "type": "panel",
+      "panelId": "live",
+      "section": "agents",
+      "route": "/live",
+      "component": "src/components/LiveCognition/LiveWorkspace",
+      "article": "panel-debate-live",
+      "status": "live"
+    },
+    {
+      "id": "panel:agent-marketplace",
+      "type": "panel",
+      "panelId": "agent-marketplace",
+      "section": "agents",
+      "route": "/agent-marketplace",
+      "component": "src/components/AgentMarketplacePanel",
+      "article": "panel-agents-market",
+      "status": "live"
+    },
+    {
+      "id": "panel:agent-comparison",
+      "type": "panel",
+      "panelId": "agent-comparison",
+      "section": "agents",
+      "route": "/agent-comparison",
+      "component": "src/components/AgentComparisonPanel",
+      "article": "panel-agents-market",
+      "status": "live"
+    },
+    {
+      "id": "panel:agent-protocol",
+      "type": "panel",
+      "panelId": "agent-protocol",
+      "section": "agents",
+      "route": "/agent-protocol",
+      "component": "src/components/AgentProtocolPanel",
+      "article": "panel-agents-market",
+      "status": "live"
+    },
+    {
+      "id": "panel:persona-marketplace",
+      "type": "panel",
+      "panelId": "persona-marketplace",
+      "section": "agents",
+      "route": "/persona-marketplace",
+      "component": "src/components/PersonaMarketplacePanel",
+      "article": "panel-persona",
+      "status": "live"
+    },
+    {
+      "id": "panel:persona-picker",
+      "type": "panel",
+      "panelId": "persona-picker",
+      "section": "agents",
+      "route": "/persona-picker",
+      "component": "src/components/PersonaPickerPanel",
+      "article": "panel-persona",
+      "status": "live"
+    },
+    {
+      "id": "panel:skills",
+      "type": "panel",
+      "panelId": "skills",
+      "section": "agents",
+      "route": "/skills",
+      "component": "src/components/SkillsPanel/SkillsPanel",
+      "article": "panel-integrations",
+      "status": "live"
+    },
+    {
+      "id": "panel:leaderboard",
+      "type": "panel",
+      "panelId": "leaderboard",
+      "section": "agents",
+      "route": "/leaderboard",
+      "component": "src/components/SocialLeaderboardPanel",
+      "article": "panel-contribution",
+      "status": "live"
+    },
+    {
+      "id": "panel:meta-agent",
+      "type": "panel",
+      "panelId": "meta-agent",
+      "section": "agents",
+      "route": "/meta-agent",
+      "component": "src/components/MetaAgentPanel/MetaAgentPanel",
+      "article": "panel-planning",
+      "status": "live"
+    },
+    {
+      "id": "panel:logs",
+      "type": "panel",
+      "panelId": "logs",
+      "section": "diagnostics",
+      "route": "/logs",
+      "component": "src/components/LogsPanel/LogsPanel",
+      "article": "panel-observability",
+      "status": "live"
+    },
+    {
+      "id": "panel:debugger",
+      "type": "panel",
+      "panelId": "debugger",
+      "section": "diagnostics",
+      "route": "/debugger",
+      "component": "src/components/TracesPanel/TracesPanel",
+      "article": "panel-observability",
+      "status": "live"
+    },
+    {
+      "id": "panel:router-trace",
+      "type": "panel",
+      "panelId": "router-trace",
+      "section": "diagnostics",
+      "route": "/router-trace",
+      "component": "src/components/RouterTraceView/RouterTraceView",
+      "article": "panel-observability",
+      "status": "live"
+    },
+    {
+      "id": "panel:memory",
+      "type": "panel",
+      "panelId": "memory",
+      "section": "diagnostics",
+      "route": "/memory",
+      "component": "src/components/MemoryPanel/MemoryPanel",
+      "article": "memory",
+      "status": "live"
+    },
+    {
+      "id": "panel:health",
+      "type": "panel",
+      "panelId": "health",
+      "section": "diagnostics",
+      "route": "/health",
+      "component": "src/components/HealthPanel/HealthPanel",
+      "article": "panel-observability",
+      "status": "live"
+    },
+    {
+      "id": "panel:system-health",
+      "type": "panel",
+      "panelId": "system-health",
+      "section": "diagnostics",
+      "route": "/system-health",
+      "component": "src/components/SystemHealthPanel",
+      "article": "panel-observability",
+      "status": "live"
+    },
+    {
+      "id": "panel:docs-health",
+      "type": "panel",
+      "panelId": "docs-health",
+      "section": "diagnostics",
+      "route": "/docs-health",
+      "component": "src/components/DocsHealthPanel",
+      "article": "panel-observability",
+      "status": "live"
+    },
+    {
+      "id": "panel:pressure",
+      "type": "panel",
+      "panelId": "pressure",
+      "section": "diagnostics",
+      "route": "/pressure",
+      "component": "src/components/PressureMap",
+      "article": "panel-pressure",
+      "status": "live"
+    },
+    {
+      "id": "panel:runtime-pressure",
+      "type": "panel",
+      "panelId": "runtime-pressure",
+      "section": "diagnostics",
+      "route": "/runtime-pressure",
+      "component": "src/components/PressureMapPanel/PressureMapPanel",
+      "article": "panel-pressure",
+      "status": "live"
+    },
+    {
+      "id": "panel:what-if",
+      "type": "panel",
+      "panelId": "what-if",
+      "section": "diagnostics",
+      "route": "/what-if",
+      "component": "src/components/WhatIfPanel/WhatIfPanel",
+      "article": "panel-simulation",
+      "status": "live"
+    },
+    {
+      "id": "panel:dependency-map",
+      "type": "panel",
+      "panelId": "dependency-map",
+      "section": "diagnostics",
+      "route": "/dependency-map",
+      "component": "src/components/DependencyMapPanel",
+      "article": "panel-infra-meta",
+      "status": "live"
+    },
+    {
+      "id": "panel:diagnostics",
+      "type": "panel",
+      "panelId": "diagnostics",
+      "section": "diagnostics",
+      "route": "/diagnostics",
+      "component": "src/components/DiagnosticPanel",
+      "article": "diagnostics",
+      "status": "live"
+    },
+    {
+      "id": "panel:state-inspector",
+      "type": "panel",
+      "panelId": "state-inspector",
+      "section": "diagnostics",
+      "route": "/state-inspector",
+      "component": "src/components/StateInspectorPanel/StateInspectorPanel",
+      "article": "panel-observability",
+      "status": "live"
+    },
+    {
+      "id": "panel:performance-profiler",
+      "type": "panel",
+      "panelId": "performance-profiler",
+      "section": "diagnostics",
+      "route": "/performance-profiler",
+      "component": "src/components/PerformanceProfilerPanel",
+      "article": "panel-observability",
+      "status": "live"
+    },
+    {
+      "id": "panel:shadow",
+      "type": "panel",
+      "panelId": "shadow",
+      "section": "diagnostics",
+      "route": "/shadow",
+      "component": "src/components/ShadowPanel/ShadowPanel",
+      "article": "panel-shadow",
+      "status": "live"
+    },
+    {
+      "id": "panel:causal-debugger",
+      "type": "panel",
+      "panelId": "causal-debugger",
+      "section": "diagnostics",
+      "route": "/causal-debugger",
+      "component": "src/components/CausalDebugger/CausalDebugger",
+      "article": "panel-simulation",
+      "status": "live"
+    },
+    {
+      "id": "panel:counterfactual",
+      "type": "panel",
+      "panelId": "counterfactual",
+      "section": "diagnostics",
+      "route": "/counterfactual",
+      "component": "src/components/CounterfactualPanel/CounterfactualPanel",
+      "article": "panel-simulation",
+      "status": "live"
+    },
+    {
+      "id": "panel:obs-gaps",
+      "type": "panel",
+      "panelId": "obs-gaps",
+      "section": "diagnostics",
+      "route": "/obs-gaps",
+      "component": "src/components/DebateResearch/ObsGaps",
+      "article": "panel-debate-research",
+      "status": "live"
+    },
+    {
+      "id": "panel:health-sla",
+      "type": "panel",
+      "panelId": "health-sla",
+      "section": "diagnostics",
+      "route": "/health-sla",
+      "component": "src/components/HealthSlaPanel",
+      "article": "panel-observability",
+      "status": "live"
+    },
+    {
+      "id": "panel:custom-metrics",
+      "type": "panel",
+      "panelId": "custom-metrics",
+      "section": "diagnostics",
+      "route": "/custom-metrics",
+      "component": "src/components/CustomMetricsPanel",
+      "article": "panel-custom-metrics",
+      "status": "live"
+    },
+    {
+      "id": "panel:wiki",
+      "type": "panel",
+      "panelId": "wiki",
+      "section": "wiki",
+      "route": "/wiki",
+      "component": "src/components/WikiPanel/WikiPanel",
+      "article": "panel-wiki",
+      "status": "live"
+    },
+    {
+      "id": "panel:fleet",
+      "type": "panel",
+      "panelId": "fleet",
+      "section": "fleet",
+      "route": "/fleet",
+      "component": "src/components/FleetPanel/FleetPanel",
+      "article": "panel-fleet",
+      "status": "live"
+    },
+    {
+      "id": "panel:fleet-crews",
+      "type": "panel",
+      "panelId": "fleet-crews",
+      "section": "fleet",
+      "route": "/fleet-crews",
+      "component": "src/components/FleetPanels/CrewsPanel",
+      "article": "panel-fleet",
+      "status": "live"
+    },
+    {
+      "id": "panel:fleet-councils",
+      "type": "panel",
+      "panelId": "fleet-councils",
+      "section": "fleet",
+      "route": "/fleet-councils",
+      "component": "src/components/CouncilPanel/CouncilPanel",
+      "article": "panel-fleet",
+      "status": "live"
+    },
+    {
+      "id": "panel:fleet-graphs",
+      "type": "panel",
+      "panelId": "fleet-graphs",
+      "section": "fleet",
+      "route": "/fleet-graphs",
+      "component": "src/components/FleetPanels/GraphsPanel",
+      "article": "panel-fleet",
+      "status": "live"
+    },
+    {
+      "id": "panel:fleet-persona",
+      "type": "panel",
+      "panelId": "fleet-persona",
+      "section": "fleet",
+      "route": "/fleet-persona",
+      "component": "src/components/FleetPanels/PersonaOpsPanel",
+      "article": "panel-fleet",
+      "status": "live"
+    },
+    {
+      "id": "panel:fleet-interop",
+      "type": "panel",
+      "panelId": "fleet-interop",
+      "section": "fleet",
+      "route": "/fleet-interop",
+      "component": "src/components/FleetPanels/InteropPanel",
+      "article": "panel-fleet",
+      "status": "live"
+    },
+    {
+      "id": "panel:fleet-frontier",
+      "type": "panel",
+      "panelId": "fleet-frontier",
+      "section": "fleet",
+      "route": "/fleet-frontier",
+      "component": "src/components/FleetPanels/FrontierPanel",
+      "article": "panel-fleet",
+      "status": "live"
+    },
+    {
+      "id": "panel:companies",
+      "type": "panel",
+      "panelId": "companies",
+      "section": "fleet",
+      "route": "/companies",
+      "component": "src/components/CompaniesPanel",
+      "article": "panel-gateway",
+      "status": "live"
+    },
+    {
+      "id": "panel:issues",
+      "type": "panel",
+      "panelId": "issues",
+      "section": "fleet",
+      "route": "/issues",
+      "component": "src/components/IssuesPanel",
+      "article": "panel-gateway",
+      "status": "live"
+    },
+    {
+      "id": "panel:runs",
+      "type": "panel",
+      "panelId": "runs",
+      "section": "fleet",
+      "route": "/runs",
+      "component": "src/components/RunsPanel",
+      "article": "panel-gateway",
+      "status": "live"
+    },
+    {
+      "id": "panel:agent-tasks",
+      "type": "panel",
+      "panelId": "agent-tasks",
+      "section": "fleet",
+      "route": "/agent-tasks",
+      "component": "src/components/AgentTasksPanel/AgentTasksPanel",
+      "article": "panel-agent-tasks",
+      "status": "live"
+    },
+    {
+      "id": "panel:provenance",
+      "type": "panel",
+      "panelId": "provenance",
+      "section": "fleet",
+      "route": "/provenance",
+      "component": "src/components/ProvenancePanel/ProvenancePanel",
+      "article": "panel-provenance-junctions",
+      "status": "live"
+    },
+    {
+      "id": "panel:google-studio",
+      "type": "panel",
+      "panelId": "google-studio",
+      "section": "google",
+      "route": "/google-studio",
+      "component": "src/components/GoogleStudio/GoogleStudioPanel",
+      "article": "panel-providers-extra",
+      "status": "live"
+    },
+    {
+      "id": "panel:google-cache",
+      "type": "panel",
+      "panelId": "google-cache",
+      "section": "google",
+      "route": "/google-cache",
+      "component": "src/components/GoogleCachePanel",
+      "article": "panel-integrations",
+      "status": "live"
+    },
+    {
+      "id": "panel:gemini-live",
+      "type": "panel",
+      "panelId": "gemini-live",
+      "section": "google",
+      "route": "/gemini-live",
+      "component": "src/components/GeminiLivePanel",
+      "article": "panel-providers-extra",
+      "status": "live"
+    },
+    {
+      "id": "panel:research-gemini",
+      "type": "panel",
+      "panelId": "research-gemini",
+      "section": "google",
+      "route": "/research-gemini",
+      "component": "src/components/GeminiResearch/GeminiResearchPanel",
+      "article": "panel-research-extra",
+      "status": "live"
+    },
+    {
+      "id": "panel:research-engine",
+      "type": "panel",
+      "panelId": "research-engine",
+      "section": "research",
+      "route": "/research-engine",
+      "component": "src/components/ResearchPanel/ResearchEnginePanel",
+      "article": "panel-research",
+      "status": "live"
+    },
+    {
+      "id": "panel:debate-system-research",
+      "type": "panel",
+      "panelId": "debate-system-research",
+      "section": "research",
+      "route": "/debate-system-research",
+      "component": "src/components/DebateResearch/DebateSystemResearch",
+      "article": "panel-debate-research",
+      "status": "live"
+    },
+    {
+      "id": "panel:research-reports",
+      "type": "panel",
+      "panelId": "research-reports",
+      "section": "research",
+      "route": "/research-reports",
+      "component": "src/components/ResearchReportPanel",
+      "article": "panel-research",
+      "status": "live"
+    },
+    {
+      "id": "panel:research-advanced",
+      "type": "panel",
+      "panelId": "research-advanced",
+      "section": "research",
+      "route": "/research-advanced",
+      "component": "src/components/ResearchPanel/ResearchEngineAdvancedPanel",
+      "article": "panel-research-extra",
+      "status": "live"
+    },
+    {
+      "id": "panel:hypothesis-gen",
+      "type": "panel",
+      "panelId": "hypothesis-gen",
+      "section": "research",
+      "route": "/hypothesis-gen",
+      "component": "src/components/DebateResearch/HypothesisGenerator",
+      "article": "panel-debate-research",
+      "status": "live"
+    },
+    {
+      "id": "panel:rival-labs",
+      "type": "panel",
+      "panelId": "rival-labs",
+      "section": "research",
+      "route": "/rival-labs",
+      "component": "src/components/RivalLabs/RivalLabsPanel",
+      "article": "panel-providers-extra",
+      "status": "live"
+    },
+    {
+      "id": "panel:rivals-catalog",
+      "type": "panel",
+      "panelId": "rivals-catalog",
+      "section": "research",
+      "route": "/rivals-catalog",
+      "component": "src/components/RivalsCatalogPanel",
+      "article": "panel-providers-extra",
+      "status": "live"
+    },
+    {
+      "id": "panel:workflows",
+      "type": "panel",
+      "panelId": "workflows",
+      "section": "integrations",
+      "route": "/workflows",
+      "component": "src/components/WorkflowPanel",
+      "article": "panel-workflows",
+      "status": "live"
+    },
+    {
+      "id": "panel:tutorials",
+      "type": "panel",
+      "panelId": "tutorials",
+      "section": "randoms",
+      "route": "/tutorials",
+      "component": "src/components/LearnHubPanel",
+      "article": "panel-files-editors",
+      "status": "live"
+    },
+    {
+      "id": "panel:template-sharing",
+      "type": "panel",
+      "panelId": "template-sharing",
+      "section": "randoms",
+      "route": "/template-sharing",
+      "component": "src/components/TemplateSharingPanel",
+      "article": "panel-agents-market",
+      "status": "live"
+    },
+    {
+      "id": "panel:pools",
+      "type": "panel",
+      "panelId": "pools",
+      "section": "ai-providers",
+      "route": "/pools",
+      "component": "src/components/PoolStatusPanel/PoolStatusPanel",
+      "article": "panel-pools",
+      "status": "live"
+    },
+    {
+      "id": "panel:groups",
+      "type": "panel",
+      "panelId": "groups",
+      "section": "ai-providers",
+      "route": "/groups",
+      "component": "src/components/GroupsPanel/GroupsPanel",
+      "article": "panel-groups",
+      "status": "live"
+    },
+    {
+      "id": "panel:key-notes",
+      "type": "panel",
+      "panelId": "key-notes",
+      "section": "ai-providers",
+      "route": "/key-notes",
+      "component": "src/components/KeyNotesPanel",
+      "article": "panel-key-notes",
+      "status": "live"
+    },
+    {
+      "id": "panel:rotations",
+      "type": "panel",
+      "panelId": "rotations",
+      "section": "ai-providers",
+      "route": "/rotations",
+      "component": "src/components/RotationsPanel",
+      "article": "panel-rotations",
+      "status": "live"
+    },
+    {
+      "id": "panel:session-bindings",
+      "type": "panel",
+      "panelId": "session-bindings",
+      "section": "ai-providers",
+      "route": "/session-bindings",
+      "component": "src/components/SessionBindingsPanel",
+      "article": "panel-sessions",
+      "status": "live"
+    },
+    {
+      "id": "panel:smart-routing",
+      "type": "panel",
+      "panelId": "smart-routing",
+      "section": "ai-providers",
+      "route": "/smart-routing",
+      "component": "src/components/SmartRoutingPanel",
+      "article": "panel-routing",
+      "status": "live"
+    },
+    {
+      "id": "panel:routing",
+      "type": "panel",
+      "panelId": "routing",
+      "section": "ai-providers",
+      "route": "/routing",
+      "component": "src/components/RoutingIntelligence/RoutingIntelligence",
+      "article": "panel-routing",
+      "status": "live"
+    },
+    {
+      "id": "panel:provider-dashboard",
+      "type": "panel",
+      "panelId": "provider-dashboard",
+      "section": "ai-providers",
+      "route": "/provider-dashboard",
+      "component": "src/components/ProviderDashboard",
+      "article": "panel-providers-extra",
+      "status": "live"
+    },
+    {
+      "id": "panel:provider-marketplace",
+      "type": "panel",
+      "panelId": "provider-marketplace",
+      "section": "ai-providers",
+      "route": "/provider-marketplace",
+      "component": "src/components/ProviderMarketplace",
+      "article": "panel-providers-extra",
+      "status": "live"
+    },
+    {
+      "id": "panel:key-usage-analytics",
+      "type": "panel",
+      "panelId": "key-usage-analytics",
+      "section": "ai-providers",
+      "route": "/key-usage-analytics",
+      "component": "src/components/KeyUsageAnalyticsPanel",
+      "article": "panel-analytics",
+      "status": "live"
+    },
+    {
+      "id": "panel:groq-speed",
+      "type": "panel",
+      "panelId": "groq-speed",
+      "section": "ai-providers",
+      "route": "/groq-speed",
+      "component": "src/components/ProviderManager/GroqSpeedDashboard",
+      "article": "panel-providers-extra",
+      "status": "live"
+    },
+    {
+      "id": "panel:nvidia-enterprise",
+      "type": "panel",
+      "panelId": "nvidia-enterprise",
+      "section": "ai-providers",
+      "route": "/nvidia-enterprise",
+      "component": "src/components/NvidiaEnterprise/NvidiaEnterprisePanel",
+      "article": "panel-providers-extra",
+      "status": "live"
+    },
+    {
+      "id": "panel:openrouter",
+      "type": "panel",
+      "panelId": "openrouter",
+      "section": "ai-providers",
+      "route": "/openrouter",
+      "component": "src/components/OpenRouterPanel",
+      "article": "panel-providers-extra",
+      "status": "live"
+    },
+    {
+      "id": "panel:tools",
+      "type": "panel",
+      "panelId": "tools",
+      "section": "system",
+      "route": "/tools",
+      "component": "src/components/ToolsPanel/ToolsPanel",
+      "article": "panel-integrations",
+      "status": "live"
+    },
+    {
+      "id": "panel:connectors",
+      "type": "panel",
+      "panelId": "connectors",
+      "section": "system",
+      "route": "/connectors",
+      "component": "src/components/ConnectorsPanel/ConnectorsPanel",
+      "article": "panel-integrations",
+      "status": "live"
+    },
+    {
+      "id": "panel:mcp",
+      "type": "panel",
+      "panelId": "mcp",
+      "section": "system",
+      "route": "/mcp",
+      "component": "src/components/MCPPanel/MCPPanel",
+      "article": "panel-integrations",
+      "status": "live"
+    },
+    {
+      "id": "panel:service-registry",
+      "type": "panel",
+      "panelId": "service-registry",
+      "section": "system",
+      "route": "/service-registry",
+      "component": "src/components/ServiceRegistryPanel/ServiceRegistryPanel",
+      "article": "panel-infra-meta",
+      "status": "live"
+    },
+    {
+      "id": "panel:topology-templates",
+      "type": "panel",
+      "panelId": "topology-templates",
+      "section": "system",
+      "route": "/topology-templates",
+      "component": "src/components/TopologyGalleryPanel",
+      "article": "panel-simulation",
+      "status": "live"
+    },
+    {
+      "id": "panel:cache",
+      "type": "panel",
+      "panelId": "cache",
+      "section": "system",
+      "route": "/cache",
+      "component": "src/components/CachePanel",
+      "article": "panel-integrations",
+      "status": "live"
+    },
+    {
+      "id": "panel:webhooks",
+      "type": "panel",
+      "panelId": "webhooks",
+      "section": "system",
+      "route": "/webhooks",
+      "component": "src/components/WebhooksPanel",
+      "article": "panel-integrations",
+      "status": "live"
+    },
+    {
+      "id": "panel:plugin-sdk",
+      "type": "panel",
+      "panelId": "plugin-sdk",
+      "section": "system",
+      "route": "/plugin-sdk",
+      "component": "src/components/PluginSdkPanel",
+      "article": "panel-infra-meta",
+      "status": "live"
+    },
+    {
+      "id": "panel:guardians",
+      "type": "panel",
+      "panelId": "guardians",
+      "section": "system",
+      "route": "/guardians",
+      "component": "src/components/GuardiansPanel",
+      "article": "panel-guardians",
+      "status": "live"
+    },
+    {
+      "id": "panel:adapters",
+      "type": "panel",
+      "panelId": "adapters",
+      "section": "system",
+      "route": "/adapters",
+      "component": "src/components/AdaptersPanel",
+      "article": "panel-gateway",
+      "status": "live"
+    },
+    {
+      "id": "panel:portability",
+      "type": "panel",
+      "panelId": "portability",
+      "section": "system",
+      "route": "/portability",
+      "component": "src/components/PortabilityPanel",
+      "article": "panel-gateway",
+      "status": "live"
+    },
+    {
+      "id": "panel:settings",
+      "type": "panel",
+      "panelId": "settings",
+      "section": "security",
+      "route": "/settings",
+      "component": "src/components/SettingsPanel/SettingsPanel",
+      "article": "panel-settings",
+      "status": "live"
+    },
+    {
+      "id": "panel:policies",
+      "type": "panel",
+      "panelId": "policies",
+      "section": "security",
+      "route": "/policies",
+      "component": "src/components/PolicyPanel/PolicyPanel",
+      "article": "panel-governance",
+      "status": "live"
+    },
+    {
+      "id": "panel:policy-editor",
+      "type": "panel",
+      "panelId": "policy-editor",
+      "section": "security",
+      "route": "/policy-editor",
+      "component": "src/components/PolicyEditorPanel",
+      "article": "panel-governance",
+      "status": "live"
+    },
+    {
+      "id": "panel:audit",
+      "type": "panel",
+      "panelId": "audit",
+      "section": "security",
+      "route": "/audit",
+      "component": "src/components/AuditLogView",
+      "article": "panel-history-audit",
+      "status": "live"
+    },
+    {
+      "id": "panel:history",
+      "type": "panel",
+      "panelId": "history",
+      "section": "security",
+      "route": "/history",
+      "component": "src/components/ConfigHistoryView",
+      "article": "panel-history-audit",
+      "status": "live"
+    },
+    {
+      "id": "panel:export-import",
+      "type": "panel",
+      "panelId": "export-import",
+      "section": "security",
+      "route": "/export-import",
+      "component": "src/components/ExportImportPanel",
+      "article": "panel-infra-meta",
+      "status": "live"
+    },
+    {
+      "id": "panel:time-machine",
+      "type": "panel",
+      "panelId": "time-machine",
+      "section": "security",
+      "route": "/time-machine",
+      "component": "src/components/TimeMachinePanel",
+      "article": "panel-history-audit",
+      "status": "live"
+    },
+    {
+      "id": "panel:governance",
+      "type": "panel",
+      "panelId": "governance",
+      "section": "security",
+      "route": "/governance",
+      "component": "src/components/GovernancePanel/GovernancePanel",
+      "article": "panel-governance",
+      "status": "live"
+    },
+    {
+      "id": "panel:guardrails",
+      "type": "panel",
+      "panelId": "guardrails",
+      "section": "security",
+      "route": "/guardrails",
+      "component": "src/components/GuardrailsPanel/GuardrailsPanel",
+      "article": "panel-governance",
+      "status": "live"
+    },
+    {
+      "id": "panel:security",
+      "type": "panel",
+      "panelId": "security",
+      "section": "security",
+      "route": "/security",
+      "component": "src/components/PromptSecurityPanel",
+      "article": "panel-governance",
+      "status": "live"
+    },
+    {
+      "id": "panel:approvals",
+      "type": "panel",
+      "panelId": "approvals",
+      "section": "security",
+      "route": "/approvals",
+      "component": "src/components/ApprovalsPanel",
+      "article": "panel-gateway",
+      "status": "live"
+    },
+    {
+      "id": "panel:memory-palace",
+      "type": "panel",
+      "panelId": "memory-palace",
+      "section": "memory",
+      "route": "/memory-palace",
+      "component": "src/components/MemoryPanel/MemoryPalacePanel",
+      "article": "panel-memory-palace",
+      "status": "live"
+    },
+    {
+      "id": "panel:federated-memory",
+      "type": "panel",
+      "panelId": "federated-memory",
+      "section": "memory",
+      "route": "/federated-memory",
+      "component": "src/components/FederatedMemoryPanel",
+      "article": "panel-memory-extra",
+      "status": "live"
+    },
+    {
+      "id": "panel:memory-export-import",
+      "type": "panel",
+      "panelId": "memory-export-import",
+      "section": "memory",
+      "route": "/memory-export-import",
+      "component": "src/components/MemoryTransferPanel",
+      "article": "panel-memory-extra",
+      "status": "live"
+    },
+    {
+      "id": "panel:eval-datasets",
+      "type": "panel",
+      "panelId": "eval-datasets",
+      "section": "lab",
+      "route": "/eval-datasets",
+      "component": "src/components/EvalDatasetPanel",
+      "article": "panel-eval",
+      "status": "live"
+    },
+    {
+      "id": "panel:routing-experiments",
+      "type": "panel",
+      "panelId": "routing-experiments",
+      "section": "lab",
+      "route": "/routing-experiments",
+      "component": "src/components/DebateResearch/RoutingExperiments",
+      "article": "panel-debate-research",
+      "status": "live"
+    },
+    {
+      "id": "panel:playground",
+      "type": "panel",
+      "panelId": "playground",
+      "section": "lab",
+      "route": "/playground",
+      "component": "src/components/ModelComparePanel",
+      "article": "panel-playground",
+      "status": "live"
+    },
+    {
+      "id": "panel:ab-testing",
+      "type": "panel",
+      "panelId": "ab-testing",
+      "section": "lab",
+      "route": "/ab-testing",
+      "component": "src/components/ABTestPanel",
+      "article": "panel-ab-testing",
+      "status": "live"
+    },
+    {
+      "id": "panel:arch-review",
+      "type": "panel",
+      "panelId": "arch-review",
+      "section": "lab",
+      "route": "/arch-review",
+      "component": "src/components/DebateResearch/ArchitectureReview",
+      "article": "panel-debate-research",
+      "status": "live"
+    },
+    {
+      "id": "panel:prompt-audit",
+      "type": "panel",
+      "panelId": "prompt-audit",
+      "section": "lab",
+      "route": "/prompt-audit",
+      "component": "src/components/DebateResearch/PromptAudit",
+      "article": "panel-debate-research",
+      "status": "live"
+    },
+    {
+      "id": "panel:simulation",
+      "type": "panel",
+      "panelId": "simulation",
+      "section": "lab",
+      "route": "/simulation",
+      "component": "src/components/SimulationPanel/SimulationPanel",
+      "article": "panel-simulation",
+      "status": "live"
+    },
+    {
+      "id": "panel:gov-stress-test",
+      "type": "panel",
+      "panelId": "gov-stress-test",
+      "section": "lab",
+      "route": "/gov-stress-test",
+      "component": "src/components/DebateResearch/GovStressTest",
+      "article": "panel-debate-research",
+      "status": "live"
+    },
+    {
+      "id": "panel:editors",
+      "type": "panel",
+      "panelId": "editors",
+      "section": "other",
+      "route": "/editors",
+      "component": "src/components/Editors/EditorsPanel",
+      "article": "panel-files-editors",
+      "status": "live"
+    },
+    {
+      "id": "panel:prompts",
+      "type": "panel",
+      "panelId": "prompts",
+      "section": "other",
+      "route": "/prompts",
+      "component": "src/components/PromptLibraryPanel",
+      "article": "panel-prompt-library",
+      "status": "live"
+    },
+    {
+      "id": "panel:prompt-versions",
+      "type": "panel",
+      "panelId": "prompt-versions",
+      "section": "other",
+      "route": "/prompt-versions",
+      "component": "src/components/PromptVersionPanel",
+      "article": "panel-history-audit",
+      "status": "live"
+    },
+    {
+      "id": "panel:batch",
+      "type": "panel",
+      "panelId": "batch",
+      "section": "other",
+      "route": "/batch",
+      "component": "src/components/BatchProcessingPanel",
+      "article": "panel-batch",
+      "status": "live"
+    },
+    {
+      "id": "panel:team-collaboration",
+      "type": "panel",
+      "panelId": "team-collaboration",
+      "section": "other",
+      "route": "/team-collaboration",
+      "component": "src/components/CollaborationPanel",
+      "article": "panel-agents-market",
+      "status": "live"
+    },
+    {
+      "id": "panel:community-hub",
+      "type": "panel",
+      "panelId": "community-hub",
+      "section": "other",
+      "route": "/community-hub",
+      "component": "src/components/CommunityHubPanel",
+      "article": "panel-contribution",
+      "status": "live"
+    },
+    {
+      "id": "panel:model-distillation",
+      "type": "panel",
+      "panelId": "model-distillation",
+      "section": "other",
+      "route": "/model-distillation",
+      "component": "src/components/DistillationPanel",
+      "article": "panel-providers-extra",
+      "status": "live"
+    },
+    {
+      "id": "panel:deploy",
+      "type": "panel",
+      "panelId": "deploy",
+      "section": "other",
+      "route": "/deploy",
+      "component": "src/components/DeployPanel",
+      "article": "panel-history-audit",
+      "status": "live"
+    },
+    {
+      "id": "panel:voice-input",
+      "type": "panel",
+      "panelId": "voice-input",
+      "section": "other",
+      "route": "/voice-input",
+      "component": "src/components/VoiceInputPanel",
+      "article": "panel-files-editors",
+      "status": "live"
+    },
+    {
+      "id": "panel:aquarium",
+      "type": "panel",
+      "panelId": "aquarium",
+      "section": "other",
+      "route": "/aquarium",
+      "component": "src/components/AquariumPanel/AquariumPanel",
+      "article": "panel-aquarium",
+      "status": "live"
+    },
+    {
+      "id": "panel:contribution-graph",
+      "type": "panel",
+      "panelId": "contribution-graph",
+      "section": "other",
+      "route": "/contribution-graph",
+      "component": "src/components/ContributionGraphPanel",
+      "article": "panel-contribution",
+      "status": "live"
+    },
+    {
+      "id": "panel:tasks",
+      "type": "panel",
+      "panelId": "tasks",
+      "section": "other",
+      "route": "/tasks",
+      "component": "src/components/TasksPanel/TasksPanel",
+      "article": "panel-tasks",
+      "status": "live"
+    },
+    {
+      "id": "panel:files",
+      "type": "panel",
+      "panelId": "files",
+      "section": "other",
+      "route": "/files",
+      "component": "src/components/WorkspacePanel/WorkspacePanel",
+      "article": "panel-files-editors",
+      "status": "live"
+    }
+  ]
+}

@@ -10,7 +10,7 @@
 import { readFileSync, writeFileSync, mkdirSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, resolve } from 'path';
-import { navLabels, parseNavSections, techniqueComponents } from './lib/route-nav.mjs';
+import { navLabels, parseNavSections, techniqueComponents, routeImportComponents } from './lib/route-nav.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const genDir = resolve(root, 'src/generated');
@@ -23,21 +23,6 @@ const ru = navLabels('ru');
 const en = navLabels('en');
 const label = (key) => ru.get(key) || en.get(key) || (key ? key.split('.').pop() : '');
 
-// ---- panel id -> component path (route-imports.ts) ----
-function panelComponents() {
-    const src = read('src/route-imports.ts');
-    const decls = {};
-    const declRe = /const\s+(\w+)\s*=\s*React\.lazy\(\s*\(\)\s*=>\s*import\('([^']+)'\)/g;
-    let m;
-    while ((m = declRe.exec(src))) decls[m[1]] = m[2];
-    const map = {};
-    const mapRe = /^\s*'?([\w-]+)'?:\s*(\w+),?\s*$/gm;
-    while ((m = mapRe.exec(src))) {
-        if (decls[m[2]]) map[m[1]] = decls[m[2]].replace(/^\.\//, 'src/');
-    }
-    return map;
-}
-
 // ---- panel id -> wiki article slug ----
 function panelArticles() {
     const src = read('src/components/WikiPanel/wiki-panels.ts');
@@ -49,7 +34,7 @@ function panelArticles() {
 }
 
 const sections = parseNavSections();
-const panelComp = { ...panelComponents(), ...techniqueComponents() };
+const panelComp = { ...routeImportComponents(), ...techniqueComponents() };
 const articles = panelArticles();
 
 const esc = (s) => String(s).replace(/\|/g, '\\|');

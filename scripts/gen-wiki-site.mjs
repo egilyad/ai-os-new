@@ -4,7 +4,7 @@
 //
 // Deploy: CI copies wiki-site/ into dist/wiki so the Pages site serves
 // https://<org>.github.io/<repo>/wiki/.
-import { readFileSync, writeFileSync, mkdirSync, rmSync, existsSync, readdirSync } from 'fs';
+import { readFileSync, writeFileSync, mkdirSync, rmSync, existsSync, readdirSync, copyFileSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, resolve, basename } from 'path';
 
@@ -174,6 +174,7 @@ for (const list of bySection.values()) list.sort((x, y) => x.title.localeCompare
 // ---- nav + page shell ----
 function navHtml(activeSlug) {
     const parts = ['<nav class="nav"><a class="home" href="./index.html">Wiki SuperAgents OS</a>'];
+    parts.push('<a class="agent-link" href="./manifest.json">manifest.json · данные для агентов</a>');
     for (const [section, list] of bySection) {
         if (!list.length) continue;
         parts.push(`<div class="nav-section"><div class="nav-title">${escHtml(section)}</div><ul>`);
@@ -248,6 +249,15 @@ const search = articles.map((a) => ({
 }));
 writeFileSync(resolve(outDir, 'search-index.json'), JSON.stringify(search), 'utf8');
 
+// ---- machine-readable manifest (for agents) ----
+const manifestSrc = resolve(root, 'docs/manifest.json');
+if (existsSync(manifestSrc)) {
+    copyFileSync(manifestSrc, resolve(outDir, 'manifest.json'));
+    console.log('  + manifest.json');
+} else {
+    console.warn('  ! docs/manifest.json missing — run `npm run gen:wiki-manifest`');
+}
+
 // ---- inert files ----
 writeFileSync(resolve(outDir, '.nojekyll'), '', 'utf8');
 
@@ -269,6 +279,7 @@ a:hover{text-decoration:underline}
 .layout{display:flex;align-items:flex-start;max-width:1200px;margin:0 auto}
 .sidebar{flex:0 0 280px;position:sticky;top:57px;max-height:calc(100vh - 57px);overflow:auto;padding:16px;border-right:1px solid var(--line);background:var(--nav-bg)}
 .nav .home{display:block;font-weight:700;margin-bottom:12px}
+.nav .agent-link{display:block;font-size:12px;color:var(--muted);margin:-6px 0 10px}
 .nav-title{font-size:13px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);margin:14px 0 6px}
 .nav ul{list-style:none;margin:0;padding:0}
 .nav li a{display:block;padding:3px 8px;border-radius:6px;color:var(--fg)}
