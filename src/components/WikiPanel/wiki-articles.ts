@@ -6,6 +6,8 @@
 import { ZONE_ARTICLES } from './wiki-zones';
 import { DEV_ARTICLES } from './wiki-dev';
 import { CATALOG_ARTICLES } from './wiki-catalog';
+import { EVENT_ARTICLES } from './wiki-event-catalog';
+import { SERVICE_MAP_ARTICLES } from './wiki-service-map';
 
 export type WikiFreshness = 'verified' | 'documented' | 'needs-check' | 'not-implemented';
 
@@ -400,7 +402,14 @@ Health-панели провайдеров, трейсы и timeline, DLQ (dead-
 ];
 
 /** Full corpus: hand-written core articles + per-zone audit articles + dev handbook. */
-export const WIKI_ARTICLES: WikiArticle[] = [...CORE_ARTICLES, ...ZONE_ARTICLES, ...DEV_ARTICLES, ...CATALOG_ARTICLES];
+export const WIKI_ARTICLES: WikiArticle[] = [
+    ...CORE_ARTICLES,
+    ...ZONE_ARTICLES,
+    ...DEV_ARTICLES,
+    ...CATALOG_ARTICLES,
+    ...EVENT_ARTICLES,
+    ...SERVICE_MAP_ARTICLES,
+];
 
 export function getArticle(slug: string): WikiArticle | undefined {
     return WIKI_ARTICLES.find((a) => a.slug === slug);

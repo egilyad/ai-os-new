@@ -269,10 +269,12 @@ export function WikiPanelStub({
     title,
     sectionTitle,
     componentFile,
+    openSlug,
 }: {
     title: string;
     sectionTitle: string;
     componentFile?: string;
+    openSlug?: (slug: string) => void;
 }): React.ReactNode {
     return (
         <div>
@@ -299,6 +301,27 @@ export function WikiPanelStub({
                     <div style={{ fontWeight: 700, marginBottom: '0.25rem' }}>Реализация</div>
                     <div style={{ fontFamily: 'monospace' }}>{componentFile}</div>
                 </div>
+            )}
+            {openSlug && getArticle('dev-component-catalog') && (
+                <p style={{ fontSize: '0.8rem', marginTop: '0.75rem' }}>
+                    Что этот компонент импортирует (сервисы ядра, сторы, i18n) — в авто-каталоге{' '}
+                    <button
+                        type="button"
+                        onClick={() => openSlug('dev-component-catalog')}
+                        style={{
+                            background: 'none',
+                            border: 'none',
+                            cursor: 'pointer',
+                            color: '#60a5fa',
+                            textDecoration: 'underline',
+                            fontSize: 'inherit',
+                            padding: 0,
+                        }}
+                    >
+                        Каталог компонентов OS
+                    </button>
+                    .
+                </p>
             )}
         </div>
     );

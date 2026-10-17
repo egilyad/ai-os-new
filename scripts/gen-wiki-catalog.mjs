@@ -127,6 +127,32 @@ for (const f of folders) {
 }
 lines.push('');
 
+const svcGroups = new Map();
+for (const r of rows) {
+    for (const s of r.services) {
+        let e = svcGroups.get(s);
+        if (!e) {
+            e = { folders: new Set(), comps: 0 };
+            svcGroups.set(s, e);
+        }
+        e.folders.add(r.folder);
+        e.comps++;
+    }
+}
+const hot = [...svcGroups.entries()]
+    .sort((a, b) => b[1].folders.size - a[1].folders.size || b[1].comps - a[1].comps)
+    .slice(0, 30);
+if (hot.length) {
+    lines.push('### Горячие сервисы (по охвату групп)');
+    lines.push('');
+    lines.push('Сервисы ядра, которые компоненты запрашивают чаще всего — центральные точки связности.');
+    lines.push('');
+    lines.push('| Сервис | Групп | Компонентов |');
+    lines.push('|---|---|---|');
+    for (const [name, e] of hot) lines.push(`| ${name} | ${e.folders.size} | ${e.comps} |`);
+    lines.push('');
+}
+
 for (const f of folders) {
     const group = rows.filter((r) => r.folder === f);
     lines.push(`### ${f} (${group.length})`);

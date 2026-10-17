@@ -258,6 +258,7 @@ export const WikiPanel: React.FC = () => {
                                 title={view.title}
                                 sectionTitle={view.sectionTitle}
                                 componentFile={WIKI_PANEL_MAP[view.panelId]}
+                                openSlug={openSlug}
                             />
                         )}
                     </div>

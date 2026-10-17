@@ -36,6 +36,7 @@ flowchart LR
 - Как поднимается ядро: [[dev-boot]].
 - Сервисы и lazyService: [[dev-services]].
 - События: [[dev-events]]. Панели: [[dev-components]]. Ворота: [[dev-ci]].
+- Авто-каталоги (генерируются из кода): [[dev-component-catalog]] (компоненты и связи), [[dev-event-catalog]] (события шины), [[dev-service-map]] (DI-граф ядра).
 - Короткая версия для онбординга — [[for-developers]].`,
     },
     {
@@ -121,7 +122,7 @@ sequenceDiagram
         tags: ['dev', 'события', 'шина'],
         freshness: 'verified',
         sources: ['src/kernel/events/event-bus.ts', 'src/kernel/events/event-names.ts', 'src/kernel/events/event-registry.ts'],
-        related: ['dev-services', 'dev-boot'],
+        related: ['dev-event-catalog', 'dev-services', 'dev-boot'],
         body: `## Где что
 
 - \`event-bus.ts\` — реализация шины (on/emit/onSafe/subscribeAll/off) + DLQ (dead-letter с ретраями).
@@ -145,7 +146,9 @@ flowchart LR
 
 - Доменные события добавляй в соответствующий \`*-events.ts\` и в \`EVENTS\`.
 - \`onSafe\` — когда нельзя допустить исключение из хендлера в шину.
-- Для порядко-зависимой логики не полагайся на последовательность эмитов — читай состояние из БД.`,
+- Для порядко-зависимой логики не полагайся на последовательность эмитов — читай состояние из БД.
+
+Полный перечень имён — в авто-каталоге [[dev-event-catalog]].`,
     },
     {
         slug: 'dev-services',
@@ -154,7 +157,7 @@ flowchart LR
         tags: ['dev', 'сервисы', 'DI', 'lazyService'],
         freshness: 'verified',
         sources: ['src/kernel/service-helper.ts', 'src/kernel/instances/'],
-        related: ['dev-boot', 'dev-events', 'dev-components'],
+        related: ['dev-service-map', 'dev-boot', 'dev-events', 'dev-components'],
         body: `## Баррели-фасады
 
 Панели импортируют сервисы только из \`src/kernel/instances\`, собранного из:
@@ -181,7 +184,9 @@ flowchart LR
 1. Контракт — в \`src/kernel/contracts\`.
 2. Реализация — в \`src/kernel/services/...\`.
 3. Регистрация — в фазе bootstrap.
-4. Экспорт — из нужного барреля \`instances/*\`.`,
+4. Экспорт — из нужного барреля \`instances/*\`.
+
+Полный граф «кто от кого зависит» — в [[dev-service-map]] (из DEPENDENCY_MAP.md).`,
     },
     {
         slug: 'dev-components',
@@ -373,11 +378,14 @@ flowchart LR
 
 - \`src/generated/commits-feed.ts\` — лента коммитов (git log, 40 записей) для раздела «Новости».
 - \`src/generated/wiki-panel-map.ts\` — карта «id панели → путь компонента» (из \`route-imports.ts\`).
-- \`src/generated/wiki-component-catalog.ts\` — каталог компонентов и их связей (эта документация).
+- \`src/generated/wiki-component-catalog.ts\` — каталог компонентов и их связей (статья [[dev-component-catalog]]).
+- \`src/generated/wiki-event-catalog.ts\` — каталог событий шины (статья [[dev-event-catalog]]).
 
 ## Скрипты
 
 - \`node scripts/gen-wiki-data.mjs\` — обновить ленту коммитов и карту панелей.
+- \`node scripts/gen-wiki-catalog.mjs\` — каталог компонентов (обойти дерево src/components).
+- \`node scripts/gen-wiki-events.mjs\` — каталог событий (из event-registry.ts).
 - \`node scripts/gen-technique-panels.mjs\` — панели техник дебатов.
 - \`node scripts/gen-readme-maps.mjs\` — карты для README.
 
