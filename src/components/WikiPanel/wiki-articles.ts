@@ -629,6 +629,89 @@ Health-панели провайдеров, трейсы и timeline, DLQ (dead-
 - ShadowPanel живьём зависит от routerProjection/routerService: расхождение live vs projection при реальной нагрузке не проверялось — только баннер сбоя.
 - Counterfactual-панель (CausalAttribution/ScoreComparison/TraceSidebar) — вообще не тронута.
 
+## Зона 23: коммуникации-2 (проверено, исправлено)
+
+- GroupsPanel: refresh был голым — getGroups мог бросить и дать unhandled rejection; теперь try/catch с баннером. Группы с legacy-полем keyIds (без массива) роняли .includes/.length — fallback на пустой массив.
+- GroupDetail: group.keyIds и поля burst/quota шареного пула терпят отсутствующие значения (0 вместо краша).
+- BoPTrackerPanel: loadDebate при undefined round давал NaN в инпуте раунда (Math.max с undefined) и ронял recordClaim на отсутствующем content — guards (round→1, content→пусто). Рендер claimText — безопасный slice.
+- debate-bop-service.recordClaim: не-строковый claimText больше не роняет запись (пусто), round приводится к конечному числу.
+- ChatDock: legacy-сессии без title и сообщения без text роняли .slice — guards (fallback на id и пустую строку).
+- i18n: добавлен ключ групп groups.error.load (en+ru, паритет сохранён).
+- Тесты: GroupsPanel 3/3 (новый: счётчики, legacy без keyIds, баннер ошибки), BoPTracker +1 (legacy live-аргументы без content/round — нет NaN), ChatDock 2/2 (новый: legacy-сессия).
+- ВАЖНО: локальная верификация невозможна (vitest-пул мёртв), гейт — только CI. Синтаксис проверен транспиляцией.
+
+## Зона 23: отложено, требует проверки
+
+- RoomPanel: прочитан целиком — уже хорошо guarded (id/sessionRef/feed guards, error-баннеры); в живом прогоне не гонялся.
+- ChatAdminPanel (AdminToolbar/SessionRow/PreviewModal/AdminStatsCards/SessionTable) и ChatExportPanel (Source/Format/ExportActions/PreviewPane) — не тронуты, только заметки о размерах.
+- DebateLive (DebateLivePanel + сабкомпоненты) — не тронут, есть собственный comprehensive-тест.
+- StakeholderPanel: relevanceScore гарантированно число (hits/4) — правок не потребовал.
+- invocationEngine/invocationRepository из services-extras — живьём не поднимались, только type-guards.
+
+## Зона 26: остатки (проверено, исправлено)
+
+- PolicyEditorPanel: ConditionEditor терпит отсутствующий массив values; RuleList безопасно рендерит правило без id (пустая строка) и без массива actions.
+- AnalyticsPanel: DecisionsTab терпит запись без массива scores; PricingPanel — отсутствующий budget (dailyAverage/monthlyBudget через optional chaining), а refreshData нормализует prices/overrides к объектам; ProviderHealthSection/ProvidersTab терпят отсутствующие avgTTFT/reliability/avgTPS/selectionRate (0/— вместо NaN).
+- PerformanceProfilerPanel/ServiceDetailPanel: селекция без min/max/totalLatency не даёт NaN (0), сообщение об ошибке без строки не роняет slice.
+- DriftDetectorPanel: запись агента без driftScore (0), история без content (пустая строка), fetched без driftScore — guards.
+- VulnTargetingPanel: edges терпит не-массив (slice и length), stats без averageConfidence/attackRatio/supportRatio — guards.
+- AquariumPanel: фигура/легенда/выбранная ячейка с отсутствующим provider не роняют toLowerCase (пустая строка).
+- BookmarksPanel: карточка и панель терпят закладку без массива tags; refresh не роняет панель на не-массиве; seedDemo больше не даёт unhandled rejection (ошибка в баннер); getAllTags терпит не-массив.
+- CausalDebugger: scope с отсутствующими requestIds/providerIds/keyIds не роняет join; TraceListPanel терпит запись/scope без этих массивов; ConsistencyCheckSection терпит отчёт без массива mismatches.
+- RivalsHub: legacy-цикл без goal (пустая строка), чат/раунд без members/turns (пустые массивы), тулкит без prefixes (пустой join), блок без content; setBlocks терпит не-массив.
+- AgentJournalPanel/JournalEntryCard: неизвестный исход показывается серым (не undefined-цвет), запись без tags/durationMs/tokensUsed не роняет рендер.
+- AlertLayer: refreshAlerts терпит не-массив от keyService.getAlerts.
+- NvidiaEnterprise: таблица ключей терпит ключ без provider (фильтр и тест не роняют toLowerCase); PlatformBudgetSection терпит не-массив incidents (пустой список вместо краха sort).
+- FleetPanel: вкладка Rivals терпит цикл без goal и очередь без refId (пустые строки).
+- Проверены без правок: TechniquePanels (общий сгенерированный паттерн уже guarded, есть smoke-тест), KeyNotesPanel/NoteCard и NoteInputForm, LiveCognition (MissionControl/LiveWorkspace — try/catch и optional chaining), UsageHeatmap, RivalLabsPanel/RivalServiceCard, BudgetPanel-секции, PerformanceProfilerPanel/components.
+- Тесты: AlertLayer +1 (getAlerts вернул не-массив), RivalsHub +1 (legacy-циклы/чаты/тулкиты/блоки без опциональных полей), DriftDetectorPanel/VulnTargetingPanel/AnalyticsPanel — существующие тесты покрывают рендер.
+- ВАЖНО: локальная верификация невозможна (vitest-пул мёртв), гейт — только CI. Синтаксис проверен транспиляцией, ESLint по изменённым файлам — 0 ошибок.
+
+## Зона 26: отложено, требует проверки
+
+- Palette/CommandPalette/NotificationCenter/CustomizationPanel и прочие мелкие тултипы — не тронуты, отдельного аудита не было.
+- Реальные payload сервисов (policy/analytics/driftTargeting/bookmarks/causal/rivals/nvidia/fleet) против guards не гонялись — только моки/транспиляция.
+- LiveCognition/IntelligenceGraph и DashboardPanel/AgentLiveBoard живьём не проверялись.
+- KeyNotesPanel: FilePreviewModal/KeySelectorSidebar не аудировались.
+
+## Зона 25: конструкторы (проверено, исправлено)
+
+- PlannerPanel: список фильтров терпит не-массив (listFilters мог вернуть null) — fallback на пустой массив.
+- RunQueuePanel: очередь и тулкиты терпят не-массив (list/listToolkits); legacy-записи без refId/kind не роняют поиск (toLowerCase) и рендер (slice); тулкит без массива prefixes не роняет join.
+- SimulationPanel: список миров терпит не-массив (list); мир без rooms/relations/agentIds и комната без массива agents не роняют SVG-карту и легенду (пустые массивы).
+- LensesPanel: библиотека линз и подсказки терпят не-массив (listLenses/suggestLenses); LensSelector ищет по name/description без краша на отсутствующих; LensStackVisualizer терпит validation без errors.
+- JunctionPanel: список джанкшенов и источники терпят не-массив; detect/handleSeedDemo/handleChallenge больше не дают unhandled rejection — ошибка уходит в message; счётчик кандидатов терпит не-массив.
+- JunctionCard/JunctionGraph: legacy-джанкшен без synthesisType/inputs/confidence/status/content/cognitiveDebt рендерится с fallback (unknown, пустая пара, 0%, пустые строки); JunctionList терпит отсутствующий rationale.
+- TasksPanel: legacy-трасса без массива steps больше не роняет маппинг всех задач (steps→пустой массив); список AGEMS-задач терпит не-массив.
+- Тесты: PlannerPanel +1 (не-массив фильтров), RunQueuePanel +1 (не-массив очереди/тулкитов), LensesPanel +1 (не-массив библиотеки и подсказок), JunctionPanel +1 (legacy-джанкшен + не-массив источников), TasksPanel +1 (legacy-трасса без steps), SimulationPanel 2/2 (новый файл: рендер + не-массив миров).
+- ВАЖНО: локальная верификация невозможна (vitest-пул мёртв), гейт — только CI. Синтаксис проверен транспиляцией.
+
+## Зона 25: отложено, требует проверки
+
+- CognitiveBuilder: прочитан целиком — уже guarded (getTools в try/catch, deploy в try/catch с баннером); InspectorPanel/builder-nodes/ComponentPalette/WorkflowListPanel/BuilderAISidebar живьём не гонялись.
+- TaskDetailModal (16KB) — не тронут, отдельного аудита не было.
+- PlannerPanel/RunQueuePanel/SimulationPanel/LensesPanel/JunctionPanel: реальные payload сервисов (planner/runQueue/worldState/lensEngine/junctionEngine) против guards не гонялись — только моки/транспиляция.
+
+## Зона 24: знания-2 (проверено, исправлено)
+
+- SimilarityMonitor.recordArgument: не-строковый content ронял tokenize/.length, а undefined round давал битый ключ записи — нормализация к пустой строке и round→1.
+- SimilarityPanel: loadDebate на undefined content падал на .slice(0,80), undefined round давал NaN в инпуте раунда — guards.
+- InsightBus.ingestRound: не-строковый content ронял toLowerCase/.length, отсутствующий массив аргументов не терпелся — нормализация аргументов и round.
+- InsightBusPanel: loadDebate группировал по undefined round (битый ключ Map) и передавал undefined content — guards (round→1, content→пусто).
+- ProvenancePanel: результат trace без nodes/edges ронял .map — guards (пустые массивы, отброс пар без концов).
+- DocsHealth: legacy-отчёт из хранилища без items ронял filter, legacy-план без tasks ронял map, отчёт без byCategory ронял Object.entries, задача без failedItems/suggestedFixes роняла .length — guards во всех секциях (Broken/HealingPlan/ByCategory) и в самой панели; executeAll приведён к массиву.
+- Проверены без правок: PatternsPanel/InsightFeed и DocumentationPanel работают на статических данных (INITIAL_NOTES/doc-content) — legacy-пути нет.
+- Тесты: SimilarityPanel +1 (legacy live-аргументы), InsightBusPanel +1 (legacy), ProvenancePanel 2/2 (новый, битый trace), DocsHealthPanel 1/1 (новый, legacy отчёт/план без коллекций).
+- ВАЖНО: локальная верификация невозможна (vitest-пул мёртв), гейт — только CI. Синтаксис проверен транспиляцией.
+
+## Зона 24: отложено, требует проверки
+
+- SimilarityMonitor/InsightBus живьём против реального движка дебатов не гонялись — только моки/транспиляция.
+- ProvenancePanel: graphVizService.svg и DOMPurify-санитайзинг в живом рендере не проверялись.
+- DocsHealth: consistencyChecker.fetchDocs/checkDocs и healingPipeline.analyze/executeAll живьём (сеть/файлы) не проверялись.
+- PatternsPanel: CRUD заметок не реализован (кнопки Create/Edit/Save только показывают уведомление coming soon).
+- DocumentationPanel: doc-content-data и doc-section-components не сверялись с фактическим состоянием кода.
+
 ## Зона 21: качество аргументов (проверено, исправлено)
 
 - SynthesisPanel: handleSynthesize/export/refine/refresh были голыми — теперь runGuarded с баннером; confidenceDistribution/input/zones/perspectives/totalTokens — guards («—» вместо краша/NaN).
