@@ -12,6 +12,15 @@
 - `route-imports.ts` — карта «id панели → React.lazy(import(компонент))».
 - По этим данным генерируется `src/generated/wiki-panel-map.ts` (id → путь файла).
 
+```mermaid
+flowchart TD
+    Id["id панели"] --> Registry["route-registry-* (секция + labelKey)"]
+    Registry --> Imports["route-imports.ts lazy(import)"]
+    Imports --> Route["Роут + пункт сайдбара + поиск"]
+    Imports --> Map["generated/wiki-panel-map.ts"]
+    Map --> Docs["docs/wiki (зеркало на GitHub)"]
+```
+
 ## Новая панель за 4 шага
 
 1. Два i18n-ключа: en + ru (иначе падает тест паритета `i18n-keys.test.ts`).

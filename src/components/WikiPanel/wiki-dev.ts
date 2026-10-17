@@ -168,6 +168,15 @@ flowchart LR
 - \`core-references\` / \`extra-references\` — ссылки на ресурсы;
 - \`infra\` — инфраструктура (БД, security, logger).
 
+\`\`\`mermaid
+flowchart LR
+    Panel["Панель"] --> Barrel["kernel/instances (баррель)"]
+    Barrel --> Proxy["lazyService Proxy"]
+    Proxy --> Container["DI-контейнер"]
+    Container --> Svc["Сервис (реализация)"]
+    Svc --> Contract["Контракт (contracts/)"]
+\`\`\`
+
 ## lazyService (src/kernel/service-helper.ts)
 
 Это Proxy, который резолвит сервис из контейнера **при первом обращении к свойству**, кэширует инстанс и биндит методы.
@@ -237,6 +246,15 @@ flowchart TD
 - \`route-registry-core.ts\`, \`route-registry-content.ts\`, \`route-registry-system.ts\` — секции меню (\`NAV_SECTIONS\`) и пункты (id + labelKey).
 - \`route-imports.ts\` — карта «id панели → React.lazy(import(компонент))».
 - По этим данным генерируется \`src/generated/wiki-panel-map.ts\` (id → путь файла).
+
+\`\`\`mermaid
+flowchart TD
+    Id["id панели"] --> Registry["route-registry-* (секция + labelKey)"]
+    Registry --> Imports["route-imports.ts lazy(import)"]
+    Imports --> Route["Роут + пункт сайдбара + поиск"]
+    Imports --> Map["generated/wiki-panel-map.ts"]
+    Map --> Docs["docs/wiki (зеркало на GitHub)"]
+\`\`\`
 
 ## Новая панель за 4 шага
 

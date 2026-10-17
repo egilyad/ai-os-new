@@ -14,6 +14,15 @@
 - `core-references` / `extra-references` — ссылки на ресурсы;
 - `infra` — инфраструктура (БД, security, logger).
 
+```mermaid
+flowchart LR
+    Panel["Панель"] --> Barrel["kernel/instances (баррель)"]
+    Barrel --> Proxy["lazyService Proxy"]
+    Proxy --> Container["DI-контейнер"]
+    Container --> Svc["Сервис (реализация)"]
+    Svc --> Contract["Контракт (contracts/)"]
+```
+
 ## lazyService (src/kernel/service-helper.ts)
 
 Это Proxy, который резолвит сервис из контейнера **при первом обращении к свойству**, кэширует инстанс и биндит методы.
