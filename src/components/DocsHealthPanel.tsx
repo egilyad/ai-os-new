@@ -88,8 +88,8 @@ const DocsHealthPanel: React.FC = () => {
             const newPlan = consistencyHealingPipeline.analyze(docContents);
             if (isMountedRef.current) {
                 setPlan(newPlan);
-                const executed = await consistencyHealingPipeline.executeAll();
-                const succeeded = executed.filter((t) => t.status === 'completed').length;
+                const executed = (await consistencyHealingPipeline.executeAll()) ?? [];
+                const succeeded = executed.filter((task) => task.status === 'completed').length;
                 eventBus.emit(EVENTS.NOTIFICATION, {
                     message: t('docs_health.fix_done', { count: succeeded }),
                     type: 'success',
@@ -114,7 +114,7 @@ const DocsHealthPanel: React.FC = () => {
         };
     }, [loadLastReport]);
 
-    const brokenItems = report?.items.filter((i) => !i.found) ?? [];
+    const brokenItems = (report?.items ?? []).filter((i) => !i.found);
 
     return (
         <div style={{ height: '100%', display: 'flex', flexDirection: 'column', gap: '2rem' }}>

@@ -1,6 +1,10 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import SimilarityPanel from './SimilarityPanel';
+
+const mockState = vi.hoisted(() => ({
+    args: [] as Array<Record<string, unknown>>,
+}));
 
 vi.mock('../../hooks/useRealAgents', () => {
     const A = [
@@ -9,6 +13,19 @@ vi.mock('../../hooks/useRealAgents', () => {
         { id: 'carol', name: 'Carol (Neutral)', role: 'agent' },
     ];
     return { useRealAgents: () => A };
+});
+
+vi.mock('../../hooks/useDebateArguments', () => ({
+    useDebateArguments: () => ({
+        args: mockState.args,
+        sessionId: mockState.args.length ? 's1' : null,
+        topic: null,
+        hasLiveDebate: mockState.args.length > 0,
+    }),
+}));
+
+beforeEach(() => {
+    mockState.args = [];
 });
 
 describe('SimilarityPanel', () => {
@@ -26,5 +43,12 @@ describe('SimilarityPanel', () => {
         render(<SimilarityPanel />);
         fireEvent.click(screen.getByRole('button', { name: 'Record' }));
         expect(document.body.textContent).toContain('History');
+    });
+    it('tolerates legacy live args missing content/round (no NaN)', () => {
+        mockState.args = [{ id: 'a1', agentId: 'alice', agentName: 'Alice' }];
+        render(<SimilarityPanel />);
+        const roundInput = document.querySelector('input[type="number"]') as HTMLInputElement;
+        expect(roundInput.value).toBe('2');
+        expect(document.body.textContent).not.toContain('NaN');
     });
 });

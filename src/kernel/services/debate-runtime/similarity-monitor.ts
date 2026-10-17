@@ -65,15 +65,17 @@ export class SimilarityMonitor implements ISimilarityMonitor {
         content: string,
         slidingWindow = DEFAULT_SLIDING_WINDOW,
     ): RedundancyRecord {
-        if (content.length < MIN_CONTENT_LENGTH) {
+        const text = typeof content === 'string' ? content : '';
+        const safeRound = Number.isFinite(round) ? round : 1;
+        if (text.length < MIN_CONTENT_LENGTH) {
             const record: RedundancyRecord = {
                 agentId,
-                round,
+                round: safeRound,
                 similarityScore: 0,
                 comparedWith: '',
                 isRedundant: false,
             };
-            this.records.set(`${agentId}:${round}`, record);
+            this.records.set(`${agentId}:${safeRound}`, record);
             return record;
         }
 
@@ -83,8 +85,8 @@ export class SimilarityMonitor implements ISimilarityMonitor {
             this.history.set(agentId, hist);
         }
 
-        const currentTokens = tokenize(content);
-        const currentHash = contentHash(content);
+        const currentTokens = tokenize(text);
+        const currentHash = contentHash(text);
 
         // Compare against sliding window of prior turns
         let maxSimilarity = 0;
@@ -105,7 +107,7 @@ export class SimilarityMonitor implements ISimilarityMonitor {
 
         // Add current turn to history (maintain sliding window)
         hist.turns.push({
-            round,
+            round: safeRound,
             hash: currentHash,
             tokens: currentTokens,
         });
@@ -116,12 +118,12 @@ export class SimilarityMonitor implements ISimilarityMonitor {
         const isRedundant = maxSimilarity >= this.threshold;
         const record: RedundancyRecord = {
             agentId,
-            round,
+            round: safeRound,
             similarityScore: maxSimilarity,
             comparedWith: mostSimilarHash,
             isRedundant,
         };
-        this.records.set(`${agentId}:${round}`, record);
+        this.records.set(`${agentId}:${safeRound}`, record);
         return record;
     }
 

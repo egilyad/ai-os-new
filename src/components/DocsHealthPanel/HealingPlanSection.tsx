@@ -58,7 +58,7 @@ export const HealingPlanSection: React.FC<HealingPlanSectionProps> = ({ plan }) 
                     </div>
                 </div>
             </div>
-            {plan.tasks.map((task) => (
+            {(plan.tasks ?? []).map((task) => (
                 <div
                     key={task.id}
                     style={{
@@ -104,8 +104,8 @@ export const HealingPlanSection: React.FC<HealingPlanSectionProps> = ({ plan }) 
                         </span>
                     </div>
                     <div style={{ fontSize: '0.8rem', color: 'var(--slate-400)' }}>
-                        {task.failedItems.length} {t('docs_health.broken')} —{' '}
-                        {task.suggestedFixes.length} {t('docs_health.fixes')}
+                        {(task.failedItems ?? []).length} {t('docs_health.broken')} —{' '}
+                        {(task.suggestedFixes ?? []).length} {t('docs_health.fixes')}
                     </div>
                 </div>
             ))}

@@ -119,12 +119,17 @@ export class InsightBus implements IInsightBus {
         round: number,
         allArguments: Array<{ agentId: string; content: string; agentName?: string }>,
     ): void {
-        if (this.processedRounds.has(round)) return;
-        this.processedRounds.add(round);
+        const safeRound = Number.isFinite(round) ? round : 1;
+        if (this.processedRounds.has(safeRound)) return;
+        this.processedRounds.add(safeRound);
 
-        const texts = allArguments
-            .map((a) => a.content)
-            .filter((c) => c.length >= MIN_CONTENT_LENGTH);
+        const args = (allArguments ?? []).map((a) => ({
+            agentId: a.agentId,
+            agentName: a.agentName,
+            content: typeof a.content === 'string' ? a.content : '',
+        }));
+
+        const texts = args.map((a) => a.content).filter((c) => c.length >= MIN_CONTENT_LENGTH);
         if (texts.length < 2) return;
 
         // Accumulate tokens for corpus
@@ -136,20 +141,18 @@ export class InsightBus implements IInsightBus {
         const candidates: Insight[] = [];
 
         // 1. Contradiction detection: pairwise comparison of same-round arguments
-        for (let i = 0; i < allArguments.length; i++) {
-            for (let j = i + 1; j < allArguments.length; j++) {
-                if (allArguments[i]!.agentId === allArguments[j]!.agentId) continue;
-                const cs = contrastScore(allArguments[i]!.content, allArguments[j]!.content);
+        for (let i = 0; i < args.length; i++) {
+            for (let j = i + 1; j < args.length; j++) {
+                if (args[i]!.agentId === args[j]!.agentId) continue;
+                const cs = contrastScore(args[i]!.content, args[j]!.content);
                 if (cs >= 0.4) {
                     const quote =
-                        cs >= 0.6
-                            ? allArguments[i]!.content.slice(0, 120)
-                            : allArguments[j]!.content.slice(0, 120);
+                        cs >= 0.6 ? args[i]!.content.slice(0, 120) : args[j]!.content.slice(0, 120);
                     candidates.push({
                         type: 'contradiction',
-                        text: `Contradiction between ${allArguments[i]!.agentName || allArguments[i]!.agentId} and ${allArguments[j]!.agentName || allArguments[j]!.agentId}`,
+                        text: `Contradiction between ${args[i]!.agentName || args[i]!.agentId} and ${args[j]!.agentName || args[j]!.agentId}`,
                         quote: quote.trim(),
-                        round,
+                        round: safeRound,
                         significance: Math.min(1, cs * 1.2),
                     });
                 }
@@ -157,7 +160,7 @@ export class InsightBus implements IInsightBus {
         }
 
         // 2. Surprise detection: lexical novelty
-        for (const arg of allArguments) {
+        for (const arg of args) {
             if (arg.content.length < MIN_CONTENT_LENGTH) continue;
             const ss = surpriseScore(arg.content, this.corpusTokens);
             if (ss >= 0.6) {
@@ -165,14 +168,14 @@ export class InsightBus implements IInsightBus {
                     type: 'surprise',
                     text: `Unexpected perspective from ${arg.agentName || arg.agentId}`,
                     quote: arg.content.slice(0, 120).trim(),
-                    round,
+                    round: safeRound,
                     significance: ss,
                 });
             }
         }
 
         // 3. Premise detection: foundational declarative claims
-        for (const arg of allArguments) {
+        for (const arg of args) {
             if (arg.content.length < MIN_CONTENT_LENGTH) continue;
             // Split into sentences
             const sentences = arg.content.split(/[.!?]+/).filter((s) => s.trim().length > 20);
@@ -183,7 +186,7 @@ export class InsightBus implements IInsightBus {
                         type: 'premise',
                         text: `Foundational claim by ${arg.agentName || arg.agentId}`,
                         quote: sentence.trim().slice(0, 150),
-                        round,
+                        round: safeRound,
                         significance: ps,
                     });
                 }
@@ -196,7 +199,7 @@ export class InsightBus implements IInsightBus {
         this.allInsights.push(...top);
 
         // Prune: keep only last MAX_ROUNDS_RETAINED rounds of insights
-        const keepFromRound = round - MAX_ROUNDS_RETAINED + 1;
+        const keepFromRound = safeRound - MAX_ROUNDS_RETAINED + 1;
         this.allInsights = this.allInsights.filter((i) => i.round >= keepFromRound);
     }
 

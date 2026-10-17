@@ -14,8 +14,12 @@ const ProvenancePanel: React.FC = () => {
     const trace = async () => {
         try {
             const { nodes, edges } = await provenanceService.trace(decisionId, 4);
-            const ids = nodes.map(n => n.id);
-            const pairs = edges.map(e => [e.fromId, e.toId] as [string,string]);
+            const safeNodes = nodes ?? [];
+            const safeEdges = edges ?? [];
+            const ids = safeNodes.map(n => n.id);
+            const pairs = safeEdges
+                .filter(e => e.fromId != null && e.toId != null)
+                .map(e => [e.fromId, e.toId] as [string, string]);
             // L-2: sanitize the generated SVG before injection — node ids are
             // user-typed, so this must not depend on the esc() implementation
             // detail of never emitting single-quoted attributes.
@@ -24,7 +28,7 @@ const ProvenancePanel: React.FC = () => {
                     USE_PROFILES: { svg: true },
                 }),
             );
-            setMsg(`${nodes.length} nodes, ${edges.length} edges`);
+            setMsg(`${safeNodes.length} nodes, ${safeEdges.length} edges`);
         } catch (e) { setMsg(e instanceof Error ? e.message : String(e)); }
     };
 

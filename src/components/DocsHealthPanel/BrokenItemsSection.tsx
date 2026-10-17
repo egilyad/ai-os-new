@@ -9,7 +9,7 @@ interface BrokenItemsSectionProps {
 
 export const BrokenItemsSection: React.FC<BrokenItemsSectionProps> = ({ items }) => {
     const { t } = useTranslation();
-    const broken = items.filter((i) => !i.found);
+    const broken = (items ?? []).filter((i) => !i.found);
     if (broken.length === 0) return null;
 
     return (

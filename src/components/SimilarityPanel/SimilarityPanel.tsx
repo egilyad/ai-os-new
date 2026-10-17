@@ -33,12 +33,20 @@ export const SimilarityPanel: React.FC = () => {
         if (!liveArgs.length) return;
         monitor.clearSession();
         const recs = liveArgs.map((a) => {
-            const rec = monitor.recordArgument(a.agentId, a.round, a.content);
-            return { agentId: a.agentId, round: a.round, content: a.content.slice(0, 80), record: rec };
+            const content = a.content ?? '';
+            const round = Number.isFinite(a.round) ? a.round : 1;
+            const rec = monitor.recordArgument(a.agentId, round, content);
+            return { agentId: a.agentId, round, content: content.slice(0, 80), record: rec };
         });
         setHistory(recs);
         setLast(recs[recs.length - 1]?.record ?? null);
-        setRound((r) => Math.max(r, ...liveArgs.map((a) => a.round)));
+        setRound((r) => {
+            const maxRound = liveArgs.reduce(
+                (m, a) => Math.max(m, Number.isFinite(a.round) ? a.round : 1),
+                1,
+            );
+            return Math.max(Number.isFinite(r) ? r : 1, maxRound);
+        });
     }, [liveArgs, monitor]);
 
     useEffect(() => {

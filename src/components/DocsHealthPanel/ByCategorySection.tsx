@@ -27,7 +27,7 @@ export const ByCategorySection: React.FC<ByCategorySectionProps> = ({ report }) 
                 >
                     {t('docs_health.by_category')}
                 </h3>
-                {Object.entries(report.byCategory).map(([cat, stats]) => (
+                {Object.entries(report.byCategory ?? {}).map(([cat, stats]) => (
                     <div
                         key={cat}
                         style={{

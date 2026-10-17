@@ -1,6 +1,19 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import InsightBusPanel from './InsightBusPanel';
+
+const mockState = vi.hoisted(() => ({
+    args: [] as Array<Record<string, unknown>>,
+}));
+
+vi.mock('../../hooks/useDebateArguments', () => ({
+    useDebateArguments: () => ({
+        args: mockState.args,
+        sessionId: mockState.args.length ? 's1' : null,
+        topic: null,
+        hasLiveDebate: mockState.args.length > 0,
+    }),
+}));
 
 vi.mock('../../kernel/instances/services-core', async (importOriginal) => {
     const actual = await importOriginal<typeof import('../../kernel/instances/services-core')>();
@@ -13,6 +26,10 @@ vi.mock('../../kernel/instances/services-core', async (importOriginal) => {
             ]),
         },
     };
+});
+
+beforeEach(() => {
+    mockState.args = [];
 });
 
 describe('InsightBusPanel', () => {
@@ -34,5 +51,14 @@ describe('InsightBusPanel', () => {
         const btn = screen.getByRole('button', { name: /Clear/i });
         fireEvent.click(btn);
         expect(document.body.textContent).toContain('Active insights');
+    });
+    it('tolerates legacy live args missing content/round', () => {
+        mockState.args = [
+            { id: 'a1', agentId: 'agent-1', agentName: 'Agent One' },
+            { id: 'a2', agentId: 'agent-2', agentName: 'Agent Two' },
+        ];
+        render(<InsightBusPanel />);
+        expect(document.body.textContent).not.toContain('undefined');
+        expect(document.body.textContent).not.toContain('NaN');
     });
 });

@@ -31,9 +31,10 @@ export const InsightBusPanel: React.FC = () => {
         bus.clearSession();
         const byRound = new Map<number, Array<{ agentId: string; content: string; agentName?: string }>>();
         for (const a of liveArgs) {
-            const arr = byRound.get(a.round) ?? [];
-            arr.push({ agentId: a.agentId, content: a.content, agentName: a.agentName });
-            byRound.set(a.round, arr);
+            const round = Number.isFinite(a.round) ? a.round : 1;
+            const arr = byRound.get(round) ?? [];
+            arr.push({ agentId: a.agentId, content: a.content ?? '', agentName: a.agentName });
+            byRound.set(round, arr);
         }
         for (const [r, list] of byRound) bus.ingestRound(r, list);
         setVersion((v) => v + 1);
