@@ -283,7 +283,7 @@
       "category": "audits",
       "language": "ru",
       "title": "au4.md",
-      "bytes": 20474,
+      "bytes": 20233,
       "hash": "8250e218e26e324845401e7e9238853e615476ed"
     },
     {
@@ -307,7 +307,7 @@
       "category": "audits",
       "language": "mixed",
       "title": "Аудит 2: Жизненный цикл и состояние (Lifecycle & State)",
-      "bytes": 17028,
+      "bytes": 16872,
       "hash": "3d68d7d82a163af2dcdc0e651896b6992f504528"
     },
     {
@@ -315,7 +315,7 @@
       "category": "audits",
       "language": "mixed",
       "title": "Аудит 3: Потоки, таймеры и отмена (Streaming, Timers & Abort)",
-      "bytes": 16970,
+      "bytes": 16837,
       "hash": "c1e95be9449d78d1251fb4cc265d86b52c0dfca8"
     },
     {
@@ -323,7 +323,7 @@
       "category": "audits",
       "language": "ru",
       "title": "Аудит 4: UX, Производительность и Утечки в UI (UX, Performance & Leaks)",
-      "bytes": 14551,
+      "bytes": 14442,
       "hash": "c28c63030df1d06b1fa68f6b48cfad0be13ca41c"
     },
     {
@@ -331,7 +331,7 @@
       "category": "audits",
       "language": "mixed",
       "title": "Аудит 5: Архитектура и Зависимости (Architecture & Dependencies)",
-      "bytes": 16205,
+      "bytes": 16090,
       "hash": "46d107fcdf313a1523876988c809082144196988"
     },
     {
@@ -339,7 +339,7 @@
       "category": "audits",
       "language": "ru",
       "title": "Аудит 6: Обработка Ошибок и Логирование (Error Handling & Logging)",
-      "bytes": 17047,
+      "bytes": 16933,
       "hash": "584a08ceaa2f4935975b133243a6d921104a07ba"
     },
     {
@@ -603,7 +603,7 @@
       "category": "audits",
       "language": "en",
       "title": "OPPORTUNITIES CHECKLIST — реализовано или нет",
-      "bytes": 17768,
+      "bytes": 17581,
       "hash": "f6767b5b0ae8014254d357d1b9400d7b0ffaf897"
     },
     {
@@ -619,7 +619,7 @@
       "category": "audits",
       "language": "ru",
       "title": "_done — закрытые аудиты",
-      "bytes": 15754,
+      "bytes": 15568,
       "hash": "dbe9eff8c6a2ea3546a9f9d7afce7c15e88aff72"
     },
     {
@@ -683,7 +683,7 @@
       "category": "audits",
       "language": "ru",
       "title": "Аудит чата + роадмап (из XLSX)",
-      "bytes": 61440,
+      "bytes": 61260,
       "hash": "8c1817528266e76526610c53864680b30ccf0905"
     },
     {
@@ -707,7 +707,7 @@
       "category": "audits",
       "language": "ru",
       "title": "typecheackerror.md",
-      "bytes": 14550,
+      "bytes": 14452,
       "hash": "c2040325e36200a666a81d93fe573b4a280b6929"
     },
     {
@@ -715,7 +715,7 @@
       "category": "audits",
       "language": "ru",
       "title": "ua22.md",
-      "bytes": 8887,
+      "bytes": 8787,
       "hash": "53ea39ab4640d709dff5ead64ea16ce8c32d7b24"
     },
     {
@@ -4419,7 +4419,7 @@
       "category": "history",
       "language": "en",
       "title": "RESEARCH_PROGRESS.md",
-      "bytes": 86,
+      "bytes": 90,
       "hash": "f48d2228d9674a5da82c0799d93d7be0b22e3bb2"
     },
     {
@@ -4499,7 +4499,7 @@
       "category": "history",
       "language": "en",
       "title": "RESEARCH_PROGRESS.md",
-      "bytes": 74,
+      "bytes": 78,
       "hash": "074843a0ac586c00a55de231e7705a47779869a3"
     },
     {
@@ -5139,7 +5139,7 @@
       "category": "history",
       "language": "en",
       "title": "RESEARCH_PROGRESS.md",
-      "bytes": 80,
+      "bytes": 84,
       "hash": "485cd96f158ae34e9ce7a693eb3f073a15c806d4"
     },
     {
@@ -5435,7 +5435,7 @@
       "category": "history",
       "language": "en",
       "title": "RESEARCH_PROGRESS.md",
-      "bytes": 100,
+      "bytes": 104,
       "hash": "f90b17ffc2db5d6e017d9fdae3335320d54faa91"
     },
     {
@@ -6379,7 +6379,7 @@
       "category": "roadmap",
       "language": "en",
       "title": "AGEMS -> SuperAgents OS -- Roadmap",
-      "bytes": 45137,
+      "bytes": 44408,
       "hash": "5651ab59b1b33c4aa51a281b090d0bbaeb41b8f2"
     },
     {

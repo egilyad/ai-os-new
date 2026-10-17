@@ -75,7 +75,9 @@ for (const abs of files) {
     const slug = rel.split('/').pop().replace(/\.md$/, '');
     if (SELF_REPORTS.has(slug)) continue;
     const text = readFileSync(abs, 'utf8');
-    const bytes = statSync(abs).size;
+    // Size in LF-normalized bytes: the checkout line ending differs between
+    // Windows (CRLF) and CI (LF), and the inventory must be identical on both.
+    const bytes = Buffer.byteLength(text.replace(/\r\n/g, '\n'), 'utf8');
     const category = categoryOf(rel);
     const language = languageOf(text);
     const title = titleOf(text, rel);
