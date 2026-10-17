@@ -194,6 +194,7 @@ docs/wiki/           # markdown-зеркало вики (этот портал)
 | `npm run gen:wiki-panel-catalog` | пересобрать каталог панелей |
 | `npm run gen:wiki-site` | собрать статический сайт вики (для GitHub Pages) |
 | `npm run gen:readme-maps` | пересобрать таблицы README из кода |
+| `npm run docs:health` | проверка здоровья документации (ссылки, источники, полнота) |
 | `npm run proxy` | CORS-прокси для инструментов |
 
 Полный список — в [английском README](./README_EN.md#scripts).

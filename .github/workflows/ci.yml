@@ -70,6 +70,13 @@ jobs:
                   npm run gen:wiki-docs
                   git diff --exit-code -- docs/wiki
 
+            - name: Documentation health
+              # Objective checks over the committed wiki mirror: declared source
+              # paths must resolve, internal links must work, slugs must be
+              # unique. Hard problems fail the job; soft metrics (incomplete
+              # articles, unmapped panels) are printed for visibility.
+              run: npm run docs:health
+
     build:
         name: Build
         runs-on: ubuntu-latest

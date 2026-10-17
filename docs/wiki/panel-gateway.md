@@ -4,7 +4,7 @@
 
 > Раздел: **Панели** · Статус: verified · Теги: панель, gateway, компании, задачи, согласования, инструкция
 
-Источники: `src/i18n/translations/en/nav.ts`, `src/components/IssuesPanel/`, `src/components/ApprovalsPanel/`, `src/components/ExportImportPanel/`, `src/components/Adapters/`
+Источники: `src/i18n/translations/en/nav.ts`, `src/components/IssuesPanel/`, `src/components/ApprovalsPanel/`, `src/components/ExportImportPanel/`, `src/components/AdaptersPanel.tsx`
 
 ## Назначение
 

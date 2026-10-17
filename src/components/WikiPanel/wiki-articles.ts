@@ -938,7 +938,7 @@ EWMA-латентность, TTFT, cache hit rate, доля ошибок (429 / 
         section: 'panels',
         tags: ['панель', 'gateway', 'компании', 'задачи', 'согласования', 'инструкция'],
         freshness: 'verified',
-        sources: ['src/i18n/translations/en/nav.ts', 'src/components/IssuesPanel/', 'src/components/ApprovalsPanel/', 'src/components/ExportImportPanel/', 'src/components/Adapters/'],
+        sources: ['src/i18n/translations/en/nav.ts', 'src/components/IssuesPanel/', 'src/components/ApprovalsPanel/', 'src/components/ExportImportPanel/', 'src/components/AdaptersPanel.tsx'],
         related: ['panel-governance', 'agents', 'panel-observability', 'zone-16'],
         body: `## Назначение
 
