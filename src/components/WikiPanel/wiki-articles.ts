@@ -227,7 +227,7 @@ Providers → Installed → Add Key → вставить ключ → дожда
         section: 'panels',
         tags: ['панель', 'governance', 'политики', 'guardrails', 'инструкция'],
         freshness: 'verified',
-        sources: ['src/components/GovernancePanel/GovernancePanel.tsx', 'src/components/PolicyPanel/PolicyPanel.tsx', 'src/components/GuardrailsPanel/GuardrailsPanel.tsx', 'src/components/SopPanel/SopPanel.tsx', 'src/components/PromptSecurityPanel/'],
+        sources: ['src/components/GovernancePanel/GovernancePanel.tsx', 'src/components/PolicyPanel/PolicyPanel.tsx', 'src/components/GuardrailsPanel/GuardrailsPanel.tsx', 'src/components/SopPanel/SopPanel.tsx', 'src/components/PromptSecurityPanel.tsx'],
         related: ['agents', 'diagnostics', 'providers', 'dev-component-catalog'],
         body: `## Назначение
 
@@ -328,6 +328,78 @@ SRE-контур: алерты, метрики здоровья, предлож�
 ## Где менять
 
 Компонент: \`src/components/SREAgentPanel/SREAgentPanel.tsx\`. Системная диагностика — [[diagnostics]].`,
+    },
+    {
+        slug: 'panel-observability',
+        title: 'Панель: Наблюдаемость (логи, трейсы, здоровье)',
+        section: 'panels',
+        tags: ['панель', 'логи', 'трейсы', 'health', 'инструкция'],
+        freshness: 'verified',
+        sources: ['src/i18n/translations/en/observability.ts', 'src/components/LogsPanel/LogsPanel.tsx', 'src/components/RouterTraceView/RouterTraceView.tsx', 'src/components/TracesPanel/TracesPanel.tsx'],
+        related: ['diagnostics', 'panel-sre', 'dev-component-catalog'],
+        body: `## Назначение
+
+Контур наблюдаемости: логи, трейсы, здоровье, трейс роутера, инспектор состояния, профилировщик и здоровье документации. Строки — ключи \`logs.*\`, \`traces.*\`, \`health.*\`, \`router_trace.*\`, \`docs_health.*\`, \`performance_profiler.*\`, \`state_inspector.*\` (в неймспейсе observability).
+
+## Логи
+
+Консоль логов с уровнями и фильтрами — первое место, куда смотреть при сбое.
+
+## Трейсы
+
+Список трейсов: спаны, длительности, ошибки. Версия \`router-trace\` показывает выбор провайдера и ключа, причины отказа и fallback.
+
+## Здоровье
+
+Здоровье подсистем и SLA: статусы, предупреждения, время обновления. Health-метрики питают и дашборд обзора.
+
+## Инспектор состояния
+
+Снимок состояния ядра/сторов для отладки (что реально лежит в памяти и БД).
+
+## Профилировщик производительности
+
+Замеры времени рендера и сервисов — где тормозит.
+
+## Здоровье документации
+
+Проверка документации и ссылок: что устарело или битое.
+
+## Где менять
+
+Компоненты: \`LogsPanel\`, \`TracesPanel\`, \`RouterTraceView\`, \`HealthPanel\`, \`StateInspectorPanel\`. Системная диагностика — [[diagnostics]], SRE-контур — [[panel-sre]].`,
+    },
+    {
+        slug: 'panel-budget',
+        title: 'Панель: Бюджет и затраты',
+        section: 'panels',
+        tags: ['панель', 'бюджет', 'затраты', 'pricing', 'инструкция'],
+        freshness: 'verified',
+        sources: ['src/i18n/translations/en/budget.ts', 'src/components/BudgetPanel/'],
+        related: ['providers', 'diagnostics', 'panel-settings', 'dev-component-catalog'],
+        body: `## Назначение
+
+Бюджеты, цены, оптимизация затрат и алерты. Строки — ключи \`budget.*\`, \`pricing.*\`, \`cost_opt.*\`, \`budgetAlerts.*\`.
+
+## Бюджеты
+
+Общий, дневной, недельный и месячный лимиты, баланс, потрачено/остаток, автопополнение, отдельные бюджеты по провайдерам и история. Есть секции: глобальная, агентов, провайдеров, алертов.
+
+## Цены (pricing)
+
+Таблица цен, синхронизация с OpenRouter, активные оверрайды стоимости входа/выхода для модели и их правка. Показывает трату за месяц, среднее в день, остаток, прогноз до конца месяца и выход за бюджет.
+
+## Оптимизация затрат
+
+Потенциальная экономия, рекомендации (можно скрыть), разбивка по провайдерам и моделям: запросы, средняя стоимость, средняя латентность, надёжность. Если данных нет — так и написано.
+
+## Алерты бюджета
+
+Правила с именем и порогом; условия (выше/ниже порога, около лимита, тренд вверх/вниз) и действия (уведомить, блокировать, переключить провайдера, предупредить). Есть история срабатываний и очистка.
+
+## Где менять
+
+Компоненты: \`BudgetPanel\` и его секции (\`PlatformBudgetSection\` и др.). Провайдеры и ключи — [[panel-providers]], роутер — в настройках [[panel-settings]].`,
     },
     {
         slug: 'agents',
