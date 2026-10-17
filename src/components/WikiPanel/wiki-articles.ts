@@ -564,10 +564,113 @@ Health-панели провайдеров, трейсы и timeline, DLQ (dead-
 
 ## Зона 15: отложено, требует проверки
 
-- ResearchEngine AdvancedPanel и все табы ResearchPanel (Citations/FactCheck/PeerReview/...) — не covered.
+- ResearchEngine AdvancedTab и все табы ResearchPanel (Citations/FactCheck/PeerReview/...) — не covered.
 - DebateResearch (50+ файлов аудитов) — вообще не тронут, отдельная зона.
 - Gemini-табы (Search/FactCheck/Summary/Anomalies/PeerReview) — только рендер через панель, прямых тестов нет.
 - useVisibilityInterval на 2с + usePolling на 15с одновременно — двойной опрос, возможный лишний ререндер.
+
+## Зона 18: SRE и пулы (проверено, исправлено)
+
+- SREAgentPanel: все catch были пустыми («resolver logged») — теперь баннер + лог; refresh терпит не-массивы; execute/dismiss/autofix — с видимыми ошибками.
+- PoolStatusPanel: сохранение квоты санитизировано (NaN/отрицательные → 0, иначе травит все суммы); legacy-ключи без provider не роняют matching; 4 захардкоженных лейбла — в ключи en+ru.
+- ServiceRegistryPanel проверен чтением — честный (glob-источник, самоподдерживающийся), правок не потребовал.
+- Тесты: SREAgentPanel 4/4 (новый), PoolStatusPanel 7/5+2 (мок через vi.hoisted-stores).
+- ВАЖНО: локальная верификация невозможна (vitest-пул мёртв), гейт — только CI. Синтаксис проверен транспиляцией.
+
+## Зона 18: отложено, требует проверки
+
+- WhatIfCard/CachingAdvice/AlertItem/SREHeader — только через интеграционные тесты панели.
+- usePoolStatus/getPoolKeyDistribution — живые стора-пути не гонялись, только моки.
+- ServiceRegistry DetailPanel/UnmappedPanel — не покрыты.
+
+## Зона 19: прогнозы и симуляции (проверено, исправлено)
+
+- OutcomeForecasterPanel: handleForecast в try/catch с баннером; expectedScoreGain — «—» вместо NaN%.
+- WhatIfPanel: runSim глотал ошибки в finally-молчании — теперь баннер; null-результаты терпятся.
+- Тесты: OutcomeForecaster +1 (мусорный ввод), WhatIfPanel 3/3 (новый: honest render + error-banner через UI).
+- ВАЖНО: локальная верификация невозможна (vitest-пул мёртв), гейт — только CI. Синтаксис проверен транспиляцией.
+
+## Зона 19: отложено, требует проверки
+
+- OutcomeForecaster: формула эвристики зашита в UI-тексте (+0.15 novelty, −0.1 risk) — рассинхрон с движком никто не ловит.
+- WhatIf-симуляции против живых engine-сервисов — только моки, живого прогона нет.
+- ResearchEngine AdvancedTab и остальные табы ResearchPanel — по-прежнему не covered.
+
+## Зона 20: управление дебатами (проверено, исправлено)
+
+- GoTDeliberationPanel: handleDeliberate был try/finally без catch (unhandled) — теперь баннер; branches/diversity/confidence/novelty/reasoning/conclusion — guards от частичных веток.
+- CouncilPanel: списки/детали/сообщения/факты/оценки — guards на legacy без полей; effect загрузки детали терпит и синхронный throw lazy-прокси.
+- Тесты: GoTDeliberationPanel.guards 2/2 (мокнутый сервис с битой полезной нагрузкой), CouncilPanel 3/3 (новый, стора-мок).
+- ВАЖНО: локальная верификация невозможна (vitest-пул мёртв), гейт — только CI. Синтаксис проверен транспиляцией.
+
+## Зона 20: отложено, требует проверки
+
+- DirectorPanel (сценарии/прогоны) — большая панель с тестами, не тронута: отдельный аудит при необходимости.
+- MetaAgentPanel/ExpertWitnessPanel — прочитаны поверхностно, явной лжи не видно; глубокий аудит не делался.
+
+## Зона 22: смещения и доверие (проверено, исправлено)
+
+- BeliefMining: extractBeliefs пропускает записи без content (падал matchAll на undefined, роняя все панели-потребители).
+- AnchoringPanel: useMemo обёрнуты в try/catch ([] и '' при ошибке); рендер терпит записи без полей.
+- Entanglement-engine: extractAnchors пропускает записи без content.
+- BlindEval: displayAgent терпит отсутствующий agentId.
+- AdversarialSourcePanel: verify глотал ошибки в try/finally — теперь баннер; loadDebate не вставляет «undefined» в текст.
+- BayesianJudgePanel: agent.name.split без fallback ронял рендер, если у legacy-агента нет name — теперь (name ?? id); posterior/updates — guards от NaN.
+- ShadowPanel: сбой diff логировался только в console.error (панель показывала «No data») — теперь баннер с текстом ошибки.
+- DyadPanel: legacy-цикл без goal/log ронял .toLowerCase()/.slice()/.log.length — guards + «—»/пустой лог вместо undefined.
+- i18n: весь неймспейс dyad.* отсутствовал (панель показывала сырые ключи) — добавлен en+ru (23 ключа), паритет проверен.
+- Проверены без правок (сервисы гарантируют корректные поля / уже есть баннер): BiasProfilerPanel, CredibilityPanel, IncentiveDetectorPanel, PersonaMixerPanel, ShadowOpponentPanel.
+- Тесты: BeliefMining +1 (legacy без content), AnchoringPanel 2/2 (новый), BlindEval +1, AdversarialSource +1 (fetch-ошибка → баннер), BayesianJudge +1 (агент без name), DyadPanel +1 (цикл без goal/log).
+- ВАЖНО: локальная верификация невозможна (vitest-пул мёртв), гейт — только CI. Синтаксис проверен транспиляцией.
+
+## Зона 22: отложено, требует проверки
+
+- BayesianJudge/BiasProfiler/Credibility/Incentive/PersonaMixer — guards точечные, живой прогон против реальных payload шины не гонялся.
+- ShadowPanel живьём зависит от routerProjection/routerService: расхождение live vs projection при реальной нагрузке не проверялось — только баннер сбоя.
+- Counterfactual-панель (CausalAttribution/ScoreComparison/TraceSidebar) — вообще не тронута.
+
+## Зона 21: качество аргументов (проверено, исправлено)
+
+- SynthesisPanel: handleSynthesize/export/refine/refresh были голыми — теперь runGuarded с баннером; confidenceDistribution/input/zones/perspectives/totalTokens — guards («—» вместо краша/NaN).
+- PerspectiveGrid: confidence — «—» вместо NaN%.
+- OutcomeForecasterPanel: handleForecast в try/catch с баннером; expectedScoreGain — «—» вместо NaN.
+- WhatIfPanel: runSim глотал ошибки в finally — теперь баннер; null-результаты терпятся.
+- Тесты: SynthesisPanel +2 (баннер, legacy), OutcomeForecaster +1 (мусорный ввод), WhatIfPanel 3/3 (новый, error-banner через UI).
+- ВАЖНО: локальная верификация невозможна (vitest-пул мёртв), гейт — только CI. Синтаксис проверен транспиляцией.
+
+## Зона 21: отложено, требует проверки
+
+- Steelman/Rhetoric/Justification/LogicalForm/ArgumentGraph/FrameTracker/StanceDrift/Entanglement/ConceptBlender/Minimax — только grep-разведка; у части есть свои тесты, прямого аудита не было.
+- Counterfactual-панель (CausalAttribution/ScoreComparison/TraceSidebar) — не тронута вообще.
+- ResearchEngine AdvancedTab и остальные табы ResearchPanel — по-прежнему не covered.
+
+## Зона 17: debate research (проверено, исправлено)
+
+- ExperimentComparison: getAllRuns терпит не-массив и throw; formatDuration — «—» вместо NaN s при битых метках.
+- GovStressTest: getScenarios на уровне модуля больше не роняет импорт; runAllScenarios терпит не-массив и throw (панель не виснет в Running...); поиск и счётчики терпят записи без scenario.
+- Math.random в ExperimentComparison — честный рандом-пик для кнопки Random, не фабрикация данных.
+- Тесты: ExperimentComparison 3/3, GovStressTest 3/3 (новые файлы).
+- ВАЖНО: локальная верификация невозможна — vitest-пул мёртв системно (проверено многократно, включая тривиальные файлы), гейт — только CI. Синтаксис проверен транспиляцией.
+
+## Зона 17: отложено, требует проверки
+
+- Остальные ~45 файлов DebateResearch (аудиты, гипотезы, покрытия, покрытия) — только точечная проверка.
+- ResearchRunHistory/StatsPanel и прочие потребители researchRunService — не покрыты.
+- Живой прогон GovStressTest.runAllScenarios против реального движка — не гонялся.
+
+## Зона 16: company gateway (проверено, исправлено)
+
+- Gateway-панели в целом оказались образцовыми (ошибки баннером, Array-гарды, честный local fallback) — правились только точечные места.
+- CompaniesPanel: fallback-орг без mission ронял рендер — guard.
+- CostsPanel/RunsPanel: «Invalid Date» и «undefined¢» на legacy-записях — прочерки.
+- Тесты: CompaniesPanel/CostsPanel/RunsPanel — новые файлы (fallback-баннер, legacy без полей).
+- ВАЖНО: локальная верификация невозможна — vitest-пул мёртв системно (проверено даже на тривиальных файлах), гейт — только CI. Синтаксис новых файлов проверен транспиляцией, паритет ключей — выборкой.
+
+## Зона 16: отложено, требует проверки
+
+- AdaptersPanel/ApprovalsPanel/IssuesPanel/PortabilityPanel — только чтение кода (паттерн тот же честный), прямых тестов нет.
+- Секреты шлюза в localStorage открытым текстом — известное решение, не трогалось.
+- Живого gateway-бэкенда для интеграционной проверки нет — только моки.
 
 ## Зона 3: отложено, требует проверки
 
