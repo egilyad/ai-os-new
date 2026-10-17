@@ -30,4 +30,16 @@
 - [Панель: Анализ дебатов](./panel-debate-analysis.md)
 - [Панель: Governance и безопасность](./panel-governance.md)
 
+---
+
+## Связи с кодом (авто)
+
+Цепочка «панель → маршрут → компонент → тесты» собрана из реестра маршрутов.
+
+- Панель `debate-quality` → маршрут `/debate-quality`
+  - Компонент: `src/components/DebateQualityPanel`
+  - Тесты: — (рядом с компонентом не найдены)
+
+См. также: [Каталог панелей](./panels-catalog.md) · [Каталог компонентов OS](./dev-component-catalog.md).
+
 [← Все материалы](./README.md)

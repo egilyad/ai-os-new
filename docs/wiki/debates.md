@@ -40,4 +40,16 @@ flowchart TD
 - [Знания и память](./memory.md)
 - [Провайдеры и маршрутизация](./providers.md)
 
+---
+
+## Связи с кодом (авто)
+
+Цепочка «панель → маршрут → компонент → тесты» собрана из реестра маршрутов.
+
+- Панель `debate` → маршрут `/debate`
+  - Компонент: `src/components/DebateArena`
+  - Тесты: `src/components/DebateArena.test.tsx`
+
+См. также: [Каталог панелей](./panels-catalog.md) · [Каталог компонентов OS](./dev-component-catalog.md).
+
 [← Все материалы](./README.md)

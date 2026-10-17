@@ -33,4 +33,37 @@
 - [Инструменты анализа дебатов](./panel-debate-toolkit.md)
 - [Панели: Аналитика, затраты и ключи](./panel-analytics.md)
 
+---
+
+## Связи с кодом (авто)
+
+Цепочка «панель → маршрут → компонент → тесты» собрана из реестра маршрутов.
+
+- Панель `outcome-forecaster` → маршрут `/outcome-forecaster`
+  - Компонент: `src/components/OutcomeForecasterPanel/OutcomeForecasterPanel`
+  - Тесты: `src/components/OutcomeForecasterPanel/OutcomeForecasterPanel.test.tsx`
+- Панель `similarity` → маршрут `/similarity`
+  - Компонент: `src/components/SimilarityPanel/SimilarityPanel`
+  - Тесты: `src/components/SimilarityPanel/SimilarityPanel.test.tsx`
+- Панель `drift-detector` → маршрут `/drift-detector`
+  - Компонент: `src/components/DriftDetectorPanel/DriftDetectorPanel`
+  - Тесты: `src/components/DriftDetectorPanel/DriftDetectorPanel.test.tsx`
+- Панель `blind-eval` → маршрут `/blind-eval`
+  - Компонент: `src/components/BlindEvalPanel/BlindEvalPanel`
+  - Тесты: `src/components/BlindEvalPanel/BlindEvalPanel.test.tsx`
+- Панель `calibration` → маршрут `/calibration`
+  - Компонент: `src/components/CalibrationPanel/CalibrationPanel`
+  - Тесты: `src/components/CalibrationPanel/CalibrationPanel.test.tsx`
+- Панель `consistency` → маршрут `/consistency`
+  - Компонент: `src/components/ConsistencyPanel/ConsistencyPanel`
+  - Тесты: `src/components/ConsistencyPanel/ConsistencyPanel.test.tsx`
+- Панель `entanglement` → маршрут `/entanglement`
+  - Компонент: `src/components/EntanglementPanel/EntanglementPanel`
+  - Тесты: `src/components/EntanglementPanel/EntanglementPanel.test.tsx`
+- Панель `bop-tracker` → маршрут `/bop-tracker`
+  - Компонент: `src/components/BoPTrackerPanel/BoPTrackerPanel`
+  - Тесты: `src/components/BoPTrackerPanel/BoPTrackerPanel.test.tsx`
+
+См. также: [Каталог панелей](./panels-catalog.md) · [Каталог компонентов OS](./dev-component-catalog.md).
+
 [← Все материалы](./README.md)

@@ -30,4 +30,19 @@
 - [Панель: Синтез мнений](./panel-synthesis.md)
 - [Инструменты анализа дебатов](./panel-debate-toolkit.md)
 
+---
+
+## Связи с кодом (авто)
+
+Цепочка «панель → маршрут → компонент → тесты» собрана из реестра маршрутов.
+
+- Панель `lenses` → маршрут `/lenses`
+  - Компонент: `src/components/LensesPanel/LensesPanel`
+  - Тесты: `src/components/LensesPanel/LensesPanel.test.tsx`
+- Панель `crystals` → маршрут `/crystals`
+  - Компонент: `src/components/CrystalVaultPanel/CrystalVaultPanel`
+  - Тесты: `src/components/CrystalVaultPanel/CrystalVaultPanel.test.tsx`
+
+См. также: [Каталог панелей](./panels-catalog.md) · [Каталог компонентов OS](./dev-component-catalog.md).
+
 [← Все материалы](./README.md)

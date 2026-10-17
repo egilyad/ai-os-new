@@ -29,4 +29,16 @@
 - [След исполнения: журнал, раны, зомби](./execution-trail.md)
 - [Диагностика и известные проблемы](./diagnostics.md)
 
+---
+
+## Связи с кодом (авто)
+
+Цепочка «панель → маршрут → компонент → тесты» собрана из реестра маршрутов.
+
+- Панель `agents` → маршрут `/agents`
+  - Компонент: `src/components/AgentsPanel/AgentsPanel`
+  - Тесты: `src/components/AgentsPanel/AgentsPanel.test.tsx`
+
+См. также: [Каталог панелей](./panels-catalog.md) · [Каталог компонентов OS](./dev-component-catalog.md).
+
 [← Все материалы](./README.md)

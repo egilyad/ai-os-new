@@ -30,4 +30,28 @@
 - [Панель: Governance и безопасность](./panel-governance.md)
 - [Панель: Настройки](./panel-settings.md)
 
+---
+
+## Связи с кодом (авто)
+
+Цепочка «панель → маршрут → компонент → тесты» собрана из реестра маршрутов.
+
+- Панель `audit` → маршрут `/audit`
+  - Компонент: `src/components/AuditLogView`
+  - Тесты: — (рядом с компонентом не найдены)
+- Панель `history` → маршрут `/history`
+  - Компонент: `src/components/ConfigHistoryView`
+  - Тесты: — (рядом с компонентом не найдены)
+- Панель `time-machine` → маршрут `/time-machine`
+  - Компонент: `src/components/TimeMachinePanel`
+  - Тесты: — (рядом с компонентом не найдены)
+- Панель `prompt-versions` → маршрут `/prompt-versions`
+  - Компонент: `src/components/PromptVersionPanel`
+  - Тесты: — (рядом с компонентом не найдены)
+- Панель `deploy` → маршрут `/deploy`
+  - Компонент: `src/components/DeployPanel`
+  - Тесты: — (рядом с компонентом не найдены)
+
+См. также: [Каталог панелей](./panels-catalog.md) · [Каталог компонентов OS](./dev-component-catalog.md).
+
 [← Все материалы](./README.md)

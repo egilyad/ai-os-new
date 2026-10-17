@@ -30,4 +30,28 @@
 - [Панель: Флот (Fleet Console)](./panel-fleet.md)
 - [Панели: Персоны агентов](./panel-persona.md)
 
+---
+
+## Связи с кодом (авто)
+
+Цепочка «панель → маршрут → компонент → тесты» собрана из реестра маршрутов.
+
+- Панель `agent-marketplace` → маршрут `/agent-marketplace`
+  - Компонент: `src/components/AgentMarketplacePanel`
+  - Тесты: — (рядом с компонентом не найдены)
+- Панель `agent-comparison` → маршрут `/agent-comparison`
+  - Компонент: `src/components/AgentComparisonPanel`
+  - Тесты: — (рядом с компонентом не найдены)
+- Панель `agent-protocol` → маршрут `/agent-protocol`
+  - Компонент: `src/components/AgentProtocolPanel`
+  - Тесты: — (рядом с компонентом не найдены)
+- Панель `template-sharing` → маршрут `/template-sharing`
+  - Компонент: `src/components/TemplateSharingPanel`
+  - Тесты: — (рядом с компонентом не найдены)
+- Панель `team-collaboration` → маршрут `/team-collaboration`
+  - Компонент: `src/components/CollaborationPanel`
+  - Тесты: — (рядом с компонентом не найдены)
+
+См. также: [Каталог панелей](./panels-catalog.md) · [Каталог компонентов OS](./dev-component-catalog.md).
+
 [← Все материалы](./README.md)

@@ -30,4 +30,16 @@
 - [Панели: Линзы и кристаллы](./panel-lenses-crystals.md)
 - [Знания и память](./memory.md)
 
+---
+
+## Связи с кодом (авто)
+
+Цепочка «панель → маршрут → компонент → тесты» собрана из реестра маршрутов.
+
+- Панель `knowledge-generator` → маршрут `/knowledge-generator`
+  - Компонент: `src/components/KnowledgeGenPanel/KnowledgeGenPanel`
+  - Тесты: `src/components/KnowledgeGenPanel/KnowledgeGenPanel.test.tsx`
+
+См. также: [Каталог панелей](./panels-catalog.md) · [Каталог компонентов OS](./dev-component-catalog.md).
+
 [← Все материалы](./README.md)

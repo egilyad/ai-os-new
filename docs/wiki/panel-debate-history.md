@@ -34,4 +34,22 @@
 - [Панель: Живые дебаты](./panel-debate-live.md)
 - [Панель: Анализ дебатов](./panel-debate-analysis.md)
 
+---
+
+## Связи с кодом (авто)
+
+Цепочка «панель → маршрут → компонент → тесты» собрана из реестра маршрутов.
+
+- Панель `debate-replay` → маршрут `/debate-replay`
+  - Компонент: `src/components/DebateReplayPanel`
+  - Тесты: — (рядом с компонентом не найдены)
+- Панель `debate-history` → маршрут `/debate-history`
+  - Компонент: `src/components/DebatePanel/DebateHistoryPage`
+  - Тесты: `src/components/DebatePanel/DebateHistoryPage.test.tsx`
+- Панель `debates-manager` → маршрут `/debates-manager`
+  - Компонент: `src/components/DebatesManagerPanel`
+  - Тесты: `src/components/DebatesManagerPanel.test.tsx`
+
+См. также: [Каталог панелей](./panels-catalog.md) · [Каталог компонентов OS](./dev-component-catalog.md).
+
 [← Все материалы](./README.md)

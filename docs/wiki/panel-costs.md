@@ -26,4 +26,16 @@
 - [Панели: Компании и корпоративный gateway](./panel-gateway.md)
 - [Панель: Провайдеры и ключи](./panel-providers.md)
 
+---
+
+## Связи с кодом (авто)
+
+Цепочка «панель → маршрут → компонент → тесты» собрана из реестра маршрутов.
+
+- Панель `costs` → маршрут `/costs`
+  - Компонент: `src/components/CostsPanel`
+  - Тесты: `src/components/CostsPanel.test.tsx`
+
+См. также: [Каталог панелей](./panels-catalog.md) · [Каталог компонентов OS](./dev-component-catalog.md).
+
 [← Все материалы](./README.md)

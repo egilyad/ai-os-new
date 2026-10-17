@@ -34,4 +34,16 @@
 - [Панель: Форум](./panel-forum.md)
 - [Панель: Живые дебаты](./panel-debate-live.md)
 
+---
+
+## Связи с кодом (авто)
+
+Цепочка «панель → маршрут → компонент → тесты» собрана из реестра маршрутов.
+
+- Панель `room` → маршрут `/room`
+  - Компонент: `src/components/RoomPanel/RoomPanel`
+  - Тесты: `src/components/RoomPanel/RoomPanel.test.tsx`
+
+См. также: [Каталог панелей](./panels-catalog.md) · [Каталог компонентов OS](./dev-component-catalog.md).
+
 [← Все материалы](./README.md)

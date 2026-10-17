@@ -50,4 +50,16 @@ flowchart LR
 - [Каталог компонентов OS](./dev-component-catalog.md)
 - [Зона 4: память и знания](./zone-4.md)
 
+---
+
+## Связи с кодом (авто)
+
+Цепочка «панель → маршрут → компонент → тесты» собрана из реестра маршрутов.
+
+- Панель `knowledge` → маршрут `/knowledge`
+  - Компонент: `src/components/KnowledgePanel/KnowledgePanel`
+  - Тесты: `src/components/KnowledgePanel/KnowledgePanel.test.tsx`
+
+См. также: [Каталог панелей](./panels-catalog.md) · [Каталог компонентов OS](./dev-component-catalog.md).
+
 [← Все материалы](./README.md)

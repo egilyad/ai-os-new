@@ -43,4 +43,19 @@ flowchart LR
 - [Панель: Бюджет и затраты](./panel-budget.md)
 - [Зона 8: роутер и маршрутизация](./zone-8.md)
 
+---
+
+## Связи с кодом (авто)
+
+Цепочка «панель → маршрут → компонент → тесты» собрана из реестра маршрутов.
+
+- Панель `smart-routing` → маршрут `/smart-routing`
+  - Компонент: `src/components/SmartRoutingPanel`
+  - Тесты: — (рядом с компонентом не найдены)
+- Панель `routing` → маршрут `/routing`
+  - Компонент: `src/components/RoutingIntelligence/RoutingIntelligence`
+  - Тесты: `src/components/RoutingIntelligence/RoutingIntelligence.test.tsx`
+
+См. также: [Каталог панелей](./panels-catalog.md) · [Каталог компонентов OS](./dev-component-catalog.md).
+
 [← Все материалы](./README.md)

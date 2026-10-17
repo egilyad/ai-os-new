@@ -3,11 +3,11 @@
 // Deterministic (no timestamps) so CI can gate it: regenerate must equal the
 // committed file. Entities: sections, articles (from the wiki corpus), panels
 // (from the route registries + route-imports).
-import { writeFileSync, readFileSync, existsSync } from 'fs';
+import { writeFileSync, readFileSync } from 'fs';
 import { register } from 'tsx/esm/api';
 import { fileURLToPath, pathToFileURL } from 'url';
 import { dirname, resolve } from 'path';
-import { parseNavSections, techniqueComponents, routeImportComponents } from './lib/route-nav.mjs';
+import { parseNavSections, techniqueComponents, routeImportComponents, testsFor } from './lib/route-nav.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 register();
@@ -15,14 +15,6 @@ register();
 const { WIKI_ARTICLES, WIKI_SECTIONS } = await import(
     pathToFileURL(resolve(root, 'src/components/WikiPanel/wiki-articles.ts')).href
 );
-
-// ---- sibling tests for a source file (conservative heuristic) ----
-function testsFor(source) {
-    if (!/\.(ts|tsx)$/.test(source) || source.includes('*')) return [];
-    const base = source.replace(/\.(ts|tsx)$/, '');
-    const cands = [`${base}.test.tsx`, `${base}.test.ts`, `${base}.smoke.test.tsx`, `${base}.test.tsx`];
-    return [...new Set(cands)].filter((c) => existsSync(resolve(root, c)));
-}
 
 const articles = WIKI_ARTICLES.map((a) => ({
     id: `wiki:${a.slug}`,

@@ -1,12 +1,20 @@
 // Shared parser: nav sections -> items, resolved from the route registries.
 // Used by gen-readme-maps.mjs and gen-wiki-panel-catalog.mjs so both agree on
 // the same code-truth (core + system + content sections, incl. technique spread).
-import { readFileSync } from 'fs';
+import { readFileSync, existsSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, resolve } from 'path';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const read = (p) => readFileSync(resolve(root, p), 'utf8');
+
+/** Tests co-located with a source file (conservative: only real siblings). */
+export function testsFor(source) {
+    if (source.includes('*')) return [];
+    const bases = /\.(ts|tsx)$/.test(source) ? [source.replace(/\.(ts|tsx)$/, '')] : [source];
+    const cands = bases.flatMap((b) => [`${b}.test.tsx`, `${b}.test.ts`, `${b}.smoke.test.tsx`]);
+    return [...new Set(cands)].filter((c) => existsSync(resolve(root, c)));
+}
 
 /** Flat 'nav.*' label map for a language (ru | en). */
 export function navLabels(lang) {

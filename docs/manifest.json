@@ -1011,7 +1011,9 @@
         "panel-budget",
         "zone-8"
       ],
-      "tests": []
+      "tests": [
+        "src/components/RoutingIntelligence/RoutingIntelligence.test.tsx"
+      ]
     },
     {
       "id": "wiki:panel-pools",
@@ -1187,7 +1189,9 @@
         "panel-debate-live",
         "panel-debate-analysis"
       ],
-      "tests": []
+      "tests": [
+        "src/components/DebatePanel/DebateHistoryPage.test.tsx"
+      ]
     },
     {
       "id": "wiki:panel-debate-templates",
@@ -1399,7 +1403,9 @@
         "panel-room",
         "dev-component-catalog"
       ],
-      "tests": []
+      "tests": [
+        "src/components/ChatSessionsManagerPanel.test.tsx"
+      ]
     },
     {
       "id": "wiki:panel-lenses-crystals",
@@ -1809,7 +1815,8 @@
         "zone-19"
       ],
       "tests": [
-        "src/components/SimulationPanel/SimulationPanel.test.tsx"
+        "src/components/SimulationPanel/SimulationPanel.test.tsx",
+        "src/components/WhatIfPanel/WhatIfPanel.test.tsx"
       ]
     },
     {
@@ -1888,7 +1895,10 @@
         "panel-memory-palace",
         "panel-knowledge"
       ],
-      "tests": []
+      "tests": [
+        "src/components/FederatedMemoryPanel.test.tsx",
+        "src/components/MemoryTransferPanel.test.tsx"
+      ]
     },
     {
       "id": "wiki:panel-files-editors",
@@ -1995,7 +2005,9 @@
         "panel-topics",
         "dev-component-catalog"
       ],
-      "tests": []
+      "tests": [
+        "src/components/GeminiResearch/GeminiResearchPanel.test.tsx"
+      ]
     },
     {
       "id": "wiki:panel-provenance-junctions",

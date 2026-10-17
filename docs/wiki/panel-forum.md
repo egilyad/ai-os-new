@@ -31,4 +31,16 @@
 - [Каталог компонентов OS](./dev-component-catalog.md)
 - [Зона 13: коммуникации](./zone-13.md)
 
+---
+
+## Связи с кодом (авто)
+
+Цепочка «панель → маршрут → компонент → тесты» собрана из реестра маршрутов.
+
+- Панель `forum` → маршрут `/forum`
+  - Компонент: `src/components/ForumPanel/ForumPanel`
+  - Тесты: `src/components/ForumPanel/ForumPanel.test.tsx`
+
+См. также: [Каталог панелей](./panels-catalog.md) · [Каталог компонентов OS](./dev-component-catalog.md).
+
 [← Все материалы](./README.md)

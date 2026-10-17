@@ -57,4 +57,40 @@ flowchart LR
 - [Каталог компонентов OS](./dev-component-catalog.md)
 - [Зона 5: система и мониторинг](./zone-5.md)
 
+---
+
+## Связи с кодом (авто)
+
+Цепочка «панель → маршрут → компонент → тесты» собрана из реестра маршрутов.
+
+- Панель `logs` → маршрут `/logs`
+  - Компонент: `src/components/LogsPanel/LogsPanel`
+  - Тесты: `src/components/LogsPanel/LogsPanel.test.tsx`
+- Панель `debugger` → маршрут `/debugger`
+  - Компонент: `src/components/TracesPanel/TracesPanel`
+  - Тесты: `src/components/TracesPanel/TracesPanel.test.tsx`
+- Панель `router-trace` → маршрут `/router-trace`
+  - Компонент: `src/components/RouterTraceView/RouterTraceView`
+  - Тесты: — (рядом с компонентом не найдены)
+- Панель `health` → маршрут `/health`
+  - Компонент: `src/components/HealthPanel/HealthPanel`
+  - Тесты: `src/components/HealthPanel/HealthPanel.test.tsx`
+- Панель `system-health` → маршрут `/system-health`
+  - Компонент: `src/components/SystemHealthPanel`
+  - Тесты: — (рядом с компонентом не найдены)
+- Панель `docs-health` → маршрут `/docs-health`
+  - Компонент: `src/components/DocsHealthPanel`
+  - Тесты: `src/components/DocsHealthPanel.test.tsx`
+- Панель `state-inspector` → маршрут `/state-inspector`
+  - Компонент: `src/components/StateInspectorPanel/StateInspectorPanel`
+  - Тесты: — (рядом с компонентом не найдены)
+- Панель `performance-profiler` → маршрут `/performance-profiler`
+  - Компонент: `src/components/PerformanceProfilerPanel`
+  - Тесты: — (рядом с компонентом не найдены)
+- Панель `health-sla` → маршрут `/health-sla`
+  - Компонент: `src/components/HealthSlaPanel`
+  - Тесты: — (рядом с компонентом не найдены)
+
+См. также: [Каталог панелей](./panels-catalog.md) · [Каталог компонентов OS](./dev-component-catalog.md).
+
 [← Все материалы](./README.md)

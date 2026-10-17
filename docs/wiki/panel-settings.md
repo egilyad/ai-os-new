@@ -44,4 +44,16 @@
 - [Панель: Провайдеры и ключи](./panel-providers.md)
 - [Зона 9: настройки](./zone-9.md)
 
+---
+
+## Связи с кодом (авто)
+
+Цепочка «панель → маршрут → компонент → тесты» собрана из реестра маршрутов.
+
+- Панель `settings` → маршрут `/settings`
+  - Компонент: `src/components/SettingsPanel/SettingsPanel`
+  - Тесты: `src/components/SettingsPanel/SettingsPanel.test.tsx`
+
+См. также: [Каталог панелей](./panels-catalog.md) · [Каталог компонентов OS](./dev-component-catalog.md).
+
 [← Все материалы](./README.md)

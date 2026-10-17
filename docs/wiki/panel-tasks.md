@@ -43,4 +43,16 @@ flowchart LR
 - [Каталог компонентов OS](./dev-component-catalog.md)
 - [Зона 3: агенты и задачи](./zone-3.md)
 
+---
+
+## Связи с кодом (авто)
+
+Цепочка «панель → маршрут → компонент → тесты» собрана из реестра маршрутов.
+
+- Панель `tasks` → маршрут `/tasks`
+  - Компонент: `src/components/TasksPanel/TasksPanel`
+  - Тесты: `src/components/TasksPanel/TasksPanel.test.tsx`
+
+См. также: [Каталог панелей](./panels-catalog.md) · [Каталог компонентов OS](./dev-component-catalog.md).
+
 [← Все материалы](./README.md)

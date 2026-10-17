@@ -35,4 +35,16 @@
 - [Каталог компонентов OS](./dev-component-catalog.md)
 - [Зона 25: конструкторы](./zone-25.md)
 
+---
+
+## Связи с кодом (авто)
+
+Цепочка «панель → маршрут → компонент → тесты» собрана из реестра маршрутов.
+
+- Панель `builder` → маршрут `/builder`
+  - Компонент: `src/components/BuilderPanel/CognitiveBuilder`
+  - Тесты: `src/components/BuilderPanel/CognitiveBuilder.test.tsx`
+
+См. также: [Каталог панелей](./panels-catalog.md) · [Каталог компонентов OS](./dev-component-catalog.md).
+
 [← Все материалы](./README.md)

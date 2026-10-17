@@ -26,4 +26,16 @@
 - [Панель: Чат](./panel-chat.md)
 - [Каталог компонентов OS](./dev-component-catalog.md)
 
+---
+
+## Связи с кодом (авто)
+
+Цепочка «панель → маршрут → компонент → тесты» собрана из реестра маршрутов.
+
+- Панель `bookmarks` → маршрут `/bookmarks`
+  - Компонент: `src/components/BookmarksPanel/BookmarksPanel`
+  - Тесты: — (рядом с компонентом не найдены)
+
+См. также: [Каталог панелей](./panels-catalog.md) · [Каталог компонентов OS](./dev-component-catalog.md).
+
 [← Все материалы](./README.md)

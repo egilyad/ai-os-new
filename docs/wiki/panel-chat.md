@@ -42,4 +42,16 @@ sequenceDiagram
 - [Знания и память](./memory.md)
 - [Зона 1: панели провайдеров и чата](./zone-1.md)
 
+---
+
+## Связи с кодом (авто)
+
+Цепочка «панель → маршрут → компонент → тесты» собрана из реестра маршрутов.
+
+- Панель `chat` → маршрут `/chat`
+  - Компонент: `src/components/ChatPanel/ChatPanel`
+  - Тесты: `src/components/ChatPanel/ChatPanel.test.tsx`
+
+См. также: [Каталог панелей](./panels-catalog.md) · [Каталог компонентов OS](./dev-component-catalog.md).
+
 [← Все материалы](./README.md)

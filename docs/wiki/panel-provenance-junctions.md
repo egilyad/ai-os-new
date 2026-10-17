@@ -34,4 +34,25 @@
 - [Панель: Генератор знаний](./panel-knowledge-generator.md)
 - [Панель: Задачи и пайплайны](./panel-tasks.md)
 
+---
+
+## Связи с кодом (авто)
+
+Цепочка «панель → маршрут → компонент → тесты» собрана из реестра маршрутов.
+
+- Панель `junctions` → маршрут `/junctions`
+  - Компонент: `src/components/JunctionPanel/JunctionPanel`
+  - Тесты: `src/components/JunctionPanel/JunctionPanel.test.tsx`
+- Панель `run-queue` → маршрут `/run-queue`
+  - Компонент: `src/components/RunQueuePanel/RunQueuePanel`
+  - Тесты: `src/components/RunQueuePanel/RunQueuePanel.test.tsx`
+- Панель `insight-bus` → маршрут `/insight-bus`
+  - Компонент: `src/components/InsightBusPanel/InsightBusPanel`
+  - Тесты: `src/components/InsightBusPanel/InsightBusPanel.test.tsx`
+- Панель `provenance` → маршрут `/provenance`
+  - Компонент: `src/components/ProvenancePanel/ProvenancePanel`
+  - Тесты: `src/components/ProvenancePanel/ProvenancePanel.test.tsx`
+
+См. также: [Каталог панелей](./panels-catalog.md) · [Каталог компонентов OS](./dev-component-catalog.md).
+
 [← Все материалы](./README.md)

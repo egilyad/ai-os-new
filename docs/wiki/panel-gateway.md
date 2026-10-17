@@ -58,4 +58,31 @@ flowchart LR
 - [Панель: Наблюдаемость (логи, трейсы, здоровье)](./panel-observability.md)
 - [Зона 16: company gateway](./zone-16.md)
 
+---
+
+## Связи с кодом (авто)
+
+Цепочка «панель → маршрут → компонент → тесты» собрана из реестра маршрутов.
+
+- Панель `companies` → маршрут `/companies`
+  - Компонент: `src/components/CompaniesPanel`
+  - Тесты: `src/components/CompaniesPanel.test.tsx`
+- Панель `issues` → маршрут `/issues`
+  - Компонент: `src/components/IssuesPanel`
+  - Тесты: — (рядом с компонентом не найдены)
+- Панель `runs` → маршрут `/runs`
+  - Компонент: `src/components/RunsPanel`
+  - Тесты: `src/components/RunsPanel.test.tsx`
+- Панель `adapters` → маршрут `/adapters`
+  - Компонент: `src/components/AdaptersPanel`
+  - Тесты: — (рядом с компонентом не найдены)
+- Панель `portability` → маршрут `/portability`
+  - Компонент: `src/components/PortabilityPanel`
+  - Тесты: — (рядом с компонентом не найдены)
+- Панель `approvals` → маршрут `/approvals`
+  - Компонент: `src/components/ApprovalsPanel`
+  - Тесты: — (рядом с компонентом не найдены)
+
+См. также: [Каталог панелей](./panels-catalog.md) · [Каталог компонентов OS](./dev-component-catalog.md).
+
 [← Все материалы](./README.md)

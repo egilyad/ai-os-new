@@ -30,4 +30,16 @@
 - [Панель: Групповой чат](./panel-group-chat.md)
 - [Каталог компонентов OS](./dev-component-catalog.md)
 
+---
+
+## Связи с кодом (авто)
+
+Цепочка «панель → маршрут → компонент → тесты» собрана из реестра маршрутов.
+
+- Панель `dyad` → маршрут `/dyad`
+  - Компонент: `src/components/DyadPanel/DyadPanel`
+  - Тесты: `src/components/DyadPanel/DyadPanel.test.tsx`
+
+См. также: [Каталог панелей](./panels-catalog.md) · [Каталог компонентов OS](./dev-component-catalog.md).
+
 [← Все материалы](./README.md)

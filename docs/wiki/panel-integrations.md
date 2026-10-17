@@ -55,4 +55,34 @@ flowchart LR
 - [Каталог компонентов OS](./dev-component-catalog.md)
 - [Зона 7: инструменты и MCP](./zone-7.md)
 
+---
+
+## Связи с кодом (авто)
+
+Цепочка «панель → маршрут → компонент → тесты» собрана из реестра маршрутов.
+
+- Панель `skills` → маршрут `/skills`
+  - Компонент: `src/components/SkillsPanel/SkillsPanel`
+  - Тесты: `src/components/SkillsPanel/SkillsPanel.test.tsx`
+- Панель `google-cache` → маршрут `/google-cache`
+  - Компонент: `src/components/GoogleCachePanel`
+  - Тесты: — (рядом с компонентом не найдены)
+- Панель `tools` → маршрут `/tools`
+  - Компонент: `src/components/ToolsPanel/ToolsPanel`
+  - Тесты: `src/components/ToolsPanel/ToolsPanel.test.tsx`
+- Панель `connectors` → маршрут `/connectors`
+  - Компонент: `src/components/ConnectorsPanel/ConnectorsPanel`
+  - Тесты: `src/components/ConnectorsPanel/ConnectorsPanel.test.tsx`
+- Панель `mcp` → маршрут `/mcp`
+  - Компонент: `src/components/MCPPanel/MCPPanel`
+  - Тесты: `src/components/MCPPanel/MCPPanel.test.tsx`
+- Панель `cache` → маршрут `/cache`
+  - Компонент: `src/components/CachePanel`
+  - Тесты: — (рядом с компонентом не найдены)
+- Панель `webhooks` → маршрут `/webhooks`
+  - Компонент: `src/components/WebhooksPanel`
+  - Тесты: — (рядом с компонентом не найдены)
+
+См. также: [Каталог панелей](./panels-catalog.md) · [Каталог компонентов OS](./dev-component-catalog.md).
+
 [← Все материалы](./README.md)

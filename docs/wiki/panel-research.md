@@ -31,4 +31,19 @@
 - [Дебаты: режимы и механика](./debates.md)
 - [Зона 15: исследования](./zone-15.md)
 
+---
+
+## Связи с кодом (авто)
+
+Цепочка «панель → маршрут → компонент → тесты» собрана из реестра маршрутов.
+
+- Панель `research-engine` → маршрут `/research-engine`
+  - Компонент: `src/components/ResearchPanel/ResearchEnginePanel`
+  - Тесты: `src/components/ResearchPanel/ResearchEnginePanel.test.tsx`
+- Панель `research-reports` → маршрут `/research-reports`
+  - Компонент: `src/components/ResearchReportPanel`
+  - Тесты: — (рядом с компонентом не найдены)
+
+См. также: [Каталог панелей](./panels-catalog.md) · [Каталог компонентов OS](./dev-component-catalog.md).
+
 [← Все материалы](./README.md)

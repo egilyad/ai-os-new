@@ -50,4 +50,25 @@ flowchart LR
 - [Панель: Настройки](./panel-settings.md)
 - [Каталог компонентов OS](./dev-component-catalog.md)
 
+---
+
+## Связи с кодом (авто)
+
+Цепочка «панель → маршрут → компонент → тесты» собрана из реестра маршрутов.
+
+- Панель `pricing` → маршрут `/pricing`
+  - Компонент: `src/components/AnalyticsPanel/PricingPanel`
+  - Тесты: — (рядом с компонентом не найдены)
+- Панель `budget` → маршрут `/budget`
+  - Компонент: `src/components/BudgetPanel`
+  - Тесты: — (рядом с компонентом не найдены)
+- Панель `cost-optimization` → маршрут `/cost-optimization`
+  - Компонент: `src/components/CostOptimizationPanel`
+  - Тесты: — (рядом с компонентом не найдены)
+- Панель `budget-alerts` → маршрут `/budget-alerts`
+  - Компонент: `src/components/BudgetAlertsPanel`
+  - Тесты: — (рядом с компонентом не найдены)
+
+См. также: [Каталог панелей](./panels-catalog.md) · [Каталог компонентов OS](./dev-component-catalog.md).
+
 [← Все материалы](./README.md)

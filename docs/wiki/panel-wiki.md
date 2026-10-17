@@ -39,4 +39,16 @@ flowchart LR
 - [Разработчикам: обзор и слои](./dev-overview.md)
 - [Каталог компонентов OS](./dev-component-catalog.md)
 
+---
+
+## Связи с кодом (авто)
+
+Цепочка «панель → маршрут → компонент → тесты» собрана из реестра маршрутов.
+
+- Панель `wiki` → маршрут `/wiki`
+  - Компонент: `src/components/WikiPanel/WikiPanel`
+  - Тесты: `src/components/WikiPanel/WikiPanel.test.tsx`
+
+См. также: [Каталог панелей](./panels-catalog.md) · [Каталог компонентов OS](./dev-component-catalog.md).
+
 [← Все материалы](./README.md)

@@ -30,4 +30,43 @@
 - [Панели: Умная маршрутизация](./panel-routing.md)
 - [Панель: Пул ключей провайдеров](./panel-pools.md)
 
+---
+
+## Связи с кодом (авто)
+
+Цепочка «панель → маршрут → компонент → тесты» собрана из реестра маршрутов.
+
+- Панель `google-studio` → маршрут `/google-studio`
+  - Компонент: `src/components/GoogleStudio/GoogleStudioPanel`
+  - Тесты: — (рядом с компонентом не найдены)
+- Панель `gemini-live` → маршрут `/gemini-live`
+  - Компонент: `src/components/GeminiLivePanel`
+  - Тесты: — (рядом с компонентом не найдены)
+- Панель `rival-labs` → маршрут `/rival-labs`
+  - Компонент: `src/components/RivalLabs/RivalLabsPanel`
+  - Тесты: `src/components/RivalLabs/RivalLabsPanel.test.tsx`
+- Панель `rivals-catalog` → маршрут `/rivals-catalog`
+  - Компонент: `src/components/RivalsCatalogPanel`
+  - Тесты: — (рядом с компонентом не найдены)
+- Панель `provider-dashboard` → маршрут `/provider-dashboard`
+  - Компонент: `src/components/ProviderDashboard`
+  - Тесты: — (рядом с компонентом не найдены)
+- Панель `provider-marketplace` → маршрут `/provider-marketplace`
+  - Компонент: `src/components/ProviderMarketplace`
+  - Тесты: — (рядом с компонентом не найдены)
+- Панель `groq-speed` → маршрут `/groq-speed`
+  - Компонент: `src/components/ProviderManager/GroqSpeedDashboard`
+  - Тесты: — (рядом с компонентом не найдены)
+- Панель `nvidia-enterprise` → маршрут `/nvidia-enterprise`
+  - Компонент: `src/components/NvidiaEnterprise/NvidiaEnterprisePanel`
+  - Тесты: — (рядом с компонентом не найдены)
+- Панель `openrouter` → маршрут `/openrouter`
+  - Компонент: `src/components/OpenRouterPanel`
+  - Тесты: — (рядом с компонентом не найдены)
+- Панель `model-distillation` → маршрут `/model-distillation`
+  - Компонент: `src/components/DistillationPanel`
+  - Тесты: — (рядом с компонентом не найдены)
+
+См. также: [Каталог панелей](./panels-catalog.md) · [Каталог компонентов OS](./dev-component-catalog.md).
+
 [← Все материалы](./README.md)

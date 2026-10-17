@@ -31,4 +31,19 @@
 - [Каталог компонентов OS](./dev-component-catalog.md)
 - [Зона 11: workspace и проекты](./zone-11.md)
 
+---
+
+## Связи с кодом (авто)
+
+Цепочка «панель → маршрут → компонент → тесты» собрана из реестра маршрутов.
+
+- Панель `project-os` → маршрут `/project-os`
+  - Компонент: `src/components/DebateResearch/ProjectOsExplorer`
+  - Тесты: — (рядом с компонентом не найдены)
+- Панель `projects` → маршрут `/projects`
+  - Компонент: `src/components/ProjectsPanel/ProjectsPanel`
+  - Тесты: `src/components/ProjectsPanel/ProjectsPanel.test.tsx`
+
+См. также: [Каталог панелей](./panels-catalog.md) · [Каталог компонентов OS](./dev-component-catalog.md).
+
 [← Все материалы](./README.md)

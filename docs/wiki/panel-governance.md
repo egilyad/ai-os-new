@@ -57,4 +57,31 @@ flowchart LR
 - [Каталог компонентов OS](./dev-component-catalog.md)
 - [Зона 6: governance и политики](./zone-6.md)
 
+---
+
+## Связи с кодом (авто)
+
+Цепочка «панель → маршрут → компонент → тесты» собрана из реестра маршрутов.
+
+- Панель `sop` → маршрут `/sop`
+  - Компонент: `src/components/SopPanel/SopPanel`
+  - Тесты: `src/components/SopPanel/SopPanel.test.tsx`
+- Панель `policies` → маршрут `/policies`
+  - Компонент: `src/components/PolicyPanel/PolicyPanel`
+  - Тесты: `src/components/PolicyPanel/PolicyPanel.test.tsx`
+- Панель `policy-editor` → маршрут `/policy-editor`
+  - Компонент: `src/components/PolicyEditorPanel`
+  - Тесты: — (рядом с компонентом не найдены)
+- Панель `governance` → маршрут `/governance`
+  - Компонент: `src/components/GovernancePanel/GovernancePanel`
+  - Тесты: `src/components/GovernancePanel/GovernancePanel.test.tsx`
+- Панель `guardrails` → маршрут `/guardrails`
+  - Компонент: `src/components/GuardrailsPanel/GuardrailsPanel`
+  - Тесты: `src/components/GuardrailsPanel/GuardrailsPanel.test.tsx`
+- Панель `security` → маршрут `/security`
+  - Компонент: `src/components/PromptSecurityPanel`
+  - Тесты: — (рядом с компонентом не найдены)
+
+См. также: [Каталог панелей](./panels-catalog.md) · [Каталог компонентов OS](./dev-component-catalog.md).
+
 [← Все материалы](./README.md)

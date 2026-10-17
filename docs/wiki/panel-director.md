@@ -30,4 +30,16 @@
 - [Панель: Синтез мнений](./panel-synthesis.md)
 - [Каталог компонентов OS](./dev-component-catalog.md)
 
+---
+
+## Связи с кодом (авто)
+
+Цепочка «панель → маршрут → компонент → тесты» собрана из реестра маршрутов.
+
+- Панель `director` → маршрут `/director`
+  - Компонент: `src/components/DirectorPanel/DirectorPanel`
+  - Тесты: `src/components/DirectorPanel/DirectorPanel.test.tsx`
+
+См. также: [Каталог панелей](./panels-catalog.md) · [Каталог компонентов OS](./dev-component-catalog.md).
+
 [← Все материалы](./README.md)

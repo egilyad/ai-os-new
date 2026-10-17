@@ -26,4 +26,16 @@
 - [Панель: Ротация ключей](./panel-rotations.md)
 - [Панель: Провайдеры и ключи](./panel-providers.md)
 
+---
+
+## Связи с кодом (авто)
+
+Цепочка «панель → маршрут → компонент → тесты» собрана из реестра маршрутов.
+
+- Панель `groups` → маршрут `/groups`
+  - Компонент: `src/components/GroupsPanel/GroupsPanel`
+  - Тесты: `src/components/GroupsPanel/GroupsPanel.test.tsx`
+
+См. также: [Каталог панелей](./panels-catalog.md) · [Каталог компонентов OS](./dev-component-catalog.md).
+
 [← Все материалы](./README.md)

@@ -28,4 +28,16 @@
 - [След исполнения: журнал, раны, зомби](./execution-trail.md)
 - [Зона 3: агенты и задачи](./zone-3.md)
 
+---
+
+## Связи с кодом (авто)
+
+Цепочка «панель → маршрут → компонент → тесты» собрана из реестра маршрутов.
+
+- Панель `agent-tasks` → маршрут `/agent-tasks`
+  - Компонент: `src/components/AgentTasksPanel/AgentTasksPanel`
+  - Тесты: `src/components/AgentTasksPanel/AgentTasksPanel.test.tsx`
+
+См. также: [Каталог панелей](./panels-catalog.md) · [Каталог компонентов OS](./dev-component-catalog.md).
+
 [← Все материалы](./README.md)

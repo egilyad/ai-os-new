@@ -27,4 +27,16 @@ Providers → Installed → Add Key → вставить ключ → дожда
 - [Диагностика и известные проблемы](./diagnostics.md)
 - [Зона 1: панели провайдеров и чата](./zone-1.md)
 
+---
+
+## Связи с кодом (авто)
+
+Цепочка «панель → маршрут → компонент → тесты» собрана из реестра маршрутов.
+
+- Панель `keys` → маршрут `/keys`
+  - Компонент: `src/components/ProviderManager/ProviderManager`
+  - Тесты: `src/components/ProviderManager/ProviderManager.test.tsx`
+
+См. также: [Каталог панелей](./panels-catalog.md) · [Каталог компонентов OS](./dev-component-catalog.md).
+
 [← Все материалы](./README.md)

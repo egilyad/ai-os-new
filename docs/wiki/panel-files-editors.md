@@ -29,4 +29,25 @@
 - [Панель: Библиотека промптов](./panel-prompt-library.md)
 - [Каталог компонентов OS](./dev-component-catalog.md)
 
+---
+
+## Связи с кодом (авто)
+
+Цепочка «панель → маршрут → компонент → тесты» собрана из реестра маршрутов.
+
+- Панель `tutorials` → маршрут `/tutorials`
+  - Компонент: `src/components/LearnHubPanel`
+  - Тесты: — (рядом с компонентом не найдены)
+- Панель `editors` → маршрут `/editors`
+  - Компонент: `src/components/Editors/EditorsPanel`
+  - Тесты: — (рядом с компонентом не найдены)
+- Панель `voice-input` → маршрут `/voice-input`
+  - Компонент: `src/components/VoiceInputPanel`
+  - Тесты: — (рядом с компонентом не найдены)
+- Панель `files` → маршрут `/files`
+  - Компонент: `src/components/WorkspacePanel/WorkspacePanel`
+  - Тесты: `src/components/WorkspacePanel/WorkspacePanel.test.tsx`
+
+См. также: [Каталог панелей](./panels-catalog.md) · [Каталог компонентов OS](./dev-component-catalog.md).
+
 [← Все материалы](./README.md)

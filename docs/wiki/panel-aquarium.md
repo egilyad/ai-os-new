@@ -33,4 +33,16 @@
 - [Агенты: устройство и управление](./agents.md)
 - [Каталог компонентов OS](./dev-component-catalog.md)
 
+---
+
+## Связи с кодом (авто)
+
+Цепочка «панель → маршрут → компонент → тесты» собрана из реестра маршрутов.
+
+- Панель `aquarium` → маршрут `/aquarium`
+  - Компонент: `src/components/AquariumPanel/AquariumPanel`
+  - Тесты: `src/components/AquariumPanel/AquariumPanel.test.tsx`
+
+См. также: [Каталог панелей](./panels-catalog.md) · [Каталог компонентов OS](./dev-component-catalog.md).
+
 [← Все материалы](./README.md)

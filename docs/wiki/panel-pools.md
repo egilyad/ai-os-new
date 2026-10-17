@@ -31,4 +31,16 @@
 - [Панель: Бюджет и затраты](./panel-budget.md)
 - [Зона 18: SRE и пулы](./zone-18.md)
 
+---
+
+## Связи с кодом (авто)
+
+Цепочка «панель → маршрут → компонент → тесты» собрана из реестра маршрутов.
+
+- Панель `pools` → маршрут `/pools`
+  - Компонент: `src/components/PoolStatusPanel/PoolStatusPanel`
+  - Тесты: `src/components/PoolStatusPanel/PoolStatusPanel.test.tsx`
+
+См. также: [Каталог панелей](./panels-catalog.md) · [Каталог компонентов OS](./dev-component-catalog.md).
+
 [← Все материалы](./README.md)

@@ -44,4 +44,34 @@ crews, councils, graphs, persona, ops, interop, meta, trust, frontier, rivals.
 - [Инструменты анализа дебатов](./panel-debate-toolkit.md)
 - [Панели: Персоны агентов](./panel-persona.md)
 
+---
+
+## Связи с кодом (авто)
+
+Цепочка «панель → маршрут → компонент → тесты» собрана из реестра маршрутов.
+
+- Панель `fleet` → маршрут `/fleet`
+  - Компонент: `src/components/FleetPanel/FleetPanel`
+  - Тесты: `src/components/FleetPanel/FleetPanel.test.tsx`
+- Панель `fleet-crews` → маршрут `/fleet-crews`
+  - Компонент: `src/components/FleetPanels/CrewsPanel`
+  - Тесты: — (рядом с компонентом не найдены)
+- Панель `fleet-councils` → маршрут `/fleet-councils`
+  - Компонент: `src/components/CouncilPanel/CouncilPanel`
+  - Тесты: `src/components/CouncilPanel/CouncilPanel.test.tsx`
+- Панель `fleet-graphs` → маршрут `/fleet-graphs`
+  - Компонент: `src/components/FleetPanels/GraphsPanel`
+  - Тесты: — (рядом с компонентом не найдены)
+- Панель `fleet-persona` → маршрут `/fleet-persona`
+  - Компонент: `src/components/FleetPanels/PersonaOpsPanel`
+  - Тесты: — (рядом с компонентом не найдены)
+- Панель `fleet-interop` → маршрут `/fleet-interop`
+  - Компонент: `src/components/FleetPanels/InteropPanel`
+  - Тесты: — (рядом с компонентом не найдены)
+- Панель `fleet-frontier` → маршрут `/fleet-frontier`
+  - Компонент: `src/components/FleetPanels/FrontierPanel`
+  - Тесты: — (рядом с компонентом не найдены)
+
+См. также: [Каталог панелей](./panels-catalog.md) · [Каталог компонентов OS](./dev-component-catalog.md).
+
 [← Все материалы](./README.md)
