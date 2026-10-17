@@ -1304,6 +1304,374 @@ crews, councils, graphs, persona, ops, interop, meta, trust, frontier, rivals.
 Компоненты: \`PersonaPickerPanel\`, \`PersonaMixerPanel\`, \`PersonaMarketplacePanel\`. Флот — [[panel-fleet]], агенты — [[agents]].`,
     },
     {
+        slug: 'panel-channels',
+        title: 'Панель: Каналы',
+        section: 'panels',
+        tags: ['панель', 'каналы', 'чат', 'инструкция'],
+        freshness: 'verified',
+        sources: ['src/i18n/translations/en/analytics.ts', 'src/components/ChannelPanel/ChannelPanel.tsx'],
+        related: ['panel-chat', 'panel-group-chat', 'dev-component-catalog'],
+        body: `## Назначение
+
+Каналы для тематического общения. Ключи \`channels.*\`.
+
+## Возможности
+
+Создание канала (имя, описание), список каналов, участники, отправка сообщений, ответы и треды, удаление сообщения, индикатор набора. Есть сид-демо и честные пустые состояния.
+
+## Где менять
+
+Компонент: \`ChannelPanel\`. Чат — [[panel-chat]], групп-чат — [[panel-group-chat]].`,
+    },
+    {
+        slug: 'panel-room',
+        title: 'Панель: Комната (Room)',
+        section: 'panels',
+        tags: ['панель', 'комната', 'вызовы', 'агенты', 'инструкция'],
+        freshness: 'verified',
+        sources: ['src/i18n/translations/en/analytics.ts', 'src/components/RoomPanel/RoomPanel.tsx'],
+        related: ['agents', 'panel-forum', 'panel-debate-live'],
+        body: `## Назначение
+
+Общая комната для вызова агентов. Ключи \`room.*\`.
+
+## Вызов агента
+
+Выбирается агент, место (room / forum / conversation), режим (chat / debate / director-scenario) и задача; запуск с валидацией.
+
+## Статусы и детали
+
+Запрос проходит статусы requested / accepted / rejected / executing / done. У вызова есть детали: сессия и стоимость. Ведётся лента вызовов, можно очистить вид и историю.
+
+## Политика
+
+Если политика запрещает вызов — показывается понятная ошибка (noPolicy).
+
+## Где менять
+
+Компонент: \`RoomPanel\`. Агенты — [[agents]], форум — [[panel-forum]].`,
+    },
+    {
+        slug: 'panel-rotations',
+        title: 'Панель: Ротация ключей',
+        section: 'panels',
+        tags: ['панель', 'ротация', 'ключи', 'инструкция'],
+        freshness: 'verified',
+        sources: ['src/i18n/translations/en/providers.ts', 'src/components/RotationsPanel/'],
+        related: ['panel-pools', 'panel-providers', 'panel-settings'],
+        body: `## Назначение
+
+Автоматическая ротация ключей провайдеров. Ключи \`rotations.*\`.
+
+## Возможности
+
+Список ротаций с частотой, сроком (duration_days), стратегией и политикой; автоповорот и ручной «повернуть сейчас», время следующего и последнего поворота, включение / выключение. Есть редактирование, создание и удаление.
+
+## Прочее
+
+История поворотов, статусы active / inactive / expired, настройка TTL (с валидацией). Пустые состояния честные.
+
+## Где менять
+
+Компонент: \`RotationsPanel\`. Пул ключей — [[panel-pools]], ключи — [[panel-providers]].`,
+    },
+    {
+        slug: 'panel-sessions',
+        title: 'Панели: Сессии и привязки',
+        section: 'panels',
+        tags: ['панель', 'сессии', 'привязки', 'инструкция'],
+        freshness: 'verified',
+        sources: ['src/i18n/translations/en/workspace.ts', 'src/components/SessionBindingsPanel/', 'src/components/SessionHubPanel/', 'src/components/ChatSessionsManagerPanel'],
+        related: ['panel-chat', 'panel-room', 'dev-component-catalog'],
+        body: `## Назначение
+
+Управление сессиями и их привязками. Ключи \`session_bindings.*\`.
+
+## Привязки
+
+Список привязок сессий со счётчиком; состояния pending и stable, обновление, пустое состояние.
+
+## Хаб и менеджер
+
+\`SessionHubPanel\` — хаб сессий, \`ChatSessionsManagerPanel\` — менеджер чат-сессий.
+
+## Где менять
+
+Компоненты: \`SessionBindingsPanel\`, \`SessionHubPanel\`, \`ChatSessionsManagerPanel\`. Чат — [[panel-chat]], комната — [[panel-room]].`,
+    },
+    {
+        slug: 'panel-lenses-crystals',
+        title: 'Панели: Линзы и кристаллы',
+        section: 'panels',
+        tags: ['панель', 'линзы', 'кристаллы', 'знания', 'инструкция'],
+        freshness: 'verified',
+        sources: ['src/i18n/translations/en/analytics.ts', 'src/components/LensesPanel/LensesPanel.tsx', 'src/components/CrystalVaultPanel/CrystalVaultPanel.tsx'],
+        related: ['memory', 'panel-synthesis', 'panel-debate-toolkit'],
+        body: `## Назначение
+
+Линзы анализа и кристаллы знаний. Ключи \`lenses.*\` и \`lenses_crystal.*\`.
+
+## Линзы
+
+Библиотека линз и активный стек, предложения (suggest). Категории: analytical, ethical, temporal, domain, risk, stakeholder. Создание, редактирование, удаление и очистка; у линзы есть имя, описание, категория, префикс и теги.
+
+## Кристаллы
+
+Кристаллы — зафиксированные утверждения: предложить (propose), кристаллизовать (crystallize), заменить (supersede), опровергнуть (refute). Статусы: semi, crystal, superseded, refuted. У кристалла есть доказательства, допущения, отрицание и противоречия; замена и опровержение подтверждаются.
+
+## Где менять
+
+Компоненты: \`LensesPanel\`, \`CrystalVaultPanel\`. Память — [[memory]], синтез — [[panel-synthesis]].`,
+    },
+    {
+        slug: 'panel-eval',
+        title: 'Панель: Датасеты оценки',
+        section: 'panels',
+        tags: ['панель', 'eval', 'датасеты', 'оценка', 'инструкция'],
+        freshness: 'verified',
+        sources: ['src/i18n/translations/en/analytics.ts', 'src/components/EvalDatasetPanel/'],
+        related: ['panel-quality-impact', 'panel-debate-quality', 'dev-component-catalog'],
+        body: `## Назначение
+
+Датасеты для оценки моделей. Ключи \`eval.*\`.
+
+## Возможности
+
+Создание датасета (имя, описание, промпты), список датасетов, пустое состояние.
+
+## Где менять
+
+Компонент: \`EvalDatasetPanel\`. Влияние техник — [[panel-quality-impact]], качество дебатов — [[panel-debate-quality]].`,
+    },
+    {
+        slug: 'panel-quality-impact',
+        title: 'Панель: Влияние техник',
+        section: 'panels',
+        tags: ['панель', 'качество', 'эксперименты', 'экспорт', 'инструкция'],
+        freshness: 'verified',
+        sources: ['src/i18n/translations/en/quality.ts', 'src/components/QualityImpactDashboard/QualityImpactDashboardPanel'],
+        related: ['panel-eval', 'panel-debate-quality', 'panel-analytics'],
+        body: `## Назначение
+
+Оценка влияния техник на результат. Ключи \`quality_impact.*\`.
+
+## Метрики
+
+Сессии, техники, срабатывания, доля положительных, дельта, число применений и уверенность. Вклад оценивается по последнему касанию (last_touch) и по частоте.
+
+## Эксперименты
+
+Создание и запуск эксперимента (имя, число сессий), прогресс, статус, остановка и удаление; список экспериментов.
+
+## Экспорт
+
+Экспорт в JSON и CSV (метрики, сессии, бейзлайны); копирование JSON с уведомлением.
+
+## Где менять
+
+Компонент: \`QualityImpactDashboardPanel\`. Датасеты — [[panel-eval]], аналитика — [[panel-analytics]].`,
+    },
+    {
+        slug: 'panel-groups',
+        title: 'Панель: Группы ключей',
+        section: 'panels',
+        tags: ['панель', 'группы', 'ключи', 'инструкция'],
+        freshness: 'verified',
+        sources: ['src/i18n/translations/en/providers.ts', 'src/components/GroupsPanel/GroupsPanel.tsx'],
+        related: ['panel-pools', 'panel-rotations', 'panel-providers'],
+        body: `## Назначение
+
+Группировка ключей по пулам и балансировка. Ключи \`groups.*\`.
+
+## Возможности
+
+Создание, переименование и удаление группы (с подтверждением), число ключей, перемещение ключей между группами (включая «без группы»), распределение ключей и авто-балансировка пулов. Есть предупреждение по умолчанию и подсказка выбора.
+
+## Где менять
+
+Компонент: \`GroupsPanel\`. Пул ключей — [[panel-pools]], ротация — [[panel-rotations]].`,
+    },
+    {
+        slug: 'panel-guardians',
+        title: 'Панель: Хранители (Guardians)',
+        section: 'panels',
+        tags: ['панель', 'хранители', 'политики', 'инструкция'],
+        freshness: 'verified',
+        sources: ['src/i18n/translations/en/analytics.ts', 'src/components/GuardiansPanel/'],
+        related: ['panel-providers', 'panel-routing', 'panel-governance'],
+        body: `## Назначение
+
+Режимы-«хранители», задающие приоритет поведения системы. Ключи \`guardians.*\`.
+
+## Режимы
+
+Скорость, безопасность, мощность, маршрутизация, стоимость, локальный режим и креативность — каждый со своим девизом-ориентиром.
+
+## Состояния
+
+Если провайдеров нет — честное сообщение.
+
+## Где менять
+
+Компонент: \`GuardiansPanel\`. Маршрутизация — [[panel-routing]], ключи — [[panel-providers]].`,
+    },
+    {
+        slug: 'panel-memory-palace',
+        title: 'Панель: Дворец памяти',
+        section: 'panels',
+        tags: ['панель', 'память', 'дворец', 'инструкция'],
+        freshness: 'verified',
+        sources: ['src/i18n/translations/en/memory.ts', 'src/components/MemoryPanel/MemoryPalacePanel.tsx'],
+        related: ['memory', 'panel-knowledge', 'panel-lenses-crystals'],
+        body: `## Назначение
+
+Пространственная организация памяти по комнатам. Ключи \`memory_palace.*\`.
+
+## Комнаты
+
+Учебная (study), библиотека, архив, мастерская, сад, двор и обсерватория — каждая со своим назначением. Показываются всего записей и использование памяти.
+
+## Состояния
+
+Ошибка загрузки и недоступность сервиса показываются явно.
+
+## Где менять
+
+Компонент: \`MemoryPalacePanel\`. Память и RAG — [[memory]], база знаний — [[panel-knowledge]].`,
+    },
+    {
+        slug: 'panel-topics',
+        title: 'Панель: Генератор тем',
+        section: 'panels',
+        tags: ['панель', 'темы', 'генератор', 'инструкция'],
+        freshness: 'verified',
+        sources: ['src/i18n/translations/en/debate.ts', 'src/components/TopicSuggesterPanel/'],
+        related: ['debates', 'panel-debate-templates', 'dev-component-catalog'],
+        body: `## Назначение
+
+Предложение тем для дебатов. Ключи \`topic_suggester.*\`.
+
+## Возможности
+
+Фильтры по категориям, исключения, число тем, своя тема (custom), копирование темы, обновление и сброс фильтров. Пустое состояние честное.
+
+## Где менять
+
+Компонент: \`TopicSuggesterPanel\`. Дебаты — [[debates]], шаблоны — [[panel-debate-templates]].`,
+    },
+    {
+        slug: 'panel-knowledge-generator',
+        title: 'Панель: Генератор знаний',
+        section: 'panels',
+        tags: ['панель', 'генератор', 'знания', 'инструкция'],
+        freshness: 'verified',
+        sources: ['src/i18n/translations/en/analytics.ts', 'src/components/KnowledgeGenPanel/KnowledgeGenPanel.tsx'],
+        related: ['panel-knowledge', 'panel-lenses-crystals', 'memory'],
+        body: `## Назначение
+
+Автоматическая генерация знаний по типам заданий. Ключи \`generator.*\`.
+
+## Типы заданий
+
+По расписанию (scheduled), аномалия, пробел (gap), вопрос форума, конфликт кристаллов и кросс-доменное.
+
+## Ход
+
+Запуск и отмена задания, список активных задач. Стадии: гипотеза → доказательства → ревью → кристаллизация → готово. Статусы queued / running / completed / failed / cancelled; показываются уверенность и токены. Есть сид-демо.
+
+## Где менять
+
+Компонент: \`KnowledgeGenPanel\`. База знаний — [[panel-knowledge]], кристаллы — [[panel-lenses-crystals]].`,
+    },
+    {
+        slug: 'panel-providers-extra',
+        title: 'Панели: Провайдерские дополнения',
+        section: 'panels',
+        tags: ['панель', 'провайдеры', 'маркетплейс', 'инструкция'],
+        freshness: 'verified',
+        sources: ['src/i18n/translations/en/providers.ts', 'src/components/ProviderDashboard', 'src/components/ProviderMarketplace'],
+        related: ['panel-providers', 'panel-routing', 'panel-pools'],
+        body: `## Назначение
+
+Дополнительные панели вокруг провайдеров: дашборд, маркетплейс и интеграции отдельных вендоров. Ключи \`provider_dashboard.*\`.
+
+## Дашборд
+
+Активные ключи, провайдеры, всего запросов, средняя латентность, оценочная стоимость, недавние решения и события.
+
+## Маркетплейс и вендоры
+
+Маркетплейс провайдеров, интеграции OpenRouter, Groq (скорость), NVIDIA Enterprise, Google Studio и Gemini Live, а также сравнение лабораторий (Rival Labs) и каталог соперников. Дистилляция моделей — отдельная панель.
+
+## Где менять
+
+Компоненты: \`ProviderDashboard\`, \`ProviderMarketplace\`, \`OpenRouterPanel\`, \`GroqSpeedDashboard\`, \`NvidiaEnterprisePanel\`, \`GoogleStudioPanel\`, \`GeminiLivePanel\`, \`RivalLabsPanel\`, \`DistillationPanel\`. Основное — [[panel-providers]].`,
+    },
+    {
+        slug: 'panel-contribution',
+        title: 'Панели: Вклад и сообщество',
+        section: 'panels',
+        tags: ['панель', 'сообщество', 'вклад', 'лидерборд', 'инструкция'],
+        freshness: 'verified',
+        sources: ['src/i18n/translations/en/dashboard.ts', 'src/components/ContributionGraphPanel/', 'src/components/SocialLeaderboardPanel'],
+        related: ['agents', 'panel-scheduler', 'dev-component-catalog'],
+        body: `## Назначение
+
+Активность и вклад участников. Ключи \`contrib.*\`.
+
+## Граф вклада
+
+Всего вклада, текущая серия (streak) и самая длинная, календарь активности по дням (меньше / больше).
+
+## Лидерборд
+
+Социальный лидерборд и хаб сообщества (\`CommunityHubPanel\`) — рейтинги и общая активность.
+
+## Где менять
+
+Компоненты: \`ContributionGraphPanel\`, \`SocialLeaderboardPanel\`, \`CommunityHubPanel\`. Агенты — [[agents]].`,
+    },
+    {
+        slug: 'panel-costs',
+        title: 'Панель: Бюджеты компании (gateway)',
+        section: 'panels',
+        tags: ['панель', 'бюджет', 'gateway', 'стоимость', 'инструкция'],
+        freshness: 'verified',
+        sources: ['src/i18n/translations/en/nav.ts', 'src/components/CostsPanel/'],
+        related: ['panel-budget', 'panel-gateway', 'panel-providers'],
+        body: `## Назначение
+
+Бюджеты компании через gateway: лимиты на модель и на ключ. Ключи \`costs.*\`.
+
+## Возможности
+
+Подключение (URL, секрет), выбор компании, цены за модель и за ключ (в центах), запись значения и подтверждение. Есть «вся компания», безлимит (unlimited), превышение (over) и сохранение бюджета. Ошибки суммы (bad_amount) показываются.
+
+## Где менять
+
+Компонент: \`CostsPanel\`. Бюджеты ОС — [[panel-budget]], gateway — [[panel-gateway]].`,
+    },
+    {
+        slug: 'panel-key-notes',
+        title: 'Панель: Заметки к ключам',
+        section: 'panels',
+        tags: ['панель', 'ключи', 'заметки', 'инструкция'],
+        freshness: 'verified',
+        sources: ['src/i18n/translations/en/memory.ts', 'src/components/KeyNotesPanel/'],
+        related: ['panel-providers', 'panel-pools', 'dev-component-catalog'],
+        body: `## Назначение
+
+Заметки, привязанные к провайдерским ключам. Ключи \`key_notes.*\`.
+
+## Возможности
+
+Выбор ключа, добавление заметки, теги, вложения, скачивание, поиск. Если ключей или заметок нет — честное сообщение.
+
+## Где менять
+
+Компонент: \`KeyNotesPanel\`. Ключи — [[panel-providers]], пул — [[panel-pools]].`,
+    },
+    {
         slug: 'agents',
         title: 'Агенты: устройство и управление',
         section: 'agents',
