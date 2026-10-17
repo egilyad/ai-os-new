@@ -18,11 +18,16 @@ type WikiView =
     | { name: 'article'; slug: string }
     | { name: 'panel'; panelId: string; title: string; sectionTitle: string };
 
-/** Panels with a full written guide; everything else opens an honest stub. */
+/** Panels that open a written panel guide or a covering concept article; else an honest stub. */
 const PANEL_ARTICLES: Record<string, string> = {
     chat: 'panel-chat',
     keys: 'panel-providers',
     'agent-tasks': 'panel-agent-tasks',
+    debate: 'debates',
+    agents: 'agents',
+    memory: 'memory',
+    diagnostics: 'diagnostics',
+    'agent-journal': 'execution-trail',
 };
 
 const shellStyle: React.CSSProperties = {
@@ -470,8 +475,9 @@ function WikiCoverage({
         <div>
             <h3 style={{ marginTop: 0 }}>Покрытие документации</h3>
             <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', lineHeight: 1.7 }}>
-                Честная картина: {documented} из {total} панелей имеют написанную статью,
-                остальные открывают заглушку. Список строится из живого реестра маршрутов.
+                Честная картина: {documented} из {total} панелей имеют материал — гайд по панели
+                или покрывающую обзорную статью; остальные открывают заглушку. Список строится из
+                живого реестра маршрутов.
             </p>
             {NAV_SECTIONS.map((s) => (
                 <div
@@ -513,7 +519,7 @@ function WikiCoverage({
                                     }}
                                 >
                                     {t(item.labelKey)}
-                                    <span style={badge(ok)}>{ok ? 'статья' : 'заглушка'}</span>
+                                    <span style={badge(ok)}>{ok ? 'материал' : 'заглушка'}</span>
                                 </button>
                             );
                         })}
@@ -535,7 +541,7 @@ function WikiMap({
         <div>
             <h3 style={{ marginTop: 0 }}>Карта ОС — дерево из живого реестра</h3>
             <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', lineHeight: 1.7 }}>
-                Панели с написанной инструкцией открывают статью; остальные — честную
+                Панели с материалом открывают гайд или покрывающую статью; остальные — честную
                 заглушку «уточняется» (не выдуманное описание).
             </p>
             {NAV_SECTIONS.map((s) => (
