@@ -7,6 +7,7 @@ import { DOCS_STANDARD_MARKDOWN } from '../../generated/wiki-docs-standard';
 import { DOCS_INDEX_MARKDOWN } from '../../generated/wiki-docs-index';
 import { SYSTEM_MAP_MARKDOWN } from '../../generated/wiki-system-map';
 import { DEVELOPMENT_HISTORY_MARKDOWN } from '../../generated/wiki-history';
+import { CAPABILITIES_MARKDOWN } from '../../generated/wiki-capabilities';
 
 // Auto-maintained catalogs: components, and the panel -> section -> route ->
 // component -> article chain. Bodies come from the generators — edit those.
@@ -123,5 +124,20 @@ export const CATALOG_ARTICLES: WikiArticle[] = [
         ],
         related: ['docs-standard', 'docs-index', 'zone-1', 'dev-tests-catalog'],
         body: DEVELOPMENT_HISTORY_MARKDOWN,
+    },
+    {
+        slug: 'scenarios',
+        title: 'Возможности и сценарии',
+        section: 'guide',
+        tags: ['возможности', 'сценарии', 'руководства', 'ограничения', 'диагностика'],
+        freshness: 'verified',
+        sources: [
+            'src/route-registry-core.ts',
+            'src/route-registry-system.ts',
+            'src/route-registry-content.ts',
+            'scripts/gen-wiki-capabilities.mjs',
+        ],
+        related: ['capabilities', 'panels-guide', 'panels-catalog', 'diagnostics'],
+        body: CAPABILITIES_MARKDOWN,
     },
 ];

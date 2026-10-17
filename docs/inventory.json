@@ -3,7 +3,7 @@
   "generatedBy": "scripts/gen-docs-inventory.mjs",
   "scope": "git-tracked docs/**/*.md, excluding docs/new drafts and the generated self-report pages docs-health, docs-inventory",
   "totals": {
-    "documents": 945,
+    "documents": 946,
     "byCategory": {
       "top": 41,
       "active": 1,
@@ -12,11 +12,11 @@
       "reference": 6,
       "roadmap": 6,
       "superseded": 3,
-      "wiki": 140
+      "wiki": 141
     },
     "byLanguage": {
       "en": 651,
-      "ru": 174,
+      "ru": 175,
       "mixed": 120
     }
   },
@@ -6723,8 +6723,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Карта документации",
-      "bytes": 21287,
-      "hash": "b15421b1b9b450c970785386c253aeaa51b7cc61"
+      "bytes": 21351,
+      "hash": "6692e2e4bbd74b4507f2798edc14285fb04483e5"
     },
     {
       "path": "docs/wiki/docs-standard.md",
@@ -7371,8 +7371,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Wiki SuperAgents OS",
-      "bytes": 13848,
-      "hash": "70dc893a030cfcf0b92dceaa5f229fcfa8d79a00"
+      "bytes": 13926,
+      "hash": "cec369841beadb099b8af483f0f8b11c8c479040"
     },
     {
       "path": "docs/wiki/roadmap-notes.md",
@@ -7381,6 +7381,14 @@
       "title": "Планы и направления",
       "bytes": 1558,
       "hash": "8ecd0e635d7af6b7d89d3421dbf2c31492fa2384"
+    },
+    {
+      "path": "docs/wiki/scenarios.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Возможности и сценарии",
+      "bytes": 9954,
+      "hash": "06d573ff9041e7a2829e432fd19837fe15b65d91"
     },
     {
       "path": "docs/wiki/what-is.md",

@@ -31,6 +31,7 @@
     "gen:wiki-docs-index": "node scripts/gen-wiki-docs-index.mjs",
     "gen:wiki-system-map": "node scripts/gen-wiki-system-map.mjs",
     "gen:wiki-history": "node scripts/gen-wiki-history.mjs",
+    "gen:wiki-capabilities": "node scripts/gen-wiki-capabilities.mjs",
     "gen:wiki-panel-catalog": "node scripts/gen-wiki-panel-catalog.mjs",
     "gen:wiki-site": "node scripts/gen-wiki-site.mjs",
     "gen:readme-maps": "node scripts/gen-readme-maps.mjs",

@@ -5,7 +5,7 @@
     {
       "id": "guide",
       "title": "Руководство",
-      "articles": 4
+      "articles": 5
     },
     {
       "id": "panels",
@@ -3308,6 +3308,34 @@
         "docs-index",
         "zone-1",
         "dev-tests-catalog"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:scenarios",
+      "type": "article",
+      "slug": "scenarios",
+      "title": "Возможности и сценарии",
+      "section": "guide",
+      "status": "verified",
+      "tags": [
+        "возможности",
+        "сценарии",
+        "руководства",
+        "ограничения",
+        "диагностика"
+      ],
+      "sources": [
+        "src/route-registry-core.ts",
+        "src/route-registry-system.ts",
+        "src/route-registry-content.ts",
+        "scripts/gen-wiki-capabilities.mjs"
+      ],
+      "related": [
+        "capabilities",
+        "panels-guide",
+        "panels-catalog",
+        "diagnostics"
       ],
       "tests": []
     },

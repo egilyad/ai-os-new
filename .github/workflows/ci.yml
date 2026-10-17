@@ -77,7 +77,8 @@ jobs:
                   npm run gen:wiki-docs-index
                   npm run gen:wiki-system-map
                   npm run gen:wiki-history
-                  git diff --exit-code -- docs/wiki docs/inventory.json docs/entity-model.json docs/manifest.json src/generated/wiki-connections.ts src/generated/wiki-docs-health.ts src/generated/wiki-docs-inventory.ts src/generated/wiki-docs-standard.ts src/generated/wiki-docs-index.ts src/generated/wiki-system-map.ts src/generated/wiki-history.ts
+                  npm run gen:wiki-capabilities
+                  git diff --exit-code -- docs/wiki docs/inventory.json docs/entity-model.json docs/manifest.json src/generated
 
             - name: Documentation health
               # Objective checks over the committed wiki mirror: declared source
