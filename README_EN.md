@@ -870,6 +870,9 @@ Adjust routing behavior in **Settings → SLA Mode**:
 | [Debt Report](./docs/DEBT_REPORT.md)                       | Technical debt assessment                                |
 | [Wiki (RU)](./docs/wiki/README.md)                         | Full system wiki: panels, agents, debates, memory, providers, diagnostics, history, dev guides |
 | [manifest.json](./docs/manifest.json)                      | Machine-readable index: sections, articles (sources/tests/related), panels (route/component/article) |
+| [graph.json](./docs/graph.json)                            | Knowledge graph: nodes (articles, panels, code, tests) and edges (related, sources, tests, panel→article) |
+| [inventory.json](./docs/inventory.json)                    | Inventory of all `docs/**` documents (category, language, size, hash) |
+| [entity-model.json](./docs/entity-model.json)              | Documentation standard: entity card, statuses, sources of truth, languages |
 | Wiki site (GitHub Pages)                                   | Static wiki with section menu, search and mermaid, built from the same mirror and served at `/wiki/` (`npm run gen:wiki-site`) |
 
 ### Wiki map
