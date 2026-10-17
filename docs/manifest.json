@@ -5,7 +5,7 @@
     {
       "id": "guide",
       "title": "Руководство",
-      "articles": 3
+      "articles": 4
     },
     {
       "id": "panels",
@@ -3225,6 +3225,32 @@
         "docs-health",
         "dev-generators",
         "dev-conventions"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:docs-index",
+      "type": "article",
+      "slug": "docs-index",
+      "title": "Карта документации",
+      "section": "guide",
+      "status": "verified",
+      "tags": [
+        "документация",
+        "навигация",
+        "индекс",
+        "карта"
+      ],
+      "sources": [
+        "docs/manifest.json",
+        "docs/inventory.json",
+        "scripts/gen-wiki-docs-index.mjs"
+      ],
+      "related": [
+        "docs-standard",
+        "docs-inventory",
+        "docs-health",
+        "dev-generators"
       ],
       "tests": []
     },

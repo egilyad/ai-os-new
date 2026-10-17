@@ -3,7 +3,7 @@
   "generatedBy": "scripts/gen-docs-inventory.mjs",
   "scope": "docs/**/*.md (excl. generated self-report pages docs-health, docs-inventory)",
   "totals": {
-    "documents": 946,
+    "documents": 947,
     "byCategory": {
       "top": 41,
       "active": 1,
@@ -13,12 +13,12 @@
       "reference": 6,
       "roadmap": 6,
       "superseded": 3,
-      "wiki": 137
+      "wiki": 138
     },
     "byLanguage": {
       "en": 651,
       "ru": 175,
-      "mixed": 120
+      "mixed": 121
     }
   },
   "duplicates": {
@@ -6736,6 +6736,14 @@
       "hash": "f32b52786fc3fd044e80a4b47b2973338e502f2c"
     },
     {
+      "path": "docs/wiki/docs-index.md",
+      "category": "wiki",
+      "language": "mixed",
+      "title": "Карта документации",
+      "bytes": 21176,
+      "hash": "c3f2b005f5b9e22f409100c0d4197d7983d44e6c"
+    },
+    {
       "path": "docs/wiki/docs-standard.md",
       "category": "wiki",
       "language": "ru",
@@ -7380,8 +7388,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Wiki SuperAgents OS",
-      "bytes": 13637,
-      "hash": "8aaf7fcd0561aef2c4b8767e5f720c5c76ac2748"
+      "bytes": 13709,
+      "hash": "04e3225091f0149fe81650ea0b19a1afb477ad2f"
     },
     {
       "path": "docs/wiki/roadmap-notes.md",

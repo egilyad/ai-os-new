@@ -36,6 +36,7 @@ Autonomous, event-driven multi-agent runtime. v4.5.0 — 177 contracts, 352 serv
 - `src/generated/wiki-connections.ts` — panel → route → component → tests links per article (shown in the Wiki panel, mirrored in `docs/wiki`); regenerate with `npm run gen:wiki-connections`
 - `docs/entity-model.json` — documentation standard (entity card fields, confidence statuses, sources of truth, language policy); source `scripts/lib/entity-model.mjs`, regenerate with `npm run gen:wiki-docs-standard`
 - `docs/inventory.json` — machine-readable inventory of all `docs/**` markdown (path/category/language/title/size/hash); regenerate with `npm run gen:docs-inventory`
+- `docs/wiki/docs-index.md` — documentation map: single entry point (wiki sections, top-level docs, reference/roadmap, archives); regenerate with `npm run gen:wiki-docs-index`
 - `scripts/gen-wiki-site.mjs` — builds the static wiki site (menu + search + mermaid) from `docs/wiki` into `wiki-site/`; CI publishes it at `/wiki/` on GitHub Pages (`npm run gen:wiki-site`, output is git-ignored)
 
 ## Code Rules
