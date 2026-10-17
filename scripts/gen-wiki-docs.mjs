@@ -3,10 +3,10 @@
 // The same content is bundled in the app (Wiki panel). This mirror lets people and
 // coding agents read the whole wiki straight from the repository, no build needed.
 import { register } from 'tsx/esm/api';
-import { writeFileSync, readFileSync, mkdirSync, rmSync, existsSync } from 'fs';
+import { writeFileSync, mkdirSync, rmSync, existsSync } from 'fs';
 import { fileURLToPath, pathToFileURL } from 'url';
 import { dirname, resolve } from 'path';
-import { parseNavSections, routeImportComponents, techniqueComponents, testsFor } from './lib/route-nav.mjs';
+import { parseNavSections, routeImportComponents, techniqueComponents, testsFor, panelArticles } from './lib/route-nav.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 register();
@@ -23,9 +23,7 @@ const bySlug = new Map(WIKI_ARTICLES.map((a) => [a.slug, a]));
 const sectionTitle = new Map(WIKI_SECTIONS.map((s) => [s.id, s.title]));
 
 // ---- panel -> article connections (panel -> route -> component -> tests) ----
-const panelArticlesSrc = readFileSync(resolve(root, 'src/components/WikiPanel/wiki-panels.ts'), 'utf8');
-const panelArticle = {};
-for (const m of panelArticlesSrc.matchAll(/^\s*'?([\w-]+)'?:\s*'([\w-]+)',?\s*$/gm)) panelArticle[m[1]] = m[2];
+const panelArticle = panelArticles();
 const components = { ...routeImportComponents(), ...techniqueComponents() };
 const articlePanels = new Map();
 for (const section of parseNavSections()) {

@@ -7,6 +7,7 @@ import {
     type WikiArticle,
     type WikiFreshness,
 } from './wiki-articles';
+import { WIKI_CONNECTIONS } from '../../generated/wiki-connections';
 
 const FRESH_COLORS: Record<WikiFreshness, string> = {
     verified: '#10b981',
@@ -194,6 +195,7 @@ export function WikiArticleView({
         const el = bodyRef.current?.querySelectorAll('h1,h2,h3')[i];
         el?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     };
+    const connections = WIKI_CONNECTIONS[article.slug];
     return (
         <div>
             <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '0.25rem' }}>
@@ -219,6 +221,28 @@ export function WikiArticleView({
                     {article.sources.map((s) => (
                         <div key={s} style={{ fontFamily: 'monospace' }}>
                             {s}
+                        </div>
+                    ))}
+                </div>
+            )}
+            {connections && connections.length > 0 && (
+                <div style={{ marginTop: '1rem', fontSize: '0.78rem' }}>
+                    <div style={{ fontWeight: 700, marginBottom: '0.4rem' }}>Связи с кодом</div>
+                    {connections.map((c) => (
+                        <div key={c.panelId} style={{ marginBottom: '0.35rem', lineHeight: 1.6 }}>
+                            <span style={{ color: 'var(--text-muted)' }}>Панель </span>
+                            <span style={{ fontFamily: 'monospace' }}>{c.panelId}</span>
+                            <span style={{ color: 'var(--text-muted)' }}> → </span>
+                            <span style={{ fontFamily: 'monospace' }}>{c.route}</span>
+                            {c.component && (
+                                <>
+                                    <span style={{ color: 'var(--text-muted)' }}> → </span>
+                                    <span style={{ fontFamily: 'monospace' }}>{c.component}</span>
+                                </>
+                            )}
+                            <div style={{ fontFamily: 'monospace', color: 'var(--text-muted)', fontSize: '0.72rem' }}>
+                                {c.tests.length > 0 ? `тесты: ${c.tests.join(', ')}` : 'тесты: — (рядом не найдены)'}
+                            </div>
                         </div>
                     ))}
                 </div>

@@ -847,6 +847,8 @@ Adjust routing behavior in **Settings → SLA Mode**:
 | `npm run dev:shared`            | Runs Vite + sync-server together                                             |
 | `npm run fix:unused`            | Remove unused exports                                                        |
 | `npm run gen:wiki-docs`         | Regenerate the markdown Wiki mirror under `docs/wiki`                        |
+| `npm run gen:wiki-manifest`     | Regenerate the machine-readable index (`docs/manifest.json`)                 |
+| `npm run gen:wiki-connections`  | Regenerate panel → route → component → tests links                           |
 | `npm run prepare`               | Install husky hooks                                                          |
 | `npm run sync-server`           | Start collaboration sync server                                              |
 | `npm run test:watch`            | Watch mode tests                                                             |

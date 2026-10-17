@@ -192,6 +192,7 @@ docs/wiki/           # markdown-зеркало вики (этот портал)
 | `npm run typecheck` | TypeScript без emit |
 | `npm run gen:wiki-docs` | пересобрать markdown-зеркало вики |
 | `npm run gen:wiki-manifest` | пересобрать машиночитаемый индекс (docs/manifest.json) |
+| `npm run gen:wiki-connections` | пересобрать связи «панель → маршрут → компонент → тесты» |
 | `npm run gen:wiki-panel-catalog` | пересобрать каталог панелей |
 | `npm run gen:wiki-site` | собрать статический сайт вики (для GitHub Pages) |
 | `npm run gen:readme-maps` | пересобрать таблицы README из кода |

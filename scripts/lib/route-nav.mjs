@@ -46,8 +46,7 @@ export function techniqueComponents() {
     return map;
 }
 
-/** Panel nav id -> component path declared in route-imports.ts. */
-export function routeImportComponents() {
+/** Panel nav id -> component path declared in route-imports.ts. */export function routeImportComponents() {
     const src = read('src/route-imports.ts');
     const decls = {};
     const declRe = /const\s+(\w+)\s*=\s*React\.lazy\(\s*\(\)\s*=>\s*import\('([^']+)'\)/g;
@@ -58,6 +57,16 @@ export function routeImportComponents() {
     while ((m = mapRe.exec(src))) {
         if (decls[m[2]]) map[m[1]] = decls[m[2]].replace(/^\.\//, 'src/');
     }
+    return map;
+}
+
+/** Panel nav id -> wiki article slug (from the wiki-panels map). */
+export function panelArticles() {
+    const src = read('src/components/WikiPanel/wiki-panels.ts');
+    const map = {};
+    const re = /^\s*'?([\w-]+)'?:\s*'([\w-]+)',?\s*$/gm;
+    let m;
+    while ((m = re.exec(src))) map[m[1]] = m[2];
     return map;
 }
 

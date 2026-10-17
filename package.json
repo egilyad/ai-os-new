@@ -24,6 +24,7 @@
     "fix:unused": "tsx scripts/fix-unused.ts",
     "gen:wiki-docs": "node scripts/gen-wiki-docs.mjs",
     "gen:wiki-manifest": "node scripts/gen-wiki-manifest.mjs",
+    "gen:wiki-connections": "node scripts/gen-wiki-connections.mjs",
     "gen:wiki-panel-catalog": "node scripts/gen-wiki-panel-catalog.mjs",
     "gen:wiki-site": "node scripts/gen-wiki-site.mjs",
     "gen:readme-maps": "node scripts/gen-readme-maps.mjs",

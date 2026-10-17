@@ -3,11 +3,11 @@
 // Deterministic (no timestamps) so CI can gate it: regenerate must equal the
 // committed file. Entities: sections, articles (from the wiki corpus), panels
 // (from the route registries + route-imports).
-import { writeFileSync, readFileSync } from 'fs';
+import { writeFileSync } from 'fs';
 import { register } from 'tsx/esm/api';
 import { fileURLToPath, pathToFileURL } from 'url';
 import { dirname, resolve } from 'path';
-import { parseNavSections, techniqueComponents, routeImportComponents, testsFor } from './lib/route-nav.mjs';
+import { parseNavSections, techniqueComponents, routeImportComponents, testsFor, panelArticles } from './lib/route-nav.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 register();
@@ -30,9 +30,7 @@ const articles = WIKI_ARTICLES.map((a) => ({
 }));
 
 // ---- panels ----
-const panelArticlesSrc = readFileSync(resolve(root, 'src/components/WikiPanel/wiki-panels.ts'), 'utf8');
-const panelArticle = {};
-for (const m of panelArticlesSrc.matchAll(/^\s*'?([\w-]+)'?:\s*'([\w-]+)',?\s*$/gm)) panelArticle[m[1]] = m[2];
+const panelArticle = panelArticles();
 const components = { ...routeImportComponents(), ...techniqueComponents() };
 
 const panels = [];
