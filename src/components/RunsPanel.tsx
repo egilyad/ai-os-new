@@ -174,7 +174,7 @@ const RunsPanel: React.FC = () => {
                             {selected.trigger} · {selected.status}
                         </h3>
                         <div style={{ color: '#64748b', marginBottom: 8 }}>
-                            {new Date(selected.createdAt).toLocaleString()}
+                            {selected.createdAt ? new Date(selected.createdAt).toLocaleString() : '—'}
                             {selected.ref ? ` · ${selected.ref}` : ''}
                         </div>
                         <ol style={{ paddingLeft: '1.25rem', margin: 0 }}>

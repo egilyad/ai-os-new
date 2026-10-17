@@ -245,9 +245,10 @@ const CostsPanel: React.FC = () => {
                     .reverse()
                     .map((c) => (
                         <li key={c.id} style={{ marginBottom: 4 }}>
-                            {c.cents}¢{c.model ? ` · ${c.model}` : ''}
+                            {typeof c.cents === 'number' ? `${c.cents}¢` : '—'}
+                            {c.model ? ` · ${c.model}` : ''}
                             {c.agentId ? ` · ${c.agentId}` : ''} ·{' '}
-                            {new Date(c.createdAt).toLocaleString()}
+                            {c.createdAt ? new Date(c.createdAt).toLocaleString() : '—'}
                         </li>
                     ))}
                 {costs.length === 0 && <li>{t('costs.empty')}</li>}

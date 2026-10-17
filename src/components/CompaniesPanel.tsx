@@ -141,7 +141,7 @@ const CompaniesPanel: React.FC = () => {
                 <ul>
                     {localOrgs.map((o) => (
                         <li key={o.id}>
-                            {o.name} — {o.mission.slice(0, 120)}
+                            {o.name} — {(o.mission ?? '').slice(0, 120)}
                         </li>
                     ))}
                     {localOrgs.length === 0 && <li>{t('companies.empty')}</li>}
