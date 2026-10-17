@@ -37,7 +37,7 @@ flowchart LR
 - Сервисы и lazyService: [[dev-services]].
 - События: [[dev-events]]. Панели: [[dev-components]]. Ворота: [[dev-ci]].
 - Авто-каталоги (генерируются из кода): [[dev-component-catalog]] (компоненты и связи), [[dev-event-catalog]] (события шины), [[dev-service-map]] (DI-граф ядра), [[dev-contracts]] (интерфейсы ядра и их реализации), [[dev-store-catalog]] (сторы), [[dev-i18n-catalog]] (локали).
-- Скрипты и команды: [[dev-scripts]].
+- Скрипты и команды: [[dev-scripts]]. Тестовая поверхность: [[dev-tests-catalog]].
 - Короткая версия для онбординга — [[for-developers]].`,
     },
     {
@@ -311,7 +311,7 @@ flowchart LR
         tags: ['dev', 'тесты', 'vitest', 'playwright'],
         freshness: 'verified',
         sources: ['vitest.config.ts', 'package.json', 'e2e/'],
-        related: ['dev-ci', 'dev-conventions'],
+        related: ['dev-tests-catalog', 'dev-ci', 'dev-conventions'],
         body: `## Уровни
 
 - **Unit/компонентные** — Vitest + Testing Library (\`.test.ts/.test.tsx\` рядом с кодом).
@@ -342,7 +342,7 @@ flowchart LR
         tags: ['dev', 'CI', 'гейт', 'сборка'],
         freshness: 'verified',
         sources: ['.github/workflows/ci.yml', 'package.json'],
-        related: ['dev-testing', 'dev-generators', 'dev-scripts', 'for-developers'],
+        related: ['dev-testing', 'dev-generators', 'dev-scripts', 'dev-tests-catalog', 'for-developers'],
         body: `## Конвейер (.github/workflows/ci.yml)
 
 \`\`\`mermaid
