@@ -71,7 +71,8 @@ jobs:
                   npm run gen:wiki-docs
                   npm run gen:wiki-manifest
                   npm run gen:wiki-connections
-                  git diff --exit-code -- docs/wiki docs/manifest.json src/generated/wiki-connections.ts
+                  npm run gen:wiki-docs-health
+                  git diff --exit-code -- docs/wiki docs/manifest.json src/generated/wiki-connections.ts src/generated/wiki-docs-health.ts
 
             - name: Documentation health
               # Objective checks over the committed wiki mirror: declared source

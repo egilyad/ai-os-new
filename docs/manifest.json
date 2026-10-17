@@ -35,7 +35,7 @@
     {
       "id": "diagnostics",
       "title": "Диагностика",
-      "articles": 1
+      "articles": 2
     },
     {
       "id": "history",
@@ -3146,6 +3146,32 @@
         "dev-routing",
         "dev-layout",
         "dev-component-catalog"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:docs-health",
+      "type": "article",
+      "slug": "docs-health",
+      "title": "Здоровье документации",
+      "section": "diagnostics",
+      "status": "verified",
+      "tags": [
+        "диагностика",
+        "документация",
+        "качество",
+        "метрики"
+      ],
+      "sources": [
+        "scripts/lib/docs-health.mjs",
+        "scripts/gen-wiki-docs-health.mjs",
+        "src/generated/wiki-docs-health.ts"
+      ],
+      "related": [
+        "dev-generators",
+        "dev-ci",
+        "panels-catalog",
+        "diagnostics"
       ],
       "tests": []
     },

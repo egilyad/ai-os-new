@@ -86,7 +86,7 @@ flowchart TD
 | [Глоссарий](./docs/wiki/dev-glossary.md) | Термины |
 | [Рецепты](./docs/wiki/dev-cookbook.md) | Частые задачи |
 
-**Авто-каталоги (из кода):** [панели: раздел → маршрут → компонент → статья](./docs/wiki/panels-catalog.md), [компоненты](./docs/wiki/dev-component-catalog.md), [события](./docs/wiki/dev-event-catalog.md), [контракты](./docs/wiki/dev-contracts.md), [карта зависимостей ядра](./docs/wiki/dev-service-map.md), [сторы](./docs/wiki/dev-store-catalog.md), [локали](./docs/wiki/dev-i18n-catalog.md), [скрипты](./docs/wiki/dev-scripts.md), [тесты](./docs/wiki/dev-tests-catalog.md).
+**Авто-каталоги (из кода):** [панели: раздел → маршрут → компонент → статья](./docs/wiki/panels-catalog.md), [компоненты](./docs/wiki/dev-component-catalog.md), [события](./docs/wiki/dev-event-catalog.md), [контракты](./docs/wiki/dev-contracts.md), [карта зависимостей ядра](./docs/wiki/dev-service-map.md), [сторы](./docs/wiki/dev-store-catalog.md), [локали](./docs/wiki/dev-i18n-catalog.md), [скрипты](./docs/wiki/dev-scripts.md), [тесты](./docs/wiki/dev-tests-catalog.md), [здоровье документации](./docs/wiki/docs-health.md).
 
 > Зеркало вики генерируется скриптом `npm run gen:wiki-docs`; CI проверяет, что оно не устарело.
 
