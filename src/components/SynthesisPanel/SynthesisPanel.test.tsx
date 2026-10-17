@@ -17,7 +17,7 @@ beforeAll(() => {
     });
 });
 
-const list = vi.fn(() => Promise.resolve([]));
+const list = vi.fn(async (): Promise<unknown[]> => []);
 const synthesize = vi.fn(async () => undefined);
 const exportToCrystal = vi.fn(async () => undefined);
 const exportToForum = vi.fn(async () => undefined);

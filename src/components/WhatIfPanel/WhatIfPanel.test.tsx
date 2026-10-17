@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 
 vi.mock('../../kernel/instances', () => ({
     debateEngine: {
@@ -11,9 +11,6 @@ vi.mock('../../kernel/instances', () => ({
         simulateBudgetChange: vi.fn(() => Promise.resolve({})),
         simulateProviderChange: vi.fn(() => Promise.resolve({})),
         simulateStrategyChange: vi.fn(() => Promise.resolve({})),
-    },
-    debateEngine: {
-        getActiveSessions: vi.fn(() => []),
     },
 }));
 
