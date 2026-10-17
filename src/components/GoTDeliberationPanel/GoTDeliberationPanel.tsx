@@ -13,13 +13,18 @@ export const GoTDeliberationPanel: React.FC = () => {
     const [opposing, setOpposing] = useState('Nuclear 92% capacity factor vs 24% solar; Silver constraints limit PV to 3x;');
     const [result, setResult] = useState<Awaited<ReturnType<GoTDeliberation['deliberate']>> | null>(null);
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
     const handleDeliberate = async () => {
         setLoading(true);
+        setError(null);
         try {
             const claims = opposing.split(';').map(s => s.trim()).filter(Boolean);
             const r = await got.deliberate(topic, perspective, claims);
             setResult(r);
+        } catch (e) {
+            setResult(null);
+            setError(e instanceof Error ? e.message : 'Deliberation failed');
         } finally {
             setLoading(false);
         }
@@ -53,28 +58,35 @@ export const GoTDeliberationPanel: React.FC = () => {
             </div>
             <div style={{ display: 'flex', gap: 8 }}>
                 <Button variant="primary" onClick={handleDeliberate} disabled={loading}><Zap size={14} /> {loading ? 'Deliberating…' : 'Deliberate (3 branches)'}</Button>
-                <Button variant="ghost" onClick={() => setResult(null)}><RefreshCw size={14} /> Clear</Button>
+                <Button variant="ghost" onClick={() => { setResult(null); setError(null); }}><RefreshCw size={14} /> Clear</Button>
             </div>
+
+            {error && (
+                <div role="alert" style={{ padding: 10, borderRadius: 10, background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)', fontSize: 13, color: '#f87171', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8 }}>
+                    <span>{error}</span>
+                    <button onClick={() => setError(null)} style={{ background: 'none', border: 'none', color: 'inherit', cursor: 'pointer', fontSize: 13 }} aria-label="Dismiss error">✕</button>
+                </div>
+            )}
 
             {!result ? (
                 <div style={{ padding: 16, textAlign: 'center', color: 'var(--slate-500)', fontSize: 13, border: '1px dashed rgba(255,255,255,0.08)', borderRadius: 8 }}>Click Deliberate to generate 3 branches and synthesis.</div>
             ) : (
                 <div style={{ display: 'grid', gridTemplateColumns: '1.1fr 0.9fr', gap: 14, alignItems: 'start' }}>
                     <div style={{ padding: 14, borderRadius: 12, background: 'rgba(15,23,42,0.6)', border: '1px solid rgba(255,255,255,0.06)' }}>
-                        <div style={{ fontWeight: 700, fontSize: 13, color: 'var(--slate-200)', marginBottom: 10, display: 'flex', alignItems: 'center', gap: 6 }}><Lightbulb size={16} color="#a855f7" /> Branches — 3 · diversity {(result.diversityScore * 100).toFixed(0)}% · selected <span style={{ color: '#a78bfa', marginLeft: 4 }}>{result.selectedType}</span></div>
+                        <div style={{ fontWeight: 700, fontSize: 13, color: 'var(--slate-200)', marginBottom: 10, display: 'flex', alignItems: 'center', gap: 6 }}><Lightbulb size={16} color="#a855f7" /> Branches — {(result.branches ?? []).length} · diversity {typeof result.diversityScore === 'number' && Number.isFinite(result.diversityScore) ? `${(result.diversityScore * 100).toFixed(0)}%` : '—'} · selected <span style={{ color: '#a78bfa', marginLeft: 4 }}>{result.selectedType}</span></div>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                            {result.branches.map((b, i) => {
+                            {(result.branches ?? []).map((b, i) => {
                                 const isSelected = b.type === result.selectedType;
                                 return (
                                     <div key={i} style={{ padding: '10px 12px', borderRadius: 10, background: isSelected ? 'rgba(168,85,247,0.08)' : 'rgba(255,255,255,0.03)', border: `1px solid ${isSelected ? 'rgba(168,85,247,0.3)' : 'rgba(255,255,255,0.06)'}` }}>
                                         <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
                                             <span style={{ fontSize: 11, fontWeight: 800, color: '#fff', background: isSelected ? '#8b5cf6' : '#475569', borderRadius: 4, padding: '2px 8px' }}>{b.type}</span>
                                             {isSelected && <span style={{ fontSize: 10, padding: '2px 6px', borderRadius: 4, background: 'rgba(34,197,94,0.15)', color: '#22c55e', fontWeight: 700 }}>SELECTED</span>}
-                                            <span style={{ marginLeft: 'auto', fontSize: 11, color: 'var(--slate-500)' }}>conf {(b.confidence * 100).toFixed(0)}% · nov {(b.novelty * 100).toFixed(0)}%</span>
+                                            <span style={{ marginLeft: 'auto', fontSize: 11, color: 'var(--slate-500)' }}>conf {typeof b.confidence === 'number' && Number.isFinite(b.confidence) ? `${(b.confidence * 100).toFixed(0)}%` : '—'} · nov {typeof b.novelty === 'number' && Number.isFinite(b.novelty) ? `${(b.novelty * 100).toFixed(0)}%` : '—'}</span>
                                         </div>
                                         <div style={{ fontSize: 11, color: '#c4b5fd', marginBottom: 4, fontWeight: 600 }}>Premise: {b.premise}</div>
-                                        <div style={{ fontSize: 11, color: 'var(--slate-400)', lineHeight: 1.4, marginBottom: 4 }}>{b.reasoning.slice(0, 140)}…</div>
-                                        <div style={{ fontSize: 12, color: 'var(--slate-200)', fontWeight: 600, padding: '6px 8px', borderRadius: 6, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)' }}>{b.conclusion.slice(0, 160)}</div>
+                                        <div style={{ fontSize: 11, color: 'var(--slate-400)', lineHeight: 1.4, marginBottom: 4 }}>{(b.reasoning ?? '').slice(0, 140)}…</div>
+                                        <div style={{ fontSize: 12, color: 'var(--slate-200)', fontWeight: 600, padding: '6px 8px', borderRadius: 6, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)' }}>{(b.conclusion ?? '').slice(0, 160)}</div>
                                     </div>
                                 );
                             })}

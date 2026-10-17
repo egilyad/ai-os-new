@@ -39,7 +39,14 @@ export const CouncilPanel: React.FC = () => {
 
     useEffect(() => {
         if (!activeId) { setDetail(null); return; }
-        councilService.getSession(activeId).then(setDetail).catch((e) => setError(e instanceof Error ? e.message : String(e)));
+        try {
+            councilService.getSession(activeId).then(setDetail).catch((e) => setError(e instanceof Error ? e.message : String(e)));
+        } catch (e) {
+            // The lazy proxy can throw synchronously (unregistered service) —
+            // that path never reaches the promise .catch above.
+            setDetail(null);
+            setError(e instanceof Error ? e.message : String(e));
+        }
     }, [activeId, sessions]);
 
     const run = async (fn: () => Promise<unknown>) => {
@@ -103,8 +110,8 @@ export const CouncilPanel: React.FC = () => {
                     {sessions.length === 0 && <p style={{ opacity: 0.5, fontSize: '0.85rem' }}>No councils yet — create one.</p>}
                     {sessions.map((s) => (
                         <div key={s.id} onClick={() => select(s.id)} style={{ ...card, cursor: 'pointer', background: activeId === s.id ? 'rgba(168,85,247,0.12)' : 'transparent', borderColor: activeId === s.id ? '#a855f7' : '#2a2a35' }}>
-                            <div style={{ fontWeight: 600, fontSize: '0.9rem' }}>{s.topic.slice(0, 80)}</div>
-                            <div style={{ fontSize: '0.75rem', opacity: 0.6 }}>{s.phase} · {s.status} · {s.messages.length} msgs · {s.facts.length} facts · {s.scores.length} judges {s.winnerId ? `· winner ${s.winnerId.slice(0, 8)}` : ''}</div>
+                            <div style={{ fontWeight: 600, fontSize: '0.9rem' }}>{(s.topic ?? '').slice(0, 80)}</div>
+                            <div style={{ fontSize: '0.75rem', opacity: 0.6 }}>{s.phase} · {s.status} · {(s.messages ?? []).length} msgs · {(s.facts ?? []).length} facts · {(s.scores ?? []).length} judges {s.winnerId ? `· winner ${s.winnerId.slice(0, 8)}` : ''}</div>
                         </div>
                     ))}
                 </div>
@@ -116,8 +123,8 @@ export const CouncilPanel: React.FC = () => {
                         <>
                             <div style={{ fontWeight: 700 }}>{detail.topic}</div>
                             <div style={{ fontSize: '0.75rem', opacity: 0.7 }}>{detail.phase} · {detail.status} · aliases: {detail.aliases ? Object.values(detail.aliases).join(', ') : '—'}</div>
-                            <div style={{ fontSize: '0.75rem', opacity: 0.7 }}>Participants: {detail.participants.map((p) => `${p.name}(${p.kind}${p.lensId ? `:${p.lensId}` : ''})`).join(', ')}</div>
-                            <div style={{ fontSize: '0.75rem', opacity: 0.7 }}>Judges: {detail.judges.map((j) => `${j.name} w${j.weight ?? 1}`).join(', ') || '—'} {detail.winnerId ? `→ winner ${detail.winnerId}` : ''}</div>
+                        <div style={{ fontSize: '0.75rem', opacity: 0.7 }}>Participants: {(detail.participants ?? []).map((p) => `${p.name}(${p.kind}${p.lensId ? `:${p.lensId}` : ''})`).join(', ') || '—'}</div>
+                        <div style={{ fontSize: '0.75rem', opacity: 0.7 }}>Judges: {(detail.judges ?? []).map((j) => `${j.name} w${j.weight ?? 1}`).join(', ') || '—'} {detail.winnerId ? `→ winner ${detail.winnerId}` : ''}</div>
                             {detail.summary && <div style={{ fontSize: '0.8rem', background: 'rgba(168,85,247,0.08)', padding: '0.5rem', borderRadius: 6 }}>{detail.summary}</div>}
 
                             <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap' }}>
@@ -129,10 +136,10 @@ export const CouncilPanel: React.FC = () => {
                             <div style={{ borderTop: '1px solid #2a2a35', paddingTop: '0.5rem', marginTop: '0.25rem' }}>
                                 <div style={{ fontWeight: 600, fontSize: '0.85rem' }}>Forum / Whisper (double-blind)</div>
                                 <div style={{ maxHeight: 160, overflowY: 'auto', marginTop: '0.4rem', display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
-                                    {detail.messages.length === 0 && <span style={{ opacity: 0.5, fontSize: '0.8rem' }}>No messages</span>}
-                                    {detail.messages.slice(-20).map((m) => (
+                                    {(detail.messages ?? []).length === 0 && <span style={{ opacity: 0.5, fontSize: '0.8rem' }}>No messages</span>}
+                                    {(detail.messages ?? []).slice(-20).map((m) => (
                                         <div key={m.id} style={{ fontSize: '0.78rem', background: m.channel === 'whisper' ? 'rgba(245,158,11,0.08)' : 'rgba(255,255,255,0.03)', padding: '0.35rem 0.5rem', borderRadius: 6 }}>
-                                            <b>{m.channel}</b> {m.authorId.slice(0, 8)}→{m.toId?.slice(0, 8) ?? 'forum'}: {m.body.slice(0, 200)}
+                                            <b>{m.channel}</b> {(m.authorId ?? '?').slice(0, 8)}→{m.toId?.slice(0, 8) ?? 'forum'}: {(m.body ?? '').slice(0, 200)}
                                         </div>
                                     ))}
                                 </div>
@@ -147,10 +154,10 @@ export const CouncilPanel: React.FC = () => {
                             </div>
 
                             <div style={{ borderTop: '1px solid #2a2a35', paddingTop: '0.5rem' }}>
-                                <div style={{ fontWeight: 600, fontSize: '0.85rem' }}>Facts ({detail.facts.length})</div>
-                                {detail.facts.slice(-5).map((f) => (
-                                    <div key={f.id} style={{ fontSize: '0.78rem', opacity: 0.8 }}>{f.verdict} — {f.claim.slice(0, 120)} {f.sources?.length ? `· sources ${f.sources.length}` : ''}</div>
-                                ))}
+                        <div style={{ fontWeight: 600, fontSize: '0.85rem' }}>Facts ({(detail.facts ?? []).length})</div>
+                        {(detail.facts ?? []).slice(-5).map((f) => (
+                            <div key={f.id} style={{ fontSize: '0.78rem', opacity: 0.8 }}>{f.verdict} — {(f.claim ?? '').slice(0, 120)} {f.sources?.length ? `· sources ${f.sources.length}` : ''}</div>
+                        ))}
                                 <div style={{ display: 'flex', gap: '0.4rem', marginTop: '0.4rem' }}>
                                     <input style={{ ...inputStyle, flex: 1 }} placeholder="Fact claim (researcher)" value={factClaim} onChange={(e) => setFactClaim(e.target.value)} />
                                     <button style={btn} disabled={busy || !factClaim.trim()} onClick={() => {
@@ -162,10 +169,10 @@ export const CouncilPanel: React.FC = () => {
                             </div>
 
                             <div style={{ borderTop: '1px solid #2a2a35', paddingTop: '0.5rem' }}>
-                                <div style={{ fontWeight: 600, fontSize: '0.85rem' }}>Judging ({detail.scores.length})</div>
-                                {detail.scores.slice(-5).map((s, i) => (
-                                    <div key={i} style={{ fontSize: '0.78rem' }}>{s.judgeId.slice(0, 8)} → {s.winnerId} {s.blind ? '(blind)' : ''}</div>
-                                ))}
+                        <div style={{ fontWeight: 600, fontSize: '0.85rem' }}>Judging ({(detail.scores ?? []).length})</div>
+                        {(detail.scores ?? []).slice(-5).map((s, i) => (
+                            <div key={i} style={{ fontSize: '0.78rem' }}>{(s.judgeId ?? '?').slice(0, 8)} → {s.winnerId} {s.blind ? '(blind)' : ''}</div>
+                        ))}
                                 <button style={btn} disabled={busy} onClick={() => {
                                     const judge = detail.judges[0]?.id;
                                     const pick = detail.participants[0]?.id;
