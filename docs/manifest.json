@@ -55,7 +55,7 @@
     {
       "id": "dev",
       "title": "Разработчикам",
-      "articles": 25
+      "articles": 26
     }
   ],
   "articles": [
@@ -3198,6 +3198,33 @@
         "dev-generators",
         "dev-layout",
         "dev-ci"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:docs-standard",
+      "type": "article",
+      "slug": "docs-standard",
+      "title": "Стандарт документации",
+      "section": "dev",
+      "status": "verified",
+      "tags": [
+        "документация",
+        "стандарт",
+        "статусы",
+        "источники истины",
+        "языки"
+      ],
+      "sources": [
+        "scripts/lib/entity-model.mjs",
+        "docs/entity-model.json",
+        "scripts/gen-wiki-docs-standard.mjs"
+      ],
+      "related": [
+        "docs-inventory",
+        "docs-health",
+        "dev-generators",
+        "dev-conventions"
       ],
       "tests": []
     },

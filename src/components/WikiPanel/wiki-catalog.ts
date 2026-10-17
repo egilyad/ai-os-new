@@ -3,6 +3,7 @@ import { CATALOG_MARKDOWN } from '../../generated/wiki-component-catalog';
 import { PANEL_CATALOG_MARKDOWN } from '../../generated/wiki-panel-catalog';
 import { DOCS_HEALTH_MARKDOWN } from '../../generated/wiki-docs-health';
 import { DOCS_INVENTORY_MARKDOWN } from '../../generated/wiki-docs-inventory';
+import { DOCS_STANDARD_MARKDOWN } from '../../generated/wiki-docs-standard';
 
 // Auto-maintained catalogs: components, and the panel -> section -> route ->
 // component -> article chain. Bodies come from the generators — edit those.
@@ -61,5 +62,19 @@ export const CATALOG_ARTICLES: WikiArticle[] = [
         ],
         related: ['docs-health', 'dev-generators', 'dev-layout', 'dev-ci'],
         body: DOCS_INVENTORY_MARKDOWN,
+    },
+    {
+        slug: 'docs-standard',
+        title: 'Стандарт документации',
+        section: 'dev',
+        tags: ['документация', 'стандарт', 'статусы', 'источники истины', 'языки'],
+        freshness: 'verified',
+        sources: [
+            'scripts/lib/entity-model.mjs',
+            'docs/entity-model.json',
+            'scripts/gen-wiki-docs-standard.mjs',
+        ],
+        related: ['docs-inventory', 'docs-health', 'dev-generators', 'dev-conventions'],
+        body: DOCS_STANDARD_MARKDOWN,
     },
 ];

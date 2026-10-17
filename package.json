@@ -27,6 +27,7 @@
     "gen:wiki-connections": "node scripts/gen-wiki-connections.mjs",
     "gen:wiki-docs-health": "node scripts/gen-wiki-docs-health.mjs",
     "gen:docs-inventory": "node scripts/gen-docs-inventory.mjs",
+    "gen:wiki-docs-standard": "node scripts/gen-wiki-docs-standard.mjs",
     "gen:wiki-panel-catalog": "node scripts/gen-wiki-panel-catalog.mjs",
     "gen:wiki-site": "node scripts/gen-wiki-site.mjs",
     "gen:readme-maps": "node scripts/gen-readme-maps.mjs",

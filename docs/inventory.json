@@ -3,7 +3,7 @@
   "generatedBy": "scripts/gen-docs-inventory.mjs",
   "scope": "docs/**/*.md (excl. generated self-report pages docs-health, docs-inventory)",
   "totals": {
-    "documents": 945,
+    "documents": 946,
     "byCategory": {
       "top": 41,
       "active": 1,
@@ -13,11 +13,11 @@
       "reference": 6,
       "roadmap": 6,
       "superseded": 3,
-      "wiki": 136
+      "wiki": 137
     },
     "byLanguage": {
       "en": 651,
-      "ru": 174,
+      "ru": 175,
       "mixed": 120
     }
   },
@@ -6736,6 +6736,14 @@
       "hash": "f32b52786fc3fd044e80a4b47b2973338e502f2c"
     },
     {
+      "path": "docs/wiki/docs-standard.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Стандарт документации",
+      "bytes": 11917,
+      "hash": "457e71ed59a1b5edd2696e01c276f421a27bad02"
+    },
+    {
       "path": "docs/wiki/execution-trail.md",
       "category": "wiki",
       "language": "ru",
@@ -7372,8 +7380,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Wiki SuperAgents OS",
-      "bytes": 13556,
-      "hash": "43c09054d56df952ae2f962cd7be13ea6c14d0fe"
+      "bytes": 13637,
+      "hash": "8aaf7fcd0561aef2c4b8767e5f720c5c76ac2748"
     },
     {
       "path": "docs/wiki/roadmap-notes.md",

@@ -38,6 +38,7 @@ md.push(`| Статьи без источников | ${h.noSources.length} | о
 md.push(`| Панели с документацией | ${h.mapped.size}/${h.allPanels.length} | панели из реестра маршрутов сопоставлены со статьёй |`);
 md.push(`| &nbsp;&nbsp;авто-панели техник | ${h.techniquePanels.length} | покрыты статьёй [[panels-catalog]], пробелом не считаются |`);
 md.push(`| Проблемы манифеста | ${h.manifestProblems.length} | ссылки в \`docs/manifest.json\` резолвятся |`);
+md.push(`| Проблемы модели сущности | ${h.schemaProblems.length} | \`docs/entity-model.json\` разбирается и соответствует [[docs-standard]] |`);
 md.push(`| README → вики | ${h.readmeRu.slugs.length} (RU) / ${h.readmeEn.slugs.length} (EN) | ссылки README.md и README_EN.md в \`docs/wiki/*.md\` резолвятся |`);
 md.push(`| README RU/EN расхождение | ${h.readmeParityDiff.length} | разница наборов статей между README.md и README_EN.md |`);
 md.push(`| Статьи вне README | ${h.readmeOrphans.length} | статьи вики, не залинкованные из README.md |`);
@@ -59,6 +60,9 @@ if (h.brokenLinks.length) {
 }
 if (h.manifestProblems.length) {
     attention.push(`Проблемы манифеста (${h.manifestProblems.length}):`, ...cap(h.manifestProblems).map((b) => `- ${b}`), '');
+}
+if (h.schemaProblems.length) {
+    attention.push(`Проблемы модели сущности (${h.schemaProblems.length}):`, ...cap(h.schemaProblems).map((b) => `- ${b}`), '');
 }
 if (h.brokenReadmeLinks.length) {
     attention.push(`Битые ссылки README (${h.brokenReadmeLinks.length}):`, ...cap(h.brokenReadmeLinks).map((b) => `- ${b.file} → ${b.slug}.md`), '');

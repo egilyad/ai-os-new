@@ -21,6 +21,7 @@ lines.push(`articles without sources: ${h.noSources.length}`);
 lines.push(`panels:                   ${h.mapped.size}/${h.allPanels.length} mapped to an article`);
 lines.push(`  technique auto-panels:  ${h.techniquePanels.length} (covered by panels-catalog)`);
 lines.push(`manifest problems:        ${h.manifestProblems.length}`);
+lines.push(`entity-model problems:    ${h.schemaProblems.length}`);
 lines.push(`README wiki links:        ${h.readmeRu.slugs.length} (RU) / ${h.readmeEn.slugs.length} (EN)`);
 lines.push(`README broken links:      ${h.brokenReadmeLinks.length}`);
 lines.push(`README RU/EN diff:        ${h.readmeParityDiff.length} slug(s)`);
@@ -52,6 +53,11 @@ if (h.undocumented.length) {
 if (h.manifestProblems.length) {
     lines.push('Manifest problems:');
     for (const b of cap(h.manifestProblems)) lines.push(`  - ${b}`);
+    lines.push('');
+}
+if (h.schemaProblems.length) {
+    lines.push('Entity-model problems:');
+    for (const b of cap(h.schemaProblems)) lines.push(`  - ${b}`);
     lines.push('');
 }
 if (h.brokenReadmeLinks.length) {

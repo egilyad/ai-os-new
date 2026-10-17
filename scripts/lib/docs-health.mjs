@@ -163,8 +163,45 @@ export function computeDocsHealth(root) {
     ];
     const readmeOrphans = [...slugs].filter((s) => !ruSet.has(s));
 
+    // --- documentation standard (Stage 2): docs/entity-model.json is usable ---
+    const schemaProblems = [];
+    const modelPath = resolve(root, 'docs/entity-model.json');
+    if (existsSync(modelPath)) {
+        let model = null;
+        try {
+            model = JSON.parse(readFileSync(modelPath, 'utf8'));
+        } catch (e) {
+            schemaProblems.push(`entity-model.json is not valid JSON: ${e.message}`);
+        }
+        if (model) {
+            const arrays = [
+                ['categories', model.categories],
+                ['entityModel', model.entityModel],
+                ['statuses', model.statuses],
+                ['sourcesOfTruth', model.sourcesOfTruth],
+                ['idConventions', model.idConventions],
+                ['historyRules', model.historyRules],
+            ];
+            for (const [key, val] of arrays) {
+                if (!Array.isArray(val) || !val.length) schemaProblems.push(`entity-model.${key} is missing or empty`);
+            }
+            if (typeof model.version !== 'number') schemaProblems.push('entity-model.version is not a number');
+            const ids = (model.statuses ?? []).map((s) => s.id);
+            const dupIds = ids.filter((id, i) => ids.indexOf(id) !== i);
+            if (dupIds.length) schemaProblems.push(`entity-model.statuses has duplicate ids: ${[...new Set(dupIds)].join(', ')}`);
+            const statusSet = new Set(ids);
+            for (const m of model.freshnessMap ?? []) {
+                if (!statusSet.has(m.status)) schemaProblems.push(`entity-model.freshnessMap ${m.freshness} -> unknown status ${m.status}`);
+            }
+        }
+    }
+
     const hardErrors =
-        brokenSources.length + brokenLinks.length + manifestProblems.length + brokenReadmeLinks.length;
+        brokenSources.length +
+        brokenLinks.length +
+        manifestProblems.length +
+        brokenReadmeLinks.length +
+        schemaProblems.length;
 
     return {
         articles: files.length,
@@ -177,6 +214,7 @@ export function computeDocsHealth(root) {
         techniquePanels,
         undocumented,
         manifestProblems,
+        schemaProblems,
         readmeRu,
         readmeEn,
         brokenReadmeLinks,
