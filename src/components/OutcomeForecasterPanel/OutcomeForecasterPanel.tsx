@@ -13,12 +13,19 @@ export const OutcomeForecasterPanel: React.FC = () => {
     const [opponents, setOpponents] = useState('Empirical Overload, Moral High Ground');
     const [topic, setTopic] = useState('Should we invest heavily in solar energy?');
     const [result, setResult] = useState<ReturnType<OutcomeForecaster['forecast']> | null>(null);
+    const [error, setError] = useState<string | null>(null);
 
     const handleForecast = () => {
-        const previousScores = scoresStr.split(',').map(s => parseFloat(s.trim())).filter(n => !isNaN(n));
-        const opponentStrengths = opponents.split(',').map(s => s.trim()).filter(Boolean);
-        const r = forecaster.forecast(previousScores, role, opponentStrengths, topic, 'English');
-        setResult(r);
+        setError(null);
+        try {
+            const previousScores = scoresStr.split(',').map(s => parseFloat(s.trim())).filter(n => !isNaN(n));
+            const opponentStrengths = opponents.split(',').map(s => s.trim()).filter(Boolean);
+            const r = forecaster.forecast(previousScores, role, opponentStrengths, topic, 'English');
+            setResult(r);
+        } catch (e) {
+            setResult(null);
+            setError(e instanceof Error ? e.message : 'Forecast failed');
+        }
     };
 
     return (
@@ -60,6 +67,13 @@ export const OutcomeForecasterPanel: React.FC = () => {
                 <span style={{ fontSize: 11, color: 'var(--slate-500)', alignSelf: 'center', display: 'flex', alignItems: 'center', gap: 4 }}><Info size={12} /> 8 angles ranked by expectedScore = base + novelty*0.15 − risk*0.1</span>
             </div>
 
+            {error && (
+                <div role="alert" style={{ padding: 10, borderRadius: 10, background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)', fontSize: 13, color: '#f87171', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8 }}>
+                    <span>{error}</span>
+                    <button onClick={() => setError(null)} style={{ background: 'none', border: 'none', color: 'inherit', cursor: 'pointer', fontSize: 13 }} aria-label="Dismiss error">✕</button>
+                </div>
+            )}
+
             {result ? (
                 <div style={{ display: 'grid', gridTemplateColumns: '0.9fr 1.1fr', gap: 14, alignItems: 'start' }}>
                     <div style={{ padding: 14, borderRadius: 12, background: 'rgba(15,23,42,0.6)', border: '1px solid rgba(255,255,255,0.06)' }}>
@@ -67,7 +81,7 @@ export const OutcomeForecasterPanel: React.FC = () => {
                         <div style={{ padding: '10px 12px', borderRadius: 8, background: 'rgba(6,182,214,0.08)', border: '1px solid rgba(6,182,214,0.2)' }}>
                             <div style={{ fontSize: 13, fontWeight: 700, color: '#22d3ee', marginBottom: 4 }}>{result.recommendedLabel}</div>
                             <div style={{ fontSize: 12, color: 'var(--slate-300)', lineHeight: 1.4 }}>{result.recommendedAngle}</div>
-                            <div style={{ marginTop: 8, fontSize: 11, color: 'var(--slate-500)' }}>Expected gain +{(result.expectedScoreGain * 100).toFixed(1)}%</div>
+                            <div style={{ marginTop: 8, fontSize: 11, color: 'var(--slate-500)' }}>Expected gain {typeof result.expectedScoreGain === 'number' && Number.isFinite(result.expectedScoreGain) ? `+${(result.expectedScoreGain * 100).toFixed(1)}%` : '—'}</div>
                         </div>
                     </div>
                     <div style={{ padding: 14, borderRadius: 12, background: 'rgba(15,23,42,0.6)', border: '1px solid rgba(255,255,255,0.06)' }}>

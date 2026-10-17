@@ -18,4 +18,11 @@ describe('OutcomeForecasterPanel', () => {
         fireEvent.click(screen.getByRole('button', { name: /Forecast/i }));
         expect(document.body.textContent).toContain('All variants');
     });
+    it('tolerates garbage score input without crashing', () => {
+        render(<OutcomeForecasterPanel />);
+        const inputs = document.querySelectorAll('input');
+        fireEvent.change(inputs[0]!, { target: { value: 'abc, ???' } });
+        fireEvent.click(screen.getByRole('button', { name: /Forecast/i }));
+        expect(document.body.textContent).not.toContain('NaN');
+    });
 });

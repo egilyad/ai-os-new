@@ -88,6 +88,7 @@ const WhatIfPanel: React.FC = () => {
     const [sessions, setSessions] = useState<Array<{ id: string; topic: string }>>([]);
     const [results, setResults] = useState<SimResult[]>([]);
     const [running, setRunning] = useState<string | null>(null);
+    const [error, setError] = useState<string | null>(null);
 
     const [topoSession, setTopoSession] = useState('');
     const [topoType, setTopoType] = useState('roundtable');
@@ -107,9 +108,10 @@ const WhatIfPanel: React.FC = () => {
 
     const runSim = useCallback(async (type: SimType, label: string, fn: () => Promise<unknown>) => {
         setRunning(type);
+        setError(null);
         try {
             const result = await fn();
-            const r = result as Record<string, unknown>;
+            const r = (result ?? {}) as Record<string, unknown>;
             setResults((prev) =>
                 [
                     {
@@ -121,6 +123,8 @@ const WhatIfPanel: React.FC = () => {
                     ...prev,
                 ].slice(0, 20),
             );
+        } catch (e) {
+            setError(e instanceof Error ? e.message : 'Simulation failed');
         } finally {
             setRunning(null);
         }
@@ -143,6 +147,13 @@ const WhatIfPanel: React.FC = () => {
             <p style={{ margin: '0 0 1.5rem 0', fontSize: '0.8rem', color: 'var(--slate-500)' }}>
                 Simulate topology, participant, budget, provider, and strategy changes
             </p>
+
+            {error && (
+                <div role="alert" style={{ padding: '0.6rem 0.9rem', borderRadius: 10, background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)', color: '#fca5a5', fontSize: '0.82rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8, marginBottom: '1rem' }}>
+                    <span>{error}</span>
+                    <button onClick={() => setError(null)} style={{ background: 'none', border: 'none', color: 'inherit', cursor: 'pointer', fontSize: '0.85rem', flexShrink: 0 }} aria-label="Dismiss error">✕</button>
+                </div>
+            )}
 
             <div
                 style={{
