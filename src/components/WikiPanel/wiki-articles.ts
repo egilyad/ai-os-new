@@ -1672,6 +1672,320 @@ crews, councils, graphs, persona, ops, interop, meta, trust, frontier, rivals.
 Компонент: \`KeyNotesPanel\`. Ключи — [[panel-providers]], пул — [[panel-pools]].`,
     },
     {
+        slug: 'panel-debate-research',
+        title: 'Панели: Исследования системы дебатов',
+        section: 'panels',
+        tags: ['панель', 'дебаты', 'исследование', 'эксперименты', 'инструкция'],
+        freshness: 'documented',
+        sources: ['src/i18n/translations/en/debate.ts', 'src/components/DebateResearch/'],
+        related: ['debates', 'panel-debate-analysis', 'panel-eval-extra'],
+        body: `## Назначение
+
+Экспериментальные исследования самой системы дебатов (папка DebateResearch). Метки — \`nav.*\`, часть ключей — \`debate.*\`.
+
+## Инструменты
+
+- **Architecture Review** — разбор архитектуры.
+- **Prompt & Strategy Audit** — аудит промптов и стратегий.
+- **Model Routing Experiments** — эксперименты маршрутизации моделей.
+- **Governance Stress-Test** — стресс-тест управления.
+- **Observability Gaps Scanner** — поиск пробелов наблюдаемости.
+- **Hypothesis Generator** — генерация гипотез: создание/запуск/удаление, старт дебата (\`hypothesis_generator.*\`).
+- **Debate System Research** — исследование системы дебатов.
+
+## Где менять
+
+Компоненты: \`src/components/DebateResearch/*\`. Анализ дебатов — [[panel-debate-analysis]], метрики — [[panel-eval-extra]].`,
+    },
+    {
+        slug: 'panel-eval-extra',
+        title: 'Панели: Метрики-анализаторы',
+        section: 'panels',
+        tags: ['панель', 'анализ', 'оценка', 'метрики', 'инструкция'],
+        freshness: 'documented',
+        sources: ['src/i18n/translations/en/nav.ts', 'src/components/BlindEvalPanel/', 'src/components/CalibrationPanel/'],
+        related: ['panel-debate-quality', 'panel-debate-toolkit', 'panel-analytics'],
+        body: `## Назначение
+
+Набор измерителей качества рассуждений и ответов. Метки — \`nav.*\`.
+
+## Инструменты
+
+- **Blind Eval** — слепая оценка ответов.
+- **Calibration** — калибровка уверенности.
+- **Consistency** — устойчивость/непротиворечивость.
+- **Similarity** — сходство ответов.
+- **BoP Tracker** — отслеживание баланса доказательств.
+- **Drift Detector** — обнаружение дрейфа.
+- **Entanglement** — связность/запутанность аргументов.
+- **Outcome Forecaster** — прогноз исхода.
+
+## Где менять
+
+Компоненты: \`BlindEvalPanel\`, \`CalibrationPanel\`, \`ConsistencyPanel\`, \`SimilarityPanel\`, \`BoPTrackerPanel\`, \`DriftDetectorPanel\`, \`EntanglementPanel\`, \`OutcomeForecasterPanel\`. Качество — [[panel-debate-quality]].`,
+    },
+    {
+        slug: 'panel-planning',
+        title: 'Панели: Планирование и миссии',
+        section: 'panels',
+        tags: ['панель', 'планирование', 'миссия', 'инструкция'],
+        freshness: 'documented',
+        sources: ['src/i18n/translations/en/nav.ts', 'src/components/PlannerPanel/', 'src/components/MetaAgentPanel/MetaAgentPanel.tsx'],
+        related: ['agents', 'panel-autonomy', 'panel-simulation'],
+        body: `## Назначение
+
+Планирование действий и живое исполнение миссий. Метки — \`nav.*\`.
+
+## Инструменты
+
+- **Planner** — планирование шагов.
+- **Minimax Planner** — планирование по принципу минимакса.
+- **Meta Agent** — мета-агент (управление агентами).
+- **Scratchpad** — черновик промежуточных рассуждений.
+- **Mission Control** — живое исполнение миссий.
+
+## Где менять
+
+Компоненты: \`PlannerPanel\`, \`MinimaxPlannerPanel\`, \`MetaAgentPanel\`, \`ScratchpadPanel\`, \`LiveCognition/MissionControl\`. Автономия — [[panel-autonomy]].`,
+    },
+    {
+        slug: 'panel-simulation',
+        title: 'Панели: Симуляция и контрфакты',
+        section: 'panels',
+        tags: ['панель', 'симуляция', 'контрфакт', 'инструкция'],
+        freshness: 'documented',
+        sources: ['src/i18n/translations/en/nav.ts', 'src/components/SimulationPanel/SimulationPanel.tsx', 'src/components/WhatIfPanel/WhatIfPanel'],
+        related: ['panel-planning', 'panel-shadow', 'panel-observability'],
+        body: `## Назначение
+
+Моделирование «а что если» и разбор причин. Метки — \`nav.*\`.
+
+## Инструменты
+
+- **Simulation Lab** — лаборатория симуляций.
+- **Counterfactual** — контрфактический анализ.
+- **Causal Debugger** — причинная отладка.
+- **What-If** — сценарные прикидки.
+- **Topology Templates** — шаблоны топологий.
+
+## Где менять
+
+Компоненты: \`SimulationPanel\`, \`CounterfactualPanel\`, \`CausalDebugger\`, \`WhatIfPanel\`, \`TopologyGalleryPanel\`. Наблюдаемость — [[panel-observability]].`,
+    },
+    {
+        slug: 'panel-shadow',
+        title: 'Панели: Теневые прогоны и стратегия',
+        section: 'panels',
+        tags: ['панель', 'shadow', 'стратегия', 'инструкция'],
+        freshness: 'documented',
+        sources: ['src/i18n/translations/en/nav.ts', 'src/components/ShadowPanel/ShadowPanel.tsx', 'src/components/ShadowOpponentPanel/ShadowOpponentPanel.tsx'],
+        related: ['debates', 'panel-simulation', 'panel-debate-analysis'],
+        body: `## Назначение
+
+Теневое сравнение вариантов и стратегия дебатов. Метки — \`nav.*\`.
+
+## Инструменты
+
+- **Shadow Compare** — теневое сравнение.
+- **Shadow Opponent** — теневой оппонент для отработки аргументов.
+- **Audience** — модель аудитории.
+- **Strategy Builder** — конструктор стратегии дебатов.
+
+## Где менять
+
+Компоненты: \`ShadowPanel\`, \`ShadowOpponentPanel\`, \`AudiencePanel\`, \`DebatePanel/DebateStrategyBuilder\`. Дебаты — [[debates]].`,
+    },
+    {
+        slug: 'panel-agents-market',
+        title: 'Панели: Агенты — маркетплейс и протокол',
+        section: 'panels',
+        tags: ['панель', 'агенты', 'маркетплейс', 'протокол', 'инструкция'],
+        freshness: 'documented',
+        sources: ['src/i18n/translations/en/nav.ts', 'src/components/AgentMarketplacePanel', 'src/components/AgentComparisonPanel'],
+        related: ['agents', 'panel-fleet', 'panel-persona'],
+        body: `## Назначение
+
+Каталог, сравнение и взаимодействие агентов. Метки — \`nav.*\`.
+
+## Инструменты
+
+- **Agent Marketplace** — магазин агентов.
+- **Agent Comparison** — сравнение агентов.
+- **Agent Protocol** — протокол взаимодействия агентов.
+- **Team Collaboration** — командная работа.
+- **Template Sharing** — обмен шаблонами.
+
+## Где менять
+
+Компоненты: \`AgentMarketplacePanel\`, \`AgentComparisonPanel\`, \`AgentProtocolPanel\`, \`CollaborationPanel\`, \`TemplateSharingPanel\`. Агенты — [[agents]], персоны — [[panel-persona]].`,
+    },
+    {
+        slug: 'panel-memory-extra',
+        title: 'Панели: Федеративная память и перенос',
+        section: 'panels',
+        tags: ['панель', 'память', 'экспорт', 'инструкция'],
+        freshness: 'documented',
+        sources: ['src/i18n/translations/en/memory.ts', 'src/components/FederatedMemoryPanel', 'src/components/MemoryTransferPanel'],
+        related: ['memory', 'panel-memory-palace', 'panel-knowledge'],
+        body: `## Назначение
+
+Федеративная память и перенос памяти между системами. Метки — \`nav.*\`, неймспейс memory.
+
+## Инструменты
+
+- **Federated Memory** — общая память между узлами.
+- **Memory Export/Import** — экспорт и импорт памяти.
+
+## Где менять
+
+Компоненты: \`FederatedMemoryPanel\`, \`MemoryTransferPanel\`. Обзор памяти — [[memory]], дворец — [[panel-memory-palace]].`,
+    },
+    {
+        slug: 'panel-files-editors',
+        title: 'Панели: Файлы, редакторы, обучение, голос',
+        section: 'panels',
+        tags: ['панель', 'файлы', 'редакторы', 'обучение', 'голос', 'инструкция'],
+        freshness: 'documented',
+        sources: ['src/i18n/translations/en/nav.ts', 'src/components/WorkspacePanel/WorkspacePanel.tsx', 'src/components/Editors/EditorsPanel'],
+        related: ['panel-chat', 'panel-prompt-library', 'dev-component-catalog'],
+        body: `## Назначение
+
+Работа с файлами, редакторы, обучение и голосовой ввод. Метки — \`nav.*\`.
+
+## Инструменты
+
+- **Files** — рабочее пространство файлов (\`WorkspacePanel\`).
+- **Editors** — редакторы содержимого.
+- **Tutorials** — обучающие материалы (\`LearnHubPanel\`).
+- **Voice & Multimodal** — голосовой и мультимодальный ввод.
+
+## Где менять
+
+Компоненты: \`WorkspacePanel\`, \`EditorsPanel\`, \`LearnHubPanel\`, \`VoiceInputPanel\`.`,
+    },
+    {
+        slug: 'panel-history-audit',
+        title: 'Панели: История, аудит, версии, деплой',
+        section: 'panels',
+        tags: ['панель', 'история', 'аудит', 'версии', 'деплой', 'инструкция'],
+        freshness: 'documented',
+        sources: ['src/i18n/translations/en/nav.ts', 'src/components/AuditLogView', 'src/components/TimeMachinePanel', 'src/components/ConfigHistoryView'],
+        related: ['panel-observability', 'panel-governance', 'panel-settings'],
+        body: `## Назначение
+
+Историчность изменений, аудит и выпуск. Метки — \`nav.*\`.
+
+## Инструменты
+
+- **Config History** — история конфигураций (\`ConfigHistoryView\`).
+- **Audit Log** — журнал аудита.
+- **Time Machine** — откат к прошлым состояниям.
+- **Deploy to Production** — деплой в продакшн.
+- **Prompt Versions** — версии промптов.
+
+## Где менять
+
+Компоненты: \`ConfigHistoryView\`, \`AuditLogView\`, \`TimeMachinePanel\`, \`DeployPanel\`, \`PromptVersionPanel\`. Управление — [[panel-governance]].`,
+    },
+    {
+        slug: 'panel-infra-meta',
+        title: 'Панели: Инфраструктура и платформа',
+        section: 'panels',
+        tags: ['панель', 'инфраструктура', 'плагины', 'инструкция'],
+        freshness: 'documented',
+        sources: ['src/i18n/translations/en/nav.ts', 'src/components/ServiceRegistryPanel/ServiceRegistryPanel.tsx', 'src/components/PluginSdkPanel'],
+        related: ['panel-observability', 'dev-service-map', 'dev-component-catalog'],
+        body: `## Назначение
+
+Инфраструктурные и платформенные панели. Метки — \`nav.*\`.
+
+## Инструменты
+
+- **Dependency Graph** — граф зависимостей.
+- **Service Registry** — реестр сервисов.
+- **Plugin SDK** — SDK плагинов.
+- **Experimental** — экспериментальные функции (статус planned, бейдж).
+- **Export / Import** — экспорт и импорт данных.
+
+## Где менять
+
+Компоненты: \`DependencyMapPanel\`, \`ServiceRegistryPanel\`, \`PluginSdkPanel\`, \`ExperimentalPanel\`, \`ExportImportPanel\`. Карта сервисов — [[dev-service-map]].`,
+    },
+    {
+        slug: 'panel-research-extra',
+        title: 'Панели: Исследование (расширенное и Gemini)',
+        section: 'panels',
+        tags: ['панель', 'исследование', 'gemini', 'инструкция'],
+        freshness: 'documented',
+        sources: ['src/i18n/translations/en/nav.ts', 'src/components/ResearchPanel/ResearchEngineAdvancedPanel', 'src/components/GeminiResearch/GeminiResearchPanel'],
+        related: ['panel-research', 'panel-topics', 'dev-component-catalog'],
+        body: `## Назначение
+
+Расширенные режимы исследования. Метки — \`nav.*\`.
+
+## Инструменты
+
+- **Research: Advanced** — продвинутый движок исследования.
+- **Research: Gemini AI** — исследование через Gemini.
+- **Research Reports** — отчёты по исследованию.
+
+## Где менять
+
+Компоненты: \`ResearchEngineAdvancedPanel\`, \`GeminiResearchPanel\`, \`ResearchReportPanel\`. Базовый движок — [[panel-research]].`,
+    },
+    {
+        slug: 'panel-provenance-junctions',
+        title: 'Панели: Связи, происхождение, очередь',
+        section: 'panels',
+        tags: ['панель', 'связи', 'происхождение', 'очередь', 'инструкция'],
+        freshness: 'verified',
+        sources: ['src/i18n/translations/en/analytics.ts', 'src/components/JunctionPanel/JunctionPanel.tsx', 'src/components/ProvenancePanel/ProvenancePanel.tsx', 'src/components/InsightBusPanel/InsightBusPanel.tsx'],
+        related: ['panel-lenses-crystals', 'panel-knowledge-generator', 'panel-tasks'],
+        body: `## Назначение
+
+Связи между знаниями, происхождение данных и очередь выполнения. Ключи \`junctions.*\`, \`provenance.*\`.
+
+## Junction Engine
+
+Движок связей: всего связей, поиск новых (detect), подтверждение (verified); источники связей — кристаллы и дебаты. Есть сид-демо.
+
+## Provenance Graph
+
+Граф происхождения: откуда пришли данные и как они связаны.
+
+## Insight Bus и очередь
+
+\`Insight Bus\` — шина инсайтов (метки \`nav.*\`), \`Run Queue\` — очередь прогонов.
+
+## Где менять
+
+Компоненты: \`JunctionPanel\`, \`ProvenancePanel\`, \`InsightBusPanel\`, \`RunQueuePanel\`. Кристаллы — [[panel-lenses-crystals]].`,
+    },
+    {
+        slug: 'panel-wiki',
+        title: 'Панель: Wiki',
+        section: 'panels',
+        tags: ['панель', 'wiki', 'документация', 'инструкция'],
+        freshness: 'verified',
+        sources: ['src/components/WikiPanel/WikiPanel.tsx', 'src/components/WikiPanel/wiki-articles.ts'],
+        related: ['for-developers', 'dev-overview', 'dev-component-catalog'],
+        body: `## Назначение
+
+Сама эта документация. Wiki — портал о системе в системе: материалы, карта панелей, покрытие и раздел для разработчиков.
+
+## Разделы
+
+Слева — секции (руководство, панели, агенты, дебаты, память, провайдеры, диагностика, история, архитектура, заметки, разработчикам). Сверху — поиск и крошки. Есть «Карта ОС», которая ведёт от панели к связанной статье, и «Покрытие», которое показывает, где материал есть, а где заглушка.
+
+## Для разработчиков
+
+8 авто-каталогов (компоненты, события, сервисы-DI, контракты, сторы, локали, скрипты, тесты) и набор руководств. Подробнее — [[for-developers]].
+
+## Где менять
+
+Компонент: \`src/components/WikiPanel/WikiPanel.tsx\`; статьи — в \`wiki-*.ts\`. См. [[dev-overview]].`,
+    },
+    {
         slug: 'agents',
         title: 'Агенты: устройство и управление',
         section: 'agents',
