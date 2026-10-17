@@ -4,7 +4,7 @@
 
 > Раздел: **Архитектура** · Статус: documented · Теги: слои, шина, DI
 
-Источники: `docs/SYSTEM_MANIFEST_RU.md`, `README.md`
+Источники: `docs/SYSTEM_MANIFEST_RU.md`, `README_EN.md`
 
 ## Слои
 

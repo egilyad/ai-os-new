@@ -61,7 +61,7 @@ const CORE_ARTICLES: WikiArticle[] = [
         section: 'guide',
         tags: ['обзор', 'философия', 'local-first'],
         freshness: 'documented',
-        sources: ['README.md', 'docs/SYSTEM_MANIFEST_RU.md'],
+        sources: ['README_EN.md', 'docs/SYSTEM_MANIFEST_RU.md'],
         related: ['capabilities', 'architecture', 'providers'],
         body: `## Что это
 
@@ -92,7 +92,7 @@ flowchart TD
         section: 'guide',
         tags: ['обзор', 'функции'],
         freshness: 'documented',
-        sources: ['README.md'],
+        sources: ['README_EN.md'],
         related: ['what-is', 'debates', 'agents', 'providers', 'memory'],
         body: `## Коротко
 
@@ -2279,7 +2279,7 @@ Browser-шлюз, MCP-делегаты, фабрика агентов — вне
         section: 'architecture',
         tags: ['слои', 'шина', 'DI'],
         freshness: 'documented',
-        sources: ['docs/SYSTEM_MANIFEST_RU.md', 'README.md'],
+        sources: ['docs/SYSTEM_MANIFEST_RU.md', 'README_EN.md'],
         related: ['memory', 'execution-trail', 'for-developers', 'diagnostics'],
         body: `## Слои
 
@@ -2378,7 +2378,7 @@ Health-панели провайдеров, трейсы и timeline, DLQ (dead-
         section: 'dev',
         tags: ['код', 'контракты', 'CI'],
         freshness: 'verified',
-        sources: ['README.md', '.github/workflows/ci.yml', 'package.json'],
+        sources: ['README_EN.md', '.github/workflows/ci.yml', 'package.json'],
         related: ['dev-overview', 'dev-boot', 'dev-ci', 'architecture'],
         body: `## Коротко
 

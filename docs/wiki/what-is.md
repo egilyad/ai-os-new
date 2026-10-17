@@ -4,7 +4,7 @@
 
 > Раздел: **Руководство** · Статус: documented · Теги: обзор, философия, local-first
 
-Источники: `README.md`, `docs/SYSTEM_MANIFEST_RU.md`
+Источники: `README_EN.md`, `docs/SYSTEM_MANIFEST_RU.md`
 
 ## Что это
 

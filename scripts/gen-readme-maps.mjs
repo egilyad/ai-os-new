@@ -1,5 +1,5 @@
 // Generator: embeds code-truth maps (debate strategies, quality techniques,
-// nav panels) into README.md between markers. Run: node scripts/gen-readme-maps.mjs
+// nav panels) into README_EN.md between markers. Run: node scripts/gen-readme-maps.mjs
 // Re-run after adding strategies/techniques/panels — never hand-edit the blocks.
 import { readFileSync, writeFileSync } from 'fs';
 import { fileURLToPath } from 'url';
@@ -230,9 +230,9 @@ console.log(`strategies: ${strategies.length}, techniques: ${techniques.length},
 const date = new Date().toISOString().slice(0, 10);
 const header = `_Generated from code on ${date} by \`node scripts/gen-readme-maps.mjs\` — do not hand-edit, re-run the script._\n\n`;
 
-let readme = readFileSync(resolve(root, 'README.md'), 'utf8');
+let readme = readFileSync(resolve(root, 'README_EN.md'), 'utf8');
 readme = replaceBlock(readme, 'STRATEGIES', header + strategiesMd(strategies));
 readme = replaceBlock(readme, 'TECHNIQUES', header + techniquesMd(techniques));
 readme = replaceBlock(readme, 'PANELS', header + panelsMd(sections));
-writeFileSync(resolve(root, 'README.md'), readme);
+writeFileSync(resolve(root, 'README_EN.md'), readme);
 console.log('README.md updated');

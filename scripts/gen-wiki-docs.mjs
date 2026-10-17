@@ -53,7 +53,7 @@ for (const a of WIKI_ARTICLES) {
 
 const idx = [];
 idx.push('# Wiki SuperAgents OS', '');
-idx.push('[← README (рус.)](../README_RU.md) · [English README](../README.md)', '');
+idx.push('[← README (рус.)](../README.md) · [English README](../README_EN.md)', '');
 idx.push(
     '> Полная документация системы: панели, агенты, дебаты, память, провайдеры, диагностика, история разработки, архитектура и руководства для разработчиков.',
 );

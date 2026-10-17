@@ -4,7 +4,7 @@
 
 > Раздел: **Разработчикам** · Статус: verified · Теги: код, контракты, CI
 
-Источники: `README.md`, `.github/workflows/ci.yml`, `package.json`
+Источники: `README_EN.md`, `.github/workflows/ci.yml`, `package.json`
 
 ## Коротко
 
