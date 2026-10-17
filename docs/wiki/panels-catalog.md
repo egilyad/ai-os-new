@@ -1,0 +1,288 @@
+<!-- АВТОСГЕНЕРАЦИЯ: файл создан scripts/gen-wiki-docs.mjs из корпуса Wiki (src/components/WikiPanel). Не редактировать вручную. -->
+
+# Каталог панелей: раздел → маршрут → компонент → статья
+
+> Раздел: **Панели** · Статус: verified · Теги: панели, каталог, маршруты, компоненты
+
+Источники: `scripts/gen-wiki-panel-catalog.mjs`, `src/generated/wiki-panel-catalog.ts`, `src/route-registry-core.ts`, `src/route-registry-system.ts`, `src/route-registry-content.ts`, `src/route-imports.ts`
+
+# Каталог панелей: раздел → маршрут → компонент → статья
+
+> Автосгенерировано `scripts/gen-wiki-panel-catalog.mjs` из реестра маршрутов,
+> `route-imports.ts`, локалей `nav.*` и карты статей вики. Не редактировать вручную.
+
+Панелей: **259** · с компонентом: **258** · со статьёй: **200** · всего разделов: **20**.
+
+| Раздел | Панель | Маршрут | Компонент | Статья |
+| --- | --- | --- | --- | --- |
+| Панель | Обзор `dashboard` | `/dashboard` | — | — |
+| Панель | провайдеры `keys` | `/keys` | `src/components/ProviderManager/ProviderManager` | [Панель: Провайдеры и ключи](./panel-providers.md) |
+| Панель | знания `knowledge` | `/knowledge` | `src/components/KnowledgePanel/KnowledgePanel` | [Панель: База знаний (RAG)](./panel-knowledge.md) |
+| Панель | проводник Project OS `project-os` | `/project-os` | `src/components/DebateResearch/ProjectOsExplorer` | [Панель: Проекты](./panel-projects.md) |
+| Панель | Когнитивные линзы `lenses` | `/lenses` | `src/components/LensesPanel/LensesPanel` | [Панели: Линзы и кристаллы](./panel-lenses-crystals.md) |
+| Панель | Хранилище кристаллов `crystals` | `/crystals` | `src/components/CrystalVaultPanel/CrystalVaultPanel` | [Панели: Линзы и кристаллы](./panel-lenses-crystals.md) |
+| Панель | Движок связей `junctions` | `/junctions` | `src/components/JunctionPanel/JunctionPanel` | [Панели: Связи, происхождение, очередь](./panel-provenance-junctions.md) |
+| Панель | Движок синтеза `synthesis` | `/synthesis` | `src/components/SynthesisPanel/SynthesisPanel` | [Панель: Синтез мнений](./panel-synthesis.md) |
+| Панель | Генератор знаний `knowledge-generator` | `/knowledge-generator` | `src/components/KnowledgeGenPanel/KnowledgeGenPanel` | [Панель: Генератор знаний](./panel-knowledge-generator.md) |
+| Панель | Форум агентов `forum` | `/forum` | `src/components/ForumPanel/ForumPanel` | [Панель: Форум](./panel-forum.md) |
+| Панель | Конструктор `builder` | `/builder` | `src/components/BuilderPanel/CognitiveBuilder` | [Панель: Конструктор агентов](./panel-builder.md) |
+| Панель | Директор разговоров `director` | `/director` | `src/components/DirectorPanel/DirectorPanel` | [Панель: Режиссёр](./panel-director.md) |
+| Панель | Комнаты агентов `room` | `/room` | `src/components/RoomPanel/RoomPanel` | [Панель: Комната (Room)](./panel-room.md) |
+| Панель | Проекты `projects` | `/projects` | `src/components/ProjectsPanel/ProjectsPanel` | [Панель: Проекты](./panel-projects.md) |
+| Панель | Каналы `channels` | `/channels` | `src/components/ChannelPanel/ChannelPanel` | [Панель: Каналы](./panel-channels.md) |
+| Панель | Групповой чат `group-chat` | `/group-chat` | `src/components/GroupChatPanel/GroupChatPanel` | [Панель: Групповой чат](./panel-group-chat.md) |
+| Панель | Планировщик `scheduler` | `/scheduler` | `src/components/SchedulerPanel` | [Панель: Планировщик](./panel-scheduler.md) |
+| Панель | Планировщик `planner` | `/planner` | `src/components/PlannerPanel/PlannerPanel` | [Панели: Планирование и миссии](./panel-planning.md) |
+| Панель | Автономия `autonomy` | `/autonomy` | `src/components/AutonomyPanel/AutonomyPanel` | [Панель: Автономия](./panel-autonomy.md) |
+| Панель | Диада `dyad` | `/dyad` | `src/components/DyadPanel/DyadPanel` | [Панель: Диада](./panel-dyad.md) |
+| Панель | SOP `sop` | `/sop` | `src/components/SopPanel/SopPanel` | [Панель: Governance и безопасность](./panel-governance.md) |
+| Панель | Очередь запусков `run-queue` | `/run-queue` | `src/components/RunQueuePanel/RunQueuePanel` | [Панели: Связи, происхождение, очередь](./panel-provenance-junctions.md) |
+| Бюджет AI | аналитика `analytics` | `/analytics` | `src/components/AnalyticsPanel/AnalyticsPanel` | [Панели: Аналитика, затраты и ключи](./panel-analytics.md) |
+| Бюджет AI | экономика `pricing` | `/pricing` | `src/components/AnalyticsPanel/PricingPanel` | [Панель: Бюджет и затраты](./panel-budget.md) |
+| Бюджет AI | Бюджет `budget` | `/budget` | `src/components/BudgetPanel` | [Панель: Бюджет и затраты](./panel-budget.md) |
+| Бюджет AI | Аналитика стоимости `cost-analytics` | `/cost-analytics` | `src/components/CostAnalyticsPanel` | [Панели: Аналитика, затраты и ключи](./panel-analytics.md) |
+| Бюджет AI | Оптимизация стоимости `cost-optimization` | `/cost-optimization` | `src/components/CostOptimizationPanel` | [Панель: Бюджет и затраты](./panel-budget.md) |
+| Бюджет AI | Оповещения о бюджете `budget-alerts` | `/budget-alerts` | `src/components/BudgetAlertsPanel` | [Панель: Бюджет и затраты](./panel-budget.md) |
+| Бюджет AI | Траты компании `costs` | `/costs` | `src/components/CostsPanel` | [Панель: Бюджеты компании (gateway)](./panel-costs.md) |
+| Чат | Чат `chat` | `/chat` | `src/components/ChatPanel/ChatPanel` | [Панель: Чат](./panel-chat.md) |
+| Чат | Сессии чата `chat-sessions` | `/chat-sessions` | `src/components/ChatSessionsManagerPanel` | [Панели: Сессии и привязки](./panel-sessions.md) |
+| Чат | Хаб сессий `session-hub` | `/session-hub` | `src/components/SessionHubPanel` | [Панели: Сессии и привязки](./panel-sessions.md) |
+| Чат | закладки `bookmarks` | `/bookmarks` | `src/components/BookmarksPanel/BookmarksPanel` | [Панель: Закладки](./panel-bookmarks.md) |
+| Дебаты | Арена дебатов `debate` | `/debate` | `src/components/DebateArena` | [Дебаты: режимы и механика](./debates.md) |
+| Дебаты | Живые дебаты `debate-live` | `/debate-live` | `src/components/DebateLive/DebateLivePanel` | [Панель: Живые дебаты](./panel-debate-live.md) |
+| Дебаты | Комнаты дебатов `debate-workspace` | `/debate-workspace` | `src/components/DebatePanel/DebateWorkspacePanel` | [Панель: Шаблоны дебатов](./panel-debate-templates.md) |
+| Дебаты | Повтор дебатов `debate-replay` | `/debate-replay` | `src/components/DebateReplayPanel` | [Панели: История дебатов и повтор](./panel-debate-history.md) |
+| Дебаты | турнир `debate-tournament` | `/debate-tournament` | `src/components/TournamentPanel` | [Панель: Турнир дебатов](./panel-debate-tournament.md) |
+| Дебаты | аудитория `audience` | `/audience` | `src/components/AudiencePanel` | [Панели: Теневые прогоны и стратегия](./panel-shadow.md) |
+| Дебаты | Аргумент Граф `argument-graph` | `/argument-graph` | `src/components/ArgumentGraphPanel/ArgumentGraphPanel` | [Инструменты анализа дебатов](./panel-debate-toolkit.md) |
+| Дебаты | Стратегия Конструктор `strategy-builder` | `/strategy-builder` | `src/components/DebatePanel/DebateStrategyBuilder` | [Панели: Теневые прогоны и стратегия](./panel-shadow.md) |
+| Дебаты | Анализ дебатов `debate-analysis` | `/debate-analysis` | `src/components/DebateAnalysisPanel` | [Панель: Анализ дебатов](./panel-debate-analysis.md) |
+| Дебаты | Дебаты История `debate-history` | `/debate-history` | `src/components/DebatePanel/DebateHistoryPage` | [Панели: История дебатов и повтор](./panel-debate-history.md) |
+| Дебаты | Менеджер дебатов `debates-manager` | `/debates-manager` | `src/components/DebatesManagerPanel` | [Панели: История дебатов и повтор](./panel-debate-history.md) |
+| Дебаты | темы `topics` | `/topics` | `src/components/TopicSuggesterPanel` | [Панель: Генератор тем](./panel-topics.md) |
+| Дебаты | Шаблоны дебатов `debate-templates` | `/debate-templates` | `src/components/DebateTemplatesPanel` | [Панель: Шаблоны дебатов](./panel-debate-templates.md) |
+| Дебаты | Качество дебатов `debate-quality` | `/debate-quality` | `src/components/DebateQualityPanel` | [Панель: Качество дебатов](./panel-debate-quality.md) |
+| Дебаты | Влияние техник `quality-impact` | `/quality-impact` | `src/components/QualityImpactDashboard/QualityImpactDashboardPanel` | [Панель: Влияние техник](./panel-quality-impact.md) |
+| Дебаты | Эксперименты `experimental` | `/experimental` | `src/components/ExperimentalPanel` | [Панели: Инфраструктура и платформа](./panel-infra-meta.md) |
+| Дебаты | Черновик `scratchpad` | `/scratchpad` | `src/components/ScratchpadPanel/ScratchpadPanel` | [Панели: Планирование и миссии](./panel-planning.md) |
+| Стратегия и анализ | Прогноз исхода `outcome-forecaster` | `/outcome-forecaster` | `src/components/OutcomeForecasterPanel/OutcomeForecasterPanel` | [Панели: Метрики-анализаторы](./panel-eval-extra.md) |
+| Стратегия и анализ | Минимакс `minimax-planner` | `/minimax-planner` | `src/components/MinimaxPlannerPanel/MinimaxPlannerPanel` | [Панели: Планирование и миссии](./panel-planning.md) |
+| Стратегия и анализ | Сходство `similarity` | `/similarity` | `src/components/SimilarityPanel/SimilarityPanel` | [Панели: Метрики-анализаторы](./panel-eval-extra.md) |
+| Стратегия и анализ | Детектор дрейфа `drift-detector` | `/drift-detector` | `src/components/DriftDetectorPanel/DriftDetectorPanel` | [Панели: Метрики-анализаторы](./panel-eval-extra.md) |
+| Техники | Стальной аргумент `steelman` | `/steelman` | `src/components/SteelmanPanel/SteelmanPanel` | [Инструменты анализа дебатов](./panel-debate-toolkit.md) |
+| Техники | Байесовский судья `bayesian-judge` | `/bayesian-judge` | `src/components/BayesianJudgePanel/BayesianJudgePanel` | [Инструменты анализа дебатов](./panel-debate-toolkit.md) |
+| Техники | Слепая оценка `blind-eval` | `/blind-eval` | `src/components/BlindEvalPanel/BlindEvalPanel` | [Панели: Метрики-анализаторы](./panel-eval-extra.md) |
+| Техники | Достоверность `credibility` | `/credibility` | `src/components/CredibilityPanel/CredibilityPanel` | [Инструменты анализа дебатов](./panel-debate-toolkit.md) |
+| Техники | Калибровка `calibration` | `/calibration` | `src/components/CalibrationPanel/CalibrationPanel` | [Панели: Метрики-анализаторы](./panel-eval-extra.md) |
+| Техники | Согласованность `consistency` | `/consistency` | `src/components/ConsistencyPanel/ConsistencyPanel` | [Панели: Метрики-анализаторы](./panel-eval-extra.md) |
+| Техники | Трекер фреймов `frame-tracker` | `/frame-tracker` | `src/components/FrameTrackerPanel/FrameTrackerPanel` | [Инструменты анализа дебатов](./panel-debate-toolkit.md) |
+| Техники | Дрейф позиции `stance-drift` | `/stance-drift` | `src/components/StanceDriftPanel/StanceDriftPanel` | [Инструменты анализа дебатов](./panel-debate-toolkit.md) |
+| Техники | Шина инсайтов `insight-bus` | `/insight-bus` | `src/components/InsightBusPanel/InsightBusPanel` | [Панели: Связи, происхождение, очередь](./panel-provenance-junctions.md) |
+| Техники | Запутывание (planned) `entanglement` | `/entanglement` | `src/components/EntanglementPanel/EntanglementPanel` | [Панели: Метрики-анализаторы](./panel-eval-extra.md) |
+| Техники | Якорение `anchoring` | `/anchoring` | `src/components/AnchoringPanel/AnchoringPanel` | [Инструменты анализа дебатов](./panel-debate-toolkit.md) |
+| Техники | Смешение концептов `concept-blender` | `/concept-blender` | `src/components/ConceptBlenderPanel/ConceptBlenderPanel` | [Инструменты анализа дебатов](./panel-debate-toolkit.md) |
+| Техники | Добыча убеждений `belief-mining` | `/belief-mining` | `src/components/BeliefMiningPanel/BeliefMiningPanel` | [Инструменты анализа дебатов](./panel-debate-toolkit.md) |
+| Техники | Эксперт-свидетель `expert-witness` | `/expert-witness` | `src/components/ExpertWitnessPanel/ExpertWitnessPanel` | [Инструменты анализа дебатов](./panel-debate-toolkit.md) |
+| Техники | Риторика `rhetoric` | `/rhetoric` | `src/components/RhetoricPanel/RhetoricPanel` | [Инструменты анализа дебатов](./panel-debate-toolkit.md) |
+| Техники | Профайлер искажений `bias-profiler` | `/bias-profiler` | `src/components/BiasProfilerPanel/BiasProfilerPanel` | [Инструменты анализа дебатов](./panel-debate-toolkit.md) |
+| Техники | Детектор выгод `incentive-detector` | `/incentive-detector` | `src/components/IncentiveDetectorPanel/IncentiveDetectorPanel` | [Инструменты анализа дебатов](./panel-debate-toolkit.md) |
+| Техники | Стейкхолдеры `stakeholder` | `/stakeholder` | `src/components/StakeholderPanel/StakeholderPanel` | [Инструменты анализа дебатов](./panel-debate-toolkit.md) |
+| Техники | Миксер персон `persona-mixer` | `/persona-mixer` | `src/components/PersonaMixerPanel/PersonaMixerPanel` | [Панели: Персоны агентов](./panel-persona.md) |
+| Техники | Трекер бремени `bop-tracker` | `/bop-tracker` | `src/components/BoPTrackerPanel/BoPTrackerPanel` | [Панели: Метрики-анализаторы](./panel-eval-extra.md) |
+| Техники | Граф мыслей `got-deliberation` | `/got-deliberation` | `src/components/GoTDeliberationPanel/GoTDeliberationPanel` | [Инструменты анализа дебатов](./panel-debate-toolkit.md) |
+| Техники | Теневой оппонент `shadow-opponent` | `/shadow-opponent` | `src/components/ShadowOpponentPanel/ShadowOpponentPanel` | [Панели: Теневые прогоны и стратегия](./panel-shadow.md) |
+| Техники | Враждебный источник `adversarial-source` | `/adversarial-source` | `src/components/AdversarialSourcePanel/AdversarialSourcePanel` | [Инструменты анализа дебатов](./panel-debate-toolkit.md) |
+| Техники | Атака уязвимостей `vuln-targeting` | `/vuln-targeting` | `src/components/VulnTargetingPanel/VulnTargetingPanel` | [Инструменты анализа дебатов](./panel-debate-toolkit.md) |
+| Техники | Обоснование `justification` | `/justification` | `src/components/JustificationPanel/JustificationPanel` | [Инструменты анализа дебатов](./panel-debate-toolkit.md) |
+| Техники | Логическая форма `logical-form` | `/logical-form` | `src/components/LogicalFormPanel/LogicalFormPanel` | [Инструменты анализа дебатов](./panel-debate-toolkit.md) |
+| Техники | cross-examination `cross-examination` | `/cross-examination` | `src/components/TechniquePanels/CrossExaminationPanel` | — |
+| Техники | delta-focusing `delta-focusing` | `/delta-focusing` | `src/components/TechniquePanels/DeltaFocusingPanel` | — |
+| Техники | vulnerability-targeting `vulnerability-targeting` | `/vulnerability-targeting` | `src/components/TechniquePanels/VulnerabilityTargetingPanel` | — |
+| Техники | agreement-anchoring `agreement-anchoring` | `/agreement-anchoring` | `src/components/TechniquePanels/AgreementAnchoringPanel` | — |
+| Техники | graph-minimax `graph-minimax` | `/graph-minimax` | `src/components/TechniquePanels/GraphMinimaxPanel` | — |
+| Техники | burden-of-proof `burden-of-proof` | `/burden-of-proof` | `src/components/TechniquePanels/BurdenOfProofPanel` | — |
+| Техники | consistency-check `consistency-check` | `/consistency-check` | `src/components/TechniquePanels/ConsistencyCheckPanel` | — |
+| Техники | credibility-scoring `credibility-scoring` | `/credibility-scoring` | `src/components/TechniquePanels/CredibilityScoringPanel` | — |
+| Техники | causal-graph `causal-graph` | `/causal-graph` | `src/components/TechniquePanels/CausalGraphPanel` | — |
+| Техники | pre-publish-critic `pre-publish-critic` | `/pre-publish-critic` | `src/components/TechniquePanels/PrePublishCriticPanel` | — |
+| Техники | fact-checking `fact-checking` | `/fact-checking` | `src/components/TechniquePanels/FactCheckingPanel` | — |
+| Техники | epistemic-calibration `epistemic-calibration` | `/epistemic-calibration` | `src/components/TechniquePanels/EpistemicCalibrationPanel` | — |
+| Техники | socratic-pivot `socratic-pivot` | `/socratic-pivot` | `src/components/TechniquePanels/SocraticPivotPanel` | — |
+| Техники | concession-engine `concession-engine` | `/concession-engine` | `src/components/TechniquePanels/ConcessionEnginePanel` | — |
+| Техники | bayesian-judges `bayesian-judges` | `/bayesian-judges` | `src/components/TechniquePanels/BayesianJudgesPanel` | — |
+| Техники | dpo-sampler `dpo-sampler` | `/dpo-sampler` | `src/components/TechniquePanels/DpoSamplerPanel` | — |
+| Техники | critic `critic` | `/critic` | `src/components/TechniquePanels/CriticPanel` | — |
+| Техники | pivot `pivot` | `/pivot` | `src/components/TechniquePanels/PivotPanel` | — |
+| Техники | concession `concession` | `/concession` | `src/components/TechniquePanels/ConcessionPanel` | — |
+| Техники | triangulation `triangulation` | `/triangulation` | `src/components/TechniquePanels/TriangulationPanel` | — |
+| Техники | empathy `empathy` | `/empathy` | `src/components/TechniquePanels/EmpathyPanel` | — |
+| Техники | heat `heat` | `/heat` | `src/components/TechniquePanels/HeatPanel` | — |
+| Техники | sentinel `sentinel` | `/sentinel` | `src/components/TechniquePanels/SentinelPanel` | — |
+| Техники | redundancy `redundancy` | `/redundancy` | `src/components/TechniquePanels/RedundancyPanel` | — |
+| Техники | replay `replay` | `/replay` | `src/components/TechniquePanels/ReplayPanel` | — |
+| Техники | enthymeme `enthymeme` | `/enthymeme` | `src/components/TechniquePanels/EnthymemePanel` | — |
+| Техники | multi-hop `multi-hop` | `/multi-hop` | `src/components/TechniquePanels/MultiHopPanel` | — |
+| Техники | bias-exploit `bias-exploit` | `/bias-exploit` | `src/components/TechniquePanels/BiasExploitPanel` | — |
+| Техники | interrupt `interrupt` | `/interrupt` | `src/components/TechniquePanels/InterruptPanel` | — |
+| Техники | frame `frame` | `/frame` | `src/components/TechniquePanels/FramePanel` | — |
+| Техники | rhetorical-device `rhetorical-device` | `/rhetorical-device` | `src/components/TechniquePanels/RhetoricalDevicePanel` | — |
+| Техники | narrative-arc `narrative-arc` | `/narrative-arc` | `src/components/TechniquePanels/NarrativeArcPanel` | — |
+| Техники | abstraction-ladder `abstraction-ladder` | `/abstraction-ladder` | `src/components/TechniquePanels/AbstractionLadderPanel` | — |
+| Техники | role-reversal `role-reversal` | `/role-reversal` | `src/components/TechniquePanels/RoleReversalPanel` | — |
+| Техники | fog-of-war `fog-of-war` | `/fog-of-war` | `src/components/TechniquePanels/FogOfWarPanel` | — |
+| Техники | evidence-revelation `evidence-revelation` | `/evidence-revelation` | `src/components/TechniquePanels/EvidenceRevelationPanel` | — |
+| Техники | humor `humor` | `/humor` | `src/components/TechniquePanels/HumorPanel` | — |
+| Техники | status-dynamics `status-dynamics` | `/status-dynamics` | `src/components/TechniquePanels/StatusDynamicsPanel` | — |
+| Техники | style-matching `style-matching` | `/style-matching` | `src/components/TechniquePanels/StyleMatchingPanel` | — |
+| Техники | dynamic-persona `dynamic-persona` | `/dynamic-persona` | `src/components/TechniquePanels/DynamicPersonaPanel` | — |
+| Техники | strategist `strategist` | `/strategist` | `src/components/TechniquePanels/StrategistPanel` | — |
+| Техники | whisper-channels `whisper-channels` | `/whisper-channels` | `src/components/TechniquePanels/WhisperChannelsPanel` | — |
+| Техники | alliance `alliance` | `/alliance` | `src/components/TechniquePanels/AlliancePanel` | — |
+| Техники | prediction-market `prediction-market` | `/prediction-market` | `src/components/TechniquePanels/PredictionMarketPanel` | — |
+| Техники | rtom `rtom` | `/rtom` | `src/components/TechniquePanels/RtomPanel` | — |
+| Техники | strategy-fingerprint `strategy-fingerprint` | `/strategy-fingerprint` | `src/components/TechniquePanels/StrategyFingerprintPanel` | — |
+| Техники | objection-anticipation `objection-anticipation` | `/objection-anticipation` | `src/components/TechniquePanels/ObjectionAnticipationPanel` | — |
+| Техники | evidence-triangulation `evidence-triangulation` | `/evidence-triangulation` | `src/components/TechniquePanels/EvidenceTriangulationPanel` | — |
+| Техники | hegelian-synthesis `hegelian-synthesis` | `/hegelian-synthesis` | `src/components/TechniquePanels/HegelianSynthesisPanel` | — |
+| Техники | uncertainty-propagation `uncertainty-propagation` | `/uncertainty-propagation` | `src/components/TechniquePanels/UncertaintyPropagationPanel` | — |
+| Техники | rhetoric-safety `rhetoric-safety` | `/rhetoric-safety` | `src/components/TechniquePanels/RhetoricSafetyPanel` | — |
+| Техники | blind-evaluation `blind-evaluation` | `/blind-evaluation` | `src/components/TechniquePanels/BlindEvaluationPanel` | — |
+| Техники | bidding-time `bidding-time` | `/bidding-time` | `src/components/TechniquePanels/BiddingTimePanel` | — |
+| Техники | adaptive-order `adaptive-order` | `/adaptive-order` | `src/components/TechniquePanels/AdaptiveOrderPanel` | — |
+| Техники | executable-evidence `executable-evidence` | `/executable-evidence` | `src/components/TechniquePanels/ExecutableEvidencePanel` | — |
+| Техники | hidden-incentives `hidden-incentives` | `/hidden-incentives` | `src/components/TechniquePanels/HiddenIncentivesPanel` | — |
+| Техники | semantic-blending `semantic-blending` | `/semantic-blending` | `src/components/TechniquePanels/SemanticBlendingPanel` | — |
+| Техники | judge-deliberation `judge-deliberation` | `/judge-deliberation` | `src/components/TechniquePanels/JudgeDeliberationPanel` | — |
+| Агенты | агенты `agents` | `/agents` | `src/components/AgentsPanel/AgentsPanel` | [Агенты: устройство и управление](./agents.md) |
+| Агенты | роли `roles` | `/roles` | `src/components/RolesPanel/RolesPanel` | [Панель: Роли и консорциумы](./panel-roles.md) |
+| Агенты | роли: консорциумы `roles-consortia` | `/roles-consortia` | `src/components/RolesPanel/RolesConsortiaPanel` | [Панель: Роли и консорциумы](./panel-roles.md) |
+| Агенты | SRE-агент `sre` | `/sre` | `src/components/SREAgentPanel/SREAgentPanel` | [Панель: SRE-агент](./panel-sre.md) |
+| Агенты | Журнал агента `agent-journal` | `/agent-journal` | `src/components/AgentJournalPanel` | [След исполнения: журнал, раны, зомби](./execution-trail.md) |
+| Агенты | Контроль миссии `mission` | `/mission` | `src/components/LiveCognition/MissionControl` | [Панели: Планирование и миссии](./panel-planning.md) |
+| Агенты | живое рабочее пространство `live` | `/live` | `src/components/LiveCognition/LiveWorkspace` | [Панель: Живые дебаты](./panel-debate-live.md) |
+| Агенты | Маркетплейс агентов `agent-marketplace` | `/agent-marketplace` | `src/components/AgentMarketplacePanel` | [Панели: Агенты — маркетплейс и протокол](./panel-agents-market.md) |
+| Агенты | Сравнение агентов `agent-comparison` | `/agent-comparison` | `src/components/AgentComparisonPanel` | [Панели: Агенты — маркетплейс и протокол](./panel-agents-market.md) |
+| Агенты | Протокол агента `agent-protocol` | `/agent-protocol` | `src/components/AgentProtocolPanel` | [Панели: Агенты — маркетплейс и протокол](./panel-agents-market.md) |
+| Агенты | маркетплейс персон `persona-marketplace` | `/persona-marketplace` | `src/components/PersonaMarketplacePanel` | [Панели: Персоны агентов](./panel-persona.md) |
+| Агенты | выбор персоны `persona-picker` | `/persona-picker` | `src/components/PersonaPickerPanel` | [Панели: Персоны агентов](./panel-persona.md) |
+| Агенты | навыки `skills` | `/skills` | `src/components/SkillsPanel/SkillsPanel` | [Панели: Интеграции (MCP, коннекторы, навыки, инструменты, вебхуки)](./panel-integrations.md) |
+| Агенты | таблица лидеров `leaderboard` | `/leaderboard` | `src/components/SocialLeaderboardPanel` | [Панели: Вклад и сообщество](./panel-contribution.md) |
+| Агенты | Мета-агент `meta-agent` | `/meta-agent` | `src/components/MetaAgentPanel/MetaAgentPanel` | [Панели: Планирование и миссии](./panel-planning.md) |
+| Диагностика | Лог Браузер `logs` | `/logs` | `src/components/LogsPanel/LogsPanel` | [Панель: Наблюдаемость (логи, трейсы, здоровье)](./panel-observability.md) |
+| Диагностика | трейсы `debugger` | `/debugger` | `src/components/TracesPanel/TracesPanel` | [Панель: Наблюдаемость (логи, трейсы, здоровье)](./panel-observability.md) |
+| Диагностика | Маршрутизатор Трассировка `router-trace` | `/router-trace` | `src/components/RouterTraceView/RouterTraceView` | [Панель: Наблюдаемость (логи, трейсы, здоровье)](./panel-observability.md) |
+| Диагностика | Память `memory` | `/memory` | `src/components/MemoryPanel/MemoryPanel` | [Знания и память](./memory.md) |
+| Диагностика | Здоровье `health` | `/health` | `src/components/HealthPanel/HealthPanel` | [Панель: Наблюдаемость (логи, трейсы, здоровье)](./panel-observability.md) |
+| Диагностика | Система Здоровье `system-health` | `/system-health` | `src/components/SystemHealthPanel` | [Панель: Наблюдаемость (логи, трейсы, здоровье)](./panel-observability.md) |
+| Диагностика | Документы Здоровье `docs-health` | `/docs-health` | `src/components/DocsHealthPanel` | [Панель: Наблюдаемость (логи, трейсы, здоровье)](./panel-observability.md) |
+| Диагностика | Карта давления `pressure` | `/pressure` | `src/components/PressureMap` | [Панель: Карта давления](./panel-pressure.md) |
+| Диагностика | Карта давления рантайма `runtime-pressure` | `/runtime-pressure` | `src/components/PressureMapPanel/PressureMapPanel` | [Панель: Карта давления](./panel-pressure.md) |
+| Диагностика | что если `what-if` | `/what-if` | `src/components/WhatIfPanel/WhatIfPanel` | [Панели: Симуляция и контрфакты](./panel-simulation.md) |
+| Диагностика | Граф зависимостей `dependency-map` | `/dependency-map` | `src/components/DependencyMapPanel` | [Панели: Инфраструктура и платформа](./panel-infra-meta.md) |
+| Диагностика | диагностика `diagnostics` | `/diagnostics` | `src/components/DiagnosticPanel` | [Диагностика и известные проблемы](./diagnostics.md) |
+| Диагностика | инспектор состояния `state-inspector` | `/state-inspector` | `src/components/StateInspectorPanel/StateInspectorPanel` | [Панель: Наблюдаемость (логи, трейсы, здоровье)](./panel-observability.md) |
+| Диагностика | профилировщик производительности `performance-profiler` | `/performance-profiler` | `src/components/PerformanceProfilerPanel` | [Панель: Наблюдаемость (логи, трейсы, здоровье)](./panel-observability.md) |
+| Диагностика | тень `shadow` | `/shadow` | `src/components/ShadowPanel/ShadowPanel` | [Панели: Теневые прогоны и стратегия](./panel-shadow.md) |
+| Диагностика | каузальный отладчик `causal-debugger` | `/causal-debugger` | `src/components/CausalDebugger/CausalDebugger` | [Панели: Симуляция и контрфакты](./panel-simulation.md) |
+| Диагностика | контрфактический `counterfactual` | `/counterfactual` | `src/components/CounterfactualPanel/CounterfactualPanel` | [Панели: Симуляция и контрфакты](./panel-simulation.md) |
+| Диагностика | сканер пробелов наблюдаемости `obs-gaps` | `/obs-gaps` | `src/components/DebateResearch/ObsGaps` | [Панели: Исследования системы дебатов](./panel-debate-research.md) |
+| Диагностика | Здоровье SLA `health-sla` | `/health-sla` | `src/components/HealthSlaPanel` | [Панель: Наблюдаемость (логи, трейсы, здоровье)](./panel-observability.md) |
+| Диагностика | Пользовательский Метрики `custom-metrics` | `/custom-metrics` | `src/components/CustomMetricsPanel` | [Панель: Пользовательские метрики](./panel-custom-metrics.md) |
+| Вики | Вики `wiki` | `/wiki` | `src/components/WikiPanel/WikiPanel` | [Панель: Wiki](./panel-wiki.md) |
+| Флот | Консоль флота `fleet` | `/fleet` | `src/components/FleetPanel/FleetPanel` | [Панель: Флот (Fleet Console)](./panel-fleet.md) |
+| Флот | Флот — Команды `fleet-crews` | `/fleet-crews` | `src/components/FleetPanels/CrewsPanel` | [Панель: Флот (Fleet Console)](./panel-fleet.md) |
+| Флот | Флот — Советы `fleet-councils` | `/fleet-councils` | `src/components/CouncilPanel/CouncilPanel` | [Панель: Флот (Fleet Console)](./panel-fleet.md) |
+| Флот | Флот — Графы `fleet-graphs` | `/fleet-graphs` | `src/components/FleetPanels/GraphsPanel` | [Панель: Флот (Fleet Console)](./panel-fleet.md) |
+| Флот | Флот — Персона `fleet-persona` | `/fleet-persona` | `src/components/FleetPanels/PersonaOpsPanel` | [Панель: Флот (Fleet Console)](./panel-fleet.md) |
+| Флот | Флот — Интероп `fleet-interop` | `/fleet-interop` | `src/components/FleetPanels/InteropPanel` | [Панель: Флот (Fleet Console)](./panel-fleet.md) |
+| Флот | Флот — Рубеж `fleet-frontier` | `/fleet-frontier` | `src/components/FleetPanels/FrontierPanel` | [Панель: Флот (Fleet Console)](./panel-fleet.md) |
+| Флот | Компании `companies` | `/companies` | `src/components/CompaniesPanel` | [Панели: Компании и корпоративный gateway](./panel-gateway.md) |
+| Флот | Задачи `issues` | `/issues` | `src/components/IssuesPanel` | [Панели: Компании и корпоративный gateway](./panel-gateway.md) |
+| Флот | Запуски heartbeat `runs` | `/runs` | `src/components/RunsPanel` | [Панели: Компании и корпоративный gateway](./panel-gateway.md) |
+| Флот | Задачи агента `agent-tasks` | `/agent-tasks` | `src/components/AgentTasksPanel/AgentTasksPanel` | [Панель: Задачи агентов](./panel-agent-tasks.md) |
+| Флот | Граф происхождения `provenance` | `/provenance` | `src/components/ProvenancePanel/ProvenancePanel` | [Панели: Связи, происхождение, очередь](./panel-provenance-junctions.md) |
+| Google AI | Google Studio `google-studio` | `/google-studio` | `src/components/GoogleStudio/GoogleStudioPanel` | [Панели: Провайдерские дополнения](./panel-providers-extra.md) |
+| Google AI | Google Кэш `google-cache` | `/google-cache` | `src/components/GoogleCachePanel` | [Панели: Интеграции (MCP, коннекторы, навыки, инструменты, вебхуки)](./panel-integrations.md) |
+| Google AI | Gemini Live `gemini-live` | `/gemini-live` | `src/components/GeminiLivePanel` | [Панели: Провайдерские дополнения](./panel-providers-extra.md) |
+| Google AI | исследование Gemini `research-gemini` | `/research-gemini` | `src/components/GeminiResearch/GeminiResearchPanel` | [Панели: Исследование (расширенное и Gemini)](./panel-research-extra.md) |
+| Исследования | Исследовательский движок `research-engine` | `/research-engine` | `src/components/ResearchPanel/ResearchEnginePanel` | [Панель: Исследовательский движок](./panel-research.md) |
+| Исследования | Исследование дебатов `debate-system-research` | `/debate-system-research` | `src/components/DebateResearch/DebateSystemResearch` | [Панели: Исследования системы дебатов](./panel-debate-research.md) |
+| Исследования | исследовательские отчёты `research-reports` | `/research-reports` | `src/components/ResearchReportPanel` | [Панель: Исследовательский движок](./panel-research.md) |
+| Исследования | Расширенное исследование `research-advanced` | `/research-advanced` | `src/components/ResearchPanel/ResearchEngineAdvancedPanel` | [Панели: Исследование (расширенное и Gemini)](./panel-research-extra.md) |
+| Исследования | Генератор гипотез `hypothesis-gen` | `/hypothesis-gen` | `src/components/DebateResearch/HypothesisGenerator` | [Панели: Исследования системы дебатов](./panel-debate-research.md) |
+| Исследования | Лаборатория rivals `rival-labs` | `/rival-labs` | `src/components/RivalLabs/RivalLabsPanel` | [Панели: Провайдерские дополнения](./panel-providers-extra.md) |
+| Исследования | Проекты Rivals `rivals-catalog` | `/rivals-catalog` | `src/components/RivalsCatalogPanel` | [Панели: Провайдерские дополнения](./panel-providers-extra.md) |
+| Интеграции | воркфлоу `workflows` | `/workflows` | `src/components/WorkflowPanel` | [Панель: Потоки (workflows)](./panel-workflows.md) |
+| Рандомс | руководства `tutorials` | `/tutorials` | `src/components/LearnHubPanel` | [Панели: Файлы, редакторы, обучение, голос](./panel-files-editors.md) |
+| Рандомс | Общий доступ к шаблону `template-sharing` | `/template-sharing` | `src/components/TemplateSharingPanel` | [Панели: Агенты — маркетплейс и протокол](./panel-agents-market.md) |
+| AI провайдеры и ключи | Пулы ключей `pools` | `/pools` | `src/components/PoolStatusPanel/PoolStatusPanel` | [Панель: Пул ключей провайдеров](./panel-pools.md) |
+| AI провайдеры и ключи | группы `groups` | `/groups` | `src/components/GroupsPanel/GroupsPanel` | [Панель: Группы ключей](./panel-groups.md) |
+| AI провайдеры и ключи | Ключевые заметки `key-notes` | `/key-notes` | `src/components/KeyNotesPanel` | [Панель: Заметки к ключам](./panel-key-notes.md) |
+| AI провайдеры и ключи | ротации `rotations` | `/rotations` | `src/components/RotationsPanel` | [Панель: Ротация ключей](./panel-rotations.md) |
+| AI провайдеры и ключи | Привязки сессии `session-bindings` | `/session-bindings` | `src/components/SessionBindingsPanel` | [Панели: Сессии и привязки](./panel-sessions.md) |
+| AI провайдеры и ключи | Умная маршрутизация `smart-routing` | `/smart-routing` | `src/components/SmartRoutingPanel` | [Панели: Умная маршрутизация](./panel-routing.md) |
+| AI провайдеры и ключи | Маршрутизация Ии `routing` | `/routing` | `src/components/RoutingIntelligence/RoutingIntelligence` | [Панели: Умная маршрутизация](./panel-routing.md) |
+| AI провайдеры и ключи | Провайдер Панель `provider-dashboard` | `/provider-dashboard` | `src/components/ProviderDashboard` | [Панели: Провайдерские дополнения](./panel-providers-extra.md) |
+| AI провайдеры и ключи | Маркетплейс провайдеров `provider-marketplace` | `/provider-marketplace` | `src/components/ProviderMarketplace` | [Панели: Провайдерские дополнения](./panel-providers-extra.md) |
+| AI провайдеры и ключи | Аналитика использования ключей `key-usage-analytics` | `/key-usage-analytics` | `src/components/KeyUsageAnalyticsPanel` | [Панели: Аналитика, затраты и ключи](./panel-analytics.md) |
+| AI провайдеры и ключи | Скорость Groq `groq-speed` | `/groq-speed` | `src/components/ProviderManager/GroqSpeedDashboard` | [Панели: Провайдерские дополнения](./panel-providers-extra.md) |
+| AI провайдеры и ключи | Nvidia Enterprise `nvidia-enterprise` | `/nvidia-enterprise` | `src/components/NvidiaEnterprise/NvidiaEnterprisePanel` | [Панели: Провайдерские дополнения](./panel-providers-extra.md) |
+| AI провайдеры и ключи | OpenRouter ◈ `openrouter` | `/openrouter` | `src/components/OpenRouterPanel` | [Панели: Провайдерские дополнения](./panel-providers-extra.md) |
+| Системные сервисы | инструменты `tools` | `/tools` | `src/components/ToolsPanel/ToolsPanel` | [Панели: Интеграции (MCP, коннекторы, навыки, инструменты, вебхуки)](./panel-integrations.md) |
+| Системные сервисы | коннекторы `connectors` | `/connectors` | `src/components/ConnectorsPanel/ConnectorsPanel` | [Панели: Интеграции (MCP, коннекторы, навыки, инструменты, вебхуки)](./panel-integrations.md) |
+| Системные сервисы | MCP-серверы `mcp` | `/mcp` | `src/components/MCPPanel/MCPPanel` | [Панели: Интеграции (MCP, коннекторы, навыки, инструменты, вебхуки)](./panel-integrations.md) |
+| Системные сервисы | Сервис Реестр `service-registry` | `/service-registry` | `src/components/ServiceRegistryPanel/ServiceRegistryPanel` | [Панели: Инфраструктура и платформа](./panel-infra-meta.md) |
+| Системные сервисы | шаблоны топологии `topology-templates` | `/topology-templates` | `src/components/TopologyGalleryPanel` | [Панели: Симуляция и контрфакты](./panel-simulation.md) |
+| Системные сервисы | Кэш `cache` | `/cache` | `src/components/CachePanel` | [Панели: Интеграции (MCP, коннекторы, навыки, инструменты, вебхуки)](./panel-integrations.md) |
+| Системные сервисы | Вебхуки `webhooks` | `/webhooks` | `src/components/WebhooksPanel` | [Панели: Интеграции (MCP, коннекторы, навыки, инструменты, вебхуки)](./panel-integrations.md) |
+| Системные сервисы | Плагин Сдк `plugin-sdk` | `/plugin-sdk` | `src/components/PluginSdkPanel` | [Панели: Инфраструктура и платформа](./panel-infra-meta.md) |
+| Системные сервисы | стражи `guardians` | `/guardians` | `src/components/GuardiansPanel` | [Панель: Хранители (Guardians)](./panel-guardians.md) |
+| Системные сервисы | Адаптеры агентов `adapters` | `/adapters` | `src/components/AdaptersPanel` | [Панели: Компании и корпоративный gateway](./panel-gateway.md) |
+| Системные сервисы | Переносимость `portability` | `/portability` | `src/components/PortabilityPanel` | [Панели: Компании и корпоративный gateway](./panel-gateway.md) |
+| Безопасность и правила | Настройки `settings` | `/settings` | `src/components/SettingsPanel/SettingsPanel` | [Панель: Настройки](./panel-settings.md) |
+| Безопасность и правила | политики `policies` | `/policies` | `src/components/PolicyPanel/PolicyPanel` | [Панель: Governance и безопасность](./panel-governance.md) |
+| Безопасность и правила | Редактор политик `policy-editor` | `/policy-editor` | `src/components/PolicyEditorPanel` | [Панель: Governance и безопасность](./panel-governance.md) |
+| Безопасность и правила | Аудит Лог `audit` | `/audit` | `src/components/AuditLogView` | [Панели: История, аудит, версии, деплой](./panel-history-audit.md) |
+| Безопасность и правила | Конфиг История `history` | `/history` | `src/components/ConfigHistoryView` | [Панели: История, аудит, версии, деплой](./panel-history-audit.md) |
+| Безопасность и правила | Экспорт Импорт `export-import` | `/export-import` | `src/components/ExportImportPanel` | [Панели: Инфраструктура и платформа](./panel-infra-meta.md) |
+| Безопасность и правила | машина времени `time-machine` | `/time-machine` | `src/components/TimeMachinePanel` | [Панели: История, аудит, версии, деплой](./panel-history-audit.md) |
+| Безопасность и правила | Управление / RBAC `governance` | `/governance` | `src/components/GovernancePanel/GovernancePanel` | [Панель: Governance и безопасность](./panel-governance.md) |
+| Безопасность и правила | Ограничения `guardrails` | `/guardrails` | `src/components/GuardrailsPanel/GuardrailsPanel` | [Панель: Governance и безопасность](./panel-governance.md) |
+| Безопасность и правила | проверка безопасности `security` | `/security` | `src/components/PromptSecurityPanel` | [Панель: Governance и безопасность](./panel-governance.md) |
+| Безопасность и правила | Одобрения `approvals` | `/approvals` | `src/components/ApprovalsPanel` | [Панели: Компании и корпоративный gateway](./panel-gateway.md) |
+| Системная память | Дворец памяти `memory-palace` | `/memory-palace` | `src/components/MemoryPanel/MemoryPalacePanel` | [Панель: Дворец памяти](./panel-memory-palace.md) |
+| Системная память | Федеративная память `federated-memory` | `/federated-memory` | `src/components/FederatedMemoryPanel` | [Панели: Федеративная память и перенос](./panel-memory-extra.md) |
+| Системная память | Память Экспорт Импорт `memory-export-import` | `/memory-export-import` | `src/components/MemoryTransferPanel` | [Панели: Федеративная память и перенос](./panel-memory-extra.md) |
+| Лаборатория | наборы данных для оценки `eval-datasets` | `/eval-datasets` | `src/components/EvalDatasetPanel` | [Панель: Датасеты оценки](./panel-eval.md) |
+| Лаборатория | Эксперименты маршрутизации моделей `routing-experiments` | `/routing-experiments` | `src/components/DebateResearch/RoutingExperiments` | [Панели: Исследования системы дебатов](./panel-debate-research.md) |
+| Лаборатория | песочница `playground` | `/playground` | `src/components/ModelComparePanel` | [Панель: Песочница сравнения моделей](./panel-playground.md) |
+| Лаборатория | A/B-тестирование `ab-testing` | `/ab-testing` | `src/components/ABTestPanel` | [Панель: A/B-тест промптов](./panel-ab-testing.md) |
+| Лаборатория | Ревью архитектуры `arch-review` | `/arch-review` | `src/components/DebateResearch/ArchitectureReview` | [Панели: Исследования системы дебатов](./panel-debate-research.md) |
+| Лаборатория | Аудит стратегии промпта `prompt-audit` | `/prompt-audit` | `src/components/DebateResearch/PromptAudit` | [Панели: Исследования системы дебатов](./panel-debate-research.md) |
+| Лаборатория | Лаборатория симуляций `simulation` | `/simulation` | `src/components/SimulationPanel/SimulationPanel` | [Панели: Симуляция и контрфакты](./panel-simulation.md) |
+| Лаборатория | Стресс-тест управления `gov-stress-test` | `/gov-stress-test` | `src/components/DebateResearch/GovStressTest` | [Панели: Исследования системы дебатов](./panel-debate-research.md) |
+| Остальное | редакторы `editors` | `/editors` | `src/components/Editors/EditorsPanel` | [Панели: Файлы, редакторы, обучение, голос](./panel-files-editors.md) |
+| Остальное | промпты `prompts` | `/prompts` | `src/components/PromptLibraryPanel` | [Панель: Библиотека промптов](./panel-prompt-library.md) |
+| Остальное | История версий промпта `prompt-versions` | `/prompt-versions` | `src/components/PromptVersionPanel` | [Панели: История, аудит, версии, деплой](./panel-history-audit.md) |
+| Остальное | пакетная обработка `batch` | `/batch` | `src/components/BatchProcessingPanel` | [Панель: Пакетная обработка](./panel-batch.md) |
+| Остальное | командная работа `team-collaboration` | `/team-collaboration` | `src/components/CollaborationPanel` | [Панели: Агенты — маркетплейс и протокол](./panel-agents-market.md) |
+| Остальное | сообщество `community-hub` | `/community-hub` | `src/components/CommunityHubPanel` | [Панели: Вклад и сообщество](./panel-contribution.md) |
+| Остальное | Дистилляция моделей `model-distillation` | `/model-distillation` | `src/components/DistillationPanel` | [Панели: Провайдерские дополнения](./panel-providers-extra.md) |
+| Остальное | Деплой `deploy` | `/deploy` | `src/components/DeployPanel` | [Панели: История, аудит, версии, деплой](./panel-history-audit.md) |
+| Остальное | Голосовой ввод `voice-input` | `/voice-input` | `src/components/VoiceInputPanel` | [Панели: Файлы, редакторы, обучение, голос](./panel-files-editors.md) |
+| Остальное | аквариум `aquarium` | `/aquarium` | `src/components/AquariumPanel/AquariumPanel` | [Панель: Аквариум агентов](./panel-aquarium.md) |
+| Остальное | Граф вклада `contribution-graph` | `/contribution-graph` | `src/components/ContributionGraphPanel` | [Панели: Вклад и сообщество](./panel-contribution.md) |
+| Остальное | задачи `tasks` | `/tasks` | `src/components/TasksPanel/TasksPanel` | [Панель: Задачи и пайплайны](./panel-tasks.md) |
+| Остальное | файлы `files` | `/files` | `src/components/WorkspacePanel/WorkspacePanel` | [Панели: Файлы, редакторы, обучение, голос](./panel-files-editors.md) |
+
+
+---
+
+## Связанные материалы
+
+- [Как пользоваться панелями](./panels-guide.md)
+- [Разработчикам: маршруты и добавление панели](./dev-routing.md)
+- [Разработчикам: карта каталогов](./dev-layout.md)
+- [Каталог компонентов OS](./dev-component-catalog.md)
+
+[← Все материалы](./README.md)
