@@ -222,6 +222,46 @@ Providers → Installed → Add Key → вставить ключ → дожда
 Компонент: \`src/components/SettingsPanel/SettingsPanel.tsx\`. Строки — неймспейс \`settings.*\` (en и ru обязаны совпадать, см. [[dev-i18n]]). Связи компонента — в [[dev-component-catalog]].`,
     },
     {
+        slug: 'panel-governance',
+        title: 'Панель: Governance и безопасность',
+        section: 'panels',
+        tags: ['панель', 'governance', 'политики', 'guardrails', 'инструкция'],
+        freshness: 'verified',
+        sources: ['src/components/GovernancePanel/GovernancePanel.tsx', 'src/components/PolicyPanel/PolicyPanel.tsx', 'src/components/GuardrailsPanel/GuardrailsPanel.tsx', 'src/components/SopPanel/SopPanel.tsx', 'src/components/PromptSecurityPanel/'],
+        related: ['agents', 'diagnostics', 'providers', 'dev-component-catalog'],
+        body: `## Назначение
+
+Контур управления и безопасности ОС: роли, правила политик, guardrails, SOP-процедуры и проверка промптов. Все панели этой группы используют неймспейс \`governance.*\`.
+
+## Роли (Governance)
+
+Назначение ролей: вводится \`user_id\`, выбирается роль, кнопка «назначить». Список назначенных и доступных ролей; при пустоте — честное «ролей нет».
+
+## Политики (Policy + редактор)
+
+Правила доступа: создать/редактировать/удалить, включить/выключить, статистика по правилам, импорт и экспорт политик целиком. Редактор правила (\`policy-editor\`) — форма конкретной политики (условия и действия).
+
+## Guardrails
+
+Правила безопасности: у каждого — тип (kind), паттерны, проверка \`check\` с вердиктом; tripwire отмечает срабатывание. Добавление правила по имени + паттерну, проверка на пробном вводе, удаление.
+
+## SOP (стандартные процедуры)
+
+Определения процедур (definitions), запуски (runs), фазы (phases) и статус; запуск по цели (goal), лог выполнения. Есть сид-демо для быстрого старта.
+
+## Промпт-безопасность (Prompt Security)
+
+Скан промпта: оценка (score), порог блокировки (block_score), активные правила, история сканов. Включается/выключается.
+
+## Опасные действия
+
+Удаление и сброс правил/политик, очистка списка — подтверждаются диалогом.
+
+## Где менять
+
+Компоненты: \`GovernancePanel\`, \`PolicyPanel\`, \`PolicyEditorPanel\`, \`GuardrailsPanel\`, \`SopPanel\`, \`PromptSecurityPanel\`. Строки — неймспейс \`governance.*\` (en/ru паритет). Связи — в [[dev-component-catalog]].`,
+    },
+    {
         slug: 'agents',
         title: 'Агенты: устройство и управление',
         section: 'agents',
