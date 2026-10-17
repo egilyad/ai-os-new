@@ -47,7 +47,7 @@ export const BlindEvalPanel: React.FC = () => {
     }, [svc, derivedIds, claims]);
 
     // For blind view, hide agentId in claim list
-    const displayClaims = claims.map(c => ({ ...c, displayAgent: blind ? `Agent-${c.agentId.slice(0, 2).toUpperCase()}` : c.agentId })) as Array<Claim & { displayAgent: string }>;
+    const displayClaims = (claims ?? []).map(c => ({ ...c, displayAgent: blind ? `Agent-${(c.agentId ?? '??').slice(0, 2).toUpperCase()}` : c.agentId })) as Array<Claim & { displayAgent: string }>;
 
     if (agents.length === 0) {
         return (

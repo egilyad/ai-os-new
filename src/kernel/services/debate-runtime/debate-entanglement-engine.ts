@@ -262,6 +262,9 @@ export class AnchoringService implements IAnchoringService {
 
         for (const [agentId, args] of byAgent) {
             for (const arg of args) {
+                // Legacy/bus payloads may lack content — skip instead of crashing
+                // extractClaims / jaccardWords on undefined.
+                if (!arg || typeof arg.content !== 'string') continue;
                 const claims = extractClaims(arg.content);
                 for (const claimText of claims) {
                     const subsequentRounds = allArguments.filter(

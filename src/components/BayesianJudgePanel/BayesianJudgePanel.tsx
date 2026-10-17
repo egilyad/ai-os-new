@@ -103,16 +103,17 @@ export const BayesianJudgePanel: React.FC = () => {
                     </div>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                         {beliefs.map(b => {
-                            const pct = b.posterior * 100;
+                            const posterior = Number.isFinite(b.posterior) ? b.posterior : 0;
+                            const pct = posterior * 100;
                             const isSelected = b.agentId === agentId;
                             return (
                                 <div key={b.agentId} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 10px', borderRadius: 8, background: isSelected ? 'rgba(124,58,237,0.15)' : 'rgba(255,255,255,0.03)', border: `1px solid ${isSelected ? 'rgba(124,58,237,0.4)' : 'rgba(255,255,255,0.06)'}` }}>
-                                    <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--slate-200)', width: 60 }}>{agents.find(a => a.id === b.agentId)?.name.split(' ')[0] ?? b.agentId}</div>
+                                    <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--slate-200)', width: 60 }}>{(agents.find(a => a.id === b.agentId)?.name ?? b.agentId).split(' ')[0]}</div>
                                     <div style={{ flex: 1, height: 8, borderRadius: 4, background: 'rgba(255,255,255,0.08)', overflow: 'hidden' }}>
-                                        <div style={{ width: `${pct}%`, height: '100%', background: b.posterior > 0.6 ? '#22c55e' : b.posterior < 0.4 ? '#ef4444' : '#7c3aed', transition: 'width 0.3s' }} />
+                                        <div style={{ width: `${pct}%`, height: '100%', background: posterior > 0.6 ? '#22c55e' : posterior < 0.4 ? '#ef4444' : '#7c3aed', transition: 'width 0.3s' }} />
                                     </div>
-                                    <div style={{ fontSize: 12, fontWeight: 700, color: b.posterior > 0.6 ? '#22c55e' : b.posterior < 0.4 ? '#ef4444' : '#a78bfa', minWidth: 48, textAlign: 'right' }}>{pct.toFixed(1)}%</div>
-                                    <div style={{ fontSize: 11, color: 'var(--slate-500)', minWidth: 40, textAlign: 'right' }}>{b.updates} upd</div>
+                                    <div style={{ fontSize: 12, fontWeight: 700, color: posterior > 0.6 ? '#22c55e' : posterior < 0.4 ? '#ef4444' : '#a78bfa', minWidth: 48, textAlign: 'right' }}>{pct.toFixed(1)}%</div>
+                                    <div style={{ fontSize: 11, color: 'var(--slate-500)', minWidth: 40, textAlign: 'right' }}>{b.updates ?? 0} upd</div>
                                 </div>
                             );
                         })}
@@ -135,7 +136,7 @@ export const BayesianJudgePanel: React.FC = () => {
                     ) : (
                         <div style={{ display: 'flex', alignItems: 'end', gap: 3, height: 120, padding: '8px 4px 4px', borderRadius: 8, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
                             {history.map((h, i) => {
-                                const hPct = h.posterior * 100;
+                                const hPct = (Number.isFinite(h.posterior) ? h.posterior : 0) * 100;
                                 const COLORS = ['#3b82f6', '#ef4444', '#10b981'] as const;
                                 const idx = agents.findIndex(a => a.id === h.agentId);
                                 const color = idx >= 0 ? COLORS[idx % COLORS.length]! : '#10b981';
@@ -154,7 +155,7 @@ export const BayesianJudgePanel: React.FC = () => {
                                 const COLORS = ['#3b82f6', '#ef4444', '#10b981'] as const;
                                 const c = COLORS[idx % COLORS.length]!;
                                 return (
-                                    <span key={a.id} style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}><span style={{ width: 10, height: 3, background: c, borderRadius: 1 }} /> {a.name.split(' ')[0]}</span>
+                                    <span key={a.id} style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}><span style={{ width: 10, height: 3, background: c, borderRadius: 1 }} /> {(a.name ?? a.id).split(' ')[0]}</span>
                                 );
                             })}
                             <span style={{ marginLeft: 'auto' }}><Info size={12} style={{ verticalAlign: 'middle', marginRight: 4 }} />likelihood via logistic, updates Bayesian</span>

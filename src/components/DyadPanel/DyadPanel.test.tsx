@@ -97,4 +97,23 @@ describe('DyadPanel', () => {
         fireEvent.click(screen.getByRole('button', { name: 'dyad.run.start' }));
         expect(await screen.findByText('dyad.validation.topic')).toBeDefined();
     });
+
+    it('tolerates a legacy loop missing goal/log without crashing', async () => {
+        store = [
+            {
+                id: 'legacy-dyad',
+                kind: 'dyad',
+                status: 'completed',
+                iterations: 1,
+                maxIterations: 5,
+                taskList: [],
+                createdAt: 2,
+                updatedAt: 2,
+            } as unknown as AgentLoop,
+        ];
+        const Panel = (await import('./DyadPanel')).default;
+        render(<Panel />);
+        expect((await screen.findAllByText('dyad.list.untitled')).length).toBeGreaterThan(0);
+        expect(document.body.textContent).not.toContain('undefined');
+    });
 });

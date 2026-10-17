@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import BeliefMiningPanel from './BeliefMiningPanel';
 
 vi.mock('../../hooks/useRealAgents', () => ({
@@ -8,6 +8,23 @@ vi.mock('../../hooks/useRealAgents', () => ({
         { id: 'agent-beta', name: 'Beta', role: 'con' },
         { id: 'agent-gamma', name: 'Gamma', role: 'neutral' },
     ],
+}));
+
+const { debateArgsState } = vi.hoisted(() => ({
+    debateArgsState: {
+        args: [] as Array<Record<string, unknown>>,
+        sessionId: null as string | null,
+        hasLiveDebate: false,
+    },
+}));
+
+vi.mock('../../hooks/useDebateArguments', () => ({
+    useDebateArguments: () => ({
+        args: debateArgsState.args,
+        sessionId: debateArgsState.sessionId,
+        topic: '',
+        hasLiveDebate: debateArgsState.hasLiveDebate,
+    }),
 }));
 
 describe('BeliefMiningPanel', () => {
@@ -22,5 +39,22 @@ describe('BeliefMiningPanel', () => {
     it('shows conflicts', () => {
         render(<BeliefMiningPanel />);
         expect(document.body.textContent).toContain('Conflicts');
+    });
+    it('tolerates legacy args without content', async () => {
+        debateArgsState.args = [
+            { id: 'x1', agentId: 'agent-alpha', agentName: 'Alpha', round: 1 },
+        ] as never;
+        debateArgsState.sessionId = 's1';
+        debateArgsState.hasLiveDebate = true;
+        try {
+            render(<BeliefMiningPanel />);
+            fireEvent.click(await screen.findByText('Load active debate (1)'));
+            await screen.findByText('Mined beliefs');
+            expect(document.body.textContent).not.toContain('NaN');
+        } finally {
+            debateArgsState.args = [];
+            debateArgsState.sessionId = null;
+            debateArgsState.hasLiveDebate = false;
+        }
     });
 });

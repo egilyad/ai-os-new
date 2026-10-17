@@ -14,9 +14,11 @@ import type { RouterDiffReport } from '../../kernel/services/projections/router-
 const ShadowPanel: React.FC = () => {
     const [routerReport, setRouterReport] = useState<RouterDiffReport | null>(null);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
     const runDiff = useCallback(() => {
         setLoading(true);
+        setError(null);
         try {
             const liveDecisions = routerService.getDecisionHistory(200);
             const projRouterMap = routerProjection.getState();
@@ -32,6 +34,7 @@ const ShadowPanel: React.FC = () => {
                 });
         } catch (e) {
             console.error('[ShadowPanel] Diff failed:', e);
+            setError(e instanceof Error ? e.message : String(e));
         } finally {
             setLoading(false);
         }
@@ -69,6 +72,34 @@ const ShadowPanel: React.FC = () => {
                     Router Projection Diff
                 </h1>
             </div>
+
+            {error && (
+                <div
+                    role="alert"
+                    style={{
+                        padding: '10px 12px',
+                        marginBottom: 16,
+                        borderRadius: 8,
+                        background: 'rgba(239,68,68,0.08)',
+                        border: '1px solid rgba(239,68,68,0.2)',
+                        color: '#fca5a5',
+                        fontSize: 13,
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        gap: 8,
+                    }}
+                >
+                    <span>Diff failed: {error}</span>
+                    <button
+                        onClick={() => setError(null)}
+                        aria-label="Dismiss error"
+                        style={{ background: 'none', border: 'none', color: 'inherit', cursor: 'pointer', fontSize: 13 }}
+                    >
+                        ✕
+                    </button>
+                </div>
+            )}
 
             {loading && !routerReport && (
                 <div style={{ textAlign: 'center', padding: 40, color: 'var(--slate-500)' }}>

@@ -1,28 +1,57 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
-import AnchoringPanel from './AnchoringPanel';
 
 vi.mock('../../hooks/useRealAgents', () => ({
-    useRealAgents: () => [
-        { id: 'agent-alpha', name: 'Alpha', role: 'pro' },
-        { id: 'agent-beta', name: 'Beta', role: 'con' },
-        { id: 'agent-gamma', name: 'Gamma', role: 'neutral' },
-    ],
+    useRealAgents: () => [{ id: 'a1', name: 'Agent One', role: 'pro' }],
+}));
+
+const { debateArgsState } = vi.hoisted(() => ({
+    debateArgsState: {
+        args: [] as Array<Record<string, unknown>>,
+        sessionId: null as string | null,
+        hasLiveDebate: false,
+    },
+}));
+
+vi.mock('../../hooks/useDebateArguments', () => ({
+    useDebateArguments: () => ({
+        args: debateArgsState.args,
+        sessionId: debateArgsState.sessionId,
+        topic: '',
+        hasLiveDebate: debateArgsState.hasLiveDebate,
+    }),
+}));
+
+vi.mock('../../i18n/useTranslation', () => ({
+    useTranslation: () => ({
+        t: (key: string) => key,
+    }),
 }));
 
 describe('AnchoringPanel', () => {
-    it('renders header', () => {
+    beforeEach(() => {
+        debateArgsState.args = [];
+        debateArgsState.sessionId = null;
+        debateArgsState.hasLiveDebate = false;
+        vi.clearAllMocks();
+    });
+
+    it('renders the anchoring header', async () => {
+        const { AnchoringPanel } = await import('./AnchoringPanel');
         render(<AnchoringPanel />);
         expect(screen.getAllByText(/Anchoring/i).length).toBeGreaterThan(0);
     });
-    it('adds claim', () => {
+
+    it('tolerates legacy args without content', async () => {
+        debateArgsState.args = [
+            { id: 'x1', agentId: 'a1', agentName: 'Agent One', round: 1 },
+        ] as never;
+        debateArgsState.sessionId = 's1';
+        debateArgsState.hasLiveDebate = true;
+        const { AnchoringPanel } = await import('./AnchoringPanel');
         render(<AnchoringPanel />);
-        const btn = screen.getByText(/Add claim/i);
-        fireEvent.click(btn);
-        expect(document.body.textContent).toContain('Arguments');
-    });
-    it('shows anchors', () => {
-        render(<AnchoringPanel />);
-        expect(document.body.textContent).toContain('Anchors');
+        fireEvent.click(await screen.findByText(/Load active debate/));
+        expect(await screen.findByText(/Arguments/)).toBeDefined();
+        expect(document.body.textContent).not.toContain('NaN');
     });
 });

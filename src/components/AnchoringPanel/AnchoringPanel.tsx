@@ -31,8 +31,20 @@ export const AnchoringPanel: React.FC = () => {
     }, [agents, agentId]);
     const [text, setText] = useState('');
 
-    const anchors = useMemo(() => svc.extractAnchors(args, round, 2), [svc, args, round]);
-    const prompt = useMemo(() => svc.buildDeltaPrompt(anchors, 'English'), [svc, anchors]);
+    const anchors = useMemo(() => {
+        try {
+            return svc.extractAnchors(args, round, 2);
+        } catch {
+            return [];
+        }
+    }, [svc, args, round]);
+    const prompt = useMemo(() => {
+        try {
+            return svc.buildDeltaPrompt(anchors, 'English');
+        } catch {
+            return '';
+        }
+    }, [svc, anchors]);
 
     const handleAdd = () => {
         if (!agentId) return;
@@ -92,9 +104,9 @@ export const AnchoringPanel: React.FC = () => {
                         <div style={{ padding: 12, textAlign: 'center', color: 'var(--slate-500)', fontSize: 12, border: '1px dashed rgba(255,255,255,0.08)', borderRadius: 8 }}>No arguments yet — load an active debate or add a claim to analyze.</div>
                     ) : (
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 6, maxHeight: 320, overflowY: 'auto' }}>
-                            {args.map(a => (
+                            {(args ?? []).map(a => (
                                 <div key={a.id} style={{ padding: '6px 8px', borderRadius: 6, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', fontSize: 12, color: 'var(--slate-300)' }}>
-                                    <span style={{ fontWeight: 700, color: 'var(--slate-200)' }}>{a.agentName}</span> <span style={{ color: 'var(--slate-500)' }}>r{a.round}</span> — {a.content.slice(0, 100)}
+                                    <span style={{ fontWeight: 700, color: 'var(--slate-200)' }}>{a.agentName}</span> <span style={{ color: 'var(--slate-500)' }}>r{a.round}</span> — {(a.content ?? '').slice(0, 100)}
                                 </div>
                             ))}
                         </div>
@@ -110,8 +122,8 @@ export const AnchoringPanel: React.FC = () => {
                             {anchors.map(a => (
                                 <div key={a.claimId} style={{ padding: '8px 10px', borderRadius: 8, background: 'rgba(34,197,94,0.08)', border: '1px solid rgba(34,197,94,0.2)', fontSize: 12, color: 'var(--slate-300)' }}>
                                     <div style={{ fontWeight: 700, color: '#22c55e', fontSize: 11, marginBottom: 2 }}>{a.agentName} · r{a.roundResolved} · {Math.round(a.confidence * 100)}%</div>
-                                    <div>{a.text.slice(0, 140)}</div>
-                                    <div style={{ fontSize: 11, color: 'var(--slate-500)', marginTop: 2 }}>ID {a.claimId.slice(0, 8)}</div>
+                                    <div>{(a.text ?? '').slice(0, 140)}</div>
+                                    <div style={{ fontSize: 11, color: 'var(--slate-500)', marginTop: 2 }}>ID {(a.claimId ?? '').slice(0, 8)}</div>
                                 </div>
                             ))}
                         </div>

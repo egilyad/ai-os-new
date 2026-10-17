@@ -36,6 +36,9 @@ export class BeliefMiningService implements IBeliefMiningService {
         const beliefs: MinedBelief[] = [];
 
         for (const arg of previousArguments) {
+            // Legacy/bus payloads may lack content — skip instead of crashing
+            // matchAll on undefined (would kill every consumer panel).
+            if (!arg || typeof arg.content !== 'string') continue;
             const argBeliefs = this._extractFromText(arg.content, arg);
             beliefs.push(...argBeliefs.slice(0, MAX_BELIEFS_PER_ARGUMENT));
         }

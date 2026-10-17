@@ -84,7 +84,7 @@ export default function DyadPanel() {
         } catch (e) { fail(e); }
     };
 
-    const filtered = search.trim() ? loops.filter((l) => l.goal.toLowerCase().includes(search.toLowerCase())) : loops;
+    const filtered = search.trim() ? loops.filter((l) => (l.goal ?? '').toLowerCase().includes(search.toLowerCase())) : loops;
 
     return (
         <div style={{ display: 'flex', height: '100%', background: 'var(--slate-900)', color: 'var(--slate-200)' }}>
@@ -106,10 +106,10 @@ export default function DyadPanel() {
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                             {filtered.map((l) => (
                                 <div key={l.id} onClick={() => setActiveId(l.id)} style={{ padding: '10px 12px', borderRadius: 10, cursor: 'pointer', background: l.id === activeId ? 'rgba(168,85,247,0.12)' : 'rgba(255,255,255,0.03)', borderLeft: l.id === activeId ? '3px solid #a855f7' : '3px solid transparent', border: '1px solid rgba(255,255,255,0.06)' }}>
-                                    <div style={{ fontSize: 12, fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{l.goal.slice(0, 80)}</div>
+                                    <div style={{ fontSize: 12, fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{(l.goal || t('dyad.list.untitled')).slice(0, 80)}</div>
                                     <div style={{ display: 'flex', gap: 6, alignItems: 'center', marginTop: 6 }}>
                                         <StatusBadge status={l.status} label={t(`dyad.status.${l.status}`)} />
-                                        <span style={{ fontSize: 11, color: 'var(--slate-500)' }}>{l.iterations}/{l.maxIterations} turns</span>
+                                        <span style={{ fontSize: 11, color: 'var(--slate-500)' }}>{l.iterations ?? 0}/{l.maxIterations ?? 0} turns</span>
                                     </div>
                                 </div>
                             ))}
@@ -143,19 +143,20 @@ export default function DyadPanel() {
                 ) : (
                     <div style={{ flex: 1, overflowY: 'auto', padding: '16px 20px' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
-                            <span style={{ fontWeight: 800, fontSize: 14 }}>{active.goal.slice(0, 100)}</span>
+                            <span style={{ fontWeight: 800, fontSize: 14 }}>{(active.goal || t('dyad.list.untitled')).slice(0, 100)}</span>
                             <StatusBadge status={active.status} label={t(`dyad.status.${active.status}`)} />
-                            <span style={{ fontSize: 11, color: 'var(--slate-500)' }}>{active.iterations}/{active.maxIterations}</span>
+                            <span style={{ fontSize: 11, color: 'var(--slate-500)' }}>{active.iterations ?? 0}/{active.maxIterations ?? 0}</span>
                         </div>
-                        <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--slate-500)', letterSpacing: 0.5, textTransform: 'uppercase', marginBottom: 8 }}>{t('dyad.log.heading')} · {active.log.length}</div>
-                        {active.log.length === 0 ? (
+                        <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--slate-500)', letterSpacing: 0.5, textTransform: 'uppercase', marginBottom: 8 }}>{t('dyad.log.heading')} · {(active.log ?? []).length}</div>
+                        {(active.log ?? []).length === 0 ? (
                             <div style={{ textAlign: 'center', padding: 16, color: 'var(--slate-500)', fontSize: 12, border: '1px dashed rgba(255,255,255,0.08)', borderRadius: 10 }}>{t('dyad.log.empty')}</div>
                         ) : (
                             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                                {active.log.map((line, i) => {
+                                {(active.log ?? []).map((line, i) => {
                                     const isUser = i % 2 === 0;
+                                    const text = typeof line === 'string' ? line : String(line ?? '');
                                     return (
-                                        <div key={`${i}-${line.slice(0, 24)}`} style={{ alignSelf: isUser ? 'flex-start' : 'flex-end', maxWidth: '85%', padding: '8px 12px', borderRadius: 12, background: isUser ? 'rgba(59,130,246,0.12)' : 'rgba(255,255,255,0.04)', border: `1px solid ${isUser ? 'rgba(59,130,246,0.15)' : 'rgba(255,255,255,0.06)'}`, borderBottomLeftRadius: isUser ? 4 : 12, borderBottomRightRadius: isUser ? 12 : 4, fontSize: 12, whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>{line}</div>
+                                        <div key={`${i}-${text.slice(0, 24)}`} style={{ alignSelf: isUser ? 'flex-start' : 'flex-end', maxWidth: '85%', padding: '8px 12px', borderRadius: 12, background: isUser ? 'rgba(59,130,246,0.12)' : 'rgba(255,255,255,0.04)', border: `1px solid ${isUser ? 'rgba(59,130,246,0.15)' : 'rgba(255,255,255,0.06)'}`, borderBottomLeftRadius: isUser ? 4 : 12, borderBottomRightRadius: isUser ? 12 : 4, fontSize: 12, whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>{text}</div>
                                     );
                                 })}
                             </div>

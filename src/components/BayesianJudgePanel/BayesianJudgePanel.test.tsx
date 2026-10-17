@@ -2,12 +2,20 @@ import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import BayesianJudgePanel from './BayesianJudgePanel';
 
+type TestAgent = { id: string; name?: string; role?: string };
+
+const { agentsState } = vi.hoisted(() => ({
+    agentsState: {
+        agents: [
+            { id: 'agent-alpha', name: 'Alpha', role: 'pro' },
+            { id: 'agent-beta', name: 'Beta', role: 'con' },
+            { id: 'agent-gamma', name: 'Gamma', role: 'neutral' },
+        ] as TestAgent[],
+    },
+}));
+
 vi.mock('../../hooks/useRealAgents', () => ({
-    useRealAgents: () => [
-        { id: 'agent-alpha', name: 'Alpha', role: 'pro' },
-        { id: 'agent-beta', name: 'Beta', role: 'con' },
-        { id: 'agent-gamma', name: 'Gamma', role: 'neutral' },
-    ],
+    useRealAgents: () => agentsState.agents,
 }));
 
 describe('BayesianJudgePanel', () => {
@@ -30,5 +38,19 @@ describe('BayesianJudgePanel', () => {
         const btn = screen.getByText(/Reset/i);
         fireEvent.click(btn);
         expect(document.body.textContent).toContain('Beliefs');
+    });
+    it('falls back to agent id when a legacy agent has no name', () => {
+        agentsState.agents = [{ id: 'legacy-1' }, { id: 'agent-beta', name: 'Beta' }];
+        try {
+            render(<BayesianJudgePanel />);
+            expect(document.body.textContent).not.toContain('undefined');
+            expect(document.body.textContent).toContain('legacy-1');
+        } finally {
+            agentsState.agents = [
+                { id: 'agent-alpha', name: 'Alpha', role: 'pro' },
+                { id: 'agent-beta', name: 'Beta', role: 'con' },
+                { id: 'agent-gamma', name: 'Gamma', role: 'neutral' },
+            ];
+        }
     });
 });

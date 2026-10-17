@@ -28,7 +28,7 @@ export const AdversarialSourcePanel: React.FC = () => {
     const { args: liveArgs, topic: liveTopic, sessionId, hasLiveDebate } = useDebateArguments();
     const [text, setText] = useState<string>('');
     const loadDebate = useCallback(() => {
-        if (liveArgs.length) setText(liveArgs.map((a) => a.content).join('\n\n'));
+        if (liveArgs.length) setText(liveArgs.map((a) => a.content ?? '').filter(Boolean).join('\n\n'));
     }, [liveArgs, setText]);
     useEffect(() => {
         if (hasLiveDebate) loadDebate();
@@ -38,17 +38,21 @@ export const AdversarialSourcePanel: React.FC = () => {
     const [history, setHistory] = useState<HistoryEntry[]>([]);
     const [isRunning, setIsRunning] = useState(false);
     const [hasRun, setHasRun] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
     const canRun = text.trim().length >= 50 && /https?:\/\//i.test(text);
 
     const handleVerify = async () => {
         setIsRunning(true);
         setHasRun(true);
+        setError(null);
         try {
             const ac = new AbortController();
             const res = await svc.verifyClaims(text, ac.signal);
-            setResults(res);
-            setHistory((h) => [...h, { text, results: res, at: Date.now() }]);
+            setResults(Array.isArray(res) ? res : []);
+            setHistory((h) => [...h, { text, results: Array.isArray(res) ? res : [], at: Date.now() }]);
+        } catch (e) {
+            setError(e instanceof Error ? e.message : 'Verification failed');
         } finally {
             setIsRunning(false);
         }
@@ -153,6 +157,12 @@ export const AdversarialSourcePanel: React.FC = () => {
                         <BarChart3 size={16} color="#8b5cf6" /> Verification — {results.length} distorted
                         {hasRun && <span style={{ marginLeft: 'auto', fontSize: 11, color: distortedCount ? '#f87171' : '#22c55e' }}>{distortedCount ? `${distortedCount} warnings` : 'no distortion'}</span>}
                     </div>
+                    {error && (
+                        <div role="alert" style={{ padding: '8px 10px', borderRadius: 8, background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)', fontSize: 12, color: '#f87171', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8, marginBottom: 10 }}>
+                            <span>{error}</span>
+                            <button onClick={() => setError(null)} style={{ background: 'none', border: 'none', color: 'inherit', cursor: 'pointer', fontSize: 12 }} aria-label="Dismiss error">✕</button>
+                        </div>
+                    )}
                     {!hasRun ? (
                         <div
                             style={{

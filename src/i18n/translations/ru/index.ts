@@ -7,6 +7,7 @@ import { agents } from './agents';
 import { memory } from './memory';
 import { chat } from './chat';
 import { groupChat } from './groupChat';
+import { dyad } from './dyad';
 import { providers } from './providers';
 import { dashboard } from './dashboard';
 import { analytics } from './analytics';
@@ -27,6 +28,7 @@ const ru: Record<string, string> = {
     ...memory,
     ...chat,
     ...groupChat,
+    ...dyad,
     ...providers,
     ...dashboard,
     ...analytics,
