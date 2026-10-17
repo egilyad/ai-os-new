@@ -35,9 +35,13 @@ export const BoPTrackerPanel: React.FC = () => {
     const loadDebate = useCallback(() => {
         if (!liveArgs.length) return;
         svc.reset();
-        liveArgs.forEach((a) => svc.recordClaim(`c_${a.id}`, a.agentId, a.agentName, a.content, a.round));
+        liveArgs.forEach((a) => svc.recordClaim(`c_${a.id}`, a.agentId, a.agentName, a.content ?? '', a.round ?? 1));
         setVersion(v => v + 1);
-        setRound((r) => Math.max(r, ...liveArgs.map((a) => a.round)));
+        const maxRound = liveArgs.reduce(
+            (m, a) => Math.max(m, Number.isFinite(a.round) ? a.round : 1),
+            1,
+        );
+        setRound((r) => Math.max(Number.isFinite(r) ? r : 1, maxRound));
     }, [liveArgs, svc]);
 
     useEffect(() => {
@@ -107,7 +111,7 @@ export const BoPTrackerPanel: React.FC = () => {
                                 <div key={u.claimId} style={{ padding: '8px 10px', borderRadius: 8, background: 'rgba(245,158,11,0.08)', border: '1px solid rgba(245,158,11,0.2)', display: 'flex', gap: 8, alignItems: 'center' }}>
                                     <div style={{ flex: 1, minWidth: 0 }}>
                                         <div style={{ fontSize: 11, color: 'var(--slate-500)' }}>{u.agentName} · r{u.round} · {u.claimId.slice(0, 8)}</div>
-                                        <div style={{ fontSize: 12, color: 'var(--slate-300)', lineHeight: 1.4, marginTop: 2 }}>{u.claimText.slice(0, 120)}</div>
+                                        <div style={{ fontSize: 12, color: 'var(--slate-300)', lineHeight: 1.4, marginTop: 2 }}>{(u.claimText ?? '').slice(0, 120)}</div>
                                     </div>
                                     <Button variant="ghost" size="sm" onClick={() => handleMeet(u.claimId)}><CheckCircle size={12} /> Meet</Button>
                                 </div>
@@ -137,7 +141,7 @@ export const BoPTrackerPanel: React.FC = () => {
                         {allUnmet.slice(0, 6).map(c => (
                             <div key={c.claimId} style={{ fontSize: 11, color: 'var(--slate-400)', padding: '4px 6px', borderRadius: 4, background: c.status === 'met' ? 'rgba(34,197,94,0.06)' : 'rgba(245,158,11,0.06)', border: `1px solid ${c.status === 'met' ? 'rgba(34,197,94,0.12)' : 'rgba(245,158,11,0.12)'}`, display: 'flex', gap: 6, alignItems: 'center' }}>
                                 <span style={{ width: 6, height: 6, borderRadius: '50%', background: c.status === 'met' ? '#22c55e' : '#f59e0b', flexShrink: 0 }} />
-                                <span style={{ flex: 1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{c.agentName} r{c.round}: {c.claimText.slice(0, 60)}</span>
+                                <span style={{ flex: 1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{c.agentName} r{c.round}: {(c.claimText ?? '').slice(0, 60)}</span>
                                 <span style={{ fontSize: 10, color: c.status === 'met' ? '#22c55e' : '#fbbf24' }}>{c.status}</span>
                             </div>
                         ))}

@@ -25,9 +25,15 @@ const GroupsPanel: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
 
     const refresh = useCallback(async () => {
-        setGroups(groupManager.getGroups());
-        refreshKeyStore();
-    }, []);
+        try {
+            setGroups(groupManager.getGroups() ?? []);
+            refreshKeyStore();
+            setError(null);
+        } catch (e) {
+            LOGGER.error('Failed to load groups', String(e));
+            setError(t('groups.error.load'));
+        }
+    }, [t]);
 
     useEffect(() => {
         refresh();
@@ -40,7 +46,8 @@ const GroupsPanel: React.FC = () => {
 
     const groupKeys = useMemo(() => {
         if (!selectedGroup) return [];
-        return keys.filter((k) => selectedGroup.keyIds.includes(k.id));
+        const keyIds = selectedGroup.keyIds ?? [];
+        return keys.filter((k) => keyIds.includes(k.id));
     }, [selectedGroup, keys]);
 
     const poolStatsByProvider = useMemo(() => {
@@ -56,7 +63,8 @@ const GroupsPanel: React.FC = () => {
         if (!selectedGroup) return [];
         const defaultGroup = groups.find((g) => g.id === '__default__');
         if (!defaultGroup) return [];
-        return keys.filter((k) => defaultGroup.keyIds.includes(k.id));
+        const keyIds = defaultGroup.keyIds ?? [];
+        return keys.filter((k) => keyIds.includes(k.id));
     }, [selectedGroup, groups, keys]);
 
     const handleCreate = async () => {
@@ -259,7 +267,7 @@ const GroupsPanel: React.FC = () => {
                                         padding: '0.1rem 0.45rem',
                                     }}
                                 >
-                                    {g.keyIds.length}
+                                    {g.keyIds?.length ?? 0}
                                 </span>
                             </button>
                         );

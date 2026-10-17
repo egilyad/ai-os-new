@@ -24,8 +24,8 @@ export class BoPTrackerService implements IBoPTrackerService {
             claimId,
             agentId,
             agentName,
-            claimText: claimText.slice(0, 400),
-            round,
+            claimText: (claimText ?? '').slice(0, 400),
+            round: Number.isFinite(round) ? round : 1,
             status: 'assigned',
         });
 

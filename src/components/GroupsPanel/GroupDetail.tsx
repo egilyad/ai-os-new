@@ -139,7 +139,7 @@ const GroupDetail: React.FC<GroupDetailProps> = ({
                             </div>
                         )}
                         <div style={{ fontSize: '0.75rem', color: 'var(--slate-500)', marginTop: 4 }}>
-                            {group.keyIds.length} {t('groups.keys_count')}
+                            {group.keyIds?.length ?? 0} {t('groups.keys_count')}
                             {isDefault && (
                                 <span
                                     style={{ marginLeft: 12, color: 'var(--warning)', fontSize: '0.7rem' }}
@@ -223,15 +223,22 @@ const GroupDetail: React.FC<GroupDetailProps> = ({
                                 </span>
                                 <span style={{ color: 'var(--slate-400)' }}>
                                     Burst:{' '}
-                                    <span style={{ color: 'var(--slate-200)' }}>{burst.availableBurst}</span>
-                                    <span style={{ color: 'var(--slate-500)' }}> / {burst.totalQuota}</span>
+                                    <span style={{ color: 'var(--slate-200)' }}>
+                                        {burst?.availableBurst ?? 0}
+                                    </span>
+                                    <span style={{ color: 'var(--slate-500)' }}>
+                                        {' '}
+                                        / {burst?.totalQuota ?? 0}
+                                    </span>
                                 </span>
                                 <span style={{ color: 'var(--slate-400)' }}>
                                     Shared:{' '}
-                                    <span style={{ color: 'var(--slate-200)' }}>{quota.available}</span>
+                                    <span style={{ color: 'var(--slate-200)' }}>
+                                        {quota?.available ?? 0}
+                                    </span>
                                     <span style={{ color: 'var(--slate-500)' }}>
                                         {' '}
-                                        (pool {Math.round(quota.sharedPool)})
+                                        (pool {Math.round(quota?.sharedPool ?? 0)})
                                     </span>
                                 </span>
                             </div>

@@ -24,6 +24,7 @@ const providers: Record<string, string> = {
     'groups.move_to': 'Move to...',
     'groups.unassigned': 'Unassigned Keys',
     'groups.move_here': 'Move here',
+    'groups.error.load': 'Failed to load key groups',
     'provider.all_groups': 'All Groups',
     'provider.card_view': 'Card View',
     'provider.check_health': 'Check Health',

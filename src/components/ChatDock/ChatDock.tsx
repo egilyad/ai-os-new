@@ -47,7 +47,7 @@ export default function ChatDock() {
 
                     <div style={{ padding: '8px 10px', borderBottom: '1px solid rgba(255,255,255,0.06)', display: 'flex', gap: 6, flexWrap: 'wrap' }}>
                         {sessions.slice(0, 8).map((s) => (
-                            <button key={s.id} onClick={() => addDock(s.id)} style={{ padding: '4px 8px', borderRadius: 20, fontSize: 11, border: docks.some((d) => d.id === s.id) ? '1px solid #3b82f6' : '1px solid rgba(255,255,255,0.08)', background: docks.some((d) => d.id === s.id) ? 'rgba(59,130,246,0.12)' : 'rgba(255,255,255,0.04)', color: docks.some((d) => d.id === s.id) ? '#60a5fa' : 'var(--slate-400)', cursor: 'pointer' }}>{s.title.slice(0, 18)}</button>
+                            <button key={s.id} onClick={() => addDock(s.id)} style={{ padding: '4px 8px', borderRadius: 20, fontSize: 11, border: docks.some((d) => d.id === s.id) ? '1px solid #3b82f6' : '1px solid rgba(255,255,255,0.08)', background: docks.some((d) => d.id === s.id) ? 'rgba(59,130,246,0.12)' : 'rgba(255,255,255,0.04)', color: docks.some((d) => d.id === s.id) ? '#60a5fa' : 'var(--slate-400)', cursor: 'pointer' }}>{(s.title ?? s.id).slice(0, 18)}</button>
                         ))}
                     </div>
 
@@ -69,7 +69,7 @@ export default function ChatDock() {
                                             <div style={{ padding: '8px 10px', maxHeight: 140, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 4 }}>
                                                 {(sess?.history ?? []).slice(-3).map((e) => (
                                                     <div key={e.id} style={{ fontSize: 11, padding: '6px 8px', borderRadius: 8, background: e.role === 'user' ? 'rgba(59,130,246,0.08)' : 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.04)' }}>
-                                                        <span style={{ fontWeight: 700, color: e.role === 'user' ? '#60a5fa' : 'var(--slate-300)' }}>{e.role}:</span> {e.text.slice(0, 100)}
+                                                        <span style={{ fontWeight: 700, color: e.role === 'user' ? '#60a5fa' : 'var(--slate-300)' }}>{e.role}:</span> {(e.text ?? '').slice(0, 100)}
                                                     </div>
                                                 ))}
                                                 {(sess?.history?.length ?? 0) === 0 && <div style={{ fontSize: 11, color: 'var(--slate-500)', fontStyle: 'italic' }}>No messages yet</div>}

@@ -132,6 +132,7 @@ const providers: Record<string, string> = {
     'groups.select_hint': 'Подсказка выбора',
     'groups.title': 'Название',
     'groups.unassigned': 'Не назначено',
+    'groups.error.load': 'Не удалось загрузить группы ключей',
     'pool_status.empty_pool': 'Пул пуст',
     'pool_status.key_usage': 'Использование ключей',
     'pool_status.quota_burn': 'Расход квоты',
