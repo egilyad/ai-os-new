@@ -2,6 +2,7 @@ import type { WikiArticle } from './wiki-articles';
 import { CATALOG_MARKDOWN } from '../../generated/wiki-component-catalog';
 import { PANEL_CATALOG_MARKDOWN } from '../../generated/wiki-panel-catalog';
 import { DOCS_HEALTH_MARKDOWN } from '../../generated/wiki-docs-health';
+import { DOCS_INVENTORY_MARKDOWN } from '../../generated/wiki-docs-inventory';
 
 // Auto-maintained catalogs: components, and the panel -> section -> route ->
 // component -> article chain. Bodies come from the generators — edit those.
@@ -46,5 +47,19 @@ export const CATALOG_ARTICLES: WikiArticle[] = [
         ],
         related: ['dev-generators', 'dev-ci', 'panels-catalog', 'diagnostics'],
         body: DOCS_HEALTH_MARKDOWN,
+    },
+    {
+        slug: 'docs-inventory',
+        title: 'Инвентаризация документации',
+        section: 'dev',
+        tags: ['документация', 'инвентаризация', 'каталог', 'метрики'],
+        freshness: 'verified',
+        sources: [
+            'scripts/gen-docs-inventory.mjs',
+            'docs/inventory.json',
+            'src/generated/wiki-docs-inventory.ts',
+        ],
+        related: ['docs-health', 'dev-generators', 'dev-layout', 'dev-ci'],
+        body: DOCS_INVENTORY_MARKDOWN,
     },
 ];

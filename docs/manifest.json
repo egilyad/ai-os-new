@@ -55,7 +55,7 @@
     {
       "id": "dev",
       "title": "Разработчикам",
-      "articles": 24
+      "articles": 25
     }
   ],
   "articles": [
@@ -3172,6 +3172,32 @@
         "dev-ci",
         "panels-catalog",
         "diagnostics"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:docs-inventory",
+      "type": "article",
+      "slug": "docs-inventory",
+      "title": "Инвентаризация документации",
+      "section": "dev",
+      "status": "verified",
+      "tags": [
+        "документация",
+        "инвентаризация",
+        "каталог",
+        "метрики"
+      ],
+      "sources": [
+        "scripts/gen-docs-inventory.mjs",
+        "docs/inventory.json",
+        "src/generated/wiki-docs-inventory.ts"
+      ],
+      "related": [
+        "docs-health",
+        "dev-generators",
+        "dev-layout",
+        "dev-ci"
       ],
       "tests": []
     },
