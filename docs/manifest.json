@@ -45,7 +45,7 @@
     {
       "id": "architecture",
       "title": "Архитектура",
-      "articles": 1
+      "articles": 2
     },
     {
       "id": "notes",
@@ -3250,6 +3250,35 @@
         "docs-standard",
         "docs-inventory",
         "docs-health",
+        "dev-generators"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:dev-system-map",
+      "type": "article",
+      "slug": "dev-system-map",
+      "title": "Карта системы",
+      "section": "architecture",
+      "status": "verified",
+      "tags": [
+        "система",
+        "слои",
+        "агенты",
+        "стратегии",
+        "провайдеры",
+        "карта"
+      ],
+      "sources": [
+        "src/data/role-library.ts",
+        "src/constants/pools.ts",
+        "src/components/DebatePanel/wizard-constants.ts",
+        "scripts/gen-wiki-system-map.mjs"
+      ],
+      "related": [
+        "docs-index",
+        "dev-service-map",
+        "panel-infra-meta",
         "dev-generators"
       ],
       "tests": []

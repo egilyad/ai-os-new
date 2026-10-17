@@ -5,6 +5,7 @@ import { DOCS_HEALTH_MARKDOWN } from '../../generated/wiki-docs-health';
 import { DOCS_INVENTORY_MARKDOWN } from '../../generated/wiki-docs-inventory';
 import { DOCS_STANDARD_MARKDOWN } from '../../generated/wiki-docs-standard';
 import { DOCS_INDEX_MARKDOWN } from '../../generated/wiki-docs-index';
+import { SYSTEM_MAP_MARKDOWN } from '../../generated/wiki-system-map';
 
 // Auto-maintained catalogs: components, and the panel -> section -> route ->
 // component -> article chain. Bodies come from the generators — edit those.
@@ -91,5 +92,20 @@ export const CATALOG_ARTICLES: WikiArticle[] = [
         ],
         related: ['docs-standard', 'docs-inventory', 'docs-health', 'dev-generators'],
         body: DOCS_INDEX_MARKDOWN,
+    },
+    {
+        slug: 'dev-system-map',
+        title: 'Карта системы',
+        section: 'architecture',
+        tags: ['система', 'слои', 'агенты', 'стратегии', 'провайдеры', 'карта'],
+        freshness: 'verified',
+        sources: [
+            'src/data/role-library.ts',
+            'src/constants/pools.ts',
+            'src/components/DebatePanel/wizard-constants.ts',
+            'scripts/gen-wiki-system-map.mjs',
+        ],
+        related: ['docs-index', 'dev-service-map', 'panel-infra-meta', 'dev-generators'],
+        body: SYSTEM_MAP_MARKDOWN,
     },
 ];
