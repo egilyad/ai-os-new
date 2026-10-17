@@ -43,7 +43,7 @@ const PerspectiveGrid: React.FC<{ perspectives: Perspective[] }> = ({ perspectiv
                             {p.roleName}
                         </span>
                         <span style={{ fontSize: '0.66rem', color: 'var(--warning)' }}>
-                            {(p.confidence * 100).toFixed(0)}%
+                            {typeof p.confidence === 'number' && Number.isFinite(p.confidence) ? `${(p.confidence * 100).toFixed(0)}%` : '—'}
                         </span>
                     </div>
                     <div style={{ fontSize: '0.68rem', color: 'var(--purple)', marginBottom: 4 }}>

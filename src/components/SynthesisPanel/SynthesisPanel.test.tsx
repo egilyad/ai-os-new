@@ -48,4 +48,20 @@ describe('SynthesisPanel (FT-01)', () => {
         fireEvent.click(screen.getByTitle('synthesis.refresh'));
         expect(list.mock.calls.length).toBeGreaterThanOrEqual(2);
     });
+
+    it('banners a load failure instead of failing silently', async () => {
+        list.mockRejectedValueOnce(new Error('store down'));
+        const SynthesisPanel = (await import('./SynthesisPanel')).default;
+        render(<SynthesisPanel />);
+        expect(await screen.findByText('store down')).toBeDefined();
+        expect(screen.getByRole('alert')).toBeDefined();
+    });
+
+    it('renders legacy syntheses without nested fields', async () => {
+        list.mockResolvedValueOnce([{ id: 'legacy-1' }]);
+        const SynthesisPanel = (await import('./SynthesisPanel')).default;
+        render(<SynthesisPanel />);
+        await screen.findByText('synthesis.title');
+        expect(document.body.textContent).not.toContain('NaN');
+    });
 });

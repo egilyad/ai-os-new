@@ -28,9 +28,24 @@ const SynthesisPanel: React.FC = () => {
     const [message, setMessage] = useState<string | null>(null);
     const [expanded, setExpanded] = useState<Set<string>>(new Set());
     const [feedback, setFeedback] = useState<Record<string, string>>({});
+    const [error, setError] = useState<string | null>(null);
+
+    const runGuarded = async (fn: () => Promise<unknown>) => {
+        setError(null);
+        try {
+            await fn();
+        } catch (e) {
+            console.error('[SynthesisPanel]', e);
+            setError(e instanceof Error ? e.message : 'Synthesis request failed');
+        }
+    };
 
     const refresh = useCallback(async () => {
-        setSyntheses(await synthesisEngine.list({}));
+        await runGuarded(async () => {
+            const list = await synthesisEngine.list({});
+            setSyntheses(Array.isArray(list) ? list : []);
+        });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {
@@ -52,31 +67,39 @@ const SynthesisPanel: React.FC = () => {
         setSynthesizing(true);
         setMessage(null);
         try {
-            await synthesisEngine.synthesize(input);
-            await refresh();
+            await runGuarded(async () => {
+                await synthesisEngine.synthesize(input);
+                await refresh();
+            });
         } finally {
             setSynthesizing(false);
         }
     };
 
     const handleExportCrystal = async (id: string): Promise<void> => {
-        await synthesisEngine.exportToCrystal(id);
-        setMessage(t('synthesis.crystal_exported'));
-        await refresh();
+        await runGuarded(async () => {
+            await synthesisEngine.exportToCrystal(id);
+            setMessage(t('synthesis.crystal_exported'));
+            await refresh();
+        });
     };
 
     const handleExportForum = async (id: string): Promise<void> => {
-        await synthesisEngine.exportToForum(id);
-        setMessage(t('synthesis.forum_exported'));
+        await runGuarded(async () => {
+            await synthesisEngine.exportToForum(id);
+            setMessage(t('synthesis.forum_exported'));
+        });
     };
 
     const handleRefine = async (id: string): Promise<void> => {
         const comments = feedback[id]?.trim();
         if (!comments) return;
-        await synthesisEngine.refine(id, { comments });
-        setMessage(`${comments} — ${t('synthesis.refined_suffix')}`);
-        setFeedback((prev) => ({ ...prev, [id]: '' }));
-        await refresh();
+        await runGuarded(async () => {
+            await synthesisEngine.refine(id, { comments });
+            setMessage(`${comments} — ${t('synthesis.refined_suffix')}`);
+            setFeedback((prev) => ({ ...prev, [id]: '' }));
+            await refresh();
+        });
     };
 
     const toggleExpanded = (id: string): void => {
@@ -103,14 +126,14 @@ const SynthesisPanel: React.FC = () => {
                 }}
             >
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                    <BrainCircuit size={18} color="#f59e0b" />
-                    <span style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--slate-50)' }}>
-                        {t('synthesis.title')}
-                    </span>
-                    <span style={{ fontSize: '0.72rem', color: 'var(--slate-500)' }}>
-                        {syntheses.length} {t('synthesis.total')}
-                    </span>
-                </div>
+                        <BrainCircuit size={18} color="#f59e0b" />
+                        <span style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--slate-50)' }}>
+                            {t('synthesis.title')}
+                        </span>
+                        <span style={{ fontSize: '0.72rem', color: 'var(--slate-500)' }}>
+                            {syntheses.length} {t('synthesis.total')}
+                        </span>
+                    </div>
                 <div style={{ display: 'flex', gap: 6 }}>
                     <button
                         onClick={() => void handleSeedDemo()}
@@ -150,6 +173,13 @@ const SynthesisPanel: React.FC = () => {
                     </button>
                 </div>
             </div>
+
+            {error && (
+                <div role="alert" style={{ margin: '0.5rem 1.25rem 0', padding: '0.5rem 0.75rem', borderRadius: 8, background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)', color: '#fca5a5', fontSize: '0.8rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8 }}>
+                    <span>{error}</span>
+                    <button onClick={() => setError(null)} style={{ background: 'none', border: 'none', color: 'inherit', cursor: 'pointer', fontSize: '0.8rem', flexShrink: 0 }} aria-label={t('common.dismiss_error')}>✕</button>
+                </div>
+            )}
 
             <div style={{ flex: 1, overflowY: 'auto', padding: '0.9rem 1rem' }}>
                 <SynthesisComposer
@@ -207,7 +237,7 @@ const SynthesisPanel: React.FC = () => {
                                             fontWeight: 600,
                                         }}
                                     >
-                                        {s.input.question}
+                                        {s.input?.question ?? ''}
                                     </div>
                                     <div
                                         style={{
@@ -244,36 +274,36 @@ const SynthesisPanel: React.FC = () => {
                                 </div>
                             </div>
 
-                            <div
-                                style={{
-                                    display: 'flex',
-                                    gap: 14,
-                                    alignItems: 'center',
-                                    marginTop: 6,
-                                    fontSize: '0.68rem',
-                                    color: 'var(--slate-500)',
-                                    flexWrap: 'wrap',
-                                }}
-                            >
-                                <span style={{ color: 'var(--success)' }}>
-                                    {s.confidenceDistribution.consensus.toFixed(2)}{' '}
-                                    {t('synthesis.consensus')}
-                                </span>
-                                <span style={{ color: 'var(--error)' }}>
-                                    {s.confidenceDistribution.dissent.toFixed(2)}{' '}
-                                    {t('synthesis.dissent')}
-                                </span>
-                                <span style={{ color: 'var(--warning)' }}>
-                                    {s.confidenceDistribution.uncertainty.toFixed(2)}{' '}
-                                    {t('synthesis.uncertainty')}
-                                </span>
-                                <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                                    <Clock size={10} /> {s.totalTokensSpent} {t('synthesis.tokens')}
-                                </span>
-                                <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                                    <Tag size={10} /> {s.input.roleIds.length}×
-                                    {s.input.lensIds.length} {t('synthesis.roles_x_lenses')}
-                                </span>
+                    <div
+                        style={{
+                            display: 'flex',
+                            gap: 14,
+                            alignItems: 'center',
+                            marginTop: 6,
+                            fontSize: '0.68rem',
+                            color: 'var(--slate-500)',
+                            flexWrap: 'wrap',
+                        }}
+                    >
+                        <span style={{ color: 'var(--success)' }}>
+                            {typeof s.confidenceDistribution?.consensus === 'number' ? s.confidenceDistribution.consensus.toFixed(2) : '—'}{' '}
+                            {t('synthesis.consensus')}
+                        </span>
+                        <span style={{ color: 'var(--error)' }}>
+                            {typeof s.confidenceDistribution?.dissent === 'number' ? s.confidenceDistribution.dissent.toFixed(2) : '—'}{' '}
+                            {t('synthesis.dissent')}
+                        </span>
+                        <span style={{ color: 'var(--warning)' }}>
+                            {typeof s.confidenceDistribution?.uncertainty === 'number' ? s.confidenceDistribution.uncertainty.toFixed(2) : '—'}{' '}
+                            {t('synthesis.uncertainty')}
+                        </span>
+                        <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                            <Clock size={10} /> {typeof s.totalTokensSpent === 'number' ? s.totalTokensSpent : '—'} {t('synthesis.tokens')}
+                        </span>
+                        <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                            <Tag size={10} /> {(s.input?.roleIds ?? []).length}×
+                            {(s.input?.lensIds ?? []).length} {t('synthesis.roles_x_lenses')}
+                        </span>
                                 {s.generatedCrystalId && (
                                     <span style={{ color: 'var(--success)' }}>
                                         ◆ {s.generatedCrystalId.slice(0, 16)}
@@ -283,13 +313,13 @@ const SynthesisPanel: React.FC = () => {
 
                             {isOpen && (
                                 <div style={{ marginTop: 10 }}>
-                                    <SynthesisZonesView
-                                        zones={[
-                                            ...s.consensusZones,
-                                            ...s.dissentZones,
-                                            ...s.uncertaintyZones,
-                                        ]}
-                                    />
+                    <SynthesisZonesView
+                        zones={[
+                            ...(s.consensusZones ?? []),
+                            ...(s.dissentZones ?? []),
+                            ...(s.uncertaintyZones ?? []),
+                        ]}
+                    />
                                     <div
                                         style={{
                                             display: 'flex',
@@ -303,7 +333,7 @@ const SynthesisPanel: React.FC = () => {
                                         <SlidersHorizontal size={12} />{' '}
                                         {t('synthesis.perspectives')}
                                     </div>
-                                    <PerspectiveGrid perspectives={s.perspectives} />
+                                    <PerspectiveGrid perspectives={s.perspectives ?? []} />
 
                                     <div style={{ display: 'flex', gap: 6, marginTop: 10 }}>
                                         <input
