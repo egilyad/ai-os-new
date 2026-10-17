@@ -37,10 +37,11 @@ export default function RunQueuePanel() {
     const reload = async () => {
         try {
             const [q, tk] = await Promise.all([runQueueService.list(), runQueueService.listToolkits()]);
-            setRuns([...q].sort(byNewest));
-            setToolkits(tk);
-            if (activeId === null && q.length > 0) {
-                const sorted = [...q].sort(byNewest);
+            const queue = Array.isArray(q) ? q : [];
+            setRuns([...queue].sort(byNewest));
+            setToolkits(Array.isArray(tk) ? tk : []);
+            if (activeId === null && queue.length > 0) {
+                const sorted = [...queue].sort(byNewest);
                 setActiveId(sorted[0]!.id);
             }
         } catch (e) { fail(e); }
@@ -96,7 +97,7 @@ export default function RunQueuePanel() {
         } catch (e) { fail(e); } finally { setBusy(false); }
     };
 
-    const filtered = search.trim() ? runs.filter((r) => r.refId.toLowerCase().includes(search.toLowerCase()) || r.kind.toLowerCase().includes(search.toLowerCase())) : runs;
+    const filtered = search.trim() ? runs.filter((r) => (r.refId ?? '').toLowerCase().includes(search.toLowerCase()) || (r.kind ?? '').toLowerCase().includes(search.toLowerCase())) : runs;
     const statusColor: Record<string, string> = { queued: '#f59e0b', running: '#3b82f6', completed: '#10b981', failed: '#ef4444' };
 
     return (
@@ -120,7 +121,7 @@ export default function RunQueuePanel() {
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                             {filtered.map((r) => (
                                 <div key={r.id} onClick={() => setActiveId(r.id)} style={{ padding: '10px 12px', borderRadius: 10, cursor: 'pointer', background: r.id === activeId ? 'rgba(59,130,246,0.12)' : 'rgba(255,255,255,0.03)', borderLeft: `3px solid ${statusColor[r.status] ?? '#64748b'}`, border: '1px solid rgba(255,255,255,0.06)' }}>
-                                    <div style={{ fontSize: 12, fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{r.refId.slice(0, 60)}</div>
+                                    <div style={{ fontSize: 12, fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{(r.refId ?? '').slice(0, 60)}</div>
                                     <div style={{ display: 'flex', gap: 6, marginTop: 6, alignItems: 'center', flexWrap: 'wrap' }}>
                                         <StatusBadge status={r.status} label={t(`runQueue.status.${r.status}`)} />
                                         <span style={{ fontSize: 11, padding: '2px 6px', borderRadius: 6, background: 'rgba(255,255,255,0.06)', color: 'var(--slate-400)' }}>{t(`runQueue.kind.${r.kind}`)}</span>
@@ -140,7 +141,7 @@ export default function RunQueuePanel() {
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 4, maxHeight: 100, overflowY: 'auto', marginBottom: 8 }}>
                             {toolkits.map((tk) => (
                                 <div key={tk.id} style={{ padding: '6px 8px', borderRadius: 8, background: 'rgba(0,0,0,0.2)', fontSize: 11 }}>
-                                    <span style={{ fontWeight: 700 }}>{tk.name}</span> <span style={{ color: 'var(--slate-500)', fontSize: 10 }}>[{tk.prefixes.join(', ')}]</span>
+                                    <span style={{ fontWeight: 700 }}>{tk.name}</span> <span style={{ color: 'var(--slate-500)', fontSize: 10 }}>[{(tk.prefixes ?? []).join(', ')}]</span>
                                 </div>
                             ))}
                         </div>
@@ -180,7 +181,7 @@ export default function RunQueuePanel() {
                 ) : (
                     <div style={{ flex: 1, overflowY: 'auto', padding: '16px 20px' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
-                            <span style={{ fontWeight: 800, fontSize: 14, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{active.refId.slice(0, 80)}</span>
+                            <span style={{ fontWeight: 800, fontSize: 14, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{(active.refId ?? '').slice(0, 80)}</span>
                             <StatusBadge status={active.status} label={t(`runQueue.status.${active.status}`)} />
                             <span style={{ fontSize: 11, padding: '2px 6px', borderRadius: 6, background: 'rgba(255,255,255,0.06)', color: 'var(--slate-400)' }}>{t(`runQueue.kind.${active.kind}`)}</span>
                         </div>

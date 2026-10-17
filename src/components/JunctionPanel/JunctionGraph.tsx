@@ -20,7 +20,7 @@ const TYPE_COLORS: Record<string, string> = {
  */
 const JunctionGraph: React.FC<Props> = ({ junction, width = 320, height = 140 }) => {
     const color = TYPE_COLORS[junction.synthesisType] ?? '#64748b';
-    const inputs = junction.inputs.slice(0, 2);
+    const inputs = (junction.inputs ?? []).slice(0, 2);
     const cx = width / 2;
     const cy = height / 2;
 
@@ -59,7 +59,7 @@ const JunctionGraph: React.FC<Props> = ({ junction, width = 320, height = 140 })
                 fill="#64748b"
                 letterSpacing={1}
             >
-                {Math.round(junction.confidence * 100)}% · {junction.status}
+                {Math.round((junction.confidence ?? 0) * 100)}% · {junction.status ?? ''}
             </text>
         </svg>
     );

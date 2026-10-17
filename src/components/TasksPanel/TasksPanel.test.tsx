@@ -189,4 +189,20 @@ describe('TasksPanel', () => {
         render(<TasksPanel />);
         expect(await screen.findByText('No tasks yet')).toBeDefined();
     });
+
+    it('tolerates a legacy trace without a steps array', async () => {
+        const { cognitiveService } = await import('../../kernel/instances');
+        (cognitiveService.getTraces as ReturnType<typeof vi.fn>).mockReturnValueOnce([
+            {
+                id: 'legacy',
+                traceId: 'tr-legacy',
+                startTime: Date.now(),
+                input: 'Legacy run',
+                status: 'running',
+            },
+        ]);
+        const TasksPanel = (await import('./TasksPanel')).default;
+        render(<TasksPanel />);
+        expect(await screen.findByText('Legacy run')).toBeDefined();
+    });
 });

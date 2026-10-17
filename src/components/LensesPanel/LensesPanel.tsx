@@ -18,7 +18,8 @@ const LensesPanel: React.FC = () => {
     const [suggestions, setSuggestions] = useState<{ lensId: string; confidence: number }[]>([]);
 
     const refresh = useCallback(() => {
-        setLenses(lensEngine.listLenses());
+        const list = lensEngine.listLenses();
+        setLenses(Array.isArray(list) ? list : []);
     }, []);
 
     useEffect(() => {
@@ -63,8 +64,9 @@ const LensesPanel: React.FC = () => {
                 metadata: { tags: ['analysis', 'meta'] },
             },
         );
-        setSuggestions(s.map((x) => ({ lensId: x.lensId, confidence: x.confidence })));
-        const auto = s.slice(0, 3).map((x) => x.lensId);
+        const list = Array.isArray(s) ? s : [];
+        setSuggestions(list.map((x) => ({ lensId: x.lensId, confidence: x.confidence })));
+        const auto = list.slice(0, 3).map((x) => x.lensId);
         setStack((prev) => {
             const merged = [...prev];
             for (const id of auto) {
@@ -266,7 +268,7 @@ const LensesPanel: React.FC = () => {
                                     >
                                         <span>{lens.name}</span>
                                         <span style={{ color: 'var(--purple)' }}>
-                                            {(s.confidence * 100).toFixed(0)}%
+                                            {((s.confidence ?? 0) * 100).toFixed(0)}%
                                         </span>
                                     </div>
                                 );

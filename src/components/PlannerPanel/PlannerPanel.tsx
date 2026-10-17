@@ -29,7 +29,8 @@ export default function PlannerPanel() {
 
     const reloadFilters = async () => {
         try {
-            setFilters(await plannerService.listFilters());
+            const list = await plannerService.listFilters();
+            setFilters(Array.isArray(list) ? list : []);
         } catch (e) {
             fail(e);
         }

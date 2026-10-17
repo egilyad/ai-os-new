@@ -93,4 +93,14 @@ describe('LensesPanel (FT-01)', () => {
         expect(suggestLenses).toHaveBeenCalled();
         expect(await screen.findByText('lenses.suggestions')).toBeDefined();
     });
+
+    it('tolerates a non-array lens library and non-array suggestions', async () => {
+        listLenses.mockReturnValueOnce(null as never);
+        suggestLenses.mockReturnValueOnce(null as never);
+        const LensesPanel = (await import('./LensesPanel')).default;
+        render(<LensesPanel />);
+        expect(await screen.findByText('0 lenses.total')).toBeDefined();
+        fireEvent.click(screen.getByText('lenses.suggest'));
+        expect(suggestLenses).toHaveBeenCalled();
+    });
 });

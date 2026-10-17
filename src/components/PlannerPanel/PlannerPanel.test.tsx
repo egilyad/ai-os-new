@@ -85,4 +85,13 @@ describe('PlannerPanel', () => {
         await waitFor(() => expect(plannerService.addFilter).toHaveBeenCalled());
         expect((await screen.findAllByText('pre · policy')).length).toBeGreaterThan(0);
     });
+
+    it('tolerates a non-array filter payload', async () => {
+        const { plannerService } = await import('../../kernel/instances/services-extras');
+        plannerService.listFilters.mockResolvedValueOnce(null as never);
+        const Panel = (await import('./PlannerPanel')).default;
+        render(<Panel />);
+        await waitFor(() => expect(plannerService.listFilters).toHaveBeenCalled());
+        expect(screen.getByRole('button', { name: 'planner.filter.add' })).toBeDefined();
+    });
 });

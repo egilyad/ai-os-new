@@ -141,7 +141,7 @@ const LensStackVisualizer: React.FC<LensStackVisualizerProps> = ({
                 })
             )}
 
-            {validation && validation.errors.length > 0 && (
+                    {validation && (validation.errors?.length ?? 0) > 0 && (
                 <div
                     style={{
                         padding: '0.4rem 0.6rem',
@@ -159,7 +159,7 @@ const LensStackVisualizer: React.FC<LensStackVisualizerProps> = ({
                         style={{ marginTop: 1, flexShrink: 0 }}
                     />
                     <div style={{ fontSize: '0.7rem', color: '#fca5a5', lineHeight: 1.4 }}>
-                        {validation.errors.map((e) => (
+                                {(validation.errors ?? []).map((e) => (
                             <div key={e}>{e}</div>
                         ))}
                     </div>

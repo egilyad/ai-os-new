@@ -20,8 +20,10 @@ const JunctionPanel: React.FC = () => {
     const [message, setMessage] = useState<string | null>(null);
 
     const refresh = useCallback(async () => {
-        setJunctions(await junctionEngine.list());
-        setSources(await junctionEngine.getSources());
+        const list = await junctionEngine.list();
+        const src = await junctionEngine.getSources();
+        setJunctions(Array.isArray(list) ? list : []);
+        setSources(Array.isArray(src) ? src : []);
     }, []);
 
     useEffect(() => {
@@ -34,6 +36,8 @@ const JunctionPanel: React.FC = () => {
         try {
             await seedJunctionDemo();
             await refresh();
+        } catch (e) {
+            setMessage(e instanceof Error ? e.message : String(e));
         } finally {
             setSeedingDemo(false);
         }
@@ -44,17 +48,24 @@ const JunctionPanel: React.FC = () => {
         setMessage(null);
         try {
             const candidates = await junctionEngine.detect();
-            setMessage(`${candidates.length} ${t('junctions.detected_suffix')}`);
+            const list = Array.isArray(candidates) ? candidates : [];
+            setMessage(`${list.length} ${t('junctions.detected_suffix')}`);
             await refresh();
+        } catch (e) {
+            setMessage(e instanceof Error ? e.message : String(e));
         } finally {
             setDetecting(false);
         }
     };
 
     const handleChallenge = async (id: string, argument: string) => {
-        await junctionEngine.submitCounterargument(id, argument, 'human');
-        setMessage(t('junctions.verified'));
-        await refresh();
+        try {
+            await junctionEngine.submitCounterargument(id, argument, 'human');
+            setMessage(t('junctions.verified'));
+            await refresh();
+        } catch (e) {
+            setMessage(e instanceof Error ? e.message : String(e));
+        }
     };
 
     const crystalCount = sources.filter((s) => s.kind === 'crystal').length;

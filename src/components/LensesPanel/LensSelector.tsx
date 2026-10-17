@@ -46,7 +46,7 @@ const LensSelector: React.FC<LensSelectorProps> = ({
         if (search.trim()) {
             const q = search.toLowerCase();
             list = list.filter(
-                (l) => l.name.toLowerCase().includes(q) || l.description.toLowerCase().includes(q),
+                (l) => (l.name ?? '').toLowerCase().includes(q) || (l.description ?? '').toLowerCase().includes(q),
             );
         }
         return [...list].sort((a, b) => b.priority - a.priority);

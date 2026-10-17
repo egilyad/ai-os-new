@@ -53,7 +53,7 @@ const JunctionCard: React.FC<Props> = ({ junction }) => {
                         letterSpacing: 0.4,
                     }}
                 >
-                    {junction.synthesisType.replace('_', ' ')}
+                    {(junction.synthesisType ?? 'unknown').replace('_', ' ')}
                 </span>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                     <span
@@ -65,7 +65,7 @@ const JunctionCard: React.FC<Props> = ({ junction }) => {
                             borderRadius: 5,
                         }}
                     >
-                        {Math.round(junction.confidence * 100)}%
+                        {Math.round((junction.confidence ?? 0) * 100)}%
                     </span>
                     <span style={{ fontSize: '0.85rem' }}>
                         {STATUS_LABELS[junction.status] ?? ''}
@@ -75,7 +75,7 @@ const JunctionCard: React.FC<Props> = ({ junction }) => {
 
             {/* Inputs bridge */}
             <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: '0.5rem' }}>
-                {junction.inputs.map((s, i) => (
+                {(junction.inputs ?? []).map((s, i) => (
                     <div key={s.id} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                         {i > 0 && <span style={{ color, fontSize: '0.8rem' }}>⟷</span>}
                         <span
@@ -88,19 +88,19 @@ const JunctionCard: React.FC<Props> = ({ junction }) => {
                                 whiteSpace: 'nowrap',
                             }}
                         >
-                            [{s.domain}] {s.label}
+                            [{s.domain ?? ''}] {s.label ?? s.id}
                         </span>
                     </div>
                 ))}
             </div>
 
             <p style={{ fontSize: '0.78rem', color: 'var(--slate-200)', margin: '0 0 0.4rem' }}>
-                {junction.content}
+                {junction.content ?? ''}
             </p>
 
             <div style={{ fontSize: '0.7rem', color: 'var(--slate-500)' }}>
                 <span style={{ color: 'var(--purple)', fontWeight: 700 }}>Cognitive debt:</span>{' '}
-                {junction.cognitiveDebt}
+                {junction.cognitiveDebt ?? 0}
             </div>
         </div>
     );

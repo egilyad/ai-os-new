@@ -48,4 +48,12 @@ describe('JunctionPanel (FT-01)', () => {
         expect(await screen.findByText('0 junctions.detected_suffix')).toBeDefined();
         expect(detect).toHaveBeenCalled();
     });
+
+    it('tolerates legacy junctions with missing fields and non-array sources', async () => {
+        list.mockResolvedValueOnce([{ id: 'j1', status: 'pending' }] as never);
+        getSources.mockResolvedValueOnce(null as never);
+        const JunctionPanel = (await import('./JunctionPanel')).default;
+        render(<JunctionPanel />);
+        expect(await screen.findByText('1 junctions.total')).toBeDefined();
+    });
 });

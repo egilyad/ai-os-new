@@ -31,7 +31,8 @@ export const SimulationPanel: React.FC = () => {
 
     const refresh = useCallback(async () => {
         try {
-            const list = await worldStateService.list();
+            const rawList = await worldStateService.list();
+            const list = Array.isArray(rawList) ? rawList : [];
             setWorlds(list);
             if (selectedId && list.find((w) => w.id === selectedId)) {
                 const w = await worldStateService.get(selectedId);
@@ -147,7 +148,7 @@ export const SimulationPanel: React.FC = () => {
                 <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap', alignItems: 'center' }}>
                     <span style={{ fontSize: '0.8rem', opacity: 0.7 }}>World:</span>
                     <select value={selectedId ?? ''} onChange={(e) => { setSelectedId(e.target.value); const w = worlds.find((x) => x.id === e.target.value); if (w) setWorld(w); }} style={{ padding: '0.3rem 0.5rem', borderRadius: 6, border: '1px solid #2a2a35', background: 'transparent', color: 'inherit' }}>
-                        {worlds.map((w) => <option key={w.id} value={w.id}>{w.name} (tick {w.globalClock}, {w.agentIds.length} agents)</option>)}
+                        {worlds.map((w) => <option key={w.id} value={w.id}>{w.name} (tick {w.globalClock}, {(w.agentIds ?? []).length} agents)</option>)}
                     </select>
                     {selected && <span style={{ fontSize: '0.8rem', opacity: 0.6 }}>clock: {selected.globalClock}</span>}
                 </div>
@@ -169,22 +170,22 @@ export const SimulationPanel: React.FC = () => {
                     <div style={{ flex: '1 1 420px', minWidth: 320, border: '1px solid #2a2a35', borderRadius: 8, padding: '0.5rem', background: '#0f0f14' }}>
                         <div style={{ fontSize: '0.8rem', opacity: 0.7, marginBottom: '0.4rem' }}>Rooms 1000×1000 — кружки-агенты + связи</div>
                         <svg viewBox="0 0 1000 1000" style={{ width: '100%', height: 'auto', aspectRatio: '1 / 1', maxHeight: 380, display: 'block', background: '#0a0a0f', borderRadius: 6, border: '1px solid #1e1e2e' }}>
-                            {selected.rooms.map((room) => (
+                            {(selected.rooms ?? []).map((room) => (
                                 <g key={room.id}>
                                     <rect x={room.x} y={room.y} width={room.w} height={room.h} rx={8} fill="#1a1a2e" stroke="#3b82f6" strokeOpacity={0.6} />
                                     <text x={room.x + 8} y={room.y + 18} fontSize={13} fill="#a5b4fc">{room.name}</text>
                                 </g>
                             ))}
-                            {selected.relations.map((rel) => {
-                                const aRoom = selected.rooms.find((r) => r.agents.includes(rel.from));
-                                const bRoom = selected.rooms.find((r) => r.agents.includes(rel.to));
+                            {(selected.relations ?? []).map((rel) => {
+                                const aRoom = (selected.rooms ?? []).find((r) => (r.agents ?? []).includes(rel.from));
+                                const bRoom = (selected.rooms ?? []).find((r) => (r.agents ?? []).includes(rel.to));
                                 if (!aRoom || !bRoom) return null;
                                 const ax = aRoom.x + aRoom.w / 2, ay = aRoom.y + aRoom.h / 2;
                                 const bx = bRoom.x + bRoom.w / 2, by = bRoom.y + bRoom.h / 2;
                                 return <line key={rel.id} x1={ax} y1={ay} x2={bx} y2={by} stroke="#f59e0b" strokeOpacity={0.35 + 0.4 * rel.weight} strokeWidth={1 + 2 * rel.weight} />;
                             })}
-                            {selected.rooms.flatMap((room) => room.agents.map((agentId, idx) => {
-                                const cols = Math.max(1, Math.ceil(Math.sqrt(room.agents.length)));
+                            {(selected.rooms ?? []).flatMap((room) => (room.agents ?? []).map((agentId, idx) => {
+                                const cols = Math.max(1, Math.ceil(Math.sqrt((room.agents ?? []).length)));
                                 const col = idx % cols, row = Math.floor(idx / cols);
                                 const cx = room.x + 28 + col * 56, cy = room.y + 44 + row * 44;
                                 const hue = (agentId.split('').reduce((a, c) => a + c.charCodeAt(0), 0) * 57) % 360;
@@ -197,7 +198,7 @@ export const SimulationPanel: React.FC = () => {
                                 );
                             }))}
                         </svg>
-                        <div style={{ fontSize: '0.7rem', opacity: 0.5, marginTop: '0.3rem' }}>{selected.rooms.map((r) => `${r.name}: ${r.agents.join(', ') || '—'}`).join(' · ')}</div>
+                        <div style={{ fontSize: '0.7rem', opacity: 0.5, marginTop: '0.3rem' }}>{(selected.rooms ?? []).map((r) => `${r.name}: ${(r.agents ?? []).join(', ') || '—'}`).join(' · ')}</div>
                     </div>
                     <div style={{ flex: '1 1 260px', minWidth: 240, border: '1px solid #2a2a35', borderRadius: 8, padding: '0.5rem', maxHeight: 400, overflowY: 'auto' }}>
                         <div style={{ fontWeight: 600, fontSize: '0.85rem', marginBottom: '0.4rem' }}>Event timeline (ExecutionViz)</div>

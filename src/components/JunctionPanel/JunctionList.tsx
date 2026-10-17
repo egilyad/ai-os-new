@@ -151,7 +151,7 @@ const JunctionList: React.FC<Props> = ({ junctions, onChallenge }) => {
                     <>
                         <JunctionGraph junction={selected} />
                         <div style={{ marginTop: '0.5rem', fontSize: '0.72rem', color: 'var(--slate-400)' }}>
-                            {selected.rationale}
+                            {selected.rationale ?? ''}
                         </div>
                     </>
                 ) : (

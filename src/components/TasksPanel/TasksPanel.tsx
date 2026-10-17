@@ -52,15 +52,16 @@ const formatDuration = (ms?: number): string => {
 };
 
 const mapTraceToTask = (trace: CognitiveTrace): Task => {
-    const doneSteps = trace.steps.filter((s) => s.status === 'done' || s.status === 'error').length;
-    const totalSteps = trace.steps.length || 1;
+    const steps = trace.steps ?? [];
+    const doneSteps = steps.filter((s) => s.status === 'done' || s.status === 'error').length;
+    const totalSteps = steps.length || 1;
     const progress =
         trace.status === 'completed' ? 100 : Math.round((doneSteps / totalSteps) * 100);
 
     let taskStatus: Task['status'] = 'running';
     if (trace.status === 'completed') taskStatus = 'completed';
     else if (trace.status === 'failed') taskStatus = 'failed';
-    else if (trace.steps.length === 0) taskStatus = 'pending';
+    else if (steps.length === 0) taskStatus = 'pending';
 
     return {
         id: trace.traceId,
@@ -70,7 +71,7 @@ const mapTraceToTask = (trace: CognitiveTrace): Task => {
         progress,
         priority: 'medium',
         createdAt: trace.startTime,
-        steps: trace.steps.map((s) => ({
+        steps: steps.map((s) => ({
             label: s.label || s.type,
             status: s.status === 'done' ? 'done' : s.status === 'active' ? 'active' : 'todo',
             duration: s.duration ? formatDuration(s.duration) : undefined,
@@ -180,7 +181,7 @@ const TasksPanel: React.FC = () => {
     useEffect(() => {
         void agemsTaskService
             .list()
-            .then(setAgemsTasks)
+            .then((list) => setAgemsTasks(Array.isArray(list) ? list : []))
             .catch(() => {
                 setError(t('tasks.error_refresh'));
             });
@@ -191,7 +192,8 @@ const TasksPanel: React.FC = () => {
         setSeedingDemo(true);
         try {
             await seedTasksDemo(agemsTaskService);
-            setAgemsTasks(await agemsTaskService.list());
+            const list = await agemsTaskService.list();
+            setAgemsTasks(Array.isArray(list) ? list : []);
         } finally {
             setSeedingDemo(false);
         }
