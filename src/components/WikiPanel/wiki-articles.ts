@@ -160,6 +160,37 @@ sequenceDiagram
 Провайдер и ключи — из [[providers]]; история — в сессиях Dexie (последние 200 записей, дальше обрезка); память подмешивается в промпт.`,
     },
     {
+        slug: 'panel-dashboard',
+        title: 'Панель: Обзор (Dashboard)',
+        section: 'panels',
+        tags: ['панель', 'обзор', 'dashboard', 'диагностика'],
+        freshness: 'verified',
+        reviewed: { at: '2026-10-17', by: 'opencode' },
+        sources: [
+            'src/components/DashboardPanel/DashboardPanel.tsx',
+            'src/components/DashboardPanel/DashboardPanel.test.tsx',
+        ],
+        related: ['panels-guide', 'panel-observability', 'panel-providers'],
+        body: `## Назначение
+
+Стартовый экран \`/dashboard\`: сводка состояния ОС и быстрые действия. Это первый экран после загрузки, поэтому он должен работать даже без ключей и истории.
+
+## Как устроена
+
+- Рендерится вручную в оболочке и получает \`onNavigate\`; поэтому его нет в общем \`PANEL_COMPONENTS\`, а маршрут обрабатывается отдельно.
+- Источники состояния: \`kernel.getState()\`, трейсы \`cognitiveService\`, история решений \`routerService\`, бюджет, мониторинг и ключи из \`useKeyStore\`.
+- Блоки: здоровье системы, давление на провайдеров, inference-mesh, критические алерты, статистика, активность роутинга и живой терминал событий.
+
+## Устойчивость
+
+- Каждый источник обёрнут в try/catch: без ключей, трейсов или истории панель показывает пустые состояния, а не падает.
+- Ошибки всплывают баннером и авто-скрываются (\`useAutoClearError\`); подписки EventBus снимаются при размонтировании.
+
+## Проверка
+
+Тест \`src/components/DashboardPanel/DashboardPanel.test.tsx\` рендерит панель в изоляции. Связанные области — [[panels-guide]], [[panel-observability]], [[panel-providers]].`,
+    },
+    {
         slug: 'panel-providers',
         title: 'Панель: Провайдеры и ключи',
         section: 'panels',

@@ -16,5 +16,7 @@ export interface WikiArticle {
     freshness: WikiFreshness;
     sources: string[];
     related: string[];
+    /** Who checked the article's claims against code and when (not just links). */
+    reviewed?: { at: string; by: string };
     body: string;
 }

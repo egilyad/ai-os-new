@@ -195,6 +195,7 @@ export const PANEL_ARTICLES: Record<string, string> = {
     'insight-bus': 'panel-provenance-junctions',
     'run-queue': 'panel-provenance-junctions',
     wiki: 'panel-wiki',
+    dashboard: 'panel-dashboard',
     debate: 'debates',
     agents: 'agents',
     memory: 'memory',

@@ -39,6 +39,11 @@ for (const p of manifest.panels) {
     addNode(p.id, 'panel', p.label ?? p.panelId, { section: p.section, route: p.route });
     if (p.article && articleSlugs.has(p.article)) addEdge(p.id, `wiki:${p.article}`, 'documents');
 }
+for (const a of manifest.audits ?? []) {
+    addNode(a.id, 'audit', a.title, { path: a.path, date: a.date });
+    for (const m of a.mentions ?? []) addEdge(a.id, `file:${m}`, 'audit_mention');
+    for (const t of a.tests ?? []) addEdge(a.id, `file:${t}`, 'audit_test');
+}
 
 // dedupe + stable order
 const edgeKey = (e) => `${e.from}\u0000${e.to}\u0000${e.kind}`;
@@ -79,7 +84,7 @@ md.push('# Граф знаний');
 md.push('');
 md.push('> Автосгенерировано `scripts/gen-docs-graph.mjs` из `docs/manifest.json`. Машиночитаемая версия — `docs/graph.json`. Не редактировать вручную.');
 md.push('');
-md.push('Сущности и их связи как граф: статьи, панели и файлы кода/тестов. Агенты читают');
+md.push('Сущности и их связи как граф: статьи, панели, аудиты и файлы кода/тестов. Агенты читают');
 md.push('`docs/graph.json` для переходов между сущностями; люди — эту страницу. Правила связей — [[docs-standard]].');
 md.push('');
 md.push('## Состав графа');
@@ -95,7 +100,11 @@ md.push('');
 md.push(`Всего: **${nodeList.length}** узлов, **${uniqueEdges.length}** рёбер.`);
 md.push('');
 md.push('Виды связей: `related` (статья → статья), `source` (статья → файл кода),');
-md.push('`test` (статья → тест), `documents` (панель → статья).');
+md.push('`test` (статья → тест), `documents` (панель → статья), `audit_mention`');
+md.push('(аудит → файл, о котором он говорит), `audit_test` (аудит → смежный тест).');
+md.push('');
+md.push('Связи аудитов — навигационные: отчёт «упоминает» файл, это не доказательство');
+md.push('причинного исправления. Для проверки открывайте исходный отчёт по `path`.');
 md.push('');
 md.push('## Самые связанные статьи');
 md.push('');

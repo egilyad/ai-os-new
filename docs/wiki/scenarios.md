@@ -19,7 +19,7 @@
 
 | Область | Панелей | Примеры |
 | --- | --- | --- |
-| Панель | 22 | Обзор, [Панель: Провайдеры и ключи](./panel-providers.md), [Панель: База знаний (RAG)](./panel-knowledge.md) |
+| Панель | 22 | [Панель: Обзор (Dashboard)](./panel-dashboard.md), [Панель: Провайдеры и ключи](./panel-providers.md), [Панель: База знаний (RAG)](./panel-knowledge.md) |
 | Бюджет AI | 7 | [Панели: Аналитика, затраты и ключи](./panel-analytics.md), [Панель: Бюджет и затраты](./panel-budget.md), [Панель: Бюджеты компании (gateway)](./panel-costs.md) |
 | Чат | 4 | [Панель: Чат](./panel-chat.md), [Панели: Сессии и привязки](./panel-sessions.md), [Панель: Закладки](./panel-bookmarks.md) |
 | Дебаты | 17 | [Дебаты: режимы и механика](./debates.md), [Панель: Живые дебаты](./panel-debate-live.md), [Панель: Шаблоны дебатов](./panel-debate-templates.md) |

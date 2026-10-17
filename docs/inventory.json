@@ -3,7 +3,7 @@
   "generatedBy": "scripts/gen-docs-inventory.mjs",
   "scope": "git-tracked docs/**/*.md, excluding docs/new drafts and the generated self-report pages docs-health, docs-inventory",
   "totals": {
-    "documents": 950,
+    "documents": 951,
     "byCategory": {
       "top": 41,
       "active": 1,
@@ -12,11 +12,11 @@
       "reference": 6,
       "roadmap": 6,
       "superseded": 3,
-      "wiki": 143
+      "wiki": 144
     },
     "byLanguage": {
       "en": 651,
-      "ru": 179,
+      "ru": 180,
       "mixed": 120
     }
   },
@@ -6539,8 +6539,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Проверки и показатели",
-      "bytes": 4072,
-      "hash": "a7b1492c33ec2c209d7d38a80e5d7b5b8e7485f0"
+      "bytes": 4073,
+      "hash": "7d61ee40015a9ffe19deb24b00cca59de1623739"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -6627,8 +6627,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Граф знаний",
-      "bytes": 4400,
-      "hash": "ec3ada8648f671a56fdb49f9cf59aaadedec9252"
+      "bytes": 4887,
+      "hash": "e5d663f03bd2b3955fba6d24f58e2b10bf60a383"
     },
     {
       "path": "docs/wiki/dev-history.md",
@@ -6755,16 +6755,16 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Карта документации",
-      "bytes": 21457,
-      "hash": "d3e75856c11312727d2a8c35be18b32278804f74"
+      "bytes": 21521,
+      "hash": "83958528427d682c85388bb754b203c2988feb2e"
     },
     {
       "path": "docs/wiki/docs-standard.md",
       "category": "wiki",
       "language": "ru",
       "title": "Стандарт документации",
-      "bytes": 11917,
-      "hash": "457e71ed59a1b5edd2696e01c276f421a27bad02"
+      "bytes": 12069,
+      "hash": "98ea61c191ca0f9b7c1327e49809a223de51df10"
     },
     {
       "path": "docs/wiki/execution-trail.md",
@@ -6909,6 +6909,14 @@
       "title": "Панель: Пользовательские метрики",
       "bytes": 2139,
       "hash": "96c22c9af1c43e4e908d6359f76f831f51445437"
+    },
+    {
+      "path": "docs/wiki/panel-dashboard.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Панель: Обзор (Dashboard)",
+      "bytes": 3198,
+      "hash": "d603d8933b6d07e055cfb78a0fbc2dcbd35c4038"
     },
     {
       "path": "docs/wiki/panel-debate-analysis.md",
@@ -7403,8 +7411,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Wiki SuperAgents OS",
-      "bytes": 14060,
-      "hash": "4601b05a9ec9384ae8694307381d5974a80b48ed"
+      "bytes": 14138,
+      "hash": "566af0c6dc8277bec4270e6f29a8f36c06cc269b"
     },
     {
       "path": "docs/wiki/roadmap-notes.md",
@@ -7419,8 +7427,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Возможности и сценарии",
-      "bytes": 9954,
-      "hash": "06d573ff9041e7a2829e432fd19837fe15b65d91"
+      "bytes": 10004,
+      "hash": "719f09d2caf091409bfaffd5c7952792c1e062de"
     },
     {
       "path": "docs/wiki/what-is.md",

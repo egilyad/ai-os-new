@@ -42,6 +42,7 @@ export const ENTITY_MODEL = [
     { name: 'related_audits', required: false, auto: false, contains: 'Связанные аудиты', mapsTo: '—' },
     { name: 'known_issues', required: false, auto: false, contains: 'Известные проблемы', mapsTo: '—' },
     { name: 'evidence', required: false, auto: true, contains: 'Чем подтверждено (файл/тест/запуск)', mapsTo: 'tests' },
+    { name: 'reviewed', required: false, auto: true, contains: 'Кто и когда проверил содержание, а не только ссылки: { at, by }', mapsTo: 'reviewed' },
     { name: 'verification_method', required: false, auto: false, contains: 'Как проверить утверждение', mapsTo: '—' },
     { name: 'confidence', required: false, auto: false, contains: 'Степень достоверности', mapsTo: 'status' },
     { name: 'generated', required: true, auto: true, contains: 'Собрано генератором (да) или написано человеком (нет)', mapsTo: '—' },

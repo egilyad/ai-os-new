@@ -119,6 +119,9 @@ export function computeDocsHealth(root) {
     // --- manifest cross-check (entity references must resolve) ---
     const manifestPath = resolve(root, 'docs/manifest.json');
     const manifestProblems = [];
+    let reviewedArticles = 0;
+    let auditCount = 0;
+    let auditMentions = 0;
     if (existsSync(manifestPath)) {
         let manifest = null;
         try {
@@ -134,6 +137,20 @@ export function computeDocsHealth(root) {
             for (const a of manifest.articles ?? []) {
                 if (!slugs.has(a.slug)) manifestProblems.push(`article ${a.id} has no page (${a.slug}.md)`);
                 for (const r of a.related ?? []) if (!slugs.has(r)) manifestProblems.push(`article ${a.slug} -> dead related ${r}`);
+            }
+            reviewedArticles = (manifest.articles ?? []).filter((a) => a.reviewed).length;
+            auditCount = (manifest.audits ?? []).length;
+            for (const au of manifest.audits ?? []) {
+                if (!existsSync(resolve(root, au.path))) {
+                    manifestProblems.push(`audit ${au.id} -> missing report ${au.path}`);
+                }
+                for (const m of au.mentions ?? []) {
+                    auditMentions += 1;
+                    if (!existsSync(resolve(root, m))) manifestProblems.push(`audit ${au.id} -> missing mention ${m}`);
+                }
+                for (const t of au.tests ?? []) {
+                    if (!existsSync(resolve(root, t))) manifestProblems.push(`audit ${au.id} -> missing test ${t}`);
+                }
             }
         }
     }
@@ -215,6 +232,9 @@ export function computeDocsHealth(root) {
         undocumented,
         manifestProblems,
         schemaProblems,
+        reviewedArticles,
+        auditCount,
+        auditMentions,
         readmeRu,
         readmeEn,
         brokenReadmeLinks,

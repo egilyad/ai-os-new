@@ -176,6 +176,13 @@
       "mapsTo": "tests"
     },
     {
+      "name": "reviewed",
+      "required": false,
+      "auto": true,
+      "contains": "Кто и когда проверил содержание, а не только ссылки: { at, by }",
+      "mapsTo": "reviewed"
+    },
+    {
       "name": "verification_method",
       "required": false,
       "auto": false,

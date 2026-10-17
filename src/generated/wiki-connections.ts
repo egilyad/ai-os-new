@@ -9,6 +9,14 @@ export interface WikiConnection {
 
 /** Panel -> code chain per wiki article slug (panels mapped to that article). */
 export const WIKI_CONNECTIONS: Record<string, WikiConnection[]> = {
+    "panel-dashboard": [
+        {
+            "panelId": "dashboard",
+            "route": "/dashboard",
+            "component": null,
+            "tests": []
+        }
+    ],
     "panel-providers": [
         {
             "panelId": "keys",
