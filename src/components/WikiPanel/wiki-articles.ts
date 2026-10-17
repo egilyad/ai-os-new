@@ -399,7 +399,7 @@ Health-панели провайдеров, трейсы и timeline, DLQ (dead-
 
 ## Полный справочник
 
-Это краткая версия. Подробнее — в разделе «Разработчикам»: [[dev-overview]] (слои), [[dev-layout]] (каталоги), [[dev-boot]] (boot и DI), [[dev-services]], [[dev-events]], [[dev-components]], [[dev-routing]] (добавление панели), [[dev-stores]], [[dev-i18n]], [[dev-testing]], [[dev-ci]], [[dev-generators]], [[dev-conventions]], [[dev-glossary]] и авто-каталог [[dev-component-catalog]].`,
+Это краткая версия. Подробнее — в разделе «Разработчикам»: [[dev-overview]] (слои), [[dev-layout]] (каталоги), [[dev-boot]] (boot и DI), [[dev-services]], [[dev-events]], [[dev-components]], [[dev-routing]] (добавление панели), [[dev-stores]], [[dev-i18n]], [[dev-testing]], [[dev-ci]], [[dev-generators]], [[dev-conventions]], [[dev-glossary]], [[dev-cookbook]] (рецепты) и авто-каталог [[dev-component-catalog]].`,
     },
 ];
 

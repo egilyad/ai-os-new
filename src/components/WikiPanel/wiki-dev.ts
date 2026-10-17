@@ -38,6 +38,7 @@ flowchart LR
 - События: [[dev-events]]. Панели: [[dev-components]]. Ворота: [[dev-ci]].
 - Авто-каталоги (генерируются из кода): [[dev-component-catalog]] (компоненты и связи), [[dev-event-catalog]] (события шины), [[dev-service-map]] (DI-граф ядра), [[dev-contracts]] (интерфейсы ядра и их реализации), [[dev-store-catalog]] (сторы), [[dev-i18n-catalog]] (локали).
 - Скрипты и команды: [[dev-scripts]]. Тестовая поверхность: [[dev-tests-catalog]].
+- Рецепты типовых задач: [[dev-cookbook]].
 - Короткая версия для онбординга — [[for-developers]].`,
     },
     {
@@ -448,5 +449,66 @@ flowchart LR
 - **Кристалл / джанкшн / линза** — артефакты синтеза: затвердевшее знание, пересечение дебатов, точка зрения.
 - **Persona** — профиль агента-роли в дебате.
 - **Sidecar** — внешний процесс (browser/computer-use) рядом с ОС; CSP loopback, approve-гейт.`,
+    },
+    {
+        slug: 'dev-cookbook',
+        title: 'Рецепты: типовые задачи',
+        section: 'dev',
+        tags: ['dev', 'рецепты', 'how-to'],
+        freshness: 'verified',
+        sources: ['src/route-registry-*.ts', 'src/kernel/', 'src/i18n/'],
+        related: ['dev-routing', 'dev-services', 'dev-events', 'dev-i18n', 'dev-testing', 'dev-conventions', 'dev-generators'],
+        body: `## Как что-то добавить или починить
+
+Короткие рецепты. Детали — по ссылкам.
+
+### Добавить панель
+1. Два i18n-ключа (en+ru, иначе красный \`i18n-keys.test.ts\`).
+2. Запись id+labelKey в реестр секций (\`route-registry-*\`).
+3. Lazy-импорт + строка в \`route-imports.ts\`.
+4. \`node scripts/gen-wiki-data.mjs\` — обновить карту «панель → файл».
+   Полностью: [[dev-routing]].
+
+### Добавить сервис ядра
+1. Контракт в \`src/kernel/contracts\`.
+2. Реализация в \`src/kernel/services/...\`, зависимости — через \`constructor(deps)\`.
+3. Регистрация в фазе bootstrap.
+4. Экспорт из барреля \`instances/*\`.
+   Граф — [[dev-service-map]], контракты — [[dev-contracts]], детали — [[dev-services]].
+
+### Добавить событие
+1. Запись в \`EVENT_REGISTRY\` (\`event-registry.ts\`) — имя + Zod-схема; производные EVENTS/валидаторы подхватят её сами.
+2. Эмит через \`eventBus.emit(EVENTS.X, payload)\`.
+3. Подписка через \`eventBus.on(...)\` / \`onSafe(...)\`.
+4. Помни: шина lossy — durable-состояние храни в БД, событие — только сигнал.
+   Полный список — [[dev-event-catalog]], детали — [[dev-events]].
+
+### Добавить строку i18n
+1. Ключ в en и ru (наборы обязаны совпадать).
+2. В компоненте \`t('ns.key')\`.
+   Счётчики — [[dev-i18n-catalog]], детали — [[dev-i18n]].
+
+### Защитить панель от «грязных» данных
+- массивы: \`Array.isArray(x) ? x : []\`;
+- строки: \`(x ?? '')\` перед \`.slice/.toLowerCase\`;
+- числа: \`(x ?? 0)\` перед арифметикой; \`—\` вместо NaN/Invalid Date;
+- сервисные вызовы: \`try/catch\` + видимый баннер.
+  Детали — [[dev-conventions]], примеры фиксов — зоны в [[diagnostics]].
+
+### Добавить тест
+- Рядом с кодом: \`*.test.ts(x)\` (Vitest + Testing Library).
+- Если мок ссылается на top-level \`let\` — \`vi.hoisted\` или динамический \`import\`.
+- Обзор и грабли — [[dev-testing]], поверхность — [[dev-tests-catalog]].
+
+### Обновить сгенерированные данные
+- \`node scripts/gen-wiki-data.mjs\` — лента коммитов + карта панелей.
+- \`node scripts/gen-wiki-catalog.mjs\` — каталог компонентов.
+- \`node scripts/gen-wiki-events.mjs\` — каталог событий.
+- \`node scripts/gen-wiki-contracts.mjs\` — контракты.
+- \`node scripts/gen-wiki-stores.mjs\`, \`gen-wiki-i18n.mjs\`, \`gen-wiki-scripts.mjs\`, \`gen-wiki-tests.mjs\`, \`gen-wiki-depmap.mjs\`.
+  Детали — [[dev-generators]] и [[dev-scripts]].
+
+### Провайдер-адаптер
+- Реализация в \`src/llm\`, регистрация в реестре адаптеров (\`src/llm/registry/adapter-factory\`); выбор — через сервис роутера. Кто от кого зависит — [[dev-service-map]].`,
     },
 ];
