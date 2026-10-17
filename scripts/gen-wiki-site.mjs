@@ -160,6 +160,60 @@ for (const f of mdFiles) {
     articles.push({ slug, title, section, body });
 }
 
+// ---- manifest + graph: search index and cross-links ----
+const manifest = existsSync(resolve(root, 'docs/manifest.json'))
+    ? JSON.parse(readFileSync(resolve(root, 'docs/manifest.json'), 'utf8'))
+    : { articles: [], audits: [], panels: [], sections: [] };
+const graph = existsSync(resolve(root, 'docs/graph.json'))
+    ? JSON.parse(readFileSync(resolve(root, 'docs/graph.json'), 'utf8'))
+    : { nodes: [] };
+const blob = (p) => `${REPO}/blob/main/${p}`;
+const articleMeta = new Map((manifest.articles ?? []).map((a) => [a.slug, a]));
+
+function cleanText(s) {
+    return (s ?? '')
+        .replace(/```[\s\S]*?```/g, ' ')
+        .replace(/[#>*`|_-]/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+}
+
+function metaFooter(slug) {
+    const meta = articleMeta.get(slug);
+    if (!meta) return '';
+    const sources = meta.sources ?? [];
+    const tests = meta.tests ?? [];
+    const sourceSet = new Set(sources);
+    const audits = (manifest.audits ?? []).filter(
+        (a) =>
+            (a.mentions ?? []).some((m) => sourceSet.has(m)) ||
+            (a.tests ?? []).some((t) => tests.includes(t)),
+    );
+    const parts = ['<section class="meta-links">', '<h2>Источники и связи</h2>'];
+    if (sources.length) {
+        parts.push('<p><strong>Источники:</strong></p><ul>');
+        for (const s of sources) parts.push(`<li><a href="${blob(s)}">${escHtml(s)}</a></li>`);
+        parts.push('</ul>');
+    }
+    if (tests.length) {
+        parts.push('<p><strong>Тесты:</strong></p><ul>');
+        for (const t of tests) parts.push(`<li><a href="${blob(t)}">${escHtml(t)}</a></li>`);
+        parts.push('</ul>');
+    }
+    if (audits.length) {
+        parts.push('<p><strong>Аудиты:</strong></p><ul>');
+        for (const a of audits) {
+            parts.push(`<li><a href="${blob(a.path)}">${escHtml(a.title)}</a> <span class="sec">(${a.date})</span></li>`);
+        }
+        parts.push('</ul>');
+    }
+    parts.push(
+        '<p><strong>История:</strong> <a href="./dev-history.html">Хроника проекта</a> · <a href="./manifest.json">manifest.json</a> (данные для агентов)</p>',
+    );
+    parts.push('</section>');
+    return parts.join('');
+}
+
 // section order + titles from the index (docs/wiki/README.md)
 const indexRaw = readFileSync(resolve(docsDir, 'README.md'), 'utf8');
 const sectionOrder = [];
@@ -188,7 +242,7 @@ function navHtml(activeSlug) {
     return parts.join('');
 }
 
-function page({ title, contentHtml, activeSlug }) {
+function page({ title, contentHtml, activeSlug, metaHtml = '' }) {
     return `<!doctype html>
 <html lang="ru">
 <head>
@@ -208,7 +262,7 @@ function page({ title, contentHtml, activeSlug }) {
 </header>
 <div class="layout">
   <aside class="sidebar" id="sidebar">${navHtml(activeSlug)}</aside>
-  <main class="content">${contentHtml}</main>
+  <main class="content">${contentHtml}${metaHtml}</main>
 </div>
 <script type="module">
 import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
@@ -224,7 +278,7 @@ mermaid.initialize({ startOnLoad: true, theme: 'neutral' });
 for (const a of articles) {
     writeFileSync(
         resolve(outDir, `${a.slug}.html`),
-        page({ title: a.title, contentHtml: mdToHtml(a.body), activeSlug: a.slug }),
+        page({ title: a.title, contentHtml: mdToHtml(a.body) + metaFooter(a.slug), activeSlug: a.slug }),
         'utf8',
     );
 }
@@ -236,17 +290,45 @@ writeFileSync(
     'utf8',
 );
 
-// ---- search index ----
-const search = articles.map((a) => ({
-    slug: a.slug,
-    title: a.title,
-    section: a.section,
-    text: a.body
-        .replace(/```[\s\S]*?```/g, ' ')
-        .replace(/[#>*`|_-]/g, ' ')
-        .replace(/\s+/g, ' ')
-        .slice(0, 1500),
-}));
+// ---- search index (articles + panels + audits + code + tests) ----
+const search = [];
+for (const a of articles) {
+    search.push({
+        url: `./${a.slug}.html`,
+        slug: a.slug,
+        title: a.title,
+        section: a.section,
+        type: 'article',
+        text: cleanText(a.body).slice(0, 1500),
+    });
+}
+for (const a of manifest.audits ?? []) {
+    search.push({
+        url: blob(a.path),
+        slug: a.id,
+        title: a.title,
+        section: 'Аудит',
+        type: 'audit',
+        text: cleanText([a.date, (a.mentions ?? []).join(' '), (a.tests ?? []).join(' ')].join(' ')).slice(0, 1500),
+    });
+}
+for (const p of manifest.panels ?? []) {
+    search.push({
+        url: p.article ? `./${p.article}.html` : './panels-catalog.html',
+        slug: p.id,
+        title: `Панель: ${p.panelId}`,
+        section: `Панель · ${p.section}`,
+        type: 'panel',
+        text: cleanText(`${p.panelId} ${p.route ?? ''} ${p.section}`),
+    });
+}
+for (const n of graph.nodes ?? []) {
+    if (n.type === 'code') {
+        search.push({ url: blob(n.label), slug: n.id, title: n.label, section: 'Исходный код', type: 'code', text: n.label });
+    } else if (n.type === 'test') {
+        search.push({ url: blob(n.label), slug: n.id, title: n.label, section: 'Тесты', type: 'test', text: n.label });
+    }
+}
 writeFileSync(resolve(outDir, 'search-index.json'), JSON.stringify(search), 'utf8');
 
 // ---- machine-readable manifest (for agents) ----
@@ -295,6 +377,10 @@ a:hover{text-decoration:underline}
 .content pre{background:var(--code-bg);padding:14px;border-radius:8px;overflow:auto}
 .content pre code{background:none;padding:0}
 .content pre.mermaid{background:transparent;text-align:center}
+.content .meta-links{margin-top:2.5em;padding-top:1em;border-top:1px solid var(--line);font-size:14px}
+.content .meta-links h2{font-size:16px;border:0;margin-top:1.2em}
+.content .meta-links ul{margin:.3em 0 1em;padding-left:1.2em}
+.content .meta-links .sec{color:var(--muted);font-size:12px}
 @media(max-width:860px){
 .sidebar{position:fixed;left:0;top:57px;bottom:0;width:280px;transform:translateX(-100%);transition:transform .2s;z-index:15;border-right:1px solid var(--line)}
 .sidebar.open{transform:none}
@@ -329,7 +415,9 @@ const APPJS = `(function(){
     if(!hits.length){box.hidden=false;box.innerHTML='<a>ничего не найдено</a>';return;}
     box.hidden=false;
     box.innerHTML=hits.map(function(a){
-      return '<a href="./'+a.slug+'.html"><b>'+a.title+'</b><div class="sec">'+a.section+'</div></a>';
+      var href=a.url||('./'+a.slug+'.html');
+      var meta=[a.type,a.section].filter(Boolean).join(' · ');
+      return '<a href="'+href+'"><b>'+a.title+'</b><div class="sec">'+meta+'</div></a>';
     }).join('');
   });
   document.addEventListener('click',function(e){if(!box.contains(e.target)&&e.target!==input)box.hidden=true;});
@@ -343,5 +431,5 @@ const APPJS = `(function(){
 `;
 writeFileSync(resolve(outDir, 'assets/app.js'), APPJS, 'utf8');
 
-console.log(`wiki site: ${articles.length} articles + index -> wiki-site/`);
+console.log(`wiki site: ${articles.length} articles + index -> wiki-site/ (search entries: ${search.length})`);
 
