@@ -741,6 +741,7 @@ Adjust routing behavior in **Settings → SLA Mode**:
 | `npm run check:deps:graph`      | Generate dependency graph SVG                                                |
 | `npm run dev:shared`            | Runs Vite + sync-server together                                             |
 | `npm run fix:unused`            | Remove unused exports                                                        |
+| `npm run gen:wiki-docs`         | Regenerate the markdown Wiki mirror under `docs/wiki`                        |
 | `npm run prepare`               | Install husky hooks                                                          |
 | `npm run sync-server`           | Start collaboration sync server                                              |
 | `npm run test:watch`            | Watch mode tests                                                             |
@@ -759,7 +760,8 @@ Adjust routing behavior in **Settings → SLA Mode**:
 | [Event Reference](./docs/events.md)                        | 141+ typed events with payloads and Zod schemas         |
 | [Cognitive Runtime Spec](./docs/COGNITIVE_RUNTIME_SPEC.md) | Event data and runtime specification                    |
 | [Architecture (RU)](./docs/01-system-architecture_RU.md)   | System architecture overview                            |
-| [Debt Report](./docs/DEBT_REPORT.md)                       | Technical debt assessment                               |
+| [Debt Report](./docs/DEBT_REPORT.md)                       | Technical debt assessment                                |
+| [Wiki (RU)](./docs/wiki/README.md)                         | Full system wiki: panels, agents, debates, memory, providers, diagnostics, history, dev guides |
 
 ---
 

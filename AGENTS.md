@@ -31,6 +31,7 @@ Autonomous, event-driven multi-agent runtime. v4.5.0 — 177 contracts, 352 serv
 - `src/components/` — React UI (638 panels)
 - `src/stores/` — Zustand stores (22 files)
 - `docs/` — architecture docs (63 files, RU/EN)
+- `docs/wiki/` — full system Wiki mirror (markdown, GitHub-readable; regenerate with `npm run gen:wiki-docs`)
 
 ## Code Rules
 

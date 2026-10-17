@@ -61,6 +61,15 @@ jobs:
               # Re-tighten as warnings are fixed.
               run: npm run lint -- --max-warnings 5200
 
+            - name: Wiki docs in sync
+              # docs/wiki is generated from the Wiki corpus
+              # (src/components/WikiPanel) so GitHub renders the whole wiki
+              # without the app. Fail if the corpus changed but the mirror was
+              # not regenerated (keeps the committed docs truthful).
+              run: |
+                  npm run gen:wiki-docs
+                  git diff --exit-code -- docs/wiki
+
     build:
         name: Build
         runs-on: ubuntu-latest
