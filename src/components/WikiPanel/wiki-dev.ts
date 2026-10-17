@@ -36,7 +36,7 @@ flowchart LR
 - Как поднимается ядро: [[dev-boot]].
 - Сервисы и lazyService: [[dev-services]].
 - События: [[dev-events]]. Панели: [[dev-components]]. Ворота: [[dev-ci]].
-- Авто-каталоги (генерируются из кода): [[dev-component-catalog]] (компоненты и связи), [[dev-event-catalog]] (события шины), [[dev-service-map]] (DI-граф ядра), [[dev-contracts]] (интерфейсы ядра и их реализации).
+- Авто-каталоги (генерируются из кода): [[dev-component-catalog]] (компоненты и связи), [[dev-event-catalog]] (события шины), [[dev-service-map]] (DI-граф ядра), [[dev-contracts]] (интерфейсы ядра и их реализации), [[dev-store-catalog]] (сторы), [[dev-i18n-catalog]] (локали).
 - Короткая версия для онбординга — [[for-developers]].`,
     },
     {
@@ -254,7 +254,7 @@ flowchart TD
         tags: ['dev', 'stores', 'состояние'],
         freshness: 'verified',
         sources: ['src/stores/', 'src/hooks/'],
-        related: ['dev-components', 'dev-services'],
+        related: ['dev-store-catalog', 'dev-components', 'dev-services'],
         body: `## Сторы
 
 \`src/stores/\` — Zustand-подобные сторы на фичу: \`useChatStore\`, \`useKeyStore\`, \`useNotificationStore\`, \`activeDebateStore\`, \`debateLiveStore\`, \`directorStore\`, \`personaStore\`, \`councilStore\`, \`crewStore\`, \`graphStore\`, \`rivalStore\`, \`opsStore\` и др. Каждый сторы держат UI-состояние и (где нужно) синхронизируются с сервисами.
@@ -273,7 +273,9 @@ flowchart LR
 
 ## Правило
 
-Прежде чем класть данные в стор — реши, обязаны ли они переживать reload. Если да — источник правды в сервисе/БД, а стор — кэш для рендера.`,
+Прежде чем класть данные в стор — реши, обязаны ли они переживать reload. Если да — источник правды в сервисе/БД, а стор — кэш для рендера.
+
+Полный список хуков, типов состояния и вспомогательных экспортов — в [[dev-store-catalog]].`,
     },
     {
         slug: 'dev-i18n',
@@ -282,7 +284,7 @@ flowchart LR
         tags: ['dev', 'i18n', 'локали'],
         freshness: 'verified',
         sources: ['src/i18n/', 'src/i18n/i18n-keys.test.ts'],
-        related: ['dev-components', 'dev-routing'],
+        related: ['dev-i18n-catalog', 'dev-components', 'dev-routing'],
         body: `## Структура
 
 - \`src/i18n/translations/{en,ru}/<namespace>.ts\` — словари по неймспейсам (chat, debate, memory, providers, settings, workspace, agents, analytics, budget, common, dashboard, dyad, errors, governance, groupChat, integrations, nav, observability, quality).
@@ -297,7 +299,9 @@ flowchart LR
 
 1. Ключ в нужный неймспейс en и ru (наборы — идентичны).
 2. В компоненте \`const { t } = useTranslation();\` и \`t('ns.key')\`.
-3. Никакого хардкода UI-текста и «временных» английских строк.`,
+3. Никакого хардкода UI-текста и «временных» английских строк.
+
+Счётчики ключей по неймспейсам и верхнеуровневые префиксы — в [[dev-i18n-catalog]].`,
     },
     {
         slug: 'dev-testing',

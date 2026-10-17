@@ -411,6 +411,14 @@ function WikiHome({
                     <button type="button" onClick={() => openSlug('dev-contracts')} style={linkBtn}>
                         контракты
                     </button>
+                    {', '}
+                    <button type="button" onClick={() => openSlug('dev-store-catalog')} style={linkBtn}>
+                        сторы
+                    </button>
+                    {', '}
+                    <button type="button" onClick={() => openSlug('dev-i18n-catalog')} style={linkBtn}>
+                        локали
+                    </button>
                     .
                 </p>
             </div>

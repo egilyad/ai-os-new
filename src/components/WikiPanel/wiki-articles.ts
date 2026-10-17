@@ -9,7 +9,7 @@ import { CATALOG_ARTICLES } from './wiki-catalog';
 import { EVENT_ARTICLES } from './wiki-event-catalog';
 import { SERVICE_MAP_ARTICLES } from './wiki-service-map';
 import { CONTRACT_ARTICLES } from './wiki-contracts';
-
+import { LAYER_ARTICLES } from './wiki-layers';
 export type WikiFreshness = 'verified' | 'documented' | 'needs-check' | 'not-implemented';
 
 export interface WikiSection {
@@ -411,6 +411,7 @@ export const WIKI_ARTICLES: WikiArticle[] = [
     ...EVENT_ARTICLES,
     ...SERVICE_MAP_ARTICLES,
     ...CONTRACT_ARTICLES,
+    ...LAYER_ARTICLES,
 ];
 
 export function getArticle(slug: string): WikiArticle | undefined {
