@@ -128,7 +128,7 @@ SuperAgents OS — браузерная операционная система 
         tags: ['панель', 'чат', 'инструкция'],
         freshness: 'verified',
         sources: ['src/components/ChatPanel/ChatPanel.tsx', 'src/components/ChatPanel/MarkdownRenderer.tsx'],
-        related: ['providers', 'panel-providers', 'memory'],
+        related: ['providers', 'panel-providers', 'memory', 'zone-1'],
         body: `## Назначение
 
 Основной диалог с моделями: стриминг ответов, режимы исполнения (single, broadcast, race), сравнение провайдеров side-by-side.
@@ -163,7 +163,7 @@ sequenceDiagram
         tags: ['панель', 'ключи', 'инструкция', 'безопасность'],
         freshness: 'verified',
         sources: ['src/components/ProviderManager/', 'src/kernel/services/key-management/key-service.ts'],
-        related: ['providers', 'panel-chat', 'diagnostics'],
+        related: ['providers', 'panel-chat', 'diagnostics', 'zone-1'],
         body: `## Назначение
 
 Добавление API-ключей, health-чеки, выбор моделей. Без ключа провайдер недоступен ни чату, ни дебатам, ни поиску.
@@ -183,7 +183,7 @@ Providers → Installed → Add Key → вставить ключ → дожда
         tags: ['панель', 'задачи', 'инструкция'],
         freshness: 'verified',
         sources: ['src/components/AgentTasksPanel/AgentTasksPanel.tsx'],
-        related: ['agents', 'execution-trail'],
+        related: ['agents', 'execution-trail', 'zone-3'],
         body: `## Назначение
 
 Создание задач, композитор (обычный / browser / computer режимы), история запусков с итогами.
@@ -205,7 +205,7 @@ Providers → Installed → Add Key → вставить ключ → дожда
         tags: ['панель', 'настройки', 'конфиг', 'инструкция'],
         freshness: 'verified',
         sources: ['src/components/SettingsPanel/SettingsPanel.tsx', 'src/i18n/translations/en/settings.ts'],
-        related: ['providers', 'diagnostics', 'dev-i18n-catalog', 'panel-providers'],
+        related: ['providers', 'diagnostics', 'dev-i18n-catalog', 'panel-providers', 'zone-9'],
         body: `## Назначение
 
 Центральный конфиг ОС: интерфейс, язык, модель по умолчанию, роутер провайдеров, память, данные, логи и вебхуки. Часть значений применяется сразу, часть — по кнопке «Сохранить» или после перезапуска (смотри подписи у полей).
@@ -241,7 +241,7 @@ Providers → Installed → Add Key → вставить ключ → дожда
         tags: ['панель', 'governance', 'политики', 'guardrails', 'инструкция'],
         freshness: 'verified',
         sources: ['src/components/GovernancePanel/GovernancePanel.tsx', 'src/components/PolicyPanel/PolicyPanel.tsx', 'src/components/GuardrailsPanel/GuardrailsPanel.tsx', 'src/components/SopPanel/SopPanel.tsx', 'src/components/PromptSecurityPanel.tsx'],
-        related: ['agents', 'diagnostics', 'providers', 'dev-component-catalog'],
+        related: ['agents', 'diagnostics', 'providers', 'dev-component-catalog', 'zone-6'],
         body: `## Назначение
 
 Контур управления и безопасности ОС: роли, правила политик, guardrails, SOP-процедуры и проверка промптов. Все панели этой группы используют неймспейс \`governance.*\`.
@@ -290,7 +290,7 @@ flowchart LR
         tags: ['панель', 'знания', 'RAG', 'поиск', 'инструкция'],
         freshness: 'verified',
         sources: ['src/components/KnowledgePanel/KnowledgePanel.tsx', 'src/i18n/translations/en/memory.ts'],
-        related: ['memory', 'panel-governance', 'dev-component-catalog'],
+        related: ['memory', 'panel-governance', 'dev-component-catalog', 'zone-4'],
         body: `## Назначение
 
 База знаний для RAG: документы и записи, их индексация, семантический поиск и граф связей. Строки — ключи \`knowledge.*\` (лежат в неймспейсе memory).
@@ -333,7 +333,7 @@ flowchart LR
         tags: ['панель', 'SRE', 'метрики', 'алерты', 'инструкция'],
         freshness: 'verified',
         sources: ['src/components/SREAgentPanel/SREAgentPanel.tsx', 'src/i18n/translations/en/observability.ts'],
-        related: ['diagnostics', 'execution-trail', 'dev-component-catalog'],
+        related: ['diagnostics', 'execution-trail', 'dev-component-catalog', 'zone-18'],
         body: `## Назначение
 
 SRE-контур: алерты, метрики здоровья, предложения по авто-исправлению и прогон сценариев «что если». Строки — ключи \`sre.*\` (лежат в неймспейсе observability).
@@ -365,7 +365,7 @@ SRE-контур: алерты, метрики здоровья, предлож�
         tags: ['панель', 'логи', 'трейсы', 'health', 'инструкция'],
         freshness: 'verified',
         sources: ['src/i18n/translations/en/observability.ts', 'src/components/LogsPanel/LogsPanel.tsx', 'src/components/RouterTraceView/RouterTraceView.tsx', 'src/components/TracesPanel/TracesPanel.tsx'],
-        related: ['diagnostics', 'panel-sre', 'dev-component-catalog'],
+        related: ['diagnostics', 'panel-sre', 'dev-component-catalog', 'zone-5'],
         body: `## Назначение
 
 Контур наблюдаемости: логи, трейсы, здоровье, трейс роутера, инспектор состояния, профилировщик и здоровье документации. Строки — ключи \`logs.*\`, \`traces.*\`, \`health.*\`, \`router_trace.*\`, \`docs_health.*\`, \`performance_profiler.*\`, \`state_inspector.*\` (в неймспейсе observability).
@@ -458,7 +458,7 @@ flowchart LR
         tags: ['панель', 'интеграции', 'mcp', 'коннекторы', 'навыки', 'инструменты', 'вебхуки', 'инструкция'],
         freshness: 'verified',
         sources: ['src/i18n/translations/en/integrations.ts', 'src/components/MCPPanel/MCPPanel.tsx', 'src/components/ConnectorsPanel/ConnectorsPanel.tsx', 'src/components/SkillsPanel/SkillsPanel.tsx', 'src/components/ToolsPanel/ToolsPanel.tsx'],
-        related: ['providers', 'panel-governance', 'dev-component-catalog'],
+        related: ['providers', 'panel-governance', 'dev-component-catalog', 'zone-7'],
         body: `## Назначение
 
 Внешние и внутренние подключения ОС: MCP-серверы, коннекторы, навыки, инструменты, вебхуки и кэш. Строки — неймспейс \`integrations.*\` (секции mcp, connectors, skills, tools, webhooks, cache).
@@ -534,7 +534,7 @@ flowchart LR
         tags: ['панель', 'задачи', 'пайплайны', 'инструкция'],
         freshness: 'verified',
         sources: ['src/i18n/translations/en/workspace.ts', 'src/components/TasksPanel/TasksPanel.tsx'],
-        related: ['execution-trail', 'panel-agent-tasks', 'dev-component-catalog'],
+        related: ['execution-trail', 'panel-agent-tasks', 'dev-component-catalog', 'zone-3'],
         body: `## Назначение
 
 Задачи и их выполнение через пайплайны раннеров. Строки — ключи \`tasks.*\`.
@@ -658,7 +658,7 @@ flowchart LR
         tags: ['панель', 'конструктор', 'builder', 'агенты', 'инструкция'],
         freshness: 'verified',
         sources: ['src/i18n/translations/en/workspace.ts', 'src/components/BuilderPanel/'],
-        related: ['agents', 'panel-workflows', 'dev-component-catalog'],
+        related: ['agents', 'panel-workflows', 'dev-component-catalog', 'zone-25'],
         body: `## Назначение
 
 Сборка когнитивного агента из узлов. Строки — ключи \`builder.*\`.
@@ -762,7 +762,7 @@ EWMA-латентность, TTFT, cache hit rate, доля ошибок (429 / 
         tags: ['панель', 'проекты', 'инструкция'],
         freshness: 'verified',
         sources: ['src/i18n/translations/en/analytics.ts', 'src/components/ProjectsPanel/ProjectsPanel.tsx'],
-        related: ['panel-tasks', 'panel-workflows', 'dev-component-catalog'],
+        related: ['panel-tasks', 'panel-workflows', 'dev-component-catalog', 'zone-11'],
         body: `## Назначение
 
 Проекты как контейнеры работы. Ключи \`projects.*\`.
@@ -786,7 +786,7 @@ EWMA-латентность, TTFT, cache hit rate, доля ошибок (429 / 
         tags: ['панель', 'исследование', 'research', 'инструкция'],
         freshness: 'verified',
         sources: ['src/i18n/translations/en/analytics.ts', 'src/components/ResearchPanel/ResearchEnginePanel.tsx'],
-        related: ['panel-synthesis', 'panel-forum', 'debates'],
+        related: ['panel-synthesis', 'panel-forum', 'debates', 'zone-15'],
         body: `## Назначение
 
 Исследовательские сессии с источниками. Ключи \`research_engine.*\`.
@@ -882,7 +882,7 @@ EWMA-латентность, TTFT, cache hit rate, доля ошибок (429 / 
         tags: ['панель', 'форум', 'обсуждения', 'инструкция'],
         freshness: 'verified',
         sources: ['src/i18n/translations/en/analytics.ts', 'src/components/ForumPanel/ForumPanel.tsx'],
-        related: ['debates', 'panel-research', 'dev-component-catalog'],
+        related: ['debates', 'panel-research', 'dev-component-catalog', 'zone-13'],
         body: `## Назначение
 
 Внутренний форум обсуждений между темами, постами и голосами. Ключи \`forum.*\`.
@@ -906,7 +906,7 @@ EWMA-латентность, TTFT, cache hit rate, доля ошибок (429 / 
         tags: ['панель', 'gateway', 'компании', 'задачи', 'согласования', 'инструкция'],
         freshness: 'verified',
         sources: ['src/i18n/translations/en/nav.ts', 'src/components/IssuesPanel/', 'src/components/ApprovalsPanel/', 'src/components/ExportImportPanel/', 'src/components/Adapters/'],
-        related: ['panel-governance', 'agents', 'panel-observability'],
+        related: ['panel-governance', 'agents', 'panel-observability', 'zone-16'],
         body: `## Назначение
 
 Группа панелей, работающих через корпоративный gateway: компании, задачи, согласования, переносимость, адаптеры и прогоны. Ключи \`issues.*\`, \`approvals.*\`, \`portability.*\`, \`adapters.*\`, \`companies.*\`, \`runs.*\` (в неймспейсе nav).
@@ -1075,7 +1075,7 @@ flowchart LR
         tags: ['панель', 'маршрутизация', 'routing', 'веса', 'инструкция'],
         freshness: 'verified',
         sources: ['src/i18n/translations/en/providers.ts', 'src/components/RoutingIntelligence/RoutingIntelligence'],
-        related: ['panel-providers', 'panel-settings', 'panel-budget'],
+        related: ['panel-providers', 'panel-settings', 'panel-budget', 'zone-8'],
         body: `## Назначение
 
 Маршрутизация запросов к провайдерам с настраиваемыми весами. Ключи \`routing.*\`.
@@ -1111,7 +1111,7 @@ flowchart LR
         tags: ['панель', 'пул', 'ключи', 'квоты', 'инструкция'],
         freshness: 'verified',
         sources: ['src/i18n/translations/en/providers.ts', 'src/components/PoolStatusPanel/PoolStatusPanel.tsx'],
-        related: ['panel-providers', 'panel-routing', 'panel-budget'],
+        related: ['panel-providers', 'panel-routing', 'panel-budget', 'zone-18'],
         body: `## Назначение
 
 Состояние пула ключей провайдеров: активность, использование и квоты. Ключи \`pool_status.*\`.
@@ -1175,7 +1175,7 @@ flowchart LR
         tags: ['панель', 'дебаты', 'анализ', 'инструкция'],
         freshness: 'verified',
         sources: ['src/i18n/translations/en/debate.ts', 'src/components/DebateAnalysisPanel/'],
-        related: ['debates', 'panel-debate-toolkit', 'panel-debate-quality'],
+        related: ['debates', 'panel-debate-toolkit', 'panel-debate-quality', 'zone-21'],
         body: `## Назначение
 
 Анализ хода дебатов: логические ошибки, сдвиг позиции, волатильность и тон. Ключи \`debate_analysis.*\`.
@@ -1397,7 +1397,7 @@ crews, councils, graphs, persona, ops, interop, meta, trust, frontier, rivals.
         tags: ['панель', 'каналы', 'чат', 'инструкция'],
         freshness: 'verified',
         sources: ['src/i18n/translations/en/analytics.ts', 'src/components/ChannelPanel/ChannelPanel.tsx'],
-        related: ['panel-chat', 'panel-group-chat', 'dev-component-catalog'],
+        related: ['panel-chat', 'panel-group-chat', 'dev-component-catalog', 'zone-13'],
         body: `## Назначение
 
 Каналы для тематического общения. Ключи \`channels.*\`.
@@ -1537,7 +1537,7 @@ crews, councils, graphs, persona, ops, interop, meta, trust, frontier, rivals.
         tags: ['панель', 'качество', 'эксперименты', 'экспорт', 'инструкция'],
         freshness: 'verified',
         sources: ['src/i18n/translations/en/quality.ts', 'src/components/QualityImpactDashboard/QualityImpactDashboardPanel'],
-        related: ['panel-eval', 'panel-debate-quality', 'panel-analytics'],
+        related: ['panel-eval', 'panel-debate-quality', 'panel-analytics', 'zone-12'],
         body: `## Назначение
 
 Оценка влияния техник на результат. Ключи \`quality_impact.*\`.
@@ -1765,7 +1765,7 @@ crews, councils, graphs, persona, ops, interop, meta, trust, frontier, rivals.
         tags: ['панель', 'дебаты', 'исследование', 'эксперименты', 'инструкция'],
         freshness: 'documented',
         sources: ['src/i18n/translations/en/debate.ts', 'src/components/DebateResearch/'],
-        related: ['debates', 'panel-debate-analysis', 'panel-eval-extra'],
+        related: ['debates', 'panel-debate-analysis', 'panel-eval-extra', 'zone-17'],
         body: `## Назначение
 
 Экспериментальные исследования самой системы дебатов (папка DebateResearch). Метки — \`nav.*\`, часть ключей — \`debate.*\`.
@@ -1842,7 +1842,7 @@ crews, councils, graphs, persona, ops, interop, meta, trust, frontier, rivals.
         tags: ['панель', 'симуляция', 'контрфакт', 'инструкция'],
         freshness: 'documented',
         sources: ['src/i18n/translations/en/nav.ts', 'src/components/SimulationPanel/SimulationPanel.tsx', 'src/components/WhatIfPanel/WhatIfPanel'],
-        related: ['panel-planning', 'panel-shadow', 'panel-observability'],
+        related: ['panel-planning', 'panel-shadow', 'panel-observability', 'zone-19'],
         body: `## Назначение
 
 Моделирование «а что если» и разбор причин. Метки — \`nav.*\`.
