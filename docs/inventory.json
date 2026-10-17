@@ -3,11 +3,11 @@
   "generatedBy": "scripts/gen-docs-inventory.mjs",
   "scope": "git-tracked docs/**/*.md, excluding docs/new drafts and the generated self-report pages docs-health, docs-inventory",
   "totals": {
-    "documents": 948,
+    "documents": 949,
     "byCategory": {
       "top": 41,
       "active": 1,
-      "audits": 65,
+      "audits": 66,
       "history": 683,
       "reference": 6,
       "roadmap": 6,
@@ -16,7 +16,7 @@
     },
     "byLanguage": {
       "en": 651,
-      "ru": 177,
+      "ru": 178,
       "mixed": 120
     }
   },
@@ -749,6 +749,14 @@
       "title": "Инвентаризация `docs/` (2026-10-17)",
       "bytes": 4691,
       "hash": "e741ce2e6ab965f719e3cf944a98ac7c61ba9169"
+    },
+    {
+      "path": "docs/audits/DOCS_PROGRAM_REPORT_2026-10-17.md",
+      "category": "audits",
+      "language": "ru",
+      "title": "Отчёт: программа документации SuperAgents OS",
+      "bytes": 4824,
+      "hash": "b9fcca119bb43733bc5aaf150d69930018209bac"
     },
     {
       "path": "docs/audits/New folder/CRITICAL_BUGS_AUDIT.md",
@@ -6524,7 +6532,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4072,
-      "hash": "f9c46cb86ae5871cb27321daf8239db999df8359"
+      "hash": "c32630240f5b4c680cb6ba31cce9c51ec31b123e"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -6740,7 +6748,7 @@
       "language": "mixed",
       "title": "Карта документации",
       "bytes": 21457,
-      "hash": "1f714ecc48399b0dc2f663534bb0976884d57418"
+      "hash": "600c942db3b627eec2d3ba243476e25f1287b4b6"
     },
     {
       "path": "docs/wiki/docs-standard.md",
