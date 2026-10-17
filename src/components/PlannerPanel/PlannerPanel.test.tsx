@@ -88,7 +88,7 @@ describe('PlannerPanel', () => {
 
     it('tolerates a non-array filter payload', async () => {
         const { plannerService } = await import('../../kernel/instances/services-extras');
-        plannerService.listFilters.mockResolvedValueOnce(null as never);
+        vi.mocked(plannerService.listFilters).mockResolvedValueOnce(null as never);
         const Panel = (await import('./PlannerPanel')).default;
         render(<Panel />);
         await waitFor(() => expect(plannerService.listFilters).toHaveBeenCalled());

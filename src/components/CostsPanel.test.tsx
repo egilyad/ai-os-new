@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 
 vi.mock('./Common', () => ({
-    gatewayApi: vi.fn((base: string, secret: string, path: string) => {
+    gatewayApi: vi.fn((_base: string, _secret: string, path: string) => {
         if (path === '/api/companies') return Promise.resolve({ companies: [] });
         return Promise.resolve({});
     }),
@@ -28,7 +28,7 @@ describe('CostsPanel', () => {
 
     it('renders legacy cost events without cents or timestamps', async () => {
         const { gatewayApi } = await import('./Common');
-        vi.mocked(gatewayApi).mockImplementation((base: string, secret: string, path: string) => {
+        vi.mocked(gatewayApi).mockImplementation((_base: string, _secret: string, path: string) => {
             if (path === '/api/companies') {
                 return Promise.resolve({
                     companies: [{ id: 'c1', name: 'Acme' }],

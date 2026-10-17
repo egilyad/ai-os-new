@@ -154,8 +154,8 @@ describe('RunQueuePanel', () => {
 
     it('tolerates non-array queue and toolkit payloads', async () => {
         const { runQueueService } = await import('../../kernel/instances/services-extras');
-        runQueueService.list.mockResolvedValueOnce(null as never);
-        runQueueService.listToolkits.mockResolvedValueOnce(null as never);
+        vi.mocked(runQueueService.list).mockResolvedValueOnce(null as never);
+        vi.mocked(runQueueService.listToolkits).mockResolvedValueOnce(null as never);
         const Panel = (await import('./RunQueuePanel')).default;
         render(<Panel />);
         await waitFor(() => expect(runQueueService.list).toHaveBeenCalled());
