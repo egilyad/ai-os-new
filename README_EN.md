@@ -764,6 +764,7 @@ Adjust routing behavior in **Settings → SLA Mode**:
 | [Architecture (RU)](./docs/01-system-architecture_RU.md)   | System architecture overview                            |
 | [Debt Report](./docs/DEBT_REPORT.md)                       | Technical debt assessment                                |
 | [Wiki (RU)](./docs/wiki/README.md)                         | Full system wiki: panels, agents, debates, memory, providers, diagnostics, history, dev guides |
+| Wiki site (GitHub Pages)                                   | Static wiki with section menu, search and mermaid, built from the same mirror and served at `/wiki/` (`npm run gen:wiki-site`) |
 
 ---
 

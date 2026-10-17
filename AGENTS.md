@@ -32,6 +32,7 @@ Autonomous, event-driven multi-agent runtime. v4.5.0 — 177 contracts, 352 serv
 - `src/stores/` — Zustand stores (22 files)
 - `docs/` — architecture docs (63 files, RU/EN)
 - `docs/wiki/` — full system Wiki mirror (markdown, GitHub-readable; regenerate with `npm run gen:wiki-docs`)
+- `scripts/gen-wiki-site.mjs` — builds the static wiki site (menu + search + mermaid) from `docs/wiki` into `wiki-site/`; CI publishes it at `/wiki/` on GitHub Pages (`npm run gen:wiki-site`, output is git-ignored)
 
 ## Code Rules
 

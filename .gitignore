@@ -75,6 +75,9 @@ playwright/.cache/
 # Vitest coverage reports
 coverage/
 
+# Generated static wiki site (built in CI from docs/wiki)
+wiki-site/
+
 
 
 # Temp analysis files

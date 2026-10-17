@@ -493,6 +493,15 @@ jobs:
               # (dist/assets/chunks/*.map) would leak. `find` is exact.
               run: find dist -name '*.map' -delete
 
+            - name: Publish wiki site under /wiki/
+              # Builds a self-contained HTML wiki (nav + client search +
+              # mermaid) from the committed markdown mirror in docs/wiki and
+              # serves it alongside the app at /wiki/. Stdlib-only Node.
+              run: |
+                  node scripts/gen-wiki-site.mjs
+                  mkdir -p dist/wiki
+                  cp -r wiki-site/. dist/wiki/
+
             - name: Upload Pages artifact
               uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3
               with:
