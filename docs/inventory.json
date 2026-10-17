@@ -3,11 +3,11 @@
   "generatedBy": "scripts/gen-docs-inventory.mjs",
   "scope": "git-tracked docs/**/*.md, excluding docs/new drafts and the generated self-report pages docs-health, docs-inventory",
   "totals": {
-    "documents": 949,
+    "documents": 950,
     "byCategory": {
       "top": 41,
       "active": 1,
-      "audits": 66,
+      "audits": 67,
       "history": 683,
       "reference": 6,
       "roadmap": 6,
@@ -16,7 +16,7 @@
     },
     "byLanguage": {
       "en": 651,
-      "ru": 178,
+      "ru": 179,
       "mixed": 120
     }
   },
@@ -741,6 +741,14 @@
       "title": "Аудит: память агентов, история действий, управление командой",
       "bytes": 27141,
       "hash": "317dc61ecc48bdf33eb1ec04d85b51df0379d022"
+    },
+    {
+      "path": "docs/audits/DOCS_GAP_AUDIT_2026-10-17.md",
+      "category": "audits",
+      "language": "ru",
+      "title": "Gap-аудит документации SuperAgents OS",
+      "bytes": 9525,
+      "hash": "2995cb994c73cfc4e7985069caa9e110c5421673"
     },
     {
       "path": "docs/audits/DOCS_INVENTORY_2026-10-17.md",

@@ -20,7 +20,7 @@
 - Панель **Wiki** в приложении и сайт `/wiki/` — тот же корпус статей
 - [`docs/manifest.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/manifest.json) — машиночитаемый индекс сущностей (статьи, панели)
 - [`docs/entity-model.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/entity-model.json) — стандарт документации
-- [`docs/inventory.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/inventory.json) — инвентарь всех `docs/**` (949 документов)
+- [`docs/inventory.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/inventory.json) — инвентарь всех `docs/**` (950 документов)
 
 ## Вики по разделам
 
@@ -116,7 +116,7 @@
 
 Исторические материалы сохраняются без смысловой переписи (см. [Стандарт документации](./docs-standard.md)).
 
-- аудиты: **66** — [`docs/audits/`](https://github.com/egilyad/ai-os-new/tree/main/docs/audits)
+- аудиты: **67** — [`docs/audits/`](https://github.com/egilyad/ai-os-new/tree/main/docs/audits)
 - история/зоны: **683** — [`docs/history/`](https://github.com/egilyad/ai-os-new/tree/main/docs/history)
 - заменённое: **3** — [`docs/superseded/`](https://github.com/egilyad/ai-os-new/tree/main/docs/superseded)
 - текущее рабочее: **1** — [`docs/active/`](https://github.com/egilyad/ai-os-new/tree/main/docs/active)

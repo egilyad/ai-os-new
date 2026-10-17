@@ -22,18 +22,19 @@
 
 Каждая зона — отчёт о проделанном на тот момент. Не выдаётся за текущее состояние.
 
-## Аудиты (66)
+## Аудиты (67)
 
 Отчёты проверок сохраняются как есть:
 
 - папка [`docs/audits/_done/`](https://github.com/egilyad/ai-os-new/tree/main/docs/audits/_done/) — 58
 - [Аудит: память агентов, история действий, управление командой](https://github.com/egilyad/ai-os-new/blob/main/docs/audits/agent-team-audit-memory-history-management.md)
+- [Gap-аудит документации SuperAgents OS](https://github.com/egilyad/ai-os-new/blob/main/docs/audits/DOCS_GAP_AUDIT_2026-10-17.md)
 - [Инвентаризация `docs/` (2026-10-17)](https://github.com/egilyad/ai-os-new/blob/main/docs/audits/DOCS_INVENTORY_2026-10-17.md)
 - [Отчёт: программа документации SuperAgents OS](https://github.com/egilyad/ai-os-new/blob/main/docs/audits/DOCS_PROGRAM_REPORT_2026-10-17.md)
 - [🟡 AUDITS — результаты проверок](https://github.com/egilyad/ai-os-new/blob/main/docs/audits/README.md)
 - папка [`docs/audits/New folder/`](https://github.com/egilyad/ai-os-new/tree/main/docs/audits/New folder/) — 4
 
-Всего отчётов: **66** (в корне — 4).
+Всего отчётов: **67** (в корне — 5).
 
 ## Архив решений и планов (683)
 
