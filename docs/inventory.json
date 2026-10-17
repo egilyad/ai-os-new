@@ -1,15 +1,14 @@
 {
   "version": 1,
   "generatedBy": "scripts/gen-docs-inventory.mjs",
-  "scope": "docs/**/*.md (excl. generated self-report pages docs-health, docs-inventory)",
+  "scope": "git-tracked docs/**/*.md, excluding docs/new drafts and the generated self-report pages docs-health, docs-inventory",
   "totals": {
-    "documents": 948,
+    "documents": 944,
     "byCategory": {
       "top": 41,
       "active": 1,
-      "audits": 67,
+      "audits": 65,
       "history": 683,
-      "new": 2,
       "reference": 6,
       "roadmap": 6,
       "superseded": 3,
@@ -17,8 +16,8 @@
     },
     "byLanguage": {
       "en": 651,
-      "ru": 175,
-      "mixed": 122
+      "ru": 173,
+      "mixed": 120
     }
   },
   "duplicates": {
@@ -790,22 +789,6 @@
       "title": "🟡 AUDITS — результаты проверок",
       "bytes": 1159,
       "hash": "513ded8ea2aac8d6d4396e8ad82aa3d725d9f6be"
-    },
-    {
-      "path": "docs/audits/soveti2.md",
-      "category": "audits",
-      "language": "ru",
-      "title": "📚 SuperAgents OS — полная программа документации и прозрачности",
-      "bytes": 88977,
-      "hash": "7dc4ea4ebbdcc5aa73cb972d89dafe4bb25523fe"
-    },
-    {
-      "path": "docs/audits/sovetigpt.md",
-      "category": "audits",
-      "language": "ru",
-      "title": "ПРОМПТ ДЛЯ CODING AGENT",
-      "bytes": 74364,
-      "hash": "b41602c55f180e58affe0371846b32e357fac84b"
     },
     {
       "path": "docs/COGNITIVE_RUNTIME_SPEC.md",
@@ -6320,22 +6303,6 @@
       "hash": "aff53f0f08968798923ff2cc3ec7a31c393baa3d"
     },
     {
-      "path": "docs/new/ro1.md",
-      "category": "new",
-      "language": "mixed",
-      "title": "ro1.md",
-      "bytes": 14524,
-      "hash": "c9f499b6d033ed3e08196753fa420e0cb8a53062"
-    },
-    {
-      "path": "docs/new/ro2.md",
-      "category": "new",
-      "language": "mixed",
-      "title": "Второй проверочный аудит — Browser Use / Computer Use в `ai-os-new`",
-      "bytes": 46210,
-      "hash": "74d3c291b35c4f3470f36bbf859f17f26f7666c7"
-    },
-    {
       "path": "docs/PANEL_MAP.md",
       "category": "top",
       "language": "en",
@@ -6748,8 +6715,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Карта документации",
-      "bytes": 21228,
-      "hash": "04a50d5c1d8b2720f9830a10a5f30f7efa05c53e"
+      "bytes": 21287,
+      "hash": "6ef7cacda44fd688f70d63799ee21fb45158eff1"
     },
     {
       "path": "docs/wiki/docs-standard.md",
@@ -7396,8 +7363,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Wiki SuperAgents OS",
-      "bytes": 13775,
-      "hash": "4e0ce12588c8efc3e31dd345919e94aac37f50b8"
+      "bytes": 13848,
+      "hash": "70dc893a030cfcf0b92dceaa5f229fcfa8d79a00"
     },
     {
       "path": "docs/wiki/roadmap-notes.md",

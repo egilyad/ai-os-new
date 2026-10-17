@@ -6,6 +6,7 @@ import { DOCS_INVENTORY_MARKDOWN } from '../../generated/wiki-docs-inventory';
 import { DOCS_STANDARD_MARKDOWN } from '../../generated/wiki-docs-standard';
 import { DOCS_INDEX_MARKDOWN } from '../../generated/wiki-docs-index';
 import { SYSTEM_MAP_MARKDOWN } from '../../generated/wiki-system-map';
+import { DEVELOPMENT_HISTORY_MARKDOWN } from '../../generated/wiki-history';
 
 // Auto-maintained catalogs: components, and the panel -> section -> route ->
 // component -> article chain. Bodies come from the generators — edit those.
@@ -107,5 +108,20 @@ export const CATALOG_ARTICLES: WikiArticle[] = [
         ],
         related: ['docs-index', 'dev-service-map', 'panel-infra-meta', 'dev-generators'],
         body: SYSTEM_MAP_MARKDOWN,
+    },
+    {
+        slug: 'dev-history',
+        title: 'История разработки',
+        section: 'history',
+        tags: ['история', 'аудиты', 'зоны', 'решения', 'архив'],
+        freshness: 'verified',
+        sources: [
+            'docs/manifest.json',
+            'docs/inventory.json',
+            'docs/entity-model.json',
+            'scripts/gen-wiki-history.mjs',
+        ],
+        related: ['docs-standard', 'docs-index', 'zone-1', 'dev-tests-catalog'],
+        body: DEVELOPMENT_HISTORY_MARKDOWN,
     },
 ];

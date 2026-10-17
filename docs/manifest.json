@@ -40,7 +40,7 @@
     {
       "id": "history",
       "title": "История разработки",
-      "articles": 26
+      "articles": 27
     },
     {
       "id": "architecture",
@@ -3280,6 +3280,34 @@
         "dev-service-map",
         "panel-infra-meta",
         "dev-generators"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:dev-history",
+      "type": "article",
+      "slug": "dev-history",
+      "title": "История разработки",
+      "section": "history",
+      "status": "verified",
+      "tags": [
+        "история",
+        "аудиты",
+        "зоны",
+        "решения",
+        "архив"
+      ],
+      "sources": [
+        "docs/manifest.json",
+        "docs/inventory.json",
+        "docs/entity-model.json",
+        "scripts/gen-wiki-history.mjs"
+      ],
+      "related": [
+        "docs-standard",
+        "docs-index",
+        "zone-1",
+        "dev-tests-catalog"
       ],
       "tests": []
     },

@@ -20,7 +20,7 @@
 - Панель **Wiki** в приложении и сайт `/wiki/` — тот же корпус статей
 - [`docs/manifest.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/manifest.json) — машиночитаемый индекс сущностей (статьи, панели)
 - [`docs/entity-model.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/entity-model.json) — стандарт документации
-- [`docs/inventory.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/inventory.json) — инвентарь всех `docs/**` (948 документов)
+- [`docs/inventory.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/inventory.json) — инвентарь всех `docs/**` (944 документов)
 
 ## Вики по разделам
 
@@ -38,7 +38,7 @@
 
 **Диагностика** — 2: [Диагностика и известные проблемы](./diagnostics.md) · [Здоровье документации](./docs-health.md)
 
-**История разработки** — 26: [Зона 1: панели провайдеров и чата](./zone-1.md) · [Зона 2: дебаты](./zone-2.md) · [Зона 3: агенты и задачи](./zone-3.md) · [Зона 4: память и знания](./zone-4.md) · [Зона 5: система и мониторинг](./zone-5.md) · [Зона 6: governance и политики](./zone-6.md) · [Зона 7: инструменты и MCP](./zone-7.md) · [Зона 8: роутер и маршрутизация](./zone-8.md) · [Зона 9: настройки](./zone-9.md) · [Зона 10: логи и инспекции](./zone-10.md) · [Зона 11: workspace и проекты](./zone-11.md) · [Зона 12: качество](./zone-12.md) · [Зона 13: коммуникации](./zone-13.md) · [Зона 14: коннекторы](./zone-14.md) · [Зона 15: исследования](./zone-15.md) · [Зона 16: company gateway](./zone-16.md) · [Зона 17: debate research](./zone-17.md) · [Зона 18: SRE и пулы](./zone-18.md) · [Зона 19: прогнозы и симуляции](./zone-19.md) · [Зона 20: управление дебатами](./zone-20.md) · [Зона 21: качество аргументов](./zone-21.md) · [Зона 22: смещения и доверие](./zone-22.md) · [Зона 23: коммуникации-2](./zone-23.md) · [Зона 24: знания-2](./zone-24.md) · [Зона 25: конструкторы](./zone-25.md) · [Зона 26: остатки](./zone-26.md)
+**История разработки** — 27: [Зона 1: панели провайдеров и чата](./zone-1.md) · [Зона 2: дебаты](./zone-2.md) · [Зона 3: агенты и задачи](./zone-3.md) · [Зона 4: память и знания](./zone-4.md) · [Зона 5: система и мониторинг](./zone-5.md) · [Зона 6: governance и политики](./zone-6.md) · [Зона 7: инструменты и MCP](./zone-7.md) · [Зона 8: роутер и маршрутизация](./zone-8.md) · [Зона 9: настройки](./zone-9.md) · [Зона 10: логи и инспекции](./zone-10.md) · [Зона 11: workspace и проекты](./zone-11.md) · [Зона 12: качество](./zone-12.md) · [Зона 13: коммуникации](./zone-13.md) · [Зона 14: коннекторы](./zone-14.md) · [Зона 15: исследования](./zone-15.md) · [Зона 16: company gateway](./zone-16.md) · [Зона 17: debate research](./zone-17.md) · [Зона 18: SRE и пулы](./zone-18.md) · [Зона 19: прогнозы и симуляции](./zone-19.md) · [Зона 20: управление дебатами](./zone-20.md) · [Зона 21: качество аргументов](./zone-21.md) · [Зона 22: смещения и доверие](./zone-22.md) · [Зона 23: коммуникации-2](./zone-23.md) · [Зона 24: знания-2](./zone-24.md) · [Зона 25: конструкторы](./zone-25.md) · [Зона 26: остатки](./zone-26.md) · [История разработки](./dev-history.md)
 
 **Архитектура** — 2: [Архитектура и связи](./architecture.md) · [Карта системы](./dev-system-map.md)
 
@@ -46,7 +46,7 @@
 
 **Разработчикам** — 26: [Разработчикам: структура и ворота](./for-developers.md) · [Разработчикам: обзор и слои](./dev-overview.md) · [Разработчикам: карта каталогов](./dev-layout.md) · [Разработчикам: boot, DI и контейнер](./dev-boot.md) · [Разработчикам: шина событий](./dev-events.md) · [Разработчикам: сервисы и lazyService](./dev-services.md) · [Разработчикам: компоненты и панели](./dev-components.md) · [Разработчикам: маршруты и добавление панели](./dev-routing.md) · [Разработчикам: состояние (stores) и хуки](./dev-stores.md) · [Разработчикам: локализация (i18n)](./dev-i18n.md) · [Разработчикам: тесты](./dev-testing.md) · [Разработчикам: ворота качества и CI](./dev-ci.md) · [Разработчикам: генераторы и сгенерированные файлы](./dev-generators.md) · [Разработчикам: конвенции кода](./dev-conventions.md) · [Разработчикам: глоссарий](./dev-glossary.md) · [Рецепты: типовые задачи](./dev-cookbook.md) · [Каталог компонентов OS](./dev-component-catalog.md) · [Инвентаризация документации](./docs-inventory.md) · [Стандарт документации](./docs-standard.md) · [Каталог событий шины](./dev-event-catalog.md) · [Карта зависимостей ядра (DI)](./dev-service-map.md) · [Контракты ядра](./dev-contracts.md) · [Каталог сторов](./dev-store-catalog.md) · [Каталог локализации](./dev-i18n-catalog.md) · [Скрипты и CLI](./dev-scripts.md) · [Каталог тестов](./dev-tests-catalog.md)
 
-Всего статей вики: **140** в 11 разделах.
+Всего статей вики: **141** в 11 разделах.
 
 ## Документация верхнего уровня
 
@@ -116,7 +116,7 @@
 
 Исторические материалы сохраняются без смысловой переписи (см. [Стандарт документации](./docs-standard.md)).
 
-- аудиты: **67** — [`docs/audits/`](https://github.com/egilyad/ai-os-new/tree/main/docs/audits)
+- аудиты: **65** — [`docs/audits/`](https://github.com/egilyad/ai-os-new/tree/main/docs/audits)
 - история/зоны: **683** — [`docs/history/`](https://github.com/egilyad/ai-os-new/tree/main/docs/history)
 - заменённое: **3** — [`docs/superseded/`](https://github.com/egilyad/ai-os-new/tree/main/docs/superseded)
 - текущее рабочее: **1** — [`docs/active/`](https://github.com/egilyad/ai-os-new/tree/main/docs/active)

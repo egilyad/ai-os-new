@@ -7,11 +7,23 @@
 // rewrite any document.
 import { readFileSync, writeFileSync, readdirSync, statSync, mkdirSync } from 'fs';
 import { createHash } from 'crypto';
+import { execSync } from 'child_process';
 import { fileURLToPath } from 'url';
 import { dirname, resolve, relative } from 'path';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const docsRoot = resolve(root, 'docs');
+
+// Only git-tracked documents are in scope: keeps the inventory identical between
+// a developer's machine (with untracked drafts) and CI (clean checkout).
+function trackedFiles() {
+    try {
+        const out = execSync('git ls-files -z -- docs', { cwd: root, encoding: 'buffer' }).toString('utf8');
+        return new Set(out.split('\u0000').filter(Boolean).map((p) => p.normalize('NFC')));
+    } catch {
+        return null;
+    }
+}
 
 // Pages that are produced *from* the inventory/tests — never counted (self-reference).
 const SELF_REPORTS = new Set(['docs-health', 'docs-inventory']);
@@ -50,6 +62,7 @@ function titleOf(text, rel) {
     return m ? m[1].trim() : rel.split('/').pop();
 }
 
+const tracked = trackedFiles();
 const files = walk(docsRoot).sort();
 const items = [];
 const seenHashes = new Map(); // hash -> [paths]
@@ -57,6 +70,8 @@ const seenTitles = new Map(); // normalized title -> [paths]
 
 for (const abs of files) {
     const rel = relative(root, abs).replace(/\\/g, '/');
+    if (tracked && !tracked.has(rel.normalize('NFC'))) continue; // untracked draft, not part of the repo
+    if (rel.startsWith('docs/new/')) continue; // drafts live mostly outside git -> out of scope
     const slug = rel.split('/').pop().replace(/\.md$/, '');
     if (SELF_REPORTS.has(slug)) continue;
     const text = readFileSync(abs, 'utf8');
@@ -91,7 +106,7 @@ for (const it of items) {
 const inventory = {
     version: 1,
     generatedBy: 'scripts/gen-docs-inventory.mjs',
-    scope: 'docs/**/*.md (excl. generated self-report pages docs-health, docs-inventory)',
+    scope: 'git-tracked docs/**/*.md, excluding docs/new drafts and the generated self-report pages docs-health, docs-inventory',
     totals: { documents: items.length, byCategory, byLanguage },
     duplicates: { content: duplicateContent, titles: duplicateTitles.map((d) => d.title) },
     documents: items.sort((a, b) => a.path.localeCompare(b.path)),
@@ -114,11 +129,11 @@ const catalogLinks = [
 const md = [];
 md.push('# Инвентаризация документации');
 md.push('');
-md.push('> Автосгенерировано `scripts/gen-docs-inventory.mjs` из файлов `docs/**/*.md`.');
+md.push('> Автосгенерировано `scripts/gen-docs-inventory.mjs` из отслеживаемых git-файлов `docs/**/*.md`.');
 md.push('> Машиночитаемая версия — `docs/inventory.json`. Не редактировать вручную.');
 md.push('');
 md.push(
-    `Это Этап 1 программы документации: полный учёт существующих Markdown-файлов. Всего: **${items.length}** документов.`,
+    `Это Этап 1 программы документации: полный учёт существующих Markdown-файлов. Всего: **${items.length}** документов (только отслеживаемые git).`,
 );
 md.push(
     'Две генерируемые страницы-самоотчёта (`docs-health`, `docs-inventory`) исключены, чтобы числа не зависели от самих отчётов.',

@@ -38,6 +38,7 @@ Autonomous, event-driven multi-agent runtime. v4.5.0 — 177 contracts, 352 serv
 - `docs/inventory.json` — machine-readable inventory of all `docs/**` markdown (path/category/language/title/size/hash); regenerate with `npm run gen:docs-inventory`
 - `docs/wiki/docs-index.md` — documentation map: single entry point (wiki sections, top-level docs, reference/roadmap, archives); regenerate with `npm run gen:wiki-docs-index`
 - `docs/wiki/dev-system-map.md` — system map: layers + agents/roles (role-library), debate strategies, provider pools (pools.ts); regenerate with `npm run gen:wiki-system-map`
+- `docs/wiki/dev-history.md` — development history: zones, audits, decision/plan archive (from manifest + inventory); regenerate with `npm run gen:wiki-history`
 - `scripts/gen-wiki-site.mjs` — builds the static wiki site (menu + search + mermaid) from `docs/wiki` into `wiki-site/`; CI publishes it at `/wiki/` on GitHub Pages (`npm run gen:wiki-site`, output is git-ignored)
 
 ## Code Rules
