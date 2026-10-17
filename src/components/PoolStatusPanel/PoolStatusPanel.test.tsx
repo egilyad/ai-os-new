@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 
 vi.mock('../../i18n/useTranslation', () => ({
     useTranslation: () => ({
@@ -28,6 +28,9 @@ vi.mock('../../i18n/useTranslation', () => ({
                 'pool_status.stat.keys': 'Keys',
                 'pool_status.quota_button': 'Quota',
                 'pool_status.key_usage': 'Key Usage',
+                'pool_status.edit_quota_title': 'Edit Free Tier Quota',
+                'pool_status.reqs_per_day': 'Requests / Day',
+                'pool_status.tokens_per_day': 'Tokens / Day',
                 'pool_status.status.ok': 'OK',
                 'pool_status.status.err': 'Error',
                 'common.not_available': 'N/A',
@@ -39,16 +42,24 @@ vi.mock('../../i18n/useTranslation', () => ({
     }),
 }));
 
+const { poolState, poolActions } = vi.hoisted(() => ({
+    poolState: {
+        keys: [] as Array<Record<string, unknown>>,
+        quotas: {} as Record<string, unknown>,
+    },
+    poolActions: {
+        setFreeTierLimit: vi.fn(),
+        setPoolStrategy: vi.fn(),
+        getPoolStrategy: vi.fn(() => 'round-robin'),
+        getPoolKeyDistribution: vi.fn(() => []),
+    },
+}));
+
 vi.mock('../../hooks/usePoolStatus', () => ({
     usePoolStatus: () => ({
-        keys: [],
-        quotas: {},
-        actions: {
-            setFreeTierLimit: vi.fn(),
-            setPoolStrategy: vi.fn(),
-            getPoolStrategy: vi.fn(() => 'round-robin'),
-            getPoolKeyDistribution: vi.fn(() => []),
-        },
+        keys: poolState.keys,
+        quotas: poolState.quotas,
+        actions: poolActions,
     }),
 }));
 
@@ -129,6 +140,8 @@ vi.mock('../../kernel/instances', () => ({
 describe('PoolStatusPanel', () => {
     beforeEach(() => {
         vi.clearAllMocks();
+        poolState.keys = [];
+        poolState.quotas = {};
     });
 
     it('renders Resource Pools heading', async () => {
@@ -166,5 +179,36 @@ describe('PoolStatusPanel', () => {
         const btn = screen.getByText('Providers');
         btn.click();
         expect(await screen.findByText('Quota Cap')).toBeDefined();
+    });
+
+    it('renders legacy keys without a provider', async () => {
+        poolState.keys = [{ id: 'legacy-1' }];
+        const PoolStatusPanel = (await import('./PoolStatusPanel')).default;
+        render(<PoolStatusPanel />);
+        expect(await screen.findByText('Resource Pools')).toBeDefined();
+        expect(document.body.textContent).not.toContain('NaN');
+    });
+
+    it('sanitizes quota input to non-negative integers on save', async () => {
+        poolState.keys = [
+            { id: 'k1', provider: 'groq', status: 'active', label: 'G1' },
+        ];
+        const Panel = (await import('./PoolStatusPanel')).default;
+        const { container } = render(<Panel />);
+        fireEvent.click(screen.getByText('Providers'));
+        await screen.findByText('Quota Cap');
+        fireEvent.click(screen.getByText('Quota'));
+        await screen.findByText('Edit Free Tier Quota');
+        const inputs = container.querySelectorAll('input[type="number"]');
+        expect(inputs.length).toBe(2);
+        fireEvent.change(inputs[0]!, { target: { value: 'abc' } });
+        fireEvent.change(inputs[1]!, { target: { value: '-5' } });
+        fireEvent.click(screen.getByText('Save'));
+        await waitFor(() =>
+            expect(poolActions.setFreeTierLimit).toHaveBeenCalledWith('groq', {
+                requestsPerDay: 0,
+                tokensPerDay: 0,
+            }),
+        );
     });
 });

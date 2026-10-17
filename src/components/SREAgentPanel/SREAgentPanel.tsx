@@ -41,6 +41,7 @@ const SREAgentPanel: React.FC = () => {
     } | null>(null);
     const [autoFixEnabled, setAutoFixEnabled] = useState(false);
     const [executingId, setExecutingId] = useState<string | null>(null);
+    const [error, setError] = useState<string | null>(null);
 
     const scrollRef = useRef<HTMLDivElement>(null);
     const retryTimeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
@@ -54,17 +55,22 @@ const SREAgentPanel: React.FC = () => {
 
     const refreshData = useCallback(() => {
         try {
-            setSuggestions(advisorService.getSuggestions());
-            setAlerts(advisorService.getSREAlerts());
+            const sug = advisorService.getSuggestions();
+            const al = advisorService.getSREAlerts();
+            const whatIf = advisorService.getWhatIfAnalysis();
+            setSuggestions(Array.isArray(sug) ? sug : []);
+            setAlerts(Array.isArray(al) ? al : []);
             setMetrics(advisorService.getMetrics());
-            setWhatIfResults(advisorService.getWhatIfAnalysis());
+            setWhatIfResults(Array.isArray(whatIf) ? whatIf : null);
             setCachingAdvice(advisorService.getPromptCachingAdvice());
             setAutoFixEnabled(
                 (advisorService.getConfig?.() ?? { enableAutoFix: false }).enableAutoFix ?? false,
             );
-        } catch {
-            /* resolver logged */
+        } catch (e) {
+            console.error('[SREAgentPanel] refresh failed', e);
+            setError(t('sre.error.refresh'));
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {
@@ -100,35 +106,44 @@ const SREAgentPanel: React.FC = () => {
     usePolling(refreshData, 5000);
 
     const handleExecute = useCallback((id: string) => {
+        setError(null);
         setExecutingId(id);
         if (execTimeoutRef.current) clearTimeout(execTimeoutRef.current);
         execTimeoutRef.current = setTimeout(() => {
             execTimeoutRef.current = undefined;
             try {
                 advisorService.executeFix(id);
-            } catch {
-                /* resolver logged */
+            } catch (e) {
+                console.error('[SREAgentPanel] execute failed', e);
+                setError(t('sre.error.execute'));
             }
             setExecutingId(null);
         }, 500);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const handleDismiss = useCallback((id: string) => {
+        setError(null);
         try {
             advisorService.dismissSuggestion(id);
-        } catch {
-            /* resolver logged */
+        } catch (e) {
+            console.error('[SREAgentPanel] dismiss failed', e);
+            setError(t('sre.error.dismiss'));
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const handleAutoFixToggle = useCallback(() => {
+        setError(null);
         try {
             const cfg = advisorService.getConfig?.() ?? { enableAutoFix: false };
             advisorService.updateConfig({ enableAutoFix: !cfg.enableAutoFix });
             setAutoFixEnabled(!cfg.enableAutoFix);
-        } catch {
-            /* resolver logged */
+        } catch (e) {
+            console.error('[SREAgentPanel] autofix toggle failed', e);
+            setError(t('sre.error.config'));
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const criticalCount = alerts.filter((a) => a.severity === 'critical').length;
@@ -136,6 +151,39 @@ const SREAgentPanel: React.FC = () => {
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', height: '100%' }}>
+            {error && (
+                <div
+                    role="alert"
+                    style={{
+                        padding: '0.6rem 0.9rem',
+                        borderRadius: 10,
+                        background: 'rgba(239,68,68,0.08)',
+                        border: '1px solid rgba(239,68,68,0.2)',
+                        color: '#fca5a5',
+                        fontSize: '0.82rem',
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        gap: 8,
+                    }}
+                >
+                    <span>{error}</span>
+                    <button
+                        onClick={() => setError(null)}
+                        style={{
+                            background: 'none',
+                            border: 'none',
+                            color: 'inherit',
+                            cursor: 'pointer',
+                            fontSize: '0.85rem',
+                            flexShrink: 0,
+                        }}
+                        aria-label={t('common.dismiss_error')}
+                    >
+                        ✕
+                    </button>
+                </div>
+            )}
             <SREHeader
                 criticalCount={criticalCount}
                 warningCount={warningCount}

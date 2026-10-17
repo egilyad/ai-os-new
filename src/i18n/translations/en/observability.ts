@@ -2,6 +2,10 @@
 const observability: Record<string, string> = {
     'sre.title': 'SRE Agent',
     'sre.subtitle': 'Monitor and optimize provider reliability',
+    'sre.error.refresh': 'Failed to load SRE data',
+    'sre.error.execute': 'Failed to execute fix',
+    'sre.error.dismiss': 'Failed to dismiss suggestion',
+    'sre.error.config': 'Failed to update auto-fix setting',
     'sre.auto_fix': 'Auto-Fix Enabled',
     'sre.auto_badge': 'Auto-Fix',
     'sre.suggestions.empty': 'No suggestions',

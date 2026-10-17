@@ -46,12 +46,23 @@ const PoolStatusPanel: React.FC = () => {
 
     const handleSaveQuota = () => {
         if (editingProvider) {
-            actions.setFreeTierLimit(editingProvider, editLimit);
+            // Number('') is 0 but Number('abc') is NaN — never persist NaN or
+            // negative quotas into the store (they poison every downstream sum).
+            const clean = {
+                requestsPerDay: Math.max(0, Math.floor(Number(editLimit.requestsPerDay) || 0)),
+                tokensPerDay: Math.max(0, Math.floor(Number(editLimit.tokensPerDay) || 0)),
+            };
+            setEditLimit(clean);
+            try {
+                actions.setFreeTierLimit(editingProvider, clean);
+            } catch {
+                /* store write is best-effort; inputs keep their values */
+            }
             setEditingProvider(null);
         }
     };
 
-    const providers = [...new Set(keys.map((k) => k.provider))].sort();
+    const providers = [...new Set(keys.map((k) => k.provider ?? 'unknown'))].sort();
     const getPoolKeys = (provider: string) => keys.filter((k) => k.provider === provider);
     const getActivePoolKeys = (provider: string) =>
         getPoolKeys(provider).filter((k) => k.status === 'active');
@@ -133,7 +144,7 @@ const PoolStatusPanel: React.FC = () => {
                 >
                     {POOLS.map((pool) => {
                         const kps = keys.filter((k) =>
-                            pool.providers.includes(k.provider.toLowerCase()),
+                            pool.providers.includes((k.provider ?? '').toLowerCase()),
                         );
                         const activeKeys = kps.filter((k) => k.status === 'active').length;
                         const totalUsage = kps.reduce(
@@ -438,7 +449,7 @@ const PoolStatusPanel: React.FC = () => {
                                                 padding: '0.3rem',
                                             }}
                                         >
-                                            +{kps.length - 4} more keys
+                                            +{kps.length - 4} {t('pool_status.more_keys')}
                                         </div>
                                     )}
                                     {kps.length === 0 && (
@@ -610,16 +621,16 @@ const PoolStatusPanel: React.FC = () => {
                                             minWidth: 220,
                                         }}
                                     >
-                                        <div
-                                            style={{
-                                                fontSize: '0.8rem',
-                                                fontWeight: 700,
-                                                color: 'var(--slate-50)',
-                                                marginBottom: '0.75rem',
-                                            }}
-                                        >
-                                            Edit Free Tier Quota
-                                        </div>
+                    <div
+                        style={{
+                            fontSize: '0.8rem',
+                            fontWeight: 700,
+                            color: 'var(--slate-50)',
+                            marginBottom: '0.75rem',
+                        }}
+                    >
+                        {t('pool_status.edit_quota_title')}
+                    </div>
                                         <div
                                             style={{
                                                 display: 'flex',
@@ -627,9 +638,9 @@ const PoolStatusPanel: React.FC = () => {
                                                 gap: '0.5rem',
                                             }}
                                         >
-                                            <label style={{ fontSize: '0.7rem', color: 'var(--slate-400)' }}>
-                                                Requests / Day
-                                            </label>
+                        <label style={{ fontSize: '0.7rem', color: 'var(--slate-400)' }}>
+                            {t('pool_status.reqs_per_day')}
+                        </label>
                                             <input
                                                 type="number"
                                                 value={editLimit.requestsPerDay}
@@ -648,9 +659,9 @@ const PoolStatusPanel: React.FC = () => {
                                                     fontSize: '0.75rem',
                                                 }}
                                             />
-                                            <label style={{ fontSize: '0.7rem', color: 'var(--slate-400)' }}>
-                                                Tokens / Day
-                                            </label>
+                        <label style={{ fontSize: '0.7rem', color: 'var(--slate-400)' }}>
+                            {t('pool_status.tokens_per_day')}
+                        </label>
                                             <input
                                                 type="number"
                                                 value={editLimit.tokensPerDay}

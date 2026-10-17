@@ -2,6 +2,10 @@
 const observability: Record<string, string> = {
     'sre.title': 'Заголовок',
     'sre.subtitle': 'Подзаголовок',
+    'sre.error.refresh': 'Не удалось загрузить данные SRE',
+    'sre.error.execute': 'Не удалось выполнить исправление',
+    'sre.error.dismiss': 'Не удалось отклонить предложение',
+    'sre.error.config': 'Не удалось обновить автоисправление',
     'sre.auto_fix': 'Автоисправление',
     'sre.auto_badge': 'Автоматический значок',
     'sre.suggestions.empty': 'Опустошить',
