@@ -30,6 +30,8 @@ const PANEL_ARTICLES: Record<string, string> = {
     guardrails: 'panel-governance',
     sop: 'panel-governance',
     security: 'panel-governance',
+    knowledge: 'panel-knowledge',
+    sre: 'panel-sre',
     debate: 'debates',
     agents: 'agents',
     memory: 'memory',
