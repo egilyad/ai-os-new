@@ -105,7 +105,7 @@ SuperAgents OS — браузерная операционная система 
         tags: ['инструкция', 'навигация'],
         freshness: 'verified',
         sources: ['src/route-registry-core.ts', 'src/route-registry-content.ts', 'src/routes.tsx'],
-        related: ['map', 'panel-chat', 'panel-providers', 'panel-agent-tasks'],
+        related: ['panel-chat', 'panel-providers', 'panel-agent-tasks'],
         body: `## Навигация
 
 Слева — сайдбар с секциями, сверху — поиск и крошки. Каждый пункт меню — это запись в реестре маршрутов: один id открывает один ленивый компонент панели.
@@ -402,6 +402,226 @@ SRE-контур: алерты, метрики здоровья, предлож�
 Компоненты: \`BudgetPanel\` и его секции (\`PlatformBudgetSection\` и др.). Провайдеры и ключи — [[panel-providers]], роутер — в настройках [[panel-settings]].`,
     },
     {
+        slug: 'panel-integrations',
+        title: 'Панели: Интеграции (MCP, коннекторы, навыки, инструменты, вебхуки)',
+        section: 'panels',
+        tags: ['панель', 'интеграции', 'mcp', 'коннекторы', 'навыки', 'инструменты', 'вебхуки', 'инструкция'],
+        freshness: 'verified',
+        sources: ['src/i18n/translations/en/integrations.ts', 'src/components/MCPPanel/MCPPanel.tsx', 'src/components/ConnectorsPanel/ConnectorsPanel.tsx', 'src/components/SkillsPanel/SkillsPanel.tsx', 'src/components/ToolsPanel/ToolsPanel.tsx'],
+        related: ['providers', 'panel-governance', 'dev-component-catalog'],
+        body: `## Назначение
+
+Внешние и внутренние подключения ОС: MCP-серверы, коннекторы, навыки, инструменты, вебхуки и кэш. Строки — неймспейс \`integrations.*\` (секции mcp, connectors, skills, tools, webhooks, cache).
+
+## MCP
+
+Серверы MCP: список со статусом (connected/connecting/disconnected/error), добавление по имени и URL, проверка соединения и переподключение всех. Показываются инструменты и ресурсы сервера; если их нет — честное «нет».
+
+## Коннекторы
+
+Карточки подключений с типом и категорией: подключить/отключить, синхронизация сейчас, конфиг провайдера, deploy и отзыв. Есть симулированный режим и подтверждения удаления.
+
+## Навыки (skills)
+
+Список навыков: создать/редактировать/удалить, включить/выключить (active/inactive), импорт и экспорт. Есть хаб популярных навыков с установкой и разделением «установленные» / «доступные».
+
+## Инструменты (tools)
+
+Каталог инструментов с фильтром и поиском; карточка инструмента с вкладками sandbox, schema и security (секреты, сетевой доступ). Регистрация нового инструмента, экспорт/импорт, быстрый тест с выводом.
+
+## Вебхуки
+
+Добавление вебхука (URL, события, секрет), включение/пауза, ping и тестовая отправка с результатом, история последних срабатываний, удаление.
+
+## Кэш
+
+Настройки кэша: hit_rate, ключи, размер, TTL, максимальное число записей, персистентность и кэш по провайдеру, история инвалидаций, очистка. Есть отдельная панель Google-кэша.
+
+## Где менять
+
+Компоненты: \`MCPPanel\`, \`ConnectorsPanel\`, \`SkillsPanel\`, \`ToolsPanel\`, \`WebhooksPanel\`, \`CachePanel\`. Связи — в [[dev-component-catalog]].`,
+    },
+    {
+        slug: 'panel-aquarium',
+        title: 'Панель: Аквариум агентов',
+        section: 'panels',
+        tags: ['панель', 'аквариум', 'агенты', 'экосистема', 'инструкция'],
+        freshness: 'verified',
+        sources: ['src/i18n/translations/en/workspace.ts', 'src/components/AquariumPanel/AquariumPanel.tsx'],
+        related: ['agents', 'dev-component-catalog'],
+        body: `## Назначение
+
+Игровая визуализация экосистемы: «существа» представляют агентов и модели, их здоровье отражает реальное состояние провайдеров. Строки — ключи \`aquarium.*\`.
+
+## Население
+
+Список существ с редкостью (rarity), уровнем, счастьем, голодом, настроением, личностью и сроком жизни. Счётчик населения и активных моделей.
+
+## Экосистема
+
+Здоровье экосистемы, разнообразие, стабильность провайдеров, индекс репутации, средняя латентность и количество активных сущностей — это реальные метрики, поданные образно.
+
+## Забота
+
+Кормление существа, сбор достижений, выбор и детали. Достижения открываются по мере активности.
+
+## Где менять
+
+Компонент: \`AquariumPanel\`. Обзор агентов — [[agents]].`,
+    },
+    {
+        slug: 'panel-tasks',
+        title: 'Панель: Задачи и пайплайны',
+        section: 'panels',
+        tags: ['панель', 'задачи', 'пайплайны', 'инструкция'],
+        freshness: 'verified',
+        sources: ['src/i18n/translations/en/workspace.ts', 'src/components/TasksPanel/TasksPanel.tsx'],
+        related: ['execution-trail', 'panel-agent-tasks', 'dev-component-catalog'],
+        body: `## Назначение
+
+Задачи и их выполнение через пайплайны раннеров. Строки — ключи \`tasks.*\`.
+
+## Задачи
+
+Создание задачи (название, описание, приоритет, срок), редактирование и удаление. Статусы: queued, in_progress, completed, failed. Кнопка очистки завершённых.
+
+## Пайплайны
+
+Строка активных задач: активный пайплайн, активные раннеры, статусы и исключения. Есть сид-демо для быстрого старта.
+
+## Фильтры и состояния
+
+Поиск, фильтр по статусу, честные пустые состояния («нет задач» / «нет совпадений»). Ошибки загрузки и обновления показываются.
+
+## Где менять
+
+Компонент: \`TasksPanel\`. Журнал исполнения — [[execution-trail]].`,
+    },
+    {
+        slug: 'panel-playground',
+        title: 'Панель: Песочница сравнения моделей',
+        section: 'panels',
+        tags: ['панель', 'песочница', 'сравнение', 'модели', 'инструкция'],
+        freshness: 'verified',
+        sources: ['src/i18n/translations/en/workspace.ts', 'src/components/ModelComparePanel/'],
+        related: ['providers', 'debates', 'dev-component-catalog'],
+        body: `## Назначение
+
+Сравнение моделей и провайдеров на одном промпте. Строки — ключи \`playground.*\`.
+
+## Как пользоваться
+
+Задаётся системный промпт и температура, выбираются провайдеры и модели (можно выбрать все или снять выбор), запуск «прогнать все». Результаты сравниваются рядом.
+
+## Пустые состояния
+
+Если результатов нет — выводится «нет результатов», без заглушек.
+
+## Где менять
+
+Компонент: \`ModelComparePanel\`. Провайдеры и ключи — [[panel-providers]].`,
+    },
+    {
+        slug: 'panel-batch',
+        title: 'Панель: Пакетная обработка',
+        section: 'panels',
+        tags: ['панель', 'батч', 'пакетная обработка', 'инструкция'],
+        freshness: 'verified',
+        sources: ['src/i18n/translations/en/workspace.ts', 'src/components/BatchProcessingPanel/'],
+        related: ['panel-playground', 'panel-budget', 'dev-component-catalog'],
+        body: `## Назначение
+
+Пакетный прогон множества промптов через выбранные провайдеры. Строки — ключи \`batch.*\`.
+
+## Запуск
+
+Список промптов (со счётчиком), выбор провайдеров и задач, запуск и отмена, индикатор прогресса.
+
+## Результаты
+
+Таблица по каждому запросу: промпт, провайдер, модель, статус, латентность, токены и ответ. Есть история запусков и очистка.
+
+## Где менять
+
+Компонент: \`BatchProcessingPanel\`. Стоимость таких прогонов — [[panel-budget]].`,
+    },
+    {
+        slug: 'panel-workflows',
+        title: 'Панель: Потоки (workflows)',
+        section: 'panels',
+        tags: ['панель', 'workflows', 'потоки', 'инструкция'],
+        freshness: 'verified',
+        sources: ['src/i18n/translations/en/workspace.ts', 'src/components/WorkflowPanel/'],
+        related: ['panel-builder', 'panel-tasks', 'dev-component-catalog'],
+        body: `## Назначение
+
+Запуск и создание потоков (workflows). Строки — ключи \`workflows.*\`.
+
+## Запуск
+
+Выбор потока, ввод данных, запуск с индикатором прогресса и история запусков. Есть сид-демо.
+
+## Создание
+
+Форма нового потока (название и описание) с сохранением и отменой.
+
+## Где менять
+
+Компонент: \`WorkflowPanel\`. Конструктор агентов — [[panel-builder]].`,
+    },
+    {
+        slug: 'panel-pressure',
+        title: 'Панель: Карта давления',
+        section: 'panels',
+        tags: ['панель', 'pressure', 'давление', 'мониторинг', 'инструкция'],
+        freshness: 'verified',
+        sources: ['src/i18n/translations/en/workspace.ts', 'src/components/PressureMapPanel/PressureMapPanel.tsx'],
+        related: ['panel-observability', 'panel-sre', 'dev-component-catalog'],
+        body: `## Назначение
+
+Карта давления на провайдеров и сессии: где накапливается нагрузка. Строки — ключи \`pressure_map.*\`.
+
+## Данные
+
+Счётчики провайдеров, сессий и алертов, уровень системного давления, тренд, точки по времени и активные алерты. Если данных по провайдеру или сессии нет — так и написано.
+
+## Действия
+
+Обновление карты и подтверждение (acknowledge) алертов.
+
+## Где менять
+
+Компоненты: \`PressureMapPanel\` и вкладка \`runtime-pressure\`. Связанный мониторинг — [[panel-observability]].`,
+    },
+    {
+        slug: 'panel-builder',
+        title: 'Панель: Конструктор агентов',
+        section: 'panels',
+        tags: ['панель', 'конструктор', 'builder', 'агенты', 'инструкция'],
+        freshness: 'verified',
+        sources: ['src/i18n/translations/en/workspace.ts', 'src/components/BuilderPanel/'],
+        related: ['agents', 'panel-workflows', 'dev-component-catalog'],
+        body: `## Назначение
+
+Сборка когнитивного агента из узлов. Строки — ключи \`builder.*\`.
+
+## Как собирать
+
+Добавление узла, инспектор выбранного узла, системный промпт, «вооружение» инструментами и привязка возможностей. Автовыбор узла при добавлении.
+
+## Проверки
+
+Предупреждения: нет доступных провайдеров и нет выбранных инструментов.
+
+## Запуск
+
+Сохранение и деплой конфигурации, состояние рантайма (idle) и ошибки деплоя.
+
+## Где менять
+
+Компонент: \`BuilderPanel\` (CognitiveBuilder). Обзор агентов — [[agents]].`,
+    },
+    {
         slug: 'agents',
         title: 'Агенты: устройство и управление',
         section: 'agents',
@@ -527,7 +747,7 @@ UI (React-панели, только сервисы+контракты) → Kern
         tags: ['мониторинг', 'проблемы', 'ограничения'],
         freshness: 'documented',
         sources: ['docs/audits/agent-team-audit-memory-history-management.md'],
-        related: ['providers', 'execution-trail', 'audits'],
+        related: ['providers', 'execution-trail', 'panel-governance'],
         body: `## Что смотреть
 
 Health-панели провайдеров, трейсы и timeline, DLQ (dead-letter очередь с retry), уведомления. У approvals есть TTL и claim-once семантика.
@@ -597,7 +817,7 @@ Health-панели провайдеров, трейсы и timeline, DLQ (dead-
         tags: ['код', 'контракты', 'CI'],
         freshness: 'verified',
         sources: ['README.md', '.github/workflows/ci.yml', 'package.json'],
-        related: ['dev-overview', 'dev-boot', 'dev-ci', 'architecture', 'audits'],
+        related: ['dev-overview', 'dev-boot', 'dev-ci', 'architecture'],
         body: `## Коротко
 
 \`src/kernel\` (DI, контракты, сервисы, события), \`src/components\` (панели), \`src/llm\` (адаптеры), \`src/stores\`, \`scripts/\` (генераторы, sidecar-ctl, smoke).
