@@ -181,7 +181,7 @@ Multi-agent debate system with configurable strategies and comprehensive metrics
 - **Recoverable history**: Failed/cancelled debates persist with arguments; fact-check joins work across id namespaces; reload-verified snapshots
 
 <!-- README-MAPS:STRATEGIES:BEGIN -->
-_Generated from code on 2026-10-15 by `node scripts/gen-readme-maps.mjs` — do not hand-edit, re-run the script._
+_Generated from code on 2026-10-17 by `node scripts/gen-readme-maps.mjs` — do not hand-edit, re-run the script._
 
 <details>
 <summary><b>All 33 built-in debate strategies (from code)</b></summary>
@@ -226,7 +226,7 @@ _Generated from code on 2026-10-15 by `node scripts/gen-readme-maps.mjs` — do 
 <!-- README-MAPS:STRATEGIES:END -->
 
 <!-- README-MAPS:TECHNIQUES:BEGIN -->
-_Generated from code on 2026-10-15 by `node scripts/gen-readme-maps.mjs` — do not hand-edit, re-run the script._
+_Generated from code on 2026-10-17 by `node scripts/gen-readme-maps.mjs` — do not hand-edit, re-run the script._
 
 <details>
 <summary><b>All 75 debate quality techniques (from code)</b></summary>
@@ -462,12 +462,12 @@ src/
 ```
 
 <!-- README-MAPS:PANELS:BEGIN -->
-_Generated from code on 2026-10-15 by `node scripts/gen-readme-maps.mjs` — do not hand-edit, re-run the script._
+_Generated from code on 2026-10-17 by `node scripts/gen-readme-maps.mjs` — do not hand-edit, re-run the script._
 
 <details>
-<summary><b>All 165 statically-wired nav panels by section (from code)</b></summary>
+<summary><b>All 259 statically-wired nav panels by section (from code)</b></summary>
 
-**DASHBOARD** (`section-dashboard`, 22)
+**DASHBOARD** (`dashboard`, 22)
 
 - Overview (`dashboard`)
 - Providers (`keys`)
@@ -492,7 +492,7 @@ _Generated from code on 2026-10-15 by `node scripts/gen-readme-maps.mjs` — do 
 - SOP (`sop`)
 - Run Queue (`run-queue`)
 
-**BUDGET AI** (`section-budget`, 7)
+**BUDGET AI** (`budget`, 7)
 
 - Analytics (`analytics`)
 - Economics (`pricing`)
@@ -502,14 +502,14 @@ _Generated from code on 2026-10-15 by `node scripts/gen-readme-maps.mjs` — do 
 - Budget Alerts (`budget-alerts`)
 - Company Costs (`costs`)
 
-**CHAT** (`section-chat`, 4)
+**CHAT** (`chat`, 4)
 
 - Chat (`chat`)
 - Chat Sessions (`chat-sessions`)
 - Session Hub (`session-hub`)
 - Bookmarks (`bookmarks`)
 
-**DEBATES** (`section-debates`, 17)
+**DEBATES** (`debates`, 17)
 
 - Debate Arena (`debate`)
 - Debate Live (`debate-live`)
@@ -529,14 +529,14 @@ _Generated from code on 2026-10-15 by `node scripts/gen-readme-maps.mjs` — do 
 - Experimental (`experimental`)
 - Scratchpad (`scratchpad`)
 
-**DEBATE STRATEGY & ANALYSIS** (`section-debate-strategy`, 4)
+**DEBATE STRATEGY & ANALYSIS** (`debate-strategy`, 4)
 
 - Outcome Forecaster (`outcome-forecaster`)
 - Minimax Planner (`minimax-planner`)
 - Similarity (`similarity`)
 - Drift Detector (`drift-detector`)
 
-**TECHNIQUES** (`section-techniques`, 26)
+**TECHNIQUES** (`techniques`, 84)
 
 - Steelman (`steelman`)
 - Bayesian Judge (`bayesian-judge`)
@@ -564,8 +564,111 @@ _Generated from code on 2026-10-15 by `node scripts/gen-readme-maps.mjs` — do 
 - Vuln Targeting (`vuln-targeting`)
 - Justification (`justification`)
 - Logical Form (`logical-form`)
+- Cross Examination (`cross-examination`)
+- Delta Focusing (`delta-focusing`)
+- Vulnerability Targeting (`vulnerability-targeting`)
+- Agreement Anchoring (`agreement-anchoring`)
+- Graph Minimax (`graph-minimax`)
+- Burden Of Proof (`burden-of-proof`)
+- Consistency Check (`consistency-check`)
+- Credibility Scoring (`credibility-scoring`)
+- Causal Graph (`causal-graph`)
+- Pre Publish Critic (`pre-publish-critic`)
+- Fact Checking (`fact-checking`)
+- Epistemic Calibration (`epistemic-calibration`)
+- Socratic Pivot (`socratic-pivot`)
+- Concession Engine (`concession-engine`)
+- Bayesian Judges (`bayesian-judges`)
+- Dpo Sampler (`dpo-sampler`)
+- Critic (`critic`)
+- Pivot (`pivot`)
+- Concession (`concession`)
+- Triangulation (`triangulation`)
+- Empathy (`empathy`)
+- Heat (`heat`)
+- Sentinel (`sentinel`)
+- Redundancy (`redundancy`)
+- Replay (`replay`)
+- Enthymeme (`enthymeme`)
+- Multi Hop (`multi-hop`)
+- Bias Exploit (`bias-exploit`)
+- Interrupt (`interrupt`)
+- Frame (`frame`)
+- Rhetorical Device (`rhetorical-device`)
+- Narrative Arc (`narrative-arc`)
+- Abstraction Ladder (`abstraction-ladder`)
+- Role Reversal (`role-reversal`)
+- Fog Of War (`fog-of-war`)
+- Evidence Revelation (`evidence-revelation`)
+- Humor (`humor`)
+- Status Dynamics (`status-dynamics`)
+- Style Matching (`style-matching`)
+- Dynamic Persona (`dynamic-persona`)
+- Strategist (`strategist`)
+- Whisper Channels (`whisper-channels`)
+- Alliance (`alliance`)
+- Prediction Market (`prediction-market`)
+- Rtom (`rtom`)
+- Strategy Fingerprint (`strategy-fingerprint`)
+- Objection Anticipation (`objection-anticipation`)
+- Evidence Triangulation (`evidence-triangulation`)
+- Hegelian Synthesis (`hegelian-synthesis`)
+- Uncertainty Propagation (`uncertainty-propagation`)
+- Rhetoric Safety (`rhetoric-safety`)
+- Blind Evaluation (`blind-evaluation`)
+- Bidding Time (`bidding-time`)
+- Adaptive Order (`adaptive-order`)
+- Executable Evidence (`executable-evidence`)
+- Hidden Incentives (`hidden-incentives`)
+- Semantic Blending (`semantic-blending`)
+- Judge Deliberation (`judge-deliberation`)
 
-**FLEET** (`section-fleet`, 12)
+**AGENTS** (`agents`, 15)
+
+- Agents (`agents`)
+- Roles (`roles`)
+- Roles & Consortia (`roles-consortia`)
+- SRE Agent (`sre`)
+- Agent Journal (`agent-journal`)
+- Mission Control (`mission`)
+- Live Workspace (`live`)
+- Agent Marketplace (`agent-marketplace`)
+- Agent Comparison (`agent-comparison`)
+- Agent Protocol (`agent-protocol`)
+- Persona Marketplace (`persona-marketplace`)
+- Persona Library (`persona-picker`)
+- Skills (`skills`)
+- Leaderboard (`leaderboard`)
+- Meta Agent (`meta-agent`)
+
+**DIAGNOSTICS** (`diagnostics`, 20)
+
+- Activity Log (`logs`)
+- Traces (`debugger`)
+- Router Trace (`router-trace`)
+- Memory (`memory`)
+- Provider Health (`health`)
+- System Status (`system-health`)
+- Docs Health (`docs-health`)
+- Pressure Map (`pressure`)
+- Runtime Pressure (`runtime-pressure`)
+- What-If (`what-if`)
+- Dependency Graph (`dependency-map`)
+- Diagnostics (`diagnostics`)
+- State Inspector (`state-inspector`)
+- Profiler (`performance-profiler`)
+- Shadow Compare (`shadow`)
+- Causal Debugger (`causal-debugger`)
+- Counterfactual (`counterfactual`)
+- Observability Gaps Scanner (`obs-gaps`)
+- Health SLA (`health-sla`)
+- Custom Metrics (`custom-metrics`)
+
+**WIKI** (`wiki`, 1)
+
+- Wiki (`wiki`)
+
+**FLEET** (`fleet`, 12)
 
 - Fleet Console (`fleet`)
 - Fleet — Crews (`fleet-crews`)
@@ -580,14 +683,14 @@ _Generated from code on 2026-10-15 by `node scripts/gen-readme-maps.mjs` — do 
 - Agent Tasks (`agent-tasks`)
 - Provenance Graph (`provenance`)
 
-**GOOGLE AI** (`section-google`, 4)
+**GOOGLE AI** (`google`, 4)
 
 - Google Studio (`google-studio`)
 - Google Cache (`google-cache`)
 - Gemini Live (`gemini-live`)
 - Research: Gemini AI (`research-gemini`)
 
-**RESEARCH** (`section-research`, 7)
+**RESEARCH** (`research`, 7)
 
 - Research Engine (`research-engine`)
 - Debate System Research (`debate-system-research`)
@@ -597,16 +700,16 @@ _Generated from code on 2026-10-15 by `node scripts/gen-readme-maps.mjs` — do 
 - Rival Labs (`rival-labs`)
 - Rivals Projects (`rivals-catalog`)
 
-**INTEGRATIONS** (`section-integrations`, 1)
+**INTEGRATIONS** (`integrations`, 1)
 
 - Workflows (`workflows`)
 
-**RANDOMS** (`section-randoms`, 2)
+**RANDOMS** (`randoms`, 2)
 
 - Tutorials (`tutorials`)
 - Template Sharing (`template-sharing`)
 
-**AI PROVIDERS & KEYS** (`section-ai-providers`, 13)
+**AI PROVIDERS & KEYS** (`ai-providers`, 13)
 
 - Key Pools (`pools`)
 - Key Groups (`groups`)
@@ -622,7 +725,7 @@ _Generated from code on 2026-10-15 by `node scripts/gen-readme-maps.mjs` — do 
 - NVIDIA Enterprise 🏢 (`nvidia-enterprise`)
 - OpenRouter ◈ (`openrouter`)
 
-**SYSTEM SERVICES** (`section-system`, 11)
+**SYSTEM SERVICES** (`system`, 11)
 
 - Tools (`tools`)
 - Connectors (`connectors`)
@@ -636,7 +739,7 @@ _Generated from code on 2026-10-15 by `node scripts/gen-readme-maps.mjs` — do 
 - Agent Adapters (`adapters`)
 - Portability (`portability`)
 
-**SECURITY & RULES** (`section-security`, 11)
+**SECURITY & RULES** (`security`, 11)
 
 - Settings (`settings`)
 - Policies (`policies`)
@@ -650,13 +753,13 @@ _Generated from code on 2026-10-15 by `node scripts/gen-readme-maps.mjs` — do 
 - Security Scan (`security`)
 - Approvals (`approvals`)
 
-**SYSTEM MEMORY** (`section-memory`, 3)
+**SYSTEM MEMORY** (`memory`, 3)
 
 - Memory Palace (`memory-palace`)
 - Federated Memory (`federated-memory`)
 - Memory Export/Import (`memory-export-import`)
 
-**LAB** (`section-lab`, 8)
+**LAB** (`lab`, 8)
 
 - Eval Datasets (`eval-datasets`)
 - Model Routing Experiments (`routing-experiments`)
@@ -667,7 +770,7 @@ _Generated from code on 2026-10-15 by `node scripts/gen-readme-maps.mjs` — do 
 - Simulation Lab (`simulation`)
 - Governance Stress-Test (`gov-stress-test`)
 
-**OTHER** (`section-other`, 13)
+**OTHER** (`other`, 13)
 
 - Editors (`editors`)
 - Prompt Library (`prompts`)

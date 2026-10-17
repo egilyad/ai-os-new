@@ -4,6 +4,7 @@
 import { readFileSync, writeFileSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, resolve } from 'path';
+import { navLabels, parseNavSections } from './lib/route-nav.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const root = resolve(dirname(__filename), '..');
@@ -89,66 +90,57 @@ function parseTechniques() {
 }
 
 // ---------- i18n labels ----------
-function parseNavLabels() {
-    const src = readFileSync(
-        resolve(root, 'src/i18n/translations/en/nav.ts'),
-        'utf8',
-    );
-    const map = new Map();
-    const re = /'(nav\.[^']+)':\s*'((?:[^'\\]|\\.)*)'/g;
-    let m;
-    while ((m = re.exec(src))) map.set(m[1], m[2]);
-    return map;
-}
-
 function prettyId(id) {
     return id.split(/[-_]/).map((s) => (s ? s[0].toUpperCase() + s.slice(1) : s)).join(' ');
 }
 
 // ---------- nav panels ----------
-function parseSections(file, labels) {
-    const src = readFileSync(resolve(root, file), 'utf8');
-    const sections = [];
-    // Section headers: id: 'section-...', labelKey: '...'
-    const secRe = /id:\s*'(section-[^']+)'\s*,?\s*\n?\s*labelKey:\s*'([^']+)'/g;
-    let m;
-    const bounds = [];
-    while ((m = secRe.exec(src))) {
-        bounds.push({ id: m[1], labelKey: m[2], index: m.index });
-    }
-    // Items: id: '...', labelKey: '...' (spreads have no id — skipped automatically)
-    const itemRe = /id:\s*'([^']+)'\s*,?\s*\n?\s*labelKey:\s*'([^']+)'/g;
-    const items = [];
-    while ((m = itemRe.exec(src))) {
-        if (m[1].startsWith('section-')) continue;
-        items.push({ id: m[1], labelKey: m[2], index: m.index });
-    }
-    for (let i = 0; i < bounds.length; i++) {
-        const start = bounds[i].index;
-        const end = i + 1 < bounds.length ? bounds[i + 1].index : src.length;
-        const own = items.filter((it) => it.index > start && it.index < end);
-        sections.push({
-            id: bounds[i].id,
-            label: labels.get(bounds[i].labelKey) || prettyId(bounds[i].id),
-            items: own.map((it) => ({
-                id: it.id,
-                label: labels.get(it.labelKey) || prettyId(it.id),
-            })),
-        });
-    }
-    return sections;
+function sectionsWithLabels(labels) {
+    return parseNavSections().map((sec) => ({
+        id: sec.id,
+        label: labels.get(sec.labelKey) || prettyId(sec.id),
+        items: sec.items.map((it) => ({
+            id: it.id,
+            label: labels.get(it.labelKey) || prettyId(it.id),
+        })),
+    }));
 }
 
 // ---------- markdown builders ----------
-function strategiesMd(list) {
+const EN_STR = {
+    strategies: (n) => `All ${n} built-in debate strategies (from code)`,
+    thStrategy: 'Strategy',
+    thId: 'ID',
+    thWhat: 'What it does',
+    techniques: (n) => `All ${n} debate quality techniques (from code)`,
+    panels: (n) => `All ${n} statically-wired nav panels by section (from code)`,
+    note: [
+        `> Technique panels under Debate Techniques are generated at build time`,
+        `> by \`node scripts/gen-technique-panels.mjs\` from the quality-technique catalog.`,
+    ],
+};
+const RU_STR = {
+    strategies: (n) => `Все ${n} встроенных стратегий дебатов (из кода)`,
+    thStrategy: 'Стратегия',
+    thId: 'ID',
+    thWhat: 'Что делает',
+    techniques: (n) => `Все ${n} техник качества дебатов (из кода)`,
+    panels: (n) => `Все ${n} панелей по разделам (из кода)`,
+    note: [
+        `> Имена/описания стратегий и техник берутся из кода (без перевода);`,
+        `> панели подписаны русскими локалями \`nav.*\`.`,
+    ],
+};
+
+function strategiesMd(list, s) {
     const rows = list.map(
-        (s) => `| **${escMd(s.name)}** | \`${s.id}\` | ${escMd(s.desc)} |`,
+        (x) => `| **${escMd(x.name)}** | \`${x.id}\` | ${escMd(x.desc)} |`,
     );
     return [
         `<details>`,
-        `<summary><b>All ${list.length} built-in debate strategies (from code)</b></summary>`,
+        `<summary><b>${s.strategies(list.length)}</b></summary>`,
         ``,
-        `| Strategy | ID | What it does |`,
+        `| ${s.thStrategy} | ${s.thId} | ${s.thWhat} |`,
         `| -------- | -- | ----------- |`,
         ...rows,
         ``,
@@ -156,7 +148,7 @@ function strategiesMd(list) {
     ].join('\n');
 }
 
-function techniquesMd(list) {
+function techniquesMd(list, s) {
     const byCat = new Map();
     for (const t of list) {
         if (!byCat.has(t.category)) byCat.set(t.category, []);
@@ -164,7 +156,7 @@ function techniquesMd(list) {
     }
     const parts = [
         `<details>`,
-        `<summary><b>All ${list.length} debate quality techniques (from code)</b></summary>`,
+        `<summary><b>${s.techniques(list.length)}</b></summary>`,
         ``,
     ];
     for (const [cat, items] of [...byCat.entries()].sort()) {
@@ -179,33 +171,29 @@ function techniquesMd(list) {
     return parts.join('\n');
 }
 
-function panelsMd(sections) {
-    const total = sections.reduce((n, s) => n + s.items.length, 0);
+function panelsMd(sections, s) {
+    const total = sections.reduce((n, sec) => n + sec.items.length, 0);
     const parts = [
         `<details>`,
-        `<summary><b>All ${total} statically-wired nav panels by section (from code)</b></summary>`,
+        `<summary><b>${s.panels(total)}</b></summary>`,
         ``,
     ];
-    for (const s of sections) {
-        parts.push(`**${escMd(s.label)}** (\`${s.id}\`, ${s.items.length})`);
+    for (const sec of sections) {
+        parts.push(`**${escMd(sec.label)}** (\`${sec.id}\`, ${sec.items.length})`);
         parts.push(``);
-        for (const it of s.items) {
+        for (const it of sec.items) {
             parts.push(`- ${escMd(it.label)} (\`${it.id}\`)`);
         }
         parts.push(``);
     }
-    parts.push(
-        `> Technique panels under Debate Techniques are generated at build time`,
-        `> by \`node scripts/gen-technique-panels.mjs\` from the quality-technique catalog.`,
-        `</details>`,
-    );
+    parts.push(...s.note, `</details>`);
     return parts.join('\n');
 }
 
 // ---------- main ----------
-function replaceBlock(readme, name, body) {
-    const begin = `<!-- README-MAPS:${name}:BEGIN -->`;
-    const end = `<!-- README-MAPS:${name}:END -->`;
+function replaceBlock(readme, key, body) {
+    const begin = `<!-- ${key}:BEGIN -->`;
+    const end = `<!-- ${key}:END -->`;
     const block = `${begin}\n${body}\n${end}`;
     if (readme.includes(begin) && readme.includes(end)) {
         return readme.replace(
@@ -218,21 +206,25 @@ function replaceBlock(readme, name, body) {
 
 const strategies = parseStrategies();
 const techniques = parseTechniques();
-const labels = parseNavLabels();
-const sections = [
-    ...parseSections('src/route-registry-core.ts', labels),
-    ...parseSections('src/route-registry-content.ts', labels),
-];
+const enSections = sectionsWithLabels(navLabels('en'));
+const ruSections = sectionsWithLabels(navLabels('ru'));
 
 console.log(`strategies: ${strategies.length}, techniques: ${techniques.length}, ` +
-    `sections: ${sections.length}, panels: ${sections.reduce((n, s) => n + s.items.length, 0)}`);
+    `sections: ${enSections.length}, panels: ${enSections.reduce((n, s) => n + s.items.length, 0)}`);
 
 const date = new Date().toISOString().slice(0, 10);
-const header = `_Generated from code on ${date} by \`node scripts/gen-readme-maps.mjs\` — do not hand-edit, re-run the script._\n\n`;
+const enHeader = `_Generated from code on ${date} by \`node scripts/gen-readme-maps.mjs\` — do not hand-edit, re-run the script._\n\n`;
+const ruHeader = `_Сгенерировано из кода ${date}, скрипт \`npm run gen:readme-maps\` — не редактировать вручную, перезапускать скрипт._\n\n`;
 
 let readme = readFileSync(resolve(root, 'README_EN.md'), 'utf8');
-readme = replaceBlock(readme, 'STRATEGIES', header + strategiesMd(strategies));
-readme = replaceBlock(readme, 'TECHNIQUES', header + techniquesMd(techniques));
-readme = replaceBlock(readme, 'PANELS', header + panelsMd(sections));
+readme = replaceBlock(readme, 'README-MAPS:STRATEGIES', enHeader + strategiesMd(strategies, EN_STR));
+readme = replaceBlock(readme, 'README-MAPS:TECHNIQUES', enHeader + techniquesMd(techniques, EN_STR));
+readme = replaceBlock(readme, 'README-MAPS:PANELS', enHeader + panelsMd(enSections, EN_STR));
 writeFileSync(resolve(root, 'README_EN.md'), readme);
-console.log('README.md updated');
+
+let readmeRu = readFileSync(resolve(root, 'README.md'), 'utf8');
+readmeRu = replaceBlock(readmeRu, 'README-MAPS-RU:STRATEGIES', ruHeader + strategiesMd(strategies, RU_STR));
+readmeRu = replaceBlock(readmeRu, 'README-MAPS-RU:TECHNIQUES', ruHeader + techniquesMd(techniques, RU_STR));
+readmeRu = replaceBlock(readmeRu, 'README-MAPS-RU:PANELS', ruHeader + panelsMd(ruSections, RU_STR));
+writeFileSync(resolve(root, 'README.md'), readmeRu);
+console.log('README.md + README_EN.md updated');
