@@ -1,8 +1,9 @@
 // Documentation Health check — objective, code-truth checks over the committed
 // markdown mirror (docs/wiki). Run: node scripts/check-docs-health.mjs
 // Exits non-zero when hard problems are found (broken source refs, broken
-// internal links, duplicate slugs). Soft metrics (incomplete articles,
-// undocumented panels) are reported but do not fail the run.
+// internal links, duplicate slugs, broken README->wiki links). Soft metrics
+// (incomplete articles, undocumented panels, README RU/EN drift) are reported
+// but do not fail the run.
 import { readFileSync, readdirSync, existsSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, resolve, basename } from 'path';
@@ -134,6 +135,33 @@ if (existsSync(manifestPath)) {
     }
 }
 
+// --- README -> wiki links + RU/EN parity ---
+// README.md and README_EN.md are the entry portals; every link they make into
+// the wiki mirror must resolve, and both should point at the same article set.
+function readmeWikiSlugs(file) {
+    const abs = resolve(root, file);
+    if (!existsSync(abs)) return { slugs: [], broken: [] };
+    const md = readFileSync(abs, 'utf8');
+    const refs = [...md.matchAll(/\(\.?\/?docs\/wiki\/([\w-]+)\.md\)/g)]
+        .map((m) => m[1])
+        .filter((s) => s !== 'README');
+    const uniq = [...new Set(refs)];
+    return { slugs: uniq, broken: uniq.filter((s) => !slugs.has(s)) };
+}
+const readmeRu = readmeWikiSlugs('README.md');
+const readmeEn = readmeWikiSlugs('README_EN.md');
+const brokenReadmeLinks = [
+    ...readmeRu.broken.map((s) => ({ file: 'README.md', slug: s })),
+    ...readmeEn.broken.map((s) => ({ file: 'README_EN.md', slug: s })),
+];
+const ruSet = new Set(readmeRu.slugs);
+const enSet = new Set(readmeEn.slugs);
+const readmeParityDiff = [
+    ...[...ruSet].filter((s) => !enSet.has(s)).map((s) => `README.md only: ${s}`),
+    ...[...enSet].filter((s) => !ruSet.has(s)).map((s) => `README_EN.md only: ${s}`),
+];
+const readmeOrphans = [...slugs].filter((s) => !ruSet.has(s));
+
 // --- report ---
 const lines = [];
 lines.push('Documentation Health', '');
@@ -145,6 +173,10 @@ lines.push(`articles without sources: ${noSources.length}`);
 lines.push(`panels:                   ${mapped.size}/${allPanels.length} mapped to an article`);
 lines.push(`  technique auto-panels:  ${techniquePanels.length} (covered by panels-catalog)`);
 lines.push(`manifest problems:        ${manifestProblems.length}`);
+lines.push(`README wiki links:        ${readmeRu.slugs.length} (RU) / ${readmeEn.slugs.length} (EN)`);
+lines.push(`README broken links:      ${brokenReadmeLinks.length}`);
+lines.push(`README RU/EN diff:        ${readmeParityDiff.length} slug(s)`);
+lines.push(`README wiki orphans:      ${readmeOrphans.length} article(s) not linked from README.md`);
 lines.push('');
 const cap = (arr) => (arr.length > 20 ? [...arr.slice(0, 20), `… +${arr.length - 20} more`] : arr);
 if (brokenSources.length) {
@@ -172,9 +204,19 @@ if (manifestProblems.length) {
     for (const b of cap(manifestProblems)) lines.push(`  - ${b}`);
     lines.push('');
 }
+if (brokenReadmeLinks.length) {
+    lines.push('Broken README wiki links:');
+    for (const b of cap(brokenReadmeLinks)) lines.push(`  - ${b.file} -> ${b.slug}.md`);
+    lines.push('');
+}
+if (readmeParityDiff.length) {
+    lines.push('README RU/EN slug diff (soft):');
+    for (const b of cap(readmeParityDiff)) lines.push(`  - ${b}`);
+    lines.push('');
+}
 console.log(lines.join('\n'));
 
-const hardErrors = brokenSources.length + brokenLinks.length + manifestProblems.length;
+const hardErrors = brokenSources.length + brokenLinks.length + manifestProblems.length + brokenReadmeLinks.length;
 if (hardErrors > 0) {
     console.error(`docs-health: FAILED (${hardErrors} hard problem(s))`);
     process.exit(1);
