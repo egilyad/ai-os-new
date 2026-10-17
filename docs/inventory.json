@@ -6540,7 +6540,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4072,
-      "hash": "c32630240f5b4c680cb6ba31cce9c51ec31b123e"
+      "hash": "a7b1492c33ec2c209d7d38a80e5d7b5b8e7485f0"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -6635,8 +6635,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "История разработки",
-      "bytes": 6200,
-      "hash": "a8b7e7ce42642f85b2684a841b094759989c0d7a"
+      "bytes": 6348,
+      "hash": "f70c652299490c36c8a66befce8a9060fa0afde0"
     },
     {
       "path": "docs/wiki/dev-i18n-catalog.md",
@@ -6756,7 +6756,7 @@
       "language": "mixed",
       "title": "Карта документации",
       "bytes": 21457,
-      "hash": "600c942db3b627eec2d3ba243476e25f1287b4b6"
+      "hash": "d3e75856c11312727d2a8c35be18b32278804f74"
     },
     {
       "path": "docs/wiki/docs-standard.md",
