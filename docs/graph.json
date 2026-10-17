@@ -3,22 +3,22 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 740,
-    "edges": 2249,
+    "nodes": 746,
+    "edges": 2260,
     "byType": {
       "audit": 67,
-      "code": 209,
+      "code": 213,
       "test": 60,
       "panel": 259,
-      "article": 145
+      "article": 147
     },
     "byKind": {
       "audit_test": 325,
       "audit_mention": 928,
       "documents": 201,
-      "source": 298,
+      "source": 303,
       "test": 63,
-      "related": 434
+      "related": 440
     }
   },
   "nodes": [
@@ -507,6 +507,16 @@
       "label": "docs/audits/agent-team-audit-memory-history-management.md"
     },
     {
+      "id": "file:docs/audits/DOCS_INVENTORY_2026-10-17.md",
+      "type": "code",
+      "label": "docs/audits/DOCS_INVENTORY_2026-10-17.md"
+    },
+    {
+      "id": "file:docs/audits/DOCS_PROGRAM_REPORT_2026-10-17.md",
+      "type": "code",
+      "label": "docs/audits/DOCS_PROGRAM_REPORT_2026-10-17.md"
+    },
+    {
       "id": "file:docs/entity-model.json",
       "type": "code",
       "label": "docs/entity-model.json"
@@ -620,6 +630,11 @@
       "id": "file:scripts/gen-wiki-i18n.mjs",
       "type": "code",
       "label": "scripts/gen-wiki-i18n.mjs"
+    },
+    {
+      "id": "file:scripts/gen-wiki-libraries.mjs",
+      "type": "code",
+      "label": "scripts/gen-wiki-libraries.mjs"
     },
     {
       "id": "file:scripts/gen-wiki-panel-catalog.mjs",
@@ -1545,6 +1560,11 @@
       "id": "file:src/generated/wiki-docs-inventory.ts",
       "type": "code",
       "label": "src/generated/wiki-docs-inventory.ts"
+    },
+    {
+      "id": "file:src/generated/wiki-libraries.ts",
+      "type": "code",
+      "label": "src/generated/wiki-libraries.ts"
     },
     {
       "id": "file:src/generated/wiki-panel-catalog.ts",
@@ -3678,6 +3698,13 @@
       "status": "verified"
     },
     {
+      "id": "wiki:dev-adr",
+      "type": "article",
+      "label": "Реестр архитектурных решений (ADR)",
+      "section": "dev",
+      "status": "documented"
+    },
+    {
       "id": "wiki:dev-boot",
       "type": "article",
       "label": "Разработчикам: boot, DI и контейнер",
@@ -3793,6 +3820,13 @@
       "id": "wiki:dev-layout",
       "type": "article",
       "label": "Разработчикам: карта каталогов",
+      "section": "dev",
+      "status": "verified"
+    },
+    {
+      "id": "wiki:dev-libraries",
+      "type": "article",
+      "label": "Внешние библиотеки",
       "section": "dev",
       "status": "verified"
     },
@@ -12057,6 +12091,31 @@
       "kind": "related"
     },
     {
+      "from": "wiki:dev-adr",
+      "to": "file:docs/audits/DOCS_INVENTORY_2026-10-17.md",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:dev-adr",
+      "to": "file:docs/audits/DOCS_PROGRAM_REPORT_2026-10-17.md",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:dev-adr",
+      "to": "wiki:dev-conventions",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-adr",
+      "to": "wiki:dev-history",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-adr",
+      "to": "wiki:docs-index",
+      "kind": "related"
+    },
+    {
       "from": "wiki:dev-boot",
       "to": "file:src/kernel/bootstrap-phases.ts",
       "kind": "source"
@@ -12594,6 +12653,36 @@
     {
       "from": "wiki:dev-layout",
       "to": "wiki:dev-overview",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-libraries",
+      "to": "file:package.json",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:dev-libraries",
+      "to": "file:scripts/gen-wiki-libraries.mjs",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:dev-libraries",
+      "to": "file:src/generated/wiki-libraries.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:dev-libraries",
+      "to": "wiki:dev-conventions",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-libraries",
+      "to": "wiki:dev-overview",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-libraries",
+      "to": "wiki:dev-scripts",
       "kind": "related"
     },
     {

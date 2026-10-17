@@ -4,7 +4,7 @@
 // here straight from their code constants (single source of truth).
 // Run: node scripts/gen-wiki-system-map.mjs
 // Output: src/generated/wiki-system-map.ts -> SYSTEM_MAP_MARKDOWN
-import { readFileSync, writeFileSync, mkdirSync } from 'fs';
+import { writeFileSync, mkdirSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, resolve } from 'path';
 
@@ -12,42 +12,11 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const genDir = resolve(root, 'src/generated');
 mkdirSync(genDir, { recursive: true });
 
-const read = (p) => readFileSync(resolve(root, p), 'utf8');
+import { roleCatalog, poolCatalog, strategyCatalog } from './lib/code-catalogs.mjs';
 
-// --- roles / agents (src/data/role-library.ts) ---
-const roleSrc = read('src/data/role-library.ts');
-const roles = roleSrc
-    .split(/\n {4}\{\n/)
-    .slice(1)
-    .map((chunk) => {
-        const f = (re) => re.exec(chunk)?.[1];
-        const caps = f(/capabilities: \[([^\]]*)\]/);
-        return {
-            id: f(/id: '([^']+)'/),
-            name: f(/name: '([^']+)'/),
-            category: f(/category: '([^']+)'/),
-            temp: f(/baseTemperature: ([\d.]+)/),
-            model: f(/recommendedModel: '([^']+)'/),
-            caps: caps ? caps.split(',').map((s) => s.trim().replace(/'/g, '')).filter(Boolean) : [],
-        };
-    })
-    .filter((r) => r.id && r.name);
-
-// --- provider pools (src/constants/pools.ts) ---
-const poolSrc = read('src/constants/pools.ts');
-const pools = [...poolSrc.matchAll(/\{ id: '([^']+)', name: '([^']+)', color: '[^']*', description: '([^']*)', providers: \[([^\]]*)\] \}/g)].map(
-    (m) => ({
-        id: m[1],
-        name: m[2],
-        description: m[3],
-        providers: m[4].split(',').map((s) => s.trim().replace(/'/g, '')).filter(Boolean),
-    }),
-);
-
-// --- debate strategies (src/components/DebatePanel/wizard-constants.ts) ---
-const wizSrc = read('src/components/DebatePanel/wizard-constants.ts');
-const namesBlock = /const names: Record<string, string> = \{([\s\S]*?)\};/.exec(wizSrc)?.[1] ?? '';
-const strategies = [...namesBlock.matchAll(/(\w+): '([^']+)'/g)].map((m) => ({ id: m[1], name: m[2] }));
+const roles = roleCatalog();
+const pools = poolCatalog();
+const strategies = strategyCatalog();
 
 // --- layers (where each is described) ---
 const LAYERS = [

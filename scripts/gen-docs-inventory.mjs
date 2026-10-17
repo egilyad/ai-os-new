@@ -5,7 +5,7 @@
 //   - src/generated/wiki-docs-inventory.ts (DOCS_INVENTORY_MARKDOWN -> wiki article)
 // Deterministic (no timestamps, sorted) so CI can gate it. It does NOT move or
 // rewrite any document.
-import { readFileSync, writeFileSync, readdirSync, statSync, mkdirSync } from 'fs';
+import { readFileSync, writeFileSync, readdirSync, statSync, mkdirSync, existsSync } from 'fs';
 import { createHash } from 'crypto';
 import { execSync } from 'child_process';
 import { fileURLToPath } from 'url';
@@ -18,7 +18,7 @@ const docsRoot = resolve(root, 'docs');
 // a developer's machine (with untracked drafts) and CI (clean checkout).
 function trackedFiles() {
     try {
-        const out = execSync('git ls-files -z -- docs', { cwd: root, encoding: 'buffer' }).toString('utf8');
+        const out = execSync('git ls-files -z', { cwd: root, encoding: 'buffer' }).toString('utf8');
         return new Set(out.split('\u0000').filter(Boolean).map((p) => p.normalize('NFC')));
     } catch {
         return null;
@@ -30,6 +30,11 @@ const SELF_REPORTS = new Set(['docs-health', 'docs-inventory']);
 
 const CATEGORIES = ['wiki', 'audits', 'history', 'roadmap', 'reference', 'superseded', 'active', 'new'];
 
+// Repository-level markdown outside docs/: entry points, agent rules, changelog.
+// Explicit allowlist so the inventory never drifts into generated/vendor files.
+const REPO_DIRS = ['.superagents'];
+const REPO_FILES = ['src/kernel/DEPENDENCY_MAP.md'];
+
 function walk(dir, acc = []) {
     for (const entry of readdirSync(dir)) {
         const abs = resolve(dir, entry);
@@ -40,7 +45,24 @@ function walk(dir, acc = []) {
     return acc;
 }
 
+function repoDocs() {
+    const acc = [];
+    for (const entry of readdirSync(root)) {
+        if (entry.endsWith('.md')) acc.push(resolve(root, entry));
+    }
+    for (const dir of REPO_DIRS) {
+        const abs = resolve(root, dir);
+        if (existsSync(abs)) walk(abs, acc);
+    }
+    for (const rel of REPO_FILES) {
+        const abs = resolve(root, rel);
+        if (existsSync(abs)) acc.push(abs);
+    }
+    return acc;
+}
+
 function categoryOf(rel) {
+    if (!rel.startsWith('docs/')) return 'repo';
     const parts = rel.split('/'); // docs/... -> parts[0] === 'docs'
     const first = parts[1];
     if (parts.length === 2) return 'top';
@@ -63,7 +85,7 @@ function titleOf(text, rel) {
 }
 
 const tracked = trackedFiles();
-const files = walk(docsRoot).sort();
+const files = [...walk(docsRoot), ...repoDocs()].sort();
 const items = [];
 const seenHashes = new Map(); // hash -> [paths]
 const seenTitles = new Map(); // normalized title -> [paths]
@@ -108,7 +130,7 @@ for (const it of items) {
 const inventory = {
     version: 1,
     generatedBy: 'scripts/gen-docs-inventory.mjs',
-    scope: 'git-tracked docs/**/*.md, excluding docs/new drafts and the generated self-report pages docs-health, docs-inventory',
+    scope: 'git-tracked markdown: docs/**/*.md (excluding docs/new drafts and the self-report pages docs-health, docs-inventory) plus repository entry docs (root *.md, .superagents/**, src/kernel/DEPENDENCY_MAP.md)',
     totals: { documents: items.length, byCategory, byLanguage },
     duplicates: { content: duplicateContent, titles: duplicateTitles.map((d) => d.title) },
     documents: items.sort((a, b) => a.path.localeCompare(b.path)),
@@ -135,7 +157,7 @@ md.push('> Автосгенерировано `scripts/gen-docs-inventory.mjs` �
 md.push('> Машиночитаемая версия — `docs/inventory.json`. Не редактировать вручную.');
 md.push('');
 md.push(
-    `Это Этап 1 программы документации: полный учёт существующих Markdown-файлов. Всего: **${items.length}** документов (только отслеживаемые git).`,
+    `Это Этап 1 программы документации: полный учёт существующих Markdown-файлов. Всего: **${items.length}** документов (только отслеживаемые git): \`docs/**\` плюс корневые \`*.md\`, \`.superagents/**\` и \`src/kernel/DEPENDENCY_MAP.md\`.`,
 );
 md.push(
     'Две генерируемые страницы-самоотчёта (`docs-health`, `docs-inventory`) исключены, чтобы числа не зависели от самих отчётов.',
@@ -176,7 +198,7 @@ md.push('Связи «панель → маршрут → компонент →
 md.push('');
 md.push('## Как это считается');
 md.push('');
-md.push('- Категория — по первой папке под `docs/` (`wiki`, `audits`, `history`, `roadmap`, `reference`, `superseded`, `active`, `new`, иначе `top`).');
+md.push('- Категория — по первой папке под `docs/` (`wiki`, `audits`, `history`, `roadmap`, `reference`, `superseded`, `active`, `new`, иначе `top`); всё вне `docs/` — `repo` (README, AGENTS, CHANGELOG, `.superagents`, dependency map).');
 md.push('- Язык — доля кириллицы среди букв: `ru` ≥ 0.5, `en` ≤ 0.15, иначе `mixed`.');
 md.push('- Дубликаты содержимого — совпадение sha1 нормализованного текста (без пробелов, в нижнем регистре).');
 md.push('- Совпадающие заголовки — нормализованный первый `#`-заголовок.');

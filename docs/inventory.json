@@ -1,10 +1,11 @@
 {
   "version": 1,
   "generatedBy": "scripts/gen-docs-inventory.mjs",
-  "scope": "git-tracked docs/**/*.md, excluding docs/new drafts and the generated self-report pages docs-health, docs-inventory",
+  "scope": "git-tracked markdown: docs/**/*.md (excluding docs/new drafts and the self-report pages docs-health, docs-inventory) plus repository entry docs (root *.md, .superagents/**, src/kernel/DEPENDENCY_MAP.md)",
   "totals": {
-    "documents": 951,
+    "documents": 965,
     "byCategory": {
+      "repo": 12,
       "top": 41,
       "active": 1,
       "audits": 67,
@@ -12,12 +13,12 @@
       "reference": 6,
       "roadmap": 6,
       "superseded": 3,
-      "wiki": 144
+      "wiki": 146
     },
     "byLanguage": {
-      "en": 651,
-      "ru": 180,
-      "mixed": 120
+      "en": 659,
+      "ru": 183,
+      "mixed": 123
     }
   },
   "duplicates": {
@@ -46,6 +47,62 @@
     ]
   },
   "documents": [
+    {
+      "path": ".superagents/ARCHITECTURE.md",
+      "category": "repo",
+      "language": "en",
+      "title": "SuperAgents OS — Architecture Rules",
+      "bytes": 2332,
+      "hash": "9c4fbd7e436e0943fa3f8de960d776fe581a9929"
+    },
+    {
+      "path": ".superagents/CODING.md",
+      "category": "repo",
+      "language": "en",
+      "title": "SuperAgents OS — Coding Style",
+      "bytes": 1283,
+      "hash": "a07119bc07dabf7cd54587d857454b87efe17037"
+    },
+    {
+      "path": ".superagents/README.md",
+      "category": "repo",
+      "language": "en",
+      "title": "SuperAgents OS — System Rules",
+      "bytes": 299,
+      "hash": "cec1f631844e3b776ad4d87d4248b6eb7053860c"
+    },
+    {
+      "path": ".superagents/RULES.md",
+      "category": "repo",
+      "language": "en",
+      "title": "SuperAgents OS — Core Rules",
+      "bytes": 855,
+      "hash": "32551ca58dd711d944a9527bc0c672df8d06de2b"
+    },
+    {
+      "path": "AGENTS.md",
+      "category": "repo",
+      "language": "en",
+      "title": "SuperAgents OS — Agent Guide",
+      "bytes": 121241,
+      "hash": "8c58257e0411425b237611476f0d05fadf1fbf15"
+    },
+    {
+      "path": "CHANGELOG_RU.md",
+      "category": "repo",
+      "language": "ru",
+      "title": "История изменений — Super-Agents OS",
+      "bytes": 35279,
+      "hash": "c6e793a35061bab7ecf9319d249a76fe3b4ff21f"
+    },
+    {
+      "path": "CHANGELOG.md",
+      "category": "repo",
+      "language": "en",
+      "title": "Changelog — SuperAgents OS",
+      "bytes": 27471,
+      "hash": "5d906053ee8bf831d0b81a3359c7ad69361f892f"
+    },
     {
       "path": "docs/00-overview_RU.md",
       "category": "top",
@@ -6527,6 +6584,14 @@
       "hash": "6864561d014629ad085778dc21ec2abf867d0776"
     },
     {
+      "path": "docs/wiki/dev-adr.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Реестр архитектурных решений (ADR)",
+      "bytes": 3076,
+      "hash": "9a6698f1a8a721477a277d0fe11a41da7a282e91"
+    },
+    {
       "path": "docs/wiki/dev-boot.md",
       "category": "wiki",
       "language": "ru",
@@ -6540,7 +6605,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4073,
-      "hash": "7d61ee40015a9ffe19deb24b00cca59de1623739"
+      "hash": "8dd8f34b942dc596934db0a657ac3aeb192cc893"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -6628,7 +6693,7 @@
       "language": "ru",
       "title": "Граф знаний",
       "bytes": 4887,
-      "hash": "e5d663f03bd2b3955fba6d24f58e2b10bf60a383"
+      "hash": "d81d918647d875f3406ce3d62bd3e6a6b704e231"
     },
     {
       "path": "docs/wiki/dev-history.md",
@@ -6661,6 +6726,14 @@
       "title": "Разработчикам: карта каталогов",
       "bytes": 2428,
       "hash": "404ebf3001712107ca4c4fb86914fa8f4ded0f18"
+    },
+    {
+      "path": "docs/wiki/dev-libraries.md",
+      "category": "wiki",
+      "language": "mixed",
+      "title": "Внешние библиотеки",
+      "bytes": 3641,
+      "hash": "ea6320fefaaa364291778f4ee5ece985a403b869"
     },
     {
       "path": "docs/wiki/dev-overview.md",
@@ -6755,16 +6828,16 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Карта документации",
-      "bytes": 21521,
-      "hash": "83958528427d682c85388bb754b203c2988feb2e"
+      "bytes": 21662,
+      "hash": "4ff0af0777fb3a4971923ed7537f855158e151af"
     },
     {
       "path": "docs/wiki/docs-standard.md",
       "category": "wiki",
       "language": "ru",
       "title": "Стандарт документации",
-      "bytes": 12069,
-      "hash": "98ea61c191ca0f9b7c1327e49809a223de51df10"
+      "bytes": 12289,
+      "hash": "99591f47ac12788b0dd63225e79d2aa8a8b1416a"
     },
     {
       "path": "docs/wiki/execution-trail.md",
@@ -7411,8 +7484,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Wiki SuperAgents OS",
-      "bytes": 14138,
-      "hash": "566af0c6dc8277bec4270e6f29a8f36c06cc269b"
+      "bytes": 14309,
+      "hash": "7f0127c34c10eca125cda6f602d3ef600f5f2754"
     },
     {
       "path": "docs/wiki/roadmap-notes.md",
@@ -7653,6 +7726,46 @@
       "title": "Полный реестр системы — всё что запрограммировано",
       "bytes": 73459,
       "hash": "3b103d084f5095fc0b59ff984965dbd574791560"
+    },
+    {
+      "path": "evgenyroadmap.md",
+      "category": "repo",
+      "language": "ru",
+      "title": "Evgeny Roadmap — доделать и починить SuperAgents OS",
+      "bytes": 12765,
+      "hash": "646e8b2c92abb6fe552221dc4c1b244313e723aa"
+    },
+    {
+      "path": "README_EN.md",
+      "category": "repo",
+      "language": "en",
+      "title": "SuperAgents OS",
+      "bytes": 50391,
+      "hash": "ed83bd3edb4d244251b26107ac53c20f72963e7d"
+    },
+    {
+      "path": "README.md",
+      "category": "repo",
+      "language": "mixed",
+      "title": "SuperAgents OS — Wiki",
+      "bytes": 41778,
+      "hash": "f67f6e11edb9f2d79daf46eb94b8d0fc653bdb69"
+    },
+    {
+      "path": "SELF_IMPROVEMENT_AUDIT_2026-09-22.md",
+      "category": "repo",
+      "language": "mixed",
+      "title": "SELF-IMPROVEMENT AUDIT — SuperAgents OS (форензика, 2026-09-22)",
+      "bytes": 38499,
+      "hash": "8f84f8c59bca07453e585cd30f65cc563423cda3"
+    },
+    {
+      "path": "src/kernel/DEPENDENCY_MAP.md",
+      "category": "repo",
+      "language": "en",
+      "title": "Kernel Dependency Map",
+      "bytes": 10529,
+      "hash": "9fe18cb4c77ac2b12aaddf94a21d195ecea89ff3"
     }
   ]
 }

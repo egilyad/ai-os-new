@@ -31,6 +31,7 @@
 | superseded | `docs/superseded/` | Заменённое другим документом | нет |
 | active | `docs/active/` | Текущая рабочая документация | нет |
 | new | `docs/new/` | Черновики (в основном вне git) | нет |
+| repo | `корень репозитория, .superagents/, src/kernel/DEPENDENCY_MAP.md` | Входные документы репозитория: README, AGENTS, CHANGELOG, правила агентов | нет |
 
 ## Карточка сущности
 

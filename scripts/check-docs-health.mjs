@@ -22,6 +22,7 @@ lines.push(`panels:                   ${h.mapped.size}/${h.allPanels.length} map
 lines.push(`  technique auto-panels:  ${h.techniquePanels.length} (covered by panels-catalog)`);
 lines.push(`manifest problems:        ${h.manifestProblems.length}`);
 lines.push(`audits:                   ${h.auditCount} (${h.auditMentions} file mentions)`);
+lines.push(`catalogs:                 ${h.catalogCount}`);
 lines.push(`articles reviewed:        ${h.reviewedArticles}/${h.articles}`);
 lines.push(`entity-model problems:    ${h.schemaProblems.length}`);
 lines.push(`README wiki links:        ${h.readmeRu.slugs.length} (RU) / ${h.readmeEn.slugs.length} (EN)`);

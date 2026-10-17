@@ -8,6 +8,7 @@ import { register } from 'tsx/esm/api';
 import { fileURLToPath, pathToFileURL } from 'url';
 import { dirname, resolve, relative } from 'path';
 import { parseNavSections, techniqueComponents, routeImportComponents, testsFor, panelArticles } from './lib/route-nav.mjs';
+import { roleCatalog, poolCatalog, strategyCatalog } from './lib/code-catalogs.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 register();
@@ -98,6 +99,49 @@ const manifest = {
     articles,
     panels,
     audits,
+    catalogs: [
+        { id: 'catalog:panels', kind: 'panel', title: 'Панели', article: 'panels-catalog', generator: 'scripts/gen-wiki-panel-catalog.mjs' },
+        { id: 'catalog:components', kind: 'component', title: 'Компоненты', article: 'dev-component-catalog', generator: 'scripts/gen-wiki-catalog.mjs' },
+        { id: 'catalog:services', kind: 'service', title: 'Сервисы', article: 'dev-service-map', source: 'src/kernel/services' },
+        { id: 'catalog:events', kind: 'event', title: 'События', article: 'dev-event-catalog', generator: 'scripts/gen-wiki-events.mjs' },
+        { id: 'catalog:stores', kind: 'store', title: 'Хранилища', article: 'dev-store-catalog', generator: 'scripts/gen-wiki-stores.mjs' },
+        { id: 'catalog:contracts', kind: 'contract', title: 'Контракты', article: 'dev-contracts', generator: 'scripts/gen-wiki-contracts.mjs' },
+        { id: 'catalog:tests', kind: 'test', title: 'Тесты', article: 'dev-tests-catalog', generator: 'scripts/gen-wiki-tests.mjs' },
+        { id: 'catalog:scripts', kind: 'script', title: 'Скрипты и генераторы', article: 'dev-scripts', generator: 'scripts/gen-wiki-scripts.mjs' },
+        { id: 'catalog:i18n', kind: 'i18n', title: 'Локализация', article: 'dev-i18n-catalog', generator: 'scripts/gen-wiki-i18n.mjs' },
+        { id: 'catalog:roles', kind: 'agent', title: 'Роли и агенты', article: 'dev-system-map', source: 'src/data/role-library.ts', count: roleCatalog().length },
+        {
+            id: 'catalog:strategies',
+            kind: 'strategy',
+            title: 'Стратегии дебатов',
+            article: 'dev-system-map',
+            source: 'src/components/DebatePanel/wizard-constants.ts',
+            count: strategyCatalog().length,
+        },
+        {
+            id: 'catalog:pools',
+            kind: 'provider-pool',
+            title: 'Провайдеры (пулы)',
+            article: 'dev-system-map',
+            source: 'src/constants/pools.ts',
+            count: poolCatalog().length,
+        },
+        {
+            id: 'catalog:libraries',
+            kind: 'library',
+            title: 'Внешние библиотеки',
+            article: 'dev-libraries',
+            source: 'package.json',
+            generator: 'scripts/gen-wiki-libraries.mjs',
+        },
+        {
+            id: 'catalog:adr',
+            kind: 'adr',
+            title: 'Архитектурные решения',
+            article: 'dev-adr',
+            source: 'docs/audits/DOCS_INVENTORY_2026-10-17.md',
+        },
+    ],
 };
 
 writeFileSync(resolve(root, 'docs/manifest.json'), `${JSON.stringify(manifest, null, 2)}\n`, 'utf8');

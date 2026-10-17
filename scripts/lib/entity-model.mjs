@@ -23,6 +23,7 @@ export const CATEGORIES = [
     { id: 'superseded', where: 'docs/superseded/', role: 'Заменённое другим документом', generated: false },
     { id: 'active', where: 'docs/active/', role: 'Текущая рабочая документация', generated: false },
     { id: 'new', where: 'docs/new/', role: 'Черновики (в основном вне git)', generated: false },
+    { id: 'repo', where: 'корень репозитория, .superagents/, src/kernel/DEPENDENCY_MAP.md', role: 'Входные документы репозитория: README, AGENTS, CHANGELOG, правила агентов', generated: false },
 ];
 
 export const ENTITY_MODEL = [

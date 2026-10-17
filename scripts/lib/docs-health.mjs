@@ -122,6 +122,7 @@ export function computeDocsHealth(root) {
     let reviewedArticles = 0;
     let auditCount = 0;
     let auditMentions = 0;
+    let catalogCount = 0;
     if (existsSync(manifestPath)) {
         let manifest = null;
         try {
@@ -150,6 +151,17 @@ export function computeDocsHealth(root) {
                 }
                 for (const t of au.tests ?? []) {
                     if (!existsSync(resolve(root, t))) manifestProblems.push(`audit ${au.id} -> missing test ${t}`);
+                }
+            }
+            for (const c of manifest.catalogs ?? []) {
+                catalogCount += 1;
+                if (c.article && !slugs.has(c.article)) manifestProblems.push(`catalog ${c.id} -> missing article ${c.article}`);
+                if (c.generator && !existsSync(resolve(root, c.generator))) {
+                    manifestProblems.push(`catalog ${c.id} -> missing generator ${c.generator}`);
+                }
+                if (c.source) {
+                    const base = c.source.replace(/\/\*\*.*$/, '');
+                    if (!existsSync(resolve(root, base))) manifestProblems.push(`catalog ${c.id} -> missing source ${c.source}`);
                 }
             }
         }
@@ -235,6 +247,7 @@ export function computeDocsHealth(root) {
         reviewedArticles,
         auditCount,
         auditMentions,
+        catalogCount,
         readmeRu,
         readmeEn,
         brokenReadmeLinks,

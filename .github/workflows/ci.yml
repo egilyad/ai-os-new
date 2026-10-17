@@ -68,6 +68,7 @@ jobs:
               # index derived from the same corpus + route registries. Fail if
               # either is stale relative to the source.
               run: |
+                  npm run gen:wiki-libraries
                   npm run gen:wiki-docs
                   npm run gen:wiki-manifest
                   npm run gen:wiki-connections

@@ -60,6 +60,12 @@
       "where": "docs/new/",
       "role": "Черновики (в основном вне git)",
       "generated": false
+    },
+    {
+      "id": "repo",
+      "where": "корень репозитория, .superagents/, src/kernel/DEPENDENCY_MAP.md",
+      "role": "Входные документы репозитория: README, AGENTS, CHANGELOG, правила агентов",
+      "generated": false
     }
   ],
   "entityModel": [

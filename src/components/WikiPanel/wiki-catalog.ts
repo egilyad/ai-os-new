@@ -10,6 +10,7 @@ import { DEVELOPMENT_HISTORY_MARKDOWN } from '../../generated/wiki-history';
 import { CAPABILITIES_MARKDOWN } from '../../generated/wiki-capabilities';
 import { GRAPH_MARKDOWN } from '../../generated/wiki-graph';
 import { CHECKS_MARKDOWN } from '../../generated/wiki-checks';
+import { LIBRARIES_MARKDOWN } from '../../generated/wiki-libraries';
 
 // Auto-maintained catalogs: components, and the panel -> section -> route ->
 // component -> article chain. Bodies come from the generators — edit those.
@@ -168,5 +169,15 @@ export const CATALOG_ARTICLES: WikiArticle[] = [
         ],
         related: ['docs-health', 'docs-standard', 'docs-inventory', 'dev-graph'],
         body: CHECKS_MARKDOWN,
+    },
+    {
+        slug: 'dev-libraries',
+        title: 'Внешние библиотеки',
+        section: 'dev',
+        tags: ['библиотеки', 'зависимости', 'package.json', 'dev'],
+        freshness: 'verified',
+        sources: ['package.json', 'scripts/gen-wiki-libraries.mjs', 'src/generated/wiki-libraries.ts'],
+        related: ['dev-overview', 'dev-scripts', 'dev-conventions'],
+        body: LIBRARIES_MARKDOWN,
     },
 ];
