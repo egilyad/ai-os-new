@@ -55,7 +55,7 @@
     {
       "id": "dev",
       "title": "Разработчикам",
-      "articles": 26
+      "articles": 27
     }
   ],
   "articles": [
@@ -3336,6 +3336,32 @@
         "panels-guide",
         "panels-catalog",
         "diagnostics"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:dev-graph",
+      "type": "article",
+      "slug": "dev-graph",
+      "title": "Граф знаний",
+      "section": "dev",
+      "status": "verified",
+      "tags": [
+        "граф",
+        "знания",
+        "связи",
+        "поиск",
+        "индекс"
+      ],
+      "sources": [
+        "docs/manifest.json",
+        "scripts/gen-docs-graph.mjs"
+      ],
+      "related": [
+        "docs-standard",
+        "docs-index",
+        "docs-inventory",
+        "dev-system-map"
       ],
       "tests": []
     },

@@ -8,6 +8,7 @@ import { DOCS_INDEX_MARKDOWN } from '../../generated/wiki-docs-index';
 import { SYSTEM_MAP_MARKDOWN } from '../../generated/wiki-system-map';
 import { DEVELOPMENT_HISTORY_MARKDOWN } from '../../generated/wiki-history';
 import { CAPABILITIES_MARKDOWN } from '../../generated/wiki-capabilities';
+import { GRAPH_MARKDOWN } from '../../generated/wiki-graph';
 
 // Auto-maintained catalogs: components, and the panel -> section -> route ->
 // component -> article chain. Bodies come from the generators — edit those.
@@ -139,5 +140,18 @@ export const CATALOG_ARTICLES: WikiArticle[] = [
         ],
         related: ['capabilities', 'panels-guide', 'panels-catalog', 'diagnostics'],
         body: CAPABILITIES_MARKDOWN,
+    },
+    {
+        slug: 'dev-graph',
+        title: 'Граф знаний',
+        section: 'dev',
+        tags: ['граф', 'знания', 'связи', 'поиск', 'индекс'],
+        freshness: 'verified',
+        sources: [
+            'docs/manifest.json',
+            'scripts/gen-docs-graph.mjs',
+        ],
+        related: ['docs-standard', 'docs-index', 'docs-inventory', 'dev-system-map'],
+        body: GRAPH_MARKDOWN,
     },
 ];
