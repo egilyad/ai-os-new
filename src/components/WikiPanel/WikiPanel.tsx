@@ -23,6 +23,7 @@ const PANEL_ARTICLES: Record<string, string> = {
     chat: 'panel-chat',
     keys: 'panel-providers',
     'agent-tasks': 'panel-agent-tasks',
+    settings: 'panel-settings',
     debate: 'debates',
     agents: 'agents',
     memory: 'memory',
