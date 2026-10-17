@@ -107,7 +107,7 @@ export const BookmarkCard: React.FC<BookmarkCardProps> = memo(
                 </div>
                 <div style={{ ...flexBetween, marginTop: '0.5rem' }}>
                     <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
-                        {b.tags.map((tag) => (
+                        {(b.tags ?? []).map((tag) => (
                             <span
                                 key={tag}
                                 style={{

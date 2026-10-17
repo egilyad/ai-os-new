@@ -48,8 +48,8 @@ export const JournalEntryCard: React.FC<JournalEntryCardProps> = memo(
                             style={{
                                 padding: '0.1rem 0.5rem',
                                 borderRadius: 6,
-                                background: `${OUTCOME_COLORS[entry.outcome]}20`,
-                                color: OUTCOME_COLORS[entry.outcome],
+                                background: `${OUTCOME_COLORS[entry.outcome] ?? '#94a3b8'}20`,
+                                color: OUTCOME_COLORS[entry.outcome] ?? '#94a3b8',
                                 fontSize: '0.65rem',
                                 fontWeight: 700,
                                 textTransform: 'uppercase',
@@ -84,7 +84,7 @@ export const JournalEntryCard: React.FC<JournalEntryCardProps> = memo(
                         </div>
                     )}
                     <div style={{ display: 'flex', gap: 6, marginTop: 4, flexWrap: 'wrap' }}>
-                        {entry.tags.map((tag) => (
+                        {(entry.tags ?? []).map((tag) => (
                             <span
                                 key={tag}
                                 style={{
@@ -99,7 +99,7 @@ export const JournalEntryCard: React.FC<JournalEntryCardProps> = memo(
                             </span>
                         ))}
                         <span style={{ ...textMutedXs, fontSize: '0.65rem' }}>
-                            ⏱ {(entry.durationMs / 1000).toFixed(1)}s · {entry.tokensUsed} tokens
+                            ⏱ {((entry.durationMs ?? 0) / 1000).toFixed(1)}s · {entry.tokensUsed ?? 0} tokens
                         </span>
                     </div>
                 </div>

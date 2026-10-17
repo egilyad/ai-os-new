@@ -56,7 +56,7 @@ const RuleList: React.FC<RuleListProps> = ({ rules, selectedId, onSelect, onTogg
                                 {rule.enabled ? <Power size={11} /> : <PowerOff size={11} />}
                             </button>
                             <span style={{ fontSize: 11, fontWeight: 600, color: 'var(--slate-200)' }}>
-                                {rule.name || rule.id.slice(0, 16)}
+                                {rule.name || (rule.id ?? '').slice(0, 16)}
                             </span>
                         </div>
                         <span
@@ -74,8 +74,8 @@ const RuleList: React.FC<RuleListProps> = ({ rules, selectedId, onSelect, onTogg
                     </div>
                     <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
                         <span style={s.badge('#8b5cf6')}>
-                            {rule.actions.length} action
-                            {rule.actions.length !== 1 ? 's' : ''}
+                            {(rule.actions ?? []).length} action
+                            {(rule.actions ?? []).length !== 1 ? 's' : ''}
                         </span>
                         <span style={s.badge('#06b6d4')}>
                             {conditionCount(rule.condition)} condition

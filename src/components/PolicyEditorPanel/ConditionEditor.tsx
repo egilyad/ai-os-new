@@ -183,7 +183,7 @@ const ConditionEditor: React.FC<ConditionEditorProps> = ({
                 {showValues && (
                     <input
                         type="text"
-                        value={(condition as unknown as { values: string[] }).values.join(', ')}
+                        value={((condition as unknown as { values?: string[] }).values ?? []).join(', ')}
                         onChange={(e) =>
                             onChange({
                                 ...condition,

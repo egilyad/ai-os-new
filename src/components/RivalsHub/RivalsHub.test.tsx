@@ -110,4 +110,34 @@ describe('RivalsHub', () => {
             expect(dyadService.startDyad).toHaveBeenCalledWith(expect.objectContaining({ topic: 'Tabs vs spaces' })),
         );
     });
+
+    it('tolerates legacy records missing optional fields', async () => {
+        const { autonomyService, groupChatService, runQueueService, memoryBlocksService } =
+            await import('../../kernel/instances/services-extras');
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (autonomyService.listLoops as any).mockResolvedValueOnce([
+            { id: 'l9', kind: 'autonomy', status: 'running', iterations: 0, maxIterations: 8, taskList: [], log: [], createdAt: 1, updatedAt: 1 },
+        ]);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (groupChatService.listChats as any).mockResolvedValueOnce([
+            { id: 'c9', name: 'LegacyChat', selection: 'auto', maxRounds: 6, stopPhrases: [], status: 'running', createdAt: 1, updatedAt: 1 },
+        ]);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (runQueueService.listToolkits as any).mockResolvedValueOnce([
+            { id: 'k9', name: 'LegacyKit', createdAt: 1 },
+        ]);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (memoryBlocksService.getBlocks as any).mockResolvedValueOnce([
+            { ownerId: 'o', section: 'human', charLimit: 100, updatedAt: 1, createdAt: 1 },
+        ]);
+        const Hub = (await import('./RivalsHub')).default;
+        render(<Hub />);
+        expect(await screen.findByText(/LegacyChat/)).toBeDefined();
+        expect(await screen.findByText(/LegacyKit/)).toBeDefined();
+        fireEvent.change(screen.getByPlaceholderText('hub.blocks.ownerPlaceholder'), {
+            target: { value: 'o' },
+        });
+        fireEvent.click(screen.getByRole('button', { name: 'hub.blocks.load' }));
+        await waitFor(() => expect(memoryBlocksService.getBlocks).toHaveBeenCalledWith('o'));
+    });
 });

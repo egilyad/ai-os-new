@@ -30,8 +30,11 @@ const BookmarksPanel: React.FC = () => {
     const clearError = useAutoClearError(setError);
 
     const refresh = useCallback(() => {
-        const list = search.trim() ? bookmarksService.search(search) : bookmarksService.listAll();
-        const filtered = activeTag ? list.filter((b) => b.tags.includes(activeTag)) : list;
+        const raw = search.trim() ? bookmarksService.search(search) : bookmarksService.listAll();
+        const list = Array.isArray(raw) ? raw : [];
+        const filtered = activeTag
+            ? list.filter((b) => (b.tags ?? []).includes(activeTag))
+            : list;
         setBookmarks(filtered);
     }, [search, activeTag]);
 
@@ -43,6 +46,11 @@ const BookmarksPanel: React.FC = () => {
         try {
             await seedBookmarksDemo(bookmarksService, sessions);
             refresh();
+        } catch (err) {
+            if (isMountedRef.current) {
+                setError(String(err));
+                clearError();
+            }
         } finally {
             setSeedingDemo(false);
         }
@@ -130,7 +138,10 @@ const BookmarksPanel: React.FC = () => {
     }, [t, confirm]);
 
     // P6: compute from service, not from filtered local state (bookmarks ref changes every render)
-    const allTags = useMemo(() => bookmarksService.getAllTags(), []);
+    const allTags = useMemo(() => {
+        const raw = bookmarksService.getAllTags();
+        return Array.isArray(raw) ? raw : [];
+    }, []);
     const total = useMemo(() => bookmarksService.count(), []);
 
     if (loading) return <PanelLoading />;

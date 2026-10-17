@@ -105,7 +105,7 @@ const ProviderHealthSection: React.FC<ProviderHealthSectionProps> = ({
                                       : '#ef4444',
                         }}
                     >
-                        {m.id} ({m.avgTTFT.toFixed(0)}ms)
+                        {m.id} ({(m.avgTTFT ?? 0).toFixed(0)}ms)
                     </span>
                 ))}
             </div>

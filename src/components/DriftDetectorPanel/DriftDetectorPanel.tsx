@@ -194,7 +194,7 @@ export const DriftDetectorPanel: React.FC = () => {
                     <strong style={{ color: driftCount ? '#f87171' : '#22c55e' }}>
                         {driftCount} drifting
                     </strong>{' '}
-                    · last score {lastForAgent ? lastForAgent.driftScore.toFixed(2) : '—'}
+                        · last score {lastForAgent ? (lastForAgent.driftScore ?? 0).toFixed(2) : '—'}
                 </span>
             </div>
 
@@ -267,7 +267,7 @@ export const DriftDetectorPanel: React.FC = () => {
                                             </span>
                                         </div>
                                         <div style={{ fontSize: 11, color: 'var(--slate-400)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                                            {h.content.slice(0, 120)}
+                                            {(h.content ?? '').slice(0, 120)}
                                         </div>
                                         <div
                                             style={{
@@ -379,7 +379,7 @@ export const DriftDetectorPanel: React.FC = () => {
                                     const fetched = detector.getDrift(last.agentId, last.round);
                                     return fetched ? (
                                         <div style={{ fontSize: 11, color: 'var(--slate-500)', padding: '6px 8px', borderRadius: 6, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
-                                            getDrift({last.agentId}, {last.round}) → score {fetched.driftScore.toFixed(2)} · {fetched.isDrifting ? 'drifting' : 'ok'}
+                                            getDrift({last.agentId}, {last.round}) → score {(fetched.driftScore ?? 0).toFixed(2)} · {fetched.isDrifting ? 'drifting' : 'ok'}
                                         </div>
                                     ) : null;
                                 })()}

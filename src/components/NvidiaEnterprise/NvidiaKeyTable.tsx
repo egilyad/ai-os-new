@@ -39,8 +39,8 @@ export default function NvidiaKeyTable() {
         setKeys(
             all.filter(
                 (k) =>
-                    k.provider.toLowerCase() === 'nvidia-nim' ||
-                    k.provider.toLowerCase() === 'nvidia',
+                    (k.provider ?? '').toLowerCase() === 'nvidia-nim' ||
+                    (k.provider ?? '').toLowerCase() === 'nvidia',
             ),
         );
     }, []);
@@ -64,7 +64,7 @@ export default function NvidiaKeyTable() {
         const start = Date.now();
         let isDone = false;
 
-        const p = apiKey.provider.toLowerCase();
+        const p = (apiKey.provider ?? '').toLowerCase();
         const defaultModel = PROVIDER_DEFAULT_MODELS[p] || 'auto';
         const resolvedModel = apiKey.model || apiKey.availableModels?.[0] || defaultModel;
 

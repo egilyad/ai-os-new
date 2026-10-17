@@ -131,7 +131,7 @@ export const ProvidersTab: React.FC<ProvidersTabProps> = ({ metrics, itemVariant
                                         color: m.avgTTFT < 500 ? '#10b981' : '#f59e0b',
                                     }}
                                 >
-                                    {m.avgTTFT.toFixed(0)}
+                                    {(m.avgTTFT ?? 0).toFixed(0)}
                                     <span
                                         style={{
                                             fontSize: '0.8rem',
@@ -180,7 +180,7 @@ export const ProvidersTab: React.FC<ProvidersTabProps> = ({ metrics, itemVariant
                                         color: m.reliability > 0.95 ? '#10b981' : '#ef4444',
                                     }}
                                 >
-                                    {(m.reliability * 100).toFixed(1)}
+                                    {((m.reliability ?? 0) * 100).toFixed(1)}
                                     <span
                                         style={{
                                             fontSize: '0.8rem',
@@ -230,7 +230,7 @@ export const ProvidersTab: React.FC<ProvidersTabProps> = ({ metrics, itemVariant
                                         color: m.avgTPS > 50 ? '#10b981' : '#f59e0b',
                                     }}
                                 >
-                                    {m.avgTPS.toFixed(1)}
+                                    {(m.avgTPS ?? 0).toFixed(1)}
                                     <span
                                         style={{
                                             fontSize: '0.8rem',
@@ -280,7 +280,7 @@ export const ProvidersTab: React.FC<ProvidersTabProps> = ({ metrics, itemVariant
                                         color: m.selectionRate > 0.3 ? '#3b82f6' : '#64748b',
                                     }}
                                 >
-                                    {(m.selectionRate * 100).toFixed(1)}
+                                    {((m.selectionRate ?? 0) * 100).toFixed(1)}
                                     <span
                                         style={{
                                             fontSize: '0.8rem',

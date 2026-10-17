@@ -67,11 +67,11 @@ export const ServiceDetailPanel: React.FC<ServiceDetailPanelProps> = ({
                     marginBottom: '0.75rem',
                 }}
             >
-                <MiniStat label="min" value={`${sel.min.toFixed(0)}ms`} color="#10b981" />
-                <MiniStat label="max" value={`${sel.max.toFixed(0)}ms`} color="#ef4444" />
+                <MiniStat label="min" value={`${(sel.min ?? 0).toFixed(0)}ms`} color="#10b981" />
+                <MiniStat label="max" value={`${(sel.max ?? 0).toFixed(0)}ms`} color="#ef4444" />
                 <MiniStat
                     label="total"
-                    value={`${sel.totalLatency.toFixed(0)}ms`}
+                    value={`${(sel.totalLatency ?? 0).toFixed(0)}ms`}
                     color="#f59e0b"
                 />
                 <MiniStat label="last 60s" value={lastMinute.toString()} color="#a855f7" />
@@ -131,7 +131,7 @@ export const ServiceDetailPanel: React.FC<ServiceDetailPanelProps> = ({
                                 textOverflow: 'ellipsis',
                             }}
                         >
-                            {e.message.slice(0, 80)}
+                            {(e.message ?? '').slice(0, 80)}
                         </span>
                         <span style={{ color: 'var(--purple-muted)' }}>{e.latency}ms</span>
                     </div>

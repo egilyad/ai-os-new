@@ -252,15 +252,15 @@ const CausalDebugger: React.FC = () => {
                                     </div>
                                     <div>
                                         <strong>requestIds:</strong>{' '}
-                                        {selectedTrace.scope.requestIds.join(', ')}
+                                        {(selectedTrace.scope.requestIds ?? []).join(', ')}
                                     </div>
                                     <div>
                                         <strong>providers:</strong>{' '}
-                                        {selectedTrace.scope.providerIds.join(', ') || '(none)'}
+                                        {(selectedTrace.scope.providerIds ?? []).join(', ') || '(none)'}
                                     </div>
                                     <div>
                                         <strong>keys:</strong>{' '}
-                                        {selectedTrace.scope.keyIds.join(', ') || '(none)'}
+                                        {(selectedTrace.scope.keyIds ?? []).join(', ') || '(none)'}
                                     </div>
                                     <div>
                                         <strong>started:</strong>{' '}

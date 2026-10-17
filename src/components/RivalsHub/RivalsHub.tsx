@@ -139,7 +139,7 @@ export default function RivalsHub() {
                             <li key={l.id}>
                                 <StatusBadge status={l.kind} label={t(`autonomy.kind.${l.kind}`)} />{' '}
                                 <StatusBadge status={l.status} label={t(`autonomy.status.${l.status}`)} />{' '}
-                                {l.goal.slice(0, 60)} · {l.iterations}/{l.maxIterations}
+                                {(l.goal ?? '').slice(0, 60)} · {l.iterations}/{l.maxIterations}
                             </li>
                         ))}
                     </ul>
@@ -155,7 +155,7 @@ export default function RivalsHub() {
                         {chats.slice(0, 20).map((c) => (
                             <li key={c.id}>
                                 {c.name} <StatusBadge status={c.status} label={t(`groupChat.status.${c.status}`)} /> ·{' '}
-                                {t('hub.chats.members', { count: String(c.members.length), turns: String(c.turns.length) })}
+                                {t('hub.chats.members', { count: String((c.members ?? []).length), turns: String((c.turns ?? []).length) })}
                             </li>
                         ))}
                     </ul>
@@ -272,7 +272,7 @@ export default function RivalsHub() {
                     <ul>
                         {toolkits.map((k) => (
                             <li key={k.id}>
-                                {k.name} · {k.prefixes.join(', ')}
+                                {k.name} · {(k.prefixes ?? []).join(', ')}
                             </li>
                         ))}
                     </ul>
@@ -329,7 +329,8 @@ export default function RivalsHub() {
                             if (need(ownerId.trim() !== '', 'hub.validation.owner')) {
                                 const o = ownerId;
                                 void act(async () => {
-                                    setBlocks(await memoryBlocksService.getBlocks(o.trim()));
+                                    const list = await memoryBlocksService.getBlocks(o.trim());
+                                    setBlocks(Array.isArray(list) ? list : []);
                                 });
                             }
                         }}
@@ -341,7 +342,7 @@ export default function RivalsHub() {
                     <ul>
                         {blocks.map((b) => (
                             <li key={`${b.ownerId}:${b.section}`}>
-                                {b.section} · {b.content.slice(0, 120)}
+                                {b.section} · {(b.content ?? '').slice(0, 120)}
                             </li>
                         ))}
                     </ul>

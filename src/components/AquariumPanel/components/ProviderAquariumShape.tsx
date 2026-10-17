@@ -9,7 +9,7 @@ interface ProviderAquariumShapeProps {
 type ProviderShape = 'default' | 'ray' | 'twin' | 'dart' | 'shell' | 'spiral' | 'crest';
 
 function getShape(provider: string): ProviderShape {
-  switch (provider.toLowerCase()) {
+  switch ((provider ?? '').toLowerCase()) {
     case 'openrouter':
       return 'ray';
     case 'gemini':

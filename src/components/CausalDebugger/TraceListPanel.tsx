@@ -70,10 +70,10 @@ const TraceListPanel: React.FC<Props> = ({ entries, selectedId, scopes, onSelect
                             >
                                 {t.causalId}
                             </span>
-                            <span style={textXxsMuted}>{t.requestIds.length} req</span>
+                            <span style={textXxsMuted}>{(t.requestIds ?? []).length} req</span>
                         </div>
                         <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap', marginTop: 4 }}>
-                            {scope?.providerIds.slice(0, 3).map((p) => (
+                            {(scope?.providerIds ?? []).slice(0, 3).map((p) => (
                                 <span
                                     key={p}
                                     style={{

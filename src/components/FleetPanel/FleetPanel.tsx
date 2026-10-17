@@ -1147,7 +1147,7 @@ function RivalsTab() {
                 {loops.length === 0 && <p style={{ opacity: 0.6 }}>{t('fleet.empty')}</p>}
                 {loops.slice(0, 15).map((l) => (
                     <div key={l.id} style={card}>
-                        <div style={{ fontWeight: 600 }}>{l.goal.slice(0, 100)}</div>
+                        <div style={{ fontWeight: 600 }}>{(l.goal ?? '').slice(0, 100)}</div>
                         <div style={{ fontSize: '0.8rem', opacity: 0.7 }}>
                             {l.kind} · {l.status} · {l.iterations} iters
                         </div>
@@ -1159,7 +1159,7 @@ function RivalsTab() {
                 {queue.slice(0, 15).map((q) => (
                     <div key={q.id} style={card}>
                         <div style={{ fontSize: '0.85rem' }}>
-                            {q.kind}:{q.refId.slice(0, 16)}…
+                            {q.kind}:{(q.refId ?? '').slice(0, 16)}…
                         </div>
                         <div style={{ fontSize: '0.8rem', opacity: 0.7 }}>{q.status}</div>
                     </div>

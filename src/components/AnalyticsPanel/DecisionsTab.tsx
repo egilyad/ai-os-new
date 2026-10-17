@@ -169,7 +169,7 @@ export const DecisionsTab: React.FC<DecisionsTabProps> = ({
                                 {t('analytics.matrix_scores')}
                             </div>
                             <div style={{ display: 'flex', gap: '0.75rem' }}>
-                                {d.scores.slice(0, 3).map((s, i) => (
+                                {(d.scores ?? []).slice(0, 3).map((s, i) => (
                                     <span
                                         key={`${s.p}-${s.s}`}
                                         style={{

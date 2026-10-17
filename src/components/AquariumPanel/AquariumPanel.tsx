@@ -151,7 +151,7 @@ const AquariumPanel: React.FC = () => {
                                     nvidia: '#fbbf24',
                                 };
                                 for (const f of fishes) {
-                                    const color = fishColors[f.provider.toLowerCase()] || '#94a3b8';
+                                    const color = fishColors[(f.provider ?? '').toLowerCase()] || '#94a3b8';
                                     ctx.beginPath();
                                     ctx.ellipse(f.x, f.y, 18, 10, 0, 0, Math.PI * 2);
                                     ctx.fillStyle = color;
@@ -432,7 +432,7 @@ const AquariumPanel: React.FC = () => {
                         const keyData = keys.find(
                             (k) =>
                                 k.id === f.id ||
-                                k.provider?.toLowerCase() === f.provider.toLowerCase(),
+                                k.provider?.toLowerCase() === f.provider?.toLowerCase(),
                         );
                         return (
                             <Fish
@@ -485,7 +485,7 @@ const AquariumPanel: React.FC = () => {
                         </div>
                         {Object.entries(providerColors).map(([p, c]) => {
                             if (p === 'default') return null;
-                            const hasFish = fishes.some((f) => f.provider.toLowerCase() === p);
+                            const hasFish = fishes.some((f) => (f.provider ?? '').toLowerCase() === p);
                             const label = p.charAt(0).toUpperCase() + p.slice(1);
                             return (
                                 <div
@@ -554,7 +554,7 @@ const AquariumPanel: React.FC = () => {
                                                 color={
                                                     selectedKeyData.status === 'active'
                                                         ? providerColors[
-                                                              selectedKeyData.provider.toLowerCase()
+                                                              (selectedKeyData.provider ?? '').toLowerCase()
                                                           ]!
                                                         : '#64748b'
                                                 }
@@ -579,10 +579,10 @@ const AquariumPanel: React.FC = () => {
                                                     fontSize: '0.65rem',
                                                     color:
                                                         selectedKeyData.status === 'active'
-                                                            ? providerColors[
-                                                                  selectedKeyData.provider.toLowerCase()
-                                                              ]
-                                                            : '#ef4444',
+                                                        ? providerColors[
+                                                              (selectedKeyData.provider ?? '').toLowerCase()
+                                                          ]
+                                                        : '#ef4444',
                                                     fontWeight: 800,
                                                     textTransform: 'uppercase',
                                                 }}

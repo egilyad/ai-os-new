@@ -43,18 +43,18 @@ const ConsistencyCheckSection: React.FC<Props> = ({ report, onCheck }) => (
                     {report.driftScore > 0.01 ? (report.driftScore * 100).toFixed(0) + '%' : '0%'}
                 </span>
                 <span style={{ color: 'var(--slate-500)' }}>
-                    {report.mismatches.length} mismatch{report.mismatches.length !== 1 ? 'es' : ''}
+                    {(report.mismatches ?? []).length} mismatch{(report.mismatches ?? []).length !== 1 ? 'es' : ''}
                 </span>
-                {report.mismatches.length > 0 && (
+                {(report.mismatches ?? []).length > 0 && (
                     <span style={{ color: 'var(--slate-400)' }}>
-                        ({report.mismatches.filter((m) => m.severity === 'critical').length}{' '}
-                        critical, {report.mismatches.filter((m) => m.severity === 'major').length}{' '}
+                        ({(report.mismatches ?? []).filter((m) => m.severity === 'critical').length}{' '}
+                        critical, {(report.mismatches ?? []).filter((m) => m.severity === 'major').length}{' '}
                         major)
                     </span>
                 )}
             </div>
         )}
-        {report && report.mismatches.length > 0 && (
+        {report && (report.mismatches ?? []).length > 0 && (
             <div
                 style={{
                     fontSize: '0.6rem',
@@ -64,7 +64,7 @@ const ConsistencyCheckSection: React.FC<Props> = ({ report, onCheck }) => (
                     marginTop: 4,
                 }}
             >
-                {report.mismatches.slice(0, 5).map((m) => (
+                {(report.mismatches ?? []).slice(0, 5).map((m) => (
                     <div
                         key={`${m.provider}-${m.field}`}
                         style={{ color: severityColor(m.severity) }}

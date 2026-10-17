@@ -255,7 +255,7 @@ export const VulnTargetingPanel: React.FC = () => {
                             ))}
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 4, maxHeight: 140, overflowY: 'auto' }}>
-                            {edges.slice(0, 12).map((e) => (
+                            {(edges ?? []).slice(0, 12).map((e) => (
                                 <div
                                     key={e.id}
                                     style={{ fontSize: 11, color: 'var(--slate-400)', display: 'flex', gap: 6, alignItems: 'center', padding: '4px 6px', borderRadius: 4, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.04)' }}
@@ -269,7 +269,7 @@ export const VulnTargetingPanel: React.FC = () => {
                                     </span>
                                 </div>
                             ))}
-                            {edges.length === 0 && <div style={{ fontSize: 11, color: 'var(--slate-500)', padding: 8, textAlign: 'center', border: '1px dashed rgba(255,255,255,0.08)', borderRadius: 6 }}>No edges yet — need ≥4 nodes + cross-agent Jaccard &gt;0.12</div>}
+                            {(edges ?? []).length === 0 && <div style={{ fontSize: 11, color: 'var(--slate-500)', padding: 8, textAlign: 'center', border: '1px dashed rgba(255,255,255,0.08)', borderRadius: 6 }}>No edges yet — need ≥4 nodes + cross-agent Jaccard &gt;0.12</div>}
                         </div>
                         <div style={{ marginTop: 10, display: 'flex', gap: 8, alignItems: 'end' }}>
                             <label style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 4, fontSize: 12, color: 'var(--slate-300)' }}>
@@ -441,10 +441,10 @@ export const VulnTargetingPanel: React.FC = () => {
                                 orphans <strong style={{ color: '#f87171' }}>{stats.orphanNodes}</strong> · components <strong style={{ color: '#a78bfa' }}>{stats.connectedComponents}</strong>
                             </div>
                             <div style={{ padding: '6px 8px', borderRadius: 6, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
-                                longestPath <strong>{stats.longestPath}</strong> · avgConf <strong>{stats.averageConfidence.toFixed(2)}</strong>
+                                longestPath <strong>{stats.longestPath}</strong> · avgConf <strong>{(stats.averageConfidence ?? 0).toFixed(2)}</strong>
                             </div>
                             <div style={{ padding: '6px 8px', borderRadius: 6, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
-                                attack/support <strong>{stats.attackRatio === Infinity ? '∞' : stats.attackRatio.toFixed(2)}</strong> / {stats.supportRatio === Infinity ? '∞' : stats.supportRatio.toFixed(2)}
+                                attack/support <strong>{stats.attackRatio === Infinity ? '∞' : (stats.attackRatio ?? 0).toFixed(2)}</strong> / {stats.supportRatio === Infinity ? '∞' : (stats.supportRatio ?? 0).toFixed(2)}
                             </div>
                         </div>
                         <div style={{ fontSize: 11, color: 'var(--slate-500)', lineHeight: 1.4 }}>

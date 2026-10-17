@@ -29,7 +29,8 @@ export const PlatformBudgetSection: React.FC = () => {
             setHourly(b.hourlyLimitUsd !== undefined ? String(b.hourlyLimitUsd) : '');
             setHardStop(b.hardStopEnabled);
             const list = await agemsBudgetService.incidents(b.id);
-            setIncidents(list.sort((x, y) => y.createdAt - x.createdAt).slice(0, 20));
+            const safeList = Array.isArray(list) ? list : [];
+            setIncidents(safeList.sort((x, y) => y.createdAt - x.createdAt).slice(0, 20));
         } else {
             setIncidents([]);
         }

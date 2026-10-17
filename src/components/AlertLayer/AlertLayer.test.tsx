@@ -80,6 +80,13 @@ describe('AlertLayer', () => {
         expect(await screen.findByText(/1 critical/)).toBeDefined();
     });
 
+    it('tolerates a non-array alerts payload', async () => {
+        mockGetAlerts.mockReturnValue(null as never);
+        const AlertLayer = (await import('./AlertLayer')).default;
+        const { container } = render(<AlertLayer />);
+        expect(container).toBeDefined();
+    });
+
     it('expands alert list on click', async () => {
         mockGetAlerts.mockReturnValue([
             {

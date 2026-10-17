@@ -23,8 +23,10 @@ const PricingPanel: React.FC = () => {
     const [editPrice, setEditPrice] = useState<ModelPricing>({ input: 0, output: 0 });
 
     const refreshData = useCallback(() => {
-        setPrices(pricingService.getAllPrices());
-        setOverrides(pricingService.getUserOverrides());
+        const p = pricingService.getAllPrices();
+        const o = pricingService.getUserOverrides();
+        setPrices(p && typeof p === 'object' ? p : {});
+        setOverrides(o && typeof o === 'object' ? o : {});
         setBudget(budgetService.getBudgetInfo());
         setLastSync(pricingService.getLastSync());
     }, []);
@@ -140,7 +142,7 @@ const PricingPanel: React.FC = () => {
                     <div style={budgetValueLarge}>{formatCost(budget?.spentThisMonth ?? 0)}</div>
                     <div style={{ fontSize: '0.8rem', color: 'var(--slate-500)', marginTop: '0.5rem' }}>
                         {t('pricing.daily_avg', {
-                            amount: budget?.dailyAverage.toFixed(2) ?? '0.00',
+                            amount: budget?.dailyAverage?.toFixed(2) ?? '0.00',
                         })}
                     </div>
                 </div>
@@ -171,7 +173,7 @@ const PricingPanel: React.FC = () => {
                     </div>
                     <div style={{ fontSize: '0.8rem', color: 'var(--slate-500)', marginTop: '0.5rem' }}>
                         {t('pricing.of_goal', {
-                            amount: budget?.monthlyBudget.toFixed(2) ?? '0.00',
+                            amount: budget?.monthlyBudget?.toFixed(2) ?? '0.00',
                         })}
                     </div>
                 </div>
