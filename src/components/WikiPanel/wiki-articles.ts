@@ -622,6 +622,226 @@ SRE-контур: алерты, метрики здоровья, предлож�
 Компонент: \`BuilderPanel\` (CognitiveBuilder). Обзор агентов — [[agents]].`,
     },
     {
+        slug: 'panel-analytics',
+        title: 'Панели: Аналитика, затраты и ключи',
+        section: 'panels',
+        tags: ['панель', 'аналитика', 'затраты', 'ключи', 'метрики', 'инструкция'],
+        freshness: 'verified',
+        sources: ['src/i18n/translations/en/analytics.ts', 'src/components/AnalyticsPanel/AnalyticsPanel.tsx', 'src/components/CostAnalyticsPanel/', 'src/components/KeyUsageAnalyticsPanel/'],
+        related: ['panel-budget', 'panel-observability', 'dev-component-catalog'],
+        body: `## Назначение
+
+Сводная аналитика: метрики LLM, затраты и использование ключей. Ключи \`analytics.*\`, \`cost_analytics.*\`, \`keyUsage.*\`.
+
+## Метрики LLM
+
+EWMA-латентность, TTFT, cache hit rate, доля ошибок (429 / 5xx / timeout / прочие), fallback rate и здоровье. Таблица LLM и полный отчёт. Разбор решений: единственное / ничья / разброс / потери.
+
+## Затраты
+
+Общая стоимость, прогноз до конца месяца, тренд и аномалии; разбивка по провайдеру, модели и агенту; периоды 7 / 30 / 60 дней. Если данных нет — так и написано.
+
+## Использование ключей
+
+Всего и активных ключей, запросы, токены, стоимость, средняя латентность, тренд и разбивка по строкам (запросы / токены / латентность / ошибки).
+
+## Где менять
+
+Компоненты: \`AnalyticsPanel\`, \`CostAnalyticsPanel\`, \`KeyUsageAnalyticsPanel\`. Бюджеты и алерты — [[panel-budget]].`,
+    },
+    {
+        slug: 'panel-ab-testing',
+        title: 'Панель: A/B-тест промптов',
+        section: 'panels',
+        tags: ['панель', 'a/b', 'эксперимент', 'инструкция'],
+        freshness: 'verified',
+        sources: ['src/i18n/translations/en/analytics.ts', 'src/components/ABTestPanel/'],
+        related: ['panel-playground', 'panel-batch', 'dev-component-catalog'],
+        body: `## Назначение
+
+Сравнение двух вариантов на одном промпте: A и B. Ключи \`ab_test.*\`.
+
+## Как пользоваться
+
+Вводится промпт, выбираются провайдер и модель для варианта A и для варианта B, запуск.
+
+## Результаты
+
+Латентность, токены, стоимость, степень сходства (similarity) и оба ответа. Есть история запусков; если результатов нет — честное сообщение.
+
+## Где менять
+
+Компонент: \`ABTestPanel\`. Массовый прогон — [[panel-batch]].`,
+    },
+    {
+        slug: 'panel-roles',
+        title: 'Панель: Роли и консорциумы',
+        section: 'panels',
+        tags: ['панель', 'роли', 'консорциум', 'инструкция'],
+        freshness: 'verified',
+        sources: ['src/i18n/translations/en/agents.ts', 'src/components/RolesPanel/RolesPanel.tsx', 'src/components/RolesPanel/RolesConsortiaPanel.tsx'],
+        related: ['agents', 'panel-governance', 'dev-component-catalog'],
+        body: `## Назначение
+
+Роли агентов и их объединения (консорциумы). Ключи \`roles.*\` и \`roles_consortia.*\`.
+
+## Роли
+
+Список ролей: создание, редактирование и удаление, поиск, роль по умолчанию, температура у роли, импорт и экспорт. Удаление подтверждается, ошибки удаления показываются.
+
+## Консорциумы
+
+Объединения ролей: список и поиск.
+
+## Где менять
+
+Компоненты: \`RolesPanel\`, \`RolesConsortiaPanel\`. Обзор агентов — [[agents]], роли доступа — [[panel-governance]].`,
+    },
+    {
+        slug: 'panel-projects',
+        title: 'Панель: Проекты',
+        section: 'panels',
+        tags: ['панель', 'проекты', 'инструкция'],
+        freshness: 'verified',
+        sources: ['src/i18n/translations/en/analytics.ts', 'src/components/ProjectsPanel/ProjectsPanel.tsx'],
+        related: ['panel-tasks', 'panel-workflows', 'dev-component-catalog'],
+        body: `## Назначение
+
+Проекты как контейнеры работы. Ключи \`projects.*\`.
+
+## Проекты
+
+Создание проекта (имя, описание, тип), список со статусами, сид-демо для быстрого старта. Ошибки загрузки и действий показываются, есть повтор (retry).
+
+## Вкладки
+
+Обзор, Q&A, артефакты и превью — содержимое проекта по разделам.
+
+## Где менять
+
+Компонент: \`ProjectsPanel\`. Задачи — [[panel-tasks]], потоки — [[panel-workflows]].`,
+    },
+    {
+        slug: 'panel-research',
+        title: 'Панель: Исследовательский движок',
+        section: 'panels',
+        tags: ['панель', 'исследование', 'research', 'инструкция'],
+        freshness: 'verified',
+        sources: ['src/i18n/translations/en/analytics.ts', 'src/components/ResearchPanel/ResearchEnginePanel.tsx'],
+        related: ['panel-synthesis', 'panel-forum', 'debates'],
+        body: `## Назначение
+
+Исследовательские сессии с источниками. Ключи \`research_engine.*\`.
+
+## Как пользоваться
+
+Создание сессии (заголовок), формулировка вопроса, выбор доступных источников, запуск. Есть списки сессий и источников.
+
+## Состояния
+
+Пустые состояния честные; ошибки обновления, создания, запуска и удаления показываются.
+
+## Где менять
+
+Компонент: \`ResearchEnginePanel\`. Синтез мнений — [[panel-synthesis]].`,
+    },
+    {
+        slug: 'panel-synthesis',
+        title: 'Панель: Синтез мнений',
+        section: 'panels',
+        tags: ['панель', 'синтез', 'консенсус', 'инструкция'],
+        freshness: 'verified',
+        sources: ['src/i18n/translations/en/analytics.ts', 'src/components/SynthesisPanel/SynthesisPanel.tsx'],
+        related: ['debates', 'panel-research', 'dev-component-catalog'],
+        body: `## Назначение
+
+Синтез мнений ролей и линз в единый ответ. Ключи \`synthesis.*\`.
+
+## Как пользоваться
+
+Вопрос, выбор ролей и линз, глубина (quick / standard / deep), опция «сохранять несогласие», стратегия синтеза и запуск.
+
+## Итог
+
+Результат показывает консенсус, несогласие, неопределённость и общее число мнений. Есть сид-демо и обновление.
+
+## Где менять
+
+Компонент: \`SynthesisPanel\`. Дебаты — [[debates]], исследование — [[panel-research]].`,
+    },
+    {
+        slug: 'panel-scheduler',
+        title: 'Панель: Планировщик',
+        section: 'panels',
+        tags: ['панель', 'планировщик', 'расписание', 'инструкция'],
+        freshness: 'verified',
+        sources: ['src/i18n/translations/en/analytics.ts', 'src/components/SchedulerPanel/'],
+        related: ['panel-tasks', 'agents', 'dev-component-catalog'],
+        body: `## Назначение
+
+Расписания автоматического запуска агентов. Ключи \`scheduler.*\`.
+
+## Карточки расписаний
+
+У каждой карточки: агент, тип запуска, время следующего запуска, включено / выключено (бейдж). Счётчик активных.
+
+## Прочее
+
+Список доступных агентов, пояснение «как это работает» и демо-сид. Пустое состояние честное.
+
+## Где менять
+
+Компонент: \`SchedulerPanel\`. Задачи — [[panel-tasks]].`,
+    },
+    {
+        slug: 'panel-director',
+        title: 'Панель: Режиссёр',
+        section: 'panels',
+        tags: ['панель', 'режиссёр', 'director', 'сценарии', 'инструкция'],
+        freshness: 'verified',
+        sources: ['src/i18n/translations/en/analytics.ts', 'src/components/DirectorPanel/DirectorPanel.tsx'],
+        related: ['debates', 'panel-synthesis', 'dev-component-catalog'],
+        body: `## Назначение
+
+Прогон сценариев и целей через роли агентов. Ключи \`director.*\`.
+
+## Вкладки
+
+Настройка (configure), библиотека (library) и запуск (run).
+
+## Что настраивается
+
+Сценарий, цель (objective) и роли. Есть сид-демо для быстрого старта.
+
+## Где менять
+
+Компонент: \`DirectorPanel\`. Синтез — [[panel-synthesis]], дебаты — [[debates]].`,
+    },
+    {
+        slug: 'panel-forum',
+        title: 'Панель: Форум',
+        section: 'panels',
+        tags: ['панель', 'форум', 'обсуждения', 'инструкция'],
+        freshness: 'verified',
+        sources: ['src/i18n/translations/en/analytics.ts', 'src/components/ForumPanel/ForumPanel.tsx'],
+        related: ['debates', 'panel-research', 'dev-component-catalog'],
+        body: `## Назначение
+
+Внутренний форум обсуждений между темами, постами и голосами. Ключи \`forum.*\`.
+
+## Топики
+
+Список тем с категориями и фильтром, системные темы, посты. Есть сид-демо.
+
+## Действия
+
+Модерация, голоса вверх / вниз, закрепление (pin / unpin), экспорт темы в markdown и эскалация спорных тем в дебаты (можно только спорные).
+
+## Где менять
+
+Компонент: \`ForumPanel\`. Дебаты — [[debates]], исследование — [[panel-research]].`,
+    },
+    {
         slug: 'agents',
         title: 'Агенты: устройство и управление',
         section: 'agents',
