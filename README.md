@@ -2,6 +2,8 @@
 
 > **Browser-based cognitive orchestration system** — local-first, privacy-preserving, multi-agent runtime environment.
 
+**Language:** English · [Русский](./README_RU.md) — русская вики-версия (портал документации).
+
 SuperAgents OS is an event-driven platform for orchestrating distributed intelligence. It brings together multiple LLM providers, agent roles, memory systems, and cognitive pipelines into a unified browser-based operating system — all data stays on your machine.
 
 [![TypeScript](https://img.shields.io/badge/TypeScript-6.0-3178C6?logo=typescript)](https://www.typescriptlang.org)

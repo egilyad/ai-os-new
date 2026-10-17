@@ -53,21 +53,30 @@ for (const a of WIKI_ARTICLES) {
 
 const idx = [];
 idx.push('# Wiki SuperAgents OS', '');
+idx.push('[← README (рус.)](../README_RU.md) · [English README](../README.md)', '');
 idx.push(
     '> Полная документация системы: панели, агенты, дебаты, память, провайдеры, диагностика, история разработки, архитектура и руководства для разработчиков.',
 );
 idx.push(
     '> Страницы автосгенерированы из корпуса Wiki (`scripts/gen-wiki-docs.mjs`). Та же документация доступна в приложении в панели «Wiki».',
 );
-idx.push('', `Всего материалов: **${WIKI_ARTICLES.length}**.`, '');
+idx.push('', `Всего материалов: **${WIKI_ARTICLES.length}** в ${WIKI_SECTIONS.length} разделах.`, '');
 idx.push(
-    '> Разработчикам: начните с [Обзор для разработчиков](./dev-overview.md) и [Каталог компонентов](./dev-component-catalog.md).',
+    '> Разработчикам: начните с [Обзор для разработчиков](./dev-overview.md), затем [Структура](./dev-layout.md) и [Каталог компонентов](./dev-component-catalog.md).',
 );
+idx.push('', '## Разделы', '');
+idx.push('| Раздел | Материалов |');
+idx.push('| --- | --- |');
+for (const section of WIKI_SECTIONS) {
+    const arts = WIKI_ARTICLES.filter((a) => a.section === section.id);
+    if (!arts.length) continue;
+    idx.push(`| ${section.title} | ${arts.length} |`);
+}
 idx.push('');
 for (const section of WIKI_SECTIONS) {
     const arts = WIKI_ARTICLES.filter((a) => a.section === section.id);
     if (!arts.length) continue;
-    idx.push(`## ${section.title}`, '');
+    idx.push(`## ${section.title} (${arts.length})`, '');
     for (const a of arts) idx.push(`- [${a.title}](./${a.slug}.md) — _${a.freshness}_`);
     idx.push('');
 }
