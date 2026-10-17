@@ -384,6 +384,36 @@ function WikiHome({
                     .
                 </p>
             </div>
+            <div style={card}>
+                <h3 style={{ marginTop: 0 }}>Разработчикам</h3>
+                <p style={{ lineHeight: 1.7 }}>
+                    Как устроена ОС и как её менять:{' '}
+                    <button type="button" onClick={() => openSlug('dev-overview')} style={linkBtn}>
+                        обзор и слои
+                    </button>
+                    ,{' '}
+                    <button type="button" onClick={() => openSlug('for-developers')} style={linkBtn}>
+                        краткий онбординг
+                    </button>
+                    . Авто-каталоги из кода:{' '}
+                    <button type="button" onClick={() => openSlug('dev-component-catalog')} style={linkBtn}>
+                        компоненты
+                    </button>
+                    {', '}
+                    <button type="button" onClick={() => openSlug('dev-event-catalog')} style={linkBtn}>
+                        события
+                    </button>
+                    {', '}
+                    <button type="button" onClick={() => openSlug('dev-service-map')} style={linkBtn}>
+                        DI-граф
+                    </button>
+                    {', '}
+                    <button type="button" onClick={() => openSlug('dev-contracts')} style={linkBtn}>
+                        контракты
+                    </button>
+                    .
+                </p>
+            </div>
         </div>
     );
 }

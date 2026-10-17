@@ -8,6 +8,7 @@ import { DEV_ARTICLES } from './wiki-dev';
 import { CATALOG_ARTICLES } from './wiki-catalog';
 import { EVENT_ARTICLES } from './wiki-event-catalog';
 import { SERVICE_MAP_ARTICLES } from './wiki-service-map';
+import { CONTRACT_ARTICLES } from './wiki-contracts';
 
 export type WikiFreshness = 'verified' | 'documented' | 'needs-check' | 'not-implemented';
 
@@ -409,6 +410,7 @@ export const WIKI_ARTICLES: WikiArticle[] = [
     ...CATALOG_ARTICLES,
     ...EVENT_ARTICLES,
     ...SERVICE_MAP_ARTICLES,
+    ...CONTRACT_ARTICLES,
 ];
 
 export function getArticle(slug: string): WikiArticle | undefined {

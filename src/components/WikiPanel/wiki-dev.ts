@@ -36,7 +36,7 @@ flowchart LR
 - Как поднимается ядро: [[dev-boot]].
 - Сервисы и lazyService: [[dev-services]].
 - События: [[dev-events]]. Панели: [[dev-components]]. Ворота: [[dev-ci]].
-- Авто-каталоги (генерируются из кода): [[dev-component-catalog]] (компоненты и связи), [[dev-event-catalog]] (события шины), [[dev-service-map]] (DI-граф ядра).
+- Авто-каталоги (генерируются из кода): [[dev-component-catalog]] (компоненты и связи), [[dev-event-catalog]] (события шины), [[dev-service-map]] (DI-граф ядра), [[dev-contracts]] (интерфейсы ядра и их реализации).
 - Короткая версия для онбординга — [[for-developers]].`,
     },
     {
@@ -186,7 +186,7 @@ flowchart LR
 3. Регистрация — в фазе bootstrap.
 4. Экспорт — из нужного барреля \`instances/*\`.
 
-Полный граф «кто от кого зависит» — в [[dev-service-map]] (из DEPENDENCY_MAP.md).`,
+Полный граф «кто от кого зависит» — в [[dev-service-map]] (из DEPENDENCY_MAP.md). Перечень контрактов и их реализаций — в [[dev-contracts]].`,
     },
     {
         slug: 'dev-components',
