@@ -3,7 +3,7 @@
   "generatedBy": "scripts/gen-docs-inventory.mjs",
   "scope": "git-tracked docs/**/*.md, excluding docs/new drafts and the generated self-report pages docs-health, docs-inventory",
   "totals": {
-    "documents": 944,
+    "documents": 945,
     "byCategory": {
       "top": 41,
       "active": 1,
@@ -12,11 +12,11 @@
       "reference": 6,
       "roadmap": 6,
       "superseded": 3,
-      "wiki": 139
+      "wiki": 140
     },
     "byLanguage": {
       "en": 651,
-      "ru": 173,
+      "ru": 174,
       "mixed": 120
     }
   },
@@ -6599,6 +6599,14 @@
       "hash": "b9c3f9ac68b546404286438c6b6c8ce890a563ef"
     },
     {
+      "path": "docs/wiki/dev-history.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "История разработки",
+      "bytes": 6031,
+      "hash": "e00e16c156b8f4f8f9ef2411755962e745547493"
+    },
+    {
       "path": "docs/wiki/dev-i18n-catalog.md",
       "category": "wiki",
       "language": "mixed",
@@ -6716,7 +6724,7 @@
       "language": "mixed",
       "title": "Карта документации",
       "bytes": 21287,
-      "hash": "6ef7cacda44fd688f70d63799ee21fb45158eff1"
+      "hash": "b15421b1b9b450c970785386c253aeaa51b7cc61"
     },
     {
       "path": "docs/wiki/docs-standard.md",
