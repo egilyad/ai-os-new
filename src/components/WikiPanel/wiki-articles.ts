@@ -1072,6 +1072,238 @@ EWMA-латентность, TTFT, cache hit rate, доля ошибок (429 / 
 Компонент: \`CustomMetricsPanel\`. Наблюдаемость — [[panel-observability]], аналитика — [[panel-analytics]].`,
     },
     {
+        slug: 'panel-debate-live',
+        title: 'Панель: Живые дебаты',
+        section: 'panels',
+        tags: ['панель', 'дебаты', 'live', 'инструкция'],
+        freshness: 'verified',
+        sources: ['src/i18n/translations/en/debate.ts', 'src/components/DebateLive/DebateLivePanel'],
+        related: ['debates', 'panel-debate-history', 'panel-debate-analysis'],
+        body: `## Назначение
+
+Просмотр активных дебатов в реальном времени. Ключи \`debate_live.*\`.
+
+## Состояния
+
+Если активных дебатов нет — честное «нет активных» (\`empty\` / \`no_active\`), без заглушек.
+
+## Где менять
+
+Компонент: \`DebateLivePanel\`. Обзор дебатов — [[debates]].`,
+    },
+    {
+        slug: 'panel-debate-analysis',
+        title: 'Панель: Анализ дебатов',
+        section: 'panels',
+        tags: ['панель', 'дебаты', 'анализ', 'инструкция'],
+        freshness: 'verified',
+        sources: ['src/i18n/translations/en/debate.ts', 'src/components/DebateAnalysisPanel/'],
+        related: ['debates', 'panel-debate-toolkit', 'panel-debate-quality'],
+        body: `## Назначение
+
+Анализ хода дебатов: логические ошибки, сдвиг позиции, волатильность и тон. Ключи \`debate_analysis.*\`.
+
+## Метрики
+
+Общее число ошибок рассуждения (fallacies) и их разбивка, сдвиг позиции (overall_shift), волатильность, тренд (rising / falling / stable / oscillating), убедительность (persuasion) и таймлайн тона.
+
+## Состояния
+
+Если сессий нет — \`no_sessions\`.
+
+## Где менять
+
+Компонент: \`DebateAnalysisPanel\`. Инструменты анализа — [[panel-debate-toolkit]], качество — [[panel-debate-quality]].`,
+    },
+    {
+        slug: 'panel-debate-quality',
+        title: 'Панель: Качество дебатов',
+        section: 'panels',
+        tags: ['панель', 'дебаты', 'качество', 'правила', 'инструкция'],
+        freshness: 'verified',
+        sources: ['src/i18n/translations/en/quality.ts', 'src/components/DebateQualityPanel/'],
+        related: ['debates', 'panel-debate-analysis', 'panel-governance'],
+        body: `## Назначение
+
+Контроль качества дебатов набором правил (quality gates). Ключи \`quality.*\`.
+
+## Категории и управление
+
+Правила сгруппированы по приоритету P0 / P1 / P2. Можно включать и выключать правила по одному или все сразу, а также сбросить к значениям по умолчанию.
+
+## Метрики
+
+Показывает активные правила, метку сессий и подсказку; если данных о влиянии нет — честное \`no_impact_data\`.
+
+## Где менять
+
+Компонент: \`DebateQualityPanel\`. Анализ — [[panel-debate-analysis]], управление — [[panel-governance]].`,
+    },
+    {
+        slug: 'panel-debate-tournament',
+        title: 'Панель: Турнир дебатов',
+        section: 'panels',
+        tags: ['панель', 'дебаты', 'турнир', 'инструкция'],
+        freshness: 'verified',
+        sources: ['src/i18n/translations/en/debate.ts', 'src/components/TournamentPanel/'],
+        related: ['debates', 'panel-debate-analysis', 'panel-debate-templates'],
+        body: `## Назначение
+
+Турнир форматов: несколько участников соревнуются на общую тему. Ключи \`debate.tournament_*\`.
+
+## Ход
+
+Задаётся тема и участники, старт турнира. Показываются результаты, ранги и матчи («X против Y»), победитель или ничья, счёт, победы и поражения, длительность.
+
+## Состояния
+
+running, creating, cancelled, failed.
+
+## Где менять
+
+Компонент: \`TournamentPanel\`. Шаблоны — [[panel-debate-templates]], анализ — [[panel-debate-analysis]].`,
+    },
+    {
+        slug: 'panel-debate-history',
+        title: 'Панели: История дебатов и повтор',
+        section: 'panels',
+        tags: ['панель', 'дебаты', 'история', 'replay', 'инструкция'],
+        freshness: 'verified',
+        sources: ['src/i18n/translations/en/debate.ts', 'src/components/DebatePanel/DebateHistoryPage', 'src/components/DebateReplayPanel'],
+        related: ['debates', 'panel-debate-live', 'panel-debate-analysis'],
+        body: `## Назначение
+
+История дебатов и воспроизведение хода. Ключи \`debate.*\`.
+
+## История
+
+Список прошлых сессий с вердиктами; отдельная страница истории (\`DebateHistoryPage\`).
+
+## Повтор
+
+Панель повтора (\`DebateReplayPanel\`) воспроизводит ход дебата по шагам (\`verdict.replay\`).
+
+## Менеджер
+
+\`DebatesManagerPanel\` — общий список и управление сессиями.
+
+## Где менять
+
+Компоненты: \`DebateHistoryPage\`, \`DebateReplayPanel\`, \`DebatesManagerPanel\`. Обзор — [[debates]].`,
+    },
+    {
+        slug: 'panel-debate-templates',
+        title: 'Панель: Шаблоны дебатов',
+        section: 'panels',
+        tags: ['панель', 'дебаты', 'шаблоны', 'инструкция'],
+        freshness: 'verified',
+        sources: ['src/i18n/translations/en/debate.ts', 'src/components/DebateTemplatesPanel/', 'src/components/DebatePanel/DebateWorkspacePanel'],
+        related: ['debates', 'panel-debate-tournament', 'dev-component-catalog'],
+        body: `## Назначение
+
+Библиотека готовых шаблонов дебатов. Ключи \`debate.templates*\`.
+
+## Шаблоны
+
+Готовые сценарии: code-review, ADR, post-mortem, оптимизация промпта. Есть поиск, счётчик, применение шаблона, а также поля участников и числа раундов.
+
+## Рабочее пространство
+
+\`DebateWorkspacePanel\` — рабочее пространство для сборки дебата.
+
+## Где менять
+
+Компоненты: \`DebateTemplatesPanel\`, \`DebateWorkspacePanel\`. Турнир — [[panel-debate-tournament]].`,
+    },
+    {
+        slug: 'panel-debate-toolkit',
+        title: 'Инструменты анализа дебатов',
+        section: 'panels',
+        tags: ['панель', 'дебаты', 'анализ', 'аргументация', 'инструкция'],
+        freshness: 'documented',
+        sources: ['src/i18n/translations/en/nav.ts', 'src/components/LogicalFormPanel/', 'src/components/SteelmanPanel/', 'src/components/BayesianJudgePanel/'],
+        related: ['debates', 'panel-debate-analysis', 'panel-synthesis'],
+        body: `## Назначение
+
+Набор эвристик анализа аргументации. Каждая — отдельная панель с меткой из \`nav.*\`; часть работает поверх текста дебатов.
+
+## Инструменты
+
+- **Logical Form** — приведение утверждений к логической форме.
+- **Rhetoric** — разбор риторических приёмов.
+- **Steelman** — усиление позиции оппонента до сильнейшей версии.
+- **Bayesian Judge** — байесовская оценка убедительности.
+- **Belief Mining** — извлечение убеждений из текста.
+- **Stance Drift** — дрейф позиции во времени.
+- **Expert Witness** — оценка экспертного свидетельства.
+- **Stakeholder** — интересы стейкхолдеров.
+- **Vuln Targeting** — поиск уязвимых мест аргумента.
+- **Adversarial Source** — оценка враждебного источника.
+- **Credibility** — оценка достоверности.
+- **Bias Profiler** — профиль когнитивных искажений.
+- **Anchoring** — эффект якоря.
+- **Justification** — оценка обоснованности.
+- **Incentive Detector** — скрытые мотивы и стимулы.
+- **Frame Tracker** — отслеживание фреймов.
+- **Concept Blender** — смешение концепций.
+- **GoT Deliberation** — делиберация над графом мыслей.
+- **Argument Graph** — граф аргументов.
+
+## Где менять
+
+Компоненты: \`LogicalFormPanel\`, \`RhetoricPanel\`, \`SteelmanPanel\`, \`BayesianJudgePanel\` и родственные. Метки — \`nav.*\`.`,
+    },
+    {
+        slug: 'panel-fleet',
+        title: 'Панель: Флот (Fleet Console)',
+        section: 'panels',
+        tags: ['панель', 'флот', 'fleet', 'агенты', 'инструкция'],
+        freshness: 'verified',
+        sources: ['src/i18n/translations/en/analytics.ts', 'src/components/FleetPanel/FleetPanel.tsx', 'src/components/FleetPanels/'],
+        related: ['agents', 'panel-debate-toolkit', 'panel-persona'],
+        body: `## Назначение
+
+Управление парком агентов и сценариев: вкладки, запуски и форматы. Ключи \`fleet.*\`.
+
+## Вкладки
+
+crews, councils, graphs, persona, ops, interop, meta, trust, frontier, rivals.
+
+## Работа
+
+Кузница (forge) с созданием и запуском, прогон (run), продвижение (advance), завершение (conclude), approve / reject, установка, снапшоты и отметка прочитанного. Есть уведомления, peers и handoffs, предложения, пакеты и бандлы.
+
+## Форматы и прогоны
+
+Форматы дебатов: oxford, lincoln-douglas, popper, deliberative, munk, adversarial. Прогоны: dyad, chat, react, rag, codeagent, assistant, scaffold, askcode, deck, ticket, n8n, sim, mesa, gym, mission, poll, tot, reflexion. Плюс извлечение утверждений, циклы (loops) и очередь (queue), бенчмарк и heartbeat.
+
+## Где менять
+
+Компоненты: \`FleetPanel\`, \`FleetPanels/*\`, \`CouncilPanel\`. Персоны — [[panel-persona]], агенты — [[agents]].`,
+    },
+    {
+        slug: 'panel-persona',
+        title: 'Панели: Персоны агентов',
+        section: 'panels',
+        tags: ['панель', 'персоны', 'persona', 'инструкция'],
+        freshness: 'verified',
+        sources: ['src/i18n/translations/en/nav.ts', 'src/components/PersonaPickerPanel/', 'src/components/PersonaMixerPanel/PersonaMixerPanel.tsx', 'src/components/PersonaMarketplacePanel/'],
+        related: ['agents', 'panel-fleet', 'dev-component-catalog'],
+        body: `## Назначение
+
+Персоны агентов: выбор, смешение и магазин. Метки — \`nav.persona_*\`.
+
+## Панели
+
+- **Persona Library** (picker) — выбрать персону для агента.
+- **Persona Mixer** — смешать несколько персон в новую.
+- **Persona Marketplace** — магазин персон.
+
+## Где менять
+
+Компоненты: \`PersonaPickerPanel\`, \`PersonaMixerPanel\`, \`PersonaMarketplacePanel\`. Флот — [[panel-fleet]], агенты — [[agents]].`,
+    },
+    {
         slug: 'agents',
         title: 'Агенты: устройство и управление',
         section: 'agents',
