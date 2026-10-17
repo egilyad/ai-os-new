@@ -3,7 +3,7 @@
   "generatedBy": "scripts/gen-docs-inventory.mjs",
   "scope": "git-tracked docs/**/*.md, excluding docs/new drafts and the generated self-report pages docs-health, docs-inventory",
   "totals": {
-    "documents": 947,
+    "documents": 948,
     "byCategory": {
       "top": 41,
       "active": 1,
@@ -12,11 +12,11 @@
       "reference": 6,
       "roadmap": 6,
       "superseded": 3,
-      "wiki": 142
+      "wiki": 143
     },
     "byLanguage": {
       "en": 651,
-      "ru": 176,
+      "ru": 177,
       "mixed": 120
     }
   },
@@ -6519,6 +6519,14 @@
       "hash": "0cdc8bcb6928ead07c5e3f0d168756ac779eb773"
     },
     {
+      "path": "docs/wiki/dev-checks.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Проверки и показатели",
+      "bytes": 4072,
+      "hash": "f9c46cb86ae5871cb27321daf8239db999df8359"
+    },
+    {
       "path": "docs/wiki/dev-ci.md",
       "category": "wiki",
       "language": "mixed",
@@ -6604,7 +6612,7 @@
       "language": "ru",
       "title": "Граф знаний",
       "bytes": 4400,
-      "hash": "4403098c94cbd37ec52b05d8ab3b35d1c5fe510f"
+      "hash": "ec3ada8648f671a56fdb49f9cf59aaadedec9252"
     },
     {
       "path": "docs/wiki/dev-history.md",
@@ -6731,8 +6739,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Карта документации",
-      "bytes": 21394,
-      "hash": "7911cb16d89e8bef2713847f91ed7c813801a871"
+      "bytes": 21457,
+      "hash": "1f714ecc48399b0dc2f663534bb0976884d57418"
     },
     {
       "path": "docs/wiki/docs-standard.md",
@@ -7379,8 +7387,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Wiki SuperAgents OS",
-      "bytes": 13983,
-      "hash": "19eb94e118ab9be001ed9d52fc16d4038710d25c"
+      "bytes": 14060,
+      "hash": "4601b05a9ec9384ae8694307381d5974a80b48ed"
     },
     {
       "path": "docs/wiki/roadmap-notes.md",

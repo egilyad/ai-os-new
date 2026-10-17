@@ -3,19 +3,19 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 668,
-    "edges": 982,
+    "nodes": 670,
+    "edges": 989,
     "byType": {
-      "code": 206,
+      "code": 207,
       "test": 60,
       "panel": 259,
-      "article": 143
+      "article": 144
     },
     "byKind": {
       "documents": 200,
-      "source": 293,
+      "source": 296,
       "test": 62,
-      "related": 427
+      "related": 431
     }
   },
   "nodes": [
@@ -103,6 +103,11 @@
       "id": "file:scripts/gen-wiki-catalog.mjs",
       "type": "code",
       "label": "scripts/gen-wiki-catalog.mjs"
+    },
+    {
+      "id": "file:scripts/gen-wiki-checks.mjs",
+      "type": "code",
+      "label": "scripts/gen-wiki-checks.mjs"
     },
     {
       "id": "file:scripts/gen-wiki-contracts.mjs",
@@ -3198,6 +3203,13 @@
       "status": "verified"
     },
     {
+      "id": "wiki:dev-checks",
+      "type": "article",
+      "label": "Проверки и показатели",
+      "section": "dev",
+      "status": "verified"
+    },
+    {
       "id": "wiki:dev-ci",
       "type": "article",
       "label": "Разработчикам: ворота качества и CI",
@@ -5318,6 +5330,41 @@
     {
       "from": "wiki:dev-boot",
       "to": "wiki:dev-services",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-checks",
+      "to": "file:docs/manifest.json",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:dev-checks",
+      "to": "file:scripts/gen-wiki-checks.mjs",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:dev-checks",
+      "to": "file:scripts/lib/docs-health.mjs",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:dev-checks",
+      "to": "wiki:dev-graph",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-checks",
+      "to": "wiki:docs-health",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-checks",
+      "to": "wiki:docs-inventory",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-checks",
+      "to": "wiki:docs-standard",
       "kind": "related"
     },
     {

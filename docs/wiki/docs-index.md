@@ -20,7 +20,7 @@
 - Панель **Wiki** в приложении и сайт `/wiki/` — тот же корпус статей
 - [`docs/manifest.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/manifest.json) — машиночитаемый индекс сущностей (статьи, панели)
 - [`docs/entity-model.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/entity-model.json) — стандарт документации
-- [`docs/inventory.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/inventory.json) — инвентарь всех `docs/**` (947 документов)
+- [`docs/inventory.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/inventory.json) — инвентарь всех `docs/**` (948 документов)
 
 ## Вики по разделам
 
@@ -44,9 +44,9 @@
 
 **Заметки** — 1: [Планы и направления](./roadmap-notes.md)
 
-**Разработчикам** — 27: [Разработчикам: структура и ворота](./for-developers.md) · [Разработчикам: обзор и слои](./dev-overview.md) · [Разработчикам: карта каталогов](./dev-layout.md) · [Разработчикам: boot, DI и контейнер](./dev-boot.md) · [Разработчикам: шина событий](./dev-events.md) · [Разработчикам: сервисы и lazyService](./dev-services.md) · [Разработчикам: компоненты и панели](./dev-components.md) · [Разработчикам: маршруты и добавление панели](./dev-routing.md) · [Разработчикам: состояние (stores) и хуки](./dev-stores.md) · [Разработчикам: локализация (i18n)](./dev-i18n.md) · [Разработчикам: тесты](./dev-testing.md) · [Разработчикам: ворота качества и CI](./dev-ci.md) · [Разработчикам: генераторы и сгенерированные файлы](./dev-generators.md) · [Разработчикам: конвенции кода](./dev-conventions.md) · [Разработчикам: глоссарий](./dev-glossary.md) · [Рецепты: типовые задачи](./dev-cookbook.md) · [Каталог компонентов OS](./dev-component-catalog.md) · [Инвентаризация документации](./docs-inventory.md) · [Стандарт документации](./docs-standard.md) · [Граф знаний](./dev-graph.md) · [Каталог событий шины](./dev-event-catalog.md) · [Карта зависимостей ядра (DI)](./dev-service-map.md) · [Контракты ядра](./dev-contracts.md) · [Каталог сторов](./dev-store-catalog.md) · [Каталог локализации](./dev-i18n-catalog.md) · [Скрипты и CLI](./dev-scripts.md) · [Каталог тестов](./dev-tests-catalog.md)
+**Разработчикам** — 28: [Разработчикам: структура и ворота](./for-developers.md) · [Разработчикам: обзор и слои](./dev-overview.md) · [Разработчикам: карта каталогов](./dev-layout.md) · [Разработчикам: boot, DI и контейнер](./dev-boot.md) · [Разработчикам: шина событий](./dev-events.md) · [Разработчикам: сервисы и lazyService](./dev-services.md) · [Разработчикам: компоненты и панели](./dev-components.md) · [Разработчикам: маршруты и добавление панели](./dev-routing.md) · [Разработчикам: состояние (stores) и хуки](./dev-stores.md) · [Разработчикам: локализация (i18n)](./dev-i18n.md) · [Разработчикам: тесты](./dev-testing.md) · [Разработчикам: ворота качества и CI](./dev-ci.md) · [Разработчикам: генераторы и сгенерированные файлы](./dev-generators.md) · [Разработчикам: конвенции кода](./dev-conventions.md) · [Разработчикам: глоссарий](./dev-glossary.md) · [Рецепты: типовые задачи](./dev-cookbook.md) · [Каталог компонентов OS](./dev-component-catalog.md) · [Инвентаризация документации](./docs-inventory.md) · [Стандарт документации](./docs-standard.md) · [Граф знаний](./dev-graph.md) · [Проверки и показатели](./dev-checks.md) · [Каталог событий шины](./dev-event-catalog.md) · [Карта зависимостей ядра (DI)](./dev-service-map.md) · [Контракты ядра](./dev-contracts.md) · [Каталог сторов](./dev-store-catalog.md) · [Каталог локализации](./dev-i18n-catalog.md) · [Скрипты и CLI](./dev-scripts.md) · [Каталог тестов](./dev-tests-catalog.md)
 
-Всего статей вики: **143** в 11 разделах.
+Всего статей вики: **144** в 11 разделах.
 
 ## Документация верхнего уровня
 

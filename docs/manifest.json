@@ -55,7 +55,7 @@
     {
       "id": "dev",
       "title": "Разработчикам",
-      "articles": 27
+      "articles": 28
     }
   ],
   "articles": [
@@ -3362,6 +3362,33 @@
         "docs-index",
         "docs-inventory",
         "dev-system-map"
+      ],
+      "tests": []
+    },
+    {
+      "id": "wiki:dev-checks",
+      "type": "article",
+      "slug": "dev-checks",
+      "title": "Проверки и показатели",
+      "section": "dev",
+      "status": "verified",
+      "tags": [
+        "проверки",
+        "метрики",
+        "полнота",
+        "ci",
+        "качество"
+      ],
+      "sources": [
+        "scripts/lib/docs-health.mjs",
+        "scripts/gen-wiki-checks.mjs",
+        "docs/manifest.json"
+      ],
+      "related": [
+        "docs-health",
+        "docs-standard",
+        "docs-inventory",
+        "dev-graph"
       ],
       "tests": []
     },

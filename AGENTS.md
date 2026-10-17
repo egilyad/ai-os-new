@@ -41,6 +41,7 @@ Autonomous, event-driven multi-agent runtime. v4.5.0 — 177 contracts, 352 serv
 - `docs/wiki/dev-history.md` — development history: zones, audits, decision/plan archive (from manifest + inventory); regenerate with `npm run gen:wiki-history`
 - `docs/wiki/scenarios.md` — capabilities & scenarios: user areas from route registries, guides, diagram, limitations, diagnostics; regenerate with `npm run gen:wiki-capabilities`
 - `docs/graph.json` — knowledge graph (nodes: articles/panels/code/tests; edges: related/source/test/documents) + `docs/wiki/dev-graph.md`; regenerate with `npm run gen:docs-graph`
+- `docs/wiki/dev-checks.md` — checks & metrics: all objective checks + completeness report (coverage); regenerate with `npm run gen:wiki-checks`
 - `scripts/gen-wiki-site.mjs` — builds the static wiki site (menu + search + mermaid) from `docs/wiki` into `wiki-site/`; CI publishes it at `/wiki/` on GitHub Pages (`npm run gen:wiki-site`, output is git-ignored)
 
 ## Code Rules

@@ -9,6 +9,7 @@ import { SYSTEM_MAP_MARKDOWN } from '../../generated/wiki-system-map';
 import { DEVELOPMENT_HISTORY_MARKDOWN } from '../../generated/wiki-history';
 import { CAPABILITIES_MARKDOWN } from '../../generated/wiki-capabilities';
 import { GRAPH_MARKDOWN } from '../../generated/wiki-graph';
+import { CHECKS_MARKDOWN } from '../../generated/wiki-checks';
 
 // Auto-maintained catalogs: components, and the panel -> section -> route ->
 // component -> article chain. Bodies come from the generators — edit those.
@@ -153,5 +154,19 @@ export const CATALOG_ARTICLES: WikiArticle[] = [
         ],
         related: ['docs-standard', 'docs-index', 'docs-inventory', 'dev-system-map'],
         body: GRAPH_MARKDOWN,
+    },
+    {
+        slug: 'dev-checks',
+        title: 'Проверки и показатели',
+        section: 'dev',
+        tags: ['проверки', 'метрики', 'полнота', 'ci', 'качество'],
+        freshness: 'verified',
+        sources: [
+            'scripts/lib/docs-health.mjs',
+            'scripts/gen-wiki-checks.mjs',
+            'docs/manifest.json',
+        ],
+        related: ['docs-health', 'docs-standard', 'docs-inventory', 'dev-graph'],
+        body: CHECKS_MARKDOWN,
     },
 ];

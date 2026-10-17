@@ -79,6 +79,7 @@ jobs:
                   npm run gen:wiki-history
                   npm run gen:wiki-capabilities
                   npm run gen:docs-graph
+                  npm run gen:wiki-checks
                   git diff --exit-code -- docs/wiki docs/inventory.json docs/graph.json docs/entity-model.json docs/manifest.json src/generated
 
             - name: Documentation health
