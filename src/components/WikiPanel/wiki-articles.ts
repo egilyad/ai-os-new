@@ -842,6 +842,236 @@ EWMA-латентность, TTFT, cache hit rate, доля ошибок (429 / 
 Компонент: \`ForumPanel\`. Дебаты — [[debates]], исследование — [[panel-research]].`,
     },
     {
+        slug: 'panel-gateway',
+        title: 'Панели: Компании и корпоративный gateway',
+        section: 'panels',
+        tags: ['панель', 'gateway', 'компании', 'задачи', 'согласования', 'инструкция'],
+        freshness: 'verified',
+        sources: ['src/i18n/translations/en/nav.ts', 'src/components/IssuesPanel/', 'src/components/ApprovalsPanel/', 'src/components/ExportImportPanel/', 'src/components/Adapters/'],
+        related: ['panel-governance', 'agents', 'panel-observability'],
+        body: `## Назначение
+
+Группа панелей, работающих через корпоративный gateway: компании, задачи, согласования, переносимость, адаптеры и прогоны. Ключи \`issues.*\`, \`approvals.*\`, \`portability.*\`, \`adapters.*\`, \`companies.*\`, \`runs.*\` (в неймспейсе nav).
+
+Общий шаблон подключения у всех: URL, секрет и кнопка «подключить», плюс выбор компании.
+
+## Компании
+
+Обзор гейтвея: агенты, heartbeat, бюджет (или безлимит), локальный фолбэк, состояния загрузки и ошибок. Если гейтвея нет — честное сообщение.
+
+## Задачи (issues)
+
+Статусы, фильтры по компании / агенту / статусу, вход в задачу (checkout), перемещение по статусам, цитаты и отметка «взято в работу».
+
+## Согласования (approvals)
+
+Очередь pending / approved / rejected с комментариями; отправить, одобрить, отклонить.
+
+## Переносимость
+
+Экспорт и импорт, переименование, режимы пропуск / перезапись и отчёт по пропущенным и импортированным.
+
+## Адаптеры
+
+Конфиг в JSON, входные данные и execute, включение / выключение; при плохом JSON — понятная ошибка.
+
+## Прогоны (runs)
+
+Список прогонов с фильтрами и честным пустым состоянием.
+
+## Где менять
+
+Компоненты: \`IssuesPanel\`, \`ApprovalsPanel\`, \`ExportImportPanel\`, \`Adapters\`, \`CompaniesPanel\`, \`RunsPanel\`. Управление доступом — [[panel-governance]].`,
+    },
+    {
+        slug: 'panel-dyad',
+        title: 'Панель: Диада',
+        section: 'panels',
+        tags: ['панель', 'диада', 'дебаты', 'инструкция'],
+        freshness: 'verified',
+        sources: ['src/i18n/translations/en/dyad.ts', 'src/components/DyadPanel/DyadPanel.tsx'],
+        related: ['debates', 'panel-group-chat', 'dev-component-catalog'],
+        body: `## Назначение
+
+Диалог двух ролей (пользователь и ассистент) на заданную тему. Ключи \`dyad.*\`.
+
+## Как пользоваться
+
+Список диад (со статусами running / completed / stuck / failed / aborted), открытие по идентификатору, запуск по теме с выбором ролей пользователя и ассистента.
+
+## Лог и результат
+
+Есть лог выполнения и результат; тема обязательна (валидация), при отсутствии — \`notFound\`.
+
+## Где менять
+
+Компонент: \`DyadPanel\`. Обзор дебатов — [[debates]], групповой чат — [[panel-group-chat]].`,
+    },
+    {
+        slug: 'panel-group-chat',
+        title: 'Панель: Групповой чат',
+        section: 'panels',
+        tags: ['панель', 'групповой чат', 'агенты', 'инструкция'],
+        freshness: 'verified',
+        sources: ['src/i18n/translations/en/groupChat.ts', 'src/components/GroupChatPanel/GroupChatPanel.tsx'],
+        related: ['debates', 'panel-dyad', 'agents'],
+        body: `## Назначение
+
+Чат нескольких участников (агентов) с раундами. Ключи \`groupChat.*\`.
+
+## Создание
+
+Заголовок, имя, список участников, режим выбора (auto / round_robin / manual), максимум раундов. Есть сид-демо.
+
+## Ход чата
+
+Статусы running / completed / paused, история раундов, следующий ход, выбор говорящего, резюме.
+
+## Посты и ветки
+
+Добавление поста (говорящий, текст), вложенная тема (nest). Обязательны участники — иначе валидация не пропустит.
+
+## Где менять
+
+Компонент: \`GroupChatPanel\`. Дебаты — [[debates]], диада — [[panel-dyad]].`,
+    },
+    {
+        slug: 'panel-bookmarks',
+        title: 'Панель: Закладки',
+        section: 'panels',
+        tags: ['панель', 'закладки', 'инструкция'],
+        freshness: 'verified',
+        sources: ['src/i18n/translations/en/chat.ts', 'src/components/BookmarksPanel/BookmarksPanel.tsx'],
+        related: ['panel-prompt-library', 'panel-chat', 'dev-component-catalog'],
+        body: `## Назначение
+
+Сохранённые фрагменты и ответы. Ключи \`bookmarks.*\`.
+
+## Возможности
+
+Поиск, теги, копирование (с обработкой ошибки буфера), удаление и очистка всего (с подтверждением). Есть сид-демо и счётчик показанных. Пустые состояния различают «нет закладок» и «нет совпадений».
+
+## Где менять
+
+Компонент: \`BookmarksPanel\`. Библиотека промптов — [[panel-prompt-library]], чат — [[panel-chat]].`,
+    },
+    {
+        slug: 'panel-prompt-library',
+        title: 'Панель: Библиотека промптов',
+        section: 'panels',
+        tags: ['панель', 'промпты', 'библиотека', 'инструкция'],
+        freshness: 'verified',
+        sources: ['src/i18n/translations/en/chat.ts', 'src/components/PromptLibraryPanel/'],
+        related: ['panel-chat', 'panel-bookmarks', 'panel-playground'],
+        body: `## Назначение
+
+Каталог промптов с категориями и переменными. Ключи \`prompts.*\`.
+
+## Возможности
+
+Поиск и фильтр по категориям (engineering / security / strategy / research / general), создание, редактирование и удаление (с подтверждением), метка «встроенный». У промпта есть содержимое, теги и переменные; показывается счётчик использований.
+
+## В чат
+
+Кнопка «использовать в чате» отдаёт промпт в чат; копирование с уведомлением.
+
+## Где менять
+
+Компонент: \`PromptLibraryPanel\`. Чат — [[panel-chat]], песочница — [[panel-playground]].`,
+    },
+    {
+        slug: 'panel-autonomy',
+        title: 'Панель: Автономия',
+        section: 'panels',
+        tags: ['панель', 'автономия', 'планирование', 'инструкция'],
+        freshness: 'verified',
+        sources: ['src/i18n/translations/en/analytics.ts', 'src/components/AutonomyPanel/AutonomyPanel.tsx'],
+        related: ['agents', 'panel-tasks', 'dev-component-catalog'],
+        body: `## Назначение
+
+Автономный цикл: цель → план → задачи → исполнение → проверка → доработка → завершение. Ключи \`autonomy.*\`.
+
+## Шаги
+
+Цель (goal), план, задачи (tasks), назначение исполнителей, execute, test, revise, complete. Показываются прогресс, статус и запуск. Есть сид-демо.
+
+## Где менять
+
+Компонент: \`AutonomyPanel\`. Задачи — [[panel-tasks]], агенты — [[agents]].`,
+    },
+    {
+        slug: 'panel-routing',
+        title: 'Панели: Умная маршрутизация',
+        section: 'panels',
+        tags: ['панель', 'маршрутизация', 'routing', 'веса', 'инструкция'],
+        freshness: 'verified',
+        sources: ['src/i18n/translations/en/providers.ts', 'src/components/RoutingIntelligence/RoutingIntelligence'],
+        related: ['panel-providers', 'panel-settings', 'panel-budget'],
+        body: `## Назначение
+
+Маршрутизация запросов к провайдерам с настраиваемыми весами. Ключи \`routing.*\`.
+
+## Веса
+
+Вес бюджета, латентности и надёжности; пользовательский вес, пресеты весов и эффективные веса. Сохранение, сброс, импорт и экспорт конфигурации.
+
+## Вкладки
+
+Дополнительно (advanced), дерево решений (decision_tree) и история. Кнопка объяснения (explain) показывает, почему выбран маршрут.
+
+## Детали решения
+
+Таблица провайдеров: стоимость, надёжность, оценка, TPS, TTFT; плюс выбранный и фолбэк, оценка стоимости.
+
+## Где менять
+
+Компоненты: \`RoutingIntelligence\` и \`SmartRoutingPanel\`. Провайдеры и ключи — [[panel-providers]].`,
+    },
+    {
+        slug: 'panel-pools',
+        title: 'Панель: Пул ключей провайдеров',
+        section: 'panels',
+        tags: ['панель', 'пул', 'ключи', 'квоты', 'инструкция'],
+        freshness: 'verified',
+        sources: ['src/i18n/translations/en/providers.ts', 'src/components/PoolStatusPanel/PoolStatusPanel.tsx'],
+        related: ['panel-providers', 'panel-routing', 'panel-budget'],
+        body: `## Назначение
+
+Состояние пула ключей провайдеров: активность, использование и квоты. Ключи \`pool_status.*\`.
+
+## Что показывает
+
+Две вкладки — пулы и провайдеры. Таблица со стратегией, квотой, активными ключами; статистика: активные, средняя латентность, число ключей. Есть просмотр использования ключей и сгорания квоты, редактирование квоты (запросы и токены в день).
+
+## Состояния
+
+Пустой пул и ошибки статуса показываются явно.
+
+## Где менять
+
+Компонент: \`PoolStatusPanel\`. Ключи — [[panel-providers]], маршрутизация — [[panel-routing]].`,
+    },
+    {
+        slug: 'panel-custom-metrics',
+        title: 'Панель: Пользовательские метрики',
+        section: 'panels',
+        tags: ['панель', 'метрики', 'дашборды', 'инструкция'],
+        freshness: 'verified',
+        sources: ['src/i18n/translations/en/analytics.ts', 'src/components/CustomMetricsPanel/'],
+        related: ['panel-observability', 'panel-analytics', 'dev-component-catalog'],
+        body: `## Назначение
+
+Собственные дашборды и метрики поверх системных. Ключи \`metrics.*\`.
+
+## Возможности
+
+Список дашбордов, добавление дашборда (имя и поле), добавление метрики, сохранение и отмена, обновление. Пустое состояние честное.
+
+## Где менять
+
+Компонент: \`CustomMetricsPanel\`. Наблюдаемость — [[panel-observability]], аналитика — [[panel-analytics]].`,
+    },
+    {
         slug: 'agents',
         title: 'Агенты: устройство и управление',
         section: 'agents',
