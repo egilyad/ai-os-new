@@ -37,6 +37,7 @@ flowchart LR
 - Сервисы и lazyService: [[dev-services]].
 - События: [[dev-events]]. Панели: [[dev-components]]. Ворота: [[dev-ci]].
 - Авто-каталоги (генерируются из кода): [[dev-component-catalog]] (компоненты и связи), [[dev-event-catalog]] (события шины), [[dev-service-map]] (DI-граф ядра), [[dev-contracts]] (интерфейсы ядра и их реализации), [[dev-store-catalog]] (сторы), [[dev-i18n-catalog]] (локали).
+- Скрипты и команды: [[dev-scripts]].
 - Короткая версия для онбординга — [[for-developers]].`,
     },
     {
@@ -341,7 +342,7 @@ flowchart LR
         tags: ['dev', 'CI', 'гейт', 'сборка'],
         freshness: 'verified',
         sources: ['.github/workflows/ci.yml', 'package.json'],
-        related: ['dev-testing', 'dev-generators', 'for-developers'],
+        related: ['dev-testing', 'dev-generators', 'dev-scripts', 'for-developers'],
         body: `## Конвейер (.github/workflows/ci.yml)
 
 \`\`\`mermaid
@@ -377,7 +378,7 @@ flowchart LR
         tags: ['dev', 'генераторы', 'scripts'],
         freshness: 'verified',
         sources: ['scripts/', 'src/generated/'],
-        related: ['dev-ci', 'dev-routing', 'dev-layout'],
+        related: ['dev-ci', 'dev-routing', 'dev-layout', 'dev-scripts'],
         body: `## Что генерируется
 
 - \`src/generated/commits-feed.ts\` — лента коммитов (git log, 40 записей) для раздела «Новости».
