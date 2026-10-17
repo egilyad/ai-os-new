@@ -12,6 +12,7 @@ import { WikiArticleView, WikiPanelStub } from './WikiArticleView';
 type WikiView =
     | { name: 'home' }
     | { name: 'map' }
+    | { name: 'coverage' }
     | { name: 'search' }
     | { name: 'news' }
     | { name: 'article'; slug: string }
@@ -133,6 +134,7 @@ export const WikiPanel: React.FC = () => {
         const names: Record<string, string> = {
             home: 'Главная',
             map: 'Карта ОС',
+            coverage: 'Покрытие документации',
             search: 'Поиск',
             news: 'Новости',
         };
@@ -146,6 +148,13 @@ export const WikiPanel: React.FC = () => {
             </button>
             <button type="button" onClick={() => setView({ name: 'map' })} style={navButton(view.name === 'map')}>
                 Карта ОС
+            </button>
+            <button
+                type="button"
+                onClick={() => setView({ name: 'coverage' })}
+                style={navButton(view.name === 'coverage')}
+            >
+                Покрытие
             </button>
             <button type="button" onClick={() => setView({ name: 'search' })} style={navButton(view.name === 'search')}>
                 Поиск
@@ -230,6 +239,9 @@ export const WikiPanel: React.FC = () => {
                         )}
                         {view.name === 'map' && (
                             <WikiMap t={t as (k: string) => string} openPanel={openPanel} />
+                        )}
+                        {view.name === 'coverage' && (
+                            <WikiCoverage t={t as (k: string) => string} openPanel={openPanel} />
                         )}
                         {view.name === 'search' && (
                             <WikiSearch
@@ -339,6 +351,9 @@ function WikiHome({
                     Карта системы{' '}
                     <button type="button" onClick={() => go({ name: 'map' })} style={linkBtn}>
                         (открыть полностью)
+                    </button>{' '}
+                    <button type="button" onClick={() => go({ name: 'coverage' })} style={linkBtn}>
+                        · покрытие документации
                     </button>
                 </h3>
                 <p style={{ lineHeight: 1.7 }}>
@@ -422,6 +437,89 @@ function WikiHome({
                     .
                 </p>
             </div>
+        </div>
+    );
+}
+
+function WikiCoverage({
+    t,
+    openPanel,
+}: {
+    t: (k: string) => string;
+    openPanel: (panelId: string, title: string, sectionTitle: string) => void;
+}): React.ReactNode {
+    const isDocumented = (id: string) => {
+        const slug = PANEL_ARTICLES[id];
+        return Boolean(slug && getArticle(slug));
+    };
+    const total = NAV_SECTIONS.reduce((n, s) => n + s.items.length, 0);
+    const documented = NAV_SECTIONS.reduce(
+        (n, s) => n + s.items.filter((i) => isDocumented(i.id)).length,
+        0,
+    );
+    const badge = (ok: boolean): React.CSSProperties => ({
+        fontSize: '0.65rem',
+        fontWeight: 700,
+        color: ok ? '#10b981' : '#f59e0b',
+        border: `1px solid ${ok ? '#10b981' : '#f59e0b'}`,
+        borderRadius: 999,
+        padding: '1px 8px',
+        whiteSpace: 'nowrap',
+    });
+    return (
+        <div>
+            <h3 style={{ marginTop: 0 }}>Покрытие документации</h3>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', lineHeight: 1.7 }}>
+                Честная картина: {documented} из {total} панелей имеют написанную статью,
+                остальные открывают заглушку. Список строится из живого реестра маршрутов.
+            </p>
+            {NAV_SECTIONS.map((s) => (
+                <div
+                    key={s.id}
+                    style={{
+                        background: 'rgba(255,255,255,0.03)',
+                        border: '1px solid rgba(255,255,255,0.06)',
+                        borderRadius: 10,
+                        padding: '0.9rem 1rem',
+                        marginBottom: '0.75rem',
+                    }}
+                >
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.4rem' }}>
+                        <span style={{ fontWeight: 700 }}>{t(s.labelKey)}</span>
+                        <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                            {s.items.filter((i) => isDocumented(i.id)).length}/{s.items.length}
+                        </span>
+                    </div>
+                    <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap' }}>
+                        {s.items.map((item) => {
+                            const ok = isDocumented(item.id);
+                            return (
+                                <button
+                                    key={item.id}
+                                    type="button"
+                                    onClick={() => openPanel(item.id, t(item.labelKey), t(s.labelKey))}
+                                    title={WIKI_PANEL_MAP[item.id] ?? ''}
+                                    style={{
+                                        display: 'inline-flex',
+                                        alignItems: 'center',
+                                        gap: '0.4rem',
+                                        background: 'rgba(255,255,255,0.04)',
+                                        border: '1px solid rgba(255,255,255,0.08)',
+                                        borderRadius: 8,
+                                        padding: '0.35rem 0.7rem',
+                                        cursor: 'pointer',
+                                        color: 'inherit',
+                                        fontSize: '0.8rem',
+                                    }}
+                                >
+                                    {t(item.labelKey)}
+                                    <span style={badge(ok)}>{ok ? 'статья' : 'заглушка'}</span>
+                                </button>
+                            );
+                        })}
+                    </div>
+                </div>
+            ))}
         </div>
     );
 }
