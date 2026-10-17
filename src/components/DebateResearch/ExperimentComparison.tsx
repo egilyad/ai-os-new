@@ -13,7 +13,14 @@ export const ExperimentComparison: React.FC = () => {
   const [rightId, setRightId] = useState<string>('');
   const [expandedField, setExpandedField] = useState<string | null>(null);
 
-  const allRuns = useMemo(() => researchRunService.getAllRuns(), []);
+  const allRuns = useMemo(() => {
+    try {
+      const list = researchRunService.getAllRuns();
+      return Array.isArray(list) ? list : [];
+    } catch {
+      return [];
+    }
+  }, []);
   const completedRuns = useMemo(() => allRuns.filter(r => r.status === 'completed' || r.status === 'failed'), [allRuns]);
 
   const left = useMemo(() => allRuns.find(r => r.id === leftId) || null, [allRuns, leftId]);
@@ -25,8 +32,9 @@ export const ExperimentComparison: React.FC = () => {
   };
 
   const formatDuration = (r: ResearchRun) => {
-    if (!r.completedAt) return '—';
-    return `${((r.completedAt - r.startedAt) / 1000).toFixed(1)}s`;
+    if (!r.completedAt || !r.startedAt) return '—';
+    const secs = (r.completedAt - r.startedAt) / 1000;
+    return Number.isFinite(secs) ? `${secs.toFixed(1)}s` : '—';
   };
 
   const diffFields = useMemo(() => {

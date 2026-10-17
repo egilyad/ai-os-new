@@ -12,7 +12,15 @@ import GovStatCards from './GovStatCards';
 import GovSummaryBar from './GovSummaryBar';
 import ScenarioResultCard from './ScenarioResultCard';
 
-const SCENARIO_COUNT = govStressTestService.getScenarios().length;
+const SCENARIO_COUNT = (() => {
+    // Module scope must never crash the import if the service is unavailable.
+    try {
+        const list = govStressTestService.getScenarios();
+        return Array.isArray(list) ? list.length : 0;
+    } catch {
+        return 0;
+    }
+})();
 
 const GovStressTest: React.FC = () => {
     const navigate = useNavigate();
@@ -26,8 +34,14 @@ const GovStressTest: React.FC = () => {
     const runAll = useCallback(() => {
         setRunning(true);
         setTimeout(() => {
-            setResults(govStressTestService.runAllScenarios());
-            setRunning(false);
+            try {
+                const out = govStressTestService.runAllScenarios();
+                setResults(Array.isArray(out) ? out : []);
+            } catch {
+                setResults([]);
+            } finally {
+                setRunning(false);
+            }
         }, 800);
     }, []);
 
@@ -39,8 +53,8 @@ const GovStressTest: React.FC = () => {
             const q = searchQuery.toLowerCase();
             list = list.filter(
                 (r) =>
-                    r.scenario.name.toLowerCase().includes(q) ||
-                    r.scenario.description.toLowerCase().includes(q),
+                    (r.scenario?.name ?? '').toLowerCase().includes(q) ||
+                    (r.scenario?.description ?? '').toLowerCase().includes(q),
             );
         }
         return list;
@@ -49,8 +63,10 @@ const GovStressTest: React.FC = () => {
     const summary = useMemo(() => govStressTestService.summarize(results), [results]);
     const categoryCounts = useMemo(() => {
         const counts: Record<string, number> = {};
-        for (const r of results)
-            counts[r.scenario.category] = (counts[r.scenario.category] || 0) + 1;
+        for (const r of results) {
+            const cat = r.scenario?.category ?? 'uncategorized';
+            counts[cat] = (counts[cat] || 0) + 1;
+        }
         return counts;
     }, [results]);
 
