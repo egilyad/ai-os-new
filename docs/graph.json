@@ -3,22 +3,22 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 830,
-    "edges": 2419,
+    "nodes": 864,
+    "edges": 2473,
     "byType": {
       "audit": 67,
-      "code": 269,
-      "test": 73,
+      "code": 291,
+      "test": 80,
       "panel": 259,
-      "article": 162
+      "article": 167
     },
     "byKind": {
       "audit_test": 325,
       "audit_mention": 928,
       "documents": 201,
-      "source": 372,
-      "test": 86,
-      "related": 507
+      "source": 394,
+      "test": 94,
+      "related": 531
     }
   },
   "nodes": [
@@ -1732,6 +1732,11 @@
       "label": "src/kernel/contracts/budget.ts"
     },
     {
+      "id": "file:src/kernel/contracts/memory.ts",
+      "type": "code",
+      "label": "src/kernel/contracts/memory.ts"
+    },
+    {
       "id": "file:src/kernel/contracts/pricing.ts",
       "type": "code",
       "label": "src/kernel/contracts/pricing.ts"
@@ -1812,6 +1817,11 @@
       "label": "src/kernel/services/"
     },
     {
+      "id": "file:src/kernel/services/admin-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/admin-service.ts"
+    },
+    {
       "id": "file:src/kernel/services/agent-project-runtime.test.ts",
       "type": "test",
       "label": "src/kernel/services/agent-project-runtime.test.ts"
@@ -1840,6 +1850,36 @@
       "id": "file:src/kernel/services/budget-service.ts",
       "type": "code",
       "label": "src/kernel/services/budget-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/cache-service.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/cache-service.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/cache-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/cache-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/chat-executor.test.ts",
+      "type": "code",
+      "label": "src/kernel/services/chat-executor.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/chat-executor.ts",
+      "type": "code",
+      "label": "src/kernel/services/chat-executor.ts"
+    },
+    {
+      "id": "file:src/kernel/services/cognitive-intelligence/cognitive-intelligence-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/cognitive-intelligence/cognitive-intelligence-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/cognitive-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/cognitive-service.ts"
     },
     {
       "id": "file:src/kernel/services/compromise-webhook-service.test.ts",
@@ -1907,6 +1947,41 @@
       "label": "src/kernel/services/debate-runtime/"
     },
     {
+      "id": "file:src/kernel/services/debate-runtime/debate-budget.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/debate-runtime/debate-budget.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/debate-runtime/debate-budget.ts",
+      "type": "code",
+      "label": "src/kernel/services/debate-runtime/debate-budget.ts"
+    },
+    {
+      "id": "file:src/kernel/services/debate-runtime/debate-consensus.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/debate-runtime/debate-consensus.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/debate-runtime/debate-consensus.ts",
+      "type": "code",
+      "label": "src/kernel/services/debate-runtime/debate-consensus.ts"
+    },
+    {
+      "id": "file:src/kernel/services/debate-runtime/debate-engine.ts",
+      "type": "code",
+      "label": "src/kernel/services/debate-runtime/debate-engine.ts"
+    },
+    {
+      "id": "file:src/kernel/services/debate-runtime/debate-evaluator.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/debate-runtime/debate-evaluator.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/debate-runtime/debate-evaluator.ts",
+      "type": "code",
+      "label": "src/kernel/services/debate-runtime/debate-evaluator.ts"
+    },
+    {
       "id": "file:src/kernel/services/debate-runtime/debate-memory.test.ts",
       "type": "test",
       "label": "src/kernel/services/debate-runtime/debate-memory.test.ts"
@@ -1917,9 +1992,34 @@
       "label": "src/kernel/services/debate-runtime/debate-memory.ts"
     },
     {
+      "id": "file:src/kernel/services/debate-runtime/debate-orchestrator.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/debate-runtime/debate-orchestrator.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/debate-runtime/debate-orchestrator.ts",
+      "type": "code",
+      "label": "src/kernel/services/debate-runtime/debate-orchestrator.ts"
+    },
+    {
+      "id": "file:src/kernel/services/debate-runtime/debate-session.ts",
+      "type": "code",
+      "label": "src/kernel/services/debate-runtime/debate-session.ts"
+    },
+    {
       "id": "file:src/kernel/services/debate-runtime/debate-strategy-definitions.ts",
       "type": "code",
       "label": "src/kernel/services/debate-runtime/debate-strategy-definitions.ts"
+    },
+    {
+      "id": "file:src/kernel/services/debate-runtime/debate-sync-manager.ts",
+      "type": "code",
+      "label": "src/kernel/services/debate-runtime/debate-sync-manager.ts"
+    },
+    {
+      "id": "file:src/kernel/services/debate-runtime/debate-topology.ts",
+      "type": "code",
+      "label": "src/kernel/services/debate-runtime/debate-topology.ts"
     },
     {
       "id": "file:src/kernel/services/dexie-schema-versioning.test.ts",
@@ -1992,6 +2092,26 @@
       "label": "src/kernel/services/mcp-service.ts"
     },
     {
+      "id": "file:src/kernel/services/memory-engine.ts",
+      "type": "code",
+      "label": "src/kernel/services/memory-engine.ts"
+    },
+    {
+      "id": "file:src/kernel/services/metrics-service.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/metrics-service.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/metrics-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/metrics-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/monitoring-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/monitoring-service.ts"
+    },
+    {
       "id": "file:src/kernel/services/notification-webhook-service.test.ts",
       "type": "test",
       "label": "src/kernel/services/notification-webhook-service.test.ts"
@@ -2000,6 +2120,11 @@
       "id": "file:src/kernel/services/notification-webhook-service.ts",
       "type": "code",
       "label": "src/kernel/services/notification-webhook-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/orchestration-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/orchestration-service.ts"
     },
     {
       "id": "file:src/kernel/services/policy-service.test.ts",
@@ -2107,6 +2232,21 @@
       "label": "src/kernel/services/storage/local-storage-adapter.ts"
     },
     {
+      "id": "file:src/kernel/services/system-status-service.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/system-status-service.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/system-status-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/system-status-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/timeline-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/timeline-service.ts"
+    },
+    {
       "id": "file:src/kernel/services/tool-executor.test.ts",
       "type": "test",
       "label": "src/kernel/services/tool-executor.test.ts"
@@ -2115,6 +2255,11 @@
       "id": "file:src/kernel/services/tool-executor.ts",
       "type": "code",
       "label": "src/kernel/services/tool-executor.ts"
+    },
+    {
+      "id": "file:src/kernel/services/trace-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/trace-service.ts"
     },
     {
       "id": "file:src/kernel/services/transaction.ts",
@@ -4050,6 +4195,20 @@
       "status": "verified"
     },
     {
+      "id": "wiki:comp-chat",
+      "type": "article",
+      "label": "Компонент: чат (ChatExecutor)",
+      "section": "components",
+      "status": "documented"
+    },
+    {
+      "id": "wiki:comp-cognitive-orchestration",
+      "type": "article",
+      "label": "Компонент: когнитивные трассы и оркестрация топологий",
+      "section": "components",
+      "status": "documented"
+    },
+    {
       "id": "wiki:comp-config",
       "type": "article",
       "label": "Компонент: конфигурация и настройки",
@@ -4060,6 +4219,13 @@
       "id": "wiki:comp-consistency",
       "type": "article",
       "label": "Компонент: консистентность и дрейф",
+      "section": "components",
+      "status": "documented"
+    },
+    {
+      "id": "wiki:comp-debate-runtime",
+      "type": "article",
+      "label": "Компонент: рантайм дебатов",
       "section": "components",
       "status": "documented"
     },
@@ -4088,6 +4254,20 @@
       "id": "wiki:comp-key-management",
       "type": "article",
       "label": "Компонент: управление ключами провайдеров",
+      "section": "components",
+      "status": "documented"
+    },
+    {
+      "id": "wiki:comp-memory",
+      "type": "article",
+      "label": "Компонент: память и знания",
+      "section": "components",
+      "status": "documented"
+    },
+    {
+      "id": "wiki:comp-observability",
+      "type": "article",
+      "label": "Компонент: наблюдаемость (метрики, трейсы, мониторинг)",
       "section": "components",
       "status": "documented"
     },
@@ -12626,6 +12806,81 @@
       "kind": "related"
     },
     {
+      "from": "wiki:comp-chat",
+      "to": "file:src/kernel/services/chat-executor.test.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-chat",
+      "to": "file:src/kernel/services/chat-executor.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-chat",
+      "to": "file:src/kernel/services/chat-executor.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-chat",
+      "to": "wiki:comp-budget-pricing",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-chat",
+      "to": "wiki:comp-policy-security",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-chat",
+      "to": "wiki:comp-routing",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-chat",
+      "to": "wiki:panel-chat",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-cognitive-orchestration",
+      "to": "file:src/kernel/services/cognitive-intelligence/cognitive-intelligence-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-cognitive-orchestration",
+      "to": "file:src/kernel/services/cognitive-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-cognitive-orchestration",
+      "to": "file:src/kernel/services/orchestration-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-cognitive-orchestration",
+      "to": "wiki:architecture",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-cognitive-orchestration",
+      "to": "wiki:comp-agents-roles-skills",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-cognitive-orchestration",
+      "to": "wiki:comp-routing",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-cognitive-orchestration",
+      "to": "wiki:panel-dashboard",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-cognitive-orchestration",
+      "to": "wiki:panel-knowledge",
+      "kind": "related"
+    },
+    {
       "from": "wiki:comp-config",
       "to": "file:src/kernel/services/config-history.test.ts",
       "kind": "test"
@@ -12723,6 +12978,91 @@
     {
       "from": "wiki:comp-consistency",
       "to": "wiki:docs-health",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-debate-runtime",
+      "to": "file:src/kernel/services/debate-runtime/debate-budget.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-debate-runtime",
+      "to": "file:src/kernel/services/debate-runtime/debate-budget.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-debate-runtime",
+      "to": "file:src/kernel/services/debate-runtime/debate-consensus.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-debate-runtime",
+      "to": "file:src/kernel/services/debate-runtime/debate-consensus.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-debate-runtime",
+      "to": "file:src/kernel/services/debate-runtime/debate-engine.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-debate-runtime",
+      "to": "file:src/kernel/services/debate-runtime/debate-evaluator.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-debate-runtime",
+      "to": "file:src/kernel/services/debate-runtime/debate-evaluator.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-debate-runtime",
+      "to": "file:src/kernel/services/debate-runtime/debate-orchestrator.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-debate-runtime",
+      "to": "file:src/kernel/services/debate-runtime/debate-orchestrator.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-debate-runtime",
+      "to": "file:src/kernel/services/debate-runtime/debate-session.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-debate-runtime",
+      "to": "file:src/kernel/services/debate-runtime/debate-sync-manager.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-debate-runtime",
+      "to": "file:src/kernel/services/debate-runtime/debate-topology.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-debate-runtime",
+      "to": "wiki:comp-agents-roles-skills",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-debate-runtime",
+      "to": "wiki:comp-routing",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-debate-runtime",
+      "to": "wiki:debates",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-debate-runtime",
+      "to": "wiki:panel-debate-live",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-debate-runtime",
+      "to": "wiki:panel-debate-toolkit",
       "kind": "related"
     },
     {
@@ -12948,6 +13288,116 @@
     {
       "from": "wiki:comp-key-management",
       "to": "wiki:panel-providers",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-memory",
+      "to": "file:src/kernel/contracts/memory.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-memory",
+      "to": "file:src/kernel/services/memory-engine.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-memory",
+      "to": "wiki:comp-persistence",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-memory",
+      "to": "wiki:dev-store-catalog",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-memory",
+      "to": "wiki:memory",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-memory",
+      "to": "wiki:panel-knowledge",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-memory",
+      "to": "wiki:panel-memory-palace",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-observability",
+      "to": "file:src/kernel/services/admin-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-observability",
+      "to": "file:src/kernel/services/cache-service.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-observability",
+      "to": "file:src/kernel/services/cache-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-observability",
+      "to": "file:src/kernel/services/metrics-service.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-observability",
+      "to": "file:src/kernel/services/metrics-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-observability",
+      "to": "file:src/kernel/services/monitoring-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-observability",
+      "to": "file:src/kernel/services/system-status-service.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-observability",
+      "to": "file:src/kernel/services/system-status-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-observability",
+      "to": "file:src/kernel/services/timeline-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-observability",
+      "to": "file:src/kernel/services/trace-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-observability",
+      "to": "wiki:comp-routing",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-observability",
+      "to": "wiki:diagnostics",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-observability",
+      "to": "wiki:panel-custom-metrics",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-observability",
+      "to": "wiki:panel-observability",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-observability",
+      "to": "wiki:panel-sre",
       "kind": "related"
     },
     {

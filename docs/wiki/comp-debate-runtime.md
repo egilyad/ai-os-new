@@ -1,0 +1,56 @@
+<!-- АВТОСГЕНЕРАЦИЯ: файл создан scripts/gen-wiki-docs.mjs из корпуса Wiki (src/components/WikiPanel). Не редактировать вручную. -->
+
+# Компонент: рантайм дебатов
+
+> Раздел: **Компоненты и сервисы** · Статус: documented · Теги: компоненты, дебаты, оркестрация, агенты
+
+Источники: `src/kernel/services/debate-runtime/debate-engine.ts`, `src/kernel/services/debate-runtime/debate-sync-manager.ts`, `src/kernel/services/debate-runtime/debate-session.ts`, `src/kernel/services/debate-runtime/debate-orchestrator.ts`, `src/kernel/services/debate-runtime/debate-topology.ts`, `src/kernel/services/debate-runtime/debate-budget.ts`, `src/kernel/services/debate-runtime/debate-consensus.ts`, `src/kernel/services/debate-runtime/debate-evaluator.ts`
+
+## Назначение
+
+Многогерентные дебаты: несколько агентов-ролей обсуждают тему по заданной стратегии, а рантайм ведёт сессию, собирает аргументы, считает метрики, ищет консенсус и подводит итог.
+
+## Возможности
+
+- Управление сессией: создание, старт, пауза/возобновление, отмена, завершение.
+- Выбор следующего участника по стратегии; раунды; человеческие инъекции.
+- Бюджет дебатов (токены/стоимость/раунды/длительность) с уровнями давления.
+- Метрики (графовые, активности, качества), интерпретация постанализа, оценка агентов, поиск консенсуса, факт-чекинг.
+- Авто-дебаты (batch/stress-test) и «губернатор» качества.
+
+## Реализация
+
+- Каталог `src/kernel/services/debate-runtime/` — **очень крупный** (300+ файлов, десятки подсервисов).
+- Ядро: `DebateEngine` (`debate-engine.ts`, `IDebateEngine, ILifecycle`), `DebateSyncManager` (+ `DebateAlreadyActiveError`), `DebateSession` (`IDebateSession`), `DebateOrchestrator` (`IDebateOrchestrator`), `DebateTopologyService` (`ITopologyService`).
+- Компоненты: `DebateBudget`, `DebateConsensusEngine`, `DebateEvaluator`, `debate-interpreter.ts`, `debate-metrics.ts` (`computeGraphMetrics/computeActivityMetrics/computeQualityMetrics`), `fact-checking-service.ts`.
+- Подкаталоги: `auto-debate/auto-debate-service.ts` (`AutoDebateService`), `debate-governor/debate-governor.ts` (`DebateGovernor`).
+- Стратегии/режимы: `debate-strategy-registry.ts`, `debate-strategy-manager.ts`, `debate-mode-system.ts`, `debate-archetypes.ts`.
+- События семейства `debate-runtime:*` и `debate:*` (создание/старт/раунд/аргумент/консенсус/память).
+- Feature flag `DEBATE_RUNTIME_ENGINE` переключает путь старта (старый `DebateService` vs `DebateEngine`).
+
+## Связи
+
+- Участники — [Компонент: агенты, роли и навыки](./comp-agents-roles-skills.md); LLM-вызовы идут через роутинг ([Компонент: роутинг и провайдеры](./comp-routing.md)).
+- Панели: [Панель: Живые дебаты](./panel-debate-live.md), [Панель: Анализ дебатов](./panel-debate-analysis.md), [Инструменты анализа дебатов](./panel-debate-toolkit.md), а также [Дебаты: режимы и механика](./debates.md) (обзор).
+
+## Проверка работоспособности
+
+- Богатая поверхность тестов внутри `debate-runtime/`: `debate-orchestrator.test.ts`, `debate-budget.test.ts`, `debate-consensus.test.ts`, `debate-evaluator.test.ts`, `debate-memory.test.ts`, `debate-policy.test.ts`, `debate-session-reload.test.ts` и др.
+- Ручная: запустить дебат в панели Debate Live и проверить раунды/метрики.
+
+## Состояние
+
+- Реализовано; основное подтверждено тестами в самом каталоге.
+- Точные числа (например, «13 стратегий / 33 пресета» из старой описи) здесь **не подтверждены** и требуют сверки с `debate-strategy-registry.ts`.
+
+---
+
+## Связанные материалы
+
+- [Дебаты: режимы и механика](./debates.md)
+- [Панель: Живые дебаты](./panel-debate-live.md)
+- [Компонент: агенты, роли и навыки](./comp-agents-roles-skills.md)
+- [Компонент: роутинг и провайдеры](./comp-routing.md)
+- [Инструменты анализа дебатов](./panel-debate-toolkit.md)
+
+[← Все материалы](./README.md)

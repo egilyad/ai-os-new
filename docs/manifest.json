@@ -50,7 +50,7 @@
     {
       "id": "components",
       "title": "Компоненты и сервисы",
-      "articles": 15
+      "articles": 20
     },
     {
       "id": "notes",
@@ -2869,6 +2869,163 @@
       "reviewed": null,
       "tests": [
         "src/kernel/services/consistency-checker.test.ts"
+      ]
+    },
+    {
+      "id": "wiki:comp-debate-runtime",
+      "type": "article",
+      "slug": "comp-debate-runtime",
+      "title": "Компонент: рантайм дебатов",
+      "section": "components",
+      "status": "documented",
+      "tags": [
+        "компоненты",
+        "дебаты",
+        "оркестрация",
+        "агенты"
+      ],
+      "sources": [
+        "src/kernel/services/debate-runtime/debate-engine.ts",
+        "src/kernel/services/debate-runtime/debate-sync-manager.ts",
+        "src/kernel/services/debate-runtime/debate-session.ts",
+        "src/kernel/services/debate-runtime/debate-orchestrator.ts",
+        "src/kernel/services/debate-runtime/debate-topology.ts",
+        "src/kernel/services/debate-runtime/debate-budget.ts",
+        "src/kernel/services/debate-runtime/debate-consensus.ts",
+        "src/kernel/services/debate-runtime/debate-evaluator.ts"
+      ],
+      "related": [
+        "debates",
+        "panel-debate-live",
+        "comp-agents-roles-skills",
+        "comp-routing",
+        "panel-debate-toolkit"
+      ],
+      "reviewed": null,
+      "tests": [
+        "src/kernel/services/debate-runtime/debate-orchestrator.test.ts",
+        "src/kernel/services/debate-runtime/debate-budget.test.ts",
+        "src/kernel/services/debate-runtime/debate-consensus.test.ts",
+        "src/kernel/services/debate-runtime/debate-evaluator.test.ts"
+      ]
+    },
+    {
+      "id": "wiki:comp-cognitive-orchestration",
+      "type": "article",
+      "slug": "comp-cognitive-orchestration",
+      "title": "Компонент: когнитивные трассы и оркестрация топологий",
+      "section": "components",
+      "status": "documented",
+      "tags": [
+        "компоненты",
+        "когнитивные",
+        "топологии",
+        "оркестрация"
+      ],
+      "sources": [
+        "src/kernel/services/cognitive-service.ts",
+        "src/kernel/services/orchestration-service.ts",
+        "src/kernel/services/cognitive-intelligence/cognitive-intelligence-service.ts"
+      ],
+      "related": [
+        "architecture",
+        "panel-dashboard",
+        "panel-knowledge",
+        "comp-routing",
+        "comp-agents-roles-skills"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:comp-memory",
+      "type": "article",
+      "slug": "comp-memory",
+      "title": "Компонент: память и знания",
+      "section": "components",
+      "status": "documented",
+      "tags": [
+        "компоненты",
+        "память",
+        "поиск",
+        "RAG"
+      ],
+      "sources": [
+        "src/kernel/services/memory-engine.ts",
+        "src/kernel/contracts/memory.ts"
+      ],
+      "related": [
+        "memory",
+        "panel-memory-palace",
+        "panel-knowledge",
+        "comp-persistence",
+        "dev-store-catalog"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:comp-chat",
+      "type": "article",
+      "slug": "comp-chat",
+      "title": "Компонент: чат (ChatExecutor)",
+      "section": "components",
+      "status": "documented",
+      "tags": [
+        "компоненты",
+        "чат",
+        "стриминг",
+        "LLM"
+      ],
+      "sources": [
+        "src/kernel/services/chat-executor.ts",
+        "src/kernel/services/chat-executor.test.ts"
+      ],
+      "related": [
+        "panel-chat",
+        "comp-routing",
+        "comp-budget-pricing",
+        "comp-policy-security"
+      ],
+      "reviewed": null,
+      "tests": [
+        "src/kernel/services/chat-executor.test.ts"
+      ]
+    },
+    {
+      "id": "wiki:comp-observability",
+      "type": "article",
+      "slug": "comp-observability",
+      "title": "Компонент: наблюдаемость (метрики, трейсы, мониторинг)",
+      "section": "components",
+      "status": "documented",
+      "tags": [
+        "компоненты",
+        "наблюдаемость",
+        "метрики",
+        "трейсы"
+      ],
+      "sources": [
+        "src/kernel/services/metrics-service.ts",
+        "src/kernel/services/monitoring-service.ts",
+        "src/kernel/services/timeline-service.ts",
+        "src/kernel/services/trace-service.ts",
+        "src/kernel/services/system-status-service.ts",
+        "src/kernel/services/cache-service.ts",
+        "src/kernel/services/admin-service.ts"
+      ],
+      "related": [
+        "panel-observability",
+        "panel-sre",
+        "diagnostics",
+        "panel-custom-metrics",
+        "comp-routing"
+      ],
+      "reviewed": null,
+      "tests": [
+        "src/kernel/services/metrics-service.test.ts",
+        "src/kernel/services/system-status-service.test.ts",
+        "src/kernel/services/cache-service.test.ts"
       ]
     },
     {

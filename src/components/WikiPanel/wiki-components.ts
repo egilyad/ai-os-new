@@ -45,6 +45,8 @@ export const COMPONENT_ARTICLES: WikiArticle[] = [
 - **Данные:** [[comp-persistence]] (Dexie и storage-адаптеры).
 - **Провайдеры и деньги:** [[comp-key-management]] (ключи), [[comp-routing]] (роутинг), [[comp-budget-pricing]] (бюджет и цены).
 - **Люди и инструменты:** [[comp-agents-roles-skills]], [[comp-tools-mcp]] (инструменты, MCP, sandbox), [[comp-policy-security]] (политики, секреты, вебхуки).
+- **Дебаты, мышление, память, чат:** [[comp-debate-runtime]] (движок дебатов), [[comp-cognitive-orchestration]] (когнитивные трассы и топологии), [[comp-memory]] (память и поиск), [[comp-chat]] (ChatExecutor).
+- **Наблюдаемость:** [[comp-observability]] (метрики, трейсы, мониторинг, кеш, админ).
 
 Машиночитаемые каталоги (генерируются из кода): [[dev-component-catalog]], [[dev-service-map]], [[dev-contracts]], [[dev-event-catalog]].
 
@@ -759,5 +761,228 @@ flowchart TD
 ## Состояние
 
 - Реализовано; \`ConsistencyChecker\` покрыт тестом, \`TruthConsistencyMonitor\` — нет.`,
+    },
+    {
+        slug: 'comp-debate-runtime',
+        title: 'Компонент: рантайм дебатов',
+        section: 'components',
+        tags: ['компоненты', 'дебаты', 'оркестрация', 'агенты'],
+        freshness: 'documented',
+        sources: [
+            'src/kernel/services/debate-runtime/debate-engine.ts',
+            'src/kernel/services/debate-runtime/debate-sync-manager.ts',
+            'src/kernel/services/debate-runtime/debate-session.ts',
+            'src/kernel/services/debate-runtime/debate-orchestrator.ts',
+            'src/kernel/services/debate-runtime/debate-topology.ts',
+            'src/kernel/services/debate-runtime/debate-budget.ts',
+            'src/kernel/services/debate-runtime/debate-consensus.ts',
+            'src/kernel/services/debate-runtime/debate-evaluator.ts',
+        ],
+        related: ['debates', 'panel-debate-live', 'comp-agents-roles-skills', 'comp-routing', 'panel-debate-toolkit'],
+        body: `## Назначение
+
+Многогерентные дебаты: несколько агентов-ролей обсуждают тему по заданной стратегии, а рантайм ведёт сессию, собирает аргументы, считает метрики, ищет консенсус и подводит итог.
+
+## Возможности
+
+- Управление сессией: создание, старт, пауза/возобновление, отмена, завершение.
+- Выбор следующего участника по стратегии; раунды; человеческие инъекции.
+- Бюджет дебатов (токены/стоимость/раунды/длительность) с уровнями давления.
+- Метрики (графовые, активности, качества), интерпретация постанализа, оценка агентов, поиск консенсуса, факт-чекинг.
+- Авто-дебаты (batch/stress-test) и «губернатор» качества.
+
+## Реализация
+
+- Каталог \`src/kernel/services/debate-runtime/\` — **очень крупный** (300+ файлов, десятки подсервисов).
+- Ядро: \`DebateEngine\` (\`debate-engine.ts\`, \`IDebateEngine, ILifecycle\`), \`DebateSyncManager\` (+ \`DebateAlreadyActiveError\`), \`DebateSession\` (\`IDebateSession\`), \`DebateOrchestrator\` (\`IDebateOrchestrator\`), \`DebateTopologyService\` (\`ITopologyService\`).
+- Компоненты: \`DebateBudget\`, \`DebateConsensusEngine\`, \`DebateEvaluator\`, \`debate-interpreter.ts\`, \`debate-metrics.ts\` (\`computeGraphMetrics/computeActivityMetrics/computeQualityMetrics\`), \`fact-checking-service.ts\`.
+- Подкаталоги: \`auto-debate/auto-debate-service.ts\` (\`AutoDebateService\`), \`debate-governor/debate-governor.ts\` (\`DebateGovernor\`).
+- Стратегии/режимы: \`debate-strategy-registry.ts\`, \`debate-strategy-manager.ts\`, \`debate-mode-system.ts\`, \`debate-archetypes.ts\`.
+- События семейства \`debate-runtime:*\` и \`debate:*\` (создание/старт/раунд/аргумент/консенсус/память).
+- Feature flag \`DEBATE_RUNTIME_ENGINE\` переключает путь старта (старый \`DebateService\` vs \`DebateEngine\`).
+
+## Связи
+
+- Участники — [[comp-agents-roles-skills]]; LLM-вызовы идут через роутинг ([[comp-routing]]).
+- Панели: [[panel-debate-live]], [[panel-debate-analysis]], [[panel-debate-toolkit]], а также [[debates]] (обзор).
+
+## Проверка работоспособности
+
+- Богатая поверхность тестов внутри \`debate-runtime/\`: \`debate-orchestrator.test.ts\`, \`debate-budget.test.ts\`, \`debate-consensus.test.ts\`, \`debate-evaluator.test.ts\`, \`debate-memory.test.ts\`, \`debate-policy.test.ts\`, \`debate-session-reload.test.ts\` и др.
+- Ручная: запустить дебат в панели Debate Live и проверить раунды/метрики.
+
+## Состояние
+
+- Реализовано; основное подтверждено тестами в самом каталоге.
+- Точные числа (например, «13 стратегий / 33 пресета» из старой описи) здесь **не подтверждены** и требуют сверки с \`debate-strategy-registry.ts\`.`,
+    },
+    {
+        slug: 'comp-cognitive-orchestration',
+        title: 'Компонент: когнитивные трассы и оркестрация топологий',
+        section: 'components',
+        tags: ['компоненты', 'когнитивные', 'топологии', 'оркестрация'],
+        freshness: 'documented',
+        sources: [
+            'src/kernel/services/cognitive-service.ts',
+            'src/kernel/services/orchestration-service.ts',
+            'src/kernel/services/cognitive-intelligence/cognitive-intelligence-service.ts',
+        ],
+        related: ['architecture', 'panel-dashboard', 'panel-knowledge', 'comp-routing', 'comp-agents-roles-skills'],
+        body: `## Назначение
+
+Исполнять когнитивные процессы и топологии: прогонять узлы (шаги) через цепочки провайдеров, фиксировать решения и монтировать графы (DAG) рабочих процессов.
+
+## Возможности
+
+- Когнитивные шаги: активный/завершённый, запись решения, вычисление confidence/score.
+- Оркестрация: монтирование/управление топологиями, исполнение узлов, enable/disable, статистика.
+- Когнитивная разведка: анализ метрик (диагностика, давление, what-if) в подкаталоге \`cognitive-intelligence/\`.
+
+## Реализация
+
+- \`CognitiveService\` (\`cognitive-service.ts\`): события \`cognitive:trace:updated\`, \`cognitive:step:active\`, \`cognitive:step:completed\`, \`cognitive:decision:made\`, а также \`request:incoming/completed\`.
+- \`OrchestrationService\` (\`orchestration-service.ts\`): исполнение DAG-топологий, \`system:topology:mounted\`.
+- \`cognitive-intelligence/cognitive-intelligence-service.ts\` + \`cognitive-diagnostics.ts\`, \`cognitive-metrics.ts\`, \`cognitive-pressure.ts\`, \`cognitive-whatif.ts\`.
+
+## Связи
+
+- Узлы исполняются через провайдеров ([[comp-routing]]).
+- Роли агентов, исполняющие шаги — [[comp-agents-roles-skills]].
+- Панели: [[panel-dashboard]], [[panel-knowledge]].
+
+## Проверка работоспособности
+
+- Ручная: запустить топологию в панели и проследить \`cognitive:step:*\` в ленте событий.
+- **Тестов нет:** для \`cognitive-service.ts\` и \`orchestration-service.ts\` автотесты не найдены.
+
+## Состояние
+
+- Реализовано; подтверждено только чтением кода (тестов нет).`,
+    },
+    {
+        slug: 'comp-memory',
+        title: 'Компонент: память и знания',
+        section: 'components',
+        tags: ['компоненты', 'память', 'поиск', 'RAG'],
+        freshness: 'documented',
+        sources: ['src/kernel/services/memory-engine.ts', 'src/kernel/contracts/memory.ts'],
+        related: ['memory', 'panel-memory-palace', 'panel-knowledge', 'comp-persistence', 'dev-store-catalog'],
+        body: `## Назначение
+
+Семантическая и полнотекстовая память: хранить заметки/знания и находить нужное по смыслу, а не только по подстроке.
+
+## Возможности
+
+- Три коллекции: долговременная (\`long-term\`), эфемерная с TTL (\`ephemeral\`), RAG.
+- Режимы поиска: \`auto\`, \`semantic\`, \`fulltext\`.
+- Векторный поиск через Web Worker; авто-прунинг по TTL; CRUD записей.
+- Feature-flag-гейтинг.
+
+## Реализация
+
+- \`MemoryService implements IMemoryEngine\` (\`memory-engine.ts\`, ~780 строк); тип \`SearchMode = 'auto' | 'semantic' | 'fulltext'\`.
+- Эмитит \`memory:updated\` (панели перерисовывают список).
+- Расширенная память (memory-palace, federated, export/import) реализована отдельными панелями/сервисами.
+
+## Связи
+
+- Персистентность — [[comp-persistence]]; сторы памяти — [[dev-store-catalog]].
+- Панели: [[memory]] (обзор), [[panel-memory-palace]], [[panel-knowledge]].
+- ADR по стратегии поиска — \`docs/004-hybrid-search-strategy.md\` (см. [[dev-adr]]).
+
+## Проверка работоспособности
+
+- Ручная: добавить запись, искать в режимах semantic/fulltext.
+- **Тестов нет:** файл теста для \`memory-engine\` не найден.
+
+## Состояние
+
+- Реализовано; подтверждено чтением кода, без автотестов.`,
+    },
+    {
+        slug: 'comp-chat',
+        title: 'Компонент: чат (ChatExecutor)',
+        section: 'components',
+        tags: ['компоненты', 'чат', 'стриминг', 'LLM'],
+        freshness: 'documented',
+        sources: ['src/kernel/services/chat-executor.ts', 'src/kernel/services/chat-executor.test.ts'],
+        related: ['panel-chat', 'comp-routing', 'comp-budget-pricing', 'comp-policy-security'],
+        body: `## Назначение
+
+Оркестрация пользовательского чата: принять сообщение, выбрать провайдера/ключ, отправить в LLM (в т.ч. стримом), обновить историю и стоимость.
+
+## Возможности
+
+- Отправка и стриминг ответов, token estimation, история, очередь, выбор ключа.
+- События \`request:incoming\`, \`request:completed\`, \`chat:stream:end\` (используются аналитикой и бюджетом).
+
+## Реализация
+
+- **Важно:** файла \`chat-service.ts\` в коде нет — сервис реализован как \`ChatExecutor\` (\`src/kernel/services/chat-executor.ts\`, ~770 строк). В \`docs/SERVICES_RU.md\` он ошибочно назван \`ChatService (chat-service.ts)\`.
+- UI-логика чата — в сторах \`src/stores/chat/\` (\`chat-send-message.ts\`, \`chat-event-handlers.ts\`, \`useChatStore.ts\`).
+
+## Связи
+
+- Провайдер/ключ — [[comp-routing]]; стоимость — [[comp-budget-pricing]]; ограничения — [[comp-policy-security]].
+- Панель: [[panel-chat]].
+
+## Проверка работоспособности
+
+- \`chat-executor.test.ts\` и \`ChatService.test.ts\` (тестируют именно \`ChatExecutor\`).
+- Ручная: отправить сообщение в панели Chat, увидеть стрим и запись расхода.
+
+## Состояние
+
+- Реализовано и подтверждено тестами; имя сервиса в старой описи исправлено.`,
+    },
+    {
+        slug: 'comp-observability',
+        title: 'Компонент: наблюдаемость (метрики, трейсы, мониторинг)',
+        section: 'components',
+        tags: ['компоненты', 'наблюдаемость', 'метрики', 'трейсы'],
+        freshness: 'documented',
+        sources: [
+            'src/kernel/services/metrics-service.ts',
+            'src/kernel/services/monitoring-service.ts',
+            'src/kernel/services/timeline-service.ts',
+            'src/kernel/services/trace-service.ts',
+            'src/kernel/services/system-status-service.ts',
+            'src/kernel/services/cache-service.ts',
+            'src/kernel/services/admin-service.ts',
+        ],
+        related: ['panel-observability', 'panel-sre', 'diagnostics', 'panel-custom-metrics', 'comp-routing'],
+        body: `## Назначение
+
+Видеть, что происходит внутри: метрики провайдеров, здоровье системы, хронология событий, трейсы выполнения, сводный статус и админ-функции.
+
+## Возможности
+
+- \`MetricsService\` — latency/TPS/error rate time-series, пороговые алерты, периодический снапшот.
+- \`MonitoringService\` — health score из trace/metrics/timeline, события о смене здоровья.
+- \`TimelineService\` — хронологическая лента системных событий (фильтры, поиск, пагинация, кольцевой буфер).
+- \`TraceService\` + \`TraceContext\` — трейсы выполнения, активный трейс, quality-of-data метрики.
+- \`SystemStatusService\` — композитный отчёт по группам/ключам/состоянию (ничего не хранит).
+- \`CacheService\` — in-memory кеш LLM-ответов (TTL, LRU, hit/miss).
+- \`AdminService\` — audit log, system health report, runtime status, рестарт/сброс.
+
+## Реализация
+
+- Все три — классы с зависимостями через DI: \`MetricsService\`, \`MonitoringService\`, \`TimelineService implements ITimelineContract\`, \`TraceService\`, \`SystemStatusService implements ISystemStatusService\`, \`CacheService implements ICacheService\`, \`AdminService\`.
+- \`trace-context.ts\`: стек \`enter/exit\`, \`run(fn)\`, \`generateTraceId()\` = \`timestamp-random\`.
+- \`causal-timeline-service.ts\` пишет каузальные трейсы из \`system:decision\`.
+
+## Связи
+
+- Питается событиями ядра и роутинга ([[comp-routing]], [[comp-event-bus]]).
+- Панели: [[panel-observability]], [[panel-sre]], [[diagnostics]], [[panel-custom-metrics]].
+
+## Проверка работоспособности
+
+- Ручная: открыть панели Observability/SRE/Diagnostics, сверить ряды метрик с реальными запросами.
+- **Тестов нет:** для \`metrics-service\`, \`monitoring-service\`, \`timeline-service\`, \`trace-service\`, \`admin-service\`, \`causal-timeline-service\` автотесты не найдены.
+
+## Состояние
+
+- Реализовано; подтверждено чтением кода. Покрытие тестами — открыто.`,
     },
 ];

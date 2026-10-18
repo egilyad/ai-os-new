@@ -3,7 +3,7 @@
   "generatedBy": "scripts/gen-docs-inventory.mjs",
   "scope": "git-tracked markdown: docs/**/*.md (excluding docs/new drafts and the self-report pages docs-health, docs-inventory) plus repository entry docs (root *.md, .superagents/**, src/kernel/DEPENDENCY_MAP.md)",
   "totals": {
-    "documents": 985,
+    "documents": 990,
     "byCategory": {
       "repo": 12,
       "top": 46,
@@ -13,12 +13,12 @@
       "reference": 6,
       "roadmap": 6,
       "superseded": 3,
-      "wiki": 161
+      "wiki": 166
     },
     "byLanguage": {
       "en": 658,
-      "ru": 199,
-      "mixed": 128
+      "ru": 203,
+      "mixed": 129
     }
   },
   "duplicates": {
@@ -6632,6 +6632,22 @@
       "hash": "95425a3a7a85a4822bceadc856d6f081a9f31bd2"
     },
     {
+      "path": "docs/wiki/comp-chat.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Компонент: чат (ChatExecutor)",
+      "bytes": 2809,
+      "hash": "d8447af6e88cc5f6bbf3602c30fad40da72af042"
+    },
+    {
+      "path": "docs/wiki/comp-cognitive-orchestration.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Компонент: когнитивные трассы и оркестрация топологий",
+      "bytes": 3420,
+      "hash": "991e387f7c81428c02e9be65ecd5e94258080adb"
+    },
+    {
       "path": "docs/wiki/comp-config.md",
       "category": "wiki",
       "language": "mixed",
@@ -6646,6 +6662,14 @@
       "title": "Компонент: консистентность и дрейф",
       "bytes": 2840,
       "hash": "94b65059a4e601bde78d6a88190dcd817c961b04"
+    },
+    {
+      "path": "docs/wiki/comp-debate-runtime.md",
+      "category": "wiki",
+      "language": "mixed",
+      "title": "Компонент: рантайм дебатов",
+      "bytes": 5163,
+      "hash": "ed31bb4b7634550c8f20013cbfeb134a4e99484e"
     },
     {
       "path": "docs/wiki/comp-di-container.md",
@@ -6680,12 +6704,28 @@
       "hash": "e5bbe20c277a0bd742d85b1764f628fe68f3d872"
     },
     {
+      "path": "docs/wiki/comp-memory.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Компонент: память и знания",
+      "bytes": 2940,
+      "hash": "5be589975f35bb86bcfb08ebd3e11ace5074aaa8"
+    },
+    {
+      "path": "docs/wiki/comp-observability.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Компонент: наблюдаемость (метрики, трейсы, мониторинг)",
+      "bytes": 4178,
+      "hash": "ac1dc3b45c3c310cd76370888e02dc7f6c448b00"
+    },
+    {
       "path": "docs/wiki/comp-overview.md",
       "category": "wiki",
       "language": "ru",
       "title": "Компоненты и сервисы: как читать этот раздел",
-      "bytes": 5896,
-      "hash": "a73fdcdba857c3f3c4ce7cdfa10f1135a7983286"
+      "bytes": 6674,
+      "hash": "a84bdd875d0a76f983ae335c927731101fa373a3"
     },
     {
       "path": "docs/wiki/comp-persistence.md",
@@ -6765,7 +6805,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4073,
-      "hash": "040d15b9e5cf9aa14734f167c90739e33f4b8627"
+      "hash": "3d9ee7e82c782945af651afc53a19f4c91700f71"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -6852,8 +6892,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Граф знаний",
-      "bytes": 4940,
-      "hash": "275fa6df0483095ecaee2c52db5acfb6bfceedf6"
+      "bytes": 4915,
+      "hash": "50814f927f2a1b89585aa6f49084bb1ffcc08e14"
     },
     {
       "path": "docs/wiki/dev-history.md",
@@ -6988,8 +7028,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Карта документации",
-      "bytes": 23787,
-      "hash": "a74b61fd1ab7eb0d70a078ce7aa05a3a314390cb"
+      "bytes": 24274,
+      "hash": "cb457090325d9bead3da98922c06c913960ffa70"
     },
     {
       "path": "docs/wiki/docs-standard.md",
@@ -7644,8 +7684,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Wiki SuperAgents OS",
-      "bytes": 16048,
-      "hash": "8125e3d1112229fc29fad86b87c7793284bbf94e"
+      "bytes": 16615,
+      "hash": "edc60ec5c5d4834a7f0b46710789a197c202289b"
     },
     {
       "path": "docs/wiki/roadmap-notes.md",
