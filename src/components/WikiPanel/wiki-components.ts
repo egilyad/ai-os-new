@@ -51,7 +51,7 @@ export const COMPONENT_ARTICLES: WikiArticle[] = [
 - **Задачи и управление:** [[comp-task-planning]] (задачи, расписание), [[comp-fleet-governance]] (флот, governance, аудит), [[comp-integrations-interop]] (A2A, gateway, MCP).
 - **Провайдеры и состояние:** [[comp-provider-runtime]] (инстансы, сессии, бюджет), [[comp-llm-bridge]] (мост к LLM), [[comp-state-stores]] (UI-состояние).
 - **Сквозные сценарии:** [[comp-scenarios]] (чат, дебаты, задача от панели до аудита).
-- **Сквозные контуры (end-to-end):** [[comp-flow-debate]] (дебаты: панель → сервис → движок → LLM → события → хранилище → UI), [[comp-flow-chat]] (чат: ввод → стор → событие → ChatExecutor → роутер → адаптер → стрим → UI → персист), [[comp-flow-knowledge]] (знания: ингест → чанки → эмбеддинги → гибридный поиск (BM25+vector+RRF) → выдача в чат/дебаты/инструменты), [[comp-flow-multiagent]] (мультиагент: запрос → Invocation Engine (политики/резолв/бюджет) → хэндофф в дебаты или Director-диалог), [[comp-flow-tools]] (инструменты: цикл tool-calling → политики → песочница (Web Worker) / MCP), [[comp-flow-computer-use]] (computer-use: апрув по политике → цикл «действие → скриншот → действие»), [[comp-flow-restore]] (восстановление сессии: холодный старт → пред-гидрация → гидрация состояния → реконнект), с точками обрыва.
+- **Сквозные контуры (end-to-end):** [[comp-flow-debate]] (дебаты: панель → сервис → движок → LLM → события → хранилище → UI), [[comp-flow-chat]] (чат: ввод → стор → событие → ChatExecutor → роутер → адаптер → стрим → UI → персист), [[comp-flow-knowledge]] (знания: ингест → чанки → эмбеддинги → гибридный поиск (BM25+vector+RRF) → выдача в чат/дебаты/инструменты), [[comp-flow-multiagent]] (мультиагент: запрос → Invocation Engine (политики/резолв/бюджет) → хэндофф в дебаты или Director-диалог), [[comp-flow-tools]] (инструменты: цикл tool-calling → политики → песочница (Web Worker) / MCP), [[comp-flow-computer-use]] (computer-use: апрув по политике → цикл «действие → скриншот → действие»), [[comp-flow-restore]] (восстановление сессии: холодный старт → пред-гидрация → гидрация состояния → реконнект), [[comp-flow-diagnostics]] (самодиагностика: прогон → опрос ключей/провайдеров → проверка согласованности → здоровье системы), с точками обрыва.
 - **Мультиагентность:** [[comp-crews-councils]] (экипажи, совет), [[comp-frontier-diversity]] (фронтир, разнообразие), [[comp-rivals-lab]] (лаборатория вариантов), [[comp-persona-builder]] (персоны, строитель), [[comp-invocation-meta]] (вызовы, мета-агент).
 - **Знания и оценка:** [[comp-knowledge-rag]] (RAG, кристаллы, линзы), [[comp-eval-elo]] (судья, Эло).
 - **Симуляция:** [[comp-simulation-world]] (мир, computer-use, parity).
@@ -3426,5 +3426,80 @@ flowchart TD
 ## Состояние
 
 - Подтверждено чтением кода; важное ограничение — прерванные дебаты не возобновляются автоматически, а помечаются \`failed\`.`,
+    },
+    {
+        slug: 'comp-flow-diagnostics',
+        title: 'Сквозной контур: самодиагностика',
+        section: 'components',
+        tags: ['компоненты', 'контур', 'диагностика', 'здоровье', 'проверка', 'наблюдаемость'],
+        freshness: 'verified',
+        sources: [
+            'src/kernel/services/runtime-intelligence/diagnostic-service.ts',
+            'src/kernel/services/advisor/diagnostics-engine.ts',
+            'src/kernel/services/probe-service.ts',
+            'src/kernel/services/key-management/key-diagnostics.ts',
+            'src/kernel/services/key-management/key-health.ts',
+            'src/kernel/services/agent-health-monitor.ts',
+            'src/kernel/services/truth-consistency-monitor.ts',
+            'src/kernel/services/consistency-checker.ts',
+            'src/kernel/services/health-sla-service.ts',
+            'src/components/HealthPanel/HealthPanel.tsx',
+            'src/main.tsx',
+        ],
+        related: ['diagnostics', 'comp-key-management', 'comp-observability', 'comp-provider-runtime', 'comp-flow-restore'],
+        body: `## Назначение
+
+Показать **самодиагностику** как сквозной контур: запуск проверки → опрос провайдеров и ключей → проверка согласованности → агрегация здоровья и уведомления; с точками обрыва.
+
+## Возможности
+
+- Проверка ключей/провайдеров (\`ProbeService.probeKey\` / \`probeAll\`), в том числе под дебаты (\`probeForDebate\`).
+- Диагностический прогон по области (\`DiagnosticService.runDiagnostic(scope)\`), движок — \`DiagnosticsEngine\`.
+- Проверка истинности/согласованности состояния и исцеление (\`TruthConsistencyMonitor\`, \`ConsistencyChecker\`).
+- Мониторинг здоровья агентов и системы (\`AgentHealthMonitor\`, \`SYSTEM_HEALTH_CHANGED\`).
+- Dev-хелперы в консоли: \`__probeAll\`, \`__checkConsistency\`, \`__getState\`.
+
+## Сквозной поток (по шагам)
+
+1. **Запуск.** [[panel-observability]] (\`HealthPanel.tsx\`) или dev-хелперы \`window.__probeAll\` / \`__checkConsistency\` (только в DEV).
+2. **Диагностический прогон.** \`DiagnosticService.runDiagnostic(scope)\` → \`DiagnosticsEngine\`; по завершении — событие \`DIAGNOSTIC_COMPLETE\`.
+3. **Опрос ключей/провайдеров.** \`ProbeService.probeAll()\` → по каждому ключу \`probeKey\` (запуск \`start()\`, ожидание \`STREAM_END\`); эмитятся \`KEY_HEALTH_CHECK_STARTED/COMPLETED/FAILED\` и \`KEY_PROBE_RESULT\`.
+4. **Проверка согласованности.** \`TruthConsistencyMonitor.check(kernel.getState().providers, {})\` сверяет проекцию и провайдеры; \`ConsistencyChecker\` формирует задачи исцеления.
+5. **Исцеление.** В рамках \`ConsistencyChecker\` может запускаться «документационный дебат» (\`runDocumentationDebate\`) для задач типа правки документации.
+6. **Мониторинг.** \`AgentHealthMonitor\` отслеживает агентов и эмитит \`AGENT_HEALTH_CHANGE\`; агрегат — \`SYSTEM_HEALTH_CHANGED\` (\`observability:health:changed\`).
+7. **Уведомление.** Результаты диагностики ключей/бенчмарков идут в \`NOTIFICATION\`; панель отображает сводку.
+
+## Обрывы цепочки (что происходит при ошибке)
+
+- **Провал проверки ключа.** \`KEY_HEALTH_CHECK_FAILED\` + уведомление; здоровье ключа понижается, но контур продолжает работу.
+- **Бенчмарк/советник ключа.** \`KeyDiagnostics.runBenchmark\` / \`runAdvisor\` сообщают результат через \`NOTIFICATION\`.
+- **Несогласованность состояния.** \`TruthConsistencyMonitor\` возвращает отчёт; \`ConsistencyChecker\` ставит задачу исцеления (вплоть до документационного дебата).
+- **SLA-здоровье — заглушка.** \`HealthSlaService\` помечен \`@deprecated MOCK\` и не отражает реальное SLA.
+
+## Данные, события, восстановление
+
+- **События:** \`KEY_HEALTH_CHECK_STARTED/COMPLETED/FAILED\`, \`KEY_PROBE_RESULT\`, \`STREAM_END\`, \`DIAGNOSTIC_COMPLETE\`, \`AGENT_HEALTH_CHANGE\`, \`SYSTEM_HEALTH_CHANGED\`, \`NOTIFICATION\`.
+- **Связь:** ключи — [[comp-key-management]]; наблюдаемость — [[comp-observability]]; провайдеры/роутинг — [[comp-provider-runtime]].
+- **Восстановление:** результаты доступны после гидрации ([[comp-flow-restore]]).
+
+## Реализация
+
+- Оркестрация: \`src/kernel/services/runtime-intelligence/diagnostic-service.ts\`, \`src/kernel/services/advisor/diagnostics-engine.ts\`.
+- Проверки ключей: \`src/kernel/services/probe-service.ts\`, \`src/kernel/services/key-management/key-diagnostics.ts\`, \`key-health.ts\`.
+- Согласованность/исцеление: \`truth-consistency-monitor.ts\`, \`consistency-checker.ts\`.
+- Здоровье: \`agent-health-monitor.ts\`, \`health-sla-service.ts\` (MOCK).
+- UI/хелперы: \`src/components/HealthPanel/HealthPanel.tsx\`, \`src/main.tsx\` (DEV-глобали \`__probeAll\`/\`__checkConsistency\`).
+
+## Связи
+
+- Диагностика системы — [[diagnostics]]; ключи — [[comp-key-management]]; наблюдаемость — [[comp-observability]]; провайдеры — [[comp-provider-runtime]]; загрузка/гидрация — [[comp-flow-restore]].
+
+## Проверка работоспособности
+
+- Тесты: \`src/kernel/services/consistency-checker.test.ts\`, \`src/kernel/services/notification-webhook-service.test.ts\`, тесты probe/health (см. профильные статьи).
+
+## Состояние
+
+- Подтверждено чтением кода; \`HealthSlaService\` остаётся MOCK-заглушкой — реальное SLA не считается.`,
     },
 ];

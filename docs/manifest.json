@@ -50,7 +50,7 @@
     {
       "id": "components",
       "title": "Компоненты и сервисы",
-      "articles": 73
+      "articles": 74
     },
     {
       "id": "notes",
@@ -4812,6 +4812,49 @@
         "src/kernel/services/reconnection-service.test.ts",
         "src/kernel/services/snapshot-service.test.ts",
         "src/kernel/services/time-machine-service.test.ts"
+      ]
+    },
+    {
+      "id": "wiki:comp-flow-diagnostics",
+      "type": "article",
+      "slug": "comp-flow-diagnostics",
+      "title": "Сквозной контур: самодиагностика",
+      "section": "components",
+      "status": "verified",
+      "tags": [
+        "компоненты",
+        "контур",
+        "диагностика",
+        "здоровье",
+        "проверка",
+        "наблюдаемость"
+      ],
+      "sources": [
+        "src/kernel/services/runtime-intelligence/diagnostic-service.ts",
+        "src/kernel/services/advisor/diagnostics-engine.ts",
+        "src/kernel/services/probe-service.ts",
+        "src/kernel/services/key-management/key-diagnostics.ts",
+        "src/kernel/services/key-management/key-health.ts",
+        "src/kernel/services/agent-health-monitor.ts",
+        "src/kernel/services/truth-consistency-monitor.ts",
+        "src/kernel/services/consistency-checker.ts",
+        "src/kernel/services/health-sla-service.ts",
+        "src/components/HealthPanel/HealthPanel.tsx",
+        "src/main.tsx"
+      ],
+      "related": [
+        "diagnostics",
+        "comp-key-management",
+        "comp-observability",
+        "comp-provider-runtime",
+        "comp-flow-restore"
+      ],
+      "reviewed": null,
+      "tests": [
+        "src/kernel/services/agent-health-monitor.test.ts",
+        "src/kernel/services/consistency-checker.test.ts",
+        "src/kernel/services/health-sla-service.test.ts",
+        "src/components/HealthPanel/HealthPanel.test.tsx"
       ]
     },
     {

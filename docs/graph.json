@@ -3,22 +3,22 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 1202,
-    "edges": 3148,
+    "nodes": 1212,
+    "edges": 3168,
     "byType": {
       "audit": 67,
-      "code": 507,
-      "test": 148,
+      "code": 513,
+      "test": 151,
       "panel": 259,
-      "article": 221
+      "article": 222
     },
     "byKind": {
       "audit_test": 325,
       "audit_mention": 928,
       "documents": 201,
-      "source": 685,
-      "test": 207,
-      "related": 802
+      "source": 696,
+      "test": 211,
+      "related": 807
     }
   },
   "nodes": [
@@ -1127,6 +1127,16 @@
       "label": "src/components/GuardrailsPanel/GuardrailsPanel.tsx"
     },
     {
+      "id": "file:src/components/HealthPanel/HealthPanel.test.tsx",
+      "type": "test",
+      "label": "src/components/HealthPanel/HealthPanel.test.tsx"
+    },
+    {
+      "id": "file:src/components/HealthPanel/HealthPanel.tsx",
+      "type": "code",
+      "label": "src/components/HealthPanel/HealthPanel.tsx"
+    },
+    {
       "id": "file:src/components/InsightBusPanel/InsightBusPanel.test.tsx",
       "type": "test",
       "label": "src/components/InsightBusPanel/InsightBusPanel.test.tsx"
@@ -2047,6 +2057,16 @@
       "label": "src/kernel/services/agent-diversity/diversity-scorer.ts"
     },
     {
+      "id": "file:src/kernel/services/agent-health-monitor.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/agent-health-monitor.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/agent-health-monitor.ts",
+      "type": "code",
+      "label": "src/kernel/services/agent-health-monitor.ts"
+    },
+    {
       "id": "file:src/kernel/services/agent-project-runtime.test.ts",
       "type": "test",
       "label": "src/kernel/services/agent-project-runtime.test.ts"
@@ -2542,6 +2562,16 @@
       "label": "src/kernel/services/group-manager.ts"
     },
     {
+      "id": "file:src/kernel/services/health-sla-service.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/health-sla-service.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/health-sla-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/health-sla-service.ts"
+    },
+    {
       "id": "file:src/kernel/services/interop/a2a-service.ts",
       "type": "code",
       "label": "src/kernel/services/interop/a2a-service.ts"
@@ -2600,6 +2630,16 @@
       "id": "file:src/kernel/services/key-intelligence-pipeline.ts",
       "type": "code",
       "label": "src/kernel/services/key-intelligence-pipeline.ts"
+    },
+    {
+      "id": "file:src/kernel/services/key-management/key-diagnostics.ts",
+      "type": "code",
+      "label": "src/kernel/services/key-management/key-diagnostics.ts"
+    },
+    {
+      "id": "file:src/kernel/services/key-management/key-health.ts",
+      "type": "code",
+      "label": "src/kernel/services/key-management/key-health.ts"
     },
     {
       "id": "file:src/kernel/services/key-management/key-pool-selector.ts",
@@ -2825,6 +2865,11 @@
       "id": "file:src/kernel/services/pricing-service.ts",
       "type": "code",
       "label": "src/kernel/services/pricing-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/probe-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/probe-service.ts"
     },
     {
       "id": "file:src/kernel/services/projections/router-projection.ts",
@@ -5814,6 +5859,13 @@
       "id": "wiki:comp-flow-debate",
       "type": "article",
       "label": "Сквозной контур: дебаты",
+      "section": "components",
+      "status": "verified"
+    },
+    {
+      "id": "wiki:comp-flow-diagnostics",
+      "type": "article",
+      "label": "Сквозной контур: самодиагностика",
       "section": "components",
       "status": "verified"
     },
@@ -16266,6 +16318,106 @@
     {
       "from": "wiki:comp-flow-debate",
       "to": "wiki:comp-state-stores",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-flow-diagnostics",
+      "to": "file:src/components/HealthPanel/HealthPanel.test.tsx",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-flow-diagnostics",
+      "to": "file:src/components/HealthPanel/HealthPanel.tsx",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-flow-diagnostics",
+      "to": "file:src/kernel/services/advisor/diagnostics-engine.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-flow-diagnostics",
+      "to": "file:src/kernel/services/agent-health-monitor.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-flow-diagnostics",
+      "to": "file:src/kernel/services/agent-health-monitor.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-flow-diagnostics",
+      "to": "file:src/kernel/services/consistency-checker.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-flow-diagnostics",
+      "to": "file:src/kernel/services/consistency-checker.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-flow-diagnostics",
+      "to": "file:src/kernel/services/health-sla-service.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-flow-diagnostics",
+      "to": "file:src/kernel/services/health-sla-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-flow-diagnostics",
+      "to": "file:src/kernel/services/key-management/key-diagnostics.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-flow-diagnostics",
+      "to": "file:src/kernel/services/key-management/key-health.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-flow-diagnostics",
+      "to": "file:src/kernel/services/probe-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-flow-diagnostics",
+      "to": "file:src/kernel/services/runtime-intelligence/diagnostic-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-flow-diagnostics",
+      "to": "file:src/kernel/services/truth-consistency-monitor.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-flow-diagnostics",
+      "to": "file:src/main.tsx",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-flow-diagnostics",
+      "to": "wiki:comp-flow-restore",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-flow-diagnostics",
+      "to": "wiki:comp-key-management",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-flow-diagnostics",
+      "to": "wiki:comp-observability",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-flow-diagnostics",
+      "to": "wiki:comp-provider-runtime",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-flow-diagnostics",
+      "to": "wiki:diagnostics",
       "kind": "related"
     },
     {
