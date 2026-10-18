@@ -3,7 +3,7 @@
   "generatedBy": "scripts/gen-docs-inventory.mjs",
   "scope": "git-tracked markdown: docs/**/*.md (excluding docs/new drafts and the self-report pages docs-health, docs-inventory) plus repository entry docs (root *.md, .superagents/**, src/kernel/DEPENDENCY_MAP.md)",
   "totals": {
-    "documents": 1000,
+    "documents": 1008,
     "byCategory": {
       "repo": 12,
       "top": 46,
@@ -13,12 +13,12 @@
       "reference": 6,
       "roadmap": 6,
       "superseded": 3,
-      "wiki": 176
+      "wiki": 184
     },
     "byLanguage": {
       "en": 658,
-      "ru": 208,
-      "mixed": 134
+      "ru": 212,
+      "mixed": 138
     }
   },
   "duplicates": {
@@ -6672,6 +6672,14 @@
       "hash": "94b65059a4e601bde78d6a88190dcd817c961b04"
     },
     {
+      "path": "docs/wiki/comp-crews-councils.md",
+      "category": "wiki",
+      "language": "mixed",
+      "title": "Компонент: экипажи и совет",
+      "bytes": 3276,
+      "hash": "aa19ecd380bfdb22353f0bff57d24f9852e5a5da"
+    },
+    {
       "path": "docs/wiki/comp-debate-runtime.md",
       "category": "wiki",
       "language": "mixed",
@@ -6686,6 +6694,14 @@
       "title": "Компонент: DI-контейнер и lazyService",
       "bytes": 4989,
       "hash": "9bae7d6cf35e9ddf7bf6057eeac84efc7b8d1e1a"
+    },
+    {
+      "path": "docs/wiki/comp-eval-elo.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Компонент: оценка и рейтинг (eval, elo)",
+      "bytes": 2728,
+      "hash": "60b2dcb0cc96fa0735c16441fb747a0159fd6959"
     },
     {
       "path": "docs/wiki/comp-event-bus.md",
@@ -6712,12 +6728,28 @@
       "hash": "df2a6964829918f71f4302d4dab6087ef0155d8a"
     },
     {
+      "path": "docs/wiki/comp-frontier-diversity.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Компонент: фронтир и разнообразие агентов",
+      "bytes": 3481,
+      "hash": "68cd8f3a4e7f32d8df00633b8a9a8416a55b4e53"
+    },
+    {
       "path": "docs/wiki/comp-integrations-interop.md",
       "category": "wiki",
       "language": "ru",
       "title": "Компонент: интеграции и интероперабельность",
       "bytes": 3329,
       "hash": "4104a5d1e0fbae66b4f3077adb1e663a668a3a53"
+    },
+    {
+      "path": "docs/wiki/comp-invocation-meta.md",
+      "category": "wiki",
+      "language": "mixed",
+      "title": "Компонент: вызовы (invocation) и мета-агент",
+      "bytes": 2982,
+      "hash": "169f2a751b9b4d7955154588a8e778a710f35d29"
     },
     {
       "path": "docs/wiki/comp-kernel-boot.md",
@@ -6734,6 +6766,14 @@
       "title": "Компонент: управление ключами провайдеров",
       "bytes": 6030,
       "hash": "e5bbe20c277a0bd742d85b1764f628fe68f3d872"
+    },
+    {
+      "path": "docs/wiki/comp-knowledge-rag.md",
+      "category": "wiki",
+      "language": "mixed",
+      "title": "Компонент: генерация знаний и RAG",
+      "bytes": 3219,
+      "hash": "617f684c3a1480764084aa33432b8a0bde08fc36"
     },
     {
       "path": "docs/wiki/comp-llm-bridge.md",
@@ -6764,8 +6804,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Компоненты и сервисы: как читать этот раздел",
-      "bytes": 8214,
-      "hash": "a2712130a1622ec25dba61e68bf8758c13be0e37"
+      "bytes": 9358,
+      "hash": "fd979b7cc5ccb495022468424ddcf30ebc976bf6"
     },
     {
       "path": "docs/wiki/comp-persistence.md",
@@ -6774,6 +6814,14 @@
       "title": "Компонент: персистентность (Dexie и storage-адаптеры)",
       "bytes": 4319,
       "hash": "b718ab6e527fe454278867d76dbfc10749b72ce4"
+    },
+    {
+      "path": "docs/wiki/comp-persona-builder.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Компонент: персоны и строитель (persona, builder)",
+      "bytes": 2851,
+      "hash": "d4f73a392572c1705346406a5d635f107c667cf0"
     },
     {
       "path": "docs/wiki/comp-policy-security.md",
@@ -6790,6 +6838,14 @@
       "title": "Компонент: рантайм провайдеров",
       "bytes": 3835,
       "hash": "aca190d692198ab9d89906cebca0f702eaefaa27"
+    },
+    {
+      "path": "docs/wiki/comp-rivals-lab.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Компонент: лаборатория вариантов (rivals)",
+      "bytes": 3491,
+      "hash": "828eb6772cc1e2afd9e098375a83d82c6dc1dbc8"
     },
     {
       "path": "docs/wiki/comp-routing.md",
@@ -6814,6 +6870,14 @@
       "title": "Компонент: шифрование at-rest (SecurityService)",
       "bytes": 3498,
       "hash": "694a7a4db06eaca64bd27274770fa9bd15bc4f2e"
+    },
+    {
+      "path": "docs/wiki/comp-simulation-world.md",
+      "category": "wiki",
+      "language": "mixed",
+      "title": "Компонент: симуляция, компьютер и parity",
+      "bytes": 3550,
+      "hash": "c2bed7ab01a284d9268a5ede0dad7004b4eec936"
     },
     {
       "path": "docs/wiki/comp-state-stores.md",
@@ -6884,8 +6948,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Проверки и показатели",
-      "bytes": 4073,
-      "hash": "b7d1ddcc8d30fb7ec1cd78bc87556fff4edfaac3"
+      "bytes": 4074,
+      "hash": "84a0d4613da01edc2b60ccb3751fc1bbe9692cd9"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -6973,7 +7037,7 @@
       "language": "ru",
       "title": "Граф знаний",
       "bytes": 4962,
-      "hash": "a6702c1d3c0c9e53b27d635ed7c41cb816ab4cbd"
+      "hash": "8e653b31970a61ba4260866a9c05f93cfa7404fc"
     },
     {
       "path": "docs/wiki/dev-history.md",
@@ -7108,8 +7172,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Карта документации",
-      "bytes": 25306,
-      "hash": "66d5f86cd32acfbfe09cbe92c718250c3ad22438"
+      "bytes": 26086,
+      "hash": "61feb34e13ab506c9adf888b91da4d847825d167"
     },
     {
       "path": "docs/wiki/docs-standard.md",
@@ -7764,8 +7828,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Wiki SuperAgents OS",
-      "bytes": 17807,
-      "hash": "6bba48b84b74862c3d839b04fae35bc966c84d89"
+      "bytes": 18714,
+      "hash": "d17ecde3fcd5ccaa2be361de6286e82a435f0aa8"
     },
     {
       "path": "docs/wiki/roadmap-notes.md",

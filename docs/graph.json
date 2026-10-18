@@ -3,22 +3,22 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 923,
-    "edges": 2581,
+    "nodes": 982,
+    "edges": 2673,
     "byType": {
       "audit": 67,
-      "code": 333,
-      "test": 87,
+      "code": 373,
+      "test": 98,
       "panel": 259,
-      "article": 177
+      "article": 185
     },
     "byKind": {
       "audit_test": 325,
       "audit_mention": 928,
       "documents": 201,
-      "source": 442,
-      "test": 103,
-      "related": 582
+      "source": 483,
+      "test": 114,
+      "related": 622
     }
   },
   "nodes": [
@@ -1857,6 +1857,16 @@
       "label": "src/kernel/services/agems-task-service.ts"
     },
     {
+      "id": "file:src/kernel/services/agent-diversity/clustering.ts",
+      "type": "code",
+      "label": "src/kernel/services/agent-diversity/clustering.ts"
+    },
+    {
+      "id": "file:src/kernel/services/agent-diversity/diversity-scorer.ts",
+      "type": "code",
+      "label": "src/kernel/services/agent-diversity/diversity-scorer.ts"
+    },
+    {
       "id": "file:src/kernel/services/agent-project-runtime.test.ts",
       "type": "test",
       "label": "src/kernel/services/agent-project-runtime.test.ts"
@@ -1885,6 +1895,16 @@
       "id": "file:src/kernel/services/budget-service.ts",
       "type": "code",
       "label": "src/kernel/services/budget-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/builder/builder-agent-service.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/builder/builder-agent-service.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/builder/builder-agent-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/builder/builder-agent-service.ts"
     },
     {
       "id": "file:src/kernel/services/cache-service.test.ts",
@@ -1937,6 +1957,26 @@
       "label": "src/kernel/services/compromise-webhook-service.ts"
     },
     {
+      "id": "file:src/kernel/services/computer/computer-use-loop-service.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/computer/computer-use-loop-service.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/computer/computer-use-loop-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/computer/computer-use-loop-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/computer/sidecar-computer-executor.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/computer/sidecar-computer-executor.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/computer/sidecar-computer-executor.ts",
+      "type": "code",
+      "label": "src/kernel/services/computer/sidecar-computer-executor.ts"
+    },
+    {
       "id": "file:src/kernel/services/config-history.test.ts",
       "type": "test",
       "label": "src/kernel/services/config-history.test.ts"
@@ -1982,9 +2022,49 @@
       "label": "src/kernel/services/consistency-checker.ts"
     },
     {
+      "id": "file:src/kernel/services/council/council-aware-evaluator.ts",
+      "type": "code",
+      "label": "src/kernel/services/council/council-aware-evaluator.ts"
+    },
+    {
+      "id": "file:src/kernel/services/council/council-service-facade.ts",
+      "type": "code",
+      "label": "src/kernel/services/council/council-service-facade.ts"
+    },
+    {
+      "id": "file:src/kernel/services/council/council-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/council/council-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/council/weighted-judge-evaluator.ts",
+      "type": "code",
+      "label": "src/kernel/services/council/weighted-judge-evaluator.ts"
+    },
+    {
       "id": "file:src/kernel/services/counterfactual-explanation-service.ts",
       "type": "code",
       "label": "src/kernel/services/counterfactual-explanation-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/crew/agent-forge-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/crew/agent-forge-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/crew/crew-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/crew/crew-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/crystal-vault/crystal-vault-service.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/crystal-vault/crystal-vault-service.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/crystal-vault/crystal-vault-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/crystal-vault/crystal-vault-service.ts"
     },
     {
       "id": "file:src/kernel/services/database-service.ts",
@@ -2082,6 +2162,26 @@
       "label": "src/kernel/services/dexie-schema.ts"
     },
     {
+      "id": "file:src/kernel/services/elo/elo-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/elo/elo-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/eval/llm-judge-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/eval/llm-judge-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/eval/scorer-registry-service.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/eval/scorer-registry-service.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/eval/scorer-registry-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/eval/scorer-registry-service.ts"
+    },
+    {
       "id": "file:src/kernel/services/event-sourcing/checkpoint-store.ts",
       "type": "code",
       "label": "src/kernel/services/event-sourcing/checkpoint-store.ts"
@@ -2105,6 +2205,26 @@
       "id": "file:src/kernel/services/external-secrets-service.ts",
       "type": "code",
       "label": "src/kernel/services/external-secrets-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/frontier/capability-matrix.ts",
+      "type": "code",
+      "label": "src/kernel/services/frontier/capability-matrix.ts"
+    },
+    {
+      "id": "file:src/kernel/services/frontier/eval-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/frontier/eval-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/frontier/frontier-ops-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/frontier/frontier-ops-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/frontier/simulation-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/frontier/simulation-service.ts"
     },
     {
       "id": "file:src/kernel/services/group-manager.ts",
@@ -2142,6 +2262,21 @@
       "label": "src/kernel/services/interop/mcp-harness-service.ts"
     },
     {
+      "id": "file:src/kernel/services/invocation/invocation-cost-tracker.ts",
+      "type": "code",
+      "label": "src/kernel/services/invocation/invocation-cost-tracker.ts"
+    },
+    {
+      "id": "file:src/kernel/services/invocation/invocation-engine-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/invocation/invocation-engine-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/invocation/invocation-repository.ts",
+      "type": "code",
+      "label": "src/kernel/services/invocation/invocation-repository.ts"
+    },
+    {
       "id": "file:src/kernel/services/key-intelligence-pipeline.ts",
       "type": "code",
       "label": "src/kernel/services/key-intelligence-pipeline.ts"
@@ -2172,6 +2307,26 @@
       "label": "src/kernel/services/key-state-store.ts"
     },
     {
+      "id": "file:src/kernel/services/knowledge-generator/knowledge-generator-service.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/knowledge-generator/knowledge-generator-service.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/knowledge-generator/knowledge-generator-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/knowledge-generator/knowledge-generator-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/lens-engine/lens-engine-service.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/lens-engine/lens-engine-service.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/lens-engine/lens-engine-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/lens-engine/lens-engine-service.ts"
+    },
+    {
       "id": "file:src/kernel/services/llm-bridge/llm-task-executor.ts",
       "type": "code",
       "label": "src/kernel/services/llm-bridge/llm-task-executor.ts"
@@ -2195,6 +2350,16 @@
       "id": "file:src/kernel/services/memory-engine.ts",
       "type": "code",
       "label": "src/kernel/services/memory-engine.ts"
+    },
+    {
+      "id": "file:src/kernel/services/meta/meta-agent-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/meta/meta-agent-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/meta/strategy-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/meta/strategy-service.ts"
     },
     {
       "id": "file:src/kernel/services/metrics-service.test.ts",
@@ -2245,6 +2410,36 @@
       "id": "file:src/kernel/services/orchestration-service.ts",
       "type": "code",
       "label": "src/kernel/services/orchestration-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/parity/knowledge-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/parity/knowledge-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/parity/tool-runner-service.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/parity/tool-runner-service.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/parity/tool-runner-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/parity/tool-runner-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/persona/lt-memory-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/persona/lt-memory-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/persona/persona-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/persona/persona-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/persona/shared-context-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/persona/shared-context-service.ts"
     },
     {
       "id": "file:src/kernel/services/policy-service.test.ts",
@@ -2312,9 +2507,49 @@
       "label": "src/kernel/services/provider-tracker.ts"
     },
     {
+      "id": "file:src/kernel/services/rag/bm25-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/rag/bm25-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/rag/hybrid-retrieval-service.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/rag/hybrid-retrieval-service.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/rag/hybrid-retrieval-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/rag/hybrid-retrieval-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/rag/reranker-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/rag/reranker-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/rivals/planner-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/rivals/planner-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/rivals2/aider-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/rivals2/aider-service.ts"
+    },
+    {
       "id": "file:src/kernel/services/rivals2/integrations-service.ts",
       "type": "code",
       "label": "src/kernel/services/rivals2/integrations-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/rivals2/swe-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/rivals2/swe-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/rivals3/codeplan-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/rivals3/codeplan-service.ts"
     },
     {
       "id": "file:src/kernel/services/role-service.ts",
@@ -2380,6 +2615,26 @@
       "id": "file:src/kernel/services/settings-service.ts",
       "type": "code",
       "label": "src/kernel/services/settings-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/simulation/simulation-engine-service.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/simulation/simulation-engine-service.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/simulation/simulation-engine-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/simulation/simulation-engine-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/simulation/world-state-service.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/simulation/world-state-service.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/simulation/world-state-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/simulation/world-state-service.ts"
     },
     {
       "id": "file:src/kernel/services/skill-service.test.ts",
@@ -4475,6 +4730,13 @@
       "status": "documented"
     },
     {
+      "id": "wiki:comp-crews-councils",
+      "type": "article",
+      "label": "Компонент: экипажи и совет",
+      "section": "components",
+      "status": "documented"
+    },
+    {
       "id": "wiki:comp-debate-runtime",
       "type": "article",
       "label": "Компонент: рантайм дебатов",
@@ -4487,6 +4749,13 @@
       "label": "Компонент: DI-контейнер и lazyService",
       "section": "components",
       "status": "verified"
+    },
+    {
+      "id": "wiki:comp-eval-elo",
+      "type": "article",
+      "label": "Компонент: оценка и рейтинг (eval, elo)",
+      "section": "components",
+      "status": "documented"
     },
     {
       "id": "wiki:comp-event-bus",
@@ -4510,9 +4779,23 @@
       "status": "documented"
     },
     {
+      "id": "wiki:comp-frontier-diversity",
+      "type": "article",
+      "label": "Компонент: фронтир и разнообразие агентов",
+      "section": "components",
+      "status": "documented"
+    },
+    {
       "id": "wiki:comp-integrations-interop",
       "type": "article",
       "label": "Компонент: интеграции и интероперабельность",
+      "section": "components",
+      "status": "documented"
+    },
+    {
+      "id": "wiki:comp-invocation-meta",
+      "type": "article",
+      "label": "Компонент: вызовы (invocation) и мета-агент",
       "section": "components",
       "status": "documented"
     },
@@ -4527,6 +4810,13 @@
       "id": "wiki:comp-key-management",
       "type": "article",
       "label": "Компонент: управление ключами провайдеров",
+      "section": "components",
+      "status": "documented"
+    },
+    {
+      "id": "wiki:comp-knowledge-rag",
+      "type": "article",
+      "label": "Компонент: генерация знаний и RAG",
       "section": "components",
       "status": "documented"
     },
@@ -4566,6 +4856,13 @@
       "status": "verified"
     },
     {
+      "id": "wiki:comp-persona-builder",
+      "type": "article",
+      "label": "Компонент: персоны и строитель (persona, builder)",
+      "section": "components",
+      "status": "documented"
+    },
+    {
       "id": "wiki:comp-policy-security",
       "type": "article",
       "label": "Компонент: политики, секреты и вебхуки",
@@ -4576,6 +4873,13 @@
       "id": "wiki:comp-provider-runtime",
       "type": "article",
       "label": "Компонент: рантайм провайдеров",
+      "section": "components",
+      "status": "documented"
+    },
+    {
+      "id": "wiki:comp-rivals-lab",
+      "type": "article",
+      "label": "Компонент: лаборатория вариантов (rivals)",
       "section": "components",
       "status": "documented"
     },
@@ -4599,6 +4903,13 @@
       "label": "Компонент: шифрование at-rest (SecurityService)",
       "section": "components",
       "status": "verified"
+    },
+    {
+      "id": "wiki:comp-simulation-world",
+      "type": "article",
+      "label": "Компонент: симуляция, компьютер и parity",
+      "section": "components",
+      "status": "documented"
     },
     {
       "id": "wiki:comp-state-stores",
@@ -13361,6 +13672,61 @@
       "kind": "related"
     },
     {
+      "from": "wiki:comp-crews-councils",
+      "to": "file:src/kernel/services/council/council-aware-evaluator.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-crews-councils",
+      "to": "file:src/kernel/services/council/council-service-facade.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-crews-councils",
+      "to": "file:src/kernel/services/council/council-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-crews-councils",
+      "to": "file:src/kernel/services/council/weighted-judge-evaluator.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-crews-councils",
+      "to": "file:src/kernel/services/crew/agent-forge-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-crews-councils",
+      "to": "file:src/kernel/services/crew/crew-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-crews-councils",
+      "to": "wiki:comp-agents-roles-skills",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-crews-councils",
+      "to": "wiki:comp-llm-bridge",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-crews-councils",
+      "to": "wiki:panel-director",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-crews-councils",
+      "to": "wiki:panel-fleet",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-crews-councils",
+      "to": "wiki:panel-synthesis",
+      "kind": "related"
+    },
+    {
       "from": "wiki:comp-debate-runtime",
       "to": "file:src/kernel/services/debate-runtime/debate-budget.test.ts",
       "kind": "test"
@@ -13488,6 +13854,51 @@
     {
       "from": "wiki:comp-di-container",
       "to": "wiki:dev-services",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-eval-elo",
+      "to": "file:src/kernel/services/elo/elo-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-eval-elo",
+      "to": "file:src/kernel/services/eval/llm-judge-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-eval-elo",
+      "to": "file:src/kernel/services/eval/scorer-registry-service.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-eval-elo",
+      "to": "file:src/kernel/services/eval/scorer-registry-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-eval-elo",
+      "to": "wiki:panel-ab-testing",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-eval-elo",
+      "to": "wiki:panel-analytics",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-eval-elo",
+      "to": "wiki:panel-eval-extra",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-eval-elo",
+      "to": "wiki:panel-eval",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-eval-elo",
+      "to": "wiki:panel-quality-impact",
       "kind": "related"
     },
     {
@@ -13646,6 +14057,61 @@
       "kind": "related"
     },
     {
+      "from": "wiki:comp-frontier-diversity",
+      "to": "file:src/kernel/services/agent-diversity/clustering.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-frontier-diversity",
+      "to": "file:src/kernel/services/agent-diversity/diversity-scorer.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-frontier-diversity",
+      "to": "file:src/kernel/services/frontier/capability-matrix.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-frontier-diversity",
+      "to": "file:src/kernel/services/frontier/eval-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-frontier-diversity",
+      "to": "file:src/kernel/services/frontier/frontier-ops-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-frontier-diversity",
+      "to": "file:src/kernel/services/frontier/simulation-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-frontier-diversity",
+      "to": "wiki:comp-eval-elo",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-frontier-diversity",
+      "to": "wiki:panel-analytics",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-frontier-diversity",
+      "to": "wiki:panel-eval",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-frontier-diversity",
+      "to": "wiki:panel-fleet",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-frontier-diversity",
+      "to": "wiki:panel-simulation",
+      "kind": "related"
+    },
+    {
       "from": "wiki:comp-integrations-interop",
       "to": "file:src/kernel/services/interop/a2a-service.ts",
       "kind": "source"
@@ -13703,6 +14169,56 @@
     {
       "from": "wiki:comp-integrations-interop",
       "to": "wiki:panel-integrations",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-invocation-meta",
+      "to": "file:src/kernel/services/invocation/invocation-cost-tracker.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-invocation-meta",
+      "to": "file:src/kernel/services/invocation/invocation-engine-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-invocation-meta",
+      "to": "file:src/kernel/services/invocation/invocation-repository.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-invocation-meta",
+      "to": "file:src/kernel/services/meta/meta-agent-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-invocation-meta",
+      "to": "file:src/kernel/services/meta/strategy-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-invocation-meta",
+      "to": "wiki:comp-agents-roles-skills",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-invocation-meta",
+      "to": "wiki:comp-budget-pricing",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-invocation-meta",
+      "to": "wiki:comp-state-stores",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-invocation-meta",
+      "to": "wiki:panel-analytics",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-invocation-meta",
+      "to": "wiki:panel-settings",
       "kind": "related"
     },
     {
@@ -13823,6 +14339,81 @@
     {
       "from": "wiki:comp-key-management",
       "to": "wiki:panel-providers",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-knowledge-rag",
+      "to": "file:src/kernel/services/crystal-vault/crystal-vault-service.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-knowledge-rag",
+      "to": "file:src/kernel/services/crystal-vault/crystal-vault-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-knowledge-rag",
+      "to": "file:src/kernel/services/knowledge-generator/knowledge-generator-service.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-knowledge-rag",
+      "to": "file:src/kernel/services/knowledge-generator/knowledge-generator-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-knowledge-rag",
+      "to": "file:src/kernel/services/lens-engine/lens-engine-service.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-knowledge-rag",
+      "to": "file:src/kernel/services/lens-engine/lens-engine-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-knowledge-rag",
+      "to": "file:src/kernel/services/rag/bm25-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-knowledge-rag",
+      "to": "file:src/kernel/services/rag/hybrid-retrieval-service.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-knowledge-rag",
+      "to": "file:src/kernel/services/rag/hybrid-retrieval-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-knowledge-rag",
+      "to": "file:src/kernel/services/rag/reranker-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-knowledge-rag",
+      "to": "wiki:comp-memory",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-knowledge-rag",
+      "to": "wiki:panel-knowledge-generator",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-knowledge-rag",
+      "to": "wiki:panel-knowledge",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-knowledge-rag",
+      "to": "wiki:panel-lenses-crystals",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-knowledge-rag",
+      "to": "wiki:panel-memory-palace",
       "kind": "related"
     },
     {
@@ -14056,6 +14647,56 @@
       "kind": "related"
     },
     {
+      "from": "wiki:comp-persona-builder",
+      "to": "file:src/kernel/services/builder/builder-agent-service.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-persona-builder",
+      "to": "file:src/kernel/services/builder/builder-agent-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-persona-builder",
+      "to": "file:src/kernel/services/persona/lt-memory-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-persona-builder",
+      "to": "file:src/kernel/services/persona/persona-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-persona-builder",
+      "to": "file:src/kernel/services/persona/shared-context-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-persona-builder",
+      "to": "wiki:comp-agents-roles-skills",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-persona-builder",
+      "to": "wiki:comp-memory",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-persona-builder",
+      "to": "wiki:panel-agents-market",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-persona-builder",
+      "to": "wiki:panel-builder",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-persona-builder",
+      "to": "wiki:panel-persona",
+      "kind": "related"
+    },
+    {
       "from": "wiki:comp-policy-security",
       "to": "file:src/kernel/services/compromise-webhook-service.test.ts",
       "kind": "test"
@@ -14183,6 +14824,56 @@
     {
       "from": "wiki:comp-provider-runtime",
       "to": "wiki:providers",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-rivals-lab",
+      "to": "file:src/kernel/services/rivals/planner-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-rivals-lab",
+      "to": "file:src/kernel/services/rivals2/aider-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-rivals-lab",
+      "to": "file:src/kernel/services/rivals2/integrations-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-rivals-lab",
+      "to": "file:src/kernel/services/rivals2/swe-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-rivals-lab",
+      "to": "file:src/kernel/services/rivals3/codeplan-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-rivals-lab",
+      "to": "wiki:comp-integrations-interop",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-rivals-lab",
+      "to": "wiki:panel-ab-testing",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-rivals-lab",
+      "to": "wiki:panel-agents-market",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-rivals-lab",
+      "to": "wiki:panel-analytics",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-rivals-lab",
+      "to": "wiki:panel-eval",
       "kind": "related"
     },
     {
@@ -14348,6 +15039,86 @@
     {
       "from": "wiki:comp-security-crypto",
       "to": "wiki:comp-policy-security",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-simulation-world",
+      "to": "file:src/kernel/services/computer/computer-use-loop-service.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-simulation-world",
+      "to": "file:src/kernel/services/computer/computer-use-loop-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-simulation-world",
+      "to": "file:src/kernel/services/computer/sidecar-computer-executor.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-simulation-world",
+      "to": "file:src/kernel/services/computer/sidecar-computer-executor.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-simulation-world",
+      "to": "file:src/kernel/services/parity/knowledge-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-simulation-world",
+      "to": "file:src/kernel/services/parity/tool-runner-service.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-simulation-world",
+      "to": "file:src/kernel/services/parity/tool-runner-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-simulation-world",
+      "to": "file:src/kernel/services/simulation/simulation-engine-service.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-simulation-world",
+      "to": "file:src/kernel/services/simulation/simulation-engine-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-simulation-world",
+      "to": "file:src/kernel/services/simulation/world-state-service.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-simulation-world",
+      "to": "file:src/kernel/services/simulation/world-state-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-simulation-world",
+      "to": "wiki:comp-tools-mcp",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-simulation-world",
+      "to": "wiki:panel-guardians",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-simulation-world",
+      "to": "wiki:panel-infra-meta",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-simulation-world",
+      "to": "wiki:panel-playground",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-simulation-world",
+      "to": "wiki:panel-simulation",
       "kind": "related"
     },
     {

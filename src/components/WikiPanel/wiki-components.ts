@@ -51,6 +51,9 @@ export const COMPONENT_ARTICLES: WikiArticle[] = [
 - **Задачи и управление:** [[comp-task-planning]] (задачи, расписание), [[comp-fleet-governance]] (флот, governance, аудит), [[comp-integrations-interop]] (A2A, gateway, MCP).
 - **Провайдеры и состояние:** [[comp-provider-runtime]] (инстансы, сессии, бюджет), [[comp-llm-bridge]] (мост к LLM), [[comp-state-stores]] (UI-состояние).
 - **Сквозные сценарии:** [[comp-scenarios]] (чат, дебаты, задача от панели до аудита).
+- **Мультиагентность:** [[comp-crews-councils]] (экипажи, совет), [[comp-frontier-diversity]] (фронтир, разнообразие), [[comp-rivals-lab]] (лаборатория вариантов), [[comp-persona-builder]] (персоны, строитель), [[comp-invocation-meta]] (вызовы, мета-агент).
+- **Знания и оценка:** [[comp-knowledge-rag]] (RAG, кристаллы, линзы), [[comp-eval-elo]] (судья, Эло).
+- **Симуляция:** [[comp-simulation-world]] (мир, computer-use, parity).
 
 Машиночитаемые каталоги (генерируются из кода): [[dev-component-catalog]], [[dev-service-map]], [[dev-contracts]], [[dev-event-catalog]].
 
@@ -1412,5 +1415,345 @@ flowchart TD
 ## Состояние
 
 - Сценарии описаны по коду и тестам подсистем; отдельного «сценарного» сервиса нет — это композиция.`,
+    },
+    {
+        slug: 'comp-crews-councils',
+        title: 'Компонент: экипажи и совет',
+        section: 'components',
+        tags: ['компоненты', 'экипажи', 'совет', 'мультиагентность'],
+        freshness: 'documented',
+        sources: [
+            'src/kernel/services/crew/crew-service.ts',
+            'src/kernel/services/crew/agent-forge-service.ts',
+            'src/kernel/services/council/council-service.ts',
+            'src/kernel/services/council/council-service-facade.ts',
+            'src/kernel/services/council/council-aware-evaluator.ts',
+            'src/kernel/services/council/weighted-judge-evaluator.ts',
+        ],
+        related: ['panel-director', 'panel-synthesis', 'panel-fleet', 'comp-agents-roles-skills', 'comp-llm-bridge'],
+        body: `## Назначение
+
+Собирать группы агентов (экипажи) и «совет» судей, которые сообща решают задачу и оценивают результаты.
+
+## Возможности
+
+- Экипажи: состав, шаблоны, кузница агентов (\`AgentForgeService\`).
+- Совет: фасад \`CouncilServiceFacade\` над \`CouncilService\`, оценка с учётом совета (\`CouncilAwareEvaluator\`), взвешенное голосование судей (\`WeightedJudgeEvaluator\`), миграция советов.
+
+## Реализация
+
+- \`crew/\`: \`crew-service.ts\` (\`CrewService\`), \`agent-forge-service.ts\` (\`AgentForgeService\`), \`crew-templates.ts\`, демо-сид.
+- \`council/\`: \`council-service.ts\`, \`council-service-facade.ts\`, \`council-aware-evaluator.ts\`, \`weighted-judge-evaluator.ts\`, \`council-migration-service.ts\`, \`council-lenses.ts\`, \`council-to-debate-mapper.ts\`.
+
+## Связи
+
+- Роли агентов — [[comp-agents-roles-skills]]; вызовы LLM — [[comp-llm-bridge]]; дебаты — [[comp-debate-runtime]].
+- Панели: [[panel-director]], [[panel-synthesis]], [[panel-fleet]]; состояние — [[comp-state-stores]].
+
+## Проверка работоспособности
+
+- Ручная: собрать экипаж/совет в Director и прогнать задачу.
+- В каталогах \`crew/\` и \`council/\` выделенных \`*.test.ts\` не найдено.
+
+## Состояние
+
+- Реализовано; подтверждено чтением кода, без автотестов.`,
+    },
+    {
+        slug: 'comp-frontier-diversity',
+        title: 'Компонент: фронтир и разнообразие агентов',
+        section: 'components',
+        tags: ['компоненты', 'фронтир', 'разнообразие', 'эксперименты'],
+        freshness: 'documented',
+        sources: [
+            'src/kernel/services/frontier/eval-service.ts',
+            'src/kernel/services/frontier/frontier-ops-service.ts',
+            'src/kernel/services/frontier/simulation-service.ts',
+            'src/kernel/services/frontier/capability-matrix.ts',
+            'src/kernel/services/agent-diversity/diversity-scorer.ts',
+            'src/kernel/services/agent-diversity/clustering.ts',
+        ],
+        related: ['panel-eval', 'panel-simulation', 'panel-analytics', 'panel-fleet', 'comp-eval-elo'],
+        body: `## Назначение
+
+Искать «фронтир» — лучшие конфигурации агентов — и измерять разнообразие/влияние участников, чтобы не вырождаться в однообразие.
+
+## Возможности
+
+- Фронтир: оценка (\`EvalService\`), операции (\`FrontierOpsService\`, \`capability-matrix\`), симуляция (\`SimulationService\`).
+- Разнообразие: скоринг (\`DiversityScorer\`), кластеризация (\`clustering.ts\`), семантическая дистанция (\`semantic-distance.ts\`), отслеживание влияния (\`influence-tracker.ts\`), паттерны рассуждений (\`reasoning-patterns.ts\`).
+
+## Реализация
+
+- \`frontier/\`: \`eval-service.ts\`, \`frontier-ops-service.ts\`, \`simulation-service.ts\`, \`capability-matrix.ts\`, демо-сид.
+- \`agent-diversity/\`: \`diversity-scorer.ts\`, \`clustering.ts\`, \`semantic-distance.ts\`, \`influence-tracker.ts\`, \`reasoning-patterns.ts\`, \`index.ts\`, \`types.ts\`.
+
+## Связи
+
+- Оценка/рейтинг — [[comp-eval-elo]]; симуляция — [[comp-simulation-world]]; агенты — [[comp-agents-roles-skills]].
+- Панели: [[panel-eval]], [[panel-simulation]], [[panel-analytics]], [[panel-fleet]].
+
+## Проверка работоспособности
+
+- Ручная: запустить эксперимент фронтира и посмотреть распределение вариантов.
+- В каталогах \`frontier/\` и \`agent-diversity/\` выделенных тестов не найдено.
+
+## Состояние
+
+- Реализовано; подтверждено чтением кода, без автотестов.`,
+    },
+    {
+        slug: 'comp-rivals-lab',
+        title: 'Компонент: лаборатория вариантов (rivals)',
+        section: 'components',
+        tags: ['компоненты', 'rivals', 'эксперименты', 'интеграции'],
+        freshness: 'documented',
+        sources: [
+            'src/kernel/services/rivals/planner-service.ts',
+            'src/kernel/services/rivals2/integrations-service.ts',
+            'src/kernel/services/rivals2/aider-service.ts',
+            'src/kernel/services/rivals2/swe-service.ts',
+            'src/kernel/services/rivals3/codeplan-service.ts',
+        ],
+        related: ['panel-agents-market', 'panel-ab-testing', 'panel-eval', 'comp-integrations-interop', 'panel-analytics'],
+        body: `## Назначение
+
+Набор «конкурентов» — альтернативных реализаций и внешних агентов (Aider, SWE-agent, React-режимы и т.п.), с которыми систему сравнивают и у которых заимствуют ходы.
+
+## Возможности
+
+- Планировщики и адаптеры внешних инструментов, режимы, память с областью видимости, загрузчики.
+- Серия каталогов \`rivals/\`, \`rivals2..20/\` — по подсистемам (интеграции, код-план, персонажи, RAG и др.).
+
+## Реализация
+
+- \`rivals/\`: \`planner-service.ts\` (\`PlannerService\`).
+- \`rivals2/\`: \`integrations-service.ts\` (\`IntegrationsService\`), \`aider-service.ts\`, \`swe-service.ts\`, \`react-service.ts\`, \`rag-service.ts\`, \`character-service.ts\`, \`modes-service.ts\`, \`loader-service.ts\`, \`runtime-service.ts\`, \`scopedmem-service.ts\`.
+- \`rivals3/\`: \`codeplan-service.ts\`; далее до \`rivals20/\` — отдельные тематические сервисы.
+
+## Связи
+
+- Внешние интеграции — [[comp-integrations-interop]]; A/B и качество — [[panel-ab-testing]], [[panel-quality-impact]].
+- Панели: [[panel-agents-market]], [[panel-eval]], [[panel-analytics]].
+
+## Проверка работоспособности
+
+- Ручная: сравнить результаты «конкурента» и основного пути в Evaluation/Market.
+- В каталогах серии \`rivals*\` выделенных тестов не найдено.
+
+## Состояние
+
+- Реализовано как исследовательская лаборатория; подтверждено чтением кода, без автотестов.`,
+    },
+    {
+        slug: 'comp-knowledge-rag',
+        title: 'Компонент: генерация знаний и RAG',
+        section: 'components',
+        tags: ['компоненты', 'знания', 'RAG', 'кристаллы'],
+        freshness: 'documented',
+        sources: [
+            'src/kernel/services/rag/bm25-service.ts',
+            'src/kernel/services/rag/hybrid-retrieval-service.ts',
+            'src/kernel/services/rag/reranker-service.ts',
+            'src/kernel/services/knowledge-generator/knowledge-generator-service.ts',
+            'src/kernel/services/crystal-vault/crystal-vault-service.ts',
+            'src/kernel/services/lens-engine/lens-engine-service.ts',
+        ],
+        related: ['panel-knowledge', 'panel-knowledge-generator', 'panel-lenses-crystals', 'comp-memory', 'panel-memory-palace'],
+        body: `## Назначение
+
+Порождать, хранить и находить знания: генерировать статьи, извлекать релевантное (RAG), кристаллизовать и смотреть через «линзы».
+
+## Возможности
+
+- RAG: BM25 (\`Bm25Service\`), гибридный поиск (\`HybridRetrievalService\`, \`StubRerankerService\`/\`ProviderRerankerService\`).
+- Генерация знаний (\`KnowledgeGeneratorService\`), «кристаллы» (\`CrystalVaultService\`, \`CrystalDebateBridge\`), линзы (\`LensEngineService\`).
+
+## Реализация
+
+- \`rag/\`: \`bm25-service.ts\`, \`hybrid-retrieval-service.ts\`, \`reranker-service.ts\` (см. ADR \`docs/004-hybrid-search-strategy.md\`).
+- \`knowledge-generator/\`, \`crystal-vault/\` (\`crystal-debate-bridge.ts\` связывает кристаллы с дебатами), \`lens-engine/\` (\`lens-library.ts\`).
+
+## Связи
+
+- Память — [[comp-memory]]; дебаты — [[comp-debate-runtime]].
+- Панели: [[panel-knowledge]], [[panel-knowledge-generator]], [[panel-lenses-crystals]], [[panel-memory-palace]]; ADR — [[dev-adr]].
+
+## Проверка работоспособности
+
+- Ручная: сгенерировать знание, найти через гибридный поиск, открыть линзу.
+- В каталогах \`rag/\`, \`knowledge-generator/\`, \`crystal-vault/\`, \`lens-engine/\` выделенных тестов не найдено.
+
+## Состояние
+
+- Реализовано; подтверждено чтением кода, без автотестов.`,
+    },
+    {
+        slug: 'comp-eval-elo',
+        title: 'Компонент: оценка и рейтинг (eval, elo)',
+        section: 'components',
+        tags: ['компоненты', 'оценка', 'рейтинг', 'LLM-judge'],
+        freshness: 'documented',
+        sources: [
+            'src/kernel/services/eval/llm-judge-service.ts',
+            'src/kernel/services/eval/scorer-registry-service.ts',
+            'src/kernel/services/elo/elo-service.ts',
+        ],
+        related: ['panel-eval', 'panel-eval-extra', 'panel-quality-impact', 'panel-ab-testing', 'panel-analytics'],
+        body: `## Назначение
+
+Объективно сравнивать ответы и агентов: судить (LLM-judge и оценки), вести рейтинг Эло, показывать влияние качества.
+
+## Возможности
+
+- LLM-судья (\`LlmJudgeService\`) и реестр скореров (\`ScorerRegistryService\`).
+- Рейтинг Эло (\`EloRatingService\`) для соревновательных пар.
+
+## Реализация
+
+- \`eval/\`: \`llm-judge-service.ts\`, \`scorer-registry-service.ts\`.
+- \`elo/\`: \`elo-service.ts\` (\`EloRatingService\`).
+- Связанные: \`council/weighted-judge-evaluator.ts\` (взвешенные судьи), \`frontier/eval-service.ts\`.
+
+## Связи
+
+- Фронтир/разнообразие — [[comp-frontier-diversity]]; A/B — [[panel-ab-testing]].
+- Панели: [[panel-eval]], [[panel-eval-extra]], [[panel-quality-impact]], [[panel-analytics]].
+
+## Проверка работоспособности
+
+- Ручная: прогнать оценивание и посмотреть таблицу рейтинга.
+- В каталогах \`eval/\` и \`elo/\` выделенных тестов не найдено.
+
+## Состояние
+
+- Реализовано; подтверждено чтением кода, без автотестов.`,
+    },
+    {
+        slug: 'comp-persona-builder',
+        title: 'Компонент: персоны и строитель (persona, builder)',
+        section: 'components',
+        tags: ['компоненты', 'персоны', 'билдер', 'контекст'],
+        freshness: 'documented',
+        sources: [
+            'src/kernel/services/persona/persona-service.ts',
+            'src/kernel/services/persona/lt-memory-service.ts',
+            'src/kernel/services/persona/shared-context-service.ts',
+            'src/kernel/services/builder/builder-agent-service.ts',
+        ],
+        related: ['panel-persona', 'panel-builder', 'panel-agents-market', 'comp-memory', 'comp-agents-roles-skills'],
+        body: `## Назначение
+
+Давать агентам устойчивую личность (персону) и общий контекст, а также строить/дорабатывать агентов и артефакты «строителем».
+
+## Возможности
+
+- Персоны (\`PersonaService\`), долговременная память персоны (\`LtMemoryService\`), общий контекст (\`SharedContextService\`).
+- Агент-строитель (\`BuilderAgentService\`) — создание и правка через агента.
+
+## Реализация
+
+- \`persona/\`: \`persona-service.ts\`, \`lt-memory-service.ts\`, \`shared-context-service.ts\`, демо-сид.
+- \`builder/\`: \`builder-agent-service.ts\` (\`BuilderAgentService\`).
+
+## Связи
+
+- Память — [[comp-memory]]; роли — [[comp-agents-roles-skills]].
+- Панели: [[panel-persona]], [[panel-builder]], [[panel-agents-market]].
+
+## Проверка работоспособности
+
+- Ручная: создать персону, задать общий контекст, собрать агента строителем.
+- В каталогах \`persona/\` и \`builder/\` выделенных тестов не найдено.
+
+## Состояние
+
+- Реализовано; подтверждено чтением кода, без автотестов.`,
+    },
+    {
+        slug: 'comp-invocation-meta',
+        title: 'Компонент: вызовы (invocation) и мета-агент',
+        section: 'components',
+        tags: ['компоненты', 'invocation', 'мета-агент', 'учёт'],
+        freshness: 'documented',
+        sources: [
+            'src/kernel/services/invocation/invocation-engine-service.ts',
+            'src/kernel/services/invocation/invocation-repository.ts',
+            'src/kernel/services/invocation/invocation-cost-tracker.ts',
+            'src/kernel/services/meta/meta-agent-service.ts',
+            'src/kernel/services/meta/strategy-service.ts',
+        ],
+        related: ['panel-settings', 'panel-analytics', 'comp-budget-pricing', 'comp-agents-roles-skills', 'comp-state-stores'],
+        body: `## Назначение
+
+Фиксировать каждый вызов агента/инструмента (учёт, повтор) и управлять ими на мета-уровне: стратегии и «мета-агент», который рулит другими.
+
+## Возможности
+
+- Движок вызовов (\`InvocationEngineService\`), хранилище (\`InvocationRepository\`), учёт стоимости (\`InvocationCostTracker\`).
+- Мета-агент (\`MetaAgentService\`), стратегии (\`StrategyService\`), когнитивная память (\`CogMemoryService\`).
+
+## Реализация
+
+- \`invocation/\`: \`invocation-engine-service.ts\`, \`invocation-repository.ts\`, \`invocation-cost-tracker.ts\`.
+- \`meta/\`: \`meta-agent-service.ts\`, \`strategy-service.ts\`, \`cog-memory-service.ts\`.
+
+## Связи
+
+- Расходы — [[comp-budget-pricing]]; агенты — [[comp-agents-roles-skills]].
+- Панели: [[panel-settings]], [[panel-analytics]]; состояние — [[comp-state-stores]] (\`invocationStore\`).
+
+## Проверка работоспособности
+
+- Тест: \`src/stores/invocationStore.test.ts\` (слой состояния); в самих каталогах \`invocation/\`/\`meta/\` выделенных тестов не найдено.
+
+## Состояние
+
+- Реализовано; подтверждено чтением кода и тестом стора.`,
+    },
+    {
+        slug: 'comp-simulation-world',
+        title: 'Компонент: симуляция, компьютер и parity',
+        section: 'components',
+        tags: ['компоненты', 'симуляция', 'компьютер', 'parity'],
+        freshness: 'documented',
+        sources: [
+            'src/kernel/services/simulation/simulation-engine-service.ts',
+            'src/kernel/services/simulation/world-state-service.ts',
+            'src/kernel/services/computer/computer-use-loop-service.ts',
+            'src/kernel/services/computer/sidecar-computer-executor.ts',
+            'src/kernel/services/parity/knowledge-service.ts',
+            'src/kernel/services/parity/tool-runner-service.ts',
+        ],
+        related: ['panel-simulation', 'panel-playground', 'panel-guardians', 'panel-infra-meta', 'comp-tools-mcp'],
+        body: `## Назначение
+
+Прогонять «мир» с агентами (симуляция), давать агенту управлять компьютером и проверять паритет с внешними рантаймами.
+
+## Возможности
+
+- Симуляция: движок (\`SimulationEngineService\`), состояние мира (\`WorldStateService\`), адаптер действий агента (\`AgentActAdapterService\`).
+- Computer-use: цикл управления (\`ComputerUseLoopService\`), исполнитель-сайдкар (\`SidecarComputerExecutor\`).
+- Parity: знание, запуск инструментов и обучение (\`KnowledgeService\`, \`ToolRunnerService\`, \`TrainingService\`, \`DefaultEmbeddingService\`).
+
+## Реализация
+
+- \`simulation/\`: \`simulation-engine-service.ts\`, \`world-state-service.ts\`, \`agent-act-adapter-service.ts\`.
+- \`computer/\`: \`computer-use-loop-service.ts\`, \`sidecar-computer-executor.ts\`.
+- \`parity/\`: \`knowledge-service.ts\`, \`tool-runner-service.ts\`, \`training-service.ts\`, \`default-embedding-service.ts\`.
+
+## Связи
+
+- Инструменты/песочница — [[comp-tools-mcp]]; дебаты/фронтир — [[comp-debate-runtime]], [[comp-frontier-diversity]].
+- Панели: [[panel-simulation]], [[panel-playground]], [[panel-guardians]], [[panel-infra-meta]].
+
+## Проверка работоспособности
+
+- Ручная: запустить симуляцию, дать агенту действие в мире.
+- В каталогах \`simulation/\`, \`computer/\`, \`parity/\` выделенных тестов не найдено.
+
+## Состояние
+
+- Реализовано; подтверждено чтением кода, без автотестов.`,
     },
 ];

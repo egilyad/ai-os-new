@@ -5,7 +5,7 @@
 > Полная документация системы: панели, агенты, дебаты, память, провайдеры, диагностика, история разработки, архитектура и руководства для разработчиков.
 > Страницы автосгенерированы из корпуса Wiki (`scripts/gen-wiki-docs.mjs`). Та же документация доступна в приложении в панели «Wiki».
 
-Всего материалов: **177** в 12 разделах.
+Всего материалов: **185** в 12 разделах.
 
 > Разработчикам: начните с [Обзор для разработчиков](./dev-overview.md), затем [Структура](./dev-layout.md) и [Каталог компонентов](./dev-component-catalog.md).
 
@@ -22,7 +22,7 @@
 | Диагностика | 2 |
 | История разработки | 27 |
 | Архитектура | 2 |
-| Компоненты и сервисы | 30 |
+| Компоненты и сервисы | 38 |
 | Заметки | 1 |
 | Разработчикам | 30 |
 
@@ -169,7 +169,7 @@
 - [Архитектура и связи](./architecture.md) — _documented_
 - [Карта системы](./dev-system-map.md) — _verified_
 
-## Компоненты и сервисы (30)
+## Компоненты и сервисы (38)
 
 - [Компоненты и сервисы: как читать этот раздел](./comp-overview.md) — _verified_
 - [Компонент: запуск ядра (bootstrap, container, runtime)](./comp-kernel-boot.md) — _verified_
@@ -201,6 +201,14 @@
 - [Компонент: LLM-мост (адаптеры crews/council/graph/frontier)](./comp-llm-bridge.md) — _documented_
 - [Компонент: слой состояния (Zustand-сторы)](./comp-state-stores.md) — _documented_
 - [Компонент: сквозные сценарии](./comp-scenarios.md) — _documented_
+- [Компонент: экипажи и совет](./comp-crews-councils.md) — _documented_
+- [Компонент: фронтир и разнообразие агентов](./comp-frontier-diversity.md) — _documented_
+- [Компонент: лаборатория вариантов (rivals)](./comp-rivals-lab.md) — _documented_
+- [Компонент: генерация знаний и RAG](./comp-knowledge-rag.md) — _documented_
+- [Компонент: оценка и рейтинг (eval, elo)](./comp-eval-elo.md) — _documented_
+- [Компонент: персоны и строитель (persona, builder)](./comp-persona-builder.md) — _documented_
+- [Компонент: вызовы (invocation) и мета-агент](./comp-invocation-meta.md) — _documented_
+- [Компонент: симуляция, компьютер и parity](./comp-simulation-world.md) — _documented_
 
 ## Заметки (1)
 
