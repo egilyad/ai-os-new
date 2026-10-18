@@ -51,7 +51,7 @@ export const COMPONENT_ARTICLES: WikiArticle[] = [
 - **Задачи и управление:** [[comp-task-planning]] (задачи, расписание), [[comp-fleet-governance]] (флот, governance, аудит), [[comp-integrations-interop]] (A2A, gateway, MCP).
 - **Провайдеры и состояние:** [[comp-provider-runtime]] (инстансы, сессии, бюджет), [[comp-llm-bridge]] (мост к LLM), [[comp-state-stores]] (UI-состояние).
 - **Сквозные сценарии:** [[comp-scenarios]] (чат, дебаты, задача от панели до аудита).
-- **Сквозные контуры (end-to-end):** [[comp-flow-debate]] (дебаты: панель → сервис → движок → LLM → события → хранилище → UI), [[comp-flow-chat]] (чат: ввод → стор → событие → ChatExecutor → роутер → адаптер → стрим → UI → персист), [[comp-flow-knowledge]] (знания: ингест → чанки → эмбеддинги → гибридный поиск (BM25+vector+RRF) → выдача в чат/дебаты/инструменты), [[comp-flow-multiagent]] (мультиагент: запрос → Invocation Engine (политики/резолв/бюджет) → хэндофф в дебаты или Director-диалог), с точками обрыва.
+- **Сквозные контуры (end-to-end):** [[comp-flow-debate]] (дебаты: панель → сервис → движок → LLM → события → хранилище → UI), [[comp-flow-chat]] (чат: ввод → стор → событие → ChatExecutor → роутер → адаптер → стрим → UI → персист), [[comp-flow-knowledge]] (знания: ингест → чанки → эмбеддинги → гибридный поиск (BM25+vector+RRF) → выдача в чат/дебаты/инструменты), [[comp-flow-multiagent]] (мультиагент: запрос → Invocation Engine (политики/резолв/бюджет) → хэндофф в дебаты или Director-диалог), [[comp-flow-tools]] (инструменты: цикл tool-calling → политики → песочница (Web Worker) / MCP), с точками обрыва.
 - **Мультиагентность:** [[comp-crews-councils]] (экипажи, совет), [[comp-frontier-diversity]] (фронтир, разнообразие), [[comp-rivals-lab]] (лаборатория вариантов), [[comp-persona-builder]] (персоны, строитель), [[comp-invocation-meta]] (вызовы, мета-агент).
 - **Знания и оценка:** [[comp-knowledge-rag]] (RAG, кристаллы, линзы), [[comp-eval-elo]] (судья, Эло).
 - **Симуляция:** [[comp-simulation-world]] (мир, computer-use, parity).
@@ -3193,5 +3193,87 @@ flowchart TD
 ## Состояние
 
 - Подтверждено чтением кода; жизненный цикл вызова, хэндофф и демо-подсистемы покрыты тестами; реальный LLM-исполнитель Crew — ожидаемое расширение (GAP E.1).`,
+    },
+    {
+        slug: 'comp-flow-tools',
+        title: 'Сквозной контур: инструменты и песочница',
+        section: 'components',
+        tags: ['компоненты', 'контур', 'инструменты', 'tool-calling', 'песочница', 'MCP'],
+        freshness: 'verified',
+        sources: [
+            'src/components/ToolsPanel/ToolsPanel.tsx',
+            'src/kernel/services/parity/tool-runner-service.ts',
+            'src/kernel/services/tool-executor.ts',
+            'src/kernel/services/ops/tool-governance-service.ts',
+            'src/kernel/services/ops/sandbox-broker-service.ts',
+            'src/kernel/services/sandbox/code-sandbox-service.ts',
+            'src/kernel/workers/sandbox.worker.ts',
+            'src/kernel/workers/sandbox-interpreter.ts',
+            'src/kernel/services/tool-loop-detector.ts',
+            'src/kernel/services/tool-repair-service.ts',
+            'src/kernel/services/mcp-service.ts',
+            'src/kernel/service-registration/phase58-code-sandbox.ts',
+        ],
+        related: ['comp-tools-mcp', 'comp-tool-capability', 'comp-policy-security', 'comp-flow-chat', 'comp-flow-knowledge'],
+        body: `## Назначение
+
+Показать вызов инструментов как **сквозной контур**: от запроса агента/чата до выполнения в песочнице или через MCP — с политиками, защитой от циклов и точками обрыва.
+
+## Возможности
+
+- Цикл tool-calling: модель предлагает вызовы → рантайм исполняет → результаты возвращаются модели.
+- Реестр инструментов: \`workspace.*\`, \`http.fetch\`, \`knowledge.search\`, \`mcp.call\`.
+- Управление: политики (ToolGovernance), брокер песочницы (подтверждения), защита от зацикливания и ремонт вызовов.
+- Изоляция: код — в Web Worker ([[comp-tool-capability]], ADR-002).
+
+## Сквозной поток (по шагам)
+
+1. **UI/агент.** [[panel-integrations]] → \`ToolsPanel.tsx\` или агент/чат запускает \`ToolRunnerService.runWithTools(prompt, opts)\`.
+2. **Подготовка.** Системное и пользовательское сообщения, набор \`toolDefs\` из реестра, лимит раундов (1–5, по умолчанию 3).
+3. **Раунд LLM.** \`llm.chat(messages, { tools: toolDefs, cacheScope })\`; если \`toolCalls\` пуст — ответ финальный, цикл завершён.
+4. **Исполнение вызова.** \`callTool(agentId, name, args, link)\`:
+   - **Гейт политики:** \`governance.check(agentId, 'tool:<name>')\` ([[comp-policy-security]]);
+   - выполнение инструмента (workspace/http/knowledge/MCP);
+   - событие \`TOOL_EXECUTED\` (и на успехе, и на ошибке).
+5. **Возврат результата.** Результат (обрезанный ~6000) кладётся в сообщение \`role: 'tool'\`, цикл продолжается.
+6. **MCP.** Инструмент \`mcp.call\` → \`MCPService.callTool(serverId, tool, args)\`; серверы — [[comp-tools-mcp]], события \`mcp:updated\`, \`mcp:harness:proxy\`.
+7. **Песочница.** Исполнение кода — \`CodeSandboxService\` (phase58-code-sandbox.ts) → \`runWithTimeout\` → \`sandbox.worker.ts\`/\`sandbox-interpreter.ts\`; событие \`codeexec:sandbox:done\`.
+8. **Защита.** \`ToolLoopDetector\` (защита от зацикливания), \`ToolRepairService\` (ремонт неудачных вызовов), \`SandboxBrokerService.approve\` (тикеты на доступ).
+
+## Обрывы цепочки (что происходит при ошибке)
+
+- **Политика запрещает.** \`governance.check\` = false → вызов не исполняется, результат-ошибка уходит модели как \`role:'tool'\`.
+- **Инструмент бросил исключение.** Ошибка ловится и передаётся модели строкой \`ERROR: ...\` (цикл не падает).
+- **Нет MCP-моста.** \`mcp.call\` бросает «MCP bridge not configured».
+- **Сеть.** \`http.fetch\` блокирует приватные хосты (httpGuard) и обрывается по таймауту 15с (\`AbortController\`).
+- **Зацикливание.** \`ToolLoopDetector\` сигнализирует о петле; \`ToolRepairService\` пытается починить вызов.
+- **Лимит раундов.** Достигнут \`maxRounds\` → возвращается последний вывод.
+
+## Данные, события, восстановление
+
+- **События:** \`tool:execution:start/success/error\`, \`tool:executed\`, \`tool:group\`; песочница \`codeexec:sandbox:done\`, \`ops:sandbox\`; MCP \`mcp:updated\`, \`mcp:harness:proxy/reconnected\`; ремонт вызовов — \`ToolRepairService\`.
+- **Связь с моделями:** вызовы LLM идут через роутер/адаптеры ([[comp-provider-runtime]]), как в [[comp-flow-chat]].
+- **Знания как инструмент:** \`knowledge.search\` — мост к [[comp-flow-knowledge]].
+
+## Реализация
+
+- Запуск цикла: \`src/kernel/services/parity/tool-runner-service.ts\`.
+- Исполнитель/реестр: \`src/kernel/services/tool-executor.ts\`.
+- Управление: \`ops/tool-governance-service.ts\`, \`ops/sandbox-broker-service.ts\`, \`tool-loop-detector.ts\`, \`tool-repair-service.ts\`.
+- Песочница: \`src/kernel/services/sandbox/code-sandbox-service.ts\`, \`src/kernel/workers/sandbox.worker.ts\`, \`sandbox-interpreter.ts\`, DI — \`phase58-code-sandbox.ts\`.
+- MCP: \`src/kernel/services/mcp-service.ts\`.
+
+## Связи
+
+- Инструменты и MCP — [[comp-tools-mcp]]; способности/песочница — [[comp-tool-capability]]; политики — [[comp-policy-security]].
+- Чат и знания как потребители — [[comp-flow-chat]], [[comp-flow-knowledge]].
+
+## Проверка работоспособности
+
+- Тесты: \`src/kernel/services/parity/tool-runner-service.test.ts\`, \`src/kernel/services/tool-executor.test.ts\`, \`src/kernel/services/sandbox/code-sandbox-service.test.ts\`, \`src/kernel/workers/sandbox-interpreter.test.ts\`, \`src/kernel/services/file-toolset.test.ts\`, \`src/kernel/services/interop/mcp-harness-service.test.ts\`, \`src/components/ToolsPanel/ToolsPanel.test.tsx\`, \`src/components/MCPPanel/MCPPanel.test.tsx\`.
+
+## Состояние
+
+- Подтверждено чтением кода; цикл вызова, исполнитель, песочница и MCP покрыты тестами.`,
     },
 ];

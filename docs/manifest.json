@@ -50,7 +50,7 @@
     {
       "id": "components",
       "title": "Компоненты и сервисы",
-      "articles": 70
+      "articles": 71
     },
     {
       "id": "notes",
@@ -4681,6 +4681,51 @@
         "src/components/RoomPanel/RoomPanel.test.tsx",
         "src/components/CouncilPanel/CouncilPanel.test.tsx",
         "src/kernel/services/multi-agent-project-service.test.ts"
+      ]
+    },
+    {
+      "id": "wiki:comp-flow-tools",
+      "type": "article",
+      "slug": "comp-flow-tools",
+      "title": "Сквозной контур: инструменты и песочница",
+      "section": "components",
+      "status": "verified",
+      "tags": [
+        "компоненты",
+        "контур",
+        "инструменты",
+        "tool-calling",
+        "песочница",
+        "MCP"
+      ],
+      "sources": [
+        "src/components/ToolsPanel/ToolsPanel.tsx",
+        "src/kernel/services/parity/tool-runner-service.ts",
+        "src/kernel/services/tool-executor.ts",
+        "src/kernel/services/ops/tool-governance-service.ts",
+        "src/kernel/services/ops/sandbox-broker-service.ts",
+        "src/kernel/services/sandbox/code-sandbox-service.ts",
+        "src/kernel/workers/sandbox.worker.ts",
+        "src/kernel/workers/sandbox-interpreter.ts",
+        "src/kernel/services/tool-loop-detector.ts",
+        "src/kernel/services/tool-repair-service.ts",
+        "src/kernel/services/mcp-service.ts",
+        "src/kernel/service-registration/phase58-code-sandbox.ts"
+      ],
+      "related": [
+        "comp-tools-mcp",
+        "comp-tool-capability",
+        "comp-policy-security",
+        "comp-flow-chat",
+        "comp-flow-knowledge"
+      ],
+      "reviewed": null,
+      "tests": [
+        "src/components/ToolsPanel/ToolsPanel.test.tsx",
+        "src/kernel/services/parity/tool-runner-service.test.ts",
+        "src/kernel/services/tool-executor.test.ts",
+        "src/kernel/services/sandbox/code-sandbox-service.test.ts",
+        "src/kernel/workers/sandbox-interpreter.test.ts"
       ]
     },
     {

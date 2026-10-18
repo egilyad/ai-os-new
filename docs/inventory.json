@@ -3,7 +3,7 @@
   "generatedBy": "scripts/gen-docs-inventory.mjs",
   "scope": "git-tracked markdown: docs/**/*.md (excluding docs/new drafts and the self-report pages docs-health, docs-inventory) plus repository entry docs (root *.md, .superagents/**, src/kernel/DEPENDENCY_MAP.md)",
   "totals": {
-    "documents": 1041,
+    "documents": 1042,
     "byCategory": {
       "repo": 12,
       "top": 46,
@@ -13,12 +13,12 @@
       "reference": 6,
       "roadmap": 6,
       "superseded": 3,
-      "wiki": 217
+      "wiki": 218
     },
     "byLanguage": {
       "en": 658,
       "ru": 232,
-      "mixed": 151
+      "mixed": 152
     }
   },
   "duplicates": {
@@ -6872,6 +6872,14 @@
       "hash": "143d149749dbfcaab71ebccebf522cafef030e5e"
     },
     {
+      "path": "docs/wiki/comp-flow-tools.md",
+      "category": "wiki",
+      "language": "mixed",
+      "title": "Сквозной контур: инструменты и песочница",
+      "bytes": 8226,
+      "hash": "bb89edb088b3d88941ec024b88ea0c9acb87ea71"
+    },
+    {
       "path": "docs/wiki/comp-frontier-diversity.md",
       "category": "wiki",
       "language": "ru",
@@ -6988,8 +6996,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Компоненты и сервисы: как читать этот раздел",
-      "bytes": 14071,
-      "hash": "e3f9e91b6fdc59fe787af4b13e7f9528e47eb32e"
+      "bytes": 14283,
+      "hash": "c267982e71778e0789da56cce77fd937185241dd"
     },
     {
       "path": "docs/wiki/comp-persistence.md",
@@ -7181,7 +7189,7 @@
       "language": "mixed",
       "title": "Матрица покрытия",
       "bytes": 8315,
-      "hash": "77c32b3e13bc8b82261e1786f9f5c6e8852d27b8"
+      "hash": "bc2287fcdd55cff04acf064d644c051725b60a21"
     },
     {
       "path": "docs/wiki/debates.md",
@@ -7213,7 +7221,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4075,
-      "hash": "ecab56d126e0704abf634bb821356a80840afa01"
+      "hash": "c7f33a16626e75ff584597fb598a91c3b49e8bde"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -7301,7 +7309,7 @@
       "language": "ru",
       "title": "Граф знаний",
       "bytes": 4900,
-      "hash": "7c417759ae46bbfe36c671e553a30c97ac2acba6"
+      "hash": "e33ed66285b7b2035a013b2a51a84d970456292c"
     },
     {
       "path": "docs/wiki/dev-history.md",
@@ -7436,8 +7444,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Карта документации",
-      "bytes": 29425,
-      "hash": "ad2cd70bb5154c38bafa8a8bdaddeec14f20a76d"
+      "bytes": 29528,
+      "hash": "319213d6e039c5b7a223f372cf2b1a3ce3165ec0"
     },
     {
       "path": "docs/wiki/docs-standard.md",
@@ -8092,8 +8100,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Wiki SuperAgents OS",
-      "bytes": 22555,
-      "hash": "afdfb84bdba3159e5345661d289231d93b54c1f4"
+      "bytes": 22672,
+      "hash": "716c6acd8c80d996c54df1cb029c60f5e165d658"
     },
     {
       "path": "docs/wiki/roadmap-notes.md",
@@ -8348,16 +8356,16 @@
       "category": "repo",
       "language": "en",
       "title": "SuperAgents OS",
-      "bytes": 54467,
-      "hash": "3d3eac26f81072db3bdeeddfac17671373a9966f"
+      "bytes": 54513,
+      "hash": "f2c7d9d0cafcf45b4f0f80707c32370c86d9bd06"
     },
     {
       "path": "README.md",
       "category": "repo",
       "language": "mixed",
       "title": "SuperAgents OS — Wiki",
-      "bytes": 46792,
-      "hash": "6a4df8c26091adcc98fd5bbd123885b941db8d51"
+      "bytes": 46882,
+      "hash": "3815868d56cfe6c9ad93c42039ad51aa645cac6a"
     },
     {
       "path": "SELF_IMPROVEMENT_AUDIT_2026-09-22.md",
