@@ -51,7 +51,7 @@ export const COMPONENT_ARTICLES: WikiArticle[] = [
 - **Задачи и управление:** [[comp-task-planning]] (задачи, расписание), [[comp-fleet-governance]] (флот, governance, аудит), [[comp-integrations-interop]] (A2A, gateway, MCP).
 - **Провайдеры и состояние:** [[comp-provider-runtime]] (инстансы, сессии, бюджет), [[comp-llm-bridge]] (мост к LLM), [[comp-state-stores]] (UI-состояние).
 - **Сквозные сценарии:** [[comp-scenarios]] (чат, дебаты, задача от панели до аудита).
-- **Сквозные контуры (end-to-end):** [[comp-flow-debate]] (дебаты: панель → сервис → движок → LLM → события → хранилище → UI), [[comp-flow-chat]] (чат: ввод → стор → событие → ChatExecutor → роутер → адаптер → стрим → UI → персист), [[comp-flow-knowledge]] (знания: ингест → чанки → эмбеддинги → гибридный поиск (BM25+vector+RRF) → выдача в чат/дебаты/инструменты), [[comp-flow-multiagent]] (мультиагент: запрос → Invocation Engine (политики/резолв/бюджет) → хэндофф в дебаты или Director-диалог), [[comp-flow-tools]] (инструменты: цикл tool-calling → политики → песочница (Web Worker) / MCP), с точками обрыва.
+- **Сквозные контуры (end-to-end):** [[comp-flow-debate]] (дебаты: панель → сервис → движок → LLM → события → хранилище → UI), [[comp-flow-chat]] (чат: ввод → стор → событие → ChatExecutor → роутер → адаптер → стрим → UI → персист), [[comp-flow-knowledge]] (знания: ингест → чанки → эмбеддинги → гибридный поиск (BM25+vector+RRF) → выдача в чат/дебаты/инструменты), [[comp-flow-multiagent]] (мультиагент: запрос → Invocation Engine (политики/резолв/бюджет) → хэндофф в дебаты или Director-диалог), [[comp-flow-tools]] (инструменты: цикл tool-calling → политики → песочница (Web Worker) / MCP), [[comp-flow-computer-use]] (computer-use: апрув по политике → цикл «действие → скриншот → действие»), с точками обрыва.
 - **Мультиагентность:** [[comp-crews-councils]] (экипажи, совет), [[comp-frontier-diversity]] (фронтир, разнообразие), [[comp-rivals-lab]] (лаборатория вариантов), [[comp-persona-builder]] (персоны, строитель), [[comp-invocation-meta]] (вызовы, мета-агент).
 - **Знания и оценка:** [[comp-knowledge-rag]] (RAG, кристаллы, линзы), [[comp-eval-elo]] (судья, Эло).
 - **Симуляция:** [[comp-simulation-world]] (мир, computer-use, parity).
@@ -3275,5 +3275,76 @@ flowchart TD
 ## Состояние
 
 - Подтверждено чтением кода; цикл вызова, исполнитель, песочница и MCP покрыты тестами.`,
+    },
+    {
+        slug: 'comp-flow-computer-use',
+        title: 'Сквозной контур: computer-use',
+        section: 'components',
+        tags: ['компоненты', 'контур', 'computer-use', 'CUA', 'песочница', 'адаптеры'],
+        freshness: 'verified',
+        sources: [
+            'src/kernel/services/computer/computer-use-loop-service.ts',
+            'src/kernel/services/computer/sidecar-computer-executor.ts',
+            'src/kernel/services/rivals5/computer-service.ts',
+            'src/llm/anthropic/anthropic-adapter.ts',
+            'src/llm/gemini-computer/gemini-computer-adapter.ts',
+            'src/kernel/service-registration/phase71-computer-use-loop.ts',
+            'src/components/SimulationPanel/SimulationPanel.tsx',
+            'src/components/AquariumPanel/AquariumPanel.tsx',
+        ],
+        related: ['comp-simulation-world', 'comp-llm-adapters', 'comp-tool-capability', 'comp-policy-security', 'comp-flow-tools'],
+        body: `## Назначение
+
+Показать computer-use (управление «компьютером» агентом) как **сквозной контур**: от запуска до многошагового цикла «действие → скриншот → действие» — с обязательными подтверждениями и точками обрыва.
+
+## Возможности
+
+- Многошаговый CUA-цикл: **LLM → computer action → screenshot → LLM** (Phase 71, «блок B»).
+- Апрув по политике: \`BLOCKED\` / \`REQUIRES_APPROVAL\` / \`FREE\` и лимит ходов по пресету.
+- Отдельные адаптеры под формат компьютерных действий (\`AnthropicAdapter\` tool_use, \`GeminiComputerAdapter\`).
+- Изоляция исполнителя (sidecar) и durable-трасса действий.
+
+## Сквозной поток (по шагам)
+
+1. **Запуск.** UI ([[panel-simulation]], AquariumPanel) или агент вызывает \`ComputerUseLoopService.requestAndRun(opts)\`.
+2. **Политика.** \`resolveComputerMode(policy)\` читает \`toolOverrides['computer.use']\` / \`executeMode\`: \`BLOCKED\` | \`REQUIRES_APPROVAL\` | \`FREE\`. При \`REQUIRES_APPROVAL\` создаётся \`ApprovalRequest\`, и запуск ждёт подтверждения.
+3. **Старт после апрува.** \`runApproved\` → \`claim\` → \`run(opts)\`.
+4. **Цикл.** На каждом ходе — \`llm.sendMessage\` с компьютерным инструментом; ответ возвращает действие, исполняется, публикуется \`COMPUTER_ACT\` (\`computer:act\`), затем захват скриншота (лимит ~3.5M символов) и передача обратно модели.
+5. **Адаптеры.** Формат вызова зависит от провайдера: \`AnthropicAdapter\` (tool_use), \`GeminiComputerAdapter\` ('gemini-computer'); см. [[comp-llm-adapters]].
+6. **Лимит ходов.** \`presetTurnsCap(policy)\` — максимум 30, по умолчанию 10, по пресету ([[comp-policy-security]]).
+7. **Трасса.** Действие пишется в durable-трассу через \`ToolService.recordExternalExecution\`; события \`COMPUTER_HANDOFF\`, а также \`aquarium:screenshot:captured\`.
+
+## Обрывы цепочки (что происходит при ошибке)
+
+- **Политика \`BLOCKED\`.** Цикл не запускается вовсе.
+- **\`REQUIRES_APPROVAL\` без подтверждения.** Запуск не происходит — ждёт \`claim\`; тайм-аут/отказ оставляет действие невыполненным.
+- **Нет адаптера под провайдера.** Вызов модели падает (см. [[comp-flow-chat]] про отказоустойчивость).
+- **Лимит ходов/скриншота.** Достигнут \`turnsCap\` → цикл останавливается; слишком большой скриншот обрезается по лимиту.
+
+## Данные, события, восстановление
+
+- **События:** \`COMPUTER_ACT\` (\`computer:act\`), \`COMPUTER_HANDOFF\` (\`computer:handoff\`), \`aquarium:screenshot:captured\`.
+- **Трасса:** durable-записи внешних исполнений (\`recordExternalExecution\`); см. [[comp-persistence]].
+- **Потребители:** панель Simulation/Aquarium и агенты; [[comp-simulation-world]].
+
+## Реализация
+
+- Цикл: \`src/kernel/services/computer/computer-use-loop-service.ts\`.
+- Исполнитель (sidecar): \`src/kernel/services/computer/sidecar-computer-executor.ts\`; сервис-обёртка — \`src/kernel/services/rivals5/computer-service.ts\`.
+- Адаптеры: \`src/llm/anthropic/anthropic-adapter.ts\`, \`src/llm/gemini-computer/gemini-computer-adapter.ts\`.
+- DI: \`src/kernel/service-registration/phase71-computer-use-loop.ts\`.
+
+## Связи
+
+- Симуляция и мир — [[comp-simulation-world]]; адаптеры — [[comp-llm-adapters]].
+- Песочница/способности — [[comp-tool-capability]]; политики и апрувы — [[comp-policy-security]]; общий цикл инструментов — [[comp-flow-tools]].
+
+## Проверка работоспособности
+
+- Тесты: \`src/kernel/service-registration/phase71-computer-use-loop.test.ts\`, \`src/llm/gemini-computer/gemini-computer-adapter.test.ts\`, \`src/llm/anthropic/anthropic-adapter.test.ts\`, \`src/components/SimulationPanel/SimulationPanel.test.tsx\`, \`src/components/AquariumPanel/AquariumPanel.test.tsx\`.
+
+## Состояние
+
+- Подтверждено чтением кода; цикл и адаптеры покрыты тестами; апрув-гейтинг — обязательная часть пути.`,
     },
 ];

@@ -50,7 +50,7 @@
     {
       "id": "components",
       "title": "Компоненты и сервисы",
-      "articles": 71
+      "articles": 72
     },
     {
       "id": "notes",
@@ -4726,6 +4726,49 @@
         "src/kernel/services/tool-executor.test.ts",
         "src/kernel/services/sandbox/code-sandbox-service.test.ts",
         "src/kernel/workers/sandbox-interpreter.test.ts"
+      ]
+    },
+    {
+      "id": "wiki:comp-flow-computer-use",
+      "type": "article",
+      "slug": "comp-flow-computer-use",
+      "title": "Сквозной контур: computer-use",
+      "section": "components",
+      "status": "verified",
+      "tags": [
+        "компоненты",
+        "контур",
+        "computer-use",
+        "CUA",
+        "песочница",
+        "адаптеры"
+      ],
+      "sources": [
+        "src/kernel/services/computer/computer-use-loop-service.ts",
+        "src/kernel/services/computer/sidecar-computer-executor.ts",
+        "src/kernel/services/rivals5/computer-service.ts",
+        "src/llm/anthropic/anthropic-adapter.ts",
+        "src/llm/gemini-computer/gemini-computer-adapter.ts",
+        "src/kernel/service-registration/phase71-computer-use-loop.ts",
+        "src/components/SimulationPanel/SimulationPanel.tsx",
+        "src/components/AquariumPanel/AquariumPanel.tsx"
+      ],
+      "related": [
+        "comp-simulation-world",
+        "comp-llm-adapters",
+        "comp-tool-capability",
+        "comp-policy-security",
+        "comp-flow-tools"
+      ],
+      "reviewed": null,
+      "tests": [
+        "src/kernel/services/computer/computer-use-loop-service.test.ts",
+        "src/kernel/services/computer/sidecar-computer-executor.test.ts",
+        "src/llm/anthropic/anthropic-adapter.test.ts",
+        "src/llm/gemini-computer/gemini-computer-adapter.test.ts",
+        "src/kernel/service-registration/phase71-computer-use-loop.test.ts",
+        "src/components/SimulationPanel/SimulationPanel.test.tsx",
+        "src/components/AquariumPanel/AquariumPanel.test.tsx"
       ]
     },
     {

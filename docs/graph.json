@@ -3,22 +3,22 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 1189,
-    "edges": 3108,
+    "nodes": 1193,
+    "edges": 3128,
     "byType": {
       "audit": 67,
-      "code": 499,
-      "test": 145,
+      "code": 501,
+      "test": 146,
       "panel": 259,
-      "article": 219
+      "article": 220
     },
     "byKind": {
       "audit_test": 325,
       "audit_mention": 928,
       "documents": 201,
-      "source": 665,
-      "test": 196,
-      "related": 793
+      "source": 673,
+      "test": 203,
+      "related": 798
     }
   },
   "nodes": [
@@ -1972,6 +1972,16 @@
       "label": "src/kernel/service-registration/phase6-high-level.ts"
     },
     {
+      "id": "file:src/kernel/service-registration/phase71-computer-use-loop.test.ts",
+      "type": "test",
+      "label": "src/kernel/service-registration/phase71-computer-use-loop.test.ts"
+    },
+    {
+      "id": "file:src/kernel/service-registration/phase71-computer-use-loop.ts",
+      "type": "code",
+      "label": "src/kernel/service-registration/phase71-computer-use-loop.ts"
+    },
+    {
       "id": "file:src/kernel/services/",
       "type": "code",
       "label": "src/kernel/services/"
@@ -2900,6 +2910,11 @@
       "id": "file:src/kernel/services/rivals3/codeplan-service.ts",
       "type": "code",
       "label": "src/kernel/services/rivals3/codeplan-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/rivals5/computer-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/rivals5/computer-service.ts"
     },
     {
       "id": "file:src/kernel/services/role-service.ts",
@@ -5745,6 +5760,13 @@
       "id": "wiki:comp-flow-chat",
       "type": "article",
       "label": "Сквозной контур: чат",
+      "section": "components",
+      "status": "verified"
+    },
+    {
+      "id": "wiki:comp-flow-computer-use",
+      "type": "article",
+      "label": "Сквозной контур: computer-use",
       "section": "components",
       "status": "verified"
     },
@@ -15957,6 +15979,106 @@
     {
       "from": "wiki:comp-flow-chat",
       "to": "wiki:comp-state-stores",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-flow-computer-use",
+      "to": "file:src/components/AquariumPanel/AquariumPanel.test.tsx",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-flow-computer-use",
+      "to": "file:src/components/AquariumPanel/AquariumPanel.tsx",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-flow-computer-use",
+      "to": "file:src/components/SimulationPanel/SimulationPanel.test.tsx",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-flow-computer-use",
+      "to": "file:src/components/SimulationPanel/SimulationPanel.tsx",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-flow-computer-use",
+      "to": "file:src/kernel/service-registration/phase71-computer-use-loop.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-flow-computer-use",
+      "to": "file:src/kernel/service-registration/phase71-computer-use-loop.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-flow-computer-use",
+      "to": "file:src/kernel/services/computer/computer-use-loop-service.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-flow-computer-use",
+      "to": "file:src/kernel/services/computer/computer-use-loop-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-flow-computer-use",
+      "to": "file:src/kernel/services/computer/sidecar-computer-executor.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-flow-computer-use",
+      "to": "file:src/kernel/services/computer/sidecar-computer-executor.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-flow-computer-use",
+      "to": "file:src/kernel/services/rivals5/computer-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-flow-computer-use",
+      "to": "file:src/llm/anthropic/anthropic-adapter.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-flow-computer-use",
+      "to": "file:src/llm/anthropic/anthropic-adapter.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-flow-computer-use",
+      "to": "file:src/llm/gemini-computer/gemini-computer-adapter.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-flow-computer-use",
+      "to": "file:src/llm/gemini-computer/gemini-computer-adapter.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-flow-computer-use",
+      "to": "wiki:comp-flow-tools",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-flow-computer-use",
+      "to": "wiki:comp-llm-adapters",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-flow-computer-use",
+      "to": "wiki:comp-policy-security",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-flow-computer-use",
+      "to": "wiki:comp-simulation-world",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-flow-computer-use",
+      "to": "wiki:comp-tool-capability",
       "kind": "related"
     },
     {
