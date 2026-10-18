@@ -6,7 +6,7 @@ export const ZONE_ARTICLES: WikiArticle[] = [
         title: 'Зона 1: панели провайдеров и чата',
         section: 'history',
         tags: ['аудит', 'зона 1'],
-        freshness: 'verified',
+        freshness: 'documented',
         sources: [],
         related: ['diagnostics'],
         body: `## Что проверено и исправлено
@@ -33,7 +33,7 @@ export const ZONE_ARTICLES: WikiArticle[] = [
         title: 'Зона 2: дебаты',
         section: 'history',
         tags: ['аудит', 'зона 2'],
-        freshness: 'verified',
+        freshness: 'documented',
         sources: [],
         related: ['diagnostics'],
         body: `## Что проверено и исправлено
@@ -62,7 +62,7 @@ export const ZONE_ARTICLES: WikiArticle[] = [
         title: 'Зона 3: агенты и задачи',
         section: 'history',
         tags: ['аудит', 'зона 3'],
-        freshness: 'verified',
+        freshness: 'documented',
         sources: [],
         related: ['diagnostics'],
         body: `## Что проверено и исправлено
@@ -91,7 +91,7 @@ export const ZONE_ARTICLES: WikiArticle[] = [
         title: 'Зона 4: память и знания',
         section: 'history',
         tags: ['аудит', 'зона 4'],
-        freshness: 'verified',
+        freshness: 'documented',
         sources: [],
         related: ['diagnostics'],
         body: `## Что проверено и исправлено
@@ -125,7 +125,7 @@ export const ZONE_ARTICLES: WikiArticle[] = [
         title: 'Зона 5: система и мониторинг',
         section: 'history',
         tags: ['аудит', 'зона 5'],
-        freshness: 'verified',
+        freshness: 'documented',
         sources: [],
         related: ['diagnostics'],
         body: `## Что проверено и исправлено
@@ -156,7 +156,7 @@ export const ZONE_ARTICLES: WikiArticle[] = [
         title: 'Зона 6: governance и политики',
         section: 'history',
         tags: ['аудит', 'зона 6'],
-        freshness: 'verified',
+        freshness: 'documented',
         sources: [],
         related: ['diagnostics'],
         body: `## Что проверено и исправлено
@@ -183,7 +183,7 @@ export const ZONE_ARTICLES: WikiArticle[] = [
         title: 'Зона 7: инструменты и MCP',
         section: 'history',
         tags: ['аудит', 'зона 7'],
-        freshness: 'verified',
+        freshness: 'documented',
         sources: [],
         related: ['diagnostics'],
         body: `## Что проверено и исправлено
@@ -211,7 +211,7 @@ export const ZONE_ARTICLES: WikiArticle[] = [
         title: 'Зона 8: роутер и маршрутизация',
         section: 'history',
         tags: ['аудит', 'зона 8'],
-        freshness: 'verified',
+        freshness: 'documented',
         sources: [],
         related: ['diagnostics'],
         body: `## Что проверено и исправлено
@@ -236,7 +236,7 @@ export const ZONE_ARTICLES: WikiArticle[] = [
         title: 'Зона 9: настройки',
         section: 'history',
         tags: ['аудит', 'зона 9'],
-        freshness: 'verified',
+        freshness: 'documented',
         sources: [],
         related: ['diagnostics'],
         body: `## Что проверено и исправлено
@@ -257,7 +257,7 @@ export const ZONE_ARTICLES: WikiArticle[] = [
         title: 'Зона 10: логи и инспекции',
         section: 'history',
         tags: ['аудит', 'зона 10'],
-        freshness: 'verified',
+        freshness: 'documented',
         sources: [],
         related: ['diagnostics'],
         body: `## Что проверено и исправлено
@@ -281,7 +281,7 @@ export const ZONE_ARTICLES: WikiArticle[] = [
         title: 'Зона 11: workspace и проекты',
         section: 'history',
         tags: ['аудит', 'зона 11'],
-        freshness: 'verified',
+        freshness: 'documented',
         sources: [],
         related: ['diagnostics'],
         body: `## Что проверено и исправлено
@@ -305,7 +305,7 @@ export const ZONE_ARTICLES: WikiArticle[] = [
         title: 'Зона 12: качество',
         section: 'history',
         tags: ['аудит', 'зона 12'],
-        freshness: 'verified',
+        freshness: 'documented',
         sources: [],
         related: ['diagnostics'],
         body: `## Что проверено и исправлено
@@ -328,7 +328,7 @@ export const ZONE_ARTICLES: WikiArticle[] = [
         title: 'Зона 13: коммуникации',
         section: 'history',
         tags: ['аудит', 'зона 13'],
-        freshness: 'verified',
+        freshness: 'documented',
         sources: [],
         related: ['diagnostics'],
         body: `## Что проверено и исправлено
@@ -351,7 +351,7 @@ export const ZONE_ARTICLES: WikiArticle[] = [
         title: 'Зона 14: коннекторы',
         section: 'history',
         tags: ['аудит', 'зона 14'],
-        freshness: 'verified',
+        freshness: 'documented',
         sources: [],
         related: ['diagnostics'],
         body: `## Что проверено и исправлено
@@ -373,7 +373,7 @@ export const ZONE_ARTICLES: WikiArticle[] = [
         title: 'Зона 15: исследования',
         section: 'history',
         tags: ['аудит', 'зона 15'],
-        freshness: 'verified',
+        freshness: 'documented',
         sources: [],
         related: ['diagnostics'],
         body: `## Что проверено и исправлено
@@ -396,7 +396,7 @@ export const ZONE_ARTICLES: WikiArticle[] = [
         title: 'Зона 16: company gateway',
         section: 'history',
         tags: ['аудит', 'зона 16'],
-        freshness: 'verified',
+        freshness: 'documented',
         sources: [],
         related: ['diagnostics'],
         body: `## Что проверено и исправлено
@@ -418,7 +418,7 @@ export const ZONE_ARTICLES: WikiArticle[] = [
         title: 'Зона 17: debate research',
         section: 'history',
         tags: ['аудит', 'зона 17'],
-        freshness: 'verified',
+        freshness: 'documented',
         sources: [],
         related: ['diagnostics'],
         body: `## Что проверено и исправлено
@@ -440,7 +440,7 @@ export const ZONE_ARTICLES: WikiArticle[] = [
         title: 'Зона 18: SRE и пулы',
         section: 'history',
         tags: ['аудит', 'зона 18'],
-        freshness: 'verified',
+        freshness: 'documented',
         sources: [],
         related: ['diagnostics'],
         body: `## Что проверено и исправлено
@@ -462,7 +462,7 @@ export const ZONE_ARTICLES: WikiArticle[] = [
         title: 'Зона 19: прогнозы и симуляции',
         section: 'history',
         tags: ['аудит', 'зона 19'],
-        freshness: 'verified',
+        freshness: 'documented',
         sources: [],
         related: ['diagnostics'],
         body: `## Что проверено и исправлено
@@ -483,7 +483,7 @@ export const ZONE_ARTICLES: WikiArticle[] = [
         title: 'Зона 20: управление дебатами',
         section: 'history',
         tags: ['аудит', 'зона 20'],
-        freshness: 'verified',
+        freshness: 'documented',
         sources: [],
         related: ['diagnostics'],
         body: `## Что проверено и исправлено
@@ -503,7 +503,7 @@ export const ZONE_ARTICLES: WikiArticle[] = [
         title: 'Зона 21: качество аргументов',
         section: 'history',
         tags: ['аудит', 'зона 21'],
-        freshness: 'verified',
+        freshness: 'documented',
         sources: [],
         related: ['diagnostics'],
         body: `## Что проверено и исправлено
@@ -526,7 +526,7 @@ export const ZONE_ARTICLES: WikiArticle[] = [
         title: 'Зона 22: смещения и доверие',
         section: 'history',
         tags: ['аудит', 'зона 22'],
-        freshness: 'verified',
+        freshness: 'documented',
         sources: [],
         related: ['diagnostics'],
         body: `## Что проверено и исправлено
@@ -555,7 +555,7 @@ export const ZONE_ARTICLES: WikiArticle[] = [
         title: 'Зона 23: коммуникации-2',
         section: 'history',
         tags: ['аудит', 'зона 23'],
-        freshness: 'verified',
+        freshness: 'documented',
         sources: [],
         related: ['diagnostics'],
         body: `## Что проверено и исправлено
@@ -582,7 +582,7 @@ export const ZONE_ARTICLES: WikiArticle[] = [
         title: 'Зона 24: знания-2',
         section: 'history',
         tags: ['аудит', 'зона 24'],
-        freshness: 'verified',
+        freshness: 'documented',
         sources: [],
         related: ['diagnostics'],
         body: `## Что проверено и исправлено
@@ -610,7 +610,7 @@ export const ZONE_ARTICLES: WikiArticle[] = [
         title: 'Зона 25: конструкторы',
         section: 'history',
         tags: ['аудит', 'зона 25'],
-        freshness: 'verified',
+        freshness: 'documented',
         sources: [],
         related: ['diagnostics'],
         body: `## Что проверено и исправлено
@@ -636,7 +636,7 @@ export const ZONE_ARTICLES: WikiArticle[] = [
         title: 'Зона 26: остатки',
         section: 'history',
         tags: ['аудит', 'зона 26'],
-        freshness: 'verified',
+        freshness: 'documented',
         sources: [],
         related: ['diagnostics'],
         body: `## Что проверено и исправлено

@@ -17,8 +17,8 @@ lines.push(`articles:                 ${h.articles}`);
 lines.push(`broken source refs:       ${h.brokenSources.length}`);
 lines.push(`broken internal links:    ${h.brokenLinks.length}`);
 lines.push(`incomplete articles:      ${h.incomplete.length}`);
-lines.push(`articles without sources: ${h.noSources.length}`);
-lines.push(`panels:                   ${h.mapped.size}/${h.allPanels.length} mapped to an article`);
+lines.push(`articles without sources: ${h.noSources.length} (${h.verifiedWithoutSources.length} marked verified)`);
+lines.push(`panels:                   ${h.nonTechniqueMapped.length}/${h.nonTechniquePanels.length} mapped to an article`);
 lines.push(`  technique auto-panels:  ${h.techniquePanels.length} (covered by panels-catalog)`);
 lines.push(`manifest problems:        ${h.manifestProblems.length}`);
 lines.push(`audits:                   ${h.auditCount} (${h.auditMentions} file mentions)`);
@@ -28,7 +28,7 @@ lines.push(`entity-model problems:    ${h.schemaProblems.length}`);
 lines.push(`README wiki links:        ${h.readmeRu.slugs.length} (RU) / ${h.readmeEn.slugs.length} (EN)`);
 lines.push(`README broken links:      ${h.brokenReadmeLinks.length}`);
 lines.push(`README RU/EN diff:        ${h.readmeParityDiff.length} slug(s)`);
-lines.push(`README wiki orphans:      ${h.readmeOrphans.length} article(s) not linked from README.md`);
+lines.push(`README wiki orphans:      ${h.readmeOrphans.length} direct (${h.unreachableFromReadme.length} unreachable via links)`);
 lines.push('');
 
 const cap = (arr) => (arr.length > 20 ? [...arr.slice(0, 20), `… +${arr.length - 20} more`] : arr);
@@ -71,6 +71,16 @@ if (h.brokenReadmeLinks.length) {
 if (h.readmeParityDiff.length) {
     lines.push('README RU/EN slug diff (soft):');
     for (const b of cap(h.readmeParityDiff)) lines.push(`  - ${b}`);
+    lines.push('');
+}
+if (h.verifiedWithoutSources.length) {
+    lines.push(`Articles marked verified without sources (${h.verifiedWithoutSources.length}):`);
+    for (const b of cap(h.verifiedWithoutSources)) lines.push(`  - ${b}`);
+    lines.push('');
+}
+if (h.unreachableFromReadme.length) {
+    lines.push(`Articles unreachable from README via links (${h.unreachableFromReadme.length}):`);
+    for (const b of cap(h.unreachableFromReadme)) lines.push(`  - ${b}`);
     lines.push('');
 }
 console.log(lines.join('\n'));

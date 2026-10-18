@@ -11,6 +11,8 @@ const STUB_RE = /пока не написана/i;
 const STUB_MIN_CHARS = 250;
 const SOURCES_RE = /^Источники:\s*(.+)$/m;
 const TICK_RE = /`([^`]+)`/g;
+const STATUS_RE = /·\s*Статус:\s*([\w-]+)/;
+const WIKI_LINK_RE = /\]\(\.?\/?([\w-]+)\.md(?:#[^)]*)?\)/g;
 
 /** This article is produced from the check results — never counted by them. */
 export const DOCS_HEALTH_SLUG = 'docs-health';
@@ -70,6 +72,8 @@ export function computeDocsHealth(root) {
     const brokenLinks = [];
     const incomplete = [];
     const noSources = [];
+    const statusOf = new Map();
+    const wikiLinks = new Map();
 
     for (const f of mirrorFiles) {
         const slug = basename(f, '.md');
@@ -84,6 +88,14 @@ export function computeDocsHealth(root) {
         for (const s of sources) {
             if (!resolveModule(root, s)) brokenSources.push({ slug, source: s });
         }
+
+        statusOf.set(slug, STATUS_RE.exec(md)?.[1] ?? '');
+
+        // --- internal wiki links (for reachability) ---
+        const targets = [...md.matchAll(WIKI_LINK_RE)]
+            .map((m) => m[1])
+            .filter((s) => s !== slug);
+        wikiLinks.set(slug, targets);
 
         // --- internal markdown links resolve ---
         for (const m of md.matchAll(/\]\(([^)\s]+)\)/g)) {
@@ -111,10 +123,13 @@ export function computeDocsHealth(root) {
     const sections = parseNavSections();
     const mapped = new Set(Object.keys(panelArticles()));
     const allPanels = sections.flatMap((s) => s.items.map((it) => ({ ...it, section: s.id })));
-    // Technique panels are auto-generated and covered by the panels-catalog
-    // article, so they are reported separately rather than as gaps.
+    // Technique panels are auto-generated (one per technique) and are covered by
+    // the panels-catalog article as a group, so they are neither counted as gaps
+    // nor as individually-mapped. Real coverage is measured over the rest.
     const techniquePanels = allPanels.filter((p) => p.section === 'techniques');
-    const undocumented = allPanels.filter((p) => p.section !== 'techniques' && !mapped.has(p.id));
+    const nonTechniquePanels = allPanels.filter((p) => p.section !== 'techniques');
+    const nonTechniqueMapped = nonTechniquePanels.filter((p) => mapped.has(p.id));
+    const undocumented = nonTechniquePanels.filter((p) => !mapped.has(p.id));
 
     // --- manifest cross-check (entity references must resolve) ---
     const manifestPath = resolve(root, 'docs/manifest.json');
@@ -192,6 +207,26 @@ export function computeDocsHealth(root) {
     ];
     const readmeOrphans = [...slugs].filter((s) => !ruSet.has(s));
 
+    // --- transitive reachability: can a reader reach a page from README? ---
+    // Not only direct README links count: catalogs/index pages linked from the
+    // README re-expose many articles. A page is "reachable" if a path exists.
+    const reachable = new Set([...ruSet, ...enSet].filter((s) => slugs.has(s)));
+    const queue = [...reachable];
+    while (queue.length) {
+        const cur = queue.shift();
+        for (const next of wikiLinks.get(cur) ?? []) {
+            if (slugs.has(next) && !reachable.has(next)) {
+                reachable.add(next);
+                queue.push(next);
+            }
+        }
+    }
+    const unreachableFromReadme = [...slugs].filter((s) => !reachable.has(s));
+
+    // --- provenance: a "verified" status promises code-truth, so it should
+    // not coexist with an empty source list (that is a data inconsistency). ---
+    const verifiedWithoutSources = noSources.filter((s) => statusOf.get(s) === 'verified');
+
     // --- documentation standard (Stage 2): docs/entity-model.json is usable ---
     const schemaProblems = [];
     const modelPath = resolve(root, 'docs/entity-model.json');
@@ -241,6 +276,8 @@ export function computeDocsHealth(root) {
         allPanels,
         mapped,
         techniquePanels,
+        nonTechniquePanels,
+        nonTechniqueMapped,
         undocumented,
         manifestProblems,
         schemaProblems,
@@ -253,6 +290,8 @@ export function computeDocsHealth(root) {
         brokenReadmeLinks,
         readmeParityDiff,
         readmeOrphans,
+        unreachableFromReadme,
+        verifiedWithoutSources,
         hardErrors,
     };
 }

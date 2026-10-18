@@ -6628,182 +6628,182 @@
       "type": "article",
       "label": "Зона 1: панели провайдеров и чата",
       "section": "history",
-      "status": "verified"
+      "status": "documented"
     },
     {
       "id": "wiki:zone-10",
       "type": "article",
       "label": "Зона 10: логи и инспекции",
       "section": "history",
-      "status": "verified"
+      "status": "documented"
     },
     {
       "id": "wiki:zone-11",
       "type": "article",
       "label": "Зона 11: workspace и проекты",
       "section": "history",
-      "status": "verified"
+      "status": "documented"
     },
     {
       "id": "wiki:zone-12",
       "type": "article",
       "label": "Зона 12: качество",
       "section": "history",
-      "status": "verified"
+      "status": "documented"
     },
     {
       "id": "wiki:zone-13",
       "type": "article",
       "label": "Зона 13: коммуникации",
       "section": "history",
-      "status": "verified"
+      "status": "documented"
     },
     {
       "id": "wiki:zone-14",
       "type": "article",
       "label": "Зона 14: коннекторы",
       "section": "history",
-      "status": "verified"
+      "status": "documented"
     },
     {
       "id": "wiki:zone-15",
       "type": "article",
       "label": "Зона 15: исследования",
       "section": "history",
-      "status": "verified"
+      "status": "documented"
     },
     {
       "id": "wiki:zone-16",
       "type": "article",
       "label": "Зона 16: company gateway",
       "section": "history",
-      "status": "verified"
+      "status": "documented"
     },
     {
       "id": "wiki:zone-17",
       "type": "article",
       "label": "Зона 17: debate research",
       "section": "history",
-      "status": "verified"
+      "status": "documented"
     },
     {
       "id": "wiki:zone-18",
       "type": "article",
       "label": "Зона 18: SRE и пулы",
       "section": "history",
-      "status": "verified"
+      "status": "documented"
     },
     {
       "id": "wiki:zone-19",
       "type": "article",
       "label": "Зона 19: прогнозы и симуляции",
       "section": "history",
-      "status": "verified"
+      "status": "documented"
     },
     {
       "id": "wiki:zone-2",
       "type": "article",
       "label": "Зона 2: дебаты",
       "section": "history",
-      "status": "verified"
+      "status": "documented"
     },
     {
       "id": "wiki:zone-20",
       "type": "article",
       "label": "Зона 20: управление дебатами",
       "section": "history",
-      "status": "verified"
+      "status": "documented"
     },
     {
       "id": "wiki:zone-21",
       "type": "article",
       "label": "Зона 21: качество аргументов",
       "section": "history",
-      "status": "verified"
+      "status": "documented"
     },
     {
       "id": "wiki:zone-22",
       "type": "article",
       "label": "Зона 22: смещения и доверие",
       "section": "history",
-      "status": "verified"
+      "status": "documented"
     },
     {
       "id": "wiki:zone-23",
       "type": "article",
       "label": "Зона 23: коммуникации-2",
       "section": "history",
-      "status": "verified"
+      "status": "documented"
     },
     {
       "id": "wiki:zone-24",
       "type": "article",
       "label": "Зона 24: знания-2",
       "section": "history",
-      "status": "verified"
+      "status": "documented"
     },
     {
       "id": "wiki:zone-25",
       "type": "article",
       "label": "Зона 25: конструкторы",
       "section": "history",
-      "status": "verified"
+      "status": "documented"
     },
     {
       "id": "wiki:zone-26",
       "type": "article",
       "label": "Зона 26: остатки",
       "section": "history",
-      "status": "verified"
+      "status": "documented"
     },
     {
       "id": "wiki:zone-3",
       "type": "article",
       "label": "Зона 3: агенты и задачи",
       "section": "history",
-      "status": "verified"
+      "status": "documented"
     },
     {
       "id": "wiki:zone-4",
       "type": "article",
       "label": "Зона 4: память и знания",
       "section": "history",
-      "status": "verified"
+      "status": "documented"
     },
     {
       "id": "wiki:zone-5",
       "type": "article",
       "label": "Зона 5: система и мониторинг",
       "section": "history",
-      "status": "verified"
+      "status": "documented"
     },
     {
       "id": "wiki:zone-6",
       "type": "article",
       "label": "Зона 6: governance и политики",
       "section": "history",
-      "status": "verified"
+      "status": "documented"
     },
     {
       "id": "wiki:zone-7",
       "type": "article",
       "label": "Зона 7: инструменты и MCP",
       "section": "history",
-      "status": "verified"
+      "status": "documented"
     },
     {
       "id": "wiki:zone-8",
       "type": "article",
       "label": "Зона 8: роутер и маршрутизация",
       "section": "history",
-      "status": "verified"
+      "status": "documented"
     },
     {
       "id": "wiki:zone-9",
       "type": "article",
       "label": "Зона 9: настройки",
       "section": "history",
-      "status": "verified"
+      "status": "documented"
     }
   ],
   "edges": [

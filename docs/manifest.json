@@ -4512,7 +4512,7 @@
       "slug": "zone-1",
       "title": "Зона 1: панели провайдеров и чата",
       "section": "history",
-      "status": "verified",
+      "status": "documented",
       "tags": [
         "аудит",
         "зона 1"
@@ -4530,7 +4530,7 @@
       "slug": "zone-2",
       "title": "Зона 2: дебаты",
       "section": "history",
-      "status": "verified",
+      "status": "documented",
       "tags": [
         "аудит",
         "зона 2"
@@ -4548,7 +4548,7 @@
       "slug": "zone-3",
       "title": "Зона 3: агенты и задачи",
       "section": "history",
-      "status": "verified",
+      "status": "documented",
       "tags": [
         "аудит",
         "зона 3"
@@ -4566,7 +4566,7 @@
       "slug": "zone-4",
       "title": "Зона 4: память и знания",
       "section": "history",
-      "status": "verified",
+      "status": "documented",
       "tags": [
         "аудит",
         "зона 4"
@@ -4584,7 +4584,7 @@
       "slug": "zone-5",
       "title": "Зона 5: система и мониторинг",
       "section": "history",
-      "status": "verified",
+      "status": "documented",
       "tags": [
         "аудит",
         "зона 5"
@@ -4602,7 +4602,7 @@
       "slug": "zone-6",
       "title": "Зона 6: governance и политики",
       "section": "history",
-      "status": "verified",
+      "status": "documented",
       "tags": [
         "аудит",
         "зона 6"
@@ -4620,7 +4620,7 @@
       "slug": "zone-7",
       "title": "Зона 7: инструменты и MCP",
       "section": "history",
-      "status": "verified",
+      "status": "documented",
       "tags": [
         "аудит",
         "зона 7"
@@ -4638,7 +4638,7 @@
       "slug": "zone-8",
       "title": "Зона 8: роутер и маршрутизация",
       "section": "history",
-      "status": "verified",
+      "status": "documented",
       "tags": [
         "аудит",
         "зона 8"
@@ -4656,7 +4656,7 @@
       "slug": "zone-9",
       "title": "Зона 9: настройки",
       "section": "history",
-      "status": "verified",
+      "status": "documented",
       "tags": [
         "аудит",
         "зона 9"
@@ -4674,7 +4674,7 @@
       "slug": "zone-10",
       "title": "Зона 10: логи и инспекции",
       "section": "history",
-      "status": "verified",
+      "status": "documented",
       "tags": [
         "аудит",
         "зона 10"
@@ -4692,7 +4692,7 @@
       "slug": "zone-11",
       "title": "Зона 11: workspace и проекты",
       "section": "history",
-      "status": "verified",
+      "status": "documented",
       "tags": [
         "аудит",
         "зона 11"
@@ -4710,7 +4710,7 @@
       "slug": "zone-12",
       "title": "Зона 12: качество",
       "section": "history",
-      "status": "verified",
+      "status": "documented",
       "tags": [
         "аудит",
         "зона 12"
@@ -4728,7 +4728,7 @@
       "slug": "zone-13",
       "title": "Зона 13: коммуникации",
       "section": "history",
-      "status": "verified",
+      "status": "documented",
       "tags": [
         "аудит",
         "зона 13"
@@ -4746,7 +4746,7 @@
       "slug": "zone-14",
       "title": "Зона 14: коннекторы",
       "section": "history",
-      "status": "verified",
+      "status": "documented",
       "tags": [
         "аудит",
         "зона 14"
@@ -4764,7 +4764,7 @@
       "slug": "zone-15",
       "title": "Зона 15: исследования",
       "section": "history",
-      "status": "verified",
+      "status": "documented",
       "tags": [
         "аудит",
         "зона 15"
@@ -4782,7 +4782,7 @@
       "slug": "zone-16",
       "title": "Зона 16: company gateway",
       "section": "history",
-      "status": "verified",
+      "status": "documented",
       "tags": [
         "аудит",
         "зона 16"
@@ -4800,7 +4800,7 @@
       "slug": "zone-17",
       "title": "Зона 17: debate research",
       "section": "history",
-      "status": "verified",
+      "status": "documented",
       "tags": [
         "аудит",
         "зона 17"
@@ -4818,7 +4818,7 @@
       "slug": "zone-18",
       "title": "Зона 18: SRE и пулы",
       "section": "history",
-      "status": "verified",
+      "status": "documented",
       "tags": [
         "аудит",
         "зона 18"
@@ -4836,7 +4836,7 @@
       "slug": "zone-19",
       "title": "Зона 19: прогнозы и симуляции",
       "section": "history",
-      "status": "verified",
+      "status": "documented",
       "tags": [
         "аудит",
         "зона 19"
@@ -4854,7 +4854,7 @@
       "slug": "zone-20",
       "title": "Зона 20: управление дебатами",
       "section": "history",
-      "status": "verified",
+      "status": "documented",
       "tags": [
         "аудит",
         "зона 20"
@@ -4872,7 +4872,7 @@
       "slug": "zone-21",
       "title": "Зона 21: качество аргументов",
       "section": "history",
-      "status": "verified",
+      "status": "documented",
       "tags": [
         "аудит",
         "зона 21"
@@ -4890,7 +4890,7 @@
       "slug": "zone-22",
       "title": "Зона 22: смещения и доверие",
       "section": "history",
-      "status": "verified",
+      "status": "documented",
       "tags": [
         "аудит",
         "зона 22"
@@ -4908,7 +4908,7 @@
       "slug": "zone-23",
       "title": "Зона 23: коммуникации-2",
       "section": "history",
-      "status": "verified",
+      "status": "documented",
       "tags": [
         "аудит",
         "зона 23"
@@ -4926,7 +4926,7 @@
       "slug": "zone-24",
       "title": "Зона 24: знания-2",
       "section": "history",
-      "status": "verified",
+      "status": "documented",
       "tags": [
         "аудит",
         "зона 24"
@@ -4944,7 +4944,7 @@
       "slug": "zone-25",
       "title": "Зона 25: конструкторы",
       "section": "history",
-      "status": "verified",
+      "status": "documented",
       "tags": [
         "аудит",
         "зона 25"
@@ -4962,7 +4962,7 @@
       "slug": "zone-26",
       "title": "Зона 26: остатки",
       "section": "history",
-      "status": "verified",
+      "status": "documented",
       "tags": [
         "аудит",
         "зона 26"

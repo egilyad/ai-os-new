@@ -34,14 +34,15 @@ md.push(`| Статей проверено | ${h.articles} | файлы \`docs/w
 md.push(`| Битые ссылки на исходники | ${h.brokenSources.length} | пути из строки «Источники:» резолвятся как модули (расширение / index / glob) |`);
 md.push(`| Битые внутренние ссылки | ${h.brokenLinks.length} | markdown-ссылки внутри статей ведут на существующие файлы |`);
 md.push(`| Неполные статьи | ${h.incomplete.length} | текст короче 250 символов или пометка «пока не написана» |`);
-md.push(`| Статьи без источников | ${h.noSources.length} | отсутствует строка «Источники:» |`);
-md.push(`| Панели с документацией | ${h.mapped.size}/${h.allPanels.length} | панели из реестра маршрутов сопоставлены со статьёй |`);
+md.push(`| Статьи без источников | ${h.noSources.length} | отсутствует строка «Источники:» (из них помечены verified: ${h.verifiedWithoutSources.length}) |`);
+md.push(`| Панели с документацией | ${h.nonTechniqueMapped.length}/${h.nonTechniquePanels.length} | обычные панели из реестра маршрутов сопоставлены со статьёй |`);
 md.push(`| &nbsp;&nbsp;авто-панели техник | ${h.techniquePanels.length} | покрыты статьёй [[panels-catalog]], пробелом не считаются |`);
 md.push(`| Проблемы манифеста | ${h.manifestProblems.length} | ссылки в \`docs/manifest.json\` резолвятся |`);
 md.push(`| Проблемы модели сущности | ${h.schemaProblems.length} | \`docs/entity-model.json\` разбирается и соответствует [[docs-standard]] |`);
 md.push(`| README → вики | ${h.readmeRu.slugs.length} (RU) / ${h.readmeEn.slugs.length} (EN) | ссылки README.md и README_EN.md в \`docs/wiki/*.md\` резолвятся |`);
 md.push(`| README RU/EN расхождение | ${h.readmeParityDiff.length} | разница наборов статей между README.md и README_EN.md |`);
-md.push(`| Статьи вне README | ${h.readmeOrphans.length} | статьи вики, не залинкованные из README.md |`);
+md.push(`| Статьи вне README | ${h.readmeOrphans.length} | не залинкованные напрямую из README.md |`);
+md.push(`| Статьи недостижимые по ссылкам | ${h.unreachableFromReadme.length} | нет пути от README через внутренние ссылки (каталоги, индексы) |`);
 md.push('');
 md.push(
     h.hardErrors === 0
@@ -76,6 +77,20 @@ if (h.undocumented.length) {
 }
 if (h.readmeParityDiff.length) {
     attention.push(`README RU/EN расхождение (${h.readmeParityDiff.length}):`, ...cap(h.readmeParityDiff).map((b) => `- ${b}`), '');
+}
+if (h.verifiedWithoutSources.length) {
+    attention.push(
+        `Помечены verified, но без источников (${h.verifiedWithoutSources.length}):`,
+        ...cap(h.verifiedWithoutSources).map((b) => `- ${b}`),
+        '',
+    );
+}
+if (h.unreachableFromReadme.length) {
+    attention.push(
+        `Недостижимы от README по ссылкам (${h.unreachableFromReadme.length}):`,
+        ...cap(h.unreachableFromReadme).map((b) => `- ${b}`),
+        '',
+    );
 }
 if (!attention.length) attention.push('Проблем не найдено.');
 md.push(...attention);

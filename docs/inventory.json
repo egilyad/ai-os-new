@@ -7173,7 +7173,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4075,
-      "hash": "e134e3556ea1d396059c5cf8058b9a9d76a4d906"
+      "hash": "ffb19767a576c666676a8ac3100fc83cefc617bb"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -7397,7 +7397,7 @@
       "language": "mixed",
       "title": "Карта документации",
       "bytes": 29035,
-      "hash": "e383977ed5f33f9ca4b5d971ab52caf71b423ada"
+      "hash": "1e4795ddfdaf70f3427b9c61e3338c7fafcfc6cc"
     },
     {
       "path": "docs/wiki/docs-standard.md",
@@ -8052,8 +8052,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Wiki SuperAgents OS",
-      "bytes": 22043,
-      "hash": "7de966158f6490e0ba45be016d85b6455e345772"
+      "bytes": 22095,
+      "hash": "531a1997130c091e0fffea10d6eeed3d89f12ed5"
     },
     {
       "path": "docs/wiki/roadmap-notes.md",
@@ -8084,208 +8084,208 @@
       "category": "wiki",
       "language": "ru",
       "title": "Зона 1: панели провайдеров и чата",
-      "bytes": 2347,
-      "hash": "56ae77e7f98d16a2273e170b6a53d1a695e89722"
+      "bytes": 2349,
+      "hash": "453b3660503db8589e4b39fe979997a45a23043e"
     },
     {
       "path": "docs/wiki/zone-10.md",
       "category": "wiki",
       "language": "ru",
       "title": "Зона 10: логи и инспекции",
-      "bytes": 2646,
-      "hash": "1fe9b0e8d0d248f899a460e044974fd7361eb1f6"
+      "bytes": 2648,
+      "hash": "6f3e01ca185312053d7d1877a449f50a667397c1"
     },
     {
       "path": "docs/wiki/zone-11.md",
       "category": "wiki",
       "language": "ru",
       "title": "Зона 11: workspace и проекты",
-      "bytes": 2441,
-      "hash": "fc1c254b04893888d6cafa49dc4d0dc7a7f41a0f"
+      "bytes": 2443,
+      "hash": "92288c2e145be2cd71c2fec320b8b13ba9bac6ef"
     },
     {
       "path": "docs/wiki/zone-12.md",
       "category": "wiki",
       "language": "ru",
       "title": "Зона 12: качество",
-      "bytes": 2008,
-      "hash": "02e05a103e4fd73e46988ad52fa331e5204bf41e"
+      "bytes": 2010,
+      "hash": "bde8e22e2d53cd7468be5af068583ec4a693606d"
     },
     {
       "path": "docs/wiki/zone-13.md",
       "category": "wiki",
       "language": "ru",
       "title": "Зона 13: коммуникации",
-      "bytes": 2293,
-      "hash": "260cc8fa9ee13a4d71fc0d243a95b8a938492c50"
+      "bytes": 2295,
+      "hash": "3c3950dd1afce3e03fed9a7778343b5b2d81e4d0"
     },
     {
       "path": "docs/wiki/zone-14.md",
       "category": "wiki",
       "language": "ru",
       "title": "Зона 14: коннекторы",
-      "bytes": 2022,
-      "hash": "b9f04f04e257943a11ad4e748ace1c0c05f72bd8"
+      "bytes": 2024,
+      "hash": "d1196a4b002ca51ee1d8145c7655edee89170beb"
     },
     {
       "path": "docs/wiki/zone-15.md",
       "category": "wiki",
       "language": "ru",
       "title": "Зона 15: исследования",
-      "bytes": 2142,
-      "hash": "9c01d4925b39d642ad8432d838c5654c8dd6dc54"
+      "bytes": 2144,
+      "hash": "674c2023eb4b2a651d89c80de11e6c44c5b8923b"
     },
     {
       "path": "docs/wiki/zone-16.md",
       "category": "wiki",
       "language": "ru",
       "title": "Зона 16: company gateway",
-      "bytes": 1979,
-      "hash": "ebf0d7d739022a23bbd7938c1470b97d70dcd9ee"
+      "bytes": 1981,
+      "hash": "aef2d1f321a98c7bb4174347be709fbc4e0f13f4"
     },
     {
       "path": "docs/wiki/zone-17.md",
       "category": "wiki",
       "language": "ru",
       "title": "Зона 17: debate research",
-      "bytes": 2021,
-      "hash": "f055eac2b11a09a0d656520ecee522701a494370"
+      "bytes": 2023,
+      "hash": "a37a38fd8d2e83e4b1a469b948c8eee6355fd3cd"
     },
     {
       "path": "docs/wiki/zone-18.md",
       "category": "wiki",
       "language": "ru",
       "title": "Зона 18: SRE и пулы",
-      "bytes": 1951,
-      "hash": "8e3374c89d77f67014a340f87217b92e3e5c1020"
+      "bytes": 1953,
+      "hash": "aa7c1a7c237f7532a52c7f1a684ab55b20d69d2d"
     },
     {
       "path": "docs/wiki/zone-19.md",
       "category": "wiki",
       "language": "ru",
       "title": "Зона 19: прогнозы и симуляции",
-      "bytes": 1703,
-      "hash": "32d4ec3025bc49ec1ef296c88f92be92b1a8a182"
+      "bytes": 1705,
+      "hash": "d4fbe7eeaca9b48ffd4dae4a45e02d6fbbc0070d"
     },
     {
       "path": "docs/wiki/zone-2.md",
       "category": "wiki",
       "language": "ru",
       "title": "Зона 2: дебаты",
-      "bytes": 2876,
-      "hash": "e5be3a8b3729e98385f5df69017ae2a3f8770f62"
+      "bytes": 2878,
+      "hash": "0e28542eee707d26a1c27aff1a7428c31d0d5bb4"
     },
     {
       "path": "docs/wiki/zone-20.md",
       "category": "wiki",
       "language": "ru",
       "title": "Зона 20: управление дебатами",
-      "bytes": 1832,
-      "hash": "ce82e0bb9754bdbc3a5434a012aa79c66dfa735b"
+      "bytes": 1834,
+      "hash": "7a5d506bc7a6aa036ad41a5d1c3423c6bd381117"
     },
     {
       "path": "docs/wiki/zone-21.md",
       "category": "wiki",
       "language": "mixed",
       "title": "Зона 21: качество аргументов",
-      "bytes": 2048,
-      "hash": "aa820f04438d2dac13992dbfac1ad8c22d358ab1"
+      "bytes": 2050,
+      "hash": "ec12b9c5c5718e98ec142f2513b4aec01aa300ca"
     },
     {
       "path": "docs/wiki/zone-22.md",
       "category": "wiki",
       "language": "ru",
       "title": "Зона 22: смещения и доверие",
-      "bytes": 3265,
-      "hash": "a20759776d1ae3a4645060486842ba49616a8399"
+      "bytes": 3267,
+      "hash": "bd2b4ac1e80fe6626715c40afd7a1c9f4143b6fc"
     },
     {
       "path": "docs/wiki/zone-23.md",
       "category": "wiki",
       "language": "ru",
       "title": "Зона 23: коммуникации-2",
-      "bytes": 3077,
-      "hash": "104a0f2ebfe4d61318901244b3ed5bea08c45920"
+      "bytes": 3079,
+      "hash": "4721f76d6bfc3a1e97be616df3d243d8830c8765"
     },
     {
       "path": "docs/wiki/zone-24.md",
       "category": "wiki",
       "language": "ru",
       "title": "Зона 24: знания-2",
-      "bytes": 3418,
-      "hash": "e256282ac913e3a9fc9e6f5732ba4fef03144dee"
+      "bytes": 3420,
+      "hash": "c8968911400c26386cbf7e47dfda69f0c1444f98"
     },
     {
       "path": "docs/wiki/zone-25.md",
       "category": "wiki",
       "language": "ru",
       "title": "Зона 25: конструкторы",
-      "bytes": 3671,
-      "hash": "1279d0528be607a08591edc16a16ffcdc4e821a7"
+      "bytes": 3673,
+      "hash": "e7cb9f1932554c154d322fabdd2126b4f7d988f7"
     },
     {
       "path": "docs/wiki/zone-26.md",
       "category": "wiki",
       "language": "mixed",
       "title": "Зона 26: остатки",
-      "bytes": 5036,
-      "hash": "4e16fdc766f4420d4b19e931c1757c223de3af2e"
+      "bytes": 5038,
+      "hash": "de62d89382e142d3a7928a2ab96eeda4e91ff854"
     },
     {
       "path": "docs/wiki/zone-3.md",
       "category": "wiki",
       "language": "ru",
       "title": "Зона 3: агенты и задачи",
-      "bytes": 2802,
-      "hash": "0b5ae6ffe1d545589374480eb2f69d1996f1908a"
+      "bytes": 2804,
+      "hash": "16def38bc52869029d577b59fb73eb1e8e7aa6ea"
     },
     {
       "path": "docs/wiki/zone-4.md",
       "category": "wiki",
       "language": "ru",
       "title": "Зона 4: память и знания",
-      "bytes": 3086,
-      "hash": "1b753299687750b303784bc74d49c4fca17ba8f5"
+      "bytes": 3088,
+      "hash": "7cdef1b4b69f8a201118bec00631fc9007c79168"
     },
     {
       "path": "docs/wiki/zone-5.md",
       "category": "wiki",
       "language": "ru",
       "title": "Зона 5: система и мониторинг",
-      "bytes": 3493,
-      "hash": "35364524934b3f0464a9d272277323bd499af05e"
+      "bytes": 3495,
+      "hash": "40da9760c107b7a4f84d3c20f6298b992e1d0420"
     },
     {
       "path": "docs/wiki/zone-6.md",
       "category": "wiki",
       "language": "ru",
       "title": "Зона 6: governance и политики",
-      "bytes": 2977,
-      "hash": "bc1b57fe6441edf359742f8fb0045f4987327127"
+      "bytes": 2979,
+      "hash": "5cd216a989b3adae058c65dc4a2d47f1c05fcbe2"
     },
     {
       "path": "docs/wiki/zone-7.md",
       "category": "wiki",
       "language": "ru",
       "title": "Зона 7: инструменты и MCP",
-      "bytes": 3379,
-      "hash": "3225dd9a2106f2bb5b03832e215aa40ae1395063"
+      "bytes": 3381,
+      "hash": "c1450ee385c3a85b620b021010ad6f2bbd2648f6"
     },
     {
       "path": "docs/wiki/zone-8.md",
       "category": "wiki",
       "language": "ru",
       "title": "Зона 8: роутер и маршрутизация",
-      "bytes": 2343,
-      "hash": "3e429310c844502d529c34ffd97ec1e48ba44e29"
+      "bytes": 2345,
+      "hash": "e92c3e2ff3741cab1e84d6f2ebcacb2b920af403"
     },
     {
       "path": "docs/wiki/zone-9.md",
       "category": "wiki",
       "language": "ru",
       "title": "Зона 9: настройки",
-      "bytes": 2088,
-      "hash": "77f7a978d6574d0e39199f5faee682d2d48267eb"
+      "bytes": 2090,
+      "hash": "fb825d4dc14adabdf449e84d9d263f62d3878ecd"
     },
     {
       "path": "docs/ПОЛНЫЙ_РЕЕСТР.md",

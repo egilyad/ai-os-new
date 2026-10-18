@@ -136,32 +136,32 @@
 
 ## История разработки (27)
 
-- [Зона 1: панели провайдеров и чата](./zone-1.md) — _verified_
-- [Зона 2: дебаты](./zone-2.md) — _verified_
-- [Зона 3: агенты и задачи](./zone-3.md) — _verified_
-- [Зона 4: память и знания](./zone-4.md) — _verified_
-- [Зона 5: система и мониторинг](./zone-5.md) — _verified_
-- [Зона 6: governance и политики](./zone-6.md) — _verified_
-- [Зона 7: инструменты и MCP](./zone-7.md) — _verified_
-- [Зона 8: роутер и маршрутизация](./zone-8.md) — _verified_
-- [Зона 9: настройки](./zone-9.md) — _verified_
-- [Зона 10: логи и инспекции](./zone-10.md) — _verified_
-- [Зона 11: workspace и проекты](./zone-11.md) — _verified_
-- [Зона 12: качество](./zone-12.md) — _verified_
-- [Зона 13: коммуникации](./zone-13.md) — _verified_
-- [Зона 14: коннекторы](./zone-14.md) — _verified_
-- [Зона 15: исследования](./zone-15.md) — _verified_
-- [Зона 16: company gateway](./zone-16.md) — _verified_
-- [Зона 17: debate research](./zone-17.md) — _verified_
-- [Зона 18: SRE и пулы](./zone-18.md) — _verified_
-- [Зона 19: прогнозы и симуляции](./zone-19.md) — _verified_
-- [Зона 20: управление дебатами](./zone-20.md) — _verified_
-- [Зона 21: качество аргументов](./zone-21.md) — _verified_
-- [Зона 22: смещения и доверие](./zone-22.md) — _verified_
-- [Зона 23: коммуникации-2](./zone-23.md) — _verified_
-- [Зона 24: знания-2](./zone-24.md) — _verified_
-- [Зона 25: конструкторы](./zone-25.md) — _verified_
-- [Зона 26: остатки](./zone-26.md) — _verified_
+- [Зона 1: панели провайдеров и чата](./zone-1.md) — _documented_
+- [Зона 2: дебаты](./zone-2.md) — _documented_
+- [Зона 3: агенты и задачи](./zone-3.md) — _documented_
+- [Зона 4: память и знания](./zone-4.md) — _documented_
+- [Зона 5: система и мониторинг](./zone-5.md) — _documented_
+- [Зона 6: governance и политики](./zone-6.md) — _documented_
+- [Зона 7: инструменты и MCP](./zone-7.md) — _documented_
+- [Зона 8: роутер и маршрутизация](./zone-8.md) — _documented_
+- [Зона 9: настройки](./zone-9.md) — _documented_
+- [Зона 10: логи и инспекции](./zone-10.md) — _documented_
+- [Зона 11: workspace и проекты](./zone-11.md) — _documented_
+- [Зона 12: качество](./zone-12.md) — _documented_
+- [Зона 13: коммуникации](./zone-13.md) — _documented_
+- [Зона 14: коннекторы](./zone-14.md) — _documented_
+- [Зона 15: исследования](./zone-15.md) — _documented_
+- [Зона 16: company gateway](./zone-16.md) — _documented_
+- [Зона 17: debate research](./zone-17.md) — _documented_
+- [Зона 18: SRE и пулы](./zone-18.md) — _documented_
+- [Зона 19: прогнозы и симуляции](./zone-19.md) — _documented_
+- [Зона 20: управление дебатами](./zone-20.md) — _documented_
+- [Зона 21: качество аргументов](./zone-21.md) — _documented_
+- [Зона 22: смещения и доверие](./zone-22.md) — _documented_
+- [Зона 23: коммуникации-2](./zone-23.md) — _documented_
+- [Зона 24: знания-2](./zone-24.md) — _documented_
+- [Зона 25: конструкторы](./zone-25.md) — _documented_
+- [Зона 26: остатки](./zone-26.md) — _documented_
 - [История разработки](./dev-history.md) — _verified_
 
 ## Архитектура (2)
