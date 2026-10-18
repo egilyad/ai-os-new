@@ -3,22 +3,22 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 1104,
-    "edges": 2929,
+    "nodes": 1141,
+    "edges": 2991,
     "byType": {
       "audit": 67,
-      "code": 442,
-      "test": 129,
+      "code": 465,
+      "test": 137,
       "panel": 259,
-      "article": 207
+      "article": 213
     },
     "byKind": {
       "audit_test": 325,
       "audit_mention": 928,
       "documents": 201,
-      "source": 579,
-      "test": 164,
-      "related": 732
+      "source": 603,
+      "test": 172,
+      "related": 762
     }
   },
   "nodes": [
@@ -1747,6 +1747,76 @@
       "label": "src/kernel/contracts/transaction.ts"
     },
     {
+      "id": "file:src/kernel/dal/data-access-layer.test.ts",
+      "type": "test",
+      "label": "src/kernel/dal/data-access-layer.test.ts"
+    },
+    {
+      "id": "file:src/kernel/dal/data-access-layer.ts",
+      "type": "code",
+      "label": "src/kernel/dal/data-access-layer.ts"
+    },
+    {
+      "id": "file:src/kernel/dal/debate-repository.test.ts",
+      "type": "test",
+      "label": "src/kernel/dal/debate-repository.test.ts"
+    },
+    {
+      "id": "file:src/kernel/dal/debate-repository.ts",
+      "type": "code",
+      "label": "src/kernel/dal/debate-repository.ts"
+    },
+    {
+      "id": "file:src/kernel/dal/event-log-repository.test.ts",
+      "type": "test",
+      "label": "src/kernel/dal/event-log-repository.test.ts"
+    },
+    {
+      "id": "file:src/kernel/dal/event-log-repository.ts",
+      "type": "code",
+      "label": "src/kernel/dal/event-log-repository.ts"
+    },
+    {
+      "id": "file:src/kernel/dal/memory-repository.test.ts",
+      "type": "test",
+      "label": "src/kernel/dal/memory-repository.test.ts"
+    },
+    {
+      "id": "file:src/kernel/dal/memory-repository.ts",
+      "type": "code",
+      "label": "src/kernel/dal/memory-repository.ts"
+    },
+    {
+      "id": "file:src/kernel/dal/scenario-repository.test.ts",
+      "type": "test",
+      "label": "src/kernel/dal/scenario-repository.test.ts"
+    },
+    {
+      "id": "file:src/kernel/dal/scenario-repository.ts",
+      "type": "code",
+      "label": "src/kernel/dal/scenario-repository.ts"
+    },
+    {
+      "id": "file:src/kernel/dal/session-repository.test.ts",
+      "type": "test",
+      "label": "src/kernel/dal/session-repository.test.ts"
+    },
+    {
+      "id": "file:src/kernel/dal/session-repository.ts",
+      "type": "code",
+      "label": "src/kernel/dal/session-repository.ts"
+    },
+    {
+      "id": "file:src/kernel/dal/workspace-repository.test.ts",
+      "type": "test",
+      "label": "src/kernel/dal/workspace-repository.test.ts"
+    },
+    {
+      "id": "file:src/kernel/dal/workspace-repository.ts",
+      "type": "code",
+      "label": "src/kernel/dal/workspace-repository.ts"
+    },
+    {
       "id": "file:src/kernel/DEPENDENCY_MAP.md",
       "type": "code",
       "label": "src/kernel/DEPENDENCY_MAP.md"
@@ -2945,6 +3015,91 @@
       "id": "file:src/kernel/services/virtual-key-service.ts",
       "type": "code",
       "label": "src/kernel/services/virtual-key-service.ts"
+    },
+    {
+      "id": "file:src/kernel/utils/compute-memory-id.ts",
+      "type": "code",
+      "label": "src/kernel/utils/compute-memory-id.ts"
+    },
+    {
+      "id": "file:src/kernel/utils/constant-time.ts",
+      "type": "code",
+      "label": "src/kernel/utils/constant-time.ts"
+    },
+    {
+      "id": "file:src/kernel/utils/debate-analysis.ts",
+      "type": "code",
+      "label": "src/kernel/utils/debate-analysis.ts"
+    },
+    {
+      "id": "file:src/kernel/utils/embedding.ts",
+      "type": "code",
+      "label": "src/kernel/utils/embedding.ts"
+    },
+    {
+      "id": "file:src/kernel/utils/memory-tracker.ts",
+      "type": "code",
+      "label": "src/kernel/utils/memory-tracker.ts"
+    },
+    {
+      "id": "file:src/kernel/utils/memory-watchdog.ts",
+      "type": "code",
+      "label": "src/kernel/utils/memory-watchdog.ts"
+    },
+    {
+      "id": "file:src/kernel/utils/network.test.ts",
+      "type": "test",
+      "label": "src/kernel/utils/network.test.ts"
+    },
+    {
+      "id": "file:src/kernel/utils/network.ts",
+      "type": "code",
+      "label": "src/kernel/utils/network.ts"
+    },
+    {
+      "id": "file:src/kernel/utils/persist-then-emit.ts",
+      "type": "code",
+      "label": "src/kernel/utils/persist-then-emit.ts"
+    },
+    {
+      "id": "file:src/kernel/utils/provider-default-models.ts",
+      "type": "code",
+      "label": "src/kernel/utils/provider-default-models.ts"
+    },
+    {
+      "id": "file:src/kernel/utils/provider-fleet-health.ts",
+      "type": "code",
+      "label": "src/kernel/utils/provider-fleet-health.ts"
+    },
+    {
+      "id": "file:src/kernel/utils/safe-json.ts",
+      "type": "code",
+      "label": "src/kernel/utils/safe-json.ts"
+    },
+    {
+      "id": "file:src/kernel/utils/sanitize.ts",
+      "type": "code",
+      "label": "src/kernel/utils/sanitize.ts"
+    },
+    {
+      "id": "file:src/kernel/utils/seedable-rng.ts",
+      "type": "code",
+      "label": "src/kernel/utils/seedable-rng.ts"
+    },
+    {
+      "id": "file:src/kernel/utils/ssr-storage.ts",
+      "type": "code",
+      "label": "src/kernel/utils/ssr-storage.ts"
+    },
+    {
+      "id": "file:src/kernel/utils/tokenEstimate.ts",
+      "type": "code",
+      "label": "src/kernel/utils/tokenEstimate.ts"
+    },
+    {
+      "id": "file:src/kernel/utils/topic-suggestions.ts",
+      "type": "code",
+      "label": "src/kernel/utils/topic-suggestions.ts"
     },
     {
       "id": "file:src/kernel/utils/with-transaction.ts",
@@ -5300,6 +5455,13 @@
       "status": "documented"
     },
     {
+      "id": "wiki:comp-dal-repositories",
+      "type": "article",
+      "label": "Компонент: Data Access Layer (репозитории)",
+      "section": "components",
+      "status": "verified"
+    },
+    {
       "id": "wiki:comp-debate-runtime",
       "type": "article",
       "label": "Компонент: рантайм дебатов",
@@ -5599,6 +5761,41 @@
       "label": "Компонент: транзакции состояния",
       "section": "components",
       "status": "verified"
+    },
+    {
+      "id": "wiki:comp-util-debate-analysis",
+      "type": "article",
+      "label": "Компонент: утилиты анализа дебатов и оценки токенов",
+      "section": "components",
+      "status": "documented"
+    },
+    {
+      "id": "wiki:comp-util-embeddings-rng",
+      "type": "article",
+      "label": "Компонент: утилиты эмбеддингов и детерминированного RNG",
+      "section": "components",
+      "status": "documented"
+    },
+    {
+      "id": "wiki:comp-util-memory-observability",
+      "type": "article",
+      "label": "Компонент: утилиты наблюдения за памятью",
+      "section": "components",
+      "status": "documented"
+    },
+    {
+      "id": "wiki:comp-util-network-security",
+      "type": "article",
+      "label": "Компонент: утилиты сети и безопасности (kernel/utils)",
+      "section": "components",
+      "status": "verified"
+    },
+    {
+      "id": "wiki:comp-util-persistence-helpers",
+      "type": "article",
+      "label": "Компонент: утилиты персиста и провайдеров",
+      "section": "components",
+      "status": "documented"
     },
     {
       "id": "wiki:debates",
@@ -14751,6 +14948,101 @@
       "kind": "related"
     },
     {
+      "from": "wiki:comp-dal-repositories",
+      "to": "file:src/kernel/dal/data-access-layer.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-dal-repositories",
+      "to": "file:src/kernel/dal/data-access-layer.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-dal-repositories",
+      "to": "file:src/kernel/dal/debate-repository.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-dal-repositories",
+      "to": "file:src/kernel/dal/debate-repository.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-dal-repositories",
+      "to": "file:src/kernel/dal/event-log-repository.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-dal-repositories",
+      "to": "file:src/kernel/dal/event-log-repository.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-dal-repositories",
+      "to": "file:src/kernel/dal/memory-repository.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-dal-repositories",
+      "to": "file:src/kernel/dal/memory-repository.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-dal-repositories",
+      "to": "file:src/kernel/dal/scenario-repository.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-dal-repositories",
+      "to": "file:src/kernel/dal/scenario-repository.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-dal-repositories",
+      "to": "file:src/kernel/dal/session-repository.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-dal-repositories",
+      "to": "file:src/kernel/dal/session-repository.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-dal-repositories",
+      "to": "file:src/kernel/dal/workspace-repository.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-dal-repositories",
+      "to": "file:src/kernel/dal/workspace-repository.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-dal-repositories",
+      "to": "wiki:comp-event-sourcing",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-dal-repositories",
+      "to": "wiki:comp-persistence",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-dal-repositories",
+      "to": "wiki:comp-state-stores",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-dal-repositories",
+      "to": "wiki:comp-storage-timeline",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-dal-repositories",
+      "to": "wiki:for-developers",
+      "kind": "related"
+    },
+    {
       "from": "wiki:comp-debate-runtime",
       "to": "file:src/kernel/services/debate-runtime/debate-budget.test.ts",
       "kind": "test"
@@ -17303,6 +17595,221 @@
     {
       "from": "wiki:comp-transactions",
       "to": "wiki:comp-persistence",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-util-debate-analysis",
+      "to": "file:src/kernel/utils/debate-analysis.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-util-debate-analysis",
+      "to": "file:src/kernel/utils/tokenEstimate.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-util-debate-analysis",
+      "to": "file:src/kernel/utils/topic-suggestions.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-util-debate-analysis",
+      "to": "wiki:comp-debate-runtime",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-util-debate-analysis",
+      "to": "wiki:comp-debateplus",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-util-debate-analysis",
+      "to": "wiki:comp-eval-elo",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-util-debate-analysis",
+      "to": "wiki:comp-scenarios",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-util-debate-analysis",
+      "to": "wiki:for-developers",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-util-embeddings-rng",
+      "to": "file:src/kernel/utils/embedding.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-util-embeddings-rng",
+      "to": "file:src/kernel/utils/seedable-rng.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-util-embeddings-rng",
+      "to": "wiki:comp-frontier-diversity",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-util-embeddings-rng",
+      "to": "wiki:comp-knowledge-rag",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-util-embeddings-rng",
+      "to": "wiki:comp-memory",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-util-embeddings-rng",
+      "to": "wiki:comp-simulation-world",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-util-embeddings-rng",
+      "to": "wiki:for-developers",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-util-memory-observability",
+      "to": "file:src/kernel/utils/compute-memory-id.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-util-memory-observability",
+      "to": "file:src/kernel/utils/memory-tracker.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-util-memory-observability",
+      "to": "file:src/kernel/utils/memory-watchdog.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-util-memory-observability",
+      "to": "wiki:comp-fleet-governance",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-util-memory-observability",
+      "to": "wiki:comp-memory",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-util-memory-observability",
+      "to": "wiki:comp-observability",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-util-memory-observability",
+      "to": "wiki:for-developers",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-util-memory-observability",
+      "to": "wiki:panel-infra-meta",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-util-network-security",
+      "to": "file:src/kernel/utils/constant-time.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-util-network-security",
+      "to": "file:src/kernel/utils/network.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-util-network-security",
+      "to": "file:src/kernel/utils/network.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-util-network-security",
+      "to": "file:src/kernel/utils/safe-json.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-util-network-security",
+      "to": "file:src/kernel/utils/sanitize.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-util-network-security",
+      "to": "file:src/kernel/utils/ssr-storage.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-util-network-security",
+      "to": "wiki:comp-integrations-interop",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-util-network-security",
+      "to": "wiki:comp-messaging-integrations",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-util-network-security",
+      "to": "wiki:comp-policy-security",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-util-network-security",
+      "to": "wiki:comp-security-crypto",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-util-network-security",
+      "to": "wiki:for-developers",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-util-persistence-helpers",
+      "to": "file:src/kernel/utils/persist-then-emit.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-util-persistence-helpers",
+      "to": "file:src/kernel/utils/provider-default-models.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-util-persistence-helpers",
+      "to": "file:src/kernel/utils/provider-fleet-health.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-util-persistence-helpers",
+      "to": "file:src/kernel/utils/with-transaction.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-util-persistence-helpers",
+      "to": "wiki:comp-fleet-governance",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-util-persistence-helpers",
+      "to": "wiki:comp-persistence",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-util-persistence-helpers",
+      "to": "wiki:comp-provider-runtime",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-util-persistence-helpers",
+      "to": "wiki:panel-providers",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-util-persistence-helpers",
+      "to": "wiki:providers",
       "kind": "related"
     },
     {

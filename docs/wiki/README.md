@@ -5,7 +5,7 @@
 > Полная документация системы: панели, агенты, дебаты, память, провайдеры, диагностика, история разработки, архитектура и руководства для разработчиков.
 > Страницы автосгенерированы из корпуса Wiki (`scripts/gen-wiki-docs.mjs`). Та же документация доступна в приложении в панели «Wiki».
 
-Всего материалов: **207** в 12 разделах.
+Всего материалов: **213** в 12 разделах.
 
 > Разработчикам: начните с [Обзор для разработчиков](./dev-overview.md), затем [Структура](./dev-layout.md) и [Каталог компонентов](./dev-component-catalog.md).
 
@@ -22,7 +22,7 @@
 | Диагностика | 2 |
 | История разработки | 27 |
 | Архитектура | 2 |
-| Компоненты и сервисы | 60 |
+| Компоненты и сервисы | 66 |
 | Заметки | 1 |
 | Разработчикам | 30 |
 
@@ -169,7 +169,7 @@
 - [Архитектура и связи](./architecture.md) — _documented_
 - [Карта системы](./dev-system-map.md) — _verified_
 
-## Компоненты и сервисы (60)
+## Компоненты и сервисы (66)
 
 - [Компоненты и сервисы: как читать этот раздел](./comp-overview.md) — _verified_
 - [Компонент: запуск ядра (bootstrap, container, runtime)](./comp-kernel-boot.md) — _verified_
@@ -231,6 +231,12 @@
 - [Компонент: декораторы экономии LLM](./comp-decorator-optimization.md) — _verified_
 - [Компонент: декораторы маршрутизации LLM](./comp-decorator-routing.md) — _verified_
 - [Компонент: ядро LLM-конвейера (базы, middleware, утилиты)](./comp-middleware-core.md) — _verified_
+- [Компонент: утилиты сети и безопасности (kernel/utils)](./comp-util-network-security.md) — _verified_
+- [Компонент: утилиты эмбеддингов и детерминированного RNG](./comp-util-embeddings-rng.md) — _documented_
+- [Компонент: утилиты наблюдения за памятью](./comp-util-memory-observability.md) — _documented_
+- [Компонент: утилиты анализа дебатов и оценки токенов](./comp-util-debate-analysis.md) — _documented_
+- [Компонент: утилиты персиста и провайдеров](./comp-util-persistence-helpers.md) — _documented_
+- [Компонент: Data Access Layer (репозитории)](./comp-dal-repositories.md) — _verified_
 
 ## Заметки (1)
 

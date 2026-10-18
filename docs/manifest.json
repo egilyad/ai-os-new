@@ -50,7 +50,7 @@
     {
       "id": "components",
       "title": "Компоненты и сервисы",
-      "articles": 60
+      "articles": 66
     },
     {
       "id": "notes",
@@ -4320,6 +4320,190 @@
       "tests": [
         "src/llm/core/middleware-pipeline.test.ts",
         "src/llm/core/flyweight.test.ts"
+      ]
+    },
+    {
+      "id": "wiki:comp-util-network-security",
+      "type": "article",
+      "slug": "comp-util-network-security",
+      "title": "Компонент: утилиты сети и безопасности (kernel/utils)",
+      "section": "components",
+      "status": "verified",
+      "tags": [
+        "компоненты",
+        "утилиты",
+        "сеть",
+        "безопасность"
+      ],
+      "sources": [
+        "src/kernel/utils/network.ts",
+        "src/kernel/utils/constant-time.ts",
+        "src/kernel/utils/sanitize.ts",
+        "src/kernel/utils/safe-json.ts",
+        "src/kernel/utils/ssr-storage.ts"
+      ],
+      "related": [
+        "comp-security-crypto",
+        "comp-integrations-interop",
+        "comp-policy-security",
+        "comp-messaging-integrations",
+        "for-developers"
+      ],
+      "reviewed": null,
+      "tests": [
+        "src/kernel/utils/network.test.ts"
+      ]
+    },
+    {
+      "id": "wiki:comp-util-embeddings-rng",
+      "type": "article",
+      "slug": "comp-util-embeddings-rng",
+      "title": "Компонент: утилиты эмбеддингов и детерминированного RNG",
+      "section": "components",
+      "status": "documented",
+      "tags": [
+        "компоненты",
+        "утилиты",
+        "эмбеддинги",
+        "rng"
+      ],
+      "sources": [
+        "src/kernel/utils/embedding.ts",
+        "src/kernel/utils/seedable-rng.ts"
+      ],
+      "related": [
+        "comp-knowledge-rag",
+        "comp-memory",
+        "comp-simulation-world",
+        "comp-frontier-diversity",
+        "for-developers"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:comp-util-memory-observability",
+      "type": "article",
+      "slug": "comp-util-memory-observability",
+      "title": "Компонент: утилиты наблюдения за памятью",
+      "section": "components",
+      "status": "documented",
+      "tags": [
+        "компоненты",
+        "утилиты",
+        "память",
+        "наблюдаемость"
+      ],
+      "sources": [
+        "src/kernel/utils/memory-tracker.ts",
+        "src/kernel/utils/memory-watchdog.ts",
+        "src/kernel/utils/compute-memory-id.ts"
+      ],
+      "related": [
+        "comp-observability",
+        "comp-memory",
+        "comp-fleet-governance",
+        "panel-infra-meta",
+        "for-developers"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:comp-util-debate-analysis",
+      "type": "article",
+      "slug": "comp-util-debate-analysis",
+      "title": "Компонент: утилиты анализа дебатов и оценки токенов",
+      "section": "components",
+      "status": "documented",
+      "tags": [
+        "компоненты",
+        "утилиты",
+        "дебаты",
+        "анализ"
+      ],
+      "sources": [
+        "src/kernel/utils/debate-analysis.ts",
+        "src/kernel/utils/topic-suggestions.ts",
+        "src/kernel/utils/tokenEstimate.ts"
+      ],
+      "related": [
+        "comp-debate-runtime",
+        "comp-eval-elo",
+        "comp-debateplus",
+        "comp-scenarios",
+        "for-developers"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:comp-util-persistence-helpers",
+      "type": "article",
+      "slug": "comp-util-persistence-helpers",
+      "title": "Компонент: утилиты персиста и провайдеров",
+      "section": "components",
+      "status": "documented",
+      "tags": [
+        "компоненты",
+        "утилиты",
+        "персист",
+        "провайдеры"
+      ],
+      "sources": [
+        "src/kernel/utils/persist-then-emit.ts",
+        "src/kernel/utils/with-transaction.ts",
+        "src/kernel/utils/provider-default-models.ts",
+        "src/kernel/utils/provider-fleet-health.ts"
+      ],
+      "related": [
+        "comp-persistence",
+        "comp-provider-runtime",
+        "comp-fleet-governance",
+        "providers",
+        "panel-providers"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:comp-dal-repositories",
+      "type": "article",
+      "slug": "comp-dal-repositories",
+      "title": "Компонент: Data Access Layer (репозитории)",
+      "section": "components",
+      "status": "verified",
+      "tags": [
+        "компоненты",
+        "dal",
+        "репозитории",
+        "персист"
+      ],
+      "sources": [
+        "src/kernel/dal/data-access-layer.ts",
+        "src/kernel/dal/debate-repository.ts",
+        "src/kernel/dal/session-repository.ts",
+        "src/kernel/dal/memory-repository.ts",
+        "src/kernel/dal/event-log-repository.ts",
+        "src/kernel/dal/scenario-repository.ts",
+        "src/kernel/dal/workspace-repository.ts"
+      ],
+      "related": [
+        "comp-persistence",
+        "comp-storage-timeline",
+        "comp-event-sourcing",
+        "comp-state-stores",
+        "for-developers"
+      ],
+      "reviewed": null,
+      "tests": [
+        "src/kernel/dal/data-access-layer.test.ts",
+        "src/kernel/dal/debate-repository.test.ts",
+        "src/kernel/dal/session-repository.test.ts",
+        "src/kernel/dal/memory-repository.test.ts",
+        "src/kernel/dal/event-log-repository.test.ts",
+        "src/kernel/dal/scenario-repository.test.ts",
+        "src/kernel/dal/workspace-repository.test.ts"
       ]
     },
     {

@@ -3,7 +3,7 @@
   "generatedBy": "scripts/gen-docs-inventory.mjs",
   "scope": "git-tracked markdown: docs/**/*.md (excluding docs/new drafts and the self-report pages docs-health, docs-inventory) plus repository entry docs (root *.md, .superagents/**, src/kernel/DEPENDENCY_MAP.md)",
   "totals": {
-    "documents": 1030,
+    "documents": 1036,
     "byCategory": {
       "repo": 12,
       "top": 46,
@@ -13,12 +13,12 @@
       "reference": 6,
       "roadmap": 6,
       "superseded": 3,
-      "wiki": 206
+      "wiki": 212
     },
     "byLanguage": {
       "en": 658,
-      "ru": 227,
-      "mixed": 145
+      "ru": 232,
+      "mixed": 146
     }
   },
   "duplicates": {
@@ -6752,6 +6752,14 @@
       "hash": "091a016004758df3760390a34d4d4bba08e1b7a8"
     },
     {
+      "path": "docs/wiki/comp-dal-repositories.md",
+      "category": "wiki",
+      "language": "mixed",
+      "title": "Компонент: Data Access Layer (репозитории)",
+      "bytes": 2959,
+      "hash": "70176db92b190077594846c1981909cf9ed5de2d"
+    },
+    {
       "path": "docs/wiki/comp-debate-runtime.md",
       "category": "wiki",
       "language": "mixed",
@@ -6948,8 +6956,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Компоненты и сервисы: как читать этот раздел",
-      "bytes": 12290,
-      "hash": "2ab7dce348cecd0af14d708d3ab181b4a9577ed9"
+      "bytes": 13045,
+      "hash": "4a55e2ed4a08d9dbf70ca930f934cfefb0d205da"
     },
     {
       "path": "docs/wiki/comp-persistence.md",
@@ -7096,6 +7104,46 @@
       "hash": "a0f697ce8c67b0dd2575e713e93b7e57f91aab0f"
     },
     {
+      "path": "docs/wiki/comp-util-debate-analysis.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Компонент: утилиты анализа дебатов и оценки токенов",
+      "bytes": 2394,
+      "hash": "2d890945311d58f0517b86777b48bb1a8abb650a"
+    },
+    {
+      "path": "docs/wiki/comp-util-embeddings-rng.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Компонент: утилиты эмбеддингов и детерминированного RNG",
+      "bytes": 2405,
+      "hash": "b785d3a774ce735da050e892adf6095dabc640c8"
+    },
+    {
+      "path": "docs/wiki/comp-util-memory-observability.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Компонент: утилиты наблюдения за памятью",
+      "bytes": 2481,
+      "hash": "acad39d6ab5cd82a1b9893776de34c7743d36fa1"
+    },
+    {
+      "path": "docs/wiki/comp-util-network-security.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Компонент: утилиты сети и безопасности (kernel/utils)",
+      "bytes": 2891,
+      "hash": "d4f07760d4dca132e31ee6144dc8e5c2776b5b2f"
+    },
+    {
+      "path": "docs/wiki/comp-util-persistence-helpers.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Компонент: утилиты персиста и провайдеров",
+      "bytes": 2671,
+      "hash": "94ae62d25abe033a37558517381bdd9c4888718a"
+    },
+    {
       "path": "docs/wiki/debates.md",
       "category": "wiki",
       "language": "ru",
@@ -7125,7 +7173,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4075,
-      "hash": "e27b4e3f09e06d6b99b40c9e5ab635891c75fb21"
+      "hash": "e134e3556ea1d396059c5cf8058b9a9d76a4d906"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -7212,8 +7260,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Граф знаний",
-      "bytes": 5021,
-      "hash": "da1c284b46f53973ce565c496cfb4a63ed1740e3"
+      "bytes": 5000,
+      "hash": "8e82c47e2ec88d4d49bcd9e337d48e59b439ae2e"
     },
     {
       "path": "docs/wiki/dev-history.md",
@@ -7348,8 +7396,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Карта документации",
-      "bytes": 28306,
-      "hash": "d2c6cd8c920a11c3a8a3c1a734ce434e280cb4df"
+      "bytes": 29035,
+      "hash": "e383977ed5f33f9ca4b5d971ab52caf71b423ada"
     },
     {
       "path": "docs/wiki/docs-standard.md",
@@ -8004,8 +8052,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Wiki SuperAgents OS",
-      "bytes": 21222,
-      "hash": "c0d287e04963d71f55e87178e4b022048a05e2b7"
+      "bytes": 22043,
+      "hash": "7de966158f6490e0ba45be016d85b6455e345772"
     },
     {
       "path": "docs/wiki/roadmap-notes.md",
@@ -8260,16 +8308,16 @@
       "category": "repo",
       "language": "en",
       "title": "SuperAgents OS",
-      "bytes": 53816,
-      "hash": "5a848d70e3b9b92b67f08bf0006b77fff5a26df4"
+      "bytes": 54213,
+      "hash": "aba3760a50fcdd36e3127fa20396cfcd0c516554"
     },
     {
       "path": "README.md",
       "category": "repo",
       "language": "mixed",
       "title": "SuperAgents OS — Wiki",
-      "bytes": 45906,
-      "hash": "c2f3858206b5fda9b75fc804a8e5d696b7fd8427"
+      "bytes": 46394,
+      "hash": "5ace6f1423bd39049af059983d527a4bb976fae4"
     },
     {
       "path": "SELF_IMPROVEMENT_AUDIT_2026-09-22.md",

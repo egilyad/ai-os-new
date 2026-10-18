@@ -59,6 +59,7 @@ export const COMPONENT_ARTICLES: WikiArticle[] = [
 - **LLM-слой:** [[comp-llm-pipeline]] (декораторы, middleware), [[comp-llm-adapters]] (адаптеры провайдеров).
 - **Детализация LLM:** [[comp-middleware-core]] (базы/middleware/утилиты), [[comp-decorator-resilience]], [[comp-decorator-optimization]], [[comp-decorator-routing]]; адаптеры — [[comp-adapter-gemini]], [[comp-adapter-anthropic]], [[comp-adapter-gemini-computer]], [[comp-adapter-openai-compatible]], [[comp-adapter-openrouter]], [[comp-adapter-groq]], [[comp-adapter-nvidia-nim]], [[comp-adapter-cloudflare]], [[comp-adapter-mock]].
 - **Безопасность и связь:** [[comp-secrets-locks]] (секреты, блокировки), [[comp-messaging-integrations]] (n8n, Telegram, вебхуки).
+- **Утилиты и данные:** [[comp-util-network-security]], [[comp-util-embeddings-rng]], [[comp-util-memory-observability]], [[comp-util-debate-analysis]], [[comp-util-persistence-helpers]], [[comp-dal-repositories]].
 
 Машиночитаемые каталоги (генерируются из кода): [[dev-component-catalog]], [[dev-service-map]], [[dev-contracts]], [[dev-event-catalog]].
 
@@ -2642,5 +2643,232 @@ flowchart TD
 ## Состояние
 
 - Реализовано; middleware и flyweight покрыты тестами.`,
+    },
+    {
+        slug: 'comp-util-network-security',
+        title: 'Компонент: утилиты сети и безопасности (kernel/utils)',
+        section: 'components',
+        tags: ['компоненты', 'утилиты', 'сеть', 'безопасность'],
+        freshness: 'verified',
+        sources: [
+            'src/kernel/utils/network.ts',
+            'src/kernel/utils/constant-time.ts',
+            'src/kernel/utils/sanitize.ts',
+            'src/kernel/utils/safe-json.ts',
+            'src/kernel/utils/ssr-storage.ts',
+        ],
+        related: ['comp-security-crypto', 'comp-integrations-interop', 'comp-policy-security', 'comp-messaging-integrations', 'for-developers'],
+        body: `## Назначение
+
+Набор низкоуровневых защитных утилит: проверка адресов, безопасный парсинг и хранение.
+
+## Возможности
+
+- \`network.ts\`: \`isPrivateIP\`, \`isValidWebhookUrl\`, \`validateIntegrationUrl\` — защита от SSRF и небезопасных интеграций.
+- \`constant-time.ts\`: \`constantTimeEqual\` — сравнение без утечки по времени.
+- \`sanitize.ts\` — санитизация входных данных; \`safe-json.ts\` — безопасный разбор JSON.
+- \`ssr-storage.ts\`: \`ssrSafeStorage\` — безопасная обёртка хранилища (SSR/tests).
+
+## Реализация
+
+- \`src/kernel/utils/\`: \`network.ts\`, \`constant-time.ts\`, \`sanitize.ts\`, \`safe-json.ts\`, \`ssr-storage.ts\`.
+
+## Связи
+
+- Шифрование — [[comp-security-crypto]]; политики — [[comp-policy-security]].
+- Интеграции/webhook'и — [[comp-integrations-interop]], [[comp-messaging-integrations]].
+
+## Проверка работоспособности
+
+- Тест: \`src/kernel/utils/network.test.ts\`.
+
+## Состояние
+
+- Реализовано; сетевые проверки покрыты тестом.`,
+    },
+    {
+        slug: 'comp-util-embeddings-rng',
+        title: 'Компонент: утилиты эмбеддингов и детерминированного RNG',
+        section: 'components',
+        tags: ['компоненты', 'утилиты', 'эмбеддинги', 'rng'],
+        freshness: 'documented',
+        sources: ['src/kernel/utils/embedding.ts', 'src/kernel/utils/seedable-rng.ts'],
+        related: ['comp-knowledge-rag', 'comp-memory', 'comp-simulation-world', 'comp-frontier-diversity', 'for-developers'],
+        body: `## Назначение
+
+Давать лёгкие локальные эмбеддинги и воспроизводимую случайность там, где не нужен внешний сервис.
+
+## Возможности
+
+- \`embedding.ts\`: \`getFNVEmbedding(text, dims = 128)\` — хеш-эмбеддинг, \`cosineSimilarity\` — косинусная близость.
+- \`seedable-rng.ts\`: \`SeededRng\` — детерминированный генератор по seed.
+
+## Реализация
+
+- \`src/kernel/utils/embedding.ts\`, \`src/kernel/utils/seedable-rng.ts\`.
+
+## Связи
+
+- Поиск/RAG — [[comp-knowledge-rag]]; память — [[comp-memory]].
+- Детерминизм сценариев — [[comp-simulation-world]], [[comp-frontier-diversity]].
+
+## Проверка работоспособности
+
+- Подтверждено чтением кода (отдельного тест-файла нет).
+
+## Состояние
+
+- Реализовано; автотестом не покрыто.`,
+    },
+    {
+        slug: 'comp-util-memory-observability',
+        title: 'Компонент: утилиты наблюдения за памятью',
+        section: 'components',
+        tags: ['компоненты', 'утилиты', 'память', 'наблюдаемость'],
+        freshness: 'documented',
+        sources: ['src/kernel/utils/memory-tracker.ts', 'src/kernel/utils/memory-watchdog.ts', 'src/kernel/utils/compute-memory-id.ts'],
+        related: ['comp-observability', 'comp-memory', 'comp-fleet-governance', 'panel-infra-meta', 'for-developers'],
+        body: `## Назначение
+
+Следить за ростом памяти и предотвращать утечки/переполнение на клиенте.
+
+## Возможности
+
+- \`memory-tracker.ts\`: \`logMemoryStats\`, \`estimateSessionBytes\`, оценки размеров (\`EngineSizes\`, \`SyncManagerSizes\`, \`AggregateSizes\`).
+- \`memory-watchdog.ts\`: \`MemoryWatchdog\` (\`WatchdogOptions\`) — реакция на превышение порогов.
+- \`compute-memory-id.ts\` — детерминированный идентификатор памяти.
+
+## Реализация
+
+- \`src/kernel/utils/memory-tracker.ts\`, \`memory-watchdog.ts\`, \`compute-memory-id.ts\`.
+
+## Связи
+
+- Наблюдаемость — [[comp-observability]]; память — [[comp-memory]].
+- Панель служебных метрик — [[panel-infra-meta]].
+
+## Проверка работоспособности
+
+- Подтверждено чтением кода (отдельного тест-файла нет).
+
+## Состояние
+
+- Реализовано; автотестом не покрыто.`,
+    },
+    {
+        slug: 'comp-util-debate-analysis',
+        title: 'Компонент: утилиты анализа дебатов и оценки токенов',
+        section: 'components',
+        tags: ['компоненты', 'утилиты', 'дебаты', 'анализ'],
+        freshness: 'documented',
+        sources: ['src/kernel/utils/debate-analysis.ts', 'src/kernel/utils/topic-suggestions.ts', 'src/kernel/utils/tokenEstimate.ts'],
+        related: ['comp-debate-runtime', 'comp-eval-elo', 'comp-debateplus', 'comp-scenarios', 'for-developers'],
+        body: `## Назначение
+
+Давать локальный анализ аргументации и подсказки тем, а также оценку токенов.
+
+## Возможности
+
+- \`debate-analysis.ts\`: \`detectFallacies\`/\`fallacyScore\` (софизмы), \`computePersuasion\`, \`analyzeTone\`, \`analyzeDebate\`, \`FALLACY_LABELS\`.
+- \`topic-suggestions.ts\`: \`suggestTopics\`, \`suggestByDifficulty\`, \`suggestByCategory\`, \`TOPIC_CATEGORIES\`, \`TOPIC_DIFFICULTIES\`.
+- \`tokenEstimate.ts\`: \`estimateTokens(text, divisor = 4)\`.
+
+## Реализация
+
+- \`src/kernel/utils/debate-analysis.ts\`, \`topic-suggestions.ts\`, \`tokenEstimate.ts\`.
+
+## Связи
+
+- Дебаты — [[comp-debate-runtime]], [[comp-debateplus]]; оценка — [[comp-eval-elo]]; сценарии — [[comp-scenarios]].
+
+## Проверка работоспособности
+
+- Подтверждено чтением кода (отдельного тест-файла нет).
+
+## Состояние
+
+- Реализовано; автотестом не покрыто.`,
+    },
+    {
+        slug: 'comp-util-persistence-helpers',
+        title: 'Компонент: утилиты персиста и провайдеров',
+        section: 'components',
+        tags: ['компоненты', 'утилиты', 'персист', 'провайдеры'],
+        freshness: 'documented',
+        sources: [
+            'src/kernel/utils/persist-then-emit.ts',
+            'src/kernel/utils/with-transaction.ts',
+            'src/kernel/utils/provider-default-models.ts',
+            'src/kernel/utils/provider-fleet-health.ts',
+        ],
+        related: ['comp-persistence', 'comp-provider-runtime', 'comp-fleet-governance', 'providers', 'panel-providers'],
+        body: `## Назначение
+
+Обеспечивать корректный порядок «сначала запись — потом событие» и справочные данные по провайдерам.
+
+## Возможности
+
+- \`persist-then-emit.ts\`: \`Outbox\` — отложенная эмиссия после персиста.
+- \`with-transaction.ts\` — обёртка транзакции.
+- \`provider-default-models.ts\`: \`PROVIDER_DEFAULT_MODELS\`, \`PROVIDER_PREFERRED_MODELS\`, \`PROVIDER_DISPLAY_NAMES\`.
+- \`provider-fleet-health.ts\`: \`summarizeProviderFleet\`, \`summarizeAllProviders\` (\`ProviderFleetStatus\`, \`ProviderFleetSummary\`).
+
+## Реализация
+
+- \`src/kernel/utils/persist-then-emit.ts\`, \`with-transaction.ts\`, \`provider-default-models.ts\`, \`provider-fleet-health.ts\`.
+
+## Связи
+
+- Персист — [[comp-persistence]]; транзакции — [[comp-transactions]]; провайдеры — [[comp-provider-runtime]], [[providers]].
+
+## Проверка работоспособности
+
+- Подтверждено чтением кода (отдельного тест-файла нет).
+
+## Состояние
+
+- Реализовано; автотестом не покрыто.`,
+    },
+    {
+        slug: 'comp-dal-repositories',
+        title: 'Компонент: Data Access Layer (репозитории)',
+        section: 'components',
+        tags: ['компоненты', 'dal', 'репозитории', 'персист'],
+        freshness: 'verified',
+        sources: [
+            'src/kernel/dal/data-access-layer.ts',
+            'src/kernel/dal/debate-repository.ts',
+            'src/kernel/dal/session-repository.ts',
+            'src/kernel/dal/memory-repository.ts',
+            'src/kernel/dal/event-log-repository.ts',
+            'src/kernel/dal/scenario-repository.ts',
+            'src/kernel/dal/workspace-repository.ts',
+        ],
+        related: ['comp-persistence', 'comp-storage-timeline', 'comp-event-sourcing', 'comp-state-stores', 'for-developers'],
+        body: `## Назначение
+
+Дать типизированный доступ к данным через репозитории поверх слоя хранения.
+
+## Возможности
+
+- \`data-access-layer.ts\` — вход в DAL.
+- Репозитории: \`debate-repository.ts\`, \`session-repository.ts\`, \`memory-repository.ts\`, \`event-log-repository.ts\`, \`scenario-repository.ts\`, \`workspace-repository.ts\`, \`role-repository.ts\`, \`note-repository.ts\`, \`trace-repository.ts\`, \`cognitive-repository.ts\`, \`crystal-repository.ts\`, \`director-repository.ts\`, \`debate-timeline-repository.ts\`, \`debate-override-repository.ts\`, \`session-link-repository.ts\`.
+- Миграции: \`key-migration.ts\`, \`scenario-migration.ts\`.
+
+## Реализация
+
+- Каталог \`src/kernel/dal/\`.
+
+## Связи
+
+- Хранение — [[comp-persistence]]; таймлайн — [[comp-storage-timeline]]; журнал событий — [[comp-event-sourcing]].
+
+## Проверка работоспособности
+
+- Тесты репозиториев: \`dal/data-access-layer.test.ts\`, \`debate-repository.test.ts\`, \`session-repository.test.ts\`, \`memory-repository.test.ts\`, \`event-log-repository.test.ts\`, \`scenario-repository.test.ts\`, \`workspace-repository.test.ts\` и др.
+
+## Состояние
+
+- Реализовано; широко покрыто тестами.`,
     },
 ];
