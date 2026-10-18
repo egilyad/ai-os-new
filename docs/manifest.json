@@ -50,7 +50,7 @@
     {
       "id": "components",
       "title": "Компоненты и сервисы",
-      "articles": 68
+      "articles": 69
     },
     {
       "id": "notes",
@@ -4599,6 +4599,46 @@
         "src/kernel/services/llm-client-service.test.ts",
         "src/kernel/services/provider-adapter-registry.test.ts",
         "src/kernel/events/event-registry.test.ts"
+      ]
+    },
+    {
+      "id": "wiki:comp-flow-knowledge",
+      "type": "article",
+      "slug": "comp-flow-knowledge",
+      "title": "Сквозной контур: знания и RAG",
+      "section": "components",
+      "status": "verified",
+      "tags": [
+        "компоненты",
+        "контур",
+        "знания",
+        "RAG",
+        "поиск",
+        "эмбеддинги"
+      ],
+      "sources": [
+        "src/components/KnowledgePanel/KnowledgePanel.tsx",
+        "src/kernel/services/parity/knowledge-service.ts",
+        "src/kernel/services/rag/hybrid-retrieval-service.ts",
+        "src/kernel/services/parity/default-embedding-service.ts",
+        "src/kernel/services/rivals2/rag-service.ts",
+        "src/kernel/services/knowledge-generator/knowledge-generator-service.ts",
+        "src/kernel/services/debate-runtime/debate-rag-retriever.ts",
+        "src/kernel/services/debate-runtime/debate-knowledge-sync.ts",
+        "src/kernel/service-registration/phase54-hybrid-rag.ts"
+      ],
+      "related": [
+        "comp-knowledge-rag",
+        "comp-memory",
+        "comp-llm-bridge",
+        "comp-flow-debate",
+        "comp-event-bus"
+      ],
+      "reviewed": null,
+      "tests": [
+        "src/components/KnowledgePanel/KnowledgePanel.test.tsx",
+        "src/kernel/services/rag/hybrid-retrieval-service.test.ts",
+        "src/kernel/services/knowledge-generator/knowledge-generator-service.test.ts"
       ]
     },
     {

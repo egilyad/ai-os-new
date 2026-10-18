@@ -3,22 +3,22 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 1168,
-    "edges": 3050,
+    "nodes": 1174,
+    "edges": 3067,
     "byType": {
       "audit": 67,
-      "code": 484,
+      "code": 489,
       "test": 142,
       "panel": 259,
-      "article": 216
+      "article": 217
     },
     "byKind": {
       "audit_test": 325,
       "audit_mention": 928,
       "documents": 201,
-      "source": 634,
-      "test": 185,
-      "related": 777
+      "source": 643,
+      "test": 188,
+      "related": 782
     }
   },
   "nodes": [
@@ -1937,6 +1937,11 @@
       "label": "src/kernel/service-registration/phase3-debate-runtime.ts"
     },
     {
+      "id": "file:src/kernel/service-registration/phase54-hybrid-rag.ts",
+      "type": "code",
+      "label": "src/kernel/service-registration/phase54-hybrid-rag.ts"
+    },
+    {
       "id": "file:src/kernel/service-registration/phase6-high-level.ts",
       "type": "code",
       "label": "src/kernel/service-registration/phase6-high-level.ts"
@@ -2282,6 +2287,11 @@
       "label": "src/kernel/services/debate-runtime/debate-evaluator.ts"
     },
     {
+      "id": "file:src/kernel/services/debate-runtime/debate-knowledge-sync.ts",
+      "type": "code",
+      "label": "src/kernel/services/debate-runtime/debate-knowledge-sync.ts"
+    },
+    {
       "id": "file:src/kernel/services/debate-runtime/debate-llm-caller.ts",
       "type": "code",
       "label": "src/kernel/services/debate-runtime/debate-llm-caller.ts"
@@ -2320,6 +2330,11 @@
       "id": "file:src/kernel/services/debate-runtime/debate-persistence-manager.ts",
       "type": "code",
       "label": "src/kernel/services/debate-runtime/debate-persistence-manager.ts"
+    },
+    {
+      "id": "file:src/kernel/services/debate-runtime/debate-rag-retriever.ts",
+      "type": "code",
+      "label": "src/kernel/services/debate-runtime/debate-rag-retriever.ts"
     },
     {
       "id": "file:src/kernel/services/debate-runtime/debate-session-persistence.ts",
@@ -2692,6 +2707,11 @@
       "label": "src/kernel/services/orchestration-service.ts"
     },
     {
+      "id": "file:src/kernel/services/parity/default-embedding-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/parity/default-embedding-service.ts"
+    },
+    {
       "id": "file:src/kernel/services/parity/knowledge-service.ts",
       "type": "code",
       "label": "src/kernel/services/parity/knowledge-service.ts"
@@ -2825,6 +2845,11 @@
       "id": "file:src/kernel/services/rivals2/integrations-service.ts",
       "type": "code",
       "label": "src/kernel/services/rivals2/integrations-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/rivals2/rag-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/rivals2/rag-service.ts"
     },
     {
       "id": "file:src/kernel/services/rivals2/swe-service.ts",
@@ -5662,6 +5687,13 @@
       "id": "wiki:comp-flow-debate",
       "type": "article",
       "label": "Сквозной контур: дебаты",
+      "section": "components",
+      "status": "verified"
+    },
+    {
+      "id": "wiki:comp-flow-knowledge",
+      "type": "article",
+      "label": "Сквозной контур: знания и RAG",
       "section": "components",
       "status": "verified"
     },
@@ -15986,6 +16018,91 @@
     {
       "from": "wiki:comp-flow-debate",
       "to": "wiki:comp-state-stores",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-flow-knowledge",
+      "to": "file:src/components/KnowledgePanel/KnowledgePanel.test.tsx",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-flow-knowledge",
+      "to": "file:src/components/KnowledgePanel/KnowledgePanel.tsx",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-flow-knowledge",
+      "to": "file:src/kernel/service-registration/phase54-hybrid-rag.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-flow-knowledge",
+      "to": "file:src/kernel/services/debate-runtime/debate-knowledge-sync.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-flow-knowledge",
+      "to": "file:src/kernel/services/debate-runtime/debate-rag-retriever.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-flow-knowledge",
+      "to": "file:src/kernel/services/knowledge-generator/knowledge-generator-service.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-flow-knowledge",
+      "to": "file:src/kernel/services/knowledge-generator/knowledge-generator-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-flow-knowledge",
+      "to": "file:src/kernel/services/parity/default-embedding-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-flow-knowledge",
+      "to": "file:src/kernel/services/parity/knowledge-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-flow-knowledge",
+      "to": "file:src/kernel/services/rag/hybrid-retrieval-service.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-flow-knowledge",
+      "to": "file:src/kernel/services/rag/hybrid-retrieval-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-flow-knowledge",
+      "to": "file:src/kernel/services/rivals2/rag-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-flow-knowledge",
+      "to": "wiki:comp-event-bus",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-flow-knowledge",
+      "to": "wiki:comp-flow-debate",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-flow-knowledge",
+      "to": "wiki:comp-knowledge-rag",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-flow-knowledge",
+      "to": "wiki:comp-llm-bridge",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-flow-knowledge",
+      "to": "wiki:comp-memory",
       "kind": "related"
     },
     {

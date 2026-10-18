@@ -51,7 +51,7 @@ export const COMPONENT_ARTICLES: WikiArticle[] = [
 - **Задачи и управление:** [[comp-task-planning]] (задачи, расписание), [[comp-fleet-governance]] (флот, governance, аудит), [[comp-integrations-interop]] (A2A, gateway, MCP).
 - **Провайдеры и состояние:** [[comp-provider-runtime]] (инстансы, сессии, бюджет), [[comp-llm-bridge]] (мост к LLM), [[comp-state-stores]] (UI-состояние).
 - **Сквозные сценарии:** [[comp-scenarios]] (чат, дебаты, задача от панели до аудита).
-- **Сквозные контуры (end-to-end):** [[comp-flow-debate]] (дебаты: панель → сервис → движок → LLM → события → хранилище → UI), [[comp-flow-chat]] (чат: ввод → стор → событие → ChatExecutor → роутер → адаптер → стрим → UI → персист), с точками обрыва.
+- **Сквозные контуры (end-to-end):** [[comp-flow-debate]] (дебаты: панель → сервис → движок → LLM → события → хранилище → UI), [[comp-flow-chat]] (чат: ввод → стор → событие → ChatExecutor → роутер → адаптер → стрим → UI → персист), [[comp-flow-knowledge]] (знания: ингест → чанки → эмбеддинги → гибридный поиск (BM25+vector+RRF) → выдача в чат/дебаты/инструменты), с точками обрыва.
 - **Мультиагентность:** [[comp-crews-councils]] (экипажи, совет), [[comp-frontier-diversity]] (фронтир, разнообразие), [[comp-rivals-lab]] (лаборатория вариантов), [[comp-persona-builder]] (персоны, строитель), [[comp-invocation-meta]] (вызовы, мета-агент).
 - **Знания и оценка:** [[comp-knowledge-rag]] (RAG, кристаллы, линзы), [[comp-eval-elo]] (судья, Эло).
 - **Симуляция:** [[comp-simulation-world]] (мир, computer-use, parity).
@@ -3040,5 +3040,78 @@ flowchart TD
 ## Состояние
 
 - Подтверждено чтением кода по всей цепочке; ключевые звенья (стор, исполнитель, LLM-клиент, UI) покрыты тестами.`,
+    },
+    {
+        slug: 'comp-flow-knowledge',
+        title: 'Сквозной контур: знания и RAG',
+        section: 'components',
+        tags: ['компоненты', 'контур', 'знания', 'RAG', 'поиск', 'эмбеддинги'],
+        freshness: 'verified',
+        sources: [
+            'src/components/KnowledgePanel/KnowledgePanel.tsx',
+            'src/kernel/services/parity/knowledge-service.ts',
+            'src/kernel/services/rag/hybrid-retrieval-service.ts',
+            'src/kernel/services/parity/default-embedding-service.ts',
+            'src/kernel/services/rivals2/rag-service.ts',
+            'src/kernel/services/knowledge-generator/knowledge-generator-service.ts',
+            'src/kernel/services/debate-runtime/debate-rag-retriever.ts',
+            'src/kernel/services/debate-runtime/debate-knowledge-sync.ts',
+            'src/kernel/service-registration/phase54-hybrid-rag.ts',
+        ],
+        related: ['comp-knowledge-rag', 'comp-memory', 'comp-llm-bridge', 'comp-flow-debate', 'comp-event-bus'],
+        body: `## Назначение
+
+Показать знания и RAG как **сквозной контур**: путь источника от загрузки/индексации до выдачи релевантных фрагментов потребителям (чат, дебаты, инструменты) — вместе с точками обрыва.
+
+## Возможности
+
+- Два уровня поиска: лёгкий token+vector-скоринг (\`KnowledgeService\`) и гибридный BM25+vector с RRF-слиянием (\`HybridRetrievalService\`).
+- Ингест источников: текст/URL, нарезка на чанки (~600 символов), эмбеддинги, дедуп.
+- Генерация знаний: автономный цикл (\`KnowledgeGeneratorService\`), кристаллы, junction'ы.
+- Потребители: чат, дебаты (RAG-retriever, sync), tool-runner.
+
+## Сквозной поток (по шагам)
+
+1. **UI.** [[panel-knowledge]] → \`KnowledgePanel.tsx\`; добавление/поиск знаний через \`knowledgeService\` ([[comp-memory]], [[comp-knowledge-rag]]).
+2. **Ингест.** \`KnowledgeService.addSource\` (knowledge-service.ts): загрузка контента (URL — best-effort fetch, CORS/сеть могут отказать) → \`chunkText\` (~600 символов по абзацам) → событие \`KNOWLEDGE_ADDED\`.
+3. **Эмбеддинги.** Источник получает вектора через \`IEmbeddingPort\` (\`DefaultEmbeddingService\`, hash-384, пока не подключён провайдерский embed — PROVIDER-PENDING); скоринг блендит **0.6 vector + 0.4 token**.
+4. **Лёгкий поиск.** \`KnowledgeService.retrieve\` — токенный скоринг + (если есть эмбеддер) векторный, возвращает \`{ sourceId, title, chunk }\`.
+5. **Гибридный поиск.** \`HybridRetrievalService.retrieveHybrid\` (hybrid-retrieval-service.ts): **BM25 (k*mult) ∪ vector (k*mult) → RRF-слияние (k=60) с весами → reranker**; возвращает \`HybridHit[]\`. Регистрация — \`phase54-hybrid-rag.ts\`.
+6. **RAG-сервис.** \`RagService\` (rivals2/rag-service.ts) отдаёт \`{ title, chunk }\`; \`tool-runner-service\` может вызывать retrieval как инструмент.
+7. **Потребители дебатов.** \`debate-rag-retriever\` подтягивает контекст в дебаты, \`debate-knowledge-sync\` и \`debate-embedding-pipeline\` синхронизируют аргументы с базой знаний ([[comp-flow-debate]]).
+8. **Генерация.** \`KnowledgeGeneratorService.generateFromTrigger\` создаёт \`GenerationJob\` → гипотезы; кристаллы и junction'ы оформляются событиями \`knowledge:crystal:*\`, \`knowledge:junction:*\`. Шина — [[comp-event-bus]].
+
+## Обрывы цепочки (что происходит при ошибке)
+
+- **URL-ингест не удался.** CORS/сеть — источник регистрируется **без содержимого** (логируется, не падает).
+- **Эмбеддер недоступен.** Векторный поиск пропускается, остаётся token-only; запрос эмбеддингов логируется и не роняет retrieve.
+- **Пока нет провайдерского embed.** Используется hash-эмбеддер (детерминированный, но семантически слабый) — помечено как PROVIDER-PENDING.
+
+## Данные, события, восстановление
+
+- **События:** \`KNOWLEDGE_ADDED\`; кристаллы \`knowledge:crystal:proposed/formed/superseded/refuted/contradiction:detected\`; junction'ы \`knowledge:junction:detected/validated/rejected\`; \`synthesis:exported-to-crystal\`; цикл knowledge generator.
+- **Хранилище:** источники/чанки/кристаллы — через слой персиста ([[comp-persistence]]); связь с памятью — [[comp-memory]].
+- **Синхронизация с дебатами:** обратный поток аргументов в базу знаний (debate-knowledge-sync).
+
+## Реализация
+
+- UI: \`src/components/KnowledgePanel/KnowledgePanel.tsx\`.
+- Знания: \`src/kernel/services/parity/knowledge-service.ts\`, \`knowledge-generator/knowledge-generator-service.ts\`.
+- Гибридный поиск: \`src/kernel/services/rag/hybrid-retrieval-service.ts\`, \`service-registration/phase54-hybrid-rag.ts\`.
+- Эмбеддинги: \`src/kernel/services/parity/default-embedding-service.ts\`.
+- RAG: \`src/kernel/services/rivals2/rag-service.ts\`; дебаты — \`debate-runtime/debate-rag-retriever.ts\`, \`debate-knowledge-sync.ts\`.
+
+## Связи
+
+- Знания и RAG — [[comp-knowledge-rag]]; память — [[comp-memory]]; мост к LLM — [[comp-llm-bridge]].
+- Контур дебатов — [[comp-flow-debate]]; события — [[comp-event-bus]]; персист — [[comp-persistence]].
+
+## Проверка работоспособности
+
+- Тесты: \`src/kernel/services/rag/hybrid-retrieval-service.test.ts\`, \`src/kernel/services/knowledge-generator/knowledge-generator-service.test.ts\`, \`src/kernel/services/debate-runtime/debate-embedding-pipeline.test.ts\`.
+
+## Состояние
+
+- Подтверждено чтением кода; гибридный поиск и генератор покрыты тестами; провайдерский embed — ожидаемое расширение (PROVIDER-PENDING).`,
     },
 ];
