@@ -20,7 +20,7 @@
 - Панель **Wiki** в приложении и сайт `/wiki/` — тот же корпус статей
 - [`docs/manifest.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/manifest.json) — машиночитаемый индекс сущностей (статьи, панели)
 - [`docs/entity-model.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/entity-model.json) — стандарт документации
-- [`docs/inventory.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/inventory.json) — инвентарь всех `docs/**` (970 документов)
+- [`docs/inventory.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/inventory.json) — инвентарь всех `docs/**` (985 документов)
 
 ## Вики по разделам
 
@@ -42,11 +42,13 @@
 
 **Архитектура** — 2: [Архитектура и связи](./architecture.md) · [Карта системы](./dev-system-map.md)
 
+**Компоненты и сервисы** — 15: [Компоненты и сервисы: как читать этот раздел](./comp-overview.md) · [Компонент: запуск ядра (bootstrap, container, runtime)](./comp-kernel-boot.md) · [Компонент: DI-контейнер и lazyService](./comp-di-container.md) · [Компонент: шина событий (EventBus)](./comp-event-bus.md) · [Компонент: транзакции состояния](./comp-transactions.md) · [Компонент: конфигурация и настройки](./comp-config.md) · [Компонент: персистентность (Dexie и storage-адаптеры)](./comp-persistence.md) · [Компонент: шифрование at-rest (SecurityService)](./comp-security-crypto.md) · [Компонент: управление ключами провайдеров](./comp-key-management.md) · [Компонент: роутинг и провайдеры](./comp-routing.md) · [Компонент: бюджет, цены и расход](./comp-budget-pricing.md) · [Компонент: агенты, роли и навыки](./comp-agents-roles-skills.md) · [Компонент: инструменты, MCP и sandbox](./comp-tools-mcp.md) · [Компонент: политики, секреты и вебхуки](./comp-policy-security.md) · [Компонент: консистентность и дрейф](./comp-consistency.md)
+
 **Заметки** — 1: [Планы и направления](./roadmap-notes.md)
 
 **Разработчикам** — 30: [Разработчикам: структура и ворота](./for-developers.md) · [Разработчикам: обзор и слои](./dev-overview.md) · [Разработчикам: карта каталогов](./dev-layout.md) · [Разработчикам: boot, DI и контейнер](./dev-boot.md) · [Разработчикам: шина событий](./dev-events.md) · [Разработчикам: сервисы и lazyService](./dev-services.md) · [Разработчикам: компоненты и панели](./dev-components.md) · [Разработчикам: маршруты и добавление панели](./dev-routing.md) · [Разработчикам: состояние (stores) и хуки](./dev-stores.md) · [Разработчикам: локализация (i18n)](./dev-i18n.md) · [Разработчикам: тесты](./dev-testing.md) · [Разработчикам: ворота качества и CI](./dev-ci.md) · [Разработчикам: генераторы и сгенерированные файлы](./dev-generators.md) · [Разработчикам: конвенции кода](./dev-conventions.md) · [Разработчикам: глоссарий](./dev-glossary.md) · [Рецепты: типовые задачи](./dev-cookbook.md) · [Реестр архитектурных решений (ADR)](./dev-adr.md) · [Каталог компонентов OS](./dev-component-catalog.md) · [Инвентаризация документации](./docs-inventory.md) · [Стандарт документации](./docs-standard.md) · [Граф знаний](./dev-graph.md) · [Проверки и показатели](./dev-checks.md) · [Внешние библиотеки](./dev-libraries.md) · [Каталог событий шины](./dev-event-catalog.md) · [Карта зависимостей ядра (DI)](./dev-service-map.md) · [Контракты ядра](./dev-contracts.md) · [Каталог сторов](./dev-store-catalog.md) · [Каталог локализации](./dev-i18n-catalog.md) · [Скрипты и CLI](./dev-scripts.md) · [Каталог тестов](./dev-tests-catalog.md)
 
-Всего статей вики: **147** в 11 разделах.
+Всего статей вики: **162** в 12 разделах.
 
 ## Документация верхнего уровня
 

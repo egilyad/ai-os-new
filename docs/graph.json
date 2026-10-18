@@ -3,22 +3,22 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 749,
-    "edges": 2264,
+    "nodes": 830,
+    "edges": 2419,
     "byType": {
       "audit": 67,
-      "code": 216,
-      "test": 60,
+      "code": 269,
+      "test": 73,
       "panel": 259,
-      "article": 147
+      "article": 162
     },
     "byKind": {
       "audit_test": 325,
       "audit_mention": 928,
       "documents": 201,
-      "source": 306,
-      "test": 63,
-      "related": 441
+      "source": 372,
+      "test": 86,
+      "related": 507
     }
   },
   "nodes": [
@@ -550,6 +550,11 @@
       "id": "file:docs/roadmap/README.md",
       "type": "code",
       "label": "docs/roadmap/README.md"
+    },
+    {
+      "id": "file:docs/SERVICES_RU.md",
+      "type": "code",
+      "label": "docs/SERVICES_RU.md"
     },
     {
       "id": "file:docs/SYSTEM_MANIFEST_RU.md",
@@ -1708,7 +1713,7 @@
     },
     {
       "id": "file:src/kernel/container.test.ts",
-      "type": "test",
+      "type": "code",
       "label": "src/kernel/container.test.ts"
     },
     {
@@ -1722,13 +1727,28 @@
       "label": "src/kernel/contracts/"
     },
     {
+      "id": "file:src/kernel/contracts/budget.ts",
+      "type": "code",
+      "label": "src/kernel/contracts/budget.ts"
+    },
+    {
+      "id": "file:src/kernel/contracts/pricing.ts",
+      "type": "code",
+      "label": "src/kernel/contracts/pricing.ts"
+    },
+    {
+      "id": "file:src/kernel/contracts/transaction.ts",
+      "type": "code",
+      "label": "src/kernel/contracts/transaction.ts"
+    },
+    {
       "id": "file:src/kernel/DEPENDENCY_MAP.md",
       "type": "code",
       "label": "src/kernel/DEPENDENCY_MAP.md"
     },
     {
       "id": "file:src/kernel/events/event-bus.test.ts",
-      "type": "test",
+      "type": "code",
       "label": "src/kernel/events/event-bus.test.ts"
     },
     {
@@ -1743,7 +1763,7 @@
     },
     {
       "id": "file:src/kernel/events/event-registry.test.ts",
-      "type": "test",
+      "type": "code",
       "label": "src/kernel/events/event-registry.test.ts"
     },
     {
@@ -1757,9 +1777,39 @@
       "label": "src/kernel/instances/"
     },
     {
+      "id": "file:src/kernel/instances/index.ts",
+      "type": "code",
+      "label": "src/kernel/instances/index.ts"
+    },
+    {
+      "id": "file:src/kernel/kernel.ts",
+      "type": "code",
+      "label": "src/kernel/kernel.ts"
+    },
+    {
+      "id": "file:src/kernel/runtime.ts",
+      "type": "code",
+      "label": "src/kernel/runtime.ts"
+    },
+    {
+      "id": "file:src/kernel/security.test.ts",
+      "type": "code",
+      "label": "src/kernel/security.test.ts"
+    },
+    {
+      "id": "file:src/kernel/security.ts",
+      "type": "code",
+      "label": "src/kernel/security.ts"
+    },
+    {
       "id": "file:src/kernel/service-helper.ts",
       "type": "code",
       "label": "src/kernel/service-helper.ts"
+    },
+    {
+      "id": "file:src/kernel/services/",
+      "type": "code",
+      "label": "src/kernel/services/"
     },
     {
       "id": "file:src/kernel/services/agent-project-runtime.test.ts",
@@ -1782,6 +1832,76 @@
       "label": "src/kernel/services/agent-service.ts"
     },
     {
+      "id": "file:src/kernel/services/budget-service.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/budget-service.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/budget-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/budget-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/compromise-webhook-service.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/compromise-webhook-service.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/compromise-webhook-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/compromise-webhook-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/config-history.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/config-history.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/config-history.ts",
+      "type": "code",
+      "label": "src/kernel/services/config-history.ts"
+    },
+    {
+      "id": "file:src/kernel/services/config-mutations.ts",
+      "type": "code",
+      "label": "src/kernel/services/config-mutations.ts"
+    },
+    {
+      "id": "file:src/kernel/services/config-registry.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/config-registry.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/config-registry.ts",
+      "type": "code",
+      "label": "src/kernel/services/config-registry.ts"
+    },
+    {
+      "id": "file:src/kernel/services/config-service.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/config-service.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/config-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/config-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/consistency-checker.test.ts",
+      "type": "code",
+      "label": "src/kernel/services/consistency-checker.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/consistency-checker.ts",
+      "type": "code",
+      "label": "src/kernel/services/consistency-checker.ts"
+    },
+    {
+      "id": "file:src/kernel/services/database-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/database-service.ts"
+    },
+    {
       "id": "file:src/kernel/services/debate-runtime/",
       "type": "code",
       "label": "src/kernel/services/debate-runtime/"
@@ -1802,14 +1922,189 @@
       "label": "src/kernel/services/debate-runtime/debate-strategy-definitions.ts"
     },
     {
+      "id": "file:src/kernel/services/dexie-schema-versioning.test.ts",
+      "type": "code",
+      "label": "src/kernel/services/dexie-schema-versioning.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/dexie-schema.ts",
+      "type": "code",
+      "label": "src/kernel/services/dexie-schema.ts"
+    },
+    {
+      "id": "file:src/kernel/services/external-secrets-service.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/external-secrets-service.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/external-secrets-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/external-secrets-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/group-manager.ts",
+      "type": "code",
+      "label": "src/kernel/services/group-manager.ts"
+    },
+    {
+      "id": "file:src/kernel/services/key-intelligence-pipeline.ts",
+      "type": "code",
+      "label": "src/kernel/services/key-intelligence-pipeline.ts"
+    },
+    {
+      "id": "file:src/kernel/services/key-management/key-pool-selector.ts",
+      "type": "code",
+      "label": "src/kernel/services/key-management/key-pool-selector.ts"
+    },
+    {
       "id": "file:src/kernel/services/key-management/key-service.ts",
       "type": "code",
       "label": "src/kernel/services/key-management/key-service.ts"
     },
     {
+      "id": "file:src/kernel/services/key-management/key-vault.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/key-management/key-vault.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/key-management/key-vault.ts",
+      "type": "code",
+      "label": "src/kernel/services/key-management/key-vault.ts"
+    },
+    {
+      "id": "file:src/kernel/services/key-state-store.ts",
+      "type": "code",
+      "label": "src/kernel/services/key-state-store.ts"
+    },
+    {
+      "id": "file:src/kernel/services/llm-client-service.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/llm-client-service.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/llm-client-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/llm-client-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/mcp-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/mcp-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/notification-webhook-service.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/notification-webhook-service.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/notification-webhook-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/notification-webhook-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/policy-service.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/policy-service.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/policy-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/policy-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/pricing-service.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/pricing-service.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/pricing-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/pricing-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/provider-adapter-registry.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/provider-adapter-registry.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/provider-adapter-registry.ts",
+      "type": "code",
+      "label": "src/kernel/services/provider-adapter-registry.ts"
+    },
+    {
       "id": "file:src/kernel/services/provider-router.ts",
       "type": "code",
       "label": "src/kernel/services/provider-router.ts"
+    },
+    {
+      "id": "file:src/kernel/services/provider-tracker.ts",
+      "type": "code",
+      "label": "src/kernel/services/provider-tracker.ts"
+    },
+    {
+      "id": "file:src/kernel/services/role-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/role-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/rotation-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/rotation-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/router-config-manager.ts",
+      "type": "code",
+      "label": "src/kernel/services/router-config-manager.ts"
+    },
+    {
+      "id": "file:src/kernel/services/router-scoring.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/router-scoring.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/router-scoring.ts",
+      "type": "code",
+      "label": "src/kernel/services/router-scoring.ts"
+    },
+    {
+      "id": "file:src/kernel/services/router-types.ts",
+      "type": "code",
+      "label": "src/kernel/services/router-types.ts"
+    },
+    {
+      "id": "file:src/kernel/services/sandbox-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/sandbox-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/session-affinity-store.ts",
+      "type": "code",
+      "label": "src/kernel/services/session-affinity-store.ts"
+    },
+    {
+      "id": "file:src/kernel/services/settings-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/settings-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/skill-service.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/skill-service.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/skill-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/skill-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/storage-adapter.ts",
+      "type": "code",
+      "label": "src/kernel/services/storage-adapter.ts"
+    },
+    {
+      "id": "file:src/kernel/services/storage/local-storage-adapter.ts",
+      "type": "code",
+      "label": "src/kernel/services/storage/local-storage-adapter.ts"
     },
     {
       "id": "file:src/kernel/services/tool-executor.test.ts",
@@ -1820,6 +2115,41 @@
       "id": "file:src/kernel/services/tool-executor.ts",
       "type": "code",
       "label": "src/kernel/services/tool-executor.ts"
+    },
+    {
+      "id": "file:src/kernel/services/transaction.ts",
+      "type": "code",
+      "label": "src/kernel/services/transaction.ts"
+    },
+    {
+      "id": "file:src/kernel/services/truth-consistency-monitor.ts",
+      "type": "code",
+      "label": "src/kernel/services/truth-consistency-monitor.ts"
+    },
+    {
+      "id": "file:src/kernel/services/usage-tracker.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/usage-tracker.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/usage-tracker.ts",
+      "type": "code",
+      "label": "src/kernel/services/usage-tracker.ts"
+    },
+    {
+      "id": "file:src/kernel/services/virtual-key-service.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/virtual-key-service.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/virtual-key-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/virtual-key-service.ts"
+    },
+    {
+      "id": "file:src/kernel/utils/with-transaction.ts",
+      "type": "code",
+      "label": "src/kernel/utils/with-transaction.ts"
     },
     {
       "id": "file:src/llm/anthropic/anthropic-adapter.test.ts",
@@ -3704,6 +4034,111 @@
       "label": "Возможности ОС",
       "section": "guide",
       "status": "documented"
+    },
+    {
+      "id": "wiki:comp-agents-roles-skills",
+      "type": "article",
+      "label": "Компонент: агенты, роли и навыки",
+      "section": "components",
+      "status": "documented"
+    },
+    {
+      "id": "wiki:comp-budget-pricing",
+      "type": "article",
+      "label": "Компонент: бюджет, цены и расход",
+      "section": "components",
+      "status": "verified"
+    },
+    {
+      "id": "wiki:comp-config",
+      "type": "article",
+      "label": "Компонент: конфигурация и настройки",
+      "section": "components",
+      "status": "verified"
+    },
+    {
+      "id": "wiki:comp-consistency",
+      "type": "article",
+      "label": "Компонент: консистентность и дрейф",
+      "section": "components",
+      "status": "documented"
+    },
+    {
+      "id": "wiki:comp-di-container",
+      "type": "article",
+      "label": "Компонент: DI-контейнер и lazyService",
+      "section": "components",
+      "status": "verified"
+    },
+    {
+      "id": "wiki:comp-event-bus",
+      "type": "article",
+      "label": "Компонент: шина событий (EventBus)",
+      "section": "components",
+      "status": "verified"
+    },
+    {
+      "id": "wiki:comp-kernel-boot",
+      "type": "article",
+      "label": "Компонент: запуск ядра (bootstrap, container, runtime)",
+      "section": "components",
+      "status": "verified"
+    },
+    {
+      "id": "wiki:comp-key-management",
+      "type": "article",
+      "label": "Компонент: управление ключами провайдеров",
+      "section": "components",
+      "status": "documented"
+    },
+    {
+      "id": "wiki:comp-overview",
+      "type": "article",
+      "label": "Компоненты и сервисы: как читать этот раздел",
+      "section": "components",
+      "status": "verified"
+    },
+    {
+      "id": "wiki:comp-persistence",
+      "type": "article",
+      "label": "Компонент: персистентность (Dexie и storage-адаптеры)",
+      "section": "components",
+      "status": "verified"
+    },
+    {
+      "id": "wiki:comp-policy-security",
+      "type": "article",
+      "label": "Компонент: политики, секреты и вебхуки",
+      "section": "components",
+      "status": "verified"
+    },
+    {
+      "id": "wiki:comp-routing",
+      "type": "article",
+      "label": "Компонент: роутинг и провайдеры",
+      "section": "components",
+      "status": "verified"
+    },
+    {
+      "id": "wiki:comp-security-crypto",
+      "type": "article",
+      "label": "Компонент: шифрование at-rest (SecurityService)",
+      "section": "components",
+      "status": "verified"
+    },
+    {
+      "id": "wiki:comp-tools-mcp",
+      "type": "article",
+      "label": "Компонент: инструменты, MCP и sandbox",
+      "section": "components",
+      "status": "verified"
+    },
+    {
+      "id": "wiki:comp-transactions",
+      "type": "article",
+      "label": "Компонент: транзакции состояния",
+      "section": "components",
+      "status": "verified"
     },
     {
       "id": "wiki:debates",
@@ -12083,6 +12518,781 @@
     {
       "from": "wiki:capabilities",
       "to": "wiki:what-is",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-agents-roles-skills",
+      "to": "file:src/kernel/services/agent-service.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-agents-roles-skills",
+      "to": "file:src/kernel/services/agent-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-agents-roles-skills",
+      "to": "file:src/kernel/services/role-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-agents-roles-skills",
+      "to": "file:src/kernel/services/skill-service.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-agents-roles-skills",
+      "to": "file:src/kernel/services/skill-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-agents-roles-skills",
+      "to": "wiki:agents",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-agents-roles-skills",
+      "to": "wiki:comp-routing",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-agents-roles-skills",
+      "to": "wiki:panel-agents-market",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-agents-roles-skills",
+      "to": "wiki:panel-roles",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-budget-pricing",
+      "to": "file:src/kernel/contracts/budget.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-budget-pricing",
+      "to": "file:src/kernel/contracts/pricing.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-budget-pricing",
+      "to": "file:src/kernel/services/budget-service.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-budget-pricing",
+      "to": "file:src/kernel/services/budget-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-budget-pricing",
+      "to": "file:src/kernel/services/pricing-service.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-budget-pricing",
+      "to": "file:src/kernel/services/pricing-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-budget-pricing",
+      "to": "file:src/kernel/services/usage-tracker.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-budget-pricing",
+      "to": "file:src/kernel/services/usage-tracker.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-budget-pricing",
+      "to": "wiki:comp-key-management",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-budget-pricing",
+      "to": "wiki:comp-routing",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-budget-pricing",
+      "to": "wiki:panel-budget",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-budget-pricing",
+      "to": "wiki:panel-providers",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-config",
+      "to": "file:src/kernel/services/config-history.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-config",
+      "to": "file:src/kernel/services/config-history.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-config",
+      "to": "file:src/kernel/services/config-mutations.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-config",
+      "to": "file:src/kernel/services/config-registry.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-config",
+      "to": "file:src/kernel/services/config-registry.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-config",
+      "to": "file:src/kernel/services/config-service.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-config",
+      "to": "file:src/kernel/services/config-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-config",
+      "to": "file:src/kernel/services/settings-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-config",
+      "to": "wiki:comp-kernel-boot",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-config",
+      "to": "wiki:comp-persistence",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-config",
+      "to": "wiki:comp-transactions",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-config",
+      "to": "wiki:panel-settings",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-consistency",
+      "to": "file:src/kernel/services/consistency-checker.test.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-consistency",
+      "to": "file:src/kernel/services/consistency-checker.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-consistency",
+      "to": "file:src/kernel/services/consistency-checker.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-consistency",
+      "to": "file:src/kernel/services/truth-consistency-monitor.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-consistency",
+      "to": "wiki:comp-routing",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-consistency",
+      "to": "wiki:dev-checks",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-consistency",
+      "to": "wiki:dev-graph",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-consistency",
+      "to": "wiki:docs-health",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-di-container",
+      "to": "file:src/kernel/container.test.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-di-container",
+      "to": "file:src/kernel/container.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-di-container",
+      "to": "file:src/kernel/container.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-di-container",
+      "to": "file:src/kernel/service-helper.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-di-container",
+      "to": "wiki:comp-kernel-boot",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-di-container",
+      "to": "wiki:dev-boot",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-di-container",
+      "to": "wiki:dev-conventions",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-di-container",
+      "to": "wiki:dev-service-map",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-di-container",
+      "to": "wiki:dev-services",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-event-bus",
+      "to": "file:src/kernel/events/event-bus.test.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-event-bus",
+      "to": "file:src/kernel/events/event-bus.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-event-bus",
+      "to": "file:src/kernel/events/event-bus.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-event-bus",
+      "to": "file:src/kernel/events/event-names.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-event-bus",
+      "to": "file:src/kernel/events/event-registry.test.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-event-bus",
+      "to": "file:src/kernel/events/event-registry.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-event-bus",
+      "to": "file:src/kernel/events/event-registry.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-event-bus",
+      "to": "wiki:comp-di-container",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-event-bus",
+      "to": "wiki:comp-kernel-boot",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-event-bus",
+      "to": "wiki:comp-transactions",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-event-bus",
+      "to": "wiki:dev-event-catalog",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-event-bus",
+      "to": "wiki:dev-events",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-kernel-boot",
+      "to": "file:src/kernel/bootstrap-phases.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-kernel-boot",
+      "to": "file:src/kernel/bootstrap.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-kernel-boot",
+      "to": "file:src/kernel/instances/index.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-kernel-boot",
+      "to": "file:src/kernel/kernel.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-kernel-boot",
+      "to": "file:src/kernel/runtime.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-kernel-boot",
+      "to": "wiki:comp-di-container",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-kernel-boot",
+      "to": "wiki:comp-event-bus",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-kernel-boot",
+      "to": "wiki:dev-boot",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-kernel-boot",
+      "to": "wiki:dev-layout",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-kernel-boot",
+      "to": "wiki:dev-services",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-key-management",
+      "to": "file:src/kernel/services/group-manager.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-key-management",
+      "to": "file:src/kernel/services/key-intelligence-pipeline.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-key-management",
+      "to": "file:src/kernel/services/key-management/key-pool-selector.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-key-management",
+      "to": "file:src/kernel/services/key-management/key-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-key-management",
+      "to": "file:src/kernel/services/key-state-store.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-key-management",
+      "to": "file:src/kernel/services/rotation-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-key-management",
+      "to": "file:src/kernel/services/session-affinity-store.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-key-management",
+      "to": "file:src/kernel/services/virtual-key-service.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-key-management",
+      "to": "file:src/kernel/services/virtual-key-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-key-management",
+      "to": "wiki:comp-budget-pricing",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-key-management",
+      "to": "wiki:comp-routing",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-key-management",
+      "to": "wiki:comp-security-crypto",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-key-management",
+      "to": "wiki:panel-pools",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-key-management",
+      "to": "wiki:panel-providers",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-overview",
+      "to": "file:docs/SERVICES_RU.md",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-overview",
+      "to": "file:src/kernel/contracts/",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-overview",
+      "to": "file:src/kernel/services/",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-overview",
+      "to": "wiki:architecture",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-overview",
+      "to": "wiki:dev-contracts",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-overview",
+      "to": "wiki:dev-overview",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-overview",
+      "to": "wiki:dev-service-map",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-overview",
+      "to": "wiki:dev-services",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-persistence",
+      "to": "file:src/kernel/services/database-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-persistence",
+      "to": "file:src/kernel/services/dexie-schema-versioning.test.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-persistence",
+      "to": "file:src/kernel/services/dexie-schema.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-persistence",
+      "to": "file:src/kernel/services/storage-adapter.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-persistence",
+      "to": "file:src/kernel/services/storage/local-storage-adapter.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-persistence",
+      "to": "wiki:comp-config",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-persistence",
+      "to": "wiki:comp-event-bus",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-persistence",
+      "to": "wiki:comp-kernel-boot",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-persistence",
+      "to": "wiki:dev-store-catalog",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-persistence",
+      "to": "wiki:dev-stores",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-policy-security",
+      "to": "file:src/kernel/services/compromise-webhook-service.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-policy-security",
+      "to": "file:src/kernel/services/compromise-webhook-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-policy-security",
+      "to": "file:src/kernel/services/external-secrets-service.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-policy-security",
+      "to": "file:src/kernel/services/external-secrets-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-policy-security",
+      "to": "file:src/kernel/services/notification-webhook-service.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-policy-security",
+      "to": "file:src/kernel/services/notification-webhook-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-policy-security",
+      "to": "file:src/kernel/services/policy-service.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-policy-security",
+      "to": "file:src/kernel/services/policy-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-policy-security",
+      "to": "wiki:comp-key-management",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-policy-security",
+      "to": "wiki:comp-security-crypto",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-policy-security",
+      "to": "wiki:panel-governance",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-policy-security",
+      "to": "wiki:panel-settings",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-routing",
+      "to": "file:src/kernel/services/llm-client-service.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-routing",
+      "to": "file:src/kernel/services/llm-client-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-routing",
+      "to": "file:src/kernel/services/provider-adapter-registry.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-routing",
+      "to": "file:src/kernel/services/provider-adapter-registry.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-routing",
+      "to": "file:src/kernel/services/provider-router.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-routing",
+      "to": "file:src/kernel/services/provider-tracker.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-routing",
+      "to": "file:src/kernel/services/router-config-manager.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-routing",
+      "to": "file:src/kernel/services/router-scoring.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-routing",
+      "to": "file:src/kernel/services/router-scoring.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-routing",
+      "to": "file:src/kernel/services/router-types.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-routing",
+      "to": "wiki:comp-budget-pricing",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-routing",
+      "to": "wiki:comp-key-management",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-routing",
+      "to": "wiki:comp-policy-security",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-routing",
+      "to": "wiki:panel-providers",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-routing",
+      "to": "wiki:panel-routing",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-security-crypto",
+      "to": "file:src/kernel/security.test.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-security-crypto",
+      "to": "file:src/kernel/security.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-security-crypto",
+      "to": "file:src/kernel/security.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-security-crypto",
+      "to": "file:src/kernel/services/key-management/key-vault.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-security-crypto",
+      "to": "file:src/kernel/services/key-management/key-vault.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-security-crypto",
+      "to": "wiki:comp-key-management",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-security-crypto",
+      "to": "wiki:comp-persistence",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-security-crypto",
+      "to": "wiki:comp-policy-security",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-tools-mcp",
+      "to": "file:src/kernel/services/mcp-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-tools-mcp",
+      "to": "file:src/kernel/services/sandbox-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-tools-mcp",
+      "to": "file:src/kernel/services/tool-executor.test.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-tools-mcp",
+      "to": "file:src/kernel/services/tool-executor.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-tools-mcp",
+      "to": "file:src/kernel/services/tool-executor.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-tools-mcp",
+      "to": "wiki:comp-policy-security",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-tools-mcp",
+      "to": "wiki:comp-security-crypto",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-tools-mcp",
+      "to": "wiki:panel-integrations",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-tools-mcp",
+      "to": "wiki:panel-playground",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-transactions",
+      "to": "file:src/kernel/contracts/transaction.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-transactions",
+      "to": "file:src/kernel/services/transaction.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-transactions",
+      "to": "file:src/kernel/utils/with-transaction.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-transactions",
+      "to": "wiki:comp-config",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-transactions",
+      "to": "wiki:comp-event-bus",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-transactions",
+      "to": "wiki:comp-kernel-boot",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-transactions",
+      "to": "wiki:comp-persistence",
       "kind": "related"
     },
     {

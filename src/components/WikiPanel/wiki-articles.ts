@@ -4,6 +4,7 @@
 // repo docs/audits; needs-check = not yet verified; not-implemented = confirmed absent.
 
 import { ZONE_ARTICLES } from './wiki-zones';
+import { COMPONENT_ARTICLES } from './wiki-components';
 import { DEV_ARTICLES } from './wiki-dev';
 import { CATALOG_ARTICLES } from './wiki-catalog';
 import { EVENT_ARTICLES } from './wiki-event-catalog';
@@ -25,6 +26,7 @@ export const WIKI_SECTIONS: WikiSection[] = [
     { id: 'diagnostics', title: 'Диагностика' },
     { id: 'history', title: 'История разработки' },
     { id: 'architecture', title: 'Архитектура' },
+    { id: 'components', title: 'Компоненты и сервисы' },
     { id: 'notes', title: 'Заметки' },
     { id: 'dev', title: 'Разработчикам' },
 ];
@@ -2421,6 +2423,7 @@ Health-панели провайдеров, трейсы и timeline, DLQ (dead-
 /** Full corpus: hand-written core articles + per-zone audit articles + dev handbook. */
 export const WIKI_ARTICLES: WikiArticle[] = [
     ...CORE_ARTICLES,
+    ...COMPONENT_ARTICLES,
     ...ZONE_ARTICLES,
     ...DEV_ARTICLES,
     ...CATALOG_ARTICLES,

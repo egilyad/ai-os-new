@@ -3,7 +3,7 @@
   "generatedBy": "scripts/gen-docs-inventory.mjs",
   "scope": "git-tracked markdown: docs/**/*.md (excluding docs/new drafts and the self-report pages docs-health, docs-inventory) plus repository entry docs (root *.md, .superagents/**, src/kernel/DEPENDENCY_MAP.md)",
   "totals": {
-    "documents": 970,
+    "documents": 985,
     "byCategory": {
       "repo": 12,
       "top": 46,
@@ -13,12 +13,12 @@
       "reference": 6,
       "roadmap": 6,
       "superseded": 3,
-      "wiki": 146
+      "wiki": 161
     },
     "byLanguage": {
       "en": 658,
-      "ru": 189,
-      "mixed": 123
+      "ru": 199,
+      "mixed": 128
     }
   },
   "duplicates": {
@@ -6616,6 +6616,126 @@
       "hash": "16ed03b558c230bbadadd1a6e54c84be00d39c99"
     },
     {
+      "path": "docs/wiki/comp-agents-roles-skills.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Компонент: агенты, роли и навыки",
+      "bytes": 4278,
+      "hash": "85494557219e6bc5f79285646e5a7771dac84833"
+    },
+    {
+      "path": "docs/wiki/comp-budget-pricing.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Компонент: бюджет, цены и расход",
+      "bytes": 3974,
+      "hash": "95425a3a7a85a4822bceadc856d6f081a9f31bd2"
+    },
+    {
+      "path": "docs/wiki/comp-config.md",
+      "category": "wiki",
+      "language": "mixed",
+      "title": "Компонент: конфигурация и настройки",
+      "bytes": 5034,
+      "hash": "16b19f9ea194fb0732e43c804b5151f776e7a2de"
+    },
+    {
+      "path": "docs/wiki/comp-consistency.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Компонент: консистентность и дрейф",
+      "bytes": 2840,
+      "hash": "94b65059a4e601bde78d6a88190dcd817c961b04"
+    },
+    {
+      "path": "docs/wiki/comp-di-container.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Компонент: DI-контейнер и lazyService",
+      "bytes": 4989,
+      "hash": "9bae7d6cf35e9ddf7bf6057eeac84efc7b8d1e1a"
+    },
+    {
+      "path": "docs/wiki/comp-event-bus.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Компонент: шина событий (EventBus)",
+      "bytes": 5163,
+      "hash": "d18f3aa5e960881a444c8bbddf26184a2ec44967"
+    },
+    {
+      "path": "docs/wiki/comp-kernel-boot.md",
+      "category": "wiki",
+      "language": "mixed",
+      "title": "Компонент: запуск ядра (bootstrap, container, runtime)",
+      "bytes": 5533,
+      "hash": "a444d4f595146600999945f3f777b50f6aac7fd5"
+    },
+    {
+      "path": "docs/wiki/comp-key-management.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Компонент: управление ключами провайдеров",
+      "bytes": 6030,
+      "hash": "e5bbe20c277a0bd742d85b1764f628fe68f3d872"
+    },
+    {
+      "path": "docs/wiki/comp-overview.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Компоненты и сервисы: как читать этот раздел",
+      "bytes": 5896,
+      "hash": "a73fdcdba857c3f3c4ce7cdfa10f1135a7983286"
+    },
+    {
+      "path": "docs/wiki/comp-persistence.md",
+      "category": "wiki",
+      "language": "mixed",
+      "title": "Компонент: персистентность (Dexie и storage-адаптеры)",
+      "bytes": 4319,
+      "hash": "b718ab6e527fe454278867d76dbfc10749b72ce4"
+    },
+    {
+      "path": "docs/wiki/comp-policy-security.md",
+      "category": "wiki",
+      "language": "mixed",
+      "title": "Компонент: политики, секреты и вебхуки",
+      "bytes": 4897,
+      "hash": "46b7c0d3b02667f44356659212243d6fafa7b542"
+    },
+    {
+      "path": "docs/wiki/comp-routing.md",
+      "category": "wiki",
+      "language": "mixed",
+      "title": "Компонент: роутинг и провайдеры",
+      "bytes": 5367,
+      "hash": "008e046ef79351037e4ea2a6429bc0d54dcd79db"
+    },
+    {
+      "path": "docs/wiki/comp-security-crypto.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Компонент: шифрование at-rest (SecurityService)",
+      "bytes": 3498,
+      "hash": "694a7a4db06eaca64bd27274770fa9bd15bc4f2e"
+    },
+    {
+      "path": "docs/wiki/comp-tools-mcp.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Компонент: инструменты, MCP и sandbox",
+      "bytes": 4829,
+      "hash": "30ea9f215f58cdaeec2802225fc07fade3242dc9"
+    },
+    {
+      "path": "docs/wiki/comp-transactions.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Компонент: транзакции состояния",
+      "bytes": 4416,
+      "hash": "a0f697ce8c67b0dd2575e713e93b7e57f91aab0f"
+    },
+    {
       "path": "docs/wiki/debates.md",
       "category": "wiki",
       "language": "ru",
@@ -6645,7 +6765,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4073,
-      "hash": "6af6d707951accd7a49e00881fec0e213c63fccf"
+      "hash": "040d15b9e5cf9aa14734f167c90739e33f4b8627"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -6732,8 +6852,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Граф знаний",
-      "bytes": 4887,
-      "hash": "e70f8c987c9590349ff0a0feb0173da5e2216ce1"
+      "bytes": 4940,
+      "hash": "275fa6df0483095ecaee2c52db5acfb6bfceedf6"
     },
     {
       "path": "docs/wiki/dev-history.md",
@@ -6868,8 +6988,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Карта документации",
-      "bytes": 22310,
-      "hash": "519a3d29e96a8fac98684ed68daa8d661753135a"
+      "bytes": 23787,
+      "hash": "a74b61fd1ab7eb0d70a078ce7aa05a3a314390cb"
     },
     {
       "path": "docs/wiki/docs-standard.md",
@@ -7524,8 +7644,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Wiki SuperAgents OS",
-      "bytes": 14307,
-      "hash": "2520e6745c24f18bea43f1146801bf352b883a2a"
+      "bytes": 16048,
+      "hash": "8125e3d1112229fc29fad86b87c7793284bbf94e"
     },
     {
       "path": "docs/wiki/roadmap-notes.md",

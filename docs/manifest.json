@@ -48,6 +48,11 @@
       "articles": 2
     },
     {
+      "id": "components",
+      "title": "Компоненты и сервисы",
+      "articles": 15
+    },
+    {
       "id": "notes",
       "title": "Заметки",
       "articles": 1
@@ -2399,6 +2404,472 @@
       ],
       "reviewed": null,
       "tests": []
+    },
+    {
+      "id": "wiki:comp-overview",
+      "type": "article",
+      "slug": "comp-overview",
+      "title": "Компоненты и сервисы: как читать этот раздел",
+      "section": "components",
+      "status": "verified",
+      "tags": [
+        "компоненты",
+        "сервисы",
+        "ядро",
+        "навигация"
+      ],
+      "sources": [
+        "src/kernel/services/",
+        "src/kernel/contracts/",
+        "docs/SERVICES_RU.md"
+      ],
+      "related": [
+        "dev-overview",
+        "dev-services",
+        "dev-service-map",
+        "architecture",
+        "dev-contracts"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:comp-kernel-boot",
+      "type": "article",
+      "slug": "comp-kernel-boot",
+      "title": "Компонент: запуск ядра (bootstrap, container, runtime)",
+      "section": "components",
+      "status": "verified",
+      "tags": [
+        "компоненты",
+        "ядро",
+        "bootstrap",
+        "runtime"
+      ],
+      "sources": [
+        "src/kernel/bootstrap.ts",
+        "src/kernel/bootstrap-phases.ts",
+        "src/kernel/kernel.ts",
+        "src/kernel/runtime.ts",
+        "src/kernel/instances/index.ts"
+      ],
+      "related": [
+        "comp-di-container",
+        "comp-event-bus",
+        "dev-boot",
+        "dev-services",
+        "dev-layout"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:comp-di-container",
+      "type": "article",
+      "slug": "comp-di-container",
+      "title": "Компонент: DI-контейнер и lazyService",
+      "section": "components",
+      "status": "verified",
+      "tags": [
+        "компоненты",
+        "DI",
+        "container",
+        "сервисы"
+      ],
+      "sources": [
+        "src/kernel/container.ts",
+        "src/kernel/container.test.ts",
+        "src/kernel/service-helper.ts"
+      ],
+      "related": [
+        "comp-kernel-boot",
+        "dev-boot",
+        "dev-services",
+        "dev-service-map",
+        "dev-conventions"
+      ],
+      "reviewed": null,
+      "tests": [
+        "src/kernel/container.test.ts"
+      ]
+    },
+    {
+      "id": "wiki:comp-event-bus",
+      "type": "article",
+      "slug": "comp-event-bus",
+      "title": "Компонент: шина событий (EventBus)",
+      "section": "components",
+      "status": "verified",
+      "tags": [
+        "компоненты",
+        "события",
+        "шина",
+        "event-bus"
+      ],
+      "sources": [
+        "src/kernel/events/event-bus.ts",
+        "src/kernel/events/event-registry.ts",
+        "src/kernel/events/event-names.ts",
+        "src/kernel/events/event-bus.test.ts",
+        "src/kernel/events/event-registry.test.ts"
+      ],
+      "related": [
+        "dev-events",
+        "dev-event-catalog",
+        "comp-kernel-boot",
+        "comp-di-container",
+        "comp-transactions"
+      ],
+      "reviewed": null,
+      "tests": [
+        "src/kernel/events/event-bus.test.ts",
+        "src/kernel/events/event-registry.test.ts"
+      ]
+    },
+    {
+      "id": "wiki:comp-transactions",
+      "type": "article",
+      "slug": "comp-transactions",
+      "title": "Компонент: транзакции состояния",
+      "section": "components",
+      "status": "verified",
+      "tags": [
+        "компоненты",
+        "транзакции",
+        "атомарность"
+      ],
+      "sources": [
+        "src/kernel/services/transaction.ts",
+        "src/kernel/contracts/transaction.ts",
+        "src/kernel/utils/with-transaction.ts"
+      ],
+      "related": [
+        "comp-kernel-boot",
+        "comp-event-bus",
+        "comp-persistence",
+        "comp-config"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:comp-config",
+      "type": "article",
+      "slug": "comp-config",
+      "title": "Компонент: конфигурация и настройки",
+      "section": "components",
+      "status": "verified",
+      "tags": [
+        "компоненты",
+        "конфигурация",
+        "настройки",
+        "feature-flags"
+      ],
+      "sources": [
+        "src/kernel/services/config-registry.ts",
+        "src/kernel/services/config-mutations.ts",
+        "src/kernel/services/config-service.ts",
+        "src/kernel/services/config-history.ts",
+        "src/kernel/services/settings-service.ts"
+      ],
+      "related": [
+        "comp-persistence",
+        "comp-kernel-boot",
+        "comp-transactions",
+        "panel-settings"
+      ],
+      "reviewed": null,
+      "tests": [
+        "src/kernel/services/config-registry.test.ts",
+        "src/kernel/services/config-service.test.ts",
+        "src/kernel/services/config-history.test.ts"
+      ]
+    },
+    {
+      "id": "wiki:comp-persistence",
+      "type": "article",
+      "slug": "comp-persistence",
+      "title": "Компонент: персистентность (Dexie и storage-адаптеры)",
+      "section": "components",
+      "status": "verified",
+      "tags": [
+        "компоненты",
+        "хранилище",
+        "Dexie",
+        "IndexedDB"
+      ],
+      "sources": [
+        "src/kernel/services/database-service.ts",
+        "src/kernel/services/dexie-schema.ts",
+        "src/kernel/services/storage/local-storage-adapter.ts",
+        "src/kernel/services/storage-adapter.ts",
+        "src/kernel/services/dexie-schema-versioning.test.ts"
+      ],
+      "related": [
+        "comp-config",
+        "comp-kernel-boot",
+        "comp-event-bus",
+        "dev-stores",
+        "dev-store-catalog"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:comp-security-crypto",
+      "type": "article",
+      "slug": "comp-security-crypto",
+      "title": "Компонент: шифрование at-rest (SecurityService)",
+      "section": "components",
+      "status": "verified",
+      "tags": [
+        "компоненты",
+        "безопасность",
+        "шифрование",
+        "AES-GCM"
+      ],
+      "sources": [
+        "src/kernel/security.ts",
+        "src/kernel/security.test.ts",
+        "src/kernel/services/key-management/key-vault.ts"
+      ],
+      "related": [
+        "comp-key-management",
+        "comp-policy-security",
+        "comp-persistence"
+      ],
+      "reviewed": null,
+      "tests": [
+        "src/kernel/security.test.ts",
+        "src/kernel/services/key-management/key-vault.test.ts"
+      ]
+    },
+    {
+      "id": "wiki:comp-key-management",
+      "type": "article",
+      "slug": "comp-key-management",
+      "title": "Компонент: управление ключами провайдеров",
+      "section": "components",
+      "status": "documented",
+      "tags": [
+        "компоненты",
+        "ключи",
+        "провайдеры",
+        "KeyVault"
+      ],
+      "sources": [
+        "src/kernel/services/key-management/key-service.ts",
+        "src/kernel/services/key-state-store.ts",
+        "src/kernel/services/group-manager.ts",
+        "src/kernel/services/key-management/key-pool-selector.ts",
+        "src/kernel/services/session-affinity-store.ts",
+        "src/kernel/services/rotation-service.ts",
+        "src/kernel/services/virtual-key-service.ts",
+        "src/kernel/services/key-intelligence-pipeline.ts"
+      ],
+      "related": [
+        "comp-routing",
+        "comp-security-crypto",
+        "comp-budget-pricing",
+        "panel-pools",
+        "panel-providers"
+      ],
+      "reviewed": null,
+      "tests": [
+        "src/kernel/services/virtual-key-service.test.ts"
+      ]
+    },
+    {
+      "id": "wiki:comp-routing",
+      "type": "article",
+      "slug": "comp-routing",
+      "title": "Компонент: роутинг и провайдеры",
+      "section": "components",
+      "status": "verified",
+      "tags": [
+        "компоненты",
+        "роутинг",
+        "провайдеры",
+        "стратегии"
+      ],
+      "sources": [
+        "src/kernel/services/provider-router.ts",
+        "src/kernel/services/router-types.ts",
+        "src/kernel/services/router-scoring.ts",
+        "src/kernel/services/provider-adapter-registry.ts",
+        "src/kernel/services/provider-tracker.ts",
+        "src/kernel/services/router-config-manager.ts",
+        "src/kernel/services/llm-client-service.ts"
+      ],
+      "related": [
+        "comp-key-management",
+        "comp-budget-pricing",
+        "comp-policy-security",
+        "panel-providers",
+        "panel-routing"
+      ],
+      "reviewed": null,
+      "tests": [
+        "src/kernel/services/router-scoring.test.ts",
+        "src/kernel/services/provider-adapter-registry.test.ts",
+        "src/kernel/services/llm-client-service.test.ts"
+      ]
+    },
+    {
+      "id": "wiki:comp-budget-pricing",
+      "type": "article",
+      "slug": "comp-budget-pricing",
+      "title": "Компонент: бюджет, цены и расход",
+      "section": "components",
+      "status": "verified",
+      "tags": [
+        "компоненты",
+        "бюджет",
+        "цены",
+        "расход"
+      ],
+      "sources": [
+        "src/kernel/services/budget-service.ts",
+        "src/kernel/services/pricing-service.ts",
+        "src/kernel/services/usage-tracker.ts",
+        "src/kernel/contracts/budget.ts",
+        "src/kernel/contracts/pricing.ts"
+      ],
+      "related": [
+        "comp-routing",
+        "comp-key-management",
+        "panel-budget",
+        "panel-providers"
+      ],
+      "reviewed": null,
+      "tests": [
+        "src/kernel/services/budget-service.test.ts",
+        "src/kernel/services/pricing-service.test.ts",
+        "src/kernel/services/usage-tracker.test.ts"
+      ]
+    },
+    {
+      "id": "wiki:comp-agents-roles-skills",
+      "type": "article",
+      "slug": "comp-agents-roles-skills",
+      "title": "Компонент: агенты, роли и навыки",
+      "section": "components",
+      "status": "documented",
+      "tags": [
+        "компоненты",
+        "агенты",
+        "роли",
+        "навыки"
+      ],
+      "sources": [
+        "src/kernel/services/agent-service.ts",
+        "src/kernel/services/role-service.ts",
+        "src/kernel/services/skill-service.ts"
+      ],
+      "related": [
+        "agents",
+        "panel-roles",
+        "panel-agents-market",
+        "comp-routing"
+      ],
+      "reviewed": null,
+      "tests": [
+        "src/kernel/services/agent-service.test.ts",
+        "src/kernel/services/skill-service.test.ts"
+      ]
+    },
+    {
+      "id": "wiki:comp-tools-mcp",
+      "type": "article",
+      "slug": "comp-tools-mcp",
+      "title": "Компонент: инструменты, MCP и sandbox",
+      "section": "components",
+      "status": "verified",
+      "tags": [
+        "компоненты",
+        "инструменты",
+        "MCP",
+        "sandbox"
+      ],
+      "sources": [
+        "src/kernel/services/tool-executor.ts",
+        "src/kernel/services/mcp-service.ts",
+        "src/kernel/services/sandbox-service.ts",
+        "src/kernel/services/tool-executor.test.ts"
+      ],
+      "related": [
+        "comp-policy-security",
+        "comp-security-crypto",
+        "panel-integrations",
+        "panel-playground"
+      ],
+      "reviewed": null,
+      "tests": [
+        "src/kernel/services/tool-executor.test.ts"
+      ]
+    },
+    {
+      "id": "wiki:comp-policy-security",
+      "type": "article",
+      "slug": "comp-policy-security",
+      "title": "Компонент: политики, секреты и вебхуки",
+      "section": "components",
+      "status": "verified",
+      "tags": [
+        "компоненты",
+        "политики",
+        "безопасность",
+        "секреты",
+        "вебхуки"
+      ],
+      "sources": [
+        "src/kernel/services/policy-service.ts",
+        "src/kernel/services/external-secrets-service.ts",
+        "src/kernel/services/compromise-webhook-service.ts",
+        "src/kernel/services/notification-webhook-service.ts"
+      ],
+      "related": [
+        "comp-security-crypto",
+        "comp-key-management",
+        "panel-governance",
+        "panel-settings"
+      ],
+      "reviewed": null,
+      "tests": [
+        "src/kernel/services/policy-service.test.ts",
+        "src/kernel/services/external-secrets-service.test.ts",
+        "src/kernel/services/compromise-webhook-service.test.ts",
+        "src/kernel/services/notification-webhook-service.test.ts"
+      ]
+    },
+    {
+      "id": "wiki:comp-consistency",
+      "type": "article",
+      "slug": "comp-consistency",
+      "title": "Компонент: консистентность и дрейф",
+      "section": "components",
+      "status": "documented",
+      "tags": [
+        "компоненты",
+        "консистентность",
+        "дрейф",
+        "документация"
+      ],
+      "sources": [
+        "src/kernel/services/truth-consistency-monitor.ts",
+        "src/kernel/services/consistency-checker.ts",
+        "src/kernel/services/consistency-checker.test.ts"
+      ],
+      "related": [
+        "dev-checks",
+        "docs-health",
+        "comp-routing",
+        "dev-graph"
+      ],
+      "reviewed": null,
+      "tests": [
+        "src/kernel/services/consistency-checker.test.ts"
+      ]
     },
     {
       "id": "wiki:zone-1",

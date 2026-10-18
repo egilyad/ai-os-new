@@ -5,7 +5,7 @@
 > Полная документация системы: панели, агенты, дебаты, память, провайдеры, диагностика, история разработки, архитектура и руководства для разработчиков.
 > Страницы автосгенерированы из корпуса Wiki (`scripts/gen-wiki-docs.mjs`). Та же документация доступна в приложении в панели «Wiki».
 
-Всего материалов: **147** в 11 разделах.
+Всего материалов: **162** в 12 разделах.
 
 > Разработчикам: начните с [Обзор для разработчиков](./dev-overview.md), затем [Структура](./dev-layout.md) и [Каталог компонентов](./dev-component-catalog.md).
 
@@ -22,6 +22,7 @@
 | Диагностика | 2 |
 | История разработки | 27 |
 | Архитектура | 2 |
+| Компоненты и сервисы | 15 |
 | Заметки | 1 |
 | Разработчикам | 30 |
 
@@ -167,6 +168,24 @@
 
 - [Архитектура и связи](./architecture.md) — _documented_
 - [Карта системы](./dev-system-map.md) — _verified_
+
+## Компоненты и сервисы (15)
+
+- [Компоненты и сервисы: как читать этот раздел](./comp-overview.md) — _verified_
+- [Компонент: запуск ядра (bootstrap, container, runtime)](./comp-kernel-boot.md) — _verified_
+- [Компонент: DI-контейнер и lazyService](./comp-di-container.md) — _verified_
+- [Компонент: шина событий (EventBus)](./comp-event-bus.md) — _verified_
+- [Компонент: транзакции состояния](./comp-transactions.md) — _verified_
+- [Компонент: конфигурация и настройки](./comp-config.md) — _verified_
+- [Компонент: персистентность (Dexie и storage-адаптеры)](./comp-persistence.md) — _verified_
+- [Компонент: шифрование at-rest (SecurityService)](./comp-security-crypto.md) — _verified_
+- [Компонент: управление ключами провайдеров](./comp-key-management.md) — _documented_
+- [Компонент: роутинг и провайдеры](./comp-routing.md) — _verified_
+- [Компонент: бюджет, цены и расход](./comp-budget-pricing.md) — _verified_
+- [Компонент: агенты, роли и навыки](./comp-agents-roles-skills.md) — _documented_
+- [Компонент: инструменты, MCP и sandbox](./comp-tools-mcp.md) — _verified_
+- [Компонент: политики, секреты и вебхуки](./comp-policy-security.md) — _verified_
+- [Компонент: консистентность и дрейф](./comp-consistency.md) — _documented_
 
 ## Заметки (1)
 
