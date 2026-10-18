@@ -10807,24 +10807,6 @@
         "src/kernel/events/event-bus.test.ts",
         "src/kernel/services/debate-runtime/debate-memory.test.ts"
       ]
-    },
-    {
-      "id": "audit:soveti2",
-      "type": "audit",
-      "path": "docs/audits/soveti2.md",
-      "title": "📚 SuperAgents OS — полная программа документации и прозрачности",
-      "date": null,
-      "mentions": [],
-      "tests": []
-    },
-    {
-      "id": "audit:sovetigpt",
-      "type": "audit",
-      "path": "docs/audits/sovetigpt.md",
-      "title": "ПРОМПТ ДЛЯ CODING AGENT",
-      "date": null,
-      "mentions": [],
-      "tests": []
     }
   ],
   "catalogs": [

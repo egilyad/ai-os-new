@@ -3,10 +3,10 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 1212,
+    "nodes": 1210,
     "edges": 3168,
     "byType": {
-      "audit": 67,
+      "audit": 65,
       "code": 513,
       "test": 151,
       "panel": 259,
@@ -476,20 +476,6 @@
       "label": "Карта end-to-end сценариев AI OS New",
       "path": "docs/audits/New folder/Карта_end-to-end_сценариев_AI_OS_New.md",
       "date": "2026-09-29"
-    },
-    {
-      "id": "audit:soveti2",
-      "type": "audit",
-      "label": "📚 SuperAgents OS — полная программа документации и прозрачности",
-      "path": "docs/audits/soveti2.md",
-      "date": null
-    },
-    {
-      "id": "audit:sovetigpt",
-      "type": "audit",
-      "label": "ПРОМПТ ДЛЯ CODING AGENT",
-      "path": "docs/audits/sovetigpt.md",
-      "date": null
     },
     {
       "id": "file:.dependency-cruiser.cjs",
