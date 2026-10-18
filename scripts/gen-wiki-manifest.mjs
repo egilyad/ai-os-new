@@ -139,7 +139,7 @@ const manifest = {
             kind: 'adr',
             title: 'Архитектурные решения',
             article: 'dev-adr',
-            source: 'docs/audits/DOCS_INVENTORY_2026-10-17.md',
+            source: 'docs/001-event-driven-architecture.md',
         },
     ],
 };

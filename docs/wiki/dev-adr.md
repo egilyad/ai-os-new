@@ -2,41 +2,43 @@
 
 # Реестр архитектурных решений (ADR)
 
-> Раздел: **Разработчикам** · Статус: documented · Теги: adr, решения, архитектура, история
+> Раздел: **Разработчикам** · Статус: verified · Теги: adr, решения, архитектура, история
 
-Источники: `docs/audits/DOCS_INVENTORY_2026-10-17.md`, `docs/audits/DOCS_PROGRAM_REPORT_2026-10-17.md`
+Источники: `docs/001-event-driven-architecture.md`, `docs/002-worker-sandboxing.md`, `docs/003-dexie-as-primary-storage.md`, `docs/004-hybrid-search-strategy.md`, `docs/005-mcp-integration.md`
 
-## Статус реестра
+## Реестр
 
-Серия ADR-001…ADR-005 фиксировала ключевые решения проекта. Исходные файлы **отсутствуют в репозитории** — это зафиксировано в аудите `docs/audits/DOCS_INVENTORY_2026-10-17.md` (разделы A и B). Реестр ниже честно показывает, что известно и где искать следы; недостающие звенья не придумываются.
+Пять принятых решений лежат в корне `docs/` и описывают фундамент ОС. Файлы долго были «осиротевшими» (ноль входящих ссылок) — теперь они включены в `DOC_FILES` (панель Docs Health) и в этот реестр.
 
-| ID | Решение | След в репозитории | Статус |
+| ID | Решение | Статус | Файл |
 | --- | --- | --- | --- |
-| ADR-001 | Event-driven architecture | `001-event-driven-architecture.md` (утерян) | только упоминания |
-| ADR-002 | Worker sandboxing | `002-worker-sandboxing.md` (утерян) | только упоминания |
-| ADR-003 | Dexie as primary storage | `003-dexie-as-primary-storage.md` (утерян) | только упоминания |
-| ADR-004 | Hybrid search strategy | `004-hybrid-search-strategy.md` (утерян) | только упоминания |
-| ADR-005 | MCP integration | `005-mcp-integration.md` (утерян) | только упоминания |
+| ADR-001 | Event-Driven Architecture | Accepted (v1.0) | `docs/001-event-driven-architecture.md` |
+| ADR-002 | Worker Sandboxing (Web Workers) | Accepted (v1.0) | `docs/002-worker-sandboxing.md` |
+| ADR-003 | Dexie.js (IndexedDB) as Primary Storage | Accepted (v1.0) | `docs/003-dexie-as-primary-storage.md` |
+| ADR-004 | Hybrid Search Strategy | Accepted (v2.0) | `docs/004-hybrid-search-strategy.md` |
+| ADR-005 | MCP Integration | Accepted (v3.0) | `docs/005-mcp-integration.md` |
+
+Все пять приняты Architecture Team 2026-06-28; ADR-003 обновлён 2026-07-06 (убраны ссылки на SQLite).
+
+## Как читать
+
+- ADR фиксируют «почему», а не «как сейчас»; текущее состояние — [Архитектура и связи](./architecture.md) и [Разработчикам: обзор и слои](./dev-overview.md).
+- В каждом файле есть контекст, решение и последствия (consequences).
+- Индекс всех документов — [Карта документации](./docs-index.md); инвентарь — [Инвентаризация документации](./docs-inventory.md).
 
 ## Правила ведения
 
-- Новые решения — в `docs/reference/adr/NNN-краткое-имя.md` плюс строка в этой таблице.
-- Исторические ADR не переписываются; уточнения — отдельным документом со ссылкой на исходный.
-- Пока исходник не найден, статус остаётся «только упоминания», а не «действует».
-- Каждая строка должна указывать проверяемый след (файл, аудит, коммит), а не пересказ.
-
-## Где искать следы
-
-- [История разработки](./dev-history.md) — хроника проекта и архив решений.
-- `docs/audits/DOCS_INVENTORY_2026-10-17.md` — разделы A/B о потерянных и полупотерянных файлах.
-- [Карта документации](./docs-index.md) — общая карта документации.
+- Новые решения — файлом `docs/NNN-краткое-имя.md` (или `docs/reference/adr/`) плюс строка в таблице.
+- Историю не переписываем: уточнение к принятому ADR — отдельная пометка `Updated` в шапке.
+- Файл считается «живым», только если на него есть входящая ссылка (этот реестр или `DOC_FILES`).
 
 ---
 
 ## Связанные материалы
 
+- [Разработчикам: обзор и слои](./dev-overview.md)
+- [Архитектура и связи](./architecture.md)
 - [История разработки](./dev-history.md)
 - [Карта документации](./docs-index.md)
-- [Разработчикам: конвенции кода](./dev-conventions.md)
 
 [← Все материалы](./README.md)

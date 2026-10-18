@@ -3,10 +3,10 @@
   "generatedBy": "scripts/gen-docs-inventory.mjs",
   "scope": "git-tracked markdown: docs/**/*.md (excluding docs/new drafts and the self-report pages docs-health, docs-inventory) plus repository entry docs (root *.md, .superagents/**, src/kernel/DEPENDENCY_MAP.md)",
   "totals": {
-    "documents": 971,
+    "documents": 970,
     "byCategory": {
       "repo": 12,
-      "top": 47,
+      "top": 46,
       "active": 1,
       "audits": 67,
       "history": 683,
@@ -16,7 +16,7 @@
       "wiki": 146
     },
     "byLanguage": {
-      "en": 659,
+      "en": 658,
       "ru": 189,
       "mixed": 123
     }
@@ -324,8 +324,8 @@
       "category": "active",
       "language": "ru",
       "title": "🟢 ACTIVE — актуальная документация",
-      "bytes": 1618,
-      "hash": "740acb457563a5f9022a2076c4bcefe73f0327ad"
+      "bytes": 1727,
+      "hash": "cc2648ab7c66820e8e30d78b3e047b89bd3912d7"
     },
     {
       "path": "docs/audits/_done/ACTUAL_SYSTEM_AUDIT.md",
@@ -6424,20 +6424,12 @@
       "hash": "aff53f0f08968798923ff2cc3ec7a31c393baa3d"
     },
     {
-      "path": "docs/PANEL_MAP.md",
-      "category": "top",
-      "language": "en",
-      "title": "Panel Map",
-      "bytes": 6660,
-      "hash": "7cbabfa2df7211790a78ea6aa83fe51f2cf9cddc"
-    },
-    {
       "path": "docs/README.md",
       "category": "top",
       "language": "mixed",
       "title": "SuperAgents OS — Documentation Map",
-      "bytes": 9107,
-      "hash": "ba68585f6f80af3e04a943c517959cbf5b01d4f9"
+      "bytes": 10281,
+      "hash": "c0118956b1b1ecea6387d454a1bccc0e15f5f3c0"
     },
     {
       "path": "docs/reference/CAPABILITY_MATRIX.md",
@@ -6564,8 +6556,8 @@
       "category": "superseded",
       "language": "ru",
       "title": "⚪ DUPLICATE / SUPERSEDED — заменённое другим документом",
-      "bytes": 953,
-      "hash": "c1f16f94f327a9914642f9d93935c2d62afe70fb"
+      "bytes": 985,
+      "hash": "c8cecf17e88835766ca28f022b2eec40d62521e0"
     },
     {
       "path": "docs/superseded/SERVICES_INVENTORY.md",
@@ -6636,8 +6628,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Реестр архитектурных решений (ADR)",
-      "bytes": 3076,
-      "hash": "9a6698f1a8a721477a277d0fe11a41da7a282e91"
+      "bytes": 3099,
+      "hash": "ce97a7b0a7f0c7134c6ecf7fa8bc5a39c6cf885f"
     },
     {
       "path": "docs/wiki/dev-boot.md",
@@ -6653,7 +6645,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4073,
-      "hash": "1ed52a61ee83cdae4cc51138736585226adb53c1"
+      "hash": "6af6d707951accd7a49e00881fec0e213c63fccf"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -6741,7 +6733,7 @@
       "language": "ru",
       "title": "Граф знаний",
       "bytes": 4887,
-      "hash": "d81d918647d875f3406ce3d62bd3e6a6b704e231"
+      "hash": "e70f8c987c9590349ff0a0feb0173da5e2216ce1"
     },
     {
       "path": "docs/wiki/dev-history.md",
@@ -6876,8 +6868,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Карта документации",
-      "bytes": 22390,
-      "hash": "a28aef3f05dff4abb2f9705e17e89feaf1f80ca5"
+      "bytes": 22310,
+      "hash": "519a3d29e96a8fac98684ed68daa8d661753135a"
     },
     {
       "path": "docs/wiki/docs-standard.md",
@@ -7532,8 +7524,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Wiki SuperAgents OS",
-      "bytes": 14309,
-      "hash": "7f0127c34c10eca125cda6f602d3ef600f5f2754"
+      "bytes": 14307,
+      "hash": "2520e6745c24f18bea43f1146801bf352b883a2a"
     },
     {
       "path": "docs/wiki/roadmap-notes.md",

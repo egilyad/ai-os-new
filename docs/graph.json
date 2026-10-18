@@ -3,11 +3,11 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 746,
-    "edges": 2260,
+    "nodes": 749,
+    "edges": 2264,
     "byType": {
       "audit": 67,
-      "code": 213,
+      "code": 216,
       "test": 60,
       "panel": 259,
       "article": 147
@@ -16,9 +16,9 @@
       "audit_test": 325,
       "audit_mention": 928,
       "documents": 201,
-      "source": 303,
+      "source": 306,
       "test": 63,
-      "related": 440
+      "related": 441
     }
   },
   "nodes": [
@@ -502,19 +502,34 @@
       "label": ".github/workflows/ci.yml"
     },
     {
+      "id": "file:docs/001-event-driven-architecture.md",
+      "type": "code",
+      "label": "docs/001-event-driven-architecture.md"
+    },
+    {
+      "id": "file:docs/002-worker-sandboxing.md",
+      "type": "code",
+      "label": "docs/002-worker-sandboxing.md"
+    },
+    {
+      "id": "file:docs/003-dexie-as-primary-storage.md",
+      "type": "code",
+      "label": "docs/003-dexie-as-primary-storage.md"
+    },
+    {
+      "id": "file:docs/004-hybrid-search-strategy.md",
+      "type": "code",
+      "label": "docs/004-hybrid-search-strategy.md"
+    },
+    {
+      "id": "file:docs/005-mcp-integration.md",
+      "type": "code",
+      "label": "docs/005-mcp-integration.md"
+    },
+    {
       "id": "file:docs/audits/agent-team-audit-memory-history-management.md",
       "type": "code",
       "label": "docs/audits/agent-team-audit-memory-history-management.md"
-    },
-    {
-      "id": "file:docs/audits/DOCS_INVENTORY_2026-10-17.md",
-      "type": "code",
-      "label": "docs/audits/DOCS_INVENTORY_2026-10-17.md"
-    },
-    {
-      "id": "file:docs/audits/DOCS_PROGRAM_REPORT_2026-10-17.md",
-      "type": "code",
-      "label": "docs/audits/DOCS_PROGRAM_REPORT_2026-10-17.md"
     },
     {
       "id": "file:docs/entity-model.json",
@@ -3702,7 +3717,7 @@
       "type": "article",
       "label": "Реестр архитектурных решений (ADR)",
       "section": "dev",
-      "status": "documented"
+      "status": "verified"
     },
     {
       "id": "wiki:dev-boot",
@@ -12092,22 +12107,42 @@
     },
     {
       "from": "wiki:dev-adr",
-      "to": "file:docs/audits/DOCS_INVENTORY_2026-10-17.md",
+      "to": "file:docs/001-event-driven-architecture.md",
       "kind": "source"
     },
     {
       "from": "wiki:dev-adr",
-      "to": "file:docs/audits/DOCS_PROGRAM_REPORT_2026-10-17.md",
+      "to": "file:docs/002-worker-sandboxing.md",
       "kind": "source"
     },
     {
       "from": "wiki:dev-adr",
-      "to": "wiki:dev-conventions",
+      "to": "file:docs/003-dexie-as-primary-storage.md",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:dev-adr",
+      "to": "file:docs/004-hybrid-search-strategy.md",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:dev-adr",
+      "to": "file:docs/005-mcp-integration.md",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:dev-adr",
+      "to": "wiki:architecture",
       "kind": "related"
     },
     {
       "from": "wiki:dev-adr",
       "to": "wiki:dev-history",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-adr",
+      "to": "wiki:dev-overview",
       "kind": "related"
     },
     {

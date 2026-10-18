@@ -3257,7 +3257,7 @@
       "slug": "dev-adr",
       "title": "Реестр архитектурных решений (ADR)",
       "section": "dev",
-      "status": "documented",
+      "status": "verified",
       "tags": [
         "adr",
         "решения",
@@ -3265,13 +3265,17 @@
         "история"
       ],
       "sources": [
-        "docs/audits/DOCS_INVENTORY_2026-10-17.md",
-        "docs/audits/DOCS_PROGRAM_REPORT_2026-10-17.md"
+        "docs/001-event-driven-architecture.md",
+        "docs/002-worker-sandboxing.md",
+        "docs/003-dexie-as-primary-storage.md",
+        "docs/004-hybrid-search-strategy.md",
+        "docs/005-mcp-integration.md"
       ],
       "related": [
+        "dev-overview",
+        "architecture",
         "dev-history",
-        "docs-index",
-        "dev-conventions"
+        "docs-index"
       ],
       "reviewed": null,
       "tests": []
@@ -8437,7 +8441,7 @@
       "kind": "adr",
       "title": "Архитектурные решения",
       "article": "dev-adr",
-      "source": "docs/audits/DOCS_INVENTORY_2026-10-17.md"
+      "source": "docs/001-event-driven-architecture.md"
     }
   ]
 }

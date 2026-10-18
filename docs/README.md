@@ -99,3 +99,21 @@ ConsistencyChecker.checkDocs() → mismatch detected
 
 Портал: статическая вики публикуется на GitHub Pages под `/wiki/`
 (`npm run gen:wiki-site`). Проверки состояния — `npm run docs:health`.
+
+## Архитектурные решения (ADR)
+
+Пять принятых решений в корне `docs/` (входят в `DOC_FILES` панели Docs Health и в статью
+[`wiki/dev-adr.md`](./wiki/dev-adr.md)):
+
+| ID | Решение | Статус |
+|---|---|---|
+| [`001`](./001-event-driven-architecture.md) | Event-Driven Architecture | Accepted (v1.0) |
+| [`002`](./002-worker-sandboxing.md) | Worker Sandboxing (Web Workers) | Accepted (v1.0) |
+| [`003`](./003-dexie-as-primary-storage.md) | Dexie.js (IndexedDB) as Primary Storage | Accepted (v1.0) |
+| [`004`](./004-hybrid-search-strategy.md) | Hybrid Search Strategy | Accepted (v2.0) |
+| [`005`](./005-mcp-integration.md) | MCP Integration | Accepted (v3.0) |
+
+Смежные документы корня: [`COMPANY_GATEWAY.md`](./COMPANY_GATEWAY.md) (серверный срез M1–M9),
+[`DEV_QUICKSTART.md`](./DEV_QUICKSTART.md) (быстрый старт разработчика),
+[`NAVIGATION_MAP.md`](./NAVIGATION_MAP.md) (раскладка меню).
+Живая карта панелей — [`wiki/panels-catalog.md`](./wiki/panels-catalog.md) и [`manifest.json`](./manifest.json).

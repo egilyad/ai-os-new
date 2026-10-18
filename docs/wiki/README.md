@@ -190,7 +190,7 @@
 - [Разработчикам: конвенции кода](./dev-conventions.md) — _verified_
 - [Разработчикам: глоссарий](./dev-glossary.md) — _verified_
 - [Рецепты: типовые задачи](./dev-cookbook.md) — _verified_
-- [Реестр архитектурных решений (ADR)](./dev-adr.md) — _documented_
+- [Реестр архитектурных решений (ADR)](./dev-adr.md) — _verified_
 - [Каталог компонентов OS](./dev-component-catalog.md) — _verified_
 - [Инвентаризация документации](./docs-inventory.md) — _verified_
 - [Стандарт документации](./docs-standard.md) — _verified_

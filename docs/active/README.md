@@ -18,5 +18,6 @@
 
 Канон корня: `00–10` (EN+RU, 22 файла), `events.md`, `STRUCTURE.md`, `SERVICES_RU.md`,
 `SYSTEM_MANIFEST*.md`, `SYSTEM_PASSPORT.md`, `ПОЛНЫЙ_РЕЕСТР.md`, `DEBT_REPORT.md`,
-`COGNITIVE_RUNTIME_SPEC.md`, `PANEL_MAP.md` (автоген), `DEV_QUICKSTART.md`, `README.md`,
-ADR `001–005`. Эта папка (`active/`) — для новых активных документов вне канона.
+`COGNITIVE_RUNTIME_SPEC.md`, `DEV_QUICKSTART.md`, `README.md`,
+ADR `001–005`. Живая карта панелей — `wiki/panels-catalog.md` и `docs/manifest.json`
+(устаревший `PANEL_MAP.md` удалён). Эта папка (`active/`) — для новых активных документов вне канона.

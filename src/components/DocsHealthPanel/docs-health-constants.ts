@@ -30,4 +30,12 @@ export const DOC_FILES = [
     'docs/COGNITIVE_RUNTIME_SPEC.md',
     'docs/ПОЛНЫЙ_РЕЕСТР.md',
     'docs/DEBT_REPORT.md',
+    'docs/001-event-driven-architecture.md',
+    'docs/002-worker-sandboxing.md',
+    'docs/003-dexie-as-primary-storage.md',
+    'docs/004-hybrid-search-strategy.md',
+    'docs/005-mcp-integration.md',
+    'docs/COMPANY_GATEWAY.md',
+    'docs/DEV_QUICKSTART.md',
+    'docs/NAVIGATION_MAP.md',
 ];

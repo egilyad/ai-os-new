@@ -12,5 +12,5 @@
 
 | Файл | Заменён чем | Дата |
 |---|---|---|
-| `PANELS_MAP.md` | Автогенный `docs/PANEL_MAP.md` (генерится из route-registry) | 2026-09-18 |
+| `PANELS_MAP.md` | Живая карта панелей `wiki/panels-catalog.md` + `docs/manifest.json` (автогенерация) | 2026-10-17 |
 | `SERVICES_INVENTORY.md` | `docs/SERVICES_RU.md` (690 строк против 55) + автогенные источники | 2026-09-19 |
