@@ -56,6 +56,8 @@ export const COMPONENT_ARTICLES: WikiArticle[] = [
 - **Симуляция:** [[comp-simulation-world]] (мир, computer-use, parity).
 - **Синтез и аргументация:** [[comp-synthesis-forum]] (синтез, форум, junction), [[comp-debateplus]] (аргументация).
 - **Платформа:** [[comp-storage-timeline]] (хранилище, таймлайн, проекции), [[comp-tool-capability]] (инструменты, способности, песочница), [[comp-graph-eventbridge]] (графы, мост событий).
+- **LLM-слой:** [[comp-llm-pipeline]] (декораторы, middleware), [[comp-llm-adapters]] (адаптеры провайдеров).
+- **Безопасность и связь:** [[comp-secrets-locks]] (секреты, блокировки), [[comp-messaging-integrations]] (n8n, Telegram, вебхуки).
 
 Машиночитаемые каталоги (генерируются из кода): [[dev-component-catalog]], [[dev-service-map]], [[dev-contracts]], [[dev-event-catalog]].
 
@@ -1967,5 +1969,188 @@ flowchart TD
 ## Состояние
 
 - Реализовано; подтверждено чтением кода, без автотестов.`,
+    },
+    {
+        slug: 'comp-llm-pipeline',
+        title: 'Компонент: LLM-конвейер и декораторы',
+        section: 'components',
+        tags: ['компоненты', 'llm', 'декораторы', 'middleware'],
+        freshness: 'verified',
+        sources: [
+            'src/llm/core/base-adapter.ts',
+            'src/llm/core/base-decorator.ts',
+            'src/llm/core/middleware-pipeline.ts',
+            'src/llm/core/request-builder.ts',
+            'src/llm/decorators/circuit-breaker.ts',
+            'src/llm/decorators/retry-decorator.ts',
+            'src/llm/decorators/rate-limit-decorator.ts',
+            'src/llm/decorators/fallback-decorator.ts',
+            'src/llm/decorators/semantic-router.ts',
+            'src/llm/decorators/canary-router.ts',
+            'src/llm/decorators/cost-manager.ts',
+            'src/llm/decorators/compress-route.ts',
+            'src/llm/decorators/cache-decorator.ts',
+            'src/llm/decorators/priority-queue.ts',
+            'src/llm/decorators/logging-decorator.ts',
+        ],
+        related: ['comp-llm-adapters', 'comp-provider-runtime', 'comp-routing', 'comp-budget-pricing', 'for-developers'],
+        body: `## Назначение
+
+Обернуть вызовы LLM в переиспользуемые «декораторы»: устойчивость, экономия, маршрутизация и наблюдаемость — поверх базового адаптера.
+
+## Возможности
+
+- Устойчивость: circuit breaker, retry, fallback, rate limit, priority queue.
+- Экономия и качество: cost manager, compress-route (сжатие промптов), cache, semantic-router, canary-router.
+- Наблюдаемость: logging-decorator; база — \`BaseDecorator\`, \`BaseLLMAdapter\`.
+- Сквозная обработка: \`MiddlewarePipeline\` (validation, moderation, logging), сборка запроса \`LLMRequestBuilder\`, ошибки \`RetryableError\`/\`SafetyError\`/\`ModelValidationError\`.
+
+## Реализация
+
+- \`src/llm/core/\`: \`base-adapter.ts\`, \`base-decorator.ts\`, \`middleware-pipeline.ts\`, \`request-builder.ts\`, \`errors.ts\`, \`flyweight.ts\`.
+- \`src/llm/decorators/\`: \`circuit-breaker.ts\`, \`retry-decorator.ts\`, \`rate-limit-decorator.ts\`, \`fallback-decorator.ts\`, \`semantic-router.ts\`, \`canary-router.ts\`, \`cost-manager.ts\`, \`compress-route.ts\`, \`cache-decorator.ts\`, \`priority-queue.ts\`, \`logging-decorator.ts\`.
+- Декораторы композируются вокруг адаптера (паттерн декоратор + цепочка middleware).
+
+## Связи
+
+- Адаптеры провайдеров — [[comp-llm-adapters]]; выбор/маршрут — [[comp-routing]].
+- Рантайм провайдеров — [[comp-provider-runtime]]; расходы — [[comp-budget-pricing]].
+
+## Проверка работоспособности
+
+- Тесты покрывают почти все декораторы: \`circuit-breaker.test.ts\`, \`retry-decorator.test.ts\`, \`rate-limit-decorator.test.ts\`, \`fallback-decorator.test.ts\`, \`semantic-router.test.ts\`, \`canary-router.test.ts\`, \`cost-manager.test.ts\`, \`compress-route.test.ts\`, \`cache-decorator.test.ts\`, \`priority-queue.test.ts\`, \`logging-decorator.test.ts\`.
+
+## Состояние
+
+- Реализовано и хорошо покрыто тестами.`,
+    },
+    {
+        slug: 'comp-llm-adapters',
+        title: 'Компонент: адаптеры провайдеров LLM',
+        section: 'components',
+        tags: ['компоненты', 'llm', 'адаптеры', 'провайдеры'],
+        freshness: 'verified',
+        sources: [
+            'src/llm/registry/adapter-factory.ts',
+            'src/llm/http/llm-http-client.ts',
+            'src/llm/http/sse-parser.ts',
+            'src/llm/gemini/gemini-adapter.ts',
+            'src/llm/openrouter/openrouter-adapter.ts',
+            'src/llm/groq/groq-adapter.ts',
+            'src/llm/nvidia/nvidia-nim-adapter.ts',
+            'src/llm/anthropic/anthropic-adapter.ts',
+            'src/llm/openai-compatible/openai-compatible-adapter.ts',
+            'src/llm/utils/token-counter.ts',
+        ],
+        related: ['providers', 'panel-providers', 'comp-provider-runtime', 'comp-llm-pipeline', 'dev-component-catalog'],
+        body: `## Назначение
+
+Говорить на «языке» каждого провайдера: превращать общий запрос в формат конкретного API и обратно, включая стриминг и tool-calls.
+
+## Возможности
+
+- Адаптеры под провайдеров: Gemini, OpenRouter, Groq, NVIDIA NIM, Anthropic, Cerebras, Cloudflare, DeepSeek, Kimi, MiniMax, Qwen, OpenAI-совместимые, компьютерные (Gemini Computer), а также MockAdapter.
+- Фабрика адаптеров, HTTP-клиент с таймаутами и \`parseRetryAfterHeader\`, парсер SSE-стрима.
+- Утилиты: подсчёт токенов (\`estimateTokenCount\`), сжатие промптов.
+
+## Реализация
+
+- Провайдерные каталоги: \`gemini/\`, \`openrouter/\`, \`groq/\`, \`nvidia/\`, \`anthropic/\`, \`cerebras/\`, \`cloudflare/\`, \`deepseek/\`, \`kimi/\`, \`minimax/\`, \`qwen/\`, \`openai-compatible/\`, \`gemini-computer/\`, \`mock/\`.
+- \`registry/adapter-factory.ts\` (\`AdapterFactory\`), \`http/llm-http-client.ts\` (\`LLMHttpClient\`, таймаут 120000 мс), \`http/sse-parser.ts\`.
+- Gemini-специфика: \`gemini-request-builder.ts\`, \`gemini-response-mapper.ts\`, \`gemini-stream-parser.ts\`, \`gemini-health.ts\`, \`gemini-model-validator.ts\`.
+
+## Связи
+
+- Конвейер декораторов — [[comp-llm-pipeline]]; рантайм — [[comp-provider-runtime]]; ключи — [[comp-key-management]].
+- Панели: [[providers]], [[panel-providers]]; каталог — [[dev-component-catalog]].
+
+## Проверка работоспособности
+
+- Тесты: \`llm/http/llm-http-client.test.ts\`, \`llm/http/sse-parser.test.ts\`, \`llm/registry/adapter-factory.test.ts\`.
+
+## Состояние
+
+- Реализовано; HTTP/SSE и фабрика адаптеров покрыты тестами, часть адаптеров — чтением кода.`,
+    },
+    {
+        slug: 'comp-secrets-locks',
+        title: 'Компонент: секреты и распределённые блокировки',
+        section: 'components',
+        tags: ['компоненты', 'секреты', 'блокировки', 'безопасность'],
+        freshness: 'verified',
+        sources: [
+            'src/kernel/services/local-secret-store.ts',
+            'src/kernel/services/external-secrets-service.ts',
+            'src/kernel/services/cross-tab-lock-service.ts',
+        ],
+        related: ['comp-security-crypto', 'comp-key-management', 'comp-policy-security', 'panel-settings', 'panel-infra-meta'],
+        body: `## Назначение
+
+Хранить секреты безопасно и не давать вкладкам/процессам конфликтовать за общие ресурсы.
+
+## Возможности
+
+- Локальное хранилище секретов (\`LocalSecretStore\`) и внешние бэкенды секретов (\`ExternalSecretsService\`, статусы бэкендов).
+- Распределённые блокировки между вкладками (\`DistributedLockService\` / cross-tab lock).
+
+## Реализация
+
+- \`local-secret-store.ts\` (\`LocalSecretStore\`), \`external-secrets-service.ts\` (\`ExternalSecretsService\`, \`BackendStatus\`), \`cross-tab-lock-service.ts\` (\`DistributedLockService\`).
+- Работает поверх [[comp-security-crypto]] (шифрование at-rest) и слоя хранения.
+
+## Связи
+
+- Ключи провайдеров — [[comp-key-management]]; политики — [[comp-policy-security]]; шифрование — [[comp-security-crypto]].
+- Панели: [[panel-settings]], [[panel-infra-meta]].
+
+## Проверка работоспособности
+
+- Тесты: \`local-secret-store.test.ts\`, \`external-secrets-service.test.ts\`, \`cross-tab-lock-service.test.ts\`.
+
+## Состояние
+
+- Реализовано и покрыто тестами.`,
+    },
+    {
+        slug: 'comp-messaging-integrations',
+        title: 'Компонент: мессенджеры и внешние интеграции (n8n, Telegram)',
+        section: 'components',
+        tags: ['компоненты', 'интеграции', 'n8n', 'telegram', 'уведомления'],
+        freshness: 'verified',
+        sources: [
+            'src/kernel/services/n8n-service.ts',
+            'src/kernel/services/telegram-service.ts',
+            'src/kernel/services/notification-webhook-service.ts',
+            'src/kernel/services/tool-executor.ts',
+        ],
+        related: ['comp-integrations-interop', 'panel-integrations', 'panel-channels', 'comp-tools-mcp', 'comp-fleet-governance'],
+        body: `## Назначение
+
+Связывать систему с внешним миром через автоматизацию, мессенджеры и вебхуки, а также исполнять внешние инструменты.
+
+## Возможности
+
+- Интеграция с n8n (\`N8NService\`, \`N8NWorkflow\`) — автоматизации/воркфлоу.
+- Telegram-мост (\`TelegramService\`, \`TelegramBridge\`).
+- Вебхук-уведомления (\`NotificationWebhookService\`) — сюда же относится событие \`system:notification\`.
+- Исполнение инструментов (\`ToolService\`, \`tool-executor.ts\`) — привязки, внешние инструменты.
+
+## Реализация
+
+- \`n8n-service.ts\`, \`telegram-service.ts\`, \`notification-webhook-service.ts\`, \`tool-executor.ts\` (класс \`ToolService\`).
+- Дополняет \`interop/\` ([[comp-integrations-interop]]) и инструментальную подсистему ([[comp-tools-mcp]]).
+
+## Связи
+
+- Интероп/шлюз — [[comp-integrations-interop]]; инструменты — [[comp-tools-mcp]].
+- Панели: [[panel-integrations]], [[panel-channels]]; уведомления — [[comp-state-stores]] (\`useNotificationStore\`).
+
+## Проверка работоспособности
+
+- Тесты: \`n8n-service.test.ts\`, \`telegram-service.test.ts\`, \`tool-executor.test.ts\`.
+
+## Состояние
+
+- Реализовано; n8n, Telegram и исполнитель инструментов покрыты тестами.`,
     },
 ];

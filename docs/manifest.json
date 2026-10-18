@@ -50,7 +50,7 @@
     {
       "id": "components",
       "title": "Компоненты и сервисы",
-      "articles": 43
+      "articles": 47
     },
     {
       "id": "notes",
@@ -3756,6 +3756,168 @@
       ],
       "reviewed": null,
       "tests": []
+    },
+    {
+      "id": "wiki:comp-llm-pipeline",
+      "type": "article",
+      "slug": "comp-llm-pipeline",
+      "title": "Компонент: LLM-конвейер и декораторы",
+      "section": "components",
+      "status": "verified",
+      "tags": [
+        "компоненты",
+        "llm",
+        "декораторы",
+        "middleware"
+      ],
+      "sources": [
+        "src/llm/core/base-adapter.ts",
+        "src/llm/core/base-decorator.ts",
+        "src/llm/core/middleware-pipeline.ts",
+        "src/llm/core/request-builder.ts",
+        "src/llm/decorators/circuit-breaker.ts",
+        "src/llm/decorators/retry-decorator.ts",
+        "src/llm/decorators/rate-limit-decorator.ts",
+        "src/llm/decorators/fallback-decorator.ts",
+        "src/llm/decorators/semantic-router.ts",
+        "src/llm/decorators/canary-router.ts",
+        "src/llm/decorators/cost-manager.ts",
+        "src/llm/decorators/compress-route.ts",
+        "src/llm/decorators/cache-decorator.ts",
+        "src/llm/decorators/priority-queue.ts",
+        "src/llm/decorators/logging-decorator.ts"
+      ],
+      "related": [
+        "comp-llm-adapters",
+        "comp-provider-runtime",
+        "comp-routing",
+        "comp-budget-pricing",
+        "for-developers"
+      ],
+      "reviewed": null,
+      "tests": [
+        "src/llm/core/middleware-pipeline.test.ts",
+        "src/llm/decorators/circuit-breaker.test.ts",
+        "src/llm/decorators/retry-decorator.test.ts",
+        "src/llm/decorators/rate-limit-decorator.test.ts",
+        "src/llm/decorators/fallback-decorator.test.ts",
+        "src/llm/decorators/semantic-router.test.ts",
+        "src/llm/decorators/canary-router.test.ts",
+        "src/llm/decorators/cost-manager.test.ts",
+        "src/llm/decorators/compress-route.test.ts",
+        "src/llm/decorators/cache-decorator.test.ts",
+        "src/llm/decorators/priority-queue.test.ts",
+        "src/llm/decorators/logging-decorator.test.ts"
+      ]
+    },
+    {
+      "id": "wiki:comp-llm-adapters",
+      "type": "article",
+      "slug": "comp-llm-adapters",
+      "title": "Компонент: адаптеры провайдеров LLM",
+      "section": "components",
+      "status": "verified",
+      "tags": [
+        "компоненты",
+        "llm",
+        "адаптеры",
+        "провайдеры"
+      ],
+      "sources": [
+        "src/llm/registry/adapter-factory.ts",
+        "src/llm/http/llm-http-client.ts",
+        "src/llm/http/sse-parser.ts",
+        "src/llm/gemini/gemini-adapter.ts",
+        "src/llm/openrouter/openrouter-adapter.ts",
+        "src/llm/groq/groq-adapter.ts",
+        "src/llm/nvidia/nvidia-nim-adapter.ts",
+        "src/llm/anthropic/anthropic-adapter.ts",
+        "src/llm/openai-compatible/openai-compatible-adapter.ts",
+        "src/llm/utils/token-counter.ts"
+      ],
+      "related": [
+        "providers",
+        "panel-providers",
+        "comp-provider-runtime",
+        "comp-llm-pipeline",
+        "dev-component-catalog"
+      ],
+      "reviewed": null,
+      "tests": [
+        "src/llm/registry/adapter-factory.test.ts",
+        "src/llm/http/llm-http-client.test.ts",
+        "src/llm/http/sse-parser.test.ts",
+        "src/llm/gemini/gemini-adapter.test.ts",
+        "src/llm/anthropic/anthropic-adapter.test.ts",
+        "src/llm/openai-compatible/openai-compatible-adapter.test.ts"
+      ]
+    },
+    {
+      "id": "wiki:comp-secrets-locks",
+      "type": "article",
+      "slug": "comp-secrets-locks",
+      "title": "Компонент: секреты и распределённые блокировки",
+      "section": "components",
+      "status": "verified",
+      "tags": [
+        "компоненты",
+        "секреты",
+        "блокировки",
+        "безопасность"
+      ],
+      "sources": [
+        "src/kernel/services/local-secret-store.ts",
+        "src/kernel/services/external-secrets-service.ts",
+        "src/kernel/services/cross-tab-lock-service.ts"
+      ],
+      "related": [
+        "comp-security-crypto",
+        "comp-key-management",
+        "comp-policy-security",
+        "panel-settings",
+        "panel-infra-meta"
+      ],
+      "reviewed": null,
+      "tests": [
+        "src/kernel/services/local-secret-store.test.ts",
+        "src/kernel/services/external-secrets-service.test.ts",
+        "src/kernel/services/cross-tab-lock-service.test.ts"
+      ]
+    },
+    {
+      "id": "wiki:comp-messaging-integrations",
+      "type": "article",
+      "slug": "comp-messaging-integrations",
+      "title": "Компонент: мессенджеры и внешние интеграции (n8n, Telegram)",
+      "section": "components",
+      "status": "verified",
+      "tags": [
+        "компоненты",
+        "интеграции",
+        "n8n",
+        "telegram",
+        "уведомления"
+      ],
+      "sources": [
+        "src/kernel/services/n8n-service.ts",
+        "src/kernel/services/telegram-service.ts",
+        "src/kernel/services/notification-webhook-service.ts",
+        "src/kernel/services/tool-executor.ts"
+      ],
+      "related": [
+        "comp-integrations-interop",
+        "panel-integrations",
+        "panel-channels",
+        "comp-tools-mcp",
+        "comp-fleet-governance"
+      ],
+      "reviewed": null,
+      "tests": [
+        "src/kernel/services/n8n-service.test.ts",
+        "src/kernel/services/telegram-service.test.ts",
+        "src/kernel/services/notification-webhook-service.test.ts",
+        "src/kernel/services/tool-executor.test.ts"
+      ]
     },
     {
       "id": "wiki:zone-1",

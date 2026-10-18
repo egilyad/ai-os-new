@@ -3,22 +3,22 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 1016,
-    "edges": 2728,
+    "nodes": 1069,
+    "edges": 2805,
     "byType": {
       "audit": 67,
-      "code": 394,
-      "test": 106,
+      "code": 422,
+      "test": 127,
       "panel": 259,
-      "article": 190
+      "article": 194
     },
     "byKind": {
       "audit_test": 325,
       "audit_mention": 928,
       "documents": 201,
-      "source": 505,
-      "test": 122,
-      "related": 647
+      "source": 537,
+      "test": 147,
+      "related": 667
     }
   },
   "nodes": [
@@ -2077,6 +2077,16 @@
       "label": "src/kernel/services/crew/crew-service.ts"
     },
     {
+      "id": "file:src/kernel/services/cross-tab-lock-service.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/cross-tab-lock-service.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/cross-tab-lock-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/cross-tab-lock-service.ts"
+    },
+    {
       "id": "file:src/kernel/services/crystal-vault/crystal-vault-service.test.ts",
       "type": "test",
       "label": "src/kernel/services/crystal-vault/crystal-vault-service.test.ts"
@@ -2427,6 +2437,16 @@
       "label": "src/kernel/services/llm-client-service.ts"
     },
     {
+      "id": "file:src/kernel/services/local-secret-store.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/local-secret-store.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/local-secret-store.ts",
+      "type": "code",
+      "label": "src/kernel/services/local-secret-store.ts"
+    },
+    {
       "id": "file:src/kernel/services/mcp-service.ts",
       "type": "code",
       "label": "src/kernel/services/mcp-service.ts"
@@ -2460,6 +2480,16 @@
       "id": "file:src/kernel/services/monitoring-service.ts",
       "type": "code",
       "label": "src/kernel/services/monitoring-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/n8n-service.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/n8n-service.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/n8n-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/n8n-service.ts"
     },
     {
       "id": "file:src/kernel/services/notification-webhook-service.test.ts",
@@ -2827,6 +2857,16 @@
       "label": "src/kernel/services/task-work-product-service.ts"
     },
     {
+      "id": "file:src/kernel/services/telegram-service.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/telegram-service.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/telegram-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/telegram-service.ts"
+    },
+    {
       "id": "file:src/kernel/services/temporal-replay-service.ts",
       "type": "code",
       "label": "src/kernel/services/temporal-replay-service.ts"
@@ -2920,6 +2960,211 @@
       "id": "file:src/llm/anthropic/anthropic-adapter.ts",
       "type": "code",
       "label": "src/llm/anthropic/anthropic-adapter.ts"
+    },
+    {
+      "id": "file:src/llm/core/base-adapter.ts",
+      "type": "code",
+      "label": "src/llm/core/base-adapter.ts"
+    },
+    {
+      "id": "file:src/llm/core/base-decorator.ts",
+      "type": "code",
+      "label": "src/llm/core/base-decorator.ts"
+    },
+    {
+      "id": "file:src/llm/core/middleware-pipeline.test.ts",
+      "type": "test",
+      "label": "src/llm/core/middleware-pipeline.test.ts"
+    },
+    {
+      "id": "file:src/llm/core/middleware-pipeline.ts",
+      "type": "code",
+      "label": "src/llm/core/middleware-pipeline.ts"
+    },
+    {
+      "id": "file:src/llm/core/request-builder.ts",
+      "type": "code",
+      "label": "src/llm/core/request-builder.ts"
+    },
+    {
+      "id": "file:src/llm/decorators/cache-decorator.test.ts",
+      "type": "test",
+      "label": "src/llm/decorators/cache-decorator.test.ts"
+    },
+    {
+      "id": "file:src/llm/decorators/cache-decorator.ts",
+      "type": "code",
+      "label": "src/llm/decorators/cache-decorator.ts"
+    },
+    {
+      "id": "file:src/llm/decorators/canary-router.test.ts",
+      "type": "test",
+      "label": "src/llm/decorators/canary-router.test.ts"
+    },
+    {
+      "id": "file:src/llm/decorators/canary-router.ts",
+      "type": "code",
+      "label": "src/llm/decorators/canary-router.ts"
+    },
+    {
+      "id": "file:src/llm/decorators/circuit-breaker.test.ts",
+      "type": "test",
+      "label": "src/llm/decorators/circuit-breaker.test.ts"
+    },
+    {
+      "id": "file:src/llm/decorators/circuit-breaker.ts",
+      "type": "code",
+      "label": "src/llm/decorators/circuit-breaker.ts"
+    },
+    {
+      "id": "file:src/llm/decorators/compress-route.test.ts",
+      "type": "test",
+      "label": "src/llm/decorators/compress-route.test.ts"
+    },
+    {
+      "id": "file:src/llm/decorators/compress-route.ts",
+      "type": "code",
+      "label": "src/llm/decorators/compress-route.ts"
+    },
+    {
+      "id": "file:src/llm/decorators/cost-manager.test.ts",
+      "type": "test",
+      "label": "src/llm/decorators/cost-manager.test.ts"
+    },
+    {
+      "id": "file:src/llm/decorators/cost-manager.ts",
+      "type": "code",
+      "label": "src/llm/decorators/cost-manager.ts"
+    },
+    {
+      "id": "file:src/llm/decorators/fallback-decorator.test.ts",
+      "type": "test",
+      "label": "src/llm/decorators/fallback-decorator.test.ts"
+    },
+    {
+      "id": "file:src/llm/decorators/fallback-decorator.ts",
+      "type": "code",
+      "label": "src/llm/decorators/fallback-decorator.ts"
+    },
+    {
+      "id": "file:src/llm/decorators/logging-decorator.test.ts",
+      "type": "test",
+      "label": "src/llm/decorators/logging-decorator.test.ts"
+    },
+    {
+      "id": "file:src/llm/decorators/logging-decorator.ts",
+      "type": "code",
+      "label": "src/llm/decorators/logging-decorator.ts"
+    },
+    {
+      "id": "file:src/llm/decorators/priority-queue.test.ts",
+      "type": "test",
+      "label": "src/llm/decorators/priority-queue.test.ts"
+    },
+    {
+      "id": "file:src/llm/decorators/priority-queue.ts",
+      "type": "code",
+      "label": "src/llm/decorators/priority-queue.ts"
+    },
+    {
+      "id": "file:src/llm/decorators/rate-limit-decorator.test.ts",
+      "type": "test",
+      "label": "src/llm/decorators/rate-limit-decorator.test.ts"
+    },
+    {
+      "id": "file:src/llm/decorators/rate-limit-decorator.ts",
+      "type": "code",
+      "label": "src/llm/decorators/rate-limit-decorator.ts"
+    },
+    {
+      "id": "file:src/llm/decorators/retry-decorator.test.ts",
+      "type": "test",
+      "label": "src/llm/decorators/retry-decorator.test.ts"
+    },
+    {
+      "id": "file:src/llm/decorators/retry-decorator.ts",
+      "type": "code",
+      "label": "src/llm/decorators/retry-decorator.ts"
+    },
+    {
+      "id": "file:src/llm/decorators/semantic-router.test.ts",
+      "type": "test",
+      "label": "src/llm/decorators/semantic-router.test.ts"
+    },
+    {
+      "id": "file:src/llm/decorators/semantic-router.ts",
+      "type": "code",
+      "label": "src/llm/decorators/semantic-router.ts"
+    },
+    {
+      "id": "file:src/llm/gemini/gemini-adapter.test.ts",
+      "type": "test",
+      "label": "src/llm/gemini/gemini-adapter.test.ts"
+    },
+    {
+      "id": "file:src/llm/gemini/gemini-adapter.ts",
+      "type": "code",
+      "label": "src/llm/gemini/gemini-adapter.ts"
+    },
+    {
+      "id": "file:src/llm/groq/groq-adapter.ts",
+      "type": "code",
+      "label": "src/llm/groq/groq-adapter.ts"
+    },
+    {
+      "id": "file:src/llm/http/llm-http-client.test.ts",
+      "type": "test",
+      "label": "src/llm/http/llm-http-client.test.ts"
+    },
+    {
+      "id": "file:src/llm/http/llm-http-client.ts",
+      "type": "code",
+      "label": "src/llm/http/llm-http-client.ts"
+    },
+    {
+      "id": "file:src/llm/http/sse-parser.test.ts",
+      "type": "test",
+      "label": "src/llm/http/sse-parser.test.ts"
+    },
+    {
+      "id": "file:src/llm/http/sse-parser.ts",
+      "type": "code",
+      "label": "src/llm/http/sse-parser.ts"
+    },
+    {
+      "id": "file:src/llm/nvidia/nvidia-nim-adapter.ts",
+      "type": "code",
+      "label": "src/llm/nvidia/nvidia-nim-adapter.ts"
+    },
+    {
+      "id": "file:src/llm/openai-compatible/openai-compatible-adapter.test.ts",
+      "type": "test",
+      "label": "src/llm/openai-compatible/openai-compatible-adapter.test.ts"
+    },
+    {
+      "id": "file:src/llm/openai-compatible/openai-compatible-adapter.ts",
+      "type": "code",
+      "label": "src/llm/openai-compatible/openai-compatible-adapter.ts"
+    },
+    {
+      "id": "file:src/llm/openrouter/openrouter-adapter.ts",
+      "type": "code",
+      "label": "src/llm/openrouter/openrouter-adapter.ts"
+    },
+    {
+      "id": "file:src/llm/registry/adapter-factory.test.ts",
+      "type": "test",
+      "label": "src/llm/registry/adapter-factory.test.ts"
+    },
+    {
+      "id": "file:src/llm/registry/adapter-factory.ts",
+      "type": "code",
+      "label": "src/llm/registry/adapter-factory.ts"
+    },
+    {
+      "id": "file:src/llm/utils/token-counter.ts",
+      "type": "code",
+      "label": "src/llm/utils/token-counter.ts"
     },
     {
       "id": "file:src/route-imports.ts",
@@ -4980,6 +5225,13 @@
       "status": "verified"
     },
     {
+      "id": "wiki:comp-llm-adapters",
+      "type": "article",
+      "label": "Компонент: адаптеры провайдеров LLM",
+      "section": "components",
+      "status": "verified"
+    },
+    {
       "id": "wiki:comp-llm-bridge",
       "type": "article",
       "label": "Компонент: LLM-мост (адаптеры crews/council/graph/frontier)",
@@ -4987,11 +5239,25 @@
       "status": "documented"
     },
     {
+      "id": "wiki:comp-llm-pipeline",
+      "type": "article",
+      "label": "Компонент: LLM-конвейер и декораторы",
+      "section": "components",
+      "status": "verified"
+    },
+    {
       "id": "wiki:comp-memory",
       "type": "article",
       "label": "Компонент: память и знания",
       "section": "components",
       "status": "documented"
+    },
+    {
+      "id": "wiki:comp-messaging-integrations",
+      "type": "article",
+      "label": "Компонент: мессенджеры и внешние интеграции (n8n, Telegram)",
+      "section": "components",
+      "status": "verified"
     },
     {
       "id": "wiki:comp-observability",
@@ -5053,6 +5319,13 @@
       "id": "wiki:comp-scenarios",
       "type": "article",
       "label": "Компонент: сквозные сценарии",
+      "section": "components",
+      "status": "verified"
+    },
+    {
+      "id": "wiki:comp-secrets-locks",
+      "type": "article",
+      "label": "Компонент: секреты и распределённые блокировки",
       "section": "components",
       "status": "verified"
     },
@@ -14692,6 +14965,111 @@
       "kind": "related"
     },
     {
+      "from": "wiki:comp-llm-adapters",
+      "to": "file:src/llm/anthropic/anthropic-adapter.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-llm-adapters",
+      "to": "file:src/llm/anthropic/anthropic-adapter.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-llm-adapters",
+      "to": "file:src/llm/gemini/gemini-adapter.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-llm-adapters",
+      "to": "file:src/llm/gemini/gemini-adapter.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-llm-adapters",
+      "to": "file:src/llm/groq/groq-adapter.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-llm-adapters",
+      "to": "file:src/llm/http/llm-http-client.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-llm-adapters",
+      "to": "file:src/llm/http/llm-http-client.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-llm-adapters",
+      "to": "file:src/llm/http/sse-parser.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-llm-adapters",
+      "to": "file:src/llm/http/sse-parser.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-llm-adapters",
+      "to": "file:src/llm/nvidia/nvidia-nim-adapter.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-llm-adapters",
+      "to": "file:src/llm/openai-compatible/openai-compatible-adapter.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-llm-adapters",
+      "to": "file:src/llm/openai-compatible/openai-compatible-adapter.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-llm-adapters",
+      "to": "file:src/llm/openrouter/openrouter-adapter.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-llm-adapters",
+      "to": "file:src/llm/registry/adapter-factory.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-llm-adapters",
+      "to": "file:src/llm/registry/adapter-factory.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-llm-adapters",
+      "to": "file:src/llm/utils/token-counter.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-llm-adapters",
+      "to": "wiki:comp-llm-pipeline",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-llm-adapters",
+      "to": "wiki:comp-provider-runtime",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-llm-adapters",
+      "to": "wiki:dev-component-catalog",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-llm-adapters",
+      "to": "wiki:panel-providers",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-llm-adapters",
+      "to": "wiki:providers",
+      "kind": "related"
+    },
+    {
       "from": "wiki:comp-llm-bridge",
       "to": "file:src/kernel/services/llm-bridge/llm-task-executor.ts",
       "kind": "source"
@@ -14719,6 +15097,166 @@
     {
       "from": "wiki:comp-llm-bridge",
       "to": "wiki:panel-director",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-llm-pipeline",
+      "to": "file:src/llm/core/base-adapter.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-llm-pipeline",
+      "to": "file:src/llm/core/base-decorator.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-llm-pipeline",
+      "to": "file:src/llm/core/middleware-pipeline.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-llm-pipeline",
+      "to": "file:src/llm/core/middleware-pipeline.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-llm-pipeline",
+      "to": "file:src/llm/core/request-builder.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-llm-pipeline",
+      "to": "file:src/llm/decorators/cache-decorator.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-llm-pipeline",
+      "to": "file:src/llm/decorators/cache-decorator.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-llm-pipeline",
+      "to": "file:src/llm/decorators/canary-router.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-llm-pipeline",
+      "to": "file:src/llm/decorators/canary-router.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-llm-pipeline",
+      "to": "file:src/llm/decorators/circuit-breaker.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-llm-pipeline",
+      "to": "file:src/llm/decorators/circuit-breaker.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-llm-pipeline",
+      "to": "file:src/llm/decorators/compress-route.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-llm-pipeline",
+      "to": "file:src/llm/decorators/compress-route.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-llm-pipeline",
+      "to": "file:src/llm/decorators/cost-manager.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-llm-pipeline",
+      "to": "file:src/llm/decorators/cost-manager.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-llm-pipeline",
+      "to": "file:src/llm/decorators/fallback-decorator.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-llm-pipeline",
+      "to": "file:src/llm/decorators/fallback-decorator.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-llm-pipeline",
+      "to": "file:src/llm/decorators/logging-decorator.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-llm-pipeline",
+      "to": "file:src/llm/decorators/logging-decorator.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-llm-pipeline",
+      "to": "file:src/llm/decorators/priority-queue.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-llm-pipeline",
+      "to": "file:src/llm/decorators/priority-queue.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-llm-pipeline",
+      "to": "file:src/llm/decorators/rate-limit-decorator.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-llm-pipeline",
+      "to": "file:src/llm/decorators/rate-limit-decorator.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-llm-pipeline",
+      "to": "file:src/llm/decorators/retry-decorator.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-llm-pipeline",
+      "to": "file:src/llm/decorators/retry-decorator.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-llm-pipeline",
+      "to": "file:src/llm/decorators/semantic-router.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-llm-pipeline",
+      "to": "file:src/llm/decorators/semantic-router.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-llm-pipeline",
+      "to": "wiki:comp-budget-pricing",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-llm-pipeline",
+      "to": "wiki:comp-llm-adapters",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-llm-pipeline",
+      "to": "wiki:comp-provider-runtime",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-llm-pipeline",
+      "to": "wiki:comp-routing",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-llm-pipeline",
+      "to": "wiki:for-developers",
       "kind": "related"
     },
     {
@@ -14754,6 +15292,71 @@
     {
       "from": "wiki:comp-memory",
       "to": "wiki:panel-memory-palace",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-messaging-integrations",
+      "to": "file:src/kernel/services/n8n-service.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-messaging-integrations",
+      "to": "file:src/kernel/services/n8n-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-messaging-integrations",
+      "to": "file:src/kernel/services/notification-webhook-service.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-messaging-integrations",
+      "to": "file:src/kernel/services/notification-webhook-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-messaging-integrations",
+      "to": "file:src/kernel/services/telegram-service.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-messaging-integrations",
+      "to": "file:src/kernel/services/telegram-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-messaging-integrations",
+      "to": "file:src/kernel/services/tool-executor.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-messaging-integrations",
+      "to": "file:src/kernel/services/tool-executor.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-messaging-integrations",
+      "to": "wiki:comp-fleet-governance",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-messaging-integrations",
+      "to": "wiki:comp-integrations-interop",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-messaging-integrations",
+      "to": "wiki:comp-tools-mcp",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-messaging-integrations",
+      "to": "wiki:panel-channels",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-messaging-integrations",
+      "to": "wiki:panel-integrations",
       "kind": "related"
     },
     {
@@ -15274,6 +15877,61 @@
     {
       "from": "wiki:comp-scenarios",
       "to": "wiki:what-is",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-secrets-locks",
+      "to": "file:src/kernel/services/cross-tab-lock-service.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-secrets-locks",
+      "to": "file:src/kernel/services/cross-tab-lock-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-secrets-locks",
+      "to": "file:src/kernel/services/external-secrets-service.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-secrets-locks",
+      "to": "file:src/kernel/services/external-secrets-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-secrets-locks",
+      "to": "file:src/kernel/services/local-secret-store.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-secrets-locks",
+      "to": "file:src/kernel/services/local-secret-store.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-secrets-locks",
+      "to": "wiki:comp-key-management",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-secrets-locks",
+      "to": "wiki:comp-policy-security",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-secrets-locks",
+      "to": "wiki:comp-security-crypto",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-secrets-locks",
+      "to": "wiki:panel-infra-meta",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-secrets-locks",
+      "to": "wiki:panel-settings",
       "kind": "related"
     },
     {

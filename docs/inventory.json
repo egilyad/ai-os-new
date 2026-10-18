@@ -3,7 +3,7 @@
   "generatedBy": "scripts/gen-docs-inventory.mjs",
   "scope": "git-tracked markdown: docs/**/*.md (excluding docs/new drafts and the self-report pages docs-health, docs-inventory) plus repository entry docs (root *.md, .superagents/**, src/kernel/DEPENDENCY_MAP.md)",
   "totals": {
-    "documents": 1013,
+    "documents": 1017,
     "byCategory": {
       "repo": 12,
       "top": 46,
@@ -13,12 +13,12 @@
       "reference": 6,
       "roadmap": 6,
       "superseded": 3,
-      "wiki": 189
+      "wiki": 193
     },
     "byLanguage": {
       "en": 658,
-      "ru": 217,
-      "mixed": 138
+      "ru": 219,
+      "mixed": 140
     }
   },
   "duplicates": {
@@ -6792,6 +6792,14 @@
       "hash": "747fafa41d10c8c218be25350aaabce629b1195a"
     },
     {
+      "path": "docs/wiki/comp-llm-adapters.md",
+      "category": "wiki",
+      "language": "mixed",
+      "title": "Компонент: адаптеры провайдеров LLM",
+      "bytes": 3666,
+      "hash": "cae53fca43e4109c9dae06fbc682324fbcc812b3"
+    },
+    {
       "path": "docs/wiki/comp-llm-bridge.md",
       "category": "wiki",
       "language": "ru",
@@ -6800,12 +6808,28 @@
       "hash": "ae339df4db47056181d2cb38f23d7ffa1dfee169"
     },
     {
+      "path": "docs/wiki/comp-llm-pipeline.md",
+      "category": "wiki",
+      "language": "mixed",
+      "title": "Компонент: LLM-конвейер и декораторы",
+      "bytes": 4013,
+      "hash": "f8b22c625081b794bf03d7093c4b463a953ef2a5"
+    },
+    {
       "path": "docs/wiki/comp-memory.md",
       "category": "wiki",
       "language": "ru",
       "title": "Компонент: память и знания",
       "bytes": 2940,
       "hash": "5be589975f35bb86bcfb08ebd3e11ace5074aaa8"
+    },
+    {
+      "path": "docs/wiki/comp-messaging-integrations.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Компонент: мессенджеры и внешние интеграции (n8n, Telegram)",
+      "bytes": 3346,
+      "hash": "47cbf027c3f5b35356833d6d637e025a6349f3a9"
     },
     {
       "path": "docs/wiki/comp-observability.md",
@@ -6820,8 +6844,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Компоненты и сервисы: как читать этот раздел",
-      "bytes": 10190,
-      "hash": "e29580e8c98a3f89185c6979d376b9d2c8df6b85"
+      "bytes": 10838,
+      "hash": "e36d229902bedcb8ff81c33cc082d8e04e3e1d05"
     },
     {
       "path": "docs/wiki/comp-persistence.md",
@@ -6878,6 +6902,14 @@
       "title": "Компонент: сквозные сценарии",
       "bytes": 4087,
       "hash": "14ae509f20b50e09ada13a093a9bbb80106713bd"
+    },
+    {
+      "path": "docs/wiki/comp-secrets-locks.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Компонент: секреты и распределённые блокировки",
+      "bytes": 2936,
+      "hash": "17452674db754af99fec8361c3778f676976d362"
     },
     {
       "path": "docs/wiki/comp-security-crypto.md",
@@ -6989,7 +7021,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4075,
-      "hash": "49c5df15d20f832eaacd47e61eef7a8b18d38783"
+      "hash": "4e512fd877fcdf573d9960f8a516d9e7dc9ef3fc"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -7076,8 +7108,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Граф знаний",
-      "bytes": 5002,
-      "hash": "33f60c2f677a0a238c3e1c17af6f96cc853ab81b"
+      "bytes": 5015,
+      "hash": "a4b475a1370224164ce76127486d6bb076ae725c"
     },
     {
       "path": "docs/wiki/dev-history.md",
@@ -7212,8 +7244,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Карта документации",
-      "bytes": 26626,
-      "hash": "eac6f9f29cf849180f311e6fe5f5ef729cf9153b"
+      "bytes": 27068,
+      "hash": "9ff06c7f4f96a10fd6a236b17e1fbee5fcefdc1b"
     },
     {
       "path": "docs/wiki/docs-standard.md",
@@ -7868,8 +7900,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Wiki SuperAgents OS",
-      "bytes": 19294,
-      "hash": "494eecc929fbb8ba702a886653c5cef87b593130"
+      "bytes": 19792,
+      "hash": "48f1366778315019ed2614c0596d833100f8d432"
     },
     {
       "path": "docs/wiki/roadmap-notes.md",
@@ -8124,16 +8156,16 @@
       "category": "repo",
       "language": "en",
       "title": "SuperAgents OS",
-      "bytes": 52862,
-      "hash": "1d03f57c3ca07078e357e9986330759a8ebfbf3d"
+      "bytes": 53092,
+      "hash": "b000000dd7f9eee57a81382a8b9f23dd9cefb18d"
     },
     {
       "path": "README.md",
       "category": "repo",
       "language": "mixed",
       "title": "SuperAgents OS — Wiki",
-      "bytes": 44812,
-      "hash": "c142ac9b74fc04082ff210302a57530c6469889f"
+      "bytes": 45099,
+      "hash": "db8dbaf47da40526ffdcc2a1d17a6ef18f4805c2"
     },
     {
       "path": "SELF_IMPROVEMENT_AUDIT_2026-09-22.md",
