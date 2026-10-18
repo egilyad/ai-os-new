@@ -57,6 +57,7 @@ export const COMPONENT_ARTICLES: WikiArticle[] = [
 - **Синтез и аргументация:** [[comp-synthesis-forum]] (синтез, форум, junction), [[comp-debateplus]] (аргументация).
 - **Платформа:** [[comp-storage-timeline]] (хранилище, таймлайн, проекции), [[comp-tool-capability]] (инструменты, способности, песочница), [[comp-graph-eventbridge]] (графы, мост событий).
 - **LLM-слой:** [[comp-llm-pipeline]] (декораторы, middleware), [[comp-llm-adapters]] (адаптеры провайдеров).
+- **Детализация LLM:** [[comp-middleware-core]] (базы/middleware/утилиты), [[comp-decorator-resilience]], [[comp-decorator-optimization]], [[comp-decorator-routing]]; адаптеры — [[comp-adapter-gemini]], [[comp-adapter-anthropic]], [[comp-adapter-gemini-computer]], [[comp-adapter-openai-compatible]], [[comp-adapter-openrouter]], [[comp-adapter-groq]], [[comp-adapter-nvidia-nim]], [[comp-adapter-cloudflare]], [[comp-adapter-mock]].
 - **Безопасность и связь:** [[comp-secrets-locks]] (секреты, блокировки), [[comp-messaging-integrations]] (n8n, Telegram, вебхуки).
 
 Машиночитаемые каталоги (генерируются из кода): [[dev-component-catalog]], [[dev-service-map]], [[dev-contracts]], [[dev-event-catalog]].
@@ -2152,5 +2153,494 @@ flowchart TD
 ## Состояние
 
 - Реализовано; n8n, Telegram и исполнитель инструментов покрыты тестами.`,
+    },
+    {
+        slug: 'comp-adapter-gemini',
+        title: 'Компонент: адаптер Gemini',
+        section: 'components',
+        tags: ['компоненты', 'llm', 'адаптер', 'gemini'],
+        freshness: 'verified',
+        sources: [
+            'src/llm/gemini/gemini-adapter.ts',
+            'src/llm/gemini/gemini-request-builder.ts',
+            'src/llm/gemini/gemini-response-mapper.ts',
+            'src/llm/gemini/gemini-stream-parser.ts',
+            'src/llm/gemini/gemini-health.ts',
+            'src/llm/gemini/gemini-model-validator.ts',
+            'src/llm/gemini/gemini-types.ts',
+        ],
+        related: ['comp-llm-adapters', 'comp-llm-pipeline', 'comp-provider-runtime', 'providers', 'panel-providers'],
+        body: `## Назначение
+
+Обслуживать провайдера Google Gemini: сборка запроса, разбор ответа и стрима, проверка здоровья и валидация моделей.
+
+## Возможности
+
+- \`GeminiAdapter\` (\`BaseLLMAdapter\`) — основной адаптер.
+- \`GeminiRequestBuilder\` — сборка тела запроса; \`gemini-response-mapper.ts\` — маппинг в \`ProviderResponse\` (\`toProviderResponse\`, токены, grounding-метаданные).
+- \`GeminiStreamParser\` — потоковый разбор; \`extractChunkText\`/\`extractStreamMeta\`.
+- \`GeminiHealthCheck\` — проверка доступности; \`ModelCache\`/\`sanitizeModel\` — валидация имён моделей.
+
+## Реализация
+
+- Каталог \`src/llm/gemini/\`: \`gemini-adapter.ts\`, \`gemini-request-builder.ts\`, \`gemini-response-mapper.ts\`, \`gemini-stream-parser.ts\`, \`gemini-health.ts\`, \`gemini-model-validator.ts\`, \`gemini-types.ts\`.
+
+## Связи
+
+- Зонтик — [[comp-llm-adapters]]; конвейер — [[comp-llm-pipeline]]; рантайм — [[comp-provider-runtime]].
+- Панели: [[providers]], [[panel-providers]].
+
+## Проверка работоспособности
+
+- Тест: \`src/llm/gemini/gemini-adapter.test.ts\`.
+
+## Состояние
+
+- Реализовано; покрыто тестом.`,
+    },
+    {
+        slug: 'comp-adapter-anthropic',
+        title: 'Компонент: адаптер Anthropic (Claude)',
+        section: 'components',
+        tags: ['компоненты', 'llm', 'адаптер', 'anthropic', 'claude'],
+        freshness: 'verified',
+        sources: ['src/llm/anthropic/anthropic-adapter.ts'],
+        related: ['comp-llm-adapters', 'comp-llm-pipeline', 'comp-adapter-gemini-computer', 'providers', 'panel-providers'],
+        body: `## Назначение
+
+Обслуживать API Anthropic (Claude), включая инструменты и режим computer-use.
+
+## Возможности
+
+- \`AnthropicAdapter\` (\`BaseLLMAdapter\`); базовый URL \`ANTHROPIC_API_BASE\`, версия \`ANTHROPIC_VERSION = '2023-06-01'\`.
+- Computer-use: \`ANTHROPIC_COMPUTER_BETA = 'computer-use-2025-01-24'\`, тип \`computer_20250124\`.
+- Модель по умолчанию \`ANTHROPIC_DEFAULT_MODEL = 'claude-sonnet-4-20250514'\`.
+- Маппинг: \`normalizeFinishReason\`, \`mapTools\`, \`mapToolChoice\`, \`toAnthropicMessages\`, \`parseAnthropicResponse\`, \`extractToolCalls\`, \`extractText\`.
+
+## Реализация
+
+- \`src/llm/anthropic/anthropic-adapter.ts\`.
+
+## Связи
+
+- Зонтик — [[comp-llm-adapters]]; родственный computer-use адаптер — [[comp-adapter-gemini-computer]].
+- Панели: [[providers]], [[panel-providers]].
+
+## Проверка работоспособности
+
+- Тест: \`src/llm/anthropic/anthropic-adapter.test.ts\`.
+
+## Состояние
+
+- Реализовано; покрыто тестом.`,
+    },
+    {
+        slug: 'comp-adapter-gemini-computer',
+        title: 'Компонент: адаптер Gemini Computer Use',
+        section: 'components',
+        tags: ['компоненты', 'llm', 'адаптер', 'gemini', 'computer-use'],
+        freshness: 'verified',
+        sources: ['src/llm/gemini-computer/gemini-computer-adapter.ts'],
+        related: ['comp-llm-adapters', 'comp-adapter-gemini', 'comp-adapter-anthropic', 'comp-simulation-world', 'panel-providers'],
+        body: `## Назначение
+
+Давать моделям управлять «компьютером»: действия, шаги и результаты вызовов — через Gemini Computer Use.
+
+## Возможности
+
+- \`GeminiComputerAdapter\` (\`BaseLLMAdapter\`); база \`GEMINI_COMPUTER_API_BASE\`, модель по умолчанию \`GEMINI_COMPUTER_DEFAULT_MODEL = 'gemini-3.5-flash'\`.
+- Нормализация действий: \`mapGeminiActionName\`, \`denormalizeArgs\`.
+- Сборка входа: \`buildFirstInput\`, \`buildFunctionResults\`, \`extractSteps\`.
+
+## Реализация
+
+- \`src/llm/gemini-computer/gemini-computer-adapter.ts\`.
+
+## Связи
+
+- Зонтик — [[comp-llm-adapters]]; родственный — [[comp-adapter-gemini]]; сценарии computer-use — [[comp-simulation-world]].
+- Панель: [[panel-providers]].
+
+## Проверка работоспособности
+
+- Тест: \`src/llm/gemini-computer/gemini-computer-adapter.test.ts\`.
+
+## Состояние
+
+- Реализовано; покрыто тестом.`,
+    },
+    {
+        slug: 'comp-adapter-openai-compatible',
+        title: 'Компонент: адаптер OpenAI-совместимых провайдеров (DeepSeek, Kimi, MiniMax, Qwen, Cerebras)',
+        section: 'components',
+        tags: ['компоненты', 'llm', 'адаптер', 'openai', 'deepseek', 'kimi', 'qwen'],
+        freshness: 'verified',
+        sources: [
+            'src/llm/openai-compatible/openai-compatible-adapter.ts',
+            'src/llm/openai-compatible/openai-compatible-types.ts',
+            'src/llm/deepseek/deepseek-adapter.ts',
+            'src/llm/kimi/kimi-adapter.ts',
+            'src/llm/minimax/minimax-adapter.ts',
+            'src/llm/qwen/qwen-adapter.ts',
+            'src/llm/cerebras/cerebras-adapter.ts',
+        ],
+        related: ['comp-llm-adapters', 'comp-adapter-groq', 'comp-adapter-openrouter', 'providers', 'panel-providers'],
+        body: `## Назначение
+
+Одна реализация на весь класс провайдеров, говорящих на OpenAI-совместимом протоколе; конкретные вендоры — тонкие наследники с дефолтами.
+
+## Возможности
+
+- \`OpenAiCompatibleAdapter\` (\`BaseLLMAdapter\`) + схема ответа \`OpenAiCompatibleResponseSchema\`.
+- Наследники с моделями по умолчанию: DeepSeek (\`deepseek-chat\`, \`deepseek-reasoner\`), Kimi (\`kimi-k2\`, \`kimi-k2-thinking\`), MiniMax (\`MiniMax-M1\`), Qwen (\`qwen3-max\`), Cerebras.
+
+## Реализация
+
+- База: \`src/llm/openai-compatible/openai-compatible-adapter.ts\`, \`...-types.ts\`.
+- Вендоры: \`deepseek/deepseek-adapter.ts\`, \`kimi/kimi-adapter.ts\`, \`minimax/minimax-adapter.ts\`, \`qwen/qwen-adapter.ts\`, \`cerebras/cerebras-adapter.ts\`.
+
+## Связи
+
+- Зонтик — [[comp-llm-adapters]]; родственные адаптеры — [[comp-adapter-groq]], [[comp-adapter-openrouter]].
+- Панели: [[providers]], [[panel-providers]].
+
+## Проверка работоспособности
+
+- Тест базового класса: \`src/llm/openai-compatible/openai-compatible-adapter.test.ts\`.
+
+## Состояние
+
+- База реализована и покрыта тестом; вендорные наследники подтверждены чтением кода.`,
+    },
+    {
+        slug: 'comp-adapter-openrouter',
+        title: 'Компонент: адаптер OpenRouter',
+        section: 'components',
+        tags: ['компоненты', 'llm', 'адаптер', 'openrouter'],
+        freshness: 'documented',
+        sources: ['src/llm/openrouter/openrouter-adapter.ts', 'src/llm/openrouter/openrouter-types.ts'],
+        related: ['comp-llm-adapters', 'comp-adapter-openai-compatible', 'comp-adapter-groq', 'providers', 'panel-providers'],
+        body: `## Назначение
+
+Ходить через агрегатор OpenRouter к множеству моделей одним ключом.
+
+## Возможности
+
+- \`OpenRouterAdapter\` (\`BaseLLMAdapter\`); схема ответа \`OpenRouterResponseSchema\` (zod).
+
+## Реализация
+
+- \`src/llm/openrouter/openrouter-adapter.ts\`, \`src/llm/openrouter/openrouter-types.ts\`.
+
+## Связи
+
+- Зонтик — [[comp-llm-adapters]]; родственные — [[comp-adapter-openai-compatible]], [[comp-adapter-groq]].
+- Панели: [[providers]], [[panel-providers]].
+
+## Проверка работоспособности
+
+- Подтверждено чтением кода (отдельного тест-файла нет); схема ответа валидируется zod.
+
+## Состояние
+
+- Реализовано; автотестом не покрыто.`,
+    },
+    {
+        slug: 'comp-adapter-groq',
+        title: 'Компонент: адаптер Groq',
+        section: 'components',
+        tags: ['компоненты', 'llm', 'адаптер', 'groq'],
+        freshness: 'documented',
+        sources: ['src/llm/groq/groq-adapter.ts'],
+        related: ['comp-llm-adapters', 'comp-adapter-openai-compatible', 'comp-adapter-nvidia-nim', 'providers', 'panel-providers'],
+        body: `## Назначение
+
+Подключать быстрый инференс Groq.
+
+## Возможности
+
+- \`GroqAdapter\` (\`BaseLLMAdapter\`).
+
+## Реализация
+
+- \`src/llm/groq/groq-adapter.ts\`.
+
+## Связи
+
+- Зонтик — [[comp-llm-adapters]]; родственные — [[comp-adapter-openai-compatible]], [[comp-adapter-nvidia-nim]].
+- Панели: [[providers]], [[panel-providers]].
+
+## Проверка работоспособности
+
+- Подтверждено чтением кода (отдельного тест-файла нет).
+
+## Состояние
+
+- Реализовано; автотестом не покрыто.`,
+    },
+    {
+        slug: 'comp-adapter-nvidia-nim',
+        title: 'Компонент: адаптер NVIDIA NIM',
+        section: 'components',
+        tags: ['компоненты', 'llm', 'адаптер', 'nvidia', 'nim'],
+        freshness: 'documented',
+        sources: ['src/llm/nvidia/nvidia-nim-adapter.ts', 'src/llm/nvidia/nvidia-nim-types.ts'],
+        related: ['comp-llm-adapters', 'comp-adapter-groq', 'comp-adapter-cloudflare', 'providers', 'panel-providers'],
+        body: `## Назначение
+
+Подключать инференс NVIDIA NIM.
+
+## Возможности
+
+- \`NvidiaNIMAdapter\` (\`BaseLLMAdapter\`); схема ответа \`NvidiaNIMResponseSchema\` (zod).
+
+## Реализация
+
+- \`src/llm/nvidia/nvidia-nim-adapter.ts\`, \`src/llm/nvidia/nvidia-nim-types.ts\`.
+
+## Связи
+
+- Зонтик — [[comp-llm-adapters]]; родственные — [[comp-adapter-groq]], [[comp-adapter-cloudflare]].
+- Панели: [[providers]], [[panel-providers]].
+
+## Проверка работоспособности
+
+- Подтверждено чтением кода (отдельного тест-файла нет).
+
+## Состояние
+
+- Реализовано; автотестом не покрыто.`,
+    },
+    {
+        slug: 'comp-adapter-cloudflare',
+        title: 'Компонент: адаптер Cloudflare',
+        section: 'components',
+        tags: ['компоненты', 'llm', 'адаптер', 'cloudflare'],
+        freshness: 'documented',
+        sources: ['src/llm/cloudflare/cloudflare-adapter.ts'],
+        related: ['comp-llm-adapters', 'comp-adapter-nvidia-nim', 'comp-adapter-mock', 'providers', 'panel-providers'],
+        body: `## Назначение
+
+Подключать модели Cloudflare (Workers AI).
+
+## Возможности
+
+- \`CloudflareAdapter\` (\`BaseLLMAdapter\`).
+
+## Реализация
+
+- \`src/llm/cloudflare/cloudflare-adapter.ts\`.
+
+## Связи
+
+- Зонтик — [[comp-llm-adapters]]; родственные — [[comp-adapter-nvidia-nim]], [[comp-adapter-mock]].
+- Панели: [[providers]], [[panel-providers]].
+
+## Проверка работоспособности
+
+- Подтверждено чтением кода (отдельного тест-файла нет).
+
+## Состояние
+
+- Реализовано; автотестом не покрыто.`,
+    },
+    {
+        slug: 'comp-adapter-mock',
+        title: 'Компонент: MockAdapter',
+        section: 'components',
+        tags: ['компоненты', 'llm', 'адаптер', 'mock', 'тесты'],
+        freshness: 'documented',
+        sources: ['src/llm/mock/mock-adapter.ts'],
+        related: ['comp-llm-adapters', 'comp-adapter-cloudflare', 'for-developers', 'dev-component-catalog', 'panel-providers'],
+        body: `## Назначение
+
+Давать детерминированные ответы без сети — для тестов, офлайн-режима и демо.
+
+## Возможности
+
+- \`MockAdapter\` — заглушка провайдера.
+
+## Реализация
+
+- \`src/llm/mock/mock-adapter.ts\`.
+
+## Связи
+
+- Зонтик — [[comp-llm-adapters]]; родственный — [[comp-adapter-cloudflare]].
+- Для разработчиков — [[for-developers]], [[dev-component-catalog]].
+
+## Проверка работоспособности
+
+- Подтверждено чтением кода (отдельного тест-файла нет).
+
+## Состояние
+
+- Реализовано; автотестом не покрыто.`,
+    },
+    {
+        slug: 'comp-decorator-resilience',
+        title: 'Компонент: декораторы устойчивости LLM',
+        section: 'components',
+        tags: ['компоненты', 'llm', 'декораторы', 'устойчивость', 'retry'],
+        freshness: 'verified',
+        sources: [
+            'src/llm/decorators/circuit-breaker.ts',
+            'src/llm/decorators/retry-decorator.ts',
+            'src/llm/decorators/rate-limit-decorator.ts',
+            'src/llm/decorators/fallback-decorator.ts',
+        ],
+        related: ['comp-llm-pipeline', 'comp-llm-adapters', 'comp-provider-runtime', 'comp-routing', 'for-developers'],
+        body: `## Назначение
+
+Не падать и не перегружать провайдеров при сбоях и лимитах.
+
+## Возможности
+
+- \`CircuitBreakerDecorator\` — размыкание при отказах.
+- \`RetryDecorator\` — повторы (в т.ч. по \`RetryableError\`).
+- \`RateLimitDecorator\` — ограничение частоты.
+- \`FallbackDecorator\` — резервный путь/провайдер.
+
+## Реализация
+
+- \`src/llm/decorators/circuit-breaker.ts\`, \`retry-decorator.ts\`, \`rate-limit-decorator.ts\`, \`fallback-decorator.ts\`.
+- Все наследуют \`BaseDecorator\` ([[comp-middleware-core]]).
+
+## Связи
+
+- Конвейер — [[comp-llm-pipeline]]; адаптеры — [[comp-llm-adapters]]; рантайм — [[comp-provider-runtime]].
+
+## Проверка работоспособности
+
+- Тесты: \`circuit-breaker.test.ts\`, \`retry-decorator.test.ts\`, \`rate-limit-decorator.test.ts\`, \`fallback-decorator.test.ts\`.
+
+## Состояние
+
+- Реализовано; покрыто тестами.`,
+    },
+    {
+        slug: 'comp-decorator-optimization',
+        title: 'Компонент: декораторы экономии LLM',
+        section: 'components',
+        tags: ['компоненты', 'llm', 'декораторы', 'экономия', 'кэш'],
+        freshness: 'verified',
+        sources: [
+            'src/llm/decorators/cost-manager.ts',
+            'src/llm/decorators/compress-route.ts',
+            'src/llm/decorators/cache-decorator.ts',
+        ],
+        related: ['comp-llm-pipeline', 'comp-budget-pricing', 'comp-llm-adapters', 'comp-provider-runtime', 'for-developers'],
+        body: `## Назначение
+
+Снижать стоимость и объём трафика, не теряя качества.
+
+## Возможности
+
+- \`CostManagerDecorator\` — учёт/контроль расходов.
+- \`CompressRouteDecorator\` — сжатие промптов перед отправкой.
+- \`CacheDecorator\` — кэширование ответов.
+
+## Реализация
+
+- \`src/llm/decorators/cost-manager.ts\`, \`compress-route.ts\`, \`cache-decorator.ts\`.
+- Сжатие опирается на \`src/llm/utils/compression.ts\` (\`compressText\`, \`compressMessages\`, \`getCompressionStats\`).
+
+## Связи
+
+- Конвейер — [[comp-llm-pipeline]]; бюджет — [[comp-budget-pricing]]; адаптеры — [[comp-llm-adapters]].
+
+## Проверка работоспособности
+
+- Тесты: \`cost-manager.test.ts\`, \`compress-route.test.ts\`, \`cache-decorator.test.ts\`.
+
+## Состояние
+
+- Реализовано; покрыто тестами.`,
+    },
+    {
+        slug: 'comp-decorator-routing',
+        title: 'Компонент: декораторы маршрутизации LLM',
+        section: 'components',
+        tags: ['компоненты', 'llm', 'декораторы', 'маршрутизация', 'canary'],
+        freshness: 'verified',
+        sources: [
+            'src/llm/decorators/semantic-router.ts',
+            'src/llm/decorators/canary-router.ts',
+            'src/llm/decorators/priority-queue.ts',
+            'src/llm/decorators/logging-decorator.ts',
+        ],
+        related: ['comp-llm-pipeline', 'comp-routing', 'comp-llm-adapters', 'comp-provider-runtime', 'comp-observability'],
+        body: `## Назначение
+
+Выбирать, куда и в каком порядке отправлять запрос, и логировать это.
+
+## Возможности
+
+- \`SemanticRouterDecorator\` — маршрут по смыслу запроса.
+- \`CanaryRouterDecorator\` — канареечное распределение трафика.
+- \`PriorityQueueDecorator\` — приоритеты запросов.
+- \`LoggingDecorator\` — наблюдаемость вызовов.
+
+## Реализация
+
+- \`src/llm/decorators/semantic-router.ts\`, \`canary-router.ts\`, \`priority-queue.ts\`, \`logging-decorator.ts\`.
+
+## Связи
+
+- Конвейер — [[comp-llm-pipeline]]; маршрут — [[comp-routing]]; наблюдаемость — [[comp-observability]].
+
+## Проверка работоспособности
+
+- Тесты: \`semantic-router.test.ts\`, \`canary-router.test.ts\`, \`priority-queue.test.ts\`, \`logging-decorator.test.ts\`.
+
+## Состояние
+
+- Реализовано; покрыто тестами.`,
+    },
+    {
+        slug: 'comp-middleware-core',
+        title: 'Компонент: ядро LLM-конвейера (базы, middleware, утилиты)',
+        section: 'components',
+        tags: ['компоненты', 'llm', 'ядро', 'middleware', 'утилиты'],
+        freshness: 'verified',
+        sources: [
+            'src/llm/core/base-adapter.ts',
+            'src/llm/core/base-decorator.ts',
+            'src/llm/core/middleware-pipeline.ts',
+            'src/llm/core/request-builder.ts',
+            'src/llm/core/errors.ts',
+            'src/llm/core/flyweight.ts',
+            'src/llm/utils/compression.ts',
+            'src/llm/utils/token-counter.ts',
+        ],
+        related: ['comp-llm-pipeline', 'comp-llm-adapters', 'comp-provider-runtime', 'comp-routing', 'for-developers'],
+        body: `## Назначение
+
+Дать общий фундамент: базовые классы адаптера/декоратора, middleware-конвейер, сборку запроса, ошибки и утилиты.
+
+## Возможности
+
+- \`BaseLLMAdapter\` и \`BaseDecorator\` — база для всех адаптеров и декораторов (\`LLMProviderAdapter\`, \`SendMessageOptions\`, \`BuildBodyConfig\`).
+- \`MiddlewarePipeline\` + \`LLMMiddleware\`: \`ValidationMiddleware\`, \`ModerationMiddleware\`, \`LoggingMiddleware\` (\`MiddlewareContext\`, \`NextFunction\`).
+- \`LLMRequestBuilder\` — сборка запросов.
+- Ошибки: \`RetryableError\`, \`SafetyError\`, \`ModelValidationError\`.
+- Утилиты: \`compressText\`/\`compressMessages\`/\`getCompressionStats\`, \`estimateTokenCount\`/\`countChars\`/\`formatTokenCount\`.
+
+## Реализация
+
+- \`src/llm/core/\`: \`base-adapter.ts\`, \`base-decorator.ts\`, \`middleware-pipeline.ts\`, \`request-builder.ts\`, \`errors.ts\`, \`flyweight.ts\`, \`types.ts\`.
+- \`src/llm/utils/\`: \`compression.ts\`, \`token-counter.ts\`.
+
+## Связи
+
+- Конвейер — [[comp-llm-pipeline]]; адаптеры — [[comp-llm-adapters]]; рантайм — [[comp-provider-runtime]].
+
+## Проверка работоспособности
+
+- Тесты: \`core/middleware-pipeline.test.ts\`, \`core/flyweight.test.ts\`.
+
+## Состояние
+
+- Реализовано; middleware и flyweight покрыты тестами.`,
     },
 ];

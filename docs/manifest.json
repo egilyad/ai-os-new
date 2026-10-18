@@ -50,7 +50,7 @@
     {
       "id": "components",
       "title": "Компоненты и сервисы",
-      "articles": 47
+      "articles": 60
     },
     {
       "id": "notes",
@@ -3917,6 +3917,409 @@
         "src/kernel/services/telegram-service.test.ts",
         "src/kernel/services/notification-webhook-service.test.ts",
         "src/kernel/services/tool-executor.test.ts"
+      ]
+    },
+    {
+      "id": "wiki:comp-adapter-gemini",
+      "type": "article",
+      "slug": "comp-adapter-gemini",
+      "title": "Компонент: адаптер Gemini",
+      "section": "components",
+      "status": "verified",
+      "tags": [
+        "компоненты",
+        "llm",
+        "адаптер",
+        "gemini"
+      ],
+      "sources": [
+        "src/llm/gemini/gemini-adapter.ts",
+        "src/llm/gemini/gemini-request-builder.ts",
+        "src/llm/gemini/gemini-response-mapper.ts",
+        "src/llm/gemini/gemini-stream-parser.ts",
+        "src/llm/gemini/gemini-health.ts",
+        "src/llm/gemini/gemini-model-validator.ts",
+        "src/llm/gemini/gemini-types.ts"
+      ],
+      "related": [
+        "comp-llm-adapters",
+        "comp-llm-pipeline",
+        "comp-provider-runtime",
+        "providers",
+        "panel-providers"
+      ],
+      "reviewed": null,
+      "tests": [
+        "src/llm/gemini/gemini-adapter.test.ts"
+      ]
+    },
+    {
+      "id": "wiki:comp-adapter-anthropic",
+      "type": "article",
+      "slug": "comp-adapter-anthropic",
+      "title": "Компонент: адаптер Anthropic (Claude)",
+      "section": "components",
+      "status": "verified",
+      "tags": [
+        "компоненты",
+        "llm",
+        "адаптер",
+        "anthropic",
+        "claude"
+      ],
+      "sources": [
+        "src/llm/anthropic/anthropic-adapter.ts"
+      ],
+      "related": [
+        "comp-llm-adapters",
+        "comp-llm-pipeline",
+        "comp-adapter-gemini-computer",
+        "providers",
+        "panel-providers"
+      ],
+      "reviewed": null,
+      "tests": [
+        "src/llm/anthropic/anthropic-adapter.test.ts"
+      ]
+    },
+    {
+      "id": "wiki:comp-adapter-gemini-computer",
+      "type": "article",
+      "slug": "comp-adapter-gemini-computer",
+      "title": "Компонент: адаптер Gemini Computer Use",
+      "section": "components",
+      "status": "verified",
+      "tags": [
+        "компоненты",
+        "llm",
+        "адаптер",
+        "gemini",
+        "computer-use"
+      ],
+      "sources": [
+        "src/llm/gemini-computer/gemini-computer-adapter.ts"
+      ],
+      "related": [
+        "comp-llm-adapters",
+        "comp-adapter-gemini",
+        "comp-adapter-anthropic",
+        "comp-simulation-world",
+        "panel-providers"
+      ],
+      "reviewed": null,
+      "tests": [
+        "src/llm/gemini-computer/gemini-computer-adapter.test.ts"
+      ]
+    },
+    {
+      "id": "wiki:comp-adapter-openai-compatible",
+      "type": "article",
+      "slug": "comp-adapter-openai-compatible",
+      "title": "Компонент: адаптер OpenAI-совместимых провайдеров (DeepSeek, Kimi, MiniMax, Qwen, Cerebras)",
+      "section": "components",
+      "status": "verified",
+      "tags": [
+        "компоненты",
+        "llm",
+        "адаптер",
+        "openai",
+        "deepseek",
+        "kimi",
+        "qwen"
+      ],
+      "sources": [
+        "src/llm/openai-compatible/openai-compatible-adapter.ts",
+        "src/llm/openai-compatible/openai-compatible-types.ts",
+        "src/llm/deepseek/deepseek-adapter.ts",
+        "src/llm/kimi/kimi-adapter.ts",
+        "src/llm/minimax/minimax-adapter.ts",
+        "src/llm/qwen/qwen-adapter.ts",
+        "src/llm/cerebras/cerebras-adapter.ts"
+      ],
+      "related": [
+        "comp-llm-adapters",
+        "comp-adapter-groq",
+        "comp-adapter-openrouter",
+        "providers",
+        "panel-providers"
+      ],
+      "reviewed": null,
+      "tests": [
+        "src/llm/openai-compatible/openai-compatible-adapter.test.ts"
+      ]
+    },
+    {
+      "id": "wiki:comp-adapter-openrouter",
+      "type": "article",
+      "slug": "comp-adapter-openrouter",
+      "title": "Компонент: адаптер OpenRouter",
+      "section": "components",
+      "status": "documented",
+      "tags": [
+        "компоненты",
+        "llm",
+        "адаптер",
+        "openrouter"
+      ],
+      "sources": [
+        "src/llm/openrouter/openrouter-adapter.ts",
+        "src/llm/openrouter/openrouter-types.ts"
+      ],
+      "related": [
+        "comp-llm-adapters",
+        "comp-adapter-openai-compatible",
+        "comp-adapter-groq",
+        "providers",
+        "panel-providers"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:comp-adapter-groq",
+      "type": "article",
+      "slug": "comp-adapter-groq",
+      "title": "Компонент: адаптер Groq",
+      "section": "components",
+      "status": "documented",
+      "tags": [
+        "компоненты",
+        "llm",
+        "адаптер",
+        "groq"
+      ],
+      "sources": [
+        "src/llm/groq/groq-adapter.ts"
+      ],
+      "related": [
+        "comp-llm-adapters",
+        "comp-adapter-openai-compatible",
+        "comp-adapter-nvidia-nim",
+        "providers",
+        "panel-providers"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:comp-adapter-nvidia-nim",
+      "type": "article",
+      "slug": "comp-adapter-nvidia-nim",
+      "title": "Компонент: адаптер NVIDIA NIM",
+      "section": "components",
+      "status": "documented",
+      "tags": [
+        "компоненты",
+        "llm",
+        "адаптер",
+        "nvidia",
+        "nim"
+      ],
+      "sources": [
+        "src/llm/nvidia/nvidia-nim-adapter.ts",
+        "src/llm/nvidia/nvidia-nim-types.ts"
+      ],
+      "related": [
+        "comp-llm-adapters",
+        "comp-adapter-groq",
+        "comp-adapter-cloudflare",
+        "providers",
+        "panel-providers"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:comp-adapter-cloudflare",
+      "type": "article",
+      "slug": "comp-adapter-cloudflare",
+      "title": "Компонент: адаптер Cloudflare",
+      "section": "components",
+      "status": "documented",
+      "tags": [
+        "компоненты",
+        "llm",
+        "адаптер",
+        "cloudflare"
+      ],
+      "sources": [
+        "src/llm/cloudflare/cloudflare-adapter.ts"
+      ],
+      "related": [
+        "comp-llm-adapters",
+        "comp-adapter-nvidia-nim",
+        "comp-adapter-mock",
+        "providers",
+        "panel-providers"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:comp-adapter-mock",
+      "type": "article",
+      "slug": "comp-adapter-mock",
+      "title": "Компонент: MockAdapter",
+      "section": "components",
+      "status": "documented",
+      "tags": [
+        "компоненты",
+        "llm",
+        "адаптер",
+        "mock",
+        "тесты"
+      ],
+      "sources": [
+        "src/llm/mock/mock-adapter.ts"
+      ],
+      "related": [
+        "comp-llm-adapters",
+        "comp-adapter-cloudflare",
+        "for-developers",
+        "dev-component-catalog",
+        "panel-providers"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:comp-decorator-resilience",
+      "type": "article",
+      "slug": "comp-decorator-resilience",
+      "title": "Компонент: декораторы устойчивости LLM",
+      "section": "components",
+      "status": "verified",
+      "tags": [
+        "компоненты",
+        "llm",
+        "декораторы",
+        "устойчивость",
+        "retry"
+      ],
+      "sources": [
+        "src/llm/decorators/circuit-breaker.ts",
+        "src/llm/decorators/retry-decorator.ts",
+        "src/llm/decorators/rate-limit-decorator.ts",
+        "src/llm/decorators/fallback-decorator.ts"
+      ],
+      "related": [
+        "comp-llm-pipeline",
+        "comp-llm-adapters",
+        "comp-provider-runtime",
+        "comp-routing",
+        "for-developers"
+      ],
+      "reviewed": null,
+      "tests": [
+        "src/llm/decorators/circuit-breaker.test.ts",
+        "src/llm/decorators/retry-decorator.test.ts",
+        "src/llm/decorators/rate-limit-decorator.test.ts",
+        "src/llm/decorators/fallback-decorator.test.ts"
+      ]
+    },
+    {
+      "id": "wiki:comp-decorator-optimization",
+      "type": "article",
+      "slug": "comp-decorator-optimization",
+      "title": "Компонент: декораторы экономии LLM",
+      "section": "components",
+      "status": "verified",
+      "tags": [
+        "компоненты",
+        "llm",
+        "декораторы",
+        "экономия",
+        "кэш"
+      ],
+      "sources": [
+        "src/llm/decorators/cost-manager.ts",
+        "src/llm/decorators/compress-route.ts",
+        "src/llm/decorators/cache-decorator.ts"
+      ],
+      "related": [
+        "comp-llm-pipeline",
+        "comp-budget-pricing",
+        "comp-llm-adapters",
+        "comp-provider-runtime",
+        "for-developers"
+      ],
+      "reviewed": null,
+      "tests": [
+        "src/llm/decorators/cost-manager.test.ts",
+        "src/llm/decorators/compress-route.test.ts",
+        "src/llm/decorators/cache-decorator.test.ts"
+      ]
+    },
+    {
+      "id": "wiki:comp-decorator-routing",
+      "type": "article",
+      "slug": "comp-decorator-routing",
+      "title": "Компонент: декораторы маршрутизации LLM",
+      "section": "components",
+      "status": "verified",
+      "tags": [
+        "компоненты",
+        "llm",
+        "декораторы",
+        "маршрутизация",
+        "canary"
+      ],
+      "sources": [
+        "src/llm/decorators/semantic-router.ts",
+        "src/llm/decorators/canary-router.ts",
+        "src/llm/decorators/priority-queue.ts",
+        "src/llm/decorators/logging-decorator.ts"
+      ],
+      "related": [
+        "comp-llm-pipeline",
+        "comp-routing",
+        "comp-llm-adapters",
+        "comp-provider-runtime",
+        "comp-observability"
+      ],
+      "reviewed": null,
+      "tests": [
+        "src/llm/decorators/semantic-router.test.ts",
+        "src/llm/decorators/canary-router.test.ts",
+        "src/llm/decorators/priority-queue.test.ts",
+        "src/llm/decorators/logging-decorator.test.ts"
+      ]
+    },
+    {
+      "id": "wiki:comp-middleware-core",
+      "type": "article",
+      "slug": "comp-middleware-core",
+      "title": "Компонент: ядро LLM-конвейера (базы, middleware, утилиты)",
+      "section": "components",
+      "status": "verified",
+      "tags": [
+        "компоненты",
+        "llm",
+        "ядро",
+        "middleware",
+        "утилиты"
+      ],
+      "sources": [
+        "src/llm/core/base-adapter.ts",
+        "src/llm/core/base-decorator.ts",
+        "src/llm/core/middleware-pipeline.ts",
+        "src/llm/core/request-builder.ts",
+        "src/llm/core/errors.ts",
+        "src/llm/core/flyweight.ts",
+        "src/llm/utils/compression.ts",
+        "src/llm/utils/token-counter.ts"
+      ],
+      "related": [
+        "comp-llm-pipeline",
+        "comp-llm-adapters",
+        "comp-provider-runtime",
+        "comp-routing",
+        "for-developers"
+      ],
+      "reviewed": null,
+      "tests": [
+        "src/llm/core/middleware-pipeline.test.ts",
+        "src/llm/core/flyweight.test.ts"
       ]
     },
     {

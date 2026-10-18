@@ -3,7 +3,7 @@
   "generatedBy": "scripts/gen-docs-inventory.mjs",
   "scope": "git-tracked markdown: docs/**/*.md (excluding docs/new drafts and the self-report pages docs-health, docs-inventory) plus repository entry docs (root *.md, .superagents/**, src/kernel/DEPENDENCY_MAP.md)",
   "totals": {
-    "documents": 1017,
+    "documents": 1030,
     "byCategory": {
       "repo": 12,
       "top": 46,
@@ -13,12 +13,12 @@
       "reference": 6,
       "roadmap": 6,
       "superseded": 3,
-      "wiki": 193
+      "wiki": 206
     },
     "byLanguage": {
       "en": 658,
-      "ru": 219,
-      "mixed": 140
+      "ru": 227,
+      "mixed": 145
     }
   },
   "duplicates": {
@@ -6616,6 +6616,78 @@
       "hash": "16ed03b558c230bbadadd1a6e54c84be00d39c99"
     },
     {
+      "path": "docs/wiki/comp-adapter-anthropic.md",
+      "category": "wiki",
+      "language": "mixed",
+      "title": "Компонент: адаптер Anthropic (Claude)",
+      "bytes": 2333,
+      "hash": "a8503113dc56b6a4ae937be7212303fc86ffe725"
+    },
+    {
+      "path": "docs/wiki/comp-adapter-cloudflare.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Компонент: адаптер Cloudflare",
+      "bytes": 1857,
+      "hash": "db9b1889b0aec0fdce83d7d7e7ef648834b44e1a"
+    },
+    {
+      "path": "docs/wiki/comp-adapter-gemini-computer.md",
+      "category": "wiki",
+      "language": "mixed",
+      "title": "Компонент: адаптер Gemini Computer Use",
+      "bytes": 2319,
+      "hash": "8396e873552dc18e88ddec1b249cc3c3637cf3d5"
+    },
+    {
+      "path": "docs/wiki/comp-adapter-gemini.md",
+      "category": "wiki",
+      "language": "mixed",
+      "title": "Компонент: адаптер Gemini",
+      "bytes": 2909,
+      "hash": "de1c851b2e59ac615823c0c79cf7f723c5185722"
+    },
+    {
+      "path": "docs/wiki/comp-adapter-groq.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Компонент: адаптер Groq",
+      "bytes": 2037,
+      "hash": "6003239c3801114c8dc263a6d527ef12a22efaa2"
+    },
+    {
+      "path": "docs/wiki/comp-adapter-mock.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Компонент: MockAdapter",
+      "bytes": 1934,
+      "hash": "d14cd4952ad7e9b2df905551dd8c6e2275a0fe82"
+    },
+    {
+      "path": "docs/wiki/comp-adapter-nvidia-nim.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Компонент: адаптер NVIDIA NIM",
+      "bytes": 1989,
+      "hash": "6512f9201d2b9403148a5a2ae1ec8bf53e083a98"
+    },
+    {
+      "path": "docs/wiki/comp-adapter-openai-compatible.md",
+      "category": "wiki",
+      "language": "mixed",
+      "title": "Компонент: адаптер OpenAI-совместимых провайдеров (DeepSeek, Kimi, MiniMax, Qwen, Cerebras)",
+      "bytes": 2998,
+      "hash": "5703cac2c10f05297554bda39e9fe58324ba1bcd"
+    },
+    {
+      "path": "docs/wiki/comp-adapter-openrouter.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Компонент: адаптер OpenRouter",
+      "bytes": 2308,
+      "hash": "a1c41dd33ca7fc424a0d97b4121168f80b80ede3"
+    },
+    {
       "path": "docs/wiki/comp-advisor-runtime-intelligence.md",
       "category": "wiki",
       "language": "mixed",
@@ -6694,6 +6766,30 @@
       "title": "Компонент: аргументация (debateplus)",
       "bytes": 2713,
       "hash": "33c9659150d9f5e02e70f68c78ff9d7bac50d9f5"
+    },
+    {
+      "path": "docs/wiki/comp-decorator-optimization.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Компонент: декораторы экономии LLM",
+      "bytes": 2307,
+      "hash": "2d6813e4aac8728941844b33f8c7af52904d2c12"
+    },
+    {
+      "path": "docs/wiki/comp-decorator-resilience.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Компонент: декораторы устойчивости LLM",
+      "bytes": 2553,
+      "hash": "10eddcb8acbe93a52495ac990a7e6a916b802791"
+    },
+    {
+      "path": "docs/wiki/comp-decorator-routing.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Компонент: декораторы маршрутизации LLM",
+      "bytes": 2487,
+      "hash": "1bc37a4fc70329b703d712e7d11793e967780dbd"
     },
     {
       "path": "docs/wiki/comp-di-container.md",
@@ -6832,6 +6928,14 @@
       "hash": "47cbf027c3f5b35356833d6d637e025a6349f3a9"
     },
     {
+      "path": "docs/wiki/comp-middleware-core.md",
+      "category": "wiki",
+      "language": "mixed",
+      "title": "Компонент: ядро LLM-конвейера (базы, middleware, утилиты)",
+      "bytes": 2922,
+      "hash": "ebd1ce6a9f859b3f8ef4aa6117a162c7d0318ca6"
+    },
+    {
       "path": "docs/wiki/comp-observability.md",
       "category": "wiki",
       "language": "ru",
@@ -6844,8 +6948,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Компоненты и сервисы: как читать этот раздел",
-      "bytes": 10986,
-      "hash": "cf906f8845ff0b9b3ab5ef740281e785acadd9d4"
+      "bytes": 12290,
+      "hash": "2ab7dce348cecd0af14d708d3ab181b4a9577ed9"
     },
     {
       "path": "docs/wiki/comp-persistence.md",
@@ -7021,7 +7125,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4075,
-      "hash": "6518d0b3f246edd3dfd66ed3d89e52180d231bd8"
+      "hash": "e27b4e3f09e06d6b99b40c9e5ab635891c75fb21"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -7108,8 +7212,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Граф знаний",
-      "bytes": 5015,
-      "hash": "a4b475a1370224164ce76127486d6bb076ae725c"
+      "bytes": 5021,
+      "hash": "da1c284b46f53973ce565c496cfb4a63ed1740e3"
     },
     {
       "path": "docs/wiki/dev-history.md",
@@ -7244,8 +7348,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Карта документации",
-      "bytes": 27068,
-      "hash": "eb84decc266b668a39062570fe8372d78fa03ca6"
+      "bytes": 28306,
+      "hash": "d2c6cd8c920a11c3a8a3c1a734ce434e280cb4df"
     },
     {
       "path": "docs/wiki/docs-standard.md",
@@ -7900,8 +8004,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Wiki SuperAgents OS",
-      "bytes": 19792,
-      "hash": "48f1366778315019ed2614c0596d833100f8d432"
+      "bytes": 21222,
+      "hash": "c0d287e04963d71f55e87178e4b022048a05e2b7"
     },
     {
       "path": "docs/wiki/roadmap-notes.md",
@@ -8156,16 +8260,16 @@
       "category": "repo",
       "language": "en",
       "title": "SuperAgents OS",
-      "bytes": 53092,
-      "hash": "b000000dd7f9eee57a81382a8b9f23dd9cefb18d"
+      "bytes": 53816,
+      "hash": "5a848d70e3b9b92b67f08bf0006b77fff5a26df4"
     },
     {
       "path": "README.md",
       "category": "repo",
       "language": "mixed",
       "title": "SuperAgents OS — Wiki",
-      "bytes": 45099,
-      "hash": "db8dbaf47da40526ffdcc2a1d17a6ef18f4805c2"
+      "bytes": 45906,
+      "hash": "c2f3858206b5fda9b75fc804a8e5d696b7fd8427"
     },
     {
       "path": "SELF_IMPROVEMENT_AUDIT_2026-09-22.md",

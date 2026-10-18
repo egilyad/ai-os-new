@@ -3,22 +3,22 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 1069,
-    "edges": 2805,
+    "nodes": 1104,
+    "edges": 2929,
     "byType": {
       "audit": 67,
-      "code": 422,
-      "test": 127,
+      "code": 442,
+      "test": 129,
       "panel": 259,
-      "article": 194
+      "article": 207
     },
     "byKind": {
       "audit_test": 325,
       "audit_mention": 928,
       "documents": 201,
-      "source": 537,
-      "test": 147,
-      "related": 667
+      "source": 579,
+      "test": 164,
+      "related": 732
     }
   },
   "nodes": [
@@ -2962,6 +2962,16 @@
       "label": "src/llm/anthropic/anthropic-adapter.ts"
     },
     {
+      "id": "file:src/llm/cerebras/cerebras-adapter.ts",
+      "type": "code",
+      "label": "src/llm/cerebras/cerebras-adapter.ts"
+    },
+    {
+      "id": "file:src/llm/cloudflare/cloudflare-adapter.ts",
+      "type": "code",
+      "label": "src/llm/cloudflare/cloudflare-adapter.ts"
+    },
+    {
       "id": "file:src/llm/core/base-adapter.ts",
       "type": "code",
       "label": "src/llm/core/base-adapter.ts"
@@ -2970,6 +2980,21 @@
       "id": "file:src/llm/core/base-decorator.ts",
       "type": "code",
       "label": "src/llm/core/base-decorator.ts"
+    },
+    {
+      "id": "file:src/llm/core/errors.ts",
+      "type": "code",
+      "label": "src/llm/core/errors.ts"
+    },
+    {
+      "id": "file:src/llm/core/flyweight.test.ts",
+      "type": "test",
+      "label": "src/llm/core/flyweight.test.ts"
+    },
+    {
+      "id": "file:src/llm/core/flyweight.ts",
+      "type": "code",
+      "label": "src/llm/core/flyweight.ts"
     },
     {
       "id": "file:src/llm/core/middleware-pipeline.test.ts",
@@ -3097,6 +3122,21 @@
       "label": "src/llm/decorators/semantic-router.ts"
     },
     {
+      "id": "file:src/llm/deepseek/deepseek-adapter.ts",
+      "type": "code",
+      "label": "src/llm/deepseek/deepseek-adapter.ts"
+    },
+    {
+      "id": "file:src/llm/gemini-computer/gemini-computer-adapter.test.ts",
+      "type": "test",
+      "label": "src/llm/gemini-computer/gemini-computer-adapter.test.ts"
+    },
+    {
+      "id": "file:src/llm/gemini-computer/gemini-computer-adapter.ts",
+      "type": "code",
+      "label": "src/llm/gemini-computer/gemini-computer-adapter.ts"
+    },
+    {
       "id": "file:src/llm/gemini/gemini-adapter.test.ts",
       "type": "test",
       "label": "src/llm/gemini/gemini-adapter.test.ts"
@@ -3105,6 +3145,36 @@
       "id": "file:src/llm/gemini/gemini-adapter.ts",
       "type": "code",
       "label": "src/llm/gemini/gemini-adapter.ts"
+    },
+    {
+      "id": "file:src/llm/gemini/gemini-health.ts",
+      "type": "code",
+      "label": "src/llm/gemini/gemini-health.ts"
+    },
+    {
+      "id": "file:src/llm/gemini/gemini-model-validator.ts",
+      "type": "code",
+      "label": "src/llm/gemini/gemini-model-validator.ts"
+    },
+    {
+      "id": "file:src/llm/gemini/gemini-request-builder.ts",
+      "type": "code",
+      "label": "src/llm/gemini/gemini-request-builder.ts"
+    },
+    {
+      "id": "file:src/llm/gemini/gemini-response-mapper.ts",
+      "type": "code",
+      "label": "src/llm/gemini/gemini-response-mapper.ts"
+    },
+    {
+      "id": "file:src/llm/gemini/gemini-stream-parser.ts",
+      "type": "code",
+      "label": "src/llm/gemini/gemini-stream-parser.ts"
+    },
+    {
+      "id": "file:src/llm/gemini/gemini-types.ts",
+      "type": "code",
+      "label": "src/llm/gemini/gemini-types.ts"
     },
     {
       "id": "file:src/llm/groq/groq-adapter.ts",
@@ -3132,9 +3202,29 @@
       "label": "src/llm/http/sse-parser.ts"
     },
     {
+      "id": "file:src/llm/kimi/kimi-adapter.ts",
+      "type": "code",
+      "label": "src/llm/kimi/kimi-adapter.ts"
+    },
+    {
+      "id": "file:src/llm/minimax/minimax-adapter.ts",
+      "type": "code",
+      "label": "src/llm/minimax/minimax-adapter.ts"
+    },
+    {
+      "id": "file:src/llm/mock/mock-adapter.ts",
+      "type": "code",
+      "label": "src/llm/mock/mock-adapter.ts"
+    },
+    {
       "id": "file:src/llm/nvidia/nvidia-nim-adapter.ts",
       "type": "code",
       "label": "src/llm/nvidia/nvidia-nim-adapter.ts"
+    },
+    {
+      "id": "file:src/llm/nvidia/nvidia-nim-types.ts",
+      "type": "code",
+      "label": "src/llm/nvidia/nvidia-nim-types.ts"
     },
     {
       "id": "file:src/llm/openai-compatible/openai-compatible-adapter.test.ts",
@@ -3147,9 +3237,24 @@
       "label": "src/llm/openai-compatible/openai-compatible-adapter.ts"
     },
     {
+      "id": "file:src/llm/openai-compatible/openai-compatible-types.ts",
+      "type": "code",
+      "label": "src/llm/openai-compatible/openai-compatible-types.ts"
+    },
+    {
       "id": "file:src/llm/openrouter/openrouter-adapter.ts",
       "type": "code",
       "label": "src/llm/openrouter/openrouter-adapter.ts"
+    },
+    {
+      "id": "file:src/llm/openrouter/openrouter-types.ts",
+      "type": "code",
+      "label": "src/llm/openrouter/openrouter-types.ts"
+    },
+    {
+      "id": "file:src/llm/qwen/qwen-adapter.ts",
+      "type": "code",
+      "label": "src/llm/qwen/qwen-adapter.ts"
     },
     {
       "id": "file:src/llm/registry/adapter-factory.test.ts",
@@ -3160,6 +3265,11 @@
       "id": "file:src/llm/registry/adapter-factory.ts",
       "type": "code",
       "label": "src/llm/registry/adapter-factory.ts"
+    },
+    {
+      "id": "file:src/llm/utils/compression.ts",
+      "type": "code",
+      "label": "src/llm/utils/compression.ts"
     },
     {
       "id": "file:src/llm/utils/token-counter.ts",
@@ -5071,6 +5181,69 @@
       "status": "documented"
     },
     {
+      "id": "wiki:comp-adapter-anthropic",
+      "type": "article",
+      "label": "Компонент: адаптер Anthropic (Claude)",
+      "section": "components",
+      "status": "verified"
+    },
+    {
+      "id": "wiki:comp-adapter-cloudflare",
+      "type": "article",
+      "label": "Компонент: адаптер Cloudflare",
+      "section": "components",
+      "status": "documented"
+    },
+    {
+      "id": "wiki:comp-adapter-gemini",
+      "type": "article",
+      "label": "Компонент: адаптер Gemini",
+      "section": "components",
+      "status": "verified"
+    },
+    {
+      "id": "wiki:comp-adapter-gemini-computer",
+      "type": "article",
+      "label": "Компонент: адаптер Gemini Computer Use",
+      "section": "components",
+      "status": "verified"
+    },
+    {
+      "id": "wiki:comp-adapter-groq",
+      "type": "article",
+      "label": "Компонент: адаптер Groq",
+      "section": "components",
+      "status": "documented"
+    },
+    {
+      "id": "wiki:comp-adapter-mock",
+      "type": "article",
+      "label": "Компонент: MockAdapter",
+      "section": "components",
+      "status": "documented"
+    },
+    {
+      "id": "wiki:comp-adapter-nvidia-nim",
+      "type": "article",
+      "label": "Компонент: адаптер NVIDIA NIM",
+      "section": "components",
+      "status": "documented"
+    },
+    {
+      "id": "wiki:comp-adapter-openai-compatible",
+      "type": "article",
+      "label": "Компонент: адаптер OpenAI-совместимых провайдеров (DeepSeek, Kimi, MiniMax, Qwen, Cerebras)",
+      "section": "components",
+      "status": "verified"
+    },
+    {
+      "id": "wiki:comp-adapter-openrouter",
+      "type": "article",
+      "label": "Компонент: адаптер OpenRouter",
+      "section": "components",
+      "status": "documented"
+    },
+    {
       "id": "wiki:comp-advisor-runtime-intelligence",
       "type": "article",
       "label": "Компонент: советник и runtime-intelligence",
@@ -5139,6 +5312,27 @@
       "label": "Компонент: аргументация (debateplus)",
       "section": "components",
       "status": "documented"
+    },
+    {
+      "id": "wiki:comp-decorator-optimization",
+      "type": "article",
+      "label": "Компонент: декораторы экономии LLM",
+      "section": "components",
+      "status": "verified"
+    },
+    {
+      "id": "wiki:comp-decorator-resilience",
+      "type": "article",
+      "label": "Компонент: декораторы устойчивости LLM",
+      "section": "components",
+      "status": "verified"
+    },
+    {
+      "id": "wiki:comp-decorator-routing",
+      "type": "article",
+      "label": "Компонент: декораторы маршрутизации LLM",
+      "section": "components",
+      "status": "verified"
     },
     {
       "id": "wiki:comp-di-container",
@@ -5256,6 +5450,13 @@
       "id": "wiki:comp-messaging-integrations",
       "type": "article",
       "label": "Компонент: мессенджеры и внешние интеграции (n8n, Telegram)",
+      "section": "components",
+      "status": "verified"
+    },
+    {
+      "id": "wiki:comp-middleware-core",
+      "type": "article",
+      "label": "Компонент: ядро LLM-конвейера (базы, middleware, утилиты)",
       "section": "components",
       "status": "verified"
     },
@@ -13780,6 +13981,366 @@
       "kind": "related"
     },
     {
+      "from": "wiki:comp-adapter-anthropic",
+      "to": "file:src/llm/anthropic/anthropic-adapter.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-adapter-anthropic",
+      "to": "file:src/llm/anthropic/anthropic-adapter.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-adapter-anthropic",
+      "to": "wiki:comp-adapter-gemini-computer",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-adapter-anthropic",
+      "to": "wiki:comp-llm-adapters",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-adapter-anthropic",
+      "to": "wiki:comp-llm-pipeline",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-adapter-anthropic",
+      "to": "wiki:panel-providers",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-adapter-anthropic",
+      "to": "wiki:providers",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-adapter-cloudflare",
+      "to": "file:src/llm/cloudflare/cloudflare-adapter.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-adapter-cloudflare",
+      "to": "wiki:comp-adapter-mock",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-adapter-cloudflare",
+      "to": "wiki:comp-adapter-nvidia-nim",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-adapter-cloudflare",
+      "to": "wiki:comp-llm-adapters",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-adapter-cloudflare",
+      "to": "wiki:panel-providers",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-adapter-cloudflare",
+      "to": "wiki:providers",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-adapter-gemini-computer",
+      "to": "file:src/llm/gemini-computer/gemini-computer-adapter.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-adapter-gemini-computer",
+      "to": "file:src/llm/gemini-computer/gemini-computer-adapter.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-adapter-gemini-computer",
+      "to": "wiki:comp-adapter-anthropic",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-adapter-gemini-computer",
+      "to": "wiki:comp-adapter-gemini",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-adapter-gemini-computer",
+      "to": "wiki:comp-llm-adapters",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-adapter-gemini-computer",
+      "to": "wiki:comp-simulation-world",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-adapter-gemini-computer",
+      "to": "wiki:panel-providers",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-adapter-gemini",
+      "to": "file:src/llm/gemini/gemini-adapter.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-adapter-gemini",
+      "to": "file:src/llm/gemini/gemini-adapter.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-adapter-gemini",
+      "to": "file:src/llm/gemini/gemini-health.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-adapter-gemini",
+      "to": "file:src/llm/gemini/gemini-model-validator.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-adapter-gemini",
+      "to": "file:src/llm/gemini/gemini-request-builder.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-adapter-gemini",
+      "to": "file:src/llm/gemini/gemini-response-mapper.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-adapter-gemini",
+      "to": "file:src/llm/gemini/gemini-stream-parser.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-adapter-gemini",
+      "to": "file:src/llm/gemini/gemini-types.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-adapter-gemini",
+      "to": "wiki:comp-llm-adapters",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-adapter-gemini",
+      "to": "wiki:comp-llm-pipeline",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-adapter-gemini",
+      "to": "wiki:comp-provider-runtime",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-adapter-gemini",
+      "to": "wiki:panel-providers",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-adapter-gemini",
+      "to": "wiki:providers",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-adapter-groq",
+      "to": "file:src/llm/groq/groq-adapter.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-adapter-groq",
+      "to": "wiki:comp-adapter-nvidia-nim",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-adapter-groq",
+      "to": "wiki:comp-adapter-openai-compatible",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-adapter-groq",
+      "to": "wiki:comp-llm-adapters",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-adapter-groq",
+      "to": "wiki:panel-providers",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-adapter-groq",
+      "to": "wiki:providers",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-adapter-mock",
+      "to": "file:src/llm/mock/mock-adapter.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-adapter-mock",
+      "to": "wiki:comp-adapter-cloudflare",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-adapter-mock",
+      "to": "wiki:comp-llm-adapters",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-adapter-mock",
+      "to": "wiki:dev-component-catalog",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-adapter-mock",
+      "to": "wiki:for-developers",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-adapter-mock",
+      "to": "wiki:panel-providers",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-adapter-nvidia-nim",
+      "to": "file:src/llm/nvidia/nvidia-nim-adapter.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-adapter-nvidia-nim",
+      "to": "file:src/llm/nvidia/nvidia-nim-types.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-adapter-nvidia-nim",
+      "to": "wiki:comp-adapter-cloudflare",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-adapter-nvidia-nim",
+      "to": "wiki:comp-adapter-groq",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-adapter-nvidia-nim",
+      "to": "wiki:comp-llm-adapters",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-adapter-nvidia-nim",
+      "to": "wiki:panel-providers",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-adapter-nvidia-nim",
+      "to": "wiki:providers",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-adapter-openai-compatible",
+      "to": "file:src/llm/cerebras/cerebras-adapter.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-adapter-openai-compatible",
+      "to": "file:src/llm/deepseek/deepseek-adapter.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-adapter-openai-compatible",
+      "to": "file:src/llm/kimi/kimi-adapter.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-adapter-openai-compatible",
+      "to": "file:src/llm/minimax/minimax-adapter.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-adapter-openai-compatible",
+      "to": "file:src/llm/openai-compatible/openai-compatible-adapter.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-adapter-openai-compatible",
+      "to": "file:src/llm/openai-compatible/openai-compatible-adapter.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-adapter-openai-compatible",
+      "to": "file:src/llm/openai-compatible/openai-compatible-types.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-adapter-openai-compatible",
+      "to": "file:src/llm/qwen/qwen-adapter.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-adapter-openai-compatible",
+      "to": "wiki:comp-adapter-groq",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-adapter-openai-compatible",
+      "to": "wiki:comp-adapter-openrouter",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-adapter-openai-compatible",
+      "to": "wiki:comp-llm-adapters",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-adapter-openai-compatible",
+      "to": "wiki:panel-providers",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-adapter-openai-compatible",
+      "to": "wiki:providers",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-adapter-openrouter",
+      "to": "file:src/llm/openrouter/openrouter-adapter.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-adapter-openrouter",
+      "to": "file:src/llm/openrouter/openrouter-types.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-adapter-openrouter",
+      "to": "wiki:comp-adapter-groq",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-adapter-openrouter",
+      "to": "wiki:comp-adapter-openai-compatible",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-adapter-openrouter",
+      "to": "wiki:comp-llm-adapters",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-adapter-openrouter",
+      "to": "wiki:panel-providers",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-adapter-openrouter",
+      "to": "wiki:providers",
+      "kind": "related"
+    },
+    {
       "from": "wiki:comp-advisor-runtime-intelligence",
       "to": "file:src/kernel/services/advisor-service.ts",
       "kind": "source"
@@ -14312,6 +14873,191 @@
     {
       "from": "wiki:comp-debateplus",
       "to": "wiki:panel-debate-toolkit",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-decorator-optimization",
+      "to": "file:src/llm/decorators/cache-decorator.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-decorator-optimization",
+      "to": "file:src/llm/decorators/cache-decorator.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-decorator-optimization",
+      "to": "file:src/llm/decorators/compress-route.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-decorator-optimization",
+      "to": "file:src/llm/decorators/compress-route.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-decorator-optimization",
+      "to": "file:src/llm/decorators/cost-manager.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-decorator-optimization",
+      "to": "file:src/llm/decorators/cost-manager.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-decorator-optimization",
+      "to": "wiki:comp-budget-pricing",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-decorator-optimization",
+      "to": "wiki:comp-llm-adapters",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-decorator-optimization",
+      "to": "wiki:comp-llm-pipeline",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-decorator-optimization",
+      "to": "wiki:comp-provider-runtime",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-decorator-optimization",
+      "to": "wiki:for-developers",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-decorator-resilience",
+      "to": "file:src/llm/decorators/circuit-breaker.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-decorator-resilience",
+      "to": "file:src/llm/decorators/circuit-breaker.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-decorator-resilience",
+      "to": "file:src/llm/decorators/fallback-decorator.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-decorator-resilience",
+      "to": "file:src/llm/decorators/fallback-decorator.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-decorator-resilience",
+      "to": "file:src/llm/decorators/rate-limit-decorator.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-decorator-resilience",
+      "to": "file:src/llm/decorators/rate-limit-decorator.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-decorator-resilience",
+      "to": "file:src/llm/decorators/retry-decorator.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-decorator-resilience",
+      "to": "file:src/llm/decorators/retry-decorator.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-decorator-resilience",
+      "to": "wiki:comp-llm-adapters",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-decorator-resilience",
+      "to": "wiki:comp-llm-pipeline",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-decorator-resilience",
+      "to": "wiki:comp-provider-runtime",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-decorator-resilience",
+      "to": "wiki:comp-routing",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-decorator-resilience",
+      "to": "wiki:for-developers",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-decorator-routing",
+      "to": "file:src/llm/decorators/canary-router.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-decorator-routing",
+      "to": "file:src/llm/decorators/canary-router.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-decorator-routing",
+      "to": "file:src/llm/decorators/logging-decorator.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-decorator-routing",
+      "to": "file:src/llm/decorators/logging-decorator.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-decorator-routing",
+      "to": "file:src/llm/decorators/priority-queue.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-decorator-routing",
+      "to": "file:src/llm/decorators/priority-queue.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-decorator-routing",
+      "to": "file:src/llm/decorators/semantic-router.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-decorator-routing",
+      "to": "file:src/llm/decorators/semantic-router.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-decorator-routing",
+      "to": "wiki:comp-llm-adapters",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-decorator-routing",
+      "to": "wiki:comp-llm-pipeline",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-decorator-routing",
+      "to": "wiki:comp-observability",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-decorator-routing",
+      "to": "wiki:comp-provider-runtime",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-decorator-routing",
+      "to": "wiki:comp-routing",
       "kind": "related"
     },
     {
@@ -15357,6 +16103,81 @@
     {
       "from": "wiki:comp-messaging-integrations",
       "to": "wiki:panel-integrations",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-middleware-core",
+      "to": "file:src/llm/core/base-adapter.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-middleware-core",
+      "to": "file:src/llm/core/base-decorator.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-middleware-core",
+      "to": "file:src/llm/core/errors.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-middleware-core",
+      "to": "file:src/llm/core/flyweight.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-middleware-core",
+      "to": "file:src/llm/core/flyweight.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-middleware-core",
+      "to": "file:src/llm/core/middleware-pipeline.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-middleware-core",
+      "to": "file:src/llm/core/middleware-pipeline.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-middleware-core",
+      "to": "file:src/llm/core/request-builder.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-middleware-core",
+      "to": "file:src/llm/utils/compression.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-middleware-core",
+      "to": "file:src/llm/utils/token-counter.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-middleware-core",
+      "to": "wiki:comp-llm-adapters",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-middleware-core",
+      "to": "wiki:comp-llm-pipeline",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-middleware-core",
+      "to": "wiki:comp-provider-runtime",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-middleware-core",
+      "to": "wiki:comp-routing",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-middleware-core",
+      "to": "wiki:for-developers",
       "kind": "related"
     },
     {

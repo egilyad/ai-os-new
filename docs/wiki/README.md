@@ -5,7 +5,7 @@
 > Полная документация системы: панели, агенты, дебаты, память, провайдеры, диагностика, история разработки, архитектура и руководства для разработчиков.
 > Страницы автосгенерированы из корпуса Wiki (`scripts/gen-wiki-docs.mjs`). Та же документация доступна в приложении в панели «Wiki».
 
-Всего материалов: **194** в 12 разделах.
+Всего материалов: **207** в 12 разделах.
 
 > Разработчикам: начните с [Обзор для разработчиков](./dev-overview.md), затем [Структура](./dev-layout.md) и [Каталог компонентов](./dev-component-catalog.md).
 
@@ -22,7 +22,7 @@
 | Диагностика | 2 |
 | История разработки | 27 |
 | Архитектура | 2 |
-| Компоненты и сервисы | 47 |
+| Компоненты и сервисы | 60 |
 | Заметки | 1 |
 | Разработчикам | 30 |
 
@@ -169,7 +169,7 @@
 - [Архитектура и связи](./architecture.md) — _documented_
 - [Карта системы](./dev-system-map.md) — _verified_
 
-## Компоненты и сервисы (47)
+## Компоненты и сервисы (60)
 
 - [Компоненты и сервисы: как читать этот раздел](./comp-overview.md) — _verified_
 - [Компонент: запуск ядра (bootstrap, container, runtime)](./comp-kernel-boot.md) — _verified_
@@ -218,6 +218,19 @@
 - [Компонент: адаптеры провайдеров LLM](./comp-llm-adapters.md) — _verified_
 - [Компонент: секреты и распределённые блокировки](./comp-secrets-locks.md) — _verified_
 - [Компонент: мессенджеры и внешние интеграции (n8n, Telegram)](./comp-messaging-integrations.md) — _verified_
+- [Компонент: адаптер Gemini](./comp-adapter-gemini.md) — _verified_
+- [Компонент: адаптер Anthropic (Claude)](./comp-adapter-anthropic.md) — _verified_
+- [Компонент: адаптер Gemini Computer Use](./comp-adapter-gemini-computer.md) — _verified_
+- [Компонент: адаптер OpenAI-совместимых провайдеров (DeepSeek, Kimi, MiniMax, Qwen, Cerebras)](./comp-adapter-openai-compatible.md) — _verified_
+- [Компонент: адаптер OpenRouter](./comp-adapter-openrouter.md) — _documented_
+- [Компонент: адаптер Groq](./comp-adapter-groq.md) — _documented_
+- [Компонент: адаптер NVIDIA NIM](./comp-adapter-nvidia-nim.md) — _documented_
+- [Компонент: адаптер Cloudflare](./comp-adapter-cloudflare.md) — _documented_
+- [Компонент: MockAdapter](./comp-adapter-mock.md) — _documented_
+- [Компонент: декораторы устойчивости LLM](./comp-decorator-resilience.md) — _verified_
+- [Компонент: декораторы экономии LLM](./comp-decorator-optimization.md) — _verified_
+- [Компонент: декораторы маршрутизации LLM](./comp-decorator-routing.md) — _verified_
+- [Компонент: ядро LLM-конвейера (базы, middleware, утилиты)](./comp-middleware-core.md) — _verified_
 
 ## Заметки (1)
 
