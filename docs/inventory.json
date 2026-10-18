@@ -3,10 +3,10 @@
   "generatedBy": "scripts/gen-docs-inventory.mjs",
   "scope": "git-tracked markdown: docs/**/*.md (excluding docs/new drafts and the self-report pages docs-health, docs-inventory) plus repository entry docs (root *.md, .superagents/**, src/kernel/DEPENDENCY_MAP.md)",
   "totals": {
-    "documents": 1045,
+    "documents": 1046,
     "byCategory": {
       "repo": 12,
-      "top": 46,
+      "top": 47,
       "active": 1,
       "audits": 67,
       "history": 683,
@@ -16,7 +16,7 @@
       "wiki": 221
     },
     "byLanguage": {
-      "en": 658,
+      "en": 659,
       "ru": 235,
       "mixed": 152
     }
@@ -84,8 +84,8 @@
       "category": "repo",
       "language": "en",
       "title": "SuperAgents OS — Agent Guide",
-      "bytes": 121241,
-      "hash": "8c58257e0411425b237611476f0d05fadf1fbf15"
+      "bytes": 4494,
+      "hash": "989b1ab9ee3eec927b7d78b63b705b9625e12e2b"
     },
     {
       "path": "CHANGELOG_RU.md",
@@ -6536,6 +6536,14 @@
       "hash": "40bada8e2638f2dc31116f4f92b806d1b154b643"
     },
     {
+      "path": "docs/SESSION_LOG.md",
+      "category": "top",
+      "language": "en",
+      "title": "SuperAgents OS — Журнал сессий (Session Log)",
+      "bytes": 117027,
+      "hash": "92770058e65a25cc7f01e840a729d670d1461d49"
+    },
+    {
       "path": "docs/STRUCTURE.md",
       "category": "top",
       "language": "en",
@@ -7245,7 +7253,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4075,
-      "hash": "6b5211ced0a29f6c56b4f8c3ac86e62f3ebb8df5"
+      "hash": "ad5f42a047681bce1515695d452beda33d0acb8f"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -7468,8 +7476,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Карта документации",
-      "bytes": 29803,
-      "hash": "1d05bfe7059c5b5feef1075dbbcd0886719970b5"
+      "bytes": 29934,
+      "hash": "300b08e20f8320f2e109f75f8c5eefdc134e3621"
     },
     {
       "path": "docs/wiki/docs-standard.md",

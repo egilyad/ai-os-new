@@ -20,7 +20,7 @@
 - Панель **Wiki** в приложении и сайт `/wiki/` — тот же корпус статей
 - [`docs/manifest.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/manifest.json) — машиночитаемый индекс сущностей (статьи, панели)
 - [`docs/entity-model.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/entity-model.json) — стандарт документации
-- [`docs/inventory.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/inventory.json) — инвентарь всех `docs/**` (1045 документов)
+- [`docs/inventory.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/inventory.json) — инвентарь всех `docs/**` (1046 документов)
 
 ## Вики по разделам
 
@@ -95,6 +95,7 @@
 - [Navigation Map — зафиксированная раскладка меню](https://github.com/egilyad/ai-os-new/blob/main/docs/NAVIGATION_MAP.md)
 - [SuperAgents OS — Documentation Map](https://github.com/egilyad/ai-os-new/blob/main/docs/README.md)
 - [Сервисы Ядра — Полный Справочник](https://github.com/egilyad/ai-os-new/blob/main/docs/SERVICES_RU.md)
+- [SuperAgents OS — Журнал сессий (Session Log)](https://github.com/egilyad/ai-os-new/blob/main/docs/SESSION_LOG.md)
 - [SuperAgents OS — Project Structure](https://github.com/egilyad/ai-os-new/blob/main/docs/STRUCTURE.md)
 - [SuperAgents OS — Системный Манифест](https://github.com/egilyad/ai-os-new/blob/main/docs/SYSTEM_MANIFEST_RU.md)
 - [SuperAgents OS — System Manifest (Quick Reference)](https://github.com/egilyad/ai-os-new/blob/main/docs/SYSTEM_MANIFEST.md)
