@@ -50,7 +50,7 @@
     {
       "id": "components",
       "title": "Компоненты и сервисы",
-      "articles": 72
+      "articles": 73
     },
     {
       "id": "notes",
@@ -4769,6 +4769,49 @@
         "src/kernel/service-registration/phase71-computer-use-loop.test.ts",
         "src/components/SimulationPanel/SimulationPanel.test.tsx",
         "src/components/AquariumPanel/AquariumPanel.test.tsx"
+      ]
+    },
+    {
+      "id": "wiki:comp-flow-restore",
+      "type": "article",
+      "slug": "comp-flow-restore",
+      "title": "Сквозной контур: восстановление сессии",
+      "section": "components",
+      "status": "verified",
+      "tags": [
+        "компоненты",
+        "контур",
+        "восстановление",
+        "загрузка",
+        "bootstrap",
+        "гидрация"
+      ],
+      "sources": [
+        "src/main.tsx",
+        "src/kernel/runtime.ts",
+        "src/kernel/bootstrap.ts",
+        "src/kernel/bootstrap-key-init.ts",
+        "src/kernel/service-registration/index.ts",
+        "src/kernel/services/key-storage-hydrator.ts",
+        "src/kernel/services/debate-runtime/debate-persistence-manager.ts",
+        "src/stores/chat/hydration.ts",
+        "src/kernel/services/event-sourcing/checkpoint-store.ts",
+        "src/kernel/services/reconnection-service.ts",
+        "src/kernel/services/snapshot-service.ts",
+        "src/kernel/services/time-machine-service.ts"
+      ],
+      "related": [
+        "comp-persistence",
+        "comp-flow-chat",
+        "comp-flow-debate",
+        "comp-flow-knowledge"
+      ],
+      "reviewed": null,
+      "tests": [
+        "src/kernel/services/debate-runtime/debate-persistence-manager.test.ts",
+        "src/kernel/services/reconnection-service.test.ts",
+        "src/kernel/services/snapshot-service.test.ts",
+        "src/kernel/services/time-machine-service.test.ts"
       ]
     },
     {

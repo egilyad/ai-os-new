@@ -3,22 +3,22 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 1193,
-    "edges": 3128,
+    "nodes": 1202,
+    "edges": 3148,
     "byType": {
       "audit": 67,
-      "code": 501,
-      "test": 146,
+      "code": 507,
+      "test": 148,
       "panel": 259,
-      "article": 220
+      "article": 221
     },
     "byKind": {
       "audit_test": 325,
       "audit_mention": 928,
       "documents": 201,
-      "source": 673,
-      "test": 203,
-      "related": 798
+      "source": 685,
+      "test": 207,
+      "related": 802
     }
   },
   "nodes": [
@@ -1757,6 +1757,11 @@
       "label": "src/kernel/agents/registry.ts"
     },
     {
+      "id": "file:src/kernel/bootstrap-key-init.ts",
+      "type": "code",
+      "label": "src/kernel/bootstrap-key-init.ts"
+    },
+    {
       "id": "file:src/kernel/bootstrap-phases.ts",
       "type": "code",
       "label": "src/kernel/bootstrap-phases.ts"
@@ -1945,6 +1950,11 @@
       "id": "file:src/kernel/service-helper.ts",
       "type": "code",
       "label": "src/kernel/service-helper.ts"
+    },
+    {
+      "id": "file:src/kernel/service-registration/index.ts",
+      "type": "code",
+      "label": "src/kernel/service-registration/index.ts"
     },
     {
       "id": "file:src/kernel/service-registration/phase21-invocation.ts",
@@ -2617,6 +2627,11 @@
       "label": "src/kernel/services/key-state-store.ts"
     },
     {
+      "id": "file:src/kernel/services/key-storage-hydrator.ts",
+      "type": "code",
+      "label": "src/kernel/services/key-storage-hydrator.ts"
+    },
+    {
       "id": "file:src/kernel/services/knowledge-generator/knowledge-generator-service.test.ts",
       "type": "test",
       "label": "src/kernel/services/knowledge-generator/knowledge-generator-service.test.ts"
@@ -2882,6 +2897,16 @@
       "label": "src/kernel/services/rag/reranker-service.ts"
     },
     {
+      "id": "file:src/kernel/services/reconnection-service.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/reconnection-service.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/reconnection-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/reconnection-service.ts"
+    },
+    {
       "id": "file:src/kernel/services/rivals/planner-service.ts",
       "type": "code",
       "label": "src/kernel/services/rivals/planner-service.ts"
@@ -3115,6 +3140,16 @@
       "id": "file:src/kernel/services/temporal-replay-service.ts",
       "type": "code",
       "label": "src/kernel/services/temporal-replay-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/time-machine-service.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/time-machine-service.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/time-machine-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/time-machine-service.ts"
     },
     {
       "id": "file:src/kernel/services/timeline-service.ts",
@@ -3630,6 +3665,11 @@
       "id": "file:src/llm/utils/token-counter.ts",
       "type": "code",
       "label": "src/llm/utils/token-counter.ts"
+    },
+    {
+      "id": "file:src/main.tsx",
+      "type": "code",
+      "label": "src/main.tsx"
     },
     {
       "id": "file:src/route-imports.ts",
@@ -5788,6 +5828,13 @@
       "id": "wiki:comp-flow-multiagent",
       "type": "article",
       "label": "Сквозной контур: мультиагентное исполнение",
+      "section": "components",
+      "status": "verified"
+    },
+    {
+      "id": "wiki:comp-flow-restore",
+      "type": "article",
+      "label": "Сквозной контур: восстановление сессии",
       "section": "components",
       "status": "verified"
     },
@@ -16399,6 +16446,106 @@
     {
       "from": "wiki:comp-flow-multiagent",
       "to": "wiki:comp-invocation-meta",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-flow-restore",
+      "to": "file:src/kernel/bootstrap-key-init.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-flow-restore",
+      "to": "file:src/kernel/bootstrap.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-flow-restore",
+      "to": "file:src/kernel/runtime.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-flow-restore",
+      "to": "file:src/kernel/service-registration/index.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-flow-restore",
+      "to": "file:src/kernel/services/debate-runtime/debate-persistence-manager.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-flow-restore",
+      "to": "file:src/kernel/services/debate-runtime/debate-persistence-manager.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-flow-restore",
+      "to": "file:src/kernel/services/event-sourcing/checkpoint-store.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-flow-restore",
+      "to": "file:src/kernel/services/key-storage-hydrator.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-flow-restore",
+      "to": "file:src/kernel/services/reconnection-service.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-flow-restore",
+      "to": "file:src/kernel/services/reconnection-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-flow-restore",
+      "to": "file:src/kernel/services/snapshot-service.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-flow-restore",
+      "to": "file:src/kernel/services/snapshot-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-flow-restore",
+      "to": "file:src/kernel/services/time-machine-service.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-flow-restore",
+      "to": "file:src/kernel/services/time-machine-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-flow-restore",
+      "to": "file:src/main.tsx",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-flow-restore",
+      "to": "file:src/stores/chat/hydration.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-flow-restore",
+      "to": "wiki:comp-flow-chat",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-flow-restore",
+      "to": "wiki:comp-flow-debate",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-flow-restore",
+      "to": "wiki:comp-flow-knowledge",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-flow-restore",
+      "to": "wiki:comp-persistence",
       "kind": "related"
     },
     {
