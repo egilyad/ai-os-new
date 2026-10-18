@@ -41,7 +41,7 @@ export const COMPONENT_ARTICLES: WikiArticle[] = [
 
 ## Карта статей о компонентах
 
-- **Инфраструктура ядра:** [[comp-kernel-boot]] (bootstrap, container, runtime), [[comp-di-container]] (DI и lazyService), [[comp-event-bus]] (шина событий), [[comp-transactions]] (транзакции), [[comp-config]] (конфигурация и настройки), [[comp-security-crypto]] (шифрование at-rest).
+- **Инфраструктура ядра:** [[comp-kernel-boot]] (bootstrap, container, runtime), [[comp-di-container]] (DI и lazyService), [[comp-event-bus]] (шина событий), [[comp-transactions]] (транзакции), [[comp-config]] (конфигурация и настройки), [[comp-security-crypto]] (шифрование at-rest), [[comp-consistency]] (консистентность и инварианты).
 - **Данные:** [[comp-persistence]] (Dexie и storage-адаптеры).
 - **Провайдеры и деньги:** [[comp-key-management]] (ключи), [[comp-routing]] (роутинг), [[comp-budget-pricing]] (бюджет и цены).
 - **Люди и инструменты:** [[comp-agents-roles-skills]], [[comp-tools-mcp]] (инструменты, MCP, sandbox), [[comp-policy-security]] (политики, секреты, вебхуки).

@@ -6844,8 +6844,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Компоненты и сервисы: как читать этот раздел",
-      "bytes": 10838,
-      "hash": "e36d229902bedcb8ff81c33cc082d8e04e3e1d05"
+      "bytes": 10986,
+      "hash": "cf906f8845ff0b9b3ab5ef740281e785acadd9d4"
     },
     {
       "path": "docs/wiki/comp-persistence.md",
@@ -7021,7 +7021,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4075,
-      "hash": "4e512fd877fcdf573d9960f8a516d9e7dc9ef3fc"
+      "hash": "6518d0b3f246edd3dfd66ed3d89e52180d231bd8"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -7245,7 +7245,7 @@
       "language": "mixed",
       "title": "Карта документации",
       "bytes": 27068,
-      "hash": "9ff06c7f4f96a10fd6a236b17e1fbee5fcefdc1b"
+      "hash": "eb84decc266b668a39062570fe8372d78fa03ca6"
     },
     {
       "path": "docs/wiki/docs-standard.md",
