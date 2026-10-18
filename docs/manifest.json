@@ -50,7 +50,7 @@
     {
       "id": "components",
       "title": "Компоненты и сервисы",
-      "articles": 38
+      "articles": 43
     },
     {
       "id": "notes",
@@ -3597,6 +3597,162 @@
         "src/kernel/services/computer/sidecar-computer-executor.test.ts",
         "src/kernel/services/parity/tool-runner-service.test.ts"
       ]
+    },
+    {
+      "id": "wiki:comp-synthesis-forum",
+      "type": "article",
+      "slug": "comp-synthesis-forum",
+      "title": "Компонент: синтез, форум и junction-движок",
+      "section": "components",
+      "status": "documented",
+      "tags": [
+        "компоненты",
+        "синтез",
+        "форум",
+        "junction"
+      ],
+      "sources": [
+        "src/kernel/services/synthesis/synthesis-engine-service.ts",
+        "src/kernel/services/forum/forum-service.ts",
+        "src/kernel/services/junction-engine/junction-engine-service.ts"
+      ],
+      "related": [
+        "panel-synthesis",
+        "panel-forum",
+        "panel-provenance-junctions",
+        "panel-group-chat",
+        "comp-crews-councils"
+      ],
+      "reviewed": null,
+      "tests": [
+        "src/kernel/services/synthesis/synthesis-engine-service.test.ts",
+        "src/kernel/services/forum/forum-service.test.ts",
+        "src/kernel/services/junction-engine/junction-engine-service.test.ts"
+      ]
+    },
+    {
+      "id": "wiki:comp-storage-timeline",
+      "type": "article",
+      "slug": "comp-storage-timeline",
+      "title": "Компонент: хранилище, таймлайн и проекции",
+      "section": "components",
+      "status": "documented",
+      "tags": [
+        "компоненты",
+        "хранилище",
+        "таймлайн",
+        "проекции"
+      ],
+      "sources": [
+        "src/kernel/services/storage/dexie-storage.ts",
+        "src/kernel/services/storage/local-storage-adapter.ts",
+        "src/kernel/services/timeline/execution-viz-service.ts",
+        "src/kernel/services/timeline/timeline-map.ts",
+        "src/kernel/services/projections/router-projection.ts"
+      ],
+      "related": [
+        "comp-persistence",
+        "dev-store-catalog",
+        "comp-observability",
+        "execution-trail",
+        "panel-history-audit"
+      ],
+      "reviewed": null,
+      "tests": [
+        "src/kernel/services/timeline/execution-viz-service.test.ts"
+      ]
+    },
+    {
+      "id": "wiki:comp-tool-capability",
+      "type": "article",
+      "slug": "comp-tool-capability",
+      "title": "Компонент: каталог инструментов, способности и политики",
+      "section": "components",
+      "status": "documented",
+      "tags": [
+        "компоненты",
+        "инструменты",
+        "способности",
+        "политики"
+      ],
+      "sources": [
+        "src/kernel/services/catalog/tool-catalog-service.ts",
+        "src/kernel/services/capability/capability-resolver.ts",
+        "src/kernel/services/capability/agent-factory.ts",
+        "src/kernel/services/routing-policy/routing-policy-service.ts",
+        "src/kernel/services/sandbox/code-sandbox-service.ts",
+        "src/kernel/services/deploy/deploy-bundle-service.ts"
+      ],
+      "related": [
+        "comp-tools-mcp",
+        "panel-playground",
+        "panel-infra-meta",
+        "comp-policy-security",
+        "comp-routing"
+      ],
+      "reviewed": null,
+      "tests": [
+        "src/kernel/services/catalog/tool-catalog-service.test.ts",
+        "src/kernel/services/sandbox/code-sandbox-service.test.ts",
+        "src/kernel/services/deploy/deploy-bundle-service.test.ts"
+      ]
+    },
+    {
+      "id": "wiki:comp-graph-eventbridge",
+      "type": "article",
+      "slug": "comp-graph-eventbridge",
+      "title": "Компонент: графы режимов и мост событий",
+      "section": "components",
+      "status": "documented",
+      "tags": [
+        "компоненты",
+        "графы",
+        "event-bridge",
+        "проекции"
+      ],
+      "sources": [
+        "src/kernel/services/graph/graph-service.ts",
+        "src/kernel/services/graph/graph-modes.ts",
+        "src/kernel/services/event-bridge/event-bridge.ts",
+        "src/kernel/services/event-bridge/projection-registry.ts"
+      ],
+      "related": [
+        "comp-event-bus",
+        "comp-cognitive-orchestration",
+        "panel-workflows",
+        "dev-graph",
+        "comp-storage-timeline"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:comp-debateplus",
+      "type": "article",
+      "slug": "comp-debateplus",
+      "title": "Компонент: аргументация (debateplus)",
+      "section": "components",
+      "status": "documented",
+      "tags": [
+        "компоненты",
+        "аргументация",
+        "дебаты",
+        "консенсус"
+      ],
+      "sources": [
+        "src/kernel/services/debateplus/argtech-service.ts",
+        "src/kernel/services/debateplus/format-service.ts",
+        "src/kernel/services/debateplus/argtech-consensus-bridge.ts"
+      ],
+      "related": [
+        "comp-debate-runtime",
+        "panel-debate-toolkit",
+        "comp-consistency",
+        "debates",
+        "comp-synthesis-forum"
+      ],
+      "reviewed": null,
+      "tests": []
     },
     {
       "id": "wiki:zone-1",

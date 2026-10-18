@@ -3,7 +3,7 @@
   "generatedBy": "scripts/gen-docs-inventory.mjs",
   "scope": "git-tracked markdown: docs/**/*.md (excluding docs/new drafts and the self-report pages docs-health, docs-inventory) plus repository entry docs (root *.md, .superagents/**, src/kernel/DEPENDENCY_MAP.md)",
   "totals": {
-    "documents": 1008,
+    "documents": 1013,
     "byCategory": {
       "repo": 12,
       "top": 46,
@@ -13,11 +13,11 @@
       "reference": 6,
       "roadmap": 6,
       "superseded": 3,
-      "wiki": 184
+      "wiki": 189
     },
     "byLanguage": {
       "en": 658,
-      "ru": 212,
+      "ru": 217,
       "mixed": 138
     }
   },
@@ -6688,6 +6688,14 @@
       "hash": "ed31bb4b7634550c8f20013cbfeb134a4e99484e"
     },
     {
+      "path": "docs/wiki/comp-debateplus.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Компонент: аргументация (debateplus)",
+      "bytes": 2713,
+      "hash": "33c9659150d9f5e02e70f68c78ff9d7bac50d9f5"
+    },
+    {
       "path": "docs/wiki/comp-di-container.md",
       "category": "wiki",
       "language": "ru",
@@ -6734,6 +6742,14 @@
       "title": "Компонент: фронтир и разнообразие агентов",
       "bytes": 3481,
       "hash": "68cd8f3a4e7f32d8df00633b8a9a8416a55b4e53"
+    },
+    {
+      "path": "docs/wiki/comp-graph-eventbridge.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Компонент: графы режимов и мост событий",
+      "bytes": 2805,
+      "hash": "1365440b6f3c07c52f5ae68c88a73571c649f2fb"
     },
     {
       "path": "docs/wiki/comp-integrations-interop.md",
@@ -6804,8 +6820,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Компоненты и сервисы: как читать этот раздел",
-      "bytes": 9358,
-      "hash": "fd979b7cc5ccb495022468424ddcf30ebc976bf6"
+      "bytes": 10190,
+      "hash": "e29580e8c98a3f89185c6979d376b9d2c8df6b85"
     },
     {
       "path": "docs/wiki/comp-persistence.md",
@@ -6888,6 +6904,22 @@
       "hash": "6f69566ba5e502b1b50951df3635f5eaa14c97e1"
     },
     {
+      "path": "docs/wiki/comp-storage-timeline.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Компонент: хранилище, таймлайн и проекции",
+      "bytes": 3326,
+      "hash": "171fa3ee16fdbc982a1abad6bf72c10ac4459030"
+    },
+    {
+      "path": "docs/wiki/comp-synthesis-forum.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Компонент: синтез, форум и junction-движок",
+      "bytes": 2670,
+      "hash": "dad87ac8110499fd5ab8118a95eef25aa03554e6"
+    },
+    {
       "path": "docs/wiki/comp-task-planning.md",
       "category": "wiki",
       "language": "ru",
@@ -6902,6 +6934,14 @@
       "title": "Компонент: тайм-тревел, снапшоты и каузальность",
       "bytes": 3685,
       "hash": "fa5f5422eba901a623f58087649d64d5d71091be"
+    },
+    {
+      "path": "docs/wiki/comp-tool-capability.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Компонент: каталог инструментов, способности и политики",
+      "bytes": 3131,
+      "hash": "3a7e9dc80f13a77fe86ceef426ab4f9273ba2a10"
     },
     {
       "path": "docs/wiki/comp-tools-mcp.md",
@@ -6948,8 +6988,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Проверки и показатели",
-      "bytes": 4074,
-      "hash": "84a0d4613da01edc2b60ccb3751fc1bbe9692cd9"
+      "bytes": 4075,
+      "hash": "631d6c8764c52a39c2e7a1b9ef07f2dfb25dd9c8"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -7036,8 +7076,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Граф знаний",
-      "bytes": 4962,
-      "hash": "8e653b31970a61ba4260866a9c05f93cfa7404fc"
+      "bytes": 5002,
+      "hash": "7b2e46a230733d8e51c9977e0d338223a7174f0e"
     },
     {
       "path": "docs/wiki/dev-history.md",
@@ -7172,8 +7212,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Карта документации",
-      "bytes": 26086,
-      "hash": "61feb34e13ab506c9adf888b91da4d847825d167"
+      "bytes": 26626,
+      "hash": "5592da9af97745b728baac4197900ded7836cfcf"
     },
     {
       "path": "docs/wiki/docs-standard.md",
@@ -7828,8 +7868,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Wiki SuperAgents OS",
-      "bytes": 18714,
-      "hash": "d17ecde3fcd5ccaa2be361de6286e82a435f0aa8"
+      "bytes": 19334,
+      "hash": "330e6fa94d4d10ad3181ed1a15dfb75b45ec5e8c"
     },
     {
       "path": "docs/wiki/roadmap-notes.md",

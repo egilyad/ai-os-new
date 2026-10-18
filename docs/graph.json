@@ -3,22 +3,22 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 982,
-    "edges": 2673,
+    "nodes": 1014,
+    "edges": 2726,
     "byType": {
       "audit": 67,
-      "code": 373,
-      "test": 98,
+      "code": 393,
+      "test": 105,
       "panel": 259,
-      "article": 185
+      "article": 190
     },
     "byKind": {
       "audit_test": 325,
       "audit_mention": 928,
       "documents": 201,
-      "source": 483,
-      "test": 114,
-      "related": 622
+      "source": 504,
+      "test": 121,
+      "related": 647
     }
   },
   "nodes": [
@@ -1917,6 +1917,26 @@
       "label": "src/kernel/services/cache-service.ts"
     },
     {
+      "id": "file:src/kernel/services/capability/agent-factory.ts",
+      "type": "code",
+      "label": "src/kernel/services/capability/agent-factory.ts"
+    },
+    {
+      "id": "file:src/kernel/services/capability/capability-resolver.ts",
+      "type": "code",
+      "label": "src/kernel/services/capability/capability-resolver.ts"
+    },
+    {
+      "id": "file:src/kernel/services/catalog/tool-catalog-service.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/catalog/tool-catalog-service.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/catalog/tool-catalog-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/catalog/tool-catalog-service.ts"
+    },
+    {
       "id": "file:src/kernel/services/causal-scope-manager.ts",
       "type": "code",
       "label": "src/kernel/services/causal-scope-manager.ts"
@@ -2152,6 +2172,31 @@
       "label": "src/kernel/services/debate-runtime/debate-topology.ts"
     },
     {
+      "id": "file:src/kernel/services/debateplus/argtech-consensus-bridge.ts",
+      "type": "code",
+      "label": "src/kernel/services/debateplus/argtech-consensus-bridge.ts"
+    },
+    {
+      "id": "file:src/kernel/services/debateplus/argtech-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/debateplus/argtech-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/debateplus/format-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/debateplus/format-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/deploy/deploy-bundle-service.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/deploy/deploy-bundle-service.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/deploy/deploy-bundle-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/deploy/deploy-bundle-service.ts"
+    },
+    {
       "id": "file:src/kernel/services/dexie-schema-versioning.test.ts",
       "type": "code",
       "label": "src/kernel/services/dexie-schema-versioning.test.ts"
@@ -2182,6 +2227,16 @@
       "label": "src/kernel/services/eval/scorer-registry-service.ts"
     },
     {
+      "id": "file:src/kernel/services/event-bridge/event-bridge.ts",
+      "type": "code",
+      "label": "src/kernel/services/event-bridge/event-bridge.ts"
+    },
+    {
+      "id": "file:src/kernel/services/event-bridge/projection-registry.ts",
+      "type": "code",
+      "label": "src/kernel/services/event-bridge/projection-registry.ts"
+    },
+    {
       "id": "file:src/kernel/services/event-sourcing/checkpoint-store.ts",
       "type": "code",
       "label": "src/kernel/services/event-sourcing/checkpoint-store.ts"
@@ -2207,6 +2262,16 @@
       "label": "src/kernel/services/external-secrets-service.ts"
     },
     {
+      "id": "file:src/kernel/services/forum/forum-service.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/forum/forum-service.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/forum/forum-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/forum/forum-service.ts"
+    },
+    {
       "id": "file:src/kernel/services/frontier/capability-matrix.ts",
       "type": "code",
       "label": "src/kernel/services/frontier/capability-matrix.ts"
@@ -2225,6 +2290,16 @@
       "id": "file:src/kernel/services/frontier/simulation-service.ts",
       "type": "code",
       "label": "src/kernel/services/frontier/simulation-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/graph/graph-modes.ts",
+      "type": "code",
+      "label": "src/kernel/services/graph/graph-modes.ts"
+    },
+    {
+      "id": "file:src/kernel/services/graph/graph-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/graph/graph-service.ts"
     },
     {
       "id": "file:src/kernel/services/group-manager.ts",
@@ -2275,6 +2350,16 @@
       "id": "file:src/kernel/services/invocation/invocation-repository.ts",
       "type": "code",
       "label": "src/kernel/services/invocation/invocation-repository.ts"
+    },
+    {
+      "id": "file:src/kernel/services/junction-engine/junction-engine-service.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/junction-engine/junction-engine-service.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/junction-engine/junction-engine-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/junction-engine/junction-engine-service.ts"
     },
     {
       "id": "file:src/kernel/services/key-intelligence-pipeline.ts",
@@ -2462,6 +2547,11 @@
       "label": "src/kernel/services/pricing-service.ts"
     },
     {
+      "id": "file:src/kernel/services/projections/router-projection.ts",
+      "type": "code",
+      "label": "src/kernel/services/projections/router-projection.ts"
+    },
+    {
       "id": "file:src/kernel/services/provider-adapter-registry.test.ts",
       "type": "test",
       "label": "src/kernel/services/provider-adapter-registry.test.ts"
@@ -2582,6 +2672,11 @@
       "label": "src/kernel/services/router-types.ts"
     },
     {
+      "id": "file:src/kernel/services/routing-policy/routing-policy-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/routing-policy/routing-policy-service.ts"
+    },
+    {
       "id": "file:src/kernel/services/runtime-intelligence/diagnostic-service.ts",
       "type": "code",
       "label": "src/kernel/services/runtime-intelligence/diagnostic-service.ts"
@@ -2595,6 +2690,16 @@
       "id": "file:src/kernel/services/sandbox-service.ts",
       "type": "code",
       "label": "src/kernel/services/sandbox-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/sandbox/code-sandbox-service.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/sandbox/code-sandbox-service.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/sandbox/code-sandbox-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/sandbox/code-sandbox-service.ts"
     },
     {
       "id": "file:src/kernel/services/scheduler-service.test.ts",
@@ -2662,9 +2767,24 @@
       "label": "src/kernel/services/storage-adapter.ts"
     },
     {
+      "id": "file:src/kernel/services/storage/dexie-storage.ts",
+      "type": "code",
+      "label": "src/kernel/services/storage/dexie-storage.ts"
+    },
+    {
       "id": "file:src/kernel/services/storage/local-storage-adapter.ts",
       "type": "code",
       "label": "src/kernel/services/storage/local-storage-adapter.ts"
+    },
+    {
+      "id": "file:src/kernel/services/synthesis/synthesis-engine-service.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/synthesis/synthesis-engine-service.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/synthesis/synthesis-engine-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/synthesis/synthesis-engine-service.ts"
     },
     {
       "id": "file:src/kernel/services/system-status-service.test.ts",
@@ -2705,6 +2825,21 @@
       "id": "file:src/kernel/services/timeline-service.ts",
       "type": "code",
       "label": "src/kernel/services/timeline-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/timeline/execution-viz-service.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/timeline/execution-viz-service.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/timeline/execution-viz-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/timeline/execution-viz-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/timeline/timeline-map.ts",
+      "type": "code",
+      "label": "src/kernel/services/timeline/timeline-map.ts"
     },
     {
       "id": "file:src/kernel/services/tool-executor.test.ts",
@@ -4744,6 +4879,13 @@
       "status": "documented"
     },
     {
+      "id": "wiki:comp-debateplus",
+      "type": "article",
+      "label": "Компонент: аргументация (debateplus)",
+      "section": "components",
+      "status": "documented"
+    },
+    {
       "id": "wiki:comp-di-container",
       "type": "article",
       "label": "Компонент: DI-контейнер и lazyService",
@@ -4782,6 +4924,13 @@
       "id": "wiki:comp-frontier-diversity",
       "type": "article",
       "label": "Компонент: фронтир и разнообразие агентов",
+      "section": "components",
+      "status": "documented"
+    },
+    {
+      "id": "wiki:comp-graph-eventbridge",
+      "type": "article",
+      "label": "Компонент: графы режимов и мост событий",
       "section": "components",
       "status": "documented"
     },
@@ -4919,6 +5068,20 @@
       "status": "documented"
     },
     {
+      "id": "wiki:comp-storage-timeline",
+      "type": "article",
+      "label": "Компонент: хранилище, таймлайн и проекции",
+      "section": "components",
+      "status": "documented"
+    },
+    {
+      "id": "wiki:comp-synthesis-forum",
+      "type": "article",
+      "label": "Компонент: синтез, форум и junction-движок",
+      "section": "components",
+      "status": "documented"
+    },
+    {
       "id": "wiki:comp-task-planning",
       "type": "article",
       "label": "Компонент: задачи, планирование и расписание",
@@ -4929,6 +5092,13 @@
       "id": "wiki:comp-time-travel",
       "type": "article",
       "label": "Компонент: тайм-тревел, снапшоты и каузальность",
+      "section": "components",
+      "status": "documented"
+    },
+    {
+      "id": "wiki:comp-tool-capability",
+      "type": "article",
+      "label": "Компонент: каталог инструментов, способности и политики",
       "section": "components",
       "status": "documented"
     },
@@ -13812,6 +13982,46 @@
       "kind": "related"
     },
     {
+      "from": "wiki:comp-debateplus",
+      "to": "file:src/kernel/services/debateplus/argtech-consensus-bridge.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-debateplus",
+      "to": "file:src/kernel/services/debateplus/argtech-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-debateplus",
+      "to": "file:src/kernel/services/debateplus/format-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-debateplus",
+      "to": "wiki:comp-consistency",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-debateplus",
+      "to": "wiki:comp-debate-runtime",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-debateplus",
+      "to": "wiki:comp-synthesis-forum",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-debateplus",
+      "to": "wiki:debates",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-debateplus",
+      "to": "wiki:panel-debate-toolkit",
+      "kind": "related"
+    },
+    {
       "from": "wiki:comp-di-container",
       "to": "file:src/kernel/container.test.ts",
       "kind": "source"
@@ -14109,6 +14319,51 @@
     {
       "from": "wiki:comp-frontier-diversity",
       "to": "wiki:panel-simulation",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-graph-eventbridge",
+      "to": "file:src/kernel/services/event-bridge/event-bridge.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-graph-eventbridge",
+      "to": "file:src/kernel/services/event-bridge/projection-registry.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-graph-eventbridge",
+      "to": "file:src/kernel/services/graph/graph-modes.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-graph-eventbridge",
+      "to": "file:src/kernel/services/graph/graph-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-graph-eventbridge",
+      "to": "wiki:comp-cognitive-orchestration",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-graph-eventbridge",
+      "to": "wiki:comp-event-bus",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-graph-eventbridge",
+      "to": "wiki:comp-storage-timeline",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-graph-eventbridge",
+      "to": "wiki:dev-graph",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-graph-eventbridge",
+      "to": "wiki:panel-workflows",
       "kind": "related"
     },
     {
@@ -15177,6 +15432,116 @@
       "kind": "related"
     },
     {
+      "from": "wiki:comp-storage-timeline",
+      "to": "file:src/kernel/services/projections/router-projection.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-storage-timeline",
+      "to": "file:src/kernel/services/storage/dexie-storage.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-storage-timeline",
+      "to": "file:src/kernel/services/storage/local-storage-adapter.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-storage-timeline",
+      "to": "file:src/kernel/services/timeline/execution-viz-service.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-storage-timeline",
+      "to": "file:src/kernel/services/timeline/execution-viz-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-storage-timeline",
+      "to": "file:src/kernel/services/timeline/timeline-map.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-storage-timeline",
+      "to": "wiki:comp-observability",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-storage-timeline",
+      "to": "wiki:comp-persistence",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-storage-timeline",
+      "to": "wiki:dev-store-catalog",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-storage-timeline",
+      "to": "wiki:execution-trail",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-storage-timeline",
+      "to": "wiki:panel-history-audit",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-synthesis-forum",
+      "to": "file:src/kernel/services/forum/forum-service.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-synthesis-forum",
+      "to": "file:src/kernel/services/forum/forum-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-synthesis-forum",
+      "to": "file:src/kernel/services/junction-engine/junction-engine-service.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-synthesis-forum",
+      "to": "file:src/kernel/services/junction-engine/junction-engine-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-synthesis-forum",
+      "to": "file:src/kernel/services/synthesis/synthesis-engine-service.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-synthesis-forum",
+      "to": "file:src/kernel/services/synthesis/synthesis-engine-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-synthesis-forum",
+      "to": "wiki:comp-crews-councils",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-synthesis-forum",
+      "to": "wiki:panel-forum",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-synthesis-forum",
+      "to": "wiki:panel-group-chat",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-synthesis-forum",
+      "to": "wiki:panel-provenance-junctions",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-synthesis-forum",
+      "to": "wiki:panel-synthesis",
+      "kind": "related"
+    },
+    {
       "from": "wiki:comp-task-planning",
       "to": "file:src/kernel/services/agems-task-service.ts",
       "kind": "source"
@@ -15289,6 +15654,76 @@
     {
       "from": "wiki:comp-time-travel",
       "to": "wiki:panel-simulation",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-tool-capability",
+      "to": "file:src/kernel/services/capability/agent-factory.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-tool-capability",
+      "to": "file:src/kernel/services/capability/capability-resolver.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-tool-capability",
+      "to": "file:src/kernel/services/catalog/tool-catalog-service.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-tool-capability",
+      "to": "file:src/kernel/services/catalog/tool-catalog-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-tool-capability",
+      "to": "file:src/kernel/services/deploy/deploy-bundle-service.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-tool-capability",
+      "to": "file:src/kernel/services/deploy/deploy-bundle-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-tool-capability",
+      "to": "file:src/kernel/services/routing-policy/routing-policy-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-tool-capability",
+      "to": "file:src/kernel/services/sandbox/code-sandbox-service.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-tool-capability",
+      "to": "file:src/kernel/services/sandbox/code-sandbox-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-tool-capability",
+      "to": "wiki:comp-policy-security",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-tool-capability",
+      "to": "wiki:comp-routing",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-tool-capability",
+      "to": "wiki:comp-tools-mcp",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-tool-capability",
+      "to": "wiki:panel-infra-meta",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-tool-capability",
+      "to": "wiki:panel-playground",
       "kind": "related"
     },
     {

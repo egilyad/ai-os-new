@@ -54,6 +54,8 @@ export const COMPONENT_ARTICLES: WikiArticle[] = [
 - **Мультиагентность:** [[comp-crews-councils]] (экипажи, совет), [[comp-frontier-diversity]] (фронтир, разнообразие), [[comp-rivals-lab]] (лаборатория вариантов), [[comp-persona-builder]] (персоны, строитель), [[comp-invocation-meta]] (вызовы, мета-агент).
 - **Знания и оценка:** [[comp-knowledge-rag]] (RAG, кристаллы, линзы), [[comp-eval-elo]] (судья, Эло).
 - **Симуляция:** [[comp-simulation-world]] (мир, computer-use, parity).
+- **Синтез и аргументация:** [[comp-synthesis-forum]] (синтез, форум, junction), [[comp-debateplus]] (аргументация).
+- **Платформа:** [[comp-storage-timeline]] (хранилище, таймлайн, проекции), [[comp-tool-capability]] (инструменты, способности, песочница), [[comp-graph-eventbridge]] (графы, мост событий).
 
 Машиночитаемые каталоги (генерируются из кода): [[dev-component-catalog]], [[dev-service-map]], [[dev-contracts]], [[dev-event-catalog]].
 
@@ -1751,6 +1753,215 @@ flowchart TD
 
 - Ручная: запустить симуляцию, дать агенту действие в мире.
 - В каталогах \`simulation/\`, \`computer/\`, \`parity/\` выделенных тестов не найдено.
+
+## Состояние
+
+- Реализовано; подтверждено чтением кода, без автотестов.`,
+    },
+    {
+        slug: 'comp-synthesis-forum',
+        title: 'Компонент: синтез, форум и junction-движок',
+        section: 'components',
+        tags: ['компоненты', 'синтез', 'форум', 'junction'],
+        freshness: 'documented',
+        sources: [
+            'src/kernel/services/synthesis/synthesis-engine-service.ts',
+            'src/kernel/services/forum/forum-service.ts',
+            'src/kernel/services/junction-engine/junction-engine-service.ts',
+        ],
+        related: ['panel-synthesis', 'panel-forum', 'panel-provenance-junctions', 'panel-group-chat', 'comp-crews-councils'],
+        body: `## Назначение
+
+Сводить мнения в единый вывод (синтез), вести публичное обсуждение (форум) и связывать разрозненные ветки рассуждений в «перекрёстки» (junction).
+
+## Возможности
+
+- Синтез ответов/аргументов (\`SynthesisEngineService\`).
+- Форум тем и сообщений (\`ForumService\`).
+- Junction: соединение трасс/точек (\`JunctionEngineService\`).
+
+## Реализация
+
+- \`synthesis/synthesis-engine-service.ts\` (\`SynthesisEngineService\`) + демо-сид.
+- \`forum/forum-service.ts\` (\`ForumService\`) + демо-сид.
+- \`junction-engine/junction-engine-service.ts\` (\`JunctionEngineService\`) + демо-сид.
+
+## Связи
+
+- Экипажи/совет — [[comp-crews-councils]]; дебаты — [[comp-debate-runtime]].
+- Панели: [[panel-synthesis]], [[panel-forum]], [[panel-provenance-junctions]], [[panel-group-chat]].
+
+## Проверка работоспособности
+
+- Тесты: \`synthesis-engine-service.test.ts\`, \`forum-service.test.ts\`, \`junction-engine-service.test.ts\` (+ их демо-сиды).
+
+## Состояние
+
+- Реализовано и покрыто тестами.`,
+    },
+    {
+        slug: 'comp-storage-timeline',
+        title: 'Компонент: хранилище, таймлайн и проекции',
+        section: 'components',
+        tags: ['компоненты', 'хранилище', 'таймлайн', 'проекции'],
+        freshness: 'documented',
+        sources: [
+            'src/kernel/services/storage/dexie-storage.ts',
+            'src/kernel/services/storage/local-storage-adapter.ts',
+            'src/kernel/services/timeline/execution-viz-service.ts',
+            'src/kernel/services/timeline/timeline-map.ts',
+            'src/kernel/services/projections/router-projection.ts',
+        ],
+        related: ['comp-persistence', 'dev-store-catalog', 'comp-observability', 'execution-trail', 'panel-history-audit'],
+        body: `## Назначение
+
+Низкоуровневое хранение (Dexie/IndexedDB и localStorage), визуализация хронологии исполнения и «проекции» решений роутера.
+
+## Возможности
+
+- Слой хранилища \`StorageLayer\` (\`createDexieStorage\`), адаптер \`LocalStorageAdapter\`, событие привязки шины (\`setDexieStorageEventBus\`).
+- Визуализация исполнения (\`ExecutionVizService\`) и карта таймлайна \`TIMELINE_MAP\` (60 записей).
+- Проекция решений роутера (\`RouterProjection\`, \`ProjectedDecision\`) и сравнение решений (\`compareRouterDecisions\` → \`RouterDiffReport\`).
+
+## Реализация
+
+- \`storage/\`: \`dexie-storage.ts\`, \`local-storage-adapter.ts\`.
+- \`timeline/\`: \`execution-viz-service.ts\`, \`timeline-map.ts\`.
+- \`projections/\`: \`router-projection.ts\`, \`router-shadow-diff.ts\`.
+- \`routing-policy/routing-policy-service.ts\` (\`RoutingPolicyService\`) соседствует по смыслу с проекциями.
+
+## Связи
+
+- Базовый слой данных — [[comp-persistence]]; каталог сторов — [[dev-store-catalog]].
+- Роутинг — [[comp-routing]]; наблюдаемость — [[comp-observability]].
+
+## Проверка работоспособности
+
+- Тест: \`storage/dexie-storage.session.test.ts\`.
+- Ручная: History/Audit показывает таймлайн, Router — проекцию решения.
+
+## Состояние
+
+- Реализовано; хранилище покрыто тестом, таймлайн/проекции — чтением кода.`,
+    },
+    {
+        slug: 'comp-tool-capability',
+        title: 'Компонент: каталог инструментов, способности и политики',
+        section: 'components',
+        tags: ['компоненты', 'инструменты', 'способности', 'политики'],
+        freshness: 'documented',
+        sources: [
+            'src/kernel/services/catalog/tool-catalog-service.ts',
+            'src/kernel/services/capability/capability-resolver.ts',
+            'src/kernel/services/capability/agent-factory.ts',
+            'src/kernel/services/routing-policy/routing-policy-service.ts',
+            'src/kernel/services/sandbox/code-sandbox-service.ts',
+            'src/kernel/services/deploy/deploy-bundle-service.ts',
+        ],
+        related: ['comp-tools-mcp', 'panel-playground', 'panel-infra-meta', 'comp-policy-security', 'comp-routing'],
+        body: `## Назначение
+
+Знать, что система умеет: каталог инструментов, разрешение способностей агентов, политики маршрутизации, песочница кода и упаковка деплоя.
+
+## Возможности
+
+- Каталог инструментов (\`ToolCatalogService\`).
+- Способности: разрешение возможностей (\`CapabilityResolver\`) и фабрика агентов (\`AgentFactory\`).
+- Политики роутинга (\`RoutingPolicyService\`), песочница кода (\`CodeSandboxService\`), сборка бандла деплоя (\`DeployBundleService\`).
+
+## Реализация
+
+- \`catalog/\`, \`capability/\` (\`capability-resolver.ts\`, \`agent-factory.ts\`), \`routing-policy/\`, \`sandbox/\`, \`deploy/\`.
+
+## Связи
+
+- Инструменты/MCP — [[comp-tools-mcp]]; маршрут — [[comp-routing]]; безопасность — [[comp-policy-security]].
+- Панели: [[panel-playground]], [[panel-infra-meta]].
+
+## Проверка работоспособности
+
+- Тесты: \`catalog/tool-catalog-service.test.ts\`, \`capability/golden-e2e.test.ts\`, \`sandbox/code-sandbox-service.test.ts\`, \`deploy/deploy-bundle-service.test.ts\`.
+
+## Состояние
+
+- Реализовано; ключевые сервисы покрыты тестами.`,
+    },
+    {
+        slug: 'comp-graph-eventbridge',
+        title: 'Компонент: графы режимов и мост событий',
+        section: 'components',
+        tags: ['компоненты', 'графы', 'event-bridge', 'проекции'],
+        freshness: 'documented',
+        sources: [
+            'src/kernel/services/graph/graph-service.ts',
+            'src/kernel/services/graph/graph-modes.ts',
+            'src/kernel/services/event-bridge/event-bridge.ts',
+            'src/kernel/services/event-bridge/projection-registry.ts',
+        ],
+        related: ['comp-event-bus', 'comp-cognitive-orchestration', 'panel-workflows', 'dev-graph', 'comp-storage-timeline'],
+        body: `## Назначение
+
+Исполнять графовые режимы (узлы/связи) и переносить события в проекции (read-модели).
+
+## Возможности
+
+- Сервис графов (\`GraphService\`) и конструктор режимов (\`buildModeDefinition\`).
+- Мост событий (\`EventBridge\`) и реестр проекций (\`ProjectionRegistry\`) — подписка и раскладка событий в проекции.
+
+## Реализация
+
+- \`graph/graph-service.ts\`, \`graph/graph-modes.ts\`.
+- \`event-bridge/event-bridge.ts\`, \`event-bridge/projection-registry.ts\`.
+
+## Связи
+
+- Шина — [[comp-event-bus]]; оркестрация топологий — [[comp-cognitive-orchestration]]; проекции — [[comp-storage-timeline]].
+- Панель: [[panel-workflows]]; граф знаний — [[dev-graph]].
+
+## Проверка работоспособности
+
+- Ручная: запустить графовый режим в Workflows, проверить обновление проекции.
+- В \`graph/\` и \`event-bridge/\` выделенных тестов не найдено.
+
+## Состояние
+
+- Реализовано; подтверждено чтением кода, без автотестов.`,
+    },
+    {
+        slug: 'comp-debateplus',
+        title: 'Компонент: аргументация (debateplus)',
+        section: 'components',
+        tags: ['компоненты', 'аргументация', 'дебаты', 'консенсус'],
+        freshness: 'documented',
+        sources: [
+            'src/kernel/services/debateplus/argtech-service.ts',
+            'src/kernel/services/debateplus/format-service.ts',
+            'src/kernel/services/debateplus/argtech-consensus-bridge.ts',
+        ],
+        related: ['comp-debate-runtime', 'panel-debate-toolkit', 'comp-consistency', 'debates', 'comp-synthesis-forum'],
+        body: `## Назначение
+
+Формализовать аргументацию: структуры аргументов/атак, форматирование и мост к консенсусу дебатов.
+
+## Возможности
+
+- \`ArgTechService\` — работа с аргументационной структурой.
+- \`FormatService\` — представление аргументов.
+- \`argtech-consensus-bridge.ts\` — связка с расчётом консенсуса дебатов.
+
+## Реализация
+
+- Каталог \`debateplus/\` из трёх модулей; дополняет [[comp-debate-runtime]] и [[comp-consistency]].
+
+## Связи
+
+- Дебаты — [[comp-debate-runtime]]; синтез/форум — [[comp-synthesis-forum]].
+- Панели: [[panel-debate-toolkit]], [[debates]].
+
+## Проверка работоспособности
+
+- Ручная: разобрать аргумент и посмотреть вклад в консенсус.
+- В каталоге \`debateplus/\` выделенных тестов не найдено.
 
 ## Состояние
 
