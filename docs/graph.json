@@ -3,22 +3,22 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 1141,
-    "edges": 2991,
+    "nodes": 1145,
+    "edges": 3000,
     "byType": {
       "audit": 67,
-      "code": 465,
+      "code": 468,
       "test": 137,
       "panel": 259,
-      "article": 213
+      "article": 214
     },
     "byKind": {
       "audit_test": 325,
       "audit_mention": 928,
       "documents": 201,
-      "source": 603,
+      "source": 607,
       "test": 172,
-      "related": 762
+      "related": 767
     }
   },
   "nodes": [
@@ -617,6 +617,11 @@
       "label": "scripts/gen-wiki-contracts.mjs"
     },
     {
+      "id": "file:scripts/gen-wiki-coverage.mjs",
+      "type": "code",
+      "label": "scripts/gen-wiki-coverage.mjs"
+    },
+    {
       "id": "file:scripts/gen-wiki-depmap.mjs",
       "type": "code",
       "label": "scripts/gen-wiki-depmap.mjs"
@@ -690,6 +695,11 @@
       "id": "file:scripts/lib/entity-model.mjs",
       "type": "code",
       "label": "scripts/lib/entity-model.mjs"
+    },
+    {
+      "id": "file:scripts/lib/route-nav.mjs",
+      "type": "code",
+      "label": "scripts/lib/route-nav.mjs"
     },
     {
       "id": "file:src/",
@@ -1570,6 +1580,11 @@
       "id": "file:src/generated/wiki-component-catalog.ts",
       "type": "code",
       "label": "src/generated/wiki-component-catalog.ts"
+    },
+    {
+      "id": "file:src/generated/wiki-coverage.ts",
+      "type": "code",
+      "label": "src/generated/wiki-coverage.ts"
     },
     {
       "id": "file:src/generated/wiki-docs-health.ts",
@@ -5796,6 +5811,13 @@
       "label": "Компонент: утилиты персиста и провайдеров",
       "section": "components",
       "status": "documented"
+    },
+    {
+      "id": "wiki:coverage-matrix",
+      "type": "article",
+      "label": "Матрица покрытия",
+      "section": "dev",
+      "status": "verified"
     },
     {
       "id": "wiki:debates",
@@ -17810,6 +17832,51 @@
     {
       "from": "wiki:comp-util-persistence-helpers",
       "to": "wiki:providers",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:coverage-matrix",
+      "to": "file:docs/manifest.json",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:coverage-matrix",
+      "to": "file:scripts/gen-wiki-coverage.mjs",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:coverage-matrix",
+      "to": "file:scripts/lib/route-nav.mjs",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:coverage-matrix",
+      "to": "file:src/generated/wiki-coverage.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:coverage-matrix",
+      "to": "wiki:dev-checks",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:coverage-matrix",
+      "to": "wiki:dev-graph",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:coverage-matrix",
+      "to": "wiki:docs-health",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:coverage-matrix",
+      "to": "wiki:docs-inventory",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:coverage-matrix",
+      "to": "wiki:docs-standard",
       "kind": "related"
     },
     {

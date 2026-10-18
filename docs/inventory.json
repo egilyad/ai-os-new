@@ -3,7 +3,7 @@
   "generatedBy": "scripts/gen-docs-inventory.mjs",
   "scope": "git-tracked markdown: docs/**/*.md (excluding docs/new drafts and the self-report pages docs-health, docs-inventory) plus repository entry docs (root *.md, .superagents/**, src/kernel/DEPENDENCY_MAP.md)",
   "totals": {
-    "documents": 1036,
+    "documents": 1037,
     "byCategory": {
       "repo": 12,
       "top": 46,
@@ -13,12 +13,12 @@
       "reference": 6,
       "roadmap": 6,
       "superseded": 3,
-      "wiki": 212
+      "wiki": 213
     },
     "byLanguage": {
       "en": 658,
       "ru": 232,
-      "mixed": 146
+      "mixed": 147
     }
   },
   "duplicates": {
@@ -7144,6 +7144,14 @@
       "hash": "94ae62d25abe033a37558517381bdd9c4888718a"
     },
     {
+      "path": "docs/wiki/coverage-matrix.md",
+      "category": "wiki",
+      "language": "mixed",
+      "title": "Матрица покрытия",
+      "bytes": 8315,
+      "hash": "1ab4a9d848bccf5cdcd7cdb08874cb3b52392c5d"
+    },
+    {
       "path": "docs/wiki/debates.md",
       "category": "wiki",
       "language": "ru",
@@ -7173,7 +7181,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4075,
-      "hash": "ffb19767a576c666676a8ac3100fc83cefc617bb"
+      "hash": "f8c00058478b263383a6041c254dd0fc8eb6d3f2"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -7261,7 +7269,7 @@
       "language": "ru",
       "title": "Граф знаний",
       "bytes": 5000,
-      "hash": "8e82c47e2ec88d4d49bcd9e337d48e59b439ae2e"
+      "hash": "aae8e730cc3c48982e62eb86bb2be8a00c7858e3"
     },
     {
       "path": "docs/wiki/dev-history.md",
@@ -7396,8 +7404,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Карта документации",
-      "bytes": 29035,
-      "hash": "1e4795ddfdaf70f3427b9c61e3338c7fafcfc6cc"
+      "bytes": 29094,
+      "hash": "166571c887f17e844596ddb516c3663f8368cd83"
     },
     {
       "path": "docs/wiki/docs-standard.md",
@@ -8052,8 +8060,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Wiki SuperAgents OS",
-      "bytes": 22095,
-      "hash": "531a1997130c091e0fffea10d6eeed3d89f12ed5"
+      "bytes": 22168,
+      "hash": "448d151008b0167c8c8c064532de747817d67527"
     },
     {
       "path": "docs/wiki/roadmap-notes.md",
@@ -8308,16 +8316,16 @@
       "category": "repo",
       "language": "en",
       "title": "SuperAgents OS",
-      "bytes": 54213,
-      "hash": "aba3760a50fcdd36e3127fa20396cfcd0c516554"
+      "bytes": 54264,
+      "hash": "9ec33c73eb9234b28dc4e311c1b2a52c2d486a48"
     },
     {
       "path": "README.md",
       "category": "repo",
       "language": "mixed",
       "title": "SuperAgents OS — Wiki",
-      "bytes": 46394,
-      "hash": "5ace6f1423bd39049af059983d527a4bb976fae4"
+      "bytes": 46461,
+      "hash": "d2800c4685f07ea191c76fb29195e94c7809e056"
     },
     {
       "path": "SELF_IMPROVEMENT_AUDIT_2026-09-22.md",

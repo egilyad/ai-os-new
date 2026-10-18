@@ -107,6 +107,7 @@ const manifest = {
         { id: 'catalog:stores', kind: 'store', title: 'Хранилища', article: 'dev-store-catalog', generator: 'scripts/gen-wiki-stores.mjs' },
         { id: 'catalog:contracts', kind: 'contract', title: 'Контракты', article: 'dev-contracts', generator: 'scripts/gen-wiki-contracts.mjs' },
         { id: 'catalog:tests', kind: 'test', title: 'Тесты', article: 'dev-tests-catalog', generator: 'scripts/gen-wiki-tests.mjs' },
+        { id: 'catalog:coverage', kind: 'coverage', title: 'Матрица покрытия', article: 'coverage-matrix', generator: 'scripts/gen-wiki-coverage.mjs' },
         { id: 'catalog:scripts', kind: 'script', title: 'Скрипты и генераторы', article: 'dev-scripts', generator: 'scripts/gen-wiki-scripts.mjs' },
         { id: 'catalog:i18n', kind: 'i18n', title: 'Локализация', article: 'dev-i18n-catalog', generator: 'scripts/gen-wiki-i18n.mjs' },
         { id: 'catalog:roles', kind: 'agent', title: 'Роли и агенты', article: 'dev-system-map', source: 'src/data/role-library.ts', count: roleCatalog().length },

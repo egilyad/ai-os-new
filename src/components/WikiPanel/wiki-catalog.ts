@@ -11,6 +11,7 @@ import { CAPABILITIES_MARKDOWN } from '../../generated/wiki-capabilities';
 import { GRAPH_MARKDOWN } from '../../generated/wiki-graph';
 import { CHECKS_MARKDOWN } from '../../generated/wiki-checks';
 import { LIBRARIES_MARKDOWN } from '../../generated/wiki-libraries';
+import { COVERAGE_MARKDOWN } from '../../generated/wiki-coverage';
 
 // Auto-maintained catalogs: components, and the panel -> section -> route ->
 // component -> article chain. Bodies come from the generators — edit those.
@@ -179,5 +180,20 @@ export const CATALOG_ARTICLES: WikiArticle[] = [
         sources: ['package.json', 'scripts/gen-wiki-libraries.mjs', 'src/generated/wiki-libraries.ts'],
         related: ['dev-overview', 'dev-scripts', 'dev-conventions'],
         body: LIBRARIES_MARKDOWN,
+    },
+    {
+        slug: 'coverage-matrix',
+        title: 'Матрица покрытия',
+        section: 'dev',
+        tags: ['документация', 'покрытие', 'проверки', 'тесты', 'метрики'],
+        freshness: 'verified',
+        sources: [
+            'scripts/gen-wiki-coverage.mjs',
+            'src/generated/wiki-coverage.ts',
+            'docs/manifest.json',
+            'scripts/lib/route-nav.mjs',
+        ],
+        related: ['docs-health', 'dev-checks', 'docs-standard', 'docs-inventory', 'dev-graph'],
+        body: COVERAGE_MARKDOWN,
     },
 ];

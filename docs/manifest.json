@@ -60,7 +60,7 @@
     {
       "id": "dev",
       "title": "Разработчикам",
-      "articles": 30
+      "articles": 31
     }
   ],
   "articles": [
@@ -5721,6 +5721,36 @@
       "tests": []
     },
     {
+      "id": "wiki:coverage-matrix",
+      "type": "article",
+      "slug": "coverage-matrix",
+      "title": "Матрица покрытия",
+      "section": "dev",
+      "status": "verified",
+      "tags": [
+        "документация",
+        "покрытие",
+        "проверки",
+        "тесты",
+        "метрики"
+      ],
+      "sources": [
+        "scripts/gen-wiki-coverage.mjs",
+        "src/generated/wiki-coverage.ts",
+        "docs/manifest.json",
+        "scripts/lib/route-nav.mjs"
+      ],
+      "related": [
+        "docs-health",
+        "dev-checks",
+        "docs-standard",
+        "docs-inventory",
+        "dev-graph"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
       "id": "wiki:dev-event-catalog",
       "type": "article",
       "slug": "dev-event-catalog",
@@ -10495,6 +10525,13 @@
       "title": "Тесты",
       "article": "dev-tests-catalog",
       "generator": "scripts/gen-wiki-tests.mjs"
+    },
+    {
+      "id": "catalog:coverage",
+      "kind": "coverage",
+      "title": "Матрица покрытия",
+      "article": "coverage-matrix",
+      "generator": "scripts/gen-wiki-coverage.mjs"
     },
     {
       "id": "catalog:scripts",
