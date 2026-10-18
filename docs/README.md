@@ -76,6 +76,7 @@ ConsistencyChecker.checkDocs() → mismatch detected
 | `roadmap/` | 🟣 ROADMAP | Планы и архитектурные направления |
 | `history/` | 🟠 HISTORY | Старое с исторической ценностью |
 | `superseded/` | ⚪ SUPERSEDED | Заменённое другим документом |
+| `demos/` | 🟢 ACTIVE | Демонстрации со скриншотами реального интерфейса (`npm run gen:demos`) |
 | `new/` | 🗑 DRAFTS | Черновики; в основном вне git, в инвентарь не входят |
 
 Правила категорий, статусов и языков зафиксированы в стандарте — см.
@@ -94,6 +95,7 @@ ConsistencyChecker.checkDocs() → mismatch detected
 | [`entity-model.json`](./entity-model.json) | Стандарт документации (карточка сущности, статусы, источники истины) |
 | [`wiki/docs-index.md`](./wiki/docs-index.md) | Карта документации — единый вход во всё вышеперечисленное |
 | [`wiki/dev-checks.md`](./wiki/dev-checks.md) | Проверки и показатели; отчёт о полноте |
+| [`demos/README.md`](./demos/README.md) | 5 демонстраций (чат, дебаты, провайдеры, память, диагностика) со скриншотами |
 
 Портал: статическая вики публикуется на GitHub Pages под `/wiki/`
 (`npm run gen:wiki-site`). Проверки состояния — `npm run docs:health`.

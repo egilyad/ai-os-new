@@ -20,7 +20,7 @@
 - Панель **Wiki** в приложении и сайт `/wiki/` — тот же корпус статей
 - [`docs/manifest.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/manifest.json) — машиночитаемый индекс сущностей (статьи, панели)
 - [`docs/entity-model.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/entity-model.json) — стандарт документации
-- [`docs/inventory.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/inventory.json) — инвентарь всех `docs/**` (965 документов)
+- [`docs/inventory.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/inventory.json) — инвентарь всех `docs/**` (971 документов)
 
 ## Вики по разделам
 
@@ -82,6 +82,12 @@
 - [🧠 Cognitive Runtime Specification (CRS)](https://github.com/egilyad/ai-os-new/blob/main/docs/COGNITIVE_RUNTIME_SPEC.md)
 - [Company Gateway — сервер SuperAgents OS](https://github.com/egilyad/ai-os-new/blob/main/docs/COMPANY_GATEWAY.md)
 - [Debt Report — Технический долг системы](https://github.com/egilyad/ai-os-new/blob/main/docs/DEBT_REPORT.md)
+- [Демонстрация: Чат с ИИ](https://github.com/egilyad/ai-os-new/blob/main/docs/demos/chat.md)
+- [Демонстрация: Дебаты агентов](https://github.com/egilyad/ai-os-new/blob/main/docs/demos/debate.md)
+- [Демонстрация: Диагностика](https://github.com/egilyad/ai-os-new/blob/main/docs/demos/diagnostics.md)
+- [Демонстрация: Память](https://github.com/egilyad/ai-os-new/blob/main/docs/demos/memory.md)
+- [Демонстрация: Провайдеры и ключи](https://github.com/egilyad/ai-os-new/blob/main/docs/demos/providers.md)
+- [Демонстрации SuperAgents OS](https://github.com/egilyad/ai-os-new/blob/main/docs/demos/README.md)
 - [SuperAgents OS — Developer Quickstart](https://github.com/egilyad/ai-os-new/blob/main/docs/DEV_QUICKSTART.md)
 - [EventBus Reference](https://github.com/egilyad/ai-os-new/blob/main/docs/events.md)
 - [Navigation Map — зафиксированная раскладка меню](https://github.com/egilyad/ai-os-new/blob/main/docs/NAVIGATION_MAP.md)
