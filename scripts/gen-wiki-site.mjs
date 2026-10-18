@@ -20,6 +20,10 @@ if (!existsSync(docsDir)) {
 if (existsSync(outDir)) rmSync(outDir, { recursive: true, force: true });
 mkdirSync(resolve(outDir, 'assets'), { recursive: true });
 
+// portal hero/logo (committed source asset -> published copy)
+const heroSrc = resolve(root, 'scripts/assets/wiki-hero.png');
+if (existsSync(heroSrc)) copyFileSync(heroSrc, resolve(outDir, 'assets/wiki-hero.png'));
+
 const HEADER_RE = /^<!--.*?-->\s*/s;
 
 function escHtml(s) {
@@ -242,7 +246,7 @@ function navHtml(activeSlug) {
     return parts.join('');
 }
 
-function page({ title, contentHtml, activeSlug, metaHtml = '' }) {
+function page({ title, contentHtml, activeSlug, metaHtml = '', hero = false }) {
     return `<!doctype html>
 <html lang="ru">
 <head>
@@ -262,7 +266,7 @@ function page({ title, contentHtml, activeSlug, metaHtml = '' }) {
 </header>
 <div class="layout">
   <aside class="sidebar" id="sidebar">${navHtml(activeSlug)}</aside>
-  <main class="content">${contentHtml}${metaHtml}</main>
+  <main class="content">${hero ? '<img class="hero" src="./assets/wiki-hero.png" alt="SuperAgents OS — your personal AI operating system">' : ''}${contentHtml}${metaHtml}</main>
 </div>
 <script type="module">
 import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
@@ -286,7 +290,7 @@ for (const a of articles) {
 // ---- index page (portal) ----
 writeFileSync(
     resolve(outDir, 'index.html'),
-    page({ title: 'Главная', contentHtml: mdToHtml(indexRaw.replace(HEADER_RE, '')), activeSlug: '__home__' }),
+    page({ title: 'Главная', contentHtml: mdToHtml(indexRaw.replace(HEADER_RE, '')), activeSlug: '__home__', hero: true }),
     'utf8',
 );
 
@@ -368,6 +372,7 @@ a:hover{text-decoration:underline}
 .nav li a.active{background:var(--accent);color:#fff}
 .content{flex:1 1 auto;min-width:0;padding:24px 32px 80px}
 .content h1{margin-top:0}
+.hero{display:block;width:100%;height:auto;margin:0 0 28px;border-radius:12px}
 .content h2{margin-top:1.8em;border-bottom:1px solid var(--line);padding-bottom:.2em}
 .content table{border-collapse:collapse;display:block;overflow:auto;max-width:100%}
 .content th,.content td{border:1px solid var(--line);padding:6px 10px;text-align:left}
