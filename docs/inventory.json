@@ -3,7 +3,7 @@
   "generatedBy": "scripts/gen-docs-inventory.mjs",
   "scope": "git-tracked markdown: docs/**/*.md (excluding docs/new drafts and the self-report pages docs-health, docs-inventory) plus repository entry docs (root *.md, .superagents/**, src/kernel/DEPENDENCY_MAP.md)",
   "totals": {
-    "documents": 1046,
+    "documents": 1056,
     "byCategory": {
       "repo": 12,
       "top": 47,
@@ -13,11 +13,11 @@
       "reference": 6,
       "roadmap": 6,
       "superseded": 3,
-      "wiki": 221
+      "wiki": 231
     },
     "byLanguage": {
       "en": 659,
-      "ru": 235,
+      "ru": 245,
       "mixed": 152
     }
   },
@@ -7220,8 +7220,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Матрица покрытия",
-      "bytes": 8315,
-      "hash": "2aaf106e8d4ec62884221a0cb458b303f68eb2f0"
+      "bytes": 8372,
+      "hash": "1b4f24a8dd00b42708cd0a8422041ee795cf03ba"
     },
     {
       "path": "docs/wiki/debates.md",
@@ -7252,8 +7252,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Проверки и показатели",
-      "bytes": 4075,
-      "hash": "ad5f42a047681bce1515695d452beda33d0acb8f"
+      "bytes": 4076,
+      "hash": "fb4f914bd5ca0ba94f6d6a05a8cd96d0bfc73337"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -7341,7 +7341,7 @@
       "language": "ru",
       "title": "Граф знаний",
       "bytes": 4900,
-      "hash": "cd66b31ec4e6ed0af31a75d8929c9511327be040"
+      "hash": "3acdccc1968a772dd5b34e105dc460bb334246a0"
     },
     {
       "path": "docs/wiki/dev-history.md",
@@ -7424,6 +7424,86 @@
       "hash": "df4e5fe3d3f5d3aa2220cdd8627c15be299c0110"
     },
     {
+      "path": "docs/wiki/dev-status-active.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Активная разработка",
+      "bytes": 1085,
+      "hash": "0814888c64f97ad4e1faf0f4d1827f83275bf8a5"
+    },
+    {
+      "path": "docs/wiki/dev-status-blocked.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Заблокированные задачи",
+      "bytes": 1078,
+      "hash": "999151abd92b700a2ec222556a2e77506577a4d6"
+    },
+    {
+      "path": "docs/wiki/dev-status-bugs.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Отложенные баги",
+      "bytes": 1079,
+      "hash": "efdf9e4ea2740dcacf85fd288dcb34762d913b0d"
+    },
+    {
+      "path": "docs/wiki/dev-status-critical.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Критические проблемы",
+      "bytes": 1077,
+      "hash": "45f3860544968e5a65c3418769610216f24baece"
+    },
+    {
+      "path": "docs/wiki/dev-status-debt.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Технический долг",
+      "bytes": 1079,
+      "hash": "5f676a4e79ddeb4cc70f44a8b7b214d8a535b6ed"
+    },
+    {
+      "path": "docs/wiki/dev-status-docs.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Документация",
+      "bytes": 1095,
+      "hash": "f455eba1c5be5229f54647869d4f610950e3c9c1"
+    },
+    {
+      "path": "docs/wiki/dev-status-done.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Завершённые задачи",
+      "bytes": 1087,
+      "hash": "65ac1bdab0a0f67bb73eebd013ec0e0cf586ff1e"
+    },
+    {
+      "path": "docs/wiki/dev-status-files.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "MD и другие файлы от разработки",
+      "bytes": 1084,
+      "hash": "a224fdfc23aec0ea9a4c62f908100bc30feab997"
+    },
+    {
+      "path": "docs/wiki/dev-status-roadmaps.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Roadmaps",
+      "bytes": 1077,
+      "hash": "dfe15f68ba8ffccd025dbd6ce47f0725a713b727"
+    },
+    {
+      "path": "docs/wiki/dev-status-testing.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Состояние тестирования",
+      "bytes": 1078,
+      "hash": "69e87b254bdb3f02cb0c0233d9e4fbd75e950ca8"
+    },
+    {
       "path": "docs/wiki/dev-store-catalog.md",
       "category": "wiki",
       "language": "en",
@@ -7476,8 +7556,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Карта документации",
-      "bytes": 29934,
-      "hash": "300b08e20f8320f2e109f75f8c5eefdc134e3621"
+      "bytes": 30625,
+      "hash": "99c7968d56fb41de5f35a95f1517a14b04d1a87a"
     },
     {
       "path": "docs/wiki/docs-standard.md",
@@ -8132,8 +8212,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Wiki SuperAgents OS",
-      "bytes": 22989,
-      "hash": "0b8f6d57e9a0f442e50d241f7563ed9705f9fbfd"
+      "bytes": 23899,
+      "hash": "9587ad6849f651798d3dac0e26ca38859eaa40dc"
     },
     {
       "path": "docs/wiki/roadmap-notes.md",
@@ -8388,16 +8468,16 @@
       "category": "repo",
       "language": "en",
       "title": "SuperAgents OS",
-      "bytes": 54694,
-      "hash": "93cc08893709765fbd68285350e6a3ce58fb4975"
+      "bytes": 55402,
+      "hash": "eef6a83329b89eb6a309020fe528fd8d879f9e74"
     },
     {
       "path": "README.md",
       "category": "repo",
       "language": "mixed",
       "title": "SuperAgents OS — Wiki",
-      "bytes": 47178,
-      "hash": "a3467b258611830b194163ab99dc631b8fd08c4d"
+      "bytes": 48145,
+      "hash": "bb06b1eac805644be1dc7d37d96c1eecd655af2f"
     },
     {
       "path": "SELF_IMPROVEMENT_AUDIT_2026-09-22.md",

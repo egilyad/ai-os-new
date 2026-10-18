@@ -58,6 +58,11 @@
       "articles": 1
     },
     {
+      "id": "dev-status",
+      "title": "Состояние разработки",
+      "articles": 10
+    },
+    {
       "id": "dev",
       "title": "Разработчикам",
       "articles": 31
@@ -6279,6 +6284,266 @@
         "dev-ci",
         "dev-scripts",
         "dev-overview"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:dev-status-done",
+      "type": "article",
+      "slug": "dev-status-done",
+      "title": "Завершённые задачи",
+      "section": "dev-status",
+      "status": "needs-check",
+      "tags": [
+        "состояние разработки",
+        "прогресс"
+      ],
+      "sources": [],
+      "related": [
+        "dev-status-active",
+        "dev-status-critical",
+        "dev-status-debt",
+        "dev-status-bugs",
+        "dev-status-testing",
+        "dev-status-docs",
+        "dev-status-blocked",
+        "dev-status-roadmaps",
+        "dev-status-files"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:dev-status-active",
+      "type": "article",
+      "slug": "dev-status-active",
+      "title": "Активная разработка",
+      "section": "dev-status",
+      "status": "needs-check",
+      "tags": [
+        "состояние разработки",
+        "прогресс"
+      ],
+      "sources": [],
+      "related": [
+        "dev-status-done",
+        "dev-status-critical",
+        "dev-status-debt",
+        "dev-status-bugs",
+        "dev-status-testing",
+        "dev-status-docs",
+        "dev-status-blocked",
+        "dev-status-roadmaps",
+        "dev-status-files"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:dev-status-critical",
+      "type": "article",
+      "slug": "dev-status-critical",
+      "title": "Критические проблемы",
+      "section": "dev-status",
+      "status": "needs-check",
+      "tags": [
+        "состояние разработки",
+        "риски"
+      ],
+      "sources": [],
+      "related": [
+        "dev-status-done",
+        "dev-status-active",
+        "dev-status-debt",
+        "dev-status-bugs",
+        "dev-status-testing",
+        "dev-status-docs",
+        "dev-status-blocked",
+        "dev-status-roadmaps",
+        "dev-status-files"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:dev-status-debt",
+      "type": "article",
+      "slug": "dev-status-debt",
+      "title": "Технический долг",
+      "section": "dev-status",
+      "status": "needs-check",
+      "tags": [
+        "состояние разработки",
+        "долг"
+      ],
+      "sources": [],
+      "related": [
+        "dev-status-done",
+        "dev-status-active",
+        "dev-status-critical",
+        "dev-status-bugs",
+        "dev-status-testing",
+        "dev-status-docs",
+        "dev-status-blocked",
+        "dev-status-roadmaps",
+        "dev-status-files"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:dev-status-bugs",
+      "type": "article",
+      "slug": "dev-status-bugs",
+      "title": "Отложенные баги",
+      "section": "dev-status",
+      "status": "needs-check",
+      "tags": [
+        "состояние разработки",
+        "баги"
+      ],
+      "sources": [],
+      "related": [
+        "dev-status-done",
+        "dev-status-active",
+        "dev-status-critical",
+        "dev-status-debt",
+        "dev-status-testing",
+        "dev-status-docs",
+        "dev-status-blocked",
+        "dev-status-roadmaps",
+        "dev-status-files"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:dev-status-testing",
+      "type": "article",
+      "slug": "dev-status-testing",
+      "title": "Состояние тестирования",
+      "section": "dev-status",
+      "status": "needs-check",
+      "tags": [
+        "состояние разработки",
+        "тесты"
+      ],
+      "sources": [],
+      "related": [
+        "dev-status-done",
+        "dev-status-active",
+        "dev-status-critical",
+        "dev-status-debt",
+        "dev-status-bugs",
+        "dev-status-docs",
+        "dev-status-blocked",
+        "dev-status-roadmaps",
+        "dev-status-files"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:dev-status-docs",
+      "type": "article",
+      "slug": "dev-status-docs",
+      "title": "Документация",
+      "section": "dev-status",
+      "status": "needs-check",
+      "tags": [
+        "состояние разработки",
+        "документация"
+      ],
+      "sources": [],
+      "related": [
+        "dev-status-done",
+        "dev-status-active",
+        "dev-status-critical",
+        "dev-status-debt",
+        "dev-status-bugs",
+        "dev-status-testing",
+        "dev-status-blocked",
+        "dev-status-roadmaps",
+        "dev-status-files"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:dev-status-blocked",
+      "type": "article",
+      "slug": "dev-status-blocked",
+      "title": "Заблокированные задачи",
+      "section": "dev-status",
+      "status": "needs-check",
+      "tags": [
+        "состояние разработки",
+        "риски"
+      ],
+      "sources": [],
+      "related": [
+        "dev-status-done",
+        "dev-status-active",
+        "dev-status-critical",
+        "dev-status-debt",
+        "dev-status-bugs",
+        "dev-status-testing",
+        "dev-status-docs",
+        "dev-status-roadmaps",
+        "dev-status-files"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:dev-status-roadmaps",
+      "type": "article",
+      "slug": "dev-status-roadmaps",
+      "title": "Roadmaps",
+      "section": "dev-status",
+      "status": "needs-check",
+      "tags": [
+        "состояние разработки",
+        "планы"
+      ],
+      "sources": [],
+      "related": [
+        "dev-status-done",
+        "dev-status-active",
+        "dev-status-critical",
+        "dev-status-debt",
+        "dev-status-bugs",
+        "dev-status-testing",
+        "dev-status-docs",
+        "dev-status-blocked",
+        "dev-status-files"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:dev-status-files",
+      "type": "article",
+      "slug": "dev-status-files",
+      "title": "MD и другие файлы от разработки",
+      "section": "dev-status",
+      "status": "needs-check",
+      "tags": [
+        "состояние разработки",
+        "процесс"
+      ],
+      "sources": [],
+      "related": [
+        "dev-status-done",
+        "dev-status-active",
+        "dev-status-critical",
+        "dev-status-debt",
+        "dev-status-bugs",
+        "dev-status-testing",
+        "dev-status-docs",
+        "dev-status-blocked",
+        "dev-status-roadmaps"
       ],
       "reviewed": null,
       "tests": []

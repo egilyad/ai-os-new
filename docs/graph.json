@@ -3,14 +3,14 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 1210,
-    "edges": 3168,
+    "nodes": 1220,
+    "edges": 3258,
     "byType": {
       "audit": 65,
       "code": 513,
       "test": 151,
       "panel": 259,
-      "article": 222
+      "article": 232
     },
     "byKind": {
       "audit_test": 325,
@@ -18,7 +18,7 @@
       "documents": 201,
       "source": 696,
       "test": 211,
-      "related": 807
+      "related": 897
     }
   },
   "nodes": [
@@ -6330,6 +6330,76 @@
       "label": "Разработчикам: сервисы и lazyService",
       "section": "dev",
       "status": "verified"
+    },
+    {
+      "id": "wiki:dev-status-active",
+      "type": "article",
+      "label": "Активная разработка",
+      "section": "dev-status",
+      "status": "needs-check"
+    },
+    {
+      "id": "wiki:dev-status-blocked",
+      "type": "article",
+      "label": "Заблокированные задачи",
+      "section": "dev-status",
+      "status": "needs-check"
+    },
+    {
+      "id": "wiki:dev-status-bugs",
+      "type": "article",
+      "label": "Отложенные баги",
+      "section": "dev-status",
+      "status": "needs-check"
+    },
+    {
+      "id": "wiki:dev-status-critical",
+      "type": "article",
+      "label": "Критические проблемы",
+      "section": "dev-status",
+      "status": "needs-check"
+    },
+    {
+      "id": "wiki:dev-status-debt",
+      "type": "article",
+      "label": "Технический долг",
+      "section": "dev-status",
+      "status": "needs-check"
+    },
+    {
+      "id": "wiki:dev-status-docs",
+      "type": "article",
+      "label": "Документация",
+      "section": "dev-status",
+      "status": "needs-check"
+    },
+    {
+      "id": "wiki:dev-status-done",
+      "type": "article",
+      "label": "Завершённые задачи",
+      "section": "dev-status",
+      "status": "needs-check"
+    },
+    {
+      "id": "wiki:dev-status-files",
+      "type": "article",
+      "label": "MD и другие файлы от разработки",
+      "section": "dev-status",
+      "status": "needs-check"
+    },
+    {
+      "id": "wiki:dev-status-roadmaps",
+      "type": "article",
+      "label": "Roadmaps",
+      "section": "dev-status",
+      "status": "needs-check"
+    },
+    {
+      "id": "wiki:dev-status-testing",
+      "type": "article",
+      "label": "Состояние тестирования",
+      "section": "dev-status",
+      "status": "needs-check"
     },
     {
       "id": "wiki:dev-store-catalog",
@@ -19839,6 +19909,456 @@
     {
       "from": "wiki:dev-services",
       "to": "wiki:dev-service-map",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-active",
+      "to": "wiki:dev-status-blocked",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-active",
+      "to": "wiki:dev-status-bugs",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-active",
+      "to": "wiki:dev-status-critical",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-active",
+      "to": "wiki:dev-status-debt",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-active",
+      "to": "wiki:dev-status-docs",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-active",
+      "to": "wiki:dev-status-done",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-active",
+      "to": "wiki:dev-status-files",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-active",
+      "to": "wiki:dev-status-roadmaps",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-active",
+      "to": "wiki:dev-status-testing",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-blocked",
+      "to": "wiki:dev-status-active",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-blocked",
+      "to": "wiki:dev-status-bugs",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-blocked",
+      "to": "wiki:dev-status-critical",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-blocked",
+      "to": "wiki:dev-status-debt",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-blocked",
+      "to": "wiki:dev-status-docs",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-blocked",
+      "to": "wiki:dev-status-done",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-blocked",
+      "to": "wiki:dev-status-files",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-blocked",
+      "to": "wiki:dev-status-roadmaps",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-blocked",
+      "to": "wiki:dev-status-testing",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-bugs",
+      "to": "wiki:dev-status-active",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-bugs",
+      "to": "wiki:dev-status-blocked",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-bugs",
+      "to": "wiki:dev-status-critical",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-bugs",
+      "to": "wiki:dev-status-debt",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-bugs",
+      "to": "wiki:dev-status-docs",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-bugs",
+      "to": "wiki:dev-status-done",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-bugs",
+      "to": "wiki:dev-status-files",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-bugs",
+      "to": "wiki:dev-status-roadmaps",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-bugs",
+      "to": "wiki:dev-status-testing",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-critical",
+      "to": "wiki:dev-status-active",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-critical",
+      "to": "wiki:dev-status-blocked",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-critical",
+      "to": "wiki:dev-status-bugs",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-critical",
+      "to": "wiki:dev-status-debt",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-critical",
+      "to": "wiki:dev-status-docs",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-critical",
+      "to": "wiki:dev-status-done",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-critical",
+      "to": "wiki:dev-status-files",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-critical",
+      "to": "wiki:dev-status-roadmaps",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-critical",
+      "to": "wiki:dev-status-testing",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-debt",
+      "to": "wiki:dev-status-active",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-debt",
+      "to": "wiki:dev-status-blocked",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-debt",
+      "to": "wiki:dev-status-bugs",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-debt",
+      "to": "wiki:dev-status-critical",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-debt",
+      "to": "wiki:dev-status-docs",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-debt",
+      "to": "wiki:dev-status-done",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-debt",
+      "to": "wiki:dev-status-files",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-debt",
+      "to": "wiki:dev-status-roadmaps",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-debt",
+      "to": "wiki:dev-status-testing",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-docs",
+      "to": "wiki:dev-status-active",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-docs",
+      "to": "wiki:dev-status-blocked",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-docs",
+      "to": "wiki:dev-status-bugs",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-docs",
+      "to": "wiki:dev-status-critical",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-docs",
+      "to": "wiki:dev-status-debt",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-docs",
+      "to": "wiki:dev-status-done",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-docs",
+      "to": "wiki:dev-status-files",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-docs",
+      "to": "wiki:dev-status-roadmaps",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-docs",
+      "to": "wiki:dev-status-testing",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-done",
+      "to": "wiki:dev-status-active",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-done",
+      "to": "wiki:dev-status-blocked",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-done",
+      "to": "wiki:dev-status-bugs",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-done",
+      "to": "wiki:dev-status-critical",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-done",
+      "to": "wiki:dev-status-debt",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-done",
+      "to": "wiki:dev-status-docs",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-done",
+      "to": "wiki:dev-status-files",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-done",
+      "to": "wiki:dev-status-roadmaps",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-done",
+      "to": "wiki:dev-status-testing",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-files",
+      "to": "wiki:dev-status-active",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-files",
+      "to": "wiki:dev-status-blocked",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-files",
+      "to": "wiki:dev-status-bugs",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-files",
+      "to": "wiki:dev-status-critical",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-files",
+      "to": "wiki:dev-status-debt",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-files",
+      "to": "wiki:dev-status-docs",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-files",
+      "to": "wiki:dev-status-done",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-files",
+      "to": "wiki:dev-status-roadmaps",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-files",
+      "to": "wiki:dev-status-testing",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-roadmaps",
+      "to": "wiki:dev-status-active",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-roadmaps",
+      "to": "wiki:dev-status-blocked",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-roadmaps",
+      "to": "wiki:dev-status-bugs",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-roadmaps",
+      "to": "wiki:dev-status-critical",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-roadmaps",
+      "to": "wiki:dev-status-debt",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-roadmaps",
+      "to": "wiki:dev-status-docs",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-roadmaps",
+      "to": "wiki:dev-status-done",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-roadmaps",
+      "to": "wiki:dev-status-files",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-roadmaps",
+      "to": "wiki:dev-status-testing",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-testing",
+      "to": "wiki:dev-status-active",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-testing",
+      "to": "wiki:dev-status-blocked",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-testing",
+      "to": "wiki:dev-status-bugs",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-testing",
+      "to": "wiki:dev-status-critical",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-testing",
+      "to": "wiki:dev-status-debt",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-testing",
+      "to": "wiki:dev-status-docs",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-testing",
+      "to": "wiki:dev-status-done",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-testing",
+      "to": "wiki:dev-status-files",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-testing",
+      "to": "wiki:dev-status-roadmaps",
       "kind": "related"
     },
     {

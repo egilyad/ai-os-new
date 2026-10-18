@@ -911,6 +911,10 @@ A guide per panel — `panel-*` in the [wiki index](./docs/wiki/README.md#пан
 
 The audit and fix chronology by zone — [zone-1](./docs/wiki/zone-1.md) … [zone-26](./docs/wiki/zone-26.md).
 
+#### Development status
+
+Development progress summaries — the "Development status" section in the [wiki index](./docs/wiki/README.md#состояние-разработки): [Completed tasks](./docs/wiki/dev-status-done.md), [Active development](./docs/wiki/dev-status-active.md), [Critical issues](./docs/wiki/dev-status-critical.md), [Technical debt](./docs/wiki/dev-status-debt.md), [Deferred bugs](./docs/wiki/dev-status-bugs.md), [Testing status](./docs/wiki/dev-status-testing.md), [Documentation](./docs/wiki/dev-status-docs.md), [Blocked tasks](./docs/wiki/dev-status-blocked.md), [Roadmaps](./docs/wiki/dev-status-roadmaps.md), [MD and other development files](./docs/wiki/dev-status-files.md).
+
 #### For developers
 
 | Guide | About |

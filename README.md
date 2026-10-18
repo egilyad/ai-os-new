@@ -70,6 +70,10 @@ flowchart TD
 
 Хронология аудита и починок по зонам — [zone-1](./docs/wiki/zone-1.md) … [zone-26](./docs/wiki/zone-26.md).
 
+### Состояние разработки
+
+Сводки о ходе разработки — раздел «Состояние разработки» в [индексе вики](./docs/wiki/README.md#состояние-разработки): [Завершённые задачи](./docs/wiki/dev-status-done.md), [Активная разработка](./docs/wiki/dev-status-active.md), [Критические проблемы](./docs/wiki/dev-status-critical.md), [Технический долг](./docs/wiki/dev-status-debt.md), [Отложенные баги](./docs/wiki/dev-status-bugs.md), [Состояние тестирования](./docs/wiki/dev-status-testing.md), [Документация](./docs/wiki/dev-status-docs.md), [Заблокированные задачи](./docs/wiki/dev-status-blocked.md), [Roadmaps](./docs/wiki/dev-status-roadmaps.md), [MD и другие файлы от разработки](./docs/wiki/dev-status-files.md).
+
 ### Разработчикам
 
 | Руководство | О чём |

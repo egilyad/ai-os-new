@@ -12,6 +12,7 @@ import { SERVICE_MAP_ARTICLES } from './wiki-service-map';
 import { CONTRACT_ARTICLES } from './wiki-contracts';
 import { LAYER_ARTICLES } from './wiki-layers';
 import { TOOLING_ARTICLES } from './wiki-tooling';
+import { DEV_STATUS_ARTICLES } from './wiki-dev-status';
 import type { WikiArticle, WikiFreshness, WikiSection } from './wiki-types';
 
 export type { WikiArticle, WikiFreshness, WikiSection } from './wiki-types';
@@ -28,6 +29,7 @@ export const WIKI_SECTIONS: WikiSection[] = [
     { id: 'architecture', title: 'Архитектура' },
     { id: 'components', title: 'Компоненты и сервисы' },
     { id: 'notes', title: 'Заметки' },
+    { id: 'dev-status', title: 'Состояние разработки' },
     { id: 'dev', title: 'Разработчикам' },
 ];
 
@@ -2432,6 +2434,7 @@ export const WIKI_ARTICLES: WikiArticle[] = [
     ...CONTRACT_ARTICLES,
     ...LAYER_ARTICLES,
     ...TOOLING_ARTICLES,
+    ...DEV_STATUS_ARTICLES,
 ];
 
 export function getArticle(slug: string): WikiArticle | undefined {
