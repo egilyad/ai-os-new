@@ -2,7 +2,7 @@
 
 # Компонент: каталог инструментов, способности и политики
 
-> Раздел: **Компоненты и сервисы** · Статус: documented · Теги: компоненты, инструменты, способности, политики
+> Раздел: **Компоненты и сервисы** · Статус: verified · Теги: компоненты, инструменты, способности, политики
 
 Источники: `src/kernel/services/catalog/tool-catalog-service.ts`, `src/kernel/services/capability/capability-resolver.ts`, `src/kernel/services/capability/agent-factory.ts`, `src/kernel/services/routing-policy/routing-policy-service.ts`, `src/kernel/services/sandbox/code-sandbox-service.ts`, `src/kernel/services/deploy/deploy-bundle-service.ts`
 

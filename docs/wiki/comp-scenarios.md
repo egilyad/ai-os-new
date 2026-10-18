@@ -2,7 +2,7 @@
 
 # Компонент: сквозные сценарии
 
-> Раздел: **Компоненты и сервисы** · Статус: documented · Теги: компоненты, сценарии, сквозные, интеграция
+> Раздел: **Компоненты и сервисы** · Статус: verified · Теги: компоненты, сценарии, сквозные, интеграция
 
 Источники: `src/kernel/services/chat-executor.ts`, `src/kernel/services/debate-runtime/debate-engine.ts`, `src/kernel/services/agems-task-service.ts`
 

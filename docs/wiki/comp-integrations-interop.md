@@ -2,7 +2,7 @@
 
 # Компонент: интеграции и интероперабельность
 
-> Раздел: **Компоненты и сервисы** · Статус: documented · Теги: компоненты, интеграции, интероп, gateway
+> Раздел: **Компоненты и сервисы** · Статус: verified · Теги: компоненты, интеграции, интероп, gateway
 
 Источники: `src/kernel/services/interop/a2a-service.ts`, `src/kernel/services/interop/coordination-service.ts`, `src/kernel/services/interop/federation-service.ts`, `src/kernel/services/interop/gateway-service.ts`, `src/kernel/services/interop/mcp-harness-service.ts`, `src/kernel/services/rivals2/integrations-service.ts`
 

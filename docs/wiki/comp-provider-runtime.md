@@ -2,7 +2,7 @@
 
 # Компонент: рантайм провайдеров
 
-> Раздел: **Компоненты и сервисы** · Статус: documented · Теги: компоненты, провайдеры, инстансы, адаптеры
+> Раздел: **Компоненты и сервисы** · Статус: verified · Теги: компоненты, провайдеры, инстансы, адаптеры
 
 Источники: `src/kernel/services/provider-runtime/provider-service.ts`, `src/kernel/services/provider-runtime/provider-instance.ts`, `src/kernel/services/provider-runtime/provider-budget.ts`, `src/kernel/services/provider-runtime/provider-session.ts`, `src/kernel/services/provider-runtime/provider-state.ts`, `src/kernel/services/provider-adapter-registry.ts`, `src/kernel/services/provider-router.ts`, `src/kernel/services/provider-tracker.ts`
 

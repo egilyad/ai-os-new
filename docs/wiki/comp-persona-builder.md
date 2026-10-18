@@ -2,7 +2,7 @@
 
 # Компонент: персоны и строитель (persona, builder)
 
-> Раздел: **Компоненты и сервисы** · Статус: documented · Теги: компоненты, персоны, билдер, контекст
+> Раздел: **Компоненты и сервисы** · Статус: verified · Теги: компоненты, персоны, билдер, контекст
 
 Источники: `src/kernel/services/persona/persona-service.ts`, `src/kernel/services/persona/lt-memory-service.ts`, `src/kernel/services/persona/shared-context-service.ts`, `src/kernel/services/builder/builder-agent-service.ts`
 
@@ -27,12 +27,12 @@
 
 ## Проверка работоспособности
 
+- Тесты: `persona/persona-demo-seed.test.ts`, `builder/builder-agent-service.test.ts`.
 - Ручная: создать персону, задать общий контекст, собрать агента строителем.
-- В каталогах `persona/` и `builder/` выделенных тестов не найдено.
 
 ## Состояние
 
-- Реализовано; подтверждено чтением кода, без автотестов.
+- Реализовано; персона и строитель покрыты тестами.
 
 ---
 

@@ -2,7 +2,7 @@
 
 # Компонент: рантайм дебатов
 
-> Раздел: **Компоненты и сервисы** · Статус: documented · Теги: компоненты, дебаты, оркестрация, агенты
+> Раздел: **Компоненты и сервисы** · Статус: verified · Теги: компоненты, дебаты, оркестрация, агенты
 
 Источники: `src/kernel/services/debate-runtime/debate-engine.ts`, `src/kernel/services/debate-runtime/debate-sync-manager.ts`, `src/kernel/services/debate-runtime/debate-session.ts`, `src/kernel/services/debate-runtime/debate-orchestrator.ts`, `src/kernel/services/debate-runtime/debate-topology.ts`, `src/kernel/services/debate-runtime/debate-budget.ts`, `src/kernel/services/debate-runtime/debate-consensus.ts`, `src/kernel/services/debate-runtime/debate-evaluator.ts`
 

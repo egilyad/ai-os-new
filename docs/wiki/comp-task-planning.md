@@ -2,7 +2,7 @@
 
 # Компонент: задачи, планирование и расписание
 
-> Раздел: **Компоненты и сервисы** · Статус: documented · Теги: компоненты, задачи, планирование, расписание
+> Раздел: **Компоненты и сервисы** · Статус: verified · Теги: компоненты, задачи, планирование, расписание
 
 Источники: `src/kernel/services/agems-task-service.ts`, `src/kernel/services/task-handoff.ts`, `src/kernel/services/task-trigger-service.ts`, `src/kernel/services/task-work-product-service.ts`, `src/kernel/services/scheduler-service.ts`
 

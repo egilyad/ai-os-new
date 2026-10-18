@@ -444,7 +444,7 @@ flowchart TD
         title: 'Компонент: управление ключами провайдеров',
         section: 'components',
         tags: ['компоненты', 'ключи', 'провайдеры', 'KeyVault'],
-        freshness: 'documented',
+        freshness: 'verified',
         sources: [
             'src/kernel/services/key-management/key-service.ts',
             'src/kernel/services/key-state-store.ts',
@@ -604,7 +604,7 @@ flowchart TD
         title: 'Компонент: агенты, роли и навыки',
         section: 'components',
         tags: ['компоненты', 'агенты', 'роли', 'навыки'],
-        freshness: 'documented',
+        freshness: 'verified',
         sources: [
             'src/kernel/services/agent-service.ts',
             'src/kernel/services/role-service.ts',
@@ -736,7 +736,7 @@ flowchart TD
         title: 'Компонент: консистентность и дрейф',
         section: 'components',
         tags: ['компоненты', 'консистентность', 'дрейф', 'документация'],
-        freshness: 'documented',
+        freshness: 'verified',
         sources: [
             'src/kernel/services/truth-consistency-monitor.ts',
             'src/kernel/services/consistency-checker.ts',
@@ -776,7 +776,7 @@ flowchart TD
         title: 'Компонент: рантайм дебатов',
         section: 'components',
         tags: ['компоненты', 'дебаты', 'оркестрация', 'агенты'],
-        freshness: 'documented',
+        freshness: 'verified',
         sources: [
             'src/kernel/services/debate-runtime/debate-engine.ts',
             'src/kernel/services/debate-runtime/debate-sync-manager.ts',
@@ -913,7 +913,7 @@ flowchart TD
         title: 'Компонент: чат (ChatExecutor)',
         section: 'components',
         tags: ['компоненты', 'чат', 'стриминг', 'LLM'],
-        freshness: 'documented',
+        freshness: 'verified',
         sources: ['src/kernel/services/chat-executor.ts', 'src/kernel/services/chat-executor.test.ts'],
         related: ['panel-chat', 'comp-routing', 'comp-budget-pricing', 'comp-policy-security'],
         body: `## Назначение
@@ -949,7 +949,7 @@ flowchart TD
         title: 'Компонент: наблюдаемость (метрики, трейсы, мониторинг)',
         section: 'components',
         tags: ['компоненты', 'наблюдаемость', 'метрики', 'трейсы'],
-        freshness: 'documented',
+        freshness: 'verified',
         sources: [
             'src/kernel/services/metrics-service.ts',
             'src/kernel/services/monitoring-service.ts',
@@ -999,7 +999,7 @@ flowchart TD
         title: 'Компонент: советник и runtime-intelligence',
         section: 'components',
         tags: ['компоненты', 'советник', 'диагностика', 'what-if'],
-        freshness: 'documented',
+        freshness: 'verified',
         sources: [
             'src/kernel/services/advisor-service.ts',
             'src/kernel/services/advisor/diagnostics-engine.ts',
@@ -1009,6 +1009,7 @@ flowchart TD
             'src/kernel/services/advisor/whatif-engine.ts',
             'src/kernel/services/runtime-intelligence/diagnostic-service.ts',
             'src/kernel/services/runtime-intelligence/pressure-map-service.ts',
+            'src/kernel/services/runtime-intelligence/whatif-service.ts',
         ],
         related: ['panel-dashboard', 'diagnostics', 'panel-pressure', 'panel-sre', 'comp-observability'],
         body: `## Назначение
@@ -1087,7 +1088,7 @@ flowchart TD
         title: 'Компонент: тайм-тревел, снапшоты и каузальность',
         section: 'components',
         tags: ['компоненты', 'тайм-тревел', 'снапшоты', 'каузальность'],
-        freshness: 'documented',
+        freshness: 'verified',
         sources: [
             'src/kernel/services/temporal-replay-service.ts',
             'src/kernel/services/snapshot-service.ts',
@@ -1130,7 +1131,7 @@ flowchart TD
         title: 'Компонент: задачи, планирование и расписание',
         section: 'components',
         tags: ['компоненты', 'задачи', 'планирование', 'расписание'],
-        freshness: 'documented',
+        freshness: 'verified',
         sources: [
             'src/kernel/services/agems-task-service.ts',
             'src/kernel/services/task-handoff.ts',
@@ -1218,7 +1219,7 @@ flowchart TD
         title: 'Компонент: интеграции и интероперабельность',
         section: 'components',
         tags: ['компоненты', 'интеграции', 'интероп', 'gateway'],
-        freshness: 'documented',
+        freshness: 'verified',
         sources: [
             'src/kernel/services/interop/a2a-service.ts',
             'src/kernel/services/interop/coordination-service.ts',
@@ -1263,7 +1264,7 @@ flowchart TD
         title: 'Компонент: рантайм провайдеров',
         section: 'components',
         tags: ['компоненты', 'провайдеры', 'инстансы', 'адаптеры'],
-        freshness: 'documented',
+        freshness: 'verified',
         sources: [
             'src/kernel/services/provider-runtime/provider-service.ts',
             'src/kernel/services/provider-runtime/provider-instance.ts',
@@ -1346,7 +1347,7 @@ flowchart TD
         title: 'Компонент: слой состояния (Zustand-сторы)',
         section: 'components',
         tags: ['компоненты', 'состояние', 'zustand', 'ui'],
-        freshness: 'documented',
+        freshness: 'verified',
         sources: ['src/stores/useKeyStore.ts', 'src/stores/debateLiveStore.ts', 'src/stores/chat/store.ts'],
         related: ['dev-stores', 'dev-store-catalog', 'comp-chat', 'panel-wiki', 'dev-layout'],
         body: `## Назначение
@@ -1383,7 +1384,7 @@ flowchart TD
         title: 'Компонент: сквозные сценарии',
         section: 'components',
         tags: ['компоненты', 'сценарии', 'сквозные', 'интеграция'],
-        freshness: 'documented',
+        freshness: 'verified',
         sources: [
             'src/kernel/services/chat-executor.ts',
             'src/kernel/services/debate-runtime/debate-engine.ts',
@@ -1454,12 +1455,12 @@ flowchart TD
 
 ## Проверка работоспособности
 
+- Тесты: \`crew/crews-demo-seed.test.ts\`, \`council/council-demo-seed.test.ts\` (демо-уровень).
 - Ручная: собрать экипаж/совет в Director и прогнать задачу.
-- В каталогах \`crew/\` и \`council/\` выделенных \`*.test.ts\` не найдено.
 
 ## Состояние
 
-- Реализовано; подтверждено чтением кода, без автотестов.`,
+- Реализовано; подтверждено кодом и демо-тестами.`,
     },
     {
         slug: 'comp-frontier-diversity',
@@ -1497,12 +1498,12 @@ flowchart TD
 
 ## Проверка работоспособности
 
+- Тест: \`frontier/frontier-demo-seed.test.ts\`; для \`agent-diversity/\` тестов нет.
 - Ручная: запустить эксперимент фронтира и посмотреть распределение вариантов.
-- В каталогах \`frontier/\` и \`agent-diversity/\` выделенных тестов не найдено.
 
 ## Состояние
 
-- Реализовано; подтверждено чтением кода, без автотестов.`,
+- Реализовано; сервис фронтира покрыт демо-тестом, \`agent-diversity/\` — без тестов.`,
     },
     {
         slug: 'comp-rivals-lab',
@@ -1540,19 +1541,19 @@ flowchart TD
 
 ## Проверка работоспособности
 
+- Тесты в \`rivals/\`: \`guardrail-service.test.ts\` и демо-сиды (autonomy/dyad/groupchat/runqueue/sop).
 - Ручная: сравнить результаты «конкурента» и основного пути в Evaluation/Market.
-- В каталогах серии \`rivals*\` выделенных тестов не найдено.
 
 ## Состояние
 
-- Реализовано как исследовательская лаборатория; подтверждено чтением кода, без автотестов.`,
+- Реализовано как исследовательская лаборатория; частично покрыто демо-тестами.`,
     },
     {
         slug: 'comp-knowledge-rag',
         title: 'Компонент: генерация знаний и RAG',
         section: 'components',
         tags: ['компоненты', 'знания', 'RAG', 'кристаллы'],
-        freshness: 'documented',
+        freshness: 'verified',
         sources: [
             'src/kernel/services/rag/bm25-service.ts',
             'src/kernel/services/rag/hybrid-retrieval-service.ts',
@@ -1583,19 +1584,19 @@ flowchart TD
 
 ## Проверка работоспособности
 
+- Тесты: \`rag/hybrid-retrieval-service.test.ts\`, \`knowledge-generator/knowledge-generator-service.test.ts\`, \`crystal-vault/crystal-vault-service.test.ts\`, \`lens-engine/lens-engine-service.test.ts\`.
 - Ручная: сгенерировать знание, найти через гибридный поиск, открыть линзу.
-- В каталогах \`rag/\`, \`knowledge-generator/\`, \`crystal-vault/\`, \`lens-engine/\` выделенных тестов не найдено.
 
 ## Состояние
 
-- Реализовано; подтверждено чтением кода, без автотестов.`,
+- Реализовано; ключевые сервисы покрыты тестами.`,
     },
     {
         slug: 'comp-eval-elo',
         title: 'Компонент: оценка и рейтинг (eval, elo)',
         section: 'components',
         tags: ['компоненты', 'оценка', 'рейтинг', 'LLM-judge'],
-        freshness: 'documented',
+        freshness: 'verified',
         sources: [
             'src/kernel/services/eval/llm-judge-service.ts',
             'src/kernel/services/eval/scorer-registry-service.ts',
@@ -1624,19 +1625,19 @@ flowchart TD
 
 ## Проверка работоспособности
 
+- Тест: \`eval/scorer-registry-service.test.ts\`; для \`elo/\` тестов нет.
 - Ручная: прогнать оценивание и посмотреть таблицу рейтинга.
-- В каталогах \`eval/\` и \`elo/\` выделенных тестов не найдено.
 
 ## Состояние
 
-- Реализовано; подтверждено чтением кода, без автотестов.`,
+- Реализовано; реестр скореров покрыт тестом, Эло — чтением кода.`,
     },
     {
         slug: 'comp-persona-builder',
         title: 'Компонент: персоны и строитель (persona, builder)',
         section: 'components',
         tags: ['компоненты', 'персоны', 'билдер', 'контекст'],
-        freshness: 'documented',
+        freshness: 'verified',
         sources: [
             'src/kernel/services/persona/persona-service.ts',
             'src/kernel/services/persona/lt-memory-service.ts',
@@ -1665,12 +1666,12 @@ flowchart TD
 
 ## Проверка работоспособности
 
+- Тесты: \`persona/persona-demo-seed.test.ts\`, \`builder/builder-agent-service.test.ts\`.
 - Ручная: создать персону, задать общий контекст, собрать агента строителем.
-- В каталогах \`persona/\` и \`builder/\` выделенных тестов не найдено.
 
 ## Состояние
 
-- Реализовано; подтверждено чтением кода, без автотестов.`,
+- Реализовано; персона и строитель покрыты тестами.`,
     },
     {
         slug: 'comp-invocation-meta',
@@ -1718,7 +1719,7 @@ flowchart TD
         title: 'Компонент: симуляция, компьютер и parity',
         section: 'components',
         tags: ['компоненты', 'симуляция', 'компьютер', 'parity'],
-        freshness: 'documented',
+        freshness: 'verified',
         sources: [
             'src/kernel/services/simulation/simulation-engine-service.ts',
             'src/kernel/services/simulation/world-state-service.ts',
@@ -1751,19 +1752,19 @@ flowchart TD
 
 ## Проверка работоспособности
 
+- Тесты: \`simulation/simulation-engine-service.test.ts\`, \`world-state-service.test.ts\`, \`computer/computer-use-loop-service.test.ts\`, \`parity/tool-runner-service.test.ts\`.
 - Ручная: запустить симуляцию, дать агенту действие в мире.
-- В каталогах \`simulation/\`, \`computer/\`, \`parity/\` выделенных тестов не найдено.
 
 ## Состояние
 
-- Реализовано; подтверждено чтением кода, без автотестов.`,
+- Реализовано; симуляция, computer-use и parity покрыты тестами.`,
     },
     {
         slug: 'comp-synthesis-forum',
         title: 'Компонент: синтез, форум и junction-движок',
         section: 'components',
         tags: ['компоненты', 'синтез', 'форум', 'junction'],
-        freshness: 'documented',
+        freshness: 'verified',
         sources: [
             'src/kernel/services/synthesis/synthesis-engine-service.ts',
             'src/kernel/services/forum/forum-service.ts',
@@ -1804,7 +1805,7 @@ flowchart TD
         title: 'Компонент: хранилище, таймлайн и проекции',
         section: 'components',
         tags: ['компоненты', 'хранилище', 'таймлайн', 'проекции'],
-        freshness: 'documented',
+        freshness: 'verified',
         sources: [
             'src/kernel/services/storage/dexie-storage.ts',
             'src/kernel/services/storage/local-storage-adapter.ts',
@@ -1837,19 +1838,19 @@ flowchart TD
 
 ## Проверка работоспособности
 
-- Тест: \`storage/dexie-storage.session.test.ts\`.
+- Тесты: \`storage/dexie-storage.session.test.ts\`, \`timeline/execution-viz-service.test.ts\`.
 - Ручная: History/Audit показывает таймлайн, Router — проекцию решения.
 
 ## Состояние
 
-- Реализовано; хранилище покрыто тестом, таймлайн/проекции — чтением кода.`,
+- Реализовано; хранилище и таймлайн покрыты тестами, проекции — чтением кода.`,
     },
     {
         slug: 'comp-tool-capability',
         title: 'Компонент: каталог инструментов, способности и политики',
         section: 'components',
         tags: ['компоненты', 'инструменты', 'способности', 'политики'],
-        freshness: 'documented',
+        freshness: 'verified',
         sources: [
             'src/kernel/services/catalog/tool-catalog-service.ts',
             'src/kernel/services/capability/capability-resolver.ts',

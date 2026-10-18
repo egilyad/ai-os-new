@@ -2,7 +2,7 @@
 
 # Компонент: тайм-тревел, снапшоты и каузальность
 
-> Раздел: **Компоненты и сервисы** · Статус: documented · Теги: компоненты, тайм-тревел, снапшоты, каузальность
+> Раздел: **Компоненты и сервисы** · Статус: verified · Теги: компоненты, тайм-тревел, снапшоты, каузальность
 
 Источники: `src/kernel/services/temporal-replay-service.ts`, `src/kernel/services/snapshot-service.ts`, `src/kernel/services/causal-timeline-service.ts`, `src/kernel/services/counterfactual-explanation-service.ts`, `src/kernel/services/causal-scope-manager.ts`
 

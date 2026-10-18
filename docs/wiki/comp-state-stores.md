@@ -2,7 +2,7 @@
 
 # Компонент: слой состояния (Zustand-сторы)
 
-> Раздел: **Компоненты и сервисы** · Статус: documented · Теги: компоненты, состояние, zustand, ui
+> Раздел: **Компоненты и сервисы** · Статус: verified · Теги: компоненты, состояние, zustand, ui
 
 Источники: `src/stores/useKeyStore.ts`, `src/stores/debateLiveStore.ts`, `src/stores/chat/store.ts`
 

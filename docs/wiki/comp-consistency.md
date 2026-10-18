@@ -2,7 +2,7 @@
 
 # Компонент: консистентность и дрейф
 
-> Раздел: **Компоненты и сервисы** · Статус: documented · Теги: компоненты, консистентность, дрейф, документация
+> Раздел: **Компоненты и сервисы** · Статус: verified · Теги: компоненты, консистентность, дрейф, документация
 
 Источники: `src/kernel/services/truth-consistency-monitor.ts`, `src/kernel/services/consistency-checker.ts`, `src/kernel/services/consistency-checker.test.ts`
 

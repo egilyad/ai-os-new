@@ -2,7 +2,7 @@
 
 # Компонент: синтез, форум и junction-движок
 
-> Раздел: **Компоненты и сервисы** · Статус: documented · Теги: компоненты, синтез, форум, junction
+> Раздел: **Компоненты и сервисы** · Статус: verified · Теги: компоненты, синтез, форум, junction
 
 Источники: `src/kernel/services/synthesis/synthesis-engine-service.ts`, `src/kernel/services/forum/forum-service.ts`, `src/kernel/services/junction-engine/junction-engine-service.ts`
 

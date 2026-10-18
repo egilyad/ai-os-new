@@ -2,7 +2,7 @@
 
 # Компонент: управление ключами провайдеров
 
-> Раздел: **Компоненты и сервисы** · Статус: documented · Теги: компоненты, ключи, провайдеры, KeyVault
+> Раздел: **Компоненты и сервисы** · Статус: verified · Теги: компоненты, ключи, провайдеры, KeyVault
 
 Источники: `src/kernel/services/key-management/key-service.ts`, `src/kernel/services/key-state-store.ts`, `src/kernel/services/group-manager.ts`, `src/kernel/services/key-management/key-pool-selector.ts`, `src/kernel/services/session-affinity-store.ts`, `src/kernel/services/rotation-service.ts`, `src/kernel/services/virtual-key-service.ts`, `src/kernel/services/key-intelligence-pipeline.ts`
 

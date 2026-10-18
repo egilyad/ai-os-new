@@ -2,7 +2,7 @@
 
 # Компонент: симуляция, компьютер и parity
 
-> Раздел: **Компоненты и сервисы** · Статус: documented · Теги: компоненты, симуляция, компьютер, parity
+> Раздел: **Компоненты и сервисы** · Статус: verified · Теги: компоненты, симуляция, компьютер, parity
 
 Источники: `src/kernel/services/simulation/simulation-engine-service.ts`, `src/kernel/services/simulation/world-state-service.ts`, `src/kernel/services/computer/computer-use-loop-service.ts`, `src/kernel/services/computer/sidecar-computer-executor.ts`, `src/kernel/services/parity/knowledge-service.ts`, `src/kernel/services/parity/tool-runner-service.ts`
 
@@ -29,12 +29,12 @@
 
 ## Проверка работоспособности
 
+- Тесты: `simulation/simulation-engine-service.test.ts`, `world-state-service.test.ts`, `computer/computer-use-loop-service.test.ts`, `parity/tool-runner-service.test.ts`.
 - Ручная: запустить симуляцию, дать агенту действие в мире.
-- В каталогах `simulation/`, `computer/`, `parity/` выделенных тестов не найдено.
 
 ## Состояние
 
-- Реализовано; подтверждено чтением кода, без автотестов.
+- Реализовано; симуляция, computer-use и parity покрыты тестами.
 
 ---
 

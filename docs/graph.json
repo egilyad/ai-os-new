@@ -3,12 +3,12 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 1014,
-    "edges": 2726,
+    "nodes": 1016,
+    "edges": 2728,
     "byType": {
       "audit": 67,
-      "code": 393,
-      "test": 105,
+      "code": 394,
+      "test": 106,
       "panel": 259,
       "article": 190
     },
@@ -16,8 +16,8 @@
       "audit_test": 325,
       "audit_mention": 928,
       "documents": 201,
-      "source": 504,
-      "test": 121,
+      "source": 505,
+      "test": 122,
       "related": 647
     }
   },
@@ -2687,6 +2687,16 @@
       "label": "src/kernel/services/runtime-intelligence/pressure-map-service.ts"
     },
     {
+      "id": "file:src/kernel/services/runtime-intelligence/whatif-service.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/runtime-intelligence/whatif-service.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/runtime-intelligence/whatif-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/runtime-intelligence/whatif-service.ts"
+    },
+    {
       "id": "file:src/kernel/services/sandbox-service.ts",
       "type": "code",
       "label": "src/kernel/services/sandbox-service.ts"
@@ -4820,14 +4830,14 @@
       "type": "article",
       "label": "Компонент: советник и runtime-intelligence",
       "section": "components",
-      "status": "documented"
+      "status": "verified"
     },
     {
       "id": "wiki:comp-agents-roles-skills",
       "type": "article",
       "label": "Компонент: агенты, роли и навыки",
       "section": "components",
-      "status": "documented"
+      "status": "verified"
     },
     {
       "id": "wiki:comp-budget-pricing",
@@ -4841,7 +4851,7 @@
       "type": "article",
       "label": "Компонент: чат (ChatExecutor)",
       "section": "components",
-      "status": "documented"
+      "status": "verified"
     },
     {
       "id": "wiki:comp-cognitive-orchestration",
@@ -4862,7 +4872,7 @@
       "type": "article",
       "label": "Компонент: консистентность и дрейф",
       "section": "components",
-      "status": "documented"
+      "status": "verified"
     },
     {
       "id": "wiki:comp-crews-councils",
@@ -4876,7 +4886,7 @@
       "type": "article",
       "label": "Компонент: рантайм дебатов",
       "section": "components",
-      "status": "documented"
+      "status": "verified"
     },
     {
       "id": "wiki:comp-debateplus",
@@ -4897,7 +4907,7 @@
       "type": "article",
       "label": "Компонент: оценка и рейтинг (eval, elo)",
       "section": "components",
-      "status": "documented"
+      "status": "verified"
     },
     {
       "id": "wiki:comp-event-bus",
@@ -4939,7 +4949,7 @@
       "type": "article",
       "label": "Компонент: интеграции и интероперабельность",
       "section": "components",
-      "status": "documented"
+      "status": "verified"
     },
     {
       "id": "wiki:comp-invocation-meta",
@@ -4960,14 +4970,14 @@
       "type": "article",
       "label": "Компонент: управление ключами провайдеров",
       "section": "components",
-      "status": "documented"
+      "status": "verified"
     },
     {
       "id": "wiki:comp-knowledge-rag",
       "type": "article",
       "label": "Компонент: генерация знаний и RAG",
       "section": "components",
-      "status": "documented"
+      "status": "verified"
     },
     {
       "id": "wiki:comp-llm-bridge",
@@ -4988,7 +4998,7 @@
       "type": "article",
       "label": "Компонент: наблюдаемость (метрики, трейсы, мониторинг)",
       "section": "components",
-      "status": "documented"
+      "status": "verified"
     },
     {
       "id": "wiki:comp-overview",
@@ -5009,7 +5019,7 @@
       "type": "article",
       "label": "Компонент: персоны и строитель (persona, builder)",
       "section": "components",
-      "status": "documented"
+      "status": "verified"
     },
     {
       "id": "wiki:comp-policy-security",
@@ -5023,7 +5033,7 @@
       "type": "article",
       "label": "Компонент: рантайм провайдеров",
       "section": "components",
-      "status": "documented"
+      "status": "verified"
     },
     {
       "id": "wiki:comp-rivals-lab",
@@ -5044,7 +5054,7 @@
       "type": "article",
       "label": "Компонент: сквозные сценарии",
       "section": "components",
-      "status": "documented"
+      "status": "verified"
     },
     {
       "id": "wiki:comp-security-crypto",
@@ -5058,49 +5068,49 @@
       "type": "article",
       "label": "Компонент: симуляция, компьютер и parity",
       "section": "components",
-      "status": "documented"
+      "status": "verified"
     },
     {
       "id": "wiki:comp-state-stores",
       "type": "article",
       "label": "Компонент: слой состояния (Zustand-сторы)",
       "section": "components",
-      "status": "documented"
+      "status": "verified"
     },
     {
       "id": "wiki:comp-storage-timeline",
       "type": "article",
       "label": "Компонент: хранилище, таймлайн и проекции",
       "section": "components",
-      "status": "documented"
+      "status": "verified"
     },
     {
       "id": "wiki:comp-synthesis-forum",
       "type": "article",
       "label": "Компонент: синтез, форум и junction-движок",
       "section": "components",
-      "status": "documented"
+      "status": "verified"
     },
     {
       "id": "wiki:comp-task-planning",
       "type": "article",
       "label": "Компонент: задачи, планирование и расписание",
       "section": "components",
-      "status": "documented"
+      "status": "verified"
     },
     {
       "id": "wiki:comp-time-travel",
       "type": "article",
       "label": "Компонент: тайм-тревел, снапшоты и каузальность",
       "section": "components",
-      "status": "documented"
+      "status": "verified"
     },
     {
       "id": "wiki:comp-tool-capability",
       "type": "article",
       "label": "Компонент: каталог инструментов, способности и политики",
       "section": "components",
-      "status": "documented"
+      "status": "verified"
     },
     {
       "id": "wiki:comp-tools-mcp",
@@ -13534,6 +13544,16 @@
     {
       "from": "wiki:comp-advisor-runtime-intelligence",
       "to": "file:src/kernel/services/runtime-intelligence/pressure-map-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-advisor-runtime-intelligence",
+      "to": "file:src/kernel/services/runtime-intelligence/whatif-service.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-advisor-runtime-intelligence",
+      "to": "file:src/kernel/services/runtime-intelligence/whatif-service.ts",
       "kind": "source"
     },
     {

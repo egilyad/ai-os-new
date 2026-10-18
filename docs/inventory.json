@@ -6620,16 +6620,16 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Компонент: советник и runtime-intelligence",
-      "bytes": 3460,
-      "hash": "f7cddeb8fb8b690e591c3804bb025733bc31a311"
+      "bytes": 3520,
+      "hash": "1d83113a1dd71321ea5b307a8ca0acdc91d7e879"
     },
     {
       "path": "docs/wiki/comp-agents-roles-skills.md",
       "category": "wiki",
       "language": "ru",
       "title": "Компонент: агенты, роли и навыки",
-      "bytes": 4278,
-      "hash": "85494557219e6bc5f79285646e5a7771dac84833"
+      "bytes": 4276,
+      "hash": "97bf8dc29f0dfb32c1ea50101a8ef1a51bfb92ea"
     },
     {
       "path": "docs/wiki/comp-budget-pricing.md",
@@ -6644,8 +6644,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Компонент: чат (ChatExecutor)",
-      "bytes": 2802,
-      "hash": "291777a5006062b314d7736127a56e7ce40a7eee"
+      "bytes": 2800,
+      "hash": "5399c6bf4ef69cf040149190bfec7f02b87eb6f2"
     },
     {
       "path": "docs/wiki/comp-cognitive-orchestration.md",
@@ -6668,24 +6668,24 @@
       "category": "wiki",
       "language": "ru",
       "title": "Компонент: консистентность и дрейф",
-      "bytes": 2840,
-      "hash": "94b65059a4e601bde78d6a88190dcd817c961b04"
+      "bytes": 2838,
+      "hash": "dc74f15c2ce4d172c983a557f3ffb88ac7f3057f"
     },
     {
       "path": "docs/wiki/comp-crews-councils.md",
       "category": "wiki",
       "language": "mixed",
       "title": "Компонент: экипажи и совет",
-      "bytes": 3276,
-      "hash": "aa19ecd380bfdb22353f0bff57d24f9852e5a5da"
+      "bytes": 3270,
+      "hash": "091a016004758df3760390a34d4d4bba08e1b7a8"
     },
     {
       "path": "docs/wiki/comp-debate-runtime.md",
       "category": "wiki",
       "language": "mixed",
       "title": "Компонент: рантайм дебатов",
-      "bytes": 5163,
-      "hash": "ed31bb4b7634550c8f20013cbfeb134a4e99484e"
+      "bytes": 5161,
+      "hash": "ce336cd06de1a19e1a3d218ec509285610c0fbc6"
     },
     {
       "path": "docs/wiki/comp-debateplus.md",
@@ -6708,8 +6708,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Компонент: оценка и рейтинг (eval, elo)",
-      "bytes": 2728,
-      "hash": "60b2dcb0cc96fa0735c16441fb747a0159fd6959"
+      "bytes": 2730,
+      "hash": "772ddcfb117a917eefb603bbf78153bcd4124bf5"
     },
     {
       "path": "docs/wiki/comp-event-bus.md",
@@ -6740,8 +6740,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Компонент: фронтир и разнообразие агентов",
-      "bytes": 3481,
-      "hash": "68cd8f3a4e7f32d8df00633b8a9a8416a55b4e53"
+      "bytes": 3497,
+      "hash": "3f2192216b1fb524c61d42c71dd3cb91b61157e3"
     },
     {
       "path": "docs/wiki/comp-graph-eventbridge.md",
@@ -6756,8 +6756,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Компонент: интеграции и интероперабельность",
-      "bytes": 3329,
-      "hash": "4104a5d1e0fbae66b4f3077adb1e663a668a3a53"
+      "bytes": 3327,
+      "hash": "2724e31ee4b5579a03ee5d99792f2fe8a82f135c"
     },
     {
       "path": "docs/wiki/comp-invocation-meta.md",
@@ -6780,16 +6780,16 @@
       "category": "wiki",
       "language": "ru",
       "title": "Компонент: управление ключами провайдеров",
-      "bytes": 6030,
-      "hash": "e5bbe20c277a0bd742d85b1764f628fe68f3d872"
+      "bytes": 6028,
+      "hash": "7890620d85473f4e35bad5fad17a930cdcafcfb0"
     },
     {
       "path": "docs/wiki/comp-knowledge-rag.md",
       "category": "wiki",
       "language": "mixed",
       "title": "Компонент: генерация знаний и RAG",
-      "bytes": 3219,
-      "hash": "617f684c3a1480764084aa33432b8a0bde08fc36"
+      "bytes": 3260,
+      "hash": "747fafa41d10c8c218be25350aaabce629b1195a"
     },
     {
       "path": "docs/wiki/comp-llm-bridge.md",
@@ -6812,8 +6812,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Компонент: наблюдаемость (метрики, трейсы, мониторинг)",
-      "bytes": 4178,
-      "hash": "ac1dc3b45c3c310cd76370888e02dc7f6c448b00"
+      "bytes": 4176,
+      "hash": "dbd21b921583aa1da1855c14112aa7fea4216495"
     },
     {
       "path": "docs/wiki/comp-overview.md",
@@ -6836,8 +6836,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Компонент: персоны и строитель (persona, builder)",
-      "bytes": 2851,
-      "hash": "d4f73a392572c1705346406a5d635f107c667cf0"
+      "bytes": 2826,
+      "hash": "7b9872e254d343547e50f6a6c0ca94bc59cce423"
     },
     {
       "path": "docs/wiki/comp-policy-security.md",
@@ -6852,16 +6852,16 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Компонент: рантайм провайдеров",
-      "bytes": 3835,
-      "hash": "aca190d692198ab9d89906cebca0f702eaefaa27"
+      "bytes": 3833,
+      "hash": "940f55cf7b23080ee9067be3b806cf7643e5dbf7"
     },
     {
       "path": "docs/wiki/comp-rivals-lab.md",
       "category": "wiki",
       "language": "ru",
       "title": "Компонент: лаборатория вариантов (rivals)",
-      "bytes": 3491,
-      "hash": "828eb6772cc1e2afd9e098375a83d82c6dc1dbc8"
+      "bytes": 3485,
+      "hash": "3b486603450e0a91e7767cd709954871023a7788"
     },
     {
       "path": "docs/wiki/comp-routing.md",
@@ -6876,8 +6876,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Компонент: сквозные сценарии",
-      "bytes": 4089,
-      "hash": "e47f995ff7e1e57dc30913a8a34c6234138d6efe"
+      "bytes": 4087,
+      "hash": "14ae509f20b50e09ada13a093a9bbb80106713bd"
     },
     {
       "path": "docs/wiki/comp-security-crypto.md",
@@ -6892,56 +6892,56 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Компонент: симуляция, компьютер и parity",
-      "bytes": 3550,
-      "hash": "c2bed7ab01a284d9268a5ede0dad7004b4eec936"
+      "bytes": 3603,
+      "hash": "15fb84c16e3fe3923a3a1b4581bba117ff538d23"
     },
     {
       "path": "docs/wiki/comp-state-stores.md",
       "category": "wiki",
       "language": "mixed",
       "title": "Компонент: слой состояния (Zustand-сторы)",
-      "bytes": 3167,
-      "hash": "6f69566ba5e502b1b50951df3635f5eaa14c97e1"
+      "bytes": 3165,
+      "hash": "ba9d84a08d8dc8cc4eca383bea0e854018a9b384"
     },
     {
       "path": "docs/wiki/comp-storage-timeline.md",
       "category": "wiki",
       "language": "ru",
       "title": "Компонент: хранилище, таймлайн и проекции",
-      "bytes": 3326,
-      "hash": "171fa3ee16fdbc982a1abad6bf72c10ac4459030"
+      "bytes": 3373,
+      "hash": "0ac29de358f09e1311bd6c78376e5b71fddc8d36"
     },
     {
       "path": "docs/wiki/comp-synthesis-forum.md",
       "category": "wiki",
       "language": "ru",
       "title": "Компонент: синтез, форум и junction-движок",
-      "bytes": 2670,
-      "hash": "dad87ac8110499fd5ab8118a95eef25aa03554e6"
+      "bytes": 2668,
+      "hash": "63fdaa6d3d30cea26e2beb5737120291ace02ada"
     },
     {
       "path": "docs/wiki/comp-task-planning.md",
       "category": "wiki",
       "language": "ru",
       "title": "Компонент: задачи, планирование и расписание",
-      "bytes": 3089,
-      "hash": "c8107fbb4c1bc4558d9c004a9506eddd4f755383"
+      "bytes": 3087,
+      "hash": "da9d006dbada058625420af6f0e7794e0e30f425"
     },
     {
       "path": "docs/wiki/comp-time-travel.md",
       "category": "wiki",
       "language": "ru",
       "title": "Компонент: тайм-тревел, снапшоты и каузальность",
-      "bytes": 3685,
-      "hash": "fa5f5422eba901a623f58087649d64d5d71091be"
+      "bytes": 3683,
+      "hash": "8ad2e174c3524ba3cabf65240a34c923a8208607"
     },
     {
       "path": "docs/wiki/comp-tool-capability.md",
       "category": "wiki",
       "language": "ru",
       "title": "Компонент: каталог инструментов, способности и политики",
-      "bytes": 3131,
-      "hash": "3a7e9dc80f13a77fe86ceef426ab4f9273ba2a10"
+      "bytes": 3129,
+      "hash": "cc305f067f85d25d487e8c273860d632dbdbf790"
     },
     {
       "path": "docs/wiki/comp-tools-mcp.md",
@@ -6989,7 +6989,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4075,
-      "hash": "631d6c8764c52a39c2e7a1b9ef07f2dfb25dd9c8"
+      "hash": "49c5df15d20f832eaacd47e61eef7a8b18d38783"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -7077,7 +7077,7 @@
       "language": "ru",
       "title": "Граф знаний",
       "bytes": 5002,
-      "hash": "7b2e46a230733d8e51c9977e0d338223a7174f0e"
+      "hash": "33f60c2f677a0a238c3e1c17af6f96cc853ab81b"
     },
     {
       "path": "docs/wiki/dev-history.md",
@@ -7213,7 +7213,7 @@
       "language": "mixed",
       "title": "Карта документации",
       "bytes": 26626,
-      "hash": "5592da9af97745b728baac4197900ded7836cfcf"
+      "hash": "eac6f9f29cf849180f311e6fe5f5ef729cf9153b"
     },
     {
       "path": "docs/wiki/docs-standard.md",
@@ -7868,8 +7868,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Wiki SuperAgents OS",
-      "bytes": 19334,
-      "hash": "330e6fa94d4d10ad3181ed1a15dfb75b45ec5e8c"
+      "bytes": 19294,
+      "hash": "494eecc929fbb8ba702a886653c5cef87b593130"
     },
     {
       "path": "docs/wiki/roadmap-notes.md",

@@ -179,39 +179,39 @@
 - [Компонент: конфигурация и настройки](./comp-config.md) — _verified_
 - [Компонент: персистентность (Dexie и storage-адаптеры)](./comp-persistence.md) — _verified_
 - [Компонент: шифрование at-rest (SecurityService)](./comp-security-crypto.md) — _verified_
-- [Компонент: управление ключами провайдеров](./comp-key-management.md) — _documented_
+- [Компонент: управление ключами провайдеров](./comp-key-management.md) — _verified_
 - [Компонент: роутинг и провайдеры](./comp-routing.md) — _verified_
 - [Компонент: бюджет, цены и расход](./comp-budget-pricing.md) — _verified_
-- [Компонент: агенты, роли и навыки](./comp-agents-roles-skills.md) — _documented_
+- [Компонент: агенты, роли и навыки](./comp-agents-roles-skills.md) — _verified_
 - [Компонент: инструменты, MCP и sandbox](./comp-tools-mcp.md) — _verified_
 - [Компонент: политики, секреты и вебхуки](./comp-policy-security.md) — _verified_
-- [Компонент: консистентность и дрейф](./comp-consistency.md) — _documented_
-- [Компонент: рантайм дебатов](./comp-debate-runtime.md) — _documented_
+- [Компонент: консистентность и дрейф](./comp-consistency.md) — _verified_
+- [Компонент: рантайм дебатов](./comp-debate-runtime.md) — _verified_
 - [Компонент: когнитивные трассы и оркестрация топологий](./comp-cognitive-orchestration.md) — _documented_
 - [Компонент: память и знания](./comp-memory.md) — _documented_
-- [Компонент: чат (ChatExecutor)](./comp-chat.md) — _documented_
-- [Компонент: наблюдаемость (метрики, трейсы, мониторинг)](./comp-observability.md) — _documented_
-- [Компонент: советник и runtime-intelligence](./comp-advisor-runtime-intelligence.md) — _documented_
+- [Компонент: чат (ChatExecutor)](./comp-chat.md) — _verified_
+- [Компонент: наблюдаемость (метрики, трейсы, мониторинг)](./comp-observability.md) — _verified_
+- [Компонент: советник и runtime-intelligence](./comp-advisor-runtime-intelligence.md) — _verified_
 - [Компонент: журналирование событий (event sourcing)](./comp-event-sourcing.md) — _documented_
-- [Компонент: тайм-тревел, снапшоты и каузальность](./comp-time-travel.md) — _documented_
-- [Компонент: задачи, планирование и расписание](./comp-task-planning.md) — _documented_
+- [Компонент: тайм-тревел, снапшоты и каузальность](./comp-time-travel.md) — _verified_
+- [Компонент: задачи, планирование и расписание](./comp-task-planning.md) — _verified_
 - [Компонент: флот, governance и аудит](./comp-fleet-governance.md) — _documented_
-- [Компонент: интеграции и интероперабельность](./comp-integrations-interop.md) — _documented_
-- [Компонент: рантайм провайдеров](./comp-provider-runtime.md) — _documented_
+- [Компонент: интеграции и интероперабельность](./comp-integrations-interop.md) — _verified_
+- [Компонент: рантайм провайдеров](./comp-provider-runtime.md) — _verified_
 - [Компонент: LLM-мост (адаптеры crews/council/graph/frontier)](./comp-llm-bridge.md) — _documented_
-- [Компонент: слой состояния (Zustand-сторы)](./comp-state-stores.md) — _documented_
-- [Компонент: сквозные сценарии](./comp-scenarios.md) — _documented_
+- [Компонент: слой состояния (Zustand-сторы)](./comp-state-stores.md) — _verified_
+- [Компонент: сквозные сценарии](./comp-scenarios.md) — _verified_
 - [Компонент: экипажи и совет](./comp-crews-councils.md) — _documented_
 - [Компонент: фронтир и разнообразие агентов](./comp-frontier-diversity.md) — _documented_
 - [Компонент: лаборатория вариантов (rivals)](./comp-rivals-lab.md) — _documented_
-- [Компонент: генерация знаний и RAG](./comp-knowledge-rag.md) — _documented_
-- [Компонент: оценка и рейтинг (eval, elo)](./comp-eval-elo.md) — _documented_
-- [Компонент: персоны и строитель (persona, builder)](./comp-persona-builder.md) — _documented_
+- [Компонент: генерация знаний и RAG](./comp-knowledge-rag.md) — _verified_
+- [Компонент: оценка и рейтинг (eval, elo)](./comp-eval-elo.md) — _verified_
+- [Компонент: персоны и строитель (persona, builder)](./comp-persona-builder.md) — _verified_
 - [Компонент: вызовы (invocation) и мета-агент](./comp-invocation-meta.md) — _documented_
-- [Компонент: симуляция, компьютер и parity](./comp-simulation-world.md) — _documented_
-- [Компонент: синтез, форум и junction-движок](./comp-synthesis-forum.md) — _documented_
-- [Компонент: хранилище, таймлайн и проекции](./comp-storage-timeline.md) — _documented_
-- [Компонент: каталог инструментов, способности и политики](./comp-tool-capability.md) — _documented_
+- [Компонент: симуляция, компьютер и parity](./comp-simulation-world.md) — _verified_
+- [Компонент: синтез, форум и junction-движок](./comp-synthesis-forum.md) — _verified_
+- [Компонент: хранилище, таймлайн и проекции](./comp-storage-timeline.md) — _verified_
+- [Компонент: каталог инструментов, способности и политики](./comp-tool-capability.md) — _verified_
 - [Компонент: графы режимов и мост событий](./comp-graph-eventbridge.md) — _documented_
 - [Компонент: аргументация (debateplus)](./comp-debateplus.md) — _documented_
 

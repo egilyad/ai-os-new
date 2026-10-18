@@ -2,7 +2,7 @@
 
 # Компонент: хранилище, таймлайн и проекции
 
-> Раздел: **Компоненты и сервисы** · Статус: documented · Теги: компоненты, хранилище, таймлайн, проекции
+> Раздел: **Компоненты и сервисы** · Статус: verified · Теги: компоненты, хранилище, таймлайн, проекции
 
 Источники: `src/kernel/services/storage/dexie-storage.ts`, `src/kernel/services/storage/local-storage-adapter.ts`, `src/kernel/services/timeline/execution-viz-service.ts`, `src/kernel/services/timeline/timeline-map.ts`, `src/kernel/services/projections/router-projection.ts`
 
@@ -30,12 +30,12 @@
 
 ## Проверка работоспособности
 
-- Тест: `storage/dexie-storage.session.test.ts`.
+- Тесты: `storage/dexie-storage.session.test.ts`, `timeline/execution-viz-service.test.ts`.
 - Ручная: History/Audit показывает таймлайн, Router — проекцию решения.
 
 ## Состояние
 
-- Реализовано; хранилище покрыто тестом, таймлайн/проекции — чтением кода.
+- Реализовано; хранилище и таймлайн покрыты тестами, проекции — чтением кода.
 
 ---
 

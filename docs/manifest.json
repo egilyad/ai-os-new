@@ -2650,7 +2650,7 @@
       "slug": "comp-key-management",
       "title": "Компонент: управление ключами провайдеров",
       "section": "components",
-      "status": "documented",
+      "status": "verified",
       "tags": [
         "компоненты",
         "ключи",
@@ -2754,7 +2754,7 @@
       "slug": "comp-agents-roles-skills",
       "title": "Компонент: агенты, роли и навыки",
       "section": "components",
-      "status": "documented",
+      "status": "verified",
       "tags": [
         "компоненты",
         "агенты",
@@ -2848,7 +2848,7 @@
       "slug": "comp-consistency",
       "title": "Компонент: консистентность и дрейф",
       "section": "components",
-      "status": "documented",
+      "status": "verified",
       "tags": [
         "компоненты",
         "консистентность",
@@ -2877,7 +2877,7 @@
       "slug": "comp-debate-runtime",
       "title": "Компонент: рантайм дебатов",
       "section": "components",
-      "status": "documented",
+      "status": "verified",
       "tags": [
         "компоненты",
         "дебаты",
@@ -2970,7 +2970,7 @@
       "slug": "comp-chat",
       "title": "Компонент: чат (ChatExecutor)",
       "section": "components",
-      "status": "documented",
+      "status": "verified",
       "tags": [
         "компоненты",
         "чат",
@@ -2998,7 +2998,7 @@
       "slug": "comp-observability",
       "title": "Компонент: наблюдаемость (метрики, трейсы, мониторинг)",
       "section": "components",
-      "status": "documented",
+      "status": "verified",
       "tags": [
         "компоненты",
         "наблюдаемость",
@@ -3034,7 +3034,7 @@
       "slug": "comp-advisor-runtime-intelligence",
       "title": "Компонент: советник и runtime-intelligence",
       "section": "components",
-      "status": "documented",
+      "status": "verified",
       "tags": [
         "компоненты",
         "советник",
@@ -3049,7 +3049,8 @@
         "src/kernel/services/advisor/pressure-engine.ts",
         "src/kernel/services/advisor/whatif-engine.ts",
         "src/kernel/services/runtime-intelligence/diagnostic-service.ts",
-        "src/kernel/services/runtime-intelligence/pressure-map-service.ts"
+        "src/kernel/services/runtime-intelligence/pressure-map-service.ts",
+        "src/kernel/services/runtime-intelligence/whatif-service.ts"
       ],
       "related": [
         "panel-dashboard",
@@ -3059,7 +3060,9 @@
         "comp-observability"
       ],
       "reviewed": null,
-      "tests": []
+      "tests": [
+        "src/kernel/services/runtime-intelligence/whatif-service.test.ts"
+      ]
     },
     {
       "id": "wiki:comp-event-sourcing",
@@ -3095,7 +3098,7 @@
       "slug": "comp-time-travel",
       "title": "Компонент: тайм-тревел, снапшоты и каузальность",
       "section": "components",
-      "status": "documented",
+      "status": "verified",
       "tags": [
         "компоненты",
         "тайм-тревел",
@@ -3127,7 +3130,7 @@
       "slug": "comp-task-planning",
       "title": "Компонент: задачи, планирование и расписание",
       "section": "components",
-      "status": "documented",
+      "status": "verified",
       "tags": [
         "компоненты",
         "задачи",
@@ -3191,7 +3194,7 @@
       "slug": "comp-integrations-interop",
       "title": "Компонент: интеграции и интероперабельность",
       "section": "components",
-      "status": "documented",
+      "status": "verified",
       "tags": [
         "компоненты",
         "интеграции",
@@ -3224,7 +3227,7 @@
       "slug": "comp-provider-runtime",
       "title": "Компонент: рантайм провайдеров",
       "section": "components",
-      "status": "documented",
+      "status": "verified",
       "tags": [
         "компоненты",
         "провайдеры",
@@ -3285,7 +3288,7 @@
       "slug": "comp-state-stores",
       "title": "Компонент: слой состояния (Zustand-сторы)",
       "section": "components",
-      "status": "documented",
+      "status": "verified",
       "tags": [
         "компоненты",
         "состояние",
@@ -3317,7 +3320,7 @@
       "slug": "comp-scenarios",
       "title": "Компонент: сквозные сценарии",
       "section": "components",
-      "status": "documented",
+      "status": "verified",
       "tags": [
         "компоненты",
         "сценарии",
@@ -3440,7 +3443,7 @@
       "slug": "comp-knowledge-rag",
       "title": "Компонент: генерация знаний и RAG",
       "section": "components",
-      "status": "documented",
+      "status": "verified",
       "tags": [
         "компоненты",
         "знания",
@@ -3476,7 +3479,7 @@
       "slug": "comp-eval-elo",
       "title": "Компонент: оценка и рейтинг (eval, elo)",
       "section": "components",
-      "status": "documented",
+      "status": "verified",
       "tags": [
         "компоненты",
         "оценка",
@@ -3506,7 +3509,7 @@
       "slug": "comp-persona-builder",
       "title": "Компонент: персоны и строитель (persona, builder)",
       "section": "components",
-      "status": "documented",
+      "status": "verified",
       "tags": [
         "компоненты",
         "персоны",
@@ -3567,7 +3570,7 @@
       "slug": "comp-simulation-world",
       "title": "Компонент: симуляция, компьютер и parity",
       "section": "components",
-      "status": "documented",
+      "status": "verified",
       "tags": [
         "компоненты",
         "симуляция",
@@ -3604,7 +3607,7 @@
       "slug": "comp-synthesis-forum",
       "title": "Компонент: синтез, форум и junction-движок",
       "section": "components",
-      "status": "documented",
+      "status": "verified",
       "tags": [
         "компоненты",
         "синтез",
@@ -3636,7 +3639,7 @@
       "slug": "comp-storage-timeline",
       "title": "Компонент: хранилище, таймлайн и проекции",
       "section": "components",
-      "status": "documented",
+      "status": "verified",
       "tags": [
         "компоненты",
         "хранилище",
@@ -3668,7 +3671,7 @@
       "slug": "comp-tool-capability",
       "title": "Компонент: каталог инструментов, способности и политики",
       "section": "components",
-      "status": "documented",
+      "status": "verified",
       "tags": [
         "компоненты",
         "инструменты",

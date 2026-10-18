@@ -2,7 +2,7 @@
 
 # Компонент: генерация знаний и RAG
 
-> Раздел: **Компоненты и сервисы** · Статус: documented · Теги: компоненты, знания, RAG, кристаллы
+> Раздел: **Компоненты и сервисы** · Статус: verified · Теги: компоненты, знания, RAG, кристаллы
 
 Источники: `src/kernel/services/rag/bm25-service.ts`, `src/kernel/services/rag/hybrid-retrieval-service.ts`, `src/kernel/services/rag/reranker-service.ts`, `src/kernel/services/knowledge-generator/knowledge-generator-service.ts`, `src/kernel/services/crystal-vault/crystal-vault-service.ts`, `src/kernel/services/lens-engine/lens-engine-service.ts`
 
@@ -27,12 +27,12 @@
 
 ## Проверка работоспособности
 
+- Тесты: `rag/hybrid-retrieval-service.test.ts`, `knowledge-generator/knowledge-generator-service.test.ts`, `crystal-vault/crystal-vault-service.test.ts`, `lens-engine/lens-engine-service.test.ts`.
 - Ручная: сгенерировать знание, найти через гибридный поиск, открыть линзу.
-- В каталогах `rag/`, `knowledge-generator/`, `crystal-vault/`, `lens-engine/` выделенных тестов не найдено.
 
 ## Состояние
 
-- Реализовано; подтверждено чтением кода, без автотестов.
+- Реализовано; ключевые сервисы покрыты тестами.
 
 ---
 

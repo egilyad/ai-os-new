@@ -2,9 +2,9 @@
 
 # Компонент: советник и runtime-intelligence
 
-> Раздел: **Компоненты и сервисы** · Статус: documented · Теги: компоненты, советник, диагностика, what-if
+> Раздел: **Компоненты и сервисы** · Статус: verified · Теги: компоненты, советник, диагностика, what-if
 
-Источники: `src/kernel/services/advisor-service.ts`, `src/kernel/services/advisor/diagnostics-engine.ts`, `src/kernel/services/advisor/insight-engine.ts`, `src/kernel/services/advisor/optimization-engine.ts`, `src/kernel/services/advisor/pressure-engine.ts`, `src/kernel/services/advisor/whatif-engine.ts`, `src/kernel/services/runtime-intelligence/diagnostic-service.ts`, `src/kernel/services/runtime-intelligence/pressure-map-service.ts`
+Источники: `src/kernel/services/advisor-service.ts`, `src/kernel/services/advisor/diagnostics-engine.ts`, `src/kernel/services/advisor/insight-engine.ts`, `src/kernel/services/advisor/optimization-engine.ts`, `src/kernel/services/advisor/pressure-engine.ts`, `src/kernel/services/advisor/whatif-engine.ts`, `src/kernel/services/runtime-intelligence/diagnostic-service.ts`, `src/kernel/services/runtime-intelligence/pressure-map-service.ts`, `src/kernel/services/runtime-intelligence/whatif-service.ts`
 
 ## Назначение
 

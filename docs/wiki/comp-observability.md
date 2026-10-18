@@ -2,7 +2,7 @@
 
 # Компонент: наблюдаемость (метрики, трейсы, мониторинг)
 
-> Раздел: **Компоненты и сервисы** · Статус: documented · Теги: компоненты, наблюдаемость, метрики, трейсы
+> Раздел: **Компоненты и сервисы** · Статус: verified · Теги: компоненты, наблюдаемость, метрики, трейсы
 
 Источники: `src/kernel/services/metrics-service.ts`, `src/kernel/services/monitoring-service.ts`, `src/kernel/services/timeline-service.ts`, `src/kernel/services/trace-service.ts`, `src/kernel/services/system-status-service.ts`, `src/kernel/services/cache-service.ts`, `src/kernel/services/admin-service.ts`
 

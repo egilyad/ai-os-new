@@ -2,7 +2,7 @@
 
 # Компонент: агенты, роли и навыки
 
-> Раздел: **Компоненты и сервисы** · Статус: documented · Теги: компоненты, агенты, роли, навыки
+> Раздел: **Компоненты и сервисы** · Статус: verified · Теги: компоненты, агенты, роли, навыки
 
 Источники: `src/kernel/services/agent-service.ts`, `src/kernel/services/role-service.ts`, `src/kernel/services/skill-service.ts`
 

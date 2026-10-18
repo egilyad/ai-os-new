@@ -2,7 +2,7 @@
 
 # Компонент: чат (ChatExecutor)
 
-> Раздел: **Компоненты и сервисы** · Статус: documented · Теги: компоненты, чат, стриминг, LLM
+> Раздел: **Компоненты и сервисы** · Статус: verified · Теги: компоненты, чат, стриминг, LLM
 
 Источники: `src/kernel/services/chat-executor.ts`, `src/kernel/services/chat-executor.test.ts`
 
