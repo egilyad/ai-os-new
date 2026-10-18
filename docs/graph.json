@@ -3,22 +3,22 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 1145,
-    "edges": 3000,
+    "nodes": 1162,
+    "edges": 3028,
     "byType": {
       "audit": 67,
-      "code": 468,
-      "test": 137,
+      "code": 479,
+      "test": 142,
       "panel": 259,
-      "article": 214
+      "article": 215
     },
     "byKind": {
       "audit_test": 325,
       "audit_mention": 928,
       "documents": 201,
-      "source": 607,
-      "test": 172,
-      "related": 767
+      "source": 623,
+      "test": 179,
+      "related": 772
     }
   },
   "nodes": [
@@ -917,6 +917,16 @@
       "label": "src/components/DebateAnalysisPanel/"
     },
     {
+      "id": "file:src/components/DebateArena.test.tsx",
+      "type": "test",
+      "label": "src/components/DebateArena.test.tsx"
+    },
+    {
+      "id": "file:src/components/DebateArena.tsx",
+      "type": "code",
+      "label": "src/components/DebateArena.tsx"
+    },
+    {
       "id": "file:src/components/DebateLive/DebateLivePanel",
       "type": "code",
       "label": "src/components/DebateLive/DebateLivePanel"
@@ -932,9 +942,29 @@
       "label": "src/components/DebatePanel/DebateHistoryPage.test.tsx"
     },
     {
+      "id": "file:src/components/DebatePanel/DebatePanel.test.tsx",
+      "type": "test",
+      "label": "src/components/DebatePanel/DebatePanel.test.tsx"
+    },
+    {
+      "id": "file:src/components/DebatePanel/DebatePanel.tsx",
+      "type": "code",
+      "label": "src/components/DebatePanel/DebatePanel.tsx"
+    },
+    {
       "id": "file:src/components/DebatePanel/DebateWorkspacePanel",
       "type": "code",
       "label": "src/components/DebatePanel/DebateWorkspacePanel"
+    },
+    {
+      "id": "file:src/components/DebatePanel/useDebatePanelSubscriptions.test.tsx",
+      "type": "test",
+      "label": "src/components/DebatePanel/useDebatePanelSubscriptions.test.tsx"
+    },
+    {
+      "id": "file:src/components/DebatePanel/useDebatePanelSubscriptions.ts",
+      "type": "code",
+      "label": "src/components/DebatePanel/useDebatePanelSubscriptions.ts"
     },
     {
       "id": "file:src/components/DebatePanel/wizard-constants.ts",
@@ -1897,6 +1927,11 @@
       "label": "src/kernel/service-helper.ts"
     },
     {
+      "id": "file:src/kernel/service-registration/phase3-debate-runtime.ts",
+      "type": "code",
+      "label": "src/kernel/service-registration/phase3-debate-runtime.ts"
+    },
+    {
       "id": "file:src/kernel/services/",
       "type": "code",
       "label": "src/kernel/services/"
@@ -2192,6 +2227,16 @@
       "label": "src/kernel/services/debate-runtime/"
     },
     {
+      "id": "file:src/kernel/services/debate-runtime/conversation-backed-debate-orchestrator.ts",
+      "type": "code",
+      "label": "src/kernel/services/debate-runtime/conversation-backed-debate-orchestrator.ts"
+    },
+    {
+      "id": "file:src/kernel/services/debate-runtime/debate-agent-executor.ts",
+      "type": "code",
+      "label": "src/kernel/services/debate-runtime/debate-agent-executor.ts"
+    },
+    {
       "id": "file:src/kernel/services/debate-runtime/debate-budget.test.ts",
       "type": "test",
       "label": "src/kernel/services/debate-runtime/debate-budget.test.ts"
@@ -2227,6 +2272,11 @@
       "label": "src/kernel/services/debate-runtime/debate-evaluator.ts"
     },
     {
+      "id": "file:src/kernel/services/debate-runtime/debate-llm-caller.ts",
+      "type": "code",
+      "label": "src/kernel/services/debate-runtime/debate-llm-caller.ts"
+    },
+    {
       "id": "file:src/kernel/services/debate-runtime/debate-memory.test.ts",
       "type": "test",
       "label": "src/kernel/services/debate-runtime/debate-memory.test.ts"
@@ -2237,6 +2287,11 @@
       "label": "src/kernel/services/debate-runtime/debate-memory.ts"
     },
     {
+      "id": "file:src/kernel/services/debate-runtime/debate-orchestrator-factory.ts",
+      "type": "code",
+      "label": "src/kernel/services/debate-runtime/debate-orchestrator-factory.ts"
+    },
+    {
       "id": "file:src/kernel/services/debate-runtime/debate-orchestrator.test.ts",
       "type": "test",
       "label": "src/kernel/services/debate-runtime/debate-orchestrator.test.ts"
@@ -2245,6 +2300,21 @@
       "id": "file:src/kernel/services/debate-runtime/debate-orchestrator.ts",
       "type": "code",
       "label": "src/kernel/services/debate-runtime/debate-orchestrator.ts"
+    },
+    {
+      "id": "file:src/kernel/services/debate-runtime/debate-persistence-manager.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/debate-runtime/debate-persistence-manager.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/debate-runtime/debate-persistence-manager.ts",
+      "type": "code",
+      "label": "src/kernel/services/debate-runtime/debate-persistence-manager.ts"
+    },
+    {
+      "id": "file:src/kernel/services/debate-runtime/debate-session-persistence.ts",
+      "type": "code",
+      "label": "src/kernel/services/debate-runtime/debate-session-persistence.ts"
     },
     {
       "id": "file:src/kernel/services/debate-runtime/debate-session.ts",
@@ -3480,6 +3550,16 @@
       "id": "file:src/stores/",
       "type": "code",
       "label": "src/stores/"
+    },
+    {
+      "id": "file:src/stores/activeDebateStore.test.ts",
+      "type": "test",
+      "label": "src/stores/activeDebateStore.test.ts"
+    },
+    {
+      "id": "file:src/stores/activeDebateStore.ts",
+      "type": "code",
+      "label": "src/stores/activeDebateStore.ts"
     },
     {
       "id": "file:src/stores/chat/store.test.ts",
@@ -5545,6 +5625,13 @@
       "label": "Компонент: флот, governance и аудит",
       "section": "components",
       "status": "documented"
+    },
+    {
+      "id": "wiki:comp-flow-debate",
+      "type": "article",
+      "label": "Сквозной контур: дебаты",
+      "section": "components",
+      "status": "verified"
     },
     {
       "id": "wiki:comp-frontier-diversity",
@@ -15617,6 +15704,146 @@
     {
       "from": "wiki:comp-fleet-governance",
       "to": "wiki:panel-roles",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-flow-debate",
+      "to": "file:src/components/DebateArena.test.tsx",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-flow-debate",
+      "to": "file:src/components/DebateArena.tsx",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-flow-debate",
+      "to": "file:src/components/DebatePanel/DebatePanel.test.tsx",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-flow-debate",
+      "to": "file:src/components/DebatePanel/DebatePanel.tsx",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-flow-debate",
+      "to": "file:src/components/DebatePanel/useDebatePanelSubscriptions.test.tsx",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-flow-debate",
+      "to": "file:src/components/DebatePanel/useDebatePanelSubscriptions.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-flow-debate",
+      "to": "file:src/kernel/events/event-registry.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-flow-debate",
+      "to": "file:src/kernel/events/event-registry.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-flow-debate",
+      "to": "file:src/kernel/service-registration/phase3-debate-runtime.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-flow-debate",
+      "to": "file:src/kernel/services/debate-runtime/conversation-backed-debate-orchestrator.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-flow-debate",
+      "to": "file:src/kernel/services/debate-runtime/debate-agent-executor.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-flow-debate",
+      "to": "file:src/kernel/services/debate-runtime/debate-engine.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-flow-debate",
+      "to": "file:src/kernel/services/debate-runtime/debate-llm-caller.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-flow-debate",
+      "to": "file:src/kernel/services/debate-runtime/debate-orchestrator-factory.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-flow-debate",
+      "to": "file:src/kernel/services/debate-runtime/debate-persistence-manager.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-flow-debate",
+      "to": "file:src/kernel/services/debate-runtime/debate-persistence-manager.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-flow-debate",
+      "to": "file:src/kernel/services/debate-runtime/debate-session-persistence.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-flow-debate",
+      "to": "file:src/kernel/services/debate-runtime/debate-sync-manager.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-flow-debate",
+      "to": "file:src/kernel/services/storage/dexie-storage.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-flow-debate",
+      "to": "file:src/stores/activeDebateStore.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-flow-debate",
+      "to": "file:src/stores/activeDebateStore.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-flow-debate",
+      "to": "file:src/stores/debateLiveStore.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-flow-debate",
+      "to": "file:src/stores/debateLiveStore.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-flow-debate",
+      "to": "wiki:comp-debate-runtime",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-flow-debate",
+      "to": "wiki:comp-event-bus",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-flow-debate",
+      "to": "wiki:comp-llm-adapters",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-flow-debate",
+      "to": "wiki:comp-provider-runtime",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-flow-debate",
+      "to": "wiki:comp-state-stores",
       "kind": "related"
     },
     {

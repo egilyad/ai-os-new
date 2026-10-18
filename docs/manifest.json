@@ -50,7 +50,7 @@
     {
       "id": "components",
       "title": "Компоненты и сервисы",
-      "articles": 66
+      "articles": 67
     },
     {
       "id": "notes",
@@ -4504,6 +4504,56 @@
         "src/kernel/dal/event-log-repository.test.ts",
         "src/kernel/dal/scenario-repository.test.ts",
         "src/kernel/dal/workspace-repository.test.ts"
+      ]
+    },
+    {
+      "id": "wiki:comp-flow-debate",
+      "type": "article",
+      "slug": "comp-flow-debate",
+      "title": "Сквозной контур: дебаты",
+      "section": "components",
+      "status": "verified",
+      "tags": [
+        "компоненты",
+        "контур",
+        "дебаты",
+        "поток",
+        "события"
+      ],
+      "sources": [
+        "src/components/DebateArena.tsx",
+        "src/components/DebatePanel/DebatePanel.tsx",
+        "src/components/DebatePanel/useDebatePanelSubscriptions.ts",
+        "src/kernel/services/debate-runtime/debate-sync-manager.ts",
+        "src/kernel/services/debate-runtime/debate-engine.ts",
+        "src/kernel/services/debate-runtime/debate-orchestrator-factory.ts",
+        "src/kernel/services/debate-runtime/conversation-backed-debate-orchestrator.ts",
+        "src/kernel/services/debate-runtime/debate-agent-executor.ts",
+        "src/kernel/services/debate-runtime/debate-llm-caller.ts",
+        "src/kernel/services/debate-runtime/debate-session-persistence.ts",
+        "src/kernel/services/debate-runtime/debate-persistence-manager.ts",
+        "src/kernel/services/storage/dexie-storage.ts",
+        "src/kernel/service-registration/phase3-debate-runtime.ts",
+        "src/kernel/events/event-registry.ts",
+        "src/stores/activeDebateStore.ts",
+        "src/stores/debateLiveStore.ts"
+      ],
+      "related": [
+        "comp-debate-runtime",
+        "comp-provider-runtime",
+        "comp-llm-adapters",
+        "comp-event-bus",
+        "comp-state-stores"
+      ],
+      "reviewed": null,
+      "tests": [
+        "src/components/DebateArena.test.tsx",
+        "src/components/DebatePanel/DebatePanel.test.tsx",
+        "src/components/DebatePanel/useDebatePanelSubscriptions.test.tsx",
+        "src/kernel/services/debate-runtime/debate-persistence-manager.test.ts",
+        "src/kernel/events/event-registry.test.ts",
+        "src/stores/activeDebateStore.test.ts",
+        "src/stores/debateLiveStore.test.ts"
       ]
     },
     {

@@ -51,6 +51,7 @@ export const COMPONENT_ARTICLES: WikiArticle[] = [
 - **Задачи и управление:** [[comp-task-planning]] (задачи, расписание), [[comp-fleet-governance]] (флот, governance, аудит), [[comp-integrations-interop]] (A2A, gateway, MCP).
 - **Провайдеры и состояние:** [[comp-provider-runtime]] (инстансы, сессии, бюджет), [[comp-llm-bridge]] (мост к LLM), [[comp-state-stores]] (UI-состояние).
 - **Сквозные сценарии:** [[comp-scenarios]] (чат, дебаты, задача от панели до аудита).
+- **Сквозные контуры (end-to-end):** [[comp-flow-debate]] (дебаты: панель → сервис → движок → LLM → события → хранилище → UI, с точками обрыва).
 - **Мультиагентность:** [[comp-crews-councils]] (экипажи, совет), [[comp-frontier-diversity]] (фронтир, разнообразие), [[comp-rivals-lab]] (лаборатория вариантов), [[comp-persona-builder]] (персоны, строитель), [[comp-invocation-meta]] (вызовы, мета-агент).
 - **Знания и оценка:** [[comp-knowledge-rag]] (RAG, кристаллы, линзы), [[comp-eval-elo]] (судья, Эло).
 - **Симуляция:** [[comp-simulation-world]] (мир, computer-use, parity).
@@ -2870,5 +2871,94 @@ flowchart TD
 ## Состояние
 
 - Реализовано; широко покрыто тестами.`,
+    },
+    {
+        slug: 'comp-flow-debate',
+        title: 'Сквозной контур: дебаты',
+        section: 'components',
+        tags: ['компоненты', 'контур', 'дебаты', 'поток', 'события'],
+        freshness: 'verified',
+        sources: [
+            'src/components/DebateArena.tsx',
+            'src/components/DebatePanel/DebatePanel.tsx',
+            'src/components/DebatePanel/useDebatePanelSubscriptions.ts',
+            'src/kernel/services/debate-runtime/debate-sync-manager.ts',
+            'src/kernel/services/debate-runtime/debate-engine.ts',
+            'src/kernel/services/debate-runtime/debate-orchestrator-factory.ts',
+            'src/kernel/services/debate-runtime/conversation-backed-debate-orchestrator.ts',
+            'src/kernel/services/debate-runtime/debate-agent-executor.ts',
+            'src/kernel/services/debate-runtime/debate-llm-caller.ts',
+            'src/kernel/services/debate-runtime/debate-session-persistence.ts',
+            'src/kernel/services/debate-runtime/debate-persistence-manager.ts',
+            'src/kernel/services/storage/dexie-storage.ts',
+            'src/kernel/service-registration/phase3-debate-runtime.ts',
+            'src/kernel/events/event-registry.ts',
+            'src/stores/activeDebateStore.ts',
+            'src/stores/debateLiveStore.ts',
+        ],
+        related: ['comp-debate-runtime', 'comp-provider-runtime', 'comp-llm-adapters', 'comp-event-bus', 'comp-state-stores'],
+        body: `## Назначение
+
+Показать дебаты не как набор сервисов, а как **сквозной контур**: путь запроса от панели до сохранённого вердикта и обратно в интерфейс — вместе с точками обрыва.
+
+## Возможности
+
+- Панель → сервис → движок → оркестратор → агент → вызов модели → события → хранилище → UI.
+- Два режима запуска (classic в \`DebatePanel\`, runtime в \`DebateRuntimePanel\`) и топологии: linear, roundtable, judge, tree-of-thought, red-blue.
+- Управление жизненным циклом: старт, пауза, возобновление, отмена, тайм-аут, троттлинг рестарта, owner-guard.
+
+## Сквозной поток (по шагам)
+
+1. **UI.** [[debates]] → \`DebateArena.tsx\` → \`DebatePanel.tsx\`. Старт: \`debateService.startDebate(topic, participants, strategy, maxRounds, config, chatSessionId, owner)\`.
+2. **Синхронизация.** \`DebateSyncManager.startDebate\` (debate-sync-manager.ts): троттлинг (\`RESTART_COOLDOWN_MS\`), owner-guard, \`checkDebatePreflight\`, сброс circuit-breaker провайдеров, duration-timer (\`maxDurationMs\`).
+3. **Создание сессии.** \`_initEngineSession\`: построение топологии, \`engine.createSession(...)\` (DebateEngine), подписка \`_setupListeners\`, \`_syncSessionImpl\`, запись в \`activeDebateStore.setSession\` и состояние governor.
+4. **Событие старта.** \`_emitDebateStarted\`: \`system:notification\` + \`debate:started\`; при \`chatSessionId\` — \`sessionManager.link(chat→debate)\` и \`updateMeta({linkedDebateId})\`.
+5. **Запуск движка.** \`_startEngineWithFinalize\` → \`engine.startSession(runtimeId)\`.
+6. **Оркестратор.** DebateEngine через \`createDebateOrchestrator\` выбирает \`ConversationBackedDebateOrchestrator\` (решение — \`DebatePolicy\`) или классический \`DebateOrchestrator\`; перевод в события — \`debate-pipeline-builder\`.
+7. **Раунды.** \`debate:runtime:round:started/ended\`, ранний выход \`...:round:early:exit\`; порядок ходов — \`TurnProposal\`.
+8. **Исполнение хода.** \`DebateAgentExecutionEngine.execute\` → \`AgentExecutor\` → \`debate-agent-executor.ts\` (резерв бюджета \`reserveAndRecord\`, \`...:budget:pressure\`/\`...:budget:updated\`).
+9. **Вызов модели.** \`debateCallLlm\` (debate-llm-caller.ts): ключ (keyService) → адаптер (providerAdapterRegistry) → \`adapter.sendMessage\` со стримом чанков (\`...:agent:chunk\`); учёт governor. Маршрут и отказоустойчивость — [[comp-provider-runtime]], [[comp-llm-adapters]].
+10. **Результаты.** \`...:agent:thinking/responded/scored\`, \`debate:argument\`, оценка (debate-evaluator / CouncilAwareEvaluator), \`debate:consensus\`/\`...:consensus:reached\`.
+11. **Финализация.** \`_finalizeInternal\` → вердикт (debate-finalizer / debate-conclusion-engine) → \`debate:verdict:generated\`; \`engine.saveSnapshot\`.
+12. **Хранилище.** \`DebatePersistenceManager.saveSnapshot\` → \`DexieDebateStore\` (dexie-storage.ts) → \`StorageLayer.debates\` (запись \`DebateSessionRecord\`), мета — merge-on-save (\`saveSnapshotPreservingMeta\`). Подробнее — [[comp-persistence]], [[comp-dal-repositories]].
+13. **Возврат в UI.** \`useDebatePanelSubscriptions\` слушает \`debate:updated\`, \`debate:verdict:generated\`, \`...:session:cancelled/failed\` и \`debateLiveStore\`; рендер — DebateChat, VerdictPanel, Analytics. Стор чата — [[comp-chat]].
+
+## Обрывы цепочки (что происходит при ошибке)
+
+- **Модель недоступна/таймаут.** В \`debateCallLlm\` работает цикл resolve → call → classify → retry/failover: события \`...:agent:fallback\`, \`...:agent:timeout\`, \`...:agent:error\`; если все провайдеры уже «мертвы» — fast-fail (ретраи пропускаются).
+- **Бюджет исчерпан.** Ход завершается \`budgetSkipped\` с ошибкой \`Budget exceeded\`; давление — \`...:budget:pressure\`, \`...:budget:updated\`. Сессия при этом не рушится целиком.
+- **Governor.** Истечение бюджета операции классифицируется как ретраибельный таймаут, а не как «тихий» обрыв (см. комментарии в debate-llm-caller).
+- **Отмена.** \`debate:runtime:session:cancelled\`; отмена проверяется на каждой итерации ретрая.
+- **Падение пайплайна.** \`_startEngineWithFinalize.catch\` переводит «залипшую» сессию в \`failed\` (\`debate:runtime:session:failed\`). Недоставленные события — dead-letter очередь ([[comp-event-sourcing]]).
+
+## Данные, события, восстановление
+
+- **Снапшот сессии:** phase, round, tokens/cost, agentStates, arguments, memory → \`StorageLayer.debates\`.
+- **Таймлайн:** \`engine.getTimeline(sessionId)\` (debate-timeline.ts) — основа реплея ([[panel-debate-history]]).
+- **Восстановление после перезагрузки:** \`restoreSession\` / loadActiveSession поднимает снапшот active/paused.
+- **События:** namespace \`debate:runtime:*\` (event-registry.ts) и легаси \`debate:*\` (\`started\`, \`updated\`, \`argument\`, \`consensus\`, \`ended\`, \`fact:checked\`, \`verdict:generated\`, \`session:conflict\`, \`human:vote\`). Шина — [[comp-event-bus]].
+
+## Реализация
+
+- UI: \`src/components/DebateArena.tsx\`, \`src/components/DebatePanel/DebatePanel.tsx\`, \`useDebatePanelSubscriptions.ts\`.
+- Синхронизация и жизненный цикл: \`debate-sync-manager.ts\`.
+- Движок и оркестрация: \`debate-engine.ts\`, \`debate-orchestrator.ts\`, \`conversation-backed-debate-orchestrator.ts\`, \`debate-orchestrator-factory.ts\`, \`debate-pipeline-builder.ts\`.
+- LLM-звено: \`debate-agent-executor.ts\`, \`debate-llm-caller.ts\`, \`debate-llm-backoff.ts\`.
+- Персист: \`debate-session-persistence.ts\`, \`debate-persistence-manager.ts\`, \`DexieDebateStore\` в \`src/kernel/services/storage/dexie-storage.ts\`.
+- DI: \`src/kernel/service-registration/phase3-debate-runtime.ts\` (\`debateEngine\`, \`debateService\`, \`debateApiService\`, \`debateHumanService\`, \`collaborativeService\`).
+- Сторы: \`src/stores/activeDebateStore.ts\`, \`src/stores/debateLiveStore.ts\`.
+
+## Связи
+
+- Движок и сервисы дебатов — [[comp-debate-runtime]]; провайдеры — [[comp-provider-runtime]], [[comp-llm-adapters]].
+- События — [[comp-event-bus]]; состояние — [[comp-state-stores]]; персист — [[comp-persistence]], [[comp-dal-repositories]].
+
+## Проверка работоспособности
+
+- Тесты: \`src/components/DebateArena.test.tsx\`, \`src/components/DebatePanel/DebatePanel.test.tsx\`, \`useDebatePanelSubscriptions.test.tsx\`, \`src/kernel/services/debate-runtime/debate-orchestrator.test.ts\`, \`debate-policy.test.ts\`, \`debate-persistence-manager.test.ts\`, \`debate-conclusion-engine.test.ts\`, \`debate-evaluator.test.ts\`, \`debate-consensus.test.ts\`, \`debate-conversation-core-migration.test.ts\`.
+
+## Состояние
+
+- Подтверждено чтением кода по всей цепочке; ключевые звенья (UI-подписки, оркестратор, политика, персист, вердикт) покрыты тестами.`,
     },
 ];
