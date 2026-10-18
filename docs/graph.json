@@ -3,22 +3,22 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 1174,
-    "edges": 3067,
+    "nodes": 1181,
+    "edges": 3086,
     "byType": {
       "audit": 67,
-      "code": 489,
-      "test": 142,
+      "code": 493,
+      "test": 144,
       "panel": 259,
-      "article": 217
+      "article": 218
     },
     "byKind": {
       "audit_test": 325,
       "audit_mention": 928,
       "documents": 201,
-      "source": 643,
-      "test": 188,
-      "related": 782
+      "source": 653,
+      "test": 191,
+      "related": 788
     }
   },
   "nodes": [
@@ -885,6 +885,16 @@
       "id": "file:src/components/CostsPanel/",
       "type": "code",
       "label": "src/components/CostsPanel/"
+    },
+    {
+      "id": "file:src/components/CouncilPanel/CouncilPanel.test.tsx",
+      "type": "test",
+      "label": "src/components/CouncilPanel/CouncilPanel.test.tsx"
+    },
+    {
+      "id": "file:src/components/CouncilPanel/CouncilPanel.tsx",
+      "type": "code",
+      "label": "src/components/CouncilPanel/CouncilPanel.tsx"
     },
     {
       "id": "file:src/components/CrystalVaultPanel/CrystalVaultPanel.test.tsx",
@@ -1777,6 +1787,11 @@
       "label": "src/kernel/contracts/budget.ts"
     },
     {
+      "id": "file:src/kernel/contracts/invocation.ts",
+      "type": "code",
+      "label": "src/kernel/contracts/invocation.ts"
+    },
+    {
       "id": "file:src/kernel/contracts/memory.ts",
       "type": "code",
       "label": "src/kernel/contracts/memory.ts"
@@ -1930,6 +1945,11 @@
       "id": "file:src/kernel/service-helper.ts",
       "type": "code",
       "label": "src/kernel/service-helper.ts"
+    },
+    {
+      "id": "file:src/kernel/service-registration/phase21-invocation.ts",
+      "type": "code",
+      "label": "src/kernel/service-registration/phase21-invocation.ts"
     },
     {
       "id": "file:src/kernel/service-registration/phase3-debate-runtime.ts",
@@ -2660,6 +2680,16 @@
       "id": "file:src/kernel/services/monitoring-service.ts",
       "type": "code",
       "label": "src/kernel/services/monitoring-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/multi-agent-project-service.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/multi-agent-project-service.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/multi-agent-project-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/multi-agent-project-service.ts"
     },
     {
       "id": "file:src/kernel/services/n8n-service.test.ts",
@@ -5694,6 +5724,13 @@
       "id": "wiki:comp-flow-knowledge",
       "type": "article",
       "label": "Сквозной контур: знания и RAG",
+      "section": "components",
+      "status": "verified"
+    },
+    {
+      "id": "wiki:comp-flow-multiagent",
+      "type": "article",
+      "label": "Сквозной контур: мультиагентное исполнение",
       "section": "components",
       "status": "verified"
     },
@@ -16103,6 +16140,101 @@
     {
       "from": "wiki:comp-flow-knowledge",
       "to": "wiki:comp-memory",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-flow-multiagent",
+      "to": "file:src/components/CouncilPanel/CouncilPanel.test.tsx",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-flow-multiagent",
+      "to": "file:src/components/CouncilPanel/CouncilPanel.tsx",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-flow-multiagent",
+      "to": "file:src/components/RoomPanel/RoomPanel.test.tsx",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-flow-multiagent",
+      "to": "file:src/components/RoomPanel/RoomPanel.tsx",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-flow-multiagent",
+      "to": "file:src/kernel/contracts/invocation.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-flow-multiagent",
+      "to": "file:src/kernel/service-registration/phase21-invocation.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-flow-multiagent",
+      "to": "file:src/kernel/services/council/council-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-flow-multiagent",
+      "to": "file:src/kernel/services/crew/crew-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-flow-multiagent",
+      "to": "file:src/kernel/services/frontier/frontier-ops-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-flow-multiagent",
+      "to": "file:src/kernel/services/invocation/invocation-engine-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-flow-multiagent",
+      "to": "file:src/kernel/services/invocation/invocation-repository.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-flow-multiagent",
+      "to": "file:src/kernel/services/multi-agent-project-service.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-flow-multiagent",
+      "to": "file:src/kernel/services/multi-agent-project-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-flow-multiagent",
+      "to": "wiki:comp-budget-pricing",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-flow-multiagent",
+      "to": "wiki:comp-crews-councils",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-flow-multiagent",
+      "to": "wiki:comp-flow-chat",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-flow-multiagent",
+      "to": "wiki:comp-flow-debate",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-flow-multiagent",
+      "to": "wiki:comp-frontier-diversity",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-flow-multiagent",
+      "to": "wiki:comp-invocation-meta",
       "kind": "related"
     },
     {

@@ -50,7 +50,7 @@
     {
       "id": "components",
       "title": "Компоненты и сервисы",
-      "articles": 69
+      "articles": 70
     },
     {
       "id": "notes",
@@ -4639,6 +4639,48 @@
         "src/components/KnowledgePanel/KnowledgePanel.test.tsx",
         "src/kernel/services/rag/hybrid-retrieval-service.test.ts",
         "src/kernel/services/knowledge-generator/knowledge-generator-service.test.ts"
+      ]
+    },
+    {
+      "id": "wiki:comp-flow-multiagent",
+      "type": "article",
+      "slug": "comp-flow-multiagent",
+      "title": "Сквозной контур: мультиагентное исполнение",
+      "section": "components",
+      "status": "verified",
+      "tags": [
+        "компоненты",
+        "контур",
+        "мультиагент",
+        "invocation",
+        "crew",
+        "council"
+      ],
+      "sources": [
+        "src/components/RoomPanel/RoomPanel.tsx",
+        "src/components/CouncilPanel/CouncilPanel.tsx",
+        "src/kernel/services/invocation/invocation-engine-service.ts",
+        "src/kernel/services/invocation/invocation-repository.ts",
+        "src/kernel/service-registration/phase21-invocation.ts",
+        "src/kernel/services/crew/crew-service.ts",
+        "src/kernel/services/council/council-service.ts",
+        "src/kernel/services/frontier/frontier-ops-service.ts",
+        "src/kernel/services/multi-agent-project-service.ts",
+        "src/kernel/contracts/invocation.ts"
+      ],
+      "related": [
+        "comp-invocation-meta",
+        "comp-crews-councils",
+        "comp-frontier-diversity",
+        "comp-flow-debate",
+        "comp-flow-chat",
+        "comp-budget-pricing"
+      ],
+      "reviewed": null,
+      "tests": [
+        "src/components/RoomPanel/RoomPanel.test.tsx",
+        "src/components/CouncilPanel/CouncilPanel.test.tsx",
+        "src/kernel/services/multi-agent-project-service.test.ts"
       ]
     },
     {
