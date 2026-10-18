@@ -18,7 +18,7 @@
 ## Реализация
 
 - **Важно:** файла `chat-service.ts` в коде нет — сервис реализован как `ChatExecutor` (`src/kernel/services/chat-executor.ts`, ~770 строк). В `docs/SERVICES_RU.md` он ошибочно назван `ChatService (chat-service.ts)`.
-- UI-логика чата — в сторах `src/stores/chat/` (`chat-send-message.ts`, `chat-event-handlers.ts`, `useChatStore.ts`).
+- UI-логика чата — в сторах `src/stores/chat/` (`store.ts`, `chat-send-message.ts`, `chat-event-handlers.ts`).
 
 ## Связи
 

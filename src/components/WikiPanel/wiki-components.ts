@@ -49,6 +49,8 @@ export const COMPONENT_ARTICLES: WikiArticle[] = [
 - **Наблюдаемость:** [[comp-observability]] (метрики, трейсы, мониторинг, кеш, админ).
 - **Советник и время:** [[comp-advisor-runtime-intelligence]] (диагностика/what-if), [[comp-event-sourcing]] (журнал), [[comp-time-travel]] (replay, снапшоты, каузальность).
 - **Задачи и управление:** [[comp-task-planning]] (задачи, расписание), [[comp-fleet-governance]] (флот, governance, аудит), [[comp-integrations-interop]] (A2A, gateway, MCP).
+- **Провайдеры и состояние:** [[comp-provider-runtime]] (инстансы, сессии, бюджет), [[comp-llm-bridge]] (мост к LLM), [[comp-state-stores]] (UI-состояние).
+- **Сквозные сценарии:** [[comp-scenarios]] (чат, дебаты, задача от панели до аудита).
 
 Машиночитаемые каталоги (генерируются из кода): [[dev-component-catalog]], [[dev-service-map]], [[dev-contracts]], [[dev-event-catalog]].
 
@@ -921,7 +923,7 @@ flowchart TD
 ## Реализация
 
 - **Важно:** файла \`chat-service.ts\` в коде нет — сервис реализован как \`ChatExecutor\` (\`src/kernel/services/chat-executor.ts\`, ~770 строк). В \`docs/SERVICES_RU.md\` он ошибочно назван \`ChatService (chat-service.ts)\`.
-- UI-логика чата — в сторах \`src/stores/chat/\` (\`chat-send-message.ts\`, \`chat-event-handlers.ts\`, \`useChatStore.ts\`).
+- UI-логика чата — в сторах \`src/stores/chat/\` (\`store.ts\`, \`chat-send-message.ts\`, \`chat-event-handlers.ts\`).
 
 ## Связи
 
@@ -1250,5 +1252,165 @@ flowchart TD
 ## Состояние
 
 - Реализовано; MCP-харнесс и демо интеропа покрыты тестами.`,
+    },
+    {
+        slug: 'comp-provider-runtime',
+        title: 'Компонент: рантайм провайдеров',
+        section: 'components',
+        tags: ['компоненты', 'провайдеры', 'инстансы', 'адаптеры'],
+        freshness: 'documented',
+        sources: [
+            'src/kernel/services/provider-runtime/provider-service.ts',
+            'src/kernel/services/provider-runtime/provider-instance.ts',
+            'src/kernel/services/provider-runtime/provider-budget.ts',
+            'src/kernel/services/provider-runtime/provider-session.ts',
+            'src/kernel/services/provider-runtime/provider-state.ts',
+            'src/kernel/services/provider-adapter-registry.ts',
+            'src/kernel/services/provider-router.ts',
+            'src/kernel/services/provider-tracker.ts',
+        ],
+        related: ['providers', 'panel-providers', 'comp-routing', 'comp-key-management', 'comp-budget-pricing'],
+        body: `## Назначение
+
+Держать рантайм-состояние провайдеров: инстансы, сессии, бюджет и метрики, а также адаптеры, роутинг и миграции.
+
+## Возможности
+
+- Инстанс провайдера с состояниями \`idle/active/degraded/backoff/dead\` (\`ProviderInstance\`).
+- Сессии (\`ProviderSession\`: \`pending/active/completed/errored/cancelled\`, токен-учёт) и снимки рантайма.
+- Бюджет провайдера (\`ProviderBudget\`: \`BudgetLimit\`, снапшоты), метрики (\`ProviderRuntimeState\`, \`ProviderMetricData\`).
+- Реестр адаптеров, роутер, трекер и рейтинги, миграция конфигураций, достижения.
+
+## Реализация
+
+- Каталог \`provider-runtime/\`: \`provider-service.ts\` (\`ProviderRuntimeService\`, \`ProviderRuntimeDeps\`), \`provider-instance.ts\` (\`ProviderInstance\`, \`IProviderInstance\`, \`ProviderInstanceConfig\`), \`provider-budget.ts\`, \`provider-session.ts\`, \`provider-state.ts\`.
+- Верхний уровень: \`provider-adapter-registry.ts\` (\`ProviderAdapterRegistry\`, \`ProviderRuntimeStatus\`), \`provider-router.ts\` (\`RouterService\`), \`provider-tracker.ts\` (\`ProviderTracker\`, \`ProviderRanking\`), \`provider-migration-service.ts\`, \`provider-achievement-service.ts\`.
+
+## Связи
+
+- Ключи — [[comp-key-management]]; выбор/маршрут — [[comp-routing]]; расходы — [[comp-budget-pricing]].
+- Панели: [[providers]] (обзор), [[panel-providers]], [[panel-providers-extra]].
+
+## Проверка работоспособности
+
+- Тесты: \`provider-adapter-registry.test.ts\`, \`provider-stack.e2e.test.ts\`.
+- Ручная: открыть Providers, проверить статусы инстансов и метрики.
+
+## Состояние
+
+- Реализовано; реестр адаптеров и e2e стека провайдеров покрыты тестами.`,
+    },
+    {
+        slug: 'comp-llm-bridge',
+        title: 'Компонент: LLM-мост (адаптеры crews/council/graph/frontier)',
+        section: 'components',
+        tags: ['компоненты', 'llm', 'адаптеры', 'мост'],
+        freshness: 'documented',
+        sources: ['src/kernel/services/llm-bridge/llm-task-executor.ts'],
+        related: ['comp-provider-runtime', 'comp-routing', 'comp-agents-roles-skills', 'panel-director', 'for-developers'],
+        body: `## Назначение
+
+Связывать прикладные подсистемы (экипажи, совет, графы, фронтир) с LLM: единый мост исполняет их задачи через провайдеров.
+
+## Возможности
+
+- Исполнение задач экипажа (\`LlmCrewExecutor implements ICrewTaskExecutor\`).
+- LLM-порт для совета (\`LlmCouncilPort implements ICouncilLlmPort\`), для графа (\`LlmGraphPort implements IGraphLlmPort\`), исполнитель фронтира (\`LlmFrontierExecutor implements IFrontierExecutor\`).
+- Общие опции моста \`LlmBridgeOptions\`.
+
+## Реализация
+
+- Единственный файл \`src/kernel/services/llm-bridge/llm-task-executor.ts\` с четырьмя классами-адаптерами. Это тонкий слой: сами вызовы идут через роутинг/провайдеров.
+
+## Связи
+
+- Провайдеры — [[comp-provider-runtime]]; маршрутизация — [[comp-routing]]; роли — [[comp-agents-roles-skills]].
+- Панель: [[panel-director]] (Director/совет).
+
+## Проверка работоспособности
+
+- **Тестов нет:** для \`llm-task-executor.ts\` выделенный тест не найден.
+- Ручная: запустить экипаж/совет и убедиться, что задачи доходят до провайдера.
+
+## Состояние
+
+- Реализовано; подтверждено чтением кода, без автотестов.`,
+    },
+    {
+        slug: 'comp-state-stores',
+        title: 'Компонент: слой состояния (Zustand-сторы)',
+        section: 'components',
+        tags: ['компоненты', 'состояние', 'zustand', 'ui'],
+        freshness: 'documented',
+        sources: ['src/stores/useKeyStore.ts', 'src/stores/debateLiveStore.ts', 'src/stores/chat/store.ts'],
+        related: ['dev-stores', 'dev-store-catalog', 'comp-chat', 'panel-wiki', 'dev-layout'],
+        body: `## Назначение
+
+Хранить состояние интерфейса между панелями: ключи, дебаты, чат, персонажи, проекты, уведомления и т.д.
+
+## Возможности
+
+- Ключи и интеллект по ключам (\`useKeyStore\`, \`useKeyIntelligence\`), статус системы (\`useSystemStatus\`), уведомления (\`useNotificationStore\`).
+- Дебаты: \`debateLiveStore\`, \`activeDebateStore\`, подкаталог \`debate-session-store/\`.
+- Домен: \`crewStore\`, \`councilStore\`, \`directorStore\`, \`invocationStore\`, \`project-store\`, \`personaStore\`, \`trustStore\`, \`opsStore\`, \`interopStore\`, \`rivalStore\`, \`frontierStore\`, \`graphStore\`, \`metaStore\`, \`channel-store\`, \`topologyTraceStore\`, \`uiPreferencesStore\`.
+- Подкаталог \`chat/\` — логика чата (\`store.ts\`, \`chat-send-message.ts\`, \`chat-event-handlers.ts\`, \`hydration.ts\`).
+
+## Реализация
+
+- Каталог \`src/stores/\` (Zustand). Часть сторов имеет собственные \`*.test.ts\` (см. каталог сторов).
+- Инициализация ключей вынесена в \`key-store-init.ts\`, \`key-store-deps.ts\`, \`key-store-utils.ts\`.
+
+## Связи
+
+- UI-слой и маршрутизация панелей — [[dev-layout]]; каталог сторов — [[dev-store-catalog]], правила — [[dev-stores]].
+- Чат-логика соседствует с [[comp-chat]].
+
+## Проверка работоспособности
+
+- Тесты сторов: \`activeDebateStore.test.ts\`, \`debateLiveStore.test.ts\`, \`directorStore.test.ts\`, \`invocationStore.test.ts\`, \`topologyTraceStore.test.ts\`, \`uiPreferencesStore.test.ts\`, \`useChatStore.test.ts\`, \`useKeyStore.test.ts\`, \`useKeyIntelligence.test.ts\`, \`useNotificationStore.test.ts\`, \`useSystemStatus.test.ts\`.
+
+## Состояние
+
+- Реализовано; значительная часть сторов покрыта тестами.`,
+    },
+    {
+        slug: 'comp-scenarios',
+        title: 'Компонент: сквозные сценарии',
+        section: 'components',
+        tags: ['компоненты', 'сценарии', 'сквозные', 'интеграция'],
+        freshness: 'documented',
+        sources: [
+            'src/kernel/services/chat-executor.ts',
+            'src/kernel/services/debate-runtime/debate-engine.ts',
+            'src/kernel/services/agems-task-service.ts',
+        ],
+        related: ['scenarios', 'what-is', 'panels-guide', 'comp-chat', 'comp-debate-runtime', 'comp-task-planning'],
+        body: `## Назначение
+
+Показать, как отдельные подсистемы собираются в целостные пользовательские потоки: от действия в панели до результата и записи в аудит.
+
+## Возможности
+
+- Три опорных сценария: чат, дебаты и задача.
+
+## Реализация
+
+- **Чат:** сообщение → [[comp-chat]] (\`ChatExecutor\`) → выбор ключа/провайдера ([[comp-routing]], [[comp-key-management]], [[comp-provider-runtime]]) → стрим ответа → расход ([[comp-budget-pricing]]) → события в наблюдаемость ([[comp-observability]]).
+- **Дебаты:** панель → [[comp-debate-runtime]] (\`DebateEngine\`) → раунды участников ([[comp-agents-roles-skills]]) → консенсус/метрики → память ([[comp-memory]]) и след исполнения ([[execution-trail]]).
+- **Задача:** постановка → [[comp-task-planning]] (\`AgemsTaskService\`) → передача агенту → результат (work product) → аудит ([[comp-fleet-governance]]).
+
+## Связи
+
+- Обзор продукта и маршруты — [[what-is]], [[scenarios]], [[panels-guide]].
+- Демонстрации — \`docs/demos/\` (чат, дебаты, память, провайдеры, диагностика).
+
+## Проверка работоспособности
+
+- Сквозные тесты подсистем: \`provider-stack.e2e.test.ts\`, дебатовые тесты \`debate-runtime/*\`, \`scheduler-service.test.ts\`, \`task-handoff.test.ts\`.
+- Ручная: пройти каждый сценарий из соответствующей панели.
+
+## Состояние
+
+- Сценарии описаны по коду и тестам подсистем; отдельного «сценарного» сервиса нет — это композиция.`,
     },
 ];

@@ -3,22 +3,22 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 907,
-    "edges": 2540,
+    "nodes": 923,
+    "edges": 2581,
     "byType": {
       "audit": 67,
-      "code": 324,
-      "test": 84,
+      "code": 333,
+      "test": 87,
       "panel": 259,
-      "article": 173
+      "article": 177
     },
     "byKind": {
       "audit_test": 325,
       "audit_mention": 928,
       "documents": 201,
-      "source": 427,
-      "test": 98,
-      "related": 561
+      "source": 442,
+      "test": 103,
+      "related": 582
     }
   },
   "nodes": [
@@ -2172,6 +2172,11 @@
       "label": "src/kernel/services/key-state-store.ts"
     },
     {
+      "id": "file:src/kernel/services/llm-bridge/llm-task-executor.ts",
+      "type": "code",
+      "label": "src/kernel/services/llm-bridge/llm-task-executor.ts"
+    },
+    {
       "id": "file:src/kernel/services/llm-client-service.test.ts",
       "type": "test",
       "label": "src/kernel/services/llm-client-service.test.ts"
@@ -2275,6 +2280,31 @@
       "id": "file:src/kernel/services/provider-router.ts",
       "type": "code",
       "label": "src/kernel/services/provider-router.ts"
+    },
+    {
+      "id": "file:src/kernel/services/provider-runtime/provider-budget.ts",
+      "type": "code",
+      "label": "src/kernel/services/provider-runtime/provider-budget.ts"
+    },
+    {
+      "id": "file:src/kernel/services/provider-runtime/provider-instance.ts",
+      "type": "code",
+      "label": "src/kernel/services/provider-runtime/provider-instance.ts"
+    },
+    {
+      "id": "file:src/kernel/services/provider-runtime/provider-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/provider-runtime/provider-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/provider-runtime/provider-session.ts",
+      "type": "code",
+      "label": "src/kernel/services/provider-runtime/provider-session.ts"
+    },
+    {
+      "id": "file:src/kernel/services/provider-runtime/provider-state.ts",
+      "type": "code",
+      "label": "src/kernel/services/provider-runtime/provider-state.ts"
     },
     {
       "id": "file:src/kernel/services/provider-tracker.ts",
@@ -2525,6 +2555,36 @@
       "id": "file:src/stores/",
       "type": "code",
       "label": "src/stores/"
+    },
+    {
+      "id": "file:src/stores/chat/store.test.ts",
+      "type": "test",
+      "label": "src/stores/chat/store.test.ts"
+    },
+    {
+      "id": "file:src/stores/chat/store.ts",
+      "type": "code",
+      "label": "src/stores/chat/store.ts"
+    },
+    {
+      "id": "file:src/stores/debateLiveStore.test.ts",
+      "type": "test",
+      "label": "src/stores/debateLiveStore.test.ts"
+    },
+    {
+      "id": "file:src/stores/debateLiveStore.ts",
+      "type": "code",
+      "label": "src/stores/debateLiveStore.ts"
+    },
+    {
+      "id": "file:src/stores/useKeyStore.test.ts",
+      "type": "test",
+      "label": "src/stores/useKeyStore.test.ts"
+    },
+    {
+      "id": "file:src/stores/useKeyStore.ts",
+      "type": "code",
+      "label": "src/stores/useKeyStore.ts"
     },
     {
       "id": "file:vitest.config.ts",
@@ -4471,6 +4531,13 @@
       "status": "documented"
     },
     {
+      "id": "wiki:comp-llm-bridge",
+      "type": "article",
+      "label": "Компонент: LLM-мост (адаптеры crews/council/graph/frontier)",
+      "section": "components",
+      "status": "documented"
+    },
+    {
       "id": "wiki:comp-memory",
       "type": "article",
       "label": "Компонент: память и знания",
@@ -4506,6 +4573,13 @@
       "status": "verified"
     },
     {
+      "id": "wiki:comp-provider-runtime",
+      "type": "article",
+      "label": "Компонент: рантайм провайдеров",
+      "section": "components",
+      "status": "documented"
+    },
+    {
       "id": "wiki:comp-routing",
       "type": "article",
       "label": "Компонент: роутинг и провайдеры",
@@ -4513,11 +4587,25 @@
       "status": "verified"
     },
     {
+      "id": "wiki:comp-scenarios",
+      "type": "article",
+      "label": "Компонент: сквозные сценарии",
+      "section": "components",
+      "status": "documented"
+    },
+    {
       "id": "wiki:comp-security-crypto",
       "type": "article",
       "label": "Компонент: шифрование at-rest (SecurityService)",
       "section": "components",
       "status": "verified"
+    },
+    {
+      "id": "wiki:comp-state-stores",
+      "type": "article",
+      "label": "Компонент: слой состояния (Zustand-сторы)",
+      "section": "components",
+      "status": "documented"
     },
     {
       "id": "wiki:comp-task-planning",
@@ -13738,6 +13826,36 @@
       "kind": "related"
     },
     {
+      "from": "wiki:comp-llm-bridge",
+      "to": "file:src/kernel/services/llm-bridge/llm-task-executor.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-llm-bridge",
+      "to": "wiki:comp-agents-roles-skills",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-llm-bridge",
+      "to": "wiki:comp-provider-runtime",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-llm-bridge",
+      "to": "wiki:comp-routing",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-llm-bridge",
+      "to": "wiki:for-developers",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-llm-bridge",
+      "to": "wiki:panel-director",
+      "kind": "related"
+    },
+    {
       "from": "wiki:comp-memory",
       "to": "file:src/kernel/contracts/memory.ts",
       "kind": "source"
@@ -13998,6 +14116,76 @@
       "kind": "related"
     },
     {
+      "from": "wiki:comp-provider-runtime",
+      "to": "file:src/kernel/services/provider-adapter-registry.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-provider-runtime",
+      "to": "file:src/kernel/services/provider-adapter-registry.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-provider-runtime",
+      "to": "file:src/kernel/services/provider-router.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-provider-runtime",
+      "to": "file:src/kernel/services/provider-runtime/provider-budget.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-provider-runtime",
+      "to": "file:src/kernel/services/provider-runtime/provider-instance.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-provider-runtime",
+      "to": "file:src/kernel/services/provider-runtime/provider-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-provider-runtime",
+      "to": "file:src/kernel/services/provider-runtime/provider-session.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-provider-runtime",
+      "to": "file:src/kernel/services/provider-runtime/provider-state.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-provider-runtime",
+      "to": "file:src/kernel/services/provider-tracker.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-provider-runtime",
+      "to": "wiki:comp-budget-pricing",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-provider-runtime",
+      "to": "wiki:comp-key-management",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-provider-runtime",
+      "to": "wiki:comp-routing",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-provider-runtime",
+      "to": "wiki:panel-providers",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-provider-runtime",
+      "to": "wiki:providers",
+      "kind": "related"
+    },
+    {
       "from": "wiki:comp-routing",
       "to": "file:src/kernel/services/llm-client-service.test.ts",
       "kind": "test"
@@ -14073,6 +14261,56 @@
       "kind": "related"
     },
     {
+      "from": "wiki:comp-scenarios",
+      "to": "file:src/kernel/services/agems-task-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-scenarios",
+      "to": "file:src/kernel/services/chat-executor.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-scenarios",
+      "to": "file:src/kernel/services/chat-executor.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-scenarios",
+      "to": "file:src/kernel/services/debate-runtime/debate-engine.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-scenarios",
+      "to": "wiki:comp-chat",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-scenarios",
+      "to": "wiki:comp-debate-runtime",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-scenarios",
+      "to": "wiki:comp-task-planning",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-scenarios",
+      "to": "wiki:panels-guide",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-scenarios",
+      "to": "wiki:scenarios",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-scenarios",
+      "to": "wiki:what-is",
+      "kind": "related"
+    },
+    {
       "from": "wiki:comp-security-crypto",
       "to": "file:src/kernel/security.test.ts",
       "kind": "source"
@@ -14110,6 +14348,61 @@
     {
       "from": "wiki:comp-security-crypto",
       "to": "wiki:comp-policy-security",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-state-stores",
+      "to": "file:src/stores/chat/store.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-state-stores",
+      "to": "file:src/stores/chat/store.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-state-stores",
+      "to": "file:src/stores/debateLiveStore.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-state-stores",
+      "to": "file:src/stores/debateLiveStore.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-state-stores",
+      "to": "file:src/stores/useKeyStore.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-state-stores",
+      "to": "file:src/stores/useKeyStore.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-state-stores",
+      "to": "wiki:comp-chat",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-state-stores",
+      "to": "wiki:dev-layout",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-state-stores",
+      "to": "wiki:dev-store-catalog",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-state-stores",
+      "to": "wiki:dev-stores",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-state-stores",
+      "to": "wiki:panel-wiki",
       "kind": "related"
     },
     {

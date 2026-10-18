@@ -50,7 +50,7 @@
     {
       "id": "components",
       "title": "Компоненты и сервисы",
-      "articles": 26
+      "articles": 30
     },
     {
       "id": "notes",
@@ -3216,6 +3216,130 @@
       "reviewed": null,
       "tests": [
         "src/kernel/services/interop/mcp-harness-service.test.ts"
+      ]
+    },
+    {
+      "id": "wiki:comp-provider-runtime",
+      "type": "article",
+      "slug": "comp-provider-runtime",
+      "title": "Компонент: рантайм провайдеров",
+      "section": "components",
+      "status": "documented",
+      "tags": [
+        "компоненты",
+        "провайдеры",
+        "инстансы",
+        "адаптеры"
+      ],
+      "sources": [
+        "src/kernel/services/provider-runtime/provider-service.ts",
+        "src/kernel/services/provider-runtime/provider-instance.ts",
+        "src/kernel/services/provider-runtime/provider-budget.ts",
+        "src/kernel/services/provider-runtime/provider-session.ts",
+        "src/kernel/services/provider-runtime/provider-state.ts",
+        "src/kernel/services/provider-adapter-registry.ts",
+        "src/kernel/services/provider-router.ts",
+        "src/kernel/services/provider-tracker.ts"
+      ],
+      "related": [
+        "providers",
+        "panel-providers",
+        "comp-routing",
+        "comp-key-management",
+        "comp-budget-pricing"
+      ],
+      "reviewed": null,
+      "tests": [
+        "src/kernel/services/provider-adapter-registry.test.ts"
+      ]
+    },
+    {
+      "id": "wiki:comp-llm-bridge",
+      "type": "article",
+      "slug": "comp-llm-bridge",
+      "title": "Компонент: LLM-мост (адаптеры crews/council/graph/frontier)",
+      "section": "components",
+      "status": "documented",
+      "tags": [
+        "компоненты",
+        "llm",
+        "адаптеры",
+        "мост"
+      ],
+      "sources": [
+        "src/kernel/services/llm-bridge/llm-task-executor.ts"
+      ],
+      "related": [
+        "comp-provider-runtime",
+        "comp-routing",
+        "comp-agents-roles-skills",
+        "panel-director",
+        "for-developers"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:comp-state-stores",
+      "type": "article",
+      "slug": "comp-state-stores",
+      "title": "Компонент: слой состояния (Zustand-сторы)",
+      "section": "components",
+      "status": "documented",
+      "tags": [
+        "компоненты",
+        "состояние",
+        "zustand",
+        "ui"
+      ],
+      "sources": [
+        "src/stores/useKeyStore.ts",
+        "src/stores/debateLiveStore.ts",
+        "src/stores/chat/store.ts"
+      ],
+      "related": [
+        "dev-stores",
+        "dev-store-catalog",
+        "comp-chat",
+        "panel-wiki",
+        "dev-layout"
+      ],
+      "reviewed": null,
+      "tests": [
+        "src/stores/useKeyStore.test.ts",
+        "src/stores/debateLiveStore.test.ts",
+        "src/stores/chat/store.test.ts"
+      ]
+    },
+    {
+      "id": "wiki:comp-scenarios",
+      "type": "article",
+      "slug": "comp-scenarios",
+      "title": "Компонент: сквозные сценарии",
+      "section": "components",
+      "status": "documented",
+      "tags": [
+        "компоненты",
+        "сценарии",
+        "сквозные",
+        "интеграция"
+      ],
+      "sources": [
+        "src/kernel/services/chat-executor.ts",
+        "src/kernel/services/debate-runtime/debate-engine.ts",
+        "src/kernel/services/agems-task-service.ts"
+      ],
+      "related": [
+        "scenarios",
+        "what-is",
+        "panels-guide",
+        "comp-chat",
+        "comp-debate-runtime",
+        "comp-task-planning"
+      ],
+      "reviewed": null,
+      "tests": [
+        "src/kernel/services/chat-executor.test.ts"
       ]
     },
     {

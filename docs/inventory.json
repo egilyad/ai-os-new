@@ -3,7 +3,7 @@
   "generatedBy": "scripts/gen-docs-inventory.mjs",
   "scope": "git-tracked markdown: docs/**/*.md (excluding docs/new drafts and the self-report pages docs-health, docs-inventory) plus repository entry docs (root *.md, .superagents/**, src/kernel/DEPENDENCY_MAP.md)",
   "totals": {
-    "documents": 996,
+    "documents": 1000,
     "byCategory": {
       "repo": 12,
       "top": 46,
@@ -13,12 +13,12 @@
       "reference": 6,
       "roadmap": 6,
       "superseded": 3,
-      "wiki": 172
+      "wiki": 176
     },
     "byLanguage": {
       "en": 658,
-      "ru": 206,
-      "mixed": 132
+      "ru": 208,
+      "mixed": 134
     }
   },
   "duplicates": {
@@ -6644,8 +6644,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Компонент: чат (ChatExecutor)",
-      "bytes": 2809,
-      "hash": "d8447af6e88cc5f6bbf3602c30fad40da72af042"
+      "bytes": 2802,
+      "hash": "291777a5006062b314d7736127a56e7ce40a7eee"
     },
     {
       "path": "docs/wiki/comp-cognitive-orchestration.md",
@@ -6736,6 +6736,14 @@
       "hash": "e5bbe20c277a0bd742d85b1764f628fe68f3d872"
     },
     {
+      "path": "docs/wiki/comp-llm-bridge.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Компонент: LLM-мост (адаптеры crews/council/graph/frontier)",
+      "bytes": 2836,
+      "hash": "ae339df4db47056181d2cb38f23d7ffa1dfee169"
+    },
+    {
       "path": "docs/wiki/comp-memory.md",
       "category": "wiki",
       "language": "ru",
@@ -6756,8 +6764,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Компоненты и сервисы: как читать этот раздел",
-      "bytes": 7592,
-      "hash": "ef6d2cfebd31be7183ce29d0e1d9cce0849cf5e9"
+      "bytes": 8214,
+      "hash": "a2712130a1622ec25dba61e68bf8758c13be0e37"
     },
     {
       "path": "docs/wiki/comp-persistence.md",
@@ -6776,6 +6784,14 @@
       "hash": "46b7c0d3b02667f44356659212243d6fafa7b542"
     },
     {
+      "path": "docs/wiki/comp-provider-runtime.md",
+      "category": "wiki",
+      "language": "mixed",
+      "title": "Компонент: рантайм провайдеров",
+      "bytes": 3835,
+      "hash": "aca190d692198ab9d89906cebca0f702eaefaa27"
+    },
+    {
       "path": "docs/wiki/comp-routing.md",
       "category": "wiki",
       "language": "mixed",
@@ -6784,12 +6800,28 @@
       "hash": "008e046ef79351037e4ea2a6429bc0d54dcd79db"
     },
     {
+      "path": "docs/wiki/comp-scenarios.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Компонент: сквозные сценарии",
+      "bytes": 4089,
+      "hash": "e47f995ff7e1e57dc30913a8a34c6234138d6efe"
+    },
+    {
       "path": "docs/wiki/comp-security-crypto.md",
       "category": "wiki",
       "language": "ru",
       "title": "Компонент: шифрование at-rest (SecurityService)",
       "bytes": 3498,
       "hash": "694a7a4db06eaca64bd27274770fa9bd15bc4f2e"
+    },
+    {
+      "path": "docs/wiki/comp-state-stores.md",
+      "category": "wiki",
+      "language": "mixed",
+      "title": "Компонент: слой состояния (Zustand-сторы)",
+      "bytes": 3167,
+      "hash": "6f69566ba5e502b1b50951df3635f5eaa14c97e1"
     },
     {
       "path": "docs/wiki/comp-task-planning.md",
@@ -6853,7 +6885,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4073,
-      "hash": "c82c1962513d2999efc476e46c36e463ba7ddf69"
+      "hash": "b7d1ddcc8d30fb7ec1cd78bc87556fff4edfaac3"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -6940,8 +6972,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Граф знаний",
-      "bytes": 4961,
-      "hash": "c0886752216c290dbacc920c9ea0fd368e305c9e"
+      "bytes": 4962,
+      "hash": "a6702c1d3c0c9e53b27d635ed7c41cb816ab4cbd"
     },
     {
       "path": "docs/wiki/dev-history.md",
@@ -7076,8 +7108,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Карта документации",
-      "bytes": 24929,
-      "hash": "94c4a8983c3314c222118a72c4d0c49015cb1040"
+      "bytes": 25306,
+      "hash": "66d5f86cd32acfbfe09cbe92c718250c3ad22438"
     },
     {
       "path": "docs/wiki/docs-standard.md",
@@ -7732,8 +7764,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Wiki SuperAgents OS",
-      "bytes": 17366,
-      "hash": "421166c03946d1adf71c58ea25d11db34bdcdf89"
+      "bytes": 17807,
+      "hash": "6bba48b84b74862c3d839b04fae35bc966c84d89"
     },
     {
       "path": "docs/wiki/roadmap-notes.md",
