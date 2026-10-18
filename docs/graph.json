@@ -3,22 +3,22 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 864,
-    "edges": 2473,
+    "nodes": 907,
+    "edges": 2540,
     "byType": {
       "audit": 67,
-      "code": 291,
-      "test": 80,
+      "code": 324,
+      "test": 84,
       "panel": 259,
-      "article": 167
+      "article": 173
     },
     "byKind": {
       "audit_test": 325,
       "audit_mention": 928,
       "documents": 201,
-      "source": 394,
-      "test": 94,
-      "related": 531
+      "source": 427,
+      "test": 98,
+      "related": 561
     }
   },
   "nodes": [
@@ -1822,6 +1822,41 @@
       "label": "src/kernel/services/admin-service.ts"
     },
     {
+      "id": "file:src/kernel/services/advisor-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/advisor-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/advisor/diagnostics-engine.ts",
+      "type": "code",
+      "label": "src/kernel/services/advisor/diagnostics-engine.ts"
+    },
+    {
+      "id": "file:src/kernel/services/advisor/insight-engine.ts",
+      "type": "code",
+      "label": "src/kernel/services/advisor/insight-engine.ts"
+    },
+    {
+      "id": "file:src/kernel/services/advisor/optimization-engine.ts",
+      "type": "code",
+      "label": "src/kernel/services/advisor/optimization-engine.ts"
+    },
+    {
+      "id": "file:src/kernel/services/advisor/pressure-engine.ts",
+      "type": "code",
+      "label": "src/kernel/services/advisor/pressure-engine.ts"
+    },
+    {
+      "id": "file:src/kernel/services/advisor/whatif-engine.ts",
+      "type": "code",
+      "label": "src/kernel/services/advisor/whatif-engine.ts"
+    },
+    {
+      "id": "file:src/kernel/services/agems-task-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/agems-task-service.ts"
+    },
+    {
       "id": "file:src/kernel/services/agent-project-runtime.test.ts",
       "type": "test",
       "label": "src/kernel/services/agent-project-runtime.test.ts"
@@ -1860,6 +1895,16 @@
       "id": "file:src/kernel/services/cache-service.ts",
       "type": "code",
       "label": "src/kernel/services/cache-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/causal-scope-manager.ts",
+      "type": "code",
+      "label": "src/kernel/services/causal-scope-manager.ts"
+    },
+    {
+      "id": "file:src/kernel/services/causal-timeline-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/causal-timeline-service.ts"
     },
     {
       "id": "file:src/kernel/services/chat-executor.test.ts",
@@ -1935,6 +1980,11 @@
       "id": "file:src/kernel/services/consistency-checker.ts",
       "type": "code",
       "label": "src/kernel/services/consistency-checker.ts"
+    },
+    {
+      "id": "file:src/kernel/services/counterfactual-explanation-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/counterfactual-explanation-service.ts"
     },
     {
       "id": "file:src/kernel/services/database-service.ts",
@@ -2032,6 +2082,21 @@
       "label": "src/kernel/services/dexie-schema.ts"
     },
     {
+      "id": "file:src/kernel/services/event-sourcing/checkpoint-store.ts",
+      "type": "code",
+      "label": "src/kernel/services/event-sourcing/checkpoint-store.ts"
+    },
+    {
+      "id": "file:src/kernel/services/event-sourcing/event-recorder.ts",
+      "type": "code",
+      "label": "src/kernel/services/event-sourcing/event-recorder.ts"
+    },
+    {
+      "id": "file:src/kernel/services/event-sourcing/event-types.ts",
+      "type": "code",
+      "label": "src/kernel/services/event-sourcing/event-types.ts"
+    },
+    {
       "id": "file:src/kernel/services/external-secrets-service.test.ts",
       "type": "test",
       "label": "src/kernel/services/external-secrets-service.test.ts"
@@ -2045,6 +2110,36 @@
       "id": "file:src/kernel/services/group-manager.ts",
       "type": "code",
       "label": "src/kernel/services/group-manager.ts"
+    },
+    {
+      "id": "file:src/kernel/services/interop/a2a-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/interop/a2a-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/interop/coordination-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/interop/coordination-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/interop/federation-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/interop/federation-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/interop/gateway-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/interop/gateway-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/interop/mcp-harness-service.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/interop/mcp-harness-service.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/interop/mcp-harness-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/interop/mcp-harness-service.ts"
     },
     {
       "id": "file:src/kernel/services/key-intelligence-pipeline.ts",
@@ -2122,6 +2217,26 @@
       "label": "src/kernel/services/notification-webhook-service.ts"
     },
     {
+      "id": "file:src/kernel/services/ops/audit-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/ops/audit-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/ops/fleet-monitor-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/ops/fleet-monitor-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/ops/hierarchy-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/ops/hierarchy-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/ops/tool-governance-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/ops/tool-governance-service.ts"
+    },
+    {
       "id": "file:src/kernel/services/orchestration-service.ts",
       "type": "code",
       "label": "src/kernel/services/orchestration-service.ts"
@@ -2167,6 +2282,11 @@
       "label": "src/kernel/services/provider-tracker.ts"
     },
     {
+      "id": "file:src/kernel/services/rivals2/integrations-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/rivals2/integrations-service.ts"
+    },
+    {
       "id": "file:src/kernel/services/role-service.ts",
       "type": "code",
       "label": "src/kernel/services/role-service.ts"
@@ -2197,9 +2317,29 @@
       "label": "src/kernel/services/router-types.ts"
     },
     {
+      "id": "file:src/kernel/services/runtime-intelligence/diagnostic-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/runtime-intelligence/diagnostic-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/runtime-intelligence/pressure-map-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/runtime-intelligence/pressure-map-service.ts"
+    },
+    {
       "id": "file:src/kernel/services/sandbox-service.ts",
       "type": "code",
       "label": "src/kernel/services/sandbox-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/scheduler-service.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/scheduler-service.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/scheduler-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/scheduler-service.ts"
     },
     {
       "id": "file:src/kernel/services/session-affinity-store.ts",
@@ -2222,6 +2362,16 @@
       "label": "src/kernel/services/skill-service.ts"
     },
     {
+      "id": "file:src/kernel/services/snapshot-service.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/snapshot-service.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/snapshot-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/snapshot-service.ts"
+    },
+    {
       "id": "file:src/kernel/services/storage-adapter.ts",
       "type": "code",
       "label": "src/kernel/services/storage-adapter.ts"
@@ -2240,6 +2390,31 @@
       "id": "file:src/kernel/services/system-status-service.ts",
       "type": "code",
       "label": "src/kernel/services/system-status-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/task-handoff.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/task-handoff.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/task-handoff.ts",
+      "type": "code",
+      "label": "src/kernel/services/task-handoff.ts"
+    },
+    {
+      "id": "file:src/kernel/services/task-trigger-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/task-trigger-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/task-work-product-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/task-work-product-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/temporal-replay-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/temporal-replay-service.ts"
     },
     {
       "id": "file:src/kernel/services/timeline-service.ts",
@@ -2265,6 +2440,16 @@
       "id": "file:src/kernel/services/transaction.ts",
       "type": "code",
       "label": "src/kernel/services/transaction.ts"
+    },
+    {
+      "id": "file:src/kernel/services/trust/governance-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/trust/governance-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/trust/provenance-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/trust/provenance-service.ts"
     },
     {
       "id": "file:src/kernel/services/truth-consistency-monitor.ts",
@@ -4181,6 +4366,13 @@
       "status": "documented"
     },
     {
+      "id": "wiki:comp-advisor-runtime-intelligence",
+      "type": "article",
+      "label": "Компонент: советник и runtime-intelligence",
+      "section": "components",
+      "status": "documented"
+    },
+    {
       "id": "wiki:comp-agents-roles-skills",
       "type": "article",
       "label": "Компонент: агенты, роли и навыки",
@@ -4244,6 +4436,27 @@
       "status": "verified"
     },
     {
+      "id": "wiki:comp-event-sourcing",
+      "type": "article",
+      "label": "Компонент: журналирование событий (event sourcing)",
+      "section": "components",
+      "status": "documented"
+    },
+    {
+      "id": "wiki:comp-fleet-governance",
+      "type": "article",
+      "label": "Компонент: флот, governance и аудит",
+      "section": "components",
+      "status": "documented"
+    },
+    {
+      "id": "wiki:comp-integrations-interop",
+      "type": "article",
+      "label": "Компонент: интеграции и интероперабельность",
+      "section": "components",
+      "status": "documented"
+    },
+    {
       "id": "wiki:comp-kernel-boot",
       "type": "article",
       "label": "Компонент: запуск ядра (bootstrap, container, runtime)",
@@ -4305,6 +4518,20 @@
       "label": "Компонент: шифрование at-rest (SecurityService)",
       "section": "components",
       "status": "verified"
+    },
+    {
+      "id": "wiki:comp-task-planning",
+      "type": "article",
+      "label": "Компонент: задачи, планирование и расписание",
+      "section": "components",
+      "status": "documented"
+    },
+    {
+      "id": "wiki:comp-time-travel",
+      "type": "article",
+      "label": "Компонент: тайм-тревел, снапшоты и каузальность",
+      "section": "components",
+      "status": "documented"
     },
     {
       "id": "wiki:comp-tools-mcp",
@@ -12701,6 +12928,71 @@
       "kind": "related"
     },
     {
+      "from": "wiki:comp-advisor-runtime-intelligence",
+      "to": "file:src/kernel/services/advisor-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-advisor-runtime-intelligence",
+      "to": "file:src/kernel/services/advisor/diagnostics-engine.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-advisor-runtime-intelligence",
+      "to": "file:src/kernel/services/advisor/insight-engine.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-advisor-runtime-intelligence",
+      "to": "file:src/kernel/services/advisor/optimization-engine.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-advisor-runtime-intelligence",
+      "to": "file:src/kernel/services/advisor/pressure-engine.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-advisor-runtime-intelligence",
+      "to": "file:src/kernel/services/advisor/whatif-engine.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-advisor-runtime-intelligence",
+      "to": "file:src/kernel/services/runtime-intelligence/diagnostic-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-advisor-runtime-intelligence",
+      "to": "file:src/kernel/services/runtime-intelligence/pressure-map-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-advisor-runtime-intelligence",
+      "to": "wiki:comp-observability",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-advisor-runtime-intelligence",
+      "to": "wiki:diagnostics",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-advisor-runtime-intelligence",
+      "to": "wiki:panel-dashboard",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-advisor-runtime-intelligence",
+      "to": "wiki:panel-pressure",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-advisor-runtime-intelligence",
+      "to": "wiki:panel-sre",
+      "kind": "related"
+    },
+    {
       "from": "wiki:comp-agents-roles-skills",
       "to": "file:src/kernel/services/agent-service.test.ts",
       "kind": "test"
@@ -13168,6 +13460,161 @@
     {
       "from": "wiki:comp-event-bus",
       "to": "wiki:dev-events",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-event-sourcing",
+      "to": "file:src/kernel/services/event-sourcing/checkpoint-store.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-event-sourcing",
+      "to": "file:src/kernel/services/event-sourcing/event-recorder.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-event-sourcing",
+      "to": "file:src/kernel/services/event-sourcing/event-types.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-event-sourcing",
+      "to": "wiki:comp-event-bus",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-event-sourcing",
+      "to": "wiki:comp-persistence",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-event-sourcing",
+      "to": "wiki:comp-transactions",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-event-sourcing",
+      "to": "wiki:execution-trail",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-event-sourcing",
+      "to": "wiki:panel-history-audit",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-fleet-governance",
+      "to": "file:src/kernel/services/ops/audit-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-fleet-governance",
+      "to": "file:src/kernel/services/ops/fleet-monitor-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-fleet-governance",
+      "to": "file:src/kernel/services/ops/hierarchy-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-fleet-governance",
+      "to": "file:src/kernel/services/ops/tool-governance-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-fleet-governance",
+      "to": "file:src/kernel/services/trust/governance-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-fleet-governance",
+      "to": "file:src/kernel/services/trust/provenance-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-fleet-governance",
+      "to": "wiki:panel-fleet",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-fleet-governance",
+      "to": "wiki:panel-governance",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-fleet-governance",
+      "to": "wiki:panel-history-audit",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-fleet-governance",
+      "to": "wiki:panel-provenance-junctions",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-fleet-governance",
+      "to": "wiki:panel-roles",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-integrations-interop",
+      "to": "file:src/kernel/services/interop/a2a-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-integrations-interop",
+      "to": "file:src/kernel/services/interop/coordination-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-integrations-interop",
+      "to": "file:src/kernel/services/interop/federation-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-integrations-interop",
+      "to": "file:src/kernel/services/interop/gateway-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-integrations-interop",
+      "to": "file:src/kernel/services/interop/mcp-harness-service.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-integrations-interop",
+      "to": "file:src/kernel/services/interop/mcp-harness-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-integrations-interop",
+      "to": "file:src/kernel/services/rivals2/integrations-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-integrations-interop",
+      "to": "wiki:comp-routing",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-integrations-interop",
+      "to": "wiki:comp-tools-mcp",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-integrations-interop",
+      "to": "wiki:panel-forum",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-integrations-interop",
+      "to": "wiki:panel-gateway",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-integrations-interop",
+      "to": "wiki:panel-integrations",
       "kind": "related"
     },
     {
@@ -13663,6 +14110,121 @@
     {
       "from": "wiki:comp-security-crypto",
       "to": "wiki:comp-policy-security",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-task-planning",
+      "to": "file:src/kernel/services/agems-task-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-task-planning",
+      "to": "file:src/kernel/services/scheduler-service.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-task-planning",
+      "to": "file:src/kernel/services/scheduler-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-task-planning",
+      "to": "file:src/kernel/services/task-handoff.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-task-planning",
+      "to": "file:src/kernel/services/task-handoff.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-task-planning",
+      "to": "file:src/kernel/services/task-trigger-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-task-planning",
+      "to": "file:src/kernel/services/task-work-product-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-task-planning",
+      "to": "wiki:comp-agents-roles-skills",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-task-planning",
+      "to": "wiki:panel-agent-tasks",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-task-planning",
+      "to": "wiki:panel-planning",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-task-planning",
+      "to": "wiki:panel-scheduler",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-task-planning",
+      "to": "wiki:panel-tasks",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-time-travel",
+      "to": "file:src/kernel/services/causal-scope-manager.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-time-travel",
+      "to": "file:src/kernel/services/causal-timeline-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-time-travel",
+      "to": "file:src/kernel/services/counterfactual-explanation-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-time-travel",
+      "to": "file:src/kernel/services/snapshot-service.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-time-travel",
+      "to": "file:src/kernel/services/snapshot-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-time-travel",
+      "to": "file:src/kernel/services/temporal-replay-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-time-travel",
+      "to": "wiki:comp-event-sourcing",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-time-travel",
+      "to": "wiki:execution-trail",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-time-travel",
+      "to": "wiki:panel-history-audit",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-time-travel",
+      "to": "wiki:panel-shadow",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-time-travel",
+      "to": "wiki:panel-simulation",
       "kind": "related"
     },
     {

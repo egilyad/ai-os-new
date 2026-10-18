@@ -50,7 +50,7 @@
     {
       "id": "components",
       "title": "Компоненты и сервисы",
-      "articles": 20
+      "articles": 26
     },
     {
       "id": "notes",
@@ -3026,6 +3026,196 @@
         "src/kernel/services/metrics-service.test.ts",
         "src/kernel/services/system-status-service.test.ts",
         "src/kernel/services/cache-service.test.ts"
+      ]
+    },
+    {
+      "id": "wiki:comp-advisor-runtime-intelligence",
+      "type": "article",
+      "slug": "comp-advisor-runtime-intelligence",
+      "title": "Компонент: советник и runtime-intelligence",
+      "section": "components",
+      "status": "documented",
+      "tags": [
+        "компоненты",
+        "советник",
+        "диагностика",
+        "what-if"
+      ],
+      "sources": [
+        "src/kernel/services/advisor-service.ts",
+        "src/kernel/services/advisor/diagnostics-engine.ts",
+        "src/kernel/services/advisor/insight-engine.ts",
+        "src/kernel/services/advisor/optimization-engine.ts",
+        "src/kernel/services/advisor/pressure-engine.ts",
+        "src/kernel/services/advisor/whatif-engine.ts",
+        "src/kernel/services/runtime-intelligence/diagnostic-service.ts",
+        "src/kernel/services/runtime-intelligence/pressure-map-service.ts"
+      ],
+      "related": [
+        "panel-dashboard",
+        "diagnostics",
+        "panel-pressure",
+        "panel-sre",
+        "comp-observability"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:comp-event-sourcing",
+      "type": "article",
+      "slug": "comp-event-sourcing",
+      "title": "Компонент: журналирование событий (event sourcing)",
+      "section": "components",
+      "status": "documented",
+      "tags": [
+        "компоненты",
+        "event-sourcing",
+        "журнал",
+        "восстановление"
+      ],
+      "sources": [
+        "src/kernel/services/event-sourcing/event-recorder.ts",
+        "src/kernel/services/event-sourcing/checkpoint-store.ts",
+        "src/kernel/services/event-sourcing/event-types.ts"
+      ],
+      "related": [
+        "comp-event-bus",
+        "comp-persistence",
+        "comp-transactions",
+        "execution-trail",
+        "panel-history-audit"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:comp-time-travel",
+      "type": "article",
+      "slug": "comp-time-travel",
+      "title": "Компонент: тайм-тревел, снапшоты и каузальность",
+      "section": "components",
+      "status": "documented",
+      "tags": [
+        "компоненты",
+        "тайм-тревел",
+        "снапшоты",
+        "каузальность"
+      ],
+      "sources": [
+        "src/kernel/services/temporal-replay-service.ts",
+        "src/kernel/services/snapshot-service.ts",
+        "src/kernel/services/causal-timeline-service.ts",
+        "src/kernel/services/counterfactual-explanation-service.ts",
+        "src/kernel/services/causal-scope-manager.ts"
+      ],
+      "related": [
+        "comp-event-sourcing",
+        "execution-trail",
+        "panel-history-audit",
+        "panel-shadow",
+        "panel-simulation"
+      ],
+      "reviewed": null,
+      "tests": [
+        "src/kernel/services/snapshot-service.test.ts"
+      ]
+    },
+    {
+      "id": "wiki:comp-task-planning",
+      "type": "article",
+      "slug": "comp-task-planning",
+      "title": "Компонент: задачи, планирование и расписание",
+      "section": "components",
+      "status": "documented",
+      "tags": [
+        "компоненты",
+        "задачи",
+        "планирование",
+        "расписание"
+      ],
+      "sources": [
+        "src/kernel/services/agems-task-service.ts",
+        "src/kernel/services/task-handoff.ts",
+        "src/kernel/services/task-trigger-service.ts",
+        "src/kernel/services/task-work-product-service.ts",
+        "src/kernel/services/scheduler-service.ts"
+      ],
+      "related": [
+        "panel-agent-tasks",
+        "panel-scheduler",
+        "panel-tasks",
+        "panel-planning",
+        "comp-agents-roles-skills"
+      ],
+      "reviewed": null,
+      "tests": [
+        "src/kernel/services/task-handoff.test.ts",
+        "src/kernel/services/scheduler-service.test.ts"
+      ]
+    },
+    {
+      "id": "wiki:comp-fleet-governance",
+      "type": "article",
+      "slug": "comp-fleet-governance",
+      "title": "Компонент: флот, governance и аудит",
+      "section": "components",
+      "status": "documented",
+      "tags": [
+        "компоненты",
+        "флот",
+        "governance",
+        "аудит"
+      ],
+      "sources": [
+        "src/kernel/services/ops/fleet-monitor-service.ts",
+        "src/kernel/services/trust/governance-service.ts",
+        "src/kernel/services/ops/tool-governance-service.ts",
+        "src/kernel/services/trust/provenance-service.ts",
+        "src/kernel/services/ops/audit-service.ts",
+        "src/kernel/services/ops/hierarchy-service.ts"
+      ],
+      "related": [
+        "panel-fleet",
+        "panel-governance",
+        "panel-roles",
+        "panel-history-audit",
+        "panel-provenance-junctions"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:comp-integrations-interop",
+      "type": "article",
+      "slug": "comp-integrations-interop",
+      "title": "Компонент: интеграции и интероперабельность",
+      "section": "components",
+      "status": "documented",
+      "tags": [
+        "компоненты",
+        "интеграции",
+        "интероп",
+        "gateway"
+      ],
+      "sources": [
+        "src/kernel/services/interop/a2a-service.ts",
+        "src/kernel/services/interop/coordination-service.ts",
+        "src/kernel/services/interop/federation-service.ts",
+        "src/kernel/services/interop/gateway-service.ts",
+        "src/kernel/services/interop/mcp-harness-service.ts",
+        "src/kernel/services/rivals2/integrations-service.ts"
+      ],
+      "related": [
+        "panel-integrations",
+        "panel-gateway",
+        "comp-tools-mcp",
+        "panel-forum",
+        "comp-routing"
+      ],
+      "reviewed": null,
+      "tests": [
+        "src/kernel/services/interop/mcp-harness-service.test.ts"
       ]
     },
     {

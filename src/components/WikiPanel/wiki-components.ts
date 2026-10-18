@@ -47,6 +47,8 @@ export const COMPONENT_ARTICLES: WikiArticle[] = [
 - **Люди и инструменты:** [[comp-agents-roles-skills]], [[comp-tools-mcp]] (инструменты, MCP, sandbox), [[comp-policy-security]] (политики, секреты, вебхуки).
 - **Дебаты, мышление, память, чат:** [[comp-debate-runtime]] (движок дебатов), [[comp-cognitive-orchestration]] (когнитивные трассы и топологии), [[comp-memory]] (память и поиск), [[comp-chat]] (ChatExecutor).
 - **Наблюдаемость:** [[comp-observability]] (метрики, трейсы, мониторинг, кеш, админ).
+- **Советник и время:** [[comp-advisor-runtime-intelligence]] (диагностика/what-if), [[comp-event-sourcing]] (журнал), [[comp-time-travel]] (replay, снапшоты, каузальность).
+- **Задачи и управление:** [[comp-task-planning]] (задачи, расписание), [[comp-fleet-governance]] (флот, governance, аудит), [[comp-integrations-interop]] (A2A, gateway, MCP).
 
 Машиночитаемые каталоги (генерируются из кода): [[dev-component-catalog]], [[dev-service-map]], [[dev-contracts]], [[dev-event-catalog]].
 
@@ -984,5 +986,269 @@ flowchart TD
 ## Состояние
 
 - Реализовано; подтверждено чтением кода. Покрытие тестами — открыто.`,
+    },
+    {
+        slug: 'comp-advisor-runtime-intelligence',
+        title: 'Компонент: советник и runtime-intelligence',
+        section: 'components',
+        tags: ['компоненты', 'советник', 'диагностика', 'what-if'],
+        freshness: 'documented',
+        sources: [
+            'src/kernel/services/advisor-service.ts',
+            'src/kernel/services/advisor/diagnostics-engine.ts',
+            'src/kernel/services/advisor/insight-engine.ts',
+            'src/kernel/services/advisor/optimization-engine.ts',
+            'src/kernel/services/advisor/pressure-engine.ts',
+            'src/kernel/services/advisor/whatif-engine.ts',
+            'src/kernel/services/runtime-intelligence/diagnostic-service.ts',
+            'src/kernel/services/runtime-intelligence/pressure-map-service.ts',
+        ],
+        related: ['panel-dashboard', 'diagnostics', 'panel-pressure', 'panel-sre', 'comp-observability'],
+        body: `## Назначение
+
+Превращать «сырые» метрики и события в советы: что не так, почему, что будет, если изменить параметры, и что сделать, чтобы работало лучше.
+
+## Возможности
+
+- Диагностика узких мест, инсайты и рекомендации, оптимизации, карта давления, сценарии «что если».
+- Один вход — \`AdvisorService\`; движки собраны как подключаемые модули в каталоге \`advisor/\`.
+
+## Реализация
+
+- \`AdvisorService\` (\`advisor-service.ts\`) оркестрирует движки.
+- \`advisor/diagnostics-engine.ts\` (\`DiagnosticsEngine\`), \`insight-engine.ts\` (\`InsightEngine\`), \`optimization-engine.ts\` (\`OptimizationEngine\`), \`pressure-engine.ts\` (\`PressureEngine\`), \`whatif-engine.ts\` (\`WhatIfEngine\` — тип \`FreeTierLimit\`).
+- \`runtime-intelligence/\`: \`diagnostic-service.ts\` (\`DiagnosticService\`), \`pressure-map-service.ts\` (\`PressureMapService\`), \`whatif-service.ts\` (\`WhatIfService\`).
+
+## Связи
+
+- Питается наблюдаемостью ([[comp-observability]]) и роутингом.
+- Панели: [[panel-dashboard]], [[diagnostics]], [[panel-pressure]], [[panel-sre]].
+
+## Проверка работоспособности
+
+- Есть тест \`runtime-intelligence/whatif-service.test.ts\`; для движков \`advisor/\` автотесты не найдены.
+- Ручная: открыть Dashboard/Diagnostics и сверить рекомендации с метриками.
+
+## Состояние
+
+- Реализовано; часть движков подтверждена только чтением кода.`,
+    },
+    {
+        slug: 'comp-event-sourcing',
+        title: 'Компонент: журналирование событий (event sourcing)',
+        section: 'components',
+        tags: ['компоненты', 'event-sourcing', 'журнал', 'восстановление'],
+        freshness: 'documented',
+        sources: [
+            'src/kernel/services/event-sourcing/event-recorder.ts',
+            'src/kernel/services/event-sourcing/checkpoint-store.ts',
+            'src/kernel/services/event-sourcing/event-types.ts',
+        ],
+        related: ['comp-event-bus', 'comp-persistence', 'comp-transactions', 'execution-trail', 'panel-history-audit'],
+        body: `## Назначение
+
+Сохранять поток событий и периодические контрольные точки, чтобы состояние можно было восстановить и проанализировать задним числом.
+
+## Возможности
+
+- Запись событий в append-only журнал с кольцевым буфером (\`EventRecorder\`).
+- Контрольные точки (\`CheckpointStore\`) для быстрого восстановления.
+- Типизация событий в \`event-types.ts\`.
+
+## Реализация
+
+- \`EventRecorder\` (\`event-recorder.ts\`, \`RecorderConfig\`, интерфейс хранилища \`EventRecorderStore\`) — подписка на шину и запись.
+- \`CheckpointStore\` (\`checkpoint-store.ts\`, \`Checkpoint\`, \`CheckpointStoreConfig\`, \`CheckpointPersistenceStore\`).
+- Отдельного \`EventStoreService\` нет: роль «event store» выполняет эта пара recorder+checkpoint поверх [[comp-persistence]].
+
+## Связи
+
+- Пишет то, что эмитит шина ([[comp-event-bus]]); хранит через [[comp-persistence]].
+- Используется тайм-тревелом ([[comp-time-travel]]) и следом исполнения ([[execution-trail]], [[panel-history-audit]]).
+
+## Проверка работоспособности
+
+- **Тестов нет:** в каталоге \`event-sourcing/\` тестовые файлы не найдены.
+- Ручная: открыть History/Audit, убедиться, что события и чекпоинты доступны.
+
+## Состояние
+
+- Реализовано; подтверждено чтением кода, без автотестов.`,
+    },
+    {
+        slug: 'comp-time-travel',
+        title: 'Компонент: тайм-тревел, снапшоты и каузальность',
+        section: 'components',
+        tags: ['компоненты', 'тайм-тревел', 'снапшоты', 'каузальность'],
+        freshness: 'documented',
+        sources: [
+            'src/kernel/services/temporal-replay-service.ts',
+            'src/kernel/services/snapshot-service.ts',
+            'src/kernel/services/causal-timeline-service.ts',
+            'src/kernel/services/counterfactual-explanation-service.ts',
+            'src/kernel/services/causal-scope-manager.ts',
+        ],
+        related: ['comp-event-sourcing', 'execution-trail', 'panel-history-audit', 'panel-shadow', 'panel-simulation'],
+        body: `## Назначение
+
+Перемещаться во времени: переиграть прошлое, снять/сравнить состояние, показать причинно-следственные цепочки и объяснить «а что если».
+
+## Возможности
+
+- Воспроизведение событий (\`TemporalReplayService\`), снимки состояния и их сравнение (\`SnapshotService\`: \`RuntimeState\`, \`SystemSnapshot\`, \`SnapshotDiff\`).
+- Каузальная лента решений (\`CausalTimelineService\`) и управление областью причинности (\`causal-scope-manager.ts\`).
+- Контрфактические объяснения (\`CounterfactualExplanationService\`).
+
+## Реализация
+
+- \`temporal-replay-service.ts\` (\`TemporalReplayService\`), \`snapshot-service.ts\` (\`SnapshotService\` + типы), \`causal-timeline-service.ts\` (\`CausalTimelineService\`), \`counterfactual-explanation-service.ts\` (\`CounterfactualExplanationService\`).
+- В дебатах есть свои аналоги: \`debate-runtime/causal-graph-builder.ts\`, \`counterfactual-service.ts\`, \`replay-selector.ts\`, \`debate-snapshot-bridge.ts\`.
+
+## Связи
+
+- Источник событий — [[comp-event-sourcing]]; подтверждение/сверка — [[comp-consistency]].
+- Панели: [[panel-history-audit]], [[panel-shadow]], [[panel-simulation]].
+
+## Проверка работоспособности
+
+- Есть тесты \`snapshot-service.test.ts\`, а также в дебатах \`causal-graph-builder.test.ts\`, \`counterfactual-service.test.ts\`, \`replay-selector.test.ts\`.
+- Ручная: снять снапшот, изменить состояние, сравнить и переиграть.
+
+## Состояние
+
+- Реализовано; снапшоты и дебатовые аналоги покрыты тестами, верхнеуровневый replay — без выделенного теста.`,
+    },
+    {
+        slug: 'comp-task-planning',
+        title: 'Компонент: задачи, планирование и расписание',
+        section: 'components',
+        tags: ['компоненты', 'задачи', 'планирование', 'расписание'],
+        freshness: 'documented',
+        sources: [
+            'src/kernel/services/agems-task-service.ts',
+            'src/kernel/services/task-handoff.ts',
+            'src/kernel/services/task-trigger-service.ts',
+            'src/kernel/services/task-work-product-service.ts',
+            'src/kernel/services/scheduler-service.ts',
+        ],
+        related: ['panel-agent-tasks', 'panel-scheduler', 'panel-tasks', 'panel-planning', 'comp-agents-roles-skills'],
+        body: `## Назначение
+
+Ставить задачи агентам, передавать их «из рук в руки», запускать по триггерам/расписанию и собирать результат работы.
+
+## Возможности
+
+- Жизненный цикл задачи, передача между агентами (\`TaskHandoffService\`), триггеры, приёмка результата (work product).
+- Расписание задач по cron-выражениям (\`SchedulerService\`).
+
+## Реализация
+
+- \`AgemsTaskService\` (\`agems-task-service.ts\`) — реестр/оркестрация задач.
+- \`TaskHandoffService\` (\`task-handoff.ts\`, \`HandoffRequest\`), \`task-trigger-service.ts\`, \`task-work-product-service.ts\`.
+- \`SchedulerService\` (\`scheduler-service.ts\`: \`Schedule\`, \`TaskParams\`, \`CronParts\`).
+- Демо-сиды: \`tasks-demo-seed.ts\`, \`scheduler-demo-seed.ts\`.
+
+## Связи
+
+- Исполнители — [[comp-agents-roles-skills]]; вызовы через [[comp-routing]].
+- Панели: [[panel-agent-tasks]], [[panel-scheduler]], [[panel-tasks]], [[panel-planning]].
+
+## Проверка работоспособности
+
+- Тесты: \`scheduler-service.test.ts\`, \`task-handoff.test.ts\`, \`tasks-demo-seed.test.ts\`, \`scheduler-demo-seed.test.ts\`.
+- Ручная: создать задачу, расписание и убедиться в срабатывании.
+
+## Состояние
+
+- Реализовано; расписание и передача задач покрыты тестами.`,
+    },
+    {
+        slug: 'comp-fleet-governance',
+        title: 'Компонент: флот, governance и аудит',
+        section: 'components',
+        tags: ['компоненты', 'флот', 'governance', 'аудит'],
+        freshness: 'documented',
+        sources: [
+            'src/kernel/services/ops/fleet-monitor-service.ts',
+            'src/kernel/services/trust/governance-service.ts',
+            'src/kernel/services/ops/tool-governance-service.ts',
+            'src/kernel/services/trust/provenance-service.ts',
+            'src/kernel/services/ops/audit-service.ts',
+            'src/kernel/services/ops/hierarchy-service.ts',
+        ],
+        related: ['panel-fleet', 'panel-governance', 'panel-roles', 'panel-history-audit', 'panel-provenance-junctions'],
+        body: `## Назначение
+
+Управлять «флотом» агентов и инструментов: следить за здоровьем, задавать правила, фиксировать происхождение и вести аудит.
+
+## Возможности
+
+- Мониторинг флота (\`FleetMonitorService\`), иерархия (\`HierarchyService\`), sandbox-брокер (\`sandbox-broker-service.ts\`).
+- Доверие/правила: \`trust/governance-service.ts\` (\`GovernanceService\`), \`ops/tool-governance-service.ts\` (\`ToolGovernanceService\`), провенанс (\`provenance-service.ts\`).
+- Аудит действий (\`audit-service.ts\`), рынок навыков (\`skill-market-service.ts\`).
+
+## Реализация
+
+- Разбросано по каталогам \`ops/\` (операционное) и \`trust/\` (доверие) — единого \`FleetService\` нет.
+- \`FleetMonitorService\`, \`GovernanceService\`, \`ToolGovernanceService\`, \`ProvenanceService\`, \`AuditService\`, \`HierarchyService\`.
+
+## Связи
+
+- Инструменты/песочница — [[comp-tools-mcp]]; политики — [[comp-policy-security]].
+- Панели: [[panel-fleet]], [[panel-governance]], [[panel-roles]], [[panel-history-audit]], [[panel-provenance-junctions]].
+
+## Проверка работоспособности
+
+- **Тестов нет:** для перечисленных сервисов выделенные тесты не найдены.
+- Ручная: Fleet/Governance/History-Audit показывают агентов, правила и записи аудита.
+
+## Состояние
+
+- Реализовано; подтверждено чтением кода, без автотестов.`,
+    },
+    {
+        slug: 'comp-integrations-interop',
+        title: 'Компонент: интеграции и интероперабельность',
+        section: 'components',
+        tags: ['компоненты', 'интеграции', 'интероп', 'gateway'],
+        freshness: 'documented',
+        sources: [
+            'src/kernel/services/interop/a2a-service.ts',
+            'src/kernel/services/interop/coordination-service.ts',
+            'src/kernel/services/interop/federation-service.ts',
+            'src/kernel/services/interop/gateway-service.ts',
+            'src/kernel/services/interop/mcp-harness-service.ts',
+            'src/kernel/services/rivals2/integrations-service.ts',
+        ],
+        related: ['panel-integrations', 'panel-gateway', 'comp-tools-mcp', 'panel-forum', 'comp-routing'],
+        body: `## Назначение
+
+Связывать систему с внешним миром: другими агентами, сервисами, MCP-инструментами и корпоративным шлюзом.
+
+## Возможности
+
+- A2A-обмен агент↔агент, координация, федерация, перевод сообщений/протоколов.
+- Шлюз (\`GatewayService\`) для внешних вызовов; проверка MCP-инструментов (\`McpHarnessService\`).
+- Каталог интеграций (\`rivals2/integrations-service.ts\`).
+
+## Реализация
+
+- Каталог \`interop/\`: \`a2a-service.ts\`, \`coordination-service.ts\`, \`federation-service.ts\`, \`gateway-service.ts\` (\`GatewayService\`), \`mcp-harness-service.ts\`, \`translation.ts\`.
+- Отдельный серверный шлюз описан в \`docs/COMPANY_GATEWAY.md\` (см. [[docs-index]]).
+- Каталог \`rivals2/\`: \`integrations-service.ts\` (\`IntegrationsService\`) и адаптеры (aider, swe, rag, react-режимы).
+
+## Связи
+
+- Инструменты и MCP — [[comp-tools-mcp]]; маршрутизация — [[comp-routing]].
+- Панели: [[panel-integrations]], [[panel-gateway]], [[panel-forum]].
+
+## Проверка работоспособности
+
+- Тесты: \`mcp-harness-service.test.ts\`, \`interop-demo-seed.test.ts\`.
+- Ручная: открыть Integrations/Gateway и проверить подключения.
+
+## Состояние
+
+- Реализовано; MCP-харнесс и демо интеропа покрыты тестами.`,
     },
 ];
