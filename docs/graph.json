@@ -3,22 +3,22 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 1162,
-    "edges": 3028,
+    "nodes": 1168,
+    "edges": 3050,
     "byType": {
       "audit": 67,
-      "code": 479,
+      "code": 484,
       "test": 142,
       "panel": 259,
-      "article": 215
+      "article": 216
     },
     "byKind": {
       "audit_test": 325,
       "audit_mention": 928,
       "documents": 201,
-      "source": 623,
-      "test": 179,
-      "related": 772
+      "source": 634,
+      "test": 185,
+      "related": 777
     }
   },
   "nodes": [
@@ -1867,6 +1867,11 @@
       "label": "src/kernel/DEPENDENCY_MAP.md"
     },
     {
+      "id": "file:src/kernel/events/chat-events.ts",
+      "type": "code",
+      "label": "src/kernel/events/chat-events.ts"
+    },
+    {
       "id": "file:src/kernel/events/event-bus.test.ts",
       "type": "code",
       "label": "src/kernel/events/event-bus.test.ts"
@@ -1930,6 +1935,11 @@
       "id": "file:src/kernel/service-registration/phase3-debate-runtime.ts",
       "type": "code",
       "label": "src/kernel/service-registration/phase3-debate-runtime.ts"
+    },
+    {
+      "id": "file:src/kernel/service-registration/phase6-high-level.ts",
+      "type": "code",
+      "label": "src/kernel/service-registration/phase6-high-level.ts"
     },
     {
       "id": "file:src/kernel/services/",
@@ -3560,6 +3570,21 @@
       "id": "file:src/stores/activeDebateStore.ts",
       "type": "code",
       "label": "src/stores/activeDebateStore.ts"
+    },
+    {
+      "id": "file:src/stores/chat/chat-event-handlers.ts",
+      "type": "code",
+      "label": "src/stores/chat/chat-event-handlers.ts"
+    },
+    {
+      "id": "file:src/stores/chat/chat-send-message.ts",
+      "type": "code",
+      "label": "src/stores/chat/chat-send-message.ts"
+    },
+    {
+      "id": "file:src/stores/chat/hydration.ts",
+      "type": "code",
+      "label": "src/stores/chat/hydration.ts"
     },
     {
       "id": "file:src/stores/chat/store.test.ts",
@@ -5625,6 +5650,13 @@
       "label": "Компонент: флот, governance и аудит",
       "section": "components",
       "status": "documented"
+    },
+    {
+      "id": "wiki:comp-flow-chat",
+      "type": "article",
+      "label": "Сквозной контур: чат",
+      "section": "components",
+      "status": "verified"
     },
     {
       "id": "wiki:comp-flow-debate",
@@ -15704,6 +15736,116 @@
     {
       "from": "wiki:comp-fleet-governance",
       "to": "wiki:panel-roles",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-flow-chat",
+      "to": "file:src/components/ChatPanel/ChatPanel.test.tsx",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-flow-chat",
+      "to": "file:src/components/ChatPanel/ChatPanel.tsx",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-flow-chat",
+      "to": "file:src/kernel/events/chat-events.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-flow-chat",
+      "to": "file:src/kernel/events/event-registry.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-flow-chat",
+      "to": "file:src/kernel/events/event-registry.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-flow-chat",
+      "to": "file:src/kernel/service-registration/phase6-high-level.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-flow-chat",
+      "to": "file:src/kernel/services/chat-executor.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-flow-chat",
+      "to": "file:src/kernel/services/chat-executor.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-flow-chat",
+      "to": "file:src/kernel/services/llm-client-service.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-flow-chat",
+      "to": "file:src/kernel/services/llm-client-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-flow-chat",
+      "to": "file:src/kernel/services/provider-adapter-registry.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-flow-chat",
+      "to": "file:src/kernel/services/provider-adapter-registry.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-flow-chat",
+      "to": "file:src/stores/chat/chat-event-handlers.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-flow-chat",
+      "to": "file:src/stores/chat/chat-send-message.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-flow-chat",
+      "to": "file:src/stores/chat/hydration.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-flow-chat",
+      "to": "file:src/stores/chat/store.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-flow-chat",
+      "to": "file:src/stores/chat/store.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-flow-chat",
+      "to": "wiki:comp-chat",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-flow-chat",
+      "to": "wiki:comp-event-bus",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-flow-chat",
+      "to": "wiki:comp-llm-adapters",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-flow-chat",
+      "to": "wiki:comp-provider-runtime",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-flow-chat",
+      "to": "wiki:comp-state-stores",
       "kind": "related"
     },
     {

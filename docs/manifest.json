@@ -50,7 +50,7 @@
     {
       "id": "components",
       "title": "Компоненты и сервисы",
-      "articles": 67
+      "articles": 68
     },
     {
       "id": "notes",
@@ -4554,6 +4554,51 @@
         "src/kernel/events/event-registry.test.ts",
         "src/stores/activeDebateStore.test.ts",
         "src/stores/debateLiveStore.test.ts"
+      ]
+    },
+    {
+      "id": "wiki:comp-flow-chat",
+      "type": "article",
+      "slug": "comp-flow-chat",
+      "title": "Сквозной контур: чат",
+      "section": "components",
+      "status": "verified",
+      "tags": [
+        "компоненты",
+        "контур",
+        "чат",
+        "поток",
+        "события",
+        "стриминг"
+      ],
+      "sources": [
+        "src/components/ChatPanel/ChatPanel.tsx",
+        "src/stores/chat/store.ts",
+        "src/stores/chat/chat-send-message.ts",
+        "src/stores/chat/chat-event-handlers.ts",
+        "src/stores/chat/hydration.ts",
+        "src/kernel/services/chat-executor.ts",
+        "src/kernel/services/llm-client-service.ts",
+        "src/kernel/services/provider-adapter-registry.ts",
+        "src/kernel/service-registration/phase6-high-level.ts",
+        "src/kernel/events/chat-events.ts",
+        "src/kernel/events/event-registry.ts"
+      ],
+      "related": [
+        "comp-chat",
+        "comp-provider-runtime",
+        "comp-llm-adapters",
+        "comp-event-bus",
+        "comp-state-stores"
+      ],
+      "reviewed": null,
+      "tests": [
+        "src/components/ChatPanel/ChatPanel.test.tsx",
+        "src/stores/chat/store.test.ts",
+        "src/kernel/services/chat-executor.test.ts",
+        "src/kernel/services/llm-client-service.test.ts",
+        "src/kernel/services/provider-adapter-registry.test.ts",
+        "src/kernel/events/event-registry.test.ts"
       ]
     },
     {

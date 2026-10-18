@@ -51,7 +51,7 @@ export const COMPONENT_ARTICLES: WikiArticle[] = [
 - **Задачи и управление:** [[comp-task-planning]] (задачи, расписание), [[comp-fleet-governance]] (флот, governance, аудит), [[comp-integrations-interop]] (A2A, gateway, MCP).
 - **Провайдеры и состояние:** [[comp-provider-runtime]] (инстансы, сессии, бюджет), [[comp-llm-bridge]] (мост к LLM), [[comp-state-stores]] (UI-состояние).
 - **Сквозные сценарии:** [[comp-scenarios]] (чат, дебаты, задача от панели до аудита).
-- **Сквозные контуры (end-to-end):** [[comp-flow-debate]] (дебаты: панель → сервис → движок → LLM → события → хранилище → UI, с точками обрыва).
+- **Сквозные контуры (end-to-end):** [[comp-flow-debate]] (дебаты: панель → сервис → движок → LLM → события → хранилище → UI), [[comp-flow-chat]] (чат: ввод → стор → событие → ChatExecutor → роутер → адаптер → стрим → UI → персист), с точками обрыва.
 - **Мультиагентность:** [[comp-crews-councils]] (экипажи, совет), [[comp-frontier-diversity]] (фронтир, разнообразие), [[comp-rivals-lab]] (лаборатория вариантов), [[comp-persona-builder]] (персоны, строитель), [[comp-invocation-meta]] (вызовы, мета-агент).
 - **Знания и оценка:** [[comp-knowledge-rag]] (RAG, кристаллы, линзы), [[comp-eval-elo]] (судья, Эло).
 - **Симуляция:** [[comp-simulation-world]] (мир, computer-use, parity).
@@ -2960,5 +2960,85 @@ flowchart TD
 ## Состояние
 
 - Подтверждено чтением кода по всей цепочке; ключевые звенья (UI-подписки, оркестратор, политика, персист, вердикт) покрыты тестами.`,
+    },
+    {
+        slug: 'comp-flow-chat',
+        title: 'Сквозной контур: чат',
+        section: 'components',
+        tags: ['компоненты', 'контур', 'чат', 'поток', 'события', 'стриминг'],
+        freshness: 'verified',
+        sources: [
+            'src/components/ChatPanel/ChatPanel.tsx',
+            'src/stores/chat/store.ts',
+            'src/stores/chat/chat-send-message.ts',
+            'src/stores/chat/chat-event-handlers.ts',
+            'src/stores/chat/hydration.ts',
+            'src/kernel/services/chat-executor.ts',
+            'src/kernel/services/llm-client-service.ts',
+            'src/kernel/services/provider-adapter-registry.ts',
+            'src/kernel/service-registration/phase6-high-level.ts',
+            'src/kernel/events/chat-events.ts',
+            'src/kernel/events/event-registry.ts',
+        ],
+        related: ['comp-chat', 'comp-provider-runtime', 'comp-llm-adapters', 'comp-event-bus', 'comp-state-stores'],
+        body: `## Назначение
+
+Показать чат как **сквозной контур**: путь сообщения от ввода в панели до стримингового ответа в UI и записи в хранилище — вместе с точками обрыва.
+
+## Возможности
+
+- Панель → стор → событие → исполнитель → роутер → адаптер LLM → стрим-события → UI → персист.
+- Оптимистичный рендер, write-through сохранение, гидрация истории и защита от потери «хвоста» стрима.
+- Устойчивость: fallback по провайдерам, даунгрейд модели, отмена, ре-ап «протухших» запросов, дедупликация requestId.
+
+## Сквозной поток (по шагам)
+
+1. **UI.** [[panel-chat]] → \`ChatPanel.tsx\`; отправка вызывает \`useChatStore.sendMessage\` (\`src/stores/chat/store.ts\`) → \`createSendMessageHandler\` (chat-send-message.ts).
+2. **Оптимистичный рендер + запись.** Сообщение появляется в сторе сразу и сохраняется write-through; при сбое записи — событие \`system:notification\` «message not saved».
+3. **Событие отправки.** Стор публикует \`EVENTS.SEND_MESSAGE\` (\`chat:send\`) с \`QueuedRequest\`.
+4. **Исполнитель.** \`ChatExecutor\` (chat-executor.ts; регистрируется как \`chatService\` в phase6-high-level.ts) подписан на \`EVENTS.SEND_MESSAGE\` → \`handleMessage\` (дедуп по \`requestId\`, очередь).
+5. **Выбор провайдера.** \`executeRequest\` использует \`routerService.getRaceCandidateDetails\` / \`getRankedProviders\` / \`resolveWithFallback\`; возможен race-режим \`executeRaceRequest\` или одиночный вызов. Маршрут — [[comp-routing]], [[comp-provider-runtime]].
+6. **Вызов LLM.** \`llmClient.sendMessage\` → \`LLMClientService\` (llm-client-service.ts) → \`registry.getAdapter(provider)\` → \`adapter.streamMessage\`/\`sendMessage\`. Адаптеры — [[comp-llm-adapters]].
+7. **События ответа.** \`EVENTS.STREAM_START\` (\`chat:stream:start\`), \`EVENTS.STREAM_CHUNK\` (\`chat:stream:chunk\`), \`EVENTS.STREAM_END\` (\`chat:stream:end\`; status: \`timeout\`| \`done\`| \`cancelled\`| \`error\`), \`EVENTS.STREAM_ERROR\` (\`chat:stream:error\`), \`EVENTS.MESSAGE_RESPONSE\` (\`chat:response\`). Шина — [[comp-event-bus]].
+8. **Возврат в UI.** chat-event-handlers.ts слушает \`MESSAGE_RESPONSE\`, \`STREAM_START\`, \`STREAM_CHUNK\`: чанки **коалесцируются** (\`chunkBuffers\` + \`requestAnimationFrame\`-flush) перед \`set()\`, терминальные события сбрасывают буфер.
+9. **Персист и гидрация.** Запись при отправке; \`hydration.ts\` грузит историю и сбрасывает буферы (защита от потери хвоста при крэше <1с после \`STREAM_END\`). Стор — [[comp-state-stores]].
+10. **Стоимость.** Учёт расходов идёт по \`STREAM_END\` → \`BudgetService\` ([[comp-budget-pricing]]).
+
+## Обрывы цепочки (что происходит при ошибке)
+
+- **Нет адаптера/провайдера.** Ошибка стрима + \`resolveWithFallback\`; при необходимости — даунгрейд модели (\`getDowngradedModel\`).
+- **Отмена.** \`STREAM_END\` со статусом \`cancelled\`; \`dropChunkBuffer\` немедленно отбрасывает буферизованные чанки (чтобы поздний flush не дописал устаревший текст).
+- **Таймаут.** \`STREAM_END\` со статусом \`timeout\`.
+- **Дубликаты.** \`handleMessage\` игнорирует повторный \`requestId\`.
+- **Протухшие запросы.** Stale request «выкашивается» по TTL с \`AbortError\`.
+- **Сбой записи.** Сообщение не сохранено → \`system:notification\` (UI уже показал его оптимистично).
+
+## Данные, события, восстановление
+
+- **События namespace \`chat:*\`:** \`send\`, \`cancel\`, \`response\`, \`stream:start\`/\`chunk\`/\`end\`/\`error\`, \`model:select\`, \`target:start\`, \`summary:created\`.
+- **История:** восстанавливается гидрацией из хранилища; терминальные статусы — \`done\`/\`error\`/\`cancelled\`/\`timeout\`.
+- **Связь с дебатами/комнатами:** чат-сессия может быть связана с дебатом (см. [[comp-flow-debate]]).
+
+## Реализация
+
+- UI: \`src/components/ChatPanel/ChatPanel.tsx\`.
+- Стор: \`src/stores/chat/store.ts\`, \`chat-send-message.ts\`, \`chat-event-handlers.ts\`, \`hydration.ts\`.
+- Исполнитель: \`src/kernel/services/chat-executor.ts\`.
+- LLM: \`src/kernel/services/llm-client-service.ts\`, \`provider-adapter-registry.ts\`.
+- DI: \`src/kernel/service-registration/phase6-high-level.ts\` (токен \`chatService\`).
+- События: \`src/kernel/events/chat-events.ts\`, \`event-registry.ts\`.
+
+## Связи
+
+- Компонент чата — [[comp-chat]]; провайдеры — [[comp-provider-runtime]], [[comp-routing]], [[comp-llm-adapters]].
+- События — [[comp-event-bus]]; состояние — [[comp-state-stores]]; стоимость — [[comp-budget-pricing]].
+
+## Проверка работоспособности
+
+- Тесты: \`src/stores/chat/store.test.ts\`, \`src/stores/useChatStore.test.ts\`, \`src/kernel/services/chat-executor.test.ts\`, \`src/kernel/services/llm-client-service.test.ts\`, \`src/components/ChatPanel/ChatPanel.test.tsx\`.
+
+## Состояние
+
+- Подтверждено чтением кода по всей цепочке; ключевые звенья (стор, исполнитель, LLM-клиент, UI) покрыты тестами.`,
     },
 ];
