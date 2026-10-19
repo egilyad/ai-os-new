@@ -45,6 +45,7 @@ const {
     const mockMemoryService = {
         search: vi.fn(async () => []),
         store: vi.fn(async () => {}),
+        searchAdvanced: vi.fn(async () => [] as unknown[]),
     };
     const mockWorkspaceService = {
         isAttached: vi.fn(() => false),
@@ -159,6 +160,7 @@ beforeEach(() => {
     mockExecutionGovernor.start.mockClear();
     mockMemoryService.search.mockClear();
     mockMemoryService.store.mockClear();
+    mockMemoryService.searchAdvanced.mockClear();
     mockWorkspaceService.isAttached.mockClear();
     mockWorkspaceService.getFileTreeSnapshot.mockClear();
     mockSessionManager.create.mockClear();
@@ -174,6 +176,7 @@ beforeEach(() => {
 
     mockLock.acquire.mockResolvedValue({ lock: { token: 't' }, error: null });
     mockMemoryService.search.mockResolvedValue([]);
+    mockMemoryService.searchAdvanced.mockResolvedValue([] as never);
     mockWorkspaceService.isAttached.mockReturnValue(false);
     mockSessionManager.create.mockResolvedValue('new-session-id');
     mockSStore.listSessions.mockResolvedValue([]);
@@ -290,6 +293,21 @@ describe('useChatStore', () => {
         expect(messages.at(-1)?.content).toContain('remembered fact');
         const entry = useChatStore.getState().sessions[0].history[0];
         expect(entry.recalledMemories).toEqual([{ content: 'remembered fact', score: 0.9 }]);
+    });
+
+    it('prefers session-scoped recall when the session has enough context', async () => {
+        mockConfig.featureFlags.memory.ragOnChat = true;
+        mockMemoryService.searchAdvanced.mockResolvedValue([
+            { entry: { content: 'scoped fact A' }, score: 0.8 },
+            { entry: { content: 'scoped fact B' }, score: 0.7 },
+        ] as never);
+        await useChatStore.getState().sendMessage([{ provider: 'groq', model: 'm' }], 'Q?');
+        expect(mockMemoryService.searchAdvanced).toHaveBeenCalledWith(
+            expect.objectContaining({ query: 'Q?', filter: { sessionId: expect.any(String) } }),
+        );
+        expect(mockMemoryService.search).not.toHaveBeenCalled();
+        const messages = getSendPayload().messages as Array<{ role: string; content: string }>;
+        expect(messages.at(-1)?.content).toContain('scoped fact A');
     });
 
     it('sendMessage stores user query to memory when autoStore enabled', async () => {

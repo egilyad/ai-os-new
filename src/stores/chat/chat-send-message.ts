@@ -115,7 +115,18 @@ export function createSendMessageHandler(
             let summaryPrefix = '';
             if (CONFIG.featureFlags.memory.ragOnChat) {
                 try {
-                    relatedMemories = (await memoryService.search(text, 3)) || [];
+                    // Session-scoped recall first (ACL): prefer memories written
+                    // inside this chat, then widen to the global mesh if the
+                    // current session has too little of its own context.
+                    const scoped = memoryService.searchAdvanced
+                        ? await memoryService.searchAdvanced({
+                              query: text,
+                              filter: { sessionId },
+                              limit: 3,
+                          })
+                        : [];
+                    relatedMemories =
+                        scoped.length >= 2 ? scoped : (await memoryService.search(text, 3)) || [];
                 } catch (e) {
                     LOGGER.warn('ChatStore', 'Memory search failed', { error: e });
                 }
