@@ -103,6 +103,10 @@ export class MCPService {
     private deps: MCPServiceDeps;
     private _initialized = false;
     private _abortController = new AbortController();
+    private localHandlers = new Map<
+        string,
+        { name: string; handle: (method: string, params?: unknown) => Promise<unknown> }
+    >();
 
     constructor(deps: MCPServiceDeps) {
         this.deps = deps;
@@ -195,7 +199,7 @@ export class MCPService {
 
     private validateUri(uri: string): void {
         const decoded = decodeURIComponent(uri.replace(/\+/g, ' '));
-        const allowedSchemes = ['http:', 'https:'];
+        const allowedSchemes = ['http:', 'https:', 'memory:'];
         const scheme = decoded.split('://')[0] + ':';
         if (!allowedSchemes.includes(scheme))
             throw new Error(`MCP URI scheme not allowed: ${scheme}`);
@@ -230,6 +234,8 @@ export class MCPService {
     }
 
     private async rpc(server: MCPServerConfig, method: string, params?: unknown): Promise<unknown> {
+        const local = this.localHandlers.get(server.id);
+        if (local) return local.handle(method, params);
         const id = ++this.rpcId;
         const body = { jsonrpc: '2.0', id, method, params };
         const response = await this.safeFetch(server.url, {
@@ -260,7 +266,7 @@ export class MCPService {
     }
 
     async connect(serverId: string): Promise<void> {
-        const server = this.servers.find((s) => s.id === serverId);
+        const server = this.getServer(serverId);
         if (!server) throw new Error(`Server ${serverId} not found`);
 
         const retries = this.connectionRetries.get(serverId) || 0;
@@ -325,7 +331,7 @@ export class MCPService {
     }
 
     async disconnect(serverId: string): Promise<void> {
-        const server = this.servers.find((s) => s.id === serverId);
+        const server = this.getServer(serverId);
         if (!server) return;
         server.status = 'disconnected';
         server.error = undefined;
@@ -351,7 +357,7 @@ export class MCPService {
     }
 
     async listResources(serverId: string): Promise<MCPResource[]> {
-        const server = this.servers.find((s) => s.id === serverId);
+        const server = this.getServer(serverId);
         if (!server) throw new Error(`Server ${serverId} not found`);
 
         try {
@@ -388,7 +394,7 @@ export class MCPService {
     async readResource(uri: string): Promise<string> {
         this.validateUri(uri);
 
-        for (const server of this.servers) {
+        for (const server of [...this.servers, ...this.localServers()]) {
             if (server.status !== 'connected') continue;
             try {
                 const result = (await this.rpc(server, 'resources/read', { uri })) as {
@@ -419,7 +425,7 @@ export class MCPService {
     }
 
     async listTools(serverId: string): Promise<MCPTool[]> {
-        const server = this.servers.find((s) => s.id === serverId);
+        const server = this.getServer(serverId);
         if (!server) throw new Error(`Server ${serverId} not found`);
         try {
             const result = (await this.rpc(server, 'tools/list')) as { tools: MCPTool[] };
@@ -443,7 +449,7 @@ export class MCPService {
         toolName: string,
         args?: Record<string, unknown>,
     ): Promise<unknown> {
-        const server = this.servers.find((s) => s.id === serverId);
+        const server = this.getServer(serverId);
         if (!server) throw new Error(`Server ${serverId} not found`);
         const tools = await this.listTools(serverId);
         const tool = tools.find((t) => t.name === sanitizeExternalString(toolName));
@@ -464,15 +470,48 @@ export class MCPService {
     }
 
     getServers(): MCPServerConfig[] {
-        return [...this.servers];
+        return [...this.servers, ...this.localServers()];
     }
 
     getConnectedServers(): MCPServerConfig[] {
-        return this.servers.filter((s) => s.status === 'connected');
+        return this.getServers().filter((s) => s.status === 'connected');
     }
 
     getServer(id: string): MCPServerConfig | undefined {
-        return this.servers.find((s) => s.id === id);
+        return this.getServers().find((s) => s.id === id);
+    }
+
+    /** Built-in (in-process) MCP servers — always connected, never persisted. */
+    private localServers(): MCPServerConfig[] {
+        return [...this.localHandlers.entries()].map(([id, h]) => ({
+            id,
+            name: h.name,
+            url: `memory://${id}`,
+            status: 'connected' as const,
+            capabilities: ['resources', 'tools'],
+        }));
+    }
+
+    /**
+     * Attach an in-process MCP server (e.g. the built-in memory server). It
+     * is routed through rpc() locally — no HTTP endpoint, no persistence.
+     */
+    registerLocalServer(
+        id: string,
+        name: string,
+        handle: (method: string, params?: unknown) => Promise<unknown>,
+    ): void {
+        this.localHandlers.set(id, { name, handle });
+        this.deps.eventBus.emit(EVENTS.MCP_UPDATED, this.getServers());
+    }
+
+    unregisterLocalServer(id: string): void {
+        if (!this.localHandlers.delete(id)) return;
+        this.deps.eventBus.emit(EVENTS.MCP_UPDATED, this.getServers());
+    }
+
+    isLocalServer(id: string): boolean {
+        return this.localHandlers.has(id);
     }
 
     addServer(config: Omit<MCPServerConfig, 'status' | 'error'>): void {
@@ -500,11 +539,12 @@ export class MCPService {
     }
 
     getConnectionStats() {
+        const all = this.getServers();
         return {
-            total: this.servers.length,
-            connected: this.servers.filter((s) => s.status === 'connected').length,
-            disconnected: this.servers.filter((s) => s.status === 'disconnected').length,
-            error: this.servers.filter((s) => s.status === 'error').length,
+            total: all.length,
+            connected: all.filter((s) => s.status === 'connected').length,
+            disconnected: all.filter((s) => s.status === 'disconnected').length,
+            error: all.filter((s) => s.status === 'error').length,
         };
     }
 }

@@ -69,6 +69,7 @@ import { registerPhase68 } from './phase68-investigation';
 import { registerPhase69 } from './phase69-approval-execution';
 import { registerPhase70 } from './phase70-browser-use';
 import { registerPhase71 } from './phase71-computer-use-loop';
+import { registerPhase72 } from './phase72-memory-mcp';
 import type { IContainer } from '../container';
 import type { IEventBus } from '../types/interfaces';
 
@@ -150,6 +151,7 @@ export function registerServices(
     registerPhase69(helpers, ctx);
     registerPhase70(helpers, ctx);
     registerPhase71(helpers, ctx);
+    registerPhase72(helpers, ctx);
 }
 
 export type { PhaseContext, Phase } from './helpers';

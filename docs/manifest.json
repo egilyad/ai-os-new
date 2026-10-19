@@ -2800,6 +2800,8 @@
       "sources": [
         "src/kernel/services/tool-executor.ts",
         "src/kernel/services/mcp-service.ts",
+        "src/kernel/services/mcp-service.local.test.ts",
+        "src/kernel/services/memory/memory-mcp-server.ts",
         "src/kernel/services/sandbox-service.ts",
         "src/kernel/services/tool-executor.test.ts"
       ],
@@ -2811,7 +2813,8 @@
       ],
       "reviewed": null,
       "tests": [
-        "src/kernel/services/tool-executor.test.ts"
+        "src/kernel/services/tool-executor.test.ts",
+        "src/kernel/services/memory/memory-mcp-server.test.ts"
       ]
     },
     {
@@ -6576,6 +6579,7 @@
         "src/kernel/contracts/memory-store.ts",
         "src/kernel/services/memory/service-backed-memory.ts",
         "src/kernel/services/memory/memory-search-utils.ts",
+        "src/kernel/services/memory/memory-mcp-server.ts",
         "src/kernel/services/tool-executor.ts",
         "src/kernel/services/crystal-vault/crystal-vault-service.ts"
       ],
@@ -6597,6 +6601,7 @@
         "src/kernel/services/persona/associative-context.test.ts",
         "src/kernel/services/memory/service-backed-memory.test.ts",
         "src/kernel/services/memory/memory-search-utils.test.ts",
+        "src/kernel/services/memory/memory-mcp-server.test.ts",
         "src/kernel/services/tool-executor.test.ts",
         "src/kernel/services/crystal-vault/crystal-vault-service.test.ts"
       ]

@@ -57,7 +57,9 @@ export const INIT_TIERS: string[][] = [
         'cognitiveIntelligenceService',
         'pressureMapService',
     ],
-    // Tier 6 — remaining (no explicit deps or self-contained)
+    // Tier 6 — built-in MCP memory server (attaches itself to mcpService)
+    ['memoryMcpServer'],
+    // Tier 7 — remaining (no explicit deps or self-contained)
     ['*'],
 ];
 

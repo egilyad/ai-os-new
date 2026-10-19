@@ -3,12 +3,12 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 1233,
-    "edges": 3291,
+    "nodes": 1236,
+    "edges": 3296,
     "byType": {
       "audit": 65,
-      "code": 519,
-      "test": 157,
+      "code": 521,
+      "test": 158,
       "panel": 259,
       "article": 233
     },
@@ -16,8 +16,8 @@
       "audit_test": 328,
       "audit_mention": 928,
       "documents": 201,
-      "source": 707,
-      "test": 221,
+      "source": 710,
+      "test": 223,
       "related": 906
     }
   },
@@ -2708,6 +2708,11 @@
       "label": "src/kernel/services/local-secret-store.ts"
     },
     {
+      "id": "file:src/kernel/services/mcp-service.local.test.ts",
+      "type": "code",
+      "label": "src/kernel/services/mcp-service.local.test.ts"
+    },
+    {
       "id": "file:src/kernel/services/mcp-service.ts",
       "type": "code",
       "label": "src/kernel/services/mcp-service.ts"
@@ -2716,6 +2721,16 @@
       "id": "file:src/kernel/services/memory-engine.ts",
       "type": "code",
       "label": "src/kernel/services/memory-engine.ts"
+    },
+    {
+      "id": "file:src/kernel/services/memory/memory-mcp-server.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/memory/memory-mcp-server.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/memory/memory-mcp-server.ts",
+      "type": "code",
+      "label": "src/kernel/services/memory/memory-mcp-server.ts"
     },
     {
       "id": "file:src/kernel/services/memory/memory-search-utils.test.ts",
@@ -18880,7 +18895,22 @@
     },
     {
       "from": "wiki:comp-tools-mcp",
+      "to": "file:src/kernel/services/mcp-service.local.test.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-tools-mcp",
       "to": "file:src/kernel/services/mcp-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-tools-mcp",
+      "to": "file:src/kernel/services/memory/memory-mcp-server.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-tools-mcp",
+      "to": "file:src/kernel/services/memory/memory-mcp-server.ts",
       "kind": "source"
     },
     {
@@ -20861,6 +20891,16 @@
     {
       "from": "wiki:memory-audit",
       "to": "file:src/kernel/services/memory-engine.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:memory-audit",
+      "to": "file:src/kernel/services/memory/memory-mcp-server.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:memory-audit",
+      "to": "file:src/kernel/services/memory/memory-mcp-server.ts",
       "kind": "source"
     },
     {

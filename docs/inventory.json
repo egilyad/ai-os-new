@@ -17,8 +17,8 @@
     },
     "byLanguage": {
       "en": 659,
-      "ru": 246,
-      "mixed": 152
+      "ru": 245,
+      "mixed": 153
     }
   },
   "duplicates": {
@@ -7162,10 +7162,10 @@
     {
       "path": "docs/wiki/comp-tools-mcp.md",
       "category": "wiki",
-      "language": "ru",
+      "language": "mixed",
       "title": "Компонент: инструменты, MCP и sandbox",
-      "bytes": 4829,
-      "hash": "30ea9f215f58cdaeec2802225fc07fade3242dc9"
+      "bytes": 5853,
+      "hash": "99bb34af235c00bf347b74b98695c9bcaae8bf8c"
     },
     {
       "path": "docs/wiki/comp-transactions.md",
@@ -7253,7 +7253,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4077,
-      "hash": "e931689b5c635af8746d8c8656bf0c5e23887f1b"
+      "hash": "f87bcd45714d8f8cbcfac63a9b188c931473afb4"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -7340,8 +7340,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Граф знаний",
-      "bytes": 4900,
-      "hash": "54c338b1802291a46367a9dc8da34a03400c0fd9"
+      "bytes": 4922,
+      "hash": "4f467bc1dc45c81ab05b836bc78422de7ae7644c"
     },
     {
       "path": "docs/wiki/dev-history.md",
@@ -7588,8 +7588,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Память: что есть и чего нет (аудит)",
-      "bytes": 13019,
-      "hash": "1a54ee9edfac3d92ccde312c5fd4d9ac6ffdbf61"
+      "bytes": 13469,
+      "hash": "54ede76294fd837c4cfab3244eb469bec24591bb"
     },
     {
       "path": "docs/wiki/memory.md",
