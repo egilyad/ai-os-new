@@ -3,12 +3,12 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 1226,
-    "edges": 3281,
+    "nodes": 1228,
+    "edges": 3283,
     "byType": {
       "audit": 65,
-      "code": 515,
-      "test": 154,
+      "code": 516,
+      "test": 155,
       "panel": 259,
       "article": 233
     },
@@ -16,8 +16,8 @@
       "audit_test": 327,
       "audit_mention": 928,
       "documents": 201,
-      "source": 702,
-      "test": 217,
+      "source": 703,
+      "test": 218,
       "related": 906
     }
   },
@@ -2821,6 +2821,16 @@
       "id": "file:src/kernel/services/parity/tool-runner-service.ts",
       "type": "code",
       "label": "src/kernel/services/parity/tool-runner-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/persona/associative-context.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/persona/associative-context.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/persona/associative-context.ts",
+      "type": "code",
+      "label": "src/kernel/services/persona/associative-context.ts"
     },
     {
       "id": "file:src/kernel/services/persona/lt-memory-service.test.ts",
@@ -20821,6 +20831,16 @@
     {
       "from": "wiki:memory-audit",
       "to": "file:src/kernel/services/memory/sleep-engine.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:memory-audit",
+      "to": "file:src/kernel/services/persona/associative-context.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:memory-audit",
+      "to": "file:src/kernel/services/persona/associative-context.ts",
       "kind": "source"
     },
     {

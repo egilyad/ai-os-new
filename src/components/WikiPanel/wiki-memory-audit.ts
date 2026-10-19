@@ -17,6 +17,7 @@ export const MEMORY_AUDIT_ARTICLES: WikiArticle[] = [
             'src/kernel/services/rag/hybrid-retrieval-service.ts',
             'src/kernel/services/persona/lt-memory-service.ts',
             'src/kernel/services/persona/ppr-recall.ts',
+            'src/kernel/services/persona/associative-context.ts',
             'src/kernel/services/crystal-vault/crystal-vault-service.ts',
         ],
         related: [
@@ -58,7 +59,7 @@ export const MEMORY_AUDIT_ARTICLES: WikiArticle[] = [
 | Тема | Статус | Что в системе |
 | --- | --- | --- |
 | Temporal graph (Graphiti) | Частично | Связи памяти и рёбра провенанса темпоральны и персистентны; claim-рёбра дебатов темпоральны и пересобираются из сохранённых аргументов при загрузке; граф знаний — снапшот. |
-| HippoRAG (PPR associative recall) | Частично | Multi-hop BFS + Personalized PageRank (associativeRecall) по темпоральным связям; агенту доступно как memory.related, в основной retrieval-цикл пока не встроено. |
+| HippoRAG (PPR associative recall) | Работает | Personalized PageRank (associativeRecall) по темпоральным связям: агенту как memory.related и в основном чат-контексте (buildAssociativeContext при memory.ragOnChat). Сиды — keyword-recall, поэтому нужны записанные памяти и связи. |
 | Provenance (Cognee) | Частично | Только кристаллы. |
 | ChatDB (SQL/symbolic) | Частично | Типизированные фильтры (store/timeRange/importanceMin/tags/agentId/sessionId) + substring. SQL/DSL нет. |
 
@@ -104,6 +105,7 @@ export const MEMORY_AUDIT_ARTICLES: WikiArticle[] = [
 - RAG дебатов: персистентные чанки, поиск, инъекция в промпт; при первом обращении чанки перечитываются из хранилища (rehydration), поэтому память прошлых дебатов доступна после перезагрузки ([[comp-flow-knowledge]]).
 - Кристаллы знаний: жизненный цикл, версии, provenance ([[comp-knowledge-rag]]).
 - Hybrid retrieval (BM25 ∪ vector → RRF → rerank) подключён в агентный RAG-цикл RagService с fallback на token-retrieve.
+- Ассоциативный recall (PPR/HippoRAG) встроен в основной чат-контекст: keyword-сиды → Personalized PageRank по действующим связям памяти (buildAssociativeContext).
 - Skills-библиотека, blackboard, Reflexion, task-handoff, ACL (частично).
 
 ## Чего нет

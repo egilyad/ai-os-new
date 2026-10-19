@@ -6572,6 +6572,7 @@
         "src/kernel/services/rag/hybrid-retrieval-service.ts",
         "src/kernel/services/persona/lt-memory-service.ts",
         "src/kernel/services/persona/ppr-recall.ts",
+        "src/kernel/services/persona/associative-context.ts",
         "src/kernel/services/crystal-vault/crystal-vault-service.ts"
       ],
       "related": [
@@ -6589,6 +6590,7 @@
         "src/kernel/services/rag/hybrid-retrieval-service.test.ts",
         "src/kernel/services/persona/lt-memory-service.test.ts",
         "src/kernel/services/persona/ppr-recall.test.ts",
+        "src/kernel/services/persona/associative-context.test.ts",
         "src/kernel/services/crystal-vault/crystal-vault-service.test.ts"
       ]
     }

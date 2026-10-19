@@ -7,10 +7,12 @@ import {
     EVENTS,
     executionGovernor,
     memoryService,
+    ltMemoryService,
     workspaceService,
     agentService,
     getDistributedLock,
 } from './service-deps';
+import { buildAssociativeContext } from '../../kernel/services/persona/associative-context';
 import type { ChatEntry, ZustandSet, ZustandGet, ChatStoreShape } from './types';
 import { genId, MAX_HISTORY, requestEntryMap } from './types';
 import { resolveSessionStore, updateSessionInList } from './store-helpers';
@@ -107,6 +109,7 @@ export function createSendMessageHandler(
             };
 
             let relatedMemories: Array<{ entry: { content: string }; score?: number }> = [];
+            let associativePrefix = '';
             if (CONFIG.featureFlags.memory.ragOnChat) {
                 try {
                     relatedMemories = (await memoryService.search(text, 3)) || [];
@@ -114,11 +117,18 @@ export function createSendMessageHandler(
                     LOGGER.warn('ChatStore', 'Memory search failed', { error: e });
                 }
                 cancelGuard();
+                try {
+                    associativePrefix = await buildAssociativeContext(ltMemoryService, 'agent', text);
+                } catch (e) {
+                    LOGGER.warn('ChatStore', 'Associative memory recall failed', { error: e });
+                }
+                cancelGuard();
             }
-            const contextPrefix =
+            const recalledPrefix =
                 relatedMemories.length > 0
                     ? `[RECALLED CONTEXT]\n${relatedMemories.map((m) => `- ${m.entry.content}`).join('\n')}\n\n`
                     : '';
+            const contextPrefix = associativePrefix + recalledPrefix;
 
             if (CONFIG.featureFlags.memory.autoStore) {
                 try {
