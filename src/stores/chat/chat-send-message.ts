@@ -8,6 +8,7 @@ import {
     executionGovernor,
     memoryService,
     ltMemoryService,
+    sessionMemoryService,
     workspaceService,
     agentService,
     getDistributedLock,
@@ -131,6 +132,11 @@ export function createSendMessageHandler(
             const contextPrefix = associativePrefix + recalledPrefix;
 
             if (CONFIG.featureFlags.memory.autoStore) {
+                try {
+                    await sessionMemoryService.setObjectiveIfEmpty(sessionId, text);
+                } catch (e) {
+                    LOGGER.warn('ChatStore', 'Session objective capture failed', { error: e });
+                }
                 try {
                     await memoryService.store({
                         content: text,

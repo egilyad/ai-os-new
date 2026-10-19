@@ -11,6 +11,7 @@ export const runtime = _runtime;
 export { executionGovernor } from '../../kernel/instances';
 export { memoryService } from '../../kernel/instances';
 export { ltMemoryService } from '../../kernel/instances';
+export { sessionMemoryService } from '../../kernel/instances';
 export { workspaceService } from '../../kernel/instances';
 export { sessionManager } from '../../kernel/instances';
 export { agentService } from '../../kernel/instances';

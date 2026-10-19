@@ -38,6 +38,7 @@ import type { ICustomMetricsService } from '../contracts/custom-metrics';
 import type { IUnifiedRoleRegistry } from '../contracts/unified-role';
 import type { IRoleTeamService } from '../contracts/role-team';
 import type { ChatExecutor } from '../services/chat-executor';
+import type { ISessionMemoryService } from '../contracts/session-memory';
 import type { AutoDebateService as AutoDebateServiceType } from '../services/debate-runtime/auto-debate/auto-debate-service';
 
 export { database, keyService, adapterRegistry } from './core-references';
@@ -74,6 +75,7 @@ export const keyStateStore = lazyService<KeyStateStore>('keyStateStore');
 export const probeService = lazyService<ProbeService>('probeService');
 export const executionGovernor = lazyService<IExecutionGovernor>('executionGovernor');
 export const memoryOrchestrator = lazyService<MemoryOrchestrator>('memoryOrchestrator');
+export const sessionMemoryService = lazyService<ISessionMemoryService>('sessionMemoryService');
 export const evalDatasetService = lazyService<IEvalDatasetService>('evalDatasetService');
 export const customMetricsService = lazyService<ICustomMetricsService>('customMetricsService');
 export const unifiedRoleRegistry = lazyService<IUnifiedRoleRegistry>('unifiedRoleRegistry');

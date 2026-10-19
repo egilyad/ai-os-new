@@ -6581,6 +6581,8 @@
         "src/kernel/services/memory/memory-search-utils.ts",
         "src/kernel/services/memory/memory-mcp-server.ts",
         "src/kernel/services/memory/memory-summarizer.ts",
+        "src/kernel/services/session-memory-service.ts",
+        "src/kernel/contracts/session-memory.ts",
         "src/kernel/services/llm-bridge/llm-task-executor.ts",
         "src/kernel/services/tool-executor.ts",
         "src/kernel/services/crystal-vault/crystal-vault-service.ts"
@@ -6605,6 +6607,7 @@
         "src/kernel/services/memory/memory-search-utils.test.ts",
         "src/kernel/services/memory/memory-mcp-server.test.ts",
         "src/kernel/services/memory/memory-summarizer.test.ts",
+        "src/kernel/services/session-memory-service.test.ts",
         "src/kernel/services/tool-executor.test.ts",
         "src/kernel/services/crystal-vault/crystal-vault-service.test.ts"
       ]

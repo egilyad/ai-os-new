@@ -3,12 +3,12 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 1238,
-    "edges": 3299,
+    "nodes": 1241,
+    "edges": 3302,
     "byType": {
       "audit": 65,
-      "code": 522,
-      "test": 159,
+      "code": 524,
+      "test": 160,
       "panel": 259,
       "article": 233
     },
@@ -16,8 +16,8 @@
       "audit_test": 328,
       "audit_mention": 928,
       "documents": 201,
-      "source": 712,
-      "test": 224,
+      "source": 714,
+      "test": 225,
       "related": 906
     }
   },
@@ -1808,6 +1808,11 @@
       "label": "src/kernel/contracts/pricing.ts"
     },
     {
+      "id": "file:src/kernel/contracts/session-memory.ts",
+      "type": "code",
+      "label": "src/kernel/contracts/session-memory.ts"
+    },
+    {
       "id": "file:src/kernel/contracts/transaction.ts",
       "type": "code",
       "label": "src/kernel/contracts/transaction.ts"
@@ -3136,6 +3141,16 @@
       "id": "file:src/kernel/services/session-affinity-store.ts",
       "type": "code",
       "label": "src/kernel/services/session-affinity-store.ts"
+    },
+    {
+      "id": "file:src/kernel/services/session-memory-service.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/session-memory-service.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/session-memory-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/session-memory-service.ts"
     },
     {
       "id": "file:src/kernel/services/settings-service.ts",
@@ -20890,6 +20905,11 @@
     },
     {
       "from": "wiki:memory-audit",
+      "to": "file:src/kernel/contracts/session-memory.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:memory-audit",
       "to": "file:src/kernel/services/crystal-vault/crystal-vault-service.test.ts",
       "kind": "test"
     },
@@ -20991,6 +21011,16 @@
     {
       "from": "wiki:memory-audit",
       "to": "file:src/kernel/services/rag/hybrid-retrieval-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:memory-audit",
+      "to": "file:src/kernel/services/session-memory-service.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:memory-audit",
+      "to": "file:src/kernel/services/session-memory-service.ts",
       "kind": "source"
     },
     {

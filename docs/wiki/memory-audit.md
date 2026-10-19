@@ -4,7 +4,7 @@
 
 > Раздел: **Знания и память** · Статус: verified · Теги: память, аудит, RAG, граф, гэпы
 
-Источники: `src/kernel/services/memory-engine.ts`, `src/kernel/services/memory/sleep-engine.ts`, `src/kernel/services/rag/hybrid-retrieval-service.ts`, `src/kernel/services/persona/lt-memory-service.ts`, `src/kernel/services/persona/ppr-recall.ts`, `src/kernel/services/persona/associative-context.ts`, `src/kernel/contracts/memory-store.ts`, `src/kernel/services/memory/service-backed-memory.ts`, `src/kernel/services/memory/memory-search-utils.ts`, `src/kernel/services/memory/memory-mcp-server.ts`, `src/kernel/services/memory/memory-summarizer.ts`, `src/kernel/services/llm-bridge/llm-task-executor.ts`, `src/kernel/services/tool-executor.ts`, `src/kernel/services/crystal-vault/crystal-vault-service.ts`
+Источники: `src/kernel/services/memory-engine.ts`, `src/kernel/services/memory/sleep-engine.ts`, `src/kernel/services/rag/hybrid-retrieval-service.ts`, `src/kernel/services/persona/lt-memory-service.ts`, `src/kernel/services/persona/ppr-recall.ts`, `src/kernel/services/persona/associative-context.ts`, `src/kernel/contracts/memory-store.ts`, `src/kernel/services/memory/service-backed-memory.ts`, `src/kernel/services/memory/memory-search-utils.ts`, `src/kernel/services/memory/memory-mcp-server.ts`, `src/kernel/services/memory/memory-summarizer.ts`, `src/kernel/services/session-memory-service.ts`, `src/kernel/contracts/session-memory.ts`, `src/kernel/services/llm-bridge/llm-task-executor.ts`, `src/kernel/services/tool-executor.ts`, `src/kernel/services/crystal-vault/crystal-vault-service.ts`
 
 ## Назначение
 
@@ -73,7 +73,7 @@
 
 ## Специализированные для coding agents
 
-Ни одной из систем (Claude-Mem, Memorix, engram, Remnic, Memov, Puppyone) нет. Роль ручной памяти играют AGENTS.md и docs/SESSION_LOG.md. Есть project-memory-service (решения/issues/context), персистентный через KV базы ([Компонент: персистентность (Dexie и storage-адаптеры)](./comp-persistence.md)); без БД работает в памяти и теряется при перезагрузке.
+Готовых систем (Claude-Mem, Memorix, engram, Remnic, Memov, Puppyone) нет. Роль ручной памяти играют AGENTS.md и docs/SESSION_LOG.md. Есть project-memory-service (решения/issues/context), персистентный через KV базы ([Компонент: персистентность (Dexie и storage-адаптеры)](./comp-persistence.md)); без БД работает в памяти и теряется при перезагрузке. Плюс появился sessionMemoryService — персистентный скретчпад сессии (objective/файлы/команды/решения/issues/заметки): первый вопрос чата автоматически становится objective, остальное агент пишет через tools `session.remember`/`session.recall`; авто-захвата файлов и команд инструментами пока нет.
 
 ## Что реально работает
 
@@ -86,6 +86,7 @@
 - Namespaces памяти: metadata-фильтры (agent/role/session/chat/source/type/timeRange/importance/tags) в searchAdvanced/recall и scope-параметры tool t-search ([Компонент: каталог инструментов, способности и политики](./comp-tool-capability.md)).
 - Встроенный MCP-сервер памяти: JSON-RPC initialize/resources/tools над memoryService; MCPService подключает его локально (memory://, без сети и персистенции).
 - LLM-порт персоны/памяти (LlmPersonaPort): LtMemoryService.summarize и PersonaService.distillStyle идут через llmClientService, при отсутствии LLM — эвристический fallback.
+- Session-memory coding-агентов ([Компонент: память и знания](./comp-memory.md)): KV-персистентный скретчпад на сессию — objective, файлы, команды, решения, issues, заметки; дедуп и лимиты по типам, контекст-блок для промпта; tools `session.remember`/`session.recall`.
 - Skills-библиотека, blackboard, Reflexion, task-handoff, ACL (частично).
 
 ## Чего нет
@@ -94,7 +95,6 @@
 - Реальные эмбеддинги (везде лексические хэши) и векторная БД/ANN.
 - Автоматический ACL-scoping (роль/сессия) в основном recall и внешний MCP-транспорт (HTTP) для встроенного сервера памяти.
 - self-editing памяти и workflow-дистилляция.
-- Session-memory coding-агентов.
 
 Также: 6+ специализированных сторов (working/episodic/semantic/procedural/emotional/social/spatial) — мёртвые классы; LLM-суммаризация работает только в ночной консолидации mesh и в LT/персоне; «граф знаний» — эвристика и визуализация с синтетическими рёбрами; knowledge-generator — шаблонная симуляция, не LLM.
 
