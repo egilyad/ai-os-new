@@ -122,4 +122,23 @@ describe('DebateRAGRetriever P4 (indexUnits + injection)', () => {
         const retriever = new DebateRAGRetriever({ embeddingPipeline: pipeline });
         expect(await retriever.injectMemoryIntoDebate('s1', 'anything', 'base')).toBe('base');
     });
+
+    it('rehydrates persisted chunks across instances (lazy init wiring)', async () => {
+        const store = fakeStore();
+        const first = new DebateRAGRetriever({
+            embeddingPipeline: new DebateEmbeddingPipeline({ embedText, store }),
+        });
+        await first.indexUnits('s1', [unit()]);
+
+        const second = new DebateRAGRetriever({
+            embeddingPipeline: new DebateEmbeddingPipeline({ embedText, store }),
+        });
+        const ctx = await second.retrieveRelevantDebates(
+            'nuclear baseload electricity generation capacity',
+            's2',
+        );
+        expect(ctx.chunks.length).toBeGreaterThan(0);
+        expect(ctx.chunks[0]!.chunk.sessionId).toBe('s1');
+        expect(ctx.chunks[0]!.source).toBe('similar_debate');
+    });
 });

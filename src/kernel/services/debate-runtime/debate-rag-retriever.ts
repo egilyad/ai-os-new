@@ -40,6 +40,7 @@ export class DebateRAGRetriever {
         currentSessionId: string,
         topK = MAX_CONTEXT_CHUNKS,
     ): Promise<RAGContext> {
+        await this.deps.embeddingPipeline.init();
         const results: RetrievedChunk[] = [];
 
         // Search within current debate
@@ -84,6 +85,7 @@ export class DebateRAGRetriever {
      */
     async indexUnits(sessionId: string, units: MemoryUnit[]): Promise<number> {
         if (units.length === 0) return 0;
+        await this.deps.embeddingPipeline.init();
         const chunks = await this.deps.embeddingPipeline.processMemoryUnits(sessionId, units);
         return chunks.length;
     }

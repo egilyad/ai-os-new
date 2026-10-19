@@ -79,7 +79,7 @@ export const MEMORY_AUDIT_ARTICLES: WikiArticle[] = [
 | Memory-R1 (RL add/update/delete) | Нет | — |
 | Hindsight (multi-strategy + fusion) | Работает | Hybrid retrieval (BM25 ∪ vector → RRF) подключён в RagService с fallback на KnowledgeService.retrieve. Эмбеддер — хэш, реранкер — stub. |
 | LightMem/SleepGate (sleep) | Частично | sleep-engine помечен deprecated MOCK, consolidate() возвращает нули. |
-| PowerMem (hybrid+decay+distill) | Частично | Hybrid есть (unwired); decay — только TTL (30 дней), без кривой; дистилляция слабая. |
+| PowerMem (hybrid+decay+distill) | Частично | Hybrid есть и подключён в агентный RAG (RagService); decay — только TTL (30 дней), без кривой; дистилляция слабая. |
 
 ## Мультиагентная память
 
@@ -100,7 +100,7 @@ export const MEMORY_AUDIT_ARTICLES: WikiArticle[] = [
 ## Что реально работает
 
 - Единая memory-служба на Dexie + BM25/полнотекст ([[comp-memory]]); при старте лениво включается semantic-режим (хэш-векторы).
-- RAG дебатов: персистентные чанки, поиск, инъекция в промпт ([[comp-flow-knowledge]]).
+- RAG дебатов: персистентные чанки, поиск, инъекция в промпт; при первом обращении чанки перечитываются из хранилища (rehydration), поэтому память прошлых дебатов доступна после перезагрузки ([[comp-flow-knowledge]]).
 - Кристаллы знаний: жизненный цикл, версии, provenance ([[comp-knowledge-rag]]).
 - Hybrid retrieval (BM25 ∪ vector → RRF → rerank) подключён в агентный RAG-цикл RagService с fallback на token-retrieve.
 - Skills-библиотека, blackboard, Reflexion, task-handoff, ACL (частично).
