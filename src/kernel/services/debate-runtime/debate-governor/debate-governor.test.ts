@@ -78,6 +78,8 @@ describe('DebateGovernor claim-graph wiring', () => {
 
         expect(restored.getState().graph.edges).toHaveLength(live.getState().graph.edges.length);
         expect(restored.getState().graph.edges[0]!.type).toBe('challenges');
+        // Edge is stamped with the argument timestamp, not rebuild time.
+        expect(restored.getState().graph.edges[0]!.validFrom).toBe(2);
         expect(Object.keys(restored.getState().graph.claims).sort()).toEqual(
             Object.keys(live.getState().graph.claims).sort(),
         );

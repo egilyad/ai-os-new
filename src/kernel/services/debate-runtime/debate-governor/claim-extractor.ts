@@ -26,6 +26,7 @@ export function extractClaims(
     round: number,
     agentId?: string,
     confidence?: number,
+    at?: number,
 ): Claim[] {
     const sentences = text
         .split(/(?<=[.!?])\s+/)
@@ -60,7 +61,7 @@ export function extractClaims(
             status: 'active',
             supportCount: 0,
             challengeCount: 0,
-            createdAt: Date.now(),
+            createdAt: at ?? Date.now(),
         });
     }
 

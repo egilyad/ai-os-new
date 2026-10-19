@@ -64,15 +64,18 @@ export function detectChallenges(graph: ClaimGraph): ClaimEdge[] {
             if (a.round === b.round && a.speaker === b.speaker) continue;
             const overlap = jaccardSimilarity(a.text, b.text);
             if (overlap > 0.15 && overlap < 0.6) {
+                // Stamp with the newest of the two claims so a rehydrated graph
+                // reflects when the argument actually happened, not rebuild time.
+                const at = Math.max(a.createdAt ?? t, b.createdAt ?? t);
                 edges.push({
                     from: a.id,
                     to: b.id,
                     type: 'challenges',
                     weight: overlap,
-                    createdAt: t,
-                    validFrom: t,
+                    createdAt: at,
+                    validFrom: at,
                     validTo: null,
-                    observedAt: t,
+                    observedAt: at,
                 });
             }
         }

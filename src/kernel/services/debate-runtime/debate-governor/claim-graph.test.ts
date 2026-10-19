@@ -58,4 +58,19 @@ describe('ClaimGraph temporal edges', () => {
         g.edges.push(...edges);
         expect(claimEdgesAsOf(g)).toHaveLength(1);
     });
+
+    it('stamps challenge edges with the newest claim timestamp', () => {
+        const g = createClaimGraph();
+        g.claims['a'] = {
+            ...claim('a', 'policy improves economic growth today', 's1'),
+            createdAt: 1000,
+        };
+        g.claims['b'] = {
+            ...claim('b', 'policy harms economic growth tomorrow', 's2'),
+            createdAt: 2000,
+        };
+        const edges = detectChallenges(g);
+        expect(edges[0]!.validFrom).toBe(2000);
+        expect(edges[0]!.observedAt).toBe(2000);
+    });
 });

@@ -38,8 +38,9 @@ export class DebateGovernor {
     /**
      * Rebuild the claim graph from persisted arguments (session reload / history
      * view). Mirrors the live `processGovernorFeeding` pipeline, skipping
-     * arguments already flagged as duplicates. Claim IDs are stable, so repeated
-     * calls do not duplicate claims and `addEdge` dedupes valid edges.
+     * arguments already flagged as duplicates, and stamps claims/edges with the
+     * argument timestamp so temporal (asOf) views stay truthful. Intended to run
+     * once on a fresh governor.
      */
     rehydrate(args: ReadonlyArray<DebateArgument>): void {
         for (const arg of args) {
@@ -52,6 +53,7 @@ export class DebateGovernor {
                 arg.round,
                 arg.agentId,
                 arg.confidence,
+                arg.timestamp,
             );
             this.updateContradictions();
             this.computeConvergence();
@@ -68,6 +70,7 @@ export class DebateGovernor {
         round: number,
         agentId?: string,
         confidence?: number,
+        at?: number,
     ): Claim[] {
         const claims = extractClaims(
             content,
@@ -77,6 +80,7 @@ export class DebateGovernor {
             round,
             agentId,
             confidence,
+            at,
         );
         addClaimsToGraph(this.state.graph, claims);
         this.rebuildChallengeEdges();
