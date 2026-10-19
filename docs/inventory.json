@@ -3,7 +3,7 @@
   "generatedBy": "scripts/gen-docs-inventory.mjs",
   "scope": "git-tracked markdown: docs/**/*.md (excluding docs/new drafts and the self-report pages docs-health, docs-inventory) plus repository entry docs (root *.md, .superagents/**, src/kernel/DEPENDENCY_MAP.md)",
   "totals": {
-    "documents": 1056,
+    "documents": 1057,
     "byCategory": {
       "repo": 12,
       "top": 47,
@@ -13,11 +13,11 @@
       "reference": 6,
       "roadmap": 6,
       "superseded": 3,
-      "wiki": 231
+      "wiki": 232
     },
     "byLanguage": {
       "en": 659,
-      "ru": 245,
+      "ru": 246,
       "mixed": 152
     }
   },
@@ -7221,7 +7221,7 @@
       "language": "mixed",
       "title": "Матрица покрытия",
       "bytes": 8372,
-      "hash": "1b4f24a8dd00b42708cd0a8422041ee795cf03ba"
+      "hash": "60b52dde3b5997a78bb3ae6ec1c153722c002c67"
     },
     {
       "path": "docs/wiki/debates.md",
@@ -7253,7 +7253,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4076,
-      "hash": "fb4f914bd5ca0ba94f6d6a05a8cd96d0bfc73337"
+      "hash": "92a731d00c2051e9f854ae8df6a2368d0dc45f36"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -7341,7 +7341,7 @@
       "language": "ru",
       "title": "Граф знаний",
       "bytes": 4900,
-      "hash": "3acdccc1968a772dd5b34e105dc460bb334246a0"
+      "hash": "e6760bf1fe6b707d2c0753bb364f9f400535b235"
     },
     {
       "path": "docs/wiki/dev-history.md",
@@ -7556,8 +7556,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Карта документации",
-      "bytes": 30625,
-      "hash": "99c7968d56fb41de5f35a95f1517a14b04d1a87a"
+      "bytes": 30711,
+      "hash": "9f82f023a2457ab845887cc8e52b0551c79e579a"
     },
     {
       "path": "docs/wiki/docs-standard.md",
@@ -7584,12 +7584,20 @@
       "hash": "641753a579f0ac47283f518a653170b1018d282c"
     },
     {
+      "path": "docs/wiki/memory-audit.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Память: что есть и чего нет (аудит)",
+      "bytes": 9917,
+      "hash": "95f87a8fea35c86c73fe28d0dcc371cf6b4fa2f4"
+    },
+    {
       "path": "docs/wiki/memory.md",
       "category": "wiki",
       "language": "ru",
       "title": "Знания и память",
-      "bytes": 2816,
-      "hash": "d99fdf4abc91649a18c414047d57c496c1e629b3"
+      "bytes": 2901,
+      "hash": "51538e07c85775e3650f545a52ed2f0ea87d5702"
     },
     {
       "path": "docs/wiki/panel-ab-testing.md",
@@ -8212,8 +8220,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Wiki SuperAgents OS",
-      "bytes": 23899,
-      "hash": "9587ad6849f651798d3dac0e26ca38859eaa40dc"
+      "bytes": 23999,
+      "hash": "c135a8d3649eef398f4e4a55572831ecacd91aba"
     },
     {
       "path": "docs/wiki/roadmap-notes.md",
@@ -8468,16 +8476,16 @@
       "category": "repo",
       "language": "en",
       "title": "SuperAgents OS",
-      "bytes": 55402,
-      "hash": "eef6a83329b89eb6a309020fe528fd8d879f9e74"
+      "bytes": 55485,
+      "hash": "31cc9c5fe8027f0c6f88fd9212b77be6a52b6013"
     },
     {
       "path": "README.md",
       "category": "repo",
       "language": "mixed",
       "title": "SuperAgents OS — Wiki",
-      "bytes": 48145,
-      "hash": "bb06b1eac805644be1dc7d37d96c1eecd655af2f"
+      "bytes": 48283,
+      "hash": "689c4eaa3d13e858ab914c3b87e198c6affc7965"
     },
     {
       "path": "SELF_IMPROVEMENT_AUDIT_2026-09-22.md",

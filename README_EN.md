@@ -896,6 +896,7 @@ The full documentation lives in [docs/wiki](./docs/wiki/README.md) — the same 
 | [Debates](./docs/wiki/debates.md) | Formats, strategies, quality metrics |
 | [Agents](./docs/wiki/agents.md) | Roles, personas, topologies, consortia |
 | [Memory](./docs/wiki/memory.md) | BM25 + semantics, debate RAG |
+| [Memory audit](./docs/wiki/memory-audit.md) | What exists vs a reference stack |
 | [Providers](./docs/wiki/providers.md) | Keys, router, health, budgets |
 | [Diagnostics](./docs/wiki/diagnostics.md) | Logs, traces, health, audits |
 

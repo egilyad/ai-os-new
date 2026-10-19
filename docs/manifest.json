@@ -25,7 +25,7 @@
     {
       "id": "memory",
       "title": "Знания и память",
-      "articles": 2
+      "articles": 3
     },
     {
       "id": "providers",
@@ -2278,7 +2278,8 @@
       "related": [
         "execution-trail",
         "debates",
-        "architecture"
+        "architecture",
+        "memory-audit"
       ],
       "reviewed": null,
       "tests": [
@@ -6547,6 +6548,43 @@
       ],
       "reviewed": null,
       "tests": []
+    },
+    {
+      "id": "wiki:memory-audit",
+      "type": "article",
+      "slug": "memory-audit",
+      "title": "Память: что есть и чего нет (аудит)",
+      "section": "memory",
+      "status": "verified",
+      "tags": [
+        "память",
+        "аудит",
+        "RAG",
+        "граф",
+        "гэпы"
+      ],
+      "sources": [
+        "src/kernel/services/memory-engine.ts",
+        "src/kernel/services/memory/sleep-engine.ts",
+        "src/kernel/services/rag/hybrid-retrieval-service.ts",
+        "src/kernel/services/persona/lt-memory-service.ts",
+        "src/kernel/services/crystal-vault/crystal-vault-service.ts"
+      ],
+      "related": [
+        "memory",
+        "comp-memory",
+        "comp-knowledge-rag",
+        "comp-flow-knowledge",
+        "dev-status-debt",
+        "dev-status-docs",
+        "comp-consistency",
+        "comp-persistence"
+      ],
+      "reviewed": null,
+      "tests": [
+        "src/kernel/services/rag/hybrid-retrieval-service.test.ts",
+        "src/kernel/services/crystal-vault/crystal-vault-service.test.ts"
+      ]
     }
   ],
   "panels": [

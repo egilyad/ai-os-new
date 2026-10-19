@@ -13,6 +13,7 @@ import { CONTRACT_ARTICLES } from './wiki-contracts';
 import { LAYER_ARTICLES } from './wiki-layers';
 import { TOOLING_ARTICLES } from './wiki-tooling';
 import { DEV_STATUS_ARTICLES } from './wiki-dev-status';
+import { MEMORY_AUDIT_ARTICLES } from './wiki-memory-audit';
 import type { WikiArticle, WikiFreshness, WikiSection } from './wiki-types';
 
 export type { WikiArticle, WikiFreshness, WikiSection } from './wiki-types';
@@ -2244,7 +2245,7 @@ flowchart TD
         tags: ['память', 'RAG', 'персоны'],
         freshness: 'verified',
         sources: ['src/kernel/services/debate-runtime/debate-memory.ts', 'docs/audits/agent-team-audit-memory-history-management.md'],
-        related: ['execution-trail', 'debates', 'architecture'],
+        related: ['execution-trail', 'debates', 'architecture', 'memory-audit'],
         body: `## Слои
 
 - **Живая память дебата** — шаги/клеймы/цепочки; synthesis-шаг завершает цепочку (иначе persona-память мертва).
@@ -2435,6 +2436,7 @@ export const WIKI_ARTICLES: WikiArticle[] = [
     ...LAYER_ARTICLES,
     ...TOOLING_ARTICLES,
     ...DEV_STATUS_ARTICLES,
+    ...MEMORY_AUDIT_ARTICLES,
 ];
 
 export function getArticle(slug: string): WikiArticle | undefined {

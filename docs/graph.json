@@ -3,22 +3,22 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 1220,
-    "edges": 3258,
+    "nodes": 1222,
+    "edges": 3274,
     "byType": {
       "audit": 65,
-      "code": 513,
+      "code": 514,
       "test": 151,
       "panel": 259,
-      "article": 232
+      "article": 233
     },
     "byKind": {
       "audit_test": 325,
       "audit_mention": 928,
       "documents": 201,
-      "source": 696,
-      "test": 211,
-      "related": 897
+      "source": 701,
+      "test": 213,
+      "related": 906
     }
   },
   "nodes": [
@@ -2711,6 +2711,11 @@
       "id": "file:src/kernel/services/memory-engine.ts",
       "type": "code",
       "label": "src/kernel/services/memory-engine.ts"
+    },
+    {
+      "id": "file:src/kernel/services/memory/sleep-engine.ts",
+      "type": "code",
+      "label": "src/kernel/services/memory/sleep-engine.ts"
     },
     {
       "id": "file:src/kernel/services/meta/meta-agent-service.ts",
@@ -6489,6 +6494,13 @@
       "id": "wiki:memory",
       "type": "article",
       "label": "Знания и память",
+      "section": "memory",
+      "status": "verified"
+    },
+    {
+      "id": "wiki:memory-audit",
+      "type": "article",
+      "label": "Память: что есть и чего нет (аудит)",
       "section": "memory",
       "status": "verified"
     },
@@ -20752,6 +20764,81 @@
       "kind": "related"
     },
     {
+      "from": "wiki:memory-audit",
+      "to": "file:src/kernel/services/crystal-vault/crystal-vault-service.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:memory-audit",
+      "to": "file:src/kernel/services/crystal-vault/crystal-vault-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:memory-audit",
+      "to": "file:src/kernel/services/memory-engine.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:memory-audit",
+      "to": "file:src/kernel/services/memory/sleep-engine.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:memory-audit",
+      "to": "file:src/kernel/services/persona/lt-memory-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:memory-audit",
+      "to": "file:src/kernel/services/rag/hybrid-retrieval-service.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:memory-audit",
+      "to": "file:src/kernel/services/rag/hybrid-retrieval-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:memory-audit",
+      "to": "wiki:comp-consistency",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:memory-audit",
+      "to": "wiki:comp-flow-knowledge",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:memory-audit",
+      "to": "wiki:comp-knowledge-rag",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:memory-audit",
+      "to": "wiki:comp-memory",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:memory-audit",
+      "to": "wiki:comp-persistence",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:memory-audit",
+      "to": "wiki:dev-status-debt",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:memory-audit",
+      "to": "wiki:dev-status-docs",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:memory-audit",
+      "to": "wiki:memory",
+      "kind": "related"
+    },
+    {
       "from": "wiki:memory",
       "to": "file:docs/audits/agent-team-audit-memory-history-management.md",
       "kind": "source"
@@ -20779,6 +20866,11 @@
     {
       "from": "wiki:memory",
       "to": "wiki:execution-trail",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:memory",
+      "to": "wiki:memory-audit",
       "kind": "related"
     },
     {
