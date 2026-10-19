@@ -24,6 +24,9 @@ import { ProjectDebateIntegration } from '../services/project-debate-integration
 import { AutonomyOrchestrator } from '../services/autonomy-orchestrator';
 import { AutonomyRunner } from '../services/autonomy-runner';
 import { ProjectInvocationBridge } from '../services/project-invocation-bridge';
+import { rootLogger } from '../services/logger-service';
+
+const LOGGER = rootLogger.child('Phase66Projects');
 
 export const registerPhase66: Phase = ({ register }) => {
     register('projectRepository', (c: IContainer) => {
@@ -84,8 +87,29 @@ export const registerPhase66: Phase = ({ register }) => {
         );
     });
 
-    register('projectMemoryService', () => {
-        return new ProjectMemoryService();
+    register('projectMemoryService', (c: IContainer) => {
+        // P9: persist project memory (entries/decisions/issues/context) across
+        // reloads via the database KV; graceful in-memory fallback otherwise.
+        let store: import('../services/project-memory-service').ProjectMemoryStore | undefined;
+        try {
+            if (c.has('database')) {
+                const database = c.get<{
+                    getKv<T>(id: string): Promise<T | null>;
+                    setKv<T>(id: string, value: T): Promise<void>;
+                }>('database');
+                store = {
+                    get: (key) => database.getKv(key),
+                    set: (key, value) => database.setKv(key, value),
+                };
+            }
+        } catch {
+            store = undefined;
+        }
+        const service = new ProjectMemoryService(store);
+        service
+            .init()
+            .catch((e: unknown) => LOGGER.warn('Phase66', 'ProjectMemoryService.init failed', { error: e }));
+        return service;
     });
 
     register('approvalService', () => {

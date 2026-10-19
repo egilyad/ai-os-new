@@ -131,4 +131,55 @@ describe('ProjectMemoryService', () => {
             expect(svc.searchEntries('p1', 'performance')).toHaveLength(1);
         });
     });
+
+    describe('persistence', () => {
+        function fakeStore() {
+            const kv = new Map<string, unknown>();
+            return {
+                kv,
+                get: async <T,>(key: string): Promise<T | null> =>
+                    kv.has(key) ? (kv.get(key) as T) : null,
+                set: async <T,>(key: string, value: T): Promise<void> => {
+                    kv.set(key, value);
+                },
+            };
+        }
+
+        it('persists and rehydrates across instances', async () => {
+            const store = fakeStore();
+            const a = new ProjectMemoryService(store);
+            await a.init();
+            a.addEntry('p1', { projectId: 'p1', type: 'note', title: 'kept', content: 'c', tags: [] });
+            a.addDecision('p1', {
+                projectId: 'p1',
+                title: 'd',
+                content: 'c',
+                tags: [],
+                options: [],
+                chosen: 'x',
+                rationale: 'r',
+            });
+            a.setContext('p1', {
+                projectId: 'p1',
+                summary: 'ctx',
+                techStack: [],
+                goals: [],
+                constraints: [],
+            });
+            await new Promise((r) => setTimeout(r, 0));
+
+            const b = new ProjectMemoryService(store);
+            await b.init();
+            expect(b.getEntries('p1')).toHaveLength(2);
+            expect(b.getDecisions('p1')).toHaveLength(1);
+            expect(b.getContext('p1')?.summary).toBe('ctx');
+        });
+
+        it('stays in memory-only without a store', async () => {
+            const plain = new ProjectMemoryService();
+            await plain.init();
+            plain.addEntry('p1', { projectId: 'p1', type: 'note', title: 'n', content: 'c', tags: [] });
+            expect(plain.getEntries('p1')).toHaveLength(1);
+        });
+    });
 });

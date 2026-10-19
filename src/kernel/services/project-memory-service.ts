@@ -27,6 +27,21 @@ export interface IProjectMemoryService {
     searchEntries(projectId: string, query: string): ProjectMemoryEntry[];
 }
 
+export interface ProjectMemoryStore {
+    get<T>(key: string): Promise<T | null>;
+    set<T>(key: string, value: T): Promise<void>;
+}
+
+interface PersistedProjectMemory {
+    entries: ProjectMemoryEntry[];
+    decisions: DecisionLogEntry[];
+    issues: KnownIssueEntry[];
+    context?: ProjectContext;
+}
+
+const STORE_PREFIX = 'project-memory:v1:';
+const STORE_INDEX_KEY = `${STORE_PREFIX}index`;
+
 let memCounter = 0;
 
 export class ProjectMemoryService implements IProjectMemoryService {
@@ -34,6 +49,56 @@ export class ProjectMemoryService implements IProjectMemoryService {
     private decisions = new Map<string, DecisionLogEntry[]>();
     private issues = new Map<string, KnownIssueEntry[]>();
     private contexts = new Map<string, ProjectContext>();
+    private store?: ProjectMemoryStore;
+    private initialized = false;
+
+    constructor(store?: ProjectMemoryStore) {
+        this.store = store;
+    }
+
+    /**
+     * Load persisted project memory. Idempotent; a no-op without a store or
+     * when called again. The sync public API reads/writes in memory and
+     * persists fire-and-forget, so call this once during boot.
+     */
+    async init(): Promise<void> {
+        if (this.initialized) return;
+        this.initialized = true;
+        if (!this.store) return;
+        try {
+            const ids = (await this.store.get<string[]>(STORE_INDEX_KEY)) ?? [];
+            for (const projectId of ids) {
+                const blob = await this.store.get<PersistedProjectMemory>(STORE_PREFIX + projectId);
+                if (!blob) continue;
+                if (blob.entries) this.entries.set(projectId, blob.entries);
+                if (blob.decisions) this.decisions.set(projectId, blob.decisions);
+                if (blob.issues) this.issues.set(projectId, blob.issues);
+                if (blob.context) this.contexts.set(projectId, blob.context);
+            }
+        } catch (e) {
+            LOGGER.warn('init', 'Failed to load persisted project memory', { error: e });
+        }
+    }
+
+    private persist(projectId: string): void {
+        if (!this.store) return;
+        const store = this.store;
+        const blob: PersistedProjectMemory = {
+            entries: this.entries.get(projectId) ?? [],
+            decisions: this.decisions.get(projectId) ?? [],
+            issues: this.issues.get(projectId) ?? [],
+            context: this.contexts.get(projectId),
+        };
+        void (async () => {
+            await store.set(STORE_PREFIX + projectId, blob);
+            const ids = (await store.get<string[]>(STORE_INDEX_KEY)) ?? [];
+            if (!ids.includes(projectId)) {
+                await store.set(STORE_INDEX_KEY, [...ids, projectId]);
+            }
+        })().catch((e: unknown) =>
+            LOGGER.warn('persist', `Failed to persist project ${projectId}`, { error: e }),
+        );
+    }
 
     addEntry(projectId: string, entry: Omit<ProjectMemoryEntry, 'id' | 'createdAt' | 'updatedAt'>): ProjectMemoryEntry {
         const full: ProjectMemoryEntry = {
@@ -46,6 +111,7 @@ export class ProjectMemoryService implements IProjectMemoryService {
         const list = this.entries.get(projectId) || [];
         list.push(full);
         this.entries.set(projectId, list);
+        this.persist(projectId);
         LOGGER.info('addEntry', `Added ${entry.type} to project ${projectId}`);
         return full;
     }
@@ -61,12 +127,14 @@ export class ProjectMemoryService implements IProjectMemoryService {
         const entry = list.find((e) => e.id === entryId);
         if (entry) {
             Object.assign(entry, updates, { updatedAt: Date.now() });
+            this.persist(projectId);
         }
     }
 
     deleteEntry(projectId: string, entryId: string): void {
         const list = this.entries.get(projectId) || [];
         this.entries.set(projectId, list.filter((e) => e.id !== entryId));
+        this.persist(projectId);
     }
 
     addDecision(projectId: string, decision: Omit<DecisionLogEntry, 'id' | 'createdAt' | 'updatedAt' | 'type'>): DecisionLogEntry {
@@ -87,6 +155,7 @@ export class ProjectMemoryService implements IProjectMemoryService {
         if (existingDecisionEntries) existingDecisionEntries.push(entry as ProjectMemoryEntry);
         else this.entries.set(projectId, [entry as ProjectMemoryEntry]);
 
+        this.persist(projectId);
         return entry;
     }
 
@@ -111,6 +180,7 @@ export class ProjectMemoryService implements IProjectMemoryService {
         if (existingIssueEntries) existingIssueEntries.push(entry as ProjectMemoryEntry);
         else this.entries.set(projectId, [entry as ProjectMemoryEntry]);
 
+        this.persist(projectId);
         return entry;
     }
 
@@ -126,6 +196,7 @@ export class ProjectMemoryService implements IProjectMemoryService {
         if (issue) {
             issue.status = 'resolved';
             issue.updatedAt = Date.now();
+            this.persist(projectId);
         }
     }
 
@@ -134,6 +205,7 @@ export class ProjectMemoryService implements IProjectMemoryService {
             ...context,
             lastUpdated: Date.now(),
         });
+        this.persist(projectId);
     }
 
     getContext(projectId: string): ProjectContext | undefined {

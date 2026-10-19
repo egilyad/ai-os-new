@@ -73,7 +73,7 @@
 
 ## Специализированные для coding agents
 
-Ни одной из систем (Claude-Mem, Memorix, engram, Remnic, Memov, Puppyone) нет. Роль ручной памяти играют AGENTS.md и docs/SESSION_LOG.md. Есть project-memory-service (решения/issues/context), но состояние в in-memory Map — теряется при перезагрузке.
+Ни одной из систем (Claude-Mem, Memorix, engram, Remnic, Memov, Puppyone) нет. Роль ручной памяти играют AGENTS.md и docs/SESSION_LOG.md. Есть project-memory-service (решения/issues/context), персистентный через KV базы ([Компонент: персистентность (Dexie и storage-адаптеры)](./comp-persistence.md)); без БД работает в памяти и теряется при перезагрузке.
 
 ## Что реально работает
 
