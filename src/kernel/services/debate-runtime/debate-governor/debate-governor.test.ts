@@ -8,8 +8,7 @@ function feedRepetitive(g: DebateGovernor, rounds: number[]): void {
     }
 }
 
-describe('DebateGovernor soft-stop floor (long debates)', () => {
-    it('holds soft stops until the second half of requested maxRounds', () => {
+describe('DebateGovernor soft-stop floor (long debates)', () => {    it('holds soft stops until the second half of requested maxRounds', () => {
         const g = new DebateGovernor();
         g.setMaxRounds(10);
         feedRepetitive(g, [1, 2, 3]);
@@ -30,5 +29,19 @@ describe('DebateGovernor soft-stop floor (long debates)', () => {
         g.setMaxRounds(3);
         feedRepetitive(g, [1, 2, 3]);
         expect(g.shouldStop()).toBe(true);
+    });
+});
+
+describe('DebateGovernor claim-graph wiring', () => {
+    it('populates temporal challenge edges across speakers', () => {
+        const g = new DebateGovernor();
+        g.ingestArgument('policy improves economic growth today', 'a1', 's1', 'pro', 1);
+        g.ingestArgument('policy harms economic growth tomorrow', 'a2', 's2', 'con', 2);
+        const edges = g.getState().graph.edges;
+        expect(edges.length).toBeGreaterThan(0);
+        expect(edges[0]!.type).toBe('challenges');
+        expect(edges[0]!.validFrom).toBeGreaterThan(0);
+        expect(edges[0]!.observedAt).toBeGreaterThan(0);
+        expect(edges[0]!.validTo).toBeNull();
     });
 });

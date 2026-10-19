@@ -56,7 +56,7 @@ export const MEMORY_AUDIT_ARTICLES: WikiArticle[] = [
 
 | Тема | Статус | Что в системе |
 | --- | --- | --- |
-| Temporal graph (Graphiti) | Частично | Связи памяти и рёбра провенанса темпоральны (validFrom/validTo + asOf-BFS); графы дебатов/знаний — снапшоты с createdAt/timestamp. |
+| Temporal graph (Graphiti) | Частично | Связи памяти и рёбра провенанса темпоральны и персистентны; claim-рёбра дебатов темпоральны, но живут в памяти; граф знаний — снапшот. |
 | HippoRAG (PPR associative recall) | Частично | Multi-hop BFS есть, PageRank/PersonalizedPageRank нет, в retrieval не подключено. |
 | Provenance (Cognee) | Частично | Только кристаллы. |
 | ChatDB (SQL/symbolic) | Частично | Типизированные фильтры (store/timeRange/importanceMin/tags/agentId/sessionId) + substring. SQL/DSL нет. |
@@ -107,7 +107,7 @@ export const MEMORY_AUDIT_ARTICLES: WikiArticle[] = [
 
 ## Чего нет
 
-- Темпоральность большинства графов: она есть у связей памяти (MemoryLink) и рёбер провенанса; графы дебатов и знаний остаются снапшотными.
+- Темпоральность большинства графов: она есть у связей памяти, рёбер провенанса и claim-рёбер дебатов (последние — только в памяти); граф знаний остаётся снапшотным.
 - Реальные эмбеддинги (везде лексические хэши) и векторная БД/ANN.
 - MCP-сервер памяти, ACL и namespaces в основной памяти.
 - Ebbinghaus-decay с кривой, self-editing памяти, workflow-дистилляция.

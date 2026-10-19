@@ -1,6 +1,6 @@
 import type { Claim, GovernorState, SynthesisResult, Contradiction } from './types';
 import type { DiversityState } from '../../agent-diversity/types';
-import { createClaimGraph, addClaimsToGraph } from './claim-graph';
+import { createClaimGraph, addClaimsToGraph, addEdge, detectChallenges } from './claim-graph';
 import { detectContradictions, hasOpenContradictions } from './contradiction-detector';
 import { extractClaims } from './claim-extractor';
 import { validateOutcome, type OutcomeValidation } from './outcome-validator';
@@ -53,11 +53,27 @@ export class DebateGovernor {
             confidence,
         );
         addClaimsToGraph(this.state.graph, claims);
+        this.rebuildChallengeEdges();
 
         this.state.round = round;
         this.state.lastUpdatedAt = Date.now();
 
         return claims;
+    }
+
+    /**
+     * Populate claim-graph edges from the existing challenge heuristic. Runs on
+     * every ingest; `addEdge` dedupes against currently-valid edges, so repeated
+     * pairs are not duplicated. Consumers (diversity scorer, Argument Graph
+     * panel) read this.state.graph.edges.
+     */
+    private rebuildChallengeEdges(): void {
+        for (const e of detectChallenges(this.state.graph)) {
+            addEdge(this.state.graph, e.from, e.to, e.type, e.weight, {
+                validFrom: e.validFrom,
+                observedAt: e.observedAt,
+            });
+        }
     }
 
     updateContradictions(): Contradiction[] {
