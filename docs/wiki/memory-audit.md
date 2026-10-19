@@ -23,7 +23,7 @@
 | Референс | Статус | Что в системе |
 | --- | --- | --- |
 | Mem0 (extract-and-update) | Частично | Единый сервис: upsert с детерминированным SHA-256 ID (дедуп = update). Извлечения фактов из диалогов нет — только regex по дебатам. |
-| Letta / MemGPT (core/recall/archival) | Частично | Тиры core/recall/archival, promote/forget, графовые связи и BFS-соседи. Но это не OS-иерархия с блоками под инструментами; память доступна агенту как memory.append/recall/related. |
+| Letta / MemGPT (core/recall/archival) | Частично | Тиры core/recall/archival, promote/forget, графовые связи и BFS-соседи. Но это не OS-иерархия с блоками под инструментами; память доступна агенту как memory.append/recall/remember/search/link/related. |
 | Zep / Graphiti (temporal KG) | Частично | validFrom/validTo/observedAt есть у связей памяти (MemoryLink) и рёбер провенанса, с asOf-обходом; графы дебатов и знаний — снапшоты. |
 | Cognee (graph + provenance) | Частично | Provenance силён только у кристаллов (evidence, originKind, modelIds). У документов и памяти — тонко. |
 | LangMem (semantic/episodic/procedural) | Частично | Классы-сторы есть, но не инстанцируются (мёртвый код). LangGraph не используется. |

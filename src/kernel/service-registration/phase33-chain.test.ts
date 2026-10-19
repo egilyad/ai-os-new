@@ -11,6 +11,7 @@ import type {
     IPlannerService,
     IDyadService,
 } from '../contracts/rivals';
+import type { IToolRunnerService } from '../contracts/parity';
 
 const get = <T>(token: string): T => runtime.getService<T>(token);
 
@@ -42,4 +43,20 @@ describe('Phase33 e2e chain (F)', () => {
         const dyad = get<IDyadService>('dyadService');
         expect((await dyad.startDyad({ topic: 'x', maxTurns: 2 })).id).toBeDefined();
     }, 60000);
+
+    it('registers Letta-style agent-callable memory tools', () => {
+        get<IMemoryBlocksService>('memoryBlocksService');
+        const runner = get<IToolRunnerService>('toolRunnerService');
+        const names = runner.listTools().map((t) => t.name);
+        expect(names).toEqual(
+            expect.arrayContaining([
+                'memory.append',
+                'memory.recall',
+                'memory.remember',
+                'memory.search',
+                'memory.link',
+                'memory.related',
+            ]),
+        );
+    });
 });

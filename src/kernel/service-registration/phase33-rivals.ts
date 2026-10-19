@@ -25,6 +25,7 @@ import type { IGraphService } from '../contracts/graph';
 import type { IEvalService } from '../contracts/frontier';
 import type { IToolRunnerService } from '../contracts/parity';
 import type { ILtMemoryService } from '../contracts/persona';
+import type { MemoryRelation } from '../types/persona-types';
 import type { DataAccessLayer } from '../dal/types';
 import { RivalRepository } from '../dal/rival-repository';
 import { GroupChatService } from '../services/rivals/groupchat-service';
@@ -128,6 +129,94 @@ export const registerPhase33: Phase = ({ register }) => {
                                     `${i + 1}. [${h.memory.tier}] ${h.memory.content.slice(0, 240)} (${h.score.toFixed(4)})`,
                             )
                             .join('\n');
+                    },
+                });
+                runner.addTool({
+                    name: 'memory.remember',
+                    description:
+                        'Store a durable long-term memory (recall/archival tier) for later search/recall.',
+                    parameters: {
+                        type: 'object',
+                        properties: {
+                            content: { type: 'string' },
+                            tier: { type: 'string' },
+                            tags: { type: 'array', items: { type: 'string' } },
+                        },
+                        required: ['content'],
+                    },
+                    run: async (args) => {
+                        if (!c.has('ltMemoryService')) return '(long-term memory unavailable)';
+                        const lt = c.get<ILtMemoryService>('ltMemoryService');
+                        const content = str(args['content']);
+                        if (!content) throw new Error('content is required');
+                        const tier = str(args['tier']);
+                        const tags = Array.isArray(args['tags'])
+                            ? (args['tags'] as unknown[]).map(String)
+                            : undefined;
+                        const m = await lt.remember({
+                            ownerId: 'agent',
+                            content,
+                            ...(tier === 'core' || tier === 'recall' || tier === 'archival'
+                                ? { tier }
+                                : {}),
+                            ...(tags && tags.length > 0 ? { tags } : {}),
+                        });
+                        return `remembered ${m.id} [${m.tier}]`;
+                    },
+                });
+                runner.addTool({
+                    name: 'memory.search',
+                    description: 'Search your durable long-term memory by keyword.',
+                    parameters: {
+                        type: 'object',
+                        properties: { query: { type: 'string' }, limit: { type: 'number' } },
+                        required: ['query'],
+                    },
+                    run: async (args) => {
+                        if (!c.has('ltMemoryService')) return '(long-term memory unavailable)';
+                        const lt = c.get<ILtMemoryService>('ltMemoryService');
+                        const query = str(args['query']);
+                        if (!query) throw new Error('query is required');
+                        const limit = typeof args['limit'] === 'number' ? args['limit'] : 5;
+                        const hits = await lt.recall('agent', query, limit);
+                        if (hits.length === 0) return 'no memories found';
+                        return hits
+                            .map((m, i) => `${i + 1}. ${m.id} [${m.tier}] ${m.content.slice(0, 240)}`)
+                            .join('\n');
+                    },
+                });
+                runner.addTool({
+                    name: 'memory.link',
+                    description:
+                        'Link two long-term memories (supports/contradicts/elaborates/caused_by/relates).',
+                    parameters: {
+                        type: 'object',
+                        properties: {
+                            from: { type: 'string' },
+                            to: { type: 'string' },
+                            relation: { type: 'string' },
+                        },
+                        required: ['from', 'to'],
+                    },
+                    run: async (args) => {
+                        if (!c.has('ltMemoryService')) return '(long-term memory unavailable)';
+                        const lt = c.get<ILtMemoryService>('ltMemoryService');
+                        const from = str(args['from']);
+                        const to = str(args['to']);
+                        if (!from || !to) throw new Error('from and to are required');
+                        const allowed: MemoryRelation[] = [
+                            'supports',
+                            'contradicts',
+                            'elaborates',
+                            'caused_by',
+                            'relates',
+                        ];
+                        const rel = str(args['relation']);
+                        const relation = (allowed as string[]).includes(rel)
+                            ? (rel as MemoryRelation)
+                            : 'relates';
+                        const l = await lt.link(from, to, relation);
+                        return `linked ${l.id} (${from} ${relation} ${to})`;
                     },
                 });
             }
