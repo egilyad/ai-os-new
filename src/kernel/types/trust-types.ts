@@ -72,6 +72,12 @@ export interface ProvenanceEdge {
     toId: string;
     relation: 'derived_from' | 'voted_by' | 'executed_by' | 'prompted_by' | 'informed_by';
     createdAt: number;
+    /** World-time from which the provenance relation holds. Defaults to createdAt. */
+    validFrom?: number;
+    /** World-time until which the provenance relation holds. null/undefined = still valid. */
+    validTo?: number | null;
+    /** When the system observed the relation (may differ from validFrom). Defaults to createdAt. */
+    observedAt?: number;
 }
 
 export interface ExtensionManifest {

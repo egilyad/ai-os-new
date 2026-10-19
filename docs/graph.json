@@ -3,21 +3,21 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 1223,
-    "edges": 3277,
+    "nodes": 1224,
+    "edges": 3279,
     "byType": {
       "audit": 65,
       "code": 514,
-      "test": 152,
+      "test": 153,
       "panel": 259,
       "article": 233
     },
     "byKind": {
-      "audit_test": 326,
+      "audit_test": 327,
       "audit_mention": 928,
       "documents": 201,
       "source": 701,
-      "test": 215,
+      "test": 216,
       "related": 906
     }
   },
@@ -3246,6 +3246,11 @@
       "id": "file:src/kernel/services/trust/governance-service.ts",
       "type": "code",
       "label": "src/kernel/services/trust/governance-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/trust/provenance-service.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/trust/provenance-service.test.ts"
     },
     {
       "id": "file:src/kernel/services/trust/provenance-service.ts",
@@ -11120,6 +11125,11 @@
     },
     {
       "from": "audit:_done--FULL_FUNCTIONALITY_AUDIT",
+      "to": "file:src/kernel/services/trust/provenance-service.test.ts",
+      "kind": "audit_test"
+    },
+    {
+      "from": "audit:_done--FULL_FUNCTIONALITY_AUDIT",
       "to": "file:src/kernel/services/trust/provenance-service.ts",
       "kind": "audit_mention"
     },
@@ -16017,6 +16027,11 @@
       "from": "wiki:comp-fleet-governance",
       "to": "file:src/kernel/services/trust/governance-service.ts",
       "kind": "source"
+    },
+    {
+      "from": "wiki:comp-fleet-governance",
+      "to": "file:src/kernel/services/trust/provenance-service.test.ts",
+      "kind": "test"
     },
     {
       "from": "wiki:comp-fleet-governance",

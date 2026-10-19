@@ -91,6 +91,11 @@ export class TrustRepository {
         await this.db.provenanceEdges.put(clone(e));
     }
 
+    async getProvEdge(id: string): Promise<ProvenanceEdge | null> {
+        const r = await this.db.provenanceEdges.get(id);
+        return r ? clone(r) : null;
+    }
+
     async listProvEdges(): Promise<ProvenanceEdge[]> {
         return (await this.db.provenanceEdges.toArray()).map(clone);
     }

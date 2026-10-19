@@ -64,9 +64,20 @@ export interface IGovernanceService extends ILifecycle {
 /** Wave 10.25 + 10.26: provenance graph + sandbox continuum. */
 export interface IProvenanceService extends ILifecycle {
     addNode(kind: ProvenanceNode['kind'], label: string, ref?: string): Promise<ProvenanceNode>;
-    link(fromId: string, toId: string, relation?: ProvenanceEdge['relation']): Promise<ProvenanceEdge>;
-    /** Full ancestry of a decision node (BFS upstream). */
-    trace(decisionId: string, depth?: number): Promise<{ nodes: ProvenanceNode[]; edges: ProvenanceEdge[] }>;
+    link(
+        fromId: string,
+        toId: string,
+        relation?: ProvenanceEdge['relation'],
+        opts?: { validFrom?: number; validTo?: number | null; observedAt?: number },
+    ): Promise<ProvenanceEdge>;
+    /** Close an edge's validity window (sets validTo; defaults to now). */
+    closeLink(id: string, validTo?: number): Promise<ProvenanceEdge>;
+    /** Full ancestry of a decision node (BFS upstream) as of `asOf` (default now). */
+    trace(
+        decisionId: string,
+        depth?: number,
+        asOf?: number,
+    ): Promise<{ nodes: ProvenanceNode[]; edges: ProvenanceEdge[] }>;
     sandboxLevelFor(task: string): SandboxLevel;
 }
 

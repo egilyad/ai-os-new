@@ -46,7 +46,7 @@ export const MEMORY_AUDIT_ARTICLES: WikiArticle[] = [
 | --- | --- | --- |
 | Mem0 (extract-and-update) | Частично | Единый сервис: upsert с детерминированным SHA-256 ID (дедуп = update). Извлечения фактов из диалогов нет — только regex по дебатам. |
 | Letta / MemGPT (core/recall/archival) | Частично | Тиры core/recall/archival, promote/forget, графовые связи и BFS-соседи. Но это не OS-иерархия с блоками под инструментами; агентского memory.* tool нет. |
-| Zep / Graphiti (temporal KG) | Частично | У связей памяти (MemoryLink) есть validFrom/validTo/observedAt и asOf-обход графа; у остальных графов (дебаты, знания, провенанс) — только createdAt/снапшоты. |
+| Zep / Graphiti (temporal KG) | Частично | validFrom/validTo/observedAt есть у связей памяти (MemoryLink) и рёбер провенанса, с asOf-обходом; графы дебатов и знаний — снапшоты. |
 | Cognee (graph + provenance) | Частично | Provenance силён только у кристаллов (evidence, originKind, modelIds). У документов и памяти — тонко. |
 | LangMem (semantic/episodic/procedural) | Частично | Классы-сторы есть, но не инстанцируются (мёртвый код). LangGraph не используется. |
 | LlamaIndex Memory (blocks) | Частично | Сервис блоков памяти (block:set) есть, но минимальный. |
@@ -56,7 +56,7 @@ export const MEMORY_AUDIT_ARTICLES: WikiArticle[] = [
 
 | Тема | Статус | Что в системе |
 | --- | --- | --- |
-| Temporal graph (Graphiti) | Частично | Связи памяти темпоральны (validFrom/validTo + asOf-BFS). Остальные графы — снапшоты с createdAt/timestamp. |
+| Temporal graph (Graphiti) | Частично | Связи памяти и рёбра провенанса темпоральны (validFrom/validTo + asOf-BFS); графы дебатов/знаний — снапшоты с createdAt/timestamp. |
 | HippoRAG (PPR associative recall) | Частично | Multi-hop BFS есть, PageRank/PersonalizedPageRank нет, в retrieval не подключено. |
 | Provenance (Cognee) | Частично | Только кристаллы. |
 | ChatDB (SQL/symbolic) | Частично | Типизированные фильтры (store/timeRange/importanceMin/tags/agentId/sessionId) + substring. SQL/DSL нет. |
@@ -107,7 +107,7 @@ export const MEMORY_AUDIT_ARTICLES: WikiArticle[] = [
 
 ## Чего нет
 
-- Темпоральность большинства графов: она есть только у связей памяти (MemoryLink, validFrom/validTo + asOf); дебаты, знания и провенанс остаются снапшотными.
+- Темпоральность большинства графов: она есть у связей памяти (MemoryLink) и рёбер провенанса; графы дебатов и знаний остаются снапшотными.
 - Реальные эмбеддинги (везде лексические хэши) и векторная БД/ANN.
 - MCP-сервер памяти, ACL и namespaces в основной памяти.
 - Ebbinghaus-decay с кривой, self-editing памяти, workflow-дистилляция.

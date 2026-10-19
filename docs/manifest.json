@@ -3192,7 +3192,9 @@
         "panel-provenance-junctions"
       ],
       "reviewed": null,
-      "tests": []
+      "tests": [
+        "src/kernel/services/trust/provenance-service.test.ts"
+      ]
     },
     {
       "id": "wiki:comp-integrations-interop",
@@ -9781,6 +9783,7 @@
         "src/kernel/services/parity/tool-runner-service.test.ts",
         "src/kernel/services/persona/lt-memory-service.test.ts",
         "src/kernel/services/skill-service.test.ts",
+        "src/kernel/services/trust/provenance-service.test.ts",
         "src/llm/gemini/gemini-adapter.test.ts",
         "src/llm/openai-compatible/openai-compatible-adapter.test.ts",
         "src/llm/registry/adapter-factory.test.ts"

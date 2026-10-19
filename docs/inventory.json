@@ -7253,7 +7253,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4076,
-      "hash": "92a731d00c2051e9f854ae8df6a2368d0dc45f36"
+      "hash": "f591599bac601b2940be2ea8357937ee1328e217"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -7341,7 +7341,7 @@
       "language": "ru",
       "title": "Граф знаний",
       "bytes": 4900,
-      "hash": "e6760bf1fe6b707d2c0753bb364f9f400535b235"
+      "hash": "6f22dee7a4deb21483b3159f7e67ff17278c08fc"
     },
     {
       "path": "docs/wiki/dev-history.md",
@@ -7588,8 +7588,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Память: что есть и чего нет (аудит)",
-      "bytes": 11044,
-      "hash": "f33b2c89e62e662d6ee21d6e0e4137e75fcea2e0"
+      "bytes": 11041,
+      "hash": "8a8bc5057455f2e0a1e2da0fd1a7bff9c89b2736"
     },
     {
       "path": "docs/wiki/memory.md",

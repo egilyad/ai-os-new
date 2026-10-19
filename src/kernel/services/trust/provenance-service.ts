@@ -23,6 +23,17 @@ const RISKY_HINTS = [
     'network', 'сеть', 'payment', 'оплат', 'delete', 'удали', 'external', 'внешн',
 ];
 
+/**
+ * Temporal validity predicate for provenance edges. Valid at `asOf` when it
+ * started (`validFrom`, else `createdAt`) and has not ended (`validTo`,
+ * exclusive). Missing `validTo` means "still valid".
+ */
+export function isProvenanceEdgeValidAt(edge: ProvenanceEdge, asOf: number): boolean {
+    const from = edge.validFrom ?? edge.createdAt;
+    const to = edge.validTo;
+    return from <= asOf && (to == null || to > asOf);
+}
+
 export class ProvenanceService implements IProvenanceService {
     constructor(private repo: TrustRepository) {}
 
@@ -50,23 +61,40 @@ export class ProvenanceService implements IProvenanceService {
         fromId: string,
         toId: string,
         relation: ProvenanceEdge['relation'] = 'derived_from',
+        opts: { validFrom?: number; validTo?: number | null; observedAt?: number } = {},
     ): Promise<ProvenanceEdge> {
         const from = await this.repo.getProvNode(fromId);
         const to = await this.repo.getProvNode(toId);
         if (!from) throw new Error(`Provenance node not found: ${fromId}`);
         if (!to) throw new Error(`Provenance node not found: ${toId}`);
+        const t = now();
         const edge: ProvenanceEdge = {
             id: genId('provedge'),
             fromId,
             toId,
             relation,
-            createdAt: now(),
+            createdAt: t,
+            validFrom: opts.validFrom ?? t,
+            validTo: opts.validTo ?? null,
+            observedAt: opts.observedAt ?? t,
         };
         await this.repo.putProvEdge(edge);
         return edge;
     }
 
-    async trace(decisionId: string, depth = 5): Promise<{ nodes: ProvenanceNode[]; edges: ProvenanceEdge[] }> {
+    async closeLink(id: string, validTo: number = now()): Promise<ProvenanceEdge> {
+        const edge = await this.repo.getProvEdge(id);
+        if (!edge) throw new Error(`Provenance edge not found: ${id}`);
+        edge.validTo = validTo;
+        await this.repo.putProvEdge(edge);
+        return edge;
+    }
+
+    async trace(
+        decisionId: string,
+        depth = 5,
+        asOf: number = now(),
+    ): Promise<{ nodes: ProvenanceNode[]; edges: ProvenanceEdge[] }> {
         const start = await this.repo.getProvNode(decisionId);
         if (!start) throw new Error(`Provenance node not found: ${decisionId}`);
         const allEdges = await this.repo.listProvEdges();
@@ -77,6 +105,7 @@ export class ProvenanceService implements IProvenanceService {
         for (let d = 0; d < Math.max(1, depth); d++) {
             const next: string[] = [];
             for (const e of allEdges) {
+                if (!isProvenanceEdgeValidAt(e, asOf)) continue;
                 if (frontier.includes(e.toId) && !nodes.has(e.fromId)) {
                     const n = await this.repo.getProvNode(e.fromId);
                     if (n) {
