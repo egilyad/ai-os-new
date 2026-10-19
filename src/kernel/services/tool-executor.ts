@@ -552,13 +552,32 @@ export class ToolService {
                 resultData = wrapExternalData(await pluginTool.execute(input, context));
             } else if (!tool) throw toolError(toolId, `Tool ${toolId} not found`, 'NOT_FOUND');
             else if (toolId === 't-search') {
-                const query =
+                const obj =
                     typeof input === 'string'
-                        ? input
-                        : (input as Record<string, string>).query || '';
-                resultData = wrapExternalData(
-                    (await this.deps.memoryService?.search(query)) ?? 'No results',
-                );
+                        ? ({ query: input } as Record<string, unknown>)
+                        : (input as Record<string, unknown>);
+                const query = typeof obj.query === 'string' ? obj.query : '';
+                const filter: Record<string, unknown> = {};
+                for (const key of [
+                    'agentId',
+                    'roleId',
+                    'sessionId',
+                    'chatId',
+                    'source',
+                    'type',
+                    'collection',
+                ]) {
+                    if (typeof obj[key] === 'string') filter[key] = obj[key];
+                }
+                if (typeof obj.importanceMin === 'number') filter.importanceMin = obj.importanceMin;
+                const engine = this.deps.memoryService;
+                if (Object.keys(filter).length > 0 && engine?.searchAdvanced) {
+                    resultData = wrapExternalData(
+                        await engine.searchAdvanced({ query, filter, limit: 5 }),
+                    );
+                } else {
+                    resultData = wrapExternalData((await engine?.search(query)) ?? 'No results');
+                }
             } else if (toolId === 't-code') {
                 const code = tool.code || 'return data';
                 resultData = await this.deps.sandboxService?.execute(code, input, undefined, []);

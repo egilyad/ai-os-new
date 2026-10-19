@@ -9,7 +9,7 @@ import type {
     MemoryPruneOptions,
     MemoryPruneResult,
 } from '../types/memory-types';
-import type { IMemoryEngine, MemoryCapability } from '../contracts/memory';
+import type { IMemoryEngine, MemoryCapability, MemoryQuery } from '../contracts/memory';
 import type { ITransaction } from '../contracts/transaction';
 import { TransactionContext } from './transaction';
 import type { DatabaseService } from './database-service';
@@ -18,7 +18,12 @@ import { MemoryCache } from './memory/memory-cache';
 import { MemoryWorkerClient, MEMORY_PENDING_TIMEOUT_MS } from './memory/memory-worker-client';
 import { MemoryPruneScheduler } from './memory/memory-prune-scheduler';
 import { passesMemoryQualityGate } from './memory/memory-quality-gate';
-import { keywordFilterSearch, recallRank, computeEngineStats } from './memory/memory-search-utils';
+import {
+    keywordFilterSearch,
+    recallRank,
+    computeEngineStats,
+    matchesMemoryQuery,
+} from './memory/memory-search-utils';
 const LOGGER = rootLogger.child('MemoryEngine');
 
 function getMaxMemoryEntries(): number {
@@ -697,6 +702,37 @@ export class MemoryService implements IMemoryEngine {
         return keywordFilterSearch(this.cache.entries, query, limit);
     }
 
+    /**
+     * Filtered search (namespaces/ACL): `filter` is matched on entry metadata
+     * (agentId/roleId/sessionId/chatId/source/type/collection/parentId plus
+     * importanceMin, timeRange and tags). Empty query returns cache entries
+     * ranked by filter only, so callers can list a scope.
+     */
+    async searchAdvanced(query: MemoryQuery): Promise<MemorySearchResult[]> {
+        const limit = query.limit ?? 5;
+        const filter = query.filter;
+        let results: MemorySearchResult[];
+
+        if (query.query.trim()) {
+            const fetched = await this.search(
+                query.query,
+                Math.max(limit * 10, 100),
+                (query.mode as SearchMode) || 'auto',
+            );
+            results = fetched.filter((r) => matchesMemoryQuery(r.entry, filter));
+        } else {
+            results = this.cache.entries
+                .filter((e) => matchesMemoryQuery(e, filter))
+                .map((entry) => ({ entry, score: 0, matchedOn: 'keyword' as const }));
+        }
+
+        if (typeof query.minScore === 'number') {
+            const minScore = query.minScore;
+            results = results.filter((r) => (r.score ?? 0) >= minScore);
+        }
+        return results.slice(0, limit);
+    }
+
     getStats(): MemoryStats {
         return computeEngineStats(this.cache.entries);
     }
@@ -808,8 +844,11 @@ export class MemoryService implements IMemoryEngine {
         };
     }
 
-    recall(context: string, limit = 3): MemoryEntry[] {
+    recall(context: string, limit = 3, filter?: Record<string, unknown>): MemoryEntry[] {
         if (!CONFIG.featureFlags.memory.enabled) return [];
-        return recallRank(this.cache.entries, context, limit);
+        const entries = filter
+            ? this.cache.entries.filter((e) => matchesMemoryQuery(e, filter))
+            : this.cache.entries;
+        return recallRank(entries, context, limit);
     }
 }

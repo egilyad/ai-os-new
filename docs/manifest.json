@@ -6576,6 +6576,7 @@
         "src/kernel/contracts/memory-store.ts",
         "src/kernel/services/memory/service-backed-memory.ts",
         "src/kernel/services/memory/memory-search-utils.ts",
+        "src/kernel/services/tool-executor.ts",
         "src/kernel/services/crystal-vault/crystal-vault-service.ts"
       ],
       "related": [
@@ -6595,6 +6596,8 @@
         "src/kernel/services/persona/ppr-recall.test.ts",
         "src/kernel/services/persona/associative-context.test.ts",
         "src/kernel/services/memory/service-backed-memory.test.ts",
+        "src/kernel/services/memory/memory-search-utils.test.ts",
+        "src/kernel/services/tool-executor.test.ts",
         "src/kernel/services/crystal-vault/crystal-vault-service.test.ts"
       ]
     }
@@ -10582,6 +10585,7 @@
         "src/kernel/services/forum/forum-service.test.ts",
         "src/kernel/services/health-sla-service.test.ts",
         "src/kernel/services/key-management/key-vault.test.ts",
+        "src/kernel/services/memory/memory-search-utils.test.ts",
         "src/kernel/services/metrics-service.test.ts",
         "src/kernel/services/notification-webhook-service.test.ts",
         "src/kernel/services/prompt-security-service.test.ts",

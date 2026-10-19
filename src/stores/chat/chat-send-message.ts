@@ -140,6 +140,7 @@ export function createSendMessageHandler(
                             timestamp: Date.now(),
                             importance: 0.5,
                             chatId: sessionId,
+                            sessionId: sessionId,
                         },
                     });
                 } catch (e) {

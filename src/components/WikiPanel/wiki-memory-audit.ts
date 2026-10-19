@@ -21,6 +21,7 @@ export const MEMORY_AUDIT_ARTICLES: WikiArticle[] = [
             'src/kernel/contracts/memory-store.ts',
             'src/kernel/services/memory/service-backed-memory.ts',
             'src/kernel/services/memory/memory-search-utils.ts',
+            'src/kernel/services/tool-executor.ts',
             'src/kernel/services/crystal-vault/crystal-vault-service.ts',
         ],
         related: [
@@ -91,9 +92,9 @@ export const MEMORY_AUDIT_ARTICLES: WikiArticle[] = [
 | Подход | Статус | Что в системе |
 | --- | --- | --- |
 | Shared message pool (MetaGPT) | Работает | Blackboard (в памяти, TTL, visibility) + персистентный blackboard (bb/board). |
-| Namespaces / scopes | Частично | Метаданные owner/agent/role/session есть, но основной движок их не форсит. |
+| Namespaces / scopes | Работает | Метаданные agent/role/session/chat/type пишутся; searchAdvanced/recall фильтруют по ним (+ timeRange/importance/tags). Основной чат-recall общий. |
 | MCP memory server | Нет | Только MCP-клиент; сервера памяти нет. Внутренний поиск — лишь knowledge.search. |
-| Role-based ACL | Частично | ACL фильтрует Knowledge/Workspace; основная память ACL не проверяет. |
+| Role-based ACL | Частично | ACL фильтрует Knowledge/Workspace; память фильтруется по metadata (searchAdvanced/t-search), но roleId не форсится автоматически. |
 | Handoff memory | Работает | Персист в kv task_handoffs_v1 (что/кому/контекст/результат). Полей «почему/ограничения» нет. |
 | CrewAI shared memory | Частично | Blackboard + shared-context-service. |
 | MIRIX (6 типов) | Частично | Классы emotional/social/spatial есть, но не инстанцируются — по факту нет. |
@@ -110,13 +111,14 @@ export const MEMORY_AUDIT_ARTICLES: WikiArticle[] = [
 - Hybrid retrieval (BM25 ∪ vector → RRF → rerank) подключён в агентный RAG-цикл RagService с fallback на token-retrieve.
 - Ассоциативный recall (PPR/HippoRAG) встроен в основной чат-контекст: keyword-сиды → Personalized PageRank по действующим связям памяти (buildAssociativeContext).
 - Консолидация «сна» (микро/ночная) мёржит дубли и забывает низкозначимые по Ebbinghaus-кривой; recall ранжируется с учётом кривой забывания.
+- Namespaces памяти: metadata-фильтры (agent/role/session/chat/source/type/timeRange/importance/tags) в searchAdvanced/recall и scope-параметры tool t-search ([[comp-tool-capability]]).
 - Skills-библиотека, blackboard, Reflexion, task-handoff, ACL (частично).
 
 ## Чего нет
 
 - Темпоральность большинства графов: она есть у связей памяти, рёбер провенанса и claim-рёбер дебатов (последние пересобираются из аргументов при загрузке сессии); граф знаний остаётся снапшотным.
 - Реальные эмбеддинги (везде лексические хэши) и векторная БД/ANN.
-- MCP-сервер памяти, ACL и namespaces в основной памяти.
+- MCP-сервер памяти и автоматический ACL-scoping (роль/сессия) в основном recall.
 - self-editing памяти, workflow-дистилляция и LLM-суммаризация при консолидации.
 - Session-memory coding-агентов.
 

@@ -37,7 +37,7 @@ export interface IMemoryEngine {
     getStats(): MemoryStats;
     prune(options: MemoryPruneOptions): Promise<MemoryPruneResult>;
     clear(tx?: ITransaction): Promise<void>;
-    recall(context: string, limit?: number): MemoryEntry[];
+    recall(context: string, limit?: number, filter?: Record<string, unknown>): MemoryEntry[];
     searchAdvanced?(query: MemoryQuery): Promise<MemorySearchResult[]>;
     tryStore?(entry: Omit<MemoryEntry, 'id'>): Result<void, MemoryError>;
     tryDelete?(id: string): Result<void, MemoryError>;
@@ -62,7 +62,7 @@ export interface IMemoryEngine {
     getStats(): MemoryStats;
     prune(options: MemoryPruneOptions): Promise<MemoryPruneResult>;
     clear(): Promise<void>;
-    recall(context: string, limit?: number): MemoryEntry[];
+    recall(context: string, limit?: number, filter?: Record<string, unknown>): MemoryEntry[];
     searchAdvanced?(query: MemoryQuery): Promise<MemorySearchResult[]>;
     getCapabilities(): MemoryCapability;
     tryStore?(entry: Omit<MemoryEntry, 'id'>): Result<void, MemoryError>;
