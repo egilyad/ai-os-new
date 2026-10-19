@@ -1,5 +1,10 @@
 import { describe, it, expect } from 'vitest';
-import { CATALOG_CONTEXT_WINDOWS, CATALOG_PRICING, MODELS_CATALOG } from './models-catalog';
+import {
+    CATALOG_CAPABILITIES,
+    CATALOG_CONTEXT_WINDOWS,
+    CATALOG_PRICING,
+} from './models-catalog';
+import { MODELS_CATALOG } from './models-catalog-detail';
 
 describe('models catalog', () => {
     it('contains the expected mainstream models', () => {
@@ -20,6 +25,12 @@ describe('models catalog', () => {
             provider: 'google',
         });
         expect(CATALOG_PRICING['claude-sonnet-4-5']).toMatchObject({ input: 3, output: 15 });
+    });
+
+    it('exposes capability flags', () => {
+        expect(CATALOG_CAPABILITIES['gpt-4o']?.toolCall).toBe(true);
+        expect(CATALOG_CAPABILITIES['gpt-4o']?.vision).toBe(true);
+        expect(CATALOG_CAPABILITIES['claude-sonnet-4-5']?.reasoning).toBe(true);
     });
 
     it('keeps every entry well-formed', () => {
@@ -43,8 +54,19 @@ describe('models catalog', () => {
     it('does not expose deprecated models through the lookup maps', () => {
         const deprecated = MODELS_CATALOG.filter((m) => m.deprecated);
         expect(deprecated.length).toBeGreaterThan(0);
-        for (const entry of deprecated) {
-            expect(CATALOG_CONTEXT_WINDOWS[entry.model.toLowerCase()]).toBeUndefined();
+        const liveKeys = new Set<string>();
+        for (const entry of MODELS_CATALOG) {
+            if (entry.deprecated) continue;
+            const key = entry.model.toLowerCase();
+            liveKeys.add(key);
+            const slash = key.indexOf('/');
+            if (slash > 0) liveKeys.add(key.slice(slash + 1));
+        }
+        for (const key of Object.keys(CATALOG_CONTEXT_WINDOWS)) {
+            expect(liveKeys.has(key)).toBe(true);
+        }
+        for (const key of Object.keys(CATALOG_PRICING)) {
+            expect(liveKeys.has(key)).toBe(true);
         }
     });
 });

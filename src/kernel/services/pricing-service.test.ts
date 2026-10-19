@@ -44,7 +44,10 @@ describe('PricingService', () => {
             const p = (
                 svc as unknown as { lookup: (m: string) => { input: number; output: number } }
             ).lookup('groq:llama-3.1-8b-instant');
-            expect(p.input).toBe(0.03);
+            // Value comes from the models.dev catalog (current Groq pricing),
+            // which takes precedence over the legacy hand-written fallback table.
+            expect(p.input).toBe(0.05);
+            expect(p.output).toBe(0.08);
         });
 
         it('should match by prefix', () => {

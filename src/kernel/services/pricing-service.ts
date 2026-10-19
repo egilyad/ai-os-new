@@ -4,6 +4,7 @@ import { estimateTokens } from '../utils/tokenEstimate';
 import type { ICostCalculator } from '../contracts/pricing';
 import { rootLogger } from './logger-service';
 import { CATALOG_PRICING } from '../../llm/catalog/models-catalog';
+import { getCatalogCapabilities } from '../../llm/catalog/catalog-lookup';
 const LOGGER = rootLogger.child('PricingService');
 
 const FALLBACK_PRICING: Record<string, { input: number; output: number; provider?: string }> = {
@@ -248,10 +249,12 @@ export class PricingService implements ICostCalculator {
     }
 
     getPricingCapabilities(model: string) {
+        const capabilities = getCatalogCapabilities(model);
         return {
             supportsStreaming: true,
-            supportsFunctionCalling: false,
-            supportsVision: model.toLowerCase().includes('vision'),
+            supportsFunctionCalling: capabilities?.toolCall ?? false,
+            supportsVision:
+                capabilities?.vision ?? model.toLowerCase().includes('vision'),
             maxTokens: CONFIG.pricing.defaultEstimatedOutputTokens,
             supportedModels: Object.keys(this.pricingData),
         };

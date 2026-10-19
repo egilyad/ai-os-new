@@ -4,7 +4,7 @@
 
 > Раздел: **Компоненты и сервисы** · Статус: verified · Теги: компоненты, бюджет, цены, расход
 
-Источники: `src/kernel/services/budget-service.ts`, `src/kernel/services/pricing-service.ts`, `src/kernel/services/usage-tracker.ts`, `src/kernel/contracts/budget.ts`, `src/kernel/contracts/pricing.ts`
+Источники: `src/kernel/services/budget-service.ts`, `src/kernel/services/pricing-service.ts`, `src/kernel/services/usage-tracker.ts`, `src/kernel/contracts/budget.ts`, `src/kernel/contracts/pricing.ts`, `src/llm/catalog/models-catalog.ts`, `src/llm/catalog/catalog-lookup.ts`
 
 ## Назначение
 
@@ -20,7 +20,8 @@
 ## Реализация
 
 - `BudgetService implements IBudgetService` (`budget-service.ts`): дефолт `monthlyBudget = 50`; пороги `[50,80,90,100]` с дедупликацией `type:entity:level`; история расходов ≤ 10000, алертов ≤ 100; `saveHistory` дебаунс 5000 мс; кеш `BUDGET_CACHE_TTL = 1000` мс. Подписан на `chat:stream:end` (считает стоимость, дедуп по `requestId`).
-- `PricingService implements ICostCalculator` (`pricing-service.ts`): `FALLBACK_PRICING` (~31 модели, цены за 1M токенов), снятие префиксов провайдеров, override'ы, prefix-cache, `syncFromOpenRouter()` (10с таймаут, пересчёт per-token → per-1M). Локальные модели (`ollama/lmstudio/localhost`) — нулевая стоимость.
+- `PricingService implements ICostCalculator` (`pricing-service.ts`): `FALLBACK_PRICING` (~31 модель, цены за 1M токенов) плюс каталог `CATALOG_PRICING` (models.dev), снятие префиксов провайдеров, override'ы, prefix-cache, `syncFromOpenRouter()` (10с таймаут, пересчёт per-token → per-1M). Локальные модели (`ollama/lmstudio/localhost`) — нулевая стоимость.
+- Каталог моделей: `src/llm/catalog/` — сгенерированный из models.dev (MIT) набор контекстных окон, цен и capability-флагов (784 chat-модели, 18 провайдеров); `catalog-lookup.ts` резолвит `openai/gpt-4o`, `groq:llama-3.1-8b-instant` и `openrouter/anthropic/claude-opus-4.7`. Пересборка: `node scripts/extract-models-catalog.mjs`.
 - `UsageTracker implements IUsageTracker` (`usage-tracker.ts`): KV `super_agents_usage_records`, дебаунс записи 2000 мс, квота за окно **30 дней** (`defaultMonthlyBudget`, `maxRequestsPerMonth`).
 
 ## Связи

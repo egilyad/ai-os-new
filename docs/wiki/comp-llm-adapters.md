@@ -4,7 +4,7 @@
 
 > Раздел: **Компоненты и сервисы** · Статус: verified · Теги: компоненты, llm, адаптеры, провайдеры
 
-Источники: `src/llm/registry/adapter-factory.ts`, `src/llm/http/llm-http-client.ts`, `src/llm/http/sse-parser.ts`, `src/llm/gemini/gemini-adapter.ts`, `src/llm/openrouter/openrouter-adapter.ts`, `src/llm/groq/groq-adapter.ts`, `src/llm/nvidia/nvidia-nim-adapter.ts`, `src/llm/anthropic/anthropic-adapter.ts`, `src/llm/openai-compatible/openai-compatible-adapter.ts`, `src/llm/utils/token-counter.ts`
+Источники: `src/llm/registry/adapter-factory.ts`, `src/llm/http/llm-http-client.ts`, `src/llm/http/sse-parser.ts`, `src/llm/gemini/gemini-adapter.ts`, `src/llm/openrouter/openrouter-adapter.ts`, `src/llm/groq/groq-adapter.ts`, `src/llm/nvidia/nvidia-nim-adapter.ts`, `src/llm/anthropic/anthropic-adapter.ts`, `src/llm/openai-compatible/openai-compatible-adapter.ts`, `src/llm/utils/token-counter.ts`, `src/llm/catalog/models-catalog.ts`, `src/llm/catalog/catalog-lookup.ts`
 
 ## Назначение
 
@@ -15,6 +15,7 @@
 - Адаптеры под провайдеров: Gemini, OpenRouter, Groq, NVIDIA NIM, Anthropic, Cerebras, Cloudflare, DeepSeek, Kimi, MiniMax, Qwen, OpenAI-совместимые, компьютерные (Gemini Computer), а также MockAdapter.
 - Фабрика адаптеров, HTTP-клиент с таймаутами и `parseRetryAfterHeader`, парсер SSE-стрима.
 - Утилиты: подсчёт токенов (`estimateTokenCount`), сжатие промптов.
+- Каталог моделей (context/цены/capability-флаги) — `catalog/`, данные models.dev; используется `PricingService` и контролем контекста чата.
 
 ## Реализация
 

@@ -571,6 +571,8 @@ flowchart TD
             'src/kernel/services/usage-tracker.ts',
             'src/kernel/contracts/budget.ts',
             'src/kernel/contracts/pricing.ts',
+            'src/llm/catalog/models-catalog.ts',
+            'src/llm/catalog/catalog-lookup.ts',
         ],
         related: ['comp-routing', 'comp-key-management', 'panel-budget', 'panel-providers'],
         body: `## Назначение
@@ -587,7 +589,8 @@ flowchart TD
 ## Реализация
 
 - \`BudgetService implements IBudgetService\` (\`budget-service.ts\`): дефолт \`monthlyBudget = 50\`; пороги \`[50,80,90,100]\` с дедупликацией \`type:entity:level\`; история расходов ≤ 10000, алертов ≤ 100; \`saveHistory\` дебаунс 5000 мс; кеш \`BUDGET_CACHE_TTL = 1000\` мс. Подписан на \`chat:stream:end\` (считает стоимость, дедуп по \`requestId\`).
-- \`PricingService implements ICostCalculator\` (\`pricing-service.ts\`): \`FALLBACK_PRICING\` (~31 модели, цены за 1M токенов), снятие префиксов провайдеров, override'ы, prefix-cache, \`syncFromOpenRouter()\` (10с таймаут, пересчёт per-token → per-1M). Локальные модели (\`ollama/lmstudio/localhost\`) — нулевая стоимость.
+- \`PricingService implements ICostCalculator\` (\`pricing-service.ts\`): \`FALLBACK_PRICING\` (~31 модель, цены за 1M токенов) плюс каталог \`CATALOG_PRICING\` (models.dev), снятие префиксов провайдеров, override'ы, prefix-cache, \`syncFromOpenRouter()\` (10с таймаут, пересчёт per-token → per-1M). Локальные модели (\`ollama/lmstudio/localhost\`) — нулевая стоимость.
+- Каталог моделей: \`src/llm/catalog/\` — сгенерированный из models.dev (MIT) набор контекстных окон, цен и capability-флагов (784 chat-модели, 18 провайдеров); \`catalog-lookup.ts\` резолвит \`openai/gpt-4o\`, \`groq:llama-3.1-8b-instant\` и \`openrouter/anthropic/claude-opus-4.7\`. Пересборка: \`node scripts/extract-models-catalog.mjs\`.
 - \`UsageTracker implements IUsageTracker\` (\`usage-tracker.ts\`): KV \`super_agents_usage_records\`, дебаунс записи 2000 мс, квота за окно **30 дней** (\`defaultMonthlyBudget\`, \`maxRequestsPerMonth\`).
 
 ## Связи
@@ -2049,6 +2052,8 @@ flowchart TD
             'src/llm/anthropic/anthropic-adapter.ts',
             'src/llm/openai-compatible/openai-compatible-adapter.ts',
             'src/llm/utils/token-counter.ts',
+            'src/llm/catalog/models-catalog.ts',
+            'src/llm/catalog/catalog-lookup.ts',
         ],
         related: ['providers', 'panel-providers', 'comp-provider-runtime', 'comp-llm-pipeline', 'dev-component-catalog'],
         body: `## Назначение
@@ -2060,6 +2065,7 @@ flowchart TD
 - Адаптеры под провайдеров: Gemini, OpenRouter, Groq, NVIDIA NIM, Anthropic, Cerebras, Cloudflare, DeepSeek, Kimi, MiniMax, Qwen, OpenAI-совместимые, компьютерные (Gemini Computer), а также MockAdapter.
 - Фабрика адаптеров, HTTP-клиент с таймаутами и \`parseRetryAfterHeader\`, парсер SSE-стрима.
 - Утилиты: подсчёт токенов (\`estimateTokenCount\`), сжатие промптов.
+- Каталог моделей (context/цены/capability-флаги) — \`catalog/\`, данные models.dev; используется \`PricingService\` и контролем контекста чата.
 
 ## Реализация
 

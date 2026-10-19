@@ -28,6 +28,7 @@ const {
     mockLock,
     mockSStore,
     mockConfig,
+    mockWorkflowDistiller,
 } = vi.hoisted(() => {
     const mockSStore = {
         listSessions: vi.fn(async () => []),

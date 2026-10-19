@@ -2739,7 +2739,9 @@
         "src/kernel/services/pricing-service.ts",
         "src/kernel/services/usage-tracker.ts",
         "src/kernel/contracts/budget.ts",
-        "src/kernel/contracts/pricing.ts"
+        "src/kernel/contracts/pricing.ts",
+        "src/llm/catalog/models-catalog.ts",
+        "src/llm/catalog/catalog-lookup.ts"
       ],
       "related": [
         "comp-routing",
@@ -2751,7 +2753,9 @@
       "tests": [
         "src/kernel/services/budget-service.test.ts",
         "src/kernel/services/pricing-service.test.ts",
-        "src/kernel/services/usage-tracker.test.ts"
+        "src/kernel/services/usage-tracker.test.ts",
+        "src/llm/catalog/models-catalog.test.ts",
+        "src/llm/catalog/catalog-lookup.test.ts"
       ]
     },
     {
@@ -3845,7 +3849,9 @@
         "src/llm/nvidia/nvidia-nim-adapter.ts",
         "src/llm/anthropic/anthropic-adapter.ts",
         "src/llm/openai-compatible/openai-compatible-adapter.ts",
-        "src/llm/utils/token-counter.ts"
+        "src/llm/utils/token-counter.ts",
+        "src/llm/catalog/models-catalog.ts",
+        "src/llm/catalog/catalog-lookup.ts"
       ],
       "related": [
         "providers",
@@ -3861,7 +3867,9 @@
         "src/llm/http/sse-parser.test.ts",
         "src/llm/gemini/gemini-adapter.test.ts",
         "src/llm/anthropic/anthropic-adapter.test.ts",
-        "src/llm/openai-compatible/openai-compatible-adapter.test.ts"
+        "src/llm/openai-compatible/openai-compatible-adapter.test.ts",
+        "src/llm/catalog/models-catalog.test.ts",
+        "src/llm/catalog/catalog-lookup.test.ts"
       ]
     },
     {

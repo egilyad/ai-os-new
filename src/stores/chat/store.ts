@@ -15,6 +15,7 @@ import {
     rebuildRequestEntryMap,
     requestEntryMap,
 } from './types';
+import { getCatalogContextWindow } from '../../llm/catalog/catalog-lookup';
 
 // M-06: pinned session updater — sessionId is captured BEFORE awaits so
 // post-await writes land in the originating session even if the user switched
@@ -548,7 +549,8 @@ export const useChatStore = create<ChatStoreShape>((set, get) => {
                     .map((h) => h.text + h.responses.map((r) => r.content).join(''))
                     .join('') || '';
             const estimatedTokens = Math.ceil(historyText.length / 4);
-            const contextWindow = MODEL_CONTEXT_WINDOWS[model] || 128000;
+            const contextWindow =
+                getCatalogContextWindow(model) ?? MODEL_CONTEXT_WINDOWS[model] ?? 128000;
             if (estimatedTokens > contextWindow * 0.85) {
                 eventBus.emit(EVENTS.NOTIFICATION, {
                     message: `Context (${estimatedTokens} tokens) may exceed ${model} limit (${contextWindow}). Consider starting a new chat.`,

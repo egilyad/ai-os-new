@@ -3,12 +3,12 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 1246,
-    "edges": 3309,
+    "nodes": 1250,
+    "edges": 3317,
     "byType": {
       "audit": 65,
-      "code": 527,
-      "test": 162,
+      "code": 529,
+      "test": 164,
       "panel": 259,
       "article": 233
     },
@@ -16,8 +16,8 @@
       "audit_test": 328,
       "audit_mention": 928,
       "documents": 201,
-      "source": 718,
-      "test": 228,
+      "source": 722,
+      "test": 232,
       "related": 906
     }
   },
@@ -3506,6 +3506,26 @@
       "id": "file:src/llm/anthropic/anthropic-adapter.ts",
       "type": "code",
       "label": "src/llm/anthropic/anthropic-adapter.ts"
+    },
+    {
+      "id": "file:src/llm/catalog/catalog-lookup.test.ts",
+      "type": "test",
+      "label": "src/llm/catalog/catalog-lookup.test.ts"
+    },
+    {
+      "id": "file:src/llm/catalog/catalog-lookup.ts",
+      "type": "code",
+      "label": "src/llm/catalog/catalog-lookup.ts"
+    },
+    {
+      "id": "file:src/llm/catalog/models-catalog.test.ts",
+      "type": "test",
+      "label": "src/llm/catalog/models-catalog.test.ts"
+    },
+    {
+      "id": "file:src/llm/catalog/models-catalog.ts",
+      "type": "code",
+      "label": "src/llm/catalog/models-catalog.ts"
     },
     {
       "id": "file:src/llm/cerebras/cerebras-adapter.ts",
@@ -15275,6 +15295,26 @@
     },
     {
       "from": "wiki:comp-budget-pricing",
+      "to": "file:src/llm/catalog/catalog-lookup.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-budget-pricing",
+      "to": "file:src/llm/catalog/catalog-lookup.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-budget-pricing",
+      "to": "file:src/llm/catalog/models-catalog.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-budget-pricing",
+      "to": "file:src/llm/catalog/models-catalog.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-budget-pricing",
       "to": "wiki:comp-key-management",
       "kind": "related"
     },
@@ -17431,6 +17471,26 @@
     {
       "from": "wiki:comp-llm-adapters",
       "to": "file:src/llm/anthropic/anthropic-adapter.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-llm-adapters",
+      "to": "file:src/llm/catalog/catalog-lookup.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-llm-adapters",
+      "to": "file:src/llm/catalog/catalog-lookup.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-llm-adapters",
+      "to": "file:src/llm/catalog/models-catalog.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-llm-adapters",
+      "to": "file:src/llm/catalog/models-catalog.ts",
       "kind": "source"
     },
     {
