@@ -1,8 +1,9 @@
 import type { ChatResponse } from '../../types/chat';
+import { CATALOG_CONTEXT_WINDOWS } from '../../llm/catalog/models-catalog';
 
 export const MAX_HISTORY = 200;
 
-export const MODEL_CONTEXT_WINDOWS: Record<string, number> = {
+const CONTEXT_OVERRIDES: Record<string, number> = {
     'gpt-4o': 128000,
     'gpt-4o-mini': 128000,
     'gpt-4-turbo': 128000,
@@ -11,10 +12,16 @@ export const MODEL_CONTEXT_WINDOWS: Record<string, number> = {
     'claude-3-haiku': 200000,
     'gemini-3.1-flash-lite': 1048576,
     'gemini-2.0-flash': 1000000,
+    'gemini-3.1-flash': 1000000,
     'gemini-3.1-pro': 1000000,
     'llama-3.3-70b-versatile': 128000,
     'llama-3.1-8b-instant': 128000,
     'openrouter/auto': 128000,
+};
+
+export const MODEL_CONTEXT_WINDOWS: Record<string, number> = {
+    ...CATALOG_CONTEXT_WINDOWS,
+    ...CONTEXT_OVERRIDES,
 };
 
 export interface ChatEntry {

@@ -3,6 +3,7 @@ import { CONFIG } from './config-registry';
 import { estimateTokens } from '../utils/tokenEstimate';
 import type { ICostCalculator } from '../contracts/pricing';
 import { rootLogger } from './logger-service';
+import { CATALOG_PRICING } from '../../llm/catalog/models-catalog';
 const LOGGER = rootLogger.child('PricingService');
 
 const FALLBACK_PRICING: Record<string, { input: number; output: number; provider?: string }> = {
@@ -64,6 +65,7 @@ export interface ModelPricing {
 export class PricingService implements ICostCalculator {
     protected pricingData: Record<string, { input: number; output: number; provider?: string }> = {
         ...FALLBACK_PRICING,
+        ...CATALOG_PRICING,
     };
     protected lastFetch: number = 0;
     protected prefixCache = new Map<string, { input: number; output: number; provider?: string }>();
@@ -101,7 +103,7 @@ export class PricingService implements ICostCalculator {
                 timestamp: number;
             }>(CACHE_KEY_DB);
             if (cached && Date.now() - cached.timestamp < CONFIG.pricing.cacheTTLMs) {
-                this.pricingData = { ...FALLBACK_PRICING, ...cached.data };
+                this.pricingData = { ...FALLBACK_PRICING, ...CATALOG_PRICING, ...cached.data };
                 this.lastFetch = cached.timestamp;
             }
         } catch (e) {
