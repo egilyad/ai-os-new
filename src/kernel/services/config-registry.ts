@@ -271,7 +271,17 @@ export const rawConfig: ConfigRegistry = {
         whatif: { maxHistory: 100 },
         keyService: { introspectionTimeoutMs: 10000 },
         providerInstance: { healthCheckIntervalMs: 30000 },
-        memory: { semanticEnabled: true, autoEmbedOnStore: true, maxEntries: 1000 },
+        memory: {
+            semanticEnabled: true,
+            autoEmbedOnStore: true,
+            maxEntries: 1000,
+            providerEmbeddings: {
+                enabled: false,
+                provider: 'openai',
+                model: 'text-embedding-3-small',
+                baseUrl: '',
+            },
+        },
     },
 
     featureFlags: {

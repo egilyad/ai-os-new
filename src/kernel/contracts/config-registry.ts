@@ -306,6 +306,17 @@ export interface ServicesConfigSection {
         semanticEnabled: boolean;
         autoEmbedOnStore: boolean;
         maxEntries: number;
+        /**
+         * Real provider embeddings for the memory mesh. Off by default: the
+         * offline hash embedding stays in use until a provider + key exist.
+         */
+        providerEmbeddings: {
+            enabled: boolean;
+            provider: string;
+            model: string;
+            baseUrl: string;
+            dimensions?: number;
+        };
     };
 }
 

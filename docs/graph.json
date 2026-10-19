@@ -3,21 +3,21 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 1250,
-    "edges": 3317,
+    "nodes": 1255,
+    "edges": 3324,
     "byType": {
       "audit": 65,
-      "code": 529,
-      "test": 164,
+      "code": 531,
+      "test": 167,
       "panel": 259,
       "article": 233
     },
     "byKind": {
-      "audit_test": 328,
+      "audit_test": 329,
       "audit_mention": 928,
       "documents": 201,
-      "source": 722,
-      "test": 232,
+      "source": 724,
+      "test": 236,
       "related": 906
     }
   },
@@ -2728,6 +2728,11 @@
       "label": "src/kernel/services/mcp-service.ts"
     },
     {
+      "id": "file:src/kernel/services/memory-engine.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/memory-engine.test.ts"
+    },
+    {
       "id": "file:src/kernel/services/memory-engine.ts",
       "type": "code",
       "label": "src/kernel/services/memory-engine.ts"
@@ -2771,6 +2776,16 @@
       "id": "file:src/kernel/services/memory/memory-summarizer.ts",
       "type": "code",
       "label": "src/kernel/services/memory/memory-summarizer.ts"
+    },
+    {
+      "id": "file:src/kernel/services/memory/provider-embedding-service.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/memory/provider-embedding-service.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/memory/provider-embedding-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/memory/provider-embedding-service.ts"
     },
     {
       "id": "file:src/kernel/services/memory/service-backed-memory.test.ts",
@@ -3481,6 +3496,16 @@
       "id": "file:src/kernel/utils/with-transaction.ts",
       "type": "code",
       "label": "src/kernel/utils/with-transaction.ts"
+    },
+    {
+      "id": "file:src/kernel/workers/memory-vector-space.test.ts",
+      "type": "test",
+      "label": "src/kernel/workers/memory-vector-space.test.ts"
+    },
+    {
+      "id": "file:src/kernel/workers/memory-vector-space.ts",
+      "type": "code",
+      "label": "src/kernel/workers/memory-vector-space.ts"
     },
     {
       "id": "file:src/kernel/workers/sandbox-interpreter.test.ts",
@@ -9247,6 +9272,11 @@
       "from": "audit:_done--audit-13-code-147",
       "to": "file:src/kernel/services/mcp-service.ts",
       "kind": "audit_mention"
+    },
+    {
+      "from": "audit:_done--audit-13-code-147",
+      "to": "file:src/kernel/services/memory-engine.test.ts",
+      "kind": "audit_test"
     },
     {
       "from": "audit:_done--audit-13-code-147",
@@ -17785,7 +17815,32 @@
     },
     {
       "from": "wiki:comp-memory",
+      "to": "file:src/kernel/services/memory-engine.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-memory",
       "to": "file:src/kernel/services/memory-engine.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-memory",
+      "to": "file:src/kernel/services/memory/provider-embedding-service.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-memory",
+      "to": "file:src/kernel/services/memory/provider-embedding-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-memory",
+      "to": "file:src/kernel/workers/memory-vector-space.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-memory",
+      "to": "file:src/kernel/workers/memory-vector-space.ts",
       "kind": "source"
     },
     {
@@ -21012,6 +21067,11 @@
       "from": "wiki:memory-audit",
       "to": "file:src/kernel/services/llm-bridge/llm-task-executor.ts",
       "kind": "source"
+    },
+    {
+      "from": "wiki:memory-audit",
+      "to": "file:src/kernel/services/memory-engine.test.ts",
+      "kind": "test"
     },
     {
       "from": "wiki:memory-audit",

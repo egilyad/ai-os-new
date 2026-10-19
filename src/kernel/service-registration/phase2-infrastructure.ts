@@ -16,6 +16,7 @@ import type { ProviderAdapterRegistry } from '../services/provider-adapter-regis
 import type { GroupManagerService } from '../services/group-manager';
 import type { KeyStateStore } from '../services/key-state-store';
 import type { IDiagnosticService } from '../contracts/diagnostic-service';
+import type { IEmbeddingPort } from '../contracts/parity';
 import { SessionAffinityStore } from '../services/session-affinity-store';
 import { ChatBookmarksService } from '../services/chat-bookmarks-service';
 import { AgentJournalService } from '../services/agent-journal-service';
@@ -118,6 +119,15 @@ export const registerPhase2: Phase = (helpers, ctx) => {
                             return undefined;
                         }
                     })(),
+                    // Resolved lazily: the embedding service is registered in a
+                    // later phase, so it may not exist yet when memory boots.
+                    getEmbedder: () => {
+                        try {
+                            return ctx.container.get<IEmbeddingPort>('embeddingService');
+                        } catch {
+                            return undefined;
+                        }
+                    },
                 }),
             ),
     );

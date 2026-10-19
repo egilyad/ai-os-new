@@ -59,7 +59,7 @@ export const INIT_TIERS: string[][] = [
     ],
     // Tier 6 — built-in MCP memory server (attaches itself to mcpService) and
     // the session scratchpad (loads persisted records before first chat turn)
-    ['memoryMcpServer', 'sessionMemoryService', 'workflowDistiller'],
+    ['memoryMcpServer', 'sessionMemoryService', 'workflowDistiller', 'embeddingService'],
     // Tier 7 — remaining (no explicit deps or self-contained)
     ['*'],
 ];

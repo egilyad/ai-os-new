@@ -72,6 +72,7 @@ import { registerPhase71 } from './phase71-computer-use-loop';
 import { registerPhase72 } from './phase72-memory-mcp';
 import { registerPhase73 } from './phase73-session-memory';
 import { registerPhase74 } from './phase74-workflow-distill';
+import { registerPhase75 } from './phase75-provider-embeddings';
 import type { IContainer } from '../container';
 import type { IEventBus } from '../types/interfaces';
 
@@ -156,6 +157,7 @@ export function registerServices(
     registerPhase72(helpers, ctx);
     registerPhase73(helpers, ctx);
     registerPhase74(helpers, ctx);
+    registerPhase75(helpers, ctx);
 }
 
 export type { PhaseContext, Phase } from './helpers';

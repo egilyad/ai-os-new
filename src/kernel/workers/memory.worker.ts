@@ -7,12 +7,18 @@ import {
 } from '@orama/orama';
 import type { MemoryEntry } from '../../types/memory';
 import { rootLogger } from '../services/logger-service';
+import { VectorSpace, hashEmbedding } from './memory-vector-space';
 const LOGGER = rootLogger.child('MemoryWorker');
 
 let db: unknown = null;
 let entries: MemoryEntry[] = [];
 let semanticReady = true;
-const vectors = new Map<string, number[]>();
+/**
+ * Embedding storage. Two spaces can coexist: 'hash' (offline fallback) and
+ * 'provider' (real provider vectors) — vectors from different spaces are never
+ * compared, so a provider query only sees provider-embedded entries.
+ */
+const vectors = new VectorSpace();
 const MAX_ENTRIES = 10000;
 const MAX_VECTORS = 10000;
 
@@ -27,44 +33,29 @@ const SCHEMA = {
     },
 } as const;
 
-/** Compute a fixed-size embedding using word-level hashing (no external deps). */
-function getEmbedding(text: string, dimensions = 384): number[] {
-    const vector = new Array(dimensions).fill(0);
-    const tokens = text.toLowerCase().split(/\W+/).filter(Boolean);
-
-    for (const token of tokens) {
-        let hash = 0;
-        for (let i = 0; i < token.length; i++) {
-            hash = (hash << 5) - hash + token.charCodeAt(i);
-            hash |= 0;
-        }
-        vector[Math.abs(hash) % dimensions] += 1;
-    }
-
-    let norm = 0;
-    for (let i = 0; i < dimensions; i++) norm += vector[i] * vector[i];
-    norm = Math.sqrt(norm);
-    if (norm > 0) {
-        for (let i = 0; i < dimensions; i++) vector[i] /= norm;
-    }
-    return vector;
-}
-
 async function loadEmbeddingModel() {
     // Lightweight in-process embedding — no external model needed
     semanticReady = true;
 }
 
-function cosineSimilarity(a: number[], b: number[]): number {
-    let dot = 0,
-        normA = 0,
-        normB = 0;
-    for (let i = 0; i < a.length; i++) {
-        dot += a[i]! * b[i]!;
-        normA += a[i]! * a[i]!;
-        normB += b[i]! * b[i]!;
+/**
+ * Resolve the vector for an entry: an externally supplied one wins, otherwise
+ * the offline hash embedding is used as a fallback.
+ */
+function resolveEntryVector(
+    id: string,
+    content: string,
+    supplied?: number[],
+    space?: string,
+): number[] | undefined {
+    if (Array.isArray(supplied) && supplied.length > 0) {
+        vectors.set(id, supplied, space || 'provider');
+        return supplied;
     }
-    return dot / (Math.sqrt(normA) * Math.sqrt(normB));
+    if (!semanticReady) return undefined;
+    const hashed = hashEmbedding(content);
+    vectors.set(id, hashed, 'hash');
+    return hashed;
 }
 
 function pruneEntries(): void {
@@ -83,16 +74,7 @@ function pruneEntries(): void {
 }
 
 function pruneVectors(): void {
-    if (vectors.size > MAX_VECTORS) {
-        // Remove oldest vectors (FIFO based on insertion order approximation)
-        const toRemove = vectors.size - MAX_VECTORS;
-        let count = 0;
-        for (const [id] of vectors.entries()) {
-            if (count >= toRemove) break;
-            vectors.delete(id);
-            count++;
-        }
-    }
+    vectors.prune(MAX_VECTORS);
 }
 
 self.onmessage = async (event: MessageEvent) => {
@@ -105,7 +87,9 @@ self.onmessage = async (event: MessageEvent) => {
                 entries = payload?.memories || [];
                 for (const m of entries) {
                     await insert(db as AnyOrama, m);
-                    if (m.vector) vectors.set(m.id, m.vector);
+                    if (m.vector) {
+                        vectors.set(m.id, m.vector, VectorSpace.detectSpace(m.vector));
+                    }
                 }
                 self.postMessage({ requestId, type: 'init' });
                 break;
@@ -123,9 +107,15 @@ self.onmessage = async (event: MessageEvent) => {
                 entries.push(entry);
 
                 let embedding: number[] | undefined;
-                if (payload.generateEmbedding && semanticReady) {
-                    embedding = await getEmbedding(entry.content);
-                    vectors.set(entry.id, embedding);
+                if (payload.vector) {
+                    embedding = resolveEntryVector(
+                        entry.id,
+                        entry.content,
+                        payload.vector,
+                        payload.vectorSpace,
+                    );
+                } else if (payload.generateEmbedding && semanticReady) {
+                    embedding = resolveEntryVector(entry.id, entry.content);
                 }
 
                 pruneEntries();
@@ -155,9 +145,15 @@ self.onmessage = async (event: MessageEvent) => {
                 if (db) await insert(db as AnyOrama, entry);
 
                 let embedding: number[] | undefined;
-                if (payload.generateEmbedding && semanticReady) {
-                    embedding = await getEmbedding(entry.content);
-                    vectors.set(entry.id, embedding);
+                if (payload.vector) {
+                    embedding = resolveEntryVector(
+                        entry.id,
+                        entry.content,
+                        payload.vector,
+                        payload.vectorSpace,
+                    );
+                } else if (payload.generateEmbedding && semanticReady) {
+                    embedding = resolveEntryVector(entry.id, entry.content);
                 }
 
                 pruneEntries();
@@ -176,7 +172,7 @@ self.onmessage = async (event: MessageEvent) => {
                 entries = entries.filter((e) => e.id !== id);
                 vectors.delete(id);
                 try {
-                    if (db) await oramaRemove(db as AnyOrama, id);
+                    if (db) void oramaRemove(db as AnyOrama, id);
                 } catch (e) {
                     LOGGER.warn('MemoryWorker', 'remove error', { error: e });
                 }
@@ -204,15 +200,19 @@ self.onmessage = async (event: MessageEvent) => {
                     break;
                 }
 
-                const queryVec = await getEmbedding(payload.query);
-                const scored = entries
-                    .filter((e) => vectors.has(e.id))
-                    .map((e) => ({
-                        ...e,
-                        score: cosineSimilarity(queryVec, vectors.get(e.id)!),
-                    }))
-                    .sort((a, b) => b.score - a.score)
-                    .slice(0, payload.limit ?? 5);
+                const querySpace = payload.querySpace || 'hash';
+                const queryVec: number[] =
+                    Array.isArray(payload.queryVector) && payload.queryVector.length > 0
+                        ? payload.queryVector
+                        : hashEmbedding(payload.query);
+                const scored = vectors
+                    .match(queryVec, querySpace)
+                    .slice(0, payload.limit ?? 5)
+                    .map(({ id, score }) => {
+                        const entry = entries.find((e) => e.id === id);
+                        return entry ? { ...entry, score } : null;
+                    })
+                    .filter((entry): entry is MemoryEntry & { score: number } => entry !== null);
 
                 self.postMessage({ requestId, type: 'search_semantic', payload: { hits: scored } });
                 break;

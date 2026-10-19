@@ -10,6 +10,7 @@ import type {
     MemoryPruneResult,
 } from '../types/memory-types';
 import type { IMemoryEngine, MemoryCapability, MemoryQuery } from '../contracts/memory';
+import type { IEmbeddingPort } from '../contracts/parity';
 import type { ITransaction } from '../contracts/transaction';
 import { TransactionContext } from './transaction';
 import type { DatabaseService } from './database-service';
@@ -53,7 +54,17 @@ export interface MemoryServiceDeps {
             fail(e: Error): void;
         };
     };
+    /**
+     * Optional real-embedding provider. Resolved lazily because the memory
+     * service is created long before the LLM/key services exist.
+     */
+    getEmbedder?: () => IEmbeddingPort | undefined;
 }
+
+/** Label of the vector space used for provider embeddings. */
+const PROVIDER_VECTOR_SPACE = 'provider';
+/** Upper bound for the in-memory embedding cache (query + entry vectors). */
+const EMBEDDING_CACHE_MAX = 500;
 
 export class MemoryService implements IMemoryEngine {
     private cache: MemoryCache;
@@ -66,6 +77,10 @@ export class MemoryService implements IMemoryEngine {
     private memoryRepo: MemoryRepository;
     private _listenersSetup = false;
     private _initPromise: Promise<void> | null = null;
+    /** Cached provider embeddings (text -> vector), bounded by EMBEDDING_CACHE_MAX. */
+    private embeddingCache = new Map<string, number[]>();
+    /** Set once a provider embedding call fails, to avoid hammering a broken provider. */
+    private providerEmbeddingsDisabled = false;
 
     private async _withTransaction<T>(
         source: string,
@@ -158,6 +173,7 @@ export class MemoryService implements IMemoryEngine {
         this.accessTracker.destroy();
         this.workerClient.destroy();
         this.cache.clear();
+        this.embeddingCache.clear();
         this._listenersSetup = false;
         this.semanticReady = false;
     }
@@ -173,6 +189,52 @@ export class MemoryService implements IMemoryEngine {
             LOGGER.info('MemoryEngine', 'Semantic search ready (lazy)');
         } catch (e) {
             LOGGER.warn('MemoryEngine', 'Semantic search unavailable:', { error: e });
+        }
+    }
+
+    /**
+     * Resolve a provider embedding for the given texts (best-effort).
+     * Returns undefined when no provider is configured, the provider fails, or
+     * embeddings are disabled — the caller then keeps the offline hash vectors.
+     */
+    private async providerEmbed(texts: string[]): Promise<number[][] | undefined> {
+        if (!texts.length) return undefined;
+        if (this.providerEmbeddingsDisabled) return undefined;
+        const embedder = this.deps.getEmbedder?.();
+        if (!embedder) return undefined;
+
+        const pending: string[] = [];
+        const cached: Array<number[] | undefined> = texts.map((text) => {
+            const hit = this.embeddingCache.get(text);
+            if (hit) return hit;
+            pending.push(text);
+            return undefined;
+        });
+        if (!pending.length) return cached as number[][];
+
+        try {
+            const vectors = await embedder.embed(pending);
+            pending.forEach((text, idx) => {
+                const vector = vectors[idx];
+                if (!vector) return;
+                this.embeddingCache.set(text, vector);
+                if (this.embeddingCache.size > EMBEDDING_CACHE_MAX) {
+                    const oldest = this.embeddingCache.keys().next().value;
+                    if (oldest !== undefined) this.embeddingCache.delete(oldest);
+                }
+            });
+            let cursor = 0;
+            return cached.map((hit) => {
+                if (hit) return hit;
+                const vector = vectors[cursor++];
+                return vector;
+            }) as number[][];
+        } catch (e) {
+            this.providerEmbeddingsDisabled = true;
+            LOGGER.warn('MemoryEngine', 'Provider embeddings unavailable, using hash vectors', {
+                error: e,
+            });
+            return undefined;
         }
     }
 
@@ -309,23 +371,20 @@ export class MemoryService implements IMemoryEngine {
             }
             this.workerClient
                 .ensure(this.cache.entries)
-                .then(() => {
+                .then(async () => {
                     if (this.workerClient.ready) {
-                        this.workerClient
-                            .send('upsert', {
-                                entry: newEntry,
-                                generateEmbedding: this.semanticReady,
-                            })
-                            .catch((e) => {
-                                LOGGER.warn('MemoryEngine', 'Worker insert failed', { error: e });
-                                this.semanticReady = false;
-                            });
+                        const vectors = await this.providerEmbed([newEntry.content]);
+                        const vector = vectors?.[0];
+                        await this.workerClient.send('upsert', {
+                            entry: newEntry,
+                            generateEmbedding: this.semanticReady,
+                            vector,
+                            vectorSpace: vector ? PROVIDER_VECTOR_SPACE : undefined,
+                        });
                     }
                 })
                 .catch((e) => {
-                    LOGGER.warn('MemoryEngine', 'init worker failed', {
-                        error: e,
-                    });
+                    LOGGER.warn('MemoryEngine', 'Worker insert failed', { error: e });
                     this.semanticReady = false;
                 });
         });
@@ -383,23 +442,20 @@ export class MemoryService implements IMemoryEngine {
             }
             this.workerClient
                 .ensure(this.cache.entries)
-                .then(() => {
+                .then(async () => {
                     if (this.workerClient.ready) {
-                        this.workerClient
-                            .send('upsert', {
-                                entry: newEntry,
-                                generateEmbedding: this.semanticReady,
-                            })
-                            .catch((e) => {
-                                LOGGER.warn('MemoryEngine', 'Worker upsert failed', { error: e });
-                                this.semanticReady = false;
-                            });
+                        const vectors = await this.providerEmbed([newEntry.content]);
+                        const vector = vectors?.[0];
+                        await this.workerClient.send('upsert', {
+                            entry: newEntry,
+                            generateEmbedding: this.semanticReady,
+                            vector,
+                            vectorSpace: vector ? PROVIDER_VECTOR_SPACE : undefined,
+                        });
                     }
                 })
                 .catch((e) => {
-                    LOGGER.warn('MemoryEngine', 'init worker failed', {
-                        error: e,
-                    });
+                    LOGGER.warn('MemoryEngine', 'Worker upsert failed', { error: e });
                     this.semanticReady = false;
                 });
         });
@@ -461,13 +517,20 @@ export class MemoryService implements IMemoryEngine {
             }
             this.workerClient
                 .ensure(this.cache.entries)
-                .then(() => {
+                .then(async () => {
                     if (this.workerClient.ready) {
+                        const vectors = await this.providerEmbed(
+                            newEntries.map((e) => e.content),
+                        );
                         Promise.all(
-                            newEntries.map((e) =>
+                            newEntries.map((e, idx) =>
                                 this.workerClient.send('upsert', {
                                     entry: e,
                                     generateEmbedding: false,
+                                    vector: vectors?.[idx],
+                                    vectorSpace: vectors?.[idx]
+                                        ? PROVIDER_VECTOR_SPACE
+                                        : undefined,
                                 }),
                             ),
                         ).catch((err) =>
@@ -683,9 +746,13 @@ export class MemoryService implements IMemoryEngine {
                     metadata: { operation: 'search_semantic', query: query.slice(0, 60) },
                 });
                 try {
+                    const queryVectors = await this.providerEmbed([query]);
+                    const queryVector = queryVectors?.[0];
                     const result = await this.workerClient.send('search_semantic', {
                         query,
                         limit,
+                        queryVector,
+                        querySpace: queryVector ? PROVIDER_VECTOR_SPACE : 'hash',
                     });
                     govOp?.complete();
                     const hits = (
@@ -695,6 +762,23 @@ export class MemoryService implements IMemoryEngine {
                         score: h.score,
                         matchedOn: 'semantic' as const,
                     }));
+                    // Entries embedded in another space (e.g. legacy hash vectors)
+                    // are invisible to a provider-space query — fall through to the
+                    // keyword index instead of returning nothing.
+                    if (!hits.length && queryVector) {
+                        govOp?.complete();
+                        const fallback = await this.workerClient.send('search', { query, limit });
+                        const fallbackHits = (
+                            (fallback.payload as { hits: { document: MemoryEntry; score: number }[] })
+                                .hits || []
+                        ).map((h) => ({
+                            entry: h.document,
+                            score: h.score,
+                            matchedOn: 'keyword' as const,
+                        }));
+                        this.accessTracker.touch(fallbackHits.map((r) => r.entry.id));
+                        return fallbackHits;
+                    }
                     this.accessTracker.touch(hits.map((r) => r.entry.id));
                     return hits;
                 } catch (e) {
