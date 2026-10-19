@@ -1,5 +1,6 @@
 import type { Claim, ClaimEdge, ClaimGraph } from './types';
 import { jaccardSimilarity } from '../../../contracts/debate-types';
+import { isEdgeValidAt, type TemporalEdgeFields } from '../../../types/temporal-edge';
 
 export function createClaimGraph(): ClaimGraph {
     return { claims: {}, edges: [] };
@@ -19,15 +20,41 @@ export function addEdge(
     to: string,
     type: 'supports' | 'challenges' | 'refines',
     weight: number,
+    opts: TemporalEdgeFields = {},
 ): void {
     if (from === to) return;
-    const exists = graph.edges.some((e) => e.from === from && e.to === to && e.type === type);
+    const t = Date.now();
+    const asOf = opts.observedAt ?? t;
+    // Dedupe only against currently-valid edges: a re-observed relation after
+    // its previous window expired is allowed to open a new edge.
+    const exists = graph.edges.some(
+        (e) =>
+            e.from === from &&
+            e.to === to &&
+            e.type === type &&
+            isEdgeValidAt(e, asOf),
+    );
     if (exists) return;
-    graph.edges.push({ from, to, type, weight, createdAt: Date.now() });
+    graph.edges.push({
+        from,
+        to,
+        type,
+        weight,
+        createdAt: t,
+        validFrom: opts.validFrom ?? t,
+        validTo: opts.validTo ?? null,
+        observedAt: opts.observedAt ?? t,
+    });
+}
+
+/** Edges that were valid at `asOf` (default: now). */
+export function claimEdgesAsOf(graph: ClaimGraph, asOf: number = Date.now()): ClaimEdge[] {
+    return graph.edges.filter((e) => isEdgeValidAt(e, asOf));
 }
 
 export function detectChallenges(graph: ClaimGraph): ClaimEdge[] {
     const edges: ClaimEdge[] = [];
+    const t = Date.now();
     const claimList = Object.values(graph.claims);
     for (let i = 0; i < claimList.length; i++) {
         for (let j = i + 1; j < claimList.length; j++) {
@@ -42,7 +69,10 @@ export function detectChallenges(graph: ClaimGraph): ClaimEdge[] {
                     to: b.id,
                     type: 'challenges',
                     weight: overlap,
-                    createdAt: Date.now(),
+                    createdAt: t,
+                    validFrom: t,
+                    validTo: null,
+                    observedAt: t,
                 });
             }
         }

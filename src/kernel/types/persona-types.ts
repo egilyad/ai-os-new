@@ -9,6 +9,7 @@
  * Communication: EventBus only (`memory:*`, `persona:*`, `context:*`, `goal:*`).
  * Existing Memory Mesh / roles / workspace are untouched.
  */
+import type { TemporalEdgeFields } from './temporal-edge';
 
 /** Letta-style tiers: core (always in context) / recall (searchable) / archival (cold). */
 export type MemoryTier = 'core' | 'recall' | 'archival';
@@ -33,18 +34,12 @@ export type MemoryRelation =
     | 'caused_by'
     | 'relates';
 
-export interface MemoryLink {
+export interface MemoryLink extends TemporalEdgeFields {
     id: string;
     fromId: string;
     toId: string;
     relation: MemoryRelation;
     createdAt: number;
-    /** World-time from which the relation holds. Defaults to createdAt when absent. */
-    validFrom?: number;
-    /** World-time until which the relation holds. null/undefined = still valid. */
-    validTo?: number | null;
-    /** When the system observed the relation (may differ from validFrom). Defaults to createdAt. */
-    observedAt?: number;
 }
 
 /** Distilled style/judgment of a user or expert (Distilly-inspired). */

@@ -12,6 +12,7 @@ import type {
     IPersonaLlmPort,
 } from '../../contracts/persona';
 import type { LongTermMemory, MemoryLink, MemoryRelation, MemoryTier } from '../../types/persona-types';
+import { isEdgeValidAt } from '../../types/temporal-edge';
 import { genId } from '../../../utils/gen-id';
 import { rootLogger } from '../logger-service';
 import { EVENTS } from '../../events/event-names';
@@ -49,9 +50,7 @@ const TIERS: MemoryTier[] = ['core', 'recall', 'archival'];
  * which is exclusive). Missing `validTo` means "still valid".
  */
 export function isLinkValidAt(link: MemoryLink, asOf: number): boolean {
-    const from = link.validFrom ?? link.createdAt;
-    const to = link.validTo;
-    return from <= asOf && (to == null || to > asOf);
+    return isEdgeValidAt(link, asOf);
 }
 
 export class LtMemoryService implements ILtMemoryService {

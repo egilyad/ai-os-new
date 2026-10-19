@@ -7,6 +7,7 @@ export {
     getUnresolvedClaims,
     getClaimsBySpeaker,
     detectChallenges,
+    claimEdgesAsOf,
 } from './claim-graph';
 export {
     detectContradictions,

@@ -1,7 +1,8 @@
 import type { Claim } from '../../../contracts/debate-runtime';
+import type { TemporalEdgeFields } from '../../../types/temporal-edge';
 export type { Claim } from '../../../contracts/debate-runtime';
 
-export interface ClaimEdge {
+export interface ClaimEdge extends TemporalEdgeFields {
     from: string;
     to: string;
     type: 'supports' | 'challenges' | 'refines';

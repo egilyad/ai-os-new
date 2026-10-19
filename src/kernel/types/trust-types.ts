@@ -9,6 +9,7 @@
  * Persistence: Dexie v30 (10 tables). Communication: EventBus (`trust:*`, `eco:*`).
  * AuditService / ToolGovernance / SandboxBroker / SkillMarket untouched.
  */
+import type { TemporalEdgeFields } from './temporal-edge';
 
 export interface CapabilityGrant {
     id: string;
@@ -66,18 +67,12 @@ export interface ProvenanceNode {
     createdAt: number;
 }
 
-export interface ProvenanceEdge {
+export interface ProvenanceEdge extends TemporalEdgeFields {
     id: string;
     fromId: string;
     toId: string;
     relation: 'derived_from' | 'voted_by' | 'executed_by' | 'prompted_by' | 'informed_by';
     createdAt: number;
-    /** World-time from which the provenance relation holds. Defaults to createdAt. */
-    validFrom?: number;
-    /** World-time until which the provenance relation holds. null/undefined = still valid. */
-    validTo?: number | null;
-    /** When the system observed the relation (may differ from validFrom). Defaults to createdAt. */
-    observedAt?: number;
 }
 
 export interface ExtensionManifest {

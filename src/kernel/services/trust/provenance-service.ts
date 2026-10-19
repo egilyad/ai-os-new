@@ -9,6 +9,7 @@
 import type { TrustRepository } from '../../dal/trust-repository';
 import type { IProvenanceService } from '../../contracts/trust';
 import type { ProvenanceEdge, ProvenanceNode, SandboxLevel } from '../../types/trust-types';
+import { isEdgeValidAt } from '../../types/temporal-edge';
 import { genId } from '../../../utils/gen-id';
 import { rootLogger } from '../logger-service';
 
@@ -29,9 +30,7 @@ const RISKY_HINTS = [
  * exclusive). Missing `validTo` means "still valid".
  */
 export function isProvenanceEdgeValidAt(edge: ProvenanceEdge, asOf: number): boolean {
-    const from = edge.validFrom ?? edge.createdAt;
-    const to = edge.validTo;
-    return from <= asOf && (to == null || to > asOf);
+    return isEdgeValidAt(edge, asOf);
 }
 
 export class ProvenanceService implements IProvenanceService {
