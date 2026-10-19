@@ -57,6 +57,11 @@ export class PersonaRepository {
         await this.db.memoryLinks.put({ ...l });
     }
 
+    async getLink(id: string): Promise<MemoryLink | null> {
+        const r = await this.db.memoryLinks.get(id);
+        return r ? { ...r } : null;
+    }
+
     async listLinks(): Promise<MemoryLink[]> {
         const rows = await this.db.memoryLinks.toArray();
         return rows.map((r) => ({ ...r }));

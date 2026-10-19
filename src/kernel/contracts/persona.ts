@@ -52,8 +52,16 @@ export interface ILtMemoryService extends ILifecycle {
     promote(id: string): Promise<LongTermMemory>;
     demote(id: string): Promise<LongTermMemory>;
     forget(id: string): Promise<void>;
-    link(fromId: string, toId: string, relation: MemoryRelation): Promise<MemoryLink>;
-    neighbors(id: string, depth?: number): Promise<LongTermMemory[]>;
+    link(
+        fromId: string,
+        toId: string,
+        relation: MemoryRelation,
+        opts?: { validFrom?: number; validTo?: number | null; observedAt?: number },
+    ): Promise<MemoryLink>;
+    /** Close a link's validity window (sets validTo; defaults to now). */
+    closeLink(id: string, validTo?: number): Promise<MemoryLink>;
+    /** BFS over currently-valid links by default; pass asOf for historical views. */
+    neighbors(id: string, depth?: number, asOf?: number): Promise<LongTermMemory[]>;
     summarize(ownerId: string): Promise<string>;
 }
 

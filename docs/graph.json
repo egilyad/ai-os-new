@@ -3,21 +3,21 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 1222,
-    "edges": 3274,
+    "nodes": 1223,
+    "edges": 3277,
     "byType": {
       "audit": 65,
       "code": 514,
-      "test": 151,
+      "test": 152,
       "panel": 259,
       "article": 233
     },
     "byKind": {
-      "audit_test": 325,
+      "audit_test": 326,
       "audit_mention": 928,
       "documents": 201,
       "source": 701,
-      "test": 213,
+      "test": 215,
       "related": 906
     }
   },
@@ -2821,6 +2821,11 @@
       "id": "file:src/kernel/services/parity/tool-runner-service.ts",
       "type": "code",
       "label": "src/kernel/services/parity/tool-runner-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/persona/lt-memory-service.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/persona/lt-memory-service.test.ts"
     },
     {
       "id": "file:src/kernel/services/persona/lt-memory-service.ts",
@@ -11040,6 +11045,11 @@
     },
     {
       "from": "audit:_done--FULL_FUNCTIONALITY_AUDIT",
+      "to": "file:src/kernel/services/persona/lt-memory-service.test.ts",
+      "kind": "audit_test"
+    },
+    {
+      "from": "audit:_done--FULL_FUNCTIONALITY_AUDIT",
       "to": "file:src/kernel/services/persona/lt-memory-service.ts",
       "kind": "audit_mention"
     },
@@ -17930,6 +17940,11 @@
     },
     {
       "from": "wiki:comp-persona-builder",
+      "to": "file:src/kernel/services/persona/lt-memory-service.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-persona-builder",
       "to": "file:src/kernel/services/persona/lt-memory-service.ts",
       "kind": "source"
     },
@@ -20782,6 +20797,11 @@
       "from": "wiki:memory-audit",
       "to": "file:src/kernel/services/memory/sleep-engine.ts",
       "kind": "source"
+    },
+    {
+      "from": "wiki:memory-audit",
+      "to": "file:src/kernel/services/persona/lt-memory-service.test.ts",
+      "kind": "test"
     },
     {
       "from": "wiki:memory-audit",

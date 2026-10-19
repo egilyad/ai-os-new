@@ -43,6 +43,17 @@ function overlapScore(query: string, content: string): number {
 const TIER_ORDER: Record<MemoryTier, number> = { core: 0, recall: 1, archival: 2 };
 const TIERS: MemoryTier[] = ['core', 'recall', 'archival'];
 
+/**
+ * Temporal validity predicate for memory links. A link holds at `asOf` when it
+ * started (`validFrom`, else `createdAt`) and has not yet ended (`validTo`,
+ * which is exclusive). Missing `validTo` means "still valid".
+ */
+export function isLinkValidAt(link: MemoryLink, asOf: number): boolean {
+    const from = link.validFrom ?? link.createdAt;
+    const to = link.validTo;
+    return from <= asOf && (to == null || to > asOf);
+}
+
 export class LtMemoryService implements ILtMemoryService {
     constructor(
         private repo: PersonaRepository,
@@ -137,20 +148,44 @@ export class LtMemoryService implements ILtMemoryService {
         this.events.emit(EVENTS.MEMORY_FORGOTTEN, { memoryId: id });
     }
 
-    async link(fromId: string, toId: string, relation: MemoryRelation): Promise<MemoryLink> {
+    async link(
+        fromId: string,
+        toId: string,
+        relation: MemoryRelation,
+        opts: { validFrom?: number; validTo?: number | null; observedAt?: number } = {},
+    ): Promise<MemoryLink> {
         await this.require(fromId);
         await this.require(toId);
-        const link: MemoryLink = { id: genId('mlink'), fromId, toId, relation, createdAt: now() };
+        const t = now();
+        const link: MemoryLink = {
+            id: genId('mlink'),
+            fromId,
+            toId,
+            relation,
+            createdAt: t,
+            validFrom: opts.validFrom ?? t,
+            validTo: opts.validTo ?? null,
+            observedAt: opts.observedAt ?? t,
+        };
         await this.repo.putLink(link);
         this.events.emit(EVENTS.MEMORY_LINKED, { fromId, toId, relation });
         return link;
     }
 
-    async neighbors(id: string, depth = 1): Promise<LongTermMemory[]> {
+    async closeLink(id: string, validTo: number = now()): Promise<MemoryLink> {
+        const link = await this.repo.getLink(id);
+        if (!link) throw new Error(`Memory link not found: ${id}`);
+        link.validTo = validTo;
+        await this.repo.putLink(link);
+        return link;
+    }
+
+    async neighbors(id: string, depth = 1, asOf: number = now()): Promise<LongTermMemory[]> {
         await this.require(id);
         const links = await this.repo.listLinks();
         const adj = new Map<string, string[]>();
         for (const l of links) {
+            if (!isLinkValidAt(l, asOf)) continue;
             const a = adj.get(l.fromId) ?? [];
             a.push(l.toId);
             adj.set(l.fromId, a);

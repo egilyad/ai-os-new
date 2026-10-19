@@ -3537,6 +3537,7 @@
       ],
       "reviewed": null,
       "tests": [
+        "src/kernel/services/persona/lt-memory-service.test.ts",
         "src/kernel/services/builder/builder-agent-service.test.ts"
       ]
     },
@@ -6583,6 +6584,7 @@
       "reviewed": null,
       "tests": [
         "src/kernel/services/rag/hybrid-retrieval-service.test.ts",
+        "src/kernel/services/persona/lt-memory-service.test.ts",
         "src/kernel/services/crystal-vault/crystal-vault-service.test.ts"
       ]
     }
@@ -9777,6 +9779,7 @@
         "src/kernel/dal/data-access-layer.test.ts",
         "src/kernel/events/event-registry.test.ts",
         "src/kernel/services/parity/tool-runner-service.test.ts",
+        "src/kernel/services/persona/lt-memory-service.test.ts",
         "src/kernel/services/skill-service.test.ts",
         "src/llm/gemini/gemini-adapter.test.ts",
         "src/llm/openai-compatible/openai-compatible-adapter.test.ts",
