@@ -3,12 +3,12 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 1244,
-    "edges": 3305,
+    "nodes": 1246,
+    "edges": 3307,
     "byType": {
       "audit": 65,
-      "code": 526,
-      "test": 161,
+      "code": 527,
+      "test": 162,
       "panel": 259,
       "article": 233
     },
@@ -16,8 +16,8 @@
       "audit_test": 328,
       "audit_mention": 928,
       "documents": 201,
-      "source": 716,
-      "test": 226,
+      "source": 717,
+      "test": 227,
       "related": 906
     }
   },
@@ -2731,6 +2731,16 @@
       "id": "file:src/kernel/services/memory-engine.ts",
       "type": "code",
       "label": "src/kernel/services/memory-engine.ts"
+    },
+    {
+      "id": "file:src/kernel/services/memory/memory-access-tracker.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/memory/memory-access-tracker.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/memory/memory-access-tracker.ts",
+      "type": "code",
+      "label": "src/kernel/services/memory/memory-access-tracker.ts"
     },
     {
       "id": "file:src/kernel/services/memory/memory-mcp-server.test.ts",
@@ -20946,6 +20956,16 @@
     {
       "from": "wiki:memory-audit",
       "to": "file:src/kernel/services/memory-engine.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:memory-audit",
+      "to": "file:src/kernel/services/memory/memory-access-tracker.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:memory-audit",
+      "to": "file:src/kernel/services/memory/memory-access-tracker.ts",
       "kind": "source"
     },
     {

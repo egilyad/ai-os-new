@@ -14,6 +14,7 @@ import {
     getDistributedLock,
 } from './service-deps';
 import { buildAssociativeContext } from '../../kernel/services/persona/associative-context';
+import { CONSOLIDATION_SUMMARY_TYPE } from '../../kernel/services/memory-orchestrator';
 import type { ChatEntry, ZustandSet, ZustandGet, ChatStoreShape } from './types';
 import { genId, MAX_HISTORY, requestEntryMap } from './types';
 import { resolveSessionStore, updateSessionInList } from './store-helpers';
@@ -111,11 +112,29 @@ export function createSendMessageHandler(
 
             let relatedMemories: Array<{ entry: { content: string }; score?: number }> = [];
             let associativePrefix = '';
+            let summaryPrefix = '';
             if (CONFIG.featureFlags.memory.ragOnChat) {
                 try {
                     relatedMemories = (await memoryService.search(text, 3)) || [];
                 } catch (e) {
                     LOGGER.warn('ChatStore', 'Memory search failed', { error: e });
+                }
+                cancelGuard();
+                try {
+                    const summaries = memoryService.searchAdvanced
+                        ? await memoryService.searchAdvanced({
+                              query: '',
+                              filter: { type: CONSOLIDATION_SUMMARY_TYPE },
+                              limit: 2,
+                          })
+                        : [];
+                    if (summaries.length > 0) {
+                        summaryPrefix = `[CONSOLIDATED MEMORY]\n${summaries
+                            .map((s) => `- ${s.entry.content.slice(0, 1200)}`)
+                            .join('\n')}\n\n`;
+                    }
+                } catch (e) {
+                    LOGGER.warn('ChatStore', 'Consolidation summary recall failed', { error: e });
                 }
                 cancelGuard();
                 try {
@@ -129,7 +148,7 @@ export function createSendMessageHandler(
                 relatedMemories.length > 0
                     ? `[RECALLED CONTEXT]\n${relatedMemories.map((m) => `- ${m.entry.content}`).join('\n')}\n\n`
                     : '';
-            const contextPrefix = associativePrefix + recalledPrefix;
+            const contextPrefix = summaryPrefix + associativePrefix + recalledPrefix;
 
             if (CONFIG.featureFlags.memory.autoStore) {
                 try {

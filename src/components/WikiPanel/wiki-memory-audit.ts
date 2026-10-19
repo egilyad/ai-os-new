@@ -23,6 +23,7 @@ export const MEMORY_AUDIT_ARTICLES: WikiArticle[] = [
             'src/kernel/services/memory/memory-search-utils.ts',
             'src/kernel/services/memory/memory-mcp-server.ts',
             'src/kernel/services/memory/memory-summarizer.ts',
+            'src/kernel/services/memory/memory-access-tracker.ts',
             'src/kernel/services/session-memory-service.ts',
             'src/kernel/services/memory/workflow-distiller.ts',
             'src/kernel/contracts/session-memory.ts',
@@ -117,7 +118,7 @@ export const MEMORY_AUDIT_ARTICLES: WikiArticle[] = [
 - Кристаллы знаний: жизненный цикл, версии, provenance ([[comp-knowledge-rag]]).
 - Hybrid retrieval (BM25 ∪ vector → RRF → rerank) подключён в агентный RAG-цикл RagService с fallback на token-retrieve.
 - Ассоциативный recall (PPR/HippoRAG) встроен в основной чат-контекст: keyword-сиды → Personalized PageRank по действующим связям памяти (buildAssociativeContext).
-- Консолидация «сна» (микро/ночная) мёржит дубли и забывает низкозначимые по Ebbinghaus-кривой (recall тоже ранжируется с учётом кривой); ночной проход делает LLM-summary mesh-памяти (MemorySummarizer, кулдаун 6 ч, ≤5 сводок).
+- Консолидация «сна» (микро/ночная) мёржит дубли и забывает низкозначимые по Ebbinghaus-кривой (recall тоже ранжируется с учётом кривой); recall помечает \`lastAccessed\` с debounce, поэтому повторные обращения реально замедляют забывание; ночной проход делает LLM-summary mesh-памяти (MemorySummarizer, кулдаун 6 ч, ≤5 сводок), и последние 2 сводки подмешиваются в контекст чата.
 - Namespaces памяти: metadata-фильтры (agent/role/session/chat/source/type/timeRange/importance/tags) в searchAdvanced/recall и scope-параметры tool t-search ([[comp-tool-capability]]).
 - Встроенный MCP-сервер памяти: JSON-RPC initialize/resources/tools над memoryService; MCPService подключает его локально (memory://, без сети и персистенции).
 - LLM-порт персоны/памяти (LlmPersonaPort): LtMemoryService.summarize и PersonaService.distillStyle идут через llmClientService, при отсутствии LLM — эвристический fallback.

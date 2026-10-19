@@ -17,6 +17,7 @@ import { rootLogger } from './logger-service';
 import { MemoryCache } from './memory/memory-cache';
 import { MemoryWorkerClient, MEMORY_PENDING_TIMEOUT_MS } from './memory/memory-worker-client';
 import { MemoryPruneScheduler } from './memory/memory-prune-scheduler';
+import { MemoryAccessTracker } from './memory/memory-access-tracker';
 import { passesMemoryQualityGate } from './memory/memory-quality-gate';
 import {
     keywordFilterSearch,
@@ -59,6 +60,7 @@ export class MemoryService implements IMemoryEngine {
     private semanticReady = false;
     private workerClient: MemoryWorkerClient;
     private pruneScheduler: MemoryPruneScheduler;
+    private accessTracker: MemoryAccessTracker;
     private unsubs: Array<() => void> = [];
     private deps: MemoryServiceDeps;
     private memoryRepo: MemoryRepository;
@@ -107,6 +109,20 @@ export class MemoryService implements IMemoryEngine {
                 this.deps.eventBus.emit(EVENTS.MEMORY_UPDATED, this.cache.entries);
             },
         });
+        this.accessTracker = new MemoryAccessTracker({
+            get: (id) => this.cache.get(id),
+            save: (entry) => this.memoryRepo.save(entry),
+            onFlush: (entries) => {
+                if (!this.workerClient.ready) return;
+                for (const entry of entries) {
+                    this.workerClient
+                        .send('upsert', { entry, generateEmbedding: false })
+                        .catch((e) =>
+                            LOGGER.warn('MemoryEngine', 'Worker touch sync failed', { error: e }),
+                        );
+                }
+            },
+        });
     }
 
     async init() {
@@ -139,6 +155,7 @@ export class MemoryService implements IMemoryEngine {
         this.unsubs.forEach((u) => u());
         this.unsubs = [];
         this.pruneScheduler.stop();
+        this.accessTracker.destroy();
         this.workerClient.destroy();
         this.cache.clear();
         this._listenersSetup = false;
@@ -643,10 +660,13 @@ export class MemoryService implements IMemoryEngine {
         mode: SearchMode = 'auto',
     ): Promise<MemorySearchResult[]> {
         if (!CONFIG.featureFlags.memory.enabled) return [];
-        if (!query.trim())
-            return this.cache
+        if (!query.trim()) {
+            const recent = this.cache
                 .slice(limit)
-                .map((e) => ({ entry: e, score: 0, matchedOn: 'keyword' }));
+                .map((e) => ({ entry: e, score: 0, matchedOn: 'keyword' as const }));
+            this.accessTracker.touch(recent.map((r) => r.entry.id));
+            return recent;
+        }
 
         if (!this.workerClient.ready) {
             await this.workerClient
@@ -668,13 +688,15 @@ export class MemoryService implements IMemoryEngine {
                         limit,
                     });
                     govOp?.complete();
-                    return (
+                    const hits = (
                         (result.payload as { hits: (MemoryEntry & { score: number })[] }).hits || []
                     ).map((h) => ({
                         entry: h,
                         score: h.score,
                         matchedOn: 'semantic' as const,
                     }));
+                    this.accessTracker.touch(hits.map((r) => r.entry.id));
+                    return hits;
                 } catch (e) {
                     govOp?.fail(e instanceof Error ? e : new Error(String(e)));
                     LOGGER.warn('MemoryEngine', 'Semantic search failed, falling back', {
@@ -684,7 +706,7 @@ export class MemoryService implements IMemoryEngine {
             }
             try {
                 const result = await this.workerClient.send('search', { query, limit });
-                return (
+                const hits = (
                     (result.payload as { hits: { document: MemoryEntry; score: number }[] }).hits ||
                     []
                 ).map((h) => ({
@@ -692,6 +714,8 @@ export class MemoryService implements IMemoryEngine {
                     score: h.score,
                     matchedOn: 'keyword' as const,
                 }));
+                this.accessTracker.touch(hits.map((r) => r.entry.id));
+                return hits;
             } catch (e) {
                 LOGGER.warn('MemoryEngine', 'Worker search failed, falling back to local filter', {
                     error: e,
@@ -699,7 +723,9 @@ export class MemoryService implements IMemoryEngine {
             }
         }
 
-        return keywordFilterSearch(this.cache.entries, query, limit);
+        const local = keywordFilterSearch(this.cache.entries, query, limit);
+        this.accessTracker.touch(local.map((r) => r.entry.id));
+        return local;
     }
 
     /**
@@ -730,7 +756,9 @@ export class MemoryService implements IMemoryEngine {
             const minScore = query.minScore;
             results = results.filter((r) => (r.score ?? 0) >= minScore);
         }
-        return results.slice(0, limit);
+        const final = results.slice(0, limit);
+        this.accessTracker.touch(final.map((r) => r.entry.id));
+        return final;
     }
 
     getStats(): MemoryStats {
@@ -849,6 +877,8 @@ export class MemoryService implements IMemoryEngine {
         const entries = filter
             ? this.cache.entries.filter((e) => matchesMemoryQuery(e, filter))
             : this.cache.entries;
-        return recallRank(entries, context, limit);
+        const ranked = recallRank(entries, context, limit);
+        this.accessTracker.touch(ranked.map((e) => e.id));
+        return ranked;
     }
 }
