@@ -4,7 +4,7 @@
 
 > Раздел: **Знания и память** · Статус: verified · Теги: память, аудит, RAG, граф, гэпы
 
-Источники: `src/kernel/services/memory-engine.ts`, `src/kernel/services/memory/sleep-engine.ts`, `src/kernel/services/rag/hybrid-retrieval-service.ts`, `src/kernel/services/persona/lt-memory-service.ts`, `src/kernel/services/crystal-vault/crystal-vault-service.ts`
+Источники: `src/kernel/services/memory-engine.ts`, `src/kernel/services/memory/sleep-engine.ts`, `src/kernel/services/rag/hybrid-retrieval-service.ts`, `src/kernel/services/persona/lt-memory-service.ts`, `src/kernel/services/persona/ppr-recall.ts`, `src/kernel/services/crystal-vault/crystal-vault-service.ts`
 
 ## Назначение
 
@@ -35,7 +35,7 @@
 | Тема | Статус | Что в системе |
 | --- | --- | --- |
 | Temporal graph (Graphiti) | Частично | Связи памяти и рёбра провенанса темпоральны и персистентны; claim-рёбра дебатов темпоральны, но живут в памяти; граф знаний — снапшот. |
-| HippoRAG (PPR associative recall) | Частично | Multi-hop BFS есть, PageRank/PersonalizedPageRank нет, в retrieval не подключено. |
+| HippoRAG (PPR associative recall) | Частично | Multi-hop BFS + Personalized PageRank (associativeRecall) по темпоральным связям; агенту доступно как memory.related, в основной retrieval-цикл пока не встроено. |
 | Provenance (Cognee) | Частично | Только кристаллы. |
 | ChatDB (SQL/symbolic) | Частично | Типизированные фильтры (store/timeRange/importanceMin/tags/agentId/sessionId) + substring. SQL/DSL нет. |
 

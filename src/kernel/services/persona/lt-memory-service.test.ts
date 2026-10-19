@@ -77,3 +77,37 @@ describe('LtMemoryService temporal links', () => {
         expect(isLinkValidAt({ ...link, validTo: 1500 }, 1499)).toBe(true);
     });
 });
+
+describe('LtMemoryService associative recall (PPR)', () => {
+    let svc: LtMemoryService;
+
+    beforeEach(() => {
+        const bus = { emit: vi.fn() } as unknown as IEventBus;
+        svc = new LtMemoryService(fakeRepo(), bus);
+    });
+
+    async function seedGraph() {
+        const a = await svc.remember({ ownerId: 'o', content: 'a' });
+        const b = await svc.remember({ ownerId: 'o', content: 'b' });
+        const c = await svc.remember({ ownerId: 'o', content: 'c' });
+        const d = await svc.remember({ ownerId: 'o', content: 'd' });
+        const ab = await svc.link(a.id, b.id, 'relates');
+        await svc.link(b.id, c.id, 'relates');
+        await svc.link(a.id, d.id, 'relates');
+        return { a, b, c, d, ab };
+    }
+
+    it('ranks related memories by PPR and excludes the seed', async () => {
+        const { a, b, c, d } = await seedGraph();
+        const hits = await svc.associativeRecall(a.id, { limit: 3 });
+        expect(hits.map((h) => h.memory.id)).toEqual([b.id, d.id, c.id]);
+        expect(hits.every((h) => h.score > 0)).toBe(true);
+    });
+
+    it('respects temporal validity (closed links drop out)', async () => {
+        const { a, d, ab } = await seedGraph();
+        await svc.closeLink(ab.id);
+        const hits = await svc.associativeRecall(a.id, { limit: 3 });
+        expect(hits.map((h) => h.memory.id)).toEqual([d.id]);
+    });
+});

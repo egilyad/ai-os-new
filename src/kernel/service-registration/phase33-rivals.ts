@@ -24,6 +24,7 @@ import type { ICrewService } from '../contracts/crew';
 import type { IGraphService } from '../contracts/graph';
 import type { IEvalService } from '../contracts/frontier';
 import type { IToolRunnerService } from '../contracts/parity';
+import type { ILtMemoryService } from '../contracts/persona';
 import type { DataAccessLayer } from '../dal/types';
 import { RivalRepository } from '../dal/rival-repository';
 import { GroupChatService } from '../services/rivals/groupchat-service';
@@ -95,6 +96,39 @@ export const registerPhase33: Phase = ({ register }) => {
                     description: 'Read your core memory blocks.',
                     parameters: { type: 'object', properties: {} },
                     run: async () => svc.corePrompt('agent') || '(empty core memory)',
+                });
+                runner.addTool({
+                    name: 'memory.related',
+                    description:
+                        'Associative (Personalized PageRank) recall: memories most related to a given memory id.',
+                    parameters: {
+                        type: 'object',
+                        properties: {
+                            id: { type: 'string' },
+                            limit: { type: 'number' },
+                            asOf: { type: 'number' },
+                        },
+                        required: ['id'],
+                    },
+                    run: async (args) => {
+                        if (!c.has('ltMemoryService')) return '(long-term memory unavailable)';
+                        const lt = c.get<ILtMemoryService>('ltMemoryService');
+                        const id = str(args['id']);
+                        if (!id) throw new Error('id is required');
+                        const limit = typeof args['limit'] === 'number' ? args['limit'] : 10;
+                        const asOf = typeof args['asOf'] === 'number' ? args['asOf'] : undefined;
+                        const hits = await lt.associativeRecall(id, {
+                            limit,
+                            ...(asOf !== undefined ? { asOf } : {}),
+                        });
+                        if (hits.length === 0) return 'no related memories';
+                        return hits
+                            .map(
+                                (h, i) =>
+                                    `${i + 1}. [${h.memory.tier}] ${h.memory.content.slice(0, 240)} (${h.score.toFixed(4)})`,
+                            )
+                            .join('\n');
+                    },
                 });
             }
         } catch {

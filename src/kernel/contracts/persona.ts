@@ -62,6 +62,11 @@ export interface ILtMemoryService extends ILifecycle {
     closeLink(id: string, validTo?: number): Promise<MemoryLink>;
     /** BFS over currently-valid links by default; pass asOf for historical views. */
     neighbors(id: string, depth?: number, asOf?: number): Promise<LongTermMemory[]>;
+    /** HippoRAG-style PPR associative recall over currently-valid links. */
+    associativeRecall(
+        id: string,
+        opts?: { limit?: number; asOf?: number; alpha?: number; maxIter?: number },
+    ): Promise<Array<{ memory: LongTermMemory; score: number }>>;
     summarize(ownerId: string): Promise<string>;
 }
 

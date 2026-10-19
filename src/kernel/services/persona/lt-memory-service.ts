@@ -13,6 +13,7 @@ import type {
 } from '../../contracts/persona';
 import type { LongTermMemory, MemoryLink, MemoryRelation, MemoryTier } from '../../types/persona-types';
 import { isEdgeValidAt } from '../../types/temporal-edge';
+import { personalizedPageRank } from './ppr-recall';
 import { genId } from '../../../utils/gen-id';
 import { rootLogger } from '../logger-service';
 import { EVENTS } from '../../events/event-names';
@@ -211,6 +212,34 @@ export class LtMemoryService implements ILtMemoryService {
         for (const mid of seen) {
             const m = await this.repo.getMemory(mid);
             if (m) out.push(m);
+        }
+        return out;
+    }
+
+    /**
+     * HippoRAG-style associative recall: rank memories by Personalized PageRank
+     * over currently-valid links (seeded at `id`). Returns seed-excluded hits.
+     */
+    async associativeRecall(
+        id: string,
+        opts: { limit?: number; asOf?: number; alpha?: number; maxIter?: number } = {},
+    ): Promise<Array<{ memory: LongTermMemory; score: number }>> {
+        await this.require(id);
+        const limit = opts.limit ?? 10;
+        const asOf = opts.asOf ?? now();
+        const links = (await this.repo.listLinks()).filter((l) => isLinkValidAt(l, asOf));
+        const scores = personalizedPageRank([id], links, {
+            alpha: opts.alpha,
+            maxIter: opts.maxIter,
+        });
+        const ranked = [...scores.entries()]
+            .filter(([nodeId, score]) => nodeId !== id && score > 0)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, limit);
+        const out: Array<{ memory: LongTermMemory; score: number }> = [];
+        for (const [nodeId, score] of ranked) {
+            const m = await this.repo.getMemory(nodeId);
+            if (m) out.push({ memory: m, score });
         }
         return out;
     }

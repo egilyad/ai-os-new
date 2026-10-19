@@ -3,12 +3,12 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 1224,
-    "edges": 3279,
+    "nodes": 1226,
+    "edges": 3281,
     "byType": {
       "audit": 65,
-      "code": 514,
-      "test": 153,
+      "code": 515,
+      "test": 154,
       "panel": 259,
       "article": 233
     },
@@ -16,8 +16,8 @@
       "audit_test": 327,
       "audit_mention": 928,
       "documents": 201,
-      "source": 701,
-      "test": 216,
+      "source": 702,
+      "test": 217,
       "related": 906
     }
   },
@@ -2836,6 +2836,16 @@
       "id": "file:src/kernel/services/persona/persona-service.ts",
       "type": "code",
       "label": "src/kernel/services/persona/persona-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/persona/ppr-recall.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/persona/ppr-recall.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/persona/ppr-recall.ts",
+      "type": "code",
+      "label": "src/kernel/services/persona/ppr-recall.ts"
     },
     {
       "id": "file:src/kernel/services/persona/shared-context-service.ts",
@@ -20821,6 +20831,16 @@
     {
       "from": "wiki:memory-audit",
       "to": "file:src/kernel/services/persona/lt-memory-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:memory-audit",
+      "to": "file:src/kernel/services/persona/ppr-recall.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:memory-audit",
+      "to": "file:src/kernel/services/persona/ppr-recall.ts",
       "kind": "source"
     },
     {
