@@ -6585,6 +6585,7 @@
         "src/kernel/contracts/session-memory.ts",
         "src/kernel/services/llm-bridge/llm-task-executor.ts",
         "src/kernel/services/tool-executor.ts",
+        "src/kernel/service-registration/phase33-rivals.ts",
         "src/kernel/services/crystal-vault/crystal-vault-service.ts"
       ],
       "related": [

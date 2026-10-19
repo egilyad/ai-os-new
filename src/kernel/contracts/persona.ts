@@ -48,6 +48,7 @@ export interface ILtMemoryService extends ILifecycle {
         importance?: number;
     }): Promise<LongTermMemory>;
     recall(ownerId: string, query: string, limit?: number): Promise<LongTermMemory[]>;
+    get(id: string): Promise<LongTermMemory | null>;
     coreContext(ownerId: string): Promise<string>;
     promote(id: string): Promise<LongTermMemory>;
     demote(id: string): Promise<LongTermMemory>;

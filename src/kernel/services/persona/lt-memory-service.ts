@@ -119,6 +119,10 @@ export class LtMemoryService implements ILtMemoryService {
         return core.map((m) => `- ${m.content}`.slice(0, 500)).join('\n');
     }
 
+    async get(id: string): Promise<LongTermMemory | null> {
+        return this.repo.getMemory(id);
+    }
+
     async promote(id: string): Promise<LongTermMemory> {
         const m = await this.require(id);
         const idx = TIER_ORDER[m.tier];

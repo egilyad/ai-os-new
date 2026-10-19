@@ -3,11 +3,11 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 1241,
-    "edges": 3302,
+    "nodes": 1242,
+    "edges": 3303,
     "byType": {
       "audit": 65,
-      "code": 524,
+      "code": 525,
       "test": 160,
       "panel": 259,
       "article": 233
@@ -16,7 +16,7 @@
       "audit_test": 328,
       "audit_mention": 928,
       "documents": 201,
-      "source": 714,
+      "source": 715,
       "test": 225,
       "related": 906
     }
@@ -1971,6 +1971,11 @@
       "id": "file:src/kernel/service-registration/phase3-debate-runtime.ts",
       "type": "code",
       "label": "src/kernel/service-registration/phase3-debate-runtime.ts"
+    },
+    {
+      "id": "file:src/kernel/service-registration/phase33-rivals.ts",
+      "type": "code",
+      "label": "src/kernel/service-registration/phase33-rivals.ts"
     },
     {
       "id": "file:src/kernel/service-registration/phase54-hybrid-rag.ts",
@@ -20906,6 +20911,11 @@
     {
       "from": "wiki:memory-audit",
       "to": "file:src/kernel/contracts/session-memory.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:memory-audit",
+      "to": "file:src/kernel/service-registration/phase33-rivals.ts",
       "kind": "source"
     },
     {

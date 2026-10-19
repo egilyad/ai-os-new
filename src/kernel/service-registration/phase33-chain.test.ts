@@ -12,6 +12,7 @@ import type {
     IDyadService,
 } from '../contracts/rivals';
 import type { IToolRunnerService } from '../contracts/parity';
+import type { ILtMemoryService } from '../contracts/persona';
 
 const get = <T>(token: string): T => runtime.getService<T>(token);
 
@@ -56,7 +57,26 @@ describe('Phase33 e2e chain (F)', () => {
                 'memory.search',
                 'memory.link',
                 'memory.related',
+                'memory.forget',
+                'memory.promote',
+                'memory.demote',
             ]),
         );
+    });
+
+    it('lets agents curate their own long-term memory', async () => {
+        get<IMemoryBlocksService>('memoryBlocksService');
+        const runner = get<IToolRunnerService>('toolRunnerService');
+        const lt = get<ILtMemoryService>('ltMemoryService');
+        const m = await lt.remember({ ownerId: 'agent', content: 'self-edit probe' });
+
+        expect(await runner.callTool('agent', 'memory.promote', { id: m.id })).toContain(
+            'promoted',
+        );
+        expect(await runner.callTool('agent', 'memory.demote', { id: m.id })).toContain(
+            'demoted',
+        );
+        expect(await runner.callTool('agent', 'memory.forget', { id: m.id })).toContain('forgot');
+        expect(await lt.get(m.id)).toBeNull();
     });
 });

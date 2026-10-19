@@ -134,3 +134,13 @@ describe('LtMemoryService summarize', () => {
         expect(out).toContain('alpha');
     });
 });
+
+describe('LtMemoryService get', () => {
+    it('returns a memory by id and null for unknown ids', async () => {
+        const bus = { emit: vi.fn() } as unknown as IEventBus;
+        const svc = new LtMemoryService(fakeRepo(), bus);
+        const m = await svc.remember({ ownerId: 'agent', content: 'alpha' });
+        expect((await svc.get(m.id))?.content).toBe('alpha');
+        expect(await svc.get('missing')).toBeNull();
+    });
+});

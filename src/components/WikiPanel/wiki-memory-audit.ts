@@ -27,6 +27,7 @@ export const MEMORY_AUDIT_ARTICLES: WikiArticle[] = [
             'src/kernel/contracts/session-memory.ts',
             'src/kernel/services/llm-bridge/llm-task-executor.ts',
             'src/kernel/services/tool-executor.ts',
+            'src/kernel/service-registration/phase33-rivals.ts',
             'src/kernel/services/crystal-vault/crystal-vault-service.ts',
         ],
         related: [
@@ -120,6 +121,7 @@ export const MEMORY_AUDIT_ARTICLES: WikiArticle[] = [
 - Встроенный MCP-сервер памяти: JSON-RPC initialize/resources/tools над memoryService; MCPService подключает его локально (memory://, без сети и персистенции).
 - LLM-порт персоны/памяти (LlmPersonaPort): LtMemoryService.summarize и PersonaService.distillStyle идут через llmClientService, при отсутствии LLM — эвристический fallback.
 - Session-memory coding-агентов ([[comp-memory]]): KV-персистентный скретчпад на сессию — objective, файлы, команды, решения, issues, заметки; дедуп и лимиты по типам, контекст-блок для промпта; tools \`session.remember\`/\`session.recall\`.
+- Self-editing LT-памяти агента: tools \`memory.forget\`/\`memory.promote\`/\`memory.demote\` с проверкой \`ownerId === 'agent'\` (чужие записи не трогаются); текст записей не редактируется, mesh-память — нет.
 - Skills-библиотека, blackboard, Reflexion, task-handoff, ACL (частично).
 
 ## Чего нет
@@ -127,7 +129,7 @@ export const MEMORY_AUDIT_ARTICLES: WikiArticle[] = [
 - Темпоральность большинства графов: она есть у связей памяти, рёбер провенанса и claim-рёбер дебатов (последние пересобираются из аргументов при загрузке сессии); граф знаний остаётся снапшотным.
 - Реальные эмбеддинги (везде лексические хэши) и векторная БД/ANN.
 - Автоматический ACL-scoping (роль/сессия) в основном recall и внешний MCP-транспорт (HTTP) для встроенного сервера памяти.
-- self-editing памяти и workflow-дистилляция.
+- Редактирование текста существующих воспоминаний и workflow-дистилляция (self-edit есть только у LT-памяти агента: forget/promote/demote).
 
 Также: 6+ специализированных сторов (working/episodic/semantic/procedural/emotional/social/spatial) — мёртвые классы; LLM-суммаризация работает только в ночной консолидации mesh и в LT/персоне; «граф знаний» — эвристика и визуализация с синтетическими рёбрами; knowledge-generator — шаблонная симуляция, не LLM.
 

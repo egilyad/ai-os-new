@@ -219,6 +219,66 @@ export const registerPhase33: Phase = ({ register }) => {
                         return `linked ${l.id} (${from} ${relation} ${to})`;
                     },
                 });
+                runner.addTool({
+                    name: 'memory.forget',
+                    description: 'Delete one of your own long-term memories (agent-owned only).',
+                    parameters: {
+                        type: 'object',
+                        properties: { id: { type: 'string' } },
+                        required: ['id'],
+                    },
+                    run: async (args) => {
+                        if (!c.has('ltMemoryService')) return '(long-term memory unavailable)';
+                        const lt = c.get<ILtMemoryService>('ltMemoryService');
+                        const id = str(args['id']);
+                        if (!id) throw new Error('id is required');
+                        const cur = await lt.get(id);
+                        if (!cur) throw new Error(`memory not found: ${id}`);
+                        if (cur.ownerId !== 'agent') throw new Error('only agent-owned memories');
+                        await lt.forget(id);
+                        return `forgot ${id}`;
+                    },
+                });
+                runner.addTool({
+                    name: 'memory.promote',
+                    description: 'Promote one of your memories to a higher tier (archival→recall→core).',
+                    parameters: {
+                        type: 'object',
+                        properties: { id: { type: 'string' } },
+                        required: ['id'],
+                    },
+                    run: async (args) => {
+                        if (!c.has('ltMemoryService')) return '(long-term memory unavailable)';
+                        const lt = c.get<ILtMemoryService>('ltMemoryService');
+                        const id = str(args['id']);
+                        if (!id) throw new Error('id is required');
+                        const cur = await lt.get(id);
+                        if (!cur) throw new Error(`memory not found: ${id}`);
+                        if (cur.ownerId !== 'agent') throw new Error('only agent-owned memories');
+                        const m = await lt.promote(id);
+                        return `promoted ${m.id} to [${m.tier}]`;
+                    },
+                });
+                runner.addTool({
+                    name: 'memory.demote',
+                    description: 'Demote one of your memories to a lower tier (core→recall→archival).',
+                    parameters: {
+                        type: 'object',
+                        properties: { id: { type: 'string' } },
+                        required: ['id'],
+                    },
+                    run: async (args) => {
+                        if (!c.has('ltMemoryService')) return '(long-term memory unavailable)';
+                        const lt = c.get<ILtMemoryService>('ltMemoryService');
+                        const id = str(args['id']);
+                        if (!id) throw new Error('id is required');
+                        const cur = await lt.get(id);
+                        if (!cur) throw new Error(`memory not found: ${id}`);
+                        if (cur.ownerId !== 'agent') throw new Error('only agent-owned memories');
+                        const m = await lt.demote(id);
+                        return `demoted ${m.id} to [${m.tier}]`;
+                    },
+                });
             }
         } catch {
             // offline / partial container — memory tools simply unavailable
