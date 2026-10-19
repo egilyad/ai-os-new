@@ -3,12 +3,12 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 1242,
-    "edges": 3303,
+    "nodes": 1244,
+    "edges": 3305,
     "byType": {
       "audit": 65,
-      "code": 525,
-      "test": 160,
+      "code": 526,
+      "test": 161,
       "panel": 259,
       "article": 233
     },
@@ -16,8 +16,8 @@
       "audit_test": 328,
       "audit_mention": 928,
       "documents": 201,
-      "source": 715,
-      "test": 225,
+      "source": 716,
+      "test": 226,
       "related": 906
     }
   },
@@ -2776,6 +2776,16 @@
       "id": "file:src/kernel/services/memory/sleep-engine.ts",
       "type": "code",
       "label": "src/kernel/services/memory/sleep-engine.ts"
+    },
+    {
+      "id": "file:src/kernel/services/memory/workflow-distiller.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/memory/workflow-distiller.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/memory/workflow-distiller.ts",
+      "type": "code",
+      "label": "src/kernel/services/memory/workflow-distiller.ts"
     },
     {
       "id": "file:src/kernel/services/meta/meta-agent-service.ts",
@@ -20981,6 +20991,16 @@
     {
       "from": "wiki:memory-audit",
       "to": "file:src/kernel/services/memory/sleep-engine.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:memory-audit",
+      "to": "file:src/kernel/services/memory/workflow-distiller.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:memory-audit",
+      "to": "file:src/kernel/services/memory/workflow-distiller.ts",
       "kind": "source"
     },
     {

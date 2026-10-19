@@ -4,7 +4,7 @@
 
 > Раздел: **Знания и память** · Статус: verified · Теги: память, аудит, RAG, граф, гэпы
 
-Источники: `src/kernel/services/memory-engine.ts`, `src/kernel/services/memory/sleep-engine.ts`, `src/kernel/services/rag/hybrid-retrieval-service.ts`, `src/kernel/services/persona/lt-memory-service.ts`, `src/kernel/services/persona/ppr-recall.ts`, `src/kernel/services/persona/associative-context.ts`, `src/kernel/contracts/memory-store.ts`, `src/kernel/services/memory/service-backed-memory.ts`, `src/kernel/services/memory/memory-search-utils.ts`, `src/kernel/services/memory/memory-mcp-server.ts`, `src/kernel/services/memory/memory-summarizer.ts`, `src/kernel/services/session-memory-service.ts`, `src/kernel/contracts/session-memory.ts`, `src/kernel/services/llm-bridge/llm-task-executor.ts`, `src/kernel/services/tool-executor.ts`, `src/kernel/service-registration/phase33-rivals.ts`, `src/kernel/services/crystal-vault/crystal-vault-service.ts`
+Источники: `src/kernel/services/memory-engine.ts`, `src/kernel/services/memory/sleep-engine.ts`, `src/kernel/services/rag/hybrid-retrieval-service.ts`, `src/kernel/services/persona/lt-memory-service.ts`, `src/kernel/services/persona/ppr-recall.ts`, `src/kernel/services/persona/associative-context.ts`, `src/kernel/contracts/memory-store.ts`, `src/kernel/services/memory/service-backed-memory.ts`, `src/kernel/services/memory/memory-search-utils.ts`, `src/kernel/services/memory/memory-mcp-server.ts`, `src/kernel/services/memory/memory-summarizer.ts`, `src/kernel/services/session-memory-service.ts`, `src/kernel/services/memory/workflow-distiller.ts`, `src/kernel/contracts/session-memory.ts`, `src/kernel/services/llm-bridge/llm-task-executor.ts`, `src/kernel/services/tool-executor.ts`, `src/kernel/service-registration/phase33-rivals.ts`, `src/kernel/services/crystal-vault/crystal-vault-service.ts`
 
 ## Назначение
 
@@ -88,6 +88,7 @@
 - LLM-порт персоны/памяти (LlmPersonaPort): LtMemoryService.summarize и PersonaService.distillStyle идут через llmClientService, при отсутствии LLM — эвристический fallback.
 - Session-memory coding-агентов ([Компонент: память и знания](./comp-memory.md)): KV-персистентный скретчпад на сессию — objective, файлы, команды, решения, issues, заметки; дедуп и лимиты по типам, контекст-блок для промпта; tools `session.remember`/`session.recall`.
 - Self-editing LT-памяти агента: tools `memory.forget`/`memory.promote`/`memory.demote` с проверкой `ownerId === 'agent'` (чужие записи не трогаются); текст записей не редактируется, mesh-память — нет.
+- Workflow-дистилляция (Voyager-style): WorkflowDistiller сворачивает скретчпад сессии в упорядоченный workflow (LLM при наличии, иначе эвристика из команд/решений), сохраняет его как agent-owned LT-память (tier core, тег workflow) и регистрирует in-memory SOP; tool `workflow.distill`.
 - Skills-библиотека, blackboard, Reflexion, task-handoff, ACL (частично).
 
 ## Чего нет
@@ -95,7 +96,7 @@
 - Темпоральность большинства графов: она есть у связей памяти, рёбер провенанса и claim-рёбер дебатов (последние пересобираются из аргументов при загрузке сессии); граф знаний остаётся снапшотным.
 - Реальные эмбеддинги (везде лексические хэши) и векторная БД/ANN.
 - Автоматический ACL-scoping (роль/сессия) в основном recall и внешний MCP-транспорт (HTTP) для встроенного сервера памяти.
-- Редактирование текста существующих воспоминаний и workflow-дистилляция (self-edit есть только у LT-памяти агента: forget/promote/demote).
+- Редактирование текста существующих воспоминаний (self-edit есть только у LT-памяти агента: forget/promote/demote).
 
 Также: 6+ специализированных сторов (working/episodic/semantic/procedural/emotional/social/spatial) — мёртвые классы; LLM-суммаризация работает только в ночной консолидации mesh и в LT/персоне; «граф знаний» — эвристика и визуализация с синтетическими рёбрами; knowledge-generator — шаблонная симуляция, не LLM.
 
