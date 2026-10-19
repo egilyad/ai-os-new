@@ -18,6 +18,9 @@ export const MEMORY_AUDIT_ARTICLES: WikiArticle[] = [
             'src/kernel/services/persona/lt-memory-service.ts',
             'src/kernel/services/persona/ppr-recall.ts',
             'src/kernel/services/persona/associative-context.ts',
+            'src/kernel/contracts/memory-store.ts',
+            'src/kernel/services/memory/service-backed-memory.ts',
+            'src/kernel/services/memory/memory-search-utils.ts',
             'src/kernel/services/crystal-vault/crystal-vault-service.ts',
         ],
         related: [
@@ -80,8 +83,8 @@ export const MEMORY_AUDIT_ARTICLES: WikiArticle[] = [
 | A-MEM (самопереписывание заметок) | Нет | — |
 | Memory-R1 (RL add/update/delete) | Нет | — |
 | Hindsight (multi-strategy + fusion) | Работает | Hybrid retrieval (BM25 ∪ vector → RRF) подключён в RagService с fallback на KnowledgeService.retrieve. Эмбеддер — хэш, реранкер — stub. |
-| LightMem/SleepGate (sleep) | Частично | sleep-engine помечен deprecated MOCK, consolidate() возвращает нули. |
-| PowerMem (hybrid+decay+distill) | Частично | Hybrid есть и подключён в агентный RAG (RagService); decay — только TTL (30 дней), без кривой; дистилляция слабая. |
+| LightMem/SleepGate (sleep) | Частично | sleep-engine: микро/ночная консолидация реально мёржит дубли и забывает по Ebbinghaus-retention; LLM-суммаризации нет. |
+| PowerMem (hybrid+decay+distill) | Частично | Hybrid подключён в агентный RAG; decay — TTL (30 дней) + Ebbinghaus-кривая в recall (half-life 15–30 дней по важности); дистилляция слабая. |
 
 ## Мультиагентная память
 
@@ -106,6 +109,7 @@ export const MEMORY_AUDIT_ARTICLES: WikiArticle[] = [
 - Кристаллы знаний: жизненный цикл, версии, provenance ([[comp-knowledge-rag]]).
 - Hybrid retrieval (BM25 ∪ vector → RRF → rerank) подключён в агентный RAG-цикл RagService с fallback на token-retrieve.
 - Ассоциативный recall (PPR/HippoRAG) встроен в основной чат-контекст: keyword-сиды → Personalized PageRank по действующим связям памяти (buildAssociativeContext).
+- Консолидация «сна» (микро/ночная) мёржит дубли и забывает низкозначимые по Ebbinghaus-кривой; recall ранжируется с учётом кривой забывания.
 - Skills-библиотека, blackboard, Reflexion, task-handoff, ACL (частично).
 
 ## Чего нет
@@ -113,10 +117,10 @@ export const MEMORY_AUDIT_ARTICLES: WikiArticle[] = [
 - Темпоральность большинства графов: она есть у связей памяти, рёбер провенанса и claim-рёбер дебатов (последние пересобираются из аргументов при загрузке сессии); граф знаний остаётся снапшотным.
 - Реальные эмбеддинги (везде лексические хэши) и векторная БД/ANN.
 - MCP-сервер памяти, ACL и namespaces в основной памяти.
-- Ebbinghaus-decay с кривой, self-editing памяти, workflow-дистилляция.
+- self-editing памяти, workflow-дистилляция и LLM-суммаризация при консолидации.
 - Session-memory coding-агентов.
 
-Также: 6+ специализированных сторов (working/episodic/semantic/procedural/emotional/social/spatial) — мёртвые классы; sleep-консолидация MOCK; «граф знаний» — эвристика и визуализация с синтетическими рёбрами; knowledge-generator — шаблонная симуляция, не LLM.
+Также: 6+ специализированных сторов (working/episodic/semantic/procedural/emotional/social/spatial) — мёртвые классы; sleep-консолидация без LLM-суммаризации; «граф знаний» — эвристика и визуализация с синтетическими рёбрами; knowledge-generator — шаблонная симуляция, не LLM.
 
 ## Связи
 

@@ -3,12 +3,12 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 1228,
-    "edges": 3283,
+    "nodes": 1232,
+    "edges": 3287,
     "byType": {
       "audit": 65,
-      "code": 516,
-      "test": 155,
+      "code": 519,
+      "test": 156,
       "panel": 259,
       "article": 233
     },
@@ -16,8 +16,8 @@
       "audit_test": 327,
       "audit_mention": 928,
       "documents": 201,
-      "source": 703,
-      "test": 218,
+      "source": 706,
+      "test": 219,
       "related": 906
     }
   },
@@ -1793,6 +1793,11 @@
       "label": "src/kernel/contracts/invocation.ts"
     },
     {
+      "id": "file:src/kernel/contracts/memory-store.ts",
+      "type": "code",
+      "label": "src/kernel/contracts/memory-store.ts"
+    },
+    {
       "id": "file:src/kernel/contracts/memory.ts",
       "type": "code",
       "label": "src/kernel/contracts/memory.ts"
@@ -2711,6 +2716,21 @@
       "id": "file:src/kernel/services/memory-engine.ts",
       "type": "code",
       "label": "src/kernel/services/memory-engine.ts"
+    },
+    {
+      "id": "file:src/kernel/services/memory/memory-search-utils.ts",
+      "type": "code",
+      "label": "src/kernel/services/memory/memory-search-utils.ts"
+    },
+    {
+      "id": "file:src/kernel/services/memory/service-backed-memory.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/memory/service-backed-memory.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/memory/service-backed-memory.ts",
+      "type": "code",
+      "label": "src/kernel/services/memory/service-backed-memory.ts"
     },
     {
       "id": "file:src/kernel/services/memory/sleep-engine.ts",
@@ -20815,6 +20835,11 @@
     },
     {
       "from": "wiki:memory-audit",
+      "to": "file:src/kernel/contracts/memory-store.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:memory-audit",
       "to": "file:src/kernel/services/crystal-vault/crystal-vault-service.test.ts",
       "kind": "test"
     },
@@ -20826,6 +20851,21 @@
     {
       "from": "wiki:memory-audit",
       "to": "file:src/kernel/services/memory-engine.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:memory-audit",
+      "to": "file:src/kernel/services/memory/memory-search-utils.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:memory-audit",
+      "to": "file:src/kernel/services/memory/service-backed-memory.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:memory-audit",
+      "to": "file:src/kernel/services/memory/service-backed-memory.ts",
       "kind": "source"
     },
     {

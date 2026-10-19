@@ -52,11 +52,18 @@ export interface IMemoryStore {
     consolidate(): Promise<ConsolidationReport>;
 }
 
-export function computeRetention(importance: number, ageHours: number): number {
-    const T = 1 * Math.pow(2, Math.max(0, importance - 1));
-    return Math.exp(-ageHours / T);
-}
+/**
+ * Ebbinghaus retention curve. The half-life is importance-scaled and expressed
+ * in hours: importance 1.0 → 30 days, 0.5 → ~21 days, 0 → ~15 days. `ageHours`
+ * is the age since last access (falling back to creation).
+ */
+export const RETENTION_BASE_HALF_LIFE_HOURS = 24 * 30;
 
 export function computeHalfLife(importance: number): number {
-    return 1 * Math.pow(2, Math.max(0, importance - 1));
+    return RETENTION_BASE_HALF_LIFE_HOURS * Math.pow(2, Math.max(0, importance - 1));
+}
+
+export function computeRetention(importance: number, ageHours: number): number {
+    if (ageHours <= 0) return 1;
+    return Math.exp(-ageHours / computeHalfLife(importance));
 }

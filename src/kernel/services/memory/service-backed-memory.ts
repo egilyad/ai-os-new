@@ -6,7 +6,7 @@ import type {
     ConsolidationReport,
     MemoryStoreSnapshot,
 } from '../../contracts/memory-store';
-import { MemoryStoreType } from '../../contracts/memory-store';
+import { MemoryStoreType, computeRetention } from '../../contracts/memory-store';
 import type { MemoryService } from '../memory-engine';
 
 export class ServiceBackedMemoryStore implements IMemoryStore {
@@ -107,13 +107,63 @@ export class ServiceBackedMemoryStore implements IMemoryStore {
     }
 
     async consolidate(): Promise<ConsolidationReport> {
+        const started = Date.now();
+        const svc = this.memoryService();
+        if (!svc) {
+            return {
+                timestamp: started,
+                storesConsolidated: [this.type],
+                entriesForgotten: 0,
+                entriesConsolidated: 0,
+                newSemanticEntries: 0,
+                durationMs: 0,
+            };
+        }
+        const all = await this.query({ query: '', limit: 100_000 });
+        const now = Date.now();
+        const toDelete = new Set<string>();
+
+        // 1) Merge duplicates (same normalized content) — keep the more important.
+        const best = new Map<string, MemoryEntry>();
+        let entriesConsolidated = 0;
+        for (const e of all) {
+            const key = e.content.trim().toLowerCase().replace(/\s+/g, ' ');
+            const prev = best.get(key);
+            if (!prev) {
+                best.set(key, e);
+                continue;
+            }
+            const keep = (e.metadata.importance ?? 0) > (prev.metadata.importance ?? 0) ? e : prev;
+            const drop = keep === e ? prev : e;
+            best.set(key, keep);
+            toDelete.add(drop.id);
+            entriesConsolidated++;
+        }
+
+        // 2) Forget low-importance memories past the Ebbinghaus retention floor.
+        let entriesForgotten = 0;
+        for (const e of best.values()) {
+            const importance = e.metadata.importance ?? 0.5;
+            if (importance >= 0.3) continue;
+            const last = e.metadata.lastAccessed ?? e.metadata.timestamp ?? now;
+            const ageHours = Math.max(0, now - last) / 3_600_000;
+            if (computeRetention(importance, ageHours) < 0.05) {
+                toDelete.add(e.id);
+                entriesForgotten++;
+            }
+        }
+
+        for (const id of toDelete) {
+            await svc.deleteMemory(id);
+        }
+
         return {
-            timestamp: Date.now(),
+            timestamp: now,
             storesConsolidated: [this.type],
-            entriesForgotten: 0,
-            entriesConsolidated: 0,
+            entriesForgotten,
+            entriesConsolidated,
             newSemanticEntries: 0,
-            durationMs: 0,
+            durationMs: Date.now() - started,
         };
     }
 }

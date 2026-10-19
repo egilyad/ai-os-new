@@ -5,7 +5,10 @@ const MICRO_CONSOLIDATION_TRIGGER = 10;
 const NIGHTLY_IDLE_MS = 15 * 60 * 1000;
 
 /**
- * @deprecated MOCK — simulated backend. Replace with real implementation before production use.
+ * SleepEngine — idle-triggered consolidation. Micro-consolidation fires every
+ * N mutations, nightly consolidation after an idle window; both delegate to the
+ * stores' `consolidate()` (duplicate merge + Ebbinghaus retention forgetting).
+ * No LLM summarization — see the memory audit for the remaining gap.
  */
 export class SleepEngine {
     private microCounter = 0;

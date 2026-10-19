@@ -1,5 +1,17 @@
 import type { MemoryEntry, MemorySearchResult, MemoryStats } from '../../types/memory-types';
+import { computeRetention } from '../../contracts/memory-store';
 import { estimateTokenCount } from '../../../llm/utils/token-counter';
+
+/** Old-but-relevant matches keep at least this share of their keyword score. */
+const DECAY_FLOOR = 0.5;
+
+/** Ebbinghaus recency weight in [DECAY_FLOOR, 1] from last access / creation. */
+function recencyFactor(entry: MemoryEntry, now: number): number {
+    const last = entry.metadata.lastAccessed ?? entry.metadata.timestamp ?? now;
+    const ageHours = Math.max(0, now - last) / 3_600_000;
+    const retention = computeRetention(entry.metadata.importance ?? 0.5, ageHours);
+    return DECAY_FLOOR + (1 - DECAY_FLOOR) * retention;
+}
 
 /** Local keyword fallback used when the worker is unavailable. */
 export function keywordFilterSearch(
@@ -13,8 +25,13 @@ export function keywordFilterSearch(
         .map((e) => ({ entry: e, score: 1, matchedOn: 'keyword' as const }));
 }
 
-/** Recall ranking: score memories by keyword overlap with the context. */
-export function recallRank(memories: MemoryEntry[], context: string, limit: number): MemoryEntry[] {
+/** Recall ranking: keyword overlap, softened by an Ebbinghaus recency factor. */
+export function recallRank(
+    memories: MemoryEntry[],
+    context: string,
+    limit: number,
+    now: number = Date.now(),
+): MemoryEntry[] {
     const keywords = context
         .toLowerCase()
         .split(/\s+/)
@@ -24,7 +41,8 @@ export function recallRank(memories: MemoryEntry[], context: string, limit: numb
     const scored = memories.map((m) => {
         const content = m.content.toLowerCase();
         const matches = keywords.filter((k) => content.includes(k)).length;
-        return { entry: m, score: matches / keywords.length };
+        const overlap = matches / keywords.length;
+        return { entry: m, score: overlap * recencyFactor(m, now) };
     });
 
     return scored
