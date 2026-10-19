@@ -8,6 +8,7 @@
 import type { IEventBus } from '../../types/interfaces';
 import type { ILLMClientService } from '../../contracts/provider-adapter';
 import type { IKnowledgeService } from '../../contracts/parity';
+import type { IHybridRetrievalService } from '../../contracts/hybrid-retrieval';
 import type { IRagService } from '../../contracts/rivals2';
 import { rootLogger } from '../logger-service';
 import { EVENTS } from '../../events/event-names';
@@ -19,6 +20,7 @@ export class RagService implements IRagService {
         private events: IEventBus,
         private knowledge?: IKnowledgeService,
         private llm?: ILLMClientService,
+        private hybrid?: IHybridRetrievalService,
     ) {}
 
     async init(): Promise<void> {
@@ -70,6 +72,20 @@ export class RagService implements IRagService {
     }
 
     private async retrieve(query: string): Promise<Array<{ title: string; chunk: string }>> {
+        // G1: prefer hybrid retrieval (BM25 ∪ vector → RRF → rerank) when wired;
+        // fall back to KnowledgeService token retrieve when hybrid yields nothing.
+        if (this.hybrid) {
+            try {
+                const hits = await this.hybrid.retrieveHybrid(query, { limit: 5 });
+                if (hits.length > 0) {
+                    return hits.map((h) => ({ title: h.title, chunk: h.chunk }));
+                }
+            } catch (e) {
+                LOGGER.warn('RagLoop', 'hybrid retrieve failed, falling back', {
+                    error: e instanceof Error ? e.message : String(e),
+                });
+            }
+        }
         if (!this.knowledge) return [];
         try {
             return await this.knowledge.retrieve(query, 5);

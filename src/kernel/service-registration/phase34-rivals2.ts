@@ -22,6 +22,7 @@ import type { IEventBus } from '../types/interfaces';
 import type { DatabaseService } from '../services/database-service';
 import type { DataAccessLayer } from '../dal/types';
 import type { ILLMClientService } from '../contracts/provider-adapter';import type { IToolRunnerService, IKnowledgeService } from '../contracts/parity';
+import type { IHybridRetrievalService } from '../contracts/hybrid-retrieval';
 import type { IPersonaService } from '../contracts/persona';
 import type { IWorkspaceService } from '../contracts/workspace';
 import type { ISandboxBrokerService } from '../contracts/ops';
@@ -64,6 +65,9 @@ export const registerPhase34: Phase = ({ register }) => {
             c.get<IEventBus>('eventBus'),
             c.has('knowledgeService') ? c.get<IKnowledgeService>('knowledgeService') : undefined,
             llmOf(c),
+            c.has('hybridRetrievalService')
+                ? c.get<IHybridRetrievalService>('hybridRetrievalService')
+                : undefined,
         );
     });
 

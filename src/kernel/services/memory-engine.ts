@@ -126,6 +126,8 @@ export class MemoryService implements IMemoryEngine {
         this._listenersSetup = true;
         await this.load();
         this.pruneScheduler.start();
+        // Enable semantic search lazily (best-effort; no-op if disabled or worker unavailable).
+        void this.ensureSemantic();
     }
 
     destroy() {
