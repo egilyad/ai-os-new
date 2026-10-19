@@ -26,6 +26,7 @@ export const MEMORY_AUDIT_ARTICLES: WikiArticle[] = [
             'src/kernel/services/memory/memory-access-tracker.ts',
             'src/kernel/services/session-memory-service.ts',
             'src/kernel/services/memory/workflow-distiller.ts',
+            'src/stores/chat/store.ts',
             'src/kernel/contracts/session-memory.ts',
             'src/kernel/services/llm-bridge/llm-task-executor.ts',
             'src/kernel/services/tool-executor.ts',
@@ -124,7 +125,7 @@ export const MEMORY_AUDIT_ARTICLES: WikiArticle[] = [
 - LLM-порт персоны/памяти (LlmPersonaPort): LtMemoryService.summarize и PersonaService.distillStyle идут через llmClientService, при отсутствии LLM — эвристический fallback.
 - Session-memory coding-агентов ([[comp-memory]]): KV-персистентный скретчпад на сессию — objective, файлы, команды, решения, issues, заметки; дедуп и лимиты по типам, контекст-блок для промпта; tools \`session.remember\`/\`session.recall\`.
 - Self-editing LT-памяти агента: tools \`memory.forget\`/\`memory.promote\`/\`memory.demote\`/\`memory.edit\` с проверкой \`ownerId === 'agent'\` (чужие записи не трогаются, правка текста эмитит memory:updated); mesh-память агенту недоступна.
-- Workflow-дистилляция (Voyager-style): WorkflowDistiller сворачивает скретчпад сессии в упорядоченный workflow (LLM при наличии, иначе эвристика из команд/решений), сохраняет его как agent-owned LT-память (tier core, тег workflow) и регистрирует in-memory SOP; tool \`workflow.distill\`.
+- Workflow-дистилляция (Voyager-style): WorkflowDistiller сворачивает скретчпад сессии в упорядоченный workflow (LLM при наличии, иначе эвристика из команд/решений), сохраняет его как agent-owned LT-память (tier core, тег workflow) и регистрирует in-memory SOP; tool \`workflow.distill\` и авто-триггер при очистке/удалении сессии.
 - Skills-библиотека, blackboard, Reflexion, task-handoff, ACL (частично).
 
 ## Чего нет

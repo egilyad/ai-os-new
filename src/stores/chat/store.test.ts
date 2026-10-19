@@ -55,6 +55,7 @@ const {
         delete: vi.fn(async () => {}),
         updateMeta: vi.fn(async () => {}),
     };
+    const mockWorkflowDistiller = { distill: vi.fn(async () => null) };
     const mockRuntime = {
         getService: vi.fn(() => ({ sessions: mockSStore })),
     };
@@ -70,6 +71,7 @@ const {
         mockLock,
         mockSStore,
         mockConfig,
+        mockWorkflowDistiller,
     };
 });
 
@@ -91,6 +93,7 @@ vi.mock('./service-deps', () => ({
     workspaceService: mockWorkspaceService,
     sessionManager: mockSessionManager,
     getDistributedLock: () => mockLock,
+    workflowDistiller: mockWorkflowDistiller,
 }));
 vi.mock('../../kernel/instances', () => ({
     CONFIG: mockConfig,
@@ -161,6 +164,7 @@ beforeEach(() => {
     mockSessionManager.create.mockClear();
     mockSessionManager.delete.mockClear();
     mockSessionManager.updateMeta.mockClear();
+    mockWorkflowDistiller.distill.mockClear();
     mockLock.acquire.mockClear();
     mockLock.release.mockClear();
     mockSStore.listSessions.mockClear();
@@ -505,6 +509,8 @@ describe('useChatStore', () => {
         const s = useChatStore.getState();
         expect(s.sessions[0].history).toEqual([]);
         expect(mockSStore.put).toHaveBeenCalled();
+        // Best-effort workflow distillation from the session scratchpad.
+        expect(mockWorkflowDistiller.distill).toHaveBeenCalledWith('s1');
     });
 
     it('createSession creates a new session', async () => {
@@ -537,6 +543,7 @@ describe('useChatStore', () => {
         expect(s.sessions.map((x) => x.id)).toEqual(['s2']);
         expect(s.activeSessionId).toBe('s2');
         expect(mockSessionManager.delete).toHaveBeenCalledWith('s1');
+        expect(mockWorkflowDistiller.distill).toHaveBeenCalledWith('s1');
     });
 
     it('deleteSession resets to default when last session removed', async () => {

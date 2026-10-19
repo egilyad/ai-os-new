@@ -6584,6 +6584,7 @@
         "src/kernel/services/memory/memory-access-tracker.ts",
         "src/kernel/services/session-memory-service.ts",
         "src/kernel/services/memory/workflow-distiller.ts",
+        "src/stores/chat/store.ts",
         "src/kernel/contracts/session-memory.ts",
         "src/kernel/services/llm-bridge/llm-task-executor.ts",
         "src/kernel/services/tool-executor.ts",
@@ -6613,6 +6614,7 @@
         "src/kernel/services/memory/memory-access-tracker.test.ts",
         "src/kernel/services/session-memory-service.test.ts",
         "src/kernel/services/memory/workflow-distiller.test.ts",
+        "src/stores/chat/store.test.ts",
         "src/kernel/services/tool-executor.test.ts",
         "src/kernel/services/crystal-vault/crystal-vault-service.test.ts"
       ]

@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { rootLogger } from '../../kernel/instances';
 const LOGGER = rootLogger.child('ChatStore');
 import { BucketStorageAdapter } from '../../kernel/storage-adapter-instance';
-import { eventBus, EVENTS, sessionManager, getDistributedLock } from './service-deps';
+import { eventBus, EVENTS, sessionManager, getDistributedLock, workflowDistiller } from './service-deps';
 import { setupChatEventHandlers, dropChunkBuffer } from './chat-event-handlers';
 import { createSendMessageHandler, _sendQueue, _historyLimitWarned } from './chat-send-message';
 import { resolveSessionStore, updateSessionInList } from './store-helpers';
@@ -32,6 +32,21 @@ const updatePinnedSession =
 
 export const useChatStore = create<ChatStoreShape>((set, get) => {
     const ups = updatePinnedSession(set);
+
+    // Best-effort: persist a distilled workflow from the session scratchpad
+    // before the history is wiped. Never blocks the UI; a no-op when there is
+    // not enough activity (or the distiller/service is unavailable).
+    const distillSession = (id: string): void => {
+        try {
+            void workflowDistiller
+                ?.distill(id)
+                .catch((e: unknown) =>
+                    LOGGER.warn('ChatStore', 'Workflow distillation failed', { error: e }),
+                );
+        } catch (e) {
+            LOGGER.warn('ChatStore', 'Workflow distillation unavailable', { error: e });
+        }
+    };
 
     const _unsubs = setupChatEventHandlers(set, get);
 
@@ -259,6 +274,7 @@ export const useChatStore = create<ChatStoreShape>((set, get) => {
                 }
                 ups(sessionId, () => []);
                 set({ activeRequestIds: new Set() });
+                distillSession(sessionId);
             } finally {
                 distLock.release(lockResult.lock).catch((e: unknown) =>
                     LOGGER.warn('ChatStore', 'Failed to release clearHistory lock', {
@@ -294,6 +310,7 @@ export const useChatStore = create<ChatStoreShape>((set, get) => {
         },
 
         deleteSession: async (id) => {
+            distillSession(id);
             for (const [reqId, ref] of requestEntryMap) {
                 if (ref.sessionId === id) requestEntryMap.delete(reqId);
             }

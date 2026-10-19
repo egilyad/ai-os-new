@@ -4,7 +4,7 @@
   "source": "docs/manifest.json",
   "stats": {
     "nodes": 1246,
-    "edges": 3307,
+    "edges": 3309,
     "byType": {
       "audit": 65,
       "code": 527,
@@ -16,8 +16,8 @@
       "audit_test": 328,
       "audit_mention": 928,
       "documents": 201,
-      "source": 717,
-      "test": 227,
+      "source": 718,
+      "test": 228,
       "related": 906
     }
   },
@@ -21081,6 +21081,16 @@
     {
       "from": "wiki:memory-audit",
       "to": "file:src/kernel/services/tool-executor.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:memory-audit",
+      "to": "file:src/stores/chat/store.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:memory-audit",
+      "to": "file:src/stores/chat/store.ts",
       "kind": "source"
     },
     {
