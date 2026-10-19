@@ -44,4 +44,61 @@ describe('DebateGovernor claim-graph wiring', () => {
         expect(edges[0]!.observedAt).toBeGreaterThan(0);
         expect(edges[0]!.validTo).toBeNull();
     });
+
+    it('rehydrates the same claim graph from persisted arguments', () => {
+        const live = new DebateGovernor();
+        live.ingestArgument('policy improves economic growth today', 'a1', 's1', 'pro', 1);
+        live.ingestArgument('policy harms economic growth tomorrow', 'a2', 's2', 'con', 2);
+
+        const restored = new DebateGovernor();
+        restored.rehydrate([
+            {
+                id: 'a1',
+                agentId: 'x1',
+                agentName: 's1',
+                content: 'policy improves economic growth today',
+                confidence: 0.8,
+                timestamp: 1,
+                round: 1,
+                position: 'pro',
+                source: 'llm',
+            },
+            {
+                id: 'a2',
+                agentId: 'x2',
+                agentName: 's2',
+                content: 'policy harms economic growth tomorrow',
+                confidence: 0.8,
+                timestamp: 2,
+                round: 2,
+                position: 'con',
+                source: 'llm',
+            },
+        ]);
+
+        expect(restored.getState().graph.edges).toHaveLength(live.getState().graph.edges.length);
+        expect(restored.getState().graph.edges[0]!.type).toBe('challenges');
+        expect(Object.keys(restored.getState().graph.claims).sort()).toEqual(
+            Object.keys(live.getState().graph.claims).sort(),
+        );
+    });
+
+    it('skips arguments already flagged as duplicates when rehydrating', () => {
+        const g = new DebateGovernor();
+        g.rehydrate([
+            {
+                id: 'a1',
+                agentId: 'x1',
+                agentName: 's1',
+                content: 'policy improves economic growth today',
+                confidence: 0.8,
+                timestamp: 1,
+                round: 1,
+                position: 'pro',
+                source: 'llm',
+                duplicateOf: 'a0',
+            },
+        ]);
+        expect(Object.keys(g.getState().graph.claims)).toHaveLength(0);
+    });
 });

@@ -211,10 +211,22 @@ export class DebateSyncManager {
         if (loaded) {
             const entry = this._makeEntry(loaded.id, null);
             entry.activeSession = loaded;
+            // Reloaded debate has no engine runtime and no persisted governor —
+            // rebuild claims/edges from the saved arguments so the argument graph
+            // survives a page reload.
+            if (entry.governor && loaded.arguments.length > 0) {
+                entry.governor.rehydrate(loaded.arguments);
+            }
             // A reloaded (non-running) debate has no engine runtime session.
             this._entries.set(loaded.id, entry);
             this._activeSessionId = loaded.id;
             this.deps.activeDebateStore.setSession(loaded);
+            if (entry.governor) {
+                this.deps.activeDebateStore.setGovernorStateFor(
+                    loaded.id,
+                    entry.governor.getState(),
+                );
+            }
         }
         this._initUnsubs.push(
             this.deps.eventBus.on(EVENTS.DEBATE_VERDICT_GENERATED, (data) => {

@@ -46,7 +46,7 @@ export const MEMORY_AUDIT_ARTICLES: WikiArticle[] = [
 | Референс | Статус | Что в системе |
 | --- | --- | --- |
 | Mem0 (extract-and-update) | Частично | Единый сервис: upsert с детерминированным SHA-256 ID (дедуп = update). Извлечения фактов из диалогов нет — только regex по дебатам. |
-| Letta / MemGPT (core/recall/archival) | Частично | Тиры core/recall/archival, promote/forget, графовые связи и BFS-соседи. Но это не OS-иерархия с блоками под инструментами; агентского memory.* tool нет. |
+| Letta / MemGPT (core/recall/archival) | Частично | Тиры core/recall/archival, promote/forget, графовые связи и BFS-соседи. Но это не OS-иерархия с блоками под инструментами; память доступна агенту как memory.append/recall/related. |
 | Zep / Graphiti (temporal KG) | Частично | validFrom/validTo/observedAt есть у связей памяти (MemoryLink) и рёбер провенанса, с asOf-обходом; графы дебатов и знаний — снапшоты. |
 | Cognee (graph + provenance) | Частично | Provenance силён только у кристаллов (evidence, originKind, modelIds). У документов и памяти — тонко. |
 | LangMem (semantic/episodic/procedural) | Частично | Классы-сторы есть, но не инстанцируются (мёртвый код). LangGraph не используется. |
@@ -57,7 +57,7 @@ export const MEMORY_AUDIT_ARTICLES: WikiArticle[] = [
 
 | Тема | Статус | Что в системе |
 | --- | --- | --- |
-| Temporal graph (Graphiti) | Частично | Связи памяти и рёбра провенанса темпоральны и персистентны; claim-рёбра дебатов темпоральны, но живут в памяти; граф знаний — снапшот. |
+| Temporal graph (Graphiti) | Частично | Связи памяти и рёбра провенанса темпоральны и персистентны; claim-рёбра дебатов темпоральны и пересобираются из сохранённых аргументов при загрузке; граф знаний — снапшот. |
 | HippoRAG (PPR associative recall) | Частично | Multi-hop BFS + Personalized PageRank (associativeRecall) по темпоральным связям; агенту доступно как memory.related, в основной retrieval-цикл пока не встроено. |
 | Provenance (Cognee) | Частично | Только кристаллы. |
 | ChatDB (SQL/symbolic) | Частично | Типизированные фильтры (store/timeRange/importanceMin/tags/agentId/sessionId) + substring. SQL/DSL нет. |
@@ -108,7 +108,7 @@ export const MEMORY_AUDIT_ARTICLES: WikiArticle[] = [
 
 ## Чего нет
 
-- Темпоральность большинства графов: она есть у связей памяти, рёбер провенанса и claim-рёбер дебатов (последние — только в памяти); граф знаний остаётся снапшотным.
+- Темпоральность большинства графов: она есть у связей памяти, рёбер провенанса и claim-рёбер дебатов (последние пересобираются из аргументов при загрузке сессии); граф знаний остаётся снапшотным.
 - Реальные эмбеддинги (везде лексические хэши) и векторная БД/ANN.
 - MCP-сервер памяти, ACL и namespaces в основной памяти.
 - Ebbinghaus-decay с кривой, self-editing памяти, workflow-дистилляция.

@@ -1,5 +1,6 @@
 import type { Claim, GovernorState, SynthesisResult, Contradiction } from './types';
 import type { DiversityState } from '../../agent-diversity/types';
+import type { DebateArgument } from '../../../contracts/debate-types';
 import { createClaimGraph, addClaimsToGraph, addEdge, detectChallenges } from './claim-graph';
 import { detectContradictions, hasOpenContradictions } from './contradiction-detector';
 import { extractClaims } from './claim-extractor';
@@ -32,6 +33,31 @@ export class DebateGovernor {
     /** Set maximum number of rounds before forced stop. */
     setMaxRounds(n: number): void {
         this.maxRounds = n;
+    }
+
+    /**
+     * Rebuild the claim graph from persisted arguments (session reload / history
+     * view). Mirrors the live `processGovernorFeeding` pipeline, skipping
+     * arguments already flagged as duplicates. Claim IDs are stable, so repeated
+     * calls do not duplicate claims and `addEdge` dedupes valid edges.
+     */
+    rehydrate(args: ReadonlyArray<DebateArgument>): void {
+        for (const arg of args) {
+            if (arg.duplicateOf) continue;
+            this.ingestArgument(
+                arg.content,
+                arg.id,
+                arg.agentName,
+                arg.position,
+                arg.round,
+                arg.agentId,
+                arg.confidence,
+            );
+            this.updateContradictions();
+            this.computeConvergence();
+            this.computeNovelty();
+            this.updateDiversity();
+        }
     }
 
     ingestArgument(
