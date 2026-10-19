@@ -4,7 +4,7 @@
   "source": "docs/manifest.json",
   "stats": {
     "nodes": 1236,
-    "edges": 3296,
+    "edges": 3297,
     "byType": {
       "audit": 65,
       "code": 521,
@@ -16,7 +16,7 @@
       "audit_test": 328,
       "audit_mention": 928,
       "documents": 201,
-      "source": 710,
+      "source": 711,
       "test": 223,
       "related": 906
     }
@@ -20886,6 +20886,11 @@
     {
       "from": "wiki:memory-audit",
       "to": "file:src/kernel/services/crystal-vault/crystal-vault-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:memory-audit",
+      "to": "file:src/kernel/services/llm-bridge/llm-task-executor.ts",
       "kind": "source"
     },
     {

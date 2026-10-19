@@ -111,3 +111,26 @@ describe('LtMemoryService associative recall (PPR)', () => {
         expect(hits.map((h) => h.memory.id)).toEqual([d.id]);
     });
 });
+
+describe('LtMemoryService summarize', () => {
+    it('uses the LLM port when provided', async () => {
+        const bus = { emit: vi.fn() } as unknown as IEventBus;
+        const llm = {
+            distillStyle: vi.fn(),
+            summarizeMemories: vi.fn(async () => 'LLM SUMMARY'),
+        };
+        const svc = new LtMemoryService(fakeRepo(), bus, llm);
+        await svc.remember({ ownerId: 'o', content: 'alpha' });
+        expect(await svc.summarize('o')).toBe('LLM SUMMARY');
+        expect(llm.summarizeMemories).toHaveBeenCalled();
+    });
+
+    it('falls back to the heuristic without an LLM port', async () => {
+        const bus = { emit: vi.fn() } as unknown as IEventBus;
+        const svc = new LtMemoryService(fakeRepo(), bus);
+        await svc.remember({ ownerId: 'o', content: 'alpha' });
+        const out = await svc.summarize('o');
+        expect(out).toContain('memories');
+        expect(out).toContain('alpha');
+    });
+});

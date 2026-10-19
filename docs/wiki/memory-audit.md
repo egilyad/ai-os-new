@@ -4,7 +4,7 @@
 
 > Раздел: **Знания и память** · Статус: verified · Теги: память, аудит, RAG, граф, гэпы
 
-Источники: `src/kernel/services/memory-engine.ts`, `src/kernel/services/memory/sleep-engine.ts`, `src/kernel/services/rag/hybrid-retrieval-service.ts`, `src/kernel/services/persona/lt-memory-service.ts`, `src/kernel/services/persona/ppr-recall.ts`, `src/kernel/services/persona/associative-context.ts`, `src/kernel/contracts/memory-store.ts`, `src/kernel/services/memory/service-backed-memory.ts`, `src/kernel/services/memory/memory-search-utils.ts`, `src/kernel/services/memory/memory-mcp-server.ts`, `src/kernel/services/tool-executor.ts`, `src/kernel/services/crystal-vault/crystal-vault-service.ts`
+Источники: `src/kernel/services/memory-engine.ts`, `src/kernel/services/memory/sleep-engine.ts`, `src/kernel/services/rag/hybrid-retrieval-service.ts`, `src/kernel/services/persona/lt-memory-service.ts`, `src/kernel/services/persona/ppr-recall.ts`, `src/kernel/services/persona/associative-context.ts`, `src/kernel/contracts/memory-store.ts`, `src/kernel/services/memory/service-backed-memory.ts`, `src/kernel/services/memory/memory-search-utils.ts`, `src/kernel/services/memory/memory-mcp-server.ts`, `src/kernel/services/llm-bridge/llm-task-executor.ts`, `src/kernel/services/tool-executor.ts`, `src/kernel/services/crystal-vault/crystal-vault-service.ts`
 
 ## Назначение
 
@@ -85,6 +85,7 @@
 - Консолидация «сна» (микро/ночная) мёржит дубли и забывает низкозначимые по Ebbinghaus-кривой; recall ранжируется с учётом кривой забывания.
 - Namespaces памяти: metadata-фильтры (agent/role/session/chat/source/type/timeRange/importance/tags) в searchAdvanced/recall и scope-параметры tool t-search ([Компонент: каталог инструментов, способности и политики](./comp-tool-capability.md)).
 - Встроенный MCP-сервер памяти: JSON-RPC initialize/resources/tools над memoryService; MCPService подключает его локально (memory://, без сети и персистенции).
+- LLM-порт персоны/памяти (LlmPersonaPort): LtMemoryService.summarize и PersonaService.distillStyle идут через llmClientService, при отсутствии LLM — эвристический fallback.
 - Skills-библиотека, blackboard, Reflexion, task-handoff, ACL (частично).
 
 ## Чего нет
@@ -92,7 +93,7 @@
 - Темпоральность большинства графов: она есть у связей памяти, рёбер провенанса и claim-рёбер дебатов (последние пересобираются из аргументов при загрузке сессии); граф знаний остаётся снапшотным.
 - Реальные эмбеддинги (везде лексические хэши) и векторная БД/ANN.
 - Автоматический ACL-scoping (роль/сессия) в основном recall и внешний MCP-транспорт (HTTP) для встроенного сервера памяти.
-- self-editing памяти, workflow-дистилляция и LLM-суммаризация при консолидации.
+- self-editing памяти, workflow-дистилляция и LLM-суммаризация слияния памяти (у LT-памяти/персоны LLM-summary уже есть).
 - Session-memory coding-агентов.
 
 Также: 6+ специализированных сторов (working/episodic/semantic/procedural/emotional/social/spatial) — мёртвые классы; sleep-консолидация без LLM-суммаризации; «граф знаний» — эвристика и визуализация с синтетическими рёбрами; knowledge-generator — шаблонная симуляция, не LLM.

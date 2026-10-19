@@ -6580,6 +6580,7 @@
         "src/kernel/services/memory/service-backed-memory.ts",
         "src/kernel/services/memory/memory-search-utils.ts",
         "src/kernel/services/memory/memory-mcp-server.ts",
+        "src/kernel/services/llm-bridge/llm-task-executor.ts",
         "src/kernel/services/tool-executor.ts",
         "src/kernel/services/crystal-vault/crystal-vault-service.ts"
       ],

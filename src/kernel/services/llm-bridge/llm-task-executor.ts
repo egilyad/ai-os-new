@@ -6,6 +6,7 @@
  *   - LlmCouncilPort   : ICouncilLlmPort (stance drafts + judge ballots)
  *   - LlmGraphPort     : IGraphLlmPort (task nodes + reflections)
  *   - LlmFrontierExecutor : IFrontierExecutor (benchmark cases)
+ *   - LlmPersonaPort   : IPersonaLlmPort (style distillation + memory summaries)
  *
  * Every call carries cacheScope { agentId, sessionId, role } (B-20 pattern)
  * so agents never contaminate each other's cache. Temperature/maxTokens are
@@ -19,6 +20,8 @@ import type { ICrewTaskExecutor } from '../../contracts/crew';
 import type { ICouncilLlmPort } from '../../contracts/council';
 import type { IGraphLlmPort } from '../../contracts/graph';
 import type { IFrontierExecutor } from '../../contracts/frontier';
+import type { IPersonaLlmPort } from '../../contracts/persona';
+import type { LongTermMemory } from '../../types/persona-types';
 import { rootLogger } from '../logger-service';
 
 const LOGGER = rootLogger.child('LlmBridge');
@@ -202,6 +205,62 @@ export class LlmFrontierExecutor implements IFrontierExecutor {
             'You are a benchmark subject. Solve the task directly and completely.',
             task,
             {},
+        );
+    }
+}
+
+/**
+ * Persona LLM port — style distillation + long-term memory summaries.
+ * Offline heuristics in PersonaService/LtMemoryService remain the fallback.
+ */
+export class LlmPersonaPort implements IPersonaLlmPort {
+    constructor(private opts: LlmBridgeOptions) {}
+
+    async distillStyle(
+        samples: string[],
+    ): Promise<{ styleNotes: string[]; judgments: string[] }> {
+        if (samples.length === 0) return { styleNotes: [], judgments: [] };
+        const out = await chat(
+            this.opts,
+            'You are a forensic style analyst. Reply as JSON only: ' +
+                '{"styleNotes":["..."],"judgments":["..."]}. Keep at most 8 of each.',
+            `Writing samples:\n${samples
+                .slice(0, 20)
+                .map((s) => `- ${s.slice(0, 600)}`)
+                .join('\n')}`,
+            { role: 'persona' },
+        );
+        try {
+            const start = out.indexOf('{');
+            const parsed = JSON.parse(out.slice(start, out.lastIndexOf('}') + 1)) as {
+                styleNotes?: unknown;
+                judgments?: unknown;
+            };
+            const toStrings = (v: unknown): string[] =>
+                Array.isArray(v) ? v.filter((x): x is string => typeof x === 'string') : [];
+            return { styleNotes: toStrings(parsed.styleNotes), judgments: toStrings(parsed.judgments) };
+        } catch (e) {
+            LOGGER.warn('LlmBridge', 'distillStyle JSON parse failed, heuristic split', {
+                error: e instanceof Error ? e.message : String(e),
+            });
+            return {
+                styleNotes: out.split('\n').map((l) => l.trim()).filter(Boolean).slice(0, 8),
+                judgments: [],
+            };
+        }
+    }
+
+    async summarizeMemories(memories: LongTermMemory[]): Promise<string> {
+        if (memories.length === 0) return 'No long-term memories.';
+        return chat(
+            this.opts,
+            'You are a memory archivist. Compress the memories into a compact profile: ' +
+                'stable facts, preferences, decisions and open threads. Be concise and concrete.',
+            memories
+                .slice(0, 50)
+                .map((m) => `[${m.tier}] ${m.content.slice(0, 400)}`)
+                .join('\n'),
+            { role: 'memory' },
         );
     }
 }
