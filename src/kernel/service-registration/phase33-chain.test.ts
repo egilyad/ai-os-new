@@ -60,6 +60,7 @@ describe('Phase33 e2e chain (F)', () => {
                 'memory.forget',
                 'memory.promote',
                 'memory.demote',
+                'memory.edit',
             ]),
         );
     });
@@ -78,5 +79,18 @@ describe('Phase33 e2e chain (F)', () => {
         );
         expect(await runner.callTool('agent', 'memory.forget', { id: m.id })).toContain('forgot');
         expect(await lt.get(m.id)).toBeNull();
+    });
+
+    it('lets an agent rewrite its own memory text', async () => {
+        get<IMemoryBlocksService>('memoryBlocksService');
+        const runner = get<IToolRunnerService>('toolRunnerService');
+        const lt = get<ILtMemoryService>('ltMemoryService');
+        const m = await lt.remember({ ownerId: 'agent', content: 'draft v1' });
+
+        expect(
+            await runner.callTool('agent', 'memory.edit', { id: m.id, content: 'draft v2' }),
+        ).toContain('updated');
+        expect((await lt.get(m.id))?.content).toBe('draft v2');
+        await lt.forget(m.id);
     });
 });

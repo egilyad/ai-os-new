@@ -1699,6 +1699,10 @@ export const EVENT_REGISTRY = {
         z.object({ memoryId: z.string(), tier: z.string() }),
     ),
     MEMORY_FORGOTTEN: event('memory:forgotten', z.object({ memoryId: z.string() })),
+    LT_MEMORY_UPDATED: event(
+        'memory:lt-updated',
+        z.object({ memoryId: z.string(), ownerId: z.string() }),
+    ),
     MEMORY_LINKED: event(
         'memory:linked',
         z.object({ fromId: z.string(), toId: z.string(), relation: z.string() }),

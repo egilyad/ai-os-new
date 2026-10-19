@@ -123,6 +123,17 @@ export class LtMemoryService implements ILtMemoryService {
         return this.repo.getMemory(id);
     }
 
+    async update(id: string, content: string): Promise<LongTermMemory> {
+        const next = content.trim();
+        if (!next) throw new Error('content is required');
+        const m = await this.require(id);
+        m.content = next;
+        m.updatedAt = now();
+        await this.repo.putMemory(m);
+        this.events.emit(EVENTS.LT_MEMORY_UPDATED, { memoryId: id, ownerId: m.ownerId });
+        return m;
+    }
+
     async promote(id: string): Promise<LongTermMemory> {
         const m = await this.require(id);
         const idx = TIER_ORDER[m.tier];

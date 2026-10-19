@@ -3,6 +3,7 @@
  */
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { LtMemoryService, isLinkValidAt } from './lt-memory-service';
+import { EVENTS } from '../../events/event-names';
 import type { PersonaRepository } from '../../dal/persona-repository';
 import type { LongTermMemory, MemoryLink } from '../../types/persona-types';
 import type { IEventBus } from '../../types/interfaces';
@@ -142,5 +143,19 @@ describe('LtMemoryService get', () => {
         const m = await svc.remember({ ownerId: 'agent', content: 'alpha' });
         expect((await svc.get(m.id))?.content).toBe('alpha');
         expect(await svc.get('missing')).toBeNull();
+    });
+
+    it('updates content and emits MEMORY_UPDATED', async () => {
+        const bus = { emit: vi.fn() } as unknown as IEventBus;
+        const svc = new LtMemoryService(fakeRepo(), bus);
+        const m = await svc.remember({ ownerId: 'agent', content: 'alpha' });
+        const updated = await svc.update(m.id, '  beta  ');
+        expect(updated.content).toBe('beta');
+        expect((await svc.get(m.id))?.content).toBe('beta');
+        expect(bus.emit).toHaveBeenCalledWith(EVENTS.LT_MEMORY_UPDATED, {
+            memoryId: m.id,
+            ownerId: 'agent',
+        });
+        await expect(svc.update(m.id, '   ')).rejects.toThrow('content is required');
     });
 });
