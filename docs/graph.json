@@ -3,12 +3,12 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 1236,
-    "edges": 3297,
+    "nodes": 1238,
+    "edges": 3299,
     "byType": {
       "audit": 65,
-      "code": 521,
-      "test": 158,
+      "code": 522,
+      "test": 159,
       "panel": 259,
       "article": 233
     },
@@ -16,8 +16,8 @@
       "audit_test": 328,
       "audit_mention": 928,
       "documents": 201,
-      "source": 711,
-      "test": 223,
+      "source": 712,
+      "test": 224,
       "related": 906
     }
   },
@@ -2741,6 +2741,16 @@
       "id": "file:src/kernel/services/memory/memory-search-utils.ts",
       "type": "code",
       "label": "src/kernel/services/memory/memory-search-utils.ts"
+    },
+    {
+      "id": "file:src/kernel/services/memory/memory-summarizer.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/memory/memory-summarizer.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/memory/memory-summarizer.ts",
+      "type": "code",
+      "label": "src/kernel/services/memory/memory-summarizer.ts"
     },
     {
       "id": "file:src/kernel/services/memory/service-backed-memory.test.ts",
@@ -20916,6 +20926,16 @@
     {
       "from": "wiki:memory-audit",
       "to": "file:src/kernel/services/memory/memory-search-utils.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:memory-audit",
+      "to": "file:src/kernel/services/memory/memory-summarizer.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:memory-audit",
+      "to": "file:src/kernel/services/memory/memory-summarizer.ts",
       "kind": "source"
     },
     {

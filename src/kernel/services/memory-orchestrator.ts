@@ -10,16 +10,38 @@ import { ServiceBackedMemoryStore } from './memory/service-backed-memory';
 import { SleepEngine } from './memory/sleep-engine';
 import { MemoryPalace } from './memory/memory-palace';
 import type { PalaceState } from './memory/memory-palace';
+import { MIN_SUMMARY_ENTRIES } from './memory/memory-summarizer';
+import { rootLogger } from './logger-service';
+
+const LOGGER = rootLogger.child('MemoryOrchestrator');
+
+export const CONSOLIDATION_SUMMARY_TYPE = 'consolidation_summary';
+const SUMMARY_WINDOW_MS = 24 * 60 * 60 * 1000;
+const SUMMARY_COOLDOWN_MS = 6 * 60 * 60 * 1000;
+const MAX_SUMMARIES = 5;
+const SUMMARY_SCAN_LIMIT = 500;
+
+/** Structural type so the orchestrator does not depend on the LLM client. */
+export interface MemorySummarizerLike {
+    summarize(entries: MemoryEntry[]): Promise<string | null>;
+}
 
 export class MemoryOrchestrator {
     readonly stores: Map<MemoryStoreType, IMemoryStore>;
     readonly sleepEngine: SleepEngine;
     readonly palace: MemoryPalace;
 
-    constructor(private memoryService?: () => MemoryService | undefined) {
+    constructor(
+        private memoryService?: () => MemoryService | undefined,
+        private summarizer?: () => MemorySummarizerLike | undefined,
+    ) {
         this.stores = new Map();
         this.registerDefaultStores();
-        this.sleepEngine = new SleepEngine(this.stores);
+        this.sleepEngine = new SleepEngine(this.stores, {
+            afterNightlyConsolidation: async () => {
+                await this.summarizeRecent();
+            },
+        });
         this.palace = new MemoryPalace(this.stores);
     }
 
@@ -117,7 +139,69 @@ export class MemoryOrchestrator {
         for (const [, store] of this.stores) {
             reports.push(await store.consolidate());
         }
+        try {
+            await this.summarizeRecent();
+        } catch (e) {
+            LOGGER.warn('MemoryOrchestrator', 'summarization failed', {
+                error: e instanceof Error ? e.message : String(e),
+            });
+        }
         return reports;
+    }
+
+    /**
+     * LLM-summarize recent mesh entries into one `consolidation_summary` entry.
+     * No-op without a summarizer (offline), below the entry threshold, during
+     * the cooldown window, or when the text is unchanged. Keeps at most
+     * MAX_SUMMARIES summaries (oldest pruned). Returns true when stored.
+     */
+    async summarizeRecent(windowMs: number = SUMMARY_WINDOW_MS): Promise<boolean> {
+        const svc = this.getService();
+        const summarizer = this.summarizer?.();
+        if (!svc || !summarizer) return false;
+
+        const now = Date.now();
+        const all = svc.getMemories(SUMMARY_SCAN_LIMIT);
+        const summaries = all
+            .filter((e) => e.metadata.type === CONSOLIDATION_SUMMARY_TYPE)
+            .sort((a, b) => (b.metadata.timestamp ?? 0) - (a.metadata.timestamp ?? 0));
+        const recent = all.filter(
+            (e) =>
+                e.metadata.type !== CONSOLIDATION_SUMMARY_TYPE &&
+                now - (e.metadata.timestamp ?? 0) <= windowMs &&
+                e.content.trim().length > 0,
+        );
+        if (recent.length < MIN_SUMMARY_ENTRIES) return false;
+
+        const text = await summarizer.summarize(recent);
+        if (!text) return false;
+
+        const latest = summaries[0];
+        if (
+            latest &&
+            (latest.content.trim() === text.trim() ||
+                now - (latest.metadata.timestamp ?? 0) < SUMMARY_COOLDOWN_MS)
+        ) {
+            return false;
+        }
+
+        await svc.store({
+            content: text,
+            metadata: {
+                source: 'summary',
+                type: CONSOLIDATION_SUMMARY_TYPE,
+                timestamp: now,
+                importance: 0.85,
+            },
+        });
+
+        const excess = summaries.length - (MAX_SUMMARIES - 1);
+        if (excess > 0) {
+            for (const old of summaries.slice(summaries.length - excess)) {
+                await svc.deleteMemory(old.id);
+            }
+        }
+        return true;
     }
 
     async getStats(): Promise<Record<MemoryStoreType, MemoryStats>> {

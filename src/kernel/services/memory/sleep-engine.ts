@@ -1,14 +1,23 @@
 import type { IMemoryStore } from '../../contracts/memory-store';
 import { MemoryStoreType } from '../../contracts/memory-store';
+import { rootLogger } from '../logger-service';
+
+const LOGGER = rootLogger.child('SleepEngine');
 
 const MICRO_CONSOLIDATION_TRIGGER = 10;
 const NIGHTLY_IDLE_MS = 15 * 60 * 1000;
+
+export interface SleepEngineHooks {
+    /** Runs after nightly store consolidation (e.g. LLM memory summarization). */
+    afterNightlyConsolidation?: () => Promise<void>;
+}
 
 /**
  * SleepEngine — idle-triggered consolidation. Micro-consolidation fires every
  * N mutations, nightly consolidation after an idle window; both delegate to the
  * stores' `consolidate()` (duplicate merge + Ebbinghaus retention forgetting).
- * No LLM summarization — see the memory audit for the remaining gap.
+ * The nightly pass then invokes `afterNightlyConsolidation` (LLM summarization
+ * when a client is wired; no-op offline).
  */
 export class SleepEngine {
     private microCounter = 0;
@@ -16,7 +25,10 @@ export class SleepEngine {
     private idleSince: number | null = null;
     private running = false;
 
-    constructor(private stores: Map<MemoryStoreType, IMemoryStore>) {}
+    constructor(
+        private stores: Map<MemoryStoreType, IMemoryStore>,
+        private hooks: SleepEngineHooks = {},
+    ) {}
 
     start(): void {
         this.running = true;
@@ -66,6 +78,13 @@ export class SleepEngine {
             results.push({ store: type, forgotten: report.entriesForgotten });
         }
         void results;
+        try {
+            await this.hooks.afterNightlyConsolidation?.();
+        } catch (e) {
+            LOGGER.warn('SleepEngine', 'afterNightlyConsolidation failed', {
+                error: e instanceof Error ? e.message : String(e),
+            });
+        }
     }
 
     async consolidateNow(): Promise<void> {

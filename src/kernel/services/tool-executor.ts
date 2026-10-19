@@ -196,6 +196,11 @@ export interface ToolServiceDeps {
     };
     memoryService?: {
         search: (query: string, limit?: number) => Promise<unknown[]>;
+        searchAdvanced?: (query: {
+            query: string;
+            limit?: number;
+            filter?: Record<string, unknown>;
+        }) => Promise<unknown[]>;
     };
     sandboxService?: {
         execute: (

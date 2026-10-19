@@ -6,6 +6,8 @@
 import type { Phase } from './helpers';
 import { MemoryOrchestrator } from '../services/memory-orchestrator';
 import type { MemoryService } from '../services/memory-engine';
+import { MemorySummarizer } from '../services/memory/memory-summarizer';
+import type { ILLMClientService } from '../contracts/provider-adapter';
 import { EvalDatasetService } from '../services/eval-dataset-service';
 import { CustomMetricsService } from '../services/custom-metrics-service';
 import type { IProviderAdapter } from '../contracts/provider-adapter';
@@ -15,13 +17,23 @@ export const registerPhase7: Phase = ({ register }) => {
     register(
         'memoryOrchestrator',
         (c) =>
-            new MemoryOrchestrator(() => {
-                try {
-                    return c.get<MemoryService>('memoryService');
-                } catch {
-                    return undefined;
-                }
-            }),
+            new MemoryOrchestrator(
+                () => {
+                    try {
+                        return c.get<MemoryService>('memoryService');
+                    } catch {
+                        return undefined;
+                    }
+                },
+                () => {
+                    if (!c.has('llmClientService')) return undefined;
+                    try {
+                        return new MemorySummarizer(c.get<ILLMClientService>('llmClientService'));
+                    } catch {
+                        return undefined;
+                    }
+                },
+            ),
     );
 
     register('evalDatasetService', (c) => {
