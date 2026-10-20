@@ -169,6 +169,15 @@ const memory: Record<string, string> = {
     'message_search.title': 'Title',
     'message_search.user': 'User',
     'message_search.user_msgs': 'User Msgs',
+    'memory.embeddings_title': 'Provider embeddings',
+    'memory.embeddings_description':
+        'Real vectors from an OpenAI-compatible /embeddings endpoint instead of the offline hash fallback.',
+    'memory.embeddings_provider': 'Embedding provider',
+    'memory.embeddings_model': 'Embedding model',
+    'memory.embeddings_reembed': 'Re-embed memories',
+    'memory.embeddings_reembedded': 'Re-embedded {0} memories',
+    'memory.embeddings_unavailable': 'Embeddings are unavailable (no provider or API key)',
+    'memory.embeddings_failed': 'Re-embed failed: {0}',
 };
 
 export { memory };

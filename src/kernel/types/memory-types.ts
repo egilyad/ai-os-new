@@ -45,6 +45,10 @@ export interface MemoryEntry {
         tags?: MemoryTags;
         vectorData?: {
             dimensions?: number;
+            /** Vector space: 'hash' (offline fallback) or 'provider' (real vectors). */
+            space?: 'hash' | 'provider' | string;
+            /** Embedding model that produced the vector (stale when the model changes). */
+            model?: string;
         };
         relations?: MemoryRelation[];
         importanceLabel?: MemoryImportance;

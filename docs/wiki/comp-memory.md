@@ -4,7 +4,7 @@
 
 > Раздел: **Компоненты и сервисы** · Статус: documented · Теги: компоненты, память, поиск, RAG
 
-Источники: `src/kernel/services/memory-engine.ts`, `src/kernel/contracts/memory.ts`, `src/kernel/services/memory/provider-embedding-service.ts`, `src/kernel/workers/memory-vector-space.ts`
+Источники: `src/kernel/services/memory-engine.ts`, `src/kernel/contracts/memory.ts`, `src/kernel/services/memory/provider-embedding-service.ts`, `src/kernel/workers/memory-vector-space.ts`, `src/components/MemoryPanel/MemoryEmbeddingsCard.tsx`
 
 ## Назначение
 
@@ -15,7 +15,7 @@
 - Три коллекции: долговременная (`long-term`), эфемерная с TTL (`ephemeral`), RAG.
 - Режимы поиска: `auto`, `semantic`, `fulltext`.
 - Векторный поиск через Web Worker; авто-прунинг по TTL; CRUD записей.
-- Провайдерские эмбеддинги (опционально): реальные векторы от OpenAI-совместимого `/embeddings`; по умолчанию выключены, без ключа работает офлайн-хэш.
+- Провайдерские эмбеддинги (опционально): реальные векторы от OpenAI-совместимого `/embeddings`; по умолчанию выключены, без ключа работает офлайн-хэш. Настройка — в панели памяти (карточка «Провайдерские эмбеддинги»): провайдер, модель, пере-эмбеддинг старых записей.
 - Feature-flag-гейтинг.
 
 ## Реализация

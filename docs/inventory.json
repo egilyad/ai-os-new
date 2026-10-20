@@ -6996,8 +6996,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Компонент: память и знания",
-      "bytes": 3793,
-      "hash": "3c991bb62fdb66aa0c3b6bf49731754edd5a8dc6"
+      "bytes": 4063,
+      "hash": "8b185a94ab08b95a69900055f0dff454de7180a0"
     },
     {
       "path": "docs/wiki/comp-messaging-integrations.md",
@@ -7221,7 +7221,7 @@
       "language": "mixed",
       "title": "Матрица покрытия",
       "bytes": 8373,
-      "hash": "ddb2542e4750d95b6b46a25a39de40d08c4c2032"
+      "hash": "5a9b45f77d2ff3abedd063afdcdf3eb5bc6ed55b"
     },
     {
       "path": "docs/wiki/debates.md",
@@ -7253,7 +7253,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4077,
-      "hash": "56fbdea5f1f9e9d2bacec98cff486d5c5938dfb6"
+      "hash": "ea964ebdfff7670d1aa88c0706bd0ff49064a87b"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -7341,7 +7341,7 @@
       "language": "ru",
       "title": "Граф знаний",
       "bytes": 4922,
-      "hash": "7292806f6ed577afe22630fdebaa6a7ba2ea3992"
+      "hash": "9d4c93d9954d70c70e7d6ad6def91caa61932560"
     },
     {
       "path": "docs/wiki/dev-history.md",
@@ -7588,8 +7588,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Память: что есть и чего нет (аудит)",
-      "bytes": 17152,
-      "hash": "5419a535189ba88f9b8e4d1fe578f438662b6189"
+      "bytes": 17485,
+      "hash": "51add6a7c5ceae8306317c1fea5ca59b6e94ac63"
     },
     {
       "path": "docs/wiki/memory.md",

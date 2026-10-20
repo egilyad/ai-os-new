@@ -168,6 +168,15 @@ const memory: Record<string, string> = {
     'message_search.title': 'Название',
     'message_search.user': 'Пользователь',
     'message_search.user_msgs': 'Сообщения пользователя',
+    'memory.embeddings_title': 'Провайдерские эмбеддинги',
+    'memory.embeddings_description':
+        'Настоящие векторы от OpenAI-совместимого /embeddings вместо офлайн-хэша.',
+    'memory.embeddings_provider': 'Провайдер эмбеддингов',
+    'memory.embeddings_model': 'Модель эмбеддингов',
+    'memory.embeddings_reembed': 'Пере-эмбедить память',
+    'memory.embeddings_reembedded': 'Пере-эмбеджено записей: {0}',
+    'memory.embeddings_unavailable': 'Эмбеддинги недоступны (нет провайдера или ключа)',
+    'memory.embeddings_failed': 'Не удалось пере-эмбедить: {0}',
 };
 
 export { memory };

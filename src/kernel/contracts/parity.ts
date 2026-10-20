@@ -32,6 +32,11 @@ export interface IToolRunnerService extends ILifecycle {
 /** GAP E.3 — embedding boundary (provider wiring lands separately). */
 export interface IEmbeddingPort {
     embed(texts: string[]): Promise<number[][]>;
+    /**
+     * Describes the embedding space (model, dimensionality). Used to detect
+     * stale vectors after a model switch and to tag persisted entries.
+     */
+    describe?(): { model?: string; dimensions?: number };
 }
 
 /** GAP E.2 — Knowledge RAG (url/text sources, chunked, cited). */

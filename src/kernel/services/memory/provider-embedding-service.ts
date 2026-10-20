@@ -62,6 +62,13 @@ export class ProviderEmbeddingService implements IEmbeddingPort {
         return !!this.deps.resolveApiKey(config.provider);
     }
 
+    /** Describes the configured embedding space (model / dimensionality hint). */
+    describe(): { model?: string; dimensions?: number } {
+        const config = this.deps.getConfig();
+        if (!config?.enabled) return {};
+        return { model: config.model, dimensions: config.dimensions };
+    }
+
     async embed(texts: string[]): Promise<number[][]> {
         const config = this.deps.getConfig();
         if (!config?.enabled) {

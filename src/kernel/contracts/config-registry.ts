@@ -310,11 +310,12 @@ export interface ServicesConfigSection {
          * Real provider embeddings for the memory mesh. Off by default: the
          * offline hash embedding stays in use until a provider + key exist.
          */
-        providerEmbeddings: {
+        providerEmbeddings?: {
             enabled: boolean;
             provider: string;
             model: string;
-            baseUrl: string;
+            /** Optional override; empty means "use the provider default endpoint". */
+            baseUrl?: string;
             dimensions?: number;
         };
     };

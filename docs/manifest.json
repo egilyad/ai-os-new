@@ -2967,7 +2967,8 @@
         "src/kernel/services/memory-engine.ts",
         "src/kernel/contracts/memory.ts",
         "src/kernel/services/memory/provider-embedding-service.ts",
-        "src/kernel/workers/memory-vector-space.ts"
+        "src/kernel/workers/memory-vector-space.ts",
+        "src/components/MemoryPanel/MemoryEmbeddingsCard.tsx"
       ],
       "related": [
         "memory",

@@ -16,6 +16,7 @@ import MemoryHeader from './MemoryHeader';
 import MemoryErrorAlert from './MemoryErrorAlert';
 import CollectionTabs from './CollectionTabs';
 import SearchBar from './SearchBar';
+import MemoryEmbeddingsCard from './MemoryEmbeddingsCard';
 import MemoryEmptyState from './MemoryEmptyState';
 import MemoryCard from './MemoryCard';
 import IndexStatsPanel from './IndexStatsPanel';
@@ -272,7 +273,10 @@ const MemoryPanel: React.FC = () => {
         setSemanticMode(next);
         configService
             .updateServices({
-                memory: { semanticEnabled: next, autoEmbedOnStore: true, maxEntries: 1000 },
+                memory: {
+                    ...CONFIG.services.memory,
+                    semanticEnabled: next,
+                },
             })
             .catch((e) => LOGGER.warn('Config update failed', e));
         if (next) void Promise.resolve();
@@ -332,6 +336,7 @@ const MemoryPanel: React.FC = () => {
                             semanticMode={semanticMode}
                             onToggleSemantic={toggleSemantic}
                         />
+                        <MemoryEmbeddingsCard />
                         {searching && (
                             <div style={{ fontSize: '0.7rem', color: 'var(--slate-500)' }}>
                                 Top 5 matches — refine the query for more

@@ -88,7 +88,9 @@ self.onmessage = async (event: MessageEvent) => {
                 for (const m of entries) {
                     await insert(db as AnyOrama, m);
                     if (m.vector) {
-                        vectors.set(m.id, m.vector, VectorSpace.detectSpace(m.vector));
+                        const space =
+                            m.metadata?.vectorData?.space ?? VectorSpace.detectSpace(m.vector);
+                        vectors.set(m.id, m.vector, space);
                     }
                 }
                 self.postMessage({ requestId, type: 'init' });

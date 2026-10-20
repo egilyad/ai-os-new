@@ -65,6 +65,14 @@ export interface IMemoryEngine {
     recall(context: string, limit?: number, filter?: Record<string, unknown>): MemoryEntry[];
     searchAdvanced?(query: MemoryQuery): Promise<MemorySearchResult[]>;
     getCapabilities(): MemoryCapability;
+    /**
+     * Re-embed existing entries with the active provider embedding model.
+     * Returns how many entries were re-embedded and how many were skipped.
+     */
+    backfillProviderEmbeddings?(opts?: {
+        batchSize?: number;
+        limit?: number;
+    }): Promise<{ embedded: number; skipped: number; failed: boolean }>;
     tryStore?(entry: Omit<MemoryEntry, 'id'>): Result<void, MemoryError>;
     tryDelete?(id: string): Result<void, MemoryError>;
 }

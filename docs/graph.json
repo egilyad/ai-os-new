@@ -3,11 +3,11 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 1255,
-    "edges": 3324,
+    "nodes": 1256,
+    "edges": 3325,
     "byType": {
       "audit": 65,
-      "code": 531,
+      "code": 532,
       "test": 167,
       "panel": 259,
       "article": 233
@@ -16,7 +16,7 @@
       "audit_test": 329,
       "audit_mention": 928,
       "documents": 201,
-      "source": 724,
+      "source": 725,
       "test": 236,
       "related": 906
     }
@@ -1211,6 +1211,11 @@
       "id": "file:src/components/MCPPanel/MCPPanel.tsx",
       "type": "code",
       "label": "src/components/MCPPanel/MCPPanel.tsx"
+    },
+    {
+      "id": "file:src/components/MemoryPanel/MemoryEmbeddingsCard.tsx",
+      "type": "code",
+      "label": "src/components/MemoryPanel/MemoryEmbeddingsCard.tsx"
     },
     {
       "id": "file:src/components/MemoryPanel/MemoryPalacePanel.tsx",
@@ -17807,6 +17812,11 @@
       "from": "wiki:comp-llm-pipeline",
       "to": "wiki:for-developers",
       "kind": "related"
+    },
+    {
+      "from": "wiki:comp-memory",
+      "to": "file:src/components/MemoryPanel/MemoryEmbeddingsCard.tsx",
+      "kind": "source"
     },
     {
       "from": "wiki:comp-memory",

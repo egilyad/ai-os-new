@@ -81,6 +81,8 @@ export class MemoryService implements IMemoryEngine {
     private embeddingCache = new Map<string, number[]>();
     /** Set once a provider embedding call fails, to avoid hammering a broken provider. */
     private providerEmbeddingsDisabled = false;
+    /** Embedding model used for the provider vectors of an entry (for staleness checks). */
+    private pendingProviderModel = new Map<string, string>();
 
     private async _withTransaction<T>(
         source: string,
@@ -238,15 +240,98 @@ export class MemoryService implements IMemoryEngine {
         }
     }
 
+    /** Model of the active embedding provider (undefined when embeddings are off). */
+    private embedderModel(): string | undefined {
+        try {
+            return this.deps.getEmbedder?.()?.describe?.()?.model;
+        } catch {
+            return undefined;
+        }
+    }
+
+    /**
+     * Re-embed existing entries with the current provider model.
+     *
+     * Entries that already carry a provider vector of the same model are
+     * skipped; everything else (hash vectors, vectors of a previous model) is
+     * re-embedded in batches and pushed to the search worker.
+     */
+    async backfillProviderEmbeddings(
+        opts: { batchSize?: number; limit?: number } = {},
+    ): Promise<{ embedded: number; skipped: number; failed: boolean }> {
+        const embedder = this.deps.getEmbedder?.();
+        if (!embedder) return { embedded: 0, skipped: 0, failed: true };
+        const model = embedder.describe?.()?.model;
+        const batchSize = Math.max(1, opts.batchSize ?? 16);
+        const limit = Math.max(1, opts.limit ?? 500);
+
+        const candidates = this.cache.entries.filter((entry) => {
+            const data = entry.metadata?.vectorData;
+            if (data?.space !== PROVIDER_VECTOR_SPACE) return true;
+            if (model && data.model && data.model !== model) return true;
+            return false;
+        });
+        const targets = candidates.slice(0, limit);
+        if (!targets.length) return { embedded: 0, skipped: candidates.length, failed: false };
+
+        let embedded = 0;
+        for (let i = 0; i < targets.length; i += batchSize) {
+            const batch = targets.slice(i, i + batchSize);
+            const vectors = await this.providerEmbed(batch.map((e) => e.content));
+            if (!vectors) return { embedded, skipped: candidates.length - embedded, failed: true };
+            for (let j = 0; j < batch.length; j++) {
+                const entry = batch[j]!;
+                const vector = vectors[j];
+                if (!vector) continue;
+                if (model) this.pendingProviderModel.set(entry.id, model);
+                await this.backfillVector(entry.id, vector);
+                if (this.workerClient.ready) {
+                    await this.workerClient
+                        .send('upsert', {
+                            entry,
+                            generateEmbedding: false,
+                            vector,
+                            vectorSpace: PROVIDER_VECTOR_SPACE,
+                        })
+                        .catch((e) =>
+                            LOGGER.warn('MemoryEngine', 'Worker upsert (backfill) failed', {
+                                error: e,
+                            }),
+                        );
+                }
+                embedded++;
+            }
+        }
+        this.pendingProviderModel.clear();
+        return { embedded, skipped: candidates.length - embedded, failed: false };
+    }
+
     private async backfillVector(id: string, vector: number[]) {
         try {
-            await this.memoryRepo.update(id, { vector });
+            const providerModel = this.pendingProviderModel.get(id);
+            const space = providerModel ? PROVIDER_VECTOR_SPACE : 'hash';
+            const mem = this.cache.get(id);
+            const metadata = mem
+                ? {
+                      ...mem.metadata,
+                      vectorData: {
+                          dimensions: vector.length,
+                          space,
+                          ...(providerModel ? { model: providerModel } : {}),
+                      },
+                  }
+                : undefined;
+            await this.memoryRepo.update(id, metadata ? { vector, metadata } : { vector });
             await this.cache.withLock(async () => {
-                const mem = this.cache.get(id);
-                if (mem) {
+                const cached = this.cache.get(id);
+                if (cached) {
                     const idx = this.cache.findIndex(id);
                     if (idx >= 0) {
-                        this.cache.replaceAt(idx, { ...mem, vector });
+                        this.cache.replaceAt(idx, {
+                            ...cached,
+                            vector,
+                            metadata: metadata ?? cached.metadata,
+                        });
                         this.deps.eventBus.emitOnce(
                             EVENTS.MEMORY_UPDATED,
                             'all',
@@ -313,6 +398,20 @@ export class MemoryService implements IMemoryEngine {
                 ) {
                     this.clear();
                 }
+                // Provider embedding settings changed: drop cached vectors and
+                // re-embed existing entries in the new space.
+                const memoryChanges = changes?.['memory'] as
+                    | { providerEmbeddings?: unknown }
+                    | undefined;
+                if (memoryChanges?.providerEmbeddings) {
+                    this.embeddingCache.clear();
+                    this.providerEmbeddingsDisabled = false;
+                    void this.backfillProviderEmbeddings().catch((e) =>
+                        LOGGER.warn('MemoryEngine', 'Provider embedding backfill failed', {
+                            error: e,
+                        }),
+                    );
+                }
             }),
         );
     }
@@ -375,6 +474,10 @@ export class MemoryService implements IMemoryEngine {
                     if (this.workerClient.ready) {
                         const vectors = await this.providerEmbed([newEntry.content]);
                         const vector = vectors?.[0];
+                        if (vector) {
+                            const model = this.embedderModel();
+                            if (model) this.pendingProviderModel.set(newEntry.id, model);
+                        }
                         await this.workerClient.send('upsert', {
                             entry: newEntry,
                             generateEmbedding: this.semanticReady,
@@ -446,6 +549,10 @@ export class MemoryService implements IMemoryEngine {
                     if (this.workerClient.ready) {
                         const vectors = await this.providerEmbed([newEntry.content]);
                         const vector = vectors?.[0];
+                        if (vector) {
+                            const model = this.embedderModel();
+                            if (model) this.pendingProviderModel.set(newEntry.id, model);
+                        }
                         await this.workerClient.send('upsert', {
                             entry: newEntry,
                             generateEmbedding: this.semanticReady,
@@ -522,6 +629,12 @@ export class MemoryService implements IMemoryEngine {
                         const vectors = await this.providerEmbed(
                             newEntries.map((e) => e.content),
                         );
+                        const model = vectors ? this.embedderModel() : undefined;
+                        newEntries.forEach((e, idx) => {
+                            if (model && vectors?.[idx]) {
+                                this.pendingProviderModel.set(e.id, model);
+                            }
+                        });
                         Promise.all(
                             newEntries.map((e, idx) =>
                                 this.workerClient.send('upsert', {

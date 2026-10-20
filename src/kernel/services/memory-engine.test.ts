@@ -60,6 +60,7 @@ function makeDatabase() {
         }),
         put: vi.fn(async () => {}),
         bulkPut: vi.fn(async () => {}),
+        update: vi.fn(async () => 1),
         get: vi.fn(async () => undefined),
         delete: vi.fn(async () => {}),
         count: vi.fn(async () => 0),
@@ -161,6 +162,46 @@ describe('MemoryService provider embeddings', () => {
         const upsert = worker!.posted.find((m) => m.type === 'upsert');
         expect(upsert).toBeDefined();
         expect(upsert!.payload?.['vector']).toBeUndefined();
+        service.destroy();
+    });
+
+    it('re-embeds existing entries with the provider model', async () => {
+        const embedder = {
+            embed: vi.fn(async (texts: string[]) => texts.map(() => [0.5, 0.5])),
+            describe: () => ({ model: 'text-embedding-3-small' }),
+        };
+        const service = new MemoryService({
+            database: makeDatabase(),
+            eventBus: makeEventBus(),
+            getEmbedder: () => embedder,
+        });
+
+        await service.store({
+            content: 'Legacy entry stored with hash vectors only',
+            metadata: { source: 'test', type: 'note', timestamp: Date.now(), importance: 0.8 },
+        });
+        await new Promise((r) => setTimeout(r, 20));
+
+        const result = await service.backfillProviderEmbeddings();
+        expect(result.failed).toBe(false);
+        expect(result.embedded).toBe(1);
+
+        const worker = FakeWorker.instances[0];
+        const providerUpserts = worker!.posted.filter(
+            (m) => m.type === 'upsert' && m.payload?.['vectorSpace'] === 'provider',
+        );
+        expect(providerUpserts.length).toBeGreaterThan(0);
+        service.destroy();
+    });
+
+    it('reports failure when no embedder is configured', async () => {
+        const service = new MemoryService({
+            database: makeDatabase(),
+            eventBus: makeEventBus(),
+            getEmbedder: () => undefined,
+        });
+        const result = await service.backfillProviderEmbeddings();
+        expect(result).toEqual({ embedded: 0, skipped: 0, failed: true });
         service.destroy();
     });
 });
