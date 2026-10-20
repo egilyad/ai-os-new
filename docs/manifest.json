@@ -2968,7 +2968,9 @@
         "src/kernel/contracts/memory.ts",
         "src/kernel/services/memory/provider-embedding-service.ts",
         "src/kernel/workers/memory-vector-space.ts",
-        "src/components/MemoryPanel/MemoryEmbeddingsCard.tsx"
+        "src/components/MemoryPanel/MemoryEmbeddingsCard.tsx",
+        "src/components/ProviderManager/ModelCatalogView.tsx",
+        "src/llm/catalog/catalog-lookup.ts"
       ],
       "related": [
         "memory",
@@ -2981,7 +2983,9 @@
       "tests": [
         "src/kernel/services/memory-engine.test.ts",
         "src/kernel/services/memory/provider-embedding-service.test.ts",
-        "src/kernel/workers/memory-vector-space.test.ts"
+        "src/kernel/workers/memory-vector-space.test.ts",
+        "src/components/ProviderManager/ModelCatalogView.test.tsx",
+        "src/llm/catalog/catalog-lookup.test.ts"
       ]
     },
     {

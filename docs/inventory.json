@@ -6996,8 +6996,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Компонент: память и знания",
-      "bytes": 4063,
-      "hash": "8b185a94ab08b95a69900055f0dff454de7180a0"
+      "bytes": 4624,
+      "hash": "e4dc883f341c611c571b311cdd275d7e815b0304"
     },
     {
       "path": "docs/wiki/comp-messaging-integrations.md",
@@ -7253,7 +7253,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4077,
-      "hash": "ea964ebdfff7670d1aa88c0706bd0ff49064a87b"
+      "hash": "a3715aa9cb8fd0dbd93b4ae0d61123a96511ba72"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -7341,7 +7341,7 @@
       "language": "ru",
       "title": "Граф знаний",
       "bytes": 4922,
-      "hash": "9d4c93d9954d70c70e7d6ad6def91caa61932560"
+      "hash": "a695c40358df469fdddaec7fefb3f96968d2237c"
     },
     {
       "path": "docs/wiki/dev-history.md",

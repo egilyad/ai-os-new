@@ -6,7 +6,11 @@ import { useChatStore } from '../../stores/useChatStore';
 import { useTranslation } from '../../i18n/useTranslation';
 import { VoiceButton } from './VoiceButton';
 import ProviderIcon from '../ProviderIcon/ProviderIcon';
-import { DEFAULT_MODELS } from './chat-panel-utils';
+import { DEFAULT_MODELS, formatContextWindow } from './chat-panel-utils';
+import {
+    getCatalogContextWindow,
+    getCatalogPricing,
+} from '../../llm/catalog/catalog-lookup';
 
 interface Props {
     selectedKeys: string[];
@@ -182,11 +186,27 @@ const ChatInputArea: React.FC<Props> = ({
                                     }}
                                 >
                                     {models.length > 0 ? (
-                                        models.map((m) => (
-                                            <option key={m} value={m}>
-                                                {m}
-                                            </option>
-                                        ))
+                                        models.map((m) => {
+                                            const context = getCatalogContextWindow(m);
+                                            const pricing = getCatalogPricing(m);
+                                            const suffix = context
+                                                ? ` — ${formatContextWindow(context)}${
+                                                      pricing
+                                                          ? ` · $${pricing.input.toFixed(
+                                                                pricing.input < 1 ? 3 : 2,
+                                                            )}/$${pricing.output.toFixed(
+                                                                pricing.output < 1 ? 3 : 2,
+                                                            )}`
+                                                          : ''
+                                                  }`
+                                                : '';
+                                            return (
+                                                <option key={m} value={m}>
+                                                    {m}
+                                                    {suffix}
+                                                </option>
+                                            );
+                                        })
                                     ) : (
                                         <option value="">{t('chat.no_models')}</option>
                                     )}

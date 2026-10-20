@@ -15,6 +15,13 @@ export const DEFAULT_MODELS: Record<string, string> = {
     NVIDIA: 'meta/llama-3.3-70b-instruct',
 };
 
+/** Compact context window label (e.g. 128k, 1M) for model pickers. */
+export function formatContextWindow(tokens: number): string {
+    if (tokens >= 1_000_000) return `${Math.round(tokens / 100_000) / 10}M`;
+    if (tokens >= 1000) return `${Math.round(tokens / 1000)}k`;
+    return String(tokens);
+}
+
 export type ExecutionMode = 'auto' | 'parallel' | 'single';
 
 export function formatTime(ts: number, t: (key: string) => string): string {

@@ -19,6 +19,7 @@ import {
     type ProviderFleetStatus,
 } from '../../kernel/utils/provider-fleet-health';
 import type { ApiKey } from '../../types/metrics';
+import { MODELS_CATALOG } from '../../llm/catalog/models-catalog-detail';
 
 interface BrowseModelsViewProps {
     onAddProvider: (provider?: string) => void;
@@ -179,6 +180,16 @@ const BrowseModelsView: React.FC<BrowseModelsViewProps> = ({
         [],
     );
 
+    /** Number of chat models per provider in the models.dev catalog. */
+    const catalogCounts = useMemo(() => {
+        const counts = new Map<string, number>();
+        for (const entry of MODELS_CATALOG) {
+            if (entry.deprecated) continue;
+            counts.set(entry.provider, (counts.get(entry.provider) ?? 0) + 1);
+        }
+        return counts;
+    }, []);
+
     const enrichedProviders = useMemo(
         () =>
             PROVIDERS.map((p) => {
@@ -189,9 +200,10 @@ const BrowseModelsView: React.FC<BrowseModelsViewProps> = ({
                     isInstalled: installedProviders.has(p.name.toLowerCase()),
                     hasAdapter,
                     fleet,
+                    catalogModels: catalogCounts.get(p.name.toLowerCase()) ?? 0,
                 };
             }),
-        [installedProviders, availableFromRegistry, installedKeys],
+        [installedProviders, availableFromRegistry, installedKeys, catalogCounts],
     );
 
     const filteredProviders = enrichedProviders.filter(
@@ -288,6 +300,20 @@ const BrowseModelsView: React.FC<BrowseModelsViewProps> = ({
                                     >
                                         {provider.category}
                                     </span>
+                                    {provider.catalogModels > 0 && (
+                                        <span
+                                            style={{
+                                                fontSize: '0.65rem',
+                                                color: 'var(--text-muted)',
+                                                border: '1px solid var(--border)',
+                                                borderRadius: 4,
+                                                padding: '2px 6px',
+                                            }}
+                                            title="Models in the models.dev catalog"
+                                        >
+                                            {provider.catalogModels} models
+                                        </span>
+                                    )}
                                     <span
                                         title={provider.fleet.hint}
                                         style={{

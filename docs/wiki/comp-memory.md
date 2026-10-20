@@ -4,7 +4,7 @@
 
 > Раздел: **Компоненты и сервисы** · Статус: documented · Теги: компоненты, память, поиск, RAG
 
-Источники: `src/kernel/services/memory-engine.ts`, `src/kernel/contracts/memory.ts`, `src/kernel/services/memory/provider-embedding-service.ts`, `src/kernel/workers/memory-vector-space.ts`, `src/components/MemoryPanel/MemoryEmbeddingsCard.tsx`
+Источники: `src/kernel/services/memory-engine.ts`, `src/kernel/contracts/memory.ts`, `src/kernel/services/memory/provider-embedding-service.ts`, `src/kernel/workers/memory-vector-space.ts`, `src/components/MemoryPanel/MemoryEmbeddingsCard.tsx`, `src/components/ProviderManager/ModelCatalogView.tsx`, `src/llm/catalog/catalog-lookup.ts`
 
 ## Назначение
 
@@ -16,6 +16,7 @@
 - Режимы поиска: `auto`, `semantic`, `fulltext`.
 - Векторный поиск через Web Worker; авто-прунинг по TTL; CRUD записей.
 - Провайдерские эмбеддинги (опционально): реальные векторы от OpenAI-совместимого `/embeddings`; по умолчанию выключены, без ключа работает офлайн-хэш. Настройка — в панели памяти (карточка «Провайдерские эмбеддинги»): провайдер, модель, пере-эмбеддинг старых записей.
+- Каталог моделей (models.dev, 784 chat-модели / 18 провайдеров): контекст, цены за 1M, capability-флаги. Витрина — вкладка «Каталог моделей» в панели провайдеров (поиск, фильтры по tools/vision/reasoning, сортировка по цене/контексту); селектор модели в чате показывает контекст и цену.
 - Feature-flag-гейтинг.
 
 ## Реализация

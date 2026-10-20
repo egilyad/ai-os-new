@@ -3,12 +3,12 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 1256,
-    "edges": 3325,
+    "nodes": 1258,
+    "edges": 3329,
     "byType": {
       "audit": 65,
-      "code": 532,
-      "test": 167,
+      "code": 533,
+      "test": 168,
       "panel": 259,
       "article": 233
     },
@@ -16,8 +16,8 @@
       "audit_test": 329,
       "audit_mention": 928,
       "documents": 201,
-      "source": 725,
-      "test": 236,
+      "source": 727,
+      "test": 238,
       "related": 906
     }
   },
@@ -1341,6 +1341,16 @@
       "id": "file:src/components/ProviderManager/",
       "type": "code",
       "label": "src/components/ProviderManager/"
+    },
+    {
+      "id": "file:src/components/ProviderManager/ModelCatalogView.test.tsx",
+      "type": "test",
+      "label": "src/components/ProviderManager/ModelCatalogView.test.tsx"
+    },
+    {
+      "id": "file:src/components/ProviderManager/ModelCatalogView.tsx",
+      "type": "code",
+      "label": "src/components/ProviderManager/ModelCatalogView.tsx"
     },
     {
       "id": "file:src/components/ProviderMarketplace",
@@ -17820,6 +17830,16 @@
     },
     {
       "from": "wiki:comp-memory",
+      "to": "file:src/components/ProviderManager/ModelCatalogView.test.tsx",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-memory",
+      "to": "file:src/components/ProviderManager/ModelCatalogView.tsx",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-memory",
       "to": "file:src/kernel/contracts/memory.ts",
       "kind": "source"
     },
@@ -17851,6 +17871,16 @@
     {
       "from": "wiki:comp-memory",
       "to": "file:src/kernel/workers/memory-vector-space.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-memory",
+      "to": "file:src/llm/catalog/catalog-lookup.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-memory",
+      "to": "file:src/llm/catalog/catalog-lookup.ts",
       "kind": "source"
     },
     {

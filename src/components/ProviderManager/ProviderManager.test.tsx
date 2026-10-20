@@ -156,6 +156,7 @@ vi.mock('../../i18n/useTranslation', () => ({
             'provider_manager.add_custom_provider': 'Add Custom Provider',
             'provider_manager.tab.installed': 'Installed',
             'provider_manager.tab.browse_models': 'Browse Models',
+            'provider_manager.tab.model_catalog': 'Model Catalog',
             'provider_manager.tab.routing_sla': 'Routing & SLA',
             'provider_manager.tab.resource_pools': 'Resource Pools',
             'provider_manager.tab.routing_intel': 'Routing Intelligence',

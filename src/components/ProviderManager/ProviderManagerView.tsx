@@ -19,6 +19,7 @@ import ErrorBoundary from '../Common/ErrorBoundary';
 import AddKeyModal from '../AddKeyModal/AddKeyModal';
 import InstalledProvidersView from './InstalledProvidersView';
 import BrowseModelsView from './BrowseModelsView';
+import ModelCatalogView from './ModelCatalogView';
 import RoutingSLAView from './RoutingSLAView';
 import ResourcePoolsView from './ResourcePoolsView';
 import RoutingIntelligenceView from './RoutingIntelligenceView';
@@ -26,8 +27,16 @@ import RotationView from './RotationView';
 import ProviderDetailModal from './ProviderDetailModal';
 import ModuleInfo from '../ModuleInfo';
 
-export type TabId = 'installed' | 'browse' | 'routing' | 'pools' | 'intel' | 'rotation';
-export const TABS: TabId[] = ['installed', 'browse', 'routing', 'pools', 'intel', 'rotation'];
+export type TabId = 'installed' | 'browse' | 'catalog' | 'routing' | 'pools' | 'intel' | 'rotation';
+export const TABS: TabId[] = [
+    'installed',
+    'browse',
+    'catalog',
+    'routing',
+    'pools',
+    'intel',
+    'rotation',
+];
 
 export const containerVariants = {
     hidden: { opacity: 0 },
@@ -254,13 +263,15 @@ const ProviderManagerView: React.FC<ProviderManagerViewProps> = ({
                                 ? `${t('provider_manager.tab.installed')} (${keys.length})`
                                 : tab === 'browse'
                                   ? t('provider_manager.tab.browse_models')
-                                  : tab === 'routing'
-                                    ? t('provider_manager.tab.routing_sla')
-                                    : tab === 'pools'
-                                      ? t('provider_manager.tab.resource_pools')
-                                      : tab === 'intel'
-                                        ? t('provider_manager.tab.routing_intel')
-                                        : 'Rotation'}
+                                  : tab === 'catalog'
+                                    ? t('provider_manager.tab.model_catalog')
+                                    : tab === 'routing'
+                                      ? t('provider_manager.tab.routing_sla')
+                                      : tab === 'pools'
+                                        ? t('provider_manager.tab.resource_pools')
+                                        : tab === 'intel'
+                                          ? t('provider_manager.tab.routing_intel')
+                                          : 'Rotation'}
                         </button>
                     ))}
                 </motion.div>
@@ -334,6 +345,17 @@ const ProviderManagerView: React.FC<ProviderManagerViewProps> = ({
                     >
                         <ErrorBoundary variant="panel" name="RoutingIntelligence">
                             <RoutingIntelligenceView />
+                        </ErrorBoundary>
+                    </motion.div>
+                ) : activeTab === 'catalog' ? (
+                    <motion.div
+                        variants={itemVariants}
+                        role="tabpanel"
+                        id="provider-panel-catalog"
+                        aria-label="Model catalog"
+                    >
+                        <ErrorBoundary variant="panel" name="ModelCatalog">
+                            <ModelCatalogView />
                         </ErrorBoundary>
                     </motion.div>
                 ) : (
