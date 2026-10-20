@@ -4,7 +4,7 @@
   "source": "docs/manifest.json",
   "stats": {
     "nodes": 1258,
-    "edges": 3329,
+    "edges": 3331,
     "byType": {
       "audit": 65,
       "code": 533,
@@ -16,7 +16,7 @@
       "audit_test": 329,
       "audit_mention": 928,
       "documents": 201,
-      "source": 727,
+      "source": 729,
       "test": 238,
       "related": 906
     }
@@ -6584,7 +6584,7 @@
       "type": "article",
       "label": "Состояние тестирования",
       "section": "dev-status",
-      "status": "needs-check"
+      "status": "verified"
     },
     {
       "id": "wiki:dev-store-catalog",
@@ -20642,6 +20642,16 @@
       "from": "wiki:dev-status-roadmaps",
       "to": "wiki:dev-status-testing",
       "kind": "related"
+    },
+    {
+      "from": "wiki:dev-status-testing",
+      "to": "file:package.json",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:dev-status-testing",
+      "to": "file:vitest.config.ts",
+      "kind": "source"
     },
     {
       "from": "wiki:dev-status-testing",

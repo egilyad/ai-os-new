@@ -6450,12 +6450,15 @@
       "slug": "dev-status-testing",
       "title": "Состояние тестирования",
       "section": "dev-status",
-      "status": "needs-check",
+      "status": "verified",
       "tags": [
         "состояние разработки",
         "тесты"
       ],
-      "sources": [],
+      "sources": [
+        "package.json",
+        "vitest.config.ts"
+      ],
       "related": [
         "dev-status-done",
         "dev-status-active",

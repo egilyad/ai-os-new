@@ -1,4 +1,5 @@
 import { describe, it, expect, vi, beforeEach, beforeAll } from 'vitest';
+import ProviderManagerComponent from './ProviderManager';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import type { FC } from 'react';
 import type { ApiKey } from '../../types/metrics';
@@ -103,8 +104,15 @@ vi.mock('../../stores/useKeyStore', () => ({
     }),
 }));
 
-vi.mock('../../kernel/instances', () => ({
-    rootLogger: { error: vi.fn(), info: vi.fn(), warn: vi.fn(), debug: vi.fn() },
+vi.mock('../../kernel/instances', () => {
+    const makeLogger = () => ({
+        error: vi.fn(),
+        info: vi.fn(),
+        warn: vi.fn(),
+        debug: vi.fn(),
+    });
+    return {
+    rootLogger: { ...makeLogger(), child: vi.fn(() => makeLogger()) },
     eventBus: { emit: vi.fn(), on: vi.fn(), off: vi.fn() },
     EVENTS: {
         KEYS_LOADED: 'key:loaded',
@@ -134,7 +142,8 @@ vi.mock('../../kernel/instances', () => ({
         getProviderIntrospection: vi.fn(() => Promise.resolve({})),
         getAlerts: vi.fn(() => []),
     },
-}));
+    };
+});
 
 vi.mock('../../kernel/events/event-bus', () => ({
     eventBus: { emit: vi.fn(), on: vi.fn(), off: vi.fn() },
@@ -250,11 +259,9 @@ vi.mock('../../i18n/useTranslation', () => ({
 }));
 
 describe('ProviderManager', () => {
-    let ProviderManager: FC;
-
-    beforeAll(async () => {
-        ProviderManager = (await import('./ProviderManager')).default;
-    }, 30000);
+    // Static import: transforming the provider graph takes ~30s, which must not
+    // happen inside a hook (the dynamic import used to time out the beforeAll).
+    const ProviderManager = ProviderManagerComponent;
 
     beforeEach(() => {
         vi.clearAllMocks();
@@ -322,7 +329,8 @@ describe('ProviderManager', () => {
         render(<ProviderManager />);
         const tablist = screen.getByRole('tablist');
         fireEvent.keyDown(tablist, { key: 'ArrowLeft' });
-        expect(screen.queryByRole('tab', { selected: true })?.textContent).toMatch(/Routing Intel/);
+        // ArrowLeft from the first tab wraps around to the last one.
+        expect(screen.queryByRole('tab', { selected: true })?.textContent).toMatch(/Rotation/);
     });
 
     it('shows provider table with key labels', () => {

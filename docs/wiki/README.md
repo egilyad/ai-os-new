@@ -259,7 +259,7 @@
 - [Критические проблемы](./dev-status-critical.md) — _needs-check_
 - [Технический долг](./dev-status-debt.md) — _needs-check_
 - [Отложенные баги](./dev-status-bugs.md) — _needs-check_
-- [Состояние тестирования](./dev-status-testing.md) — _needs-check_
+- [Состояние тестирования](./dev-status-testing.md) — _verified_
 - [Документация](./dev-status-docs.md) — _needs-check_
 - [Заблокированные задачи](./dev-status-blocked.md) — _needs-check_
 - [Roadmaps](./dev-status-roadmaps.md) — _needs-check_

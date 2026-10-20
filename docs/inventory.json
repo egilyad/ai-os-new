@@ -7253,7 +7253,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4077,
-      "hash": "a3715aa9cb8fd0dbd93b4ae0d61123a96511ba72"
+      "hash": "db336ac648bef14877af0c6aee8d1e37b761f1d2"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -7341,7 +7341,7 @@
       "language": "ru",
       "title": "Граф знаний",
       "bytes": 4922,
-      "hash": "a695c40358df469fdddaec7fefb3f96968d2237c"
+      "hash": "7f1d9965b9d7ef3f1e5cd3d8d07b871e4d72700c"
     },
     {
       "path": "docs/wiki/dev-history.md",
@@ -7500,8 +7500,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Состояние тестирования",
-      "bytes": 1078,
-      "hash": "69e87b254bdb3f02cb0c0233d9e4fbd75e950ca8"
+      "bytes": 3388,
+      "hash": "d40f4378d5e272eea978b8c5e8ef8515d6149bce"
     },
     {
       "path": "docs/wiki/dev-store-catalog.md",
@@ -8220,8 +8220,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Wiki SuperAgents OS",
-      "bytes": 23999,
-      "hash": "c135a8d3649eef398f4e4a55572831ecacd91aba"
+      "bytes": 23996,
+      "hash": "6c0c3f552d82d22cdc16704c8d8765f3d18ca368"
     },
     {
       "path": "docs/wiki/roadmap-notes.md",
