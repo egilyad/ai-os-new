@@ -6604,8 +6604,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Агенты: устройство и управление",
-      "bytes": 2576,
-      "hash": "1375e754f063e72ba151c9f51e2722b09757ee45"
+      "bytes": 3976,
+      "hash": "11f5497d66426b477513e991e46d8c39d191b110"
     },
     {
       "path": "docs/wiki/architecture.md",
@@ -7221,7 +7221,7 @@
       "language": "mixed",
       "title": "Матрица покрытия",
       "bytes": 8373,
-      "hash": "5a9b45f77d2ff3abedd063afdcdf3eb5bc6ed55b"
+      "hash": "6a1543510f6855650eb705351c34d8e7c6e411b9"
     },
     {
       "path": "docs/wiki/debates.md",
@@ -7252,8 +7252,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Проверки и показатели",
-      "bytes": 4077,
-      "hash": "db336ac648bef14877af0c6aee8d1e37b761f1d2"
+      "bytes": 4076,
+      "hash": "430006e2d77438ef62cf963210ecfe661ee18ddc"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -7341,7 +7341,7 @@
       "language": "ru",
       "title": "Граф знаний",
       "bytes": 4922,
-      "hash": "7f1d9965b9d7ef3f1e5cd3d8d07b871e4d72700c"
+      "hash": "34e0fe1327c4dc2c205d961143a7819ba2b9afd5"
     },
     {
       "path": "docs/wiki/dev-history.md",

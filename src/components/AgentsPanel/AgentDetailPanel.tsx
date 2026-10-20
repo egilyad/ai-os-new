@@ -208,7 +208,7 @@ export const AgentDetailPanel: React.FC<AgentDetailPanelProps> = ({
                                 />
                             )}
                             {activeTab === 'permissions' && (
-                                <AgentPolicySection agentId={agent.id} />
+                                <AgentPolicySection key={agent.id} agentId={agent.id} />
                             )}
                             {activeTab === 'infra' && (
                                 <AgentInfraTab agent={agent} onUpdateAgent={onUpdateAgent} />

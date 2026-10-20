@@ -9,6 +9,10 @@ import { MaterialsAgentDefinition } from './MaterialsAgent';
 import { SchematicsAgentDefinition } from './SchematicsAgent';
 import { AiArchitectAgentDefinition } from './AiArchitectAgent';
 import { PatentAgentDefinition } from './PatentAgent';
+import { OpenCodeAgentDefinition } from './OpenCodeAgent';
+import { HermesAgentDefinition } from './HermesAgent';
+import { DeepSeekHarnessAgentDefinition } from './DeepSeekHarnessAgent';
+import { OpenClawAgentDefinition } from './OpenClawAgent';
 
 export interface AgentDefinition {
     metadata: {
@@ -49,4 +53,9 @@ export const AGENT_REGISTRY: Record<string, AgentDefinition> = {
     [SchematicsAgentDefinition.metadata.id]: SchematicsAgentDefinition as AgentDefinition,
     [AiArchitectAgentDefinition.metadata.id]: AiArchitectAgentDefinition as AgentDefinition,
     [PatentAgentDefinition.metadata.id]: PatentAgentDefinition as AgentDefinition,
+    [OpenCodeAgentDefinition.metadata.id]: OpenCodeAgentDefinition as AgentDefinition,
+    [HermesAgentDefinition.metadata.id]: HermesAgentDefinition as AgentDefinition,
+    [DeepSeekHarnessAgentDefinition.metadata.id]:
+        DeepSeekHarnessAgentDefinition as AgentDefinition,
+    [OpenClawAgentDefinition.metadata.id]: OpenClawAgentDefinition as AgentDefinition,
 };

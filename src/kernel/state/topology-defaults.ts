@@ -512,6 +512,32 @@ const NODES = normalizeAgentIdentity(
                 label: AGENT_REGISTRY['agent-patent']!.metadata.name,
                 config: AGENT_REGISTRY['agent-patent']!.config! as ISNode['config'],
             },
+
+            // ═══ Harness agents (4) — портированы из внешних агентных каркасов
+            {
+                id: 'agent-opencode',
+                type: 'agent',
+                label: AGENT_REGISTRY['agent-opencode']!.metadata.name,
+                config: AGENT_REGISTRY['agent-opencode']!.config! as ISNode['config'],
+            },
+            {
+                id: 'agent-hermes',
+                type: 'agent',
+                label: AGENT_REGISTRY['agent-hermes']!.metadata.name,
+                config: AGENT_REGISTRY['agent-hermes']!.config! as ISNode['config'],
+            },
+            {
+                id: 'agent-deepseek-harness',
+                type: 'agent',
+                label: AGENT_REGISTRY['agent-deepseek-harness']!.metadata.name,
+                config: AGENT_REGISTRY['agent-deepseek-harness']!.config! as ISNode['config'],
+            },
+            {
+                id: 'agent-openclaw',
+                type: 'agent',
+                label: AGENT_REGISTRY['agent-openclaw']!.metadata.name,
+                config: AGENT_REGISTRY['agent-openclaw']!.config! as ISNode['config'],
+            },
         ]),
     ),
 );
@@ -520,7 +546,7 @@ export const AuditorTopology: ISTopology = {
     version: '2.0.0',
     name: 'Agent Workforce',
     description:
-        '58 specialized agents across technical, analytical, creative, management, specialized, and documentation domains. Router dispatches to relevant agents; aggregator synthesizes results.',
+        '62 specialized agents across technical, analytical, creative, management, specialized, documentation and harness domains. Router dispatches to relevant agents; aggregator synthesizes results.',
     nodes: NODES,
     edges: [
         { id: 'e-router-architect', from: 'router', to: 'agent-architect', trigger: 'data_flow' },
@@ -653,6 +679,15 @@ export const AuditorTopology: ISTopology = {
         { id: 'e-ecologist-agg', from: 'agent-ecologist', to: 'aggregator', trigger: 'on_success' },
         { id: 'e-statistician-agg', from: 'agent-statistician', to: 'aggregator', trigger: 'on_success' },
         { id: 'e-security-ru-agg', from: 'agent-security-ru', to: 'aggregator', trigger: 'on_success' },
+        { id: 'e-opencode-agg', from: 'agent-opencode', to: 'aggregator', trigger: 'on_success' },
+        { id: 'e-hermes-agg', from: 'agent-hermes', to: 'aggregator', trigger: 'on_success' },
+        {
+            id: 'e-deepseek-harness-agg',
+            from: 'agent-deepseek-harness',
+            to: 'aggregator',
+            trigger: 'on_success',
+        },
+        { id: 'e-openclaw-agg', from: 'agent-openclaw', to: 'aggregator', trigger: 'on_success' },
         { id: 'e-router-idea-generator', from: 'router', to: 'agent-idea-generator', trigger: 'data_flow' },
         { id: 'e-router-critic-ru', from: 'router', to: 'agent-critic-ru', trigger: 'data_flow' },
         { id: 'e-router-analyst-ru', from: 'router', to: 'agent-analyst-ru', trigger: 'data_flow' },
@@ -686,6 +721,15 @@ export const AuditorTopology: ISTopology = {
         { id: 'e-router-schematics', from: 'router', to: 'agent-schematics', trigger: 'data_flow' },
         { id: 'e-router-ai-architect', from: 'router', to: 'agent-ai-architect', trigger: 'data_flow' },
         { id: 'e-router-patent', from: 'router', to: 'agent-patent', trigger: 'data_flow' },
+        { id: 'e-router-opencode', from: 'router', to: 'agent-opencode', trigger: 'data_flow' },
+        { id: 'e-router-hermes', from: 'router', to: 'agent-hermes', trigger: 'data_flow' },
+        {
+            id: 'e-router-deepseek-harness',
+            from: 'router',
+            to: 'agent-deepseek-harness',
+            trigger: 'data_flow',
+        },
+        { id: 'e-router-openclaw', from: 'router', to: 'agent-openclaw', trigger: 'data_flow' },
     ],
     policies: [],
 };

@@ -856,6 +856,30 @@ export const EVENT_REGISTRY = {
         'tool:execution:error',
         z.object({ toolId: z.string(), error: z.string() }),
     ),
+    PERMISSION_DECIDED: event(
+        'permission:decided',
+        z.object({
+            agentId: z.string(),
+            action: z.string(),
+            resource: z.string(),
+            effect: z.enum(['allow', 'deny', 'ask']),
+            escalated: z.boolean().optional(),
+            reason: z.string().optional(),
+        }),
+    ),
+    PERMISSION_UPDATED: event(
+        'permission:updated',
+        z.object({ agentId: z.string(), mode: z.string().optional() }),
+    ),
+    TOOL_PIPELINE_BLOCKED: event(
+        'tool:pipeline:blocked',
+        z.object({
+            toolId: z.string(),
+            agentId: z.string().optional(),
+            reason: z.string(),
+            phase: z.enum(['pre', 'post']),
+        }),
+    ),
     ROLES_UPDATED: event('roles:updated', z.array(RoleSchema)),
     ROLE_ASSIGNED: event('role:assigned', z.object({ roleId: z.string(), agentId: z.string() })),
     ROLE_UNASSIGNED: event(

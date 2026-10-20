@@ -10,6 +10,9 @@ export const DomainEvents = {
     TOOL_EXECUTION_START: EVENT_REGISTRY.TOOL_EXECUTION_START.name,
     TOOL_EXECUTION_SUCCESS: EVENT_REGISTRY.TOOL_EXECUTION_SUCCESS.name,
     TOOL_EXECUTION_ERROR: EVENT_REGISTRY.TOOL_EXECUTION_ERROR.name,
+    PERMISSION_DECIDED: EVENT_REGISTRY.PERMISSION_DECIDED.name,
+    PERMISSION_UPDATED: EVENT_REGISTRY.PERMISSION_UPDATED.name,
+    TOOL_PIPELINE_BLOCKED: EVENT_REGISTRY.TOOL_PIPELINE_BLOCKED.name,
     ROLES_UPDATED: EVENT_REGISTRY.ROLES_UPDATED.name,
     ROLE_ASSIGNED: EVENT_REGISTRY.ROLE_ASSIGNED.name,
     ROLE_UNASSIGNED: EVENT_REGISTRY.ROLE_UNASSIGNED.name,
@@ -85,6 +88,9 @@ export type DomainEventMap = Pick<
     | 'tool:execution:start'
     | 'tool:execution:success'
     | 'tool:execution:error'
+    | 'permission:decided'
+    | 'permission:updated'
+    | 'tool:pipeline:blocked'
     | 'roles:updated'
     | 'role:assigned'
     | 'role:unassigned'

@@ -8,6 +8,7 @@ import type { NodeContext } from '../types/domain-types';
 import { EVENTS } from '../events/event-names';
 import { estimateTokens } from '../utils/tokenEstimate';
 import { rootLogger } from './logger-service';
+import { renderSkillPrompt, resolveAgentSkills } from './skills/skill-spec';
 import { safeJsonParse } from '../../kernel/utils/safe-json';
 
 const LOGGER = rootLogger.child('AgentService');
@@ -521,12 +522,21 @@ export class AgentService implements IAgentResolver {
         );
         if (!node) return null;
         const cfg = (node.config ?? {}) as Record<string, unknown>;
-        const systemPrompt =
+        const baseSystemPrompt =
             typeof cfg.systemPrompt === 'string' && cfg.systemPrompt.trim().length > 0
                 ? cfg.systemPrompt
                 : typeof cfg.prompt === 'string'
                   ? cfg.prompt
                   : undefined;
+        // Declarative skills (Hermes-style SKILL.md) are injected into the
+        // persona so the agent actually follows the procedure it declares.
+        const skillPrompts = resolveAgentSkills(
+            Array.isArray(cfg.skills) ? cfg.skills.map((s) => String(s)) : [],
+        ).map(renderSkillPrompt);
+        const systemPrompt =
+            baseSystemPrompt && skillPrompts.length
+                ? `${baseSystemPrompt}\n\n${skillPrompts.join('\n\n')}`
+                : baseSystemPrompt;
         const rawModel = typeof cfg.model === 'string' ? cfg.model : '';
         const model =
             rawModel && rawModel !== 'auto' && rawModel !== 'default' ? rawModel : undefined;

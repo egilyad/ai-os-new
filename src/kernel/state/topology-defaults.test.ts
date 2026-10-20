@@ -5,8 +5,8 @@ import { AGENT_PROFILES } from './agent-profiles';
 describe('AuditorTopology agent identity', () => {
     const agentNodes = AuditorTopology.nodes.filter((n) => n.type === 'agent');
 
-    it('has 58 specialized agents', () => {
-        expect(agentNodes.length).toBe(58);
+    it('has 62 specialized agents', () => {
+        expect(agentNodes.length).toBe(62);
     });
 
     it('every profiled agent carries a complete curated identity', () => {

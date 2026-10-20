@@ -3,12 +3,12 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 1258,
-    "edges": 3331,
+    "nodes": 1261,
+    "edges": 3334,
     "byType": {
       "audit": 65,
-      "code": 533,
-      "test": 168,
+      "code": 534,
+      "test": 170,
       "panel": 259,
       "article": 233
     },
@@ -16,8 +16,8 @@
       "audit_test": 329,
       "audit_mention": 928,
       "documents": 201,
-      "source": 729,
-      "test": 238,
+      "source": 730,
+      "test": 240,
       "related": 906
     }
   },
@@ -1763,6 +1763,11 @@
       "label": "src/kernel/"
     },
     {
+      "id": "file:src/kernel/agents/registry.test.ts",
+      "type": "test",
+      "label": "src/kernel/agents/registry.test.ts"
+    },
+    {
       "id": "file:src/kernel/agents/registry.ts",
       "type": "code",
       "label": "src/kernel/agents/registry.ts"
@@ -2931,6 +2936,16 @@
       "id": "file:src/kernel/services/parity/tool-runner-service.ts",
       "type": "code",
       "label": "src/kernel/services/parity/tool-runner-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/permissions/permission-service.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/permissions/permission-service.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/permissions/permission-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/permissions/permission-service.ts"
     },
     {
       "id": "file:src/kernel/services/persona/associative-context.test.ts",
@@ -14725,6 +14740,11 @@
     },
     {
       "from": "wiki:agents",
+      "to": "file:src/kernel/agents/registry.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:agents",
       "to": "file:src/kernel/agents/registry.ts",
       "kind": "source"
     },
@@ -14736,6 +14756,16 @@
     {
       "from": "wiki:agents",
       "to": "file:src/kernel/services/agent-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:agents",
+      "to": "file:src/kernel/services/permissions/permission-service.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:agents",
+      "to": "file:src/kernel/services/permissions/permission-service.ts",
       "kind": "source"
     },
     {

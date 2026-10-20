@@ -38,11 +38,15 @@ vite_*.txt
 data/
 
 # Downloaded third-party reference repositories (opencode, models.dev, hermes, ...)
-# — kept outside the repo; only generated output is committed.
-src/kernel/agents/DeepSeekHarnessAgent/
-src/kernel/agents/HermessAgent/
-src/kernel/agents/OpenClawAgent/
-src/kernel/agents/OpenCodeAgent/
+# — kept outside the repo (~/Desktop/ai-os-references); only generated output is
+# committed. The patterns below ignore *subdirectories* of the harness agent
+# folders, so a re-downloaded reference repo can never be committed while our
+# own agent definitions (index.ts / persona.ts) stay tracked.
+src/kernel/agents/DeepSeekHarnessAgent/*/
+src/kernel/agents/HermessAgent/*/
+src/kernel/agents/HermessAgent/*/
+src/kernel/agents/OpenClawAgent/*/
+src/kernel/agents/OpenCodeAgent/*/
 
 # Scripts with API keys
 scripts/add-keys.mjs

@@ -35,6 +35,10 @@ export interface Agent {
     temperature: number;
     tools: string[];
     skills: string[];
+    /** Permission mode (read-only | guarded | workspace | full). */
+    permissionMode?: string;
+    /** Tool profile that expands into tool groups (minimal | research | coding | full). */
+    toolProfile?: string;
     systemPrompt: string;
     hilEnabled: boolean;
     vpcEnabled: boolean;

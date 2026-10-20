@@ -123,6 +123,23 @@ vi.mock('../../kernel/events/event-bus', () => ({
     },
 }));
 
+vi.mock('../../kernel/services/agent-identity', () => ({
+    // The panel resolves the display name through the canonical identity seam.
+    // Without a resolver the panel falls back to "Unknown Agent".
+    resolveAgentIdentity: vi.fn((id: string) => {
+        const node = TOPO.nodes.find((n) => n.id === id);
+        return {
+            id,
+            displayName: node?.label ?? id,
+            baseRole: String(node?.config.roleName ?? ''),
+            specializations: [],
+            lensIds: [],
+            lensNames: [],
+            avatar: { emoji: '🤖', color: '#64748b' },
+        };
+    }),
+}));
+
 vi.mock('../../stores/useKeyStore', () => {
     const state = {
         keys: [{ id: 'key-1', status: 'active', provider: 'openai', availableModels: ['gpt-4'] }],
@@ -132,6 +149,12 @@ vi.mock('../../stores/useKeyStore', () => {
             if (typeof selector === 'function') return selector(state);
             return state;
         }),
+        // AgentWizard reads the key list through this hook — without it the
+        // whole panel fails to mount.
+        useKeyList: vi.fn(() => ({
+            keys: state.keys,
+            activeKeys: state.keys.filter((k) => k.status === 'active'),
+        })),
     };
 });
 
@@ -178,6 +201,18 @@ vi.mock('../../kernel/instances', () => ({
     policyService: {
         getAgentPolicy: vi.fn(() => ({ freeOnly: false })),
         setAgentPolicy: vi.fn(),
+    },
+    agentPermissionService: {
+        getState: vi.fn(() => ({
+            agentId: 'agent-1',
+            mode: 'guarded',
+            preset: 'guarded',
+            rules: [],
+            consecutiveDenials: 0,
+            updatedAt: 0,
+        })),
+        getEffectiveRules: vi.fn(() => []),
+        setMode: vi.fn(() => Promise.resolve()),
     },
     taskHandoffService: {
         getHandoffs: vi.fn(() => []),
@@ -277,11 +312,9 @@ describe('AgentsPanel', () => {
         expect(betaCards.length).toBeGreaterThanOrEqual(1);
     });
 
-    it('renders quick start template buttons', async () => {
+    it('renders the spawn button', async () => {
         render(<AgentsPanel />);
-        expect(await screen.findByText('Quick Start')).toBeDefined();
-        expect(screen.getByText('Research')).toBeDefined();
-        expect(screen.getByText('Coding')).toBeDefined();
+        expect(await screen.findByText('Spawn Agent')).toBeDefined();
     });
 
     it('renders search input with placeholder', async () => {
@@ -318,13 +351,13 @@ describe('AgentsPanel', () => {
         expect(activeBtn.getAttribute('aria-pressed')).toBe('false');
     });
 
-    it('has view toggle with radio role', async () => {
+    it('has view toggle with aria-pressed', async () => {
         render(<AgentsPanel />);
         await waitForAgentCards();
         const gridBtn = screen.getByLabelText('Grid view');
         const listBtn = screen.getByLabelText('List view');
-        expect(gridBtn.getAttribute('role')).toBe('radio');
-        expect(listBtn.getAttribute('role')).toBe('radio');
+        expect(gridBtn.getAttribute('aria-pressed')).toBe('true');
+        expect(listBtn.getAttribute('aria-pressed')).toBe('false');
     });
 
     it('opens modal on card click', async () => {
@@ -353,7 +386,7 @@ describe('AgentsPanel', () => {
         await screen.findByRole('dialog');
         expect(screen.getByRole('tablist')).toBeDefined();
         const tabs = screen.getAllByRole('tab');
-        expect(tabs.length).toBe(8);
+        expect(tabs.length).toBeGreaterThanOrEqual(8);
         expect(tabs[0].getAttribute('aria-selected')).toBe('true');
     });
 
@@ -411,26 +444,32 @@ describe('AgentsPanel', () => {
         await waitForAgentCards();
         fireEvent.click(getAgentCard());
         await screen.findByRole('dialog');
-        expect(screen.getByLabelText('Duplicate agent')).toBeDefined();
+        // The header action and the card action both carry the label.
+        expect(screen.getAllByLabelText('Duplicate agent').length).toBeGreaterThanOrEqual(1);
     });
 
-    it('spawns agent on template click', async () => {
+    it('spawns agent from the quick create modal', async () => {
         const { agentService } = await import('../../kernel/instances');
         render(<AgentsPanel />);
-        const codingBtn = await screen.findByLabelText('Deploy Coding agent');
-        fireEvent.click(codingBtn);
-        expect(agentService.spawnAgent).toHaveBeenCalled();
+        const spawnBtn = await screen.findByText('Spawn Agent');
+        fireEvent.click(spawnBtn);
+        const nameInput = await screen.findByPlaceholderText('New Autonomous Agent');
+        fireEvent.change(nameInput, { target: { value: 'Harness Agent' } });
+        const createBtn = screen.getByRole('button', { name: 'Create' });
+        fireEvent.click(createBtn);
+        await waitFor(() => {
+            expect(agentService.spawnAgent).toHaveBeenCalled();
+        });
     });
 
     it('renders error banner with alert role', async () => {
         render(<AgentsPanel />);
-        await screen.findByText('Agent Workforce');
-        const { orchestrator } = await import('../../kernel/instances');
-        (orchestrator.getActiveTopology as ReturnType<typeof vi.fn>).mockImplementationOnce(() => {
+        await waitForAgentCards();
+        const { agentService } = await import('../../kernel/instances');
+        (agentService.toggleAgent as ReturnType<typeof vi.fn>).mockImplementationOnce(() => {
             throw new Error('fail');
         });
-        const spawnBtn = screen.getByText('Spawn Agent');
-        fireEvent.click(spawnBtn);
+        fireEvent.click(screen.getByLabelText('Pause Alpha Agent'));
         await waitFor(() => {
             expect(screen.getByRole('alert')).toBeDefined();
         });

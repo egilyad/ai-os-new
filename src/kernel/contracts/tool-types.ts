@@ -14,4 +14,8 @@ export type ToolDefinition = {
   timeout?: number;
   allowedDomains?: string[];
   parameters?: unknown;
+  /** Tool group used by tool profiles (see tool-groups.ts), e.g. `group:web`. */
+  group?: string;
+  /** Permission action this tool performs, e.g. `tool:net`. */
+  permissionAction?: string;
 };

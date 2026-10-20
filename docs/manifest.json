@@ -2197,7 +2197,8 @@
       "sources": [
         "docs/audits/agent-team-audit-memory-history-management.md",
         "src/kernel/agents/registry.ts",
-        "src/kernel/services/agent-service.ts"
+        "src/kernel/services/agent-service.ts",
+        "src/kernel/services/permissions/permission-service.ts"
       ],
       "related": [
         "panel-agent-tasks",
@@ -2207,7 +2208,9 @@
       ],
       "reviewed": null,
       "tests": [
-        "src/kernel/services/agent-service.test.ts"
+        "src/kernel/agents/registry.test.ts",
+        "src/kernel/services/agent-service.test.ts",
+        "src/kernel/services/permissions/permission-service.test.ts"
       ]
     },
     {

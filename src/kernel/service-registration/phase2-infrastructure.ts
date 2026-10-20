@@ -24,6 +24,7 @@ import { SystemStatusService } from '../services/system-status-service';
 import { RotationService } from '../services/rotation-service';
 import { PolicyService } from '../services/policy-service';
 import { ToolService } from '../services/tool-executor';
+import type { ToolPipeline } from '../services/tool-pipeline/tool-pipeline';
 import { MemoryService } from '../services/memory-engine';
 import { ExternalSecretsService } from '../services/external-secrets-service';
 import { LocalSecretStore } from '../services/local-secret-store';
@@ -102,6 +103,16 @@ export const registerPhase2: Phase = (helpers, ctx) => {
             new ToolService({
                 database: c.get<IDatabaseService>('database'),
                 eventBus: c.get<IEventBus>('eventBus'),
+                // Tool execution waterfall (pre/execute/post). The permission
+                // gate is a `pre` middleware, resolved lazily because it is
+                // registered in a later phase.
+                toolPipeline: (() => {
+                    try {
+                        return c.get<ToolPipeline>('toolPipeline');
+                    } catch {
+                        return undefined;
+                    }
+                })(),
             }),
     );
 

@@ -1,6 +1,7 @@
 import { EVENTS } from '../events/event-names';
 import { isPrivateIP } from '../utils/network';
 import type { ToolDefinition, ToolCategory } from '../contracts/tool-types';
+import type { ToolPipelinePort } from './tool-pipeline/tool-pipeline';
 import { rootLogger } from './logger-service';
 import { z } from 'zod';
 export type { ToolDefinition, ToolCategory };
@@ -219,6 +220,11 @@ export interface ToolServiceDeps {
     mcpService?: {
         readResource: (uri: string) => Promise<string>;
     };
+    /**
+     * Optional tool execution waterfall (pre/execute/post). The permission
+     * gate lives in the `pre` phase so the dispatcher stays policy-free.
+     */
+    toolPipeline?: ToolPipelinePort;
 }
 
 function toolError(
@@ -242,6 +248,8 @@ export class ToolService {
             category: 'search',
             description: 'Performs semantic search across the long-term memory mesh.',
             enabled: true,
+            group: 'group:memory',
+            permissionAction: 'tool:memory',
         },
         {
             id: 't-code',
@@ -251,6 +259,8 @@ export class ToolService {
             language: 'javascript',
             description: 'Safely executes JavaScript logic in a sandboxed-like environment.',
             enabled: true,
+            group: 'group:code',
+            permissionAction: 'tool:exec',
             code: 'return `Executed JS logic at ${new Date().toISOString()}`',
         },
         {
@@ -261,6 +271,8 @@ export class ToolService {
             description:
                 'Fetches content from allow-listed https URLs. Configure allowedDomains via updateTool/importTools — empty by default (deny-all).',
             enabled: true,
+            group: 'group:web',
+            permissionAction: 'tool:net',
             // M-3: default-deny. An LLM-reachable fetcher with no domain
             // bounds lets prompt-injected agents exfiltrate data to arbitrary
             // hosts (incl. via the proxy fallback). [] means "no external
@@ -274,6 +286,8 @@ export class ToolService {
             category: 'connector',
             description: 'Fetches context from Model Context Protocol servers.',
             enabled: true,
+            group: 'group:mcp',
+            permissionAction: 'tool:mcp',
         },
         {
             id: 't-read-file',
@@ -282,6 +296,8 @@ export class ToolService {
             category: 'utility',
             description: 'Reads a file from the attached workspace and returns its content.',
             enabled: true,
+            group: 'group:fs',
+            permissionAction: 'tool:read',
         },
         {
             id: 't-list-files',
@@ -290,6 +306,8 @@ export class ToolService {
             category: 'utility',
             description: 'Lists files and directories in the attached workspace.',
             enabled: true,
+            group: 'group:fs',
+            permissionAction: 'tool:read',
         },
         {
             id: 't-summarize',
@@ -298,6 +316,8 @@ export class ToolService {
             category: 'data',
             description: 'Summarizes a long text into key points using LLM.',
             enabled: true,
+            group: 'group:memory',
+            permissionAction: 'tool:memory',
         },
         {
             id: 't-translate',
@@ -306,6 +326,8 @@ export class ToolService {
             category: 'utility',
             description: 'Translates text between languages using LLM.',
             enabled: true,
+            group: 'group:memory',
+            permissionAction: 'tool:memory',
         },
         {
             id: 't-web-search',
@@ -314,6 +336,8 @@ export class ToolService {
             category: 'web',
             description: 'Searches the web using DuckDuckGo and returns results.',
             enabled: true,
+            group: 'group:web',
+            permissionAction: 'tool:net',
         },
         {
             id: 't-api-call',
@@ -322,6 +346,8 @@ export class ToolService {
             category: 'connector',
             description: 'Makes an HTTP request to a specified API endpoint.',
             enabled: true,
+            group: 'group:data',
+            permissionAction: 'tool:net',
         },
     ];
     private executionHistory: ToolExecution[] = [];
@@ -526,6 +552,39 @@ export class ToolService {
 
         signal?.throwIfAborted();
 
+        // Tool execution waterfall (pre phase). The permission gate lives here,
+        // outside the dispatcher — see tool-pipeline/.
+        let effectiveInput = input;
+        const pipeline = this.deps.toolPipeline;
+        if (pipeline) {
+            const gate = await pipeline.runPre({
+                toolId,
+                input,
+                agentId: link?.agentId,
+                sessionId: link?.sessionId,
+                runId: link?.runId,
+                signal,
+            });
+            if (gate.decision !== 'allow') {
+                const reason = gate.reason ?? 'Tool call blocked by policy';
+                await this.recordExternalExecution({
+                    toolId,
+                    input,
+                    status: 'denied',
+                    reason,
+                    ...(link ? { link } : {}),
+                });
+                this.deps.eventBus.emit(EVENTS.TOOL_PIPELINE_BLOCKED, {
+                    toolId,
+                    agentId: link?.agentId,
+                    reason,
+                    phase: 'pre',
+                });
+                throw toolError(toolId, reason, 'PERMISSION_DENIED');
+            }
+            effectiveInput = gate.input;
+        }
+
         if (tool && !this.checkRateLimit(toolId)) {
             await this.recordExternalExecution({
                 toolId,
@@ -541,7 +600,7 @@ export class ToolService {
             };
         }
 
-        this.deps.eventBus.emit(EVENTS.TOOL_EXECUTION_START, { toolId, input });
+        this.deps.eventBus.emit(EVENTS.TOOL_EXECUTION_START, { toolId, input: effectiveInput });
         const startTime = performance.now();
 
         try {
@@ -554,13 +613,15 @@ export class ToolService {
                         `Plugin context not found for tool ${toolId}`,
                         'CONTEXT_MISSING',
                     );
-                resultData = wrapExternalData(await pluginTool.execute(input, context));
+                resultData = wrapExternalData(
+                    await pluginTool.execute(effectiveInput, context),
+                );
             } else if (!tool) throw toolError(toolId, `Tool ${toolId} not found`, 'NOT_FOUND');
             else if (toolId === 't-search') {
                 const obj =
-                    typeof input === 'string'
-                        ? ({ query: input } as Record<string, unknown>)
-                        : (input as Record<string, unknown>);
+                    typeof effectiveInput === 'string'
+                        ? ({ query: effectiveInput } as Record<string, unknown>)
+                        : (effectiveInput as Record<string, unknown>);
                 const query = typeof obj.query === 'string' ? obj.query : '';
                 const filter: Record<string, unknown> = {};
                 for (const key of [
@@ -585,10 +646,17 @@ export class ToolService {
                 }
             } else if (toolId === 't-code') {
                 const code = tool.code || 'return data';
-                resultData = await this.deps.sandboxService?.execute(code, input, undefined, []);
+                resultData = await this.deps.sandboxService?.execute(
+                    code,
+                    effectiveInput,
+                    undefined,
+                    [],
+                );
             } else if (toolId === 't-web') {
                 const url =
-                    typeof input === 'string' ? input : (input as Record<string, string>).url || '';
+                    typeof effectiveInput === 'string'
+                        ? effectiveInput
+                        : (effectiveInput as Record<string, string>).url || '';
                 resultData = wrapExternalData(
                     await this.fetchWithTimeout(
                         toolId,
@@ -600,7 +668,9 @@ export class ToolService {
                 );
             } else if (toolId === 't-mcp') {
                 const uri =
-                    typeof input === 'string' ? input : (input as Record<string, string>).uri || '';
+                    typeof effectiveInput === 'string'
+                        ? effectiveInput
+                        : (effectiveInput as Record<string, string>).uri || '';
                 const mcpResult = (await this.deps.mcpService?.readResource(uri)) ?? '';
                 if (
                     typeof mcpResult === 'string' &&
@@ -622,11 +692,35 @@ export class ToolService {
             }
 
             const duration = Math.round(performance.now() - startTime);
-            const result = { status: 'success', data: resultData, timestamp: Date.now(), duration };
+            let result: {
+                status: string;
+                data?: unknown;
+                error?: string;
+                timestamp: number;
+                duration?: number;
+            } = {
+                status: 'success',
+                data: resultData,
+                timestamp: Date.now(),
+                duration,
+            };
+            if (pipeline) {
+                result = await pipeline.runPost(
+                    {
+                        toolId,
+                        input: effectiveInput,
+                        agentId: link?.agentId,
+                        sessionId: link?.sessionId,
+                        runId: link?.runId,
+                        signal,
+                    },
+                    result,
+                );
+            }
             await this.pushHistory({
                 toolId,
-                input,
-                output: resultData,
+                input: effectiveInput,
+                output: result.data,
                 status: 'success',
                 ...(link ? { link } : {}),
                 duration,

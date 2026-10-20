@@ -69,6 +69,10 @@ const getAgentsFromTopology = (): Agent[] => {
                 temperature: typeof cfg.temperature === 'number' ? cfg.temperature : 0.7,
                 tools: Array.isArray(cfg.tools) ? (cfg.tools as string[]) : [],
                 skills: Array.isArray(cfg.skills) ? (cfg.skills as string[]) : [],
+                permissionMode:
+                    typeof cfg.permissionMode === 'string' ? cfg.permissionMode : undefined,
+                toolProfile:
+                    typeof cfg.toolProfile === 'string' ? cfg.toolProfile : undefined,
                 systemPrompt: String(cfg.prompt || ''),
                 hilEnabled: Boolean(cfg.hilEnabled ?? false),
                 vpcEnabled: Boolean(cfg.vpcEnabled ?? true),

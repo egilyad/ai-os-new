@@ -4,6 +4,8 @@ import { PromptOptimizer } from '../../kernel/services/prompt-optimizer';
 import { eventBus, EVENTS } from '../../kernel/instances';
 import { useKeyStore } from '../../stores/useKeyStore';
 import { PROVIDER_DEFAULT_MODELS } from '../../kernel/utils/provider-default-models';
+import { PERMISSION_MODES } from '../../kernel/contracts/agent-permissions';
+import { TOOL_PROFILES } from '../../kernel/contracts/tool-groups';
 import type { AgentDetailPanelProps } from './AgentDetailPanelProps';
 
 type Props = Pick<
@@ -68,6 +70,44 @@ const AgentConfigTab: React.FC<Props> = ({
                         {availableRoles.map((role) => (
                             <option key={role.id} value={role.id}>
                                 {role.name}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+            </div>
+            <div className="agents-config-grid">
+                <div className="agents-config-field">
+                    <label className="agents-config-label" htmlFor="agents-permission-mode">
+                        Permission Mode
+                    </label>
+                    <select
+                        id="agents-permission-mode"
+                        value={agent.permissionMode ?? 'guarded'}
+                        onChange={(e) =>
+                            onUpdateAgent(agent.id, { permissionMode: e.target.value })
+                        }
+                        className="agents-config-select"
+                    >
+                        {PERMISSION_MODES.map((m) => (
+                            <option key={m.id} value={m.id}>
+                                {m.label}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+                <div className="agents-config-field">
+                    <label className="agents-config-label" htmlFor="agents-tool-profile">
+                        Tool Profile
+                    </label>
+                    <select
+                        id="agents-tool-profile"
+                        value={agent.toolProfile ?? 'minimal'}
+                        onChange={(e) => onUpdateAgent(agent.id, { toolProfile: e.target.value })}
+                        className="agents-config-select"
+                    >
+                        {Object.values(TOOL_PROFILES).map((p) => (
+                            <option key={p.id} value={p.id}>
+                                {p.label}
                             </option>
                         ))}
                     </select>
