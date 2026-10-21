@@ -1,6 +1,7 @@
 /** Panels that open a written panel guide or a covering concept article; else an honest stub. */
 export const PANEL_ARTICLES: Record<string, string> = {
     chat: 'panel-chat',
+    assistant: 'panel-assistant',
     keys: 'panel-providers',
     'agent-tasks': 'panel-agent-tasks',
     settings: 'panel-settings',

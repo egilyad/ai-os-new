@@ -1,0 +1,256 @@
+/**
+ * AssistantService — the project assistant's brain.
+ *
+ * It is a harness, not a personality: the model is a replaceable engine, the
+ * knowledge, the memory and the actions belong to the system. That is what
+ * lets the assistant keep working when the user switches provider.
+ *
+ * The prompt is assembled from four layers of knowledge (see the design
+ * note):
+ *   A — documentary: wiki articles about the system;
+ *   B — structural: panel → route → component → tests, derived from the code;
+ *   C — episodic: what was learned earlier (long-term memory);
+ *   D — operational: what is true right now (agents, tools, the session).
+ *
+ * Every action goes through the permission gate: reads are free, writes and
+ * executions ask the human first.
+ */
+import type { ILLMClientService } from '../../contracts/provider-adapter';
+import type { ChatMessage } from '../../types/llm-types';
+import type {
+    AssistantAction,
+    AssistantActionResult,
+    AssistantTurnRequest,
+    AssistantTurnResult,
+} from '../../contracts/assistant';
+import type { IToolApprovalService } from '../../contracts/tool-approval';
+import type { IEventBus } from '../../types/interfaces';
+import { EVENTS } from '../../events/event-names';
+import { runToolLoop, type ToolLoopMessage, type ToolLoopTool } from '../tool-loop/tool-loop';
+import { AssistantActionRegistry } from './assistant-action-registry';
+import { ProjectKnowledgeService } from './project-knowledge-service';
+import type { AgentPermissionService } from '../permissions/permission-service';
+import type { CapabilityTrustService } from '../capability-trust/capability-trust-service';
+import { rootLogger } from '../logger-service';
+
+const LOGGER = rootLogger.child('Assistant');
+
+const MAX_ROUNDS = 5;
+
+export interface AssistantServiceDeps {
+    llm: ILLMClientService;
+    actions: AssistantActionRegistry;
+    knowledge: ProjectKnowledgeService;
+    events: IEventBus;
+    /** Agent id the assistant acts as — its permission state decides the gate. */
+    agentId: string;
+    permissionService?: AgentPermissionService;
+    approvalService?: IToolApprovalService;
+    /** The trust ledger — what is verified vs only documented. */
+    trust?: CapabilityTrustService;
+    /** Long-term memory (episodic layer). */
+    memory?: {
+        recall(
+            context: string,
+            limit?: number,
+        ): Promise<Array<{ content: string; metadata: { type?: string } }>>;
+    };
+    /** Provider/model of the assistant; the session may override it. */
+    provider?: string;
+    model?: string;
+}
+
+const IDENTITY = `You are the project assistant of SuperAgents OS — a multi-agent runtime with many panels, services and tools.
+
+How you work:
+- You answer questions about THIS system. You do not guess: use the actions to find the real implementation, its route, its file and its tests.
+- You state what you observed, not what you intended. If an action was not confirmed, say it was not.
+- Documentation states intent; the panel/component chain comes from the code. When they disagree, trust the code and say so.
+- You may act on the system: create agents, open panels, store facts, start debates. Actions that change something ask the user first — wait for the answer instead of trying again.
+- Answer in the language of the question. Be concise: a few sentences plus concrete references (file, route, id).`;
+
+export class AssistantService {
+    constructor(private readonly deps: AssistantServiceDeps) {}
+
+    /** The system prompt of the assistant (identity + rules). */
+    systemPrompt(): string {
+        return IDENTITY;
+    }
+
+    /**
+     * Assemble the context block for a question.
+     *
+     * Layer A/B come from the knowledge service, layer C from the long-term
+     * memory, layer D from the live state of the system.
+     */
+    async buildContext(question: string, sessionId?: string): Promise<string> {
+        const blocks: string[] = [];
+
+        const knowledge = await this.deps.knowledge.context(question);
+        if (knowledge.markdown) blocks.push(knowledge.markdown);
+
+        if (this.deps.memory) {
+            try {
+                const hits = await this.deps.memory.recall(question, 5);
+                if (hits.length > 0) {
+                    blocks.push(
+                        '[RECALLED MEMORY]',
+                        hits
+                            .map(
+                                (h) => `- (${h.metadata.type ?? 'memory'}) ${h.content.slice(0, 240)}`,
+                            )
+                            .join('\n'),
+                    );
+                }
+            } catch (e) {
+                LOGGER.warn('Assistant', 'context: memory recall failed', {
+                    error: e instanceof Error ? e.message : String(e),
+                });
+            }
+        }
+
+        blocks.push(
+            '[LIVE STATE]',
+            `- assistant agent id: ${this.deps.agentId}`,
+            `- session: ${sessionId ?? 'none'}`,
+            `- actions available: ${this.deps.actions.list().length}`,
+        );
+
+        if (this.deps.trust) {
+            const stats = this.deps.trust.stats();
+            blocks.push(
+                '[TRUST LEDGER]',
+                `- ${stats.total} capability/capabilities: ${stats.verified} verified, ${stats.discovered} discovered, ${stats.declared} declared${stats.stale ? `, ${stats.stale} stale` : ''}`,
+                '- rely on verified and discovered; a "declared" capability is only documentation',
+            );
+        }
+
+        return blocks.join('\n\n');
+    }
+
+    /**
+     * The permission gate for one action.
+     *
+     * Reads pass, writes and executions ask the human through the approval
+     * channel. A denial is returned as a result so the model can explain it
+     * instead of crashing.
+     */
+    private async gate(
+        action: AssistantAction,
+        args: Record<string, unknown>,
+    ): Promise<AssistantActionResult | null> {
+        const permissions = this.deps.permissionService;
+        if (!permissions) return null;
+        const decision = await permissions.evaluate(this.deps.agentId, action.action, action.id);
+        if (decision.effect === 'allow') return null;
+        if (decision.effect === 'deny') {
+            return { ok: false, detail: `Permission denied: ${decision.reason}` };
+        }
+        const approval = this.deps.approvalService;
+        if (!approval) {
+            return { ok: false, detail: `Permission required: ${decision.reason}` };
+        }
+        const verdict = await approval.request({
+            toolId: action.id,
+            agentId: this.deps.agentId,
+            action: action.action,
+            resource: action.id,
+            reason: decision.reason,
+            input: args,
+        });
+        if (verdict === 'allow') return null;
+        return { ok: false, detail: 'The user did not allow this action.' };
+    }
+
+    /** Run one turn of the assistant. */
+    async ask(req: AssistantTurnRequest): Promise<AssistantTurnResult> {
+        const requestId = `assistant-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+        const context = await this.buildContext(req.text, req.sessionId);
+        const messages: ToolLoopMessage[] = [
+            { role: 'system', content: this.systemPrompt() },
+            { role: 'user', content: `${context}\n\n[QUESTION]\n${req.text}` },
+        ];
+
+        const definitions = this.deps.actions.definitions();
+        const tools: ToolLoopTool[] = definitions.map((d) => ({
+            name: d.function.name,
+            description: d.function.description,
+            parameters: d.function.parameters,
+        }));
+        const used: string[] = [];
+
+        const loop = await runToolLoop(
+            messages,
+            async (conversation, available) => {
+                const res = await this.deps.llm.sendMessage(
+                    conversation as unknown as ChatMessage[],
+                    {
+                        provider: req.provider ?? this.deps.provider,
+                        model: req.model ?? this.deps.model,
+                        temperature: 0.2,
+                        maxTokens: 1500,
+                        tools: available.map((t) => ({
+                            type: 'function',
+                            function: {
+                                name: t.name,
+                                description: t.description,
+                                parameters: t.parameters,
+                            },
+                        })),
+                        onChunk: (chunk: string) => {
+                            this.deps.events.emit(EVENTS.ASSISTANT_CHUNK, { requestId, chunk });
+                        },
+                    },
+                );
+                if (res.error) throw new Error(`LLM error: ${res.error}`);
+                return { content: res.content, toolCalls: res.toolCalls };
+            },
+            {
+                tools,
+                maxRounds: MAX_ROUNDS,
+                runTool: async (name, args) => {
+                    const action = this.deps.actions.get(name);
+                    if (!action) return `Unknown action: ${name}`;
+                    this.deps.events.emit(EVENTS.ASSISTANT_TOOL_CALL, {
+                        requestId,
+                        action: name,
+                        group: action.group,
+                        args,
+                        status: 'started',
+                    });
+                    const blocked = await this.gate(action, args);
+                    const result = blocked ?? (await this.deps.actions.run(name, args));
+                    used.push(name);
+                    this.deps.events.emit(EVENTS.ASSISTANT_TOOL_CALL, {
+                        requestId,
+                        action: name,
+                        group: action.group,
+                        args,
+                        status: result.ok ? 'done' : 'error',
+                        detail: result.detail,
+                    });
+                    return [
+                        result.ok ? 'OK' : 'FAILED',
+                        result.detail,
+                        result.evidence ? `evidence: ${result.evidence}` : '',
+                    ]
+                        .filter(Boolean)
+                        .join('\n');
+                },
+            },
+        );
+
+        this.deps.events.emit(EVENTS.ASSISTANT_DONE, {
+            requestId,
+            content: loop.content,
+            toolCalls: loop.toolCalls,
+            rounds: loop.rounds,
+        });
+
+        return {
+            content: loop.content,
+            toolCalls: used,
+            rounds: loop.rounds,
+        };
+    }
+}

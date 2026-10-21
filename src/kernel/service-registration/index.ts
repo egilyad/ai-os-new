@@ -74,6 +74,9 @@ import { registerPhase73 } from './phase73-session-memory';
 import { registerPhase74 } from './phase74-workflow-distill';
 import { registerPhase75 } from './phase75-provider-embeddings';
 import { registerPhase76 } from './phase76-agent-permissions';
+import { registerPhase77 } from './phase77-tool-exposure';
+import { registerPhase78 } from './phase78-assistant';
+import { registerPhase79 } from './phase79-capability-trust';
 import type { IContainer } from '../container';
 import type { IEventBus } from '../types/interfaces';
 
@@ -160,6 +163,9 @@ export function registerServices(
     registerPhase74(helpers, ctx);
     registerPhase75(helpers, ctx);
     registerPhase76(helpers, ctx);
+    registerPhase78(helpers, ctx);
+    registerPhase79(helpers, ctx);
+    registerPhase77(helpers, ctx);
 }
 
 export type { PhaseContext, Phase } from './helpers';

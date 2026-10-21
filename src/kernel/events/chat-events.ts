@@ -11,6 +11,7 @@ export const ChatEvents = {
     SELECT_MODEL: EVENT_REGISTRY.SELECT_MODEL.name,
     START_WITH_TARGET: EVENT_REGISTRY.START_CHAT_WITH_TARGET.name,
     SUMMARY_CREATED: EVENT_REGISTRY.CHAT_SUMMARY_CREATED.name,
+    TOOL_CALL: EVENT_REGISTRY.CHAT_TOOL_CALL.name,
 } as const;
 
 export type ChatEventMap = Pick<
@@ -25,6 +26,7 @@ export type ChatEventMap = Pick<
     | 'chat:model:select'
     | 'chat:target:start'
     | 'chat:summary:created'
+    | 'chat:tool:call'
 >;
 
 export interface ChatSendPayload {

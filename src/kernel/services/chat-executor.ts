@@ -1,12 +1,24 @@
-import type { ILLMClientService, AdapterMessage } from '../contracts/provider-adapter';
+import type {
+    ILLMClientService,
+    AdapterMessage,
+    AdapterFinishReason,
+} from '../contracts/provider-adapter';
 import type { ChatResponse, QueuedRequest } from '../types/chat-types';
 import { EVENTS } from '../events/event-names';
 import { CONFIG } from './config-registry';
 import { LLMError } from '../errors';
 import type { ChatServiceDeps } from '../contracts/chat';
+import {
+    runToolLoop,
+    type ToolLoopMessage,
+    type ToolLoopTool,
+} from './tool-loop/tool-loop';
 import { rootLogger } from './logger-service';
 
 const LOGGER = rootLogger.child('ChatExecutor');
+
+/** Maximum LLM round-trips when the model may call tools. */
+const MAX_TOOL_ROUNDS = 4;
 
 export class ChatExecutor {
     private deps: ChatServiceDeps;
@@ -38,6 +50,134 @@ export class ChatExecutor {
                 if (d && typeof d.requestId === 'string') this.cancelRequest(d.requestId);
             }),
         );
+    }
+
+    /**
+     * Which tools the model may call in this request.
+     *
+     * Tools are opt-in per agent: the request metadata may force them on
+     * (`agentTools: true`) or off (`agentTools: false`); otherwise they are
+     * enabled only when the agent declares a tool profile — an agent that
+     * never configured tools keeps the plain chat behaviour.
+     */
+    private resolveToolDefs(
+        agentId: string | undefined,
+        metadata: Record<string, unknown> | undefined,
+    ): ToolLoopTool[] {
+        const exposure = this.deps.toolExposure;
+        if (!exposure || !agentId) return [];
+        const explicit = metadata?.['agentTools'];
+        if (explicit === false) return [];
+        if (explicit !== true) {
+            const selection = exposure.selection?.(agentId);
+            if (!selection?.profileId) return [];
+        }
+        return exposure.definitions(agentId).map((d) => ({
+            name: d.function.name,
+            description: d.function.description,
+            parameters: d.function.parameters,
+        }));
+    }
+
+    /**
+     * The agentic path: LLM → tool calls → execute → LLM.
+     *
+     * The conversation grows inside the loop (assistant tool-call turns plus
+     * tool results), so the model sees what the tools actually returned.
+     * A failing tool is reported back to the model instead of aborting.
+     */
+    private async runAgenticTurn(
+        req: QueuedRequest,
+        messages: AdapterMessage[],
+        provider: string,
+        model: string,
+        tools: ToolLoopTool[],
+        agentId: string,
+        signal: AbortSignal,
+    ): Promise<Awaited<ReturnType<ILLMClientService['sendMessage']>>> {
+        const requestId = req.requestId;
+        const exposure = this.deps.toolExposure;
+        let tokens = 0;
+        let finishReason: AdapterFinishReason | undefined;
+
+        const loop = await runToolLoop(
+            messages as unknown as ToolLoopMessage[],
+            async (conversation, schemas) => {
+                const res = await this.llmClient.sendMessage(
+                    conversation as unknown as AdapterMessage[],
+                    {
+                        provider,
+                        model,
+                        temperature: req.options?.temperature,
+                        maxTokens: req.options?.maxTokens,
+                        signal,
+                        tools: schemas.map((t) => ({
+                            type: 'function' as const,
+                            function: {
+                                name: t.name,
+                                description: t.description,
+                                parameters: t.parameters,
+                            },
+                        })),
+                        onChunk: (chunk: string) => {
+                            this.deps.eventBus.emit(EVENTS.STREAM_CHUNK, {
+                                requestId,
+                                provider,
+                                chunk,
+                                keyId: req.keyId,
+                            });
+                        },
+                    },
+                );
+                tokens += res.tokens ?? 0;
+                finishReason = res.finishReason;
+                return { content: res.content, toolCalls: res.toolCalls };
+            },
+            {
+                tools,
+                maxRounds: MAX_TOOL_ROUNDS,
+                signal,
+                runTool: async (name, args) => {
+                    this.deps.eventBus.emit(EVENTS.CHAT_TOOL_CALL, {
+                        requestId,
+                        agentId,
+                        tool: name,
+                        args,
+                        status: 'started',
+                    });
+                    try {
+                        const out = await exposure!.invoke(agentId, name, args);
+                        this.deps.eventBus.emit(EVENTS.CHAT_TOOL_CALL, {
+                            requestId,
+                            agentId,
+                            tool: name,
+                            args,
+                            status: 'done',
+                            output: out.slice(0, 2000),
+                        });
+                        return out;
+                    } catch (e) {
+                        const message = e instanceof Error ? e.message : String(e);
+                        this.deps.eventBus.emit(EVENTS.CHAT_TOOL_CALL, {
+                            requestId,
+                            agentId,
+                            tool: name,
+                            args,
+                            status: 'error',
+                            error: message.slice(0, 500),
+                        });
+                        throw new Error(message, { cause: e });
+                    }
+                },
+            },
+        );
+
+        return {
+            content: loop.content,
+            tokens,
+            finishReason,
+            latency: 0,
+        };
     }
 
     private startStaleTimer(): void {
@@ -301,15 +441,24 @@ export class ChatExecutor {
 
                         let result: Awaited<ReturnType<ILLMClientService['sendMessage']>>;
 
-                        const cacheKey = this.deps.cacheService
-                            ? await this.deps.cacheService.generateKey(
-                                  effectiveMessages as unknown as Array<{
-                                      role: string;
-                                      content: string;
-                                  }>,
-                                  effectiveModel,
-                              )
-                            : null;
+                        // Tool-enabled requests skip the response cache: the
+                        // cached text is the answer *after* the tools ran, and
+                        // replaying it would hide the tool turns from the model.
+                        const toolDefs = this.resolveToolDefs(
+                            agentId,
+                            req.options?.metadata as Record<string, unknown> | undefined,
+                        );
+
+                        const cacheKey =
+                            toolDefs.length > 0 || !this.deps.cacheService
+                                ? null
+                                : await this.deps.cacheService.generateKey(
+                                      effectiveMessages as unknown as Array<{
+                                          role: string;
+                                          content: string;
+                                      }>,
+                                      effectiveModel,
+                                  );
 
                         if (cacheKey) {
                             const cached = this.deps.cacheService.get(cacheKey);
@@ -408,21 +557,33 @@ export class ChatExecutor {
                                 model: effectiveModel,
                                 keyId: req.keyId,
                             });
-                            result = await this.llmClient.sendMessage(effectiveMessages, {
-                                provider: currentProvider,
-                                model: effectiveModel,
-                                temperature: req.options?.temperature,
-                                maxTokens: req.options?.maxTokens,
-                                signal: sessionController.signal,
-                                onChunk: (chunk: string) => {
-                                    this.deps.eventBus.emit(EVENTS.STREAM_CHUNK, {
-                                        requestId,
-                                        provider: currentProvider,
-                                        chunk,
-                                        keyId: req.keyId,
-                                    });
-                                },
-                            });
+                            if (toolDefs.length > 0 && agentId) {
+                                result = await this.runAgenticTurn(
+                                    req,
+                                    effectiveMessages,
+                                    currentProvider,
+                                    effectiveModel,
+                                    toolDefs,
+                                    agentId,
+                                    sessionController.signal,
+                                );
+                            } else {
+                                result = await this.llmClient.sendMessage(effectiveMessages, {
+                                    provider: currentProvider,
+                                    model: effectiveModel,
+                                    temperature: req.options?.temperature,
+                                    maxTokens: req.options?.maxTokens,
+                                    signal: sessionController.signal,
+                                    onChunk: (chunk: string) => {
+                                        this.deps.eventBus.emit(EVENTS.STREAM_CHUNK, {
+                                            requestId,
+                                            provider: currentProvider,
+                                            chunk,
+                                            keyId: req.keyId,
+                                        });
+                                    },
+                                });
+                            }
                         }
 
                         const latencyMs = Math.round(performance.now() - startTime);

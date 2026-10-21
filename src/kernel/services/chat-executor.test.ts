@@ -496,6 +496,117 @@ describe('ChatExecutor', () => {
         });
     });
 
+    describe('agentic tool loop', () => {
+        function toolDeps(invoke = vi.fn().mockResolvedValue('tool output')) {
+            return {
+                definitions: vi.fn().mockReturnValue([
+                    {
+                        type: 'function' as const,
+                        function: {
+                            name: 'workspace.read',
+                            description: 'read a file',
+                            parameters: { type: 'object', properties: {} },
+                        },
+                    },
+                ]),
+                selection: vi.fn().mockReturnValue({ profileId: 'research' }),
+                invoke,
+            };
+        }
+
+        it('runs the tool and feeds the result back to the model', async () => {
+            const invoke = vi.fn().mockResolvedValue('file contents');
+            deps.toolExposure = toolDeps(invoke);
+            let round = 0;
+            deps.llmClient.sendMessage = vi.fn().mockImplementation(() => {
+                round += 1;
+                if (round === 1) {
+                    return Promise.resolve({
+                        content: '',
+                        tokens: 10,
+                        finishReason: 'tool_calls',
+                        toolCalls: [
+                            {
+                                id: 'call-1',
+                                type: 'function',
+                                function: { name: 'workspace.read', arguments: '{"path":"a.ts"}' },
+                            },
+                        ],
+                    });
+                }
+                return Promise.resolve({
+                    content: 'The file says hello',
+                    tokens: 12,
+                    finishReason: 'stop',
+                });
+            }) as unknown as ILLMClientService['sendMessage'];
+
+            executor.handleMessage(
+                makeRequest({
+                    options: {
+                        temperature: 0.7,
+                        maxTokens: 100,
+                        metadata: { agentId: 'agent-1' },
+                    },
+                }),
+            );
+
+            await vi.waitFor(() => {
+                expect(mockEmit).toHaveBeenCalledWith(
+                    'chat:response',
+                    expect.objectContaining({
+                        requestId: 'req-1',
+                        status: 'done',
+                        content: 'The file says hello',
+                    }),
+                );
+            });
+            expect(invoke).toHaveBeenCalledWith('agent-1', 'workspace.read', { path: 'a.ts' });
+            expect(deps.llmClient.sendMessage).toHaveBeenCalledTimes(2);
+        });
+
+        it('does not offer tools when the agent declares no profile', async () => {
+            deps.toolExposure = toolDeps();
+            deps.toolExposure.selection = vi.fn().mockReturnValue({});
+            executor.handleMessage(
+                makeRequest({
+                    options: {
+                        temperature: 0.7,
+                        maxTokens: 100,
+                        metadata: { agentId: 'agent-1' },
+                    },
+                }),
+            );
+            await vi.waitFor(() => {
+                expect(mockEmit).toHaveBeenCalledWith(
+                    'chat:response',
+                    expect.objectContaining({ status: 'done' }),
+                );
+            });
+            expect(deps.toolExposure.definitions).not.toHaveBeenCalled();
+        });
+
+        it('honours an explicit opt-out', async () => {
+            deps.toolExposure = toolDeps();
+            executor.handleMessage(
+                makeRequest({
+                    options: {
+                        temperature: 0.7,
+                        maxTokens: 100,
+                        metadata: { agentId: 'agent-1', agentTools: false },
+                    },
+                }),
+            );
+            await vi.waitFor(() => {
+                expect(mockEmit).toHaveBeenCalledWith(
+                    'chat:response',
+                    expect.objectContaining({ status: 'done' }),
+                );
+            });
+            expect(deps.toolExposure.definitions).not.toHaveBeenCalled();
+        });
+    });
+
     describe('stale request cleanup', () => {
         it('should abort requests older than TTL', async () => {
             vi.useFakeTimers();

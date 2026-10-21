@@ -251,11 +251,16 @@ export function presetById(id: PermissionPresetId): PermissionPreset {
  * Resolve the permission action of a tool.
  *
  * Explicit metadata wins; otherwise the tool id is mapped heuristically.
- * Unknown tools fall back to `tool:exec` â€” the most conservative side-effect
- * class â€” so a newly added tool is never silently unrestricted.
+ * Two namespaces are understood:
+ *  - the catalog namespace (`t-read-file`, `t-web-search`, …) used by ToolService;
+ *  - the runner namespace (`workspace.read`, `http.fetch`, `mcp.call`, …) used
+ *    by ToolRunnerService.
+ * Unknown tools fall back to `tool:exec` — the most conservative side-effect
+ * class — so a newly added tool is never silently unrestricted.
  */
 export function actionForTool(toolId: string, explicit?: string): PermissionAction {
     if (explicit) return explicit;
+    // --- catalog namespace (ToolService) ---
     if (toolId.startsWith('t-read') || toolId.startsWith('t-list')) return 'tool:read';
     if (toolId.startsWith('t-write') || toolId.startsWith('t-edit')) return 'tool:write';
     if (toolId.startsWith('t-delete') || toolId.startsWith('t-rm')) return 'tool:exec';
@@ -265,6 +270,20 @@ export function actionForTool(toolId: string, explicit?: string): PermissionActi
     if (toolId.startsWith('t-web') || toolId.startsWith('t-http') || toolId.startsWith('t-api')) {
         return 'tool:net';
     }
+    // --- runner namespace (ToolRunnerService) ---
+    if (toolId.startsWith('workspace.')) return 'tool:read';
+    if (toolId.startsWith('http.')) return 'tool:net';
+    if (toolId.startsWith('mcp.')) return 'tool:mcp';
+    if (toolId.startsWith('memory.')) return 'tool:memory';
+    if (toolId.startsWith('knowledge.')) return 'tool:memory';
+    if (toolId.startsWith('session.')) return 'tool:memory';
+    if (toolId.startsWith('debate.')) {
+        // Starting a debate spawns agents — a side effect, not a read.
+        return toolId === 'debate.status' || toolId === 'debate.verdict'
+            ? 'tool:read'
+            : 'tool:exec';
+    }
+    if (toolId.startsWith('time.') || toolId.startsWith('math.')) return 'tool:read';
     return 'tool:exec';
 }
 

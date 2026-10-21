@@ -10,6 +10,7 @@ import type { AgentService } from '../services/agent-service';
 import type { ToolService } from '../services/tool-executor';
 import type { RoleService } from '../services/role-service';
 import type { AgentPermissionService } from '../services/permissions/permission-service';
+import type { IToolApprovalService } from '../contracts/tool-approval';
 import type { PolicyService } from '../services/policy-service';
 import type { PricingService } from '../services/pricing-service';
 import type { AdminService } from '../services/admin-service';
@@ -64,6 +65,7 @@ export const toolService = lazyService<ToolService>('toolService');
 export const roleService = lazyService<RoleService>('roleService');
 export const policyService = lazyService<PolicyService>('policyService');
 export const agentPermissionService = lazyService<AgentPermissionService>('agentPermissionService');
+export const toolApprovalService = lazyService<IToolApprovalService>('toolApprovalService');
 export const pricingService = lazyService<PricingService>('pricingService');
 export const adminService = lazyService<AdminService>('adminService');
 export const snapshotService = lazyService<SnapshotService>('snapshotService');
@@ -99,6 +101,27 @@ export const externalSecretsService = lazyService<ExternalSecretsService>('exter
 export const skillService = lazyService<SkillService>('skillService');
 export const compromiseWebhookService = lazyService<CompromiseWebhookService>(
     'compromiseWebhookService',
+);
+
+// ── Assistant Services ──
+import type { ProjectKnowledgeService } from '../services/assistant/project-knowledge-service';
+import type { AssistantNavigationService } from '../services/assistant/assistant-navigation-service';
+import type { AssistantActionRegistry } from '../services/assistant/assistant-action-registry';
+import type { AssistantService } from '../services/assistant/assistant-service';
+import type { CapabilityTrustService } from '../services/capability-trust/capability-trust-service';
+
+export const projectKnowledgeService = lazyService<ProjectKnowledgeService>(
+    'projectKnowledgeService',
+);
+export const assistantNavigationService = lazyService<AssistantNavigationService>(
+    'assistantNavigationService',
+);
+export const assistantActionRegistry = lazyService<AssistantActionRegistry>(
+    'assistantActionRegistry',
+);
+export const projectAssistantService = lazyService<AssistantService>('projectAssistantService');
+export const capabilityTrustService = lazyService<CapabilityTrustService>(
+    'capabilityTrustService',
 );
 
 // ── Debate Services ──

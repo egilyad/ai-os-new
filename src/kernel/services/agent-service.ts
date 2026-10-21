@@ -578,6 +578,33 @@ export class AgentService implements IAgentResolver {
         };
     }
 
+    /**
+     * Tool selection of an agent: the profile it equips plus explicit
+     * allow/deny lists. This is what decides which tools the agent may even
+     * see (see `services/tools/tool-exposure-service.ts`) — without it every
+     * agent would inherit the full catalogue.
+     */
+    getToolSelection(agentId: string): {
+        profileId?: string;
+        tools?: string[];
+        deny?: string[];
+    } | null {
+        const top = this.deps.orchestrator.getActiveTopology();
+        if (!top) return null;
+        const node = top.nodes.find(
+            (n) => n.id === agentId && (n.type === 'agent' || n.type === 'router'),
+        );
+        if (!node) return null;
+        const cfg = (node.config ?? {}) as Record<string, unknown>;
+        const asStringArray = (v: unknown): string[] =>
+            Array.isArray(v) ? v.map((x) => String(x)).filter((s) => s.length > 0) : [];
+        return {
+            profileId: typeof cfg.toolProfile === 'string' ? cfg.toolProfile : undefined,
+            tools: asStringArray(cfg.tools),
+            deny: asStringArray(cfg.denyTools),
+        };
+    }
+
     spawnAgent(name: string, roleId?: string, config?: Record<string, unknown>) {
         const top = this.deps.orchestrator.getActiveTopology();
         if (!top) {

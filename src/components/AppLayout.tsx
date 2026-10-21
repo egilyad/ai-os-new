@@ -11,6 +11,7 @@ import { useResponsive } from './Layout/ResponsiveShell';
 import { AppRoutes } from '../routes';
 import { GlobalErrorBoundary } from './GlobalErrorBoundary';
 import AlertLayer from './AlertLayer/AlertLayer';
+import ToolApprovalLayer from './ToolApprovalLayer/ToolApprovalLayer';
 import { CommandPalette, useCommandPalette } from './CommandPalette';
 import { Breadcrumbs } from './Common/Breadcrumbs';
 import { OnboardingWizard } from './OnboardingWizard/OnboardingWizard';
@@ -349,6 +350,7 @@ export const AppLayout: React.FC = () => {
                         </section>
                         {activeTab !== 'debate' && <NextActionPredictions />}
                         <AlertLayer />
+                        <ToolApprovalLayer />
                         <CommandPalette
                             open={isPaletteOpen}
                             onClose={closePalette}

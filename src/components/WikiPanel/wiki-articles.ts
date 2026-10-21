@@ -14,6 +14,7 @@ import { LAYER_ARTICLES } from './wiki-layers';
 import { TOOLING_ARTICLES } from './wiki-tooling';
 import { DEV_STATUS_ARTICLES } from './wiki-dev-status';
 import { MEMORY_AUDIT_ARTICLES } from './wiki-memory-audit';
+import { ASSISTANT_ARTICLES } from './wiki-assistant';
 import type { WikiArticle, WikiFreshness, WikiSection } from './wiki-types';
 
 export type { WikiArticle, WikiFreshness, WikiSection } from './wiki-types';
@@ -2445,6 +2446,7 @@ export const WIKI_ARTICLES: WikiArticle[] = [
     ...TOOLING_ARTICLES,
     ...DEV_STATUS_ARTICLES,
     ...MEMORY_AUDIT_ARTICLES,
+    ...ASSISTANT_ARTICLES,
 ];
 
 export function getArticle(slug: string): WikiArticle | undefined {

@@ -124,6 +124,29 @@ export interface ChatServiceDeps {
     budgetService?: {
         recordSpend: (agentId: string | null, provider: string, amount: number) => void;
     };
+    /**
+     * Unified tool surface. When present, a request that carries an agent
+     * whose selection declares a tool profile runs the LLM→tool→LLM loop
+     * instead of a single completion.
+     */
+    toolExposure?: {
+        definitions(agentId: string): Array<{
+            type: 'function';
+            function: {
+                name: string;
+                description: string;
+                parameters: Record<string, unknown>;
+            };
+        }>;
+        selection?(
+            agentId: string,
+        ): { profileId?: string; tools?: string[]; deny?: string[] } | null;
+        invoke(
+            agentId: string,
+            name: string,
+            args?: Record<string, unknown>,
+        ): Promise<string>;
+    };
     freeTierLimits: Record<string, { requestsPerDay: number; tokensPerDay: number }>;
     executionGovernor?: {
         start(spec: { type: string; timeoutMs: number; metadata?: Record<string, unknown> }): {

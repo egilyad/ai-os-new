@@ -3,6 +3,7 @@
  */
 import type { AgentPermissionService } from '../permissions/permission-service';
 import { actionForTool } from '../../contracts/agent-permissions';
+import type { IToolApprovalService } from '../../contracts/tool-approval';
 import type {
     ToolApprovalResolver,
     ToolPipelineMiddleware,
@@ -29,6 +30,9 @@ const defaultResolver: PermissionActionResolver = (toolId) => ({
 /**
  * Middleware that consults the agent permission store before the tool body
  * runs. `ask` decisions are forwarded to the pipeline's approval resolver.
+ *
+ * Fail closed: an agent without its own state lands in the default `guarded`
+ * mode, where writes / exec / net / MCP become human questions.
  */
 export function createPermissionMiddleware(
     permissionService: AgentPermissionService,
@@ -76,6 +80,37 @@ export function createPermissionApprovalResolver(
                 return 'deny';
             }
             const verdict = await requestApproval(request);
+            if (verdict === 'allow') {
+                if (request.agentId) await permissionService.resetDenials(request.agentId);
+                return 'allow';
+            }
+            if (request.agentId) await permissionService.recordDenial(request.agentId);
+            return 'deny';
+        },
+    };
+}
+
+/**
+ * Approval resolver backed by the kernel-level approval channel.
+ *
+ * Unlike {@link createPermissionApprovalResolver} this one has a real channel:
+ * the request is published as an event, the UI shows a dialog, and the human
+ * answers through `IToolApprovalService.resolve()`. Denials are recorded so
+ * the consecutive-denial circuit breaker keeps working.
+ */
+export function createChannelApprovalResolver(
+    permissionService: AgentPermissionService,
+    approvalService: IToolApprovalService,
+): ToolApprovalResolver {
+    return {
+        async resolve(request) {
+            const verdict = await approvalService.request({
+                toolId: request.toolId,
+                agentId: request.agentId,
+                action: request.action,
+                resource: request.resource,
+                reason: request.reason,
+            });
             if (verdict === 'allow') {
                 if (request.agentId) await permissionService.resetDenials(request.agentId);
                 return 'allow';

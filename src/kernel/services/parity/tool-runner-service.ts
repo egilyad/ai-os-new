@@ -15,6 +15,12 @@ import type { IWorkspaceService } from '../../contracts/workspace';
 import type { MCPService } from '../mcp-service';
 import type { DebateSyncManager } from '../debate-runtime/debate-sync-manager';
 import type { IToolRunnerService, ToolRunResult } from '../../contracts/parity';
+import type { ToolPipelinePort } from '../tool-pipeline/tool-pipeline';
+import {
+    runToolLoop,
+    type ToolLoopMessage,
+    type ToolLoopTool,
+} from '../tool-loop/tool-loop';
 import type { ExternalToolRecord, ToolExecutionLink } from '../tool-executor';
 import { rootLogger } from '../logger-service';
 import { EVENTS } from '../../events/event-names';
@@ -113,6 +119,19 @@ export interface ToolRunnerDeps {
     /** P1 durable trail sink (ToolService.recordExternalExecution). Absent → events only, as before. */
     toolTrail?: { record(entry: ExternalToolRecord): Promise<void> };
     governance?: IToolGovernanceService;
+    /**
+     * Execution waterfall. When present, every call goes through the same
+     * `pre`/`post` chain as the catalog tools — permissions, `ask` → human
+     * approval, audit. Absent → the legacy governance check only.
+     */
+    pipeline?: ToolPipelinePort;
+    /**
+     * Decides whether the waterfall applies to an agent. Agents that never
+     * joined the permission system keep the legacy behaviour (the runner
+     * tools were never gated before); agents with an explicit state are
+     * gated, so `ask` reaches the human.
+     */
+    gatingApplies?: (agentId: string) => boolean;
     workspace?: IWorkspaceService;
     mcp?: MCPService;
     debate?: DebateSyncManager;
@@ -138,6 +157,18 @@ export class ToolRunnerService implements IToolRunnerService {
 
     listTools(): Array<{ name: string; description: string }> {
         return [...this.tools.values()].map((t) => ({ name: t.name, description: t.description }));
+    }
+
+    listToolDefs(): Array<{
+        name: string;
+        description: string;
+        parameters: Record<string, unknown>;
+    }> {
+        return [...this.tools.values()].map((t) => ({
+            name: t.name,
+            description: t.description,
+            parameters: t.parameters,
+        }));
     }
 
     /** F.2 — external packs (Letta memory tools, toolkits) register here. */
@@ -201,9 +232,65 @@ export class ToolRunnerService implements IToolRunnerService {
                 throw new Error(`Tool ${name} denied for ${agentId} by policy`);
             }
         }
+
+        // Waterfall: permissions + human approval (`ask`) live in the `pre`
+        // phase. Without it a runner tool would bypass the very gate the
+        // catalog tools go through. Only agents that joined the permission
+        // system are gated — the legacy runner tools were never gated, and
+        // silently changing that would break existing flows.
+        let effectiveArgs = args;
+        const gated = this.deps.pipeline && (this.deps.gatingApplies?.(agentId) ?? true);
+        if (gated && this.deps.pipeline) {
+            const pre = await this.deps.pipeline.runPre({
+                toolId: name,
+                input: args,
+                agentId,
+                runId: link?.runId,
+            });
+            if (pre.decision !== 'allow') {
+                await this.trail({
+                    toolId: name,
+                    input: args,
+                    status: 'denied',
+                    reason: `Tool ${name} ${pre.decision}: ${pre.reason ?? 'no reason'}`,
+                    link: trailLink,
+                });
+                this.deps.events.emit(EVENTS.TOOL_PIPELINE_BLOCKED, {
+                    toolId: name,
+                    agentId,
+                    reason: pre.reason ?? `blocked by ${pre.blockedBy ?? 'pipeline'}`,
+                    phase: 'pre',
+                });
+                throw new Error(
+                    `Tool ${name} ${pre.decision === 'cancel' ? 'cancelled' : 'denied'}: ${pre.reason ?? 'blocked by policy'}`,
+                );
+            }
+            effectiveArgs = (pre.input as Record<string, unknown>) ?? args;
+        }
+
         const started = now();
         try {
-            const out = (await tool.run(args)).slice(0, 8000);
+            let out = (await tool.run(effectiveArgs)).slice(0, 8000);
+            if (gated && this.deps.pipeline) {
+                const post = await this.deps.pipeline.runPost(
+                    {
+                        toolId: name,
+                        input: effectiveArgs,
+                        agentId,
+                        runId: link?.runId,
+                    },
+                    {
+                        status: 'ok',
+                        data: out,
+                        timestamp: started,
+                        duration: now() - started,
+                    },
+                );
+                if (post.status === 'error') {
+                    throw new Error(post.error || `Tool ${name} blocked after execution`);
+                }
+                if (typeof post.data === 'string') out = post.data.slice(0, 8000);
+            }
             this.deps.events.emit(EVENTS.TOOL_EXECUTED, {
                 agentId,
                 tool: name,
@@ -212,7 +299,7 @@ export class ToolRunnerService implements IToolRunnerService {
             });
             await this.trail({
                 toolId: name,
-                input: args,
+                input: effectiveArgs,
                 output: out,
                 status: 'success',
                 link: trailLink,
@@ -229,7 +316,7 @@ export class ToolRunnerService implements IToolRunnerService {
             });
             await this.trail({
                 toolId: name,
-                input: args,
+                input: effectiveArgs,
                 output: msg,
                 status: 'error',
                 reason: msg.slice(0, 500),
@@ -252,61 +339,58 @@ export class ToolRunnerService implements IToolRunnerService {
         } = {},
     ): Promise<ToolRunResult> {
         const agentId = opts.agentId ?? 'tool-runner';
-        const messages: AdapterMessage[] = [
+        const messages: ToolLoopMessage[] = [
             {
                 role: 'system',
                 content: (opts.system ?? 'You are a capable assistant. Use tools when they help. Answer concisely.').slice(0, 4000),
             },
             { role: 'user', content: prompt.slice(0, 12000) },
         ];
-        const toolDefs = [...this.tools.values()].map((t) => ({
-            type: 'function',
-            function: { name: t.name, description: t.description, parameters: t.parameters },
+        const tools: ToolLoopTool[] = [...this.tools.values()].map((t) => ({
+            name: t.name,
+            description: t.description,
+            parameters: t.parameters,
         }));
-        const used: string[] = [];
         const maxRounds = Math.max(1, Math.min(5, opts.maxRounds ?? 3));
-        let output = '';
-        for (let round = 0; round < maxRounds; round++) {
-            const res = await this.deps.llm.chat(messages, {
-                model: opts.model,
-                temperature: 0.3,
-                maxTokens: 1024,
-                tools: toolDefs,
-                cacheScope: { agentId },
-            });
-            if (res.error) throw new Error(`LLM error: ${res.error}`);
-            const calls = res.toolCalls ?? [];
-            if (calls.length === 0) {
-                output = res.content;
-                break;
-            }
-            output = res.content;
-            messages.push({
-                role: 'assistant',
-                content: res.content,
-                // Phase 70, трасса B: сохраняем исходный тип вызова —
-                // Anthropic computer_use (`computer_20250124`) обязан вернуться
-                // провайдеру как tool_use, а не как function-call.
-                toolCalls: calls.map((c) => ({ id: c.id, type: c.type, function: c.function })),
-            });
-            for (const call of calls) {
-                let args: Record<string, unknown>;
-                try {
-                    args = JSON.parse(call.function.arguments || '{}') as Record<string, unknown>;
-                } catch {
-                    args = {};
-                }
-                let result: string;
-                try {
-                    result = await this.callTool(agentId, call.function.name, args, opts.link);
-                } catch (e) {
-                    result = `ERROR: ${e instanceof Error ? e.message : String(e)}`;
-                }
-                used.push(call.function.name);
-                messages.push({ role: 'tool', content: result.slice(0, 6000), toolCallId: call.id });
-            }
-        }
-        return { output, toolCalls: used, rounds: used.length };
+
+        const result = await runToolLoop(
+            messages,
+            async (conversation, toolSchemas) => {
+                const res = await this.deps.llm.chat(conversation as AdapterMessage[], {
+                    model: opts.model,
+                    temperature: 0.3,
+                    maxTokens: 1024,
+                    tools: toolSchemas.map((t) => ({
+                        type: 'function' as const,
+                        function: {
+                            name: t.name,
+                            description: t.description,
+                            parameters: t.parameters,
+                        },
+                    })),
+                    cacheScope: { agentId },
+                });
+                if (res.error) throw new Error(`LLM error: ${res.error}`);
+                return { content: res.content, toolCalls: res.toolCalls };
+            },
+            {
+                tools,
+                maxRounds,
+                runTool: async (name, args) => {
+                    try {
+                        return await this.callTool(agentId, name, args, opts.link);
+                    } catch (e) {
+                        return `ERROR: ${e instanceof Error ? e.message : String(e)}`;
+                    }
+                },
+            },
+        );
+
+        return {
+            output: result.content,
+            toolCalls: result.toolCalls,
+            rounds: result.rounds,
+        };
     }
 
     private registerBuiltin(): void {

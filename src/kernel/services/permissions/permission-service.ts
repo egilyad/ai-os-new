@@ -120,6 +120,19 @@ export class AgentPermissionService {
         return this.states[agentId] ?? defaultState(agentId);
     }
 
+    /**
+     * True when the agent was explicitly configured (its mode/rules were set
+     * at least once).
+     *
+     * The waterfall uses this to decide whether to gate a call: an agent that
+     * never joined the permission system keeps the legacy behaviour instead of
+     * silently landing in the default `guarded` mode (where every write, exec,
+     * net and MCP call would turn into a human question).
+     */
+    hasState(agentId: string): boolean {
+        return Object.prototype.hasOwnProperty.call(this.states, agentId);
+    }
+
     getSavedRules(): PermissionRule[] {
         return [...this.savedRules];
     }

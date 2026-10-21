@@ -880,6 +880,90 @@ export const EVENT_REGISTRY = {
             phase: z.enum(['pre', 'post']),
         }),
     ),
+    /** HITL: a tool call needs a human decision. The UI renders a dialog. */
+    TOOL_APPROVAL_REQUESTED: event(
+        'tool:approval:requested',
+        z.object({
+            id: z.string(),
+            toolId: z.string(),
+            agentId: z.string().optional(),
+            action: z.string().optional(),
+            resource: z.string().optional(),
+            reason: z.string(),
+            input: z.unknown().optional(),
+            createdAt: z.number(),
+            expiresAt: z.number(),
+        }),
+    ),
+    TOOL_APPROVAL_RESOLVED: event(
+        'tool:approval:resolved',
+        z.object({
+            id: z.string(),
+            toolId: z.string(),
+            agentId: z.string().optional(),
+            decision: z.enum(['allow', 'deny']),
+        }),
+    ),
+    /** A tool call inside a chat turn — the UI shows the progress. */
+    CHAT_TOOL_CALL: event(
+        'chat:tool:call',
+        z.object({
+            requestId: z.string(),
+            agentId: z.string(),
+            tool: z.string(),
+            args: z.unknown().optional(),
+            status: z.enum(['started', 'done', 'error']),
+            output: z.string().optional(),
+            error: z.string().optional(),
+        }),
+    ),
+    /** The assistant asks the UI to open a route. */
+    ASSISTANT_NAVIGATION: event(
+        'assistant:navigation',
+        z.object({
+            id: z.string(),
+            route: z.string(),
+            reason: z.string(),
+            params: z.record(z.string(), z.unknown()).optional(),
+        }),
+    ),
+    ASSISTANT_NAVIGATION_RESOLVED: event(
+        'assistant:navigation:resolved',
+        z.object({
+            id: z.string(),
+            route: z.string(),
+            confirmed: z.boolean(),
+        }),
+    ),
+    /** The assistant streams its answer. */
+    ASSISTANT_CHUNK: event(
+        'assistant:chunk',
+        z.object({
+            requestId: z.string(),
+            chunk: z.string(),
+        }),
+    ),
+    /** The assistant used an action. */
+    ASSISTANT_TOOL_CALL: event(
+        'assistant:tool:call',
+        z.object({
+            requestId: z.string(),
+            action: z.string(),
+            group: z.string(),
+            args: z.unknown().optional(),
+            status: z.enum(['started', 'done', 'error', 'denied']),
+            detail: z.string().optional(),
+        }),
+    ),
+    ASSISTANT_DONE: event(
+        'assistant:done',
+        z.object({
+            requestId: z.string(),
+            content: z.string(),
+            toolCalls: z.array(z.string()),
+            rounds: z.number(),
+        }),
+    ),
     ROLES_UPDATED: event('roles:updated', z.array(RoleSchema)),
     ROLE_ASSIGNED: event('role:assigned', z.object({ roleId: z.string(), agentId: z.string() })),
     ROLE_UNASSIGNED: event(

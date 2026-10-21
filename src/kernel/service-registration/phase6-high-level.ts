@@ -37,6 +37,7 @@ import type { AgentService } from '../services/agent-service';
 import type { MetricsService } from '../services/metrics-service';
 import type { AgentHealthMonitor } from '../services/agent-health-monitor';
 import { ChatExecutor } from '../services/chat-executor';
+import type { ToolExposureService } from '../services/tools/tool-exposure-service';
 import { WorkspaceService } from '../services/workspace-service';
 import { ProbeService } from '../services/probe-service';
 import { AutoDebateService } from '../services/debate-runtime/auto-debate/auto-debate-service';
@@ -121,6 +122,11 @@ export const registerPhase6: Phase = (helpers, ctx) => {
                         return state.providers[provider] ?? state.providers[provider.toLowerCase()];
                     },
                     logger: c.get<LoggerService>('logger'),
+                    // Unified tool surface — enables the LLM→tool→LLM loop
+                    // for agents that declare a tool profile.
+                    toolExposure: c.has('toolExposureService')
+                        ? c.get<ToolExposureService>('toolExposureService')
+                        : undefined,
                 }),
                 c.get<LLMClientService>('llmClientService'),
             ),

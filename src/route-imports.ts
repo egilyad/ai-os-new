@@ -198,6 +198,7 @@ const ProviderManagerLazy = React.lazy(
     () => import('./components/ProviderManager/ProviderManager'),
 );
 const AgentsPanelLazy = React.lazy(() => import('./components/AgentsPanel/AgentsPanel'));
+const AssistantPanelLazy = React.lazy(() => import('./components/Assistant/AssistantPanel'));
 const ToolsPanelLazy = React.lazy(() => import('./components/ToolsPanel/ToolsPanel'));
 const ConnectorsPanelLazy = React.lazy(
     () => import('./components/ConnectorsPanel/ConnectorsPanel'),
@@ -290,6 +291,7 @@ export const PANEL_COMPONENTS: Record<string, React.ComponentType<any>> = {
     'debates-manager': DebatesManagerPanel,
     topics: TopicSuggesterPanel,
     agents: AgentsPanelLazy,
+    assistant: AssistantPanelLazy,
     roles: RolesPanelLazy,
     'roles-consortia': RolesConsortiaPanel,
     sre: SREAgentPanel,

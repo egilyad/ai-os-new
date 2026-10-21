@@ -22,6 +22,8 @@ import type { MCPService } from '../services/mcp-service';
 import type { DebateSyncManager } from '../services/debate-runtime/debate-sync-manager';
 import { ParityRepository } from '../dal/parity-repository';
 import { ToolRunnerService } from '../services/parity/tool-runner-service';
+import type { ToolPipeline, ToolPipelinePort } from '../services/tool-pipeline/tool-pipeline';
+import type { AgentPermissionService } from '../services/permissions/permission-service';
 import type { ToolService } from '../services/tool-executor';
 import type { ExternalToolRecord } from '../services/tool-executor';
 import { KnowledgeService } from '../services/parity/knowledge-service';
@@ -49,6 +51,21 @@ export const registerPhase32: Phase = ({ register }) => {
             : undefined;
         // P1 durable trail: runner records into the ToolService KV journal.
         const toolSvc = c.has('toolService') ? c.get<ToolService>('toolService') : undefined;
+        // Execution waterfall (registered later, in phase 76) — resolved lazily
+        // so the runner tools pass the same permission/approval gate as the
+        // catalog tools regardless of phase order.
+        const pipeline: ToolPipelinePort = {
+            async runPre(ctx) {
+                const p = c.has('toolPipeline') ? c.get<ToolPipeline>('toolPipeline') : undefined;
+                if (!p) return { decision: 'allow', input: ctx.input };
+                return p.runPre(ctx);
+            },
+            async runPost(ctx, outcome) {
+                const p = c.has('toolPipeline') ? c.get<ToolPipeline>('toolPipeline') : undefined;
+                if (!p) return outcome;
+                return p.runPost(ctx, outcome);
+            },
+        };
         return new ToolRunnerService({
             events: c.get<IEventBus>('eventBus'),
             llm: c.get<ILLMClientService>('llmClientService'),
@@ -61,6 +78,17 @@ export const registerPhase32: Phase = ({ register }) => {
             governance: c.has('toolGovernanceService')
                 ? c.get<IToolGovernanceService>('toolGovernanceService')
                 : undefined,
+            pipeline,
+            // Only agents that joined the permission system are gated by the
+            // runner path — the legacy runner tools were never gated, and the
+            // default `guarded` mode would turn every legacy call into a
+            // human question.
+            gatingApplies: (agentId: string) => {
+                if (!c.has('agentPermissionService')) return false;
+                return c
+                    .get<AgentPermissionService>('agentPermissionService')
+                    .hasState(agentId);
+            },
             workspace: c.has('workspaceService')
                 ? c.get<IWorkspaceService>('workspaceService')
                 : undefined,

@@ -15,6 +15,12 @@ export const CORE_SECTIONS: NavSection[] = [
                 lazy: true,
             },
             {
+                id: 'assistant',
+                labelKey: 'nav.assistant',
+                icon: Icons.sparkles,
+                color: '#22d3ee',
+            },
+            {
                 id: 'keys',
                 labelKey: 'nav.providers',
                 icon: Icons.key,

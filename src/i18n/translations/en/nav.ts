@@ -355,5 +355,6 @@ const nav: Record<string, string> = {
     'nav.logical_form': 'Logical Form',
     'nav.skip_to_content': 'Skip To Content',
     'nav.start_debate': 'Start Debate',
+    'nav.assistant': 'Assistant',
 };
 export { nav };

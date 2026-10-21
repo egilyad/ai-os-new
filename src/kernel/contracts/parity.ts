@@ -15,6 +15,16 @@ export interface ToolRunResult {
  */
 export interface IToolRunnerService extends ILifecycle {
     listTools(): Array<{ name: string; description: string }>;
+    /**
+     * Full tool definitions (name, description, JSON-schema parameters) — what
+     * a model needs to call a tool. `listTools()` stays summary-only for the
+     * catalog UI.
+     */
+    listToolDefs(): Array<{
+        name: string;
+        description: string;
+        parameters: Record<string, unknown>;
+    }>;
     /** F.2 — external packs (Letta memory tools, toolkits) register here. */
     addTool(def: {
         name: string;
@@ -22,7 +32,13 @@ export interface IToolRunnerService extends ILifecycle {
         parameters?: Record<string, unknown>;
         run: (args: Record<string, unknown>) => Promise<string>;
     }): void;
-    callTool(agentId: string, name: string, args?: Record<string, unknown>): Promise<string>;
+    callTool(
+        agentId: string,
+        name: string,
+        args?: Record<string, unknown>,
+        /** Join keys (runId/taskId) carried into the durable trail record. */
+        link?: { runId?: string; taskId?: string; sessionId?: string; invocationId?: string },
+    ): Promise<string>;
     runWithTools(
         prompt: string,
         opts?: { agentId?: string; system?: string; maxRounds?: number; model?: string },

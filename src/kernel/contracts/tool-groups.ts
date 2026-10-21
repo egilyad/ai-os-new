@@ -5,6 +5,12 @@
  *    a model the full tool catalogue, an agent equips a profile and the
  *    profile expands into groups; explicit denies always beat allows.
  *
+ *  - Both tool namespaces live here: the catalog namespace (`t-*`, executed by
+ *    ToolService) and the runner namespace (`workspace.*`, `http.*`, `mcp.*`,
+ *    `knowledge.*`, `debate.*`, executed by ToolRunnerService). A profile that
+ *    only mentions `t-*` would otherwise leave the runner tools unreachable —
+ *    or, worse, reachable regardless of the profile.
+ *
  * Pure data + pure functions only — the stateful availability probe lives in
  * `src/kernel/services/tool-pipeline/tool-availability.ts`.
  */
@@ -16,7 +22,8 @@ export type ToolGroupId =
     | 'group:memory'
     | 'group:mcp'
     | 'group:data'
-    | 'group:utility';
+    | 'group:utility'
+    | 'group:debate';
 
 export interface ToolGroup {
     id: ToolGroupId;
@@ -30,7 +37,13 @@ export const TOOL_GROUPS: Readonly<Record<ToolGroupId, ToolGroup>> = {
         id: 'group:fs',
         label: 'Filesystem',
         description: 'Чтение и запись файлов рабочей области.',
-        tools: ['t-read-file', 't-list-files'],
+        tools: [
+            't-read-file',
+            't-list-files',
+            'workspace.list',
+            'workspace.read',
+            'workspace.search',
+        ],
     },
     'group:code': {
         id: 'group:code',
@@ -42,19 +55,19 @@ export const TOOL_GROUPS: Readonly<Record<ToolGroupId, ToolGroup>> = {
         id: 'group:web',
         label: 'Web',
         description: 'Внешние HTTP-запросы и поиск.',
-        tools: ['t-web', 't-web-search'],
+        tools: ['t-web', 't-web-search', 'http.fetch'],
     },
     'group:memory': {
         id: 'group:memory',
         label: 'Memory',
         description: 'Поиск по долговременной памяти и LLM-утилиты.',
-        tools: ['t-search', 't-summarize', 't-translate'],
+        tools: ['t-search', 't-summarize', 't-translate', 'knowledge.search'],
     },
     'group:mcp': {
         id: 'group:mcp',
         label: 'MCP',
         description: 'Инструменты Model Context Protocol.',
-        tools: ['t-mcp'],
+        tools: ['t-mcp', 'mcp.call'],
     },
     'group:data': {
         id: 'group:data',
@@ -66,7 +79,13 @@ export const TOOL_GROUPS: Readonly<Record<ToolGroupId, ToolGroup>> = {
         id: 'group:utility',
         label: 'Utility',
         description: 'Служебные инструменты без внешних эффектов.',
-        tools: [],
+        tools: ['time.now', 'math.calc'],
+    },
+    'group:debate': {
+        id: 'group:debate',
+        label: 'Debate',
+        description: 'Запуск дебатов и чтение их вердиктов.',
+        tools: ['debate.start', 'debate.verdict', 'debate.status'],
     },
 };
 
@@ -113,6 +132,7 @@ export const TOOL_PROFILES: Readonly<Record<string, ToolProfile>> = {
             'group:mcp',
             'group:data',
             'group:utility',
+            'group:debate',
         ],
         tools: [],
     },
