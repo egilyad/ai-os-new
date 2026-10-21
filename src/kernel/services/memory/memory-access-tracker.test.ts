@@ -10,6 +10,7 @@ function entry(id: string, lastAccessed?: number): MemoryEntry {
             source: 'user',
             type: 'note',
             timestamp: 1,
+            importance: 0.5,
             ...(lastAccessed !== undefined ? { lastAccessed } : {}),
         },
     };

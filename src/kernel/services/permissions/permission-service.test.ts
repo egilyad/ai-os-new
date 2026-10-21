@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { AgentPermissionService } from './permission-service';
-import type { PermissionRule } from './permission-rules';
+import type { PermissionRule } from '../../contracts/agent-permissions';
 
 function createService() {
     const store = new Map<string, unknown>();

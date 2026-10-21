@@ -1,17 +1,30 @@
 /**
  * SessionMemoryService — durable per-session scratchpad for coding agents.
  */
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, type Mock } from 'vitest';
 import { SessionMemoryService, SESSION_MEMORY_KEY } from './session-memory-service';
+
+/**
+ * `Mock<T>` erases generic signatures — its call signature resolves the type
+ * parameter to `unknown` — so the concrete generic signature is intersected
+ * back in to keep the fake assignable to the service dependency type.
+ */
+type KvGetMock = Mock<(id: string) => Promise<unknown>> & (<T>(id: string) => Promise<T | null>);
+type KvSetMock = Mock<(id: string, value: unknown) => Promise<void>> &
+    (<T>(id: string, value: T) => Promise<void>);
 
 function fakeDb(initial: unknown = null) {
     const store = new Map<string, unknown>();
     if (initial !== null) store.set(SESSION_MEMORY_KEY, initial);
+    const getKv = vi.fn(
+        async (id: string) => (store.get(id) ?? null) as unknown,
+    ) as unknown as KvGetMock;
+    const setKv = vi.fn(async (id: string, value: unknown) => {
+        store.set(id, value);
+    }) as unknown as KvSetMock;
     return {
-        getKv: vi.fn(async <T>(id: string): Promise<T | null> => (store.get(id) as T) ?? null),
-        setKv: vi.fn(async <T>(id: string, value: T): Promise<void> => {
-            store.set(id, value);
-        }),
+        getKv,
+        setKv,
         _store: store,
     };
 }

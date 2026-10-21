@@ -25,14 +25,15 @@ export function hashEmbedding(text: string, dimensions = HASH_DIMENSIONS): numbe
             hash = (hash << 5) - hash + token.charCodeAt(i);
             hash |= 0;
         }
-        vector[Math.abs(hash) % dimensions] += 1;
+        const idx = Math.abs(hash) % dimensions;
+        vector[idx] = (vector[idx] ?? 0) + 1;
     }
 
     let norm = 0;
-    for (let i = 0; i < dimensions; i++) norm += vector[i]! * vector[i];
+    for (const value of vector) norm += value * value;
     norm = Math.sqrt(norm);
     if (norm > 0) {
-        for (let i = 0; i < dimensions; i++) vector[i] /= norm;
+        for (let i = 0; i < vector.length; i++) vector[i] = (vector[i] ?? 0) / norm;
     }
     return vector;
 }

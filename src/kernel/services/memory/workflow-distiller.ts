@@ -164,7 +164,9 @@ export class WorkflowDistiller {
         for (const line of text.split(/\r?\n/)) {
             const m = /^\s*(?:\d+[.)]|[-*])\s+(.+)$/.exec(line);
             if (!m) continue;
-            const step = m[1].trim();
+            const raw = m[1];
+            if (!raw) continue;
+            const step = raw.trim();
             if (step) out.push(step);
         }
         return out;
