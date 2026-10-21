@@ -68,6 +68,19 @@ export interface AssistantActionDeps {
             nextStep: string;
         }>;
     };
+    /** Routing a symptom to the layer that owns it. */
+    diagnosis?: {
+        diagnose(symptom: string): {
+            layer: string;
+            reasons: string[];
+            checks: Array<{
+                action: string;
+                question: string;
+                args?: Record<string, unknown>;
+            }>;
+            fallbackLayers: string[];
+        };
+    };
     /** The assistant's own experience log. */
     diary?: {
         write(input: {
@@ -364,6 +377,38 @@ export function createAssistantActions(deps: AssistantActionDeps): AssistantActi
                     .slice(0, limit)
                     .map((c) => `${c.id} [${c.trust}]${c.stale ? ' (stale)' : ''}`)
                     .join(' | '),
+            );
+        },
+    });
+
+    actions.push({
+        id: 'system.diagnose',
+        group: 'research',
+        description:
+            'Route a symptom to the layer that owns it (A documentation, B structure, C memory, D live state) and get the checks to run there.',
+        parameters: {
+            type: 'object',
+            properties: {
+                symptom: {
+                    type: 'string',
+                    description: 'What the user reported, in their own words.',
+                },
+            },
+            required: ['symptom'],
+        },
+        action: 'tool:read',
+        run: async (args) => {
+            if (!deps.diagnosis) return fail('diagnosis service is not available');
+            const symptom = str(args['symptom']).trim();
+            if (!symptom) return fail('symptom is required');
+            const plan = deps.diagnosis.diagnose(symptom);
+            return ok(
+                `Layer ${plan.layer}`,
+                [
+                    `reasons: ${plan.reasons.join('; ')}`,
+                    `checks: ${plan.checks.map((c) => `${c.action} — ${c.question}`).join(' | ')}`,
+                    `fallback layers: ${plan.fallbackLayers.join(', ')}`,
+                ].join(' | '),
             );
         },
     });

@@ -33,6 +33,7 @@ import type { AgentPermissionService } from '../permissions/permission-service';
 import type { CapabilityTrustService } from '../capability-trust/capability-trust-service';
 import type { AssistantDiaryService } from './assistant-diary-service';
 import type { AssistantExamService } from './assistant-exam-service';
+import type { AssistantDiagnosisService } from './assistant-diagnosis-service';
 import { rootLogger } from '../logger-service';
 
 const LOGGER = rootLogger.child('Assistant');
@@ -54,6 +55,8 @@ export interface AssistantServiceDeps {
     diary?: AssistantDiaryService;
     /** The self-check gate. */
     exam?: AssistantExamService;
+    /** Routing a symptom to the layer that owns it. */
+    diagnosis?: AssistantDiagnosisService;
     /** Long-term memory (episodic layer). */
     memory?: {
         recall(
@@ -82,7 +85,11 @@ export class AssistantService {
 
     /** The system prompt of the assistant (identity + rules). */
     systemPrompt(): string {
-        return IDENTITY;
+        const rules: string[] = [];
+        if (this.deps.exam) rules.push(this.deps.exam.rule());
+        if (this.deps.diagnosis) rules.push(this.deps.diagnosis.rule());
+        if (rules.length === 0) return IDENTITY;
+        return `${IDENTITY}\n\n${rules.join('\n')}`;
     }
 
     /**

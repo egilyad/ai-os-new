@@ -73,10 +73,11 @@ describe('AssistantActionRegistry', () => {
             'memory.search',
             'system.capabilities',
             'system.describe',
+            'system.diagnose',
             'system.exam',
             'system.find',
         ]);
-        expect(registry.groups().research).toBe(6);
+        expect(registry.groups().research).toBe(7);
         expect(registry.groups().work).toBeGreaterThan(0);
         expect(() => registry.register(registry.list()[0]!)).toThrow(/already registered/);
     });

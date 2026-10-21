@@ -19,6 +19,7 @@ import type { AgentService } from '../services/agent-service';
 import type { ToolService } from '../services/tool-executor';
 import type { CapabilityTrustService } from '../services/capability-trust/capability-trust-service';
 import { AssistantExamService } from '../services/assistant/assistant-exam-service';
+import { AssistantDiagnosisService } from '../services/assistant/assistant-diagnosis-service';
 import type { AssistantDiaryService } from '../services/assistant/assistant-diary-service';
 import { ProjectKnowledgeService } from '../services/assistant/project-knowledge-service';
 import { AssistantNavigationService } from '../services/assistant/assistant-navigation-service';
@@ -63,10 +64,12 @@ export const registerPhase78: Phase = ({ register }) => {
         // lazily — the actions only touch them when they actually run.
         let exam: AssistantExamService | undefined;
         let diary: AssistantDiaryService | undefined;
+        const diagnosis = new AssistantDiagnosisService();
         registry.registerAll(
             createAssistantActions({
                 knowledge,
                 navigation,
+                diagnosis,
                 get exam() {
                     return exam;
                 },
@@ -164,6 +167,8 @@ export const registerPhase78: Phase = ({ register }) => {
         return new AssistantExamService({ trust, actions });
     });
 
+    register('assistantDiagnosisService', () => new AssistantDiagnosisService());
+
     register('projectAssistantService', (c: IContainer) => {
         return new AssistantService({
             llm: c.get<ILLMClientService>('llmClientService'),
@@ -188,6 +193,9 @@ export const registerPhase78: Phase = ({ register }) => {
                 : undefined,
             exam: c.has('assistantExamService')
                 ? c.get<AssistantExamService>('assistantExamService')
+                : undefined,
+            diagnosis: c.has('assistantDiagnosisService')
+                ? c.get<AssistantDiagnosisService>('assistantDiagnosisService')
                 : undefined,
         });
     });

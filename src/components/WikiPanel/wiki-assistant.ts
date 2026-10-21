@@ -22,6 +22,10 @@ export const ASSISTANT_ARTICLES: WikiArticle[] = [
             'src/kernel/services/assistant/assistant-actions.ts',
             'src/kernel/services/assistant/project-knowledge-service.ts',
             'src/kernel/services/assistant/assistant-navigation-service.ts',
+            'src/kernel/services/assistant/assistant-diary-service.ts',
+            'src/kernel/services/assistant/assistant-exam-service.ts',
+            'src/kernel/services/assistant/assistant-diagnosis-service.ts',
+            'src/kernel/services/capability-trust/capability-trust-service.ts',
         ],
         related: ['panel-chat', 'panel-observability', 'memory'],
         body: `## Что это
@@ -69,15 +73,40 @@ sequenceDiagram
 Действия объявлены декларативно (\`assistant-actions.ts\`), сгруппированы и
 имеют класс разрешения:
 
-- **research** — \`system.find\`, \`system.describe\`, \`memory.search\`;
+- **research** — \`system.find\`, \`system.describe\`, \`system.capabilities\`,
+  \`system.exam\`, \`system.diagnose\`, \`memory.search\`, \`diary.recent\`;
 - **navigation** — \`ui.openPanel\` (роут открывает интерфейс и подтверждает переход);
 - **work** — \`agents.list\`, \`agents.spawn\`, \`agents.setState\`, \`tools.list\`,
-  \`memory.remember\`, а также UI-действия \`keys.*\`, \`mcp.list\`, \`skills.list\`;
+  \`memory.remember\`, \`diary.write\`, а также UI-действия \`keys.*\`, \`mcp.list\`,
+  \`skills.list\`;
 - **coordination** — \`debate.start\`, \`scheduler.list\`, \`tasks.list\`.
 
 Каждое действие возвращает проверяемый результат: \`ok\`, краткое описание и
 **evidence** — что именно было зафиксировано. Ассистент не имеет права сказать
 «открыл», если интерфейс не подтвердил переход.
+
+## Экзамен и дневник
+
+Ассистент не имеет права утверждать, что возможность работает, пока это не
+проверено (\`assistant-exam-service.ts\`):
+
+- **verified** — возможность исполнена, результат наблюдаем: утверждать можно;
+- **discovered** — реализация есть, но в этой сессии не запускалась: описывать
+  можно, утверждать — нет;
+- **declared** — о возможности знает только документация: утверждать нельзя.
+
+Читаемые возможности экзаменует запуском, пишущие — только через права
+человека. Дневник (\`assistant-diary-service.ts\`) хранит опыт в журнале агентов
+и зеркалит его в долговременную память, поэтому прошлый опыт всплывает в
+контексте следующего вопроса.
+
+## Маршрутизация проблемы
+
+Симптом сам не говорит, где поломка: «панель не открывается» может быть
+роутом (B), ключом (D) или устаревшей статьёй (A). \`system.diagnose\`
+(\`assistant-diagnosis-service.ts\`) определяет слой и даёт проверки, которые
+нужно выполнить в этом слое, с запасными слоями на случай, если первый
+окажется чистым.
 
 ## Права
 
