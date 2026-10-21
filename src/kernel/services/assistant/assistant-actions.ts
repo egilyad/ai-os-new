@@ -54,6 +54,44 @@ export interface AssistantActionDeps {
         }>;
         stats(): { total: number; declared: number; discovered: number; verified: number; stale: number };
     };
+    /** The self-check gate. */
+    exam?: {
+        examine(
+            capabilityId: string,
+            probeArgs?: Record<string, unknown>,
+        ): Promise<{
+            capabilityId: string;
+            passed: boolean;
+            level: string;
+            evidence: string[];
+            reason: string;
+            nextStep: string;
+        }>;
+    };
+    /** The assistant's own experience log. */
+    diary?: {
+        write(input: {
+            kind: string;
+            text: string;
+            evidence?: string;
+            outcome?: string;
+            tags?: string[];
+        }): Promise<{ id: string }>;
+        recent(limit?: number): Array<{
+            id: string;
+            kind: string;
+            text: string;
+            evidence?: string;
+            timestamp: number;
+        }>;
+        search(query: string, limit?: number): Array<{
+            id: string;
+            kind: string;
+            text: string;
+            evidence?: string;
+            timestamp: number;
+        }>;
+    };
     memory?: {
         recall(
             context: string,
@@ -325,6 +363,109 @@ export function createAssistantActions(deps: AssistantActionDeps): AssistantActi
                 filtered
                     .slice(0, limit)
                     .map((c) => `${c.id} [${c.trust}]${c.stale ? ' (stale)' : ''}`)
+                    .join(' | '),
+            );
+        },
+    });
+
+    actions.push({
+        id: 'system.exam',
+        group: 'research',
+        description:
+            'Examine a capability before claiming it works. Runs a safe probe when possible and reports whether the claim is allowed.',
+        parameters: {
+            type: 'object',
+            properties: {
+                capability: {
+                    type: 'string',
+                    description: 'Capability id: "action:ui.openPanel" or "ui.openPanel".',
+                },
+                probeArgs: {
+                    type: 'object',
+                    description: 'Arguments for the probe, when the capability needs them.',
+                },
+            },
+            required: ['capability'],
+        },
+        action: 'tool:read',
+        run: async (args) => {
+            if (!deps.exam) return fail('exam service is not available');
+            const capability = str(args['capability']);
+            if (!capability) return fail('capability is required');
+            const probeArgs =
+                args['probeArgs'] && typeof args['probeArgs'] === 'object'
+                    ? (args['probeArgs'] as Record<string, unknown>)
+                    : {};
+            const verdict = await deps.exam.examine(capability, probeArgs);
+            return ok(
+                verdict.passed
+                    ? `Exam passed (${verdict.level})`
+                    : `Exam not passed (${verdict.level})`,
+                [
+                    verdict.reason,
+                    verdict.evidence.length ? `evidence: ${verdict.evidence.join('; ')}` : '',
+                    verdict.nextStep ? `next: ${verdict.nextStep}` : '',
+                ]
+                    .filter(Boolean)
+                    .join(' | '),
+            );
+        },
+    });
+
+    actions.push({
+        id: 'diary.write',
+        group: 'work',
+        description:
+            'Record an experience in the assistant diary: what was decided, what was learned, what went wrong.',
+        parameters: {
+            type: 'object',
+            properties: {
+                kind: {
+                    type: 'string',
+                    enum: ['decision', 'lesson', 'mistake', 'question', 'action'],
+                },
+                text: { type: 'string', description: 'One sentence about what happened.' },
+                evidence: { type: 'string', description: 'What was actually observed.' },
+            },
+            required: ['kind', 'text'],
+        },
+        action: 'tool:write',
+        run: async (args) => {
+            if (!deps.diary) return fail('diary service is not available');
+            const text = str(args['text']).trim();
+            if (!text) return fail('text is required');
+            const kind = str(args['kind'], 'lesson');
+            const entry = await deps.diary.write({
+                kind: kind as 'decision' | 'lesson' | 'mistake' | 'question' | 'action',
+                text,
+                evidence: str(args['evidence']) || undefined,
+            });
+            return ok('Recorded in the diary', `diaryId: ${entry.id}`);
+        },
+    });
+
+    actions.push({
+        id: 'diary.recent',
+        group: 'research',
+        description: 'Read the recent entries of the assistant diary.',
+        parameters: {
+            type: 'object',
+            properties: {
+                limit: { type: 'number', description: 'Maximum entries (default 10).' },
+                query: { type: 'string', description: 'Search the diary instead of listing it.' },
+            },
+        },
+        action: 'tool:read',
+        run: async (args) => {
+            if (!deps.diary) return fail('diary service is not available');
+            const limit = num(args['limit'], 10);
+            const query = str(args['query']);
+            const entries = query ? deps.diary.search(query, limit) : deps.diary.recent(limit);
+            if (entries.length === 0) return fail('The diary is empty');
+            return ok(
+                `${entries.length} diary entry/entries`,
+                entries
+                    .map((e) => `(${e.kind}) ${e.text}${e.evidence ? ` — ${e.evidence}` : ''}`)
                     .join(' | '),
             );
         },

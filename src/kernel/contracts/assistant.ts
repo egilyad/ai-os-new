@@ -77,3 +77,46 @@ export interface AssistantTurnResult {
     /** Round-trips with the model. */
     rounds: number;
 }
+
+/* ------------------------------------------------------------------- diary */
+
+/** What kind of experience the assistant records. */
+export type AssistantDiaryKind =
+    | 'question'
+    | 'action'
+    | 'decision'
+    | 'mistake'
+    | 'lesson'
+    | 'answer';
+
+export interface AssistantDiaryEntry {
+    id: string;
+    kind: AssistantDiaryKind;
+    /** What happened, in one sentence. */
+    text: string;
+    /** What was actually observed. */
+    evidence?: string;
+    outcome: 'success' | 'failure' | 'partial' | 'in_progress';
+    tags: string[];
+    timestamp: number;
+}
+
+/* ------------------------------------------------------------------- exam */
+
+/**
+ * The verdict of the self-check.
+ *
+ * The assistant may only state a capability as working when the exam passed
+ * with a `verified` level. A `declared` capability is documentation, not a
+ * fact.
+ */
+export interface AssistantExamVerdict {
+    capabilityId: string;
+    /** May the assistant claim it works? */
+    passed: boolean;
+    level: 'declared' | 'discovered' | 'verified';
+    evidence: string[];
+    reason: string;
+    /** What would raise the level. */
+    nextStep: string;
+}

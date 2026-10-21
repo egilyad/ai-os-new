@@ -964,6 +964,20 @@ export const EVENT_REGISTRY = {
             rounds: z.number(),
         }),
     ),
+    /** A capability changed its trust level. */
+    CAPABILITY_TRUST_CHANGED: event(
+        'capability:trust:changed',
+        z.object({
+            id: z.string(),
+            kind: z.string(),
+            trust: z.string(),
+            stale: z.boolean(),
+        }),
+    ),
+    CAPABILITY_TRUST_SEEDED: event(
+        'capability:trust:seeded',
+        z.object({ added: z.number(), total: z.number() }),
+    ),
     ROLES_UPDATED: event('roles:updated', z.array(RoleSchema)),
     ROLE_ASSIGNED: event('role:assigned', z.object({ roleId: z.string(), agentId: z.string() })),
     ROLE_UNASSIGNED: event(

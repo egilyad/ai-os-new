@@ -4623,3 +4623,23 @@
 .assistant-trust__badge.is-stale {
   text-decoration: line-through;
 }
+
+.assistant-diary {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  padding: 0.45rem 0.7rem;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg-panel);
+  color: var(--text-muted);
+  font-size: 0.72rem;
+}
+
+.assistant-diary__entry {
+  padding: 0.1rem 0.4rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  color: var(--text-main);
+}

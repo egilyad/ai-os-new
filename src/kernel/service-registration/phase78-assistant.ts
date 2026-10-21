@@ -18,6 +18,8 @@ import type { ToolApprovalService } from '../services/tool-pipeline/tool-approva
 import type { AgentService } from '../services/agent-service';
 import type { ToolService } from '../services/tool-executor';
 import type { CapabilityTrustService } from '../services/capability-trust/capability-trust-service';
+import { AssistantExamService } from '../services/assistant/assistant-exam-service';
+import type { AssistantDiaryService } from '../services/assistant/assistant-diary-service';
 import { ProjectKnowledgeService } from '../services/assistant/project-knowledge-service';
 import { AssistantNavigationService } from '../services/assistant/assistant-navigation-service';
 import { AssistantActionRegistry } from '../services/assistant/assistant-action-registry';
@@ -57,10 +59,20 @@ export const registerPhase78: Phase = ({ register }) => {
             : undefined;
 
         const registry = new AssistantActionRegistry();
+        // The exam and the diary depend on the registry, so they are resolved
+        // lazily — the actions only touch them when they actually run.
+        let exam: AssistantExamService | undefined;
+        let diary: AssistantDiaryService | undefined;
         registry.registerAll(
             createAssistantActions({
                 knowledge,
                 navigation,
+                get exam() {
+                    return exam;
+                },
+                get diary() {
+                    return diary;
+                },
                 agents: agentService
                     ? {
                           getAgents: () => agentService.getAgents(),
@@ -136,8 +148,20 @@ export const registerPhase78: Phase = ({ register }) => {
                     evidence: [p.route, p.component ?? 'no component'],
                 })),
             );
+            exam = new AssistantExamService({ trust, actions: registry });
+        }
+        if (c.has('assistantDiaryService')) {
+            diary = c.get<AssistantDiaryService>('assistantDiaryService');
         }
         return registry;
+    });
+
+    // The exam is stateless — it only reads the trust ledger and the action
+    // registry — so the container may hold its own instance for the assistant.
+    register('assistantExamService', (c: IContainer) => {
+        const trust = c.get<CapabilityTrustService>('capabilityTrustService');
+        const actions = c.get<AssistantActionRegistry>('assistantActionRegistry');
+        return new AssistantExamService({ trust, actions });
     });
 
     register('projectAssistantService', (c: IContainer) => {
@@ -158,6 +182,12 @@ export const registerPhase78: Phase = ({ register }) => {
                 : undefined,
             trust: c.has('capabilityTrustService')
                 ? c.get<CapabilityTrustService>('capabilityTrustService')
+                : undefined,
+            diary: c.has('assistantDiaryService')
+                ? c.get<AssistantDiaryService>('assistantDiaryService')
+                : undefined,
+            exam: c.has('assistantExamService')
+                ? c.get<AssistantExamService>('assistantExamService')
                 : undefined,
         });
     });

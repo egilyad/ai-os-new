@@ -6,7 +6,7 @@
  * events, so the panel stays dumb.
  */
 import { create } from 'zustand';
-import { projectAssistantService } from '../kernel/instances/services-core';
+import { projectAssistantService, assistantDiaryService } from '../kernel/instances/services-core';
 import { eventBus } from '../kernel/instances/events';
 import { EVENTS } from '../kernel/events/event-names';
 
@@ -25,10 +25,18 @@ export interface AssistantMessage {
     pending?: boolean;
 }
 
+export interface AssistantDiaryRow {
+    id: string;
+    kind: string;
+    text: string;
+}
+
 export interface AssistantState {
     messages: AssistantMessage[];
     busy: boolean;
     error: string | null;
+    /** The assistant's own recent experience. */
+    diary: AssistantDiaryRow[];
     send: (text: string) => Promise<void>;
     clear: () => void;
 }
@@ -54,6 +62,16 @@ function notePending(state: AssistantState, patch: (m: AssistantMessage) => Assi
     if (index === -1) return state.messages;
     const at = state.messages.length - 1 - index;
     return state.messages.map((m, i) => (i === at ? patch(m) : m));
+}
+
+function readDiary(): AssistantDiaryRow[] {
+    try {
+        return assistantDiaryService
+            .recent(5)
+            .map((e) => ({ id: e.id, kind: e.kind, text: e.text }));
+    } catch {
+        return [];
+    }
 }
 
 let subscribed = false;
@@ -93,6 +111,7 @@ function ensureSubscribed(set: (fn: (s: AssistantState) => Partial<AssistantStat
                 pending: false,
             })),
             busy: false,
+            diary: readDiary(),
         }));
     });
 }
@@ -104,6 +123,7 @@ export const useAssistantStore = create<AssistantState>((set, get) => {
         messages: [],
         busy: false,
         error: null,
+        diary: [],
 
         send: async (text: string) => {
             const trimmed = text.trim();
@@ -135,6 +155,7 @@ export const useAssistantStore = create<AssistantState>((set, get) => {
                             : m,
                     ),
                     busy: false,
+                    diary: readDiary(),
                 }));
             } catch (e) {
                 const detail = e instanceof Error ? e.message : String(e);
@@ -154,6 +175,6 @@ export const useAssistantStore = create<AssistantState>((set, get) => {
             }
         },
 
-        clear: () => set({ messages: [], busy: false, error: null }),
+        clear: () => set({ messages: [], busy: false, error: null, diary: [] }),
     };
 });

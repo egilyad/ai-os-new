@@ -109,6 +109,7 @@ import type { AssistantNavigationService } from '../services/assistant/assistant
 import type { AssistantActionRegistry } from '../services/assistant/assistant-action-registry';
 import type { AssistantService } from '../services/assistant/assistant-service';
 import type { CapabilityTrustService } from '../services/capability-trust/capability-trust-service';
+import type { AssistantDiaryService } from '../services/assistant/assistant-diary-service';
 
 export const projectKnowledgeService = lazyService<ProjectKnowledgeService>(
     'projectKnowledgeService',
@@ -122,6 +123,9 @@ export const assistantActionRegistry = lazyService<AssistantActionRegistry>(
 export const projectAssistantService = lazyService<AssistantService>('projectAssistantService');
 export const capabilityTrustService = lazyService<CapabilityTrustService>(
     'capabilityTrustService',
+);
+export const assistantDiaryService = lazyService<AssistantDiaryService>(
+    'assistantDiaryService',
 );
 
 // ── Debate Services ──

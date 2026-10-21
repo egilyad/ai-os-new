@@ -69,12 +69,14 @@ describe('AssistantActionRegistry', () => {
 
         expect(registry.list('navigation').map((a) => a.id)).toEqual(['ui.openPanel']);
         expect(registry.list('research').map((a) => a.id)).toEqual([
+            'diary.recent',
             'memory.search',
             'system.capabilities',
             'system.describe',
+            'system.exam',
             'system.find',
         ]);
-        expect(registry.groups().research).toBe(4);
+        expect(registry.groups().research).toBe(6);
         expect(registry.groups().work).toBeGreaterThan(0);
         expect(() => registry.register(registry.list()[0]!)).toThrow(/already registered/);
     });

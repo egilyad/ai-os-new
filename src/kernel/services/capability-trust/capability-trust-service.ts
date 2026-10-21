@@ -17,6 +17,7 @@ import type {
 } from '../../contracts/capability-trust';
 import { canPromote } from '../../contracts/capability-trust';
 import type { IEventBus } from '../../types/interfaces';
+import { EVENTS } from '../../events/event-names';
 
 export class CapabilityTrustService {
     private records = new Map<string, CapabilityRecord>();
@@ -143,7 +144,7 @@ export class CapabilityTrustService {
             added += 1;
         }
         if (added > 0) {
-            this.deps.eventBus?.emit('capability:trust:seeded', { added, total: this.records.size });
+            this.deps.eventBus?.emit(EVENTS.CAPABILITY_TRUST_SEEDED, { added, total: this.records.size });
         }
         return added;
     }
@@ -179,7 +180,7 @@ export class CapabilityTrustService {
     }
 
     private emit(record: CapabilityRecord): void {
-        this.deps.eventBus?.emit('capability:trust:changed', {
+        this.deps.eventBus?.emit(EVENTS.CAPABILITY_TRUST_CHANGED, {
             id: record.id,
             kind: record.kind,
             trust: record.trust,

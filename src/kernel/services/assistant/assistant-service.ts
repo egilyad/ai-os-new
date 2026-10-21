@@ -31,6 +31,8 @@ import { AssistantActionRegistry } from './assistant-action-registry';
 import { ProjectKnowledgeService } from './project-knowledge-service';
 import type { AgentPermissionService } from '../permissions/permission-service';
 import type { CapabilityTrustService } from '../capability-trust/capability-trust-service';
+import type { AssistantDiaryService } from './assistant-diary-service';
+import type { AssistantExamService } from './assistant-exam-service';
 import { rootLogger } from '../logger-service';
 
 const LOGGER = rootLogger.child('Assistant');
@@ -48,6 +50,10 @@ export interface AssistantServiceDeps {
     approvalService?: IToolApprovalService;
     /** The trust ledger — what is verified vs only documented. */
     trust?: CapabilityTrustService;
+    /** The assistant's own experience log. */
+    diary?: AssistantDiaryService;
+    /** The self-check gate. */
+    exam?: AssistantExamService;
     /** Long-term memory (episodic layer). */
     memory?: {
         recall(
@@ -67,6 +73,8 @@ How you work:
 - You state what you observed, not what you intended. If an action was not confirmed, say it was not.
 - Documentation states intent; the panel/component chain comes from the code. When they disagree, trust the code and say so.
 - You may act on the system: create agents, open panels, store facts, start debates. Actions that change something ask the user first — wait for the answer instead of trying again.
+- Before you claim that something works, examine it (system.exam). If the exam does not pass, say what is known and what is not.
+- Keep a diary of what you learned (diary.write): decisions, lessons and mistakes. Do not write noise.
 - Answer in the language of the question. Be concise: a few sentences plus concrete references (file, route, id).`;
 
 export class AssistantService {
@@ -123,6 +131,13 @@ export class AssistantService {
                 `- ${stats.total} capability/capabilities: ${stats.verified} verified, ${stats.discovered} discovered, ${stats.declared} declared${stats.stale ? `, ${stats.stale} stale` : ''}`,
                 '- rely on verified and discovered; a "declared" capability is only documentation',
             );
+        }
+
+        if (this.deps.diary) {
+            const summary = this.deps.diary.summary(5);
+            if (summary) {
+                blocks.push('[DIARY — your own recent experience]', summary);
+            }
         }
 
         return blocks.join('\n\n');
@@ -247,10 +262,44 @@ export class AssistantService {
             rounds: loop.rounds,
         });
 
+        await this.recordExperience(req.text, loop.content, used);
+
         return {
             content: loop.content,
             toolCalls: used,
             rounds: loop.rounds,
         };
+    }
+
+    /**
+     * Write the turn into the diary.
+     *
+     * The entry is deliberately thin: what was asked, which actions ran and
+     * what the answer was. Lessons and mistakes are written by the assistant
+     * itself (the `diary.write` action) — the harness only records the trace.
+     */
+    private async recordExperience(
+        question: string,
+        answer: string,
+        toolCalls: string[],
+    ): Promise<void> {
+        const diary = this.deps.diary;
+        if (!diary) return;
+        try {
+            await diary.write({
+                kind: 'question',
+                text: question.slice(0, 240),
+                evidence: [
+                    toolCalls.length ? `actions: ${toolCalls.join(', ')}` : 'no actions',
+                    answer.slice(0, 400),
+                ].join(' | '),
+                outcome: answer ? 'success' : 'partial',
+                importance: 0.35,
+            });
+        } catch (e) {
+            LOGGER.warn('Assistant', 'diary write failed', {
+                error: e instanceof Error ? e.message : String(e),
+            });
+        }
     }
 }

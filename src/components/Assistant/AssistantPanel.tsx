@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Mic, MicOff, Send, Volume2, VolumeX, Trash2, Loader2, ShieldCheck } from 'lucide-react';
+import { Mic, MicOff, Send, Volume2, VolumeX, Trash2, Loader2, ShieldCheck, BookOpen } from 'lucide-react';
 import { useAssistantStore, type AssistantMessage } from '../../stores/assistant-store';
 import {
     assistantNavigationService,
@@ -78,11 +78,14 @@ const AssistantPanel: React.FC = () => {
             }
         };
         read();
-        const unsub = eventBus.on('capability:trust:changed', read);
+        const unsub = eventBus.on(EVENTS.CAPABILITY_TRUST_CHANGED, read);
         return () => {
             unsub();
         };
     }, []);
+
+    // The diary: what the assistant learned recently.
+    const diaryRows = useAssistantStore((s) => s.diary);
 
     useEffect(() => {
         const unsub = eventBus.on(
@@ -233,6 +236,19 @@ const AssistantPanel: React.FC = () => {
             </div>
 
             {error && <div className="assistant-error">Ошибка: {error}</div>}
+
+            {diaryRows.length > 0 && (
+                <div className="assistant-diary">
+                    <BookOpen size={14} />
+                    <span>Дневник:</span>
+                    {diaryRows.map((d) => (
+                        <span key={d.id} className="assistant-diary__entry" title={d.text}>
+                            {d.kind}: {d.text.slice(0, 48)}
+                            {d.text.length > 48 ? '…' : ''}
+                        </span>
+                    ))}
+                </div>
+            )}
 
             {trustRows.length > 0 && (
                 <div className="assistant-trust">
