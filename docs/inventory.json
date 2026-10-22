@@ -7221,7 +7221,7 @@
       "language": "mixed",
       "title": "Матрица покрытия",
       "bytes": 8373,
-      "hash": "88650cb0bc95db18f34316a9835ef3c742cd1da4"
+      "hash": "4890f693d522bbf95ad2cfeb09ab470819c6c37f"
     },
     {
       "path": "docs/wiki/debates.md",
@@ -7253,7 +7253,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4076,
-      "hash": "0aea290dd68d36e87b7e5c1a972034a21d0378e1"
+      "hash": "cb1574d3a96120fc72ba46d25c962a1c0dca45c5"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -7341,7 +7341,7 @@
       "language": "ru",
       "title": "Граф знаний",
       "bytes": 4929,
-      "hash": "e50b9ac944e2da2e82d456901366b838542f9ed2"
+      "hash": "89fbd5eac29d354a74593ba84006bf2929afa565"
     },
     {
       "path": "docs/wiki/dev-history.md",
