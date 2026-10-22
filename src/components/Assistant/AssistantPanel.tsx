@@ -101,6 +101,12 @@ const AssistantPanel: React.FC = () => {
 
     // The diary: what the assistant learned recently.
     const diaryRows = useAssistantStore((s) => s.diary);
+    const self = useAssistantStore((s) => s.self);
+    const refreshSelf = useAssistantStore((s) => s.refreshSelf);
+
+    useEffect(() => {
+        refreshSelf();
+    }, [refreshSelf]);
 
     useEffect(() => {
         const unsub = eventBus.on(
@@ -179,6 +185,16 @@ const AssistantPanel: React.FC = () => {
                                   ? 'Не получилось — причина ниже'
                                   : 'Спросите про систему — отвечу по факту, а не по догадке'}
                     </p>
+                    {self && (
+                        <p
+                            className="assistant-self"
+                            title={`preset ${self.preset}${
+                                self.denials > 0 ? `, ${self.denials} отказов подряд` : ''
+                            }`}
+                        >
+                            агент <code>{self.id}</code> · {self.status} · {self.mode}
+                        </p>
+                    )}
                 </div>
                 <div className="assistant-head__controls">
                     <button

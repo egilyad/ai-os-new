@@ -4305,6 +4305,18 @@
   color: var(--text-muted);
 }
 
+.assistant-head__text p.assistant-self {
+  margin-top: 0.2rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.02em;
+  opacity: 0.7;
+}
+
+.assistant-self code {
+  font-size: 0.7rem;
+  color: var(--text-main);
+}
+
 .assistant-head__controls {
   display: flex;
   gap: 0.375rem;

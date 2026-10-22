@@ -9,7 +9,17 @@ const { handlers, ask, confirmNav } = vi.hoisted(() => ({
 }));
 
 vi.mock('../../kernel/instances/services-core', () => ({
-    projectAssistantService: { ask: (...args: unknown[]) => ask(...args) },
+    projectAssistantService: {
+        ask: (...args: unknown[]) => ask(...args),
+        describeSelf: () => ({
+            id: 'assistant',
+            name: 'Project Assistant',
+            status: 'ready',
+            mode: 'guarded',
+            preset: 'guarded',
+            denials: 0,
+        }),
+    },
     assistantNavigationService: { confirm: (...args: unknown[]) => confirmNav(...args) },
     projectKnowledgeService: { setCorpusProvider: vi.fn() },
     assistantActionRegistry: { attachUiActions: vi.fn() },
@@ -59,6 +69,14 @@ describe('AssistantPanel', () => {
         renderPanel();
         expect(screen.getByText('Помощник проекта')).toBeDefined();
         expect(screen.getByRole('button', { name: /Где находится панель памяти/ })).toBeDefined();
+    });
+
+    it('shows the assistant as an agent node of the topology', () => {
+        const { container } = renderPanel();
+        const badge = container.querySelector('.assistant-self');
+        expect(badge?.textContent).toContain('assistant');
+        expect(badge?.textContent).toContain('ready');
+        expect(badge?.textContent).toContain('guarded');
     });
 
     it('sends a question and shows the answer', async () => {

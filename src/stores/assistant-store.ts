@@ -31,13 +31,26 @@ export interface AssistantDiaryRow {
     text: string;
 }
 
+/** The assistant's own node, as the topology sees it. */
+export interface AssistantSelfRow {
+    id: string;
+    name: string;
+    status: string;
+    mode: string;
+    preset: string;
+    denials: number;
+}
+
 export interface AssistantState {
     messages: AssistantMessage[];
     busy: boolean;
     error: string | null;
     /** The assistant's own recent experience. */
     diary: AssistantDiaryRow[];
+    /** Who the assistant is as an agent: node, lifecycle, permission mode. */
+    self: AssistantSelfRow | null;
     send: (text: string) => Promise<void>;
+    refreshSelf: () => void;
     clear: () => void;
 }
 
@@ -71,6 +84,14 @@ function readDiary(): AssistantDiaryRow[] {
             .map((e) => ({ id: e.id, kind: e.kind, text: e.text }));
     } catch {
         return [];
+    }
+}
+
+function readSelf(): AssistantSelfRow | null {
+    try {
+        return projectAssistantService.describeSelf();
+    } catch {
+        return null;
     }
 }
 
@@ -112,6 +133,7 @@ function ensureSubscribed(set: (fn: (s: AssistantState) => Partial<AssistantStat
             })),
             busy: false,
             diary: readDiary(),
+            self: readSelf(),
         }));
     });
 }
@@ -124,6 +146,7 @@ export const useAssistantStore = create<AssistantState>((set, get) => {
         busy: false,
         error: null,
         diary: [],
+        self: readSelf(),
 
         send: async (text: string) => {
             const trimmed = text.trim();
@@ -156,6 +179,7 @@ export const useAssistantStore = create<AssistantState>((set, get) => {
                     ),
                     busy: false,
                     diary: readDiary(),
+                    self: readSelf(),
                 }));
             } catch (e) {
                 const detail = e instanceof Error ? e.message : String(e);
@@ -173,10 +197,13 @@ export const useAssistantStore = create<AssistantState>((set, get) => {
                     ),
                     busy: false,
                     error: detail,
+                    self: readSelf(),
                 }));
             }
         },
 
-        clear: () => set({ messages: [], busy: false, error: null, diary: [] }),
+        refreshSelf: () => set({ self: readSelf() }),
+
+        clear: () => set({ messages: [], busy: false, error: null, diary: [], self: readSelf() }),
     };
 });
