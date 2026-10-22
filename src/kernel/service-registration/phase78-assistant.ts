@@ -20,6 +20,8 @@ import type { ToolService } from '../services/tool-executor';
 import type { CapabilityTrustService } from '../services/capability-trust/capability-trust-service';
 import { AssistantExamService } from '../services/assistant/assistant-exam-service';
 import { AssistantDiagnosisService } from '../services/assistant/assistant-diagnosis-service';
+import { AssistantViewService } from '../services/assistant/assistant-view-service';
+import { AssistantGuideService } from '../services/assistant/assistant-guide-service';
 import type { AssistantDiaryService } from '../services/assistant/assistant-diary-service';
 import { ProjectKnowledgeService } from '../services/assistant/project-knowledge-service';
 import { AssistantNavigationService } from '../services/assistant/assistant-navigation-service';
@@ -65,11 +67,13 @@ export const registerPhase78: Phase = ({ register }) => {
         let exam: AssistantExamService | undefined;
         let diary: AssistantDiaryService | undefined;
         const diagnosis = new AssistantDiagnosisService();
+        const guide = new AssistantGuideService({ knowledge });
         registry.registerAll(
             createAssistantActions({
                 knowledge,
                 navigation,
                 diagnosis,
+                guide,
                 get exam() {
                     return exam;
                 },
@@ -169,6 +173,13 @@ export const registerPhase78: Phase = ({ register }) => {
 
     register('assistantDiagnosisService', () => new AssistantDiagnosisService());
 
+    register('assistantViewService', () => new AssistantViewService());
+
+    register('assistantGuideService', (c: IContainer) => {
+        const knowledge = c.get<ProjectKnowledgeService>('projectKnowledgeService');
+        return new AssistantGuideService({ knowledge });
+    });
+
     register('projectAssistantService', (c: IContainer) => {
         return new AssistantService({
             llm: c.get<ILLMClientService>('llmClientService'),
@@ -196,6 +207,9 @@ export const registerPhase78: Phase = ({ register }) => {
                 : undefined,
             diagnosis: c.has('assistantDiagnosisService')
                 ? c.get<AssistantDiagnosisService>('assistantDiagnosisService')
+                : undefined,
+            view: c.has('assistantViewService')
+                ? c.get<AssistantViewService>('assistantViewService')
                 : undefined,
         });
     });

@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { AssistantService } from './assistant-service';
 import { AssistantActionRegistry } from './assistant-action-registry';
+import { AssistantViewService } from './assistant-view-service';
 import type { ProjectKnowledgeService } from './project-knowledge-service';
 import type { ILLMClientService } from '../../contracts/provider-adapter';
 import type { IToolApprovalService } from '../../contracts/tool-approval';
@@ -103,6 +104,27 @@ describe('AssistantService', () => {
         expect(prompt).toContain('решили X');
         expect(prompt).toContain('[LIVE STATE]');
         expect(prompt).toContain('session: s1');
+    });
+
+    it('tells the model which screen the operator is looking at', async () => {
+        const llm = llmStub([{ content: 'ok' }]);
+        const view = new AssistantViewService();
+        view.setView({ route: '/memory', panelId: 'memory' });
+        const service = new AssistantService({
+            llm: llm.service,
+            actions: makeRegistry(),
+            knowledge: makeKnowledge(),
+            events: makeEvents(),
+            agentId: 'assistant',
+            view,
+        });
+
+        await service.ask({ text: 'что это за экран?' });
+        const prompt = String(
+            (llm.calls[0]!.messages as Array<{ role: string; content: string }>)[1]!.content,
+        );
+        expect(prompt).toContain('[CURRENT VIEW]');
+        expect(prompt).toContain('route: /memory');
     });
 
     it('executes a read action without asking and feeds the result back', async () => {

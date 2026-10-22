@@ -34,6 +34,7 @@ import type { CapabilityTrustService } from '../capability-trust/capability-trus
 import type { AssistantDiaryService } from './assistant-diary-service';
 import type { AssistantExamService } from './assistant-exam-service';
 import type { AssistantDiagnosisService } from './assistant-diagnosis-service';
+import type { AssistantViewService } from './assistant-view-service';
 import { rootLogger } from '../logger-service';
 
 const LOGGER = rootLogger.child('Assistant');
@@ -57,6 +58,8 @@ export interface AssistantServiceDeps {
     exam?: AssistantExamService;
     /** Routing a symptom to the layer that owns it. */
     diagnosis?: AssistantDiagnosisService;
+    /** Where the operator is right now. */
+    view?: AssistantViewService;
     /** Long-term memory (episodic layer). */
     memory?: {
         recall(
@@ -130,6 +133,11 @@ export class AssistantService {
             `- session: ${sessionId ?? 'none'}`,
             `- actions available: ${this.deps.actions.list().length}`,
         );
+
+        const view = this.deps.view?.summary();
+        if (view) {
+            blocks.push(`[CURRENT VIEW] ${view} — the operator is looking at this screen`);
+        }
 
         if (this.deps.trust) {
             const stats = this.deps.trust.stats();

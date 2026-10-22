@@ -21,6 +21,7 @@ import ChatDock from './ChatDock/ChatDock';
 import { safeClone } from '../shared/utils/safe-json';
 import { eventBus, EVENTS } from '../kernel/instances';
 import { settingsService, groupManager } from '../kernel/instances';
+import { assistantViewService } from '../kernel/instances/services-core';
 import { useUiPreferences } from '../stores/uiPreferencesStore';
 import { setLanguage, type TranslationKey } from '../i18n/translations';
 import { useTranslation } from '../i18n/useTranslation';
@@ -144,6 +145,16 @@ export const AppLayout: React.FC = () => {
     }, []);
 
     useChatStoreHydration();
+
+    // The assistant knows where the operator is looking — it answers most
+    // questions about the screen that is open right now.
+    useEffect(() => {
+        const panelId = activeTab === 'dashboard' ? 'dashboard' : activeTab;
+        assistantViewService.setView({
+            route: location.pathname,
+            panelId,
+        });
+    }, [location.pathname, activeTab]);
 
     const handleNavigate = useCallback(
         (path: string) => {

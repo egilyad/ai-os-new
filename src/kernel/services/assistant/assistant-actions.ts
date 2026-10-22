@@ -81,6 +81,22 @@ export interface AssistantActionDeps {
             fallbackLayers: string[];
         };
     };
+    /** "How do I do this here?" — an ordered plan with real routes. */
+    guide?: {
+        plan(goal: string): {
+            goal: string;
+            steps: Array<{
+                order: number;
+                kind: string;
+                action?: string;
+                args?: Record<string, unknown>;
+                route?: string;
+                title: string;
+                detail: string;
+            }>;
+            note: string;
+        };
+    };
     /** The assistant's own experience log. */
     diary?: {
         write(input: {
@@ -376,6 +392,34 @@ export function createAssistantActions(deps: AssistantActionDeps): AssistantActi
                 filtered
                     .slice(0, limit)
                     .map((c) => `${c.id} [${c.trust}]${c.stale ? ' (stale)' : ''}`)
+                    .join(' | '),
+            );
+        },
+    });
+
+    actions.push({
+        id: 'system.howto',
+        group: 'research',
+        description:
+            'Turn a goal into an ordered plan with real routes: which panels to open, in what order, and how to check the result.',
+        parameters: {
+            type: 'object',
+            properties: {
+                goal: { type: 'string', description: 'What the operator wants to achieve.' },
+            },
+            required: ['goal'],
+        },
+        action: 'tool:read',
+        run: async (args) => {
+            if (!deps.guide) return fail('guide service is not available');
+            const goal = str(args['goal']).trim();
+            if (!goal) return fail('goal is required');
+            const plan = deps.guide.plan(goal);
+            if (plan.steps.length === 0) return fail(plan.note);
+            return ok(
+                `${plan.steps.length} step(s) for "${plan.goal}"`,
+                plan.steps
+                    .map((s) => `${s.order}. ${s.title}${s.route ? ` → ${s.route}` : ''} (${s.detail})`)
                     .join(' | '),
             );
         },
