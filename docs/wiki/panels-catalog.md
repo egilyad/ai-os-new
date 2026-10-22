@@ -11,11 +11,12 @@
 > Автосгенерировано `scripts/gen-wiki-panel-catalog.mjs` из реестра маршрутов,
 > `route-imports.ts`, локалей `nav.*` и карты статей вики. Не редактировать вручную.
 
-Панелей: **259** · с компонентом: **258** · со статьёй: **200** · всего разделов: **20**.
+Панелей: **260** · с компонентом: **259** · со статьёй: **202** · всего разделов: **20**.
 
 | Раздел | Панель | Маршрут | Компонент | Статья |
 | --- | --- | --- | --- | --- |
-| Панель | Обзор `dashboard` | `/dashboard` | — | — |
+| Панель | Обзор `dashboard` | `/dashboard` | — | [Панель: Обзор (Dashboard)](./panel-dashboard.md) |
+| Панель | Помощник `assistant` | `/assistant` | `src/components/Assistant/AssistantPanel` | [Панель: Помощник проекта](./panel-assistant.md) |
 | Панель | провайдеры `keys` | `/keys` | `src/components/ProviderManager/ProviderManager` | [Панель: Провайдеры и ключи](./panel-providers.md) |
 | Панель | знания `knowledge` | `/knowledge` | `src/components/KnowledgePanel/KnowledgePanel` | [Панель: База знаний (RAG)](./panel-knowledge.md) |
 | Панель | проводник Project OS `project-os` | `/project-os` | `src/components/DebateResearch/ProjectOsExplorer` | [Панель: Проекты](./panel-projects.md) |
