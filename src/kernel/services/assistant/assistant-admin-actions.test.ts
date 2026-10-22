@@ -44,9 +44,9 @@ describe('assistant admin actions', () => {
         const registry = new AssistantActionRegistry();
         registry.registerAll(createAssistantAdminActions(deps()));
         expect(registry.list().map((a) => a.id)).toEqual([
+            'audit.recent',
             'roles.list',
             'settings.get',
-            'audit.recent',
         ]);
         for (const action of registry.list()) {
             expect(action.action).toBe('tool:read');

@@ -51,10 +51,10 @@ describe('assistant ops actions', () => {
         registry.registerAll(createAssistantOpsActions(deps()));
         const ids = registry.list().map((a) => a.id);
         expect(ids).toEqual([
-            'topology.summary',
-            'metrics.summary',
-            'traces.summary',
             'approvals.pending',
+            'metrics.summary',
+            'topology.summary',
+            'traces.summary',
         ]);
         for (const action of registry.list()) {
             expect(action.action).toBe('tool:read');

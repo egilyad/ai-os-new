@@ -51,27 +51,32 @@ export const registerPhase78: Phase = ({ register }) => {
     register('assistantActionRegistry', (c: IContainer) => {
         const knowledge = c.get<ProjectKnowledgeService>('projectKnowledgeService');
         const navigation = c.get<AssistantNavigationService>('assistantNavigationService');
-        const agentService = c.has('agentService') ? c.get<AgentService>('agentService') : undefined;
-        const memory = c.has('memoryOrchestrator')
-            ? c.get<MemoryOrchestrator>('memoryOrchestrator')
-            : undefined;
-        const toolService = c.has('toolService') ? c.get<ToolService>('toolService') : undefined;
-        const trust = c.has('capabilityTrustService')
-            ? c.get<CapabilityTrustService>('capabilityTrustService')
-            : undefined;
-        const approvalSvc = c.has('toolApprovalService')
-            ? c.get<ToolApprovalService>('toolApprovalService')
-            : undefined;
-        const debateService = c.has('debateService')
-            ? c.get<{
-                  startDebate(
-                      topic: string,
-                      participants: unknown,
-                      strategy?: string,
-                      maxRounds?: number,
-                  ): Promise<{ id: string; status?: string }>;
-              }>('debateService')
-            : undefined;
+        /**
+         * Optional services: a trimmed composition (tests, embed mode) may not
+         * have them, and constructing some of them can fail without storage.
+         * The actions that need them degrade to "not available" instead of
+         * breaking the whole assistant.
+         */
+        const optional = <T>(id: string): T | undefined => {
+            try {
+                return c.has(id) ? c.get<T>(id) : undefined;
+            } catch {
+                return undefined;
+            }
+        };
+        const agentService = optional<AgentService>('agentService');
+        const memory = optional<MemoryOrchestrator>('memoryOrchestrator');
+        const toolService = optional<ToolService>('toolService');
+        const trust = optional<CapabilityTrustService>('capabilityTrustService');
+        const approvalSvc = optional<ToolApprovalService>('toolApprovalService');
+        const debateService = optional<{
+            startDebate(
+                topic: string,
+                participants: unknown,
+                strategy?: string,
+                maxRounds?: number,
+            ): Promise<{ id: string; status?: string }>;
+        }>('debateService');
 
         const registry = new AssistantActionRegistry();
         // The exam and the diary depend on the registry, so they are resolved
@@ -170,20 +175,12 @@ export const registerPhase78: Phase = ({ register }) => {
         );
 
         // Runtime observations: what the system is doing right now.
-        const orchestrator = c.has('orchestrator')
-            ? c.get<OrchestrationService>('orchestrator')
-            : undefined;
-        const metricsService = c.has('metricsService')
-            ? c.get<MetricsService>('metricsService')
-            : undefined;
-        const traceService = c.has('traceService')
-            ? c.get<TraceService>('traceService')
-            : undefined;
-        const roleService = c.has('roleService') ? c.get<RoleService>('roleService') : undefined;
-        const settingsService = c.has('settingsService')
-            ? c.get<SettingsService>('settingsService')
-            : undefined;
-        const auditService = c.has('auditService') ? c.get<IAuditService>('auditService') : undefined;
+        const orchestrator = optional<OrchestrationService>('orchestrator');
+        const metricsService = optional<MetricsService>('metricsService');
+        const traceService = optional<TraceService>('traceService');
+        const roleService = optional<RoleService>('roleService');
+        const settingsService = optional<SettingsService>('settingsService');
+        const auditService = optional<IAuditService>('auditService');
         registry.registerAll(
             createAssistantOpsActions({
                 topology: orchestrator

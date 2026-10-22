@@ -259,6 +259,8 @@ export class AssistantService {
      * the assistant is configured by design: guarded — reads are free, writes
      * and executions ask the operator.
      */
+    private permissionSeeded = false;
+
     private async ensurePermissionState(): Promise<void> {
         const permissions = this.deps.permissionService;
         if (!permissions) return;
@@ -267,9 +269,13 @@ export class AssistantService {
             typeof permissions.setMode !== 'function'
         )
             return;
-        if (permissions.hasState(this.deps.agentId)) return;
+        if (this.permissionSeeded || permissions.hasState(this.deps.agentId)) {
+            this.permissionSeeded = true;
+            return;
+        }
         try {
             await permissions.setMode(this.deps.agentId, 'guarded');
+            this.permissionSeeded = true;
         } catch (e) {
             LOGGER.warn('Assistant', 'Failed to seed the guarded permission state', {
                 error: e instanceof Error ? e.message : String(e),
