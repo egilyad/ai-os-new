@@ -187,6 +187,15 @@ export class AssistantService {
         action: AssistantAction,
         args: Record<string, unknown>,
     ): Promise<AssistantActionResult | null> {
+        // Pausing the agent in the admin must mean something: a paused
+        // assistant still answers, but it does not act.
+        const lifecycle = this.deps.lifecycle?.status(this.deps.agentId);
+        if (lifecycle === 'paused') {
+            return {
+                ok: false,
+                detail: 'The assistant is paused in the Agents panel; resume it before acting.',
+            };
+        }
         const permissions = this.deps.permissionService;
         if (!permissions) return null;
         const decision = await permissions.evaluate(this.deps.agentId, action.action, action.id);
@@ -282,6 +291,7 @@ export class AssistantService {
     /** Run one turn of the assistant. */
     async ask(req: AssistantTurnRequest): Promise<AssistantTurnResult> {
         const requestId = `assistant-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+        const startedAt = Date.now();
         await this.ensurePermissionState();
         const context = await this.buildContext(req.text, req.sessionId);
         const messages: ToolLoopMessage[] = [
@@ -364,6 +374,18 @@ export class AssistantService {
             content: loop.content,
             toolCalls: loop.toolCalls,
             rounds: loop.rounds,
+        });
+
+        // The assistant is an agent of the topology: its turns feed the same
+        // per-agent statistics the admin shows for every other agent.
+        this.deps.events.emit(EVENTS.COGNITIVE_STEP_COMPLETED, {
+            nodeId: this.deps.agentId,
+            traceId: requestId,
+            status: 'done',
+            duration: Date.now() - startedAt,
+            output: loop.content,
+            provider: route.provider ?? 'auto',
+            model: route.model ?? 'auto',
         });
 
         await this.recordExperience(req.text, loop.content, used);

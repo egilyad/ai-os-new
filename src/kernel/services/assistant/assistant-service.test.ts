@@ -382,4 +382,59 @@ describe('AssistantService', () => {
             denials: 2,
         });
     });
+
+    it('stops acting while paused in the admin, but still answers', async () => {
+        const llm = llmStub([
+            {
+                content: '',
+                toolCalls: [
+                    {
+                        id: 'c1',
+                        type: 'function',
+                        function: { name: 'system.find', arguments: '{"query":"память"}' },
+                    },
+                ],
+            },
+            { content: 'Я на паузе, поэтому не искал.' },
+        ]);
+        const service = new AssistantService({
+            llm: llm.service,
+            actions: makeRegistry(),
+            knowledge: makeKnowledge(),
+            events: makeEvents(),
+            agentId: 'assistant',
+            lifecycle: { status: () => 'paused' },
+        });
+
+        const result = await service.ask({ text: 'найди память' });
+        expect(result.content).toContain('паузе');
+        const toolMessage = (llm.calls[1]!.messages as Array<{ role: string; content: string }>).find(
+            (m) => m.role === 'tool',
+        );
+        expect(toolMessage?.content).toContain('paused');
+    });
+
+    it('reports its turns to the per-agent statistics', async () => {
+        const llm = llmStub([{ content: 'готово' }]);
+        const events = makeEvents();
+        const service = new AssistantService({
+            llm: llm.service,
+            actions: makeRegistry(),
+            knowledge: makeKnowledge(),
+            events,
+            agentId: 'assistant',
+            resolveRoute: () => ({ provider: 'OpenRouter', model: 'openai/gpt-4o' }),
+        });
+
+        await service.ask({ text: 'привет' });
+        expect(events.emit).toHaveBeenCalledWith(
+            'cognitive:step:completed',
+            expect.objectContaining({
+                nodeId: 'assistant',
+                status: 'done',
+                provider: 'OpenRouter',
+                model: 'openai/gpt-4o',
+            }),
+        );
+    });
 });
