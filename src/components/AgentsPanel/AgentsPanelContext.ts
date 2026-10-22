@@ -45,6 +45,8 @@ export interface Agent {
     // Phase 1.1: AGEMS AgentType
     type?: 'AUTONOMOUS' | 'ASSISTANT' | 'META' | 'REACTIVE' | 'EXTERNAL';
     slug?: string;
+    /** Built-in agent of the product: shipped with the system, not deletable. */
+    system?: boolean;
     stats: {
         calls: number;
         tokens: number;

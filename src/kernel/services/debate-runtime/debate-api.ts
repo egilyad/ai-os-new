@@ -298,7 +298,12 @@ export class DebateApiService {
 
     private resolveParticipants(ids?: string[]): DebateParticipant[] {
         const topology = this.deps.orchestrator.getActiveTopology();
-        const agentNodes = topology?.nodes.filter((n) => n.type === 'agent') ?? [];
+        // Built-in agents (the project assistant) belong to the product, not
+        // to the pool of debate workers.
+        const agentNodes =
+            topology?.nodes.filter(
+                (n) => n.type === 'agent' && n.config?.['systemAgent'] !== true,
+            ) ?? [];
         const selected = ids?.length
             ? ids
                   .map((id) => agentNodes.find((n) => n.id === id))

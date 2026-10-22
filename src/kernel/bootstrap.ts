@@ -22,6 +22,8 @@ import { setBucketStorageEventBus } from './services/storage-adapter';
 import { setDexieStorageEventBus } from './services/storage/dexie-storage';
 import { setMessageIndexEventBus } from './services/message-index-service';
 import { setAgentIdentityResolver } from './services/agent-identity';
+import { ASSISTANT_AGENT_NODE } from './services/assistant/assistant-agent';
+import type { ISNode } from './contracts/topology';
 import type { IAgentResolver } from './contracts/conversation/agent-resolver';
 // eslint-disable-next-line no-restricted-imports
 import { LLMHttpClient } from '../llm/http/llm-http-client';
@@ -107,7 +109,13 @@ export class SystemBootstrap implements IBootstrap {
 
         try {
             this.registerMigratedServices();
-            setAgentIdentityResolver(this.container.get<IAgentResolver>('agentService'));
+            const agentSvc = this.container.get<
+                IAgentResolver & { registerSystemAgents: (nodes: ISNode[]) => void }
+            >('agentService');
+            setAgentIdentityResolver(agentSvc);
+            // The project assistant is a first-class agent of the topology,
+            // not a chat window next to it.
+            agentSvc.registerSystemAgents([ASSISTANT_AGENT_NODE]);
         } catch (e) {
             this.logger.error('Bootstrap', 'Service registration failed', { error: e });
             this.phase = 'failed';

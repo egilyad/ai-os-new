@@ -83,4 +83,18 @@ test.describe('assistant panel', () => {
         await expect(page.getByText(/-PATH-42/).first()).toBeVisible({ timeout: 90000 });
         await page.screenshot({ path: 'test-results/assistant-panel.png', fullPage: false });
     });
+
+    test('the assistant is a real agent in the topology', async ({ page }) => {
+        await boot(page);
+        await page.goto('/agents');
+
+        // The assistant is not a side panel: it is a node of the topology and
+        // the admin shows it as a built-in agent.
+        const search = page.getByLabel('Search agents');
+        await expect(search).toBeVisible({ timeout: 60000 });
+        await search.fill('Project Assistant');
+        await expect(page.getByText('Project Assistant').first()).toBeVisible({ timeout: 30000 });
+        await expect(page.getByText('built-in').first()).toBeVisible({ timeout: 30000 });
+        await page.screenshot({ path: 'test-results/assistant-agent.png', fullPage: false });
+    });
 });

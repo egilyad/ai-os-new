@@ -148,3 +148,69 @@ describe('AgentService topology persistence (P0)', () => {
         expect(rebooted.nodes.map((n) => n.id)).toEqual(['agent-1', 'agent-2', 'router-1']);
     });
 });
+
+describe('AgentService built-in agents', () => {
+    const spec = {
+        id: 'assistant',
+        type: 'agent',
+        label: 'Project Assistant',
+        config: { roleName: 'Project Assistant', systemAgent: true, model: 'auto' },
+    } as unknown as ISTopology['nodes'][number];
+
+    it('seeds the built-in agent into the live topology with an entry edge', () => {
+        const live = freshTopology();
+        const svc = makeServiceWithKv(live, new Map());
+        svc.registerSystemAgents([spec]);
+
+        expect(live.nodes.map((n) => n.id)).toContain('assistant');
+        expect(live.edges.some((e) => e.from === 'router-1' && e.to === 'assistant')).toBe(true);
+        expect(svc.isSystemAgent('assistant')).toBe(true);
+        expect(svc.getAgents().find((a) => a.id === 'assistant')?.name).toBe('Project Assistant');
+    });
+
+    it('is idempotent: a second registration does not duplicate the node', () => {
+        const live = freshTopology();
+        const svc = makeServiceWithKv(live, new Map());
+        svc.registerSystemAgents([spec]);
+        svc.registerSystemAgents([spec]);
+        expect(live.nodes.filter((n) => n.id === 'assistant')).toHaveLength(1);
+        expect(live.edges.filter((e) => e.to === 'assistant')).toHaveLength(1);
+    });
+
+    it('keeps user edits but never lets the node be deleted', async () => {
+        const live = freshTopology();
+        const kv = new Map<string, unknown>();
+        const svc = makeServiceWithKv(live, kv);
+        svc.registerSystemAgents([spec]);
+        svc.updateAgent('assistant', { temperature: 0.5 });
+
+        expect(svc.deleteAgent('assistant')).toBe(false);
+        expect(live.nodes.some((n) => n.id === 'assistant')).toBe(true);
+
+        (svc as unknown as { persistTopology: (immediate?: boolean) => void }).persistTopology(
+            true,
+        );
+        await Promise.resolve();
+        const snap = kv.get('super_agents_agent_topology') as {
+            customNodes: Array<{ id: string }>;
+            deletedIds: string[];
+        };
+        // The built-in node is not stored as a user customization.
+        expect(snap.customNodes.map((n) => n.id)).not.toContain('assistant');
+        expect(snap.deletedIds).not.toContain('assistant');
+    });
+
+    it('resurrects the built-in agent when an older snapshot omits it', () => {
+        const live = freshTopology();
+        const svc = makeServiceWithKv(live, new Map());
+        svc.registerSystemAgents([spec]);
+        live.nodes = live.nodes.filter((n) => n.id !== 'assistant');
+        live.edges = [];
+
+        svc.applyStoredTopologyOverrides();
+        (
+            svc as unknown as { ensureSystemAgents: () => void }
+        ).ensureSystemAgents();
+        expect(live.nodes.some((n) => n.id === 'assistant')).toBe(true);
+    });
+});

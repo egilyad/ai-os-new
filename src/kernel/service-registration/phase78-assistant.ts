@@ -155,6 +155,16 @@ export const registerPhase78: Phase = ({ register }) => {
                     evidence: [p.route, p.component ?? 'no component'],
                 })),
             );
+            // The assistant itself is a capability of the system, not a
+            // hidden helper: it has an agent node and a panel behind it.
+            trust.seed([
+                {
+                    id: 'agent:assistant',
+                    kind: 'agent' as const,
+                    title: 'Project Assistant',
+                    evidence: ['topology node assistant', 'panel /assistant'],
+                },
+            ]);
             exam = new AssistantExamService({ trust, actions: registry });
         }
         if (c.has('assistantDiaryService')) {

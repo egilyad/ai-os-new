@@ -13,7 +13,7 @@
  */
 export type CapabilityTrust = 'declared' | 'discovered' | 'verified';
 
-export type CapabilityKind = 'panel' | 'tool' | 'action' | 'service' | 'feature';
+export type CapabilityKind = 'panel' | 'tool' | 'action' | 'service' | 'feature' | 'agent';
 
 export interface CapabilityRecord {
     /** Stable id: `action:ui.openPanel`, `panel:memory`, `tool:t-read-file`. */

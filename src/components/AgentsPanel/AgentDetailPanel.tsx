@@ -119,11 +119,14 @@ export const AgentDetailPanel: React.FC<AgentDetailPanelProps> = ({
                     <button
                         onClick={() => onDeleteRequest({ id: agent.id, name: agent.name })}
                         className="agents-modal-header-action-btn btn-secondary"
-                        title="Delete Agent"
+                        title={agent.system ? 'Built-in agent' : 'Delete Agent'}
                         aria-label="Delete agent"
+                        disabled={agent.system}
                         style={{
                             color: 'var(--error)',
                             borderColor: 'rgba(239,68,68,0.2)',
+                            opacity: agent.system ? 0.4 : 1,
+                            cursor: agent.system ? 'not-allowed' : 'pointer',
                         }}
                     >
                         <Trash2 size={16} /> Delete

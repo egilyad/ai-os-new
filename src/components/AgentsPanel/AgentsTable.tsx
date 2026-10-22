@@ -60,7 +60,12 @@ export const AgentsTable: React.FC<AgentsTableProps> = ({ agents, agentStats, on
                                             <AgentAvatar agentId={agent.id} name={agent.name} size={28} emoji={identity.avatar.emoji} color={identity.avatar.color} url={identity.avatar.url} />
                                             <div style={{ minWidth: 0 }}>
                                                 <div style={{ fontWeight: 600, color: 'var(--slate-100)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{agent.name}</div>
-                                                <div style={{ fontSize: '0.7rem', color: 'var(--slate-500)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{agent.id}</div>
+                                                <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                                                    <div style={{ fontSize: '0.7rem', color: 'var(--slate-500)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{agent.id}</div>
+                                                    {agent.system && (
+                                                        <span style={{ fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.04em', textTransform: 'uppercase', padding: '1px 6px', borderRadius: 999, border: '1px solid var(--slate-700)', color: 'var(--slate-400)' }}>built-in</span>
+                                                    )}
+                                                </div>
                                             </div>
                                         </div>
                                     </td>
@@ -110,9 +115,10 @@ export const AgentsTable: React.FC<AgentsTableProps> = ({ agents, agentStats, on
                                             </button>
                                             <button
                                                 onClick={() => onDeleteRequest(agent.id, agent.name)}
-                                                title="Delete"
+                                                disabled={agent.system}
+                                                title={agent.system ? 'Built-in agent' : 'Delete'}
                                                 aria-label={`Delete ${agent.name}`}
-                                                style={{ width: 30, height: 30, borderRadius: 8, border: '1px solid rgba(239,68,68,0.25)', background: 'rgba(239,68,68,0.08)', color: '#ef4444', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
+                                                style={{ width: 30, height: 30, borderRadius: 8, border: '1px solid rgba(239,68,68,0.25)', background: 'rgba(239,68,68,0.08)', color: '#ef4444', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', cursor: agent.system ? 'not-allowed' : 'pointer', opacity: agent.system ? 0.35 : 1 }}
                                             >
                                                 <Trash2 size={14} />
                                             </button>

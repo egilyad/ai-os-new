@@ -323,6 +323,57 @@ export class AgentService implements IAgentResolver {
     private storedCustomNodes: ISNode[] = [];
     private storedCustomEdges: ISEdge[] = [];
     private topoPersistTimer: ReturnType<typeof setTimeout> | null = null;
+    // Built-in agents (the project assistant) that every mounted topology
+    // must contain. Kept here so snapshot restores re-seed them too.
+    private systemAgentNodes: ISNode[] = [];
+
+    /**
+     * Reserve built-in agent nodes in every mounted topology.
+     *
+     * They are re-seeded on each mount (boot and snapshot restores), are not
+     * persisted as user customizations, and cannot be deleted.
+     */
+    registerSystemAgents(nodes: ISNode[]): void {
+        this.systemAgentNodes = nodes.map((n) => structuredClone(n));
+        this.ensureSystemAgents();
+    }
+
+    /** True for a reserved built-in agent (id based, survives config edits). */
+    isSystemAgent(agentId: string): boolean {
+        return this.systemAgentNodes.some((n) => n.id === agentId);
+    }
+
+    private ensureSystemAgents(): void {
+        const top = this.deps.orchestrator.getActiveTopology();
+        if (!top || this.systemAgentNodes.length === 0) return;
+        const live = new Set(top.nodes.map((n) => n.id));
+        let added = false;
+        for (const spec of this.systemAgentNodes) {
+            // A user deletion must not keep a built-in agent hidden.
+            this.deletedIds.delete(spec.id);
+            if (live.has(spec.id)) continue;
+            top.nodes.push(structuredClone(spec));
+            live.add(spec.id);
+            added = true;
+            const entry = top.nodes.find((n) => n.type === 'router' || n.id === 'entry');
+            if (entry) {
+                (top.edges ??= []).push({
+                    id: `edge-${spec.id}`,
+                    from: entry.id,
+                    to: spec.id,
+                    trigger: 'on_success',
+                });
+            }
+        }
+        if (added) {
+            this.lifecycleStates.set(this.systemAgentNodes[0]!.id, 'ready');
+            LOGGER.info(
+                'AgentService',
+                'Seeded built-in agents into the mounted topology',
+                { ids: this.systemAgentNodes.map((n) => n.id) },
+            );
+        }
+    }
 
     private persist() {
         if (this.persistDebounceTimer) clearTimeout(this.persistDebounceTimer);
@@ -348,6 +399,9 @@ export class AgentService implements IAgentResolver {
             this.deps.eventBus.onSafe<{ topologyId?: string }>(EVENTS.SYSTEM_TOPOLOGY_MOUNTED, () => {
                 try {
                     this.applyStoredTopologyOverrides();
+                    // Built-in agents come after user overrides: the user may
+                    // tune them, but not remove them.
+                    this.ensureSystemAgents();
                 } catch (e) {
                     LOGGER.error('AgentService', 'Failed to apply topology overrides', {
                         error: e,
@@ -663,9 +717,13 @@ export class AgentService implements IAgentResolver {
         this.persistTopology();
     }
 
-    deleteAgent(agentId: string) {
+    deleteAgent(agentId: string): boolean {
+        if (this.isSystemAgent(agentId)) {
+            LOGGER.warn('AgentService', `Refusing to delete the built-in agent ${agentId}`);
+            return false;
+        }
         const top = this.deps.orchestrator.getActiveTopology();
-        if (!top) return;
+        if (!top) return false;
         top.nodes = top.nodes.filter((n) => n.id !== agentId);
         top.edges = top.edges.filter((e) => e.from !== agentId && e.to !== agentId);
         this.deps.orchestrator.mount({ ...top });
@@ -686,6 +744,7 @@ export class AgentService implements IAgentResolver {
         this.deps.eventBus.emit(EVENTS.SYSTEM_NODE_REMOVED, { id: agentId });
         this.stats.delete(agentId);
         this.autoCloneIds.delete(agentId);
+        return true;
     }
 
     toggleAgent(id: string) {
@@ -980,7 +1039,11 @@ export class AgentService implements IAgentResolver {
         const top = this.deps.orchestrator.getActiveTopology();
         if (!top) return;
 
-        const agents = top.nodes.filter((n) => n.type === 'agent' || n.type === 'router');
+        // Built-in agents are part of the product: they are neither load
+        // candidates for auto-cloning nor eligible for auto-termination.
+        const agents = top.nodes.filter(
+            (n) => (n.type === 'agent' || n.type === 'router') && !this.isSystemAgent(n.id),
+        );
         const agentCount = agents.length;
 
         let busyCount = 0;

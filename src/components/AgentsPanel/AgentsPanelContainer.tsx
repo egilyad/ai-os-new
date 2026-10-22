@@ -76,6 +76,7 @@ const getAgentsFromTopology = (): Agent[] => {
                 systemPrompt: String(cfg.prompt || ''),
                 hilEnabled: Boolean(cfg.hilEnabled ?? false),
                 vpcEnabled: Boolean(cfg.vpcEnabled ?? true),
+                system: cfg.systemAgent === true,
                 stats: { calls: 0, tokens: 0, latency: 0 },
             };
         });

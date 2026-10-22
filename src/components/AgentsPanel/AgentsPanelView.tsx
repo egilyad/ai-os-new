@@ -128,6 +128,7 @@ const AgentsPanelView: React.FC = () => {
                     <input
                         ref={searchInputRef}
                         type="text"
+                        aria-label="Search agents"
                         placeholder={t('agents.search_placeholder')}
                         value={searchQuery}
                         onChange={e => onSetSearchQuery(e.target.value)}

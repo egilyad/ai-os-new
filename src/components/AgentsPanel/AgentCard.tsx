@@ -79,7 +79,12 @@ export const AgentCard: React.FC<AgentCardProps> = memo(
                             />
                         </div>
                         <div className="agents-card-info">
-                            <h3 className="agents-card-name">{agent.name}</h3>
+                            <h3 className="agents-card-name">
+                                {agent.name}
+                                {agent.system && (
+                                    <span style={{ marginLeft: 8, fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.04em', textTransform: 'uppercase', padding: '1px 6px', borderRadius: 999, border: '1px solid var(--slate-700)', color: 'var(--slate-400)' }}>built-in</span>
+                                )}
+                            </h3>
                             <p className="agents-card-role">{agent.role} {agent.type && <span style={{ marginLeft: 6, fontSize: '0.65rem', padding: '2px 6px', borderRadius: 6, background: 'rgba(139,92,246,0.12)', border: '1px solid rgba(139,92,246,0.2)', color: '#a78bfa' }}>{TYPE_ICON[agent.type] ?? '🤖'} {agent.type}</span>}</p>
                             {identity.specializations.length > 0 && (
                                 <p
