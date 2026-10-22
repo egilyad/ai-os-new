@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { boot, idbPut, stubOpenRouter, stubOpenRouterToolCall, STUB_MODEL } from './helpers';
+import { boot, idbAll, idbPut, stubOpenRouter, stubOpenRouterToolCall, STUB_MODEL } from './helpers';
 
 /** Seed a working key so the assistant can actually call the model. */
 async function seedKey(page: import('@playwright/test').Page) {
@@ -138,6 +138,46 @@ test.describe('assistant panel', () => {
         await expect(page.getByText('Режим по умолчанию теперь single.')).toBeVisible({
             timeout: 90000,
         });
+    });
+
+    test('the assistant delegates a task and the task really lands on the board', async ({
+        page,
+    }) => {
+        await boot(page);
+        await seedKey(page);
+        const title = 'Собрать отчёт по релизу';
+        await stubOpenRouterToolCall(page, {
+            tool: 'tasks.create',
+            args: { title, agentId: 'assistant', priority: 'HIGH' },
+            reply: 'Задача создана и назначена.',
+        });
+        await page.reload();
+        await boot(page);
+        await page.goto('/assistant');
+        await expect(page.getByRole('heading', { name: /помощник проекта/i })).toBeVisible({
+            timeout: 60000,
+        });
+
+        const input = page.getByLabel('Вопрос помощнику');
+        await input.fill('делегируй себе отчёт по релизу');
+        await input.press('Enter');
+
+        await expect(page.getByText('Инструмент: tasks.create')).toBeVisible({ timeout: 90000 });
+        await page.getByRole('button', { name: 'Разрешить' }).click();
+        await expect(page.getByText('Задача создана и назначена.')).toBeVisible({
+            timeout: 90000,
+        });
+
+        // The reply alone is not proof: the row has to exist in the app's own
+        // database, with the assignee and priority that were approved.
+        const tasks = await idbAll<{ title: string; assigneeId?: string; priority?: string }>(
+            page,
+            'agemsTasks',
+        );
+        expect(tasks.some((t) => t.title === title)).toBe(true);
+        const stored = tasks.find((t) => t.title === title);
+        expect(stored?.assigneeId).toBe('assistant');
+        expect(stored?.priority).toBe('HIGH');
     });
 
     test('the assistant is a real agent in the topology', async ({ page }) => {

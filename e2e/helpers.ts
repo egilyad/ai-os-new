@@ -124,9 +124,41 @@ function stubModels(route: Route) {
     });
 }
 
+/**
+ * Read every row of a Dexie store from a sidecar page (see `idbPut` for why
+ * the sidecar). Used to prove that a write really landed in the app's own
+ * storage, not just in the reply text.
+ */
+export async function idbAll<T>(page: Page, store: string): Promise<T[]> {
+    const sidecar = await page.context().newPage();
+    try {
+        await sidecar.goto('/favicon.svg');
+        return await sidecar.evaluate(
+            ({ dbName, store }) =>
+                new Promise<T[]>((resolve, reject) => {
+                    const req = indexedDB.open(dbName);
+                    req.onerror = () => reject(req.error);
+                    req.onsuccess = () => {
+                        const db = req.result;
+                        if (!db.objectStoreNames.contains(store)) {
+                            reject(new Error(`store ${store} missing`));
+                            return;
+                        }
+                        const tx = db.transaction(store, 'readonly');
+                        const all = tx.objectStore(store).getAll();
+                        all.onsuccess = () => resolve(all.result as T[]);
+                        all.onerror = () => reject(all.error);
+                    };
+                }),
+            { dbName: DB_NAME, store },
+        ) as Promise<T[]>;
+    } finally {
+        await sidecar.close().catch(() => {});
+    }
+}
+
 async function stubCompletions(route: Route) {
     const body = route.request().postDataJSON() as { stream?: boolean } | null;
-    console.log(`STUB-HIT completions stream=${body?.stream} url=${route.request().url()}`);
     if (body?.stream) {
         // Minimal single-event SSE: one delta chunk, then DONE. (A second
         // content-bearing event before DONE confused the app's accumulator
