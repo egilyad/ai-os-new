@@ -105,6 +105,8 @@ export const registerPhase78: Phase = ({ register }) => {
                           activate: (id) => agentService.activate(id),
                           pause: (id) => agentService.pause(id),
                           getLifecycleState: (id) => agentService.getLifecycleState(id),
+                          updateAgent: (id, updates) => agentService.updateAgent(id, updates),
+                          isSystemAgent: (id) => agentService.isSystemAgent(id),
                       }
                     : undefined,
                 memory: memory

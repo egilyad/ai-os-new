@@ -54,7 +54,8 @@ sequenceDiagram
 - **research** — `system.find`, `system.describe`, `system.capabilities`,
   `system.exam`, `system.diagnose`, `memory.search`, `diary.recent`;
 - **navigation** — `ui.openPanel` (роут открывает интерфейс и подтверждает переход);
-- **work** — `agents.list`, `agents.spawn`, `agents.setState`, `tools.list`,
+- **work** — `agents.list`, `agents.spawn`, `agents.setState`, `agents.update`
+  (только имя и роль, встроенных агентов не трогает), `tools.list`,
   `memory.remember`, `diary.write`, а также UI-действия `keys.*`, `mcp.list`,
   `skills.list`;
 - **coordination** — `debate.start`, `scheduler.list`, `tasks.list`.

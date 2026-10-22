@@ -176,6 +176,67 @@ describe('assistant actions', () => {
         expect(result.evidence).toContain('a1 (coder, idle)');
     });
 
+    it('renames an agent and reads the change back', async () => {
+        const store = [{ id: 'a1', name: 'Coder', role: 'coder', status: 'idle' }];
+        const updateAgent = vi.fn((id: string, updates: Record<string, unknown>) => {
+            const row = store.find((a) => a.id === id);
+            if (!row) return;
+            if (typeof updates['label'] === 'string') row.name = updates['label'];
+            if (typeof updates['roleName'] === 'string') row.role = updates['roleName'];
+        });
+        const agents = {
+            getAgents: () => store.map((a) => ({ ...a })),
+            spawnAgent: vi.fn(),
+            activate: vi.fn(),
+            pause: vi.fn(),
+            getLifecycleState: () => 'ready',
+            updateAgent,
+            isSystemAgent: () => false,
+        };
+        const registry = new AssistantActionRegistry();
+        registry.registerAll(createAssistantActions(deps({ agents })));
+
+        const result = await registry.run('agents.update', {
+            agentId: 'a1',
+            label: 'Writer',
+            roleName: 'writer',
+        });
+        expect(result.ok).toBe(true);
+        expect(result.evidence).toContain('label: Coder → Writer');
+        expect(result.evidence).toContain('roleName: coder → writer');
+        expect(store[0].name).toBe('Writer');
+    });
+
+    it('refuses to edit built-in agents and empty changes', async () => {
+        const row = { id: 'assistant', name: 'Assistant', role: 'assistant', status: 'ready' };
+        const custom = { id: 'a1', name: 'Coder', role: 'coder', status: 'idle' };
+        const updateAgent = vi.fn();
+        const agents = {
+            getAgents: () => [row, custom],
+            spawnAgent: vi.fn(),
+            activate: vi.fn(),
+            pause: vi.fn(),
+            getLifecycleState: () => 'ready',
+            updateAgent,
+            isSystemAgent: (id: string) => id === 'assistant',
+        };
+        const registry = new AssistantActionRegistry();
+        registry.registerAll(createAssistantActions(deps({ agents })));
+
+        const builtIn = await registry.run('agents.update', { agentId: 'assistant', label: 'X' });
+        expect(builtIn.ok).toBe(false);
+        expect(builtIn.detail).toContain('built-in');
+
+        const empty = await registry.run('agents.update', { agentId: 'a1' });
+        expect(empty.ok).toBe(false);
+        expect(empty.detail).toContain('Nothing to change');
+
+        const unknown = await registry.run('agents.update', { agentId: 'ghost', label: 'X' });
+        expect(unknown.ok).toBe(false);
+        expect(unknown.detail).toContain('not found');
+        expect(updateAgent).not.toHaveBeenCalled();
+    });
+
     it('stores a fact in memory and returns the id', async () => {
         const memory = {
             recall: vi.fn(async () => []),

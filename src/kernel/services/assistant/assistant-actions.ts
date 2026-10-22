@@ -28,6 +28,8 @@ export interface AssistantActionDeps {
         activate(id: string): void;
         pause(id: string): void;
         getLifecycleState(id: string): string;
+        updateAgent?(agentId: string, updates: Record<string, unknown>): void;
+        isSystemAgent?(agentId: string): boolean;
     };
     keys?: {
         getKeys(): Array<{ id: string; provider: string; status: string }>;
@@ -731,6 +733,56 @@ export function createAssistantActions(deps: AssistantActionDeps): AssistantActi
                 `Agent ${agentId} → ${state}`,
                 `lifecycle: ${deps.agents.getLifecycleState(agentId)}`,
             );
+        },
+    });
+
+    actions.push({
+        id: 'agents.update',
+        group: 'work',
+        description:
+            'Rename an agent or change its role. Only these two fields are writable here; built-in agents keep their identity.',
+        parameters: {
+            type: 'object',
+            properties: {
+                agentId: { type: 'string' },
+                label: { type: 'string', description: 'New display name.' },
+                roleName: { type: 'string', description: 'New role title.' },
+            },
+            required: ['agentId'],
+        },
+        action: 'tool:write',
+        run: async (args) => {
+            if (!deps.agents) return fail('agent service is not available');
+            const agentId = str(args['agentId']);
+            if (!agentId) return fail('agentId is required');
+            if (!deps.agents.updateAgent) return fail('agent editing is not available');
+
+            const current = deps.agents.getAgents().find((a) => a.id === agentId);
+            if (!current) return fail(`Agent ${agentId} not found`);
+            if (deps.agents.isSystemAgent?.(agentId)) {
+                return fail(`Agent ${agentId} is built-in and keeps its identity`);
+            }
+
+            const updates: Record<string, string> = {};
+            for (const field of ['label', 'roleName'] as const) {
+                const value = str(args[field]);
+                if (!value) continue;
+                if (value.length > 120) return fail(`${field} is too long (max 120)`);
+                updates[field] = value;
+            }
+            if (Object.keys(updates).length === 0) return fail('Nothing to change: pass label or roleName');
+
+            deps.agents.updateAgent(agentId, updates);
+
+            const after = deps.agents.getAgents().find((a) => a.id === agentId);
+            const evidence: string[] = [];
+            if (updates['label']) evidence.push(`label: ${current.name} → ${updates['label']}`);
+            if (updates['roleName']) evidence.push(`roleName: ${current.role} → ${updates['roleName']}`);
+            const changed =
+                (updates['label'] ? after?.name === updates['label'] : true) &&
+                (updates['roleName'] ? after?.role === updates['roleName'] : true);
+            if (!changed) return fail(`Agent ${agentId} did not take the change`);
+            return ok(`Agent ${agentId} updated`, evidence.join(' | '));
         },
     });
 
