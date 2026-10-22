@@ -3,7 +3,7 @@
   "generatedBy": "scripts/gen-docs-inventory.mjs",
   "scope": "git-tracked markdown: docs/**/*.md (excluding docs/new drafts and the self-report pages docs-health, docs-inventory) plus repository entry docs (root *.md, .superagents/**, src/kernel/DEPENDENCY_MAP.md)",
   "totals": {
-    "documents": 1057,
+    "documents": 1058,
     "byCategory": {
       "repo": 12,
       "top": 47,
@@ -13,11 +13,11 @@
       "reference": 6,
       "roadmap": 6,
       "superseded": 3,
-      "wiki": 232
+      "wiki": 233
     },
     "byLanguage": {
       "en": 659,
-      "ru": 245,
+      "ru": 246,
       "mixed": 153
     }
   },
@@ -7221,7 +7221,7 @@
       "language": "mixed",
       "title": "Матрица покрытия",
       "bytes": 8373,
-      "hash": "6a1543510f6855650eb705351c34d8e7c6e411b9"
+      "hash": "88650cb0bc95db18f34316a9835ef3c742cd1da4"
     },
     {
       "path": "docs/wiki/debates.md",
@@ -7253,7 +7253,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4076,
-      "hash": "430006e2d77438ef62cf963210ecfe661ee18ddc"
+      "hash": "0aea290dd68d36e87b7e5c1a972034a21d0378e1"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -7340,8 +7340,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Граф знаний",
-      "bytes": 4922,
-      "hash": "cc364bac24c644c94951d3614a2d9868da17e555"
+      "bytes": 4929,
+      "hash": "e50b9ac944e2da2e82d456901366b838542f9ed2"
     },
     {
       "path": "docs/wiki/dev-history.md",
@@ -7556,8 +7556,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Карта документации",
-      "bytes": 30711,
-      "hash": "9f82f023a2457ab845887cc8e52b0551c79e579a"
+      "bytes": 30784,
+      "hash": "84cc136cb431cee8916e2e397a1e6f05ec972d05"
     },
     {
       "path": "docs/wiki/docs-standard.md",
@@ -7638,6 +7638,14 @@
       "title": "Панель: Аквариум агентов",
       "bytes": 2578,
       "hash": "94115d1e003a035aa652ce5994cfa41a552820ee"
+    },
+    {
+      "path": "docs/wiki/panel-assistant.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Панель: Помощник проекта",
+      "bytes": 11123,
+      "hash": "484253e40f149c6b3925aea8c18081f794395f57"
     },
     {
       "path": "docs/wiki/panel-autonomy.md",
@@ -8236,8 +8244,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Возможности и сценарии",
-      "bytes": 10004,
-      "hash": "719f09d2caf091409bfaffd5c7952792c1e062de"
+      "bytes": 10008,
+      "hash": "f723f189af93f61bddbfe5c76a961d431f94aaea"
     },
     {
       "path": "docs/wiki/what-is.md",
