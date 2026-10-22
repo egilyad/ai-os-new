@@ -19,22 +19,17 @@ import type { AgentService } from '../services/agent-service';
 import type { ScenarioRepository } from '../dal/scenario-repository';
 import type { ConversationDirectorService } from '../services/conversation-director-service';
 import type { DebateSyncManager } from '../services/debate-runtime/debate-sync-manager';
-import type {
-    AgentRef,
-    ExecutionMode,
-    ExecutionTarget,
-    InvocationContext,
-} from '../contracts/invocation';
 import type { IBudgetService } from '../contracts/budget';
-import type { TurnProposal } from '../contracts/conversation/turn';
-import type { DebateParticipant, DebateRole } from '../contracts/debate-types';
 import {
     InvocationEngineService,
     type AgentDirectory,
-    type IExecutionDelegate,
 } from '../services/invocation/invocation-engine-service';
 import { InvocationRepository } from '../services/invocation/invocation-repository';
 import { EVENTS } from '../events/event-names';
+import { InvocationExecutionDelegate } from './invocation-execution-delegate';
+import type { ScheduledAssistantBrain, ScheduledAssistantDiary } from './invocation-execution-delegate';
+
+export { InvocationExecutionDelegate };
 
 /** Minimal shape the engine's `AgentDirectory` needs from `agentService`. */
 interface AgentDirectorySource {
@@ -56,68 +51,6 @@ class AgentResolverDirectory implements AgentDirectory {
                 specializations: resolved?.specializations,
             };
         });
-    }
-}
-
-/** Thin handoff: invocation intent → ConversationDirector / Debate session. */
-class InvocationExecutionDelegate implements IExecutionDelegate {
-    constructor(
-        private repo: ScenarioRepository,
-        private director: ConversationDirectorService,
-        private debate: DebateSyncManager,
-    ) {}
-
-    async start(
-        agents: AgentRef[],
-        context: InvocationContext,
-        mode: ExecutionMode,
-        invocationId?: string,
-    ): Promise<{ target: ExecutionTarget; completed: Promise<void> }> {
-        const participants = agents.map((a) => ({ id: a.id, role: a.role ?? a.id }));
-
-        if (mode === 'debate') {
-            const owner = `invocation:${invocationId ?? agents.map((a) => a.id).join(',')}`;
-            const session = await this.debate.startDebate(
-                context.ref || 'Invocation-triggered debate',
-                agents.map<DebateParticipant>((a) => ({
-                    id: a.id,
-                    name: a.id,
-                    role: 'neutral' as DebateRole,
-                })),
-                'round_robin',
-                5,
-                undefined,
-                undefined,
-                owner,
-            );
-            // B-16: await the real end of the debate run (not just startDebate's
-            // return) so the Invocation lifecycle `executing -> done` is genuine.
-            const completed = this.debate.getRunCompletion(session.id) ?? Promise.resolve();
-            return { target: { kind: 'debate', ref: session.id }, completed };
-        }
-
-        // chat / director-scenario → ConversationDirector scenario (ConversationCore).
-        const topic = context.ref || 'Invocation-triggered conversation';
-        const turns: TurnProposal[] = agents.map((a) => ({
-            participantId: a.id,
-            objective: {
-                type: 'INTRODUCE',
-                description: `Participate in ${topic}`,
-                constraints: [],
-            },
-        }));
-        const scenario = await this.repo.create({
-            name: `Invocation · ${mode}`,
-            description: `Auto-created by Invocation Engine (context ${context.type}:${context.ref}).`,
-            topic,
-            participants,
-            turns,
-        });
-        await this.director.loadScenario(scenario.id, invocationId);
-        // Fire the run without awaiting here; the engine awaits `completed`
-        // (the same promise) so executing is genuinely in-flight (B-17).
-        const completed = this.director.run();
-        return { target: { kind: 'conversation', ref: scenario.id }, completed };
     }
 }
 
@@ -221,6 +154,21 @@ export const registerPhase21: Phase = ({ register }) => {
             c.get<ScenarioRepository>('scenarioRepository'),
             c.get<ConversationDirectorService>('conversationDirectorService'),
             c.get<DebateSyncManager>('debateService'),
+            // Resolved lazily: the assistant lives in a later phase.
+            () => {
+                try {
+                    return c.get<ScheduledAssistantBrain>('projectAssistantService');
+                } catch {
+                    return undefined;
+                }
+            },
+            () => {
+                try {
+                    return c.get<ScheduledAssistantDiary>('assistantDiaryService');
+                } catch {
+                    return undefined;
+                }
+            },
         );
         const svc = new InvocationEngineService(
             c.get<InvocationRepository>('invocationRepository'),
