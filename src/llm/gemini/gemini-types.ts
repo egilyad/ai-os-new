@@ -1,3 +1,5 @@
+import type { ToolCall } from '../core/types';
+
 export type GeminiFinishReason =
     | 'STOP'
     | 'MAX_TOKENS'
@@ -143,6 +145,8 @@ export interface StreamMeta {
         probability: 'NEGLIGIBLE' | 'LOW' | 'MEDIUM' | 'HIGH';
         blocked?: boolean;
     }>;
+    /** Function calls collected from the streamed parts. */
+    toolCalls?: ToolCall[];
     usageMetadata?: {
         promptTokenCount?: number;
         candidatesTokenCount?: number;
