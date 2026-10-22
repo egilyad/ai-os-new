@@ -27,7 +27,11 @@ import { ProjectKnowledgeService } from '../services/assistant/project-knowledge
 import { AssistantNavigationService } from '../services/assistant/assistant-navigation-service';
 import { AssistantActionRegistry } from '../services/assistant/assistant-action-registry';
 import { createAssistantActions } from '../services/assistant/assistant-actions';
+import { createAssistantOpsActions } from '../services/assistant/assistant-ops-actions';
 import { AssistantService } from '../services/assistant/assistant-service';
+import type { OrchestrationService } from '../services/orchestration-service';
+import type { MetricsService } from '../services/metrics-service';
+import type { TraceService } from '../services/trace-service';
 
 /** The assistant acts as a system agent; its permission state gates writes. */
 import { ASSISTANT_AGENT_ID } from '../services/assistant/assistant-agent';
@@ -50,6 +54,9 @@ export const registerPhase78: Phase = ({ register }) => {
         const toolService = c.has('toolService') ? c.get<ToolService>('toolService') : undefined;
         const trust = c.has('capabilityTrustService')
             ? c.get<CapabilityTrustService>('capabilityTrustService')
+            : undefined;
+        const approvalSvc = c.has('toolApprovalService')
+            ? c.get<ToolApprovalService>('toolApprovalService')
             : undefined;
         const debateService = c.has('debateService')
             ? c.get<{
@@ -157,6 +164,58 @@ export const registerPhase78: Phase = ({ register }) => {
                 },
             }),
         );
+
+        // Runtime observations: what the system is doing right now.
+        const orchestrator = c.has('orchestrator')
+            ? c.get<OrchestrationService>('orchestrator')
+            : undefined;
+        const metricsService = c.has('metricsService')
+            ? c.get<MetricsService>('metricsService')
+            : undefined;
+        const traceService = c.has('traceService')
+            ? c.get<TraceService>('traceService')
+            : undefined;
+        registry.registerAll(
+            createAssistantOpsActions({
+                topology: orchestrator
+                    ? {
+                          summary: () => {
+                              const top = orchestrator.getActiveTopology();
+                              if (!top) return null;
+                              const agents = top.nodes.filter((n) => n.type === 'agent');
+                              return {
+                                  id: top.id,
+                                  name: top.name,
+                                  nodes: top.nodes.length,
+                                  agents: agents.length,
+                                  routers: top.nodes.filter((n) => n.type === 'router').length,
+                                  paused: agents.filter((n) =>
+                                      orchestrator.isNodeDisabled(n.id),
+                                  ).length,
+                                  edges: (top.edges ?? []).length,
+                              };
+                          },
+                      }
+                    : undefined,
+                metrics: metricsService
+                    ? { aggregated: () => metricsService.generateAggregated() }
+                    : undefined,
+                traces: traceService
+                    ? { stats: () => traceService.getTraceStats() }
+                    : undefined,
+                approvals: approvalSvc
+                    ? {
+                          pending: () =>
+                              approvalSvc.listPending().map((p) => ({
+                                  id: p.id,
+                                  tool: p.toolId,
+                                  agentId: p.agentId,
+                              })),
+                      }
+                    : undefined,
+            }),
+        );
+
         // Actions are tracked capabilities: discovered on registration,
         // verified when they actually run.
         if (trust) {

@@ -26,6 +26,7 @@ How you work:
 - Before you claim that something works, examine it (system.exam). If the exam does not pass, say what is known and what is not.
 - You are an agent of this system, not a chat box: the [SELF] block states your node and permission mode; use system.self when the user asks who you are or what you may do.
 - Keep a diary of what you learned (diary.write): decisions, lessons and mistakes. Do not write noise.
+- You can look at the running system: topology.summary, metrics.summary, traces.summary and approvals.pending report what is happening now — quote those numbers instead of guessing.
 - Answer in the language of the question. Be concise: a few sentences plus concrete references (file, route, id).`;
 
 export const ASSISTANT_AGENT_NODE: ISNode = {
