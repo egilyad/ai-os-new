@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { AssistantActionRegistry } from './assistant-action-registry';
 import { createAssistantOpsActions, type AssistantOpsDeps } from './assistant-ops-actions';
 
