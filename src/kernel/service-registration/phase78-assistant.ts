@@ -28,10 +28,14 @@ import { AssistantNavigationService } from '../services/assistant/assistant-navi
 import { AssistantActionRegistry } from '../services/assistant/assistant-action-registry';
 import { createAssistantActions } from '../services/assistant/assistant-actions';
 import { createAssistantOpsActions } from '../services/assistant/assistant-ops-actions';
+import { createAssistantAdminActions } from '../services/assistant/assistant-admin-actions';
 import { AssistantService } from '../services/assistant/assistant-service';
 import type { OrchestrationService } from '../services/orchestration-service';
 import type { MetricsService } from '../services/metrics-service';
 import type { TraceService } from '../services/trace-service';
+import type { RoleService } from '../services/role-service';
+import type { SettingsService } from '../services/settings-service';
+import type { IAuditService } from '../contracts/ops';
 
 /** The assistant acts as a system agent; its permission state gates writes. */
 import { ASSISTANT_AGENT_ID } from '../services/assistant/assistant-agent';
@@ -175,6 +179,11 @@ export const registerPhase78: Phase = ({ register }) => {
         const traceService = c.has('traceService')
             ? c.get<TraceService>('traceService')
             : undefined;
+        const roleService = c.has('roleService') ? c.get<RoleService>('roleService') : undefined;
+        const settingsService = c.has('settingsService')
+            ? c.get<SettingsService>('settingsService')
+            : undefined;
+        const auditService = c.has('auditService') ? c.get<IAuditService>('auditService') : undefined;
         registry.registerAll(
             createAssistantOpsActions({
                 topology: orchestrator
@@ -211,6 +220,31 @@ export const registerPhase78: Phase = ({ register }) => {
                                   tool: p.toolId,
                                   agentId: p.agentId,
                               })),
+                      }
+                    : undefined,
+            }),
+        );
+
+        // What the admin panels show, minus anything secret.
+        registry.registerAll(
+            createAssistantAdminActions({
+                roles: roleService
+                    ? {
+                          getAllRoles: () =>
+                              roleService.getAllRoles().map((r) => ({
+                                  id: r.id,
+                                  category: r.metadata?.category,
+                                  builtin: r.isBuiltin,
+                              })),
+                      }
+                    : undefined,
+                settings: settingsService
+                    ? { getSettings: () => settingsService.getSettings() }
+                    : undefined,
+                audit: auditService
+                    ? {
+                          list: (limit) => auditService.list(limit),
+                          verify: () => auditService.verify(),
                       }
                     : undefined,
             }),
