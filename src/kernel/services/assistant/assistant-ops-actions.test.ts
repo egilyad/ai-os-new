@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { AssistantActionRegistry } from './assistant-action-registry';
 import { createAssistantOpsActions, type AssistantOpsDeps } from './assistant-ops-actions';
 
@@ -46,19 +46,111 @@ function deps(overrides: Partial<AssistantOpsDeps> = {}): AssistantOpsDeps {
 }
 
 describe('assistant ops actions', () => {
-    it('registers four read-only observations', () => {
+    it('registers four reads and one guarded write', () => {
         const registry = new AssistantActionRegistry();
         registry.registerAll(createAssistantOpsActions(deps()));
         const ids = registry.list().map((a) => a.id);
         expect(ids).toEqual([
             'approvals.pending',
             'metrics.summary',
+            'scheduler.create',
             'topology.summary',
             'traces.summary',
         ]);
         for (const action of registry.list()) {
-            expect(action.action).toBe('tool:read');
+            expect(action.action).toBe(action.id === 'scheduler.create' ? 'tool:write' : 'tool:read');
         }
+    });
+
+    it('creates a schedule, reads it back and reports the cron', async () => {
+        const rows: Array<{ id: string }> = [];
+        const create = vi.fn(async (data: Record<string, unknown>) => {
+            const row = {
+                id: 'schedule-1',
+                name: String(data['name']),
+                agentId: String(data['agentId']),
+                cronExpression: '0 9 * * *',
+                nextRun: Date.now() + 3600_000,
+            };
+            rows.push(row);
+            return row;
+        });
+        const registry = new AssistantActionRegistry();
+        registry.registerAll(
+            createAssistantOpsActions(
+                deps({ scheduler: { create, getAll: () => rows } as never }),
+            ),
+        );
+
+        const result = await registry.run('scheduler.create', {
+            name: 'Утренняя проверка',
+            prompt: 'Проверь здоровье системы',
+            frequency: 'daily',
+        });
+        expect(result.ok).toBe(true);
+        expect(result.detail).toContain('(daily)');
+        expect(result.detail).toContain('agent assistant');
+        expect(result.evidence).toContain('schedule: schedule-1');
+        expect(result.evidence).toContain('cron: 0 9 * * *');
+        expect(create).toHaveBeenCalledWith(
+            expect.objectContaining({
+                name: 'Утренняя проверка',
+                agentId: 'assistant',
+                frequency: 'daily',
+                taskParams: { prompt: 'Проверь здоровье системы' },
+            }),
+        );
+    });
+
+    it('refuses bad frequencies, missing prompts and invalid crons', async () => {
+        const create = vi.fn();
+        const registry = new AssistantActionRegistry();
+        registry.registerAll(
+            createAssistantOpsActions(
+                deps({
+                    scheduler: {
+                        create,
+                        getAll: () => [],
+                        validateCron: (cron: string) => cron === '*/5 * * * *',
+                    } as never,
+                }),
+            ),
+        );
+
+        const noPrompt = await registry.run('scheduler.create', {
+            name: 'x',
+            prompt: '',
+            frequency: 'daily',
+        });
+        expect(noPrompt.ok).toBe(false);
+        expect(noPrompt.detail).toContain('prompt is required');
+
+        const badFrequency = await registry.run('scheduler.create', {
+            name: 'x',
+            prompt: 'y',
+            frequency: 'every-minute',
+        });
+        expect(badFrequency.ok).toBe(false);
+        expect(badFrequency.detail).toContain('Unknown frequency');
+
+        const noCron = await registry.run('scheduler.create', {
+            name: 'x',
+            prompt: 'y',
+            frequency: 'custom',
+        });
+        expect(noCron.ok).toBe(false);
+        expect(noCron.detail).toContain('cronExpression is required');
+
+        const badCron = await registry.run('scheduler.create', {
+            name: 'x',
+            prompt: 'y',
+            frequency: 'custom',
+            cronExpression: 'nope',
+        });
+        expect(badCron.ok).toBe(false);
+        expect(badCron.detail).toContain('Invalid cron expression');
+
+        expect(create).not.toHaveBeenCalled();
     });
 
     it('reports the real topology numbers', async () => {

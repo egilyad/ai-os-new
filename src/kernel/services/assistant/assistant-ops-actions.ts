@@ -47,7 +47,29 @@ export interface AssistantOpsDeps {
     approvals?: {
         pending(): Array<{ id: string; tool?: string; agentId?: string }>;
     };
+    /** Recurring automation: the one operational write the assistant has. */
+    scheduler?: {
+        create(data: {
+            name: string;
+            agentId: string;
+            frequency: ScheduleFrequency;
+            cronExpression?: string;
+            taskParams: { prompt: string; priority?: 'low' | 'normal' | 'high' };
+        }): Promise<{
+            id: string;
+            name: string;
+            agentId: string;
+            cronExpression: string;
+            nextRun?: number;
+        }>;
+        getAll(): Array<{ id: string }>;
+        validateCron?(cron: string): boolean;
+    };
 }
+
+type ScheduleFrequency = 'hourly' | 'daily' | 'weekly' | 'monthly' | 'custom';
+
+const FREQUENCIES: ScheduleFrequency[] = ['hourly', 'daily', 'weekly', 'monthly', 'custom'];
 
 const pct = (v: number): string => `${Math.round(v * 100)}%`;
 
@@ -130,6 +152,93 @@ export function createAssistantOpsActions(deps: AssistantOpsDeps): AssistantActi
                 evidence: pending
                     .map((p) => `${p.id}${p.tool ? ` ${p.tool}` : ''}${p.agentId ? ` (${p.agentId})` : ''}`)
                     .join(' | '),
+                verification: 'verified',
+            };
+        },
+    });
+
+    actions.push({
+        id: 'scheduler.create',
+        group: 'work',
+        description:
+            'Create a recurring task (hourly, daily, weekly, monthly or a custom cron). The task runs the given prompt on an agent; by default on the assistant itself. Confirm with the user before creating it.',
+        parameters: {
+            type: 'object',
+            properties: {
+                name: { type: 'string', description: 'Short name of the schedule.' },
+                prompt: { type: 'string', description: 'What the agent should do on each run.' },
+                frequency: {
+                    type: 'string',
+                    enum: FREQUENCIES,
+                    description: 'How often it runs; "custom" needs cronExpression.',
+                },
+                cronExpression: {
+                    type: 'string',
+                    description: 'Cron expression for the custom frequency.',
+                },
+                agentId: {
+                    type: 'string',
+                    description: 'Agent that runs the task (default: assistant).',
+                },
+                priority: { type: 'string', enum: ['low', 'normal', 'high'] },
+            },
+            required: ['name', 'prompt', 'frequency'],
+        },
+        action: 'tool:write',
+        run: async (args) => {
+            const scheduler = deps.scheduler;
+            if (!scheduler) return { ok: false, detail: 'scheduler is not available' };
+
+            const text = (v: unknown): string => (typeof v === 'string' ? v.trim() : '');
+            const name = text(args['name']);
+            const prompt = text(args['prompt']);
+            const frequency = text(args['frequency']) as ScheduleFrequency;
+            const cronExpression = text(args['cronExpression']);
+            const agentId = text(args['agentId']) || 'assistant';
+            const priority = text(args['priority']) || undefined;
+
+            if (!name) return { ok: false, detail: 'name is required' };
+            if (name.length > 80) return { ok: false, detail: 'name is too long (max 80)' };
+            if (!prompt) return { ok: false, detail: 'prompt is required' };
+            if (prompt.length > 500) return { ok: false, detail: 'prompt is too long (max 500)' };
+            if (!FREQUENCIES.includes(frequency)) {
+                return { ok: false, detail: `Unknown frequency: ${frequency || '(empty)'}` };
+            }
+            if (frequency === 'custom') {
+                if (!cronExpression) {
+                    return { ok: false, detail: 'cronExpression is required for the custom frequency' };
+                }
+                if (scheduler.validateCron && !scheduler.validateCron(cronExpression)) {
+                    return { ok: false, detail: `Invalid cron expression: ${cronExpression}` };
+                }
+            }
+            if (priority && !['low', 'normal', 'high'].includes(priority)) {
+                return { ok: false, detail: `Unknown priority: ${priority}` };
+            }
+
+            const created = await scheduler.create({
+                name,
+                agentId,
+                frequency,
+                cronExpression: frequency === 'custom' ? cronExpression : undefined,
+                taskParams: {
+                    prompt,
+                    ...(priority ? { priority: priority as 'low' | 'normal' | 'high' } : {}),
+                },
+            });
+
+            // Read it back: a schedule that is not listed is not a schedule.
+            const listed = scheduler.getAll().some((s) => s.id === created.id);
+            if (!listed) return { ok: false, detail: `Schedule ${created.id} was not stored` };
+
+            const nextRun =
+                typeof created.nextRun === 'number'
+                    ? ` | next run: ${new Date(created.nextRun).toISOString()}`
+                    : '';
+            return {
+                ok: true,
+                detail: `Scheduled "${created.name}" (${frequency}) on agent ${created.agentId}`,
+                evidence: `schedule: ${created.id} | cron: ${created.cronExpression} | agent: ${created.agentId}${nextRun}`,
                 verification: 'verified',
             };
         },

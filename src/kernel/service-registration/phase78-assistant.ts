@@ -183,6 +183,23 @@ export const registerPhase78: Phase = ({ register }) => {
         const roleService = optional<RoleService>('roleService');
         const settingsService = optional<SettingsService>('settingsService');
         const auditService = optional<IAuditService>('auditService');
+        const schedulerService = optional<{
+            create(data: {
+                name: string;
+                agentId: string;
+                frequency: 'hourly' | 'daily' | 'weekly' | 'monthly' | 'custom';
+                cronExpression?: string;
+                taskParams: { prompt: string; priority?: 'low' | 'normal' | 'high' };
+            }): Promise<{
+                id: string;
+                name: string;
+                agentId: string;
+                cronExpression: string;
+                nextRun?: number;
+            }>;
+            getAll(): Array<{ id: string }>;
+            validateCron?(cron: string): boolean;
+        }>('schedulerService');
         registry.registerAll(
             createAssistantOpsActions({
                 topology: orchestrator
@@ -219,6 +236,13 @@ export const registerPhase78: Phase = ({ register }) => {
                                   tool: p.toolId,
                                   agentId: p.agentId,
                               })),
+                      }
+                    : undefined,
+                scheduler: schedulerService
+                    ? {
+                          create: (data) => schedulerService.create(data),
+                          getAll: () => schedulerService.getAll(),
+                          validateCron: (cron) => schedulerService.validateCron?.(cron) ?? true,
                       }
                     : undefined,
             }),
