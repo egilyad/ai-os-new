@@ -52,7 +52,9 @@ sequenceDiagram
 имеют класс разрешения:
 
 - **research** — `system.find`, `system.describe`, `system.capabilities`,
-  `system.exam`, `system.diagnose`, `memory.search`, `diary.recent`;
+  `system.exam`, `system.diagnose`, `memory.search`, `diary.recent`, а также
+  `topology.summary`, `metrics.summary`, `providers.health`, `traces.summary`
+  и `approvals.pending`;
 - **navigation** — `ui.openPanel` (роут открывает интерфейс и подтверждает переход);
 - **work** — `agents.list`, `agents.spawn`, `agents.setState`, `agents.update`
   (только имя и роль, встроенных агентов не трогает), `tools.list`,
@@ -126,9 +128,11 @@ sequenceDiagram
 
 Текущее состояние системы ассистент читает, а не воображает:
 `topology.summary` (узлы, агенты, паузы, рёбра), `metrics.summary` (запросы,
-токены, стоимость, задержка, успех), `traces.summary` (выполненные, упавшие,
-идущие) и `approvals.pending` (что ждёт подтверждения человека). Все четыре —
-`tool:read` и возвращают числа как evidence. Конфигурацию он тоже читает, а не
+токены, стоимость, задержка, успех), `providers.health` (рейтинг провайдеров
+по реальному трафику: надёжность, средняя задержка, число запросов, цена за
+запрос и рекомендация), `traces.summary` (выполненные, упавшие, идущие) и
+`approvals.pending` (что ждёт подтверждения человека). Все пять — `tool:read`
+и возвращают числа как evidence. Конфигурацию он тоже читает, а не
 пересказывает: `roles.list` (роли по категориям, built-in/custom),
 `settings.get` (режим, SLA, модель по умолчанию — без ключей и токенов) и
 `audit.recent` (последние записи журнала + целостность цепочки). Пишущих
