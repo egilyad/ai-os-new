@@ -108,6 +108,38 @@ test.describe('assistant panel', () => {
         await page.waitForURL('**/agents', { timeout: 90000 });
     });
 
+    test('a write action waits for the human, then reports what changed', async ({ page }) => {
+        await boot(page);
+        await seedKey(page);
+        await stubOpenRouterToolCall(page, {
+            tool: 'settings.update',
+            args: { defaultMode: 'single' },
+            reply: 'Режим по умолчанию теперь single.',
+        });
+        await page.reload();
+        await boot(page);
+        await page.goto('/assistant');
+        await expect(page.getByRole('heading', { name: /помощник проекта/i })).toBeVisible({
+            timeout: 60000,
+        });
+
+        const input = page.getByLabel('Вопрос помощнику');
+        await input.fill('поставь режим по умолчанию single');
+        await input.press('Enter');
+
+        // The guarded action does not run by itself: the global approval layer
+        // asks the human first and names the tool it wants to use.
+        await expect(page.getByText('Инструмент: settings.update')).toBeVisible({ timeout: 90000 });
+        await page.getByRole('button', { name: 'Разрешить' }).click();
+
+        // Only after approval the tool runs and the model continues the answer.
+        // (The answer used to vanish: the cache replayed the empty tool-call
+        // turn back into the loop, so the second round had no text and no calls.)
+        await expect(page.getByText('Режим по умолчанию теперь single.')).toBeVisible({
+            timeout: 90000,
+        });
+    });
+
     test('the assistant is a real agent in the topology', async ({ page }) => {
         await boot(page);
         await page.goto('/agents');

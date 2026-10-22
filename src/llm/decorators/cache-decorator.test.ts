@@ -156,4 +156,82 @@ describe('CacheDecorator - Semantic Caching', () => {
         expect(res.content).toBe('Paris');
         expect(innerAdapter.sendMessage).toHaveBeenCalledTimes(2); // scoped MISS
     });
+
+    // Tool turns are state, not a repeatable question. Caching them silently
+    // ended the assistant loop: the follow-up replayed an empty cached answer
+    // and the tool calls were lost.
+
+    it('does not cache a streamed turn that answered with tool calls', async () => {
+        const stream = vi.fn(
+            async (
+                _m: ChatMessage[],
+                _model: string,
+                _key: string,
+                onChunk: (chunk: string, meta?: unknown) => void,
+            ) => {
+                onChunk('', {
+                    toolCalls: [
+                        {
+                            id: 'c1',
+                            type: 'function',
+                            function: { name: 'agents.list', arguments: '{}' },
+                        },
+                    ],
+                });
+            },
+        );
+        innerAdapter.streamMessage = stream;
+        const d = new CacheDecorator(innerAdapter, 10000, 5, 0);
+        const msgs: ChatMessage[] = [
+            { role: 'system', content: 's' },
+            { role: 'user', content: 'кто есть в системе?' },
+        ];
+
+        await d.streamMessage(msgs, 'gpt-4', 'key-1', () => undefined);
+        await d.streamMessage(msgs, 'gpt-4', 'key-1', () => undefined);
+
+        expect(stream).toHaveBeenCalledTimes(2);
+    });
+
+    it('never replays the semantic cache into a tool continuation', async () => {
+        const stream = vi.fn(
+            async (
+                messages: ChatMessage[],
+                _model: string,
+                _key: string,
+                onChunk: (chunk: string, meta?: unknown) => void,
+            ) => {
+                const toolTurn = messages.some((m) => m.role === 'tool');
+                onChunk(toolTurn ? 'Панель памяти открыта.' : 'Это панель памяти.');
+            },
+        );
+        innerAdapter.streamMessage = stream;
+        const d = new CacheDecorator(innerAdapter, 10000, 5, 0.5);
+        const question: ChatMessage[] = [
+            { role: 'system', content: 's' },
+            { role: 'user', content: 'где панель памяти?' },
+        ];
+        await d.streamMessage(question, 'gpt-4', 'key-1', () => undefined);
+
+        const followUp: ChatMessage[] = [
+            ...question,
+            {
+                role: 'assistant',
+                content: '',
+                toolCalls: [
+                    {
+                        id: 'c1',
+                        type: 'function',
+                        function: { name: 'ui.openPanel', arguments: '{}' },
+                    },
+                ],
+            },
+            { role: 'tool', content: 'OK', toolCallId: 'c1' },
+        ];
+        const chunks: string[] = [];
+        await d.streamMessage(followUp, 'gpt-4', 'key-1', (chunk) => chunks.push(chunk));
+
+        expect(stream).toHaveBeenCalledTimes(2);
+        expect(chunks.join('')).toContain('Панель памяти открыта');
+    });
 });

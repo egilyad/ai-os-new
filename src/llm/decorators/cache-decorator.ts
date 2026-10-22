@@ -161,6 +161,20 @@ export class CacheDecorator extends BaseDecorator {
         return hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
     }
 
+    /**
+     * A turn that carries tool traffic is state-dependent: the tool result is
+     * new information and the answer may be another tool call. Caching or
+     * replaying such a turn loses the tool calls (only text is stored), which
+     * silently ended the agent loop with an empty answer.
+     */
+    private isToolTurn(messages: ChatMessage[]): boolean {
+        return messages.some(
+            (m) =>
+                m.role === 'tool' ||
+                (Array.isArray(m.toolCalls) && m.toolCalls.length > 0),
+        );
+    }
+
     async sendMessage(
         messages: ChatMessage[],
         model: string,
@@ -168,7 +182,7 @@ export class CacheDecorator extends BaseDecorator {
         signal?: AbortSignal,
         options?: SendMessageOptions,
     ): Promise<ProviderResponse> {
-        if (this.#destroyed)
+        if (this.#destroyed || this.isToolTurn(messages))
             return this.inner.sendMessage(messages, model, apiKey, signal, options);
         const now = Date.now();
 
@@ -336,7 +350,7 @@ export class CacheDecorator extends BaseDecorator {
         signal?: AbortSignal,
         options?: SendMessageOptions,
     ): Promise<void> {
-        if (this.#destroyed) {
+        if (this.#destroyed || this.isToolTurn(messages)) {
             if (!this.inner.streamMessage)
                 throw new Error('CacheDecorator: inner adapter does not support streaming');
             return this.inner.streamMessage(messages, model, apiKey, onChunk, signal, options);
@@ -412,8 +426,12 @@ export class CacheDecorator extends BaseDecorator {
 
         // Stream fresh, buffer chunks, cache on completion
         const chunks: string[] = [];
+        let sawToolCalls = false;
         const wrapped: typeof onChunk = (chunk, meta) => {
             chunks.push(chunk);
+            if (Array.isArray(meta?.toolCalls) && meta.toolCalls.length > 0) {
+                sawToolCalls = true;
+            }
             onChunk(chunk, meta);
         };
 
@@ -421,7 +439,9 @@ export class CacheDecorator extends BaseDecorator {
             throw new Error('CacheDecorator: inner adapter does not support streaming');
         await this.inner.streamMessage(messages, model, apiKey, wrapped, signal, options);
 
-        if (chunks.length > 0) {
+        // A tool-call answer has no text worth replaying; caching it would turn
+        // the next round into an empty answer without the call.
+        if (chunks.length > 0 && !sawToolCalls) {
             const content = chunks.join('');
             const latency = Date.now() - now;
             const tokens = content.split(/\s+/).filter(Boolean).length;
