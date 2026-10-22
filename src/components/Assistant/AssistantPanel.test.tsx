@@ -74,6 +74,13 @@ describe('AssistantPanel', () => {
         expect(screen.getByText('где память?')).toBeDefined();
     });
 
+    it('shows an error face when the last turn failed', () => {
+        useAssistantStore.setState({ messages: [], busy: false, error: 'Нет ключа' });
+        const { container } = renderPanel();
+        expect(container.querySelector('.assistant-face--error')).not.toBeNull();
+        expect(screen.getByText(/Не получилось — причина ниже/)).toBeDefined();
+    });
+
     it('confirms a navigation request coming from the kernel', () => {
         renderPanel();
         const nav = handlers.get('assistant:navigation');

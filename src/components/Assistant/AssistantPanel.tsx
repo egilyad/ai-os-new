@@ -10,7 +10,7 @@ import { eventBus, EVENTS } from '../../kernel/instances';
 import { ensureAssistantWiring } from './assistant-wiring';
 import { useSpeech } from './use-speech';
 
-type FaceState = 'idle' | 'listening' | 'thinking' | 'speaking';
+type FaceState = 'idle' | 'listening' | 'thinking' | 'speaking' | 'error';
 
 interface TrustRow {
     id: string;
@@ -158,7 +158,9 @@ const AssistantPanel: React.FC = () => {
           ? 'listening'
           : busy
             ? 'thinking'
-            : 'idle';
+            : error
+              ? 'error'
+              : 'idle';
 
     return (
         <div className="assistant-panel">
@@ -173,7 +175,9 @@ const AssistantPanel: React.FC = () => {
                               ? 'Думаю и проверяю по коду…'
                               : faceState === 'speaking'
                                 ? 'Отвечаю вслух'
-                                : 'Спросите про систему — отвечу по факту, а не по догадке'}
+                                : faceState === 'error'
+                                  ? 'Не получилось — причина ниже'
+                                  : 'Спросите про систему — отвечу по факту, а не по догадке'}
                     </p>
                 </div>
                 <div className="assistant-head__controls">

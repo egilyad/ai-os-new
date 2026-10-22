@@ -4362,6 +4362,22 @@
   animation: assistant-ring 1.1s linear infinite;
 }
 
+.assistant-face--error {
+  border-color: var(--error);
+  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.18);
+}
+
+.assistant-face--error .assistant-face__eye {
+  background: var(--error);
+  animation: none;
+}
+
+.assistant-face--error .assistant-face__mouth {
+  width: 16px;
+  background: var(--error);
+  transform: translateX(-50%) rotate(-8deg);
+}
+
 .assistant-face__ring {
   position: absolute;
   inset: -5px;
