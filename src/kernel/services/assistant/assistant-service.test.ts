@@ -271,4 +271,46 @@ describe('AssistantService', () => {
         );
         expect(toolMessage?.content).toContain('Permission denied');
     });
+
+    it('falls back to the first usable key when no provider is configured', async () => {
+        const llm = llmStub([{ content: 'ok' }]);
+        const resolveRoute = vi.fn(() => ({ provider: 'OpenRouter', model: 'openai/gpt-4o' }));
+        const service = new AssistantService({
+            llm: llm.service,
+            actions: makeRegistry(),
+            knowledge: makeKnowledge(),
+            events: makeEvents(),
+            agentId: 'assistant',
+            resolveRoute,
+        });
+
+        await service.ask({ text: 'привет' });
+        expect(resolveRoute).toHaveBeenCalled();
+        expect(llm.calls[0]!.options).toMatchObject({
+            provider: 'OpenRouter',
+            model: 'openai/gpt-4o',
+        });
+    });
+
+    it('prefers the session route and ignores an "auto" default', async () => {
+        const llm = llmStub([{ content: 'a' }, { content: 'b' }]);
+        const resolveRoute = vi.fn(() => ({ provider: 'OpenRouter', model: 'm-1' }));
+        const service = new AssistantService({
+            llm: llm.service,
+            actions: makeRegistry(),
+            knowledge: makeKnowledge(),
+            events: makeEvents(),
+            agentId: 'assistant',
+            provider: 'auto',
+            resolveRoute,
+        });
+
+        await service.ask({ text: 'раз', provider: 'OpenAI', model: 'gpt-5' });
+        expect(resolveRoute).not.toHaveBeenCalled();
+        expect(llm.calls[0]!.options).toMatchObject({ provider: 'OpenAI', model: 'gpt-5' });
+
+        await service.ask({ text: 'два' });
+        expect(resolveRoute).toHaveBeenCalledTimes(1);
+        expect(llm.calls[1]!.options).toMatchObject({ provider: 'OpenRouter', model: 'm-1' });
+    });
 });

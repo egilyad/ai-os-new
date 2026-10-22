@@ -211,6 +211,35 @@ export const registerPhase78: Phase = ({ register }) => {
             view: c.has('assistantViewService')
                 ? c.get<AssistantViewService>('assistantViewService')
                 : undefined,
+            // The same rule as the chat: the first usable active key. The
+            // assistant must run on any key the user has, without extra setup.
+            // Resolved lazily: the key pool belongs to the UI-owned layer and
+            // may be absent in a reduced composition.
+            resolveRoute: () => {
+                try {
+                    if (!c.has('keyService')) return undefined;
+                    const keyService = c.get<{
+                        getActiveKeys(): Array<{
+                            provider: string;
+                            key: string;
+                            status: string;
+                            model?: string;
+                            availableModels?: string[];
+                        }>;
+                    }>('keyService');
+                    const key = keyService
+                        .getActiveKeys()
+                        .find((k) => k.status === 'active' && !!k.key);
+                    if (!key) return undefined;
+                    const model =
+                        key.model && key.model !== 'auto'
+                            ? key.model
+                            : (key.availableModels ?? []).find((m) => m && m !== 'auto');
+                    return { provider: key.provider, model };
+                } catch {
+                    return undefined;
+                }
+            },
         });
     });
 };

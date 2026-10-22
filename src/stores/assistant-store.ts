@@ -164,7 +164,9 @@ export const useAssistantStore = create<AssistantState>((set, get) => {
                         m.id === assistantId
                             ? {
                                   ...m,
-                                  content: m.content || 'Не удалось получить ответ.',
+                                  // The reason of the failure belongs in the
+                                  // answer, not only in the strip below.
+                                  content: m.content || `Не получилось получить ответ: ${detail}`,
                                   pending: false,
                               }
                             : m,

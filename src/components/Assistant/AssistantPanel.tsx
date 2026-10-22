@@ -253,7 +253,7 @@ const AssistantPanel: React.FC = () => {
             {trustRows.length > 0 && (
                 <div className="assistant-trust">
                     <ShieldCheck size={14} />
-                    <span>Проверено на деле:</span>
+                    <span>Возможности:</span>
                     {trustRows.map((r) => (
                         <span
                             key={r.id}

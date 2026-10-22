@@ -70,6 +70,11 @@ export interface AssistantServiceDeps {
     /** Provider/model of the assistant; the session may override it. */
     provider?: string;
     model?: string;
+    /**
+     * Last-resort route when neither the request nor the service names one:
+     * the assistant is expected to work on whatever key the user has.
+     */
+    resolveRoute?: () => { provider?: string; model?: string } | undefined;
 }
 
 const IDENTITY = `You are the project assistant of SuperAgents OS — a multi-agent runtime with many panels, services and tools.
@@ -192,6 +197,23 @@ export class AssistantService {
         return { ok: false, detail: 'The user did not allow this action.' };
     }
 
+    /**
+     * Which provider/model a turn runs on.
+     *
+     * The request wins, then the configured assistant route, then whatever
+     * active key the system has — an assistant that needs a hand-configured
+     * default provider is useless on a fresh install.
+     */
+    private resolveRoute(req: AssistantTurnRequest): { provider?: string; model?: string } {
+        const pick = (provider?: string) =>
+            provider && provider !== 'auto' && provider !== 'race' ? provider : undefined;
+        const provider = pick(req.provider) ?? pick(this.deps.provider);
+        const model = req.model ?? this.deps.model;
+        if (provider) return { provider, model };
+        const fallback = this.deps.resolveRoute?.();
+        return { provider: pick(fallback?.provider), model: model ?? fallback?.model };
+    }
+
     /** Run one turn of the assistant. */
     async ask(req: AssistantTurnRequest): Promise<AssistantTurnResult> {
         const requestId = `assistant-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
@@ -208,6 +230,7 @@ export class AssistantService {
             parameters: d.function.parameters,
         }));
         const used: string[] = [];
+        const route = this.resolveRoute(req);
 
         const loop = await runToolLoop(
             messages,
@@ -215,8 +238,8 @@ export class AssistantService {
                 const res = await this.deps.llm.sendMessage(
                     conversation as unknown as ChatMessage[],
                     {
-                        provider: req.provider ?? this.deps.provider,
-                        model: req.model ?? this.deps.model,
+                        provider: route.provider,
+                        model: route.model,
                         temperature: 0.2,
                         maxTokens: 1500,
                         tools: available.map((t) => ({
