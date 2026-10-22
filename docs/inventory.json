@@ -7341,7 +7341,7 @@
       "language": "ru",
       "title": "Граф знаний",
       "bytes": 4922,
-      "hash": "34e0fe1327c4dc2c205d961143a7819ba2b9afd5"
+      "hash": "cc364bac24c644c94951d3614a2d9868da17e555"
     },
     {
       "path": "docs/wiki/dev-history.md",
@@ -7380,8 +7380,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Внешние библиотеки",
-      "bytes": 3641,
-      "hash": "ea6320fefaaa364291778f4ee5ece985a403b869"
+      "bytes": 3642,
+      "hash": "2b1f52afa02619be46164c1cf754a440943677c7"
     },
     {
       "path": "docs/wiki/dev-overview.md",
@@ -8220,8 +8220,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Wiki SuperAgents OS",
-      "bytes": 23996,
-      "hash": "6c0c3f552d82d22cdc16704c8d8765f3d18ca368"
+      "bytes": 24083,
+      "hash": "7c4817ee95b672028a98c7dee301085476c03629"
     },
     {
       "path": "docs/wiki/roadmap-notes.md",

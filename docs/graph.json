@@ -3,22 +3,22 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 1261,
-    "edges": 3334,
+    "nodes": 1285,
+    "edges": 3362,
     "byType": {
       "audit": 65,
-      "code": 534,
-      "test": 170,
-      "panel": 259,
-      "article": 233
+      "code": 546,
+      "test": 180,
+      "panel": 260,
+      "article": 234
     },
     "byKind": {
       "audit_test": 329,
       "audit_mention": 928,
-      "documents": 201,
-      "source": 730,
-      "test": 240,
-      "related": 906
+      "documents": 202,
+      "source": 743,
+      "test": 251,
+      "related": 909
     }
   },
   "nodes": [
@@ -751,6 +751,31 @@
       "id": "file:src/components/AquariumPanel/AquariumPanel.tsx",
       "type": "code",
       "label": "src/components/AquariumPanel/AquariumPanel.tsx"
+    },
+    {
+      "id": "file:src/components/Assistant/assistant-wiring.ts",
+      "type": "code",
+      "label": "src/components/Assistant/assistant-wiring.ts"
+    },
+    {
+      "id": "file:src/components/Assistant/AssistantPanel.test.tsx",
+      "type": "test",
+      "label": "src/components/Assistant/AssistantPanel.test.tsx"
+    },
+    {
+      "id": "file:src/components/Assistant/AssistantPanel.tsx",
+      "type": "code",
+      "label": "src/components/Assistant/AssistantPanel.tsx"
+    },
+    {
+      "id": "file:src/components/Assistant/use-speech.test.ts",
+      "type": "test",
+      "label": "src/components/Assistant/use-speech.test.ts"
+    },
+    {
+      "id": "file:src/components/Assistant/use-speech.ts",
+      "type": "code",
+      "label": "src/components/Assistant/use-speech.ts"
     },
     {
       "id": "file:src/components/AuditLogView",
@@ -2108,6 +2133,81 @@
       "label": "src/kernel/services/agent-service.ts"
     },
     {
+      "id": "file:src/kernel/services/assistant/assistant-actions.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/assistant/assistant-actions.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/assistant/assistant-actions.ts",
+      "type": "code",
+      "label": "src/kernel/services/assistant/assistant-actions.ts"
+    },
+    {
+      "id": "file:src/kernel/services/assistant/assistant-agent.ts",
+      "type": "code",
+      "label": "src/kernel/services/assistant/assistant-agent.ts"
+    },
+    {
+      "id": "file:src/kernel/services/assistant/assistant-diagnosis-service.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/assistant/assistant-diagnosis-service.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/assistant/assistant-diagnosis-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/assistant/assistant-diagnosis-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/assistant/assistant-diary-service.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/assistant/assistant-diary-service.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/assistant/assistant-diary-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/assistant/assistant-diary-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/assistant/assistant-exam-service.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/assistant/assistant-exam-service.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/assistant/assistant-exam-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/assistant/assistant-exam-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/assistant/assistant-navigation-service.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/assistant/assistant-navigation-service.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/assistant/assistant-navigation-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/assistant/assistant-navigation-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/assistant/assistant-service.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/assistant/assistant-service.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/assistant/assistant-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/assistant/assistant-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/assistant/project-knowledge-service.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/assistant/project-knowledge-service.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/assistant/project-knowledge-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/assistant/project-knowledge-service.ts"
+    },
+    {
       "id": "file:src/kernel/services/budget-service.test.ts",
       "type": "test",
       "label": "src/kernel/services/budget-service.test.ts"
@@ -2136,6 +2236,16 @@
       "id": "file:src/kernel/services/cache-service.ts",
       "type": "code",
       "label": "src/kernel/services/cache-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/capability-trust/capability-trust-service.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/capability-trust/capability-trust-service.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/capability-trust/capability-trust-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/capability-trust/capability-trust-service.ts"
     },
     {
       "id": "file:src/kernel/services/capability/agent-factory.ts",
@@ -4129,6 +4239,13 @@
       "label": "argument-graph",
       "section": "debates",
       "route": "/argument-graph"
+    },
+    {
+      "id": "panel:assistant",
+      "type": "panel",
+      "label": "assistant",
+      "section": "dashboard",
+      "route": "/assistant"
     },
     {
       "id": "panel:audience",
@@ -6731,6 +6848,13 @@
       "id": "wiki:panel-aquarium",
       "type": "article",
       "label": "Панель: Аквариум агентов",
+      "section": "panels",
+      "status": "verified"
+    },
+    {
+      "id": "wiki:panel-assistant",
+      "type": "article",
+      "label": "Панель: Помощник проекта",
       "section": "panels",
       "status": "verified"
     },
@@ -13801,6 +13925,11 @@
     {
       "from": "panel:argument-graph",
       "to": "wiki:panel-debate-toolkit",
+      "kind": "documents"
+    },
+    {
+      "from": "panel:assistant",
+      "to": "wiki:panel-assistant",
       "kind": "documents"
     },
     {
@@ -21511,6 +21640,141 @@
     {
       "from": "wiki:panel-aquarium",
       "to": "wiki:dev-component-catalog",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:panel-assistant",
+      "to": "file:src/components/Assistant/assistant-wiring.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:panel-assistant",
+      "to": "file:src/components/Assistant/AssistantPanel.test.tsx",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:panel-assistant",
+      "to": "file:src/components/Assistant/AssistantPanel.tsx",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:panel-assistant",
+      "to": "file:src/components/Assistant/use-speech.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:panel-assistant",
+      "to": "file:src/components/Assistant/use-speech.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:panel-assistant",
+      "to": "file:src/kernel/services/agent-service.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:panel-assistant",
+      "to": "file:src/kernel/services/agent-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:panel-assistant",
+      "to": "file:src/kernel/services/assistant/assistant-actions.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:panel-assistant",
+      "to": "file:src/kernel/services/assistant/assistant-actions.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:panel-assistant",
+      "to": "file:src/kernel/services/assistant/assistant-agent.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:panel-assistant",
+      "to": "file:src/kernel/services/assistant/assistant-diagnosis-service.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:panel-assistant",
+      "to": "file:src/kernel/services/assistant/assistant-diagnosis-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:panel-assistant",
+      "to": "file:src/kernel/services/assistant/assistant-diary-service.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:panel-assistant",
+      "to": "file:src/kernel/services/assistant/assistant-diary-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:panel-assistant",
+      "to": "file:src/kernel/services/assistant/assistant-exam-service.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:panel-assistant",
+      "to": "file:src/kernel/services/assistant/assistant-exam-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:panel-assistant",
+      "to": "file:src/kernel/services/assistant/assistant-navigation-service.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:panel-assistant",
+      "to": "file:src/kernel/services/assistant/assistant-navigation-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:panel-assistant",
+      "to": "file:src/kernel/services/assistant/assistant-service.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:panel-assistant",
+      "to": "file:src/kernel/services/assistant/assistant-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:panel-assistant",
+      "to": "file:src/kernel/services/assistant/project-knowledge-service.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:panel-assistant",
+      "to": "file:src/kernel/services/assistant/project-knowledge-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:panel-assistant",
+      "to": "file:src/kernel/services/capability-trust/capability-trust-service.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:panel-assistant",
+      "to": "file:src/kernel/services/capability-trust/capability-trust-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:panel-assistant",
+      "to": "wiki:memory",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:panel-assistant",
+      "to": "wiki:panel-chat",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:panel-assistant",
+      "to": "wiki:panel-observability",
       "kind": "related"
     },
     {

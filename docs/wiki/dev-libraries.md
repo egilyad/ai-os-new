@@ -58,8 +58,8 @@
 | `@types/react` | ^19.2.14 |
 | `@types/react-dom` | ^19.2.3 |
 | `@vitejs/plugin-react` | ^6.0.1 |
-| `@vitest/coverage-v8` | ^4.1.10 |
-| `@vitest/ui` | ^4.1.5 |
+| `@vitest/coverage-v8` | ^4.1.12 |
+| `@vitest/ui` | ^4.1.12 |
 | `commitlint` | ^21.2.1 |
 | `dependency-cruiser` | 18.0.0 |
 | `esbuild` | 0.28.1 |
@@ -76,8 +76,8 @@
 | `tsx` | ^4.23.15 |
 | `typescript` | ~6.0.2 |
 | `typescript-eslint` | ^8.71.0 |
-| `vite` | ^8.0.10 |
-| `vitest` | ^4.1.5 |
+| `vite` | ^8.1.6 |
+| `vitest` | ^4.1.12 |
 | `ws` | ^8.21.0 |
 
 ## Как обновляется

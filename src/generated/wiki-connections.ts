@@ -17,6 +17,16 @@ export const WIKI_CONNECTIONS: Record<string, WikiConnection[]> = {
             "tests": []
         }
     ],
+    "panel-assistant": [
+        {
+            "panelId": "assistant",
+            "route": "/assistant",
+            "component": "src/components/Assistant/AssistantPanel",
+            "tests": [
+                "src/components/Assistant/AssistantPanel.test.tsx"
+            ]
+        }
+    ],
     "panel-providers": [
         {
             "panelId": "keys",

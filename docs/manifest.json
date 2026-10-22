@@ -10,7 +10,7 @@
     {
       "id": "panels",
       "title": "Панели",
-      "articles": 75
+      "articles": 76
     },
     {
       "id": "agents",
@@ -6644,6 +6644,55 @@
         "src/kernel/services/tool-executor.test.ts",
         "src/kernel/services/crystal-vault/crystal-vault-service.test.ts"
       ]
+    },
+    {
+      "id": "wiki:panel-assistant",
+      "type": "article",
+      "slug": "panel-assistant",
+      "title": "Панель: Помощник проекта",
+      "section": "panels",
+      "status": "verified",
+      "tags": [
+        "панель",
+        "ассистент",
+        "голос",
+        "инструменты",
+        "память"
+      ],
+      "sources": [
+        "src/components/Assistant/AssistantPanel.tsx",
+        "src/components/Assistant/assistant-wiring.ts",
+        "src/components/Assistant/use-speech.ts",
+        "src/kernel/services/assistant/assistant-service.ts",
+        "src/kernel/services/assistant/assistant-actions.ts",
+        "src/kernel/services/assistant/assistant-agent.ts",
+        "src/kernel/services/agent-service.ts",
+        "src/kernel/services/assistant/project-knowledge-service.ts",
+        "src/kernel/services/assistant/assistant-navigation-service.ts",
+        "src/kernel/services/assistant/assistant-diary-service.ts",
+        "src/kernel/services/assistant/assistant-exam-service.ts",
+        "src/kernel/services/assistant/assistant-diagnosis-service.ts",
+        "src/kernel/services/capability-trust/capability-trust-service.ts"
+      ],
+      "related": [
+        "panel-chat",
+        "panel-observability",
+        "memory"
+      ],
+      "reviewed": null,
+      "tests": [
+        "src/components/Assistant/AssistantPanel.test.tsx",
+        "src/components/Assistant/use-speech.test.ts",
+        "src/kernel/services/assistant/assistant-service.test.ts",
+        "src/kernel/services/assistant/assistant-actions.test.ts",
+        "src/kernel/services/agent-service.test.ts",
+        "src/kernel/services/assistant/project-knowledge-service.test.ts",
+        "src/kernel/services/assistant/assistant-navigation-service.test.ts",
+        "src/kernel/services/assistant/assistant-diary-service.test.ts",
+        "src/kernel/services/assistant/assistant-exam-service.test.ts",
+        "src/kernel/services/assistant/assistant-diagnosis-service.test.ts",
+        "src/kernel/services/capability-trust/capability-trust-service.test.ts"
+      ]
     }
   ],
   "panels": [
@@ -6655,6 +6704,16 @@
       "route": "/dashboard",
       "component": null,
       "article": "panel-dashboard",
+      "status": "live"
+    },
+    {
+      "id": "panel:assistant",
+      "type": "panel",
+      "panelId": "assistant",
+      "section": "dashboard",
+      "route": "/assistant",
+      "component": "src/components/Assistant/AssistantPanel",
+      "article": "panel-assistant",
       "status": "live"
     },
     {
