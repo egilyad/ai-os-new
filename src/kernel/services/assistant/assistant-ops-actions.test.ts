@@ -53,6 +53,7 @@ describe('assistant ops actions', () => {
         expect(ids).toEqual([
             'approvals.pending',
             'metrics.summary',
+            'providers.health',
             'scheduler.create',
             'tasks.create',
             'tasks.list',
@@ -213,6 +214,63 @@ describe('assistant ops actions', () => {
         const none = await empty.run('approvals.pending', {});
         expect(none.ok).toBe(true);
         expect(none.detail).toContain('nothing is waiting');
+    });
+
+    it('ranks the providers by their real traffic', async () => {
+        const registry = new AssistantActionRegistry();
+        registry.registerAll(
+            createAssistantOpsActions(
+                deps({
+                    providers: {
+                        installed: () => ['openai', 'anthropic'],
+                        rankings: () => [
+                            {
+                                provider: 'anthropic',
+                                score: 0.4,
+                                reliability: 0.5,
+                                avgLatency: 3000,
+                                requests: 4,
+                                costPerRequest: 0.02,
+                                recommendation: 'fair',
+                            },
+                            {
+                                provider: 'openai',
+                                score: 0.92,
+                                reliability: 0.98,
+                                avgLatency: 800,
+                                requests: 120,
+                                costPerRequest: 0.0012,
+                                recommendation: 'recommended',
+                            },
+                        ],
+                    },
+                }),
+            ),
+        );
+
+        const result = await registry.run('providers.health', {});
+        expect(result.ok).toBe(true);
+        expect(result.detail).toContain('2 provider(s)');
+        expect(result.detail).toContain('best: openai (recommended)');
+        expect(result.evidence).toContain(
+            'openai: 98% reliable, avg 800 ms, 120 request(s), $0.0012/request — recommended',
+        );
+        expect(result.evidence?.indexOf('openai')).toBeLessThan(
+            result.evidence?.indexOf('anthropic') ?? -1,
+        );
+    });
+
+    it('stays honest when no provider has traffic yet', async () => {
+        const registry = new AssistantActionRegistry();
+        registry.registerAll(
+            createAssistantOpsActions(
+                deps({ providers: { installed: () => [], rankings: () => [] } }),
+            ),
+        );
+        const result = await registry.run('providers.health', {});
+        expect(result.ok).toBe(true);
+        expect(result.detail).toBe('no provider metrics yet');
+        expect(result.evidence).toBe('providers: 0');
     });
 
     it('says what is missing instead of inventing state', async () => {

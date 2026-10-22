@@ -85,6 +85,19 @@ export interface AssistantOpsDeps {
             creatorId?: string;
         }): Promise<{ id: string; title: string; status: string; assigneeId?: string }>;
     };
+    /** Real provider behaviour: score, reliability, latency and cost. */
+    providers?: {
+        rankings(installed: string[]): Array<{
+            provider: string;
+            score: number;
+            reliability: number;
+            avgLatency: number;
+            requests: number;
+            costPerRequest: number;
+            recommendation: string;
+        }>;
+        installed(): string[];
+    };
 }
 
 type ScheduleFrequency = 'hourly' | 'daily' | 'weekly' | 'monthly' | 'custom';
@@ -137,6 +150,42 @@ export function createAssistantOpsActions(deps: AssistantOpsDeps): AssistantActi
                 ok: true,
                 detail: `${m.totalRequests} request(s), ${m.totalTokens} tokens, ~$${m.estimatedCost.toFixed(4)}, avg ${Math.round(m.avgLatency)} ms, success ${pct(m.successRate)}, errors ${pct(m.errorRate)}, providers ${m.activeProviders}/${m.totalProviders}`,
                 evidence: `requests: ${m.totalRequests} | tokens: ${m.totalTokens} | success: ${pct(m.successRate)}`,
+                verification: 'verified',
+            };
+        },
+    });
+
+    actions.push({
+        id: 'providers.health',
+        group: 'research',
+        description:
+            'Rank the providers by real traffic: reliability, average latency, request count, cost per request and the recommendation. Use it when the user asks which provider is best, slow or expensive.',
+        parameters: { type: 'object', properties: {} },
+        action: 'tool:read',
+        run: async () => {
+            const providers = deps.providers;
+            if (!providers) {
+                return { ok: false, detail: 'provider metrics are not available', verification: 'discovered' };
+            }
+            const rows = providers
+                .rankings(providers.installed())
+                .slice()
+                .sort((a, b) => b.score - a.score);
+            if (rows.length === 0) {
+                return {
+                    ok: true,
+                    detail: 'no provider metrics yet',
+                    evidence: 'providers: 0',
+                    verification: 'verified',
+                };
+            }
+            const line = (r: (typeof rows)[number]): string =>
+                `${r.provider}: ${Math.round(r.reliability * 100)}% reliable, avg ${Math.round(r.avgLatency)} ms, ${r.requests} request(s), $${r.costPerRequest.toFixed(4)}/request — ${r.recommendation}`;
+            const top = rows[0];
+            return {
+                ok: true,
+                detail: `${rows.length} provider(s); best: ${top.provider} (${top.recommendation})`,
+                evidence: rows.slice(0, 5).map(line).join(' | '),
                 verification: 'verified',
             };
         },

@@ -201,6 +201,17 @@ export const registerPhase78: Phase = ({ register }) => {
             getAll(): Array<{ id: string }>;
             validateCron?(cron: string): boolean;
         }>('schedulerService');
+        const providerTracker = optional<{
+            getProviderRankings(catalogProviders?: string[]): Array<{
+                provider: string;
+                score: number;
+                reliability: number;
+                avgLatency: number;
+                requests: number;
+                costPerRequest: number;
+                recommendation: string;
+            }>;
+        }>('providerTracker');
         registry.registerAll(
             createAssistantOpsActions({
                 topology: orchestrator
@@ -253,6 +264,30 @@ export const registerPhase78: Phase = ({ register }) => {
                     list: () => agemsTaskService.list(),
                     create: (input) => agemsTaskService.create({ ...input, status: 'PENDING' }),
                 },
+                providers: providerTracker
+                    ? {
+                          rankings: (installed) =>
+                              providerTracker.getProviderRankings(installed),
+                          installed: () => {
+                              try {
+                                  if (!c.has('keyService')) return [];
+                                  const keyService = c.get<{
+                                      getKeys(): Array<{ provider: string }>;
+                                  }>('keyService');
+                                  return [
+                                      ...new Set(
+                                          keyService
+                                              .getKeys()
+                                              .map((k) => k.provider)
+                                              .filter(Boolean),
+                                      ),
+                                  ];
+                              } catch {
+                                  return [];
+                              }
+                          },
+                      }
+                    : undefined,
             }),
         );
 
