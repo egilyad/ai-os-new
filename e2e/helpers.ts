@@ -169,3 +169,57 @@ export async function stubOpenRouter(page: Page) {
     await page.route('**/proxy/openrouter/api/v1/models', (r) => stubModels(r));
     await page.route('**/proxy/openrouter/api/v1/chat/completions', (r) => stubCompletions(r));
 }
+
+/**
+ * A two-turn model: the first streamed answer calls one tool, the second
+ * answers in plain text. This is the shortest honest proof that a streamed
+ * tool call survives the adapter and that the agent actually acted.
+ */
+export async function stubOpenRouterToolCall(
+    page: Page,
+    opts: { tool: string; args: Record<string, unknown>; reply: string },
+) {
+    await page.route('**/proxy/openrouter/api/v1/models', (r) => stubModels(r));
+    let turns = 0;
+    await page.route('**/proxy/openrouter/api/v1/chat/completions', (route) => {
+        turns += 1;
+        if (turns === 1) {
+            const events = [
+                `data: ${JSON.stringify({
+                    choices: [
+                        {
+                            delta: {
+                                tool_calls: [
+                                    {
+                                        index: 0,
+                                        id: 'call_e2e_1',
+                                        type: 'function',
+                                        function: {
+                                            name: opts.tool,
+                                            arguments: JSON.stringify(opts.args),
+                                        },
+                                    },
+                                ],
+                            },
+                        },
+                    ],
+                })}`,
+                '',
+                `data: ${JSON.stringify({ choices: [{ finish_reason: 'tool_calls' }] })}`,
+                '',
+                'data: [DONE]',
+                '',
+                '',
+            ].join('\n');
+            return route.fulfill({ status: 200, contentType: 'text/event-stream', body: events });
+        }
+        const events = [
+            `data: ${JSON.stringify({ choices: [{ delta: { content: opts.reply } }] })}`,
+            '',
+            'data: [DONE]',
+            '',
+            '',
+        ].join('\n');
+        return route.fulfill({ status: 200, contentType: 'text/event-stream', body: events });
+    });
+}

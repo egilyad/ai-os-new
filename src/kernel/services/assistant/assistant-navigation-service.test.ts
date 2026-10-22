@@ -16,6 +16,8 @@ describe('AssistantNavigationService', () => {
         const pending = nav.open('/memory', 'показать память');
         const [request] = nav.listPending();
         expect(request?.route).toBe('/memory');
+        // The request must reach the interface, not only sit in the kernel.
+        expect(events.emit).toHaveBeenCalledWith('assistant:navigation', request);
         expect(request?.reason).toBe('показать память');
 
         expect(nav.confirm(request!.id)).toBe(true);

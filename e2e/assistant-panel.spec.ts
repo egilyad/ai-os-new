@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { boot, idbPut, stubOpenRouter, STUB_MODEL } from './helpers';
+import { boot, idbPut, stubOpenRouter, stubOpenRouterToolCall, STUB_MODEL } from './helpers';
 
 /** Seed a working key so the assistant can actually call the model. */
 async function seedKey(page: import('@playwright/test').Page) {
@@ -82,6 +82,30 @@ test.describe('assistant panel', () => {
         await input.press('Enter');
         await expect(page.getByText(/-PATH-42/).first()).toBeVisible({ timeout: 90000 });
         await page.screenshot({ path: 'test-results/assistant-panel.png', fullPage: false });
+    });
+
+    test('the assistant actually acts: opens the panel it was asked for', async ({ page }) => {
+        await boot(page);
+        await seedKey(page);
+        await stubOpenRouterToolCall(page, {
+            tool: 'ui.openPanel',
+            args: { panelId: 'agents', reason: 'e2e' },
+            reply: 'Панель агентов открыта.',
+        });
+        await page.reload();
+        await boot(page);
+        await page.goto('/assistant');
+        await expect(page.getByRole('heading', { name: /помощник проекта/i })).toBeVisible({
+            timeout: 60000,
+        });
+
+        const input = page.getByLabel('Вопрос помощнику');
+        await input.fill('открой панель агентов');
+        await input.press('Enter');
+
+        // The tool call crossed the streaming adapter, the registry ran it and
+        // the interface confirmed the navigation: the browser is on /agents.
+        await page.waitForURL('**/agents', { timeout: 90000 });
     });
 
     test('the assistant is a real agent in the topology', async ({ page }) => {

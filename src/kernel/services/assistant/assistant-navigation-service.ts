@@ -54,6 +54,9 @@ export class AssistantNavigationService {
                 resolve(false);
             }, timeoutMs);
             this.pending.set(request.id, { request, settle: resolve, timer });
+            // Ask the interface only after the request is pending: the UI may
+            // confirm synchronously from inside its event handler.
+            this.deps.eventBus.emit(EVENTS.ASSISTANT_NAVIGATION, request);
         });
 
         this.deps.eventBus.emit(EVENTS.ASSISTANT_NAVIGATION_RESOLVED, {

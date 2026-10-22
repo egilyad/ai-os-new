@@ -3,21 +3,21 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 1285,
-    "edges": 3362,
+    "nodes": 1287,
+    "edges": 3366,
     "byType": {
       "audit": 65,
       "code": 546,
-      "test": 180,
+      "test": 182,
       "panel": 260,
       "article": 234
     },
     "byKind": {
-      "audit_test": 329,
+      "audit_test": 330,
       "audit_mention": 928,
       "documents": 202,
       "source": 743,
-      "test": 251,
+      "test": 254,
       "related": 909
     }
   },
@@ -3898,6 +3898,11 @@
       "label": "src/llm/gemini/gemini-response-mapper.ts"
     },
     {
+      "id": "file:src/llm/gemini/gemini-stream-parser.test.ts",
+      "type": "test",
+      "label": "src/llm/gemini/gemini-stream-parser.test.ts"
+    },
+    {
       "id": "file:src/llm/gemini/gemini-stream-parser.ts",
       "type": "code",
       "label": "src/llm/gemini/gemini-stream-parser.ts"
@@ -3971,6 +3976,11 @@
       "id": "file:src/llm/openai-compatible/openai-compatible-types.ts",
       "type": "code",
       "label": "src/llm/openai-compatible/openai-compatible-types.ts"
+    },
+    {
+      "id": "file:src/llm/openrouter/openrouter-adapter.test.ts",
+      "type": "test",
+      "label": "src/llm/openrouter/openrouter-adapter.test.ts"
     },
     {
       "id": "file:src/llm/openrouter/openrouter-adapter.ts",
@@ -11524,6 +11534,11 @@
     },
     {
       "from": "audit:_done--FULL_FUNCTIONALITY_AUDIT",
+      "to": "file:src/llm/openrouter/openrouter-adapter.test.ts",
+      "kind": "audit_test"
+    },
+    {
+      "from": "audit:_done--FULL_FUNCTIONALITY_AUDIT",
       "to": "file:src/llm/openrouter/openrouter-adapter.ts",
       "kind": "audit_mention"
     },
@@ -15109,6 +15124,11 @@
     },
     {
       "from": "wiki:comp-adapter-gemini",
+      "to": "file:src/llm/gemini/gemini-stream-parser.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-adapter-gemini",
       "to": "file:src/llm/gemini/gemini-stream-parser.ts",
       "kind": "source"
     },
@@ -15301,6 +15321,11 @@
       "from": "wiki:comp-adapter-openai-compatible",
       "to": "wiki:providers",
       "kind": "related"
+    },
+    {
+      "from": "wiki:comp-adapter-openrouter",
+      "to": "file:src/llm/openrouter/openrouter-adapter.test.ts",
+      "kind": "test"
     },
     {
       "from": "wiki:comp-adapter-openrouter",
@@ -17746,6 +17771,11 @@
       "from": "wiki:comp-llm-adapters",
       "to": "file:src/llm/openai-compatible/openai-compatible-adapter.ts",
       "kind": "source"
+    },
+    {
+      "from": "wiki:comp-llm-adapters",
+      "to": "file:src/llm/openrouter/openrouter-adapter.test.ts",
+      "kind": "test"
     },
     {
       "from": "wiki:comp-llm-adapters",

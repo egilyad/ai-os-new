@@ -3880,6 +3880,7 @@
         "src/llm/http/llm-http-client.test.ts",
         "src/llm/http/sse-parser.test.ts",
         "src/llm/gemini/gemini-adapter.test.ts",
+        "src/llm/openrouter/openrouter-adapter.test.ts",
         "src/llm/anthropic/anthropic-adapter.test.ts",
         "src/llm/openai-compatible/openai-compatible-adapter.test.ts",
         "src/llm/catalog/models-catalog.test.ts",
@@ -3984,7 +3985,8 @@
       ],
       "reviewed": null,
       "tests": [
-        "src/llm/gemini/gemini-adapter.test.ts"
+        "src/llm/gemini/gemini-adapter.test.ts",
+        "src/llm/gemini/gemini-stream-parser.test.ts"
       ]
     },
     {
@@ -4107,7 +4109,9 @@
         "panel-providers"
       ],
       "reviewed": null,
-      "tests": []
+      "tests": [
+        "src/llm/openrouter/openrouter-adapter.test.ts"
+      ]
     },
     {
       "id": "wiki:comp-adapter-groq",
@@ -9900,6 +9904,7 @@
         "src/kernel/services/trust/provenance-service.test.ts",
         "src/llm/gemini/gemini-adapter.test.ts",
         "src/llm/openai-compatible/openai-compatible-adapter.test.ts",
+        "src/llm/openrouter/openrouter-adapter.test.ts",
         "src/llm/registry/adapter-factory.test.ts"
       ]
     },
