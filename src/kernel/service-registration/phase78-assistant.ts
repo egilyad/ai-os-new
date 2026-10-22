@@ -236,7 +236,13 @@ export const registerPhase78: Phase = ({ register }) => {
                       }
                     : undefined,
                 settings: settingsService
-                    ? { getSettings: () => settingsService.getSettings() }
+                    ? {
+                          getSettings: () => settingsService.getSettings(),
+                          updateSettings: (updates) =>
+                              settingsService.updateSettings(
+                                  updates as Parameters<SettingsService['updateSettings']>[0],
+                              ),
+                      }
                     : undefined,
                 audit: auditService
                     ? {

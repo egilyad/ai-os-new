@@ -5,6 +5,30 @@ import {
     type AssistantAdminDeps,
 } from './assistant-admin-actions';
 
+function settingsState() {
+    const state = {
+        defaultMode: 'smart' as string,
+        slaMode: 'BALANCED' as string,
+        language: 'ru' as string,
+        theme: 'dark',
+        streamingEnabled: true,
+        fallbackEnabled: true,
+        debugMode: false,
+        historyPersistence: true,
+        chatDefaultProvider: 'openrouter',
+        chatDefaultModel: 'claude-sonnet',
+    };
+    return {
+        state,
+        settings: {
+            getSettings: () => ({ ...state }),
+            updateSettings: async (updates: Record<string, unknown>) => {
+                Object.assign(state, updates);
+            },
+        },
+    };
+}
+
 function deps(overrides: Partial<AssistantAdminDeps> = {}): AssistantAdminDeps {
     return {
         roles: {
@@ -14,19 +38,7 @@ function deps(overrides: Partial<AssistantAdminDeps> = {}): AssistantAdminDeps {
                 { id: 'my-role', category: 'custom', builtin: false },
             ],
         },
-        settings: {
-            getSettings: () => ({
-                defaultMode: 'smart',
-                slaMode: 'BALANCED',
-                language: 'ru',
-                theme: 'dark',
-                streamingEnabled: true,
-                fallbackEnabled: true,
-                debugMode: false,
-                chatDefaultProvider: 'openrouter',
-                chatDefaultModel: 'claude-sonnet',
-            }),
-        },
+        settings: settingsState().settings,
         audit: {
             list: async (limit = 10) =>
                 [
@@ -40,16 +52,18 @@ function deps(overrides: Partial<AssistantAdminDeps> = {}): AssistantAdminDeps {
 }
 
 describe('assistant admin actions', () => {
-    it('registers three safe reads', () => {
+    it('registers three safe reads and one guarded write', () => {
         const registry = new AssistantActionRegistry();
         registry.registerAll(createAssistantAdminActions(deps()));
         expect(registry.list().map((a) => a.id)).toEqual([
             'audit.recent',
             'roles.list',
             'settings.get',
+            'settings.update',
         ]);
-        for (const action of registry.list()) {
-            expect(action.action).toBe('tool:read');
+        expect(registry.get('settings.update')?.action).toBe('tool:write');
+        for (const id of ['audit.recent', 'roles.list', 'settings.get']) {
+            expect(registry.get(id)?.action).toBe('tool:read');
         }
     });
 
@@ -95,10 +109,50 @@ describe('assistant admin actions', () => {
         expect(failed.detail).toContain('broken at 7');
     });
 
+    it('changes an allowed setting and reads the new value back', async () => {
+        const fixture = settingsState();
+        const registry = new AssistantActionRegistry();
+        registry.registerAll(createAssistantAdminActions(deps({ settings: fixture.settings })));
+        const result = await registry.run('settings.update', { defaultMode: 'single' });
+        expect(result.ok).toBe(true);
+        expect(result.detail).toContain('changed defaultMode');
+        expect(result.evidence).toContain('smart → single');
+        expect(fixture.state.defaultMode).toBe('single');
+    });
+
+    it('refuses unknown keys and values outside the allowed set', async () => {
+        const fixture = settingsState();
+        const registry = new AssistantActionRegistry();
+        registry.registerAll(createAssistantAdminActions(deps({ settings: fixture.settings })));
+
+        const unknown = await registry.run('settings.update', { apiKey: 'sk-x' });
+        expect(unknown.ok).toBe(false);
+        expect(unknown.detail).toContain('refuses to change apiKey');
+
+        const invalid = await registry.run('settings.update', { slaMode: 'TURBO' });
+        expect(invalid.ok).toBe(false);
+        expect(invalid.detail).toContain('slaMode=TURBO');
+
+        expect(fixture.state.slaMode).toBe('BALANCED');
+        expect(fixture.state.defaultMode).toBe('smart');
+    });
+
+    it('reports a read-only settings service instead of pretending', async () => {
+        const registry = new AssistantActionRegistry();
+        registry.registerAll(
+            createAssistantAdminActions({
+                settings: { getSettings: () => ({ defaultMode: 'smart' }) },
+            }),
+        );
+        const result = await registry.run('settings.update', { defaultMode: 'single' });
+        expect(result.ok).toBe(false);
+        expect(result.detail).toContain('read-only');
+    });
+
     it('degrades honestly when a service is absent', async () => {
         const registry = new AssistantActionRegistry();
         registry.registerAll(createAssistantAdminActions({}));
-        for (const id of ['roles.list', 'settings.get', 'audit.recent']) {
+        for (const id of ['roles.list', 'settings.get', 'audit.recent', 'settings.update']) {
             const result = await registry.run(id, {});
             expect(result.ok).toBe(false);
             expect(result.verification).toBe('discovered');

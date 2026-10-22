@@ -27,12 +27,23 @@ export interface AssistantAdminDeps {
             chatDefaultProvider?: string;
             chatDefaultModel?: string;
         };
+        updateSettings?(updates: Record<string, unknown>): Promise<unknown>;
     };
     audit?: {
         list(limit?: number): Promise<Array<{ actor: string; action: string; target?: string }>>;
         verify?(): Promise<{ ok: boolean; brokenAt?: number }>;
     };
 }
+
+/** Values the assistant may write; anything else is refused, not guessed. */
+const SETTING_VALUES: Record<string, unknown[]> = {
+    defaultMode: ['broadcast', 'single', 'smart'],
+    slaMode: ['LOW_LATENCY', 'HIGH_QUALITY', 'BALANCED', 'ECONOMY', 'FREE_FIRST'],
+    language: ['en', 'ru'],
+    streamingEnabled: [true, false],
+    historyPersistence: [true, false],
+    fallbackEnabled: [true, false],
+};
 
 const argLimit = (value: unknown, fallback: number, max: number): number => {
     const n = typeof value === 'number' ? value : Number(value);
@@ -143,6 +154,92 @@ export function createAssistantAdminActions(deps: AssistantAdminDeps): Assistant
                 evidence: entries
                     .map((e) => `${e.actor} ${e.action}${e.target ? ` → ${e.target}` : ''}`)
                     .join(' | '),
+                verification: 'verified',
+            };
+        },
+    });
+
+    actions.push({
+        id: 'settings.update',
+        group: 'work',
+        description:
+            'Change a safe system setting: default routing mode, SLA mode, language, or one of the on/off switches (streaming, history persistence, fallback). The user confirms before it is applied; the result is read back.',
+        parameters: {
+            type: 'object',
+            properties: {
+                defaultMode: { type: 'string', enum: ['broadcast', 'single', 'smart'] },
+                slaMode: {
+                    type: 'string',
+                    enum: ['LOW_LATENCY', 'HIGH_QUALITY', 'BALANCED', 'ECONOMY', 'FREE_FIRST'],
+                },
+                language: { type: 'string', enum: ['en', 'ru'] },
+                streamingEnabled: { type: 'boolean' },
+                historyPersistence: { type: 'boolean' },
+                fallbackEnabled: { type: 'boolean' },
+            },
+        },
+        action: 'tool:write',
+        run: async (args) => {
+            const settings = deps.settings;
+            if (!settings) return { ok: false, detail: 'settings are not available', verification: 'discovered' };
+            if (!settings.updateSettings) {
+                return { ok: false, detail: 'settings are read-only in this build', verification: 'discovered' };
+            }
+
+            const patch: Record<string, unknown> = {};
+            const rejected: string[] = [];
+            for (const [key, value] of Object.entries(args)) {
+                if (SETTING_VALUES[key] === undefined) {
+                    rejected.push(key);
+                } else if (!SETTING_VALUES[key].includes(value)) {
+                    rejected.push(`${key}=${String(value)}`);
+                } else {
+                    patch[key] = value;
+                }
+            }
+            if (rejected.length > 0) {
+                return {
+                    ok: false,
+                    detail: `refuses to change ${rejected.join(', ')}; allowed values: ${Object.entries(
+                        SETTING_VALUES,
+                    )
+                        .map(([k, v]) => `${k} ∈ {${v.join('|')}}`)
+                        .join('; ')}`,
+                    verification: 'discovered',
+                };
+            }
+            if (Object.keys(patch).length === 0) {
+                return {
+                    ok: false,
+                    detail: `nothing to change; allowed keys: ${Object.keys(SETTING_VALUES).join(', ')}`,
+                    verification: 'discovered',
+                };
+            }
+
+            const before = settings.getSettings();
+            try {
+                await settings.updateSettings(patch);
+            } catch (e) {
+                return {
+                    ok: false,
+                    detail: `settings were not changed: ${e instanceof Error ? e.message : String(e)}`,
+                    verification: 'discovered',
+                };
+            }
+            const after = settings.getSettings() as Record<string, unknown>;
+            const changed = Object.keys(patch)
+                .map((k) => `${k}: ${String((before as Record<string, unknown>)[k])} → ${String(after[k])}`)
+                .join(' | ');
+            const applied = Object.keys(patch).filter(
+                (k) => (before as Record<string, unknown>)[k] !== after[k],
+            );
+            return {
+                ok: applied.length > 0,
+                detail:
+                    applied.length > 0
+                        ? `changed ${applied.join(', ')} (the new values are read back)`
+                        : 'the settings service accepted the call but kept the old values',
+                evidence: changed,
                 verification: 'verified',
             };
         },
