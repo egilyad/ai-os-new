@@ -4,6 +4,12 @@
  * Speech recognition and synthesis are part of the browser, not of the
  * runtime, so the assistant speaks on any provider and any API key. The hook
  * degrades gracefully: without Web Speech the panel stays text-only.
+ *
+ * Two details make it usable in practice:
+ *  - the voice is chosen for the utterance language, because the default
+ *    browser voice often reads Russian with an English accent;
+ *  - long answers are split into sentences, because several browsers cut a
+ *    single utterance after a few seconds.
  */
 import { useCallback, useEffect, useRef, useState } from 'react';
 
@@ -45,6 +51,40 @@ function recognitionCtor(): RecognitionCtor | null {
     return w.SpeechRecognition ?? w.webkitSpeechRecognition ?? null;
 }
 
+/** Pick the voice that actually speaks the requested language. */
+export function pickVoice(
+    voices: SpeechSynthesisVoice[],
+    lang: string,
+): SpeechSynthesisVoice | null {
+    const wanted = lang.toLowerCase();
+    const exact = voices.find((v) => v.lang.toLowerCase() === wanted);
+    if (exact) return exact;
+    const prefix = wanted.split('-')[0] ?? wanted;
+    const sameFamily = voices.find((v) => v.lang.toLowerCase().startsWith(prefix));
+    if (sameFamily) return sameFamily;
+    return voices.find((v) => v.default) ?? null;
+}
+
+/** Split an answer into speakable sentences of a safe length. */
+export function chunkForSpeech(text: string, max = 180): string[] {
+    const normalized = text.replace(/\s+/g, ' ').trim();
+    if (!normalized) return [];
+    if (normalized.length <= max) return [normalized];
+    const sentences = normalized.match(/[^.!?…]+[.!?…]*/g) ?? [normalized];
+    const chunks: string[] = [];
+    let buffer = '';
+    for (const sentence of sentences) {
+        if (buffer && (buffer + sentence).length > max) {
+            chunks.push(buffer.trim());
+            buffer = sentence;
+        } else {
+            buffer += sentence;
+        }
+    }
+    if (buffer.trim()) chunks.push(buffer.trim());
+    return chunks;
+}
+
 export interface UseSpeechOptions {
     lang?: string;
     onFinalTranscript?: (text: string) => void;
@@ -69,11 +109,26 @@ export function useSpeech({
     const [speaking, setSpeaking] = useState(false);
     const [interim, setInterim] = useState('');
     const recognition = useRef<RecognitionLike | null>(null);
+    const voices = useRef<SpeechSynthesisVoice[]>([]);
     const transcriptHandler = useRef(onFinalTranscript);
+    const speakToken = useRef(0);
 
     useEffect(() => {
         transcriptHandler.current = onFinalTranscript;
     }, [onFinalTranscript]);
+
+    useEffect(() => {
+        const synth = typeof window === 'undefined' ? undefined : window.speechSynthesis;
+        if (!synth) return;
+        const load = () => {
+            voices.current = synth.getVoices();
+        };
+        load();
+        if (typeof synth.addEventListener === 'function') {
+            synth.addEventListener('voiceschanged', load);
+            return () => synth.removeEventListener('voiceschanged', load);
+        }
+    }, []);
 
     useEffect(() => {
         const Ctor = recognitionCtor();
@@ -119,6 +174,13 @@ export function useSpeech({
         };
     }, [lang]);
 
+    const stopSpeaking = useCallback(() => {
+        speakToken.current += 1;
+        if (typeof window === 'undefined' || !window.speechSynthesis) return;
+        window.speechSynthesis.cancel();
+        setSpeaking(false);
+    }, []);
+
     const toggleListening = useCallback(() => {
         const rec = recognition.current;
         if (!rec) return;
@@ -127,32 +189,48 @@ export function useSpeech({
             setListening(false);
             return;
         }
+        // Barge-in: the user talking wins over the assistant talking.
+        stopSpeaking();
         try {
             rec.start();
             setListening(true);
         } catch {
             setListening(false);
         }
-    }, [listening]);
-
-    const stopSpeaking = useCallback(() => {
-        if (typeof window === 'undefined' || !window.speechSynthesis) return;
-        window.speechSynthesis.cancel();
-        setSpeaking(false);
-    }, []);
+    }, [listening, stopSpeaking]);
 
     const speak = useCallback(
         (text: string) => {
             if (typeof window === 'undefined' || !window.speechSynthesis) return;
-            if (!text.trim()) return;
-            window.speechSynthesis.cancel();
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = lang;
-            utterance.rate = 1.02;
-            utterance.onend = () => setSpeaking(false);
-            utterance.onerror = () => setSpeaking(false);
+            const parts = chunkForSpeech(text);
+            if (parts.length === 0) return;
+            const synth = window.speechSynthesis;
+            synth.cancel();
+            const token = speakToken.current + 1;
+            speakToken.current = token;
+            const voice = pickVoice(
+                voices.current.length > 0 ? voices.current : synth.getVoices(),
+                lang,
+            );
             setSpeaking(true);
-            window.speechSynthesis.speak(utterance);
+
+            const next = (index: number) => {
+                if (token !== speakToken.current) return;
+                if (index >= parts.length) {
+                    setSpeaking(false);
+                    return;
+                }
+                const utterance = new SpeechSynthesisUtterance(parts[index] ?? '');
+                utterance.lang = lang;
+                utterance.rate = 1.02;
+                if (voice) utterance.voice = voice;
+                utterance.onend = () => next(index + 1);
+                utterance.onerror = () => {
+                    if (token === speakToken.current) setSpeaking(false);
+                };
+                synth.speak(utterance);
+            };
+            next(0);
         },
         [lang],
     );

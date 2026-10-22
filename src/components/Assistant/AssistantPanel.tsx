@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Mic, MicOff, Send, Volume2, VolumeX, Trash2, Loader2, ShieldCheck, BookOpen } from 'lucide-react';
+import { Mic, MicOff, Send, Square, Volume2, VolumeX, Trash2, Loader2, ShieldCheck, BookOpen } from 'lucide-react';
 import { useAssistantStore, type AssistantMessage } from '../../stores/assistant-store';
 import {
     assistantNavigationService,
@@ -55,10 +55,25 @@ const AssistantPanel: React.FC = () => {
     const navigate = useNavigate();
     const { messages, busy, error, send, clear } = useAssistantStore();
     const [input, setInput] = useState('');
-    const [autoSpeak, setAutoSpeak] = useState(false);
+    const [autoSpeak, setAutoSpeak] = useState<boolean>(() => {
+        try {
+            return localStorage.getItem('assistant.autoSpeak') === '1';
+        } catch {
+            return false;
+        }
+    });
     const [trustRows, setTrustRows] = useState<TrustRow[]>([]);
     const scrollRef = useRef<HTMLDivElement | null>(null);
     const spokenRef = useRef<string>('');
+    const submitRef = useRef<(text: string) => void>(() => {});
+
+    useEffect(() => {
+        try {
+            localStorage.setItem('assistant.autoSpeak', autoSpeak ? '1' : '0');
+        } catch {
+            /* storage may be unavailable (private mode) */
+        }
+    }, [autoSpeak]);
 
     useEffect(() => {
         ensureAssistantWiring();
@@ -101,19 +116,25 @@ const AssistantPanel: React.FC = () => {
         };
     }, [navigate]);
 
+    const speech = useSpeech({
+        onFinalTranscript: (text) => submitRef.current(text),
+    });
+    const stopSpeaking = speech.stopSpeaking;
+
     const submit = useCallback(
         (text: string) => {
             const trimmed = text.trim();
             if (!trimmed) return;
+            stopSpeaking();
             setInput('');
             void send(trimmed);
         },
-        [send],
+        [send, stopSpeaking],
     );
 
-    const speech = useSpeech({
-        onFinalTranscript: (text) => submit(text),
-    });
+    useEffect(() => {
+        submitRef.current = submit;
+    }, [submit]);
 
     const lastAssistant = useMemo(
         () => [...messages].reverse().find((m) => m.role === 'assistant' && !m.pending),
@@ -169,6 +190,16 @@ const AssistantPanel: React.FC = () => {
                     >
                         {speech.listening ? <Mic size={18} /> : <MicOff size={18} />}
                     </button>
+                    {speech.speaking && (
+                        <button
+                            className="assistant-icon-btn is-active"
+                            onClick={speech.stopSpeaking}
+                            aria-label="Остановить озвучку"
+                            title="Остановить озвучку"
+                        >
+                            <Square size={16} />
+                        </button>
+                    )}
                     <button
                         className="assistant-icon-btn"
                         onClick={() => {
