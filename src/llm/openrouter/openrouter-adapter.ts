@@ -207,6 +207,14 @@ export class OpenRouterAdapter extends BaseLLMAdapter {
             let finalFinishReason: string | undefined;
             let finalUsage: OpenRouterUsage | undefined;
             let finalReasoning: string | undefined;
+            // Tool calls arrive split across deltas: `index` identifies the call,
+            // `name` arrives once and `arguments` is a JSON string built up in
+            // pieces. Without this accumulator a streamed turn silently lost its
+            // tool calls and the agent never acted.
+            const pending = new Map<
+                number,
+                { id: string; type: string; name: string; args: string }
+            >();
 
             await parseSSEStream(
                 res,
@@ -214,10 +222,35 @@ export class OpenRouterAdapter extends BaseLLMAdapter {
                 (parsed: Record<string, unknown>) => {
                     const choices = parsed.choices as Array<Record<string, unknown>> | undefined;
                     const choice = choices?.[0];
-                    const delta = choice?.delta as { content?: string; reasoning?: string } | undefined;
+                    const delta = choice?.delta as
+                        | {
+                              content?: string;
+                              reasoning?: string;
+                              tool_calls?: Array<{
+                                  index?: number;
+                                  id?: string;
+                                  type?: string;
+                                  function?: { name?: string; arguments?: string };
+                              }>;
+                          }
+                        | undefined;
                     if (choice?.finish_reason) finalFinishReason = choice.finish_reason as string;
                     if (parsed.usage) finalUsage = parsed.usage as OpenRouterUsage;
                     if (delta?.reasoning) finalReasoning = (finalReasoning || '') + delta.reasoning;
+                    for (const call of delta?.tool_calls ?? []) {
+                        const index = typeof call.index === 'number' ? call.index : 0;
+                        const slot = pending.get(index) ?? {
+                            id: '',
+                            type: 'function',
+                            name: '',
+                            args: '',
+                        };
+                        if (call.id) slot.id = call.id;
+                        if (call.type) slot.type = call.type;
+                        if (call.function?.name) slot.name += call.function.name;
+                        if (call.function?.arguments) slot.args += call.function.arguments;
+                        pending.set(index, slot);
+                    }
                     return delta?.content;
                 },
                 undefined,
@@ -227,11 +260,21 @@ export class OpenRouterAdapter extends BaseLLMAdapter {
             const normalizedFinishReason = finalFinishReason
                 ? normalizeFinishReason(finalFinishReason)
                 : undefined;
-            if (finalFinishReason || finalUsage || finalReasoning) {
+            const toolCalls = [...pending.entries()]
+                .sort((a, b) => a[0] - b[0])
+                .filter(([, slot]) => slot.name.length > 0)
+                .map(([index, slot]) => ({
+                    id: slot.id || `call_${index}`,
+                    type: slot.type || 'function',
+                    function: { name: slot.name, arguments: slot.args || '{}' },
+                }));
+            if (finalFinishReason || finalUsage || finalReasoning || toolCalls.length > 0) {
                 onChunk('', {
                     finishReason: normalizedFinishReason,
+                    tokens: finalUsage?.total_tokens,
                     usage: finalUsage as Record<string, unknown> | undefined,
                     reasoning: finalReasoning,
+                    ...(toolCalls.length > 0 ? { toolCalls } : {}),
                 });
             }
         } finally {
