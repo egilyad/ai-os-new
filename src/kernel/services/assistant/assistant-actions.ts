@@ -144,9 +144,6 @@ export interface AssistantActionDeps {
     scheduler?: {
         getAll(): Array<{ id: string; name?: string; enabled?: boolean; cron?: string }>;
     };
-    tasks?: {
-        list(): Array<{ id: string; title?: string; status?: string }>;
-    };
     debates?: {
         startDebate(
             topic: string,
@@ -173,13 +170,12 @@ function fail(detail: string): AssistantActionResult {
     return { ok: false, detail, verification: 'discovered' };
 }
 
-/** UI-owned capabilities (keys, MCP, skills, scheduler, tasks). */
+/** UI-owned capabilities (keys, MCP, skills, scheduler). */
 export interface AssistantUiActionDeps {
     keys?: AssistantActionDeps['keys'];
     mcp?: AssistantActionDeps['mcp'];
     skills?: AssistantActionDeps['skills'];
     scheduler?: AssistantActionDeps['scheduler'];
-    tasks?: AssistantActionDeps['tasks'];
 }
 
 function uiWorkActions(deps: AssistantUiActionDeps): AssistantAction[] {
@@ -278,23 +274,6 @@ function uiCoordinationActions(deps: AssistantUiActionDeps): AssistantAction[] {
             return ok(
                 `${jobs.length} job(s)`,
                 jobs.map((j) => `${j.name ?? j.id}${j.enabled === false ? ' (off)' : ''}`).join(' | '),
-            );
-        },
-    });
-
-    actions.push({
-        id: 'tasks.list',
-        group: 'coordination',
-        description: 'List the tasks of the system with their status.',
-        parameters: { type: 'object', properties: {} },
-        action: 'tool:read',
-        run: async () => {
-            if (!deps.tasks) return fail('task service is not available');
-            const tasks = deps.tasks.list();
-            if (tasks.length === 0) return fail('No tasks');
-            return ok(
-                `${tasks.length} task(s)`,
-                tasks.map((t) => `${t.title ?? t.id} (${t.status ?? 'unknown'})`).join(' | '),
             );
         },
     });

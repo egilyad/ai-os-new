@@ -286,7 +286,6 @@ describe('assistant actions', () => {
         );
         expect((await registry.run('mcp.list')).evidence).toContain('files (connected)');
         expect((await registry.run('skills.list')).evidence).toBe('review');
-        expect((await registry.run('tasks.list')).detail).toContain('task service');
     });
 
     it('describes itself as an agent with a permission profile', async () => {

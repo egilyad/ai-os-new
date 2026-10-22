@@ -46,7 +46,7 @@ function deps(overrides: Partial<AssistantOpsDeps> = {}): AssistantOpsDeps {
 }
 
 describe('assistant ops actions', () => {
-    it('registers four reads and one guarded write', () => {
+    it('registers the reads and the guarded writes', () => {
         const registry = new AssistantActionRegistry();
         registry.registerAll(createAssistantOpsActions(deps()));
         const ids = registry.list().map((a) => a.id);
@@ -54,11 +54,14 @@ describe('assistant ops actions', () => {
             'approvals.pending',
             'metrics.summary',
             'scheduler.create',
+            'tasks.create',
+            'tasks.list',
             'topology.summary',
             'traces.summary',
         ]);
+        const writes = new Set(['scheduler.create', 'tasks.create']);
         for (const action of registry.list()) {
-            expect(action.action).toBe(action.id === 'scheduler.create' ? 'tool:write' : 'tool:read');
+            expect(action.action).toBe(writes.has(action.id) ? 'tool:write' : 'tool:read');
         }
     });
 
@@ -225,5 +228,122 @@ describe('assistant ops actions', () => {
         const metrics = await registry.run('metrics.summary', {});
         expect(metrics.ok).toBe(false);
         expect(metrics.verification).toBe('discovered');
+    });
+
+    it('delegates a task to an agent and reads it back from the board', async () => {
+        const board: Array<{
+            id: string;
+            title: string;
+            status: string;
+            assigneeId?: string;
+        }> = [];
+        const create = vi.fn(async (input: Record<string, unknown>) => {
+            const row = {
+                id: 'task-1',
+                title: String(input['title']),
+                status: 'PENDING',
+                assigneeId: input['assigneeId'] as string | undefined,
+            };
+            board.push(row);
+            return row;
+        });
+        const registry = new AssistantActionRegistry();
+        registry.registerAll(
+            createAssistantOpsActions(
+                deps({
+                    tasks: { list: async () => board, create },
+                    agents: { getAgents: () => [{ id: 'assistant' }, { id: 'cto' }] },
+                }),
+            ),
+        );
+
+        const result = await registry.run('tasks.create', {
+            title: 'Review the deploy checklist',
+            description: 'Check staging first',
+            agentId: 'cto',
+            priority: 'HIGH',
+        });
+        expect(result.ok).toBe(true);
+        expect(result.detail).toContain('for cto');
+        expect(result.evidence).toContain('task: task-1');
+        expect(result.evidence).toContain('priority: HIGH');
+        expect(create).toHaveBeenCalledWith(
+            expect.objectContaining({
+                title: 'Review the deploy checklist',
+                description: 'Check staging first',
+                type: 'ONE_TIME',
+                priority: 'HIGH',
+                assigneeId: 'cto',
+                creatorId: 'assistant',
+            }),
+        );
+
+        const listed = await registry.run('tasks.list', { agentId: 'cto' });
+        expect(listed.ok).toBe(true);
+        expect(listed.evidence).toContain('Review the deploy checklist (PENDING, cto)');
+    });
+
+    it('refuses to delegate to a ghost agent or without a title', async () => {
+        const create = vi.fn();
+        const registry = new AssistantActionRegistry();
+        registry.registerAll(
+            createAssistantOpsActions(
+                deps({
+                    tasks: { list: async () => [], create },
+                    agents: { getAgents: () => [{ id: 'assistant' }] },
+                }),
+            ),
+        );
+
+        const ghost = await registry.run('tasks.create', { title: 'x', agentId: 'nobody' });
+        expect(ghost.ok).toBe(false);
+        expect(ghost.detail).toContain('Agent nobody does not exist');
+
+        const untitled = await registry.run('tasks.create', { title: '   ' });
+        expect(untitled.ok).toBe(false);
+        expect(untitled.detail).toContain('title is required');
+
+        const badPriority = await registry.run('tasks.create', {
+            title: 'x',
+            priority: 'URGENT',
+        });
+        expect(badPriority.ok).toBe(false);
+        expect(badPriority.detail).toContain('Unknown priority');
+
+        expect(create).not.toHaveBeenCalled();
+    });
+
+    it('does not pretend a task exists when the board did not store it', async () => {
+        const registry = new AssistantActionRegistry();
+        registry.registerAll(
+            createAssistantOpsActions(
+                deps({
+                    tasks: {
+                        list: async () => [],
+                        create: async () => ({
+                            id: 'task-x',
+                            title: 'lost',
+                            status: 'PENDING',
+                        }),
+                    },
+                }),
+            ),
+        );
+        const result = await registry.run('tasks.create', { title: 'lost' });
+        expect(result.ok).toBe(false);
+        expect(result.detail).toContain('was not stored');
+    });
+
+    it('lists tasks honestly when the board is empty', async () => {
+        const registry = new AssistantActionRegistry();
+        registry.registerAll(
+            createAssistantOpsActions(
+                deps({ tasks: { list: async () => [], create: vi.fn() } }),
+            ),
+        );
+        const all = await registry.run('tasks.list', {});
+        expect(all.ok).toBe(true);
+        expect(all.detail).toBe('no tasks');
+        expect(all.evidence).toBe('tasks: 0');
     });
 });

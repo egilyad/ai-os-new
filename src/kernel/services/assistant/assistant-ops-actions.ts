@@ -1,10 +1,12 @@
 /**
- * The assistant's operational eyes: what the system is doing right now.
+ * The assistant's operational hands and eyes: what the system is doing right
+ * now and the work the assistant can start on it.
  *
- * These are read-only observations of runtime state — topology, metrics,
- * traces and pending approvals. They exist so the assistant can answer
- * "почему тормозит", "что сейчас выполняется" and "кого ждёт система"
- * from numbers instead of guessing.
+ * Reads are observations of runtime state — topology, metrics, traces, pending
+ * approvals and the task board. They exist so the assistant can answer
+ * "почему тормозит", "что сейчас выполняется" and "кого ждёт система" from
+ * numbers instead of guessing. Writes are scheduled automation and task
+ * delegation; both go through the permission gate.
  */
 import type { AssistantAction } from '../../contracts/assistant';
 
@@ -47,7 +49,7 @@ export interface AssistantOpsDeps {
     approvals?: {
         pending(): Array<{ id: string; tool?: string; agentId?: string }>;
     };
-    /** Recurring automation: the one operational write the assistant has. */
+    /** Recurring automation: the assistant's first operational write. */
     scheduler?: {
         create(data: {
             name: string;
@@ -69,9 +71,31 @@ export interface AssistantOpsDeps {
     agents?: {
         getAgents(): Array<{ id: string }>;
     };
+    /** The task board: what the system owes and who is on it. */
+    tasks?: {
+        list(): Promise<
+            Array<{ id: string; title: string; status: string; assigneeId?: string }>
+        >;
+        create(input: {
+            title: string;
+            description?: string;
+            type: TaskType;
+            priority: TaskPriority;
+            assigneeId?: string;
+            creatorId?: string;
+        }): Promise<{ id: string; title: string; status: string; assigneeId?: string }>;
+    };
 }
 
 type ScheduleFrequency = 'hourly' | 'daily' | 'weekly' | 'monthly' | 'custom';
+
+type TaskType = 'ONE_TIME' | 'RECURRING' | 'CONTINUOUS';
+
+type TaskPriority = 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
+
+const TASK_TYPES: TaskType[] = ['ONE_TIME', 'RECURRING', 'CONTINUOUS'];
+
+const TASK_PRIORITIES: TaskPriority[] = ['LOW', 'MEDIUM', 'HIGH', 'CRITICAL'];
 
 const FREQUENCIES: ScheduleFrequency[] = ['hourly', 'daily', 'weekly', 'monthly', 'custom'];
 
@@ -156,6 +180,125 @@ export function createAssistantOpsActions(deps: AssistantOpsDeps): AssistantActi
                 evidence: pending
                     .map((p) => `${p.id}${p.tool ? ` ${p.tool}` : ''}${p.agentId ? ` (${p.agentId})` : ''}`)
                     .join(' | '),
+                verification: 'verified',
+            };
+        },
+    });
+
+    actions.push({
+        id: 'tasks.list',
+        group: 'coordination',
+        description:
+            'List the tasks of the system with their status and assignee. Optionally filter by agent.',
+        parameters: {
+            type: 'object',
+            properties: {
+                agentId: {
+                    type: 'string',
+                    description: 'Only show tasks assigned to this agent.',
+                },
+            },
+        },
+        action: 'tool:read',
+        run: async (args) => {
+            const tasks = deps.tasks;
+            if (!tasks) return { ok: false, detail: 'task board is not available' };
+            const agentId = typeof args['agentId'] === 'string' ? args['agentId'].trim() : '';
+            const all = await tasks.list();
+            const filtered = agentId ? all.filter((t) => t.assigneeId === agentId) : all;
+            if (filtered.length === 0) {
+                return {
+                    ok: true,
+                    detail: agentId ? `no tasks assigned to ${agentId}` : 'no tasks',
+                    evidence: 'tasks: 0',
+                    verification: 'verified',
+                };
+            }
+            return {
+                ok: true,
+                detail: `${filtered.length} task(s)`,
+                evidence: filtered
+                    .map((t) => `${t.title} (${t.status}${t.assigneeId ? `, ${t.assigneeId}` : ''})`)
+                    .join(' | '),
+                verification: 'verified',
+            };
+        },
+    });
+
+    actions.push({
+        id: 'tasks.create',
+        group: 'coordination',
+        description:
+            'Delegate work by creating a task for an agent. The task is stored on the board and becomes that agent\'s responsibility. Confirm with the user before delegating.',
+        parameters: {
+            type: 'object',
+            properties: {
+                title: { type: 'string', description: 'What has to be done, short and concrete.' },
+                description: {
+                    type: 'string',
+                    description: 'Details, context and the definition of done.',
+                },
+                agentId: {
+                    type: 'string',
+                    description: 'Agent that owns the task. Omit for an unassigned task.',
+                },
+                type: {
+                    type: 'string',
+                    enum: TASK_TYPES,
+                    description: 'ONE_TIME (default), RECURRING or CONTINUOUS.',
+                },
+                priority: {
+                    type: 'string',
+                    enum: TASK_PRIORITIES,
+                    description: 'LOW, MEDIUM (default), HIGH or CRITICAL.',
+                },
+            },
+            required: ['title'],
+        },
+        action: 'tool:write',
+        run: async (args) => {
+            const tasks = deps.tasks;
+            if (!tasks) return { ok: false, detail: 'task board is not available' };
+
+            const text = (v: unknown): string => (typeof v === 'string' ? v.trim() : '');
+            const title = text(args['title']);
+            const description = text(args['description']);
+            const agentId = text(args['agentId']);
+            const type = (text(args['type']) || 'ONE_TIME') as TaskType;
+            const priority = (text(args['priority']) || 'MEDIUM') as TaskPriority;
+
+            if (!title) return { ok: false, detail: 'title is required' };
+            if (title.length > 200) return { ok: false, detail: 'title is too long (max 200)' };
+            if (description.length > 2000) {
+                return { ok: false, detail: 'description is too long (max 2000)' };
+            }
+            if (!TASK_TYPES.includes(type)) return { ok: false, detail: `Unknown type: ${type}` };
+            if (!TASK_PRIORITIES.includes(priority)) {
+                return { ok: false, detail: `Unknown priority: ${priority}` };
+            }
+            if (agentId && deps.agents) {
+                const exists = deps.agents.getAgents().some((a) => a.id === agentId);
+                if (!exists) return { ok: false, detail: `Agent ${agentId} does not exist` };
+            }
+
+            const created = await tasks.create({
+                title,
+                ...(description ? { description } : {}),
+                type,
+                priority,
+                ...(agentId ? { assigneeId: agentId } : {}),
+                creatorId: 'assistant',
+            });
+
+            // Read it back: a task that is not on the board was not delegated.
+            const listed = await tasks.list();
+            const fresh = listed.find((t) => t.id === created.id);
+            if (!fresh) return { ok: false, detail: `Task ${created.id} was not stored` };
+
+            return {
+                ok: true,
+                detail: `Created task "${fresh.title}"${fresh.assigneeId ? ` for ${fresh.assigneeId}` : ' (unassigned)'}`,
+                evidence: `task: ${fresh.id} | status: ${fresh.status} | priority: ${priority}${fresh.assigneeId ? ` | assignee: ${fresh.assigneeId}` : ''}`,
                 verification: 'verified',
             };
         },

@@ -28,6 +28,7 @@ import { AssistantNavigationService } from '../services/assistant/assistant-navi
 import { AssistantActionRegistry } from '../services/assistant/assistant-action-registry';
 import { createAssistantActions } from '../services/assistant/assistant-actions';
 import { createAssistantOpsActions } from '../services/assistant/assistant-ops-actions';
+import { agemsTaskService } from '../services/agems-task-service';
 import { createAssistantAdminActions } from '../services/assistant/assistant-admin-actions';
 import { AssistantService } from '../services/assistant/assistant-service';
 import type { OrchestrationService } from '../services/orchestration-service';
@@ -248,6 +249,10 @@ export const registerPhase78: Phase = ({ register }) => {
                 agents: agentService
                     ? { getAgents: () => agentService.getAgents() }
                     : undefined,
+                tasks: {
+                    list: () => agemsTaskService.list(),
+                    create: (input) => agemsTaskService.create({ ...input, status: 'PENDING' }),
+                },
             }),
         );
 
