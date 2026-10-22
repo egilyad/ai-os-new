@@ -30,7 +30,8 @@ import { createAssistantActions } from '../services/assistant/assistant-actions'
 import { AssistantService } from '../services/assistant/assistant-service';
 
 /** The assistant acts as a system agent; its permission state gates writes. */
-export const ASSISTANT_AGENT_ID = 'assistant';
+import { ASSISTANT_AGENT_ID } from '../services/assistant/assistant-agent';
+export { ASSISTANT_AGENT_ID };
 
 export const registerPhase78: Phase = ({ register }) => {
     register('projectKnowledgeService', () => new ProjectKnowledgeService());

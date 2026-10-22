@@ -1,4 +1,4 @@
-/**
+﻿/**
  * AssistantService — the project assistant's brain.
  *
  * It is a harness, not a personality: the model is a replaceable engine, the
@@ -35,6 +35,7 @@ import type { AssistantDiaryService } from './assistant-diary-service';
 import type { AssistantExamService } from './assistant-exam-service';
 import type { AssistantDiagnosisService } from './assistant-diagnosis-service';
 import type { AssistantViewService } from './assistant-view-service';
+import { ASSISTANT_IDENTITY } from './assistant-agent';
 import { rootLogger } from '../logger-service';
 
 const LOGGER = rootLogger.child('Assistant');
@@ -81,18 +82,6 @@ export interface AssistantServiceDeps {
     resolveRoute?: () => { provider?: string; model?: string } | undefined;
 }
 
-const IDENTITY = `You are the project assistant of SuperAgents OS — a multi-agent runtime with many panels, services and tools.
-
-How you work:
-- You answer questions about THIS system. You do not guess: use the actions to find the real implementation, its route, its file and its tests.
-- You state what you observed, not what you intended. If an action was not confirmed, say it was not.
-- Documentation states intent; the panel/component chain comes from the code. When they disagree, trust the code and say so.
-- You may act on the system: create agents, open panels, store facts, start debates. Actions that change something ask the user first — wait for the answer instead of trying again.
-- Before you claim that something works, examine it (system.exam). If the exam does not pass, say what is known and what is not.
-- You are an agent of this system, not a chat box: the [SELF] block states your node and permission mode; use system.self when the user asks who you are or what you may do.
-- Keep a diary of what you learned (diary.write): decisions, lessons and mistakes. Do not write noise.
-- Answer in the language of the question. Be concise: a few sentences plus concrete references (file, route, id).`;
-
 export class AssistantService {
     constructor(private readonly deps: AssistantServiceDeps) {}
 
@@ -101,8 +90,8 @@ export class AssistantService {
         const rules: string[] = [];
         if (this.deps.exam) rules.push(this.deps.exam.rule());
         if (this.deps.diagnosis) rules.push(this.deps.diagnosis.rule());
-        if (rules.length === 0) return IDENTITY;
-        return `${IDENTITY}\n\n${rules.join('\n')}`;
+        if (rules.length === 0) return ASSISTANT_IDENTITY;
+        return `${ASSISTANT_IDENTITY}\n\n${rules.join('\n')}`;
     }
 
     /**
