@@ -65,6 +65,10 @@ export interface AssistantOpsDeps {
         getAll(): Array<{ id: string }>;
         validateCron?(cron: string): boolean;
     };
+    /** Only used to refuse schedules for agents that do not exist. */
+    agents?: {
+        getAgents(): Array<{ id: string }>;
+    };
 }
 
 type ScheduleFrequency = 'hourly' | 'daily' | 'weekly' | 'monthly' | 'custom';
@@ -214,6 +218,10 @@ export function createAssistantOpsActions(deps: AssistantOpsDeps): AssistantActi
             }
             if (priority && !['low', 'normal', 'high'].includes(priority)) {
                 return { ok: false, detail: `Unknown priority: ${priority}` };
+            }
+            if (deps.agents) {
+                const exists = deps.agents.getAgents().some((a) => a.id === agentId);
+                if (!exists) return { ok: false, detail: `Agent ${agentId} does not exist` };
             }
 
             const created = await scheduler.create({

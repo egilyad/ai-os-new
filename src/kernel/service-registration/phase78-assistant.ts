@@ -245,6 +245,9 @@ export const registerPhase78: Phase = ({ register }) => {
                           validateCron: (cron) => schedulerService.validateCron?.(cron) ?? true,
                       }
                     : undefined,
+                agents: agentService
+                    ? { getAgents: () => agentService.getAgents() }
+                    : undefined,
             }),
         );
 

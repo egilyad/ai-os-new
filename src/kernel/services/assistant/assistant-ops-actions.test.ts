@@ -102,6 +102,29 @@ describe('assistant ops actions', () => {
         );
     });
 
+    it('refuses to schedule a task on an agent that does not exist', async () => {
+        const create = vi.fn();
+        const registry = new AssistantActionRegistry();
+        registry.registerAll(
+            createAssistantOpsActions(
+                deps({
+                    scheduler: { create, getAll: () => [] } as never,
+                    agents: { getAgents: () => [{ id: 'assistant' }] },
+                }),
+            ),
+        );
+
+        const result = await registry.run('scheduler.create', {
+            name: 'x',
+            prompt: 'y',
+            frequency: 'daily',
+            agentId: 'ghost',
+        });
+        expect(result.ok).toBe(false);
+        expect(result.detail).toContain('Agent ghost does not exist');
+        expect(create).not.toHaveBeenCalled();
+    });
+
     it('refuses bad frequencies, missing prompts and invalid crons', async () => {
         const create = vi.fn();
         const registry = new AssistantActionRegistry();
