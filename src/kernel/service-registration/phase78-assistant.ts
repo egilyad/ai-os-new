@@ -30,7 +30,7 @@ import { createAssistantActions } from '../services/assistant/assistant-actions'
 import { AssistantService } from '../services/assistant/assistant-service';
 
 /** The assistant acts as a system agent; its permission state gates writes. */
-const ASSISTANT_AGENT_ID = 'assistant';
+export const ASSISTANT_AGENT_ID = 'assistant';
 
 export const registerPhase78: Phase = ({ register }) => {
     register('projectKnowledgeService', () => new ProjectKnowledgeService());
@@ -141,6 +141,19 @@ export const registerPhase78: Phase = ({ register }) => {
                               ),
                       }
                     : undefined,
+                // The service is built after the registry; the action only
+                // resolves it when the model asks who it is.
+                self: {
+                    describe: () => {
+                        try {
+                            return c.get<AssistantService>(
+                                'projectAssistantService',
+                            ).describeSelf();
+                        } catch {
+                            return null;
+                        }
+                    },
+                },
             }),
         );
         // Actions are tracked capabilities: discovered on registration,
@@ -197,6 +210,13 @@ export const registerPhase78: Phase = ({ register }) => {
             knowledge: c.get<ProjectKnowledgeService>('projectKnowledgeService'),
             events: c.get<IEventBus>('eventBus'),
             agentId: ASSISTANT_AGENT_ID,
+            agentLabel: 'Project Assistant',
+            lifecycle: c.has('agentService')
+                ? {
+                      status: (id: string) =>
+                          c.get<AgentService>('agentService').getLifecycleState(id),
+                  }
+                : undefined,
             permissionService: c.has('agentPermissionService')
                 ? c.get<AgentPermissionService>('agentPermissionService')
                 : undefined,

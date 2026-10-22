@@ -77,8 +77,9 @@ describe('AssistantActionRegistry', () => {
             'system.exam',
             'system.find',
             'system.howto',
+            'system.self',
         ]);
-        expect(registry.groups().research).toBe(8);
+        expect(registry.groups().research).toBe(9);
         expect(registry.groups().work).toBeGreaterThan(0);
         expect(() => registry.register(registry.list()[0]!)).toThrow(/already registered/);
     });
@@ -225,5 +226,39 @@ describe('assistant actions', () => {
         expect((await registry.run('mcp.list')).evidence).toContain('files (connected)');
         expect((await registry.run('skills.list')).evidence).toBe('review');
         expect((await registry.run('tasks.list')).detail).toContain('task service');
+    });
+
+    it('describes itself as an agent with a permission profile', async () => {
+        const registry = new AssistantActionRegistry();
+        registry.registerAll(
+            createAssistantActions(
+                deps({
+                    self: {
+                        describe: () => ({
+                            id: 'assistant',
+                            name: 'Project Assistant',
+                            status: 'ready',
+                            mode: 'guarded',
+                            preset: 'guarded',
+                            denials: 0,
+                        }),
+                    },
+                }),
+            ),
+        );
+
+        const result = await registry.run('system.self');
+        expect(result.ok).toBe(true);
+        expect(result.detail).toContain('agent node assistant');
+        expect(result.detail).toContain('guarded');
+        expect(result.evidence).toContain('node: assistant');
+    });
+
+    it('says so when self-description is not wired', async () => {
+        const registry = new AssistantActionRegistry();
+        registry.registerAll(createAssistantActions(deps()));
+        const result = await registry.run('system.self');
+        expect(result.ok).toBe(false);
+        expect(result.detail).toContain('not wired');
     });
 });

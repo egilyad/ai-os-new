@@ -292,8 +292,7 @@ describe('AssistantService', () => {
         });
     });
 
-    it('prefers the session route and ignores an "auto" default', async () => {
-        const llm = llmStub([{ content: 'a' }, { content: 'b' }]);
+    it('prefers the session route and ignores an "auto" default', async () => {        const llm = llmStub([{ content: 'a' }, { content: 'b' }]);
         const resolveRoute = vi.fn(() => ({ provider: 'OpenRouter', model: 'm-1' }));
         const service = new AssistantService({
             llm: llm.service,
@@ -312,5 +311,75 @@ describe('AssistantService', () => {
         await service.ask({ text: 'два' });
         expect(resolveRoute).toHaveBeenCalledTimes(1);
         expect(llm.calls[1]!.options).toMatchObject({ provider: 'OpenRouter', model: 'm-1' });
+    });
+
+    it('tells the model who it is and seeds its guarded profile once', async () => {
+        const llm = llmStub([{ content: 'a' }, { content: 'b' }]);
+        const state = { mode: 'guarded' as string, preset: 'guarded' as string };
+        const permissions = {
+            hasState: vi.fn(() => false),
+            setMode: vi.fn(async (_id: string, mode: string) => {
+                state.mode = mode;
+            }),
+            getState: vi.fn(() => ({
+                agentId: 'assistant',
+                mode: state.mode,
+                preset: state.preset,
+                rules: [],
+                consecutiveDenials: 0,
+                updatedAt: 0,
+            })),
+            evaluate: vi.fn(async () => ({ effect: 'allow', reason: 'read' })),
+        } as unknown as AgentPermissionService;
+        const service = new AssistantService({
+            llm: llm.service,
+            actions: makeRegistry(),
+            knowledge: makeKnowledge(),
+            events: makeEvents(),
+            agentId: 'assistant',
+            agentLabel: 'Project Assistant',
+            permissionService: permissions,
+        });
+
+        await service.ask({ text: 'кто ты?' });
+        expect(permissions.setMode).toHaveBeenCalledWith('assistant', 'guarded');
+        const prompt = String(
+            (llm.calls[0]!.messages as Array<{ role: string; content: string }>)[1]!.content,
+        );
+        expect(prompt).toContain('[SELF]');
+        expect(prompt).toContain('Project Assistant');
+        expect(prompt).toContain('permission mode: guarded');
+
+        await service.ask({ text: 'ещё' });
+        expect(permissions.setMode).toHaveBeenCalledTimes(1);
+    });
+
+    it('describes itself with node, status and permission mode', () => {
+        const service = new AssistantService({
+            llm: llmStub([]).service,
+            actions: makeRegistry(),
+            knowledge: makeKnowledge(),
+            events: makeEvents(),
+            agentId: 'assistant',
+            agentLabel: 'Project Assistant',
+            permissionService: {
+                getState: () => ({
+                    agentId: 'assistant',
+                    mode: 'guarded',
+                    preset: 'guarded',
+                    rules: [],
+                    consecutiveDenials: 2,
+                    updatedAt: 0,
+                }),
+            } as unknown as AgentPermissionService,
+        });
+
+        expect(service.describeSelf()).toMatchObject({
+            id: 'assistant',
+            name: 'Project Assistant',
+            mode: 'guarded',
+            preset: 'guarded',
+            denials: 2,
+        });
     });
 });

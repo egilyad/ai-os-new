@@ -54,6 +54,17 @@ export interface AssistantActionDeps {
         }>;
         stats(): { total: number; declared: number; discovered: number; verified: number; stale: number };
     };
+    /** The assistant's own identity inside the system. */
+    self?: {
+        describe(): {
+            id: string;
+            name: string;
+            status: string;
+            mode: string;
+            preset: string;
+            denials: number;
+        } | null;
+    };
     /** The self-check gate. */
     exam?: {
         examine(
@@ -453,6 +464,24 @@ export function createAssistantActions(deps: AssistantActionDeps): AssistantActi
                     `checks: ${plan.checks.map((c) => `${c.action} — ${c.question}`).join(' | ')}`,
                     `fallback layers: ${plan.fallbackLayers.join(', ')}`,
                 ].join(' | '),
+            );
+        },
+    });
+
+    actions.push({
+        id: 'system.self',
+        group: 'research',
+        description:
+            'Describe the assistant itself: its agent node in the topology, its lifecycle and its permission mode. Use it when the user asks who you are or what you are allowed to do.',
+        parameters: { type: 'object', properties: {} },
+        action: 'tool:read',
+        run: async () => {
+            if (!deps.self) return fail('self-description is not wired in this composition');
+            const self = deps.self.describe();
+            if (!self) return fail('the assistant has no permission profile in this composition');
+            return ok(
+                `I am "${self.name}" (agent node ${self.id}), status ${self.status}, permission mode ${self.mode}/${self.preset}`,
+                `node: ${self.id} | mode: ${self.mode} | preset: ${self.preset} | denials: ${self.denials}`,
             );
         },
     });

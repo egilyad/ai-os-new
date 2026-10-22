@@ -20,6 +20,8 @@ export const ASSISTANT_ARTICLES: WikiArticle[] = [
             'src/components/Assistant/use-speech.ts',
             'src/kernel/services/assistant/assistant-service.ts',
             'src/kernel/services/assistant/assistant-actions.ts',
+            'src/kernel/services/assistant/assistant-agent.ts',
+            'src/kernel/services/agent-service.ts',
             'src/kernel/services/assistant/project-knowledge-service.ts',
             'src/kernel/services/assistant/assistant-navigation-service.ts',
             'src/kernel/services/assistant/assistant-diary-service.ts',
@@ -115,6 +117,19 @@ sequenceDiagram
 требуют подтверждения через \`ToolApprovalService\` — тот же канал, что и у
 обычных агентов. Если интерфейс не подключён, запрос отклоняется сразу
 (fail closed), а не висит.
+
+## Ассистент как агент топологии
+
+Ассистент — не отдельное окно рядом с системой, а её агент: узел с
+зарезервированным id \`assistant\` (\`assistant-agent.ts\`). Узел засевается при
+каждой загрузке топологии, поэтому переживает и перезапуск, и восстановление
+снимка; удалить его нельзя, авто-клонирование и пул участников дебатов его
+пропускают. В админке он отмечен как \`built-in\`.
+
+Свой профиль ассистент знает фактами: блок \`[SELF]\` в контексте и действие
+\`system.self\` отдают id узла, статус и режим прав. Режим \`guarded\` записан
+явно при первом ходе — движок прав больше не считает ассистента «не
+настроенным». Реестр возможностей содержит запись \`agent:assistant\`.
 
 ## Голос
 

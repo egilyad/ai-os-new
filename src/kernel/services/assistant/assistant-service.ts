@@ -48,6 +48,10 @@ export interface AssistantServiceDeps {
     events: IEventBus;
     /** Agent id the assistant acts as — its permission state decides the gate. */
     agentId: string;
+    /** Human-readable name of that agent node. */
+    agentLabel?: string;
+    /** Live lifecycle of that node, so the assistant does not lie about itself. */
+    lifecycle?: { status(agentId: string): string };
     permissionService?: AgentPermissionService;
     approvalService?: IToolApprovalService;
     /** The trust ledger — what is verified vs only documented. */
@@ -85,6 +89,7 @@ How you work:
 - Documentation states intent; the panel/component chain comes from the code. When they disagree, trust the code and say so.
 - You may act on the system: create agents, open panels, store facts, start debates. Actions that change something ask the user first — wait for the answer instead of trying again.
 - Before you claim that something works, examine it (system.exam). If the exam does not pass, say what is known and what is not.
+- You are an agent of this system, not a chat box: the [SELF] block states your node and permission mode; use system.self when the user asks who you are or what you may do.
 - Keep a diary of what you learned (diary.write): decisions, lessons and mistakes. Do not write noise.
 - Answer in the language of the question. Be concise: a few sentences plus concrete references (file, route, id).`;
 
@@ -137,6 +142,14 @@ export class AssistantService {
             `- assistant agent id: ${this.deps.agentId}`,
             `- session: ${sessionId ?? 'none'}`,
             `- actions available: ${this.deps.actions.list().length}`,
+        );
+
+        const self = this.describeSelf();
+        blocks.push(
+            '[SELF]',
+            `- you are the agent node "${self.id}" (${self.name}) of this system, status ${self.status}`,
+            `- permission mode: ${self.mode} (preset ${self.preset})${self.denials > 0 ? `, ${self.denials} consecutive denials` : ''}`,
+            '- reads need no approval; writes and executions ask the operator first',
         );
 
         const view = this.deps.view?.summary();
@@ -214,9 +227,62 @@ export class AssistantService {
         return { provider: pick(fallback?.provider), model: model ?? fallback?.model };
     }
 
+    /**
+     * Who the assistant is in this system: its agent node and its explicit
+     * permission profile. Used both in the prompt and by `system.self`.
+     */
+    describeSelf(): {
+        id: string;
+        name: string;
+        status: string;
+        mode: string;
+        preset: string;
+        denials: number;
+    } {
+        const permissions = this.deps.permissionService;
+        const state =
+            permissions && typeof permissions.getState === 'function'
+                ? permissions.getState(this.deps.agentId)
+                : null;
+        return {
+            id: this.deps.agentId,
+            name: this.deps.agentLabel ?? 'Project Assistant',
+            status: this.deps.lifecycle?.status(this.deps.agentId) ?? 'unknown',
+            mode: state?.mode ?? 'unknown',
+            preset: state?.preset ?? 'unknown',
+            denials: state?.consecutiveDenials ?? 0,
+        };
+    }
+
+    /**
+     * Make the assistant an explicit member of the permission system.
+     *
+     * Without stored state the engine treats the agent as "never configured";
+     * the assistant is configured by design: guarded — reads are free, writes
+     * and executions ask the operator.
+     */
+    private async ensurePermissionState(): Promise<void> {
+        const permissions = this.deps.permissionService;
+        if (!permissions) return;
+        if (
+            typeof permissions.hasState !== 'function' ||
+            typeof permissions.setMode !== 'function'
+        )
+            return;
+        if (permissions.hasState(this.deps.agentId)) return;
+        try {
+            await permissions.setMode(this.deps.agentId, 'guarded');
+        } catch (e) {
+            LOGGER.warn('Assistant', 'Failed to seed the guarded permission state', {
+                error: e instanceof Error ? e.message : String(e),
+            });
+        }
+    }
+
     /** Run one turn of the assistant. */
     async ask(req: AssistantTurnRequest): Promise<AssistantTurnResult> {
         const requestId = `assistant-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+        await this.ensurePermissionState();
         const context = await this.buildContext(req.text, req.sessionId);
         const messages: ToolLoopMessage[] = [
             { role: 'system', content: this.systemPrompt() },
