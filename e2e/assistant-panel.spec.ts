@@ -180,6 +180,30 @@ test.describe('assistant panel', () => {
         expect(stored?.priority).toBe('HIGH');
     });
 
+    test('a checkup runs the read capabilities without asking for approval', async ({ page }) => {
+        await boot(page);
+        await seedKey(page);
+        await stubOpenRouterToolCall(page, {
+            tool: 'system.checkup',
+            args: {},
+            reply: 'Проверка выполнена.',
+        });
+        await page.reload();
+        await boot(page);
+        await page.goto('/assistant');
+        await expect(page.getByRole('heading', { name: /помощник проекта/i })).toBeVisible({
+            timeout: 60000,
+        });
+
+        const input = page.getByLabel('Вопрос помощнику');
+        await input.fill('проверь, что всё работает');
+        await input.press('Enter');
+
+        // A read is not gated: no approval modal, the answer just continues.
+        await expect(page.getByText('Проверка выполнена.')).toBeVisible({ timeout: 120000 });
+        await expect(page.getByRole('button', { name: 'Разрешить' })).toHaveCount(0);
+    });
+
     test('the assistant is a real agent in the topology', async ({ page }) => {
         await boot(page);
         await page.goto('/agents');
