@@ -52,7 +52,7 @@ sequenceDiagram
 имеют класс разрешения:
 
 - **research** — `system.find`, `system.describe`, `system.capabilities`,
-  `system.exam`, `system.diagnose`, `memory.search`, `diary.recent`, а также
+  `system.exam`, `system.diagnose`, `system.gaps`, `memory.search`, `diary.recent`, а также
   `topology.summary`, `metrics.summary`, `providers.health`, `traces.summary`
   и `approvals.pending`;
 - **navigation** — `ui.openPanel` (роут открывает интерфейс и подтверждает переход);
@@ -86,7 +86,10 @@ sequenceDiagram
 - **declared** — о возможности знает только документация: утверждать нельзя.
 
 Читаемые возможности экзаменует запуском, пишущие — только через права
-человека. Дневник (`assistant-diary-service.ts`) хранит опыт в журнале агентов
+человека. Разницу между обещанием и реальностью видно отдельным действием
+`system.gaps`: оно перечисляет возможности уровня `declared` (документация
+есть, реализации не найдено) и `stale` (раньше работали, потом перестали).
+Дневник (`assistant-diary-service.ts`) хранит опыт в журнале агентов
 и зеркалит его в долговременную память, поэтому прошлый опыт всплывает в
 контексте следующего вопроса.
 
