@@ -15,6 +15,11 @@ import type { PanelActionCatalog } from '../../contracts/panel-actions';
 
 export interface PanelActionDeps {
     panels: PanelActionCatalog;
+    /**
+     * Optional: the panel catalog of the project (route registry + wiki), used
+     * only to report how many of the panels are actable yet.
+     */
+    knowledge?: { panelsMatching(query?: string): Array<{ id: string }> };
 }
 
 function str(value: unknown): string {
@@ -81,9 +86,12 @@ export function createPanelActions(deps: PanelActionDeps): AssistantAction[] {
             }
             const total = deps.panels.list().length;
             const lines = panels.map((p) => `${p}: ${deps.panels.list(p).length}`);
+            const panelCount = deps.knowledge?.panelsMatching().length;
             return {
                 ok: true,
-                detail: `${panels.length} actable panel(s), ${total} action(s)`,
+                detail: panelCount
+                    ? `${panels.length} actable of ${panelCount} panel(s), ${total} action(s)`
+                    : `${panels.length} actable panel(s), ${total} action(s)`,
                 evidence: lines.slice(0, 40).join(' | '),
                 verification: 'verified',
             };

@@ -16,11 +16,14 @@ function descriptor(
     };
 }
 
-function registryWith(descriptors: PanelActionDescriptor[]): AssistantActionRegistry {
+function registryWith(
+    descriptors: PanelActionDescriptor[],
+    knowledge?: { panelsMatching(query?: string): Array<{ id: string }> },
+): AssistantActionRegistry {
     const panels = new PanelActionRegistry();
     panels.registerAll(descriptors);
     const registry = new AssistantActionRegistry();
-    registry.registerAll(createPanelActions({ panels }));
+    registry.registerAll(createPanelActions({ panels, knowledge }));
     return registry;
 }
 
@@ -65,6 +68,15 @@ describe('panel actions', () => {
         const none = await registry.run('panel.list', { panelId: 'ghost' });
         expect(none.ok).toBe(true);
         expect(none.detail).toBe('no panel actions for "ghost"');
+    });
+
+    it('reports how much of the admin is actable yet', async () => {
+        const registry = registryWith(
+            [descriptor({ panelId: 'memory', id: 'search' })],
+            { panelsMatching: () => Array.from({ length: 260 }, (_, i) => ({ id: `p${i}` })) },
+        );
+        const result = await registry.run('panel.list', {});
+        expect(result.detail).toBe('1 actable of 260 panel(s), 1 action(s)');
     });
 
     it('runs reads and refuses to smuggle a write through panel.read', async () => {

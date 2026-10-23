@@ -92,6 +92,7 @@ export const registerPhase78: Phase = ({ register }) => {
         registry.registerAll(
             createPanelActions({
                 panels: c.get<PanelActionRegistry>('panelActionRegistry'),
+                knowledge,
             }),
         );
         // The exam and the diary depend on the registry, so they are resolved
