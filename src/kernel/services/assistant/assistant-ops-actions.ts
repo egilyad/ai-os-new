@@ -65,6 +65,9 @@ export interface AssistantOpsDeps {
             nextRun?: number;
         }>;
         getAll(): Array<{ id: string }>;
+        getById(id: string): { id: string; name: string; enabled: boolean } | undefined;
+        toggle(id: string, enabled: boolean): Promise<{ id: string; name: string; enabled: boolean } | null>;
+        remove(id: string): Promise<boolean>;
         validateCron?(cron: string): boolean;
     };
     /** Only used to refuse schedules for agents that do not exist. */
@@ -439,6 +442,95 @@ export function createAssistantOpsActions(deps: AssistantOpsDeps): AssistantActi
                 ok: true,
                 detail: `Scheduled "${created.name}" (${frequency}) on agent ${created.agentId}`,
                 evidence: `schedule: ${created.id} | cron: ${created.cronExpression} | agent: ${created.agentId}${nextRun}`,
+                verification: 'verified',
+            };
+        },
+    });
+
+    actions.push({
+        id: 'scheduler.toggle',
+        group: 'work',
+        description:
+            'Pause or resume an existing recurring task. Use scheduler.list to find its id first; confirm with the user before pausing anything.',
+        parameters: {
+            type: 'object',
+            properties: {
+                id: { type: 'string', description: 'Schedule id.' },
+                enabled: {
+                    type: 'boolean',
+                    description: 'true to resume, false to pause.',
+                },
+            },
+            required: ['id', 'enabled'],
+        },
+        action: 'tool:write',
+        run: async (args) => {
+            const scheduler = deps.scheduler;
+            if (!scheduler) return { ok: false, detail: 'scheduler is not available' };
+
+            const id = typeof args['id'] === 'string' ? args['id'].trim() : '';
+            if (!id) return { ok: false, detail: 'id is required' };
+            if (typeof args['enabled'] !== 'boolean') {
+                return { ok: false, detail: 'enabled must be true or false' };
+            }
+            const enabled = args['enabled'];
+            const before = scheduler.getById(id);
+            if (!before) return { ok: false, detail: `Schedule ${id} does not exist` };
+
+            if (before.enabled === enabled) {
+                return {
+                    ok: true,
+                    detail: `Schedule "${before.name}" is already ${enabled ? 'running' : 'paused'}`,
+                    evidence: `schedule: ${before.id} | enabled: ${before.enabled}`,
+                    verification: 'verified',
+                };
+            }
+
+            const updated = await scheduler.toggle(id, enabled);
+            if (!updated) return { ok: false, detail: `Schedule ${id} was not updated` };
+            const after = scheduler.getById(id);
+            if (!after || after.enabled !== enabled) {
+                return { ok: false, detail: `Schedule ${id} did not change state` };
+            }
+            return {
+                ok: true,
+                detail: `${enabled ? 'Resumed' : 'Paused'} "${after.name}"`,
+                evidence: `schedule: ${after.id} | enabled: ${after.enabled} (was ${before.enabled})`,
+                verification: 'verified',
+            };
+        },
+    });
+
+    actions.push({
+        id: 'scheduler.delete',
+        group: 'work',
+        description:
+            'Delete a recurring task permanently. Use scheduler.list to find its id, state what will be deleted and confirm with the user first.',
+        parameters: {
+            type: 'object',
+            properties: {
+                id: { type: 'string', description: 'Schedule id.' },
+            },
+            required: ['id'],
+        },
+        action: 'tool:write',
+        run: async (args) => {
+            const scheduler = deps.scheduler;
+            if (!scheduler) return { ok: false, detail: 'scheduler is not available' };
+
+            const id = typeof args['id'] === 'string' ? args['id'].trim() : '';
+            if (!id) return { ok: false, detail: 'id is required' };
+            const before = scheduler.getById(id);
+            if (!before) return { ok: false, detail: `Schedule ${id} does not exist` };
+
+            const deleted = await scheduler.remove(id);
+            if (!deleted) return { ok: false, detail: `Schedule ${id} was not deleted` };
+            // A deletion that still lists the schedule did not happen.
+            if (scheduler.getById(id)) return { ok: false, detail: `Schedule ${id} is still there` };
+            return {
+                ok: true,
+                detail: `Deleted schedule "${before.name}"`,
+                evidence: `deleted: ${before.id} | name: ${before.name}`,
                 verification: 'verified',
             };
         },

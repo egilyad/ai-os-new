@@ -199,6 +199,12 @@ export const registerPhase78: Phase = ({ register }) => {
                 nextRun?: number;
             }>;
             getAll(): Array<{ id: string }>;
+            getById(id: string): { id: string; name: string; enabled: boolean } | undefined;
+            toggle(
+                id: string,
+                enabled: boolean,
+            ): Promise<{ id: string; name: string; enabled: boolean } | null>;
+            delete(id: string): Promise<boolean>;
             validateCron?(cron: string): boolean;
         }>('schedulerService');
         const providerTracker = optional<{
@@ -254,6 +260,9 @@ export const registerPhase78: Phase = ({ register }) => {
                     ? {
                           create: (data) => schedulerService.create(data),
                           getAll: () => schedulerService.getAll(),
+                          getById: (id) => schedulerService.getById(id),
+                          toggle: (id, enabled) => schedulerService.toggle(id, enabled),
+                          remove: (id) => schedulerService.delete(id),
                           validateCron: (cron) => schedulerService.validateCron?.(cron) ?? true,
                       }
                     : undefined,
