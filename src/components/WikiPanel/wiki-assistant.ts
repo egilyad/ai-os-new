@@ -76,7 +76,7 @@ sequenceDiagram
 имеют класс разрешения:
 
 - **research** — \`system.find\`, \`system.describe\`, \`system.capabilities\`,
-  \`system.exam\`, \`system.checkup\`, \`system.diagnose\`, \`system.gaps\`, \`memory.search\`, \`diary.recent\`, а также
+  \`system.exam\`, \`system.checkup\`, \`system.diagnose\`, \`system.gaps\`, \`system.review\`, \`memory.search\`, \`diary.recent\`, а также
   \`topology.summary\`, \`metrics.summary\`, \`providers.health\`, \`traces.summary\`
   и \`approvals.pending\`;
 - **navigation** — \`ui.openPanel\` (роут открывает интерфейс и подтверждает переход);
@@ -119,7 +119,9 @@ sequenceDiagram
 работали, потом перестали).
 Дневник (\`assistant-diary-service.ts\`) хранит опыт в журнале агентов
 и зеркалит его в долговременную память, поэтому прошлый опыт всплывает в
-контексте следующего вопроса.
+контексте следующего вопроса. \`system.review\` — взгляд назад: ошибки
+(\`mistake\`) и выводы (\`lesson\`) из дневника, а если на ошибку вывода ещё нет,
+действие говорит об этом прямо, а не придумывает урок.
 
 ## Маршрутизация проблемы
 

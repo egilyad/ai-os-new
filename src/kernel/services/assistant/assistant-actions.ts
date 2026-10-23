@@ -140,6 +140,14 @@ export interface AssistantActionDeps {
             evidence?: string;
             timestamp: number;
         }>;
+        byKind?(kind: string, limit?: number): Array<{
+            id: string;
+            kind: string;
+            text: string;
+            evidence?: string;
+            timestamp: number;
+        }>;
+        count?(): number;
         search(query: string, limit?: number): Array<{
             id: string;
             kind: string;
@@ -634,6 +642,48 @@ export function createAssistantActions(deps: AssistantActionDeps): AssistantActi
                 entries
                     .map((e) => `(${e.kind}) ${e.text}${e.evidence ? ` — ${e.evidence}` : ''}`)
                     .join(' | '),
+            );
+        },
+    });
+
+    actions.push({
+        id: 'system.review',
+        group: 'research',
+        description:
+            'Look back at your own diary: the mistakes you recorded and the lessons you drew. Use it before repeating a task, and be honest when a mistake has no lesson yet.',
+        parameters: {
+            type: 'object',
+            properties: {
+                limit: { type: 'number', description: 'How many recent entries to scan (default 20).' },
+            },
+        },
+        action: 'tool:read',
+        run: async (args) => {
+            if (!deps.diary) return fail('diary service is not available');
+            const limit = num(args['limit'], 20);
+            const byKind = (kind: string): Array<{ kind: string; text: string; evidence?: string }> => {
+                if (deps.diary?.byKind) return deps.diary.byKind(kind, limit);
+                return deps.diary!.recent(limit).filter((e) => e.kind === kind);
+            };
+            const mistakes = byKind('mistake');
+            const lessons = byKind('lesson');
+            if (mistakes.length === 0 && lessons.length === 0) {
+                return ok(
+                    'no mistakes and no lessons recorded yet',
+                    `diary: ${deps.diary.count ? deps.diary.count() : 0} entry/entries`,
+                );
+            }
+            const rows = [
+                ...mistakes.map((e) => `mistake: ${e.text}${e.evidence ? ` (${e.evidence})` : ''}`),
+                ...lessons.map((e) => `lesson: ${e.text}`),
+            ].slice(0, 12);
+            const gap =
+                mistakes.length > 0 && lessons.length === 0
+                    ? ' | no lesson recorded for these mistakes yet'
+                    : '';
+            return ok(
+                `${mistakes.length} mistake(s), ${lessons.length} lesson(s)${gap}`,
+                rows.join(' | '),
             );
         },
     });

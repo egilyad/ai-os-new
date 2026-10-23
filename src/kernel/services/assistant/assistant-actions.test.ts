@@ -79,9 +79,10 @@ describe('AssistantActionRegistry', () => {
             'system.find',
             'system.gaps',
             'system.howto',
+            'system.review',
             'system.self',
         ]);
-        expect(registry.groups().research).toBe(11);
+        expect(registry.groups().research).toBe(12);
         expect(registry.groups().work).toBeGreaterThan(0);
         expect(() => registry.register(registry.list()[0]!)).toThrow(/already registered/);
     });
@@ -314,6 +315,98 @@ describe('assistant actions', () => {
         expect(result.detail).toContain('agent node assistant');
         expect(result.detail).toContain('guarded');
         expect(result.evidence).toContain('node: assistant');
+    });
+
+    it('looks back at its own mistakes and lessons', async () => {
+        const entries = {
+            mistake: [
+                {
+                    id: 'd1',
+                    kind: 'mistake',
+                    text: 'Claimed the schedule was created without reading it back',
+                    evidence: 'schedule not listed',
+                    timestamp: 1,
+                },
+            ],
+            lesson: [
+                {
+                    id: 'd2',
+                    kind: 'lesson',
+                    text: 'Always read a write back before claiming success',
+                    timestamp: 2,
+                },
+            ],
+        };
+        const registry = new AssistantActionRegistry();
+        registry.registerAll(
+            createAssistantActions(
+                deps({
+                    diary: {
+                        write: vi.fn(),
+                        recent: vi.fn(() => []),
+                        byKind: (kind: string) => entries[kind as 'mistake' | 'lesson'] ?? [],
+                        count: () => 2,
+                    },
+                }),
+            ),
+        );
+
+        const result = await registry.run('system.review', {});
+        expect(result.ok).toBe(true);
+        expect(result.detail).toBe('1 mistake(s), 1 lesson(s)');
+        expect(result.evidence).toContain('mistake: Claimed the schedule');
+        expect(result.evidence).toContain('lesson: Always read a write back');
+    });
+
+    it('says so when a mistake has no lesson yet', async () => {
+        const registry = new AssistantActionRegistry();
+        registry.registerAll(
+            createAssistantActions(
+                deps({
+                    diary: {
+                        write: vi.fn(),
+                        recent: vi.fn(() => []),
+                        byKind: (kind: string) =>
+                            kind === 'mistake'
+                                ? [
+                                      {
+                                          id: 'd1',
+                                          kind: 'mistake',
+                                          text: 'Guessed a provider latency',
+                                          timestamp: 1,
+                                      },
+                                  ]
+                                : [],
+                        count: () => 1,
+                    },
+                }),
+            ),
+        );
+
+        const result = await registry.run('system.review', {});
+        expect(result.ok).toBe(true);
+        expect(result.detail).toContain('no lesson recorded for these mistakes yet');
+        expect(result.evidence).toContain('mistake: Guessed a provider latency');
+    });
+
+    it('falls back to recent entries when byKind is not wired', async () => {
+        const registry = new AssistantActionRegistry();
+        registry.registerAll(
+            createAssistantActions(
+                deps({
+                    diary: {
+                        write: vi.fn(),
+                        recent: vi.fn(() => [
+                            { id: 'd1', kind: 'mistake', text: 'Wrong route', timestamp: 1 },
+                            { id: 'd2', kind: 'answer', text: 'Fine', timestamp: 2 },
+                        ]),
+                    },
+                }),
+            ),
+        );
+        const result = await registry.run('system.review', {});
+        expect(result.detail).toContain('1 mistake(s), 0 lesson(s)');
+        expect(result.evidence).not.toContain('Fine');
     });
 
     it('says so when self-description is not wired', async () => {
