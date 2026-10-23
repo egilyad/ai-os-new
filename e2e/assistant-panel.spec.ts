@@ -217,4 +217,84 @@ test.describe('assistant panel', () => {
         await expect(page.getByText('built-in').first()).toBeVisible({ timeout: 30000 });
         await page.screenshot({ path: 'test-results/assistant-agent.png', fullPage: false });
     });
+
+    test('repeated mistakes become a proposal that still waits for the human', async ({
+        page,
+    }) => {
+        await boot(page);
+        await seedKey(page);
+
+        // Two recorded mistakes about the same subsystem: the assistant writes
+        // them itself, through the same approval gate as any other write.
+        await stubOpenRouterToolCall(page, {
+            tool: 'diary.write',
+            args: {
+                kind: 'mistake',
+                text: 'Said the schedule was created without reading it back',
+                tags: ['scheduler'],
+            },
+            reply: 'Записал первую ошибку.',
+        });
+        await page.reload();
+        await boot(page);
+        await page.goto('/assistant');
+        await expect(page.getByRole('heading', { name: /помощник проекта/i })).toBeVisible({
+            timeout: 60000,
+        });
+
+        const input = page.getByLabel('Вопрос помощнику');
+        await input.fill('Запиши мою ошибку с расписанием');
+        await input.press('Enter');
+        await expect(page.getByText('Инструмент: diary.write')).toBeVisible({ timeout: 90000 });
+        await page.getByRole('button', { name: 'Разрешить' }).click();
+        await expect(page.getByText('Записал первую ошибку.')).toBeVisible({ timeout: 90000 });
+
+        // A second mistake with the same tag: only a repeat is evidence.
+        await stubOpenRouterToolCall(page, {
+            tool: 'diary.write',
+            args: {
+                kind: 'mistake',
+                text: 'Missed a paused schedule',
+                evidence: 'the list showed pausedAt set',
+                tags: ['scheduler'],
+            },
+            reply: 'Записал вторую ошибку.',
+        });
+        await input.fill('Запиши ещё одну ошибку с расписанием');
+        await input.press('Enter');
+        await expect(page.getByText('Инструмент: diary.write')).toBeVisible({ timeout: 90000 });
+        await page.getByRole('button', { name: 'Разрешить' }).click();
+        await expect(page.getByText('Записал вторую ошибку.')).toBeVisible({ timeout: 90000 });
+
+        await stubOpenRouterToolCall(page, {
+            tool: 'system.improve',
+            args: {},
+            reply: 'Записал предложение в дневник.',
+        });
+        await input.fill('Сделай вывод из своих ошибок');
+        await input.press('Enter');
+
+        // The proposal is a write, so the human still decides.
+        await expect(page.getByText('Инструмент: system.improve')).toBeVisible({
+            timeout: 90000,
+        });
+        await page.getByRole('button', { name: 'Разрешить' }).click();
+        await expect(page.getByText('Записал предложение в дневник.')).toBeVisible({
+            timeout: 90000,
+        });
+
+        // Proof beyond the reply: the diary now holds the decision the assistant
+        // proposed, tagged improvement+proposal, and the prompt was not touched.
+        const journal = await idbAll<{
+            id: string;
+            value: Array<{ tags?: string[]; taskType?: string; taskDescription?: string }>;
+        }>(page, 'keyValue');
+        const rows = journal.find((kv) => kv.id === 'agent_journal_v1')?.value ?? [];
+        const proposal = rows.find((r) => (r.tags ?? []).includes('proposal'));
+        expect(proposal).toBeTruthy();
+        expect(proposal?.tags).toContain('improvement');
+        expect(proposal?.tags).toContain('scheduler');
+        expect(proposal?.taskType).toBe('assistant.decision');
+        expect(proposal?.taskDescription).toContain('re-check the result');
+    });
 });

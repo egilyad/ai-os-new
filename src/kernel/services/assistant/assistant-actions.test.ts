@@ -463,6 +463,30 @@ describe('assistant actions', () => {
         );
     });
 
+    it('keeps the tags a mistake was recorded with', async () => {
+        const write = vi.fn(async () => ({ id: 'd1' }));
+        const registry = new AssistantActionRegistry();
+        registry.registerAll(
+            createAssistantActions(
+                deps({ diary: { write, recent: vi.fn(() => []) } }),
+            ),
+        );
+
+        const result = await registry.run('diary.write', {
+            kind: 'mistake',
+            text: 'Missed a paused schedule',
+            tags: ['scheduler', 42, '  '],
+        });
+        expect(result.ok).toBe(true);
+        expect(write).toHaveBeenCalledWith(
+            expect.objectContaining({
+                kind: 'mistake',
+                text: 'Missed a paused schedule',
+                tags: ['scheduler'],
+            }),
+        );
+    });
+
     it('does not invent a pattern from a single mistake', async () => {
         const write = vi.fn();
         const registry = new AssistantActionRegistry();

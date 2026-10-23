@@ -603,6 +603,12 @@ export function createAssistantActions(deps: AssistantActionDeps): AssistantActi
                 },
                 text: { type: 'string', description: 'One sentence about what happened.' },
                 evidence: { type: 'string', description: 'What was actually observed.' },
+                tags: {
+                    type: 'array',
+                    items: { type: 'string' },
+                    description:
+                        'Topic tags (the subsystem involved). system.improve groups repeated mistakes by tag.',
+                },
             },
             required: ['kind', 'text'],
         },
@@ -612,10 +618,15 @@ export function createAssistantActions(deps: AssistantActionDeps): AssistantActi
             const text = str(args['text']).trim();
             if (!text) return fail('text is required');
             const kind = str(args['kind'], 'lesson');
+            const rawTags = args['tags'];
+            const tags = Array.isArray(rawTags)
+                ? rawTags.filter((t): t is string => typeof t === 'string' && t.trim().length > 0)
+                : undefined;
             const entry = await deps.diary.write({
                 kind: kind as 'decision' | 'lesson' | 'mistake' | 'question' | 'action',
                 text,
                 evidence: str(args['evidence']) || undefined,
+                tags,
             });
             return ok('Recorded in the diary', `diaryId: ${entry.id}`);
         },
