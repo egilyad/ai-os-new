@@ -138,15 +138,17 @@ export const registerPhase78: Phase = ({ register }) => {
                     : undefined,
                 trust: trust
                     ? {
-                          list: () =>
-                              trust.list().map((c) => ({
-                                  id: c.id,
-                                  kind: c.kind,
-                                  title: c.title,
-                                  trust: c.trust,
-                                  evidence: c.evidence,
-                                  stale: c.stale,
-                              })),
+                          list: (filter) =>
+                              trust
+                                  .list({ includeStale: filter?.includeStale })
+                                  .map((c) => ({
+                                      id: c.id,
+                                      kind: c.kind,
+                                      title: c.title,
+                                      trust: c.trust,
+                                      evidence: c.evidence,
+                                      stale: c.stale,
+                                  })),
                           stats: () => trust.stats(),
                       }
                     : undefined,

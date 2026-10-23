@@ -46,7 +46,7 @@ export interface AssistantActionDeps {
     };
     /** The trust ledger — what is declared, discovered and verified. */
     trust?: {
-        list(): Array<{
+        list(filter?: { includeStale?: boolean }): Array<{
             id: string;
             kind: string;
             title: string;
@@ -385,6 +385,36 @@ export function createAssistantActions(deps: AssistantActionDeps): AssistantActi
                     .slice(0, limit)
                     .map((c) => `${c.id} [${c.trust}]${c.stale ? ' (stale)' : ''}`)
                     .join(' | '),
+            );
+        },
+    });
+
+    actions.push({
+        id: 'system.gaps',
+        group: 'research',
+        description:
+            'Report where the system is less real than it claims: capabilities that are only declared (documented but not found in code) and verified capabilities that went stale. Use it when the user asks what does not work or what is only a promise.',
+        parameters: { type: 'object', properties: {} },
+        action: 'tool:read',
+        run: async () => {
+            if (!deps.trust) return fail('capability trust ledger is not available');
+            const all = deps.trust.list({ includeStale: true });
+            const declared = all.filter((c) => c.trust === 'declared');
+            const stale = all.filter((c) => c.stale);
+            const stats = deps.trust.stats();
+            if (declared.length === 0 && stale.length === 0) {
+                return ok(
+                    'no gaps: every capability was found in code and nothing went stale',
+                    `ledger: ${stats.total} total, ${stats.verified} verified`,
+                );
+            }
+            const rows = [
+                ...declared.map((c) => `declared: ${c.id}`),
+                ...stale.map((c) => `stale: ${c.id}`),
+            ].slice(0, 12);
+            return ok(
+                `${declared.length} declared-only, ${stale.length} stale`,
+                rows.join(' | '),
             );
         },
     });

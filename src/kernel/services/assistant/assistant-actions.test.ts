@@ -76,10 +76,11 @@ describe('AssistantActionRegistry', () => {
             'system.diagnose',
             'system.exam',
             'system.find',
+            'system.gaps',
             'system.howto',
             'system.self',
         ]);
-        expect(registry.groups().research).toBe(9);
+        expect(registry.groups().research).toBe(10);
         expect(registry.groups().work).toBeGreaterThan(0);
         expect(() => registry.register(registry.list()[0]!)).toThrow(/already registered/);
     });
@@ -320,5 +321,83 @@ describe('assistant actions', () => {
         const result = await registry.run('system.self');
         expect(result.ok).toBe(false);
         expect(result.detail).toContain('not wired');
+    });
+
+    it('reports declared-only and stale capabilities as gaps', async () => {
+        const rows = [
+            {
+                id: 'panel:ghost',
+                kind: 'panel',
+                title: 'Ghost',
+                trust: 'declared',
+                evidence: ['docs only'],
+                stale: false,
+            },
+            {
+                id: 'tool:broken',
+                kind: 'tool',
+                title: 'Broken',
+                trust: 'verified',
+                evidence: ['stale: 500'],
+                stale: true,
+            },
+            {
+                id: 'action:ui.openPanel',
+                kind: 'action',
+                title: 'Open panel',
+                trust: 'verified',
+                evidence: ['ran'],
+                stale: false,
+            },
+        ];
+        const list = vi.fn(() => rows);
+        const registry = new AssistantActionRegistry();
+        registry.registerAll(
+            createAssistantActions(
+                deps({
+                    trust: {
+                        list,
+                        stats: () => ({
+                            total: 3,
+                            declared: 1,
+                            discovered: 0,
+                            verified: 2,
+                            stale: 1,
+                        }),
+                    },
+                }),
+            ),
+        );
+
+        const result = await registry.run('system.gaps');
+        expect(result.ok).toBe(true);
+        expect(result.detail).toBe('1 declared-only, 1 stale');
+        expect(result.evidence).toContain('declared: panel:ghost');
+        expect(result.evidence).toContain('stale: tool:broken');
+        expect(result.evidence).not.toContain('action:ui.openPanel');
+        expect(list).toHaveBeenCalledWith({ includeStale: true });
+    });
+
+    it('says there are no gaps when the ledger is clean', async () => {
+        const registry = new AssistantActionRegistry();
+        registry.registerAll(
+            createAssistantActions(
+                deps({
+                    trust: {
+                        list: () => [],
+                        stats: () => ({
+                            total: 0,
+                            declared: 0,
+                            discovered: 0,
+                            verified: 0,
+                            stale: 0,
+                        }),
+                    },
+                }),
+            ),
+        );
+        const result = await registry.run('system.gaps');
+        expect(result.ok).toBe(true);
+        expect(result.detail).toContain('no gaps');
     });
 });
