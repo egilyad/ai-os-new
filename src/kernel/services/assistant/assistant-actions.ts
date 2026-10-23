@@ -138,6 +138,7 @@ export interface AssistantActionDeps {
             kind: string;
             text: string;
             evidence?: string;
+            tags?: string[];
             timestamp: number;
         }>;
         byKind?(kind: string, limit?: number): Array<{
@@ -145,6 +146,7 @@ export interface AssistantActionDeps {
             kind: string;
             text: string;
             evidence?: string;
+            tags?: string[];
             timestamp: number;
         }>;
         count?(): number;
@@ -689,8 +691,62 @@ export function createAssistantActions(deps: AssistantActionDeps): AssistantActi
     });
 
     actions.push({
-        id: 'memory.search',
-        group: 'research',
+        id: 'system.improve',
+        group: 'work',
+        description:
+            'Turn repeated mistakes into a rule for yourself. Looks for a tag shared by at least two mistakes, writes a concrete proposal to the diary and never changes the prompt by itself: the human decides. Use it after a failure repeats.',
+        parameters: { type: 'object', properties: {} },
+        action: 'tool:write',
+        run: async () => {
+            if (!deps.diary) return fail('diary service is not available');
+            const mistakes = deps.diary.byKind
+                ? deps.diary.byKind('mistake', 50)
+                : deps.diary.recent(50).filter((e) => e.kind === 'mistake');
+            const ignore = new Set(['assistant', 'diary', 'mistake']);
+            const counts = new Map<string, number>();
+            for (const entry of mistakes) {
+                for (const tag of entry.tags ?? []) {
+                    const key = tag.trim().toLowerCase();
+                    if (!key || ignore.has(key)) continue;
+                    counts.set(key, (counts.get(key) ?? 0) + 1);
+                }
+            }
+            const repeated = [...counts.entries()]
+                .filter(([, n]) => n >= 2)
+                .sort((a, b) => b[1] - a[1])[0];
+            if (!repeated) {
+                return ok(
+                    'no repeated mistake pattern yet, nothing to propose',
+                    `mistakes scanned: ${mistakes.length}`,
+                );
+            }
+            const [tag, occurrences] = repeated;
+            const latest = mistakes.find((m) => (m.tags ?? []).includes(tag));
+            if (!latest) return fail(`mistake tagged "${tag}" disappeared`);
+            const lessons = deps.diary.byKind
+                ? deps.diary.byKind('lesson', 20)
+                : deps.diary.recent(20).filter((e) => e.kind === 'lesson');
+            const lesson = lessons.find((l) => (l.tags ?? []).includes(tag));
+            const rule = lesson
+                ? `${lesson.text.trim()} (applies to: ${tag})`
+                : `Before touching ${tag}, re-check the result: ${latest.text.trim()}`;
+            const saved = await deps.diary.write({
+                kind: 'decision',
+                text: `Proposal: ${rule}`,
+                evidence: `${occurrences} mistake(s) tagged "${tag}"; latest: ${latest.text.trim()}`,
+                tags: ['proposal', 'improvement', tag],
+            });
+            return {
+                ok: true,
+                detail: `Proposed a rule for "${tag}" after ${occurrences} mistake(s)`,
+                evidence: `proposal: ${rule} | diary: ${saved.id}`,
+                verification: 'verified',
+            };
+        },
+    });
+
+    actions.push({
+        id: 'memory.search',        group: 'research',
         description:
             'Search the long-term memory of the system (decisions, lessons, earlier research, user facts).',
         parameters: {

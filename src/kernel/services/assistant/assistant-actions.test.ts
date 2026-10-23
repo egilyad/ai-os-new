@@ -409,6 +409,88 @@ describe('assistant actions', () => {
         expect(result.evidence).not.toContain('Fine');
     });
 
+    it('turns a repeated mistake into a proposal, never a silent edit', async () => {
+        const write = vi.fn(async () => ({ id: 'd9' }));
+        const mistakes = [
+            {
+                id: 'd1',
+                kind: 'mistake',
+                text: 'Said the schedule was created without reading it back',
+                tags: ['assistant', 'diary', 'mistake', 'scheduler'],
+                timestamp: 1,
+            },
+            {
+                id: 'd2',
+                kind: 'mistake',
+                text: 'Missed a paused schedule',
+                tags: ['assistant', 'diary', 'mistake', 'scheduler'],
+                timestamp: 2,
+            },
+        ];
+        const registry = new AssistantActionRegistry();
+        registry.registerAll(
+            createAssistantActions(
+                deps({
+                    diary: {
+                        write,
+                        recent: vi.fn(() => []),
+                        byKind: (kind: string) =>
+                            kind === 'mistake'
+                                ? mistakes
+                                : [
+                                      {
+                                          id: 'd3',
+                                          kind: 'lesson',
+                                          text: 'Read every schedule back',
+                                          tags: ['lesson', 'scheduler'],
+                                          timestamp: 3,
+                                      },
+                                  ],
+                    },
+                }),
+            ),
+        );
+
+        const result = await registry.run('system.improve', {});
+        expect(result.ok).toBe(true);
+        expect(result.detail).toContain('2 mistake(s)');
+        expect(result.evidence).toContain('Read every schedule back (applies to: scheduler)');
+        expect(write).toHaveBeenCalledWith(
+            expect.objectContaining({
+                kind: 'decision',
+                tags: ['proposal', 'improvement', 'scheduler'],
+            }),
+        );
+    });
+
+    it('does not invent a pattern from a single mistake', async () => {
+        const write = vi.fn();
+        const registry = new AssistantActionRegistry();
+        registry.registerAll(
+            createAssistantActions(
+                deps({
+                    diary: {
+                        write,
+                        recent: vi.fn(() => []),
+                        byKind: () => [
+                            {
+                                id: 'd1',
+                                kind: 'mistake',
+                                text: 'Guessed once',
+                                tags: ['mistake', 'providers'],
+                                timestamp: 1,
+                            },
+                        ],
+                    },
+                }),
+            ),
+        );
+        const result = await registry.run('system.improve', {});
+        expect(result.ok).toBe(true);
+        expect(result.detail).toBe('no repeated mistake pattern yet, nothing to propose');
+        expect(write).not.toHaveBeenCalled();
+    });
+
     it('says so when self-description is not wired', async () => {
         const registry = new AssistantActionRegistry();
         registry.registerAll(createAssistantActions(deps()));
