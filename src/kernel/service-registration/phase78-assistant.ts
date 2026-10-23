@@ -28,6 +28,8 @@ import { AssistantNavigationService } from '../services/assistant/assistant-navi
 import { AssistantActionRegistry } from '../services/assistant/assistant-action-registry';
 import { createAssistantActions } from '../services/assistant/assistant-actions';
 import { createAssistantOpsActions } from '../services/assistant/assistant-ops-actions';
+import { createPanelActions } from '../services/assistant/assistant-panel-actions';
+import { PanelActionRegistry } from '../services/assistant/panel-action-registry';
 import { agemsTaskService } from '../services/agems-task-service';
 import { createAssistantAdminActions } from '../services/assistant/assistant-admin-actions';
 import { AssistantService } from '../services/assistant/assistant-service';
@@ -44,6 +46,13 @@ export { ASSISTANT_AGENT_ID };
 
 export const registerPhase78: Phase = ({ register }) => {
     register('projectKnowledgeService', () => new ProjectKnowledgeService());
+
+    /**
+     * Panel capabilities. The UI registers descriptors into this catalog (it
+     * owns the panels); the kernel exposes them through three generic actions,
+     * so hundreds of panels never become hundreds of model tools.
+     */
+    register('panelActionRegistry', () => new PanelActionRegistry());
 
     register('assistantNavigationService', (c: IContainer) => {
         return new AssistantNavigationService({ eventBus: c.get<IEventBus>('eventBus') });
@@ -80,6 +89,11 @@ export const registerPhase78: Phase = ({ register }) => {
         }>('debateService');
 
         const registry = new AssistantActionRegistry();
+        registry.registerAll(
+            createPanelActions({
+                panels: c.get<PanelActionRegistry>('panelActionRegistry'),
+            }),
+        );
         // The exam and the diary depend on the registry, so they are resolved
         // lazily — the actions only touch them when they actually run.
         let exam: AssistantExamService | undefined;

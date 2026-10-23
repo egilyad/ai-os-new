@@ -107,6 +107,7 @@ export const compromiseWebhookService = lazyService<CompromiseWebhookService>(
 import type { ProjectKnowledgeService } from '../services/assistant/project-knowledge-service';
 import type { AssistantNavigationService } from '../services/assistant/assistant-navigation-service';
 import type { AssistantActionRegistry } from '../services/assistant/assistant-action-registry';
+import type { PanelActionRegistry } from '../services/assistant/panel-action-registry';
 import type { AssistantService } from '../services/assistant/assistant-service';
 import type { CapabilityTrustService } from '../services/capability-trust/capability-trust-service';
 import type { AssistantDiaryService } from '../services/assistant/assistant-diary-service';
@@ -121,6 +122,7 @@ export const assistantNavigationService = lazyService<AssistantNavigationService
 export const assistantActionRegistry = lazyService<AssistantActionRegistry>(
     'assistantActionRegistry',
 );
+export const panelActionRegistry = lazyService<PanelActionRegistry>('panelActionRegistry');
 export const projectAssistantService = lazyService<AssistantService>('projectAssistantService');
 export const capabilityTrustService = lazyService<CapabilityTrustService>(
     'capabilityTrustService',

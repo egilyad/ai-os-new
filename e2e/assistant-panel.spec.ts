@@ -361,4 +361,43 @@ test.describe('assistant panel', () => {
         await page.goto('/scheduler');
         await expect(page.getByText(name).first()).toBeVisible({ timeout: 90000 });
     });
+
+    test('the assistant reaches a panel through panel.read and panel.act', async ({ page }) => {
+        await boot(page);
+        await seedKey(page);
+
+        await stubOpenRouterToolCall(page, {
+            tool: 'panel.read',
+            args: { panelId: 'memory', id: 'stats' },
+            reply: 'Память: столько-то записей.',
+        });
+        await page.reload();
+        await boot(page);
+        await page.goto('/assistant');
+        await expect(page.getByRole('heading', { name: /помощник проекта/i })).toBeVisible({
+            timeout: 60000,
+        });
+
+        const input = page.getByLabel('Вопрос помощнику');
+        await input.fill('что сейчас в памяти?');
+        await input.press('Enter');
+
+        // Reading inside a panel is not gated, like every other read.
+        await expect(page.getByText('Память: столько-то записей.')).toBeVisible({
+            timeout: 120000,
+        });
+        await expect(page.getByRole('button', { name: 'Разрешить' })).toHaveCount(0);
+
+        // A panel write goes through the same human gate as any other write.
+        await stubOpenRouterToolCall(page, {
+            tool: 'panel.act',
+            args: { panelId: 'memory', id: 'forget', args: { id: 'mem-missing' } },
+            reply: 'Такой записи нет.',
+        });
+        await input.fill('забудь эту запись');
+        await input.press('Enter');
+        await expect(page.getByText('Инструмент: panel.act')).toBeVisible({ timeout: 90000 });
+        await page.getByRole('button', { name: 'Разрешить' }).click();
+        await expect(page.getByText('Такой записи нет.')).toBeVisible({ timeout: 90000 });
+    });
 });

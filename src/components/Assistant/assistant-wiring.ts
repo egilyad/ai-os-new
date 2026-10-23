@@ -9,12 +9,14 @@
  */
 import {
     assistantActionRegistry,
+    panelActionRegistry,
     projectKnowledgeService,
     keyService,
     mcpService,
     skillService,
 } from '../../kernel/instances/services-core';
 import { WIKI_ARTICLES } from '../WikiPanel/wiki-articles';
+import { ensurePanelActionCatalog } from './panel-actions-catalog';
 
 let wired = false;
 
@@ -40,6 +42,14 @@ export function ensureAssistantWiring(): void {
         projectKnowledgeService.setCorpusProvider(articleCorpus);
     } catch {
         /* container not ready — the assistant works without articles */
+    }
+
+    // The panels can only advertise their capabilities from here: the kernel
+    // must not import UI singletons. `panel.list/read/act` reach all of them.
+    try {
+        ensurePanelActionCatalog(panelActionRegistry);
+    } catch {
+        /* catalog is optional — the kernel actions still work */
     }
 
     try {
