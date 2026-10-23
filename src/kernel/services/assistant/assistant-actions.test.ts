@@ -72,6 +72,7 @@ describe('AssistantActionRegistry', () => {
             'diary.recent',
             'memory.search',
             'system.capabilities',
+            'system.checkup',
             'system.describe',
             'system.diagnose',
             'system.exam',
@@ -80,7 +81,7 @@ describe('AssistantActionRegistry', () => {
             'system.howto',
             'system.self',
         ]);
-        expect(registry.groups().research).toBe(10);
+        expect(registry.groups().research).toBe(11);
         expect(registry.groups().work).toBeGreaterThan(0);
         expect(() => registry.register(registry.list()[0]!)).toThrow(/already registered/);
     });
@@ -321,6 +322,48 @@ describe('assistant actions', () => {
         const result = await registry.run('system.self');
         expect(result.ok).toBe(false);
         expect(result.detail).toContain('not wired');
+    });
+
+    it('reports a sweep of the read capabilities as a health check', async () => {
+        const registry = new AssistantActionRegistry();
+        registry.registerAll(
+            createAssistantActions(
+                deps({
+                    exam: {
+                        examine: vi.fn(),
+                        sweep: async () => ({
+                            checked: 3,
+                            passed: 2,
+                            failed: 1,
+                            skipped: 4,
+                            verdicts: [
+                                {
+                                    capabilityId: 'action:system.find',
+                                    passed: true,
+                                    level: 'verified',
+                                    evidence: ['panel memory'],
+                                    reason: 'ok',
+                                    nextStep: '',
+                                },
+                                {
+                                    capabilityId: 'action:traces.summary',
+                                    passed: false,
+                                    level: 'discovered',
+                                    evidence: [],
+                                    reason: 'traces are not available',
+                                    nextStep: 'check the trace service',
+                                },
+                            ],
+                        }),
+                    },
+                }),
+            ),
+        );
+
+        const result = await registry.run('system.checkup');
+        expect(result.ok).toBe(true);
+        expect(result.detail).toBe('3 checked: 2 passed, 1 failed, 4 skipped');
+        expect(result.evidence).toContain('action:traces.summary: traces are not available');
     });
 
     it('reports declared-only and stale capabilities as gaps', async () => {

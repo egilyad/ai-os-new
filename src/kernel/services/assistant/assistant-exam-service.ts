@@ -95,6 +95,45 @@ export class AssistantExamService {
         );
     }
 
+    /**
+     * Examine every read-only action that can run without arguments.
+     *
+     * This is the checkup an operator asks for: "is the system actually
+     * working right now?" Each action runs once, so a pass is observed
+     * behaviour, not a guess. Actions that need input and all writes are
+     * skipped — the sweep never triggers a permission prompt or a change.
+     */
+    async sweep(): Promise<{
+        checked: number;
+        passed: number;
+        failed: number;
+        skipped: number;
+        verdicts: AssistantExamVerdict[];
+    }> {
+        const verdicts: AssistantExamVerdict[] = [];
+        let skipped = 0;
+        for (const action of this.deps.actions.list()) {
+            if (action.id === 'system.checkup' || !this.isSafeToProbe(action)) {
+                skipped += 1;
+                continue;
+            }
+            const required = action.parameters['required'];
+            if (Array.isArray(required) && required.length > 0) {
+                skipped += 1;
+                continue;
+            }
+            verdicts.push(await this.examine(action.id));
+        }
+        const passed = verdicts.filter((v) => v.passed).length;
+        return {
+            checked: verdicts.length,
+            passed,
+            failed: verdicts.length - passed,
+            skipped,
+            verdicts,
+        };
+    }
+
     /** A short instruction for the assistant prompt. */
     rule(): string {
         return (

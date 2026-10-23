@@ -98,4 +98,35 @@ describe('AssistantExamService', () => {
         const { exam } = makeExam([action()]);
         expect(exam.rule()).toContain('system.exam');
     });
+
+    it('sweeps every argument-free read capability and skips the rest', async () => {
+        const writeRun = vi.fn();
+        const needsArgsRun = vi.fn();
+        const { exam, trust } = makeExam([
+            action({ id: 'system.find' }),
+            action({ id: 'system.failing', run: async () => ({ ok: false, detail: 'no data' }) }),
+            action({
+                id: 'system.checkup',
+                run: async () => ({ ok: true, detail: 'should not run here' }),
+            }),
+            action({ id: 'agents.spawn', action: 'tool:write', run: writeRun }),
+            action({
+                id: 'system.needsArgs',
+                parameters: { type: 'object', properties: {}, required: ['query'] },
+                run: needsArgsRun,
+            }),
+        ]);
+
+        const report = await exam.sweep();
+
+        expect(report.checked).toBe(2);
+        expect(report.passed).toBe(1);
+        expect(report.failed).toBe(1);
+        expect(report.skipped).toBe(3);
+        expect(writeRun).not.toHaveBeenCalled();
+        expect(needsArgsRun).not.toHaveBeenCalled();
+        expect(trust.get('action:system.find')?.trust).toBe('verified');
+        const failed = report.verdicts.find((v) => v.capabilityId === 'action:system.failing');
+        expect(failed?.reason).toContain('no data');
+    });
 });

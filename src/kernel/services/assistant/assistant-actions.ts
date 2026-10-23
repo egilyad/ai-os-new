@@ -80,6 +80,20 @@ export interface AssistantActionDeps {
             reason: string;
             nextStep: string;
         }>;
+        sweep?(): Promise<{
+            checked: number;
+            passed: number;
+            failed: number;
+            skipped: number;
+            verdicts: Array<{
+                capabilityId: string;
+                passed: boolean;
+                level: string;
+                evidence: string[];
+                reason: string;
+                nextStep: string;
+            }>;
+        }>;
     };
     /** Routing a symptom to the layer that owns it. */
     diagnosis?: {
@@ -537,6 +551,30 @@ export function createAssistantActions(deps: AssistantActionDeps): AssistantActi
                 ]
                     .filter(Boolean)
                     .join(' | '),
+            );
+        },
+    });
+
+    actions.push({
+        id: 'system.checkup',
+        group: 'research',
+        description:
+            'Run every read-only capability that needs no arguments and report what actually works right now. Use it when the user asks whether the system is healthy; it never changes anything and never asks for approval.',
+        parameters: { type: 'object', properties: {} },
+        action: 'tool:read',
+        run: async () => {
+            if (!deps.exam?.sweep) return fail('exam service is not available');
+            const report = await deps.exam.sweep();
+            const failures = report.verdicts.filter((v) => !v.passed);
+            const evidence = failures.length
+                ? failures
+                      .slice(0, 8)
+                      .map((v) => `${v.capabilityId}: ${v.reason}`)
+                      .join(' | ')
+                : `all ${report.passed} read capabilities answered`;
+            return ok(
+                `${report.checked} checked: ${report.passed} passed, ${report.failed} failed, ${report.skipped} skipped`,
+                evidence,
             );
         },
     });
