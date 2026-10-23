@@ -178,6 +178,10 @@ test.describe('assistant panel', () => {
         const stored = tasks.find((t) => t.title === title);
         expect(stored?.assigneeId).toBe('assistant');
         expect(stored?.priority).toBe('HIGH');
+
+        // And the human sees it where the work is managed, not only in the DB.
+        await page.goto('/tasks');
+        await expect(page.getByText(title).first()).toBeVisible({ timeout: 90000 });
     });
 
     test('a checkup runs the read capabilities without asking for approval', async ({ page }) => {
