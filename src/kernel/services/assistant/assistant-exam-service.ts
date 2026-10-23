@@ -122,7 +122,7 @@ export class AssistantExamService {
                 skipped += 1;
                 continue;
             }
-            verdicts.push(await this.examine(action.id));
+            verdicts.push(await this.probeWithTimeout(action.id));
         }
         const passed = verdicts.filter((v) => v.passed).length;
         return {
@@ -190,6 +190,37 @@ export class AssistantExamService {
             reason: 'Only the documentation mentions this capability.',
             nextStep: 'find the implementation first (system.find), then run it',
         };
+    }
+
+    /**
+     * A read can still touch the network (a key health probe, an MCP
+     * connection). A checkup must not hang the answer, so one probe that
+     * outlives the budget is reported as failed and the sweep moves on.
+     */
+    private async probeWithTimeout(actionId: string): Promise<AssistantExamVerdict> {
+        const budgetMs = 3000;
+        let timer: ReturnType<typeof setTimeout> | undefined;
+        try {
+            return await Promise.race([
+                this.examine(actionId),
+                new Promise<AssistantExamVerdict>((resolve) => {
+                    timer = setTimeout(
+                        () =>
+                            resolve({
+                                capabilityId: `action:${actionId}`,
+                                passed: false,
+                                level: 'discovered',
+                                evidence: [],
+                                reason: `The probe did not answer within ${budgetMs} ms.`,
+                                nextStep: 'check it directly when the system is less busy',
+                            }),
+                        budgetMs,
+                    );
+                }),
+            ]);
+        } finally {
+            if (timer) clearTimeout(timer);
+        }
     }
 
     private isSafeToProbe(action: AssistantAction): boolean {

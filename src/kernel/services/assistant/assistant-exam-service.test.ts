@@ -129,4 +129,21 @@ describe('AssistantExamService', () => {
         const failed = report.verdicts.find((v) => v.capabilityId === 'action:system.failing');
         expect(failed?.reason).toContain('no data');
     });
+
+    it('does not hang the checkup when one probe never answers', async () => {
+        vi.useFakeTimers();
+        try {
+            const { exam } = makeExam([
+                action({ id: 'slow.read', run: () => new Promise(() => {}) }),
+            ]);
+            const sweep = exam.sweep();
+            await vi.advanceTimersByTimeAsync(3100);
+            const report = await sweep;
+            expect(report.checked).toBe(1);
+            expect(report.failed).toBe(1);
+            expect(report.verdicts[0]?.reason).toContain('did not answer within');
+        } finally {
+            vi.useRealTimers();
+        }
+    });
 });
