@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { boot, idbAll, idbPut, stubOpenRouter, stubOpenRouterToolCall, STUB_MODEL } from './helpers';
+import { boot, idbAll, idbGet, idbPut, stubOpenRouter, stubOpenRouterToolCall, STUB_MODEL } from './helpers';
 
 /** Seed a working key so the assistant can actually call the model. */
 async function seedKey(page: import('@playwright/test').Page) {
@@ -300,5 +300,65 @@ test.describe('assistant panel', () => {
         expect(proposal?.tags).toContain('scheduler');
         expect(proposal?.taskType).toBe('assistant.decision');
         expect(proposal?.taskDescription).toContain('re-check the result');
+    });
+
+    test('the assistant pauses a schedule it created', async ({ page }) => {
+        await boot(page);
+        await seedKey(page);
+
+        const name = 'Ночной обзор системы';
+        await stubOpenRouterToolCall(page, {
+            tool: 'scheduler.create',
+            args: { name, prompt: 'Проверь состояние системы', frequency: 'daily' },
+            reply: 'Расписание создано.',
+        });
+        await page.reload();
+        await boot(page);
+        await page.goto('/assistant');
+        await expect(page.getByRole('heading', { name: /помощник проекта/i })).toBeVisible({
+            timeout: 60000,
+        });
+
+        const input = page.getByLabel('Вопрос помощнику');
+        await input.fill('создай ежедневное расписание');
+        await input.press('Enter');
+        await expect(page.getByText('Инструмент: scheduler.create')).toBeVisible({
+            timeout: 90000,
+        });
+        await page.getByRole('button', { name: 'Разрешить' }).click();
+        await expect(page.getByText('Расписание создано.')).toBeVisible({ timeout: 90000 });
+
+        // The id has to come from the app's own storage: the reply text is not
+        // proof, and the assistant can only pause what really exists.
+        interface ScheduleRow {
+            id: string;
+            name: string;
+            enabled: boolean;
+            cronExpression: string;
+        }
+        const schedules = (await idbGet<ScheduleRow[]>(page, 'keyValue', 'schedules')) ?? [];
+        const created = schedules.find((s) => s.name === name);
+        expect(created).toBeTruthy();
+        expect(created?.enabled).toBe(true);
+
+        await stubOpenRouterToolCall(page, {
+            tool: 'scheduler.toggle',
+            args: { id: created?.id, enabled: false },
+            reply: 'Расписание на паузе.',
+        });
+        await input.fill('поставь это расписание на паузу');
+        await input.press('Enter');
+        await expect(page.getByText('Инструмент: scheduler.toggle')).toBeVisible({
+            timeout: 90000,
+        });
+        await page.getByRole('button', { name: 'Разрешить' }).click();
+        await expect(page.getByText('Расписание на паузе.')).toBeVisible({ timeout: 90000 });
+
+        const after = (await idbGet<ScheduleRow[]>(page, 'keyValue', 'schedules')) ?? [];
+        expect(after.find((s) => s.id === created?.id)?.enabled).toBe(false);
+
+        // And the human sees the paused schedule where schedules live.
+        await page.goto('/scheduler');
+        await expect(page.getByText(name).first()).toBeVisible({ timeout: 90000 });
     });
 });

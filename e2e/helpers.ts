@@ -116,6 +116,41 @@ export async function idbPut(
     throw lastError;
 }
 
+/**
+ * Read one row of a Dexie store by its primary key from a sidecar page.
+ * Used when the app stores a whole collection under one KV id (e.g. the
+ * scheduler keeps every schedule under `keyValue:schedules`).
+ */
+export async function idbGet<T>(page: Page, store: string, key: string): Promise<T | undefined> {
+    const sidecar = await page.context().newPage();
+    try {
+        await sidecar.goto('/favicon.svg');
+        const row = await sidecar.evaluate(
+            ({ dbName, store, key }) =>
+                new Promise<{ value?: T } | undefined>((resolve, reject) => {
+                    const req = indexedDB.open(dbName);
+                    req.onerror = () => reject(req.error);
+                    req.onsuccess = () => {
+                        const db = req.result;
+                        if (!db.objectStoreNames.contains(store)) {
+                            reject(new Error(`store ${store} missing`));
+                            return;
+                        }
+                        const tx = db.transaction(store, 'readonly');
+                        const get = tx.objectStore(store).get(key);
+                        get.onsuccess = () =>
+                            resolve(get.result as { value?: T } | undefined);
+                        get.onerror = () => reject(get.error);
+                    };
+                }),
+            { dbName: DB_NAME, store, key },
+        ) as { value?: T } | undefined;
+        return row?.value;
+    } finally {
+        await sidecar.close().catch(() => {});
+    }
+}
+
 function stubModels(route: Route) {
     return route.fulfill({
         status: 200,

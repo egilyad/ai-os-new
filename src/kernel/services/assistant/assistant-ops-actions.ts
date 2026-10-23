@@ -64,7 +64,16 @@ export interface AssistantOpsDeps {
             cronExpression: string;
             nextRun?: number;
         }>;
-        getAll(): Array<{ id: string }>;
+        getAll(): Array<{
+            id: string;
+            name: string;
+            agentId: string;
+            cronExpression: string;
+            enabled: boolean;
+            nextRun?: number;
+            lastRun?: number;
+            runCount?: number;
+        }>;
         getById(id: string): { id: string; name: string; enabled: boolean } | undefined;
         toggle(id: string, enabled: boolean): Promise<{ id: string; name: string; enabled: boolean } | null>;
         remove(id: string): Promise<boolean>;
@@ -531,6 +540,52 @@ export function createAssistantOpsActions(deps: AssistantOpsDeps): AssistantActi
                 ok: true,
                 detail: `Deleted schedule "${before.name}"`,
                 evidence: `deleted: ${before.id} | name: ${before.name}`,
+                verification: 'verified',
+            };
+        },
+    });
+
+    actions.push({
+        id: 'scheduler.list',
+        group: 'coordination',
+        description:
+            'List the recurring schedules of the system: id, name, agent, cron, whether it is enabled and the next run. Use it to find the id before pausing or deleting one.',
+        parameters: {
+            type: 'object',
+            properties: {
+                agentId: {
+                    type: 'string',
+                    description: 'Only schedules of this agent (optional).',
+                },
+            },
+        },
+        action: 'tool:read',
+        run: async (args) => {
+            const scheduler = deps.scheduler;
+            if (!scheduler) return { ok: false, detail: 'scheduler is not available' };
+            const agentId = typeof args['agentId'] === 'string' ? args['agentId'].trim() : '';
+            const all = scheduler.getAll();
+            const rows = agentId ? all.filter((s) => s.agentId === agentId) : all;
+            if (rows.length === 0) {
+                return {
+                    ok: true,
+                    detail: agentId ? `no schedules for "${agentId}"` : 'no schedules yet',
+                    evidence: 'schedules: 0',
+                    verification: 'verified',
+                };
+            }
+            const enabled = rows.filter((s) => s.enabled).length;
+            const lines = rows.slice(0, 20).map((s) => {
+                const next =
+                    typeof s.nextRun === 'number'
+                        ? ` | next: ${new Date(s.nextRun).toISOString()}`
+                        : '';
+                return `${s.name} [${s.id}] agent: ${s.agentId} | ${s.cronExpression} | ${s.enabled ? 'enabled' : 'paused'}${next}`;
+            });
+            return {
+                ok: true,
+                detail: `${rows.length} schedule(s), ${enabled} enabled`,
+                evidence: lines.join(' | '),
                 verification: 'verified',
             };
         },

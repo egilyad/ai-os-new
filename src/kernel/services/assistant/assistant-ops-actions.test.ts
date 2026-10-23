@@ -56,6 +56,7 @@ describe('assistant ops actions', () => {
             'providers.health',
             'scheduler.create',
             'scheduler.delete',
+            'scheduler.list',
             'scheduler.toggle',
             'tasks.create',
             'tasks.list',
@@ -134,6 +135,51 @@ describe('assistant ops actions', () => {
         expect(result.ok).toBe(false);
         expect(result.detail).toContain('Agent ghost does not exist');
         expect(create).not.toHaveBeenCalled();
+    });
+
+    it('lists the schedules with the ids needed to pause or delete one', async () => {
+        const registry = new AssistantActionRegistry();
+        registry.registerAll(
+            createAssistantOpsActions(
+                deps({
+                    scheduler: {
+                        getAll: () => [
+                            {
+                                id: 's1',
+                                name: 'Ночной обзор',
+                                agentId: 'assistant',
+                                cronExpression: '0 3 * * *',
+                                enabled: true,
+                                nextRun: Date.UTC(2026, 0, 2, 3, 0, 0),
+                            },
+                            {
+                                id: 's2',
+                                name: 'Утренняя сводка',
+                                agentId: 'analyst',
+                                cronExpression: '0 9 * * *',
+                                enabled: false,
+                            },
+                        ],
+                    } as never,
+                }),
+            ),
+        );
+
+        const all = await registry.run('scheduler.list', {});
+        expect(all.ok).toBe(true);
+        expect(all.detail).toBe('2 schedule(s), 1 enabled');
+        expect(all.evidence).toContain('Ночной обзор [s1] agent: assistant | 0 3 * * * | enabled');
+        expect(all.evidence).toContain('Утренняя сводка [s2] agent: analyst | 0 9 * * * | paused');
+        expect(all.evidence).toContain('next: 2026-01-02T03:00:00.000Z');
+
+        const mine = await registry.run('scheduler.list', { agentId: 'analyst' });
+        expect(mine.detail).toBe('1 schedule(s), 0 enabled');
+        expect(mine.evidence).not.toContain('Ночной обзор');
+
+        const none = await registry.run('scheduler.list', { agentId: 'ghost' });
+        expect(none.ok).toBe(true);
+        expect(none.detail).toBe('no schedules for "ghost"');
+        expect(none.evidence).toBe('schedules: 0');
     });
 
     it('refuses bad frequencies, missing prompts and invalid crons', async () => {
