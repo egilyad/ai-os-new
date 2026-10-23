@@ -26,7 +26,15 @@ export interface AssistantExamDeps {
 }
 
 export class AssistantExamService {
+    private readonly timers = new Set<ReturnType<typeof setTimeout>>();
+
     constructor(private readonly deps: AssistantExamDeps) {}
+
+    /** Drop pending probe budgets so a shutdown never leaves timers behind. */
+    destroy(): void {
+        for (const timer of this.timers) clearTimeout(timer);
+        this.timers.clear();
+    }
 
     /**
      * Examine a capability.
@@ -204,22 +212,25 @@ export class AssistantExamService {
             return await Promise.race([
                 this.examine(actionId),
                 new Promise<AssistantExamVerdict>((resolve) => {
-                    timer = setTimeout(
-                        () =>
-                            resolve({
-                                capabilityId: `action:${actionId}`,
-                                passed: false,
-                                level: 'discovered',
-                                evidence: [],
-                                reason: `The probe did not answer within ${budgetMs} ms.`,
-                                nextStep: 'check it directly when the system is less busy',
-                            }),
-                        budgetMs,
-                    );
+                    timer = setTimeout(() => {
+                        if (timer) this.timers.delete(timer);
+                        resolve({
+                            capabilityId: `action:${actionId}`,
+                            passed: false,
+                            level: 'discovered',
+                            evidence: [],
+                            reason: `The probe did not answer within ${budgetMs} ms.`,
+                            nextStep: 'check it directly when the system is less busy',
+                        });
+                    }, budgetMs);
+                    this.timers.add(timer);
                 }),
             ]);
         } finally {
-            if (timer) clearTimeout(timer);
+            if (timer) {
+                clearTimeout(timer);
+                this.timers.delete(timer);
+            }
         }
     }
 
