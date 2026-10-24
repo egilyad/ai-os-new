@@ -15,10 +15,12 @@ import {
     agentService,
     diagnosticService,
     keyService,
+    mcpService,
     memoryOrchestrator,
     memoryService,
     monitoringService,
     providerTracker,
+    skillService,
     systemStatusService,
 } from '../../kernel/instances/services-core';
 import { agemsApprovalService } from '../../kernel/services/agems-approval-service';
@@ -1224,6 +1226,171 @@ export function panelActionDescriptors(): PanelActionDescriptor[] {
                     evidence: `${record.scope} | issues: ${record.issueCount} | run: ${record.id}`,
                     verification: 'verified',
                 };
+            },
+        },
+
+        /* ----------------------------------------------------------- skills */
+        {
+            panelId: 'skills',
+            id: 'list',
+            title: 'Cognitive skills',
+            description: 'The installed and available skills, with their state.',
+            permission: 'tool:read',
+            parameters: { type: 'object', properties: {} },
+            run: async () => {
+                const skills = skillService.getSkills();
+                if (skills.length === 0) {
+                    return { ok: true, detail: 'no skills', evidence: 'skills: 0', verification: 'verified' };
+                }
+                return {
+                    ok: true,
+                    detail: `${skills.length} skill(s)`,
+                    evidence: skills
+                        .slice(0, 10)
+                        .map((s) => `${s.id} ${s.name} [${s.status}] runs: ${s.executionCount}`)
+                        .join(' | '),
+                    verification: 'verified',
+                };
+            },
+        },
+        {
+            panelId: 'skills',
+            id: 'toggle',
+            title: 'Toggle a skill',
+            description: 'Switch one skill on or off and read the new state back.',
+            permission: 'tool:write',
+            parameters: {
+                type: 'object',
+                properties: { id: { type: 'string', description: 'Skill id.' } },
+                required: ['id'],
+            },
+            run: async (args) => {
+                const id = str(args['id']);
+                if (!id) return fail('id is required');
+                const before = skillService.getSkills().find((s) => s.id === id);
+                if (!before) return fail(`skill ${id} does not exist`);
+                await skillService.toggleActive(id);
+                const after = skillService.getSkills().find((s) => s.id === id);
+                if (after && after.status !== before.status) {
+                    return {
+                        ok: true,
+                        detail: `Skill "${before.name}" is now ${after.status}`,
+                        evidence: `${id}: ${before.status} → ${after.status}`,
+                        verification: 'verified',
+                    };
+                }
+                return fail(`skill ${id} did not change state`);
+            },
+        },
+        {
+            panelId: 'skills',
+            id: 'install',
+            title: 'Install a skill',
+            description: 'Install an available skill and read it back.',
+            permission: 'tool:write',
+            parameters: {
+                type: 'object',
+                properties: { id: { type: 'string', description: 'Skill id.' } },
+                required: ['id'],
+            },
+            run: async (args) => {
+                const id = str(args['id']);
+                if (!id) return fail('id is required');
+                const before = skillService.getSkills().find((s) => s.id === id);
+                if (!before) return fail(`skill ${id} does not exist`);
+                await skillService.installSkill(id);
+                const after = skillService.getSkills().find((s) => s.id === id);
+                if (after && after.status !== 'not_installed') {
+                    return {
+                        ok: true,
+                        detail: `Installed "${after.name}"`,
+                        evidence: `${id}: ${after.status}`,
+                        verification: 'verified',
+                    };
+                }
+                return fail(`skill ${id} was not installed`);
+            },
+        },
+
+        /* ------------------------------------------------------------- mcp */
+        {
+            panelId: 'mcp',
+            id: 'servers',
+            title: 'MCP servers',
+            description: 'The configured Model Context Protocol servers and their connection state.',
+            permission: 'tool:read',
+            parameters: { type: 'object', properties: {} },
+            run: async () => {
+                const servers = mcpService.getServers();
+                if (servers.length === 0) {
+                    return { ok: true, detail: 'no MCP servers', evidence: 'servers: 0', verification: 'verified' };
+                }
+                return {
+                    ok: true,
+                    detail: `${servers.length} server(s)`,
+                    evidence: servers
+                        .map((s) => `${s.id} ${s.name} [${s.status}] ${s.url}`)
+                        .join(' | '),
+                    verification: 'verified',
+                };
+            },
+        },
+        {
+            panelId: 'mcp',
+            id: 'connect',
+            title: 'Connect an MCP server',
+            description: 'Connect one MCP server and read the connection state back.',
+            permission: 'tool:write',
+            parameters: {
+                type: 'object',
+                properties: { serverId: { type: 'string', description: 'Server id.' } },
+                required: ['serverId'],
+            },
+            run: async (args) => {
+                const serverId = str(args['serverId']);
+                if (!serverId) return fail('serverId is required');
+                const before = mcpService.getServers().find((s) => s.id === serverId);
+                if (!before) return fail(`MCP server ${serverId} does not exist`);
+                await mcpService.connect(serverId);
+                const after = mcpService.getServers().find((s) => s.id === serverId);
+                if (after && after.status === 'connected') {
+                    return {
+                        ok: true,
+                        detail: `Connected "${after.name}"`,
+                        evidence: `${serverId}: ${before.status} → ${after.status}`,
+                        verification: 'verified',
+                    };
+                }
+                return fail(`server ${serverId} did not connect (${after?.status ?? 'unknown'})`);
+            },
+        },
+        {
+            panelId: 'mcp',
+            id: 'disconnect',
+            title: 'Disconnect an MCP server',
+            description: 'Disconnect one MCP server and read the state back.',
+            permission: 'tool:write',
+            parameters: {
+                type: 'object',
+                properties: { serverId: { type: 'string', description: 'Server id.' } },
+                required: ['serverId'],
+            },
+            run: async (args) => {
+                const serverId = str(args['serverId']);
+                if (!serverId) return fail('serverId is required');
+                const before = mcpService.getServers().find((s) => s.id === serverId);
+                if (!before) return fail(`MCP server ${serverId} does not exist`);
+                await mcpService.disconnect(serverId);
+                const after = mcpService.getServers().find((s) => s.id === serverId);
+                if (after && after.status === 'disconnected') {
+                    return {
+                        ok: true,
+                        detail: `Disconnected "${before.name}"`,
+                        evidence: `${serverId}: ${before.status} → ${after.status}`,
+                        verification: 'verified',
+                    };
+                }
+                return fail(`server ${serverId} did not disconnect (${after?.status ?? 'unknown'})`);
             },
         },
     ];
