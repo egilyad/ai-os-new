@@ -265,7 +265,7 @@ export class OpenRouterAdapter extends BaseLLMAdapter {
                 .filter(([, slot]) => slot.name.length > 0)
                 .map(([index, slot]) => ({
                     id: slot.id || `call_${index}`,
-                    type: slot.type || 'function',
+                    type: 'function' as const,
                     function: { name: slot.name, arguments: slot.args || '{}' },
                 }));
             if (finalFinishReason || finalUsage || finalReasoning || toolCalls.length > 0) {

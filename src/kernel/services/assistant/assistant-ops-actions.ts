@@ -193,7 +193,8 @@ export function createAssistantOpsActions(deps: AssistantOpsDeps): AssistantActi
             }
             const line = (r: (typeof rows)[number]): string =>
                 `${r.provider}: ${Math.round(r.reliability * 100)}% reliable, avg ${Math.round(r.avgLatency)} ms, ${r.requests} request(s), $${r.costPerRequest.toFixed(4)}/request — ${r.recommendation}`;
-            const top = rows[0];
+            // The empty-guard above guarantees a first row here.
+            const top = rows[0]!;
             return {
                 ok: true,
                 detail: `${rows.length} provider(s); best: ${top.provider} (${top.recommendation})`,

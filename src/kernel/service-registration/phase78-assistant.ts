@@ -215,7 +215,16 @@ export const registerPhase78: Phase = ({ register }) => {
                 cronExpression: string;
                 nextRun?: number;
             }>;
-            getAll(): Array<{ id: string }>;
+            getAll(): Array<{
+                id: string;
+                name: string;
+                agentId: string;
+                cronExpression: string;
+                enabled: boolean;
+                nextRun?: number;
+                lastRun?: number;
+                runCount?: number;
+            }>;
             getById(id: string): { id: string; name: string; enabled: boolean } | undefined;
             toggle(
                 id: string,

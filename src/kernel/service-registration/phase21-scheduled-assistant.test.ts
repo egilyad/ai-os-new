@@ -32,7 +32,7 @@ const coder = [{ id: 'coder', role: 'coder' }] as never;
 describe('scheduled assistant tasks', () => {
     it('runs through the assistant brain and records the run in the diary', async () => {
         const ask = vi.fn(async () => ({ content: 'Здоровье в норме' }));
-        const write = vi.fn(async () => ({}));
+        const write = vi.fn(async (_entry: { text?: string }) => ({}));
         const { delegate, repo } = make(() => ({ ask }), () => ({ write }));
 
         const { target, completed } = await delegate.start(

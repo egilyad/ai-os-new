@@ -346,6 +346,7 @@ describe('assistant actions', () => {
                         recent: vi.fn(() => []),
                         byKind: (kind: string) => entries[kind as 'mistake' | 'lesson'] ?? [],
                         count: () => 2,
+                        search: vi.fn(() => []),
                     },
                 }),
             ),
@@ -378,6 +379,7 @@ describe('assistant actions', () => {
                                   ]
                                 : [],
                         count: () => 1,
+                        search: vi.fn(() => []),
                     },
                 }),
             ),
@@ -400,6 +402,7 @@ describe('assistant actions', () => {
                             { id: 'd1', kind: 'mistake', text: 'Wrong route', timestamp: 1 },
                             { id: 'd2', kind: 'answer', text: 'Fine', timestamp: 2 },
                         ]),
+                        search: vi.fn(() => []),
                     },
                 }),
             ),
@@ -446,6 +449,7 @@ describe('assistant actions', () => {
                                           timestamp: 3,
                                       },
                                   ],
+                        search: vi.fn(() => []),
                     },
                 }),
             ),
@@ -468,7 +472,7 @@ describe('assistant actions', () => {
         const registry = new AssistantActionRegistry();
         registry.registerAll(
             createAssistantActions(
-                deps({ diary: { write, recent: vi.fn(() => []) } }),
+                deps({ diary: { write, recent: vi.fn(() => []), search: vi.fn(() => []) } }),
             ),
         );
 
@@ -505,6 +509,7 @@ describe('assistant actions', () => {
                                 timestamp: 1,
                             },
                         ],
+                        search: vi.fn(() => []),
                     },
                 }),
             ),

@@ -294,7 +294,7 @@ export function panelActionDescriptors(): PanelActionDescriptor[] {
                     detail: `${pending.length} pending approval(s)`,
                     evidence: pending
                         .slice(0, 10)
-                        .map((p) => `#${p.id} ${p.tool} (${p.agentId})`)
+                        .map((p) => `#${p.id} ${p.toolName} (${p.agentId})`)
                         .join(' | '),
                     verification: 'verified',
                 };
