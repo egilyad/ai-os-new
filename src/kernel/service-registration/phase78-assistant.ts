@@ -357,6 +357,31 @@ export const registerPhase78: Phase = ({ register }) => {
             }),
         );
 
+        // Seed a nightly self-review schedule for the assistant (idempotent).
+        // The scheduler fires it through the invocation bridge, which routes the
+        // prompt into the assistant brain; pause it in the Scheduler panel.
+        if (schedulerService) {
+            const nightlyExists = schedulerService.getAll().some(
+                (s) => s.name === 'assistant-nightly',
+            );
+            if (!nightlyExists) {
+                void schedulerService
+                    .create({
+                        name: 'assistant-nightly',
+                        agentId: 'assistant',
+                        frequency: 'daily',
+                        cronExpression: '0 3 * * *',
+                        taskParams: {
+                            prompt:
+                                'Проведи ночной самоанализ: system.review, затем system.improve, запиши итог в дневник.',
+                        },
+                    })
+                    .catch(() => {
+                        /* best-effort seed */
+                    });
+            }
+        }
+
         // Actions are tracked capabilities: discovered on registration,
         // verified when they actually run.
         if (trust) {
