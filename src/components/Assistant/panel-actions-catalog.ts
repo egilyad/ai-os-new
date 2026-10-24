@@ -1782,7 +1782,7 @@ export function panelActionDescriptors(): PanelActionDescriptor[] {
                     ? rawTargets.filter((t): t is string => typeof t === 'string' && t.trim().length > 0)
                     : [];
                 const before = policyService.getPolicies();
-                await policyService.addPolicy({ type, action, value: {}, target_nodes: targets });
+                await policyService.addPolicy({ type, action, value: num(args['value'], 0), target_nodes: targets });
                 const after = policyService.getPolicies();
                 const created = after.find((p) => !before.some((b) => b.id === p.id));
                 if (!created) return fail('the policy was not stored');
@@ -1927,6 +1927,31 @@ export function panelActionDescriptors(): PanelActionDescriptor[] {
                     ok: true,
                     detail: `Removed role "${before.name}"`,
                     evidence: `removed: ${id}`,
+                    verification: 'verified',
+                };
+            },
+        },
+
+        /* ---------------------------------------------------------- safety */
+        {
+            panelId: 'safety',
+            id: 'patterns',
+            title: 'Safety patterns',
+            description: 'The PII, toxicity and blocklist patterns the policy service applies.',
+            permission: 'tool:read',
+            parameters: { type: 'object', properties: {} },
+            run: async () => {
+                const patterns = policyService.getSecurityPatterns();
+                if (patterns.length === 0) {
+                    return { ok: true, detail: 'no safety patterns', evidence: 'patterns: 0', verification: 'verified' };
+                }
+                return {
+                    ok: true,
+                    detail: `${patterns.length} pattern(s)`,
+                    evidence: patterns
+                        .slice(0, 10)
+                        .map((p) => `${p.label} [${p.type}]`)
+                        .join(' | '),
                     verification: 'verified',
                 };
             },

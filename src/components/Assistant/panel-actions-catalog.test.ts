@@ -73,6 +73,7 @@ describe('panel action catalog', () => {
             'providers',
             'research',
             'roles',
+            'safety',
             'sessions',
             'settings',
             'skills',
