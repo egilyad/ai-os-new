@@ -17,6 +17,17 @@ interface PageRow {
     type: string;
 }
 
+interface QueueRow {
+    id: string;
+    status: string;
+}
+
+interface LintRow {
+    rule: string;
+    severity: string;
+    message: string;
+}
+
 const label: React.CSSProperties = {
     fontSize: 12,
     color: tokens.slate[500],
@@ -47,6 +58,8 @@ const input: React.CSSProperties = {
 export default function WikiBrainPanel() {
     const [stats, setStats] = useState<Stats | null>(null);
     const [pages, setPages] = useState<PageRow[]>([]);
+    const [queue, setQueue] = useState<QueueRow[]>([]);
+    const [lint, setLint] = useState<LintRow[]>([]);
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const [busy, setBusy] = useState(false);
@@ -56,24 +69,34 @@ export default function WikiBrainPanel() {
         try {
             const brain = getContainer().get<IWikiBrainService>('wikiBrainService');
             const store = brain.store;
-            const [allPages, allSources, queue, issues] = await Promise.all([
+            const [allPages, allSources, allQueue, issues] = await Promise.all([
                 store.listPages({ limit: 10000 }),
                 store.listSources({ limit: 10000 }),
                 store.listQueue(),
                 brain.lint.listIssues(),
             ]);
-            const pending = queue.filter((t) => t.status === 'pending').length;
+            const pending = allQueue.filter((t) => t.status === 'pending').length;
             setStats({
                 pages: allPages.length,
                 sources: allSources.length,
                 pending,
-                total: queue.length,
+                total: allQueue.length,
                 issues: issues.length,
             });
             setPages(
                 allPages
                     .slice(0, 20)
                     .map((p) => ({ slug: p.slug, title: p.frontmatter.title, type: p.frontmatter.type })),
+            );
+            setQueue(
+                allQueue
+                    .slice(0, 10)
+                    .map((t) => ({ id: t.id, status: t.status })),
+            );
+            setLint(
+                issues
+                    .slice(0, 10)
+                    .map((i) => ({ rule: i.rule, severity: i.severity, message: i.message })),
             );
         } catch {
             setStats(null);
@@ -204,6 +227,57 @@ export default function WikiBrainPanel() {
                             <span style={{ color: tokens.slate[500], fontSize: 13 }}>
                                 {p.slug} · {p.type}
                             </span>
+                        </li>
+                    ))}
+                </ul>
+            )}
+
+            <div style={{ ...label, marginTop: 24 }}>Ingest queue</div>
+            {queue.length === 0 ? (
+                <div style={{ color: tokens.slate[500], fontSize: 14 }}>Queue is empty.</div>
+            ) : (
+                <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+                    {queue.map((t) => (
+                        <li
+                            key={t.id}
+                            style={{
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                background: tokens.surface,
+                                border: `1px solid ${tokens.borderSubtle}`,
+                                borderRadius: 8,
+                                padding: '10px 12px',
+                                marginBottom: 6,
+                            }}
+                        >
+                            <span>{t.id}</span>
+                            <span style={{ color: tokens.slate[500], fontSize: 13 }}>{t.status}</span>
+                        </li>
+                    ))}
+                </ul>
+            )}
+
+            <div style={{ ...label, marginTop: 24 }}>Lint issues</div>
+            {lint.length === 0 ? (
+                <div style={{ color: tokens.slate[500], fontSize: 14 }}>No lint issues.</div>
+            ) : (
+                <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+                    {lint.map((i) => (
+                        <li
+                            key={`${i.rule}-${i.message}`}
+                            style={{
+                                background: tokens.surface,
+                                border: `1px solid ${tokens.borderSubtle}`,
+                                borderRadius: 8,
+                                padding: '10px 12px',
+                                marginBottom: 6,
+                            }}
+                        >
+                            <div>
+                                <span style={{ fontWeight: 600 }}>{i.rule}</span>{' '}
+                                <span style={{ color: tokens.slate[500], fontSize: 13 }}>[{i.severity}]</span>
+                            </div>
+                            <div style={{ color: tokens.slate[400], fontSize: 13, marginTop: 2 }}>{i.message}</div>
                         </li>
                     ))}
                 </ul>
