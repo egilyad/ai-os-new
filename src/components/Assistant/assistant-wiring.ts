@@ -25,6 +25,7 @@ import {
     federatedMemoryService,
     promptLibraryService,
     promptVersionService,
+    researchRunService,
 } from '../../kernel/instances/services-extras';
 
 let wired = false;
@@ -63,6 +64,7 @@ export function ensureAssistantWiring(): void {
             prompts: promptLibraryService,
             promptVersions: promptVersionService,
             audit: auditService,
+            research: researchRunService,
         });
         ensurePanelActionCatalog(panelActionRegistry);
     } catch {

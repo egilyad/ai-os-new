@@ -99,6 +99,15 @@ export interface PanelActionExtrasServices {
             }>
         >;
     };
+    research: {
+        getRecentRuns(limit?: number): Array<{
+            id: string;
+            module: string;
+            status: string;
+            startedAt: number;
+            summary?: string;
+        }>;
+    };
 }
 
 let extrasServices: PanelActionExtrasServices | null = null;
@@ -2010,6 +2019,30 @@ export function panelActionDescriptors(): PanelActionDescriptor[] {
                     detail: `${entries.length} audit entr(y|ies)`,
                     evidence: entries
                         .map((e) => `${e.actor} ${e.action}${e.target ? ` → ${e.target}` : ''}`)
+                        .join(' | '),
+                    verification: 'verified',
+                };
+            },
+        },
+
+        /* -------------------------------------------------------- research */
+        {
+            panelId: 'research',
+            id: 'recent',
+            title: 'Research runs',
+            description: 'The latest research runs and their status.',
+            permission: 'tool:read',
+            parameters: { type: 'object', properties: {} },
+            run: async () => {
+                const runs = needExtras().research.getRecentRuns(10);
+                if (runs.length === 0) {
+                    return { ok: true, detail: 'no research runs yet', evidence: 'runs: 0', verification: 'verified' };
+                }
+                return {
+                    ok: true,
+                    detail: `${runs.length} research run(s)`,
+                    evidence: runs
+                        .map((r) => `${r.id} ${r.module} [${r.status}]`)
                         .join(' | '),
                     verification: 'verified',
                 };
