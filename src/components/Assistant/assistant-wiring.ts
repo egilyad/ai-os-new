@@ -14,6 +14,12 @@ import {
     keyService,
     mcpService,
     skillService,
+    autoDebateService,
+    debateEngine,
+    debateModeManager,
+    debatePolicyEngine,
+    debateWorkspace,
+    strategyManager,
 } from '../../kernel/instances/services-core';
 import { WIKI_ARTICLES } from '../WikiPanel/wiki-articles';
 import {
@@ -703,6 +709,93 @@ export function ensureAssistantWiring(): void {
                 find: async (pattern) => {
                     const matches = await sweService.find(pattern);
                     return matches;
+                },
+            },
+            debates: {
+                sessions: async () => {
+                    const sessions = debateEngine.getAllSessions();
+                    return sessions.map((s) => ({
+                        id: s.id,
+                        topic: s.topic,
+                        round: s.round,
+                        phase: s.phase,
+                    }));
+                },
+                rooms: async () => {
+                    const rooms = debateWorkspace.listRooms();
+                    return rooms.map((r) => ({
+                        id: r.id,
+                        topic: r.topic,
+                        modeId: r.modeId,
+                        status: r.status,
+                    }));
+                },
+                strategies: async () => {
+                    const entries = strategyManager.list();
+                    return entries.map((e) => ({
+                        id: e.definition.id,
+                        name: e.definition.name,
+                        version: e.definition.version,
+                        builtin: e.builtin,
+                    }));
+                },
+                modes: async () => {
+                    const modes = debateModeManager.list();
+                    return modes.map((m) => ({
+                        id: m.mode.id,
+                        name: m.mode.name,
+                        builtin: m.builtin,
+                    }));
+                },
+                policyRules: async () => {
+                    const rules = debatePolicyEngine.listRules();
+                    return rules.map((r) => ({
+                        id: r.id,
+                        name: r.name,
+                        enabled: r.enabled,
+                        priority: r.priority,
+                    }));
+                },
+                autoResults: async () => {
+                    const results = autoDebateService.getResults();
+                    return results.map((r) => ({
+                        id: r.id,
+                        topic: r.topic,
+                        strategy: r.strategy,
+                        completed: r.completed,
+                    }));
+                },
+                createRoom: async ({ topic, modeId }) => {
+                    const id = await debateWorkspace.createRoom(topic, modeId);
+                    return { id };
+                },
+                closeRoom: async (id) => {
+                    await debateWorkspace.closeRoom(id);
+                },
+                startSession: async (id) => {
+                    await debateEngine.startSession(id);
+                },
+                pauseSession: async (id) => {
+                    debateEngine.pauseSession(id);
+                },
+                resumeSession: async (id) => {
+                    debateEngine.resumeSession(id);
+                },
+                cancelSession: async (id) => {
+                    debateEngine.cancelSession(id);
+                },
+                runAuto: async ({ topic, category, strategy }) => {
+                    const result = await autoDebateService.runAutoDebate({
+                        topic,
+                        category,
+                        strategy: strategy as 'round_robin' | 'moderated' | 'free_for_all' | undefined,
+                    });
+                    return {
+                        id: result.id,
+                        topic: result.topic,
+                        strategy: result.strategy,
+                        completed: result.completed,
+                    };
                 },
             },
         });

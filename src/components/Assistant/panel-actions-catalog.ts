@@ -255,6 +255,26 @@ export interface PanelActionExtrasServices {
         loops(): Promise<Array<{ id: string; kind: string; goal: string; status: string }>>;
         start(input: { topic: string }): Promise<{ id: string; topic: string; status: string }>;
     };
+    debates: {
+        sessions(): Promise<Array<{ id: string; topic: string; round: number; phase: string }>>;
+        rooms(): Promise<Array<{ id: string; topic: string; modeId?: string; status: string }>>;
+        strategies(): Promise<Array<{ id: string; name: string; version: string; builtin: boolean }>>;
+        modes(): Promise<Array<{ id: string; name: string; builtin: boolean }>>;
+        policyRules(): Promise<Array<{ id: string; name: string; enabled: boolean; priority: number }>>;
+        autoResults(): Promise<Array<{ id: string; topic: string; strategy: string; completed: boolean }>>;
+        createRoom(input: { topic: string; modeId?: string }): Promise<{ id: string }>;
+        closeRoom(id: string): Promise<void>;
+        startSession(id: string): Promise<void>;
+        pauseSession(id: string): Promise<void>;
+        resumeSession(id: string): Promise<void>;
+        cancelSession(id: string): Promise<void>;
+        runAuto(input: { topic: string; category?: string; strategy?: string }): Promise<{
+            id: string;
+            topic: string;
+            strategy: string;
+            completed: boolean;
+        }>;
+    };
 }
 
 let extrasServices: PanelActionExtrasServices | null = null;
@@ -4381,6 +4401,314 @@ export function panelActionDescriptors(): PanelActionDescriptor[] {
                     ok: true,
                     detail: `drained ${processed} run(s)`,
                     evidence: `processed: ${processed}`,
+                    verification: 'verified',
+                };
+            },
+        },
+
+        /* ---------------------------------------------------- debates */
+        {
+            panelId: 'debates',
+            id: 'sessions',
+            title: 'Debate sessions',
+            description: 'Active debate sessions and their round and phase.',
+            permission: 'tool:read',
+            parameters: { type: 'object', properties: {} },
+            run: async () => {
+                const sessions = await needExtras().debates.sessions();
+                if (sessions.length === 0) {
+                    return { ok: true, detail: 'no debate sessions', evidence: 'sessions: 0', verification: 'verified' };
+                }
+                return {
+                    ok: true,
+                    detail: `${sessions.length} session(s)`,
+                    evidence: sessions
+                        .slice(0, 10)
+                        .map((s) => `${s.id} "${s.topic.slice(0, 40)}" round ${s.round} [${s.phase}]`)
+                        .join(' | '),
+                    verification: 'verified',
+                };
+            },
+        },
+        {
+            panelId: 'debates',
+            id: 'rooms',
+            title: 'Debate workspace rooms',
+            description: 'Rooms in the debate workspace.',
+            permission: 'tool:read',
+            parameters: { type: 'object', properties: {} },
+            run: async () => {
+                const rooms = await needExtras().debates.rooms();
+                if (rooms.length === 0) {
+                    return { ok: true, detail: 'no debate rooms', evidence: 'rooms: 0', verification: 'verified' };
+                }
+                return {
+                    ok: true,
+                    detail: `${rooms.length} room(s)`,
+                    evidence: rooms
+                        .slice(0, 10)
+                        .map((r) => `${r.id} "${r.topic.slice(0, 40)}" [${r.status}]`)
+                        .join(' | '),
+                    verification: 'verified',
+                };
+            },
+        },
+        {
+            panelId: 'debates',
+            id: 'strategies',
+            title: 'Debate strategies',
+            description: 'Registered debate strategies and their versions.',
+            permission: 'tool:read',
+            parameters: { type: 'object', properties: {} },
+            run: async () => {
+                const strategies = await needExtras().debates.strategies();
+                if (strategies.length === 0) {
+                    return { ok: true, detail: 'no strategies', evidence: 'strategies: 0', verification: 'verified' };
+                }
+                return {
+                    ok: true,
+                    detail: `${strategies.length} strateg(y|ies)`,
+                    evidence: strategies
+                        .slice(0, 10)
+                        .map((s) => `${s.id} ${s.name}@${s.version} [${s.builtin ? 'built-in' : 'custom'}]`)
+                        .join(' | '),
+                    verification: 'verified',
+                };
+            },
+        },
+        {
+            panelId: 'debates',
+            id: 'modes',
+            title: 'Debate modes',
+            description: 'Debate modes (presets) and whether they are built-in.',
+            permission: 'tool:read',
+            parameters: { type: 'object', properties: {} },
+            run: async () => {
+                const modes = await needExtras().debates.modes();
+                if (modes.length === 0) {
+                    return { ok: true, detail: 'no modes', evidence: 'modes: 0', verification: 'verified' };
+                }
+                return {
+                    ok: true,
+                    detail: `${modes.length} mode(s)`,
+                    evidence: modes.map((m) => `${m.id} ${m.name} [${m.builtin ? 'built-in' : 'custom'}]`).join(' | '),
+                    verification: 'verified',
+                };
+            },
+        },
+        {
+            panelId: 'debates',
+            id: 'policy-rules',
+            title: 'Debate policy rules',
+            description: 'Rules in the debate policy engine.',
+            permission: 'tool:read',
+            parameters: { type: 'object', properties: {} },
+            run: async () => {
+                const rules = await needExtras().debates.policyRules();
+                if (rules.length === 0) {
+                    return { ok: true, detail: 'no policy rules', evidence: 'rules: 0', verification: 'verified' };
+                }
+                return {
+                    ok: true,
+                    detail: `${rules.length} rule(s)`,
+                    evidence: rules
+                        .slice(0, 10)
+                        .map((r) => `${r.name} [priority ${r.priority}] ${r.enabled ? 'on' : 'off'}`)
+                        .join(' | '),
+                    verification: 'verified',
+                };
+            },
+        },
+        {
+            panelId: 'debates',
+            id: 'auto-results',
+            title: 'Auto-debate results',
+            description: 'Results of automatic debate runs.',
+            permission: 'tool:read',
+            parameters: { type: 'object', properties: {} },
+            run: async () => {
+                const results = await needExtras().debates.autoResults();
+                if (results.length === 0) {
+                    return { ok: true, detail: 'no auto-debate results', evidence: 'results: 0', verification: 'verified' };
+                }
+                return {
+                    ok: true,
+                    detail: `${results.length} result(s)`,
+                    evidence: results
+                        .slice(0, 10)
+                        .map((r) => `${r.id} "${r.topic.slice(0, 40)}" [${r.strategy}] ${r.completed ? 'done' : 'running'}`)
+                        .join(' | '),
+                    verification: 'verified',
+                };
+            },
+        },
+        {
+            panelId: 'debates',
+            id: 'create-room',
+            title: 'Create a debate room',
+            description: 'Create a room in the debate workspace.',
+            permission: 'tool:write',
+            parameters: {
+                type: 'object',
+                properties: {
+                    topic: { type: 'string', description: 'Debate topic.' },
+                    modeId: { type: 'string', description: 'Debate mode id (optional).' },
+                },
+                required: ['topic'],
+            },
+            run: async (args) => {
+                const topic = str(args['topic']);
+                if (!topic) return fail('topic is required');
+                const modeId = str(args['modeId']) || undefined;
+                const { id } = await needExtras().debates.createRoom({ topic, modeId });
+                return {
+                    ok: true,
+                    detail: `created debate room ${id}`,
+                    evidence: `topic: ${topic} | room: ${id}`,
+                    verification: 'verified',
+                };
+            },
+        },
+        {
+            panelId: 'debates',
+            id: 'close-room',
+            title: 'Close a debate room',
+            description: 'Close a room in the debate workspace.',
+            permission: 'tool:write',
+            parameters: {
+                type: 'object',
+                properties: { id: { type: 'string', description: 'Room id.' } },
+                required: ['id'],
+            },
+            run: async (args) => {
+                const id = str(args['id']);
+                if (!id) return fail('id is required');
+                await needExtras().debates.closeRoom(id);
+                return {
+                    ok: true,
+                    detail: `closed debate room ${id}`,
+                    evidence: `closed: ${id}`,
+                    verification: 'verified',
+                };
+            },
+        },
+        {
+            panelId: 'debates',
+            id: 'start-session',
+            title: 'Start a debate session',
+            description: 'Start (or resume) a debate session.',
+            permission: 'tool:write',
+            parameters: {
+                type: 'object',
+                properties: { id: { type: 'string', description: 'Session id.' } },
+                required: ['id'],
+            },
+            run: async (args) => {
+                const id = str(args['id']);
+                if (!id) return fail('id is required');
+                await needExtras().debates.startSession(id);
+                return {
+                    ok: true,
+                    detail: `started debate session ${id}`,
+                    evidence: `session: ${id}`,
+                    verification: 'verified',
+                };
+            },
+        },
+        {
+            panelId: 'debates',
+            id: 'pause-session',
+            title: 'Pause a debate session',
+            description: 'Pause a running debate session.',
+            permission: 'tool:write',
+            parameters: {
+                type: 'object',
+                properties: { id: { type: 'string', description: 'Session id.' } },
+                required: ['id'],
+            },
+            run: async (args) => {
+                const id = str(args['id']);
+                if (!id) return fail('id is required');
+                await needExtras().debates.pauseSession(id);
+                return {
+                    ok: true,
+                    detail: `paused debate session ${id}`,
+                    evidence: `session: ${id}`,
+                    verification: 'verified',
+                };
+            },
+        },
+        {
+            panelId: 'debates',
+            id: 'resume-session',
+            title: 'Resume a debate session',
+            description: 'Resume a paused debate session.',
+            permission: 'tool:write',
+            parameters: {
+                type: 'object',
+                properties: { id: { type: 'string', description: 'Session id.' } },
+                required: ['id'],
+            },
+            run: async (args) => {
+                const id = str(args['id']);
+                if (!id) return fail('id is required');
+                await needExtras().debates.resumeSession(id);
+                return {
+                    ok: true,
+                    detail: `resumed debate session ${id}`,
+                    evidence: `session: ${id}`,
+                    verification: 'verified',
+                };
+            },
+        },
+        {
+            panelId: 'debates',
+            id: 'cancel-session',
+            title: 'Cancel a debate session',
+            description: 'Cancel a debate session.',
+            permission: 'tool:write',
+            parameters: {
+                type: 'object',
+                properties: { id: { type: 'string', description: 'Session id.' } },
+                required: ['id'],
+            },
+            run: async (args) => {
+                const id = str(args['id']);
+                if (!id) return fail('id is required');
+                await needExtras().debates.cancelSession(id);
+                return {
+                    ok: true,
+                    detail: `cancelled debate session ${id}`,
+                    evidence: `session: ${id}`,
+                    verification: 'verified',
+                };
+            },
+        },
+        {
+            panelId: 'debates',
+            id: 'run-auto',
+            title: 'Run an auto-debate',
+            description: 'Run an automatic debate on a topic.',
+            permission: 'tool:write',
+            parameters: {
+                type: 'object',
+                properties: {
+                    topic: { type: 'string', description: 'Debate topic.' },
+                    category: { type: 'string', description: 'Topic category (optional).' },
+                    strategy: { type: 'string', description: 'round_robin, moderated, or free_for_all (optional).' },
+                },
+                required: ['topic'],
+            },
+            run: async (args) => {
+                const topic = str(args['topic']);
+                if (!topic) return fail('topic is required');
+                const category = str(args['category']) || undefined;
+                const strategy = str(args['strategy']) || undefined;
+                const result = await needExtras().debates.runAuto({ topic, category, strategy });
+                return {
+                    ok: true,
+                    detail: `auto-debate ${result.id} ${result.completed ? 'completed' : 'is running'}`,
+                    evidence: `topic: ${result.topic} | strategy: ${result.strategy}`,
                     verification: 'verified',
                 };
             },

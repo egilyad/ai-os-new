@@ -133,6 +133,13 @@ describe('panel action catalog', () => {
             'council.advance',
             'council.conclude',
             'council.create',
+            'debates.cancel-session',
+            'debates.close-room',
+            'debates.create-room',
+            'debates.pause-session',
+            'debates.resume-session',
+            'debates.run-auto',
+            'debates.start-session',
             'diagnostics.run',
             'dyads.start',
             'eval.run',
@@ -142,7 +149,8 @@ describe('panel action catalog', () => {
             'guardrails.add-rule',
             'guardrails.check',
             'guardrails.remove-rule',
-            'knowledge.remove',            'knowledge.update',
+            'knowledge.remove',
+            'knowledge.update',
             'keys.remove',
             'keys.set-status',
             'mcp.connect',
@@ -492,6 +500,24 @@ function fakeDyads(): PanelActionExtrasServices['dyads'] {
     };
 }
 
+function fakeDebates(): PanelActionExtrasServices['debates'] {
+    return {
+        sessions: async () => [],
+        rooms: async () => [],
+        strategies: async () => [],
+        modes: async () => [],
+        policyRules: async () => [],
+        autoResults: async () => [],
+        createRoom: async () => ({ id: 'room1' }),
+        closeRoom: async () => undefined,
+        startSession: async () => undefined,
+        pauseSession: async () => undefined,
+        resumeSession: async () => undefined,
+        cancelSession: async () => undefined,
+        runAuto: async (input) => ({ id: 'a1', topic: input.topic, strategy: 'round_robin', completed: true }),
+    };
+}
+
 function fakeSwe(): PanelActionExtrasServices['swe'] {
     return { find: async () => [] };
 }
@@ -548,6 +574,7 @@ describe('panel action catalog — memory and knowledge extras', () => {
             eval: fakeEval(),
             frontierOps: fakeFrontierOps(),
             dyads: fakeDyads(),
+            debates: fakeDebates(),
             swe: fakeSwe(),
         });
 
@@ -604,6 +631,7 @@ describe('panel action catalog — memory and knowledge extras', () => {
             eval: fakeEval(),
             frontierOps: fakeFrontierOps(),
             dyads: fakeDyads(),
+            debates: fakeDebates(),
             swe: fakeSwe(),
         });
 
@@ -658,6 +686,7 @@ describe('panel action catalog — memory and knowledge extras', () => {
             eval: fakeEval(),
             frontierOps: fakeFrontierOps(),
             dyads: fakeDyads(),
+            debates: fakeDebates(),
             swe: fakeSwe(),
         });
 
@@ -708,6 +737,7 @@ describe('panel action catalog — memory and knowledge extras', () => {
             eval: fakeEval(),
             frontierOps: fakeFrontierOps(),
             dyads: fakeDyads(),
+            debates: fakeDebates(),
             swe: fakeSwe(),
         });
 
@@ -760,6 +790,7 @@ describe('panel action catalog — memory and knowledge extras', () => {
             eval: fakeEval(),
             frontierOps: fakeFrontierOps(),
             dyads: fakeDyads(),
+            debates: fakeDebates(),
             swe: fakeSwe(),
         });
 
