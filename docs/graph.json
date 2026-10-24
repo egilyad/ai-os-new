@@ -3,13 +3,13 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 1288,
+    "nodes": 1289,
     "edges": 3366,
     "byType": {
       "audit": 65,
       "code": 546,
       "test": 182,
-      "panel": 261,
+      "panel": 262,
       "article": 234
     },
     "byKind": {
@@ -4242,6 +4242,13 @@
       "label": "arch-review",
       "section": "lab",
       "route": "/arch-review"
+    },
+    {
+      "id": "panel:architecture-map",
+      "type": "panel",
+      "label": "architecture-map",
+      "section": "wiki",
+      "route": "/architecture-map"
     },
     {
       "id": "panel:argument-graph",
