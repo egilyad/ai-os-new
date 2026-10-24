@@ -83,6 +83,41 @@ export function ensureAssistantWiring(): void {
                     }));
                 },
                 runLint: async () => (await wikiBrainService.lint.runAll()).length,
+                enqueueSource: async ({ title, content }) => {
+                    const encoder = new TextEncoder();
+                    const buffer = await crypto.subtle.digest('SHA-256', encoder.encode(content));
+                    const sha256 = Array.from(new Uint8Array(buffer))
+                        .map((b) => b.toString(16).padStart(2, '0'))
+                        .join('');
+                    const uid = () => crypto.randomUUID?.() ?? `${Date.now()}-${Math.random()}`;
+                    const sourceId = `src-${uid()}`;
+                    const taskId = `task-${uid()}`;
+                    await wikiBrainService.store.putSource({
+                        id: sourceId,
+                        kind: 'markdown',
+                        title,
+                        origin: title,
+                        sha256,
+                        sizeBytes: content.length,
+                        language: 'auto',
+                        contentText: content,
+                        meta: {},
+                        importedAt: new Date().toISOString(),
+                    });
+                    await wikiBrainService.store.enqueue({
+                        id: taskId,
+                        sourceId,
+                        status: 'pending',
+                        attempts: 0,
+                        priority: 0,
+                    });
+                    return { sourceId, taskId };
+                },
+                queueSummary: async () => {
+                    const all = await wikiBrainService.store.listQueue();
+                    const pending = all.filter((t) => t.status === 'pending').length;
+                    return { pending, total: all.length };
+                },
             },
         });
         ensurePanelActionCatalog(panelActionRegistry);

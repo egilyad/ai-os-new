@@ -121,6 +121,7 @@ describe('panel action catalog', () => {
             'skills.install',
             'skills.toggle',
             'tasks.set-status',
+            'wiki.ingest-source',
             'wiki.lint-run',
         ]);
 
@@ -230,6 +231,8 @@ function fakeWiki(): PanelActionExtrasServices['wiki'] {
         stats: async () => ({ pages: 0, sources: 0 }),
         recentPages: async () => [],
         runLint: async () => 0,
+        enqueueSource: async () => ({ sourceId: 'src-x', taskId: 'task-x' }),
+        queueSummary: async () => ({ pending: 0, total: 0 }),
     };
 }
 

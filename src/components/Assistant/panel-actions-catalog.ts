@@ -113,6 +113,8 @@ export interface PanelActionExtrasServices {
         stats(): Promise<{ pages: number; sources: number }>;
         recentPages(limit?: number): Promise<Array<{ slug: string; title: string; type: string }>>;
         runLint(): Promise<number>;
+        enqueueSource(input: { title: string; content: string }): Promise<{ sourceId: string; taskId: string }>;
+        queueSummary(): Promise<{ pending: number; total: number }>;
     };
 }
 
@@ -2133,6 +2135,51 @@ export function panelActionDescriptors(): PanelActionDescriptor[] {
                     ok: true,
                     detail: count === 0 ? 'lint clean' : `${count} lint issue(s)`,
                     evidence: `issues: ${count}`,
+                    verification: 'verified',
+                };
+            },
+        },
+        {
+            panelId: 'wiki',
+            id: 'queue',
+            title: 'Wiki ingest queue',
+            description: 'Sources waiting to be compiled.',
+            permission: 'tool:read',
+            parameters: { type: 'object', properties: {} },
+            run: async () => {
+                const queue = await needExtras().wiki.queueSummary();
+                return {
+                    ok: true,
+                    detail: `${queue.pending} pending of ${queue.total} task(s)`,
+                    evidence: `pending: ${queue.pending}`,
+                    verification: 'verified',
+                };
+            },
+        },
+        {
+            panelId: 'wiki',
+            id: 'ingest-source',
+            title: 'Queue a source',
+            description: 'Queue markdown text as a raw source for the LLM wiki compiler.',
+            permission: 'tool:write',
+            parameters: {
+                type: 'object',
+                properties: {
+                    title: { type: 'string', description: 'Source title.' },
+                    content: { type: 'string', description: 'The raw markdown text.' },
+                },
+                required: ['title', 'content'],
+            },
+            run: async (args) => {
+                const title = str(args['title']);
+                const content = str(args['content']);
+                if (!title) return fail('title is required');
+                if (!content) return fail('content is required');
+                const { sourceId, taskId } = await needExtras().wiki.enqueueSource({ title, content });
+                return {
+                    ok: true,
+                    detail: `Queued "${title}" for ingest`,
+                    evidence: `source: ${sourceId} | task: ${taskId}`,
                     verification: 'verified',
                 };
             },
