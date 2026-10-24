@@ -12,6 +12,7 @@
  */
 import {
     agentJournalService,
+    agentPermissionService,
     agentService,
     capabilityTrustService,
     debateService,
@@ -2215,6 +2216,64 @@ export function panelActionDescriptors(): PanelActionDescriptor[] {
                     ok: true,
                     detail: `${agent.name} (${agent.role})`,
                     evidence: `model: ${agent.model || 'auto'} | provider: ${agent.provider || 'auto'}`,
+                    verification: 'verified',
+                };
+            },
+        },
+
+        /* ---------------------------------------------------- permissions */
+        {
+            panelId: 'permissions',
+            id: 'state',
+            title: 'Agent permission state',
+            description: 'The permission mode, preset, rules and denial count of one agent.',
+            permission: 'tool:read',
+            parameters: {
+                type: 'object',
+                properties: { agentId: { type: 'string', description: 'Agent id.' } },
+                required: ['agentId'],
+            },
+            run: async (args) => {
+                const id = str(args['agentId']);
+                if (!id) return fail('agentId is required');
+                const state = agentPermissionService.getState(id);
+                return {
+                    ok: true,
+                    detail: `mode: ${state.mode}, preset: ${state.preset}`,
+                    evidence: `rules: ${state.rules.length} | denials: ${state.consecutiveDenials}`,
+                    verification: 'verified',
+                };
+            },
+        },
+        {
+            panelId: 'permissions',
+            id: 'set-mode',
+            title: 'Set the permission mode',
+            description: 'Switch one agent between read-only, guarded, workspace and full, and read it back.',
+            permission: 'tool:write',
+            parameters: {
+                type: 'object',
+                properties: {
+                    agentId: { type: 'string', description: 'Agent id.' },
+                    mode: { type: 'string', description: 'read-only, guarded, workspace, or full.' },
+                },
+                required: ['agentId', 'mode'],
+            },
+            run: async (args) => {
+                const id = str(args['agentId']);
+                if (!id) return fail('agentId is required');
+                const mode = str(args['mode']);
+                const allowed = ['read-only', 'guarded', 'workspace', 'full'] as const;
+                const normalized = allowed.find((m) => m === mode);
+                if (!normalized) return fail(`unsupported mode "${mode}"`);
+                const before = agentPermissionService.getState(id).mode;
+                await agentPermissionService.setMode(id, normalized);
+                const after = agentPermissionService.getState(id).mode;
+                if (after !== normalized) return fail('mode did not change');
+                return {
+                    ok: true,
+                    detail: `Mode for ${id} is now ${after}`,
+                    evidence: `${before} → ${after}`,
                     verification: 'verified',
                 };
             },
