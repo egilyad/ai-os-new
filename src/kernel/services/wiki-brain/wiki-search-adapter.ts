@@ -55,8 +55,10 @@ export class WikiSearchAdapter implements IWikiSearchAdapter {
         return scored.sort((a, b) => b.score - a.score).slice(0, topK);
     }
 
-    async semantic() {
-        // Not implemented in the MVP — hybrid search falls back to BM25.
-        return [] as WikiSearchHit[];
+    async semantic(query: string, topK: number): Promise<WikiSearchHit[]> {
+        // Fallback: no embedder is wired yet, so "semantic" is the same BM25
+        // score. The contract stays — a real embedder can replace this later
+        // without touching the query service.
+        return this.bm25(query, topK);
     }
 }

@@ -17,7 +17,10 @@ export class WikiQueryService implements IWikiQueryService {
     async search(query: string, opts: { topK?: number; mode?: string; filterByType?: string[]; readSourcesOnly?: boolean } = {}): Promise<WikiQueryResult[]> {
         const topK = opts.topK ?? 8;
         const exact = await this.store.getPageBySlug(query.trim().toLowerCase());
-        const hits = await this.searchAdapter.bm25(query, topK);
+        const useSemantic = opts.mode === 'semantic-only';
+        const hits = useSemantic
+            ? await this.searchAdapter.semantic(query, topK)
+            : await this.searchAdapter.bm25(query, topK);
         const results: WikiQueryResult[] = [];
 
         if (exact) {
@@ -38,7 +41,7 @@ export class WikiQueryService implements IWikiQueryService {
             results.push({
                 page,
                 score: hit.score,
-                matchedOn: 'bm25',
+                matchedOn: useSemantic ? 'semantic' : 'bm25',
                 snippet: snippet(page.body),
                 sources: await this.loadSources(page),
             });

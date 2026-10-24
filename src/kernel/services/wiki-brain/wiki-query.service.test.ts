@@ -60,4 +60,13 @@ describe('wiki query service', () => {
         const results = await query.search('quantum');
         expect(results[0].matchedOn).toBe('exact-slug');
     });
+
+    it('semantic mode falls back to bm25 and tags the match', async () => {
+        const store = new WikiDexieStore();
+        await store.putPage(page('gardening', 'Gardening', 'About soil and compost.'));
+        const query = new WikiQueryService(store, new WikiSearchAdapter(store));
+        const results = await query.search('compost', { mode: 'semantic-only' });
+        expect(results.length).toBeGreaterThan(0);
+        expect(results[0].matchedOn).toBe('semantic');
+    });
 });

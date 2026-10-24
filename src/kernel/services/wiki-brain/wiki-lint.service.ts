@@ -108,7 +108,32 @@ export class WikiLintService implements IWikiLintService {
             }
         }
 
-        const rules = ['dead-wikilink', 'orphan-page', 'missing-frontmatter', 'circular-link', 'duplicate-entity'] as const;
+        for (const page of pages) {
+            for (const ref of page.frontmatter.sources) {
+                const source = await this.store.getSource(ref.sourceId);
+                if (!source) {
+                    issues.push({
+                        id: wikiId('lint'),
+                        rule: 'stale-source',
+                        severity: 'warn',
+                        pageId: page.id,
+                        message: `${page.slug} references missing source ${ref.sourceId}`,
+                        detectedAt: now,
+                    });
+                } else if (source.sha256 !== ref.sha256) {
+                    issues.push({
+                        id: wikiId('lint'),
+                        rule: 'stale-source',
+                        severity: 'info',
+                        pageId: page.id,
+                        message: `${page.slug} was compiled from an older version of ${source.title}`,
+                        detectedAt: now,
+                    });
+                }
+            }
+        }
+
+        const rules = ['dead-wikilink', 'orphan-page', 'missing-frontmatter', 'circular-link', 'duplicate-entity', 'stale-source'] as const;
         for (const rule of rules) await this.store.clearIssuesForRule(rule);
         for (const issue of issues) await this.store.putIssue(issue);
         return issues;
