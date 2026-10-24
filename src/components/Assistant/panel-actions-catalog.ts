@@ -109,6 +109,11 @@ export interface PanelActionExtrasServices {
             summary?: string;
         }>;
     };
+    wiki: {
+        stats(): Promise<{ pages: number; sources: number }>;
+        recentPages(limit?: number): Promise<Array<{ slug: string; title: string; type: string }>>;
+        runLint(): Promise<number>;
+    };
 }
 
 let extrasServices: PanelActionExtrasServices | null = null;
@@ -2072,6 +2077,62 @@ export function panelActionDescriptors(): PanelActionDescriptor[] {
                     evidence: runs
                         .map((r) => `${r.id} ${r.module} [${r.status}]`)
                         .join(' | '),
+                    verification: 'verified',
+                };
+            },
+        },
+
+        /* ------------------------------------------------------------ wiki */
+        {
+            panelId: 'wiki',
+            id: 'overview',
+            title: 'Wiki Brain overview',
+            description: 'How many pages and sources the LLM wiki has compiled.',
+            permission: 'tool:read',
+            parameters: { type: 'object', properties: {} },
+            run: async () => {
+                const stats = await needExtras().wiki.stats();
+                return {
+                    ok: true,
+                    detail: `${stats.pages} page(s), ${stats.sources} source(s)`,
+                    evidence: `compiled from raw sources`,
+                    verification: 'verified',
+                };
+            },
+        },
+        {
+            panelId: 'wiki',
+            id: 'pages',
+            title: 'Wiki pages',
+            description: 'The recently compiled wiki pages.',
+            permission: 'tool:read',
+            parameters: { type: 'object', properties: {} },
+            run: async () => {
+                const pages = await needExtras().wiki.recentPages(10);
+                if (pages.length === 0) {
+                    return { ok: true, detail: 'no wiki pages yet', evidence: 'pages: 0', verification: 'verified' };
+                }
+                return {
+                    ok: true,
+                    detail: `${pages.length} page(s)`,
+                    evidence: pages.map((p) => `${p.slug} ${p.title} [${p.type}]`).join(' | '),
+                    verification: 'verified',
+                };
+            },
+        },
+        {
+            panelId: 'wiki',
+            id: 'lint-run',
+            title: 'Run wiki lint',
+            description: 'Check the wiki for dead links and orphan pages and report how many issues were found.',
+            permission: 'tool:write',
+            parameters: { type: 'object', properties: {} },
+            run: async () => {
+                const count = await needExtras().wiki.runLint();
+                return {
+                    ok: true,
+                    detail: count === 0 ? 'lint clean' : `${count} lint issue(s)`,
+                    evidence: `issues: ${count}`,
                     verification: 'verified',
                 };
             },

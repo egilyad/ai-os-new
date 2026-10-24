@@ -81,6 +81,7 @@ describe('panel action catalog', () => {
             'system',
             'tasks',
             'trust',
+            'wiki',
             'workspace',
         ]);
 
@@ -120,6 +121,7 @@ describe('panel action catalog', () => {
             'skills.install',
             'skills.toggle',
             'tasks.set-status',
+            'wiki.lint-run',
         ]);
 
         // The human-in-the-loop queue must never be resolvable by the assistant.
@@ -223,6 +225,14 @@ function fakeResearch(): PanelActionExtrasServices['research'] {
     return { getRecentRuns: () => [] };
 }
 
+function fakeWiki(): PanelActionExtrasServices['wiki'] {
+    return {
+        stats: async () => ({ pages: 0, sources: 0 }),
+        recentPages: async () => [],
+        runLint: async () => 0,
+    };
+}
+
 describe('panel action catalog — memory and knowledge extras', () => {
     afterEach(() => setPanelActionExtrasServices(null));
 
@@ -240,7 +250,8 @@ describe('panel action catalog — memory and knowledge extras', () => {
             prompts,
             promptVersions: fakeVersions(),
                         audit: fakeAudit(),
-            research: fakeResearch(),        });
+                        research: fakeResearch(),
+            wiki: fakeWiki(),        });
 
         const result = await descriptor('prompts', 'create').run({
             title: 'Triage the queue',
@@ -260,7 +271,8 @@ describe('panel action catalog — memory and knowledge extras', () => {
             prompts: fakePrompts(true),
             promptVersions: fakeVersions(),
                         audit: fakeAudit(),
-            research: fakeResearch(),        });
+                        research: fakeResearch(),
+            wiki: fakeWiki(),        });
 
         const result = await descriptor('prompts', 'remove').run({ id: 'built-in' });
 
@@ -278,7 +290,8 @@ describe('panel action catalog — memory and knowledge extras', () => {
             prompts: fakePrompts(),
             promptVersions: fakeVersions(),
                         audit: fakeAudit(),
-            research: fakeResearch(),        });
+                        research: fakeResearch(),
+            wiki: fakeWiki(),        });
 
         const result = await descriptor('federated-memory', 'disconnect').run({ id: 'north' });
 
@@ -292,7 +305,8 @@ describe('panel action catalog — memory and knowledge extras', () => {
             prompts: fakePrompts(),
             promptVersions: fakeVersions(),
                         audit: fakeAudit(),
-            research: fakeResearch(),        });
+                        research: fakeResearch(),
+            wiki: fakeWiki(),        });
 
         const result = await descriptor('federated-memory', 'sync').run({});
 
@@ -308,7 +322,8 @@ describe('panel action catalog — memory and knowledge extras', () => {
             prompts: fakePrompts(),
             promptVersions,
                         audit: fakeAudit(),
-            research: fakeResearch(),        });
+                        research: fakeResearch(),
+            wiki: fakeWiki(),        });
 
         const result = await descriptor('prompt-versions', 'save').run({
             promptId: 'guard',

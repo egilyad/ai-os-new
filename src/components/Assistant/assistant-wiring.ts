@@ -26,6 +26,7 @@ import {
     promptLibraryService,
     promptVersionService,
     researchRunService,
+    wikiBrainService,
 } from '../../kernel/instances/services-extras';
 
 let wired = false;
@@ -65,6 +66,24 @@ export function ensureAssistantWiring(): void {
             promptVersions: promptVersionService,
             audit: auditService,
             research: researchRunService,
+            wiki: {
+                stats: async () => {
+                    const [pages, sources] = await Promise.all([
+                        wikiBrainService.store.listPages({ limit: 10000 }),
+                        wikiBrainService.store.listSources({ limit: 10000 }),
+                    ]);
+                    return { pages: pages.length, sources: sources.length };
+                },
+                recentPages: async (limit = 10) => {
+                    const pages = await wikiBrainService.store.listPages({ limit });
+                    return pages.map((p) => ({
+                        slug: p.slug,
+                        title: p.frontmatter.title,
+                        type: p.frontmatter.type,
+                    }));
+                },
+                runLint: async () => (await wikiBrainService.lint.runAll()).length,
+            },
         });
         ensurePanelActionCatalog(panelActionRegistry);
     } catch {
