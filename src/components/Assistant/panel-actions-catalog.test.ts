@@ -107,6 +107,8 @@ describe('panel action catalog', () => {
             'prompt-versions.save',
             'prompts.create',
             'prompts.remove',
+            'roles.create',
+            'roles.remove',
             'sessions.archive',
             'sessions.pause',
             'sessions.resume',

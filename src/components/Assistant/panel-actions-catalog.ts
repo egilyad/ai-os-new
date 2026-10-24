@@ -1861,6 +1861,67 @@ export function panelActionDescriptors(): PanelActionDescriptor[] {
                 };
             },
         },
+        {
+            panelId: 'roles',
+            id: 'create',
+            title: 'Create a role',
+            description: 'Create a custom role and read it back.',
+            permission: 'tool:write',
+            parameters: {
+                type: 'object',
+                properties: {
+                    name: { type: 'string', description: 'Role name.' },
+                    description: { type: 'string', description: 'Role description (optional).' },
+                },
+                required: ['name'],
+            },
+            run: async (args) => {
+                const name = str(args['name']);
+                if (!name) return fail('name is required');
+                const role = await roleService.addRole({
+                    name,
+                    description: str(args['description']) || undefined,
+                    capabilities: [],
+                    permissions: [],
+                });
+                const stored = roleService.getAllRoles().find((r) => r.id === role.id);
+                if (!stored) return fail('the role was not stored');
+                return {
+                    ok: true,
+                    detail: `Created role "${stored.name}"`,
+                    evidence: `id: ${stored.id}`,
+                    verification: 'verified',
+                };
+            },
+        },
+        {
+            panelId: 'roles',
+            id: 'remove',
+            title: 'Delete a role',
+            description: 'Delete a custom role and read the list back.',
+            permission: 'tool:write',
+            parameters: {
+                type: 'object',
+                properties: { id: { type: 'string', description: 'Role id.' } },
+                required: ['id'],
+            },
+            run: async (args) => {
+                const id = str(args['id']);
+                if (!id) return fail('id is required');
+                const before = roleService.getAllRoles().find((r) => r.id === id);
+                if (!before) return fail(`role ${id} does not exist`);
+                await roleService.deleteRole(id);
+                if (roleService.getAllRoles().some((r) => r.id === id)) {
+                    return fail(`role ${id} is still there (built-in roles cannot be deleted)`);
+                }
+                return {
+                    ok: true,
+                    detail: `Removed role "${before.name}"`,
+                    evidence: `removed: ${id}`,
+                    verification: 'verified',
+                };
+            },
+        },
 
         /* ------------------------------------------------------- settings */
         {
