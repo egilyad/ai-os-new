@@ -35,9 +35,11 @@ function cosine(a: number[], b: number[]): number {
     let na = 0;
     let nb = 0;
     for (let i = 0; i < len; i++) {
-        dot += a[i] * b[i];
-        na += a[i] * a[i];
-        nb += b[i] * b[i];
+        const ai = a[i]!;
+        const bi = b[i]!;
+        dot += ai * bi;
+        na += ai * ai;
+        nb += bi * bi;
     }
     if (na === 0 || nb === 0) return 0;
     return dot / Math.sqrt(na * nb);
@@ -63,7 +65,7 @@ export class WikiSearchAdapter implements IWikiSearchAdapter {
         try {
             const texts = pages.map((p) => `${p.frontmatter.title}\n${p.body}`);
             const vectors = await this.embedder.embed(texts);
-            pages.forEach((p, index) => this.vecs.set(p.id, vectors[index]));
+            pages.forEach((p, index) => this.vecs.set(p.id, vectors[index]!));
         } catch {
             // embedder failure is non-fatal — fall back to BM25 only
             for (const p of pages) this.vecs.delete(p.id);
@@ -99,14 +101,16 @@ export class WikiSearchAdapter implements IWikiSearchAdapter {
             try {
                 const texts = missing.map((p) => `${p.frontmatter.title}\n${p.body}`);
                 const vectors = await this.embedder.embed(texts);
-                missing.forEach((p, index) => this.vecs.set(p.id, vectors[index]));
+                missing.forEach((p, index) => this.vecs.set(p.id, vectors[index]!));
             } catch {
                 return this.bm25(query, topK);
             }
         }
         let queryVec: number[];
         try {
-            [queryVec] = await this.embedder.embed([query]);
+            const [first] = await this.embedder.embed([query]);
+            if (!first) return this.bm25(query, topK);
+            queryVec = first;
         } catch {
             return this.bm25(query, topK);
         }

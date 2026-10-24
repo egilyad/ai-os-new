@@ -7,7 +7,7 @@ import type { TWikiPage } from '../../contracts/wiki-brain/types';
 
 const now = () => new Date().toISOString();
 
-function page(slug: string, type = 'concept'): TWikiPage {
+function page(slug: string, type: TWikiPage['frontmatter']['type'] = 'concept'): TWikiPage {
     return {
         id: wikiId('pg'),
         slug,
@@ -43,8 +43,8 @@ describe('wiki graph service', () => {
         const store = new WikiDexieStore();
         await store.putPage(page('a'));
         await store.putPage(page('b'));
-        await store.putLink({ id: wikiId('lnk'), fromSlug: 'a', toSlug: 'b', weight: 1 });
-        await store.putLink({ id: wikiId('lnk'), fromSlug: 'b', toSlug: 'a', weight: 1 });
+        await store.putLink({ id: wikiId('lnk'), kind: 'wikilink', fromSlug: 'a', toSlug: 'b', weight: 1 });
+        await store.putLink({ id: wikiId('lnk'), kind: 'wikilink', fromSlug: 'b', toSlug: 'a', weight: 1 });
 
         const graph = new WikiGraphService(store);
         const sim = await graph.similarity('a', 'b');
@@ -56,10 +56,10 @@ describe('wiki graph service', () => {
         const store = new WikiDexieStore();
         // Two disconnected pairs → two communities.
         for (const slug of ['a', 'b', 'c', 'd']) await store.putPage(page(slug));
-        await store.putLink({ id: wikiId('lnk'), fromSlug: 'a', toSlug: 'b', weight: 1 });
-        await store.putLink({ id: wikiId('lnk'), fromSlug: 'b', toSlug: 'a', weight: 1 });
-        await store.putLink({ id: wikiId('lnk'), fromSlug: 'c', toSlug: 'd', weight: 1 });
-        await store.putLink({ id: wikiId('lnk'), fromSlug: 'd', toSlug: 'c', weight: 1 });
+        await store.putLink({ id: wikiId('lnk'), kind: 'wikilink', fromSlug: 'a', toSlug: 'b', weight: 1 });
+        await store.putLink({ id: wikiId('lnk'), kind: 'wikilink', fromSlug: 'b', toSlug: 'a', weight: 1 });
+        await store.putLink({ id: wikiId('lnk'), kind: 'wikilink', fromSlug: 'c', toSlug: 'd', weight: 1 });
+        await store.putLink({ id: wikiId('lnk'), kind: 'wikilink', fromSlug: 'd', toSlug: 'c', weight: 1 });
 
         const graph = new WikiGraphService(store);
         const communities = await graph.detectCommunities();
@@ -74,7 +74,7 @@ describe('wiki graph service', () => {
         const store = new WikiDexieStore();
         await store.putPage(page('a'));
         await store.putPage(page('b'));
-        await store.putLink({ id: wikiId('lnk'), fromSlug: 'a', toSlug: 'b', weight: 1 });
+        await store.putLink({ id: wikiId('lnk'), kind: 'wikilink', fromSlug: 'a', toSlug: 'b', weight: 1 });
 
         const graph = new WikiGraphService(store);
         const flow = await graph.toFlowGraph();

@@ -20,7 +20,7 @@ function parseFrontmatter(text: string): ParsedMarkdown {
     const match = /^---\n([\s\S]*?)\n---\n?([\s\S]*)$/.exec(text);
     if (!match) return { frontmatter: {}, body: text };
     const frontmatter: Record<string, unknown> = {};
-    for (const line of match[1].split('\n')) {
+    for (const line of match[1]!.split('\n')) {
         const idx = line.indexOf(':');
         if (idx < 0) continue;
         const key = line.slice(0, idx).trim();
@@ -33,7 +33,7 @@ function parseFrontmatter(text: string): ParsedMarkdown {
         }
         frontmatter[key] = value;
     }
-    return { frontmatter, body: match[2] };
+    return { frontmatter, body: match[2]! };
 }
 
 function safeFileName(name: string): string {
