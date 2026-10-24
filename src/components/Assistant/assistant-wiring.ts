@@ -384,6 +384,10 @@ export function ensureAssistantWiring(): void {
                     const filters = await plannerService.listFilters();
                     return filters;
                 },
+                plan: async (task) => {
+                    const plan = await plannerService.plan(task);
+                    return { plan };
+                },
             },
             knowledge: {
                 sources: async () => {
@@ -421,6 +425,17 @@ export function ensureAssistantWiring(): void {
                     const result = await guardrailService.check(text);
                     return { ok: result.ok, hits: result.hits };
                 },
+                addRule: async ({ name, kind, tripwire }) => {
+                    const rule = await guardrailService.addRule({
+                        name,
+                        kind: kind as 'contains' | 'regex' | 'minLength' | 'maxLength',
+                        tripwire: tripwire as 'block' | 'flag',
+                    });
+                    return { id: rule.id, name: rule.name };
+                },
+                removeRule: async (id) => {
+                    await guardrailService.removeRule(id);
+                },
             },
             sops: {
                 list: async () => {
@@ -430,6 +445,10 @@ export function ensureAssistantWiring(): void {
                         name: s.name,
                         phases: s.phases.length,
                     }));
+                },
+                run: async ({ sopId, goal }) => {
+                    const loop = await sopService.runSop(sopId, goal);
+                    return { id: loop.id, status: loop.status };
                 },
             },
             modes: {

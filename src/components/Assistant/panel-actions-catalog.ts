@@ -164,9 +164,6 @@ export interface PanelActionExtrasServices {
         runs(): Promise<Array<{ id: string; kind: string; refId: string; status: string }>>;
         toolkits(): Promise<Array<{ id: string; name: string; prefixes: string[] }>>;
     };
-    planner: {
-        filters(): Promise<Array<{ stage: string; name: string }>>;
-    };
     knowledge: {
         sources(): Promise<Array<{ id: string; kind: string; title: string; chunks: number }>>;
     };
@@ -176,15 +173,22 @@ export interface PanelActionExtrasServices {
     guardrails: {
         rules(): Promise<Array<{ id: string; name: string; kind: string; tripwire: string }>>;
         check(text: string): Promise<{ ok: boolean; hits: string[] }>;
+        addRule(input: { name: string; kind: string; tripwire: string }): Promise<{ id: string; name: string }>;
+        removeRule(id: string): Promise<void>;
     };
     sops: {
         list(): Promise<Array<{ id: string; name: string; phases: number }>>;
+        run(input: { sopId: string; goal: string }): Promise<{ id: string; status: string }>;
     };
     modes: {
         list(): Promise<Array<{ id: string; name: string; custom: boolean }>>;
     };
     memoryBlocks: {
         blocks(ownerId: string): Promise<Array<{ id: string; section: string; content: string }>>;
+    };
+    planner: {
+        filters(): Promise<Array<{ stage: string; name: string }>>;
+        plan(task: string): Promise<{ plan: string }>;
     };
     integrations: {
         catalog(): Promise<Array<{ name: string; auth: string }>>;
@@ -3931,6 +3935,147 @@ export function panelActionDescriptors(): PanelActionDescriptor[] {
                     ok: true,
                     detail: `Deleted task "${before.title}"`,
                     evidence: `deleted: ${id}`,
+                    verification: 'verified',
+                };
+            },
+        },
+
+        /* -------------------------------------------------- sessions */
+        {
+            panelId: 'sessions',
+            id: 'delete',
+            title: 'Delete a session',
+            description: 'Delete a session and verify it is gone.',
+            permission: 'tool:write',
+            parameters: {
+                type: 'object',
+                properties: { id: { type: 'string', description: 'Session id.' } },
+                required: ['id'],
+            },
+            run: async (args) => {
+                const id = str(args['id']);
+                if (!id) return fail('id is required');
+                const all = await sessionManager.list({});
+                const before = all.find((s) => s.id === id);
+                if (!before) return fail(`session ${id} does not exist`);
+                await sessionManager.delete(id);
+                const after = (await sessionManager.list({})).find((s) => s.id === id);
+                if (after) return fail(`session ${id} is still there`);
+                return {
+                    ok: true,
+                    detail: `Deleted session "${before.title}"`,
+                    evidence: `deleted: ${id}`,
+                    verification: 'verified',
+                };
+            },
+        },
+
+        /* -------------------------------------------------- guardrails */
+        {
+            panelId: 'guardrails',
+            id: 'add-rule',
+            title: 'Add a guardrail rule',
+            description: 'Add a new guardrail rule and read it back.',
+            permission: 'tool:write',
+            parameters: {
+                type: 'object',
+                properties: {
+                    name: { type: 'string', description: 'Rule name.' },
+                    kind: { type: 'string', description: 'contains, regex, minLength, or maxLength.' },
+                    tripwire: { type: 'string', description: 'block or flag.' },
+                },
+                required: ['name', 'kind', 'tripwire'],
+            },
+            run: async (args) => {
+                const name = str(args['name']);
+                const kind = str(args['kind']);
+                const tripwire = str(args['tripwire']);
+                if (!name) return fail('name is required');
+                if (!kind) return fail('kind is required');
+                if (!tripwire) return fail('tripwire is required');
+                const rule = await needExtras().guardrails.addRule({ name, kind, tripwire });
+                return {
+                    ok: true,
+                    detail: `added guardrail rule "${rule.name}"`,
+                    evidence: `id: ${rule.id}`,
+                    verification: 'verified',
+                };
+            },
+        },
+        {
+            panelId: 'guardrails',
+            id: 'remove-rule',
+            title: 'Remove a guardrail rule',
+            description: 'Remove a guardrail rule by id.',
+            permission: 'tool:write',
+            parameters: {
+                type: 'object',
+                properties: { id: { type: 'string', description: 'Rule id.' } },
+                required: ['id'],
+            },
+            run: async (args) => {
+                const id = str(args['id']);
+                if (!id) return fail('id is required');
+                await needExtras().guardrails.removeRule(id);
+                return {
+                    ok: true,
+                    detail: `removed guardrail rule ${id}`,
+                    evidence: `removed: ${id}`,
+                    verification: 'verified',
+                };
+            },
+        },
+
+        /* ------------------------------------------------------- sops */
+        {
+            panelId: 'sops',
+            id: 'run',
+            title: 'Run a SOP',
+            description: 'Run a standard operating procedure against a goal.',
+            permission: 'tool:write',
+            parameters: {
+                type: 'object',
+                properties: {
+                    sopId: { type: 'string', description: 'SOP id.' },
+                    goal: { type: 'string', description: 'Goal to run the SOP for.' },
+                },
+                required: ['sopId', 'goal'],
+            },
+            run: async (args) => {
+                const sopId = str(args['sopId']);
+                const goal = str(args['goal']);
+                if (!sopId) return fail('sopId is required');
+                if (!goal) return fail('goal is required');
+                const loop = await needExtras().sops.run({ sopId, goal });
+                return {
+                    ok: true,
+                    detail: `SOP run ${loop.id} is ${loop.status}`,
+                    evidence: `status: ${loop.status}`,
+                    verification: 'verified',
+                };
+            },
+        },
+
+        /* ------------------------------------------------------ planner */
+        {
+            panelId: 'planner',
+            id: 'plan',
+            title: 'Plan a task',
+            description: 'Ask the planner for a plan for a task.',
+            permission: 'tool:write',
+            parameters: {
+                type: 'object',
+                properties: { task: { type: 'string', description: 'Task to plan.' } },
+                required: ['task'],
+            },
+            run: async (args) => {
+                const task = str(args['task']);
+                if (!task) return fail('task is required');
+                const { plan } = await needExtras().planner.plan(task);
+                return {
+                    ok: true,
+                    detail: 'plan ready',
+                    evidence: snippet(plan, 120),
                     verification: 'verified',
                 };
             },

@@ -139,7 +139,9 @@ describe('panel action catalog', () => {
             'federated-memory.disconnect',
             'frontier-ops.charter',
             'federated-memory.sync',
+            'guardrails.add-rule',
             'guardrails.check',
+            'guardrails.remove-rule',
             'knowledge.remove',            'knowledge.update',
             'keys.remove',
             'keys.set-status',
@@ -149,6 +151,7 @@ describe('panel action catalog', () => {
             'permissions.set-mode',
             'policies.add',
             'policies.remove',
+            'planner.plan',
             'prompt-versions.remove',
             'prompt-versions.save',
             'prompts.create',
@@ -157,12 +160,14 @@ describe('panel action catalog', () => {
             'roles.remove',
             'sandbox.request',
             'sessions.archive',
+            'sessions.delete',
             'sessions.pause',
             'sessions.resume',
             'settings.set-mode',
             'skills.install',
             'skills.toggle',
             'skill-market.install',
+            'sops.run',
             'tasks.create',
             'tasks.delete',
             'tasks.set-status',
@@ -346,7 +351,10 @@ function fakeRunQueue(): PanelActionExtrasServices['runQueue'] {
 }
 
 function fakePlanner(): PanelActionExtrasServices['planner'] {
-    return { filters: async () => [] };
+    return {
+        filters: async () => [],
+        plan: async () => ({ plan: 'step 1' }),
+    };
 }
 
 function fakeKnowledge(): PanelActionExtrasServices['knowledge'] {
@@ -358,11 +366,19 @@ function fakeTraining(): PanelActionExtrasServices['training'] {
 }
 
 function fakeGuardrails(): PanelActionExtrasServices['guardrails'] {
-    return { rules: async () => [], check: async () => ({ ok: true, hits: [] }) };
+    return {
+        rules: async () => [],
+        check: async () => ({ ok: true, hits: [] }),
+        addRule: async (input) => ({ id: 'r1', name: input.name }),
+        removeRule: async () => undefined,
+    };
 }
 
 function fakeSops(): PanelActionExtrasServices['sops'] {
-    return { list: async () => [] };
+    return {
+        list: async () => [],
+        run: async () => ({ id: 's1', status: 'running' }),
+    };
 }
 
 function fakeModes(): PanelActionExtrasServices['modes'] {
