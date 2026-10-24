@@ -1270,8 +1270,7 @@ export function panelActionDescriptors(): PanelActionDescriptor[] {
                 if (!id) return fail('id is required');
                 const status = str(args['status']) as AgemsTaskStatus;
                 const allowed: AgemsTaskStatus[] = ['PENDING', 'IN_PROGRESS', 'IN_REVIEW', 'IN_TESTING', 'VERIFIED', 'AWAITING_APPROVAL', 'COMPLETED', 'FAILED', 'BLOCKED', 'CANCELLED'];
-                if (!allowed.includes(status)) return fail(`unsupported status "${status}"`);
-                const before = (await agemsTaskService.list()).find((t) => t.id === id);
+                if (!allowed.includes(status)) return fail(`unsupported status "${status}"`);                const before = (await agemsTaskService.list()).find((t) => t.id === id);
                 if (!before) return fail(`task ${id} does not exist`);
                 const updated = await agemsTaskService.updateStatus(id, status);
                 if (!updated || updated.status !== status) {
@@ -3867,6 +3866,71 @@ export function panelActionDescriptors(): PanelActionDescriptor[] {
                     ok: true,
                     detail: `dyad ${loop.id} started on "${loop.topic}"`,
                     evidence: `status: ${loop.status}`,
+                    verification: 'verified',
+                };
+            },
+        },
+
+        /* ------------------------------------------------------- tasks */
+        {
+            panelId: 'tasks',
+            id: 'create',
+            title: 'Create a task',
+            description: 'Create a task on the board and read it back.',
+            permission: 'tool:write',
+            parameters: {
+                type: 'object',
+                properties: {
+                    title: { type: 'string', description: 'Task title.' },
+                    assigneeId: { type: 'string', description: 'Assignee agent id (optional).' },
+                },
+                required: ['title'],
+            },
+            run: async (args) => {
+                const title = str(args['title']);
+                const assigneeId = str(args['assigneeId']) || undefined;
+                if (!title) return fail('title is required');
+                const task = await agemsTaskService.create({
+                    title,
+                    assigneeId,
+                    type: 'ONE_TIME',
+                    priority: 'HIGH',
+                    status: 'PENDING',
+                });
+                const stored = (await agemsTaskService.list()).find((t) => t.id === task.id);
+                if (!stored) return fail('the task was not stored');
+                return {
+                    ok: true,
+                    detail: `Created task "${stored.title}"`,
+                    evidence: `${stored.id} | status ${stored.status}`,
+                    verification: 'verified',
+                };
+            },
+        },
+        {
+            panelId: 'tasks',
+            id: 'delete',
+            title: 'Delete a task',
+            description: 'Delete a task from the board and verify it is gone.',
+            permission: 'tool:write',
+            parameters: {
+                type: 'object',
+                properties: { id: { type: 'string', description: 'Task id.' } },
+                required: ['id'],
+            },
+            run: async (args) => {
+                const id = str(args['id']);
+                if (!id) return fail('id is required');
+                const before = (await agemsTaskService.list()).find((t) => t.id === id);
+                if (!before) return fail(`task ${id} does not exist`);
+                await agemsTaskService.delete(id);
+                if ((await agemsTaskService.list()).some((t) => t.id === id)) {
+                    return fail(`task ${id} is still there`);
+                }
+                return {
+                    ok: true,
+                    detail: `Deleted task "${before.title}"`,
+                    evidence: `deleted: ${id}`,
                     verification: 'verified',
                 };
             },

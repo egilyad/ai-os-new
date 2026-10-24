@@ -163,6 +163,8 @@ describe('panel action catalog', () => {
             'skills.install',
             'skills.toggle',
             'skill-market.install',
+            'tasks.create',
+            'tasks.delete',
             'tasks.set-status',
             'wiki.add-page',
             'wiki.ingest-source',
