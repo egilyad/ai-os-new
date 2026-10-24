@@ -449,6 +449,18 @@ export function ensureAssistantWiring(): void {
                         chunks: s.chunks.length,
                     }));
                 },
+                addSource: async ({ kind, title, content, uri }) => {
+                    const source = await knowledgeService.addSource({
+                        kind: kind as 'url' | 'text',
+                        title,
+                        content,
+                        uri,
+                    });
+                    return { id: source.id, title: source.title };
+                },
+                removeSource: async (id) => {
+                    await knowledgeService.removeSource(id);
+                },
             },
             training: {
                 guides: async () => {

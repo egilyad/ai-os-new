@@ -151,6 +151,8 @@ describe('panel action catalog', () => {
             'guardrails.remove-rule',
             'knowledge.remove',
             'knowledge.update',
+            'knowledge-sources.add',
+            'knowledge-sources.remove',
             'keys.remove',
             'keys.set-status',
             'mcp.connect',

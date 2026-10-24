@@ -178,6 +178,8 @@ export interface PanelActionExtrasServices {
     };
     knowledge: {
         sources(): Promise<Array<{ id: string; kind: string; title: string; chunks: number }>>;
+        addSource(input: { kind: string; title: string; content?: string; uri?: string }): Promise<{ id: string; title: string }>;
+        removeSource(id: string): Promise<void>;
     };
     training: {
         guides(): Promise<Array<{ id: string; role: string; quality: number; runs: number }>>;
@@ -4747,6 +4749,63 @@ export function panelActionDescriptors(): PanelActionDescriptor[] {
                     ok: true,
                     detail: `declared capability "${title}"`,
                     evidence: `${id} [${kind}] trust: ${record.trust}`,
+                    verification: 'verified',
+                };
+            },
+        },
+
+        /* ------------------------------------------------ knowledge src */
+        {
+            panelId: 'knowledge-sources',
+            id: 'add',
+            title: 'Add a knowledge source',
+            description: 'Add a text or URL source to retrieve knowledge from.',
+            permission: 'tool:write',
+            parameters: {
+                type: 'object',
+                properties: {
+                    kind: { type: 'string', description: 'text or url.' },
+                    title: { type: 'string', description: 'Source title.' },
+                    content: { type: 'string', description: 'Text content (for text sources).' },
+                    uri: { type: 'string', description: 'URL (for url sources).' },
+                },
+                required: ['kind', 'title'],
+            },
+            run: async (args) => {
+                const kind = str(args['kind']);
+                const title = str(args['title']);
+                if (!kind) return fail('kind is required');
+                if (!title) return fail('title is required');
+                const content = str(args['content']) || undefined;
+                const uri = str(args['uri']) || undefined;
+                new source = await needExtras().knowledge.addSource({ kind, title, content, uri });
+                return {
+                    ok: true,
+                    detail: `added knowledge source "${source.title}"`,
+                    evidence: `id: ${source.id}`,
+                    verification: 'verified',
+                };
+            },
+        },
+        {
+            panelId: 'knowledge-sources',
+            id: 'remove',
+            title: 'Remove a knowledge source',
+            description: 'Remove a knowledge source by id.',
+            permission: 'tool:write',
+            parameters: {
+                type: 'object',
+                properties: { id: { type: 'string', description: 'Source id.' } },
+                required: ['id'],
+            },
+            run: async (args) => {
+                const id = str(args['id']);
+                if (!id) return fail('id is required');
+                await needExtras().knowledge.removeSource(id);
+                return {
+                    ok: true,
+                    detail: `removed knowledge source ${id}`,
+                    evidence: `removed: ${id}`,
                     verification: 'verified',
                 };
             },
