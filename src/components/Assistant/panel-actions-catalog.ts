@@ -199,6 +199,15 @@ export interface PanelActionExtrasServices {
     characters: {
         clients(): Promise<Array<{ name: string; kind: string }>>;
     };
+    groupChat: {
+        chats(): Promise<Array<{ id: string; name: string; members: number; status: string }>>;
+    };
+    aiEmployees: {
+        employees(): Promise<Array<{ id: string; name: string; triggers: string[] }>>;
+    };
+    aiAssistants: {
+        assistants(): Promise<Array<{ id: string; name: string }>>;
+    };
 }
 
 let extrasServices: PanelActionExtrasServices | null = null;
@@ -2946,6 +2955,78 @@ export function panelActionDescriptors(): PanelActionDescriptor[] {
                     ok: true,
                     detail: `${clients.length} client(s)`,
                     evidence: clients.map((c) => `${c.name} [${c.kind}]`).join(' | '),
+                    verification: 'verified',
+                };
+            },
+        },
+
+        /* --------------------------------------------------- group chat */
+        {
+            panelId: 'group-chat',
+            id: 'chats',
+            title: 'Group chats',
+            description: 'Multi-agent group chats and their state.',
+            permission: 'tool:read',
+            parameters: { type: 'object', properties: {} },
+            run: async () => {
+                const chats = await needExtras().groupChat.chats();
+                if (chats.length === 0) {
+                    return { ok: true, detail: 'no group chats', evidence: 'chats: 0', verification: 'verified' };
+                }
+                return {
+                    ok: true,
+                    detail: `${chats.length} chat(s)`,
+                    evidence: chats
+                        .slice(0, 10)
+                        .map((c) => `${c.id} "${c.name}" (${c.members} members) [${c.status}]`)
+                        .join(' | '),
+                    verification: 'verified',
+                };
+            },
+        },
+
+        /* ------------------------------------------------ ai employees */
+        {
+            panelId: 'ai-employees',
+            id: 'list',
+            title: 'AI employees',
+            description: 'Lindy-style AI employees and their triggers.',
+            permission: 'tool:read',
+            parameters: { type: 'object', properties: {} },
+            run: async () => {
+                const employees = await needExtras().aiEmployees.employees();
+                if (employees.length === 0) {
+                    return { ok: true, detail: 'no AI employees', evidence: 'employees: 0', verification: 'verified' };
+                }
+                return {
+                    ok: true,
+                    detail: `${employees.length} employee(s)`,
+                    evidence: employees
+                        .slice(0, 10)
+                        .map((e) => `${e.id} ${e.name} [${e.triggers.join(', ')}]`)
+                        .join(' | '),
+                    verification: 'verified',
+                };
+            },
+        },
+
+        /* --------------------------------------------- ai assistants */
+        {
+            panelId: 'ai-assistants',
+            id: 'list',
+            title: 'AI assistants',
+            description: 'StackAI-style assistants defined in the system.',
+            permission: 'tool:read',
+            parameters: { type: 'object', properties: {} },
+            run: async () => {
+                const assistants = await needExtras().aiAssistants.assistants();
+                if (assistants.length === 0) {
+                    return { ok: true, detail: 'no AI assistants', evidence: 'assistants: 0', verification: 'verified' };
+                }
+                return {
+                    ok: true,
+                    detail: `${assistants.length} assistant(s)`,
+                    evidence: assistants.map((a) => `${a.id} ${a.name}`).join(' | '),
                     verification: 'verified',
                 };
             },

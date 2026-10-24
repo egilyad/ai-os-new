@@ -55,6 +55,8 @@ describe('panel action catalog', () => {
         expect([...panels].sort()).toEqual([
             'agent-journal',
             'agents',
+            'ai-assistants',
+            'ai-employees',
             'approvals',
             'audit',
             'autonomy',
@@ -68,6 +70,7 @@ describe('panel action catalog', () => {
             'fleet',
             'flow-api',
             'governance',
+            'group-chat',
             'guardrails',
             'hierarchy',
             'integrations',
@@ -370,6 +373,18 @@ function fakeCharacters(): PanelActionExtrasServices['characters'] {
     return { clients: async () => [] };
 }
 
+function fakeGroupChat(): PanelActionExtrasServices['groupChat'] {
+    return { chats: async () => [] };
+}
+
+function fakeAiEmployees(): PanelActionExtrasServices['aiEmployees'] {
+    return { employees: async () => [] };
+}
+
+function fakeAiAssistants(): PanelActionExtrasServices['aiAssistants'] {
+    return { assistants: async () => [] };
+}
+
 describe('panel action catalog — memory and knowledge extras', () => {
     afterEach(() => setPanelActionExtrasServices(null));
 
@@ -413,6 +428,9 @@ describe('panel action catalog — memory and knowledge extras', () => {
             datasets: fakeDatasets(),
             flowApi: fakeFlowApi(),
             characters: fakeCharacters(),
+            groupChat: fakeGroupChat(),
+            aiEmployees: fakeAiEmployees(),
+            aiAssistants: fakeAiAssistants(),
         });
 
         const result = await descriptor('prompts', 'create').run({
@@ -459,6 +477,9 @@ describe('panel action catalog — memory and knowledge extras', () => {
             datasets: fakeDatasets(),
             flowApi: fakeFlowApi(),
             characters: fakeCharacters(),
+            groupChat: fakeGroupChat(),
+            aiEmployees: fakeAiEmployees(),
+            aiAssistants: fakeAiAssistants(),
         });
 
         const result = await descriptor('prompts', 'remove').run({ id: 'built-in' });
@@ -503,6 +524,9 @@ describe('panel action catalog — memory and knowledge extras', () => {
             datasets: fakeDatasets(),
             flowApi: fakeFlowApi(),
             characters: fakeCharacters(),
+            groupChat: fakeGroupChat(),
+            aiEmployees: fakeAiEmployees(),
+            aiAssistants: fakeAiAssistants(),
         });
 
         const result = await descriptor('federated-memory', 'disconnect').run({ id: 'north' });
@@ -543,6 +567,9 @@ describe('panel action catalog — memory and knowledge extras', () => {
             datasets: fakeDatasets(),
             flowApi: fakeFlowApi(),
             characters: fakeCharacters(),
+            groupChat: fakeGroupChat(),
+            aiEmployees: fakeAiEmployees(),
+            aiAssistants: fakeAiAssistants(),
         });
 
         const result = await descriptor('federated-memory', 'sync').run({});
@@ -585,6 +612,9 @@ describe('panel action catalog — memory and knowledge extras', () => {
             datasets: fakeDatasets(),
             flowApi: fakeFlowApi(),
             characters: fakeCharacters(),
+            groupChat: fakeGroupChat(),
+            aiEmployees: fakeAiEmployees(),
+            aiAssistants: fakeAiAssistants(),
         });
 
         const result = await descriptor('prompt-versions', 'save').run({

@@ -21,16 +21,19 @@ import {
     setPanelActionExtrasServices,
 } from './panel-actions-catalog';
 import {
+    assistantService,
     auditService,
     autonomyService,
     characterService,
     crewService,
     crystalVault,
     datasetService,
+    employeeService,
     federatedMemoryService,
     fleetMonitorService,
     flowApiService,
     guardrailService,
+    groupChatService,
     hierarchyService,
     integrationsService,
     junctionEngine,
@@ -472,6 +475,29 @@ export function ensureAssistantWiring(): void {
                 clients: async () => {
                     const clients = await characterService.listClients();
                     return clients;
+                },
+            },
+            groupChat: {
+                chats: async () => {
+                    const chats = await groupChatService.listChats();
+                    return chats.map((c) => ({
+                        id: c.id,
+                        name: c.name,
+                        members: c.members.length,
+                        status: c.status,
+                    }));
+                },
+            },
+            aiEmployees: {
+                employees: async () => {
+                    const employees = await employeeService.listEmployees();
+                    return employees;
+                },
+            },
+            aiAssistants: {
+                assistants: async () => {
+                    const assistants = await assistantService.listAssistants();
+                    return assistants;
                 },
             },
         });
