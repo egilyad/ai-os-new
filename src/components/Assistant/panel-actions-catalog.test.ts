@@ -331,15 +331,25 @@ function fakeSkillMarket(): PanelActionExtrasServices['skillMarket'] {
     return {
         list: async () => [],
         install: async (id) => ({ id, installed: true }),
+        uninstall: async (id) => ({ id, installed: false }),
     };
 }
 
 function fakeFleet(): PanelActionExtrasServices['fleet'] {
-    return { watches: async () => [] };
+    return {
+        watches: async () => [],
+        watch: async () => ({ id: 'w1', status: 'watching' }),
+        unwatch: async () => undefined,
+    };
 }
 
 function fakeMobile(): PanelActionExtrasServices['mobile'] {
-    return { sessions: async () => [], notifications: async () => [] };
+    return {
+        sessions: async () => [],
+        notifications: async () => [],
+        notify: async () => ({ id: 'n1' }),
+        markRead: async () => undefined,
+    };
 }
 
 function fakeAutonomy(): PanelActionExtrasServices['autonomy'] {
@@ -390,11 +400,19 @@ function fakeMemoryBlocks(): PanelActionExtrasServices['memoryBlocks'] {
 }
 
 function fakeIntegrations(): PanelActionExtrasServices['integrations'] {
-    return { catalog: async () => [], connections: async () => [] };
+    return {
+        catalog: async () => [],
+        connections: async () => [],
+        connect: async (input) => ({ id: 'i1', app: input.app, label: input.label }),
+        disconnect: async () => undefined,
+    };
 }
 
 function fakeDatasets(): PanelActionExtrasServices['datasets'] {
-    return { list: async () => [] };
+    return {
+        list: async () => [],
+        create: async (name) => ({ id: 'd1', name }),
+    };
 }
 
 function fakeFlowApi(): PanelActionExtrasServices['flowApi'] {

@@ -149,13 +149,18 @@ export interface PanelActionExtrasServices {
     skillMarket: {
         list(): Promise<Array<{ id: string; name: string; version: string; installed: boolean }>>;
         install(id: string): Promise<{ id: string; installed: boolean }>;
+        uninstall(id: string): Promise<{ id: string; installed: boolean }>;
     };
     fleet: {
         watches(): Promise<Array<{ id: string; kind: string; label: string; status: string }>>;
+        watch(input: { kind: string; ref: string; label: string }): Promise<{ id: string; status: string }>;
+        unwatch(id: string): Promise<void>;
     };
     mobile: {
         sessions(): Promise<Array<{ id: string; deviceName: string; status: string }>>;
         notifications(): Promise<Array<{ id: string; title: string; read: boolean }>>;
+        notify(input: { title: string; body: string }): Promise<{ id: string }>;
+        markRead(id: string): Promise<void>;
     };
     autonomy: {
         loops(): Promise<Array<{ id: string; kind: string; goal: string; status: string; iterations: number }>>;
@@ -193,9 +198,12 @@ export interface PanelActionExtrasServices {
     integrations: {
         catalog(): Promise<Array<{ name: string; auth: string }>>;
         connections(): Promise<Array<{ id: string; app: string; label: string }>>;
+        connect(input: { app: string; label: string }): Promise<{ id: string; app: string; label: string }>;
+        disconnect(id: string): Promise<void>;
     };
     datasets: {
         list(): Promise<Array<{ id: string; name: string; sources: number }>>;
+        create(name: string): Promise<{ id: string; name: string }>;
     };
     flowApi: {
         tokens(): Promise<Array<{ token: string; graphId: string; label?: string }>>;
@@ -4076,6 +4084,217 @@ export function panelActionDescriptors(): PanelActionDescriptor[] {
                     ok: true,
                     detail: 'plan ready',
                     evidence: snippet(plan, 120),
+                    verification: 'verified',
+                };
+            },
+        },
+
+        /* ------------------------------------------------ skill market */
+        {
+            panelId: 'skill-market',
+            id: 'uninstall',
+            title: 'Uninstall a skill',
+            description: 'Uninstall a skill and read the state back.',
+            permission: 'tool:write',
+            parameters: {
+                type: 'object',
+                properties: { id: { type: 'string', description: 'Skill manifest id.' } },
+                required: ['id'],
+            },
+            run: async (args) => {
+                const id = str(args['id']);
+                if (!id) return fail('id is required');
+                const result = await needExtras().skillMarket.uninstall(id);
+                return {
+                    ok: true,
+                    detail: `skill ${result.id} uninstalled`,
+                    evidence: `installed: ${result.installed}`,
+                    verification: 'verified',
+                };
+            },
+        },
+
+        /* ------------------------------------------------------- fleet */
+        {
+            panelId: 'fleet',
+            id: 'watch',
+            title: 'Watch a mission',
+            description: 'Start watching a crew, council or graph run.',
+            permission: 'tool:write',
+            parameters: {
+                type: 'object',
+                properties: {
+                    kind: { type: 'string', description: 'crew, council, or graph.' },
+                    ref: { type: 'string', description: 'Run reference id.' },
+                    label: { type: 'string', description: 'Watch label (optional).' },
+                },
+                required: ['kind', 'ref'],
+            },
+            run: async (args) => {
+                const kind = str(args['kind']);
+                const ref = str(args['ref']);
+                const label = str(args['label']) || ref;
+                if (!kind) return fail('kind is required');
+                if (!ref) return fail('ref is required');
+                const watch = await needExtras().fleet.watch({ kind, ref, label });
+                return {
+                    ok: true,
+                    detail: `watching ${kind} run ${watch.id}`,
+                    evidence: `status: ${watch.status}`,
+                    verification: 'verified',
+                };
+            },
+        },
+        {
+            panelId: 'fleet',
+            id: 'unwatch',
+            title: 'Stop watching',
+            description: 'Stop watching a mission.',
+            permission: 'tool:write',
+            parameters: {
+                type: 'object',
+                properties: { id: { type: 'string', description: 'Watch id.' } },
+                required: ['id'],
+            },
+            run: async (args) => {
+                const id = str(args['id']);
+                if (!id) return fail('id is required');
+                await needExtras().fleet.unwatch(id);
+                return {
+                    ok: true,
+                    detail: `stopped watching ${id}`,
+                    evidence: `removed: ${id}`,
+                    verification: 'verified',
+                };
+            },
+        },
+
+        /* ------------------------------------------------------ mobile */
+        {
+            panelId: 'mobile',
+            id: 'notify',
+            title: 'Send a notification',
+            description: 'Send a push notification to mobile devices.',
+            permission: 'tool:write',
+            parameters: {
+                type: 'object',
+                properties: {
+                    title: { type: 'string', description: 'Notification title.' },
+                    body: { type: 'string', description: 'Notification body.' },
+                },
+                required: ['title', 'body'],
+            },
+            run: async (args) => {
+                const title = str(args['title']);
+                const body = str(args['body']);
+                if (!title) return fail('title is required');
+                if (!body) return fail('body is required');
+                const notification = await needExtras().mobile.notify({ title, body });
+                return {
+                    ok: true,
+                    detail: `sent notification "${title}"`,
+                    evidence: `id: ${notification.id}`,
+                    verification: 'verified',
+                };
+            },
+        },
+        {
+            panelId: 'mobile',
+            id: 'mark-read',
+            title: 'Mark a notification read',
+            description: 'Mark a mobile notification as read.',
+            permission: 'tool:write',
+            parameters: {
+                type: 'object',
+                properties: { id: { type: 'string', description: 'Notification id.' } },
+                required: ['id'],
+            },
+            run: async (args) => {
+                const id = str(args['id']);
+                if (!id) return fail('id is required');
+                await needExtras().mobile.markRead(id);
+                return {
+                    ok: true,
+                    detail: `notification ${id} marked read`,
+                    evidence: `read: ${id}`,
+                    verification: 'verified',
+                };
+            },
+        },
+
+        /* ------------------------------------------------- integrations */
+        {
+            panelId: 'integrations',
+            id: 'connect',
+            title: 'Connect an app',
+            description: 'Connect an external app integration.',
+            permission: 'tool:write',
+            parameters: {
+                type: 'object',
+                properties: {
+                    app: { type: 'string', description: 'App name.' },
+                    label: { type: 'string', description: 'Connection label.' },
+                },
+                required: ['app', 'label'],
+            },
+            run: async (args) => {
+                const app = str(args['app']);
+                const label = str(args['label']);
+                if (!app) return fail('app is required');
+                if (!label) return fail('label is required');
+                const connection = await needExtras().integrations.connect({ app, label });
+                return {
+                    ok: true,
+                    detail: `connected ${connection.app} "${connection.label}"`,
+                    evidence: `id: ${connection.id}`,
+                    verification: 'verified',
+                };
+            },
+        },
+        {
+            panelId: 'integrations',
+            id: 'disconnect',
+            title: 'Disconnect an app',
+            description: 'Disconnect an integration.',
+            permission: 'tool:write',
+            parameters: {
+                type: 'object',
+                properties: { id: { type: 'string', description: 'Connection id.' } },
+                required: ['id'],
+            },
+            run: async (args) => {
+                const id = str(args['id']);
+                if (!id) return fail('id is required');
+                await needExtras().integrations.disconnect(id);
+                return {
+                    ok: true,
+                    detail: `disconnected ${id}`,
+                    evidence: `removed: ${id}`,
+                    verification: 'verified',
+                };
+            },
+        },
+
+        /* ------------------------------------------------------ datasets */
+        {
+            panelId: 'datasets',
+            id: 'create',
+            title: 'Create a dataset',
+            description: 'Create a new dataset.',
+            permission: 'tool:write',
+            parameters: {
+                type: 'object',
+                properties: { name: { type: 'string', description: 'Dataset name.' } },
+                required: ['name'],
+            },
+            run: async (args) => {
+                const name = str(args['name']);
+                if (!name) return fail('name is required');
+                const dataset = await needExtras().datasets.create(name);
+                return {
+                    ok: true,
+                    detail: `created dataset "${dataset.name}"`,
+                    evidence: `id: ${dataset.id}`,
                     verification: 'verified',
                 };
             },

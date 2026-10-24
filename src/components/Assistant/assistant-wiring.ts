@@ -318,6 +318,10 @@ export function ensureAssistantWiring(): void {
                     const skill = await skillMarketService.install(id);
                     return { id: skill.id, installed: skill.installed };
                 },
+                uninstall: async (id) => {
+                    const skill = await skillMarketService.uninstall(id);
+                    return { id: skill.id, installed: skill.installed };
+                },
             },
             fleet: {
                 watches: async () => {
@@ -328,6 +332,17 @@ export function ensureAssistantWiring(): void {
                         label: w.label,
                         status: w.status,
                     }));
+                },
+                watch: async ({ kind, ref, label }) => {
+                    const watch = await fleetMonitorService.watch(
+                        kind as 'crew' | 'council' | 'graph',
+                        ref,
+                        label,
+                    );
+                    return { id: watch.id, status: watch.status };
+                },
+                unwatch: async (id) => {
+                    await fleetMonitorService.unwatch(id);
                 },
             },
             mobile: {
@@ -346,6 +361,13 @@ export function ensureAssistantWiring(): void {
                         title: n.title,
                         read: n.read,
                     }));
+                },
+                notify: async ({ title, body }) => {
+                    const notification = await mobileAccessService.notify({ title, body });
+                    return { id: notification.id };
+                },
+                markRead: async (id) => {
+                    await mobileAccessService.markRead(id);
                 },
             },
             autonomy: {
@@ -484,11 +506,22 @@ export function ensureAssistantWiring(): void {
                         label: c.label,
                     }));
                 },
+                connect: async ({ app, label }) => {
+                    const connection = await integrationsService.connect(app, label);
+                    return { id: connection.id, app: connection.app, label: connection.label };
+                },
+                disconnect: async (id) => {
+                    await integrationsService.disconnect(id);
+                },
             },
             datasets: {
                 list: async () => {
                     const datasets = await datasetService.listDatasets();
                     return datasets;
+                },
+                create: async (name) => {
+                    const id = await datasetService.createDataset(name);
+                    return { id, name };
                 },
             },
             flowApi: {
