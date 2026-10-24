@@ -20,6 +20,7 @@ import {
     memoryOrchestrator,
     memoryService,
     monitoringService,
+    projectKnowledgeService,
     providerTracker,
     sessionManager,
     skillService,
@@ -1396,6 +1397,64 @@ export function panelActionDescriptors(): PanelActionDescriptor[] {
                 return fail(`server ${serverId} did not disconnect (${after?.status ?? 'unknown'})`);
             },
         },
+        {
+            panelId: 'mcp',
+            id: 'resources',
+            title: 'MCP resources',
+            description: 'The resources one MCP server exposes.',
+            permission: 'tool:read',
+            parameters: {
+                type: 'object',
+                properties: { serverId: { type: 'string', description: 'Server id.' } },
+                required: ['serverId'],
+            },
+            run: async (args) => {
+                const serverId = str(args['serverId']);
+                if (!serverId) return fail('serverId is required');
+                const resources = await mcpService.listResources(serverId);
+                if (resources.length === 0) {
+                    return { ok: true, detail: 'no resources on this server', evidence: 'resources: 0', verification: 'verified' };
+                }
+                return {
+                    ok: true,
+                    detail: `${resources.length} resource(s)`,
+                    evidence: resources
+                        .slice(0, 10)
+                        .map((r) => `${r.uri} ${r.name}`)
+                        .join(' | '),
+                    verification: 'verified',
+                };
+            },
+        },
+        {
+            panelId: 'mcp',
+            id: 'tools',
+            title: 'MCP tools',
+            description: 'The tools one MCP server exposes.',
+            permission: 'tool:read',
+            parameters: {
+                type: 'object',
+                properties: { serverId: { type: 'string', description: 'Server id.' } },
+                required: ['serverId'],
+            },
+            run: async (args) => {
+                const serverId = str(args['serverId']);
+                if (!serverId) return fail('serverId is required');
+                const tools = await mcpService.listTools(serverId);
+                if (tools.length === 0) {
+                    return { ok: true, detail: 'no tools on this server', evidence: 'tools: 0', verification: 'verified' };
+                }
+                return {
+                    ok: true,
+                    detail: `${tools.length} tool(s)`,
+                    evidence: tools
+                        .slice(0, 10)
+                        .map((t) => `${t.name}${t.description ? ` — ${snippet(t.description)}` : ''}`)
+                        .join(' | '),
+                    verification: 'verified',
+                };
+            },
+        },
 
         /* -------------------------------------------------------- sessions */
         {
@@ -1579,6 +1638,25 @@ export function panelActionDescriptors(): PanelActionDescriptor[] {
                         .slice(0, 10)
                         .map((n) => `${n.name} [${n.type}]`)
                         .join(' | '),
+                    verification: 'verified',
+                };
+            },
+        },
+
+        /* -------------------------------------------------------- projects */
+        {
+            panelId: 'projects',
+            id: 'overview',
+            title: 'Project knowledge overview',
+            description: 'How much the assistant knows about the project: panels and articles covered.',
+            permission: 'tool:read',
+            parameters: { type: 'object', properties: {} },
+            run: async () => {
+                const stats = projectKnowledgeService.stats();
+                return {
+                    ok: true,
+                    detail: `${stats.panels} panel(s), ${stats.articles} article(s)`,
+                    evidence: `with article: ${stats.withArticle} | with tests: ${stats.withTests}`,
                     verification: 'verified',
                 };
             },

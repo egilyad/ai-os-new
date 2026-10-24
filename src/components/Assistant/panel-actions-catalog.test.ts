@@ -65,6 +65,7 @@ describe('panel action catalog', () => {
             'memory',
             'memory-palace',
             'monitoring',
+            'projects',
             'prompt-versions',
             'prompts',
             'providers',
