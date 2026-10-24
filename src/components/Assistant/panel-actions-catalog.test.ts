@@ -108,8 +108,10 @@ describe('panel action catalog', () => {
             'tasks',
             'training',
             'trust',
+            'web-search',
             'wiki',
             'workspace',
+            'writer',
         ]);
 
         const writes = descriptors
@@ -126,8 +128,7 @@ describe('panel action catalog', () => {
             'federated-memory.disconnect',
             'federated-memory.sync',
             'guardrails.check',
-            'knowledge.remove',
-            'knowledge.update',
+            'knowledge.remove',            'knowledge.update',
             'keys.remove',
             'keys.set-status',
             'mcp.connect',
@@ -155,6 +156,7 @@ describe('panel action catalog', () => {
             'wiki.ingest-source',
             'wiki.lint-run',
             'wiki.run-worker',
+            'writer.check',
         ]);
 
         // The human-in-the-loop queue must never be resolvable by the assistant.
@@ -385,6 +387,14 @@ function fakeAiAssistants(): PanelActionExtrasServices['aiAssistants'] {
     return { assistants: async () => [] };
 }
 
+function fakeWebSearch(): PanelActionExtrasServices['webSearch'] {
+    return { search: async () => [] };
+}
+
+function fakeWriter(): PanelActionExtrasServices['writer'] {
+    return { check: async () => ({ score: 100, issues: [] }) };
+}
+
 describe('panel action catalog — memory and knowledge extras', () => {
     afterEach(() => setPanelActionExtrasServices(null));
 
@@ -431,6 +441,8 @@ describe('panel action catalog — memory and knowledge extras', () => {
             groupChat: fakeGroupChat(),
             aiEmployees: fakeAiEmployees(),
             aiAssistants: fakeAiAssistants(),
+            webSearch: fakeWebSearch(),
+            writer: fakeWriter(),
         });
 
         const result = await descriptor('prompts', 'create').run({
@@ -480,6 +492,8 @@ describe('panel action catalog — memory and knowledge extras', () => {
             groupChat: fakeGroupChat(),
             aiEmployees: fakeAiEmployees(),
             aiAssistants: fakeAiAssistants(),
+            webSearch: fakeWebSearch(),
+            writer: fakeWriter(),
         });
 
         const result = await descriptor('prompts', 'remove').run({ id: 'built-in' });
@@ -527,6 +541,8 @@ describe('panel action catalog — memory and knowledge extras', () => {
             groupChat: fakeGroupChat(),
             aiEmployees: fakeAiEmployees(),
             aiAssistants: fakeAiAssistants(),
+            webSearch: fakeWebSearch(),
+            writer: fakeWriter(),
         });
 
         const result = await descriptor('federated-memory', 'disconnect').run({ id: 'north' });
@@ -570,6 +586,8 @@ describe('panel action catalog — memory and knowledge extras', () => {
             groupChat: fakeGroupChat(),
             aiEmployees: fakeAiEmployees(),
             aiAssistants: fakeAiAssistants(),
+            webSearch: fakeWebSearch(),
+            writer: fakeWriter(),
         });
 
         const result = await descriptor('federated-memory', 'sync').run({});
@@ -615,6 +633,8 @@ describe('panel action catalog — memory and knowledge extras', () => {
             groupChat: fakeGroupChat(),
             aiEmployees: fakeAiEmployees(),
             aiAssistants: fakeAiAssistants(),
+            webSearch: fakeWebSearch(),
+            writer: fakeWriter(),
         });
 
         const result = await descriptor('prompt-versions', 'save').run({

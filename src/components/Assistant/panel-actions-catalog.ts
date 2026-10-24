@@ -208,6 +208,12 @@ export interface PanelActionExtrasServices {
     aiAssistants: {
         assistants(): Promise<Array<{ id: string; name: string }>>;
     };
+    webSearch: {
+        search(query: string, limit?: number): Promise<Array<{ title: string; snippet: string; via: string }>>;
+    };
+    writer: {
+        check(text: string): Promise<{ score: number; issues: string[] }>;
+    };
 }
 
 let extrasServices: PanelActionExtrasServices | null = null;
@@ -3027,6 +3033,59 @@ export function panelActionDescriptors(): PanelActionDescriptor[] {
                     ok: true,
                     detail: `${assistants.length} assistant(s)`,
                     evidence: assistants.map((a) => `${a.id} ${a.name}`).join(' | '),
+                    verification: 'verified',
+                };
+            },
+        },
+
+        /* --------------------------------------------------- web search */
+        {
+            panelId: 'web-search',
+            id: 'search',
+            title: 'Web search',
+            description: 'Search the web through the registered search providers.',
+            permission: 'tool:read',
+            parameters: {
+                type: 'object',
+                properties: { query: { type: 'string', description: 'Search query.' } },
+                required: ['query'],
+            },
+            run: async (args) => {
+                const query = str(args['query']);
+                if (!query) return fail('query is required');
+                const hits = await needExtras().webSearch.search(query, 5);
+                if (hits.length === 0) {
+                    return { ok: true, detail: `nothing found for "${query}"`, evidence: 'hits: 0', verification: 'verified' };
+                }
+                return {
+                    ok: true,
+                    detail: `${hits.length} result(s)`,
+                    evidence: hits.map((h) => `${h.title} (via ${h.via})`).join(' | '),
+                    verification: 'verified',
+                };
+            },
+        },
+
+        /* ------------------------------------------------------- writer */
+        {
+            panelId: 'writer',
+            id: 'check',
+            title: 'Check terminology',
+            description: 'Check a text against the writer terminology guardrails.',
+            permission: 'tool:write',
+            parameters: {
+                type: 'object',
+                properties: { text: { type: 'string', description: 'Text to check.' } },
+                required: ['text'],
+            },
+            run: async (args) => {
+                const text = str(args['text']);
+                if (!text) return fail('text is required');
+                const result = await needExtras().writer.check(text);
+                return {
+                    ok: true,
+                    detail: `terminology score ${result.score}`,
+                    evidence: result.issues.length ? result.issues.join(' | ') : 'no issues',
                     verification: 'verified',
                 };
             },

@@ -54,6 +54,8 @@ import {
     toolGovernanceService,
     trainingService,
     wikiBrainService,
+    searchService,
+    writerService,
 } from '../../kernel/instances/services-extras';
 
 let wired = false;
@@ -498,6 +500,18 @@ export function ensureAssistantWiring(): void {
                 assistants: async () => {
                     const assistants = await assistantService.listAssistants();
                     return assistants;
+                },
+            },
+            webSearch: {
+                search: async (query, limit = 5) => {
+                    const hits = await searchService.search(query, limit);
+                    return hits;
+                },
+            },
+            writer: {
+                check: async (text) => {
+                    const result = await writerService.check(text);
+                    return result;
                 },
             },
         });
