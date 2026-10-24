@@ -3,9 +3,9 @@
   "generatedBy": "scripts/gen-docs-inventory.mjs",
   "scope": "git-tracked markdown: docs/**/*.md (excluding docs/new drafts and the self-report pages docs-health, docs-inventory) plus repository entry docs (root *.md, .superagents/**, src/kernel/DEPENDENCY_MAP.md)",
   "totals": {
-    "documents": 1058,
+    "documents": 1059,
     "byCategory": {
-      "repo": 12,
+      "repo": 13,
       "top": 47,
       "active": 1,
       "audits": 67,
@@ -17,7 +17,7 @@
     },
     "byLanguage": {
       "en": 659,
-      "ru": 246,
+      "ru": 247,
       "mixed": 153
     }
   },
@@ -8510,6 +8510,14 @@
       "title": "Kernel Dependency Map",
       "bytes": 10529,
       "hash": "9fe18cb4c77ac2b12aaddf94a21d195ecea89ff3"
+    },
+    {
+      "path": "WIKI_BRAIN_DEPTH_AUDIT.md",
+      "category": "repo",
+      "language": "ru",
+      "title": "WIKI_BRAIN_DEPTH_AUDIT",
+      "bytes": 19639,
+      "hash": "d997451f185e2ee1265e022b885a787aa8beda8a"
     }
   ]
 }

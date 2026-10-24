@@ -57,6 +57,12 @@ for (const a of WIKI_ARTICLES) {
     if (a.sources.length) {
         lines.push(`Источники: ${a.sources.map((s) => `\`${s}\``).join(', ')}`, '');
     }
+    if (a.reviewed) {
+        lines.push(`Проверено по коду: ${a.reviewed.at} · ${a.reviewed.by}`, '');
+    }
+    if (a.freshness === 'not-implemented') {
+        lines.push('> ⚠️ Компонент не реализован: статья описывает план/намерение, а не рабочий факт.', '');
+    }
     lines.push(linkify(a.body));
     if (a.related.length) {
         lines.push('', '---', '', '## Связанные материалы', '');
