@@ -17,6 +17,7 @@ import { observability } from './observability';
 import { integrations } from './integrations';
 import { governance } from './governance';
 import { workspace } from './workspace';
+import { wiki } from './wiki';
 
 const en: Record<string, string> = {
     ...nav,
@@ -38,6 +39,7 @@ const en: Record<string, string> = {
     ...integrations,
     ...governance,
     ...workspace,
+    ...wiki,
 };
 
 export { en };

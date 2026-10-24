@@ -210,6 +210,26 @@ export const AGENT_SKILL_CATALOG: Readonly<Record<string, AgentSkillSpec>> = {
         ],
         completionCriteria: ['Каждый шаг подтверждён результатом инструмента.'],
     },
+    'wiki-brain': {
+        id: 'wiki-brain',
+        name: 'wiki-brain',
+        description: 'Search the compiled wiki to ground answers in cited sources.',
+        version: '1.0.0',
+        license: 'MIT',
+        platforms: ['linux', 'macos', 'windows'],
+        tags: ['wiki', 'knowledge', 'rag', 'grounding'],
+        relatedSkills: ['literature-synthesis'],
+        steps: [
+            'Уточни запрос и какие сущности или концепции нужны.',
+            'Вызови поиск по вики: `wikiBrainService.query.search(query)` через инструмент памяти.',
+            'Возьми top-k страниц вместе с `sources[]` как трейс.',
+            'Построй ответ на основе страниц со ссылкой на их slug.',
+            'Если нужной страницы нет — предложи поставить источник на инжест.',
+        ],
+        completionCriteria: [
+            'Ответ опирается на страницы wiki; каждая ссылка ведёт на существующий slug.',
+        ],
+    },
 };
 
 /** Resolve the skills declared by an agent id. */

@@ -1,7 +1,10 @@
 import type { IWikiLintService } from '../../contracts/wiki-brain/wiki-lint.service';
 import type { IWikiStore } from '../../contracts/wiki-brain/wiki-store';
+import type { IWikiGraphService } from '../../contracts/wiki-brain/wiki-graph.service';
 import type { TWikiLintIssue, TWikiPage } from '../../contracts/wiki-brain/types';
 import { wikiId } from './wiki-brain-dexie';
+
+const LOW_COHESION_THRESHOLD = 0.5;
 
 function wikilinks(body: string): string[] {
     const found: string[] = [];
@@ -15,7 +18,10 @@ function wikilinks(body: string): string[] {
 }
 
 export class WikiLintService implements IWikiLintService {
-    constructor(private store: IWikiStore) {}
+    constructor(
+        private store: IWikiStore,
+        private graph?: IWikiGraphService,
+    ) {}
 
     async runAll(): Promise<TWikiLintIssue[]> {
         const issues: TWikiLintIssue[] = [];
@@ -133,7 +139,24 @@ export class WikiLintService implements IWikiLintService {
             }
         }
 
-        const rules = ['dead-wikilink', 'orphan-page', 'missing-frontmatter', 'circular-link', 'duplicate-entity', 'stale-source'] as const;
+        if (this.graph) {
+            const communities = await this.graph.detectCommunities();
+            for (const community of communities) {
+                if (community.slugs.length < 2) continue;
+                if (community.cohesion >= LOW_COHESION_THRESHOLD) continue;
+                issues.push({
+                    id: wikiId('lint'),
+                    rule: 'low-cohesion-cluster',
+                    severity: 'info',
+                    message:
+                        `cluster [${community.slugs.join(', ')}] has low cohesion ` +
+                        `(${community.cohesion} < ${LOW_COHESION_THRESHOLD})`,
+                    detectedAt: now,
+                });
+            }
+        }
+
+        const rules = ['dead-wikilink', 'orphan-page', 'missing-frontmatter', 'circular-link', 'duplicate-entity', 'stale-source', 'low-cohesion-cluster'] as const;
         for (const rule of rules) await this.store.clearIssuesForRule(rule);
         for (const issue of issues) await this.store.putIssue(issue);
         return issues;

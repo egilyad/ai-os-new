@@ -3,7 +3,10 @@ import { ReactFlow, Controls, Background, type Node, type Edge } from '@xyflow/r
 import '@xyflow/react/dist/style.css';
 import { getContainer } from '../../kernel/service-helper';
 import { tokens } from '../../styles/tokens';
+import { useTranslation } from '../../i18n/useTranslation';
+import { MarkdownRenderer } from '../ChatPanel/MarkdownRenderer';
 import type { IWikiBrainService } from '../../kernel/contracts/wiki-brain';
+import type { TWikiPage } from '../../kernel/contracts/wiki-brain';
 
 interface Stats {
     pages: number;
@@ -57,7 +60,18 @@ const input: React.CSSProperties = {
     fontSize: 14,
 };
 
+const buttonStyle: React.CSSProperties = {
+    background: tokens.accent,
+    color: tokens.slate[950],
+    border: 'none',
+    borderRadius: 8,
+    padding: '8px 14px',
+    fontWeight: 700,
+    cursor: 'pointer',
+};
+
 export default function WikiBrainPanel() {
+    const { t } = useTranslation();
     const [stats, setStats] = useState<Stats | null>(null);
     const [pages, setPages] = useState<PageRow[]>([]);
     const [queue, setQueue] = useState<QueueRow[]>([]);
@@ -67,6 +81,12 @@ export default function WikiBrainPanel() {
     const [content, setContent] = useState('');
     const [busy, setBusy] = useState(false);
     const [message, setMessage] = useState('');
+    const [storageMb, setStorageMb] = useState<number | null>(null);
+    const [vault, setVault] = useState<{ name: string | null; attached: boolean; message?: string }>({
+        name: null,
+        attached: false,
+    });
+    const [selected, setSelected] = useState<TWikiPage | null>(null);
 
     const load = useCallback(async () => {
         try {
@@ -103,6 +123,14 @@ export default function WikiBrainPanel() {
                     .map((i) => ({ rule: i.rule, severity: i.severity, message: i.message })),
             );
             setGraph({ nodes: g.nodes, edges: g.edges });
+            try {
+                if (navigator.storage?.estimate) {
+                    const { usage } = await navigator.storage.estimate();
+                    setStorageMb(usage ? Math.round(usage / 1024 / 1024) : null);
+                }
+            } catch {
+                setStorageMb(null);
+            }
         } catch {
             setStats(null);
         }
@@ -167,12 +195,93 @@ export default function WikiBrainPanel() {
                 importedAt: new Date().toISOString(),
             });
             await store.enqueue({ id: taskId, sourceId, status: 'pending', attempts: 0, priority: 0 });
-            setMessage(`Queued "${title}" for ingest`);
+            setMessage(t('wiki.queued_msg', { title }));
             setTitle('');
             setContent('');
             await load();
         } catch (error) {
-            setMessage(`Error: ${error instanceof Error ? error.message : String(error)}`);
+            const message = error instanceof Error ? error.message : String(error);
+            setMessage(t('wiki.error_msg', { message }));
+        } finally {
+            setBusy(false);
+        }
+    };
+
+    const openPage = async (slug: string) => {
+        try {
+            const brain = getContainer().get<IWikiBrainService>('wikiBrainService');
+            const page = await brain.store.getPageBySlug(slug);
+            setSelected(page ?? null);
+        } catch {
+            setSelected(null);
+        }
+    };
+
+    const setReview = async (slug: string, state: 'auto' | 'flagged' | 'approved' | 'rejected') => {
+        try {
+            const brain = getContainer().get<IWikiBrainService>('wikiBrainService');
+            const page = await brain.store.getPageBySlug(slug);
+            if (!page) return;
+            await brain.store.putPage({
+                ...page,
+                frontmatter: {
+                    ...page.frontmatter,
+                    reviewState: state,
+                    updatedAt: new Date().toISOString(),
+                },
+            });
+            setSelected((current) => (current && current.slug === slug ? { ...current, frontmatter: { ...current.frontmatter, reviewState: state, updatedAt: new Date().toISOString() } } : current));
+            await load();
+        } catch {
+            // ignore review update failures
+        }
+    };
+
+    const attachVault = async () => {
+        try {
+            const brain = getContainer().get<IWikiBrainService>('wikiBrainService');
+            const result = await brain.vault.attachVault();
+            setVault({ name: result.name, attached: result.attached });
+        } catch (error) {
+            const message = error instanceof Error ? error.message : String(error);
+            setVault((v) => ({ ...v, message: t('wiki.vault_error', { message }) }));
+        }
+    };
+
+    const detachVault = async () => {
+        const brain = getContainer().get<IWikiBrainService>('wikiBrainService');
+        await brain.vault.detachVault();
+        setVault({ name: null, attached: false });
+    };
+
+    const exportVault = async () => {
+        setBusy(true);
+        try {
+            const brain = getContainer().get<IWikiBrainService>('wikiBrainService');
+            const result = await brain.vault.exportToVault();
+            setVault({ name: result.name, attached: result.attached, message: t('wiki.vault_export_done', { count: result.exported }) });
+        } catch (error) {
+            const message = error instanceof Error ? error.message : String(error);
+            setVault((v) => ({ ...v, message: t('wiki.vault_error', { message }) }));
+        } finally {
+            setBusy(false);
+        }
+    };
+
+    const importVault = async () => {
+        setBusy(true);
+        try {
+            const brain = getContainer().get<IWikiBrainService>('wikiBrainService');
+            const result = await brain.vault.importFromVault();
+            setVault({
+                name: result.name,
+                attached: result.attached,
+                message: t('wiki.vault_import_done', { imported: result.imported, skipped: result.skipped }),
+            });
+            await load();
+        } catch (error) {
+            const message = error instanceof Error ? error.message : String(error);
+            setVault((v) => ({ ...v, message: t('wiki.vault_error', { message }) }));
         } finally {
             setBusy(false);
         }
@@ -180,41 +289,41 @@ export default function WikiBrainPanel() {
 
     return (
         <div style={{ padding: '2rem', maxWidth: 960, margin: '0 auto', color: tokens.slate[200] }}>
-            <h1 style={{ fontSize: 22, fontWeight: 700, marginBottom: 8 }}>Wiki Brain</h1>
+            <h1 style={{ fontSize: 22, fontWeight: 700, marginBottom: 8 }}>{t('wiki.title')}</h1>
             <p style={{ color: tokens.slate[400], marginBottom: 24, fontSize: 14 }}>
-                LLM-compiled knowledge base — separate IndexedDB, isolated from the product memory.
+                {t('wiki.subtitle')}
             </p>
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: 12, marginBottom: 24 }}>
                 <div style={statBox}>
-                    <div style={label}>Pages</div>
+                    <div style={label}>{t('wiki.stat_pages')}</div>
                     <div style={statValue}>{stats?.pages ?? '–'}</div>
                 </div>
                 <div style={statBox}>
-                    <div style={label}>Sources</div>
+                    <div style={label}>{t('wiki.stat_sources')}</div>
                     <div style={statValue}>{stats?.sources ?? '–'}</div>
                 </div>
                 <div style={statBox}>
-                    <div style={label}>Queued</div>
+                    <div style={label}>{t('wiki.stat_queued')}</div>
                     <div style={statValue}>{stats?.pending ?? '–'}</div>
                 </div>
                 <div style={statBox}>
-                    <div style={label}>Lint issues</div>
+                    <div style={label}>{t('wiki.stat_lint')}</div>
                     <div style={statValue}>{stats?.issues ?? '–'}</div>
                 </div>
             </div>
 
             <div style={{ background: tokens.surface, border: `1px solid ${tokens.borderSubtle}`, borderRadius: 10, padding: 16, marginBottom: 24 }}>
-                <div style={label}>Queue a markdown source</div>
+                <div style={label}>{t('wiki.queue_title')}</div>
                 <input
                     style={{ ...input, marginBottom: 8 }}
-                    placeholder="Title"
+                    placeholder={t('wiki.title_placeholder')}
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                 />
                 <textarea
                     style={{ ...input, minHeight: 90 }}
-                    placeholder="Paste markdown content…"
+                    placeholder={t('wiki.content_placeholder')}
                     value={content}
                     onChange={(e) => setContent(e.target.value)}
                 />
@@ -232,27 +341,30 @@ export default function WikiBrainPanel() {
                     disabled={busy || !title.trim() || !content.trim()}
                     onClick={enqueue}
                 >
-                    {busy ? 'Queuing…' : 'Queue for ingest'}
+                    {busy ? t('wiki.queuing') : t('wiki.queue_button')}
                 </button>
                 {message && <div style={{ marginTop: 8, fontSize: 13, color: tokens.slate[400] }}>{message}</div>}
             </div>
 
-            <div style={label}>Recent pages</div>
+            <div style={label}>{t('wiki.recent_pages')}</div>
             {pages.length === 0 ? (
-                <div style={{ color: tokens.slate[500], fontSize: 14 }}>No pages yet.</div>
+                <div style={{ color: tokens.slate[500], fontSize: 14 }}>{t('wiki.no_pages')}</div>
             ) : (
                 <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
                     {pages.map((p) => (
                         <li
                             key={p.slug}
+                            onClick={() => openPage(p.slug)}
                             style={{
                                 display: 'flex',
                                 justifyContent: 'space-between',
+                                alignItems: 'center',
                                 background: tokens.surface,
                                 border: `1px solid ${tokens.borderSubtle}`,
                                 borderRadius: 8,
                                 padding: '10px 12px',
                                 marginBottom: 6,
+                                cursor: 'pointer',
                             }}
                         >
                             <span>{p.title}</span>
@@ -264,9 +376,55 @@ export default function WikiBrainPanel() {
                 </ul>
             )}
 
-            <div style={{ ...label, marginTop: 24 }}>Ingest queue</div>
+            {selected && (
+                <div
+                    style={{
+                        marginTop: 24,
+                        background: tokens.surface,
+                        border: `1px solid ${tokens.borderSubtle}`,
+                        borderRadius: 10,
+                        padding: 16,
+                    }}
+                >
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+                        <div style={{ fontWeight: 700, fontSize: 16 }}>{selected.frontmatter.title}</div>
+                        <button
+                            style={{ ...buttonStyle, background: tokens.borderDefault }}
+                            onClick={() => setSelected(null)}
+                        >
+                            ✕
+                        </button>
+                    </div>
+                    <div style={{ color: tokens.slate[500], fontSize: 13, marginBottom: 12 }}>
+                        {selected.slug} · {selected.frontmatter.type} ·{' '}
+                        {t(`wiki.review_${selected.frontmatter.reviewState}`)}
+                    </div>
+                    <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 12 }}>
+                        {(['approved', 'flagged', 'rejected', 'auto'] as const).map((state) => (
+                            <button
+                                key={state}
+                                style={{
+                                    ...buttonStyle,
+                                    background:
+                                        selected.frontmatter.reviewState === state
+                                            ? tokens.accent
+                                            : tokens.borderDefault,
+                                }}
+                                onClick={() => setReview(selected.slug, state)}
+                            >
+                                {t(`wiki.review_${state}`)}
+                            </button>
+                        ))}
+                    </div>
+                    <div style={{ fontSize: 14, lineHeight: 1.7 }}>
+                        <MarkdownRenderer content={selected.body} />
+                    </div>
+                </div>
+            )}
+
+            <div style={{ ...label, marginTop: 24 }}>{t('wiki.ingest_queue')}</div>
             {queue.length === 0 ? (
-                <div style={{ color: tokens.slate[500], fontSize: 14 }}>Queue is empty.</div>
+                <div style={{ color: tokens.slate[500], fontSize: 14 }}>{t('wiki.queue_empty')}</div>
             ) : (
                 <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
                     {queue.map((t) => (
@@ -289,9 +447,9 @@ export default function WikiBrainPanel() {
                 </ul>
             )}
 
-            <div style={{ ...label, marginTop: 24 }}>Lint issues</div>
+            <div style={{ ...label, marginTop: 24 }}>{t('wiki.lint_issues')}</div>
             {lint.length === 0 ? (
-                <div style={{ color: tokens.slate[500], fontSize: 14 }}>No lint issues.</div>
+                <div style={{ color: tokens.slate[500], fontSize: 14 }}>{t('wiki.no_lint')}</div>
             ) : (
                 <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
                     {lint.map((i) => (
@@ -315,7 +473,7 @@ export default function WikiBrainPanel() {
                 </ul>
             )}
 
-            <div style={{ ...label, marginTop: 24 }}>Knowledge graph</div>
+            <div style={{ ...label, marginTop: 24 }}>{t('wiki.knowledge_graph')}</div>
             <div
                 style={{
                     height: 420,
@@ -329,6 +487,93 @@ export default function WikiBrainPanel() {
                     <Background />
                     <Controls />
                 </ReactFlow>
+            </div>
+
+            <div
+                style={{
+                    marginTop: 24,
+                    background: tokens.surface,
+                    border: `1px solid ${tokens.borderSubtle}`,
+                    borderRadius: 10,
+                    padding: 16,
+                }}
+            >
+                <div style={label}>{t('wiki.vault_title')}</div>
+                <div style={{ color: tokens.slate[400], fontSize: 13, marginBottom: 12 }}>
+                    {vault.attached && vault.name
+                        ? t('wiki.vault_attached', { name: vault.name })
+                        : t('wiki.vault_not_attached')}
+                </div>
+                <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                    {!vault.attached ? (
+                        <button
+                            style={buttonStyle}
+                            onClick={attachVault}
+                        >
+                            {t('wiki.vault_attach')}
+                        </button>
+                    ) : (
+                        <button
+                            style={{ ...buttonStyle, background: tokens.borderDefault }}
+                            onClick={detachVault}
+                        >
+                            {t('wiki.vault_detach')}
+                        </button>
+                    )}
+                    <button
+                        style={{ ...buttonStyle, background: tokens.success, color: tokens.slate[950] }}
+                        disabled={!vault.attached || busy}
+                        onClick={exportVault}
+                    >
+                        {t('wiki.vault_export')}
+                    </button>
+                    <button
+                        style={{ ...buttonStyle, background: tokens.accent }}
+                        disabled={!vault.attached || busy}
+                        onClick={importVault}
+                    >
+                        {t('wiki.vault_import')}
+                    </button>
+                </div>
+                {vault.message && (
+                    <div style={{ marginTop: 8, fontSize: 13, color: tokens.slate[400] }}>
+                        {vault.message}
+                    </div>
+                )}
+            </div>
+
+            <div
+                style={{
+                    marginTop: 24,
+                    background: tokens.surface,
+                    border: `1px solid ${tokens.borderSubtle}`,
+                    borderRadius: 10,
+                    padding: 16,
+                }}
+            >
+                <div style={label}>{t('wiki.settings_title')}</div>
+
+                <div style={{ marginBottom: 12 }}>
+                    <div style={{ fontWeight: 600, fontSize: 14 }}>{t('wiki.settings_semantic')}</div>
+                    <div style={{ color: tokens.slate[400], fontSize: 13, marginTop: 2 }}>
+                        {t('wiki.settings_semantic_hint')}
+                    </div>
+                </div>
+
+                <div style={{ marginBottom: 12 }}>
+                    <div style={{ fontWeight: 600, fontSize: 14 }}>{t('wiki.settings_queue_worker')}</div>
+                    <div style={{ color: tokens.slate[400], fontSize: 13, marginTop: 2 }}>
+                        {t('wiki.settings_queue_worker_hint')}
+                    </div>
+                </div>
+
+                <div>
+                    <div style={{ fontWeight: 600, fontSize: 14 }}>{t('wiki.settings_storage')}</div>
+                    <div style={{ color: tokens.slate[400], fontSize: 13, marginTop: 2 }}>
+                        {t('wiki.settings_storage_usage')}:{' '}
+                        {storageMb === null ? '–' : `${storageMb} MB`}
+                    </div>
+                </div>
             </div>
         </div>
     );

@@ -46,7 +46,7 @@ describe('wiki query service', () => {
         await store.putPage(page('gardening', 'Gardening', 'About soil and compost.'));
 
         const query = new WikiQueryService(store, new WikiSearchAdapter(store));
-        const results = await query.search('quantum');
+        const results = await query.search('mechanics');
 
         expect(results.length).toBeGreaterThan(0);
         expect(results[0].page.slug).toBe('quantum');

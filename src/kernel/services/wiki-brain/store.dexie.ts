@@ -94,7 +94,8 @@ export class WikiDexieStore implements IWikiStore {
     async listLog(opts: { limit?: number; op?: TWikiLogEntry['op'] } = {}) {
         const { limit = 100, op } = opts;
         const query = op ? this.db.log.where('op').equals(op) : this.db.log.toCollection();
-        return query.reverse().limit(limit).toArray();
+        const rows = await query.toArray();
+        return rows.sort((a, b) => b.ts.localeCompare(a.ts)).slice(0, limit);
     }
 
     async enqueue(task: TWikiQueueTask) {

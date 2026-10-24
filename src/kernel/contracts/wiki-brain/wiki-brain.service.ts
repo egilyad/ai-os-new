@@ -5,6 +5,7 @@ import type { IWikiLintService } from './wiki-lint.service';
 import type { IWikiIndexService } from './wiki-index.service';
 import type { IWikiLogService } from './wiki-log.service';
 import type { IWikiGraphService } from './wiki-graph.service';
+import type { IWikiVaultSyncService } from './wiki-vault-sync.service';
 
 export interface IWikiBrainService {
     readonly store: IWikiStore;
@@ -14,6 +15,7 @@ export interface IWikiBrainService {
     readonly index: IWikiIndexService;
     readonly log: IWikiLogService;
     readonly graph: IWikiGraphService;
+    readonly vault: IWikiVaultSyncService;
 }
 
 export interface WikiBrainInitOptions {

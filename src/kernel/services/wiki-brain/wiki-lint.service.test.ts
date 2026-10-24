@@ -3,6 +3,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { createWikiBrainDB, getWikiBrainDB, wikiId } from './wiki-brain-dexie';
 import { WikiDexieStore } from './store.dexie';
 import { WikiLintService } from './wiki-lint.service';
+import type { IWikiGraphService } from '../../contracts/wiki-brain/wiki-graph.service';
 import type { TWikiPage } from '../../contracts/wiki-brain/types';
 
 const now = () => new Date().toISOString();
@@ -95,5 +96,24 @@ describe('wiki lint service', () => {
         const issues = await lint.runAll();
         const stale = issues.filter((i) => i.rule === 'stale-source');
         expect(stale.length).toBe(2);
+    });
+
+    it('flags low-cohesion clusters when a graph is available', async () => {
+        const store = new WikiDexieStore();
+        await store.putPage(page('a', 'Thing A'));
+        await store.putPage(page('b', 'Thing B'));
+
+        const graph: IWikiGraphService = {
+            similarity: async () => ({ signals: {}, total: 0 }),
+            detectCommunities: async () => [
+                { id: 'community-0', slugs: ['a', 'b'], cohesion: 0.1 },
+            ],
+            toFlowGraph: async () => ({ nodes: [], edges: [] }),
+        };
+
+        const lint = new WikiLintService(store, graph);
+        const issues = await lint.runAll();
+        const cluster = issues.filter((i) => i.rule === 'low-cohesion-cluster');
+        expect(cluster.length).toBe(1);
     });
 });

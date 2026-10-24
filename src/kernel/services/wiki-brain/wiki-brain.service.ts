@@ -6,6 +6,7 @@ import type { IWikiLintService } from '../../contracts/wiki-brain/wiki-lint.serv
 import type { IWikiIndexService } from '../../contracts/wiki-brain/wiki-index.service';
 import type { IWikiLogService } from '../../contracts/wiki-brain/wiki-log.service';
 import type { IWikiGraphService } from '../../contracts/wiki-brain/wiki-graph.service';
+import type { IWikiVaultSyncService } from '../../contracts/wiki-brain/wiki-vault-sync.service';
 
 export class WikiBrainService implements IWikiBrainService {
     constructor(
@@ -16,5 +17,6 @@ export class WikiBrainService implements IWikiBrainService {
         public readonly index: IWikiIndexService,
         public readonly log: IWikiLogService,
         public readonly graph: IWikiGraphService,
+        public readonly vault: IWikiVaultSyncService,
     ) {}
 }

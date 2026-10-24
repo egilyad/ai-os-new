@@ -10,3 +10,4 @@ export * from './wiki-search-adapter';
 export * from './wiki-brain.service';
 export * from './wiki-context-provider';
 export * from './wiki-llm';
+export * from './wiki-vault-sync.service';

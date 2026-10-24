@@ -65,7 +65,7 @@ describe('wiki dexie store', () => {
         for (const i of [1, 2, 3]) {
             const entry: TWikiLogEntry = {
                 id: wikiId('log'),
-                ts: now(),
+                ts: new Date(Date.now() + i * 1000).toISOString(),
                 op: 'ingest',
                 actor: 'system',
                 sourceId: `s${i}`,
