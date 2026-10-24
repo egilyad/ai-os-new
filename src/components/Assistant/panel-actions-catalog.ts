@@ -157,6 +157,22 @@ export interface PanelActionExtrasServices {
         sessions(): Promise<Array<{ id: string; deviceName: string; status: string }>>;
         notifications(): Promise<Array<{ id: string; title: string; read: boolean }>>;
     };
+    autonomy: {
+        loops(): Promise<Array<{ id: string; kind: string; goal: string; status: string; iterations: number }>>;
+    };
+    runQueue: {
+        runs(): Promise<Array<{ id: string; kind: string; refId: string; status: string }>>;
+        toolkits(): Promise<Array<{ id: string; name: string; prefixes: string[] }>>;
+    };
+    planner: {
+        filters(): Promise<Array<{ stage: string; name: string }>>;
+    };
+    knowledge: {
+        sources(): Promise<Array<{ id: string; kind: string; title: string; chunks: number }>>;
+    };
+    training: {
+        guides(): Promise<Array<{ id: string; role: string; quality: number; runs: number }>>;
+    };
 }
 
 let extrasServices: PanelActionExtrasServices | null = null;
@@ -2530,6 +2546,148 @@ export function panelActionDescriptors(): PanelActionDescriptor[] {
                     evidence: notifications
                         .slice(0, 10)
                         .map((n) => `${n.title}${n.read ? '' : ' (unread)'}`)
+                        .join(' | '),
+                    verification: 'verified',
+                };
+            },
+        },
+
+        /* --------------------------------------------------- autonomy */
+        {
+            panelId: 'autonomy',
+            id: 'loops',
+            title: 'Autonomy loops',
+            description: 'AutoGPT / BabyAGI loops that are running or finished.',
+            permission: 'tool:read',
+            parameters: { type: 'object', properties: {} },
+            run: async () => {
+                const loops = await needExtras().autonomy.loops();
+                if (loops.length === 0) {
+                    return { ok: true, detail: 'no autonomy loops', evidence: 'loops: 0', verification: 'verified' };
+                }
+                return {
+                    ok: true,
+                    detail: `${loops.length} loop(s)`,
+                    evidence: loops
+                        .slice(0, 10)
+                        .map((l) => `${l.id} ${l.kind} "${l.goal.slice(0, 40)}" [${l.status}] ${l.iterations} iter`)
+                        .join(' | '),
+                    verification: 'verified',
+                };
+            },
+        },
+
+        /* --------------------------------------------------- run queue */
+        {
+            panelId: 'run-queue',
+            id: 'runs',
+            title: 'Run queue',
+            description: 'Queued crew/graph/eval runs and their state.',
+            permission: 'tool:read',
+            parameters: { type: 'object', properties: {} },
+            run: async () => {
+                const runs = await needExtras().runQueue.runs();
+                if (runs.length === 0) {
+                    return { ok: true, detail: 'run queue is empty', evidence: 'runs: 0', verification: 'verified' };
+                }
+                return {
+                    ok: true,
+                    detail: `${runs.length} run(s)`,
+                    evidence: runs
+                        .slice(0, 10)
+                        .map((r) => `${r.id} ${r.kind} → ${r.refId} [${r.status}]`)
+                        .join(' | '),
+                    verification: 'verified',
+                };
+            },
+        },
+        {
+            panelId: 'run-queue',
+            id: 'toolkits',
+            title: 'Toolkits',
+            description: 'Tool prefix packs for queued runs.',
+            permission: 'tool:read',
+            parameters: { type: 'object', properties: {} },
+            run: async () => {
+                const toolkits = await needExtras().runQueue.toolkits();
+                if (toolkits.length === 0) {
+                    return { ok: true, detail: 'no toolkits', evidence: 'toolkits: 0', verification: 'verified' };
+                }
+                return {
+                    ok: true,
+                    detail: `${toolkits.length} toolkit(s)`,
+                    evidence: toolkits.map((t) => `${t.id} ${t.name} [${t.prefixes.join(', ')}]`).join(' | '),
+                    verification: 'verified',
+                };
+            },
+        },
+
+        /* ------------------------------------------------------- planner */
+        {
+            panelId: 'planner',
+            id: 'filters',
+            title: 'Planner filters',
+            description: 'Composable pre/post middleware filters of the planner.',
+            permission: 'tool:read',
+            parameters: { type: 'object', properties: {} },
+            run: async () => {
+                const filters = await needExtras().planner.filters();
+                if (filters.length === 0) {
+                    return { ok: true, detail: 'no planner filters', evidence: 'filters: 0', verification: 'verified' };
+                }
+                return {
+                    ok: true,
+                    detail: `${filters.length} filter(s)`,
+                    evidence: filters.map((f) => `${f.stage}: ${f.name}`).join(' | '),
+                    verification: 'verified',
+                };
+            },
+        },
+
+        /* --------------------------------------------------- knowledge */
+        {
+            panelId: 'knowledge-sources',
+            id: 'list',
+            title: 'Knowledge sources',
+            description: 'External knowledge sources the system can retrieve from.',
+            permission: 'tool:read',
+            parameters: { type: 'object', properties: {} },
+            run: async () => {
+                const sources = await needExtras().knowledge.sources();
+                if (sources.length === 0) {
+                    return { ok: true, detail: 'no knowledge sources', evidence: 'sources: 0', verification: 'verified' };
+                }
+                return {
+                    ok: true,
+                    detail: `${sources.length} source(s)`,
+                    evidence: sources
+                        .slice(0, 10)
+                        .map((s) => `${s.id} ${s.kind} "${s.title}" (${s.chunks} chunks)`)
+                        .join(' | '),
+                    verification: 'verified',
+                };
+            },
+        },
+
+        /* ----------------------------------------------------- training */
+        {
+            panelId: 'training',
+            id: 'guides',
+            title: 'Training guides',
+            description: 'Crew training guides distilled from feedback.',
+            permission: 'tool:read',
+            parameters: { type: 'object', properties: {} },
+            run: async () => {
+                const guides = await needExtras().training.guides();
+                if (guides.length === 0) {
+                    return { ok: true, detail: 'no training guides', evidence: 'guides: 0', verification: 'verified' };
+                }
+                return {
+                    ok: true,
+                    detail: `${guides.length} guide(s)`,
+                    evidence: guides
+                        .slice(0, 10)
+                        .map((g) => `${g.role}: quality ${g.quality}, ${g.runs} runs`)
                         .join(' | '),
                     verification: 'verified',
                 };

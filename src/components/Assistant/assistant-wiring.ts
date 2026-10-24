@@ -22,21 +22,26 @@ import {
 } from './panel-actions-catalog';
 import {
     auditService,
+    autonomyService,
     crewService,
     crystalVault,
     federatedMemoryService,
     fleetMonitorService,
     hierarchyService,
     junctionEngine,
+    knowledgeService,
     lensEngine,
     metaAgentService,
     mobileAccessService,
+    plannerService,
     promptLibraryService,
     promptVersionService,
     researchRunService,
+    runQueueService,
     sandboxBrokerService,
     skillMarketService,
     toolGovernanceService,
+    trainingService,
     wikiBrainService,
 } from '../../kernel/instances/services-extras';
 
@@ -322,6 +327,65 @@ export function ensureAssistantWiring(): void {
                         id: n.id,
                         title: n.title,
                         read: n.read,
+                    }));
+                },
+            },
+            autonomy: {
+                loops: async () => {
+                    const loops = await autonomyService.listLoops();
+                    return loops.map((l) => ({
+                        id: l.id,
+                        kind: l.kind,
+                        goal: l.goal,
+                        status: l.status,
+                        iterations: l.iterations,
+                    }));
+                },
+            },
+            runQueue: {
+                runs: async () => {
+                    const runs = await runQueueService.list();
+                    return runs.map((r) => ({
+                        id: r.id,
+                        kind: r.kind,
+                        refId: r.refId,
+                        status: r.status,
+                    }));
+                },
+                toolkits: async () => {
+                    const toolkits = await runQueueService.listToolkits();
+                    return toolkits.map((t) => ({
+                        id: t.id,
+                        name: t.name,
+                        prefixes: t.prefixes,
+                    }));
+                },
+            },
+            planner: {
+                filters: async () => {
+                    const filters = await plannerService.listFilters();
+                    return filters;
+                },
+            },
+            knowledge: {
+                sources: async () => {
+                    const sources = await knowledgeService.listSources();
+                    return sources.map((s) => ({
+                        id: s.id,
+                        kind: s.kind,
+                        title: s.title,
+                        chunks: s.chunks.length,
+                    }));
+                },
+            },
+            training: {
+                guides: async () => {
+                    const guides = await trainingService.listGuides();
+                    return guides.map((g) => ({
+                        id: g.id,
+                        role: g.role,
+                        quality: g.quality,
+                        runs: g.runs,
                     }));
                 },
             },

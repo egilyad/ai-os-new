@@ -57,6 +57,7 @@ describe('panel action catalog', () => {
             'agents',
             'approvals',
             'audit',
+            'autonomy',
             'crews',
             'crystal',
             'debates',
@@ -67,6 +68,7 @@ describe('panel action catalog', () => {
             'hierarchy',
             'junction',
             'knowledge',
+            'knowledge-sources',
             'keys',
             'lens',
             'mcp',
@@ -77,12 +79,14 @@ describe('panel action catalog', () => {
             'monitoring',
             'permissions',
             'policies',
+            'planner',
             'projects',
             'prompt-versions',
             'prompts',
             'providers',
             'research',
             'roles',
+            'run-queue',
             'safety',
             'sandbox',
             'sessions',
@@ -91,6 +95,7 @@ describe('panel action catalog', () => {
             'skills',
             'system',
             'tasks',
+            'training',
             'trust',
             'wiki',
             'workspace',
@@ -304,6 +309,26 @@ function fakeMobile(): PanelActionExtrasServices['mobile'] {
     return { sessions: async () => [], notifications: async () => [] };
 }
 
+function fakeAutonomy(): PanelActionExtrasServices['autonomy'] {
+    return { loops: async () => [] };
+}
+
+function fakeRunQueue(): PanelActionExtrasServices['runQueue'] {
+    return { runs: async () => [], toolkits: async () => [] };
+}
+
+function fakePlanner(): PanelActionExtrasServices['planner'] {
+    return { filters: async () => [] };
+}
+
+function fakeKnowledge(): PanelActionExtrasServices['knowledge'] {
+    return { sources: async () => [] };
+}
+
+function fakeTraining(): PanelActionExtrasServices['training'] {
+    return { guides: async () => [] };
+}
+
 describe('panel action catalog — memory and knowledge extras', () => {
     afterEach(() => setPanelActionExtrasServices(null));
 
@@ -334,6 +359,11 @@ describe('panel action catalog — memory and knowledge extras', () => {
             skillMarket: fakeSkillMarket(),
             fleet: fakeFleet(),
             mobile: fakeMobile(),
+            autonomy: fakeAutonomy(),
+            runQueue: fakeRunQueue(),
+            planner: fakePlanner(),
+            knowledge: fakeKnowledge(),
+            training: fakeTraining(),
         });
 
         const result = await descriptor('prompts', 'create').run({
@@ -367,6 +397,11 @@ describe('panel action catalog — memory and knowledge extras', () => {
             skillMarket: fakeSkillMarket(),
             fleet: fakeFleet(),
             mobile: fakeMobile(),
+            autonomy: fakeAutonomy(),
+            runQueue: fakeRunQueue(),
+            planner: fakePlanner(),
+            knowledge: fakeKnowledge(),
+            training: fakeTraining(),
         });
 
         const result = await descriptor('prompts', 'remove').run({ id: 'built-in' });
@@ -398,6 +433,11 @@ describe('panel action catalog — memory and knowledge extras', () => {
             skillMarket: fakeSkillMarket(),
             fleet: fakeFleet(),
             mobile: fakeMobile(),
+            autonomy: fakeAutonomy(),
+            runQueue: fakeRunQueue(),
+            planner: fakePlanner(),
+            knowledge: fakeKnowledge(),
+            training: fakeTraining(),
         });
 
         const result = await descriptor('federated-memory', 'disconnect').run({ id: 'north' });
@@ -425,6 +465,11 @@ describe('panel action catalog — memory and knowledge extras', () => {
             skillMarket: fakeSkillMarket(),
             fleet: fakeFleet(),
             mobile: fakeMobile(),
+            autonomy: fakeAutonomy(),
+            runQueue: fakeRunQueue(),
+            planner: fakePlanner(),
+            knowledge: fakeKnowledge(),
+            training: fakeTraining(),
         });
 
         const result = await descriptor('federated-memory', 'sync').run({});
@@ -454,6 +499,11 @@ describe('panel action catalog — memory and knowledge extras', () => {
             skillMarket: fakeSkillMarket(),
             fleet: fakeFleet(),
             mobile: fakeMobile(),
+            autonomy: fakeAutonomy(),
+            runQueue: fakeRunQueue(),
+            planner: fakePlanner(),
+            knowledge: fakeKnowledge(),
+            training: fakeTraining(),
         });
 
         const result = await descriptor('prompt-versions', 'save').run({
