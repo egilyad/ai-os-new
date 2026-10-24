@@ -6,5 +6,7 @@ export * from './wiki-index.service';
 export * from './wiki-log.service';
 export * from './wiki-lint.service';
 export * from './wiki-graph.service';
+export * from './wiki-search-adapter';
 export * from './wiki-brain.service';
 export * from './wiki-context-provider';
+export * from './wiki-llm';
