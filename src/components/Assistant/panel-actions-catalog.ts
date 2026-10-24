@@ -257,6 +257,9 @@ export interface PanelActionExtrasServices {
         loops(): Promise<Array<{ id: string; kind: string; goal: string; status: string }>>;
         start(input: { topic: string }): Promise<{ id: string; topic: string; status: string }>;
     };
+    swe: {
+        find(pattern: string): Promise<string[]>;
+    };
     debates: {
         sessions(): Promise<Array<{ id: string; topic: string; round: number; phase: string }>>;
         rooms(): Promise<Array<{ id: string; topic: string; modeId?: string; status: string }>>;

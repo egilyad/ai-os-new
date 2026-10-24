@@ -263,9 +263,9 @@ export function ensureAssistantWiring(): void {
                 search: async (query) => {
                     const hits = await crystalVault.search(query);
                     return hits.map((h) => ({
-                        id: h.crystalId,
-                        domain: h.applicableDomain,
-                        confidence: h.confidence,
+                        id: h.crystal.crystalId,
+                        domain: h.crystal.applicableDomain,
+                        confidence: h.crystal.confidence,
                     }));
                 },
             },
@@ -718,7 +718,7 @@ export function ensureAssistantWiring(): void {
                 },
             },
             swe: {
-                find: async (pattern) => {
+                find: async (pattern: string) => {
                     const matches = await sweService.find(pattern);
                     return matches;
                 },
