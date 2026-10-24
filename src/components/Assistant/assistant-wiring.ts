@@ -529,6 +529,26 @@ export function ensureAssistantWiring(): void {
                         status: s.status,
                     }));
                 },
+                create: async ({ topic }) => {
+                    const session = await councilService.createSession({ topic });
+                    return {
+                        id: session.id,
+                        topic: session.topic,
+                        phase: session.phase,
+                        status: session.status,
+                    };
+                },
+                advance: async (id) => {
+                    const session = await councilService.advancePhase(id);
+                    return { id: session.id, phase: session.phase, status: session.status };
+                },
+                conclude: async (id) => {
+                    const session = await councilService.conclude(id);
+                    return { id: session.id, phase: session.phase, status: session.status, winnerId: session.winnerId };
+                },
+                abort: async (id) => {
+                    await councilService.abort(id);
+                },
             },
             eval: {
                 benchmarks: async () => {
@@ -557,6 +577,15 @@ export function ensureAssistantWiring(): void {
                         result: f.result,
                     }));
                 },
+                run: async (benchmarkId, subject) => {
+                    const run = await evalService.runBenchmark(benchmarkId, subject);
+                    return {
+                        id: run.id,
+                        benchmarkId: run.benchmarkId,
+                        subject: run.subject,
+                        total: run.total,
+                    };
+                },
             },
             frontierOps: {
                 orgs: async () => {
@@ -576,6 +605,10 @@ export function ensureAssistantWiring(): void {
                         agentId: m.agentId,
                     }));
                 },
+                charter: async ({ name, mission }) => {
+                    const org = await frontierOpsService.charterOrg(name, mission);
+                    return { id: org.id, name: org.name, status: org.status };
+                },
             },
             dyads: {
                 loops: async () => {
@@ -586,6 +619,10 @@ export function ensureAssistantWiring(): void {
                         goal: l.goal,
                         status: l.status,
                     }));
+                },
+                start: async ({ topic }) => {
+                    const loop = await dyadService.startDyad({ topic });
+                    return { id: loop.id, topic: loop.goal, status: loop.status };
                 },
             },
             swe: {

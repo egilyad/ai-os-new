@@ -216,21 +216,25 @@ export interface PanelActionExtrasServices {
     };
     council: {
         sessions(): Promise<Array<{ id: string; topic: string; phase: string; status: string }>>;
+        create(input: { topic: string }): Promise<{ id: string; topic: string; phase: string; status: string }>;
+        advance(id: string): Promise<{ id: string; phase: string; status: string }>;
+        conclude(id: string): Promise<{ id: string; phase: string; status: string; winnerId?: string }>;
+        abort(id: string): Promise<void>;
     };
     eval: {
         benchmarks(): Promise<Array<{ id: string; name: string; cases: number }>>;
         runs(): Promise<Array<{ id: string; benchmarkId: string; subject: string; total: number }>>;
         findings(): Promise<Array<{ id: string; target: string; attack: string; result: string }>>;
+        run(benchmarkId: string, subject: string): Promise<{ id: string; benchmarkId: string; subject: string; total: number }>;
     };
     frontierOps: {
         orgs(): Promise<Array<{ id: string; name: string; status: string; members: number }>>;
         modals(): Promise<Array<{ id: string; modality: string; agentId: string }>>;
+        charter(input: { name: string; mission: string }): Promise<{ id: string; name: string; status: string }>;
     };
     dyads: {
         loops(): Promise<Array<{ id: string; kind: string; goal: string; status: string }>>;
-    };
-    swe: {
-        find(pattern: string): Promise<string[]>;
+        start(input: { topic: string }): Promise<{ id: string; topic: string; status: string }>;
     };
 }
 
@@ -3684,6 +3688,185 @@ export function panelActionDescriptors(): PanelActionDescriptor[] {
                     ok: true,
                     detail: `Mode for ${id} is now ${after}`,
                     evidence: `${before} → ${after}`,
+                    verification: 'verified',
+                };
+            },
+        },
+
+        /* ----------------------------------------------------- council */
+        {
+            panelId: 'council',
+            id: 'create',
+            title: 'Start a council',
+            description: 'Create a council debate session on a topic.',
+            permission: 'tool:write',
+            parameters: {
+                type: 'object',
+                properties: { topic: { type: 'string', description: 'Debate topic.' } },
+                required: ['topic'],
+            },
+            run: async (args) => {
+                const topic = str(args['topic']);
+                if (!topic) return fail('topic is required');
+                const session = await needExtras().council.create({ topic });
+                return {
+                    ok: true,
+                    detail: `council session ${session.id} started`,
+                    evidence: `topic: ${session.topic} | phase: ${session.phase}`,
+                    verification: 'verified',
+                };
+            },
+        },
+        {
+            panelId: 'council',
+            id: 'advance',
+            title: 'Advance a council',
+            description: 'Move a council session to its next phase.',
+            permission: 'tool:write',
+            parameters: {
+                type: 'object',
+                properties: { id: { type: 'string', description: 'Council session id.' } },
+                required: ['id'],
+            },
+            run: async (args) => {
+                const id = str(args['id']);
+                if (!id) return fail('id is required');
+                const session = await needExtras().council.advance(id);
+                return {
+                    ok: true,
+                    detail: `council ${session.id} is now in ${session.phase}`,
+                    evidence: `status: ${session.status}`,
+                    verification: 'verified',
+                };
+            },
+        },
+        {
+            panelId: 'council',
+            id: 'conclude',
+            title: 'Conclude a council',
+            description: 'Tally judges and finish a council session with a winner.',
+            permission: 'tool:write',
+            parameters: {
+                type: 'object',
+                properties: { id: { type: 'string', description: 'Council session id.' } },
+                required: ['id'],
+            },
+            run: async (args) => {
+                const id = str(args['id']);
+                if (!id) return fail('id is required');
+                const session = await needExtras().council.conclude(id);
+                return {
+                    ok: true,
+                    detail: `council ${session.id} concluded, winner ${session.winnerId ?? 'draw'}`,
+                    evidence: `phase: ${session.phase} | status: ${session.status}`,
+                    verification: 'verified',
+                };
+            },
+        },
+        {
+            panelId: 'council',
+            id: 'abort',
+            title: 'Abort a council',
+            description: 'Abort a council session.',
+            permission: 'tool:write',
+            parameters: {
+                type: 'object',
+                properties: { id: { type: 'string', description: 'Council session id.' } },
+                required: ['id'],
+            },
+            run: async (args) => {
+                const id = str(args['id']);
+                if (!id) return fail('id is required');
+                await needExtras().council.abort(id);
+                return {
+                    ok: true,
+                    detail: `council ${id} aborted`,
+                    evidence: 'status: aborted',
+                    verification: 'verified',
+                };
+            },
+        },
+
+        /* --------------------------------------------------------- eval */
+        {
+            panelId: 'eval',
+            id: 'run',
+            title: 'Run a benchmark',
+            description: 'Run an evaluation benchmark against a subject.',
+            permission: 'tool:write',
+            parameters: {
+                type: 'object',
+                properties: {
+                    benchmarkId: { type: 'string', description: 'Benchmark id.' },
+                    subject: { type: 'string', description: 'Subject to evaluate (e.g. model or agent id).' },
+                },
+                required: ['benchmarkId', 'subject'],
+            },
+            run: async (args) => {
+                const benchmarkId = str(args['benchmarkId']);
+                const subject = str(args['subject']);
+                if (!benchmarkId) return fail('benchmarkId is required');
+                if (!subject) return fail('subject is required');
+                const run = await needExtras().eval.run(benchmarkId, subject);
+                return {
+                    ok: true,
+                    detail: `eval run ${run.id} finished with ${run.total}`,
+                    evidence: `${run.subject} on ${run.benchmarkId}`,
+                    verification: 'verified',
+                };
+            },
+        },
+
+        /* --------------------------------------------------- frontier ops */
+        {
+            panelId: 'frontier-ops',
+            id: 'charter',
+            title: 'Charter an org',
+            description: 'Create a long-horizon organisation in the frontier ops layer.',
+            permission: 'tool:write',
+            parameters: {
+                type: 'object',
+                properties: {
+                    name: { type: 'string', description: 'Org name.' },
+                    mission: { type: 'string', description: 'Org mission.' },
+                },
+                required: ['name', 'mission'],
+            },
+            run: async (args) => {
+                const name = str(args['name']);
+                const mission = str(args['mission']);
+                if (!name) return fail('name is required');
+                if (!mission) return fail('mission is required');
+                const org = await needExtras().frontierOps.charter({ name, mission });
+                return {
+                    ok: true,
+                    detail: `chartered org "${org.name}"`,
+                    evidence: `id: ${org.id} | status: ${org.status}`,
+                    verification: 'verified',
+                };
+            },
+        },
+
+        /* ------------------------------------------------------- dyads */
+        {
+            panelId: 'dyads',
+            id: 'start',
+            title: 'Start a dyad',
+            description: 'Start a CAMEL-style dyad conversation on a topic.',
+            permission: 'tool:write',
+            parameters: {
+                type: 'object',
+                properties: { topic: { type: 'string', description: 'Dyad topic.' } },
+                required: ['topic'],
+            },
+            run: async (args) => {
+                const topic = str(args['topic']);
+                if (!topic) return fail('topic is required');
+                const loop = await needExtras().dyads.start({ topic });
+                return {
+                    ok: true,
+                    detail: `dyad ${loop.id} started on "${loop.topic}"`,
+                    evidence: `status: ${loop.status}`,
                     verification: 'verified',
                 };
             },

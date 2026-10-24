@@ -129,8 +129,15 @@ describe('panel action catalog', () => {
             'agents.activate',
             'agents.pause',
             'agents.spawn',
+            'council.abort',
+            'council.advance',
+            'council.conclude',
+            'council.create',
             'diagnostics.run',
+            'dyads.start',
+            'eval.run',
             'federated-memory.disconnect',
+            'frontier-ops.charter',
             'federated-memory.sync',
             'guardrails.check',
             'knowledge.remove',            'knowledge.update',
@@ -401,19 +408,37 @@ function fakeWriter(): PanelActionExtrasServices['writer'] {
 }
 
 function fakeCouncil(): PanelActionExtrasServices['council'] {
-    return { sessions: async () => [] };
+    return {
+        sessions: async () => [],
+        create: async (input) => ({ id: 'c1', topic: input.topic, phase: 'proposal', status: 'active' }),
+        advance: async (id) => ({ id, phase: 'debate', status: 'active' }),
+        conclude: async (id) => ({ id, phase: 'completed', status: 'completed', winnerId: 'p1' }),
+        abort: async () => undefined,
+    };
 }
 
 function fakeEval(): PanelActionExtrasServices['eval'] {
-    return { benchmarks: async () => [], runs: async () => [], findings: async () => [] };
+    return {
+        benchmarks: async () => [],
+        runs: async () => [],
+        findings: async () => [],
+        run: async (benchmarkId, subject) => ({ id: 'r1', benchmarkId, subject, total: 10 }),
+    };
 }
 
 function fakeFrontierOps(): PanelActionExtrasServices['frontierOps'] {
-    return { orgs: async () => [], modals: async () => [] };
+    return {
+        orgs: async () => [],
+        modals: async () => [],
+        charter: async (input) => ({ id: 'o1', name: input.name, status: 'active' }),
+    };
 }
 
 function fakeDyads(): PanelActionExtrasServices['dyads'] {
-    return { loops: async () => [] };
+    return {
+        loops: async () => [],
+        start: async (input) => ({ id: 'd1', topic: input.topic, status: 'running' }),
+    };
 }
 
 function fakeSwe(): PanelActionExtrasServices['swe'] {
