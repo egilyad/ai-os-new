@@ -394,7 +394,11 @@ function fakePlanner(): PanelActionExtrasServices['planner'] {
 }
 
 function fakeKnowledge(): PanelActionExtrasServices['knowledge'] {
-    return { sources: async () => [] };
+    return {
+        sources: async () => [],
+        addSource: async (input) => ({ id: 'k1', title: input.title }),
+        removeSource: async () => undefined,
+    };
 }
 
 function fakeTraining(): PanelActionExtrasServices['training'] {

@@ -4781,7 +4781,7 @@ export function panelActionDescriptors(): PanelActionDescriptor[] {
                 if (!title) return fail('title is required');
                 const content = str(args['content']) || undefined;
                 const uri = str(args['uri']) || undefined;
-                new source = await needExtras().knowledge.addSource({ kind, title, content, uri });
+                const source = await needExtras().knowledge.addSource({ kind, title, content, uri });
                 return {
                     ok: true,
                     detail: `added knowledge source "${source.title}"`,
