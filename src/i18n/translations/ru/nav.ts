@@ -19,6 +19,7 @@ const nav: Record<string, string> = {
     'nav.section_randoms': 'Рандомс',
     'nav.section_wiki': 'Вики',
     'nav.wiki': 'Вики',
+    'nav.wiki_brain': 'Вики-мозг',
     'nav.rivals_catalog': 'Проекты Rivals',
     'nav.group_chat': 'Групповой чат',
     'nav.guardrails': 'Ограничения',

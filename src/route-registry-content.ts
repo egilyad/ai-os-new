@@ -14,6 +14,14 @@ export const CONTENT_SECTIONS: NavSection[] = [
                 color: '#10b981',
                 lazy: true,
             },
+            {
+                id: 'wiki-brain',
+                labelKey: 'nav.wiki_brain',
+                icon: Icons.bookOpen,
+                color: '#0ea5e9',
+                lazy: true,
+                experimental: true,
+            },
         ],
     },
     {

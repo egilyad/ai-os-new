@@ -11,6 +11,7 @@ const CognitiveBuilder = React.lazy(() => import('./components/BuilderPanel/Cogn
 const TracesPanel = React.lazy(() => import('./components/TracesPanel/TracesPanel'));
 const LogsPanel = React.lazy(() => import('./components/LogsPanel/LogsPanel'));
 const MemoryPanel = React.lazy(() => import('./components/MemoryPanel/MemoryPanel'));
+const WikiBrainPanelLazy = React.lazy(() => import('./components/WikiBrainPanel'));
 const HealthPanel = React.lazy(() => import('./components/HealthPanel/HealthPanel'));
 const SystemHealthPanel = React.lazy(() => import('./components/SystemHealthPanel'));
 const AquariumPanel = React.lazy(() => import('./components/AquariumPanel/AquariumPanel'));
@@ -351,6 +352,7 @@ export const PANEL_COMPONENTS: Record<string, React.ComponentType<any>> = {
     'routing-experiments': RoutingExperiments,
     'gov-stress-test': GovStressTest,
     wiki: WikiPanelLazy,
+    'wiki-brain': WikiBrainPanelLazy,
     'obs-gaps': ObsGaps,
     'debate-system-research': DebateSystemResearch,
     'research-engine': ResearchEnginePanelLazy,

@@ -1,0 +1,212 @@
+import React, { useCallback, useEffect, useState } from 'react';
+import { getContainer } from '../../kernel/service-helper';
+import type { IWikiBrainService } from '../../kernel/contracts/wiki-brain';
+
+interface Stats {
+    pages: number;
+    sources: number;
+    pending: number;
+    total: number;
+    issues: number;
+}
+
+interface PageRow {
+    slug: string;
+    title: string;
+    type: string;
+}
+
+const label: React.CSSProperties = {
+    fontSize: 12,
+    color: '#64748b',
+    textTransform: 'uppercase',
+    letterSpacing: '0.04em',
+    marginBottom: 6,
+};
+
+const statBox: React.CSSProperties = {
+    background: '#0f172a',
+    border: '1px solid #1e293b',
+    borderRadius: 8,
+    padding: '12px 14px',
+};
+
+const statValue: React.CSSProperties = { fontSize: 24, fontWeight: 700, color: '#e2e8f0' };
+
+const input: React.CSSProperties = {
+    width: '100%',
+    background: '#0f172a',
+    border: '1px solid #334155',
+    borderRadius: 8,
+    padding: '8px 10px',
+    color: '#e2e8f0',
+    fontSize: 14,
+};
+
+export default function WikiBrainPanel() {
+    const [stats, setStats] = useState<Stats | null>(null);
+    const [pages, setPages] = useState<PageRow[]>([]);
+    const [title, setTitle] = useState('');
+    const [content, setContent] = useState('');
+    const [busy, setBusy] = useState(false);
+    const [message, setMessage] = useState('');
+
+    const load = useCallback(async () => {
+        try {
+            const brain = getContainer().get<IWikiBrainService>('wikiBrainService');
+            const store = brain.store;
+            const [allPages, allSources, queue, issues] = await Promise.all([
+                store.listPages({ limit: 10000 }),
+                store.listSources({ limit: 10000 }),
+                store.listQueue(),
+                brain.lint.listIssues(),
+            ]);
+            const pending = queue.filter((t) => t.status === 'pending').length;
+            setStats({
+                pages: allPages.length,
+                sources: allSources.length,
+                pending,
+                total: queue.length,
+                issues: issues.length,
+            });
+            setPages(
+                allPages
+                    .slice(0, 20)
+                    .map((p) => ({ slug: p.slug, title: p.frontmatter.title, type: p.frontmatter.type })),
+            );
+        } catch {
+            setStats(null);
+        }
+    }, []);
+
+    useEffect(() => {
+        void load();
+    }, [load]);
+
+    const enqueue = async () => {
+        if (!title.trim() || !content.trim()) return;
+        setBusy(true);
+        setMessage('');
+        try {
+            const brain = getContainer().get<IWikiBrainService>('wikiBrainService');
+            const store = brain.store;
+            const encoder = new TextEncoder();
+            const buffer = await crypto.subtle.digest('SHA-256', encoder.encode(content));
+            const sha256 = Array.from(new Uint8Array(buffer))
+                .map((b) => b.toString(16).padStart(2, '0'))
+                .join('');
+            const uid = () => crypto.randomUUID?.() ?? `${Date.now()}-${Math.random()}`;
+            const sourceId = `src-${uid()}`;
+            const taskId = `task-${uid()}`;
+            await store.putSource({
+                id: sourceId,
+                kind: 'markdown',
+                title,
+                origin: title,
+                sha256,
+                sizeBytes: content.length,
+                language: 'auto',
+                contentText: content,
+                meta: {},
+                importedAt: new Date().toISOString(),
+            });
+            await store.enqueue({ id: taskId, sourceId, status: 'pending', attempts: 0, priority: 0 });
+            setMessage(`Queued "${title}" for ingest`);
+            setTitle('');
+            setContent('');
+            await load();
+        } catch (error) {
+            setMessage(`Error: ${error instanceof Error ? error.message : String(error)}`);
+        } finally {
+            setBusy(false);
+        }
+    };
+
+    return (
+        <div style={{ padding: '2rem', maxWidth: 960, margin: '0 auto', color: '#e2e8f0' }}>
+            <h1 style={{ fontSize: 22, fontWeight: 700, marginBottom: 8 }}>Wiki Brain</h1>
+            <p style={{ color: '#94a3b8', marginBottom: 24, fontSize: 14 }}>
+                LLM-compiled knowledge base — separate IndexedDB, isolated from the product memory.
+            </p>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: 12, marginBottom: 24 }}>
+                <div style={statBox}>
+                    <div style={label}>Pages</div>
+                    <div style={statValue}>{stats?.pages ?? '–'}</div>
+                </div>
+                <div style={statBox}>
+                    <div style={label}>Sources</div>
+                    <div style={statValue}>{stats?.sources ?? '–'}</div>
+                </div>
+                <div style={statBox}>
+                    <div style={label}>Queued</div>
+                    <div style={statValue}>{stats?.pending ?? '–'}</div>
+                </div>
+                <div style={statBox}>
+                    <div style={label}>Lint issues</div>
+                    <div style={statValue}>{stats?.issues ?? '–'}</div>
+                </div>
+            </div>
+
+            <div style={{ background: '#0f172a', border: '1px solid #1e293b', borderRadius: 10, padding: 16, marginBottom: 24 }}>
+                <div style={label}>Queue a markdown source</div>
+                <input
+                    style={{ ...input, marginBottom: 8 }}
+                    placeholder="Title"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                />
+                <textarea
+                    style={{ ...input, minHeight: 90 }}
+                    placeholder="Paste markdown content…"
+                    value={content}
+                    onChange={(e) => setContent(e.target.value)}
+                />
+                <button
+                    style={{
+                        marginTop: 10,
+                        background: busy ? '#334155' : '#10b981',
+                        color: '#0b1220',
+                        border: 'none',
+                        borderRadius: 8,
+                        padding: '8px 14px',
+                        fontWeight: 700,
+                        cursor: busy ? 'default' : 'pointer',
+                    }}
+                    disabled={busy || !title.trim() || !content.trim()}
+                    onClick={enqueue}
+                >
+                    {busy ? 'Queuing…' : 'Queue for ingest'}
+                </button>
+                {message && <div style={{ marginTop: 8, fontSize: 13, color: '#94a3b8' }}>{message}</div>}
+            </div>
+
+            <div style={label}>Recent pages</div>
+            {pages.length === 0 ? (
+                <div style={{ color: '#64748b', fontSize: 14 }}>No pages yet.</div>
+            ) : (
+                <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+                    {pages.map((p) => (
+                        <li
+                            key={p.slug}
+                            style={{
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                background: '#0f172a',
+                                border: '1px solid #1e293b',
+                                borderRadius: 8,
+                                padding: '10px 12px',
+                                marginBottom: 6,
+                            }}
+                        >
+                            <span>{p.title}</span>
+                            <span style={{ color: '#64748b', fontSize: 13 }}>
+                                {p.slug} · {p.type}
+                            </span>
+                        </li>
+                    ))}
+                </ul>
+            )}
+        </div>
+    );
+}
