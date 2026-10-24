@@ -65,6 +65,7 @@ describe('panel action catalog', () => {
             'prompts',
             'providers',
             'system',
+            'tasks',
         ]);
 
         const writes = descriptors
@@ -88,6 +89,7 @@ describe('panel action catalog', () => {
             'prompt-versions.save',
             'prompts.create',
             'prompts.remove',
+            'tasks.set-status',
         ]);
 
         // The human-in-the-loop queue must never be resolvable by the assistant.

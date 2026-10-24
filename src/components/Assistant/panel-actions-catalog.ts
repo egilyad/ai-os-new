@@ -20,6 +20,8 @@ import {
     systemStatusService,
 } from '../../kernel/instances/services-core';
 import { agemsApprovalService } from '../../kernel/services/agems-approval-service';
+import { agemsTaskService } from '../../kernel/services/agems-task-service';
+import type { AgemsTaskStatus } from '../../kernel/types/agems-task';
 import type {
     PanelActionCatalog,
     PanelActionDescriptor,
@@ -1051,6 +1053,73 @@ export function panelActionDescriptors(): PanelActionDescriptor[] {
                     ok: true,
                     detail: report.summary,
                     evidence: `status: ${report.status} | ${areas} | warnings: ${report.warnings.length}`,
+                    verification: 'verified',
+                };
+            },
+        },
+
+        /* ------------------------------------------------------------ tasks */
+        {
+            panelId: 'tasks',
+            id: 'list',
+            title: 'Task board',
+            description: 'The open work on the board, optionally filtered by status or assignee.',
+            permission: 'tool:read',
+            parameters: {
+                type: 'object',
+                properties: {
+                    status: { type: 'string', description: 'Filter by status (optional).' },
+                    assigneeId: { type: 'string', description: 'Filter by assignee (optional).' },
+                },
+            },
+            run: async (args) => {
+                const status = str(args['status']) || undefined;
+                const assigneeId = str(args['assigneeId']) || undefined;
+                const tasks = await agemsTaskService.list({ status: status as AgemsTaskStatus | undefined, assigneeId });
+                if (tasks.length === 0) {
+                    return { ok: true, detail: 'no tasks on the board', evidence: 'tasks: 0', verification: 'verified' };
+                }
+                return {
+                    ok: true,
+                    detail: `${tasks.length} task(s)`,
+                    evidence: tasks
+                        .slice(0, 10)
+                        .map((t) => `${t.id} ${t.title} [${t.status}]${t.assigneeId ? ` → ${t.assigneeId}` : ''}`)
+                        .join(' | '),
+                    verification: 'verified',
+                };
+            },
+        },
+        {
+            panelId: 'tasks',
+            id: 'set-status',
+            title: 'Move a task',
+            description: 'Change one task status and read the board back.',
+            permission: 'tool:write',
+            parameters: {
+                type: 'object',
+                properties: {
+                    id: { type: 'string', description: 'Task id.' },
+                    status: { type: 'string', description: 'PENDING, IN_PROGRESS, IN_REVIEW, IN_TESTING, VERIFIED, AWAITING_APPROVAL, COMPLETED, FAILED, BLOCKED, CANCELLED.' },
+                },
+                required: ['id', 'status'],
+            },
+            run: async (args) => {
+                const id = str(args['id']);
+                if (!id) return fail('id is required');
+                const status = str(args['status']) as AgemsTaskStatus;
+                const allowed: AgemsTaskStatus[] = ['PENDING', 'IN_PROGRESS', 'IN_REVIEW', 'IN_TESTING', 'VERIFIED', 'AWAITING_APPROVAL', 'COMPLETED', 'FAILED', 'BLOCKED', 'CANCELLED'];
+                if (!allowed.includes(status)) return fail(`unsupported status "${status}"`);
+                const before = (await agemsTaskService.list()).find((t) => t.id === id);
+                if (!before) return fail(`task ${id} does not exist`);
+                const updated = await agemsTaskService.updateStatus(id, status);
+                if (!updated || updated.status !== status) {
+                    return fail(`task ${id} did not move to ${status}`);
+                }
+                return {
+                    ok: true,
+                    detail: `Task "${before.title}" → ${updated.status}`,
+                    evidence: `${id}: ${before.status} → ${updated.status}`,
                     verification: 'verified',
                 };
             },
