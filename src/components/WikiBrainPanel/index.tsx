@@ -1,4 +1,6 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { ReactFlow, Controls, Background, type Node, type Edge } from '@xyflow/react';
+import '@xyflow/react/dist/style.css';
 import { getContainer } from '../../kernel/service-helper';
 import { tokens } from '../../styles/tokens';
 import type { IWikiBrainService } from '../../kernel/contracts/wiki-brain';
@@ -60,6 +62,7 @@ export default function WikiBrainPanel() {
     const [pages, setPages] = useState<PageRow[]>([]);
     const [queue, setQueue] = useState<QueueRow[]>([]);
     const [lint, setLint] = useState<LintRow[]>([]);
+    const [graph, setGraph] = useState<{ nodes: unknown[]; edges: unknown[] }>({ nodes: [], edges: [] });
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const [busy, setBusy] = useState(false);
@@ -69,11 +72,12 @@ export default function WikiBrainPanel() {
         try {
             const brain = getContainer().get<IWikiBrainService>('wikiBrainService');
             const store = brain.store;
-            const [allPages, allSources, allQueue, issues] = await Promise.all([
+            const [allPages, allSources, allQueue, issues, g] = await Promise.all([
                 store.listPages({ limit: 10000 }),
                 store.listSources({ limit: 10000 }),
                 store.listQueue(),
                 brain.lint.listIssues(),
+                brain.graph.toFlowGraph(),
             ]);
             const pending = allQueue.filter((t) => t.status === 'pending').length;
             setStats({
@@ -98,10 +102,38 @@ export default function WikiBrainPanel() {
                     .slice(0, 10)
                     .map((i) => ({ rule: i.rule, severity: i.severity, message: i.message })),
             );
+            setGraph({ nodes: g.nodes, edges: g.edges });
         } catch {
             setStats(null);
         }
     }, []);
+
+    const flowNodes = useMemo<Node[]>(
+        () =>
+            graph.nodes.map((n, index) => {
+                const node = n as { id: string; label: string };
+                const angle = graph.nodes.length > 1 ? (2 * Math.PI * index) / graph.nodes.length : 0;
+                const radius = 140;
+                return {
+                    id: node.id,
+                    position: {
+                        x: radius * Math.cos(angle),
+                        y: radius * Math.sin(angle),
+                    },
+                    data: { label: node.label },
+                };
+            }),
+        [graph],
+    );
+
+    const flowEdges = useMemo<Edge[]>(
+        () =>
+            graph.edges.map((e) => {
+                const edge = e as { id: string; source: string; target: string };
+                return { id: edge.id, source: edge.source, target: edge.target };
+            }),
+        [graph],
+    );
 
     useEffect(() => {
         void load();
@@ -282,6 +314,22 @@ export default function WikiBrainPanel() {
                     ))}
                 </ul>
             )}
+
+            <div style={{ ...label, marginTop: 24 }}>Knowledge graph</div>
+            <div
+                style={{
+                    height: 420,
+                    background: tokens.surface,
+                    border: `1px solid ${tokens.borderSubtle}`,
+                    borderRadius: 10,
+                    overflow: 'hidden',
+                }}
+            >
+                <ReactFlow nodes={flowNodes} edges={flowEdges} fitView>
+                    <Background />
+                    <Controls />
+                </ReactFlow>
+            </div>
         </div>
     );
 }
