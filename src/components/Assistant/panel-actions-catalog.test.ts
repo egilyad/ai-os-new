@@ -182,6 +182,7 @@ describe('panel action catalog', () => {
             'tasks.create',
             'tasks.delete',
             'tasks.set-status',
+            'trust.declare',
             'wiki.add-page',
             'wiki.ingest-source',
             'wiki.lint-run',

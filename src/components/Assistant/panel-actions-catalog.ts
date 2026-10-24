@@ -4713,6 +4713,44 @@ export function panelActionDescriptors(): PanelActionDescriptor[] {
                 };
             },
         },
+
+        /* -------------------------------------------------------- trust */
+        {
+            panelId: 'trust',
+            id: 'declare',
+            title: 'Declare a capability',
+            description: 'Declare what the system can do, so the trust ledger tracks it.',
+            permission: 'tool:write',
+            parameters: {
+                type: 'object',
+                properties: {
+                    id: { type: 'string', description: 'Capability id (e.g. action:ui.openPanel).' },
+                    kind: { type: 'string', description: 'action, panel, or tool.' },
+                    title: { type: 'string', description: 'Human-readable title.' },
+                },
+                required: ['id', 'kind', 'title'],
+            },
+            run: async (args) => {
+                const id = str(args['id']);
+                const kind = str(args['kind']);
+                const title = str(args['title']);
+                if (!id) return fail('id is required');
+                if (!kind) return fail('kind is required');
+                if (!title) return fail('title is required');
+                if (kind !== 'action' && kind !== 'panel' && kind !== 'tool') {
+                    return fail(`unsupported kind "${kind}"`);
+                }
+                capabilityTrustService.declare(id, kind, title);
+                const record = capabilityTrustService.get(id);
+                if (!record) return fail('the capability was not declared');
+                return {
+                    ok: true,
+                    detail: `declared capability "${title}"`,
+                    evidence: `${id} [${kind}] trust: ${record.trust}`,
+                    verification: 'verified',
+                };
+            },
+        },
     ];
 }
 
