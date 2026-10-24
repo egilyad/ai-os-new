@@ -647,4 +647,34 @@ describe('assistant actions', () => {
         expect(result.ok).toBe(true);
         expect(result.detail).toContain('no gaps');
     });
+
+    it('nightly proposes a rule after a repeated mistake', async () => {
+        const write = vi.fn(async () => ({ id: 'd9' }));
+        const mistakes = [
+            { id: 'd1', kind: 'mistake', text: 'Said the schedule was created without reading it back', tags: ['scheduler'], timestamp: 1 },
+            { id: 'd2', kind: 'mistake', text: 'Missed a paused schedule', tags: ['scheduler'], timestamp: 2 },
+        ];
+        const registry = new AssistantActionRegistry();
+        registry.registerAll(
+            createAssistantActions(
+                deps({
+                    diary: {
+                        write,
+                        recent: vi.fn(() => []),
+                        byKind: (kind: string) => (kind === 'mistake' ? mistakes : []),
+                        search: vi.fn(() => []),
+                    },
+                }),
+            ),
+        );
+        const result = await registry.run('system.nightly');
+        expect(result.ok).toBe(true);
+        expect(result.detail).toContain('Proposed a rule for "scheduler"');
+        expect(write).toHaveBeenCalledWith(
+            expect.objectContaining({
+                kind: 'decision',
+                tags: ['proposal', 'improvement', 'scheduler'],
+            }),
+        );
+    });
 });
