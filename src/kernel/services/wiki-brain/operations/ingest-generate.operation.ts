@@ -24,6 +24,7 @@ const OUTPUT_SCHEMA = z.object({
         op: z.literal('ingest'),
         actor: z.literal('llm'),
         summary: z.string(),
+        pageIds: z.array(z.string()).default([]),
         details: z.record(z.string(), z.unknown()),
     }),
     lintFlags: z.array(z.object({ rule: z.string(), payload: z.unknown() })).default([]),
