@@ -400,4 +400,49 @@ test.describe('assistant panel', () => {
         await page.getByRole('button', { name: 'Разрешить' }).click();
         await expect(page.getByText('Такой записи нет.')).toBeVisible({ timeout: 90000 });
     });
+
+    test('the assistant reads the knowledge graph and writes a prompt through the seam', async ({
+        page,
+    }) => {
+        await boot(page);
+        await seedKey(page);
+
+        // A read inside the knowledge panel is not gated, like every other read.
+        await stubOpenRouterToolCall(page, {
+            tool: 'panel.read',
+            args: { panelId: 'knowledge', id: 'graph' },
+            reply: 'Граф знаний: 3 узла.',
+        });
+        await page.reload();
+        await boot(page);
+        await page.goto('/assistant');
+        await expect(page.getByRole('heading', { name: /помощник проекта/i })).toBeVisible({
+            timeout: 60000,
+        });
+
+        const input = page.getByLabel('Вопрос помощнику');
+        await input.fill('покажи граф знаний');
+        await input.press('Enter');
+
+        await expect(page.getByText('Граф знаний: 3 узла.')).toBeVisible({ timeout: 120000 });
+        await expect(page.getByRole('button', { name: 'Разрешить' })).toHaveCount(0);
+
+        // A write in the prompt library goes through the same human gate.
+        await stubOpenRouterToolCall(page, {
+            tool: 'panel.act',
+            args: {
+                panelId: 'prompts',
+                id: 'create',
+                args: { title: 'Ретроспектива', content: 'Что улучшить?' },
+            },
+            reply: 'Создал промпт "Ретроспектива".',
+        });
+        await input.fill('создай промпт ретроспективы');
+        await input.press('Enter');
+        await expect(page.getByText('Инструмент: panel.act')).toBeVisible({ timeout: 90000 });
+        await page.getByRole('button', { name: 'Разрешить' }).click();
+        await expect(page.getByText('Создал промпт "Ретроспектива".')).toBeVisible({
+            timeout: 90000,
+        });
+    });
 });
