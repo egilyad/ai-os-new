@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { getContainer } from '../../kernel/service-helper';
+import { tokens } from '../../styles/tokens';
 import type { IWikiBrainService } from '../../kernel/contracts/wiki-brain';
 
 interface Stats {
@@ -18,28 +19,28 @@ interface PageRow {
 
 const label: React.CSSProperties = {
     fontSize: 12,
-    color: '#64748b',
+    color: tokens.slate[500],
     textTransform: 'uppercase',
     letterSpacing: '0.04em',
     marginBottom: 6,
 };
 
 const statBox: React.CSSProperties = {
-    background: '#0f172a',
-    border: '1px solid #1e293b',
+    background: tokens.surface,
+    border: `1px solid ${tokens.borderSubtle}`,
     borderRadius: 8,
     padding: '12px 14px',
 };
 
-const statValue: React.CSSProperties = { fontSize: 24, fontWeight: 700, color: '#e2e8f0' };
+const statValue: React.CSSProperties = { fontSize: 24, fontWeight: 700, color: tokens.slate[200] };
 
 const input: React.CSSProperties = {
     width: '100%',
-    background: '#0f172a',
-    border: '1px solid #334155',
+    background: tokens.surface,
+    border: `1px solid ${tokens.borderDefault}`,
     borderRadius: 8,
     padding: '8px 10px',
-    color: '#e2e8f0',
+    color: tokens.slate[200],
     fontSize: 14,
 };
 
@@ -123,9 +124,9 @@ export default function WikiBrainPanel() {
     };
 
     return (
-        <div style={{ padding: '2rem', maxWidth: 960, margin: '0 auto', color: '#e2e8f0' }}>
+        <div style={{ padding: '2rem', maxWidth: 960, margin: '0 auto', color: tokens.slate[200] }}>
             <h1 style={{ fontSize: 22, fontWeight: 700, marginBottom: 8 }}>Wiki Brain</h1>
-            <p style={{ color: '#94a3b8', marginBottom: 24, fontSize: 14 }}>
+            <p style={{ color: tokens.slate[400], marginBottom: 24, fontSize: 14 }}>
                 LLM-compiled knowledge base — separate IndexedDB, isolated from the product memory.
             </p>
 
@@ -148,7 +149,7 @@ export default function WikiBrainPanel() {
                 </div>
             </div>
 
-            <div style={{ background: '#0f172a', border: '1px solid #1e293b', borderRadius: 10, padding: 16, marginBottom: 24 }}>
+            <div style={{ background: tokens.surface, border: `1px solid ${tokens.borderSubtle}`, borderRadius: 10, padding: 16, marginBottom: 24 }}>
                 <div style={label}>Queue a markdown source</div>
                 <input
                     style={{ ...input, marginBottom: 8 }}
@@ -165,8 +166,8 @@ export default function WikiBrainPanel() {
                 <button
                     style={{
                         marginTop: 10,
-                        background: busy ? '#334155' : '#10b981',
-                        color: '#0b1220',
+                        background: busy ? tokens.borderDefault : tokens.success,
+                        color: tokens.slate[950],
                         border: 'none',
                         borderRadius: 8,
                         padding: '8px 14px',
@@ -178,12 +179,12 @@ export default function WikiBrainPanel() {
                 >
                     {busy ? 'Queuing…' : 'Queue for ingest'}
                 </button>
-                {message && <div style={{ marginTop: 8, fontSize: 13, color: '#94a3b8' }}>{message}</div>}
+                {message && <div style={{ marginTop: 8, fontSize: 13, color: tokens.slate[400] }}>{message}</div>}
             </div>
 
             <div style={label}>Recent pages</div>
             {pages.length === 0 ? (
-                <div style={{ color: '#64748b', fontSize: 14 }}>No pages yet.</div>
+                <div style={{ color: tokens.slate[500], fontSize: 14 }}>No pages yet.</div>
             ) : (
                 <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
                     {pages.map((p) => (
@@ -192,15 +193,15 @@ export default function WikiBrainPanel() {
                             style={{
                                 display: 'flex',
                                 justifyContent: 'space-between',
-                                background: '#0f172a',
-                                border: '1px solid #1e293b',
+                                background: tokens.surface,
+                                border: `1px solid ${tokens.borderSubtle}`,
                                 borderRadius: 8,
                                 padding: '10px 12px',
                                 marginBottom: 6,
                             }}
                         >
                             <span>{p.title}</span>
-                            <span style={{ color: '#64748b', fontSize: 13 }}>
+                            <span style={{ color: tokens.slate[500], fontSize: 13 }}>
                                 {p.slug} · {p.type}
                             </span>
                         </li>
