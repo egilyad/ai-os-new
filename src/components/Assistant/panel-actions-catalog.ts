@@ -186,6 +186,19 @@ export interface PanelActionExtrasServices {
     memoryBlocks: {
         blocks(ownerId: string): Promise<Array<{ id: string; section: string; content: string }>>;
     };
+    integrations: {
+        catalog(): Promise<Array<{ name: string; auth: string }>>;
+        connections(): Promise<Array<{ id: string; app: string; label: string }>>;
+    };
+    datasets: {
+        list(): Promise<Array<{ id: string; name: string; sources: number }>>;
+    };
+    flowApi: {
+        tokens(): Promise<Array<{ token: string; graphId: string; label?: string }>>;
+    };
+    characters: {
+        clients(): Promise<Array<{ name: string; kind: string }>>;
+    };
 }
 
 let extrasServices: PanelActionExtrasServices | null = null;
@@ -2825,6 +2838,114 @@ export function panelActionDescriptors(): PanelActionDescriptor[] {
                     ok: true,
                     detail: `${blocks.length} block(s)`,
                     evidence: blocks.map((b) => `[${b.section}] ${snippet(b.content, 60)}`).join(' | '),
+                    verification: 'verified',
+                };
+            },
+        },
+
+        /* ------------------------------------------------- integrations */
+        {
+            panelId: 'integrations',
+            id: 'catalog',
+            title: 'Integration catalog',
+            description: 'Apps available for integration and their auth modes.',
+            permission: 'tool:read',
+            parameters: { type: 'object', properties: {} },
+            run: async () => {
+                const apps = await needExtras().integrations.catalog();
+                if (apps.length === 0) {
+                    return { ok: true, detail: 'no integrations in catalog', evidence: 'apps: 0', verification: 'verified' };
+                }
+                return {
+                    ok: true,
+                    detail: `${apps.length} app(s)`,
+                    evidence: apps.slice(0, 15).map((a) => `${a.name} [${a.auth}]`).join(' | '),
+                    verification: 'verified',
+                };
+            },
+        },
+        {
+            panelId: 'integrations',
+            id: 'connections',
+            title: 'Integration connections',
+            description: 'Active connections to external apps.',
+            permission: 'tool:read',
+            parameters: { type: 'object', properties: {} },
+            run: async () => {
+                const connections = await needExtras().integrations.connections();
+                if (connections.length === 0) {
+                    return { ok: true, detail: 'no connections', evidence: 'connections: 0', verification: 'verified' };
+                }
+                return {
+                    ok: true,
+                    detail: `${connections.length} connection(s)`,
+                    evidence: connections.map((c) => `${c.id} ${c.app} "${c.label}"`).join(' | '),
+                    verification: 'verified',
+                };
+            },
+        },
+
+        /* ------------------------------------------------------ datasets */
+        {
+            panelId: 'datasets',
+            id: 'list',
+            title: 'Datasets',
+            description: 'Dify-style datasets and how many sources each has.',
+            permission: 'tool:read',
+            parameters: { type: 'object', properties: {} },
+            run: async () => {
+                const datasets = await needExtras().datasets.list();
+                if (datasets.length === 0) {
+                    return { ok: true, detail: 'no datasets', evidence: 'datasets: 0', verification: 'verified' };
+                }
+                return {
+                    ok: true,
+                    detail: `${datasets.length} dataset(s)`,
+                    evidence: datasets.map((d) => `${d.id} ${d.name} (${d.sources} sources)`).join(' | '),
+                    verification: 'verified',
+                };
+            },
+        },
+
+        /* ----------------------------------------------------- flow api */
+        {
+            panelId: 'flow-api',
+            id: 'tokens',
+            title: 'Flow API tokens',
+            description: 'Tokens published for flows-as-an-API.',
+            permission: 'tool:read',
+            parameters: { type: 'object', properties: {} },
+            run: async () => {
+                const tokens = await needExtras().flowApi.tokens();
+                if (tokens.length === 0) {
+                    return { ok: true, detail: 'no flow tokens', evidence: 'tokens: 0', verification: 'verified' };
+                }
+                return {
+                    ok: true,
+                    detail: `${tokens.length} token(s)`,
+                    evidence: tokens.map((t) => `${t.token.slice(0, 8)}… → ${t.graphId}${t.label ? ` (${t.label})` : ''}`).join(' | '),
+                    verification: 'verified',
+                };
+            },
+        },
+
+        /* --------------------------------------------------- characters */
+        {
+            panelId: 'characters',
+            id: 'clients',
+            title: 'Character clients',
+            description: 'Registered client channels for character agents.',
+            permission: 'tool:read',
+            parameters: { type: 'object', properties: {} },
+            run: async () => {
+                const clients = await needExtras().characters.clients();
+                if (clients.length === 0) {
+                    return { ok: true, detail: 'no character clients', evidence: 'clients: 0', verification: 'verified' };
+                }
+                return {
+                    ok: true,
+                    detail: `${clients.length} client(s)`,
+                    evidence: clients.map((c) => `${c.name} [${c.kind}]`).join(' | '),
                     verification: 'verified',
                 };
             },

@@ -23,12 +23,16 @@ import {
 import {
     auditService,
     autonomyService,
+    characterService,
     crewService,
     crystalVault,
+    datasetService,
     federatedMemoryService,
     fleetMonitorService,
+    flowApiService,
     guardrailService,
     hierarchyService,
+    integrationsService,
     junctionEngine,
     knowledgeService,
     lensEngine,
@@ -436,6 +440,38 @@ export function ensureAssistantWiring(): void {
                         section: b.section,
                         content: b.content,
                     }));
+                },
+            },
+            integrations: {
+                catalog: async () => {
+                    const apps = await integrationsService.catalog();
+                    return apps.map((a) => ({ name: a.name, auth: a.auth }));
+                },
+                connections: async () => {
+                    const connections = await integrationsService.listConnections();
+                    return connections.map((c) => ({
+                        id: c.id,
+                        app: c.app,
+                        label: c.label,
+                    }));
+                },
+            },
+            datasets: {
+                list: async () => {
+                    const datasets = await datasetService.listDatasets();
+                    return datasets;
+                },
+            },
+            flowApi: {
+                tokens: async () => {
+                    const tokens = await flowApiService.listTokens();
+                    return tokens;
+                },
+            },
+            characters: {
+                clients: async () => {
+                    const clients = await characterService.listClients();
+                    return clients;
                 },
             },
         });

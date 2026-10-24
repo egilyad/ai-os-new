@@ -58,15 +58,19 @@ describe('panel action catalog', () => {
             'approvals',
             'audit',
             'autonomy',
+            'characters',
             'crews',
             'crystal',
+            'datasets',
             'debates',
             'diagnostics',
             'federated-memory',
             'fleet',
+            'flow-api',
             'governance',
             'guardrails',
             'hierarchy',
+            'integrations',
             'junction',
             'knowledge',
             'knowledge-sources',
@@ -350,6 +354,22 @@ function fakeMemoryBlocks(): PanelActionExtrasServices['memoryBlocks'] {
     return { blocks: async () => [] };
 }
 
+function fakeIntegrations(): PanelActionExtrasServices['integrations'] {
+    return { catalog: async () => [], connections: async () => [] };
+}
+
+function fakeDatasets(): PanelActionExtrasServices['datasets'] {
+    return { list: async () => [] };
+}
+
+function fakeFlowApi(): PanelActionExtrasServices['flowApi'] {
+    return { tokens: async () => [] };
+}
+
+function fakeCharacters(): PanelActionExtrasServices['characters'] {
+    return { clients: async () => [] };
+}
+
 describe('panel action catalog — memory and knowledge extras', () => {
     afterEach(() => setPanelActionExtrasServices(null));
 
@@ -389,6 +409,10 @@ describe('panel action catalog — memory and knowledge extras', () => {
             sops: fakeSops(),
             modes: fakeModes(),
             memoryBlocks: fakeMemoryBlocks(),
+            integrations: fakeIntegrations(),
+            datasets: fakeDatasets(),
+            flowApi: fakeFlowApi(),
+            characters: fakeCharacters(),
         });
 
         const result = await descriptor('prompts', 'create').run({
@@ -431,6 +455,10 @@ describe('panel action catalog — memory and knowledge extras', () => {
             sops: fakeSops(),
             modes: fakeModes(),
             memoryBlocks: fakeMemoryBlocks(),
+            integrations: fakeIntegrations(),
+            datasets: fakeDatasets(),
+            flowApi: fakeFlowApi(),
+            characters: fakeCharacters(),
         });
 
         const result = await descriptor('prompts', 'remove').run({ id: 'built-in' });
@@ -471,6 +499,10 @@ describe('panel action catalog — memory and knowledge extras', () => {
             sops: fakeSops(),
             modes: fakeModes(),
             memoryBlocks: fakeMemoryBlocks(),
+            integrations: fakeIntegrations(),
+            datasets: fakeDatasets(),
+            flowApi: fakeFlowApi(),
+            characters: fakeCharacters(),
         });
 
         const result = await descriptor('federated-memory', 'disconnect').run({ id: 'north' });
@@ -507,6 +539,10 @@ describe('panel action catalog — memory and knowledge extras', () => {
             sops: fakeSops(),
             modes: fakeModes(),
             memoryBlocks: fakeMemoryBlocks(),
+            integrations: fakeIntegrations(),
+            datasets: fakeDatasets(),
+            flowApi: fakeFlowApi(),
+            characters: fakeCharacters(),
         });
 
         const result = await descriptor('federated-memory', 'sync').run({});
@@ -545,6 +581,10 @@ describe('panel action catalog — memory and knowledge extras', () => {
             sops: fakeSops(),
             modes: fakeModes(),
             memoryBlocks: fakeMemoryBlocks(),
+            integrations: fakeIntegrations(),
+            datasets: fakeDatasets(),
+            flowApi: fakeFlowApi(),
+            characters: fakeCharacters(),
         });
 
         const result = await descriptor('prompt-versions', 'save').run({
