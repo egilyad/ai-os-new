@@ -11,7 +11,7 @@
 > Автосгенерировано `scripts/gen-wiki-panel-catalog.mjs` из реестра маршрутов,
 > `route-imports.ts`, локалей `nav.*` и карты статей вики. Не редактировать вручную.
 
-Панелей: **260** · с компонентом: **259** · со статьёй: **202** · всего разделов: **20**.
+Панелей: **261** · с компонентом: **260** · со статьёй: **202** · всего разделов: **20**.
 
 | Раздел | Панель | Маршрут | Компонент | Статья |
 | --- | --- | --- | --- | --- |
@@ -190,6 +190,7 @@
 | Диагностика | Здоровье SLA `health-sla` | `/health-sla` | `src/components/HealthSlaPanel` | [Панель: Наблюдаемость (логи, трейсы, здоровье)](./panel-observability.md) |
 | Диагностика | Пользовательский Метрики `custom-metrics` | `/custom-metrics` | `src/components/CustomMetricsPanel` | [Панель: Пользовательские метрики](./panel-custom-metrics.md) |
 | Вики | Вики `wiki` | `/wiki` | `src/components/WikiPanel/WikiPanel` | [Панель: Wiki](./panel-wiki.md) |
+| Вики | Вики-мозг `wiki-brain` | `/wiki-brain` | `src/components/WikiBrainPanel` | — |
 | Флот | Консоль флота `fleet` | `/fleet` | `src/components/FleetPanel/FleetPanel` | [Панель: Флот (Fleet Console)](./panel-fleet.md) |
 | Флот | Флот — Команды `fleet-crews` | `/fleet-crews` | `src/components/FleetPanels/CrewsPanel` | [Панель: Флот (Fleet Console)](./panel-fleet.md) |
 | Флот | Флот — Советы `fleet-councils` | `/fleet-councils` | `src/components/CouncilPanel/CouncilPanel` | [Панель: Флот (Fleet Console)](./panel-fleet.md) |

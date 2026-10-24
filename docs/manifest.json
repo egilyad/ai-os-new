@@ -8451,6 +8451,16 @@
       "status": "live"
     },
     {
+      "id": "panel:wiki-brain",
+      "type": "panel",
+      "panelId": "wiki-brain",
+      "section": "wiki",
+      "route": "/wiki-brain",
+      "component": "src/components/WikiBrainPanel",
+      "article": null,
+      "status": "live"
+    },
+    {
       "id": "panel:fleet",
       "type": "panel",
       "panelId": "fleet",

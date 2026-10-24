@@ -3,13 +3,13 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 1287,
+    "nodes": 1288,
     "edges": 3366,
     "byType": {
       "audit": 65,
       "code": 546,
       "test": 182,
-      "panel": 260,
+      "panel": 261,
       "article": 234
     },
     "byKind": {
@@ -5929,6 +5929,13 @@
       "label": "wiki",
       "section": "wiki",
       "route": "/wiki"
+    },
+    {
+      "id": "panel:wiki-brain",
+      "type": "panel",
+      "label": "wiki-brain",
+      "section": "wiki",
+      "route": "/wiki-brain"
     },
     {
       "id": "panel:workflows",
