@@ -123,8 +123,13 @@ export class WikiIngestService implements IWikiIngestService {
     async startQueueWorker(): Promise<void> {
         if (this.workerRunning) return;
         this.workerRunning = true;
+        void this.runLoop();
+    }
+
+    private async runLoop(): Promise<void> {
         try {
-            while (this.workerRunning) {                const task = await this.store.nextPending();
+            while (this.workerRunning) {
+                const task = await this.store.nextPending();
                 if (!task) break;
                 await this.store.updateTask(task.id, {
                     status: 'processing',

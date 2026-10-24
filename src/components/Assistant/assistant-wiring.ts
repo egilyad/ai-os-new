@@ -153,6 +153,9 @@ export function ensureAssistantWiring(): void {
                 },
                 runWorker: async () => {
                     await wikiBrainService.ingest.startQueueWorker();
+                    const all = await wikiBrainService.store.listQueue();
+                    const pending = all.filter((t) => t.status === 'pending').length;
+                    return { pending, total: all.length };
                 },
             },
         });

@@ -237,7 +237,7 @@ function fakeWiki(): PanelActionExtrasServices['wiki'] {
         queueSummary: async () => ({ pending: 0, total: 0 }),
         search: async () => [],
         putCuratedPage: async (input) => ({ slug: input.slug }),
-        runWorker: async () => undefined,
+        runWorker: async () => ({ pending: 0, total: 0 }),
     };
 }
 

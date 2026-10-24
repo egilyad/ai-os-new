@@ -117,7 +117,7 @@ export interface PanelActionExtrasServices {
         queueSummary(): Promise<{ pending: number; total: number }>;
         search(query: string): Promise<Array<{ slug: string; title: string; snippet: string }>>;
         putCuratedPage(input: { slug: string; title: string; body: string }): Promise<{ slug: string }>;
-        runWorker(): Promise<void>;
+        runWorker(): Promise<{ pending: number; total: number }>;
     };
 }
 
@@ -2253,10 +2253,11 @@ export function panelActionDescriptors(): PanelActionDescriptor[] {
             parameters: { type: 'object', properties: {} },
             run: async () => {
                 await needExtras().wiki.runWorker();
+                const queue = await needExtras().wiki.queueSummary();
                 return {
                     ok: true,
-                    detail: 'ingest worker started',
-                    evidence: 'queue: processing',
+                    detail: `ingest worker started, ${queue.pending} task(s) left`,
+                    evidence: `pending: ${queue.pending} of ${queue.total}`,
                     verification: 'verified',
                 };
             },
