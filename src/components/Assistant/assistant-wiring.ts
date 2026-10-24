@@ -25,13 +25,16 @@ import {
     auditService,
     autonomyService,
     characterService,
+    councilService,
     crewService,
     crystalVault,
     datasetService,
     employeeService,
+    evalService,
     federatedMemoryService,
     fleetMonitorService,
     flowApiService,
+    frontierOpsService,
     guardrailService,
     groupChatService,
     hierarchyService,
@@ -512,6 +515,64 @@ export function ensureAssistantWiring(): void {
                 check: async (text) => {
                     const result = await writerService.check(text);
                     return result;
+                },
+            },
+            council: {
+                sessions: async () => {
+                    const sessions = await councilService.listSessions();
+                    return sessions.map((s) => ({
+                        id: s.id,
+                        topic: s.topic,
+                        phase: s.phase,
+                        status: s.status,
+                    }));
+                },
+            },
+            eval: {
+                benchmarks: async () => {
+                    const benchmarks = await evalService.listBenchmarks();
+                    return benchmarks.map((b) => ({
+                        id: b.id,
+                        name: b.name,
+                        cases: b.cases.length,
+                    }));
+                },
+                runs: async () => {
+                    const runs = await evalService.listRuns();
+                    return runs.map((r) => ({
+                        id: r.id,
+                        benchmarkId: r.benchmarkId,
+                        subject: r.subject,
+                        total: r.total,
+                    }));
+                },
+                findings: async () => {
+                    const findings = await evalService.listFindings();
+                    return findings.map((f) => ({
+                        id: f.id,
+                        target: f.target,
+                        attack: f.attack,
+                        result: f.result,
+                    }));
+                },
+            },
+            frontierOps: {
+                orgs: async () => {
+                    const orgs = await frontierOpsService.listOrgs();
+                    return orgs.map((o) => ({
+                        id: o.id,
+                        name: o.name,
+                        status: o.status,
+                        members: o.members.length,
+                    }));
+                },
+                modals: async () => {
+                    const modals = await frontierOpsService.listModals();
+                    return modals.map((m) => ({
+                        id: m.id,
+                        modality: m.modality,
+                        agentId: m.agentId,
+                    }));
                 },
             },
         });

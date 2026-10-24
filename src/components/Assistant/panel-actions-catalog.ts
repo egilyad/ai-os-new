@@ -214,6 +214,18 @@ export interface PanelActionExtrasServices {
     writer: {
         check(text: string): Promise<{ score: number; issues: string[] }>;
     };
+    council: {
+        sessions(): Promise<Array<{ id: string; topic: string; phase: string; status: string }>>;
+    };
+    eval: {
+        benchmarks(): Promise<Array<{ id: string; name: string; cases: number }>>;
+        runs(): Promise<Array<{ id: string; benchmarkId: string; subject: string; total: number }>>;
+        findings(): Promise<Array<{ id: string; target: string; attack: string; result: string }>>;
+    };
+    frontierOps: {
+        orgs(): Promise<Array<{ id: string; name: string; status: string; members: number }>>;
+        modals(): Promise<Array<{ id: string; modality: string; agentId: string }>>;
+    };
 }
 
 let extrasServices: PanelActionExtrasServices | null = null;
@@ -3086,6 +3098,141 @@ export function panelActionDescriptors(): PanelActionDescriptor[] {
                     ok: true,
                     detail: `terminology score ${result.score}`,
                     evidence: result.issues.length ? result.issues.join(' | ') : 'no issues',
+                    verification: 'verified',
+                };
+            },
+        },
+
+        /* ------------------------------------------------------ council */
+        {
+            panelId: 'council',
+            id: 'sessions',
+            title: 'Council sessions',
+            description: 'Debate council sessions and their phase.',
+            permission: 'tool:read',
+            parameters: { type: 'object', properties: {} },
+            run: async () => {
+                const sessions = await needExtras().council.sessions();
+                if (sessions.length === 0) {
+                    return { ok: true, detail: 'no council sessions', evidence: 'sessions: 0', verification: 'verified' };
+                }
+                return {
+                    ok: true,
+                    detail: `${sessions.length} session(s)`,
+                    evidence: sessions
+                        .slice(0, 10)
+                        .map((s) => `${s.id} "${s.topic.slice(0, 40)}" [${s.phase}:${s.status}]`)
+                        .join(' | '),
+                    verification: 'verified',
+                };
+            },
+        },
+
+        /* --------------------------------------------------------- eval */
+        {
+            panelId: 'eval',
+            id: 'benchmarks',
+            title: 'Eval benchmarks',
+            description: 'Evaluation benchmarks and how many cases each has.',
+            permission: 'tool:read',
+            parameters: { type: 'object', properties: {} },
+            run: async () => {
+                const benchmarks = await needExtras().eval.benchmarks();
+                if (benchmarks.length === 0) {
+                    return { ok: true, detail: 'no benchmarks', evidence: 'benchmarks: 0', verification: 'verified' };
+                }
+                return {
+                    ok: true,
+                    detail: `${benchmarks.length} benchmark(s)`,
+                    evidence: benchmarks.map((b) => `${b.id} ${b.name} (${b.cases} cases)`).join(' | '),
+                    verification: 'verified',
+                };
+            },
+        },
+        {
+            panelId: 'eval',
+            id: 'runs',
+            title: 'Eval runs',
+            description: 'Recent evaluation runs and their totals.',
+            permission: 'tool:read',
+            parameters: { type: 'object', properties: {} },
+            run: async () => {
+                const runs = await needExtras().eval.runs();
+                if (runs.length === 0) {
+                    return { ok: true, detail: 'no eval runs', evidence: 'runs: 0', verification: 'verified' };
+                }
+                return {
+                    ok: true,
+                    detail: `${runs.length} run(s)`,
+                    evidence: runs
+                        .slice(0, 10)
+                        .map((r) => `${r.id} ${r.subject} on ${r.benchmarkId} [${r.total}]`)
+                        .join(' | '),
+                    verification: 'verified',
+                };
+            },
+        },
+        {
+            panelId: 'eval',
+            id: 'findings',
+            title: 'Red-team findings',
+            description: 'Security findings from red-team attacks.',
+            permission: 'tool:read',
+            parameters: { type: 'object', properties: {} },
+            run: async () => {
+                const findings = await needExtras().eval.findings();
+                if (findings.length === 0) {
+                    return { ok: true, detail: 'no findings', evidence: 'findings: 0', verification: 'verified' };
+                }
+                return {
+                    ok: true,
+                    detail: `${findings.length} finding(s)`,
+                    evidence: findings
+                        .slice(0, 10)
+                        .map((f) => `${f.target}: ${f.attack} [${f.result}]`)
+                        .join(' | '),
+                    verification: 'verified',
+                };
+            },
+        },
+
+        /* --------------------------------------------------- frontier ops */
+        {
+            panelId: 'frontier-ops',
+            id: 'orgs',
+            title: 'Frontier orgs',
+            description: 'Long-horizon organisations and their heartbeats.',
+            permission: 'tool:read',
+            parameters: { type: 'object', properties: {} },
+            run: async () => {
+                const orgs = await needExtras().frontierOps.orgs();
+                if (orgs.length === 0) {
+                    return { ok: true, detail: 'no frontier orgs', evidence: 'orgs: 0', verification: 'verified' };
+                }
+                return {
+                    ok: true,
+                    detail: `${orgs.length} org(s)`,
+                    evidence: orgs.map((o) => `${o.id} ${o.name} [${o.status}] (${o.members} members)`).join(' | '),
+                    verification: 'verified',
+                };
+            },
+        },
+        {
+            panelId: 'frontier-ops',
+            id: 'modals',
+            title: 'Multimodal registry',
+            description: 'Registered multimodal capabilities of agents.',
+            permission: 'tool:read',
+            parameters: { type: 'object', properties: {} },
+            run: async () => {
+                const modals = await needExtras().frontierOps.modals();
+                if (modals.length === 0) {
+                    return { ok: true, detail: 'no modal capabilities', evidence: 'modals: 0', verification: 'verified' };
+                }
+                return {
+                    ok: true,
+                    detail: `${modals.length} modal(s)`,
+                    evidence: modals.map((m) => `${m.id} ${m.modality} on ${m.agentId}`).join(' | '),
                     verification: 'verified',
                 };
             },

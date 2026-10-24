@@ -61,14 +61,17 @@ describe('panel action catalog', () => {
             'audit',
             'autonomy',
             'characters',
+            'council',
             'crews',
             'crystal',
             'datasets',
             'debates',
             'diagnostics',
+            'eval',
             'federated-memory',
             'fleet',
             'flow-api',
+            'frontier-ops',
             'governance',
             'group-chat',
             'guardrails',
@@ -395,6 +398,18 @@ function fakeWriter(): PanelActionExtrasServices['writer'] {
     return { check: async () => ({ score: 100, issues: [] }) };
 }
 
+function fakeCouncil(): PanelActionExtrasServices['council'] {
+    return { sessions: async () => [] };
+}
+
+function fakeEval(): PanelActionExtrasServices['eval'] {
+    return { benchmarks: async () => [], runs: async () => [], findings: async () => [] };
+}
+
+function fakeFrontierOps(): PanelActionExtrasServices['frontierOps'] {
+    return { orgs: async () => [], modals: async () => [] };
+}
+
 describe('panel action catalog — memory and knowledge extras', () => {
     afterEach(() => setPanelActionExtrasServices(null));
 
@@ -443,6 +458,9 @@ describe('panel action catalog — memory and knowledge extras', () => {
             aiAssistants: fakeAiAssistants(),
             webSearch: fakeWebSearch(),
             writer: fakeWriter(),
+            council: fakeCouncil(),
+            eval: fakeEval(),
+            frontierOps: fakeFrontierOps(),
         });
 
         const result = await descriptor('prompts', 'create').run({
@@ -494,6 +512,9 @@ describe('panel action catalog — memory and knowledge extras', () => {
             aiAssistants: fakeAiAssistants(),
             webSearch: fakeWebSearch(),
             writer: fakeWriter(),
+            council: fakeCouncil(),
+            eval: fakeEval(),
+            frontierOps: fakeFrontierOps(),
         });
 
         const result = await descriptor('prompts', 'remove').run({ id: 'built-in' });
@@ -543,6 +564,9 @@ describe('panel action catalog — memory and knowledge extras', () => {
             aiAssistants: fakeAiAssistants(),
             webSearch: fakeWebSearch(),
             writer: fakeWriter(),
+            council: fakeCouncil(),
+            eval: fakeEval(),
+            frontierOps: fakeFrontierOps(),
         });
 
         const result = await descriptor('federated-memory', 'disconnect').run({ id: 'north' });
@@ -588,6 +612,9 @@ describe('panel action catalog — memory and knowledge extras', () => {
             aiAssistants: fakeAiAssistants(),
             webSearch: fakeWebSearch(),
             writer: fakeWriter(),
+            council: fakeCouncil(),
+            eval: fakeEval(),
+            frontierOps: fakeFrontierOps(),
         });
 
         const result = await descriptor('federated-memory', 'sync').run({});
@@ -635,6 +662,9 @@ describe('panel action catalog — memory and knowledge extras', () => {
             aiAssistants: fakeAiAssistants(),
             webSearch: fakeWebSearch(),
             writer: fakeWriter(),
+            council: fakeCouncil(),
+            eval: fakeEval(),
+            frontierOps: fakeFrontierOps(),
         });
 
         const result = await descriptor('prompt-versions', 'save').run({
