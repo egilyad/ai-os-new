@@ -44,7 +44,7 @@ export const WikiSourceSchema = z.object({
     sizeBytes: z.number().int().nonnegative(),
     language: z.enum(['en', 'ru', 'mixed', 'auto']).default('auto'),
     contentText: z.string(),
-    meta: z.record(z.unknown()).default({}),
+    meta: z.record(z.string(), z.unknown()).default({}),
     importedAt: z.string().datetime(),
 });
 export type TWikiSource = z.infer<typeof WikiSourceSchema>;
@@ -67,7 +67,7 @@ export const WikiLogEntrySchema = z.object({
     sourceId: z.string().optional(),
     pageIds: z.array(z.string()).default([]),
     summary: z.string(),
-    details: z.record(z.unknown()).default({}),
+    details: z.record(z.string(), z.unknown()).default({}),
 });
 export type TWikiLogEntry = z.infer<typeof WikiLogEntrySchema>;
 

@@ -10,7 +10,7 @@ import type { IWikiIndexService } from '../../contracts/wiki-brain/wiki-index.se
 import type { IWikiLogService } from '../../contracts/wiki-brain/wiki-log.service';
 import type { IWikiSearchAdapter } from '../../contracts/wiki-brain/wiki-search-adapter';
 import type { WikiLlmClient } from '../../contracts/wiki-brain/wiki-llm';
-import type { TWikiSource, TWikiPage, TWikiLink, TWikiLogEntry } from '../../contracts/wiki-brain/types';
+import type { TWikiSource, TWikiPage, TWikiLink } from '../../contracts/wiki-brain/types';
 import { IngestAnalyzeOperation } from './operations/ingest-analyze.operation';
 import { IngestGenerateOperation } from './operations/ingest-generate.operation';
 import { wikiId } from './wiki-brain-dexie';
@@ -27,7 +27,7 @@ export class WikiIngestService implements IWikiIngestService {
 
     constructor(
         private store: IWikiStore,
-        private llm: WikiLlmClient,
+        llm: WikiLlmClient,
         private events: WikiEventSink | null,
         private indexService: IWikiIndexService,
         private logService: IWikiLogService,

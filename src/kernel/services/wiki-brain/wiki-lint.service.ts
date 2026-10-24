@@ -8,7 +8,8 @@ function wikilinks(body: string): string[] {
     const re = /\[\[([^\]]+)\]\]/g;
     let m: RegExpExecArray | null;
     while ((m = re.exec(body)) !== null) {
-        found.push(m[1].trim().toLowerCase());
+        const capture = m[1];
+        if (capture) found.push(capture.trim().toLowerCase());
     }
     return found;
 }
@@ -100,7 +101,7 @@ export class WikiLintService implements IWikiLintService {
                     id: wikiId('lint'),
                     rule: 'duplicate-entity',
                     severity: 'warn',
-                    pageId: bucket[0].id,
+                    pageId: bucket[0]!.id,
                     message: `alias "${alias}" is shared by ${bucket.map((p) => p.slug).join(', ')}`,
                     detectedAt: now,
                 });

@@ -1,6 +1,5 @@
 import type { IWikiSearchAdapter, WikiSearchHit } from '../../contracts/wiki-brain/wiki-search-adapter';
 import type { IWikiStore } from '../../contracts/wiki-brain/wiki-store';
-import type { TWikiPage } from '../../contracts/wiki-brain/types';
 
 const STOP = new Set(['the', 'a', 'an', 'and', 'or', 'but', 'of', 'to', 'in', 'for', 'on', 'with', 'is', 'are', 'was', 'were', 'be', 'it', 'this', 'that']);
 

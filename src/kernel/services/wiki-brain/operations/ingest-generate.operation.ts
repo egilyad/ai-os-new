@@ -23,8 +23,9 @@ const OUTPUT_SCHEMA = z.object({
         op: z.literal('ingest'),
         actor: z.literal('llm'),
         summary: z.string(),
-        details: z.record(z.unknown()),
+        details: z.record(z.string(), z.unknown()),
     }),
+    lintFlags: z.array(z.object({ rule: z.string(), payload: z.unknown() })).default([]),
 });
 
 const SYSTEM_PROMPT = `You are a wiki-page generator following Karpathy's LLM Wiki pattern.

@@ -1,7 +1,6 @@
 import type { IWikiQueryService, WikiQueryResult } from '../../contracts/wiki-brain/wiki-query.service';
 import type { IWikiStore } from '../../contracts/wiki-brain/wiki-store';
 import type { IWikiSearchAdapter } from '../../contracts/wiki-brain/wiki-search-adapter';
-import type { IWikiGraphService } from '../../contracts/wiki-brain/wiki-graph.service';
 import type { TWikiPage } from '../../contracts/wiki-brain/types';
 
 function snippet(body: string, max = 180): string {
@@ -13,7 +12,6 @@ export class WikiQueryService implements IWikiQueryService {
     constructor(
         private store: IWikiStore,
         private searchAdapter: IWikiSearchAdapter,
-        private graph: IWikiGraphService | null = null,
     ) {}
 
     async search(query: string, opts: { topK?: number; mode?: string; filterByType?: string[]; readSourcesOnly?: boolean } = {}): Promise<WikiQueryResult[]> {

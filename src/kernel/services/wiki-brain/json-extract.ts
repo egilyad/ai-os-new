@@ -10,12 +10,16 @@ export function extractJson(text: string): unknown {
         .trim();
     const firstBrace = cleaned.indexOf('{');
     const firstBracket = cleaned.indexOf('[');
-    let start = -1;
-    if (firstBrace === -1) start = firstBracket;
-    else if (firstBracket === -1) start = firstBrace;
-    else start = Math.min(firstBrace, firstBracket);
-
-    if (start === -1) throw new Error('No JSON object/array found in the LLM reply');
+    let start: number;
+    if (firstBrace === -1 && firstBracket === -1) {
+        throw new Error('No JSON object/array found in the LLM reply');
+    } else if (firstBrace === -1) {
+        start = firstBracket;
+    } else if (firstBracket === -1) {
+        start = firstBrace;
+    } else {
+        start = Math.min(firstBrace, firstBracket);
+    }
 
     const open = cleaned[start];
     const close = open === '{' ? '}' : ']';

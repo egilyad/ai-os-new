@@ -49,7 +49,7 @@ export const registerPhase81: Phase = ({ register }) => {
     );
 
     register('wikiQueryService', (c: IContainer) =>
-        new WikiQueryService(c.get('wikiStore'), c.get('wikiSearchAdapter'), c.get('wikiGraphService')),
+        new WikiQueryService(c.get('wikiStore'), c.get('wikiSearchAdapter')),
     );
 
     register('wikiIngestService', (c: IContainer) => {
