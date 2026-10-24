@@ -16,7 +16,15 @@ import {
     skillService,
 } from '../../kernel/instances/services-core';
 import { WIKI_ARTICLES } from '../WikiPanel/wiki-articles';
-import { ensurePanelActionCatalog } from './panel-actions-catalog';
+import {
+    ensurePanelActionCatalog,
+    setPanelActionExtrasServices,
+} from './panel-actions-catalog';
+import {
+    federatedMemoryService,
+    promptLibraryService,
+    promptVersionService,
+} from '../../kernel/instances/services-extras';
 
 let wired = false;
 
@@ -47,6 +55,13 @@ export function ensureAssistantWiring(): void {
     // The panels can only advertise their capabilities from here: the kernel
     // must not import UI singletons. `panel.list/read/act` reach all of them.
     try {
+        // The prompts / federation services are injected rather than imported
+        // by the catalog, so the catalog stays cheap for its unit test.
+        setPanelActionExtrasServices({
+            federated: federatedMemoryService,
+            prompts: promptLibraryService,
+            promptVersions: promptVersionService,
+        });
         ensurePanelActionCatalog(panelActionRegistry);
     } catch {
         /* catalog is optional — the kernel actions still work */

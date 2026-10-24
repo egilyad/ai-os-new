@@ -50,5 +50,11 @@ if (!globalCrypto.crypto.randomUUID) {
     globalCrypto.crypto.randomUUID = () => '1234-5678-9012-3456';
 }
 
-Element.prototype.scrollIntoView = vi.fn();
-window.scrollTo = vi.fn();
+// Logic-only suites can opt out of jsdom (`// @vitest-environment node`), so
+// the DOM globals are patched only when a document actually exists.
+if (typeof Element !== 'undefined') {
+    Element.prototype.scrollIntoView = vi.fn();
+}
+if (typeof window !== 'undefined') {
+    window.scrollTo = vi.fn();
+}

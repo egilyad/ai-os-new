@@ -12,6 +12,7 @@
  */
 import {
     agentJournalService,
+    memoryOrchestrator,
     memoryService,
 } from '../../kernel/instances/services-core';
 import { agemsApprovalService } from '../../kernel/services/agems-approval-service';
@@ -20,6 +21,72 @@ import type {
     PanelActionDescriptor,
 } from '../../kernel/contracts/panel-actions';
 import type { AssistantActionResult } from '../../kernel/contracts/assistant';
+
+/**
+ * The prompts / federation services live in a heavy module, and importing it
+ * here would make every consumer of this catalog (including its unit test) wait
+ * on that whole graph. Instead the wiring injects them, and the descriptors
+ * whose panel is not wired say so honestly.
+ */
+export interface PanelActionExtrasServices {
+    federated: {
+        getNodes(): Array<{
+            id: string;
+            name: string;
+            role: string;
+            endpoint: string;
+            status: string;
+            syncedMemories: number;
+            totalMemories: number;
+        }>;
+        disconnectNode(id: string): void;
+        syncAll(): Promise<
+            Array<{ peerNodeId: string; status: string; memoriesTransferred: number }>
+        >;
+    };
+    prompts: {
+        getAll(): Promise<Array<{ id: string; title: string; category: string; usageCount: number }>>;
+        search(query: string): Promise<Array<{ id: string; title: string; category: string; usageCount: number }>>;
+        getById(id: string): Promise<{ id: string; title: string; category: string; isBuiltIn: boolean } | undefined>;
+        create(data: {
+            title: string;
+            content: string;
+            category: string;
+            tags: string[];
+            variables: string[];
+        }): Promise<{ id: string; title: string; category: string }>;
+        remove(id: string): Promise<boolean>;
+    };
+    promptVersions: {
+        getPrompts(): Array<{ id: string; name: string; currentVersion: number }>;
+        getVersions(promptId: string): Array<{ id: string; version: number; author: string; comment: string; content: string }>;
+        saveVersion(
+            promptId: string,
+            name: string,
+            content: string,
+            author: string,
+            comment: string,
+        ): { id: string; version: number; content: string };
+        deletePrompt(promptId: string): void;
+    };
+}
+
+let extrasServices: PanelActionExtrasServices | null = null;
+
+/** Called by the UI wiring, which owns the heavy service module. */
+export function setPanelActionExtrasServices(services: PanelActionExtrasServices | null): void {
+    extrasServices = services;
+}
+
+/**
+ * The runner (`panel.read` / `panel.act`) turns a throw into an honest failed
+ * result, so a descriptor whose panel is not wired fails visibly instead of
+ * pretending.
+ */
+function needExtras(): PanelActionExtrasServices {
+    if (!extrasServices) throw new Error('panel services are not available');
+    return extrasServices;
+}
 
 function str(value: unknown): string {
     return typeof value === 'string' ? value.trim() : '';
@@ -227,6 +294,452 @@ export function panelActionDescriptors(): PanelActionDescriptor[] {
                         .slice(0, 10)
                         .map((p) => `#${p.id} ${p.tool} (${p.agentId})`)
                         .join(' | '),
+                    verification: 'verified',
+                };
+            },
+        },
+
+        /* ---------------------------------------------------------- knowledge */
+        {
+            panelId: 'knowledge',
+            id: 'graph',
+            title: 'Knowledge graph size',
+            description: 'How many memories the knowledge graph is built from, and of what kinds.',
+            permission: 'tool:read',
+            parameters: { type: 'object', properties: {} },
+            run: async () => {
+                const stats = memoryService.getStats();
+                const types = Object.entries(stats.byType)
+                    .map(([type, count]) => `${type}: ${count}`)
+                    .join(', ');
+                return {
+                    ok: true,
+                    detail: `${stats.totalEntries} node(s) from ${stats.uniqueSources} source(s)`,
+                    evidence: `types: ${types || 'none'} | tokens: ${stats.totalTokens}`,
+                    verification: 'verified',
+                };
+            },
+        },
+        {
+            panelId: 'knowledge',
+            id: 'update',
+            title: 'Rewrite a knowledge node',
+            description: 'Replace the content of one memory (node of the graph) and read it back.',
+            permission: 'tool:write',
+            parameters: {
+                type: 'object',
+                properties: {
+                    id: { type: 'string', description: 'Memory id.' },
+                    content: { type: 'string', description: 'The new content.' },
+                },
+                required: ['id', 'content'],
+            },
+            run: async (args) => {
+                const id = str(args['id']);
+                const content = str(args['content']);
+                if (!id) return fail('id is required');
+                if (!content) return fail('content is required');
+                const before = memoryService.getMemory(id);
+                if (!before) return fail(`knowledge node ${id} does not exist`);
+                await memoryService.updateMemory(id, content);
+                const after = memoryService.getMemory(id);
+                if (!after || after.content !== content) {
+                    return fail(`knowledge node ${id} did not change`);
+                }
+                return {
+                    ok: true,
+                    detail: `Rewrote knowledge node ${id}`,
+                    evidence: `before: ${snippet(before.content)} | after: ${snippet(after.content)}`,
+                    verification: 'verified',
+                };
+            },
+        },
+        {
+            panelId: 'knowledge',
+            id: 'remove',
+            title: 'Remove a knowledge node',
+            description: 'Delete one memory from the knowledge graph by id.',
+            permission: 'tool:write',
+            parameters: {
+                type: 'object',
+                properties: { id: { type: 'string', description: 'Memory id.' } },
+                required: ['id'],
+            },
+            run: async (args) => {
+                const id = str(args['id']);
+                if (!id) return fail('id is required');
+                const before = memoryService.getMemory(id);
+                if (!before) return fail(`knowledge node ${id} does not exist`);
+                await memoryService.deleteMemory(id);
+                if (memoryService.getMemory(id)) return fail(`knowledge node ${id} is still there`);
+                return {
+                    ok: true,
+                    detail: `Removed knowledge node ${id}`,
+                    evidence: `deleted: ${id} | content: ${snippet(before.content)}`,
+                    verification: 'verified',
+                };
+            },
+        },
+
+        /* ----------------------------------------------------- memory-palace */
+        {
+            panelId: 'memory-palace',
+            id: 'state',
+            title: 'Palace rooms',
+            description: 'The rooms of the memory palace and how many entries each holds.',
+            permission: 'tool:read',
+            parameters: { type: 'object', properties: {} },
+            run: async () => {
+                const state = await memoryOrchestrator.getPalaceState();
+                if (state.rooms.length === 0) {
+                    return { ok: true, detail: 'the palace has no rooms', evidence: 'rooms: 0', verification: 'verified' };
+                }
+                return {
+                    ok: true,
+                    detail: `${state.rooms.length} room(s), ${state.totalEntries} entr(y|ies)`,
+                    evidence: state.rooms
+                        .map((r) => `${r.name} (${r.store}): ${r.entryCount}`)
+                        .join(' | '),
+                    verification: 'verified',
+                };
+            },
+        },
+        {
+            panelId: 'memory-palace',
+            id: 'room',
+            title: 'One palace room',
+            description: 'Details of a single room of the memory palace by id.',
+            permission: 'tool:read',
+            parameters: {
+                type: 'object',
+                properties: { id: { type: 'string', description: 'Room id.' } },
+                required: ['id'],
+            },
+            run: async (args) => {
+                const id = str(args['id']);
+                if (!id) return fail('id is required');
+                const state = await memoryOrchestrator.getPalaceState();
+                const room = state.rooms.find((r) => r.id === id);
+                if (!room) return fail(`palace room ${id} does not exist`);
+                return {
+                    ok: true,
+                    detail: `${room.name}: ${room.entryCount} entr(y|ies)`,
+                    evidence: `${room.id} (${room.store}) — ${room.description}`,
+                    verification: 'verified',
+                };
+            },
+        },
+
+        /* --------------------------------------------------- federated-memory */
+        {
+            panelId: 'federated-memory',
+            id: 'nodes',
+            title: 'Federation nodes',
+            description: 'The connected peers of the federated memory and their sync state.',
+            permission: 'tool:read',
+            parameters: { type: 'object', properties: {} },
+            run: async () => {
+                const federatedMemoryService = needExtras().federated;
+                const nodes = federatedMemoryService.getNodes();
+                if (nodes.length === 0) {
+                    return { ok: true, detail: 'no federation nodes', evidence: 'nodes: 0', verification: 'verified' };
+                }
+                return {
+                    ok: true,
+                    detail: `${nodes.length} node(s)`,
+                    evidence: nodes
+                        .map((n) => `${n.id} ${n.name} (${n.role}, ${n.status}) ${n.syncedMemories}/${n.totalMemories}`)
+                        .join(' | '),
+                    verification: 'verified',
+                };
+            },
+        },
+        {
+            panelId: 'federated-memory',
+            id: 'disconnect',
+            title: 'Disconnect a node',
+            description: 'Drop one federation peer by id.',
+            permission: 'tool:write',
+            parameters: {
+                type: 'object',
+                properties: { id: { type: 'string', description: 'Node id.' } },
+                required: ['id'],
+            },
+            run: async (args) => {
+                const federatedMemoryService = needExtras().federated;
+                const id = str(args['id']);
+                if (!id) return fail('id is required');
+                const before = federatedMemoryService.getNodes().find((n) => n.id === id);
+                if (!before) return fail(`federation node ${id} does not exist`);
+                federatedMemoryService.disconnectNode(id);
+                if (federatedMemoryService.getNodes().some((n) => n.id === id)) {
+                    return fail(`federation node ${id} is still connected`);
+                }
+                return {
+                    ok: true,
+                    detail: `Disconnected ${before.name}`,
+                    evidence: `disconnected: ${id} | endpoint: ${before.endpoint}`,
+                    verification: 'verified',
+                };
+            },
+        },
+        {
+            panelId: 'federated-memory',
+            id: 'sync',
+            title: 'Sync with the peers',
+            description: 'Run a sync session with every connected federation node and report what moved.',
+            permission: 'tool:write',
+            parameters: { type: 'object', properties: {} },
+            run: async () => {
+                const federatedMemoryService = needExtras().federated;
+                const sessions = await federatedMemoryService.syncAll();
+                if (sessions.length === 0) {
+                    return { ok: true, detail: 'nothing to sync (no nodes)', evidence: 'sessions: 0', verification: 'verified' };
+                }
+                const moved = sessions.reduce((sum, s) => sum + s.memoriesTransferred, 0);
+                const failed = sessions.filter((s) => s.status === 'failed').length;
+                return {
+                    ok: true,
+                    detail: `${sessions.length} sync session(s), ${moved} memor(y|ies) moved${failed ? `, ${failed} failed` : ''}`,
+                    evidence: sessions
+                        .slice(0, 10)
+                        .map((s) => `${s.peerNodeId}: ${s.status} (${s.memoriesTransferred})`)
+                        .join(' | '),
+                    verification: 'verified',
+                };
+            },
+        },
+
+        /* ------------------------------------------------------------ prompts */
+        {
+            panelId: 'prompts',
+            id: 'list',
+            title: 'Prompt templates',
+            description: 'The prompt library, optionally filtered by a query.',
+            permission: 'tool:read',
+            parameters: {
+                type: 'object',
+                properties: {
+                    query: { type: 'string', description: 'Search text (optional).' },
+                    limit: { type: 'number', description: 'How many (max 20).' },
+                },
+            },
+            run: async (args) => {
+                const promptLibraryService = needExtras().prompts;
+                const query = str(args['query']);
+                const limit = Math.min(num(args['limit'], 5), 20);
+                const all = query
+                    ? await promptLibraryService.search(query)
+                    : await promptLibraryService.getAll();
+                const shown = all.slice(0, limit);
+                if (shown.length === 0) {
+                    return { ok: true, detail: query ? `no prompt matches "${query}"` : 'the prompt library is empty', evidence: 'prompts: 0', verification: 'verified' };
+                }
+                return {
+                    ok: true,
+                    detail: `${shown.length} of ${all.length} prompt(s)`,
+                    evidence: shown
+                        .map((p) => `${p.id} • ${p.title} [${p.category}] uses: ${p.usageCount}`)
+                        .join(' | '),
+                    verification: 'verified',
+                };
+            },
+        },
+        {
+            panelId: 'prompts',
+            id: 'create',
+            title: 'Add a prompt template',
+            description: 'Create a prompt in the library and read it back.',
+            permission: 'tool:write',
+            parameters: {
+                type: 'object',
+                properties: {
+                    title: { type: 'string', description: 'Short title.' },
+                    content: { type: 'string', description: 'The prompt body.' },
+                    category: { type: 'string', description: 'Category (default: custom).' },
+                    tags: { type: 'array', items: { type: 'string' }, description: 'Tags.' },
+                },
+                required: ['title', 'content'],
+            },
+            run: async (args) => {
+                const promptLibraryService = needExtras().prompts;
+                const title = str(args['title']);
+                const content = str(args['content']);
+                if (!title) return fail('title is required');
+                if (!content) return fail('content is required');
+                const rawTags = args['tags'];
+                const tags = Array.isArray(rawTags)
+                    ? rawTags.filter((t): t is string => typeof t === 'string' && t.trim().length > 0)
+                    : [];
+                const created = await promptLibraryService.create({
+                    title,
+                    content,
+                    category: str(args['category']) || 'custom',
+                    tags,
+                    variables: [],
+                });
+                const stored = await promptLibraryService.getById(created.id);
+                if (!stored) return fail(`prompt ${created.id} was not stored`);
+                return {
+                    ok: true,
+                    detail: `Created prompt "${stored.title}"`,
+                    evidence: `id: ${stored.id} | category: ${stored.category} | tags: ${tags.join(',') || 'none'}`,
+                    verification: 'verified',
+                };
+            },
+        },
+        {
+            panelId: 'prompts',
+            id: 'remove',
+            title: 'Delete a prompt template',
+            description: 'Remove a prompt from the library by id. Built-in prompts cannot be removed.',
+            permission: 'tool:write',
+            parameters: {
+                type: 'object',
+                properties: { id: { type: 'string', description: 'Prompt id.' } },
+                required: ['id'],
+            },
+            run: async (args) => {
+                const promptLibraryService = needExtras().prompts;
+                const id = str(args['id']);
+                if (!id) return fail('id is required');
+                const before = await promptLibraryService.getById(id);
+                if (!before) return fail(`prompt ${id} does not exist`);
+                if (before.isBuiltIn) return fail(`prompt ${id} is built-in and cannot be removed`);
+                const removed = await promptLibraryService.remove(id);
+                if (!removed) return fail(`prompt ${id} was not removed`);
+                if (await promptLibraryService.getById(id)) return fail(`prompt ${id} is still there`);
+                return {
+                    ok: true,
+                    detail: `Deleted prompt "${before.title}"`,
+                    evidence: `deleted: ${id} | category: ${before.category}`,
+                    verification: 'verified',
+                };
+            },
+        },
+
+        /* --------------------------------------------------- prompt-versions */
+        {
+            panelId: 'prompt-versions',
+            id: 'list',
+            title: 'Prompts with versions',
+            description: 'Prompts that have version history, with the current version number.',
+            permission: 'tool:read',
+            parameters: { type: 'object', properties: {} },
+            run: async () => {
+                const promptVersionService = needExtras().promptVersions;
+                const prompts = promptVersionService.getPrompts();
+                if (prompts.length === 0) {
+                    return { ok: true, detail: 'no versioned prompts', evidence: 'prompts: 0', verification: 'verified' };
+                }
+                return {
+                    ok: true,
+                    detail: `${prompts.length} versioned prompt(s)`,
+                    evidence: prompts
+                        .map((p) => `${p.id} • ${p.name} v${p.currentVersion}`)
+                        .join(' | '),
+                    verification: 'verified',
+                };
+            },
+        },
+        {
+            panelId: 'prompt-versions',
+            id: 'history',
+            title: 'Version history of a prompt',
+            description: 'The saved versions of one prompt, newest first.',
+            permission: 'tool:read',
+            parameters: {
+                type: 'object',
+                properties: { promptId: { type: 'string', description: 'Prompt id.' } },
+                required: ['promptId'],
+            },
+            run: async (args) => {
+                const promptVersionService = needExtras().promptVersions;
+                const promptId = str(args['promptId']);
+                if (!promptId) return fail('promptId is required');
+                const versions = promptVersionService.getVersions(promptId);
+                if (versions.length === 0) {
+                    return fail(`prompt ${promptId} has no versions`);
+                }
+                return {
+                    ok: true,
+                    detail: `${versions.length} version(s) of ${promptId}`,
+                    evidence: versions
+                        .slice(0, 5)
+                        .map((v) => `v${v.version} by ${v.author}: ${snippet(v.comment || v.content)}`)
+                        .join(' | '),
+                    verification: 'verified',
+                };
+            },
+        },
+        {
+            panelId: 'prompt-versions',
+            id: 'save',
+            title: 'Save a new version',
+            description: 'Snapshot a prompt body as a new version and read the history back.',
+            permission: 'tool:write',
+            parameters: {
+                type: 'object',
+                properties: {
+                    promptId: { type: 'string', description: 'Prompt id (created if new).' },
+                    name: { type: 'string', description: 'Prompt name.' },
+                    content: { type: 'string', description: 'The prompt body.' },
+                    comment: { type: 'string', description: 'Why this version exists.' },
+                },
+                required: ['promptId', 'name', 'content'],
+            },
+            run: async (args) => {
+                const promptVersionService = needExtras().promptVersions;
+                const promptId = str(args['promptId']);
+                const name = str(args['name']);
+                const content = str(args['content']);
+                if (!promptId) return fail('promptId is required');
+                if (!name) return fail('name is required');
+                if (!content) return fail('content is required');
+                const saved = promptVersionService.saveVersion(
+                    promptId,
+                    name,
+                    content,
+                    'assistant',
+                    str(args['comment']) || 'saved by the assistant',
+                );
+                const history = promptVersionService.getVersions(promptId);
+                if (!history.some((v) => v.id === saved.id)) {
+                    return fail(`version ${saved.id} was not stored`);
+                }
+                return {
+                    ok: true,
+                    detail: `Saved v${saved.version} of ${promptId}`,
+                    evidence: `version: ${saved.id} | versions now: ${history.length} | content: ${snippet(saved.content)}`,
+                    verification: 'verified',
+                };
+            },
+        },
+        {
+            panelId: 'prompt-versions',
+            id: 'remove',
+            title: 'Delete a versioned prompt',
+            description: 'Delete one prompt together with its version history.',
+            permission: 'tool:write',
+            parameters: {
+                type: 'object',
+                properties: { promptId: { type: 'string', description: 'Prompt id.' } },
+                required: ['promptId'],
+            },
+            run: async (args) => {
+                const promptVersionService = needExtras().promptVersions;
+                const promptId = str(args['promptId']);
+                if (!promptId) return fail('promptId is required');
+                const before = promptVersionService.getPrompts().find((p) => p.id === promptId);
+                if (!before) return fail(`versioned prompt ${promptId} does not exist`);
+                promptVersionService.deletePrompt(promptId);
+                if (promptVersionService.getPrompts().some((p) => p.id === promptId)) {
+                    return fail(`versioned prompt ${promptId} is still there`);
+                }
+                return {
+                    ok: true,
+                    detail: `Deleted "${before.name}" and its ${before.currentVersion} version(s)`,
+                    evidence: `deleted: ${promptId}`,
                     verification: 'verified',
                 };
             },

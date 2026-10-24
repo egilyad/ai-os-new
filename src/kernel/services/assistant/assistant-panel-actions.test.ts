@@ -1,3 +1,5 @@
+// @vitest-environment node
+// Pure registry/runner logic — no DOM needed, so skip the jsdom bootstrap.
 import { describe, expect, it, vi } from 'vitest';
 import { AssistantActionRegistry } from './assistant-action-registry';
 import { PanelActionRegistry } from './panel-action-registry';
