@@ -67,6 +67,7 @@ describe('panel action catalog', () => {
             'datasets',
             'debates',
             'diagnostics',
+            'dyads',
             'eval',
             'federated-memory',
             'fleet',
@@ -107,6 +108,7 @@ describe('panel action catalog', () => {
             'skill-market',
             'skills',
             'sops',
+            'swe',
             'system',
             'tasks',
             'training',
@@ -410,6 +412,14 @@ function fakeFrontierOps(): PanelActionExtrasServices['frontierOps'] {
     return { orgs: async () => [], modals: async () => [] };
 }
 
+function fakeDyads(): PanelActionExtrasServices['dyads'] {
+    return { loops: async () => [] };
+}
+
+function fakeSwe(): PanelActionExtrasServices['swe'] {
+    return { find: async () => [] };
+}
+
 describe('panel action catalog — memory and knowledge extras', () => {
     afterEach(() => setPanelActionExtrasServices(null));
 
@@ -461,6 +471,8 @@ describe('panel action catalog — memory and knowledge extras', () => {
             council: fakeCouncil(),
             eval: fakeEval(),
             frontierOps: fakeFrontierOps(),
+            dyads: fakeDyads(),
+            swe: fakeSwe(),
         });
 
         const result = await descriptor('prompts', 'create').run({
@@ -515,6 +527,8 @@ describe('panel action catalog — memory and knowledge extras', () => {
             council: fakeCouncil(),
             eval: fakeEval(),
             frontierOps: fakeFrontierOps(),
+            dyads: fakeDyads(),
+            swe: fakeSwe(),
         });
 
         const result = await descriptor('prompts', 'remove').run({ id: 'built-in' });
@@ -567,6 +581,8 @@ describe('panel action catalog — memory and knowledge extras', () => {
             council: fakeCouncil(),
             eval: fakeEval(),
             frontierOps: fakeFrontierOps(),
+            dyads: fakeDyads(),
+            swe: fakeSwe(),
         });
 
         const result = await descriptor('federated-memory', 'disconnect').run({ id: 'north' });
@@ -615,6 +631,8 @@ describe('panel action catalog — memory and knowledge extras', () => {
             council: fakeCouncil(),
             eval: fakeEval(),
             frontierOps: fakeFrontierOps(),
+            dyads: fakeDyads(),
+            swe: fakeSwe(),
         });
 
         const result = await descriptor('federated-memory', 'sync').run({});
@@ -665,6 +683,8 @@ describe('panel action catalog — memory and knowledge extras', () => {
             council: fakeCouncil(),
             eval: fakeEval(),
             frontierOps: fakeFrontierOps(),
+            dyads: fakeDyads(),
+            swe: fakeSwe(),
         });
 
         const result = await descriptor('prompt-versions', 'save').run({

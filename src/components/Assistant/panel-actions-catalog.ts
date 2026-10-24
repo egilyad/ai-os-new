@@ -226,6 +226,12 @@ export interface PanelActionExtrasServices {
         orgs(): Promise<Array<{ id: string; name: string; status: string; members: number }>>;
         modals(): Promise<Array<{ id: string; modality: string; agentId: string }>>;
     };
+    dyads: {
+        loops(): Promise<Array<{ id: string; kind: string; goal: string; status: string }>>;
+    };
+    swe: {
+        find(pattern: string): Promise<string[]>;
+    };
 }
 
 let extrasServices: PanelActionExtrasServices | null = null;
@@ -3233,6 +3239,59 @@ export function panelActionDescriptors(): PanelActionDescriptor[] {
                     ok: true,
                     detail: `${modals.length} modal(s)`,
                     evidence: modals.map((m) => `${m.id} ${m.modality} on ${m.agentId}`).join(' | '),
+                    verification: 'verified',
+                };
+            },
+        },
+
+        /* ------------------------------------------------------- dyads */
+        {
+            panelId: 'dyads',
+            id: 'loops',
+            title: 'Dyad loops',
+            description: 'CAMEL-style dyad loops and their state.',
+            permission: 'tool:read',
+            parameters: { type: 'object', properties: {} },
+            run: async () => {
+                const loops = await needExtras().dyads.loops();
+                if (loops.length === 0) {
+                    return { ok: true, detail: 'no dyad loops', evidence: 'loops: 0', verification: 'verified' };
+                }
+                return {
+                    ok: true,
+                    detail: `${loops.length} loop(s)`,
+                    evidence: loops
+                        .slice(0, 10)
+                        .map((l) => `${l.id} ${l.kind} "${l.goal.slice(0, 40)}" [${l.status}]`)
+                        .join(' | '),
+                    verification: 'verified',
+                };
+            },
+        },
+
+        /* --------------------------------------------------------- swe */
+        {
+            panelId: 'swe',
+            id: 'find',
+            title: 'Search the workspace',
+            description: 'Find files in the workspace by pattern (SWE-agent ACI).',
+            permission: 'tool:read',
+            parameters: {
+                type: 'object',
+                properties: { pattern: { type: 'string', description: 'Pattern to search.' } },
+                required: ['pattern'],
+            },
+            run: async (args) => {
+                const pattern = str(args['pattern']);
+                if (!pattern) return fail('pattern is required');
+                const matches = await needExtras().swe.find(pattern);
+                if (matches.length === 0) {
+                    return { ok: true, detail: 'no matches', evidence: 'matches: 0', verification: 'verified' };
+                }
+                return {
+                    ok: true,
+                    detail: `${matches.length} match(es)`,
+                    evidence: matches.slice(0, 10).join(' | '),
                     verification: 'verified',
                 };
             },

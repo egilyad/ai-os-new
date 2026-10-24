@@ -29,6 +29,7 @@ import {
     crewService,
     crystalVault,
     datasetService,
+    dyadService,
     employeeService,
     evalService,
     federatedMemoryService,
@@ -54,6 +55,7 @@ import {
     sandboxBrokerService,
     skillMarketService,
     sopService,
+    sweService,
     toolGovernanceService,
     trainingService,
     wikiBrainService,
@@ -573,6 +575,23 @@ export function ensureAssistantWiring(): void {
                         modality: m.modality,
                         agentId: m.agentId,
                     }));
+                },
+            },
+            dyads: {
+                loops: async () => {
+                    const loops = await dyadService.listLoops();
+                    return loops.map((l) => ({
+                        id: l.id,
+                        kind: l.kind,
+                        goal: l.goal,
+                        status: l.status,
+                    }));
+                },
+            },
+            swe: {
+                find: async (pattern) => {
+                    const matches = await sweService.find(pattern);
+                    return matches;
                 },
             },
         });
