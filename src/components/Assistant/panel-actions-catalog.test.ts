@@ -62,6 +62,7 @@ describe('panel action catalog', () => {
             'debates',
             'diagnostics',
             'federated-memory',
+            'fleet',
             'governance',
             'hierarchy',
             'junction',
@@ -72,6 +73,7 @@ describe('panel action catalog', () => {
             'memory',
             'memory-palace',
             'meta-agents',
+            'mobile',
             'monitoring',
             'permissions',
             'policies',
@@ -82,8 +84,10 @@ describe('panel action catalog', () => {
             'research',
             'roles',
             'safety',
+            'sandbox',
             'sessions',
             'settings',
+            'skill-market',
             'skills',
             'system',
             'tasks',
@@ -121,12 +125,14 @@ describe('panel action catalog', () => {
             'prompts.remove',
             'roles.create',
             'roles.remove',
+            'sandbox.request',
             'sessions.archive',
             'sessions.pause',
             'sessions.resume',
             'settings.set-mode',
             'skills.install',
             'skills.toggle',
+            'skill-market.install',
             'tasks.set-status',
             'wiki.add-page',
             'wiki.ingest-source',
@@ -276,6 +282,28 @@ function fakeMeta(): PanelActionExtrasServices['meta'] {
     return { proposals: async () => [] };
 }
 
+function fakeSandbox(): PanelActionExtrasServices['sandbox'] {
+    return {
+        list: async () => [],
+        request: async () => ({ id: 'sb-x', status: 'pending' }),
+    };
+}
+
+function fakeSkillMarket(): PanelActionExtrasServices['skillMarket'] {
+    return {
+        list: async () => [],
+        install: async (id) => ({ id, installed: true }),
+    };
+}
+
+function fakeFleet(): PanelActionExtrasServices['fleet'] {
+    return { watches: async () => [] };
+}
+
+function fakeMobile(): PanelActionExtrasServices['mobile'] {
+    return { sessions: async () => [], notifications: async () => [] };
+}
+
 describe('panel action catalog — memory and knowledge extras', () => {
     afterEach(() => setPanelActionExtrasServices(null));
 
@@ -302,6 +330,10 @@ describe('panel action catalog — memory and knowledge extras', () => {
             junction: fakeJunction(),
             lens: fakeLens(),
             meta: fakeMeta(),
+            sandbox: fakeSandbox(),
+            skillMarket: fakeSkillMarket(),
+            fleet: fakeFleet(),
+            mobile: fakeMobile(),
         });
 
         const result = await descriptor('prompts', 'create').run({
@@ -331,6 +363,10 @@ describe('panel action catalog — memory and knowledge extras', () => {
             junction: fakeJunction(),
             lens: fakeLens(),
             meta: fakeMeta(),
+            sandbox: fakeSandbox(),
+            skillMarket: fakeSkillMarket(),
+            fleet: fakeFleet(),
+            mobile: fakeMobile(),
         });
 
         const result = await descriptor('prompts', 'remove').run({ id: 'built-in' });
@@ -358,6 +394,10 @@ describe('panel action catalog — memory and knowledge extras', () => {
             junction: fakeJunction(),
             lens: fakeLens(),
             meta: fakeMeta(),
+            sandbox: fakeSandbox(),
+            skillMarket: fakeSkillMarket(),
+            fleet: fakeFleet(),
+            mobile: fakeMobile(),
         });
 
         const result = await descriptor('federated-memory', 'disconnect').run({ id: 'north' });
@@ -381,6 +421,10 @@ describe('panel action catalog — memory and knowledge extras', () => {
             junction: fakeJunction(),
             lens: fakeLens(),
             meta: fakeMeta(),
+            sandbox: fakeSandbox(),
+            skillMarket: fakeSkillMarket(),
+            fleet: fakeFleet(),
+            mobile: fakeMobile(),
         });
 
         const result = await descriptor('federated-memory', 'sync').run({});
@@ -406,6 +450,10 @@ describe('panel action catalog — memory and knowledge extras', () => {
             junction: fakeJunction(),
             lens: fakeLens(),
             meta: fakeMeta(),
+            sandbox: fakeSandbox(),
+            skillMarket: fakeSkillMarket(),
+            fleet: fakeFleet(),
+            mobile: fakeMobile(),
         });
 
         const result = await descriptor('prompt-versions', 'save').run({

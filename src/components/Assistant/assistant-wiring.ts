@@ -25,13 +25,17 @@ import {
     crewService,
     crystalVault,
     federatedMemoryService,
+    fleetMonitorService,
     hierarchyService,
     junctionEngine,
     lensEngine,
     metaAgentService,
+    mobileAccessService,
     promptLibraryService,
     promptVersionService,
     researchRunService,
+    sandboxBrokerService,
+    skillMarketService,
     toolGovernanceService,
     wikiBrainService,
 } from '../../kernel/instances/services-extras';
@@ -254,6 +258,70 @@ export function ensureAssistantWiring(): void {
                         kind: p.kind,
                         target: p.target,
                         status: p.status,
+                    }));
+                },
+            },
+            sandbox: {
+                list: async () => {
+                    const tickets = await sandboxBrokerService.list();
+                    return tickets.map((t) => ({
+                        id: t.id,
+                        kind: t.kind,
+                        agentId: t.agentId,
+                        status: t.status,
+                        purpose: t.purpose,
+                    }));
+                },
+                request: async ({ kind, agentId, purpose }) => {
+                    const ticket = await sandboxBrokerService.request({
+                        kind: kind as 'browser' | 'computer',
+                        agentId,
+                        purpose,
+                    });
+                    return { id: ticket.id, status: ticket.status };
+                },
+            },
+            skillMarket: {
+                list: async () => {
+                    const skills = await skillMarketService.list();
+                    return skills.map((s) => ({
+                        id: s.id,
+                        name: s.name,
+                        version: s.version,
+                        installed: s.installed,
+                    }));
+                },
+                install: async (id) => {
+                    const skill = await skillMarketService.install(id);
+                    return { id: skill.id, installed: skill.installed };
+                },
+            },
+            fleet: {
+                watches: async () => {
+                    const watches = await fleetMonitorService.list();
+                    return watches.map((w) => ({
+                        id: w.id,
+                        kind: w.kind,
+                        label: w.label,
+                        status: w.status,
+                    }));
+                },
+            },
+            mobile: {
+                sessions: async () => {
+                    const sessions = await mobileAccessService.listSessions();
+                    return sessions.map((s) => ({
+                        id: s.id,
+                        deviceName: s.deviceName,
+                        status: s.status,
+                    }));
+                },
+                notifications: async () => {
+                    const notifications = await mobileAccessService.listNotifications();
+                    return notifications.map((n) => ({
+                        id: n.id,
+                        title: n.title,
+                        read: n.read,
                     }));
                 },
             },

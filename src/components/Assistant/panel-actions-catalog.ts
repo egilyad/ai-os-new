@@ -142,6 +142,21 @@ export interface PanelActionExtrasServices {
     meta: {
         proposals(): Promise<Array<{ id: string; kind: string; target: string; status: string }>>;
     };
+    sandbox: {
+        list(): Promise<Array<{ id: string; kind: string; agentId: string; status: string; purpose: string }>>;
+        request(input: { kind: string; agentId: string; purpose: string }): Promise<{ id: string; status: string }>;
+    };
+    skillMarket: {
+        list(): Promise<Array<{ id: string; name: string; version: string; installed: boolean }>>;
+        install(id: string): Promise<{ id: string; installed: boolean }>;
+    };
+    fleet: {
+        watches(): Promise<Array<{ id: string; kind: string; label: string; status: string }>>;
+    };
+    mobile: {
+        sessions(): Promise<Array<{ id: string; deviceName: string; status: string }>>;
+        notifications(): Promise<Array<{ id: string; title: string; read: boolean }>>;
+    };
 }
 
 let extrasServices: PanelActionExtrasServices | null = null;
@@ -2341,6 +2356,180 @@ export function panelActionDescriptors(): PanelActionDescriptor[] {
                     evidence: proposals
                         .slice(0, 10)
                         .map((p) => `${p.id} ${p.kind} → ${p.target} [${p.status}]`)
+                        .join(' | '),
+                    verification: 'verified',
+                };
+            },
+        },
+
+        /* ------------------------------------------------------ sandbox */
+        {
+            panelId: 'sandbox',
+            id: 'list',
+            title: 'Sandbox tickets',
+            description: 'Browser/computer-use sandbox tickets and their state.',
+            permission: 'tool:read',
+            parameters: { type: 'object', properties: {} },
+            run: async () => {
+                const tickets = await needExtras().sandbox.list();
+                if (tickets.length === 0) {
+                    return { ok: true, detail: 'no sandbox tickets', evidence: 'tickets: 0', verification: 'verified' };
+                }
+                return {
+                    ok: true,
+                    detail: `${tickets.length} ticket(s)`,
+                    evidence: tickets
+                        .slice(0, 10)
+                        .map((t) => `${t.id} ${t.kind} by ${t.agentId} [${t.status}]`)
+                        .join(' | '),
+                    verification: 'verified',
+                };
+            },
+        },
+        {
+            panelId: 'sandbox',
+            id: 'request',
+            title: 'Request a sandbox',
+            description: 'Request a browser or computer-use sandbox ticket.',
+            permission: 'tool:write',
+            parameters: {
+                type: 'object',
+                properties: {
+                    kind: { type: 'string', description: 'browser or computer.' },
+                    agentId: { type: 'string', description: 'Agent id.' },
+                    purpose: { type: 'string', description: 'Why the sandbox is needed.' },
+                },
+                required: ['kind', 'agentId', 'purpose'],
+            },
+            run: async (args) => {
+                const kind = str(args['kind']);
+                const agentId = str(args['agentId']);
+                const purpose = str(args['purpose']);
+                if (!kind) return fail('kind is required');
+                if (!agentId) return fail('agentId is required');
+                if (!purpose) return fail('purpose is required');
+                const { id, status } = await needExtras().sandbox.request({ kind, agentId, purpose });
+                return {
+                    ok: true,
+                    detail: `sandbox ticket ${id} is ${status}`,
+                    evidence: `ticket: ${id} | status: ${status}`,
+                    verification: 'verified',
+                };
+            },
+        },
+
+        /* -------------------------------------------------- skill market */
+        {
+            panelId: 'skill-market',
+            id: 'list',
+            title: 'Skill market',
+            description: 'Skills published in the marketplace and whether they are installed.',
+            permission: 'tool:read',
+            parameters: { type: 'object', properties: {} },
+            run: async () => {
+                const skills = await needExtras().skillMarket.list();
+                if (skills.length === 0) {
+                    return { ok: true, detail: 'no skills in the market', evidence: 'skills: 0', verification: 'verified' };
+                }
+                return {
+                    ok: true,
+                    detail: `${skills.length} skill(s)`,
+                    evidence: skills
+                        .slice(0, 10)
+                        .map((s) => `${s.id} ${s.name}@${s.version} [${s.installed ? 'installed' : 'available'}]`)
+                        .join(' | '),
+                    verification: 'verified',
+                };
+            },
+        },
+        {
+            panelId: 'skill-market',
+            id: 'install',
+            title: 'Install a skill',
+            description: 'Install a skill from the marketplace and read the state back.',
+            permission: 'tool:write',
+            parameters: {
+                type: 'object',
+                properties: { id: { type: 'string', description: 'Skill manifest id.' } },
+                required: ['id'],
+            },
+            run: async (args) => {
+                const id = str(args['id']);
+                if (!id) return fail('id is required');
+                const result = await needExtras().skillMarket.install(id);
+                return {
+                    ok: true,
+                    detail: `skill ${result.id} installed`,
+                    evidence: `installed: ${result.installed}`,
+                    verification: 'verified',
+                };
+            },
+        },
+
+        /* ------------------------------------------------------- fleet */
+        {
+            panelId: 'fleet',
+            id: 'watches',
+            title: 'Fleet watches',
+            description: 'Live mission watches over crews, councils and graph runs.',
+            permission: 'tool:read',
+            parameters: { type: 'object', properties: {} },
+            run: async () => {
+                const watches = await needExtras().fleet.watches();
+                if (watches.length === 0) {
+                    return { ok: true, detail: 'no fleet watches', evidence: 'watches: 0', verification: 'verified' };
+                }
+                return {
+                    ok: true,
+                    detail: `${watches.length} watch(es)`,
+                    evidence: watches
+                        .slice(0, 10)
+                        .map((w) => `${w.id} ${w.kind} "${w.label}" [${w.status}]`)
+                        .join(' | '),
+                    verification: 'verified',
+                };
+            },
+        },
+
+        /* ------------------------------------------------------ mobile */
+        {
+            panelId: 'mobile',
+            id: 'sessions',
+            title: 'Mobile sessions',
+            description: 'Paired mobile devices for remote access.',
+            permission: 'tool:read',
+            parameters: { type: 'object', properties: {} },
+            run: async () => {
+                const sessions = await needExtras().mobile.sessions();
+                if (sessions.length === 0) {
+                    return { ok: true, detail: 'no mobile sessions', evidence: 'sessions: 0', verification: 'verified' };
+                }
+                return {
+                    ok: true,
+                    detail: `${sessions.length} session(s)`,
+                    evidence: sessions.map((s) => `${s.id} ${s.deviceName} [${s.status}]`).join(' | '),
+                    verification: 'verified',
+                };
+            },
+        },
+        {
+            panelId: 'mobile',
+            id: 'notifications',
+            title: 'Mobile notifications',
+            description: 'Push notifications queued to mobile devices.',
+            permission: 'tool:read',
+            parameters: { type: 'object', properties: {} },
+            run: async () => {
+                const notifications = await needExtras().mobile.notifications();
+                if (notifications.length === 0) {
+                    return { ok: true, detail: 'no notifications', evidence: 'notifications: 0', verification: 'verified' };
+                }
+                return {
+                    ok: true,
+                    detail: `${notifications.length} notification(s)`,
+                    evidence: notifications
+                        .slice(0, 10)
+                        .map((n) => `${n.title}${n.read ? '' : ' (unread)'}`)
                         .join(' | '),
                     verification: 'verified',
                 };
