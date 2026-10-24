@@ -124,8 +124,7 @@ export class WikiIngestService implements IWikiIngestService {
         if (this.workerRunning) return;
         this.workerRunning = true;
         try {
-            while (this.workerRunning) {
-                const task = await this.store.nextPending();
+            while (this.workerRunning) {                const task = await this.store.nextPending();
                 if (!task) break;
                 await this.store.updateTask(task.id, {
                     status: 'processing',
@@ -155,6 +154,14 @@ export class WikiIngestService implements IWikiIngestService {
 
     async stopQueueWorker(): Promise<void> {
         this.workerRunning = false;
+    }
+
+    async init(): Promise<void> {
+        await this.startQueueWorker();
+    }
+
+    async destroy(): Promise<void> {
+        await this.stopQueueWorker();
     }
 
     private async sha256(text: string): Promise<string> {

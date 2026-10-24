@@ -31,7 +31,7 @@ function wikiLlm(c: IContainer): WikiLlmClient | null {
     };
 }
 
-export const registerPhase81: Phase = ({ register }) => {
+export const registerPhase81: Phase = ({ register }, ctx) => {
     register('wikiStore', (_c: IContainer) => new WikiDexieStore());
 
     register('wikiLogService', (c: IContainer) => new WikiLogService(c.get('wikiStore')));
@@ -55,7 +55,7 @@ export const registerPhase81: Phase = ({ register }) => {
     register('wikiIngestService', (c: IContainer) => {
         const llm = wikiLlm(c);
         if (!llm) throw new Error('Wiki Brain requires llmClientService');
-        return new WikiIngestService(
+        const ingest = new WikiIngestService(
             c.get('wikiStore'),
             llm,
             c.get<IEventBus>('eventBus') as unknown as { emit: (e: string, p?: unknown) => void },
@@ -63,6 +63,8 @@ export const registerPhase81: Phase = ({ register }) => {
             c.get('wikiLogService'),
             c.get('wikiSearchAdapter'),
         );
+        ctx.registerWithLifecycle('wikiIngestService', ingest);
+        return ingest;
     });
 
     register('wikiBrainService', (c: IContainer) =>
