@@ -1771,12 +1771,14 @@ export function panelActionDescriptors(): PanelActionDescriptor[] {
                 required: ['type', 'action'],
             },
             run: async (args) => {
-                const type = str(args['type']);
-                const action = str(args['action']);
+                const rawType = str(args['type']);
+                const rawAction = str(args['action']);
                 const allowedTypes = ['latency', 'privacy', 'cost', 'safety'] as const;
-                if (!allowedTypes.includes(type as (typeof allowedTypes)[number])) return fail(`unsupported policy type "${type}"`);
+                const type = allowedTypes.find((t) => t === rawType);
+                if (!type) return fail(`unsupported policy type "${rawType}"`);
                 const allowedActions = ['block', 'warn', 'retry'] as const;
-                if (!allowedActions.includes(action as (typeof allowedActions)[number])) return fail(`unsupported action "${action}"`);
+                const action = allowedActions.find((a) => a === rawAction);
+                if (!action) return fail(`unsupported action "${rawAction}"`);
                 const rawTargets = args['targetNodes'];
                 const targets = Array.isArray(rawTargets)
                     ? rawTargets.filter((t): t is string => typeof t === 'string' && t.trim().length > 0)
