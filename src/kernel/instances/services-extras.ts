@@ -1,6 +1,8 @@
 import { lazyService } from '../service-helper';
 import type { IForumService } from '../contracts/forum';
 import type { IWikiBrainService } from '../contracts/wiki-brain';
+import type { IMemoryGraphService } from '../contracts/viz/memory-graph';
+import type { IArchitectureGraphService } from '../contracts/viz/architecture-graph';
 import type { ILensEngineService } from '../contracts/lens-engine';
 import type { ICrystalVaultService } from '../contracts/knowledge-crystal';
 import type { IJunctionEngineService } from '../contracts/junction-engine';
@@ -386,6 +388,8 @@ export const personaRepository = lazyService<PersonaRepository>('personaReposito
 export const opsRepository = lazyService<OpsRepository>('opsRepository');
 export const auditService = lazyService<IAuditService>('auditService');
 export const wikiBrainService = lazyService<IWikiBrainService>('wikiBrainService');
+export const memoryGraphService = lazyService<IMemoryGraphService>('memoryGraphService');
+export const architectureGraphService = lazyService<IArchitectureGraphService>('architectureGraphService');
 export const hierarchyService = lazyService<IHierarchyService>('hierarchyService');
 export const toolGovernanceService = lazyService<IToolGovernanceService>('toolGovernanceService');
 export const sandboxBrokerService = lazyService<ISandboxBrokerService>('sandboxBrokerService');

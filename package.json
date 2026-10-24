@@ -89,6 +89,7 @@
     "react-dom": "^19.2.5",
     "react-is": "^19.2.7",
     "react-router-dom": "^7.15.0",
+    "vis-network": "^10.1.2",
     "zod": "^4.4.3",
     "zustand": "^4.5.7"
   },

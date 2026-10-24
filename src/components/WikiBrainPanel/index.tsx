@@ -1,10 +1,9 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { ReactFlow, Controls, Background, type Node, type Edge } from '@xyflow/react';
-import '@xyflow/react/dist/style.css';
+import React, { useCallback, useEffect, useState } from 'react';
 import { getContainer } from '../../kernel/service-helper';
 import { tokens } from '../../styles/tokens';
 import { useTranslation } from '../../i18n/useTranslation';
 import { MarkdownRenderer } from '../ChatPanel/MarkdownRenderer';
+import { KnowledgeGraphView, type GraphViewData } from '../viz/KnowledgeGraphView';
 import type { IWikiBrainService } from '../../kernel/contracts/wiki-brain';
 import type { TWikiPage } from '../../kernel/contracts/wiki-brain';
 
@@ -76,7 +75,7 @@ export default function WikiBrainPanel() {
     const [pages, setPages] = useState<PageRow[]>([]);
     const [queue, setQueue] = useState<QueueRow[]>([]);
     const [lint, setLint] = useState<LintRow[]>([]);
-    const [graph, setGraph] = useState<{ nodes: unknown[]; edges: unknown[] }>({ nodes: [], edges: [] });
+    const [graph, setGraph] = useState<GraphViewData>({ nodes: [], edges: [] });
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const [busy, setBusy] = useState(false);
@@ -122,7 +121,21 @@ export default function WikiBrainPanel() {
                     .slice(0, 10)
                     .map((i) => ({ rule: i.rule, severity: i.severity, message: i.message })),
             );
-            setGraph({ nodes: g.nodes, edges: g.edges });
+            const deg = new Map<string, number>();
+            const bump = (id: string) => deg.set(id, (deg.get(id) ?? 0) + 1);
+            for (const edge of g.edges) {
+                bump(edge.source);
+                bump(edge.target);
+            }
+            setGraph({
+                nodes: g.nodes.map((n) => ({
+                    id: n.id,
+                    label: n.label,
+                    type: 'knowledge',
+                    degree: deg.get(n.id) ?? 0,
+                })),
+                edges: g.edges.map((e) => ({ source: e.source, target: e.target, kind: 'link', weight: 1 })),
+            });
             try {
                 if (navigator.storage?.estimate) {
                     const { usage } = await navigator.storage.estimate();
@@ -135,33 +148,6 @@ export default function WikiBrainPanel() {
             setStats(null);
         }
     }, []);
-
-    const flowNodes = useMemo<Node[]>(
-        () =>
-            graph.nodes.map((n, index) => {
-                const node = n as { id: string; label: string };
-                const angle = graph.nodes.length > 1 ? (2 * Math.PI * index) / graph.nodes.length : 0;
-                const radius = 140;
-                return {
-                    id: node.id,
-                    position: {
-                        x: radius * Math.cos(angle),
-                        y: radius * Math.sin(angle),
-                    },
-                    data: { label: node.label },
-                };
-            }),
-        [graph],
-    );
-
-    const flowEdges = useMemo<Edge[]>(
-        () =>
-            graph.edges.map((e) => {
-                const edge = e as { id: string; source: string; target: string };
-                return { id: edge.id, source: edge.source, target: edge.target };
-            }),
-        [graph],
-    );
 
     useEffect(() => {
         void load();
@@ -483,10 +469,7 @@ export default function WikiBrainPanel() {
                     overflow: 'hidden',
                 }}
             >
-                <ReactFlow nodes={flowNodes} edges={flowEdges} fitView>
-                    <Background />
-                    <Controls />
-                </ReactFlow>
+                <KnowledgeGraphView data={graph} height={420} />
             </div>
 
             <div

@@ -23,6 +23,8 @@ import IndexStatsPanel from './IndexStatsPanel';
 import KnowledgeGrowthPanel from './KnowledgeGrowthPanel';
 import ForgettingCurvePanel from './ForgettingCurvePanel';
 import MemoryTimeline from './MemoryTimeline';
+import { KnowledgeGraphView } from '../viz/KnowledgeGraphView';
+import { memoryGraphService } from '../../kernel/instances';
 
 const MemoryPanel: React.FC = () => {
     const { confirm, ConfirmDialog } = useConfirm();
@@ -37,7 +39,7 @@ const MemoryPanel: React.FC = () => {
     >('long_term');
     const [semanticMode, setSemanticMode] = useState(!!CONFIG?.services?.memory?.semanticEnabled);
     const [importanceFilter, setImportanceFilter] = useState(0);
-    const [viewMode, setViewMode] = useState<'cards' | 'timeline'>('cards');
+    const [viewMode, setViewMode] = useState<'cards' | 'timeline' | 'graph'>('cards');
     const [currentTime, setCurrentTime] = useState(() => Date.now());
     const [isLoading, setIsLoading] = useState(memories.length === 0);
     const { t } = useTranslation();
@@ -267,6 +269,7 @@ const MemoryPanel: React.FC = () => {
         [searching, searchResults, memories, activeCollection, importanceFilter],
     );
     const totalEntries = memories.length;
+    const graphData = useMemo(() => memoryGraphService.build(memories), [memories]);
 
     const toggleSemantic = () => {
         const next = !semanticMode;
@@ -398,6 +401,25 @@ const MemoryPanel: React.FC = () => {
                                 >
                                     Timeline
                                 </button>
+                                <button
+                                    onClick={() => setViewMode('graph')}
+                                    style={{
+                                        padding: '0.3rem 0.6rem',
+                                        borderRadius: 6,
+                                        border: 'none',
+                                        fontSize: '0.65rem',
+                                        fontWeight: 700,
+                                        cursor: 'pointer',
+                                        background:
+                                            viewMode === 'graph'
+                                                ? 'rgba(168,85,247,0.25)'
+                                                : 'transparent',
+                                        color: viewMode === 'graph' ? '#a855f7' : '#64748b',
+                                        transition: 'all 0.15s',
+                                    }}
+                                >
+                                    Graph
+                                </button>
                             </div>
                             <span
                                 style={{
@@ -444,7 +466,9 @@ const MemoryPanel: React.FC = () => {
                         role="list"
                         aria-label={t('memory.title')}
                     >
-                        {viewMode === 'cards' ? (
+                        {viewMode === 'graph' ? (
+                            <KnowledgeGraphView data={graphData} height={520} />
+                        ) : viewMode === 'cards' ? (
                             <AnimatePresence mode="popLayout">
                                 {isLoading || filteredMemories.length === 0 ? (
                                     <MemoryEmptyState

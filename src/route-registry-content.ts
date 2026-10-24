@@ -22,6 +22,13 @@ export const CONTENT_SECTIONS: NavSection[] = [
                 lazy: true,
                 experimental: true,
             },
+            {
+                id: 'architecture-map',
+                labelKey: 'nav.architecture_map',
+                icon: Icons.waypoints,
+                color: '#a855f7',
+                lazy: true,
+            },
         ],
     },
     {

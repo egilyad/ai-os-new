@@ -20,6 +20,7 @@ const nav: Record<string, string> = {
     'nav.section_wiki': 'Вики',
     'nav.wiki': 'Вики',
     'nav.wiki_brain': 'Вики-мозг',
+    'nav.architecture_map': 'Карта архитектуры',
     'nav.rivals_catalog': 'Проекты Rivals',
     'nav.group_chat': 'Групповой чат',
     'nav.guardrails': 'Ограничения',

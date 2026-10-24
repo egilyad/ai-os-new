@@ -26,6 +26,8 @@ import { PolicyService } from '../services/policy-service';
 import { ToolService } from '../services/tool-executor';
 import type { ToolPipeline } from '../services/tool-pipeline/tool-pipeline';
 import { MemoryService } from '../services/memory-engine';
+import { MemoryGraphService } from '../services/viz/memory-graph.service';
+import { ArchitectureGraphService } from '../services/viz/architecture-graph.service';
 import { ExternalSecretsService } from '../services/external-secrets-service';
 import { LocalSecretStore } from '../services/local-secret-store';
 import { BlackboardService } from '../services/blackboard-service';
@@ -142,6 +144,9 @@ export const registerPhase2: Phase = (helpers, ctx) => {
                 }),
             ),
     );
+
+    register('memoryGraphService', () => new MemoryGraphService());
+    register('architectureGraphService', () => new ArchitectureGraphService());
 
     register(
         'externalSecretsService',
