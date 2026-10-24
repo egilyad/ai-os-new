@@ -126,6 +126,31 @@ export function ensureAssistantWiring(): void {
                         snippet: r.snippet.slice(0, 120),
                     }));
                 },
+                putCuratedPage: async ({ slug, title, body }) => {
+                    const now = new Date().toISOString();
+                    await wikiBrainService.store.putPage({
+                        id: `pg-${crypto.randomUUID?.() ?? `${Date.now()}`}`,
+                        slug,
+                        frontmatter: {
+                            slug,
+                            title,
+                            type: 'curated',
+                            sources: [],
+                            aliases: [],
+                            tags: [],
+                            language: 'en',
+                            createdAt: now,
+                            updatedAt: now,
+                            reviewState: 'auto',
+                            graphIn: 0,
+                            graphOut: 0,
+                        },
+                        body,
+                        sha256: '',
+                        rawMarkdown: body,
+                    });
+                    return { slug };
+                },
             },
         });
         ensurePanelActionCatalog(panelActionRegistry);

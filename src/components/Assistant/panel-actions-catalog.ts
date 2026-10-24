@@ -116,6 +116,7 @@ export interface PanelActionExtrasServices {
         enqueueSource(input: { title: string; content: string }): Promise<{ sourceId: string; taskId: string }>;
         queueSummary(): Promise<{ pending: number; total: number }>;
         search(query: string): Promise<Array<{ slug: string; title: string; snippet: string }>>;
+        putCuratedPage(input: { slug: string; title: string; body: string }): Promise<{ slug: string }>;
     };
 }
 
@@ -2207,6 +2208,37 @@ export function panelActionDescriptors(): PanelActionDescriptor[] {
                     ok: true,
                     detail: `Queued "${title}" for ingest`,
                     evidence: `source: ${sourceId} | task: ${taskId}`,
+                    verification: 'verified',
+                };
+            },
+        },
+        {
+            panelId: 'wiki',
+            id: 'add-page',
+            title: 'Add a curated page',
+            description: 'Write a wiki page directly, without an LLM ingest.',
+            permission: 'tool:write',
+            parameters: {
+                type: 'object',
+                properties: {
+                    slug: { type: 'string', description: 'Unique kebab-case slug.' },
+                    title: { type: 'string', description: 'Page title.' },
+                    body: { type: 'string', description: 'Markdown body.' },
+                },
+                required: ['slug', 'title', 'body'],
+            },
+            run: async (args) => {
+                const slug = str(args['slug']);
+                const title = str(args['title']);
+                const body = str(args['body']);
+                if (!slug) return fail('slug is required');
+                if (!title) return fail('title is required');
+                if (!body) return fail('body is required');
+                const { slug: storedSlug } = await needExtras().wiki.putCuratedPage({ slug, title, body });
+                return {
+                    ok: true,
+                    detail: `Added wiki page "${title}"`,
+                    evidence: `slug: ${storedSlug}`,
                     verification: 'verified',
                 };
             },
