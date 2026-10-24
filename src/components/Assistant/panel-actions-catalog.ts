@@ -25,6 +25,7 @@ import {
     providerTracker,
     roleService,
     sessionManager,
+    settingsService,
     skillService,
     systemStatusService,
     workspaceService,
@@ -1776,6 +1777,75 @@ export function panelActionDescriptors(): PanelActionDescriptor[] {
                         .slice(0, 10)
                         .map((r) => `${r.name}: ${r.usageStats.assignedNodes.length} node(s), ${r.usageStats.totalCalls} calls`)
                         .join(' | '),
+                    verification: 'verified',
+                };
+            },
+        },
+
+        /* ------------------------------------------------------- settings */
+        {
+            panelId: 'settings',
+            id: 'current',
+            title: 'Current settings',
+            description: 'The active behaviour settings of the product.',
+            permission: 'tool:read',
+            parameters: { type: 'object', properties: {} },
+            run: async () => {
+                const s = settingsService.getSettings();
+                return {
+                    ok: true,
+                    detail: `mode: ${s.defaultMode}, theme: ${s.theme}, language: ${s.language}`,
+                    evidence: `streaming: ${s.streamingEnabled} | sla: ${s.slaMode} | notifications: ${s.notifications}`,
+                    verification: 'verified',
+                };
+            },
+        },
+        {
+            panelId: 'settings',
+            id: 'profiles',
+            title: 'Settings profiles',
+            description: 'Saved settings profiles.',
+            permission: 'tool:read',
+            parameters: { type: 'object', properties: {} },
+            run: async () => {
+                const profiles = settingsService.getProfiles();
+                if (profiles.length === 0) {
+                    return { ok: true, detail: 'no settings profiles', evidence: 'profiles: 0', verification: 'verified' };
+                }
+                return {
+                    ok: true,
+                    detail: `${profiles.length} profile(s)`,
+                    evidence: profiles.map((p) => `${p.id} ${p.name}`).join(' | '),
+                    verification: 'verified',
+                };
+            },
+        },
+        {
+            panelId: 'settings',
+            id: 'set-mode',
+            title: 'Set the default mode',
+            description: 'Switch the default mode and read it back.',
+            permission: 'tool:write',
+            parameters: {
+                type: 'object',
+                properties: {
+                    mode: { type: 'string', description: 'broadcast, single, or smart.' },
+                },
+                required: ['mode'],
+            },
+            run: async (args) => {
+                const mode = str(args['mode']);
+                const allowed = ['broadcast', 'single', 'smart'] as const;
+                const normalized = allowed.find((m) => m === mode);
+                if (!normalized) return fail(`unsupported mode "${mode}"`);
+                const before = settingsService.getSettings().defaultMode;
+                await settingsService.updateSettings({ defaultMode: normalized });
+                const after = settingsService.getSettings().defaultMode;
+                if (after !== normalized) return fail('mode did not change');
+                return {
+                    ok: true,
+                    detail: `Default mode is now ${after}`,
+                    evidence: `${before} → ${after}`,
                     verification: 'verified',
                 };
             },
