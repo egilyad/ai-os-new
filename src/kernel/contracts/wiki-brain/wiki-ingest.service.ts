@@ -1,4 +1,4 @@
-import type { TWikiSource, TWikiPage, TWikiLink, TWikiLogEntry } from './types';
+import type { TWikiSource, TWikiLink, TWikiLogEntry, TWikiPageFrontmatter } from './types';
 
 export interface IngestAnalyzeInput {
     source: TWikiSource;
@@ -23,7 +23,7 @@ export interface IngestGenerateInput {
 }
 
 export interface IngestGenerateOutput {
-    pages: Array<Omit<TWikiPage, 'id' | 'sha256'> & { sha256?: string }>;
+    pages: Array<{ frontmatter: TWikiPageFrontmatter; body: string }>;
     links: Array<Omit<TWikiLink, 'id'>>;
     logEntry: Omit<TWikiLogEntry, 'id' | 'ts'>;
     lintFlags: Array<{ rule: string; payload: unknown }>;
