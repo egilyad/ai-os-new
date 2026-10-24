@@ -124,6 +124,7 @@ describe('panel action catalog', () => {
             'wiki.add-page',
             'wiki.ingest-source',
             'wiki.lint-run',
+            'wiki.run-worker',
         ]);
 
         // The human-in-the-loop queue must never be resolvable by the assistant.
@@ -236,6 +237,7 @@ function fakeWiki(): PanelActionExtrasServices['wiki'] {
         queueSummary: async () => ({ pending: 0, total: 0 }),
         search: async () => [],
         putCuratedPage: async (input) => ({ slug: input.slug }),
+        runWorker: async () => undefined,
     };
 }
 

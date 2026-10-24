@@ -117,6 +117,7 @@ export interface PanelActionExtrasServices {
         queueSummary(): Promise<{ pending: number; total: number }>;
         search(query: string): Promise<Array<{ slug: string; title: string; snippet: string }>>;
         putCuratedPage(input: { slug: string; title: string; body: string }): Promise<{ slug: string }>;
+        runWorker(): Promise<void>;
     };
 }
 
@@ -2239,6 +2240,23 @@ export function panelActionDescriptors(): PanelActionDescriptor[] {
                     ok: true,
                     detail: `Added wiki page "${title}"`,
                     evidence: `slug: ${storedSlug}`,
+                    verification: 'verified',
+                };
+            },
+        },
+        {
+            panelId: 'wiki',
+            id: 'run-worker',
+            title: 'Run the ingest worker',
+            description: 'Process the sources waiting in the wiki ingest queue.',
+            permission: 'tool:write',
+            parameters: { type: 'object', properties: {} },
+            run: async () => {
+                await needExtras().wiki.runWorker();
+                return {
+                    ok: true,
+                    detail: 'ingest worker started',
+                    evidence: 'queue: processing',
                     verification: 'verified',
                 };
             },

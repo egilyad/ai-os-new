@@ -151,6 +151,9 @@ export function ensureAssistantWiring(): void {
                     });
                     return { slug };
                 },
+                runWorker: async () => {
+                    await wikiBrainService.ingest.startQueueWorker();
+                },
             },
         });
         ensurePanelActionCatalog(panelActionRegistry);
