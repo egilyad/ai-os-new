@@ -13,9 +13,11 @@
 import {
     agentJournalService,
     agentService,
+    diagnosticService,
     keyService,
     memoryOrchestrator,
     memoryService,
+    monitoringService,
     providerTracker,
     systemStatusService,
 } from '../../kernel/instances/services-core';
@@ -1120,6 +1122,106 @@ export function panelActionDescriptors(): PanelActionDescriptor[] {
                     ok: true,
                     detail: `Task "${before.title}" → ${updated.status}`,
                     evidence: `${id}: ${before.status} → ${updated.status}`,
+                    verification: 'verified',
+                };
+            },
+        },
+
+        /* ------------------------------------------------------ monitoring */
+        {
+            panelId: 'monitoring',
+            id: 'health',
+            title: 'System health',
+            description: 'The overall health score and the active issues behind it.',
+            permission: 'tool:read',
+            parameters: { type: 'object', properties: {} },
+            run: async () => {
+                const health = monitoringService.getSystemHealth();
+                return {
+                    ok: true,
+                    detail: `System health: ${health.status} (score ${health.score})`,
+                    evidence: `issues: ${health.issues.length} | ${health.issues.join(' | ')}`,
+                    verification: 'verified',
+                };
+            },
+        },
+        {
+            panelId: 'monitoring',
+            id: 'providers',
+            title: 'Provider health summary',
+            description: 'Per-provider reliability and latency as the monitoring layer sees it.',
+            permission: 'tool:read',
+            parameters: { type: 'object', properties: {} },
+            run: async () => {
+                const rows = monitoringService.getProviderHealthSummary();
+                if (rows.length === 0) {
+                    return { ok: true, detail: 'no provider metrics yet', evidence: 'providers: 0', verification: 'verified' };
+                }
+                return {
+                    ok: true,
+                    detail: `${rows.length} provider(s)`,
+                    evidence: rows
+                        .slice(0, 10)
+                        .map((p) => `${p.id} [${p.status}] ${Math.round(p.reliability * 100)}% reliable, avg ${Math.round(p.avgLatency)} ms`)
+                        .join(' | '),
+                    verification: 'verified',
+                };
+            },
+        },
+
+        /* ---------------------------------------------------- diagnostics */
+        {
+            panelId: 'diagnostics',
+            id: 'system',
+            title: 'System diagnostic',
+            description: 'The diagnostic service verdict: health, score and active issues.',
+            permission: 'tool:read',
+            parameters: { type: 'object', properties: {} },
+            run: async () => {
+                const diagnostic = diagnosticService.getSystemDiagnostic();
+                return {
+                    ok: true,
+                    detail: `Diagnostic: ${diagnostic.health} (score ${diagnostic.score})`,
+                    evidence: `issues: ${diagnostic.activeIssueCount} | sessions: ${diagnostic.sessionCount} | providers: ${diagnostic.providerCount}`,
+                    verification: 'verified',
+                };
+            },
+        },
+        {
+            panelId: 'diagnostics',
+            id: 'history',
+            title: 'Diagnostic history',
+            description: 'The latest diagnostic runs, newest first.',
+            permission: 'tool:read',
+            parameters: { type: 'object', properties: {} },
+            run: async () => {
+                const records = diagnosticService.getDiagnosticHistory(10);
+                if (records.length === 0) {
+                    return { ok: true, detail: 'no diagnostic runs yet', evidence: 'runs: 0', verification: 'verified' };
+                }
+                return {
+                    ok: true,
+                    detail: `${records.length} diagnostic run(s)`,
+                    evidence: records
+                        .map((r) => `${r.scope}: ${r.health} (score ${r.score}, ${r.issueCount} issues)`)
+                        .join(' | '),
+                    verification: 'verified',
+                };
+            },
+        },
+        {
+            panelId: 'diagnostics',
+            id: 'run',
+            title: 'Run a diagnostic',
+            description: 'Run a system diagnostic and report the fresh verdict.',
+            permission: 'tool:write',
+            parameters: { type: 'object', properties: {} },
+            run: async () => {
+                const record = await diagnosticService.runDiagnostic('system');
+                return {
+                    ok: true,
+                    detail: `Diagnostic run: ${record.health} (score ${record.score})`,
+                    evidence: `${record.scope} | issues: ${record.issueCount} | run: ${record.id}`,
                     verification: 'verified',
                 };
             },
