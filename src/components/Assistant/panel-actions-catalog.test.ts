@@ -54,6 +54,7 @@ describe('panel action catalog', () => {
         const panels = new Set(descriptors.map((d) => d.panelId));
         expect([...panels].sort()).toEqual([
             'agent-journal',
+            'agents',
             'approvals',
             'federated-memory',
             'knowledge',
@@ -61,6 +62,7 @@ describe('panel action catalog', () => {
             'memory-palace',
             'prompt-versions',
             'prompts',
+            'providers',
         ]);
 
         const writes = descriptors
@@ -69,6 +71,10 @@ describe('panel action catalog', () => {
             .sort();
         expect(writes).toEqual([
             'agent-journal.remove',
+            'agents.archive',
+            'agents.activate',
+            'agents.pause',
+            'agents.spawn',
             'federated-memory.disconnect',
             'federated-memory.sync',
             'knowledge.remove',

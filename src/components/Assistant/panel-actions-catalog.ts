@@ -12,8 +12,10 @@
  */
 import {
     agentJournalService,
+    agentService,
     memoryOrchestrator,
     memoryService,
+    providerTracker,
 } from '../../kernel/instances/services-core';
 import { agemsApprovalService } from '../../kernel/services/agems-approval-service';
 import type {
@@ -740,6 +742,203 @@ export function panelActionDescriptors(): PanelActionDescriptor[] {
                     ok: true,
                     detail: `Deleted "${before.name}" and its ${before.currentVersion} version(s)`,
                     evidence: `deleted: ${promptId}`,
+                    verification: 'verified',
+                };
+            },
+        },
+
+        /* ------------------------------------------------------------ agents */
+        {
+            panelId: 'agents',
+            id: 'list',
+            title: 'Agents in the topology',
+            description: 'Every agent and router node, with its role and lifecycle status.',
+            permission: 'tool:read',
+            parameters: { type: 'object', properties: {} },
+            run: async () => {
+                const agents = agentService.getAgents();
+                if (agents.length === 0) {
+                    return { ok: true, detail: 'no agents in the topology', evidence: 'agents: 0', verification: 'verified' };
+                }
+                return {
+                    ok: true,
+                    detail: `${agents.length} agent(s)`,
+                    evidence: agents
+                        .map((a) => `${a.id} ${a.name} (${a.role}) [${a.status}]`)
+                        .join(' | '),
+                    verification: 'verified',
+                };
+            },
+        },
+        {
+            panelId: 'agents',
+            id: 'pause',
+            title: 'Pause an agent',
+            description: 'Stop one agent node and read back the paused status.',
+            permission: 'tool:write',
+            parameters: {
+                type: 'object',
+                properties: { id: { type: 'string', description: 'Agent id.' } },
+                required: ['id'],
+            },
+            run: async (args) => {
+                const id = str(args['id']);
+                if (!id) return fail('id is required');
+                const before = agentService.getAgents().find((a) => a.id === id);
+                if (!before) return fail(`agent ${id} does not exist`);
+                agentService.pause(id);
+                const after = agentService.getAgents().find((a) => a.id === id);
+                if (after && after.status === 'paused') {
+                    return {
+                        ok: true,
+                        detail: `Paused ${before.name}`,
+                        evidence: `${id}: ${after.status}`,
+                        verification: 'verified',
+                    };
+                }
+                return fail(`agent ${id} is still ${after?.status ?? 'unknown'}`);
+            },
+        },
+        {
+            panelId: 'agents',
+            id: 'activate',
+            title: 'Activate an agent',
+            description: 'Resume one agent node and read back its lifecycle status.',
+            permission: 'tool:write',
+            parameters: {
+                type: 'object',
+                properties: { id: { type: 'string', description: 'Agent id.' } },
+                required: ['id'],
+            },
+            run: async (args) => {
+                const id = str(args['id']);
+                if (!id) return fail('id is required');
+                const before = agentService.getAgents().find((a) => a.id === id);
+                if (!before) return fail(`agent ${id} does not exist`);
+                agentService.activate(id);
+                const after = agentService.getAgents().find((a) => a.id === id);
+                if (after && after.status !== 'paused') {
+                    return {
+                        ok: true,
+                        detail: `Activated ${before.name}`,
+                        evidence: `${id}: ${after.status}`,
+                        verification: 'verified',
+                    };
+                }
+                return fail(`agent ${id} did not leave the paused state`);
+            },
+        },
+        {
+            panelId: 'agents',
+            id: 'archive',
+            title: 'Archive an agent',
+            description: 'Take one agent node out of service and read back its status.',
+            permission: 'tool:write',
+            parameters: {
+                type: 'object',
+                properties: { id: { type: 'string', description: 'Agent id.' } },
+                required: ['id'],
+            },
+            run: async (args) => {
+                const id = str(args['id']);
+                if (!id) return fail('id is required');
+                const before = agentService.getAgents().find((a) => a.id === id);
+                if (!before) return fail(`agent ${id} does not exist`);
+                agentService.archive(id);
+                const after = agentService.getAgents().find((a) => a.id === id);
+                if (after && after.status !== before.status && after.status !== 'paused') {
+                    return {
+                        ok: true,
+                        detail: `Archived ${before.name}`,
+                        evidence: `${id}: ${before.status} → ${after.status}`,
+                        verification: 'verified',
+                    };
+                }
+                return fail(`agent ${id} is still ${after?.status ?? 'unknown'}`);
+            },
+        },
+        {
+            panelId: 'agents',
+            id: 'spawn',
+            title: 'Spawn a child agent',
+            description: 'Create a child agent under a parent and read it back from the topology.',
+            permission: 'tool:write',
+            parameters: {
+                type: 'object',
+                properties: {
+                    parentId: { type: 'string', description: 'Parent agent id.' },
+                    name: { type: 'string', description: 'Name of the new agent.' },
+                },
+                required: ['parentId', 'name'],
+            },
+            run: async (args) => {
+                const parentId = str(args['parentId']);
+                const name = str(args['name']);
+                if (!parentId) return fail('parentId is required');
+                if (!name) return fail('name is required');
+                const before = agentService.getAgents().find((a) => a.id === parentId);
+                if (!before) return fail(`parent agent ${parentId} does not exist`);
+                const id = agentService.spawn(parentId, { name });
+                if (!id) return fail('the child agent was not created');
+                const created = agentService.getAgents().find((a) => a.id === id);
+                if (!created) return fail(`child agent ${id} was not stored`);
+                return {
+                    ok: true,
+                    detail: `Spawned "${created.name}" under ${before.name}`,
+                    evidence: `${id} | child of ${parentId}`,
+                    verification: 'verified',
+                };
+            },
+        },
+
+        /* ------------------------------------------------------- providers */
+        {
+            panelId: 'providers',
+            id: 'rankings',
+            title: 'Provider rankings',
+            description: 'Providers scored by reliability and latency, with a recommendation.',
+            permission: 'tool:read',
+            parameters: { type: 'object', properties: {} },
+            run: async () => {
+                const rankings = providerTracker.getProviderRankings();
+                if (rankings.length === 0) {
+                    return { ok: true, detail: 'no provider activity yet', evidence: 'providers: 0', verification: 'verified' };
+                }
+                return {
+                    ok: true,
+                    detail: `${rankings.length} provider(s)`,
+                    evidence: rankings
+                        .slice(0, 10)
+                        .map((r) => `${r.provider} score ${r.score.toFixed(2)} [${r.recommendation}]`)
+                        .join(' | '),
+                    verification: 'verified',
+                };
+            },
+        },
+        {
+            panelId: 'providers',
+            id: 'health',
+            title: 'Provider health events',
+            description: 'Recent health events per provider, newest first.',
+            permission: 'tool:read',
+            parameters: {
+                type: 'object',
+                properties: {
+                    provider: { type: 'string', description: 'Provider id (optional).' },
+                },
+            },
+            run: async (args) => {
+                const provider = str(args['provider']) || undefined;
+                const events = providerTracker.getHealthEvents(provider, 20);
+                if (events.length === 0) {
+                    return { ok: true, detail: 'no health events recorded', evidence: 'events: 0', verification: 'verified' };
+                }
+                return {
+                    ok: true,
+                    detail: `${events.length} health event(s)`,
+                    evidence: events
+                        .map((e) => `${e.provider}: ${e.type}`)
+                        .join(' | '),
                     verification: 'verified',
                 };
             },
