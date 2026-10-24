@@ -757,6 +757,67 @@ export function createAssistantActions(deps: AssistantActionDeps): AssistantActi
     });
 
     actions.push({
+        id: 'system.nightly',
+        group: 'work',
+        description:
+            'A nightly self-analysis: look back at the diary, propose a rule if the same mistake repeated, and record the outcome. One gated write, run it at the end of a working day.',
+        parameters: { type: 'object', properties: {} },
+        action: 'tool:write',
+        run: async () => {
+            if (!deps.diary) return fail('diary service is not available');
+            const byKind = (kind: string): Array<{ kind: string; text: string; evidence?: string; tags?: string[] }> =>
+                deps.diary!.byKind
+                    ? deps.diary!.byKind(kind, 50)
+                    : deps.diary!.recent(50).filter((e) => e.kind === kind);
+            const mistakes = byKind('mistake');
+            const lessons = byKind('lesson');
+            const ignore = new Set(['assistant', 'diary', 'mistake']);
+            const counts = new Map<string, number>();
+            for (const entry of mistakes) {
+                for (const tag of entry.tags ?? []) {
+                    const key = tag.trim().toLowerCase();
+                    if (!key || ignore.has(key)) continue;
+                    counts.set(key, (counts.get(key) ?? 0) + 1);
+                }
+            }
+            const repeated = [...counts.entries()]
+                .filter(([, n]) => n >= 2)
+                .sort((a, b) => b[1] - a[1])[0];
+            if (repeated) {
+                const [tag, occurrences] = repeated;
+                const latest = mistakes.find((m) => (m.tags ?? []).includes(tag));
+                const lesson = lessons.find((l) => (l.tags ?? []).includes(tag));
+                const rule = lesson
+                    ? `${lesson.text.trim()} (applies to: ${tag})`
+                    : `Before touching ${tag}, re-check the result: ${latest?.text.trim() ?? ''}`;
+                const saved = await deps.diary.write({
+                    kind: 'decision',
+                    text: `Nightly proposal: ${rule}`,
+                    evidence: `${occurrences} mistake(s) tagged "${tag}"`,
+                    tags: ['proposal', 'improvement', tag],
+                });
+                return {
+                    ok: true,
+                    detail: `Proposed a rule for "${tag}" after ${occurrences} mistake(s)`,
+                    evidence: `proposal: ${rule} | diary: ${saved.id}`,
+                    verification: 'verified',
+                };
+            }
+            const saved = await deps.diary.write({
+                kind: 'action',
+                text: 'Nightly self-analysis: no repeated mistake pattern.',
+                tags: ['nightly'],
+            });
+            return {
+                ok: true,
+                detail: 'Nightly self-analysis done: nothing to improve',
+                evidence: `mistakes: ${mistakes.length} | lessons: ${lessons.length} | diary: ${saved.id}`,
+                verification: 'verified',
+            };
+        },
+    });
+
+    actions.push({
         id: 'memory.search',        group: 'research',
         description:
             'Search the long-term memory of the system (decisions, lessons, earlier research, user facts).',
