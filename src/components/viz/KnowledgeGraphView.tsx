@@ -1,7 +1,15 @@
-import React, { useEffect, useRef } from 'react';
-import { Network } from 'vis-network';
-import 'vis-network/styles/vis-network.css';
-import { stableHash } from '../../kernel/utils/hash';
+import { useMemo } from 'react';
+import {
+    ReactFlow,
+    Background,
+    Controls,
+    Handle,
+    Position,
+    MarkerType,
+} from '@xyflow/react';
+import type { Edge, Node, NodeProps, EdgeProps } from '@xyflow/react';
+import '@xyflow/react/dist/style.css';
+import { stableHash, hashHue } from '../../kernel/utils/hash';
 
 export interface GraphViewNode {
     id: string;
@@ -22,6 +30,9 @@ export interface GraphViewData {
     nodes: GraphViewNode[];
     edges: GraphViewEdge[];
 }
+
+type KnowledgeNodeData = { label: string; type?: string; degree?: number };
+type KnowledgeNodeType = Node<KnowledgeNodeData>;
 
 const NODE_COLORS: Record<string, string> = {
     user: '#22d3ee',
@@ -45,52 +56,150 @@ const NODE_COLORS: Record<string, string> = {
     service: '#94a3b8',
 };
 
-function buildOptions() {
-    const groups: Record<string, { color: { background: string; border: string; highlight: { background: string; border: string } } }> = {};
-    for (const type of Object.keys(NODE_COLORS)) {
-        const background = NODE_COLORS[type]!;
-        groups[type] = {
-            color: {
-                background,
-                border: '#0f172a',
-                highlight: { background, border: '#ffffff' },
-            },
-        };
-    }
-    return {
-        autoResize: true,
-        nodes: {
-            shape: 'dot' as const,
-            borderWidth: 1,
-            font: { color: '#cbd5e1', size: 12 },
-            shadow: { enabled: true, color: 'rgba(0,0,0,0.45)', size: 12, x: 0, y: 0 },
-        },
-        edges: {
-            color: { color: 'rgba(148,163,184,0.35)', highlight: '#22d3ee' },
-            width: 1,
-            selectionWidth: 2,
-        },
-        groups,
-        physics: {
-            enabled: true,
-            barnesHut: {
-                gravitationalConstant: -3000,
-                centralGravity: 0.3,
-                springLength: 120,
-                springConstant: 0.04,
-                damping: 0.09,
-            },
-        },
-        interaction: { hover: true, tooltipDelay: 80 },
-    };
+function colorFor(type?: string): string {
+    if (type && NODE_COLORS[type]) return NODE_COLORS[type]!;
+    return `hsl(${hashHue(type ?? 'unknown')}, 72%, 55%)`;
 }
 
-function escapeHtml(text: string): string {
-    return text
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;');
+function nodeDiameter(degree: number): number {
+    return Math.min(64, 20 + degree * 2);
+}
+
+function KnowledgeNode({ data }: NodeProps<KnowledgeNodeType>) {
+    const degree = data.degree ?? 0;
+    const d = nodeDiameter(degree);
+    const bg = colorFor(data.type);
+    return (
+        <div
+            title={`${data.type ?? ''} · links: ${degree}\n${data.label}`}
+            style={{
+                width: d,
+                height: d,
+                borderRadius: '50%',
+                background: bg,
+                border: '2px solid rgba(255, 255, 255, 0.35)',
+                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.35)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                position: 'relative',
+            }}
+        >
+            <Handle type="target" position={Position.Left} style={{ opacity: 0 }} />
+            <Handle type="source" position={Position.Right} style={{ opacity: 0 }} />
+            <span
+                style={{
+                    fontSize: Math.max(8, d / 5),
+                    color: '#0f172a',
+                    fontWeight: 700,
+                    textAlign: 'center',
+                    lineHeight: 1.05,
+                    padding: 2,
+                    overflow: 'hidden',
+                    wordBreak: 'break-word',
+                }}
+            >
+                {data.label}
+            </span>
+        </div>
+    );
+}
+
+function CurvyEdge({
+    sourceX,
+    sourceY,
+    targetX,
+    targetY,
+    style,
+    markerEnd,
+}: EdgeProps) {
+    const dx = targetX - sourceX;
+    const dy = targetY - sourceY;
+    const len = Math.hypot(dx, dy) || 1;
+    const bend = Math.min(80, len * 0.18);
+    const mx = (sourceX + targetX) / 2 + (-dy / len) * bend;
+    const my = (sourceY + targetY) / 2 + (dx / len) * bend;
+    const path = `M ${sourceX},${sourceY} Q ${mx},${my} ${targetX},${targetY}`;
+    return <path d={path} fill="none" style={style} markerEnd={markerEnd} />;
+}
+
+const nodeTypes = { knowledge: KnowledgeNode };
+const edgeTypes = { curvy: CurvyEdge };
+
+function computeLayout(
+    nodes: GraphViewNode[],
+    _edges: GraphViewEdge[],
+    _degree: Map<string, number>,
+): Map<string, { x: number; y: number }> {
+    const groups = new Map<string, string[]>();
+    for (const n of nodes) {
+        const type = n.type ?? 'knowledge';
+        const list = groups.get(type) ?? [];
+        list.push(n.id);
+        groups.set(type, list);
+    }
+
+    const types = [...groups.keys()].sort();
+    const nTypes = types.length || 1;
+    const outerR = 340;
+    const pos = new Map<string, { x: number; y: number }>();
+
+    types.forEach((type, ti) => {
+        const ids = groups.get(type)!;
+        const centerAngle = (ti / nTypes) * 2 * Math.PI;
+        const cx = Math.cos(centerAngle) * outerR;
+        const cy = Math.sin(centerAngle) * outerR;
+        const innerR = 44 + ids.length * 6;
+        ids.forEach((id, k) => {
+            const a = (k / ids.length) * 2 * Math.PI + stableHash(id) * 0.4;
+            pos.set(id, { x: cx + Math.cos(a) * innerR, y: cy + Math.sin(a) * innerR });
+        });
+    });
+
+    const unplaced = nodes.filter((n) => !pos.has(n.id));
+    unplaced.forEach((n, i) => {
+        pos.set(n.id, { x: (i % 20) * 60, y: Math.floor(i / 20) * 60 });
+    });
+
+    return pos;
+}
+
+function buildNodesEdges(data: GraphViewData): { nodes: KnowledgeNodeType[]; edges: Edge[] } {
+    const degree = new Map<string, number>();
+    const bump = (id: string) => degree.set(id, (degree.get(id) ?? 0) + 1);
+    for (const e of data.edges) {
+        bump(e.source);
+        bump(e.target);
+    }
+
+    const positions = computeLayout(data.nodes, data.edges, degree);
+
+    const nodes: KnowledgeNodeType[] = data.nodes.map((n) => {
+        const p = positions.get(n.id) ?? { x: 0, y: 0 };
+        return {
+            id: n.id,
+            type: 'knowledge',
+            position: p,
+            data: {
+                label: n.label,
+                type: n.type ?? 'knowledge',
+                degree: degree.get(n.id) ?? 0,
+            },
+        };
+    });
+
+    const edges: Edge[] = data.edges.map((e, i) => ({
+        id: `e-${i}`,
+        source: e.source,
+        target: e.target,
+        type: 'curvy',
+        style: {
+            stroke: 'rgba(148, 163, 184, 0.5)',
+            strokeWidth: Math.max(1, Math.min(3, e.weight ?? 1)),
+        },
+    }));
+
+    return { nodes, edges };
 }
 
 export function KnowledgeGraphView({
@@ -100,43 +209,27 @@ export function KnowledgeGraphView({
     data: GraphViewData;
     height?: number;
 }) {
-    const containerRef = useRef<HTMLDivElement>(null);
+    const { nodes, edges } = useMemo(() => buildNodesEdges(data), [data]);
 
-    useEffect(() => {
-        const container = containerRef.current;
-        if (!container) return;
-
-        const nodes = data.nodes.map((node) => {
-            const angle = 2 * Math.PI * stableHash(node.id);
-            const radius = 110 + stableHash(`${node.id}:r`) * 200;
-            const degree = node.degree ?? 0;
-            const type = node.type ?? 'knowledge';
-            return {
-                id: node.id,
-                label: node.label,
-                group: type,
-                value: Math.max(1, degree),
-                size: 10 + Math.min(22, degree * 2),
-                title: `${type} · links: ${degree}<br/>${escapeHtml(node.label)}`,
-                x: Math.cos(angle) * radius,
-                y: Math.sin(angle) * radius,
-            };
-        });
-        const edges = data.edges.map((edge, index) => ({
-            from: edge.source,
-            to: edge.target,
-            title: edge.kind,
-            width: Math.max(0.5, edge.weight ?? 1),
-            smooth: {
-                enabled: true,
-                type: 'continuous' as const,
-                roundness: 0.1 + stableHash(`${edge.source}|${edge.target}|${index}`) * 0.5,
-            },
-        }));
-
-        const network = new Network(container, { nodes, edges }, buildOptions());
-        return () => network.destroy();
-    }, [data]);
-
-    return <div ref={containerRef} style={{ height, width: '100%' }} />;
+    return (
+        <div style={{ height, width: '100%' }}>
+            <ReactFlow
+                nodes={nodes}
+                edges={edges}
+                nodeTypes={nodeTypes}
+                edgeTypes={edgeTypes}
+                fitView
+                minZoom={0.08}
+                maxZoom={2.5}
+                proOptions={{ hideAttribution: true }}
+                defaultEdgeOptions={{
+                    type: 'curvy',
+                    markerEnd: { type: MarkerType.ArrowClosed, width: 14, height: 14 },
+                }}
+            >
+                <Background color="rgba(148, 163, 184, 0.14)" gap={24} />
+                <Controls showInteractive={false} />
+            </ReactFlow>
+        </div>
+    );
 }

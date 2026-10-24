@@ -229,6 +229,7 @@ for (const list of bySection.values()) list.sort((x, y) => x.title.localeCompare
 function navHtml(activeSlug) {
     const parts = ['<nav class="nav"><a class="home" href="./index.html">Wiki SuperAgents OS</a>'];
     parts.push('<a class="agent-link" href="./manifest.json">manifest.json · данные для агентов</a>');
+    parts.push('<a class="arch-link" href="./architecture-graph.html">Карта архитектуры (интерактивная)</a>');
     for (const [section, list] of bySection) {
         if (!list.length) continue;
         parts.push(`<div class="nav-section"><div class="nav-title">${escHtml(section)}</div><ul>`);
@@ -242,7 +243,7 @@ function navHtml(activeSlug) {
     return parts.join('');
 }
 
-function page({ title, contentHtml, activeSlug, metaHtml = '' }) {
+function page({ title, contentHtml, activeSlug, metaHtml = '', extraHead = '', bodyAppend = '' }) {
     return `<!doctype html>
 <html lang="ru">
 <head>
@@ -250,6 +251,7 @@ function page({ title, contentHtml, activeSlug, metaHtml = '' }) {
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${escHtml(title)} — Wiki SuperAgents OS</title>
 <link rel="stylesheet" href="./assets/style.css">
+${extraHead}
 </head>
 <body>
 <header class="topbar">
@@ -264,6 +266,7 @@ function page({ title, contentHtml, activeSlug, metaHtml = '' }) {
   <aside class="sidebar" id="sidebar">${navHtml(activeSlug)}</aside>
   <main class="content">${contentHtml}${metaHtml}</main>
 </div>
+${bodyAppend}
 <script type="module">
 import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
 mermaid.initialize({ startOnLoad: true, theme: 'neutral' });
@@ -340,6 +343,121 @@ if (existsSync(manifestSrc)) {
     console.warn('  ! docs/manifest.json missing — run `npm run gen:wiki-manifest`');
 }
 
+const graphSrc = resolve(root, 'docs/graph.json');
+if (existsSync(graphSrc)) {
+    copyFileSync(graphSrc, resolve(outDir, 'graph.json'));
+    console.log('  + graph.json');
+} else {
+    console.warn('  ! docs/graph.json missing — run `npm run gen:docs-graph`');
+}
+
+// ---- interactive architecture graph page (React Flow via CDN) ----
+const ARCH_HEAD = `<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@xyflow/react@12/dist/style.min.css">
+<script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@19.2.0",
+    "react-dom": "https://esm.sh/react-dom@19.2.0",
+    "@xyflow/react": "https://esm.sh/@xyflow/react@12.10.2"
+  }
+}
+</script>`;
+
+const ARCH_CONTENT = `<h1>Карта архитектуры</h1>
+<p class="arch-intro">Интерактивный граф связей компонентов (статьи Wiki и панели приложения). <strong>Размер узла</strong> пропорционален числу связей, <strong>цвет</strong> — типу компонента, рёбра изогнуты. Перетаскивайте узлы, листайте колесом для масштаба.</p>
+<div id="arch-graph" class="graph-wrap" role="img" aria-label="Интерактивная карта архитектуры"></div>
+<p class="graph-note">Источник данных: <a href="./graph.json">graph.json</a>; для наглядности показаны статьи и панели со связями <code>related</code>/<code>documents</code>. Полный граф ядра — в панели «Карта архитектуры» приложения.</p>`;
+
+writeFileSync(
+    resolve(outDir, 'architecture-graph.html'),
+    page({
+        title: 'Карта архитектуры',
+        contentHtml: ARCH_CONTENT,
+        activeSlug: '__arch__',
+        extraHead: ARCH_HEAD,
+        bodyAppend: '<script type="module" src="./assets/architecture-graph.js"></script>',
+    }),
+    'utf8',
+);
+
+const ARCH_JS = `import React from 'react';
+import { createRoot } from 'react-dom/client';
+import { ReactFlow, Background, Controls, Handle, Position, MarkerType } from '@xyflow/react';
+
+const NODE_COLORS = {
+  article: '#60a5fa',
+  panel: '#34d399',
+  audit: '#facc15',
+  code: '#94a3b8',
+  test: '#a78bfa'
+};
+function hash(s) { let h = 2166136261; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619) >>> 0; } return h / 4294967296; }
+function colorFor(t) { return NODE_COLORS[t] || 'hsl(' + Math.floor(hash(t || 'unknown') * 360) + ',72%,55%)'; }
+
+function NodeView({ data }) {
+  const d = Math.min(64, 20 + (data.degree || 0) * 2);
+  const bg = colorFor(data.type);
+  return React.createElement('div', {
+    style: { width: d, height: d, borderRadius: '50%', background: bg, border: '2px solid rgba(255,255,255,.35)', boxShadow: '0 4px 12px rgba(0,0,0,.35)', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' },
+    title: data.type + ' · links ' + (data.degree || 0) + '\\n' + data.label
+  },
+    React.createElement(Handle, { type: 'target', position: Position.Left, style: { opacity: 0 } }),
+    React.createElement(Handle, { type: 'source', position: Position.Right, style: { opacity: 0 } }),
+    React.createElement('span', { style: { fontSize: Math.max(8, d / 5), color: '#0f172a', fontWeight: 700, textAlign: 'center', lineHeight: '1.05', padding: 2, overflow: 'hidden', wordBreak: 'break-word' } }, data.label)
+  );
+}
+
+function CurvyEdge({ sourceX, sourceY, targetX, targetY, style, markerEnd }) {
+  const dx = targetX - sourceX, dy = targetY - sourceY;
+  const len = Math.hypot(dx, dy) || 1;
+  const bend = Math.min(80, len * 0.18);
+  const mx = (sourceX + targetX) / 2 + (-dy / len) * bend;
+  const my = (sourceY + targetY) / 2 + (dx / len) * bend;
+  return React.createElement('path', { d: 'M ' + sourceX + ',' + sourceY + ' Q ' + mx + ',' + my + ' ' + targetX + ',' + targetY, fill: 'none', style: style, markerEnd: markerEnd });
+}
+
+function layout(nodes, edges, degree) {
+  const groups = {};
+  for (const n of nodes) { (groups[n.type] = groups[n.type] || []).push(n.id); }
+  const types = Object.keys(groups).sort();
+  const outerR = 360;
+  const pos = {};
+  types.forEach((type, ti) => {
+    const ids = groups[type];
+    const ca = (ti / types.length) * 2 * Math.PI;
+    const cx = Math.cos(ca) * outerR, cy = Math.sin(ca) * outerR;
+    const ir = 44 + ids.length * 6;
+    ids.forEach((id, k) => { const a = (k / ids.length) * 2 * Math.PI + hash(id) * 0.4; pos[id] = { x: cx + Math.cos(a) * ir, y: cy + Math.sin(a) * ir }; });
+  });
+  return pos;
+}
+
+async function main() {
+  const el = document.getElementById('arch-graph');
+  if (!el) return;
+  let g;
+  try { g = await (await fetch('./graph.json')).json(); }
+  catch (e) { el.textContent = 'Не удалось загрузить graph.json'; return; }
+  const wanted = new Set(['article', 'panel']);
+  const nodes = g.nodes.filter((n) => wanted.has(n.type));
+  const ids = new Set(nodes.map((n) => n.id));
+  const edges = g.edges.filter((e) => ids.has(e.from) && ids.has(e.to) && (e.kind === 'related' || e.kind === 'documents'));
+  const degree = {};
+  edges.forEach((e) => { degree[e.from] = (degree[e.from] || 0) + 1; degree[e.to] = (degree[e.to] || 0) + 1; });
+  const positions = layout(nodes, edges, degree);
+  const flowNodes = nodes.map((n) => ({ id: n.id, type: 'knowledge', position: positions[n.id] || { x: 0, y: 0 }, data: { label: n.label, type: n.type, degree: degree[n.id] || 0 } }));
+  const flowEdges = edges.map((e, i) => ({ id: 'e-' + i, source: e.from, target: e.to, type: 'curvy', style: { stroke: 'rgba(148,163,184,.5)', strokeWidth: 1 } }));
+  createRoot(el).render(
+    React.createElement(ReactFlow, { nodes: flowNodes, edges: flowEdges, nodeTypes: { knowledge: NodeView }, edgeTypes: { curvy: CurvyEdge }, fitView: true, minZoom: 0.08, maxZoom: 2.5, proOptions: { hideAttribution: true }, defaultEdgeOptions: { type: 'curvy', markerEnd: { type: MarkerType.ArrowClosed, width: 14, height: 14 } } },
+      React.createElement(Background, { color: 'rgba(148,163,184,.14)', gap: 24 }),
+      React.createElement(Controls, { showInteractive: false })
+    )
+  );
+}
+main();
+`;
+writeFileSync(resolve(outDir, 'assets/architecture-graph.js'), ARCH_JS, 'utf8');
+
 // ---- inert files ----
 writeFileSync(resolve(outDir, '.nojekyll'), '', 'utf8');
 
@@ -381,7 +499,14 @@ a:hover{text-decoration:underline}
 .content .meta-links h2{font-size:16px;border:0;margin-top:1.2em}
 .content .meta-links ul{margin:.3em 0 1em;padding-left:1.2em}
 .content .meta-links .sec{color:var(--muted);font-size:12px}
+.arch-intro{color:var(--muted);font-size:14px;margin-bottom:12px}
+.nav .arch-link{display:block;font-size:12px;font-weight:600;color:var(--accent);margin:-4px 0 10px}
+.graph-wrap{height:560px;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fbfcfe;position:relative}
+.graph-wrap .react-flow__node{cursor:grab}
+.graph-wrap .react-flow__node:active{cursor:grabbing}
+.graph-note{color:var(--muted);font-size:13px;margin-top:10px}
 @media(max-width:860px){
+.graph-wrap{height:420px}
 .sidebar{position:fixed;left:0;top:57px;bottom:0;width:280px;transform:translateX(-100%);transition:transform .2s;z-index:15;border-right:1px solid var(--line)}
 .sidebar.open{transform:none}
 .menu-toggle{display:block}
