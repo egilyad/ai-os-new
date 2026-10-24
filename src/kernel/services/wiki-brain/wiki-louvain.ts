@@ -25,8 +25,8 @@ export function buildLouvainGraph(
     let totalWeight = 0;
     for (const [a, b, w] of edges) {
         if (a === b) continue;
-        adj[a].set(b, (adj[a].get(b) ?? 0) + w);
-        adj[b].set(a, (adj[b].get(a) ?? 0) + w);
+        adj[a]!.set(b, (adj[a]!.get(b) ?? 0) + w);
+        adj[b]!.set(a, (adj[b]!.get(a) ?? 0) + w);
         totalWeight += w;
     }
     return { adj, size, totalWeight };
@@ -42,31 +42,31 @@ export function louvainCommunities(graph: LouvainGraph): number[] {
 
     const degree: number[] = new Array(size).fill(0);
     for (let i = 0; i < size; i++) {
-        for (const w of adj[i].values()) degree[i] += w;
+        for (const w of adj[i]!.values()) degree[i] = (degree[i] ?? 0) + w;
     }
 
     const community = Array.from({ length: size }, (_, i) => i);
     const tot = new Map<number, number>();
-    for (let i = 0; i < size; i++) tot.set(i, degree[i]);
+    for (let i = 0; i < size; i++) tot.set(i, degree[i]!);
 
     const twoM2 = 2 * totalWeight * totalWeight;
     let improved = true;
     while (improved) {
         improved = false;
         for (let i = 0; i < size; i++) {
-            const current = community[i];
-            tot.set(current, (tot.get(current) ?? 0) - degree[i]);
+            const current = community[i]!;
+            tot.set(current, (tot.get(current) ?? 0) - degree[i]!);
 
             let best = current;
             let bestGain = 0;
             const candidates = new Map<number, number>();
-            for (const [v, w] of adj[i]) {
-                const cv = community[v];
+            for (const [v, w] of adj[i]!) {
+                const cv = community[v]!;
                 candidates.set(cv, (candidates.get(cv) ?? 0) + w);
             }
             for (const [c, kiin] of candidates) {
                 const totC = tot.get(c) ?? 0;
-                const gain = kiin / totalWeight - (totC * degree[i]) / twoM2;
+                const gain = kiin / totalWeight - (totC * degree[i]!) / twoM2;
                 if (gain > bestGain) {
                     bestGain = gain;
                     best = c;
@@ -75,10 +75,10 @@ export function louvainCommunities(graph: LouvainGraph): number[] {
 
             if (best !== current) {
                 community[i] = best;
-                tot.set(best, (tot.get(best) ?? 0) + degree[i]);
+                tot.set(best, (tot.get(best) ?? 0) + degree[i]!);
                 improved = true;
             } else {
-                tot.set(current, (tot.get(current) ?? 0) + degree[i]);
+                tot.set(current, (tot.get(current) ?? 0) + degree[i]!);
             }
         }
     }
@@ -106,13 +106,15 @@ export function communityEdgeBalance(
         return b;
     };
     for (let i = 0; i < graph.size; i++) {
-        for (const [j, w] of graph.adj[i]) {
+        for (const [j, w] of graph.adj[i]!) {
             if (j < i) continue; // undirected — count once
-            if (community[i] === community[j]) {
-                getBucket(community[i]).internal += w;
+            const ci = community[i]!;
+            const cj = community[j]!;
+            if (ci === cj) {
+                getBucket(ci).internal += w;
             } else {
-                getBucket(community[i]).external += w;
-                getBucket(community[j]).external += w;
+                getBucket(ci).external += w;
+                getBucket(cj).external += w;
             }
         }
     }

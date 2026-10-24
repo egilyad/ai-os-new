@@ -127,6 +127,7 @@ export class MemoryGraphService implements IMemoryGraphService {
                         comparisons += 1;
                         const a = tokenized[i];
                         const b = tokenized[j];
+                        if (!a || !b) continue;
                         const sim = jaccard(a.tokens, b.tokens);
                         if (sim >= TEXT_SIMILARITY_THRESHOLD) {
                             addEdge(a.entry.id, b.entry.id, 'text', Number(sim.toFixed(3)));

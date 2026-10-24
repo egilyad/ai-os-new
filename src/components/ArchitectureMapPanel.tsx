@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { getContainer } from '../kernel/service-helper';
 import { architectureGraphService } from '../kernel/instances';
 import { useTranslation } from '../i18n/useTranslation';

@@ -83,7 +83,7 @@ export class WikiGraphService implements IWikiGraphService {
             buckets.set(label, list);
         });
         const common = new Map<number, string>();
-        for (let i = 0; i < pages.length; i++) common.set(i, pages[i].slug);
+        for (let i = 0; i < pages.length; i++) common.set(i, pages[i]!.slug);
 
         const communities: WikiCommunity[] = [];
         for (const [label, members] of buckets) {
