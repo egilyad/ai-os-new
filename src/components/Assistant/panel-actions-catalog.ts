@@ -2191,6 +2191,32 @@ export function panelActionDescriptors(): PanelActionDescriptor[] {
                 };
             },
         },
+
+        /* --------------------------------------------- agents (extras) */
+        {
+            panelId: 'agents',
+            id: 'detail',
+            title: 'One agent in detail',
+            description: 'The resolved identity of one agent: role, model and provider.',
+            permission: 'tool:read',
+            parameters: {
+                type: 'object',
+                properties: { id: { type: 'string', description: 'Agent id.' } },
+                required: ['id'],
+            },
+            run: async (args) => {
+                const id = str(args['id']);
+                if (!id) return fail('id is required');
+                const agent = agentService.resolveAgent(id);
+                if (!agent) return fail(`agent ${id} does not exist`);
+                return {
+                    ok: true,
+                    detail: `${agent.name} (${agent.role})`,
+                    evidence: `model: ${agent.model || 'auto'} | provider: ${agent.provider || 'auto'}`,
+                    verification: 'verified',
+                };
+            },
+        },
     ];
 }
 
