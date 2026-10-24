@@ -23,8 +23,12 @@ import {
 import {
     auditService,
     crewService,
+    crystalVault,
     federatedMemoryService,
     hierarchyService,
+    junctionEngine,
+    lensEngine,
+    metaAgentService,
     promptLibraryService,
     promptVersionService,
     researchRunService,
@@ -199,6 +203,57 @@ export function ensureAssistantWiring(): void {
                         agentId: g.agentId,
                         pattern: g.pattern,
                         allow: g.allow,
+                    }));
+                },
+            },
+            crystal: {
+                list: async () => {
+                    const crystals = await crystalVault.list();
+                    return crystals.map((c) => ({
+                        id: c.crystalId,
+                        status: c.status,
+                        domain: c.applicableDomain,
+                        confidence: c.confidence,
+                    }));
+                },
+                search: async (query) => {
+                    const hits = await crystalVault.search(query);
+                    return hits.map((h) => ({
+                        id: h.crystalId,
+                        domain: h.applicableDomain,
+                        confidence: h.confidence,
+                    }));
+                },
+            },
+            junction: {
+                list: async () => {
+                    const junctions = await junctionEngine.list();
+                    return junctions.map((j) => ({
+                        id: j.id,
+                        status: j.status,
+                        synthesisType: j.synthesisType,
+                        content: j.content,
+                    }));
+                },
+            },
+            lens: {
+                list: async () => {
+                    const lenses = lensEngine.listLenses();
+                    return lenses.map((l) => ({
+                        id: l.id,
+                        name: l.name,
+                        category: l.category,
+                    }));
+                },
+            },
+            meta: {
+                proposals: async () => {
+                    const proposals = await metaAgentService.listProposals();
+                    return proposals.map((p) => ({
+                        id: p.id,
+                        kind: p.kind,
+                        target: p.target,
+                        status: p.status,
                     }));
                 },
             },

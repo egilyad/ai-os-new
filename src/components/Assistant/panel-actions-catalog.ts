@@ -129,6 +129,19 @@ export interface PanelActionExtrasServices {
         servers(): Promise<Array<{ id: string; name: string; url: string; enabled: boolean }>>;
         grants(): Promise<Array<{ agentId: string; pattern: string; allow: boolean }>>;
     };
+    crystal: {
+        list(): Promise<Array<{ id: string; status: string; domain: string; confidence: number }>>;
+        search(query: string): Promise<Array<{ id: string; domain: string; confidence: number }>>;
+    };
+    junction: {
+        list(): Promise<Array<{ id: string; status: string; synthesisType: string; content: string }>>;
+    };
+    lens: {
+        list(): Promise<Array<{ id: string; name: string; category: string }>>;
+    };
+    meta: {
+        proposals(): Promise<Array<{ id: string; kind: string; target: string; status: string }>>;
+    };
 }
 
 let extrasServices: PanelActionExtrasServices | null = null;
@@ -2202,6 +2215,132 @@ export function panelActionDescriptors(): PanelActionDescriptor[] {
                     evidence: grants
                         .slice(0, 10)
                         .map((g) => `${g.agentId} ${g.allow ? '→' : 'blocked'} ${g.pattern}`)
+                        .join(' | '),
+                    verification: 'verified',
+                };
+            },
+        },
+
+        /* -------------------------------------------------------- crystal */
+        {
+            panelId: 'crystal',
+            id: 'list',
+            title: 'Knowledge crystals',
+            description: 'Crystallized knowledge claims and their validation status.',
+            permission: 'tool:read',
+            parameters: { type: 'object', properties: {} },
+            run: async () => {
+                const crystals = await needExtras().crystal.list();
+                if (crystals.length === 0) {
+                    return { ok: true, detail: 'no crystals', evidence: 'crystals: 0', verification: 'verified' };
+                }
+                return {
+                    ok: true,
+                    detail: `${crystals.length} crystal(s)`,
+                    evidence: crystals
+                        .slice(0, 10)
+                        .map((c) => `${c.id} [${c.status}] ${c.domain} conf ${c.confidence.toFixed(2)}`)
+                        .join(' | '),
+                    verification: 'verified',
+                };
+            },
+        },
+        {
+            panelId: 'crystal',
+            id: 'search',
+            title: 'Search crystals',
+            description: 'Find knowledge crystals about a topic.',
+            permission: 'tool:read',
+            parameters: {
+                type: 'object',
+                properties: { query: { type: 'string', description: 'Search text.' } },
+                required: ['query'],
+            },
+            run: async (args) => {
+                const query = str(args['query']);
+                if (!query) return fail('query is required');
+                const hits = await needExtras().crystal.search(query);
+                if (hits.length === 0) {
+                    return { ok: true, detail: `no crystals match "${query}"`, evidence: 'hits: 0', verification: 'verified' };
+                }
+                return {
+                    ok: true,
+                    detail: `${hits.length} crystal(s)`,
+                    evidence: hits.map((h) => `${h.id} (${h.domain}, conf ${h.confidence.toFixed(2)})`).join(' | '),
+                    verification: 'verified',
+                };
+            },
+        },
+
+        /* ------------------------------------------------------- junction */
+        {
+            panelId: 'junction',
+            id: 'list',
+            title: 'Junctions',
+            description: 'Detected synthesis junctions between sources.',
+            permission: 'tool:read',
+            parameters: { type: 'object', properties: {} },
+            run: async () => {
+                const junctions = await needExtras().junction.list();
+                if (junctions.length === 0) {
+                    return { ok: true, detail: 'no junctions', evidence: 'junctions: 0', verification: 'verified' };
+                }
+                return {
+                    ok: true,
+                    detail: `${junctions.length} junction(s)`,
+                    evidence: junctions
+                        .slice(0, 10)
+                        .map((j) => `${j.id} [${j.status}] ${j.synthesisType}: ${snippet(j.content, 60)}`)
+                        .join(' | '),
+                    verification: 'verified',
+                };
+            },
+        },
+
+        /* ---------------------------------------------------------- lens */
+        {
+            panelId: 'lens',
+            id: 'list',
+            title: 'Lenses',
+            description: 'Cognitive lenses available for transforming context.',
+            permission: 'tool:read',
+            parameters: { type: 'object', properties: {} },
+            run: async () => {
+                const lenses = await needExtras().lens.list();
+                if (lenses.length === 0) {
+                    return { ok: true, detail: 'no lenses', evidence: 'lenses: 0', verification: 'verified' };
+                }
+                return {
+                    ok: true,
+                    detail: `${lenses.length} lens(es)`,
+                    evidence: lenses
+                        .slice(0, 10)
+                        .map((l) => `${l.id} ${l.name} [${l.category}]`)
+                        .join(' | '),
+                    verification: 'verified',
+                };
+            },
+        },
+
+        /* -------------------------------------------------- meta-agents */
+        {
+            panelId: 'meta-agents',
+            id: 'proposals',
+            title: 'Improvement proposals',
+            description: 'Proposals the meta-agent layer has distilled for the system.',
+            permission: 'tool:read',
+            parameters: { type: 'object', properties: {} },
+            run: async () => {
+                const proposals = await needExtras().meta.proposals();
+                if (proposals.length === 0) {
+                    return { ok: true, detail: 'no improvement proposals', evidence: 'proposals: 0', verification: 'verified' };
+                }
+                return {
+                    ok: true,
+                    detail: `${proposals.length} proposal(s)`,
+                    evidence: proposals
+                        .slice(0, 10)
+                        .map((p) => `${p.id} ${p.kind} → ${p.target} [${p.status}]`)
                         .join(' | '),
                     verification: 'verified',
                 };
