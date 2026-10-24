@@ -56,6 +56,7 @@ describe('panel action catalog', () => {
             'agent-journal',
             'agents',
             'approvals',
+            'debates',
             'diagnostics',
             'federated-memory',
             'knowledge',
@@ -71,6 +72,7 @@ describe('panel action catalog', () => {
             'skills',
             'system',
             'tasks',
+            'workspace',
         ]);
 
         const writes = descriptors

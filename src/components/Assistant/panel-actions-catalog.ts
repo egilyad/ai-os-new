@@ -13,6 +13,7 @@
 import {
     agentJournalService,
     agentService,
+    debateService,
     diagnosticService,
     keyService,
     mcpService,
@@ -23,6 +24,7 @@ import {
     sessionManager,
     skillService,
     systemStatusService,
+    workspaceService,
 } from '../../kernel/instances/services-core';
 import { agemsApprovalService } from '../../kernel/services/agems-approval-service';
 import { agemsTaskService } from '../../kernel/services/agems-task-service';
@@ -1507,6 +1509,78 @@ export function panelActionDescriptors(): PanelActionDescriptor[] {
                     };
                 }
                 return fail(`session ${id} was not archived`);
+            },
+        },
+
+        /* -------------------------------------------------------- debates */
+        {
+            panelId: 'debates',
+            id: 'status',
+            title: 'Debate engine',
+            description: 'Whether the debate engine is running and which debate is active.',
+            permission: 'tool:read',
+            parameters: { type: 'object', properties: {} },
+            run: async () => {
+                const running = debateService.isEngineActive();
+                const active = debateService.getActiveDebateSession();
+                if (!active) {
+                    return {
+                        ok: true,
+                        detail: running ? 'debate engine is active' : 'no debate is running',
+                        evidence: 'active: none',
+                        verification: 'verified',
+                    };
+                }
+                return {
+                    ok: true,
+                    detail: `Debate "${active.topic}" — ${active.status}`,
+                    evidence: `id: ${active.id} | round ${active.currentRound}/${active.maxRounds} | participants ${active.participants.length}`,
+                    verification: 'verified',
+                };
+            },
+        },
+
+        /* ------------------------------------------------------ workspace */
+        {
+            panelId: 'workspace',
+            id: 'status',
+            title: 'Workspace attachment',
+            description: 'Whether a directory is attached and what it is called.',
+            permission: 'tool:read',
+            parameters: { type: 'object', properties: {} },
+            run: async () => {
+                const attached = workspaceService.isAttached();
+                const name = workspaceService.getWorkspaceName();
+                const root = workspaceService.getRootDirName();
+                return {
+                    ok: true,
+                    detail: attached ? `attached ${name ? `to "${name}"` : ''}` : 'no workspace attached',
+                    evidence: `root: ${root ?? 'none'}`,
+                    verification: 'verified',
+                };
+            },
+        },
+        {
+            panelId: 'workspace',
+            id: 'tree',
+            title: 'Workspace tree',
+            description: 'The top-level entries of the attached workspace.',
+            permission: 'tool:read',
+            parameters: { type: 'object', properties: {} },
+            run: async () => {
+                const tree = await workspaceService.listTree();
+                if (tree.length === 0) {
+                    return { ok: true, detail: 'the workspace is empty', evidence: 'entries: 0', verification: 'verified' };
+                }
+                return {
+                    ok: true,
+                    detail: `${tree.length} top-level entr(y|ies)`,
+                    evidence: tree
+                        .slice(0, 10)
+                        .map((n) => `${n.name} [${n.type}]`)
+                        .join(' | '),
+                    verification: 'verified',
+                };
             },
         },
     ];
