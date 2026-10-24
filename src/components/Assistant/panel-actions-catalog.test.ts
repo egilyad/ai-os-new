@@ -233,6 +233,7 @@ function fakeWiki(): PanelActionExtrasServices['wiki'] {
         runLint: async () => 0,
         enqueueSource: async () => ({ sourceId: 'src-x', taskId: 'task-x' }),
         queueSummary: async () => ({ pending: 0, total: 0 }),
+        search: async () => [],
     };
 }
 

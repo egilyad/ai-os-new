@@ -115,6 +115,7 @@ export interface PanelActionExtrasServices {
         runLint(): Promise<number>;
         enqueueSource(input: { title: string; content: string }): Promise<{ sourceId: string; taskId: string }>;
         queueSummary(): Promise<{ pending: number; total: number }>;
+        search(query: string): Promise<Array<{ slug: string; title: string; snippet: string }>>;
     };
 }
 
@@ -2152,6 +2153,32 @@ export function panelActionDescriptors(): PanelActionDescriptor[] {
                     ok: true,
                     detail: `${queue.pending} pending of ${queue.total} task(s)`,
                     evidence: `pending: ${queue.pending}`,
+                    verification: 'verified',
+                };
+            },
+        },
+        {
+            panelId: 'wiki',
+            id: 'search',
+            title: 'Search the wiki',
+            description: 'Find compiled wiki pages about a topic.',
+            permission: 'tool:read',
+            parameters: {
+                type: 'object',
+                properties: { query: { type: 'string', description: 'Search text.' } },
+                required: ['query'],
+            },
+            run: async (args) => {
+                const query = str(args['query']);
+                if (!query) return fail('query is required');
+                const hits = await needExtras().wiki.search(query);
+                if (hits.length === 0) {
+                    return { ok: true, detail: `nothing in the wiki matches "${query}"`, evidence: 'hits: 0', verification: 'verified' };
+                }
+                return {
+                    ok: true,
+                    detail: `${hits.length} page(s)`,
+                    evidence: hits.map((h) => `${h.slug} ${h.title} — ${h.snippet}`).join(' | '),
                     verification: 'verified',
                 };
             },

@@ -118,6 +118,14 @@ export function ensureAssistantWiring(): void {
                     const pending = all.filter((t) => t.status === 'pending').length;
                     return { pending, total: all.length };
                 },
+                search: async (query) => {
+                    const results = await wikiBrainService.query.search(query, { topK: 5 });
+                    return results.map((r) => ({
+                        slug: r.page.slug,
+                        title: r.page.frontmatter.title,
+                        snippet: r.snippet.slice(0, 120),
+                    }));
+                },
             },
         });
         ensurePanelActionCatalog(panelActionRegistry);
