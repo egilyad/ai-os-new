@@ -20,8 +20,10 @@ import {
     memoryOrchestrator,
     memoryService,
     monitoringService,
+    policyService,
     projectKnowledgeService,
     providerTracker,
+    roleService,
     sessionManager,
     skillService,
     systemStatusService,
@@ -1657,6 +1659,123 @@ export function panelActionDescriptors(): PanelActionDescriptor[] {
                     ok: true,
                     detail: `${stats.panels} panel(s), ${stats.articles} article(s)`,
                     evidence: `with article: ${stats.withArticle} | with tests: ${stats.withTests}`,
+                    verification: 'verified',
+                };
+            },
+        },
+
+        /* ------------------------------------------------------ policies */
+        {
+            panelId: 'policies',
+            id: 'list',
+            title: 'Policies',
+            description: 'The active latency, privacy, cost and safety policies.',
+            permission: 'tool:read',
+            parameters: { type: 'object', properties: {} },
+            run: async () => {
+                const policies = policyService.getPolicies();
+                if (policies.length === 0) {
+                    return { ok: true, detail: 'no policies', evidence: 'policies: 0', verification: 'verified' };
+                }
+                return {
+                    ok: true,
+                    detail: `${policies.length} polic(y|ies)`,
+                    evidence: policies
+                        .slice(0, 10)
+                        .map((p) => `${p.id} ${p.type} [${p.action}] on ${p.target_nodes.length} node(s)`)
+                        .join(' | '),
+                    verification: 'verified',
+                };
+            },
+        },
+        {
+            panelId: 'policies',
+            id: 'violations',
+            title: 'Policy violations',
+            description: 'Violations of the policies, active and resolved.',
+            permission: 'tool:read',
+            parameters: { type: 'object', properties: {} },
+            run: async () => {
+                const violations = policyService.getViolations();
+                if (violations.length === 0) {
+                    return { ok: true, detail: 'no violations', evidence: 'violations: 0', verification: 'verified' };
+                }
+                return {
+                    ok: true,
+                    detail: `${violations.length} violation(s)`,
+                    evidence: violations
+                        .slice(0, 10)
+                        .map((v) => `${v.nodeId}: ${v.detail} [${v.severity}]`)
+                        .join(' | '),
+                    verification: 'verified',
+                };
+            },
+        },
+        {
+            panelId: 'policies',
+            id: 'agent-policies',
+            title: 'Agent policies',
+            description: 'Per-agent policy overrides.',
+            permission: 'tool:read',
+            parameters: { type: 'object', properties: {} },
+            run: async () => {
+                const agentPolicies = policyService.getAllAgentPolicies();
+                const ids = Object.keys(agentPolicies);
+                if (ids.length === 0) {
+                    return { ok: true, detail: 'no agent policy overrides', evidence: 'agents: 0', verification: 'verified' };
+                }
+                return {
+                    ok: true,
+                    detail: `${ids.length} agent polic(y|ies)`,
+                    evidence: ids.slice(0, 10).map((id) => id).join(' | '),
+                    verification: 'verified',
+                };
+            },
+        },
+
+        /* ----------------------------------------------------------- roles */
+        {
+            panelId: 'roles',
+            id: 'list',
+            title: 'Roles',
+            description: 'The agent roles and their capability breadth.',
+            permission: 'tool:read',
+            parameters: { type: 'object', properties: {} },
+            run: async () => {
+                const roles = roleService.getAllRoles();
+                if (roles.length === 0) {
+                    return { ok: true, detail: 'no roles', evidence: 'roles: 0', verification: 'verified' };
+                }
+                return {
+                    ok: true,
+                    detail: `${roles.length} role(s)`,
+                    evidence: roles
+                        .slice(0, 10)
+                        .map((r) => `${r.id} ${r.name} (${r.capabilities.length} capab., ${r.permissions.length} perm.)`)
+                        .join(' | '),
+                    verification: 'verified',
+                };
+            },
+        },
+        {
+            panelId: 'roles',
+            id: 'stats',
+            title: 'Role usage',
+            description: 'How much each role is used and how many nodes are assigned.',
+            permission: 'tool:read',
+            parameters: { type: 'object', properties: {} },
+            run: async () => {
+                const rows = roleService.getRolesWithStats();
+                if (rows.length === 0) {
+                    return { ok: true, detail: 'no role stats', evidence: 'roles: 0', verification: 'verified' };
+                }
+                return {
+                    ok: true,
+                    detail: `${rows.length} role(s) with stats`,
+                    evidence: rows
+                        .slice(0, 10)
+                        .map((r) => `${r.name}: ${r.usageStats.assignedNodes.length} node(s), ${r.usageStats.totalCalls} calls`)
+                        .join(' | '),
                     verification: 'verified',
                 };
             },
