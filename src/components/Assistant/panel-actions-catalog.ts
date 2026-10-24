@@ -2140,6 +2140,57 @@ export function panelActionDescriptors(): PanelActionDescriptor[] {
                 };
             },
         },
+
+        /* -------------------------------------------- workspace (extras) */
+        {
+            panelId: 'workspace',
+            id: 'read',
+            title: 'Read a workspace file',
+            description: 'Read one file from the attached workspace.',
+            permission: 'tool:read',
+            parameters: {
+                type: 'object',
+                properties: { path: { type: 'string', description: 'File path.' } },
+                required: ['path'],
+            },
+            run: async (args) => {
+                const path = str(args['path']);
+                if (!path) return fail('path is required');
+                const content = await workspaceService.readFile(path);
+                return {
+                    ok: true,
+                    detail: `Read ${path}`,
+                    evidence: snippet(content),
+                    verification: 'verified',
+                };
+            },
+        },
+        {
+            panelId: 'workspace',
+            id: 'search',
+            title: 'Search the workspace',
+            description: 'Find files in the workspace by name pattern.',
+            permission: 'tool:read',
+            parameters: {
+                type: 'object',
+                properties: { pattern: { type: 'string', description: 'Glob or path fragment.' } },
+                required: ['pattern'],
+            },
+            run: async (args) => {
+                const pattern = str(args['pattern']);
+                if (!pattern) return fail('pattern is required');
+                const matches = await workspaceService.search(pattern);
+                if (matches.length === 0) {
+                    return { ok: true, detail: 'no matches', evidence: 'matches: 0', verification: 'verified' };
+                }
+                return {
+                    ok: true,
+                    detail: `${matches.length} match(es)`,
+                    evidence: matches.slice(0, 10).join(' | '),
+                    verification: 'verified',
+                };
+            },
+        },
     ];
 }
 
