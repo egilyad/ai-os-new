@@ -119,6 +119,16 @@ export interface PanelActionExtrasServices {
         putCuratedPage(input: { slug: string; title: string; body: string }): Promise<{ slug: string }>;
         runWorker(): Promise<{ pending: number; total: number }>;
     };
+    crews: {
+        list(): Promise<Array<{ id: string; name: string; status: string; process: string }>>;
+    };
+    hierarchy: {
+        tree(): Promise<Array<{ id: string; name: string; parentId?: string | null; budgetCap?: number }>>;
+    };
+    governance: {
+        servers(): Promise<Array<{ id: string; name: string; url: string; enabled: boolean }>>;
+        grants(): Promise<Array<{ agentId: string; pattern: string; allow: boolean }>>;
+    };
 }
 
 let extrasServices: PanelActionExtrasServices | null = null;
@@ -2101,6 +2111,98 @@ export function panelActionDescriptors(): PanelActionDescriptor[] {
                     ok: true,
                     detail: `${stats.pages} page(s), ${stats.sources} source(s)`,
                     evidence: `compiled from raw sources`,
+                    verification: 'verified',
+                };
+            },
+        },
+
+        /* ----------------------------------------------------------- crews */
+        {
+            panelId: 'crews',
+            id: 'list',
+            title: 'Agent crews',
+            description: 'The agent crews (working groups) and their status.',
+            permission: 'tool:read',
+            parameters: { type: 'object', properties: {} },
+            run: async () => {
+                const crews = await needExtras().crews.list();
+                if (crews.length === 0) {
+                    return { ok: true, detail: 'no crews', evidence: 'crews: 0', verification: 'verified' };
+                }
+                return {
+                    ok: true,
+                    detail: `${crews.length} crew(s)`,
+                    evidence: crews.map((c) => `${c.id} ${c.name} [${c.process}:${c.status}]`).join(' | '),
+                    verification: 'verified',
+                };
+            },
+        },
+
+        /* ------------------------------------------------------ hierarchy */
+        {
+            panelId: 'hierarchy',
+            id: 'tree',
+            title: 'Hierarchy tree',
+            description: 'The executive hierarchy: nodes, parents and budget caps.',
+            permission: 'tool:read',
+            parameters: { type: 'object', properties: {} },
+            run: async () => {
+                const nodes = await needExtras().hierarchy.tree();
+                if (nodes.length === 0) {
+                    return { ok: true, detail: 'no hierarchy nodes', evidence: 'nodes: 0', verification: 'verified' };
+                }
+                return {
+                    ok: true,
+                    detail: `${nodes.length} node(s)`,
+                    evidence: nodes
+                        .slice(0, 10)
+                        .map((n) => `${n.id} ${n.name}${n.parentId ? ` under ${n.parentId}` : ''}${n.budgetCap ? ` cap ${n.budgetCap}` : ''}`)
+                        .join(' | '),
+                    verification: 'verified',
+                };
+            },
+        },
+
+        /* ----------------------------------------------------- governance */
+        {
+            panelId: 'governance',
+            id: 'servers',
+            title: 'Tool governance servers',
+            description: 'MCP servers registered in the tool governance layer.',
+            permission: 'tool:read',
+            parameters: { type: 'object', properties: {} },
+            run: async () => {
+                const servers = await needExtras().governance.servers();
+                if (servers.length === 0) {
+                    return { ok: true, detail: 'no governance servers', evidence: 'servers: 0', verification: 'verified' };
+                }
+                return {
+                    ok: true,
+                    detail: `${servers.length} server(s)`,
+                    evidence: servers.map((s) => `${s.id} ${s.name} [${s.enabled ? 'enabled' : 'disabled'}] ${s.url}`).join(' | '),
+                    verification: 'verified',
+                };
+            },
+        },
+        {
+            panelId: 'governance',
+            id: 'grants',
+            title: 'Tool grants',
+            description: 'Which agents may call which server tools (or are denied).',
+            permission: 'tool:read',
+            parameters: { type: 'object', properties: {} },
+            run: async () => {
+                const grants = await needExtras().governance.grants();
+                if (grants.length === 0) {
+                    return { ok: true, detail: 'no tool grants', evidence: 'grants: 0', verification: 'verified' };
+                }
+                return {
+                    ok: true,
+                    detail: `${grants.length} grant(s)`,
+                    evidence: grants
+                        .slice(0, 10)
+                        .map((g) => `${g.agentId} ${g.allow ? '→' : 'blocked'} ${g.pattern}`)
+                        .join(' | '),
                     verification: 'verified',
                 };
             },

@@ -22,10 +22,13 @@ import {
 } from './panel-actions-catalog';
 import {
     auditService,
+    crewService,
     federatedMemoryService,
+    hierarchyService,
     promptLibraryService,
     promptVersionService,
     researchRunService,
+    toolGovernanceService,
     wikiBrainService,
 } from '../../kernel/instances/services-extras';
 
@@ -156,6 +159,47 @@ export function ensureAssistantWiring(): void {
                     const all = await wikiBrainService.store.listQueue();
                     const pending = all.filter((t) => t.status === 'pending').length;
                     return { pending, total: all.length };
+                },
+            },
+            crews: {
+                list: async () => {
+                    const crews = await crewService.listCrews();
+                    return crews.map((c) => ({
+                        id: c.id,
+                        name: c.name,
+                        status: c.status,
+                        process: c.process,
+                    }));
+                },
+            },
+            hierarchy: {
+                tree: async () => {
+                    const nodes = await hierarchyService.tree();
+                    return nodes.map((n) => ({
+                        id: n.id,
+                        name: n.name,
+                        parentId: n.parentId,
+                        budgetCap: n.budgetCap,
+                    }));
+                },
+            },
+            governance: {
+                servers: async () => {
+                    const servers = await toolGovernanceService.listServers();
+                    return servers.map((s) => ({
+                        id: s.id,
+                        name: s.name,
+                        url: s.url,
+                        enabled: s.enabled,
+                    }));
+                },
+                grants: async () => {
+                    const grants = await toolGovernanceService.listGrants();
+                    return grants.map((g) => ({
+                        agentId: g.agentId,
+                        pattern: g.pattern,
+                        allow: g.allow,
+                    }));
                 },
             },
         });

@@ -57,9 +57,12 @@ describe('panel action catalog', () => {
             'agents',
             'approvals',
             'audit',
+            'crews',
             'debates',
             'diagnostics',
             'federated-memory',
+            'governance',
+            'hierarchy',
             'knowledge',
             'keys',
             'mcp',
@@ -241,6 +244,18 @@ function fakeWiki(): PanelActionExtrasServices['wiki'] {
     };
 }
 
+function fakeCrews(): PanelActionExtrasServices['crews'] {
+    return { list: async () => [] };
+}
+
+function fakeHierarchy(): PanelActionExtrasServices['hierarchy'] {
+    return { tree: async () => [] };
+}
+
+function fakeGovernance(): PanelActionExtrasServices['governance'] {
+    return { servers: async () => [], grants: async () => [] };
+}
+
 describe('panel action catalog — memory and knowledge extras', () => {
     afterEach(() => setPanelActionExtrasServices(null));
 
@@ -257,9 +272,13 @@ describe('panel action catalog — memory and knowledge extras', () => {
             federated: fakeFederated([]),
             prompts,
             promptVersions: fakeVersions(),
-                        audit: fakeAudit(),
-                        research: fakeResearch(),
-            wiki: fakeWiki(),        });
+            audit: fakeAudit(),
+            research: fakeResearch(),
+            wiki: fakeWiki(),
+            crews: fakeCrews(),
+            hierarchy: fakeHierarchy(),
+            governance: fakeGovernance(),
+        });
 
         const result = await descriptor('prompts', 'create').run({
             title: 'Triage the queue',
@@ -278,9 +297,13 @@ describe('panel action catalog — memory and knowledge extras', () => {
             federated: fakeFederated([]),
             prompts: fakePrompts(true),
             promptVersions: fakeVersions(),
-                        audit: fakeAudit(),
-                        research: fakeResearch(),
-            wiki: fakeWiki(),        });
+            audit: fakeAudit(),
+            research: fakeResearch(),
+            wiki: fakeWiki(),
+            crews: fakeCrews(),
+            hierarchy: fakeHierarchy(),
+            governance: fakeGovernance(),
+        });
 
         const result = await descriptor('prompts', 'remove').run({ id: 'built-in' });
 
@@ -297,9 +320,13 @@ describe('panel action catalog — memory and knowledge extras', () => {
             federated,
             prompts: fakePrompts(),
             promptVersions: fakeVersions(),
-                        audit: fakeAudit(),
-                        research: fakeResearch(),
-            wiki: fakeWiki(),        });
+            audit: fakeAudit(),
+            research: fakeResearch(),
+            wiki: fakeWiki(),
+            crews: fakeCrews(),
+            hierarchy: fakeHierarchy(),
+            governance: fakeGovernance(),
+        });
 
         const result = await descriptor('federated-memory', 'disconnect').run({ id: 'north' });
 
@@ -312,9 +339,13 @@ describe('panel action catalog — memory and knowledge extras', () => {
             federated: fakeFederated([{ id: 'north', name: 'North' }], ['failed']),
             prompts: fakePrompts(),
             promptVersions: fakeVersions(),
-                        audit: fakeAudit(),
-                        research: fakeResearch(),
-            wiki: fakeWiki(),        });
+            audit: fakeAudit(),
+            research: fakeResearch(),
+            wiki: fakeWiki(),
+            crews: fakeCrews(),
+            hierarchy: fakeHierarchy(),
+            governance: fakeGovernance(),
+        });
 
         const result = await descriptor('federated-memory', 'sync').run({});
 
@@ -329,9 +360,13 @@ describe('panel action catalog — memory and knowledge extras', () => {
             federated: fakeFederated([]),
             prompts: fakePrompts(),
             promptVersions,
-                        audit: fakeAudit(),
-                        research: fakeResearch(),
-            wiki: fakeWiki(),        });
+            audit: fakeAudit(),
+            research: fakeResearch(),
+            wiki: fakeWiki(),
+            crews: fakeCrews(),
+            hierarchy: fakeHierarchy(),
+            governance: fakeGovernance(),
+        });
 
         const result = await descriptor('prompt-versions', 'save').run({
             promptId: 'guard',
