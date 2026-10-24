@@ -77,6 +77,7 @@ describe('panel action catalog', () => {
             'skills',
             'system',
             'tasks',
+            'trust',
             'workspace',
         ]);
 

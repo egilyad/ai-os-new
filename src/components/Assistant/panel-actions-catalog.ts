@@ -13,6 +13,7 @@
 import {
     agentJournalService,
     agentService,
+    capabilityTrustService,
     debateService,
     diagnosticService,
     keyService,
@@ -1881,6 +1882,73 @@ export function panelActionDescriptors(): PanelActionDescriptor[] {
                     detail: `${entries.length} audit entr(y|ies)`,
                     evidence: entries
                         .map((e) => `${e.actor} ${e.action}${e.target ? ` → ${e.target}` : ''}`)
+                        .join(' | '),
+                    verification: 'verified',
+                };
+            },
+        },
+
+        /* --------------------------------------------------------- trust */
+        {
+            panelId: 'trust',
+            id: 'ledger',
+            title: 'Trust ledger',
+            description: 'What the assistant believes it can do, and how far it trusts each capability.',
+            permission: 'tool:read',
+            parameters: { type: 'object', properties: {} },
+            run: async () => {
+                const records = capabilityTrustService.list();
+                if (records.length === 0) {
+                    return { ok: true, detail: 'trust ledger is empty', evidence: 'capabilities: 0', verification: 'verified' };
+                }
+                return {
+                    ok: true,
+                    detail: `${records.length} capabilit(y|ies)`,
+                    evidence: records
+                        .slice(0, 10)
+                        .map((c) => `${c.id} ${c.title} [${c.trust}]${c.stale ? ' (stale)' : ''}`)
+                        .join(' | '),
+                    verification: 'verified',
+                };
+            },
+        },
+        {
+            panelId: 'trust',
+            id: 'stats',
+            title: 'Trust summary',
+            description: 'How many capabilities are declared, discovered or verified.',
+            permission: 'tool:read',
+            parameters: { type: 'object', properties: {} },
+            run: async () => {
+                const stats = capabilityTrustService.stats();
+                return {
+                    ok: true,
+                    detail: `${stats.total} capabilit(y|ies): ${stats.verified} verified`,
+                    evidence: `declared: ${stats.declared} | discovered: ${stats.discovered} | verified: ${stats.verified} | stale: ${stats.stale}`,
+                    verification: 'verified',
+                };
+            },
+        },
+
+        /* -------------------------------------------- providers (extras) */
+        {
+            panelId: 'providers',
+            id: 'suggestions',
+            title: 'Provider suggestions',
+            description: 'Providers the assistant suggests installing, with a reason.',
+            permission: 'tool:read',
+            parameters: { type: 'object', properties: {} },
+            run: async () => {
+                const suggestions = providerTracker.getCollaborativeSuggestions();
+                if (suggestions.length === 0) {
+                    return { ok: true, detail: 'no provider suggestions', evidence: 'suggestions: 0', verification: 'verified' };
+                }
+                return {
+                    ok: true,
+                    detail: `${suggestions.length} suggestion(s)`,
+                    evidence: suggestions
+                        .slice(0, 10)
+                        .map((s) => `${s.provider}: ${s.reason}`)
                         .join(' | '),
                     verification: 'verified',
                 };
