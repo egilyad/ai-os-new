@@ -1,4 +1,4 @@
-import type { TWikiSource, TWikiLink, TWikiLogEntry, TWikiPageFrontmatter } from './types';
+import type { TWikiSource, TWikiPage, TWikiLink, TWikiLogEntry, TWikiPageFrontmatter } from './types';
 
 export interface IngestAnalyzeInput {
     source: TWikiSource;

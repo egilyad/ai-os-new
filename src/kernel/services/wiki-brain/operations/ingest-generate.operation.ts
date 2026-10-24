@@ -17,6 +17,7 @@ const OUTPUT_SCHEMA = z.object({
             toSlug: z.string(),
             context: z.string().optional(),
             kind: z.enum(['wikilink', 'mention', 'citation']).default('wikilink'),
+            weight: z.number().min(0).max(1).default(1),
         }),
     ),
     logEntry: z.object({
