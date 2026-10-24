@@ -20,6 +20,7 @@ import {
     memoryService,
     monitoringService,
     providerTracker,
+    sessionManager,
     skillService,
     systemStatusService,
 } from '../../kernel/instances/services-core';
@@ -1391,6 +1392,121 @@ export function panelActionDescriptors(): PanelActionDescriptor[] {
                     };
                 }
                 return fail(`server ${serverId} did not disconnect (${after?.status ?? 'unknown'})`);
+            },
+        },
+
+        /* -------------------------------------------------------- sessions */
+        {
+            panelId: 'sessions',
+            id: 'list',
+            title: 'Sessions',
+            description: 'The saved chat and debate sessions with their status.',
+            permission: 'tool:read',
+            parameters: { type: 'object', properties: {} },
+            run: async () => {
+                const sessions = await sessionManager.list({});
+                if (sessions.length === 0) {
+                    return { ok: true, detail: 'no sessions', evidence: 'sessions: 0', verification: 'verified' };
+                }
+                return {
+                    ok: true,
+                    detail: `${sessions.length} session(s)`,
+                    evidence: sessions
+                        .slice(0, 10)
+                        .map((s) => `${s.id} ${s.title} [${s.type}:${s.status}]`)
+                        .join(' | '),
+                    verification: 'verified',
+                };
+            },
+        },
+        {
+            panelId: 'sessions',
+            id: 'pause',
+            title: 'Pause a session',
+            description: 'Pause one session and read the new status back.',
+            permission: 'tool:write',
+            parameters: {
+                type: 'object',
+                properties: { id: { type: 'string', description: 'Session id.' } },
+                required: ['id'],
+            },
+            run: async (args) => {
+                const id = str(args['id']);
+                if (!id) return fail('id is required');
+                const all = await sessionManager.list({});
+                const before = all.find((s) => s.id === id);
+                if (!before) return fail(`session ${id} does not exist`);
+                await sessionManager.pause(id);
+                const after = (await sessionManager.list({})).find((s) => s.id === id);
+                if (after && after.status === 'paused') {
+                    return {
+                        ok: true,
+                        detail: `Paused "${before.title}"`,
+                        evidence: `${id}: ${before.status} → ${after.status}`,
+                        verification: 'verified',
+                    };
+                }
+                return fail(`session ${id} did not pause (${after?.status ?? 'unknown'})`);
+            },
+        },
+        {
+            panelId: 'sessions',
+            id: 'resume',
+            title: 'Resume a session',
+            description: 'Resume a paused session and read the new status back.',
+            permission: 'tool:write',
+            parameters: {
+                type: 'object',
+                properties: { id: { type: 'string', description: 'Session id.' } },
+                required: ['id'],
+            },
+            run: async (args) => {
+                const id = str(args['id']);
+                if (!id) return fail('id is required');
+                const all = await sessionManager.list({});
+                const before = all.find((s) => s.id === id);
+                if (!before) return fail(`session ${id} does not exist`);
+                await sessionManager.resume(id);
+                const after = (await sessionManager.list({})).find((s) => s.id === id);
+                if (after && after.status === 'active') {
+                    return {
+                        ok: true,
+                        detail: `Resumed "${before.title}"`,
+                        evidence: `${id}: ${before.status} → ${after.status}`,
+                        verification: 'verified',
+                    };
+                }
+                return fail(`session ${id} did not resume (${after?.status ?? 'unknown'})`);
+            },
+        },
+        {
+            panelId: 'sessions',
+            id: 'archive',
+            title: 'Archive a session',
+            description: 'Archive one session and read the archived flag back.',
+            permission: 'tool:write',
+            parameters: {
+                type: 'object',
+                properties: { id: { type: 'string', description: 'Session id.' } },
+                required: ['id'],
+            },
+            run: async (args) => {
+                const id = str(args['id']);
+                if (!id) return fail('id is required');
+                const all = await sessionManager.list({});
+                const before = all.find((s) => s.id === id);
+                if (!before) return fail(`session ${id} does not exist`);
+                await sessionManager.archive(id);
+                const after = (await sessionManager.list({})).find((s) => s.id === id);
+                if (after && after.isArchived) {
+                    return {
+                        ok: true,
+                        detail: `Archived "${before.title}"`,
+                        evidence: `${id}: archived`,
+                        verification: 'verified',
+                    };
+                }
+                return fail(`session ${id} was not archived`);
             },
         },
     ];
