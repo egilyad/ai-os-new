@@ -7253,7 +7253,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4076,
-      "hash": "8084c973ebebb5ace51cb91f5c3236b0414e5b8a"
+      "hash": "5a8ff63a0b5114678391604c83e70d03949038fe"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -7557,7 +7557,7 @@
       "language": "mixed",
       "title": "Карта документации",
       "bytes": 30784,
-      "hash": "84cc136cb431cee8916e2e397a1e6f05ec972d05"
+      "hash": "fbb215e856f9417494c7e6af09fb2cec5e7c22c3"
     },
     {
       "path": "docs/wiki/docs-standard.md",
@@ -7732,8 +7732,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Панель: Обзор (Dashboard)",
-      "bytes": 3198,
-      "hash": "d603d8933b6d07e055cfb78a0fbc2dcbd35c4038"
+      "bytes": 3256,
+      "hash": "ae871b8663fefdbf25c86f82f8e96aeb8615cba5"
     },
     {
       "path": "docs/wiki/panel-debate-analysis.md",

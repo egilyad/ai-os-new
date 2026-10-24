@@ -6,6 +6,8 @@
 
 Источники: `src/components/DashboardPanel/DashboardPanel.tsx`, `src/components/DashboardPanel/DashboardPanel.test.tsx`
 
+Проверено по коду: 2026-10-17 · opencode
+
 ## Назначение
 
 Стартовый экран `/dashboard`: сводка состояния ОС и быстрые действия. Это первый экран после загрузки, поэтому он должен работать даже без ключей и истории.
