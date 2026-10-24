@@ -1766,7 +1766,7 @@ export function panelActionDescriptors(): PanelActionDescriptor[] {
                 type: 'object',
                 properties: {
                     type: { type: 'string', description: 'latency, privacy, cost, or safety.' },
-                    action: { type: 'string', description: 'block, warn, or retry.' },
+                    action: { type: 'string', description: 'block, warn, log, throttle, or mask.' },
                     targetNodes: { type: 'array', items: { type: 'string' }, description: 'Nodes the policy applies to.' },
                 },
                 required: ['type', 'action'],
@@ -1777,7 +1777,7 @@ export function panelActionDescriptors(): PanelActionDescriptor[] {
                 const allowedTypes = ['latency', 'privacy', 'cost', 'safety'] as const;
                 const type = allowedTypes.find((t) => t === rawType);
                 if (!type) return fail(`unsupported policy type "${rawType}"`);
-                const allowedActions = ['block', 'warn', 'retry'] as const;
+                const allowedActions = ['block', 'warn', 'log', 'throttle', 'mask'] as const;
                 const action = allowedActions.find((a) => a === rawAction);
                 if (!action) return fail(`unsupported action "${rawAction}"`);
                 const rawTargets = args['targetNodes'];
