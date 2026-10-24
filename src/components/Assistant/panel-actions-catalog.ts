@@ -1746,6 +1746,73 @@ export function panelActionDescriptors(): PanelActionDescriptor[] {
                 };
             },
         },
+        {
+            panelId: 'policies',
+            id: 'add',
+            title: 'Add a policy',
+            description: 'Create a latency, privacy, cost or safety policy and read it back.',
+            permission: 'tool:write',
+            parameters: {
+                type: 'object',
+                properties: {
+                    type: { type: 'string', description: 'latency, privacy, cost, or safety.' },
+                    action: { type: 'string', description: 'block, warn, or retry.' },
+                    targetNodes: { type: 'array', items: { type: 'string' }, description: 'Nodes the policy applies to.' },
+                },
+                required: ['type', 'action'],
+            },
+            run: async (args) => {
+                const type = str(args['type']);
+                const action = str(args['action']);
+                const allowedTypes = ['latency', 'privacy', 'cost', 'safety'] as const;
+                if (!allowedTypes.includes(type as (typeof allowedTypes)[number])) return fail(`unsupported policy type "${type}"`);
+                const allowedActions = ['block', 'warn', 'retry'] as const;
+                if (!allowedActions.includes(action as (typeof allowedActions)[number])) return fail(`unsupported action "${action}"`);
+                const rawTargets = args['targetNodes'];
+                const targets = Array.isArray(rawTargets)
+                    ? rawTargets.filter((t): t is string => typeof t === 'string' && t.trim().length > 0)
+                    : [];
+                const before = policyService.getPolicies();
+                await policyService.addPolicy({ type, action, value: {}, target_nodes: targets });
+                const after = policyService.getPolicies();
+                const created = after.find((p) => !before.some((b) => b.id === p.id));
+                if (!created) return fail('the policy was not stored');
+                return {
+                    ok: true,
+                    detail: `Added a ${created.type} policy (${created.action})`,
+                    evidence: `${created.id} | applies to ${created.target_nodes.length} node(s)`,
+                    verification: 'verified',
+                };
+            },
+        },
+        {
+            panelId: 'policies',
+            id: 'remove',
+            title: 'Remove a policy',
+            description: 'Delete a policy by id and read the list back.',
+            permission: 'tool:write',
+            parameters: {
+                type: 'object',
+                properties: { id: { type: 'string', description: 'Policy id.' } },
+                required: ['id'],
+            },
+            run: async (args) => {
+                const id = str(args['id']);
+                if (!id) return fail('id is required');
+                const before = policyService.getPolicies().find((p) => p.id === id);
+                if (!before) return fail(`policy ${id} does not exist`);
+                await policyService.removePolicy(id);
+                if (policyService.getPolicies().some((p) => p.id === id)) {
+                    return fail(`policy ${id} is still there`);
+                }
+                return {
+                    ok: true,
+                    detail: `Removed the ${before.type} policy`,
+                    evidence: `removed: ${id}`,
+                    verification: 'verified',
+                };
+            },
+        },
 
         /* ----------------------------------------------------------- roles */
         {

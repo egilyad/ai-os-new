@@ -101,6 +101,8 @@ describe('panel action catalog', () => {
             'mcp.connect',
             'mcp.disconnect',
             'memory.forget',
+            'policies.add',
+            'policies.remove',
             'prompt-versions.remove',
             'prompt-versions.save',
             'prompts.create',
