@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { getContainer } from '../kernel/service-helper';
 import { architectureGraphService } from '../kernel/instances';
 import { useTranslation } from '../i18n/useTranslation';
+import { tokens } from '../styles/tokens';
 import { KnowledgeGraphView, type GraphViewData } from './viz/KnowledgeGraphView';
 import type { IContainer } from '../kernel/container';
 
@@ -52,8 +53,8 @@ export default function ArchitectureMapPanel() {
                             fontSize: 12,
                             padding: '2px 10px',
                             borderRadius: 999,
-                            background: 'rgba(255,255,255,0.04)',
-                            border: '1px solid rgba(255,255,255,0.08)',
+                            background: tokens.surfaceAlt,
+                            border: `1px solid ${tokens.borderSubtle}`,
                             color: 'var(--slate-300)',
                         }}
                     >
@@ -65,8 +66,8 @@ export default function ArchitectureMapPanel() {
                 style={{
                     flex: 1,
                     minHeight: 420,
-                    background: 'rgba(255,255,255,0.02)',
-                    border: '1px solid rgba(255,255,255,0.05)',
+                    background: tokens.surfaceAlt,
+                    border: `1px solid ${tokens.borderSubtle}`,
                     borderRadius: 12,
                     overflow: 'hidden',
                 }}

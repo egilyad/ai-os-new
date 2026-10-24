@@ -10,6 +10,7 @@ import {
 import type { Edge, Node, NodeProps, EdgeProps } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import { stableHash, hashHue } from '../../kernel/utils/hash';
+import { tokens } from '../../styles/tokens';
 
 export interface GraphViewNode {
     id: string;
@@ -77,8 +78,8 @@ function KnowledgeNode({ data }: NodeProps<KnowledgeNodeType>) {
                 height: d,
                 borderRadius: '50%',
                 background: bg,
-                border: '2px solid rgba(255, 255, 255, 0.35)',
-                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.35)',
+                border: `2px solid ${tokens.borderStrong}`,
+                boxShadow: `0 4px 12px ${tokens.accentGlow}`,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -90,7 +91,7 @@ function KnowledgeNode({ data }: NodeProps<KnowledgeNodeType>) {
             <span
                 style={{
                     fontSize: Math.max(8, d / 5),
-                    color: '#0f172a',
+                    color: tokens.slate[950],
                     fontWeight: 700,
                     textAlign: 'center',
                     lineHeight: 1.05,
