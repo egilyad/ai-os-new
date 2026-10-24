@@ -2143,6 +2143,39 @@ export function panelActionDescriptors(): PanelActionDescriptor[] {
                 };
             },
         },
+        {
+            panelId: 'providers',
+            id: 'metrics',
+            title: 'Provider key metrics',
+            description: 'Latency, errors and quota of one stored key for a provider.',
+            permission: 'tool:read',
+            parameters: {
+                type: 'object',
+                properties: {
+                    provider: { type: 'string', description: 'Provider slug.' },
+                    keyId: { type: 'string', description: 'Key id (optional — uses the first key of the provider).' },
+                },
+                required: ['provider'],
+            },
+            run: async (args) => {
+                const provider = str(args['provider']);
+                if (!provider) return fail('provider is required');
+                let keyId = str(args['keyId']);
+                if (!keyId) {
+                    const first = keyService.getKeys().find((k) => k.provider.toLowerCase() === provider.toLowerCase());
+                    keyId = first?.id ?? '';
+                }
+                if (!keyId) return fail(`no stored key for provider "${provider}"`);
+                const metrics = providerTracker.getMetrics(provider, keyId);
+                if (!metrics) return fail(`no metrics for key ${keyId}`);
+                return {
+                    ok: true,
+                    detail: `${provider} key ${keyId}`,
+                    evidence: `avg latency ${metrics.avgLatency} ms | errors ${metrics.errors} | quota ${metrics.quotaRemaining}/${metrics.quotaLimit}`,
+                    verification: 'verified',
+                };
+            },
+        },
 
         /* -------------------------------------------- workspace (extras) */
         {
