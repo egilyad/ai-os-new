@@ -173,6 +173,19 @@ export interface PanelActionExtrasServices {
     training: {
         guides(): Promise<Array<{ id: string; role: string; quality: number; runs: number }>>;
     };
+    guardrails: {
+        rules(): Promise<Array<{ id: string; name: string; kind: string; tripwire: string }>>;
+        check(text: string): Promise<{ ok: boolean; hits: string[] }>;
+    };
+    sops: {
+        list(): Promise<Array<{ id: string; name: string; phases: number }>>;
+    };
+    modes: {
+        list(): Promise<Array<{ id: string; name: string; custom: boolean }>>;
+    };
+    memoryBlocks: {
+        blocks(ownerId: string): Promise<Array<{ id: string; section: string; content: string }>>;
+    };
 }
 
 let extrasServices: PanelActionExtrasServices | null = null;
@@ -2689,6 +2702,129 @@ export function panelActionDescriptors(): PanelActionDescriptor[] {
                         .slice(0, 10)
                         .map((g) => `${g.role}: quality ${g.quality}, ${g.runs} runs`)
                         .join(' | '),
+                    verification: 'verified',
+                };
+            },
+        },
+
+        /* --------------------------------------------------- guardrails */
+        {
+            panelId: 'guardrails',
+            id: 'rules',
+            title: 'Guardrail rules',
+            description: 'Active guardrail rules for output and run safety.',
+            permission: 'tool:read',
+            parameters: { type: 'object', properties: {} },
+            run: async () => {
+                const rules = await needExtras().guardrails.rules();
+                if (rules.length === 0) {
+                    return { ok: true, detail: 'no guardrail rules', evidence: 'rules: 0', verification: 'verified' };
+                }
+                return {
+                    ok: true,
+                    detail: `${rules.length} rule(s)`,
+                    evidence: rules
+                        .slice(0, 10)
+                        .map((r) => `${r.name} [${r.kind}:${r.tripwire}]`)
+                        .join(' | '),
+                    verification: 'verified',
+                };
+            },
+        },
+        {
+            panelId: 'guardrails',
+            id: 'check',
+            title: 'Check text against guardrails',
+            description: 'Run a text through the guardrails and report hits.',
+            permission: 'tool:write',
+            parameters: {
+                type: 'object',
+                properties: { text: { type: 'string', description: 'Text to check.' } },
+                required: ['text'],
+            },
+            run: async (args) => {
+                const text = str(args['text']);
+                if (!text) return fail('text is required');
+                const result = await needExtras().guardrails.check(text);
+                if (!result.ok) {
+                    return fail(`guardrails blocked: ${result.hits.join(', ')}`);
+                }
+                return {
+                    ok: true,
+                    detail: `text passed guardrails (${result.hits.length} hit(s))`,
+                    evidence: result.hits.length ? result.hits.join(' | ') : 'no hits',
+                    verification: 'verified',
+                };
+            },
+        },
+
+        /* --------------------------------------------------------- sops */
+        {
+            panelId: 'sops',
+            id: 'list',
+            title: 'Standard operating procedures',
+            description: 'Defined SOPs and their phase counts.',
+            permission: 'tool:read',
+            parameters: { type: 'object', properties: {} },
+            run: async () => {
+                const sops = await needExtras().sops.list();
+                if (sops.length === 0) {
+                    return { ok: true, detail: 'no SOPs', evidence: 'sops: 0', verification: 'verified' };
+                }
+                return {
+                    ok: true,
+                    detail: `${sops.length} SOP(s)`,
+                    evidence: sops.map((s) => `${s.id} ${s.name} (${s.phases} phases)`).join(' | '),
+                    verification: 'verified',
+                };
+            },
+        },
+
+        /* -------------------------------------------------------- modes */
+        {
+            panelId: 'modes',
+            id: 'list',
+            title: 'Agent modes',
+            description: 'Roo-style modes available to agents, with toolkit gating.',
+            permission: 'tool:read',
+            parameters: { type: 'object', properties: {} },
+            run: async () => {
+                const modes = await needExtras().modes.list();
+                if (modes.length === 0) {
+                    return { ok: true, detail: 'no modes', evidence: 'modes: 0', verification: 'verified' };
+                }
+                return {
+                    ok: true,
+                    detail: `${modes.length} mode(s)`,
+                    evidence: modes.map((m) => `${m.id} ${m.name} [${m.custom ? 'custom' : 'built-in'}]`).join(' | '),
+                    verification: 'verified',
+                };
+            },
+        },
+
+        /* ------------------------------------------------- memory blocks */
+        {
+            panelId: 'memory-blocks',
+            id: 'blocks',
+            title: 'Core memory blocks',
+            description: 'The editable core memory blocks of one agent.',
+            permission: 'tool:read',
+            parameters: {
+                type: 'object',
+                properties: { ownerId: { type: 'string', description: 'Agent id.' } },
+                required: ['ownerId'],
+            },
+            run: async (args) => {
+                const ownerId = str(args['ownerId']);
+                if (!ownerId) return fail('ownerId is required');
+                const blocks = await needExtras().memoryBlocks.blocks(ownerId);
+                if (blocks.length === 0) {
+                    return { ok: true, detail: `no memory blocks for ${ownerId}`, evidence: 'blocks: 0', verification: 'verified' };
+                }
+                return {
+                    ok: true,
+                    detail: `${blocks.length} block(s)`,
+                    evidence: blocks.map((b) => `[${b.section}] ${snippet(b.content, 60)}`).join(' | '),
                     verification: 'verified',
                 };
             },

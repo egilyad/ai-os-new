@@ -27,12 +27,15 @@ import {
     crystalVault,
     federatedMemoryService,
     fleetMonitorService,
+    guardrailService,
     hierarchyService,
     junctionEngine,
     knowledgeService,
     lensEngine,
+    memoryBlocksService,
     metaAgentService,
     mobileAccessService,
+    modesService,
     plannerService,
     promptLibraryService,
     promptVersionService,
@@ -40,6 +43,7 @@ import {
     runQueueService,
     sandboxBrokerService,
     skillMarketService,
+    sopService,
     toolGovernanceService,
     trainingService,
     wikiBrainService,
@@ -386,6 +390,51 @@ export function ensureAssistantWiring(): void {
                         role: g.role,
                         quality: g.quality,
                         runs: g.runs,
+                    }));
+                },
+            },
+            guardrails: {
+                rules: async () => {
+                    const rules = await guardrailService.listRules();
+                    return rules.map((r) => ({
+                        id: r.id,
+                        name: r.name,
+                        kind: r.kind,
+                        tripwire: r.tripwire,
+                    }));
+                },
+                check: async (text) => {
+                    const result = await guardrailService.check(text);
+                    return { ok: result.ok, hits: result.hits };
+                },
+            },
+            sops: {
+                list: async () => {
+                    const sops = await sopService.listSops();
+                    return sops.map((s) => ({
+                        id: s.id,
+                        name: s.name,
+                        phases: s.phases.length,
+                    }));
+                },
+            },
+            modes: {
+                list: async () => {
+                    const modes = await modesService.listModes();
+                    return modes.map((m) => ({
+                        id: m.id,
+                        name: m.name,
+                        custom: m.custom,
+                    }));
+                },
+            },
+            memoryBlocks: {
+                blocks: async (ownerId) => {
+                    const blocks = await memoryBlocksService.getBlocks(ownerId);
+                    return blocks.map((b) => ({
+                        id: b.id,
+                        section: b.section,
+                        content: b.content,
                     }));
                 },
             },

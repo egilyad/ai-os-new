@@ -65,6 +65,7 @@ describe('panel action catalog', () => {
             'federated-memory',
             'fleet',
             'governance',
+            'guardrails',
             'hierarchy',
             'junction',
             'knowledge',
@@ -73,9 +74,11 @@ describe('panel action catalog', () => {
             'lens',
             'mcp',
             'memory',
+            'memory-blocks',
             'memory-palace',
             'meta-agents',
             'mobile',
+            'modes',
             'monitoring',
             'permissions',
             'policies',
@@ -93,6 +96,7 @@ describe('panel action catalog', () => {
             'settings',
             'skill-market',
             'skills',
+            'sops',
             'system',
             'tasks',
             'training',
@@ -114,6 +118,7 @@ describe('panel action catalog', () => {
             'diagnostics.run',
             'federated-memory.disconnect',
             'federated-memory.sync',
+            'guardrails.check',
             'knowledge.remove',
             'knowledge.update',
             'keys.remove',
@@ -329,6 +334,22 @@ function fakeTraining(): PanelActionExtrasServices['training'] {
     return { guides: async () => [] };
 }
 
+function fakeGuardrails(): PanelActionExtrasServices['guardrails'] {
+    return { rules: async () => [], check: async () => ({ ok: true, hits: [] }) };
+}
+
+function fakeSops(): PanelActionExtrasServices['sops'] {
+    return { list: async () => [] };
+}
+
+function fakeModes(): PanelActionExtrasServices['modes'] {
+    return { list: async () => [] };
+}
+
+function fakeMemoryBlocks(): PanelActionExtrasServices['memoryBlocks'] {
+    return { blocks: async () => [] };
+}
+
 describe('panel action catalog — memory and knowledge extras', () => {
     afterEach(() => setPanelActionExtrasServices(null));
 
@@ -364,6 +385,10 @@ describe('panel action catalog — memory and knowledge extras', () => {
             planner: fakePlanner(),
             knowledge: fakeKnowledge(),
             training: fakeTraining(),
+            guardrails: fakeGuardrails(),
+            sops: fakeSops(),
+            modes: fakeModes(),
+            memoryBlocks: fakeMemoryBlocks(),
         });
 
         const result = await descriptor('prompts', 'create').run({
@@ -402,6 +427,10 @@ describe('panel action catalog — memory and knowledge extras', () => {
             planner: fakePlanner(),
             knowledge: fakeKnowledge(),
             training: fakeTraining(),
+            guardrails: fakeGuardrails(),
+            sops: fakeSops(),
+            modes: fakeModes(),
+            memoryBlocks: fakeMemoryBlocks(),
         });
 
         const result = await descriptor('prompts', 'remove').run({ id: 'built-in' });
@@ -438,6 +467,10 @@ describe('panel action catalog — memory and knowledge extras', () => {
             planner: fakePlanner(),
             knowledge: fakeKnowledge(),
             training: fakeTraining(),
+            guardrails: fakeGuardrails(),
+            sops: fakeSops(),
+            modes: fakeModes(),
+            memoryBlocks: fakeMemoryBlocks(),
         });
 
         const result = await descriptor('federated-memory', 'disconnect').run({ id: 'north' });
@@ -470,6 +503,10 @@ describe('panel action catalog — memory and knowledge extras', () => {
             planner: fakePlanner(),
             knowledge: fakeKnowledge(),
             training: fakeTraining(),
+            guardrails: fakeGuardrails(),
+            sops: fakeSops(),
+            modes: fakeModes(),
+            memoryBlocks: fakeMemoryBlocks(),
         });
 
         const result = await descriptor('federated-memory', 'sync').run({});
@@ -504,6 +541,10 @@ describe('panel action catalog — memory and knowledge extras', () => {
             planner: fakePlanner(),
             knowledge: fakeKnowledge(),
             training: fakeTraining(),
+            guardrails: fakeGuardrails(),
+            sops: fakeSops(),
+            modes: fakeModes(),
+            memoryBlocks: fakeMemoryBlocks(),
         });
 
         const result = await descriptor('prompt-versions', 'save').run({
