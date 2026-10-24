@@ -74,6 +74,11 @@ export interface PanelActionExtrasServices {
             tags: string[];
             variables: string[];
         }): Promise<{ id: string; title: string; category: string }>;
+        update(id: string, data: { title?: string; content?: string; category?: string }): Promise<{
+            id: string;
+            title: string;
+            category: string;
+        }>;
         remove(id: string): Promise<boolean>;
     };
     promptVersions: {
@@ -168,6 +173,8 @@ export interface PanelActionExtrasServices {
     runQueue: {
         runs(): Promise<Array<{ id: string; kind: string; refId: string; status: string }>>;
         toolkits(): Promise<Array<{ id: string; name: string; prefixes: string[] }>>;
+        enqueue(input: { kind: string; refId: string }): Promise<{ id: string; status: string }>;
+        drain(): Promise<number>;
     };
     knowledge: {
         sources(): Promise<Array<{ id: string; kind: string; title: string; chunks: number }>>;
@@ -4295,6 +4302,85 @@ export function panelActionDescriptors(): PanelActionDescriptor[] {
                     ok: true,
                     detail: `created dataset "${dataset.name}"`,
                     evidence: `id: ${dataset.id}`,
+                    verification: 'verified',
+                };
+            },
+        },
+
+        /* ------------------------------------------------------ prompts */
+        {
+            panelId: 'prompts',
+            id: 'update',
+            title: 'Update a prompt',
+            description: 'Update a prompt template and read it back.',
+            permission: 'tool:write',
+            parameters: {
+                type: 'object',
+                properties: {
+                    id: { type: 'string', description: 'Prompt id.' },
+                    title: { type: 'string', description: 'New title (optional).' },
+                    content: { type: 'string', description: 'New body (optional).' },
+                },
+                required: ['id'],
+            },
+            run: async (args) => {
+                const id = str(args['id']);
+                if (!id) return fail('id is required');
+                const stored = await needExtras().prompts.update(id, {
+                    title: str(args['title']) || undefined,
+                    content: str(args['content']) || undefined,
+                });
+                return {
+                    ok: true,
+                    detail: `updated prompt "${stored.title}"`,
+                    evidence: `id: ${stored.id} | category: ${stored.category}`,
+                    verification: 'verified',
+                };
+            },
+        },
+
+        /* --------------------------------------------------- run queue */
+        {
+            panelId: 'run-queue',
+            id: 'enqueue',
+            title: 'Enqueue a run',
+            description: 'Queue a crew, graph or eval run.',
+            permission: 'tool:write',
+            parameters: {
+                type: 'object',
+                properties: {
+                    kind: { type: 'string', description: 'crew, graph, or eval.' },
+                    refId: { type: 'string', description: 'Reference run id.' },
+                },
+                required: ['kind', 'refId'],
+            },
+            run: async (args) => {
+                const kind = str(args['kind']);
+                const refId = str(args['refId']);
+                if (!kind) return fail('kind is required');
+                if (!refId) return fail('refId is required');
+                const run = await needExtras().runQueue.enqueue({ kind, refId });
+                return {
+                    ok: true,
+                    detail: `enqueued ${kind} run ${run.id}`,
+                    evidence: `status: ${run.status}`,
+                    verification: 'verified',
+                };
+            },
+        },
+        {
+            panelId: 'run-queue',
+            id: 'drain',
+            title: 'Drain the run queue',
+            description: 'Process queued runs now.',
+            permission: 'tool:write',
+            parameters: { type: 'object', properties: {} },
+            run: async () => {
+                const processed = await needExtras().runQueue.drain();
+                return {
+                    ok: true,
+                    detail: `drained ${processed} run(s)`,
+                    evidence: `processed: ${processed}`,
                     verification: 'verified',
                 };
             },

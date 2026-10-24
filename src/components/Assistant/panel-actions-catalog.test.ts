@@ -156,8 +156,11 @@ describe('panel action catalog', () => {
             'prompt-versions.save',
             'prompts.create',
             'prompts.remove',
+            'prompts.update',
             'roles.create',
             'roles.remove',
+            'run-queue.drain',
+            'run-queue.enqueue',
             'sandbox.request',
             'sessions.archive',
             'sessions.delete',
@@ -213,6 +216,13 @@ function fakePrompts(seedBuiltIn = false): Prompts & { count(): number } {
             const created = { id: `p${++n}`, ...data, usageCount: 0, isBuiltIn: false };
             items.set(created.id, created);
             return created;
+        },
+        update: async (id, data) => {
+            const existing = items.get(id);
+            if (!existing) throw new Error(`prompt ${id} not found`);
+            const updated = { ...existing, ...data, updatedAt: Date.now() };
+            items.set(id, updated);
+            return updated;
         },
         remove: async (id: string) => items.delete(id),
     };
@@ -357,7 +367,12 @@ function fakeAutonomy(): PanelActionExtrasServices['autonomy'] {
 }
 
 function fakeRunQueue(): PanelActionExtrasServices['runQueue'] {
-    return { runs: async () => [], toolkits: async () => [] };
+    return {
+        runs: async () => [],
+        toolkits: async () => [],
+        enqueue: async () => ({ id: 'q1', status: 'queued' }),
+        drain: async () => 0,
+    };
 }
 
 function fakePlanner(): PanelActionExtrasServices['planner'] {

@@ -96,7 +96,18 @@ export function ensureAssistantWiring(): void {
         // by the catalog, so the catalog stays cheap for its unit test.
         setPanelActionExtrasServices({
             federated: federatedMemoryService,
-            prompts: promptLibraryService,
+            prompts: {
+                getAll: () => promptLibraryService.getAll(),
+                search: (query) => promptLibraryService.search(query),
+                getById: (id) => promptLibraryService.getById(id),
+                create: (data) => promptLibraryService.create(data),
+                update: async (id, data) => {
+                    const updated = await promptLibraryService.update(id, data);
+                    if (!updated) throw new Error(`prompt ${id} not found`);
+                    return { id: updated.id, title: updated.title, category: updated.category };
+                },
+                remove: (id) => promptLibraryService.remove(id),
+            },
             promptVersions: promptVersionService,
             audit: auditService,
             research: researchRunService,
@@ -399,6 +410,17 @@ export function ensureAssistantWiring(): void {
                         name: t.name,
                         prefixes: t.prefixes,
                     }));
+                },
+                enqueue: async ({ kind, refId }) => {
+                    const run = await runQueueService.enqueue(
+                        kind as 'crew' | 'graph' | 'eval',
+                        refId,
+                    );
+                    return { id: run.id, status: run.status };
+                },
+                drain: async () => {
+                    const runs = await runQueueService.drain();
+                    return runs.length;
                 },
             },
             planner: {
