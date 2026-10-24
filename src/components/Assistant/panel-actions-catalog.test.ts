@@ -58,11 +58,13 @@ describe('panel action catalog', () => {
             'approvals',
             'federated-memory',
             'knowledge',
+            'keys',
             'memory',
             'memory-palace',
             'prompt-versions',
             'prompts',
             'providers',
+            'system',
         ]);
 
         const writes = descriptors
@@ -79,6 +81,8 @@ describe('panel action catalog', () => {
             'federated-memory.sync',
             'knowledge.remove',
             'knowledge.update',
+            'keys.remove',
+            'keys.set-status',
             'memory.forget',
             'prompt-versions.remove',
             'prompt-versions.save',

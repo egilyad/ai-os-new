@@ -13,9 +13,11 @@
 import {
     agentJournalService,
     agentService,
+    keyService,
     memoryOrchestrator,
     memoryService,
     providerTracker,
+    systemStatusService,
 } from '../../kernel/instances/services-core';
 import { agemsApprovalService } from '../../kernel/services/agems-approval-service';
 import type {
@@ -939,6 +941,116 @@ export function panelActionDescriptors(): PanelActionDescriptor[] {
                     evidence: events
                         .map((e) => `${e.provider}: ${e.type}`)
                         .join(' | '),
+                    verification: 'verified',
+                };
+            },
+        },
+
+        /* ------------------------------------------------------------ keys */
+        {
+            panelId: 'keys',
+            id: 'list',
+            title: 'Stored API keys',
+            description: 'Every stored key: provider, label and status. Never the secret itself.',
+            permission: 'tool:read',
+            parameters: { type: 'object', properties: {} },
+            run: async () => {
+                const keys = keyService.getKeys();
+                if (keys.length === 0) {
+                    return { ok: true, detail: 'no API keys stored', evidence: 'keys: 0', verification: 'verified' };
+                }
+                return {
+                    ok: true,
+                    detail: `${keys.length} key(s)`,
+                    evidence: keys
+                        .map((k) => `${k.id} ${k.provider}/${k.label || 'unlabelled'} [${k.status}]`)
+                        .join(' | '),
+                    verification: 'verified',
+                };
+            },
+        },
+        {
+            panelId: 'keys',
+            id: 'set-status',
+            title: 'Set a key status',
+            description: 'Mark a stored key active, inactive, or in one of the known states, and read it back.',
+            permission: 'tool:write',
+            parameters: {
+                type: 'object',
+                properties: {
+                    id: { type: 'string', description: 'Key id.' },
+                    status: { type: 'string', description: 'One of active, inactive, error, pending, quota_exhausted, invalid, quarantined, probation, compromised.' },
+                },
+                required: ['id', 'status'],
+            },
+            run: async (args) => {
+                const id = str(args['id']);
+                if (!id) return fail('id is required');
+                const status = str(args['status']);
+                const allowed = ['active', 'inactive', 'error', 'pending', 'quota_exhausted', 'invalid', 'quarantined', 'probation', 'compromised'] as const;
+                const normalized = allowed.find((s) => s === status);
+                if (!normalized) return fail(`unsupported status "${status}"`);
+                const before = keyService.getKeys().find((k) => k.id === id);
+                if (!before) return fail(`key ${id} does not exist`);
+                await keyService.updateKeyStatus(id, normalized);
+                const after = keyService.getKeys().find((k) => k.id === id);
+                if (after && after.status === normalized) {
+                    return {
+                        ok: true,
+                        detail: `Key ${before.provider}/${before.label || id} is now ${after.status}`,
+                        evidence: `${id}: ${before.status} → ${after.status}`,
+                        verification: 'verified',
+                    };
+                }
+                return fail(`key ${id} did not change status`);
+            },
+        },
+        {
+            panelId: 'keys',
+            id: 'remove',
+            title: 'Remove a key',
+            description: 'Delete a stored key by id and read the store back.',
+            permission: 'tool:write',
+            parameters: {
+                type: 'object',
+                properties: { id: { type: 'string', description: 'Key id.' } },
+                required: ['id'],
+            },
+            run: async (args) => {
+                const id = str(args['id']);
+                if (!id) return fail('id is required');
+                const before = keyService.getKeys().find((k) => k.id === id);
+                if (!before) return fail(`key ${id} does not exist`);
+                await keyService.removeKey(id);
+                if (keyService.getKeys().some((k) => k.id === id)) {
+                    return fail(`key ${id} is still there`);
+                }
+                return {
+                    ok: true,
+                    detail: `Removed the ${before.provider} key${before.label ? ` "${before.label}"` : ''}`,
+                    evidence: `removed: ${id}`,
+                    verification: 'verified',
+                };
+            },
+        },
+
+        /* ----------------------------------------------------------- system */
+        {
+            panelId: 'system',
+            id: 'status',
+            title: 'System status',
+            description: 'Overall readiness, per-area status and active warnings.',
+            permission: 'tool:read',
+            parameters: { type: 'object', properties: {} },
+            run: async () => {
+                const report = systemStatusService.getStatus();
+                const areas = Object.entries(report.areas)
+                    .map(([area, value]) => `${area}: ${value}`)
+                    .join(', ');
+                return {
+                    ok: true,
+                    detail: report.summary,
+                    evidence: `status: ${report.status} | ${areas} | warnings: ${report.warnings.length}`,
                     verification: 'verified',
                 };
             },
