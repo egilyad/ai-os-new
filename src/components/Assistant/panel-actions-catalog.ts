@@ -86,6 +86,18 @@ export interface PanelActionExtrasServices {
         ): { id: string; version: number; content: string };
         deletePrompt(promptId: string): void;
     };
+    audit: {
+        list(limit?: number): Promise<
+            Array<{
+                id: string;
+                actor: string;
+                action: string;
+                target?: string;
+                detail?: string;
+                createdAt: number;
+            }>
+        >;
+    };
 }
 
 let extrasServices: PanelActionExtrasServices | null = null;
@@ -1846,6 +1858,30 @@ export function panelActionDescriptors(): PanelActionDescriptor[] {
                     ok: true,
                     detail: `Default mode is now ${after}`,
                     evidence: `${before} → ${after}`,
+                    verification: 'verified',
+                };
+            },
+        },
+
+        /* ----------------------------------------------------------- audit */
+        {
+            panelId: 'audit',
+            id: 'recent',
+            title: 'Audit trail',
+            description: 'The recent audit entries: who did what, to what.',
+            permission: 'tool:read',
+            parameters: { type: 'object', properties: {} },
+            run: async () => {
+                const entries = await needExtras().audit.list(20);
+                if (entries.length === 0) {
+                    return { ok: true, detail: 'no audit entries', evidence: 'entries: 0', verification: 'verified' };
+                }
+                return {
+                    ok: true,
+                    detail: `${entries.length} audit entr(y|ies)`,
+                    evidence: entries
+                        .map((e) => `${e.actor} ${e.action}${e.target ? ` → ${e.target}` : ''}`)
+                        .join(' | '),
                     verification: 'verified',
                 };
             },

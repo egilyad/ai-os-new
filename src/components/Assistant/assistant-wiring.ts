@@ -21,6 +21,7 @@ import {
     setPanelActionExtrasServices,
 } from './panel-actions-catalog';
 import {
+    auditService,
     federatedMemoryService,
     promptLibraryService,
     promptVersionService,
@@ -61,6 +62,7 @@ export function ensureAssistantWiring(): void {
             federated: federatedMemoryService,
             prompts: promptLibraryService,
             promptVersions: promptVersionService,
+            audit: auditService,
         });
         ensurePanelActionCatalog(panelActionRegistry);
     } catch {

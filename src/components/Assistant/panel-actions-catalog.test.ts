@@ -56,6 +56,7 @@ describe('panel action catalog', () => {
             'agent-journal',
             'agents',
             'approvals',
+            'audit',
             'debates',
             'diagnostics',
             'federated-memory',
@@ -205,6 +206,10 @@ function fakeVersions(): Versions {
     };
 }
 
+function fakeAudit(): PanelActionExtrasServices['audit'] {
+    return { list: async () => [] };
+}
+
 describe('panel action catalog — memory and knowledge extras', () => {
     afterEach(() => setPanelActionExtrasServices(null));
 
@@ -221,7 +226,7 @@ describe('panel action catalog — memory and knowledge extras', () => {
             federated: fakeFederated([]),
             prompts,
             promptVersions: fakeVersions(),
-        });
+            audit: fakeAudit(),        });
 
         const result = await descriptor('prompts', 'create').run({
             title: 'Triage the queue',
@@ -240,7 +245,7 @@ describe('panel action catalog — memory and knowledge extras', () => {
             federated: fakeFederated([]),
             prompts: fakePrompts(true),
             promptVersions: fakeVersions(),
-        });
+            audit: fakeAudit(),        });
 
         const result = await descriptor('prompts', 'remove').run({ id: 'built-in' });
 
@@ -257,7 +262,7 @@ describe('panel action catalog — memory and knowledge extras', () => {
             federated,
             prompts: fakePrompts(),
             promptVersions: fakeVersions(),
-        });
+            audit: fakeAudit(),        });
 
         const result = await descriptor('federated-memory', 'disconnect').run({ id: 'north' });
 
@@ -270,7 +275,7 @@ describe('panel action catalog — memory and knowledge extras', () => {
             federated: fakeFederated([{ id: 'north', name: 'North' }], ['failed']),
             prompts: fakePrompts(),
             promptVersions: fakeVersions(),
-        });
+            audit: fakeAudit(),        });
 
         const result = await descriptor('federated-memory', 'sync').run({});
 
@@ -285,7 +290,7 @@ describe('panel action catalog — memory and knowledge extras', () => {
             federated: fakeFederated([]),
             prompts: fakePrompts(),
             promptVersions,
-        });
+            audit: fakeAudit(),        });
 
         const result = await descriptor('prompt-versions', 'save').run({
             promptId: 'guard',
