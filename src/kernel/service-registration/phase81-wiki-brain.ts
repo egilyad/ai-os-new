@@ -20,6 +20,7 @@ import { WikiSearchAdapter } from '../services/wiki-brain/wiki-search-adapter';
 import { WikiQueryService } from '../services/wiki-brain/wiki-query.service';
 import { WikiIngestService } from '../services/wiki-brain/wiki-ingest.service';
 import { WikiBrainService } from '../services/wiki-brain/wiki-brain.service';
+import { WikiBrainContextProvider } from '../services/wiki-brain/wiki-context-provider';
 
 function wikiLlm(c: IContainer): WikiLlmClient | null {
     if (!c.has('llmClientService')) return null;
@@ -74,5 +75,9 @@ export const registerPhase81: Phase = ({ register }) => {
             c.get('wikiLogService'),
             c.get('wikiGraphService'),
         ),
+    );
+
+    register('wikiBrainContextProvider', (c: IContainer) =>
+        new WikiBrainContextProvider(c.get('wikiQueryService')),
     );
 };
