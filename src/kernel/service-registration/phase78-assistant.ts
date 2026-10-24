@@ -12,6 +12,7 @@ import type { Phase } from './helpers';
 import type { IContainer } from '../container';
 import type { IEventBus } from '../types/interfaces';
 import type { ILLMClientService } from '../contracts/provider-adapter';
+import type { IWikiBrainService } from '../contracts/wiki-brain';
 import type { MemoryOrchestrator } from '../services/memory-orchestrator';
 import type { AgentPermissionService } from '../services/permissions/permission-service';
 import type { ToolApprovalService } from '../services/tool-pipeline/tool-approval-service';
@@ -451,6 +452,19 @@ export const registerPhase78: Phase = ({ register }) => {
                 : undefined,
             memory: c.has('memoryOrchestrator')
                 ? c.get<MemoryOrchestrator>('memoryOrchestrator')
+                : undefined,
+            wiki: c.has('wikiBrainService')
+                ? {
+                      search: async (query: string) => {
+                          const brain = c.get<IWikiBrainService>('wikiBrainService');
+                          const results = await brain.query.search(query, { topK: 3 });
+                          return results.map((r) => ({
+                              slug: r.page.slug,
+                              title: r.page.frontmatter.title,
+                              snippet: r.snippet.slice(0, 200),
+                          }));
+                      },
+                  }
                 : undefined,
             trust: c.has('capabilityTrustService')
                 ? c.get<CapabilityTrustService>('capabilityTrustService')

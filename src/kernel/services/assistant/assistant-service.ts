@@ -72,6 +72,10 @@ export interface AssistantServiceDeps {
             limit?: number,
         ): Promise<Array<{ content: string; metadata: { type?: string } }>>;
     };
+    /** The LLM-compiled wiki (Wiki Brain), queried as an extra knowledge layer. */
+    wiki?: {
+        search(query: string): Promise<Array<{ slug: string; title: string; snippet: string }>>;
+    };
     /** Provider/model of the assistant; the session may override it. */
     provider?: string;
     model?: string;
@@ -105,6 +109,24 @@ export class AssistantService {
 
         const knowledge = await this.deps.knowledge.context(question);
         if (knowledge.markdown) blocks.push(knowledge.markdown);
+
+        if (this.deps.wiki) {
+            try {
+                const wikiHits = await this.deps.wiki.search(question);
+                if (wikiHits.length > 0) {
+                    blocks.push(
+                        '[WIKI BRAIN]',
+                        wikiHits
+                            .map((h) => `- [[${h.slug}]] ${h.title}: ${h.snippet.slice(0, 200)}`)
+                            .join('\n'),
+                    );
+                }
+            } catch (e) {
+                LOGGER.warn('Assistant', 'context: wiki search failed', {
+                    error: e instanceof Error ? e.message : String(e),
+                });
+            }
+        }
 
         if (this.deps.memory) {
             try {

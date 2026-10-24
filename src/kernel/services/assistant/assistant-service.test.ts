@@ -106,6 +106,31 @@ describe('AssistantService', () => {
         expect(prompt).toContain('session: s1');
     });
 
+    it('injects wiki brain hits into the context', async () => {
+        const llm = llmStub([{ content: 'ok' }]);
+        const wiki = {
+            search: vi.fn(async () => [
+                { slug: 'memory', title: 'Memory', snippet: 'панель памяти: /memory' },
+            ]),
+        };
+        const service = new AssistantService({
+            llm: llm.service,
+            actions: makeRegistry(),
+            knowledge: makeKnowledge(),
+            events: makeEvents(),
+            agentId: 'assistant',
+            wiki,
+        });
+
+        await service.ask({ text: 'что такое память?', sessionId: 's2' });
+        const prompt = String(
+            (llm.calls[0]!.messages as Array<{ role: string; content: string }>)[1]!.content,
+        );
+        expect(prompt).toContain('[WIKI BRAIN]');
+        expect(prompt).toContain('[[memory]]');
+        expect(wiki.search).toHaveBeenCalledWith('что такое память?');
+    });
+
     it('tells the model which screen the operator is looking at', async () => {
         const llm = llmStub([{ content: 'ok' }]);
         const view = new AssistantViewService();
