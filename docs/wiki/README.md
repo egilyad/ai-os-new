@@ -205,7 +205,7 @@
 - [Компонент: LLM-мост (адаптеры crews/council/graph/frontier)](./comp-llm-bridge.md) — _documented_
 - [Компонент: слой состояния (Zustand-сторы)](./comp-state-stores.md) — _verified_
 - [Компонент: сквозные сценарии](./comp-scenarios.md) — _verified_
-- [Компонент: экипажи и совет](./comp-crews-councils.md) — _documented_
+- [Компонент: экипажи и совет](./comp-crews-councils.md) — _verified_
 - [Компонент: фронтир и разнообразие агентов](./comp-frontier-diversity.md) — _documented_
 - [Компонент: лаборатория вариантов (rivals)](./comp-rivals-lab.md) — _documented_
 - [Компонент: генерация знаний и RAG](./comp-knowledge-rag.md) — _verified_

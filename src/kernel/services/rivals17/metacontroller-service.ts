@@ -3,6 +3,15 @@ import type { IMetaControllerService } from '../../contracts/rivals17';
 import { rootLogger } from '../logger-service';
 const LOGGER = rootLogger.child('MetaCtrl');
 const CATALOG=['blackboard','storm','debate','synthesis','genius','reflexion'];
+
+function stablePick(text: string): string {
+    let h = 0;
+    for (let i = 0; i < text.length; i++) {
+        h = (h * 31 + text.charCodeAt(i)) >>> 0;
+    }
+    return CATALOG[h % CATALOG.length]!;
+}
+
 export class MetaControllerService implements IMetaControllerService {
     constructor(_events: IEventBus) { void _events; }
     async init(){ LOGGER.info('MetaCtrl', 'init',{}); } async destroy(){}
@@ -12,7 +21,6 @@ export class MetaControllerService implements IMetaControllerService {
         if (low.includes('research')||low.includes('исслед')) return 'storm';
         if (low.includes('blackboard')) return 'blackboard';
         if (low.includes('synthesis')) return 'synthesis';
-        const choice=CATALOG[Math.floor(Math.random()*CATALOG.length) as number] as string;
-        return choice;
+        return stablePick(task);
     }
 }

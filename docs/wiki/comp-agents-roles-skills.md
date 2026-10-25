@@ -19,6 +19,7 @@
 ## Реализация
 
 - `AgentService` (`agent-service.ts`, ~1130 строк) реализует `IAgentResolver` (нужен Conversation Director). `autoSpawnConfig = { enabled: true, maxAgents: 10, ... }`; лимит статистики `MAX_AGENT_STATS = 500`; персист статистики/групп/топологии с дебаунсом 2000 мс; `beforeunload`-flush. События: `agent:lifecycle:change`, `system:node:spawn`, `system:node:removed`; подписки на `system:topology:mounted`, `cognitive:step:completed`, `chat:stream:end`.
+- Модель агента — `agents/registry.ts` (`AGENT_REGISTRY`, 15 встроенных); systemPrompt собирается в `resolveAgent` (agent-service.ts:571-629): `cfg.systemPrompt` + навыки через `renderSkillPrompt` + роль/специализации/линзы.
 - `RoleService` (`role-service.ts`, ~830 строк): **20 встроенных ролей** по категориям (technical/analytical/creative/management/specialized). Встроенные роли нельзя удалить. Наследование прав (`getEffectivePermissions`), лидерборд ELO, анализ усталости. События `roles:updated`, `role:assigned/unassigned`.
 - `SkillService` (`skill-service.ts`): **5 дефолтных навыков** — Deep Web Researcher, Code Reviewer Pro, Social Media Manager, Data Visualization Agent, Swarm Orchestrator. Дефолты сеются только при пустом хранилище; `toggleActive` не трогает `not_installed`; импорт валидируется схемой.
 
@@ -45,5 +46,6 @@
 - [Панель: Роли и консорциумы](./panel-roles.md)
 - [Панели: Агенты — маркетплейс и протокол](./panel-agents-market.md)
 - [Компонент: роутинг и провайдеры](./comp-routing.md)
+- [Компонент: экипажи и совет](./comp-crews-councils.md)
 
 [← Все материалы](./README.md)

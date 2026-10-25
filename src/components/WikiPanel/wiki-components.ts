@@ -618,7 +618,7 @@ flowchart TD
             'src/kernel/services/role-service.ts',
             'src/kernel/services/skill-service.ts',
         ],
-        related: ['agents', 'panel-roles', 'panel-agents-market', 'comp-routing'],
+        related: ['agents', 'panel-roles', 'panel-agents-market', 'comp-routing', 'comp-crews-councils'],
         body: `## Назначение
 
 Кто выполняет работу: агенты (исполнители в топологии), роли (права и профиль поведения) и навыки (переиспользуемые когнитивные умения).
@@ -632,6 +632,7 @@ flowchart TD
 ## Реализация
 
 - \`AgentService\` (\`agent-service.ts\`, ~1130 строк) реализует \`IAgentResolver\` (нужен Conversation Director). \`autoSpawnConfig = { enabled: true, maxAgents: 10, ... }\`; лимит статистики \`MAX_AGENT_STATS = 500\`; персист статистики/групп/топологии с дебаунсом 2000 мс; \`beforeunload\`-flush. События: \`agent:lifecycle:change\`, \`system:node:spawn\`, \`system:node:removed\`; подписки на \`system:topology:mounted\`, \`cognitive:step:completed\`, \`chat:stream:end\`.
+- Модель агента — \`agents/registry.ts\` (\`AGENT_REGISTRY\`, 15 встроенных); systemPrompt собирается в \`resolveAgent\` (agent-service.ts:571-629): \`cfg.systemPrompt\` + навыки через \`renderSkillPrompt\` + роль/специализации/линзы.
 - \`RoleService\` (\`role-service.ts\`, ~830 строк): **20 встроенных ролей** по категориям (technical/analytical/creative/management/specialized). Встроенные роли нельзя удалить. Наследование прав (\`getEffectivePermissions\`), лидерборд ELO, анализ усталости. События \`roles:updated\`, \`role:assigned/unassigned\`.
 - \`SkillService\` (\`skill-service.ts\`): **5 дефолтных навыков** — Deep Web Researcher, Code Reviewer Pro, Social Media Manager, Data Visualization Agent, Swarm Orchestrator. Дефолты сеются только при пустом хранилище; \`toggleActive\` не трогает \`not_installed\`; импорт валидируется схемой.
 
@@ -1511,8 +1512,8 @@ flowchart TD
         slug: 'comp-crews-councils',
         title: 'Компонент: экипажи и совет',
         section: 'components',
-        tags: ['компоненты', 'экипажи', 'совет', 'мультиагентность'],
-        freshness: 'documented',
+        tags: ['компоненты', 'экипажи', 'совет', 'мультиагентность', 'линзы'],
+        freshness: 'verified',
         sources: [
             'src/kernel/services/crew/crew-service.ts',
             'src/kernel/services/crew/agent-forge-service.ts',
@@ -1520,35 +1521,39 @@ flowchart TD
             'src/kernel/services/council/council-service-facade.ts',
             'src/kernel/services/council/council-aware-evaluator.ts',
             'src/kernel/services/council/weighted-judge-evaluator.ts',
+            'src/kernel/services/council/council-lenses.ts',
+            'src/kernel/services/council/council-to-debate-mapper.ts',
         ],
-        related: ['panel-director', 'panel-synthesis', 'panel-fleet', 'comp-agents-roles-skills', 'comp-llm-bridge'],
+        related: ['panel-director', 'panel-synthesis', 'panel-fleet', 'comp-agents-roles-skills', 'comp-llm-bridge', 'comp-debate-runtime'],
         body: `## Назначение
 
 Собирать группы агентов (экипажи) и «совет» судей, которые сообща решают задачу и оценивают результаты.
 
 ## Возможности
 
-- Экипажи: состав, шаблоны, кузница агентов (\`AgentForgeService\`).
-- Совет: фасад \`CouncilServiceFacade\` над \`CouncilService\`, оценка с учётом совета (\`CouncilAwareEvaluator\`), взвешенное голосование судей (\`WeightedJudgeEvaluator\`), миграция советов.
+- Экипажи (CrewAI-парадигма): роли+задачи+процесс (sequential/hierarchical/consensual); кузница агентов (\`AgentForgeService\`).
+- Совет: фасад \`CouncilServiceFacade\` над \`CouncilService\`, линзы/полярности, оценка с учётом совета (\`CouncilAwareEvaluator\`), взвешенное голосование судей (\`WeightedJudgeEvaluator\`).
 
 ## Реализация
 
-- \`crew/\`: \`crew-service.ts\` (\`CrewService\`), \`agent-forge-service.ts\` (\`AgentForgeService\`), \`crew-templates.ts\`, демо-сид.
-- \`council/\`: \`council-service.ts\`, \`council-service-facade.ts\`, \`council-aware-evaluator.ts\`, \`weighted-judge-evaluator.ts\`, \`council-migration-service.ts\`, \`council-lenses.ts\`, \`council-to-debate-mapper.ts\`.
+- \`crew/\`: \`crew-service.ts\` (\`CrewService\`, процессы 360-452; **ИИ-исполнитель по умолчанию — \`EchoExecutor\`** (без LLM), реальный \`LlmCrewExecutor\` подключается при наличии \`llmClientService\`), \`agent-forge-service.ts\`, \`crew-templates.ts\`.
+- \`council/\`: \`council-service.ts\` (фазы proposal→факты→дебаты→консенсус), \`council-service-facade.ts\`, \`council-aware-evaluator.ts\`, \`weighted-judge-evaluator.ts\`, \`council-lenses.ts\` (14 линз, 4 пары полярностей), \`council-to-debate-mapper.ts\` (чистый маппер; вызывается в фасаде при createSession), \`council-migration-service.ts\`.
+- Совет вызывает LLM через порт \`ICouncilLlmPort.draftStance/judgeRound\` (\`LlmCouncilPort\`).
 
 ## Связи
 
-- Роли агентов — [[comp-agents-roles-skills]]; вызовы LLM — [[comp-llm-bridge]]; дебаты — [[comp-debate-runtime]].
+- Роли агентов — [[comp-agents-roles-skills]]; вызовы LLM — [[comp-llm-bridge]]; дебаты — [[comp-debate-runtime]] (mapper/оценка).
 - Панели: [[panel-director]], [[panel-synthesis]], [[panel-fleet]]; состояние — [[comp-state-stores]].
 
 ## Проверка работоспособности
 
 - Тесты: \`crew/crews-demo-seed.test.ts\`, \`council/council-demo-seed.test.ts\` (демо-уровень).
-- Ручная: собрать экипаж/совет в Director и прогнать задачу.
+- Пробел: нет прямых тестов на \`CouncilServiceFacade\`, \`WeightedJudgeEvaluator\`, \`CouncilAwareEvaluator\`, \`council-to-debate-mapper\`, \`LlmCrewExecutor\`, сборку \`buildParticipantPrompt\`.
 
 ## Состояние
 
-- Реализовано; подтверждено кодом и демо-тестами.`,
+- Реализовано; подтверждено кодом и демо-тестами (проверка 2026-10).
+- **Риски:** двойная таллировка совета (старая \`CouncilService\` vs canonical \`WeightedJudgeEvaluator\` через фасад) — риск расхождения; дефолт \`EchoExecutor\` в crews без провайдера («работают», но не думают); обновления дебатов не проталкиваются обратно из фасада. Подробно — \`docs/audits/agents-council-audit.md\`.`,
     },
     {
         slug: 'comp-frontier-diversity',
