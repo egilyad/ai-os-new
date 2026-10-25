@@ -12,7 +12,9 @@
 
 ## Возможности
 
-- `NvidiaNIMAdapter` (`BaseLLMAdapter`); схема ответа `NvidiaNIMResponseSchema` (zod).
+- `NvidiaNIMAdapter` (`BaseLLMAdapter`, НЕ OpenAiCompatible): baseURL `/proxy/nvidia`, endpoint `POST /v1/chat/completions`.
+- Streaming: SSE, `idleTimeoutMs=90000`; терминальный chunk только по finishReason (без usage/toolCalls).
+- `checkHealth`; `getAvailableModels` с бэкоффом 30 с; `sanitizeModel`; `omitFields:['cachedContent']`. `rotateKey` — **нет**.
 
 ## Реализация
 
@@ -25,11 +27,13 @@
 
 ## Проверка работоспособности
 
-- Подтверждено чтением кода (отдельного тест-файла нет).
+- Согласовано: отдельного адаптерного тест-файла нет (покрытие косвенное).
+- Ручная: выбрать NVIDIA NIM в Providers и отправить сообщение.
 
 ## Состояние
 
-- Реализовано; автотестом не покрыто.
+- Реализовано; подтверждено чтением кода, без прямых автотестов.
+- **Риск:** streaming теряет usage/toolCalls (терминальный chunk по finishReason); токены в non-streaming — через `estimateTokenCount`-фолбэк.
 
 ---
 

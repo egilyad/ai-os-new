@@ -2455,7 +2455,10 @@ flowchart TD
 
 ## Возможности
 
-- \`OpenRouterAdapter\` (\`BaseLLMAdapter\`); схема ответа \`OpenRouterResponseSchema\` (zod).
+- \`OpenRouterAdapter\` (\`BaseLLMAdapter\`, НЕ OpenAiCompatible): baseURL по умолчанию \`/proxy/openrouter/api/v1\` (прокси); модель всегда передаётся вызовом (free-модели — в \`free-tiers.ts\`).
+- Streaming: SSE \`parseSSEStream\`, склейка chunked \`delta.tool_calls\` по \`index\`, capper \`max_tokens=16384\`.
+- \`rotateKey\` — **есть** (\`POST /keys\`, таймаут 15 с); \`checkHealth\` через \`refreshModelCache\` (TTL 5 мин); \`getAvailableModels\` с пер-key кэшем.
+- Схема ответа \`OpenRouterResponseSchema\` (zod); \`sanitizeModel\` (regex).
 
 ## Реализация
 
@@ -2468,11 +2471,12 @@ flowchart TD
 
 ## Проверка работоспособности
 
-- Подтверждено чтением кода (отдельного тест-файла нет); схема ответа валидируется zod.
+- Тест: \`openrouter-adapter.test.ts\` (3 теста: склейка \`delta.tool_calls\`, параллельные tool_calls, plain text) — покрыт streaming-путь.
+- Ручная: выбрать провайдера OpenRouter в Providers и отправить сообщение.
 
 ## Состояние
 
-- Реализовано; автотестом не покрыто.`,
+- Реализовано; streaming-путь покрыт тестом, batch/health/rotateKey — чтением кода.`,
     },
     {
         slug: 'comp-adapter-groq',
@@ -2488,7 +2492,10 @@ flowchart TD
 
 ## Возможности
 
-- \`GroqAdapter\` (\`BaseLLMAdapter\`).
+- \`GroqAdapter\` (\`BaseLLMAdapter\`, НЕ OpenAiCompatible): использует SDK \`groq-sdk\` (не \`LLMHttpClient\`), \`timeout=120000\`, \`maxRetries=2\`, \`dangerouslyAllowBrowser:true\`.
+- Streaming: SSE с idle-guard 30 с и терминальным meta-chunk (finishReason/tokens/toolCalls).
+- \`trimMessagesForGroq\`: усечение истории свыше 6000 символов (\`[Previous debate history summarized...]\`).
+- \`checkHealth\` через \`getAvailableModels\`; \`normalizeError\` (401/403 → AuthError, 429 → RetryableError). \`rotateKey\` — **нет**.
 
 ## Реализация
 
@@ -2501,11 +2508,12 @@ flowchart TD
 
 ## Проверка работоспособности
 
-- Подтверждено чтением кода (отдельного тест-файла нет).
+- Согласовано: отдельного адаптерного тест-файла нет (покрытие только косвенное — фабрика/free-tiers).
+- Ручная: выбрать Groq в Providers и отправить сообщение.
 
 ## Состояние
 
-- Реализовано; автотестом не покрыто.`,
+- Реализовано; подтверждено чтением кода, без прямых автотестов.`,
     },
     {
         slug: 'comp-adapter-nvidia-nim',
@@ -2521,7 +2529,9 @@ flowchart TD
 
 ## Возможности
 
-- \`NvidiaNIMAdapter\` (\`BaseLLMAdapter\`); схема ответа \`NvidiaNIMResponseSchema\` (zod).
+- \`NvidiaNIMAdapter\` (\`BaseLLMAdapter\`, НЕ OpenAiCompatible): baseURL \`/proxy/nvidia\`, endpoint \`POST /v1/chat/completions\`.
+- Streaming: SSE, \`idleTimeoutMs=90000\`; терминальный chunk только по finishReason (без usage/toolCalls).
+- \`checkHealth\`; \`getAvailableModels\` с бэкоффом 30 с; \`sanitizeModel\`; \`omitFields:['cachedContent']\`. \`rotateKey\` — **нет**.
 
 ## Реализация
 
@@ -2534,11 +2544,13 @@ flowchart TD
 
 ## Проверка работоспособности
 
-- Подтверждено чтением кода (отдельного тест-файла нет).
+- Согласовано: отдельного адаптерного тест-файла нет (покрытие косвенное).
+- Ручная: выбрать NVIDIA NIM в Providers и отправить сообщение.
 
 ## Состояние
 
-- Реализовано; автотестом не покрыто.`,
+- Реализовано; подтверждено чтением кода, без прямых автотестов.
+- **Риск:** streaming теряет usage/toolCalls (терминальный chunk по finishReason); токены в non-streaming — через \`estimateTokenCount\`-фолбэк.`,
     },
     {
         slug: 'comp-adapter-cloudflare',
@@ -2554,7 +2566,9 @@ flowchart TD
 
 ## Возможности
 
-- \`CloudflareAdapter\` (\`BaseLLMAdapter\`).
+- \`CloudflareAdapter\` (\`BaseLLMAdapter\`, НЕ OpenAiCompatible): ключ формата \`"{account_id}:{api_token}"\` (разбор в parseAuth); фактический endpoint \`/proxy/cloudflare/{accountId}/ai/v1/chat/completions\`.
+- Streaming: SSE, \`idleTimeoutMs=30000\`; batch читает и OpenAI-формат и legacy \`result.response\`.
+- \`checkHealth\`; \`getAvailableModels\` с бэкоффом 300 с; \`getFreeTier\` → 14400 req/день, 1M токенов/день. \`rotateKey\` — **нет**.
 
 ## Реализация
 
@@ -2567,11 +2581,13 @@ flowchart TD
 
 ## Проверка работоспособности
 
-- Подтверждено чтением кода (отдельного тест-файла нет).
+- Согласовано: отдельного адаптерного тест-файла нет (покрытие косвенное).
+- Ручная: выбрать Cloudflare в Providers и отправить сообщение.
 
 ## Состояние
 
-- Реализовано; автотестом не покрыто.`,
+- Реализовано; подтверждено чтением кода, без прямых автотестов.
+- **Риск:** не нормализует finishReason и не возвращает toolCalls (сырой \`finish_reason\`).`,
     },
     {
         slug: 'comp-adapter-mock',
@@ -2587,7 +2603,9 @@ flowchart TD
 
 ## Возможности
 
-- \`MockAdapter\` — заглушка провайдера.
+- \`MockAdapter\` — **реализует \`LLMProviderAdapter\` напрямую** (НЕ наследует \`BaseLLMAdapter\`): журнали echo (по умолчанию, \`"{role} {content}"\`), preset (фикс. строка), lorem (3×Lorem ipsum), error (бросает \`LLMError(500)\`).
+- Симулирует латентность (\`simulateLatencyMs\`), токены, health; псевдо-streaming по словам с проверкой \`signal.aborted\`.
+- Дефолтные модели: \`mock-model-v1/v2\`.
 
 ## Реализация
 
@@ -2600,11 +2618,13 @@ flowchart TD
 
 ## Проверка работоспособности
 
-- Подтверждено чтением кода (отдельного тест-файла нет).
+- Отдельного \`mock-adapter.test.ts\` нет; используется косвенно в \`adapter-factory.test.ts\` (как mock-провайдер).
+- Ручная: выбрать Mock в Providers — ответы детерминированные, без сети.
 
 ## Состояние
 
-- Реализовано; автотестом не покрыто.`,
+- Реализовано; подтверждено чтением кода.
+- **Замечание:** т.к. MockAdapter не наследует \`BaseLLMAdapter\`, он не получает общую обёртку ошибок (\`LLMError\`/AbortError) — двойной источник истины для \`sendMessage\`/\`streamMessage\`.`,
     },
     {
         slug: 'comp-decorator-resilience',

@@ -12,7 +12,10 @@
 
 ## Возможности
 
-- `GroqAdapter` (`BaseLLMAdapter`).
+- `GroqAdapter` (`BaseLLMAdapter`, НЕ OpenAiCompatible): использует SDK `groq-sdk` (не `LLMHttpClient`), `timeout=120000`, `maxRetries=2`, `dangerouslyAllowBrowser:true`.
+- Streaming: SSE с idle-guard 30 с и терминальным meta-chunk (finishReason/tokens/toolCalls).
+- `trimMessagesForGroq`: усечение истории свыше 6000 символов (`[Previous debate history summarized...]`).
+- `checkHealth` через `getAvailableModels`; `normalizeError` (401/403 → AuthError, 429 → RetryableError). `rotateKey` — **нет**.
 
 ## Реализация
 
@@ -25,11 +28,12 @@
 
 ## Проверка работоспособности
 
-- Подтверждено чтением кода (отдельного тест-файла нет).
+- Согласовано: отдельного адаптерного тест-файла нет (покрытие только косвенное — фабрика/free-tiers).
+- Ручная: выбрать Groq в Providers и отправить сообщение.
 
 ## Состояние
 
-- Реализовано; автотестом не покрыто.
+- Реализовано; подтверждено чтением кода, без прямых автотестов.
 
 ---
 

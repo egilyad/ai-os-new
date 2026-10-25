@@ -12,7 +12,9 @@
 
 ## Возможности
 
-- `CloudflareAdapter` (`BaseLLMAdapter`).
+- `CloudflareAdapter` (`BaseLLMAdapter`, НЕ OpenAiCompatible): ключ формата `"{account_id}:{api_token}"` (разбор в parseAuth); фактический endpoint `/proxy/cloudflare/{accountId}/ai/v1/chat/completions`.
+- Streaming: SSE, `idleTimeoutMs=30000`; batch читает и OpenAI-формат и legacy `result.response`.
+- `checkHealth`; `getAvailableModels` с бэкоффом 300 с; `getFreeTier` → 14400 req/день, 1M токенов/день. `rotateKey` — **нет**.
 
 ## Реализация
 
@@ -25,11 +27,13 @@
 
 ## Проверка работоспособности
 
-- Подтверждено чтением кода (отдельного тест-файла нет).
+- Согласовано: отдельного адаптерного тест-файла нет (покрытие косвенное).
+- Ручная: выбрать Cloudflare в Providers и отправить сообщение.
 
 ## Состояние
 
-- Реализовано; автотестом не покрыто.
+- Реализовано; подтверждено чтением кода, без прямых автотестов.
+- **Риск:** не нормализует finishReason и не возвращает toolCalls (сырой `finish_reason`).
 
 ---
 
