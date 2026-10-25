@@ -4,6 +4,7 @@ import { ProjectionRegistry } from './projection-registry';
 export class EventBridge {
     private started = false;
     private unsub: (() => void) | null = null;
+    private seq = 0;
     private preStartBuffer: Array<{ event: string; data: unknown; timestamp: number }> = [];
 
     constructor(
@@ -37,7 +38,7 @@ export class EventBridge {
                 type: payload.event,
                 payload: payload.data,
                 timestamp: Date.now(),
-                seq: 0,
+                seq: ++this.seq,
             };
             this.registry.dispatch(kernelEvent);
         });
@@ -49,7 +50,7 @@ export class EventBridge {
                 type: be.event,
                 payload: be.data,
                 timestamp: be.timestamp,
-                seq: 0,
+                seq: ++this.seq,
             });
         }
         this.preStartBuffer = [];

@@ -109,10 +109,12 @@ export class LlmCrewExecutor implements ICrewTaskExecutor {
                 input.role.id,
             );
         } catch (e) {
-            LOGGER.warn('LlmBridge', 'crew task llm failed, echo fallback', {
+            // L2: do NOT mask an LLM failure as a fake "completed" string —
+            // propagate the error so the caller can observe/handle it.
+            LOGGER.warn('LlmBridge', 'crew task llm failed', {
                 error: e instanceof Error ? e.message : String(e),
             });
-            return `[${input.role.name}] completed: ${input.task.description}\nExpected: ${input.task.expectedOutput}`;
+            throw e;
         }
     }
 }
