@@ -6,6 +6,7 @@ import { createDebateOrchestrator } from './debate-orchestrator-factory';
 import { buildPipeline } from './debate-pipeline-builder';
 import type { PipelineEngine, PipelineEngineDeps } from './debate-pipeline-builder';
 import { debateCallLlm, debateGetDefaultPrompt, type LlmCallerDeps } from './debate-llm-caller';
+import { BestOfNSelector } from './best-of-n';
 import type {
     DebateTopology,
     ParticipantConfig,
@@ -560,47 +561,36 @@ export class DebateEngine implements IDebateEngine, ILifecycle {
             liveResearch: this.deps.liveResearch,
         };
 
-        // P2.4: Best-of-N — generate N responses and pick the best.
+        // P2.4: Best-of-N — generate N responses and pick the best (D8:
+        // use the real BestOfNSelector scoring instead of the inline
+        // length+keyword heuristic).
         // Configurable via session metadata. Default: 1 (disabled).
         const bestOfN = (session as { metadata?: Record<string, unknown> }).metadata?.bestOfN as
             number | undefined;
         if (bestOfN && bestOfN > 1 && session.round >= 2) {
-            const candidates: Array<{ content: string; score: number }> = [];
-            for (let i = 0; i < Math.min(bestOfN, 3); i++) {
-                const candidateBudget = this.budgets.get(sessionId);
-                try {
-                    if (candidateBudget) {
-                        await candidateBudget.reserveAndRecord(sessionId, 250, 250 * 0.000002);
-                    }
-                    const content = await debateCallLlm(
+            const candidateBudget = this.budgets.get(sessionId);
+            const generateVariant = async (_prompt: string, _temperature?: number): Promise<string> => {
+                if (candidateBudget) {
+                    const allowed = await candidateBudget.reserveAndRecord(
                         sessionId,
-                        session,
-                        participant,
-                        deps,
-                        externalSignal,
+                        250,
+                        250 * 0.000002,
                     );
-                    if (content && content !== 'cancelled' && content.length > 20) {
-                        // Score: prefer longer responses with more substance
-                        const score =
-                            content.length +
-                            (content.split(' ').length > 15 ? 50 : 0) +
-                            (content.includes('because') ||
-                            content.includes('therefore') ||
-                            content.includes('however')
-                                ? 30
-                                : 0);
-                        candidates.push({ content, score });
-                    }
-                } catch {
-                    // Individual generation failure — skip this candidate
+                    if (!allowed) return '';
                 }
+                const content = await debateCallLlm(sessionId, session, participant, deps, externalSignal);
+                return content && content !== 'cancelled' ? content : '';
+            };
+            try {
+                const result = await new BestOfNSelector().selectBest(
+                    generateVariant,
+                    '',
+                    Math.min(bestOfN, 3),
+                );
+                if (result.selectedContent) return result.selectedContent;
+            } catch {
+                /* fall through to the single-call result below */
             }
-            if (candidates.length > 0) {
-                candidates.sort((a, b) => b.score - a.score);
-                return candidates[0]!.content;
-            }
-            // Fallthrough: if Best-of-N produced no valid candidates, return the
-            // single-call result below
         }
 
         return debateCallLlm(sessionId, session, participant, deps, externalSignal);

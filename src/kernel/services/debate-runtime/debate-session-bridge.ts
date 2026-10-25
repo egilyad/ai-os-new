@@ -61,6 +61,129 @@ export function buildRoundtableTopology(
     };
 }
 
+function topologyNodes(participants: DebateParticipant[]): DebateTopology['nodes'] {
+    return participants.map((p) => ({
+        id: p.id,
+        label: p.name,
+        role: p.role,
+        modelId: p.modelId,
+        provider: p.provider,
+    }));
+}
+
+function chainEdges(ids: string[]): DebateTopology['edges'] {
+    return ids.slice(0, -1).map((from, i) => ({
+        from,
+        to: ids[i + 1]!,
+        type: 'sequential' as const,
+    }));
+}
+
+export function buildLinearTopology(
+    participants: DebateParticipant[],
+    maxRounds?: number,
+): DebateTopology {
+    const ids = participants.map((p) => p.id);
+    return {
+        id: `topo-${Date.now()}`,
+        type: 'linear',
+        nodes: topologyNodes(participants),
+        edges: chainEdges(ids),
+        maxRounds,
+    };
+}
+
+export function buildTreeTopology(
+    participants: DebateParticipant[],
+    maxRounds?: number,
+): DebateTopology {
+    const ids = participants.map((p) => p.id);
+    const edges =
+        ids.length > 1
+            ? ids.slice(1).map((to) => ({
+                  from: ids[0]!,
+                  to,
+                  type: 'sequential' as const,
+              }))
+            : [];
+    return {
+        id: `topo-${Date.now()}`,
+        type: 'tree-of-thought',
+        nodes: topologyNodes(participants),
+        edges,
+        maxRounds,
+    };
+}
+
+export function buildJudgeTopology(
+    participants: DebateParticipant[],
+    maxRounds?: number,
+): DebateTopology {
+    const debaters = participants.filter((p) => p.role !== 'judge');
+    const judges = participants.filter((p) => p.role === 'judge');
+    const debaterIds = debaters.map((p) => p.id);
+    const edges: DebateTopology['edges'] = [...chainEdges(debaterIds)];
+    if (debaterIds.length && judges.length) {
+        edges.push({ from: debaterIds[0]!, to: judges[0]!.id, type: 'sequential' as const });
+    }
+    return {
+        id: `topo-${Date.now()}`,
+        type: 'judge',
+        nodes: topologyNodes(participants),
+        edges,
+        maxRounds,
+    };
+}
+
+export function buildRedBlueTopology(
+    participants: DebateParticipant[],
+    maxRounds?: number,
+): DebateTopology {
+    const attackers = participants.filter((p) => p.role === 'attacker');
+    const defenders = participants.filter((p) => p.role === 'defender');
+    const edges: DebateTopology['edges'] = [];
+    for (const a of attackers) {
+        for (const d of defenders) edges.push({ from: a.id, to: d.id, type: 'sequential' as const });
+    }
+    if (edges.length === 1 && attackers.length && defenders.length) {
+        edges.push({ from: defenders[0]!.id, to: attackers[0]!.id, type: 'sequential' as const });
+    }
+    return {
+        id: `topo-${Date.now()}`,
+        type: 'red-blue',
+        nodes: topologyNodes(participants),
+        edges,
+        maxRounds,
+    };
+}
+
+export function buildTopologyForStrategy(
+    strategy: DebateStrategy,
+    participants: DebateParticipant[],
+    maxRounds?: number,
+): DebateTopology {
+    switch (strategy) {
+        case 'sequential':
+            return buildLinearTopology(participants, maxRounds);
+        case 'tree-of-thought':
+            return buildTreeTopology(participants, maxRounds);
+        case 'judge':
+            if (participants.some((p) => p.role === 'judge'))
+                return buildJudgeTopology(participants, maxRounds);
+            break;
+        case 'red-blue':
+            if (
+                participants.some((p) => p.role === 'attacker') &&
+                participants.some((p) => p.role === 'defender')
+            )
+                return buildRedBlueTopology(participants, maxRounds);
+            break;
+        default:
+            break;
+    }
+    return buildRoundtableTopology(participants, maxRounds);
+}
+
 export function timelineToArguments(
     timeline: TimelineEntry[],
     participants: DebateParticipant[],

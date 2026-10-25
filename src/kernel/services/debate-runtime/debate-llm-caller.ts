@@ -114,10 +114,16 @@ async function buildDebateCallContext(args: {
     } catch {
         timelineSteps = [];
     }
+    // D9/C5: dynamic history window instead of fixed 6 — scale with
+    // participants and max rounds so a full previous round usually fits.
+    const participantCount = Math.max(1, session.participants?.length ?? 1);
+    const maxRounds = session.topology?.maxRounds ?? 5;
+    const historyWindow = Math.min(Math.max(2, maxRounds * participantCount), 12);
+
     const historySource = selectHistorySteps(
         mem.getAllSteps().map((s) => ({ agentId: s.agentId, content: s.content })),
         timelineSteps,
-        DEBATE_HISTORY_WINDOW,
+        historyWindow,
     );
     // Audit R10: speaker labels use [Name (self/opponent)] — if raw content
     // keeps ASCII brackets, the model copies the pattern ([X (opponent)],

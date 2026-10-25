@@ -18,7 +18,7 @@ import { DEFAULT_DEBATE_LANGUAGE } from '../config-registry';
 import {
     participantsToConfig,
     mergeAndProcessSession,
-    buildRoundtableTopology,
+    buildTopologyForStrategy,
 } from './debate-session-bridge';
 import type { SnapshotBridgeContext } from './debate-session-bridge';
 import { finalizeDebateState, emitFinalizeEvents } from './debate-finalizer';
@@ -300,16 +300,10 @@ export class DebateSyncManager {
         const sessionConfig = { ...DEFAULT_CONFIG };
         if (config) Object.assign(sessionConfig, config);
         this._setupDurationTimer(entry, sessionConfig);
-        for (const p of ['groq', 'gemini', 'openrouter', 'nvidia']) {
-            try {
-                this.deps.adapterRegistry.resetCircuitBreaker(p);
-            } catch {
-                /* ignore — circuit may not exist for this provider */
-            }
-        }
+        this._resetCircuitBreakers();
         const session = await this._initEngineSession(
             entry,
-            buildRoundtableTopology(participants, maxRounds),
+            buildTopologyForStrategy(strategy, participants, maxRounds),
             topic,
             participants,
             sessionConfig,
@@ -343,13 +337,7 @@ export class DebateSyncManager {
         const sessionConfig = { ...DEFAULT_CONFIG };
         if (config) Object.assign(sessionConfig, config);
         this._setupDurationTimer(entry, sessionConfig);
-        for (const p of ['groq', 'gemini', 'openrouter', 'nvidia']) {
-            try {
-                this.deps.adapterRegistry.resetCircuitBreaker(p);
-            } catch {
-                /* ignore — circuit may not exist for this provider */
-            }
-        }
+        this._resetCircuitBreakers();
         const session = await this._initEngineSession(
             entry,
             topology,
@@ -372,6 +360,27 @@ export class DebateSyncManager {
     /** Public stop — delegates to internal (finalizes the given or viewed session). */
     stopDebate(sessionId?: string): void {
         this.stopDebateInternal(sessionId ?? this._activeSessionId ?? undefined);
+    }
+
+    /** Reset circuit breakers for debate-capable providers. Uses the router's
+     *  dynamic list, falling back to known debate providers when unavailable. */
+    private _resetCircuitBreakers(): void {
+        const fallback = ['groq', 'gemini', 'openrouter', 'nvidia'];
+        let providers = fallback;
+        try {
+            const dynamic =
+                this.deps?.routerService?.getDebateProviders?.(1)?.map((p) => p.provider) ?? [];
+            if (dynamic.length) providers = [...new Set([...dynamic, ...fallback])];
+        } catch {
+            /* keep fallback */
+        }
+        for (const p of providers) {
+            try {
+                this.deps?.adapterRegistry.resetCircuitBreaker(p);
+            } catch {
+                /* ignore — circuit may not exist for this provider */
+            }
+        }
     }
 
     private _setupDurationTimer(entry: SyncEntry, sessionConfig: DebateConfig): void {

@@ -1246,6 +1246,32 @@ export async function buildDebateSystemContent(
     }
 
     // Use the rich prompt builder instead of the simple inline prompt
+    // Multi-hop justification: run the real JustificationEnforcer on the agent's
+    // last argument; if the chain is weak, replace the static block with a
+    // targeted corrective hint (D13 — wires the previously-unused service).
+    let multiHopText: string | undefined;
+    if (isQ('multi-hop') && session.round > 1 && deps.justificationEnforcer) {
+        const lastArg = [...previousArguments]
+            .reverse()
+            .find((a) => a.agentId === participant.agentId);
+        if (lastArg?.content) {
+            try {
+                const chain = deps.justificationEnforcer.analyzeArgument(
+                    participant.agentId,
+                    session.round - 1,
+                    lastArg.content,
+                );
+                if (!chain.isValid && chain.missingTypes.length) {
+                    multiHopText =
+                        `Your previous argument lacked linked reasoning steps (missing: ${chain.missingTypes.join(', ')}). ` +
+                        'Structure this response as CLAIM → WARRANT → EVIDENCE to form a multi-hop chain.';
+                }
+            } catch {
+                /* fall back to static multi-hop prompt */
+            }
+        }
+    }
+
     let systemContent = buildArgumentPrompt(
         {
             id: participant.agentId,
@@ -1313,6 +1339,7 @@ export async function buildDebateSystemContent(
         forecasterText,
         session.qualitySettings,
         liveResearchText,
+        multiHopText,
     );
 
     // Append persona memory block (from past debates — adds 3+ step history)

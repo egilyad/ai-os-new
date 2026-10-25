@@ -45,7 +45,7 @@ const BUILTIN_MODES: DebateMode[] = [
             'Peer review process with structured evaluation criteria. Authors vs Reviewers.',
         icon: 'microscope',
         color: '#8b5cf6',
-        strategyRef: 'builtin.peer_review',
+        strategyRef: 'builtin.constrained',
         constraint: 'data_driven',
         policies: [
             { type: 'require_evidence', value: true, description: 'Empirical evidence required' },

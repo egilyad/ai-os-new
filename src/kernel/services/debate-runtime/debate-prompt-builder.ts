@@ -288,6 +288,7 @@ export function buildArgumentPrompt(
     forecasterText?: string,
     qualitySettings?: Record<string, boolean>,
     liveResearchText?: string,
+    multiHopText?: string,
 ): string {
     const isSocratic = strategy === 'socratic';
     const isArgumentTree = strategy === 'argument_tree';
@@ -437,13 +438,10 @@ export function buildArgumentPrompt(
     const synthesizeBlock =
         isQ('synthesis', qualitySettings) && round >= 4 ? buildSynthesisPrompt(language) : '';
 
-    const concessionBlock = isQ('concession', qualitySettings)
-        ? buildConcessionPrompt(language)
-        : '';
-
-    const concessionEngineBlock = isQ('concession-engine', qualitySettings)
-        ? buildConcessionPrompt(language)
-        : '';
+    const concessionBlock =
+        isQ('concession', qualitySettings) || isQ('concession-engine', qualitySettings)
+            ? buildConcessionPrompt(language)
+            : '';
 
     const counterfactualBlock =
         isQ('counterfactual', qualitySettings) && round >= 3
@@ -474,7 +472,9 @@ export function buildArgumentPrompt(
             : '';
 
     const multiHopBlock =
-        isQ('multi-hop', qualitySettings) && round > 1 ? buildMultiHopPrompt(language) : '';
+        isQ('multi-hop', qualitySettings) && round > 1
+            ? (multiHopText ?? buildMultiHopPrompt(language))
+            : '';
 
     const dpoBlock =
         isQ('dpo-sampler', qualitySettings) && round > 1 ? buildDpoSamplerPrompt(language) : '';
@@ -669,7 +669,7 @@ export function buildArgumentPrompt(
         : '';
 
     return `## Topic: ${sanitizeForPrompt(topic)}
-${roleContext}${constraintBlock}${socraticBlock}${treePrompt}${strategyBlock}${angleBlock}${tempBlock}${entanglementBlock}${anchorsBlock}${vulnerabilityBlock}${adversarialBlock}${beliefConflictsBlock}${minimaxBlock}${tacticalBlock}${steelmanBlock}${bopBlock}${consistencyBlock}${credibilityBlock}${crossExBlock}${deltaBlock}${objectionBlock}${triangulationBlock}${criticBlock}${criticSelfBlock}${socraticPivotBlock}${changePivotBlock}${synthesizeBlock}${concessionBlock}${concessionEngineBlock}${counterfactualBlock}${synthesisBlock}${shadowBlock}${empathyBlock}${humilityBlock}${heatBlock}${sentinelBlock}${redundancyBlock}${driftBlock}${insightBlock}${replayBlock}${enthymemeBlock}${multiHopBlock}${dpoBlock}${uncertaintyBlock}${biasBlock}${interruptBlock}${stakeholderBlock}${calibrationBlock}${factCheckBlock}${personaMixBlock}${frameBlock}${expertBlock}${driftCalloutBlock}${rhetoricalBlock}${rhetoricBlock}${biddingBlock}${scratchpadBlock}${narrativeBlock}${levelBlock}${reversalBlock}${fogBlock}${evidenceBlock}${humorBlock}${statusBlock}${styleBlock}${adaptiveBlock}${personaBlock}${strategistBlock}${whisperBlock}${audienceBlock}${allianceBlock}${predictionBlock}${rtomBlock}${blindBlock}${fingerprintBlock}${causalBlock}${executableEvidenceBlock}${hiddenIncentivesBlock}${gotBlock}${blendingBlock}${forecasterBlock}${liveResearchBlock}${diagramBlock}${bestOfNBlock}
+${roleContext}${constraintBlock}${socraticBlock}${treePrompt}${strategyBlock}${angleBlock}${tempBlock}${entanglementBlock}${anchorsBlock}${vulnerabilityBlock}${adversarialBlock}${beliefConflictsBlock}${minimaxBlock}${tacticalBlock}${steelmanBlock}${bopBlock}${consistencyBlock}${credibilityBlock}${crossExBlock}${deltaBlock}${objectionBlock}${triangulationBlock}${criticBlock}${criticSelfBlock}${socraticPivotBlock}${changePivotBlock}${synthesizeBlock}${concessionBlock}${counterfactualBlock}${synthesisBlock}${shadowBlock}${empathyBlock}${humilityBlock}${heatBlock}${sentinelBlock}${redundancyBlock}${driftBlock}${insightBlock}${replayBlock}${enthymemeBlock}${multiHopBlock}${dpoBlock}${uncertaintyBlock}${biasBlock}${interruptBlock}${stakeholderBlock}${calibrationBlock}${factCheckBlock}${personaMixBlock}${frameBlock}${expertBlock}${driftCalloutBlock}${rhetoricalBlock}${rhetoricBlock}${biddingBlock}${scratchpadBlock}${narrativeBlock}${levelBlock}${reversalBlock}${fogBlock}${evidenceBlock}${humorBlock}${statusBlock}${styleBlock}${adaptiveBlock}${personaBlock}${strategistBlock}${whisperBlock}${audienceBlock}${allianceBlock}${predictionBlock}${rtomBlock}${blindBlock}${fingerprintBlock}${causalBlock}${executableEvidenceBlock}${hiddenIncentivesBlock}${gotBlock}${blendingBlock}${forecasterBlock}${liveResearchBlock}${diagramBlock}${bestOfNBlock}
 
 ${statePrompt}
 
