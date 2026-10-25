@@ -59,12 +59,20 @@ export const registerPhase11: Phase = ({ register }) => {
             const kss = c.get<KeyStateStore>('keyStateStore');
             const routerProjection = c.get<RouterProjection>('routerProjection');
             const eventBus = c.get<import('../types/interfaces').IEventBus>('eventBus');
+            const recorder = c.get<EventRecorder>('eventSourcingService');
             const svc = new CausalTimelineService(
                 causalScopeManager,
                 kss,
                 routerProjection,
                 eventBus,
                 LOGGER,
+                recorder?.getAll
+                    ? () => recorder.getAll().map((e) => ({
+                          eventName: e.event,
+                          timestamp: e.timestamp,
+                          payload: (e.data ?? {}) as Record<string, unknown>,
+                      }))
+                    : undefined,
             );
             svc.start();
             const memAfter = getHeapMB();

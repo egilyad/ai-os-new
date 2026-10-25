@@ -33,6 +33,7 @@ export class CausalTimelineService implements ICausalTraceStore {
         private routerProjection: Projection,
         private eventBus: IEventBus,
         private logger: ILogger,
+        private eventLogProvider?: () => EventRef[],
     ) {}
 
     start(): void {
@@ -69,7 +70,15 @@ export class CausalTimelineService implements ICausalTraceStore {
         const entry = this.traces.get(causalId);
         if (!entry) return undefined;
         const scope = this.scopeManager.getScope(causalId);
-        const timeline: EventRef[] = [];
+        let timeline: EventRef[] = [];
+        if (this.eventLogProvider) {
+            try {
+                const log = this.eventLogProvider();
+                timeline = log.length ? this.getRelevantEvents(causalId, { entries: log }) : [];
+            } catch {
+                /* timeline stays empty on provider failure */
+            }
+        }
         return {
             entry,
             timeline,
