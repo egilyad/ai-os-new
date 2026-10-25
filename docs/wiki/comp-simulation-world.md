@@ -18,9 +18,10 @@
 
 ## Реализация
 
-- `simulation/`: `simulation-engine-service.ts`, `world-state-service.ts`, `agent-act-adapter-service.ts`.
+- `simulation/`: `simulation-engine-service.ts` (`SimulationEngineService`, ~125 ст.: параллельные тики `Promise.all`, run/step), `world-state-service.ts` (`WorldStateService`, ~140 ст.: миры/комнаты/отношения/глобальные часы, moveAgent/tick, валидация координат 0..1000), `agent-act-adapter-service.ts` (`AgentActAdapterService`, ~93 ст.: IAgentActPort через IAgentFactory).
 - `computer/`: `computer-use-loop-service.ts`, `sidecar-computer-executor.ts`.
 - `parity/`: `knowledge-service.ts`, `tool-runner-service.ts`, `training-service.ts`, `default-embedding-service.ts`.
+- **Важно:** по умолчанию движок симуляции использует `StubActPort` (детерминированный хэш, без LLM); реальный адаптер подключается вручную через `setActPort` (в UI). Дополнительно `SimulationService` (frontier) — детерминированные симуляции «социумов» без LLM.
 
 ## Связи
 
@@ -29,12 +30,13 @@
 
 ## Проверка работоспособности
 
-- Тесты: `simulation/simulation-engine-service.test.ts`, `world-state-service.test.ts`, `computer/computer-use-loop-service.test.ts`, `parity/tool-runner-service.test.ts`.
+- Тесты: `simulation/simulation-engine-service.test.ts` (parallel step, run N ticks, custom actPort), `world-state-service.test.ts` (create/get/tick/moveAgent/валидация), `agent-act-adapter-service.test.ts` (stub fallback, парсинг move/talk), `computer/computer-use-loop-service.test.ts`, `parity/tool-runner-service.test.ts`.
 - Ручная: запустить симуляцию, дать агенту действие в мире.
 
 ## Состояние
 
 - Реализовано; симуляция, computer-use и parity покрыты тестами.
+- **Риск (подробно — `docs/audits/cognitive-simulation-audit.md`):** без реального LLM-агента движок молча работает на `StubActPort`/stub fallback («PROVIDER-PENDING»).
 
 ---
 

@@ -18,7 +18,11 @@
 
 ## Реализация
 
-- `temporal-replay-service.ts` (`TemporalReplayService`), `snapshot-service.ts` (`SnapshotService` + типы), `causal-timeline-service.ts` (`CausalTimelineService`), `counterfactual-explanation-service.ts` (`CounterfactualExplanationService`).
+- `temporal-replay-service.ts` (`TemporalReplayService`, ~371 ст.): реплей событий по временному окну, пересчёт скоров (`applyEvent`), `rescore` через routerService, `flipFrame` (первый кадр-лидер), read-only (сохраняет/восстанавливает sim-state).
+- `snapshot-service.ts` (`SnapshotService` + типы): снапшоты, diff, restore, replay снимков.
+- `causal-timeline-service.ts` (`CausalTimelineService`): слушает `system:decision`, `recordDecision` (evict при 200), `getRelevantEvents` (фильтр по scope).
+- `causal-scope-manager.ts`: группировка requestId по provider/key-overlap (`MAX_SCOPES=100`, `maxScopeSize=10`).
+- `counterfactual-engine.ts` + `counterfactual-explanation-service.ts` + `counterfactual-narrative-service.ts`: override-прогон через routerService (simState), scoreDiffs, декомпозиция по COMPONENT_KEYS.
 - В дебатах есть свои аналоги: `debate-runtime/causal-graph-builder.ts`, `counterfactual-service.ts`, `replay-selector.ts`, `debate-snapshot-bridge.ts`.
 
 ## Связи
@@ -29,11 +33,13 @@
 ## Проверка работоспособности
 
 - Есть тесты `snapshot-service.test.ts`, а также в дебатах `causal-graph-builder.test.ts`, `counterfactual-service.test.ts`, `replay-selector.test.ts`.
+- **Пробел:** нет unit-тестов на `CausalScopeManager`, `CausalTimelineService`, `TemporalReplayService`, `CounterfactualEngine/Explanation/Narrative`.
 - Ручная: снять снапшот, изменить состояние, сравнить и переиграть.
 
 ## Состояние
 
 - Реализовано; снапшоты и дебатовые аналоги покрыты тестами, верхнеуровневый replay — без выделенного теста.
+- **Известный дефект:** `CausalTimelineService.getTrace` возвращает пустой `timeline: []` (массив никогда не заполняется) — потребители временной шкалы получают пустоту. Подробно — `docs/audits/cognitive-simulation-audit.md` (C2).
 
 ---
 

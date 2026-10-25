@@ -2,9 +2,9 @@
 
 # Компонент: когнитивные трассы и оркестрация топологий
 
-> Раздел: **Компоненты и сервисы** · Статус: documented · Теги: компоненты, когнитивные, топологии, оркестрация
+> Раздел: **Компоненты и сервисы** · Статус: verified · Теги: компоненты, когнитивные, топологии, оркестрация, метрики
 
-Источники: `src/kernel/services/cognitive-service.ts`, `src/kernel/services/orchestration-service.ts`, `src/kernel/services/cognitive-intelligence/cognitive-intelligence-service.ts`
+Источники: `src/kernel/services/cognitive-service.ts`, `src/kernel/services/orchestration-service.ts`, `src/kernel/services/cognitive-intelligence/cognitive-intelligence-service.ts`, `src/kernel/services/cognitive-intelligence/cognitive-metrics.ts`, `src/kernel/services/cognitive-intelligence/cognitive-pressure.ts`, `src/kernel/services/cognitive-intelligence/cognitive-diagnostics.ts`, `src/kernel/services/cognitive-intelligence/cognitive-whatif.ts`
 
 ## Назначение
 
@@ -18,24 +18,27 @@
 
 ## Реализация
 
-- `CognitiveService` (`cognitive-service.ts`): события `cognitive:trace:updated`, `cognitive:step:active`, `cognitive:step:completed`, `cognitive:decision:made`, а также `request:incoming/completed`.
-- `OrchestrationService` (`orchestration-service.ts`): исполнение DAG-топологий, `system:topology:mounted`.
-- `cognitive-intelligence/cognitive-intelligence-service.ts` + `cognitive-diagnostics.ts`, `cognitive-metrics.ts`, `cognitive-pressure.ts`, `cognitive-whatif.ts`.
+- `CognitiveService` (`cognitive-service.ts`, ~626 ст.): слушает `SEND_MESSAGE`/cognitive-события, `executeAgentNode` (buildPrompt → evaluateAlternatives → makeDecision → executeWithFallback), жёсткие OOM-лимиты (MAX_TRACES=30, MAX_STEPS=20, buffer 8k, throttle 500 мс).
+- `OrchestrationService` (`orchestration-service.ts`, ~700 ст.): обход топологии (router/agent/guardrail/tool узлы), валидация, параллельные ветки батчами по 3 (`PARALLEL_LIMIT=3`), rate-limit, lifecycle.
+- `cognitive-intelligence/cognitive-intelligence-service.ts` + `cognitive-metrics.ts` (debateQuality/сontradictionDensity/consensusConfidence/…), `cognitive-pressure.ts` (complexity 0.35 + contention 0.25 + memoryPressure 0.25 + …), `cognitive-diagnostics.ts` (issue-типы, health), `cognitive-whatif.ts` (simulateTopologyChange/ParticipantChange).
+- **Важно:** когнитивная разведка питается только событиями **дебатов** (не памяти).
 
 ## Связи
 
 - Узлы исполняются через провайдеров ([Компонент: роутинг и провайдеры](./comp-routing.md)).
 - Роли агентов, исполняющие шаги — [Компонент: агенты, роли и навыки](./comp-agents-roles-skills.md).
+- Данные для метрик/давления приходят из [Компонент: рантайм дебатов](./comp-debate-runtime.md).
 - Панели: [Панель: Обзор (Dashboard)](./panel-dashboard.md), [Панель: База знаний (RAG)](./panel-knowledge.md).
 
 ## Проверка работоспособности
 
 - Ручная: запустить топологию в панели и проследить `cognitive:step:*` в ленте событий.
-- **Тестов нет:** для `cognitive-service.ts` и `orchestration-service.ts` автотесты не найдены.
+- **Пробел:** нет unit-тестов на `CognitiveService`, `OrchestrationService`, `cognitive-intelligence/*`.
 
 ## Состояние
 
-- Реализовано; подтверждено только чтением кода (тестов нет).
+- Реализовано; подтверждено чтением кода (тестов на ядро нет).
+- **Риски (подробно — `docs/audits/cognitive-simulation-audit.md`):** `makeDecision` всегда возвращает `alts[0]` (селекция фактически в routerService); метрики считаются по последнему окну 8k (могут занижаться).
 
 ---
 
@@ -46,5 +49,6 @@
 - [Панель: База знаний (RAG)](./panel-knowledge.md)
 - [Компонент: роутинг и провайдеры](./comp-routing.md)
 - [Компонент: агенты, роли и навыки](./comp-agents-roles-skills.md)
+- [Компонент: рантайм дебатов](./comp-debate-runtime.md)
 
 [← Все материалы](./README.md)

@@ -191,7 +191,7 @@
 - [Компонент: консистентность и дрейф](./comp-consistency.md) — _verified_
 - [Компонент: рантайм дебатов](./comp-debate-runtime.md) — _verified_
 - [Дебаты: стратегии, режимы и техники качества](./comp-debate-techniques.md) — _verified_
-- [Компонент: когнитивные трассы и оркестрация топологий](./comp-cognitive-orchestration.md) — _documented_
+- [Компонент: когнитивные трассы и оркестрация топологий](./comp-cognitive-orchestration.md) — _verified_
 - [Компонент: память и знания](./comp-memory.md) — _verified_
 - [Компонент: чат (ChatExecutor)](./comp-chat.md) — _verified_
 - [Компонент: наблюдаемость (метрики, трейсы, мониторинг)](./comp-observability.md) — _verified_

@@ -903,14 +903,18 @@ flowchart TD
         slug: 'comp-cognitive-orchestration',
         title: 'Компонент: когнитивные трассы и оркестрация топологий',
         section: 'components',
-        tags: ['компоненты', 'когнитивные', 'топологии', 'оркестрация'],
-        freshness: 'documented',
+        tags: ['компоненты', 'когнитивные', 'топологии', 'оркестрация', 'метрики'],
+        freshness: 'verified',
         sources: [
             'src/kernel/services/cognitive-service.ts',
             'src/kernel/services/orchestration-service.ts',
             'src/kernel/services/cognitive-intelligence/cognitive-intelligence-service.ts',
+            'src/kernel/services/cognitive-intelligence/cognitive-metrics.ts',
+            'src/kernel/services/cognitive-intelligence/cognitive-pressure.ts',
+            'src/kernel/services/cognitive-intelligence/cognitive-diagnostics.ts',
+            'src/kernel/services/cognitive-intelligence/cognitive-whatif.ts',
         ],
-        related: ['architecture', 'panel-dashboard', 'panel-knowledge', 'comp-routing', 'comp-agents-roles-skills'],
+        related: ['architecture', 'panel-dashboard', 'panel-knowledge', 'comp-routing', 'comp-agents-roles-skills', 'comp-debate-runtime'],
         body: `## Назначение
 
 Исполнять когнитивные процессы и топологии: прогонять узлы (шаги) через цепочки провайдеров, фиксировать решения и монтировать графы (DAG) рабочих процессов.
@@ -923,24 +927,27 @@ flowchart TD
 
 ## Реализация
 
-- \`CognitiveService\` (\`cognitive-service.ts\`): события \`cognitive:trace:updated\`, \`cognitive:step:active\`, \`cognitive:step:completed\`, \`cognitive:decision:made\`, а также \`request:incoming/completed\`.
-- \`OrchestrationService\` (\`orchestration-service.ts\`): исполнение DAG-топологий, \`system:topology:mounted\`.
-- \`cognitive-intelligence/cognitive-intelligence-service.ts\` + \`cognitive-diagnostics.ts\`, \`cognitive-metrics.ts\`, \`cognitive-pressure.ts\`, \`cognitive-whatif.ts\`.
+- \`CognitiveService\` (\`cognitive-service.ts\`, ~626 ст.): слушает \`SEND_MESSAGE\`/cognitive-события, \`executeAgentNode\` (buildPrompt → evaluateAlternatives → makeDecision → executeWithFallback), жёсткие OOM-лимиты (MAX_TRACES=30, MAX_STEPS=20, buffer 8k, throttle 500 мс).
+- \`OrchestrationService\` (\`orchestration-service.ts\`, ~700 ст.): обход топологии (router/agent/guardrail/tool узлы), валидация, параллельные ветки батчами по 3 (\`PARALLEL_LIMIT=3\`), rate-limit, lifecycle.
+- \`cognitive-intelligence/cognitive-intelligence-service.ts\` + \`cognitive-metrics.ts\` (debateQuality/сontradictionDensity/consensusConfidence/…), \`cognitive-pressure.ts\` (complexity 0.35 + contention 0.25 + memoryPressure 0.25 + …), \`cognitive-diagnostics.ts\` (issue-типы, health), \`cognitive-whatif.ts\` (simulateTopologyChange/ParticipantChange).
+- **Важно:** когнитивная разведка питается только событиями **дебатов** (не памяти).
 
 ## Связи
 
 - Узлы исполняются через провайдеров ([[comp-routing]]).
 - Роли агентов, исполняющие шаги — [[comp-agents-roles-skills]].
+- Данные для метрик/давления приходят из [[comp-debate-runtime]].
 - Панели: [[panel-dashboard]], [[panel-knowledge]].
 
 ## Проверка работоспособности
 
 - Ручная: запустить топологию в панели и проследить \`cognitive:step:*\` в ленте событий.
-- **Тестов нет:** для \`cognitive-service.ts\` и \`orchestration-service.ts\` автотесты не найдены.
+- **Пробел:** нет unit-тестов на \`CognitiveService\`, \`OrchestrationService\`, \`cognitive-intelligence/*\`.
 
 ## Состояние
 
-- Реализовано; подтверждено только чтением кода (тестов нет).`,
+- Реализовано; подтверждено чтением кода (тестов на ядро нет).
+- **Риски (подробно — \`docs/audits/cognitive-simulation-audit.md\`):** \`makeDecision\` всегда возвращает \`alts[0]\` (селекция фактически в routerService); метрики считаются по последнему окну 8k (могут занижаться).`,
     },
     {
         slug: 'comp-memory',
@@ -1204,7 +1211,11 @@ flowchart TD
 
 ## Реализация
 
-- \`temporal-replay-service.ts\` (\`TemporalReplayService\`), \`snapshot-service.ts\` (\`SnapshotService\` + типы), \`causal-timeline-service.ts\` (\`CausalTimelineService\`), \`counterfactual-explanation-service.ts\` (\`CounterfactualExplanationService\`).
+- \`temporal-replay-service.ts\` (\`TemporalReplayService\`, ~371 ст.): реплей событий по временному окну, пересчёт скоров (\`applyEvent\`), \`rescore\` через routerService, \`flipFrame\` (первый кадр-лидер), read-only (сохраняет/восстанавливает sim-state).
+- \`snapshot-service.ts\` (\`SnapshotService\` + типы): снапшоты, diff, restore, replay снимков.
+- \`causal-timeline-service.ts\` (\`CausalTimelineService\`): слушает \`system:decision\`, \`recordDecision\` (evict при 200), \`getRelevantEvents\` (фильтр по scope).
+- \`causal-scope-manager.ts\`: группировка requestId по provider/key-overlap (\`MAX_SCOPES=100\`, \`maxScopeSize=10\`).
+- \`counterfactual-engine.ts\` + \`counterfactual-explanation-service.ts\` + \`counterfactual-narrative-service.ts\`: override-прогон через routerService (simState), scoreDiffs, декомпозиция по COMPONENT_KEYS.
 - В дебатах есть свои аналоги: \`debate-runtime/causal-graph-builder.ts\`, \`counterfactual-service.ts\`, \`replay-selector.ts\`, \`debate-snapshot-bridge.ts\`.
 
 ## Связи
@@ -1215,11 +1226,13 @@ flowchart TD
 ## Проверка работоспособности
 
 - Есть тесты \`snapshot-service.test.ts\`, а также в дебатах \`causal-graph-builder.test.ts\`, \`counterfactual-service.test.ts\`, \`replay-selector.test.ts\`.
+- **Пробел:** нет unit-тестов на \`CausalScopeManager\`, \`CausalTimelineService\`, \`TemporalReplayService\`, \`CounterfactualEngine/Explanation/Narrative\`.
 - Ручная: снять снапшот, изменить состояние, сравнить и переиграть.
 
 ## Состояние
 
-- Реализовано; снапшоты и дебатовые аналоги покрыты тестами, верхнеуровневый replay — без выделенного теста.`,
+- Реализовано; снапшоты и дебатовые аналоги покрыты тестами, верхнеуровневый replay — без выделенного теста.
+- **Известный дефект:** \`CausalTimelineService.getTrace\` возвращает пустой \`timeline: []\` (массив никогда не заполняется) — потребители временной шкалы получают пустоту. Подробно — \`docs/audits/cognitive-simulation-audit.md\` (C2).`,
     },
     {
         slug: 'comp-task-planning',
@@ -1842,9 +1855,10 @@ flowchart TD
 
 ## Реализация
 
-- \`simulation/\`: \`simulation-engine-service.ts\`, \`world-state-service.ts\`, \`agent-act-adapter-service.ts\`.
+- \`simulation/\`: \`simulation-engine-service.ts\` (\`SimulationEngineService\`, ~125 ст.: параллельные тики \`Promise.all\`, run/step), \`world-state-service.ts\` (\`WorldStateService\`, ~140 ст.: миры/комнаты/отношения/глобальные часы, moveAgent/tick, валидация координат 0..1000), \`agent-act-adapter-service.ts\` (\`AgentActAdapterService\`, ~93 ст.: IAgentActPort через IAgentFactory).
 - \`computer/\`: \`computer-use-loop-service.ts\`, \`sidecar-computer-executor.ts\`.
 - \`parity/\`: \`knowledge-service.ts\`, \`tool-runner-service.ts\`, \`training-service.ts\`, \`default-embedding-service.ts\`.
+- **Важно:** по умолчанию движок симуляции использует \`StubActPort\` (детерминированный хэш, без LLM); реальный адаптер подключается вручную через \`setActPort\` (в UI). Дополнительно \`SimulationService\` (frontier) — детерминированные симуляции «социумов» без LLM.
 
 ## Связи
 
@@ -1853,12 +1867,13 @@ flowchart TD
 
 ## Проверка работоспособности
 
-- Тесты: \`simulation/simulation-engine-service.test.ts\`, \`world-state-service.test.ts\`, \`computer/computer-use-loop-service.test.ts\`, \`parity/tool-runner-service.test.ts\`.
+- Тесты: \`simulation/simulation-engine-service.test.ts\` (parallel step, run N ticks, custom actPort), \`world-state-service.test.ts\` (create/get/tick/moveAgent/валидация), \`agent-act-adapter-service.test.ts\` (stub fallback, парсинг move/talk), \`computer/computer-use-loop-service.test.ts\`, \`parity/tool-runner-service.test.ts\`.
 - Ручная: запустить симуляцию, дать агенту действие в мире.
 
 ## Состояние
 
-- Реализовано; симуляция, computer-use и parity покрыты тестами.`,
+- Реализовано; симуляция, computer-use и parity покрыты тестами.
+- **Риск (подробно — \`docs/audits/cognitive-simulation-audit.md\`):** без реального LLM-агента движок молча работает на \`StubActPort\`/stub fallback («PROVIDER-PENDING»).`,
     },
     {
         slug: 'comp-synthesis-forum',
