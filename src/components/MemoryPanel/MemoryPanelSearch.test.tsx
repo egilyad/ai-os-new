@@ -26,6 +26,9 @@ vi.mock('../../kernel/instances', () => {
             search: (q: string) =>
                 memos.searchImpl ? memos.searchImpl(q) : Promise.resolve([]),
         },
+        memoryGraphService: {
+            build: () => ({ nodes: [], edges: [] }),
+        },
     };
 });
 

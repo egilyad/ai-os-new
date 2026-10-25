@@ -35,6 +35,9 @@ vi.mock('../../kernel/instances', () => ({
         clear: vi.fn(() => Promise.resolve()),
         ensureSemantic: vi.fn(() => Promise.resolve()),
     },
+    memoryGraphService: {
+        build: vi.fn(() => ({ nodes: [], edges: [] })),
+    },
     settingsService: {
         getSettings: vi.fn(() => ({
             notifications: true,
