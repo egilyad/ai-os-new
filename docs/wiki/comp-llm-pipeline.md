@@ -22,6 +22,7 @@
 - `src/llm/core/`: `base-adapter.ts`, `base-decorator.ts`, `middleware-pipeline.ts`, `request-builder.ts`, `errors.ts`, `flyweight.ts`.
 - `src/llm/decorators/`: `circuit-breaker.ts`, `retry-decorator.ts`, `rate-limit-decorator.ts`, `fallback-decorator.ts`, `semantic-router.ts`, `canary-router.ts`, `cost-manager.ts`, `compress-route.ts`, `cache-decorator.ts`, `priority-queue.ts`, `logging-decorator.ts`.
 - Декораторы композируются вокруг адаптера (паттерн декоратор + цепочка middleware).
+- **Порядок нанизывания в `AdapterFactory.create()`** (от внутреннего к внешнему): `Base adapter → RateLimit → Retry → CircuitBreaker → PriorityQueue → CostManager → Cache → Logging`. **Вне дефолтной цепочки** (экспортируются и покрыты тестами, но не авто-wiring): `SemanticRouterDecorator`, `CanaryRouterDecorator`, `CompressRouteDecorator` — их нужно подключать явно.
 
 ## Связи
 

@@ -557,7 +557,8 @@ flowchart TD
 ## Состояние
 
 - Ядро роутинга подтверждено кодом и тестами (частями).
-- Неточные имена из старой описи исправлены выше; прогрев провайдеров — не реализован.`,
+- Неточные имена из старой описи исправлены выше; прогрев провайдеров — не реализован.
+- **Известные риски (подробно — \`docs/audits/providers-llm-audit.md\`):** жёсткий \`PRIORITY\`-список в дебатах (новый провайдер требует правки кода); дублирование роутинга (\`RouterRankingService\` vs \`KeyStateStore\` — shadow-сравнение).`,
     },
     {
         slug: 'comp-budget-pricing',
@@ -1393,7 +1394,8 @@ flowchart TD
 
 ## Состояние
 
-- Реализовано; реестр адаптеров и e2e стека провайдеров покрыты тестами.`,
+- Реализовано; реестр адаптеров и e2e стека провайдеров покрыты тестами.
+- **Известные риски (подробно — \`docs/audits/providers-llm-audit.md\`):** жёсткий список провайдеров в дебатах (\`PRIORITY\`) и \`SUPPORTED_PROVIDERS\` (новый провайдер требует правки кода); «Vectorault не подключён» — ключи хранятся plaintext; дублирование роутинга (РRouterRankingService\` vs \`KeyStateStore\`, shadow-сравнение).`,
     },
     {
         slug: 'comp-llm-bridge',
@@ -2107,6 +2109,7 @@ flowchart TD
 - \`src/llm/core/\`: \`base-adapter.ts\`, \`base-decorator.ts\`, \`middleware-pipeline.ts\`, \`request-builder.ts\`, \`errors.ts\`, \`flyweight.ts\`.
 - \`src/llm/decorators/\`: \`circuit-breaker.ts\`, \`retry-decorator.ts\`, \`rate-limit-decorator.ts\`, \`fallback-decorator.ts\`, \`semantic-router.ts\`, \`canary-router.ts\`, \`cost-manager.ts\`, \`compress-route.ts\`, \`cache-decorator.ts\`, \`priority-queue.ts\`, \`logging-decorator.ts\`.
 - Декораторы композируются вокруг адаптера (паттерн декоратор + цепочка middleware).
+- **Порядок нанизывания в \`AdapterFactory.create()\`** (от внутреннего к внешнему): \`Base adapter → RateLimit → Retry → CircuitBreaker → PriorityQueue → CostManager → Cache → Logging\`. **Вне дефолтной цепочки** (экспортируются и покрыты тестами, но не авто-wiring): \`SemanticRouterDecorator\`, \`CanaryRouterDecorator\`, \`CompressRouteDecorator\` — их нужно подключать явно.
 
 ## Связи
 

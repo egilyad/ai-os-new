@@ -35,6 +35,7 @@
 ## Состояние
 
 - Реализовано; реестр адаптеров и e2e стека провайдеров покрыты тестами.
+- **Известные риски (подробно — `docs/audits/providers-llm-audit.md`):** жёсткий список провайдеров в дебатах (`PRIORITY`) и `SUPPORTED_PROVIDERS` (новый провайдер требует правки кода); «Vectorault не подключён» — ключи хранятся plaintext; дублирование роутинга (РRouterRankingService` vs `KeyStateStore`, shadow-сравнение).
 
 ---
 
