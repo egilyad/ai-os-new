@@ -2,9 +2,9 @@
 
 # Компонент: флот, governance и аудит
 
-> Раздел: **Компоненты и сервисы** · Статус: documented · Теги: компоненты, флот, governance, аудит
+> Раздел: **Компоненты и сервисы** · Статус: verified · Теги: компоненты, флот, governance, аудит, политики, guardrails
 
-Источники: `src/kernel/services/ops/fleet-monitor-service.ts`, `src/kernel/services/trust/governance-service.ts`, `src/kernel/services/ops/tool-governance-service.ts`, `src/kernel/services/trust/provenance-service.ts`, `src/kernel/services/ops/audit-service.ts`, `src/kernel/services/ops/hierarchy-service.ts`
+Источники: `src/kernel/services/ops/fleet-monitor-service.ts`, `src/kernel/services/trust/governance-service.ts`, `src/kernel/services/ops/tool-governance-service.ts`, `src/kernel/services/trust/provenance-service.ts`, `src/kernel/services/ops/audit-service.ts`, `src/kernel/services/ops/hierarchy-service.ts`, `src/kernel/services/policy-service.ts`, `src/kernel/services/permissions/permission-service.ts`, `src/kernel/services/rivals/guardrail-service.ts`
 
 ## Назначение
 
@@ -12,14 +12,15 @@
 
 ## Возможности
 
-- Мониторинг флота (`FleetMonitorService`), иерархия (`HierarchyService`), sandbox-брокер (`sandbox-broker-service.ts`).
-- Доверие/правила: `trust/governance-service.ts` (`GovernanceService`), `ops/tool-governance-service.ts` (`ToolGovernanceService`), провенанс (`provenance-service.ts`).
-- Аудит действий (`audit-service.ts`), рынок навыков (`skill-market-service.ts`).
+- Мониторинг флота (`FleetMonitorService`, ~112 ст.: **read-only проекция** миссий crew/council/graph, без супервизии/restart), иерархия (`HierarchyService`).
+- Доверие/правила: `GovernanceService` (~197 ст.: capability-гранты, trust-EMA, роли observer/approver/director/auditor), `ToolGovernanceService` (~104 ст.: MCP-реестр + per-agent grants, default-deny), `ProvenanceService` (граф предков решений).
+- Аудит: `AuditService` (~88 ст.: append-only hash-chained лог fnv1a, `verify()`).
+- Политики: `PolicyService` (~565 ст.), `AgentPermissionService` (~279 ст.), `GuardrailService` (~133 ст.).
 
 ## Реализация
 
-- Разбросано по каталогам `ops/` (операционное) и `trust/` (доверие) — единого `FleetService` нет.
-- `FleetMonitorService`, `GovernanceService`, `ToolGovernanceService`, `ProvenanceService`, `AuditService`, `HierarchyService`.
+- Разбросано по каталогам `ops/` (операционное), `trust/` (доверие), `permissions/`, `rivals/` (guardrail), `deploy/` — единого `FleetService` нет.
+- **Важно:** `DeployBundleService` — статическая заглушка (реальный deploy `BLOCKED-RUNTIME`); флот — только проекция, реальной супервизии агентов нет.
 
 ## Связи
 
@@ -28,12 +29,13 @@
 
 ## Проверка работоспособности
 
-- **Тестов нет:** для перечисленных сервисов выделенные тесты не найдены.
-- Ручная: Fleet/Governance/History-Audit показывают агентов, правила и записи аудита.
+- Тесты есть на: `policy-service.test.ts`, `permissions/permission-service.test.ts`, `rivals/guardrail-service.test.ts`, `deploy/deploy-bundle-service.test.ts`, UI-панели (Governance/Guardrails/Policy/Fleet).
+- **Пробел:** нет тестов на `AuditService`, `GovernanceService`, `FleetMonitorService`, `ToolGovernanceService` (проверка 2026-10).
 
 ## Состояние
 
-- Реализовано; подтверждено чтением кода, без автотестов.
+- Реализовано; политики/права/guardrails покрыты тестами, ядро governance/аудита — без автотестов.
+- **Риски (подробно — `docs/audits/fleet-governance-audit.md`):** `GovernanceService.evaluate` по умолчанию **fail-open** (`allow`), тогда как capability-проверка fail-closed; неаутентифицированные мутации `PolicyService`; дефолтные политики (content/custom/rate_limit) заданы, но не подключены к исполнению; два параллельных аудит-лога.
 
 ---
 
@@ -44,5 +46,6 @@
 - [Панель: Роли и консорциумы](./panel-roles.md)
 - [Панели: История, аудит, версии, деплой](./panel-history-audit.md)
 - [Панели: Связи, происхождение, очередь](./panel-provenance-junctions.md)
+- [Компонент: политики, секреты и вебхуки](./comp-policy-security.md)
 
 [← Все материалы](./README.md)

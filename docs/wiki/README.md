@@ -199,7 +199,7 @@
 - [Компонент: журналирование событий (event sourcing)](./comp-event-sourcing.md) — _verified_
 - [Компонент: тайм-тревел, снапшоты и каузальность](./comp-time-travel.md) — _verified_
 - [Компонент: задачи, планирование и расписание](./comp-task-planning.md) — _verified_
-- [Компонент: флот, governance и аудит](./comp-fleet-governance.md) — _documented_
+- [Компонент: флот, governance и аудит](./comp-fleet-governance.md) — _verified_
 - [Компонент: интеграции и интероперабельность](./comp-integrations-interop.md) — _verified_
 - [Компонент: рантайм провайдеров](./comp-provider-runtime.md) — _verified_
 - [Компонент: LLM-мост (адаптеры crews/council/graph/frontier)](./comp-llm-bridge.md) — _documented_
