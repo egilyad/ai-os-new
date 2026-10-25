@@ -17,7 +17,8 @@
 
 ## Реализация
 
-- `rag/`: `bm25-service.ts`, `hybrid-retrieval-service.ts`, `reranker-service.ts` (см. ADR `docs/004-hybrid-search-strategy.md`).
+- `rag/`: `bm25-service.ts` (k1=1.2, b=0.75, in-memory), `hybrid-retrieval-service.ts` (BM25 ∪ vector → **RRF k=60**, веса 0.5/0.5, `candidateMultiplier=4`, итог topK=5, опциональный reranker), `reranker-service.ts`. См. ADR `docs/004-hybrid-search-strategy.md`.
+- `parity/knowledge-service.ts` — вторая, независимая линия RAG: линейное сканирование `knowledgeSources` (без выделенного индекса), чанкинг абзацев ≤600 символов (лимит 200/источник), ранжирование token-overlap (или `0.6*cos + 0.4*token` при embedder).
 - `knowledge-generator/`, `crystal-vault/` (`crystal-debate-bridge.ts` связывает кристаллы с дебатами), `lens-engine/` (`lens-library.ts`).
 
 ## Связи

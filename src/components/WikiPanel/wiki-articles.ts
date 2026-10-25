@@ -2253,25 +2253,29 @@ flowchart TD
         section: 'memory',
         tags: ['память', 'RAG', 'персоны'],
         freshness: 'verified',
-        sources: ['src/kernel/services/debate-runtime/debate-memory.ts', 'docs/audits/agent-team-audit-memory-history-management.md'],
-        related: ['execution-trail', 'debates', 'architecture', 'memory-audit'],
+        sources: ['src/kernel/services/memory-engine.ts', 'src/kernel/services/memory-orchestrator.ts', 'src/kernel/services/rag/hybrid-retrieval-service.ts', 'docs/audits/agent-team-audit-memory-history-management.md'],
+        related: ['comp-memory', 'execution-trail', 'debates', 'architecture', 'memory-audit'],
         body: `## Слои
 
-- **Живая память дебата** — шаги/клеймы/цепочки; synthesis-шаг завершает цепочку (иначе persona-память мертва).
-- **Обрезка только на сохранении** — live-память полная (лимит 5000 шагов), в Dexie едет обрезанная копия.
-- **RAG дебатов** — аргументы раунда индексируются и ищутся (BM25+хэш), чанки персистентны.
-- **Глобальные стеки** — memories, persona-профили, кристаллы, кросс-дебатный индекс: персистентны, но в дебатный промпт wired только RAG и persona-блок.
+- **Единый движок памяти** — \`MemoryService\`: все записи в одной Dexie-таблице \`memories\`; 7 «магазинов» (working/episodic/semantic/procedural/emotional/social/spatial) — метки типа, не раздельные хранилища.
+- **Поиск** — семантический (векторный, Web Worker/Orama) + полнотекстовый (keyword); \`recall\` с Ebbinghaus-recency-реранком.
+- **Эмбеддинги** — провайдерские (\`/embeddings\`, опционально) с офлайн-хэш-фолбэком; пространства hash/provider не смешиваются.
+- **RAG** — две линии: гибридный BM25+vector (RRF k=60) и линейный \`KnowledgeService\` (token-overlap).
+- **Дебатный RAG** — инъекция релевантной памяти прошлых дебатов в промпт (\`[RECALLED CONTEXT]\`); чанки аргументов персистентны.
+- **WikiBrain** — отдельная БД (\`aios-wiki-brain\`) и собственный embedder; вне общего векторного пространства памяти.
 
 \`\`\`mermaid
 flowchart LR
-    L["Живая память дебата (до 5000 шагов)"] --> T["Обрезка только при сохранении"]
-    T --> D["Dexie: обрезанная копия"]
-    L --> R["RAG: индекс аргументов (BM25 + хэш)"]
+    M["MemoryService (Dexie memories)"] --> W["Web Worker: Orama + vectors"]
+    M --> P["ProviderEmbeddingService / hash fallback"]
+    M --> R["Hybrid RAG (BM25 ∪ vector)"]
+    R --> D["Debate-RAG injection"]
+    B["WikiBrain (отдельная БД)"] -. не смешивается .-> M
 \`\`\`
 
 ## Честно о дублировании
 
-Один текст лежит в нескольких местах с разной обрезкой — единого источника правды нет, это известное следствие архитектуры, а не баг одного сервиса.
+Один текст лежит в нескольких местах с разной обрезкой (Dexie + repo-кэш + MemoryCache + воркер) — единого источника правды нет. Полный список рисков — в аудите \`docs/audits/memory-audit.md\`.
 
 История разработки этой области — [[zone-4]].`,
     },
