@@ -19,6 +19,10 @@
 ## Реализация
 
 - Каталог `debateplus/` из трёх модулей; дополняет [Компонент: рантайм дебатов](./comp-debate-runtime.md) и [Компонент: консистентность и дрейф](./comp-consistency.md).
+- **Проверено на текущей ветке:**
+  - `FormatService` — 6 форматов (oxford, munk, lincoln-douglas, popper, deliberative, adversarial), но это **отдельная pipeline на базе CouncilService**, не интегрированная в DebateEngine.
+  - `ArgTechService` — Dung AF (grounded/preferred extensions), Toulmin, Kialo-дерево; `preferredExtensions` ограничен 12 аргументами (иначе исключение).
+  - `argtech-consensus-bridge.ts` — применяет бонусы Dung/Toulmin к консенсусу, но в финальном вердикте напрямую не участвует.
 
 ## Связи
 
@@ -33,6 +37,7 @@
 ## Состояние
 
 - Реализовано; подтверждено чтением кода, без автотестов.
+- Модули почти не имеют прямых unit-тестов (большинство методов — WORKING_NOT_TESTED).
 
 ---
 

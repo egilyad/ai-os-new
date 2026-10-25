@@ -45,7 +45,7 @@ export const COMPONENT_ARTICLES: WikiArticle[] = [
 - **Данные:** [[comp-persistence]] (Dexie и storage-адаптеры).
 - **Провайдеры и деньги:** [[comp-key-management]] (ключи), [[comp-routing]] (роутинг), [[comp-budget-pricing]] (бюджет и цены).
 - **Люди и инструменты:** [[comp-agents-roles-skills]], [[comp-tools-mcp]] (инструменты, MCP, sandbox), [[comp-policy-security]] (политики, секреты, вебхуки).
-- **Дебаты, мышление, память, чат:** [[comp-debate-runtime]] (движок дебатов), [[comp-cognitive-orchestration]] (когнитивные трассы и топологии), [[comp-memory]] (память и поиск), [[comp-chat]] (ChatExecutor).
+- **Дебаты, мышление, память, чат:** [[comp-debate-runtime]] (движок дебатов), [[comp-debate-techniques]] (стратегии/техники), [[comp-cognitive-orchestration]] (когнитивные трассы и топологии), [[comp-memory]] (память и поиск), [[comp-chat]] (ChatExecutor).
 - **Наблюдаемость:** [[comp-observability]] (метрики, трейсы, мониторинг, кеш, админ).
 - **Советник и время:** [[comp-advisor-runtime-intelligence]] (диагностика/what-if), [[comp-event-sourcing]] (журнал), [[comp-time-travel]] (replay, снапшоты, каузальность).
 - **Задачи и управление:** [[comp-task-planning]] (задачи, расписание), [[comp-fleet-governance]] (флот, governance, аудит), [[comp-integrations-interop]] (A2A, gateway, MCP).
@@ -800,7 +800,7 @@ flowchart TD
             'src/kernel/services/debate-runtime/debate-consensus.ts',
             'src/kernel/services/debate-runtime/debate-evaluator.ts',
         ],
-        related: ['debates', 'panel-debate-live', 'comp-agents-roles-skills', 'comp-routing', 'panel-debate-toolkit'],
+        related: ['debates', 'comp-debate-techniques', 'panel-debate-live', 'comp-agents-roles-skills', 'comp-routing', 'panel-debate-toolkit'],
         body: `## Назначение
 
 Многогерентные дебаты: несколько агентов-ролей обсуждают тему по заданной стратегии, а рантайм ведёт сессию, собирает аргументы, считает метрики, ищет консенсус и подводит итог.
@@ -835,8 +835,67 @@ flowchart TD
 
 ## Состояние
 
-- Реализовано; основное подтверждено тестами в самом каталоге.
-- Точные числа (например, «13 стратегий / 33 пресета» из старой описи) здесь **не подтверждены** и требуют сверки с \`debate-strategy-registry.ts\`.`,
+- Реализовано; основное подтверждено тестами в самом каталоге (проверка 2026-10: ключевые kernel-тесты проходят).
+- **Проверено по коду на текущей ветке:**
+  - Слои: UI → SyncManager → Engine → Pipeline → Orchestrator → LLM-caller → adapter.
+  - \`startDebate\` **всегда** строит roundtable-топологию (\`buildRoundtableTopology\`, debate-sync-manager.ts:312); параметр \`strategy\` не влияет на оркестрацию — топологии judge/tree-of-thought/red-blue доступны только через \`startTopologyDebate\`.
+  - LLM-вызовы идут через \`adapterRegistry.getAdapter(provider).sendMessage|streamMessage\`, а не через особый LLM-registry.
+  - Таксономия ошибок \`classifyLlmError\` — 10 кодов.
+  - Персистентность трёхуровневая: Zustand \`activeDebateStore\` + Dexie (\`debateSessions\`, \`debateVerdicts\`, \`debateTimeline\`, \`debateOverrides\`) + localStorage fallback.
+  - Enum-стратегий — 13; BUILTIN_STRATEGIES — 33; режимов — 8; техник качества — 77. Статусы исполнения — [[comp-debate-techniques]].`,
+    },
+    {
+        slug: 'comp-debate-techniques',
+        title: 'Дебаты: стратегии, режимы и техники качества',
+        section: 'components',
+        tags: ['компоненты', 'дебаты', 'стратегии', 'техники', 'качество', 'аудит'],
+        freshness: 'verified',
+        sources: [
+            'src/kernel/contracts/debate-types.ts',
+            'src/kernel/services/debate-runtime/debate-strategy-definitions.ts',
+            'src/kernel/services/debate-runtime/debate-mode-system.ts',
+            'src/kernel/contracts/debate-quality-settings.ts',
+            'src/kernel/services/debate-runtime/debate-prompt-builder.ts',
+            'src/kernel/services/debate-runtime/debate-llm-prompt-context.ts',
+        ],
+        related: ['comp-debate-runtime', 'comp-flow-debate', 'debates'],
+        body: `## Назначение
+
+Справочник по артефактам «джентльменского набора» дебатов — стратегиям, режимам, топологиям и техникам качества — с реальным статусом исполнения на текущей ветке (проверено по коду, 2026-10).
+
+## Реализация
+
+Реестр и механизм активации:
+
+| Сущность | Кол-во | Реальный статус |
+|---|---|---|
+| \`DebateSessionStrategy\` (enum) | 13 | 3 работают (socratic, argument_tree, constrained); 5 — только через топологию; 5 — без обработчиков |
+| \`BUILTIN_STRATEGIES\` (DSL) | 33 | все REGISTERED_UNUSED: runtime-интерпретатора DSL нет |
+| \`ArgumentStrategy\` | 10 | текст-инструкция per-agent |
+| \`DebateConstraint\` | 7 | активны только при \`strategy==='constrained'\` |
+| TopologyType | 5 | все работают через \`startTopologyDebate\` |
+| \`BUILTIN_MODES\` | 8 | policies **не применяются** движком; \`resolveStrategy\` не вызывается |
+| \`QUALITY_TECHNIQUES\` | 77 | большинство инжектит инструкцию; часть имеет backing-service |
+
+Каждая quality-техника включается через гейт \`isQ(id)\` (\`debate-prompt-builder.ts:162-164\`): \`qualitySettings?.[id] !== false\`. Пользовательские настройки приходят из UI в \`qualitySettings\` при \`startDebate\`.
+
+## Связи
+
+- Движок и архитектура — [[comp-debate-runtime]]; сквозной контур — [[comp-flow-debate]]; обзор — [[debates]].
+- Полный реестр дефектов и рисков — \`docs/audits/debate-audit.md\`.
+
+## Состояние
+
+Подтверждено чтением кода. Ключевые статусы:
+
+- **Работают с backing-service (входят в deps и вызываются):** entanglementEngine, anchoringService, argumentGraphService, vulnerabilityTargeting, adversarialSource, beliefMiningService, minimaxPlanner, metaAgent, steelmanService, boPTracker, consistencyService, credibilityScorer, similarityMonitor, driftDetector, insightBus, logicalFormExtractor, biasProfiler, interruptQueue, stakeholderMapper, calibrationService, personaMixer, frameTracker, expertWitness, factCheckService, stanceDriftTracker, rhetoricalDeviceSelector, scratchpadService, blindEval, incentiveDetector, gotDeliberation, conceptBlender, outcomeForecaster, liveResearch, qualityCollector, argTech.
+- **Inline-реализации в \`debate-llm-prompt-context.ts\`:** level-tracker (для \`abstraction-ladder\`), role-reversal, audience, fog-of-war, humor, status-dynamics, style-matching, whisper-channels, alliance, prediction-market, strategist (\`debate-strategist\`).
+- **Единственная техника с дополнительным LLM-вызовом:** \`shadow-opponent\` (через \`debate-llm-enrichment.ts\`).
+- **Stub-сервисы зарегистрированы, но не вызываются:** \`MultiHopService\`, \`AbstractionLadderService\`, \`RoleReversalService\`, \`CounterfactualService\`, \`SemanticBlendingService\`, \`JudgeDeliberationService\`, \`ConcessionService\`, \`HegelianService\`. \`BestOfNSelector\` — вообще не регистрируется (движок использует inline-эвристику в \`debate-engine.ts\`).
+- **Дубликаты гейтов:** \`concession\`/\`concession-engine\` → \`buildConcessionPrompt\`; \`triangulation\`/\`evidence-triangulation\` → \`buildTriangulationPrompt\`.
+- **Особые случаи:** \`bayesianJudge\` зарегистрирован, но не подключён в deps движка; \`searchEngine\` в коде отсутствует.
+- **Стратегии:** ветки в \`buildArgumentPrompt\` есть только для \`socratic\`, \`argument_tree\`, \`constrained\`. Остальные enum-значения либо требуют \`startTopologyDebate\` (round_robin, sequential, judge, tree-of-thought, red-blue), либо не имеют обработчиков. Все 33 DSL-определения только валидируются в \`debate-strategy-registry.ts\`; единственный потребитель числовых полей — \`getEarlyExitConfidence\`. Policies восьми режимов нигде не применяются; у \`scientific_review\` — битый \`strategyRef: 'builtin.peer_review'\`.
+- **Проверка тестами:** см. \`docs/audits/debate-audit.md\` (раздел «Что подтверждено по тестам»).`,
     },
     {
         slug: 'comp-cognitive-orchestration',
@@ -1977,6 +2036,10 @@ flowchart TD
 ## Реализация
 
 - Каталог \`debateplus/\` из трёх модулей; дополняет [[comp-debate-runtime]] и [[comp-consistency]].
+- **Проверено на текущей ветке:**
+  - \`FormatService\` — 6 форматов (oxford, munk, lincoln-douglas, popper, deliberative, adversarial), но это **отдельная pipeline на базе CouncilService**, не интегрированная в DebateEngine.
+  - \`ArgTechService\` — Dung AF (grounded/preferred extensions), Toulmin, Kialo-дерево; \`preferredExtensions\` ограничен 12 аргументами (иначе исключение).
+  - \`argtech-consensus-bridge.ts\` — применяет бонусы Dung/Toulmin к консенсусу, но в финальном вердикте напрямую не участвует.
 
 ## Связи
 
@@ -1990,7 +2053,8 @@ flowchart TD
 
 ## Состояние
 
-- Реализовано; подтверждено чтением кода, без автотестов.`,
+- Реализовано; подтверждено чтением кода, без автотестов.
+- Модули почти не имеют прямых unit-тестов (большинство методов — WORKING_NOT_TESTED).`,
     },
     {
         slug: 'comp-llm-pipeline',
@@ -2981,7 +3045,8 @@ flowchart TD
 
 ## Состояние
 
-- Подтверждено чтением кода по всей цепочке; ключевые звенья (UI-подписки, оркестратор, политика, персист, вердикт) покрыты тестами.`,
+- Подтверждено чтением кода по всей цепочке; ключевые звенья (UI-подписки, оркестратор, политика, персист, вердикт) покрыты тестами.
+- **Проверено на текущей ветке:** раунды исполняются **последовательно** (async-generator \`generateRoundEvents\`, не параллельно); retry-loop находится в \`debateCallLlm\` (debate-llm-caller.ts), а Best-of-N — в \`DebateEngine.callLLM\` (debate-engine.ts); дефолтная длительность сессии — 30 мин (\`DEFAULT_CONFIG.maxDurationMs = 1_800_000\`), потолок бюджета — 60 мин.`,
     },
     {
         slug: 'comp-flow-chat',

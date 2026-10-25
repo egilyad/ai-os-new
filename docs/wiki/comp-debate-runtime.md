@@ -40,14 +40,21 @@
 
 ## Состояние
 
-- Реализовано; основное подтверждено тестами в самом каталоге.
-- Точные числа (например, «13 стратегий / 33 пресета» из старой описи) здесь **не подтверждены** и требуют сверки с `debate-strategy-registry.ts`.
+- Реализовано; основное подтверждено тестами в самом каталоге (проверка 2026-10: ключевые kernel-тесты проходят).
+- **Проверено по коду на текущей ветке:**
+  - Слои: UI → SyncManager → Engine → Pipeline → Orchestrator → LLM-caller → adapter.
+  - `startDebate` **всегда** строит roundtable-топологию (`buildRoundtableTopology`, debate-sync-manager.ts:312); параметр `strategy` не влияет на оркестрацию — топологии judge/tree-of-thought/red-blue доступны только через `startTopologyDebate`.
+  - LLM-вызовы идут через `adapterRegistry.getAdapter(provider).sendMessage|streamMessage`, а не через особый LLM-registry.
+  - Таксономия ошибок `classifyLlmError` — 10 кодов.
+  - Персистентность трёхуровневая: Zustand `activeDebateStore` + Dexie (`debateSessions`, `debateVerdicts`, `debateTimeline`, `debateOverrides`) + localStorage fallback.
+  - Enum-стратегий — 13; BUILTIN_STRATEGIES — 33; режимов — 8; техник качества — 77. Статусы исполнения — [Дебаты: стратегии, режимы и техники качества](./comp-debate-techniques.md).
 
 ---
 
 ## Связанные материалы
 
 - [Дебаты: режимы и механика](./debates.md)
+- [Дебаты: стратегии, режимы и техники качества](./comp-debate-techniques.md)
 - [Панель: Живые дебаты](./panel-debate-live.md)
 - [Компонент: агенты, роли и навыки](./comp-agents-roles-skills.md)
 - [Компонент: роутинг и провайдеры](./comp-routing.md)

@@ -2222,7 +2222,7 @@ flowchart LR
         related: ['memory', 'providers'],
         body: `## Режимы
 
-33 встроенные стратегии: round-robin, сократический, дерево аргументов, суд, модератор, дебаты-марафон и др. Позиции pro/con/neutral, свои шаблоны тоже можно.
+В реестре **33 встроенные стратегии** (\`BUILTIN_STRATEGIES\`) и **13 enum-стратегий** (\`DebateSessionStrategy\`). Бо́льшая часть декларативных определений — **не исполняемые**: runtime-интерпретатора DSL нет. Реально работают 3 enum-стратегии (socratic, argument_tree, constrained) и 5 топологий (roundtable, linear, judge, tree-of-thought, red-blue). Подробно — [[comp-debate-techniques]]; дефекты и ограничения — в аудите \`docs/audits/debate-audit.md\`.
 
 ## Что происходит внутри раунда
 
