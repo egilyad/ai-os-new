@@ -19,6 +19,7 @@
 
 - `graph/graph-service.ts`, `graph/graph-modes.ts`.
 - `event-bridge/event-bridge.ts`, `event-bridge/projection-registry.ts`.
+- `EventBridge` подписывается на `subscribeAll`, пропускает cognitive-события, оборачивает payload в `KernelEvent {type, payload, timestamp, seq:0}`; `ProjectionRegistry.dispatch` не роняет ошибки (warn). Зарегистрирована одна проекция — `RouterProjection` (`system:decision`).
 
 ## Связи
 

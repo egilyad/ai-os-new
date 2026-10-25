@@ -22,6 +22,7 @@
 - `timeline/`: `execution-viz-service.ts`, `timeline-map.ts`.
 - `projections/`: `router-projection.ts`, `router-shadow-diff.ts`.
 - `routing-policy/routing-policy-service.ts` (`RoutingPolicyService`) соседствует по смыслу с проекциями.
+- **Фактически зарегистрирована только одна проекция** — `RouterProjection` (только `system:decision`), через `phase0-event-bridge.ts`. Остальные read-модели (Dexie-таблицы) пишутся сервисами напрямую, а не через проекции.
 
 ## Связи
 

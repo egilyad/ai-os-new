@@ -196,7 +196,7 @@
 - [Компонент: чат (ChatExecutor)](./comp-chat.md) — _verified_
 - [Компонент: наблюдаемость (метрики, трейсы, мониторинг)](./comp-observability.md) — _verified_
 - [Компонент: советник и runtime-intelligence](./comp-advisor-runtime-intelligence.md) — _verified_
-- [Компонент: журналирование событий (event sourcing)](./comp-event-sourcing.md) — _documented_
+- [Компонент: журналирование событий (event sourcing)](./comp-event-sourcing.md) — _verified_
 - [Компонент: тайм-тревел, снапшоты и каузальность](./comp-time-travel.md) — _verified_
 - [Компонент: задачи, планирование и расписание](./comp-task-planning.md) — _verified_
 - [Компонент: флот, governance и аудит](./comp-fleet-governance.md) — _documented_

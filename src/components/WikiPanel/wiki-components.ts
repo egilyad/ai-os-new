@@ -1135,29 +1135,33 @@ flowchart TD
         slug: 'comp-event-sourcing',
         title: 'Компонент: журналирование событий (event sourcing)',
         section: 'components',
-        tags: ['компоненты', 'event-sourcing', 'журнал', 'восстановление'],
-        freshness: 'documented',
+        tags: ['компоненты', 'event-sourcing', 'журнал', 'восстановление', 'WAL'],
+        freshness: 'verified',
         sources: [
             'src/kernel/services/event-sourcing/event-recorder.ts',
             'src/kernel/services/event-sourcing/checkpoint-store.ts',
             'src/kernel/services/event-sourcing/event-types.ts',
+            'src/kernel/dal/event-log-repository.ts',
+            'src/kernel/services/timeline-service.ts',
         ],
-        related: ['comp-event-bus', 'comp-persistence', 'comp-transactions', 'execution-trail', 'panel-history-audit'],
+        related: ['comp-event-bus', 'comp-persistence', 'comp-transactions', 'execution-trail', 'panel-history-audit', 'comp-storage-timeline'],
         body: `## Назначение
 
 Сохранять поток событий и периодические контрольные точки, чтобы состояние можно было восстановить и проанализировать задним числом.
 
 ## Возможности
 
-- Запись событий в append-only журнал с кольцевым буфером (\`EventRecorder\`).
-- Контрольные точки (\`CheckpointStore\`) для быстрого восстановления.
-- Типизация событий в \`event-types.ts\`.
+- Запись событий в **append-only журнал** с кольцевым буфером (\`EventRecorder\`), персистентностью в Dexie (\`eventLog\`) и WAL-replay-хвостом в localStorage.
+- Контрольные точки (\`CheckpointStore\`, max 50) со снапшотой состояния и собственным WAL.
+- Частичный реплей по временному окну (\`TemporalReplayService\`), \`getSince/getRange/getByTimeRange\`.
+- Аудит-журнал (\`AuditService\`, append-only hash-chained) и снапшоты ядра (\`SnapshotService\`).
 
 ## Реализация
 
-- \`EventRecorder\` (\`event-recorder.ts\`, \`RecorderConfig\`, интерфейс хранилища \`EventRecorderStore\`) — подписка на шину и запись.
-- \`CheckpointStore\` (\`checkpoint-store.ts\`, \`Checkpoint\`, \`CheckpointStoreConfig\`, \`CheckpointPersistenceStore\`).
-- Отдельного \`EventStoreService\` нет: роль «event store» выполняет эта пара recorder+checkpoint поверх [[comp-persistence]].
+- \`EventRecorder\` (\`event-recorder.ts\`, ~584 ст.): подписка на \`subscribeAll\`, фильтр шумных/когнитивных событий, кольцевой буфер (max 1000), запись \`{ sequence, event, data, timestamp, checksum(SHA-256/32), prevSequence }\`, WAL (хвост 300, дебаунс 1000 мс, санитизация секретов).
+- \`CheckpointStore\` (\`checkpoint-store.ts\`, ~240 ст.): чекпойнты \`{ id, label, sequence, timestamp, stateSnapshot, tags }\`, \`getBySequence/getLatest/restoreCheckpoint\`.
+- \`EventLogRepository\` (\`dal/event-log-repository.ts\`): персистентность в Dexie \`eventLog\` (индексы \`++id, sequence, event, timestamp\`), \`bulkAdd\` только для новых sequence, кап maxEvents.
+- Отдельного \`EventStoreService\` нет: роль «event store» выполняет пара recorder+checkpoint поверх [[comp-persistence]].
 
 ## Связи
 
@@ -1166,12 +1170,13 @@ flowchart TD
 
 ## Проверка работоспособности
 
-- **Тестов нет:** в каталоге \`event-sourcing/\` тестовые файлы не найдены.
-- Ручная: открыть History/Audit, убедиться, что события и чекпоинты доступны.
+- Тесты: \`dal/event-log-repository.test.ts\` (идемпотентность, кап), частично через \`integration.test.ts\` (EventBus→EventRecorder).
+- **Пробел:** нет тестов на ядро \`event-sourcing/\` (\`event-recorder\`, \`checkpoint-store\`), \`timeline-service\`, \`audit-service.verify\`.
 
 ## Состояние
 
-- Реализовано; подтверждено чтением кода, без автотестов.`,
+- Реализовано (append-only ES поверх шины); подтверждено чтением кода.
+- **Риски (подробно — \`docs/audits/events-storage-audit.md\`):** буфер и \`eventLog\` ограничены 1000 — старые события безвозвратно теряются, \`getSince\` для ранних sequence возвращает \`[]\`; реплей не перестраивает read-модели из лога; таймлайн не персистентен.`,
     },
     {
         slug: 'comp-time-travel',
@@ -1926,6 +1931,7 @@ flowchart TD
 - \`timeline/\`: \`execution-viz-service.ts\`, \`timeline-map.ts\`.
 - \`projections/\`: \`router-projection.ts\`, \`router-shadow-diff.ts\`.
 - \`routing-policy/routing-policy-service.ts\` (\`RoutingPolicyService\`) соседствует по смыслу с проекциями.
+- **Фактически зарегистрирована только одна проекция** — \`RouterProjection\` (только \`system:decision\`), через \`phase0-event-bridge.ts\`. Остальные read-модели (Dexie-таблицы) пишутся сервисами напрямую, а не через проекции.
 
 ## Связи
 
@@ -2009,6 +2015,7 @@ flowchart TD
 
 - \`graph/graph-service.ts\`, \`graph/graph-modes.ts\`.
 - \`event-bridge/event-bridge.ts\`, \`event-bridge/projection-registry.ts\`.
+- \`EventBridge\` подписывается на \`subscribeAll\`, пропускает cognitive-события, оборачивает payload в \`KernelEvent {type, payload, timestamp, seq:0}\`; \`ProjectionRegistry.dispatch\` не роняет ошибки (warn). Зарегистрирована одна проекция — \`RouterProjection\` (\`system:decision\`).
 
 ## Связи
 
