@@ -12,9 +12,9 @@
 
 ## Возможности
 
-- `debate-analysis.ts`: `detectFallacies`/`fallacyScore` (софизмы), `computePersuasion`, `analyzeTone`, `analyzeDebate`, `FALLACY_LABELS`.
-- `topic-suggestions.ts`: `suggestTopics`, `suggestByDifficulty`, `suggestByCategory`, `TOPIC_CATEGORIES`, `TOPIC_DIFFICULTIES`.
-- `tokenEstimate.ts`: `estimateTokens(text, divisor = 4)`.
+- `debate-analysis.ts`: `detectFallacies`/`fallacyScore` (софизмы), `computePersuasion`, `analyzeTone`, `analyzeDebate`, `FALLACY_LABELS` — **орфан** (файл есть, но в src не импортируется).
+- `topic-suggestions.ts`: `suggestTopics`, `suggestByDifficulty`, `suggestByCategory`, `TOPIC_CATEGORIES`, `TOPIC_DIFFICULTIES` (используется в useTopicSuggester).
+- `tokenEstimate.ts`: `estimateTokens(text, divisor = 4)` (используется в kernel/agent-service/cognitive-service/provider-tracker).
 
 ## Реализация
 
@@ -30,7 +30,7 @@
 
 ## Состояние
 
-- Реализовано; автотестом не покрыто.
+- Реализовано; `tokenEstimate`/topic-suggestions используются, `debate-analysis.ts` — орфан; автотестами не покрыто.
 
 ---
 

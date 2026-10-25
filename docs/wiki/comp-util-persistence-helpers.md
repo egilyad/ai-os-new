@@ -12,10 +12,10 @@
 
 ## Возможности
 
-- `persist-then-emit.ts`: `Outbox` — отложенная эмиссия после персиста.
-- `with-transaction.ts` — обёртка транзакции.
-- `provider-default-models.ts`: `PROVIDER_DEFAULT_MODELS`, `PROVIDER_PREFERRED_MODELS`, `PROVIDER_DISPLAY_NAMES`.
-- `provider-fleet-health.ts`: `summarizeProviderFleet`, `summarizeAllProviders` (`ProviderFleetStatus`, `ProviderFleetSummary`).
+- `persist-then-emit.ts`: `Outbox` — отложенная эмиссия после персиста — **орфан** (в src не импортируется).
+- `with-transaction.ts` — обёртка транзакции (используется в settings-service/key-service).
+- `provider-default-models.ts`: `PROVIDER_DEFAULT_MODELS`, `PROVIDER_PREFERRED_MODELS`, `PROVIDER_DISPLAY_NAMES` (используется массово: state/topology-defaults, smart-routing, settings, key-models…).
+- `provider-fleet-health.ts`: `summarizeProviderFleet`, `summarizeAllProviders` — **орфан** (в src не импортируется).
 
 ## Реализация
 
@@ -31,7 +31,7 @@
 
 ## Состояние
 
-- Реализовано; автотестом не покрыто.
+- Реализовано; активно используются `with-transaction` и `provider-default-models`; `persist-then-emit` и `provider-fleet-health` — **орфаны**; автотестами не покрыто.
 
 ---
 

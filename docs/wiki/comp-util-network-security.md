@@ -4,7 +4,7 @@
 
 > Раздел: **Компоненты и сервисы** · Статус: verified · Теги: компоненты, утилиты, сеть, безопасность
 
-Источники: `src/kernel/utils/network.ts`, `src/kernel/utils/constant-time.ts`, `src/kernel/utils/sanitize.ts`, `src/kernel/utils/safe-json.ts`, `src/kernel/utils/ssr-storage.ts`
+Источники: `src/kernel/utils/network.ts`, `src/kernel/utils/constant-time.ts`, `src/kernel/utils/sanitize.ts`, `src/kernel/utils/safe-json.ts`, `src/kernel/utils/ssr-storage.ts`, `src/llm/http/llm-http-client.ts`, `src/kernel/services/probe-service.ts`
 
 ## Назначение
 
@@ -12,14 +12,16 @@
 
 ## Возможности
 
-- `network.ts`: `isPrivateIP`, `isValidWebhookUrl`, `validateIntegrationUrl` — защита от SSRF и небезопасных интеграций.
-- `constant-time.ts`: `constantTimeEqual` — сравнение без утечки по времени.
+- `network.ts`: `isPrivateIP`, `isValidWebhookUrl`, `validateIntegrationUrl` (с защитой от IPv4-mapped IPv6/octal/hex bypass) — защита от SSRF и небезопасных интеграций.
+- `constant-time.ts`: `constantTimeEqual` — **орфан** (файл есть, но в src не импортируется).
 - `sanitize.ts` — санитизация входных данных; `safe-json.ts` — безопасный разбор JSON.
 - `ssr-storage.ts`: `ssrSafeStorage` — безопасная обёртка хранилища (SSR/tests).
+- Также к слою сети/давления относятся: `llm-http-client.ts` (семафор 50, таймаут 120 с, отмена под давлением памяти) и `probe-service.ts` (`PROBE_TIMEOUT=15000`, health-проверка ключей/провайдеров).
 
 ## Реализация
 
 - `src/kernel/utils/`: `network.ts`, `constant-time.ts`, `sanitize.ts`, `safe-json.ts`, `ssr-storage.ts`.
+- `src/llm/http/llm-http-client.ts`, `src/kernel/services/probe-service.ts`.
 
 ## Связи
 
@@ -28,11 +30,12 @@
 
 ## Проверка работоспособности
 
-- Тест: `src/kernel/utils/network.test.ts`.
+- Тесты: `src/kernel/utils/network.test.ts`, `src/llm/http/llm-http-client.test.ts` (семафор/429/Retry-After/отмена).
+- **Пробел:** `probe-service.ts` — без теста.
 
 ## Состояние
 
-- Реализовано; сетевые проверки покрыты тестом.
+- Реализовано; сетевые проверки и HTTP-клиент покрыты тестами; `constantTimeEqual` — орфан.
 
 ---
 
@@ -43,5 +46,6 @@
 - [Компонент: политики, секреты и вебхуки](./comp-policy-security.md)
 - [Компонент: мессенджеры и внешние интеграции (n8n, Telegram)](./comp-messaging-integrations.md)
 - [Разработчикам: структура и ворота](./for-developers.md)
+- [Компонент: рантайм провайдеров](./comp-provider-runtime.md)
 
 [← Все материалы](./README.md)

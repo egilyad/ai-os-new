@@ -2804,22 +2804,26 @@ flowchart TD
             'src/kernel/utils/sanitize.ts',
             'src/kernel/utils/safe-json.ts',
             'src/kernel/utils/ssr-storage.ts',
+            'src/llm/http/llm-http-client.ts',
+            'src/kernel/services/probe-service.ts',
         ],
-        related: ['comp-security-crypto', 'comp-integrations-interop', 'comp-policy-security', 'comp-messaging-integrations', 'for-developers'],
+        related: ['comp-security-crypto', 'comp-integrations-interop', 'comp-policy-security', 'comp-messaging-integrations', 'for-developers', 'comp-provider-runtime'],
         body: `## Назначение
 
 Набор низкоуровневых защитных утилит: проверка адресов, безопасный парсинг и хранение.
 
 ## Возможности
 
-- \`network.ts\`: \`isPrivateIP\`, \`isValidWebhookUrl\`, \`validateIntegrationUrl\` — защита от SSRF и небезопасных интеграций.
-- \`constant-time.ts\`: \`constantTimeEqual\` — сравнение без утечки по времени.
+- \`network.ts\`: \`isPrivateIP\`, \`isValidWebhookUrl\`, \`validateIntegrationUrl\` (с защитой от IPv4-mapped IPv6/octal/hex bypass) — защита от SSRF и небезопасных интеграций.
+- \`constant-time.ts\`: \`constantTimeEqual\` — **орфан** (файл есть, но в src не импортируется).
 - \`sanitize.ts\` — санитизация входных данных; \`safe-json.ts\` — безопасный разбор JSON.
 - \`ssr-storage.ts\`: \`ssrSafeStorage\` — безопасная обёртка хранилища (SSR/tests).
+- Также к слою сети/давления относятся: \`llm-http-client.ts\` (семафор 50, таймаут 120 с, отмена под давлением памяти) и \`probe-service.ts\` (\`PROBE_TIMEOUT=15000\`, health-проверка ключей/провайдеров).
 
 ## Реализация
 
 - \`src/kernel/utils/\`: \`network.ts\`, \`constant-time.ts\`, \`sanitize.ts\`, \`safe-json.ts\`, \`ssr-storage.ts\`.
+- \`src/llm/http/llm-http-client.ts\`, \`src/kernel/services/probe-service.ts\`.
 
 ## Связи
 
@@ -2828,11 +2832,12 @@ flowchart TD
 
 ## Проверка работоспособности
 
-- Тест: \`src/kernel/utils/network.test.ts\`.
+- Тесты: \`src/kernel/utils/network.test.ts\`, \`src/llm/http/llm-http-client.test.ts\` (семафор/429/Retry-After/отмена).
+- **Пробел:** \`probe-service.ts\` — без теста.
 
 ## Состояние
 
-- Реализовано; сетевые проверки покрыты тестом.`,
+- Реализовано; сетевые проверки и HTTP-клиент покрыты тестами; \`constantTimeEqual\` — орфан.`,
     },
     {
         slug: 'comp-util-embeddings-rng',
@@ -2840,7 +2845,7 @@ flowchart TD
         section: 'components',
         tags: ['компоненты', 'утилиты', 'эмбеддинги', 'rng'],
         freshness: 'documented',
-        sources: ['src/kernel/utils/embedding.ts', 'src/kernel/utils/seedable-rng.ts'],
+        sources: ['src/kernel/utils/embedding.ts', 'src/kernel/utils/seedable-rng.ts', 'src/kernel/workers/memory-vector-space.ts'],
         related: ['comp-knowledge-rag', 'comp-memory', 'comp-simulation-world', 'comp-frontier-diversity', 'for-developers'],
         body: `## Назначение
 
@@ -2848,12 +2853,13 @@ flowchart TD
 
 ## Возможности
 
-- \`embedding.ts\`: \`getFNVEmbedding(text, dims = 128)\` — хеш-эмбеддинг, \`cosineSimilarity\` — косинусная близость.
-- \`seedable-rng.ts\`: \`SeededRng\` — детерминированный генератор по seed.
+- \`embedding.ts\`: \`getFNVEmbedding(text, dims = 128)\` — хеш-эмбеддинг, \`cosineSimilarity\` — косинусная близость (используется в debate-consensus).
+- \`seedable-rng.ts\`: \`SeededRng\` (Mulberry32) — детерминированный генератор по seed (используется в router/role/quality/audience).
+- \`memory-vector-space.ts\`: \`hashEmbedding\` (384d), \`VectorSpace\` (set/get/match/prune/detectSpace) — реальное векторное пространство памяти (используется в memory.worker).
 
 ## Реализация
 
-- \`src/kernel/utils/embedding.ts\`, \`src/kernel/utils/seedable-rng.ts\`.
+- \`src/kernel/utils/embedding.ts\`, \`src/kernel/utils/seedable-rng.ts\`, \`src/kernel/workers/memory-vector-space.ts\`.
 
 ## Связи
 
@@ -2862,11 +2868,12 @@ flowchart TD
 
 ## Проверка работоспособности
 
-- Подтверждено чтением кода (отдельного тест-файла нет).
+- Тест: \`memory-vector-space.test.ts\`.
+- **Пробел:** \`embedding.ts\` и \`seedable-rng.ts\` — без отдельных тестов.
 
 ## Состояние
 
-- Реализовано; автотестом не покрыто.`,
+- Реализовано; векторное пространство покрыто тестом; embedding/RNG — чтением кода.`,
     },
     {
         slug: 'comp-util-memory-observability',
@@ -2917,9 +2924,9 @@ flowchart TD
 
 ## Возможности
 
-- \`debate-analysis.ts\`: \`detectFallacies\`/\`fallacyScore\` (софизмы), \`computePersuasion\`, \`analyzeTone\`, \`analyzeDebate\`, \`FALLACY_LABELS\`.
-- \`topic-suggestions.ts\`: \`suggestTopics\`, \`suggestByDifficulty\`, \`suggestByCategory\`, \`TOPIC_CATEGORIES\`, \`TOPIC_DIFFICULTIES\`.
-- \`tokenEstimate.ts\`: \`estimateTokens(text, divisor = 4)\`.
+- \`debate-analysis.ts\`: \`detectFallacies\`/\`fallacyScore\` (софизмы), \`computePersuasion\`, \`analyzeTone\`, \`analyzeDebate\`, \`FALLACY_LABELS\` — **орфан** (файл есть, но в src не импортируется).
+- \`topic-suggestions.ts\`: \`suggestTopics\`, \`suggestByDifficulty\`, \`suggestByCategory\`, \`TOPIC_CATEGORIES\`, \`TOPIC_DIFFICULTIES\` (используется в useTopicSuggester).
+- \`tokenEstimate.ts\`: \`estimateTokens(text, divisor = 4)\` (используется в kernel/agent-service/cognitive-service/provider-tracker).
 
 ## Реализация
 
@@ -2935,7 +2942,7 @@ flowchart TD
 
 ## Состояние
 
-- Реализовано; автотестом не покрыто.`,
+- Реализовано; \`tokenEstimate\`/topic-suggestions используются, \`debate-analysis.ts\` — орфан; автотестами не покрыто.`,
     },
     {
         slug: 'comp-util-persistence-helpers',
@@ -2956,10 +2963,10 @@ flowchart TD
 
 ## Возможности
 
-- \`persist-then-emit.ts\`: \`Outbox\` — отложенная эмиссия после персиста.
-- \`with-transaction.ts\` — обёртка транзакции.
-- \`provider-default-models.ts\`: \`PROVIDER_DEFAULT_MODELS\`, \`PROVIDER_PREFERRED_MODELS\`, \`PROVIDER_DISPLAY_NAMES\`.
-- \`provider-fleet-health.ts\`: \`summarizeProviderFleet\`, \`summarizeAllProviders\` (\`ProviderFleetStatus\`, \`ProviderFleetSummary\`).
+- \`persist-then-emit.ts\`: \`Outbox\` — отложенная эмиссия после персиста — **орфан** (в src не импортируется).
+- \`with-transaction.ts\` — обёртка транзакции (используется в settings-service/key-service).
+- \`provider-default-models.ts\`: \`PROVIDER_DEFAULT_MODELS\`, \`PROVIDER_PREFERRED_MODELS\`, \`PROVIDER_DISPLAY_NAMES\` (используется массово: state/topology-defaults, smart-routing, settings, key-models…).
+- \`provider-fleet-health.ts\`: \`summarizeProviderFleet\`, \`summarizeAllProviders\` — **орфан** (в src не импортируется).
 
 ## Реализация
 
@@ -2975,7 +2982,7 @@ flowchart TD
 
 ## Состояние
 
-- Реализовано; автотестом не покрыто.`,
+- Реализовано; активно используются \`with-transaction\` и \`provider-default-models\`; \`persist-then-emit\` и \`provider-fleet-health\` — **орфаны**; автотестами не покрыто.`,
     },
     {
         slug: 'comp-dal-repositories',

@@ -4,7 +4,7 @@
 
 > Раздел: **Компоненты и сервисы** · Статус: documented · Теги: компоненты, утилиты, эмбеддинги, rng
 
-Источники: `src/kernel/utils/embedding.ts`, `src/kernel/utils/seedable-rng.ts`
+Источники: `src/kernel/utils/embedding.ts`, `src/kernel/utils/seedable-rng.ts`, `src/kernel/workers/memory-vector-space.ts`
 
 ## Назначение
 
@@ -12,12 +12,13 @@
 
 ## Возможности
 
-- `embedding.ts`: `getFNVEmbedding(text, dims = 128)` — хеш-эмбеддинг, `cosineSimilarity` — косинусная близость.
-- `seedable-rng.ts`: `SeededRng` — детерминированный генератор по seed.
+- `embedding.ts`: `getFNVEmbedding(text, dims = 128)` — хеш-эмбеддинг, `cosineSimilarity` — косинусная близость (используется в debate-consensus).
+- `seedable-rng.ts`: `SeededRng` (Mulberry32) — детерминированный генератор по seed (используется в router/role/quality/audience).
+- `memory-vector-space.ts`: `hashEmbedding` (384d), `VectorSpace` (set/get/match/prune/detectSpace) — реальное векторное пространство памяти (используется в memory.worker).
 
 ## Реализация
 
-- `src/kernel/utils/embedding.ts`, `src/kernel/utils/seedable-rng.ts`.
+- `src/kernel/utils/embedding.ts`, `src/kernel/utils/seedable-rng.ts`, `src/kernel/workers/memory-vector-space.ts`.
 
 ## Связи
 
@@ -26,11 +27,12 @@
 
 ## Проверка работоспособности
 
-- Подтверждено чтением кода (отдельного тест-файла нет).
+- Тест: `memory-vector-space.test.ts`.
+- **Пробел:** `embedding.ts` и `seedable-rng.ts` — без отдельных тестов.
 
 ## Состояние
 
-- Реализовано; автотестом не покрыто.
+- Реализовано; векторное пространство покрыто тестом; embedding/RNG — чтением кода.
 
 ---
 
