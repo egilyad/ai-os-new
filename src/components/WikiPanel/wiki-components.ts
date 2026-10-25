@@ -1424,37 +1424,39 @@ flowchart TD
         slug: 'comp-llm-bridge',
         title: 'Компонент: LLM-мост (адаптеры crews/council/graph/frontier)',
         section: 'components',
-        tags: ['компоненты', 'llm', 'адаптеры', 'мост'],
-        freshness: 'documented',
-        sources: ['src/kernel/services/llm-bridge/llm-task-executor.ts'],
-        related: ['comp-provider-runtime', 'comp-routing', 'comp-agents-roles-skills', 'panel-director', 'for-developers'],
+        tags: ['компоненты', 'llm', 'адаптеры', 'мост', 'crews', 'council'],
+        freshness: 'verified',
+        sources: ['src/kernel/services/llm-bridge/llm-task-executor.ts', 'src/kernel/contracts/provider-adapter.ts'],
+        related: ['comp-provider-runtime', 'comp-routing', 'comp-agents-roles-skills', 'comp-crews-councils', 'panel-director', 'for-developers'],
         body: `## Назначение
 
-Связывать прикладные подсистемы (экипажи, совет, графы, фронтир) с LLM: единый мост исполняет их задачи через провайдеров.
+Связывать прикладные подсистемы (экипажи, совет, графы, фронтир, личности) с LLM: единый мост исполняет их задачи через клиента провайдеров.
 
 ## Возможности
 
-- Исполнение задач экипажа (\`LlmCrewExecutor implements ICrewTaskExecutor\`).
-- LLM-порт для совета (\`LlmCouncilPort implements ICouncilLlmPort\`), для графа (\`LlmGraphPort implements IGraphLlmPort\`), исполнитель фронтира (\`LlmFrontierExecutor implements IFrontierExecutor\`).
-- Общие опции моста \`LlmBridgeOptions\`.
+- Исполнение задач экипажа (\`LlmCrewExecutor implements ICrewTaskExecutor\`), включая опциональный tool-loop через \`toolRunner\` + гейтинг \`toolCheck\`.
+- LLM-порт для совета (\`LlmCouncilPort implements ICouncilLlmPort\`: \`draftStance\`/\`judgeRound\` с JSON-парсингом и fallback на \`'draw'\`), для графа (\`LlmGraphPort implements IGraphLlmPort\`), исполнитель фронтира (\`LlmFrontierExecutor implements IFrontierExecutor\`), порт личности (\`LlmPersonaPort\`).
+- Общие опции моста \`LlmBridgeOptions\` (модель per-agent/deфолт, temperature 0.5, maxTokens 1024, \`cacheScope\` B-20).
 
 ## Реализация
 
-- Единственный файл \`src/kernel/services/llm-bridge/llm-task-executor.ts\` с четырьмя классами-адаптерами. Это тонкий слой: сами вызовы идут через роутинг/провайдеров.
+- Единственный файл \`src/kernel/services/llm-bridge/llm-task-executor.ts\` (266 ст.), 6 классов. Все вызовы идут через \`ILLMClientService.chat\` (не routerService); system-буфер урезается до 6000, user — до 12000 символов.
+- **DI:** единого токена \`llmBridge\` нет — адаптеры собираются инлайн в фазах: \`phase23-crew\` (LlmCrewExecutor), \`phase24-council\` (LlmCouncilPort), \`phase25-graph\` (LlmGraphPort), \`phase26-persona\` (LlmPersonaPort), \`phase31-frontier\` (LlmFrontierExecutor).
 
 ## Связи
 
-- Провайдеры — [[comp-provider-runtime]]; маршрутизация — [[comp-routing]]; роли — [[comp-agents-roles-skills]].
+- Провайдеры — [[comp-provider-runtime]]; маршрутизация — [[comp-routing]]; роли — [[comp-agents-roles-skills]]; экипажи/совет — [[comp-crews-councils]].
 - Панель: [[panel-director]] (Director/совет).
 
 ## Проверка работоспособности
 
-- **Тестов нет:** для \`llm-task-executor.ts\` выделенный тест не найден.
-- Ручная: запустить экипаж/совет и убедиться, что задачи доходят до провайдера.
+- Тест: \`llm-persona-port.test.ts\` (5 кейсов: JSON-парсинг, non-JSON fallback, пустые данные).
+- **Пробел:** нет тестов на \`LlmCrewExecutor\`, \`LlmCouncilPort\`, \`LlmGraphPort\`, \`LlmFrontierExecutor\`.
 
 ## Состояние
 
-- Реализовано; подтверждено чтением кода, без автотестов.`,
+- Реализовано; подтверждено чтением кода, тест — только на persona-port.
+- **Риски:** echo-fallback при сбое LLM (молчаливый «успех»); жёсткие обрезки (риск потери контекста); наивный JSON-парсинг (\`indexOf('{')\`/\`lastIndexOf('}')\`); \`LlmGraphPort\` игнорирует scope (кэш не скоуплен).`,
     },
     {
         slug: 'comp-state-stores',
@@ -1796,29 +1798,33 @@ flowchart TD
         slug: 'comp-invocation-meta',
         title: 'Компонент: вызовы (invocation) и мета-агент',
         section: 'components',
-        tags: ['компоненты', 'invocation', 'мета-агент', 'учёт'],
-        freshness: 'documented',
+        tags: ['компоненты', 'invocation', 'мета-агент', 'учёт', 'стратегии'],
+        freshness: 'verified',
         sources: [
             'src/kernel/services/invocation/invocation-engine-service.ts',
             'src/kernel/services/invocation/invocation-repository.ts',
             'src/kernel/services/invocation/invocation-cost-tracker.ts',
             'src/kernel/services/meta/meta-agent-service.ts',
             'src/kernel/services/meta/strategy-service.ts',
+            'src/kernel/services/meta/cog-memory-service.ts',
+            'src/kernel/services/project-invocation-bridge.ts',
         ],
         related: ['panel-settings', 'panel-analytics', 'comp-budget-pricing', 'comp-agents-roles-skills', 'comp-state-stores'],
         body: `## Назначение
 
-Фиксировать каждый вызов агента/инструмента (учёт, повтор) и управлять ими на мета-уровне: стратегии и «мета-агент», который рулит другими.
+Фиксировать каждый вызов агента/инструмента (учёт, повтор) и управлять ими на мета-уровне: стратегии и «мета-агент», который предлагает улучшения.
 
 ## Возможности
 
-- Движок вызовов (\`InvocationEngineService\`), хранилище (\`InvocationRepository\`), учёт стоимости (\`InvocationCostTracker\`).
-- Мета-агент (\`MetaAgentService\`), стратегии (\`StrategyService\`), когнитивная память (\`CogMemoryService\`).
+- Движок вызовов (\`InvocationEngineService\`: \`invoke\` → Invocation, гейтинг политиками+бюджетом, событие \`INVOCATION_REQUESTED\`), хранилище (\`InvocationRepository\`), учёт стоимости (\`InvocationCostTracker\`).
+- Мета-агент (\`MetaAgentService\`: \`analyze\` → ImprovementProposal, \`accept/apply/reject\`, события \`META_PROPOSED/META_APPLIED\`), стратегии (\`StrategyService\`), когнитивная память (\`CogMemoryService\`).
+- Мост в проекты (\`ProjectInvocationBridge\`).
 
 ## Реализация
 
-- \`invocation/\`: \`invocation-engine-service.ts\`, \`invocation-repository.ts\`, \`invocation-cost-tracker.ts\`.
-- \`meta/\`: \`meta-agent-service.ts\`, \`strategy-service.ts\`, \`cog-memory-service.ts\`.
+- \`invocation/\`: \`invocation-engine-service.ts\`, \`invocation-repository.ts\`, \`invocation-cost-tracker.ts\` (DI: \`phase21-invocation\`, \`phase22-cost-tracker\`).
+- \`meta/\`: \`meta-agent-service.ts\`, \`strategy-service.ts\`, \`cog-memory-service.ts\` (DI: \`phase29-meta\`).
+- \`project-invocation-bridge.ts\` (DI: \`phase66-projects\`).
 
 ## Связи
 
@@ -1827,11 +1833,13 @@ flowchart TD
 
 ## Проверка работоспособности
 
-- Тест: \`src/stores/invocationStore.test.ts\` (слой состояния); в самих каталогах \`invocation/\`/\`meta/\` выделенных тестов не найдено.
+- Тесты: \`src/stores/invocationStore.test.ts\` (состояние), \`project-invocation-bridge.test.ts\` (3 кейса).
+- **Пробел:** нет юнит-тестов на ядро \`InvocationEngineService\`, \`InvocationRepository\`, \`MetaAgentService\`, \`StrategyService\`, \`CogMemoryService\`, \`InvocationCostTracker\`.
 
 ## Состояние
 
-- Реализовано; подтверждено чтением кода и тестом стора.`,
+- Реализовано; подтверждено чтением кода, тесты — на сторе и project-bridge.
+- **Риски:** \`ProjectInvocationBridge\` — заглушка (возвращает фиксированную строку, \`filesChanged=[]\`, \`success:true\` всегда); история \`invocations\` в RAM (не персистентна); MetaAgentService — детерминированные эвристики без LLM.`,
     },
     {
         slug: 'comp-simulation-world',

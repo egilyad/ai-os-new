@@ -202,7 +202,7 @@
 - [Компонент: флот, governance и аудит](./comp-fleet-governance.md) — _verified_
 - [Компонент: интеграции и интероперабельность](./comp-integrations-interop.md) — _verified_
 - [Компонент: рантайм провайдеров](./comp-provider-runtime.md) — _verified_
-- [Компонент: LLM-мост (адаптеры crews/council/graph/frontier)](./comp-llm-bridge.md) — _documented_
+- [Компонент: LLM-мост (адаптеры crews/council/graph/frontier)](./comp-llm-bridge.md) — _verified_
 - [Компонент: слой состояния (Zustand-сторы)](./comp-state-stores.md) — _verified_
 - [Компонент: сквозные сценарии](./comp-scenarios.md) — _verified_
 - [Компонент: экипажи и совет](./comp-crews-councils.md) — _verified_
@@ -211,7 +211,7 @@
 - [Компонент: генерация знаний и RAG](./comp-knowledge-rag.md) — _verified_
 - [Компонент: оценка и рейтинг (eval, elo)](./comp-eval-elo.md) — _verified_
 - [Компонент: персоны и строитель (persona, builder)](./comp-persona-builder.md) — _verified_
-- [Компонент: вызовы (invocation) и мета-агент](./comp-invocation-meta.md) — _documented_
+- [Компонент: вызовы (invocation) и мета-агент](./comp-invocation-meta.md) — _verified_
 - [Компонент: симуляция, компьютер и parity](./comp-simulation-world.md) — _verified_
 - [Компонент: синтез, форум и junction-движок](./comp-synthesis-forum.md) — _verified_
 - [Компонент: хранилище, таймлайн и проекции](./comp-storage-timeline.md) — _verified_

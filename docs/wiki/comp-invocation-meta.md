@@ -2,23 +2,25 @@
 
 # Компонент: вызовы (invocation) и мета-агент
 
-> Раздел: **Компоненты и сервисы** · Статус: documented · Теги: компоненты, invocation, мета-агент, учёт
+> Раздел: **Компоненты и сервисы** · Статус: verified · Теги: компоненты, invocation, мета-агент, учёт, стратегии
 
-Источники: `src/kernel/services/invocation/invocation-engine-service.ts`, `src/kernel/services/invocation/invocation-repository.ts`, `src/kernel/services/invocation/invocation-cost-tracker.ts`, `src/kernel/services/meta/meta-agent-service.ts`, `src/kernel/services/meta/strategy-service.ts`
+Источники: `src/kernel/services/invocation/invocation-engine-service.ts`, `src/kernel/services/invocation/invocation-repository.ts`, `src/kernel/services/invocation/invocation-cost-tracker.ts`, `src/kernel/services/meta/meta-agent-service.ts`, `src/kernel/services/meta/strategy-service.ts`, `src/kernel/services/meta/cog-memory-service.ts`, `src/kernel/services/project-invocation-bridge.ts`
 
 ## Назначение
 
-Фиксировать каждый вызов агента/инструмента (учёт, повтор) и управлять ими на мета-уровне: стратегии и «мета-агент», который рулит другими.
+Фиксировать каждый вызов агента/инструмента (учёт, повтор) и управлять ими на мета-уровне: стратегии и «мета-агент», который предлагает улучшения.
 
 ## Возможности
 
-- Движок вызовов (`InvocationEngineService`), хранилище (`InvocationRepository`), учёт стоимости (`InvocationCostTracker`).
-- Мета-агент (`MetaAgentService`), стратегии (`StrategyService`), когнитивная память (`CogMemoryService`).
+- Движок вызовов (`InvocationEngineService`: `invoke` → Invocation, гейтинг политиками+бюджетом, событие `INVOCATION_REQUESTED`), хранилище (`InvocationRepository`), учёт стоимости (`InvocationCostTracker`).
+- Мета-агент (`MetaAgentService`: `analyze` → ImprovementProposal, `accept/apply/reject`, события `META_PROPOSED/META_APPLIED`), стратегии (`StrategyService`), когнитивная память (`CogMemoryService`).
+- Мост в проекты (`ProjectInvocationBridge`).
 
 ## Реализация
 
-- `invocation/`: `invocation-engine-service.ts`, `invocation-repository.ts`, `invocation-cost-tracker.ts`.
-- `meta/`: `meta-agent-service.ts`, `strategy-service.ts`, `cog-memory-service.ts`.
+- `invocation/`: `invocation-engine-service.ts`, `invocation-repository.ts`, `invocation-cost-tracker.ts` (DI: `phase21-invocation`, `phase22-cost-tracker`).
+- `meta/`: `meta-agent-service.ts`, `strategy-service.ts`, `cog-memory-service.ts` (DI: `phase29-meta`).
+- `project-invocation-bridge.ts` (DI: `phase66-projects`).
 
 ## Связи
 
@@ -27,11 +29,13 @@
 
 ## Проверка работоспособности
 
-- Тест: `src/stores/invocationStore.test.ts` (слой состояния); в самих каталогах `invocation/`/`meta/` выделенных тестов не найдено.
+- Тесты: `src/stores/invocationStore.test.ts` (состояние), `project-invocation-bridge.test.ts` (3 кейса).
+- **Пробел:** нет юнит-тестов на ядро `InvocationEngineService`, `InvocationRepository`, `MetaAgentService`, `StrategyService`, `CogMemoryService`, `InvocationCostTracker`.
 
 ## Состояние
 
-- Реализовано; подтверждено чтением кода и тестом стора.
+- Реализовано; подтверждено чтением кода, тесты — на сторе и project-bridge.
+- **Риски:** `ProjectInvocationBridge` — заглушка (возвращает фиксированную строку, `filesChanged=[]`, `success:true` всегда); история `invocations` в RAM (не персистентна); MetaAgentService — детерминированные эвристики без LLM.
 
 ---
 
