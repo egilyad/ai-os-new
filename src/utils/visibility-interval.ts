@@ -6,7 +6,10 @@ import { useEffect, useRef } from 'react';
  */
 export function useVisibilityInterval(callback: () => void, delayMs: number): void {
     const savedCallback = useRef(callback);
-    savedCallback.current = callback;
+
+    useEffect(() => {
+        savedCallback.current = callback;
+    }, [callback]);
 
     useEffect(() => {
         if (delayMs <= 0) return;

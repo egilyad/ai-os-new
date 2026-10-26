@@ -31,7 +31,7 @@ const _getStatus = (): SystemStatusReport => {
 /** Hook that tracks system status reactively — re-computes on key events + periodic refresh */
 export function useSystemStatus(): SystemStatusWithStaleness {
     const [report, setReport] = useState(() => _getStatus());
-    const [lastUpdated, setLastUpdated] = useState(Date.now());
+    const [lastUpdated, setLastUpdated] = useState(() => Date.now());
 
     useEffect(() => {
         let timer: ReturnType<typeof setTimeout> | null = null;
