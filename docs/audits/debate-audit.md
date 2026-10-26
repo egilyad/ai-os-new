@@ -28,8 +28,8 @@
 
 | ID | Дефект | Проверено | Доказательство на ветке |
 |---|---|---|---|
-| D1 | `startDebate` игнорирует `strategy` для топологии — всегда roundtable | [V] | `debate-sync-manager.ts:312` (`buildRoundtableTopology`) |
-| D2 | BUILTIN_STRATEGIES (33) не имеют runtime-интерпретатора DSL | [V] | в `debate-strategy-registry.ts` только валидация; executor'ов нет |
+| D1 | `startDebate` игнорирует `strategy` для топологии — всегда roundtable | [V]→**исправлено** | `debate-sync-manager.ts` → `resolveStrategyConfig` (strategy→топология) |
+| D2 | BUILTIN_STRATEGIES (33) не имеют runtime-интерпретатора DSL | [V]→**lёгкий интерпретатор** | `debate-session-bridge.ts` → `resolveStrategyConfig` (root→топология+quality) |
 | D3 | 8 режимов: policies не применяются движком | [V] | grep `require_evidence/forbid_emotion/contradiction_penalty/temperature_cap` — только определения, не потребление |
 | D4 | `builtin.peer_review` — битый strategyRef в режиме `scientific_review` | [V] | `debate-mode-system.ts` ссылается на id, которого нет среди 33 |
 | D5 | Stub-сервисы зарегистрированы, но не вызываются runtime'ом | [V] | MultiHop/AbstractionLadder/RoleReversal/Counterfactual/SemanticBlending/JudgeDeliberation/Concession/Hegelian + BestOfNSelector (не регистрируется) |
@@ -38,7 +38,7 @@
 | D8 | `best-of-n` — inline-эвристика вместо `BestOfNSelector` | [V] | `debate-engine.ts:563-604`; класс не зарегистрирован |
 | D9 | `DEBATE_HISTORY_WINDOW=6` — фиксированное окно | [V] | `debate-llm-caller.ts:29` |
 | D10 | `preferredExtensions` ограничен 12 аргументами | [V] | `argtech-service.ts` — `throw` при >12 |
-| D11 | 5 enum-стратегий (`cross-examination`, `tournament`, `moderated`, `free_for_all`, `jury_trial`) без обработчиков | [V] | нет веток в `buildArgumentPrompt`/топологии |
+| D11 | 5 enum-стратегий (`cross-examination`, `tournament`, `moderated`, `free_for_all`, `jury_trial`) без обработчиков | [V]→**исправлено** | `buildTopologyForStrategy`+`strategyQualityForced` (топология+quality) |
 | D12 | Две параллельные системы стратегий (33 DSL против 13 enum) | [V] | `debate-strategy-definitions.ts` vs `debate-types.ts:61-74` |
 | D13 | `JustificationEnforcer` зарегистрирован, но не вызывается в промпт-контексте | [V] | подключён в engine:543, в prompt-context не используется |
 | D14 | `crossDebateMemory` зарегистрирован, но не интегрирован в main flow | [V] | регистрация `phase3:769`; в deps движка/промпт-контексте не используется |
