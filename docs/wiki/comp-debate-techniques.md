@@ -16,12 +16,12 @@
 
 | Сущность | Кол-во | Реальный статус |
 |---|---|---|
-| `DebateSessionStrategy` (enum) | 13 | 3 работают (socratic, argument_tree, constrained); 5 — только через топологию; 5 — без обработчиков |
-| `BUILTIN_STRATEGIES` (DSL) | 33 | все REGISTERED_UNUSED: runtime-интерпретатора DSL нет |
+| `DebateSessionStrategy` (enum) | 13 | **все маппятся в исполнение** через `resolveStrategyConfig` (топология + quality); socratic/argument_tree/constrained — свои ветки промпта |
+| `BUILTIN_STRATEGIES` (DSL) | 33 | **лёгкий интерпретатор** `resolveStrategyConfig`: root→топология+quality (D2) |
 | `ArgumentStrategy` | 10 | текст-инструкция per-agent |
 | `DebateConstraint` | 7 | активны только при `strategy==='constrained'` |
 | TopologyType | 5 | все работают через `startTopologyDebate` |
-| `BUILTIN_MODES` | 8 | policies **не применяются** движком; `resolveStrategy` не вызывается |
+| `BUILTIN_MODES` | 8 | policies **применяются** через `applyModeToSession` (температура/лимиты/quality) |
 | `QUALITY_TECHNIQUES` | 77 | большинство инжектит инструкцию; часть имеет backing-service |
 
 Каждая quality-техника включается через гейт `isQ(id)` (`debate-prompt-builder.ts:162-164`): `qualitySettings?.[id] !== false`. Пользовательские настройки приходят из UI в `qualitySettings` при `startDebate`.
@@ -40,8 +40,8 @@
 - **Единственная техника с дополнительным LLM-вызовом:** `shadow-opponent` (через `debate-llm-enrichment.ts`).
 - **Stub-сервисы зарегистрированы, но не вызываются:** `MultiHopService`, `AbstractionLadderService`, `RoleReversalService`, `CounterfactualService`, `SemanticBlendingService`, `JudgeDeliberationService`, `ConcessionService`, `HegelianService`. `BestOfNSelector` — вообще не регистрируется (движок использует inline-эвристику в `debate-engine.ts`).
 - **Дубликаты гейтов:** `concession`/`concession-engine` → `buildConcessionPrompt`; `triangulation`/`evidence-triangulation` → `buildTriangulationPrompt`.
-- **Особые случаи:** `bayesianJudge` зарегистрирован, но не подключён в deps движка; `searchEngine` в коде отсутствует.
-- **Стратегии:** ветки в `buildArgumentPrompt` есть только для `socratic`, `argument_tree`, `constrained`. Остальные enum-значения либо требуют `startTopologyDebate` (round_robin, sequential, judge, tree-of-thought, red-blue), либо не имеют обработчиков. Все 33 DSL-определения только валидируются в `debate-strategy-registry.ts`; единственный потребитель числовых полей — `getEarlyExitConfidence`. Policies восьми режимов нигде не применяются; у `scientific_review` — битый `strategyRef: 'builtin.peer_review'`.
+- **Особые случаи:** `bayesianJudge` подключён в deps движка (активирует `jury_trial`-скоринг); `searchEngine` в коде отсутствует.
+- **Стратегии:** `startDebate` маппит **все 13 enum-стратегий** в исполнение (`resolveStrategyConfig`: judge/jury_trial→judge-топология, tournament/sequential→linear, tree-of-thought→tree, red-blue→red-blue, остальные→roundtable) + принудительные quality-гейты (cross-examination/tournament/jury_trial/moderated/free_for_all). **33 DSL-стратегии** интерпретируются лёгким рантаймом (root→топология+quality). Policies восьми режимов применяются через `applyModeToSession`.
 - **Проверка тестами:** см. `docs/audits/debate-audit.md` (раздел «Что подтверждено по тестам»).
 
 ---
