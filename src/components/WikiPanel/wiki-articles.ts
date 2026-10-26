@@ -686,8 +686,8 @@ flowchart LR
 
 ### 7. Ошибка провайдера (дебаты) [V]
 
-**debateCallLlm** → `handleDebateCallError`:
-- TIMEOUT → retry с backoff; 402/401/403 → `markProviderFailed`, continue; 413/404 → `markModelFailed`; RATE_LIMIT → backoff с jitter; всё мертво → deadLetterQueue + throw.
+**debateCallLlm** → \`handleDebateCallError\`:
+- TIMEOUT → retry с backoff; 402/401/403 → \`markProviderFailed\`, continue; 413/404 → \`markModelFailed\`; RATE_LIMIT → backoff с jitter; всё мертво → deadLetterQueue + throw.
 
 **UI (startDebate catch):**
 - «402» → «недостаточно кредитов»;
