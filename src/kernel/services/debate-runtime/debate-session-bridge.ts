@@ -157,6 +157,28 @@ export function buildRedBlueTopology(
     };
 }
 
+/**
+ * Strategy → forced quality technique ids. Makes otherwise-generic strategies
+ * actually behave differently once `startDebate` merges these into the session's
+ * quality settings (additive — never disables user choices).
+ */
+export function strategyQualityForced(strategy: DebateStrategy): string[] {
+    switch (strategy) {
+        case 'cross-examination':
+            return ['cross-examination'];
+        case 'tournament':
+            return ['adaptive-order'];
+        case 'jury_trial':
+            return ['blind-evaluation', 'bayesian-judges'];
+        case 'moderated':
+            return ['critic'];
+        case 'free_for_all':
+            return ['insight-bus'];
+        default:
+            return [];
+    }
+}
+
 export function buildTopologyForStrategy(
     strategy: DebateStrategy,
     participants: DebateParticipant[],
@@ -168,6 +190,7 @@ export function buildTopologyForStrategy(
         case 'tree-of-thought':
             return buildTreeTopology(participants, maxRounds);
         case 'judge':
+        case 'jury_trial':
             if (participants.some((p) => p.role === 'judge'))
                 return buildJudgeTopology(participants, maxRounds);
             break;
@@ -178,7 +201,12 @@ export function buildTopologyForStrategy(
             )
                 return buildRedBlueTopology(participants, maxRounds);
             break;
+        case 'tournament':
+            // Elimination-style: speak sequentially, one turn at a time (linear).
+            return buildLinearTopology(participants, maxRounds);
         default:
+            // cross-examination / moderated / free_for_all / socratic / argument_tree /
+            // constrained → roundtable (distinct behavior comes from prompt/quality gates).
             break;
     }
     return buildRoundtableTopology(participants, maxRounds);
