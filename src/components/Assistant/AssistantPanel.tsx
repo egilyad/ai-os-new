@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { Mic, MicOff, Send, Square, Volume2, VolumeX, Trash2, Loader2, ShieldCheck, BookOpen } from 'lucide-react';
 import { useAssistantStore, type AssistantMessage } from '../../stores/assistant-store';
+import { useKeyStore } from '../../stores/useKeyStore';
 import {
     assistantNavigationService,
     capabilityTrustService,
@@ -54,6 +55,9 @@ const SUGGESTIONS = [
 const AssistantPanel: React.FC = () => {
     const navigate = useNavigate();
     const { messages, busy, error, send, clear } = useAssistantStore();
+    const keyId = useAssistantStore((s) => s.keyId);
+    const setKey = useAssistantStore((s) => s.setKey);
+    const keys = useKeyStore((s) => s.keys);
     const [input, setInput] = useState('');
     const [autoSpeak, setAutoSpeak] = useState<boolean>(() => {
         try {
@@ -170,6 +174,24 @@ const AssistantPanel: React.FC = () => {
 
     return (
         <div className="assistant-panel">
+            <div className="assistant-keybar">
+                <span className="assistant-keybar__label">Ключ</span>
+                <select
+                    className="assistant-keybar__select"
+                    value={keyId ?? ''}
+                    onChange={(e) => setKey(e.target.value || null)}
+                    disabled={busy}
+                    aria-label="Ключ помощника"
+                    title="Ключ, через который помощник отвечает"
+                >
+                    <option value="">Авто — первый активный</option>
+                    {keys.map((k) => (
+                        <option key={k.id} value={k.id}>
+                            {k.label || k.id.slice(0, 8)} · {k.provider} ({k.status})
+                        </option>
+                    ))}
+                </select>
+            </div>
             <header className="assistant-head">
                 <AssistantFace state={faceState} />
                 <div className="assistant-head__text">

@@ -4278,6 +4278,40 @@
   min-height: 440px;
 }
 
+.assistant-keybar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.assistant-keybar__label {
+  opacity: 0.75;
+}
+
+.assistant-keybar__select {
+  max-width: 280px;
+  padding: 0.3rem 0.55rem;
+  border-radius: 9px;
+  border: 1px solid var(--border);
+  background: var(--bg-panel);
+  color: var(--text-main);
+  font-size: 0.78rem;
+  cursor: pointer;
+}
+
+.assistant-keybar__select:focus {
+  outline: none;
+  border-color: var(--accent-color);
+}
+
+.assistant-keybar__select:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
 .assistant-head {
   display: flex;
   align-items: center;

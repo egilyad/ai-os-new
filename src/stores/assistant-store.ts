@@ -49,9 +49,23 @@ export interface AssistantState {
     diary: AssistantDiaryRow[];
     /** Who the assistant is as an agent: node, lifecycle, permission mode. */
     self: AssistantSelfRow | null;
+    /** Key id the assistant is pinned to (null = auto-routing). */
+    keyId: string | null;
     send: (text: string) => Promise<void>;
+    setKey: (keyId: string | null) => void;
     refreshSelf: () => void;
     clear: () => void;
+}
+
+const KEY_STORAGE_KEY = 'assistant.keyId';
+
+function readStoredKey(): string | null {
+    try {
+        const v = localStorage.getItem(KEY_STORAGE_KEY);
+        return v ? v : null;
+    } catch {
+        return null;
+    }
 }
 
 interface ChunkPayload {
@@ -147,6 +161,7 @@ export const useAssistantStore = create<AssistantState>((set, get) => {
         error: null,
         diary: [],
         self: readSelf(),
+        keyId: readStoredKey(),
 
         send: async (text: string) => {
             const trimmed = text.trim();
@@ -170,7 +185,10 @@ export const useAssistantStore = create<AssistantState>((set, get) => {
             }));
 
             try {
-                const result = await projectAssistantService.ask({ text: trimmed });
+                const result = await projectAssistantService.ask({
+                    text: trimmed,
+                    keyId: get().keyId ?? undefined,
+                });
                 set((s) => ({
                     messages: s.messages.map((m) =>
                         m.id === assistantId
@@ -204,6 +222,20 @@ export const useAssistantStore = create<AssistantState>((set, get) => {
 
         refreshSelf: () => set({ self: readSelf() }),
 
-        clear: () => set({ messages: [], busy: false, error: null, diary: [], self: readSelf() }),
+        setKey: (keyId) => {
+            try {
+                if (keyId) {
+                    localStorage.setItem(KEY_STORAGE_KEY, keyId);
+                } else {
+                    localStorage.removeItem(KEY_STORAGE_KEY);
+                }
+            } catch {
+                /* storage may be unavailable (private mode) */
+            }
+            set({ keyId });
+        },
+
+        clear: () =>
+            set({ messages: [], busy: false, error: null, diary: [], self: readSelf() }),
     };
 });

@@ -82,8 +82,11 @@ export interface AssistantServiceDeps {
     /**
      * Last-resort route when neither the request nor the service names one:
      * the assistant is expected to work on whatever key the user has.
+     * Accepts an optional key id to pin the turn to a specific key.
      */
-    resolveRoute?: () => { provider?: string; model?: string } | undefined;
+    resolveRoute?: (opts?: { keyId?: string }) =>
+        | { provider?: string; model?: string; apiKey?: string }
+        | undefined;
 }
 
 export class AssistantService {
@@ -233,13 +236,27 @@ export class AssistantService {
     /**
      * Which provider/model a turn runs on.
      *
-     * The request wins, then the configured assistant route, then whatever
-     * active key the system has — an assistant that needs a hand-configured
-     * default provider is useless on a fresh install.
+     * A pinned key wins, then the request, then the configured assistant route,
+     * then whatever active key the system has — an assistant that needs a
+     * hand-configured default provider is useless on a fresh install.
      */
-    private resolveRoute(req: AssistantTurnRequest): { provider?: string; model?: string } {
+    private resolveRoute(
+        req: AssistantTurnRequest,
+    ): { provider?: string; model?: string; apiKey?: string } {
         const pick = (provider?: string) =>
             provider && provider !== 'auto' && provider !== 'race' ? provider : undefined;
+
+        if (req.keyId) {
+            const pinned = this.deps.resolveRoute?.({ keyId: req.keyId });
+            if (pinned?.provider) {
+                return {
+                    provider: pick(pinned.provider),
+                    model: req.model ?? this.deps.model ?? pinned.model,
+                    apiKey: pinned.apiKey,
+                };
+            }
+        }
+
         const provider = pick(req.provider) ?? pick(this.deps.provider);
         const model = req.model ?? this.deps.model;
         if (provider) return { provider, model };
@@ -335,6 +352,7 @@ export class AssistantService {
                         model: route.model,
                         temperature: 0.2,
                         maxTokens: 1500,
+                        apiKeyOverride: route.apiKey,
                         tools: available.map((t) => ({
                             type: 'function',
                             function: {

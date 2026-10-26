@@ -485,10 +485,18 @@ export const registerPhase78: Phase = ({ register }) => {
             // assistant must run on any key the user has, without extra setup.
             // Resolved lazily: the key pool belongs to the UI-owned layer and
             // may be absent in a reduced composition.
-            resolveRoute: () => {
+            resolveRoute: (opts?: { keyId?: string }) => {
                 try {
                     if (!c.has('keyService')) return undefined;
                     const keyService = c.get<{
+                        getKeys(): Array<{
+                            id: string;
+                            provider: string;
+                            key: string;
+                            status: string;
+                            model?: string;
+                            availableModels?: string[];
+                        }>;
                         getActiveKeys(): Array<{
                             provider: string;
                             key: string;
@@ -497,15 +505,18 @@ export const registerPhase78: Phase = ({ register }) => {
                             availableModels?: string[];
                         }>;
                     }>('keyService');
-                    const key = keyService
-                        .getActiveKeys()
-                        .find((k) => k.status === 'active' && !!k.key);
+                    const keys = keyService.getKeys();
+                    const key = opts?.keyId
+                        ? keys.find((k) => k.id === opts.keyId && !!k.key)
+                        : keyService
+                              .getActiveKeys()
+                              .find((k) => k.status === 'active' && !!k.key);
                     if (!key) return undefined;
                     const model =
                         key.model && key.model !== 'auto'
                             ? key.model
                             : (key.availableModels ?? []).find((m) => m && m !== 'auto');
-                    return { provider: key.provider, model };
+                    return { provider: key.provider, model, apiKey: key.key };
                 } catch {
                     return undefined;
                 }

@@ -67,6 +67,8 @@ export interface AssistantTurnRequest {
     /** Provider/model override; the assistant uses the session default. */
     provider?: string;
     model?: string;
+    /** Pin this turn to a specific key (by id) instead of auto-routing. */
+    keyId?: string;
 }
 
 export interface AssistantTurnResult {
