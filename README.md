@@ -43,6 +43,7 @@ flowchart TD
 | Материал | О чём |
 | --- | --- |
 | [Что такое SuperAgents OS](./docs/wiki/what-is.md) | Философия, отличия от чат-бота |
+| [Путь идеи](./docs/wiki/idea-path.md) | Как провести идею через всю систему |
 | [Возможности ОС](./docs/wiki/capabilities.md) | Обзор функций |
 | [Как пользоваться панелями](./docs/wiki/panels-guide.md) | Навигация и типовой сценарий |
 | [Архитектура](./docs/wiki/architecture.md) | Слои, паттерны, поток данных |

@@ -884,6 +884,7 @@ The full documentation lives in [docs/wiki](./docs/wiki/README.md) — the same 
 | Document | About |
 | --- | --- |
 | [What is SuperAgents OS](./docs/wiki/what-is.md) | Philosophy, how it differs from a chatbot |
+| [Idea path](./docs/wiki/idea-path.md) | How to run an idea through the whole system |
 | [Capabilities](./docs/wiki/capabilities.md) | Feature overview |
 | [Using the panels](./docs/wiki/panels-guide.md) | Navigation and a typical scenario |
 | [Architecture](./docs/wiki/architecture.md) | Layers, patterns, data flow |
