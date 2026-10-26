@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowLeft, Folder } from 'lucide-react';
+import { ArrowLeft, Folder, Search } from 'lucide-react';
 import { useTranslation } from '../../i18n/useTranslation';
 import { NAV_SECTIONS } from '../../route-registry';
 import type { NavSection, RouteMeta } from '../../route-registry';
@@ -11,6 +11,7 @@ interface DesktopProps {
 const Desktop: React.FC<DesktopProps> = ({ onNavigate }) => {
     const { t } = useTranslation();
     const [activeSection, setActiveSection] = useState<NavSection | null>(null);
+    const [query, setQuery] = useState('');
 
     const openApp = (item: RouteMeta) => {
         onNavigate(item.id);
@@ -81,6 +82,8 @@ const Desktop: React.FC<DesktopProps> = ({ onNavigate }) => {
 
     // ── Открытая «папка»: квадратики-приложения ──
     const section = activeSection;
+    const q = query.trim().toLowerCase();
+    const filteredItems = q ? section.items.filter((it) => t(it.labelKey).toLowerCase().includes(q)) : section.items;
     return (
         <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem' }}>
@@ -110,8 +113,34 @@ const Desktop: React.FC<DesktopProps> = ({ onNavigate }) => {
                 </div>
             </div>
 
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.9rem' }}>
+                <Search size={15} color="var(--slate-500)" />
+                <input
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                    placeholder="Найти приложение…"
+                    style={{
+                        flex: 1,
+                        maxWidth: 320,
+                        padding: '0.45rem 0.75rem',
+                        borderRadius: 10,
+                        border: '1px solid rgba(255,255,255,0.1)',
+                        background: 'rgba(255,255,255,0.04)',
+                        color: 'var(--slate-100)',
+                        fontSize: '0.85rem',
+                        outline: 'none',
+                    }}
+                />
+            </div>
+
+            {filteredItems.length === 0 && (
+                <div style={{ fontSize: '0.85rem', color: 'var(--slate-500)', padding: '1rem 0' }}>
+                    Ничего не найдено по запросу «{query}».
+                </div>
+            )}
+
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: '1rem' }}>
-                {section.items.map((item) => (
+                {filteredItems.map((item) => (
                     <button
                         key={item.id}
                         onClick={() => openApp(item)}
