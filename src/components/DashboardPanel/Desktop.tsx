@@ -35,6 +35,20 @@ const SECTION_EMOJI: Record<string, string> = {
 
 const FAVORITES_KEY = 'desktop:favorites';
 
+const quickLaunchStyle = (color: string): React.CSSProperties => ({
+    display: 'flex',
+    alignItems: 'center',
+    gap: 8,
+    padding: '0.7rem 1.1rem',
+    borderRadius: 12,
+    cursor: 'pointer',
+    border: `1px solid ${color}55`,
+    background: `${color}1a`,
+    color: 'var(--slate-100)',
+    fontWeight: 700,
+    fontSize: '0.88rem',
+});
+
 function loadFavorites(): string[] {
     try {
         const raw = localStorage.getItem(FAVORITES_KEY);
@@ -110,6 +124,33 @@ const Desktop: React.FC<DesktopProps> = ({ onNavigate }) => {
     if (!activeSection) {
         return (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                {/* Быстрый запуск — важные возможности, чтобы не терялись */}
+                <div>
+                    <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--slate-400)', marginBottom: '0.6rem' }}>
+                        ⚡ Быстрый запуск
+                    </div>
+                    <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+                        <button
+                            onClick={() => onNavigate('debate')}
+                            style={quickLaunchStyle('#8b5cf6')}
+                        >
+                            ⚖️ Дебаты
+                        </button>
+                        <button
+                            onClick={() => onNavigate('agent-tasks')}
+                            style={quickLaunchStyle('#06b6d4')}
+                        >
+                            🌐 Компьютер и браузер (Agent Tasks)
+                        </button>
+                        <button
+                            onClick={() => onNavigate('knowledge')}
+                            style={quickLaunchStyle('#a855f7')}
+                        >
+                            📚 База знаний
+                        </button>
+                    </div>
+                </div>
+
                 {favoriteItems.length > 0 && (
                     <div>
                         <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--slate-400)', marginBottom: '0.6rem' }}>
