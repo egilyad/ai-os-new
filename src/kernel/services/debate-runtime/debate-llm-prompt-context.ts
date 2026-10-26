@@ -1369,7 +1369,7 @@ export async function buildDebateSystemContent(
     }
 
     // D14: inject cross-debate context (related past debates) into the prompt.
-    if (deps.crossDebateMemory && isQ('insight-bus')) {
+    if (deps.crossDebateMemory) {
         try {
             const crossCtx = await deps.crossDebateMemory.getContext(session.topic);
             const crossBlock = deps.crossDebateMemory.formatContextForPrompt(crossCtx);
