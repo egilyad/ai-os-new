@@ -57,11 +57,11 @@ const BilingualLabel: React.FC<{ labelKey: string }> = ({ labelKey }) => {
     const ru = translate(labelKey, 'ru');
     return (
         <span style={{ display: 'block', textAlign: 'center', lineHeight: 1.3 }}>
-            <span style={{ display: 'block', fontSize: '0.92rem', fontWeight: 700, color: 'var(--slate-100)' }}>
+            <span style={{ display: 'block', fontSize: '1.1rem', fontWeight: 800, color: 'var(--slate-50)' }}>
                 {en}
             </span>
             {ru !== en && (
-                <span style={{ display: 'block', fontSize: '0.85rem', color: 'var(--slate-300)', fontWeight: 600, marginTop: 2 }}>
+                <span style={{ display: 'block', fontSize: '1rem', color: 'var(--slate-200)', fontWeight: 700, marginTop: 3 }}>
                     {ru}
                 </span>
             )}
@@ -164,8 +164,8 @@ const Desktop: React.FC<DesktopProps> = ({ onNavigate }) => {
                             >
                                 <div
                                     style={{
-                                        width: 64,
-                                        height: 64,
+                                        width: 76,
+                                        height: 76,
                                         borderRadius: 16,
                                         display: 'flex',
                                         alignItems: 'center',
@@ -397,8 +397,8 @@ const AppTile: React.FC<AppTileProps> = ({ item, color, labelKey, onOpen, isFavo
             >
                 <div
                     style={{
-                        width: 64,
-                        height: 64,
+                        width: 76,
+                        height: 76,
                         borderRadius: 16,
                         display: 'flex',
                         alignItems: 'center',
