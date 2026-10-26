@@ -672,7 +672,7 @@ flowchart LR
 ### 5. Агент: создать и выполнить задачу [V]
 
 **AgentFactory.create** → resolver (роль/политика) → \`agent-def/<id>\` в DAL → событие \`AGENT_CREATED\`.
-**AgentFactory.execute** → resolve → `tools.runWithTools` (если есть tool) → `llm.chat` (fallback) → persist в memory → `agent-run/<id>/<ts>` в DAL → emit \`AGENT_EXECUTED\` → возврат `{output, toolCalls}`.
+**AgentFactory.execute** → resolve → \`tools.runWithTools\` (если есть tool) → \`llm.chat\` (fallback) → persist в memory → \`agent-run/<id>/<ts>\` в DAL → emit \`AGENT_EXECUTED\` → возврат \`{output, toolCalls}\`.
 
 **Статус:** [V] — полная цепочка подтверждена чтением кода (agent-factory.ts). Реальное выполнение с реальным провайдером не проверялось.
 
