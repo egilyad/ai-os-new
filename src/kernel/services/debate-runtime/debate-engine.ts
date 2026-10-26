@@ -523,6 +523,7 @@ export class DebateEngine implements IDebateEngine, ILifecycle {
             getDefaultPrompt: (nodeId, s) => this.getDefaultPrompt(nodeId, s),
             sessionAbortControllers: this.sessionAbortControllers,
             ragRetriever: this.deps.ragRetriever,
+        crossDebateMemory: this.deps.crossDebateMemory,
             isSessionCancelled: (id) => this._cancelledSessionIds.has(id),
             entanglementEngine: this.deps.entanglementEngine,
             anchoringService: this.deps.anchoringService,

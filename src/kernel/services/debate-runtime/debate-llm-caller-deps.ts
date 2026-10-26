@@ -115,6 +115,10 @@ export interface LlmCallerDeps {
     getDefaultPrompt(nodeId: string, session: IDebateSession): Promise<string>;
     sessionAbortControllers: Map<string, Map<string, AbortController>>;
     ragRetriever?: DebateRAGRetriever;
+    crossDebateMemory?: Pick<
+        import('./cross-debate-memory').CrossDebateMemoryService,
+        'getContext' | 'formatContextForPrompt'
+    >;
     isSessionCancelled?: (sessionId: string) => boolean;
     entanglementEngine?: IEntanglementEngine;
     anchoringService?: IAnchoringService;

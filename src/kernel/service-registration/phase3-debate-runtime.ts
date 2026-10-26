@@ -625,6 +625,9 @@ export const registerPhase3: Phase = (helpers, ctx) => {
             debateStore: storageLayer?.debates ?? EMPTY_DEBATE_STORE,
             policyEngine: c.get<DebatePolicyEngine>('debatePolicyEngine'),
             ragRetriever: c.get<DebateRAGRetriever>('debateRAGRetriever'),
+            crossDebateMemory: c.get<import('../services/debate-runtime/cross-debate-memory').CrossDebateMemoryService>(
+                'crossDebateMemory',
+            ),
             memoryExtractor: c.get<DebateMemoryExtractor>('debateMemoryExtractor'),
             evaluator: (councilAwareEvaluator ?? c.get<DebateEvaluator>('debateEvaluator')) as unknown as DebateEvaluator,
             entanglementEngine: c.get<IEntanglementEngine>('entanglementEngine'),

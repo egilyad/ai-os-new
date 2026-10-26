@@ -97,6 +97,10 @@ export interface DebateEngineDeps {
     };
     policyEngine?: DebatePolicyEngine;
     ragRetriever?: DebateRAGRetriever;
+    crossDebateMemory?: Pick<
+        import('./cross-debate-memory').CrossDebateMemoryService,
+        'getContext' | 'formatContextForPrompt' | 'indexVerdict'
+    >;
     memoryExtractor?: DebateMemoryExtractor;
     evaluator?: IDebateEvaluator;
     providerResolver?: DebateProviderResolver;

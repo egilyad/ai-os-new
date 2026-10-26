@@ -1368,5 +1368,19 @@ export async function buildDebateSystemContent(
         }
     }
 
+    // D14: inject cross-debate context (related past debates) into the prompt.
+    if (deps.crossDebateMemory && isQ('insight-bus')) {
+        try {
+            const crossCtx = await deps.crossDebateMemory.getContext(session.topic);
+            const crossBlock = deps.crossDebateMemory.formatContextForPrompt(crossCtx);
+            if (crossBlock) systemContent += `\n\n${crossBlock}`;
+        } catch {
+            LOGGER.warn('DebateEngine', 'cross-debate memory injection failed', {
+                sessionId,
+                agentId: participant.agentId,
+            });
+        }
+    }
+
     return { systemContent, entanglementConstraint };
 }
