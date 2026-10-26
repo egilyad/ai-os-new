@@ -620,7 +620,7 @@ flowchart LR
 | 3 | Симуляция: создать мир с агентами | [V] | SimulationPanel → worldStateService.create → engine → tick |
 | 4 | Дебаты: восстановление после reload | [V] | engine._restoreOrphanedSessions (zombie 5 мин) + restoreSession + init:loadActiveSession + governor.rehydrate |
 | 5 | Агент: создать и выполнить задачу | [SA] | AgentFactory.create → resolve → execute (LLM→tools→memory→persist→observe) |
-| 6 | RAG: загрузить источник и найти | [SA] | knowledgeService.addSource (via assistant-wiring) + chunkText + retrieve; UI-панель фильтрует memories клиентски |
+| 6 | RAG: загрузить источник и найти | [V] | knowledgeService.addSource + chunkText + retrieve; KnowledgePanel теперь вызывает retrieve при поиске (≥3 симв.) |
 | 7 | Wiki-Brain интеграция | [NV] | нет подтверждённой связки |
 
 ---
@@ -681,7 +681,7 @@ flowchart LR
 **addSource** (вызов из \`assistant-wiring.ts\`) → best-effort fetch (URL/CORS) → \`chunkText\` (~600 симв. на чанк) → событие \`KNOWLEDGE_ADDED\`.
 **retrieve** → ранжирование по пересечению токенов (или cos, если embedder).
 
-**Важно (UX-разрыв):** сам KnowledgePanel фильтрует \`memories\` клиентски (substring), а не вызывает \`retrieve\`/гибрид. Т.е. RAG-бэкенд есть, но не выведен в основную панель. [SA].
+**Сейчас (исправлено):** KnowledgePanel вызывает \`retrieve\` при поиске (≥3 симв.) и показывает «Результаты RAG». [V] — путь подтверждён кодом; реальное выполнение с данными не проверялось.
 
 ---
 
@@ -714,7 +714,7 @@ flowchart LR
 
 - **[NV]** Аудит не полон; метки проставлены только по проверенным цепочкам.
 - **[SA]** Выполнение агента требует реальной проверки (провайдер/ключи).
-- **[SA]** RAG-бэкенд существует, но основная панель знаний не вызывает \`retrieve\`/гибрид.
+- **[V]** RAG-бэкенд подключён к панели знаний (retrieve при поиске); реальное выполнение с данными не проверялось.
 - **[SA]** Wiki-Brain / Junction / Forum-интеграции не подтверждены как единый поток.
 
 ---
