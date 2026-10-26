@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ArrowLeft, Folder, Search, Star } from 'lucide-react';
+import { ArrowLeft, Folder, Search, Star, X } from 'lucide-react';
 import { useTranslation } from '../../i18n/useTranslation';
 import { NAV_SECTIONS } from '../../route-registry';
 import type { NavSection, RouteMeta } from '../../route-registry';
@@ -7,6 +7,29 @@ import type { NavSection, RouteMeta } from '../../route-registry';
 interface DesktopProps {
     onNavigate: (page: string) => void;
 }
+
+const SECTION_EMOJI: Record<string, string> = {
+    'section-dashboard': '🏠',
+    'section-chat': '💬',
+    'section-debates': '⚖️',
+    'section-debate-strategy': '♟️',
+    'section-agents': '🤖',
+    'section-memory': '🧠',
+    'section-research': '🔬',
+    'section-ai-providers': '🔌',
+    'section-budget': '💰',
+    'section-security': '🛡️',
+    'section-integrations': '🔗',
+    'section-techniques': '🧪',
+    'section-fleet': '🛰️',
+    'section-lab': '🧬',
+    'section-diagnostics': '🩺',
+    'section-wiki': '📖',
+    'section-system': '⚙️',
+    'section-google': '🌐',
+    'section-other': '🗂️',
+    'section-randoms': '🎲',
+};
 
 const FAVORITES_KEY = 'desktop:favorites';
 
@@ -34,6 +57,14 @@ const Desktop: React.FC<DesktopProps> = ({ onNavigate }) => {
     const [favorites, setFavorites] = useState<string[]>(() => loadFavorites());
 
     useEffect(() => saveFavorites(favorites), [favorites]);
+
+    useEffect(() => {
+        const onKey = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') setActiveSection(null);
+        };
+        window.addEventListener('keydown', onKey);
+        return () => window.removeEventListener('keydown', onKey);
+    }, []);
 
     const toggleFavorite = (id: string) => {
         setFavorites((prev) =>
@@ -90,10 +121,12 @@ const Desktop: React.FC<DesktopProps> = ({ onNavigate }) => {
                                 onMouseEnter={(e) => {
                                     e.currentTarget.style.background = 'rgba(255,255,255,0.06)';
                                     e.currentTarget.style.borderColor = `${folderColor(section)}55`;
+                                    e.currentTarget.style.transform = 'scale(1.04)';
                                 }}
                                 onMouseLeave={(e) => {
                                     e.currentTarget.style.background = 'rgba(255,255,255,0.02)';
                                     e.currentTarget.style.borderColor = 'rgba(255,255,255,0.05)';
+                                    e.currentTarget.style.transform = 'scale(1)';
                                 }}
                             >
                                 <div
@@ -108,7 +141,11 @@ const Desktop: React.FC<DesktopProps> = ({ onNavigate }) => {
                                         boxShadow: `0 6px 20px ${folderColor(section)}44`,
                                     }}
                                 >
-                                    <Folder size={34} color="white" />
+                                    {SECTION_EMOJI[section.id] ? (
+                                        <span style={{ fontSize: 34 }}>{SECTION_EMOJI[section.id]}</span>
+                                    ) : (
+                                        <Folder size={34} color="white" />
+                                    )}
                                 </div>
                                 <div style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--slate-200)', textAlign: 'center', lineHeight: 1.25 }}>
                                     {t(section.labelKey)}
@@ -185,6 +222,26 @@ const Desktop: React.FC<DesktopProps> = ({ onNavigate }) => {
                         outline: 'none',
                     }}
                 />
+                {query && (
+                    <button
+                        onClick={() => setQuery('')}
+                        title="Очистить"
+                        style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            width: 26,
+                            height: 26,
+                            borderRadius: '50%',
+                            border: '1px solid rgba(255,255,255,0.15)',
+                            background: 'rgba(255,255,255,0.06)',
+                            color: 'var(--slate-400)',
+                            cursor: 'pointer',
+                        }}
+                    >
+                        <X size={14} />
+                    </button>
+                )}
             </div>
 
             {filteredItems.length === 0 && (
