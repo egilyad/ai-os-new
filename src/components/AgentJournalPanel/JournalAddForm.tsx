@@ -1,5 +1,7 @@
+import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from '../../i18n/useTranslation';
+import { agentService } from '../../kernel/instances/services-core';
 import type { JournalEntry } from '../../kernel/services/agent-journal-service';
 
 interface JournalAddFormProps {
@@ -29,6 +31,23 @@ export const JournalAddForm: React.FC<JournalAddFormProps> = ({
 }) => {
     const { t } = useTranslation();
     const set = (patch: Partial<JournalAddFormProps['entry']>) => onChange({ ...entry, ...patch });
+    const [availableAgents, setAvailableAgents] = useState<Array<{ id: string; name: string }>>([]);
+
+    useEffect(() => {
+        try {
+            const list = agentService.getAgents?.() ?? [];
+            setAvailableAgents(
+                list.map((a) => ({ id: String(a.id), name: String(a.name ?? a.id) })),
+            );
+        } catch {
+            /* registry may be empty */
+        }
+    }, []);
+
+    const pickAgent = (id: string) => {
+        const a = availableAgents.find((x) => x.id === id);
+        if (a) set({ agentId: a.id, agentName: a.name });
+    };
 
     return (
         <AnimatePresence>
@@ -54,6 +73,18 @@ export const JournalAddForm: React.FC<JournalAddFormProps> = ({
                     >
                         {t('agent_journal.add_new')}
                     </h3>
+                    {availableAgents.length > 0 && (
+                        <select
+                            value=""
+                            onChange={(e) => { if (e.target.value) pickAgent(e.target.value); }}
+                            style={{ ...inputStyle, marginBottom: '0.5rem', gridColumn: '1 / -1' }}
+                        >
+                            <option value="">— выбрать агента из списка —</option>
+                            {availableAgents.map((a) => (
+                                <option key={a.id} value={a.id}>{a.name}</option>
+                            ))}
+                        </select>
+                    )}
                     <div
                         style={{
                             display: 'grid',
