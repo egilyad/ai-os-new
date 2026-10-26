@@ -1,13 +1,5 @@
 import React from 'react';
-import {
-    Bot,
-    BookOpen,
-    Brain,
-    FlaskConical,
-    MessageCircle,
-    Sparkles,
-    Users,
-} from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 
 interface WelcomePanelProps {
     onNavigate: (page: string) => void;
@@ -18,44 +10,116 @@ interface SectionCard {
     emoji: string;
     title: string;
     text: string;
-    cta: string;
 }
 
-const SECTIONS: SectionCard[] = [
+interface CardGroup {
+    label: string;
+    cards: SectionCard[];
+}
+
+const GROUPS: CardGroup[] = [
     {
-        id: 'debate',
-        emoji: '💬',
-        title: 'Дебаты',
-        text: 'Pобери команду агентов и проведи живой спор — система соберёт аргументы, найдёт противоречия и вынесет взвешенный вердикт.',
-        cta: 'Открыть дебаты',
+        label: 'Думать и обсуждать',
+        cards: [
+            {
+                id: 'debate',
+                emoji: '💬',
+                title: 'Дебаты',
+                text: 'Живой спор команды агентов — аргументы, противоречия и взвешенный вердикт.',
+            },
+            {
+                id: 'argument-graph',
+                emoji: '🕸️',
+                title: 'Граф аргументов',
+                text: 'Увидь, как аргументы связаны: кто что поддерживает, а кто опровергает.',
+            },
+        ],
     },
     {
-        id: 'agents',
-        emoji: '🤖',
-        title: 'Агенты',
-        text: 'Твои ИИ-работники: создавай профили, давай роли и навыки, отправляй их на задачи — от анализа до творчества.',
-        cta: 'К агентам',
+        label: 'Твоя команда',
+        cards: [
+            {
+                id: 'agents',
+                emoji: '🤖',
+                title: 'Агенты',
+                text: 'ИИ-работники: профили, роли и навыки. Создай и отправь на задачу.',
+            },
+            {
+                id: 'roles',
+                emoji: '🎭',
+                title: 'Роли',
+                text: 'Права и профили поведения — распредели, кто что может в системе.',
+            },
+        ],
     },
     {
-        id: 'knowledge',
-        emoji: '📚',
-        title: 'Знания и RAG',
-        text: 'Собирай источники и превращай их в базу знаний — система найдёт нужное по смыслу и поможет на его основе сделать выводы.',
-        cta: 'База знаний',
+        label: 'Знания и исследования',
+        cards: [
+            {
+                id: 'knowledge',
+                emoji: '📚',
+                title: 'База знаний',
+                text: 'Собирай источники и превращай их в базу — поиск по смыслу.',
+            },
+            {
+                id: 'memory',
+                emoji: '🧠',
+                title: 'Память',
+                text: 'Что система запомнила о тебе и задачах — загляни сюда.',
+            },
+            {
+                id: 'knowledge-generator',
+                emoji: '✨',
+                title: 'Генератор знаний',
+                text: 'Из мыслей и источников — готовые статьи и конспекты.',
+            },
+            {
+                id: 'hypothesis-gen',
+                emoji: '🔬',
+                title: 'Исследование',
+                text: 'Проверь идею: система поможет сгенерировать гипотезы и план.',
+            },
+        ],
     },
     {
-        id: 'memory',
-        emoji: '🧠',
-        title: 'Память',
-        text: 'Система помнит важное. Загляни сюда, чтобы понять, что она запомнила о тебе и твоих задачах.',
-        cta: 'Открыть память',
+        label: 'Общение',
+        cards: [
+            {
+                id: 'chat',
+                emoji: '💭',
+                title: 'Чат с ИИ',
+                text: 'Просто спроси ассистента — идея, вопрос, черновик.',
+            },
+            {
+                id: 'assistant',
+                emoji: '🧑‍💼',
+                title: 'Ассистент',
+                text: 'Личный помощник: ведёт диалог и помогает по всей системе.',
+            },
+        ],
     },
     {
-        id: 'chat',
-        emoji: '💭',
-        title: 'Чат с ИИ',
-        text: 'Просто поговори с ассистентом — начни с вопроса, идеи или черновика. Умный помощник всегда рядом.',
-        cta: 'Начать чат',
+        label: 'Система',
+        cards: [
+            {
+                id: 'routing',
+                emoji: '🔀',
+                title: 'Маршрутизация',
+                text: 'Какие ИИ-модели подключены и как выбирается лучшая.',
+            },
+            {
+                id: 'wiki-brain',
+                emoji: '📖',
+                title: 'Wiki Brain',
+                text: 'Внутренняя база знаний о самой системе — руководства и принципы.',
+            },
+            {
+                id: 'time-machine',
+                emoji: '⏪',
+                title: 'Time Machine',
+                text: 'Откат и просмотр прошлых состояний системы.',
+            },
+        ],
     },
 ];
 
@@ -68,7 +132,6 @@ const QUICK_ACTIONS: Array<{ id: string; emoji: string; label: string }> = [
 const WelcomePanel: React.FC<WelcomePanelProps> = ({ onNavigate }) => {
     return (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-            {/* Приветствие + о системе */}
             <div
                 style={{
                     padding: '1.75rem',
@@ -106,15 +169,13 @@ const WelcomePanel: React.FC<WelcomePanelProps> = ({ onNavigate }) => {
                             Привет! 👋 Это твоя система ИИ.
                         </div>
                         <div style={{ fontSize: '0.9rem', color: 'var(--slate-300)', lineHeight: 1.6 }}>
-                            Здесь можно всё: спросить совет, провести живой дебат, собрать исследование
-                            и запомнить важное. Ниже — главные разделы, с которых удобно начать.
-                            Выбери то, что больше всего нужно прямо сейчас. ✨
+                            Здесь можно всё: спросить совет, провести дебат, собрать исследование и
+                            запомнить важное. Ниже — главные разделы, с которых удобно начать. ✨
                         </div>
                     </div>
                 </div>
             </div>
 
-            {/* Быстрые действия */}
             <div>
                 <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--slate-400)', marginBottom: '0.6rem' }}>
                     ⚡ Быстрые действия
@@ -144,48 +205,54 @@ const WelcomePanel: React.FC<WelcomePanelProps> = ({ onNavigate }) => {
                 </div>
             </div>
 
-            {/* Главные разделы */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1rem' }}>
-                {SECTIONS.map((s) => (
-                    <div
-                        key={s.id}
-                        style={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            gap: '0.5rem',
-                            padding: '1.25rem',
-                            borderRadius: 16,
-                            border: '1px solid rgba(255,255,255,0.06)',
-                            background: 'linear-gradient(145deg, rgba(255,255,255,0.03), rgba(0,0,0,0.2))',
-                        }}
-                    >
-                        <div style={{ fontSize: '1.6rem' }}>{s.emoji}</div>
-                        <div style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--slate-50)' }}>
-                            {s.title}
-                        </div>
-                        <div style={{ fontSize: '0.82rem', color: 'var(--slate-400)', lineHeight: 1.5, flex: 1 }}>
-                            {s.text}
-                        </div>
-                        <button
-                            onClick={() => onNavigate(s.id)}
-                            style={{
-                                marginTop: '0.35rem',
-                                padding: '0.55rem 0.9rem',
-                                borderRadius: 10,
-                                border: 'none',
-                                cursor: 'pointer',
-                                fontSize: '0.82rem',
-                                fontWeight: 700,
-                                color: 'white',
-                                background: 'linear-gradient(90deg, #3b82f6, #2563eb)',
-                                textAlign: 'left',
-                            }}
-                        >
-                            {s.cta} →
-                        </button>
+            {GROUPS.map((g) => (
+                <div key={g.label}>
+                    <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--slate-400)', marginBottom: '0.6rem' }}>
+                        {g.label}
                     </div>
-                ))}
-            </div>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1rem' }}>
+                        {g.cards.map((s) => (
+                            <div
+                                key={s.id}
+                                style={{
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    gap: '0.5rem',
+                                    padding: '1.25rem',
+                                    borderRadius: 16,
+                                    border: '1px solid rgba(255,255,255,0.06)',
+                                    background: 'linear-gradient(145deg, rgba(255,255,255,0.03), rgba(0,0,0,0.2))',
+                                }}
+                            >
+                                <div style={{ fontSize: '1.6rem' }}>{s.emoji}</div>
+                                <div style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--slate-50)' }}>
+                                    {s.title}
+                                </div>
+                                <div style={{ fontSize: '0.82rem', color: 'var(--slate-400)', lineHeight: 1.5, flex: 1 }}>
+                                    {s.text}
+                                </div>
+                                <button
+                                    onClick={() => onNavigate(s.id)}
+                                    style={{
+                                        marginTop: '0.35rem',
+                                        padding: '0.55rem 0.9rem',
+                                        borderRadius: 10,
+                                        border: 'none',
+                                        cursor: 'pointer',
+                                        fontSize: '0.82rem',
+                                        fontWeight: 700,
+                                        color: 'white',
+                                        background: 'linear-gradient(90deg, #3b82f6, #2563eb)',
+                                        textAlign: 'left',
+                                    }}
+                                >
+                                    Открыть →
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            ))}
         </div>
     );
 };
