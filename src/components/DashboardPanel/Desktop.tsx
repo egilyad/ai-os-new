@@ -56,10 +56,12 @@ const BilingualLabel: React.FC<{ labelKey: string }> = ({ labelKey }) => {
     const en = translate(labelKey, 'en');
     const ru = translate(labelKey, 'ru');
     return (
-        <span style={{ display: 'block', textAlign: 'center', lineHeight: 1.25 }}>
-            <span style={{ display: 'block', fontWeight: 700, color: 'var(--slate-100)' }}>{en}</span>
+        <span style={{ display: 'block', textAlign: 'center', lineHeight: 1.3 }}>
+            <span style={{ display: 'block', fontSize: '0.92rem', fontWeight: 700, color: 'var(--slate-100)' }}>
+                {en}
+            </span>
             {ru !== en && (
-                <span style={{ display: 'block', fontSize: '0.7em', color: 'var(--slate-400)', fontWeight: 500 }}>
+                <span style={{ display: 'block', fontSize: '0.85rem', color: 'var(--slate-300)', fontWeight: 600, marginTop: 2 }}>
                     {ru}
                 </span>
             )}
