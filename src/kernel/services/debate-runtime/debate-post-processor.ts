@@ -238,9 +238,27 @@ export class DebatePostProcessor {
             }
             // Await each check (bounded by checkArgument's internal timeout), sampling unchanged
             pending.push(
-                this.factCheckService.checkArgument(arg).then(() => {}).catch((e) =>
-                    LOGGER.warn('DebatePostProcessor', 'Fact-check failed', { error: e }),
-                ),
+                this.factCheckService
+                    .checkArgument(arg)
+                    .then((fc) => {
+                        // C3: store the outcome on the argument for later inspection.
+                        if (fc && fc.results.length > 0) {
+                            if (fc.results.some((r) => r.verdict === 'false')) {
+                                arg.factCheckStatus = 'false';
+                            } else if (
+                                fc.results.some(
+                                    (r) => r.verdict === 'verified' || r.verdict === 'disputed',
+                                )
+                            ) {
+                                arg.factCheckStatus = 'verified';
+                            } else {
+                                arg.factCheckStatus = 'unverifiable';
+                            }
+                        }
+                    })
+                    .catch((e) =>
+                        LOGGER.warn('DebatePostProcessor', 'Fact-check failed', { error: e }),
+                    ),
             );
         }
         // Await all in parallel (bounded by slowest), but don't block beyond 5s total

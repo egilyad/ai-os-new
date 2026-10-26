@@ -190,6 +190,8 @@ export interface DebateArgument {
     role?: DebateRole;
     socraticQuality?: number;
     socraticQualityReasons?: string[];
+    /** C3: fact-check outcome stored on the argument (verified/false/unverifiable/pending). */
+    factCheckStatus?: 'verified' | 'false' | 'unverifiable' | 'pending';
 }
 
 export interface DebateConfig {
