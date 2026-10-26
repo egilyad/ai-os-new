@@ -12,6 +12,12 @@ import { rootLogger } from '../../kernel/services/logger-service';
 
 const LOGGER = rootLogger.child('GeminiAdapter');
 
+const GEMINI_DEFAULT_MODEL = 'gemini-3.5-flash';
+
+function resolveGeminiModel(model: string): string {
+    return !model || model === 'auto' ? GEMINI_DEFAULT_MODEL : model;
+}
+
 const RETRYABLE_429_CODES = new Set([429]);
 function isRetryable429(e: unknown): boolean {
     if (e instanceof RetryableError) return true;
@@ -69,7 +75,7 @@ export class GeminiAdapter extends BaseLLMAdapter {
         signal: AbortSignal | undefined,
     ): Promise<Omit<ProviderResponse, 'latency'>> {
         try {
-            const safeModel = await validateModel(model, apiKey);
+            const safeModel = await validateModel(resolveGeminiModel(model), apiKey);
             const body = GeminiRequestBuilder.build(messages, options);
             const { data, latency } = await with429Retry(() =>
                 this.#httpClient.post(
@@ -111,7 +117,7 @@ export class GeminiAdapter extends BaseLLMAdapter {
         options: SendMessageOptions | undefined,
     ): Promise<void> {
         try {
-            const safeModel = await validateModel(model, apiKey);
+            const safeModel = await validateModel(resolveGeminiModel(model), apiKey);
             const body = GeminiRequestBuilder.build(messages, options);
             const { response: res, release } = await with429Retry(() =>
                 this.#httpClient.streamPost(
