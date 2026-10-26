@@ -14,10 +14,11 @@ import type {
 import type { TimelineEntry } from '../../contracts/debate-types';
 import { DebatePostProcessor } from './debate-post-processor';
 import type { DebateGovernor } from './debate-governor';
+import { BUILTIN_STRATEGIES } from './debate-strategy-definitions';
 
 export interface SnapshotBridgeContext {
     participants: DebateParticipant[];
-    strategy: DebateStrategy;
+    strategy: DebateStrategy | string;
     maxRounds: number;
     config: DebateConfig;
     timeline?: TimelineEntry[];
@@ -179,6 +180,80 @@ export function strategyQualityForced(strategy: DebateStrategy): string[] {
     }
 }
 
+/**
+ * Map a DSL root primitive to a usable execution model (topology + quality).
+ * This is the light-weight runtime interpreter for the 33 BUILTIN DSL
+ * strategies (D2): it turns a declarative root into real debate behavior.
+ */
+const ROOT_TO_EXECUTION: Record<
+    string,
+    { topology?: 'roundtable' | 'linear' | 'judge' | 'tree-of-thought' | 'red-blue'; quality: string[] }
+> = {
+    sequence: { topology: 'linear', quality: ['adaptive-order'] },
+    debate_graph: { topology: 'roundtable', quality: [] },
+    critic_loop: { topology: 'roundtable', quality: ['critic', 'socratic-pivot'] },
+    voting: { topology: 'roundtable', quality: ['bayesian-judges', 'blind-evaluation'] },
+    peer_review: { topology: 'judge', quality: ['blind-evaluation', 'critic'] },
+};
+
+export function builtinRootToHints(rootType: string | undefined): {
+    topology?: 'roundtable' | 'linear' | 'judge' | 'tree-of-thought' | 'red-blue';
+    quality: string[];
+} {
+    if (!rootType) return { quality: [] };
+    return ROOT_TO_EXECUTION[rootType] ?? { quality: [] };
+}
+
+export function builtinExecutionHints(strategyId: string): {
+    topology?: 'roundtable' | 'linear' | 'judge' | 'tree-of-thought' | 'red-blue';
+    quality: string[];
+} {
+    const def = BUILTIN_STRATEGIES.find((d) => d.id === strategyId);
+    return builtinRootToHints(def?.root?.type);
+}
+
+export interface ResolvedStrategyConfig {
+    topology: DebateTopology;
+    forcedQuality: string[];
+}
+
+/**
+ * Resolve a strategy (enum OR builtin DSL id) into a concrete topology +
+ * forced quality techniques. For enum strategies it is exactly the existing
+ * behavior; for builtin ids it uses the light-weight DSL interpreter.
+ */
+export function resolveStrategyConfig(
+    strategy: DebateStrategy | string,
+    participants: DebateParticipant[],
+    maxRounds?: number,
+): ResolvedStrategyConfig {
+    const forcedQuality: string[] = [];
+    let effective = strategy as DebateStrategy;
+
+    if (typeof strategy === 'string' && strategy.startsWith('builtin.')) {
+        const hints = builtinExecutionHints(strategy);
+        forcedQuality.push(...hints.quality);
+        const topoType = hints.topology;
+        if (topoType === 'linear') {
+            return {
+                topology: buildLinearTopology(participants, maxRounds),
+                forcedQuality: [...new Set(forcedQuality)],
+            };
+        }
+        if (topoType === 'judge' && participants.some((p) => p.role === 'judge')) {
+            return {
+                topology: buildJudgeTopology(participants, maxRounds),
+                forcedQuality: [...new Set(forcedQuality)],
+            };
+        }
+        effective = 'round_robin';
+    }
+
+    const topology = buildTopologyForStrategy(effective, participants, maxRounds);
+    forcedQuality.push(...strategyQualityForced(effective));
+    return { topology, forcedQuality: [...new Set(forcedQuality)] };
+}
+
 export function buildTopologyForStrategy(
     strategy: DebateStrategy,
     participants: DebateParticipant[],
@@ -256,7 +331,7 @@ export function snapshotToSession(
         id,
         topic: snapshot.topic,
         status: snapshot.phase,
-        strategy: ctx.strategy,
+        strategy: ctx.strategy as DebateStrategy,
         maxRounds: ctx.maxRounds,
         currentRound: round,
         participants,

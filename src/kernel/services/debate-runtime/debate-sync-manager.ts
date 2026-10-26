@@ -20,6 +20,7 @@ import {
     mergeAndProcessSession,
     buildTopologyForStrategy,
     strategyQualityForced,
+    resolveStrategyConfig,
 } from './debate-session-bridge';
 import type { SnapshotBridgeContext } from './debate-session-bridge';
 import { finalizeDebateState, emitFinalizeEvents } from './debate-finalizer';
@@ -260,7 +261,7 @@ export class DebateSyncManager {
     async startDebate(
         topic: string,
         participants: DebateParticipant[],
-        strategy: DebateStrategy = 'round_robin',
+        strategy: DebateStrategy | string = 'round_robin',
         maxRounds: number = 5,
         config?: Partial<DebateConfig>,
         chatSessionId?: string,
@@ -300,20 +301,20 @@ export class DebateSyncManager {
         const entry = this._makeEntry('', owner ?? null);
         const sessionConfig = { ...DEFAULT_CONFIG };
         if (config) Object.assign(sessionConfig, config);
-        // Merge strategy-specific forced quality techniques so every enum strategy
-        // behaves distinctly (additive — user toggles are preserved).
-        const forcedTechniques = strategyQualityForced(strategy);
-        if (forcedTechniques.length) {
+        // Resolve strategy → topology + forced quality techniques. Handles both
+        // enum strategies and builtin DSL ids (D2/D11).
+        const resolved = resolveStrategyConfig(strategy, participants, maxRounds);
+        if (resolved.forcedQuality.length) {
             sessionConfig.qualitySettings = {
                 ...(sessionConfig.qualitySettings ?? {}),
-                ...Object.fromEntries(forcedTechniques.map((t) => [t, true])),
+                ...Object.fromEntries(resolved.forcedQuality.map((t) => [t, true])),
             };
         }
         this._setupDurationTimer(entry, sessionConfig);
         this._resetCircuitBreakers();
         const session = await this._initEngineSession(
             entry,
-            buildTopologyForStrategy(strategy, participants, maxRounds),
+            resolved.topology,
             topic,
             participants,
             sessionConfig,
