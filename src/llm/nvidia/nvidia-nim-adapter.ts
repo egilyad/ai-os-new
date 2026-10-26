@@ -87,8 +87,30 @@ export class NvidiaNIMAdapter extends BaseLLMAdapter {
         const content = choice?.message?.content ?? '';
         const finishReason = normalizeFinishReason(choice?.finish_reason);
         const tokens = data.usage?.total_tokens ?? estimateTokenCount(content);
+        // AD5: surface tool calls instead of dropping them.
+        const rawToolCalls = (choice?.message as { tool_calls?: Array<Record<string, unknown>> } | undefined)
+            ?.tool_calls;
+        const toolCalls = this.mapToolCalls(rawToolCalls);
 
-        return { content, latency, tokens, finishReason };
+        return {
+            content,
+            latency,
+            tokens,
+            finishReason: toolCalls.length ? 'TOOL_CALLS' : finishReason,
+            toolCalls,
+        };
+    }
+
+    private mapToolCalls(raw?: Array<Record<string, unknown>>): ProviderResponse['toolCalls'] {
+        if (!Array.isArray(raw) || raw.length === 0) return undefined;
+        return raw.map((tc, i) => ({
+            id: (tc.id as string) ?? `tc-${i}`,
+            type: (tc.type as 'function' | 'computer_20250124') ?? 'function',
+            function: {
+                name: ((tc.function as Record<string, unknown>)?.name as string) ?? '',
+                arguments: ((tc.function as Record<string, unknown>)?.arguments as string) ?? '',
+            },
+        }));
     }
 
     async doSendMessage(
