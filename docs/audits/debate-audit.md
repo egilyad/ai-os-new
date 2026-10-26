@@ -99,3 +99,5 @@
 ## 5. Рекомендация по приоритетам
 
 Быстрые фиксы без изменения контрактов (P0): A1/D1, A4/D4, A6/D6-D7, A10/D28, D3/D13. Затем P1: A2/D2 (удалить или реализовать DSL), A5/D5 (удалить/реализовать стабы), A7/D8, A8/D9, B3 (prompt-size budget), F1. См. `docs/roadmap/debate-improvements-roadmap.md`.
+
+**Реализовано на ветке (2026-10):** D1, D2 (лёгкий DSL-интерпретатор), D3 (mode-policies), D4, D6-D7, D8, D9, D11, D13, D14 (cross-debate memory), C3 (factCheckStatus), C6 (verdict provenance), B3 (prompt-size guard), BayesianJudge-подключение, debate-live имена.
