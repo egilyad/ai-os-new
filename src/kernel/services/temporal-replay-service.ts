@@ -256,14 +256,11 @@ export class TemporalReplayService implements ITemporalReplayService {
         const providerIds = new Set(scope?.providerIds ?? []);
         const decisionWinner = String(trace.decision.selected ?? '');
 
-        // Step 1: get all events from EventRecorder within time window
-        // 2b K3: bounded window — events capped at ~1000 by EventRecorder, windowEnd uses finite default
-        const allEvents = this.recorder.getAll();
+        // Step 1: get events from EventRecorder within time window (C6: use the
+        // bounded time-range accessor instead of copying+filtering the whole log).
         const windowStart = trace.before?.keyState?.takenAt ?? 0;
         const windowEnd = trace.after?.keyState?.takenAt ?? Date.now();
-        const windowEvents = allEvents.filter(
-            (e) => e.timestamp >= windowStart && e.timestamp <= windowEnd,
-        );
+        const windowEvents = this.recorder.getByTimeRange(windowStart, windowEnd);
 
         // Step 2: filter to relevant events (match scope providerIds or global)
         const GLOBAL_EVENT_NAMES: ReadonlySet<string> = new Set([
