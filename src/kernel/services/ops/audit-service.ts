@@ -73,8 +73,15 @@ export class AuditService implements IAuditService {
         return this.repo.listAudit(limit);
     }
 
-    async verify(): Promise<{ ok: boolean; brokenAt?: number }> {
-        const rows = await this.repo.listAudit(100000);
+    async verify(): Promise<{ ok: boolean; brokenAt?: number; truncated?: boolean }> {
+        // F7: verify() only samples the last 100k rows; if the log is larger,
+        // integrity cannot be guaranteed for earlier entries — surface that.
+        const MAX_VERIFY_ROWS = 100000;
+        const rows = await this.repo.listAudit(MAX_VERIFY_ROWS);
+        const truncated = rows.length === MAX_VERIFY_ROWS;
+        if (truncated) {
+            LOGGER.warn('Audit', 'verify: log exceeds 100k rows — earlier entries not checked', {});
+        }
         let prev = GENESIS_HASH;
         for (const r of rows) {
             const expect = auditHash(prev, r.seq, r.actor, r.action, r.target ?? '', r.detail ?? '', r.createdAt);
@@ -83,6 +90,6 @@ export class AuditService implements IAuditService {
             }
             prev = r.hash;
         }
-        return { ok: true };
+        return { ok: true, truncated };
     }
 }
