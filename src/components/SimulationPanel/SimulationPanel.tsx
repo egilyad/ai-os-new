@@ -7,6 +7,9 @@ import type { IAgentFactory } from '../../kernel/contracts/capability';
 const worldStateService = lazyService<IWorldStateService>('worldStateService');
 const simulationEngineService = lazyService<ISimulationEngineService>('simulationEngineService');
 const agentFactory = lazyService<IAgentFactory>('agentFactory');
+const governanceService = lazyService<{
+    grantCapability: (subject: string, capability: string, allow?: boolean) => Promise<unknown>;
+}>('governanceService');
 
 const btn: React.CSSProperties = {
     padding: '0.4rem 0.8rem',
@@ -55,20 +58,28 @@ export const SimulationPanel: React.FC = () => {
             // Demo seed: try to create 6 real SuperAgents via AgentFactory (if available), fallback to stub ids
             let agentIds: string[] = [];
             try {
+                // Use real built-in role ids (r-*) to maximize creation success.
                 const seeds: Array<Omit<import('../../kernel/types/capability-types').AgentDefinition, 'id'|'createdAt'|'updatedAt'>> = [
-                    { name: 'Lisa Carter (curious analyst)', roleId: 'analyst', skillIds: [], toolIds: [], personaId: 'persona-analyst' },
-                    { name: 'Oscar Weber (modernist architect)', roleId: 'critic', skillIds: [], toolIds: [], personaId: 'persona-architect' },
-                    { name: 'Mara Singh (entrepreneur)', roleId: 'founder', skillIds: [], toolIds: [] },
-                    { name: 'Ken Tanaka (engineer)', roleId: 'engineer', skillIds: [], toolIds: [] },
-                    { name: 'Sofia Alvarez (designer)', roleId: 'designer', skillIds: [], toolIds: [] },
-                    { name: 'David Kim (skeptic judge)', roleId: 'judge', skillIds: [], toolIds: [] },
+                    { name: 'Lisa Carter (research analyst)', roleId: 'r-researcher', skillIds: [], toolIds: [] },
+                    { name: 'Oscar Weber (critical auditor)', roleId: 'r-critic', skillIds: [], toolIds: [] },
+                    { name: 'Mara Singh (project manager)', roleId: 'r-pm', skillIds: [], toolIds: [] },
+                    { name: 'Ken Tanaka (product designer)', roleId: 'r-designer', skillIds: [], toolIds: [] },
+                    { name: 'Sofia Alvarez (creative visionary)', roleId: 'r-creative', skillIds: [], toolIds: [] },
+                    { name: 'David Kim (ethics officer)', roleId: 'r-ethics', skillIds: [], toolIds: [] },
                 ];
                 const created: string[] = [];
                 for (const seed of seeds) {
                     try {
-                        const def = await agentFactory.create(seed as Omit<import('../../kernel/types/capability-types').AgentDefinition, 'id'|'createdAt'|'updatedAt'>);
+                        const def = await agentFactory.create(seed);
                         created.push(def.id);
-                    } catch { /* seed may fail if role/persona missing — fallback below */ }
+                    } catch {
+                        // Best-effort: role may lack the execute capability — grant it and retry once.
+                        try {
+                            await governanceService.grantCapability(`role:${seed.roleId}`, 'agent:execute');
+                            const def = await agentFactory.create(seed);
+                            created.push(def.id);
+                        } catch { /* fallback below */ }
+                    }
                 }
                 if (created.length >= 2) agentIds = created;
             } catch { /* ignore */ }
