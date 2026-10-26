@@ -8668,16 +8668,16 @@
       "category": "repo",
       "language": "en",
       "title": "SuperAgents OS",
-      "bytes": 55485,
-      "hash": "31cc9c5fe8027f0c6f88fd9212b77be6a52b6013"
+      "bytes": 55573,
+      "hash": "b81ff3e2f5ba0c9e7afe30aa5829de563cce7625"
     },
     {
       "path": "README.md",
       "category": "repo",
       "language": "mixed",
       "title": "SuperAgents OS — Wiki",
-      "bytes": 48283,
-      "hash": "689c4eaa3d13e858ab914c3b87e198c6affc7965"
+      "bytes": 48401,
+      "hash": "ee156bb4241ba500816ae7f1affcac7bbc74f493"
     },
     {
       "path": "SELF_IMPROVEMENT_AUDIT_2026-09-22.md",
