@@ -15,6 +15,7 @@ import GetStartedPanel from './GetStartedPanel';
 import QuickActionBar from './QuickActionBar';
 import CriticalAlertBanner from './CriticalAlertBanner';
 import WelcomePanel from './WelcomePanel';
+import Desktop from './Desktop';
 import { dismissBtn, errorBanner } from '../../styles/common';
 
 interface DashboardPanelProps {
@@ -27,6 +28,7 @@ const DashboardPanel: React.FC<DashboardPanelProps> = ({ onNavigate }) => {
     const keys = useMemo(() => rawKeys ?? [], [rawKeys]);
     const [systemState, setSystemState] = useState<SystemState>(() => kernel.getState());
     const [error, setError] = useState<string | null>(null);
+    const [viewMode, setViewMode] = useState<'desktop' | 'cards'>('desktop');
     const settings = (() => {
         try {
             return settingsService.getSettings();
@@ -163,7 +165,44 @@ const DashboardPanel: React.FC<DashboardPanelProps> = ({ onNavigate }) => {
                 </div>
             )}
 
-            <WelcomePanel onNavigate={onNavigate} />
+            <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.25rem' }}>
+                <button
+                    onClick={() => setViewMode('desktop')}
+                    style={{
+                        padding: '0.45rem 1rem',
+                        borderRadius: 10,
+                        cursor: 'pointer',
+                        fontWeight: 700,
+                        fontSize: '0.82rem',
+                        border: '1px solid rgba(255,255,255,0.1)',
+                        background: viewMode === 'desktop' ? 'linear-gradient(90deg, #3b82f6, #2563eb)' : 'rgba(255,255,255,0.04)',
+                        color: viewMode === 'desktop' ? 'white' : 'var(--slate-300)',
+                    }}
+                >
+                    💻 Рабочий стол
+                </button>
+                <button
+                    onClick={() => setViewMode('cards')}
+                    style={{
+                        padding: '0.45rem 1rem',
+                        borderRadius: 10,
+                        cursor: 'pointer',
+                        fontWeight: 700,
+                        fontSize: '0.82rem',
+                        border: '1px solid rgba(255,255,255,0.1)',
+                        background: viewMode === 'cards' ? 'linear-gradient(90deg, #8b5cf6, #7c3aed)' : 'rgba(255,255,255,0.04)',
+                        color: viewMode === 'cards' ? 'white' : 'var(--slate-300)',
+                    }}
+                >
+                    🃏 Карточки
+                </button>
+            </div>
+
+            {viewMode === 'desktop' ? (
+                <Desktop onNavigate={onNavigate} />
+            ) : (
+                <WelcomePanel onNavigate={onNavigate} />
+            )}
 
             <ModuleInfo moduleKey="dashboard" />
         </div>
