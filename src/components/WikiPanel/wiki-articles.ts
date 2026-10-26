@@ -619,7 +619,7 @@ flowchart LR
 | 2 | Чат → ответ с контекстом из памяти | [V] | Chat → ragOnChat → memoryService.searchAdvanced → [RECALLED CONTEXT] → LLM → ответ |
 | 3 | Симуляция: создать мир с агентами | [V] | SimulationPanel → worldStateService.create → engine → tick |
 | 4 | Дебаты: восстановление после reload | [V] | engine._restoreOrphanedSessions (zombie 5 мин) + restoreSession + init:loadActiveSession + governor.rehydrate |
-| 5 | Агент: создать и выполнить задачу | [SA] | AgentFactory.create → resolve → execute (LLM→tools→memory→persist→observe) |
+| 5 | Агент: создать и выполнить задачу | [V] | AgentFactory.create → resolve → execute (LLM→tools→memory→persist→observe→emit) |
 | 6 | RAG: загрузить источник и найти | [V] | knowledgeService.addSource + chunkText + retrieve; KnowledgePanel теперь вызывает retrieve при поиске (≥3 симв.) |
 | 7 | Wiki-Brain интеграция | [NV] | нет подтверждённой связки |
 
@@ -669,12 +669,12 @@ flowchart LR
 
 **Статус:** [V] — цепочка подтверждена чтением кода (engine.ts:205-235, sync-manager.ts:207-219). Формальное исполнение/тест по этому пути — не запускались.
 
-### 5. Агент: создать и выполнить задачу [SA]
+### 5. Агент: создать и выполнить задачу [V]
 
 **AgentFactory.create** → resolver (роль/политика) → \`agent-def/<id>\` в DAL → событие \`AGENT_CREATED\`.
-**AgentFactory.execute** → resolve → LLM → tools → memory → **persist** → observe.
+**AgentFactory.execute** → resolve → `tools.runWithTools` (если есть tool) → `llm.chat` (fallback) → persist в memory → `agent-run/<id>/<ts>` в DAL → emit \`AGENT_EXECUTED\` → возврат `{output, toolCalls}`.
 
-**Статус:** [SA] — логика прочитана (agent-factory.ts), реальное выполнение не проверялось.
+**Статус:** [V] — полная цепочка подтверждена чтением кода (agent-factory.ts). Реальное выполнение с реальным провайдером не проверялось.
 
 ### 6. RAG: загрузить источник и найти [SA]
 
