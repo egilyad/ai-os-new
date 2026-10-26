@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { lazyService } from '../../kernel/service-helper';
+import { agentService } from '../../kernel/instances/services-core';
 import type { IWorldStateService, SimulationWorld } from '../../kernel/contracts/simulation-world';
 import type { ISimulationEngineService } from '../../kernel/contracts/simulation-engine';
 import type { IAgentFactory } from '../../kernel/contracts/capability';
@@ -29,6 +30,70 @@ export const SimulationPanel: React.FC = () => {
     const [busy, setBusy] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [log, setLog] = useState<string[]>([]);
+    const [availableAgents, setAvailableAgents] = useState<Array<{ id: string; name: string }>>([]);
+    const [pickedAgentIds, setPickedAgentIds] = useState<string[]>([]);
+
+    // UX: load real agents so the user can pick who enters the world
+    // (instead of hand-typing names or only relying on the demo seed).
+    const refreshAgents = useCallback(async () => {
+        try {
+            const list = agentService.getAgents?.() ?? [];
+            setAvailableAgents(
+                list.map((a) => ({ id: String(a.id), name: String(a.name ?? a.id) })),
+            );
+        } catch {
+            /* registry may be empty/unavailable */
+        }
+    }, []);
+    useEffect(() => {
+        void refreshAgents();
+    }, [refreshAgents]);
+
+    const addPicked = (id: string) => {
+        setPickedAgentIds((prev) => (prev.includes(id) ? prev : [...prev, id]));
+    };
+    const removePicked = (id: string) => {
+        setPickedAgentIds((prev) => prev.filter((x) => x !== id));
+    };
+
+    const demoSeed = async (): Promise<string[]> => {
+        const seeds: Array<Omit<import('../../kernel/types/capability-types').AgentDefinition, 'id'|'createdAt'|'updatedAt'>> = [
+            { name: 'Lisa Carter (research analyst)', roleId: 'r-researcher', skillIds: [], toolIds: [] },
+            { name: 'Oscar Weber (critical auditor)', roleId: 'r-critic', skillIds: [], toolIds: [] },
+            { name: 'Mara Singh (project manager)', roleId: 'r-pm', skillIds: [], toolIds: [] },
+            { name: 'Ken Tanaka (product designer)', roleId: 'r-designer', skillIds: [], toolIds: [] },
+            { name: 'Sofia Alvarez (creative visionary)', roleId: 'r-creative', skillIds: [], toolIds: [] },
+            { name: 'David Kim (ethics officer)', roleId: 'r-ethics', skillIds: [], toolIds: [] },
+        ];
+        const created: string[] = [];
+        for (const seed of seeds) {
+            try {
+                const def = await agentFactory.create(seed);
+                created.push(def.id);
+            } catch {
+                try {
+                    await governanceService.grantCapability(`role:${seed.roleId}`, 'agent:execute');
+                    const def = await agentFactory.create(seed);
+                    created.push(def.id);
+                } catch { /* skip */ }
+            }
+        }
+        if (created.length >= 2) return created;
+        return Array.from({ length: 6 }, (_, i) => `agent-${i + 1}`);
+    };
+
+    const useDemoSeed = async () => {
+        setBusy(true);
+        setError(null);
+        try {
+            const ids = await demoSeed();
+            setPickedAgentIds(ids);
+        } catch (e) {
+            setError(e instanceof Error ? e.message : String(e));
+        } finally {
+            setBusy(false);
+        }
+    };
 
     const selected = world ?? worlds.find((w) => w.id === selectedId) ?? null;
 
@@ -55,35 +120,8 @@ export const SimulationPanel: React.FC = () => {
         setBusy(true);
         setError(null);
         try {
-            // Demo seed: try to create 6 real SuperAgents via AgentFactory (if available), fallback to stub ids
-            let agentIds: string[] = [];
-            try {
-                // Use real built-in role ids (r-*) to maximize creation success.
-                const seeds: Array<Omit<import('../../kernel/types/capability-types').AgentDefinition, 'id'|'createdAt'|'updatedAt'>> = [
-                    { name: 'Lisa Carter (research analyst)', roleId: 'r-researcher', skillIds: [], toolIds: [] },
-                    { name: 'Oscar Weber (critical auditor)', roleId: 'r-critic', skillIds: [], toolIds: [] },
-                    { name: 'Mara Singh (project manager)', roleId: 'r-pm', skillIds: [], toolIds: [] },
-                    { name: 'Ken Tanaka (product designer)', roleId: 'r-designer', skillIds: [], toolIds: [] },
-                    { name: 'Sofia Alvarez (creative visionary)', roleId: 'r-creative', skillIds: [], toolIds: [] },
-                    { name: 'David Kim (ethics officer)', roleId: 'r-ethics', skillIds: [], toolIds: [] },
-                ];
-                const created: string[] = [];
-                for (const seed of seeds) {
-                    try {
-                        const def = await agentFactory.create(seed);
-                        created.push(def.id);
-                    } catch {
-                        // Best-effort: role may lack the execute capability — grant it and retry once.
-                        try {
-                            await governanceService.grantCapability(`role:${seed.roleId}`, 'agent:execute');
-                            const def = await agentFactory.create(seed);
-                            created.push(def.id);
-                        } catch { /* fallback below */ }
-                    }
-                }
-                if (created.length >= 2) agentIds = created;
-            } catch { /* ignore */ }
-            if (agentIds.length === 0) agentIds = Array.from({ length: 6 }, (_, i) => `agent-${i + 1}`);
+            // Use the user-picked agents when provided; otherwise fall back to the demo seed.
+            const agentIds = pickedAgentIds.length > 0 ? pickedAgentIds : await demoSeed();
 
             // Try to wire engine → adapter if adapter registered (phase64)
             try {
@@ -153,10 +191,59 @@ export const SimulationPanel: React.FC = () => {
                         демо-режиме на стабах (без реального ИИ). Создай агентов заранее в разделе «Агенты».
                     </p>
                 </div>
-                <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap' }}>
-                    <button style={primaryBtn} disabled={busy} onClick={() => void createWorld()}>+ New World (6 agents)</button>
+                <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap', alignItems: 'center' }}>
+                    <button style={primaryBtn} disabled={busy} onClick={() => void createWorld()}>
+                        + New World ({pickedAgentIds.length || 6} agents)
+                    </button>
+                    <button style={btn} disabled={busy} onClick={() => void useDemoSeed()}>
+                        🎲 Demo seed
+                    </button>
                     <button style={btn} disabled={busy} onClick={() => void refresh()}>Refresh</button>
                 </div>
+            </div>
+
+            {/* UX: agent picker — dropdown to add, chips to remove */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', padding: '0.6rem', borderRadius: 10, border: '1px solid #2a2a35', background: 'rgba(255,255,255,0.02)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
+                    <span style={{ fontSize: '0.8rem', opacity: 0.7 }}>Агенты в мире:</span>
+                    <select
+                        value=""
+                        onChange={(e) => { if (e.target.value) addPicked(e.target.value); }}
+                        style={{ padding: '0.3rem 0.5rem', borderRadius: 6, border: '1px solid #2a2a35', background: 'transparent', color: 'inherit', flex: '1 1 200px' }}
+                    >
+                        <option value="">— выбрать агента —</option>
+                        {availableAgents
+                            .filter((a) => !pickedAgentIds.includes(a.id))
+                            .map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
+                    </select>
+                    {availableAgents.length === 0 && (
+                        <span style={{ fontSize: '0.75rem', opacity: 0.6 }}>
+                            (готовых агентов нет — используй «🎲 Demo seed»)
+                        </span>
+                    )}
+                </div>
+                {pickedAgentIds.length > 0 && (
+                    <div style={{ display: 'flex', gap: '0.35rem', flexWrap: 'wrap' }}>
+                        {pickedAgentIds.map((id) => {
+                            const label = availableAgents.find((a) => a.id === id)?.name ?? id;
+                            return (
+                                <span
+                                    key={id}
+                                    style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '0.2rem 0.5rem', borderRadius: 999, border: '1px solid #3b82f6', background: 'rgba(59,130,246,0.15)', fontSize: '0.78rem' }}
+                                >
+                                    {label}
+                                    <button
+                                        onClick={() => removePicked(id)}
+                                        title="Убрать"
+                                        style={{ border: 'none', background: 'transparent', color: 'inherit', cursor: 'pointer', fontSize: '0.9rem', lineHeight: 1, padding: 0 }}
+                                    >
+                                        ×
+                                    </button>
+                                </span>
+                            );
+                        })}
+                    </div>
+                )}
             </div>
 
             {worlds.length > 0 && (
