@@ -622,6 +622,7 @@ flowchart LR
 | 5 | Агент: создать и выполнить задачу | [V] | AgentFactory.create → resolve → execute (LLM→tools→memory→persist→observe→emit) |
 | 6 | RAG: загрузить источник и найти | [V] | knowledgeService.addSource + chunkText + retrieve; KnowledgePanel теперь вызывает retrieve при поиске (≥3 симв.) |
 | 7 | Wiki-Brain интеграция | [NV] | нет подтверждённой связки |
+| 8 | Ошибка провайдера (дебаты) | [V] | retry/backoff → markProviderFailed/markModelFailed → DLQ → UI-сообщение (402/Circuit) |
 
 ---
 
@@ -682,6 +683,18 @@ flowchart LR
 **retrieve** → ранжирование по пересечению токенов (или cos, если embedder).
 
 **Сейчас (исправлено):** KnowledgePanel вызывает \`retrieve\` при поиске (≥3 симв.) и показывает «Результаты RAG». [V] — путь подтверждён кодом; реальное выполнение с данными не проверялось.
+
+### 7. Ошибка провайдера (дебаты) [V]
+
+**debateCallLlm** → `handleDebateCallError`:
+- TIMEOUT → retry с backoff; 402/401/403 → `markProviderFailed`, continue; 413/404 → `markModelFailed`; RATE_LIMIT → backoff с jitter; всё мертво → deadLetterQueue + throw.
+
+**UI (startDebate catch):**
+- «402» → «недостаточно кредитов»;
+- «Circuit breaker is OPEN» → «провайдер заблокирован»;
+- иначе → общее сообщение об ошибке.
+
+**Статус:** [V] — маршруты ошибок подтверждены чтением кода (error-handler.ts, DebatePanel.tsx). Воспроизведение с реальным провайдером не выполнялось.
 
 ---
 
