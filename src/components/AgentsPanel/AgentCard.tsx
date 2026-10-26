@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Pause, Play, Wrench } from 'lucide-react';
+import { Pause, Play, Wrench, Copy, Trash2 } from 'lucide-react';
 import { memo } from 'react';
 import { AgentAvatar } from './AgentAvatar';
 import { resolveAgentIdentity } from '../../kernel/services/agent-identity';
@@ -25,7 +25,7 @@ interface AgentCardProps {
 }
 
 export const AgentCard: React.FC<AgentCardProps> = memo(
-    ({ agent, agentStats, onSelect, onToggleStatus, t }) => {
+    ({ agent, agentStats, onSelect, onToggleStatus, onDuplicate, onDeleteRequest, t }) => {
         const stats = agentStats
             ? typeof agentStats === 'object' && 'calls' in agentStats
                 ? (agentStats as { calls: number; errors?: number; latency?: number })
@@ -190,6 +190,29 @@ export const AgentCard: React.FC<AgentCardProps> = memo(
                         </span>
                     </div>
                 </div>
+
+                {(onDuplicate || onDeleteRequest) && (
+                    <div style={{ display: 'flex', gap: 6, marginTop: 8, justifyContent: 'flex-end' }}>
+                        {onDuplicate && (
+                            <button
+                                onClick={(e) => { e.stopPropagation(); onDuplicate(agent.id); }}
+                                title="Дублировать"
+                                style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '4px 8px', borderRadius: 6, border: '1px solid rgba(255,255,255,0.1)', background: 'transparent', color: 'var(--slate-300)', cursor: 'pointer', fontSize: '0.72rem' }}
+                            >
+                                <Copy size={13} /> Дублировать
+                            </button>
+                        )}
+                        {onDeleteRequest && (
+                            <button
+                                onClick={(e) => { e.stopPropagation(); onDeleteRequest(agent.id, agent.name); }}
+                                title="Удалить"
+                                style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '4px 8px', borderRadius: 6, border: '1px solid rgba(239,68,68,0.25)', background: 'rgba(239,68,68,0.08)', color: '#f87171', cursor: 'pointer', fontSize: '0.72rem' }}
+                            >
+                                <Trash2 size={13} /> Удалить
+                            </button>
+                        )}
+                    </div>
+                )}
             </motion.div>
         );
     },
