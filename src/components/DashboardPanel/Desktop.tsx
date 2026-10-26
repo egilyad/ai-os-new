@@ -331,9 +331,9 @@ const AppTile: React.FC<AppTileProps> = ({ item, color, label, onOpen, isFavorit
                         width: 26,
                         height: 26,
                         borderRadius: '50%',
-                        border: '1px solid rgba(255,255,255,0.15)',
-                        background: isFavorite ? 'rgba(250,204,21,0.25)' : 'rgba(255,255,255,0.08)',
-                        color: isFavorite ? '#facc15' : 'var(--slate-400)',
+                        border: '1px solid rgba(255,255,255,0.25)',
+                        background: isFavorite ? '#facc15' : 'rgba(0,0,0,0.45)',
+                        color: isFavorite ? '#1a1a1a' : '#fff',
                         cursor: 'pointer',
                         display: 'flex',
                         alignItems: 'center',
@@ -350,42 +350,31 @@ const AppTile: React.FC<AppTileProps> = ({ item, color, label, onOpen, isFavorit
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
-                    gap: '0.5rem',
-                    padding: '1.1rem 0.5rem',
-                    borderRadius: 14,
-                    border: '1px solid rgba(255,255,255,0.05)',
-                    background: 'rgba(255,255,255,0.02)',
+                    justifyContent: 'center',
+                    gap: '0.6rem',
+                    minHeight: 120,
+                    padding: '1rem 0.5rem',
+                    borderRadius: 16,
+                    border: 'none',
                     cursor: 'pointer',
                     width: '100%',
+                    background: `linear-gradient(145deg, ${c}, ${c}bb)`,
+                    boxShadow: `0 6px 18px ${c}44`,
                     transition: 'all 0.15s',
                 }}
                 onMouseEnter={(e) => {
-                    e.currentTarget.style.background = 'rgba(255,255,255,0.06)';
-                    e.currentTarget.style.borderColor = `${c}55`;
-                    e.currentTarget.style.transform = 'scale(1.03)';
+                    e.currentTarget.style.transform = 'scale(1.04)';
+                    e.currentTarget.style.boxShadow = `0 10px 24px ${c}66`;
                 }}
                 onMouseLeave={(e) => {
-                    e.currentTarget.style.background = 'rgba(255,255,255,0.02)';
-                    e.currentTarget.style.borderColor = 'rgba(255,255,255,0.05)';
                     e.currentTarget.style.transform = 'scale(1)';
+                    e.currentTarget.style.boxShadow = `0 6px 18px ${c}44`;
                 }}
             >
-                <div
-                    style={{
-                        width: 56,
-                        height: 56,
-                        borderRadius: 14,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        color: c,
-                        background: `${c}1f`,
-                        border: `1px solid ${c}44`,
-                    }}
-                >
+                <div style={{ color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     {item.icon}
                 </div>
-                <div style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--slate-200)', textAlign: 'center', lineHeight: 1.2 }}>
+                <div style={{ fontSize: '0.82rem', fontWeight: 800, color: '#fff', textAlign: 'center', lineHeight: 1.2, textShadow: '0 1px 2px rgba(0,0,0,0.35)' }}>
                     {label}
                 </div>
             </button>
