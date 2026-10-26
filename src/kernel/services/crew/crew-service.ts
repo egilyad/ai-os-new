@@ -67,6 +67,11 @@ export class CrewService implements ICrewService {
         this.repo = deps.repository;
         this.events = deps.eventBus;
         this.executor = deps.executor ?? new EchoExecutor();
+        // A2: surface when crews are running on the deterministic echo executor
+        // (no LLM) so it isn't silently mistaken for real intelligence.
+        if (this.executor instanceof EchoExecutor) {
+            LOGGER.warn('CrewService', 'using deterministic EchoExecutor (no LLM) — tasks will not reason');
+        }
     }
 
     async init(): Promise<void> {

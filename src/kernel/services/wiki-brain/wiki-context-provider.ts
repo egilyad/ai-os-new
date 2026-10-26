@@ -21,11 +21,14 @@ export class WikiBrainContextProvider implements IWikiBrainContextProvider {
             markdown: r.page.body,
             sources: r.sources.map((s) => s.origin),
         }));
+        // M13: conservative token estimate — many CJK/emoji chars are >1 token
+        // per 4 chars, so use a safer divisor to avoid exceeding the real budget.
+        const TOKEN_ESTIMATE_DIVISOR = 3;
         let totalTokens = 0;
         const capped: typeof snippets = [];
         const budget = opts.maxTokens;
         for (const s of snippets) {
-            const sTokens = Math.ceil((s.title.length + s.markdown.length) / 4);
+            const sTokens = Math.ceil((s.title.length + s.markdown.length) / TOKEN_ESTIMATE_DIVISOR);
             if (budget && totalTokens + sTokens > budget) break;
             capped.push(s);
             totalTokens += sTokens;
