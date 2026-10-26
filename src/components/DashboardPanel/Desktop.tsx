@@ -90,7 +90,13 @@ const Desktop: React.FC<DesktopProps> = ({ onNavigate }) => {
                         </div>
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: '1rem' }}>
                             {favoriteItems.map((item) => (
-                                <AppTile key={item.id} item={item} label={t(item.labelKey)} onOpen={() => openApp(item)} />
+                                <AppTile
+                                    key={item.id}
+                                    item={item}
+                                    color={item.color ?? '#3b82f6'}
+                                    label={t(item.labelKey)}
+                                    onOpen={() => openApp(item)}
+                                />
                             ))}
                         </div>
                     </div>
@@ -167,6 +173,8 @@ const Desktop: React.FC<DesktopProps> = ({ onNavigate }) => {
     const filteredItems = q
         ? section.items.filter((it) => t(it.labelKey).toLowerCase().includes(q))
         : section.items;
+
+    const tileColor = (item: RouteMeta) => item.color ?? '#3b82f6';
 
     const live = filteredItems.filter((it) => it.status !== 'planned' && it.status !== 'beta');
     const inDev = filteredItems.filter((it) => it.status === 'planned' || it.status === 'beta');
@@ -260,6 +268,7 @@ const Desktop: React.FC<DesktopProps> = ({ onNavigate }) => {
                             <AppTile
                                 key={item.id}
                                 item={item}
+                                color={tileColor(item)}
                                 label={t(item.labelKey)}
                                 onOpen={() => openApp(item)}
                                 isFavorite={favorites.includes(item.id)}
@@ -280,6 +289,7 @@ const Desktop: React.FC<DesktopProps> = ({ onNavigate }) => {
                             <AppTile
                                 key={item.id}
                                 item={item}
+                                color={tileColor(item)}
                                 label={t(item.labelKey)}
                                 onOpen={() => openApp(item)}
                                 isFavorite={favorites.includes(item.id)}
@@ -295,13 +305,15 @@ const Desktop: React.FC<DesktopProps> = ({ onNavigate }) => {
 
 interface AppTileProps {
     item: RouteMeta;
+    color?: string;
     label: string;
     onOpen: () => void;
     isFavorite?: boolean;
     onToggleFavorite?: () => void;
 }
 
-const AppTile: React.FC<AppTileProps> = ({ item, label, onOpen, isFavorite, onToggleFavorite }) => {
+const AppTile: React.FC<AppTileProps> = ({ item, color, label, onOpen, isFavorite, onToggleFavorite }) => {
+    const c = color ?? item.color ?? '#3b82f6';
     return (
         <div style={{ position: 'relative' }}>
             {onToggleFavorite && (
@@ -349,7 +361,7 @@ const AppTile: React.FC<AppTileProps> = ({ item, label, onOpen, isFavorite, onTo
                 }}
                 onMouseEnter={(e) => {
                     e.currentTarget.style.background = 'rgba(255,255,255,0.06)';
-                    e.currentTarget.style.borderColor = `${item.color}55`;
+                    e.currentTarget.style.borderColor = `${c}55`;
                     e.currentTarget.style.transform = 'scale(1.03)';
                 }}
                 onMouseLeave={(e) => {
@@ -366,8 +378,9 @@ const AppTile: React.FC<AppTileProps> = ({ item, label, onOpen, isFavorite, onTo
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        background: `${item.color}1f`,
-                        border: `1px solid ${item.color}44`,
+                        color: c,
+                        background: `${c}1f`,
+                        border: `1px solid ${c}44`,
                     }}
                 >
                     {item.icon}
