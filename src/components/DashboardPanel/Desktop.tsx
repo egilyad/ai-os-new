@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { ArrowLeft, Folder, Search } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { ArrowLeft, Folder, Search, Star } from 'lucide-react';
 import { useTranslation } from '../../i18n/useTranslation';
 import { NAV_SECTIONS } from '../../route-registry';
 import type { NavSection, RouteMeta } from '../../route-registry';
@@ -8,87 +8,138 @@ interface DesktopProps {
     onNavigate: (page: string) => void;
 }
 
+const FAVORITES_KEY = 'desktop:favorites';
+
+function loadFavorites(): string[] {
+    try {
+        const raw = localStorage.getItem(FAVORITES_KEY);
+        return raw ? (JSON.parse(raw) as string[]) : [];
+    } catch {
+        return [];
+    }
+}
+
+function saveFavorites(list: string[]) {
+    try {
+        localStorage.setItem(FAVORITES_KEY, JSON.stringify(list));
+    } catch {
+        /* ignore */
+    }
+}
+
 const Desktop: React.FC<DesktopProps> = ({ onNavigate }) => {
     const { t } = useTranslation();
     const [activeSection, setActiveSection] = useState<NavSection | null>(null);
     const [query, setQuery] = useState('');
+    const [favorites, setFavorites] = useState<string[]>(() => loadFavorites());
 
-    const openApp = (item: RouteMeta) => {
-        onNavigate(item.id);
+    useEffect(() => saveFavorites(favorites), [favorites]);
+
+    const toggleFavorite = (id: string) => {
+        setFavorites((prev) =>
+            prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
+        );
     };
 
-    const folderColor = (section: NavSection) =>
-        section.items[0]?.color ?? '#3b82f6';
+    const openApp = (item: RouteMeta) => onNavigate(item.id);
 
-    // ── Корневой «Рабочий стол»: папки-разделы ──
+    const folderColor = (section: NavSection) => section.items[0]?.color ?? '#3b82f6';
+
+    const allItems = NAV_SECTIONS.flatMap((s) => s.items);
+    const favoriteItems = allItems.filter((it) => favorites.includes(it.id));
+
+    // ── Корневой «Рабочий стол»: папки + избранное ──
     if (!activeSection) {
         return (
-            <div>
-                <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--slate-400)', marginBottom: '0.6rem' }}>
-                    💻 Рабочий стол — разделы
-                </div>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: '1.25rem' }}>
-                    {NAV_SECTIONS.map((section) => (
-                        <button
-                            key={section.id}
-                            onClick={() => setActiveSection(section)}
-                            style={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                alignItems: 'center',
-                                gap: '0.55rem',
-                                padding: '1rem 0.5rem',
-                                borderRadius: 14,
-                                border: '1px solid rgba(255,255,255,0.05)',
-                                background: 'rgba(255,255,255,0.02)',
-                                cursor: 'pointer',
-                                transition: 'all 0.15s',
-                            }}
-                            onMouseEnter={(e) => {
-                                e.currentTarget.style.background = 'rgba(255,255,255,0.06)';
-                                e.currentTarget.style.borderColor = `${folderColor(section)}55`;
-                            }}
-                            onMouseLeave={(e) => {
-                                e.currentTarget.style.background = 'rgba(255,255,255,0.02)';
-                                e.currentTarget.style.borderColor = 'rgba(255,255,255,0.05)';
-                            }}
-                        >
-                            <div
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                {favoriteItems.length > 0 && (
+                    <div>
+                        <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--slate-400)', marginBottom: '0.6rem' }}>
+                            ⭐ Избранное
+                        </div>
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: '1rem' }}>
+                            {favoriteItems.map((item) => (
+                                <AppTile key={item.id} item={item} label={t(item.labelKey)} onOpen={() => openApp(item)} />
+                            ))}
+                        </div>
+                    </div>
+                )}
+
+                <div>
+                    <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--slate-400)', marginBottom: '0.6rem' }}>
+                        💻 Рабочий стол — разделы
+                    </div>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: '1.25rem' }}>
+                        {NAV_SECTIONS.map((section) => (
+                            <button
+                                key={section.id}
+                                onClick={() => setActiveSection(section)}
+                                onDoubleClick={() => setActiveSection(section)}
                                 style={{
-                                    width: 64,
-                                    height: 64,
-                                    borderRadius: 16,
                                     display: 'flex',
+                                    flexDirection: 'column',
                                     alignItems: 'center',
-                                    justifyContent: 'center',
-                                    background: `linear-gradient(135deg, ${folderColor(section)}, ${folderColor(section)}99)`,
-                                    boxShadow: `0 6px 20px ${folderColor(section)}44`,
+                                    gap: '0.55rem',
+                                    padding: '1rem 0.5rem',
+                                    borderRadius: 14,
+                                    border: '1px solid rgba(255,255,255,0.05)',
+                                    background: 'rgba(255,255,255,0.02)',
+                                    cursor: 'pointer',
+                                    transition: 'all 0.15s',
+                                }}
+                                onMouseEnter={(e) => {
+                                    e.currentTarget.style.background = 'rgba(255,255,255,0.06)';
+                                    e.currentTarget.style.borderColor = `${folderColor(section)}55`;
+                                }}
+                                onMouseLeave={(e) => {
+                                    e.currentTarget.style.background = 'rgba(255,255,255,0.02)';
+                                    e.currentTarget.style.borderColor = 'rgba(255,255,255,0.05)';
                                 }}
                             >
-                                <Folder size={34} color="white" />
-                            </div>
-                            <div style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--slate-200)', textAlign: 'center', lineHeight: 1.25 }}>
-                                {t(section.labelKey)}
-                            </div>
-                            <div style={{ fontSize: '0.7rem', color: 'var(--slate-500)' }}>
-                                {section.items.length} прил.
-                            </div>
-                        </button>
-                    ))}
+                                <div
+                                    style={{
+                                        width: 64,
+                                        height: 64,
+                                        borderRadius: 16,
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        background: `linear-gradient(135deg, ${folderColor(section)}, ${folderColor(section)}99)`,
+                                        boxShadow: `0 6px 20px ${folderColor(section)}44`,
+                                    }}
+                                >
+                                    <Folder size={34} color="white" />
+                                </div>
+                                <div style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--slate-200)', textAlign: 'center', lineHeight: 1.25 }}>
+                                    {t(section.labelKey)}
+                                </div>
+                                <div style={{ fontSize: '0.7rem', color: 'var(--slate-500)' }}>
+                                    {section.items.length} прил.
+                                </div>
+                            </button>
+                        ))}
+                    </div>
                 </div>
             </div>
         );
     }
 
-    // ── Открытая «папка»: квадратики-приложения ──
+    // ── Открытая «папка»: поиск + квадратики-приложения ──
     const section = activeSection;
     const q = query.trim().toLowerCase();
-    const filteredItems = q ? section.items.filter((it) => t(it.labelKey).toLowerCase().includes(q)) : section.items;
+    const filteredItems = q
+        ? section.items.filter((it) => t(it.labelKey).toLowerCase().includes(q))
+        : section.items;
+
+    const live = filteredItems.filter((it) => it.status !== 'planned' && it.status !== 'beta');
+    const inDev = filteredItems.filter((it) => it.status === 'planned' || it.status === 'beta');
+
     return (
-        <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
                 <button
                     onClick={() => setActiveSection(null)}
+                    onDoubleClick={() => setActiveSection(null)}
                     style={{
                         display: 'flex',
                         alignItems: 'center',
@@ -105,15 +156,18 @@ const Desktop: React.FC<DesktopProps> = ({ onNavigate }) => {
                 >
                     <ArrowLeft size={15} /> Рабочий стол
                 </button>
-                <div style={{ fontSize: '1rem', fontWeight: 800, color: 'var(--slate-50)' }}>
-                    {t(section.labelKey)}
+                <div style={{ fontSize: '0.85rem', color: 'var(--slate-500)' }}>
+                    /{' '}
+                    <span style={{ color: 'var(--slate-200)', fontWeight: 700 }}>
+                        {t(section.labelKey)}
+                    </span>
                 </div>
                 <div style={{ fontSize: '0.75rem', color: 'var(--slate-500)' }}>
                     {section.items.length} прил.
                 </div>
             </div>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.9rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                 <Search size={15} color="var(--slate-500)" />
                 <input
                     value={query}
@@ -139,52 +193,132 @@ const Desktop: React.FC<DesktopProps> = ({ onNavigate }) => {
                 </div>
             )}
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: '1rem' }}>
-                {filteredItems.map((item) => (
-                    <button
-                        key={item.id}
-                        onClick={() => openApp(item)}
-                        style={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'center',
-                            gap: '0.5rem',
-                            padding: '1.1rem 0.5rem',
-                            borderRadius: 14,
-                            border: '1px solid rgba(255,255,255,0.05)',
-                            background: 'rgba(255,255,255,0.02)',
-                            cursor: 'pointer',
-                            transition: 'all 0.15s',
-                        }}
-                        onMouseEnter={(e) => {
-                            e.currentTarget.style.background = 'rgba(255,255,255,0.06)';
-                            e.currentTarget.style.borderColor = `${item.color}55`;
-                        }}
-                        onMouseLeave={(e) => {
-                            e.currentTarget.style.background = 'rgba(255,255,255,0.02)';
-                            e.currentTarget.style.borderColor = 'rgba(255,255,255,0.05)';
-                        }}
-                    >
-                        <div
-                            style={{
-                                width: 56,
-                                height: 56,
-                                borderRadius: 14,
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                background: `${item.color}1f`,
-                                border: `1px solid ${item.color}44`,
-                            }}
-                        >
-                            {item.icon}
-                        </div>
-                        <div style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--slate-200)', textAlign: 'center', lineHeight: 1.2 }}>
-                            {t(item.labelKey)}
-                        </div>
-                    </button>
-                ))}
-            </div>
+            {live.length > 0 && (
+                <div>
+                    <div style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--slate-500)', marginBottom: '0.55rem' }}>
+                        ✅ Готово
+                    </div>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: '1rem' }}>
+                        {live.map((item) => (
+                            <AppTile
+                                key={item.id}
+                                item={item}
+                                label={t(item.labelKey)}
+                                onOpen={() => openApp(item)}
+                                isFavorite={favorites.includes(item.id)}
+                                onToggleFavorite={() => toggleFavorite(item.id)}
+                            />
+                        ))}
+                    </div>
+                </div>
+            )}
+
+            {inDev.length > 0 && (
+                <div>
+                    <div style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--slate-500)', marginBottom: '0.55rem' }}>
+                        🚧 В разработке
+                    </div>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: '1rem' }}>
+                        {inDev.map((item) => (
+                            <AppTile
+                                key={item.id}
+                                item={item}
+                                label={t(item.labelKey)}
+                                onOpen={() => openApp(item)}
+                                isFavorite={favorites.includes(item.id)}
+                                onToggleFavorite={() => toggleFavorite(item.id)}
+                            />
+                        ))}
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+};
+
+interface AppTileProps {
+    item: RouteMeta;
+    label: string;
+    onOpen: () => void;
+    isFavorite?: boolean;
+    onToggleFavorite?: () => void;
+}
+
+const AppTile: React.FC<AppTileProps> = ({ item, label, onOpen, isFavorite, onToggleFavorite }) => {
+    return (
+        <div style={{ position: 'relative' }}>
+            {onToggleFavorite && (
+                <button
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        onToggleFavorite();
+                    }}
+                    title={isFavorite ? 'Убрать из избранного' : 'В избранное'}
+                    style={{
+                        position: 'absolute',
+                        top: -6,
+                        right: -6,
+                        zIndex: 2,
+                        width: 26,
+                        height: 26,
+                        borderRadius: '50%',
+                        border: '1px solid rgba(255,255,255,0.15)',
+                        background: isFavorite ? 'rgba(250,204,21,0.25)' : 'rgba(255,255,255,0.08)',
+                        color: isFavorite ? '#facc15' : 'var(--slate-400)',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                    }}
+                >
+                    <Star size={14} fill={isFavorite ? 'currentColor' : 'none'} />
+                </button>
+            )}
+            <button
+                onClick={onOpen}
+                onDoubleClick={onOpen}
+                style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    gap: '0.5rem',
+                    padding: '1.1rem 0.5rem',
+                    borderRadius: 14,
+                    border: '1px solid rgba(255,255,255,0.05)',
+                    background: 'rgba(255,255,255,0.02)',
+                    cursor: 'pointer',
+                    width: '100%',
+                    transition: 'all 0.15s',
+                }}
+                onMouseEnter={(e) => {
+                    e.currentTarget.style.background = 'rgba(255,255,255,0.06)';
+                    e.currentTarget.style.borderColor = `${item.color}55`;
+                    e.currentTarget.style.transform = 'scale(1.03)';
+                }}
+                onMouseLeave={(e) => {
+                    e.currentTarget.style.background = 'rgba(255,255,255,0.02)';
+                    e.currentTarget.style.borderColor = 'rgba(255,255,255,0.05)';
+                    e.currentTarget.style.transform = 'scale(1)';
+                }}
+            >
+                <div
+                    style={{
+                        width: 56,
+                        height: 56,
+                        borderRadius: 14,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        background: `${item.color}1f`,
+                        border: `1px solid ${item.color}44`,
+                    }}
+                >
+                    {item.icon}
+                </div>
+                <div style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--slate-200)', textAlign: 'center', lineHeight: 1.2 }}>
+                    {label}
+                </div>
+            </button>
         </div>
     );
 };
