@@ -67,6 +67,10 @@ export class GroqAdapter extends BaseLLMAdapter {
         if (options?.stopSequences?.length) body.stop = options.stopSequences;
         if (options?.tools) body.tools = options.tools;
         if (options?.toolChoice) body.tool_choice = options.toolChoice;
+        // AD3: surface response_format when requested (Groq supports json_object).
+        if (options?.responseFormat) {
+            body.response_format = { type: options.responseFormat.type };
+        }
 
         try {
             const completion = (await client.chat.completions.create(body as never, {
@@ -121,6 +125,10 @@ export class GroqAdapter extends BaseLLMAdapter {
         if (options?.stopSequences?.length) body.stop = options.stopSequences;
         if (options?.tools) body.tools = options.tools;
         if (options?.toolChoice) body.tool_choice = options.toolChoice;
+        // AD3: surface response_format when requested (Groq supports json_object).
+        if (options?.responseFormat) {
+            body.response_format = { type: options.responseFormat.type };
+        }
 
         try {
             type GroqToolDelta = {
