@@ -1,33 +1,20 @@
 import React, { useEffect, useMemo, useState, useRef } from 'react';
-import { usePolling } from '../Common/usePolling';
 import { AlertTriangle, X } from 'lucide-react';
 import { eventBus, EVENTS, rootLogger } from '../../kernel/instances';
 const LOGGER = rootLogger.child('DashboardPanel');
 import { kernel } from '../../kernel/instances';
 import { settingsService } from '../../kernel/instances';
-import { cognitiveService, debateEngine } from '../../kernel/instances';
-import { budgetService } from '../../kernel/instances';
-import { routerService } from '../../kernel/instances';
-import { monitoringService } from '../../kernel/instances';
 import { agentService } from '../../kernel/instances/services-core';
 import { useKeyStore } from '../../stores/useKeyStore';
 import { useAutoClearError } from '../../hooks/useAutoClearError';
 import { useTranslation } from '../../i18n/useTranslation';
 import ModuleInfo from '../ModuleInfo';
 import type { SystemState } from '../../types/metrics';
-import type { CognitiveTrace } from '../../types/domain';
-import type { RouterDecision } from '../../kernel/instances';
-import { summarizeEvent } from './DashboardComponents';
-import SystemHealthPanel from './SystemHealthPanel';
-import { ProviderPressureMap } from './ProviderPressureMap';
-import { InferenceMeshSection } from './InferenceMeshSection';
 import DashboardHeader from './DashboardHeader';
 import GetStartedPanel from './GetStartedPanel';
 import QuickActionBar from './QuickActionBar';
 import CriticalAlertBanner from './CriticalAlertBanner';
-import StatsGrid from './StatsGrid';
-import RoutingActivitySection from './RoutingActivitySection';
-import LiveTerminalSection, { type RecentEvent } from './LiveTerminalSection';
+import WelcomePanel from './WelcomePanel';
 import { dismissBtn, errorBanner } from '../../styles/common';
 
 interface DashboardPanelProps {
@@ -38,34 +25,8 @@ const DashboardPanel: React.FC<DashboardPanelProps> = ({ onNavigate }) => {
     const rawKeys = useKeyStore((s) => s.keys);
     const checkAllHealth = useKeyStore((s) => s.checkAllHealth);
     const keys = useMemo(() => rawKeys ?? [], [rawKeys]);
-    const eventIdCounter = useRef(0);
     const [systemState, setSystemState] = useState<SystemState>(() => kernel.getState());
-    const [events, setEvents] = useState<RecentEvent[]>([]);
-    const [traces, setTraces] = useState(() => {
-        try {
-            return cognitiveService.getTraces() ?? [];
-        } catch {
-            return [];
-        }
-    });
-    const safeTraces = useMemo(() => traces ?? [], [traces]);
-    const [currentTime, setCurrentTime] = useState(() => Date.now());
     const [error, setError] = useState<string | null>(null);
-    const [routerDecisions, setRouterDecisions] = useState<RouterDecision[]>(() => {
-        try {
-            const result = routerService?.getDecisionHistory?.(10);
-            return Array.isArray(result) ? result : [];
-        } catch {
-            return [] as RouterDecision[];
-        }
-    });
-    const [healthIndicators, setHealthIndicators] = useState(() => {
-        try {
-            return monitoringService?.getSystemHealthIndicators?.();
-        } catch {
-            return null;
-        }
-    });
     const settings = (() => {
         try {
             return settingsService.getSettings();
@@ -101,19 +62,6 @@ const DashboardPanel: React.FC<DashboardPanelProps> = ({ onNavigate }) => {
         };
     }, []);
 
-    usePolling(() => {
-        if (!isMountedRef.current) return;
-        setCurrentTime(Date.now());
-        try {
-            const result = routerService?.getDecisionHistory?.();
-            if (Array.isArray(result) && result.length > 0) {
-                setRouterDecisions(result.slice(0, 60));
-            }
-        } catch {
-            /* not critical */
-        }
-    }, 10000);
-
     useEffect(() => {
         const unsubscribeKernel = eventBus.on(EVENTS.KERNEL_UPDATED, (state) => {
             if (!isMountedRef.current) return;
@@ -136,95 +84,8 @@ const DashboardPanel: React.FC<DashboardPanelProps> = ({ onNavigate }) => {
             /* kernel may not be ready */
         }
 
-        const unsubscribeTraces = eventBus.onSafe<CognitiveTrace[]>(
-            EVENTS.COGNITIVE_TRACE_UPDATED,
-            (newTraces) => {
-                if (!isMountedRef.current) return;
-                try {
-                    setTraces(Array.isArray(newTraces) ? [...newTraces] : []);
-                    setError(null);
-                } catch (e) {
-                    LOGGER.warn('DashboardPanel', 'Failed to update traces', { error: e });
-                    if (isMountedRef.current) {
-                        setError('Failed to update traces');
-                        clearError();
-                    }
-                }
-            },
-        );
-
-        const unsubscribeHealth = eventBus.on(EVENTS.SYSTEM_HEALTH_CHANGED, () => {
-            if (!isMountedRef.current) return;
-            try {
-                setHealthIndicators(monitoringService?.getSystemHealthIndicators?.());
-            } catch {
-                LOGGER.warn('DashboardPanel', 'Health indicator refresh failed');
-            }
-        });
-
-        // Надёжная подписка на все события
-        let unsubscribeAll: (() => void) | undefined;
-        const handler = ({ event, data }: { event: string; data: unknown }) => {
-            if (!isMountedRef.current) return;
-            try {
-                const eventDataType =
-                    typeof data === 'object' && data
-                        ? (data as Record<string, unknown>).type
-                        : undefined;
-                const severity: RecentEvent['severity'] =
-                    event.includes('error') || eventDataType === 'error'
-                        ? 'error'
-                        : event.includes('violation') || eventDataType === 'warning'
-                          ? 'warning'
-                          : event.includes('end') || eventDataType === 'success'
-                            ? 'success'
-                            : 'info';
-
-                eventIdCounter.current += 1;
-                const id = Date.now() * 1000 + (eventIdCounter.current % 1000);
-                setEvents((prev) =>
-                    [
-                        {
-                            id,
-                            time: new Date().toLocaleTimeString([], {
-                                hour: '2-digit',
-                                minute: '2-digit',
-                                second: '2-digit',
-                            }),
-                            event,
-                            summary: summarizeEvent(
-                                data as Record<string, unknown> | string | null | undefined,
-                                t,
-                            ),
-                            severity,
-                        },
-                        ...prev,
-                    ].slice(0, 10),
-                );
-            } catch (e) {
-                LOGGER.warn('DashboardPanel', 'Failed to process event', { error: e });
-                if (isMountedRef.current) {
-                    setError('Failed to process event');
-                    clearError();
-                }
-            }
-        };
-
-        const maybeUnsubscribe = eventBus.subscribeAll(handler);
-        if (typeof maybeUnsubscribe === 'function') {
-            unsubscribeAll = maybeUnsubscribe;
-        } else {
-            LOGGER.warn(
-                'DashboardPanel',
-                'eventBus.subscribeAll does not return an unsubscribe function; event bus may leak',
-            );
-        }
-
         return () => {
             unsubscribeKernel();
-            unsubscribeTraces();
-            if (unsubscribeHealth) unsubscribeHealth();
-            if (unsubscribeAll) unsubscribeAll();
         };
     }, [clearError, t]);
 
@@ -237,77 +98,6 @@ const DashboardPanel: React.FC<DashboardPanelProps> = ({ onNavigate }) => {
         }),
         [keys],
     );
-
-    const todayRequests = useMemo(
-        () => (traces ?? []).filter((t) => t.startTime > currentTime - 24 * 60 * 60 * 1000).length,
-        [traces, currentTime],
-    );
-
-    // Windowed to 24h to match the "today" labels downstream (Token Burn,
-    // Calculated Cost). Summing all retained traces would overstate daily use.
-    const totalTokens = useMemo(
-        () =>
-            safeTraces
-                .filter((t) => t.startTime > currentTime - 24 * 60 * 60 * 1000)
-                .reduce((sum, t) => sum + (t.totalTokens || 0), 0),
-        [safeTraces, currentTime],
-    );
-
-    const estimatedCost = useMemo(() => {
-        // getBudgetInfo().spentThisMonth is MONTH spend — never show it under
-        // the "today" labels. Prefer the measured daily average, else a
-        // trace-derived estimate at the documented fallback rate.
-        try {
-            const dailyAverage = budgetService.getBudgetInfo()?.dailyAverage;
-            if (typeof dailyAverage === 'number' && dailyAverage > 0) return dailyAverage;
-        } catch {
-            /* budget service unavailable — fall through to trace estimate */
-        }
-        return (totalTokens / 1000) * 0.01;
-    }, [totalTokens]);
-
-    const activeDebates = useMemo(() => {
-        try {
-            return debateEngine?.getAllSessions?.()?.length ?? 0;
-        } catch {
-            return 0;
-        }
-    }, []);
-
-    const tokenSparkData = useMemo(() => {
-        const now = Date.now();
-        const buckets: number[] = [];
-        for (let i = 5; i >= 0; i--) {
-            const start = now - (i + 1) * 60000;
-            const end = now - i * 60000;
-            buckets.push(
-                safeTraces
-                    .filter((t) => t.startTime >= start && t.startTime < end)
-                    .reduce((s, t) => s + (t.totalTokens || 0), 0),
-            );
-        }
-        return buckets;
-    }, [safeTraces]);
-
-    const rps = useMemo(() => {
-        const recentTraces = safeTraces.filter((t) => t.startTime > currentTime - 60000);
-        return recentTraces.length;
-    }, [safeTraces, currentTime]);
-
-    const errorRateTrend = useMemo(() => {
-        const recent = safeTraces.filter((t) => t.startTime > currentTime - 300000);
-        const older = safeTraces.filter(
-            (t) => t.startTime > currentTime - 600000 && t.startTime <= currentTime - 300000,
-        );
-        const recentErrors = recent.filter((t) => t.status === 'failed').length;
-        const olderErrors = older.filter((t) => t.status === 'failed').length;
-        const recentPct = recent.length > 0 ? recentErrors / recent.length : 0;
-        const olderPct = older.length > 0 ? olderErrors / older.length : 0;
-        if (olderPct === 0 && recentPct === 0) return 'stable';
-        if (recentPct <= olderPct * 0.8) return 'improving';
-        if (recentPct >= olderPct * 1.2) return 'worsening';
-        return 'stable';
-    }, [safeTraces, currentTime]);
 
     const hasProviderErrors =
         providerCounts.error > 0 || (systemState?.violations?.length ?? 0) > 0;
@@ -373,45 +163,8 @@ const DashboardPanel: React.FC<DashboardPanelProps> = ({ onNavigate }) => {
                 </div>
             )}
 
-            <StatsGrid
-                providerCounts={providerCounts}
-                keysLength={keys.length}
-                todayRequests={todayRequests}
-                tracesCount={safeTraces.length}
-                rps={rps}
-                activeDebates={activeDebates}
-                totalTokens={totalTokens}
-                estimatedCost={estimatedCost}
-            />
+            <WelcomePanel onNavigate={onNavigate} />
 
-            <SystemHealthPanel
-                providerCounts={providerCounts}
-                keys={keys}
-                errorRateTrend={errorRateTrend}
-                healthIndicators={healthIndicators}
-                tokenSparkData={tokenSparkData}
-                rps={rps}
-                todayRequests={todayRequests}
-                estimatedCost={estimatedCost}
-                onNavigate={onNavigate}
-            />
-
-            <ProviderPressureMap keys={keys} onNavigate={onNavigate} />
-
-            <RoutingActivitySection decisions={routerDecisions} onNavigate={onNavigate} />
-
-            <div
-                style={{
-                    display: 'grid',
-                    gridTemplateColumns: '1.3fr 0.7fr',
-                    gap: '1.25rem',
-                    alignItems: 'start',
-                }}
-            >
-                <InferenceMeshSection keys={keys} onNavigate={onNavigate} />
-
-                <LiveTerminalSection events={events} onNavigate={onNavigate} />
-            </div>
             <ModuleInfo moduleKey="dashboard" />
         </div>
     );
