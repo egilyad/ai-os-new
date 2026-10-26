@@ -74,15 +74,48 @@ export class CloudflareAdapter extends BaseLLMAdapter {
 
         const result = await this.httpClient.post(url, body, `Bearer ${token}`, signal);
         const data = result.data as {
-            choices?: Array<{ message?: { content?: unknown } }>;
+            choices?: Array<{
+                message?: { content?: unknown; tool_calls?: Array<Record<string, unknown>> };
+                finish_reason?: string;
+            }>;
             result?: { response?: unknown; usage?: { total_tokens?: number } };
             usage?: { total_tokens?: number };
         };
-        const content = data.choices?.[0]?.message?.content ?? data.result?.response ?? '';
+        const choice = data.choices?.[0];
+        const content = choice?.message?.content ?? data.result?.response ?? '';
+        // AD4: extract tool_calls and normalize finishReason instead of dropping them.
+        const toolCalls = this.mapToolCalls(choice?.message?.tool_calls);
+        const finishReason = toolCalls.length
+            ? 'TOOL_CALLS'
+            : this.normalizeFinishReason(choice?.finish_reason);
         return {
             content: typeof content === 'string' ? content : String(content ?? ''),
             tokens: data.usage?.total_tokens ?? data.result?.usage?.total_tokens ?? 0,
+            toolCalls,
+            finishReason,
         };
+    }
+
+    private mapToolCalls(raw?: Array<Record<string, unknown>>): ProviderResponse['toolCalls'] {
+        if (!Array.isArray(raw) || raw.length === 0) return undefined;
+        return raw.map((tc, i) => ({
+            id: (tc.id as string) ?? `tc-${i}`,
+            type: (tc.type as 'function' | 'computer_20250124') ?? 'function',
+            function: {
+                name: ((tc.function as Record<string, unknown>)?.name as string) ?? '',
+                arguments: ((tc.function as Record<string, unknown>)?.arguments as string) ?? '',
+            },
+        }));
+    }
+
+    private normalizeFinishReason(raw?: string): ProviderResponse['finishReason'] {
+        if (!raw) return undefined;
+        const r = raw.toUpperCase();
+        if (r.includes('STOP')) return 'STOP';
+        if (r.includes('LENGTH') || r.includes('MAX')) return 'MAX_TOKENS';
+        if (r.includes('SAFETY') || r.includes('CONTENT')) return 'SAFETY';
+        if (r.includes('TOOL')) return 'TOOL_CALLS';
+        return 'OTHER';
     }
 
     async doStreamMessage(
