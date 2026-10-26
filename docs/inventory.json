@@ -3,22 +3,22 @@
   "generatedBy": "scripts/gen-docs-inventory.mjs",
   "scope": "git-tracked markdown: docs/**/*.md (excluding docs/new drafts and the self-report pages docs-health, docs-inventory) plus repository entry docs (root *.md, .superagents/**, src/kernel/DEPENDENCY_MAP.md)",
   "totals": {
-    "documents": 1059,
+    "documents": 1082,
     "byCategory": {
       "repo": 13,
       "top": 47,
       "active": 1,
-      "audits": 67,
+      "audits": 77,
       "history": 683,
       "reference": 6,
-      "roadmap": 6,
+      "roadmap": 17,
       "superseded": 3,
-      "wiki": 233
+      "wiki": 235
     },
     "byLanguage": {
       "en": 659,
-      "ru": 247,
-      "mixed": 153
+      "ru": 252,
+      "mixed": 171
     }
   },
   "duplicates": {
@@ -792,12 +792,44 @@
       "hash": "4b478a8243d840181daefefccef3cb40fc63797a"
     },
     {
+      "path": "docs/audits/adapters-audit.md",
+      "category": "audits",
+      "language": "ru",
+      "title": "Аудит подсистемы «Адаптеры провайдеров LLM» — реестр дефектов и рисков",
+      "bytes": 3552,
+      "hash": "275cd4119df1d2614f4a3c5671945783c8a94ae7"
+    },
+    {
       "path": "docs/audits/agent-team-audit-memory-history-management.md",
       "category": "audits",
       "language": "mixed",
       "title": "Аудит: память агентов, история действий, управление командой",
       "bytes": 27141,
       "hash": "317dc61ecc48bdf33eb1ec04d85b51df0379d022"
+    },
+    {
+      "path": "docs/audits/agents-council-audit.md",
+      "category": "audits",
+      "language": "ru",
+      "title": "Аудит подсистемы «Агенты/Совет» — реестр дефектов и рисков",
+      "bytes": 4570,
+      "hash": "0f4d56a66f7f2f9d3a71ba1a194e716da98b7b22"
+    },
+    {
+      "path": "docs/audits/cognitive-simulation-audit.md",
+      "category": "audits",
+      "language": "ru",
+      "title": "Аудит подсистемы «Когнитивная оркестрация / Симуляция / Тайм-тревел» — реестр дефектов и рисков",
+      "bytes": 4372,
+      "hash": "c89e16b4f0ae95ecf358150e80e8efe3d49ab5c6"
+    },
+    {
+      "path": "docs/audits/debate-audit.md",
+      "category": "audits",
+      "language": "mixed",
+      "title": "Аудит компонента Debates — реестр дефектов и рисков",
+      "bytes": 10533,
+      "hash": "9a903d4fa06b9f8351a02bd7f1ecc18f4e4248d1"
     },
     {
       "path": "docs/audits/DOCS_GAP_AUDIT_2026-10-17.md",
@@ -822,6 +854,38 @@
       "title": "Отчёт: программа документации SuperAgents OS",
       "bytes": 4824,
       "hash": "b9fcca119bb43733bc5aaf150d69930018209bac"
+    },
+    {
+      "path": "docs/audits/events-storage-audit.md",
+      "category": "audits",
+      "language": "ru",
+      "title": "Аудит подсистемы «События / Event Sourcing / Хранилище» — реестр дефектов и рисков",
+      "bytes": 4857,
+      "hash": "5a0154346ddf6e0806b604858b3eeda7ca644dc0"
+    },
+    {
+      "path": "docs/audits/fleet-governance-audit.md",
+      "category": "audits",
+      "language": "mixed",
+      "title": "Аудит подсистемы «Флот / Governance» — реестр дефектов и рисков",
+      "bytes": 4780,
+      "hash": "54fe83ce911381db7b241e4a5ddf49e769d3b897"
+    },
+    {
+      "path": "docs/audits/llm-bridge-invocation-audit.md",
+      "category": "audits",
+      "language": "mixed",
+      "title": "Аудит «LLM-мост» и «Invocation/Мета-агент» — реестр дефектов и рисков",
+      "bytes": 2781,
+      "hash": "761bea785fdda321f3322e2e80f4a07111f3f26b"
+    },
+    {
+      "path": "docs/audits/memory-audit.md",
+      "category": "audits",
+      "language": "ru",
+      "title": "Аудит подсистемы «Память/Знания» — реестр дефектов и рисков",
+      "bytes": 5649,
+      "hash": "ef45b2d88784ad33e02edb171fa68e413f7df64b"
     },
     {
       "path": "docs/audits/New folder/CRITICAL_BUGS_AUDIT.md",
@@ -856,12 +920,28 @@
       "hash": "d18a46b3e227f972060692b90fe752c5d09a85b6"
     },
     {
+      "path": "docs/audits/providers-llm-audit.md",
+      "category": "audits",
+      "language": "mixed",
+      "title": "Аудит подсистемы «Провайдеры / LLM-конвейер» — реестр дефектов и рисков",
+      "bytes": 4648,
+      "hash": "080afa01d6ce9fe8f48f32df4ad6c9057f1083e3"
+    },
+    {
       "path": "docs/audits/README.md",
       "category": "audits",
-      "language": "ru",
-      "title": "🟡 AUDITS — результаты проверок",
-      "bytes": 1159,
-      "hash": "513ded8ea2aac8d6d4396e8ad82aa3d725d9f6be"
+      "language": "mixed",
+      "title": "Аудиты подсистем — указатель",
+      "bytes": 3983,
+      "hash": "e610b3d87ce9d20758888e343679832019622919"
+    },
+    {
+      "path": "docs/audits/utils-audit.md",
+      "category": "audits",
+      "language": "mixed",
+      "title": "Аудит подсистемы «Утилиты/Инфраструктура» — реестр дефектов и рисков",
+      "bytes": 2760,
+      "hash": "ad50fecb5b7b31c47378676868fc2f277193fdff"
     },
     {
       "path": "docs/COGNITIVE_RUNTIME_SPEC.md",
@@ -6480,12 +6560,28 @@
       "hash": "f49db1c70f436bcaefc132985819bf75bc6ee623"
     },
     {
+      "path": "docs/roadmap/adapters-improvements-roadmap.md",
+      "category": "roadmap",
+      "language": "mixed",
+      "title": "Roadmap улучшений «Адаптеры провайдеров LLM»",
+      "bytes": 1560,
+      "hash": "7d677a1b92bf4810d68be3aeb3829e7e67f01bd3"
+    },
+    {
       "path": "docs/roadmap/AGEMS_ROADMAP.md",
       "category": "roadmap",
       "language": "en",
       "title": "AGEMS -> SuperAgents OS -- Roadmap",
       "bytes": 44408,
       "hash": "5651ab59b1b33c4aa51a281b090d0bbaeb41b8f2"
+    },
+    {
+      "path": "docs/roadmap/agents-council-improvements-roadmap.md",
+      "category": "roadmap",
+      "language": "ru",
+      "title": "Roadmap улучшений «Агенты/Совет»",
+      "bytes": 1456,
+      "hash": "6f7d6115251010d06b60fb2a2c483771de7948cb"
     },
     {
       "path": "docs/roadmap/CHAT_DESIGN.md",
@@ -6496,6 +6592,14 @@
       "hash": "6384b5adcbbd31a3f1a43374b77edfc119ff6c59"
     },
     {
+      "path": "docs/roadmap/cognitive-simulation-improvements-roadmap.md",
+      "category": "roadmap",
+      "language": "ru",
+      "title": "Roadmap улучшений «Когнитивная оркестрация / Симуляция / Тайм-тревел»",
+      "bytes": 1524,
+      "hash": "4631c8d61bef6298f960d6e2db8e7c464dc155d7"
+    },
+    {
       "path": "docs/roadmap/DEBATE_MULTI_SESSION_DESIGN.md",
       "category": "roadmap",
       "language": "en",
@@ -6504,12 +6608,68 @@
       "hash": "991b7d4fa5844e108f6cf631332db26d149819cf"
     },
     {
+      "path": "docs/roadmap/debate-experiments.md",
+      "category": "roadmap",
+      "language": "mixed",
+      "title": "Программа экспериментальной проверки Debates",
+      "bytes": 3102,
+      "hash": "f68403b6cbd1ed921f65c58708f0bd95a1927462"
+    },
+    {
+      "path": "docs/roadmap/debate-improvements-roadmap.md",
+      "category": "roadmap",
+      "language": "mixed",
+      "title": "Roadmap улучшений Debates",
+      "bytes": 3793,
+      "hash": "42d8ad528171538ba6ae831823379d2e558d46b6"
+    },
+    {
+      "path": "docs/roadmap/events-storage-improvements-roadmap.md",
+      "category": "roadmap",
+      "language": "ru",
+      "title": "Roadmap улучшений «События / Event Sourcing / Хранилище»",
+      "bytes": 1675,
+      "hash": "e1a6051fabbc081f00ff2f296ce7ecc9f659ae81"
+    },
+    {
+      "path": "docs/roadmap/fleet-governance-improvements-roadmap.md",
+      "category": "roadmap",
+      "language": "ru",
+      "title": "Roadmap улучшений «Флот / Governance»",
+      "bytes": 1488,
+      "hash": "16b7e2f7f46c7a4e34d6169ef61bf72b70f9cd8a"
+    },
+    {
       "path": "docs/roadmap/IMPLEMENTATION_PLAN.md",
       "category": "roadmap",
       "language": "mixed",
       "title": "SuperAgents OS — План внедрения когнитивных модулей",
       "bytes": 29378,
       "hash": "712cf588a12d5e3842f4be45aad52983ad5138bd"
+    },
+    {
+      "path": "docs/roadmap/llm-bridge-invocation-improvements-roadmap.md",
+      "category": "roadmap",
+      "language": "ru",
+      "title": "Roadmap улучшений «LLM-мост / Invocation-Мета-агент»",
+      "bytes": 1198,
+      "hash": "c8d4e8f9301a218c247380b5cc982a7702f1e559"
+    },
+    {
+      "path": "docs/roadmap/memory-improvements-roadmap.md",
+      "category": "roadmap",
+      "language": "ru",
+      "title": "Roadmap улучшений «Память/Знания»",
+      "bytes": 2460,
+      "hash": "57bca36008686a3c065f3c12ce1245d8901b5407"
+    },
+    {
+      "path": "docs/roadmap/providers-llm-improvements-roadmap.md",
+      "category": "roadmap",
+      "language": "ru",
+      "title": "Roadmap улучшений «Провайдеры / LLM-конвейер»",
+      "bytes": 1660,
+      "hash": "555fa25220dd95bca566208b54d425768bd00afc"
     },
     {
       "path": "docs/roadmap/README.md",
@@ -6526,6 +6686,14 @@
       "title": "roadmap2.md",
       "bytes": 12586,
       "hash": "ac64fa85ebd75dcf079c77251a8ecc129628b889"
+    },
+    {
+      "path": "docs/roadmap/utils-improvements-roadmap.md",
+      "category": "roadmap",
+      "language": "mixed",
+      "title": "Roadmap улучшений «Утилиты / Инфраструктура»",
+      "bytes": 1166,
+      "hash": "b05f47fcd327132f73a36c030ad3d2971c45906d"
     },
     {
       "path": "docs/SERVICES_RU.md",
@@ -6636,8 +6804,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Компонент: адаптер Cloudflare",
-      "bytes": 1857,
-      "hash": "db9b1889b0aec0fdce83d7d7e7ef648834b44e1a"
+      "bytes": 2629,
+      "hash": "3980d1019fd9dab7c67846a13a4766415db99535"
     },
     {
       "path": "docs/wiki/comp-adapter-gemini-computer.md",
@@ -6660,24 +6828,24 @@
       "category": "wiki",
       "language": "ru",
       "title": "Компонент: адаптер Groq",
-      "bytes": 2037,
-      "hash": "6003239c3801114c8dc263a6d527ef12a22efaa2"
+      "bytes": 2791,
+      "hash": "cafdb8d34fc0aca5f05bdfdb57dd8064ebe6326a"
     },
     {
       "path": "docs/wiki/comp-adapter-mock.md",
       "category": "wiki",
       "language": "ru",
       "title": "Компонент: MockAdapter",
-      "bytes": 1934,
-      "hash": "d14cd4952ad7e9b2df905551dd8c6e2275a0fe82"
+      "bytes": 2841,
+      "hash": "faabefae442286349c0a686bc47ce35c2e6115dd"
     },
     {
       "path": "docs/wiki/comp-adapter-nvidia-nim.md",
       "category": "wiki",
-      "language": "ru",
+      "language": "mixed",
       "title": "Компонент: адаптер NVIDIA NIM",
-      "bytes": 1989,
-      "hash": "6512f9201d2b9403148a5a2ae1ec8bf53e083a98"
+      "bytes": 2657,
+      "hash": "24fe815a5727f0dfc46884bd6b3156180122fd68"
     },
     {
       "path": "docs/wiki/comp-adapter-openai-compatible.md",
@@ -6690,10 +6858,10 @@
     {
       "path": "docs/wiki/comp-adapter-openrouter.md",
       "category": "wiki",
-      "language": "ru",
+      "language": "mixed",
       "title": "Компонент: адаптер OpenRouter",
-      "bytes": 2308,
-      "hash": "a1c41dd33ca7fc424a0d97b4121168f80b80ede3"
+      "bytes": 3029,
+      "hash": "a119bbca599c8a5fb0c60758297e09d62d9c49ea"
     },
     {
       "path": "docs/wiki/comp-advisor-runtime-intelligence.md",
@@ -6708,8 +6876,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Компонент: агенты, роли и навыки",
-      "bytes": 4276,
-      "hash": "97bf8dc29f0dfb32c1ea50101a8ef1a51bfb92ea"
+      "bytes": 4648,
+      "hash": "bfebc0e65da623009f4d989fa42ce41e95888219"
     },
     {
       "path": "docs/wiki/comp-budget-pricing.md",
@@ -6730,10 +6898,10 @@
     {
       "path": "docs/wiki/comp-cognitive-orchestration.md",
       "category": "wiki",
-      "language": "ru",
+      "language": "mixed",
       "title": "Компонент: когнитивные трассы и оркестрация топологий",
-      "bytes": 3420,
-      "hash": "991e387f7c81428c02e9be65ecd5e94258080adb"
+      "bytes": 4813,
+      "hash": "51ecb2a07c94c1446d23f1b902805a5dc79ab855"
     },
     {
       "path": "docs/wiki/comp-config.md",
@@ -6756,8 +6924,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Компонент: экипажи и совет",
-      "bytes": 3270,
-      "hash": "091a016004758df3760390a34d4d4bba08e1b7a8"
+      "bytes": 4675,
+      "hash": "da53fe31c73232fc7b50412cf9bbdd96a58e2b09"
     },
     {
       "path": "docs/wiki/comp-dal-repositories.md",
@@ -6772,16 +6940,24 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Компонент: рантайм дебатов",
-      "bytes": 5161,
-      "hash": "ce336cd06de1a19e1a3d218ec509285610c0fbc6"
+      "bytes": 6329,
+      "hash": "cdebbffec4cad48ddc413cda21fdcc143423d988"
+    },
+    {
+      "path": "docs/wiki/comp-debate-techniques.md",
+      "category": "wiki",
+      "language": "mixed",
+      "title": "Дебаты: стратегии, режимы и техники качества",
+      "bytes": 6100,
+      "hash": "fb7fd57361ce1ae8507b38fe3abf191e0efac3f8"
     },
     {
       "path": "docs/wiki/comp-debateplus.md",
       "category": "wiki",
       "language": "ru",
       "title": "Компонент: аргументация (debateplus)",
-      "bytes": 2713,
-      "hash": "33c9659150d9f5e02e70f68c78ff9d7bac50d9f5"
+      "bytes": 3536,
+      "hash": "60fa5406e60665b4783293e818ecd855b477c041"
     },
     {
       "path": "docs/wiki/comp-decorator-optimization.md",
@@ -6836,16 +7012,16 @@
       "category": "wiki",
       "language": "ru",
       "title": "Компонент: журналирование событий (event sourcing)",
-      "bytes": 3464,
-      "hash": "b1496f7406995898dbf243f9e38a4314a15c8d6d"
+      "bytes": 4973,
+      "hash": "7f1d65bbb21b3e1820bdec5aa9b7095d6d454e73"
     },
     {
       "path": "docs/wiki/comp-fleet-governance.md",
       "category": "wiki",
       "language": "mixed",
       "title": "Компонент: флот, governance и аудит",
-      "bytes": 3414,
-      "hash": "df2a6964829918f71f4302d4dab6087ef0155d8a"
+      "bytes": 4783,
+      "hash": "35a4e878be018d5559d0c1233d558fb4cdac56c1"
     },
     {
       "path": "docs/wiki/comp-flow-chat.md",
@@ -6868,8 +7044,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Сквозной контур: дебаты",
-      "bytes": 10862,
-      "hash": "75707f3c25930dc926c1bd0cfbbae68dcc13b911"
+      "bytes": 11358,
+      "hash": "73d7a3bdd6478f5e6d4b6c0fbf29a9e3c10c04c2"
     },
     {
       "path": "docs/wiki/comp-flow-diagnostics.md",
@@ -6924,8 +7100,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Компонент: графы режимов и мост событий",
-      "bytes": 2805,
-      "hash": "1365440b6f3c07c52f5ae68c88a73571c649f2fb"
+      "bytes": 3171,
+      "hash": "22df9a91d7092cad55807449d598f6be8784ba57"
     },
     {
       "path": "docs/wiki/comp-integrations-interop.md",
@@ -6940,8 +7116,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Компонент: вызовы (invocation) и мета-агент",
-      "bytes": 2982,
-      "hash": "169f2a751b9b4d7955154588a8e778a710f35d29"
+      "bytes": 4015,
+      "hash": "5bde19015b8944d12ed0902c033bce148156c491"
     },
     {
       "path": "docs/wiki/comp-kernel-boot.md",
@@ -6964,8 +7140,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Компонент: генерация знаний и RAG",
-      "bytes": 3260,
-      "hash": "747fafa41d10c8c218be25350aaabce629b1195a"
+      "bytes": 3791,
+      "hash": "62b30a35485703366e2989e6c25e2fa543ce8ab5"
     },
     {
       "path": "docs/wiki/comp-llm-adapters.md",
@@ -6980,24 +7156,24 @@
       "category": "wiki",
       "language": "ru",
       "title": "Компонент: LLM-мост (адаптеры crews/council/graph/frontier)",
-      "bytes": 2836,
-      "hash": "ae339df4db47056181d2cb38f23d7ffa1dfee169"
+      "bytes": 4096,
+      "hash": "4d5d5b23d5bb455d75f804c9b618f8c8ea1cf392"
     },
     {
       "path": "docs/wiki/comp-llm-pipeline.md",
       "category": "wiki",
       "language": "mixed",
       "title": "Компонент: LLM-конвейер и декораторы",
-      "bytes": 4013,
-      "hash": "f8b22c625081b794bf03d7093c4b463a953ef2a5"
+      "bytes": 4517,
+      "hash": "f5d8833dbe1a632fdfa9f6e386bd8b8104ffce8c"
     },
     {
       "path": "docs/wiki/comp-memory.md",
       "category": "wiki",
-      "language": "ru",
+      "language": "mixed",
       "title": "Компонент: память и знания",
-      "bytes": 4624,
-      "hash": "e4dc883f341c611c571b311cdd275d7e815b0304"
+      "bytes": 6127,
+      "hash": "2ec8692386775c989af08b56e7a629803a0dcd80"
     },
     {
       "path": "docs/wiki/comp-messaging-integrations.md",
@@ -7028,8 +7204,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Компоненты и сервисы: как читать этот раздел",
-      "bytes": 15029,
-      "hash": "9a701999d96f19dfd9552db97728765b47ab5242"
+      "bytes": 15179,
+      "hash": "27be2acb3adc641835748cc8fc59f006097aac66"
     },
     {
       "path": "docs/wiki/comp-persistence.md",
@@ -7060,8 +7236,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Компонент: рантайм провайдеров",
-      "bytes": 3833,
-      "hash": "940f55cf7b23080ee9067be3b806cf7643e5dbf7"
+      "bytes": 4304,
+      "hash": "d8b176de96eba6b2af4d33cee7999f21d17baa33"
     },
     {
       "path": "docs/wiki/comp-rivals-lab.md",
@@ -7076,8 +7252,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Компонент: роутинг и провайдеры",
-      "bytes": 5367,
-      "hash": "008e046ef79351037e4ea2a6429bc0d54dcd79db"
+      "bytes": 5708,
+      "hash": "3ae30c27613045b5de4db8f342fa38a19c379db6"
     },
     {
       "path": "docs/wiki/comp-scenarios.md",
@@ -7108,8 +7284,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Компонент: симуляция, компьютер и parity",
-      "bytes": 3603,
-      "hash": "15fb84c16e3fe3923a3a1b4581bba117ff538d23"
+      "bytes": 4766,
+      "hash": "ff0ebf2a64685cf001eb451e3b9ada18ee6bd5e1"
     },
     {
       "path": "docs/wiki/comp-state-stores.md",
@@ -7124,8 +7300,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Компонент: хранилище, таймлайн и проекции",
-      "bytes": 3373,
-      "hash": "0ac29de358f09e1311bd6c78376e5b71fddc8d36"
+      "bytes": 3715,
+      "hash": "9efd05d7ced8a5d33faa4b1f91c8c474c87584a6"
     },
     {
       "path": "docs/wiki/comp-synthesis-forum.md",
@@ -7146,10 +7322,10 @@
     {
       "path": "docs/wiki/comp-time-travel.md",
       "category": "wiki",
-      "language": "ru",
+      "language": "mixed",
       "title": "Компонент: тайм-тревел, снапшоты и каузальность",
-      "bytes": 3683,
-      "hash": "8ad2e174c3524ba3cabf65240a34c923a8208607"
+      "bytes": 4926,
+      "hash": "63c0d32cb58c6ec7c56bbd9ec7ed6c17b01b06a6"
     },
     {
       "path": "docs/wiki/comp-tool-capability.md",
@@ -7178,18 +7354,18 @@
     {
       "path": "docs/wiki/comp-util-debate-analysis.md",
       "category": "wiki",
-      "language": "ru",
+      "language": "mixed",
       "title": "Компонент: утилиты анализа дебатов и оценки токенов",
-      "bytes": 2394,
-      "hash": "2d890945311d58f0517b86777b48bb1a8abb650a"
+      "bytes": 2711,
+      "hash": "6de33937e28c36cb793c6eb08785d904006aeee8"
     },
     {
       "path": "docs/wiki/comp-util-embeddings-rng.md",
       "category": "wiki",
       "language": "ru",
       "title": "Компонент: утилиты эмбеддингов и детерминированного RNG",
-      "bytes": 2405,
-      "hash": "b785d3a774ce735da050e892adf6095dabc640c8"
+      "bytes": 2952,
+      "hash": "efbc7a50a6843f7dec774e85348528a4be07f19b"
     },
     {
       "path": "docs/wiki/comp-util-memory-observability.md",
@@ -7202,18 +7378,18 @@
     {
       "path": "docs/wiki/comp-util-network-security.md",
       "category": "wiki",
-      "language": "ru",
+      "language": "mixed",
       "title": "Компонент: утилиты сети и безопасности (kernel/utils)",
-      "bytes": 2891,
-      "hash": "d4f07760d4dca132e31ee6144dc8e5c2776b5b2f"
+      "bytes": 3718,
+      "hash": "029fb748913d076639052f36f82580eb7a4a42fb"
     },
     {
       "path": "docs/wiki/comp-util-persistence-helpers.md",
       "category": "wiki",
       "language": "ru",
       "title": "Компонент: утилиты персиста и провайдеров",
-      "bytes": 2671,
-      "hash": "94ae62d25abe033a37558517381bdd9c4888718a"
+      "bytes": 3069,
+      "hash": "b65b80f7853af070ba7c07da304d1d01da52aef6"
     },
     {
       "path": "docs/wiki/coverage-matrix.md",
@@ -7228,8 +7404,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Дебаты: режимы и механика",
-      "bytes": 3019,
-      "hash": "6864561d014629ad085778dc21ec2abf867d0776"
+      "bytes": 3474,
+      "hash": "24bf54b03799c7c87afffff6370144c5735a5e0a"
     },
     {
       "path": "docs/wiki/dev-adr.md",
@@ -7584,6 +7760,14 @@
       "hash": "641753a579f0ac47283f518a653170b1018d282c"
     },
     {
+      "path": "docs/wiki/idea-path.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Путь идеи: от мысли до результата",
+      "bytes": 37314,
+      "hash": "5431b708c6b1e9b811f6dec3a8a409f070ec0d6e"
+    },
+    {
       "path": "docs/wiki/memory-audit.md",
       "category": "wiki",
       "language": "ru",
@@ -7596,8 +7780,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Знания и память",
-      "bytes": 2901,
-      "hash": "51538e07c85775e3650f545a52ed2f0ea87d5702"
+      "bytes": 3562,
+      "hash": "dd8d6b42d8651c77444ebf254a6cda071e6ea4a1"
     },
     {
       "path": "docs/wiki/panel-ab-testing.md",
@@ -8228,8 +8412,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Wiki SuperAgents OS",
-      "bytes": 24083,
-      "hash": "7c4817ee95b672028a98c7dee301085476c03629"
+      "bytes": 24297,
+      "hash": "1a76704923a1a2a2a2e15fca377d6705eab3c0a0"
     },
     {
       "path": "docs/wiki/roadmap-notes.md",

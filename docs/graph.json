@@ -3,22 +3,22 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 1289,
-    "edges": 3366,
+    "nodes": 1329,
+    "edges": 3453,
     "byType": {
-      "audit": 65,
-      "code": 546,
-      "test": 182,
+      "audit": 75,
+      "code": 561,
+      "test": 195,
       "panel": 262,
-      "article": 234
+      "article": 236
     },
     "byKind": {
-      "audit_test": 330,
-      "audit_mention": 928,
+      "audit_test": 336,
+      "audit_mention": 929,
       "documents": 202,
-      "source": 743,
-      "test": 254,
-      "related": 909
+      "source": 777,
+      "test": 281,
+      "related": 928
     }
   },
   "nodes": [
@@ -422,11 +422,39 @@
       "date": "2026-09-18"
     },
     {
+      "id": "audit:adapters-audit",
+      "type": "audit",
+      "label": "Аудит подсистемы «Адаптеры провайдеров LLM» — реестр дефектов и рисков",
+      "path": "docs/audits/adapters-audit.md",
+      "date": null
+    },
+    {
       "id": "audit:agent-team-audit-memory-history-management",
       "type": "audit",
       "label": "Аудит: память агентов, история действий, управление командой",
       "path": "docs/audits/agent-team-audit-memory-history-management.md",
       "date": "2026-10-14"
+    },
+    {
+      "id": "audit:agents-council-audit",
+      "type": "audit",
+      "label": "Аудит подсистемы «Агенты/Совет» — реестр дефектов и рисков",
+      "path": "docs/audits/agents-council-audit.md",
+      "date": null
+    },
+    {
+      "id": "audit:cognitive-simulation-audit",
+      "type": "audit",
+      "label": "Аудит подсистемы «Когнитивная оркестрация / Симуляция / Тайм-тревел» — реестр дефектов и рисков",
+      "path": "docs/audits/cognitive-simulation-audit.md",
+      "date": null
+    },
+    {
+      "id": "audit:debate-audit",
+      "type": "audit",
+      "label": "Аудит компонента Debates — реестр дефектов и рисков",
+      "path": "docs/audits/debate-audit.md",
+      "date": null
     },
     {
       "id": "audit:DOCS_GAP_AUDIT_2026-10-17",
@@ -448,6 +476,34 @@
       "label": "Отчёт: программа документации SuperAgents OS",
       "path": "docs/audits/DOCS_PROGRAM_REPORT_2026-10-17.md",
       "date": "2026-10-17"
+    },
+    {
+      "id": "audit:events-storage-audit",
+      "type": "audit",
+      "label": "Аудит подсистемы «События / Event Sourcing / Хранилище» — реестр дефектов и рисков",
+      "path": "docs/audits/events-storage-audit.md",
+      "date": null
+    },
+    {
+      "id": "audit:fleet-governance-audit",
+      "type": "audit",
+      "label": "Аудит подсистемы «Флот / Governance» — реестр дефектов и рисков",
+      "path": "docs/audits/fleet-governance-audit.md",
+      "date": null
+    },
+    {
+      "id": "audit:llm-bridge-invocation-audit",
+      "type": "audit",
+      "label": "Аудит «LLM-мост» и «Invocation/Мета-агент» — реестр дефектов и рисков",
+      "path": "docs/audits/llm-bridge-invocation-audit.md",
+      "date": null
+    },
+    {
+      "id": "audit:memory-audit",
+      "type": "audit",
+      "label": "Аудит подсистемы «Память/Знания» — реестр дефектов и рисков",
+      "path": "docs/audits/memory-audit.md",
+      "date": null
     },
     {
       "id": "audit:New folder--CRITICAL_BUGS_AUDIT",
@@ -476,6 +532,20 @@
       "label": "Карта end-to-end сценариев AI OS New",
       "path": "docs/audits/New folder/Карта_end-to-end_сценариев_AI_OS_New.md",
       "date": "2026-09-29"
+    },
+    {
+      "id": "audit:providers-llm-audit",
+      "type": "audit",
+      "label": "Аудит подсистемы «Провайдеры / LLM-конвейер» — реестр дефектов и рисков",
+      "path": "docs/audits/providers-llm-audit.md",
+      "date": null
+    },
+    {
+      "id": "audit:utils-audit",
+      "type": "audit",
+      "label": "Аудит подсистемы «Утилиты/Инфраструктура» — реестр дефектов и рисков",
+      "path": "docs/audits/utils-audit.md",
+      "date": null
     },
     {
       "id": "file:.dependency-cruiser.cjs",
@@ -1238,11 +1308,6 @@
       "label": "src/components/MCPPanel/MCPPanel.tsx"
     },
     {
-      "id": "file:src/components/MemoryPanel/MemoryEmbeddingsCard.tsx",
-      "type": "code",
-      "label": "src/components/MemoryPanel/MemoryEmbeddingsCard.tsx"
-    },
-    {
       "id": "file:src/components/MemoryPanel/MemoryPalacePanel.tsx",
       "type": "code",
       "label": "src/components/MemoryPanel/MemoryPalacePanel.tsx"
@@ -1366,16 +1431,6 @@
       "id": "file:src/components/ProviderManager/",
       "type": "code",
       "label": "src/components/ProviderManager/"
-    },
-    {
-      "id": "file:src/components/ProviderManager/ModelCatalogView.test.tsx",
-      "type": "test",
-      "label": "src/components/ProviderManager/ModelCatalogView.test.tsx"
-    },
-    {
-      "id": "file:src/components/ProviderManager/ModelCatalogView.tsx",
-      "type": "code",
-      "label": "src/components/ProviderManager/ModelCatalogView.tsx"
     },
     {
       "id": "file:src/components/ProviderMarketplace",
@@ -1833,6 +1888,16 @@
       "label": "src/kernel/contracts/budget.ts"
     },
     {
+      "id": "file:src/kernel/contracts/debate-quality-settings.ts",
+      "type": "code",
+      "label": "src/kernel/contracts/debate-quality-settings.ts"
+    },
+    {
+      "id": "file:src/kernel/contracts/debate-types.ts",
+      "type": "code",
+      "label": "src/kernel/contracts/debate-types.ts"
+    },
+    {
       "id": "file:src/kernel/contracts/invocation.ts",
       "type": "code",
       "label": "src/kernel/contracts/invocation.ts"
@@ -1843,14 +1908,14 @@
       "label": "src/kernel/contracts/memory-store.ts"
     },
     {
-      "id": "file:src/kernel/contracts/memory.ts",
-      "type": "code",
-      "label": "src/kernel/contracts/memory.ts"
-    },
-    {
       "id": "file:src/kernel/contracts/pricing.ts",
       "type": "code",
       "label": "src/kernel/contracts/pricing.ts"
+    },
+    {
+      "id": "file:src/kernel/contracts/provider-adapter.ts",
+      "type": "code",
+      "label": "src/kernel/contracts/provider-adapter.ts"
     },
     {
       "id": "file:src/kernel/contracts/session-memory.ts",
@@ -2273,6 +2338,11 @@
       "label": "src/kernel/services/causal-scope-manager.ts"
     },
     {
+      "id": "file:src/kernel/services/causal-timeline-service.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/causal-timeline-service.test.ts"
+    },
+    {
       "id": "file:src/kernel/services/causal-timeline-service.ts",
       "type": "code",
       "label": "src/kernel/services/causal-timeline-service.ts"
@@ -2288,9 +2358,29 @@
       "label": "src/kernel/services/chat-executor.ts"
     },
     {
+      "id": "file:src/kernel/services/cognitive-intelligence/cognitive-diagnostics.ts",
+      "type": "code",
+      "label": "src/kernel/services/cognitive-intelligence/cognitive-diagnostics.ts"
+    },
+    {
       "id": "file:src/kernel/services/cognitive-intelligence/cognitive-intelligence-service.ts",
       "type": "code",
       "label": "src/kernel/services/cognitive-intelligence/cognitive-intelligence-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/cognitive-intelligence/cognitive-metrics.ts",
+      "type": "code",
+      "label": "src/kernel/services/cognitive-intelligence/cognitive-metrics.ts"
+    },
+    {
+      "id": "file:src/kernel/services/cognitive-intelligence/cognitive-pressure.ts",
+      "type": "code",
+      "label": "src/kernel/services/cognitive-intelligence/cognitive-pressure.ts"
+    },
+    {
+      "id": "file:src/kernel/services/cognitive-intelligence/cognitive-whatif.ts",
+      "type": "code",
+      "label": "src/kernel/services/cognitive-intelligence/cognitive-whatif.ts"
     },
     {
       "id": "file:src/kernel/services/cognitive-service.ts",
@@ -2378,6 +2468,11 @@
       "label": "src/kernel/services/council/council-aware-evaluator.ts"
     },
     {
+      "id": "file:src/kernel/services/council/council-lenses.ts",
+      "type": "code",
+      "label": "src/kernel/services/council/council-lenses.ts"
+    },
+    {
       "id": "file:src/kernel/services/council/council-service-facade.ts",
       "type": "code",
       "label": "src/kernel/services/council/council-service-facade.ts"
@@ -2386,6 +2481,11 @@
       "id": "file:src/kernel/services/council/council-service.ts",
       "type": "code",
       "label": "src/kernel/services/council/council-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/council/council-to-debate-mapper.ts",
+      "type": "code",
+      "label": "src/kernel/services/council/council-to-debate-mapper.ts"
     },
     {
       "id": "file:src/kernel/services/council/weighted-judge-evaluator.ts",
@@ -2493,14 +2593,14 @@
       "label": "src/kernel/services/debate-runtime/debate-llm-caller.ts"
     },
     {
-      "id": "file:src/kernel/services/debate-runtime/debate-memory.test.ts",
-      "type": "test",
-      "label": "src/kernel/services/debate-runtime/debate-memory.test.ts"
+      "id": "file:src/kernel/services/debate-runtime/debate-llm-prompt-context.ts",
+      "type": "code",
+      "label": "src/kernel/services/debate-runtime/debate-llm-prompt-context.ts"
     },
     {
-      "id": "file:src/kernel/services/debate-runtime/debate-memory.ts",
+      "id": "file:src/kernel/services/debate-runtime/debate-mode-system.ts",
       "type": "code",
-      "label": "src/kernel/services/debate-runtime/debate-memory.ts"
+      "label": "src/kernel/services/debate-runtime/debate-mode-system.ts"
     },
     {
       "id": "file:src/kernel/services/debate-runtime/debate-orchestrator-factory.ts",
@@ -2526,6 +2626,11 @@
       "id": "file:src/kernel/services/debate-runtime/debate-persistence-manager.ts",
       "type": "code",
       "label": "src/kernel/services/debate-runtime/debate-persistence-manager.ts"
+    },
+    {
+      "id": "file:src/kernel/services/debate-runtime/debate-prompt-builder.ts",
+      "type": "code",
+      "label": "src/kernel/services/debate-runtime/debate-prompt-builder.ts"
     },
     {
       "id": "file:src/kernel/services/debate-runtime/debate-rag-retriever.ts",
@@ -2611,6 +2716,11 @@
       "id": "file:src/kernel/services/eval/scorer-registry-service.ts",
       "type": "code",
       "label": "src/kernel/services/eval/scorer-registry-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/event-bridge/event-bridge.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/event-bridge/event-bridge.test.ts"
     },
     {
       "id": "file:src/kernel/services/event-bridge/event-bridge.ts",
@@ -2868,6 +2978,21 @@
       "label": "src/kernel/services/memory-engine.ts"
     },
     {
+      "id": "file:src/kernel/services/memory-orchestrator.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/memory-orchestrator.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/memory-orchestrator.ts",
+      "type": "code",
+      "label": "src/kernel/services/memory-orchestrator.ts"
+    },
+    {
+      "id": "file:src/kernel/services/memory/",
+      "type": "code",
+      "label": "src/kernel/services/memory/"
+    },
+    {
       "id": "file:src/kernel/services/memory/memory-access-tracker.test.ts",
       "type": "test",
       "label": "src/kernel/services/memory/memory-access-tracker.test.ts"
@@ -2941,6 +3066,11 @@
       "id": "file:src/kernel/services/memory/workflow-distiller.ts",
       "type": "code",
       "label": "src/kernel/services/memory/workflow-distiller.ts"
+    },
+    {
+      "id": "file:src/kernel/services/meta/cog-memory-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/meta/cog-memory-service.ts"
     },
     {
       "id": "file:src/kernel/services/meta/meta-agent-service.ts",
@@ -3118,9 +3248,24 @@
       "label": "src/kernel/services/pricing-service.ts"
     },
     {
+      "id": "file:src/kernel/services/probe-service.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/probe-service.test.ts"
+    },
+    {
       "id": "file:src/kernel/services/probe-service.ts",
       "type": "code",
       "label": "src/kernel/services/probe-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/project-invocation-bridge.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/project-invocation-bridge.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/project-invocation-bridge.ts",
+      "type": "code",
+      "label": "src/kernel/services/project-invocation-bridge.ts"
     },
     {
       "id": "file:src/kernel/services/projections/router-projection.ts",
@@ -3173,6 +3318,11 @@
       "label": "src/kernel/services/provider-tracker.ts"
     },
     {
+      "id": "file:src/kernel/services/rag/",
+      "type": "code",
+      "label": "src/kernel/services/rag/"
+    },
+    {
       "id": "file:src/kernel/services/rag/bm25-service.ts",
       "type": "code",
       "label": "src/kernel/services/rag/bm25-service.ts"
@@ -3201,6 +3351,16 @@
       "id": "file:src/kernel/services/reconnection-service.ts",
       "type": "code",
       "label": "src/kernel/services/reconnection-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/rivals/guardrail-service.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/rivals/guardrail-service.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/rivals/guardrail-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/rivals/guardrail-service.ts"
     },
     {
       "id": "file:src/kernel/services/rivals/planner-service.ts",
@@ -3548,6 +3708,11 @@
       "label": "src/kernel/services/virtual-key-service.ts"
     },
     {
+      "id": "file:src/kernel/utils/compute-memory-id.test.ts",
+      "type": "test",
+      "label": "src/kernel/utils/compute-memory-id.test.ts"
+    },
+    {
       "id": "file:src/kernel/utils/compute-memory-id.ts",
       "type": "code",
       "label": "src/kernel/utils/compute-memory-id.ts"
@@ -3568,9 +3733,19 @@
       "label": "src/kernel/utils/embedding.ts"
     },
     {
+      "id": "file:src/kernel/utils/memory-tracker.test.ts",
+      "type": "test",
+      "label": "src/kernel/utils/memory-tracker.test.ts"
+    },
+    {
       "id": "file:src/kernel/utils/memory-tracker.ts",
       "type": "code",
       "label": "src/kernel/utils/memory-tracker.ts"
+    },
+    {
+      "id": "file:src/kernel/utils/memory-watchdog.test.ts",
+      "type": "test",
+      "label": "src/kernel/utils/memory-watchdog.test.ts"
     },
     {
       "id": "file:src/kernel/utils/memory-watchdog.ts",
@@ -3593,6 +3768,11 @@
       "label": "src/kernel/utils/persist-then-emit.ts"
     },
     {
+      "id": "file:src/kernel/utils/provider-default-models.test.ts",
+      "type": "test",
+      "label": "src/kernel/utils/provider-default-models.test.ts"
+    },
+    {
       "id": "file:src/kernel/utils/provider-default-models.ts",
       "type": "code",
       "label": "src/kernel/utils/provider-default-models.ts"
@@ -3601,6 +3781,11 @@
       "id": "file:src/kernel/utils/provider-fleet-health.ts",
       "type": "code",
       "label": "src/kernel/utils/provider-fleet-health.ts"
+    },
+    {
+      "id": "file:src/kernel/utils/safe-json.test.ts",
+      "type": "test",
+      "label": "src/kernel/utils/safe-json.test.ts"
     },
     {
       "id": "file:src/kernel/utils/safe-json.ts",
@@ -3613,6 +3798,11 @@
       "label": "src/kernel/utils/sanitize.ts"
     },
     {
+      "id": "file:src/kernel/utils/seedable-rng.test.ts",
+      "type": "test",
+      "label": "src/kernel/utils/seedable-rng.test.ts"
+    },
+    {
       "id": "file:src/kernel/utils/seedable-rng.ts",
       "type": "code",
       "label": "src/kernel/utils/seedable-rng.ts"
@@ -3623,6 +3813,11 @@
       "label": "src/kernel/utils/ssr-storage.ts"
     },
     {
+      "id": "file:src/kernel/utils/tokenEstimate.test.ts",
+      "type": "test",
+      "label": "src/kernel/utils/tokenEstimate.test.ts"
+    },
+    {
       "id": "file:src/kernel/utils/tokenEstimate.ts",
       "type": "code",
       "label": "src/kernel/utils/tokenEstimate.ts"
@@ -3631,6 +3826,11 @@
       "id": "file:src/kernel/utils/topic-suggestions.ts",
       "type": "code",
       "label": "src/kernel/utils/topic-suggestions.ts"
+    },
+    {
+      "id": "file:src/kernel/utils/with-transaction.test.ts",
+      "type": "test",
+      "label": "src/kernel/utils/with-transaction.test.ts"
     },
     {
       "id": "file:src/kernel/utils/with-transaction.ts",
@@ -3646,6 +3846,11 @@
       "id": "file:src/kernel/workers/memory-vector-space.ts",
       "type": "code",
       "label": "src/kernel/workers/memory-vector-space.ts"
+    },
+    {
+      "id": "file:src/kernel/workers/memory.worker.ts",
+      "type": "code",
+      "label": "src/kernel/workers/memory.worker.ts"
     },
     {
       "id": "file:src/kernel/workers/sandbox-interpreter.test.ts",
@@ -3946,6 +4151,11 @@
       "id": "file:src/llm/minimax/minimax-adapter.ts",
       "type": "code",
       "label": "src/llm/minimax/minimax-adapter.ts"
+    },
+    {
+      "id": "file:src/llm/mock/mock-adapter.test.ts",
+      "type": "test",
+      "label": "src/llm/mock/mock-adapter.test.ts"
     },
     {
       "id": "file:src/llm/mock/mock-adapter.ts",
@@ -6068,7 +6278,7 @@
       "type": "article",
       "label": "Компонент: когнитивные трассы и оркестрация топологий",
       "section": "components",
-      "status": "documented"
+      "status": "verified"
     },
     {
       "id": "wiki:comp-config",
@@ -6089,7 +6299,7 @@
       "type": "article",
       "label": "Компонент: экипажи и совет",
       "section": "components",
-      "status": "documented"
+      "status": "verified"
     },
     {
       "id": "wiki:comp-dal-repositories",
@@ -6102,6 +6312,13 @@
       "id": "wiki:comp-debate-runtime",
       "type": "article",
       "label": "Компонент: рантайм дебатов",
+      "section": "components",
+      "status": "verified"
+    },
+    {
+      "id": "wiki:comp-debate-techniques",
+      "type": "article",
+      "label": "Дебаты: стратегии, режимы и техники качества",
       "section": "components",
       "status": "verified"
     },
@@ -6159,14 +6376,14 @@
       "type": "article",
       "label": "Компонент: журналирование событий (event sourcing)",
       "section": "components",
-      "status": "documented"
+      "status": "verified"
     },
     {
       "id": "wiki:comp-fleet-governance",
       "type": "article",
       "label": "Компонент: флот, governance и аудит",
       "section": "components",
-      "status": "documented"
+      "status": "verified"
     },
     {
       "id": "wiki:comp-flow-chat",
@@ -6250,7 +6467,7 @@
       "type": "article",
       "label": "Компонент: вызовы (invocation) и мета-агент",
       "section": "components",
-      "status": "documented"
+      "status": "verified"
     },
     {
       "id": "wiki:comp-kernel-boot",
@@ -6285,7 +6502,7 @@
       "type": "article",
       "label": "Компонент: LLM-мост (адаптеры crews/council/graph/frontier)",
       "section": "components",
-      "status": "documented"
+      "status": "verified"
     },
     {
       "id": "wiki:comp-llm-pipeline",
@@ -6299,7 +6516,7 @@
       "type": "article",
       "label": "Компонент: память и знания",
       "section": "components",
-      "status": "documented"
+      "status": "verified"
     },
     {
       "id": "wiki:comp-messaging-integrations",
@@ -6825,6 +7042,13 @@
       "label": "Разработчикам: структура и ворота",
       "section": "dev",
       "status": "verified"
+    },
+    {
+      "id": "wiki:idea-path",
+      "type": "article",
+      "label": "Путь идеи: от мысли до результата",
+      "section": "guide",
+      "status": "documented"
     },
     {
       "id": "wiki:memory",
@@ -8083,6 +8307,11 @@
     },
     {
       "from": "audit:_done--AUDIT_DEMO_MOCK_STUB_2026-09-16",
+      "to": "file:src/llm/mock/mock-adapter.test.ts",
+      "kind": "audit_test"
+    },
+    {
+      "from": "audit:_done--AUDIT_DEMO_MOCK_STUB_2026-09-16",
       "to": "file:src/llm/mock/mock-adapter.ts",
       "kind": "audit_mention"
     },
@@ -8285,6 +8514,11 @@
       "from": "audit:_done--audit-02-lifecycle",
       "to": "file:src/kernel/services/model-distillation-service.ts",
       "kind": "audit_mention"
+    },
+    {
+      "from": "audit:_done--audit-02-lifecycle",
+      "to": "file:src/kernel/utils/memory-watchdog.test.ts",
+      "kind": "audit_test"
     },
     {
       "from": "audit:_done--audit-02-lifecycle",
@@ -10988,6 +11222,11 @@
     },
     {
       "from": "audit:_done--audits-2026-07--audit2--07-ux-perf-docs",
+      "to": "file:src/kernel/utils/memory-watchdog.test.ts",
+      "kind": "audit_test"
+    },
+    {
+      "from": "audit:_done--audits-2026-07--audit2--07-ux-perf-docs",
       "to": "file:src/kernel/utils/memory-watchdog.ts",
       "kind": "audit_mention"
     },
@@ -11203,6 +11442,11 @@
     },
     {
       "from": "audit:_done--CHAT_ARCHAEOLOGY",
+      "to": "file:src/kernel/utils/provider-default-models.test.ts",
+      "kind": "audit_test"
+    },
+    {
+      "from": "audit:_done--CHAT_ARCHAEOLOGY",
       "to": "file:src/kernel/utils/provider-default-models.ts",
       "kind": "audit_mention"
     },
@@ -11210,6 +11454,11 @@
       "from": "audit:_done--CHAT_ARCHAEOLOGY",
       "to": "file:src/kernel/utils/provider-fleet-health.ts",
       "kind": "audit_mention"
+    },
+    {
+      "from": "audit:_done--CHAT_ARCHAEOLOGY",
+      "to": "file:src/llm/mock/mock-adapter.test.ts",
+      "kind": "audit_test"
     },
     {
       "from": "audit:_done--CHAT_ARCHAEOLOGY",
@@ -11490,6 +11739,11 @@
       "from": "audit:_done--FULL_FUNCTIONALITY_AUDIT",
       "to": "file:src/kernel/types/ops-types.ts",
       "kind": "audit_mention"
+    },
+    {
+      "from": "audit:_done--FULL_FUNCTIONALITY_AUDIT",
+      "to": "file:src/kernel/utils/provider-default-models.test.ts",
+      "kind": "audit_test"
     },
     {
       "from": "audit:_done--FULL_FUNCTIONALITY_AUDIT",
@@ -12424,6 +12678,11 @@
     {
       "from": "audit:_done--Аудит_документации_",
       "to": "file:src/stores/project-store.ts",
+      "kind": "audit_mention"
+    },
+    {
+      "from": "audit:adapters-audit",
+      "to": "file:src/llm/openrouter/openrouter-adapter.test.ts",
       "kind": "audit_mention"
     },
     {
@@ -15208,6 +15467,11 @@
     },
     {
       "from": "wiki:comp-adapter-mock",
+      "to": "file:src/llm/mock/mock-adapter.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-adapter-mock",
       "to": "file:src/llm/mock/mock-adapter.ts",
       "kind": "source"
     },
@@ -15483,6 +15747,11 @@
     },
     {
       "from": "wiki:comp-agents-roles-skills",
+      "to": "wiki:comp-crews-councils",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-agents-roles-skills",
       "to": "wiki:comp-routing",
       "kind": "related"
     },
@@ -15613,7 +15882,27 @@
     },
     {
       "from": "wiki:comp-cognitive-orchestration",
+      "to": "file:src/kernel/services/cognitive-intelligence/cognitive-diagnostics.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-cognitive-orchestration",
       "to": "file:src/kernel/services/cognitive-intelligence/cognitive-intelligence-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-cognitive-orchestration",
+      "to": "file:src/kernel/services/cognitive-intelligence/cognitive-metrics.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-cognitive-orchestration",
+      "to": "file:src/kernel/services/cognitive-intelligence/cognitive-pressure.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-cognitive-orchestration",
+      "to": "file:src/kernel/services/cognitive-intelligence/cognitive-whatif.ts",
       "kind": "source"
     },
     {
@@ -15634,6 +15923,11 @@
     {
       "from": "wiki:comp-cognitive-orchestration",
       "to": "wiki:comp-agents-roles-skills",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-cognitive-orchestration",
+      "to": "wiki:comp-debate-runtime",
       "kind": "related"
     },
     {
@@ -15758,12 +16052,22 @@
     },
     {
       "from": "wiki:comp-crews-councils",
+      "to": "file:src/kernel/services/council/council-lenses.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-crews-councils",
       "to": "file:src/kernel/services/council/council-service-facade.ts",
       "kind": "source"
     },
     {
       "from": "wiki:comp-crews-councils",
       "to": "file:src/kernel/services/council/council-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-crews-councils",
+      "to": "file:src/kernel/services/council/council-to-debate-mapper.ts",
       "kind": "source"
     },
     {
@@ -15784,6 +16088,11 @@
     {
       "from": "wiki:comp-crews-councils",
       "to": "wiki:comp-agents-roles-skills",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-crews-councils",
+      "to": "wiki:comp-debate-runtime",
       "kind": "related"
     },
     {
@@ -15968,6 +16277,11 @@
     },
     {
       "from": "wiki:comp-debate-runtime",
+      "to": "wiki:comp-debate-techniques",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-debate-runtime",
       "to": "wiki:comp-routing",
       "kind": "related"
     },
@@ -15984,6 +16298,51 @@
     {
       "from": "wiki:comp-debate-runtime",
       "to": "wiki:panel-debate-toolkit",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-debate-techniques",
+      "to": "file:src/kernel/contracts/debate-quality-settings.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-debate-techniques",
+      "to": "file:src/kernel/contracts/debate-types.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-debate-techniques",
+      "to": "file:src/kernel/services/debate-runtime/debate-llm-prompt-context.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-debate-techniques",
+      "to": "file:src/kernel/services/debate-runtime/debate-mode-system.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-debate-techniques",
+      "to": "file:src/kernel/services/debate-runtime/debate-prompt-builder.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-debate-techniques",
+      "to": "file:src/kernel/services/debate-runtime/debate-strategy-definitions.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-debate-techniques",
+      "to": "wiki:comp-debate-runtime",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-debate-techniques",
+      "to": "wiki:comp-flow-debate",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-debate-techniques",
+      "to": "wiki:debates",
       "kind": "related"
     },
     {
@@ -16363,6 +16722,16 @@
     },
     {
       "from": "wiki:comp-event-sourcing",
+      "to": "file:src/kernel/dal/event-log-repository.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-event-sourcing",
+      "to": "file:src/kernel/dal/event-log-repository.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-event-sourcing",
       "to": "file:src/kernel/services/event-sourcing/checkpoint-store.ts",
       "kind": "source"
     },
@@ -16378,12 +16747,22 @@
     },
     {
       "from": "wiki:comp-event-sourcing",
+      "to": "file:src/kernel/services/timeline-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-event-sourcing",
       "to": "wiki:comp-event-bus",
       "kind": "related"
     },
     {
       "from": "wiki:comp-event-sourcing",
       "to": "wiki:comp-persistence",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-event-sourcing",
+      "to": "wiki:comp-storage-timeline",
       "kind": "related"
     },
     {
@@ -16423,6 +16802,36 @@
     },
     {
       "from": "wiki:comp-fleet-governance",
+      "to": "file:src/kernel/services/permissions/permission-service.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-fleet-governance",
+      "to": "file:src/kernel/services/permissions/permission-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-fleet-governance",
+      "to": "file:src/kernel/services/policy-service.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-fleet-governance",
+      "to": "file:src/kernel/services/policy-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-fleet-governance",
+      "to": "file:src/kernel/services/rivals/guardrail-service.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-fleet-governance",
+      "to": "file:src/kernel/services/rivals/guardrail-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-fleet-governance",
       "to": "file:src/kernel/services/trust/governance-service.ts",
       "kind": "source"
     },
@@ -16435,6 +16844,11 @@
       "from": "wiki:comp-fleet-governance",
       "to": "file:src/kernel/services/trust/provenance-service.ts",
       "kind": "source"
+    },
+    {
+      "from": "wiki:comp-fleet-governance",
+      "to": "wiki:comp-policy-security",
+      "kind": "related"
     },
     {
       "from": "wiki:comp-fleet-governance",
@@ -16865,6 +17279,11 @@
       "from": "wiki:comp-flow-diagnostics",
       "to": "file:src/kernel/services/key-management/key-health.ts",
       "kind": "source"
+    },
+    {
+      "from": "wiki:comp-flow-diagnostics",
+      "to": "file:src/kernel/services/probe-service.test.ts",
+      "kind": "test"
     },
     {
       "from": "wiki:comp-flow-diagnostics",
@@ -17358,6 +17777,11 @@
     },
     {
       "from": "wiki:comp-graph-eventbridge",
+      "to": "file:src/kernel/services/event-bridge/event-bridge.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-graph-eventbridge",
       "to": "file:src/kernel/services/event-bridge/event-bridge.ts",
       "kind": "source"
     },
@@ -17478,12 +17902,27 @@
     },
     {
       "from": "wiki:comp-invocation-meta",
+      "to": "file:src/kernel/services/meta/cog-memory-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-invocation-meta",
       "to": "file:src/kernel/services/meta/meta-agent-service.ts",
       "kind": "source"
     },
     {
       "from": "wiki:comp-invocation-meta",
       "to": "file:src/kernel/services/meta/strategy-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-invocation-meta",
+      "to": "file:src/kernel/services/project-invocation-bridge.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-invocation-meta",
+      "to": "file:src/kernel/services/project-invocation-bridge.ts",
       "kind": "source"
     },
     {
@@ -17838,12 +18277,22 @@
     },
     {
       "from": "wiki:comp-llm-bridge",
+      "to": "file:src/kernel/contracts/provider-adapter.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-llm-bridge",
       "to": "file:src/kernel/services/llm-bridge/llm-task-executor.ts",
       "kind": "source"
     },
     {
       "from": "wiki:comp-llm-bridge",
       "to": "wiki:comp-agents-roles-skills",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-llm-bridge",
+      "to": "wiki:comp-crews-councils",
       "kind": "related"
     },
     {
@@ -18028,22 +18477,17 @@
     },
     {
       "from": "wiki:comp-memory",
-      "to": "file:src/components/MemoryPanel/MemoryEmbeddingsCard.tsx",
-      "kind": "source"
-    },
-    {
-      "from": "wiki:comp-memory",
-      "to": "file:src/components/ProviderManager/ModelCatalogView.test.tsx",
+      "to": "file:src/kernel/dal/memory-repository.test.ts",
       "kind": "test"
     },
     {
       "from": "wiki:comp-memory",
-      "to": "file:src/components/ProviderManager/ModelCatalogView.tsx",
+      "to": "file:src/kernel/dal/memory-repository.ts",
       "kind": "source"
     },
     {
       "from": "wiki:comp-memory",
-      "to": "file:src/kernel/contracts/memory.ts",
+      "to": "file:src/kernel/services/memory-engine.test.ts",
       "kind": "source"
     },
     {
@@ -18058,12 +18502,42 @@
     },
     {
       "from": "wiki:comp-memory",
+      "to": "file:src/kernel/services/memory-orchestrator.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-memory",
+      "to": "file:src/kernel/services/memory-orchestrator.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-memory",
       "to": "file:src/kernel/services/memory/provider-embedding-service.test.ts",
       "kind": "test"
     },
     {
       "from": "wiki:comp-memory",
       "to": "file:src/kernel/services/memory/provider-embedding-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-memory",
+      "to": "file:src/kernel/services/parity/knowledge-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-memory",
+      "to": "file:src/kernel/services/rag/bm25-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-memory",
+      "to": "file:src/kernel/services/rag/hybrid-retrieval-service.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-memory",
+      "to": "file:src/kernel/services/rag/hybrid-retrieval-service.ts",
       "kind": "source"
     },
     {
@@ -18078,13 +18552,18 @@
     },
     {
       "from": "wiki:comp-memory",
-      "to": "file:src/llm/catalog/catalog-lookup.test.ts",
-      "kind": "test"
+      "to": "file:src/kernel/workers/memory.worker.ts",
+      "kind": "source"
     },
     {
       "from": "wiki:comp-memory",
-      "to": "file:src/llm/catalog/catalog-lookup.ts",
-      "kind": "source"
+      "to": "wiki:comp-flow-knowledge",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-memory",
+      "to": "wiki:comp-knowledge-rag",
+      "kind": "related"
     },
     {
       "from": "wiki:comp-memory",
@@ -19183,6 +19662,11 @@
     },
     {
       "from": "wiki:comp-time-travel",
+      "to": "file:src/kernel/services/causal-timeline-service.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-time-travel",
       "to": "file:src/kernel/services/causal-timeline-service.ts",
       "kind": "source"
     },
@@ -19373,6 +19857,11 @@
     },
     {
       "from": "wiki:comp-transactions",
+      "to": "file:src/kernel/utils/with-transaction.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-transactions",
       "to": "file:src/kernel/utils/with-transaction.ts",
       "kind": "source"
     },
@@ -19400,6 +19889,11 @@
       "from": "wiki:comp-util-debate-analysis",
       "to": "file:src/kernel/utils/debate-analysis.ts",
       "kind": "source"
+    },
+    {
+      "from": "wiki:comp-util-debate-analysis",
+      "to": "file:src/kernel/utils/tokenEstimate.test.ts",
+      "kind": "test"
     },
     {
       "from": "wiki:comp-util-debate-analysis",
@@ -19443,7 +19937,22 @@
     },
     {
       "from": "wiki:comp-util-embeddings-rng",
+      "to": "file:src/kernel/utils/seedable-rng.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-util-embeddings-rng",
       "to": "file:src/kernel/utils/seedable-rng.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-util-embeddings-rng",
+      "to": "file:src/kernel/workers/memory-vector-space.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-util-embeddings-rng",
+      "to": "file:src/kernel/workers/memory-vector-space.ts",
       "kind": "source"
     },
     {
@@ -19473,13 +19982,28 @@
     },
     {
       "from": "wiki:comp-util-memory-observability",
+      "to": "file:src/kernel/utils/compute-memory-id.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-util-memory-observability",
       "to": "file:src/kernel/utils/compute-memory-id.ts",
       "kind": "source"
     },
     {
       "from": "wiki:comp-util-memory-observability",
+      "to": "file:src/kernel/utils/memory-tracker.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-util-memory-observability",
       "to": "file:src/kernel/utils/memory-tracker.ts",
       "kind": "source"
+    },
+    {
+      "from": "wiki:comp-util-memory-observability",
+      "to": "file:src/kernel/utils/memory-watchdog.test.ts",
+      "kind": "test"
     },
     {
       "from": "wiki:comp-util-memory-observability",
@@ -19513,6 +20037,16 @@
     },
     {
       "from": "wiki:comp-util-network-security",
+      "to": "file:src/kernel/services/probe-service.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-util-network-security",
+      "to": "file:src/kernel/services/probe-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-util-network-security",
       "to": "file:src/kernel/utils/constant-time.ts",
       "kind": "source"
     },
@@ -19528,6 +20062,11 @@
     },
     {
       "from": "wiki:comp-util-network-security",
+      "to": "file:src/kernel/utils/safe-json.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-util-network-security",
       "to": "file:src/kernel/utils/safe-json.ts",
       "kind": "source"
     },
@@ -19539,6 +20078,16 @@
     {
       "from": "wiki:comp-util-network-security",
       "to": "file:src/kernel/utils/ssr-storage.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:comp-util-network-security",
+      "to": "file:src/llm/http/llm-http-client.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-util-network-security",
+      "to": "file:src/llm/http/llm-http-client.ts",
       "kind": "source"
     },
     {
@@ -19558,6 +20107,11 @@
     },
     {
       "from": "wiki:comp-util-network-security",
+      "to": "wiki:comp-provider-runtime",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:comp-util-network-security",
       "to": "wiki:comp-security-crypto",
       "kind": "related"
     },
@@ -19573,6 +20127,11 @@
     },
     {
       "from": "wiki:comp-util-persistence-helpers",
+      "to": "file:src/kernel/utils/provider-default-models.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-util-persistence-helpers",
       "to": "file:src/kernel/utils/provider-default-models.ts",
       "kind": "source"
     },
@@ -19580,6 +20139,11 @@
       "from": "wiki:comp-util-persistence-helpers",
       "to": "file:src/kernel/utils/provider-fleet-health.ts",
       "kind": "source"
+    },
+    {
+      "from": "wiki:comp-util-persistence-helpers",
+      "to": "file:src/kernel/utils/with-transaction.test.ts",
+      "kind": "test"
     },
     {
       "from": "wiki:comp-util-persistence-helpers",
@@ -21292,6 +21856,76 @@
       "kind": "related"
     },
     {
+      "from": "wiki:idea-path",
+      "to": "file:src/components/DebatePanel/DebatePanel.test.tsx",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:idea-path",
+      "to": "file:src/components/DebatePanel/DebatePanel.tsx",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:idea-path",
+      "to": "file:src/components/KnowledgePanel/KnowledgePanel.test.tsx",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:idea-path",
+      "to": "file:src/components/KnowledgePanel/KnowledgePanel.tsx",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:idea-path",
+      "to": "file:src/components/SimulationPanel/SimulationPanel.test.tsx",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:idea-path",
+      "to": "file:src/components/SimulationPanel/SimulationPanel.tsx",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:idea-path",
+      "to": "file:src/kernel/services/debate-runtime/",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:idea-path",
+      "to": "file:src/kernel/services/memory/",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:idea-path",
+      "to": "file:src/kernel/services/rag/",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:idea-path",
+      "to": "wiki:agents",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:idea-path",
+      "to": "wiki:capabilities",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:idea-path",
+      "to": "wiki:debates",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:idea-path",
+      "to": "wiki:memory",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:idea-path",
+      "to": "wiki:providers",
+      "kind": "related"
+    },
+    {
       "from": "wiki:memory-audit",
       "to": "file:src/kernel/contracts/memory-store.ts",
       "kind": "source"
@@ -21513,17 +22147,42 @@
     },
     {
       "from": "wiki:memory",
-      "to": "file:src/kernel/services/debate-runtime/debate-memory.test.ts",
+      "to": "file:src/kernel/services/memory-engine.test.ts",
       "kind": "test"
     },
     {
       "from": "wiki:memory",
-      "to": "file:src/kernel/services/debate-runtime/debate-memory.ts",
+      "to": "file:src/kernel/services/memory-engine.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:memory",
+      "to": "file:src/kernel/services/memory-orchestrator.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:memory",
+      "to": "file:src/kernel/services/memory-orchestrator.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:memory",
+      "to": "file:src/kernel/services/rag/hybrid-retrieval-service.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:memory",
+      "to": "file:src/kernel/services/rag/hybrid-retrieval-service.ts",
       "kind": "source"
     },
     {
       "from": "wiki:memory",
       "to": "wiki:architecture",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:memory",
+      "to": "wiki:comp-memory",
       "kind": "related"
     },
     {

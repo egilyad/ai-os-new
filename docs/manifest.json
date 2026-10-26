@@ -5,7 +5,7 @@
     {
       "id": "guide",
       "title": "Руководство",
-      "articles": 5
+      "articles": 6
     },
     {
       "id": "panels",
@@ -50,7 +50,7 @@
     {
       "id": "components",
       "title": "Компоненты и сервисы",
-      "articles": 74
+      "articles": 75
     },
     {
       "id": "notes",
@@ -92,6 +92,41 @@
       ],
       "reviewed": null,
       "tests": []
+    },
+    {
+      "id": "wiki:idea-path",
+      "type": "article",
+      "slug": "idea-path",
+      "title": "Путь идеи: от мысли до результата",
+      "section": "guide",
+      "status": "documented",
+      "tags": [
+        "руководство",
+        "сценарий",
+        "идея",
+        "изобретение"
+      ],
+      "sources": [
+        "src/components/DebatePanel/DebatePanel.tsx",
+        "src/components/SimulationPanel/SimulationPanel.tsx",
+        "src/components/KnowledgePanel/KnowledgePanel.tsx",
+        "src/kernel/services/debate-runtime/",
+        "src/kernel/services/memory/",
+        "src/kernel/services/rag/"
+      ],
+      "related": [
+        "capabilities",
+        "debates",
+        "agents",
+        "memory",
+        "providers"
+      ],
+      "reviewed": null,
+      "tests": [
+        "src/components/DebatePanel/DebatePanel.test.tsx",
+        "src/components/SimulationPanel/SimulationPanel.test.tsx",
+        "src/components/KnowledgePanel/KnowledgePanel.test.tsx"
+      ]
     },
     {
       "id": "wiki:capabilities",
@@ -2275,10 +2310,13 @@
         "персоны"
       ],
       "sources": [
-        "src/kernel/services/debate-runtime/debate-memory.ts",
+        "src/kernel/services/memory-engine.ts",
+        "src/kernel/services/memory-orchestrator.ts",
+        "src/kernel/services/rag/hybrid-retrieval-service.ts",
         "docs/audits/agent-team-audit-memory-history-management.md"
       ],
       "related": [
+        "comp-memory",
         "execution-trail",
         "debates",
         "architecture",
@@ -2286,7 +2324,9 @@
       ],
       "reviewed": null,
       "tests": [
-        "src/kernel/services/debate-runtime/debate-memory.test.ts"
+        "src/kernel/services/memory-engine.test.ts",
+        "src/kernel/services/memory-orchestrator.test.ts",
+        "src/kernel/services/rag/hybrid-retrieval-service.test.ts"
       ]
     },
     {
@@ -2559,7 +2599,9 @@
         "comp-config"
       ],
       "reviewed": null,
-      "tests": []
+      "tests": [
+        "src/kernel/utils/with-transaction.test.ts"
+      ]
     },
     {
       "id": "wiki:comp-config",
@@ -2783,7 +2825,8 @@
         "agents",
         "panel-roles",
         "panel-agents-market",
-        "comp-routing"
+        "comp-routing",
+        "comp-crews-councils"
       ],
       "reviewed": null,
       "tests": [
@@ -2912,6 +2955,7 @@
       ],
       "related": [
         "debates",
+        "comp-debate-techniques",
         "panel-debate-live",
         "comp-agents-roles-skills",
         "comp-routing",
@@ -2926,29 +2970,66 @@
       ]
     },
     {
+      "id": "wiki:comp-debate-techniques",
+      "type": "article",
+      "slug": "comp-debate-techniques",
+      "title": "Дебаты: стратегии, режимы и техники качества",
+      "section": "components",
+      "status": "verified",
+      "tags": [
+        "компоненты",
+        "дебаты",
+        "стратегии",
+        "техники",
+        "качество",
+        "аудит"
+      ],
+      "sources": [
+        "src/kernel/contracts/debate-types.ts",
+        "src/kernel/services/debate-runtime/debate-strategy-definitions.ts",
+        "src/kernel/services/debate-runtime/debate-mode-system.ts",
+        "src/kernel/contracts/debate-quality-settings.ts",
+        "src/kernel/services/debate-runtime/debate-prompt-builder.ts",
+        "src/kernel/services/debate-runtime/debate-llm-prompt-context.ts"
+      ],
+      "related": [
+        "comp-debate-runtime",
+        "comp-flow-debate",
+        "debates"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
       "id": "wiki:comp-cognitive-orchestration",
       "type": "article",
       "slug": "comp-cognitive-orchestration",
       "title": "Компонент: когнитивные трассы и оркестрация топологий",
       "section": "components",
-      "status": "documented",
+      "status": "verified",
       "tags": [
         "компоненты",
         "когнитивные",
         "топологии",
-        "оркестрация"
+        "оркестрация",
+        "метрики"
       ],
       "sources": [
         "src/kernel/services/cognitive-service.ts",
         "src/kernel/services/orchestration-service.ts",
-        "src/kernel/services/cognitive-intelligence/cognitive-intelligence-service.ts"
+        "src/kernel/services/cognitive-intelligence/cognitive-intelligence-service.ts",
+        "src/kernel/services/cognitive-intelligence/cognitive-metrics.ts",
+        "src/kernel/services/cognitive-intelligence/cognitive-pressure.ts",
+        "src/kernel/services/cognitive-intelligence/cognitive-diagnostics.ts",
+        "src/kernel/services/cognitive-intelligence/cognitive-whatif.ts"
       ],
       "related": [
         "architecture",
         "panel-dashboard",
         "panel-knowledge",
         "comp-routing",
-        "comp-agents-roles-skills"
+        "comp-agents-roles-skills",
+        "comp-debate-runtime"
       ],
       "reviewed": null,
       "tests": []
@@ -2959,24 +3040,30 @@
       "slug": "comp-memory",
       "title": "Компонент: память и знания",
       "section": "components",
-      "status": "documented",
+      "status": "verified",
       "tags": [
         "компоненты",
         "память",
         "поиск",
-        "RAG"
+        "RAG",
+        "эмбеддинги"
       ],
       "sources": [
         "src/kernel/services/memory-engine.ts",
-        "src/kernel/contracts/memory.ts",
+        "src/kernel/services/memory-orchestrator.ts",
         "src/kernel/services/memory/provider-embedding-service.ts",
+        "src/kernel/workers/memory.worker.ts",
         "src/kernel/workers/memory-vector-space.ts",
-        "src/components/MemoryPanel/MemoryEmbeddingsCard.tsx",
-        "src/components/ProviderManager/ModelCatalogView.tsx",
-        "src/llm/catalog/catalog-lookup.ts"
+        "src/kernel/services/rag/hybrid-retrieval-service.ts",
+        "src/kernel/services/rag/bm25-service.ts",
+        "src/kernel/services/parity/knowledge-service.ts",
+        "src/kernel/dal/memory-repository.ts",
+        "src/kernel/services/memory-engine.test.ts"
       ],
       "related": [
         "memory",
+        "comp-knowledge-rag",
+        "comp-flow-knowledge",
         "panel-memory-palace",
         "panel-knowledge",
         "comp-persistence",
@@ -2985,10 +3072,11 @@
       "reviewed": null,
       "tests": [
         "src/kernel/services/memory-engine.test.ts",
+        "src/kernel/services/memory-orchestrator.test.ts",
         "src/kernel/services/memory/provider-embedding-service.test.ts",
         "src/kernel/workers/memory-vector-space.test.ts",
-        "src/components/ProviderManager/ModelCatalogView.test.tsx",
-        "src/llm/catalog/catalog-lookup.test.ts"
+        "src/kernel/services/rag/hybrid-retrieval-service.test.ts",
+        "src/kernel/dal/memory-repository.test.ts"
       ]
     },
     {
@@ -3097,27 +3185,33 @@
       "slug": "comp-event-sourcing",
       "title": "Компонент: журналирование событий (event sourcing)",
       "section": "components",
-      "status": "documented",
+      "status": "verified",
       "tags": [
         "компоненты",
         "event-sourcing",
         "журнал",
-        "восстановление"
+        "восстановление",
+        "WAL"
       ],
       "sources": [
         "src/kernel/services/event-sourcing/event-recorder.ts",
         "src/kernel/services/event-sourcing/checkpoint-store.ts",
-        "src/kernel/services/event-sourcing/event-types.ts"
+        "src/kernel/services/event-sourcing/event-types.ts",
+        "src/kernel/dal/event-log-repository.ts",
+        "src/kernel/services/timeline-service.ts"
       ],
       "related": [
         "comp-event-bus",
         "comp-persistence",
         "comp-transactions",
         "execution-trail",
-        "panel-history-audit"
+        "panel-history-audit",
+        "comp-storage-timeline"
       ],
       "reviewed": null,
-      "tests": []
+      "tests": [
+        "src/kernel/dal/event-log-repository.test.ts"
+      ]
     },
     {
       "id": "wiki:comp-time-travel",
@@ -3148,7 +3242,8 @@
       ],
       "reviewed": null,
       "tests": [
-        "src/kernel/services/snapshot-service.test.ts"
+        "src/kernel/services/snapshot-service.test.ts",
+        "src/kernel/services/causal-timeline-service.test.ts"
       ]
     },
     {
@@ -3190,12 +3285,14 @@
       "slug": "comp-fleet-governance",
       "title": "Компонент: флот, governance и аудит",
       "section": "components",
-      "status": "documented",
+      "status": "verified",
       "tags": [
         "компоненты",
         "флот",
         "governance",
-        "аудит"
+        "аудит",
+        "политики",
+        "guardrails"
       ],
       "sources": [
         "src/kernel/services/ops/fleet-monitor-service.ts",
@@ -3203,18 +3300,25 @@
         "src/kernel/services/ops/tool-governance-service.ts",
         "src/kernel/services/trust/provenance-service.ts",
         "src/kernel/services/ops/audit-service.ts",
-        "src/kernel/services/ops/hierarchy-service.ts"
+        "src/kernel/services/ops/hierarchy-service.ts",
+        "src/kernel/services/policy-service.ts",
+        "src/kernel/services/permissions/permission-service.ts",
+        "src/kernel/services/rivals/guardrail-service.ts"
       ],
       "related": [
         "panel-fleet",
         "panel-governance",
         "panel-roles",
         "panel-history-audit",
-        "panel-provenance-junctions"
+        "panel-provenance-junctions",
+        "comp-policy-security"
       ],
       "reviewed": null,
       "tests": [
-        "src/kernel/services/trust/provenance-service.test.ts"
+        "src/kernel/services/trust/provenance-service.test.ts",
+        "src/kernel/services/policy-service.test.ts",
+        "src/kernel/services/permissions/permission-service.test.ts",
+        "src/kernel/services/rivals/guardrail-service.test.ts"
       ]
     },
     {
@@ -3291,20 +3395,24 @@
       "slug": "comp-llm-bridge",
       "title": "Компонент: LLM-мост (адаптеры crews/council/graph/frontier)",
       "section": "components",
-      "status": "documented",
+      "status": "verified",
       "tags": [
         "компоненты",
         "llm",
         "адаптеры",
-        "мост"
+        "мост",
+        "crews",
+        "council"
       ],
       "sources": [
-        "src/kernel/services/llm-bridge/llm-task-executor.ts"
+        "src/kernel/services/llm-bridge/llm-task-executor.ts",
+        "src/kernel/contracts/provider-adapter.ts"
       ],
       "related": [
         "comp-provider-runtime",
         "comp-routing",
         "comp-agents-roles-skills",
+        "comp-crews-councils",
         "panel-director",
         "for-developers"
       ],
@@ -3380,12 +3488,13 @@
       "slug": "comp-crews-councils",
       "title": "Компонент: экипажи и совет",
       "section": "components",
-      "status": "documented",
+      "status": "verified",
       "tags": [
         "компоненты",
         "экипажи",
         "совет",
-        "мультиагентность"
+        "мультиагентность",
+        "линзы"
       ],
       "sources": [
         "src/kernel/services/crew/crew-service.ts",
@@ -3393,14 +3502,17 @@
         "src/kernel/services/council/council-service.ts",
         "src/kernel/services/council/council-service-facade.ts",
         "src/kernel/services/council/council-aware-evaluator.ts",
-        "src/kernel/services/council/weighted-judge-evaluator.ts"
+        "src/kernel/services/council/weighted-judge-evaluator.ts",
+        "src/kernel/services/council/council-lenses.ts",
+        "src/kernel/services/council/council-to-debate-mapper.ts"
       ],
       "related": [
         "panel-director",
         "panel-synthesis",
         "panel-fleet",
         "comp-agents-roles-skills",
-        "comp-llm-bridge"
+        "comp-llm-bridge",
+        "comp-debate-runtime"
       ],
       "reviewed": null,
       "tests": []
@@ -3570,19 +3682,22 @@
       "slug": "comp-invocation-meta",
       "title": "Компонент: вызовы (invocation) и мета-агент",
       "section": "components",
-      "status": "documented",
+      "status": "verified",
       "tags": [
         "компоненты",
         "invocation",
         "мета-агент",
-        "учёт"
+        "учёт",
+        "стратегии"
       ],
       "sources": [
         "src/kernel/services/invocation/invocation-engine-service.ts",
         "src/kernel/services/invocation/invocation-repository.ts",
         "src/kernel/services/invocation/invocation-cost-tracker.ts",
         "src/kernel/services/meta/meta-agent-service.ts",
-        "src/kernel/services/meta/strategy-service.ts"
+        "src/kernel/services/meta/strategy-service.ts",
+        "src/kernel/services/meta/cog-memory-service.ts",
+        "src/kernel/services/project-invocation-bridge.ts"
       ],
       "related": [
         "panel-settings",
@@ -3592,7 +3707,9 @@
         "comp-state-stores"
       ],
       "reviewed": null,
-      "tests": []
+      "tests": [
+        "src/kernel/services/project-invocation-bridge.test.ts"
+      ]
     },
     {
       "id": "wiki:comp-simulation-world",
@@ -3757,7 +3874,9 @@
         "comp-storage-timeline"
       ],
       "reviewed": null,
-      "tests": []
+      "tests": [
+        "src/kernel/services/event-bridge/event-bridge.test.ts"
+      ]
     },
     {
       "id": "wiki:comp-debateplus",
@@ -4218,7 +4337,9 @@
         "panel-providers"
       ],
       "reviewed": null,
-      "tests": []
+      "tests": [
+        "src/llm/mock/mock-adapter.test.ts"
+      ]
     },
     {
       "id": "wiki:comp-decorator-resilience",
@@ -4378,18 +4499,24 @@
         "src/kernel/utils/constant-time.ts",
         "src/kernel/utils/sanitize.ts",
         "src/kernel/utils/safe-json.ts",
-        "src/kernel/utils/ssr-storage.ts"
+        "src/kernel/utils/ssr-storage.ts",
+        "src/llm/http/llm-http-client.ts",
+        "src/kernel/services/probe-service.ts"
       ],
       "related": [
         "comp-security-crypto",
         "comp-integrations-interop",
         "comp-policy-security",
         "comp-messaging-integrations",
-        "for-developers"
+        "for-developers",
+        "comp-provider-runtime"
       ],
       "reviewed": null,
       "tests": [
-        "src/kernel/utils/network.test.ts"
+        "src/kernel/utils/network.test.ts",
+        "src/kernel/utils/safe-json.test.ts",
+        "src/llm/http/llm-http-client.test.ts",
+        "src/kernel/services/probe-service.test.ts"
       ]
     },
     {
@@ -4407,7 +4534,8 @@
       ],
       "sources": [
         "src/kernel/utils/embedding.ts",
-        "src/kernel/utils/seedable-rng.ts"
+        "src/kernel/utils/seedable-rng.ts",
+        "src/kernel/workers/memory-vector-space.ts"
       ],
       "related": [
         "comp-knowledge-rag",
@@ -4417,7 +4545,10 @@
         "for-developers"
       ],
       "reviewed": null,
-      "tests": []
+      "tests": [
+        "src/kernel/utils/seedable-rng.test.ts",
+        "src/kernel/workers/memory-vector-space.test.ts"
+      ]
     },
     {
       "id": "wiki:comp-util-memory-observability",
@@ -4445,7 +4576,11 @@
         "for-developers"
       ],
       "reviewed": null,
-      "tests": []
+      "tests": [
+        "src/kernel/utils/memory-tracker.test.ts",
+        "src/kernel/utils/memory-watchdog.test.ts",
+        "src/kernel/utils/compute-memory-id.test.ts"
+      ]
     },
     {
       "id": "wiki:comp-util-debate-analysis",
@@ -4473,7 +4608,9 @@
         "for-developers"
       ],
       "reviewed": null,
-      "tests": []
+      "tests": [
+        "src/kernel/utils/tokenEstimate.test.ts"
+      ]
     },
     {
       "id": "wiki:comp-util-persistence-helpers",
@@ -4502,7 +4639,10 @@
         "panel-providers"
       ],
       "reviewed": null,
-      "tests": []
+      "tests": [
+        "src/kernel/utils/with-transaction.test.ts",
+        "src/kernel/utils/provider-default-models.test.ts"
+      ]
     },
     {
       "id": "wiki:comp-dal-repositories",
@@ -4889,6 +5029,7 @@
       ],
       "reviewed": null,
       "tests": [
+        "src/kernel/services/probe-service.test.ts",
         "src/kernel/services/agent-health-monitor.test.ts",
         "src/kernel/services/consistency-checker.test.ts",
         "src/kernel/services/health-sla-service.test.ts",
@@ -9803,7 +9944,8 @@
         "src/kernel/services/sandbox/code-sandbox-service.test.ts",
         "src/kernel/services/simulation/agent-act-adapter-service.test.ts",
         "src/kernel/services/simulation/simulation-engine-service.test.ts",
-        "src/kernel/services/task-handoff.test.ts"
+        "src/kernel/services/task-handoff.test.ts",
+        "src/llm/mock/mock-adapter.test.ts"
       ]
     },
     {
@@ -9850,6 +9992,8 @@
         "src/kernel/events/event-registry.test.ts",
         "src/kernel/security.test.ts",
         "src/kernel/services/provider-adapter-registry.test.ts",
+        "src/kernel/utils/provider-default-models.test.ts",
+        "src/llm/mock/mock-adapter.test.ts",
         "src/stores/chat/store.test.ts",
         "src/stores/useKeyStore.test.ts"
       ]
@@ -9922,6 +10066,7 @@
         "src/kernel/services/persona/lt-memory-service.test.ts",
         "src/kernel/services/skill-service.test.ts",
         "src/kernel/services/trust/provenance-service.test.ts",
+        "src/kernel/utils/provider-default-models.test.ts",
         "src/llm/gemini/gemini-adapter.test.ts",
         "src/llm/openai-compatible/openai-compatible-adapter.test.ts",
         "src/llm/openrouter/openrouter-adapter.test.ts",
@@ -10311,7 +10456,8 @@
       "tests": [
         "src/kernel/container.test.ts",
         "src/kernel/events/event-bus.test.ts",
-        "src/kernel/services/lifecycle-manager.test.ts"
+        "src/kernel/services/lifecycle-manager.test.ts",
+        "src/kernel/utils/memory-watchdog.test.ts"
       ]
     },
     {
@@ -11175,7 +11321,8 @@
         "src/utils/visibility-interval.ts"
       ],
       "tests": [
-        "src/components/DashboardPanel/DashboardPanel.test.tsx"
+        "src/components/DashboardPanel/DashboardPanel.test.tsx",
+        "src/kernel/utils/memory-watchdog.test.ts"
       ]
     },
     {
@@ -11244,6 +11391,17 @@
       "tests": []
     },
     {
+      "id": "audit:adapters-audit",
+      "type": "audit",
+      "path": "docs/audits/adapters-audit.md",
+      "title": "Аудит подсистемы «Адаптеры провайдеров LLM» — реестр дефектов и рисков",
+      "date": null,
+      "mentions": [
+        "src/llm/openrouter/openrouter-adapter.test.ts"
+      ],
+      "tests": []
+    },
+    {
       "id": "audit:agent-team-audit-memory-history-management",
       "type": "audit",
       "path": "docs/audits/agent-team-audit-memory-history-management.md",
@@ -11257,6 +11415,87 @@
         "src/kernel/events/event-bus.test.ts",
         "src/kernel/services/debate-runtime/debate-memory.test.ts"
       ]
+    },
+    {
+      "id": "audit:agents-council-audit",
+      "type": "audit",
+      "path": "docs/audits/agents-council-audit.md",
+      "title": "Аудит подсистемы «Агенты/Совет» — реестр дефектов и рисков",
+      "date": null,
+      "mentions": [],
+      "tests": []
+    },
+    {
+      "id": "audit:cognitive-simulation-audit",
+      "type": "audit",
+      "path": "docs/audits/cognitive-simulation-audit.md",
+      "title": "Аудит подсистемы «Когнитивная оркестрация / Симуляция / Тайм-тревел» — реестр дефектов и рисков",
+      "date": null,
+      "mentions": [],
+      "tests": []
+    },
+    {
+      "id": "audit:debate-audit",
+      "type": "audit",
+      "path": "docs/audits/debate-audit.md",
+      "title": "Аудит компонента Debates — реестр дефектов и рисков",
+      "date": null,
+      "mentions": [],
+      "tests": []
+    },
+    {
+      "id": "audit:events-storage-audit",
+      "type": "audit",
+      "path": "docs/audits/events-storage-audit.md",
+      "title": "Аудит подсистемы «События / Event Sourcing / Хранилище» — реестр дефектов и рисков",
+      "date": null,
+      "mentions": [],
+      "tests": []
+    },
+    {
+      "id": "audit:fleet-governance-audit",
+      "type": "audit",
+      "path": "docs/audits/fleet-governance-audit.md",
+      "title": "Аудит подсистемы «Флот / Governance» — реестр дефектов и рисков",
+      "date": null,
+      "mentions": [],
+      "tests": []
+    },
+    {
+      "id": "audit:llm-bridge-invocation-audit",
+      "type": "audit",
+      "path": "docs/audits/llm-bridge-invocation-audit.md",
+      "title": "Аудит «LLM-мост» и «Invocation/Мета-агент» — реестр дефектов и рисков",
+      "date": null,
+      "mentions": [],
+      "tests": []
+    },
+    {
+      "id": "audit:memory-audit",
+      "type": "audit",
+      "path": "docs/audits/memory-audit.md",
+      "title": "Аудит подсистемы «Память/Знания» — реестр дефектов и рисков",
+      "date": null,
+      "mentions": [],
+      "tests": []
+    },
+    {
+      "id": "audit:providers-llm-audit",
+      "type": "audit",
+      "path": "docs/audits/providers-llm-audit.md",
+      "title": "Аудит подсистемы «Провайдеры / LLM-конвейер» — реестр дефектов и рисков",
+      "date": null,
+      "mentions": [],
+      "tests": []
+    },
+    {
+      "id": "audit:utils-audit",
+      "type": "audit",
+      "path": "docs/audits/utils-audit.md",
+      "title": "Аудит подсистемы «Утилиты/Инфраструктура» — реестр дефектов и рисков",
+      "date": null,
+      "mentions": [],
+      "tests": []
     }
   ],
   "catalogs": [
