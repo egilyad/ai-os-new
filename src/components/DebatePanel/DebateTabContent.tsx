@@ -7,6 +7,7 @@ import CollabDebatePanel from './CollabDebatePanel';
 import { DebateVerdictPanel } from './DebateVerdictPanel';
 import DebateSidebar from './DebateSidebar';
 import DebateChat from './DebateChat';
+import { DebateArenaView } from '../DebateLive/DebateArenaView';
 import ErrorBoundary from '../Common/ErrorBoundary';
 import { TabBarSection } from './TabBarSection';
 import { InjectBarSection } from './InjectBarSection';
@@ -316,6 +317,11 @@ export function DebateTabContent({
                                         </div>
                                         <div className="debate-topic-text">{session.topic}</div>
                                     </div>
+
+                                    {/* Live arena — unified inline (debate + live) */}
+                                    <ErrorBoundary name="DebateArenaView" variant="panel">
+                                        <DebateArenaView sessionId={session.id} minHeight={360} />
+                                    </ErrorBoundary>
 
                                     <div
                                         role="log"
