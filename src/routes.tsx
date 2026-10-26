@@ -293,15 +293,9 @@ export const AppRoutes: React.FC = () => {
                     </PanelLoader>
                 }
             />
-            <Route
-                key="/debates/live"
-                path="/debates/live"
-                element={
-                    <PanelLoader name="DebateLive">
-                        {React.createElement(Panel('debate-live'))}
-                    </PanelLoader>
-                }
-            />
+            {/* Debate-live is unified into the main debate view (live arena inline).
+                Keep the old URL as a redirect so bookmarks/links still work. */}
+            <Route key="/debates/live" path="/debates/live" element={<Navigate to="/debates/arena" replace />} />
             <Route
                 key="/debates/replay"
                 path="/debates/replay"
