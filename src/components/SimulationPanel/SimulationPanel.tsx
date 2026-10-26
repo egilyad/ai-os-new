@@ -137,6 +137,10 @@ export const SimulationPanel: React.FC = () => {
                 <div>
                     <h2 style={{ margin: 0, fontSize: '1.1rem' }}>Simulation Lab</h2>
                     <p style={{ margin: '0.2rem 0 0', fontSize: '0.8rem', opacity: 0.6 }}>World State 1000×1000 + ExecutionViz · TinyTroupe-style parallel ticks</p>
+                    <p style={{ margin: '0.2rem 0 0', fontSize: '0.75rem', opacity: 0.55 }}>
+                        💡 Если агенты не были созданы (роли/личности отсутствуют) — симуляция работает в{' '}
+                        демо-режиме на стабах (без реального ИИ). Создай агентов заранее в разделе «Агенты».
+                    </p>
                 </div>
                 <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap' }}>
                     <button style={primaryBtn} disabled={busy} onClick={() => void createWorld()}>+ New World (6 agents)</button>
