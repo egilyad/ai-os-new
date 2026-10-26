@@ -1342,15 +1342,21 @@ export async function buildDebateSystemContent(
         multiHopText,
     );
 
+    // B3: hard budget guard — once the core argument prompt exceeds this many
+    // chars, skip non-essential enrichment blocks (persona, repetition warning,
+    // cross-debate memory) to bound context size. RAG stays (highest value).
+    const BUDGET_CHARS = 36000;
+    const underBudget = () => systemContent.length < BUDGET_CHARS;
+
     // Append persona memory block (from past debates — adds 3+ step history)
-    if (mem.getAgentSteps(participant.agentId).length >= 3) {
+    if (underBudget() && mem.getAgentSteps(participant.agentId).length >= 3) {
         const personaBlock = buildPersonaMemory(mem, participant.agentId);
         if (personaBlock) systemContent += personaBlock;
     }
 
     // Repetition gate output: per-participant by construction (this function
     // runs once per participant turn with their own last argument).
-    if (duplicateWarningText) systemContent += duplicateWarningText;
+    if (underBudget() && duplicateWarningText) systemContent += duplicateWarningText;
 
     // RAG: inject relevant memory from past debates
     if (deps.ragRetriever) {
@@ -1369,7 +1375,7 @@ export async function buildDebateSystemContent(
     }
 
     // D14: inject cross-debate context (related past debates) into the prompt.
-    if (deps.crossDebateMemory) {
+    if (underBudget() && deps.crossDebateMemory) {
         try {
             const crossCtx = await deps.crossDebateMemory.getContext(session.topic);
             const crossBlock = deps.crossDebateMemory.formatContextForPrompt(crossCtx);
