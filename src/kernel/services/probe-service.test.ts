@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { ProbeService, type ProbeServiceDeps } from './probe-service';
 import type { ApiKey } from '../types/metrics-types';
 
@@ -23,22 +23,18 @@ function makeDeps(overrides: Partial<ProbeServiceDeps> = {}): ProbeServiceDeps {
             isProviderRateLimited: () => false,
             recordUsage: () => {},
             pushHistory: () => {},
-            ...(overrides.keyService as never),
         },
         adapterRegistry: {
             getAdapter: () => undefined,
             resetCircuitBreaker: () => {},
-            ...(overrides.adapterRegistry as never),
         },
         keyStateStore: {
             get: () => undefined,
             update: () => {},
             ingestProbe: () => {},
-            ...(overrides.keyStateStore as never),
         },
         eventBus: {
             emit: () => {},
-            ...(overrides.eventBus as never),
         },
         ...overrides,
     };
