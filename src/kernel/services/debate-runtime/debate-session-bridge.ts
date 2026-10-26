@@ -238,7 +238,9 @@ export function applyModeToSession(modeId: string): ModeSessionHints {
 
     if (mode.constraint && mode.constraint !== 'none') {
         hints.constraint = mode.constraint;
-        hints.strategy = 'constrained';
+        // Only force 'constrained' if the mode doesn't resolve a specific strategyRef;
+        // otherwise keep the strategyRef path (constraint applies via 'constrained').
+        if (!mode.strategyRef) hints.strategy = 'constrained';
     }
     if (mode.defaultTemperature !== undefined) hints.temperature = mode.defaultTemperature;
     if (mode.defaultMaxRounds !== undefined) hints.maxRounds = mode.defaultMaxRounds;
