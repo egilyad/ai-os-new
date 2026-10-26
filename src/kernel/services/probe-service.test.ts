@@ -37,7 +37,7 @@ function makeDeps(overrides: Partial<ProbeServiceDeps> = {}): ProbeServiceDeps {
             emit: () => {},
         },
         ...overrides,
-    };
+    } as ProbeServiceDeps;
 }
 
 describe('ProbeService', () => {
