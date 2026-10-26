@@ -35,7 +35,10 @@ interface Props {
 }
 
 export const SpeakerNode: React.FC<Props> = ({ node, avatar, avatarCSS, isActive, sessionId }) => {
-    const displayName = resolveAgentIdentity(node.id).displayName;
+    const displayName =
+        node.label ||
+        (node as { name?: string }).name ||
+        resolveAgentIdentity(node.id).displayName;
     const key = `${sessionId}:${node.id}`;
     const streamText = useDebateLiveStore((s) => s.streamingContent.get(key));
     const thinking = useDebateLiveStore((s) => s.currentThinking.get(key));
