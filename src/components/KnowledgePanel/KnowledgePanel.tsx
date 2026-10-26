@@ -4,6 +4,7 @@ import { useConfirm } from '../../hooks/useConfirm';
 import { memoryService, rootLogger } from '../../kernel/instances';
 const LOGGER = rootLogger.child('KnowledgePanel');
 import { eventBus, EVENTS } from '../../kernel/instances';
+import { knowledgeService } from '../../kernel/instances/services-extras';
 import ModuleInfo from '../ModuleInfo';
 import GraphHeader from './GraphHeader';
 import ErrorBanner from './ErrorBanner';
@@ -37,6 +38,8 @@ const KnowledgePanel: React.FC = () => {
     const [editContent, setEditContent] = useState('');
     const [isEditing, setIsEditing] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
+    const [ragResults, setRagResults] = useState<Array<{ sourceId: string; title: string; chunk: string }>>([]);
+    const [ragLoading, setRagLoading] = useState(false);
 
     const isMountedRef = useRef(true);
     const loadingTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -95,6 +98,30 @@ const KnowledgePanel: React.FC = () => {
             return true;
         });
     }, [memories, searchQuery, typeFilter]);
+
+    // RAG: surface the backend `retrieve` results for a real search query.
+    useEffect(() => {
+        const q = searchQuery.trim();
+        if (q.length < 3) {
+            setRagResults([]);
+            return;
+        }
+        let cancelled = false;
+        setRagLoading(true);
+        (async () => {
+            try {
+                const res = (await knowledgeService.retrieve(q, 5)) ?? [];
+                if (!cancelled) setRagResults(res);
+            } catch {
+                if (!cancelled) setRagResults([]);
+            } finally {
+                if (!cancelled) setRagLoading(false);
+            }
+        })();
+        return () => {
+            cancelled = true;
+        };
+    }, [searchQuery]);
 
     const nodes = useMemo(() => buildNodes(filteredMemories), [filteredMemories]);
     const edges = useMemo(() => buildEdges(nodes), [nodes]);
@@ -209,6 +236,26 @@ const KnowledgePanel: React.FC = () => {
                 onTypeFilterChange={setTypeFilter}
                 t={t}
             />
+
+            {searchQuery.trim().length >= 3 && (
+                <div style={{ padding: '0.6rem 0.8rem', borderRadius: 12, border: '1px solid rgba(168,85,247,0.25)', background: 'rgba(168,85,247,0.06)' }}>
+                    <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--slate-200)', marginBottom: '0.4rem' }}>
+                        🔍 Результаты поиска по знаниям (RAG) {ragLoading && '…'}
+                    </div>
+                    {!ragLoading && ragResults.length === 0 && (
+                        <div style={{ fontSize: '0.78rem', color: 'var(--slate-400)' }}>
+                            Ничего не найдено по запросу «{searchQuery}».
+                        </div>
+                    )}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
+                        {ragResults.map((r, i) => (
+                            <div key={i} style={{ fontSize: '0.78rem', color: 'var(--slate-300)' }}>
+                                <span style={{ fontWeight: 700, color: '#c4b5fd' }}>{r.title}</span> — {r.chunk.slice(0, 200)}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
 
             <div
                 style={{
