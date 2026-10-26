@@ -15,6 +15,7 @@ import type { TimelineEntry } from '../../contracts/debate-types';
 import { DebatePostProcessor } from './debate-post-processor';
 import type { DebateGovernor } from './debate-governor';
 import { BUILTIN_STRATEGIES } from './debate-strategy-definitions';
+import { BUILTIN_MODES } from './debate-mode-system';
 
 export interface SnapshotBridgeContext {
     participants: DebateParticipant[];
@@ -215,6 +216,54 @@ export function builtinExecutionHints(strategyId: string): {
 export interface ResolvedStrategyConfig {
     topology: DebateTopology;
     forcedQuality: string[];
+}
+
+export interface ModeSessionHints {
+    constraint?: string;
+    temperature?: number;
+    maxRounds?: number;
+    forcedQuality: string[];
+    strategy?: DebateStrategy | string;
+}
+
+/**
+ * D3: apply a builtin mode's defaults (constraint, temperature, maxRounds,
+ * strategyRef, and policy→quality mapping) as session hints. Purely additive:
+ * only fields the mode defines override the caller's config.
+ */
+export function applyModeToSession(modeId: string): ModeSessionHints {
+    const mode = BUILTIN_MODES.find((m) => m.id === modeId);
+    const hints: ModeSessionHints = { forcedQuality: [] };
+    if (!mode) return hints;
+
+    if (mode.constraint && mode.constraint !== 'none') {
+        hints.constraint = mode.constraint;
+        hints.strategy = 'constrained';
+    }
+    if (mode.defaultTemperature !== undefined) hints.temperature = mode.defaultTemperature;
+    if (mode.defaultMaxRounds !== undefined) hints.maxRounds = mode.defaultMaxRounds;
+    if (mode.strategyRef) hints.strategy = mode.strategyRef;
+
+    for (const p of mode.policies ?? []) {
+        switch (p.type) {
+            case 'require_evidence':
+                hints.forcedQuality.push('evidence-triangulation', 'fact-checking');
+                break;
+            case 'forbid_emotion':
+                hints.forcedQuality.push('rhetoric-safety');
+                break;
+            case 'contradiction_penalty':
+                hints.forcedQuality.push('consistency-check', 'belief-mining');
+                break;
+            case 'temperature_cap':
+                if (typeof p.value === 'number') hints.temperature = p.value;
+                break;
+            default:
+                break;
+        }
+    }
+    hints.forcedQuality = [...new Set(hints.forcedQuality)];
+    return hints;
 }
 
 /**

@@ -21,6 +21,7 @@ import {
     buildTopologyForStrategy,
     strategyQualityForced,
     resolveStrategyConfig,
+    applyModeToSession,
 } from './debate-session-bridge';
 import type { SnapshotBridgeContext } from './debate-session-bridge';
 import { finalizeDebateState, emitFinalizeEvents } from './debate-finalizer';
@@ -301,6 +302,20 @@ export class DebateSyncManager {
         const entry = this._makeEntry('', owner ?? null);
         const sessionConfig = { ...DEFAULT_CONFIG };
         if (config) Object.assign(sessionConfig, config);
+        // D3: apply mode defaults (temperature/maxRounds/strategyRef/policy→quality)
+        // when a mode is requested — additive, only overrides defined fields.
+        if (sessionConfig.modeId) {
+            const modeHints = applyModeToSession(sessionConfig.modeId);
+            if (modeHints.temperature !== undefined) sessionConfig.temperature = modeHints.temperature;
+            if (modeHints.maxRounds !== undefined) maxRounds = modeHints.maxRounds;
+            if (modeHints.strategy) strategy = modeHints.strategy as DebateStrategy | string;
+            if (modeHints.forcedQuality.length) {
+                sessionConfig.qualitySettings = {
+                    ...(sessionConfig.qualitySettings ?? {}),
+                    ...Object.fromEntries(modeHints.forcedQuality.map((t) => [t, true])),
+                };
+            }
+        }
         // Resolve strategy → topology + forced quality techniques. Handles both
         // enum strategies and builtin DSL ids (D2/D11).
         const resolved = resolveStrategyConfig(strategy, participants, maxRounds);

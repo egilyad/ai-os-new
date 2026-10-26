@@ -203,6 +203,8 @@ export interface DebateConfig {
     useGovernor?: boolean;
     language?: 'ru' | 'en';
     qualitySettings?: Record<string, boolean>;
+    /** Optional builtin mode id (D3) — its constraint/temperature/limits are applied at start. */
+    modeId?: string;
 }
 
 export interface HumanVote {

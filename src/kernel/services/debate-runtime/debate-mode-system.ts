@@ -9,7 +9,7 @@ import { safeJsonParse } from '../../../kernel/utils/safe-json';
 
 // ── Built-in Modes ─────────────────────────────────────────────────
 
-const BUILTIN_MODES: DebateMode[] = [
+export const BUILTIN_MODES: DebateMode[] = [
     {
         id: 'strict_logic',
         name: 'Strict Logic',
