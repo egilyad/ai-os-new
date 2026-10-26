@@ -4,7 +4,13 @@ import { useTranslation } from '../../i18n/useTranslation';
 import { agemsApprovalService } from '../../kernel/services/agems-approval-service';
 import { browserUseService } from '../../kernel/instances/services-extras';
 import { computerUseLoopService } from '../../kernel/instances/services-extras';
+import { agentService } from '../../kernel/instances/services-core';
 import type { ComputerUseProvider } from '../../kernel/services/computer/computer-use-loop-service';
+
+const PROVIDER_LABEL: Record<ComputerUseProvider, string> = {
+    anthropic: 'Anthropic (Claude)',
+    'gemini-computer': 'Gemini Computer',
+};
 
 const HISTORY_KEY = 'agent-tasks:history:v1';
 const HISTORY_CAP = 20;
@@ -61,7 +67,20 @@ const AgentTasksPanel: React.FC = () => {
     const [running, setRunning] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [history, setHistory] = useState<RunRecord[]>(loadHistory);
+    const [availableAgents, setAvailableAgents] = useState<Array<{ id: string; name: string }>>([]);
     const appliedTurns = Math.max(1, Math.min(50, Math.floor(Number(maxTurns) || 10)));
+
+    // UX: подсказать реальных агентов для «от чьего имени».
+    useEffect(() => {
+        try {
+            const list = agentService.getAgents?.() ?? [];
+            setAvailableAgents(
+                list.map((a) => ({ id: String(a.id), name: String(a.name ?? a.id) })),
+            );
+        } catch {
+            /* registry may be empty */
+        }
+    }, []);
 
     // Persist text-only history across reloads (screenshots stay in-memory:
     // base64 would blow the 5MB localStorage budget on the first run).
@@ -160,10 +179,15 @@ const AgentTasksPanel: React.FC = () => {
 
     return (
         <div style={{ padding: '1.5rem', maxWidth: 1100, margin: '0 auto' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.25rem' }}>
                 <MonitorPlay size={20} />
                 <h2 style={{ margin: 0 }}>{t('tasks.title')}</h2>
             </div>
+            <p style={{ margin: '0 0 1rem', fontSize: '0.85rem', color: 'var(--slate-400)', lineHeight: 1.5 }}>
+                💻 Автоматизация нажатием кнопки: <b>Browser</b> — быстрая DOM-задача
+                (сайты, формы); <b>Computer</b> — визуальный контроль экрана (попиксельно,
+                медленнее, требует провайдера). Задача запускается после нажатия «Run».
+            </p>
 
             <div style={{ border: '1px solid var(--border)', borderRadius: 8, padding: '1rem', marginBottom: '1rem' }}>
                 <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.75rem', flexWrap: 'wrap' }}>
@@ -181,8 +205,20 @@ const AgentTasksPanel: React.FC = () => {
                     </button>
                     {capability === 'computer' && (
                         <select value={provider} onChange={(e) => setProvider(e.target.value as ComputerUseProvider)}>
-                            <option value="anthropic">anthropic</option>
-                            <option value="gemini-computer">gemini-computer</option>
+                            <option value="anthropic">{PROVIDER_LABEL.anthropic}</option>
+                            <option value="gemini-computer">{PROVIDER_LABEL['gemini-computer']}</option>
+                        </select>
+                    )}
+                    {availableAgents.length > 0 && (
+                        <select
+                            value=""
+                            onChange={(e) => { if (e.target.value) setAgentId(e.target.value); }}
+                            title="Выбрать агента (или впиши свой id)"
+                        >
+                            <option value="">— агент: {agentId} —</option>
+                            {availableAgents.map((a) => (
+                                <option key={a.id} value={a.id}>{a.name}</option>
+                            ))}
                         </select>
                     )}
                     <input
