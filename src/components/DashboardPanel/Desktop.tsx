@@ -383,7 +383,12 @@ const AppTile: React.FC<AppTileProps> = ({ item, color, label, onOpen, isFavorit
                         boxShadow: `0 6px 20px ${c}44`,
                     }}
                 >
-                    {item.icon}
+                    {React.isValidElement(item.icon)
+                        ? React.cloneElement(item.icon as React.ReactElement<{ size?: number; color?: string }>, {
+                              size: 32,
+                              color: '#fff',
+                          })
+                        : item.icon}
                 </div>
                 <div style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--slate-200)', textAlign: 'center', lineHeight: 1.2 }}>
                     {label}
