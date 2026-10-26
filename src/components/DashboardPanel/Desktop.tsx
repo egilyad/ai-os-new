@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { ArrowLeft, Folder, Search, Star, X } from 'lucide-react';
 import { useTranslation } from '../../i18n/useTranslation';
+import { loadLocale } from '../../i18n/translations/index';
 import { NAV_SECTIONS } from '../../route-registry';
 import type { NavSection, RouteMeta } from '../../route-registry';
 
@@ -74,6 +75,12 @@ const Desktop: React.FC<DesktopProps> = ({ onNavigate }) => {
 
     useEffect(() => saveFavorites(favorites), [favorites]);
 
+    // Ensure BOTH locales are loaded so bilingual labels (en + ru) always render.
+    const [localesReady, setLocalesReady] = useState(false);
+    useEffect(() => {
+        Promise.all([loadLocale('en'), loadLocale('ru')]).then(() => setLocalesReady(true));
+    }, []);
+
     useEffect(() => {
         const onKey = (e: KeyboardEvent) => {
             if (e.key === 'Escape') setActiveSection(null);
@@ -81,6 +88,8 @@ const Desktop: React.FC<DesktopProps> = ({ onNavigate }) => {
         window.addEventListener('keydown', onKey);
         return () => window.removeEventListener('keydown', onKey);
     }, []);
+
+    void localesReady;
 
     const toggleFavorite = (id: string) => {
         setFavorites((prev) =>
