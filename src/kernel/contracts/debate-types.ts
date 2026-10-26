@@ -223,6 +223,8 @@ export interface VerdictKeyArgument {
     content: string;
     stance: 'pro' | 'con' | 'neutral';
     strength: number;
+    /** C6: source timeline/argument id for traceability back to the debate. */
+    argumentId?: string;
 }
 
 export interface DebateVerdict {

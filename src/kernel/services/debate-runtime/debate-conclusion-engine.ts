@@ -123,6 +123,7 @@ export class DebateConclusionEngine {
                 content: payload.content.slice(0, 500),
                 stance,
                 strength: this.estimateStrength(payload.content),
+                argumentId: resp.id,
             });
         }
         return args;
