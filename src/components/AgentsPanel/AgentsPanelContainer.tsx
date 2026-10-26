@@ -109,7 +109,7 @@ const AgentsPanelContainer: React.FC = () => {
         }
     });
 
-    const [viewMode, setViewMode] = useState<ViewMode>('grid');
+    const [viewMode, setViewMode] = useState<ViewMode>('list');
     const [searchQuery, setSearchQuery] = useState('');
     const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
     const [selectedAgentId, setSelectedAgentId] = useState<string | null>(null);
