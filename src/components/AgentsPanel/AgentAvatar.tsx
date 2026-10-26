@@ -114,59 +114,46 @@ export const AgentAvatar: React.FC<AgentAvatarProps> = ({
     }
 
     const h = hashString(agentId || 'unknown');
-    const eyeStyle = h % 3; // 0 круг, 1 плоский, 2 моргающий
-    const hasAntenna = h % 2 === 0;
     const id = `mascot-${agentId || 'unknown'}-${h % 97}`;
+    const wink = h % 4 === 0; // вариант: одно «подмигивающее» око
 
     return (
         <div style={{ position: 'relative', width: px, height: px, flexShrink: 0 }}>
             <style>{ANIM_STYLE}</style>
-            <div style={{ position: 'absolute', inset: 0, animation: `agentMascotFloat ${3 + (h % 3)}s ease-in-out infinite` }}>
+            <div style={{ position: 'absolute', inset: 0, animation: `agentMascotFloat ${4 + (h % 2)}s ease-in-out infinite` }}>
                 <svg viewBox="0 0 64 64" width={px} height={px} aria-hidden="true">
                     <defs>
-                        <radialGradient id={`${id}-g`} cx="35%" cy="30%" r="80%">
-                            <stop offset="0%" stopColor="#fff" stopOpacity="0.9" />
-                            <stop offset="35%" stopColor={resolvedColor} stopOpacity="0.95" />
-                            <stop offset="100%" stopColor="#000" stopOpacity="0.4" />
+                        <radialGradient id={`${id}-g`} cx="38%" cy="28%" r="80%">
+                            <stop offset="0%" stopColor="#fff" stopOpacity="0.95" />
+                            <stop offset="40%" stopColor={resolvedColor} stopOpacity="0.9" />
+                            <stop offset="100%" stopColor="#1e293b" stopOpacity="0.5" />
                         </radialGradient>
                     </defs>
-                    {/* Антенна (у части агентов) */}
-                    {hasAntenna && (
+                    {/* Голова — большая, мягкая, дружелюбная */}
+                    <ellipse cx="32" cy="34" rx="26" ry="24" fill={`url(#${id}-g)`} />
+                    {/* Большие добрые глаза */}
+                    {wink ? (
                         <g>
-                            <line x1="32" y1="14" x2="32" y2="6" stroke={resolvedColor} strokeWidth="3" strokeLinecap="round" />
-                            <circle cx="32" cy="5" r="3.5" fill={resolvedColor} />
+                            <ellipse cx="22" cy="33" rx="6.5" ry="7" fill="#fff" />
+                            <circle cx="24" cy="34" r="3.6" fill="#1e293b" />
+                            <circle cx="25.2" cy="32.4" r="1.3" fill="#fff" />
+                            <path d="M37 34 Q40 31 43 34" stroke="#1e293b" strokeWidth="2.4" strokeLinecap="round" fill="none" />
+                        </g>
+                    ) : (
+                        <g>
+                            <ellipse cx="22" cy="33" rx="6.5" ry="7" fill="#fff" />
+                            <circle cx="24" cy="34" r="3.6" fill="#1e293b" />
+                            <circle cx="25.2" cy="32.4" r="1.3" fill="#fff" />
+                            <ellipse cx="42" cy="33" rx="6.5" ry="7" fill="#fff" />
+                            <circle cx="44" cy="34" r="3.6" fill="#1e293b" />
+                            <circle cx="45.2" cy="32.4" r="1.3" fill="#fff" />
                         </g>
                     )}
-                    {/* Тело/голова */}
-                    <ellipse cx="32" cy="36" rx="24" ry="21" fill={`url(#${id}-g)`} stroke="#000" strokeOpacity="0.18" strokeWidth="2" />
-                    {/* Глаза */}
-                    {eyeStyle === 0 && (
-                        <g>
-                            <circle cx="23" cy="34" r="5" fill="#0f172a" />
-                            <circle cx="41" cy="34" r="5" fill="#0f172a" />
-                            <circle cx="25" cy="32" r="1.8" fill="#fff" />
-                            <circle cx="43" cy="32" r="1.8" fill="#fff" />
-                        </g>
-                    )}
-                    {eyeStyle === 1 && (
-                        <g>
-                            <rect x="18" y="30" width="10" height="6" rx="3" fill="#0f172a" />
-                            <rect x="36" y="30" width="10" height="6" rx="3" fill="#0f172a" />
-                        </g>
-                    )}
-                    {eyeStyle === 2 && (
-                        <g>
-                            <circle cx="23" cy="34" r="5" fill="#0f172a" style={{ transformOrigin: '23px 34px', animation: 'agentMascotBlink 4s infinite' }} />
-                            <circle cx="41" cy="34" r="5" fill="#0f172a" style={{ transformOrigin: '41px 34px', animation: 'agentMascotBlink 4s infinite' }} />
-                            <circle cx="25" cy="32" r="1.8" fill="#fff" />
-                            <circle cx="43" cy="32" r="1.8" fill="#fff" />
-                        </g>
-                    )}
-                    {/* Рот */}
-                    <path d="M27 44 Q32 49 37 44" fill="none" stroke="#0f172a" strokeWidth="2.5" strokeLinecap="round" />
+                    {/* Тёплая улыбка */}
+                    <path d="M26 45 Q32 52 38 45" fill="none" stroke="#1e293b" strokeWidth="3" strokeLinecap="round" />
                     {/* Щёчки */}
-                    <circle cx="17" cy="40" r="3" fill={resolvedColor} opacity="0.5" />
-                    <circle cx="47" cy="40" r="3" fill={resolvedColor} opacity="0.5" />
+                    <ellipse cx="15" cy="41" rx="3.6" ry="2.6" fill={resolvedColor} opacity="0.55" />
+                    <ellipse cx="49" cy="41" rx="3.6" ry="2.6" fill={resolvedColor} opacity="0.55" />
                 </svg>
             </div>
             {showStatus && dotColor && <span style={{ position: 'absolute', right: -1, bottom: -1, width: px * 0.28, height: px * 0.28, borderRadius: '50%', background: dotColor, border: `2px solid #0f172a`, zIndex: 2 }} />}
