@@ -7397,7 +7397,7 @@
       "language": "mixed",
       "title": "Матрица покрытия",
       "bytes": 8459,
-      "hash": "8253c7f91cc415a5530983c7ed2d5544b8f0eae8"
+      "hash": "24166baf2a55e88795c70ce4a6944c424a95575c"
     },
     {
       "path": "docs/wiki/debates.md",
@@ -7429,7 +7429,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4076,
-      "hash": "99b008b71ca92d46b4f4a8346030f733afe5db65"
+      "hash": "81e0f82759fd5f2e38f50048a930c386e9525267"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -7516,16 +7516,16 @@
       "category": "wiki",
       "language": "ru",
       "title": "Граф знаний",
-      "bytes": 4929,
-      "hash": "deed5787129de456ff43054cbf2f83d035d91e9c"
+      "bytes": 4903,
+      "hash": "26fcc3a2a4475233b7a9ab01d01aa78de3b94585"
     },
     {
       "path": "docs/wiki/dev-history.md",
       "category": "wiki",
       "language": "ru",
       "title": "История разработки",
-      "bytes": 6348,
-      "hash": "f70c652299490c36c8a66befce8a9060fa0afde0"
+      "bytes": 8455,
+      "hash": "70cb76e7c86d57014f5a7e2e8b976d009795158d"
     },
     {
       "path": "docs/wiki/dev-i18n-catalog.md",
@@ -7732,8 +7732,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Карта документации",
-      "bytes": 30784,
-      "hash": "fbb215e856f9417494c7e6af09fb2cec5e7c22c3"
+      "bytes": 32881,
+      "hash": "0bd46d02ed170b6dde9fa5523bb75e8d0dc07af6"
     },
     {
       "path": "docs/wiki/docs-standard.md",
