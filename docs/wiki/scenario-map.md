@@ -49,9 +49,9 @@ flowchart LR
 | 1 | Дебаты: идея → вердикт | [V] | UI → startDebate → preflight → resolveStrategyConfig → createSession → startSession → pipeline → verdict → saveVerdict |
 | 2 | Чат → ответ с контекстом из памяти | [V] | Chat → ragOnChat → memoryService.searchAdvanced → [RECALLED CONTEXT] → LLM → ответ |
 | 3 | Симуляция: создать мир с агентами | [V] | SimulationPanel → worldStateService.create → engine → tick |
-| 4 | Дебаты: восстановление после reload | [SA] | engine._restoreOrphanedSessions + restoreSession (см. аудит) |
-| 5 | Агент: создать и выполнить задачу | [SA] | AgentFactory.create → resolve → execute |
-| 6 | RAG: загрузить источник и найти | [NV] | требует ручной проверки |
+| 4 | Дебаты: восстановление после reload | [V] | engine._restoreOrphanedSessions (zombie 5 мин) + restoreSession + init:loadActiveSession + governor.rehydrate |
+| 5 | Агент: создать и выполнить задачу | [SA] | AgentFactory.create → resolve → execute (LLM→tools→memory→persist→observe) |
+| 6 | RAG: загрузить источник и найти | [SA] | knowledgeService.addSource (via assistant-wiring) + chunkText + retrieve; UI-панель фильтрует memories клиентски |
 | 7 | Wiki-Brain интеграция | [NV] | нет подтверждённой связки |
 
 ---
@@ -89,6 +89,31 @@ flowchart LR
 
 **Ограничение:** если агенты не созданы — работает `StubActPort` (демо, без ИИ). Выбор агентов — через пикер (добавлен).
 
+### 4. Восстановление после reload [V]
+
+**DebateEngine.start** → `_restoreOrphanedSessions`:
+- active/deliberating старше 5 мин → **failed** (zombie);
+- active/deliberating моложе 5 мин → **paused** → `restoreSession`;
+- paused → `restoreSession`.
+
+**DebateSyncManager.init** → `loadActiveSession` + `governor.rehydrate(loaded.arguments)` (перестройка графа claims).
+
+**Статус:** [V] — цепочка подтверждена чтением кода (engine.ts:205-235, sync-manager.ts:207-219). Формальное исполнение/тест по этому пути — не запускались.
+
+### 5. Агент: создать и выполнить задачу [SA]
+
+**AgentFactory.create** → resolver (роль/политика) → `agent-def/<id>` в DAL → событие `AGENT_CREATED`.
+**AgentFactory.execute** → resolve → LLM → tools → memory → **persist** → observe.
+
+**Статус:** [SA] — логика прочитана (agent-factory.ts), реальное выполнение не проверялось.
+
+### 6. RAG: загрузить источник и найти [SA]
+
+**addSource** (вызов из `assistant-wiring.ts`) → best-effort fetch (URL/CORS) → `chunkText` (~600 симв. на чанк) → событие `KNOWLEDGE_ADDED`.
+**retrieve** → ранжирование по пересечению токенов (или cos, если embedder).
+
+**Важно (UX-разрыв):** сам KnowledgePanel фильтрует `memories` клиентски (substring), а не вызывает `retrieve`/гибрид. Т.е. RAG-бэкенд есть, но не выведен в основную панель. [SA].
+
 ---
 
 ## Карта передачи данных
@@ -119,7 +144,8 @@ flowchart LR
 ## Известные ограничения
 
 - **[NV]** Аудит не полон; метки проставлены только по проверенным цепочкам.
-- **[SA]** Восстановление сессий и выполнение агента требуют более глубокой проверки (см. аудиты `docs/audits/*`).
+- **[SA]** Выполнение агента требует реальной проверки (провайдер/ключи).
+- **[SA]** RAG-бэкенд существует, но основная панель знаний не вызывает `retrieve`/гибрид.
 - **[SA]** Wiki-Brain / Junction / Forum-интеграции не подтверждены как единый поток.
 
 ---
@@ -135,9 +161,9 @@ flowchart LR
 ## Дата и границы аудита
 
 - Дата проверки: 2026-10.
-- Исследованы: дебаты (sync-manager/engine/conclusion), чат→память, симуляция.
+- Исследованы: дебаты (sync-manager/engine/conclusion), чат→память, симуляция, восстановление после reload, AgentFactory, RAG-addSource/retrieve.
 - Запущены: чтение кода; **полные тесты не запускались** (ограничения окружения).
-- Остались непроверенными: RAG-загрузка, Wiki-Brain, восстановление всех типов сессий.
+- Остались непроверенными: реальное выполнение агента (провайдер), реальный RAG-поиск из панели, Wiki-Brain.
 
 ---
 
