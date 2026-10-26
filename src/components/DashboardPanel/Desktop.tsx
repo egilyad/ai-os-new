@@ -50,6 +50,22 @@ function saveFavorites(list: string[]) {
     }
 }
 
+const BilingualLabel: React.FC<{ labelKey: string }> = ({ labelKey }) => {
+    const { t } = useTranslation();
+    const en = t(labelKey, 'en');
+    const ru = t(labelKey, 'ru');
+    return (
+        <span style={{ display: 'block', textAlign: 'center', lineHeight: 1.25 }}>
+            <span style={{ display: 'block', fontWeight: 700, color: 'var(--slate-100)' }}>{en}</span>
+            {ru !== en && (
+                <span style={{ display: 'block', fontSize: '0.7em', color: 'var(--slate-400)', fontWeight: 500 }}>
+                    {ru}
+                </span>
+            )}
+        </span>
+    );
+};
+
 const Desktop: React.FC<DesktopProps> = ({ onNavigate }) => {
     const { t } = useTranslation();
     const [activeSection, setActiveSection] = useState<NavSection | null>(null);
@@ -94,7 +110,7 @@ const Desktop: React.FC<DesktopProps> = ({ onNavigate }) => {
                                     key={item.id}
                                     item={item}
                                     color={item.color ?? '#3b82f6'}
-                                    label={t(item.labelKey)}
+                                    labelKey={item.labelKey}
                                     onOpen={() => openApp(item)}
                                 />
                             ))}
@@ -153,9 +169,7 @@ const Desktop: React.FC<DesktopProps> = ({ onNavigate }) => {
                                         <Folder size={34} color="white" />
                                     )}
                                 </div>
-                                <div style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--slate-200)', textAlign: 'center', lineHeight: 1.25 }}>
-                                    {t(section.labelKey)}
-                                </div>
+                                <BilingualLabel labelKey={section.labelKey} />
                                 <div style={{ fontSize: '0.7rem', color: 'var(--slate-500)' }}>
                                     {section.items.length} прил.
                                 </div>
@@ -204,7 +218,7 @@ const Desktop: React.FC<DesktopProps> = ({ onNavigate }) => {
                 <div style={{ fontSize: '0.85rem', color: 'var(--slate-500)' }}>
                     /{' '}
                     <span style={{ color: 'var(--slate-200)', fontWeight: 700 }}>
-                        {t(section.labelKey)}
+                        <BilingualLabel labelKey={section.labelKey} />
                     </span>
                 </div>
                 <div style={{ fontSize: '0.75rem', color: 'var(--slate-500)' }}>
@@ -269,7 +283,7 @@ const Desktop: React.FC<DesktopProps> = ({ onNavigate }) => {
                                 key={item.id}
                                 item={item}
                                 color={tileColor(item)}
-                                label={t(item.labelKey)}
+                                labelKey={item.labelKey}
                                 onOpen={() => openApp(item)}
                                 isFavorite={favorites.includes(item.id)}
                                 onToggleFavorite={() => toggleFavorite(item.id)}
@@ -290,7 +304,7 @@ const Desktop: React.FC<DesktopProps> = ({ onNavigate }) => {
                                 key={item.id}
                                 item={item}
                                 color={tileColor(item)}
-                                label={t(item.labelKey)}
+                                labelKey={item.labelKey}
                                 onOpen={() => openApp(item)}
                                 isFavorite={favorites.includes(item.id)}
                                 onToggleFavorite={() => toggleFavorite(item.id)}
@@ -306,13 +320,13 @@ const Desktop: React.FC<DesktopProps> = ({ onNavigate }) => {
 interface AppTileProps {
     item: RouteMeta;
     color?: string;
-    label: string;
+    labelKey: string;
     onOpen: () => void;
     isFavorite?: boolean;
     onToggleFavorite?: () => void;
 }
 
-const AppTile: React.FC<AppTileProps> = ({ item, color, label, onOpen, isFavorite, onToggleFavorite }) => {
+const AppTile: React.FC<AppTileProps> = ({ item, color, labelKey, onOpen, isFavorite, onToggleFavorite }) => {
     const c = color ?? item.color ?? '#3b82f6';
     return (
         <div style={{ position: 'relative' }}>
@@ -390,9 +404,7 @@ const AppTile: React.FC<AppTileProps> = ({ item, color, label, onOpen, isFavorit
                           })
                         : item.icon}
                 </div>
-                <div style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--slate-200)', textAlign: 'center', lineHeight: 1.2 }}>
-                    {label}
-                </div>
+                <BilingualLabel labelKey={labelKey} />
             </button>
         </div>
     );
