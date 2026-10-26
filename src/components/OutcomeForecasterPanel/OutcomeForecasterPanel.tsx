@@ -1,6 +1,7 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { TrendingUp, Target, BarChart3, Info, Zap } from 'lucide-react';
 import { OutcomeForecaster } from '../../kernel/services/debate-runtime/outcome-forecaster';
+import { agentService } from '../../kernel/instances/services-core';
 import { useTranslation } from '../../i18n/useTranslation';
 import ModuleInfo from '../ModuleInfo';
 import { Button } from '../Common';
@@ -10,17 +11,37 @@ export const OutcomeForecasterPanel: React.FC = () => {
     const forecaster = useMemo(() => new OutcomeForecaster(), []);
     const [scoresStr, setScoresStr] = useState('0.55, 0.62, 0.58');
     const [role, setRole] = useState('pro');
-    const [opponents, setOpponents] = useState('Empirical Overload, Moral High Ground');
+    // UX: pick opponents from real agents instead of hand-typing names.
+    const [opponents, setOpponents] = useState<string[]>([]);
+    const [availableAgents, setAvailableAgents] = useState<Array<{ id: string; name: string }>>([]);
     const [topic, setTopic] = useState('Should we invest heavily in solar energy?');
     const [result, setResult] = useState<ReturnType<OutcomeForecaster['forecast']> | null>(null);
     const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+        try {
+            const list = agentService.getAgents?.() ?? [];
+            setAvailableAgents(
+                list.map((a) => ({ id: String(a.id), name: String(a.name ?? a.id) })),
+            );
+        } catch {
+            /* registry may be empty */
+        }
+    }, []);
+
+    const addOpponent = (id: string) => {
+        const name = availableAgents.find((a) => a.id === id)?.name ?? id;
+        setOpponents((prev) => (prev.includes(name) ? prev : [...prev, name]));
+    };
+    const removeOpponent = (name: string) => {
+        setOpponents((prev) => prev.filter((x) => x !== name));
+    };
 
     const handleForecast = () => {
         setError(null);
         try {
             const previousScores = scoresStr.split(',').map(s => parseFloat(s.trim())).filter(n => !isNaN(n));
-            const opponentStrengths = opponents.split(',').map(s => s.trim()).filter(Boolean);
-            const r = forecaster.forecast(previousScores, role, opponentStrengths, topic, 'English');
+            const r = forecaster.forecast(previousScores, role, opponents, topic, 'English');
             setResult(r);
         } catch (e) {
             setResult(null);
@@ -58,8 +79,34 @@ export const OutcomeForecasterPanel: React.FC = () => {
                     </select>
                 </label>
                 <label style={{ display: 'flex', flexDirection: 'column', gap: 4, fontSize: 12, color: 'var(--slate-300)' }}>
-                    Opponent strengths (comma)
-                    <input value={opponents} onChange={e => setOpponents(e.target.value)} style={{ padding: '8px 10px', borderRadius: 8, background: 'var(--slate-900)', color: 'var(--slate-100)', border: '1px solid rgba(255,255,255,0.1)', fontSize: 13 }} />
+                    Opponents (выбери агентов)
+                    <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+                        <select
+                            value=""
+                            onChange={(e) => { if (e.target.value) addOpponent(e.target.value); }}
+                            style={{ padding: '6px 10px', borderRadius: 8, background: 'var(--slate-900)', color: 'var(--slate-100)', border: '1px solid rgba(255,255,255,0.1)', fontSize: 13, flex: 1 }}
+                        >
+                            <option value="">— выбрать агента —</option>
+                            {availableAgents
+                                .filter((a) => !opponents.includes(a.name))
+                                .map((a) => (
+                                    <option key={a.id} value={a.id}>{a.name}</option>
+                                ))}
+                        </select>
+                    </div>
+                    {opponents.length > 0 && (
+                        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginTop: 6 }}>
+                            {opponents.map((name) => (
+                                <span key={name} style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '2px 8px', borderRadius: 999, border: '1px solid #06b6d4', background: 'rgba(6,182,214,0.15)', fontSize: 12 }}>
+                                    {name}
+                                    <button onClick={() => removeOpponent(name)} title="Убрать" style={{ border: 'none', background: 'transparent', color: 'inherit', cursor: 'pointer', lineHeight: 1, padding: 0, fontSize: 14 }}>×</button>
+                                </span>
+                            ))}
+                        </div>
+                    )}
+                    {availableAgents.length === 0 && opponents.length === 0 && (
+                        <span style={{ fontSize: 11, color: 'var(--slate-500)' }}>Готовых агентов нет — можно добавить позже.</span>
+                    )}
                 </label>
             </div>
             <div style={{ display: 'flex', gap: 8 }}>
