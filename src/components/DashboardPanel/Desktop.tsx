@@ -350,31 +350,42 @@ const AppTile: React.FC<AppTileProps> = ({ item, color, label, onOpen, isFavorit
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '0.6rem',
-                    minHeight: 120,
-                    padding: '1rem 0.5rem',
-                    borderRadius: 16,
-                    border: 'none',
+                    gap: '0.55rem',
+                    padding: '0.9rem 0.5rem',
+                    borderRadius: 14,
+                    border: '1px solid rgba(255,255,255,0.05)',
+                    background: 'rgba(255,255,255,0.02)',
                     cursor: 'pointer',
                     width: '100%',
-                    background: `linear-gradient(145deg, ${c}, ${c}bb)`,
-                    boxShadow: `0 6px 18px ${c}44`,
                     transition: 'all 0.15s',
                 }}
                 onMouseEnter={(e) => {
+                    e.currentTarget.style.background = 'rgba(255,255,255,0.06)';
+                    e.currentTarget.style.borderColor = `${c}55`;
                     e.currentTarget.style.transform = 'scale(1.04)';
-                    e.currentTarget.style.boxShadow = `0 10px 24px ${c}66`;
                 }}
                 onMouseLeave={(e) => {
+                    e.currentTarget.style.background = 'rgba(255,255,255,0.02)';
+                    e.currentTarget.style.borderColor = 'rgba(255,255,255,0.05)';
                     e.currentTarget.style.transform = 'scale(1)';
-                    e.currentTarget.style.boxShadow = `0 6px 18px ${c}44`;
                 }}
             >
-                <div style={{ color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <div
+                    style={{
+                        width: 64,
+                        height: 64,
+                        borderRadius: 16,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: '#fff',
+                        background: `linear-gradient(135deg, ${c}, ${c}99)`,
+                        boxShadow: `0 6px 20px ${c}44`,
+                    }}
+                >
                     {item.icon}
                 </div>
-                <div style={{ fontSize: '0.82rem', fontWeight: 800, color: '#fff', textAlign: 'center', lineHeight: 1.2, textShadow: '0 1px 2px rgba(0,0,0,0.35)' }}>
+                <div style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--slate-200)', textAlign: 'center', lineHeight: 1.2 }}>
                     {label}
                 </div>
             </button>
