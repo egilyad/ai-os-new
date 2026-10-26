@@ -628,6 +628,9 @@ export const registerPhase3: Phase = (helpers, ctx) => {
             crossDebateMemory: c.get<import('../services/debate-runtime/cross-debate-memory').CrossDebateMemoryService>(
                 'crossDebateMemory',
             ),
+            bayesianJudge: c.get<import('../services/debate-runtime/bayesian-judge').BayesianJudge>(
+                'bayesianJudge',
+            ),
             memoryExtractor: c.get<DebateMemoryExtractor>('debateMemoryExtractor'),
             evaluator: (councilAwareEvaluator ?? c.get<DebateEvaluator>('debateEvaluator')) as unknown as DebateEvaluator,
             entanglementEngine: c.get<IEntanglementEngine>('entanglementEngine'),
