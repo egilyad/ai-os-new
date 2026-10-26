@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { ArrowLeft, Folder, Search, Star, X } from 'lucide-react';
 import { useTranslation } from '../../i18n/useTranslation';
+import { t as translate } from '../../i18n/translations';
 import { loadLocale } from '../../i18n/translations/index';
 import { NAV_SECTIONS } from '../../route-registry';
 import type { NavSection, RouteMeta } from '../../route-registry';
@@ -52,9 +53,8 @@ function saveFavorites(list: string[]) {
 }
 
 const BilingualLabel: React.FC<{ labelKey: string }> = ({ labelKey }) => {
-    const { t } = useTranslation();
-    const en = t(labelKey, 'en');
-    const ru = t(labelKey, 'ru');
+    const en = translate(labelKey, 'en');
+    const ru = translate(labelKey, 'ru');
     return (
         <span style={{ display: 'block', textAlign: 'center', lineHeight: 1.25 }}>
             <span style={{ display: 'block', fontWeight: 700, color: 'var(--slate-100)' }}>{en}</span>
