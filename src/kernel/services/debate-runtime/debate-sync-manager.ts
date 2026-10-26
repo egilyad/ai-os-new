@@ -18,8 +18,6 @@ import { DEFAULT_DEBATE_LANGUAGE } from '../config-registry';
 import {
     participantsToConfig,
     mergeAndProcessSession,
-    buildTopologyForStrategy,
-    strategyQualityForced,
     resolveStrategyConfig,
     applyModeToSession,
 } from './debate-session-bridge';

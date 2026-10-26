@@ -85,7 +85,8 @@ export class CloudflareAdapter extends BaseLLMAdapter {
         const content = choice?.message?.content ?? data.result?.response ?? '';
         // AD4: extract tool_calls and normalize finishReason instead of dropping them.
         const toolCalls = this.mapToolCalls(choice?.message?.tool_calls);
-        const finishReason = toolCalls.length
+        const hasTools = (toolCalls?.length ?? 0) > 0;
+        const finishReason = hasTools
             ? 'TOOL_CALLS'
             : this.normalizeFinishReason(choice?.finish_reason);
         return {

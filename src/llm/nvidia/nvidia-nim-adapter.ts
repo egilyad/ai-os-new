@@ -91,12 +91,13 @@ export class NvidiaNIMAdapter extends BaseLLMAdapter {
         const rawToolCalls = (choice?.message as { tool_calls?: Array<Record<string, unknown>> } | undefined)
             ?.tool_calls;
         const toolCalls = this.mapToolCalls(rawToolCalls);
+        const hasTools = (toolCalls?.length ?? 0) > 0;
 
         return {
             content,
             latency,
             tokens,
-            finishReason: toolCalls.length ? 'TOOL_CALLS' : finishReason,
+            finishReason: hasTools ? 'TOOL_CALLS' : finishReason,
             toolCalls,
         };
     }

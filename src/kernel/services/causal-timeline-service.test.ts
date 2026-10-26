@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { CausalTimelineService } from './causal-timeline-service';
 import type { ICausalScopeManager, CausalScope, CausalTraceEntry, EventRef } from '../contracts/causal-debugger';
-import type { Projection, ProjectionSnapshot } from '../contracts/projection';
+import type { Projection } from '../contracts/projection';
 
 function fakeScopeManager(): ICausalScopeManager {
     const causalId = 'scope-1';
@@ -11,7 +11,7 @@ function fakeScopeManager(): ICausalScopeManager {
         resolveScope: () => scope,
         getScope: () => scope,
         getAllScopes: () => [scope],
-    } as ICausalScopeManager;
+    } as unknown as ICausalScopeManager;
 }
 
 function fakeKeyState() {
@@ -19,7 +19,7 @@ function fakeKeyState() {
 }
 
 function fakeProjection(): Projection {
-    const state: ProjectionSnapshot = { data: {}, takenAt: 1 };
+    const state: { data: Record<string, unknown>; takenAt: number } = { data: {}, takenAt: 1 };
     return {
         getState: () => state,
         reduce: () => {},

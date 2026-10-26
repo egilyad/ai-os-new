@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { EventBridge } from './event-bridge';
 import { ProjectionRegistry } from './projection-registry';
 import type { KernelEvent } from '../../contracts/event-log';
@@ -26,7 +26,7 @@ describe('EventBridge', () => {
         const registry = new ProjectionRegistry();
         const seen: KernelEvent[] = [];
         registry.register({
-            reduce: (e) => {
+            reduce: (e: KernelEvent) => {
                 seen.push(e);
             },
             getState: () => ({}),
@@ -51,7 +51,7 @@ describe('EventBridge', () => {
         const registry = new ProjectionRegistry();
         const seen: KernelEvent[] = [];
         registry.register({
-            reduce: (e) => {
+            reduce: (e: KernelEvent) => {
                 seen.push(e);
             },
             getState: () => ({}),
