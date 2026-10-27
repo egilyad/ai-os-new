@@ -3,22 +3,22 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 1338,
-    "edges": 3484,
+    "nodes": 1343,
+    "edges": 3492,
     "byType": {
       "audit": 75,
-      "code": 565,
+      "code": 569,
       "test": 196,
       "panel": 263,
-      "article": 239
+      "article": 240
     },
     "byKind": {
       "audit_test": 336,
       "audit_mention": 929,
       "documents": 202,
-      "source": 789,
+      "source": 793,
       "test": 287,
-      "related": 941
+      "related": 945
     }
   },
   "nodes": [
@@ -1111,6 +1111,21 @@
       "id": "file:src/components/EvalDatasetPanel/",
       "type": "code",
       "label": "src/components/EvalDatasetPanel/"
+    },
+    {
+      "id": "file:src/components/ExceptionsPanel/exception-store.ts",
+      "type": "code",
+      "label": "src/components/ExceptionsPanel/exception-store.ts"
+    },
+    {
+      "id": "file:src/components/ExceptionsPanel/exception-veto.ts",
+      "type": "code",
+      "label": "src/components/ExceptionsPanel/exception-veto.ts"
+    },
+    {
+      "id": "file:src/components/ExceptionsPanel/ExceptionsPanel.tsx",
+      "type": "code",
+      "label": "src/components/ExceptionsPanel/ExceptionsPanel.tsx"
     },
     {
       "id": "file:src/components/ExportImportPanel/",
@@ -3726,6 +3741,11 @@
       "id": "file:src/kernel/services/virtual-key-service.ts",
       "type": "code",
       "label": "src/kernel/services/virtual-key-service.ts"
+    },
+    {
+      "id": "file:src/kernel/types/exception-template.ts",
+      "type": "code",
+      "label": "src/kernel/types/exception-template.ts"
     },
     {
       "id": "file:src/kernel/types/lens-types.ts",
@@ -7305,6 +7325,13 @@
       "label": "Панели: Метрики-анализаторы",
       "section": "panels",
       "status": "documented"
+    },
+    {
+      "id": "wiki:panel-exceptions",
+      "type": "article",
+      "label": "Панель: Исключения (вето)",
+      "section": "panels",
+      "status": "verified"
     },
     {
       "id": "wiki:panel-files-editors",
@@ -23251,6 +23278,46 @@
     {
       "from": "wiki:panel-eval",
       "to": "wiki:panel-quality-impact",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:panel-exceptions",
+      "to": "file:src/components/ExceptionsPanel/exception-store.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:panel-exceptions",
+      "to": "file:src/components/ExceptionsPanel/exception-veto.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:panel-exceptions",
+      "to": "file:src/components/ExceptionsPanel/ExceptionsPanel.tsx",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:panel-exceptions",
+      "to": "file:src/kernel/types/exception-template.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:panel-exceptions",
+      "to": "wiki:panel-assistant",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:panel-exceptions",
+      "to": "wiki:panel-chat",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:panel-exceptions",
+      "to": "wiki:panel-lenses-crystals",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:panel-exceptions",
+      "to": "wiki:panel-lenses",
       "kind": "related"
     },
     {

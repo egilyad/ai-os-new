@@ -7404,8 +7404,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Матрица покрытия",
-      "bytes": 8459,
-      "hash": "ff98e1857367135715426d38755198b79868ed15"
+      "bytes": 8463,
+      "hash": "5ee431022da0a1baf8a3bd819211757e40a9e6f7"
     },
     {
       "path": "docs/wiki/debates.md",
@@ -7437,7 +7437,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4075,
-      "hash": "788cbd0778a00ad26392200963d2f8f4d5fa72f3"
+      "hash": "fcba5eb956dcc6d3c3e017d15254e18ba33d997e"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -7525,7 +7525,7 @@
       "language": "ru",
       "title": "Граф знаний",
       "bytes": 4903,
-      "hash": "776c08a8b266e0db05d4162a6e42e530992ab2f2"
+      "hash": "0ef4db17e98fac73e60b65738a8f4970fc9faf31"
     },
     {
       "path": "docs/wiki/dev-history.md",
@@ -8428,8 +8428,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Wiki SuperAgents OS",
-      "bytes": 24631,
-      "hash": "917575fc49663f4801c0bb82e75201bb9da5a29d"
+      "bytes": 24719,
+      "hash": "7df30a8e9782f9b4f3f976f3757fad3bb79d2154"
     },
     {
       "path": "docs/wiki/roadmap-notes.md",
@@ -8453,7 +8453,7 @@
       "language": "ru",
       "title": "Возможности и сценарии",
       "bytes": 10062,
-      "hash": "7b139fb3e037b73e1e758e734d457a74dc407a10"
+      "hash": "72d438885835e246fe8a635da5ca7e25f0ea2227"
     },
     {
       "path": "docs/wiki/what-is.md",

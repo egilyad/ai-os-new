@@ -10,7 +10,7 @@
     {
       "id": "panels",
       "title": "Панели",
-      "articles": 77
+      "articles": 78
     },
     {
       "id": "agents",
@@ -1595,6 +1595,35 @@
       "tests": [
         "src/components/ChatSessionsManagerPanel.test.tsx"
       ]
+    },
+    {
+      "id": "wiki:panel-exceptions",
+      "type": "article",
+      "slug": "panel-exceptions",
+      "title": "Панель: Исключения (вето)",
+      "section": "panels",
+      "status": "verified",
+      "tags": [
+        "панель",
+        "исключения",
+        "вето",
+        "запреты",
+        "инструкция"
+      ],
+      "sources": [
+        "src/components/ExceptionsPanel/ExceptionsPanel.tsx",
+        "src/components/ExceptionsPanel/exception-store.ts",
+        "src/components/ExceptionsPanel/exception-veto.ts",
+        "src/kernel/types/exception-template.ts"
+      ],
+      "related": [
+        "panel-lenses",
+        "panel-lenses-crystals",
+        "panel-assistant",
+        "panel-chat"
+      ],
+      "reviewed": null,
+      "tests": []
     },
     {
       "id": "wiki:panel-lenses",

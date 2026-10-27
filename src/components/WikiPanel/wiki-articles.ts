@@ -2288,6 +2288,50 @@ crews, councils, graphs, persona, ops, interop, meta, trust, frontier, rivals.
 Компоненты: \`SessionBindingsPanel\`, \`SessionHubPanel\`, \`ChatSessionsManagerPanel\`. Чат — [[panel-chat]], комната — [[panel-room]].`,
     },
     {
+        slug: 'panel-exceptions',
+        title: 'Панель: Исключения (вето)',
+        section: 'panels',
+        tags: ['панель', 'исключения', 'вето', 'запреты', 'инструкция'],
+        freshness: 'verified',
+        sources: [
+            'src/components/ExceptionsPanel/ExceptionsPanel.tsx',
+            'src/components/ExceptionsPanel/exception-store.ts',
+            'src/components/ExceptionsPanel/exception-veto.ts',
+            'src/kernel/types/exception-template.ts',
+        ],
+        related: ['panel-lenses', 'panel-lenses-crystals', 'panel-assistant', 'panel-chat'],
+        body: `## Назначение
+
+Исключения (вето) — это обратная сторона линз: если линзы *добавляют* перспективы анализа, то исключения *запрещают* определённые ответы. Пользователь создаёт шаблон с текстом, и агент воспринимает этот текст как ответ, который давать нельзя. Панель \`/exceptions\` — управление такими шаблонами.
+
+## Как это работает
+
+Каждый шаблон (тип \`ExceptionTemplate\`) содержит:
+
+- \`name\` — название;
+- \`text\` — запрещённый текст ответа (то, что агент не должен говорить);
+- \`scope\` — где применяется: \`all\` (везде), \`global\` (глобально), \`assistant\` (ассистент), \`chat\` (чат);
+- \`matchMode\` — способ сопоставления: \`contains\` (содержит), \`exact\` (точно), \`regex\` (регулярное выражение);
+- \`enabled\` — включён/выключен.
+
+Активные шаблоны со scope \`all\`/\`global\` автоматически подмешиваются к сообщению в ассистенте и чате блоком:
+
+### Запрещённые ответы (исключения)
+НЕ отвечай так и НЕ формулируй ответ в этом духе:
+- <текст шаблона>
+
+## Как пользоваться
+
+1. Открой \`/exceptions\`.
+2. В блоке «Новый шаблон» заполни название и запрещённый текст, выбери область и способ сопоставления, нажми «Добавить».
+3. В списке шаблонов можно включать/выключать каждый и удалять.
+4. Создай шаблон, например: «Не использовать слово "ок"» — и ассистент/чат перестанут так отвечать.
+
+## Где менять
+
+Компонент: \`ExceptionsPanel\`. Хранилище: \`exception-store.ts\` (localStorage). Билдер вето: \`exception-veto.ts\`. Типы: \`exception-template.ts\`. Линзы — [[panel-lenses]] — это аддитивный механизм, исключения — ограничивающий.`,
+    },
+    {
         slug: 'panel-lenses',
         title: 'Панель: Линзы',
         section: 'panels',
