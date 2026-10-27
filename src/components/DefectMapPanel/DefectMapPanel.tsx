@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { Plus, Trash2, Thermometer } from 'lucide-react';
-import { DEFECT_CLASSES, type DefectClass, type DefectSeverity } from '../../kernel/types/defect-map-types';
+import { DEFECT_CLASSES, type DefectClass, type DefectFinding, type DefectSeverity } from '../../kernel/types/defect-map-types';
 import { loadFindings, saveFindings } from './defect-store';
 
 const SEVERITY_SCORE: Record<DefectSeverity, number> = {
@@ -22,7 +22,7 @@ const COMMON_MODULES = ['kernel', 'stores', 'components', 'llm', 'server', 'scri
 const DefectMapPanel: React.FC = () => {
     const [findings, setFindings] = useState<DefectFinding[]>(() => loadFindings());
     const [defectClass, setDefectClass] = useState<DefectClass>(DEFECT_CLASSES[0]);
-    const [module, setModule] = useState(COMMON_MODULES[0]);
+    const [defectModule, setDefectModule] = useState(COMMON_MODULES[0]);
     const [severity, setSeverity] = useState<DefectSeverity>('medium');
     const [description, setDescription] = useState('');
     const [showResolved, setShowResolved] = useState(false);
@@ -39,7 +39,7 @@ const DefectMapPanel: React.FC = () => {
             {
                 id: `defect-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
                 defectClass,
-                module: module.trim() || 'other',
+                module: defectModule.trim() || 'other',
                 severity,
                 description: d.slice(0, 500),
                 createdAt: Date.now(),
@@ -115,7 +115,7 @@ const DefectMapPanel: React.FC = () => {
                         <option key={c} value={c}>{c}</option>
                     ))}
                 </select>
-                <select value={module} onChange={(e) => setModule(e.target.value)} style={ctl} aria-label="Модуль">
+                <select value={defectModule} onChange={(e) => setDefectModule(e.target.value)} style={ctl} aria-label="Модуль">
                     {modules.map((m) => (
                         <option key={m} value={m}>{m}</option>
                     ))}
