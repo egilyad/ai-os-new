@@ -102,7 +102,7 @@ const MemoryGraph: React.FC<Props> = ({ sources, onOpen, height = 520 }) => {
                 shape: 'dot',
                 size: s.status === 'verified' ? 14 : 10,
                 title: `${s.name}\nвладелец: ${s.owner}\nтаблица: ${s.table ?? '—'}\nстатус: ${s.status}\nжми, чтобы открыть`,
-                deepTarget: s.openRoute ? `#/${s.openRoute}` : undefined,
+                deepTarget: s.openRoute ? `/${s.openRoute}` : undefined,
             });
             const catIdx = catIndex.get(s.category);
             if (catIdx !== undefined) edges.push({ from: s.id, to: `cat:${s.category}`, color: { color, opacity: 0.5 } });
