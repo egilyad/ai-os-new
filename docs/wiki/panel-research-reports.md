@@ -4,7 +4,7 @@
 
 > Раздел: **Панели** · Статус: verified · Теги: панель, исследование, отчёты, research, инструкция
 
-Источники: `src/components/ResearchReportPanel.tsx`, `src/kernel/services/research/`
+Источники: `src/components/ResearchReportPanel.tsx`, `src/kernel/services/research-report-service.ts`
 
 ## Назначение
 

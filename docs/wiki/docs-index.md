@@ -20,7 +20,7 @@
 - Панель **Wiki** в приложении и сайт `/wiki/` — тот же корпус статей
 - [`docs/manifest.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/manifest.json) — машиночитаемый индекс сущностей (статьи, панели)
 - [`docs/entity-model.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/entity-model.json) — стандарт документации
-- [`docs/inventory.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/inventory.json) — инвентарь всех `docs/**` (1117 документов)
+- [`docs/inventory.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/inventory.json) — инвентарь всех `docs/**` (1118 документов)
 
 ## Вики по разделам
 
@@ -30,7 +30,7 @@
 
 **Агенты** — 1: [Агенты: устройство и управление](./agents.md)
 
-**Дебаты** — 1: [Дебаты: режимы и механика](./debates.md)
+**Дебаты** — 3: [Дебаты: стратегии — обзор](./debate-strategies.md) · [Дебаты: шпаргалка стратегий (33)](./debate-strategies-cheatsheet.md) · [Дебаты: режимы и механика](./debates.md)
 
 **Знания и память** — 3: [Знания и память](./memory.md) · [След исполнения: журнал, раны, зомби](./execution-trail.md) · [Память: что есть и чего нет (аудит)](./memory-audit.md)
 
@@ -50,7 +50,7 @@
 
 **Разработчикам** — 52: [Аудит: запуск и выживание UI](./audit-type-bootstrap.md) · [Аудит: сборка и целостность репозитория](./audit-type-build.md) · [Аудит: ключи и секреты](./audit-type-keys.md) · [Аудит: системный по доменам](./audit-type-domain.md) · [Аудит: данные, состояние и стриминг](./audit-type-data-streaming.md) · [Аудит: безопасность и hardening](./audit-type-security.md) · [Аудит: методология и процесс](./audit-methodology.md) · [Аудит: класс дефектов — утечки памяти/ресурсов](./audit-defect-memory-leaks.md) · [Аудит: класс дефектов — безопасность/auth/песочница/CSP](./audit-defect-security.md) · [Аудит: класс дефектов — целостность данных и репозитории](./audit-defect-data-integrity.md) · [Аудит: класс дефектов — гонки/жизненный цикл/async cleanup](./audit-defect-race-lifecycle.md) · [Аудит: класс дефектов — типы/контракты/дрейф событий](./audit-defect-types-contracts.md) · [Аудит: класс дефектов — производительность/индексы/кэш](./audit-defect-performance.md) · [Аудит: класс дефектов — UX/корректность](./audit-defect-ux-correctness.md) · [Аудит: класс дефектов — сборка/деплой/конфиг](./audit-defect-build-deploy-config.md) · [Аудит: класс дефектов — наблюдаемость/мониторинг](./audit-defect-observability.md) · [Аудит: класс дефектов — общие логические ошибки](./audit-defect-logic.md) · [Аудит: класс дефектов — состояние и «вторые правды»](./audit-defect-state-consistency.md) · [Аудит: класс дефектов — нарушения контрактов](./audit-defect-contract-violations.md) · [Аудиты: сводный индекс](./audit-index.md) · [Аудиты: полный обзор](./audit-overview.md) · [Разработчикам: структура и ворота](./for-developers.md) · [Разработчикам: обзор и слои](./dev-overview.md) · [Разработчикам: карта каталогов](./dev-layout.md) · [Разработчикам: boot, DI и контейнер](./dev-boot.md) · [Разработчикам: шина событий](./dev-events.md) · [Разработчикам: сервисы и lazyService](./dev-services.md) · [Разработчикам: компоненты и панели](./dev-components.md) · [Разработчикам: маршруты и добавление панели](./dev-routing.md) · [Разработчикам: состояние (stores) и хуки](./dev-stores.md) · [Разработчикам: локализация (i18n)](./dev-i18n.md) · [Разработчикам: тесты](./dev-testing.md) · [Разработчикам: ворота качества и CI](./dev-ci.md) · [Разработчикам: генераторы и сгенерированные файлы](./dev-generators.md) · [Разработчикам: конвенции кода](./dev-conventions.md) · [Разработчикам: глоссарий](./dev-glossary.md) · [Рецепты: типовые задачи](./dev-cookbook.md) · [Реестр архитектурных решений (ADR)](./dev-adr.md) · [Каталог компонентов OS](./dev-component-catalog.md) · [Инвентаризация документации](./docs-inventory.md) · [Стандарт документации](./docs-standard.md) · [Граф знаний](./dev-graph.md) · [Проверки и показатели](./dev-checks.md) · [Внешние библиотеки](./dev-libraries.md) · [Матрица покрытия](./coverage-matrix.md) · [Каталог событий шины](./dev-event-catalog.md) · [Карта зависимостей ядра (DI)](./dev-service-map.md) · [Контракты ядра](./dev-contracts.md) · [Каталог сторов](./dev-store-catalog.md) · [Каталог локализации](./dev-i18n-catalog.md) · [Скрипты и CLI](./dev-scripts.md) · [Каталог тестов](./dev-tests-catalog.md)
 
-Всего статей вики: **272** в 13 разделах.
+Всего статей вики: **274** в 13 разделах.
 
 ## Документация верхнего уровня
 

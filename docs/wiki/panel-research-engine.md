@@ -4,7 +4,7 @@
 
 > Раздел: **Панели** · Статус: verified · Теги: панель, исследование, research, движок, инструкция
 
-Источники: `src/components/ResearchPanel/ResearchEnginePanel.tsx`, `src/kernel/services/research/`
+Источники: `src/components/ResearchPanel/ResearchEnginePanel.tsx`, `src/kernel/services/research-engine-service.ts`
 
 ## Назначение
 

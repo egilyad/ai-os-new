@@ -4,7 +4,7 @@
 
 > Раздел: **Панели** · Статус: verified · Теги: панель, гипотезы, исследование, проверка, инструкция
 
-Источники: `src/components/DebateResearch/HypothesisGenerator.tsx`, `src/kernel/services/hypothesis/`
+Источники: `src/components/DebateResearch/HypothesisGenerator.tsx`, `src/kernel/services/hypothesis-service.ts`
 
 ## Назначение
 

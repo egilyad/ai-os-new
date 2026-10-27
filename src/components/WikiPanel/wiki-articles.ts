@@ -2987,7 +2987,7 @@ Junctions работают поверх **кристаллов** ([[panel-crysta
         section: 'panels',
         tags: ['панель', 'исследование', 'research', 'движок', 'инструкция'],
         freshness: 'verified',
-        sources: ['src/components/ResearchPanel/ResearchEnginePanel.tsx', 'src/kernel/services/research/'],
+        sources: ['src/components/ResearchPanel/ResearchEnginePanel.tsx', 'src/kernel/services/research-engine-service.ts'],
         related: ['panel-research-advanced', 'panel-research-reports', 'panel-hypothesis-generator'],
         body: `## Назначение
 
@@ -3011,7 +3011,7 @@ Junctions работают поверх **кристаллов** ([[panel-crysta
         section: 'panels',
         tags: ['панель', 'исследование', 'research', 'advanced', 'инструкция'],
         freshness: 'verified',
-        sources: ['src/components/ResearchPanel/ResearchEngineAdvancedPanel.tsx', 'src/kernel/services/research/'],
+        sources: ['src/components/ResearchPanel/ResearchEngineAdvancedPanel.tsx', 'src/kernel/services/research-engine-service.ts'],
         related: ['panel-research-engine', 'panel-research-reports'],
         body: `## Назначение
 
@@ -3031,7 +3031,7 @@ Junctions работают поверх **кристаллов** ([[panel-crysta
         section: 'panels',
         tags: ['панель', 'исследование', 'отчёты', 'research', 'инструкция'],
         freshness: 'verified',
-        sources: ['src/components/ResearchReportPanel.tsx', 'src/kernel/services/research/'],
+        sources: ['src/components/ResearchReportPanel.tsx', 'src/kernel/services/research-report-service.ts'],
         related: ['panel-research-engine', 'panel-research-advanced'],
         body: `## Назначение
 
@@ -3073,7 +3073,7 @@ Junctions работают поверх **кристаллов** ([[panel-crysta
         section: 'panels',
         tags: ['панель', 'гипотезы', 'исследование', 'проверка', 'инструкция'],
         freshness: 'verified',
-        sources: ['src/components/DebateResearch/HypothesisGenerator.tsx', 'src/kernel/services/hypothesis/'],
+        sources: ['src/components/DebateResearch/HypothesisGenerator.tsx', 'src/kernel/services/hypothesis-service.ts'],
         related: ['panel-research-engine', 'panel-debate-research', 'panel-synthesis'],
         body: `## Назначение
 

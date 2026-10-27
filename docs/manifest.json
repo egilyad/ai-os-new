@@ -2273,7 +2273,7 @@
       ],
       "sources": [
         "src/components/ResearchPanel/ResearchEnginePanel.tsx",
-        "src/kernel/services/research/"
+        "src/kernel/services/research-engine-service.ts"
       ],
       "related": [
         "panel-research-advanced",
@@ -2301,7 +2301,7 @@
       ],
       "sources": [
         "src/components/ResearchPanel/ResearchEngineAdvancedPanel.tsx",
-        "src/kernel/services/research/"
+        "src/kernel/services/research-engine-service.ts"
       ],
       "related": [
         "panel-research-engine",
@@ -2326,7 +2326,7 @@
       ],
       "sources": [
         "src/components/ResearchReportPanel.tsx",
-        "src/kernel/services/research/"
+        "src/kernel/services/research-report-service.ts"
       ],
       "related": [
         "panel-research-engine",
@@ -2377,7 +2377,7 @@
       ],
       "sources": [
         "src/components/DebateResearch/HypothesisGenerator.tsx",
-        "src/kernel/services/hypothesis/"
+        "src/kernel/services/hypothesis-service.ts"
       ],
       "related": [
         "panel-research-engine",

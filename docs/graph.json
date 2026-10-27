@@ -3,11 +3,11 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 1407,
+    "nodes": 1408,
     "edges": 3687,
     "byType": {
       "audit": 75,
-      "code": 597,
+      "code": 598,
       "test": 198,
       "panel": 263,
       "article": 274
@@ -2948,9 +2948,9 @@
       "label": "src/kernel/services/health-sla-service.ts"
     },
     {
-      "id": "file:src/kernel/services/hypothesis/",
+      "id": "file:src/kernel/services/hypothesis-service.ts",
       "type": "code",
-      "label": "src/kernel/services/hypothesis/"
+      "label": "src/kernel/services/hypothesis-service.ts"
     },
     {
       "id": "file:src/kernel/services/interop/a2a-service.ts",
@@ -3513,9 +3513,14 @@
       "label": "src/kernel/services/reconnection-service.ts"
     },
     {
-      "id": "file:src/kernel/services/research/",
+      "id": "file:src/kernel/services/research-engine-service.ts",
       "type": "code",
-      "label": "src/kernel/services/research/"
+      "label": "src/kernel/services/research-engine-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/research-report-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/research-report-service.ts"
     },
     {
       "id": "file:src/kernel/services/rivals/guardrail-service.test.ts",
@@ -24855,7 +24860,7 @@
     },
     {
       "from": "wiki:panel-hypothesis-generator",
-      "to": "file:src/kernel/services/hypothesis/",
+      "to": "file:src/kernel/services/hypothesis-service.ts",
       "kind": "source"
     },
     {
@@ -25665,7 +25670,7 @@
     },
     {
       "from": "wiki:panel-research-advanced",
-      "to": "file:src/kernel/services/research/",
+      "to": "file:src/kernel/services/research-engine-service.ts",
       "kind": "source"
     },
     {
@@ -25690,7 +25695,7 @@
     },
     {
       "from": "wiki:panel-research-engine",
-      "to": "file:src/kernel/services/research/",
+      "to": "file:src/kernel/services/research-engine-service.ts",
       "kind": "source"
     },
     {
@@ -25750,7 +25755,7 @@
     },
     {
       "from": "wiki:panel-research-reports",
-      "to": "file:src/kernel/services/research/",
+      "to": "file:src/kernel/services/research-report-service.ts",
       "kind": "source"
     },
     {

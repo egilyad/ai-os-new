@@ -3,7 +3,7 @@
   "generatedBy": "scripts/gen-docs-inventory.mjs",
   "scope": "git-tracked markdown: docs/**/*.md (excluding docs/new drafts and the self-report pages docs-health, docs-inventory) plus repository entry docs (root *.md, .superagents/**, src/kernel/DEPENDENCY_MAP.md)",
   "totals": {
-    "documents": 1118,
+    "documents": 1120,
     "byCategory": {
       "repo": 13,
       "top": 47,
@@ -13,11 +13,11 @@
       "reference": 6,
       "roadmap": 17,
       "superseded": 3,
-      "wiki": 271
+      "wiki": 273
     },
     "byLanguage": {
       "en": 659,
-      "ru": 288,
+      "ru": 290,
       "mixed": 171
     }
   },
@@ -7581,8 +7581,24 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Матрица покрытия",
-      "bytes": 8463,
-      "hash": "7789f38d4f68c327e7a8413d58d34fee07dc4ff8"
+      "bytes": 8464,
+      "hash": "ce300b5fc4bfe0e18979da1c5795da84f4b8ba5d"
+    },
+    {
+      "path": "docs/wiki/debate-strategies-cheatsheet.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Дебаты: шпаргалка стратегий (33)",
+      "bytes": 6795,
+      "hash": "5f97791db601cac92e4f26654668c8aa14a117b3"
+    },
+    {
+      "path": "docs/wiki/debate-strategies.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Дебаты: стратегии — обзор",
+      "bytes": 2555,
+      "hash": "9342174a71f66dafec32e0bdcbcd0b3bea3a9a19"
     },
     {
       "path": "docs/wiki/debates.md",
@@ -7614,7 +7630,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4075,
-      "hash": "df2257f34f413592872707d96df77516c8b7f2a5"
+      "hash": "d9116cc7f1590f6c57863ff07ea881111546d41e"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -7702,7 +7718,7 @@
       "language": "ru",
       "title": "Граф знаний",
       "bytes": 4905,
-      "hash": "2f225939fb13aded1dabf35bce097edaf6579f0c"
+      "hash": "b4584c566642fc25d8c719812047ab5bfa443272"
     },
     {
       "path": "docs/wiki/dev-history.md",
@@ -7917,8 +7933,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Карта документации",
-      "bytes": 36517,
-      "hash": "07d2b02a310e5f138fc87010deb92a80abe2b569"
+      "bytes": 36691,
+      "hash": "d680303c6cde70e6782f0c3f62f049780d168ead"
     },
     {
       "path": "docs/wiki/docs-standard.md",
@@ -8309,8 +8325,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Панель: Генератор гипотез",
-      "bytes": 1656,
-      "hash": "092225321aabcde1b07955d122a40e83dfa74d90"
+      "bytes": 1666,
+      "hash": "6092b2eb53a9c01de3cec05a69b70c7d36b2a8b2"
     },
     {
       "path": "docs/wiki/panel-infra-meta.md",
@@ -8493,16 +8509,16 @@
       "category": "wiki",
       "language": "ru",
       "title": "Панель: Исследования — расширенные",
-      "bytes": 1624,
-      "hash": "1f63548b609bc18623b30fba6c6b0bc25fa7b14b"
+      "bytes": 1641,
+      "hash": "93787c39d9ca1c4ebda4f166cb8cb7373bac9f36"
     },
     {
       "path": "docs/wiki/panel-research-engine.md",
       "category": "wiki",
       "language": "ru",
       "title": "Панель: Исследовательский движок",
-      "bytes": 1948,
-      "hash": "438691e2c97af83ab18466af1b33ababa6e84f06"
+      "bytes": 1965,
+      "hash": "022c92d39347dc3dc93864498858a51f72900f7f"
     },
     {
       "path": "docs/wiki/panel-research-extra.md",
@@ -8517,8 +8533,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Панель: Отчёты исследований",
-      "bytes": 1478,
-      "hash": "c37e2c9b8d7ea2dbd82c966a7b6c3af539530277"
+      "bytes": 1495,
+      "hash": "d666ff775f671a6de46482bed35de4b83f3c7415"
     },
     {
       "path": "docs/wiki/panel-research.md",
