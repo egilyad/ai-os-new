@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import PanelLoader from './PanelLoader';
+import { encryptExportPayload, decryptExportPayload } from './ExportImportPanel/export-crypto';
 
 interface ExportSection {
     id: string;
@@ -35,6 +36,10 @@ const ExportImportPanel: React.FC = () => {
     const [importFile, setImportFile] = useState<File | null>(null);
     const [importJson, setImportJson] = useState<Record<string, unknown> | null>(null);
     const [result, setResult] = useState<{ ok: boolean; msg: string } | null>(null);
+    const [encryptEnabled, setEncryptEnabled] = useState(false);
+    const [exportPassword, setExportPassword] = useState('');
+    const [importPassword, setImportPassword] = useState('');
+    const [pendingEncrypted, setPendingEncrypted] = useState<string | null>(null);
 
     const sections: ExportSection[] = useMemo(
         () => [
@@ -220,17 +225,33 @@ const ExportImportPanel: React.FC = () => {
                     }
                 }
             }
-            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            let content = JSON.stringify(data, null, 2);
+            let fileName = `superagents-export-${Date.now()}.json`;
+            let encryptedNote = '';
+            if (encryptEnabled) {
+                if (!exportPassword || exportPassword.length < 4) {
+                    setResult({
+                        ok: false,
+                        msg: 'Введи пароль (минимум 4 символа) для шифрованного экспорта.',
+                    });
+                    setExporting(false);
+                    return;
+                }
+                content = await encryptExportPayload(content, exportPassword);
+                fileName = `superagents-export-${Date.now()}.enc.json`;
+                encryptedNote = ' · зашифровано (AES-GCM)';
+            }
+            const blob = new Blob([content], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `superagents-export-${Date.now()}.json`;
+            a.download = fileName;
             a.click();
             URL.revokeObjectURL(url);
             const succeeded = selected.size - failed.length;
             const msg =
                 failed.length === 0
-                    ? `Export complete! ${succeeded} sections exported.`
+                    ? `Export complete! ${succeeded} sections exported.${encryptedNote}`
                     : `Export complete (${succeeded}/${selected.size}): ${failed.join(', ')} failed. Check logs.`;
             setResult({ ok: failed.length === 0, msg });
         } catch (e) {
@@ -241,7 +262,7 @@ const ExportImportPanel: React.FC = () => {
         } finally {
             setExporting(false);
         }
-    }, [selected, sections]);
+    }, [selected, sections, encryptEnabled, exportPassword]);
 
     const handleFileSelect = useCallback((file: File | null) => {
         setImportFile(file);
@@ -253,10 +274,17 @@ const ExportImportPanel: React.FC = () => {
         const reader = new FileReader();
         reader.onload = () => {
             try {
-                const parsed = JSON.parse(reader.result as string);
+                const raw = reader.result as string;
+                const parsed = JSON.parse(raw);
                 if (typeof parsed !== 'object' || parsed === null || Array.isArray(parsed)) {
                     throw new Error('Expected a JSON object');
                 }
+                if ((parsed as Record<string, unknown>).encrypted === true) {
+                    setPendingEncrypted(raw);
+                    setImportJson(null);
+                    return;
+                }
+                setPendingEncrypted(null);
                 setImportJson(parsed as Record<string, unknown>);
             } catch (e) {
                 setResult({
@@ -270,13 +298,29 @@ const ExportImportPanel: React.FC = () => {
     }, []);
 
     const handleImport = useCallback(async () => {
-        if (!importJson) return;
+        let source = importJson;
+        if (pendingEncrypted) {
+            if (!importPassword) {
+                setResult({ ok: false, msg: 'Файл зашифрован — введи пароль для расшифровки.' });
+                return;
+            }
+            try {
+                source = await decryptExportPayload(pendingEncrypted, importPassword);
+            } catch (e) {
+                setResult({
+                    ok: false,
+                    msg: `Не удалось расшифровать: ${e instanceof Error ? e.message : 'Ошибка'}`,
+                });
+                return;
+            }
+        }
+        if (!source) return;
         setResult(null);
         const imported: string[] = [];
         const unsupported: string[] = [];
         const failed: string[] = [];
         for (const section of sections) {
-            const sectionData = importJson[section.id] as Record<string, unknown> | undefined;
+            const sectionData = source[section.id] as Record<string, unknown> | undefined;
             if (!sectionData) continue;
             if (section.importSupported === false) {
                 unsupported.push(section.label);
@@ -305,7 +349,8 @@ const ExportImportPanel: React.FC = () => {
         });
         setImportFile(null);
         setImportJson(null);
-    }, [importJson, sections]);
+        setPendingEncrypted(null);
+    }, [importJson, pendingEncrypted, importPassword, sections]);
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
@@ -383,6 +428,42 @@ const ExportImportPanel: React.FC = () => {
                                 <span style={{ color: 'var(--text-primary)' }}>{s.label}</span>
                             </label>
                         ))}
+                    </div>
+                    <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', flexWrap: 'wrap' }}>
+                        <label
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '0.4rem',
+                                fontSize: '0.75rem',
+                                color: 'var(--text-primary)',
+                            }}
+                        >
+                            <input
+                                type="checkbox"
+                                checked={encryptEnabled}
+                                onChange={(e) => setEncryptEnabled(e.target.checked)}
+                                style={{ accentColor: '#3b82f6' }}
+                            />
+                            Зашифровать паролем (AES-GCM)
+                        </label>
+                        {encryptEnabled && (
+                            <input
+                                type="password"
+                                value={exportPassword}
+                                onChange={(e) => setExportPassword(e.target.value)}
+                                placeholder="Пароль для экспорта (мин. 4 символа)"
+                                style={{
+                                    padding: '0.35rem 0.6rem',
+                                    borderRadius: '6px',
+                                    border: '1px solid rgba(59,130,246,0.25)',
+                                    background: 'rgba(0,0,0,0.2)',
+                                    color: 'var(--text-primary)',
+                                    fontSize: '0.75rem',
+                                    width: 240,
+                                }}
+                            />
+                        )}
                     </div>
                     <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
                         <button
@@ -492,7 +573,29 @@ const ExportImportPanel: React.FC = () => {
                                 .join(', ') || 'none'}
                         </div>
                     )}
-                    {importFile && importJson && (
+                    {pendingEncrypted && (
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', alignItems: 'center' }}>
+                            <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>
+                                Файл зашифрован — введи пароль от экспорта
+                            </div>
+                            <input
+                                type="password"
+                                value={importPassword}
+                                onChange={(e) => setImportPassword(e.target.value)}
+                                placeholder="Пароль от экспорта"
+                                style={{
+                                    padding: '0.35rem 0.6rem',
+                                    borderRadius: '6px',
+                                    border: '1px solid rgba(59,130,246,0.25)',
+                                    background: 'rgba(0,0,0,0.2)',
+                                    color: 'var(--text-primary)',
+                                    fontSize: '0.75rem',
+                                    width: 260,
+                                }}
+                            />
+                        </div>
+                    )}
+                    {importFile && (importJson || pendingEncrypted) && (
                         <button
                             onClick={handleImport}
                             style={{
