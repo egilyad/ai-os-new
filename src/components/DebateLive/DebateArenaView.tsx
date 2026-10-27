@@ -21,7 +21,7 @@ interface DebateArenaViewProps {
  */
 export const DebateArenaView: React.FC<DebateArenaViewProps> = ({
     sessionId,
-    layout = 'circle',
+    layout = 'parliament',
     minHeight = 480,
 }) => {
     const { t } = useTranslation();
