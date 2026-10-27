@@ -1,7 +1,8 @@
 import { motion } from 'framer-motion';
-import { Network, Brain } from 'lucide-react';
+import { Network } from 'lucide-react';
+import VisGraph, { type VisGraphNode, type VisGraphEdge } from '../Common/VisGraph';
 import type { GraphNodeData, EdgeData } from './graph-utils';
-import { getNodeColor, GLOW_COLORS, LEGEND_ITEMS } from './graph-utils';
+import { getNodeColor, LEGEND_ITEMS } from './graph-utils';
 
 interface KnowledgeGraphProps {
     nodes: GraphNodeData[];
@@ -27,7 +28,6 @@ const KnowledgeGraph: React.FC<KnowledgeGraphProps> = ({
     totalMemories,
     density,
     onNodeClick,
-    onNodeKeyDown,
     t,
     searchQuery,
     typeFilter,
@@ -91,120 +91,35 @@ const KnowledgeGraph: React.FC<KnowledgeGraphProps> = ({
         );
     }
 
+    const visNodes: VisGraphNode[] = nodes.map((node) => ({
+        id: node.id,
+        label: node.label,
+        type: node.type,
+        color: getNodeColor(node.type),
+        size: Math.max(10, Math.min(28, Math.round(node.importance * 26))),
+        title: `${node.type} · важность ${node.importance.toFixed(2)}\n${node.fullContent.slice(0, 120)}`,
+    }));
+
+    const visEdges: VisGraphEdge[] = edges.map((edge) => ({
+        id: edge.id,
+        from: edge.source.id,
+        to: edge.target.id,
+        width: Math.max(0.5, edge.strength * 2.5),
+    }));
+
     return (
         <>
-            <svg width="100%" height="100%" style={{ position: 'absolute', inset: 0 }}>
-                <defs>
-                    {GLOW_COLORS.map((c) => (
-                        <radialGradient key={c} id={`glow-${c.replace('#', '')}`}>
-                            <stop offset="0%" stopColor={c} stopOpacity="0.5" />
-                            <stop offset="100%" stopColor={c} stopOpacity="0" />
-                        </radialGradient>
-                    ))}
-                </defs>
-
-                {edges.map((edge, i) => (
-                    <motion.line
-                        key={edge.id}
-                        x1={edge.source.x}
-                        y1={edge.source.y}
-                        x2={edge.target.x}
-                        y2={edge.target.y}
-                        stroke={
-                            selectedNodeId
-                                ? selectedNodeId === edge.source.id ||
-                                  selectedNodeId === edge.target.id
-                                    ? 'rgba(255,255,255,0.4)'
-                                    : 'rgba(255,255,255,0.02)'
-                                : 'rgba(168,85,247,0.15)'
-                        }
-                        strokeWidth={edge.strength * 2}
-                        initial={{ pathLength: 0, opacity: 0 }}
-                        animate={{ pathLength: 1, opacity: 1 }}
-                        transition={{ duration: 1, delay: i * 0.02 }}
-                    />
-                ))}
-            </svg>
-
-            {nodes.map((node, i) => {
-                const isSelected = selectedNodeId === node.id;
-                const isDimmed = selectedNodeId && !isSelected;
-                const color = getNodeColor(node.type);
-
-                return (
-                    <motion.div
-                        key={node.id}
-                        role="button"
-                        tabIndex={0}
-                        aria-label={`Node ${node.type}: ${node.label}`}
-                        aria-selected={isSelected}
-                        initial={{ scale: 0, opacity: 0 }}
-                        animate={{
-                            scale: isSelected ? 1.2 : 1,
-                            opacity: isDimmed ? 0.3 : 1,
-                        }}
-                        transition={{ type: 'spring', damping: 20, delay: i * 0.05 }}
-                        onClick={() => onNodeClick(node)}
-                        onKeyDown={(e) => onNodeKeyDown(e, node)}
-                        style={{
-                            position: 'absolute',
-                            left: node.x - 30,
-                            top: node.y - 30,
-                            width: 60,
-                            height: 60,
-                            borderRadius: '50%',
-                            background: 'rgba(15, 23, 42, 0.9)',
-                            backdropFilter: 'blur(10px)',
-                            border: `2px solid ${isSelected ? 'white' : color}`,
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            padding: '0.25rem',
-                            textAlign: 'center',
-                            cursor: 'pointer',
-                            boxShadow: isSelected ? `0 0 30px ${color}` : `0 0 15px ${color}40`,
-                            zIndex: isSelected ? 10 : 1,
-                        }}
-                    >
-                        {node.importance > 0.8 && !isSelected && (
-                            <motion.div
-                                animate={{
-                                    scale: [1, 1.5, 1],
-                                    opacity: [0.5, 0, 0.5],
-                                }}
-                                transition={{ repeat: Infinity, duration: 2 }}
-                                style={{
-                                    position: 'absolute',
-                                    inset: -4,
-                                    border: `1px solid ${color}`,
-                                    borderRadius: '50%',
-                                }}
-                            />
-                        )}
-                        <Brain
-                            size={18}
-                            color={isSelected ? 'white' : color}
-                            style={{ marginBottom: 2 }}
-                            aria-hidden="true"
-                        />
-                        <div
-                            style={{
-                                fontSize: '0.5rem',
-                                fontWeight: 700,
-                                color: 'var(--slate-200)',
-                                overflow: 'hidden',
-                                textOverflow: 'ellipsis',
-                                whiteSpace: 'nowrap',
-                                width: '100%',
-                                padding: '0 4px',
-                            }}
-                        >
-                            {node.type.toUpperCase()}
-                        </div>
-                    </motion.div>
-                );
-            })}
+            <div style={{ position: 'absolute', inset: 0 }}>
+                <VisGraph
+                    nodes={visNodes}
+                    edges={visEdges}
+                    onClickNode={(n) => {
+                        const node = nodes.find((x) => x.id === n.id);
+                        if (node) onNodeClick(node);
+                    }}
+                    height={500}
+                />
+            </div>
 
             <div
                 style={{
