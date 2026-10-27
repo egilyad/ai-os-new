@@ -42,7 +42,7 @@ const EmbeddingsLens: React.FC = () => {
     const { points, dim, total, projected } = useMemo(() => {
         let entries: Array<Record<string, unknown>> = [];
         try {
-            entries = (memoryService.getMemories?.() ?? []) as Array<Record<string, unknown>>;
+            entries = (memoryService.getMemories?.() ?? []) as unknown as Array<Record<string, unknown>>;
         } catch {
             entries = [];
         }
@@ -68,8 +68,9 @@ const EmbeddingsLens: React.FC = () => {
             let x = 0;
             let y = 0;
             for (let i = 0; i < v.length; i += 1) {
-                x += v[i] * (r1[i] ?? 0);
-                y += v[i] * (r2[i] ?? 0);
+                const value = v[i] ?? 0;
+                x += value * (r1[i] ?? 0);
+                y += value * (r2[i] ?? 0);
             }
             return {
                 id: String(e.id ?? ''),

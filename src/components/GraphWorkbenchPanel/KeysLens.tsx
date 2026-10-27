@@ -46,12 +46,14 @@ function buildSegments(key: ApiKey): Seg[] {
     });
     points.sort((a, b) => a.t - b.t);
     const now = Date.now();
-    if (points[points.length - 1].t < now) points.push({ t: now, status: key.status });
+    const last = points[points.length - 1];
+    if (last && last.t < now) points.push({ t: now, status: key.status });
 
     const segs: Seg[] = [];
     for (let i = 0; i < points.length - 1; i += 1) {
         const a = points[i];
         const b = points[i + 1];
+        if (!a || !b) continue;
         if (b.t <= a.t) continue;
         segs.push({ from: a.t, to: b.t, status: a.status });
     }

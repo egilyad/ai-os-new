@@ -12,14 +12,14 @@ function toBase64(buf: ArrayBuffer | Uint8Array): string {
     return btoa(bin);
 }
 
-function fromBase64(s: string): Uint8Array {
+function fromBase64(s: string): Uint8Array<ArrayBuffer> {
     const bin = atob(s);
     const bytes = new Uint8Array(bin.length);
     for (let i = 0; i < bin.length; i += 1) bytes[i] = bin.charCodeAt(i);
     return bytes;
 }
 
-async function deriveKey(password: string, salt: Uint8Array): Promise<CryptoKey> {
+async function deriveKey(password: string, salt: Uint8Array<ArrayBuffer>): Promise<CryptoKey> {
     const baseKey = await crypto.subtle.importKey('raw', enc.encode(password), 'PBKDF2', false, [
         'deriveKey',
     ]);

@@ -34,7 +34,7 @@ function buildTrajectories(session: DebateSession): Traj[] {
     let ci = 0;
     byAgent.forEach((pts, name) => {
         pts.sort((p, q) => p.round - q.round);
-        trajs.push({ agentName: name, color: COLORS[ci % COLORS.length], points: pts });
+        trajs.push({ agentName: name, color: COLORS[ci % COLORS.length] ?? '#94a3b8', points: pts });
         ci += 1;
     });
     return trajs;
