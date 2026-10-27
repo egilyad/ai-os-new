@@ -1,4 +1,4 @@
-import { getWikiBrainDB } from './wiki-brain-dexie';
+import { createWikiBrainDB, getWikiBrainDB } from './wiki-brain-dexie';
 import type { IWikiStore } from '../../contracts/wiki-brain/wiki-store';
 import type {
     TWikiSource,
@@ -10,6 +10,11 @@ import type {
 } from '../../contracts/wiki-brain/types';
 
 export class WikiDexieStore implements IWikiStore {
+    constructor() {
+        // Гарантируем инициализацию отдельной БД Wiki Brain до любого доступа.
+        createWikiBrainDB();
+    }
+
     private get db() {
         return getWikiBrainDB();
     }
