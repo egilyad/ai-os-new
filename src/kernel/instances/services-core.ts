@@ -72,7 +72,21 @@ export const snapshotService = lazyService<SnapshotService>('snapshotService');
 export const cognitiveService = lazyService<CognitiveService>('cognitiveService');
 export const advisorService = lazyService<AdvisorService>('advisorService');
 export const pressureMapService = lazyService<PressureMapService>('pressureMapService');
-export const debateService = lazyService<DebateService>('debateService');
+const DEBATE_FALLBACKS: Record<string, (...args: unknown[]) => unknown> = {
+    getActiveDebateSession: () => null,
+    getCachedVerdict: () => null,
+    getDebateGovernorState: () => null,
+    isEngineActive: () => false,
+    startDebate: () => undefined,
+    startTopologyDebate: () => undefined,
+    // factCheckService is a nested object; a function carrying its methods
+    // lets pre-registration access resolve without throwing.
+    factCheckService: Object.assign(() => undefined, {
+        setLevel: () => undefined,
+        getForArgument: () => null,
+    }),
+};
+export const debateService = lazyService<DebateService>('debateService', DEBATE_FALLBACKS);
 export const chatService = lazyService<ChatExecutor>('chatService');
 export const autoDebateService = lazyService<AutoDebateServiceType>('autoDebateService');
 export const workspaceService = lazyService<WorkspaceService>('workspaceService');
