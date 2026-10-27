@@ -3,7 +3,7 @@
   "generatedBy": "scripts/gen-docs-inventory.mjs",
   "scope": "git-tracked markdown: docs/**/*.md (excluding docs/new drafts and the self-report pages docs-health, docs-inventory) plus repository entry docs (root *.md, .superagents/**, src/kernel/DEPENDENCY_MAP.md)",
   "totals": {
-    "documents": 1100,
+    "documents": 1108,
     "byCategory": {
       "repo": 13,
       "top": 47,
@@ -13,11 +13,11 @@
       "reference": 6,
       "roadmap": 17,
       "superseded": 3,
-      "wiki": 253
+      "wiki": 261
     },
     "byLanguage": {
       "en": 659,
-      "ru": 270,
+      "ru": 278,
       "mixed": 171
     }
   },
@@ -6784,6 +6784,22 @@
       "hash": "8a72d262a859870fed35d8a7b5a92dcee1fb8aa9"
     },
     {
+      "path": "docs/wiki/audit-defect-build-deploy-config.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Аудит: класс дефектов — сборка/деплой/конфиг",
+      "bytes": 1724,
+      "hash": "6b6b92cea1628f1c999bad7d7af97c2dc5962d8d"
+    },
+    {
+      "path": "docs/wiki/audit-defect-contract-violations.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Аудит: класс дефектов — нарушения контрактов",
+      "bytes": 2176,
+      "hash": "9e47d59dabf814603a5b846078443fc040ce2980"
+    },
+    {
       "path": "docs/wiki/audit-defect-data-integrity.md",
       "category": "wiki",
       "language": "ru",
@@ -6792,12 +6808,28 @@
       "hash": "d69c34bb7f9833db644c86a9cbcd021b255c8e4c"
     },
     {
+      "path": "docs/wiki/audit-defect-logic.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Аудит: класс дефектов — общие логические ошибки",
+      "bytes": 1904,
+      "hash": "81fbfc1dd72a90fa110342ee783d76d418c5c9b7"
+    },
+    {
       "path": "docs/wiki/audit-defect-memory-leaks.md",
       "category": "wiki",
       "language": "ru",
       "title": "Аудит: класс дефектов — утечки памяти/ресурсов",
       "bytes": 1728,
       "hash": "c2ddfbc054193065de72076faa750555f5b9283e"
+    },
+    {
+      "path": "docs/wiki/audit-defect-observability.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Аудит: класс дефектов — наблюдаемость/мониторинг",
+      "bytes": 1930,
+      "hash": "fe8487fa2d7b16e902d451efb61ad7bae96d9180"
     },
     {
       "path": "docs/wiki/audit-defect-performance.md",
@@ -6824,6 +6856,14 @@
       "hash": "64c55efc2f96af3ac563b0727cb793d9672f00f1"
     },
     {
+      "path": "docs/wiki/audit-defect-state-consistency.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Аудит: класс дефектов — состояние и «вторые правды»",
+      "bytes": 2441,
+      "hash": "bc5dfdbfb1c3ceb2c6259cadf69c6f81378ba611"
+    },
+    {
       "path": "docs/wiki/audit-defect-types-contracts.md",
       "category": "wiki",
       "language": "ru",
@@ -6832,12 +6872,36 @@
       "hash": "3bc77d5f08bb5cef9f89733d5f46377a4d2e3331"
     },
     {
+      "path": "docs/wiki/audit-defect-ux-correctness.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Аудит: класс дефектов — UX/корректность",
+      "bytes": 1885,
+      "hash": "6c0d77f4627069ca905f6cd467a35535b3fef49a"
+    },
+    {
+      "path": "docs/wiki/audit-index.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Аудиты: сводный индекс",
+      "bytes": 6345,
+      "hash": "347c2c810dc5fa99de96c94527873c8812bc65c6"
+    },
+    {
       "path": "docs/wiki/audit-methodology.md",
       "category": "wiki",
       "language": "ru",
       "title": "Аудит: методология и процесс",
       "bytes": 2312,
       "hash": "33f4f9d920584535b3da392f48675a83974061fb"
+    },
+    {
+      "path": "docs/wiki/audit-overview.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Аудиты: полный обзор",
+      "bytes": 5248,
+      "hash": "4f90c79e3937a00e404f98ba921135fd4ef51514"
     },
     {
       "path": "docs/wiki/audit-type-architecture.md",
@@ -7549,7 +7613,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4075,
-      "hash": "ef0a4939a90201eecb6a2588dd33bdc6bfaf2158"
+      "hash": "fd45b8b79baeb409250e1f98b6d7ad76487c3c2b"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -7637,7 +7701,7 @@
       "language": "ru",
       "title": "Граф знаний",
       "bytes": 4905,
-      "hash": "17728f1aecd8a662ddc599e89c72f5dafd470e65"
+      "hash": "c1f27a18e60494073027368a96f7084942184dd7"
     },
     {
       "path": "docs/wiki/dev-history.md",

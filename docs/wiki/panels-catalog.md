@@ -11,7 +11,7 @@
 > Автосгенерировано `scripts/gen-wiki-panel-catalog.mjs` из реестра маршрутов,
 > `route-imports.ts`, локалей `nav.*` и карты статей вики. Не редактировать вручную.
 
-Панелей: **261** · с компонентом: **260** · со статьёй: **202** · всего разделов: **20**.
+Панелей: **263** · с компонентом: **262** · со статьёй: **202** · всего разделов: **20**.
 
 | Раздел | Панель | Маршрут | Компонент | Статья |
 | --- | --- | --- | --- | --- |
@@ -21,6 +21,7 @@
 | Панель | знания `knowledge` | `/knowledge` | `src/components/KnowledgePanel/KnowledgePanel` | [Панель: База знаний (RAG)](./panel-knowledge.md) |
 | Панель | проводник Project OS `project-os` | `/project-os` | `src/components/DebateResearch/ProjectOsExplorer` | [Панель: Проекты](./panel-projects.md) |
 | Панель | Когнитивные линзы `lenses` | `/lenses` | `src/components/LensesPanel/LensesPanel` | [Панели: Линзы и кристаллы](./panel-lenses-crystals.md) |
+| Панель | Исключения (вето) `exceptions` | `/exceptions` | `src/components/ExceptionsPanel/ExceptionsPanel` | — |
 | Панель | Хранилище кристаллов `crystals` | `/crystals` | `src/components/CrystalVaultPanel/CrystalVaultPanel` | [Панели: Линзы и кристаллы](./panel-lenses-crystals.md) |
 | Панель | Движок связей `junctions` | `/junctions` | `src/components/JunctionPanel/JunctionPanel` | [Панели: Связи, происхождение, очередь](./panel-provenance-junctions.md) |
 | Панель | Движок синтеза `synthesis` | `/synthesis` | `src/components/SynthesisPanel/SynthesisPanel` | [Панель: Синтез мнений](./panel-synthesis.md) |
@@ -191,6 +192,7 @@
 | Диагностика | Пользовательский Метрики `custom-metrics` | `/custom-metrics` | `src/components/CustomMetricsPanel` | [Панель: Пользовательские метрики](./panel-custom-metrics.md) |
 | Вики | Вики `wiki` | `/wiki` | `src/components/WikiPanel/WikiPanel` | [Панель: Wiki](./panel-wiki.md) |
 | Вики | Вики-мозг `wiki-brain` | `/wiki-brain` | `src/components/WikiBrainPanel` | — |
+| Вики | Карта архитектуры `architecture-map` | `/architecture-map` | `src/components/ArchitectureMapPanel` | — |
 | Флот | Консоль флота `fleet` | `/fleet` | `src/components/FleetPanel/FleetPanel` | [Панель: Флот (Fleet Console)](./panel-fleet.md) |
 | Флот | Флот — Команды `fleet-crews` | `/fleet-crews` | `src/components/FleetPanels/CrewsPanel` | [Панель: Флот (Fleet Console)](./panel-fleet.md) |
 | Флот | Флот — Советы `fleet-councils` | `/fleet-councils` | `src/components/CouncilPanel/CouncilPanel` | [Панель: Флот (Fleet Console)](./panel-fleet.md) |

@@ -29,14 +29,14 @@
 
 | Показатель | Значение |
 | --- | --- |
-| Статей всего | 239 |
-| source-checked (есть источники) | 204 |
-| test-backed (есть co-located тесты) | 116 |
+| Статей всего | 262 |
+| source-checked (есть источники) | 227 |
+| test-backed (есть co-located тесты) | 117 |
 | manual-verified (reviewed) | 1 |
-| Панелей (обычных) | 178 |
-| Панелей с компонентом | 177 |
+| Панелей (обычных) | 179 |
+| Панелей с компонентом | 178 |
 | Панелей с тестами у компонента | 71 |
-| Панелей без статьи | 2 |
+| Панелей без статьи | 3 |
 | Авто-панелей техник | 84 (покрыты [Каталог панелей: раздел → маршрут → компонент → статья](./panels-catalog.md)) |
 
 ## По разделам
@@ -44,18 +44,18 @@
 | Раздел | Статей | source-checked | test-backed |
 | --- | ---: | ---: | ---: |
 | Руководство | 8 | 8 | 3 |
-| Панели | 77 | 77 | 42 |
+| Панели | 78 | 78 | 42 |
 | Агенты | 1 | 1 | 1 |
 | Дебаты | 1 | 1 | 0 |
 | Знания и память | 3 | 3 | 3 |
 | Провайдеры | 1 | 1 | 1 |
 | Диагностика | 2 | 2 | 0 |
 | История разработки | 27 | 1 | 0 |
-| Архитектура | 2 | 2 | 0 |
+| Архитектура | 3 | 3 | 0 |
 | Компоненты и сервисы | 75 | 75 | 62 |
 | Заметки | 1 | 1 | 0 |
 | Состояние разработки | 10 | 1 | 0 |
-| Разработчикам | 31 | 31 | 4 |
+| Разработчикам | 52 | 52 | 5 |
 
 ## Домены кода → статья
 
@@ -77,16 +77,17 @@
 | Внешние библиотеки | — | [Внешние библиотеки](./dev-libraries.md) | `scripts/gen-wiki-libraries.mjs` |
 | Архитектурные решения | — | [Реестр архитектурных решений (ADR)](./dev-adr.md) | `docs/001-event-driven-architecture.md` |
 | Аудиты | 75 | [История разработки](./dev-history.md) | `docs/audits/` |
-| Панели | 178 | [Каталог панелей: раздел → маршрут → компонент → статья](./panels-catalog.md) | `src/route-registry-*.ts` |
+| Панели | 179 | [Каталог панелей: раздел → маршрут → компонент → статья](./panels-catalog.md) | `src/route-registry-*.ts` |
 
 ## Что не подтверждено тестами
 
-Компоненты панелей без co-located тестов: **106** из 177.
-Статьи, помеченные verified, но без co-located тестов: **71**.
+Компоненты панелей без co-located тестов: **107** из 178.
+Статьи, помеченные verified, но без co-located тестов: **93**.
 
 Примеры панелей без тестов у компонента:
 
 - `project-os` → `src/components/DebateResearch/ProjectOsExplorer`
+- `exceptions` → `src/components/ExceptionsPanel/ExceptionsPanel`
 - `scheduler` → `src/components/SchedulerPanel`
 - `pricing` → `src/components/AnalyticsPanel/PricingPanel`
 - `budget` → `src/components/BudgetPanel`
@@ -105,10 +106,10 @@
 - `topics` → `src/components/TopicSuggesterPanel`
 - `debate-templates` → `src/components/DebateTemplatesPanel`
 - `debate-quality` → `src/components/DebateQualityPanel`
-- `quality-impact` → `src/components/QualityImpactDashboard/QualityImpactDashboardPanel`
 
 Панели без статьи:
 
+- `exceptions` (dashboard)
 - `wiki-brain` (wiki)
 - `architecture-map` (wiki)
 
