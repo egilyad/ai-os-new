@@ -35,7 +35,7 @@ export const PROVIDER_PREFERRED_MODELS: Record<string, string[]> = {
     kimi: ['kimi-k2', 'kimi-k2-thinking'],
     minimax: ['MiniMax-M1'],
     qwen: ['qwen3-max', 'qwen3-plus', 'qwen3-30b-a3b'],
-    mercury: ['mercury-3', 'mercury-edit-2'],
+    mercury: ['mercury-3'],
 };
 
 /** Human-readable provider names keyed by the canonical provider slug.

@@ -43,7 +43,7 @@ const PROBE_FALLBACKS: Record<string, string[]> = {
     gemini: ['gemini-3.1-flash-lite'],
     openrouter: ['openrouter/free', 'meta-llama/llama-3.1-8b-instruct'],
     nvidia: ['meta/llama-4-scout-17b-16e-instruct'],
-    mercury: ['mercury-3', 'mercury-edit-2'],
+    mercury: ['mercury-3'],
 };
 
 /** Error indicates insufficient credits (402) — key is valid but account balance too low */
@@ -187,6 +187,11 @@ export class ProbeService implements IProbeService, ILifecycle {
         let modelsToTry: string[];
         if (model) {
             modelsToTry = [model];
+        } else if (provider.toLowerCase() === 'mercury') {
+            // Mercury (Inception Labs) is strict about model ids — only probe
+            // with known-valid models and never let cached availableModels
+            // inject an unsupported id.
+            modelsToTry = ['mercury-3'];
         } else {
             const allCandidates = [primaryModel, ...fallbacks, ...keyModels];
             modelsToTry = [...new Set(allCandidates)].filter((m) => m && m !== 'auto');
