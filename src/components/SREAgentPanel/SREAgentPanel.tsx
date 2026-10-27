@@ -301,11 +301,20 @@ const SREAgentPanel: React.FC = () => {
                     }}
                 >
                     <option value="">Авто — первый активный</option>
-                    {keys.map((k) => (
-                        <option key={k.id} value={k.id}>
-                            {k.label || k.id.slice(0, 8)} · {k.provider} ({k.status})
-                        </option>
-                    ))}
+                    {Array.from(new Map(keys.map((k) => [k.provider, k.provider])).keys()).map(
+                        (provider) => {
+                            const groupKeys = keys.filter((k) => k.provider === provider);
+                            return (
+                                <optgroup key={provider} label={`${provider} (${groupKeys.length})`}>
+                                    {groupKeys.map((k) => (
+                                        <option key={k.id} value={k.id}>
+                                            {k.label || k.id.slice(0, 8)} · {k.status}
+                                        </option>
+                                    ))}
+                                </optgroup>
+                            );
+                        },
+                    )}
                 </select>
                 <button
                     onClick={handleExportMd}
