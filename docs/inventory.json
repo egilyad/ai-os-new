@@ -7630,7 +7630,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4076,
-      "hash": "ceceea5e564c8c048f31835c8f02eadef5c3bfd1"
+      "hash": "f0a5ce2db963ca523ac3f2d221daad599e78ab79"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -7718,7 +7718,7 @@
       "language": "ru",
       "title": "Граф знаний",
       "bytes": 4837,
-      "hash": "808922fb20864c2dd63b7b6b6c896bb5e359461f"
+      "hash": "b534f81cfedaf531d6174c1e6fd8ab1a98c15704"
     },
     {
       "path": "docs/wiki/dev-history.md",
@@ -7934,7 +7934,7 @@
       "language": "mixed",
       "title": "Карта документации",
       "bytes": 36897,
-      "hash": "98fdce0d1f9568090688ea6b3e00a9b3fe025b15"
+      "hash": "df07cdde722137ccb8e8c7be5830e7c9eb118726"
     },
     {
       "path": "docs/wiki/docs-standard.md",
@@ -8693,8 +8693,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Каталог панелей: раздел → маршрут → компонент → статья",
-      "bytes": 52857,
-      "hash": "be9a1a33172ba888675c46d3a7cf40b736ce3de8"
+      "bytes": 53383,
+      "hash": "3c4453cb6d7d00fa26b3a147575c966b362dc759"
     },
     {
       "path": "docs/wiki/panels-guide.md",
@@ -8742,7 +8742,7 @@
       "language": "ru",
       "title": "Возможности и сценарии",
       "bytes": 10062,
-      "hash": "21be422a608ff5e0346bf749fa954618fd74d340"
+      "hash": "e6bfe785930bef8ce968e41891e6fc22c5d045ac"
     },
     {
       "path": "docs/wiki/system-audit-prompt.md",
@@ -8989,16 +8989,16 @@
       "category": "repo",
       "language": "en",
       "title": "SuperAgents OS",
-      "bytes": 55573,
-      "hash": "b81ff3e2f5ba0c9e7afe30aa5829de563cce7625"
+      "bytes": 55835,
+      "hash": "f2a82b10ab92d11eca903473494bab69d76a33d5"
     },
     {
       "path": "README.md",
       "category": "repo",
       "language": "mixed",
       "title": "SuperAgents OS — Wiki",
-      "bytes": 48401,
-      "hash": "ee156bb4241ba500816ae7f1affcac7bbc74f493"
+      "bytes": 48736,
+      "hash": "ed1a62942ef0eff952f6bad6406a236de487e33c"
     },
     {
       "path": "SELF_IMPROVEMENT_AUDIT_2026-09-22.md",

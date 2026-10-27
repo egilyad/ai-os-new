@@ -11,7 +11,7 @@
 > Автосгенерировано `scripts/gen-wiki-panel-catalog.mjs` из реестра маршрутов,
 > `route-imports.ts`, локалей `nav.*` и карты статей вики. Не редактировать вручную.
 
-Панелей: **263** · с компонентом: **262** · со статьёй: **202** · всего разделов: **20**.
+Панелей: **267** · с компонентом: **266** · со статьёй: **202** · всего разделов: **20**.
 
 | Раздел | Панель | Маршрут | Компонент | Статья |
 | --- | --- | --- | --- | --- |
@@ -22,6 +22,10 @@
 | Панель | проводник Project OS `project-os` | `/project-os` | `src/components/DebateResearch/ProjectOsExplorer` | [Панель: Проекты](./panel-projects.md) |
 | Панель | Когнитивные линзы `lenses` | `/lenses` | `src/components/LensesPanel/LensesPanel` | [Панели: Линзы и кристаллы](./panel-lenses-crystals.md) |
 | Панель | Исключения (вето) `exceptions` | `/exceptions` | `src/components/ExceptionsPanel/ExceptionsPanel` | — |
+| Панель | Memory Center `memory-center` | `/memory-center` | `src/components/MemoryCenterPanel/MemoryCenterPanel` | — |
+| Панель | Граф навигации `nav-graph` | `/nav-graph` | `src/components/NavGraphPanel/NavGraphPanel` | — |
+| Панель | Graph Workbench `graph-workbench` | `/graph-workbench` | `src/components/GraphWorkbenchPanel/GraphWorkbenchPanel` | — |
+| Панель | Карта дефектов `defect-map` | `/defect-map` | `src/components/DefectMapPanel/DefectMapPanel` | — |
 | Панель | Хранилище кристаллов `crystals` | `/crystals` | `src/components/CrystalVaultPanel/CrystalVaultPanel` | [Панели: Линзы и кристаллы](./panel-lenses-crystals.md) |
 | Панель | Движок связей `junctions` | `/junctions` | `src/components/JunctionPanel/JunctionPanel` | [Панели: Связи, происхождение, очередь](./panel-provenance-junctions.md) |
 | Панель | Движок синтеза `synthesis` | `/synthesis` | `src/components/SynthesisPanel/SynthesisPanel` | [Панель: Синтез мнений](./panel-synthesis.md) |
