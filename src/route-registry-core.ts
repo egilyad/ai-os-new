@@ -57,6 +57,14 @@ export const CORE_SECTIONS: NavSection[] = [
                 experimental: true,
             },
             {
+                id: 'memory-center',
+                labelKey: 'nav.memory_center',
+                icon: Icons.brain,
+                color: '#a855f7',
+                lazy: true,
+                experimental: true,
+            },
+            {
                 id: 'crystals',
                 labelKey: 'nav.crystals',
                 icon: Icons.gem,

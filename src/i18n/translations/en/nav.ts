@@ -124,6 +124,7 @@ const nav: Record<string, string> = {
     'nav.hypothesis_generator': 'Hypothesis Generator',
     'nav.lenses': 'Cognitive Lenses',
     'nav.exceptions': 'Exceptions (veto)',
+    'nav.memory_center': 'Memory Center',
     'nav.crystals': 'Crystal Vault',
     'nav.junctions': 'Junction Engine',
     'nav.synthesis': 'Synthesis Engine',
