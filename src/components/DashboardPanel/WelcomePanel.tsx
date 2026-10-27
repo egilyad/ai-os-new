@@ -278,6 +278,12 @@ const GROUPS: CardGroup[] = [
                 title: 'Граф навигации',
                 text: 'Карта всех разделов и панелей системы — клик ведёт в панель.',
             },
+            {
+                id: 'graph-workbench',
+                emoji: '🧰',
+                title: 'Graph Workbench',
+                text: 'Линзы: Routing (почему выбрана модель), Cost (куда уходят деньги), Tasks (зависимости задач).',
+            },
         ],
     },
     {

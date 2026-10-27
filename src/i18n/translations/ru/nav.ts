@@ -126,6 +126,7 @@ const nav: Record<string, string> = {
     'nav.exceptions': 'Исключения (вето)',
     'nav.memory_center': 'Memory Center',
     'nav.nav_graph': 'Граф навигации',
+    'nav.graph_workbench': 'Graph Workbench',
     'nav.crystals': 'Хранилище кристаллов',
     'nav.junctions': 'Движок связей',
     'nav.synthesis': 'Движок синтеза',

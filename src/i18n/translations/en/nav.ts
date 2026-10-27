@@ -126,6 +126,7 @@ const nav: Record<string, string> = {
     'nav.exceptions': 'Exceptions (veto)',
     'nav.memory_center': 'Memory Center',
     'nav.nav_graph': 'Navigation Graph',
+    'nav.graph_workbench': 'Graph Workbench',
     'nav.crystals': 'Crystal Vault',
     'nav.junctions': 'Junction Engine',
     'nav.synthesis': 'Synthesis Engine',

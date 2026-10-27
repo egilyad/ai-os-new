@@ -73,6 +73,14 @@ export const CORE_SECTIONS: NavSection[] = [
                 experimental: true,
             },
             {
+                id: 'graph-workbench',
+                labelKey: 'nav.graph_workbench',
+                icon: Icons.gitCompare,
+                color: '#10b981',
+                lazy: true,
+                experimental: true,
+            },
+            {
                 id: 'crystals',
                 labelKey: 'nav.crystals',
                 icon: Icons.gem,
