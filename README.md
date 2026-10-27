@@ -234,7 +234,7 @@ docs/wiki/           # markdown-зеркало вики (этот портал)
 > Блоки ниже собираются из исходников скриптом `npm run gen:readme-maps` — не редактировать вручную.
 
 <!-- README-MAPS-RU:STRATEGIES:BEGIN -->
-_Сгенерировано из кода 2026-10-17, скрипт `npm run gen:readme-maps` — не редактировать вручную, перезапускать скрипт._
+_Сгенерировано из кода 2026-10-27, скрипт `npm run gen:readme-maps` — не редактировать вручную, перезапускать скрипт._
 
 <details>
 <summary><b>Все 33 встроенных стратегий дебатов (из кода)</b></summary>
@@ -279,7 +279,7 @@ _Сгенерировано из кода 2026-10-17, скрипт `npm run gen:
 <!-- README-MAPS-RU:STRATEGIES:END -->
 
 <!-- README-MAPS-RU:TECHNIQUES:BEGIN -->
-_Сгенерировано из кода 2026-10-17, скрипт `npm run gen:readme-maps` — не редактировать вручную, перезапускать скрипт._
+_Сгенерировано из кода 2026-10-27, скрипт `npm run gen:readme-maps` — не редактировать вручную, перезапускать скрипт._
 
 <details>
 <summary><b>Все 75 техник качества дебатов (из кода)</b></summary>
@@ -372,18 +372,24 @@ _Сгенерировано из кода 2026-10-17, скрипт `npm run gen:
 <!-- README-MAPS-RU:TECHNIQUES:END -->
 
 <!-- README-MAPS-RU:PANELS:BEGIN -->
-_Сгенерировано из кода 2026-10-17, скрипт `npm run gen:readme-maps` — не редактировать вручную, перезапускать скрипт._
+_Сгенерировано из кода 2026-10-27, скрипт `npm run gen:readme-maps` — не редактировать вручную, перезапускать скрипт._
 
 <details>
-<summary><b>Все 259 панелей по разделам (из кода)</b></summary>
+<summary><b>Все 267 панелей по разделам (из кода)</b></summary>
 
-**Панель** (`dashboard`, 22)
+**Панель** (`dashboard`, 28)
 
 - Обзор (`dashboard`)
+- Помощник (`assistant`)
 - провайдеры (`keys`)
 - знания (`knowledge`)
 - проводник Project OS (`project-os`)
 - Когнитивные линзы (`lenses`)
+- Исключения (вето) (`exceptions`)
+- Memory Center (`memory-center`)
+- Граф навигации (`nav-graph`)
+- Graph Workbench (`graph-workbench`)
+- Карта дефектов (`defect-map`)
 - Хранилище кристаллов (`crystals`)
 - Движок связей (`junctions`)
 - Движок синтеза (`synthesis`)
@@ -574,9 +580,11 @@ _Сгенерировано из кода 2026-10-17, скрипт `npm run gen:
 - Здоровье SLA (`health-sla`)
 - Пользовательский Метрики (`custom-metrics`)
 
-**Вики** (`wiki`, 1)
+**Вики** (`wiki`, 3)
 
 - Вики (`wiki`)
+- Вики-мозг (`wiki-brain`)
+- Карта архитектуры (`architecture-map`)
 
 **Флот** (`fleet`, 12)
 

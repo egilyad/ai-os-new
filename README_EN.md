@@ -181,7 +181,7 @@ Multi-agent debate system with configurable strategies and comprehensive metrics
 - **Recoverable history**: Failed/cancelled debates persist with arguments; fact-check joins work across id namespaces; reload-verified snapshots
 
 <!-- README-MAPS:STRATEGIES:BEGIN -->
-_Generated from code on 2026-10-17 by `node scripts/gen-readme-maps.mjs` — do not hand-edit, re-run the script._
+_Generated from code on 2026-10-27 by `node scripts/gen-readme-maps.mjs` — do not hand-edit, re-run the script._
 
 <details>
 <summary><b>All 33 built-in debate strategies (from code)</b></summary>
@@ -226,7 +226,7 @@ _Generated from code on 2026-10-17 by `node scripts/gen-readme-maps.mjs` — do 
 <!-- README-MAPS:STRATEGIES:END -->
 
 <!-- README-MAPS:TECHNIQUES:BEGIN -->
-_Generated from code on 2026-10-17 by `node scripts/gen-readme-maps.mjs` — do not hand-edit, re-run the script._
+_Generated from code on 2026-10-27 by `node scripts/gen-readme-maps.mjs` — do not hand-edit, re-run the script._
 
 <details>
 <summary><b>All 75 debate quality techniques (from code)</b></summary>
@@ -462,18 +462,24 @@ src/
 ```
 
 <!-- README-MAPS:PANELS:BEGIN -->
-_Generated from code on 2026-10-17 by `node scripts/gen-readme-maps.mjs` — do not hand-edit, re-run the script._
+_Generated from code on 2026-10-27 by `node scripts/gen-readme-maps.mjs` — do not hand-edit, re-run the script._
 
 <details>
-<summary><b>All 259 statically-wired nav panels by section (from code)</b></summary>
+<summary><b>All 267 statically-wired nav panels by section (from code)</b></summary>
 
-**DASHBOARD** (`dashboard`, 22)
+**DASHBOARD** (`dashboard`, 28)
 
 - Overview (`dashboard`)
+- Assistant (`assistant`)
 - Providers (`keys`)
 - Knowledge (`knowledge`)
 - Project OS Explorer (`project-os`)
 - Cognitive Lenses (`lenses`)
+- Exceptions (veto) (`exceptions`)
+- Memory Center (`memory-center`)
+- Navigation Graph (`nav-graph`)
+- Graph Workbench (`graph-workbench`)
+- Defect Map (`defect-map`)
 - Crystal Vault (`crystals`)
 - Junction Engine (`junctions`)
 - Synthesis Engine (`synthesis`)
@@ -664,9 +670,11 @@ _Generated from code on 2026-10-17 by `node scripts/gen-readme-maps.mjs` — do 
 - Health SLA (`health-sla`)
 - Custom Metrics (`custom-metrics`)
 
-**WIKI** (`wiki`, 1)
+**WIKI** (`wiki`, 3)
 
 - Wiki (`wiki`)
+- Wiki Brain (`wiki-brain`)
+- Architecture Map (`architecture-map`)
 
 **FLEET** (`fleet`, 12)
 
