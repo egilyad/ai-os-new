@@ -3,7 +3,7 @@
   "generatedBy": "scripts/gen-docs-inventory.mjs",
   "scope": "git-tracked markdown: docs/**/*.md (excluding docs/new drafts and the self-report pages docs-health, docs-inventory) plus repository entry docs (root *.md, .superagents/**, src/kernel/DEPENDENCY_MAP.md)",
   "totals": {
-    "documents": 1117,
+    "documents": 1118,
     "byCategory": {
       "repo": 13,
       "top": 47,
@@ -13,11 +13,11 @@
       "reference": 6,
       "roadmap": 17,
       "superseded": 3,
-      "wiki": 270
+      "wiki": 271
     },
     "byLanguage": {
       "en": 659,
-      "ru": 287,
+      "ru": 288,
       "mixed": 171
     }
   },
@@ -7582,7 +7582,7 @@
       "language": "mixed",
       "title": "Матрица покрытия",
       "bytes": 8463,
-      "hash": "c012221ac40b3cee1f36252371ed68d1933e69cf"
+      "hash": "7789f38d4f68c327e7a8413d58d34fee07dc4ff8"
     },
     {
       "path": "docs/wiki/debates.md",
@@ -7614,7 +7614,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4075,
-      "hash": "802663aa598cee43b2a832f9f46d6de4a68f9803"
+      "hash": "df2257f34f413592872707d96df77516c8b7f2a5"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -7702,7 +7702,7 @@
       "language": "ru",
       "title": "Граф знаний",
       "bytes": 4905,
-      "hash": "6091140a4869a115df2dac903610031fa13934ff"
+      "hash": "2f225939fb13aded1dabf35bce097edaf6579f0c"
     },
     {
       "path": "docs/wiki/dev-history.md",
@@ -7917,8 +7917,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Карта документации",
-      "bytes": 36437,
-      "hash": "66a7074484ae49dcd8913910a7cb5754a7330e6e"
+      "bytes": 36517,
+      "hash": "07d2b02a310e5f138fc87010deb92a80abe2b569"
     },
     {
       "path": "docs/wiki/docs-standard.md",
@@ -7943,6 +7943,14 @@
       "title": "Разработчикам: структура и ворота",
       "bytes": 3405,
       "hash": "641753a579f0ac47283f518a653170b1018d282c"
+    },
+    {
+      "path": "docs/wiki/guide-work-modes.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Режимы работы с информацией",
+      "bytes": 4053,
+      "hash": "a16f319a2aa87d60cf307447b61dc663204e3445"
     },
     {
       "path": "docs/wiki/idea-path.md",
@@ -8685,8 +8693,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Wiki SuperAgents OS",
-      "bytes": 28441,
-      "hash": "35b3900dcdef8b18d5b815faed8cf978c5370014"
+      "bytes": 28643,
+      "hash": "13fc834a32a28330cf225a713e3fd6e582d08f39"
     },
     {
       "path": "docs/wiki/roadmap-notes.md",

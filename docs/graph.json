@@ -3,22 +3,22 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 1404,
-    "edges": 3680,
+    "nodes": 1407,
+    "edges": 3687,
     "byType": {
       "audit": 75,
-      "code": 596,
+      "code": 597,
       "test": 198,
       "panel": 263,
-      "article": 272
+      "article": 274
     },
     "byKind": {
       "audit_test": 336,
       "audit_mention": 929,
       "documents": 202,
-      "source": 872,
+      "source": 875,
       "test": 293,
-      "related": 1048
+      "related": 1052
     }
   },
   "nodes": [
@@ -1066,6 +1066,11 @@
       "id": "file:src/components/DebatePanel/DebateWorkspacePanel",
       "type": "code",
       "label": "src/components/DebatePanel/DebateWorkspacePanel"
+    },
+    {
+      "id": "file:src/components/DebatePanel/StrategySelector.tsx",
+      "type": "code",
+      "label": "src/components/DebatePanel/StrategySelector.tsx"
     },
     {
       "id": "file:src/components/DebatePanel/useDebatePanelSubscriptions.test.tsx",
@@ -7070,6 +7075,20 @@
       "type": "article",
       "label": "Матрица покрытия",
       "section": "dev",
+      "status": "verified"
+    },
+    {
+      "id": "wiki:debate-strategies",
+      "type": "article",
+      "label": "Дебаты: стратегии — обзор",
+      "section": "debates",
+      "status": "verified"
+    },
+    {
+      "id": "wiki:debate-strategies-cheatsheet",
+      "type": "article",
+      "label": "Дебаты: шпаргалка стратегий (33)",
+      "section": "debates",
       "status": "verified"
     },
     {
@@ -21377,6 +21396,41 @@
     {
       "from": "wiki:coverage-matrix",
       "to": "wiki:docs-standard",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:debate-strategies-cheatsheet",
+      "to": "file:src/kernel/services/debate-runtime/debate-strategy-definitions.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:debate-strategies-cheatsheet",
+      "to": "wiki:debate-strategies",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:debate-strategies-cheatsheet",
+      "to": "wiki:debates",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:debate-strategies",
+      "to": "file:src/components/DebatePanel/StrategySelector.tsx",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:debate-strategies",
+      "to": "file:src/kernel/services/debate-runtime/debate-strategy-definitions.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:debate-strategies",
+      "to": "wiki:debate-strategies-cheatsheet",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:debate-strategies",
+      "to": "wiki:debates",
       "kind": "related"
     },
     {

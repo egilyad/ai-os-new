@@ -87,15 +87,36 @@ const STRATEGY_LABELS: Record<string, string> = {
 };
 const StrategySelector: React.FC<StrategySelectorProps> = ({ value, onChange }) => {
     return (
-        <select
-            value={value}
-            onChange={e => onChange(e.target.value as DebateSessionStrategy)}
-            style={{ width: '100%', padding: '10px 12px', borderRadius: 10, border: '1px solid rgba(100,116,139,0.25)', background: 'rgba(15,23,42,0.6)', color: 'var(--slate-100)', fontSize: '0.9rem', outline: 'none' }}
-        >
-            {STRATEGIES.map(s => (
-                <option key={s.id} value={s.id}>{STRATEGY_LABELS[s.id] || s.id}</option>
-            ))}
-        </select>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+            <select
+                value={value}
+                onChange={e => onChange(e.target.value as DebateSessionStrategy)}
+                style={{ width: '100%', padding: '10px 12px', borderRadius: 10, border: '1px solid rgba(100,116,139,0.25)', background: 'rgba(15,23,42,0.6)', color: 'var(--slate-100)', fontSize: '0.9rem', outline: 'none' }}
+            >
+                {STRATEGIES.map(s => (
+                    <option key={s.id} value={s.id}>{STRATEGY_LABELS[s.id] || s.id}</option>
+                ))}
+            </select>
+            <a
+                href="#/wiki"
+                style={{
+                    alignSelf: 'flex-start',
+                    padding: '4px 10px',
+                    borderRadius: 8,
+                    border: '1px solid rgba(139,92,246,0.25)',
+                    background: 'rgba(139,92,246,0.08)',
+                    color: 'var(--slate-300)',
+                    fontSize: '0.72rem',
+                    fontWeight: 600,
+                    textDecoration: 'none',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: 4,
+                }}
+            >
+                📖 Шпаргалка стратегий →
+            </a>
+        </div>
     );
 };
 

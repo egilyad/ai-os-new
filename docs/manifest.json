@@ -20,7 +20,7 @@
     {
       "id": "debates",
       "title": "Дебаты",
-      "articles": 1
+      "articles": 3
     },
     {
       "id": "memory",
@@ -2465,6 +2465,53 @@
         "panel-knowledge",
         "panel-research-engine",
         "audit-methodology"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:debate-strategies",
+      "type": "article",
+      "slug": "debate-strategies",
+      "title": "Дебаты: стратегии — обзор",
+      "section": "debates",
+      "status": "verified",
+      "tags": [
+        "дебаты",
+        "стратегии",
+        "обзор",
+        "как выбрать"
+      ],
+      "sources": [
+        "src/kernel/services/debate-runtime/debate-strategy-definitions.ts",
+        "src/components/DebatePanel/StrategySelector.tsx"
+      ],
+      "related": [
+        "debate-strategies-cheatsheet",
+        "debates"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:debate-strategies-cheatsheet",
+      "type": "article",
+      "slug": "debate-strategies-cheatsheet",
+      "title": "Дебаты: шпаргалка стратегий (33)",
+      "section": "debates",
+      "status": "verified",
+      "tags": [
+        "дебаты",
+        "стратегии",
+        "шпаргалка",
+        "схемы"
+      ],
+      "sources": [
+        "src/kernel/services/debate-runtime/debate-strategy-definitions.ts"
+      ],
+      "related": [
+        "debate-strategies",
+        "debates"
       ],
       "reviewed": null,
       "tests": []

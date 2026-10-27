@@ -11,7 +11,7 @@
 > Автосгенерировано `scripts/gen-docs-inventory.mjs` из отслеживаемых git-файлов `docs/**/*.md`.
 > Машиночитаемая версия — `docs/inventory.json`. Не редактировать вручную.
 
-Это Этап 1 программы документации: полный учёт существующих Markdown-файлов. Всего: **1110** документов (только отслеживаемые git): `docs/**` плюс корневые `*.md`, `.superagents/**` и `src/kernel/DEPENDENCY_MAP.md`.
+Это Этап 1 программы документации: полный учёт существующих Markdown-файлов. Всего: **1117** документов (только отслеживаемые git): `docs/**` плюс корневые `*.md`, `.superagents/**` и `src/kernel/DEPENDENCY_MAP.md`.
 Две генерируемые страницы-самоотчёта (`docs-health`, `docs-inventory`) исключены, чтобы числа не зависели от самих отчётов.
 
 ## По категориям
@@ -26,7 +26,7 @@
 | roadmap | 17 |
 | superseded | 3 |
 | top | 47 |
-| wiki | 263 |
+| wiki | 270 |
 
 ## По языку
 
@@ -34,7 +34,7 @@
 | --- | --- |
 | en | 659 |
 | mixed | 171 |
-| ru | 280 |
+| ru | 287 |
 
 _Основной язык подробной документации — русский (`ru`)._
 
@@ -42,7 +42,7 @@ _Основной язык подробной документации — ру�
 
 Не найдено.
 
-## Совпадающие заголовки (20)
+## Совпадающие заголовки (21)
 
 - «02 — capabilities matrix»: `docs/history/experementmdroadmaps/agents/17_agent-pm/02_CAPABILITIES.md`, `docs/history/experementmdroadmaps/agents/18_agent-po/02_CAPABILITIES.md`
 - «02_capabilities — capability matrix»: `docs/history/experementmdroadmaps/agents/02_agent-risk/02_CAPABILITIES.md`, `docs/history/experementmdroadmaps/agents/05_agent-security/02_CAPABILITIES.md`, `docs/history/experementmdroadmaps/agents/06_agent-devops/02_CAPABILITIES.md`, `docs/history/experementmdroadmaps/agents/08_agent-perf/02_CAPABILITIES.md`, `docs/history/experementmdroadmaps/agents/09_agent-critic/02_CAPABILITIES.md`, `docs/history/experementmdroadmaps/agents/13_agent-creative/02_CAPABILITIES.md`, `docs/history/experementmdroadmaps/agents/14_agent-designer/02_CAPABILITIES.md`
@@ -64,6 +64,7 @@ _Основной язык подробной документации — ру�
 - «14_alternative_roadmap — second philosophy»: `docs/history/experementmdroadmaps/agents/01_agent-network/14_ALTERNATIVE_ROADMAP.md`, `docs/history/experementmdroadmaps/agents/02_agent-risk/14_ALTERNATIVE_ROADMAP.md`
 - «15 — do not build yet»: `docs/history/experementmdroadmaps/agents/17_agent-pm/15_DO_NOT_BUILD_YET.md`, `docs/history/experementmdroadmaps/agents/23_agent-doc-simplifier/15_DO_NOT_BUILD_YET.md`
 - «research_progress.md»: `docs/history/experementmdroadmaps/audit_log/RESEARCH_PROGRESS.md`, `docs/history/experementmdroadmaps/cost_attribution/RESEARCH_PROGRESS.md`, `docs/history/experementmdroadmaps/forum/RESEARCH_PROGRESS.md`, `docs/history/experementmdroadmaps/observability/RESEARCH_PROGRESS.md`, `docs/history/experementmdroadmaps/workflow_scheduler/RESEARCH_PROGRESS.md`
+- … +1 заголовков
 
 ## Код-сущности (существующие авто-каталоги)
 
