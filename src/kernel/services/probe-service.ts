@@ -10,6 +10,12 @@ import { rootLogger } from './logger-service';
 const LOGGER = rootLogger.child('ProbeService');
 
 const PROBE_TIMEOUT = 15000;
+
+/** Per-provider probe timeout overrides (diffusion LLMs can be slower to start). */
+const PROBE_TIMEOUTS: Record<string, number> = {
+    mercury: 45000,
+    inception: 45000,
+};
 const PROBE_MESSAGES = [
     { role: 'user' as const, content: 'What is 2+2? Answer with just the number.' },
 ];
@@ -27,6 +33,8 @@ const PROVDER_DEFAULTS: Record<string, string> = {
     nvidia: 'meta/llama-4-maverick-17b-128e-instruct',
     deepseek: 'deepseek-chat',
     cohere: 'command-r-plus',
+    mercury: 'mercury-3',
+    inception: 'mercury-3',
 };
 
 /** Models to try as fallback when primary probe model fails with a retryable error */
@@ -35,6 +43,7 @@ const PROBE_FALLBACKS: Record<string, string[]> = {
     gemini: ['gemini-3.1-flash-lite'],
     openrouter: ['openrouter/free', 'meta-llama/llama-3.1-8b-instruct'],
     nvidia: ['meta/llama-4-scout-17b-16e-instruct'],
+    mercury: ['mercury-3', 'mercury-edit-2'],
 };
 
 /** Error indicates insufficient credits (402) — key is valid but account balance too low */
@@ -208,9 +217,10 @@ export class ProbeService implements IProbeService, ILifecycle {
             const currentModel = modelsToTry[attemptIdx]!;
 
             const controller = new AbortController();
+            const probeTimeout = PROBE_TIMEOUTS[provider.toLowerCase()] ?? PROBE_TIMEOUT;
             const timeout = setTimeout(
                 () => controller.abort(new DOMException('Probe timed out', 'AbortError')),
-                PROBE_TIMEOUT,
+                probeTimeout,
             );
             const start = performance.now();
 
