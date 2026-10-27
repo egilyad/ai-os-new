@@ -4,7 +4,30 @@ import { budgetService } from '../../kernel/instances/services-extras';
 import { agemsTaskService } from '../../kernel/services/agems-task-service';
 import VisGraph, { type VisGraphNode, type VisGraphEdge } from '../Common/VisGraph';
 
-type Lens = 'routing' | 'cost' | 'task';
+type Lens = 'routing' | 'cost' | 'task' | 'ucb1';
+
+interface Ucb1Row {
+    provider: string;
+    n: number;
+    mean: number;
+    ucb: number;
+    selected: number;
+    spark: number[];
+}
+
+function sparkPoints(data: number[], w: number, h: number): string {
+    if (data.length === 0) return '';
+    const min = Math.min(...data);
+    const max = Math.max(...data);
+    const span = max - min || 1;
+    return data
+        .map((v, i) => {
+            const x = (i / (data.length - 1)) * w;
+            const y = h - ((v - min) / span) * h;
+            return `${x.toFixed(1)},${y.toFixed(1)}`;
+        })
+        .join(' ');
+}
 
 const STATUS_COLOR: Record<string, string> = {
     PENDING: '#f59e0b',
@@ -27,6 +50,7 @@ const GraphWorkbenchPanel: React.FC = () => {
     const [costEdges, setCostEdges] = useState<VisGraphEdge[]>([]);
     const [taskNodes, setTaskNodes] = useState<VisGraphNode[]>([]);
     const [taskEdges, setTaskEdges] = useState<VisGraphEdge[]>([]);
+    const [ucbRows, setUcbRows] = useState<Ucb1Row[]>([]);
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
 
@@ -164,16 +188,47 @@ const GraphWorkbenchPanel: React.FC = () => {
         }
     }, []);
 
+    const loadUcb1 = useCallback(() => {
+        try {
+            const history = routerService.getDecisionHistory?.(200) ?? [];
+            const map = new Map<string, { scoreSum: number; sel: number; samples: number[] }>();
+            history.forEach((d) => {
+                (d.scores || []).forEach((s) => {
+                    const rec = map.get(s.provider) ?? { scoreSum: 0, sel: 0, samples: [] };
+                    rec.scoreSum += s.score;
+                    rec.samples.push(s.score);
+                    if (rec.samples.length > 24) rec.samples.shift();
+                    if (s.provider === d.selected) rec.sel += 1;
+                    map.set(s.provider, rec);
+                });
+            });
+            const N = Math.max(1, history.length);
+            const rows: Ucb1Row[] = [];
+            map.forEach((rec, provider) => {
+                const n = rec.samples.length;
+                if (n === 0) return;
+                const mean = rec.scoreSum / n;
+                const ucb = mean + Math.sqrt((2 * Math.log(N)) / n);
+                rows.push({ provider, n, mean, ucb, selected: rec.sel, spark: [...rec.samples] });
+            });
+            rows.sort((a, b) => b.ucb - a.ucb);
+            setUcbRows(rows);
+        } catch (e) {
+            setError(e instanceof Error ? e.message : String(e));
+        }
+    }, []);
+
     const load = useCallback(
         async (l: Lens) => {
             setLoading(true);
             setError(null);
             if (l === 'routing') await loadRouting();
             else if (l === 'cost') await loadCost();
-            else await loadTask();
+            else if (l === 'task') await loadTask();
+            else loadUcb1();
             setLoading(false);
         },
-        [loadRouting, loadCost, loadTask],
+        [loadRouting, loadCost, loadTask, loadUcb1],
     );
 
     useEffect(() => {
@@ -217,12 +272,15 @@ const GraphWorkbenchPanel: React.FC = () => {
                     {lensBtn('routing', '🔀 Routing')}
                     {lensBtn('cost', '💰 Cost')}
                     {lensBtn('task', '✅ Tasks')}
+                    {lensBtn('ucb1', '🎰 UCB1')}
                 </div>
                 {loading && <span style={{ fontSize: 12, color: 'var(--slate-500)' }}>loading…</span>}
             </div>
             {error && <div style={{ color: 'var(--error)', fontSize: 12 }}>{error}</div>}
             <div style={{ flex: 1, minHeight: 0 }}>
-                {currentNodes.length === 0 ? (
+                {lens === 'ucb1' ? (
+                    <Ucb1View rows={ucbRows} />
+                ) : currentNodes.length === 0 ? (
                     <div style={{ color: 'var(--slate-500)', fontSize: 13, padding: 24, textAlign: 'center', border: '1px dashed rgba(255,255,255,0.1)', borderRadius: 12 }}>
                         Нет данных для этой линзы
                     </div>
@@ -230,6 +288,65 @@ const GraphWorkbenchPanel: React.FC = () => {
                     <VisGraph nodes={currentNodes} edges={currentEdges} onClickNode={() => {}} height={640} />
                 )}
             </div>
+        </div>
+    );
+};
+
+const Metric: React.FC<{ label: string; value: string; bar: number; max: number; color: string }> = ({
+    label,
+    value,
+    bar,
+    max,
+    color,
+}) => (
+    <div style={{ flex: 1 }}>
+        <div style={{ fontSize: 11, color: 'var(--slate-500)' }}>{label}</div>
+        <div style={{ fontWeight: 800, fontSize: 15 }}>{value}</div>
+        <div style={{ height: 4, borderRadius: 2, background: 'rgba(255,255,255,0.06)', marginTop: 4 }}>
+            <div
+                style={{
+                    height: '100%',
+                    width: `${Math.min(100, (bar / max) * 100)}%`,
+                    background: color,
+                    borderRadius: 2,
+                }}
+            />
+        </div>
+    </div>
+);
+
+const Ucb1View: React.FC<{ rows: Ucb1Row[] }> = ({ rows }) => {
+    if (rows.length === 0) {
+        return (
+            <div style={{ color: 'var(--slate-500)', fontSize: 13, padding: 24, textAlign: 'center', border: '1px dashed rgba(255,255,255,0.1)', borderRadius: 12 }}>
+                Нет решений роутинга — сделай несколько запросов, чтобы появилась UCB1-статистика.
+            </div>
+        );
+    }
+    const maxUcb = Math.max(...rows.map((r) => r.ucb), 1e-6);
+    return (
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: 10 }}>
+            {rows.map((r) => (
+                <div
+                    key={r.provider}
+                    style={{ padding: '0.8rem', borderRadius: 12, border: '1px solid rgba(255,255,255,0.08)', background: 'rgba(0,0,0,0.18)' }}
+                >
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <strong style={{ fontSize: 14 }}>{r.provider}</strong>
+                        <span style={{ color: 'var(--slate-500)', fontSize: 11 }}>n={r.n}</span>
+                    </div>
+                    <div style={{ display: 'flex', gap: 12, marginTop: 8 }}>
+                        <Metric label="Mean" value={r.mean.toFixed(3)} bar={r.mean} max={1} color="#3b82f6" />
+                        <Metric label="UCB1" value={r.ucb.toFixed(3)} bar={r.ucb / maxUcb} max={1} color="#10b981" />
+                    </div>
+                    <svg width={140} height={32} viewBox="0 0 140 32" style={{ marginTop: 8, width: '100%' }}>
+                        <polyline points={sparkPoints(r.spark, 140, 28)} fill="none" stroke="#22d3ee" strokeWidth={1.5} />
+                    </svg>
+                    <div style={{ fontSize: 11, color: 'var(--slate-500)', marginTop: 4 }}>
+                        selected {r.selected}/{r.n}
+                    </div>
+                </div>
+            ))}
         </div>
     );
 };
