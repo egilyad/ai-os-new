@@ -2484,6 +2484,150 @@ crews, councils, graphs, persona, ops, interop, meta, trust, frontier, rivals.
 Цель — не «магически 0 багов», а предсказуемость: каждый следующий аудит находит всё меньше нового.`,
     },
     {
+        slug: 'audit-defect-memory-leaks',
+        title: 'Аудит: класс дефектов — утечки памяти/ресурсов',
+        section: 'dev',
+        tags: ['аудит', 'память', 'утечки', 'ресурсы', 'дефекты'],
+        freshness: 'verified',
+        sources: ['src/kernel/', 'src/components/', 'src/hooks/'],
+        related: ['audit-methodology', 'audit-type-data-streaming'],
+        body: `## Назначение
+
+Аудит на утечки памяти и ресурсов: таймеры, слушатели событий, подписки, workers, http-запросы, DOM-узлы, кэши.
+
+## Что искать
+
+- setInterval/setTimeout без очистки (в т.ч. при unmount).
+- Подписки на eventBus/сторы без отписки.
+- Накопление в кэшах/библиотеках без лимитов.
+- Не отменённые AbortController/запросы.
+- Ссылки, удерживающие большие объекты (буферы, массивы).
+
+## Связи
+
+Класс часто соседствует с [[audit-defect-race-lifecycle]]. Выявлять системно через [[audit-methodology]].`,
+    },
+    {
+        slug: 'audit-defect-security',
+        title: 'Аудит: класс дефектов — безопасность/auth/песочница/CSP',
+        section: 'dev',
+        tags: ['аудит', 'безопасность', 'auth', 'sandbox', 'CSP', 'дефекты'],
+        freshness: 'verified',
+        sources: ['src/kernel/', 'server/', 'src/llm/'],
+        related: ['audit-type-security', 'audit-type-keys', 'audit-methodology'],
+        body: `## Назначение
+
+Аудит краёв безопасности: аутентификация, авторизация, песочница, CSP, утечки секретов, привилегии.
+
+## Что искать
+
+- Слабые/непроверенные проверки прав (authz).
+- Утечки ключей/секретов в логах и сообщениях.
+- Дыры в песочнице (sandbox), unsafe-eval, прямые вызовы.
+- CSP/connect-src: лишние разрешённые хосты или браун у-блокировки.
+- Прямые сетевые вызовы с секретами от клиента.
+
+## Связи
+
+См. [[audit-type-security]] (hardening) и [[audit-type-keys]] (секреты).`,
+    },
+    {
+        slug: 'audit-defect-data-integrity',
+        title: 'Аудит: класс дефектов — целостность данных и репозитории',
+        section: 'dev',
+        tags: ['аудит', 'данные', 'целостность', 'персистентность', 'репозитории', 'дефекты'],
+        freshness: 'verified',
+        sources: ['src/kernel/services/', 'src/kernel/dal/'],
+        related: ['audit-methodology', 'audit-type-data-streaming'],
+        body: `## Назначение
+
+Аудит целостности данных: персистентность, репозитории, миграции, согласованность между слоями.
+
+## Что искать
+
+- Клонирование/мутация данных на границах репозиториев.
+- Потеря данных при перезагрузке/сбое (нет flush, нет транзакций).
+- Schema drift: расхождение индексов/полей между миграциями и кодом.
+- Скрытые значения/невалидные состояния в storage.
+- Согласованность «источника правды» между несколькими хранилищами.
+
+## Связи
+
+См. [[audit-type-data-streaming]] (класс schema drift/stale).`,
+    },
+    {
+        slug: 'audit-defect-race-lifecycle',
+        title: 'Аудит: класс дефектов — гонки/жизненный цикл/async cleanup',
+        section: 'dev',
+        tags: ['аудит', 'гонки', 'race', 'жизненный цикл', 'async', 'дефекты'],
+        freshness: 'verified',
+        sources: ['src/kernel/', 'src/stores/', 'src/hooks/'],
+        related: ['audit-methodology', 'audit-type-data-streaming', 'audit-defect-memory-leaks'],
+        body: `## Назначение
+
+Аудит гонок и корректности жизненного цикла: async-очистка, повторные запуски, отмена, состояние после unmount.
+
+## Что искать
+
+- Гонки при параллельных запросах (stale-ответ перезаписывает свежий).
+- Промисы/старты, которые не сбрасываются (restart после shutdown).
+- Async-операции после unmount (setState на размонтированном).
+- Несогласованность между состоянием и реальным ресурсом (таймер/запрос).
+- Отсутствие debounce/отмены при быстрых повторных действиях.
+
+## Связи
+
+Часто переплетается с [[audit-defect-memory-leaks]]. Систематизировать через [[audit-methodology]].`,
+    },
+    {
+        slug: 'audit-defect-types-contracts',
+        title: 'Аудит: класс дефектов — типы/контракты/дрейф событий',
+        section: 'dev',
+        tags: ['аудит', 'типы', 'контракты', 'события', 'schema drift', 'дефекты'],
+        freshness: 'verified',
+        sources: ['src/kernel/contracts/', 'src/kernel/events/', 'src/kernel/types/'],
+        related: ['audit-methodology', 'audit-type-data-streaming'],
+        body: `## Назначение
+
+Аудит согласованности типов и контрактов: интерфейсы, event payload-ы, DI-зависимости.
+
+## Что искать
+
+- Несовпадение контрактов между регистрацией и потреблением (DI inconsistency).
+- Event schema drift: поля события меняются, а обработчики читают старое.
+- Размытые типы (any), приводящие к багам на этапе выполнения.
+- Разъезд типов между слоями (kernel ↔ store ↔ UI).
+- Implicit any и неявные приведения.
+
+## Связи
+
+Класс «schema drift / DI inconsistency» — см. [[audit-type-data-streaming]].`,
+    },
+    {
+        slug: 'audit-defect-performance',
+        title: 'Аудит: класс дефектов — производительность/индексы/кэш',
+        section: 'dev',
+        tags: ['аудит', 'производительность', 'индексы', 'кэш', 'сканы', 'дефекты'],
+        freshness: 'verified',
+        sources: ['src/kernel/', 'src/llm/', 'src/'],
+        related: ['audit-methodology', 'audit-type-data-streaming'],
+        body: `## Назначение
+
+Аудит производительности: индексы, сканирование, кэширование, частые ре-рендеры.
+
+## Что искать
+
+- Отсутствие индексов при частых запросах к IndexedDB/большим коллекциям.
+- Полные сканы там, где достаточно поиска по ключу.
+- Кэш без инвалидации/лимитов, устаревшие записи.
+- Повторные дорогие вычисления в рендере (без useMemo/мемоизации).
+- Linear-проходы по большим массивам в горячих путях.
+
+## Связи
+
+Соседствует с [[audit-defect-memory-leaks]] (кэши) и [[audit-methodology]].`,
+    },
+    {
         slug: 'panel-exceptions',
         title: 'Панель: Исключения (вето)',
         section: 'panels',

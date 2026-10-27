@@ -3,7 +3,7 @@
   "generatedBy": "scripts/gen-docs-inventory.mjs",
   "scope": "git-tracked markdown: docs/**/*.md (excluding docs/new drafts and the self-report pages docs-health, docs-inventory) plus repository entry docs (root *.md, .superagents/**, src/kernel/DEPENDENCY_MAP.md)",
   "totals": {
-    "documents": 1086,
+    "documents": 1094,
     "byCategory": {
       "repo": 13,
       "top": 47,
@@ -13,11 +13,11 @@
       "reference": 6,
       "roadmap": 17,
       "superseded": 3,
-      "wiki": 239
+      "wiki": 247
     },
     "byLanguage": {
       "en": 659,
-      "ru": 256,
+      "ru": 264,
       "mixed": 171
     }
   },
@@ -6784,6 +6784,70 @@
       "hash": "8a72d262a859870fed35d8a7b5a92dcee1fb8aa9"
     },
     {
+      "path": "docs/wiki/audit-methodology.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Аудит: методология и процесс",
+      "bytes": 2312,
+      "hash": "33f4f9d920584535b3da392f48675a83974061fb"
+    },
+    {
+      "path": "docs/wiki/audit-type-architecture.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Аудит: консолидация архитектуры",
+      "bytes": 1783,
+      "hash": "e732e772893c5ea590a2a1f9752a5eb4692d6448"
+    },
+    {
+      "path": "docs/wiki/audit-type-bootstrap.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Аудит: запуск и выживание UI",
+      "bytes": 2036,
+      "hash": "356ecc0421559ca74ae36a71f392b19fdce69c7f"
+    },
+    {
+      "path": "docs/wiki/audit-type-build.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Аудит: сборка и целостность репозитория",
+      "bytes": 1850,
+      "hash": "f61994bca5edae54dbf8f30f86c532a59c94a730"
+    },
+    {
+      "path": "docs/wiki/audit-type-data-streaming.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Аудит: данные, состояние и стриминг",
+      "bytes": 1822,
+      "hash": "e26d5b2e1463f32d708d6e8486540ca6e592ef4f"
+    },
+    {
+      "path": "docs/wiki/audit-type-domain.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Аудит: системный по доменам",
+      "bytes": 1651,
+      "hash": "4cb61d023f7531b0bc230f57444ab5efe4cfadaa"
+    },
+    {
+      "path": "docs/wiki/audit-type-keys.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Аудит: ключи и секреты",
+      "bytes": 1663,
+      "hash": "64300b7c7643d49afa251ead7dedeb1981677317"
+    },
+    {
+      "path": "docs/wiki/audit-type-security.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Аудит: безопасность и hardening",
+      "bytes": 1531,
+      "hash": "34776618cc99fb00cbc114e1821faf898e8f24b9"
+    },
+    {
       "path": "docs/wiki/capabilities.md",
       "category": "wiki",
       "language": "ru",
@@ -7405,7 +7469,7 @@
       "language": "mixed",
       "title": "Матрица покрытия",
       "bytes": 8463,
-      "hash": "8bcd3fbfe7a19fac7dc7c8c6a96fc9965ff0b686"
+      "hash": "140e28e267ceede53bbd26d169fc675a887c71ab"
     },
     {
       "path": "docs/wiki/debates.md",
@@ -7437,7 +7501,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4075,
-      "hash": "f58f142a755f4ea728da4ea3d0cf32d453580bb6"
+      "hash": "c4fd15fead8182ab31f8ef70773422598ccf43d6"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -7525,7 +7589,7 @@
       "language": "ru",
       "title": "Граф знаний",
       "bytes": 4904,
-      "hash": "36ee1c22f13aa65e67486faedf48de0583be8d2e"
+      "hash": "682b449b744b9be4236eaa9543d349dc0af6ac84"
     },
     {
       "path": "docs/wiki/dev-history.md",
@@ -7740,8 +7804,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Карта документации",
-      "bytes": 33243,
-      "hash": "e84d6e6e862ef87c5f6084435f9e6a9eb13da187"
+      "bytes": 33935,
+      "hash": "d0dd8d18d329da73175517f65407e2f8b64ec33a"
     },
     {
       "path": "docs/wiki/docs-standard.md",
@@ -8436,8 +8500,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Wiki SuperAgents OS",
-      "bytes": 25523,
-      "hash": "43a15b7f8da4246600ce4ddd41b7d0a4e4d6d5ec"
+      "bytes": 26419,
+      "hash": "4a26144cbef32151f3aacc9930a98ea74ef5f071"
     },
     {
       "path": "docs/wiki/roadmap-notes.md",

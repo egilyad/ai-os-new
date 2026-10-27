@@ -65,7 +65,7 @@
     {
       "id": "dev",
       "title": "Разработчикам",
-      "articles": 38
+      "articles": 44
     }
   ],
   "articles": [
@@ -1798,6 +1798,168 @@
         "audit-type-bootstrap",
         "audit-type-domain",
         "audit-type-security"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:audit-defect-memory-leaks",
+      "type": "article",
+      "slug": "audit-defect-memory-leaks",
+      "title": "Аудит: класс дефектов — утечки памяти/ресурсов",
+      "section": "dev",
+      "status": "verified",
+      "tags": [
+        "аудит",
+        "память",
+        "утечки",
+        "ресурсы",
+        "дефекты"
+      ],
+      "sources": [
+        "src/kernel/",
+        "src/components/",
+        "src/hooks/"
+      ],
+      "related": [
+        "audit-methodology",
+        "audit-type-data-streaming"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:audit-defect-security",
+      "type": "article",
+      "slug": "audit-defect-security",
+      "title": "Аудит: класс дефектов — безопасность/auth/песочница/CSP",
+      "section": "dev",
+      "status": "verified",
+      "tags": [
+        "аудит",
+        "безопасность",
+        "auth",
+        "sandbox",
+        "CSP",
+        "дефекты"
+      ],
+      "sources": [
+        "src/kernel/",
+        "server/",
+        "src/llm/"
+      ],
+      "related": [
+        "audit-type-security",
+        "audit-type-keys",
+        "audit-methodology"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:audit-defect-data-integrity",
+      "type": "article",
+      "slug": "audit-defect-data-integrity",
+      "title": "Аудит: класс дефектов — целостность данных и репозитории",
+      "section": "dev",
+      "status": "verified",
+      "tags": [
+        "аудит",
+        "данные",
+        "целостность",
+        "персистентность",
+        "репозитории",
+        "дефекты"
+      ],
+      "sources": [
+        "src/kernel/services/",
+        "src/kernel/dal/"
+      ],
+      "related": [
+        "audit-methodology",
+        "audit-type-data-streaming"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:audit-defect-race-lifecycle",
+      "type": "article",
+      "slug": "audit-defect-race-lifecycle",
+      "title": "Аудит: класс дефектов — гонки/жизненный цикл/async cleanup",
+      "section": "dev",
+      "status": "verified",
+      "tags": [
+        "аудит",
+        "гонки",
+        "race",
+        "жизненный цикл",
+        "async",
+        "дефекты"
+      ],
+      "sources": [
+        "src/kernel/",
+        "src/stores/",
+        "src/hooks/"
+      ],
+      "related": [
+        "audit-methodology",
+        "audit-type-data-streaming",
+        "audit-defect-memory-leaks"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:audit-defect-types-contracts",
+      "type": "article",
+      "slug": "audit-defect-types-contracts",
+      "title": "Аудит: класс дефектов — типы/контракты/дрейф событий",
+      "section": "dev",
+      "status": "verified",
+      "tags": [
+        "аудит",
+        "типы",
+        "контракты",
+        "события",
+        "schema drift",
+        "дефекты"
+      ],
+      "sources": [
+        "src/kernel/contracts/",
+        "src/kernel/events/",
+        "src/kernel/types/"
+      ],
+      "related": [
+        "audit-methodology",
+        "audit-type-data-streaming"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:audit-defect-performance",
+      "type": "article",
+      "slug": "audit-defect-performance",
+      "title": "Аудит: класс дефектов — производительность/индексы/кэш",
+      "section": "dev",
+      "status": "verified",
+      "tags": [
+        "аудит",
+        "производительность",
+        "индексы",
+        "кэш",
+        "сканы",
+        "дефекты"
+      ],
+      "sources": [
+        "src/kernel/",
+        "src/llm/",
+        "src/"
+      ],
+      "related": [
+        "audit-methodology",
+        "audit-type-data-streaming"
       ],
       "reviewed": null,
       "tests": []

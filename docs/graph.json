@@ -3,22 +3,22 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 1357,
-    "edges": 3531,
+    "nodes": 1366,
+    "edges": 3562,
     "byType": {
       "audit": 75,
-      "code": 575,
+      "code": 578,
       "test": 196,
       "panel": 263,
-      "article": 248
+      "article": 254
     },
     "byKind": {
       "audit_test": 336,
       "audit_mention": 929,
       "documents": 202,
-      "source": 812,
+      "source": 829,
       "test": 287,
-      "related": 965
+      "related": 979
     }
   },
   "nodes": [
@@ -1953,6 +1953,11 @@
       "label": "src/kernel/contracts/transaction.ts"
     },
     {
+      "id": "file:src/kernel/dal/",
+      "type": "code",
+      "label": "src/kernel/dal/"
+    },
+    {
       "id": "file:src/kernel/dal/data-access-layer.test.ts",
       "type": "test",
       "label": "src/kernel/dal/data-access-layer.test.ts"
@@ -2026,6 +2031,11 @@
       "id": "file:src/kernel/DEPENDENCY_MAP.md",
       "type": "code",
       "label": "src/kernel/DEPENDENCY_MAP.md"
+    },
+    {
+      "id": "file:src/kernel/events/",
+      "type": "code",
+      "label": "src/kernel/events/"
     },
     {
       "id": "file:src/kernel/events/chat-events.ts",
@@ -3761,6 +3771,11 @@
       "id": "file:src/kernel/services/virtual-key-service.ts",
       "type": "code",
       "label": "src/kernel/services/virtual-key-service.ts"
+    },
+    {
+      "id": "file:src/kernel/types/",
+      "type": "code",
+      "label": "src/kernel/types/"
     },
     {
       "id": "file:src/kernel/types/exception-template.ts",
@@ -6256,6 +6271,48 @@
       "label": "Архитектура и связи",
       "section": "architecture",
       "status": "documented"
+    },
+    {
+      "id": "wiki:audit-defect-data-integrity",
+      "type": "article",
+      "label": "Аудит: класс дефектов — целостность данных и репозитории",
+      "section": "dev",
+      "status": "verified"
+    },
+    {
+      "id": "wiki:audit-defect-memory-leaks",
+      "type": "article",
+      "label": "Аудит: класс дефектов — утечки памяти/ресурсов",
+      "section": "dev",
+      "status": "verified"
+    },
+    {
+      "id": "wiki:audit-defect-performance",
+      "type": "article",
+      "label": "Аудит: класс дефектов — производительность/индексы/кэш",
+      "section": "dev",
+      "status": "verified"
+    },
+    {
+      "id": "wiki:audit-defect-race-lifecycle",
+      "type": "article",
+      "label": "Аудит: класс дефектов — гонки/жизненный цикл/async cleanup",
+      "section": "dev",
+      "status": "verified"
+    },
+    {
+      "id": "wiki:audit-defect-security",
+      "type": "article",
+      "label": "Аудит: класс дефектов — безопасность/auth/песочница/CSP",
+      "section": "dev",
+      "status": "verified"
+    },
+    {
+      "id": "wiki:audit-defect-types-contracts",
+      "type": "article",
+      "label": "Аудит: класс дефектов — типы/контракты/дрейф событий",
+      "section": "dev",
+      "status": "verified"
     },
     {
       "id": "wiki:audit-methodology",
@@ -15399,6 +15456,161 @@
     {
       "from": "wiki:architecture",
       "to": "wiki:memory",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:audit-defect-data-integrity",
+      "to": "file:src/kernel/dal/",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:audit-defect-data-integrity",
+      "to": "file:src/kernel/services/",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:audit-defect-data-integrity",
+      "to": "wiki:audit-methodology",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:audit-defect-data-integrity",
+      "to": "wiki:audit-type-data-streaming",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:audit-defect-memory-leaks",
+      "to": "file:src/components/",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:audit-defect-memory-leaks",
+      "to": "file:src/hooks/",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:audit-defect-memory-leaks",
+      "to": "file:src/kernel/",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:audit-defect-memory-leaks",
+      "to": "wiki:audit-methodology",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:audit-defect-memory-leaks",
+      "to": "wiki:audit-type-data-streaming",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:audit-defect-performance",
+      "to": "file:src/kernel/",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:audit-defect-performance",
+      "to": "file:src/llm/",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:audit-defect-performance",
+      "to": "file:src/",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:audit-defect-performance",
+      "to": "wiki:audit-methodology",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:audit-defect-performance",
+      "to": "wiki:audit-type-data-streaming",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:audit-defect-race-lifecycle",
+      "to": "file:src/hooks/",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:audit-defect-race-lifecycle",
+      "to": "file:src/kernel/",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:audit-defect-race-lifecycle",
+      "to": "file:src/stores/",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:audit-defect-race-lifecycle",
+      "to": "wiki:audit-defect-memory-leaks",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:audit-defect-race-lifecycle",
+      "to": "wiki:audit-methodology",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:audit-defect-race-lifecycle",
+      "to": "wiki:audit-type-data-streaming",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:audit-defect-security",
+      "to": "file:server/",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:audit-defect-security",
+      "to": "file:src/kernel/",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:audit-defect-security",
+      "to": "file:src/llm/",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:audit-defect-security",
+      "to": "wiki:audit-methodology",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:audit-defect-security",
+      "to": "wiki:audit-type-keys",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:audit-defect-security",
+      "to": "wiki:audit-type-security",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:audit-defect-types-contracts",
+      "to": "file:src/kernel/contracts/",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:audit-defect-types-contracts",
+      "to": "file:src/kernel/events/",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:audit-defect-types-contracts",
+      "to": "file:src/kernel/types/",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:audit-defect-types-contracts",
+      "to": "wiki:audit-methodology",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:audit-defect-types-contracts",
+      "to": "wiki:audit-type-data-streaming",
       "kind": "related"
     },
     {
