@@ -31,6 +31,9 @@ export interface ICalibrationService {
     /** Track calibration outcome for penalty accumulation */
     trackCalibration(agentId: string, _round: number, avgScore: number, wasAccurate: boolean): void;
 
+    /** All tracked calibration samples (confidence vs accuracy) */
+    getCalibrationHistory(): Array<{ agentId: string; avgScore: number; wasAccurate: boolean }>;
+
     /** Generate calibration enforcement prompt for an agent */
     getCalibrationPrompt(agentId: string, _round: number, language?: string): string;
 

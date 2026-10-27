@@ -5,8 +5,9 @@ import { agemsTaskService } from '../../kernel/services/agems-task-service';
 import VisGraph, { type VisGraphNode, type VisGraphEdge } from '../Common/VisGraph';
 import DebateLens from './DebateLens';
 import KeysLens from './KeysLens';
+import CalibrationLens from './CalibrationLens';
 
-type Lens = 'routing' | 'cost' | 'task' | 'ucb1' | 'debate' | 'keys';
+type Lens = 'routing' | 'cost' | 'task' | 'ucb1' | 'debate' | 'keys' | 'calibration';
 
 interface Ucb1Row {
     provider: string;
@@ -277,6 +278,7 @@ const GraphWorkbenchPanel: React.FC = () => {
                     {lensBtn('ucb1', '🎰 UCB1')}
                     {lensBtn('debate', '🎯 Debate')}
                     {lensBtn('keys', '🔑 Keys')}
+                    {lensBtn('calibration', '📐 Калибровка')}
                 </div>
                 {loading && <span style={{ fontSize: 12, color: 'var(--slate-500)' }}>loading…</span>}
             </div>
@@ -288,6 +290,8 @@ const GraphWorkbenchPanel: React.FC = () => {
                     <DebateLens />
                 ) : lens === 'keys' ? (
                     <KeysLens />
+                ) : lens === 'calibration' ? (
+                    <CalibrationLens />
                 ) : currentNodes.length === 0 ? (
                     <div style={{ color: 'var(--slate-500)', fontSize: 13, padding: 24, textAlign: 'center', border: '1px dashed rgba(255,255,255,0.1)', borderRadius: 12 }}>
                         Нет данных для этой линзы

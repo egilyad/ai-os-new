@@ -229,6 +229,14 @@ export class CalibrationService implements ICalibrationService {
         );
     }
 
+    getCalibrationHistory(): Array<{ agentId: string; avgScore: number; wasAccurate: boolean }> {
+        const out: Array<{ agentId: string; avgScore: number; wasAccurate: boolean }> = [];
+        this.agentRecords.forEach((rec, agentId) => {
+            rec.rounds.forEach((r) => out.push({ agentId, avgScore: r.avgScore, wasAccurate: r.wasAccurate }));
+        });
+        return out;
+    }
+
     clearSession(): void {
         this.agentRecords.clear();
     }
