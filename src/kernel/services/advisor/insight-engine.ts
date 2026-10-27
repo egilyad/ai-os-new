@@ -142,9 +142,14 @@ export class InsightEngine implements IInsightEngine {
         return { dead: false, reason: '' };
     }
 
-    async generateLLMAnalysis(): Promise<LLMAnalysisResult | null> {
+    async generateLLMAnalysis(keyId?: string): Promise<LLMAnalysisResult | null> {
         const keys = this.deps.keyService.getKeys().filter((k) => k.status === 'active');
         if (keys.length === 0) return null;
+
+        if (keyId) {
+            const pinned = keys.find((k) => k.id === keyId);
+            if (pinned) return this.tryAnalyzeKey(pinned);
+        }
 
         const ranked = this.deps.routerService.getRankedProviders(
             'performance',
@@ -169,14 +174,96 @@ export class InsightEngine implements IInsightEngine {
             const adapter = this.deps.adapterRegistry.getAdapter(candidate.provider);
             if (!adapter) continue;
 
-            const key = candidate;
+            const res = await this.tryAnalyzeKey(candidate);
+            if (res) return res;
+        }
 
-            const topology = this.deps.orchestrator.getActiveTopology();
-            const topologySummary = topology?.nodes?.length
-                ? `\n### Active Topology Nodes\n${topology.nodes.map((n) => `- [NODE] (model: ${n.model || 'auto'}, provider: ${n.provider || 'auto'})`).join('\n')}`
-                : '\n### Active Topology\nNone mounted';
+        return null;
+    }
 
-            const metricsSummary = `
+    async generateAnswer(question: string, keyId?: string): Promise<string> {
+        const keys = this.deps.keyService.getKeys().filter((k) => k.status === 'active');
+        const chosen = keyId
+            ? keys.find((k) => k.id === keyId)
+            : keys[0];
+        if (!chosen) return 'Нет активного ключа — добавьте ключ, чтобы спросить SRE-агента.';
+
+        const adapter = this.deps.adapterRegistry.getAdapter(chosen.provider);
+        if (!adapter) return `Провайдер ${chosen.provider} недоступен.`;
+
+        const topology = this.deps.orchestrator.getActiveTopology();
+        const topologySummary = topology?.nodes?.length
+            ? `\n### Active Topology Nodes\n${topology.nodes.map((n) => `- [NODE] (model: ${n.model || 'auto'}, provider: ${n.provider || 'auto'})`).join('\n')}`
+            : '\n### Active Topology\nNone mounted';
+
+        const context = `
+## Current System Metrics
+- Average latency: ${Math.round(this.metrics.avgLatency)}ms
+- Cost/request: $${this.metrics.costPerRequest.toFixed(4)}
+- Error rate: ${(this.metrics.errorRate * 100).toFixed(1)}%
+- Provider reliability: ${
+    Object.entries(this.metrics.providerReliability)
+        .map(([p, r]) => `${p} ${(r * 100).toFixed(0)}%`)
+        .join(', ') || 'no data'
+}
+${topologySummary}
+`;
+
+        try {
+            const messages = [
+                {
+                    role: 'system' as const,
+                    content:
+                        'You are the SRE agent of SuperAgents OS. Answer based on the given system state; be concrete and honest, do not invent data.',
+                },
+                { role: 'user' as const, content: `${context}\n\nQuestion: ${question}` },
+            ];
+            const modelId = this.resolveModelId(chosen);
+            const response = await adapter.sendMessage(messages, modelId, chosen.key);
+            return response.content || '(пустой ответ)';
+        } catch (e) {
+            this.providerFailureCache.set(chosen.provider, Date.now());
+            return `Ошибка LLM-вызова: ${e instanceof Error ? e.message : String(e)}`;
+        }
+    }
+
+    private resolveModelId(key: {
+        provider: string;
+        availableModels?: string[];
+    }): string {
+        const PROVDER_DEFAULTS: Record<string, string> = {
+            ...PROVIDER_DEFAULT_MODELS,
+            gemini: 'gemini-3.1-flash-lite',
+            groq: 'llama-3.3-70b-versatile',
+            openrouter: PROVIDER_DEFAULT_MODELS.openrouter!,
+            nvidia: 'meta/llama-3.3-70b-instruct',
+            deepseek: 'deepseek-chat',
+            cohere: 'command-r-plus',
+        };
+        return (
+            PROVDER_DEFAULTS[key.provider.toLowerCase()] ||
+            key.availableModels?.[0] ||
+            'auto'
+        );
+    }
+
+    private async tryAnalyzeKey(
+        candidate: {
+            id: string;
+            provider: string;
+            key: string;
+            availableModels?: string[];
+        },
+    ): Promise<LLMAnalysisResult | null> {
+        const adapter = this.deps.adapterRegistry.getAdapter(candidate.provider);
+        if (!adapter) return null;
+
+        const topology = this.deps.orchestrator.getActiveTopology();
+        const topologySummary = topology?.nodes?.length
+            ? `\n### Active Topology Nodes\n${topology.nodes.map((n) => `- [NODE] (model: ${n.model || 'auto'}, provider: ${n.provider || 'auto'})`).join('\n')}`
+            : '\n### Active Topology\nNone mounted';
+
+        const metricsSummary = `
 ## Current System Metrics
 ### Latency
 - Average: ${Math.round(this.metrics.avgLatency)}ms
@@ -192,7 +279,7 @@ ${
 ${(this.metrics.errorRate * 100).toFixed(1)}%
 `;
 
-            const prompt = `Analyze these system metrics and provide optimization suggestions.
+        const prompt = `Analyze these system metrics and provide optimization suggestions.
 ${metricsSummary}
 ${topologySummary}
 Provide a JSON response with:
@@ -209,49 +296,38 @@ Provide a JSON response with:
 }
 Focus on actionable, specific improvements.`;
 
-            try {
-                const messages = [
-                    {
-                        role: 'system' as const,
-                        content:
-                            'You are a system optimization expert. Respond with valid JSON only.',
-                    },
-                    { role: 'user' as const, content: prompt },
-                ];
-                const PROVDER_DEFAULTS: Record<string, string> = {
-                    ...PROVIDER_DEFAULT_MODELS,
-                    gemini: 'gemini-3.1-flash-lite',
-                    groq: 'llama-3.3-70b-versatile',
-                    openrouter: PROVIDER_DEFAULT_MODELS.openrouter!,
-                    nvidia: 'meta/llama-3.3-70b-instruct',
-                    deepseek: 'deepseek-chat',
-                    cohere: 'command-r-plus',
+        try {
+            const messages = [
+                {
+                    role: 'system' as const,
+                    content:
+                        'You are a system optimization expert. Respond with valid JSON only.',
+                },
+                { role: 'user' as const, content: prompt },
+            ];
+            const response = await adapter.sendMessage(
+                messages,
+                this.resolveModelId(candidate),
+                candidate.key,
+            );
+            const jsonMatch = response.content.match(/\{[\s\S]*\}/);
+            if (jsonMatch) {
+                const parsed = safeJsonParse(jsonMatch[0]) as Record<string, unknown> | undefined;
+                const r = (parsed ?? {}) as Record<string, unknown>;
+                return {
+                    suggestions: (Array.isArray(r.suggestions)
+                        ? r.suggestions
+                        : []) as LLMAnalysisResult['suggestions'],
+                    bottlenecks: (Array.isArray(r.bottlenecks)
+                        ? r.bottlenecks
+                        : []) as string[],
+                    recommendations: (Array.isArray(r.recommendations)
+                        ? r.recommendations
+                        : []) as string[],
                 };
-                const modelId =
-                    PROVDER_DEFAULTS[key.provider.toLowerCase()] ||
-                    key.availableModels?.[0] ||
-                    'auto';
-                const response = await adapter.sendMessage(messages, modelId, key.key);
-                const jsonMatch = response.content.match(/\{[\s\S]*\}/);
-                if (jsonMatch) {
-                    const parsed = safeJsonParse(jsonMatch[0]) as
-                        Record<string, unknown> | undefined;
-                    const r = (parsed ?? {}) as Record<string, unknown>;
-                    return {
-                        suggestions: (Array.isArray(r.suggestions)
-                            ? r.suggestions
-                            : []) as LLMAnalysisResult['suggestions'],
-                        bottlenecks: (Array.isArray(r.bottlenecks)
-                            ? r.bottlenecks
-                            : []) as string[],
-                        recommendations: (Array.isArray(r.recommendations)
-                            ? r.recommendations
-                            : []) as string[],
-                    };
-                }
-            } catch {
-                this.providerFailureCache.set(candidate.provider, Date.now());
             }
+        } catch {
+            this.providerFailureCache.set(candidate.provider, Date.now());
         }
 
         return null;

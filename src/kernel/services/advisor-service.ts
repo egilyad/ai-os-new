@@ -242,7 +242,7 @@ export class AdvisorService {
     }
 
     /** The actual audit pass: budget/optimization + What-If + LLM insights. */
-    private async runAnalysis(): Promise<void> {
+    private async runAnalysis(keyId?: string): Promise<void> {
         this.pressure.generateSnapshot();
         this.optimizer.checkBudgetHealth();
         this.optimizer.triggerAnalysis();
@@ -259,7 +259,7 @@ export class AdvisorService {
             });
         }
 
-        const analysis = await this.insight.generateLLMAnalysis();
+        const analysis = await this.insight.generateLLMAnalysis(keyId);
         if (analysis) {
             for (const suggestion of analysis.suggestions) {
                 this.optimizer.propose({
@@ -298,13 +298,53 @@ export class AdvisorService {
      * operator can explicitly ask it to audit the system instead of waiting for
      * the background timer.
      */
-    async runAuditNow(): Promise<void> {
+    async runAuditNow(keyId?: string): Promise<void> {
         this.lastAnalysis = Date.now();
         try {
-            await this.runAnalysis();
+            await this.runAnalysis(keyId);
         } finally {
             this.deps.eventBus.emit(EVENTS.ADVISOR_SUGGESTION, undefined);
         }
+    }
+
+    /** Ask the SRE agent a free-form question (uses the selected/active key). */
+    async askSre(question: string, keyId?: string): Promise<string> {
+        return this.insight.generateAnswer(question, keyId);
+    }
+
+    /** Generate a downloadable markdown audit report. */
+    generateMarkdownReport(keyLabel?: string): string {
+        const metrics = this.insight.getMetrics();
+        const suggestions = this.optimizer.getSuggestions();
+        const alerts = this.optimizer.getSREAlerts();
+        const lines: string[] = [];
+        lines.push('# SRE Audit Report');
+        lines.push('');
+        lines.push(`- Generated: ${new Date().toLocaleString()}`);
+        if (keyLabel) lines.push(`- LLM key: ${keyLabel}`);
+        lines.push('');
+        lines.push('## Metrics');
+        lines.push(`- Avg latency: ${Math.round(metrics.avgLatency)}ms`);
+        lines.push(`- Error rate: ${(metrics.errorRate * 100).toFixed(1)}%`);
+        lines.push(`- Cost/request: $${metrics.costPerRequest.toFixed(4)}`);
+        lines.push('');
+        lines.push(`## Suggestions (${suggestions.length})`);
+        if (suggestions.length === 0) {
+            lines.push('_Нет активных предложений._');
+        }
+        for (const s of suggestions.slice(0, 50)) {
+            lines.push(`### [${s.impact.toUpperCase()}] ${s.title}`);
+            lines.push(s.description);
+            lines.push('');
+        }
+        lines.push(`## Alerts (${alerts.length})`);
+        if (alerts.length === 0) {
+            lines.push('_Нет алертов._');
+        }
+        for (const a of alerts.slice(0, 50)) {
+            lines.push(`- [${a.severity.toUpperCase()}] ${a.message || a.title || a.id}`);
+        }
+        return lines.join('\n');
     }
 
     // ── Pressure Map ───────────────────────────────────────────────────

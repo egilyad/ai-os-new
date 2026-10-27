@@ -136,7 +136,10 @@ export interface LLMAnalysisResult {
 export interface IInsightEngine {
     analyzeTraces(traces: unknown[]): void;
     analyzeKernelState(state: unknown): void;
-    generateLLMAnalysis(): Promise<LLMAnalysisResult | null>;
+    /** LLM-based audit. Pass a keyId to pin the analysis to that exact key. */
+    generateLLMAnalysis(keyId?: string): Promise<LLMAnalysisResult | null>;
+    /** Free-form question to the SRE brain (uses the same active/pinned key). */
+    generateAnswer(question: string, keyId?: string): Promise<string>;
     getMetrics(): AdvisorMetrics;
 }
 
