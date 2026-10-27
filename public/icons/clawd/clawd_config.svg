@@ -1,0 +1,22 @@
+<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+  <title>Config</title>
+  <g transform="translate(4,24) scale(4)">
+    <path clip-rule="evenodd" d="M20.998 10.949H24v3.102h-3v3.028h-1.487V20H18v-2.921h-1.487V20H15v-2.921H9V20H7.488v-2.921H6V20H4.487v-2.921H3V14.05H0V10.95h3V5h17.998v5.949zM6 10.949h1.488V8.102H6v2.847zm10.51 0H18V8.102h-1.49v2.847z" fill="#D97757" fill-rule="evenodd"/>
+  </g>
+  <!-- gear -->
+  <g transform="translate(104,22)">
+    <circle cx="0" cy="0" r="7" fill="none" stroke="#5B9BD5" stroke-width="3"/>
+    <circle cx="0" cy="0" r="3" fill="#5B9BD5"/>
+    <!-- gear teeth -->
+    <g fill="#5B9BD5">
+      <rect x="-2" y="-14" width="4" height="6" rx="1"/>
+      <rect x="-2" y="8" width="4" height="6" rx="1"/>
+      <rect x="-14" y="-2" width="6" height="4" rx="1"/>
+      <rect x="8" y="-2" width="6" height="4" rx="1"/>
+      <rect x="6" y="-10" width="5" height="4" rx="1" transform="rotate(45,8,-8)"/>
+      <rect x="-11" y="6" width="5" height="4" rx="1" transform="rotate(45,-8,8)"/>
+      <rect x="-11" y="-10" width="5" height="4" rx="1" transform="rotate(-45,-8,-8)"/>
+      <rect x="6" y="6" width="5" height="4" rx="1" transform="rotate(-45,8,8)"/>
+    </g>
+  </g>
+</svg>

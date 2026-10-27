@@ -1,0 +1,26 @@
+<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+  <title>Coffee</title>
+  <g transform="translate(4,24) scale(4)">
+    <path clip-rule="evenodd" d="M20.998 10.949H24v3.102h-3v3.028h-1.487V20H18v-2.921h-1.487V20H15v-2.921H9V20H7.488v-2.921H6V20H4.487v-2.921H3V14.05H0V10.95h3V5h17.998v5.949zM6 10.949h1.488V8.102H6v2.847zm10.51 0H18V8.102h-1.49v2.847z" fill="#D97757" fill-rule="evenodd"/>
+  </g>
+  <!-- cup near right hand -->
+  <g fill="#8B6C5C">
+    <rect x="100" y="60" width="24" height="24"/>
+    <rect x="100" y="80" width="24" height="4" fill="#6B4C3C"/>
+  </g>
+  <!-- handle -->
+  <rect x="124" y="64" width="4" height="4" fill="#8B6C5C"/>
+  <rect x="124" y="76" width="4" height="4" fill="#8B6C5C"/>
+  <rect x="128" y="68" width="4" height="8" fill="#8B6C5C"/>
+  <!-- coffee surface -->
+  <rect x="104" y="64" width="16" height="4" fill="#6B4C3C"/>
+  <!-- steam (pixel) -->
+  <g fill="#FFFFFF" opacity="0.5">
+    <rect x="104" y="52" width="4" height="4"/>
+    <rect x="108" y="48" width="4" height="4"/>
+    <rect x="104" y="44" width="4" height="4"/>
+    <rect x="116" y="52" width="4" height="4"/>
+    <rect x="112" y="48" width="4" height="4"/>
+    <rect x="116" y="44" width="4" height="4"/>
+  </g>
+</svg>

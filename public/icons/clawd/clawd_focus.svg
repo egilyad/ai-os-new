@@ -1,0 +1,18 @@
+<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+  <title>Focus</title>
+  <g transform="translate(4,24) scale(4)">
+    <path clip-rule="evenodd" d="M20.998 10.949H24v3.102h-3v3.028h-1.487V20H18v-2.921h-1.487V20H15v-2.921H9V20H7.488v-2.921H6V20H4.487v-2.921H3V14.05H0V10.95h3V5h17.998v5.949zM6 10.949h1.488V8.102H6v2.847zm10.51 0H18V8.102h-1.49v2.847z" fill="#D97757" fill-rule="evenodd"/>
+  </g>
+  <!-- focus lines converging toward mascot -->
+  <g stroke="#5B9BD5" stroke-width="2" opacity="0.4" stroke-linecap="round">
+    <line x1="0" y1="0" x2="24" y2="44"/>
+    <line x1="128" y1="0" x2="88" y2="44"/>
+    <line x1="0" y1="44" x2="16" y2="56"/>
+    <line x1="128" y1="44" x2="100" y2="56"/>
+    <line x1="0" y1="100" x2="20" y2="96"/>
+    <line x1="128" y1="100" x2="100" y2="96"/>
+  </g>
+  <!-- intense eye glow -->
+  <circle cx="31" cy="62" r="4" fill="#5B9BD5" opacity="0.3"/>
+  <circle cx="73" cy="62" r="4" fill="#5B9BD5" opacity="0.3"/>
+</svg>

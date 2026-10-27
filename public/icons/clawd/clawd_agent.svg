@@ -1,0 +1,25 @@
+<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+  <title>Spawn Agent</title>
+  <g transform="translate(4,24) scale(4)">
+    <path clip-rule="evenodd" d="M20.998 10.949H24v3.102h-3v3.028h-1.487V20H18v-2.921h-1.487V20H15v-2.921H9V20H7.488v-2.921H6V20H4.487v-2.921H3V14.05H0V10.95h3V5h17.998v5.949zM6 10.949h1.488V8.102H6v2.847zm10.51 0H18V8.102h-1.49v2.847z" fill="#D97757" fill-rule="evenodd"/>
+  </g>
+  <!-- mini mascot (child agent) bouncing out to the right -->
+  <g transform="translate(84,6) scale(1.6)">
+    <path clip-rule="evenodd" d="M20.998 10.949H24v3.102h-3v3.028h-1.487V20H18v-2.921h-1.487V20H15v-2.921H9V20H7.488v-2.921H6V20H4.487v-2.921H3V14.05H0V10.95h3V5h17.998v5.949zM6 10.949h1.488V8.102H6v2.847zm10.51 0H18V8.102h-1.49v2.847z" fill="#5B9BD5" fill-rule="evenodd"/>
+  </g>
+  <!-- connection line from parent to child -->
+  <path d="M100,72 Q108,56 92,44" fill="none" stroke="#F0C75E" stroke-width="2" stroke-dasharray="4,3" opacity="0.7"/>
+  <!-- energy sparkles around mini mascot -->
+  <g fill="#F0C75E">
+    <rect x="82" y="4" width="3" height="3" rx="1"/>
+    <rect x="122" y="8" width="4" height="4" rx="1"/>
+    <rect x="118" y="38" width="3" height="3" rx="1"/>
+    <rect x="80" y="32" width="3" height="3" rx="1"/>
+  </g>
+  <!-- spawn burst lines -->
+  <g stroke="#F0C75E" stroke-width="2" stroke-linecap="round" opacity="0.5">
+    <line x1="78" y1="20" x2="74" y2="16"/>
+    <line x1="126" y1="18" x2="128" y2="14"/>
+    <line x1="124" y1="36" x2="128" y2="38"/>
+  </g>
+</svg>

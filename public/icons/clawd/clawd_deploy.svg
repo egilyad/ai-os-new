@@ -1,0 +1,16 @@
+<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+  <title>Deploy</title>
+  <g transform="translate(4,24) scale(4)">
+    <path clip-rule="evenodd" d="M20.998 10.949H24v3.102h-3v3.028h-1.487V20H18v-2.921h-1.487V20H15v-2.921H9V20H7.488v-2.921H6V20H4.487v-2.921H3V14.05H0V10.95h3V5h17.998v5.949zM6 10.949h1.488V8.102H6v2.847zm10.51 0H18V8.102h-1.49v2.847z" fill="#D97757" fill-rule="evenodd"/>
+  </g>
+  <!-- rocket body -->
+  <path d="M106,4 L114,20 L110,20 L110,36 L102,36 L102,20 L98,20 Z" fill="#E05252"/>
+  <!-- window -->
+  <circle cx="106" cy="18" r="3" fill="#FFFFFF" opacity="0.7"/>
+  <!-- fins -->
+  <path d="M102,28 L96,36 L102,34 Z" fill="#5B9BD5"/>
+  <path d="M110,28 L116,36 L110,34 Z" fill="#5B9BD5"/>
+  <!-- flame -->
+  <path d="M103,36 L106,44 L109,36" fill="#F0C75E"/>
+  <path d="M104,36 L106,40 L108,36" fill="#E05252" opacity="0.7"/>
+</svg>

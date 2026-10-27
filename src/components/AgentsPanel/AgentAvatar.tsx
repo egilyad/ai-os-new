@@ -1,7 +1,25 @@
-const ANIM_STYLE = `
-@keyframes agentMascotFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
-@keyframes agentMascotBlink { 0%,92%,100% { transform: scaleY(1); } 96% { transform: scaleY(0.1); } }
-`;
+// Clawd (Claude Code mascot) icon set — `public/icons/clawd/*.svg`.
+// State icons used as deterministic per-agent avatars when no explicit status.
+const CLAWD_STATE_ICONS = [
+    'agent',
+    'explore',
+    'think',
+    'answer',
+    'ask',
+    'focus',
+    'plan',
+    'eureka',
+    'write',
+    'review',
+    'debug',
+    'happy',
+];
+
+const STATUS_TO_CLAWD: Record<string, string> = {
+    active: 'happy',
+    paused: 'sleep',
+    error: 'error',
+};
 
 const COLORS = [
     '#3b82f6',
@@ -114,48 +132,28 @@ export const AgentAvatar: React.FC<AgentAvatarProps> = ({
     }
 
     const h = hashString(agentId || 'unknown');
-    const id = `mascot-${agentId || 'unknown'}-${h % 97}`;
-    const wink = h % 4 === 0; // вариант: одно «подмигивающее» око
+    const clawdIcon = status
+        ? STATUS_TO_CLAWD[status]
+        : CLAWD_STATE_ICONS[h % CLAWD_STATE_ICONS.length];
+    const src = `/icons/clawd/clawd_${clawdIcon}.svg`;
 
     return (
         <div style={{ position: 'relative', width: px, height: px, flexShrink: 0 }}>
-            <style>{ANIM_STYLE}</style>
-            <div style={{ position: 'absolute', inset: 0, animation: `agentMascotFloat ${4 + (h % 2)}s ease-in-out infinite` }}>
-                <svg viewBox="0 0 64 64" width={px} height={px} aria-hidden="true">
-                    <defs>
-                        <radialGradient id={`${id}-g`} cx="38%" cy="28%" r="80%">
-                            <stop offset="0%" stopColor="#fff" stopOpacity="0.95" />
-                            <stop offset="40%" stopColor={resolvedColor} stopOpacity="0.9" />
-                            <stop offset="100%" stopColor="#1e293b" stopOpacity="0.5" />
-                        </radialGradient>
-                    </defs>
-                    {/* Голова — большая, мягкая, дружелюбная */}
-                    <ellipse cx="32" cy="34" rx="26" ry="24" fill={`url(#${id}-g)`} />
-                    {/* Большие добрые глаза */}
-                    {wink ? (
-                        <g>
-                            <ellipse cx="22" cy="33" rx="6.5" ry="7" fill="#fff" />
-                            <circle cx="24" cy="34" r="3.6" fill="#1e293b" />
-                            <circle cx="25.2" cy="32.4" r="1.3" fill="#fff" />
-                            <path d="M37 34 Q40 31 43 34" stroke="#1e293b" strokeWidth="2.4" strokeLinecap="round" fill="none" />
-                        </g>
-                    ) : (
-                        <g>
-                            <ellipse cx="22" cy="33" rx="6.5" ry="7" fill="#fff" />
-                            <circle cx="24" cy="34" r="3.6" fill="#1e293b" />
-                            <circle cx="25.2" cy="32.4" r="1.3" fill="#fff" />
-                            <ellipse cx="42" cy="33" rx="6.5" ry="7" fill="#fff" />
-                            <circle cx="44" cy="34" r="3.6" fill="#1e293b" />
-                            <circle cx="45.2" cy="32.4" r="1.3" fill="#fff" />
-                        </g>
-                    )}
-                    {/* Тёплая улыбка */}
-                    <path d="M26 45 Q32 52 38 45" fill="none" stroke="#1e293b" strokeWidth="3" strokeLinecap="round" />
-                    {/* Щёчки */}
-                    <ellipse cx="15" cy="41" rx="3.6" ry="2.6" fill={resolvedColor} opacity="0.55" />
-                    <ellipse cx="49" cy="41" rx="3.6" ry="2.6" fill={resolvedColor} opacity="0.55" />
-                </svg>
-            </div>
+            <img
+                src={src}
+                alt={name || agentId}
+                title={name || agentId}
+                width={px}
+                height={px}
+                style={{
+                    display: 'block',
+                    borderRadius: Math.max(6, Math.round(px * 0.18)),
+                    objectFit: 'cover',
+                    border: ring ? `2px solid ${resolvedColor}` : '2px solid transparent',
+                    background: 'rgba(255,255,255,0.04)',
+                    userSelect: 'none',
+                }}
+            />
             {showStatus && dotColor && <span style={{ position: 'absolute', right: -1, bottom: -1, width: px * 0.28, height: px * 0.28, borderRadius: '50%', background: dotColor, border: `2px solid #0f172a`, zIndex: 2 }} />}
         </div>
     );

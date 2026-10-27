@@ -1,0 +1,21 @@
+<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+  <title>With Pet</title>
+  <g transform="translate(4,24) scale(4)">
+    <path clip-rule="evenodd" d="M20.998 10.949H24v3.102h-3v3.028h-1.487V20H18v-2.921h-1.487V20H15v-2.921H9V20H7.488v-2.921H6V20H4.487v-2.921H3V14.05H0V10.95h3V5h17.998v5.949zM6 10.949h1.488V8.102H6v2.847zm10.51 0H18V8.102h-1.49v2.847z" fill="#D97757" fill-rule="evenodd"/>
+  </g>
+  <!-- small pixel cat next to left side -->
+  <g fill="#888">
+    <!-- cat body -->
+    <rect x="0" y="88" width="14" height="10"/>
+    <!-- cat head -->
+    <rect x="-2" y="82" width="10" height="8"/>
+    <!-- ears -->
+    <rect x="-2" y="78" width="4" height="4"/>
+    <rect x="4" y="78" width="4" height="4"/>
+    <!-- tail -->
+    <rect x="12" y="82" width="4" height="4"/>
+    <rect x="16" y="78" width="4" height="4"/>
+    <!-- eye -->
+    <rect x="1" y="84" width="2" height="2" fill="#6BBF6B"/>
+  </g>
+</svg>

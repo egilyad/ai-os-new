@@ -1,0 +1,14 @@
+<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+  <title>Explore Codebase</title>
+  <g transform="translate(4,24) scale(4)">
+    <path clip-rule="evenodd" d="M20.998 10.949H24v3.102h-3v3.028h-1.487V20H18v-2.921h-1.487V20H15v-2.921H9V20H7.488v-2.921H6V20H4.487v-2.921H3V14.05H0V10.95h3V5h17.998v5.949zM6 10.949h1.488V8.102H6v2.847zm10.51 0H18V8.102h-1.49v2.847z" fill="#D97757" fill-rule="evenodd"/>
+  </g>
+  <!-- flashlight in right hand -->
+  <rect x="100" y="66" width="16" height="8" rx="2" fill="#5B9BD5"/>
+  <rect x="100" y="64" width="6" height="12" rx="1" fill="#5B9BD5" opacity="0.8"/>
+  <!-- light beam shining right -->
+  <polygon points="116,64 128,52 128,88 116,76" fill="#F0C75E" opacity="0.25"/>
+  <polygon points="116,66 126,58 126,82 116,74" fill="#F0C75E" opacity="0.35"/>
+  <!-- light glow at source -->
+  <rect x="114" y="66" width="4" height="8" rx="1" fill="#F0C75E" opacity="0.8"/>
+</svg>

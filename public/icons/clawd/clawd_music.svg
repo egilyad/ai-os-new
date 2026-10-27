@@ -1,0 +1,14 @@
+<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+  <title>Listening to Music</title>
+  <g transform="translate(4,24) scale(4)">
+    <path clip-rule="evenodd" d="M20.998 10.949H24v3.102h-3v3.028h-1.487V20H18v-2.921h-1.487V20H15v-2.921H9V20H7.488v-2.921H6V20H4.487v-2.921H3V14.05H0V10.95h3V5h17.998v5.949zM6 10.949h1.488V8.102H6v2.847zm10.51 0H18V8.102h-1.49v2.847z" fill="#D97757" fill-rule="evenodd"/>
+  </g>
+  <!-- headband over head top -->
+  <path d="M18,56 Q18,36 52,36 Q86,36 86,56" fill="none" stroke="#5B9BD5" stroke-width="4"/>
+  <!-- ear cups on head sides -->
+  <rect x="10" y="52" width="14" height="18" rx="4" fill="#5B9BD5"/>
+  <rect x="80" y="52" width="14" height="18" rx="4" fill="#5B9BD5"/>
+  <!-- music notes -->
+  <text x="96" y="16" font-family="serif" font-size="18" fill="#6BBF6B">&#9835;</text>
+  <text x="108" y="8" font-family="serif" font-size="14" fill="#6BBF6B">&#9834;</text>
+</svg>

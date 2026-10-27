@@ -1,0 +1,18 @@
+<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+  <title>Dancing</title>
+  <g transform="translate(4,24) scale(4)">
+    <path clip-rule="evenodd" d="M20.998 10.949H24v3.102h-3v3.028h-1.487V20H18v-2.921h-1.487V20H15v-2.921H9V20H7.488v-2.921H6V20H4.487v-2.921H3V14.05H0V10.95h3V5h17.998v5.949zM6 10.949h1.488V8.102H6v2.847zm10.51 0H18V8.102h-1.49v2.847z" fill="#D97757" fill-rule="evenodd"/>
+  </g>
+  <!-- extended arm up-right (waving while dancing) -->
+  <g fill="#D97757">
+    <rect x="100" y="50" width="10" height="10"/>
+    <rect x="106" y="40" width="10" height="14"/>
+    <rect x="112" y="34" width="8" height="10"/>
+  </g>
+  <!-- musical notes around -->
+  <text x="16" y="20" font-family="serif" font-size="16" fill="#6BBF6B" opacity="0.7">&#9835;</text>
+  <text x="100" y="12" font-family="serif" font-size="14" fill="#5B9BD5" opacity="0.6">&#9834;</text>
+  <text x="116" y="24" font-family="serif" font-size="12" fill="#F0C75E" opacity="0.5">&#9835;</text>
+  <!-- motion swoosh -->
+  <path d="M4,88 Q0,80 4,72" fill="none" stroke="#6BBF6B" stroke-width="2" stroke-linecap="round" opacity="0.4"/>
+</svg>
