@@ -72,7 +72,15 @@ export class OpenAiCompatibleAdapter extends BaseLLMAdapter {
         stream?: boolean,
         options?: SendMessageOptions,
     ): Record<string, unknown> {
-        return this.buildRequestBody(model, messages, stream, options);
+        const body = this.buildRequestBody(model, messages, stream, options);
+        // Mercury (Inception Labs) expects max_completion_tokens, not
+        // max_tokens (OpenAI-style newer API). Keep other OpenAI-compatible
+        // providers on max_tokens.
+        if (this.id === 'mercury' && typeof body.max_tokens === 'number') {
+            body.max_completion_tokens = body.max_tokens;
+            delete body.max_tokens;
+        }
+        return body;
     }
 
     private toProviderResponse(data: Record<string, unknown>): Omit<ProviderResponse, 'latency'> {

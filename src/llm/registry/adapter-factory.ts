@@ -81,6 +81,7 @@ export class AdapterFactory {
         'qwen',
         'anthropic',
         'gemini-computer',
+        'mercury',
     ];
 
     constructor(config: AdapterFactoryConfig = {}, llmContext?: LLMContext) {
@@ -168,6 +169,15 @@ export class AdapterFactory {
                 // C-01: no /proxy/... route for interactions — direct calls
                 // with the regular Gemini key (x-goog-api-key).
                 adapter = new GeminiComputerAdapter();
+                break;
+            case 'mercury':
+            case 'inception':
+                // Mercury 3 (Inception Labs) — OpenAI-compatible chat endpoint.
+                adapter = new OpenAiCompatibleAdapter(
+                    'mercury',
+                    'https://api.inceptionlabs.ai/v1',
+                    false,
+                );
                 break;
             case 'blackboxapi':
             case 'blackbox':

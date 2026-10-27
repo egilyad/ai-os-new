@@ -97,4 +97,14 @@ export const PROVIDER_META: Record<string, { name: string; desc: string; docsUrl
             desc: 'Your own server or alternative API',
             docsUrl: null,
         },
+        Mercury: {
+            name: 'Mercury (Inception Labs)',
+            desc: 'Diffusion LLM — mercury-3, up to 1M context',
+            docsUrl: 'https://docs.inceptionlabs.ai',
+        },
+        mercury: {
+            name: 'Mercury (Inception Labs)',
+            desc: 'Diffusion LLM — mercury-3, up to 1M context',
+            docsUrl: 'https://docs.inceptionlabs.ai',
+        },
     };

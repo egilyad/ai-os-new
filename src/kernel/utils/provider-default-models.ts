@@ -20,6 +20,8 @@ export const PROVIDER_DEFAULT_MODELS: Record<string, string> = {
     kimi: 'kimi-k2',
     minimax: 'MiniMax-M1',
     qwen: 'qwen3-max',
+    mercury: 'mercury-3',
+    inception: 'mercury-3',
 };
 
 /** Preferred models for each provider (ordered by quality). */
@@ -33,6 +35,7 @@ export const PROVIDER_PREFERRED_MODELS: Record<string, string[]> = {
     kimi: ['kimi-k2', 'kimi-k2-thinking'],
     minimax: ['MiniMax-M1'],
     qwen: ['qwen3-max', 'qwen3-plus', 'qwen3-30b-a3b'],
+    mercury: ['mercury-3', 'mercury-edit-2'],
 };
 
 /** Human-readable provider names keyed by the canonical provider slug.
@@ -54,4 +57,5 @@ export const PROVIDER_DISPLAY_NAMES: Record<string, string> = {
     kimi: 'Moonshot',
     minimax: 'MiniMax',
     qwen: 'Qwen',
+    mercury: 'Mercury',
 };
