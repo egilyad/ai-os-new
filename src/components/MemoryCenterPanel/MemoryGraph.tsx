@@ -35,6 +35,24 @@ interface Props {
     height?: number;
 }
 
+interface MemNode {
+    id: string;
+    label: string;
+    color: { background: string; border: string; highlight: { background: string; border: string } };
+    font: { color: string; size: number; face?: string; bold?: boolean };
+    shape: 'dot';
+    size: number;
+    title?: string;
+    deepTarget?: string;
+}
+
+interface MemEdge {
+    from: string;
+    to: string;
+    color: { color: string; opacity: number };
+    width?: number;
+}
+
 const MemoryGraph: React.FC<Props> = ({ sources, onOpen, height = 520 }) => {
     const containerRef = useRef<HTMLDivElement | null>(null);
     const networkRef = useRef<Network | null>(null);
@@ -74,8 +92,8 @@ const MemoryGraph: React.FC<Props> = ({ sources, onOpen, height = 520 }) => {
     };
 
     const { nodes, edges } = useMemo(() => {
-        const nodes: any[] = [];
-        const edges: any[] = [];
+        const nodes: MemNode[] = [];
+        const edges: MemEdge[] = [];
         const catIndex = new Map<MemoryCategory, number>();
 
         for (const cat of Object.keys(CATEGORY_COLOR) as MemoryCategory[]) {
@@ -152,7 +170,7 @@ const MemoryGraph: React.FC<Props> = ({ sources, onOpen, height = 520 }) => {
             },
         );
         networkRef.current = net;
-        net.on('click', (params: any) => {
+        net.on('click', (params: { nodes?: string[] }) => {
             if (params.nodes && params.nodes.length > 0) {
                 const node = nodes.find((n) => n.id === params.nodes[0]);
                 if (node?.deepTarget) onOpenRef.current(node.deepTarget);
