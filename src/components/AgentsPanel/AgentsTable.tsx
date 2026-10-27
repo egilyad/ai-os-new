@@ -57,7 +57,7 @@ export const AgentsTable: React.FC<AgentsTableProps> = ({ agents, agentStats, on
                                 >
                                     <td style={{ padding: '10px 14px' }}>
                                         <div style={{ display: 'flex', alignItems: 'center', gap: 10, minWidth: 0 }}>
-                                            <AgentAvatar agentId={agent.id} name={agent.name} size={28} emoji={identity.avatar.emoji} color={identity.avatar.color} url={identity.avatar.url} />
+                                            <AgentAvatar agentId={agent.id} name={agent.name} size={40} emoji={identity.avatar.emoji} color={identity.avatar.color} url={identity.avatar.url} />
                                             <div style={{ minWidth: 0 }}>
                                                 <div style={{ fontWeight: 600, color: 'var(--slate-100)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{agent.name}</div>
                                                 <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
