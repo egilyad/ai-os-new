@@ -39,9 +39,10 @@ const CalibrationLens: React.FC = () => {
         accurate: 0,
     }));
     samples.forEach((s) => {
-        const i = Math.min(4, Math.floor(s.avgScore / 0.2));
-        bins[i].total += 1;
-        if (s.wasAccurate) bins[i].accurate += 1;
+        const bin = bins[Math.min(4, Math.floor(s.avgScore / 0.2))];
+        if (!bin) return;
+        bin.total += 1;
+        if (s.wasAccurate) bin.accurate += 1;
     });
 
     const brier = samples.reduce((acc, s) => acc + (s.avgScore - (s.wasAccurate ? 1 : 0)) ** 2, 0) / samples.length;

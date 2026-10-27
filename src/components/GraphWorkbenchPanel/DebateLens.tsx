@@ -47,12 +47,16 @@ interface AgreementRow {
     total: number;
 }
 
-function agreementMatrix(session: DebateSession, trajs: Traj[]): AgreementRow[] {
+function agreementMatrix(trajs: Traj[]): AgreementRow[] {
     const rows: AgreementRow[] = [];
     for (let i = 0; i < trajs.length; i += 1) {
+        const trA = trajs[i];
+        if (!trA) continue;
         for (let j = i + 1; j < trajs.length; j += 1) {
-            const A = new Map(trajs[i].points.map((p) => [p.round, p.pos]));
-            const B = new Map(trajs[j].points.map((p) => [p.round, p.pos]));
+            const trB = trajs[j];
+            if (!trB) continue;
+            const A = new Map(trA.points.map((p) => [p.round, p.pos]));
+            const B = new Map(trB.points.map((p) => [p.round, p.pos]));
             let agree = 0;
             let total = 0;
             A.forEach((pa, round) => {
@@ -61,7 +65,7 @@ function agreementMatrix(session: DebateSession, trajs: Traj[]): AgreementRow[] 
                 total += 1;
                 if (Math.sign(pa) === Math.sign(pb)) agree += 1;
             });
-            if (total > 0) rows.push({ a: trajs[i].agentName, b: trajs[j].agentName, agree, total });
+            if (total > 0) rows.push({ a: trA.agentName, b: trB.agentName, agree, total });
         }
     }
     return rows;
@@ -111,7 +115,7 @@ const DebateLens: React.FC = () => {
 
     const trajs = useMemo(() => (session ? buildTrajectories(session) : []), [session]);
     const agreements = useMemo(
-        () => (session && trajs.length > 1 ? agreementMatrix(session, trajs) : []),
+        () => (session && trajs.length > 1 ? agreementMatrix(trajs) : []),
         [session, trajs],
     );
 

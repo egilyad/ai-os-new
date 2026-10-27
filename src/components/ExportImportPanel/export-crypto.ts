@@ -8,7 +8,7 @@ const IV_LENGTH = 12;
 function toBase64(buf: ArrayBuffer | Uint8Array): string {
     const bytes = buf instanceof Uint8Array ? buf : new Uint8Array(buf);
     let bin = '';
-    for (let i = 0; i < bytes.length; i += 1) bin += String.fromCharCode(bytes[i]);
+    for (let i = 0; i < bytes.length; i += 1) bin += String.fromCharCode(bytes[i]!);
     return btoa(bin);
 }
 
@@ -66,7 +66,7 @@ export async function decryptExportPayload(json: string, password: string): Prom
     const buf = await crypto.subtle.decrypt(
         { name: 'AES-GCM', iv },
         key,
-        fromBase64(parsed.ciphertext).buffer as ArrayBuffer,
+        fromBase64(parsed.ciphertext),
     );
     return JSON.parse(dec.decode(buf)) as Record<string, unknown>;
 }
