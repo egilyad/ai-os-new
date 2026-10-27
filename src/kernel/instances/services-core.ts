@@ -88,7 +88,14 @@ const DEBATE_FALLBACKS: Record<string, (...args: unknown[]) => unknown> = {
 };
 export const debateService = lazyService<DebateService>('debateService', DEBATE_FALLBACKS);
 export const chatService = lazyService<ChatExecutor>('chatService');
-export const autoDebateService = lazyService<AutoDebateServiceType>('autoDebateService');
+const AUTO_DEBATE_SERVICE_FALLBACKS: Record<string, (...args: unknown[]) => unknown> = {
+    getResults: () => [],
+    runAutoDebate: () => undefined,
+};
+export const autoDebateService = lazyService<AutoDebateServiceType>(
+    'autoDebateService',
+    AUTO_DEBATE_SERVICE_FALLBACKS,
+);
 export const workspaceService = lazyService<WorkspaceService>('workspaceService');
 export const keyStateStore = lazyService<KeyStateStore>('keyStateStore');
 export const probeService = lazyService<ProbeService>('probeService');
@@ -152,13 +159,74 @@ import type { StrategyManager } from '../services/debate-runtime/debate-strategy
 import type { DebateModeManagerPersistent } from '../services/debate-runtime/debate-mode-manager';
 import type { DebateWorkspace } from '../services/debate-runtime/debate-workspace';
 import type { DebatePolicyEngine } from '../services/debate-runtime/debate-policy-engine';
-export const debateHumanService = lazyService<DebateHumanService>('debateHumanService');
-export const strategyManager = lazyService<StrategyManager>('strategyManager');
+const DEBATE_HUMAN_FALLBACKS: Record<string, (...args: unknown[]) => unknown> = {
+    getHumanVotes: () => [],
+    addArgument: () => undefined,
+    recordHumanVote: () => undefined,
+    removeHumanVote: () => undefined,
+};
+export const debateHumanService = lazyService<DebateHumanService>(
+    'debateHumanService',
+    DEBATE_HUMAN_FALLBACKS,
+);
+
+const STRATEGY_MANAGER_FALLBACKS: Record<string, (...args: unknown[]) => unknown> = {
+    list: () => [],
+};
+export const strategyManager = lazyService<StrategyManager>(
+    'strategyManager',
+    STRATEGY_MANAGER_FALLBACKS,
+);
 export const strategyRegistry = strategyManager;
-export const debateModeManager = lazyService<DebateModeManagerPersistent>('debateModeManager');
-export const debateWorkspace = lazyService<DebateWorkspace>('debateWorkspace');
-export const debatePolicyEngine = lazyService<DebatePolicyEngine>('debatePolicyEngine');
-export const debateEngine = lazyService<DebateEngine>('debateEngine');
+
+const DEBATE_MODE_MANAGER_FALLBACKS: Record<string, (...args: unknown[]) => unknown> = {
+    list: () => [],
+};
+export const debateModeManager = lazyService<DebateModeManagerPersistent>(
+    'debateModeManager',
+    DEBATE_MODE_MANAGER_FALLBACKS,
+);
+
+const DEBATE_WORKSPACE_FALLBACKS: Record<string, (...args: unknown[]) => unknown> = {
+    listRooms: () => [],
+    getIndex: () => ({}),
+    getRoomEntry: () => null,
+    createRoom: () => undefined,
+    closeRoom: () => undefined,
+    setActiveRoom: () => undefined,
+    syncFromEngine: () => undefined,
+};
+export const debateWorkspace = lazyService<DebateWorkspace>(
+    'debateWorkspace',
+    DEBATE_WORKSPACE_FALLBACKS,
+);
+
+const DEBATE_POLICY_ENGINE_FALLBACKS: Record<string, (...args: unknown[]) => unknown> = {
+    listRules: () => [],
+    exportRules: () => '',
+    getRule: () => null,
+    addRule: () => undefined,
+    enableRule: () => undefined,
+    disableRule: () => undefined,
+    removeRule: () => undefined,
+    reset: () => undefined,
+    importRules: () => undefined,
+    setFireListener: () => undefined,
+};
+export const debatePolicyEngine = lazyService<DebatePolicyEngine>(
+    'debatePolicyEngine',
+    DEBATE_POLICY_ENGINE_FALLBACKS,
+);
+const DEBATE_ENGINE_FALLBACKS: Record<string, (...args: unknown[]) => unknown> = {
+    getAllSessions: () => [],
+    getActiveSessions: () => [],
+    getSession: () => null,
+    startSession: () => undefined,
+    pauseSession: () => undefined,
+    resumeSession: () => undefined,
+    cancelSession: () => undefined,
+};
+export const debateEngine = lazyService<DebateEngine>('debateEngine', DEBATE_ENGINE_FALLBACKS);
 
 // ── Bookmarks & Journal ──
 import type { ChatBookmarksService as ChatBookmarksServiceType } from '../services/chat-bookmarks-service';
