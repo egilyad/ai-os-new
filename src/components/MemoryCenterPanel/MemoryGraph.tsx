@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Network } from 'vis-network/standalone';
 import { crystalVault } from '../../kernel/instances';
 import { getArticle } from '../WikiPanel/wiki-articles';
-import { PANEL_ARTICLES } from '../WikiPanel/wiki-panels';
 import type { MemorySourceDescriptor, MemoryCategory } from '../../kernel/types/memory-center-types';
 import type { Crystal } from '../../kernel/types/crystal-types';
 

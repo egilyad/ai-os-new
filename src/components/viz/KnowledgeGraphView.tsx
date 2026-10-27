@@ -1,7 +1,6 @@
 import { useMemo } from 'react';
 import VisGraph, { type VisGraphNode, type VisGraphEdge } from '../Common/VisGraph';
 import { hashHue } from '../../kernel/utils/hash';
-import { tokens } from '../../styles/tokens';
 
 export interface GraphViewNode {
     id: string;
