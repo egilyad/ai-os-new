@@ -40,12 +40,13 @@ const EmbeddingsLens: React.FC = () => {
     const [hover, setHover] = useState<Point | null>(null);
 
     const { points, dim, total, projected } = useMemo(() => {
-        let entries: Array<Record<string, unknown>> = [];
-        try {
-            entries = (memoryService.getMemories?.() ?? []) as unknown as Array<Record<string, unknown>>;
-        } catch {
-            entries = [];
-        }
+        const entries: Array<Record<string, unknown>> = (() => {
+            try {
+                return (memoryService.getMemories?.() ?? []) as unknown as Array<Record<string, unknown>>;
+            } catch {
+                return [];
+            }
+        })();
         const withVec = entries.filter(
             (e) => Array.isArray(e.vector) || Array.isArray(e.embedding),
         );
