@@ -29,21 +29,21 @@
 
 | Показатель | Значение |
 | --- | --- |
-| Статей всего | 275 |
-| source-checked (есть источники) | 240 |
+| Статей всего | 276 |
+| source-checked (есть источники) | 241 |
 | test-backed (есть co-located тесты) | 121 |
 | manual-verified (reviewed) | 1 |
-| Панелей (обычных) | 180 |
-| Панелей с компонентом | 179 |
+| Панелей (обычных) | 183 |
+| Панелей с компонентом | 182 |
 | Панелей с тестами у компонента | 72 |
-| Панелей без статьи | 4 |
+| Панелей без статьи | 7 |
 | Авто-панелей техник | 84 (покрыты [Каталог панелей: раздел → маршрут → компонент → статья](./panels-catalog.md)) |
 
 ## По разделам
 
 | Раздел | Статей | source-checked | test-backed |
 | --- | ---: | ---: | ---: |
-| Руководство | 9 | 9 | 3 |
+| Руководство | 10 | 10 | 3 |
 | Панели | 87 | 87 | 46 |
 | Агенты | 1 | 1 | 1 |
 | Дебаты | 3 | 3 | 0 |
@@ -77,17 +77,20 @@
 | Внешние библиотеки | — | [Внешние библиотеки](./dev-libraries.md) | `scripts/gen-wiki-libraries.mjs` |
 | Архитектурные решения | — | [Реестр архитектурных решений (ADR)](./dev-adr.md) | `docs/001-event-driven-architecture.md` |
 | Аудиты | 75 | [История разработки](./dev-history.md) | `docs/audits/` |
-| Панели | 180 | [Каталог панелей: раздел → маршрут → компонент → статья](./panels-catalog.md) | `src/route-registry-*.ts` |
+| Панели | 183 | [Каталог панелей: раздел → маршрут → компонент → статья](./panels-catalog.md) | `src/route-registry-*.ts` |
 
 ## Что не подтверждено тестами
 
-Компоненты панелей без co-located тестов: **107** из 179.
-Статьи, помеченные verified, но без co-located тестов: **102**.
+Компоненты панелей без co-located тестов: **110** из 182.
+Статьи, помеченные verified, но без co-located тестов: **103**.
 
 Примеры панелей без тестов у компонента:
 
 - `project-os` → `src/components/DebateResearch/ProjectOsExplorer`
 - `exceptions` → `src/components/ExceptionsPanel/ExceptionsPanel`
+- `nav-graph` → `src/components/NavGraphPanel/NavGraphPanel`
+- `graph-workbench` → `src/components/GraphWorkbenchPanel/GraphWorkbenchPanel`
+- `defect-map` → `src/components/DefectMapPanel/DefectMapPanel`
 - `scheduler` → `src/components/SchedulerPanel`
 - `pricing` → `src/components/AnalyticsPanel/PricingPanel`
 - `budget` → `src/components/BudgetPanel`
@@ -103,14 +106,14 @@
 - `audience` → `src/components/AudiencePanel`
 - `argument-graph` → `src/components/ArgumentGraphPanel/ArgumentGraphPanel`
 - `debate-analysis` → `src/components/DebateAnalysisPanel`
-- `topics` → `src/components/TopicSuggesterPanel`
-- `debate-templates` → `src/components/DebateTemplatesPanel`
-- `debate-quality` → `src/components/DebateQualityPanel`
 
 Панели без статьи:
 
 - `exceptions` (dashboard)
 - `memory-center` (dashboard)
+- `nav-graph` (dashboard)
+- `graph-workbench` (dashboard)
+- `defect-map` (dashboard)
 - `wiki-brain` (wiki)
 - `architecture-map` (wiki)
 

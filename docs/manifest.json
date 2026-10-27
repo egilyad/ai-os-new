@@ -8033,6 +8033,26 @@
       "status": "live"
     },
     {
+      "id": "panel:graph-workbench",
+      "type": "panel",
+      "panelId": "graph-workbench",
+      "section": "dashboard",
+      "route": "/graph-workbench",
+      "component": "src/components/GraphWorkbenchPanel/GraphWorkbenchPanel",
+      "article": null,
+      "status": "live"
+    },
+    {
+      "id": "panel:defect-map",
+      "type": "panel",
+      "panelId": "defect-map",
+      "section": "dashboard",
+      "route": "/defect-map",
+      "component": "src/components/DefectMapPanel/DefectMapPanel",
+      "article": null,
+      "status": "live"
+    },
+    {
       "id": "panel:crystals",
       "type": "panel",
       "panelId": "crystals",
