@@ -1,5 +1,6 @@
-import React from 'react';
-import type { Junction, JunctionSource } from '../../kernel/types/junction-types';
+import React, { useMemo } from 'react';
+import VisGraph, { type VisGraphNode, type VisGraphEdge } from '../Common/VisGraph';
+import type { Junction } from '../../kernel/types/junction-types';
 
 interface Props {
     junction: Junction;
@@ -15,54 +16,41 @@ const TYPE_COLORS: Record<string, string> = {
 };
 
 /**
- * JunctionGraph — visualizes the bridge between domains: source nodes on the
- * left/right connected through a central junction node.
+ * JunctionGraph — интерактивный граф «моста между доменами»: источники слева/
+ * справа, соединённые с центральным узлом junction. Зум, панорамирование,
+ * тултипы.
  */
-const JunctionGraph: React.FC<Props> = ({ junction, width = 320, height = 140 }) => {
-    const color = TYPE_COLORS[junction.synthesisType] ?? '#64748b';
-    const inputs = (junction.inputs ?? []).slice(0, 2);
-    const cx = width / 2;
-    const cy = height / 2;
+const JunctionGraph: React.FC<Props> = ({ junction, height = 220 }) => {
+    const { nodes, edges } = useMemo(() => {
+        const color = TYPE_COLORS[junction.synthesisType] ?? '#64748b';
+        const nodes: VisGraphNode[] = [];
+        const edges: VisGraphEdge[] = [];
 
-    const renderSource = (src: JunctionSource, x: number, index: number) => {
-        const y = cy + (index === 0 ? -34 : 34);
-        return (
-            <g key={src.id}>
-                <circle cx={x} cy={y} r={16} fill="rgba(139,92,246,0.15)" stroke="#8b5cf6" />
-                <text x={x} y={y + 4} textAnchor="middle" fontSize="9" fill="#cbd5e1">
-                    {src.domain}
-                </text>
-                <line
-                    x1={x}
-                    y1={y + (index === 0 ? 16 : -16)}
-                    x2={cx}
-                    y2={cy}
-                    stroke={color}
-                    strokeWidth={1.6}
-                />
-            </g>
-        );
-    };
+        const centerId = `junction:${junction.id}`;
+        nodes.push({
+            id: centerId,
+            label: junction.synthesisType.replace('_', ' '),
+            color,
+            size: 26,
+            title: `Junction · ${Math.round((junction.confidence ?? 0) * 100)}% · ${junction.status ?? ''}\n${(junction.content ?? '').slice(0, 160)}`,
+        });
 
-    return (
-        <svg width={width} height={height} style={{ display: 'block' }}>
-            <circle cx={cx} cy={cy} r={22} fill={`${color}26`} stroke={color} strokeWidth={2} />
-            <text x={cx} y={cy + 3} textAnchor="middle" fontSize="10" fill={color} fontWeight={700}>
-                J
-            </text>
-            {inputs.map((s, i) => renderSource(s, i === 0 ? 44 : width - 44, i))}
-            <text
-                x={cx}
-                y={height - 8}
-                textAnchor="middle"
-                fontSize="8"
-                fill="#64748b"
-                letterSpacing={1}
-            >
-                {Math.round((junction.confidence ?? 0) * 100)}% · {junction.status ?? ''}
-            </text>
-        </svg>
-    );
+        for (const src of junction.inputs ?? []) {
+            const id = `src:${src.id}`;
+            nodes.push({
+                id,
+                label: src.domain || src.kind,
+                color: '#38bdf8',
+                size: 16,
+                title: `${src.kind} · ${src.label}\n${(src.statement ?? '').slice(0, 160)}`,
+            });
+            edges.push({ id: `e:${src.id}`, from: id, to: centerId, color, width: 1.8 });
+        }
+
+        return { nodes, edges };
+    }, [junction]);
+
+    return <VisGraph nodes={nodes} edges={edges} onClickNode={() => {}} height={height} />;
 };
 
 export default JunctionGraph;

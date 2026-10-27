@@ -6,6 +6,7 @@ export interface VisGraphNode {
     label: string;
     type?: string;
     color?: string;
+    borderColor?: string;
     size?: number;
     title?: string;
     openTarget?: string;
@@ -54,9 +55,13 @@ const VisGraph: React.FC<Props> = ({
             title: n.title ?? n.label,
             shape: 'dot' as const,
             size: n.size ?? 14,
-            color: { background: n.color ?? '#8b5cf6', border: '#0f172a', highlight: { background: n.color ?? '#8b5cf6', border: '#fff' } },
+            color: {
+                background: n.color ?? '#8b5cf6',
+                border: n.borderColor ?? '#0f172a',
+                highlight: { background: n.color ?? '#8b5cf6', border: '#fff' },
+            },
             font: { color: '#cbd5e1', size: 12 },
-            borderWidth: 2,
+            borderWidth: n.borderColor ? 3 : 2,
             shadow: true,
         }));
 
