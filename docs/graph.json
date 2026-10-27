@@ -3,13 +3,13 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 1413,
+    "nodes": 1415,
     "edges": 3700,
     "byType": {
       "audit": 75,
       "code": 599,
       "test": 198,
-      "panel": 265,
+      "panel": 267,
       "article": 276
     },
     "byKind": {
@@ -5079,6 +5079,13 @@
       "route": "/debugger"
     },
     {
+      "id": "panel:defect-map",
+      "type": "panel",
+      "label": "defect-map",
+      "section": "dashboard",
+      "route": "/defect-map"
+    },
+    {
       "id": "panel:delta-focusing",
       "type": "panel",
       "label": "delta-focusing",
@@ -5385,6 +5392,13 @@
       "label": "graph-minimax",
       "section": "techniques",
       "route": "/graph-minimax"
+    },
+    {
+      "id": "panel:graph-workbench",
+      "type": "panel",
+      "label": "graph-workbench",
+      "section": "dashboard",
+      "route": "/graph-workbench"
     },
     {
       "id": "panel:groq-speed",

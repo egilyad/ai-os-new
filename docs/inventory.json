@@ -7581,8 +7581,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Матрица покрытия",
-      "bytes": 8494,
-      "hash": "9cf42c0c6a007b4b17f145b06ac6a40ab7addd46"
+      "bytes": 8617,
+      "hash": "b85aec45256dcf255589bf7c8dc4dd80b6a43fb5"
     },
     {
       "path": "docs/wiki/debate-strategies-cheatsheet.md",
@@ -7630,7 +7630,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4076,
-      "hash": "27474f87937cfe1d86aed53734f0c845fbf111af"
+      "hash": "ceceea5e564c8c048f31835c8f02eadef5c3bfd1"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -7718,7 +7718,7 @@
       "language": "ru",
       "title": "Граф знаний",
       "bytes": 4837,
-      "hash": "fc04b0b17fd0debe34767fa1c5523dcb3f871636"
+      "hash": "808922fb20864c2dd63b7b6b6c896bb5e359461f"
     },
     {
       "path": "docs/wiki/dev-history.md",
@@ -7933,8 +7933,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Карта документации",
-      "bytes": 36776,
-      "hash": "cf3c024a0bc6e725e6960d3c183e48785dda4435"
+      "bytes": 36897,
+      "hash": "98fdce0d1f9568090688ea6b3e00a9b3fe025b15"
     },
     {
       "path": "docs/wiki/docs-standard.md",
@@ -8742,7 +8742,7 @@
       "language": "ru",
       "title": "Возможности и сценарии",
       "bytes": 10062,
-      "hash": "76b24060526cf81cfa0485f99dac1c519020b384"
+      "hash": "21be422a608ff5e0346bf749fa954618fd74d340"
     },
     {
       "path": "docs/wiki/system-audit-prompt.md",
