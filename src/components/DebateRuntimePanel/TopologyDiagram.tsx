@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import VisGraph, { type VisGraphNode, type VisGraphEdge } from '../Common/VisGraph';
 import type { DebateTopology } from '../../kernel/instances';
 import { ROLE_COLORS } from './debate-runtime-constants';

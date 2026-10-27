@@ -87,27 +87,6 @@ function buildGraphEdges(state: GovernorState): VisGraphEdge[] {
     return edges;
 }
 
-function computeInfluence(state: GovernorState): Map<string, { outgoing: number; incoming: number; score: number }> {
-    const influence = new Map<string, { outgoing: number; incoming: number; score: number }>();
-    const claims = Object.values(state.graph.claims);
-    for (const c of claims) {
-        if (!influence.has(c.speaker)) influence.set(c.speaker, { outgoing: 0, incoming: 0, score: 0 });
-    }
-    for (const e of state.graph.edges) {
-        const fromClaim = claims.find((c) => c.id === e.from);
-        const toClaim = claims.find((c) => c.id === e.to);
-        if (fromClaim && toClaim && fromClaim.speaker !== toClaim.speaker) {
-            const fromInf = influence.get(fromClaim.speaker);
-            const toInf = influence.get(toClaim.speaker);
-            if (fromInf) fromInf.outgoing += 1;
-            if (toInf) toInf.incoming += 1;
-        }
-    }
-    const maxOut = Math.max(1, ...Array.from(influence.values()).map((v) => v.outgoing));
-    for (const [, v] of influence) v.score = v.outgoing / maxOut;
-    return influence;
-}
-
 const ArgumentGraphPanel: React.FC = () => {
     const storeGovernorState = useActiveDebateStore((s) => s.governorState);
     const [govState, setGovState] = useState<GovernorState | null>(storeGovernorState);
@@ -153,20 +132,6 @@ const ArgumentGraphPanel: React.FC = () => {
             contradictions,
         };
     }, [govState, showResolved, showContradictions]);
-
-    const influence = useMemo(() => {
-        if (!filteredState) return new Map();
-        return computeInfluence(filteredState);
-    }, [filteredState]);
-
-    const speakerRoleMap = useMemo(() => {
-        if (!filteredState) return new Map<string, string>();
-        const map = new Map<string, string>();
-        for (const c of Object.values(filteredState.graph.claims)) {
-            if (!map.has(c.speaker)) map.set(c.speaker, c.role);
-        }
-        return map;
-    }, [filteredState]);
 
     const nodes = useMemo(() => {
         if (!filteredState) return [];

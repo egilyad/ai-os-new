@@ -205,13 +205,6 @@ const KnowledgePanel: React.FC = () => {
         }
     };
 
-    const handleNodeKeyDown = (e: React.KeyboardEvent, node: GraphNodeData) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            handleNodeClick(node);
-        }
-    };
-
     return (
         <div
             style={{
@@ -284,12 +277,10 @@ const KnowledgePanel: React.FC = () => {
                         nodes={nodes}
                         edges={edges}
                         isLoading={isLoading}
-                        selectedNodeId={selectedNode?.id ?? null}
                         entityCount={entityCount}
                         totalMemories={memories.length}
                         density={density}
                         onNodeClick={handleNodeClick}
-                        onNodeKeyDown={handleNodeKeyDown}
                         t={t}
                         searchQuery={searchQuery}
                         typeFilter={typeFilter}

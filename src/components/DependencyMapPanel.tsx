@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { Network, RefreshCw } from 'lucide-react';
 import { runtime } from '../kernel/runtime';
 import ModuleInfo from './ModuleInfo';

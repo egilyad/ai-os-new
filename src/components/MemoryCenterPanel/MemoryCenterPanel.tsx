@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Database, Search, BrainCircuit, HeartPulse, Layers, Loader2, Network as NetworkIcon } from 'lucide-react';
-import { useTranslation } from '../../i18n/useTranslation';
 import { memoryService, wikiBrainService, crystalVault } from '../../kernel/instances';
 import {
     listMemorySources,
@@ -44,7 +43,6 @@ const STATUS_COLOR: Record<string, string> = {
 };
 
 const MemoryCenterPanel: React.FC = () => {
-    const { t } = useTranslation();
     const navigate = useNavigate();
     const [tab, setTab] = useState<Tab>('overview');
     const [counts, setCounts] = useState<MemorySourceCount[]>([]);
@@ -101,10 +99,12 @@ const MemoryCenterPanel: React.FC = () => {
         try {
             const res = await crystalVault.search(q, 6);
             for (const r of res) {
+                const stmt = r.crystal?.content?.statement ?? '';
+                const lab = r.crystal?.content?.elaboration ?? '';
                 out.push({
                     source: 'Кристаллы',
-                    title: r.content?.statement ? r.content.statement.slice(0, 80) : '(кристалл)',
-                    snippet: (r.content?.elaboration || r.content?.statement || '').slice(0, 160),
+                    title: stmt ? stmt.slice(0, 80) : '(кристалл)',
+                    snippet: (lab || stmt).slice(0, 160),
                     score: r.score,
                     matchedOn: 'hybrid',
                 });

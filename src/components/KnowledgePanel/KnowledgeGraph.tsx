@@ -8,12 +8,10 @@ interface KnowledgeGraphProps {
     nodes: GraphNodeData[];
     edges: EdgeData[];
     isLoading: boolean;
-    selectedNodeId: string | null;
     entityCount: number;
     totalMemories: number;
     density: number;
     onNodeClick: (node: GraphNodeData) => void;
-    onNodeKeyDown: (e: React.KeyboardEvent, node: GraphNodeData) => void;
     t: (key: string) => string;
     searchQuery: string;
     typeFilter: string | null;
@@ -23,7 +21,6 @@ const KnowledgeGraph: React.FC<KnowledgeGraphProps> = ({
     nodes,
     edges,
     isLoading,
-    selectedNodeId,
     entityCount,
     totalMemories,
     density,
