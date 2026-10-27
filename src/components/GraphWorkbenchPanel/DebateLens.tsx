@@ -151,6 +151,20 @@ const DebateLens: React.FC = () => {
                         сходимость {session.convergenceScore?.toFixed(2) ?? '—'} · раундов {session.currentRound ?? session.maxRounds}
                     </span>
                 )}
+                {session && session.status === 'completed' && session.currentRound < session.maxRounds && (
+                    <span
+                        style={{
+                            fontSize: 11,
+                            color: '#34d399',
+                            padding: '2px 8px',
+                            borderRadius: 999,
+                            background: 'rgba(52,211,153,0.12)',
+                            border: '1px solid rgba(52,211,153,0.25)',
+                        }}
+                    >
+                        досрочное завершение (сходимость)
+                    </span>
+                )}
             </div>
 
             {trajs.length > 0 && (
