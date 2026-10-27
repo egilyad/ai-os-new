@@ -2899,6 +2899,89 @@ crews, councils, graphs, persona, ops, interop, meta, trust, frontier, rivals.
 [[audit-index]] — быстрая навигация.`,
     },
     {
+        slug: 'panel-crystal-vault',
+        title: 'Панель: Хранилище кристаллов',
+        section: 'panels',
+        tags: ['панель', 'кристаллы', 'знания', 'подтверждение', 'инструкция'],
+        freshness: 'verified',
+        sources: [
+            'src/components/CrystalVaultPanel/CrystalVaultPanel.tsx',
+            'src/kernel/services/crystal-vault/',
+            'src/kernel/types/crystal-types.ts',
+        ],
+        related: ['panel-junction', 'panel-synthesis', 'panel-knowledge', 'panel-lenses-crystals'],
+        body: `## Назначение
+
+Хранилище кристаллов — «проверенные утверждения» системы. Кристалл — это зафиксированное знание с доказательствами, допущениями и формой отрицания. Панель \`/crystals\` позволяет предложить, кристаллизовать, заменить и опровергнуть такие утверждения.
+
+## Статусы и жизненный цикл
+
+- \`semi\` — предложено, ещё не подтверждено;
+- \`crystal\` — кристаллизовано (подтверждено);
+- \`superseded\` — заменено новым утверждением;
+- \`refuted\` — опровергнуто.
+
+Действия: **propose** (предложить), **crystallize** (кристаллизовать), **supersede** (заменить), **refute** (опровергнуть, с подтверждением).
+
+## Поля кристалла
+
+- \`statement\` — само утверждение;
+- \`elaboration\` — разъяснение;
+- \`evidence\` — доказательства (id памяти, URL, пути);
+- \`assumptions\` — допущения;
+- \`negationForm\` — явная форма отрицания (для поиска противоречий).
+
+## Как пользоваться
+
+1. Открой \`/crystals\`.
+2. Нажми «Предложить» и заполни утверждение + разъяснение + доказательства.
+3. После проверки — «Кристаллизовать».
+4. Используй поиск и фильтры по статусам.
+5. Для устаревшего знания — «Заменить» (с новым утверждением) или «Опровергнуть».
+
+## Связи
+
+Кристаллы — источник для **junctions** (см. [[panel-junction]]) и **synthesis** (см. [[panel-synthesis]]). Общая концепция — также [[panel-lenses-crystals]].`,
+    },
+    {
+        slug: 'panel-junction',
+        title: 'Панель: Junction-движок',
+        section: 'panels',
+        tags: ['панель', 'junction', 'пересечения', 'синтез', 'знания', 'инструкция'],
+        freshness: 'verified',
+        sources: [
+            'src/components/JunctionPanel/JunctionPanel.tsx',
+            'src/kernel/services/junction-engine/',
+            'src/kernel/contracts/junction-engine.ts',
+        ],
+        related: ['panel-crystal-vault', 'panel-synthesis', 'panel-knowledge'],
+        body: `## Назначение
+
+**Junction-движок** — поиск пересечений/связей между разными источниками знаний (кристаллы, дебаты). Он находит «стыки», где утверждения из разных доменов сходятся, конфликтуют или дополняют друг друга. Панель \`/junctions\` — запуск детекции и проверка кандидатов.
+
+## Источники
+
+- \`crystal\` — кристаллы (см. [[panel-crystal-vault]]);
+- \`debate\` — выводы дебатов.
+
+## Действия
+
+- **Detect** — запустить детекцию пересечений по источникам (порождает кандидатов).
+- **Review** — просмотреть кандидатов.
+- **Challenge / verify** — подать контраргумент (submitCounterargument), чтобы проверить или оспорить пересечение.
+
+## Как пользоваться
+
+1. Открой \`/junctions\`.
+2. Нажми «Detect» — движок просканирует источники и найдёт кандидатов-пересечений.
+3. Просмотри каждый кандидат: если связь валидна — подтверди; если сомнительна — подай контраргумент.
+4. Используй сид-демо для примера.
+
+## Связи
+
+Junctions работают поверх **кристаллов** ([[panel-crystal-vault]]) и **дебатов**. Синтез — [[panel-synthesis]].`,
+    },
+    {
         slug: 'panel-exceptions',
         title: 'Панель: Исключения (вето)',
         section: 'panels',

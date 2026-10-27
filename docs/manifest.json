@@ -10,7 +10,7 @@
     {
       "id": "panels",
       "title": "Панели",
-      "articles": 78
+      "articles": 80
     },
     {
       "id": "agents",
@@ -2196,6 +2196,66 @@
       ],
       "reviewed": null,
       "tests": []
+    },
+    {
+      "id": "wiki:panel-crystal-vault",
+      "type": "article",
+      "slug": "panel-crystal-vault",
+      "title": "Панель: Хранилище кристаллов",
+      "section": "panels",
+      "status": "verified",
+      "tags": [
+        "панель",
+        "кристаллы",
+        "знания",
+        "подтверждение",
+        "инструкция"
+      ],
+      "sources": [
+        "src/components/CrystalVaultPanel/CrystalVaultPanel.tsx",
+        "src/kernel/services/crystal-vault/",
+        "src/kernel/types/crystal-types.ts"
+      ],
+      "related": [
+        "panel-junction",
+        "panel-synthesis",
+        "panel-knowledge",
+        "panel-lenses-crystals"
+      ],
+      "reviewed": null,
+      "tests": [
+        "src/components/CrystalVaultPanel/CrystalVaultPanel.test.tsx"
+      ]
+    },
+    {
+      "id": "wiki:panel-junction",
+      "type": "article",
+      "slug": "panel-junction",
+      "title": "Панель: Junction-движок",
+      "section": "panels",
+      "status": "verified",
+      "tags": [
+        "панель",
+        "junction",
+        "пересечения",
+        "синтез",
+        "знания",
+        "инструкция"
+      ],
+      "sources": [
+        "src/components/JunctionPanel/JunctionPanel.tsx",
+        "src/kernel/services/junction-engine/",
+        "src/kernel/contracts/junction-engine.ts"
+      ],
+      "related": [
+        "panel-crystal-vault",
+        "panel-synthesis",
+        "panel-knowledge"
+      ],
+      "reviewed": null,
+      "tests": [
+        "src/components/JunctionPanel/JunctionPanel.test.tsx"
+      ]
     },
     {
       "id": "wiki:panel-exceptions",

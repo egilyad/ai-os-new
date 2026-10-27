@@ -3,22 +3,22 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 1378,
-    "edges": 3625,
+    "nodes": 1384,
+    "edges": 3640,
     "byType": {
       "audit": 75,
-      "code": 581,
+      "code": 585,
       "test": 197,
       "panel": 263,
-      "article": 262
+      "article": 264
     },
     "byKind": {
       "audit_test": 336,
       "audit_mention": 929,
       "documents": 202,
-      "source": 850,
-      "test": 289,
-      "related": 1019
+      "source": 856,
+      "test": 291,
+      "related": 1026
     }
   },
   "nodes": [
@@ -1938,6 +1938,11 @@
       "label": "src/kernel/contracts/invocation.ts"
     },
     {
+      "id": "file:src/kernel/contracts/junction-engine.ts",
+      "type": "code",
+      "label": "src/kernel/contracts/junction-engine.ts"
+    },
+    {
       "id": "file:src/kernel/contracts/memory-store.ts",
       "type": "code",
       "label": "src/kernel/contracts/memory-store.ts"
@@ -2578,6 +2583,11 @@
       "label": "src/kernel/services/cross-tab-lock-service.ts"
     },
     {
+      "id": "file:src/kernel/services/crystal-vault/",
+      "type": "code",
+      "label": "src/kernel/services/crystal-vault/"
+    },
+    {
       "id": "file:src/kernel/services/crystal-vault/crystal-vault-service.test.ts",
       "type": "test",
       "label": "src/kernel/services/crystal-vault/crystal-vault-service.test.ts"
@@ -2926,6 +2936,11 @@
       "id": "file:src/kernel/services/invocation/invocation-repository.ts",
       "type": "code",
       "label": "src/kernel/services/invocation/invocation-repository.ts"
+    },
+    {
+      "id": "file:src/kernel/services/junction-engine/",
+      "type": "code",
+      "label": "src/kernel/services/junction-engine/"
     },
     {
       "id": "file:src/kernel/services/junction-engine/junction-engine-service.test.ts",
@@ -3796,6 +3811,11 @@
       "id": "file:src/kernel/types/",
       "type": "code",
       "label": "src/kernel/types/"
+    },
+    {
+      "id": "file:src/kernel/types/crystal-types.ts",
+      "type": "code",
+      "label": "src/kernel/types/crystal-types.ts"
     },
     {
       "id": "file:src/kernel/types/exception-template.ts",
@@ -7448,6 +7468,13 @@
       "status": "verified"
     },
     {
+      "id": "wiki:panel-crystal-vault",
+      "type": "article",
+      "label": "Панель: Хранилище кристаллов",
+      "section": "panels",
+      "status": "verified"
+    },
+    {
       "id": "wiki:panel-custom-metrics",
       "type": "article",
       "label": "Панель: Пользовательские метрики",
@@ -7626,6 +7653,13 @@
       "id": "wiki:panel-integrations",
       "type": "article",
       "label": "Панели: Интеграции (MCP, коннекторы, навыки, инструменты, вебхуки)",
+      "section": "panels",
+      "status": "verified"
+    },
+    {
+      "id": "wiki:panel-junction",
+      "type": "article",
+      "label": "Панель: Junction-движок",
       "section": "panels",
       "status": "verified"
     },
@@ -23760,6 +23794,46 @@
       "kind": "related"
     },
     {
+      "from": "wiki:panel-crystal-vault",
+      "to": "file:src/components/CrystalVaultPanel/CrystalVaultPanel.test.tsx",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:panel-crystal-vault",
+      "to": "file:src/components/CrystalVaultPanel/CrystalVaultPanel.tsx",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:panel-crystal-vault",
+      "to": "file:src/kernel/services/crystal-vault/",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:panel-crystal-vault",
+      "to": "file:src/kernel/types/crystal-types.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:panel-crystal-vault",
+      "to": "wiki:panel-junction",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:panel-crystal-vault",
+      "to": "wiki:panel-knowledge",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:panel-crystal-vault",
+      "to": "wiki:panel-lenses-crystals",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:panel-crystal-vault",
+      "to": "wiki:panel-synthesis",
+      "kind": "related"
+    },
+    {
       "from": "wiki:panel-custom-metrics",
       "to": "file:src/components/CustomMetricsPanel/",
       "kind": "source"
@@ -24637,6 +24711,41 @@
     {
       "from": "wiki:panel-integrations",
       "to": "wiki:zone-7",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:panel-junction",
+      "to": "file:src/components/JunctionPanel/JunctionPanel.test.tsx",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:panel-junction",
+      "to": "file:src/components/JunctionPanel/JunctionPanel.tsx",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:panel-junction",
+      "to": "file:src/kernel/contracts/junction-engine.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:panel-junction",
+      "to": "file:src/kernel/services/junction-engine/",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:panel-junction",
+      "to": "wiki:panel-crystal-vault",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:panel-junction",
+      "to": "wiki:panel-knowledge",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:panel-junction",
+      "to": "wiki:panel-synthesis",
       "kind": "related"
     },
     {
