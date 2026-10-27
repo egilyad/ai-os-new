@@ -3,22 +3,22 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 1366,
-    "edges": 3562,
+    "nodes": 1377,
+    "edges": 3624,
     "byType": {
       "audit": 75,
-      "code": 578,
+      "code": 581,
       "test": 196,
       "panel": 263,
-      "article": 254
+      "article": 262
     },
     "byKind": {
       "audit_test": 336,
       "audit_mention": 929,
       "documents": 202,
-      "source": 829,
-      "test": 287,
-      "related": 979
+      "source": 850,
+      "test": 288,
+      "related": 1019
     }
   },
   "nodes": [
@@ -556,6 +556,11 @@
       "id": "file:.github/workflows/ci.yml",
       "type": "code",
       "label": ".github/workflows/ci.yml"
+    },
+    {
+      "id": "file:Dockerfile",
+      "type": "code",
+      "label": "Dockerfile"
     },
     {
       "id": "file:docs/001-event-driven-architecture.md",
@@ -1231,6 +1236,11 @@
       "id": "file:src/components/GuardrailsPanel/GuardrailsPanel.tsx",
       "type": "code",
       "label": "src/components/GuardrailsPanel/GuardrailsPanel.tsx"
+    },
+    {
+      "id": "file:src/components/HealthPanel/",
+      "type": "code",
+      "label": "src/components/HealthPanel/"
     },
     {
       "id": "file:src/components/HealthPanel/HealthPanel.test.tsx",
@@ -3016,6 +3026,11 @@
       "id": "file:src/kernel/services/local-secret-store.ts",
       "type": "code",
       "label": "src/kernel/services/local-secret-store.ts"
+    },
+    {
+      "id": "file:src/kernel/services/logger-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/logger-service.ts"
     },
     {
       "id": "file:src/kernel/services/mcp-service.local.test.ts",
@@ -6273,6 +6288,20 @@
       "status": "documented"
     },
     {
+      "id": "wiki:audit-defect-build-deploy-config",
+      "type": "article",
+      "label": "Аудит: класс дефектов — сборка/деплой/конфиг",
+      "section": "dev",
+      "status": "verified"
+    },
+    {
+      "id": "wiki:audit-defect-contract-violations",
+      "type": "article",
+      "label": "Аудит: класс дефектов — нарушения контрактов",
+      "section": "dev",
+      "status": "verified"
+    },
+    {
       "id": "wiki:audit-defect-data-integrity",
       "type": "article",
       "label": "Аудит: класс дефектов — целостность данных и репозитории",
@@ -6280,9 +6309,23 @@
       "status": "verified"
     },
     {
+      "id": "wiki:audit-defect-logic",
+      "type": "article",
+      "label": "Аудит: класс дефектов — общие логические ошибки",
+      "section": "dev",
+      "status": "verified"
+    },
+    {
       "id": "wiki:audit-defect-memory-leaks",
       "type": "article",
       "label": "Аудит: класс дефектов — утечки памяти/ресурсов",
+      "section": "dev",
+      "status": "verified"
+    },
+    {
+      "id": "wiki:audit-defect-observability",
+      "type": "article",
+      "label": "Аудит: класс дефектов — наблюдаемость/мониторинг",
       "section": "dev",
       "status": "verified"
     },
@@ -6308,6 +6351,13 @@
       "status": "verified"
     },
     {
+      "id": "wiki:audit-defect-state-consistency",
+      "type": "article",
+      "label": "Аудит: класс дефектов — состояние и «вторые правды»",
+      "section": "dev",
+      "status": "verified"
+    },
+    {
       "id": "wiki:audit-defect-types-contracts",
       "type": "article",
       "label": "Аудит: класс дефектов — типы/контракты/дрейф событий",
@@ -6315,9 +6365,30 @@
       "status": "verified"
     },
     {
+      "id": "wiki:audit-defect-ux-correctness",
+      "type": "article",
+      "label": "Аудит: класс дефектов — UX/корректность",
+      "section": "dev",
+      "status": "verified"
+    },
+    {
+      "id": "wiki:audit-index",
+      "type": "article",
+      "label": "Аудиты: сводный индекс",
+      "section": "dev",
+      "status": "verified"
+    },
+    {
       "id": "wiki:audit-methodology",
       "type": "article",
       "label": "Аудит: методология и процесс",
+      "section": "dev",
+      "status": "verified"
+    },
+    {
+      "id": "wiki:audit-overview",
+      "type": "article",
+      "label": "Аудиты: полный обзор",
       "section": "dev",
       "status": "verified"
     },
@@ -15459,6 +15530,66 @@
       "kind": "related"
     },
     {
+      "from": "wiki:audit-defect-build-deploy-config",
+      "to": "file:Dockerfile",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:audit-defect-build-deploy-config",
+      "to": "file:package.json",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:audit-defect-build-deploy-config",
+      "to": "file:scripts/",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:audit-defect-build-deploy-config",
+      "to": "file:vite.config.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:audit-defect-build-deploy-config",
+      "to": "wiki:audit-methodology",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:audit-defect-build-deploy-config",
+      "to": "wiki:audit-type-build",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:audit-defect-contract-violations",
+      "to": "file:src/kernel/contracts/",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:audit-defect-contract-violations",
+      "to": "file:src/kernel/events/",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:audit-defect-contract-violations",
+      "to": "file:src/kernel/services/",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:audit-defect-contract-violations",
+      "to": "wiki:audit-defect-state-consistency",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:audit-defect-contract-violations",
+      "to": "wiki:audit-defect-types-contracts",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:audit-defect-contract-violations",
+      "to": "wiki:audit-methodology",
+      "kind": "related"
+    },
+    {
       "from": "wiki:audit-defect-data-integrity",
       "to": "file:src/kernel/dal/",
       "kind": "source"
@@ -15476,6 +15607,36 @@
     {
       "from": "wiki:audit-defect-data-integrity",
       "to": "wiki:audit-type-data-streaming",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:audit-defect-logic",
+      "to": "file:src/components/",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:audit-defect-logic",
+      "to": "file:src/kernel/",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:audit-defect-logic",
+      "to": "file:src/stores/",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:audit-defect-logic",
+      "to": "wiki:audit-defect-types-contracts",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:audit-defect-logic",
+      "to": "wiki:audit-defect-ux-correctness",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:audit-defect-logic",
+      "to": "wiki:audit-methodology",
       "kind": "related"
     },
     {
@@ -15501,6 +15662,36 @@
     {
       "from": "wiki:audit-defect-memory-leaks",
       "to": "wiki:audit-type-data-streaming",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:audit-defect-observability",
+      "to": "file:src/components/HealthPanel/",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:audit-defect-observability",
+      "to": "file:src/kernel/services/logger-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:audit-defect-observability",
+      "to": "file:src/kernel/services/system-status-service.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:audit-defect-observability",
+      "to": "file:src/kernel/services/system-status-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:audit-defect-observability",
+      "to": "wiki:audit-defect-performance",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:audit-defect-observability",
+      "to": "wiki:audit-methodology",
       "kind": "related"
     },
     {
@@ -15589,6 +15780,36 @@
       "kind": "related"
     },
     {
+      "from": "wiki:audit-defect-state-consistency",
+      "to": "file:src/components/",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:audit-defect-state-consistency",
+      "to": "file:src/kernel/",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:audit-defect-state-consistency",
+      "to": "file:src/stores/",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:audit-defect-state-consistency",
+      "to": "wiki:audit-defect-contract-violations",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:audit-defect-state-consistency",
+      "to": "wiki:audit-defect-data-integrity",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:audit-defect-state-consistency",
+      "to": "wiki:audit-methodology",
+      "kind": "related"
+    },
+    {
       "from": "wiki:audit-defect-types-contracts",
       "to": "file:src/kernel/contracts/",
       "kind": "source"
@@ -15614,6 +15835,136 @@
       "kind": "related"
     },
     {
+      "from": "wiki:audit-defect-ux-correctness",
+      "to": "file:src/components/",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:audit-defect-ux-correctness",
+      "to": "file:src/hooks/",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:audit-defect-ux-correctness",
+      "to": "wiki:audit-defect-logic",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:audit-defect-ux-correctness",
+      "to": "wiki:audit-defect-performance",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:audit-defect-ux-correctness",
+      "to": "wiki:audit-methodology",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:audit-index",
+      "to": "file:docs/audits/",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:audit-index",
+      "to": "wiki:audit-defect-build-deploy-config",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:audit-index",
+      "to": "wiki:audit-defect-contract-violations",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:audit-index",
+      "to": "wiki:audit-defect-data-integrity",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:audit-index",
+      "to": "wiki:audit-defect-logic",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:audit-index",
+      "to": "wiki:audit-defect-memory-leaks",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:audit-index",
+      "to": "wiki:audit-defect-observability",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:audit-index",
+      "to": "wiki:audit-defect-performance",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:audit-index",
+      "to": "wiki:audit-defect-race-lifecycle",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:audit-index",
+      "to": "wiki:audit-defect-security",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:audit-index",
+      "to": "wiki:audit-defect-state-consistency",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:audit-index",
+      "to": "wiki:audit-defect-types-contracts",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:audit-index",
+      "to": "wiki:audit-defect-ux-correctness",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:audit-index",
+      "to": "wiki:audit-methodology",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:audit-index",
+      "to": "wiki:audit-type-architecture",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:audit-index",
+      "to": "wiki:audit-type-bootstrap",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:audit-index",
+      "to": "wiki:audit-type-build",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:audit-index",
+      "to": "wiki:audit-type-data-streaming",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:audit-index",
+      "to": "wiki:audit-type-domain",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:audit-index",
+      "to": "wiki:audit-type-keys",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:audit-index",
+      "to": "wiki:audit-type-security",
+      "kind": "related"
+    },
+    {
       "from": "wiki:audit-methodology",
       "to": "file:docs/audits/",
       "kind": "source"
@@ -15630,6 +15981,36 @@
     },
     {
       "from": "wiki:audit-methodology",
+      "to": "wiki:audit-type-security",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:audit-overview",
+      "to": "file:docs/audits/",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:audit-overview",
+      "to": "file:src/kernel/",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:audit-overview",
+      "to": "wiki:audit-index",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:audit-overview",
+      "to": "wiki:audit-methodology",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:audit-overview",
+      "to": "wiki:audit-type-domain",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:audit-overview",
       "to": "wiki:audit-type-security",
       "kind": "related"
     },

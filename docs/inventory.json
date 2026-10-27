@@ -3,7 +3,7 @@
   "generatedBy": "scripts/gen-docs-inventory.mjs",
   "scope": "git-tracked markdown: docs/**/*.md (excluding docs/new drafts and the self-report pages docs-health, docs-inventory) plus repository entry docs (root *.md, .superagents/**, src/kernel/DEPENDENCY_MAP.md)",
   "totals": {
-    "documents": 1094,
+    "documents": 1100,
     "byCategory": {
       "repo": 13,
       "top": 47,
@@ -13,11 +13,11 @@
       "reference": 6,
       "roadmap": 17,
       "superseded": 3,
-      "wiki": 247
+      "wiki": 253
     },
     "byLanguage": {
       "en": 659,
-      "ru": 264,
+      "ru": 270,
       "mixed": 171
     }
   },
@@ -6784,6 +6784,54 @@
       "hash": "8a72d262a859870fed35d8a7b5a92dcee1fb8aa9"
     },
     {
+      "path": "docs/wiki/audit-defect-data-integrity.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Аудит: класс дефектов — целостность данных и репозитории",
+      "bytes": 1771,
+      "hash": "d69c34bb7f9833db644c86a9cbcd021b255c8e4c"
+    },
+    {
+      "path": "docs/wiki/audit-defect-memory-leaks.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Аудит: класс дефектов — утечки памяти/ресурсов",
+      "bytes": 1728,
+      "hash": "c2ddfbc054193065de72076faa750555f5b9283e"
+    },
+    {
+      "path": "docs/wiki/audit-defect-performance.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Аудит: класс дефектов — производительность/индексы/кэш",
+      "bytes": 1784,
+      "hash": "c6d5abf35063ef3d10795ab91d016fdf91d4532c"
+    },
+    {
+      "path": "docs/wiki/audit-defect-race-lifecycle.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Аудит: класс дефектов — гонки/жизненный цикл/async cleanup",
+      "bytes": 2034,
+      "hash": "4e6c6bb4bf8dc3e28c40d7fc0180b339cbc31d9d"
+    },
+    {
+      "path": "docs/wiki/audit-defect-security.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Аудит: класс дефектов — безопасность/auth/песочница/CSP",
+      "bytes": 1697,
+      "hash": "64c55efc2f96af3ac563b0727cb793d9672f00f1"
+    },
+    {
+      "path": "docs/wiki/audit-defect-types-contracts.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Аудит: класс дефектов — типы/контракты/дрейф событий",
+      "bytes": 1687,
+      "hash": "3bc77d5f08bb5cef9f89733d5f46377a4d2e3331"
+    },
+    {
       "path": "docs/wiki/audit-methodology.md",
       "category": "wiki",
       "language": "ru",
@@ -7469,7 +7517,7 @@
       "language": "mixed",
       "title": "Матрица покрытия",
       "bytes": 8463,
-      "hash": "140e28e267ceede53bbd26d169fc675a887c71ab"
+      "hash": "d383e1dff8a7eb8f68898ba430bcde14753b1957"
     },
     {
       "path": "docs/wiki/debates.md",
@@ -7501,7 +7549,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4075,
-      "hash": "c4fd15fead8182ab31f8ef70773422598ccf43d6"
+      "hash": "ef0a4939a90201eecb6a2588dd33bdc6bfaf2158"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -7588,8 +7636,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Граф знаний",
-      "bytes": 4904,
-      "hash": "682b449b744b9be4236eaa9543d349dc0af6ac84"
+      "bytes": 4905,
+      "hash": "17728f1aecd8a662ddc599e89c72f5dafd470e65"
     },
     {
       "path": "docs/wiki/dev-history.md",
@@ -7804,8 +7852,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Карта документации",
-      "bytes": 33935,
-      "hash": "d0dd8d18d329da73175517f65407e2f8b64ec33a"
+      "bytes": 35629,
+      "hash": "95c1dbe1c63be6881e261ff2196956dde38aaec3"
     },
     {
       "path": "docs/wiki/docs-standard.md",
@@ -8500,8 +8548,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Wiki SuperAgents OS",
-      "bytes": 26419,
-      "hash": "4a26144cbef32151f3aacc9930a98ea74ef5f071"
+      "bytes": 27413,
+      "hash": "3fb107b55fe92d019a185070c2cce85fc33a905b"
     },
     {
       "path": "docs/wiki/roadmap-notes.md",

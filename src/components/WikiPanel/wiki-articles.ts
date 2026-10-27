@@ -2628,6 +2628,277 @@ crews, councils, graphs, persona, ops, interop, meta, trust, frontier, rivals.
 Соседствует с [[audit-defect-memory-leaks]] (кэши) и [[audit-methodology]].`,
     },
     {
+        slug: 'audit-defect-ux-correctness',
+        title: 'Аудит: класс дефектов — UX/корректность',
+        section: 'dev',
+        tags: ['аудит', 'UX', 'корректность', 'UI', 'дефекты'],
+        freshness: 'verified',
+        sources: ['src/components/', 'src/hooks/'],
+        related: ['audit-methodology', 'audit-defect-performance', 'audit-defect-logic'],
+        body: `## Назначение
+
+Аудит видимых пользователю свойств: поведение UI, состояния, фокус, текст, вёрстка.
+
+## Что искать
+
+- Сломанное/вводящее в заблуждение поведение UI.
+- Некорректные состояния loading/empty/error/success.
+- Проблемы клавиатуры, мыши, фокуса.
+- Устаревшие данные/лейблы, конфликтующие взаимодействия.
+- Layout overflow, обрезка, видимость.
+- Мелкие логические ошибки, которые видны пользователю.
+
+## Связи
+
+Соседствует с [[audit-defect-logic]] и [[audit-defect-performance]].`,
+    },
+    {
+        slug: 'audit-defect-build-deploy-config',
+        title: 'Аудит: класс дефектов — сборка/деплой/конфиг',
+        section: 'dev',
+        tags: ['аудит', 'сборка', 'деплой', 'конфиг', 'CI', 'дефекты'],
+        freshness: 'verified',
+        sources: ['Dockerfile', 'vite.config.ts', 'package.json', 'scripts/'],
+        related: ['audit-type-build', 'audit-methodology'],
+        body: `## Назначение
+
+Аудит инфраструктуры запуска/доставки: Docker, nginx, окружение, сборка, CI.
+
+## Что искать
+
+- Ошибки Docker/nginx/старта сервера, обработки переменных окружения.
+- Некорректные/отсутствующие значения конфига.
+- Разрыв dev/prod parity.
+- Проблемы сценариев сборки, упаковки, репозитория.
+- Плохие дефолты, ломающие прод.
+- Битые импорты/пути, сбои при старте.
+- Проблемы CI/CD, мешающие запуску.
+
+## Связи
+
+См. [[audit-type-build]] (целостность сборки) и [[audit-methodology]].`,
+    },
+    {
+        slug: 'audit-defect-observability',
+        title: 'Аудит: класс дефектов — наблюдаемость/мониторинг',
+        section: 'dev',
+        tags: ['аудит', 'наблюдаемость', 'мониторинг', 'телеметрия', 'логи', 'дефекты'],
+        freshness: 'verified',
+        sources: ['src/kernel/services/logger-service.ts', 'src/kernel/services/system-status-service.ts', 'src/components/HealthPanel/'],
+        related: ['audit-methodology', 'audit-defect-performance'],
+        body: `## Назначение
+
+Аудит качества сигналов системы: логи, ошибки, метрики, трейсы, health.
+
+## Что искать
+
+- Отсутствующие/вводящие в заблуждение логи.
+- Глотание исключений, плохой error-reporting.
+- Неполные счётчики/метрики/трейсы.
+- Health-проверки, не отражающие реальное состояние.
+- Сигналы, которые могут застареть или «врать».
+- Отсутствие алертов на важные события жизненного цикла.
+- Телеметрия, которой нельзя доверять.
+
+## Связи
+
+Родственно [[audit-defect-performance]] и [[audit-methodology]].`,
+    },
+    {
+        slug: 'audit-defect-logic',
+        title: 'Аудит: класс дефектов — общие логические ошибки',
+        section: 'dev',
+        tags: ['аудит', 'логика', 'дефекты', 'инварианты'],
+        freshness: 'verified',
+        sources: ['src/kernel/', 'src/stores/', 'src/components/'],
+        related: ['audit-methodology', 'audit-defect-ux-correctness', 'audit-defect-types-contracts'],
+        body: `## Назначение
+
+Аудит общих логических ошибок, не подпадающих под security/performance/type.
+
+## Что искать
+
+- Реализация не соответствует имени/намерению.
+- Неверные ветвления, условия, обработка краев.
+- Нарушенные инварианты.
+- Дублирующие/пропущенные переходы состояний.
+- Неверные дефолты.
+- Некорректные расчёты/агрегации/сравнения.
+- Тихие пути отказа.
+- Расхождение задуманного и фактического потока.
+
+## Связи
+
+См. [[audit-defect-ux-correctness]] и [[audit-defect-types-contracts]].`,
+    },
+    {
+        slug: 'audit-defect-state-consistency',
+        title: 'Аудит: класс дефектов — состояние и «вторые правды»',
+        section: 'dev',
+        tags: ['аудит', 'состояние', 'вторые правды', 'single source of truth', 'рассинхрон', 'дефекты'],
+        freshness: 'verified',
+        sources: ['src/kernel/', 'src/stores/', 'src/components/'],
+        related: ['audit-methodology', 'audit-defect-data-integrity', 'audit-defect-contract-violations'],
+        body: `## Назначение
+
+Аудит дублирующих источников правды и рассинхрона: «удалили в одном месте, а копия осталась в другом».
+
+## Что искать
+
+- Данные в нескольких местах, которые могут разойтись.
+- Удалённое/изменённое состояние, оставшееся в кэшах/снапшотах/копиях.
+- Параллельные системы состояния одного и того же.
+- Собственные копии правды в сервисах/сторах/компонентах.
+- Устаревшие производные состояния, мемоизированные копии, «зеркала».
+- Рассинхрон между вкладками/сервисами/компонентами.
+- Пути, где одно обновляет, а другое читает старую копию.
+- Частичная очистка с осиротевшими ссылками.
+
+## Связи
+
+Это прямой «корень» многих багов. См. [[audit-defect-data-integrity]] и [[audit-defect-contract-violations]].`,
+    },
+    {
+        slug: 'audit-defect-contract-violations',
+        title: 'Аудит: класс дефектов — нарушения контрактов',
+        section: 'dev',
+        tags: ['аудит', 'контракты', 'инварианты', 'дисциплина', 'дефекты'],
+        freshness: 'verified',
+        sources: ['src/kernel/contracts/', 'src/kernel/events/', 'src/kernel/services/'],
+        related: ['audit-methodology', 'audit-defect-types-contracts', 'audit-defect-state-consistency'],
+        body: `## Назначение
+
+Аудит модулей, где «обещание» (имя/тип/API/жизненный цикл) расходится с фактическим поведением.
+
+## Что искать
+
+- destroy()/clear()/reset()/close()/abort()/unsubscribe()/dispose()/cleanup() без реальной очистки.
+- upsert() который всегда insert, resume() который перезапускает, get() отдающий mutable-ссылку.
+- Тихие отказы: функции возвращают успех, а ничего не сделали.
+- Мисмэтч payload событий между DomainEventMap/Validators/фактическим emit().
+- Утечка внутренних mutable-ссылок наружу.
+- Инварианты, нарушаемые чтением/побочными эффектами.
+
+## Связи
+
+Часто это и есть «системные корни» — см. [[audit-methodology]] и [[audit-defect-types-contracts]].`,
+    },
+    {
+        slug: 'audit-index',
+        title: 'Аудиты: сводный индекс',
+        section: 'dev',
+        tags: ['аудит', 'индекс', 'сводка', 'обзор'],
+        freshness: 'verified',
+        sources: ['docs/audits/'],
+        related: [
+            'audit-methodology',
+            'audit-type-bootstrap',
+            'audit-type-build',
+            'audit-type-keys',
+            'audit-type-architecture',
+            'audit-type-domain',
+            'audit-type-data-streaming',
+            'audit-type-security',
+            'audit-defect-memory-leaks',
+            'audit-defect-security',
+            'audit-defect-data-integrity',
+            'audit-defect-race-lifecycle',
+            'audit-defect-types-contracts',
+            'audit-defect-performance',
+            'audit-defect-ux-correctness',
+            'audit-defect-build-deploy-config',
+            'audit-defect-observability',
+            'audit-defect-logic',
+            'audit-defect-state-consistency',
+            'audit-defect-contract-violations',
+        ],
+        body: `## Назначение
+
+Сводный указатель по всем статьям об аудитах SuperAgents OS.
+
+## Типы аудитов
+
+- [[audit-type-bootstrap]] — запуск и выживание UI.
+- [[audit-type-build]] — сборка и целостность репозитория.
+- [[audit-type-keys]] — ключи и секреты.
+- [[audit-type-architecture]] — консолидация архитектуры.
+- [[audit-type-domain]] — системный аудит по доменам.
+- [[audit-type-data-streaming]] — данные/состояние/стриминг.
+- [[audit-type-security]] — безопасность и hardening.
+
+## Классы дефектов
+
+- [[audit-defect-memory-leaks]] — утечки памяти/ресурсов.
+- [[audit-defect-security]] — безопасность/auth/песочница/CSP.
+- [[audit-defect-data-integrity]] — целостность данных.
+- [[audit-defect-race-lifecycle]] — гонки/жизненный цикл/async cleanup.
+- [[audit-defect-types-contracts]] — типы/контракты/дрейф событий.
+- [[audit-defect-performance]] — производительность/индексы/кэш.
+- [[audit-defect-ux-correctness]] — UX/корректность.
+- [[audit-defect-build-deploy-config]] — сборка/деплой/конфиг.
+- [[audit-defect-observability]] — наблюдаемость/мониторинг.
+- [[audit-defect-logic]] — общие логические ошибки.
+- [[audit-defect-state-consistency]] — состояние и «вторые правды».
+- [[audit-defect-contract-violations]] — нарушения контрактов.
+
+## Методология
+
+- [[audit-methodology]] — процесс, freeze, уровни A/B/C, золотые сценарии.
+- [[audit-overview]] — большая обзорная статья.`,
+    },
+    {
+        slug: 'audit-overview',
+        title: 'Аудиты: полный обзор',
+        section: 'dev',
+        tags: ['аудит', 'обзор', 'полное руководство', 'типы', 'классы'],
+        freshness: 'verified',
+        sources: ['docs/audits/', 'src/kernel/'],
+        related: ['audit-index', 'audit-methodology', 'audit-type-domain', 'audit-type-security'],
+        body: `## Назначение
+
+Большая обзорная статья: все типы аудитов и классы дефектов в одном месте.
+
+## Почему аудиты «бесконечны»
+
+Огромный AI-ускоренный проект (≈1000 файлов) нельзя охватить одним проходом. Каждый аудит освещает конкретный слой/угол, а исправления открывают следующие зоны. Баги не «заканчиваются» — они переходят из критичных в локальные/edge.
+
+## Типы аудитов (по фокусу)
+
+1. **Запуск/UI** — [[audit-type-bootstrap]].
+2. **Сборка/репозиторий** — [[audit-type-build]].
+3. **Ключи/секреты** — [[audit-type-keys]].
+4. **Консолидация архитектуры** — [[audit-type-architecture]].
+5. **Домены** — [[audit-type-domain]].
+6. **Данные/стриминг** — [[audit-type-data-streaming]].
+7. **Безопасность** — [[audit-type-security]].
+
+## Классы дефектов
+
+1. [[audit-defect-memory-leaks]] — таймеры, подписки, стримы, кэши, объекты.
+2. [[audit-defect-security]] — auth, sandbox, XSS, CSP, SSRF, ключи.
+3. [[audit-defect-data-integrity]] — персистентность, upsert, миграции, частичные записи.
+4. [[audit-defect-race-lifecycle]] — гонки, stale closures, abort, double-send.
+5. [[audit-defect-types-contracts]] — дрейф событий, интерфейсы, any.
+6. [[audit-defect-performance]] — сканы, индексы, кэш, ре-рендеры.
+7. [[audit-defect-ux-correctness]] — UI-состояния, фокус, вёрстка.
+8. [[audit-defect-build-deploy-config]] — Docker/nginx/env/CI.
+9. [[audit-defect-observability]] — логи/метрики/health.
+10. [[audit-defect-logic]] — общие логические ошибки.
+11. [[audit-defect-state-consistency]] — «вторые правды», рассинхрон.
+12. [[audit-defect-contract-violations]] — нарушение контрактов и дисциплины.
+
+## Метрики и процесс
+
+- Серьёзность: CRITICAL / HIGH / MEDIUM / LOW.
+- Категории: Ядро / Стор / API-Провайдеры / UI / Безопасность.
+- Волны hardening: security+lifecycle → timers/AbortSignal → остальное.
+- Уровни A/B/C и «золотые сценарии» — см. [[audit-methodology]].
+
+## См. также
+
+[[audit-index]] — быстрая навигация.`,
+    },
+    {
         slug: 'panel-exceptions',
         title: 'Панель: Исключения (вето)',
         section: 'panels',

@@ -5,7 +5,7 @@
 > Полная документация системы: панели, агенты, дебаты, память, провайдеры, диагностика, история разработки, архитектура и руководства для разработчиков.
 > Страницы автосгенерированы из корпуса Wiki (`scripts/gen-wiki-docs.mjs`). Та же документация доступна в приложении в панели «Wiki».
 
-Всего материалов: **254** в 13 разделах.
+Всего материалов: **262** в 13 разделах.
 
 > Разработчикам: начните с [Обзор для разработчиков](./dev-overview.md), затем [Структура](./dev-layout.md) и [Каталог компонентов](./dev-component-catalog.md).
 
@@ -25,7 +25,7 @@
 | Компоненты и сервисы | 75 |
 | Заметки | 1 |
 | Состояние разработки | 10 |
-| Разработчикам | 44 |
+| Разработчикам | 52 |
 
 ## Руководство (8)
 
@@ -273,7 +273,7 @@
 - [Roadmaps](./dev-status-roadmaps.md) — _needs-check_
 - [MD и другие файлы от разработки](./dev-status-files.md) — _needs-check_
 
-## Разработчикам (44)
+## Разработчикам (52)
 
 - [Аудит: запуск и выживание UI](./audit-type-bootstrap.md) — _verified_
 - [Аудит: сборка и целостность репозитория](./audit-type-build.md) — _verified_
@@ -288,6 +288,14 @@
 - [Аудит: класс дефектов — гонки/жизненный цикл/async cleanup](./audit-defect-race-lifecycle.md) — _verified_
 - [Аудит: класс дефектов — типы/контракты/дрейф событий](./audit-defect-types-contracts.md) — _verified_
 - [Аудит: класс дефектов — производительность/индексы/кэш](./audit-defect-performance.md) — _verified_
+- [Аудит: класс дефектов — UX/корректность](./audit-defect-ux-correctness.md) — _verified_
+- [Аудит: класс дефектов — сборка/деплой/конфиг](./audit-defect-build-deploy-config.md) — _verified_
+- [Аудит: класс дефектов — наблюдаемость/мониторинг](./audit-defect-observability.md) — _verified_
+- [Аудит: класс дефектов — общие логические ошибки](./audit-defect-logic.md) — _verified_
+- [Аудит: класс дефектов — состояние и «вторые правды»](./audit-defect-state-consistency.md) — _verified_
+- [Аудит: класс дефектов — нарушения контрактов](./audit-defect-contract-violations.md) — _verified_
+- [Аудиты: сводный индекс](./audit-index.md) — _verified_
+- [Аудиты: полный обзор](./audit-overview.md) — _verified_
 - [Разработчикам: структура и ворота](./for-developers.md) — _verified_
 - [Разработчикам: обзор и слои](./dev-overview.md) — _verified_
 - [Разработчикам: карта каталогов](./dev-layout.md) — _verified_

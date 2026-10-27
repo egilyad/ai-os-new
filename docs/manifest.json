@@ -65,7 +65,7 @@
     {
       "id": "dev",
       "title": "Разработчикам",
-      "articles": 44
+      "articles": 52
     }
   ],
   "articles": [
@@ -1960,6 +1960,238 @@
       "related": [
         "audit-methodology",
         "audit-type-data-streaming"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:audit-defect-ux-correctness",
+      "type": "article",
+      "slug": "audit-defect-ux-correctness",
+      "title": "Аудит: класс дефектов — UX/корректность",
+      "section": "dev",
+      "status": "verified",
+      "tags": [
+        "аудит",
+        "UX",
+        "корректность",
+        "UI",
+        "дефекты"
+      ],
+      "sources": [
+        "src/components/",
+        "src/hooks/"
+      ],
+      "related": [
+        "audit-methodology",
+        "audit-defect-performance",
+        "audit-defect-logic"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:audit-defect-build-deploy-config",
+      "type": "article",
+      "slug": "audit-defect-build-deploy-config",
+      "title": "Аудит: класс дефектов — сборка/деплой/конфиг",
+      "section": "dev",
+      "status": "verified",
+      "tags": [
+        "аудит",
+        "сборка",
+        "деплой",
+        "конфиг",
+        "CI",
+        "дефекты"
+      ],
+      "sources": [
+        "Dockerfile",
+        "vite.config.ts",
+        "package.json",
+        "scripts/"
+      ],
+      "related": [
+        "audit-type-build",
+        "audit-methodology"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:audit-defect-observability",
+      "type": "article",
+      "slug": "audit-defect-observability",
+      "title": "Аудит: класс дефектов — наблюдаемость/мониторинг",
+      "section": "dev",
+      "status": "verified",
+      "tags": [
+        "аудит",
+        "наблюдаемость",
+        "мониторинг",
+        "телеметрия",
+        "логи",
+        "дефекты"
+      ],
+      "sources": [
+        "src/kernel/services/logger-service.ts",
+        "src/kernel/services/system-status-service.ts",
+        "src/components/HealthPanel/"
+      ],
+      "related": [
+        "audit-methodology",
+        "audit-defect-performance"
+      ],
+      "reviewed": null,
+      "tests": [
+        "src/kernel/services/system-status-service.test.ts"
+      ]
+    },
+    {
+      "id": "wiki:audit-defect-logic",
+      "type": "article",
+      "slug": "audit-defect-logic",
+      "title": "Аудит: класс дефектов — общие логические ошибки",
+      "section": "dev",
+      "status": "verified",
+      "tags": [
+        "аудит",
+        "логика",
+        "дефекты",
+        "инварианты"
+      ],
+      "sources": [
+        "src/kernel/",
+        "src/stores/",
+        "src/components/"
+      ],
+      "related": [
+        "audit-methodology",
+        "audit-defect-ux-correctness",
+        "audit-defect-types-contracts"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:audit-defect-state-consistency",
+      "type": "article",
+      "slug": "audit-defect-state-consistency",
+      "title": "Аудит: класс дефектов — состояние и «вторые правды»",
+      "section": "dev",
+      "status": "verified",
+      "tags": [
+        "аудит",
+        "состояние",
+        "вторые правды",
+        "single source of truth",
+        "рассинхрон",
+        "дефекты"
+      ],
+      "sources": [
+        "src/kernel/",
+        "src/stores/",
+        "src/components/"
+      ],
+      "related": [
+        "audit-methodology",
+        "audit-defect-data-integrity",
+        "audit-defect-contract-violations"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:audit-defect-contract-violations",
+      "type": "article",
+      "slug": "audit-defect-contract-violations",
+      "title": "Аудит: класс дефектов — нарушения контрактов",
+      "section": "dev",
+      "status": "verified",
+      "tags": [
+        "аудит",
+        "контракты",
+        "инварианты",
+        "дисциплина",
+        "дефекты"
+      ],
+      "sources": [
+        "src/kernel/contracts/",
+        "src/kernel/events/",
+        "src/kernel/services/"
+      ],
+      "related": [
+        "audit-methodology",
+        "audit-defect-types-contracts",
+        "audit-defect-state-consistency"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:audit-index",
+      "type": "article",
+      "slug": "audit-index",
+      "title": "Аудиты: сводный индекс",
+      "section": "dev",
+      "status": "verified",
+      "tags": [
+        "аудит",
+        "индекс",
+        "сводка",
+        "обзор"
+      ],
+      "sources": [
+        "docs/audits/"
+      ],
+      "related": [
+        "audit-methodology",
+        "audit-type-bootstrap",
+        "audit-type-build",
+        "audit-type-keys",
+        "audit-type-architecture",
+        "audit-type-domain",
+        "audit-type-data-streaming",
+        "audit-type-security",
+        "audit-defect-memory-leaks",
+        "audit-defect-security",
+        "audit-defect-data-integrity",
+        "audit-defect-race-lifecycle",
+        "audit-defect-types-contracts",
+        "audit-defect-performance",
+        "audit-defect-ux-correctness",
+        "audit-defect-build-deploy-config",
+        "audit-defect-observability",
+        "audit-defect-logic",
+        "audit-defect-state-consistency",
+        "audit-defect-contract-violations"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:audit-overview",
+      "type": "article",
+      "slug": "audit-overview",
+      "title": "Аудиты: полный обзор",
+      "section": "dev",
+      "status": "verified",
+      "tags": [
+        "аудит",
+        "обзор",
+        "полное руководство",
+        "типы",
+        "классы"
+      ],
+      "sources": [
+        "docs/audits/",
+        "src/kernel/"
+      ],
+      "related": [
+        "audit-index",
+        "audit-methodology",
+        "audit-type-domain",
+        "audit-type-security"
       ],
       "reviewed": null,
       "tests": []
