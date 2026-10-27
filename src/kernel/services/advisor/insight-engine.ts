@@ -1,7 +1,10 @@
 import type { IInsightEngine, LLMAnalysisResult, AdvisorMetrics } from '../../contracts/advisor';
 import type { KeyState } from '../../contracts/key-state';
 import { safeJsonParse } from '../../../kernel/utils/safe-json';
-import { PROVIDER_DEFAULT_MODELS } from '../../../kernel/utils/provider-default-models';
+import {
+    PROVIDER_DEFAULT_MODELS,
+    resolveProviderModel,
+} from '../../../kernel/utils/provider-default-models';
 
 export interface InsightEngineDeps {
     eventBus: {
@@ -239,12 +242,11 @@ ${topologySummary}
             nvidia: 'meta/llama-3.3-70b-instruct',
             deepseek: 'deepseek-chat',
             cohere: 'command-r-plus',
+            mercury: 'mercury-3',
+            inception: 'mercury-3',
         };
-        return (
-            PROVDER_DEFAULTS[key.provider.toLowerCase()] ||
-            key.availableModels?.[0] ||
-            'auto'
-        );
+        const resolved = resolveProviderModel(key.provider, undefined, key.availableModels);
+        return resolved || PROVDER_DEFAULTS[key.provider.toLowerCase()] || 'auto';
     }
 
     private async tryAnalyzeKey(

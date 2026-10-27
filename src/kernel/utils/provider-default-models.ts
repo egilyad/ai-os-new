@@ -38,6 +38,24 @@ export const PROVIDER_PREFERRED_MODELS: Record<string, string[]> = {
     mercury: ['mercury-3'],
 };
 
+/**
+ * Resolve a safe model id for a provider. For Mercury (Inception Labs) the
+ * API is strict about which model ids it accepts, so we never send an arbitrary
+ * entry from availableModels — we always fall back to the known-valid mercury-3.
+ */
+export function resolveProviderModel(
+    provider: string,
+    preferred?: string,
+    availableModels?: string[],
+): string | undefined {
+    const p = provider.toLowerCase();
+    if (p === 'mercury' || p === 'inception') {
+        return preferred && preferred !== 'auto' ? preferred : 'mercury-3';
+    }
+    if (preferred && preferred !== 'auto') return preferred;
+    return availableModels?.find((m) => m && m !== 'auto') ?? PROVIDER_DEFAULT_MODELS[p];
+}
+
 /** Human-readable provider names keyed by the canonical provider slug.
  *  Reused by the Agent Identity view so "Groq" / "Meta" is shown instead of
  *  an inferred model prefix. */

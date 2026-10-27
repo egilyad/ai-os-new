@@ -28,6 +28,7 @@ import { ProjectKnowledgeService } from '../services/assistant/project-knowledge
 import { AssistantNavigationService } from '../services/assistant/assistant-navigation-service';
 import { AssistantActionRegistry } from '../services/assistant/assistant-action-registry';
 import { createAssistantActions } from '../services/assistant/assistant-actions';
+import { resolveProviderModel } from '../utils/provider-default-models';
 import { createAssistantOpsActions } from '../services/assistant/assistant-ops-actions';
 import { createPanelActions } from '../services/assistant/assistant-panel-actions';
 import { PanelActionRegistry } from '../services/assistant/panel-action-registry';
@@ -512,10 +513,7 @@ export const registerPhase78: Phase = ({ register }) => {
                               .getActiveKeys()
                               .find((k) => k.status === 'active' && !!k.key);
                     if (!key) return undefined;
-                    const model =
-                        key.model && key.model !== 'auto'
-                            ? key.model
-                            : (key.availableModels ?? []).find((m) => m && m !== 'auto');
+                    const model = resolveProviderModel(key.provider, key.model, key.availableModels);
                     return { provider: key.provider, model, apiKey: key.key };
                 } catch {
                     return undefined;
