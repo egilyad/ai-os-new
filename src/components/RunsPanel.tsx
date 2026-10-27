@@ -52,6 +52,7 @@ const RunsPanel: React.FC = () => {
     const [selectedId, setSelectedId] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [limit, setLimit] = useState(50);
 
     const base = url.replace(/\/$/, '');
 
@@ -76,7 +77,9 @@ const RunsPanel: React.FC = () => {
         setLoading(true);
         setError(null);
         try {
-            const q = statusFilter ? `?status=${encodeURIComponent(statusFilter)}&limit=50` : '?limit=50';
+            const q = statusFilter
+                ? `?status=${encodeURIComponent(statusFilter)}&limit=${limit}`
+                : `?limit=${limit}`;
             const data = await api<{ runs?: Run[] }>(base, secret, `/api/companies/${companyId}/runs${q}`);
             const list = Array.isArray(data.runs) ? data.runs.slice().reverse() : [];
             setRuns(list);
@@ -89,7 +92,7 @@ const RunsPanel: React.FC = () => {
         } finally {
             setLoading(false);
         }
-    }, [base, secret, companyId, statusFilter, selectedId]);
+    }, [base, secret, companyId, statusFilter, selectedId, limit]);
 
     useEffect(() => {
         try {
@@ -155,18 +158,33 @@ const RunsPanel: React.FC = () => {
 
             <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
                 <ul style={{ flex: '1 1 300px', listStyle: 'none', padding: 0, margin: 0 }}>
-                    {runs.map((x) => (
-                        <li key={x.id} style={{ marginBottom: 6 }}>
-                            <button
-                                onClick={() => setSelectedId(x.id)}
-                                style={{ width: '100%', textAlign: 'left', fontWeight: x.id === selectedId ? 700 : 400 }}
-                            >
-                                [{x.status}] {x.trigger}
-                                {x.agentId ? ` · ${x.agentId.slice(0, 14)}` : ''}
-                            </button>
+                    {loading ? (
+                        <li style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#64748b' }}>
+                            <Loader2 size={16} /> {t('runs.loading') ?? 'Загрузка…'}
                         </li>
-                    ))}
-                    {runs.length === 0 && <li>{t('runs.empty')}</li>}
+                    ) : (
+                        <>
+                            {runs.map((x) => (
+                                <li key={x.id} style={{ marginBottom: 6 }}>
+                                    <button
+                                        onClick={() => setSelectedId(x.id)}
+                                        style={{ width: '100%', textAlign: 'left', fontWeight: x.id === selectedId ? 700 : 400 }}
+                                    >
+                                        [{x.status}] {x.trigger}
+                                        {x.agentId ? ` · ${x.agentId.slice(0, 14)}` : ''}
+                                    </button>
+                                </li>
+                            ))}
+                            {runs.length === 0 && <li>{t('runs.empty')}</li>}
+                            {runs.length > 0 && runs.length === limit && (
+                                <li style={{ marginTop: 8 }}>
+                                    <button onClick={() => setLimit((l) => l + 50)}>
+                                        {t('runs.show_more') ?? 'Показать ещё…'}
+                                    </button>
+                                </li>
+                            )}
+                        </>
+                    )}
                 </ul>
                 {selected && (
                     <div style={{ flex: '2 1 400px', border: '1px solid #e2e8f0', borderRadius: 8, padding: '1rem' }}>
