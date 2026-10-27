@@ -41,6 +41,7 @@ const SREAgentPanel: React.FC = () => {
     } | null>(null);
     const [autoFixEnabled, setAutoFixEnabled] = useState(false);
     const [executingId, setExecutingId] = useState<string | null>(null);
+    const [auditing, setAuditing] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
     const scrollRef = useRef<HTMLDivElement>(null);
@@ -133,6 +134,21 @@ const SREAgentPanel: React.FC = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
+    const handleRunAudit = useCallback(async () => {
+        setError(null);
+        setAuditing(true);
+        try {
+            await advisorService.runAuditNow();
+            refreshData();
+        } catch (e) {
+            console.error('[SREAgentPanel] audit failed', e);
+            setError(t('sre.error.refresh'));
+        } finally {
+            setAuditing(false);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
     const handleAutoFixToggle = useCallback(() => {
         setError(null);
         try {
@@ -189,6 +205,8 @@ const SREAgentPanel: React.FC = () => {
                 warningCount={warningCount}
                 autoFixEnabled={autoFixEnabled}
                 onAutoFixToggle={handleAutoFixToggle}
+                auditing={auditing}
+                onRunAudit={handleRunAudit}
             />
             <MetricCards
                 avgLatency={metrics?.avgLatency}

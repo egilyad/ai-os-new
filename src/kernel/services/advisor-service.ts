@@ -238,7 +238,12 @@ export class AdvisorService {
     private async performDeepAnalysis() {
         if (Date.now() - this.lastAnalysis < this.config.analysisIntervalMs) return;
         this.lastAnalysis = Date.now();
+        await this.runAnalysis();
+    }
 
+    /** The actual audit pass: budget/optimization + What-If + LLM insights. */
+    private async runAnalysis(): Promise<void> {
+        this.pressure.generateSnapshot();
         this.optimizer.checkBudgetHealth();
         this.optimizer.triggerAnalysis();
 
@@ -285,6 +290,21 @@ export class AdvisorService {
     }
     executeFix(suggestionId: string) {
         this.optimizer.executeFix(suggestionId);
+    }
+
+    /**
+     * Run a full audit pass on demand (bypasses the interval gate) and notify
+     * listeners to refresh. This is what makes the SRE agent actionable: the
+     * operator can explicitly ask it to audit the system instead of waiting for
+     * the background timer.
+     */
+    async runAuditNow(): Promise<void> {
+        this.lastAnalysis = Date.now();
+        try {
+            await this.runAnalysis();
+        } finally {
+            this.deps.eventBus.emit(EVENTS.ADVISOR_SUGGESTION, undefined);
+        }
     }
 
     // ── Pressure Map ───────────────────────────────────────────────────

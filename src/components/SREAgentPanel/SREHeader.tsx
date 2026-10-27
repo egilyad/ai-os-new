@@ -1,4 +1,4 @@
-import { Bot } from 'lucide-react';
+import { Bot, Loader2, SearchCheck } from 'lucide-react';
 import { useTranslation } from '../../i18n/useTranslation';
 
 interface Props {
@@ -6,6 +6,8 @@ interface Props {
     warningCount: number;
     autoFixEnabled: boolean;
     onAutoFixToggle: () => void;
+    auditing?: boolean;
+    onRunAudit?: () => void;
 }
 
 const ToggleSwitch: React.FC<{ enabled: boolean; onToggle: () => void }> = ({
@@ -47,6 +49,8 @@ const SREHeader: React.FC<Props> = ({
     warningCount,
     autoFixEnabled,
     onAutoFixToggle,
+    auditing,
+    onRunAudit,
 }) => {
     const { t } = useTranslation();
     return (
@@ -92,7 +96,29 @@ const SREHeader: React.FC<Props> = ({
                     {t('sre.subtitle')}
                 </p>
             </div>
-            <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+            <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', flexWrap: 'wrap' }}>
+                <button
+                    onClick={onRunAudit}
+                    disabled={auditing || !onRunAudit}
+                    style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '0.4rem',
+                        padding: '0.45rem 0.9rem',
+                        borderRadius: 10,
+                        border: '1px solid rgba(139,92,246,0.3)',
+                        background: 'rgba(139,92,246,0.15)',
+                        color: 'var(--purple-muted)',
+                        fontSize: '0.75rem',
+                        fontWeight: 700,
+                        cursor: auditing ? 'default' : 'pointer',
+                    }}
+                    title={t('sre.run_audit_hint')}
+                    aria-label={t('sre.run_audit')}
+                >
+                    {auditing ? <Loader2 size={14} className="provider-spin" /> : <SearchCheck size={14} />}
+                    {auditing ? (t('sre.auditing') ?? 'Аудит…') : (t('sre.run_audit') ?? 'Run audit')}
+                </button>
                 <div
                     style={{
                         display: 'flex',
