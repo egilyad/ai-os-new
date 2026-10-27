@@ -153,6 +153,71 @@ export default function WikiBrainPanel() {
         void load();
     }, [load]);
 
+    const seedDemo = async () => {
+        setBusy(true);
+        setMessage('');
+        try {
+            const brain = getContainer().get<IWikiBrainService>('wikiBrainService');
+            const store = brain.store;
+            const now = new Date().toISOString();
+            const demos: Array<{ slug: string; title: string; type: TWikiPage['frontmatter']['type']; body: string }> = [
+                {
+                    slug: 'agent-system',
+                    title: 'Система агентов',
+                    type: 'overview',
+                    body: 'Агенты в SuperAgents OS — это профили с ролями, перcна и набором инструментов. Они выполняют задачи, участвуют в дебатах и имеют свою память.',
+                },
+                {
+                    slug: 'memory-engine',
+                    title: 'Движок памяти',
+                    type: 'concept',
+                    body: 'MemoryEngine сочетает BM25 и семантические эмбеддинги. Хранит записи в таблице memories и поддерживает гибридный поиск.',
+                },
+                {
+                    slug: 'debate-runtime',
+                    title: 'Рантайм дебатов',
+                    type: 'concept',
+                    body: 'DebateEngine управляет сессиями дебатов: стратегии, раунды, вердикты. Есть синхронизация и вердикты в отдельной таблице.',
+                },
+                {
+                    slug: 'knowledge-pipeline',
+                    title: 'Конвейер знаний',
+                    type: 'overview',
+                    body: 'Knowledge → Crystal Vault → Junction → Synthesis → Knowledge Generator — единый путь превращения источников в проверенные утверждения.',
+                },
+            ];
+            const pages: TWikiPage[] = demos.map((d, i) => ({
+                id: `demo-page-${i}`,
+                slug: d.slug,
+                frontmatter: {
+                    slug: d.slug,
+                    title: d.title,
+                    type: d.type,
+                    sources: [{ sourceId: `demo-src-${i}`, title: d.title, sha256: `demo-${i}` }],
+                    aliases: [],
+                    tags: ['demo'],
+                    language: 'ru',
+                    createdAt: now,
+                    updatedAt: now,
+                    reviewState: 'auto',
+                    graphIn: 0,
+                    graphOut: 0,
+                },
+                body: d.body,
+                sha256: `demo-sha-${i}`,
+                rawMarkdown: `# ${d.title}\n\n${d.body}`,
+            }));
+            await store.bulkPutPages(pages);
+            setMessage(t('wiki.demo_seeded_msg', { count: pages.length }));
+            await load();
+        } catch (error) {
+            const message = error instanceof Error ? error.message : String(error);
+            setMessage(t('wiki.error_msg', { message }));
+        } finally {
+            setBusy(false);
+        }
+    };
+
     const enqueue = async () => {
         if (!title.trim() || !content.trim()) return;
         setBusy(true);
@@ -313,28 +378,46 @@ export default function WikiBrainPanel() {
                     value={content}
                     onChange={(e) => setContent(e.target.value)}
                 />
-                <button
-                    style={{
-                        marginTop: 10,
-                        background: busy ? tokens.borderDefault : tokens.success,
-                        color: tokens.slate[950],
-                        border: 'none',
-                        borderRadius: 8,
-                        padding: '8px 14px',
-                        fontWeight: 700,
-                        cursor: busy ? 'default' : 'pointer',
-                    }}
-                    disabled={busy || !title.trim() || !content.trim()}
-                    onClick={enqueue}
-                >
-                    {busy ? t('wiki.queuing') : t('wiki.queue_button')}
-                </button>
+                <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginTop: 10 }}>
+                    <button
+                        style={{
+                            background: busy ? tokens.borderDefault : tokens.success,
+                            color: tokens.slate[950],
+                            border: 'none',
+                            borderRadius: 8,
+                            padding: '8px 14px',
+                            fontWeight: 700,
+                            cursor: busy ? 'default' : 'pointer',
+                        }}
+                        disabled={busy || !title.trim() || !content.trim()}
+                        onClick={enqueue}
+                    >
+                        {busy ? t('wiki.queuing') : t('wiki.queue_button')}
+                    </button>
+                    <button
+                        style={{
+                            background: 'transparent',
+                            color: tokens.accent,
+                            border: `1px solid ${tokens.accent}`,
+                            borderRadius: 8,
+                            padding: '8px 14px',
+                            fontWeight: 700,
+                            cursor: busy ? 'default' : 'pointer',
+                        }}
+                        disabled={busy}
+                        onClick={seedDemo}
+                    >
+                        🎲 Демо-засев
+                    </button>
+                </div>
                 {message && <div style={{ marginTop: 8, fontSize: 13, color: tokens.slate[400] }}>{message}</div>}
             </div>
 
             <div style={label}>{t('wiki.recent_pages')}</div>
             {pages.length === 0 ? (
-                <div style={{ color: tokens.slate[500], fontSize: 14 }}>{t('wiki.no_pages')}</div>
+                <div style={{ color: tokens.slate[500], fontSize: 14 }}>
+                    {t('wiki.no_pages')} — Wiki Brain — это отдельное хранилище (не продуктовая память). Добавь источник через форму выше или нажми «Демо-засев», чтобы увидеть пример.
+                </div>
             ) : (
                 <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
                     {pages.map((p) => (

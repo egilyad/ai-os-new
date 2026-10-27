@@ -14,6 +14,7 @@ const wiki: Record<string, string> = {
     'wiki.queuing': 'Ставим в очередь…',
     'wiki.queued_msg': '«{title}» поставлен в очередь на инжест',
     'wiki.error_msg': 'Ошибка: {message}',
+    'wiki.demo_seeded_msg': 'Демо: добавлено {count} статей',
     'wiki.recent_pages': 'Недавние страницы',
     'wiki.no_pages': 'Страниц пока нет.',
     'wiki.ingest_queue': 'Очередь инжеста',

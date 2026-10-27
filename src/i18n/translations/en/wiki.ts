@@ -14,6 +14,7 @@ const wiki: Record<string, string> = {
     'wiki.queuing': 'Queuing…',
     'wiki.queued_msg': 'Queued "{title}" for ingest',
     'wiki.error_msg': 'Error: {message}',
+    'wiki.demo_seeded_msg': 'Demo: added {count} pages',
     'wiki.recent_pages': 'Recent pages',
     'wiki.no_pages': 'No pages yet.',
     'wiki.ingest_queue': 'Ingest queue',
