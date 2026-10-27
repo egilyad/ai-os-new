@@ -171,8 +171,9 @@ const MemoryGraph: React.FC<Props> = ({ sources, onOpen, height = 520 }) => {
         );
         networkRef.current = net;
         net.on('click', (params: { nodes?: string[] }) => {
-            if (params.nodes && params.nodes.length > 0) {
-                const node = nodes.find((n) => n.id === params.nodes[0]);
+            const nodeIds = params.nodes;
+            if (nodeIds && nodeIds.length > 0) {
+                const node = nodes.find((n) => n.id === nodeIds[0]);
                 if (node?.deepTarget) onOpenRef.current(node.deepTarget);
             }
         });
