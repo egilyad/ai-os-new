@@ -79,6 +79,10 @@ export class RivalRepository {
         return rows.map(clone);
     }
 
+    async removeQueued(id: string): Promise<void> {
+        await this.db.runQueue.delete(id);
+    }
+
     async clear(): Promise<void> {
         await this.db.runQueue.clear();
         await this.db.memoryBlocks.clear();

@@ -4,6 +4,7 @@ import { runQueueService } from '../../kernel/instances/services-extras';
 import { seedRunQueueDemo } from '../../kernel/services/rivals/runqueue-demo-seed';
 import type { QueuedRun, Toolkit } from '../../kernel/contracts/rivals';
 import { Button, StatusBadge } from '../../components/Common';
+import { Loader2, Trash2 } from 'lucide-react';
 
 function byNewest(a: QueuedRun, b: QueuedRun): number {
     return b.createdAt - a.createdAt;
@@ -26,6 +27,7 @@ export default function RunQueuePanel() {
     const [tkName, setTkName] = useState('');
     const [tkPrefixes, setTkPrefixes] = useState('');
     const [search, setSearch] = useState('');
+    const [removingId, setRemovingId] = useState<string | null>(null);
 
     const active = runs.find((r) => r.id === activeId) ?? null;
 
@@ -85,6 +87,20 @@ export default function RunQueuePanel() {
         } catch (e) { fail(e); } finally { setBusy(false); }
     };
 
+    const handleRemove = async (r: QueuedRun) => {
+        if (r.status === 'running' || removingId === r.id) return;
+        setError(null); setNotice(null); setRemovingId(r.id);
+        try {
+            await runQueueService.remove(r.id);
+            setRuns((prev) => prev.filter((x) => x.id !== r.id));
+            setActiveId((cur) => (cur === r.id ? null : cur));
+        } catch (e) {
+            fail(e);
+        } finally {
+            setRemovingId(null);
+        }
+    };
+
     const handleDefineToolkit = async () => {
         setError(null); setNotice(null);
         if (!tkName.trim()) { setNotice(t('runQueue.validation.toolkitName')); return; }
@@ -121,7 +137,18 @@ export default function RunQueuePanel() {
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                             {filtered.map((r) => (
                                 <div key={r.id} onClick={() => setActiveId(r.id)} style={{ padding: '10px 12px', borderRadius: 10, cursor: 'pointer', background: r.id === activeId ? 'rgba(59,130,246,0.12)' : 'rgba(255,255,255,0.03)', borderLeft: `3px solid ${statusColor[r.status] ?? '#64748b'}`, border: '1px solid rgba(255,255,255,0.06)' }}>
-                                    <div style={{ fontSize: 12, fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{(r.refId ?? '').slice(0, 60)}</div>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                                        <div style={{ flex: 1, fontSize: 12, fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{(r.refId ?? '').slice(0, 60)}</div>
+                                        <button
+                                            onClick={(e) => { e.stopPropagation(); void handleRemove(r); }}
+                                            disabled={r.status === 'running' || removingId === r.id}
+                                            title={t('runQueue.remove') ?? 'Удалить запуск'}
+                                            aria-label={t('runQueue.remove') ?? 'Удалить запуск'}
+                                            style={{ background: 'transparent', border: 'none', color: r.status === 'running' ? 'var(--slate-600)' : 'var(--slate-500)', cursor: r.status === 'running' ? 'default' : 'pointer', display: 'inline-flex', padding: 2, flexShrink: 0 }}
+                                        >
+                                            {removingId === r.id ? <Loader2 size={13} className="provider-spin" /> : <Trash2 size={13} />}
+                                        </button>
+                                    </div>
                                     <div style={{ display: 'flex', gap: 6, marginTop: 6, alignItems: 'center', flexWrap: 'wrap' }}>
                                         <StatusBadge status={r.status} label={t(`runQueue.status.${r.status}`)} />
                                         <span style={{ fontSize: 11, padding: '2px 6px', borderRadius: 6, background: 'rgba(255,255,255,0.06)', color: 'var(--slate-400)' }}>{t(`runQueue.kind.${r.kind}`)}</span>
@@ -163,12 +190,12 @@ export default function RunQueuePanel() {
                     </div>
                     <textarea placeholder={t('runQueue.inputJsonPlaceholder')} value={inputJson} onChange={(e) => setInputJson(e.target.value)} rows={2} style={{ width: '100%', padding: '8px 10px', borderRadius: 8, border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(0,0,0,0.2)', color: 'inherit', fontSize: 11, resize: 'vertical', marginBottom: 8, fontFamily: 'monospace' }} />
                     <div style={{ display: 'flex', gap: 8 }}>
-                        <Button variant="primary" size="sm" disabled={busy || !refId.trim()} onClick={() => void handleEnqueue()}>{t('runQueue.enqueue.submit')}</Button>
+                        <Button variant="primary" size="sm" disabled={busy || !refId.trim()} onClick={() => void handleEnqueue()}>{busy ? <><Loader2 size={13} className="provider-spin" /> {t('runQueue.enqueue.busy') ?? '…'}</> : t('runQueue.enqueue.submit')}</Button>
                         <Button variant="ghost" size="sm" disabled={busy} onClick={() => void handleSeedDemo()} title="Load demo queue item" aria-label="Load demo queue item">☕</Button>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginLeft: 'auto' }}>
                             <span style={{ fontSize: 11, color: 'var(--slate-500)' }}>{t('runQueue.drain.concurrency')}</span>
                             <input type="number" min={1} max={4} value={drainConcurrency} onChange={(e) => setDrainConcurrency(e.target.value)} style={{ width: 60, padding: '6px 8px', borderRadius: 8, border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(0,0,0,0.2)', color: 'inherit', fontSize: 11 }} />
-                            <Button variant="accent" size="sm" disabled={busy} onClick={() => void handleDrain()}>{t('runQueue.drain.submit')}</Button>
+                            <Button variant="accent" size="sm" disabled={busy} onClick={() => void handleDrain()}>{busy ? <><Loader2 size={13} className="provider-spin" /> {t('runQueue.drain.busy') ?? '…'}</> : t('runQueue.drain.submit')}</Button>
                         </div>
                     </div>
                 </div>

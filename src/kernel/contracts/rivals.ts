@@ -87,6 +87,8 @@ export interface IRunQueueService extends ILifecycle {
     /** Process the queue with a concurrency cap (sequential default). */
     drain(concurrency?: number): Promise<QueuedRun[]>;
     list(): Promise<QueuedRun[]>;
+    /** Remove a queued run by id. Throws if the run is currently executing. */
+    remove(id: string): Promise<void>;
     defineToolkit(name: string, prefixes: string[]): Promise<Toolkit>;
     listToolkits(): Promise<Toolkit[]>;
     toolkitAllows(toolkitId: string, tool: string): Promise<boolean>;

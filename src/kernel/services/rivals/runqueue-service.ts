@@ -83,6 +83,14 @@ export class RunQueueService implements IRunQueueService {
         return this.deps.repo.listQueued();
     }
 
+    async remove(id: string): Promise<void> {
+        const item = await this.deps.repo.getQueued(id);
+        if (!item) return;
+        if (item.status === 'running') throw new Error('Cannot remove a running run');
+        await this.deps.repo.removeQueued(id);
+        LOGGER.info('RunQueue', 'removed queued run', { runId: id });
+    }
+
     async defineToolkit(name: string, prefixes: string[]): Promise<Toolkit> {
         const toolkit: Toolkit = { id: genId('toolkit'), name, prefixes: [...prefixes], createdAt: now() };
         this.toolkits.set(toolkit.id, toolkit);
