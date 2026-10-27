@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Database, Search, BrainCircuit, HeartPulse, Layers } from 'lucide-react';
+import { Database, Search, BrainCircuit, HeartPulse, Layers, Loader2 } from 'lucide-react';
 import { useTranslation } from '../../i18n/useTranslation';
+import { memoryService, wikiBrainService, crystalVault } from '../../kernel/instances';
 import {
     listMemorySources,
     computeMemoryCounts,
@@ -11,7 +12,15 @@ import type {
     MemoryCategory,
 } from '../../kernel/types/memory-center-types';
 
-type Tab = 'overview' | 'storage' | 'explorer' | 'health';
+type Tab = 'overview' | 'storage' | 'explorer' | 'health' | 'search';
+
+interface SearchHit {
+    source: string;
+    title: string;
+    snippet: string;
+    score: number;
+    matchedOn: string;
+}
 
 const CATEGORY_LABEL: Record<MemoryCategory, string> = {
     chat: '🗣️ Чаты',
@@ -39,6 +48,73 @@ const MemoryCenterPanel: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [categoryFilter, setCategoryFilter] = useState<MemoryCategory | 'all'>('all');
     const [query, setQuery] = useState('');
+    const [searchQuery, setSearchQuery] = useState('');
+    const [hits, setHits] = useState<SearchHit[]>([]);
+    const [searching, setSearching] = useState(false);
+    const [searchErrors, setSearchErrors] = useState<string[]>([]);
+
+    const runSearch = async () => {
+        const q = searchQuery.trim();
+        if (!q || searching) return;
+        setSearching(true);
+        setSearchErrors([]);
+        setHits([]);
+        const out: SearchHit[] = [];
+        const errors: string[] = [];
+
+        // MemoryEngine — семантический/ключевой поиск по памяти
+        try {
+            const res = await memoryService.search(q, 8);
+            for (const r of res) {
+                out.push({
+                    source: 'Память (MemoryEngine)',
+                    title: r.entry?.content ? r.entry.content.slice(0, 80) : '(запись)',
+                    snippet: (r.entry?.content || '').slice(0, 160),
+                    score: r.score,
+                    matchedOn: r.matchedOn,
+                });
+            }
+        } catch {
+            errors.push('MemoryEngine недоступен');
+        }
+
+        // Wiki-Brain — семантический поиск по статьям
+        try {
+            const res = await wikiBrainService.query.search(q, { topK: 6 });
+            for (const r of res) {
+                out.push({
+                    source: 'Wiki-Brain',
+                    title: r.page?.frontmatter?.title ?? r.page?.slug ?? '(статья)',
+                    snippet: r.snippet ?? '',
+                    score: r.score,
+                    matchedOn: r.matchedOn,
+                });
+            }
+        } catch {
+            errors.push('Wiki-Brain недоступен');
+        }
+
+        // Crystal Vault — поиск по кристаллам
+        try {
+            const res = await crystalVault.search(q, 6);
+            for (const r of res) {
+                out.push({
+                    source: 'Кристаллы',
+                    title: r.content?.statement ? r.content.statement.slice(0, 80) : '(кристалл)',
+                    snippet: (r.content?.elaboration || r.content?.statement || '').slice(0, 160),
+                    score: r.score,
+                    matchedOn: 'hybrid',
+                });
+            }
+        } catch {
+            errors.push('Crystal Vault недоступен');
+        }
+
+        out.sort((a, b) => b.score - a.score);
+        setHits(out);
+        setSearchErrors(errors);
+        setSearching(false);
+    };
 
     const sources = useMemo(() => listMemorySources(), []);
 
@@ -112,6 +188,9 @@ const MemoryCenterPanel: React.FC = () => {
                 </button>
                 <button onClick={() => setTab('explorer')} style={tabBtn(tab === 'explorer')}>
                     <Search size={14} /> Explorer
+                </button>
+                <button onClick={() => setTab('search')} style={tabBtn(tab === 'search')}>
+                    <Search size={14} /> Поиск
                 </button>
                 <button onClick={() => setTab('health')} style={tabBtn(tab === 'health')}>
                     <HeartPulse size={14} /> Health & Gaps
@@ -215,6 +294,53 @@ const MemoryCenterPanel: React.FC = () => {
                 </div>
             )}
 
+            {tab === 'search' && (
+                <div>
+                    <div style={{ display: 'flex', gap: 8, marginBottom: '1rem' }}>
+                        <input
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            onKeyDown={(e) => e.key === 'Enter' && void runSearch()}
+                            placeholder="Поиск по памяти, Wiki-Brain и кристаллам…"
+                            style={{ ...selectStyle, flex: 1 }}
+                        />
+                        <button
+                            onClick={() => void runSearch()}
+                            disabled={searching || !searchQuery.trim()}
+                            style={searchBtn}
+                        >
+                            {searching ? <Loader2 size={14} className="provider-spin" /> : <Search size={14} />}
+                            {' '}Искать
+                        </button>
+                    </div>
+                    {searchErrors.length > 0 && (
+                        <div style={{ fontSize: '0.75rem', color: '#fca5a5', marginBottom: 8 }}>
+                            {searchErrors.join(' · ')}
+                        </div>
+                    )}
+                    {hits.length === 0 && !searching && searchQuery && (
+                        <div style={{ color: 'var(--slate-500)', padding: 16, textAlign: 'center' }}>
+                            Ничего не найдено
+                        </div>
+                    )}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                        {hits.map((h, i) => (
+                            <div key={i} style={card}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <b style={{ fontSize: '0.82rem' }}>{h.title}</b>
+                                    <span style={{ fontSize: '0.65rem', color: 'var(--slate-500)', whiteSpace: 'nowrap' }}>
+                                        {h.source} · {h.matchedOn} · {(h.score * 100).toFixed(0)}%
+                                    </span>
+                                </div>
+                                <div style={{ fontSize: '0.78rem', color: 'var(--slate-400)', marginTop: 4 }}>
+                                    {h.snippet}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
+
             {tab === 'health' && (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                     {sources.filter((s) => s.status !== 'verified').map((s) => (
@@ -306,6 +432,19 @@ const selectStyle: React.CSSProperties = {
     background: 'rgba(0,0,0,0.3)',
     color: 'var(--slate-200)',
     fontSize: '0.8rem',
+};
+const searchBtn: React.CSSProperties = {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: 5,
+    padding: '0.45rem 0.9rem',
+    borderRadius: 9,
+    border: '1px solid rgba(139,92,246,0.4)',
+    background: 'rgba(139,92,246,0.15)',
+    color: 'var(--slate-100)',
+    fontWeight: 700,
+    fontSize: '0.8rem',
+    cursor: 'pointer',
 };
 
 export default MemoryCenterPanel;
