@@ -107,6 +107,7 @@ export const AgentAvatar: React.FC<AgentAvatarProps> = ({
     const px = typeof size === 'string' ? SIZE_MAP[size] ?? 40 : size;
     const fallback = getAgentAvatar(agentId || 'unknown');
     const resolvedColor = color ?? fallback.color;
+    const tip = emoji ? `${name || agentId} ${emoji}` : name || agentId;
     const dotColor = status === 'active' ? '#22c55e' : status === 'paused' ? '#f59e0b' : status === 'error' ? '#ef4444' : null;
 
     if (url) {
@@ -114,8 +115,8 @@ export const AgentAvatar: React.FC<AgentAvatarProps> = ({
             <div style={{ position: 'relative', width: px, height: px, flexShrink: 0 }}>
                 <img
                     src={url}
-                    alt={name || agentId}
-                    title={name || agentId}
+                    alt={tip}
+                    title={tip}
                     width={px}
                     height={px}
                     style={{
@@ -141,8 +142,8 @@ export const AgentAvatar: React.FC<AgentAvatarProps> = ({
         <div style={{ position: 'relative', width: px, height: px, flexShrink: 0 }}>
             <img
                 src={src}
-                alt={name || agentId}
-                title={name || agentId}
+                alt={tip}
+                title={tip}
                 width={px}
                 height={px}
                 style={{

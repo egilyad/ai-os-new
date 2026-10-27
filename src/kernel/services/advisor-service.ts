@@ -342,7 +342,7 @@ export class AdvisorService {
             lines.push('_Нет алертов._');
         }
         for (const a of alerts.slice(0, 50)) {
-            lines.push(`- [${a.severity.toUpperCase()}] ${a.message || a.title || a.id}`);
+            lines.push(`- [${a.severity.toUpperCase()}] ${a.message || a.id}`);
         }
         return lines.join('\n');
     }

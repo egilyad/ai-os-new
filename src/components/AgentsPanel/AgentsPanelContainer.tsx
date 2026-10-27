@@ -442,7 +442,7 @@ const AgentsPanelContainer: React.FC = () => {
             onSetViewMode: setViewMode,
             onSetSearchQuery: setSearchQuery,
             onSetStatusFilter: setStatusFilter,
-            onSetSelectedAgentId: (id) => {
+            onSetSelectedAgentId: (id: string | null) => {
                 // Открывать агента всегда с карточки «Профиль» (read-only).
                 // Редактирование — отдельным значком.
                 setSelectedAgentId(id);
