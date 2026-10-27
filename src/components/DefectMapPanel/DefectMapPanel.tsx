@@ -22,7 +22,7 @@ const COMMON_MODULES = ['kernel', 'stores', 'components', 'llm', 'server', 'scri
 const DefectMapPanel: React.FC = () => {
     const [findings, setFindings] = useState<DefectFinding[]>(() => loadFindings());
     const [defectClass, setDefectClass] = useState<DefectClass>(DEFECT_CLASSES[0]);
-    const [defectModule, setDefectModule] = useState(COMMON_MODULES[0]);
+    const [defectModule, setDefectModule] = useState<string>(COMMON_MODULES[0] ?? 'kernel');
     const [severity, setSeverity] = useState<DefectSeverity>('medium');
     const [description, setDescription] = useState('');
     const [showResolved, setShowResolved] = useState(false);
