@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { lazyService } from '../../kernel/service-helper';
 import type { ICalibrationService } from '../../kernel/contracts/debate-calibration';
 
@@ -16,13 +16,13 @@ const H = 260;
 const PAD = 34;
 
 const CalibrationLens: React.FC = () => {
-    const samples = useMemo(() => {
+    const samples = (() => {
         try {
             return calibrationService.getCalibrationHistory?.() ?? [];
         } catch {
             return [];
         }
-    }, []);
+    })();
 
     if (samples.length === 0) {
         return (
