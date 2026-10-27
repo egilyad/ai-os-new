@@ -7629,8 +7629,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Проверки и показатели",
-      "bytes": 4075,
-      "hash": "d9116cc7f1590f6c57863ff07ea881111546d41e"
+      "bytes": 4076,
+      "hash": "6888495e8c42e8e4e177c345e0057d4d956dca66"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -7718,7 +7718,7 @@
       "language": "ru",
       "title": "Граф знаний",
       "bytes": 4905,
-      "hash": "b4584c566642fc25d8c719812047ab5bfa443272"
+      "hash": "44a1af4ceb94ccee7046d99d3bf9e2e38abb2ec4"
     },
     {
       "path": "docs/wiki/dev-history.md",
@@ -7934,7 +7934,7 @@
       "language": "mixed",
       "title": "Карта документации",
       "bytes": 36691,
-      "hash": "d680303c6cde70e6782f0c3f62f049780d168ead"
+      "hash": "83a33cad150f1cade134f6c73c83dd08fee239e1"
     },
     {
       "path": "docs/wiki/docs-standard.md",
