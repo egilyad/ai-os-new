@@ -127,6 +127,7 @@ const nav: Record<string, string> = {
     'nav.memory_center': 'Memory Center',
     'nav.nav_graph': 'Граф навигации',
     'nav.graph_workbench': 'Graph Workbench',
+    'nav.defect_map': 'Карта дефектов',
     'nav.crystals': 'Хранилище кристаллов',
     'nav.junctions': 'Движок связей',
     'nav.synthesis': 'Движок синтеза',

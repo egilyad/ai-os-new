@@ -81,6 +81,14 @@ export const CORE_SECTIONS: NavSection[] = [
                 experimental: true,
             },
             {
+                id: 'defect-map',
+                labelKey: 'nav.defect_map',
+                icon: Icons.thermometer,
+                color: '#f59e0b',
+                lazy: true,
+                experimental: true,
+            },
+            {
                 id: 'crystals',
                 labelKey: 'nav.crystals',
                 icon: Icons.gem,

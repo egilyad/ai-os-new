@@ -154,6 +154,7 @@ const ExceptionsPanelLazy = React.lazy(() => import('./components/ExceptionsPane
 const MemoryCenterPanelLazy = React.lazy(() => import('./components/MemoryCenterPanel/MemoryCenterPanel'));
 const NavGraphPanelLazy = React.lazy(() => import('./components/NavGraphPanel/NavGraphPanel'));
 const GraphWorkbenchPanelLazy = React.lazy(() => import('./components/GraphWorkbenchPanel/GraphWorkbenchPanel'));
+const DefectMapPanelLazy = React.lazy(() => import('./components/DefectMapPanel/DefectMapPanel'));
 const CrystalVaultPanelLazy = React.lazy(
     () => import('./components/CrystalVaultPanel/CrystalVaultPanel'),
 );
@@ -400,6 +401,7 @@ export const PANEL_COMPONENTS: Record<string, React.ComponentType<any>> = {
     'memory-center': MemoryCenterPanelLazy,
     'nav-graph': NavGraphPanelLazy,
     'graph-workbench': GraphWorkbenchPanelLazy,
+    'defect-map': DefectMapPanelLazy,
     crystals: CrystalVaultPanelLazy,
     junctions: JunctionPanelLazy,
     synthesis: SynthesisPanelLazy,
