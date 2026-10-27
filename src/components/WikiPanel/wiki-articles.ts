@@ -2288,6 +2288,202 @@ crews, councils, graphs, persona, ops, interop, meta, trust, frontier, rivals.
 Компоненты: \`SessionBindingsPanel\`, \`SessionHubPanel\`, \`ChatSessionsManagerPanel\`. Чат — [[panel-chat]], комната — [[panel-room]].`,
     },
     {
+        slug: 'audit-type-bootstrap',
+        title: 'Аудит: запуск и выживание UI',
+        section: 'dev',
+        tags: ['аудит', 'запуск', 'bootstrap', 'краши', 'UI'],
+        freshness: 'verified',
+        sources: ['src/components/', 'src/kernel/kernel.ts', 'src/kernel/runtime.ts'],
+        related: ['audit-methodology', 'audit-type-build', 'audit-type-security'],
+        body: `## Назначение
+
+Самый ранний слой аудита: убедиться, что продукт вообще поднимается и интерфейс живёт. Типичные находки — белый экран, краши UI, дубли методов, отсутствие корневого \`ErrorBoundary\`, проблемы темы/рендера, старт runtime даже при падении инициализации.
+
+## Что проверять
+
+- Запуск без белого экрана и необработанных исключений.
+- Корневой \`ErrorBoundary\` и graceful degрадация панелей.
+- Корректный рендер темы и переключение языков.
+- Старт runtime/kernel и восстановление состояния.
+
+## Связи
+
+Первый аудит «бьёт» не по бизнес-логике, а по факту запуска. Позже он сменяется системными аудитами — см. [[audit-methodology]] и [[audit-type-domain]].`,
+    },
+    {
+        slug: 'audit-type-build',
+        title: 'Аудит: сборка и целостность репозитория',
+        section: 'dev',
+        tags: ['аудит', 'сборка', 'build', 'npm', 'регресс'],
+        freshness: 'verified',
+        sources: ['package.json', 'vite.config.ts', 'scripts/'],
+        related: ['audit-methodology', 'audit-type-bootstrap', 'audit-type-security'],
+        body: `## Назначение
+
+Аудит инфраструктуры сборки: воспроизводимость установки и билда. Это не «сексуально», но именно это превращает хаотически растущий код в инженерный продукт.
+
+## Что проверять
+
+- \`npm ci\` с чистого окружения, отсутствие сломанных тестовых импортов.
+- Пайплайн сборки (Vite/tsc), HMR-cleanup, отсутствие дрейфа версий.
+- Воспроизводимость: билд из git-состояния даёт тот же результат.
+- Дублирующие системы сборки/хелперы, которые консолидируются.
+
+## Связи
+
+Часто закрывает «инфраструктурную боль» до перехода к домен-аудитам — см. [[audit-methodology]].`,
+    },
+    {
+        slug: 'audit-type-keys',
+        title: 'Аудит: ключи и секреты',
+        section: 'dev',
+        tags: ['аудит', 'ключи', 'секреты', 'api keys', 'безопасность'],
+        freshness: 'verified',
+        sources: ['src/kernel/services/key-management/', 'src/kernel/services/key-state-store.ts'],
+        related: ['audit-type-security', 'audit-methodology'],
+        body: `## Назначение
+
+Аудит подсистемы ключей/секретов как управляемых сущностей, а не просто строк в storage.
+
+## Что проверять
+
+- Registry и жизненный цикл ключей (lifecycle), статусы, probation, ротация.
+- Квоты, health-проверки, аналитика использования.
+- Reconciler, hydrator, group manager, reset pipeline.
+- Единый source of truth для ключей/секретов (без дублирующих хранилищ).
+- Отсутствие утечек секретов в логах/сообщениях.
+
+## Связи
+
+Пересекается с [[audit-type-security]]. Идеал — один официальный источник правды для ключей и секретов.`,
+    },
+    {
+        slug: 'audit-type-architecture',
+        title: 'Аудит: консолидация архитектуры',
+        section: 'architecture',
+        tags: ['аудит', 'архитектура', 'консолидация', 'дубли', 'рефакторинг'],
+        freshness: 'verified',
+        sources: ['src/kernel/service-registration/', 'src/kernel/services/'],
+        related: ['audit-methodology', 'audit-type-domain'],
+        body: `## Назначение
+
+Аудит, направленный на схлопывание дублирующихся архитектур и уменьшение числа источников хаоса: один kernel, один основной data flow, один storage truth, один осмысленный chat store.
+
+## Что проверять
+
+- Дублирующие абстракции и «альтернативные» пути одного и того же.
+- Консолидация LLM-клиента, stores (Zustand), service registration.
+- Единый канонический стек стриминга/SSE.
+- Баланс: не плодить новые подсистемы, пока не запечатаны базовые инварианты.
+
+## Связи
+
+Сопровождает домен-аудиты — см. [[audit-type-domain]] и [[audit-methodology]].`,
+    },
+    {
+        slug: 'audit-type-domain',
+        title: 'Аудит: системный по доменам',
+        section: 'dev',
+        tags: ['аудит', 'домены', 'модули', 'системный'],
+        freshness: 'verified',
+        sources: ['src/kernel/', 'src/components/'],
+        related: ['audit-methodology', 'audit-type-architecture', 'audit-type-data-streaming'],
+        body: `## Назначение
+
+Широкий аудит по доменам, а не по отдельным багам: проект воспринимается как взаимосвязанная система рисков.
+
+## Домены
+
+- Ядро (kernel core), service registration, DAL/storage.
+- Key management, debate runtime, agents/roles.
+- LLM/chat, стриминг, router-ы, advisor/research.
+- Provider runtime, stores, utils, schemas.
+
+## Итог
+
+Выход на «классы дефектов»: race conditions, memory leaks, stale state, schema drift, streaming correctness, DI inconsistency, security boundaries. См. также [[audit-type-data-streaming]] и [[audit-type-security]].`,
+    },
+    {
+        slug: 'audit-type-data-streaming',
+        title: 'Аудит: данные, состояние и стриминг',
+        section: 'dev',
+        tags: ['аудит', 'данные', 'состояние', 'стриминг', 'race', 'память'],
+        freshness: 'verified',
+        sources: ['src/llm/', 'src/stores/', 'src/kernel/services/'],
+        related: ['audit-type-domain', 'audit-methodology'],
+        body: `## Назначение
+
+Аудит корректности данных и состояния: классы дефектов, которые всплывают слоями.
+
+## Классы дефектов
+
+- Race conditions и неконсистентное состояние.
+- Утечки памяти (memory leaks) и висящие таймеры/слушатели.
+- Stale state: устаревшие значения после обновления/перезагрузки.
+- Schema drift: расхождение схем между слоями/миграциями.
+- Streaming correctness: корректность чанков, финальных метаданных, отмены.
+- DI inconsistency: несовпадение контрактов между регистрацией и потреблением.
+
+## Связи
+
+Часто эти классы — «корень» у половины багов. См. [[audit-methodology]], как это систематизировать.`,
+    },
+    {
+        slug: 'audit-type-security',
+        title: 'Аудит: безопасность и hardening',
+        section: 'dev',
+        tags: ['аудит', 'безопасность', 'hardening', 'критические баги'],
+        freshness: 'verified',
+        sources: ['src/kernel/', 'server/', 'src/llm/'],
+        related: ['audit-type-keys', 'audit-methodology'],
+        body: `## Назначение
+
+Полный аудит безопасности и критических багов. Обычно группируется по категориям и уровням серьёзности CRITICAL/HIGH/MEDIUM.
+
+## Категории
+
+- Ядро (Kernel).
+- Стор/Состояние (Store/State).
+- API/Провайдеры (API/Providers).
+- UI Компоненты.
+- Безопасность (security boundaries, утечки секретов, привилегии).
+
+## Порядок работы
+
+1. Сначала закрыть CRITICAL/HIGH.
+2. Добавить автотесты на каждый класс критичных дефектов.
+3. Перейти к волнам hardening (см. [[audit-methodology]]).`,
+    },
+    {
+        slug: 'audit-methodology',
+        title: 'Аудит: методология и процесс',
+        section: 'dev',
+        tags: ['аудит', 'методология', 'процесс', 'freeze', 'тест-план'],
+        freshness: 'verified',
+        sources: ['docs/audits/'],
+        related: ['audit-type-bootstrap', 'audit-type-domain', 'audit-type-security'],
+        body: `## Назначение
+
+Как сделать аудиты полезными и перестать «бесконечно тушить пожары».
+
+## Ключевые принципы
+
+- Фиксировать тест-план: сценарии, роли, устройства, данные.
+- Формализовать критерии «баг vs фича/ограничение».
+- Вести баг-трекер как единый источник правды.
+- Договариваться о слоях аудита: краши/безопасность → бизнес-логика → визуальные мелочи.
+- Вводить freeze-режим во время аудита (никаких новых фич).
+- Вводить уровни стабильности модулей: A (ядро) / B / C.
+- Контра-аудит самого аудита: что повторяется каждый раз → системные корни.
+- Статус «прошёл аудит» на уровне модулей (известные issues, без критичных).
+- «Аудит без сюрпризов»: известные баги фиксируются заранее.
+- Покрывать автотестами как минимум happy-path + крайние кейсы на Level A.
+
+## Вывод
+
+Цель — не «магически 0 багов», а предсказуемость: каждый следующий аудит находит всё меньше нового.`,
+    },
+    {
         slug: 'panel-exceptions',
         title: 'Панель: Исключения (вето)',
         section: 'panels',

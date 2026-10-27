@@ -45,7 +45,7 @@
     {
       "id": "architecture",
       "title": "Архитектура",
-      "articles": 2
+      "articles": 3
     },
     {
       "id": "components",
@@ -65,7 +65,7 @@
     {
       "id": "dev",
       "title": "Разработчикам",
-      "articles": 31
+      "articles": 38
     }
   ],
   "articles": [
@@ -1595,6 +1595,212 @@
       "tests": [
         "src/components/ChatSessionsManagerPanel.test.tsx"
       ]
+    },
+    {
+      "id": "wiki:audit-type-bootstrap",
+      "type": "article",
+      "slug": "audit-type-bootstrap",
+      "title": "Аудит: запуск и выживание UI",
+      "section": "dev",
+      "status": "verified",
+      "tags": [
+        "аудит",
+        "запуск",
+        "bootstrap",
+        "краши",
+        "UI"
+      ],
+      "sources": [
+        "src/components/",
+        "src/kernel/kernel.ts",
+        "src/kernel/runtime.ts"
+      ],
+      "related": [
+        "audit-methodology",
+        "audit-type-build",
+        "audit-type-security"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:audit-type-build",
+      "type": "article",
+      "slug": "audit-type-build",
+      "title": "Аудит: сборка и целостность репозитория",
+      "section": "dev",
+      "status": "verified",
+      "tags": [
+        "аудит",
+        "сборка",
+        "build",
+        "npm",
+        "регресс"
+      ],
+      "sources": [
+        "package.json",
+        "vite.config.ts",
+        "scripts/"
+      ],
+      "related": [
+        "audit-methodology",
+        "audit-type-bootstrap",
+        "audit-type-security"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:audit-type-keys",
+      "type": "article",
+      "slug": "audit-type-keys",
+      "title": "Аудит: ключи и секреты",
+      "section": "dev",
+      "status": "verified",
+      "tags": [
+        "аудит",
+        "ключи",
+        "секреты",
+        "api keys",
+        "безопасность"
+      ],
+      "sources": [
+        "src/kernel/services/key-management/",
+        "src/kernel/services/key-state-store.ts"
+      ],
+      "related": [
+        "audit-type-security",
+        "audit-methodology"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:audit-type-architecture",
+      "type": "article",
+      "slug": "audit-type-architecture",
+      "title": "Аудит: консолидация архитектуры",
+      "section": "architecture",
+      "status": "verified",
+      "tags": [
+        "аудит",
+        "архитектура",
+        "консолидация",
+        "дубли",
+        "рефакторинг"
+      ],
+      "sources": [
+        "src/kernel/service-registration/",
+        "src/kernel/services/"
+      ],
+      "related": [
+        "audit-methodology",
+        "audit-type-domain"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:audit-type-domain",
+      "type": "article",
+      "slug": "audit-type-domain",
+      "title": "Аудит: системный по доменам",
+      "section": "dev",
+      "status": "verified",
+      "tags": [
+        "аудит",
+        "домены",
+        "модули",
+        "системный"
+      ],
+      "sources": [
+        "src/kernel/",
+        "src/components/"
+      ],
+      "related": [
+        "audit-methodology",
+        "audit-type-architecture",
+        "audit-type-data-streaming"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:audit-type-data-streaming",
+      "type": "article",
+      "slug": "audit-type-data-streaming",
+      "title": "Аудит: данные, состояние и стриминг",
+      "section": "dev",
+      "status": "verified",
+      "tags": [
+        "аудит",
+        "данные",
+        "состояние",
+        "стриминг",
+        "race",
+        "память"
+      ],
+      "sources": [
+        "src/llm/",
+        "src/stores/",
+        "src/kernel/services/"
+      ],
+      "related": [
+        "audit-type-domain",
+        "audit-methodology"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:audit-type-security",
+      "type": "article",
+      "slug": "audit-type-security",
+      "title": "Аудит: безопасность и hardening",
+      "section": "dev",
+      "status": "verified",
+      "tags": [
+        "аудит",
+        "безопасность",
+        "hardening",
+        "критические баги"
+      ],
+      "sources": [
+        "src/kernel/",
+        "server/",
+        "src/llm/"
+      ],
+      "related": [
+        "audit-type-keys",
+        "audit-methodology"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:audit-methodology",
+      "type": "article",
+      "slug": "audit-methodology",
+      "title": "Аудит: методология и процесс",
+      "section": "dev",
+      "status": "verified",
+      "tags": [
+        "аудит",
+        "методология",
+        "процесс",
+        "freeze",
+        "тест-план"
+      ],
+      "sources": [
+        "docs/audits/"
+      ],
+      "related": [
+        "audit-type-bootstrap",
+        "audit-type-domain",
+        "audit-type-security"
+      ],
+      "reviewed": null,
+      "tests": []
     },
     {
       "id": "wiki:panel-exceptions",

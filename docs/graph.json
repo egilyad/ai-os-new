@@ -3,22 +3,22 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 1343,
-    "edges": 3492,
+    "nodes": 1357,
+    "edges": 3531,
     "byType": {
       "audit": 75,
-      "code": 569,
+      "code": 575,
       "test": 196,
       "panel": 263,
-      "article": 240
+      "article": 248
     },
     "byKind": {
       "audit_test": 336,
       "audit_mention": 929,
       "documents": 202,
-      "source": 793,
+      "source": 812,
       "test": 287,
-      "related": 945
+      "related": 965
     }
   },
   "nodes": [
@@ -583,6 +583,11 @@
       "label": "docs/005-mcp-integration.md"
     },
     {
+      "id": "file:docs/audits/",
+      "type": "code",
+      "label": "docs/audits/"
+    },
+    {
       "id": "file:docs/audits/agent-team-audit-memory-history-management.md",
       "type": "code",
       "label": "docs/audits/agent-team-audit-memory-history-management.md"
@@ -756,6 +761,11 @@
       "id": "file:scripts/lib/route-nav.mjs",
       "type": "code",
       "label": "scripts/lib/route-nav.mjs"
+    },
+    {
+      "id": "file:server/",
+      "type": "code",
+      "label": "server/"
     },
     {
       "id": "file:src/",
@@ -2083,6 +2093,11 @@
       "label": "src/kernel/service-helper.ts"
     },
     {
+      "id": "file:src/kernel/service-registration/",
+      "type": "code",
+      "label": "src/kernel/service-registration/"
+    },
+    {
       "id": "file:src/kernel/service-registration/index.ts",
       "type": "code",
       "label": "src/kernel/service-registration/index.ts"
@@ -2896,6 +2911,11 @@
       "id": "file:src/kernel/services/key-intelligence-pipeline.ts",
       "type": "code",
       "label": "src/kernel/services/key-intelligence-pipeline.ts"
+    },
+    {
+      "id": "file:src/kernel/services/key-management/",
+      "type": "code",
+      "label": "src/kernel/services/key-management/"
     },
     {
       "id": "file:src/kernel/services/key-management/key-diagnostics.ts",
@@ -3913,6 +3933,11 @@
       "label": "src/kernel/workers/sandbox.worker.ts"
     },
     {
+      "id": "file:src/llm/",
+      "type": "code",
+      "label": "src/llm/"
+    },
+    {
       "id": "file:src/llm/anthropic/anthropic-adapter.test.ts",
       "type": "test",
       "label": "src/llm/anthropic/anthropic-adapter.test.ts"
@@ -4366,6 +4391,11 @@
       "id": "file:src/stores/useKeyStore.ts",
       "type": "code",
       "label": "src/stores/useKeyStore.ts"
+    },
+    {
+      "id": "file:vite.config.ts",
+      "type": "code",
+      "label": "vite.config.ts"
     },
     {
       "id": "file:vitest.config.ts",
@@ -6226,6 +6256,62 @@
       "label": "Архитектура и связи",
       "section": "architecture",
       "status": "documented"
+    },
+    {
+      "id": "wiki:audit-methodology",
+      "type": "article",
+      "label": "Аудит: методология и процесс",
+      "section": "dev",
+      "status": "verified"
+    },
+    {
+      "id": "wiki:audit-type-architecture",
+      "type": "article",
+      "label": "Аудит: консолидация архитектуры",
+      "section": "architecture",
+      "status": "verified"
+    },
+    {
+      "id": "wiki:audit-type-bootstrap",
+      "type": "article",
+      "label": "Аудит: запуск и выживание UI",
+      "section": "dev",
+      "status": "verified"
+    },
+    {
+      "id": "wiki:audit-type-build",
+      "type": "article",
+      "label": "Аудит: сборка и целостность репозитория",
+      "section": "dev",
+      "status": "verified"
+    },
+    {
+      "id": "wiki:audit-type-data-streaming",
+      "type": "article",
+      "label": "Аудит: данные, состояние и стриминг",
+      "section": "dev",
+      "status": "verified"
+    },
+    {
+      "id": "wiki:audit-type-domain",
+      "type": "article",
+      "label": "Аудит: системный по доменам",
+      "section": "dev",
+      "status": "verified"
+    },
+    {
+      "id": "wiki:audit-type-keys",
+      "type": "article",
+      "label": "Аудит: ключи и секреты",
+      "section": "dev",
+      "status": "verified"
+    },
+    {
+      "id": "wiki:audit-type-security",
+      "type": "article",
+      "label": "Аудит: безопасность и hardening",
+      "section": "dev",
+      "status": "verified"
     },
     {
       "id": "wiki:capabilities",
@@ -15313,6 +15399,201 @@
     {
       "from": "wiki:architecture",
       "to": "wiki:memory",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:audit-methodology",
+      "to": "file:docs/audits/",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:audit-methodology",
+      "to": "wiki:audit-type-bootstrap",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:audit-methodology",
+      "to": "wiki:audit-type-domain",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:audit-methodology",
+      "to": "wiki:audit-type-security",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:audit-type-architecture",
+      "to": "file:src/kernel/service-registration/",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:audit-type-architecture",
+      "to": "file:src/kernel/services/",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:audit-type-architecture",
+      "to": "wiki:audit-methodology",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:audit-type-architecture",
+      "to": "wiki:audit-type-domain",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:audit-type-bootstrap",
+      "to": "file:src/components/",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:audit-type-bootstrap",
+      "to": "file:src/kernel/kernel.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:audit-type-bootstrap",
+      "to": "file:src/kernel/runtime.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:audit-type-bootstrap",
+      "to": "wiki:audit-methodology",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:audit-type-bootstrap",
+      "to": "wiki:audit-type-build",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:audit-type-bootstrap",
+      "to": "wiki:audit-type-security",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:audit-type-build",
+      "to": "file:package.json",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:audit-type-build",
+      "to": "file:scripts/",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:audit-type-build",
+      "to": "file:vite.config.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:audit-type-build",
+      "to": "wiki:audit-methodology",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:audit-type-build",
+      "to": "wiki:audit-type-bootstrap",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:audit-type-build",
+      "to": "wiki:audit-type-security",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:audit-type-data-streaming",
+      "to": "file:src/kernel/services/",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:audit-type-data-streaming",
+      "to": "file:src/llm/",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:audit-type-data-streaming",
+      "to": "file:src/stores/",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:audit-type-data-streaming",
+      "to": "wiki:audit-methodology",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:audit-type-data-streaming",
+      "to": "wiki:audit-type-domain",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:audit-type-domain",
+      "to": "file:src/components/",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:audit-type-domain",
+      "to": "file:src/kernel/",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:audit-type-domain",
+      "to": "wiki:audit-methodology",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:audit-type-domain",
+      "to": "wiki:audit-type-architecture",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:audit-type-domain",
+      "to": "wiki:audit-type-data-streaming",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:audit-type-keys",
+      "to": "file:src/kernel/services/key-management/",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:audit-type-keys",
+      "to": "file:src/kernel/services/key-state-store.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:audit-type-keys",
+      "to": "wiki:audit-methodology",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:audit-type-keys",
+      "to": "wiki:audit-type-security",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:audit-type-security",
+      "to": "file:server/",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:audit-type-security",
+      "to": "file:src/kernel/",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:audit-type-security",
+      "to": "file:src/llm/",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:audit-type-security",
+      "to": "wiki:audit-methodology",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:audit-type-security",
+      "to": "wiki:audit-type-keys",
       "kind": "related"
     },
     {

@@ -3,7 +3,7 @@
   "generatedBy": "scripts/gen-docs-inventory.mjs",
   "scope": "git-tracked markdown: docs/**/*.md (excluding docs/new drafts and the self-report pages docs-health, docs-inventory) plus repository entry docs (root *.md, .superagents/**, src/kernel/DEPENDENCY_MAP.md)",
   "totals": {
-    "documents": 1085,
+    "documents": 1086,
     "byCategory": {
       "repo": 13,
       "top": 47,
@@ -13,11 +13,11 @@
       "reference": 6,
       "roadmap": 17,
       "superseded": 3,
-      "wiki": 238
+      "wiki": 239
     },
     "byLanguage": {
       "en": 659,
-      "ru": 255,
+      "ru": 256,
       "mixed": 171
     }
   },
@@ -7405,7 +7405,7 @@
       "language": "mixed",
       "title": "Матрица покрытия",
       "bytes": 8463,
-      "hash": "5ee431022da0a1baf8a3bd819211757e40a9e6f7"
+      "hash": "8bcd3fbfe7a19fac7dc7c8c6a96fc9965ff0b686"
     },
     {
       "path": "docs/wiki/debates.md",
@@ -7437,7 +7437,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4075,
-      "hash": "fcba5eb956dcc6d3c3e017d15254e18ba33d997e"
+      "hash": "f58f142a755f4ea728da4ea3d0cf32d453580bb6"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -7524,8 +7524,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Граф знаний",
-      "bytes": 4903,
-      "hash": "0ef4db17e98fac73e60b65738a8f4970fc9faf31"
+      "bytes": 4904,
+      "hash": "36ee1c22f13aa65e67486faedf48de0583be8d2e"
     },
     {
       "path": "docs/wiki/dev-history.md",
@@ -7740,8 +7740,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Карта документации",
-      "bytes": 33169,
-      "hash": "d9547c63885c552b9bba9d552b9e523a7a03b522"
+      "bytes": 33243,
+      "hash": "e84d6e6e862ef87c5f6084435f9e6a9eb13da187"
     },
     {
       "path": "docs/wiki/docs-standard.md",
@@ -8022,6 +8022,14 @@
       "title": "Панель: Датасеты оценки",
       "bytes": 1890,
       "hash": "359408033738ea8eb4e6b4f861b5c9f5f787cfef"
+    },
+    {
+      "path": "docs/wiki/panel-exceptions.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Панель: Исключения (вето)",
+      "bytes": 3441,
+      "hash": "13a429f3a0d58904f95be6cadd97b95bc5cb48fd"
     },
     {
       "path": "docs/wiki/panel-files-editors.md",
@@ -8428,8 +8436,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Wiki SuperAgents OS",
-      "bytes": 24719,
-      "hash": "7df30a8e9782f9b4f3f976f3757fad3bb79d2154"
+      "bytes": 25523,
+      "hash": "43a15b7f8da4246600ce4ddd41b7d0a4e4d6d5ec"
     },
     {
       "path": "docs/wiki/roadmap-notes.md",
