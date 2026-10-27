@@ -51,6 +51,7 @@ export const MessageSearchPanel: React.FC = () => {
     const [providerFilter, setProviderFilter] = useState('');
     const [modelFilter, setModelFilter] = useState('');
     const [sessionFilter, setSessionFilter] = useState('');
+    const [sessionSearch, setSessionSearch] = useState('');
     const [minTokens, setMinTokens] = useState<number>(0);
     const [fromDate, setFromDate] = useState<string>('');
     const [toDate, setToDate] = useState<string>('');
@@ -64,6 +65,12 @@ export const MessageSearchPanel: React.FC = () => {
     const providers = useMemo(() => messageIndex.uniqueProviders(), []);
     const models = useMemo(() => messageIndex.uniqueModels(), []);
     const sessions = useMemo(() => messageIndex.uniqueSessions(), []);
+
+    const visibleSessions = useMemo(() => {
+        const q = sessionSearch.trim().toLowerCase();
+        if (!q) return sessions.slice(0, 30);
+        return sessions.filter((s) => s.id.toLowerCase().includes(q)).slice(0, 50);
+    }, [sessions, sessionSearch]);
 
     const runSearch = useCallback(() => {
         try {
@@ -324,18 +331,51 @@ export const MessageSearchPanel: React.FC = () => {
                                     ...models.map((p) => ({ v: p, l: p })),
                                 ]}
                             />
-                            <FilterSelect
-                                label={t('message_search.f_session')}
-                                value={sessionFilter}
-                                onChange={(v) => setSessionFilter(v)}
-                                options={[
-                                    { v: '', l: t('message_search.any_session') },
-                                    ...sessions.slice(0, 30).map((s) => ({
-                                        v: s.id,
-                                        l: `${s.id.slice(0, 12)}… (${s.count})`,
-                                    })),
-                                ]}
-                            />
+                            <div>
+                                <div style={{ ...textMutedXs, marginBottom: 2 }}>{t('message_search.f_session')}</div>
+                                <input
+                                    type="text"
+                                    value={sessionSearch}
+                                    onChange={(e) => setSessionSearch(e.target.value)}
+                                    placeholder={t('message_search.session_search') ?? 'Поиск сессий…'}
+                                    aria-label={t('message_search.session_search') ?? 'Поиск сессий'}
+                                    style={{
+                                        width: '100%',
+                                        padding: '0.3rem 0.4rem',
+                                        borderRadius: 4,
+                                        border: '1px solid rgba(255,255,255,0.1)',
+                                        background: 'rgba(0,0,0,0.3)',
+                                        color: 'var(--slate-200)',
+                                        fontSize: '0.75rem',
+                                        marginBottom: 4,
+                                    }}
+                                />
+                                <select
+                                    value={sessionFilter}
+                                    onChange={(e) => setSessionFilter(e.target.value)}
+                                    style={{
+                                        width: '100%',
+                                        padding: '0.3rem 0.4rem',
+                                        borderRadius: 4,
+                                        border: '1px solid rgba(255,255,255,0.1)',
+                                        background: 'rgba(0,0,0,0.3)',
+                                        color: 'var(--slate-200)',
+                                        fontSize: '0.75rem',
+                                    }}
+                                >
+                                    <option value="">{t('message_search.any_session')}</option>
+                                    {visibleSessions.map((s) => (
+                                        <option key={s.id} value={s.id}>
+                                            {s.id.slice(0, 12)}… ({s.count})
+                                        </option>
+                                    ))}
+                                </select>
+                                {!sessionSearch && sessions.length > 30 && (
+                                    <div style={{ ...textMutedXs, marginTop: 2 }}>
+                                        {sessions.length - 30} ещё — начните вводить, чтобы найти
+                                    </div>
+                                )}
+                            </div>
                             <FilterInput
                                 label={t('message_search.f_from')}
                                 type="date"
@@ -363,6 +403,7 @@ export const MessageSearchPanel: React.FC = () => {
                                         setProviderFilter('');
                                         setModelFilter('');
                                         setSessionFilter('');
+                                        setSessionSearch('');
                                         setFromDate('');
                                         setToDate('');
                                         setMinTokens(0);
@@ -402,6 +443,11 @@ export const MessageSearchPanel: React.FC = () => {
                         value={assistantCount}
                         color="#10b981"
                     />
+                </div>
+            )}
+            {results.length === 200 && (
+                <div style={{ ...textMutedXs, marginTop: 4 }}>
+                    {t('message_search.limit_hint') ?? 'Показаны первые 200 совпадений — уточните запрос или добавьте фильтры'}
                 </div>
             )}
 
