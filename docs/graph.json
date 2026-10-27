@@ -3,22 +3,22 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 1408,
-    "edges": 3687,
+    "nodes": 1410,
+    "edges": 3692,
     "byType": {
       "audit": 75,
       "code": 598,
       "test": 198,
-      "panel": 263,
-      "article": 274
+      "panel": 264,
+      "article": 275
     },
     "byKind": {
       "audit_test": 336,
       "audit_mention": 929,
       "documents": 202,
-      "source": 875,
+      "source": 876,
       "test": 293,
-      "related": 1052
+      "related": 1056
     }
   },
   "nodes": [
@@ -5606,6 +5606,13 @@
       "route": "/memory"
     },
     {
+      "id": "panel:memory-center",
+      "type": "panel",
+      "label": "memory-center",
+      "section": "dashboard",
+      "route": "/memory-center"
+    },
+    {
       "id": "panel:memory-export-import",
       "type": "panel",
       "label": "memory-export-import",
@@ -7450,6 +7457,13 @@
       "id": "wiki:memory-audit",
       "type": "article",
       "label": "Память: что есть и чего нет (аудит)",
+      "section": "memory",
+      "status": "verified"
+    },
+    {
+      "id": "wiki:memory-center-audit",
+      "type": "article",
+      "label": "Memory Center: аудит памяти системы",
       "section": "memory",
       "status": "verified"
     },
@@ -23391,6 +23405,31 @@
     {
       "from": "wiki:memory-audit",
       "to": "wiki:memory",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:memory-center-audit",
+      "to": "file:src/kernel/services/dexie-schema.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:memory-center-audit",
+      "to": "wiki:memory-audit",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:memory-center-audit",
+      "to": "wiki:memory",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:memory-center-audit",
+      "to": "wiki:panel-knowledge",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:memory-center-audit",
+      "to": "wiki:panel-lenses-crystals",
       "kind": "related"
     },
     {

@@ -3288,23 +3288,23 @@ Research Engine/Advanced → Hypothesis Generator → Research Reports.
 
 ## Главный вывод
 
-Вся основная память — **в одной базе IndexedDB** (`super_agents_os_v4`, Dexie), но разбита на десятки логических таблиц с разными владельцами. Плюс отдельные лёгкие механизмы (localStorage/SSR).
+Вся основная память — **в одной базе IndexedDB** (super_agents_os_v4, Dexie), но разбита на десятки логических таблиц с разными владельцами. Плюс отдельные лёгкие механизмы (localStorage/SSR).
 
 ## Категории → таблицы → владельцы
 
-- **Чаты**: `sessions` → `chat-executor`, `useChatStore`.
-- **Дебаты**: `debateSessions`, `debateVerdicts`, `debateTimeline` → `debate-engine`, `debate-sync-manager`.
-- **Агенты**: `agentMemory`, `agentExecutions`, `agentMetrics` → `agent-service`, `agent-journal-service`.
-- **Знания/Wiki**: `memories`, `ltMemories`, `knowledgePackages` → `memory-engine`, wiki-brain.
-- **Исследования**: `crystals`, `junctions`, `synthSessions`, `genJobs` → crystal-vault, junction, synthesis, generator.
-- **Конфиг**: `keyValue` → config/settings.
-- **Задачи/проекты**: `agemsTasks`, `projects`, `runQueue` → agems-task, project, runqueue.
-- **Флот/governance**: `crews`, `councilSessions`, `invocations`, политики и т.д.
-- **Ключи/пользователь**: `apiKeys`, `notes`, `personaProfiles`.
+- **Чаты**: sessions → chat-executor, useChatStore.
+- **Дебаты**: debateSessions, debateVerdicts, debateTimeline → debate-engine, debate-sync-manager.
+- **Агенты**: agentMemory, agentExecutions, agentMetrics → agent-service, agent-journal-service.
+- **Знания/Wiki**: memories, ltMemories, knowledgePackages → memory-engine, wiki-brain.
+- **Исследования**: crystals, junctions, synthSessions, genJobs → crystal-vault, junction, synthesis, generator.
+- **Конфиг**: keyValue → config/settings.
+- **Задачи/проекты**: agemsTasks, projects, runQueue → agems-task, project, runqueue.
+- **Флот/governance**: crews, councilSessions, invocations, политики и т.д.
+- **Ключи/пользователь**: apiKeys, notes, personaProfiles.
 
 ## Механизмы поиска
 
-- MemoryEngine (BM25 + семантика) по `memories`.
+- MemoryEngine (BM25 + семантика) по memories.
 - Wiki-Brain (семантический поиск статей).
 - messageIndex (сообщения чата).
 - Остальные таблицы — без общего семантического индекса.
@@ -3313,8 +3313,8 @@ Research Engine/Advanced → Hypothesis Generator → Research Reports.
 
 - Нет единого реестра источников.
 - Нет общей карты происхождения.
-- `auditLog` vs `auditLogs` — вероятный дубликат.
-- `eventLog`/`traces`/`cognitiveTraces` — перекрывающиеся журналы.
+- auditLog vs auditLogs — вероятный дубликат.
+- eventLog/traces/cognitiveTraces — перекрывающиеся журналы.
 - localStorage/SSR — вне единой карты.
 
 ## Рекомендации

@@ -1,86 +1,57 @@
-# Memory Center — аудит памяти SuperAgents OS
+<!-- АВТОСГЕНЕРАЦИЯ: файл создан scripts/gen-wiki-docs.mjs из корпуса Wiki (src/components/WikiPanel). Не редактировать вручную. -->
 
-> Статус: **проверено по коду** (Dexie-схема, сервисы, сторы).
-> Источник истины: `src/kernel/services/dexie-schema.ts`, `src/kernel/services/*`, `src/stores/*`.
+# Memory Center: аудит памяти системы
 
-## 1. Физическое хранилище (главное)
+> Раздел: **Знания и память** · Статус: verified · Теги: память, аудит, memory center, хранилища, инвентаризация
 
-Вся основная память системы живёт в **одной базе IndexedDB** через Dexie: `super_agents_os_v4` (класс `SuperAgentsDB`). Плюс отдельные лёгкие механизмы (localStorage/SSR). Это ключевой вывод: **единое физическое хранилище**, десятки таблиц, но множество логических «владельцев».
+Источники: `src/kernel/services/dexie-schema.ts`
 
-## 2. Карта категорий → таблиц → владельцев
+## Назначение
 
-### 🗣️ История общения / чаты
-- Таблицы: `sessions` (ChatSession), `keyValue` (служебное).
-- Сервисы: `chat-executor.ts`, `useChatStore.ts`, `session-memory-service.ts`.
+Аудит памяти SuperAgents OS — карта того, что система сохраняет, где это хранится и кто владеет данными. Это фундамент для **Memory Center** (единого обзора памяти).
 
-### ⚔️ Дебаты
-- Таблицы: `debateSessions`, `debateVerdicts`, `debateTimeline`, `debateOverrides`, `sessionLinks`, `eventLog`.
-- Сервисы: `debate-engine.ts`, `debate-sync-manager.ts`, `debate-memory.ts`, `cross-debate-memory.ts`.
+## Главный вывод
 
-### 🤖 Агенты
-- Таблицы: `agentMemory`, `agentExecutions`, `agentMetrics`, `agentConfigRevisions`, `agentSkills`, `agentTools`, `agentResponsibilities`, `agentApiKeys`, `agentBudgets`, `agentRepositories`.
-- Сервисы: `agent-service.ts`, `agent-journal-service.ts`, `agent-health-monitor.ts`.
+Вся основная память — **в одной базе IndexedDB** (super_agents_os_v4, Dexie), но разбита на десятки логических таблиц с разными владельцами. Плюс отдельные лёгкие механизмы (localStorage/SSR).
 
-### 🧠 Знания / Wiki / Wiki-Brain
-- Таблицы: `memories` (MemoryEntry), `ltMemories` (LongTermMemory), `memoryLinks`, `knowledgePackages`, `knowledgeSources`.
-- Отдельные Dexie-хранилища Wiki-Brain: `src/kernel/services/wiki-brain/store.dexie.ts`.
-- Сервисы: `memory-engine.ts`, `memory-orchestrator.ts`, `project-knowledge-service.ts` (ассистент).
+## Категории → таблицы → владельцы
 
-### 🔬 Исследования / знаниевая фабрика
-- Таблицы: `crystals`, `crystalVersions`, `junctions`, `synthSessions`, `synthPerspectives`, `genJobs`, `forumTopics`, `forumPosts`, `forumVotes`, `forumSubs`, `scenarios`, `improvements`, `strategies`, `decompositions`, `counterfactuals`, `simulations`, `evalRuns`, `benchmarks`.
-- Сервисы: `crystal-vault/`, `junction-engine/`, `synthesis/`, `knowledge-generator/`, `research-engine-service.ts`, `hypothesis-service.ts`, `research-report-service.ts`.
+- **Чаты**: sessions → chat-executor, useChatStore.
+- **Дебаты**: debateSessions, debateVerdicts, debateTimeline → debate-engine, debate-sync-manager.
+- **Агенты**: agentMemory, agentExecutions, agentMetrics → agent-service, agent-journal-service.
+- **Знания/Wiki**: memories, ltMemories, knowledgePackages → memory-engine, wiki-brain.
+- **Исследования**: crystals, junctions, synthSessions, genJobs → crystal-vault, junction, synthesis, generator.
+- **Конфиг**: keyValue → config/settings.
+- **Задачи/проекты**: agemsTasks, projects, runQueue → agems-task, project, runqueue.
+- **Флот/governance**: crews, councilSessions, invocations, политики и т.д.
+- **Ключи/пользователь**: apiKeys, notes, personaProfiles.
 
-### ⚙️ Конфигурация
-- Таблица: `keyValue` (KV-хранилище).
-- Сервисы: `config-service.ts`, `settings-service.ts`, `admin-service.ts` (auditLog).
+## Механизмы поиска
 
-### 📋 Выполнение / задачи / проекты
-- Таблицы: `agemsTasks`, `taskComments`, `taskLabels`, `taskWorkProducts`, `taskTriggers`, `projects`, `projectTasks`, `projectRuns`, `projectFiles`, `projectArtifacts`, `projectAssignments`, `runQueue`, `agentLoops`, `groupChats`, `memoryBlocks`, `traces`, `cognitiveTraces`, `eventLog`.
-- Сервисы: `agems-task-service.ts`, `project-service.ts`, `agent-project-runtime.ts`, `runqueue-service.ts`, `cognitive-service.ts`.
+- MemoryEngine (BM25 + семантика) по memories.
+- Wiki-Brain (семантический поиск статей).
+- messageIndex (сообщения чата).
+- Остальные таблицы — без общего семантического индекса.
 
-### 🛰️ Флот / governance / parity
-- Таблицы: `crews`, `crewTasks`, `councilSessions`, `councilMessages`, `councilVotes`, `graphs`, `graphRuns`, `graphCheckpoints`, `graphDecisions`, `invocations`, `invocationPolicies`, `invocationCosts`, `directorSessions`, `workflows`, `a2aAgents`, `fedPeers`, `handoffs`, `collabContracts`, `marketListings`, `marketBids`, `capabilities`, `trustScores`, `policyRules`, `govRoles`, `provenanceNodes`, `provenanceEdges`, `osSnapshots`, `auditLogs`, `auditLog`, `notifications`, `mcpServers`, `toolGrants`, `skillManifests`, `sandboxTickets`, `hierarchyNodes`, `missionWatches`, `mobileSessions`, `extensions`, `bundles`, `surfaces`.
+## Пробелы и дубликаты
 
-### 👤 Пользователь / ключи
-- Таблицы: `apiKeys`, `notes`, `personaProfiles`, `voices`, `personaDepths`, `sharedContexts`, `contextEntries`, `goals`, `cogMemories`, `memPolicies`, `healthSignals`, `scopedMem`, `trainGuides`, `orgs`, `intents`, `modalCaps`, `societyNorms`, `redFindings`.
-- Сервисы: `key-management/`, `key-state-store.ts`, `persona-service.ts`.
+- Нет единого реестра источников.
+- Нет общей карты происхождения.
+- auditLog vs auditLogs — вероятный дубликат.
+- eventLog/traces/cognitiveTraces — перекрывающиеся журналы.
+- localStorage/SSR — вне единой карты.
 
-## 3. Механизмы поиска
+## Рекомендации
 
-- **MemoryEngine** (`memory-engine.ts`): гибридный поиск — BM25 (Orama) + семантические эмбеддинги (Transformers.js). Индексирует `memories`.
-- **Wiki-Brain** (`wiki-brain/`): собственный Dexie-стор + семантический смысловой поиск статей.
-- **MessageSearchPanel**: `messageIndex` (индекс сообщений чата).
-- **Knowledge**: `project-knowledge-service.ts` — контекст для ассистента.
-- Остальные таблицы — **без общего семантического индекса** (точечные запросы по ключам).
+Memory Center: Registry (каталог источников) → Overview → Storage Map → Explorer → Search (агрегация существующих) → Health & Gaps. Без дублирования хранилищ и без фиктивных цифр.
 
-## 4. Пробелы интеграции
+---
 
-- Нет **единого реестра источников памяти** (общий каталог «что где лежит»).
-- Нет **общей карты происхождения** (откуда запись, кто создал, кто читает).
-- **Ассистент**: использует `project-knowledge-service` (статическая база о системе), но его **долговременная память/история действий** отдельно не показана и не агрегируется.
-- **localStorage/SSR** (`local-storage-adapter.ts`, `ssr-storage.ts`) — вне Dexie, не учтены в единой карте.
-- Нет **общего семантического поиска** по всем таблицам — только по `memories` и Wiki-Brain.
+## Связанные материалы
 
-## 5. Дубликаты / риски
+- [Знания и память](./memory.md)
+- [Память: что есть и чего нет (аудит)](./memory-audit.md)
+- [Панель: База знаний (RAG)](./panel-knowledge.md)
+- [Панели: Линзы и кристаллы](./panel-lenses-crystals.md)
 
-- `auditLog` и `auditLogs` — две таблицы аудита (AGEMS vs ядро) — вероятный дубликат.
-- `eventLog` (EventRecorder) и `traces`/`cognitiveTraces` — перекрывающиеся журналы событий.
-- `sessions` (чат) и `directorSessions` (разговорные сессии директора) — разные типы сессий.
-- `memories` и `ltMemories` — кратковременная vs долговременная память.
-- `keyValue` используется и конфигом, и служебными состояниями — нет разделения по назначению.
-
-## 6. Рекомендации по Memory Center
-
-1. **Memory Registry**: каталог источников (таблица → владелец → API → статус), без копирования данных.
-2. **Overview**: карта категорий с честными счётчиками (из реальных API, не фиктивными).
-3. **Storage Map**: таблица «владелец / хранилище / читатели / писатели / поиск».
-4. **Explorer**: переходы к оригиналам (через существующие панели/роуты).
-5. **Search**: агрегация существующих поисков (MemoryEngine + Wiki-Brain + messageIndex), не новый движок.
-6. **Health & Gaps**: недоступные источники, дубликаты (`auditLog` vs `auditLogs`), пробелы.
-
-## 7. Проверить дополнительно
-
-- Реальные API чтения/записи каждого сервиса (контракты).
-- Подтверждённое поведение восстановления после перезапуска (персистентность).
-- Тестовое покрытие по каждой таблице.
-- Какие сервисы реально «владеют» данными (а не только пишут).
+[← Все материалы](./README.md)

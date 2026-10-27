@@ -25,7 +25,7 @@
     {
       "id": "memory",
       "title": "Знания и память",
-      "articles": 3
+      "articles": 4
     },
     {
       "id": "providers",
@@ -2512,6 +2512,32 @@
       "related": [
         "debate-strategies",
         "debates"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:memory-center-audit",
+      "type": "article",
+      "slug": "memory-center-audit",
+      "title": "Memory Center: аудит памяти системы",
+      "section": "memory",
+      "status": "verified",
+      "tags": [
+        "память",
+        "аудит",
+        "memory center",
+        "хранилища",
+        "инвентаризация"
+      ],
+      "sources": [
+        "src/kernel/services/dexie-schema.ts"
+      ],
+      "related": [
+        "memory",
+        "memory-audit",
+        "panel-knowledge",
+        "panel-lenses-crystals"
       ],
       "reviewed": null,
       "tests": []
@@ -7953,6 +7979,16 @@
       "section": "dashboard",
       "route": "/exceptions",
       "component": "src/components/ExceptionsPanel/ExceptionsPanel",
+      "article": null,
+      "status": "live"
+    },
+    {
+      "id": "panel:memory-center",
+      "type": "panel",
+      "panelId": "memory-center",
+      "section": "dashboard",
+      "route": "/memory-center",
+      "component": "src/components/MemoryCenterPanel/MemoryCenterPanel",
       "article": null,
       "status": "live"
     },
