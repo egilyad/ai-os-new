@@ -23,6 +23,11 @@ const PROBE_MESSAGES = [
 /** Per-provider overrides for SendMessageOptions in probes */
 const PROBE_OPTIONS_OVERRIDES: Record<string, Partial<{ maxOutputTokens: number }>> = {
     gemini: { maxOutputTokens: 100 },
+    // Mercury spends tokens on hidden reasoning before the visible answer —
+    // give it a real budget so the probe doesn't get an empty (content: null)
+    // completion.
+    mercury: { maxOutputTokens: 512 },
+    inception: { maxOutputTokens: 512 },
 };
 
 const PROVDER_DEFAULTS: Record<string, string> = {

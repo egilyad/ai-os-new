@@ -76,9 +76,17 @@ export class OpenAiCompatibleAdapter extends BaseLLMAdapter {
         // Mercury (Inception Labs) expects max_completion_tokens, not
         // max_tokens (OpenAI-style newer API). Keep other OpenAI-compatible
         // providers on max_tokens.
-        if (this.id === 'mercury' && typeof body.max_tokens === 'number') {
-            body.max_completion_tokens = body.max_tokens;
-            delete body.max_tokens;
+        if (this.id === 'mercury') {
+            if (typeof body.max_tokens === 'number') {
+                body.max_completion_tokens = body.max_tokens;
+                delete body.max_tokens;
+            }
+            // Mercury spends tokens on hidden reasoning before the visible
+            // answer — with a tiny budget the answer is truncated to empty
+            // (content: null). Enforce a floor so responses are non-empty.
+            if (typeof body.max_completion_tokens === 'number' && body.max_completion_tokens < 256) {
+                body.max_completion_tokens = 256;
+            }
         }
         return body;
     }
@@ -146,11 +154,6 @@ export class OpenAiCompatibleAdapter extends BaseLLMAdapter {
             `Bearer ${apiKey}`,
             signal,
         );
-        if (this.id === 'mercury') {
-            // TEMP diagnostic: surface the raw Mercury response shape so we can
-            // align parsing. Remove once integration is stable.
-            console.log('[Mercury] raw response', JSON.stringify(data).slice(0, 2000));
-        }
         return this.toProviderResponse(data as Record<string, unknown>);
     }
 
