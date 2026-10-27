@@ -282,7 +282,7 @@ const GROUPS: CardGroup[] = [
                 id: 'graph-workbench',
                 emoji: '🧰',
                 title: 'Graph Workbench',
-                text: 'Линзы: Routing (почему выбрана модель), Cost (куда уходят деньги), Tasks (зависимости задач).',
+                text: 'Линзы: Routing, UCB1-бандит, Debate-траектории, Keys (жизненный цикл), Калибровка, Cost, Tasks.',
             },
             {
                 id: 'defect-map',
