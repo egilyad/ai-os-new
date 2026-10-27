@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import {
     Grid3X3,
     Search,
-    ArrowUpRight,
     GitBranch,
     Users,
     Code,
@@ -100,6 +99,23 @@ const TopologyGalleryPanelContent: React.FC = () => {
                 </div>
             </div>
 
+            {templates.length === 0 ? (
+                <div
+                    style={{
+                        padding: '32px 16px',
+                        textAlign: 'center',
+                        color: 'var(--slate-500)',
+                        fontSize: 13,
+                        border: '1px dashed rgba(255,255,255,0.08)',
+                        borderRadius: 10,
+                    }}
+                >
+                    <Search size={20} style={{ margin: '0 auto 8px', display: 'block', opacity: 0.6 }} />
+                    {search
+                        ? 'Ничего не найдено по запросу «' + search + '»'
+                        : 'В этой категории пока нет шаблонов'}
+                </div>
+            ) : (
             <div
                 style={{
                     display: 'grid',
@@ -114,17 +130,7 @@ const TopologyGalleryPanelContent: React.FC = () => {
                             background: 'var(--slate-800)',
                             borderRadius: 10,
                             padding: 14,
-                            cursor: 'pointer',
-                            transition: 'transform 0.15s',
-                            border: '1px solid transparent',
-                        }}
-                        onMouseEnter={(e) => {
-                            e.currentTarget.style.borderColor = '#334155';
-                            e.currentTarget.style.transform = 'translateY(-2px)';
-                        }}
-                        onMouseLeave={(e) => {
-                            e.currentTarget.style.borderColor = 'transparent';
-                            e.currentTarget.style.transform = 'none';
+                            border: '1px solid var(--slate-700)',
                         }}
                     >
                         <div
@@ -166,7 +172,6 @@ const TopologyGalleryPanelContent: React.FC = () => {
                                     </span>
                                 </div>
                             </div>
-                            <ArrowUpRight size={14} style={{ color: 'var(--slate-500)', flexShrink: 0 }} />
                         </div>
                         <p
                             style={{
@@ -192,6 +197,7 @@ const TopologyGalleryPanelContent: React.FC = () => {
                     </div>
                 ))}
             </div>
+            )}
         </div>
     );
 };

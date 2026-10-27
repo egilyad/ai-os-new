@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { Calendar, Clock, Plus, RefreshCw, Trash2, Play } from 'lucide-react';
+import { Calendar, Clock, Plus, RefreshCw, Trash2, Play, Loader2, Search } from 'lucide-react';
 import { getAllSettings, setSetting } from '../kernel/instances';
 import type { QualityTechnique } from '../kernel/contracts/debate-quality-settings';
 import { useTranslation } from '../i18n/useTranslation';
@@ -35,7 +35,7 @@ const Toggle: React.FC<{ checked: boolean; onChange: (v: boolean) => void }> = (
             border: 'none',
             cursor: 'pointer',
             position: 'relative',
-            background: checked ? '#10b981' : '#374151',
+            background: checked ? 'var(--success)' : 'var(--slate-600)',
             transition: 'background 0.2s',
             flexShrink: 0,
         }}
@@ -72,6 +72,7 @@ export const SchedulerPanel: React.FC = () => {
     const [taskPrompt, setTaskPrompt] = useState('');
     const [busy, setBusy] = useState(false);
     const [seedingDemo, setSeedingDemo] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
 
     const handleToggle = useCallback(() => {
         const next = !enabled;
@@ -185,6 +186,17 @@ export const SchedulerPanel: React.FC = () => {
         }
     }, [load]);
 
+    const filteredSchedules = React.useMemo(() => {
+        const q = searchQuery.trim().toLowerCase();
+        if (!q) return schedules;
+        return schedules.filter(
+            (s) =>
+                s.name.toLowerCase().includes(q) ||
+                (s.agentName ?? s.agentId).toLowerCase().includes(q) ||
+                (s.cronExpression || '').toLowerCase().includes(q),
+        );
+    }, [schedules, searchQuery]);
+
     return (
         <div style={{ padding: 24, maxWidth: 900, margin: '0 auto' }}>
             <div
@@ -198,7 +210,7 @@ export const SchedulerPanel: React.FC = () => {
                 }}
             >
                 <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 8 }}>
-                    <Calendar size={22} color="#3b82f6" />
+                    <Calendar size={22} color="var(--accent-color)" />
                     <h2 style={{ margin: 0, fontSize: 20, fontWeight: 700, color: 'var(--slate-200)' }}>
                         {lang === 'ru' ? TECHNIQUE.nameRu : TECHNIQUE.name}
                     </h2>
@@ -216,7 +228,7 @@ export const SchedulerPanel: React.FC = () => {
                     </span>
                     <div style={{ flex: 1 }} />
                     <Toggle checked={enabled} onChange={handleToggle} />
-                    <span style={{ fontSize: 13, color: enabled ? '#10b981' : '#64748b', fontWeight: 500 }}>
+                    <span style={{ fontSize: 13, color: enabled ? 'var(--success)' : 'var(--slate-500)', fontWeight: 500 }}>
                         {enabled ? t('scheduler.active') : t('scheduler.disabled')}
                     </span>
                 </div>
@@ -236,7 +248,7 @@ export const SchedulerPanel: React.FC = () => {
                 }}
             >
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
-                    <Plus size={18} color="#60a5fa" />
+                    <Plus size={18} color="var(--accent-color)" />
                     <h3 style={{ margin: 0, fontSize: 15, fontWeight: 600, color: 'var(--slate-200)' }}>
                         {t('scheduler.create_title') ?? 'Create schedule'}
                     </h3>
@@ -288,9 +300,13 @@ export const SchedulerPanel: React.FC = () => {
                 <button
                     onClick={() => void handleCreate()}
                     disabled={busy || !name.trim() || !agentId}
-                    style={{ padding: '8px 16px', borderRadius: 8, border: 'none', background: busy || !name.trim() || !agentId ? '#374151' : '#3b82f6', color: '#fff', fontWeight: 600, cursor: busy || !name.trim() || !agentId ? 'not-allowed' : 'pointer' }}
+                    style={{ padding: '8px 16px', borderRadius: 8, border: 'none', background: busy || !name.trim() || !agentId ? 'var(--slate-600)' : 'var(--accent-color)', color: '#fff', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 6, cursor: busy || !name.trim() || !agentId ? 'not-allowed' : 'pointer' }}
                 >
-                    {busy ? '...' : t('scheduler.create') ?? 'Create'}
+                    {busy ? (
+                        <><Loader2 size={14} className="provider-spin" /> {t('scheduler.creating') ?? 'Creating…'}</>
+                    ) : (
+                        t('scheduler.create') ?? 'Create'
+                    )}
                 </button>
             </div>
 
@@ -305,7 +321,7 @@ export const SchedulerPanel: React.FC = () => {
                 }}
             >
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
-                    <Clock size={18} color="#60a5fa" />
+                    <Clock size={18} color="var(--accent-color)" />
                     <h3 style={{ margin: 0, fontSize: 15, fontWeight: 600, color: 'var(--slate-200)' }}>
                         {t('scheduler.list_title') ?? 'Schedules'}
                     </h3>
@@ -313,6 +329,17 @@ export const SchedulerPanel: React.FC = () => {
                     <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 4, background: 'rgba(34,197,94,0.15)', color: 'var(--success)', fontWeight: 500 }}>
                         {schedules.filter(s => s.enabled).length} / {schedules.length} {t('scheduler.active_count') ?? 'active'}
                     </span>
+                    <div style={{ position: 'relative', display: 'inline-flex', alignItems: 'center' }}>
+                        <Search size={14} color="var(--slate-500)" style={{ position: 'absolute', left: 9, pointerEvents: 'none' }} />
+                        <input
+                            type="text"
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            placeholder={t('scheduler.search_placeholder') ?? 'Search schedules…'}
+                            aria-label={t('scheduler.search_placeholder') ?? 'Search schedules'}
+                            style={{ padding: '6px 10px 6px 28px', borderRadius: 8, border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(15,23,42,0.6)', color: 'var(--slate-200)', fontSize: 12, width: 180 }}
+                        />
+                    </div>
                     <button
                         onClick={() => void handleSeedDemo()}
                         disabled={seedingDemo}
@@ -324,8 +351,9 @@ export const SchedulerPanel: React.FC = () => {
                     </button>
                     <button
                         onClick={() => void load()}
-                        title="Refresh"
-                        style={{ padding: 6, borderRadius: 6, border: '1px solid rgba(255,255,255,0.1)', background: 'transparent', cursor: 'pointer', color: 'var(--slate-400)' }}
+                        title={t('scheduler.refresh') ?? 'Refresh'}
+                        aria-label={t('scheduler.refresh') ?? 'Refresh'}
+                        style={{ padding: 6, borderRadius: 6, border: '1px solid rgba(255,255,255,0.1)', background: 'transparent', cursor: 'pointer', color: 'var(--slate-400)', display: 'inline-flex' }}
                     >
                         <RefreshCw size={14} />
                     </button>
@@ -337,9 +365,13 @@ export const SchedulerPanel: React.FC = () => {
                     <div style={{ padding: 16, textAlign: 'center', color: 'var(--slate-500)', fontSize: 13, border: '1px dashed rgba(255,255,255,0.08)', borderRadius: 8, marginBottom: 12 }}>
                         {t('scheduler.no_schedules')}
                     </div>
+                ) : filteredSchedules.length === 0 ? (
+                    <div style={{ padding: 16, textAlign: 'center', color: 'var(--slate-500)', fontSize: 13, border: '1px dashed rgba(255,255,255,0.08)', borderRadius: 8, marginBottom: 12 }}>
+                        {t('scheduler.no_search_results') ?? 'Ничего не найдено по запросу'}
+                    </div>
                 ) : (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 12 }}>
-                        {schedules.map(s => (
+                        {filteredSchedules.map(s => (
                             <div key={s.id} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 12px', borderRadius: 8, background: 'rgba(15,23,42,0.4)', border: '1px solid rgba(59,130,246,0.12)' }}>
                                 <div style={{ flex: 1, minWidth: 0 }}>
                                     <div style={{ fontWeight: 600, fontSize: 13, color: 'var(--slate-200)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{s.name}</div>
@@ -352,10 +384,10 @@ export const SchedulerPanel: React.FC = () => {
                                     <input type="checkbox" checked={s.enabled} onChange={e => void handleToggleSchedule(s.id, e.target.checked)} />
                                     enabled
                                 </label>
-                                <button onClick={() => void handleTrigger(s.id)} disabled={busy} title="Trigger now" style={{ padding: '6px 8px', borderRadius: 6, border: '1px solid rgba(59,130,246,0.2)', background: 'rgba(59,130,246,0.12)', color: '#60a5fa', cursor: 'pointer' }}>
+                                <button onClick={() => void handleTrigger(s.id)} disabled={busy} title={t('scheduler.trigger_now') ?? 'Trigger now'} aria-label={t('scheduler.trigger_now') ?? 'Trigger now'} style={{ padding: '6px 8px', borderRadius: 6, border: '1px solid rgba(59,130,246,0.2)', background: 'rgba(59,130,246,0.12)', color: 'var(--accent-color)', cursor: 'pointer', display: 'inline-flex' }}>
                                     <Play size={12} />
                                 </button>
-                                <button onClick={() => void handleDelete(s.id)} title="Delete" style={{ padding: '6px 8px', borderRadius: 6, border: '1px solid rgba(239,68,68,0.2)', background: 'rgba(239,68,68,0.12)', color: '#f87171', cursor: 'pointer' }}>
+                                <button onClick={() => void handleDelete(s.id)} title={t('scheduler.delete') ?? 'Delete'} aria-label={t('scheduler.delete') ?? 'Delete'} style={{ padding: '6px 8px', borderRadius: 6, border: '1px solid rgba(239,68,68,0.2)', background: 'rgba(239,68,68,0.12)', color: 'var(--error)', cursor: 'pointer', display: 'inline-flex' }}>
                                     <Trash2 size={12} />
                                 </button>
                             </div>
