@@ -244,6 +244,7 @@ const QUICK_ACTIONS: Array<{ id: string; emoji: string; label: string }> = [
     { id: 'debate', emoji: '🧑‍⚖️', label: 'Новый дебат' },
     { id: 'agents', emoji: '🤖', label: 'Новый агент' },
     { id: 'knowledge', emoji: '🔍', label: 'Новое исследование' },
+    { id: 'knowledge', emoji: '🧭', label: 'Провести тему через конвейер' },
 ];
 
 const WelcomePanel: React.FC<WelcomePanelProps> = ({ onNavigate }) => {
@@ -319,6 +320,25 @@ const WelcomePanel: React.FC<WelcomePanelProps> = ({ onNavigate }) => {
                             <span style={{ fontSize: '1.1rem' }}>{a.emoji}</span> {a.label}
                         </button>
                     ))}
+                </div>
+            </div>
+
+            <div
+                style={{
+                    padding: '1rem 1.25rem',
+                    borderRadius: 14,
+                    border: '1px solid rgba(34,197,94,0.2)',
+                    background: 'rgba(34,197,94,0.06)',
+                }}
+            >
+                <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--slate-200)', marginBottom: '0.5rem' }}>
+                    🧭 Как провести тему через конвейер знаний
+                </div>
+                <div style={{ fontSize: '0.82rem', color: 'var(--slate-400)', lineHeight: 1.7 }}>
+                    1. <b>База знаний</b> — найди существующие знания по теме. · 2. <b>Кристаллы</b> —
+                    зафиксируй проверенные утверждения. · 3. <b>Junction</b> — обнаружь связи между
+                    источниками. · 4. <b>Синтез</b> — собери мультиперспективный вывод. · 5.{' '}
+                    <b>Генератор знаний</b> — проведи автономный цикл и получи новые знания.
                 </div>
             </div>
 
