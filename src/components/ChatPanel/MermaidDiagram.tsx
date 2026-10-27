@@ -1,5 +1,6 @@
 import { useEffect, useId, useState } from 'react';
 import mermaid from 'mermaid';
+import DOMPurify from 'dompurify';
 
 let initialized = false;
 
@@ -77,7 +78,9 @@ export function MermaidDiagram({ code }: { code: string }): React.ReactNode {
                 margin: '0.5rem 0',
                 overflow: 'auto',
             }}
-            dangerouslySetInnerHTML={{ __html: svg }}
+            dangerouslySetInnerHTML={{
+                __html: DOMPurify.sanitize(svg, { USE_PROFILES: { svg: true } }),
+            }}
         />
     );
 }

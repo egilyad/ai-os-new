@@ -1,13 +1,14 @@
 const API_KEY_PATTERNS = [
-    /sk-or-v1-[a-zA-Z0-9]{20,}/,
-    /sk-[a-zA-Z0-9]{20,}/,
-    /AIza[0-9A-Za-z_-]{35,}/,
-    /gsk_[a-zA-Z0-9]{30,}/,
-    /nvapi-[a-zA-Z0-9_-]{30,}/,
-    /hf_[a-zA-Z0-9]{30,}/,
-    /pplx-[a-zA-Z0-9]{30,}/,
-    /cf-[a-zA-Z0-9]{30,}/,
-    /xai-[a-zA-Z0-9]{30,}/,
+    /sk-or-v1-[a-zA-Z0-9]{20,}/g,
+    /sk-[a-zA-Z0-9]{20,}/g,
+    /AIza[0-9A-Za-z_-]{35,}/g,
+    /gsk_[a-zA-Z0-9]{30,}/g,
+    /nvapi-[a-zA-Z0-9_-]{30,}/g,
+    /hf_[a-zA-Z0-9]{30,}/g,
+    /pplx-[a-zA-Z0-9]{30,}/g,
+    /cf-[a-zA-Z0-9]{30,}/g,
+    /xai-[a-zA-Z0-9]{30,}/g,
+    /Bearer\s+[A-Za-z0-9._~+/=_-]{16,}/gi,
 ];
 
 const SENSITIVE_KEY_RE = /^(key|token|secret|password|api_key|apiKey)$/i;
@@ -56,7 +57,7 @@ export function sanitizeObject(obj: unknown): unknown {
 
 export function sanitizeError(text: string): string {
     return text.replace(
-        /(sk-or-v1-[a-zA-Z0-9]{20,}|sk-[a-zA-Z0-9]{20,}|AIza[0-9A-Za-z_-]{35,}|gsk_[a-zA-Z0-9]{30,}|nvapi-[a-zA-Z0-9_-]{30,}|hf_[a-zA-Z0-9]{30,}|pplx-[a-zA-Z0-9]{30,}|cf-[a-zA-Z0-9]{30,}|xai-[a-zA-Z0-9]{30,})/g,
+        /(sk-or-v1-[a-zA-Z0-9]{20,}|sk-[a-zA-Z0-9]{20,}|AIza[0-9A-Za-z_-]{35,}|gsk_[a-zA-Z0-9]{30,}|nvapi-[a-zA-Z0-9_-]{30,}|hf_[a-zA-Z0-9]{30,}|pplx-[a-zA-Z0-9]{30,}|cf-[a-zA-Z0-9]{30,}|xai-[a-zA-Z0-9]{30,}|\bBearer\s+[A-Za-z0-9._~+/=_-]{16,})/gi,
         '[KEY REDACTED]',
     );
 }
