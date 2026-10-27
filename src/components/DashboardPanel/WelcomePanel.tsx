@@ -405,6 +405,22 @@ const WelcomePanel: React.FC<WelcomePanelProps> = ({ onNavigate }) => {
                     Research Engine + Hypothesis Generator + Reports. · <b>Система странно ведёт себя</b>{' '}
                     → аудиты (классы дефектов).
                 </div>
+                <button
+                    onClick={() => onNavigate('wiki')}
+                    style={{
+                        marginTop: '0.6rem',
+                        padding: '0.5rem 0.95rem',
+                        borderRadius: 10,
+                        border: '1px solid rgba(59,130,246,0.3)',
+                        cursor: 'pointer',
+                        fontSize: '0.8rem',
+                        fontWeight: 700,
+                        color: 'var(--slate-100)',
+                        background: 'rgba(59,130,246,0.15)',
+                    }}
+                >
+                    📖 Открыть шпаргалку (вики)
+                </button>
             </div>
 
             {GROUPS.map((g) => (
