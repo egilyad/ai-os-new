@@ -756,7 +756,7 @@ flowchart LR
         sources: [
             'src/components/AgentTasksPanel/AgentTasksPanel.tsx',
             'src/kernel/services/computer/computer-use-loop-service.ts',
-            'src/kernel/services/parity/browser-use-service.ts',
+            'src/kernel/services/browser/browser-use-service.ts',
         ],
         related: ['idea-path', 'scenario-map', 'agents', 'capabilities'],
         body: `## Что это

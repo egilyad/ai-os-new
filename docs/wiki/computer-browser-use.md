@@ -4,7 +4,7 @@
 
 > Раздел: **Руководство** · Статус: documented · Теги: руководство, computer-use, browser-use, автоматизация
 
-Источники: `src/components/AgentTasksPanel/AgentTasksPanel.tsx`, `src/kernel/services/computer/computer-use-loop-service.ts`, `src/kernel/services/parity/browser-use-service.ts`
+Источники: `src/components/AgentTasksPanel/AgentTasksPanel.tsx`, `src/kernel/services/computer/computer-use-loop-service.ts`, `src/kernel/services/browser/browser-use-service.ts`
 
 ## Что это
 

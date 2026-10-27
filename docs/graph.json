@@ -3,12 +3,12 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 1377,
-    "edges": 3624,
+    "nodes": 1378,
+    "edges": 3625,
     "byType": {
       "audit": 75,
       "code": 581,
-      "test": 196,
+      "test": 197,
       "panel": 263,
       "article": 262
     },
@@ -17,7 +17,7 @@
       "audit_mention": 929,
       "documents": 202,
       "source": 850,
-      "test": 288,
+      "test": 289,
       "related": 1019
     }
   },
@@ -2323,6 +2323,16 @@
       "label": "src/kernel/services/assistant/project-knowledge-service.ts"
     },
     {
+      "id": "file:src/kernel/services/browser/browser-use-service.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/browser/browser-use-service.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/browser/browser-use-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/browser/browser-use-service.ts"
+    },
+    {
       "id": "file:src/kernel/services/budget-service.test.ts",
       "type": "test",
       "label": "src/kernel/services/budget-service.test.ts"
@@ -3231,11 +3241,6 @@
       "id": "file:src/kernel/services/orchestration-service.ts",
       "type": "code",
       "label": "src/kernel/services/orchestration-service.ts"
-    },
-    {
-      "id": "file:src/kernel/services/parity/browser-use-service.ts",
-      "type": "code",
-      "label": "src/kernel/services/parity/browser-use-service.ts"
     },
     {
       "id": "file:src/kernel/services/parity/default-embedding-service.ts",
@@ -21141,17 +21146,22 @@
     },
     {
       "from": "wiki:computer-browser-use",
+      "to": "file:src/kernel/services/browser/browser-use-service.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:computer-browser-use",
+      "to": "file:src/kernel/services/browser/browser-use-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:computer-browser-use",
       "to": "file:src/kernel/services/computer/computer-use-loop-service.test.ts",
       "kind": "test"
     },
     {
       "from": "wiki:computer-browser-use",
       "to": "file:src/kernel/services/computer/computer-use-loop-service.ts",
-      "kind": "source"
-    },
-    {
-      "from": "wiki:computer-browser-use",
-      "to": "file:src/kernel/services/parity/browser-use-service.ts",
       "kind": "source"
     },
     {
