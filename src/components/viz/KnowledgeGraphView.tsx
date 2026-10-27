@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState, useCallback } from 'react';
 import {
     ReactFlow,
     Background,
@@ -206,16 +206,37 @@ function buildNodesEdges(data: GraphViewData): { nodes: KnowledgeNodeType[]; edg
 export function KnowledgeGraphView({
     data,
     height = 420,
+    onNodeClick,
 }: {
     data: GraphViewData;
     height?: number;
+    onNodeClick?: (node: GraphViewNode) => void;
 }) {
     const { nodes, edges } = useMemo(() => buildNodesEdges(data), [data]);
+    const [selectedId, setSelectedId] = useState<string | null>(null);
+
+    const handleNodeClick = useCallback(
+        (_event: React.MouseEvent, node: Node) => {
+            const n = node as KnowledgeNodeType;
+            const meta = data.nodes.find((dn) => dn.id === n.id);
+            if (meta) {
+                if (onNodeClick) onNodeClick(meta);
+                setSelectedId((prev) => (prev === meta.id ? null : meta.id));
+            }
+        },
+        [data.nodes, onNodeClick],
+    );
 
     return (
         <div style={{ height, width: '100%' }}>
             <ReactFlow
-                nodes={nodes}
+                nodes={nodes.map((n) => ({
+                    ...n,
+                    style:
+                        selectedId === n.id
+                            ? { border: `3px solid ${tokens.accent}`, filter: 'brightness(1.2)' }
+                            : undefined,
+                }))}
                 edges={edges}
                 nodeTypes={nodeTypes}
                 edgeTypes={edgeTypes}
@@ -223,6 +244,7 @@ export function KnowledgeGraphView({
                 minZoom={0.08}
                 maxZoom={2.5}
                 proOptions={{ hideAttribution: true }}
+                onNodeClick={handleNodeClick}
                 defaultEdgeOptions={{
                     type: 'curvy',
                     markerEnd: { type: MarkerType.ArrowClosed, width: 14, height: 14 },

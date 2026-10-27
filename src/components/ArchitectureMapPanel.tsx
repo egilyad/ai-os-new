@@ -1,12 +1,14 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { getContainer } from '../kernel/service-helper';
 import { architectureGraphService } from '../kernel/instances';
 import { useTranslation } from '../i18n/useTranslation';
 import { tokens } from '../styles/tokens';
-import { KnowledgeGraphView, type GraphViewData } from './viz/KnowledgeGraphView';
+import { KnowledgeGraphView, type GraphViewData, type GraphViewNode } from './viz/KnowledgeGraphView';
 import type { IContainer } from '../kernel/container';
 
 export default function ArchitectureMapPanel() {
+    const navigate = useNavigate();
     const { t } = useTranslation();
     const [graph, setGraph] = useState<GraphViewData>({ nodes: [], edges: [] });
 
@@ -72,7 +74,11 @@ export default function ArchitectureMapPanel() {
                     overflow: 'hidden',
                 }}
             >
-                <KnowledgeGraphView data={graph} height={420} />
+                <KnowledgeGraphView
+                    data={graph}
+                    height={420}
+                    onNodeClick={(n: GraphViewNode) => navigate('/services')}
+                />
             </div>
         </div>
     );
