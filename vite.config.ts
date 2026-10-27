@@ -143,7 +143,7 @@ export default defineConfig({
                 "font-src 'self' data: https://fonts.gstatic.com; " +
                 // C-01: direct-call hosts for providers without /proxy/* routes
                 // Local browser-use sidecar (loopback only; the sidecar binds 127.0.0.1).
-                "connect-src 'self' http://localhost:3100 http://127.0.0.1:3100 https://generativelanguage.googleapis.com https://openrouter.ai https://integrate.api.nvidia.com https://api.groq.com https://api.cerebras.ai https://api.cloudflare.com https://api.openai.com https://api.together.xyz https://api.fireworks.ai https://api.deepseek.com https://api.moonshot.ai https://api.minimax.io https://dashscope-intl.aliyuncs.com https://api.blackbox.ai https://api.scaleway.ai https://api.cometapi.com https://models.inference.ai.azure.com https://api.mistral.ai https://api.cohere.com https://api-inference.huggingface.co https://api.perplexity.ai; " +
+                "connect-src 'self' http://localhost:3100 http://127.0.0.1:3100 https://generativelanguage.googleapis.com https://openrouter.ai https://integrate.api.nvidia.com https://api.groq.com https://api.cerebras.ai https://api.cloudflare.com https://api.openai.com https://api.together.xyz https://api.fireworks.ai https://api.deepseek.com https://api.moonshot.ai https://api.minimax.io https://dashscope-intl.aliyuncs.com https://api.blackbox.ai https://api.scaleway.ai https://api.cometapi.com https://models.inference.ai.azure.com https://api.mistral.ai https://api.cohere.com https://api-inference.huggingface.co https://api.perplexity.ai https://api.inceptionlabs.ai; " +
                 "worker-src 'self' blob:; " +
                 "img-src 'self' data: blob:;",
         },
@@ -191,6 +191,13 @@ export default defineConfig({
                 target: process.env.VITE_PROXY_OPENAI || 'https://api.openai.com/v1',
                 changeOrigin: true,
                 rewrite: (path) => path.replace(/^\/proxy\/openai/, ''),
+                secure: true,
+            }),
+            '/proxy/mercury': withProxyErrorHandler({
+                // Mercury 3 (Inception Labs) — OpenAI-compatible chat endpoint.
+                target: process.env.VITE_PROXY_MERCURY || 'https://api.inceptionlabs.ai/v1',
+                changeOrigin: true,
+                rewrite: (path) => path.replace(/^\/proxy\/mercury/, ''),
                 secure: true,
             }),
             // SEC-07: Fetch proxy for sandboxed URL fetching.

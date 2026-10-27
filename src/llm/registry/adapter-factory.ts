@@ -173,10 +173,12 @@ export class AdapterFactory {
             case 'mercury':
             case 'inception':
                 // Mercury 3 (Inception Labs) — OpenAI-compatible chat endpoint.
+                // Route through the dev proxy to avoid CSP/CORS blocks in the
+                // browser (direct calls to api.inceptionlabs.ai are blocked).
                 adapter = new OpenAiCompatibleAdapter(
                     'mercury',
                     'https://api.inceptionlabs.ai/v1',
-                    false,
+                    true,
                 );
                 break;
             case 'blackboxapi':
