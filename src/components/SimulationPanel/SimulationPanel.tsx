@@ -82,7 +82,7 @@ export const SimulationPanel: React.FC = () => {
         return Array.from({ length: 6 }, (_, i) => `agent-${i + 1}`);
     };
 
-    const useDemoSeed = async () => {
+    const runDemoSeed = async () => {
         setBusy(true);
         setError(null);
         try {
@@ -195,7 +195,7 @@ export const SimulationPanel: React.FC = () => {
                     <button style={primaryBtn} disabled={busy} onClick={() => void createWorld()}>
                         + New World ({pickedAgentIds.length || 6} agents)
                     </button>
-                    <button style={btn} disabled={busy} onClick={() => void useDemoSeed()}>
+                    <button style={btn} disabled={busy} onClick={() => void runDemoSeed()}>
                         🎲 Demo seed
                     </button>
                     <button style={btn} disabled={busy} onClick={() => void refresh()}>Refresh</button>
