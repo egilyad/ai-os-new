@@ -19,8 +19,8 @@
 
 | Показатель | Значение | Как считается |
 | --- | --- | --- |
-| Статей проверено | 263 | файлы `docs/wiki/*.md`, кроме индекса и этой страницы |
-| Битые ссылки на исходники | 0 | пути из строки «Источники:» резолвятся как модули (расширение / index / glob) |
+| Статей проверено | 270 | файлы `docs/wiki/*.md`, кроме индекса и этой страницы |
+| Битые ссылки на исходники | 4 | пути из строки «Источники:» резолвятся как модули (расширение / index / glob) |
 | Битые внутренние ссылки | 0 | markdown-ссылки внутри статей ведут на существующие файлы |
 | Неполные статьи | 9 | текст короче 250 символов или пометка «пока не написана» |
 | Статьи без источников | 35 | отсутствует строка «Источники:» (из них помечены verified: 0) |
@@ -30,21 +30,32 @@
 | Проблемы модели сущности | 0 | `docs/entity-model.json` разбирается и соответствует [Стандарт документации](./docs-standard.md) |
 | README → вики | 138 (RU) / 138 (EN) | ссылки README.md и README_EN.md в `docs/wiki/*.md` резолвятся |
 | README RU/EN расхождение | 0 | разница наборов статей между README.md и README_EN.md |
-| Статьи вне README | 126 | не залинкованные напрямую из README.md |
-| Статьи недостижимые по ссылкам | 2 | нет пути от README через внутренние ссылки (каталоги, индексы) |
+| Статьи вне README | 133 | не залинкованные напрямую из README.md |
+| Статьи недостижимые по ссылкам | 7 | нет пути от README через внутренние ссылки (каталоги, индексы) |
 
-Итог: **здорово** — hard-ошибок нет.
+Итог: **есть проблемы** — hard-ошибок: 4.
 
 ## Что требует внимания
+
+Битые источники (4):
+- panel-hypothesis-generator → `src/kernel/services/hypothesis/`
+- panel-research-advanced → `src/kernel/services/research/`
+- panel-research-engine → `src/kernel/services/research/`
+- panel-research-reports → `src/kernel/services/research/`
 
 Панели без статьи (3):
 - exceptions (dashboard)
 - wiki-brain (wiki)
 - architecture-map (wiki)
 
-Недостижимы от README по ссылкам (2):
-- panel-crystal-vault
-- panel-junction
+Недостижимы от README по ссылкам (7):
+- panel-debate-system-research
+- panel-hypothesis-generator
+- panel-research-advanced
+- panel-research-engine
+- panel-research-reports
+- panel-rival-labs
+- panel-rivals-catalog
 
 ## Как это проверяется
 

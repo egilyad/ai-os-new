@@ -3,7 +3,7 @@
   "generatedBy": "scripts/gen-docs-inventory.mjs",
   "scope": "git-tracked markdown: docs/**/*.md (excluding docs/new drafts and the self-report pages docs-health, docs-inventory) plus repository entry docs (root *.md, .superagents/**, src/kernel/DEPENDENCY_MAP.md)",
   "totals": {
-    "documents": 1110,
+    "documents": 1117,
     "byCategory": {
       "repo": 13,
       "top": 47,
@@ -13,11 +13,11 @@
       "reference": 6,
       "roadmap": 17,
       "superseded": 3,
-      "wiki": 263
+      "wiki": 270
     },
     "byLanguage": {
       "en": 659,
-      "ru": 280,
+      "ru": 287,
       "mixed": 171
     }
   },
@@ -43,7 +43,8 @@
       "12_future_agent_concept — realized concept from existing capabilities",
       "14_alternative_roadmap — second philosophy",
       "15 — do not build yet",
-      "research_progress.md"
+      "research_progress.md",
+      "панель: исследовательский движок"
     ]
   },
   "documents": [
@@ -7581,7 +7582,7 @@
       "language": "mixed",
       "title": "Матрица покрытия",
       "bytes": 8463,
-      "hash": "7a7618ce272ad77b415421d04c88af8a36e9080c"
+      "hash": "c012221ac40b3cee1f36252371ed68d1933e69cf"
     },
     {
       "path": "docs/wiki/debates.md",
@@ -7612,8 +7613,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Проверки и показатели",
-      "bytes": 4076,
-      "hash": "2b266f09bc7a8de33a50c51dd469e75e0555d447"
+      "bytes": 4075,
+      "hash": "802663aa598cee43b2a832f9f46d6de4a68f9803"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -7701,7 +7702,7 @@
       "language": "ru",
       "title": "Граф знаний",
       "bytes": 4905,
-      "hash": "a42728ee6f40e60bfee39f71a7f57d2a3fad3b70"
+      "hash": "6091140a4869a115df2dac903610031fa13934ff"
     },
     {
       "path": "docs/wiki/dev-history.md",
@@ -7916,8 +7917,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Карта документации",
-      "bytes": 35776,
-      "hash": "165e67fbdc6cfb728d1baefd0f9285623c7800aa"
+      "bytes": 36437,
+      "hash": "66a7074484ae49dcd8913910a7cb5754a7330e6e"
     },
     {
       "path": "docs/wiki/docs-standard.md",
@@ -8152,6 +8153,14 @@
       "hash": "c8ebdc31cf5470193cdc6c524e6625f8329ff62f"
     },
     {
+      "path": "docs/wiki/panel-debate-system-research.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Панель: Исследования системы дебатов",
+      "bytes": 1730,
+      "hash": "14d63ee637369cd710782bbf4f2cd302353158de"
+    },
+    {
       "path": "docs/wiki/panel-debate-templates.md",
       "category": "wiki",
       "language": "ru",
@@ -8286,6 +8295,14 @@
       "title": "Панели: История, аудит, версии, деплой",
       "bytes": 2968,
       "hash": "77738b48f47ae730ceca7c3cfa5f4dc9ca5523c1"
+    },
+    {
+      "path": "docs/wiki/panel-hypothesis-generator.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Панель: Генератор гипотез",
+      "bytes": 1656,
+      "hash": "092225321aabcde1b07955d122a40e83dfa74d90"
     },
     {
       "path": "docs/wiki/panel-infra-meta.md",
@@ -8464,6 +8481,22 @@
       "hash": "74ac4100d71071525e21f3e6a63e997f5ba941c9"
     },
     {
+      "path": "docs/wiki/panel-research-advanced.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Панель: Исследования — расширенные",
+      "bytes": 1624,
+      "hash": "1f63548b609bc18623b30fba6c6b0bc25fa7b14b"
+    },
+    {
+      "path": "docs/wiki/panel-research-engine.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Панель: Исследовательский движок",
+      "bytes": 1948,
+      "hash": "438691e2c97af83ab18466af1b33ababa6e84f06"
+    },
+    {
       "path": "docs/wiki/panel-research-extra.md",
       "category": "wiki",
       "language": "mixed",
@@ -8472,12 +8505,36 @@
       "hash": "7e44219d8b8937887b85a64a92a606d413dcacdd"
     },
     {
+      "path": "docs/wiki/panel-research-reports.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Панель: Отчёты исследований",
+      "bytes": 1478,
+      "hash": "c37e2c9b8d7ea2dbd82c966a7b6c3af539530277"
+    },
+    {
       "path": "docs/wiki/panel-research.md",
       "category": "wiki",
       "language": "ru",
       "title": "Панель: Исследовательский движок",
       "bytes": 2353,
       "hash": "a2c6d4e0da945bd937f72de60d7710c3f0eb3e31"
+    },
+    {
+      "path": "docs/wiki/panel-rival-labs.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Панель: Лаборатория соперников (Rival Labs)",
+      "bytes": 1411,
+      "hash": "14832673eb23e7ebb60ca0ff0a8fed96f9e41f62"
+    },
+    {
+      "path": "docs/wiki/panel-rivals-catalog.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Панель: Каталог Rivals-проектов",
+      "bytes": 1403,
+      "hash": "30b5819faaf441d55fed6e2b470f51491408a213"
     },
     {
       "path": "docs/wiki/panel-roles.md",
@@ -8628,8 +8685,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Wiki SuperAgents OS",
-      "bytes": 28347,
-      "hash": "0a15cb85746d3cd114ad69487b7f6f5aaa4ab469"
+      "bytes": 28441,
+      "hash": "35b3900dcdef8b18d5b815faed8cf978c5370014"
     },
     {
       "path": "docs/wiki/roadmap-notes.md",

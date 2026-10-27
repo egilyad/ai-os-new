@@ -3131,6 +3131,54 @@ Junctions работают поверх **кристаллов** ([[panel-crysta
 Активная работа с сервисами — [[panel-rival-labs]].`,
     },
     {
+        slug: 'guide-work-modes',
+        title: 'Режимы работы с информацией',
+        section: 'guide',
+        tags: ['руководство', 'режимы', 'знания', 'исследование', 'аудит', 'шпаргалка'],
+        freshness: 'verified',
+        sources: ['src/components/DashboardPanel/WelcomePanel.tsx', 'src/components/'],
+        related: ['idea-path', 'scenario-map', 'panel-knowledge', 'panel-research-engine', 'audit-methodology'],
+        body: `## Назначение
+
+Шпаргалка: как выбрать маршрут по задаче среди многих панелей. Не «пользоваться всем сразу», а **выбрать режим под вопрос**.
+
+## Три зоны
+
+### 1. Конвейер знаний — «получить проверенный результат»
+Knowledge → Crystal Vault → Junction → Synthesis → Knowledge Generator.
+
+Маршрут: найди знания → зафиксируй утверждения → найди связи → собери мультиперспективный вывод → сгенерируй новое знание.
+
+**Когда:** понять тему и получить проверенный вывод.
+
+### 2. Исследования — «изучить что-то новое»
+Research Engine/Advanced → Hypothesis Generator → Research Reports.
+
+Маршрут: проведи исследование → сформулируй и проверь гипотезу (авто-дебат) → оформи отчёт.
+
+**Когда:** глубокая задача, новое направление.
+
+### 3. Аудиты — «здоровье системы»
+8 типов + 12 классов дефектов + методология.
+
+**Когда:** система ведёт себя странно; повторить класс дефектов (race/lifecycle, leaks, security).
+
+## Выбор маршрута
+
+| Если хочу | Маршрут |
+| --- | --- |
+| Понять тему | [[panel-knowledge]] → [[panel-crystal-vault]] → [[panel-junction]] → [[panel-synthesis]] → [[panel-knowledge-generator]] |
+| Изучить проблему глубже | [[panel-research-engine]] → [[panel-hypothesis-generator]] → [[panel-research-reports]] |
+| Проверить идею | [[panel-hypothesis-generator]] или дебаты |
+| Убедиться, что система здоровa | [[audit-methodology]] + класс дефектов |
+
+## Общие принципы
+
+- Начинай с **вопроса**, а не с панели.
+- Сохраняй **происхождение** (источники, кристаллы, аргументы) — это делает выводы проверяемыми.
+- Выполняй **один цикл за раз**, не переключайся на «просто посмотреть другие панели».`,
+    },
+    {
         slug: 'panel-exceptions',
         title: 'Панель: Исключения (вето)',
         section: 'panels',

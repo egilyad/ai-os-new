@@ -3,22 +3,22 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 1402,
-    "edges": 3673,
+    "nodes": 1404,
+    "edges": 3680,
     "byType": {
       "audit": 75,
-      "code": 595,
+      "code": 596,
       "test": 198,
       "panel": 263,
-      "article": 271
+      "article": 272
     },
     "byKind": {
       "audit_test": 336,
       "audit_mention": 929,
       "documents": 202,
-      "source": 870,
+      "source": 872,
       "test": 293,
-      "related": 1043
+      "related": 1048
     }
   },
   "nodes": [
@@ -1016,6 +1016,11 @@
       "id": "file:src/components/DashboardPanel/DashboardPanel.tsx",
       "type": "code",
       "label": "src/components/DashboardPanel/DashboardPanel.tsx"
+    },
+    {
+      "id": "file:src/components/DashboardPanel/WelcomePanel.tsx",
+      "type": "code",
+      "label": "src/components/DashboardPanel/WelcomePanel.tsx"
     },
     {
       "id": "file:src/components/DebateAnalysisPanel/",
@@ -7394,6 +7399,13 @@
       "type": "article",
       "label": "Разработчикам: структура и ворота",
       "section": "dev",
+      "status": "verified"
+    },
+    {
+      "id": "wiki:guide-work-modes",
+      "type": "article",
+      "label": "Режимы работы с информацией",
+      "section": "guide",
       "status": "verified"
     },
     {
@@ -23000,6 +23012,41 @@
     {
       "from": "wiki:for-developers",
       "to": "wiki:dev-overview",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:guide-work-modes",
+      "to": "file:src/components/DashboardPanel/WelcomePanel.tsx",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:guide-work-modes",
+      "to": "file:src/components/",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:guide-work-modes",
+      "to": "wiki:audit-methodology",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:guide-work-modes",
+      "to": "wiki:idea-path",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:guide-work-modes",
+      "to": "wiki:panel-knowledge",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:guide-work-modes",
+      "to": "wiki:panel-research-engine",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:guide-work-modes",
+      "to": "wiki:scenario-map",
       "kind": "related"
     },
     {

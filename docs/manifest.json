@@ -5,7 +5,7 @@
     {
       "id": "guide",
       "title": "Руководство",
-      "articles": 8
+      "articles": 9
     },
     {
       "id": "panels",
@@ -2436,6 +2436,35 @@
       "related": [
         "panel-rival-labs",
         "panel-debate-system-research"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:guide-work-modes",
+      "type": "article",
+      "slug": "guide-work-modes",
+      "title": "Режимы работы с информацией",
+      "section": "guide",
+      "status": "verified",
+      "tags": [
+        "руководство",
+        "режимы",
+        "знания",
+        "исследование",
+        "аудит",
+        "шпаргалка"
+      ],
+      "sources": [
+        "src/components/DashboardPanel/WelcomePanel.tsx",
+        "src/components/"
+      ],
+      "related": [
+        "idea-path",
+        "scenario-map",
+        "panel-knowledge",
+        "panel-research-engine",
+        "audit-methodology"
       ],
       "reviewed": null,
       "tests": []

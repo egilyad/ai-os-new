@@ -389,6 +389,24 @@ const WelcomePanel: React.FC<WelcomePanelProps> = ({ onNavigate }) => {
                 </div>
             </div>
 
+            <div
+                style={{
+                    padding: '1rem 1.25rem',
+                    borderRadius: 14,
+                    border: '1px solid rgba(59,130,246,0.2)',
+                    background: 'rgba(59,130,246,0.06)',
+                }}
+            >
+                <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--slate-200)', marginBottom: '0.5rem' }}>
+                    🔀 Режимы работы — выбери под вопрос
+                </div>
+                <div style={{ fontSize: '0.82rem', color: 'var(--slate-400)', lineHeight: 1.7 }}>
+                    <b>Понять тему</b> → конвейер знаний (5 шагов выше). · <b>Изучить новое</b> →{' '}
+                    Research Engine + Hypothesis Generator + Reports. · <b>Система странно ведёт себя</b>{' '}
+                    → аудиты (классы дефектов).
+                </div>
+            </div>
+
             {GROUPS.map((g) => (
                 <div key={g.label}>
                     <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--slate-400)', marginBottom: '0.6rem' }}>
