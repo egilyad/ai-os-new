@@ -10,6 +10,13 @@
 import type { Phase } from './helpers';
 import { rootLogger } from '../services/logger-service';
 const LOGGER = rootLogger.child('Phase3DebateRuntime');
+// Lazy services were loaded via require() (CJS), which throws in the browser
+// ESM build ("require is not defined"). Use static imports instead.
+import { WeightedJudgeEvaluator } from '../services/council/weighted-judge-evaluator';
+import { CouncilAwareEvaluator } from '../services/council/council-aware-evaluator';
+import { CrossDebateMemoryService } from '../services/debate-runtime/cross-debate-memory';
+import { DebateBreakpointService } from '../services/debate-runtime/debate-breakpoint-service';
+import { DebateQualityBenchmarkService } from '../services/debate-runtime/debate-quality-benchmark';
 import type { IEventBus, IDatabaseService } from '../types/interfaces';
 import type { IExecutionGovernor } from '../contracts/execution-governor';
 import type { StorageLayer, DebateStore } from '../contracts/storage/storage-layer';
@@ -246,7 +253,6 @@ export const registerPhase3: Phase = (helpers, ctx) => {
     }));
     // D4.4a: WeightedJudge for councilMode — persistent via keyValue CAS + Timeline + snapshot (no new table)
     register('weightedJudgeEvaluator', (c) => {
-        const { WeightedJudgeEvaluator } = require('../services/council/weighted-judge-evaluator') as typeof import('../services/council/weighted-judge-evaluator');
         const database = c.has('database') ? c.get<import('../services/database-service').DatabaseService>('database') : undefined;
         const eventBus = c.has('eventBus') ? c.get<IEventBus>('eventBus') : undefined;
         return new WeightedJudgeEvaluator({ database, eventBus });
@@ -568,7 +574,6 @@ export const registerPhase3: Phase = (helpers, ctx) => {
         try {
             const standard = c.get<import('../services/debate-runtime/debate-evaluator').DebateEvaluator>('debateEvaluator');
             const weighted = c.get<import('../services/council/weighted-judge-evaluator').WeightedJudgeEvaluator>('weightedJudgeEvaluator');
-            const { CouncilAwareEvaluator } = require('../services/council/council-aware-evaluator') as typeof import('../services/council/council-aware-evaluator');
             councilAwareEvaluator = new CouncilAwareEvaluator(standard, weighted, (sid: string) => {
                 try { return engineRef?.getSession(sid) as unknown as { topology?: { nodes?: Array<{ config?: Record<string, unknown> }> } }; } catch { return undefined; }
             });
@@ -773,7 +778,6 @@ export const registerPhase3: Phase = (helpers, ctx) => {
     // --- Debate Enhancement services (#2 Cross-debate memory, #3 Breakpoints, #4 Quality benchmarks) ---
 
     register('crossDebateMemory', (c) => {
-        const { CrossDebateMemoryService } = require('../services/debate-runtime/cross-debate-memory');
         return new CrossDebateMemoryService({
             eventBus: c.get<IEventBus>('eventBus'),
             store: storageLayer,
@@ -781,14 +785,12 @@ export const registerPhase3: Phase = (helpers, ctx) => {
     });
 
     register('debateBreakpointService', (c) => {
-        const { DebateBreakpointService } = require('../services/debate-runtime/debate-breakpoint-service');
         return new DebateBreakpointService({
             eventBus: c.get<IEventBus>('eventBus'),
         });
     });
 
     register('debateQualityBenchmark', (c) => {
-        const { DebateQualityBenchmarkService } = require('../services/debate-runtime/debate-quality-benchmark');
         return new DebateQualityBenchmarkService({
             eventBus: c.get<IEventBus>('eventBus'),
             store: storageLayer,
