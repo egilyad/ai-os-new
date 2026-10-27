@@ -4,8 +4,9 @@ import { tokens } from '../../styles/tokens';
 import { useTranslation } from '../../i18n/useTranslation';
 import { MarkdownRenderer } from '../ChatPanel/MarkdownRenderer';
 import { KnowledgeGraphView, type GraphViewData } from '../viz/KnowledgeGraphView';
+import { WIKI_ARTICLES } from '../WikiPanel/wiki-articles';
 import type { IWikiBrainService } from '../../kernel/contracts/wiki-brain';
-import type { TWikiPage } from '../../kernel/contracts/wiki-brain';
+import type { TWikiPage, TWikiPageFrontmatter } from '../../kernel/contracts/wiki-brain';
 
 interface Stats {
     pages: number;
@@ -152,6 +153,97 @@ export default function WikiBrainPanel() {
     useEffect(() => {
         void load();
     }, [load]);
+
+    // Auto-fill Wiki Brain from the built-in wiki corpus on first open (empty store).
+    useEffect(() => {
+        let alive = true;
+        void (async () => {
+            try {
+                const brain = getContainer().get<IWikiBrainService>('wikiBrainService');
+                const store = brain.store;
+                const pages = await store.listPages({ limit: 1 });
+                if (!alive) return;
+                if (pages.length === 0) {
+                    await syncFromBuiltinWiki();
+                }
+            } catch {
+                /* store may be unavailable — ignore */
+            }
+        })();
+        return () => {
+            alive = false;
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    const typeFromSection = (section: string): TWikiPageFrontmatter['type'] => {
+        switch (section) {
+            case 'guide':
+                return 'overview';
+            case 'architecture':
+                return 'overview';
+            case 'memory':
+                return 'concept';
+            case 'providers':
+                return 'concept';
+            case 'panels':
+                return 'curated';
+            case 'dev':
+                return 'curated';
+            default:
+                return 'concept';
+        }
+    };
+
+    const syncFromBuiltinWiki = async () => {
+        setBusy(true);
+        setMessage('');
+        try {
+            const brain = getContainer().get<IWikiBrainService>('wikiBrainService');
+            const store = brain.store;
+            const now = new Date().toISOString();
+            const pages: TWikiPage[] = [];
+            let skipped = 0;
+
+            for (const a of WIKI_ARTICLES) {
+                const existing = await store.getPageBySlug(a.slug);
+                if (existing) {
+                    skipped += 1;
+                    continue;
+                }
+                pages.push({
+                    id: `wiki-${a.slug}`,
+                    slug: a.slug,
+                    frontmatter: {
+                        slug: a.slug,
+                        title: a.title,
+                        type: typeFromSection(a.section),
+                        sources: [],
+                        aliases: [],
+                        tags: a.tags ?? [],
+                        language: 'ru',
+                        createdAt: now,
+                        updatedAt: now,
+                        reviewState: 'auto',
+                        graphIn: 0,
+                        graphOut: 0,
+                    },
+                    body: a.body ?? '',
+                    sha256: `wiki-${a.slug}`,
+                    rawMarkdown: `# ${a.title}\n\n${a.body ?? ''}`,
+                });
+            }
+
+            if (pages.length > 0) await store.bulkPutPages(pages);
+            setMessage(`${t('wiki.sync_builtin_msg', { count: pages.length })} (пропущено: ${skipped})`);
+            await load();
+        } catch (error) {
+            const message = error instanceof Error ? error.message : String(error);
+            setMessage(t('wiki.error_msg', { message }));
+        } finally {
+            setBusy(false);
+        }
+    };
 
     const seedDemo = async () => {
         setBusy(true);
@@ -406,8 +498,25 @@ export default function WikiBrainPanel() {
                         }}
                         disabled={busy}
                         onClick={seedDemo}
+                        title="Добавить несколько примеров статей"
                     >
-                        🎲 Демо-засев
+                        🎲 Демо
+                    </button>
+                    <button
+                        style={{
+                            background: tokens.accent,
+                            color: tokens.slate[950],
+                            border: 'none',
+                            borderRadius: 8,
+                            padding: '8px 14px',
+                            fontWeight: 700,
+                            cursor: busy ? 'default' : 'pointer',
+                        }}
+                        disabled={busy}
+                        onClick={syncFromBuiltinWiki}
+                        title="Импортировать все встроенные статьи вики (docs/wiki) в Wiki Brain"
+                    >
+                        ⬇ Синхронизировать из вики
                     </button>
                 </div>
                 {message && <div style={{ marginTop: 8, fontSize: 13, color: tokens.slate[400] }}>{message}</div>}
