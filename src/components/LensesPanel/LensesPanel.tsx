@@ -7,15 +7,17 @@ import type { ValidationResult } from '../../kernel/contracts/lens-engine';
 import LensSelector from './LensSelector';
 import LensStackVisualizer from './LensStackVisualizer';
 import LensEditorModal from './LensEditorModal';
+import { loadActiveLensIds, saveActiveLensIds } from './lens-stack-store';
 
 const LensesPanel: React.FC = () => {
     const { t } = useTranslation();
     const [lenses, setLenses] = useState<Lens[]>([]);
-    const [stack, setStack] = useState<string[]>([]);
+    const [stack, setStack] = useState<string[]>(() => loadActiveLensIds());
     const [validation, setValidation] = useState<ValidationResult | undefined>();
     const [showEditor, setShowEditor] = useState(false);
     const [editingLens, setEditingLens] = useState<Lens | undefined>();
     const [suggestions, setSuggestions] = useState<{ lensId: string; confidence: number }[]>([]);
+    const [taskContext, setTaskContext] = useState('');
 
     const refresh = useCallback(() => {
         const list = lensEngine.listLenses();
@@ -25,6 +27,10 @@ const LensesPanel: React.FC = () => {
     useEffect(() => {
         refresh();
     }, [refresh]);
+
+    useEffect(() => {
+        saveActiveLensIds(stack);
+    }, [stack]);
 
     const validate = useCallback((ids: string[]) => {
         const result = lensEngine.validateStack(ids);
@@ -54,7 +60,7 @@ const LensesPanel: React.FC = () => {
         const s = lensEngine.suggestLenses(
             {
                 roleSystemPrompt: '',
-                userPrompt: '',
+                userPrompt: taskContext,
             },
             {
                 id: 'lens-suggester',
@@ -229,11 +235,65 @@ const LensesPanel: React.FC = () => {
                         )}
                     </div>
 
+                    <div
+                        style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: 4,
+                            marginBottom: '0.6rem',
+                        }}
+                    >
+                        <label
+                            style={{
+                                fontSize: '0.7rem',
+                                fontWeight: 700,
+                                textTransform: 'uppercase',
+                                letterSpacing: 0.5,
+                                color: 'var(--slate-500)',
+                            }}
+                        >
+                            {t('lenses.context') ?? 'Контекст задачи'}
+                        </label>
+                        <textarea
+                            value={taskContext}
+                            onChange={(e) => setTaskContext(e.target.value)}
+                            rows={2}
+                            placeholder={t('lenses.context_placeholder') ?? 'Например: оценить риск внедрения нового провайдера LLM'}
+                            aria-label={t('lenses.context') ?? 'Контекст задачи'}
+                            style={{
+                                width: '100%',
+                                padding: '0.4rem 0.5rem',
+                                borderRadius: 8,
+                                border: '1px solid rgba(255,255,255,0.1)',
+                                background: 'rgba(0,0,0,0.3)',
+                                color: 'var(--slate-200)',
+                                fontSize: '0.75rem',
+                                resize: 'vertical',
+                            }}
+                        />
+                    </div>
+
                     <LensStackVisualizer
                         stack={stackLenses}
                         validation={validation}
                         onRemove={handleRemove}
                     />
+
+                    {stack.length > 0 && (
+                        <div
+                            style={{
+                                marginTop: '0.6rem',
+                                padding: '0.4rem 0.6rem',
+                                borderRadius: 8,
+                                background: 'rgba(139,92,246,0.08)',
+                                border: '1px solid rgba(139,92,246,0.15)',
+                                fontSize: '0.7rem',
+                                color: 'var(--slate-400)',
+                            }}
+                        >
+                            {t('lenses.used_in') ?? 'Применяется в:'} ассистент · чат · синтез · генератор знаний
+                        </div>
+                    )}
 
                     {suggestions.length > 0 && (
                         <div style={{ marginTop: '0.75rem' }}>

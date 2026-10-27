@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { Mic, MicOff, Send, Square, Volume2, VolumeX, Trash2, Loader2, ShieldCheck, BookOpen } from 'lucide-react';
 import { useAssistantStore, type AssistantMessage } from '../../stores/assistant-store';
 import { useKeyStore } from '../../stores/useKeyStore';
+import { buildLensGuidance } from '../LensesPanel/lens-guidance';
+import { loadActiveLensIds } from '../LensesPanel/lens-stack-store';
 import {
     assistantNavigationService,
     capabilityTrustService,
@@ -137,7 +139,8 @@ const AssistantPanel: React.FC = () => {
             if (!trimmed) return;
             stopSpeaking();
             setInput('');
-            void send(trimmed);
+            const guidance = buildLensGuidance(loadActiveLensIds());
+            void send(guidance ? `${trimmed}\n\n${guidance}` : trimmed);
         },
         [send, stopSpeaking],
     );

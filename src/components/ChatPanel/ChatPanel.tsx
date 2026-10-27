@@ -11,6 +11,8 @@ import { resolveSessionStore } from '../../stores/chat/store-helpers';
 import { useUiPreferences } from '../../stores/uiPreferencesStore';
 import MessageSearchPanel from '../MessageSearchPanel';
 import { useTranslation } from '../../i18n/useTranslation';
+import { buildLensGuidance } from '../LensesPanel/lens-guidance';
+import { loadActiveLensIds } from '../LensesPanel/lens-stack-store';
 import ChatSidebar from './ChatSidebar';
 import ChatInputArea from './ChatInputArea';
 import ChatHeader from './ChatHeader';
@@ -212,6 +214,8 @@ const setSessions = useChatStore((s) => s.setSessions);
     const handleSend = useCallback(
         (text: string) => {
             // M-07: return the promise so the input can restore text on failure.
+            const guidance = buildLensGuidance(loadActiveLensIds());
+            const finalText = guidance ? `${text}\n\n${guidance}` : text;
             return sendMessage(
                 selectedKeys.map((id) => ({
                     provider: 'auto',
@@ -219,7 +223,7 @@ const setSessions = useChatStore((s) => s.setSessions);
                     keyId: id,
                     ...(currentAgentId ? { agentId: currentAgentId } : {}),
                 })),
-                text,
+                finalText,
             );
         },
         [sendMessage, selectedKeys, selectedModel, selectedModelPerKey, currentAgentId],
@@ -265,6 +269,7 @@ const setSessions = useChatStore((s) => s.setSessions);
                 .sessions.find((s) => s.id === useChatStore.getState().activeSessionId)
                 ?.history?.find((e) => e.id === entryId);
             const originalText = entry?.text || '';
+            const guidance = buildLensGuidance(loadActiveLensIds());
             sendMessage(
                 selectedKeys.map((id) => ({
                     provider: 'auto',
@@ -272,7 +277,7 @@ const setSessions = useChatStore((s) => s.setSessions);
                     keyId: id,
                     ...(currentAgentId ? { agentId: currentAgentId } : {}),
                 })),
-                originalText,
+                guidance ? `${originalText}\n\n${guidance}` : originalText,
             );
         },
         [sendMessage, selectedKeys, selectedModel, selectedModelPerKey, currentAgentId],
