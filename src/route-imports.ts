@@ -150,6 +150,7 @@ const QualityImpactDashboardLazy = React.lazy(
     () => import('./components/QualityImpactDashboard/QualityImpactDashboardPanel'),
 );
 const LensesPanelLazy = React.lazy(() => import('./components/LensesPanel/LensesPanel'));
+const ExceptionsPanelLazy = React.lazy(() => import('./components/ExceptionsPanel/ExceptionsPanel'));
 const CrystalVaultPanelLazy = React.lazy(
     () => import('./components/CrystalVaultPanel/CrystalVaultPanel'),
 );
@@ -392,6 +393,7 @@ export const PANEL_COMPONENTS: Record<string, React.ComponentType<any>> = {
     'debate-quality': DebateQualityPanelLazy,
     'quality-impact': QualityImpactDashboardLazy,
     lenses: LensesPanelLazy,
+    exceptions: ExceptionsPanelLazy,
     crystals: CrystalVaultPanelLazy,
     junctions: JunctionPanelLazy,
     synthesis: SynthesisPanelLazy,

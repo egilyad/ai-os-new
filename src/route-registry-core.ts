@@ -49,6 +49,14 @@ export const CORE_SECTIONS: NavSection[] = [
                 experimental: true,
             },
             {
+                id: 'exceptions',
+                labelKey: 'nav.exceptions',
+                icon: Icons.shieldOff,
+                color: '#ef4444',
+                lazy: true,
+                experimental: true,
+            },
+            {
                 id: 'crystals',
                 labelKey: 'nav.crystals',
                 icon: Icons.gem,

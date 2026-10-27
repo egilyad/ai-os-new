@@ -6998,6 +6998,16 @@
       "status": "live"
     },
     {
+      "id": "panel:exceptions",
+      "type": "panel",
+      "panelId": "exceptions",
+      "section": "dashboard",
+      "route": "/exceptions",
+      "component": "src/components/ExceptionsPanel/ExceptionsPanel",
+      "article": null,
+      "status": "live"
+    },
+    {
       "id": "panel:crystals",
       "type": "panel",
       "panelId": "crystals",

@@ -123,6 +123,7 @@ const nav: Record<string, string> = {
     'nav.project_os_explorer': 'Project OS Explorer',
     'nav.hypothesis_generator': 'Hypothesis Generator',
     'nav.lenses': 'Cognitive Lenses',
+    'nav.exceptions': 'Exceptions (veto)',
     'nav.crystals': 'Crystal Vault',
     'nav.junctions': 'Junction Engine',
     'nav.synthesis': 'Synthesis Engine',

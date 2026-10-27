@@ -13,6 +13,7 @@ import MessageSearchPanel from '../MessageSearchPanel';
 import { useTranslation } from '../../i18n/useTranslation';
 import { buildLensGuidance } from '../LensesPanel/lens-guidance';
 import { loadActiveLensIds } from '../LensesPanel/lens-stack-store';
+import { buildExceptionVeto } from '../ExceptionsPanel/exception-veto';
 import ChatSidebar from './ChatSidebar';
 import ChatInputArea from './ChatInputArea';
 import ChatHeader from './ChatHeader';
@@ -215,7 +216,9 @@ const setSessions = useChatStore((s) => s.setSessions);
         (text: string) => {
             // M-07: return the promise so the input can restore text on failure.
             const guidance = buildLensGuidance(loadActiveLensIds());
-            const finalText = guidance ? `${text}\n\n${guidance}` : text;
+            const veto = buildExceptionVeto();
+            const extra = [guidance, veto].filter(Boolean).join('\n\n');
+            const finalText = extra ? `${text}\n\n${extra}` : text;
             return sendMessage(
                 selectedKeys.map((id) => ({
                     provider: 'auto',
@@ -270,6 +273,8 @@ const setSessions = useChatStore((s) => s.setSessions);
                 ?.history?.find((e) => e.id === entryId);
             const originalText = entry?.text || '';
             const guidance = buildLensGuidance(loadActiveLensIds());
+            const veto = buildExceptionVeto();
+            const extra = [guidance, veto].filter(Boolean).join('\n\n');
             sendMessage(
                 selectedKeys.map((id) => ({
                     provider: 'auto',
@@ -277,7 +282,7 @@ const setSessions = useChatStore((s) => s.setSessions);
                     keyId: id,
                     ...(currentAgentId ? { agentId: currentAgentId } : {}),
                 })),
-                guidance ? `${originalText}\n\n${guidance}` : originalText,
+                extra ? `${originalText}\n\n${extra}` : originalText,
             );
         },
         [sendMessage, selectedKeys, selectedModel, selectedModelPerKey, currentAgentId],

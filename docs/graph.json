@@ -3,13 +3,13 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 1337,
+    "nodes": 1338,
     "edges": 3484,
     "byType": {
       "audit": 75,
       "code": 565,
       "test": 196,
-      "panel": 262,
+      "panel": 263,
       "article": 239
     },
     "byKind": {
@@ -5023,6 +5023,13 @@
       "label": "evidence-triangulation",
       "section": "techniques",
       "route": "/evidence-triangulation"
+    },
+    {
+      "id": "panel:exceptions",
+      "type": "panel",
+      "label": "exceptions",
+      "section": "dashboard",
+      "route": "/exceptions"
     },
     {
       "id": "panel:executable-evidence",

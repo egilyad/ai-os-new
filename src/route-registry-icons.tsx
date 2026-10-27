@@ -73,6 +73,7 @@ import {
     Lightbulb,
     MessagesSquare,
     Clapperboard,
+    ShieldOff,
 } from 'lucide-react';
 
 const s = 18;
@@ -122,6 +123,7 @@ export const Icons = {
     search: <SearchIcon size={s} />,
     flaskConical: <FlaskConical size={s} />,
     shield: <Shield size={s} />,
+    shieldOff: <ShieldOff size={s} />,
     clipboardList: <ClipboardList size={s} />,
     wrench: <Wrench size={s} />,
     hardDrive: <HardDrive size={s} />,

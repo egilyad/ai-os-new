@@ -5,6 +5,7 @@ import { useAssistantStore, type AssistantMessage } from '../../stores/assistant
 import { useKeyStore } from '../../stores/useKeyStore';
 import { buildLensGuidance } from '../LensesPanel/lens-guidance';
 import { loadActiveLensIds } from '../LensesPanel/lens-stack-store';
+import { buildExceptionVeto } from '../ExceptionsPanel/exception-veto';
 import {
     assistantNavigationService,
     capabilityTrustService,
@@ -140,7 +141,9 @@ const AssistantPanel: React.FC = () => {
             stopSpeaking();
             setInput('');
             const guidance = buildLensGuidance(loadActiveLensIds());
-            void send(guidance ? `${trimmed}\n\n${guidance}` : trimmed);
+            const veto = buildExceptionVeto();
+            const extra = [guidance, veto].filter(Boolean).join('\n\n');
+            void send(extra ? `${trimmed}\n\n${extra}` : trimmed);
         },
         [send, stopSpeaking],
     );

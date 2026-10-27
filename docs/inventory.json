@@ -7437,7 +7437,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4075,
-      "hash": "ce8318d84b86dd507942b0e1d3ee4c0e3e2c9eca"
+      "hash": "788cbd0778a00ad26392200963d2f8f4d5fa72f3"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -7741,7 +7741,7 @@
       "language": "mixed",
       "title": "Карта документации",
       "bytes": 33169,
-      "hash": "e959f09d3c99d16a0a34e1e2e13fd354c3b5c48d"
+      "hash": "d9547c63885c552b9bba9d552b9e523a7a03b522"
     },
     {
       "path": "docs/wiki/docs-standard.md",
@@ -8404,8 +8404,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Каталог панелей: раздел → маршрут → компонент → статья",
-      "bytes": 52584,
-      "hash": "271e3f6c0117c6cf9f6981d2183cc326b41ad7fa"
+      "bytes": 52857,
+      "hash": "be9a1a33172ba888675c46d3a7cf40b736ce3de8"
     },
     {
       "path": "docs/wiki/panels-guide.md",

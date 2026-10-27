@@ -123,6 +123,7 @@ const nav: Record<string, string> = {
     'nav.project_os_explorer': 'проводник Project OS',
     'nav.hypothesis_generator': 'Генератор гипотез',
     'nav.lenses': 'Когнитивные линзы',
+    'nav.exceptions': 'Исключения (вето)',
     'nav.crystals': 'Хранилище кристаллов',
     'nav.junctions': 'Движок связей',
     'nav.synthesis': 'Движок синтеза',
