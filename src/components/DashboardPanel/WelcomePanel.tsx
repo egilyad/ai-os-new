@@ -228,6 +228,53 @@ const GROUPS: CardGroup[] = [
         ],
     },
     {
+        label: '🧩 Графы (интерактивные)',
+        cards: [
+            {
+                id: 'memory-center',
+                emoji: '🧠',
+                title: 'Memory Center',
+                text: 'Карта всей памяти системы: категории, источники, записей — интерактивный граф.',
+            },
+            {
+                id: 'knowledge',
+                emoji: '🕸️',
+                title: 'Граф знаний',
+                text: 'Связи между воспоминаниями и сущностями — зум, панорамирование, клик.',
+            },
+            {
+                id: 'architecture-map',
+                emoji: '🏗️',
+                title: 'Архитектура',
+                text: 'Зависимости сервисов из живого DI-контейнера — граф системы.',
+            },
+            {
+                id: 'dependency-map',
+                emoji: '🔗',
+                title: 'Зависимости',
+                text: 'Граф зависимостей сервисов с impact-анализом при клике.',
+            },
+            {
+                id: 'argument-graph',
+                emoji: '⚔️',
+                title: 'Аргументы дебатов',
+                text: 'Граф аргументов: supports/challenges/refines/contradiction, клик по узлу.',
+            },
+            {
+                id: 'junctions',
+                emoji: '🌉',
+                title: 'Junction',
+                text: 'Граф пересечений между источниками знаний (кристаллы + дебаты).',
+            },
+            {
+                id: 'debugger',
+                emoji: '📈',
+                title: 'Трассы (DecisionGraph)',
+                text: 'Когнитивные шаги — DAG с типами маршрутов и кликом по узлу.',
+            },
+        ],
+    },
+    {
         label: 'Управление и безопасность',
         cards: [
             {
