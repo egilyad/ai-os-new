@@ -7,6 +7,8 @@ interface ExportSection {
     icon: string;
     exportData: () => Promise<Record<string, unknown>>;
     importData: (data: Record<string, unknown>) => Promise<string>;
+    /** When false, import is a documented no-op (not yet wired) — surfaced as a warning, not a success. */
+    importSupported?: boolean;
 }
 
 function makeSection(
@@ -15,8 +17,9 @@ function makeSection(
     icon: string,
     exportFn: () => Promise<Record<string, unknown>>,
     importFn: (data: Record<string, unknown>) => Promise<string>,
+    importSupported = true,
 ): ExportSection {
-    return { id, label, icon, exportData: exportFn, importData: importFn };
+    return { id, label, icon, exportData: exportFn, importData: importFn, importSupported };
 }
 
 function loadServices() {
@@ -99,6 +102,7 @@ const ExportImportPanel: React.FC = () => {
                 async () => {
                     return 'Config import requires manual reconciliation. Use Settings panel.';
                 },
+                false,
             ),
             makeSection(
                 'settings',
@@ -139,6 +143,7 @@ const ExportImportPanel: React.FC = () => {
                     };
                 },
                 async () => 'Debate import not supported yet',
+                false,
             ),
             makeSection(
                 'prompts',
@@ -153,6 +158,7 @@ const ExportImportPanel: React.FC = () => {
                     return { prompts: [] };
                 },
                 async () => 'Prompt import not supported yet',
+                false,
             ),
             makeSection(
                 'workflows',
@@ -167,6 +173,7 @@ const ExportImportPanel: React.FC = () => {
                     return { workflows: [] };
                 },
                 async () => 'Workflow import not supported yet',
+                false,
             ),
             makeSection(
                 'topologies',
@@ -178,6 +185,7 @@ const ExportImportPanel: React.FC = () => {
                     return { topologies: active ? [JSON.parse(JSON.stringify(active))] : [] };
                 },
                 async () => 'Topology import not supported yet',
+                false,
             ),
         ],
         [],
@@ -264,23 +272,36 @@ const ExportImportPanel: React.FC = () => {
     const handleImport = useCallback(async () => {
         if (!importJson) return;
         setResult(null);
-        const results: string[] = [];
+        const imported: string[] = [];
+        const unsupported: string[] = [];
+        const failed: string[] = [];
         for (const section of sections) {
             const sectionData = importJson[section.id] as Record<string, unknown> | undefined;
-            if (sectionData) {
-                try {
-                    const msg = await section.importData(sectionData);
-                    results.push(`${section.label}: ${msg}`);
-                } catch (e) {
-                    results.push(
-                        `${section.label}: Failed — ${e instanceof Error ? e.message : 'Error'}`,
-                    );
-                }
+            if (!sectionData) continue;
+            if (section.importSupported === false) {
+                unsupported.push(section.label);
+                continue;
+            }
+            try {
+                const msg = await section.importData(sectionData);
+                imported.push(`${section.label}: ${msg}`);
+            } catch (e) {
+                failed.push(
+                    `${section.label}: Failed — ${e instanceof Error ? e.message : 'Error'}`,
+                );
             }
         }
+        const lines = [
+            ...imported,
+            ...unsupported.map((label) => `${label}: не поддерживается (пропущено)`),
+            ...failed,
+        ];
+        const anyRealWork = imported.length > 0;
         setResult({
-            ok: true,
-            msg: `Import finished:\n${results.join('\n')}`,
+            ok: anyRealWork && failed.length === 0,
+            msg:
+                `Import finished (${imported.length} ok, ${unsupported.length} skipped, ${failed.length} failed):\n` +
+                lines.join('\n'),
         });
         setImportFile(null);
         setImportJson(null);
