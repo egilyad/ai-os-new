@@ -3,22 +3,22 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 1329,
-    "edges": 3453,
+    "nodes": 1337,
+    "edges": 3484,
     "byType": {
       "audit": 75,
-      "code": 561,
-      "test": 195,
+      "code": 565,
+      "test": 196,
       "panel": 262,
-      "article": 236
+      "article": 239
     },
     "byKind": {
       "audit_test": 336,
       "audit_mention": 929,
       "documents": 202,
-      "source": 777,
-      "test": 281,
-      "related": 928
+      "source": 789,
+      "test": 287,
+      "related": 941
     }
   },
   "nodes": [
@@ -2558,6 +2558,16 @@
       "label": "src/kernel/services/debate-runtime/debate-budget.ts"
     },
     {
+      "id": "file:src/kernel/services/debate-runtime/debate-conclusion-engine.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/debate-runtime/debate-conclusion-engine.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/debate-runtime/debate-conclusion-engine.ts",
+      "type": "code",
+      "label": "src/kernel/services/debate-runtime/debate-conclusion-engine.ts"
+    },
+    {
       "id": "file:src/kernel/services/debate-runtime/debate-consensus.test.ts",
       "type": "test",
       "label": "src/kernel/services/debate-runtime/debate-consensus.test.ts"
@@ -2933,6 +2943,11 @@
       "label": "src/kernel/services/lens-engine/lens-engine-service.ts"
     },
     {
+      "id": "file:src/kernel/services/lens-engine/lens-library.ts",
+      "type": "code",
+      "label": "src/kernel/services/lens-engine/lens-library.ts"
+    },
+    {
       "id": "file:src/kernel/services/llm-bridge/llm-task-executor.ts",
       "type": "code",
       "label": "src/kernel/services/llm-bridge/llm-task-executor.ts"
@@ -3156,6 +3171,11 @@
       "id": "file:src/kernel/services/orchestration-service.ts",
       "type": "code",
       "label": "src/kernel/services/orchestration-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/parity/browser-use-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/parity/browser-use-service.ts"
     },
     {
       "id": "file:src/kernel/services/parity/default-embedding-service.ts",
@@ -3706,6 +3726,11 @@
       "id": "file:src/kernel/services/virtual-key-service.ts",
       "type": "code",
       "label": "src/kernel/services/virtual-key-service.ts"
+    },
+    {
+      "id": "file:src/kernel/types/lens-types.ts",
+      "type": "code",
+      "label": "src/kernel/types/lens-types.ts"
     },
     {
       "id": "file:src/kernel/utils/compute-memory-id.test.ts",
@@ -6708,6 +6733,13 @@
       "status": "documented"
     },
     {
+      "id": "wiki:computer-browser-use",
+      "type": "article",
+      "label": "Computer & Browser Use: как управлять компьютером через агентов",
+      "section": "guide",
+      "status": "documented"
+    },
+    {
       "id": "wiki:coverage-matrix",
       "type": "article",
       "label": "Матрица покрытия",
@@ -7366,6 +7398,13 @@
       "status": "verified"
     },
     {
+      "id": "wiki:panel-lenses",
+      "type": "article",
+      "label": "Панель: Линзы",
+      "section": "panels",
+      "status": "verified"
+    },
+    {
       "id": "wiki:panel-lenses-crystals",
       "type": "article",
       "label": "Панели: Линзы и кристаллы",
@@ -7616,6 +7655,13 @@
       "label": "Планы и направления",
       "section": "notes",
       "status": "needs-check"
+    },
+    {
+      "id": "wiki:scenario-map",
+      "type": "article",
+      "label": "Карта сценариев: проверенные пути выполнения",
+      "section": "guide",
+      "status": "documented"
     },
     {
       "id": "wiki:scenarios",
@@ -20176,6 +20222,51 @@
       "kind": "related"
     },
     {
+      "from": "wiki:computer-browser-use",
+      "to": "file:src/components/AgentTasksPanel/AgentTasksPanel.test.tsx",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:computer-browser-use",
+      "to": "file:src/components/AgentTasksPanel/AgentTasksPanel.tsx",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:computer-browser-use",
+      "to": "file:src/kernel/services/computer/computer-use-loop-service.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:computer-browser-use",
+      "to": "file:src/kernel/services/computer/computer-use-loop-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:computer-browser-use",
+      "to": "file:src/kernel/services/parity/browser-use-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:computer-browser-use",
+      "to": "wiki:agents",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:computer-browser-use",
+      "to": "wiki:capabilities",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:computer-browser-use",
+      "to": "wiki:idea-path",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:computer-browser-use",
+      "to": "wiki:scenario-map",
+      "kind": "related"
+    },
+    {
       "from": "wiki:coverage-matrix",
       "to": "file:docs/manifest.json",
       "kind": "source"
@@ -23721,6 +23812,56 @@
       "kind": "related"
     },
     {
+      "from": "wiki:panel-lenses",
+      "to": "file:src/components/LensesPanel/LensesPanel.test.tsx",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:panel-lenses",
+      "to": "file:src/components/LensesPanel/LensesPanel.tsx",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:panel-lenses",
+      "to": "file:src/kernel/services/lens-engine/lens-engine-service.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:panel-lenses",
+      "to": "file:src/kernel/services/lens-engine/lens-engine-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:panel-lenses",
+      "to": "file:src/kernel/services/lens-engine/lens-library.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:panel-lenses",
+      "to": "file:src/kernel/types/lens-types.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:panel-lenses",
+      "to": "wiki:panel-debate-toolkit",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:panel-lenses",
+      "to": "wiki:panel-knowledge-generator",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:panel-lenses",
+      "to": "wiki:panel-lenses-crystals",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:panel-lenses",
+      "to": "wiki:panel-synthesis",
+      "kind": "related"
+    },
+    {
       "from": "wiki:panel-memory-extra",
       "to": "file:src/components/FederatedMemoryPanel.test.tsx",
       "kind": "test"
@@ -24882,6 +25023,66 @@
     },
     {
       "from": "wiki:roadmap-notes",
+      "to": "wiki:memory",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:scenario-map",
+      "to": "file:src/components/SimulationPanel/SimulationPanel.test.tsx",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:scenario-map",
+      "to": "file:src/components/SimulationPanel/SimulationPanel.tsx",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:scenario-map",
+      "to": "file:src/kernel/services/debate-runtime/debate-conclusion-engine.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:scenario-map",
+      "to": "file:src/kernel/services/debate-runtime/debate-conclusion-engine.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:scenario-map",
+      "to": "file:src/kernel/services/debate-runtime/debate-engine.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:scenario-map",
+      "to": "file:src/kernel/services/debate-runtime/debate-sync-manager.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:scenario-map",
+      "to": "file:src/stores/chat/chat-send-message.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:scenario-map",
+      "to": "wiki:agents",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:scenario-map",
+      "to": "wiki:capabilities",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:scenario-map",
+      "to": "wiki:debates",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:scenario-map",
+      "to": "wiki:idea-path",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:scenario-map",
       "to": "wiki:memory",
       "kind": "related"
     },

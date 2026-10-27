@@ -3,7 +3,7 @@
   "generatedBy": "scripts/gen-docs-inventory.mjs",
   "scope": "git-tracked markdown: docs/**/*.md (excluding docs/new drafts and the self-report pages docs-health, docs-inventory) plus repository entry docs (root *.md, .superagents/**, src/kernel/DEPENDENCY_MAP.md)",
   "totals": {
-    "documents": 1082,
+    "documents": 1084,
     "byCategory": {
       "repo": 13,
       "top": 47,
@@ -13,11 +13,11 @@
       "reference": 6,
       "roadmap": 17,
       "superseded": 3,
-      "wiki": 235
+      "wiki": 237
     },
     "byLanguage": {
       "en": 659,
-      "ru": 252,
+      "ru": 254,
       "mixed": 171
     }
   },
@@ -7392,6 +7392,14 @@
       "hash": "b65b80f7853af070ba7c07da304d1d01da52aef6"
     },
     {
+      "path": "docs/wiki/computer-browser-use.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Computer & Browser Use: как управлять компьютером через агентов",
+      "bytes": 4016,
+      "hash": "0c008f36287edd08d7e5fdcaecf435844ea5bdc4"
+    },
+    {
       "path": "docs/wiki/coverage-matrix.md",
       "category": "wiki",
       "language": "mixed",
@@ -8412,8 +8420,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Wiki SuperAgents OS",
-      "bytes": 24297,
-      "hash": "1a76704923a1a2a2a2e15fca377d6705eab3c0a0"
+      "bytes": 24631,
+      "hash": "917575fc49663f4801c0bb82e75201bb9da5a29d"
     },
     {
       "path": "docs/wiki/roadmap-notes.md",
@@ -8422,6 +8430,14 @@
       "title": "Планы и направления",
       "bytes": 1558,
       "hash": "8ecd0e635d7af6b7d89d3421dbf2c31492fa2384"
+    },
+    {
+      "path": "docs/wiki/scenario-map.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Карта сценариев: проверенные пути выполнения",
+      "bytes": 12310,
+      "hash": "89fd7effaa45109da06000a4efa5edbd8248ac94"
     },
     {
       "path": "docs/wiki/scenarios.md",

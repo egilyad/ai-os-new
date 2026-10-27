@@ -5,12 +5,12 @@
     {
       "id": "guide",
       "title": "Руководство",
-      "articles": 6
+      "articles": 8
     },
     {
       "id": "panels",
       "title": "Панели",
-      "articles": 76
+      "articles": 77
     },
     {
       "id": "agents",
@@ -126,6 +126,69 @@
         "src/components/DebatePanel/DebatePanel.test.tsx",
         "src/components/SimulationPanel/SimulationPanel.test.tsx",
         "src/components/KnowledgePanel/KnowledgePanel.test.tsx"
+      ]
+    },
+    {
+      "id": "wiki:scenario-map",
+      "type": "article",
+      "slug": "scenario-map",
+      "title": "Карта сценариев: проверенные пути выполнения",
+      "section": "guide",
+      "status": "documented",
+      "tags": [
+        "руководство",
+        "аудит",
+        "сценарии",
+        "проверка"
+      ],
+      "sources": [
+        "src/kernel/services/debate-runtime/debate-sync-manager.ts",
+        "src/kernel/services/debate-runtime/debate-engine.ts",
+        "src/kernel/services/debate-runtime/debate-conclusion-engine.ts",
+        "src/stores/chat/chat-send-message.ts",
+        "src/components/SimulationPanel/SimulationPanel.tsx"
+      ],
+      "related": [
+        "idea-path",
+        "capabilities",
+        "debates",
+        "memory",
+        "agents"
+      ],
+      "reviewed": null,
+      "tests": [
+        "src/kernel/services/debate-runtime/debate-conclusion-engine.test.ts",
+        "src/components/SimulationPanel/SimulationPanel.test.tsx"
+      ]
+    },
+    {
+      "id": "wiki:computer-browser-use",
+      "type": "article",
+      "slug": "computer-browser-use",
+      "title": "Computer & Browser Use: как управлять компьютером через агентов",
+      "section": "guide",
+      "status": "documented",
+      "tags": [
+        "руководство",
+        "computer-use",
+        "browser-use",
+        "автоматизация"
+      ],
+      "sources": [
+        "src/components/AgentTasksPanel/AgentTasksPanel.tsx",
+        "src/kernel/services/computer/computer-use-loop-service.ts",
+        "src/kernel/services/parity/browser-use-service.ts"
+      ],
+      "related": [
+        "idea-path",
+        "scenario-map",
+        "agents",
+        "capabilities"
+      ],
+      "reviewed": null,
+      "tests": [
+        "src/components/AgentTasksPanel/AgentTasksPanel.test.tsx",
+        "src/kernel/services/computer/computer-use-loop-service.test.ts"
       ]
     },
     {
@@ -1531,6 +1594,39 @@
       "reviewed": null,
       "tests": [
         "src/components/ChatSessionsManagerPanel.test.tsx"
+      ]
+    },
+    {
+      "id": "wiki:panel-lenses",
+      "type": "article",
+      "slug": "panel-lenses",
+      "title": "Панель: Линзы",
+      "section": "panels",
+      "status": "verified",
+      "tags": [
+        "панель",
+        "линзы",
+        "анализ",
+        "перспектива",
+        "стек",
+        "инструкция"
+      ],
+      "sources": [
+        "src/components/LensesPanel/LensesPanel.tsx",
+        "src/kernel/services/lens-engine/lens-engine-service.ts",
+        "src/kernel/services/lens-engine/lens-library.ts",
+        "src/kernel/types/lens-types.ts"
+      ],
+      "related": [
+        "panel-lenses-crystals",
+        "panel-synthesis",
+        "panel-knowledge-generator",
+        "panel-debate-toolkit"
+      ],
+      "reviewed": null,
+      "tests": [
+        "src/components/LensesPanel/LensesPanel.test.tsx",
+        "src/kernel/services/lens-engine/lens-engine-service.test.ts"
       ]
     },
     {
