@@ -237,6 +237,18 @@ const TasksPanel: React.FC = () => {
         return true;
     });
 
+    const filteredAgemsTasks = useMemo(() => {
+        const q = searchQuery.trim().toLowerCase();
+        if (!q) return agemsTasks;
+        return agemsTasks.filter(
+            (t) =>
+                t.title.toLowerCase().includes(q) ||
+                t.priority.toLowerCase().includes(q) ||
+                t.status.toLowerCase().includes(q) ||
+                (t.labels || []).some((l) => l.toLowerCase().includes(q)),
+        );
+    }, [agemsTasks, searchQuery]);
+
     if (loading) {
         return (
             <div
@@ -512,7 +524,7 @@ const TasksPanel: React.FC = () => {
                 {kanbanView === 'board' ? (
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 8, minHeight: 180 }}>
                         {KANBAN_COLUMNS.map((col) => {
-                            const colTasks = agemsTasks.filter((t) => col.status.includes(t.status));
+                            const colTasks = filteredAgemsTasks.filter((t) => col.status.includes(t.status));
                             return (
                                 <div key={col.title} onDragOver={(e) => e.preventDefault()} onDrop={(e) => void handleDrop(e, col.status[0] as AgemsTaskStatus)} style={{ background: 'rgba(255,255,255,0.02)', border: `1px solid ${col.color}20`, borderTop: `3px solid ${col.color}`, borderRadius: 10, padding: '8px 6px', display: 'flex', flexDirection: 'column', gap: 6, minHeight: 160 }}>
                                     <div style={{ fontSize: 10, fontWeight: 800, color: col.color, letterSpacing: 0.5, textTransform: 'uppercase', display: 'flex', justifyContent: 'space-between' }}>
@@ -538,7 +550,12 @@ const TasksPanel: React.FC = () => {
                     </div>
                 ) : (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-                        {agemsTasks.map((t) => (
+                        {filteredAgemsTasks.length === 0 && (agemsTasks.length > 0 ? (
+                            <div style={{ fontSize: 11, color: 'var(--slate-500)', textAlign: 'center', padding: 12 }}>
+                                {t('tasks.empty_search')}
+                            </div>
+                        ) : null)}
+                        {filteredAgemsTasks.map((t) => (
                             <div key={t.id} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 10px', borderRadius: 8, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', fontSize: 12 }}>
                                 <span style={{ fontWeight: 600, flex: 1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{t.title} {t.cronSchedule ? '⏰' : ''}</span>
                                 <span style={{ fontSize: 10, padding: '2px 6px', borderRadius: 6, background: 'rgba(59,130,246,0.12)', color: '#60a5fa' }}>{t.cronSchedule ? (t.cronSchedule.kind === 'preset' ? t.cronSchedule.preset : 'custom') : t.status}</span>
