@@ -103,8 +103,29 @@ export class OpenAiCompatibleAdapter extends BaseLLMAdapter {
             );
         }
         const msg = choice?.message as Record<string, unknown> | undefined;
+        const rawContent = msg?.content;
+        let content = '';
+        if (typeof rawContent === 'string') {
+            content = rawContent;
+        } else if (Array.isArray(rawContent)) {
+            // Some OpenAI-compatible APIs return content as parts: [{type:'text',text:'…'}]
+            content = rawContent
+                .map((p) =>
+                    typeof p === 'string'
+                        ? p
+                        : ((p as Record<string, unknown>)?.text as string) ?? '',
+                )
+                .join('');
+        }
+        if (!content) {
+            // Fallbacks for providers that put the text elsewhere.
+            content =
+                ((choice.text as string) ?? '') ||
+                ((msg?.reasoning_content as string) ?? '') ||
+                ((data.output_text as string) ?? '');
+        }
         return {
-            content: (msg?.content as string) ?? '',
+            content,
             tokens: ((safe.usage as Record<string, unknown>)?.total_tokens as number) ?? 0,
             finishReason: normalizeFinishReason(choice?.finish_reason as string | undefined),
             toolCalls: extractToolCalls(msg),
@@ -125,6 +146,11 @@ export class OpenAiCompatibleAdapter extends BaseLLMAdapter {
             `Bearer ${apiKey}`,
             signal,
         );
+        if (this.id === 'mercury') {
+            // TEMP diagnostic: surface the raw Mercury response shape so we can
+            // align parsing. Remove once integration is stable.
+            console.log('[Mercury] raw response', JSON.stringify(data).slice(0, 2000));
+        }
         return this.toProviderResponse(data as Record<string, unknown>);
     }
 
