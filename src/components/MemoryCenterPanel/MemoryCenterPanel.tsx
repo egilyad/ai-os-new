@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Database, Search, BrainCircuit, HeartPulse, Layers, Loader2, Network as NetworkIcon } from 'lucide-react';
 import { useTranslation } from '../../i18n/useTranslation';
 import { memoryService, wikiBrainService, crystalVault } from '../../kernel/instances';
@@ -44,6 +45,7 @@ const STATUS_COLOR: Record<string, string> = {
 
 const MemoryCenterPanel: React.FC = () => {
     const { t } = useTranslation();
+    const navigate = useNavigate();
     const [tab, setTab] = useState<Tab>('overview');
     const [counts, setCounts] = useState<MemorySourceCount[]>([]);
     const [loading, setLoading] = useState(true);
@@ -351,7 +353,7 @@ const MemoryCenterPanel: React.FC = () => {
                         Крупные узлы — категории; малые — источники. Клик по источнику открывает оригинал.
                         Колесо — масштаб, перетаскивание — панорамирование.
                     </div>
-                    <MemoryGraph sources={sources} onOpen={(route) => { window.location.hash = `/${route}`; }} />
+                    <MemoryGraph sources={sources} onOpen={(route) => navigate(route)} />
                 </div>
             )}
 

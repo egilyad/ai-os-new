@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from '../../i18n/useTranslation';
 import { useResponsive } from '../Layout/ResponsiveShell';
 import { NAV_SECTIONS } from '../../route-registry';
@@ -77,10 +78,21 @@ function SectionLabel({ children }: { children: React.ReactNode }): React.ReactN
 export const WikiPanel: React.FC = () => {
     const { t } = useTranslation();
     const { isMobile } = useResponsive();
+    const [searchParams, setSearchParams] = useSearchParams();
     const [view, setView] = useState<WikiView>({ name: 'home' });
     const [query, setQuery] = useState('');
     const [hits, setHits] = useState<Array<{ slug: string; score: number }>>([]);
     const [menuOpen, setMenuOpen] = useState(false);
+
+    // Deep-link: ?wiki=<slug> открывает конкретную статью вики.
+    const deepSlug = searchParams.get('wiki');
+    useEffect(() => {
+        if (deepSlug && getArticle(deepSlug)) {
+            setView({ name: 'article', slug: deepSlug });
+            setSearchParams({}, { replace: true });
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [deepSlug]);
 
     const openSlug = (slug: string) => {
         if (getArticle(slug)) {

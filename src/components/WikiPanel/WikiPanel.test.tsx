@@ -1,11 +1,16 @@
 import { describe, it, expect, afterEach } from 'vitest';
 import { render, screen, cleanup, fireEvent, waitFor } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 import { WikiPanel } from './WikiPanel';
 
 afterEach(() => cleanup());
 
 function openWiki() {
-    render(<WikiPanel />);
+    render(
+        <MemoryRouter>
+            <WikiPanel />
+        </MemoryRouter>,
+    );
 }
 
 describe('WikiPanel portal', () => {

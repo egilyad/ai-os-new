@@ -1,6 +1,8 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Network } from 'vis-network/standalone';
 import { crystalVault } from '../../kernel/instances';
+import { getArticle } from '../WikiPanel/wiki-articles';
+import { PANEL_ARTICLES } from '../WikiPanel/wiki-panels';
 import type { MemorySourceDescriptor, MemoryCategory } from '../../kernel/types/memory-center-types';
 import type { Crystal } from '../../kernel/types/crystal-types';
 
@@ -41,20 +43,36 @@ const MemoryGraph: React.FC<Props> = ({ sources, onOpen, height = 520 }) => {
     const onOpenRef = useRef(onOpen);
     onOpenRef.current = onOpen;
 
-    // Реальные записи: кристаллы (до 40) — показывают живое знание, а не
-    // только статический реестр источников.
     useEffect(() => {
         let alive = true;
         crystalVault
             .list()
             .then((list) => {
-                if (alive) setCrystals(Array.isArray(list) ? list.slice(0, 40) : []);
+                if (alive) setCrystals(Array.isArray(list) ? list.slice(0, 60) : []);
             })
             .catch(() => {});
         return () => {
             alive = false;
         };
     }, []);
+
+    // Глубокий переход: для кристалла ищем подходящую статью вики по его
+    // домену/происхождению, иначе открываем панель кристаллов.
+    const resolveDeepTarget = (c: Crystal): string => {
+        const domainToSlug: Record<string, string> = {
+            arch: 'architecture',
+            prompt: 'panel-prompt-library',
+            routing: 'panel-routing',
+            gov: 'panel-governance',
+            llm: 'providers',
+            security: 'panel-governance',
+            economics: 'panel-budget',
+            general: 'idea-path',
+        };
+        const slug = domainToSlug[c.applicableDomain];
+        if (slug && getArticle(slug)) return `/wiki?wiki=${slug}`;
+        return '/crystals';
+    };
 
     const { nodes, edges } = useMemo(() => {
         const nodes: any[] = [];
@@ -70,6 +88,7 @@ const MemoryGraph: React.FC<Props> = ({ sources, onOpen, height = 520 }) => {
                 font: { color: '#e2e8f0', size: 15, face: 'Arial', bold: true },
                 shape: 'dot',
                 size: 30,
+                deepTarget: undefined,
             });
         }
 
@@ -83,13 +102,12 @@ const MemoryGraph: React.FC<Props> = ({ sources, onOpen, height = 520 }) => {
                 shape: 'dot',
                 size: s.status === 'verified' ? 14 : 10,
                 title: `${s.name}\nвладелец: ${s.owner}\nтаблица: ${s.table ?? '—'}\nстатус: ${s.status}\nжми, чтобы открыть`,
-                openRoute: s.openRoute,
+                deepTarget: s.openRoute ? `#/${s.openRoute}` : undefined,
             });
             const catIdx = catIndex.get(s.category);
             if (catIdx !== undefined) edges.push({ from: s.id, to: `cat:${s.category}`, color: { color, opacity: 0.5 } });
         }
 
-        // Кристаллы — реальные проверенные утверждения, связаны с «Исследования».
         for (const c of crystals) {
             const stmt = c.content?.statement ?? '';
             const id = `crystal:${c.crystalId}`;
@@ -100,14 +118,22 @@ const MemoryGraph: React.FC<Props> = ({ sources, onOpen, height = 520 }) => {
                 font: { color: '#e2e8f0', size: 11 },
                 shape: 'dot',
                 size: 9,
-                title: `Кристалл: ${stmt.slice(0, 120)}\nстатус: ${c.status || '—'}`,
-                openRoute: 'crystals',
+                title: `Кристалл: ${stmt.slice(0, 120)}\nстатус: ${c.status || '—'}\nдомен: ${c.applicableDomain || '—'}`,
+                deepTarget: resolveDeepTarget(c),
             });
             const catIdx = catIndex.get('research');
             if (catIdx !== undefined) edges.push({ from: id, to: 'cat:research', color: { color: CATEGORY_COLOR.research, opacity: 0.4 } });
+            // Связи между кристаллами (поддержка / противоречие)
+            for (const sup of c.supportingCrystalIds ?? []) {
+                edges.push({ from: id, to: `crystal:${sup}`, color: { color: '#34d399', opacity: 0.5 }, width: 1.5 });
+            }
+            for (const con of c.contradictingCrystalIds ?? []) {
+                edges.push({ from: id, to: `crystal:${con}`, color: { color: '#ef4444', opacity: 0.5 }, width: 1.5 });
+            }
         }
 
         return { nodes, edges };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [sources, crystals]);
 
     useEffect(() => {
@@ -130,7 +156,7 @@ const MemoryGraph: React.FC<Props> = ({ sources, onOpen, height = 520 }) => {
         net.on('click', (params: any) => {
             if (params.nodes && params.nodes.length > 0) {
                 const node = nodes.find((n) => n.id === params.nodes[0]);
-                if (node && node.openRoute) onOpenRef.current(node.openRoute);
+                if (node?.deepTarget) onOpenRef.current(node.deepTarget);
             }
         });
         return () => {
