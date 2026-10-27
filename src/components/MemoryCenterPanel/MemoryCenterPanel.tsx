@@ -1,18 +1,19 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Database, Search, BrainCircuit, HeartPulse, Layers, Loader2 } from 'lucide-react';
+import { Database, Search, BrainCircuit, HeartPulse, Layers, Loader2, Network as NetworkIcon } from 'lucide-react';
 import { useTranslation } from '../../i18n/useTranslation';
 import { memoryService, wikiBrainService, crystalVault } from '../../kernel/instances';
 import {
     listMemorySources,
     computeMemoryCounts,
 } from '../../kernel/services/memory-center/memory-registry';
+import MemoryGraph from './MemoryGraph';
 import type {
     MemorySourceDescriptor,
     MemorySourceCount,
     MemoryCategory,
 } from '../../kernel/types/memory-center-types';
 
-type Tab = 'overview' | 'storage' | 'explorer' | 'health' | 'search';
+type Tab = 'overview' | 'storage' | 'explorer' | 'health' | 'search' | 'graph';
 
 interface SearchHit {
     source: string;
@@ -192,6 +193,9 @@ const MemoryCenterPanel: React.FC = () => {
                 <button onClick={() => setTab('search')} style={tabBtn(tab === 'search')}>
                     <Search size={14} /> Поиск
                 </button>
+                <button onClick={() => setTab('graph')} style={tabBtn(tab === 'graph')}>
+                    <NetworkIcon size={14} /> Граф
+                </button>
                 <button onClick={() => setTab('health')} style={tabBtn(tab === 'health')}>
                     <HeartPulse size={14} /> Health & Gaps
                 </button>
@@ -338,6 +342,16 @@ const MemoryCenterPanel: React.FC = () => {
                             </div>
                         ))}
                     </div>
+                </div>
+            )}
+
+            {tab === 'graph' && (
+                <div>
+                    <div style={{ fontSize: '0.75rem', color: 'var(--slate-400)', marginBottom: 8 }}>
+                        Крупные узлы — категории; малые — источники. Клик по источнику открывает оригинал.
+                        Колесо — масштаб, перетаскивание — панорамирование.
+                    </div>
+                    <MemoryGraph sources={sources} onOpen={(route) => { window.location.hash = `/${route}`; }} />
                 </div>
             )}
 
