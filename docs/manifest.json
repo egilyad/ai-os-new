@@ -5,7 +5,7 @@
     {
       "id": "guide",
       "title": "Руководство",
-      "articles": 9
+      "articles": 10
     },
     {
       "id": "panels",
@@ -69,6 +69,36 @@
     }
   ],
   "articles": [
+    {
+      "id": "wiki:system-audit-prompt",
+      "type": "article",
+      "slug": "system-audit-prompt",
+      "title": "SuperAgents OS — полное описание (промт для дебатов/ИИ)",
+      "section": "guide",
+      "status": "verified",
+      "tags": [
+        "система",
+        "обзор",
+        "аудит",
+        "промт",
+        "дебаты",
+        "рекомендации"
+      ],
+      "sources": [
+        "src/route-registry.tsx",
+        "src/kernel/services/dexie-schema.ts",
+        "src/components/"
+      ],
+      "related": [
+        "what-is",
+        "idea-path",
+        "memory-center-audit",
+        "debate-strategies",
+        "audit-methodology"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
     {
       "id": "wiki:what-is",
       "type": "article",
@@ -7989,6 +8019,16 @@
       "section": "dashboard",
       "route": "/memory-center",
       "component": "src/components/MemoryCenterPanel/MemoryCenterPanel",
+      "article": null,
+      "status": "live"
+    },
+    {
+      "id": "panel:nav-graph",
+      "type": "panel",
+      "panelId": "nav-graph",
+      "section": "dashboard",
+      "route": "/nav-graph",
+      "component": "src/components/NavGraphPanel/NavGraphPanel",
       "article": null,
       "status": "live"
     },

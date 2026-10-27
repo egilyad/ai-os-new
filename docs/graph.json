@@ -3,22 +3,22 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 1410,
-    "edges": 3692,
+    "nodes": 1413,
+    "edges": 3700,
     "byType": {
       "audit": 75,
-      "code": 598,
+      "code": 599,
       "test": 198,
-      "panel": 264,
-      "article": 275
+      "panel": 265,
+      "article": 276
     },
     "byKind": {
       "audit_test": 336,
       "audit_mention": 929,
       "documents": 202,
-      "source": 876,
+      "source": 879,
       "test": 293,
-      "related": 1056
+      "related": 1061
     }
   },
   "nodes": [
@@ -4453,6 +4453,11 @@
       "label": "src/route-registry-system.ts"
     },
     {
+      "id": "file:src/route-registry.tsx",
+      "type": "code",
+      "label": "src/route-registry.tsx"
+    },
+    {
       "id": "file:src/routes.tsx",
       "type": "code",
       "label": "src/routes.tsx"
@@ -5667,6 +5672,13 @@
       "label": "narrative-arc",
       "section": "techniques",
       "route": "/narrative-arc"
+    },
+    {
+      "id": "panel:nav-graph",
+      "type": "panel",
+      "label": "nav-graph",
+      "section": "dashboard",
+      "route": "/nav-graph"
     },
     {
       "id": "panel:nvidia-enterprise",
@@ -8108,6 +8120,13 @@
       "id": "wiki:scenarios",
       "type": "article",
       "label": "Возможности и сценарии",
+      "section": "guide",
+      "status": "verified"
+    },
+    {
+      "id": "wiki:system-audit-prompt",
+      "type": "article",
+      "label": "SuperAgents OS — полное описание (промт для дебатов/ИИ)",
       "section": "guide",
       "status": "verified"
     },
@@ -26605,6 +26624,46 @@
     {
       "from": "wiki:scenarios",
       "to": "wiki:panels-guide",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:system-audit-prompt",
+      "to": "file:src/components/",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:system-audit-prompt",
+      "to": "file:src/kernel/services/dexie-schema.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:system-audit-prompt",
+      "to": "file:src/route-registry.tsx",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:system-audit-prompt",
+      "to": "wiki:audit-methodology",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:system-audit-prompt",
+      "to": "wiki:debate-strategies",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:system-audit-prompt",
+      "to": "wiki:idea-path",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:system-audit-prompt",
+      "to": "wiki:memory-center-audit",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:system-audit-prompt",
+      "to": "wiki:what-is",
       "kind": "related"
     },
     {
