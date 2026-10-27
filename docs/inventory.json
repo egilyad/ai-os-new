@@ -3,7 +3,7 @@
   "generatedBy": "scripts/gen-docs-inventory.mjs",
   "scope": "git-tracked markdown: docs/**/*.md (excluding docs/new drafts and the self-report pages docs-health, docs-inventory) plus repository entry docs (root *.md, .superagents/**, src/kernel/DEPENDENCY_MAP.md)",
   "totals": {
-    "documents": 1108,
+    "documents": 1110,
     "byCategory": {
       "repo": 13,
       "top": 47,
@@ -13,11 +13,11 @@
       "reference": 6,
       "roadmap": 17,
       "superseded": 3,
-      "wiki": 261
+      "wiki": 263
     },
     "byLanguage": {
       "en": 659,
-      "ru": 278,
+      "ru": 280,
       "mixed": 171
     }
   },
@@ -7581,7 +7581,7 @@
       "language": "mixed",
       "title": "Матрица покрытия",
       "bytes": 8463,
-      "hash": "d383e1dff8a7eb8f68898ba430bcde14753b1957"
+      "hash": "7a7618ce272ad77b415421d04c88af8a36e9080c"
     },
     {
       "path": "docs/wiki/debates.md",
@@ -7613,7 +7613,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4076,
-      "hash": "b6b7d764fc2dd3c9f37c666f4765be57c930127d"
+      "hash": "2b266f09bc7a8de33a50c51dd469e75e0555d447"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -7701,7 +7701,7 @@
       "language": "ru",
       "title": "Граф знаний",
       "bytes": 4905,
-      "hash": "65ec2cb4f3fb08d94eefaba5144ed403110b8959"
+      "hash": "a42728ee6f40e60bfee39f71a7f57d2a3fad3b70"
     },
     {
       "path": "docs/wiki/dev-history.md",
@@ -7916,8 +7916,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Карта документации",
-      "bytes": 35629,
-      "hash": "bfd40cf1e9c44fa965dcc89aa7e5f1f2ecee8308"
+      "bytes": 35776,
+      "hash": "165e67fbdc6cfb728d1baefd0f9285623c7800aa"
     },
     {
       "path": "docs/wiki/docs-standard.md",
@@ -8086,6 +8086,14 @@
       "title": "Панель: Бюджеты компании (gateway)",
       "bytes": 2134,
       "hash": "61c70545120fcb1ad94997f791a26f4d79459cb2"
+    },
+    {
+      "path": "docs/wiki/panel-crystal-vault.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Панель: Хранилище кристаллов",
+      "bytes": 3155,
+      "hash": "500b5e877d527657bd22ad4f70c7fcf29a4021bd"
     },
     {
       "path": "docs/wiki/panel-custom-metrics.md",
@@ -8294,6 +8302,14 @@
       "title": "Панели: Интеграции (MCP, коннекторы, навыки, инструменты, вебхуки)",
       "bytes": 5607,
       "hash": "a04edddc7083179b3474d8c467b80b1f0f8ee129"
+    },
+    {
+      "path": "docs/wiki/panel-junction.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Панель: Junction-движок",
+      "bytes": 2679,
+      "hash": "8a289d742f211694d382534ba56ce149f69e951a"
     },
     {
       "path": "docs/wiki/panel-key-notes.md",
@@ -8612,8 +8628,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Wiki SuperAgents OS",
-      "bytes": 27588,
-      "hash": "88294f0d8ca7a6f5ce0d4fa8df6b69b3947d098b"
+      "bytes": 28347,
+      "hash": "0a15cb85746d3cd114ad69487b7f6f5aaa4ab469"
     },
     {
       "path": "docs/wiki/roadmap-notes.md",

@@ -3,22 +3,22 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 1384,
-    "edges": 3640,
+    "nodes": 1402,
+    "edges": 3673,
     "byType": {
       "audit": 75,
-      "code": 585,
-      "test": 197,
+      "code": 595,
+      "test": 198,
       "panel": 263,
-      "article": 264
+      "article": 271
     },
     "byKind": {
       "audit_test": 336,
       "audit_mention": 929,
       "documents": 202,
-      "source": 856,
-      "test": 291,
-      "related": 1026
+      "source": 870,
+      "test": 293,
+      "related": 1043
     }
   },
   "nodes": [
@@ -1093,6 +1093,16 @@
       "label": "src/components/DebateResearch/"
     },
     {
+      "id": "file:src/components/DebateResearch/DebateSystemResearch.tsx",
+      "type": "code",
+      "label": "src/components/DebateResearch/DebateSystemResearch.tsx"
+    },
+    {
+      "id": "file:src/components/DebateResearch/HypothesisGenerator.tsx",
+      "type": "code",
+      "label": "src/components/DebateResearch/HypothesisGenerator.tsx"
+    },
+    {
       "id": "file:src/components/DebateTemplatesPanel/",
       "type": "code",
       "label": "src/components/DebateTemplatesPanel/"
@@ -1483,6 +1493,11 @@
       "label": "src/components/ResearchPanel/ResearchEngineAdvancedPanel"
     },
     {
+      "id": "file:src/components/ResearchPanel/ResearchEngineAdvancedPanel.tsx",
+      "type": "code",
+      "label": "src/components/ResearchPanel/ResearchEngineAdvancedPanel.tsx"
+    },
+    {
       "id": "file:src/components/ResearchPanel/ResearchEnginePanel.test.tsx",
       "type": "test",
       "label": "src/components/ResearchPanel/ResearchEnginePanel.test.tsx"
@@ -1491,6 +1506,31 @@
       "id": "file:src/components/ResearchPanel/ResearchEnginePanel.tsx",
       "type": "code",
       "label": "src/components/ResearchPanel/ResearchEnginePanel.tsx"
+    },
+    {
+      "id": "file:src/components/ResearchReportPanel.tsx",
+      "type": "code",
+      "label": "src/components/ResearchReportPanel.tsx"
+    },
+    {
+      "id": "file:src/components/RivalLabs/",
+      "type": "code",
+      "label": "src/components/RivalLabs/"
+    },
+    {
+      "id": "file:src/components/RivalLabs/RivalLabsPanel.test.tsx",
+      "type": "test",
+      "label": "src/components/RivalLabs/RivalLabsPanel.test.tsx"
+    },
+    {
+      "id": "file:src/components/RivalLabs/RivalLabsPanel.tsx",
+      "type": "code",
+      "label": "src/components/RivalLabs/RivalLabsPanel.tsx"
+    },
+    {
+      "id": "file:src/components/RivalsCatalogPanel.tsx",
+      "type": "code",
+      "label": "src/components/RivalsCatalogPanel.tsx"
     },
     {
       "id": "file:src/components/RolesPanel/RolesConsortiaPanel.tsx",
@@ -1731,6 +1771,11 @@
       "id": "file:src/constants/pools.ts",
       "type": "code",
       "label": "src/constants/pools.ts"
+    },
+    {
+      "id": "file:src/data/rivals-catalog.ts",
+      "type": "code",
+      "label": "src/data/rivals-catalog.ts"
     },
     {
       "id": "file:src/data/role-library.ts",
@@ -2893,6 +2938,11 @@
       "label": "src/kernel/services/health-sla-service.ts"
     },
     {
+      "id": "file:src/kernel/services/hypothesis/",
+      "type": "code",
+      "label": "src/kernel/services/hypothesis/"
+    },
+    {
       "id": "file:src/kernel/services/interop/a2a-service.ts",
       "type": "code",
       "label": "src/kernel/services/interop/a2a-service.ts"
@@ -3451,6 +3501,11 @@
       "id": "file:src/kernel/services/reconnection-service.ts",
       "type": "code",
       "label": "src/kernel/services/reconnection-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/research/",
+      "type": "code",
+      "label": "src/kernel/services/research/"
     },
     {
       "id": "file:src/kernel/services/rivals/guardrail-service.test.ts",
@@ -7524,6 +7579,13 @@
       "status": "documented"
     },
     {
+      "id": "wiki:panel-debate-system-research",
+      "type": "article",
+      "label": "Панель: Исследования системы дебатов",
+      "section": "panels",
+      "status": "verified"
+    },
+    {
       "id": "wiki:panel-debate-templates",
       "type": "article",
       "label": "Панель: Шаблоны дебатов",
@@ -7641,6 +7703,13 @@
       "label": "Панели: История, аудит, версии, деплой",
       "section": "panels",
       "status": "documented"
+    },
+    {
+      "id": "wiki:panel-hypothesis-generator",
+      "type": "article",
+      "label": "Панель: Генератор гипотез",
+      "section": "panels",
+      "status": "verified"
     },
     {
       "id": "wiki:panel-infra-meta",
@@ -7804,11 +7873,46 @@
       "status": "verified"
     },
     {
+      "id": "wiki:panel-research-advanced",
+      "type": "article",
+      "label": "Панель: Исследования — расширенные",
+      "section": "panels",
+      "status": "verified"
+    },
+    {
+      "id": "wiki:panel-research-engine",
+      "type": "article",
+      "label": "Панель: Исследовательский движок",
+      "section": "panels",
+      "status": "verified"
+    },
+    {
       "id": "wiki:panel-research-extra",
       "type": "article",
       "label": "Панели: Исследование (расширенное и Gemini)",
       "section": "panels",
       "status": "documented"
+    },
+    {
+      "id": "wiki:panel-research-reports",
+      "type": "article",
+      "label": "Панель: Отчёты исследований",
+      "section": "panels",
+      "status": "verified"
+    },
+    {
+      "id": "wiki:panel-rival-labs",
+      "type": "article",
+      "label": "Панель: Лаборатория соперников (Rival Labs)",
+      "section": "panels",
+      "status": "verified"
+    },
+    {
+      "id": "wiki:panel-rivals-catalog",
+      "type": "article",
+      "label": "Панель: Каталог Rivals-проектов",
+      "section": "panels",
+      "status": "verified"
     },
     {
       "id": "wiki:panel-roles",
@@ -24034,6 +24138,31 @@
       "kind": "related"
     },
     {
+      "from": "wiki:panel-debate-system-research",
+      "to": "file:src/components/DebateResearch/DebateSystemResearch.tsx",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:panel-debate-system-research",
+      "to": "file:src/components/DebateResearch/",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:panel-debate-system-research",
+      "to": "wiki:panel-debate-research",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:panel-debate-system-research",
+      "to": "wiki:panel-research-engine",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:panel-debate-system-research",
+      "to": "wiki:panel-rival-labs",
+      "kind": "related"
+    },
+    {
       "from": "wiki:panel-debate-templates",
       "to": "file:src/components/DebatePanel/DebateWorkspacePanel",
       "kind": "source"
@@ -24616,6 +24745,31 @@
     {
       "from": "wiki:panel-history-audit",
       "to": "wiki:panel-settings",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:panel-hypothesis-generator",
+      "to": "file:src/components/DebateResearch/HypothesisGenerator.tsx",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:panel-hypothesis-generator",
+      "to": "file:src/kernel/services/hypothesis/",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:panel-hypothesis-generator",
+      "to": "wiki:panel-debate-research",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:panel-hypothesis-generator",
+      "to": "wiki:panel-research-engine",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:panel-hypothesis-generator",
+      "to": "wiki:panel-synthesis",
       "kind": "related"
     },
     {
@@ -25404,6 +25558,56 @@
       "kind": "related"
     },
     {
+      "from": "wiki:panel-research-advanced",
+      "to": "file:src/components/ResearchPanel/ResearchEngineAdvancedPanel.tsx",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:panel-research-advanced",
+      "to": "file:src/kernel/services/research/",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:panel-research-advanced",
+      "to": "wiki:panel-research-engine",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:panel-research-advanced",
+      "to": "wiki:panel-research-reports",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:panel-research-engine",
+      "to": "file:src/components/ResearchPanel/ResearchEnginePanel.test.tsx",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:panel-research-engine",
+      "to": "file:src/components/ResearchPanel/ResearchEnginePanel.tsx",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:panel-research-engine",
+      "to": "file:src/kernel/services/research/",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:panel-research-engine",
+      "to": "wiki:panel-hypothesis-generator",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:panel-research-engine",
+      "to": "wiki:panel-research-advanced",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:panel-research-engine",
+      "to": "wiki:panel-research-reports",
+      "kind": "related"
+    },
+    {
       "from": "wiki:panel-research-extra",
       "to": "file:src/components/GeminiResearch/GeminiResearchPanel.test.tsx",
       "kind": "test"
@@ -25439,6 +25643,26 @@
       "kind": "related"
     },
     {
+      "from": "wiki:panel-research-reports",
+      "to": "file:src/components/ResearchReportPanel.tsx",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:panel-research-reports",
+      "to": "file:src/kernel/services/research/",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:panel-research-reports",
+      "to": "wiki:panel-research-advanced",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:panel-research-reports",
+      "to": "wiki:panel-research-engine",
+      "kind": "related"
+    },
+    {
       "from": "wiki:panel-research",
       "to": "file:src/components/ResearchPanel/ResearchEnginePanel.test.tsx",
       "kind": "test"
@@ -25471,6 +25695,51 @@
     {
       "from": "wiki:panel-research",
       "to": "wiki:zone-15",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:panel-rival-labs",
+      "to": "file:src/components/RivalLabs/RivalLabsPanel.test.tsx",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:panel-rival-labs",
+      "to": "file:src/components/RivalLabs/RivalLabsPanel.tsx",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:panel-rival-labs",
+      "to": "file:src/components/RivalLabs/",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:panel-rival-labs",
+      "to": "wiki:panel-debate-system-research",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:panel-rival-labs",
+      "to": "wiki:panel-rivals-catalog",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:panel-rivals-catalog",
+      "to": "file:src/components/RivalsCatalogPanel.tsx",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:panel-rivals-catalog",
+      "to": "file:src/data/rivals-catalog.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:panel-rivals-catalog",
+      "to": "wiki:panel-debate-system-research",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:panel-rivals-catalog",
+      "to": "wiki:panel-rival-labs",
       "kind": "related"
     },
     {

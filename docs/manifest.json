@@ -10,7 +10,7 @@
     {
       "id": "panels",
       "title": "Панели",
-      "articles": 80
+      "articles": 87
     },
     {
       "id": "agents",
@@ -2256,6 +2256,189 @@
       "tests": [
         "src/components/JunctionPanel/JunctionPanel.test.tsx"
       ]
+    },
+    {
+      "id": "wiki:panel-research-engine",
+      "type": "article",
+      "slug": "panel-research-engine",
+      "title": "Панель: Исследовательский движок",
+      "section": "panels",
+      "status": "verified",
+      "tags": [
+        "панель",
+        "исследование",
+        "research",
+        "движок",
+        "инструкция"
+      ],
+      "sources": [
+        "src/components/ResearchPanel/ResearchEnginePanel.tsx",
+        "src/kernel/services/research/"
+      ],
+      "related": [
+        "panel-research-advanced",
+        "panel-research-reports",
+        "panel-hypothesis-generator"
+      ],
+      "reviewed": null,
+      "tests": [
+        "src/components/ResearchPanel/ResearchEnginePanel.test.tsx"
+      ]
+    },
+    {
+      "id": "wiki:panel-research-advanced",
+      "type": "article",
+      "slug": "panel-research-advanced",
+      "title": "Панель: Исследования — расширенные",
+      "section": "panels",
+      "status": "verified",
+      "tags": [
+        "панель",
+        "исследование",
+        "research",
+        "advanced",
+        "инструкция"
+      ],
+      "sources": [
+        "src/components/ResearchPanel/ResearchEngineAdvancedPanel.tsx",
+        "src/kernel/services/research/"
+      ],
+      "related": [
+        "panel-research-engine",
+        "panel-research-reports"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:panel-research-reports",
+      "type": "article",
+      "slug": "panel-research-reports",
+      "title": "Панель: Отчёты исследований",
+      "section": "panels",
+      "status": "verified",
+      "tags": [
+        "панель",
+        "исследование",
+        "отчёты",
+        "research",
+        "инструкция"
+      ],
+      "sources": [
+        "src/components/ResearchReportPanel.tsx",
+        "src/kernel/services/research/"
+      ],
+      "related": [
+        "panel-research-engine",
+        "panel-research-advanced"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:panel-debate-system-research",
+      "type": "article",
+      "slug": "panel-debate-system-research",
+      "title": "Панель: Исследования системы дебатов",
+      "section": "panels",
+      "status": "verified",
+      "tags": [
+        "панель",
+        "исследование",
+        "дебаты",
+        "эксперименты",
+        "инструкция"
+      ],
+      "sources": [
+        "src/components/DebateResearch/DebateSystemResearch.tsx",
+        "src/components/DebateResearch/"
+      ],
+      "related": [
+        "panel-debate-research",
+        "panel-research-engine",
+        "panel-rival-labs"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:panel-hypothesis-generator",
+      "type": "article",
+      "slug": "panel-hypothesis-generator",
+      "title": "Панель: Генератор гипотез",
+      "section": "panels",
+      "status": "verified",
+      "tags": [
+        "панель",
+        "гипотезы",
+        "исследование",
+        "проверка",
+        "инструкция"
+      ],
+      "sources": [
+        "src/components/DebateResearch/HypothesisGenerator.tsx",
+        "src/kernel/services/hypothesis/"
+      ],
+      "related": [
+        "panel-research-engine",
+        "panel-debate-research",
+        "panel-synthesis"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:panel-rival-labs",
+      "type": "article",
+      "slug": "panel-rival-labs",
+      "title": "Панель: Лаборатория соперников (Rival Labs)",
+      "section": "panels",
+      "status": "verified",
+      "tags": [
+        "панель",
+        "rival",
+        "соперники",
+        "parity",
+        "A/B",
+        "инструкция"
+      ],
+      "sources": [
+        "src/components/RivalLabs/RivalLabsPanel.tsx",
+        "src/components/RivalLabs/"
+      ],
+      "related": [
+        "panel-rivals-catalog",
+        "panel-debate-system-research"
+      ],
+      "reviewed": null,
+      "tests": [
+        "src/components/RivalLabs/RivalLabsPanel.test.tsx"
+      ]
+    },
+    {
+      "id": "wiki:panel-rivals-catalog",
+      "type": "article",
+      "slug": "panel-rivals-catalog",
+      "title": "Панель: Каталог Rivals-проектов",
+      "section": "panels",
+      "status": "verified",
+      "tags": [
+        "панель",
+        "rivals",
+        "каталог",
+        "parity",
+        "справка"
+      ],
+      "sources": [
+        "src/components/RivalsCatalogPanel.tsx",
+        "src/data/rivals-catalog.ts"
+      ],
+      "related": [
+        "panel-rival-labs",
+        "panel-debate-system-research"
+      ],
+      "reviewed": null,
+      "tests": []
     },
     {
       "id": "wiki:panel-exceptions",

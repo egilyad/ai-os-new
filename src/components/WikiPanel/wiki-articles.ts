@@ -2982,6 +2982,155 @@ crews, councils, graphs, persona, ops, interop, meta, trust, frontier, rivals.
 Junctions работают поверх **кристаллов** ([[panel-crystal-vault]]) и **дебатов**. Синтез — [[panel-synthesis]].`,
     },
     {
+        slug: 'panel-research-engine',
+        title: 'Панель: Исследовательский движок',
+        section: 'panels',
+        tags: ['панель', 'исследование', 'research', 'движок', 'инструкция'],
+        freshness: 'verified',
+        sources: ['src/components/ResearchPanel/ResearchEnginePanel.tsx', 'src/kernel/services/research/'],
+        related: ['panel-research-advanced', 'panel-research-reports', 'panel-hypothesis-generator'],
+        body: `## Назначение
+
+Исследовательский движок — базовый цикл исследования: создаёшь сессию с вопросом, добавляешь источники и запускаешь цикл поиска/анализа.
+
+## Как пользоваться
+
+1. Открой \`/research-engine\`.
+2. «Новая сессия»: название + вопрос.
+3. Добавь источники.
+4. Нажми «Запустить» (\`runLoop\`) — агент прогонит цикл по вопросу.
+5. При необходимости удали/перезапусти сессию.
+
+## Связи
+
+Результаты оформляются в [[panel-research-reports]], гипотезы проверяются в [[panel-hypothesis-generator]], продвинутая версия — [[panel-research-advanced]].`,
+    },
+    {
+        slug: 'panel-research-advanced',
+        title: 'Панель: Исследования — расширенные',
+        section: 'panels',
+        tags: ['панель', 'исследование', 'research', 'advanced', 'инструкция'],
+        freshness: 'verified',
+        sources: ['src/components/ResearchPanel/ResearchEngineAdvancedPanel.tsx', 'src/kernel/services/research/'],
+        related: ['panel-research-engine', 'panel-research-reports'],
+        body: `## Назначение
+
+Продвинутая версия исследовательского движка: больше контролов и внутренних механизмов для глубоких, тонких исследований.
+
+## Когда использовать
+
+Когда обычного движка ([[panel-research-engine]]) мало: нужна тонкая настройка, глубокий анализ, работа с большим числом источников.
+
+## Связи
+
+Базовый движок — [[panel-research-engine]]. Отчёты — [[panel-research-reports]].`,
+    },
+    {
+        slug: 'panel-research-reports',
+        title: 'Панель: Отчёты исследований',
+        section: 'panels',
+        tags: ['панель', 'исследование', 'отчёты', 'research', 'инструкция'],
+        freshness: 'verified',
+        sources: ['src/components/ResearchReportPanel.tsx', 'src/kernel/services/research/'],
+        related: ['panel-research-engine', 'panel-research-advanced'],
+        body: `## Назначение
+
+Генерация оформленных отчётов из исследовательских сессий (\`researchReportService.generateReport\`).
+
+## Как пользоваться
+
+1. Открой \`/research-reports\`.
+2. Выбери сессию из списка.
+3. Нажми «Сформировать отчёт» — сырые результаты превращаются в читаемый отчёт.
+
+## Связи
+
+Работает по сессиям [[panel-research-engine]] и [[panel-research-advanced]].`,
+    },
+    {
+        slug: 'panel-debate-system-research',
+        title: 'Панель: Исследования системы дебатов',
+        section: 'panels',
+        tags: ['панель', 'исследование', 'дебаты', 'эксперименты', 'инструкция'],
+        freshness: 'verified',
+        sources: ['src/components/DebateResearch/DebateSystemResearch.tsx', 'src/components/DebateResearch/'],
+        related: ['panel-debate-research', 'panel-research-engine', 'panel-rival-labs'],
+        body: `## Назначение
+
+Эксперименты над самими дебатами: прогон стратегий, A/B-тесты роутинга, нагрузочные и стрессовые проверки. Ты исследуешь, как работает система дебатов, а не используешь её для темы.
+
+## Как пользоваться
+
+Открой \`/debate-system-research\` → выбери эксперимент/стратегию → запусти прогон → посмотри результаты.
+
+## Связи
+
+См. также [[panel-debate-research]] и [[panel-rival-labs]].`,
+    },
+    {
+        slug: 'panel-hypothesis-generator',
+        title: 'Панель: Генератор гипотез',
+        section: 'panels',
+        tags: ['панель', 'гипотезы', 'исследование', 'проверка', 'инструкция'],
+        freshness: 'verified',
+        sources: ['src/components/DebateResearch/HypothesisGenerator.tsx', 'src/kernel/services/hypothesis/'],
+        related: ['panel-research-engine', 'panel-debate-research', 'panel-synthesis'],
+        body: `## Назначение
+
+Генератор гипотез: \`hypothesisService.propose(...)\` создаёт гипотезу, а дальше её можно проверить авто-дебатом (\`autoDebate.runAutoDebate\`).
+
+## Как пользоваться
+
+1. Открой \`/hypothesis-gen\`.
+2. Сформулируй гипотезу.
+3. Запусти проверку (авто-дебат по теме).
+4. Посмотри, выдержала ли гипотеза спор.
+
+## Связи
+
+Это «предложил идею → проверил спором». Результат может уходить в [[panel-synthesis]] и [[panel-crystal-vault]].`,
+    },
+    {
+        slug: 'panel-rival-labs',
+        title: 'Панель: Лаборатория соперников (Rival Labs)',
+        section: 'panels',
+        tags: ['панель', 'rival', 'соперники', 'parity', 'A/B', 'инструкция'],
+        freshness: 'verified',
+        sources: ['src/components/RivalLabs/RivalLabsPanel.tsx', 'src/components/RivalLabs/'],
+        related: ['panel-rivals-catalog', 'panel-debate-system-research'],
+        body: `## Назначение
+
+Лаборатория «соперников»: карточки альтернативных / parity-сервисов по фазам. Площадка для A/B-сравнения параллельных реализаций — какой вариант работает лучше.
+
+## Как пользоваться
+
+Открой \`/rival-labs\` → выбери фазу → просмотри карточки сервисов.
+
+## Связи
+
+Каталог всех таких сервисов — [[panel-rivals-catalog]].`,
+    },
+    {
+        slug: 'panel-rivals-catalog',
+        title: 'Панель: Каталог Rivals-проектов',
+        section: 'panels',
+        tags: ['панель', 'rivals', 'каталог', 'parity', 'справка'],
+        freshness: 'verified',
+        sources: ['src/components/RivalsCatalogPanel.tsx', 'src/data/rivals-catalog.ts'],
+        related: ['panel-rival-labs', 'panel-debate-system-research'],
+        body: `## Назначение
+
+Статический каталог всех \`rivals*\` проектов → сервисов (parity-импорты). Чистая справка и навигация по лаборатории соперников, без рантайм-логики.
+
+## Как пользоваться
+
+Открой \`/rivals-catalog\` → поиск по названию → раскрой проект → просмотри его сервисы.
+
+## Связи
+
+Активная работа с сервисами — [[panel-rival-labs]].`,
+    },
+    {
         slug: 'panel-exceptions',
         title: 'Панель: Исключения (вето)',
         section: 'panels',

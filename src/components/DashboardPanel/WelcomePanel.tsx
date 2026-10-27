@@ -135,6 +135,53 @@ const GROUPS: CardGroup[] = [
         ],
     },
     {
+        label: '🧪 Исследования (7)',
+        cards: [
+            {
+                id: 'research-engine',
+                emoji: '🔎',
+                title: 'Research Engine',
+                text: 'Базовый цикл исследования: вопрос → источники → запуск цикла анализа.',
+            },
+            {
+                id: 'research-advanced',
+                emoji: '🧬',
+                title: 'Research: Advanced',
+                text: 'Продвинутый движок для глубоких, тонких исследований.',
+            },
+            {
+                id: 'debate-system-research',
+                emoji: '🥊',
+                title: 'Debate System Research',
+                text: 'Эксперименты над самими дебатами: стратегии, A/B, стресс-тесты.',
+            },
+            {
+                id: 'research-reports',
+                emoji: '📑',
+                title: 'Research Reports',
+                text: 'Оформи результаты сессий в читаемые отчёты.',
+            },
+            {
+                id: 'hypothesis-gen',
+                emoji: '💡',
+                title: 'Hypothesis Generator',
+                text: 'Сформулируй гипотезу и проверь её авто-дебатом.',
+            },
+            {
+                id: 'rival-labs',
+                emoji: '⚔️',
+                title: 'Rival Labs',
+                text: 'A/B-сравнение альтернативных parity-сервисов по фазам.',
+            },
+            {
+                id: 'rivals-catalog',
+                emoji: '🗂️',
+                title: 'Rivals Projects',
+                text: 'Каталог всех rivals-проектов и сервисов — справка и навигация.',
+            },
+        ],
+    },
+    {
         label: 'Общение',
         cards: [
             {

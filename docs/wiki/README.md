@@ -5,7 +5,7 @@
 > Полная документация системы: панели, агенты, дебаты, память, провайдеры, диагностика, история разработки, архитектура и руководства для разработчиков.
 > Страницы автосгенерированы из корпуса Wiki (`scripts/gen-wiki-docs.mjs`). Та же документация доступна в приложении в панели «Wiki».
 
-Всего материалов: **264** в 13 разделах.
+Всего материалов: **271** в 13 разделах.
 
 > Разработчикам: начните с [Обзор для разработчиков](./dev-overview.md), затем [Структура](./dev-layout.md) и [Каталог компонентов](./dev-component-catalog.md).
 
@@ -14,7 +14,7 @@
 | Раздел | Материалов |
 | --- | --- |
 | Руководство | 8 |
-| Панели | 80 |
+| Панели | 87 |
 | Агенты | 1 |
 | Дебаты | 1 |
 | Знания и память | 3 |
@@ -38,7 +38,7 @@
 - [Карта документации](./docs-index.md) — _verified_
 - [Возможности и сценарии](./scenarios.md) — _verified_
 
-## Панели (80)
+## Панели (87)
 
 - [Панель: Чат](./panel-chat.md) — _verified_
 - [Панель: Обзор (Dashboard)](./panel-dashboard.md) — _verified_
@@ -91,6 +91,13 @@
 - [Панели: Сессии и привязки](./panel-sessions.md) — _verified_
 - [Панель: Хранилище кристаллов](./panel-crystal-vault.md) — _verified_
 - [Панель: Junction-движок](./panel-junction.md) — _verified_
+- [Панель: Исследовательский движок](./panel-research-engine.md) — _verified_
+- [Панель: Исследования — расширенные](./panel-research-advanced.md) — _verified_
+- [Панель: Отчёты исследований](./panel-research-reports.md) — _verified_
+- [Панель: Исследования системы дебатов](./panel-debate-system-research.md) — _verified_
+- [Панель: Генератор гипотез](./panel-hypothesis-generator.md) — _verified_
+- [Панель: Лаборатория соперников (Rival Labs)](./panel-rival-labs.md) — _verified_
+- [Панель: Каталог Rivals-проектов](./panel-rivals-catalog.md) — _verified_
 - [Панель: Исключения (вето)](./panel-exceptions.md) — _verified_
 - [Панель: Линзы](./panel-lenses.md) — _verified_
 - [Панели: Линзы и кристаллы](./panel-lenses-crystals.md) — _verified_
