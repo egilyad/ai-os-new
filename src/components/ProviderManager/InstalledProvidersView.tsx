@@ -83,6 +83,7 @@ const InstalledProvidersView: React.FC<InstalledProvidersViewProps> = React.memo
         };
 
         const handleSort = (col: SortColumn) => {
+            if (!(col in SORT_FNS)) return;
             if (sortColumn === col) {
                 setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'));
             } else {
@@ -146,8 +147,9 @@ const InstalledProvidersView: React.FC<InstalledProvidersViewProps> = React.memo
         );
 
         const sortedKeys = useMemo(() => {
-            if (!sortColumn) return filteredKeys;
-            return [...filteredKeys].sort(SORT_FNS[sortColumn](sortDir));
+            const sortFn = SORT_FNS[sortColumn];
+            if (!sortFn) return filteredKeys;
+            return [...filteredKeys].sort(sortFn(sortDir));
         }, [filteredKeys, sortColumn, sortDir]);
 
         const SortIcon = sortDir === 'asc' ? ArrowUp : ArrowDown;
