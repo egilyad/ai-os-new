@@ -11,10 +11,12 @@ import {
     RefreshCw,
     ThumbsUp,
     ThumbsDown,
+    HelpCircle,
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import type { ChatResponse } from '../../types/chat';
 import ProviderIcon from '../ProviderIcon/ProviderIcon';
+import { routerService } from '../../kernel/instances/services-core';
 import { MarkdownRenderer } from './MarkdownRenderer';
 import { ContextMenu } from '../Common/ContextMenu';
 import {
@@ -36,11 +38,34 @@ interface ResponseCardProps {
     onRegenerate?: (entryId: string) => void;
 }
 
+interface RoutingInfo {
+    strategy: string;
+    selected: string;
+    scores: Array<{ provider: string; score: number }>;
+}
+
+function getLatestRouting(): RoutingInfo | null {
+    try {
+        const history = routerService.getDecisionHistory?.(1) ?? [];
+        const decision = history[0];
+        if (!decision) return null;
+        const top = (decision.scores || [])
+            .slice()
+            .sort((a, b) => b.score - a.score)
+            .slice(0, 3);
+        return { strategy: decision.strategy, selected: decision.selected, scores: top };
+    } catch {
+        return null;
+    }
+}
+
 const ResponseCard: React.FC<ResponseCardProps> = memo(
     ({ res, entryId, displayMode = 'standard', onFork, onRegenerate }) => {
         const { t } = useTranslation();
         const [copied, setCopied] = useState(false);
         const [feedback, setFeedback] = useState<'up' | 'down' | null>(null);
+        const [showWhy, setShowWhy] = useState(false);
+        const routingInfo = getLatestRouting();
         const [ctxMenu, setCtxMenu] = useState<{ x: number; y: number } | null>(null);
         const color = getProviderColor(res?.provider);
         const isStreaming = res.status === 'loading' || res.status === 'streaming';
@@ -133,7 +158,39 @@ const ResponseCard: React.FC<ResponseCardProps> = memo(
                                         style={{ animation: 'spin 1s linear infinite' }}
                                     />
                                 )}
-                                {res.status === 'error' && (
+                {showWhy && res.status === 'done' && (
+                    <div
+                        style={{
+                            marginTop: '0.75rem',
+                            padding: '0.7rem 0.9rem',
+                            borderRadius: 8,
+                            background: 'rgba(255,255,255,0.03)',
+                            border: '1px solid rgba(255,255,255,0.06)',
+                            fontSize: '0.75rem',
+                            color: 'var(--text-muted)',
+                        }}
+                    >
+                        {routingInfo ? (
+                            <>
+                                <div>
+                                    Роутинг: <b style={{ color: 'var(--slate-200)' }}>{routingInfo.strategy}</b> → выбрано{' '}
+                                    <b style={{ color }}>{routingInfo.selected}</b>
+                                </div>
+                                <div style={{ marginTop: 6, fontWeight: 700, color: 'var(--slate-300)' }}>Топ кандидатов</div>
+                                {routingInfo.scores.map((s) => (
+                                    <div key={s.provider} style={{ display: 'flex', justifyContent: 'space-between', marginTop: 2 }}>
+                                        <span>{s.provider}</span>
+                                        <span>{s.score.toFixed(3)}</span>
+                                    </div>
+                                ))}
+                            </>
+                        ) : (
+                            <div>Нет данных о роутинге для этого ответа.</div>
+                        )}
+                    </div>
+                )}
+
+                {res.status === 'error' && (
                                     <AlertCircle size={12} color="#ef4444" />
                                 )}
                                 {res.status === 'streaming' && (
@@ -174,6 +231,20 @@ const ResponseCard: React.FC<ResponseCardProps> = memo(
                         )}
                         {res.status === 'done' && (
                             <div style={{ display: 'flex', gap: '0.25rem' }}>
+                                <button
+                                    onClick={() => setShowWhy((v) => !v)}
+                                    title="Почему такой ответ"
+                                    aria-label="Почему такой ответ"
+                                    style={{
+                                        background: 'none',
+                                        border: 'none',
+                                        color: showWhy ? '#60a5fa' : 'var(--text-muted)',
+                                        cursor: 'pointer',
+                                        padding: 4,
+                                    }}
+                                >
+                                    <HelpCircle size={13} aria-hidden="true" />
+                                </button>
                                 <button
                                     onClick={() => setFeedback(feedback === 'up' ? null : 'up')}
                                     title={t('chat.helpful')}
