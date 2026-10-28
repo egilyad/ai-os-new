@@ -9933,6 +9933,16 @@
       "status": "live"
     },
     {
+      "id": "panel:research-cockpit",
+      "type": "panel",
+      "panelId": "research-cockpit",
+      "section": "research",
+      "route": "/research-cockpit",
+      "component": "src/components/ResearchCockpit/ResearchCockpit",
+      "article": null,
+      "status": "live"
+    },
+    {
       "id": "panel:debate-system-research",
       "type": "panel",
       "panelId": "debate-system-research",

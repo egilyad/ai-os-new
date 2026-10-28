@@ -11,7 +11,7 @@
 > Автосгенерировано `scripts/gen-wiki-panel-catalog.mjs` из реестра маршрутов,
 > `route-imports.ts`, локалей `nav.*` и карты статей вики. Не редактировать вручную.
 
-Панелей: **267** · с компонентом: **266** · со статьёй: **202** · всего разделов: **20**.
+Панелей: **268** · с компонентом: **267** · со статьёй: **202** · всего разделов: **20**.
 
 | Раздел | Панель | Маршрут | Компонент | Статья |
 | --- | --- | --- | --- | --- |
@@ -214,6 +214,7 @@
 | Google AI | Gemini Live `gemini-live` | `/gemini-live` | `src/components/GeminiLivePanel` | [Панели: Провайдерские дополнения](./panel-providers-extra.md) |
 | Google AI | исследование Gemini `research-gemini` | `/research-gemini` | `src/components/GeminiResearch/GeminiResearchPanel` | [Панели: Исследование (расширенное и Gemini)](./panel-research-extra.md) |
 | Исследования | Исследовательский движок `research-engine` | `/research-engine` | `src/components/ResearchPanel/ResearchEnginePanel` | [Панель: Исследовательский движок](./panel-research.md) |
+| Исследования | Research Cockpit `research-cockpit` | `/research-cockpit` | `src/components/ResearchCockpit/ResearchCockpit` | — |
 | Исследования | Исследование дебатов `debate-system-research` | `/debate-system-research` | `src/components/DebateResearch/DebateSystemResearch` | [Панели: Исследования системы дебатов](./panel-debate-research.md) |
 | Исследования | исследовательские отчёты `research-reports` | `/research-reports` | `src/components/ResearchReportPanel` | [Панель: Исследовательский движок](./panel-research.md) |
 | Исследования | Расширенное исследование `research-advanced` | `/research-advanced` | `src/components/ResearchPanel/ResearchEngineAdvancedPanel` | [Панели: Исследование (расширенное и Gemini)](./panel-research-extra.md) |

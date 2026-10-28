@@ -3,13 +3,13 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 1415,
+    "nodes": 1416,
     "edges": 3700,
     "byType": {
       "audit": 75,
       "code": 599,
       "test": 198,
-      "panel": 267,
+      "panel": 268,
       "article": 276
     },
     "byKind": {
@@ -5924,6 +5924,13 @@
       "label": "research-advanced",
       "section": "research",
       "route": "/research-advanced"
+    },
+    {
+      "id": "panel:research-cockpit",
+      "type": "panel",
+      "label": "research-cockpit",
+      "section": "research",
+      "route": "/research-cockpit"
     },
     {
       "id": "panel:research-engine",

@@ -7581,8 +7581,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Матрица покрытия",
-      "bytes": 8617,
-      "hash": "b85aec45256dcf255589bf7c8dc4dd80b6a43fb5"
+      "bytes": 8649,
+      "hash": "2bdf21fccc25594956f127aed5c9d5f4678af564"
     },
     {
       "path": "docs/wiki/debate-strategies-cheatsheet.md",
@@ -7630,7 +7630,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4076,
-      "hash": "c6132628269efde96112bf071fdcde01dbb2f27c"
+      "hash": "b3063d00039d1f140c1cb326538459abd169503e"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -7718,7 +7718,7 @@
       "language": "ru",
       "title": "Граф знаний",
       "bytes": 4837,
-      "hash": "b534f81cfedaf531d6174c1e6fd8ab1a98c15704"
+      "hash": "8a683c9353fb9020fb09c5e67b50a2cf4c63d39e"
     },
     {
       "path": "docs/wiki/dev-history.md",
@@ -8693,8 +8693,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Каталог панелей: раздел → маршрут → компонент → статья",
-      "bytes": 53383,
-      "hash": "3c4453cb6d7d00fa26b3a147575c966b362dc759"
+      "bytes": 53529,
+      "hash": "e02b42610dfe6463fa8aaf4491b73eba7c012b39"
     },
     {
       "path": "docs/wiki/panels-guide.md",
@@ -8741,8 +8741,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Возможности и сценарии",
-      "bytes": 10062,
-      "hash": "e6bfe785930bef8ce968e41891e6fc22c5d045ac"
+      "bytes": 9976,
+      "hash": "b002f9c17a767324d168991d6900f26c3d2e61af"
     },
     {
       "path": "docs/wiki/system-audit-prompt.md",

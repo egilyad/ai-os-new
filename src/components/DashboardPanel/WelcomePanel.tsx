@@ -144,6 +144,12 @@ const GROUPS: CardGroup[] = [
                 text: 'Базовый цикл исследования: вопрос → источники → запуск цикла анализа.',
             },
             {
+                id: 'research-cockpit',
+                emoji: '🎯',
+                title: 'Research Cockpit',
+                text: 'Единая рабочая область: гипотеза, бюджет, источники, провайдеры, роутинг.',
+            },
+            {
                 id: 'research-advanced',
                 emoji: '🧬',
                 title: 'Research: Advanced',

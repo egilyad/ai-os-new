@@ -111,6 +111,7 @@ const RolesConsortiaPanel = React.lazy(() => import('./components/RolesPanel/Rol
 const ResearchEnginePanelLazy = React.lazy(
     () => import('./components/ResearchPanel/ResearchEnginePanel'),
 );
+const ResearchCockpitPanelLazy = React.lazy(() => import('./components/ResearchCockpit/ResearchCockpit'));
 const ResearchEngineAdvancedPanelLazy = React.lazy(
     () => import('./components/ResearchPanel/ResearchEngineAdvancedPanel'),
 );
@@ -363,6 +364,7 @@ export const PANEL_COMPONENTS: Record<string, React.ComponentType<any>> = {
     'obs-gaps': ObsGaps,
     'debate-system-research': DebateSystemResearch,
     'research-engine': ResearchEnginePanelLazy,
+    'research-cockpit': ResearchCockpitPanelLazy,
     skills: SkillsPanelLazy,
     tools: ToolsPanelLazy,
     cache: CachePanel,

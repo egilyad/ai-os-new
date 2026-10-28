@@ -175,6 +175,14 @@ export const CONTENT_SECTIONS: NavSection[] = [
                 experimental: true,
             },
             {
+                id: 'research-cockpit',
+                labelKey: 'nav.research_cockpit',
+                icon: Icons.crosshair,
+                color: '#8b5cf6',
+                lazy: true,
+                experimental: true,
+            },
+            {
                 id: 'debate-system-research',
                 labelKey: 'nav.debate_system_research',
                 icon: Icons.flaskConical,

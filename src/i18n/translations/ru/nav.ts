@@ -285,6 +285,7 @@ const nav: Record<string, string> = {
     'nav.cost_optimization': 'Оптимизация стоимости',
     'nav.ab_testing': 'A/B-тестирование',
     'nav.research_engine': 'Исследовательский движок',
+    'nav.research_cockpit': 'Research Cockpit',
     'nav.tutorials': 'руководства',
     'nav.team_collaboration': 'командная работа',
     'nav.model_distillation': 'Дистилляция моделей',
