@@ -2,6 +2,15 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { NAV_SECTIONS } from '../../route-registry';
 import { useTranslation } from '../../i18n/useTranslation';
+import { agentService, sessionManager } from '../../kernel/instances';
+import { crystalVault } from '../../kernel/instances/services-extras';
+
+interface PaletteItem {
+    id: string;
+    label: string;
+    section: string;
+    target: string;
+}
 
 const CommandPalette: React.FC = () => {
     const { t } = useTranslation();
@@ -10,6 +19,7 @@ const CommandPalette: React.FC = () => {
     const [query, setQuery] = useState('');
     const [idx, setIdx] = useState(0);
     const inputRef = useRef<HTMLInputElement>(null);
+    const [dynamic, setDynamic] = useState<PaletteItem[]>([]);
 
     useEffect(() => {
         const onKey = (e: KeyboardEvent) => {
@@ -33,25 +43,80 @@ const CommandPalette: React.FC = () => {
         return undefined;
     }, [open]);
 
-    const items = useMemo(
+    useEffect(() => {
+        if (!open) return;
+        let cancelled = false;
+        const load = async () => {
+            const out: PaletteItem[] = [];
+            try {
+                const agents = agentService.getAgents?.() ?? [];
+                agents.slice(0, 8).forEach((a) => {
+                    out.push({
+                        id: `ag:${a.id}`,
+                        label: a.name || String(a.id),
+                        section: 'Агент',
+                        target: 'agents',
+                    });
+                });
+            } catch {
+                /* ignore */
+            }
+            try {
+                const sessions = sessionManager.getDebateHistory?.() ?? [];
+                sessions.slice(0, 8).forEach((s) => {
+                    out.push({
+                        id: `sess:${s.id}`,
+                        label: String(s.topic || '').slice(0, 50),
+                        section: 'Дебат-сессия',
+                        target: 'debate-history',
+                    });
+                });
+            } catch {
+                /* ignore */
+            }
+            try {
+                const crystals = ((await crystalVault.list?.()) ?? []) as Array<Record<string, unknown>>;
+                crystals.slice(0, 8).forEach((c) => {
+                    out.push({
+                        id: `cr:${String(c.id)}`,
+                        label: String(c.claim ?? c.text ?? c.title ?? '').slice(0, 50),
+                        section: 'Кристалл',
+                        target: 'crystal-vault',
+                    });
+                });
+            } catch {
+                /* ignore */
+            }
+            if (!cancelled) setDynamic(out);
+        };
+        void load();
+        return () => {
+            cancelled = true;
+        };
+    }, [open]);
+
+    const panels = useMemo<PaletteItem[]>(
         () =>
             NAV_SECTIONS.flatMap((s) =>
                 s.items.map((item) => ({
                     id: item.id,
                     label: t(item.labelKey),
                     section: t(s.labelKey),
+                    target: item.id,
                 })),
             ),
         [t],
     );
 
+    const all = useMemo(() => [...panels, ...dynamic], [panels, dynamic]);
+
     const filtered = useMemo(() => {
         const q = query.trim().toLowerCase();
-        if (!q) return items.slice(0, 12);
-        return items
-            .filter((it) => it.label.toLowerCase().includes(q) || it.id.toLowerCase().includes(q))
-            .slice(0, 12);
-    }, [items, query]);
+        const list = q
+            ? all.filter((it) => it.label.toLowerCase().includes(q) || it.id.toLowerCase().includes(q))
+            : all;
+        return list.slice(0, 14);
+    }, [all, query]);
 
     useEffect(() => {
         setIdx(0);
@@ -59,8 +124,8 @@ const CommandPalette: React.FC = () => {
 
     if (!open) return null;
 
-    const handleSelect = (id: string) => {
-        navigate(`/${id}`);
+    const handleSelect = (item: PaletteItem) => {
+        navigate(`/${item.target}`);
         setOpen(false);
         setQuery('');
     };
@@ -74,7 +139,7 @@ const CommandPalette: React.FC = () => {
             setIdx((i) => Math.max(i - 1, 0));
         } else if (e.key === 'Enter') {
             const target = filtered[idx];
-            if (target) handleSelect(target.id);
+            if (target) handleSelect(target);
         } else if (e.key === 'Escape') {
             setOpen(false);
             setQuery('');
@@ -112,7 +177,7 @@ const CommandPalette: React.FC = () => {
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
                     onKeyDown={onInputKeyDown}
-                    placeholder="Поиск по панелям… (Ctrl+K)"
+                    placeholder="Поиск: панели, агенты, сессии, кристаллы… (Ctrl+K)"
                     style={{
                         width: '100%',
                         padding: '0.9rem 1rem',
@@ -133,7 +198,7 @@ const CommandPalette: React.FC = () => {
                         filtered.map((it, i) => (
                             <div
                                 key={it.id}
-                                onClick={() => handleSelect(it.id)}
+                                onClick={() => handleSelect(it)}
                                 onMouseEnter={() => setIdx(i)}
                                 style={{
                                     padding: '0.5rem 0.7rem',
@@ -145,7 +210,7 @@ const CommandPalette: React.FC = () => {
                             >
                                 <div style={{ fontSize: 14, fontWeight: 600 }}>{it.label}</div>
                                 <div style={{ fontSize: 11, color: 'var(--slate-500)' }}>
-                                    {it.section} · /{it.id}
+                                    {it.section} · /{it.target}
                                 </div>
                             </div>
                         ))
