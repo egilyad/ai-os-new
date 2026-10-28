@@ -47,6 +47,45 @@ const LOGGER = rootLogger.child('ResearchEngine');
 const MAX_SESSIONS = 50;
 const MAX_SUMMARIES_PER_SESSION = 20;
 
+function simpleHash(s: string): number {
+    let h = 5381;
+    for (let i = 0; i < s.length; i += 1) {
+        h = ((h << 5) + h + s.charCodeAt(i)) | 0;
+    }
+    return h;
+}
+
+function normalizeUrl(u: string): string {
+    try {
+        const p = new URL(u);
+        p.hash = '';
+        return `${p.origin}${p.pathname}`.replace(/\/$/, '').toLowerCase();
+    } catch {
+        return u.toLowerCase().replace(/\/$/, '');
+    }
+}
+
+/**
+ * De-duplicate sources before extraction: canonical URL (origin + pathname)
+ * and a content hash over title + snippet catch both exact repeats and
+ * near-duplicate search hits, so sub-agents do not pull the same document
+ * many times.
+ */
+function deduplicateSources(sources: ResearchSource[]): ResearchSource[] {
+    const seenUrl = new Set<string>();
+    const seenHash = new Set<number>();
+    const out: ResearchSource[] = [];
+    for (const s of sources) {
+        const urlKey = normalizeUrl(s.url || '');
+        const hashKey = simpleHash(`${s.title || ''}|${(s.snippet || '').slice(0, 120)}`);
+        if (seenUrl.has(urlKey) || seenHash.has(hashKey)) continue;
+        seenUrl.add(urlKey);
+        seenHash.add(hashKey);
+        out.push(s);
+    }
+    return out;
+}
+
 interface ResearchEngineState {
     sessions: Record<string, ResearchSession>;
     citationGraphs: Record<string, CitationGraph>;
@@ -306,7 +345,7 @@ export class ResearchEngineService implements IResearchEngine {
                     setTimeout(() => reject(new Error('searchSources timed out')), 30000),
                 ),
             ]);
-            result.sources = sources;
+            result.sources = deduplicateSources(sources);
 
             if (effectiveSignal.aborted) throw new DOMException('Aborted', 'AbortError');
             result.status = 'extracting';
