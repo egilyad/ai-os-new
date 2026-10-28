@@ -9,6 +9,7 @@ import {
     knowledgeGenerator,
 } from '../../kernel/instances';
 import { routerService } from '../../kernel/instances/services-core';
+import CoverageLens from '../GraphWorkbenchPanel/CoverageLens';
 
 function safeCall<T>(fn: () => T, fallback: T): T {
     try {
@@ -445,6 +446,27 @@ const ResearchCockpit: React.FC = () => {
                         </div>
                     )}
                 </Card>
+            </div>
+
+            <div
+                style={{
+                    padding: '0.8rem 1rem',
+                    borderRadius: 12,
+                    border: '1px solid rgba(255,255,255,0.08)',
+                    background: 'rgba(0,0,0,0.18)',
+                }}
+            >
+                <div
+                    style={{
+                        fontSize: 13,
+                        fontWeight: 700,
+                        color: 'var(--slate-200)',
+                        marginBottom: 8,
+                    }}
+                >
+                    Карта покрытия памяти (treemap)
+                </div>
+                <CoverageLens />
             </div>
 
             {processes.length > 0 && (
