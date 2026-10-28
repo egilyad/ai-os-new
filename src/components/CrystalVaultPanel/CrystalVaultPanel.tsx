@@ -1,7 +1,8 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Gem, Plus, Search, RefreshCw } from 'lucide-react';
 import { useTranslation } from '../../i18n/useTranslation';
-import { crystalVault } from '../../kernel/instances';
+import { crystalVault, eventBus } from '../../kernel/instances';
+import { EVENTS } from '../../kernel/events/event-registry';
 import { seedCrystalsDemo } from '../../kernel/services/crystal-vault/crystals-demo-seed';
 import type { Crystal } from '../../kernel/types/crystal-types';
 import CrystalCard from './CrystalCard';
@@ -48,6 +49,19 @@ const CrystalVaultPanel: React.FC = () => {
     }, [seedingDemo, refresh]);
     useEffect(() => {
         void refresh();
+    }, [refresh]);
+
+    useEffect(() => {
+        const unsubSuperseded = eventBus.on(EVENTS.CRYSTAL_SUPERSEDED, () => {
+            void refresh();
+        });
+        const unsubRefuted = eventBus.on(EVENTS.CRYSTAL_REFUTED, () => {
+            void refresh();
+        });
+        return () => {
+            unsubSuperseded();
+            unsubRefuted();
+        };
     }, [refresh]);
 
     const filtered = useMemo(() => {
@@ -148,7 +162,9 @@ const CrystalVaultPanel: React.FC = () => {
             >
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                     <Gem size={18} color="#10b981" />
-                    <span style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--slate-50)' }}>
+                    <span
+                        style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--slate-50)' }}
+                    >
                         {t('lenses_crystal.title')}
                     </span>
                     <span style={{ fontSize: '0.72rem', color: 'var(--slate-500)' }}>
@@ -305,7 +321,9 @@ const CrystalVaultPanel: React.FC = () => {
             {/* List */}
             <div style={{ flex: 1, overflowY: 'auto', padding: '0.75rem 1rem' }}>
                 {filtered.length === 0 ? (
-                    <div style={{ textAlign: 'center', padding: '3rem', color: 'var(--slate-500)' }}>
+                    <div
+                        style={{ textAlign: 'center', padding: '3rem', color: 'var(--slate-500)' }}
+                    >
                         <Gem size={40} opacity={0.25} style={{ marginBottom: '0.75rem' }} />
                         <div style={{ fontSize: '0.9rem' }}>{t('lenses_crystal.empty')}</div>
                     </div>
@@ -383,7 +401,13 @@ const SupersedeModal: React.FC<{
                 >
                     {t('lenses_crystal.supersede')}
                 </div>
-                <div style={{ fontSize: '0.72rem', color: 'var(--slate-500)', marginBottom: '0.5rem' }}>
+                <div
+                    style={{
+                        fontSize: '0.72rem',
+                        color: 'var(--slate-500)',
+                        marginBottom: '0.5rem',
+                    }}
+                >
                     {crystal.content.statement}
                 </div>
                 <textarea

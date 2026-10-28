@@ -1,7 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Waypoints, RefreshCw, Radar } from 'lucide-react';
 import { useTranslation } from '../../i18n/useTranslation';
-import { junctionEngine } from '../../kernel/instances';
+import { junctionEngine, eventBus } from '../../kernel/instances';
+import { EVENTS } from '../../kernel/events/event-registry';
 import { seedJunctionDemo } from '../../kernel/services/junction-engine/junction-demo-seed';
 import type { Junction } from '../../kernel/types/junction-types';
 import type { JunctionSourceView } from '../../kernel/contracts/junction-engine';
@@ -28,6 +29,23 @@ const JunctionPanel: React.FC = () => {
 
     useEffect(() => {
         void refresh();
+    }, [refresh]);
+
+    useEffect(() => {
+        const unsubDetected = eventBus.on(EVENTS.JUNCTION_DETECTED, () => {
+            void refresh();
+        });
+        const unsubValidated = eventBus.on(EVENTS.JUNCTION_VALIDATED, () => {
+            void refresh();
+        });
+        const unsubRejected = eventBus.on(EVENTS.JUNCTION_REJECTED, () => {
+            void refresh();
+        });
+        return () => {
+            unsubDetected();
+            unsubValidated();
+            unsubRejected();
+        };
     }, [refresh]);
 
     const handleSeedDemo = async () => {
@@ -87,7 +105,9 @@ const JunctionPanel: React.FC = () => {
             >
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                     <Waypoints size={18} color="#8b5cf6" />
-                    <span style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--slate-50)' }}>
+                    <span
+                        style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--slate-50)' }}
+                    >
                         {t('junctions.title')}
                     </span>
                     <span style={{ fontSize: '0.72rem', color: 'var(--slate-500)' }}>
