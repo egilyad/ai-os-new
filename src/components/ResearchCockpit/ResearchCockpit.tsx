@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Target, Wallet, Database, Zap, ArrowRight, Lightbulb } from 'lucide-react';
 import { budgetService, researchEngine } from '../../kernel/instances/services-extras';
@@ -75,6 +75,9 @@ const ResearchCockpit: React.FC = () => {
     const navigate = useNavigate();
     const [hypothesis, setHypothesis] = useState('');
     const [launching, setLaunching] = useState(false);
+    const [sessions, setSessions] = useState<
+        Array<{ id: string; title: string; status: string; createdAt: number }>
+    >([]);
 
     const handleLaunch = async () => {
         const q = hypothesis.trim();
@@ -87,8 +90,25 @@ const ResearchCockpit: React.FC = () => {
             navigate('/research-engine');
         } finally {
             setLaunching(false);
+            void refreshSessions();
         }
     };
+
+    const refreshSessions = () => {
+        const all = safeCall(() => researchEngine.getAllSessions?.(), []);
+        const list = (Array.isArray(all) ? all : []).slice(0, 5).map((s) => ({
+            id: String(s.id),
+            title: String(s.title ?? s.initialQuestion ?? ''),
+            status: String(s.status ?? ''),
+            createdAt: Number(s.createdAt ?? 0),
+        }));
+        setSessions(list);
+    };
+
+    useEffect(() => {
+        refreshSessions();
+         
+    }, []);
 
     const spend = safeCall(() => budgetService.getSpendSummary?.(), null);
     const memStats = safeCall(() => memoryService.getStats?.(), null);
@@ -307,6 +327,72 @@ const ResearchCockpit: React.FC = () => {
                     )}
                 </Card>
             </div>
+
+            {sessions.length > 0 && (
+                <div
+                    style={{
+                        padding: '0.8rem 1rem',
+                        borderRadius: 12,
+                        border: '1px solid rgba(255,255,255,0.08)',
+                        background: 'rgba(0,0,0,0.18)',
+                    }}
+                >
+                    <div
+                        style={{
+                            fontSize: 13,
+                            fontWeight: 700,
+                            color: 'var(--slate-200)',
+                            marginBottom: 8,
+                        }}
+                    >
+                        Последние исследования
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                        {sessions.map((s) => (
+                            <button
+                                key={s.id}
+                                onClick={() =>
+                                    navigate(`/research-engine?session=${encodeURIComponent(s.id)}`)
+                                }
+                                style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: 10,
+                                    padding: '0.45rem 0.7rem',
+                                    borderRadius: 8,
+                                    border: '1px solid rgba(255,255,255,0.06)',
+                                    background: 'rgba(255,255,255,0.02)',
+                                    color: 'var(--slate-200)',
+                                    cursor: 'pointer',
+                                    fontSize: 12,
+                                    textAlign: 'left',
+                                }}
+                            >
+                                <span
+                                    style={{
+                                        flex: 1,
+                                        overflow: 'hidden',
+                                        textOverflow: 'ellipsis',
+                                        whiteSpace: 'nowrap',
+                                    }}
+                                >
+                                    {s.title}
+                                </span>
+                                <span
+                                    style={{
+                                        fontSize: 11,
+                                        color: 'var(--slate-500)',
+                                        whiteSpace: 'nowrap',
+                                    }}
+                                >
+                                    {s.status}
+                                </span>
+                                <ArrowRight size={13} />
+                            </button>
+                        ))}
+                    </div>
+                </div>
+            )}
 
             <div
                 style={{
