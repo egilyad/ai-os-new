@@ -146,8 +146,8 @@ const GROUPS: CardGroup[] = [
             {
                 id: 'research-cockpit',
                 emoji: '🎯',
-                title: 'Research Cockpit',
-                text: 'Единая рабочая область: гипотеза, бюджет, источники, провайдеры, роутинг.',
+                title: 'Deep Research',
+                text: 'Запусти глубокое исследование: гипотеза, связанная память, покрытие тем, активные процессы, бюджет и провайдеры (UCB1).',
             },
             {
                 id: 'research-advanced',
@@ -404,7 +404,13 @@ const WelcomePanel: React.FC<WelcomePanelProps> = ({ onNavigate }) => {
                         >
                             Привет! 👋 Это твоя система ИИ.
                         </div>
-                        <div style={{ fontSize: '0.9rem', color: 'var(--slate-300)', lineHeight: 1.6 }}>
+                        <div
+                            style={{
+                                fontSize: '0.9rem',
+                                color: 'var(--slate-300)',
+                                lineHeight: 1.6,
+                            }}
+                        >
                             Здесь можно всё: спросить совет, провести дебат, собрать исследование и
                             запомнить важное. Ниже — главные разделы, с которых удобно начать. ✨
                         </div>
@@ -413,7 +419,14 @@ const WelcomePanel: React.FC<WelcomePanelProps> = ({ onNavigate }) => {
             </div>
 
             <div>
-                <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--slate-400)', marginBottom: '0.6rem' }}>
+                <div
+                    style={{
+                        fontSize: '0.85rem',
+                        fontWeight: 700,
+                        color: 'var(--slate-400)',
+                        marginBottom: '0.6rem',
+                    }}
+                >
                     ⚡ Быстрые действия
                 </div>
                 <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
@@ -449,13 +462,20 @@ const WelcomePanel: React.FC<WelcomePanelProps> = ({ onNavigate }) => {
                     background: 'rgba(34,197,94,0.06)',
                 }}
             >
-                <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--slate-200)', marginBottom: '0.5rem' }}>
+                <div
+                    style={{
+                        fontSize: '0.85rem',
+                        fontWeight: 700,
+                        color: 'var(--slate-200)',
+                        marginBottom: '0.5rem',
+                    }}
+                >
                     🧭 Как провести тему через конвейер знаний
                 </div>
                 <div style={{ fontSize: '0.82rem', color: 'var(--slate-400)', lineHeight: 1.7 }}>
-                    1. <b>База знаний</b> — найди существующие знания по теме. · 2. <b>Кристаллы</b> —
-                    зафиксируй проверенные утверждения. · 3. <b>Junction</b> — обнаружь связи между
-                    источниками. · 4. <b>Синтез</b> — собери мультиперспективный вывод. · 5.{' '}
+                    1. <b>База знаний</b> — найди существующие знания по теме. · 2. <b>Кристаллы</b>{' '}
+                    — зафиксируй проверенные утверждения. · 3. <b>Junction</b> — обнаружь связи
+                    между источниками. · 4. <b>Синтез</b> — собери мультиперспективный вывод. · 5.{' '}
                     <b>Генератор знаний</b> — проведи автономный цикл и получи новые знания.
                 </div>
             </div>
@@ -468,13 +488,20 @@ const WelcomePanel: React.FC<WelcomePanelProps> = ({ onNavigate }) => {
                     background: 'rgba(59,130,246,0.06)',
                 }}
             >
-                <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--slate-200)', marginBottom: '0.5rem' }}>
+                <div
+                    style={{
+                        fontSize: '0.85rem',
+                        fontWeight: 700,
+                        color: 'var(--slate-200)',
+                        marginBottom: '0.5rem',
+                    }}
+                >
                     🔀 Режимы работы — выбери под вопрос
                 </div>
                 <div style={{ fontSize: '0.82rem', color: 'var(--slate-400)', lineHeight: 1.7 }}>
                     <b>Понять тему</b> → конвейер знаний (5 шагов выше). · <b>Изучить новое</b> →{' '}
-                    Research Engine + Hypothesis Generator + Reports. · <b>Система странно ведёт себя</b>{' '}
-                    → аудиты (классы дефектов).
+                    Research Engine + Hypothesis Generator + Reports. ·{' '}
+                    <b>Система странно ведёт себя</b> → аудиты (классы дефектов).
                 </div>
                 <button
                     onClick={() => onNavigate('wiki')}
@@ -496,10 +523,23 @@ const WelcomePanel: React.FC<WelcomePanelProps> = ({ onNavigate }) => {
 
             {GROUPS.map((g) => (
                 <div key={g.label}>
-                    <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--slate-400)', marginBottom: '0.6rem' }}>
+                    <div
+                        style={{
+                            fontSize: '0.85rem',
+                            fontWeight: 700,
+                            color: 'var(--slate-400)',
+                            marginBottom: '0.6rem',
+                        }}
+                    >
                         {g.label}
                     </div>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1rem' }}>
+                    <div
+                        style={{
+                            display: 'grid',
+                            gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+                            gap: '1rem',
+                        }}
+                    >
                         {g.cards.map((s) => (
                             <div
                                 key={s.id}
@@ -510,14 +550,28 @@ const WelcomePanel: React.FC<WelcomePanelProps> = ({ onNavigate }) => {
                                     padding: '1.25rem',
                                     borderRadius: 16,
                                     border: '1px solid rgba(255,255,255,0.06)',
-                                    background: 'linear-gradient(145deg, rgba(255,255,255,0.03), rgba(0,0,0,0.2))',
+                                    background:
+                                        'linear-gradient(145deg, rgba(255,255,255,0.03), rgba(0,0,0,0.2))',
                                 }}
                             >
                                 <div style={{ fontSize: '1.6rem' }}>{s.emoji}</div>
-                                <div style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--slate-50)' }}>
+                                <div
+                                    style={{
+                                        fontSize: '1rem',
+                                        fontWeight: 700,
+                                        color: 'var(--slate-50)',
+                                    }}
+                                >
                                     {s.title}
                                 </div>
-                                <div style={{ fontSize: '0.82rem', color: 'var(--slate-400)', lineHeight: 1.5, flex: 1 }}>
+                                <div
+                                    style={{
+                                        fontSize: '0.82rem',
+                                        color: 'var(--slate-400)',
+                                        lineHeight: 1.5,
+                                        flex: 1,
+                                    }}
+                                >
                                     {s.text}
                                 </div>
                                 <button

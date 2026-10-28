@@ -52,6 +52,7 @@ export const PANEL_ARTICLES: Record<string, string> = {
     'project-os': 'panel-projects',
     'research-engine': 'panel-research',
     'research-reports': 'panel-research',
+    'research-cockpit': 'panel-research-cockpit',
     synthesis: 'panel-synthesis',
     scheduler: 'panel-scheduler',
     director: 'panel-director',

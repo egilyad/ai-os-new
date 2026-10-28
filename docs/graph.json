@@ -3,22 +3,22 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 1423,
-    "edges": 3712,
+    "nodes": 1426,
+    "edges": 3724,
     "byType": {
       "audit": 75,
-      "code": 605,
+      "code": 607,
       "test": 198,
       "panel": 268,
-      "article": 277
+      "article": 278
     },
     "byKind": {
       "audit_test": 336,
       "audit_mention": 929,
-      "documents": 203,
-      "source": 885,
+      "documents": 204,
+      "source": 892,
       "test": 293,
-      "related": 1066
+      "related": 1070
     }
   },
   "nodes": [
@@ -1526,6 +1526,11 @@
       "id": "file:src/components/QualityImpactDashboard/QualityImpactDashboardPanel",
       "type": "code",
       "label": "src/components/QualityImpactDashboard/QualityImpactDashboardPanel"
+    },
+    {
+      "id": "file:src/components/ResearchCockpit/ResearchCockpit.tsx",
+      "type": "code",
+      "label": "src/components/ResearchCockpit/ResearchCockpit.tsx"
     },
     {
       "id": "file:src/components/ResearchPanel/ResearchEngineAdvancedPanel",
@@ -3541,6 +3546,11 @@
       "id": "file:src/kernel/services/reconnection-service.ts",
       "type": "code",
       "label": "src/kernel/services/reconnection-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/research-algorithms.ts",
+      "type": "code",
+      "label": "src/kernel/services/research-algorithms.ts"
     },
     {
       "id": "file:src/kernel/services/research-engine-service.ts",
@@ -7996,6 +8006,13 @@
       "id": "wiki:panel-research-advanced",
       "type": "article",
       "label": "Панель: Исследования — расширенные",
+      "section": "panels",
+      "status": "verified"
+    },
+    {
+      "id": "wiki:panel-research-cockpit",
+      "type": "article",
+      "label": "Deep Research",
       "section": "panels",
       "status": "verified"
     },
@@ -15457,6 +15474,11 @@
     {
       "from": "panel:research-advanced",
       "to": "wiki:panel-research-extra",
+      "kind": "documents"
+    },
+    {
+      "from": "panel:research-cockpit",
+      "to": "wiki:panel-research-cockpit",
       "kind": "documents"
     },
     {
@@ -25857,6 +25879,61 @@
     {
       "from": "wiki:panel-research-advanced",
       "to": "wiki:panel-research-reports",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:panel-research-cockpit",
+      "to": "file:src/components/GraphWorkbenchPanel/CalibrationLens.tsx",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:panel-research-cockpit",
+      "to": "file:src/components/GraphWorkbenchPanel/CoverageLens.tsx",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:panel-research-cockpit",
+      "to": "file:src/components/GraphWorkbenchPanel/DebateLens.tsx",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:panel-research-cockpit",
+      "to": "file:src/components/GraphWorkbenchPanel/GraphWorkbenchPanel.tsx",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:panel-research-cockpit",
+      "to": "file:src/components/ResearchCockpit/ResearchCockpit.tsx",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:panel-research-cockpit",
+      "to": "file:src/kernel/services/research-algorithms.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:panel-research-cockpit",
+      "to": "file:src/kernel/services/research-engine-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:panel-research-cockpit",
+      "to": "wiki:memory-center-audit",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:panel-research-cockpit",
+      "to": "wiki:panel-debate-live",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:panel-research-cockpit",
+      "to": "wiki:panel-graph-workbench",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:panel-research-cockpit",
+      "to": "wiki:panel-research",
       "kind": "related"
     },
     {

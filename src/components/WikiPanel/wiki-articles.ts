@@ -17,6 +17,7 @@ import { MEMORY_AUDIT_ARTICLES } from './wiki-memory-audit';
 import { ASSISTANT_ARTICLES } from './wiki-assistant';
 import { SYSTEM_AUDIT_PROMPT_ARTICLE } from './wiki-system-audit-prompt';
 import { GRAPH_WORKBENCH_ARTICLE } from './wiki-graph-workbench';
+import { RESEARCH_DEEP_ARTICLE } from './wiki-research-deep';
 import type { WikiArticle, WikiFreshness, WikiSection } from './wiki-types';
 
 export type { WikiArticle, WikiFreshness, WikiSection } from './wiki-types';
@@ -561,7 +562,6 @@ flowchart LR
 - Просто любопытно → листай **Wiki** и читай про любой компонент.
 
 **Ты уже создал нечто большое. Теперь научимся использовать это на полную.** 🚀`,
-
     },
     {
         slug: 'scenario-map',
@@ -865,7 +865,10 @@ flowchart LR
         section: 'panels',
         tags: ['панель', 'чат', 'инструкция'],
         freshness: 'verified',
-        sources: ['src/components/ChatPanel/ChatPanel.tsx', 'src/components/ChatPanel/MarkdownRenderer.tsx'],
+        sources: [
+            'src/components/ChatPanel/ChatPanel.tsx',
+            'src/components/ChatPanel/MarkdownRenderer.tsx',
+        ],
         related: ['providers', 'panel-providers', 'memory', 'zone-1'],
         body: `## Назначение
 
@@ -931,7 +934,10 @@ sequenceDiagram
         section: 'panels',
         tags: ['панель', 'ключи', 'инструкция', 'безопасность'],
         freshness: 'verified',
-        sources: ['src/components/ProviderManager/', 'src/kernel/services/key-management/key-service.ts'],
+        sources: [
+            'src/components/ProviderManager/',
+            'src/kernel/services/key-management/key-service.ts',
+        ],
         related: ['providers', 'panel-chat', 'diagnostics', 'zone-1'],
         body: `## Назначение
 
@@ -973,7 +979,10 @@ Providers → Installed → Add Key → вставить ключ → дожда
         section: 'panels',
         tags: ['панель', 'настройки', 'конфиг', 'инструкция'],
         freshness: 'verified',
-        sources: ['src/components/SettingsPanel/SettingsPanel.tsx', 'src/i18n/translations/en/settings.ts'],
+        sources: [
+            'src/components/SettingsPanel/SettingsPanel.tsx',
+            'src/i18n/translations/en/settings.ts',
+        ],
         related: ['providers', 'diagnostics', 'dev-i18n-catalog', 'panel-providers', 'zone-9'],
         body: `## Назначение
 
@@ -1009,7 +1018,13 @@ Providers → Installed → Add Key → вставить ключ → дожда
         section: 'panels',
         tags: ['панель', 'governance', 'политики', 'guardrails', 'инструкция'],
         freshness: 'verified',
-        sources: ['src/components/GovernancePanel/GovernancePanel.tsx', 'src/components/PolicyPanel/PolicyPanel.tsx', 'src/components/GuardrailsPanel/GuardrailsPanel.tsx', 'src/components/SopPanel/SopPanel.tsx', 'src/components/PromptSecurityPanel.tsx'],
+        sources: [
+            'src/components/GovernancePanel/GovernancePanel.tsx',
+            'src/components/PolicyPanel/PolicyPanel.tsx',
+            'src/components/GuardrailsPanel/GuardrailsPanel.tsx',
+            'src/components/SopPanel/SopPanel.tsx',
+            'src/components/PromptSecurityPanel.tsx',
+        ],
         related: ['agents', 'diagnostics', 'providers', 'dev-component-catalog', 'zone-6'],
         body: `## Назначение
 
@@ -1058,7 +1073,10 @@ flowchart LR
         section: 'panels',
         tags: ['панель', 'знания', 'RAG', 'поиск', 'инструкция'],
         freshness: 'verified',
-        sources: ['src/components/KnowledgePanel/KnowledgePanel.tsx', 'src/i18n/translations/en/memory.ts'],
+        sources: [
+            'src/components/KnowledgePanel/KnowledgePanel.tsx',
+            'src/i18n/translations/en/memory.ts',
+        ],
         related: ['memory', 'panel-governance', 'dev-component-catalog', 'zone-4'],
         body: `## Назначение
 
@@ -1101,7 +1119,10 @@ flowchart LR
         section: 'panels',
         tags: ['панель', 'SRE', 'метрики', 'алерты', 'инструкция'],
         freshness: 'verified',
-        sources: ['src/components/SREAgentPanel/SREAgentPanel.tsx', 'src/i18n/translations/en/observability.ts'],
+        sources: [
+            'src/components/SREAgentPanel/SREAgentPanel.tsx',
+            'src/i18n/translations/en/observability.ts',
+        ],
         related: ['diagnostics', 'execution-trail', 'dev-component-catalog', 'zone-18'],
         body: `## Назначение
 
@@ -1141,7 +1162,12 @@ flowchart LR
         section: 'panels',
         tags: ['панель', 'логи', 'трейсы', 'health', 'инструкция'],
         freshness: 'verified',
-        sources: ['src/i18n/translations/en/observability.ts', 'src/components/LogsPanel/LogsPanel.tsx', 'src/components/RouterTraceView/RouterTraceView.tsx', 'src/components/TracesPanel/TracesPanel.tsx'],
+        sources: [
+            'src/i18n/translations/en/observability.ts',
+            'src/components/LogsPanel/LogsPanel.tsx',
+            'src/components/RouterTraceView/RouterTraceView.tsx',
+            'src/components/TracesPanel/TracesPanel.tsx',
+        ],
         related: ['diagnostics', 'panel-sre', 'dev-component-catalog', 'zone-5'],
         body: `## Назначение
 
@@ -1232,9 +1258,24 @@ flowchart LR
         slug: 'panel-integrations',
         title: 'Панели: Интеграции (MCP, коннекторы, навыки, инструменты, вебхуки)',
         section: 'panels',
-        tags: ['панель', 'интеграции', 'mcp', 'коннекторы', 'навыки', 'инструменты', 'вебхуки', 'инструкция'],
+        tags: [
+            'панель',
+            'интеграции',
+            'mcp',
+            'коннекторы',
+            'навыки',
+            'инструменты',
+            'вебхуки',
+            'инструкция',
+        ],
         freshness: 'verified',
-        sources: ['src/i18n/translations/en/integrations.ts', 'src/components/MCPPanel/MCPPanel.tsx', 'src/components/ConnectorsPanel/ConnectorsPanel.tsx', 'src/components/SkillsPanel/SkillsPanel.tsx', 'src/components/ToolsPanel/ToolsPanel.tsx'],
+        sources: [
+            'src/i18n/translations/en/integrations.ts',
+            'src/components/MCPPanel/MCPPanel.tsx',
+            'src/components/ConnectorsPanel/ConnectorsPanel.tsx',
+            'src/components/SkillsPanel/SkillsPanel.tsx',
+            'src/components/ToolsPanel/ToolsPanel.tsx',
+        ],
         related: ['providers', 'panel-governance', 'dev-component-catalog', 'zone-7'],
         body: `## Назначение
 
@@ -1282,7 +1323,10 @@ flowchart LR
         section: 'panels',
         tags: ['панель', 'аквариум', 'агенты', 'экосистема', 'инструкция'],
         freshness: 'verified',
-        sources: ['src/i18n/translations/en/workspace.ts', 'src/components/AquariumPanel/AquariumPanel.tsx'],
+        sources: [
+            'src/i18n/translations/en/workspace.ts',
+            'src/components/AquariumPanel/AquariumPanel.tsx',
+        ],
         related: ['agents', 'dev-component-catalog'],
         body: `## Назначение
 
@@ -1310,7 +1354,10 @@ flowchart LR
         section: 'panels',
         tags: ['панель', 'задачи', 'пайплайны', 'инструкция'],
         freshness: 'verified',
-        sources: ['src/i18n/translations/en/workspace.ts', 'src/components/TasksPanel/TasksPanel.tsx'],
+        sources: [
+            'src/i18n/translations/en/workspace.ts',
+            'src/components/TasksPanel/TasksPanel.tsx',
+        ],
         related: ['execution-trail', 'panel-agent-tasks', 'dev-component-catalog', 'zone-3'],
         body: `## Назначение
 
@@ -1418,7 +1465,10 @@ flowchart LR
         section: 'panels',
         tags: ['панель', 'pressure', 'давление', 'мониторинг', 'инструкция'],
         freshness: 'verified',
-        sources: ['src/i18n/translations/en/workspace.ts', 'src/components/PressureMapPanel/PressureMapPanel.tsx'],
+        sources: [
+            'src/i18n/translations/en/workspace.ts',
+            'src/components/PressureMapPanel/PressureMapPanel.tsx',
+        ],
         related: ['panel-observability', 'panel-sre', 'dev-component-catalog'],
         body: `## Назначение
 
@@ -1470,7 +1520,12 @@ flowchart LR
         section: 'panels',
         tags: ['панель', 'аналитика', 'затраты', 'ключи', 'метрики', 'инструкция'],
         freshness: 'verified',
-        sources: ['src/i18n/translations/en/analytics.ts', 'src/components/AnalyticsPanel/AnalyticsPanel.tsx', 'src/components/CostAnalyticsPanel/', 'src/components/KeyUsageAnalyticsPanel/'],
+        sources: [
+            'src/i18n/translations/en/analytics.ts',
+            'src/components/AnalyticsPanel/AnalyticsPanel.tsx',
+            'src/components/CostAnalyticsPanel/',
+            'src/components/KeyUsageAnalyticsPanel/',
+        ],
         related: ['panel-budget', 'panel-observability', 'dev-component-catalog'],
         body: `## Назначение
 
@@ -1522,7 +1577,11 @@ EWMA-латентность, TTFT, cache hit rate, доля ошибок (429 / 
         section: 'panels',
         tags: ['панель', 'роли', 'консорциум', 'инструкция'],
         freshness: 'verified',
-        sources: ['src/i18n/translations/en/agents.ts', 'src/components/RolesPanel/RolesPanel.tsx', 'src/components/RolesPanel/RolesConsortiaPanel.tsx'],
+        sources: [
+            'src/i18n/translations/en/agents.ts',
+            'src/components/RolesPanel/RolesPanel.tsx',
+            'src/components/RolesPanel/RolesConsortiaPanel.tsx',
+        ],
         related: ['agents', 'panel-governance', 'dev-component-catalog'],
         body: `## Назначение
 
@@ -1546,7 +1605,10 @@ EWMA-латентность, TTFT, cache hit rate, доля ошибок (429 / 
         section: 'panels',
         tags: ['панель', 'проекты', 'инструкция'],
         freshness: 'verified',
-        sources: ['src/i18n/translations/en/analytics.ts', 'src/components/ProjectsPanel/ProjectsPanel.tsx'],
+        sources: [
+            'src/i18n/translations/en/analytics.ts',
+            'src/components/ProjectsPanel/ProjectsPanel.tsx',
+        ],
         related: ['panel-tasks', 'panel-workflows', 'dev-component-catalog', 'zone-11'],
         body: `## Назначение
 
@@ -1570,7 +1632,10 @@ EWMA-латентность, TTFT, cache hit rate, доля ошибок (429 / 
         section: 'panels',
         tags: ['панель', 'исследование', 'research', 'инструкция'],
         freshness: 'verified',
-        sources: ['src/i18n/translations/en/analytics.ts', 'src/components/ResearchPanel/ResearchEnginePanel.tsx'],
+        sources: [
+            'src/i18n/translations/en/analytics.ts',
+            'src/components/ResearchPanel/ResearchEnginePanel.tsx',
+        ],
         related: ['panel-synthesis', 'panel-forum', 'debates', 'zone-15'],
         body: `## Назначение
 
@@ -1594,7 +1659,10 @@ EWMA-латентность, TTFT, cache hit rate, доля ошибок (429 / 
         section: 'panels',
         tags: ['панель', 'синтез', 'консенсус', 'инструкция'],
         freshness: 'verified',
-        sources: ['src/i18n/translations/en/analytics.ts', 'src/components/SynthesisPanel/SynthesisPanel.tsx'],
+        sources: [
+            'src/i18n/translations/en/analytics.ts',
+            'src/components/SynthesisPanel/SynthesisPanel.tsx',
+        ],
         related: ['debates', 'panel-research', 'dev-component-catalog'],
         body: `## Назначение
 
@@ -1642,7 +1710,10 @@ EWMA-латентность, TTFT, cache hit rate, доля ошибок (429 / 
         section: 'panels',
         tags: ['панель', 'режиссёр', 'director', 'сценарии', 'инструкция'],
         freshness: 'verified',
-        sources: ['src/i18n/translations/en/analytics.ts', 'src/components/DirectorPanel/DirectorPanel.tsx'],
+        sources: [
+            'src/i18n/translations/en/analytics.ts',
+            'src/components/DirectorPanel/DirectorPanel.tsx',
+        ],
         related: ['debates', 'panel-synthesis', 'dev-component-catalog'],
         body: `## Назначение
 
@@ -1666,7 +1737,10 @@ EWMA-латентность, TTFT, cache hit rate, доля ошибок (429 / 
         section: 'panels',
         tags: ['панель', 'форум', 'обсуждения', 'инструкция'],
         freshness: 'verified',
-        sources: ['src/i18n/translations/en/analytics.ts', 'src/components/ForumPanel/ForumPanel.tsx'],
+        sources: [
+            'src/i18n/translations/en/analytics.ts',
+            'src/components/ForumPanel/ForumPanel.tsx',
+        ],
         related: ['debates', 'panel-research', 'dev-component-catalog', 'zone-13'],
         body: `## Назначение
 
@@ -1690,7 +1764,13 @@ EWMA-латентность, TTFT, cache hit rate, доля ошибок (429 / 
         section: 'panels',
         tags: ['панель', 'gateway', 'компании', 'задачи', 'согласования', 'инструкция'],
         freshness: 'verified',
-        sources: ['src/i18n/translations/en/nav.ts', 'src/components/IssuesPanel/', 'src/components/ApprovalsPanel/', 'src/components/ExportImportPanel/', 'src/components/AdaptersPanel.tsx'],
+        sources: [
+            'src/i18n/translations/en/nav.ts',
+            'src/components/IssuesPanel/',
+            'src/components/ApprovalsPanel/',
+            'src/components/ExportImportPanel/',
+            'src/components/AdaptersPanel.tsx',
+        ],
         related: ['panel-governance', 'agents', 'panel-observability', 'zone-16'],
         body: `## Назначение
 
@@ -1765,7 +1845,10 @@ flowchart LR
         section: 'panels',
         tags: ['панель', 'групповой чат', 'агенты', 'инструкция'],
         freshness: 'verified',
-        sources: ['src/i18n/translations/en/groupChat.ts', 'src/components/GroupChatPanel/GroupChatPanel.tsx'],
+        sources: [
+            'src/i18n/translations/en/groupChat.ts',
+            'src/components/GroupChatPanel/GroupChatPanel.tsx',
+        ],
         related: ['debates', 'panel-dyad', 'agents'],
         body: `## Назначение
 
@@ -1793,7 +1876,10 @@ flowchart LR
         section: 'panels',
         tags: ['панель', 'закладки', 'инструкция'],
         freshness: 'verified',
-        sources: ['src/i18n/translations/en/chat.ts', 'src/components/BookmarksPanel/BookmarksPanel.tsx'],
+        sources: [
+            'src/i18n/translations/en/chat.ts',
+            'src/components/BookmarksPanel/BookmarksPanel.tsx',
+        ],
         related: ['panel-prompt-library', 'panel-chat', 'dev-component-catalog'],
         body: `## Назначение
 
@@ -1837,7 +1923,10 @@ flowchart LR
         section: 'panels',
         tags: ['панель', 'автономия', 'планирование', 'инструкция'],
         freshness: 'verified',
-        sources: ['src/i18n/translations/en/analytics.ts', 'src/components/AutonomyPanel/AutonomyPanel.tsx'],
+        sources: [
+            'src/i18n/translations/en/analytics.ts',
+            'src/components/AutonomyPanel/AutonomyPanel.tsx',
+        ],
         related: ['agents', 'panel-tasks', 'dev-component-catalog'],
         body: `## Назначение
 
@@ -1868,7 +1957,10 @@ flowchart LR
         section: 'panels',
         tags: ['панель', 'маршрутизация', 'routing', 'веса', 'инструкция'],
         freshness: 'verified',
-        sources: ['src/i18n/translations/en/providers.ts', 'src/components/RoutingIntelligence/RoutingIntelligence'],
+        sources: [
+            'src/i18n/translations/en/providers.ts',
+            'src/components/RoutingIntelligence/RoutingIntelligence',
+        ],
         related: ['panel-providers', 'panel-settings', 'panel-budget', 'zone-8'],
         body: `## Назначение
 
@@ -1904,7 +1996,10 @@ flowchart LR
         section: 'panels',
         tags: ['панель', 'пул', 'ключи', 'квоты', 'инструкция'],
         freshness: 'verified',
-        sources: ['src/i18n/translations/en/providers.ts', 'src/components/PoolStatusPanel/PoolStatusPanel.tsx'],
+        sources: [
+            'src/i18n/translations/en/providers.ts',
+            'src/components/PoolStatusPanel/PoolStatusPanel.tsx',
+        ],
         related: ['panel-providers', 'panel-routing', 'panel-budget', 'zone-18'],
         body: `## Назначение
 
@@ -1948,7 +2043,10 @@ flowchart LR
         section: 'panels',
         tags: ['панель', 'дебаты', 'live', 'инструкция'],
         freshness: 'verified',
-        sources: ['src/i18n/translations/en/debate.ts', 'src/components/DebateLive/DebateLivePanel'],
+        sources: [
+            'src/i18n/translations/en/debate.ts',
+            'src/components/DebateLive/DebateLivePanel',
+        ],
         related: ['debates', 'panel-debate-history', 'panel-debate-analysis'],
         body: `## Назначение
 
@@ -2049,7 +2147,11 @@ running, creating, cancelled, failed.
         section: 'panels',
         tags: ['панель', 'дебаты', 'история', 'replay', 'инструкция'],
         freshness: 'verified',
-        sources: ['src/i18n/translations/en/debate.ts', 'src/components/DebatePanel/DebateHistoryPage', 'src/components/DebateReplayPanel'],
+        sources: [
+            'src/i18n/translations/en/debate.ts',
+            'src/components/DebatePanel/DebateHistoryPage',
+            'src/components/DebateReplayPanel',
+        ],
         related: ['debates', 'panel-debate-live', 'panel-debate-analysis'],
         body: `## Назначение
 
@@ -2077,7 +2179,11 @@ running, creating, cancelled, failed.
         section: 'panels',
         tags: ['панель', 'дебаты', 'шаблоны', 'инструкция'],
         freshness: 'verified',
-        sources: ['src/i18n/translations/en/debate.ts', 'src/components/DebateTemplatesPanel/', 'src/components/DebatePanel/DebateWorkspacePanel'],
+        sources: [
+            'src/i18n/translations/en/debate.ts',
+            'src/components/DebateTemplatesPanel/',
+            'src/components/DebatePanel/DebateWorkspacePanel',
+        ],
         related: ['debates', 'panel-debate-tournament', 'dev-component-catalog'],
         body: `## Назначение
 
@@ -2101,7 +2207,12 @@ running, creating, cancelled, failed.
         section: 'panels',
         tags: ['панель', 'дебаты', 'анализ', 'аргументация', 'инструкция'],
         freshness: 'documented',
-        sources: ['src/i18n/translations/en/nav.ts', 'src/components/LogicalFormPanel/', 'src/components/SteelmanPanel/', 'src/components/BayesianJudgePanel/'],
+        sources: [
+            'src/i18n/translations/en/nav.ts',
+            'src/components/LogicalFormPanel/',
+            'src/components/SteelmanPanel/',
+            'src/components/BayesianJudgePanel/',
+        ],
         related: ['debates', 'panel-debate-analysis', 'panel-synthesis'],
         body: `## Назначение
 
@@ -2139,7 +2250,11 @@ running, creating, cancelled, failed.
         section: 'panels',
         tags: ['панель', 'флот', 'fleet', 'агенты', 'инструкция'],
         freshness: 'verified',
-        sources: ['src/i18n/translations/en/analytics.ts', 'src/components/FleetPanel/FleetPanel.tsx', 'src/components/FleetPanels/'],
+        sources: [
+            'src/i18n/translations/en/analytics.ts',
+            'src/components/FleetPanel/FleetPanel.tsx',
+            'src/components/FleetPanels/',
+        ],
         related: ['agents', 'panel-debate-toolkit', 'panel-persona'],
         body: `## Назначение
 
@@ -2177,7 +2292,12 @@ crews, councils, graphs, persona, ops, interop, meta, trust, frontier, rivals.
         section: 'panels',
         tags: ['панель', 'персоны', 'persona', 'инструкция'],
         freshness: 'verified',
-        sources: ['src/i18n/translations/en/nav.ts', 'src/components/PersonaPickerPanel/', 'src/components/PersonaMixerPanel/PersonaMixerPanel.tsx', 'src/components/PersonaMarketplacePanel/'],
+        sources: [
+            'src/i18n/translations/en/nav.ts',
+            'src/components/PersonaPickerPanel/',
+            'src/components/PersonaMixerPanel/PersonaMixerPanel.tsx',
+            'src/components/PersonaMarketplacePanel/',
+        ],
         related: ['agents', 'panel-fleet', 'dev-component-catalog'],
         body: `## Назначение
 
@@ -2199,7 +2319,10 @@ crews, councils, graphs, persona, ops, interop, meta, trust, frontier, rivals.
         section: 'panels',
         tags: ['панель', 'каналы', 'чат', 'инструкция'],
         freshness: 'verified',
-        sources: ['src/i18n/translations/en/analytics.ts', 'src/components/ChannelPanel/ChannelPanel.tsx'],
+        sources: [
+            'src/i18n/translations/en/analytics.ts',
+            'src/components/ChannelPanel/ChannelPanel.tsx',
+        ],
         related: ['panel-chat', 'panel-group-chat', 'dev-component-catalog', 'zone-13'],
         body: `## Назначение
 
@@ -2219,7 +2342,10 @@ crews, councils, graphs, persona, ops, interop, meta, trust, frontier, rivals.
         section: 'panels',
         tags: ['панель', 'комната', 'вызовы', 'агенты', 'инструкция'],
         freshness: 'verified',
-        sources: ['src/i18n/translations/en/analytics.ts', 'src/components/RoomPanel/RoomPanel.tsx'],
+        sources: [
+            'src/i18n/translations/en/analytics.ts',
+            'src/components/RoomPanel/RoomPanel.tsx',
+        ],
         related: ['agents', 'panel-forum', 'panel-debate-live'],
         body: `## Назначение
 
@@ -2271,7 +2397,12 @@ crews, councils, graphs, persona, ops, interop, meta, trust, frontier, rivals.
         section: 'panels',
         tags: ['панель', 'сессии', 'привязки', 'инструкция'],
         freshness: 'verified',
-        sources: ['src/i18n/translations/en/workspace.ts', 'src/components/SessionBindingsPanel/', 'src/components/SessionHubPanel/', 'src/components/ChatSessionsManagerPanel'],
+        sources: [
+            'src/i18n/translations/en/workspace.ts',
+            'src/components/SessionBindingsPanel/',
+            'src/components/SessionHubPanel/',
+            'src/components/ChatSessionsManagerPanel',
+        ],
         related: ['panel-chat', 'panel-room', 'dev-component-catalog'],
         body: `## Назначение
 
@@ -2686,7 +2817,11 @@ crews, councils, graphs, persona, ops, interop, meta, trust, frontier, rivals.
         section: 'dev',
         tags: ['аудит', 'наблюдаемость', 'мониторинг', 'телеметрия', 'логи', 'дефекты'],
         freshness: 'verified',
-        sources: ['src/kernel/services/logger-service.ts', 'src/kernel/services/system-status-service.ts', 'src/components/HealthPanel/'],
+        sources: [
+            'src/kernel/services/logger-service.ts',
+            'src/kernel/services/system-status-service.ts',
+            'src/components/HealthPanel/',
+        ],
         related: ['audit-methodology', 'audit-defect-performance'],
         body: `## Назначение
 
@@ -2713,7 +2848,11 @@ crews, councils, graphs, persona, ops, interop, meta, trust, frontier, rivals.
         tags: ['аудит', 'логика', 'дефекты', 'инварианты'],
         freshness: 'verified',
         sources: ['src/kernel/', 'src/stores/', 'src/components/'],
-        related: ['audit-methodology', 'audit-defect-ux-correctness', 'audit-defect-types-contracts'],
+        related: [
+            'audit-methodology',
+            'audit-defect-ux-correctness',
+            'audit-defect-types-contracts',
+        ],
         body: `## Назначение
 
 Аудит общих логических ошибок, не подпадающих под security/performance/type.
@@ -2737,10 +2876,21 @@ crews, councils, graphs, persona, ops, interop, meta, trust, frontier, rivals.
         slug: 'audit-defect-state-consistency',
         title: 'Аудит: класс дефектов — состояние и «вторые правды»',
         section: 'dev',
-        tags: ['аудит', 'состояние', 'вторые правды', 'single source of truth', 'рассинхрон', 'дефекты'],
+        tags: [
+            'аудит',
+            'состояние',
+            'вторые правды',
+            'single source of truth',
+            'рассинхрон',
+            'дефекты',
+        ],
         freshness: 'verified',
         sources: ['src/kernel/', 'src/stores/', 'src/components/'],
-        related: ['audit-methodology', 'audit-defect-data-integrity', 'audit-defect-contract-violations'],
+        related: [
+            'audit-methodology',
+            'audit-defect-data-integrity',
+            'audit-defect-contract-violations',
+        ],
         body: `## Назначение
 
 Аудит дублирующих источников правды и рассинхрона: «удалили в одном месте, а копия осталась в другом».
@@ -2767,7 +2917,11 @@ crews, councils, graphs, persona, ops, interop, meta, trust, frontier, rivals.
         tags: ['аудит', 'контракты', 'инварианты', 'дисциплина', 'дефекты'],
         freshness: 'verified',
         sources: ['src/kernel/contracts/', 'src/kernel/events/', 'src/kernel/services/'],
-        related: ['audit-methodology', 'audit-defect-types-contracts', 'audit-defect-state-consistency'],
+        related: [
+            'audit-methodology',
+            'audit-defect-types-contracts',
+            'audit-defect-state-consistency',
+        ],
         body: `## Назначение
 
 Аудит модулей, где «обещание» (имя/тип/API/жизненный цикл) расходится с фактическим поведением.
@@ -2989,8 +3143,15 @@ Junctions работают поверх **кристаллов** ([[panel-crysta
         section: 'panels',
         tags: ['панель', 'исследование', 'research', 'движок', 'инструкция'],
         freshness: 'verified',
-        sources: ['src/components/ResearchPanel/ResearchEnginePanel.tsx', 'src/kernel/services/research-engine-service.ts'],
-        related: ['panel-research-advanced', 'panel-research-reports', 'panel-hypothesis-generator'],
+        sources: [
+            'src/components/ResearchPanel/ResearchEnginePanel.tsx',
+            'src/kernel/services/research-engine-service.ts',
+        ],
+        related: [
+            'panel-research-advanced',
+            'panel-research-reports',
+            'panel-hypothesis-generator',
+        ],
         body: `## Назначение
 
 Исследовательский движок — базовый цикл исследования: создаёшь сессию с вопросом, добавляешь источники и запускаешь цикл поиска/анализа.
@@ -3013,7 +3174,10 @@ Junctions работают поверх **кристаллов** ([[panel-crysta
         section: 'panels',
         tags: ['панель', 'исследование', 'research', 'advanced', 'инструкция'],
         freshness: 'verified',
-        sources: ['src/components/ResearchPanel/ResearchEngineAdvancedPanel.tsx', 'src/kernel/services/research-engine-service.ts'],
+        sources: [
+            'src/components/ResearchPanel/ResearchEngineAdvancedPanel.tsx',
+            'src/kernel/services/research-engine-service.ts',
+        ],
         related: ['panel-research-engine', 'panel-research-reports'],
         body: `## Назначение
 
@@ -3033,7 +3197,10 @@ Junctions работают поверх **кристаллов** ([[panel-crysta
         section: 'panels',
         tags: ['панель', 'исследование', 'отчёты', 'research', 'инструкция'],
         freshness: 'verified',
-        sources: ['src/components/ResearchReportPanel.tsx', 'src/kernel/services/research-report-service.ts'],
+        sources: [
+            'src/components/ResearchReportPanel.tsx',
+            'src/kernel/services/research-report-service.ts',
+        ],
         related: ['panel-research-engine', 'panel-research-advanced'],
         body: `## Назначение
 
@@ -3055,7 +3222,10 @@ Junctions работают поверх **кристаллов** ([[panel-crysta
         section: 'panels',
         tags: ['панель', 'исследование', 'дебаты', 'эксперименты', 'инструкция'],
         freshness: 'verified',
-        sources: ['src/components/DebateResearch/DebateSystemResearch.tsx', 'src/components/DebateResearch/'],
+        sources: [
+            'src/components/DebateResearch/DebateSystemResearch.tsx',
+            'src/components/DebateResearch/',
+        ],
         related: ['panel-debate-research', 'panel-research-engine', 'panel-rival-labs'],
         body: `## Назначение
 
@@ -3075,7 +3245,10 @@ Junctions работают поверх **кристаллов** ([[panel-crysta
         section: 'panels',
         tags: ['панель', 'гипотезы', 'исследование', 'проверка', 'инструкция'],
         freshness: 'verified',
-        sources: ['src/components/DebateResearch/HypothesisGenerator.tsx', 'src/kernel/services/hypothesis-service.ts'],
+        sources: [
+            'src/components/DebateResearch/HypothesisGenerator.tsx',
+            'src/kernel/services/hypothesis-service.ts',
+        ],
         related: ['panel-research-engine', 'panel-debate-research', 'panel-synthesis'],
         body: `## Назначение
 
@@ -3139,7 +3312,13 @@ Junctions работают поверх **кристаллов** ([[panel-crysta
         tags: ['руководство', 'режимы', 'знания', 'исследование', 'аудит', 'шпаргалка'],
         freshness: 'verified',
         sources: ['src/components/DashboardPanel/WelcomePanel.tsx', 'src/components/'],
-        related: ['idea-path', 'scenario-map', 'panel-knowledge', 'panel-research-engine', 'audit-methodology'],
+        related: [
+            'idea-path',
+            'scenario-map',
+            'panel-knowledge',
+            'panel-research-engine',
+            'audit-methodology',
+        ],
         body: `## Назначение
 
 Шпаргалка: как выбрать маршрут по задаче среди многих панелей. Не «пользоваться всем сразу», а **выбрать режим под вопрос**.
@@ -3186,7 +3365,10 @@ Research Engine/Advanced → Hypothesis Generator → Research Reports.
         section: 'debates',
         tags: ['дебаты', 'стратегии', 'обзор', 'как выбрать'],
         freshness: 'verified',
-        sources: ['src/kernel/services/debate-runtime/debate-strategy-definitions.ts', 'src/components/DebatePanel/StrategySelector.tsx'],
+        sources: [
+            'src/kernel/services/debate-runtime/debate-strategy-definitions.ts',
+            'src/components/DebatePanel/StrategySelector.tsx',
+        ],
         related: ['debate-strategies-cheatsheet', 'debates'],
         body: `## Назначение
 
@@ -3379,7 +3561,12 @@ Memory Center: Registry (каталог источников) → Overview → S
             'src/kernel/services/lens-engine/lens-library.ts',
             'src/kernel/types/lens-types.ts',
         ],
-        related: ['panel-lenses-crystals', 'panel-synthesis', 'panel-knowledge-generator', 'panel-debate-toolkit'],
+        related: [
+            'panel-lenses-crystals',
+            'panel-synthesis',
+            'panel-knowledge-generator',
+            'panel-debate-toolkit',
+        ],
         body: `## Назначение
 
 Линзы — это сменные «призмы», через которые агент смотрит на задачу (перспективы анализа). Если роль отвечает на вопрос «кто говорит?», то линза отвечает на «через какую призму?». Панель \`/lenses\` — библиотека линз и сборка активного стека перспектив.
@@ -3454,7 +3641,11 @@ Memory Center: Registry (каталог источников) → Overview → S
         section: 'panels',
         tags: ['панель', 'линзы', 'кристаллы', 'знания', 'инструкция'],
         freshness: 'verified',
-        sources: ['src/i18n/translations/en/analytics.ts', 'src/components/LensesPanel/LensesPanel.tsx', 'src/components/CrystalVaultPanel/CrystalVaultPanel.tsx'],
+        sources: [
+            'src/i18n/translations/en/analytics.ts',
+            'src/components/LensesPanel/LensesPanel.tsx',
+            'src/components/CrystalVaultPanel/CrystalVaultPanel.tsx',
+        ],
         related: ['memory', 'panel-synthesis', 'panel-debate-toolkit'],
         body: `## Назначение
 
@@ -3498,7 +3689,10 @@ Memory Center: Registry (каталог источников) → Overview → S
         section: 'panels',
         tags: ['панель', 'качество', 'эксперименты', 'экспорт', 'инструкция'],
         freshness: 'verified',
-        sources: ['src/i18n/translations/en/quality.ts', 'src/components/QualityImpactDashboard/QualityImpactDashboardPanel'],
+        sources: [
+            'src/i18n/translations/en/quality.ts',
+            'src/components/QualityImpactDashboard/QualityImpactDashboardPanel',
+        ],
         related: ['panel-eval', 'panel-debate-quality', 'panel-analytics', 'zone-12'],
         body: `## Назначение
 
@@ -3526,7 +3720,10 @@ Memory Center: Registry (каталог источников) → Overview → S
         section: 'panels',
         tags: ['панель', 'группы', 'ключи', 'инструкция'],
         freshness: 'verified',
-        sources: ['src/i18n/translations/en/providers.ts', 'src/components/GroupsPanel/GroupsPanel.tsx'],
+        sources: [
+            'src/i18n/translations/en/providers.ts',
+            'src/components/GroupsPanel/GroupsPanel.tsx',
+        ],
         related: ['panel-pools', 'panel-rotations', 'panel-providers'],
         body: `## Назначение
 
@@ -3570,7 +3767,10 @@ Memory Center: Registry (каталог источников) → Overview → S
         section: 'panels',
         tags: ['панель', 'память', 'дворец', 'инструкция'],
         freshness: 'verified',
-        sources: ['src/i18n/translations/en/memory.ts', 'src/components/MemoryPanel/MemoryPalacePanel.tsx'],
+        sources: [
+            'src/i18n/translations/en/memory.ts',
+            'src/components/MemoryPanel/MemoryPalacePanel.tsx',
+        ],
         related: ['memory', 'panel-knowledge', 'panel-lenses-crystals'],
         body: `## Назначение
 
@@ -3614,7 +3814,10 @@ Memory Center: Registry (каталог источников) → Overview → S
         section: 'panels',
         tags: ['панель', 'генератор', 'знания', 'инструкция'],
         freshness: 'verified',
-        sources: ['src/i18n/translations/en/analytics.ts', 'src/components/KnowledgeGenPanel/KnowledgeGenPanel.tsx'],
+        sources: [
+            'src/i18n/translations/en/analytics.ts',
+            'src/components/KnowledgeGenPanel/KnowledgeGenPanel.tsx',
+        ],
         related: ['panel-knowledge', 'panel-lenses-crystals', 'memory'],
         body: `## Назначение
 
@@ -3638,7 +3841,11 @@ Memory Center: Registry (каталог источников) → Overview → S
         section: 'panels',
         tags: ['панель', 'провайдеры', 'маркетплейс', 'инструкция'],
         freshness: 'verified',
-        sources: ['src/i18n/translations/en/providers.ts', 'src/components/ProviderDashboard', 'src/components/ProviderMarketplace'],
+        sources: [
+            'src/i18n/translations/en/providers.ts',
+            'src/components/ProviderDashboard',
+            'src/components/ProviderMarketplace',
+        ],
         related: ['panel-providers', 'panel-routing', 'panel-pools'],
         body: `## Назначение
 
@@ -3662,7 +3869,11 @@ Memory Center: Registry (каталог источников) → Overview → S
         section: 'panels',
         tags: ['панель', 'сообщество', 'вклад', 'лидерборд', 'инструкция'],
         freshness: 'verified',
-        sources: ['src/i18n/translations/en/dashboard.ts', 'src/components/ContributionGraphPanel/', 'src/components/SocialLeaderboardPanel'],
+        sources: [
+            'src/i18n/translations/en/dashboard.ts',
+            'src/components/ContributionGraphPanel/',
+            'src/components/SocialLeaderboardPanel',
+        ],
         related: ['agents', 'panel-scheduler', 'dev-component-catalog'],
         body: `## Назначение
 
@@ -3752,7 +3963,11 @@ Memory Center: Registry (каталог источников) → Overview → S
         section: 'panels',
         tags: ['панель', 'анализ', 'оценка', 'метрики', 'инструкция'],
         freshness: 'documented',
-        sources: ['src/i18n/translations/en/nav.ts', 'src/components/BlindEvalPanel/', 'src/components/CalibrationPanel/'],
+        sources: [
+            'src/i18n/translations/en/nav.ts',
+            'src/components/BlindEvalPanel/',
+            'src/components/CalibrationPanel/',
+        ],
         related: ['panel-debate-quality', 'panel-debate-toolkit', 'panel-analytics'],
         body: `## Назначение
 
@@ -3779,7 +3994,11 @@ Memory Center: Registry (каталог источников) → Overview → S
         section: 'panels',
         tags: ['панель', 'планирование', 'миссия', 'инструкция'],
         freshness: 'documented',
-        sources: ['src/i18n/translations/en/nav.ts', 'src/components/PlannerPanel/', 'src/components/MetaAgentPanel/MetaAgentPanel.tsx'],
+        sources: [
+            'src/i18n/translations/en/nav.ts',
+            'src/components/PlannerPanel/',
+            'src/components/MetaAgentPanel/MetaAgentPanel.tsx',
+        ],
         related: ['agents', 'panel-autonomy', 'panel-simulation'],
         body: `## Назначение
 
@@ -3803,7 +4022,11 @@ Memory Center: Registry (каталог источников) → Overview → S
         section: 'panels',
         tags: ['панель', 'симуляция', 'контрфакт', 'инструкция'],
         freshness: 'documented',
-        sources: ['src/i18n/translations/en/nav.ts', 'src/components/SimulationPanel/SimulationPanel.tsx', 'src/components/WhatIfPanel/WhatIfPanel'],
+        sources: [
+            'src/i18n/translations/en/nav.ts',
+            'src/components/SimulationPanel/SimulationPanel.tsx',
+            'src/components/WhatIfPanel/WhatIfPanel',
+        ],
         related: ['panel-planning', 'panel-shadow', 'panel-observability', 'zone-19'],
         body: `## Назначение
 
@@ -3827,7 +4050,11 @@ Memory Center: Registry (каталог источников) → Overview → S
         section: 'panels',
         tags: ['панель', 'shadow', 'стратегия', 'инструкция'],
         freshness: 'documented',
-        sources: ['src/i18n/translations/en/nav.ts', 'src/components/ShadowPanel/ShadowPanel.tsx', 'src/components/ShadowOpponentPanel/ShadowOpponentPanel.tsx'],
+        sources: [
+            'src/i18n/translations/en/nav.ts',
+            'src/components/ShadowPanel/ShadowPanel.tsx',
+            'src/components/ShadowOpponentPanel/ShadowOpponentPanel.tsx',
+        ],
         related: ['debates', 'panel-simulation', 'panel-debate-analysis'],
         body: `## Назначение
 
@@ -3850,7 +4077,11 @@ Memory Center: Registry (каталог источников) → Overview → S
         section: 'panels',
         tags: ['панель', 'агенты', 'маркетплейс', 'протокол', 'инструкция'],
         freshness: 'documented',
-        sources: ['src/i18n/translations/en/nav.ts', 'src/components/AgentMarketplacePanel', 'src/components/AgentComparisonPanel'],
+        sources: [
+            'src/i18n/translations/en/nav.ts',
+            'src/components/AgentMarketplacePanel',
+            'src/components/AgentComparisonPanel',
+        ],
         related: ['agents', 'panel-fleet', 'panel-persona'],
         body: `## Назначение
 
@@ -3874,7 +4105,11 @@ Memory Center: Registry (каталог источников) → Overview → S
         section: 'panels',
         tags: ['панель', 'память', 'экспорт', 'инструкция'],
         freshness: 'documented',
-        sources: ['src/i18n/translations/en/memory.ts', 'src/components/FederatedMemoryPanel', 'src/components/MemoryTransferPanel'],
+        sources: [
+            'src/i18n/translations/en/memory.ts',
+            'src/components/FederatedMemoryPanel',
+            'src/components/MemoryTransferPanel',
+        ],
         related: ['memory', 'panel-memory-palace', 'panel-knowledge'],
         body: `## Назначение
 
@@ -3895,7 +4130,11 @@ Memory Center: Registry (каталог источников) → Overview → S
         section: 'panels',
         tags: ['панель', 'файлы', 'редакторы', 'обучение', 'голос', 'инструкция'],
         freshness: 'documented',
-        sources: ['src/i18n/translations/en/nav.ts', 'src/components/WorkspacePanel/WorkspacePanel.tsx', 'src/components/Editors/EditorsPanel'],
+        sources: [
+            'src/i18n/translations/en/nav.ts',
+            'src/components/WorkspacePanel/WorkspacePanel.tsx',
+            'src/components/Editors/EditorsPanel',
+        ],
         related: ['panel-chat', 'panel-prompt-library', 'dev-component-catalog'],
         body: `## Назначение
 
@@ -3918,7 +4157,12 @@ Memory Center: Registry (каталог источников) → Overview → S
         section: 'panels',
         tags: ['панель', 'история', 'аудит', 'версии', 'деплой', 'инструкция'],
         freshness: 'documented',
-        sources: ['src/i18n/translations/en/nav.ts', 'src/components/AuditLogView', 'src/components/TimeMachinePanel', 'src/components/ConfigHistoryView'],
+        sources: [
+            'src/i18n/translations/en/nav.ts',
+            'src/components/AuditLogView',
+            'src/components/TimeMachinePanel',
+            'src/components/ConfigHistoryView',
+        ],
         related: ['panel-observability', 'panel-governance', 'panel-settings'],
         body: `## Назначение
 
@@ -3942,7 +4186,11 @@ Memory Center: Registry (каталог источников) → Overview → S
         section: 'panels',
         tags: ['панель', 'инфраструктура', 'плагины', 'инструкция'],
         freshness: 'documented',
-        sources: ['src/i18n/translations/en/nav.ts', 'src/components/ServiceRegistryPanel/ServiceRegistryPanel.tsx', 'src/components/PluginSdkPanel'],
+        sources: [
+            'src/i18n/translations/en/nav.ts',
+            'src/components/ServiceRegistryPanel/ServiceRegistryPanel.tsx',
+            'src/components/PluginSdkPanel',
+        ],
         related: ['panel-observability', 'dev-service-map', 'dev-component-catalog'],
         body: `## Назначение
 
@@ -3966,7 +4214,11 @@ Memory Center: Registry (каталог источников) → Overview → S
         section: 'panels',
         tags: ['панель', 'исследование', 'gemini', 'инструкция'],
         freshness: 'documented',
-        sources: ['src/i18n/translations/en/nav.ts', 'src/components/ResearchPanel/ResearchEngineAdvancedPanel', 'src/components/GeminiResearch/GeminiResearchPanel'],
+        sources: [
+            'src/i18n/translations/en/nav.ts',
+            'src/components/ResearchPanel/ResearchEngineAdvancedPanel',
+            'src/components/GeminiResearch/GeminiResearchPanel',
+        ],
         related: ['panel-research', 'panel-topics', 'dev-component-catalog'],
         body: `## Назначение
 
@@ -3988,7 +4240,12 @@ Memory Center: Registry (каталог источников) → Overview → S
         section: 'panels',
         tags: ['панель', 'связи', 'происхождение', 'очередь', 'инструкция'],
         freshness: 'verified',
-        sources: ['src/i18n/translations/en/analytics.ts', 'src/components/JunctionPanel/JunctionPanel.tsx', 'src/components/ProvenancePanel/ProvenancePanel.tsx', 'src/components/InsightBusPanel/InsightBusPanel.tsx'],
+        sources: [
+            'src/i18n/translations/en/analytics.ts',
+            'src/components/JunctionPanel/JunctionPanel.tsx',
+            'src/components/ProvenancePanel/ProvenancePanel.tsx',
+            'src/components/InsightBusPanel/InsightBusPanel.tsx',
+        ],
         related: ['panel-lenses-crystals', 'panel-knowledge-generator', 'panel-tasks'],
         body: `## Назначение
 
@@ -4016,7 +4273,10 @@ Memory Center: Registry (каталог источников) → Overview → S
         section: 'panels',
         tags: ['панель', 'wiki', 'документация', 'инструкция'],
         freshness: 'verified',
-        sources: ['src/components/WikiPanel/WikiPanel.tsx', 'src/components/WikiPanel/wiki-articles.ts'],
+        sources: [
+            'src/components/WikiPanel/WikiPanel.tsx',
+            'src/components/WikiPanel/wiki-articles.ts',
+        ],
         related: ['for-developers', 'dev-overview', 'dev-component-catalog'],
         body: `## Назначение
 
@@ -4049,7 +4309,12 @@ flowchart LR
         section: 'agents',
         tags: ['агенты', 'персоны', 'политики'],
         freshness: 'documented',
-        sources: ['docs/audits/agent-team-audit-memory-history-management.md', 'src/kernel/agents/registry.ts', 'src/kernel/services/agent-service.ts', 'src/kernel/services/permissions/permission-service.ts'],
+        sources: [
+            'docs/audits/agent-team-audit-memory-history-management.md',
+            'src/kernel/agents/registry.ts',
+            'src/kernel/services/agent-service.ts',
+            'src/kernel/services/permissions/permission-service.ts',
+        ],
         related: ['panel-agent-tasks', 'providers', 'execution-trail', 'diagnostics'],
         body: `## Что есть
 
@@ -4079,7 +4344,10 @@ flowchart LR
         section: 'providers',
         tags: ['модели', 'ключи', 'роутер'],
         freshness: 'verified',
-        sources: ['src/kernel/services/provider-router.ts', 'src/llm/anthropic/anthropic-adapter.ts'],
+        sources: [
+            'src/kernel/services/provider-router.ts',
+            'src/llm/anthropic/anthropic-adapter.ts',
+        ],
         related: ['panel-providers', 'panel-chat', 'diagnostics'],
         body: `## Как устроено
 
@@ -4106,7 +4374,10 @@ flowchart LR
         section: 'debates',
         tags: ['дебаты', 'стратегии', 'проверки'],
         freshness: 'verified',
-        sources: ['src/kernel/services/debate-runtime/debate-strategy-definitions.ts', 'src/kernel/services/debate-runtime/'],
+        sources: [
+            'src/kernel/services/debate-runtime/debate-strategy-definitions.ts',
+            'src/kernel/services/debate-runtime/',
+        ],
         related: ['memory', 'providers'],
         body: `## Режимы
 
@@ -4141,7 +4412,12 @@ flowchart TD
         section: 'memory',
         tags: ['память', 'RAG', 'персоны'],
         freshness: 'verified',
-        sources: ['src/kernel/services/memory-engine.ts', 'src/kernel/services/memory-orchestrator.ts', 'src/kernel/services/rag/hybrid-retrieval-service.ts', 'docs/audits/agent-team-audit-memory-history-management.md'],
+        sources: [
+            'src/kernel/services/memory-engine.ts',
+            'src/kernel/services/memory-orchestrator.ts',
+            'src/kernel/services/rag/hybrid-retrieval-service.ts',
+            'docs/audits/agent-team-audit-memory-history-management.md',
+        ],
         related: ['comp-memory', 'execution-trail', 'debates', 'architecture', 'memory-audit'],
         body: `## Слои
 
@@ -4173,7 +4449,11 @@ flowchart LR
         section: 'memory',
         tags: ['история', 'P1', 'P2', 'инструменты'],
         freshness: 'verified',
-        sources: ['src/kernel/services/tool-executor.ts', 'src/kernel/services/agent-project-runtime.ts', 'docs/audits/agent-team-audit-memory-history-management.md'],
+        sources: [
+            'src/kernel/services/tool-executor.ts',
+            'src/kernel/services/agent-project-runtime.ts',
+            'docs/audits/agent-team-audit-memory-history-management.md',
+        ],
         related: ['agents', 'panel-agent-tasks', 'diagnostics'],
         body: `## P1 — журнал инструментов
 
@@ -4328,6 +4608,7 @@ Health-панели провайдеров, трейсы и timeline, DLQ (dead-
 export const WIKI_ARTICLES: WikiArticle[] = [
     SYSTEM_AUDIT_PROMPT_ARTICLE,
     GRAPH_WORKBENCH_ARTICLE,
+    RESEARCH_DEEP_ARTICLE,
     ...CORE_ARTICLES,
     ...COMPONENT_ARTICLES,
     ...ZONE_ARTICLES,
