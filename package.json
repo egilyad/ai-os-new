@@ -60,10 +60,10 @@
   },
   "lint-staged": {
     "*.{ts,tsx}": [
-      "eslint --fix"
+      "node ./node_modules/eslint/bin/eslint.js --fix"
     ],
     "*.{ts,tsx,json,md,css}": [
-      "prettier --write"
+      "node ./node_modules/prettier/bin/prettier.cjs --write"
     ]
   },
   "dependencies": {
