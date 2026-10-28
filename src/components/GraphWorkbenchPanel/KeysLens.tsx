@@ -100,8 +100,15 @@ const KeyRow: React.FC<{ keyObj: ApiKey; timeStart: number; timeEnd: number; row
     );
 };
 
-const KeysLens: React.FC = () => {
-    const keys = useMemo(() => keyService.getKeys?.() ?? [], []);
+interface KeysLensProps {
+    provider?: string;
+}
+
+const KeysLens: React.FC<KeysLensProps> = ({ provider }) => {
+    const keys = useMemo(() => {
+        const all = keyService.getKeys?.() ?? [];
+        return provider ? all.filter((k) => k.provider === provider) : all;
+    }, [provider]);
 
     if (keys.length === 0) {
         return (

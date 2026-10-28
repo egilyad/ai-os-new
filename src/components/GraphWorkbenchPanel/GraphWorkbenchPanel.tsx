@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { routerService } from '../../kernel/instances/services-core';
 import { budgetService } from '../../kernel/instances/services-extras';
+import { keyService } from '../../kernel/instances';
 import { agemsTaskService } from '../../kernel/services/agems-task-service';
 import VisGraph, { type VisGraphNode, type VisGraphEdge } from '../Common/VisGraph';
 import DebateLens from './DebateLens';
@@ -46,6 +47,26 @@ const STATUS_COLOR: Record<string, string> = {
     CANCELLED: '#64748b',
 };
 
+const ctlSelect: React.CSSProperties = {
+    padding: '0.45rem 0.7rem',
+    borderRadius: 8,
+    border: '1px solid rgba(255,255,255,0.12)',
+    background: 'rgba(0,0,0,0.3)',
+    color: 'var(--slate-200)',
+    fontSize: 13,
+};
+
+const resetBtn: React.CSSProperties = {
+    padding: '0.45rem 0.8rem',
+    borderRadius: 8,
+    border: '1px solid rgba(239,68,68,0.3)',
+    background: 'rgba(239,68,68,0.1)',
+    color: '#fca5a5',
+    cursor: 'pointer',
+    fontSize: 13,
+    fontWeight: 600,
+};
+
 const GraphWorkbenchPanel: React.FC = () => {
     const [lens, setLens] = useState<Lens>('routing');
     const [routingNodes, setRoutingNodes] = useState<VisGraphNode[]>([]);
@@ -57,10 +78,30 @@ const GraphWorkbenchPanel: React.FC = () => {
     const [ucbRows, setUcbRows] = useState<Ucb1Row[]>([]);
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
+    const [providerFilter, setProviderFilter] = useState('');
+    const [windowHours, setWindowHours] = useState(0);
+
+    const availableProviders = useMemo(() => {
+        const providers = new Set<string>();
+        try {
+            (keyService.getKeys?.() ?? []).forEach((k) => {
+                if (k.provider) providers.add(k.provider);
+            });
+        } catch {
+            /* ignore */
+        }
+        return [...providers].sort();
+    }, []);
 
     const loadRouting = useCallback(async () => {
         try {
-            const history = routerService.getDecisionHistory?.(12) ?? [];
+            const allHistory = routerService.getDecisionHistory?.(200) ?? [];
+            const tsCutoff = windowHours > 0 ? Date.now() - windowHours * 3600_000 : 0;
+            const history = allHistory.filter(
+                (d) =>
+                    (tsCutoff === 0 || d.timestamp >= tsCutoff) &&
+                    (!providerFilter || (d.scores || []).some((s) => s.provider === providerFilter)),
+            );
             const nodes: VisGraphNode[] = [];
             const edges: VisGraphEdge[] = [];
             const providerNodeId = new Map<string, string>();
@@ -104,7 +145,7 @@ const GraphWorkbenchPanel: React.FC = () => {
         } catch (e) {
             setError(e instanceof Error ? e.message : String(e));
         }
-    }, []);
+    }, [providerFilter, windowHours]);
 
     const loadCost = useCallback(async () => {
         try {
@@ -126,6 +167,7 @@ const GraphWorkbenchPanel: React.FC = () => {
             });
 
             (summary.providers || []).forEach((p) => {
+                if (providerFilter && p.provider !== providerFilter) return;
                 const pid = `costp:${p.provider}`;
                 nodes.push({
                     id: pid,
@@ -154,7 +196,7 @@ const GraphWorkbenchPanel: React.FC = () => {
         } catch (e) {
             setError(e instanceof Error ? e.message : String(e));
         }
-    }, []);
+    }, [providerFilter]);
 
     const loadTask = useCallback(async () => {
         try {
@@ -194,7 +236,13 @@ const GraphWorkbenchPanel: React.FC = () => {
 
     const loadUcb1 = useCallback(() => {
         try {
-            const history = routerService.getDecisionHistory?.(200) ?? [];
+            const allHistory = routerService.getDecisionHistory?.(200) ?? [];
+            const tsCutoff = windowHours > 0 ? Date.now() - windowHours * 3600_000 : 0;
+            const history = allHistory.filter(
+                (d) =>
+                    (tsCutoff === 0 || d.timestamp >= tsCutoff) &&
+                    (!providerFilter || (d.scores || []).some((s) => s.provider === providerFilter)),
+            );
             const map = new Map<string, { scoreSum: number; sel: number; samples: number[] }>();
             history.forEach((d) => {
                 (d.scores || []).forEach((s) => {
@@ -220,7 +268,7 @@ const GraphWorkbenchPanel: React.FC = () => {
         } catch (e) {
             setError(e instanceof Error ? e.message : String(e));
         }
-    }, []);
+    }, [providerFilter, windowHours]);
 
     const load = useCallback(
         async (l: Lens) => {
@@ -284,6 +332,43 @@ const GraphWorkbenchPanel: React.FC = () => {
                 </div>
                 {loading && <span style={{ fontSize: 12, color: 'var(--slate-500)' }}>loading…</span>}
             </div>
+            <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center' }}>
+                <select
+                    value={providerFilter}
+                    onChange={(e) => setProviderFilter(e.target.value)}
+                    aria-label="Фильтр по провайдеру"
+                    style={ctlSelect}
+                >
+                    <option value="">Все провайдеры</option>
+                    {availableProviders.map((p) => (
+                        <option key={p} value={p}>
+                            {p}
+                        </option>
+                    ))}
+                </select>
+                <select
+                    value={windowHours}
+                    onChange={(e) => setWindowHours(Number(e.target.value))}
+                    aria-label="Временное окно"
+                    style={ctlSelect}
+                >
+                    <option value={0}>Всё время</option>
+                    <option value={24}>24 часа</option>
+                    <option value={72}>3 дня</option>
+                    <option value={168}>7 дней</option>
+                </select>
+                {(providerFilter || windowHours > 0) && (
+                    <button
+                        onClick={() => {
+                            setProviderFilter('');
+                            setWindowHours(0);
+                        }}
+                        style={resetBtn}
+                    >
+                        Сброс фильтров
+                    </button>
+                )}
+            </div>
             {error && <div style={{ color: 'var(--error)', fontSize: 12 }}>{error}</div>}
             <div style={{ flex: 1, minHeight: 0 }}>
                 {lens === 'ucb1' ? (
@@ -291,7 +376,7 @@ const GraphWorkbenchPanel: React.FC = () => {
                 ) : lens === 'debate' ? (
                     <DebateLens />
                 ) : lens === 'keys' ? (
-                    <KeysLens />
+                    <KeysLens provider={providerFilter} />
                 ) : lens === 'calibration' ? (
                     <CalibrationLens />
                 ) : lens === 'embeddings' ? (
