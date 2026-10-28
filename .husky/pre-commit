@@ -1,6 +1,3 @@
-#!/bin/sh
-. "$(dirname "$0")/_/husky.sh"
-
 # Run lint-staged with the LOCAL binary (npx can hang on network resolution).
 node ./node_modules/lint-staged/bin/lint-staged.js
 
