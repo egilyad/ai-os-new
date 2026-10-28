@@ -34,9 +34,13 @@ import type { ISourceAdapter, SourceAdapterConfig } from '../contracts/research-
 
 export function getNextQuestion(session: ResearchSession): string {
     if (session.loops.length === 0) return session.initialQuestion;
-    const last = session.loops[session.loops.length - 1]!;
-    if (last.synthesis?.newQuestions.length) {
-        return last.synthesis.newQuestions[0]!;
+    const used = new Set(session.loops.map((l) => l.question.text));
+    // Plan from ALL previously surfaced next-questions (not just the first of
+    // the last loop), skipping ones that already became questions.
+    for (const loop of session.loops) {
+        for (const q of loop.synthesis?.newQuestions ?? []) {
+            if (!used.has(q)) return q;
+        }
     }
     return `${session.initialQuestion} (deeper analysis, iteration ${session.loops.length + 1})`;
 }
