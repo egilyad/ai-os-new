@@ -86,6 +86,9 @@ const ResearchCockpit: React.FC = () => {
     const [processes, setProcesses] = useState<
         Array<{ id: string; label: string; kind: string; status: string }>
     >([]);
+    const [relatedHits, setRelatedHits] = useState<
+        Array<{ content: string; type: string; score: number }>
+    >([]);
     const [expandedId, setExpandedId] = useState<string | null>(null);
     const [sessionDetail, setSessionDetail] = useState<{
         status: string;
@@ -170,7 +173,36 @@ const ResearchCockpit: React.FC = () => {
             refreshProcesses();
         }, 5000);
         return () => window.clearInterval(timer);
+         
     }, []);
+
+    useEffect(() => {
+        const q = hypothesis.trim();
+        if (q.length < 8) {
+            setRelatedHits([]);
+            return;
+        }
+        const timer = window.setTimeout(() => {
+            void (async () => {
+                try {
+                    const res = (await memoryService.search(q, 5)) as Array<{
+                        entry: { content?: unknown; type?: unknown };
+                        score: unknown;
+                    }>;
+                    setRelatedHits(
+                        (Array.isArray(res) ? res : []).map((r) => ({
+                            content: String(r.entry?.content ?? ''),
+                            type: String(r.entry?.type ?? ''),
+                            score: Number(r.score ?? 0),
+                        })),
+                    );
+                } catch {
+                    setRelatedHits([]);
+                }
+            })();
+        }, 400);
+        return () => window.clearTimeout(timer);
+    }, [hypothesis]);
 
     const activeCount = processes.length;
 
@@ -335,6 +367,68 @@ const ResearchCockpit: React.FC = () => {
                     {launching ? 'Запуск…' : '🔬 Запустить Deep Research'}
                 </button>
             </div>
+
+            {relatedHits.length > 0 && (
+                <div
+                    style={{
+                        padding: '0.6rem 0.9rem',
+                        borderRadius: 10,
+                        border: '1px solid rgba(167,139,250,0.25)',
+                        background: 'rgba(167,139,250,0.06)',
+                    }}
+                >
+                    <div
+                        style={{
+                            fontSize: 12,
+                            fontWeight: 700,
+                            color: 'var(--slate-300)',
+                            marginBottom: 6,
+                        }}
+                    >
+                        Уже есть в памяти по этой теме:
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                        {relatedHits.map((h, i) => (
+                            <div
+                                key={i}
+                                style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: 8,
+                                    fontSize: 12,
+                                    color: 'var(--slate-400)',
+                                }}
+                            >
+                                <span
+                                    style={{
+                                        fontSize: 10,
+                                        color: 'var(--slate-500)',
+                                        background: 'rgba(255,255,255,0.06)',
+                                        padding: '1px 6px',
+                                        borderRadius: 4,
+                                        whiteSpace: 'nowrap',
+                                    }}
+                                >
+                                    {h.type}
+                                </span>
+                                <span
+                                    style={{
+                                        flex: 1,
+                                        overflow: 'hidden',
+                                        textOverflow: 'ellipsis',
+                                        whiteSpace: 'nowrap',
+                                    }}
+                                >
+                                    {h.content}
+                                </span>
+                                <span style={{ fontSize: 10, color: 'var(--slate-500)' }}>
+                                    {h.score.toFixed(2)}
+                                </span>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
 
             <div
                 style={{
