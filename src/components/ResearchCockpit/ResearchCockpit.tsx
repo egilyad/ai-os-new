@@ -2,7 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Target, Wallet, Database, Zap, ArrowRight, Lightbulb } from 'lucide-react';
 import { budgetService, researchEngine } from '../../kernel/instances/services-extras';
-import { memoryService, keyService, sessionManager, knowledgeGenerator } from '../../kernel/instances';
+import {
+    memoryService,
+    keyService,
+    sessionManager,
+    knowledgeGenerator,
+} from '../../kernel/instances';
 import { routerService } from '../../kernel/instances/services-core';
 
 function safeCall<T>(fn: () => T, fallback: T): T {
@@ -125,12 +130,7 @@ const ResearchCockpit: React.FC = () => {
         const debates = safeCall(() => sessionManager.getDebateHistory?.(), []);
         (Array.isArray(debates) ? debates : []).forEach((d) => {
             const st = String((d as { status?: unknown }).status ?? '');
-            if (
-                st === 'completed' ||
-                st === 'failed' ||
-                st === 'cancelled' ||
-                st === 'paused'
-            )
+            if (st === 'completed' || st === 'failed' || st === 'cancelled' || st === 'paused')
                 return;
             out.push({
                 id: `deb:${d.id}`,
@@ -408,14 +408,29 @@ const ResearchCockpit: React.FC = () => {
                         background: 'rgba(52,211,153,0.05)',
                     }}
                 >
-                    <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--slate-200)', marginBottom: 8 }}>
+                    <div
+                        style={{
+                            fontSize: 13,
+                            fontWeight: 700,
+                            color: 'var(--slate-200)',
+                            marginBottom: 8,
+                        }}
+                    >
                         Активные процессы ({processes.length})
                     </div>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                         {processes.map((p) => (
                             <button
                                 key={p.id}
-                                onClick={() => navigate(`/research-engine`)}
+                                onClick={() => {
+                                    const target =
+                                        p.kind === 'debate'
+                                            ? '/debate-history'
+                                            : p.kind === 'generator'
+                                              ? '/knowledge-generator'
+                                              : '/research-engine';
+                                    navigate(target);
+                                }}
                                 style={{
                                     display: 'flex',
                                     alignItems: 'center',
@@ -439,13 +454,32 @@ const ResearchCockpit: React.FC = () => {
                                         flexShrink: 0,
                                     }}
                                 />
-                                <span style={{ fontSize: 11, color: 'var(--slate-500)', minWidth: 70 }}>
+                                <span
+                                    style={{
+                                        fontSize: 11,
+                                        color: 'var(--slate-500)',
+                                        minWidth: 70,
+                                    }}
+                                >
                                     {p.kind}
                                 </span>
-                                <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                <span
+                                    style={{
+                                        flex: 1,
+                                        overflow: 'hidden',
+                                        textOverflow: 'ellipsis',
+                                        whiteSpace: 'nowrap',
+                                    }}
+                                >
                                     {p.label}
                                 </span>
-                                <span style={{ fontSize: 11, color: 'var(--slate-500)', whiteSpace: 'nowrap' }}>
+                                <span
+                                    style={{
+                                        fontSize: 11,
+                                        color: 'var(--slate-500)',
+                                        whiteSpace: 'nowrap',
+                                    }}
+                                >
                                     {p.status}
                                 </span>
                             </button>
