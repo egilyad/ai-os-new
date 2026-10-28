@@ -2,8 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Target, Wallet, Database, Zap, ArrowRight, Lightbulb } from 'lucide-react';
 import { budgetService, researchEngine } from '../../kernel/instances/services-extras';
-import { memoryService } from '../../kernel/instances';
-import { keyService } from '../../kernel/instances';
+import { memoryService, keyService, sessionManager, knowledgeGenerator } from '../../kernel/instances';
 import { routerService } from '../../kernel/instances/services-core';
 
 function safeCall<T>(fn: () => T, fallback: T): T {
@@ -78,6 +77,9 @@ const ResearchCockpit: React.FC = () => {
     const [sessions, setSessions] = useState<
         Array<{ id: string; title: string; status: string; createdAt: number }>
     >([]);
+    const [processes, setProcesses] = useState<
+        Array<{ id: string; label: string; kind: string; status: string }>
+    >([]);
 
     const handleLaunch = async () => {
         const q = hypothesis.trim();
@@ -105,18 +107,64 @@ const ResearchCockpit: React.FC = () => {
         setSessions(list);
     };
 
+    const refreshProcesses = () => {
+        const out: Array<{ id: string; label: string; kind: string; status: string }> = [];
+
+        const research = safeCall(() => researchEngine.getAllSessions?.(), []);
+        (Array.isArray(research) ? research : []).forEach((s) => {
+            const st = String(s.status ?? '');
+            if (st === 'complete' || st === 'error' || st === 'idle') return;
+            out.push({
+                id: `res:${s.id}`,
+                label: String(s.title ?? s.initialQuestion ?? ''),
+                kind: 'research',
+                status: st,
+            });
+        });
+
+        const debates = safeCall(() => sessionManager.getDebateHistory?.(), []);
+        (Array.isArray(debates) ? debates : []).forEach((d) => {
+            const st = String((d as { status?: unknown }).status ?? '');
+            if (
+                st === 'completed' ||
+                st === 'failed' ||
+                st === 'cancelled' ||
+                st === 'paused'
+            )
+                return;
+            out.push({
+                id: `deb:${d.id}`,
+                label: String(d.topic ?? ''),
+                kind: 'debate',
+                status: st,
+            });
+        });
+
+        const jobs = safeCall(() => knowledgeGenerator.listActiveJobs?.(), []);
+        (Array.isArray(jobs) ? jobs : []).forEach((j) => {
+            out.push({
+                id: `gen:${j.id}`,
+                label: String((j as { topic?: unknown }).topic ?? 'Генерация'),
+                kind: 'generator',
+                status: String((j as { status?: unknown }).status ?? 'running'),
+            });
+        });
+
+        setProcesses(out.slice(0, 12));
+    };
+
     useEffect(() => {
         refreshSessions();
+        refreshProcesses();
         const timer = window.setInterval(() => {
             refreshSessions();
+            refreshProcesses();
         }, 5000);
         return () => window.clearInterval(timer);
-         
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    const activeCount = sessions.filter(
-        (s) => s.status === 'running' || s.status === 'active',
-    ).length;
+    const activeCount = processes.length;
 
     const spend = safeCall(() => budgetService.getSpendSummary?.(), null);
     const memStats = safeCall(() => memoryService.getStats?.(), null);
@@ -350,6 +398,61 @@ const ResearchCockpit: React.FC = () => {
                     )}
                 </Card>
             </div>
+
+            {processes.length > 0 && (
+                <div
+                    style={{
+                        padding: '0.8rem 1rem',
+                        borderRadius: 12,
+                        border: '1px solid rgba(52,211,153,0.25)',
+                        background: 'rgba(52,211,153,0.05)',
+                    }}
+                >
+                    <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--slate-200)', marginBottom: 8 }}>
+                        Активные процессы ({processes.length})
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                        {processes.map((p) => (
+                            <button
+                                key={p.id}
+                                onClick={() => navigate(`/research-engine`)}
+                                style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: 10,
+                                    padding: '0.45rem 0.7rem',
+                                    borderRadius: 8,
+                                    border: '1px solid rgba(255,255,255,0.06)',
+                                    background: 'rgba(255,255,255,0.02)',
+                                    color: 'var(--slate-200)',
+                                    cursor: 'pointer',
+                                    fontSize: 12,
+                                    textAlign: 'left',
+                                }}
+                            >
+                                <span
+                                    style={{
+                                        width: 8,
+                                        height: 8,
+                                        borderRadius: '50%',
+                                        background: '#34d399',
+                                        flexShrink: 0,
+                                    }}
+                                />
+                                <span style={{ fontSize: 11, color: 'var(--slate-500)', minWidth: 70 }}>
+                                    {p.kind}
+                                </span>
+                                <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                    {p.label}
+                                </span>
+                                <span style={{ fontSize: 11, color: 'var(--slate-500)', whiteSpace: 'nowrap' }}>
+                                    {p.status}
+                                </span>
+                            </button>
+                        ))}
+                    </div>
+                </div>
+            )}
 
             {sessions.length > 0 && (
                 <div
