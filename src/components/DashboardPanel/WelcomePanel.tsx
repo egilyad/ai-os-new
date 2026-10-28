@@ -288,7 +288,7 @@ const GROUPS: CardGroup[] = [
                 id: 'graph-workbench',
                 emoji: '🧰',
                 title: 'Graph Workbench',
-                text: 'Линзы: Routing, UCB1-бандит, Debate-траектории, Keys (жизненный цикл), Калибровка, Cost, Tasks.',
+                text: '9 линз: Routing, UCB1, Cost, Tasks, Debate (траектории), Keys, Калибровка, Embeddings, Coverage. Фильтры по провайдеру и времени.',
             },
             {
                 id: 'defect-map',
