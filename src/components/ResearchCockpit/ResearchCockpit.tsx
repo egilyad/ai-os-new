@@ -107,8 +107,16 @@ const ResearchCockpit: React.FC = () => {
 
     useEffect(() => {
         refreshSessions();
+        const timer = window.setInterval(() => {
+            refreshSessions();
+        }, 5000);
+        return () => window.clearInterval(timer);
          
     }, []);
+
+    const activeCount = sessions.filter(
+        (s) => s.status === 'running' || s.status === 'active',
+    ).length;
 
     const spend = safeCall(() => budgetService.getSpendSummary?.(), null);
     const memStats = safeCall(() => memoryService.getStats?.(), null);
@@ -165,10 +173,25 @@ const ResearchCockpit: React.FC = () => {
                 >
                     <Target size={20} color="#8b5cf6" />
                     Research Cockpit
+                    {activeCount > 0 && (
+                        <span
+                            style={{
+                                fontSize: 11,
+                                color: '#34d399',
+                                padding: '2px 8px',
+                                borderRadius: 999,
+                                background: 'rgba(52,211,153,0.12)',
+                                border: '1px solid rgba(52,211,153,0.3)',
+                                fontWeight: 700,
+                            }}
+                        >
+                            ● {activeCount} активно
+                        </span>
+                    )}
                 </h2>
                 <p style={{ margin: '0.3rem 0 0', fontSize: 13, color: 'var(--slate-400)' }}>
-                    Единая рабочая область для глубокого исследования: бюджет, источники, провайдеры
-                    и роутинг.
+                    Единая рабочая область для глубокого исследования: запуск, бюджет, источники,
+                    провайдеры и последние сессии.
                 </p>
             </div>
 
