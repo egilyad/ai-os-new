@@ -77,6 +77,24 @@ function wireForumBridge(eventBus: IEventBus, forum: IForumService): void {
             }
         })();
     });
+
+    eventBus.onSafe<{ synthesisId?: string; topicId?: string; statement?: string }>(
+        EVENTS.SYNTHESIS_EXPORTED_TO_FORUM,
+        (data) => {
+            void (async () => {
+                try {
+                    const topicId = await ensureTopic(forum, 'synthesis', 'Синтез');
+                    await forum.postMessage(
+                        topicId,
+                        SYSTEM_AUTHOR,
+                        `Синтез ${data.synthesisId ?? '—'}: ${(data.statement ?? '').slice(0, 400)}`,
+                    );
+                } catch (e) {
+                    LOGGER.warn('ForumBridge', 'failed to post synthesis result', { error: e });
+                }
+            })();
+        },
+    );
 }
 
 function wireForumToGeneratorBridge(eventBus: IEventBus, forum: IForumService): void {
