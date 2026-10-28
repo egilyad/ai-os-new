@@ -10,7 +10,7 @@
     {
       "id": "panels",
       "title": "Панели",
-      "articles": 87
+      "articles": 88
     },
     {
       "id": "agents",
@@ -95,6 +95,41 @@
         "memory-center-audit",
         "debate-strategies",
         "audit-methodology"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:panel-graph-workbench",
+      "type": "article",
+      "slug": "panel-graph-workbench",
+      "title": "Graph Workbench",
+      "section": "panels",
+      "status": "verified",
+      "tags": [
+        "графы",
+        "аналитика",
+        "визуализация",
+        "роутинг",
+        "дебаты",
+        "память",
+        "ключи",
+        "калибровка"
+      ],
+      "sources": [
+        "src/components/GraphWorkbenchPanel/GraphWorkbenchPanel.tsx",
+        "src/components/GraphWorkbenchPanel/DebateLens.tsx",
+        "src/components/GraphWorkbenchPanel/KeysLens.tsx",
+        "src/components/GraphWorkbenchPanel/CalibrationLens.tsx",
+        "src/components/GraphWorkbenchPanel/EmbeddingsLens.tsx",
+        "src/components/GraphWorkbenchPanel/CoverageLens.tsx"
+      ],
+      "related": [
+        "memory-center-audit",
+        "panel-routing",
+        "debates",
+        "memory",
+        "panels-catalog"
       ],
       "reviewed": null,
       "tests": []
@@ -8039,7 +8074,7 @@
       "section": "dashboard",
       "route": "/graph-workbench",
       "component": "src/components/GraphWorkbenchPanel/GraphWorkbenchPanel",
-      "article": null,
+      "article": "panel-graph-workbench",
       "status": "live"
     },
     {

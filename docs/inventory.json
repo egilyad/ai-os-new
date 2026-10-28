@@ -7581,8 +7581,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Матрица покрытия",
-      "bytes": 8649,
-      "hash": "2bdf21fccc25594956f127aed5c9d5f4678af564"
+      "bytes": 8617,
+      "hash": "988c96cf6e7ae71189684c505573035f75c3511e"
     },
     {
       "path": "docs/wiki/debate-strategies-cheatsheet.md",
@@ -7630,7 +7630,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4076,
-      "hash": "b3063d00039d1f140c1cb326538459abd169503e"
+      "hash": "056f6be4127fe2917ac7f3b906926405b4ea8cc0"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -8693,8 +8693,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Каталог панелей: раздел → маршрут → компонент → статья",
-      "bytes": 53529,
-      "hash": "e02b42610dfe6463fa8aaf4491b73eba7c012b39"
+      "bytes": 53571,
+      "hash": "1cb6a01d0134a5d0ea1e828173deb350079d6407"
     },
     {
       "path": "docs/wiki/panels-guide.md",
@@ -8717,8 +8717,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Wiki SuperAgents OS",
-      "bytes": 28878,
-      "hash": "fdeaa745b18afd3e909bcbac0fcd2a69d1b2177d"
+      "bytes": 28941,
+      "hash": "c59af1b145d063f8f69c17638638d4af8533f31e"
     },
     {
       "path": "docs/wiki/roadmap-notes.md",

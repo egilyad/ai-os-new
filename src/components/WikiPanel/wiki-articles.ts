@@ -16,6 +16,7 @@ import { DEV_STATUS_ARTICLES } from './wiki-dev-status';
 import { MEMORY_AUDIT_ARTICLES } from './wiki-memory-audit';
 import { ASSISTANT_ARTICLES } from './wiki-assistant';
 import { SYSTEM_AUDIT_PROMPT_ARTICLE } from './wiki-system-audit-prompt';
+import { GRAPH_WORKBENCH_ARTICLE } from './wiki-graph-workbench';
 import type { WikiArticle, WikiFreshness, WikiSection } from './wiki-types';
 
 export type { WikiArticle, WikiFreshness, WikiSection } from './wiki-types';
@@ -4326,6 +4327,7 @@ Health-панели провайдеров, трейсы и timeline, DLQ (dead-
 /** Full corpus: hand-written core articles + per-zone audit articles + dev handbook. */
 export const WIKI_ARTICLES: WikiArticle[] = [
     SYSTEM_AUDIT_PROMPT_ARTICLE,
+    GRAPH_WORKBENCH_ARTICLE,
     ...CORE_ARTICLES,
     ...COMPONENT_ARTICLES,
     ...ZONE_ARTICLES,

@@ -3,22 +3,22 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 1416,
-    "edges": 3700,
+    "nodes": 1423,
+    "edges": 3712,
     "byType": {
       "audit": 75,
-      "code": 599,
+      "code": 605,
       "test": 198,
       "panel": 268,
-      "article": 276
+      "article": 277
     },
     "byKind": {
       "audit_test": 336,
       "audit_mention": 929,
-      "documents": 202,
-      "source": 879,
+      "documents": 203,
+      "source": 885,
       "test": 293,
-      "related": 1061
+      "related": 1066
     }
   },
   "nodes": [
@@ -1221,6 +1221,36 @@
       "id": "file:src/components/GovernancePanel/GovernancePanel.tsx",
       "type": "code",
       "label": "src/components/GovernancePanel/GovernancePanel.tsx"
+    },
+    {
+      "id": "file:src/components/GraphWorkbenchPanel/CalibrationLens.tsx",
+      "type": "code",
+      "label": "src/components/GraphWorkbenchPanel/CalibrationLens.tsx"
+    },
+    {
+      "id": "file:src/components/GraphWorkbenchPanel/CoverageLens.tsx",
+      "type": "code",
+      "label": "src/components/GraphWorkbenchPanel/CoverageLens.tsx"
+    },
+    {
+      "id": "file:src/components/GraphWorkbenchPanel/DebateLens.tsx",
+      "type": "code",
+      "label": "src/components/GraphWorkbenchPanel/DebateLens.tsx"
+    },
+    {
+      "id": "file:src/components/GraphWorkbenchPanel/EmbeddingsLens.tsx",
+      "type": "code",
+      "label": "src/components/GraphWorkbenchPanel/EmbeddingsLens.tsx"
+    },
+    {
+      "id": "file:src/components/GraphWorkbenchPanel/GraphWorkbenchPanel.tsx",
+      "type": "code",
+      "label": "src/components/GraphWorkbenchPanel/GraphWorkbenchPanel.tsx"
+    },
+    {
+      "id": "file:src/components/GraphWorkbenchPanel/KeysLens.tsx",
+      "type": "code",
+      "label": "src/components/GraphWorkbenchPanel/KeysLens.tsx"
     },
     {
       "id": "file:src/components/GroupChatPanel/GroupChatPanel.test.tsx",
@@ -7756,6 +7786,13 @@
       "id": "wiki:panel-governance",
       "type": "article",
       "label": "Панель: Governance и безопасность",
+      "section": "panels",
+      "status": "verified"
+    },
+    {
+      "id": "wiki:panel-graph-workbench",
+      "type": "article",
+      "label": "Graph Workbench",
       "section": "panels",
       "status": "verified"
     },
@@ -15120,6 +15157,11 @@
     {
       "from": "panel:governance",
       "to": "wiki:panel-governance",
+      "kind": "documents"
+    },
+    {
+      "from": "panel:graph-workbench",
+      "to": "wiki:panel-graph-workbench",
       "kind": "documents"
     },
     {
@@ -24810,6 +24852,61 @@
     {
       "from": "wiki:panel-governance",
       "to": "wiki:zone-6",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:panel-graph-workbench",
+      "to": "file:src/components/GraphWorkbenchPanel/CalibrationLens.tsx",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:panel-graph-workbench",
+      "to": "file:src/components/GraphWorkbenchPanel/CoverageLens.tsx",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:panel-graph-workbench",
+      "to": "file:src/components/GraphWorkbenchPanel/DebateLens.tsx",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:panel-graph-workbench",
+      "to": "file:src/components/GraphWorkbenchPanel/EmbeddingsLens.tsx",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:panel-graph-workbench",
+      "to": "file:src/components/GraphWorkbenchPanel/GraphWorkbenchPanel.tsx",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:panel-graph-workbench",
+      "to": "file:src/components/GraphWorkbenchPanel/KeysLens.tsx",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:panel-graph-workbench",
+      "to": "wiki:debates",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:panel-graph-workbench",
+      "to": "wiki:memory-center-audit",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:panel-graph-workbench",
+      "to": "wiki:memory",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:panel-graph-workbench",
+      "to": "wiki:panel-routing",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:panel-graph-workbench",
+      "to": "wiki:panels-catalog",
       "kind": "related"
     },
     {

@@ -8,6 +8,7 @@ export const PANEL_ARTICLES: Record<string, string> = {
     governance: 'panel-governance',
     policies: 'panel-governance',
     'policy-editor': 'panel-governance',
+    'graph-workbench': 'panel-graph-workbench',
     guardrails: 'panel-governance',
     sop: 'panel-governance',
     security: 'panel-governance',
