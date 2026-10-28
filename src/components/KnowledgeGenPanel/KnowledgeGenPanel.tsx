@@ -1,7 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Lightbulb } from 'lucide-react';
 import { useTranslation } from '../../i18n/useTranslation';
-import { knowledgeGenerator } from '../../kernel/instances';
+import { knowledgeGenerator, eventBus } from '../../kernel/instances';
+import { EVENTS } from '../../kernel/events/event-registry';
 import { seedGeneratorDemo } from '../../kernel/services/knowledge-generator/generator-demo-seed';
 import type { GenerationJob, GenerationTrigger } from '../../kernel/types/generator-types';
 import TriggerConfig from './TriggerConfig';
@@ -35,6 +36,23 @@ const KnowledgeGenPanel: React.FC = () => {
 
     useEffect(() => {
         void refresh();
+    }, [refresh]);
+
+    useEffect(() => {
+        const unsubStart = eventBus.on(EVENTS.GENERATOR_STARTED, () => {
+            void refresh();
+        });
+        const unsubStage = eventBus.on(EVENTS.GENERATOR_STAGE, () => {
+            void refresh();
+        });
+        const unsubDone = eventBus.on(EVENTS.GENERATOR_COMPLETED, () => {
+            void refresh();
+        });
+        return () => {
+            unsubStart();
+            unsubStage();
+            unsubDone();
+        };
     }, [refresh]);
 
     const handleTrigger = async (trigger: GenerationTrigger): Promise<void> => {
@@ -92,7 +110,9 @@ const KnowledgeGenPanel: React.FC = () => {
             >
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                     <Lightbulb size={18} color="#22c55e" />
-                    <span style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--slate-50)' }}>
+                    <span
+                        style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--slate-50)' }}
+                    >
                         {t('generator.title')}
                     </span>
                     <span style={{ fontSize: '0.72rem', color: 'var(--slate-500)' }}>
@@ -122,38 +142,38 @@ const KnowledgeGenPanel: React.FC = () => {
                     <button
                         onClick={() => void refresh()}
                         title={t('generator.refresh')}
-                    style={{
-                        padding: '0.45rem 0.8rem',
-                        borderRadius: 7,
-                        border: '1px solid rgba(255,255,255,0.1)',
-                        background: 'transparent',
-                        color: 'var(--slate-400)',
-                        cursor: 'pointer',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                    }}
-                >
-                    <svg
-                        width="13"
-                        height="13"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
+                        style={{
+                            padding: '0.45rem 0.8rem',
+                            borderRadius: 7,
+                            border: '1px solid rgba(255,255,255,0.1)',
+                            background: 'transparent',
+                            color: 'var(--slate-400)',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                        }}
                     >
-                        <path
-                            d="M21 12a9 9 0 1 1-3-6.7"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                        />
-                        <path
-                            d="M21 3v5h-5"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                        />
-                    </svg>
+                        <svg
+                            width="13"
+                            height="13"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                        >
+                            <path
+                                d="M21 12a9 9 0 1 1-3-6.7"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                            />
+                            <path
+                                d="M21 3v5h-5"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                            />
+                        </svg>
                     </button>
                 </div>
             </div>
