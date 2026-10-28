@@ -85,6 +85,14 @@ const ResearchCockpit: React.FC = () => {
     const [processes, setProcesses] = useState<
         Array<{ id: string; label: string; kind: string; status: string }>
     >([]);
+    const [expandedId, setExpandedId] = useState<string | null>(null);
+    const [sessionDetail, setSessionDetail] = useState<{
+        status: string;
+        sources: number;
+        claims: number;
+        findings: string[];
+        questions: string[];
+    } | null>(null);
 
     const handleLaunch = async () => {
         const q = hypothesis.trim();
@@ -161,10 +169,50 @@ const ResearchCockpit: React.FC = () => {
             refreshProcesses();
         }, 5000);
         return () => window.clearInterval(timer);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const activeCount = processes.length;
+
+    const toggleSession = (id: string) => {
+        if (expandedId === id) {
+            setExpandedId(null);
+            setSessionDetail(null);
+            return;
+        }
+        const s = safeCall(() => researchEngine.getSession?.(id), undefined);
+        const loops = Array.isArray((s as { loops?: unknown })?.loops)
+            ? ((s as { loops?: unknown }).loops as Array<Record<string, unknown>>)
+            : [];
+        let sources = 0;
+        let claims = 0;
+        const findings: string[] = [];
+        const questions: string[] = [];
+        loops.forEach((l) => {
+            const src = Array.isArray(l.sources) ? (l.sources as unknown[]).length : 0;
+            const cl = Array.isArray(l.claims) ? (l.claims as unknown[]).length : 0;
+            sources += src;
+            claims += cl;
+            const synth = l.synthesis as { keyFindings?: unknown; newQuestions?: unknown } | null;
+            if (synth && Array.isArray(synth.keyFindings)) {
+                (synth.keyFindings as unknown[]).forEach((f) => {
+                    if (findings.length < 5 && typeof f === 'string') findings.push(f);
+                });
+            }
+            if (synth && Array.isArray(synth.newQuestions)) {
+                (synth.newQuestions as unknown[]).forEach((q) => {
+                    if (questions.length < 4 && typeof q === 'string') questions.push(q);
+                });
+            }
+        });
+        setSessionDetail({
+            status: String((s as { status?: unknown })?.status ?? ''),
+            sources,
+            claims,
+            findings,
+            questions,
+        });
+        setExpandedId(id);
+    };
 
     const spend = safeCall(() => budgetService.getSpendSummary?.(), null);
     const memStats = safeCall(() => memoryService.getStats?.(), null);
@@ -509,46 +557,125 @@ const ResearchCockpit: React.FC = () => {
                     </div>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                         {sessions.map((s) => (
-                            <button
+                            <div
                                 key={s.id}
-                                onClick={() =>
-                                    navigate(`/research-engine?session=${encodeURIComponent(s.id)}`)
-                                }
-                                style={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: 10,
-                                    padding: '0.45rem 0.7rem',
-                                    borderRadius: 8,
-                                    border: '1px solid rgba(255,255,255,0.06)',
-                                    background: 'rgba(255,255,255,0.02)',
-                                    color: 'var(--slate-200)',
-                                    cursor: 'pointer',
-                                    fontSize: 12,
-                                    textAlign: 'left',
-                                }}
+                                style={{ display: 'flex', flexDirection: 'column', gap: 4 }}
                             >
-                                <span
+                                <button
+                                    onClick={() => toggleSession(s.id)}
                                     style={{
-                                        flex: 1,
-                                        overflow: 'hidden',
-                                        textOverflow: 'ellipsis',
-                                        whiteSpace: 'nowrap',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: 10,
+                                        padding: '0.45rem 0.7rem',
+                                        borderRadius: 8,
+                                        border: '1px solid rgba(255,255,255,0.06)',
+                                        background: 'rgba(255,255,255,0.02)',
+                                        color: 'var(--slate-200)',
+                                        cursor: 'pointer',
+                                        fontSize: 12,
+                                        textAlign: 'left',
                                     }}
                                 >
-                                    {s.title}
-                                </span>
-                                <span
-                                    style={{
-                                        fontSize: 11,
-                                        color: 'var(--slate-500)',
-                                        whiteSpace: 'nowrap',
-                                    }}
-                                >
-                                    {s.status}
-                                </span>
-                                <ArrowRight size={13} />
-                            </button>
+                                    <span
+                                        style={{
+                                            flex: 1,
+                                            overflow: 'hidden',
+                                            textOverflow: 'ellipsis',
+                                            whiteSpace: 'nowrap',
+                                        }}
+                                    >
+                                        {s.title}
+                                    </span>
+                                    <span
+                                        style={{
+                                            fontSize: 11,
+                                            color: 'var(--slate-500)',
+                                            whiteSpace: 'nowrap',
+                                        }}
+                                    >
+                                        {s.status}
+                                    </span>
+                                    <ArrowRight
+                                        size={13}
+                                        style={{
+                                            transform:
+                                                expandedId === s.id ? 'rotate(90deg)' : 'none',
+                                        }}
+                                    />
+                                </button>
+                                {expandedId === s.id && sessionDetail && (
+                                    <div
+                                        style={{
+                                            padding: '0.6rem 0.8rem',
+                                            borderRadius: 8,
+                                            background: 'rgba(255,255,255,0.03)',
+                                            border: '1px solid rgba(255,255,255,0.05)',
+                                            fontSize: 12,
+                                            color: 'var(--slate-300)',
+                                            display: 'flex',
+                                            flexDirection: 'column',
+                                            gap: 6,
+                                        }}
+                                    >
+                                        <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap' }}>
+                                            <span>
+                                                статус: <b>{sessionDetail.status}</b>
+                                            </span>
+                                            <span>
+                                                источников: <b>{sessionDetail.sources}</b>
+                                            </span>
+                                            <span>
+                                                claims: <b>{sessionDetail.claims}</b>
+                                            </span>
+                                        </div>
+                                        {sessionDetail.findings.length > 0 && (
+                                            <div>
+                                                <div style={{ fontWeight: 700, marginBottom: 4 }}>
+                                                    Ключевые выводы
+                                                </div>
+                                                {sessionDetail.findings.map((f, i) => (
+                                                    <div key={i} style={{ marginBottom: 2 }}>
+                                                        • {f}
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
+                                        {sessionDetail.questions.length > 0 && (
+                                            <div>
+                                                <div style={{ fontWeight: 700, marginBottom: 4 }}>
+                                                    Новые вопросы
+                                                </div>
+                                                {sessionDetail.questions.map((q, i) => (
+                                                    <div key={i} style={{ marginBottom: 2 }}>
+                                                        ? {q}
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
+                                        <button
+                                            onClick={() =>
+                                                navigate(
+                                                    `/research-engine?session=${encodeURIComponent(s.id)}`,
+                                                )
+                                            }
+                                            style={{
+                                                alignSelf: 'flex-start',
+                                                padding: '0.3rem 0.8rem',
+                                                borderRadius: 6,
+                                                border: '1px solid rgba(139,92,246,0.3)',
+                                                background: 'rgba(139,92,246,0.12)',
+                                                color: 'var(--slate-200)',
+                                                cursor: 'pointer',
+                                                fontSize: 12,
+                                                fontWeight: 600,
+                                            }}
+                                        >
+                                            Открыть полностью →
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
                         ))}
                     </div>
                 </div>
