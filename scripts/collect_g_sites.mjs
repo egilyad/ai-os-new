@@ -55,8 +55,7 @@ async function collectSite(browser, site) {
   const dir = path.join(OUT_DIR, slug(site.name, id));
   mkdirSync(dir, { recursive: true });
 
-  const ctx = await browser.newContext();
-  const page = await ctx.newPage();
+  const page = await browser.newPage();
   const base = `https://sites.google.com/u/0/d/${id}`;
   const index = [];
 
@@ -101,7 +100,7 @@ async function collectSite(browser, site) {
       }
     }
   } finally {
-    await ctx.close();
+    await page.close();
   }
 
   // site index
