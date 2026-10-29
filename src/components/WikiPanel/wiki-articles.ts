@@ -322,6 +322,34 @@ await skillService.recordSkill({
 - Периодически удаляй неиспользуемые навыки (\`remove\`), чтобы библиотека не засорялась.`,
     },
     {
+        slug: 'fetched-sites',
+        title: 'Скачанные сайты (каталог)',
+        section: 'notes',
+        tags: ['сайты', 'каталог', 'скрапинг'],
+        freshness: 'documented',
+        sources: ['docs/fetched-sites/README.md', 'scripts/gen-fetched-catalog.mjs'],
+        related: ['weekly-commits', 'roadmap-notes'],
+        body: `## Что это
+
+В \`docs/fetched-sites/\` лежит коллекция **снимков сайтов** (скрапленные страницы). Каждая папка — один сайт: \`index.md\` (главная) + страницы \`p_*\` / \`_home.md\`.
+
+## Каталог
+
+Полный перечень по категориям (ИИ и агенты, Код и проекты, Прочее, Без названия):
+
+**[Открыть каталог →](../fetched-sites/README.md)**
+
+## Обновление
+
+Каталог генерируется скриптом \`scripts/gen-fetched-catalog.mjs\`:
+
+\`\`\`bash
+npm run gen:fetched-catalog
+\`\`\`
+
+Скрипт сканирует папки, берёт заголовок из \`index.md\`, считает страницы и переписывает \`docs/fetched-sites/README.md\`.`,
+    },
+    {
         slug: 'idea-path',
         title: 'Путь идеи: от мысли до результата',
         section: 'guide',
