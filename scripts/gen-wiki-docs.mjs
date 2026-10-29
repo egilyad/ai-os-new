@@ -3,7 +3,7 @@
 // The same content is bundled in the app (Wiki panel). This mirror lets people and
 // coding agents read the whole wiki straight from the repository, no build needed.
 import { register } from 'tsx/esm/api';
-import { writeFileSync, mkdirSync, rmSync, existsSync, readdirSync, readFileSync } from 'fs';
+import { writeFileSync, mkdirSync, rmSync, existsSync } from 'fs';
 import { fileURLToPath, pathToFileURL } from 'url';
 import { dirname, resolve } from 'path';
 import { parseNavSections, routeImportComponents, techniqueComponents, testsFor, panelArticles } from './lib/route-nav.mjs';
@@ -118,20 +118,5 @@ for (const section of WIKI_SECTIONS) {
     idx.push('');
 }
 writeFileSync(resolve(outDir, 'README.md'), idx.join('\n'), 'utf8');
-
-// ---- sessions mirror: source drawn from docs/sessions (committed, survives regeneration) ----
-const SESSIONS_SRC = resolve(root, 'docs/sessions');
-function copyMdTree(src, dst) {
-    mkdirSync(dst, { recursive: true });
-    for (const entry of readdirSync(src, { withFileTypes: true })) {
-        const s = resolve(src, entry.name);
-        const d = resolve(dst, entry.name);
-        if (entry.isDirectory()) copyMdTree(s, d);
-        else if (entry.name.endsWith('.md')) {
-            writeFileSync(d, readFileSync(s, 'utf8'), 'utf8');
-        }
-    }
-}
-if (existsSync(SESSIONS_SRC)) copyMdTree(SESSIONS_SRC, resolve(outDir, 'sessions'));
 
 console.log(`wiki docs: ${WIKI_ARTICLES.length} articles -> docs/wiki/`);
