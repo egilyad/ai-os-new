@@ -207,7 +207,7 @@ describe('BrowserUseService (phase70)', () => {
     });
 
     it('act: POSTs to /act with action+params and parses output/screenshot', async () => {
-        const fetchMock = vi.fn(async (url: string, init?: RequestInit) => {
+        const fetchMock = vi.fn(async (_url: string, init?: RequestInit) => {
             const body = JSON.parse(String(init?.body)) as Record<string, unknown>;
             expect(body['action']).toBe('click_selector');
             expect(body['selector']).toBe('#buy');
