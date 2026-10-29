@@ -95,21 +95,37 @@ export class ExecutionQueue {
      *  queue keeps moving instead of being blocked forever by a hung task. */
     private runTask(task: QueueTask): void {
         let settled = false;
-        const self = this;
+        const timers = { current: undefined as ReturnType<typeof setTimeout> | undefined };
+        const release = () => {
+            if (settled) return;
+            settled = true;
+            const t = timers.current;
+            if (t !== undefined) {
+                clearTimeout(t);
+                this.watchdogs.delete(t);
+            }
+            this.inFlight--;
+            try {
+                this.drain();
+            } catch (e) {
+                LOGGER.error('ExecutionQueue', 'drain failed', { error: e });
+            }
+        };
+
         const watchdog = setTimeout(() => {
             LOGGER.warn('ExecutionQueue', 'Task hung — watchdog finalized task', {
                 taskId: task.id,
                 priority: task.priority,
                 age: Date.now() - task.enqueuedAt,
-                timeoutMs: self.taskTimeoutMs,
+                timeoutMs: this.taskTimeoutMs,
             });
-            self._eventBus?.emit(EVENTS.QUEUE_TASK_FAILED, {
+            this._eventBus?.emit(EVENTS.QUEUE_TASK_FAILED, {
                 taskId: task.id,
                 priority: task.priority,
-                error: `Task timed out after ${self.taskTimeoutMs}ms`,
+                error: `Task timed out after ${this.taskTimeoutMs}ms`,
                 timestamp: Date.now(),
             });
-            self.deadLetterQueue
+            this.deadLetterQueue
                 ?.push({
                     event: EVENTS.QUEUE_TASK_FAILED,
                     payload: {
@@ -117,7 +133,7 @@ export class ExecutionQueue {
                         priority: task.priority,
                         payload: task.payload,
                     },
-                    error: `Task timed out after ${self.taskTimeoutMs}ms`,
+                    error: `Task timed out after ${this.taskTimeoutMs}ms`,
                     context: { age: Date.now() - task.enqueuedAt },
                     retryCount: 0,
                 })
@@ -126,20 +142,8 @@ export class ExecutionQueue {
                 );
             release();
         }, this.taskTimeoutMs);
+        timers.current = watchdog;
         this.watchdogs.add(watchdog);
-
-        function release(): void {
-            if (settled) return;
-            settled = true;
-            clearTimeout(watchdog);
-            self.watchdogs.delete(watchdog);
-            self.inFlight--;
-            try {
-                self.drain();
-            } catch (e) {
-                LOGGER.error('ExecutionQueue', 'drain failed', { error: e });
-            }
-        }
 
         this.processor(task)
             .then(() => {
