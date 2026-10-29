@@ -40,8 +40,15 @@ function stripUi(text) {
 }
 
 async function waitForSignIn(page) {
+  console.log('🤝 Войди в Google в открытом окне. Жду появления списка сайтов…');
   for (let i = 0; i < 600; i++) {
-    if (page.url().includes('sites.google.com') && i > 2) return true;
+    const n = await page
+      .evaluate(() => document.querySelectorAll('.docs-homescreen-grid-item, [role="option"]').length)
+      .catch(() => 0);
+    if (n > 15) {
+      console.log('✅ Список сайтов загружен, начинаю сбор.');
+      return true;
+    }
     await page.waitForTimeout(1000);
   }
   return true;
