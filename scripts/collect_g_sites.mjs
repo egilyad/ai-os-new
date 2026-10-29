@@ -11,6 +11,7 @@
  */
 import { readFileSync, writeFileSync, mkdirSync, existsSync, appendFileSync } from 'node:fs';
 import path from 'node:path';
+import readline from 'node:readline';
 import { chromium } from 'playwright';
 
 const ROOT = path.resolve(process.cwd());
@@ -39,19 +40,14 @@ function stripUi(text) {
   return text.split('\n').filter((l) => !skip.test(l)).join('\n');
 }
 
-async function waitForSignIn(page) {
-  console.log('🤝 Войди в Google в открытом окне. Жду появления списка сайтов…');
-  for (let i = 0; i < 600; i++) {
-    const n = await page
-      .evaluate(() => document.querySelectorAll('.docs-homescreen-grid-item, [role="option"]').length)
-      .catch(() => 0);
-    if (n > 15) {
-      console.log('✅ Список сайтов загружен, начинаю сбор.');
-      return true;
-    }
-    await page.waitForTimeout(1000);
-  }
-  return true;
+function waitForEnter() {
+  return new Promise((resolve) => {
+    const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+    rl.question('👉 Войди в Google в окне браузера, затем нажми Enter здесь…', () => {
+      rl.close();
+      resolve();
+    });
+  });
 }
 
 async function collectSite(browser, site) {
@@ -119,8 +115,7 @@ const browser = await chromium.launchPersistentContext(PROFILE_DIR, {
 
 const page = await browser.newPage();
 await page.goto('https://sites.google.com/u/0/?hl=ru', { waitUntil: 'domcontentloaded' });
-console.log('🤝 Войди в Google в открытом окне (если нужно), затем дождись сбора…');
-await waitForSignIn(page);
+await waitForEnter();
 
 const report = [];
 for (const site of sites) {
