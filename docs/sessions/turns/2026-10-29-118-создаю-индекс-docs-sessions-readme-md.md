@@ -1,7 +1,0 @@
-<!-- Ответ ассистента opencode: 2026-10-29-118-создаю-индекс-docs-sessions-readme-md.md (scripts/export-opencode-turns.mjs). -->
-
-# Ответ 118 · 2026-10-29
-
-> Сессия: ses_e77960396ffeIfcCtCDoHVhKns · Раздел: **Сессии (opencode)** · Статус: verified
-
-Создаю индекс `docs/sessions/README.md`.
