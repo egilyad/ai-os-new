@@ -330,6 +330,8 @@ export class AgentProjectRuntime implements IAgentProjectRuntime {
             `## Rules`,
             `- Always read files before editing them.`,
             `- Write complete, working code.`,
+            `- Follow a test-driven loop: write/update a failing test first, then implement the code to make it pass, then run the tests again.`,
+            `- Run tests with: npx vitest run <path-to-test>. Do not report success without a passing test run when the task involves logic or code changes.`,
             `- Use project-relative paths (e.g. /src/index.html).`,
         ].join('\n');
     }
