@@ -38,10 +38,39 @@ async function handleExecute(body, ctx) {
     if (!/^https?:\/\//i.test(url)) throw new Error('url must be http(s)');
     await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 45000 });
   }
-  const text = await page.evaluate(() => document.body.innerText);
+
+  let output;
+  const lower = task.toLowerCase();
+
+  if (/таблиц|таблиц/.test(lower)) {
+    const out = await page.evaluate(() => {
+      const tables = Array.from(document.querySelectorAll('table'));
+      return tables.slice(0, 5).map((t) => {
+        const rows = Array.from(t.querySelectorAll('tr')).slice(0, 20).map((tr) =>
+          Array.from(tr.querySelectorAll('th, td')).map((c) => c.innerText.trim()).join(' | '),
+        );
+        return rows.join('\n');
+      });
+    });
+    output = out.join('\n\n---\n\n');
+  } else if (/цен|цену|прайс|price/.test(lower)) {
+    output = await page.evaluate(() => {
+      const hits = Array.from(document.querySelectorAll('*'))
+        .filter((el) => {
+          const t = (el.textContent || '').trim();
+          return t && t.length < 60 && /\d[.,]\d{2}|[₽$€£]/.test(t);
+        })
+        .slice(0, 20)
+        .map((el) => el.textContent.trim());
+      return hits.join('\n');
+    });
+  } else {
+    output = await page.evaluate(() => document.body.innerText);
+  }
+
   const buf = await page.screenshot({ fullPage: false });
   return {
-    output: text.slice(0, 6000),
+    output: String(output || '').slice(0, 6000),
     screenshot: buf.toString('base64'),
     finalState: { mode: 'browser', title: await page.title(), url: page.url() },
   };
@@ -64,16 +93,43 @@ async function handleAct(body, ctx) {
       await page.mouse.click(x, y);
       return { output: `clicked ${x},${y}` };
     }
+    case 'click_selector': {
+      const sel = String(body.selector || '');
+      if (!sel) throw new Error('click_selector: selector required');
+      await page.locator(sel).first().waitFor({ state: 'visible', timeout: 15000 });
+      await page.locator(sel).first().click();
+      return { output: `clicked selector ${sel}` };
+    }
     case 'type_text': {
       const text = String(body.text || '');
       if (!text) throw new Error('type_text: text required');
       const field = String(body.field || '');
       if (field) {
+        await page.locator(field).first().waitFor({ state: 'visible', timeout: 15000 });
         await page.locator(field).first().fill(text);
       } else {
         await page.keyboard.type(text, { delay: 5 });
       }
       return { output: `typed ${text.length} chars` };
+    }
+    case 'extract_text_selector': {
+      const sel = String(body.selector || '');
+      if (!sel) throw new Error('extract_text_selector: selector required');
+      const count = await page.locator(sel).count();
+      const texts = await page.locator(sel).allInnerTexts();
+      return { output: `[${count}] ${texts.slice(0, 20).join(' | ')}`.slice(0, 6000) };
+    }
+    case 'extract_table': {
+      const out = await page.evaluate(() => {
+        const tables = Array.from(document.querySelectorAll('table'));
+        return tables.slice(0, 5).map((t) => {
+          const rows = Array.from(t.querySelectorAll('tr')).slice(0, 20).map((tr) =>
+            Array.from(tr.querySelectorAll('th, td')).map((c) => c.innerText.trim()).join(' | '),
+          );
+          return rows.join('\n');
+        });
+      });
+      return { output: out.join('\n\n---\n\n').slice(0, 6000) };
     }
     case 'scroll': {
       const dir = String(body.direction || 'down');
