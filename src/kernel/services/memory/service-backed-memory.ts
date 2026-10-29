@@ -140,12 +140,20 @@ export class ServiceBackedMemoryStore implements IMemoryStore {
             entriesConsolidated++;
         }
 
-        // 2) Forget low-importance memories past the Ebbinghaus retention floor.
+        // 2) Forget expired (per-entry TTL) and low-importance memories past the
+        // Ebbinghaus retention floor.
         let entriesForgotten = 0;
         for (const e of best.values()) {
+            const ts = e.metadata.timestamp ?? now;
+            const ttl = e.metadata.ttl;
+            if (ttl && now - ts > ttl) {
+                toDelete.add(e.id);
+                entriesForgotten++;
+                continue;
+            }
             const importance = e.metadata.importance ?? 0.5;
             if (importance >= 0.3) continue;
-            const last = e.metadata.lastAccessed ?? e.metadata.timestamp ?? now;
+            const last = e.metadata.lastAccessed ?? ts;
             const ageHours = Math.max(0, now - last) / 3_600_000;
             if (computeRetention(importance, ageHours) < 0.05) {
                 toDelete.add(e.id);
