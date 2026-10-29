@@ -5,7 +5,9 @@ import { useTranslation } from '../../i18n/useTranslation';
 import { MarkdownRenderer } from '../ChatPanel/MarkdownRenderer';
 import { KnowledgeGraphView, type GraphViewData } from '../viz/KnowledgeGraphView';
 import { WIKI_ARTICLES } from '../WikiPanel/wiki-articles';
+import { wikiId } from '../../kernel/services/wiki-brain/wiki-brain-dexie';
 import type { IWikiBrainService } from '../../kernel/contracts/wiki-brain';
+import type { TWikiLink } from '../../kernel/contracts/wiki-brain/types';
 import type { TWikiPage, TWikiPageFrontmatter } from '../../kernel/contracts/wiki-brain';
 
 interface Stats {
@@ -69,6 +71,28 @@ const buttonStyle: React.CSSProperties = {
     fontWeight: 700,
     cursor: 'pointer',
 };
+
+async function buildWikilinks(store: {
+    putLink(l: TWikiLink): Promise<void>;
+    listPages(opts?: { limit?: number }): Promise<Array<{ slug: string; body: string }>>;
+}) {
+    const all = await store.listPages({ limit: 10000 });
+    const slugSet = new Set(all.map((p) => p.slug));
+    for (const page of all) {
+        const targets = (page.body.match(/\[\[([^\]]+)\]\]/g) ?? [])
+            .map((m) => m.slice(2, -2).split('|')[0]!.trim())
+            .filter((slug) => slug && slugSet.has(slug) && slug !== page.slug);
+        for (const toSlug of new Set(targets)) {
+            await store.putLink({
+                id: `lnk:${page.slug}->${toSlug}`,
+                fromSlug: page.slug,
+                toSlug,
+                kind: 'wikilink',
+                weight: 1,
+            });
+        }
+    }
+}
 
 export default function WikiBrainPanel() {
     const { t } = useTranslation();
@@ -235,6 +259,7 @@ export default function WikiBrainPanel() {
             }
 
             if (pages.length > 0) await store.bulkPutPages(pages);
+            await buildWikilinks(store);
             setMessage(`${t('wiki.sync_builtin_msg', { count: pages.length })} (пропущено: ${skipped})`);
             await load();
         } catch (error) {
