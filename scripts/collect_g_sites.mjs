@@ -57,13 +57,14 @@ async function collectSite(browser, site) {
 
   const ctx = await browser.newContext();
   const page = await ctx.newPage();
-  const base = `https://sites.google.com/u/0/d/${id}/p`;
+  const base = `https://sites.google.com/u/0/d/${id}`;
   const index = [];
 
   try {
-    await page.goto(base + '?authuser=0', { waitUntil: 'domcontentloaded', timeout: 60000 });
-    await page.waitForTimeout(2500);
+    await page.goto(base + '/preview?authuser=0', { waitUntil: 'domcontentloaded', timeout: 60000 });
+    await page.waitForTimeout(3000);
     const mainText = cleanText(stripUi(await page.evaluate(() => document.body.innerText)));
+    console.log('   главная длина =', mainText.length);
     const homeName = site.name || 'Главная';
     writeFileSync(path.join(dir, '_home.md'), `# ${site.name}\n\n${mainText}\n`);
     index.push({ text: homeName, file: '_home.md' });
@@ -83,15 +84,17 @@ async function collectSite(browser, site) {
       return out;
     }, id);
 
+    console.log('   найдено страниц =', pages.length);
     for (const pg of pages) {
       const name = pg.text || pg.page;
       try {
-        await page.goto(`${base}/${pg.page}/preview?authuser=0`, { waitUntil: 'domcontentloaded', timeout: 60000 });
-        await page.waitForTimeout(1200);
+        await page.goto(`${base}/p/${pg.page}/preview?authuser=0`, { waitUntil: 'domcontentloaded', timeout: 60000 });
+        await page.waitForTimeout(2000);
         const text = cleanText(stripUi(await page.evaluate(() => document.body.innerText)));
         const fname = `p_${pg.page.slice(0, 8)}.md`;
         writeFileSync(path.join(dir, fname), `# ${name}\n\n${text}\n`);
         index.push({ text: name || pg.page, file: fname });
+        if (text.length < 20) console.log(`   ⚠ короткая «${name}» (${text.length})`);
       } catch (e) {
         appendFileSync(path.join(dir, `p_${pg.page.slice(0, 8)}.md`), `# ${name}\n\n(ошибка загрузки: ${e.message})\n`);
         index.push({ text: name || pg.page, file: `p_${pg.page.slice(0, 8)}.md` });
