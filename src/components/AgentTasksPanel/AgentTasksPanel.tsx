@@ -7,6 +7,7 @@ import {
     Crosshair,
     Server,
     Rocket,
+    MousePointerClick,
 } from 'lucide-react';
 import { useTranslation } from '../../i18n/useTranslation';
 import { agemsApprovalService } from '../../kernel/services/agems-approval-service';
@@ -86,6 +87,10 @@ const AgentTasksPanel: React.FC = () => {
     const [checking, setChecking] = useState(false);
     const [providerReady, setProviderReady] = useState<Record<string, boolean>>({});
     const [savingId, setSavingId] = useState<number | null>(null);
+    const [selector, setSelector] = useState('');
+    const [schemaText, setSchemaText] = useState('');
+    const [toolBusy, setToolBusy] = useState(false);
+    const [toolOutput, setToolOutput] = useState<string | null>(null);
     const appliedTurns = Math.max(1, Math.min(50, Math.floor(Number(maxTurns) || 10)));
 
     // UX: подсказать реальных агентов для «от чьего имени».
@@ -151,6 +156,18 @@ const AgentTasksPanel: React.FC = () => {
 
     function pushHistory(patch: Partial<RunRecord> & { id: number }) {
         setHistory((prev) => prev.map((r) => (r.id === patch.id ? { ...r, ...patch } : r)));
+    }
+
+    function logRun(
+        capability: Capability,
+        task: string,
+        status: RunRecord['status'],
+        output: string,
+        screenshot?: string,
+    ) {
+        const id = ++runSeq;
+        const rec: RunRecord = { id, capability, task, status, output, screenshot, at: Date.now() };
+        setHistory((prev) => [rec, ...prev].slice(0, HISTORY_CAP));
     }
 
     async function runBrowser(
@@ -262,6 +279,72 @@ const AgentTasksPanel: React.FC = () => {
         abortRef.current?.abort();
         setRunning(false);
         setError('Отменено пользователем');
+    }
+
+    type ToolKind = 'click_selector' | 'extract_text_selector' | 'extract_table' | 'extract_schema';
+
+    async function runTool(kind: ToolKind): Promise<void> {
+        if (running || toolBusy) return;
+        if (!sidecar?.ok) {
+            setError('Sidecar не запущен. Запусти: npm run browser:sidecar, затем «Проверить».');
+            return;
+        }
+        if (kind !== 'extract_table' && !selector.trim()) {
+            setError('Введи CSS-селектор (например: #price, h1, table tr)');
+            return;
+        }
+        setError(null);
+        setToolOutput(null);
+        setToolBusy(true);
+        const label = `[${kind}] ${kind === 'extract_table' ? '' : selector.trim()}`;
+        try {
+            const agent = agentId.trim() || 'ui-tasks';
+            const req = await agemsApprovalService.requestApproval({
+                agentId: agent,
+                toolName: 'browser.act',
+                toolInput: { action: kind, selector, schema: schemaText },
+                category: 'browser',
+                riskLevel: 'medium',
+                description: `tasks panel tool: ${label}`.slice(0, 200),
+            });
+            await agemsApprovalService.resolve(
+                req.id as number,
+                'APPROVED',
+                undefined,
+                'ui:direct:tasks',
+            );
+            let res: Awaited<ReturnType<typeof browserUseService.act>>;
+            if (kind === 'extract_schema') {
+                let schema: Record<string, unknown>;
+                try {
+                    schema = JSON.parse(schemaText) as Record<string, unknown>;
+                } catch {
+                    throw new Error('Схема — не корректный JSON: {"поле": "селектор"}');
+                }
+                if (!schema || typeof schema !== 'object' || Array.isArray(schema)) {
+                    throw new Error('Схема должна быть объектом {"поле": "селектор"}');
+                }
+                res = await browserUseService.act('extract_schema', { schema });
+            } else {
+                res = await browserUseService.act(kind, {
+                    ...(kind === 'extract_table' ? {} : { selector }),
+                });
+            }
+            const summary = res.output.slice(0, 2000);
+            setToolOutput(summary);
+            logRun(
+                'browser',
+                `${label} → ${summary.slice(0, 120)}`,
+                'done',
+                `${res.via} · ${summary}`,
+            );
+        } catch (e) {
+            const msg = e instanceof Error ? e.message : String(e);
+            setError(msg);
+            logRun('browser', label, 'error', msg.slice(0, 2000));
+        } finally {
+            setToolBusy(false);
+        }
     }
 
     async function onRun(): Promise<void> {
@@ -512,6 +595,75 @@ const AgentTasksPanel: React.FC = () => {
                     >
                         <AlertTriangle size={16} /> <span>{error}</span>
                     </div>
+                )}
+            </div>
+
+            <div
+                style={{
+                    border: '1px dashed var(--border)',
+                    borderRadius: 8,
+                    padding: '0.75rem 1rem',
+                    marginBottom: '1rem',
+                }}
+            >
+                <div
+                    style={{
+                        fontSize: 12,
+                        fontWeight: 600,
+                        color: 'var(--slate-300)',
+                        marginBottom: '0.5rem',
+                    }}
+                >
+                    🎯 Инструменты селектора (точный контроль, sidecar)
+                </div>
+                <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginBottom: 6 }}>
+                    <input
+                        value={selector}
+                        onChange={(e) => setSelector(e.target.value)}
+                        placeholder="CSS-селектор, напр. #price или table tr"
+                        style={{ flex: '1 1 200px', padding: 8, borderRadius: 8 }}
+                    />
+                    <button onClick={() => void runTool('click_selector')} disabled={toolBusy}>
+                        <MousePointerClick size={14} /> Кликнуть
+                    </button>
+                    <button
+                        onClick={() => void runTool('extract_text_selector')}
+                        disabled={toolBusy}
+                    >
+                        Извлечь текст
+                    </button>
+                    <button onClick={() => void runTool('extract_table')} disabled={toolBusy}>
+                        Извлечь таблицу
+                    </button>
+                </div>
+                <textarea
+                    value={schemaText}
+                    onChange={(e) => setSchemaText(e.target.value)}
+                    placeholder={'Схема (JSON): {"цена": "#price", "заголовок": "h1"}'}
+                    rows={2}
+                    style={{ width: '100%', padding: 8, borderRadius: 8 }}
+                />
+                <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginTop: 6 }}>
+                    <button onClick={() => void runTool('extract_schema')} disabled={toolBusy}>
+                        {toolBusy ? <Loader2 size={14} /> : null} Извлечь по схеме
+                    </button>
+                    <span style={{ fontSize: 11, color: 'var(--slate-400)' }}>
+                        {toolBusy ? 'выполняется…' : 'действия идут через sidecar /act'}
+                    </span>
+                </div>
+                {toolOutput !== null && (
+                    <pre
+                        style={{
+                            background: '#f8fafc',
+                            padding: 8,
+                            marginTop: 8,
+                            overflowX: 'auto',
+                            whiteSpace: 'pre-wrap',
+                            fontSize: 12,
+                        }}
+                    >
+                        {toolOutput}
+                    </pre>
                 )}
             </div>
 

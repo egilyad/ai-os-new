@@ -131,6 +131,26 @@ async function handleAct(body, ctx) {
       });
       return { output: out.join('\n\n---\n\n').slice(0, 6000) };
     }
+    case 'extract_schema': {
+      const schema = body.schema;
+      if (!schema || typeof schema !== 'object' || Array.isArray(schema)) {
+        throw new Error('extract_schema: schema object required ({ field: selector })');
+      }
+      const out = {};
+      for (const [key, sel] of Object.entries(schema)) {
+        const s = String(sel || '').trim();
+        if (!s) { out[key] = null; continue; }
+        try {
+          const loc = page.locator(s);
+          if ((await loc.count()) === 0) { out[key] = null; continue; }
+          const txt = ((await loc.first().innerText()) || '').trim();
+          out[key] = txt ? txt.slice(0, 2000) : null;
+        } catch {
+          out[key] = null;
+        }
+      }
+      return { output: JSON.stringify(out, null, 2).slice(0, 6000) };
+    }
     case 'scroll': {
       const dir = String(body.direction || 'down');
       const amount = Number(body.amount || 400);

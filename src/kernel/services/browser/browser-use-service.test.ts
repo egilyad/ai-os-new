@@ -77,7 +77,8 @@ describe('BrowserUseService (phase70)', () => {
             vi.fn(async () => ({
                 ok: true,
                 status: 200,
-                text: async () => `prefix-noise {"screenshot": "iVBORw0K", "finalState": {}} trailing`,
+                text: async () =>
+                    `prefix-noise {"screenshot": "iVBORw0K", "finalState": {}} trailing`,
             })),
         );
         const svc = new BrowserUseService({
@@ -106,7 +107,9 @@ describe('BrowserUseService (phase70)', () => {
             events: fakeBus(),
             getConfig: () => ({ sidecarUrl: 'http://localhost:3100/execute' }),
         });
-        await expect(svc.execute('type my password 123 into the form')).rejects.toThrow(/sensitive/);
+        await expect(svc.execute('type my password 123 into the form')).rejects.toThrow(
+            /sensitive/,
+        );
         await expect(svc.execute('   ')).rejects.toThrow(/task is required/);
         await svc.destroy();
     });
@@ -116,7 +119,11 @@ describe('BrowserUseService (phase70)', () => {
             const body = JSON.parse(String(init?.body)) as Record<string, unknown>;
             expect(body['task']).toContain('example.com');
             expect(body['maxSteps']).toBe(15);
-            return jsonResponse({ screenshot: 'iVBORw0KGgo=', actions: ['goto'], finalState: 'done' });
+            return jsonResponse({
+                screenshot: 'iVBORw0KGgo=',
+                actions: ['goto'],
+                finalState: 'done',
+            });
         });
         vi.stubGlobal('fetch', fetchMock);
         const svc = new BrowserUseService({
@@ -124,7 +131,9 @@ describe('BrowserUseService (phase70)', () => {
             getConfig: () => ({ sidecarUrl: 'http://localhost:3100/execute' }),
         });
         expect(svc.isConfigured()).toBe(true);
-        const res = await svc.execute('open https://example.com and screenshot', { ticketId: 'sbx-1' });
+        const res = await svc.execute('open https://example.com and screenshot', {
+            ticketId: 'sbx-1',
+        });
         expect(res.ok).toBe(true);
         expect(res.via).toBe('sidecar');
         expect(res.screenshot).toBe('iVBORw0KGgo=');
@@ -136,7 +145,10 @@ describe('BrowserUseService (phase70)', () => {
     });
 
     it('sidecar HTTP error surfaces as throw', async () => {
-        vi.stubGlobal('fetch', vi.fn(async () => jsonResponse('timeout', 500)));
+        vi.stubGlobal(
+            'fetch',
+            vi.fn(async () => jsonResponse('timeout', 500)),
+        );
         const svc = new BrowserUseService({
             events: fakeBus(),
             getConfig: () => ({ sidecarUrl: 'http://localhost:3100/execute' }),
@@ -153,8 +165,10 @@ describe('BrowserUseService (phase70)', () => {
                 const body = JSON.parse(String(init?.body)) as Record<string, unknown>;
                 calls.push({ url, body });
                 if (url.endsWith('/runs')) return jsonResponse({ run: { id: 'run-1' } });
-                expect((body['adapter'] as string)).toBe('browser-use');
-                return jsonResponse({ stdout: JSON.stringify({ screenshot: 'iVBOR', actions: [] }) });
+                expect(body['adapter'] as string).toBe('browser-use');
+                return jsonResponse({
+                    stdout: JSON.stringify({ screenshot: 'iVBOR', actions: [] }),
+                });
             }),
         );
         const svc = new BrowserUseService({
@@ -189,6 +203,86 @@ describe('BrowserUseService (phase70)', () => {
         });
         await svc.execute('open https://example.com', { maxSteps: 999 });
         expect(seenMax).toBe(50);
+        await svc.destroy();
+    });
+
+    it('act: POSTs to /act with action+params and parses output/screenshot', async () => {
+        const fetchMock = vi.fn(async (url: string, init?: RequestInit) => {
+            const body = JSON.parse(String(init?.body)) as Record<string, unknown>;
+            expect(body['action']).toBe('click_selector');
+            expect(body['selector']).toBe('#buy');
+            return jsonResponse({ output: 'clicked selector #buy', screenshot: 'iVBOR=' });
+        });
+        vi.stubGlobal('fetch', fetchMock);
+        const svc = new BrowserUseService({
+            events: fakeBus(),
+            getConfig: () => ({ sidecarUrl: 'http://localhost:3100/execute' }),
+        });
+        const res = await svc.act('click_selector', { selector: '#buy' });
+        expect(res.ok).toBe(true);
+        expect(res.via).toBe('sidecar');
+        expect(res.output).toBe('clicked selector #buy');
+        expect(res.screenshot).toBe('iVBOR=');
+        const [url, init] = fetchMock.mock.calls[0] as [string, RequestInit];
+        expect(url).toBe('http://localhost:3100/act');
+        expect(init.redirect).toBe('manual');
+        await svc.destroy();
+    });
+
+    it('act: schema extraction forwards schema object', async () => {
+        const fetchMock = vi.fn(async (_url: string, init?: RequestInit) => {
+            const body = JSON.parse(String(init?.body)) as Record<string, unknown>;
+            expect(body['action']).toBe('extract_schema');
+            expect((body['schema'] as Record<string, string>)['price']).toBe('#price');
+            return jsonResponse({ output: '{"price":"990 ₽"}' });
+        });
+        vi.stubGlobal('fetch', fetchMock);
+        const svc = new BrowserUseService({
+            events: fakeBus(),
+            getConfig: () => ({ sidecarUrl: 'http://localhost:3100/execute' }),
+        });
+        const res = await svc.act('extract_schema', { schema: { price: '#price' } });
+        expect(res.output).toContain('990 ₽');
+        await svc.destroy();
+    });
+
+    it('act: unreachable sidecar fails with runnable hint', async () => {
+        vi.stubGlobal(
+            'fetch',
+            vi.fn(async () => {
+                throw new Error('fetch failed');
+            }),
+        );
+        const svc = new BrowserUseService({
+            events: fakeBus(),
+            getConfig: () => ({ sidecarUrl: 'http://localhost:3100/execute' }),
+        });
+        await expect(svc.act('click_selector', { selector: '#buy' })).rejects.toThrow(
+            /npm run browser:sidecar/,
+        );
+        await svc.destroy();
+    });
+
+    it('act: sidecar error field surfaces', async () => {
+        vi.stubGlobal(
+            'fetch',
+            vi.fn(async () => jsonResponse({ error: 'selector not found' }, 500)),
+        );
+        const svc = new BrowserUseService({
+            events: fakeBus(),
+            getConfig: () => ({ sidecarUrl: 'http://localhost:3100/execute' }),
+        });
+        await expect(svc.act('extract_text_selector', { selector: '#x' })).rejects.toThrow(
+            /selector not found/,
+        );
+        await svc.destroy();
+    });
+
+    it('act: throws when no sidecar configured', async () => {
+        const svc = new BrowserUseService({ events: fakeBus(), getConfig: () => ({}) });
+        await expect(svc.act('click_selector', { selector: '#buy' })).rejects.toThrow(
+            /not configured/,
+        );
         await svc.destroy();
     });
 });

@@ -53,6 +53,14 @@ export interface BrowserUseResult {
     finalState?: unknown;
 }
 
+export interface BrowserActResult {
+    ok: boolean;
+    via: 'sidecar';
+    action: string;
+    output: string;
+    screenshot?: string;
+}
+
 export interface BrowserUseDeps {
     events: IEventBus;
     /** Резолвер конфига (localStorage/env). Если не задан — используется default. */
@@ -106,6 +114,18 @@ function assertTask(task: string, blocked: RegExp[]): void {
     }
     for (const re of blocked) {
         if (re.test(task)) throw new Error(`browser.act: sensitive pattern blocked (${re.source})`);
+    }
+}
+
+function parseActResult(text: string): { output: string; screenshot?: string } {
+    try {
+        const p = JSON.parse(text) as { output?: unknown; screenshot?: string };
+        return {
+            output: typeof p.output === 'string' ? p.output : text.slice(0, RESULT_SLICE),
+            screenshot: p.screenshot,
+        };
+    } catch {
+        return { output: text.slice(0, RESULT_SLICE) };
     }
 }
 
@@ -190,6 +210,65 @@ export class BrowserUseService {
         throw new Error(
             'browser-use not configured: set browserUse.sidecarUrl (direct) or companyGateway.url/secret + browserUse.companyId (gateway)',
         );
+    }
+
+    /**
+     * Низкоуровневое действие sidecar (только прямой sidecar, не gateway):
+     * `click_selector`, `extract_text_selector`, `extract_table`,
+     * `extract_schema`, `open_url`, `type_text`, ...
+     * Возвращает `{ output, screenshot }` из ответа `/act`.
+     */
+    async act(
+        action: string,
+        params: Record<string, unknown> = {},
+        opts: { signal?: AbortSignal } = {},
+    ): Promise<BrowserActResult> {
+        const cfg = this.config();
+        if (!cfg.sidecarUrl) {
+            throw new Error(
+                'browser sidecar not configured: set browserUse.sidecarUrl or run "npm run browser:sidecar"',
+            );
+        }
+        const base = cfg.sidecarUrl.replace(/\/$/, '').replace(/\/execute$/, '');
+        const url = `${base}/act`;
+        const ctl = new AbortController();
+        const timer = setTimeout(() => ctl.abort(), EXEC_TIMEOUT_MS);
+        if (opts.signal) opts.signal.addEventListener('abort', () => ctl.abort(), { once: true });
+        let res: Response;
+        try {
+            res = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action, ...params }),
+                signal: ctl.signal,
+                redirect: 'manual',
+            });
+        } catch (e) {
+            throw new Error(
+                `browser sidecar недоступен по ${url}. Запусти его: npm run browser:sidecar ` +
+                    `(или пропиши browserUse.sidecarUrl в localStorage). Подробности: ` +
+                    `${e instanceof Error ? e.message : String(e)}`,
+                { cause: e },
+            );
+        } finally {
+            clearTimeout(timer);
+        }
+        const text = (await res.text()).slice(0, TRANSPORT_SLICE);
+        if (res.status >= 300 && res.status < 400)
+            throw new Error(`sidecar refused redirect (HTTP ${res.status})`);
+        if (!res.ok) {
+            let msg = `sidecar HTTP ${res.status}`;
+            try {
+                const p = JSON.parse(text) as { error?: unknown };
+                if (p?.error) msg = String(p.error);
+            } catch {
+                /* keep HTTP status */
+            }
+            throw new Error(msg);
+        }
+        const { output, screenshot } = parseActResult(text);
+        if (!output) throw new Error(`sidecar ${action}: пустой результат`);
+        return { ok: true, via: 'sidecar', action, output, screenshot };
     }
 
     private config(): BrowserUseConfig {
