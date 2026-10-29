@@ -135,10 +135,12 @@ function pagesOf(dir) {
 
 const dirs = readdirSync(SRC).filter((d) => statSync(join(SRC, d)).isDirectory());
 
-const sites = dirs.map((d) => {
-  const title = titleOf(d);
-  return { dir: d, title, category: categoryOf(title + ' ' + d), pages: pagesOf(d) };
-});
+const sites = dirs
+  .map((d) => {
+    const title = titleOf(d);
+    return { dir: d, title, category: categoryOf(title + ' ' + d), pages: pagesOf(d) };
+  })
+  .filter((s) => s.title !== 'Без названия');
 sites.sort((a, b) => a.title.localeCompare(b.title, 'ru'));
 
 const byCat = new Map();
