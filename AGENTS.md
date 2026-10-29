@@ -64,3 +64,10 @@ npm run test               # vitest
 npm run lint               # eslint
 npm run check:circular-kernel  # circular deps check
 ```
+
+## Browser & Computer Control (Playwright MCP)
+
+- A Playwright MCP server is configured in `opencode.jsonc` (`mcp.playwright`).
+- Use the `playwright_*` tools to control the browser: navigate, click, fill forms, take screenshots.
+- Prefer `webfetch`/`websearch` for simple reads; use Playwright for interactive actions.
+- Browser actions require approval (`permission.playwright_* = "ask"`) — confirm before destructive steps.
