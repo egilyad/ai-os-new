@@ -111,6 +111,12 @@ const browser = await chromium.launchPersistentContext(PROFILE_DIR, {
   channel: 'chrome',
   headless: false,
   viewport: { width: 1280, height: 900 },
+  args: ['--disable-blink-features=AutomationControlled'],
+});
+
+// hide automation fingerprints (Google blocks "unsafe browser" otherwise)
+await browser.addInitScript(() => {
+  Object.defineProperty(navigator, 'webdriver', { get: () => undefined });
 });
 
 const page = await browser.newPage();
