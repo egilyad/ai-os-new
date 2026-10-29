@@ -95,3 +95,6 @@ wiki-site/
 temp_*.txt
 *_used.txt
 *_keys.txt
+
+.gprofile/
+
