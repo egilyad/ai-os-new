@@ -56,7 +56,8 @@
     "check:deps": "depcruise --config .dependency-cruiser.cjs src",
     "check:deps:graph": "depcruise --config .dependency-cruiser.cjs --output-type dot src | dot -T svg > dependency-graph.svg",
     "prepare": "husky",
-    "test:server": "node --test server/tests/write-queue.test.mjs server/tests/decide-approval.test.mjs server/tests/run-integrity.test.mjs server/tests/wakeup-issue.test.mjs server/tests/autocycle.test.mjs server/tests/ws-auth.test.mjs server/tests/browser-use-adapter.test.mjs server/tests/computer-act-adapter.test.mjs scripts/tests/net-guard.test.mjs scripts/tests/smoke-stack.test.mjs scripts/tests/sidecar-ctl.test.mjs"
+    "test:server": "node --test server/tests/write-queue.test.mjs server/tests/decide-approval.test.mjs server/tests/run-integrity.test.mjs server/tests/wakeup-issue.test.mjs server/tests/autocycle.test.mjs server/tests/ws-auth.test.mjs server/tests/browser-use-adapter.test.mjs server/tests/computer-act-adapter.test.mjs scripts/tests/net-guard.test.mjs scripts/tests/smoke-stack.test.mjs scripts/tests/sidecar-ctl.test.mjs",
+    "browser:sidecar": "node server/browser-sidecar.mjs"
   },
   "lint-staged": {
     "*.{ts,tsx}": [
