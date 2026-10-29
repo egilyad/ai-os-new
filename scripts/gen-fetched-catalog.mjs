@@ -13,6 +13,53 @@ import { fileURLToPath } from 'node:url';
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const SRC = join(ROOT, 'docs', 'fetched-sites');
 const OUT = join(SRC, 'README.md');
+const HTML_OUT = join(SRC, 'index.html');
+
+function escapeHtml(s) {
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+function renderHtml(sites, byCat) {
+  const cats = [...byCat.keys()].sort((a, b) => byCat.get(b).length - byCat.get(a).length);
+  const body = cats
+    .map((cat) => {
+      const list = byCat.get(cat);
+      const items = list
+        .map(
+          (s) =>
+            `<li><a href="./${escapeHtml(s.dir)}/index.md">${escapeHtml(s.title)}</a> — ${s.pages} стр. <span class="cat">${escapeHtml(s.category)}</span></li>`,
+        )
+        .join('\n');
+      return `<h2>${escapeHtml(cat)} (${list.length})</h2>\n<ul>\n${items}\n</ul>`;
+    })
+    .join('\n\n');
+  const totalPages = sites.reduce((sum, s) => sum + s.pages + 2, 0);
+  return `<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Скачанные сайты (fetched-sites)</title>
+<style>
+  body{font-family:system-ui,sans-serif;max-width:900px;margin:2rem auto;padding:0 1rem;color:#0f172a;line-height:1.55}
+  h1{font-size:1.5rem} h2{font-size:1.1rem;color:#475569;border-bottom:1px solid #e2e8f0;padding-bottom:.3rem;margin-top:1.6rem}
+  ul{list-style:none;padding:0} li{padding:.28rem 0;border-bottom:1px dashed #eef2f7}
+  a{color:#2563eb;text-decoration:none} a:hover{text-decoration:underline}
+  .cat{font-size:.78rem;color:#94a3b8;float:right} .hint{font-size:.85rem;color:#64748b}
+</style>
+</head>
+<body>
+<h1>Скачанные сайты (fetched-sites)</h1>
+<p class="hint">Всего папок: <b>${sites.length}</b>, страниц: <b>${totalPages}</b>. Каталог генерируется <code>scripts/gen-fetched-catalog.mjs</code>.</p>
+${body}
+</body>
+</html>
+`;
+}
 
 const CATEGORY_RULES = [
   { re: /сайт-без-названия/i, cat: 'Без названия (прочее)' },
@@ -125,4 +172,5 @@ for (const cat of cats) {
 }
 lines.push('', '---', '', 'Сгенерировано `scripts/gen-fetched-catalog.mjs`.');
 writeFileSync(OUT, lines.join('\n') + '\n');
-console.log(`[fetched-catalog] ${sites.length} sites, ${byCat.size} categories -> docs/fetched-sites/README.md`);
+writeFileSync(HTML_OUT, renderHtml(sites, byCat));
+console.log(`[fetched-catalog] ${sites.length} sites, ${byCat.size} categories -> docs/fetched-sites/README.md + index.html`);
