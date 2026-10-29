@@ -3,26 +3,171 @@
   "generatedBy": "scripts/gen-docs-inventory.mjs",
   "scope": "git-tracked markdown: docs/**/*.md (excluding docs/new drafts and the self-report pages docs-health, docs-inventory) plus repository entry docs (root *.md, .superagents/**, src/kernel/DEPENDENCY_MAP.md)",
   "totals": {
-    "documents": 1147,
+    "documents": 1221,
     "byCategory": {
       "repo": 13,
-      "top": 66,
+      "top": 102,
       "active": 1,
       "audits": 77,
       "history": 683,
       "reference": 6,
       "roadmap": 19,
       "superseded": 3,
-      "wiki": 279
+      "wiki": 317
     },
     "byLanguage": {
       "en": 659,
-      "ru": 317,
+      "ru": 391,
       "mixed": 171
     }
   },
   "duplicates": {
-    "content": [],
+    "content": [
+      [
+        "docs/sessions/2026-10-29-roadmap-p0-p3.md",
+        "docs/wiki/sessions/2026-10-29-roadmap-p0-p3.md"
+      ],
+      [
+        "docs/sessions/README.md",
+        "docs/wiki/sessions/README.md"
+      ],
+      [
+        "docs/sessions/turns/2026-10-29-001-шалом-чем-могу-помочь.md",
+        "docs/wiki/sessions/turns/2026-10-29-001-шалом-чем-могу-помочь.md"
+      ],
+      [
+        "docs/sessions/turns/2026-10-29-002-в-текущей-рабочей-папке-доник-этих-файлов-нет-docs.md",
+        "docs/wiki/sessions/turns/2026-10-29-002-в-текущей-рабочей-папке-доник-этих-файлов-нет-docs.md"
+      ],
+      [
+        "docs/sessions/turns/2026-10-29-003-проект-нашёл-roadmap-p0-есть-начинаю-с-p0-1-keyvau.md",
+        "docs/wiki/sessions/turns/2026-10-29-003-проект-нашёл-roadmap-p0-есть-начинаю-с-p0-1-keyvau.md"
+      ],
+      [
+        "docs/sessions/turns/2026-10-29-004-понял-пропускаю-typecheck-гоняю-только-целевые-тес.md",
+        "docs/wiki/sessions/turns/2026-10-29-004-понял-пропускаю-typecheck-гоняю-только-целевые-тес.md"
+      ],
+      [
+        "docs/sessions/turns/2026-10-29-005-п0-1-готов-код-внесён-проверки-пропущены-по-твоей-.md",
+        "docs/wiki/sessions/turns/2026-10-29-005-п0-1-готов-код-внесён-проверки-пропущены-по-твоей-.md"
+      ],
+      [
+        "docs/sessions/turns/2026-10-29-006-продолжаем-с-p1-ставлю-план-и-начинаю-с-p1-2-запре.md",
+        "docs/wiki/sessions/turns/2026-10-29-006-продолжаем-с-p1-ставлю-план-и-начинаю-с-p1-2-запре.md"
+      ],
+      [
+        "docs/sessions/turns/2026-10-29-007-turn.md",
+        "docs/wiki/sessions/turns/2026-10-29-007-turn.md"
+      ],
+      [
+        "docs/sessions/turns/2026-10-29-008-ci-ловит-loop-synthesis-может-быть-null-внутри-кол.md",
+        "docs/wiki/sessions/turns/2026-10-29-008-ci-ловит-loop-synthesis-может-быть-null-внутри-кол.md"
+      ],
+      [
+        "docs/sessions/turns/2026-10-29-009-линт-watchdog-объявлен-через-let-и-не-переприсваив.md",
+        "docs/wiki/sessions/turns/2026-10-29-009-линт-watchdog-объявлен-через-let-и-не-переприсваив.md"
+      ],
+      [
+        "docs/sessions/turns/2026-10-29-010-no-this-alias-запрещает-const-self-this-заменю-на-.md",
+        "docs/wiki/sessions/turns/2026-10-29-010-no-this-alias-запрещает-const-self-this-заменю-на-.md"
+      ],
+      [
+        "docs/sessions/turns/2026-10-29-011-ci-зелёный-отлично-продолжаем-p1-ставлю-план-и-раз.md",
+        "docs/wiki/sessions/turns/2026-10-29-011-ci-зелёный-отлично-продолжаем-p1-ставлю-план-и-раз.md"
+      ],
+      [
+        "docs/sessions/turns/2026-10-29-012-продолжаем-разведка-прервалась-читаю-ключевые-точк.md",
+        "docs/wiki/sessions/turns/2026-10-29-012-продолжаем-разведка-прервалась-читаю-ключевые-точк.md"
+      ],
+      [
+        "docs/sessions/turns/2026-10-29-013-продолжаем-p2-ставлю-план-и-разведываю-контейнерны.md",
+        "docs/wiki/sessions/turns/2026-10-29-013-продолжаем-p2-ставлю-план-и-разведываю-контейнерны.md"
+      ],
+      [
+        "docs/sessions/turns/2026-10-29-014-ci-зелёный-делаю-p2-1-контейнерно-тип-сервис-skill.md",
+        "docs/wiki/sessions/turns/2026-10-29-014-ci-зелёный-делаю-p2-1-контейнерно-тип-сервис-skill.md"
+      ],
+      [
+        "docs/sessions/turns/2026-10-29-015-p2-2-сначала-тщательно-изучу-memory-модель-чтобы-н.md",
+        "docs/wiki/sessions/turns/2026-10-29-015-p2-2-сначала-тщательно-изучу-memory-модель-чтобы-н.md"
+      ],
+      [
+        "docs/sessions/turns/2026-10-29-016-делаю-p2-6-контейнерно-универсальный-хук-виртуализ.md",
+        "docs/wiki/sessions/turns/2026-10-29-016-делаю-p2-6-контейнерно-универсальный-хук-виртуализ.md"
+      ],
+      [
+        "docs/sessions/turns/2026-10-29-017-ci-зелёный-бью-p3-начинаю-с-p3-1-dag-план-как-конт.md",
+        "docs/wiki/sessions/turns/2026-10-29-017-ci-зелёный-бью-p3-начинаю-с-p3-1-dag-план-как-конт.md"
+      ],
+      [
+        "docs/sessions/turns/2026-10-29-018-ci-поле-initial-объявлено-как-поле-но-не-читается-.md",
+        "docs/wiki/sessions/turns/2026-10-29-018-ci-поле-initial-объявлено-как-поле-но-не-читается-.md"
+      ],
+      [
+        "docs/sessions/turns/2026-10-29-019-продолжаем-p3-делаю-p3-2-blackboard-контейнерно-с-.md",
+        "docs/wiki/sessions/turns/2026-10-29-019-продолжаем-p3-делаю-p3-2-blackboard-контейнерно-с-.md"
+      ],
+      [
+        "docs/sessions/turns/2026-10-29-020-пуш-уже-актуален-head-origin-main-18047c9-все-изме.md",
+        "docs/wiki/sessions/turns/2026-10-29-020-пуш-уже-актуален-head-origin-main-18047c9-все-изме.md"
+      ],
+      [
+        "docs/sessions/turns/2026-10-29-021-да-реально-в-проекте-уже-есть-вся-инфраструктура.md",
+        "docs/wiki/sessions/turns/2026-10-29-021-да-реально-в-проекте-уже-есть-вся-инфраструктура.md"
+      ],
+      [
+        "docs/sessions/turns/2026-10-29-022-а-ты-про-сохранение-наших-сессий-opencode-этого-ча.md",
+        "docs/wiki/sessions/turns/2026-10-29-022-а-ты-про-сохранение-наших-сессий-opencode-этого-ча.md"
+      ],
+      [
+        "docs/sessions/turns/2026-10-29-023-делаю-скрипт-автогенерации-сессий-сначала-гляну-pa.md",
+        "docs/wiki/sessions/turns/2026-10-29-023-делаю-скрипт-автогенерации-сессий-сначала-гляну-pa.md"
+      ],
+      [
+        "docs/sessions/turns/2026-10-29-024-разберусь-не-затирает-ли-gen-wiki-docs-чужие-файлы.md",
+        "docs/wiki/sessions/turns/2026-10-29-024-разберусь-не-затирает-ли-gen-wiki-docs-чужие-файлы.md"
+      ],
+      [
+        "docs/sessions/turns/2026-10-29-025-хороший-вопрос-гляну-что-реально-лежит-в-docs-grap.md",
+        "docs/wiki/sessions/turns/2026-10-29-025-хороший-вопрос-гляну-что-реально-лежит-в-docs-grap.md"
+      ],
+      [
+        "docs/sessions/turns/2026-10-29-026-смотрю-wikibrainpanel-как-строится-граф-после-синх.md",
+        "docs/wiki/sessions/turns/2026-10-29-026-смотрю-wikibrainpanel-как-строится-граф-после-синх.md"
+      ],
+      [
+        "docs/sessions/turns/2026-10-29-027-ищу-реализацию-toflowgraph.md",
+        "docs/wiki/sessions/turns/2026-10-29-027-ищу-реализацию-toflowgraph.md"
+      ],
+      [
+        "docs/sessions/turns/2026-10-29-028-понял-нужно-чтобы-каждый-мой-ответ-автоматически-с.md",
+        "docs/wiki/sessions/turns/2026-10-29-028-понял-нужно-чтобы-каждый-мой-ответ-автоматически-с.md"
+      ],
+      [
+        "docs/sessions/turns/2026-10-29-029-проверю-как-opencode-поддерживает-хуки-плагины-что.md",
+        "docs/wiki/sessions/turns/2026-10-29-029-проверю-как-opencode-поддерживает-хуки-плагины-что.md"
+      ],
+      [
+        "docs/sessions/turns/2026-10-29-030-гляну-что-внутри-opencode-и-как-он-в-gitignore-что.md",
+        "docs/wiki/sessions/turns/2026-10-29-030-гляну-что-внутри-opencode-и-как-он-в-gitignore-что.md"
+      ],
+      [
+        "docs/sessions/turns/2026-10-29-031-добавляю-в-плагин-автокоммит-пуш-только-по-docs-se.md",
+        "docs/wiki/sessions/turns/2026-10-29-031-добавляю-в-плагин-автокоммит-пуш-только-по-docs-se.md"
+      ],
+      [
+        "docs/sessions/turns/2026-10-29-032-сделаю-это-правильно-как-настоящую-статью-вики-в-к.md",
+        "docs/wiki/sessions/turns/2026-10-29-032-сделаю-это-правильно-как-настоящую-статью-вики-в-к.md"
+      ],
+      [
+        "docs/sessions/turns/2026-10-29-033-проверю-реальное-содержимое-файлов-на-диске-действ.md",
+        "docs/wiki/sessions/turns/2026-10-29-033-проверю-реальное-содержимое-файлов-на-диске-действ.md"
+      ],
+      [
+        "docs/sessions/turns/README.md",
+        "docs/wiki/sessions/turns/README.md"
+      ]
+    ],
     "titles": [
       "02 — capabilities matrix",
       "02_capabilities — capability matrix",
@@ -44,7 +189,43 @@
       "14_alternative_roadmap — second philosophy",
       "15 — do not build yet",
       "research_progress.md",
-      "панель: исследовательский движок"
+      "ответ 001 · 2026-10-29",
+      "ответ 002 · 2026-10-29",
+      "ответ 003 · 2026-10-29",
+      "ответ 004 · 2026-10-29",
+      "ответ 005 · 2026-10-29",
+      "ответ 006 · 2026-10-29",
+      "ответ 007 · 2026-10-29",
+      "ответ 008 · 2026-10-29",
+      "ответ 009 · 2026-10-29",
+      "ответ 010 · 2026-10-29",
+      "ответ 011 · 2026-10-29",
+      "ответ 012 · 2026-10-29",
+      "ответ 013 · 2026-10-29",
+      "ответ 014 · 2026-10-29",
+      "ответ 015 · 2026-10-29",
+      "ответ 016 · 2026-10-29",
+      "ответ 017 · 2026-10-29",
+      "ответ 018 · 2026-10-29",
+      "ответ 019 · 2026-10-29",
+      "ответ 020 · 2026-10-29",
+      "ответ 021 · 2026-10-29",
+      "ответ 022 · 2026-10-29",
+      "ответ 023 · 2026-10-29",
+      "ответ 024 · 2026-10-29",
+      "ответ 025 · 2026-10-29",
+      "ответ 026 · 2026-10-29",
+      "ответ 027 · 2026-10-29",
+      "ответ 028 · 2026-10-29",
+      "ответ 029 · 2026-10-29",
+      "ответ 030 · 2026-10-29",
+      "ответ 031 · 2026-10-29",
+      "ответ 032 · 2026-10-29",
+      "ответ 033 · 2026-10-29",
+      "ответы ассистента (opencode)",
+      "панель: исследовательский движок",
+      "сессии (opencode)",
+      "сессия opencode — roadmap p0–p3 (2026-10-29)"
     ]
   },
   "documents": [
@@ -6881,6 +7062,294 @@
       "hash": "92770058e65a25cc7f01e840a729d670d1461d49"
     },
     {
+      "path": "docs/sessions/2026-10-29-roadmap-p0-p3.md",
+      "category": "top",
+      "language": "ru",
+      "title": "Сессия opencode — Roadmap P0–P3 (2026-10-29)",
+      "bytes": 4916,
+      "hash": "21ab58b53106e86477f3ee568a55b4dc3b7e8ea2"
+    },
+    {
+      "path": "docs/sessions/README.md",
+      "category": "top",
+      "language": "ru",
+      "title": "Сессии (opencode)",
+      "bytes": 731,
+      "hash": "bfa96b693ee9104567c923d35ebb4ea8dd08620f"
+    },
+    {
+      "path": "docs/sessions/turns/2026-10-29-001-шалом-чем-могу-помочь.md",
+      "category": "top",
+      "language": "ru",
+      "title": "Ответ 001 · 2026-10-29",
+      "bytes": 340,
+      "hash": "2f992e3e653bf300ef29b64d0faabfc999673420"
+    },
+    {
+      "path": "docs/sessions/turns/2026-10-29-002-в-текущей-рабочей-папке-доник-этих-файлов-нет-docs.md",
+      "category": "top",
+      "language": "ru",
+      "title": "Ответ 002 · 2026-10-29",
+      "bytes": 1127,
+      "hash": "e18abee0435e0f52230e2604239d7a686a570ca5"
+    },
+    {
+      "path": "docs/sessions/turns/2026-10-29-003-проект-нашёл-roadmap-p0-есть-начинаю-с-p0-1-keyvau.md",
+      "category": "top",
+      "language": "ru",
+      "title": "Ответ 003 · 2026-10-29",
+      "bytes": 1424,
+      "hash": "d739c6870637705904bcb83675f6aa71de7c5b93"
+    },
+    {
+      "path": "docs/sessions/turns/2026-10-29-004-понял-пропускаю-typecheck-гоняю-только-целевые-тес.md",
+      "category": "top",
+      "language": "ru",
+      "title": "Ответ 004 · 2026-10-29",
+      "bytes": 437,
+      "hash": "b973cd4fd8682b8bf5f249a145c74d409a8c720e"
+    },
+    {
+      "path": "docs/sessions/turns/2026-10-29-005-п0-1-готов-код-внесён-проверки-пропущены-по-твоей-.md",
+      "category": "top",
+      "language": "ru",
+      "title": "Ответ 005 · 2026-10-29",
+      "bytes": 4999,
+      "hash": "77c95a40fb6165c039f56aba9879d7f151e3d87e"
+    },
+    {
+      "path": "docs/sessions/turns/2026-10-29-006-продолжаем-с-p1-ставлю-план-и-начинаю-с-p1-2-запре.md",
+      "category": "top",
+      "language": "ru",
+      "title": "Ответ 006 · 2026-10-29",
+      "bytes": 3596,
+      "hash": "b9d51229b151024cb9a636ed51a1f2f6dc3bcaf1"
+    },
+    {
+      "path": "docs/sessions/turns/2026-10-29-007-turn.md",
+      "category": "top",
+      "language": "ru",
+      "title": "Ответ 007 · 2026-10-29",
+      "bytes": 1213,
+      "hash": "7d9b071c3536e96db3f7bfd8c5dbbdb5aa97391e"
+    },
+    {
+      "path": "docs/sessions/turns/2026-10-29-008-ci-ловит-loop-synthesis-может-быть-null-внутри-кол.md",
+      "category": "top",
+      "language": "ru",
+      "title": "Ответ 008 · 2026-10-29",
+      "bytes": 1047,
+      "hash": "36811a4c59a55b80d741c8f2c99aa331f204acdf"
+    },
+    {
+      "path": "docs/sessions/turns/2026-10-29-009-линт-watchdog-объявлен-через-let-и-не-переприсваив.md",
+      "category": "top",
+      "language": "ru",
+      "title": "Ответ 009 · 2026-10-29",
+      "bytes": 1126,
+      "hash": "99f64ef54f88d597deefd4787b96cbd93c897e7b"
+    },
+    {
+      "path": "docs/sessions/turns/2026-10-29-010-no-this-alias-запрещает-const-self-this-заменю-на-.md",
+      "category": "top",
+      "language": "ru",
+      "title": "Ответ 010 · 2026-10-29",
+      "bytes": 925,
+      "hash": "9beb85f36fc6ebc3db50961c1171b42ac3a241b4"
+    },
+    {
+      "path": "docs/sessions/turns/2026-10-29-011-ci-зелёный-отлично-продолжаем-p1-ставлю-план-и-раз.md",
+      "category": "top",
+      "language": "ru",
+      "title": "Ответ 011 · 2026-10-29",
+      "bytes": 503,
+      "hash": "1876e013d865703266632fb8ff3da92405e79758"
+    },
+    {
+      "path": "docs/sessions/turns/2026-10-29-012-продолжаем-разведка-прервалась-читаю-ключевые-точк.md",
+      "category": "top",
+      "language": "ru",
+      "title": "Ответ 012 · 2026-10-29",
+      "bytes": 3198,
+      "hash": "fd20b35ae54cb7de6a4035f85d157c291c5f88cd"
+    },
+    {
+      "path": "docs/sessions/turns/2026-10-29-013-продолжаем-p2-ставлю-план-и-разведываю-контейнерны.md",
+      "category": "top",
+      "language": "ru",
+      "title": "Ответ 013 · 2026-10-29",
+      "bytes": 2889,
+      "hash": "c4ffc0850aa83e12a3e8c8d30e8fb369c0bfeb0a"
+    },
+    {
+      "path": "docs/sessions/turns/2026-10-29-014-ci-зелёный-делаю-p2-1-контейнерно-тип-сервис-skill.md",
+      "category": "top",
+      "language": "ru",
+      "title": "Ответ 014 · 2026-10-29",
+      "bytes": 2712,
+      "hash": "2e25ab675a604751dcc414c5f7feaf13e9fde455"
+    },
+    {
+      "path": "docs/sessions/turns/2026-10-29-015-p2-2-сначала-тщательно-изучу-memory-модель-чтобы-н.md",
+      "category": "top",
+      "language": "ru",
+      "title": "Ответ 015 · 2026-10-29",
+      "bytes": 1861,
+      "hash": "69990e9e41799cf0a05faa979616f7a48d9cbd81"
+    },
+    {
+      "path": "docs/sessions/turns/2026-10-29-016-делаю-p2-6-контейнерно-универсальный-хук-виртуализ.md",
+      "category": "top",
+      "language": "ru",
+      "title": "Ответ 016 · 2026-10-29",
+      "bytes": 1997,
+      "hash": "131a06edc7c10876855080ad24f9eba66ae6138b"
+    },
+    {
+      "path": "docs/sessions/turns/2026-10-29-017-ci-зелёный-бью-p3-начинаю-с-p3-1-dag-план-как-конт.md",
+      "category": "top",
+      "language": "ru",
+      "title": "Ответ 017 · 2026-10-29",
+      "bytes": 1923,
+      "hash": "1754f6aa9b729320cd00ed484c41386d958df399"
+    },
+    {
+      "path": "docs/sessions/turns/2026-10-29-018-ci-поле-initial-объявлено-как-поле-но-не-читается-.md",
+      "category": "top",
+      "language": "ru",
+      "title": "Ответ 018 · 2026-10-29",
+      "bytes": 699,
+      "hash": "8bde48c8825f92b8fd149c30df89fff78bd42728"
+    },
+    {
+      "path": "docs/sessions/turns/2026-10-29-019-продолжаем-p3-делаю-p3-2-blackboard-контейнерно-с-.md",
+      "category": "top",
+      "language": "ru",
+      "title": "Ответ 019 · 2026-10-29",
+      "bytes": 2008,
+      "hash": "b9fa4214d9dede8f3441dbef98a52390fddeb908"
+    },
+    {
+      "path": "docs/sessions/turns/2026-10-29-020-пуш-уже-актуален-head-origin-main-18047c9-все-изме.md",
+      "category": "top",
+      "language": "ru",
+      "title": "Ответ 020 · 2026-10-29",
+      "bytes": 846,
+      "hash": "67615e14e3ba66a99b138a6f1389c1a8cdcd3b11"
+    },
+    {
+      "path": "docs/sessions/turns/2026-10-29-021-да-реально-в-проекте-уже-есть-вся-инфраструктура.md",
+      "category": "top",
+      "language": "ru",
+      "title": "Ответ 021 · 2026-10-29",
+      "bytes": 2397,
+      "hash": "4e291209175001ead5b56ed72e51279934a15226"
+    },
+    {
+      "path": "docs/sessions/turns/2026-10-29-022-а-ты-про-сохранение-наших-сессий-opencode-этого-ча.md",
+      "category": "top",
+      "language": "ru",
+      "title": "Ответ 022 · 2026-10-29",
+      "bytes": 2957,
+      "hash": "b72c43261e88b660e47ccddffc0f33576c58e911"
+    },
+    {
+      "path": "docs/sessions/turns/2026-10-29-023-делаю-скрипт-автогенерации-сессий-сначала-гляну-pa.md",
+      "category": "top",
+      "language": "ru",
+      "title": "Ответ 023 · 2026-10-29",
+      "bytes": 2630,
+      "hash": "513078a5e0e5e93bcf4fa1858b6c57ba82548769"
+    },
+    {
+      "path": "docs/sessions/turns/2026-10-29-024-разберусь-не-затирает-ли-gen-wiki-docs-чужие-файлы.md",
+      "category": "top",
+      "language": "ru",
+      "title": "Ответ 024 · 2026-10-29",
+      "bytes": 4475,
+      "hash": "019260d8defeee0c4427fade40467076bc0181f3"
+    },
+    {
+      "path": "docs/sessions/turns/2026-10-29-025-хороший-вопрос-гляну-что-реально-лежит-в-docs-grap.md",
+      "category": "top",
+      "language": "ru",
+      "title": "Ответ 025 · 2026-10-29",
+      "bytes": 3143,
+      "hash": "e2e14d391e32def03fd9d9600236ce9a9d9522e4"
+    },
+    {
+      "path": "docs/sessions/turns/2026-10-29-026-смотрю-wikibrainpanel-как-строится-граф-после-синх.md",
+      "category": "top",
+      "language": "ru",
+      "title": "Ответ 026 · 2026-10-29",
+      "bytes": 761,
+      "hash": "f72a893eb6c26bfcdc26a7468df2008f6c4a7626"
+    },
+    {
+      "path": "docs/sessions/turns/2026-10-29-027-ищу-реализацию-toflowgraph.md",
+      "category": "top",
+      "language": "ru",
+      "title": "Ответ 027 · 2026-10-29",
+      "bytes": 2823,
+      "hash": "55818862735fe3e4735a88b259cb415b112becc5"
+    },
+    {
+      "path": "docs/sessions/turns/2026-10-29-028-понял-нужно-чтобы-каждый-мой-ответ-автоматически-с.md",
+      "category": "top",
+      "language": "ru",
+      "title": "Ответ 028 · 2026-10-29",
+      "bytes": 4172,
+      "hash": "ebeb28c7e3e78c8129e37a6f5f3b9857f938b30d"
+    },
+    {
+      "path": "docs/sessions/turns/2026-10-29-029-проверю-как-opencode-поддерживает-хуки-плагины-что.md",
+      "category": "top",
+      "language": "ru",
+      "title": "Ответ 029 · 2026-10-29",
+      "bytes": 2538,
+      "hash": "6de2dd757d6696001ab94c8b7226e9cd6b81b6e9"
+    },
+    {
+      "path": "docs/sessions/turns/2026-10-29-030-гляну-что-внутри-opencode-и-как-он-в-gitignore-что.md",
+      "category": "top",
+      "language": "ru",
+      "title": "Ответ 030 · 2026-10-29",
+      "bytes": 2259,
+      "hash": "61c8673c8f7ab259851017853839c10b23ad4678"
+    },
+    {
+      "path": "docs/sessions/turns/2026-10-29-031-добавляю-в-плагин-автокоммит-пуш-только-по-docs-se.md",
+      "category": "top",
+      "language": "ru",
+      "title": "Ответ 031 · 2026-10-29",
+      "bytes": 1890,
+      "hash": "aa9c154995ed7dcbf838fefe8db0f74d64646c51"
+    },
+    {
+      "path": "docs/sessions/turns/2026-10-29-032-сделаю-это-правильно-как-настоящую-статью-вики-в-к.md",
+      "category": "top",
+      "language": "ru",
+      "title": "Ответ 032 · 2026-10-29",
+      "bytes": 2721,
+      "hash": "d4d33aa8c99318ba1bbb3c02eda938c9f7536e2d"
+    },
+    {
+      "path": "docs/sessions/turns/2026-10-29-033-проверю-реальное-содержимое-файлов-на-диске-действ.md",
+      "category": "top",
+      "language": "ru",
+      "title": "Ответ 033 · 2026-10-29",
+      "bytes": 1159,
+      "hash": "35af47b6665e7cd7f9caf466e26549c01692f4fc"
+    },
+    {
+      "path": "docs/sessions/turns/README.md",
+      "category": "top",
+      "language": "ru",
+      "title": "Ответы ассистента (opencode)",
+      "bytes": 6962,
+      "hash": "f4eeb5d07e9a8ff1623837d8f4925e05d0bcdecc"
+    },
+    {
       "path": "docs/STRUCTURE.md",
       "category": "top",
       "language": "en",
@@ -8901,8 +9370,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Wiki SuperAgents OS",
-      "bytes": 29218,
-      "hash": "185473d5635123f7c9c239f705a13b1ff6db46f4"
+      "bytes": 29439,
+      "hash": "b7d7671ff2d6f17d98d6b9be658285ebd6755b74"
     },
     {
       "path": "docs/wiki/research-multiagent-patterns.md",
@@ -8925,8 +9394,16 @@
       "category": "wiki",
       "language": "ru",
       "title": "Планы и направления",
-      "bytes": 1558,
-      "hash": "8ecd0e635d7af6b7d89d3421dbf2c31492fa2384"
+      "bytes": 1635,
+      "hash": "8b9f0bafdc49c3fc80a32c82126affbec2bed3ed"
+    },
+    {
+      "path": "docs/wiki/roles-for-agents.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Роли агентов: как настраивать и использовать",
+      "bytes": 6352,
+      "hash": "c682cc0250587e410f0ce865aa8d105543951483"
     },
     {
       "path": "docs/wiki/scenario-map.md",
@@ -8945,12 +9422,308 @@
       "hash": "c5ed4fbf6843d6917ba2073e98896f47d30f8df9"
     },
     {
+      "path": "docs/wiki/sessions/2026-10-29-roadmap-p0-p3.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Сессия opencode — Roadmap P0–P3 (2026-10-29)",
+      "bytes": 4916,
+      "hash": "21ab58b53106e86477f3ee568a55b4dc3b7e8ea2"
+    },
+    {
+      "path": "docs/wiki/sessions/README.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Сессии (opencode)",
+      "bytes": 731,
+      "hash": "bfa96b693ee9104567c923d35ebb4ea8dd08620f"
+    },
+    {
+      "path": "docs/wiki/sessions/turns/2026-10-29-001-шалом-чем-могу-помочь.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Ответ 001 · 2026-10-29",
+      "bytes": 340,
+      "hash": "2f992e3e653bf300ef29b64d0faabfc999673420"
+    },
+    {
+      "path": "docs/wiki/sessions/turns/2026-10-29-002-в-текущей-рабочей-папке-доник-этих-файлов-нет-docs.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Ответ 002 · 2026-10-29",
+      "bytes": 1127,
+      "hash": "e18abee0435e0f52230e2604239d7a686a570ca5"
+    },
+    {
+      "path": "docs/wiki/sessions/turns/2026-10-29-003-проект-нашёл-roadmap-p0-есть-начинаю-с-p0-1-keyvau.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Ответ 003 · 2026-10-29",
+      "bytes": 1424,
+      "hash": "d739c6870637705904bcb83675f6aa71de7c5b93"
+    },
+    {
+      "path": "docs/wiki/sessions/turns/2026-10-29-004-понял-пропускаю-typecheck-гоняю-только-целевые-тес.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Ответ 004 · 2026-10-29",
+      "bytes": 437,
+      "hash": "b973cd4fd8682b8bf5f249a145c74d409a8c720e"
+    },
+    {
+      "path": "docs/wiki/sessions/turns/2026-10-29-005-п0-1-готов-код-внесён-проверки-пропущены-по-твоей-.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Ответ 005 · 2026-10-29",
+      "bytes": 4999,
+      "hash": "77c95a40fb6165c039f56aba9879d7f151e3d87e"
+    },
+    {
+      "path": "docs/wiki/sessions/turns/2026-10-29-006-продолжаем-с-p1-ставлю-план-и-начинаю-с-p1-2-запре.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Ответ 006 · 2026-10-29",
+      "bytes": 3596,
+      "hash": "b9d51229b151024cb9a636ed51a1f2f6dc3bcaf1"
+    },
+    {
+      "path": "docs/wiki/sessions/turns/2026-10-29-007-turn.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Ответ 007 · 2026-10-29",
+      "bytes": 1213,
+      "hash": "7d9b071c3536e96db3f7bfd8c5dbbdb5aa97391e"
+    },
+    {
+      "path": "docs/wiki/sessions/turns/2026-10-29-008-ci-ловит-loop-synthesis-может-быть-null-внутри-кол.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Ответ 008 · 2026-10-29",
+      "bytes": 1047,
+      "hash": "36811a4c59a55b80d741c8f2c99aa331f204acdf"
+    },
+    {
+      "path": "docs/wiki/sessions/turns/2026-10-29-009-линт-watchdog-объявлен-через-let-и-не-переприсваив.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Ответ 009 · 2026-10-29",
+      "bytes": 1126,
+      "hash": "99f64ef54f88d597deefd4787b96cbd93c897e7b"
+    },
+    {
+      "path": "docs/wiki/sessions/turns/2026-10-29-010-no-this-alias-запрещает-const-self-this-заменю-на-.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Ответ 010 · 2026-10-29",
+      "bytes": 925,
+      "hash": "9beb85f36fc6ebc3db50961c1171b42ac3a241b4"
+    },
+    {
+      "path": "docs/wiki/sessions/turns/2026-10-29-011-ci-зелёный-отлично-продолжаем-p1-ставлю-план-и-раз.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Ответ 011 · 2026-10-29",
+      "bytes": 503,
+      "hash": "1876e013d865703266632fb8ff3da92405e79758"
+    },
+    {
+      "path": "docs/wiki/sessions/turns/2026-10-29-012-продолжаем-разведка-прервалась-читаю-ключевые-точк.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Ответ 012 · 2026-10-29",
+      "bytes": 3198,
+      "hash": "fd20b35ae54cb7de6a4035f85d157c291c5f88cd"
+    },
+    {
+      "path": "docs/wiki/sessions/turns/2026-10-29-013-продолжаем-p2-ставлю-план-и-разведываю-контейнерны.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Ответ 013 · 2026-10-29",
+      "bytes": 2889,
+      "hash": "c4ffc0850aa83e12a3e8c8d30e8fb369c0bfeb0a"
+    },
+    {
+      "path": "docs/wiki/sessions/turns/2026-10-29-014-ci-зелёный-делаю-p2-1-контейнерно-тип-сервис-skill.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Ответ 014 · 2026-10-29",
+      "bytes": 2712,
+      "hash": "2e25ab675a604751dcc414c5f7feaf13e9fde455"
+    },
+    {
+      "path": "docs/wiki/sessions/turns/2026-10-29-015-p2-2-сначала-тщательно-изучу-memory-модель-чтобы-н.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Ответ 015 · 2026-10-29",
+      "bytes": 1861,
+      "hash": "69990e9e41799cf0a05faa979616f7a48d9cbd81"
+    },
+    {
+      "path": "docs/wiki/sessions/turns/2026-10-29-016-делаю-p2-6-контейнерно-универсальный-хук-виртуализ.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Ответ 016 · 2026-10-29",
+      "bytes": 1997,
+      "hash": "131a06edc7c10876855080ad24f9eba66ae6138b"
+    },
+    {
+      "path": "docs/wiki/sessions/turns/2026-10-29-017-ci-зелёный-бью-p3-начинаю-с-p3-1-dag-план-как-конт.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Ответ 017 · 2026-10-29",
+      "bytes": 1923,
+      "hash": "1754f6aa9b729320cd00ed484c41386d958df399"
+    },
+    {
+      "path": "docs/wiki/sessions/turns/2026-10-29-018-ci-поле-initial-объявлено-как-поле-но-не-читается-.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Ответ 018 · 2026-10-29",
+      "bytes": 699,
+      "hash": "8bde48c8825f92b8fd149c30df89fff78bd42728"
+    },
+    {
+      "path": "docs/wiki/sessions/turns/2026-10-29-019-продолжаем-p3-делаю-p3-2-blackboard-контейнерно-с-.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Ответ 019 · 2026-10-29",
+      "bytes": 2008,
+      "hash": "b9fa4214d9dede8f3441dbef98a52390fddeb908"
+    },
+    {
+      "path": "docs/wiki/sessions/turns/2026-10-29-020-пуш-уже-актуален-head-origin-main-18047c9-все-изме.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Ответ 020 · 2026-10-29",
+      "bytes": 846,
+      "hash": "67615e14e3ba66a99b138a6f1389c1a8cdcd3b11"
+    },
+    {
+      "path": "docs/wiki/sessions/turns/2026-10-29-021-да-реально-в-проекте-уже-есть-вся-инфраструктура.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Ответ 021 · 2026-10-29",
+      "bytes": 2397,
+      "hash": "4e291209175001ead5b56ed72e51279934a15226"
+    },
+    {
+      "path": "docs/wiki/sessions/turns/2026-10-29-022-а-ты-про-сохранение-наших-сессий-opencode-этого-ча.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Ответ 022 · 2026-10-29",
+      "bytes": 2957,
+      "hash": "b72c43261e88b660e47ccddffc0f33576c58e911"
+    },
+    {
+      "path": "docs/wiki/sessions/turns/2026-10-29-023-делаю-скрипт-автогенерации-сессий-сначала-гляну-pa.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Ответ 023 · 2026-10-29",
+      "bytes": 2630,
+      "hash": "513078a5e0e5e93bcf4fa1858b6c57ba82548769"
+    },
+    {
+      "path": "docs/wiki/sessions/turns/2026-10-29-024-разберусь-не-затирает-ли-gen-wiki-docs-чужие-файлы.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Ответ 024 · 2026-10-29",
+      "bytes": 4475,
+      "hash": "019260d8defeee0c4427fade40467076bc0181f3"
+    },
+    {
+      "path": "docs/wiki/sessions/turns/2026-10-29-025-хороший-вопрос-гляну-что-реально-лежит-в-docs-grap.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Ответ 025 · 2026-10-29",
+      "bytes": 3143,
+      "hash": "e2e14d391e32def03fd9d9600236ce9a9d9522e4"
+    },
+    {
+      "path": "docs/wiki/sessions/turns/2026-10-29-026-смотрю-wikibrainpanel-как-строится-граф-после-синх.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Ответ 026 · 2026-10-29",
+      "bytes": 761,
+      "hash": "f72a893eb6c26bfcdc26a7468df2008f6c4a7626"
+    },
+    {
+      "path": "docs/wiki/sessions/turns/2026-10-29-027-ищу-реализацию-toflowgraph.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Ответ 027 · 2026-10-29",
+      "bytes": 2823,
+      "hash": "55818862735fe3e4735a88b259cb415b112becc5"
+    },
+    {
+      "path": "docs/wiki/sessions/turns/2026-10-29-028-понял-нужно-чтобы-каждый-мой-ответ-автоматически-с.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Ответ 028 · 2026-10-29",
+      "bytes": 4172,
+      "hash": "ebeb28c7e3e78c8129e37a6f5f3b9857f938b30d"
+    },
+    {
+      "path": "docs/wiki/sessions/turns/2026-10-29-029-проверю-как-opencode-поддерживает-хуки-плагины-что.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Ответ 029 · 2026-10-29",
+      "bytes": 2538,
+      "hash": "6de2dd757d6696001ab94c8b7226e9cd6b81b6e9"
+    },
+    {
+      "path": "docs/wiki/sessions/turns/2026-10-29-030-гляну-что-внутри-opencode-и-как-он-в-gitignore-что.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Ответ 030 · 2026-10-29",
+      "bytes": 2259,
+      "hash": "61c8673c8f7ab259851017853839c10b23ad4678"
+    },
+    {
+      "path": "docs/wiki/sessions/turns/2026-10-29-031-добавляю-в-плагин-автокоммит-пуш-только-по-docs-se.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Ответ 031 · 2026-10-29",
+      "bytes": 1890,
+      "hash": "aa9c154995ed7dcbf838fefe8db0f74d64646c51"
+    },
+    {
+      "path": "docs/wiki/sessions/turns/2026-10-29-032-сделаю-это-правильно-как-настоящую-статью-вики-в-к.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Ответ 032 · 2026-10-29",
+      "bytes": 2721,
+      "hash": "d4d33aa8c99318ba1bbb3c02eda938c9f7536e2d"
+    },
+    {
+      "path": "docs/wiki/sessions/turns/2026-10-29-033-проверю-реальное-содержимое-файлов-на-диске-действ.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Ответ 033 · 2026-10-29",
+      "bytes": 1159,
+      "hash": "35af47b6665e7cd7f9caf466e26549c01692f4fc"
+    },
+    {
+      "path": "docs/wiki/sessions/turns/README.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Ответы ассистента (opencode)",
+      "bytes": 6962,
+      "hash": "f4eeb5d07e9a8ff1623837d8f4925e05d0bcdecc"
+    },
+    {
       "path": "docs/wiki/system-audit-prompt.md",
       "category": "wiki",
       "language": "ru",
       "title": "SuperAgents OS — полное описание (промт для дебатов/ИИ)",
       "bytes": 10105,
       "hash": "a40c91f5c9445271ee273ea5187442686a44aa78"
+    },
+    {
+      "path": "docs/wiki/weekly-commits.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Последние коммиты за неделю",
+      "bytes": 6856,
+      "hash": "1a3b620c448120c3b117c24e590114c45b1f20a3"
     },
     {
       "path": "docs/wiki/what-is.md",

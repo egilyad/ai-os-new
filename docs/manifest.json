@@ -15,7 +15,7 @@
     {
       "id": "agents",
       "title": "Агенты",
-      "articles": 1
+      "articles": 2
     },
     {
       "id": "debates",
@@ -40,7 +40,7 @@
     {
       "id": "history",
       "title": "История разработки",
-      "articles": 27
+      "articles": 28
     },
     {
       "id": "architecture",
@@ -236,6 +236,59 @@
         "capabilities",
         "architecture",
         "providers"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:roles-for-agents",
+      "type": "article",
+      "slug": "roles-for-agents",
+      "title": "Роли агентов: как настраивать и использовать",
+      "section": "agents",
+      "status": "documented",
+      "tags": [
+        "роли",
+        "агенты",
+        "персона",
+        "команды",
+        "дебаты"
+      ],
+      "sources": [
+        "docs/wiki/comp-agents-roles-skills.md",
+        "src/kernel/services/role-team-service.ts",
+        "src/kernel/services/unified-role-service.ts",
+        "src/kernel/contracts/debate-types.ts"
+      ],
+      "related": [
+        "agents",
+        "panel-builder",
+        "panel-roles",
+        "debates"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:weekly-commits",
+      "type": "article",
+      "slug": "weekly-commits",
+      "title": "Последние коммиты за неделю",
+      "section": "history",
+      "status": "documented",
+      "tags": [
+        "коммиты",
+        "история",
+        "неделя",
+        "итоги"
+      ],
+      "sources": [
+        "git log --since=\"7 days ago\""
+      ],
+      "related": [
+        "dev-history",
+        "roadmap-notes",
+        "comp-agents-roles-skills"
       ],
       "reviewed": null,
       "tests": []
@@ -3642,7 +3695,8 @@
       "related": [
         "agents",
         "execution-trail",
-        "memory"
+        "memory",
+        "weekly-commits"
       ],
       "reviewed": null,
       "tests": []

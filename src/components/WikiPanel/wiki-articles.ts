@@ -4754,7 +4754,7 @@ Health-панели провайдеров, трейсы и timeline, DLQ (dead-
         tags: ['планы', 'P5'],
         freshness: 'needs-check',
         sources: ['docs/roadmap/README.md'],
-        related: ['agents', 'execution-trail', 'memory'],
+        related: ['agents', 'execution-trail', 'memory', 'weekly-commits'],
         body: `## Что дальше (требует утверждения, не план работ)
 
 - **Менеджер-наблюдатель (read-only)**: здоровье, ошибки, stuck-раны — без прав на запись. Только после достоверной истории.

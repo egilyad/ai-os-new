@@ -136,7 +136,10 @@ for (const p of parts) {
   }
 }
 
+// Group all assistant fragments between user messages into ONE turn document,
+// because a single answer may span multiple `message` rows (tool steps, etc.).
 const turns = [];
+let current = null;
 for (const m of messages) {
   let meta;
   try {
@@ -144,12 +147,18 @@ for (const m of messages) {
   } catch {
     continue;
   }
+  if (meta.role === 'user') {
+    if (current && current.text) turns.push(current);
+    current = { ts: m.time_created || Date.now(), text: '' };
+    continue;
+  }
   if (meta.role !== 'assistant') continue;
-  const text = (partsByMessage.get(m.id) ?? []).join('\n\n').trim();
-  if (!text) continue;
-  const ts = m.time_created || Date.now();
-  turns.push({ ts, text });
+  const fragment = (partsByMessage.get(m.id) ?? []).join('\n\n').trim();
+  if (!fragment) continue;
+  if (!current) current = { ts: m.time_created || Date.now(), text: '' };
+  current.text += (current.text ? '\n\n' : '') + fragment;
 }
+if (current && current.text) turns.push(current);
 
 if (turns.length === 0) {
   console.log(`[turns] no assistant text turns in session ${session.id}`);
