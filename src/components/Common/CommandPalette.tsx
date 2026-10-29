@@ -75,7 +75,9 @@ const CommandPalette: React.FC = () => {
                 /* ignore */
             }
             try {
-                const crystals = ((await crystalVault.list?.()) ?? []) as Array<Record<string, unknown>>;
+                const crystals = ((await crystalVault.list?.()) ?? []) as unknown as Array<
+                    Record<string, unknown>
+                >;
                 crystals.slice(0, 8).forEach((c) => {
                     out.push({
                         id: `cr:${String(c.id)}`,
@@ -113,7 +115,9 @@ const CommandPalette: React.FC = () => {
     const filtered = useMemo(() => {
         const q = query.trim().toLowerCase();
         const list = q
-            ? all.filter((it) => it.label.toLowerCase().includes(q) || it.id.toLowerCase().includes(q))
+            ? all.filter(
+                  (it) => it.label.toLowerCase().includes(q) || it.id.toLowerCase().includes(q),
+              )
             : all;
         return list.slice(0, 14);
     }, [all, query]);

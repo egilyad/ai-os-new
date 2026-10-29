@@ -124,7 +124,7 @@ const ResearchCockpit: React.FC = () => {
         setSessions(list);
     };
 
-    const refreshProcesses = () => {
+    const refreshProcesses = async () => {
         const out: Array<{ id: string; label: string; kind: string; status: string }> = [];
 
         const research = safeCall(() => researchEngine.getAllSessions?.(), []);
@@ -152,13 +152,20 @@ const ResearchCockpit: React.FC = () => {
             });
         });
 
-        const jobs = safeCall(() => knowledgeGenerator.listActiveJobs?.(), []);
-        (Array.isArray(jobs) ? jobs : []).forEach((j) => {
+        let jobs: Array<{ id?: unknown; topic?: unknown; status?: unknown }> = [];
+        try {
+            const active = await knowledgeGenerator.listActiveJobs?.();
+            if (Array.isArray(active))
+                jobs = active as Array<{ id?: unknown; topic?: unknown; status?: unknown }>;
+        } catch {
+            /* ignore */
+        }
+        jobs.forEach((j) => {
             out.push({
-                id: `gen:${j.id}`,
-                label: String((j as { topic?: unknown }).topic ?? 'Генерация'),
+                id: `gen:${String(j.id)}`,
+                label: String(j.topic ?? 'Генерация'),
                 kind: 'generator',
-                status: String((j as { status?: unknown }).status ?? 'running'),
+                status: String(j.status ?? 'running'),
             });
         });
 
@@ -167,13 +174,12 @@ const ResearchCockpit: React.FC = () => {
 
     useEffect(() => {
         refreshSessions();
-        refreshProcesses();
+        void refreshProcesses();
         const timer = window.setInterval(() => {
             refreshSessions();
-            refreshProcesses();
+            void refreshProcesses();
         }, 5000);
         return () => window.clearInterval(timer);
-         
     }, []);
 
     useEffect(() => {
