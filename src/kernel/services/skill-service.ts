@@ -4,6 +4,7 @@ import { EVENTS } from '../events/event-names';
 import type { SkillsStore } from '../contracts/storage/skills-store';
 import { rootLogger } from './logger-service';
 import { safeJsonParse } from '../../kernel/utils/safe-json';
+import { genId } from '../../utils/gen-id';
 
 const LOGGER = rootLogger.child('SkillService');
 
@@ -155,6 +156,30 @@ export class SkillService {
             s.id === id ? { ...s, executionCount: s.executionCount + 1 } : s,
         );
         await this.persist();
+    }
+
+    /** P2-1: record a skill captured from a task/procedure. */
+    async recordSkill(input: {
+        name: string;
+        description: string;
+        category?: CognitiveSkill['category'];
+        toolsUsed?: string[];
+        version?: string;
+    }): Promise<CognitiveSkill> {
+        const skill: CognitiveSkill = {
+            id: genId('sk'),
+            name: input.name.trim(),
+            description: input.description.trim(),
+            category: input.category ?? 'utility',
+            status: 'installed',
+            toolsUsed: [...(input.toolsUsed ?? [])],
+            version: input.version ?? '1.0.0',
+            executionCount: 0,
+        };
+        this.skills.push(skill);
+        await this.persist();
+        this.emit();
+        return skill;
     }
 
     exportSkills(): string {
