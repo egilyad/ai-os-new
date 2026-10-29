@@ -121,18 +121,17 @@ writeFileSync(resolve(outDir, 'README.md'), idx.join('\n'), 'utf8');
 
 // ---- sessions mirror: source drawn from docs/sessions (committed, survives regeneration) ----
 const SESSIONS_SRC = resolve(root, 'docs/sessions');
-if (existsSync(SESSIONS_SRC)) {
-    const sessionsOut = resolve(outDir, 'sessions');
-    mkdirSync(sessionsOut, { recursive: true });
-    for (const f of readdirSync(SESSIONS_SRC)) {
-        if (f.endsWith('.md')) {
-            writeFileSync(
-                resolve(sessionsOut, f),
-                readFileSync(resolve(SESSIONS_SRC, f), 'utf8'),
-                'utf8',
-            );
+function copyMdTree(src, dst) {
+    mkdirSync(dst, { recursive: true });
+    for (const entry of readdirSync(src, { withFileTypes: true })) {
+        const s = resolve(src, entry.name);
+        const d = resolve(dst, entry.name);
+        if (entry.isDirectory()) copyMdTree(s, d);
+        else if (entry.name.endsWith('.md')) {
+            writeFileSync(d, readFileSync(s, 'utf8'), 'utf8');
         }
     }
 }
+if (existsSync(SESSIONS_SRC)) copyMdTree(SESSIONS_SRC, resolve(outDir, 'sessions'));
 
 console.log(`wiki docs: ${WIKI_ARTICLES.length} articles -> docs/wiki/`);
