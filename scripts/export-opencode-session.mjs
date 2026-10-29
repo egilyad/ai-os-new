@@ -2,7 +2,9 @@
 /**
  * export-opencode-session.mjs
  *
- * Записывает сессию opencode в вики проекта (docs/wiki/sessions/) и обновляет индекс.
+ * Записывает сессию opencode в источник вики (docs/sessions/) и обновляет индекс.
+ * `scripts/gen-wiki-docs.mjs` копирует docs/sessions -> docs/wiki/sessions при
+ * пересборке вики, поэтому сессии сохраняются надёжно (источник коммитится).
  *
  * Использование:
  *   node scripts/export-opencode-session.mjs --title "Тема" \
@@ -14,8 +16,8 @@ import { join, dirname, basename, extname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
-const SESSIONS_DIR = join(ROOT, 'docs', 'wiki', 'sessions');
-const INDEX_FILE = join(ROOT, 'docs', 'wiki', 'sessions.md');
+const SESSIONS_DIR = join(ROOT, 'docs', 'sessions');
+const INDEX_FILE = join(ROOT, 'docs', 'sessions', 'README.md');
 
 function parseArgs(argv) {
   const args = {};
@@ -65,7 +67,9 @@ function renderIndex(files) {
     '>',
     '> Сохраняются сессии агента opencode в markdown — прямо в вики проекта.',
     '',
-    'Каждая сессия — отдельный файл в `docs/wiki/sessions/`. Формат: `YYYY-MM-DD-<тема>.md`.',
+    'Каждая сессия — отдельный файл в `docs/sessions/` (источник). При пересборке вики',
+    '`scripts/gen-wiki-docs.mjs` зеркалит их в `docs/wiki/sessions/`.',
+    'Формат: `YYYY-MM-DD-<тема>.md`.',
     '',
     '## Журнал сессий',
     '',
@@ -73,7 +77,7 @@ function renderIndex(files) {
   const sorted = [...files].sort((a, b) => (a < b ? 1 : -1));
   for (const f of sorted) {
     const name = basename(f, extname(f));
-    lines.push(`- [${name}](./sessions/${f})`);
+    lines.push(`- [${name}](./${f})`);
   }
   lines.push('');
   return lines.join('\n');
