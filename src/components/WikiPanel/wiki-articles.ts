@@ -19,6 +19,7 @@ import { SYSTEM_AUDIT_PROMPT_ARTICLE } from './wiki-system-audit-prompt';
 import { GRAPH_WORKBENCH_ARTICLE } from './wiki-graph-workbench';
 import { RESEARCH_DEEP_ARTICLE } from './wiki-research-deep';
 import { RESEARCH_MULTIAGENT_ARTICLE } from './wiki-research-multiagent';
+import { RESEARCH_INDEX_ARTICLE } from './wiki-research-index';
 import type { WikiArticle, WikiFreshness, WikiSection } from './wiki-types';
 
 export type { WikiArticle, WikiFreshness, WikiSection } from './wiki-types';
@@ -4611,6 +4612,7 @@ export const WIKI_ARTICLES: WikiArticle[] = [
     GRAPH_WORKBENCH_ARTICLE,
     RESEARCH_DEEP_ARTICLE,
     RESEARCH_MULTIAGENT_ARTICLE,
+    RESEARCH_INDEX_ARTICLE,
     ...CORE_ARTICLES,
     ...COMPONENT_ARTICLES,
     ...ZONE_ARTICLES,

@@ -3,22 +3,22 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 1428,
-    "edges": 3728,
+    "nodes": 1430,
+    "edges": 3732,
     "byType": {
       "audit": 75,
-      "code": 608,
+      "code": 609,
       "test": 198,
       "panel": 268,
-      "article": 279
+      "article": 280
     },
     "byKind": {
       "audit_test": 336,
       "audit_mention": 929,
       "documents": 204,
-      "source": 893,
+      "source": 894,
       "test": 293,
-      "related": 1073
+      "related": 1076
     }
   },
   "nodes": [
@@ -611,6 +611,11 @@
       "id": "file:docs/manifest.json",
       "type": "code",
       "label": "docs/manifest.json"
+    },
+    {
+      "id": "file:docs/research/",
+      "type": "code",
+      "label": "docs/research/"
     },
     {
       "id": "file:docs/research/multiagent-os-patterns.md",
@@ -8186,6 +8191,13 @@
       "id": "wiki:research-multiagent-patterns",
       "type": "article",
       "label": "Исследование: мультиагентные ИИ-ОС",
+      "section": "notes",
+      "status": "documented"
+    },
+    {
+      "id": "wiki:research-os-index",
+      "type": "article",
+      "label": "Исследования ИИ-ОС: индекс",
       "section": "notes",
       "status": "documented"
     },
@@ -26730,6 +26742,26 @@
     },
     {
       "from": "wiki:research-multiagent-patterns",
+      "to": "wiki:roadmap-notes",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:research-os-index",
+      "to": "file:docs/research/",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:research-os-index",
+      "to": "wiki:panel-research-cockpit",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:research-os-index",
+      "to": "wiki:research-multiagent-patterns",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:research-os-index",
       "to": "wiki:roadmap-notes",
       "kind": "related"
     },

@@ -20,7 +20,7 @@
 - Панель **Wiki** в приложении и сайт `/wiki/` — тот же корпус статей
 - [`docs/manifest.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/manifest.json) — машиночитаемый индекс сущностей (статьи, панели)
 - [`docs/entity-model.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/entity-model.json) — стандарт документации
-- [`docs/inventory.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/inventory.json) — инвентарь всех `docs/**` (1126 документов)
+- [`docs/inventory.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/inventory.json) — инвентарь всех `docs/**` (1139 документов)
 
 ## Вики по разделам
 
@@ -96,7 +96,19 @@
 - [EventBus Reference](https://github.com/egilyad/ai-os-new/blob/main/docs/events.md)
 - [Navigation Map — зафиксированная раскладка меню](https://github.com/egilyad/ai-os-new/blob/main/docs/NAVIGATION_MAP.md)
 - [SuperAgents OS — Documentation Map](https://github.com/egilyad/ai-os-new/blob/main/docs/README.md)
+- [Исследование: управление браузером и компьютером ИИ](https://github.com/egilyad/ai-os-new/blob/main/docs/research/browser-computer-ai.md)
+- [Исследование: кодинг-агенты](https://github.com/egilyad/ai-os-new/blob/main/docs/research/coding-agents.md)
+- [Исследование: когнитивные компоненты для ИИ-ОС](https://github.com/egilyad/ai-os-new/blob/main/docs/research/cognitive-components-os.md)
+- [Исследование: сложные агенты](https://github.com/egilyad/ai-os-new/blob/main/docs/research/complex-agents.md)
+- [Исследование: дебаты ИИ](https://github.com/egilyad/ai-os-new/blob/main/docs/research/debates-ai.md)
+- [Исследование: создание сложных исследований ИИ](https://github.com/egilyad/ai-os-new/blob/main/docs/research/deep-research-patterns.md)
+- [Исследование: ошибки в мультиагентных системах и борьба с ними](https://github.com/egilyad/ai-os-new/blob/main/docs/research/errors-recovery-audit.md)
+- [Исследование: память ИИ](https://github.com/egilyad/ai-os-new/blob/main/docs/research/memory-ai.md)
 - [Мультиагентные ИИ-ОС: аналитический обзор и карта редких паттернов](https://github.com/egilyad/ai-os-new/blob/main/docs/research/multiagent-os-patterns.md)
+- [Исследование: сложные темы в мультиагентных системах](https://github.com/egilyad/ai-os-new/blob/main/docs/research/multiagent-research-topics.md)
+- [Исследование: оптимизация системы — надёжность и скорость](https://github.com/egilyad/ai-os-new/blob/main/docs/research/reliability-speed-optimization.md)
+- [Исследование: безопасность (минимум)](https://github.com/egilyad/ai-os-new/blob/main/docs/research/security-minimal.md)
+- [Исследование: прозрачность системы](https://github.com/egilyad/ai-os-new/blob/main/docs/research/transparency.md)
 - [Сервисы Ядра — Полный Справочник](https://github.com/egilyad/ai-os-new/blob/main/docs/SERVICES_RU.md)
 - [SuperAgents OS — Журнал сессий (Session Log)](https://github.com/egilyad/ai-os-new/blob/main/docs/SESSION_LOG.md)
 - [SuperAgents OS — Project Structure](https://github.com/egilyad/ai-os-new/blob/main/docs/STRUCTURE.md)
@@ -126,6 +138,7 @@
 - [Debate Multi-Session Rearchitecture (B-15/B-16 Phase 2)](https://github.com/egilyad/ai-os-new/blob/main/docs/roadmap/DEBATE_MULTI_SESSION_DESIGN.md)
 - [Программа экспериментальной проверки Debates](https://github.com/egilyad/ai-os-new/blob/main/docs/roadmap/debate-experiments.md)
 - [Roadmap улучшений Debates](https://github.com/egilyad/ai-os-new/blob/main/docs/roadmap/debate-improvements-roadmap.md)
+- [Roadmap: глубокие исследования и мультиагентные паттерны](https://github.com/egilyad/ai-os-new/blob/main/docs/roadmap/deep-research-roadmap.md)
 - [Roadmap улучшений «События / Event Sourcing / Хранилище»](https://github.com/egilyad/ai-os-new/blob/main/docs/roadmap/events-storage-improvements-roadmap.md)
 - [Roadmap улучшений «Флот / Governance»](https://github.com/egilyad/ai-os-new/blob/main/docs/roadmap/fleet-governance-improvements-roadmap.md)
 - [SuperAgents OS — План внедрения когнитивных модулей](https://github.com/egilyad/ai-os-new/blob/main/docs/roadmap/IMPLEMENTATION_PLAN.md)

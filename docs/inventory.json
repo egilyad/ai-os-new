@@ -3,21 +3,21 @@
   "generatedBy": "scripts/gen-docs-inventory.mjs",
   "scope": "git-tracked markdown: docs/**/*.md (excluding docs/new drafts and the self-report pages docs-health, docs-inventory) plus repository entry docs (root *.md, .superagents/**, src/kernel/DEPENDENCY_MAP.md)",
   "totals": {
-    "documents": 1126,
+    "documents": 1139,
     "byCategory": {
       "repo": 13,
-      "top": 48,
+      "top": 60,
       "active": 1,
       "audits": 77,
       "history": 683,
       "reference": 6,
-      "roadmap": 17,
+      "roadmap": 18,
       "superseded": 3,
       "wiki": 278
     },
     "byLanguage": {
       "en": 659,
-      "ru": 296,
+      "ru": 309,
       "mixed": 171
     }
   },
@@ -6561,12 +6561,108 @@
       "hash": "f49db1c70f436bcaefc132985819bf75bc6ee623"
     },
     {
+      "path": "docs/research/browser-computer-ai.md",
+      "category": "top",
+      "language": "ru",
+      "title": "Исследование: управление браузером и компьютером ИИ",
+      "bytes": 4408,
+      "hash": "9cf88a1a59807e6cc979ef1f754afbf8d43725e5"
+    },
+    {
+      "path": "docs/research/coding-agents.md",
+      "category": "top",
+      "language": "ru",
+      "title": "Исследование: кодинг-агенты",
+      "bytes": 3867,
+      "hash": "c258eb790eec0cd013fa532152d6d242d72723b6"
+    },
+    {
+      "path": "docs/research/cognitive-components-os.md",
+      "category": "top",
+      "language": "ru",
+      "title": "Исследование: когнитивные компоненты для ИИ-ОС",
+      "bytes": 5129,
+      "hash": "43505871db746bd6dc9fd1cf35ea47b7a33fe2b3"
+    },
+    {
+      "path": "docs/research/complex-agents.md",
+      "category": "top",
+      "language": "ru",
+      "title": "Исследование: сложные агенты",
+      "bytes": 4101,
+      "hash": "ef3bc57cfc6bcf09af482288b5bdf86dd3512cf6"
+    },
+    {
+      "path": "docs/research/debates-ai.md",
+      "category": "top",
+      "language": "ru",
+      "title": "Исследование: дебаты ИИ",
+      "bytes": 6005,
+      "hash": "d8ce054da13016c65bb5645d825425ef8da5ac02"
+    },
+    {
+      "path": "docs/research/deep-research-patterns.md",
+      "category": "top",
+      "language": "ru",
+      "title": "Исследование: создание сложных исследований ИИ",
+      "bytes": 4737,
+      "hash": "17a8a6fa0a692cbebbf803f791ad6e1a89a1c729"
+    },
+    {
+      "path": "docs/research/errors-recovery-audit.md",
+      "category": "top",
+      "language": "ru",
+      "title": "Исследование: ошибки в мультиагентных системах и борьба с ними",
+      "bytes": 5845,
+      "hash": "d23a8858fc6dcff80fd2e84ac06c23cb5b1ebb7e"
+    },
+    {
+      "path": "docs/research/memory-ai.md",
+      "category": "top",
+      "language": "ru",
+      "title": "Исследование: память ИИ",
+      "bytes": 5465,
+      "hash": "e8a1991f81b86721407838042f0a0063a0a9e40f"
+    },
+    {
       "path": "docs/research/multiagent-os-patterns.md",
       "category": "top",
       "language": "ru",
       "title": "Мультиагентные ИИ-ОС: аналитический обзор и карта редких паттернов",
-      "bytes": 31473,
-      "hash": "117a745f703d898c5defec25d6e9ff1333d9c49c"
+      "bytes": 32438,
+      "hash": "203cc44ae8f9722ecf48e98d9d0a292f03392491"
+    },
+    {
+      "path": "docs/research/multiagent-research-topics.md",
+      "category": "top",
+      "language": "ru",
+      "title": "Исследование: сложные темы в мультиагентных системах",
+      "bytes": 3793,
+      "hash": "33882719a8d8e9e8cd767d7bb8bef643707bc547"
+    },
+    {
+      "path": "docs/research/reliability-speed-optimization.md",
+      "category": "top",
+      "language": "ru",
+      "title": "Исследование: оптимизация системы — надёжность и скорость",
+      "bytes": 4156,
+      "hash": "35e344f28efa133a8b7f971ec88064147b81a2c4"
+    },
+    {
+      "path": "docs/research/security-minimal.md",
+      "category": "top",
+      "language": "ru",
+      "title": "Исследование: безопасность (минимум)",
+      "bytes": 1540,
+      "hash": "d23ccdff0320836dca6c9e4cdc40603ebdf2aae6"
+    },
+    {
+      "path": "docs/research/transparency.md",
+      "category": "top",
+      "language": "ru",
+      "title": "Исследование: прозрачность системы",
+      "bytes": 4030,
+      "hash": "5afe499a41af837cf79cb8eb9b009e6209c6449c"
     },
     {
       "path": "docs/roadmap/adapters-improvements-roadmap.md",
@@ -6631,6 +6727,14 @@
       "title": "Roadmap улучшений Debates",
       "bytes": 3793,
       "hash": "42d8ad528171538ba6ae831823379d2e558d46b6"
+    },
+    {
+      "path": "docs/roadmap/deep-research-roadmap.md",
+      "category": "roadmap",
+      "language": "ru",
+      "title": "Roadmap: глубокие исследования и мультиагентные паттерны",
+      "bytes": 6511,
+      "hash": "ab47a86beb4b74e80a9362229698dbd3fc1615ed"
     },
     {
       "path": "docs/roadmap/events-storage-improvements-roadmap.md",
@@ -7590,7 +7694,7 @@
       "language": "mixed",
       "title": "Матрица покрытия",
       "bytes": 8585,
-      "hash": "caec32cf88b63d493574ee5f521dfedf849edd63"
+      "hash": "d281c307329c30d240925e89f2b68e597ca2eaab"
     },
     {
       "path": "docs/wiki/debate-strategies-cheatsheet.md",
@@ -7638,7 +7742,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4076,
-      "hash": "8c665b65da988a918e2006f95447fe9dd48417ba"
+      "hash": "651e9645bea015bf71a679c08c474d0c3504cec8"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -7941,8 +8045,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Карта документации",
-      "bytes": 37315,
-      "hash": "ee4a738704882eeeda34479075f1bf944b21f5c6"
+      "bytes": 39484,
+      "hash": "7ddb55236d58b23347e1359b663764a40e27dd53"
     },
     {
       "path": "docs/wiki/docs-standard.md",
@@ -8741,8 +8845,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Wiki SuperAgents OS",
-      "bytes": 29124,
-      "hash": "5aa1ddcdca180a491c53f4bc13f9677256c83d54"
+      "bytes": 29218,
+      "hash": "185473d5635123f7c9c239f705a13b1ff6db46f4"
     },
     {
       "path": "docs/wiki/research-multiagent-patterns.md",

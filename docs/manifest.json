@@ -55,7 +55,7 @@
     {
       "id": "notes",
       "title": "Заметки",
-      "articles": 2
+      "articles": 3
     },
     {
       "id": "dev-status",
@@ -164,6 +164,19 @@
       "tags": ["исследования", "мультиагентные системы", "паттерны", "roadmap", "deep research"],
       "sources": ["docs/research/multiagent-os-patterns.md"],
       "related": ["panel-research-cockpit", "panel-graph-workbench", "roadmap-notes"],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:research-os-index",
+      "type": "article",
+      "slug": "research-os-index",
+      "title": "Исследования ИИ-ОС: индекс",
+      "section": "notes",
+      "status": "documented",
+      "tags": ["исследования", "индекс", "roadmap", "мультиагентные системы"],
+      "sources": ["docs/research/"],
+      "related": ["research-multiagent-patterns", "panel-research-cockpit", "roadmap-notes"],
       "reviewed": null,
       "tests": []
     },
