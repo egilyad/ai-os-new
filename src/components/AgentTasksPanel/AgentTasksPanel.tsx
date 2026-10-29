@@ -10,8 +10,11 @@ import {
 } from 'lucide-react';
 import { useTranslation } from '../../i18n/useTranslation';
 import { agemsApprovalService } from '../../kernel/services/agems-approval-service';
-import { browserUseService } from '../../kernel/instances/services-extras';
-import { computerUseLoopService } from '../../kernel/instances/services-extras';
+import {
+    browserUseService,
+    computerUseLoopService,
+    crystalVault,
+} from '../../kernel/instances/services-extras';
 import { agentService, keyService } from '../../kernel/instances/services-core';
 import type { ComputerUseProvider } from '../../kernel/services/computer/computer-use-loop-service';
 
@@ -82,6 +85,7 @@ const AgentTasksPanel: React.FC = () => {
     );
     const [checking, setChecking] = useState(false);
     const [providerReady, setProviderReady] = useState<Record<string, boolean>>({});
+    const [savingId, setSavingId] = useState<number | null>(null);
     const appliedTurns = Math.max(1, Math.min(50, Math.floor(Number(maxTurns) || 10)));
 
     // UX: подсказать реальных агентов для «от чьего имени».
@@ -125,7 +129,6 @@ const AgentTasksPanel: React.FC = () => {
         } catch {
             /* ignore */
         }
-         
     }, [capability]);
 
     const startSidecar = () => {
@@ -226,6 +229,34 @@ const AgentTasksPanel: React.FC = () => {
             turns: res.turns,
         });
     }
+
+    const saveToCrystal = async (r: RunRecord) => {
+        if (savingId !== null) return;
+        setSavingId(r.id);
+        try {
+            const evidence = r.output ? [r.output.slice(0, 500)] : [];
+            await crystalVault.propose({
+                content: {
+                    statement: `Browser-задача: ${r.task.slice(0, 200)}`,
+                    elaboration: r.output ? r.output.slice(0, 2000) : undefined,
+                    evidence,
+                    originKind: 'observation',
+                    originId: `browser-task:${r.id}`,
+                    contributingAgents: ['ui-tasks'],
+                    modelIds: [],
+                    totalTokensSpent: 0,
+                },
+                originKind: 'observation',
+                originId: `browser-task:${r.id}`,
+                contributingAgents: ['ui-tasks'],
+            });
+            setError(null);
+        } catch (e) {
+            setError(e instanceof Error ? e.message : String(e));
+        } finally {
+            setSavingId(null);
+        }
+    };
 
     function onCancel() {
         abortRef.current?.abort();
@@ -534,6 +565,25 @@ const AgentTasksPanel: React.FC = () => {
                                 alt="run screenshot"
                                 style={{ maxWidth: '100%', borderRadius: 6, marginTop: 6 }}
                             />
+                        )}
+                        {r.status === 'done' && r.capability === 'browser' && (
+                            <button
+                                onClick={() => void saveToCrystal(r)}
+                                disabled={savingId === r.id}
+                                style={{
+                                    marginTop: 8,
+                                    fontSize: 12,
+                                    padding: '4px 10px',
+                                    border: '1px solid var(--border)',
+                                    borderRadius: 6,
+                                    background: 'transparent',
+                                    color: 'var(--slate-200)',
+                                    cursor: savingId === r.id ? 'default' : 'pointer',
+                                }}
+                                title="Сохранить результат как факт в Crystal Vault"
+                            >
+                                {savingId === r.id ? 'Сохранение…' : '💎 В Crystal Vault'}
+                            </button>
                         )}
                     </div>
                 ))}
