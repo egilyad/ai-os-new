@@ -126,7 +126,6 @@
 ## Справочники и планы
 
 **Нормативные справочники:**
-
 - [CAPABILITY MATRIX — SuperAgents OS (STATICALLY VERIFIED, NOT RUNTIME VERIFIED)](https://github.com/egilyad/ai-os-new/blob/main/docs/reference/CAPABILITY_MATRIX.md)
 - [Cognitive Modules — Guide по использованию](https://github.com/egilyad/ai-os-new/blob/main/docs/reference/COGNITIVE_MODULES_GUIDE.md)
 - [🔵 REFERENCE — справочники, контракты, описания](https://github.com/egilyad/ai-os-new/blob/main/docs/reference/README.md)
@@ -135,7 +134,6 @@
 - [Карта пользовательского управления — сотни сервисов → понятная OS](https://github.com/egilyad/ai-os-new/blob/main/docs/reference/USER_CONTROL_MAP.md)
 
 **Планы и направления** (не текущее состояние):
-
 - [Roadmap улучшений «Адаптеры провайдеров LLM»](https://github.com/egilyad/ai-os-new/blob/main/docs/roadmap/adapters-improvements-roadmap.md)
 - [AGEMS -> SuperAgents OS -- Roadmap](https://github.com/egilyad/ai-os-new/blob/main/docs/roadmap/AGEMS_ROADMAP.md)
 - [Roadmap улучшений «Агенты/Совет»](https://github.com/egilyad/ai-os-new/blob/main/docs/roadmap/agents-council-improvements-roadmap.md)

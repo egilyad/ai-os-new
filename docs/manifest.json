@@ -76,7 +76,14 @@
       "title": "SuperAgents OS — полное описание (промт для дебатов/ИИ)",
       "section": "guide",
       "status": "verified",
-      "tags": ["система", "обзор", "аудит", "промт", "дебаты", "рекомендации"],
+      "tags": [
+        "система",
+        "обзор",
+        "аудит",
+        "промт",
+        "дебаты",
+        "рекомендации"
+      ],
       "sources": [
         "src/route-registry.tsx",
         "src/kernel/services/dexie-schema.ts",
@@ -117,7 +124,13 @@
         "src/components/GraphWorkbenchPanel/EmbeddingsLens.tsx",
         "src/components/GraphWorkbenchPanel/CoverageLens.tsx"
       ],
-      "related": ["memory-center-audit", "panel-routing", "debates", "memory", "panels-catalog"],
+      "related": [
+        "memory-center-audit",
+        "panel-routing",
+        "debates",
+        "memory",
+        "panels-catalog"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -161,9 +174,21 @@
       "title": "Исследование: мультиагентные ИИ-ОС",
       "section": "notes",
       "status": "documented",
-      "tags": ["исследования", "мультиагентные системы", "паттерны", "roadmap", "deep research"],
-      "sources": ["docs/research/multiagent-os-patterns.md"],
-      "related": ["panel-research-cockpit", "panel-graph-workbench", "roadmap-notes"],
+      "tags": [
+        "исследования",
+        "мультиагентные системы",
+        "паттерны",
+        "roadmap",
+        "deep research"
+      ],
+      "sources": [
+        "docs/research/multiagent-os-patterns.md"
+      ],
+      "related": [
+        "panel-research-cockpit",
+        "panel-graph-workbench",
+        "roadmap-notes"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -174,9 +199,20 @@
       "title": "Исследования ИИ-ОС: индекс",
       "section": "notes",
       "status": "documented",
-      "tags": ["исследования", "индекс", "roadmap", "мультиагентные системы"],
-      "sources": ["docs/research/"],
-      "related": ["research-multiagent-patterns", "panel-research-cockpit", "roadmap-notes"],
+      "tags": [
+        "исследования",
+        "индекс",
+        "roadmap",
+        "мультиагентные системы"
+      ],
+      "sources": [
+        "docs/research/"
+      ],
+      "related": [
+        "research-multiagent-patterns",
+        "panel-research-cockpit",
+        "roadmap-notes"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -187,9 +223,20 @@
       "title": "Что такое SuperAgents OS",
       "section": "guide",
       "status": "documented",
-      "tags": ["обзор", "философия", "local-first"],
-      "sources": ["README_EN.md", "docs/SYSTEM_MANIFEST_RU.md"],
-      "related": ["capabilities", "architecture", "providers"],
+      "tags": [
+        "обзор",
+        "философия",
+        "local-first"
+      ],
+      "sources": [
+        "README_EN.md",
+        "docs/SYSTEM_MANIFEST_RU.md"
+      ],
+      "related": [
+        "capabilities",
+        "architecture",
+        "providers"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -200,7 +247,12 @@
       "title": "Путь идеи: от мысли до результата",
       "section": "guide",
       "status": "documented",
-      "tags": ["руководство", "сценарий", "идея", "изобретение"],
+      "tags": [
+        "руководство",
+        "сценарий",
+        "идея",
+        "изобретение"
+      ],
       "sources": [
         "src/components/DebatePanel/DebatePanel.tsx",
         "src/components/SimulationPanel/SimulationPanel.tsx",
@@ -209,7 +261,13 @@
         "src/kernel/services/memory/",
         "src/kernel/services/rag/"
       ],
-      "related": ["capabilities", "debates", "agents", "memory", "providers"],
+      "related": [
+        "capabilities",
+        "debates",
+        "agents",
+        "memory",
+        "providers"
+      ],
       "reviewed": null,
       "tests": [
         "src/components/DebatePanel/DebatePanel.test.tsx",
@@ -224,7 +282,12 @@
       "title": "Карта сценариев: проверенные пути выполнения",
       "section": "guide",
       "status": "documented",
-      "tags": ["руководство", "аудит", "сценарии", "проверка"],
+      "tags": [
+        "руководство",
+        "аудит",
+        "сценарии",
+        "проверка"
+      ],
       "sources": [
         "src/kernel/services/debate-runtime/debate-sync-manager.ts",
         "src/kernel/services/debate-runtime/debate-engine.ts",
@@ -232,7 +295,13 @@
         "src/stores/chat/chat-send-message.ts",
         "src/components/SimulationPanel/SimulationPanel.tsx"
       ],
-      "related": ["idea-path", "capabilities", "debates", "memory", "agents"],
+      "related": [
+        "idea-path",
+        "capabilities",
+        "debates",
+        "memory",
+        "agents"
+      ],
       "reviewed": null,
       "tests": [
         "src/kernel/services/debate-runtime/debate-conclusion-engine.test.ts",
@@ -246,14 +315,24 @@
       "title": "Computer & Browser Use: как управлять компьютером через агентов",
       "section": "guide",
       "status": "documented",
-      "tags": ["руководство", "computer-use", "browser-use", "автоматизация"],
+      "tags": [
+        "руководство",
+        "computer-use",
+        "browser-use",
+        "автоматизация"
+      ],
       "sources": [
         "src/components/AgentTasksPanel/AgentTasksPanel.tsx",
         "src/kernel/services/computer/computer-use-loop-service.ts",
         "src/kernel/services/browser/browser-use-service.ts",
         "server/browser-sidecar.mjs"
       ],
-      "related": ["idea-path", "scenario-map", "agents", "capabilities"],
+      "related": [
+        "idea-path",
+        "scenario-map",
+        "agents",
+        "capabilities"
+      ],
       "reviewed": null,
       "tests": [
         "src/components/AgentTasksPanel/AgentTasksPanel.test.tsx",
@@ -268,9 +347,20 @@
       "title": "Возможности ОС",
       "section": "guide",
       "status": "documented",
-      "tags": ["обзор", "функции"],
-      "sources": ["README_EN.md"],
-      "related": ["what-is", "debates", "agents", "providers", "memory"],
+      "tags": [
+        "обзор",
+        "функции"
+      ],
+      "sources": [
+        "README_EN.md"
+      ],
+      "related": [
+        "what-is",
+        "debates",
+        "agents",
+        "providers",
+        "memory"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -281,9 +371,20 @@
       "title": "Как пользоваться панелями",
       "section": "guide",
       "status": "verified",
-      "tags": ["инструкция", "навигация"],
-      "sources": ["src/route-registry-core.ts", "src/route-registry-content.ts", "src/routes.tsx"],
-      "related": ["panel-chat", "panel-providers", "panel-agent-tasks"],
+      "tags": [
+        "инструкция",
+        "навигация"
+      ],
+      "sources": [
+        "src/route-registry-core.ts",
+        "src/route-registry-content.ts",
+        "src/routes.tsx"
+      ],
+      "related": [
+        "panel-chat",
+        "panel-providers",
+        "panel-agent-tasks"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -294,12 +395,21 @@
       "title": "Панель: Чат",
       "section": "panels",
       "status": "verified",
-      "tags": ["панель", "чат", "инструкция"],
+      "tags": [
+        "панель",
+        "чат",
+        "инструкция"
+      ],
       "sources": [
         "src/components/ChatPanel/ChatPanel.tsx",
         "src/components/ChatPanel/MarkdownRenderer.tsx"
       ],
-      "related": ["providers", "panel-providers", "memory", "zone-1"],
+      "related": [
+        "providers",
+        "panel-providers",
+        "memory",
+        "zone-1"
+      ],
       "reviewed": null,
       "tests": [
         "src/components/ChatPanel/ChatPanel.test.tsx",
@@ -313,17 +423,28 @@
       "title": "Панель: Обзор (Dashboard)",
       "section": "panels",
       "status": "verified",
-      "tags": ["панель", "обзор", "dashboard", "диагностика"],
+      "tags": [
+        "панель",
+        "обзор",
+        "dashboard",
+        "диагностика"
+      ],
       "sources": [
         "src/components/DashboardPanel/DashboardPanel.tsx",
         "src/components/DashboardPanel/DashboardPanel.test.tsx"
       ],
-      "related": ["panels-guide", "panel-observability", "panel-providers"],
+      "related": [
+        "panels-guide",
+        "panel-observability",
+        "panel-providers"
+      ],
       "reviewed": {
         "at": "2026-10-17",
         "by": "opencode"
       },
-      "tests": ["src/components/DashboardPanel/DashboardPanel.test.tsx"]
+      "tests": [
+        "src/components/DashboardPanel/DashboardPanel.test.tsx"
+      ]
     },
     {
       "id": "wiki:panel-providers",
@@ -332,12 +453,22 @@
       "title": "Панель: Провайдеры и ключи",
       "section": "panels",
       "status": "verified",
-      "tags": ["панель", "ключи", "инструкция", "безопасность"],
+      "tags": [
+        "панель",
+        "ключи",
+        "инструкция",
+        "безопасность"
+      ],
       "sources": [
         "src/components/ProviderManager/",
         "src/kernel/services/key-management/key-service.ts"
       ],
-      "related": ["providers", "panel-chat", "diagnostics", "zone-1"],
+      "related": [
+        "providers",
+        "panel-chat",
+        "diagnostics",
+        "zone-1"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -348,11 +479,23 @@
       "title": "Панель: Задачи агентов",
       "section": "panels",
       "status": "verified",
-      "tags": ["панель", "задачи", "инструкция"],
-      "sources": ["src/components/AgentTasksPanel/AgentTasksPanel.tsx"],
-      "related": ["agents", "execution-trail", "zone-3"],
+      "tags": [
+        "панель",
+        "задачи",
+        "инструкция"
+      ],
+      "sources": [
+        "src/components/AgentTasksPanel/AgentTasksPanel.tsx"
+      ],
+      "related": [
+        "agents",
+        "execution-trail",
+        "zone-3"
+      ],
       "reviewed": null,
-      "tests": ["src/components/AgentTasksPanel/AgentTasksPanel.test.tsx"]
+      "tests": [
+        "src/components/AgentTasksPanel/AgentTasksPanel.test.tsx"
+      ]
     },
     {
       "id": "wiki:panel-settings",
@@ -361,14 +504,27 @@
       "title": "Панель: Настройки",
       "section": "panels",
       "status": "verified",
-      "tags": ["панель", "настройки", "конфиг", "инструкция"],
+      "tags": [
+        "панель",
+        "настройки",
+        "конфиг",
+        "инструкция"
+      ],
       "sources": [
         "src/components/SettingsPanel/SettingsPanel.tsx",
         "src/i18n/translations/en/settings.ts"
       ],
-      "related": ["providers", "diagnostics", "dev-i18n-catalog", "panel-providers", "zone-9"],
+      "related": [
+        "providers",
+        "diagnostics",
+        "dev-i18n-catalog",
+        "panel-providers",
+        "zone-9"
+      ],
       "reviewed": null,
-      "tests": ["src/components/SettingsPanel/SettingsPanel.test.tsx"]
+      "tests": [
+        "src/components/SettingsPanel/SettingsPanel.test.tsx"
+      ]
     },
     {
       "id": "wiki:panel-governance",
@@ -377,7 +533,13 @@
       "title": "Панель: Governance и безопасность",
       "section": "panels",
       "status": "verified",
-      "tags": ["панель", "governance", "политики", "guardrails", "инструкция"],
+      "tags": [
+        "панель",
+        "governance",
+        "политики",
+        "guardrails",
+        "инструкция"
+      ],
       "sources": [
         "src/components/GovernancePanel/GovernancePanel.tsx",
         "src/components/PolicyPanel/PolicyPanel.tsx",
@@ -385,7 +547,13 @@
         "src/components/SopPanel/SopPanel.tsx",
         "src/components/PromptSecurityPanel.tsx"
       ],
-      "related": ["agents", "diagnostics", "providers", "dev-component-catalog", "zone-6"],
+      "related": [
+        "agents",
+        "diagnostics",
+        "providers",
+        "dev-component-catalog",
+        "zone-6"
+      ],
       "reviewed": null,
       "tests": [
         "src/components/GovernancePanel/GovernancePanel.test.tsx",
@@ -401,14 +569,27 @@
       "title": "Панель: База знаний (RAG)",
       "section": "panels",
       "status": "verified",
-      "tags": ["панель", "знания", "RAG", "поиск", "инструкция"],
+      "tags": [
+        "панель",
+        "знания",
+        "RAG",
+        "поиск",
+        "инструкция"
+      ],
       "sources": [
         "src/components/KnowledgePanel/KnowledgePanel.tsx",
         "src/i18n/translations/en/memory.ts"
       ],
-      "related": ["memory", "panel-governance", "dev-component-catalog", "zone-4"],
+      "related": [
+        "memory",
+        "panel-governance",
+        "dev-component-catalog",
+        "zone-4"
+      ],
       "reviewed": null,
-      "tests": ["src/components/KnowledgePanel/KnowledgePanel.test.tsx"]
+      "tests": [
+        "src/components/KnowledgePanel/KnowledgePanel.test.tsx"
+      ]
     },
     {
       "id": "wiki:panel-sre",
@@ -417,14 +598,27 @@
       "title": "Панель: SRE-агент",
       "section": "panels",
       "status": "verified",
-      "tags": ["панель", "SRE", "метрики", "алерты", "инструкция"],
+      "tags": [
+        "панель",
+        "SRE",
+        "метрики",
+        "алерты",
+        "инструкция"
+      ],
       "sources": [
         "src/components/SREAgentPanel/SREAgentPanel.tsx",
         "src/i18n/translations/en/observability.ts"
       ],
-      "related": ["diagnostics", "execution-trail", "dev-component-catalog", "zone-18"],
+      "related": [
+        "diagnostics",
+        "execution-trail",
+        "dev-component-catalog",
+        "zone-18"
+      ],
       "reviewed": null,
-      "tests": ["src/components/SREAgentPanel/SREAgentPanel.test.tsx"]
+      "tests": [
+        "src/components/SREAgentPanel/SREAgentPanel.test.tsx"
+      ]
     },
     {
       "id": "wiki:panel-observability",
@@ -433,14 +627,25 @@
       "title": "Панель: Наблюдаемость (логи, трейсы, здоровье)",
       "section": "panels",
       "status": "verified",
-      "tags": ["панель", "логи", "трейсы", "health", "инструкция"],
+      "tags": [
+        "панель",
+        "логи",
+        "трейсы",
+        "health",
+        "инструкция"
+      ],
       "sources": [
         "src/i18n/translations/en/observability.ts",
         "src/components/LogsPanel/LogsPanel.tsx",
         "src/components/RouterTraceView/RouterTraceView.tsx",
         "src/components/TracesPanel/TracesPanel.tsx"
       ],
-      "related": ["diagnostics", "panel-sre", "dev-component-catalog", "zone-5"],
+      "related": [
+        "diagnostics",
+        "panel-sre",
+        "dev-component-catalog",
+        "zone-5"
+      ],
       "reviewed": null,
       "tests": [
         "src/components/LogsPanel/LogsPanel.test.tsx",
@@ -454,9 +659,23 @@
       "title": "Панель: Бюджет и затраты",
       "section": "panels",
       "status": "verified",
-      "tags": ["панель", "бюджет", "затраты", "pricing", "инструкция"],
-      "sources": ["src/i18n/translations/en/budget.ts", "src/components/BudgetPanel/"],
-      "related": ["providers", "diagnostics", "panel-settings", "dev-component-catalog"],
+      "tags": [
+        "панель",
+        "бюджет",
+        "затраты",
+        "pricing",
+        "инструкция"
+      ],
+      "sources": [
+        "src/i18n/translations/en/budget.ts",
+        "src/components/BudgetPanel/"
+      ],
+      "related": [
+        "providers",
+        "diagnostics",
+        "panel-settings",
+        "dev-component-catalog"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -484,7 +703,12 @@
         "src/components/SkillsPanel/SkillsPanel.tsx",
         "src/components/ToolsPanel/ToolsPanel.tsx"
       ],
-      "related": ["providers", "panel-governance", "dev-component-catalog", "zone-7"],
+      "related": [
+        "providers",
+        "panel-governance",
+        "dev-component-catalog",
+        "zone-7"
+      ],
       "reviewed": null,
       "tests": [
         "src/components/MCPPanel/MCPPanel.test.tsx",
@@ -500,14 +724,25 @@
       "title": "Панель: Аквариум агентов",
       "section": "panels",
       "status": "verified",
-      "tags": ["панель", "аквариум", "агенты", "экосистема", "инструкция"],
+      "tags": [
+        "панель",
+        "аквариум",
+        "агенты",
+        "экосистема",
+        "инструкция"
+      ],
       "sources": [
         "src/i18n/translations/en/workspace.ts",
         "src/components/AquariumPanel/AquariumPanel.tsx"
       ],
-      "related": ["agents", "dev-component-catalog"],
+      "related": [
+        "agents",
+        "dev-component-catalog"
+      ],
       "reviewed": null,
-      "tests": ["src/components/AquariumPanel/AquariumPanel.test.tsx"]
+      "tests": [
+        "src/components/AquariumPanel/AquariumPanel.test.tsx"
+      ]
     },
     {
       "id": "wiki:panel-tasks",
@@ -516,14 +751,26 @@
       "title": "Панель: Задачи и пайплайны",
       "section": "panels",
       "status": "verified",
-      "tags": ["панель", "задачи", "пайплайны", "инструкция"],
+      "tags": [
+        "панель",
+        "задачи",
+        "пайплайны",
+        "инструкция"
+      ],
       "sources": [
         "src/i18n/translations/en/workspace.ts",
         "src/components/TasksPanel/TasksPanel.tsx"
       ],
-      "related": ["execution-trail", "panel-agent-tasks", "dev-component-catalog", "zone-3"],
+      "related": [
+        "execution-trail",
+        "panel-agent-tasks",
+        "dev-component-catalog",
+        "zone-3"
+      ],
       "reviewed": null,
-      "tests": ["src/components/TasksPanel/TasksPanel.test.tsx"]
+      "tests": [
+        "src/components/TasksPanel/TasksPanel.test.tsx"
+      ]
     },
     {
       "id": "wiki:panel-playground",
@@ -532,9 +779,22 @@
       "title": "Панель: Песочница сравнения моделей",
       "section": "panels",
       "status": "verified",
-      "tags": ["панель", "песочница", "сравнение", "модели", "инструкция"],
-      "sources": ["src/i18n/translations/en/workspace.ts", "src/components/ModelComparePanel/"],
-      "related": ["providers", "debates", "dev-component-catalog"],
+      "tags": [
+        "панель",
+        "песочница",
+        "сравнение",
+        "модели",
+        "инструкция"
+      ],
+      "sources": [
+        "src/i18n/translations/en/workspace.ts",
+        "src/components/ModelComparePanel/"
+      ],
+      "related": [
+        "providers",
+        "debates",
+        "dev-component-catalog"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -545,9 +805,21 @@
       "title": "Панель: Пакетная обработка",
       "section": "panels",
       "status": "verified",
-      "tags": ["панель", "батч", "пакетная обработка", "инструкция"],
-      "sources": ["src/i18n/translations/en/workspace.ts", "src/components/BatchProcessingPanel/"],
-      "related": ["panel-playground", "panel-budget", "dev-component-catalog"],
+      "tags": [
+        "панель",
+        "батч",
+        "пакетная обработка",
+        "инструкция"
+      ],
+      "sources": [
+        "src/i18n/translations/en/workspace.ts",
+        "src/components/BatchProcessingPanel/"
+      ],
+      "related": [
+        "panel-playground",
+        "panel-budget",
+        "dev-component-catalog"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -558,9 +830,21 @@
       "title": "Панель: Потоки (workflows)",
       "section": "panels",
       "status": "verified",
-      "tags": ["панель", "workflows", "потоки", "инструкция"],
-      "sources": ["src/i18n/translations/en/workspace.ts", "src/components/WorkflowPanel/"],
-      "related": ["panel-builder", "panel-tasks", "dev-component-catalog"],
+      "tags": [
+        "панель",
+        "workflows",
+        "потоки",
+        "инструкция"
+      ],
+      "sources": [
+        "src/i18n/translations/en/workspace.ts",
+        "src/components/WorkflowPanel/"
+      ],
+      "related": [
+        "panel-builder",
+        "panel-tasks",
+        "dev-component-catalog"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -571,12 +855,22 @@
       "title": "Панель: Карта давления",
       "section": "panels",
       "status": "verified",
-      "tags": ["панель", "pressure", "давление", "мониторинг", "инструкция"],
+      "tags": [
+        "панель",
+        "pressure",
+        "давление",
+        "мониторинг",
+        "инструкция"
+      ],
       "sources": [
         "src/i18n/translations/en/workspace.ts",
         "src/components/PressureMapPanel/PressureMapPanel.tsx"
       ],
-      "related": ["panel-observability", "panel-sre", "dev-component-catalog"],
+      "related": [
+        "panel-observability",
+        "panel-sre",
+        "dev-component-catalog"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -587,9 +881,23 @@
       "title": "Панель: Конструктор агентов",
       "section": "panels",
       "status": "verified",
-      "tags": ["панель", "конструктор", "builder", "агенты", "инструкция"],
-      "sources": ["src/i18n/translations/en/workspace.ts", "src/components/BuilderPanel/"],
-      "related": ["agents", "panel-workflows", "dev-component-catalog", "zone-25"],
+      "tags": [
+        "панель",
+        "конструктор",
+        "builder",
+        "агенты",
+        "инструкция"
+      ],
+      "sources": [
+        "src/i18n/translations/en/workspace.ts",
+        "src/components/BuilderPanel/"
+      ],
+      "related": [
+        "agents",
+        "panel-workflows",
+        "dev-component-catalog",
+        "zone-25"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -600,16 +908,29 @@
       "title": "Панели: Аналитика, затраты и ключи",
       "section": "panels",
       "status": "verified",
-      "tags": ["панель", "аналитика", "затраты", "ключи", "метрики", "инструкция"],
+      "tags": [
+        "панель",
+        "аналитика",
+        "затраты",
+        "ключи",
+        "метрики",
+        "инструкция"
+      ],
       "sources": [
         "src/i18n/translations/en/analytics.ts",
         "src/components/AnalyticsPanel/AnalyticsPanel.tsx",
         "src/components/CostAnalyticsPanel/",
         "src/components/KeyUsageAnalyticsPanel/"
       ],
-      "related": ["panel-budget", "panel-observability", "dev-component-catalog"],
+      "related": [
+        "panel-budget",
+        "panel-observability",
+        "dev-component-catalog"
+      ],
       "reviewed": null,
-      "tests": ["src/components/AnalyticsPanel/AnalyticsPanel.test.tsx"]
+      "tests": [
+        "src/components/AnalyticsPanel/AnalyticsPanel.test.tsx"
+      ]
     },
     {
       "id": "wiki:panel-ab-testing",
@@ -618,9 +939,21 @@
       "title": "Панель: A/B-тест промптов",
       "section": "panels",
       "status": "verified",
-      "tags": ["панель", "a/b", "эксперимент", "инструкция"],
-      "sources": ["src/i18n/translations/en/analytics.ts", "src/components/ABTestPanel/"],
-      "related": ["panel-playground", "panel-batch", "dev-component-catalog"],
+      "tags": [
+        "панель",
+        "a/b",
+        "эксперимент",
+        "инструкция"
+      ],
+      "sources": [
+        "src/i18n/translations/en/analytics.ts",
+        "src/components/ABTestPanel/"
+      ],
+      "related": [
+        "panel-playground",
+        "panel-batch",
+        "dev-component-catalog"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -631,15 +964,26 @@
       "title": "Панель: Роли и консорциумы",
       "section": "panels",
       "status": "verified",
-      "tags": ["панель", "роли", "консорциум", "инструкция"],
+      "tags": [
+        "панель",
+        "роли",
+        "консорциум",
+        "инструкция"
+      ],
       "sources": [
         "src/i18n/translations/en/agents.ts",
         "src/components/RolesPanel/RolesPanel.tsx",
         "src/components/RolesPanel/RolesConsortiaPanel.tsx"
       ],
-      "related": ["agents", "panel-governance", "dev-component-catalog"],
+      "related": [
+        "agents",
+        "panel-governance",
+        "dev-component-catalog"
+      ],
       "reviewed": null,
-      "tests": ["src/components/RolesPanel/RolesPanel.test.tsx"]
+      "tests": [
+        "src/components/RolesPanel/RolesPanel.test.tsx"
+      ]
     },
     {
       "id": "wiki:panel-projects",
@@ -648,14 +992,25 @@
       "title": "Панель: Проекты",
       "section": "panels",
       "status": "verified",
-      "tags": ["панель", "проекты", "инструкция"],
+      "tags": [
+        "панель",
+        "проекты",
+        "инструкция"
+      ],
       "sources": [
         "src/i18n/translations/en/analytics.ts",
         "src/components/ProjectsPanel/ProjectsPanel.tsx"
       ],
-      "related": ["panel-tasks", "panel-workflows", "dev-component-catalog", "zone-11"],
+      "related": [
+        "panel-tasks",
+        "panel-workflows",
+        "dev-component-catalog",
+        "zone-11"
+      ],
       "reviewed": null,
-      "tests": ["src/components/ProjectsPanel/ProjectsPanel.test.tsx"]
+      "tests": [
+        "src/components/ProjectsPanel/ProjectsPanel.test.tsx"
+      ]
     },
     {
       "id": "wiki:panel-research",
@@ -664,14 +1019,26 @@
       "title": "Панель: Исследовательский движок",
       "section": "panels",
       "status": "verified",
-      "tags": ["панель", "исследование", "research", "инструкция"],
+      "tags": [
+        "панель",
+        "исследование",
+        "research",
+        "инструкция"
+      ],
       "sources": [
         "src/i18n/translations/en/analytics.ts",
         "src/components/ResearchPanel/ResearchEnginePanel.tsx"
       ],
-      "related": ["panel-synthesis", "panel-forum", "debates", "zone-15"],
+      "related": [
+        "panel-synthesis",
+        "panel-forum",
+        "debates",
+        "zone-15"
+      ],
       "reviewed": null,
-      "tests": ["src/components/ResearchPanel/ResearchEnginePanel.test.tsx"]
+      "tests": [
+        "src/components/ResearchPanel/ResearchEnginePanel.test.tsx"
+      ]
     },
     {
       "id": "wiki:panel-synthesis",
@@ -680,14 +1047,25 @@
       "title": "Панель: Синтез мнений",
       "section": "panels",
       "status": "verified",
-      "tags": ["панель", "синтез", "консенсус", "инструкция"],
+      "tags": [
+        "панель",
+        "синтез",
+        "консенсус",
+        "инструкция"
+      ],
       "sources": [
         "src/i18n/translations/en/analytics.ts",
         "src/components/SynthesisPanel/SynthesisPanel.tsx"
       ],
-      "related": ["debates", "panel-research", "dev-component-catalog"],
+      "related": [
+        "debates",
+        "panel-research",
+        "dev-component-catalog"
+      ],
       "reviewed": null,
-      "tests": ["src/components/SynthesisPanel/SynthesisPanel.test.tsx"]
+      "tests": [
+        "src/components/SynthesisPanel/SynthesisPanel.test.tsx"
+      ]
     },
     {
       "id": "wiki:panel-scheduler",
@@ -696,9 +1074,21 @@
       "title": "Панель: Планировщик",
       "section": "panels",
       "status": "verified",
-      "tags": ["панель", "планировщик", "расписание", "инструкция"],
-      "sources": ["src/i18n/translations/en/analytics.ts", "src/components/SchedulerPanel/"],
-      "related": ["panel-tasks", "agents", "dev-component-catalog"],
+      "tags": [
+        "панель",
+        "планировщик",
+        "расписание",
+        "инструкция"
+      ],
+      "sources": [
+        "src/i18n/translations/en/analytics.ts",
+        "src/components/SchedulerPanel/"
+      ],
+      "related": [
+        "panel-tasks",
+        "agents",
+        "dev-component-catalog"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -709,14 +1099,26 @@
       "title": "Панель: Режиссёр",
       "section": "panels",
       "status": "verified",
-      "tags": ["панель", "режиссёр", "director", "сценарии", "инструкция"],
+      "tags": [
+        "панель",
+        "режиссёр",
+        "director",
+        "сценарии",
+        "инструкция"
+      ],
       "sources": [
         "src/i18n/translations/en/analytics.ts",
         "src/components/DirectorPanel/DirectorPanel.tsx"
       ],
-      "related": ["debates", "panel-synthesis", "dev-component-catalog"],
+      "related": [
+        "debates",
+        "panel-synthesis",
+        "dev-component-catalog"
+      ],
       "reviewed": null,
-      "tests": ["src/components/DirectorPanel/DirectorPanel.test.tsx"]
+      "tests": [
+        "src/components/DirectorPanel/DirectorPanel.test.tsx"
+      ]
     },
     {
       "id": "wiki:panel-forum",
@@ -725,14 +1127,26 @@
       "title": "Панель: Форум",
       "section": "panels",
       "status": "verified",
-      "tags": ["панель", "форум", "обсуждения", "инструкция"],
+      "tags": [
+        "панель",
+        "форум",
+        "обсуждения",
+        "инструкция"
+      ],
       "sources": [
         "src/i18n/translations/en/analytics.ts",
         "src/components/ForumPanel/ForumPanel.tsx"
       ],
-      "related": ["debates", "panel-research", "dev-component-catalog", "zone-13"],
+      "related": [
+        "debates",
+        "panel-research",
+        "dev-component-catalog",
+        "zone-13"
+      ],
       "reviewed": null,
-      "tests": ["src/components/ForumPanel/ForumPanel.test.tsx"]
+      "tests": [
+        "src/components/ForumPanel/ForumPanel.test.tsx"
+      ]
     },
     {
       "id": "wiki:panel-gateway",
@@ -741,7 +1155,14 @@
       "title": "Панели: Компании и корпоративный gateway",
       "section": "panels",
       "status": "verified",
-      "tags": ["панель", "gateway", "компании", "задачи", "согласования", "инструкция"],
+      "tags": [
+        "панель",
+        "gateway",
+        "компании",
+        "задачи",
+        "согласования",
+        "инструкция"
+      ],
       "sources": [
         "src/i18n/translations/en/nav.ts",
         "src/components/IssuesPanel/",
@@ -749,7 +1170,12 @@
         "src/components/ExportImportPanel/",
         "src/components/AdaptersPanel.tsx"
       ],
-      "related": ["panel-governance", "agents", "panel-observability", "zone-16"],
+      "related": [
+        "panel-governance",
+        "agents",
+        "panel-observability",
+        "zone-16"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -760,11 +1186,25 @@
       "title": "Панель: Диада",
       "section": "panels",
       "status": "verified",
-      "tags": ["панель", "диада", "дебаты", "инструкция"],
-      "sources": ["src/i18n/translations/en/dyad.ts", "src/components/DyadPanel/DyadPanel.tsx"],
-      "related": ["debates", "panel-group-chat", "dev-component-catalog"],
+      "tags": [
+        "панель",
+        "диада",
+        "дебаты",
+        "инструкция"
+      ],
+      "sources": [
+        "src/i18n/translations/en/dyad.ts",
+        "src/components/DyadPanel/DyadPanel.tsx"
+      ],
+      "related": [
+        "debates",
+        "panel-group-chat",
+        "dev-component-catalog"
+      ],
       "reviewed": null,
-      "tests": ["src/components/DyadPanel/DyadPanel.test.tsx"]
+      "tests": [
+        "src/components/DyadPanel/DyadPanel.test.tsx"
+      ]
     },
     {
       "id": "wiki:panel-group-chat",
@@ -773,14 +1213,25 @@
       "title": "Панель: Групповой чат",
       "section": "panels",
       "status": "verified",
-      "tags": ["панель", "групповой чат", "агенты", "инструкция"],
+      "tags": [
+        "панель",
+        "групповой чат",
+        "агенты",
+        "инструкция"
+      ],
       "sources": [
         "src/i18n/translations/en/groupChat.ts",
         "src/components/GroupChatPanel/GroupChatPanel.tsx"
       ],
-      "related": ["debates", "panel-dyad", "agents"],
+      "related": [
+        "debates",
+        "panel-dyad",
+        "agents"
+      ],
       "reviewed": null,
-      "tests": ["src/components/GroupChatPanel/GroupChatPanel.test.tsx"]
+      "tests": [
+        "src/components/GroupChatPanel/GroupChatPanel.test.tsx"
+      ]
     },
     {
       "id": "wiki:panel-bookmarks",
@@ -789,12 +1240,20 @@
       "title": "Панель: Закладки",
       "section": "panels",
       "status": "verified",
-      "tags": ["панель", "закладки", "инструкция"],
+      "tags": [
+        "панель",
+        "закладки",
+        "инструкция"
+      ],
       "sources": [
         "src/i18n/translations/en/chat.ts",
         "src/components/BookmarksPanel/BookmarksPanel.tsx"
       ],
-      "related": ["panel-prompt-library", "panel-chat", "dev-component-catalog"],
+      "related": [
+        "panel-prompt-library",
+        "panel-chat",
+        "dev-component-catalog"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -805,9 +1264,21 @@
       "title": "Панель: Библиотека промптов",
       "section": "panels",
       "status": "verified",
-      "tags": ["панель", "промпты", "библиотека", "инструкция"],
-      "sources": ["src/i18n/translations/en/chat.ts", "src/components/PromptLibraryPanel/"],
-      "related": ["panel-chat", "panel-bookmarks", "panel-playground"],
+      "tags": [
+        "панель",
+        "промпты",
+        "библиотека",
+        "инструкция"
+      ],
+      "sources": [
+        "src/i18n/translations/en/chat.ts",
+        "src/components/PromptLibraryPanel/"
+      ],
+      "related": [
+        "panel-chat",
+        "panel-bookmarks",
+        "panel-playground"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -818,14 +1289,25 @@
       "title": "Панель: Автономия",
       "section": "panels",
       "status": "verified",
-      "tags": ["панель", "автономия", "планирование", "инструкция"],
+      "tags": [
+        "панель",
+        "автономия",
+        "планирование",
+        "инструкция"
+      ],
       "sources": [
         "src/i18n/translations/en/analytics.ts",
         "src/components/AutonomyPanel/AutonomyPanel.tsx"
       ],
-      "related": ["agents", "panel-tasks", "dev-component-catalog"],
+      "related": [
+        "agents",
+        "panel-tasks",
+        "dev-component-catalog"
+      ],
       "reviewed": null,
-      "tests": ["src/components/AutonomyPanel/AutonomyPanel.test.tsx"]
+      "tests": [
+        "src/components/AutonomyPanel/AutonomyPanel.test.tsx"
+      ]
     },
     {
       "id": "wiki:panel-routing",
@@ -834,14 +1316,27 @@
       "title": "Панели: Умная маршрутизация",
       "section": "panels",
       "status": "verified",
-      "tags": ["панель", "маршрутизация", "routing", "веса", "инструкция"],
+      "tags": [
+        "панель",
+        "маршрутизация",
+        "routing",
+        "веса",
+        "инструкция"
+      ],
       "sources": [
         "src/i18n/translations/en/providers.ts",
         "src/components/RoutingIntelligence/RoutingIntelligence"
       ],
-      "related": ["panel-providers", "panel-settings", "panel-budget", "zone-8"],
+      "related": [
+        "panel-providers",
+        "panel-settings",
+        "panel-budget",
+        "zone-8"
+      ],
       "reviewed": null,
-      "tests": ["src/components/RoutingIntelligence/RoutingIntelligence.test.tsx"]
+      "tests": [
+        "src/components/RoutingIntelligence/RoutingIntelligence.test.tsx"
+      ]
     },
     {
       "id": "wiki:panel-pools",
@@ -850,14 +1345,27 @@
       "title": "Панель: Пул ключей провайдеров",
       "section": "panels",
       "status": "verified",
-      "tags": ["панель", "пул", "ключи", "квоты", "инструкция"],
+      "tags": [
+        "панель",
+        "пул",
+        "ключи",
+        "квоты",
+        "инструкция"
+      ],
       "sources": [
         "src/i18n/translations/en/providers.ts",
         "src/components/PoolStatusPanel/PoolStatusPanel.tsx"
       ],
-      "related": ["panel-providers", "panel-routing", "panel-budget", "zone-18"],
+      "related": [
+        "panel-providers",
+        "panel-routing",
+        "panel-budget",
+        "zone-18"
+      ],
       "reviewed": null,
-      "tests": ["src/components/PoolStatusPanel/PoolStatusPanel.test.tsx"]
+      "tests": [
+        "src/components/PoolStatusPanel/PoolStatusPanel.test.tsx"
+      ]
     },
     {
       "id": "wiki:panel-custom-metrics",
@@ -866,9 +1374,21 @@
       "title": "Панель: Пользовательские метрики",
       "section": "panels",
       "status": "verified",
-      "tags": ["панель", "метрики", "дашборды", "инструкция"],
-      "sources": ["src/i18n/translations/en/analytics.ts", "src/components/CustomMetricsPanel/"],
-      "related": ["panel-observability", "panel-analytics", "dev-component-catalog"],
+      "tags": [
+        "панель",
+        "метрики",
+        "дашборды",
+        "инструкция"
+      ],
+      "sources": [
+        "src/i18n/translations/en/analytics.ts",
+        "src/components/CustomMetricsPanel/"
+      ],
+      "related": [
+        "panel-observability",
+        "panel-analytics",
+        "dev-component-catalog"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -879,12 +1399,21 @@
       "title": "Панель: Живые дебаты",
       "section": "panels",
       "status": "verified",
-      "tags": ["панель", "дебаты", "live", "инструкция"],
+      "tags": [
+        "панель",
+        "дебаты",
+        "live",
+        "инструкция"
+      ],
       "sources": [
         "src/i18n/translations/en/debate.ts",
         "src/components/DebateLive/DebateLivePanel"
       ],
-      "related": ["debates", "panel-debate-history", "panel-debate-analysis"],
+      "related": [
+        "debates",
+        "panel-debate-history",
+        "panel-debate-analysis"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -895,9 +1424,22 @@
       "title": "Панель: Анализ дебатов",
       "section": "panels",
       "status": "verified",
-      "tags": ["панель", "дебаты", "анализ", "инструкция"],
-      "sources": ["src/i18n/translations/en/debate.ts", "src/components/DebateAnalysisPanel/"],
-      "related": ["debates", "panel-debate-toolkit", "panel-debate-quality", "zone-21"],
+      "tags": [
+        "панель",
+        "дебаты",
+        "анализ",
+        "инструкция"
+      ],
+      "sources": [
+        "src/i18n/translations/en/debate.ts",
+        "src/components/DebateAnalysisPanel/"
+      ],
+      "related": [
+        "debates",
+        "panel-debate-toolkit",
+        "panel-debate-quality",
+        "zone-21"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -908,9 +1450,22 @@
       "title": "Панель: Качество дебатов",
       "section": "panels",
       "status": "verified",
-      "tags": ["панель", "дебаты", "качество", "правила", "инструкция"],
-      "sources": ["src/i18n/translations/en/quality.ts", "src/components/DebateQualityPanel/"],
-      "related": ["debates", "panel-debate-analysis", "panel-governance"],
+      "tags": [
+        "панель",
+        "дебаты",
+        "качество",
+        "правила",
+        "инструкция"
+      ],
+      "sources": [
+        "src/i18n/translations/en/quality.ts",
+        "src/components/DebateQualityPanel/"
+      ],
+      "related": [
+        "debates",
+        "panel-debate-analysis",
+        "panel-governance"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -921,9 +1476,21 @@
       "title": "Панель: Турнир дебатов",
       "section": "panels",
       "status": "verified",
-      "tags": ["панель", "дебаты", "турнир", "инструкция"],
-      "sources": ["src/i18n/translations/en/debate.ts", "src/components/TournamentPanel/"],
-      "related": ["debates", "panel-debate-analysis", "panel-debate-templates"],
+      "tags": [
+        "панель",
+        "дебаты",
+        "турнир",
+        "инструкция"
+      ],
+      "sources": [
+        "src/i18n/translations/en/debate.ts",
+        "src/components/TournamentPanel/"
+      ],
+      "related": [
+        "debates",
+        "panel-debate-analysis",
+        "panel-debate-templates"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -934,15 +1501,27 @@
       "title": "Панели: История дебатов и повтор",
       "section": "panels",
       "status": "verified",
-      "tags": ["панель", "дебаты", "история", "replay", "инструкция"],
+      "tags": [
+        "панель",
+        "дебаты",
+        "история",
+        "replay",
+        "инструкция"
+      ],
       "sources": [
         "src/i18n/translations/en/debate.ts",
         "src/components/DebatePanel/DebateHistoryPage",
         "src/components/DebateReplayPanel"
       ],
-      "related": ["debates", "panel-debate-live", "panel-debate-analysis"],
+      "related": [
+        "debates",
+        "panel-debate-live",
+        "panel-debate-analysis"
+      ],
       "reviewed": null,
-      "tests": ["src/components/DebatePanel/DebateHistoryPage.test.tsx"]
+      "tests": [
+        "src/components/DebatePanel/DebateHistoryPage.test.tsx"
+      ]
     },
     {
       "id": "wiki:panel-debate-templates",
@@ -951,13 +1530,22 @@
       "title": "Панель: Шаблоны дебатов",
       "section": "panels",
       "status": "verified",
-      "tags": ["панель", "дебаты", "шаблоны", "инструкция"],
+      "tags": [
+        "панель",
+        "дебаты",
+        "шаблоны",
+        "инструкция"
+      ],
       "sources": [
         "src/i18n/translations/en/debate.ts",
         "src/components/DebateTemplatesPanel/",
         "src/components/DebatePanel/DebateWorkspacePanel"
       ],
-      "related": ["debates", "panel-debate-tournament", "dev-component-catalog"],
+      "related": [
+        "debates",
+        "panel-debate-tournament",
+        "dev-component-catalog"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -968,14 +1556,24 @@
       "title": "Инструменты анализа дебатов",
       "section": "panels",
       "status": "documented",
-      "tags": ["панель", "дебаты", "анализ", "аргументация", "инструкция"],
+      "tags": [
+        "панель",
+        "дебаты",
+        "анализ",
+        "аргументация",
+        "инструкция"
+      ],
       "sources": [
         "src/i18n/translations/en/nav.ts",
         "src/components/LogicalFormPanel/",
         "src/components/SteelmanPanel/",
         "src/components/BayesianJudgePanel/"
       ],
-      "related": ["debates", "panel-debate-analysis", "panel-synthesis"],
+      "related": [
+        "debates",
+        "panel-debate-analysis",
+        "panel-synthesis"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -986,15 +1584,27 @@
       "title": "Панель: Флот (Fleet Console)",
       "section": "panels",
       "status": "verified",
-      "tags": ["панель", "флот", "fleet", "агенты", "инструкция"],
+      "tags": [
+        "панель",
+        "флот",
+        "fleet",
+        "агенты",
+        "инструкция"
+      ],
       "sources": [
         "src/i18n/translations/en/analytics.ts",
         "src/components/FleetPanel/FleetPanel.tsx",
         "src/components/FleetPanels/"
       ],
-      "related": ["agents", "panel-debate-toolkit", "panel-persona"],
+      "related": [
+        "agents",
+        "panel-debate-toolkit",
+        "panel-persona"
+      ],
       "reviewed": null,
-      "tests": ["src/components/FleetPanel/FleetPanel.test.tsx"]
+      "tests": [
+        "src/components/FleetPanel/FleetPanel.test.tsx"
+      ]
     },
     {
       "id": "wiki:panel-persona",
@@ -1003,16 +1613,27 @@
       "title": "Панели: Персоны агентов",
       "section": "panels",
       "status": "verified",
-      "tags": ["панель", "персоны", "persona", "инструкция"],
+      "tags": [
+        "панель",
+        "персоны",
+        "persona",
+        "инструкция"
+      ],
       "sources": [
         "src/i18n/translations/en/nav.ts",
         "src/components/PersonaPickerPanel/",
         "src/components/PersonaMixerPanel/PersonaMixerPanel.tsx",
         "src/components/PersonaMarketplacePanel/"
       ],
-      "related": ["agents", "panel-fleet", "dev-component-catalog"],
+      "related": [
+        "agents",
+        "panel-fleet",
+        "dev-component-catalog"
+      ],
       "reviewed": null,
-      "tests": ["src/components/PersonaMixerPanel/PersonaMixerPanel.test.tsx"]
+      "tests": [
+        "src/components/PersonaMixerPanel/PersonaMixerPanel.test.tsx"
+      ]
     },
     {
       "id": "wiki:panel-channels",
@@ -1021,14 +1642,26 @@
       "title": "Панель: Каналы",
       "section": "panels",
       "status": "verified",
-      "tags": ["панель", "каналы", "чат", "инструкция"],
+      "tags": [
+        "панель",
+        "каналы",
+        "чат",
+        "инструкция"
+      ],
       "sources": [
         "src/i18n/translations/en/analytics.ts",
         "src/components/ChannelPanel/ChannelPanel.tsx"
       ],
-      "related": ["panel-chat", "panel-group-chat", "dev-component-catalog", "zone-13"],
+      "related": [
+        "panel-chat",
+        "panel-group-chat",
+        "dev-component-catalog",
+        "zone-13"
+      ],
       "reviewed": null,
-      "tests": ["src/components/ChannelPanel/ChannelPanel.test.tsx"]
+      "tests": [
+        "src/components/ChannelPanel/ChannelPanel.test.tsx"
+      ]
     },
     {
       "id": "wiki:panel-room",
@@ -1037,14 +1670,26 @@
       "title": "Панель: Комната (Room)",
       "section": "panels",
       "status": "verified",
-      "tags": ["панель", "комната", "вызовы", "агенты", "инструкция"],
+      "tags": [
+        "панель",
+        "комната",
+        "вызовы",
+        "агенты",
+        "инструкция"
+      ],
       "sources": [
         "src/i18n/translations/en/analytics.ts",
         "src/components/RoomPanel/RoomPanel.tsx"
       ],
-      "related": ["agents", "panel-forum", "panel-debate-live"],
+      "related": [
+        "agents",
+        "panel-forum",
+        "panel-debate-live"
+      ],
       "reviewed": null,
-      "tests": ["src/components/RoomPanel/RoomPanel.test.tsx"]
+      "tests": [
+        "src/components/RoomPanel/RoomPanel.test.tsx"
+      ]
     },
     {
       "id": "wiki:panel-rotations",
@@ -1053,9 +1698,21 @@
       "title": "Панель: Ротация ключей",
       "section": "panels",
       "status": "verified",
-      "tags": ["панель", "ротация", "ключи", "инструкция"],
-      "sources": ["src/i18n/translations/en/providers.ts", "src/components/RotationsPanel/"],
-      "related": ["panel-pools", "panel-providers", "panel-settings"],
+      "tags": [
+        "панель",
+        "ротация",
+        "ключи",
+        "инструкция"
+      ],
+      "sources": [
+        "src/i18n/translations/en/providers.ts",
+        "src/components/RotationsPanel/"
+      ],
+      "related": [
+        "panel-pools",
+        "panel-providers",
+        "panel-settings"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -1066,16 +1723,27 @@
       "title": "Панели: Сессии и привязки",
       "section": "panels",
       "status": "verified",
-      "tags": ["панель", "сессии", "привязки", "инструкция"],
+      "tags": [
+        "панель",
+        "сессии",
+        "привязки",
+        "инструкция"
+      ],
       "sources": [
         "src/i18n/translations/en/workspace.ts",
         "src/components/SessionBindingsPanel/",
         "src/components/SessionHubPanel/",
         "src/components/ChatSessionsManagerPanel"
       ],
-      "related": ["panel-chat", "panel-room", "dev-component-catalog"],
+      "related": [
+        "panel-chat",
+        "panel-room",
+        "dev-component-catalog"
+      ],
       "reviewed": null,
-      "tests": ["src/components/ChatSessionsManagerPanel.test.tsx"]
+      "tests": [
+        "src/components/ChatSessionsManagerPanel.test.tsx"
+      ]
     },
     {
       "id": "wiki:audit-type-bootstrap",
@@ -1084,9 +1752,23 @@
       "title": "Аудит: запуск и выживание UI",
       "section": "dev",
       "status": "verified",
-      "tags": ["аудит", "запуск", "bootstrap", "краши", "UI"],
-      "sources": ["src/components/", "src/kernel/kernel.ts", "src/kernel/runtime.ts"],
-      "related": ["audit-methodology", "audit-type-build", "audit-type-security"],
+      "tags": [
+        "аудит",
+        "запуск",
+        "bootstrap",
+        "краши",
+        "UI"
+      ],
+      "sources": [
+        "src/components/",
+        "src/kernel/kernel.ts",
+        "src/kernel/runtime.ts"
+      ],
+      "related": [
+        "audit-methodology",
+        "audit-type-build",
+        "audit-type-security"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -1097,9 +1779,23 @@
       "title": "Аудит: сборка и целостность репозитория",
       "section": "dev",
       "status": "verified",
-      "tags": ["аудит", "сборка", "build", "npm", "регресс"],
-      "sources": ["package.json", "vite.config.ts", "scripts/"],
-      "related": ["audit-methodology", "audit-type-bootstrap", "audit-type-security"],
+      "tags": [
+        "аудит",
+        "сборка",
+        "build",
+        "npm",
+        "регресс"
+      ],
+      "sources": [
+        "package.json",
+        "vite.config.ts",
+        "scripts/"
+      ],
+      "related": [
+        "audit-methodology",
+        "audit-type-bootstrap",
+        "audit-type-security"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -1110,9 +1806,21 @@
       "title": "Аудит: ключи и секреты",
       "section": "dev",
       "status": "verified",
-      "tags": ["аудит", "ключи", "секреты", "api keys", "безопасность"],
-      "sources": ["src/kernel/services/key-management/", "src/kernel/services/key-state-store.ts"],
-      "related": ["audit-type-security", "audit-methodology"],
+      "tags": [
+        "аудит",
+        "ключи",
+        "секреты",
+        "api keys",
+        "безопасность"
+      ],
+      "sources": [
+        "src/kernel/services/key-management/",
+        "src/kernel/services/key-state-store.ts"
+      ],
+      "related": [
+        "audit-type-security",
+        "audit-methodology"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -1123,9 +1831,21 @@
       "title": "Аудит: консолидация архитектуры",
       "section": "architecture",
       "status": "verified",
-      "tags": ["аудит", "архитектура", "консолидация", "дубли", "рефакторинг"],
-      "sources": ["src/kernel/service-registration/", "src/kernel/services/"],
-      "related": ["audit-methodology", "audit-type-domain"],
+      "tags": [
+        "аудит",
+        "архитектура",
+        "консолидация",
+        "дубли",
+        "рефакторинг"
+      ],
+      "sources": [
+        "src/kernel/service-registration/",
+        "src/kernel/services/"
+      ],
+      "related": [
+        "audit-methodology",
+        "audit-type-domain"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -1136,9 +1856,21 @@
       "title": "Аудит: системный по доменам",
       "section": "dev",
       "status": "verified",
-      "tags": ["аудит", "домены", "модули", "системный"],
-      "sources": ["src/kernel/", "src/components/"],
-      "related": ["audit-methodology", "audit-type-architecture", "audit-type-data-streaming"],
+      "tags": [
+        "аудит",
+        "домены",
+        "модули",
+        "системный"
+      ],
+      "sources": [
+        "src/kernel/",
+        "src/components/"
+      ],
+      "related": [
+        "audit-methodology",
+        "audit-type-architecture",
+        "audit-type-data-streaming"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -1149,9 +1881,23 @@
       "title": "Аудит: данные, состояние и стриминг",
       "section": "dev",
       "status": "verified",
-      "tags": ["аудит", "данные", "состояние", "стриминг", "race", "память"],
-      "sources": ["src/llm/", "src/stores/", "src/kernel/services/"],
-      "related": ["audit-type-domain", "audit-methodology"],
+      "tags": [
+        "аудит",
+        "данные",
+        "состояние",
+        "стриминг",
+        "race",
+        "память"
+      ],
+      "sources": [
+        "src/llm/",
+        "src/stores/",
+        "src/kernel/services/"
+      ],
+      "related": [
+        "audit-type-domain",
+        "audit-methodology"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -1162,9 +1908,21 @@
       "title": "Аудит: безопасность и hardening",
       "section": "dev",
       "status": "verified",
-      "tags": ["аудит", "безопасность", "hardening", "критические баги"],
-      "sources": ["src/kernel/", "server/", "src/llm/"],
-      "related": ["audit-type-keys", "audit-methodology"],
+      "tags": [
+        "аудит",
+        "безопасность",
+        "hardening",
+        "критические баги"
+      ],
+      "sources": [
+        "src/kernel/",
+        "server/",
+        "src/llm/"
+      ],
+      "related": [
+        "audit-type-keys",
+        "audit-methodology"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -1175,9 +1933,21 @@
       "title": "Аудит: методология и процесс",
       "section": "dev",
       "status": "verified",
-      "tags": ["аудит", "методология", "процесс", "freeze", "тест-план"],
-      "sources": ["docs/audits/"],
-      "related": ["audit-type-bootstrap", "audit-type-domain", "audit-type-security"],
+      "tags": [
+        "аудит",
+        "методология",
+        "процесс",
+        "freeze",
+        "тест-план"
+      ],
+      "sources": [
+        "docs/audits/"
+      ],
+      "related": [
+        "audit-type-bootstrap",
+        "audit-type-domain",
+        "audit-type-security"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -1188,9 +1958,22 @@
       "title": "Аудит: класс дефектов — утечки памяти/ресурсов",
       "section": "dev",
       "status": "verified",
-      "tags": ["аудит", "память", "утечки", "ресурсы", "дефекты"],
-      "sources": ["src/kernel/", "src/components/", "src/hooks/"],
-      "related": ["audit-methodology", "audit-type-data-streaming"],
+      "tags": [
+        "аудит",
+        "память",
+        "утечки",
+        "ресурсы",
+        "дефекты"
+      ],
+      "sources": [
+        "src/kernel/",
+        "src/components/",
+        "src/hooks/"
+      ],
+      "related": [
+        "audit-methodology",
+        "audit-type-data-streaming"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -1201,9 +1984,24 @@
       "title": "Аудит: класс дефектов — безопасность/auth/песочница/CSP",
       "section": "dev",
       "status": "verified",
-      "tags": ["аудит", "безопасность", "auth", "sandbox", "CSP", "дефекты"],
-      "sources": ["src/kernel/", "server/", "src/llm/"],
-      "related": ["audit-type-security", "audit-type-keys", "audit-methodology"],
+      "tags": [
+        "аудит",
+        "безопасность",
+        "auth",
+        "sandbox",
+        "CSP",
+        "дефекты"
+      ],
+      "sources": [
+        "src/kernel/",
+        "server/",
+        "src/llm/"
+      ],
+      "related": [
+        "audit-type-security",
+        "audit-type-keys",
+        "audit-methodology"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -1214,9 +2012,22 @@
       "title": "Аудит: класс дефектов — целостность данных и репозитории",
       "section": "dev",
       "status": "verified",
-      "tags": ["аудит", "данные", "целостность", "персистентность", "репозитории", "дефекты"],
-      "sources": ["src/kernel/services/", "src/kernel/dal/"],
-      "related": ["audit-methodology", "audit-type-data-streaming"],
+      "tags": [
+        "аудит",
+        "данные",
+        "целостность",
+        "персистентность",
+        "репозитории",
+        "дефекты"
+      ],
+      "sources": [
+        "src/kernel/services/",
+        "src/kernel/dal/"
+      ],
+      "related": [
+        "audit-methodology",
+        "audit-type-data-streaming"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -1227,9 +2038,24 @@
       "title": "Аудит: класс дефектов — гонки/жизненный цикл/async cleanup",
       "section": "dev",
       "status": "verified",
-      "tags": ["аудит", "гонки", "race", "жизненный цикл", "async", "дефекты"],
-      "sources": ["src/kernel/", "src/stores/", "src/hooks/"],
-      "related": ["audit-methodology", "audit-type-data-streaming", "audit-defect-memory-leaks"],
+      "tags": [
+        "аудит",
+        "гонки",
+        "race",
+        "жизненный цикл",
+        "async",
+        "дефекты"
+      ],
+      "sources": [
+        "src/kernel/",
+        "src/stores/",
+        "src/hooks/"
+      ],
+      "related": [
+        "audit-methodology",
+        "audit-type-data-streaming",
+        "audit-defect-memory-leaks"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -1240,9 +2066,23 @@
       "title": "Аудит: класс дефектов — типы/контракты/дрейф событий",
       "section": "dev",
       "status": "verified",
-      "tags": ["аудит", "типы", "контракты", "события", "schema drift", "дефекты"],
-      "sources": ["src/kernel/contracts/", "src/kernel/events/", "src/kernel/types/"],
-      "related": ["audit-methodology", "audit-type-data-streaming"],
+      "tags": [
+        "аудит",
+        "типы",
+        "контракты",
+        "события",
+        "schema drift",
+        "дефекты"
+      ],
+      "sources": [
+        "src/kernel/contracts/",
+        "src/kernel/events/",
+        "src/kernel/types/"
+      ],
+      "related": [
+        "audit-methodology",
+        "audit-type-data-streaming"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -1253,9 +2093,23 @@
       "title": "Аудит: класс дефектов — производительность/индексы/кэш",
       "section": "dev",
       "status": "verified",
-      "tags": ["аудит", "производительность", "индексы", "кэш", "сканы", "дефекты"],
-      "sources": ["src/kernel/", "src/llm/", "src/"],
-      "related": ["audit-methodology", "audit-type-data-streaming"],
+      "tags": [
+        "аудит",
+        "производительность",
+        "индексы",
+        "кэш",
+        "сканы",
+        "дефекты"
+      ],
+      "sources": [
+        "src/kernel/",
+        "src/llm/",
+        "src/"
+      ],
+      "related": [
+        "audit-methodology",
+        "audit-type-data-streaming"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -1266,9 +2120,22 @@
       "title": "Аудит: класс дефектов — UX/корректность",
       "section": "dev",
       "status": "verified",
-      "tags": ["аудит", "UX", "корректность", "UI", "дефекты"],
-      "sources": ["src/components/", "src/hooks/"],
-      "related": ["audit-methodology", "audit-defect-performance", "audit-defect-logic"],
+      "tags": [
+        "аудит",
+        "UX",
+        "корректность",
+        "UI",
+        "дефекты"
+      ],
+      "sources": [
+        "src/components/",
+        "src/hooks/"
+      ],
+      "related": [
+        "audit-methodology",
+        "audit-defect-performance",
+        "audit-defect-logic"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -1279,9 +2146,24 @@
       "title": "Аудит: класс дефектов — сборка/деплой/конфиг",
       "section": "dev",
       "status": "verified",
-      "tags": ["аудит", "сборка", "деплой", "конфиг", "CI", "дефекты"],
-      "sources": ["Dockerfile", "vite.config.ts", "package.json", "scripts/"],
-      "related": ["audit-type-build", "audit-methodology"],
+      "tags": [
+        "аудит",
+        "сборка",
+        "деплой",
+        "конфиг",
+        "CI",
+        "дефекты"
+      ],
+      "sources": [
+        "Dockerfile",
+        "vite.config.ts",
+        "package.json",
+        "scripts/"
+      ],
+      "related": [
+        "audit-type-build",
+        "audit-methodology"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -1292,15 +2174,27 @@
       "title": "Аудит: класс дефектов — наблюдаемость/мониторинг",
       "section": "dev",
       "status": "verified",
-      "tags": ["аудит", "наблюдаемость", "мониторинг", "телеметрия", "логи", "дефекты"],
+      "tags": [
+        "аудит",
+        "наблюдаемость",
+        "мониторинг",
+        "телеметрия",
+        "логи",
+        "дефекты"
+      ],
       "sources": [
         "src/kernel/services/logger-service.ts",
         "src/kernel/services/system-status-service.ts",
         "src/components/HealthPanel/"
       ],
-      "related": ["audit-methodology", "audit-defect-performance"],
+      "related": [
+        "audit-methodology",
+        "audit-defect-performance"
+      ],
       "reviewed": null,
-      "tests": ["src/kernel/services/system-status-service.test.ts"]
+      "tests": [
+        "src/kernel/services/system-status-service.test.ts"
+      ]
     },
     {
       "id": "wiki:audit-defect-logic",
@@ -1309,8 +2203,17 @@
       "title": "Аудит: класс дефектов — общие логические ошибки",
       "section": "dev",
       "status": "verified",
-      "tags": ["аудит", "логика", "дефекты", "инварианты"],
-      "sources": ["src/kernel/", "src/stores/", "src/components/"],
+      "tags": [
+        "аудит",
+        "логика",
+        "дефекты",
+        "инварианты"
+      ],
+      "sources": [
+        "src/kernel/",
+        "src/stores/",
+        "src/components/"
+      ],
       "related": [
         "audit-methodology",
         "audit-defect-ux-correctness",
@@ -1334,7 +2237,11 @@
         "рассинхрон",
         "дефекты"
       ],
-      "sources": ["src/kernel/", "src/stores/", "src/components/"],
+      "sources": [
+        "src/kernel/",
+        "src/stores/",
+        "src/components/"
+      ],
       "related": [
         "audit-methodology",
         "audit-defect-data-integrity",
@@ -1350,8 +2257,18 @@
       "title": "Аудит: класс дефектов — нарушения контрактов",
       "section": "dev",
       "status": "verified",
-      "tags": ["аудит", "контракты", "инварианты", "дисциплина", "дефекты"],
-      "sources": ["src/kernel/contracts/", "src/kernel/events/", "src/kernel/services/"],
+      "tags": [
+        "аудит",
+        "контракты",
+        "инварианты",
+        "дисциплина",
+        "дефекты"
+      ],
+      "sources": [
+        "src/kernel/contracts/",
+        "src/kernel/events/",
+        "src/kernel/services/"
+      ],
       "related": [
         "audit-methodology",
         "audit-defect-types-contracts",
@@ -1367,8 +2284,15 @@
       "title": "Аудиты: сводный индекс",
       "section": "dev",
       "status": "verified",
-      "tags": ["аудит", "индекс", "сводка", "обзор"],
-      "sources": ["docs/audits/"],
+      "tags": [
+        "аудит",
+        "индекс",
+        "сводка",
+        "обзор"
+      ],
+      "sources": [
+        "docs/audits/"
+      ],
       "related": [
         "audit-methodology",
         "audit-type-bootstrap",
@@ -1401,9 +2325,23 @@
       "title": "Аудиты: полный обзор",
       "section": "dev",
       "status": "verified",
-      "tags": ["аудит", "обзор", "полное руководство", "типы", "классы"],
-      "sources": ["docs/audits/", "src/kernel/"],
-      "related": ["audit-index", "audit-methodology", "audit-type-domain", "audit-type-security"],
+      "tags": [
+        "аудит",
+        "обзор",
+        "полное руководство",
+        "типы",
+        "классы"
+      ],
+      "sources": [
+        "docs/audits/",
+        "src/kernel/"
+      ],
+      "related": [
+        "audit-index",
+        "audit-methodology",
+        "audit-type-domain",
+        "audit-type-security"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -1414,15 +2352,28 @@
       "title": "Панель: Хранилище кристаллов",
       "section": "panels",
       "status": "verified",
-      "tags": ["панель", "кристаллы", "знания", "подтверждение", "инструкция"],
+      "tags": [
+        "панель",
+        "кристаллы",
+        "знания",
+        "подтверждение",
+        "инструкция"
+      ],
       "sources": [
         "src/components/CrystalVaultPanel/CrystalVaultPanel.tsx",
         "src/kernel/services/crystal-vault/",
         "src/kernel/types/crystal-types.ts"
       ],
-      "related": ["panel-junction", "panel-synthesis", "panel-knowledge", "panel-lenses-crystals"],
+      "related": [
+        "panel-junction",
+        "panel-synthesis",
+        "panel-knowledge",
+        "panel-lenses-crystals"
+      ],
       "reviewed": null,
-      "tests": ["src/components/CrystalVaultPanel/CrystalVaultPanel.test.tsx"]
+      "tests": [
+        "src/components/CrystalVaultPanel/CrystalVaultPanel.test.tsx"
+      ]
     },
     {
       "id": "wiki:panel-junction",
@@ -1431,15 +2382,28 @@
       "title": "Панель: Junction-движок",
       "section": "panels",
       "status": "verified",
-      "tags": ["панель", "junction", "пересечения", "синтез", "знания", "инструкция"],
+      "tags": [
+        "панель",
+        "junction",
+        "пересечения",
+        "синтез",
+        "знания",
+        "инструкция"
+      ],
       "sources": [
         "src/components/JunctionPanel/JunctionPanel.tsx",
         "src/kernel/services/junction-engine/",
         "src/kernel/contracts/junction-engine.ts"
       ],
-      "related": ["panel-crystal-vault", "panel-synthesis", "panel-knowledge"],
+      "related": [
+        "panel-crystal-vault",
+        "panel-synthesis",
+        "panel-knowledge"
+      ],
       "reviewed": null,
-      "tests": ["src/components/JunctionPanel/JunctionPanel.test.tsx"]
+      "tests": [
+        "src/components/JunctionPanel/JunctionPanel.test.tsx"
+      ]
     },
     {
       "id": "wiki:panel-research-engine",
@@ -1448,7 +2412,13 @@
       "title": "Панель: Исследовательский движок",
       "section": "panels",
       "status": "verified",
-      "tags": ["панель", "исследование", "research", "движок", "инструкция"],
+      "tags": [
+        "панель",
+        "исследование",
+        "research",
+        "движок",
+        "инструкция"
+      ],
       "sources": [
         "src/components/ResearchPanel/ResearchEnginePanel.tsx",
         "src/kernel/services/research-engine-service.ts"
@@ -1459,7 +2429,9 @@
         "panel-hypothesis-generator"
       ],
       "reviewed": null,
-      "tests": ["src/components/ResearchPanel/ResearchEnginePanel.test.tsx"]
+      "tests": [
+        "src/components/ResearchPanel/ResearchEnginePanel.test.tsx"
+      ]
     },
     {
       "id": "wiki:panel-research-advanced",
@@ -1468,12 +2440,21 @@
       "title": "Панель: Исследования — расширенные",
       "section": "panels",
       "status": "verified",
-      "tags": ["панель", "исследование", "research", "advanced", "инструкция"],
+      "tags": [
+        "панель",
+        "исследование",
+        "research",
+        "advanced",
+        "инструкция"
+      ],
       "sources": [
         "src/components/ResearchPanel/ResearchEngineAdvancedPanel.tsx",
         "src/kernel/services/research-engine-service.ts"
       ],
-      "related": ["panel-research-engine", "panel-research-reports"],
+      "related": [
+        "panel-research-engine",
+        "panel-research-reports"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -1484,12 +2465,21 @@
       "title": "Панель: Отчёты исследований",
       "section": "panels",
       "status": "verified",
-      "tags": ["панель", "исследование", "отчёты", "research", "инструкция"],
+      "tags": [
+        "панель",
+        "исследование",
+        "отчёты",
+        "research",
+        "инструкция"
+      ],
       "sources": [
         "src/components/ResearchReportPanel.tsx",
         "src/kernel/services/research-report-service.ts"
       ],
-      "related": ["panel-research-engine", "panel-research-advanced"],
+      "related": [
+        "panel-research-engine",
+        "panel-research-advanced"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -1500,12 +2490,22 @@
       "title": "Панель: Исследования системы дебатов",
       "section": "panels",
       "status": "verified",
-      "tags": ["панель", "исследование", "дебаты", "эксперименты", "инструкция"],
+      "tags": [
+        "панель",
+        "исследование",
+        "дебаты",
+        "эксперименты",
+        "инструкция"
+      ],
       "sources": [
         "src/components/DebateResearch/DebateSystemResearch.tsx",
         "src/components/DebateResearch/"
       ],
-      "related": ["panel-debate-research", "panel-research-engine", "panel-rival-labs"],
+      "related": [
+        "panel-debate-research",
+        "panel-research-engine",
+        "panel-rival-labs"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -1516,12 +2516,22 @@
       "title": "Панель: Генератор гипотез",
       "section": "panels",
       "status": "verified",
-      "tags": ["панель", "гипотезы", "исследование", "проверка", "инструкция"],
+      "tags": [
+        "панель",
+        "гипотезы",
+        "исследование",
+        "проверка",
+        "инструкция"
+      ],
       "sources": [
         "src/components/DebateResearch/HypothesisGenerator.tsx",
         "src/kernel/services/hypothesis-service.ts"
       ],
-      "related": ["panel-research-engine", "panel-debate-research", "panel-synthesis"],
+      "related": [
+        "panel-research-engine",
+        "panel-debate-research",
+        "panel-synthesis"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -1532,11 +2542,26 @@
       "title": "Панель: Лаборатория соперников (Rival Labs)",
       "section": "panels",
       "status": "verified",
-      "tags": ["панель", "rival", "соперники", "parity", "A/B", "инструкция"],
-      "sources": ["src/components/RivalLabs/RivalLabsPanel.tsx", "src/components/RivalLabs/"],
-      "related": ["panel-rivals-catalog", "panel-debate-system-research"],
+      "tags": [
+        "панель",
+        "rival",
+        "соперники",
+        "parity",
+        "A/B",
+        "инструкция"
+      ],
+      "sources": [
+        "src/components/RivalLabs/RivalLabsPanel.tsx",
+        "src/components/RivalLabs/"
+      ],
+      "related": [
+        "panel-rivals-catalog",
+        "panel-debate-system-research"
+      ],
       "reviewed": null,
-      "tests": ["src/components/RivalLabs/RivalLabsPanel.test.tsx"]
+      "tests": [
+        "src/components/RivalLabs/RivalLabsPanel.test.tsx"
+      ]
     },
     {
       "id": "wiki:panel-rivals-catalog",
@@ -1545,9 +2570,21 @@
       "title": "Панель: Каталог Rivals-проектов",
       "section": "panels",
       "status": "verified",
-      "tags": ["панель", "rivals", "каталог", "parity", "справка"],
-      "sources": ["src/components/RivalsCatalogPanel.tsx", "src/data/rivals-catalog.ts"],
-      "related": ["panel-rival-labs", "panel-debate-system-research"],
+      "tags": [
+        "панель",
+        "rivals",
+        "каталог",
+        "parity",
+        "справка"
+      ],
+      "sources": [
+        "src/components/RivalsCatalogPanel.tsx",
+        "src/data/rivals-catalog.ts"
+      ],
+      "related": [
+        "panel-rival-labs",
+        "panel-debate-system-research"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -1558,8 +2595,18 @@
       "title": "Режимы работы с информацией",
       "section": "guide",
       "status": "verified",
-      "tags": ["руководство", "режимы", "знания", "исследование", "аудит", "шпаргалка"],
-      "sources": ["src/components/DashboardPanel/WelcomePanel.tsx", "src/components/"],
+      "tags": [
+        "руководство",
+        "режимы",
+        "знания",
+        "исследование",
+        "аудит",
+        "шпаргалка"
+      ],
+      "sources": [
+        "src/components/DashboardPanel/WelcomePanel.tsx",
+        "src/components/"
+      ],
       "related": [
         "idea-path",
         "scenario-map",
@@ -1577,12 +2624,20 @@
       "title": "Дебаты: стратегии — обзор",
       "section": "debates",
       "status": "verified",
-      "tags": ["дебаты", "стратегии", "обзор", "как выбрать"],
+      "tags": [
+        "дебаты",
+        "стратегии",
+        "обзор",
+        "как выбрать"
+      ],
       "sources": [
         "src/kernel/services/debate-runtime/debate-strategy-definitions.ts",
         "src/components/DebatePanel/StrategySelector.tsx"
       ],
-      "related": ["debate-strategies-cheatsheet", "debates"],
+      "related": [
+        "debate-strategies-cheatsheet",
+        "debates"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -1593,9 +2648,19 @@
       "title": "Дебаты: шпаргалка стратегий (33)",
       "section": "debates",
       "status": "verified",
-      "tags": ["дебаты", "стратегии", "шпаргалка", "схемы"],
-      "sources": ["src/kernel/services/debate-runtime/debate-strategy-definitions.ts"],
-      "related": ["debate-strategies", "debates"],
+      "tags": [
+        "дебаты",
+        "стратегии",
+        "шпаргалка",
+        "схемы"
+      ],
+      "sources": [
+        "src/kernel/services/debate-runtime/debate-strategy-definitions.ts"
+      ],
+      "related": [
+        "debate-strategies",
+        "debates"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -1606,9 +2671,22 @@
       "title": "Memory Center: аудит памяти системы",
       "section": "memory",
       "status": "verified",
-      "tags": ["память", "аудит", "memory center", "хранилища", "инвентаризация"],
-      "sources": ["src/kernel/services/dexie-schema.ts"],
-      "related": ["memory", "memory-audit", "panel-knowledge", "panel-lenses-crystals"],
+      "tags": [
+        "память",
+        "аудит",
+        "memory center",
+        "хранилища",
+        "инвентаризация"
+      ],
+      "sources": [
+        "src/kernel/services/dexie-schema.ts"
+      ],
+      "related": [
+        "memory",
+        "memory-audit",
+        "panel-knowledge",
+        "panel-lenses-crystals"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -1619,14 +2697,25 @@
       "title": "Панель: Исключения (вето)",
       "section": "panels",
       "status": "verified",
-      "tags": ["панель", "исключения", "вето", "запреты", "инструкция"],
+      "tags": [
+        "панель",
+        "исключения",
+        "вето",
+        "запреты",
+        "инструкция"
+      ],
       "sources": [
         "src/components/ExceptionsPanel/ExceptionsPanel.tsx",
         "src/components/ExceptionsPanel/exception-store.ts",
         "src/components/ExceptionsPanel/exception-veto.ts",
         "src/kernel/types/exception-template.ts"
       ],
-      "related": ["panel-lenses", "panel-lenses-crystals", "panel-assistant", "panel-chat"],
+      "related": [
+        "panel-lenses",
+        "panel-lenses-crystals",
+        "panel-assistant",
+        "panel-chat"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -1637,7 +2726,14 @@
       "title": "Панель: Линзы",
       "section": "panels",
       "status": "verified",
-      "tags": ["панель", "линзы", "анализ", "перспектива", "стек", "инструкция"],
+      "tags": [
+        "панель",
+        "линзы",
+        "анализ",
+        "перспектива",
+        "стек",
+        "инструкция"
+      ],
       "sources": [
         "src/components/LensesPanel/LensesPanel.tsx",
         "src/kernel/services/lens-engine/lens-engine-service.ts",
@@ -1663,13 +2759,23 @@
       "title": "Панели: Линзы и кристаллы",
       "section": "panels",
       "status": "verified",
-      "tags": ["панель", "линзы", "кристаллы", "знания", "инструкция"],
+      "tags": [
+        "панель",
+        "линзы",
+        "кристаллы",
+        "знания",
+        "инструкция"
+      ],
       "sources": [
         "src/i18n/translations/en/analytics.ts",
         "src/components/LensesPanel/LensesPanel.tsx",
         "src/components/CrystalVaultPanel/CrystalVaultPanel.tsx"
       ],
-      "related": ["memory", "panel-synthesis", "panel-debate-toolkit"],
+      "related": [
+        "memory",
+        "panel-synthesis",
+        "panel-debate-toolkit"
+      ],
       "reviewed": null,
       "tests": [
         "src/components/LensesPanel/LensesPanel.test.tsx",
@@ -1683,9 +2789,22 @@
       "title": "Панель: Датасеты оценки",
       "section": "panels",
       "status": "verified",
-      "tags": ["панель", "eval", "датасеты", "оценка", "инструкция"],
-      "sources": ["src/i18n/translations/en/analytics.ts", "src/components/EvalDatasetPanel/"],
-      "related": ["panel-quality-impact", "panel-debate-quality", "dev-component-catalog"],
+      "tags": [
+        "панель",
+        "eval",
+        "датасеты",
+        "оценка",
+        "инструкция"
+      ],
+      "sources": [
+        "src/i18n/translations/en/analytics.ts",
+        "src/components/EvalDatasetPanel/"
+      ],
+      "related": [
+        "panel-quality-impact",
+        "panel-debate-quality",
+        "dev-component-catalog"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -1696,12 +2815,23 @@
       "title": "Панель: Влияние техник",
       "section": "panels",
       "status": "verified",
-      "tags": ["панель", "качество", "эксперименты", "экспорт", "инструкция"],
+      "tags": [
+        "панель",
+        "качество",
+        "эксперименты",
+        "экспорт",
+        "инструкция"
+      ],
       "sources": [
         "src/i18n/translations/en/quality.ts",
         "src/components/QualityImpactDashboard/QualityImpactDashboardPanel"
       ],
-      "related": ["panel-eval", "panel-debate-quality", "panel-analytics", "zone-12"],
+      "related": [
+        "panel-eval",
+        "panel-debate-quality",
+        "panel-analytics",
+        "zone-12"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -1712,14 +2842,25 @@
       "title": "Панель: Группы ключей",
       "section": "panels",
       "status": "verified",
-      "tags": ["панель", "группы", "ключи", "инструкция"],
+      "tags": [
+        "панель",
+        "группы",
+        "ключи",
+        "инструкция"
+      ],
       "sources": [
         "src/i18n/translations/en/providers.ts",
         "src/components/GroupsPanel/GroupsPanel.tsx"
       ],
-      "related": ["panel-pools", "panel-rotations", "panel-providers"],
+      "related": [
+        "panel-pools",
+        "panel-rotations",
+        "panel-providers"
+      ],
       "reviewed": null,
-      "tests": ["src/components/GroupsPanel/GroupsPanel.test.tsx"]
+      "tests": [
+        "src/components/GroupsPanel/GroupsPanel.test.tsx"
+      ]
     },
     {
       "id": "wiki:panel-guardians",
@@ -1728,9 +2869,21 @@
       "title": "Панель: Хранители (Guardians)",
       "section": "panels",
       "status": "verified",
-      "tags": ["панель", "хранители", "политики", "инструкция"],
-      "sources": ["src/i18n/translations/en/analytics.ts", "src/components/GuardiansPanel/"],
-      "related": ["panel-providers", "panel-routing", "panel-governance"],
+      "tags": [
+        "панель",
+        "хранители",
+        "политики",
+        "инструкция"
+      ],
+      "sources": [
+        "src/i18n/translations/en/analytics.ts",
+        "src/components/GuardiansPanel/"
+      ],
+      "related": [
+        "panel-providers",
+        "panel-routing",
+        "panel-governance"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -1741,12 +2894,21 @@
       "title": "Панель: Дворец памяти",
       "section": "panels",
       "status": "verified",
-      "tags": ["панель", "память", "дворец", "инструкция"],
+      "tags": [
+        "панель",
+        "память",
+        "дворец",
+        "инструкция"
+      ],
       "sources": [
         "src/i18n/translations/en/memory.ts",
         "src/components/MemoryPanel/MemoryPalacePanel.tsx"
       ],
-      "related": ["memory", "panel-knowledge", "panel-lenses-crystals"],
+      "related": [
+        "memory",
+        "panel-knowledge",
+        "panel-lenses-crystals"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -1757,9 +2919,21 @@
       "title": "Панель: Генератор тем",
       "section": "panels",
       "status": "verified",
-      "tags": ["панель", "темы", "генератор", "инструкция"],
-      "sources": ["src/i18n/translations/en/debate.ts", "src/components/TopicSuggesterPanel/"],
-      "related": ["debates", "panel-debate-templates", "dev-component-catalog"],
+      "tags": [
+        "панель",
+        "темы",
+        "генератор",
+        "инструкция"
+      ],
+      "sources": [
+        "src/i18n/translations/en/debate.ts",
+        "src/components/TopicSuggesterPanel/"
+      ],
+      "related": [
+        "debates",
+        "panel-debate-templates",
+        "dev-component-catalog"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -1770,14 +2944,25 @@
       "title": "Панель: Генератор знаний",
       "section": "panels",
       "status": "verified",
-      "tags": ["панель", "генератор", "знания", "инструкция"],
+      "tags": [
+        "панель",
+        "генератор",
+        "знания",
+        "инструкция"
+      ],
       "sources": [
         "src/i18n/translations/en/analytics.ts",
         "src/components/KnowledgeGenPanel/KnowledgeGenPanel.tsx"
       ],
-      "related": ["panel-knowledge", "panel-lenses-crystals", "memory"],
+      "related": [
+        "panel-knowledge",
+        "panel-lenses-crystals",
+        "memory"
+      ],
       "reviewed": null,
-      "tests": ["src/components/KnowledgeGenPanel/KnowledgeGenPanel.test.tsx"]
+      "tests": [
+        "src/components/KnowledgeGenPanel/KnowledgeGenPanel.test.tsx"
+      ]
     },
     {
       "id": "wiki:panel-providers-extra",
@@ -1786,13 +2971,22 @@
       "title": "Панели: Провайдерские дополнения",
       "section": "panels",
       "status": "verified",
-      "tags": ["панель", "провайдеры", "маркетплейс", "инструкция"],
+      "tags": [
+        "панель",
+        "провайдеры",
+        "маркетплейс",
+        "инструкция"
+      ],
       "sources": [
         "src/i18n/translations/en/providers.ts",
         "src/components/ProviderDashboard",
         "src/components/ProviderMarketplace"
       ],
-      "related": ["panel-providers", "panel-routing", "panel-pools"],
+      "related": [
+        "panel-providers",
+        "panel-routing",
+        "panel-pools"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -1803,13 +2997,23 @@
       "title": "Панели: Вклад и сообщество",
       "section": "panels",
       "status": "verified",
-      "tags": ["панель", "сообщество", "вклад", "лидерборд", "инструкция"],
+      "tags": [
+        "панель",
+        "сообщество",
+        "вклад",
+        "лидерборд",
+        "инструкция"
+      ],
       "sources": [
         "src/i18n/translations/en/dashboard.ts",
         "src/components/ContributionGraphPanel/",
         "src/components/SocialLeaderboardPanel"
       ],
-      "related": ["agents", "panel-scheduler", "dev-component-catalog"],
+      "related": [
+        "agents",
+        "panel-scheduler",
+        "dev-component-catalog"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -1820,9 +3024,22 @@
       "title": "Панель: Бюджеты компании (gateway)",
       "section": "panels",
       "status": "verified",
-      "tags": ["панель", "бюджет", "gateway", "стоимость", "инструкция"],
-      "sources": ["src/i18n/translations/en/nav.ts", "src/components/CostsPanel/"],
-      "related": ["panel-budget", "panel-gateway", "panel-providers"],
+      "tags": [
+        "панель",
+        "бюджет",
+        "gateway",
+        "стоимость",
+        "инструкция"
+      ],
+      "sources": [
+        "src/i18n/translations/en/nav.ts",
+        "src/components/CostsPanel/"
+      ],
+      "related": [
+        "panel-budget",
+        "panel-gateway",
+        "panel-providers"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -1833,9 +3050,21 @@
       "title": "Панель: Заметки к ключам",
       "section": "panels",
       "status": "verified",
-      "tags": ["панель", "ключи", "заметки", "инструкция"],
-      "sources": ["src/i18n/translations/en/memory.ts", "src/components/KeyNotesPanel/"],
-      "related": ["panel-providers", "panel-pools", "dev-component-catalog"],
+      "tags": [
+        "панель",
+        "ключи",
+        "заметки",
+        "инструкция"
+      ],
+      "sources": [
+        "src/i18n/translations/en/memory.ts",
+        "src/components/KeyNotesPanel/"
+      ],
+      "related": [
+        "panel-providers",
+        "panel-pools",
+        "dev-component-catalog"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -1846,9 +3075,23 @@
       "title": "Панели: Исследования системы дебатов",
       "section": "panels",
       "status": "documented",
-      "tags": ["панель", "дебаты", "исследование", "эксперименты", "инструкция"],
-      "sources": ["src/i18n/translations/en/debate.ts", "src/components/DebateResearch/"],
-      "related": ["debates", "panel-debate-analysis", "panel-eval-extra", "zone-17"],
+      "tags": [
+        "панель",
+        "дебаты",
+        "исследование",
+        "эксперименты",
+        "инструкция"
+      ],
+      "sources": [
+        "src/i18n/translations/en/debate.ts",
+        "src/components/DebateResearch/"
+      ],
+      "related": [
+        "debates",
+        "panel-debate-analysis",
+        "panel-eval-extra",
+        "zone-17"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -1859,13 +3102,23 @@
       "title": "Панели: Метрики-анализаторы",
       "section": "panels",
       "status": "documented",
-      "tags": ["панель", "анализ", "оценка", "метрики", "инструкция"],
+      "tags": [
+        "панель",
+        "анализ",
+        "оценка",
+        "метрики",
+        "инструкция"
+      ],
       "sources": [
         "src/i18n/translations/en/nav.ts",
         "src/components/BlindEvalPanel/",
         "src/components/CalibrationPanel/"
       ],
-      "related": ["panel-debate-quality", "panel-debate-toolkit", "panel-analytics"],
+      "related": [
+        "panel-debate-quality",
+        "panel-debate-toolkit",
+        "panel-analytics"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -1876,15 +3129,26 @@
       "title": "Панели: Планирование и миссии",
       "section": "panels",
       "status": "documented",
-      "tags": ["панель", "планирование", "миссия", "инструкция"],
+      "tags": [
+        "панель",
+        "планирование",
+        "миссия",
+        "инструкция"
+      ],
       "sources": [
         "src/i18n/translations/en/nav.ts",
         "src/components/PlannerPanel/",
         "src/components/MetaAgentPanel/MetaAgentPanel.tsx"
       ],
-      "related": ["agents", "panel-autonomy", "panel-simulation"],
+      "related": [
+        "agents",
+        "panel-autonomy",
+        "panel-simulation"
+      ],
       "reviewed": null,
-      "tests": ["src/components/MetaAgentPanel/MetaAgentPanel.test.tsx"]
+      "tests": [
+        "src/components/MetaAgentPanel/MetaAgentPanel.test.tsx"
+      ]
     },
     {
       "id": "wiki:panel-simulation",
@@ -1893,13 +3157,23 @@
       "title": "Панели: Симуляция и контрфакты",
       "section": "panels",
       "status": "documented",
-      "tags": ["панель", "симуляция", "контрфакт", "инструкция"],
+      "tags": [
+        "панель",
+        "симуляция",
+        "контрфакт",
+        "инструкция"
+      ],
       "sources": [
         "src/i18n/translations/en/nav.ts",
         "src/components/SimulationPanel/SimulationPanel.tsx",
         "src/components/WhatIfPanel/WhatIfPanel"
       ],
-      "related": ["panel-planning", "panel-shadow", "panel-observability", "zone-19"],
+      "related": [
+        "panel-planning",
+        "panel-shadow",
+        "panel-observability",
+        "zone-19"
+      ],
       "reviewed": null,
       "tests": [
         "src/components/SimulationPanel/SimulationPanel.test.tsx",
@@ -1913,15 +3187,26 @@
       "title": "Панели: Теневые прогоны и стратегия",
       "section": "panels",
       "status": "documented",
-      "tags": ["панель", "shadow", "стратегия", "инструкция"],
+      "tags": [
+        "панель",
+        "shadow",
+        "стратегия",
+        "инструкция"
+      ],
       "sources": [
         "src/i18n/translations/en/nav.ts",
         "src/components/ShadowPanel/ShadowPanel.tsx",
         "src/components/ShadowOpponentPanel/ShadowOpponentPanel.tsx"
       ],
-      "related": ["debates", "panel-simulation", "panel-debate-analysis"],
+      "related": [
+        "debates",
+        "panel-simulation",
+        "panel-debate-analysis"
+      ],
       "reviewed": null,
-      "tests": ["src/components/ShadowOpponentPanel/ShadowOpponentPanel.test.tsx"]
+      "tests": [
+        "src/components/ShadowOpponentPanel/ShadowOpponentPanel.test.tsx"
+      ]
     },
     {
       "id": "wiki:panel-agents-market",
@@ -1930,13 +3215,23 @@
       "title": "Панели: Агенты — маркетплейс и протокол",
       "section": "panels",
       "status": "documented",
-      "tags": ["панель", "агенты", "маркетплейс", "протокол", "инструкция"],
+      "tags": [
+        "панель",
+        "агенты",
+        "маркетплейс",
+        "протокол",
+        "инструкция"
+      ],
       "sources": [
         "src/i18n/translations/en/nav.ts",
         "src/components/AgentMarketplacePanel",
         "src/components/AgentComparisonPanel"
       ],
-      "related": ["agents", "panel-fleet", "panel-persona"],
+      "related": [
+        "agents",
+        "panel-fleet",
+        "panel-persona"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -1947,13 +3242,22 @@
       "title": "Панели: Федеративная память и перенос",
       "section": "panels",
       "status": "documented",
-      "tags": ["панель", "память", "экспорт", "инструкция"],
+      "tags": [
+        "панель",
+        "память",
+        "экспорт",
+        "инструкция"
+      ],
       "sources": [
         "src/i18n/translations/en/memory.ts",
         "src/components/FederatedMemoryPanel",
         "src/components/MemoryTransferPanel"
       ],
-      "related": ["memory", "panel-memory-palace", "panel-knowledge"],
+      "related": [
+        "memory",
+        "panel-memory-palace",
+        "panel-knowledge"
+      ],
       "reviewed": null,
       "tests": [
         "src/components/FederatedMemoryPanel.test.tsx",
@@ -1967,15 +3271,28 @@
       "title": "Панели: Файлы, редакторы, обучение, голос",
       "section": "panels",
       "status": "documented",
-      "tags": ["панель", "файлы", "редакторы", "обучение", "голос", "инструкция"],
+      "tags": [
+        "панель",
+        "файлы",
+        "редакторы",
+        "обучение",
+        "голос",
+        "инструкция"
+      ],
       "sources": [
         "src/i18n/translations/en/nav.ts",
         "src/components/WorkspacePanel/WorkspacePanel.tsx",
         "src/components/Editors/EditorsPanel"
       ],
-      "related": ["panel-chat", "panel-prompt-library", "dev-component-catalog"],
+      "related": [
+        "panel-chat",
+        "panel-prompt-library",
+        "dev-component-catalog"
+      ],
       "reviewed": null,
-      "tests": ["src/components/WorkspacePanel/WorkspacePanel.test.tsx"]
+      "tests": [
+        "src/components/WorkspacePanel/WorkspacePanel.test.tsx"
+      ]
     },
     {
       "id": "wiki:panel-history-audit",
@@ -1984,14 +3301,25 @@
       "title": "Панели: История, аудит, версии, деплой",
       "section": "panels",
       "status": "documented",
-      "tags": ["панель", "история", "аудит", "версии", "деплой", "инструкция"],
+      "tags": [
+        "панель",
+        "история",
+        "аудит",
+        "версии",
+        "деплой",
+        "инструкция"
+      ],
       "sources": [
         "src/i18n/translations/en/nav.ts",
         "src/components/AuditLogView",
         "src/components/TimeMachinePanel",
         "src/components/ConfigHistoryView"
       ],
-      "related": ["panel-observability", "panel-governance", "panel-settings"],
+      "related": [
+        "panel-observability",
+        "panel-governance",
+        "panel-settings"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -2002,13 +3330,22 @@
       "title": "Панели: Инфраструктура и платформа",
       "section": "panels",
       "status": "documented",
-      "tags": ["панель", "инфраструктура", "плагины", "инструкция"],
+      "tags": [
+        "панель",
+        "инфраструктура",
+        "плагины",
+        "инструкция"
+      ],
       "sources": [
         "src/i18n/translations/en/nav.ts",
         "src/components/ServiceRegistryPanel/ServiceRegistryPanel.tsx",
         "src/components/PluginSdkPanel"
       ],
-      "related": ["panel-observability", "dev-service-map", "dev-component-catalog"],
+      "related": [
+        "panel-observability",
+        "dev-service-map",
+        "dev-component-catalog"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -2019,15 +3356,26 @@
       "title": "Панели: Исследование (расширенное и Gemini)",
       "section": "panels",
       "status": "documented",
-      "tags": ["панель", "исследование", "gemini", "инструкция"],
+      "tags": [
+        "панель",
+        "исследование",
+        "gemini",
+        "инструкция"
+      ],
       "sources": [
         "src/i18n/translations/en/nav.ts",
         "src/components/ResearchPanel/ResearchEngineAdvancedPanel",
         "src/components/GeminiResearch/GeminiResearchPanel"
       ],
-      "related": ["panel-research", "panel-topics", "dev-component-catalog"],
+      "related": [
+        "panel-research",
+        "panel-topics",
+        "dev-component-catalog"
+      ],
       "reviewed": null,
-      "tests": ["src/components/GeminiResearch/GeminiResearchPanel.test.tsx"]
+      "tests": [
+        "src/components/GeminiResearch/GeminiResearchPanel.test.tsx"
+      ]
     },
     {
       "id": "wiki:panel-provenance-junctions",
@@ -2036,14 +3384,24 @@
       "title": "Панели: Связи, происхождение, очередь",
       "section": "panels",
       "status": "verified",
-      "tags": ["панель", "связи", "происхождение", "очередь", "инструкция"],
+      "tags": [
+        "панель",
+        "связи",
+        "происхождение",
+        "очередь",
+        "инструкция"
+      ],
       "sources": [
         "src/i18n/translations/en/analytics.ts",
         "src/components/JunctionPanel/JunctionPanel.tsx",
         "src/components/ProvenancePanel/ProvenancePanel.tsx",
         "src/components/InsightBusPanel/InsightBusPanel.tsx"
       ],
-      "related": ["panel-lenses-crystals", "panel-knowledge-generator", "panel-tasks"],
+      "related": [
+        "panel-lenses-crystals",
+        "panel-knowledge-generator",
+        "panel-tasks"
+      ],
       "reviewed": null,
       "tests": [
         "src/components/JunctionPanel/JunctionPanel.test.tsx",
@@ -2058,14 +3416,25 @@
       "title": "Панель: Wiki",
       "section": "panels",
       "status": "verified",
-      "tags": ["панель", "wiki", "документация", "инструкция"],
+      "tags": [
+        "панель",
+        "wiki",
+        "документация",
+        "инструкция"
+      ],
       "sources": [
         "src/components/WikiPanel/WikiPanel.tsx",
         "src/components/WikiPanel/wiki-articles.ts"
       ],
-      "related": ["for-developers", "dev-overview", "dev-component-catalog"],
+      "related": [
+        "for-developers",
+        "dev-overview",
+        "dev-component-catalog"
+      ],
       "reviewed": null,
-      "tests": ["src/components/WikiPanel/WikiPanel.test.tsx"]
+      "tests": [
+        "src/components/WikiPanel/WikiPanel.test.tsx"
+      ]
     },
     {
       "id": "wiki:agents",
@@ -2074,14 +3443,23 @@
       "title": "Агенты: устройство и управление",
       "section": "agents",
       "status": "documented",
-      "tags": ["агенты", "персоны", "политики"],
+      "tags": [
+        "агенты",
+        "персоны",
+        "политики"
+      ],
       "sources": [
         "docs/audits/agent-team-audit-memory-history-management.md",
         "src/kernel/agents/registry.ts",
         "src/kernel/services/agent-service.ts",
         "src/kernel/services/permissions/permission-service.ts"
       ],
-      "related": ["panel-agent-tasks", "providers", "execution-trail", "diagnostics"],
+      "related": [
+        "panel-agent-tasks",
+        "providers",
+        "execution-trail",
+        "diagnostics"
+      ],
       "reviewed": null,
       "tests": [
         "src/kernel/agents/registry.test.ts",
@@ -2096,14 +3474,24 @@
       "title": "Провайдеры и маршрутизация",
       "section": "providers",
       "status": "verified",
-      "tags": ["модели", "ключи", "роутер"],
+      "tags": [
+        "модели",
+        "ключи",
+        "роутер"
+      ],
       "sources": [
         "src/kernel/services/provider-router.ts",
         "src/llm/anthropic/anthropic-adapter.ts"
       ],
-      "related": ["panel-providers", "panel-chat", "diagnostics"],
+      "related": [
+        "panel-providers",
+        "panel-chat",
+        "diagnostics"
+      ],
       "reviewed": null,
-      "tests": ["src/llm/anthropic/anthropic-adapter.test.ts"]
+      "tests": [
+        "src/llm/anthropic/anthropic-adapter.test.ts"
+      ]
     },
     {
       "id": "wiki:debates",
@@ -2112,12 +3500,19 @@
       "title": "Дебаты: режимы и механика",
       "section": "debates",
       "status": "verified",
-      "tags": ["дебаты", "стратегии", "проверки"],
+      "tags": [
+        "дебаты",
+        "стратегии",
+        "проверки"
+      ],
       "sources": [
         "src/kernel/services/debate-runtime/debate-strategy-definitions.ts",
         "src/kernel/services/debate-runtime/"
       ],
-      "related": ["memory", "providers"],
+      "related": [
+        "memory",
+        "providers"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -2128,14 +3523,24 @@
       "title": "Знания и память",
       "section": "memory",
       "status": "verified",
-      "tags": ["память", "RAG", "персоны"],
+      "tags": [
+        "память",
+        "RAG",
+        "персоны"
+      ],
       "sources": [
         "src/kernel/services/memory-engine.ts",
         "src/kernel/services/memory-orchestrator.ts",
         "src/kernel/services/rag/hybrid-retrieval-service.ts",
         "docs/audits/agent-team-audit-memory-history-management.md"
       ],
-      "related": ["comp-memory", "execution-trail", "debates", "architecture", "memory-audit"],
+      "related": [
+        "comp-memory",
+        "execution-trail",
+        "debates",
+        "architecture",
+        "memory-audit"
+      ],
       "reviewed": null,
       "tests": [
         "src/kernel/services/memory-engine.test.ts",
@@ -2150,13 +3555,22 @@
       "title": "След исполнения: журнал, раны, зомби",
       "section": "memory",
       "status": "verified",
-      "tags": ["история", "P1", "P2", "инструменты"],
+      "tags": [
+        "история",
+        "P1",
+        "P2",
+        "инструменты"
+      ],
       "sources": [
         "src/kernel/services/tool-executor.ts",
         "src/kernel/services/agent-project-runtime.ts",
         "docs/audits/agent-team-audit-memory-history-management.md"
       ],
-      "related": ["agents", "panel-agent-tasks", "diagnostics"],
+      "related": [
+        "agents",
+        "panel-agent-tasks",
+        "diagnostics"
+      ],
       "reviewed": null,
       "tests": [
         "src/kernel/services/tool-executor.test.ts",
@@ -2170,9 +3584,21 @@
       "title": "Архитектура и связи",
       "section": "architecture",
       "status": "documented",
-      "tags": ["слои", "шина", "DI"],
-      "sources": ["docs/SYSTEM_MANIFEST_RU.md", "README_EN.md"],
-      "related": ["memory", "execution-trail", "for-developers", "diagnostics"],
+      "tags": [
+        "слои",
+        "шина",
+        "DI"
+      ],
+      "sources": [
+        "docs/SYSTEM_MANIFEST_RU.md",
+        "README_EN.md"
+      ],
+      "related": [
+        "memory",
+        "execution-trail",
+        "for-developers",
+        "diagnostics"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -2183,9 +3609,19 @@
       "title": "Диагностика и известные проблемы",
       "section": "diagnostics",
       "status": "documented",
-      "tags": ["мониторинг", "проблемы", "ограничения"],
-      "sources": ["docs/audits/agent-team-audit-memory-history-management.md"],
-      "related": ["providers", "execution-trail", "panel-governance"],
+      "tags": [
+        "мониторинг",
+        "проблемы",
+        "ограничения"
+      ],
+      "sources": [
+        "docs/audits/agent-team-audit-memory-history-management.md"
+      ],
+      "related": [
+        "providers",
+        "execution-trail",
+        "panel-governance"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -2196,9 +3632,18 @@
       "title": "Планы и направления",
       "section": "notes",
       "status": "needs-check",
-      "tags": ["планы", "P5"],
-      "sources": ["docs/roadmap/README.md"],
-      "related": ["agents", "execution-trail", "memory"],
+      "tags": [
+        "планы",
+        "P5"
+      ],
+      "sources": [
+        "docs/roadmap/README.md"
+      ],
+      "related": [
+        "agents",
+        "execution-trail",
+        "memory"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -2209,9 +3654,22 @@
       "title": "Разработчикам: структура и ворота",
       "section": "dev",
       "status": "verified",
-      "tags": ["код", "контракты", "CI"],
-      "sources": ["README_EN.md", ".github/workflows/ci.yml", "package.json"],
-      "related": ["dev-overview", "dev-boot", "dev-ci", "architecture"],
+      "tags": [
+        "код",
+        "контракты",
+        "CI"
+      ],
+      "sources": [
+        "README_EN.md",
+        ".github/workflows/ci.yml",
+        "package.json"
+      ],
+      "related": [
+        "dev-overview",
+        "dev-boot",
+        "dev-ci",
+        "architecture"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -2222,8 +3680,17 @@
       "title": "Компоненты и сервисы: как читать этот раздел",
       "section": "components",
       "status": "verified",
-      "tags": ["компоненты", "сервисы", "ядро", "навигация"],
-      "sources": ["src/kernel/services/", "src/kernel/contracts/", "docs/SERVICES_RU.md"],
+      "tags": [
+        "компоненты",
+        "сервисы",
+        "ядро",
+        "навигация"
+      ],
+      "sources": [
+        "src/kernel/services/",
+        "src/kernel/contracts/",
+        "docs/SERVICES_RU.md"
+      ],
       "related": [
         "dev-overview",
         "dev-services",
@@ -2241,7 +3708,12 @@
       "title": "Компонент: запуск ядра (bootstrap, container, runtime)",
       "section": "components",
       "status": "verified",
-      "tags": ["компоненты", "ядро", "bootstrap", "runtime"],
+      "tags": [
+        "компоненты",
+        "ядро",
+        "bootstrap",
+        "runtime"
+      ],
       "sources": [
         "src/kernel/bootstrap.ts",
         "src/kernel/bootstrap-phases.ts",
@@ -2249,7 +3721,13 @@
         "src/kernel/runtime.ts",
         "src/kernel/instances/index.ts"
       ],
-      "related": ["comp-di-container", "comp-event-bus", "dev-boot", "dev-services", "dev-layout"],
+      "related": [
+        "comp-di-container",
+        "comp-event-bus",
+        "dev-boot",
+        "dev-services",
+        "dev-layout"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -2260,7 +3738,12 @@
       "title": "Компонент: DI-контейнер и lazyService",
       "section": "components",
       "status": "verified",
-      "tags": ["компоненты", "DI", "container", "сервисы"],
+      "tags": [
+        "компоненты",
+        "DI",
+        "container",
+        "сервисы"
+      ],
       "sources": [
         "src/kernel/container.ts",
         "src/kernel/container.test.ts",
@@ -2274,7 +3757,9 @@
         "dev-conventions"
       ],
       "reviewed": null,
-      "tests": ["src/kernel/container.test.ts"]
+      "tests": [
+        "src/kernel/container.test.ts"
+      ]
     },
     {
       "id": "wiki:comp-event-bus",
@@ -2283,7 +3768,12 @@
       "title": "Компонент: шина событий (EventBus)",
       "section": "components",
       "status": "verified",
-      "tags": ["компоненты", "события", "шина", "event-bus"],
+      "tags": [
+        "компоненты",
+        "события",
+        "шина",
+        "event-bus"
+      ],
       "sources": [
         "src/kernel/events/event-bus.ts",
         "src/kernel/events/event-registry.ts",
@@ -2299,7 +3789,10 @@
         "comp-transactions"
       ],
       "reviewed": null,
-      "tests": ["src/kernel/events/event-bus.test.ts", "src/kernel/events/event-registry.test.ts"]
+      "tests": [
+        "src/kernel/events/event-bus.test.ts",
+        "src/kernel/events/event-registry.test.ts"
+      ]
     },
     {
       "id": "wiki:comp-transactions",
@@ -2308,15 +3801,26 @@
       "title": "Компонент: транзакции состояния",
       "section": "components",
       "status": "verified",
-      "tags": ["компоненты", "транзакции", "атомарность"],
+      "tags": [
+        "компоненты",
+        "транзакции",
+        "атомарность"
+      ],
       "sources": [
         "src/kernel/services/transaction.ts",
         "src/kernel/contracts/transaction.ts",
         "src/kernel/utils/with-transaction.ts"
       ],
-      "related": ["comp-kernel-boot", "comp-event-bus", "comp-persistence", "comp-config"],
+      "related": [
+        "comp-kernel-boot",
+        "comp-event-bus",
+        "comp-persistence",
+        "comp-config"
+      ],
       "reviewed": null,
-      "tests": ["src/kernel/utils/with-transaction.test.ts"]
+      "tests": [
+        "src/kernel/utils/with-transaction.test.ts"
+      ]
     },
     {
       "id": "wiki:comp-config",
@@ -2325,7 +3829,12 @@
       "title": "Компонент: конфигурация и настройки",
       "section": "components",
       "status": "verified",
-      "tags": ["компоненты", "конфигурация", "настройки", "feature-flags"],
+      "tags": [
+        "компоненты",
+        "конфигурация",
+        "настройки",
+        "feature-flags"
+      ],
       "sources": [
         "src/kernel/services/config-registry.ts",
         "src/kernel/services/config-mutations.ts",
@@ -2333,7 +3842,12 @@
         "src/kernel/services/config-history.ts",
         "src/kernel/services/settings-service.ts"
       ],
-      "related": ["comp-persistence", "comp-kernel-boot", "comp-transactions", "panel-settings"],
+      "related": [
+        "comp-persistence",
+        "comp-kernel-boot",
+        "comp-transactions",
+        "panel-settings"
+      ],
       "reviewed": null,
       "tests": [
         "src/kernel/services/config-registry.test.ts",
@@ -2348,7 +3862,12 @@
       "title": "Компонент: персистентность (Dexie и storage-адаптеры)",
       "section": "components",
       "status": "verified",
-      "tags": ["компоненты", "хранилище", "Dexie", "IndexedDB"],
+      "tags": [
+        "компоненты",
+        "хранилище",
+        "Dexie",
+        "IndexedDB"
+      ],
       "sources": [
         "src/kernel/services/database-service.ts",
         "src/kernel/services/dexie-schema.ts",
@@ -2373,13 +3892,22 @@
       "title": "Компонент: шифрование at-rest (SecurityService)",
       "section": "components",
       "status": "verified",
-      "tags": ["компоненты", "безопасность", "шифрование", "AES-GCM"],
+      "tags": [
+        "компоненты",
+        "безопасность",
+        "шифрование",
+        "AES-GCM"
+      ],
       "sources": [
         "src/kernel/security.ts",
         "src/kernel/security.test.ts",
         "src/kernel/services/key-management/key-vault.ts"
       ],
-      "related": ["comp-key-management", "comp-policy-security", "comp-persistence"],
+      "related": [
+        "comp-key-management",
+        "comp-policy-security",
+        "comp-persistence"
+      ],
       "reviewed": null,
       "tests": [
         "src/kernel/security.test.ts",
@@ -2393,7 +3921,12 @@
       "title": "Компонент: управление ключами провайдеров",
       "section": "components",
       "status": "verified",
-      "tags": ["компоненты", "ключи", "провайдеры", "KeyVault"],
+      "tags": [
+        "компоненты",
+        "ключи",
+        "провайдеры",
+        "KeyVault"
+      ],
       "sources": [
         "src/kernel/services/key-management/key-service.ts",
         "src/kernel/services/key-state-store.ts",
@@ -2412,7 +3945,9 @@
         "panel-providers"
       ],
       "reviewed": null,
-      "tests": ["src/kernel/services/virtual-key-service.test.ts"]
+      "tests": [
+        "src/kernel/services/virtual-key-service.test.ts"
+      ]
     },
     {
       "id": "wiki:comp-routing",
@@ -2421,7 +3956,12 @@
       "title": "Компонент: роутинг и провайдеры",
       "section": "components",
       "status": "verified",
-      "tags": ["компоненты", "роутинг", "провайдеры", "стратегии"],
+      "tags": [
+        "компоненты",
+        "роутинг",
+        "провайдеры",
+        "стратегии"
+      ],
       "sources": [
         "src/kernel/services/provider-router.ts",
         "src/kernel/services/router-types.ts",
@@ -2452,7 +3992,12 @@
       "title": "Компонент: бюджет, цены и расход",
       "section": "components",
       "status": "verified",
-      "tags": ["компоненты", "бюджет", "цены", "расход"],
+      "tags": [
+        "компоненты",
+        "бюджет",
+        "цены",
+        "расход"
+      ],
       "sources": [
         "src/kernel/services/budget-service.ts",
         "src/kernel/services/pricing-service.ts",
@@ -2462,7 +4007,12 @@
         "src/llm/catalog/models-catalog.ts",
         "src/llm/catalog/catalog-lookup.ts"
       ],
-      "related": ["comp-routing", "comp-key-management", "panel-budget", "panel-providers"],
+      "related": [
+        "comp-routing",
+        "comp-key-management",
+        "panel-budget",
+        "panel-providers"
+      ],
       "reviewed": null,
       "tests": [
         "src/kernel/services/budget-service.test.ts",
@@ -2479,7 +4029,12 @@
       "title": "Компонент: агенты, роли и навыки",
       "section": "components",
       "status": "verified",
-      "tags": ["компоненты", "агенты", "роли", "навыки"],
+      "tags": [
+        "компоненты",
+        "агенты",
+        "роли",
+        "навыки"
+      ],
       "sources": [
         "src/kernel/services/agent-service.ts",
         "src/kernel/services/role-service.ts",
@@ -2505,7 +4060,12 @@
       "title": "Компонент: инструменты, MCP и sandbox",
       "section": "components",
       "status": "verified",
-      "tags": ["компоненты", "инструменты", "MCP", "sandbox"],
+      "tags": [
+        "компоненты",
+        "инструменты",
+        "MCP",
+        "sandbox"
+      ],
       "sources": [
         "src/kernel/services/tool-executor.ts",
         "src/kernel/services/mcp-service.ts",
@@ -2533,7 +4093,13 @@
       "title": "Компонент: политики, секреты и вебхуки",
       "section": "components",
       "status": "verified",
-      "tags": ["компоненты", "политики", "безопасность", "секреты", "вебхуки"],
+      "tags": [
+        "компоненты",
+        "политики",
+        "безопасность",
+        "секреты",
+        "вебхуки"
+      ],
       "sources": [
         "src/kernel/services/policy-service.ts",
         "src/kernel/services/external-secrets-service.ts",
@@ -2561,15 +4127,27 @@
       "title": "Компонент: консистентность и дрейф",
       "section": "components",
       "status": "verified",
-      "tags": ["компоненты", "консистентность", "дрейф", "документация"],
+      "tags": [
+        "компоненты",
+        "консистентность",
+        "дрейф",
+        "документация"
+      ],
       "sources": [
         "src/kernel/services/truth-consistency-monitor.ts",
         "src/kernel/services/consistency-checker.ts",
         "src/kernel/services/consistency-checker.test.ts"
       ],
-      "related": ["dev-checks", "docs-health", "comp-routing", "dev-graph"],
+      "related": [
+        "dev-checks",
+        "docs-health",
+        "comp-routing",
+        "dev-graph"
+      ],
       "reviewed": null,
-      "tests": ["src/kernel/services/consistency-checker.test.ts"]
+      "tests": [
+        "src/kernel/services/consistency-checker.test.ts"
+      ]
     },
     {
       "id": "wiki:comp-debate-runtime",
@@ -2578,7 +4156,12 @@
       "title": "Компонент: рантайм дебатов",
       "section": "components",
       "status": "verified",
-      "tags": ["компоненты", "дебаты", "оркестрация", "агенты"],
+      "tags": [
+        "компоненты",
+        "дебаты",
+        "оркестрация",
+        "агенты"
+      ],
       "sources": [
         "src/kernel/services/debate-runtime/debate-engine.ts",
         "src/kernel/services/debate-runtime/debate-sync-manager.ts",
@@ -2612,7 +4195,14 @@
       "title": "Дебаты: стратегии, режимы и техники качества",
       "section": "components",
       "status": "verified",
-      "tags": ["компоненты", "дебаты", "стратегии", "техники", "качество", "аудит"],
+      "tags": [
+        "компоненты",
+        "дебаты",
+        "стратегии",
+        "техники",
+        "качество",
+        "аудит"
+      ],
       "sources": [
         "src/kernel/contracts/debate-types.ts",
         "src/kernel/services/debate-runtime/debate-strategy-definitions.ts",
@@ -2621,7 +4211,11 @@
         "src/kernel/services/debate-runtime/debate-prompt-builder.ts",
         "src/kernel/services/debate-runtime/debate-llm-prompt-context.ts"
       ],
-      "related": ["comp-debate-runtime", "comp-flow-debate", "debates"],
+      "related": [
+        "comp-debate-runtime",
+        "comp-flow-debate",
+        "debates"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -2632,7 +4226,13 @@
       "title": "Компонент: когнитивные трассы и оркестрация топологий",
       "section": "components",
       "status": "verified",
-      "tags": ["компоненты", "когнитивные", "топологии", "оркестрация", "метрики"],
+      "tags": [
+        "компоненты",
+        "когнитивные",
+        "топологии",
+        "оркестрация",
+        "метрики"
+      ],
       "sources": [
         "src/kernel/services/cognitive-service.ts",
         "src/kernel/services/orchestration-service.ts",
@@ -2660,7 +4260,13 @@
       "title": "Компонент: память и знания",
       "section": "components",
       "status": "verified",
-      "tags": ["компоненты", "память", "поиск", "RAG", "эмбеддинги"],
+      "tags": [
+        "компоненты",
+        "память",
+        "поиск",
+        "RAG",
+        "эмбеддинги"
+      ],
       "sources": [
         "src/kernel/services/memory-engine.ts",
         "src/kernel/services/memory-orchestrator.ts",
@@ -2699,14 +4305,26 @@
       "title": "Компонент: чат (ChatExecutor)",
       "section": "components",
       "status": "verified",
-      "tags": ["компоненты", "чат", "стриминг", "LLM"],
+      "tags": [
+        "компоненты",
+        "чат",
+        "стриминг",
+        "LLM"
+      ],
       "sources": [
         "src/kernel/services/chat-executor.ts",
         "src/kernel/services/chat-executor.test.ts"
       ],
-      "related": ["panel-chat", "comp-routing", "comp-budget-pricing", "comp-policy-security"],
+      "related": [
+        "panel-chat",
+        "comp-routing",
+        "comp-budget-pricing",
+        "comp-policy-security"
+      ],
       "reviewed": null,
-      "tests": ["src/kernel/services/chat-executor.test.ts"]
+      "tests": [
+        "src/kernel/services/chat-executor.test.ts"
+      ]
     },
     {
       "id": "wiki:comp-observability",
@@ -2715,7 +4333,12 @@
       "title": "Компонент: наблюдаемость (метрики, трейсы, мониторинг)",
       "section": "components",
       "status": "verified",
-      "tags": ["компоненты", "наблюдаемость", "метрики", "трейсы"],
+      "tags": [
+        "компоненты",
+        "наблюдаемость",
+        "метрики",
+        "трейсы"
+      ],
       "sources": [
         "src/kernel/services/metrics-service.ts",
         "src/kernel/services/monitoring-service.ts",
@@ -2746,7 +4369,12 @@
       "title": "Компонент: советник и runtime-intelligence",
       "section": "components",
       "status": "verified",
-      "tags": ["компоненты", "советник", "диагностика", "what-if"],
+      "tags": [
+        "компоненты",
+        "советник",
+        "диагностика",
+        "what-if"
+      ],
       "sources": [
         "src/kernel/services/advisor-service.ts",
         "src/kernel/services/advisor/diagnostics-engine.ts",
@@ -2766,7 +4394,9 @@
         "comp-observability"
       ],
       "reviewed": null,
-      "tests": ["src/kernel/services/runtime-intelligence/whatif-service.test.ts"]
+      "tests": [
+        "src/kernel/services/runtime-intelligence/whatif-service.test.ts"
+      ]
     },
     {
       "id": "wiki:comp-event-sourcing",
@@ -2775,7 +4405,13 @@
       "title": "Компонент: журналирование событий (event sourcing)",
       "section": "components",
       "status": "verified",
-      "tags": ["компоненты", "event-sourcing", "журнал", "восстановление", "WAL"],
+      "tags": [
+        "компоненты",
+        "event-sourcing",
+        "журнал",
+        "восстановление",
+        "WAL"
+      ],
       "sources": [
         "src/kernel/services/event-sourcing/event-recorder.ts",
         "src/kernel/services/event-sourcing/checkpoint-store.ts",
@@ -2792,7 +4428,9 @@
         "comp-storage-timeline"
       ],
       "reviewed": null,
-      "tests": ["src/kernel/dal/event-log-repository.test.ts"]
+      "tests": [
+        "src/kernel/dal/event-log-repository.test.ts"
+      ]
     },
     {
       "id": "wiki:comp-time-travel",
@@ -2801,7 +4439,12 @@
       "title": "Компонент: тайм-тревел, снапшоты и каузальность",
       "section": "components",
       "status": "verified",
-      "tags": ["компоненты", "тайм-тревел", "снапшоты", "каузальность"],
+      "tags": [
+        "компоненты",
+        "тайм-тревел",
+        "снапшоты",
+        "каузальность"
+      ],
       "sources": [
         "src/kernel/services/temporal-replay-service.ts",
         "src/kernel/services/snapshot-service.ts",
@@ -2829,7 +4472,12 @@
       "title": "Компонент: задачи, планирование и расписание",
       "section": "components",
       "status": "verified",
-      "tags": ["компоненты", "задачи", "планирование", "расписание"],
+      "tags": [
+        "компоненты",
+        "задачи",
+        "планирование",
+        "расписание"
+      ],
       "sources": [
         "src/kernel/services/agems-task-service.ts",
         "src/kernel/services/task-handoff.ts",
@@ -2857,7 +4505,14 @@
       "title": "Компонент: флот, governance и аудит",
       "section": "components",
       "status": "verified",
-      "tags": ["компоненты", "флот", "governance", "аудит", "политики", "guardrails"],
+      "tags": [
+        "компоненты",
+        "флот",
+        "governance",
+        "аудит",
+        "политики",
+        "guardrails"
+      ],
       "sources": [
         "src/kernel/services/ops/fleet-monitor-service.ts",
         "src/kernel/services/trust/governance-service.ts",
@@ -2892,7 +4547,12 @@
       "title": "Компонент: интеграции и интероперабельность",
       "section": "components",
       "status": "verified",
-      "tags": ["компоненты", "интеграции", "интероп", "gateway"],
+      "tags": [
+        "компоненты",
+        "интеграции",
+        "интероп",
+        "gateway"
+      ],
       "sources": [
         "src/kernel/services/interop/a2a-service.ts",
         "src/kernel/services/interop/coordination-service.ts",
@@ -2909,7 +4569,9 @@
         "comp-routing"
       ],
       "reviewed": null,
-      "tests": ["src/kernel/services/interop/mcp-harness-service.test.ts"]
+      "tests": [
+        "src/kernel/services/interop/mcp-harness-service.test.ts"
+      ]
     },
     {
       "id": "wiki:comp-provider-runtime",
@@ -2918,7 +4580,12 @@
       "title": "Компонент: рантайм провайдеров",
       "section": "components",
       "status": "verified",
-      "tags": ["компоненты", "провайдеры", "инстансы", "адаптеры"],
+      "tags": [
+        "компоненты",
+        "провайдеры",
+        "инстансы",
+        "адаптеры"
+      ],
       "sources": [
         "src/kernel/services/provider-runtime/provider-service.ts",
         "src/kernel/services/provider-runtime/provider-instance.ts",
@@ -2937,7 +4604,9 @@
         "comp-budget-pricing"
       ],
       "reviewed": null,
-      "tests": ["src/kernel/services/provider-adapter-registry.test.ts"]
+      "tests": [
+        "src/kernel/services/provider-adapter-registry.test.ts"
+      ]
     },
     {
       "id": "wiki:comp-llm-bridge",
@@ -2946,7 +4615,14 @@
       "title": "Компонент: LLM-мост (адаптеры crews/council/graph/frontier)",
       "section": "components",
       "status": "verified",
-      "tags": ["компоненты", "llm", "адаптеры", "мост", "crews", "council"],
+      "tags": [
+        "компоненты",
+        "llm",
+        "адаптеры",
+        "мост",
+        "crews",
+        "council"
+      ],
       "sources": [
         "src/kernel/services/llm-bridge/llm-task-executor.ts",
         "src/kernel/contracts/provider-adapter.ts"
@@ -2969,13 +4645,24 @@
       "title": "Компонент: слой состояния (Zustand-сторы)",
       "section": "components",
       "status": "verified",
-      "tags": ["компоненты", "состояние", "zustand", "ui"],
+      "tags": [
+        "компоненты",
+        "состояние",
+        "zustand",
+        "ui"
+      ],
       "sources": [
         "src/stores/useKeyStore.ts",
         "src/stores/debateLiveStore.ts",
         "src/stores/chat/store.ts"
       ],
-      "related": ["dev-stores", "dev-store-catalog", "comp-chat", "panel-wiki", "dev-layout"],
+      "related": [
+        "dev-stores",
+        "dev-store-catalog",
+        "comp-chat",
+        "panel-wiki",
+        "dev-layout"
+      ],
       "reviewed": null,
       "tests": [
         "src/stores/useKeyStore.test.ts",
@@ -2990,7 +4677,12 @@
       "title": "Компонент: сквозные сценарии",
       "section": "components",
       "status": "verified",
-      "tags": ["компоненты", "сценарии", "сквозные", "интеграция"],
+      "tags": [
+        "компоненты",
+        "сценарии",
+        "сквозные",
+        "интеграция"
+      ],
       "sources": [
         "src/kernel/services/chat-executor.ts",
         "src/kernel/services/debate-runtime/debate-engine.ts",
@@ -3005,7 +4697,9 @@
         "comp-task-planning"
       ],
       "reviewed": null,
-      "tests": ["src/kernel/services/chat-executor.test.ts"]
+      "tests": [
+        "src/kernel/services/chat-executor.test.ts"
+      ]
     },
     {
       "id": "wiki:comp-crews-councils",
@@ -3014,7 +4708,13 @@
       "title": "Компонент: экипажи и совет",
       "section": "components",
       "status": "verified",
-      "tags": ["компоненты", "экипажи", "совет", "мультиагентность", "линзы"],
+      "tags": [
+        "компоненты",
+        "экипажи",
+        "совет",
+        "мультиагентность",
+        "линзы"
+      ],
       "sources": [
         "src/kernel/services/crew/crew-service.ts",
         "src/kernel/services/crew/agent-forge-service.ts",
@@ -3043,7 +4743,12 @@
       "title": "Компонент: фронтир и разнообразие агентов",
       "section": "components",
       "status": "documented",
-      "tags": ["компоненты", "фронтир", "разнообразие", "эксперименты"],
+      "tags": [
+        "компоненты",
+        "фронтир",
+        "разнообразие",
+        "эксперименты"
+      ],
       "sources": [
         "src/kernel/services/frontier/eval-service.ts",
         "src/kernel/services/frontier/frontier-ops-service.ts",
@@ -3069,7 +4774,12 @@
       "title": "Компонент: лаборатория вариантов (rivals)",
       "section": "components",
       "status": "documented",
-      "tags": ["компоненты", "rivals", "эксперименты", "интеграции"],
+      "tags": [
+        "компоненты",
+        "rivals",
+        "эксперименты",
+        "интеграции"
+      ],
       "sources": [
         "src/kernel/services/rivals/planner-service.ts",
         "src/kernel/services/rivals2/integrations-service.ts",
@@ -3094,7 +4804,12 @@
       "title": "Компонент: генерация знаний и RAG",
       "section": "components",
       "status": "verified",
-      "tags": ["компоненты", "знания", "RAG", "кристаллы"],
+      "tags": [
+        "компоненты",
+        "знания",
+        "RAG",
+        "кристаллы"
+      ],
       "sources": [
         "src/kernel/services/rag/bm25-service.ts",
         "src/kernel/services/rag/hybrid-retrieval-service.ts",
@@ -3125,7 +4840,12 @@
       "title": "Компонент: оценка и рейтинг (eval, elo)",
       "section": "components",
       "status": "verified",
-      "tags": ["компоненты", "оценка", "рейтинг", "LLM-judge"],
+      "tags": [
+        "компоненты",
+        "оценка",
+        "рейтинг",
+        "LLM-judge"
+      ],
       "sources": [
         "src/kernel/services/eval/llm-judge-service.ts",
         "src/kernel/services/eval/scorer-registry-service.ts",
@@ -3139,7 +4859,9 @@
         "panel-analytics"
       ],
       "reviewed": null,
-      "tests": ["src/kernel/services/eval/scorer-registry-service.test.ts"]
+      "tests": [
+        "src/kernel/services/eval/scorer-registry-service.test.ts"
+      ]
     },
     {
       "id": "wiki:comp-persona-builder",
@@ -3148,7 +4870,12 @@
       "title": "Компонент: персоны и строитель (persona, builder)",
       "section": "components",
       "status": "verified",
-      "tags": ["компоненты", "персоны", "билдер", "контекст"],
+      "tags": [
+        "компоненты",
+        "персоны",
+        "билдер",
+        "контекст"
+      ],
       "sources": [
         "src/kernel/services/persona/persona-service.ts",
         "src/kernel/services/persona/lt-memory-service.ts",
@@ -3175,7 +4902,13 @@
       "title": "Компонент: вызовы (invocation) и мета-агент",
       "section": "components",
       "status": "verified",
-      "tags": ["компоненты", "invocation", "мета-агент", "учёт", "стратегии"],
+      "tags": [
+        "компоненты",
+        "invocation",
+        "мета-агент",
+        "учёт",
+        "стратегии"
+      ],
       "sources": [
         "src/kernel/services/invocation/invocation-engine-service.ts",
         "src/kernel/services/invocation/invocation-repository.ts",
@@ -3193,7 +4926,9 @@
         "comp-state-stores"
       ],
       "reviewed": null,
-      "tests": ["src/kernel/services/project-invocation-bridge.test.ts"]
+      "tests": [
+        "src/kernel/services/project-invocation-bridge.test.ts"
+      ]
     },
     {
       "id": "wiki:comp-simulation-world",
@@ -3202,7 +4937,12 @@
       "title": "Компонент: симуляция, компьютер и parity",
       "section": "components",
       "status": "verified",
-      "tags": ["компоненты", "симуляция", "компьютер", "parity"],
+      "tags": [
+        "компоненты",
+        "симуляция",
+        "компьютер",
+        "parity"
+      ],
       "sources": [
         "src/kernel/services/simulation/simulation-engine-service.ts",
         "src/kernel/services/simulation/world-state-service.ts",
@@ -3234,7 +4974,12 @@
       "title": "Компонент: синтез, форум и junction-движок",
       "section": "components",
       "status": "verified",
-      "tags": ["компоненты", "синтез", "форум", "junction"],
+      "tags": [
+        "компоненты",
+        "синтез",
+        "форум",
+        "junction"
+      ],
       "sources": [
         "src/kernel/services/synthesis/synthesis-engine-service.ts",
         "src/kernel/services/forum/forum-service.ts",
@@ -3261,7 +5006,12 @@
       "title": "Компонент: хранилище, таймлайн и проекции",
       "section": "components",
       "status": "verified",
-      "tags": ["компоненты", "хранилище", "таймлайн", "проекции"],
+      "tags": [
+        "компоненты",
+        "хранилище",
+        "таймлайн",
+        "проекции"
+      ],
       "sources": [
         "src/kernel/services/storage/dexie-storage.ts",
         "src/kernel/services/storage/local-storage-adapter.ts",
@@ -3277,7 +5027,9 @@
         "panel-history-audit"
       ],
       "reviewed": null,
-      "tests": ["src/kernel/services/timeline/execution-viz-service.test.ts"]
+      "tests": [
+        "src/kernel/services/timeline/execution-viz-service.test.ts"
+      ]
     },
     {
       "id": "wiki:comp-tool-capability",
@@ -3286,7 +5038,12 @@
       "title": "Компонент: каталог инструментов, способности и политики",
       "section": "components",
       "status": "verified",
-      "tags": ["компоненты", "инструменты", "способности", "политики"],
+      "tags": [
+        "компоненты",
+        "инструменты",
+        "способности",
+        "политики"
+      ],
       "sources": [
         "src/kernel/services/catalog/tool-catalog-service.ts",
         "src/kernel/services/capability/capability-resolver.ts",
@@ -3316,7 +5073,12 @@
       "title": "Компонент: графы режимов и мост событий",
       "section": "components",
       "status": "documented",
-      "tags": ["компоненты", "графы", "event-bridge", "проекции"],
+      "tags": [
+        "компоненты",
+        "графы",
+        "event-bridge",
+        "проекции"
+      ],
       "sources": [
         "src/kernel/services/graph/graph-service.ts",
         "src/kernel/services/graph/graph-modes.ts",
@@ -3331,7 +5093,9 @@
         "comp-storage-timeline"
       ],
       "reviewed": null,
-      "tests": ["src/kernel/services/event-bridge/event-bridge.test.ts"]
+      "tests": [
+        "src/kernel/services/event-bridge/event-bridge.test.ts"
+      ]
     },
     {
       "id": "wiki:comp-debateplus",
@@ -3340,7 +5104,12 @@
       "title": "Компонент: аргументация (debateplus)",
       "section": "components",
       "status": "documented",
-      "tags": ["компоненты", "аргументация", "дебаты", "консенсус"],
+      "tags": [
+        "компоненты",
+        "аргументация",
+        "дебаты",
+        "консенсус"
+      ],
       "sources": [
         "src/kernel/services/debateplus/argtech-service.ts",
         "src/kernel/services/debateplus/format-service.ts",
@@ -3363,7 +5132,12 @@
       "title": "Компонент: LLM-конвейер и декораторы",
       "section": "components",
       "status": "verified",
-      "tags": ["компоненты", "llm", "декораторы", "middleware"],
+      "tags": [
+        "компоненты",
+        "llm",
+        "декораторы",
+        "middleware"
+      ],
       "sources": [
         "src/llm/core/base-adapter.ts",
         "src/llm/core/base-decorator.ts",
@@ -3411,7 +5185,12 @@
       "title": "Компонент: адаптеры провайдеров LLM",
       "section": "components",
       "status": "verified",
-      "tags": ["компоненты", "llm", "адаптеры", "провайдеры"],
+      "tags": [
+        "компоненты",
+        "llm",
+        "адаптеры",
+        "провайдеры"
+      ],
       "sources": [
         "src/llm/registry/adapter-factory.ts",
         "src/llm/http/llm-http-client.ts",
@@ -3453,7 +5232,12 @@
       "title": "Компонент: секреты и распределённые блокировки",
       "section": "components",
       "status": "verified",
-      "tags": ["компоненты", "секреты", "блокировки", "безопасность"],
+      "tags": [
+        "компоненты",
+        "секреты",
+        "блокировки",
+        "безопасность"
+      ],
       "sources": [
         "src/kernel/services/local-secret-store.ts",
         "src/kernel/services/external-secrets-service.ts",
@@ -3480,7 +5264,13 @@
       "title": "Компонент: мессенджеры и внешние интеграции (n8n, Telegram)",
       "section": "components",
       "status": "verified",
-      "tags": ["компоненты", "интеграции", "n8n", "telegram", "уведомления"],
+      "tags": [
+        "компоненты",
+        "интеграции",
+        "n8n",
+        "telegram",
+        "уведомления"
+      ],
       "sources": [
         "src/kernel/services/n8n-service.ts",
         "src/kernel/services/telegram-service.ts",
@@ -3509,7 +5299,12 @@
       "title": "Компонент: адаптер Gemini",
       "section": "components",
       "status": "verified",
-      "tags": ["компоненты", "llm", "адаптер", "gemini"],
+      "tags": [
+        "компоненты",
+        "llm",
+        "адаптер",
+        "gemini"
+      ],
       "sources": [
         "src/llm/gemini/gemini-adapter.ts",
         "src/llm/gemini/gemini-request-builder.ts",
@@ -3539,8 +5334,16 @@
       "title": "Компонент: адаптер Anthropic (Claude)",
       "section": "components",
       "status": "verified",
-      "tags": ["компоненты", "llm", "адаптер", "anthropic", "claude"],
-      "sources": ["src/llm/anthropic/anthropic-adapter.ts"],
+      "tags": [
+        "компоненты",
+        "llm",
+        "адаптер",
+        "anthropic",
+        "claude"
+      ],
+      "sources": [
+        "src/llm/anthropic/anthropic-adapter.ts"
+      ],
       "related": [
         "comp-llm-adapters",
         "comp-llm-pipeline",
@@ -3549,7 +5352,9 @@
         "panel-providers"
       ],
       "reviewed": null,
-      "tests": ["src/llm/anthropic/anthropic-adapter.test.ts"]
+      "tests": [
+        "src/llm/anthropic/anthropic-adapter.test.ts"
+      ]
     },
     {
       "id": "wiki:comp-adapter-gemini-computer",
@@ -3558,8 +5363,16 @@
       "title": "Компонент: адаптер Gemini Computer Use",
       "section": "components",
       "status": "verified",
-      "tags": ["компоненты", "llm", "адаптер", "gemini", "computer-use"],
-      "sources": ["src/llm/gemini-computer/gemini-computer-adapter.ts"],
+      "tags": [
+        "компоненты",
+        "llm",
+        "адаптер",
+        "gemini",
+        "computer-use"
+      ],
+      "sources": [
+        "src/llm/gemini-computer/gemini-computer-adapter.ts"
+      ],
       "related": [
         "comp-llm-adapters",
         "comp-adapter-gemini",
@@ -3568,7 +5381,9 @@
         "panel-providers"
       ],
       "reviewed": null,
-      "tests": ["src/llm/gemini-computer/gemini-computer-adapter.test.ts"]
+      "tests": [
+        "src/llm/gemini-computer/gemini-computer-adapter.test.ts"
+      ]
     },
     {
       "id": "wiki:comp-adapter-openai-compatible",
@@ -3577,7 +5392,15 @@
       "title": "Компонент: адаптер OpenAI-совместимых провайдеров (DeepSeek, Kimi, MiniMax, Qwen, Cerebras)",
       "section": "components",
       "status": "verified",
-      "tags": ["компоненты", "llm", "адаптер", "openai", "deepseek", "kimi", "qwen"],
+      "tags": [
+        "компоненты",
+        "llm",
+        "адаптер",
+        "openai",
+        "deepseek",
+        "kimi",
+        "qwen"
+      ],
       "sources": [
         "src/llm/openai-compatible/openai-compatible-adapter.ts",
         "src/llm/openai-compatible/openai-compatible-types.ts",
@@ -3595,7 +5418,9 @@
         "panel-providers"
       ],
       "reviewed": null,
-      "tests": ["src/llm/openai-compatible/openai-compatible-adapter.test.ts"]
+      "tests": [
+        "src/llm/openai-compatible/openai-compatible-adapter.test.ts"
+      ]
     },
     {
       "id": "wiki:comp-adapter-openrouter",
@@ -3604,7 +5429,12 @@
       "title": "Компонент: адаптер OpenRouter",
       "section": "components",
       "status": "documented",
-      "tags": ["компоненты", "llm", "адаптер", "openrouter"],
+      "tags": [
+        "компоненты",
+        "llm",
+        "адаптер",
+        "openrouter"
+      ],
       "sources": [
         "src/llm/openrouter/openrouter-adapter.ts",
         "src/llm/openrouter/openrouter-types.ts"
@@ -3617,7 +5447,9 @@
         "panel-providers"
       ],
       "reviewed": null,
-      "tests": ["src/llm/openrouter/openrouter-adapter.test.ts"]
+      "tests": [
+        "src/llm/openrouter/openrouter-adapter.test.ts"
+      ]
     },
     {
       "id": "wiki:comp-adapter-groq",
@@ -3626,8 +5458,15 @@
       "title": "Компонент: адаптер Groq",
       "section": "components",
       "status": "documented",
-      "tags": ["компоненты", "llm", "адаптер", "groq"],
-      "sources": ["src/llm/groq/groq-adapter.ts"],
+      "tags": [
+        "компоненты",
+        "llm",
+        "адаптер",
+        "groq"
+      ],
+      "sources": [
+        "src/llm/groq/groq-adapter.ts"
+      ],
       "related": [
         "comp-llm-adapters",
         "comp-adapter-openai-compatible",
@@ -3645,8 +5484,17 @@
       "title": "Компонент: адаптер NVIDIA NIM",
       "section": "components",
       "status": "documented",
-      "tags": ["компоненты", "llm", "адаптер", "nvidia", "nim"],
-      "sources": ["src/llm/nvidia/nvidia-nim-adapter.ts", "src/llm/nvidia/nvidia-nim-types.ts"],
+      "tags": [
+        "компоненты",
+        "llm",
+        "адаптер",
+        "nvidia",
+        "nim"
+      ],
+      "sources": [
+        "src/llm/nvidia/nvidia-nim-adapter.ts",
+        "src/llm/nvidia/nvidia-nim-types.ts"
+      ],
       "related": [
         "comp-llm-adapters",
         "comp-adapter-groq",
@@ -3664,8 +5512,15 @@
       "title": "Компонент: адаптер Cloudflare",
       "section": "components",
       "status": "documented",
-      "tags": ["компоненты", "llm", "адаптер", "cloudflare"],
-      "sources": ["src/llm/cloudflare/cloudflare-adapter.ts"],
+      "tags": [
+        "компоненты",
+        "llm",
+        "адаптер",
+        "cloudflare"
+      ],
+      "sources": [
+        "src/llm/cloudflare/cloudflare-adapter.ts"
+      ],
       "related": [
         "comp-llm-adapters",
         "comp-adapter-nvidia-nim",
@@ -3683,8 +5538,16 @@
       "title": "Компонент: MockAdapter",
       "section": "components",
       "status": "documented",
-      "tags": ["компоненты", "llm", "адаптер", "mock", "тесты"],
-      "sources": ["src/llm/mock/mock-adapter.ts"],
+      "tags": [
+        "компоненты",
+        "llm",
+        "адаптер",
+        "mock",
+        "тесты"
+      ],
+      "sources": [
+        "src/llm/mock/mock-adapter.ts"
+      ],
       "related": [
         "comp-llm-adapters",
         "comp-adapter-cloudflare",
@@ -3693,7 +5556,9 @@
         "panel-providers"
       ],
       "reviewed": null,
-      "tests": ["src/llm/mock/mock-adapter.test.ts"]
+      "tests": [
+        "src/llm/mock/mock-adapter.test.ts"
+      ]
     },
     {
       "id": "wiki:comp-decorator-resilience",
@@ -3702,7 +5567,13 @@
       "title": "Компонент: декораторы устойчивости LLM",
       "section": "components",
       "status": "verified",
-      "tags": ["компоненты", "llm", "декораторы", "устойчивость", "retry"],
+      "tags": [
+        "компоненты",
+        "llm",
+        "декораторы",
+        "устойчивость",
+        "retry"
+      ],
       "sources": [
         "src/llm/decorators/circuit-breaker.ts",
         "src/llm/decorators/retry-decorator.ts",
@@ -3731,7 +5602,13 @@
       "title": "Компонент: декораторы экономии LLM",
       "section": "components",
       "status": "verified",
-      "tags": ["компоненты", "llm", "декораторы", "экономия", "кэш"],
+      "tags": [
+        "компоненты",
+        "llm",
+        "декораторы",
+        "экономия",
+        "кэш"
+      ],
       "sources": [
         "src/llm/decorators/cost-manager.ts",
         "src/llm/decorators/compress-route.ts",
@@ -3758,7 +5635,13 @@
       "title": "Компонент: декораторы маршрутизации LLM",
       "section": "components",
       "status": "verified",
-      "tags": ["компоненты", "llm", "декораторы", "маршрутизация", "canary"],
+      "tags": [
+        "компоненты",
+        "llm",
+        "декораторы",
+        "маршрутизация",
+        "canary"
+      ],
       "sources": [
         "src/llm/decorators/semantic-router.ts",
         "src/llm/decorators/canary-router.ts",
@@ -3787,7 +5670,13 @@
       "title": "Компонент: ядро LLM-конвейера (базы, middleware, утилиты)",
       "section": "components",
       "status": "verified",
-      "tags": ["компоненты", "llm", "ядро", "middleware", "утилиты"],
+      "tags": [
+        "компоненты",
+        "llm",
+        "ядро",
+        "middleware",
+        "утилиты"
+      ],
       "sources": [
         "src/llm/core/base-adapter.ts",
         "src/llm/core/base-decorator.ts",
@@ -3806,7 +5695,10 @@
         "for-developers"
       ],
       "reviewed": null,
-      "tests": ["src/llm/core/middleware-pipeline.test.ts", "src/llm/core/flyweight.test.ts"]
+      "tests": [
+        "src/llm/core/middleware-pipeline.test.ts",
+        "src/llm/core/flyweight.test.ts"
+      ]
     },
     {
       "id": "wiki:comp-util-network-security",
@@ -3815,7 +5707,12 @@
       "title": "Компонент: утилиты сети и безопасности (kernel/utils)",
       "section": "components",
       "status": "verified",
-      "tags": ["компоненты", "утилиты", "сеть", "безопасность"],
+      "tags": [
+        "компоненты",
+        "утилиты",
+        "сеть",
+        "безопасность"
+      ],
       "sources": [
         "src/kernel/utils/network.ts",
         "src/kernel/utils/constant-time.ts",
@@ -3848,7 +5745,12 @@
       "title": "Компонент: утилиты эмбеддингов и детерминированного RNG",
       "section": "components",
       "status": "documented",
-      "tags": ["компоненты", "утилиты", "эмбеддинги", "rng"],
+      "tags": [
+        "компоненты",
+        "утилиты",
+        "эмбеддинги",
+        "rng"
+      ],
       "sources": [
         "src/kernel/utils/embedding.ts",
         "src/kernel/utils/seedable-rng.ts",
@@ -3874,7 +5776,12 @@
       "title": "Компонент: утилиты наблюдения за памятью",
       "section": "components",
       "status": "documented",
-      "tags": ["компоненты", "утилиты", "память", "наблюдаемость"],
+      "tags": [
+        "компоненты",
+        "утилиты",
+        "память",
+        "наблюдаемость"
+      ],
       "sources": [
         "src/kernel/utils/memory-tracker.ts",
         "src/kernel/utils/memory-watchdog.ts",
@@ -3901,7 +5808,12 @@
       "title": "Компонент: утилиты анализа дебатов и оценки токенов",
       "section": "components",
       "status": "documented",
-      "tags": ["компоненты", "утилиты", "дебаты", "анализ"],
+      "tags": [
+        "компоненты",
+        "утилиты",
+        "дебаты",
+        "анализ"
+      ],
       "sources": [
         "src/kernel/utils/debate-analysis.ts",
         "src/kernel/utils/topic-suggestions.ts",
@@ -3915,7 +5827,9 @@
         "for-developers"
       ],
       "reviewed": null,
-      "tests": ["src/kernel/utils/tokenEstimate.test.ts"]
+      "tests": [
+        "src/kernel/utils/tokenEstimate.test.ts"
+      ]
     },
     {
       "id": "wiki:comp-util-persistence-helpers",
@@ -3924,7 +5838,12 @@
       "title": "Компонент: утилиты персиста и провайдеров",
       "section": "components",
       "status": "documented",
-      "tags": ["компоненты", "утилиты", "персист", "провайдеры"],
+      "tags": [
+        "компоненты",
+        "утилиты",
+        "персист",
+        "провайдеры"
+      ],
       "sources": [
         "src/kernel/utils/persist-then-emit.ts",
         "src/kernel/utils/with-transaction.ts",
@@ -3951,7 +5870,12 @@
       "title": "Компонент: Data Access Layer (репозитории)",
       "section": "components",
       "status": "verified",
-      "tags": ["компоненты", "dal", "репозитории", "персист"],
+      "tags": [
+        "компоненты",
+        "dal",
+        "репозитории",
+        "персист"
+      ],
       "sources": [
         "src/kernel/dal/data-access-layer.ts",
         "src/kernel/dal/debate-repository.ts",
@@ -3986,7 +5910,13 @@
       "title": "Сквозной контур: дебаты",
       "section": "components",
       "status": "verified",
-      "tags": ["компоненты", "контур", "дебаты", "поток", "события"],
+      "tags": [
+        "компоненты",
+        "контур",
+        "дебаты",
+        "поток",
+        "события"
+      ],
       "sources": [
         "src/components/DebateArena.tsx",
         "src/components/DebatePanel/DebatePanel.tsx",
@@ -4030,7 +5960,14 @@
       "title": "Сквозной контур: чат",
       "section": "components",
       "status": "verified",
-      "tags": ["компоненты", "контур", "чат", "поток", "события", "стриминг"],
+      "tags": [
+        "компоненты",
+        "контур",
+        "чат",
+        "поток",
+        "события",
+        "стриминг"
+      ],
       "sources": [
         "src/components/ChatPanel/ChatPanel.tsx",
         "src/stores/chat/store.ts",
@@ -4068,7 +6005,14 @@
       "title": "Сквозной контур: знания и RAG",
       "section": "components",
       "status": "verified",
-      "tags": ["компоненты", "контур", "знания", "RAG", "поиск", "эмбеддинги"],
+      "tags": [
+        "компоненты",
+        "контур",
+        "знания",
+        "RAG",
+        "поиск",
+        "эмбеддинги"
+      ],
       "sources": [
         "src/components/KnowledgePanel/KnowledgePanel.tsx",
         "src/kernel/services/parity/knowledge-service.ts",
@@ -4101,7 +6045,14 @@
       "title": "Сквозной контур: мультиагентное исполнение",
       "section": "components",
       "status": "verified",
-      "tags": ["компоненты", "контур", "мультиагент", "invocation", "crew", "council"],
+      "tags": [
+        "компоненты",
+        "контур",
+        "мультиагент",
+        "invocation",
+        "crew",
+        "council"
+      ],
       "sources": [
         "src/components/RoomPanel/RoomPanel.tsx",
         "src/components/CouncilPanel/CouncilPanel.tsx",
@@ -4136,7 +6087,14 @@
       "title": "Сквозной контур: инструменты и песочница",
       "section": "components",
       "status": "verified",
-      "tags": ["компоненты", "контур", "инструменты", "tool-calling", "песочница", "MCP"],
+      "tags": [
+        "компоненты",
+        "контур",
+        "инструменты",
+        "tool-calling",
+        "песочница",
+        "MCP"
+      ],
       "sources": [
         "src/components/ToolsPanel/ToolsPanel.tsx",
         "src/kernel/services/parity/tool-runner-service.ts",
@@ -4174,7 +6132,14 @@
       "title": "Сквозной контур: computer-use",
       "section": "components",
       "status": "verified",
-      "tags": ["компоненты", "контур", "computer-use", "CUA", "песочница", "адаптеры"],
+      "tags": [
+        "компоненты",
+        "контур",
+        "computer-use",
+        "CUA",
+        "песочница",
+        "адаптеры"
+      ],
       "sources": [
         "src/kernel/services/computer/computer-use-loop-service.ts",
         "src/kernel/services/computer/sidecar-computer-executor.ts",
@@ -4210,7 +6175,14 @@
       "title": "Сквозной контур: восстановление сессии",
       "section": "components",
       "status": "verified",
-      "tags": ["компоненты", "контур", "восстановление", "загрузка", "bootstrap", "гидрация"],
+      "tags": [
+        "компоненты",
+        "контур",
+        "восстановление",
+        "загрузка",
+        "bootstrap",
+        "гидрация"
+      ],
       "sources": [
         "src/main.tsx",
         "src/kernel/runtime.ts",
@@ -4225,7 +6197,12 @@
         "src/kernel/services/snapshot-service.ts",
         "src/kernel/services/time-machine-service.ts"
       ],
-      "related": ["comp-persistence", "comp-flow-chat", "comp-flow-debate", "comp-flow-knowledge"],
+      "related": [
+        "comp-persistence",
+        "comp-flow-chat",
+        "comp-flow-debate",
+        "comp-flow-knowledge"
+      ],
       "reviewed": null,
       "tests": [
         "src/kernel/services/debate-runtime/debate-persistence-manager.test.ts",
@@ -4241,7 +6218,14 @@
       "title": "Сквозной контур: самодиагностика",
       "section": "components",
       "status": "verified",
-      "tags": ["компоненты", "контур", "диагностика", "здоровье", "проверка", "наблюдаемость"],
+      "tags": [
+        "компоненты",
+        "контур",
+        "диагностика",
+        "здоровье",
+        "проверка",
+        "наблюдаемость"
+      ],
       "sources": [
         "src/kernel/services/runtime-intelligence/diagnostic-service.ts",
         "src/kernel/services/advisor/diagnostics-engine.ts",
@@ -4278,9 +6262,14 @@
       "title": "Зона 1: панели провайдеров и чата",
       "section": "history",
       "status": "documented",
-      "tags": ["аудит", "зона 1"],
+      "tags": [
+        "аудит",
+        "зона 1"
+      ],
       "sources": [],
-      "related": ["diagnostics"],
+      "related": [
+        "diagnostics"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -4291,9 +6280,14 @@
       "title": "Зона 2: дебаты",
       "section": "history",
       "status": "documented",
-      "tags": ["аудит", "зона 2"],
+      "tags": [
+        "аудит",
+        "зона 2"
+      ],
       "sources": [],
-      "related": ["diagnostics"],
+      "related": [
+        "diagnostics"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -4304,9 +6298,14 @@
       "title": "Зона 3: агенты и задачи",
       "section": "history",
       "status": "documented",
-      "tags": ["аудит", "зона 3"],
+      "tags": [
+        "аудит",
+        "зона 3"
+      ],
       "sources": [],
-      "related": ["diagnostics"],
+      "related": [
+        "diagnostics"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -4317,9 +6316,14 @@
       "title": "Зона 4: память и знания",
       "section": "history",
       "status": "documented",
-      "tags": ["аудит", "зона 4"],
+      "tags": [
+        "аудит",
+        "зона 4"
+      ],
       "sources": [],
-      "related": ["diagnostics"],
+      "related": [
+        "diagnostics"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -4330,9 +6334,14 @@
       "title": "Зона 5: система и мониторинг",
       "section": "history",
       "status": "documented",
-      "tags": ["аудит", "зона 5"],
+      "tags": [
+        "аудит",
+        "зона 5"
+      ],
       "sources": [],
-      "related": ["diagnostics"],
+      "related": [
+        "diagnostics"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -4343,9 +6352,14 @@
       "title": "Зона 6: governance и политики",
       "section": "history",
       "status": "documented",
-      "tags": ["аудит", "зона 6"],
+      "tags": [
+        "аудит",
+        "зона 6"
+      ],
       "sources": [],
-      "related": ["diagnostics"],
+      "related": [
+        "diagnostics"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -4356,9 +6370,14 @@
       "title": "Зона 7: инструменты и MCP",
       "section": "history",
       "status": "documented",
-      "tags": ["аудит", "зона 7"],
+      "tags": [
+        "аудит",
+        "зона 7"
+      ],
       "sources": [],
-      "related": ["diagnostics"],
+      "related": [
+        "diagnostics"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -4369,9 +6388,14 @@
       "title": "Зона 8: роутер и маршрутизация",
       "section": "history",
       "status": "documented",
-      "tags": ["аудит", "зона 8"],
+      "tags": [
+        "аудит",
+        "зона 8"
+      ],
       "sources": [],
-      "related": ["diagnostics"],
+      "related": [
+        "diagnostics"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -4382,9 +6406,14 @@
       "title": "Зона 9: настройки",
       "section": "history",
       "status": "documented",
-      "tags": ["аудит", "зона 9"],
+      "tags": [
+        "аудит",
+        "зона 9"
+      ],
       "sources": [],
-      "related": ["diagnostics"],
+      "related": [
+        "diagnostics"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -4395,9 +6424,14 @@
       "title": "Зона 10: логи и инспекции",
       "section": "history",
       "status": "documented",
-      "tags": ["аудит", "зона 10"],
+      "tags": [
+        "аудит",
+        "зона 10"
+      ],
       "sources": [],
-      "related": ["diagnostics"],
+      "related": [
+        "diagnostics"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -4408,9 +6442,14 @@
       "title": "Зона 11: workspace и проекты",
       "section": "history",
       "status": "documented",
-      "tags": ["аудит", "зона 11"],
+      "tags": [
+        "аудит",
+        "зона 11"
+      ],
       "sources": [],
-      "related": ["diagnostics"],
+      "related": [
+        "diagnostics"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -4421,9 +6460,14 @@
       "title": "Зона 12: качество",
       "section": "history",
       "status": "documented",
-      "tags": ["аудит", "зона 12"],
+      "tags": [
+        "аудит",
+        "зона 12"
+      ],
       "sources": [],
-      "related": ["diagnostics"],
+      "related": [
+        "diagnostics"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -4434,9 +6478,14 @@
       "title": "Зона 13: коммуникации",
       "section": "history",
       "status": "documented",
-      "tags": ["аудит", "зона 13"],
+      "tags": [
+        "аудит",
+        "зона 13"
+      ],
       "sources": [],
-      "related": ["diagnostics"],
+      "related": [
+        "diagnostics"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -4447,9 +6496,14 @@
       "title": "Зона 14: коннекторы",
       "section": "history",
       "status": "documented",
-      "tags": ["аудит", "зона 14"],
+      "tags": [
+        "аудит",
+        "зона 14"
+      ],
       "sources": [],
-      "related": ["diagnostics"],
+      "related": [
+        "diagnostics"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -4460,9 +6514,14 @@
       "title": "Зона 15: исследования",
       "section": "history",
       "status": "documented",
-      "tags": ["аудит", "зона 15"],
+      "tags": [
+        "аудит",
+        "зона 15"
+      ],
       "sources": [],
-      "related": ["diagnostics"],
+      "related": [
+        "diagnostics"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -4473,9 +6532,14 @@
       "title": "Зона 16: company gateway",
       "section": "history",
       "status": "documented",
-      "tags": ["аудит", "зона 16"],
+      "tags": [
+        "аудит",
+        "зона 16"
+      ],
       "sources": [],
-      "related": ["diagnostics"],
+      "related": [
+        "diagnostics"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -4486,9 +6550,14 @@
       "title": "Зона 17: debate research",
       "section": "history",
       "status": "documented",
-      "tags": ["аудит", "зона 17"],
+      "tags": [
+        "аудит",
+        "зона 17"
+      ],
       "sources": [],
-      "related": ["diagnostics"],
+      "related": [
+        "diagnostics"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -4499,9 +6568,14 @@
       "title": "Зона 18: SRE и пулы",
       "section": "history",
       "status": "documented",
-      "tags": ["аудит", "зона 18"],
+      "tags": [
+        "аудит",
+        "зона 18"
+      ],
       "sources": [],
-      "related": ["diagnostics"],
+      "related": [
+        "diagnostics"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -4512,9 +6586,14 @@
       "title": "Зона 19: прогнозы и симуляции",
       "section": "history",
       "status": "documented",
-      "tags": ["аудит", "зона 19"],
+      "tags": [
+        "аудит",
+        "зона 19"
+      ],
       "sources": [],
-      "related": ["diagnostics"],
+      "related": [
+        "diagnostics"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -4525,9 +6604,14 @@
       "title": "Зона 20: управление дебатами",
       "section": "history",
       "status": "documented",
-      "tags": ["аудит", "зона 20"],
+      "tags": [
+        "аудит",
+        "зона 20"
+      ],
       "sources": [],
-      "related": ["diagnostics"],
+      "related": [
+        "diagnostics"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -4538,9 +6622,14 @@
       "title": "Зона 21: качество аргументов",
       "section": "history",
       "status": "documented",
-      "tags": ["аудит", "зона 21"],
+      "tags": [
+        "аудит",
+        "зона 21"
+      ],
       "sources": [],
-      "related": ["diagnostics"],
+      "related": [
+        "diagnostics"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -4551,9 +6640,14 @@
       "title": "Зона 22: смещения и доверие",
       "section": "history",
       "status": "documented",
-      "tags": ["аудит", "зона 22"],
+      "tags": [
+        "аудит",
+        "зона 22"
+      ],
       "sources": [],
-      "related": ["diagnostics"],
+      "related": [
+        "diagnostics"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -4564,9 +6658,14 @@
       "title": "Зона 23: коммуникации-2",
       "section": "history",
       "status": "documented",
-      "tags": ["аудит", "зона 23"],
+      "tags": [
+        "аудит",
+        "зона 23"
+      ],
       "sources": [],
-      "related": ["diagnostics"],
+      "related": [
+        "diagnostics"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -4577,9 +6676,14 @@
       "title": "Зона 24: знания-2",
       "section": "history",
       "status": "documented",
-      "tags": ["аудит", "зона 24"],
+      "tags": [
+        "аудит",
+        "зона 24"
+      ],
       "sources": [],
-      "related": ["diagnostics"],
+      "related": [
+        "diagnostics"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -4590,9 +6694,14 @@
       "title": "Зона 25: конструкторы",
       "section": "history",
       "status": "documented",
-      "tags": ["аудит", "зона 25"],
+      "tags": [
+        "аудит",
+        "зона 25"
+      ],
       "sources": [],
-      "related": ["diagnostics"],
+      "related": [
+        "diagnostics"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -4603,9 +6712,14 @@
       "title": "Зона 26: остатки",
       "section": "history",
       "status": "documented",
-      "tags": ["аудит", "зона 26"],
+      "tags": [
+        "аудит",
+        "зона 26"
+      ],
       "sources": [],
-      "related": ["diagnostics"],
+      "related": [
+        "diagnostics"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -4616,9 +6730,21 @@
       "title": "Разработчикам: обзор и слои",
       "section": "dev",
       "status": "verified",
-      "tags": ["dev", "архитектура", "слои"],
-      "sources": [".dependency-cruiser.cjs", "src/kernel/DEPENDENCY_MAP.md"],
-      "related": ["for-developers", "architecture", "dev-layout", "dev-boot"],
+      "tags": [
+        "dev",
+        "архитектура",
+        "слои"
+      ],
+      "sources": [
+        ".dependency-cruiser.cjs",
+        "src/kernel/DEPENDENCY_MAP.md"
+      ],
+      "related": [
+        "for-developers",
+        "architecture",
+        "dev-layout",
+        "dev-boot"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -4629,9 +6755,19 @@
       "title": "Разработчикам: карта каталогов",
       "section": "dev",
       "status": "verified",
-      "tags": ["dev", "структура"],
-      "sources": ["package.json", "src/"],
-      "related": ["dev-overview", "dev-components", "dev-generators"],
+      "tags": [
+        "dev",
+        "структура"
+      ],
+      "sources": [
+        "package.json",
+        "src/"
+      ],
+      "related": [
+        "dev-overview",
+        "dev-components",
+        "dev-generators"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -4642,15 +6778,25 @@
       "title": "Разработчикам: boot, DI и контейнер",
       "section": "dev",
       "status": "verified",
-      "tags": ["dev", "bootstrap", "DI"],
+      "tags": [
+        "dev",
+        "bootstrap",
+        "DI"
+      ],
       "sources": [
         "src/kernel/bootstrap.ts",
         "src/kernel/bootstrap-phases.ts",
         "src/kernel/container.ts"
       ],
-      "related": ["dev-services", "dev-events", "dev-overview"],
+      "related": [
+        "dev-services",
+        "dev-events",
+        "dev-overview"
+      ],
       "reviewed": null,
-      "tests": ["src/kernel/container.test.ts"]
+      "tests": [
+        "src/kernel/container.test.ts"
+      ]
     },
     {
       "id": "wiki:dev-events",
@@ -4659,15 +6805,26 @@
       "title": "Разработчикам: шина событий",
       "section": "dev",
       "status": "verified",
-      "tags": ["dev", "события", "шина"],
+      "tags": [
+        "dev",
+        "события",
+        "шина"
+      ],
       "sources": [
         "src/kernel/events/event-bus.ts",
         "src/kernel/events/event-names.ts",
         "src/kernel/events/event-registry.ts"
       ],
-      "related": ["dev-event-catalog", "dev-services", "dev-boot"],
+      "related": [
+        "dev-event-catalog",
+        "dev-services",
+        "dev-boot"
+      ],
       "reviewed": null,
-      "tests": ["src/kernel/events/event-bus.test.ts", "src/kernel/events/event-registry.test.ts"]
+      "tests": [
+        "src/kernel/events/event-bus.test.ts",
+        "src/kernel/events/event-registry.test.ts"
+      ]
     },
     {
       "id": "wiki:dev-services",
@@ -4676,9 +6833,22 @@
       "title": "Разработчикам: сервисы и lazyService",
       "section": "dev",
       "status": "verified",
-      "tags": ["dev", "сервисы", "DI", "lazyService"],
-      "sources": ["src/kernel/service-helper.ts", "src/kernel/instances/"],
-      "related": ["dev-service-map", "dev-boot", "dev-events", "dev-components"],
+      "tags": [
+        "dev",
+        "сервисы",
+        "DI",
+        "lazyService"
+      ],
+      "sources": [
+        "src/kernel/service-helper.ts",
+        "src/kernel/instances/"
+      ],
+      "related": [
+        "dev-service-map",
+        "dev-boot",
+        "dev-events",
+        "dev-components"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -4689,11 +6859,25 @@
       "title": "Разработчикам: компоненты и панели",
       "section": "dev",
       "status": "verified",
-      "tags": ["dev", "компоненты", "панели"],
-      "sources": ["src/components/", "src/components/ChatPanel/MarkdownRenderer.tsx"],
-      "related": ["dev-routing", "dev-i18n", "dev-conventions", "panel-chat"],
+      "tags": [
+        "dev",
+        "компоненты",
+        "панели"
+      ],
+      "sources": [
+        "src/components/",
+        "src/components/ChatPanel/MarkdownRenderer.tsx"
+      ],
+      "related": [
+        "dev-routing",
+        "dev-i18n",
+        "dev-conventions",
+        "panel-chat"
+      ],
       "reviewed": null,
-      "tests": ["src/components/ChatPanel/MarkdownRenderer.test.tsx"]
+      "tests": [
+        "src/components/ChatPanel/MarkdownRenderer.test.tsx"
+      ]
     },
     {
       "id": "wiki:dev-routing",
@@ -4702,14 +6886,21 @@
       "title": "Разработчикам: маршруты и добавление панели",
       "section": "dev",
       "status": "verified",
-      "tags": ["dev", "роутинг", "панель"],
+      "tags": [
+        "dev",
+        "роутинг",
+        "панель"
+      ],
       "sources": [
         "src/route-registry-core.ts",
         "src/route-registry-content.ts",
         "src/route-registry-system.ts",
         "src/route-imports.ts"
       ],
-      "related": ["dev-components", "dev-i18n"],
+      "related": [
+        "dev-components",
+        "dev-i18n"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -4720,9 +6911,20 @@
       "title": "Разработчикам: состояние (stores) и хуки",
       "section": "dev",
       "status": "verified",
-      "tags": ["dev", "stores", "состояние"],
-      "sources": ["src/stores/", "src/hooks/"],
-      "related": ["dev-store-catalog", "dev-components", "dev-services"],
+      "tags": [
+        "dev",
+        "stores",
+        "состояние"
+      ],
+      "sources": [
+        "src/stores/",
+        "src/hooks/"
+      ],
+      "related": [
+        "dev-store-catalog",
+        "dev-components",
+        "dev-services"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -4733,9 +6935,20 @@
       "title": "Разработчикам: локализация (i18n)",
       "section": "dev",
       "status": "verified",
-      "tags": ["dev", "i18n", "локали"],
-      "sources": ["src/i18n/", "src/i18n/i18n-keys.test.ts"],
-      "related": ["dev-i18n-catalog", "dev-components", "dev-routing"],
+      "tags": [
+        "dev",
+        "i18n",
+        "локали"
+      ],
+      "sources": [
+        "src/i18n/",
+        "src/i18n/i18n-keys.test.ts"
+      ],
+      "related": [
+        "dev-i18n-catalog",
+        "dev-components",
+        "dev-routing"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -4746,9 +6959,22 @@
       "title": "Разработчикам: тесты",
       "section": "dev",
       "status": "verified",
-      "tags": ["dev", "тесты", "vitest", "playwright"],
-      "sources": ["vitest.config.ts", "package.json", "e2e/"],
-      "related": ["dev-tests-catalog", "dev-ci", "dev-conventions"],
+      "tags": [
+        "dev",
+        "тесты",
+        "vitest",
+        "playwright"
+      ],
+      "sources": [
+        "vitest.config.ts",
+        "package.json",
+        "e2e/"
+      ],
+      "related": [
+        "dev-tests-catalog",
+        "dev-ci",
+        "dev-conventions"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -4759,8 +6985,16 @@
       "title": "Разработчикам: ворота качества и CI",
       "section": "dev",
       "status": "verified",
-      "tags": ["dev", "CI", "гейт", "сборка"],
-      "sources": [".github/workflows/ci.yml", "package.json"],
+      "tags": [
+        "dev",
+        "CI",
+        "гейт",
+        "сборка"
+      ],
+      "sources": [
+        ".github/workflows/ci.yml",
+        "package.json"
+      ],
       "related": [
         "dev-testing",
         "dev-generators",
@@ -4778,9 +7012,21 @@
       "title": "Разработчикам: генераторы и сгенерированные файлы",
       "section": "dev",
       "status": "verified",
-      "tags": ["dev", "генераторы", "scripts"],
-      "sources": ["scripts/", "src/generated/"],
-      "related": ["dev-ci", "dev-routing", "dev-layout", "dev-scripts"],
+      "tags": [
+        "dev",
+        "генераторы",
+        "scripts"
+      ],
+      "sources": [
+        "scripts/",
+        "src/generated/"
+      ],
+      "related": [
+        "dev-ci",
+        "dev-routing",
+        "dev-layout",
+        "dev-scripts"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -4791,9 +7037,20 @@
       "title": "Разработчикам: конвенции кода",
       "section": "dev",
       "status": "verified",
-      "tags": ["dev", "стиль", "конвенции"],
-      "sources": ["eslint.config.js", ".dependency-cruiser.cjs"],
-      "related": ["dev-components", "dev-services", "dev-testing"],
+      "tags": [
+        "dev",
+        "стиль",
+        "конвенции"
+      ],
+      "sources": [
+        "eslint.config.js",
+        ".dependency-cruiser.cjs"
+      ],
+      "related": [
+        "dev-components",
+        "dev-services",
+        "dev-testing"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -4804,9 +7061,19 @@
       "title": "Разработчикам: глоссарий",
       "section": "dev",
       "status": "verified",
-      "tags": ["dev", "глоссарий", "термины"],
-      "sources": ["src/kernel/", "src/components/"],
-      "related": ["dev-overview", "dev-services"],
+      "tags": [
+        "dev",
+        "глоссарий",
+        "термины"
+      ],
+      "sources": [
+        "src/kernel/",
+        "src/components/"
+      ],
+      "related": [
+        "dev-overview",
+        "dev-services"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -4817,8 +7084,16 @@
       "title": "Рецепты: типовые задачи",
       "section": "dev",
       "status": "verified",
-      "tags": ["dev", "рецепты", "how-to"],
-      "sources": ["src/route-registry-*.ts", "src/kernel/", "src/i18n/"],
+      "tags": [
+        "dev",
+        "рецепты",
+        "how-to"
+      ],
+      "sources": [
+        "src/route-registry-*.ts",
+        "src/kernel/",
+        "src/i18n/"
+      ],
       "related": [
         "dev-routing",
         "dev-services",
@@ -4838,7 +7113,12 @@
       "title": "Реестр архитектурных решений (ADR)",
       "section": "dev",
       "status": "verified",
-      "tags": ["adr", "решения", "архитектура", "история"],
+      "tags": [
+        "adr",
+        "решения",
+        "архитектура",
+        "история"
+      ],
       "sources": [
         "docs/001-event-driven-architecture.md",
         "docs/002-worker-sandboxing.md",
@@ -4846,7 +7126,12 @@
         "docs/004-hybrid-search-strategy.md",
         "docs/005-mcp-integration.md"
       ],
-      "related": ["dev-overview", "architecture", "dev-history", "docs-index"],
+      "related": [
+        "dev-overview",
+        "architecture",
+        "dev-history",
+        "docs-index"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -4857,9 +7142,22 @@
       "title": "Каталог компонентов OS",
       "section": "dev",
       "status": "verified",
-      "tags": ["dev", "каталог", "компоненты", "связи"],
-      "sources": ["scripts/gen-wiki-catalog.mjs", "src/generated/wiki-component-catalog.ts"],
-      "related": ["dev-components", "dev-services", "dev-routing", "dev-layout"],
+      "tags": [
+        "dev",
+        "каталог",
+        "компоненты",
+        "связи"
+      ],
+      "sources": [
+        "scripts/gen-wiki-catalog.mjs",
+        "src/generated/wiki-component-catalog.ts"
+      ],
+      "related": [
+        "dev-components",
+        "dev-services",
+        "dev-routing",
+        "dev-layout"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -4870,7 +7168,12 @@
       "title": "Каталог панелей: раздел → маршрут → компонент → статья",
       "section": "panels",
       "status": "verified",
-      "tags": ["панели", "каталог", "маршруты", "компоненты"],
+      "tags": [
+        "панели",
+        "каталог",
+        "маршруты",
+        "компоненты"
+      ],
       "sources": [
         "scripts/gen-wiki-panel-catalog.mjs",
         "src/generated/wiki-panel-catalog.ts",
@@ -4879,7 +7182,12 @@
         "src/route-registry-content.ts",
         "src/route-imports.ts"
       ],
-      "related": ["panels-guide", "dev-routing", "dev-layout", "dev-component-catalog"],
+      "related": [
+        "panels-guide",
+        "dev-routing",
+        "dev-layout",
+        "dev-component-catalog"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -4890,13 +7198,23 @@
       "title": "Здоровье документации",
       "section": "diagnostics",
       "status": "verified",
-      "tags": ["диагностика", "документация", "качество", "метрики"],
+      "tags": [
+        "диагностика",
+        "документация",
+        "качество",
+        "метрики"
+      ],
       "sources": [
         "scripts/lib/docs-health.mjs",
         "scripts/gen-wiki-docs-health.mjs",
         "src/generated/wiki-docs-health.ts"
       ],
-      "related": ["dev-generators", "dev-ci", "panels-catalog", "diagnostics"],
+      "related": [
+        "dev-generators",
+        "dev-ci",
+        "panels-catalog",
+        "diagnostics"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -4907,13 +7225,23 @@
       "title": "Инвентаризация документации",
       "section": "dev",
       "status": "verified",
-      "tags": ["документация", "инвентаризация", "каталог", "метрики"],
+      "tags": [
+        "документация",
+        "инвентаризация",
+        "каталог",
+        "метрики"
+      ],
       "sources": [
         "scripts/gen-docs-inventory.mjs",
         "docs/inventory.json",
         "src/generated/wiki-docs-inventory.ts"
       ],
-      "related": ["docs-health", "dev-generators", "dev-layout", "dev-ci"],
+      "related": [
+        "docs-health",
+        "dev-generators",
+        "dev-layout",
+        "dev-ci"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -4924,13 +7252,24 @@
       "title": "Стандарт документации",
       "section": "dev",
       "status": "verified",
-      "tags": ["документация", "стандарт", "статусы", "источники истины", "языки"],
+      "tags": [
+        "документация",
+        "стандарт",
+        "статусы",
+        "источники истины",
+        "языки"
+      ],
       "sources": [
         "scripts/lib/entity-model.mjs",
         "docs/entity-model.json",
         "scripts/gen-wiki-docs-standard.mjs"
       ],
-      "related": ["docs-inventory", "docs-health", "dev-generators", "dev-conventions"],
+      "related": [
+        "docs-inventory",
+        "docs-health",
+        "dev-generators",
+        "dev-conventions"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -4941,9 +7280,23 @@
       "title": "Карта документации",
       "section": "guide",
       "status": "verified",
-      "tags": ["документация", "навигация", "индекс", "карта"],
-      "sources": ["docs/manifest.json", "docs/inventory.json", "scripts/gen-wiki-docs-index.mjs"],
-      "related": ["docs-standard", "docs-inventory", "docs-health", "dev-generators"],
+      "tags": [
+        "документация",
+        "навигация",
+        "индекс",
+        "карта"
+      ],
+      "sources": [
+        "docs/manifest.json",
+        "docs/inventory.json",
+        "scripts/gen-wiki-docs-index.mjs"
+      ],
+      "related": [
+        "docs-standard",
+        "docs-inventory",
+        "docs-health",
+        "dev-generators"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -4954,14 +7307,26 @@
       "title": "Карта системы",
       "section": "architecture",
       "status": "verified",
-      "tags": ["система", "слои", "агенты", "стратегии", "провайдеры", "карта"],
+      "tags": [
+        "система",
+        "слои",
+        "агенты",
+        "стратегии",
+        "провайдеры",
+        "карта"
+      ],
       "sources": [
         "src/data/role-library.ts",
         "src/constants/pools.ts",
         "src/components/DebatePanel/wizard-constants.ts",
         "scripts/gen-wiki-system-map.mjs"
       ],
-      "related": ["docs-index", "dev-service-map", "panel-infra-meta", "dev-generators"],
+      "related": [
+        "docs-index",
+        "dev-service-map",
+        "panel-infra-meta",
+        "dev-generators"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -4972,14 +7337,25 @@
       "title": "История разработки",
       "section": "history",
       "status": "verified",
-      "tags": ["история", "аудиты", "зоны", "решения", "архив"],
+      "tags": [
+        "история",
+        "аудиты",
+        "зоны",
+        "решения",
+        "архив"
+      ],
       "sources": [
         "docs/manifest.json",
         "docs/inventory.json",
         "docs/entity-model.json",
         "scripts/gen-wiki-history.mjs"
       ],
-      "related": ["docs-standard", "docs-index", "zone-1", "dev-tests-catalog"],
+      "related": [
+        "docs-standard",
+        "docs-index",
+        "zone-1",
+        "dev-tests-catalog"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -4990,14 +7366,25 @@
       "title": "Возможности и сценарии",
       "section": "guide",
       "status": "verified",
-      "tags": ["возможности", "сценарии", "руководства", "ограничения", "диагностика"],
+      "tags": [
+        "возможности",
+        "сценарии",
+        "руководства",
+        "ограничения",
+        "диагностика"
+      ],
       "sources": [
         "src/route-registry-core.ts",
         "src/route-registry-system.ts",
         "src/route-registry-content.ts",
         "scripts/gen-wiki-capabilities.mjs"
       ],
-      "related": ["capabilities", "panels-guide", "panels-catalog", "diagnostics"],
+      "related": [
+        "capabilities",
+        "panels-guide",
+        "panels-catalog",
+        "diagnostics"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -5008,9 +7395,23 @@
       "title": "Граф знаний",
       "section": "dev",
       "status": "verified",
-      "tags": ["граф", "знания", "связи", "поиск", "индекс"],
-      "sources": ["docs/manifest.json", "scripts/gen-docs-graph.mjs"],
-      "related": ["docs-standard", "docs-index", "docs-inventory", "dev-system-map"],
+      "tags": [
+        "граф",
+        "знания",
+        "связи",
+        "поиск",
+        "индекс"
+      ],
+      "sources": [
+        "docs/manifest.json",
+        "scripts/gen-docs-graph.mjs"
+      ],
+      "related": [
+        "docs-standard",
+        "docs-index",
+        "docs-inventory",
+        "dev-system-map"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -5021,13 +7422,24 @@
       "title": "Проверки и показатели",
       "section": "dev",
       "status": "verified",
-      "tags": ["проверки", "метрики", "полнота", "ci", "качество"],
+      "tags": [
+        "проверки",
+        "метрики",
+        "полнота",
+        "ci",
+        "качество"
+      ],
       "sources": [
         "scripts/lib/docs-health.mjs",
         "scripts/gen-wiki-checks.mjs",
         "docs/manifest.json"
       ],
-      "related": ["docs-health", "docs-standard", "docs-inventory", "dev-graph"],
+      "related": [
+        "docs-health",
+        "docs-standard",
+        "docs-inventory",
+        "dev-graph"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -5038,13 +7450,22 @@
       "title": "Внешние библиотеки",
       "section": "dev",
       "status": "verified",
-      "tags": ["библиотеки", "зависимости", "package.json", "dev"],
+      "tags": [
+        "библиотеки",
+        "зависимости",
+        "package.json",
+        "dev"
+      ],
       "sources": [
         "package.json",
         "scripts/gen-wiki-libraries.mjs",
         "src/generated/wiki-libraries.ts"
       ],
-      "related": ["dev-overview", "dev-scripts", "dev-conventions"],
+      "related": [
+        "dev-overview",
+        "dev-scripts",
+        "dev-conventions"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -5055,14 +7476,26 @@
       "title": "Матрица покрытия",
       "section": "dev",
       "status": "verified",
-      "tags": ["документация", "покрытие", "проверки", "тесты", "метрики"],
+      "tags": [
+        "документация",
+        "покрытие",
+        "проверки",
+        "тесты",
+        "метрики"
+      ],
       "sources": [
         "scripts/gen-wiki-coverage.mjs",
         "src/generated/wiki-coverage.ts",
         "docs/manifest.json",
         "scripts/lib/route-nav.mjs"
       ],
-      "related": ["docs-health", "dev-checks", "docs-standard", "docs-inventory", "dev-graph"],
+      "related": [
+        "docs-health",
+        "dev-checks",
+        "docs-standard",
+        "docs-inventory",
+        "dev-graph"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -5073,11 +7506,25 @@
       "title": "Каталог событий шины",
       "section": "dev",
       "status": "verified",
-      "tags": ["dev", "события", "каталог", "шина"],
-      "sources": ["scripts/gen-wiki-events.mjs", "src/kernel/events/event-registry.ts"],
-      "related": ["dev-events", "dev-services", "dev-overview"],
+      "tags": [
+        "dev",
+        "события",
+        "каталог",
+        "шина"
+      ],
+      "sources": [
+        "scripts/gen-wiki-events.mjs",
+        "src/kernel/events/event-registry.ts"
+      ],
+      "related": [
+        "dev-events",
+        "dev-services",
+        "dev-overview"
+      ],
       "reviewed": null,
-      "tests": ["src/kernel/events/event-registry.test.ts"]
+      "tests": [
+        "src/kernel/events/event-registry.test.ts"
+      ]
     },
     {
       "id": "wiki:dev-service-map",
@@ -5086,9 +7533,22 @@
       "title": "Карта зависимостей ядра (DI)",
       "section": "dev",
       "status": "verified",
-      "tags": ["dev", "DI", "сервисы", "карта"],
-      "sources": ["src/kernel/DEPENDENCY_MAP.md", "scripts/gen-wiki-depmap.mjs"],
-      "related": ["dev-services", "dev-boot", "dev-event-catalog", "dev-component-catalog"],
+      "tags": [
+        "dev",
+        "DI",
+        "сервисы",
+        "карта"
+      ],
+      "sources": [
+        "src/kernel/DEPENDENCY_MAP.md",
+        "scripts/gen-wiki-depmap.mjs"
+      ],
+      "related": [
+        "dev-services",
+        "dev-boot",
+        "dev-event-catalog",
+        "dev-component-catalog"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -5099,9 +7559,22 @@
       "title": "Контракты ядра",
       "section": "dev",
       "status": "verified",
-      "tags": ["dev", "контракты", "интерфейсы", "каталог"],
-      "sources": ["scripts/gen-wiki-contracts.mjs", "src/kernel/contracts/"],
-      "related": ["dev-services", "dev-service-map", "dev-component-catalog", "dev-overview"],
+      "tags": [
+        "dev",
+        "контракты",
+        "интерфейсы",
+        "каталог"
+      ],
+      "sources": [
+        "scripts/gen-wiki-contracts.mjs",
+        "src/kernel/contracts/"
+      ],
+      "related": [
+        "dev-services",
+        "dev-service-map",
+        "dev-component-catalog",
+        "dev-overview"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -5112,9 +7585,22 @@
       "title": "Каталог сторов",
       "section": "dev",
       "status": "verified",
-      "tags": ["dev", "сторы", "состояние", "каталог"],
-      "sources": ["scripts/gen-wiki-stores.mjs", "src/stores/"],
-      "related": ["dev-stores", "dev-services", "dev-contracts", "dev-overview"],
+      "tags": [
+        "dev",
+        "сторы",
+        "состояние",
+        "каталог"
+      ],
+      "sources": [
+        "scripts/gen-wiki-stores.mjs",
+        "src/stores/"
+      ],
+      "related": [
+        "dev-stores",
+        "dev-services",
+        "dev-contracts",
+        "dev-overview"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -5125,9 +7611,21 @@
       "title": "Каталог локализации",
       "section": "dev",
       "status": "verified",
-      "tags": ["dev", "i18n", "локали", "каталог"],
-      "sources": ["scripts/gen-wiki-i18n.mjs", "src/i18n/translations/"],
-      "related": ["dev-i18n", "dev-components", "dev-overview"],
+      "tags": [
+        "dev",
+        "i18n",
+        "локали",
+        "каталог"
+      ],
+      "sources": [
+        "scripts/gen-wiki-i18n.mjs",
+        "src/i18n/translations/"
+      ],
+      "related": [
+        "dev-i18n",
+        "dev-components",
+        "dev-overview"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -5138,9 +7636,22 @@
       "title": "Скрипты и CLI",
       "section": "dev",
       "status": "verified",
-      "tags": ["dev", "скрипты", "cli", "команды"],
-      "sources": ["scripts/gen-wiki-scripts.mjs", "package.json"],
-      "related": ["dev-ci", "dev-generators", "dev-testing", "dev-overview"],
+      "tags": [
+        "dev",
+        "скрипты",
+        "cli",
+        "команды"
+      ],
+      "sources": [
+        "scripts/gen-wiki-scripts.mjs",
+        "package.json"
+      ],
+      "related": [
+        "dev-ci",
+        "dev-generators",
+        "dev-testing",
+        "dev-overview"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -5151,9 +7662,22 @@
       "title": "Каталог тестов",
       "section": "dev",
       "status": "verified",
-      "tags": ["dev", "тесты", "каталог", "CI"],
-      "sources": ["scripts/gen-wiki-tests.mjs", "package.json"],
-      "related": ["dev-testing", "dev-ci", "dev-scripts", "dev-overview"],
+      "tags": [
+        "dev",
+        "тесты",
+        "каталог",
+        "CI"
+      ],
+      "sources": [
+        "scripts/gen-wiki-tests.mjs",
+        "package.json"
+      ],
+      "related": [
+        "dev-testing",
+        "dev-ci",
+        "dev-scripts",
+        "dev-overview"
+      ],
       "reviewed": null,
       "tests": []
     },
@@ -5164,7 +7688,10 @@
       "title": "Завершённые задачи",
       "section": "dev-status",
       "status": "needs-check",
-      "tags": ["состояние разработки", "прогресс"],
+      "tags": [
+        "состояние разработки",
+        "прогресс"
+      ],
       "sources": [],
       "related": [
         "dev-status-active",
@@ -5187,7 +7714,10 @@
       "title": "Активная разработка",
       "section": "dev-status",
       "status": "needs-check",
-      "tags": ["состояние разработки", "прогресс"],
+      "tags": [
+        "состояние разработки",
+        "прогресс"
+      ],
       "sources": [],
       "related": [
         "dev-status-done",
@@ -5210,7 +7740,10 @@
       "title": "Критические проблемы",
       "section": "dev-status",
       "status": "needs-check",
-      "tags": ["состояние разработки", "риски"],
+      "tags": [
+        "состояние разработки",
+        "риски"
+      ],
       "sources": [],
       "related": [
         "dev-status-done",
@@ -5233,7 +7766,10 @@
       "title": "Технический долг",
       "section": "dev-status",
       "status": "needs-check",
-      "tags": ["состояние разработки", "долг"],
+      "tags": [
+        "состояние разработки",
+        "долг"
+      ],
       "sources": [],
       "related": [
         "dev-status-done",
@@ -5256,7 +7792,10 @@
       "title": "Отложенные баги",
       "section": "dev-status",
       "status": "needs-check",
-      "tags": ["состояние разработки", "баги"],
+      "tags": [
+        "состояние разработки",
+        "баги"
+      ],
       "sources": [],
       "related": [
         "dev-status-done",
@@ -5279,8 +7818,14 @@
       "title": "Состояние тестирования",
       "section": "dev-status",
       "status": "verified",
-      "tags": ["состояние разработки", "тесты"],
-      "sources": ["package.json", "vitest.config.ts"],
+      "tags": [
+        "состояние разработки",
+        "тесты"
+      ],
+      "sources": [
+        "package.json",
+        "vitest.config.ts"
+      ],
       "related": [
         "dev-status-done",
         "dev-status-active",
@@ -5302,7 +7847,10 @@
       "title": "Документация",
       "section": "dev-status",
       "status": "needs-check",
-      "tags": ["состояние разработки", "документация"],
+      "tags": [
+        "состояние разработки",
+        "документация"
+      ],
       "sources": [],
       "related": [
         "dev-status-done",
@@ -5325,7 +7873,10 @@
       "title": "Заблокированные задачи",
       "section": "dev-status",
       "status": "needs-check",
-      "tags": ["состояние разработки", "риски"],
+      "tags": [
+        "состояние разработки",
+        "риски"
+      ],
       "sources": [],
       "related": [
         "dev-status-done",
@@ -5348,7 +7899,10 @@
       "title": "Roadmaps",
       "section": "dev-status",
       "status": "needs-check",
-      "tags": ["состояние разработки", "планы"],
+      "tags": [
+        "состояние разработки",
+        "планы"
+      ],
       "sources": [],
       "related": [
         "dev-status-done",
@@ -5371,7 +7925,10 @@
       "title": "MD и другие файлы от разработки",
       "section": "dev-status",
       "status": "needs-check",
-      "tags": ["состояние разработки", "процесс"],
+      "tags": [
+        "состояние разработки",
+        "процесс"
+      ],
       "sources": [],
       "related": [
         "dev-status-done",
@@ -5394,7 +7951,13 @@
       "title": "Память: что есть и чего нет (аудит)",
       "section": "memory",
       "status": "verified",
-      "tags": ["память", "аудит", "RAG", "граф", "гэпы"],
+      "tags": [
+        "память",
+        "аудит",
+        "RAG",
+        "граф",
+        "гэпы"
+      ],
       "sources": [
         "src/kernel/services/memory-engine.ts",
         "src/kernel/services/memory/sleep-engine.ts",
@@ -5453,7 +8016,13 @@
       "title": "Панель: Помощник проекта",
       "section": "panels",
       "status": "verified",
-      "tags": ["панель", "ассистент", "голос", "инструменты", "память"],
+      "tags": [
+        "панель",
+        "ассистент",
+        "голос",
+        "инструменты",
+        "память"
+      ],
       "sources": [
         "src/components/Assistant/AssistantPanel.tsx",
         "src/components/Assistant/assistant-wiring.ts",
@@ -5469,7 +8038,11 @@
         "src/kernel/services/assistant/assistant-diagnosis-service.ts",
         "src/kernel/services/capability-trust/capability-trust-service.ts"
       ],
-      "related": ["panel-chat", "panel-observability", "memory"],
+      "related": [
+        "panel-chat",
+        "panel-observability",
+        "memory"
+      ],
       "reviewed": null,
       "tests": [
         "src/components/Assistant/AssistantPanel.test.tsx",
@@ -8184,7 +10757,9 @@
       "path": "docs/audits/DOCS_INVENTORY_2026-10-17.md",
       "title": "Инвентаризация `docs/` (2026-10-17)",
       "date": "2026-10-17",
-      "mentions": ["src/components/DocsHealthPanel/docs-health-constants.ts"],
+      "mentions": [
+        "src/components/DocsHealthPanel/docs-health-constants.ts"
+      ],
       "tests": []
     },
     {
@@ -8193,7 +10768,9 @@
       "path": "docs/audits/DOCS_PROGRAM_REPORT_2026-10-17.md",
       "title": "Отчёт: программа документации SuperAgents OS",
       "date": "2026-10-17",
-      "mentions": ["src/components/DocsHealthPanel/docs-health-constants.ts"],
+      "mentions": [
+        "src/components/DocsHealthPanel/docs-health-constants.ts"
+      ],
       "tests": []
     },
     {
@@ -8817,8 +11394,13 @@
       "path": "docs/audits/_done/PROJECTS_RUNTIME_AUDIT.md",
       "title": "Projects Runtime Audit",
       "date": "2026-08-14",
-      "mentions": ["src/kernel/events/event-registry.ts", "src/kernel/services/dexie-schema.ts"],
-      "tests": ["src/kernel/events/event-registry.test.ts"]
+      "mentions": [
+        "src/kernel/events/event-registry.ts",
+        "src/kernel/services/dexie-schema.ts"
+      ],
+      "tests": [
+        "src/kernel/events/event-registry.test.ts"
+      ]
     },
     {
       "id": "audit:_done--SIMULATION_AUDIT",
@@ -8958,8 +11540,12 @@
       "path": "docs/audits/_done/STATIC_GAP_CLOSURE_PLAN.md",
       "title": "STATIC GAP CLOSURE PLAN — до сильного ПК, без runtime",
       "date": "2026-09-07",
-      "mentions": ["src/kernel/services/rag/hybrid-retrieval-service.ts"],
-      "tests": ["src/kernel/services/rag/hybrid-retrieval-service.test.ts"]
+      "mentions": [
+        "src/kernel/services/rag/hybrid-retrieval-service.ts"
+      ],
+      "tests": [
+        "src/kernel/services/rag/hybrid-retrieval-service.test.ts"
+      ]
     },
     {
       "id": "audit:_done--SuperAgents-OS-Audit-Report",
@@ -8972,7 +11558,9 @@
         "src/kernel/workers/memory.worker.ts",
         "src/stores/chat/store.ts"
       ],
-      "tests": ["src/stores/chat/store.test.ts"]
+      "tests": [
+        "src/stores/chat/store.test.ts"
+      ]
     },
     {
       "id": "audit:_done--SuperAgents_OS_Roadmap_10of10_2026-09-18",
@@ -8985,7 +11573,9 @@
         "src/components/Sidebar.tsx",
         "src/route-registry-content.ts"
       ],
-      "tests": ["src/components/MemoryPanel/MemoryPanel.test.tsx"]
+      "tests": [
+        "src/components/MemoryPanel/MemoryPanel.test.tsx"
+      ]
     },
     {
       "id": "audit:_done--SuperAgents_OS_vs_Paperclip_Gap_Plan_2026-09-18",
@@ -9329,7 +11919,9 @@
         "src/llm/http/llm-http-client.ts",
         "src/tests/setup-light.ts"
       ],
-      "tests": ["src/llm/http/llm-http-client.test.ts"]
+      "tests": [
+        "src/llm/http/llm-http-client.test.ts"
+      ]
     },
     {
       "id": "audit:_done--audit-10-config-env",
@@ -9344,7 +11936,9 @@
         "src/main.tsx",
         "src/shared/utils/logger.ts"
       ],
-      "tests": ["src/kernel/services/config-registry.test.ts"]
+      "tests": [
+        "src/kernel/services/config-registry.test.ts"
+      ]
     },
     {
       "id": "audit:_done--audit-11-a11y-i18n",
@@ -9377,7 +11971,10 @@
       "path": "docs/audits/_done/audit-12-build-deploy.md",
       "title": "Аудит 12: Производительность сборки и деплоя (Build & Deploy Performance)",
       "date": null,
-      "mentions": ["src/components/Editors/CodeEditor.tsx", "src/route-imports.ts"],
+      "mentions": [
+        "src/components/Editors/CodeEditor.tsx",
+        "src/route-imports.ts"
+      ],
       "tests": []
     },
     {
@@ -9592,7 +12189,9 @@
       "path": "docs/audits/_done/audit-15-debate-runtime.md",
       "title": "Debate Runtime Audit — ai-os-new @ n4-chain-backup",
       "date": "2026-09-11",
-      "mentions": ["src/kernel/services/debate-runtime/debate-llm-caller.ts"],
+      "mentions": [
+        "src/kernel/services/debate-runtime/debate-llm-caller.ts"
+      ],
       "tests": []
     },
     {
@@ -9610,8 +12209,14 @@
       "path": "docs/audits/_done/audit-17-debate-reset.md",
       "title": "Debate Reset Audit — почему дебаты \"слетают\" в форму запуска",
       "date": "2026-09-12",
-      "mentions": ["src/stores/activeDebateStore.ts", "src/stores/debateLiveStore.ts"],
-      "tests": ["src/stores/activeDebateStore.test.ts", "src/stores/debateLiveStore.test.ts"]
+      "mentions": [
+        "src/stores/activeDebateStore.ts",
+        "src/stores/debateLiveStore.ts"
+      ],
+      "tests": [
+        "src/stores/activeDebateStore.test.ts",
+        "src/stores/debateLiveStore.test.ts"
+      ]
     },
     {
       "id": "audit:_done--audit-18-debate-engine-gap",
@@ -9633,7 +12238,9 @@
         "src/stores/chat/store.ts",
         "src/stores/chat/types.ts"
       ],
-      "tests": ["src/stores/chat/store.test.ts"]
+      "tests": [
+        "src/stores/chat/store.test.ts"
+      ]
     },
     {
       "id": "audit:_done--audit-20-backend-review",
@@ -9716,7 +12323,9 @@
       "path": "docs/audits/_done/audit-23-mobile-phase1.md",
       "title": "MOBILE WEB — Phase 1: Full Responsive Audit (STATICALLY VERIFIED)",
       "date": "2026-09-07",
-      "mentions": ["src/components/Layout/ResponsiveShell.tsx"],
+      "mentions": [
+        "src/components/Layout/ResponsiveShell.tsx"
+      ],
       "tests": []
     },
     {
@@ -9889,7 +12498,9 @@
         "src/kernel/service-registration/phase8-roles-consortia.ts",
         "src/kernel/services/database-service.ts"
       ],
-      "tests": ["src/components/ChatAdminPanel/ChatAdminPanel.test.tsx"]
+      "tests": [
+        "src/components/ChatAdminPanel/ChatAdminPanel.test.tsx"
+      ]
     },
     {
       "id": "audit:_done--audits-2026-07--audit2--04-panels-debates",
@@ -10021,8 +12632,12 @@
       "path": "docs/audits/_done/typecheackerror.md",
       "title": "typecheackerror.md",
       "date": null,
-      "mentions": ["src/stores/invocationStore.ts"],
-      "tests": ["src/stores/invocationStore.test.ts"]
+      "mentions": [
+        "src/stores/invocationStore.ts"
+      ],
+      "tests": [
+        "src/stores/invocationStore.test.ts"
+      ]
     },
     {
       "id": "audit:_done--ua22",
@@ -10048,7 +12663,10 @@
       "path": "docs/audits/_done/Аудит_документации_.md",
       "title": "Аудит документации `ai-os-new`",
       "date": "2026-09-18",
-      "mentions": ["src/components/SmartRoutingPanel.tsx", "src/stores/project-store.ts"],
+      "mentions": [
+        "src/components/SmartRoutingPanel.tsx",
+        "src/stores/project-store.ts"
+      ],
       "tests": []
     },
     {
@@ -10057,7 +12675,9 @@
       "path": "docs/audits/adapters-audit.md",
       "title": "Аудит подсистемы «Адаптеры провайдеров LLM» — реестр дефектов и рисков",
       "date": null,
-      "mentions": ["src/llm/openrouter/openrouter-adapter.test.ts"],
+      "mentions": [
+        "src/llm/openrouter/openrouter-adapter.test.ts"
+      ],
       "tests": []
     },
     {

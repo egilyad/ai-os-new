@@ -1,0 +1,9 @@
+# Generated artifacts — must match the exact output of the wiki generators
+# (scripts/gen-wiki-*.mjs, scripts/gen-docs-*.mjs) for the CI "Wiki docs in
+# sync" check. Prettier must NOT reformat them, or the committed files drift
+# from what the generators emit.
+src/generated/
+docs/wiki/
+docs/inventory.json
+docs/graph.json
+docs/manifest.json

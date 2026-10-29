@@ -81,6 +81,14 @@ export const WIKI_CONNECTIONS: Record<string, WikiConnection[]> = {
             ]
         }
     ],
+    "panel-graph-workbench": [
+        {
+            "panelId": "graph-workbench",
+            "route": "/graph-workbench",
+            "component": "src/components/GraphWorkbenchPanel/GraphWorkbenchPanel",
+            "tests": []
+        }
+    ],
     "panel-provenance-junctions": [
         {
             "panelId": "junctions",
@@ -1348,6 +1356,14 @@ export const WIKI_CONNECTIONS: Record<string, WikiConnection[]> = {
             "panelId": "research-reports",
             "route": "/research-reports",
             "component": "src/components/ResearchReportPanel",
+            "tests": []
+        }
+    ],
+    "panel-research-cockpit": [
+        {
+            "panelId": "research-cockpit",
+            "route": "/research-cockpit",
+            "component": "src/components/ResearchCockpit/ResearchCockpit",
             "tests": []
         }
     ],

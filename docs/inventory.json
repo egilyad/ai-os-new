@@ -7741,8 +7741,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Computer & Browser Use: как управлять компьютером через агентов",
-      "bytes": 5962,
-      "hash": "2f84b0317e2cacd161879c2bea7c056ab6bf6a62"
+      "bytes": 6529,
+      "hash": "ef9fb5737fa2e1f68ee79c29890ce3e2a18ebe3e"
     },
     {
       "path": "docs/wiki/coverage-matrix.md",
@@ -7798,7 +7798,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4076,
-      "hash": "d90d934241b39f2cd7316469e4b2229674463f0f"
+      "hash": "35fd1bfe18a80422a31bc4ffa3bcb6755e6f9a4b"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -7886,7 +7886,7 @@
       "language": "ru",
       "title": "Граф знаний",
       "bytes": 4837,
-      "hash": "a66a1ef0134dd3161d6b9ed8615a08453b515552"
+      "hash": "3a2a7494cefc4e68e692c43e04b3423f8e344c7f"
     },
     {
       "path": "docs/wiki/dev-history.md",
@@ -7925,8 +7925,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Внешние библиотеки",
-      "bytes": 3670,
-      "hash": "cd5986a52b852a662607c0672e4d25563d4f6936"
+      "bytes": 3697,
+      "hash": "72b24a2d07f269e55d244cbbed9bc843efa52511"
     },
     {
       "path": "docs/wiki/dev-overview.md",
