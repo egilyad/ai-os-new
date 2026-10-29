@@ -344,8 +344,12 @@ const AgentTasksPanel: React.FC = () => {
                     <b style={{ color: sidecar?.ok ? '#059669' : '#dc2626' }}>
                         {checking ? 'проверка…' : sidecar?.ok ? 'готов' : 'не запущен'}
                     </b>
-                    {sidecar?.detail && !sidecar.ok && (
-                        <span style={{ color: 'var(--slate-500)' }}> — {sidecar.detail}</span>
+                    {!sidecar?.ok && (
+                        <span style={{ color: 'var(--slate-500)', fontSize: 11 }}>
+                            {' '}
+                            — {sidecar?.detail ?? 'недоступен'} · запусти:{' '}
+                            <code>npm run browser:sidecar</code>
+                        </span>
                     )}
                 </span>
                 <button

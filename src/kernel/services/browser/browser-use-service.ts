@@ -229,8 +229,8 @@ export class BrowserUseService {
             // Транспорт упал до HTTP: sidecar не запущен/недоступен.
             // Говорим прямо, иначе пользователь видит голый 'fetch failed'.
             throw new Error(
-                `browser sidecar unreachable at ${url} — is it running? ` +
-                    `(docker compose --profile browser up, or set browserUse.sidecarUrl): ` +
+                `browser sidecar недоступен по ${url}. Запусти его: npm run browser:sidecar ` +
+                    `(или пропиши browserUse.sidecarUrl в localStorage). Подробности: ` +
                     `${e instanceof Error ? e.message : String(e)}`,
                 { cause: e },
             );

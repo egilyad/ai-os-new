@@ -761,6 +761,7 @@ flowchart LR
             'src/components/AgentTasksPanel/AgentTasksPanel.tsx',
             'src/kernel/services/computer/computer-use-loop-service.ts',
             'src/kernel/services/browser/browser-use-service.ts',
+            'server/browser-sidecar.mjs',
         ],
         related: ['idea-path', 'scenario-map', 'agents', 'capabilities'],
         body: `## Что это
@@ -774,11 +775,24 @@ flowchart LR
 
 ---
 
+## Sidecar (Browser-режим)
+
+Браузерные действия выполняет **реальный sidecar**: \`server/browser-sidecar.mjs\` (Node.js + Playwright, порт 3100). Эндпоинты:
+- \`/health\` — статус (используется панелью для индикатора «готов / не запущен»);
+- \`/act\` — отдельные действия: \`open_url\`, \`click_selector\`, \`type_text\` (с waitFor), \`extract_text_selector\`, \`extract_table\`, \`scroll\`, \`screenshot\`, \`extract_text\`, \`get_url\`;
+- \`/execute\` — разбор свободной задачи эвристически (таблицы / цены / текст), возвращает скриншот + \`finalState\`.
+
+**Запуск:** \`npm run browser:sidecar\` (порт по умолчанию 3100, переопределяется \`BROWSER_SIDECAR_PORT\`). Playwright установлен как devDependency; требуется запущенный Chrome.
+
+В панели статус sidecar виден в шапке: **готов / не запущен**, кнопки **«Проверить»** (health-check) и **«Открыть»** (открыть \`/health\`).
+
+---
+
 ## Как запустить
 
 1. Открой **Рабочий стол** → «⚡ Быстрый запуск» → «🌐 Компьютер и браузер».
 2. Выбери режим: **Browser** или **Computer**.
-3. (Для Computer) выбери провайдера: Anthropic или Gemini Computer.
+3. (Для Computer) выбери провайдера: Anthropic или Gemini Computer. Понадобится ключ провайдера — в панели индикатор «ключ есть / нет ключа» (gemini-computer использует обычный Gemini-ключ).
 4. Выбери агента (или оставь по умолчанию).
 5. Напиши задачу простыми словами, например:
    - «Открой сайт X и найди цену Y» (Browser);
@@ -791,6 +805,8 @@ flowchart LR
 
 - Запуск идёт через **систему одобрений** (approval) — безопасно.
 - Задача с **высоким риском** (Computer) помечается отдельно.
+- Running-задачу можно **отменить** кнопкой «Отменить» (AbortSignal → сторнирует запрос к sidecar).
+- Для done-записей **Browser**-режима есть кнопка **«💎 В Crystal Vault»** — сохраняет результат как факт в память (\`crystalVault.propose\`).
 - Если «Агентов» нет — можно использовать id по умолчанию, но лучше создать агента заранее (раздел «Агенты»).
 - История запусков сохраняется прямо в панели.
 
@@ -798,8 +814,8 @@ flowchart LR
 
 ## Ограничения ([SA])
 
-- Для реальной работы нужны настроенные sidecar/провайдеры (URL в панели Approvals).
-- Без них действие может вернуть fallback. Проверяй статус в истории.
+- **Browser**: sidecar должен быть запущен (\`npm run browser:sidecar\`) — иначе выполнение вернёт ошибку соединения с подсказкой о запуске.
+- **Computer**: требуется ключ провайдера (anthropic или gemini-computer); без него действие недоступно (индикатор «нет ключа»).
 
 ---
 
