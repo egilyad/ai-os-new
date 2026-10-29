@@ -20,7 +20,7 @@
 - Панель **Wiki** в приложении и сайт `/wiki/` — тот же корпус статей
 - [`docs/manifest.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/manifest.json) — машиночитаемый индекс сущностей (статьи, панели)
 - [`docs/entity-model.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/entity-model.json) — стандарт документации
-- [`docs/inventory.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/inventory.json) — инвентарь всех `docs/**` (1139 документов)
+- [`docs/inventory.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/inventory.json) — инвентарь всех `docs/**` (1147 документов)
 
 ## Вики по разделам
 
@@ -96,16 +96,22 @@
 - [EventBus Reference](https://github.com/egilyad/ai-os-new/blob/main/docs/events.md)
 - [Navigation Map — зафиксированная раскладка меню](https://github.com/egilyad/ai-os-new/blob/main/docs/NAVIGATION_MAP.md)
 - [SuperAgents OS — Documentation Map](https://github.com/egilyad/ai-os-new/blob/main/docs/README.md)
+- [Исследование (сессия 1): Browser automation-фреймворки](https://github.com/egilyad/ai-os-new/blob/main/docs/research/browser-automation-frameworks.md)
 - [Исследование: управление браузером и компьютером ИИ](https://github.com/egilyad/ai-os-new/blob/main/docs/research/browser-computer-ai.md)
+- [Исследование (сессия 4): безопасность и устойчивость браузерных/компьютерных агентов](https://github.com/egilyad/ai-os-new/blob/main/docs/research/browser-computer-security-reliability.md)
+- [Исследование (сессия 2): способы управления браузером](https://github.com/egilyad/ai-os-new/blob/main/docs/research/browser-control-methods.md)
+- [Исследование (сессия 5): интеграция управления браузером/компьютером в SuperAgents OS](https://github.com/egilyad/ai-os-new/blob/main/docs/research/browser-integration-superagents.md)
 - [Исследование: кодинг-агенты](https://github.com/egilyad/ai-os-new/blob/main/docs/research/coding-agents.md)
 - [Исследование: когнитивные компоненты для ИИ-ОС](https://github.com/egilyad/ai-os-new/blob/main/docs/research/cognitive-components-os.md)
 - [Исследование: сложные агенты](https://github.com/egilyad/ai-os-new/blob/main/docs/research/complex-agents.md)
+- [Исследование (сессия 3): Computer Use / GUI-агенты](https://github.com/egilyad/ai-os-new/blob/main/docs/research/computer-use-gui-agents.md)
 - [Исследование: дебаты ИИ](https://github.com/egilyad/ai-os-new/blob/main/docs/research/debates-ai.md)
 - [Исследование: создание сложных исследований ИИ](https://github.com/egilyad/ai-os-new/blob/main/docs/research/deep-research-patterns.md)
 - [Исследование: ошибки в мультиагентных системах и борьба с ними](https://github.com/egilyad/ai-os-new/blob/main/docs/research/errors-recovery-audit.md)
 - [Исследование: память ИИ](https://github.com/egilyad/ai-os-new/blob/main/docs/research/memory-ai.md)
 - [Мультиагентные ИИ-ОС: аналитический обзор и карта редких паттернов](https://github.com/egilyad/ai-os-new/blob/main/docs/research/multiagent-os-patterns.md)
 - [Исследование: сложные темы в мультиагентных системах](https://github.com/egilyad/ai-os-new/blob/main/docs/research/multiagent-research-topics.md)
+- [Управление компьютером и браузером с помощью opencode](https://github.com/egilyad/ai-os-new/blob/main/docs/research/opencode-browser-computer.md)
 - [Исследование: оптимизация системы — надёжность и скорость](https://github.com/egilyad/ai-os-new/blob/main/docs/research/reliability-speed-optimization.md)
 - [Исследование: безопасность (минимум)](https://github.com/egilyad/ai-os-new/blob/main/docs/research/security-minimal.md)
 - [Исследование: прозрачность системы](https://github.com/egilyad/ai-os-new/blob/main/docs/research/transparency.md)
@@ -133,6 +139,7 @@
 - [Roadmap улучшений «Адаптеры провайдеров LLM»](https://github.com/egilyad/ai-os-new/blob/main/docs/roadmap/adapters-improvements-roadmap.md)
 - [AGEMS -> SuperAgents OS -- Roadmap](https://github.com/egilyad/ai-os-new/blob/main/docs/roadmap/AGEMS_ROADMAP.md)
 - [Roadmap улучшений «Агенты/Совет»](https://github.com/egilyad/ai-os-new/blob/main/docs/roadmap/agents-council-improvements-roadmap.md)
+- [Roadmap: управление браузером и компьютером (browser/computer use)](https://github.com/egilyad/ai-os-new/blob/main/docs/roadmap/browser-computer-roadmap.md)
 - [CHAT_DESIGN.md — Этап 2 (DESIGN): минимальный план исправлений](https://github.com/egilyad/ai-os-new/blob/main/docs/roadmap/CHAT_DESIGN.md)
 - [Roadmap улучшений «Когнитивная оркестрация / Симуляция / Тайм-тревел»](https://github.com/egilyad/ai-os-new/blob/main/docs/roadmap/cognitive-simulation-improvements-roadmap.md)
 - [Debate Multi-Session Rearchitecture (B-15/B-16 Phase 2)](https://github.com/egilyad/ai-os-new/blob/main/docs/roadmap/DEBATE_MULTI_SESSION_DESIGN.md)

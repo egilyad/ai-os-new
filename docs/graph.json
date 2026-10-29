@@ -3,11 +3,11 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 1430,
-    "edges": 3732,
+    "nodes": 1431,
+    "edges": 3733,
     "byType": {
       "audit": 75,
-      "code": 609,
+      "code": 610,
       "test": 198,
       "panel": 268,
       "article": 280
@@ -16,7 +16,7 @@
       "audit_test": 336,
       "audit_mention": 929,
       "documents": 204,
-      "source": 894,
+      "source": 895,
       "test": 293,
       "related": 1076
     }
@@ -781,6 +781,11 @@
       "id": "file:server/",
       "type": "code",
       "label": "server/"
+    },
+    {
+      "id": "file:server/browser-sidecar.mjs",
+      "type": "code",
+      "label": "server/browser-sidecar.mjs"
     },
     {
       "id": "file:src/",
@@ -21449,6 +21454,11 @@
       "from": "wiki:comp-util-persistence-helpers",
       "to": "wiki:providers",
       "kind": "related"
+    },
+    {
+      "from": "wiki:computer-browser-use",
+      "to": "file:server/browser-sidecar.mjs",
+      "kind": "source"
     },
     {
       "from": "wiki:computer-browser-use",
