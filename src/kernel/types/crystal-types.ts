@@ -72,6 +72,8 @@ export interface Crystal {
     confidence: number;
     status: CrystalStatus;
     supersededBy?: string;
+    /** P2-3: why the crystal was superseded (stale) or refuted (false). */
+    statusReason?: string;
     contradictingCrystalIds: string[];
     supportingCrystalIds: string[];
     linkedLensIds: string[];

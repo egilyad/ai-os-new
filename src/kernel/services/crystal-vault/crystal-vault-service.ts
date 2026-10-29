@@ -153,6 +153,7 @@ export class CrystalVaultService implements ICrystalVaultService {
             ...crystal,
             status: 'superseded',
             supersededBy: `${crystal.crystalId}#${crystal.version + 1}`,
+            statusReason: reason,
         };
         await this.deps.repository.put(oldVersion);
 
@@ -180,6 +181,7 @@ export class CrystalVaultService implements ICrystalVaultService {
         const crystal = await this.deps.repository.get(crystalId);
         if (!crystal) return null;
         crystal.status = 'refuted';
+        crystal.statusReason = reason;
         await this.deps.repository.put(crystal);
         this.deps.eventBus.emit(EVENTS.CRYSTAL_REFUTED, { crystalId, reason });
         return crystal;

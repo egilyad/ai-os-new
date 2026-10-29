@@ -11,7 +11,17 @@ export interface ResearchRun {
     completedAt?: number;
     findings?: string[];
     summary?: string;
+    /** P2-4: short post-run self-reflection (what worked / what didn't). */
+    reflection?: string;
     error?: string;
+}
+
+function buildReflection(findings: string[], summary: string): string {
+    if (!findings.length) return 'No findings produced — the query likely needs refinement.';
+    const parts = [`Produced ${findings.length} finding(s).`];
+    if (summary && summary.trim().length > 0) parts.push('Synthesis summary generated.');
+    else parts.push('No synthesis summary recorded.');
+    return parts.join(' ');
 }
 
 interface ResearchRunServiceDeps {
@@ -84,6 +94,7 @@ export class ResearchRunService {
             run.completedAt = Date.now();
             run.findings = findings;
             run.summary = summary;
+            run.reflection = buildReflection(findings, summary);
             void this.persist();
         }
     }
