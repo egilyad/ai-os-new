@@ -145,7 +145,7 @@ export class KeyVault implements IKeyVaultService {
         const out: ApiKey[] = [];
         for (const k of keys) {
             const encrypted = await this.encryptKey(k.key);
-            out.push({ ...k, key: encrypted ?? k.key });
+            out.push({ ...k, key: encrypted ?? k.key, isEncrypted: true });
         }
         return out;
     }

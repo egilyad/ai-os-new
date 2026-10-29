@@ -114,6 +114,18 @@ const LoopCard: React.FC<LoopCardProps> = ({ loop, index }) => {
                                         <div style={{ color: 'var(--slate-300)', lineHeight: 1.5 }}>
                                             {loop.synthesis.summary}
                                         </div>
+                                        {typeof loop.synthesis.confidence === 'number' && (
+                                            <div
+                                                style={{
+                                                    fontSize: '0.65rem',
+                                                    color: 'var(--slate-500)',
+                                                    marginTop: 2,
+                                                }}
+                                            >
+                                                Confidence:{' '}
+                                                {(loop.synthesis.confidence * 100).toFixed(0)}%
+                                            </div>
+                                        )}
                                     </div>
                                     {loop.synthesis.keyFindings.length > 0 && (
                                         <div>
@@ -126,19 +138,52 @@ const LoopCard: React.FC<LoopCardProps> = ({ loop, index }) => {
                                             >
                                                 Key Findings
                                             </div>
-                                            {loop.synthesis.keyFindings.map((f) => (
-                                                <div
-                                                    key={f}
-                                                    style={{
-                                                        display: 'flex',
-                                                        gap: 6,
-                                                        marginBottom: 3,
-                                                        color: 'var(--slate-300)',
-                                                    }}
-                                                >
-                                                    <span style={{ color: 'var(--success)' }}>•</span> {f}
-                                                </div>
-                                            ))}
+                                            {loop.synthesis.keyFindings.map((f) => {
+                                                const refs = (
+                                                    loop.synthesis.evidenceRefs ?? []
+                                                ).filter((r) => r.text === f);
+                                                const srcIds = new Set(
+                                                    refs
+                                                        .map((r) => r.sourceId)
+                                                        .filter(Boolean) as string[],
+                                                );
+                                                const srcs = loop.sources.filter((s) =>
+                                                    srcIds.has(s.id),
+                                                );
+                                                return (
+                                                    <div key={f} style={{ marginBottom: 6 }}>
+                                                        <div
+                                                            style={{
+                                                                display: 'flex',
+                                                                gap: 6,
+                                                                color: 'var(--slate-300)',
+                                                            }}
+                                                        >
+                                                            <span
+                                                                style={{ color: 'var(--success)' }}
+                                                            >
+                                                                •
+                                                            </span>{' '}
+                                                            {f}
+                                                        </div>
+                                                        {srcs.length > 0 && (
+                                                            <div
+                                                                style={{
+                                                                    paddingLeft: 18,
+                                                                    fontSize: '0.68rem',
+                                                                    color: 'var(--slate-500)',
+                                                                }}
+                                                            >
+                                                                Sources:{' '}
+                                                                {srcs
+                                                                    .slice(0, 3)
+                                                                    .map((s) => s.title)
+                                                                    .join('; ')}
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                );
+                                            })}
                                         </div>
                                     )}
                                     {loop.synthesis.gaps.length > 0 && (
@@ -260,7 +305,12 @@ const LoopCard: React.FC<LoopCardProps> = ({ loop, index }) => {
                                                     {src.authors.length > 1 ? ' et al.' : ''}
                                                 </span>
                                             )}
-                                            <span style={{ fontSize: '0.65rem', color: 'var(--slate-600)' }}>
+                                            <span
+                                                style={{
+                                                    fontSize: '0.65rem',
+                                                    color: 'var(--slate-600)',
+                                                }}
+                                            >
                                                 {(src.relevanceScore * 100).toFixed(0)}%
                                             </span>
                                         </div>

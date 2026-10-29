@@ -33,7 +33,10 @@ describe('ExecutionQueue', () => {
         });
 
         it('should respect max concurrency', async () => {
-            processor.mockImplementation(() => new Promise(() => {}));
+            const resolvers: Array<() => void> = [];
+            processor.mockImplementation(
+                () => new Promise<void>((resolve) => resolvers.push(resolve)),
+            );
             queue.enqueue('normal', 'a');
             queue.enqueue('normal', 'b');
             queue.enqueue('normal', 'c');
@@ -41,6 +44,9 @@ describe('ExecutionQueue', () => {
             await vi.runAllTimersAsync();
             expect(queue.active).toBe(3);
             expect(queue.pending).toBe(1);
+            resolvers.slice(0, 3).forEach((r) => r());
+            await vi.runAllTimersAsync();
+            expect(queue.active).toBe(1);
         });
 
         it('should process tasks in priority order', async () => {
@@ -103,6 +109,41 @@ describe('ExecutionQueue', () => {
             queue.enqueue('high', 'y');
             queue.clear();
             expect(queue.pending).toBe(0);
+        });
+    });
+
+    describe('watchdog', () => {
+        it('finalizes hung tasks and keeps the queue moving', async () => {
+            processor.mockImplementation(() => new Promise(() => {}));
+            queue = new ExecutionQueue(
+                processor as unknown as (task: unknown) => Promise<void>,
+                1,
+                undefined,
+                undefined,
+                1000,
+            );
+            queue.enqueue('normal', 'a');
+            queue.enqueue('normal', 'b');
+            await vi.runAllTimersAsync();
+            expect(queue.active).toBe(0);
+            expect(queue.pending).toBe(0);
+        });
+
+        it('does not finalize tasks that settle in time', async () => {
+            processor.mockResolvedValue(undefined);
+            queue = new ExecutionQueue(
+                processor as unknown as (task: unknown) => Promise<void>,
+                2,
+                undefined,
+                undefined,
+                10000,
+            );
+            queue.enqueue('normal', 'a');
+            queue.enqueue('normal', 'b');
+            await vi.runAllTimersAsync();
+            expect(queue.active).toBe(0);
+            expect(queue.pending).toBe(0);
+            expect(processor).toHaveBeenCalledTimes(2);
         });
     });
 

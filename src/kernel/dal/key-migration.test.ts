@@ -105,7 +105,7 @@ describe('runOnce (key migration)', () => {
         expect(kv.get('keys:migrated:v12')).toMatchObject({ done: true });
     });
 
-    it('migrates keys from localStorage and persists them encrypted', async () => {
+    it('migrates keys from localStorage (persists as-is; vault encrypts on save)', async () => {
         ssrSafeStorage.setItem(STORAGE_KEY, JSON.stringify([apiKey('l1', 'local', 'sk-local')]));
         const { db } = makeDb();
         const { ks, records } = makeKeyStore([]);
@@ -115,14 +115,13 @@ describe('runOnce (key migration)', () => {
 
         expect(result.migrated).toBe(1);
         const stored = records.get('l1');
-        expect(stored?.key).toBe('enc:sk-local');
-        expect(stored?.isEncrypted).toBe(true);
-        expect(security.encrypt).toHaveBeenCalledWith('sk-local');
-        // Legacy plaintext copy must be scrubbed after successful migration.
+        expect(stored?.key).toBe('sk-local');
+        expect(security.encrypt).not.toHaveBeenCalled();
+        // Legacy plaintext copy must be scrubbed after migration.
         expect(ssrSafeStorage.getItem(STORAGE_KEY)).toBeNull();
     });
 
-    it('defers when the vault is locked (skips plaintext, keeps done:false)', async () => {
+    it('keeps plaintext keys even when the encryption service is locked (no data loss)', async () => {
         ssrSafeStorage.setItem(STORAGE_KEY, JSON.stringify([apiKey('l1', 'local', 'sk-local')]));
         const { db, kv } = makeDb();
         const { ks, records } = makeKeyStore([]);
@@ -131,8 +130,9 @@ describe('runOnce (key migration)', () => {
         const result = await runOnce({ db, keyStore: ks, securityService: security });
 
         expect(result.source).toBe('migration-v12');
-        expect(records.size).toBe(0); // nothing persisted because all skipped
-        expect(kv.get('keys:migrated:v12')).toMatchObject({ done: false, pending: 1 });
+        expect(records.size).toBe(1); // persisted regardless of vault state
+        expect(records.get('l1')?.key).toBe('sk-local');
+        expect(kv.get('keys:migrated:v12')).toMatchObject({ done: true });
     });
 
     it('rolls back persisted keys if final flag write fails', async () => {

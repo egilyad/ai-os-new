@@ -89,9 +89,17 @@ export interface ResearchClaim {
     timestamp: number;
 }
 
+export interface ResearchSynthesisEvidenceRef {
+    text: string;
+    claimId?: string;
+    sourceId?: string;
+}
+
 export interface ResearchSynthesis {
     summary: string;
     keyFindings: string[];
+    /** P1-6: per-finding source/claim refs so conclusions are traceable. */
+    evidenceRefs?: ResearchSynthesisEvidenceRef[];
     confidence: number;
     gaps: string[];
     newQuestions: string[];

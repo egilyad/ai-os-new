@@ -1,6 +1,6 @@
 import { CONFIG } from './config-registry';
 import type { ILogger, LogEntry, LogLevel, ITraceContext } from '../contracts/logger';
-import { sanitizeObject } from '../../shared/utils/sanitize';
+import { sanitizeError, sanitizeObject } from '../../shared/utils/sanitize';
 import { TraceContext } from './trace-context';
 
 const LEVELS: Record<LogLevel, number> = { debug: 0, info: 1, warn: 2, error: 3 };
@@ -141,7 +141,9 @@ export class LoggerService implements ILogger {
                 (meta?.correlationId as string | undefined) ??
                 TraceContext.current?.correlationId,
             latency: meta?.latency as number | undefined,
-            error: err,
+            // P0-4: errors are stored sanitized so secrets can't reach the
+            // buffer / IndexedDB persistence / exportLogs().
+            error: sanitizeErrorEntry(err),
             meta,
         };
 
@@ -207,6 +209,12 @@ export class LoggerService implements ILogger {
                 return entries.map((e) => formatLog(e)).join('\n');
         }
     }
+}
+
+function sanitizeErrorEntry(err: unknown): unknown {
+    if (!err) return err;
+    const text = err instanceof Error ? err.message : String(err);
+    return new Error(sanitizeError(text));
 }
 
 function formatLog(entry: LogEntry): string {

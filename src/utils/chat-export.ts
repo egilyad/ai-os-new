@@ -1,4 +1,5 @@
 import type { ChatMessage } from '../kernel/types/llm-types';
+import { sanitizeObject } from '../shared/utils/sanitize';
 
 export interface ExportableChat {
     id: string;
@@ -106,14 +107,15 @@ export function exportChatToMarkdown(
         const role = m.role.charAt(0).toUpperCase() + m.role.slice(1);
         lines.push(`## ${role}`);
         lines.push('');
-        const body = escapeMarkdown((m.content ?? '').trim());
+        const body = escapeMarkdown(String(sanitizeObject(m.content ?? '')).trim());
         lines.push(body || '_(empty)_');
         if (m.toolCalls && m.toolCalls.length > 0) {
             lines.push('');
             lines.push('**Tool calls:**');
             for (const tc of m.toolCalls) {
                 lines.push(`- \`${tc.function.name}\``);
-                if (tc.function.arguments) lines.push(`  - args: \`${tc.function.arguments}\``);
+                if (tc.function.arguments)
+                    lines.push(`  - args: \`${String(sanitizeObject(tc.function.arguments))}\``);
             }
         }
         lines.push('');
@@ -134,10 +136,10 @@ export function exportChatToJSON(chat: ExportableChat, pretty = true): string {
         messages: chat.messages.map((m, idx) => ({
             index: idx,
             role: m.role,
-            content: m.content,
+            content: sanitizeObject(m.content),
             name: m.name,
             toolCallId: m.toolCallId,
-            toolCalls: m.toolCalls,
+            toolCalls: sanitizeObject(m.toolCalls),
         })),
     };
     return JSON.stringify(payload, null, pretty ? 2 : 0);
@@ -170,7 +172,7 @@ export function exportChatToHtml(chat: ExportableChat, options: ChatExportOption
     }
     for (const m of chat.messages) {
         parts.push(`<h2 class="role-${esc(m.role)}">${esc(m.role)}</h2>`);
-        parts.push(`<div class="msg">${esc(m.content ?? '')}</div>`);
+        parts.push(`<div class="msg">${esc(String(sanitizeObject(m.content ?? '')))}</div>`);
     }
     parts.push('</body></html>');
     return parts.join('\n');

@@ -48,14 +48,22 @@ export class CrystalDebateBridge {
         const statement = verdict.summary?.trim() || verdict.topic?.trim();
         if (!statement || statement.length < 24) return;
 
-        const proArguments = (verdict.keyArguments ?? [])
-            .filter((a) => a.stance !== 'con')
-            .map((a) => a.content)
-            .filter(Boolean);
+        const proArgs = (verdict.keyArguments ?? []).filter((a) => a.stance !== 'con');
+        const proArguments = proArgs.map((a) => a.content).filter(Boolean);
         const conArguments = (verdict.keyArguments ?? [])
             .filter((a) => a.stance === 'con')
             .map((a) => a.content)
             .filter(Boolean);
+        // Claim-centric evidence: attach structured citations so each statement
+        // derives from an identifiable source argument (P0-3).
+        const evidenceRefs = proArgs
+            .filter((a) => a.content)
+            .map((a) => ({
+                claimId: a.argumentId,
+                quote: a.content,
+                agentId: a.agentId,
+                agentName: a.agentName,
+            }));
 
         try {
             const crystalId = await this.deps.crystalVault.propose({
@@ -63,6 +71,7 @@ export class CrystalDebateBridge {
                     statement,
                     elaboration: verdict.reasoning?.trim() || undefined,
                     evidence: proArguments,
+                    evidenceRefs: evidenceRefs.length > 0 ? evidenceRefs : undefined,
                 },
                 originKind: 'debate',
                 originId: sessionId,

@@ -11,7 +11,7 @@ import type { IEventBus } from '../../../types/interfaces';
 import { rootLogger } from '../../logger-service';
 import { logMemoryStats } from '../../../utils/memory-tracker';
 import type { DebateRole } from '../../../contracts/debate-types';
-import { DEBATE_MODEL_PRIORITY } from '../debate-query-engine';
+import { DEBATE_MODEL_PRIORITY, modelFamily } from '../debate-query-engine';
 
 import { getAllSettings } from '../quality-settings-store';
 import { SeededRng } from '../../../utils/seedable-rng';
@@ -205,13 +205,9 @@ export class AutoDebateService implements IAutoDebateService {
 
         const selected = max && max < keys.length ? keys.slice(0, max) : keys;
         const providerOffsets: Record<string, number> = {};
-        const participants: DebateParticipant[] = selected.map((key, i) => {
-            const role = ROLES[i % ROLES.length]!;
-            const systemPrompts: Partial<Record<DebateRole, string>> = {
-                pro: `You are "Pro-${key.label ?? key.provider}". Argue in favour of the topic. Use evidence, logic, and persuasive rhetoric. Be concise but thorough.`,
-                con: `You are "Con-${key.label ?? key.provider}". Argue against the topic. Use evidence, logic, and persuasive rhetoric. Be concise but thorough.`,
-                neutral: `You are "Neutral-${key.label ?? key.provider}". Analyse both sides objectively. Identify strengths and weaknesses. Do not take a side. Be concise and balanced.`,
-            };
+        const usedFamilies = new Map<string, string>();
+        const participants: DebateParticipant[] = [];
+        for (const key of selected) {
             const offset = providerOffsets[key.provider] ?? 0;
             providerOffsets[key.provider] = offset + 1;
             const modelId = pickBestModelForDebate(
@@ -220,15 +216,34 @@ export class AutoDebateService implements IAutoDebateService {
                 undefined,
                 offset,
             );
-            return {
+            // P1-2: enforce distinct model families among participants. If the
+            // chosen family is already represented and we still have ≥2
+            // participants, skip this key rather than fielding two same-family
+            // models (echo-chamber arguments).
+            const family = modelFamily(key.provider, modelId);
+            if (usedFamilies.has(family) && participants.length >= 2) {
+                LOGGER.debug('AutoDebateService', 'skipping same-family participant', {
+                    provider: key.provider,
+                    family,
+                });
+                continue;
+            }
+            usedFamilies.set(family, key.label ?? key.provider);
+            const role = ROLES[participants.length % ROLES.length]!;
+            const systemPrompts: Partial<Record<DebateRole, string>> = {
+                pro: `You are "Pro-${key.label ?? key.provider}". Argue in favour of the topic. Use evidence, logic, and persuasive rhetoric. Be concise but thorough.`,
+                con: `You are "Con-${key.label ?? key.provider}". Argue against the topic. Use evidence, logic, and persuasive rhetoric. Be concise but thorough.`,
+                neutral: `You are "Neutral-${key.label ?? key.provider}". Analyse both sides objectively. Identify strengths and weaknesses. Do not take a side. Be concise and balanced.`,
+            };
+            participants.push({
                 id: makeParticipantId(),
                 name: `${key.label ?? key.provider}-${role}`,
                 role,
                 systemPrompt: systemPrompts[role] ?? '',
                 provider: key.provider,
                 modelId,
-            };
-        });
+            });
+        }
 
         LOGGER.debug('AutoDebateService', 'Debate models resolved', {
             participants: participants.map((p) => ({

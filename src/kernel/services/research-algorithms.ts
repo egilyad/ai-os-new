@@ -113,10 +113,17 @@ export function detectContradictions(claims: ResearchClaim[]): void {
 }
 
 export function synthesize(claims: ResearchClaim[], question: string): ResearchSynthesis {
-    const keyFindings = claims
+    const selected = claims
         .filter((c) => c.confidence > 0.4 && c.contradictions.length === 0)
-        .map((c) => c.text)
         .slice(0, 5);
+    const keyFindings = selected.map((c) => c.text);
+    // P1-6: attach the source/claim refs for each finding so conclusions are
+    // traceable back to evidence.
+    const evidenceRefs = selected.map((c) => ({
+        text: c.text,
+        claimId: c.id,
+        sourceId: c.sourceId,
+    }));
 
     const contradictory = claims.filter((c) => c.contradictions.length > 0);
     const gaps =
@@ -141,6 +148,7 @@ export function synthesize(claims: ResearchClaim[], question: string): ResearchS
                 ? `Found ${keyFindings.length} key findings from ${claims.length} claims across ${new Set(claims.map((c) => c.sourceId)).size} sources.`
                 : 'No significant findings in this iteration.',
         keyFindings,
+        evidenceRefs,
         confidence:
             claims.length > 0 ? claims.reduce((s, c) => s + c.confidence, 0) / claims.length : 0,
         gaps,

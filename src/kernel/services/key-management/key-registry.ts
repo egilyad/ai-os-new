@@ -142,42 +142,27 @@ export class KeyRegistry {
     private pendingSnapshot: ApiKey[] | null = null;
     private addKeyLock: Promise<ApiKey | null> = Promise.resolve(null);
 
-    /** One-time migration: detect old vault-encrypted keys and clear them.
-     *  Vault system was removed — encrypted keys cannot be decrypted. */
-    private migrateEncryptedKeys(keys: ApiKey[]): { migrated: ApiKey[]; count: number } {
-        const encrypted = keys.filter((k) => k.isEncrypted === true);
-        if (encrypted.length === 0) return { migrated: keys, count: 0 };
-
-        LOGGER.warn(
-            'KeyRegistry',
-            `[VAULT_MIGRATION] Found ${encrypted.length} old vault-encrypted key(s). Vault system was removed — clearing encrypted values. Please re-add your API keys.`,
-        );
-
-        const migrated: ApiKey[] = keys.map((k) => {
-            if (!k.isEncrypted) return k;
-            return {
-                ...k,
-                key: '',
-                isEncrypted: false,
-                status: 'error' as const,
-                history: [
-                    ...(k.history || []),
-                    {
-                        id: crypto.randomUUID(),
-                        timestamp: Date.now(),
-                        action: 'note_added' as const,
-                        detail: 'MIGRATED: Vault removed — encrypted key cleared. Re-add your API key.',
-                    },
-                ],
-            } as ApiKey;
-        });
-
-        return { migrated, count: encrypted.length };
+    /** Reconcile vault-encrypted keys after decryption.
+     *  The vault is active and unlocked during load, so decryptAllKeys() has
+     *  already produced runtime plaintext. Older versions cleared these keys as
+     *  unreadable ("vault removed") — that destroyed user keys. We now keep them. */
+    private reconcileEncryptedKeys(keys: ApiKey[]): { migrated: ApiKey[]; count: number } {
+        const flagged = keys.filter((k) => k.isEncrypted === true);
+        if (flagged.length > 0) {
+            LOGGER.info(
+                'KeyRegistry',
+                `Loaded ${flagged.length} vault-encrypted key(s) (decrypted for runtime use).`,
+            );
+        }
+        return { migrated: keys, count: 0 };
     }
 
     async reload(): Promise<void> {
         const prevCount = this.keys.length;
-        if (import.meta.env.DEV && (import.meta.env as unknown as { VITE_DEBUG_KEYS?: string }).VITE_DEBUG_KEYS)
+        if (
+            import.meta.env.DEV &&
+            (import.meta.env as unknown as { VITE_DEBUG_KEYS?: string }).VITE_DEBUG_KEYS
+        )
             console.trace('[KEY_REGISTRY_OVERWRITE]', {
                 source: 'reload:enter',
                 seq: ++_overwriteSeq,
@@ -289,24 +274,10 @@ export class KeyRegistry {
                         decrypted.length,
                         decrypted,
                     );
-                    // ── STAGE: vault migration ──────────────────────────────
-                    // Detect old vault-encrypted keys (isEncrypted === true) and clear them.
-                    const { migrated: migrated, count: migratedCount } =
-                        this.migrateEncryptedKeys(decrypted);
-                    if (migratedCount > 0) {
-                        LOGGER.warn(
-                            'KeyRegistry',
-                            `[VAULT_MIGRATION] Cleared ${migratedCount} encrypted key(s) from bootstrap snapshot.`,
-                        );
-                        try {
-                            this.deps.eventBus.emit(EVENTS.NOTIFICATION, {
-                                message: `[VAULT MIGRATION] ${migratedCount} old vault-encrypted key(s) cleared. Please re-add your API keys.`,
-                                type: 'warning',
-                            });
-                        } catch {
-                            /* bootstrap — eventBus may not accept yet */
-                        }
-                    }
+                    // ── STAGE: vault reconcile ──────────────────────────────
+                    // Encrypted keys are already decrypted by decryptAllKeys();
+                    // keep them (the old path cleared them = data loss).
+                    const migrated = this.reconcileEncryptedKeys(decrypted).migrated;
                     // ── STAGE: assign ───────────────────────────────────────
                     const before = this.keys.length;
                     this.setKeysInternal('loadKeys:bootstrap-snapshot', migrated, { force: true });
@@ -423,23 +394,30 @@ export class KeyRegistry {
                 return;
             }
 
-            // ── STAGE: vault migration ─────────────────────────────────
-            const { migrated, count: migratedCount } = this.migrateEncryptedKeys(final);
-            if (migratedCount > 0) {
-                LOGGER.warn(
-                    'KeyRegistry',
-                    `[VAULT_MIGRATION] Cleared ${migratedCount} encrypted key(s) from Dexie.`,
-                );
-                this.deps.eventBus.emit(EVENTS.NOTIFICATION, {
-                    message: `[VAULT MIGRATION] ${migratedCount} old vault-encrypted key(s) cleared. Please re-add your API keys.`,
-                    type: 'warning',
-                });
-            }
+            // ── STAGE: vault reconcile ─────────────────────────────────
+            const { migrated } = this.reconcileEncryptedKeys(final);
 
             // ── STAGE: assign ──────────────────────────────────────────
             const before = this.keys.length;
             this.setKeysInternal('loadKeys:dexie', migrated);
             this.traceKeyDrop(_dropRun, 'assign', before, this.keys.length, this.keys);
+
+            // ── STAGE: encrypt-on-load convergence ─────────────────────
+            // If any loaded key is stored as plaintext (legacy) and the vault
+            // is unlocked, re-save so the records are encrypted at rest. This
+            // is best-effort; failures never break the load.
+            if (!this.deps.vault.isLocked()) {
+                const needsEncrypt = this.keys.some((k) => !k.isEncrypted && !!k.key);
+                if (needsEncrypt) {
+                    try {
+                        await this.saveKeys();
+                    } catch (e) {
+                        LOGGER.warn('KeyRegistry', 'encrypt-on-load convergence failed', {
+                            error: e,
+                        });
+                    }
+                }
+            }
             if (import.meta.env.DEV)
                 LOGGER.debug('KeyRegistry', 'final committed count (loadKeys)', {
                     count: this.keys.length,
@@ -552,8 +530,10 @@ export class KeyRegistry {
                 return true;
             });
             this.traceKeyDrop(_dropRun, 'filterValid', mapped.length, loaded.length, loaded);
+            const decrypted = await this.deps.vault.decryptAllKeys(loaded);
+            this.traceKeyDrop(_dropRun, 'decrypt', loaded.length, decrypted.length, decrypted);
             const before = this.keys.length;
-            this.setKeysInternal('forceResyncFromDexie', loaded, { force: true });
+            this.setKeysInternal('forceResyncFromDexie', decrypted, { force: true });
             this.traceKeyDrop(_dropRun, 'assign', before, this.keys.length, this.keys);
             if (import.meta.env.DEV)
                 LOGGER.debug('KeyRegistry', 'force resync — committed count', {
@@ -724,6 +704,8 @@ export class KeyRegistry {
             this.invalidateSnapshot();
             throw e;
         }
+        // Persisted encrypted at rest by the vault; reflect that on the record.
+        newKey.isEncrypted = true;
         return newKey;
     }
 

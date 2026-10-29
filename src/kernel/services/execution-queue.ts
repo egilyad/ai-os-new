@@ -33,17 +33,21 @@ export class ExecutionQueue {
     private totalErrors = 0;
     private deadLetterQueue?: IDeadLetterQueue;
     private _eventBus: IEventBus | null = null;
+    private taskTimeoutMs: number;
+    private watchdogs = new Set<ReturnType<typeof setTimeout>>();
 
     constructor(
         processor: (task: QueueTask) => Promise<void>,
         maxConcurrency = 3,
         deadLetterQueue?: IDeadLetterQueue,
         eventBus?: IEventBus,
+        taskTimeoutMs = 120_000,
     ) {
         this.processor = processor;
         this.maxConcurrency = maxConcurrency;
         this.deadLetterQueue = deadLetterQueue;
         this._eventBus = eventBus ?? null;
+        this.taskTimeoutMs = taskTimeoutMs;
     }
 
     enqueue(priority: QueuePriority, payload: unknown): string {
@@ -79,54 +83,101 @@ export class ExecutionQueue {
                 const task = this.dequeueHighest();
                 if (!task) break;
                 this.inFlight++;
-                this.processor(task)
-                    .then(() => {
-                        this.totalProcessed++;
-                    })
-                    .catch((err) => {
-                        this.totalErrors++;
-                        LOGGER.error('ExecutionQueue', 'Task failed', {
-                            taskId: task.id,
-                            priority: task.priority,
-                            age: Date.now() - task.enqueuedAt,
-                            error: err,
-                        });
-                        this._eventBus?.emit(EVENTS.QUEUE_TASK_FAILED, {
-                            taskId: task.id,
-                            priority: task.priority,
-                            error: String(err),
-                            timestamp: Date.now(),
-                        });
-                        this.deadLetterQueue
-                            ?.push({
-                                event: EVENTS.QUEUE_TASK_FAILED,
-                                payload: {
-                                    taskId: task.id,
-                                    priority: task.priority,
-                                    payload: task.payload,
-                                },
-                                error: String(err),
-                                context: { age: Date.now() - task.enqueuedAt },
-                                retryCount: 0,
-                            })
-                            .catch((dlqErr) =>
-                                LOGGER.error('ExecutionQueue', 'DLQ push failed', {
-                                    error: dlqErr,
-                                }),
-                            );
-                    })
-                    .finally(() => {
-                        this.inFlight--;
-                        try {
-                            this.drain();
-                        } catch (e) {
-                            LOGGER.error('ExecutionQueue', 'drain failed', { error: e });
-                        }
-                    });
+                this.runTask(task);
             }
         } finally {
             this._draining = false;
         }
+    }
+
+    /** P0-5: run one task with a watchdog. If the processor never settles,
+     *  the timer finalizes it (logs, emits, DLQ) and releases the slot so the
+     *  queue keeps moving instead of being blocked forever by a hung task. */
+    private runTask(task: QueueTask): void {
+        let settled = false;
+        let watchdog: ReturnType<typeof setTimeout> | undefined;
+        const release = () => {
+            if (settled) return;
+            settled = true;
+            if (watchdog !== undefined) {
+                clearTimeout(watchdog);
+                this.watchdogs.delete(watchdog);
+            }
+            this.inFlight--;
+            try {
+                this.drain();
+            } catch (e) {
+                LOGGER.error('ExecutionQueue', 'drain failed', { error: e });
+            }
+        };
+
+        watchdog = setTimeout(() => {
+            LOGGER.warn('ExecutionQueue', 'Task hung — watchdog finalized task', {
+                taskId: task.id,
+                priority: task.priority,
+                age: Date.now() - task.enqueuedAt,
+                timeoutMs: this.taskTimeoutMs,
+            });
+            this._eventBus?.emit(EVENTS.QUEUE_TASK_FAILED, {
+                taskId: task.id,
+                priority: task.priority,
+                error: `Task timed out after ${this.taskTimeoutMs}ms`,
+                timestamp: Date.now(),
+            });
+            this.deadLetterQueue
+                ?.push({
+                    event: EVENTS.QUEUE_TASK_FAILED,
+                    payload: {
+                        taskId: task.id,
+                        priority: task.priority,
+                        payload: task.payload,
+                    },
+                    error: `Task timed out after ${this.taskTimeoutMs}ms`,
+                    context: { age: Date.now() - task.enqueuedAt },
+                    retryCount: 0,
+                })
+                .catch((dlqErr) =>
+                    LOGGER.error('ExecutionQueue', 'DLQ push failed', { error: dlqErr }),
+                );
+            release();
+        }, this.taskTimeoutMs);
+        this.watchdogs.add(watchdog);
+
+        this.processor(task)
+            .then(() => {
+                this.totalProcessed++;
+            })
+            .catch((err) => {
+                this.totalErrors++;
+                LOGGER.error('ExecutionQueue', 'Task failed', {
+                    taskId: task.id,
+                    priority: task.priority,
+                    age: Date.now() - task.enqueuedAt,
+                    error: err,
+                });
+                this._eventBus?.emit(EVENTS.QUEUE_TASK_FAILED, {
+                    taskId: task.id,
+                    priority: task.priority,
+                    error: String(err),
+                    timestamp: Date.now(),
+                });
+                this.deadLetterQueue
+                    ?.push({
+                        event: EVENTS.QUEUE_TASK_FAILED,
+                        payload: {
+                            taskId: task.id,
+                            priority: task.priority,
+                            payload: task.payload,
+                        },
+                        error: String(err),
+                        context: { age: Date.now() - task.enqueuedAt },
+                        retryCount: 0,
+                    })
+                    .catch((dlqErr) =>
+                        LOGGER.error('ExecutionQueue', 'DLQ push failed', { error: dlqErr }),
+                    );
+            })
+            .finally(release);
     }
 
     private dequeueHighest(): QueueTask | undefined {
@@ -177,6 +228,8 @@ export class ExecutionQueue {
             clearTimeout(this.schedulerTimer);
             this.schedulerTimer = null;
         }
+        for (const t of this.watchdogs) clearTimeout(t);
+        this.watchdogs.clear();
         this.clear();
         this.inFlight = 0;
         this._draining = false;

@@ -1,5 +1,6 @@
 import type { ApiKey } from '../../types/metrics';
 import { safeJsonParse } from '../../kernel/utils/safe-json';
+import { sanitizeApiKey } from '../../shared/utils/sanitize';
 
 export interface ProviderExportData {
     version: 1;
@@ -23,7 +24,24 @@ export class ExportProvidersCommand {
     }
 
     execute(): { data: string; filename: string } {
-        const data = this.#getExportData();
+        const raw = this.#getExportData();
+        // P0-4: never export plaintext keys — redact the key field.
+        let data = raw;
+        try {
+            const parsed = safeJsonParse(raw) as ProviderExportData | null;
+            if (parsed && Array.isArray(parsed.providers)) {
+                const redacted: ProviderExportData = {
+                    ...parsed,
+                    providers: parsed.providers.map((p) => ({
+                        ...p,
+                        key: p.key ? sanitizeApiKey(p.key) : '',
+                    })),
+                };
+                data = JSON.stringify(redacted, null, 2);
+            }
+        } catch {
+            /* keep raw if unparseable */
+        }
         const filename = `providers-export-${new Date().toISOString().slice(0, 10)}.json`;
         return { data, filename };
     }

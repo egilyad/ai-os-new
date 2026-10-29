@@ -16,6 +16,20 @@ export type CrystalOriginKind = 'debate' | 'observation' | 'synthesis' | 'human'
 export type CrystalDomain =
     'arch' | 'prompt' | 'routing' | 'gov' | 'llm' | 'security' | 'economics' | 'general';
 
+export interface CrystalEvidenceRef {
+    /** Id of the source argument/claim this evidence derives from. */
+    claimId?: string;
+    /** The passage / supporting statement quoted as evidence. */
+    quote?: string;
+    /** Agent/system that supplied the evidence. */
+    agentId?: string;
+    agentName?: string;
+    /** Optional external source reference. */
+    sourceId?: string;
+    sourceTitle?: string;
+    url?: string;
+}
+
 export interface CrystalContent {
     /** The core proposition — concise, falsifiable. */
     statement: string;
@@ -23,6 +37,8 @@ export interface CrystalContent {
     elaboration?: string;
     /** Supporting evidence refs (memory ids, URLs, doc paths). */
     evidence?: string[];
+    /** Structured evidence citations (claim-centric). */
+    evidenceRefs?: CrystalEvidenceRef[];
     /** Stated assumptions the crystal relies on. */
     assumptions?: string[];
     /** Explicit negation — used for contradiction detection. */

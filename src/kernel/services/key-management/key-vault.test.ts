@@ -78,8 +78,10 @@ describe('KeyVault (T-C-4)', () => {
         await vault.unlock('pw');
         const encrypted = await vault.encryptAllKeys(keys);
         expect(encrypted.map((k) => k.key)).not.toContain('aaa');
+        expect(encrypted.every((k) => k.isEncrypted === true)).toBe(true);
         const decrypted = await vault.decryptAllKeys(encrypted);
         expect(decrypted.map((k) => k.key)).toEqual(['aaa', 'bbb']);
+        expect(decrypted.every((k) => k.isEncrypted === true)).toBe(true);
     });
 
     it('stripPlaintextKeys redacts only while locked', () => {

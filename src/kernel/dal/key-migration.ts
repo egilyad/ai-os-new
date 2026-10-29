@@ -110,28 +110,13 @@ export async function runOnce(deps: MigrationDeps): Promise<{ migrated: number; 
     }
 
     const deduped = dedupKeys(allKeys);
-    let encryptedCount = 0;
-    let skippedCount = 0;
 
-    for (const k of deduped) {
-        if (k.isEncrypted) continue;
-        if (!k.key) continue;
-
-        if (deps.securityService && !deps.securityService.isLocked()) {
-            const encrypted = await deps.securityService.encrypt(k.key);
-            if (encrypted && encrypted !== k.key) {
-                k.key = encrypted;
-                k.isEncrypted = true;
-                encryptedCount++;
-            } else {
-                skippedCount++;
-            }
-        } else {
-            skippedCount++;
-        }
-    }
-
-    const persistable = deduped.filter((k) => k.isEncrypted || !k.key);
+    // Encryption-at-rest is applied by the KeyVault during normal saves
+    // (KeyRegistry.doSaveKeysWithSnapshot → encryptAllKeys). The migration only
+    // consolidates legacy storages into Dexie WITHOUT dropping keys, so every
+    // legacy key survives (compatible migration). Records get encrypted on the
+    // next key save / encrypt-on-load convergence.
+    const persistable = deduped.filter((k) => k.id && k.provider);
 
     let persistedIds: string[] = [];
     if (persistable.length > 0) {
@@ -139,62 +124,44 @@ export async function runOnce(deps: MigrationDeps): Promise<{ migrated: number; 
         persistedIds = persistable.map((k) => k.id);
     }
 
-    if (skippedCount > 0) {
-        LOGGER.warn('KeyMigration', 'Skipped plaintext keys — vault was locked', {
-            skipped: skippedCount,
-        });
+    try {
+        await deps.db.setKv(MIGRATION_FLAG, { done: true, timestamp: Date.now() });
+    } catch (e) {
+        // Rollback bulkPut if setKv fails — prevents partial migration state
+        if (persistedIds.length > 0) {
+            await Promise.allSettled(persistedIds.map((id) => deps.keyStore.deleteKey(id)));
+        }
+        throw e;
     }
 
-    if (skippedCount === 0) {
+    // Scrub legacy copies now that KeyStore holds everything — leaving
+    // plaintext duplicates in localStorage / sqlite blob defeats the vault.
+    if (localKeys.length > 0 || blobKeys.length > 0) {
         try {
-            await deps.db.setKv(MIGRATION_FLAG, { done: true, timestamp: Date.now() });
-        } catch (e) {
-            // Rollback bulkPut if setKv fails — prevents partial migration state
-            if (persistedIds.length > 0) {
-                await Promise.allSettled(persistedIds.map((id) => deps.keyStore.deleteKey(id)));
-            }
-            throw e;
+            ssrSafeStorage.removeItem(STORAGE_KEY);
+        } catch {
+            /* best-effort */
         }
-        // Scrub legacy copies now that KeyStore holds everything — leaving
-        // plaintext duplicates in localStorage / sqlite blob defeats the vault.
-        if (localKeys.length > 0 || blobKeys.length > 0) {
-            try {
-                ssrSafeStorage.removeItem(STORAGE_KEY);
-            } catch {
-                /* best-effort */
-            }
-            try {
-                if (blobKeys.length > 0) await deps.db.deleteKv(DB_BLOB_KEY);
-            } catch {
-                /* best-effort */
-            }
-            LOGGER.info('KeyMigration', 'Legacy key copies scrubbed', {
-                localStorage: localKeys.length,
-                sqliteBlob: blobKeys.length,
-            });
+        try {
+            if (blobKeys.length > 0) await deps.db.deleteKv(DB_BLOB_KEY);
+        } catch {
+            /* best-effort */
         }
-        LOGGER.info('KeyMigration', 'Migration complete', {
-            totalSources: allKeys.length,
-            afterDedup: deduped.length,
-            encrypted: encryptedCount,
-            persisted: persistable.length,
-            sources: {
-                localStorage: localKeys.length,
-                sqliteBlob: blobKeys.length,
-                dexie: dexieKeys.length,
-            },
-        });
-    } else {
-        await deps.db.setKv(MIGRATION_FLAG, {
-            done: false,
-            timestamp: Date.now(),
-            pending: skippedCount,
-        });
-        LOGGER.warn('KeyMigration', 'Migration deferred — vault locked', {
-            encrypted: encryptedCount,
-            skipped: skippedCount,
+        LOGGER.info('KeyMigration', 'Legacy key copies scrubbed', {
+            localStorage: localKeys.length,
+            sqliteBlob: blobKeys.length,
         });
     }
+    LOGGER.info('KeyMigration', 'Migration complete', {
+        totalSources: allKeys.length,
+        afterDedup: deduped.length,
+        persisted: persistable.length,
+        sources: {
+            localStorage: localKeys.length,
+            sqliteBlob: blobKeys.length,
+            dexie: dexieKeys.length,
+        },
+    });
 
     return { migrated: persistable.length, source: 'migration-v12' };
 }

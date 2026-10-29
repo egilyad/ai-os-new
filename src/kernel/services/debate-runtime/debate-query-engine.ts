@@ -99,6 +99,43 @@ export function isModelCompatibleWithProvider(model: string, provider: string): 
     return true;
 }
 
+/**
+ * P1-2: derive a canonical model "family" from a provider+model pair.
+ * Used to prevent debate participants/judges from fielding models of the
+ * same family (which would produce echo-chamber arguments). Family comes
+ * primarily from the model path/prefix, falling back to the provider.
+ */
+export function modelFamily(provider: string, model?: string): string {
+    const m = (model || '').toLowerCase().trim();
+    if (!m) return provider.toLowerCase() || 'unknown';
+    if (m.startsWith('gemini')) return 'gemini';
+    if (m.startsWith('anthropic/') || m.includes('claude')) return 'anthropic';
+    if (m.startsWith('openai/gpt-oss')) return 'openai-gpt-oss';
+    if (m.startsWith('openai/')) return 'openai';
+    if (m.startsWith('meta/') || m.startsWith('llama')) return 'llama';
+    if (m.startsWith('deepseek/') || m.includes('deepseek')) return 'deepseek';
+    if (m.startsWith('mistral/') || m.includes('mistral')) return 'mistral';
+    if (m.startsWith('cohere/') || m.includes('cohere')) return 'cohere';
+    if (m.startsWith('groq/') || m.includes('groq')) return 'groq';
+    if (m.startsWith('nvidia') || m.includes('nvidia')) return 'nvidia';
+    const p = provider.toLowerCase();
+    if (
+        p === 'gemini' ||
+        p === 'openai' ||
+        p === 'anthropic' ||
+        p === 'groq' ||
+        p === 'nvidia' ||
+        p === 'openrouter' ||
+        p === 'deepseek' ||
+        p === 'mistral' ||
+        p === 'cohere'
+    ) {
+        return p;
+    }
+    const seg = m.split(/[/:]/)[0]!;
+    return seg || p;
+}
+
 export function pickBestModelForDebate(
     provider: string,
     availableModels: string[],
