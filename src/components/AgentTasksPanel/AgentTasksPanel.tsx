@@ -12,7 +12,7 @@ import { useTranslation } from '../../i18n/useTranslation';
 import { agemsApprovalService } from '../../kernel/services/agems-approval-service';
 import { browserUseService } from '../../kernel/instances/services-extras';
 import { computerUseLoopService } from '../../kernel/instances/services-extras';
-import { agentService } from '../../kernel/instances/services-core';
+import { agentService, keyService } from '../../kernel/instances/services-core';
 import type { ComputerUseProvider } from '../../kernel/services/computer/computer-use-loop-service';
 
 const PROVIDER_LABEL: Record<ComputerUseProvider, string> = {
@@ -81,6 +81,7 @@ const AgentTasksPanel: React.FC = () => {
         null,
     );
     const [checking, setChecking] = useState(false);
+    const [providerReady, setProviderReady] = useState<Record<string, boolean>>({});
     const appliedTurns = Math.max(1, Math.min(50, Math.floor(Number(maxTurns) || 10)));
 
     // UX: подсказать реальных агентов для «от чьего имени».
@@ -113,6 +114,18 @@ const AgentTasksPanel: React.FC = () => {
 
     useEffect(() => {
         void checkHealth();
+        try {
+            const keys = keyService.getKeys?.() ?? [];
+            setProviderReady({
+                anthropic: keys.some((k) => k.provider === 'anthropic'),
+                'gemini-computer': keys.some(
+                    (k) => k.provider === 'gemini' || k.provider === 'gemini-computer',
+                ),
+            });
+        } catch {
+            /* ignore */
+        }
+         
     }, [capability]);
 
     const startSidecar = () => {
@@ -358,15 +371,34 @@ const AgentTasksPanel: React.FC = () => {
                         <Crosshair size={14} /> {t('tasks.computer')}
                     </button>
                     {capability === 'computer' && (
-                        <select
-                            value={provider}
-                            onChange={(e) => setProvider(e.target.value as ComputerUseProvider)}
-                        >
-                            <option value="anthropic">{PROVIDER_LABEL.anthropic}</option>
-                            <option value="gemini-computer">
-                                {PROVIDER_LABEL['gemini-computer']}
-                            </option>
-                        </select>
+                        <>
+                            <select
+                                value={provider}
+                                onChange={(e) => setProvider(e.target.value as ComputerUseProvider)}
+                            >
+                                <option value="anthropic">{PROVIDER_LABEL.anthropic}</option>
+                                <option value="gemini-computer">
+                                    {PROVIDER_LABEL['gemini-computer']}
+                                </option>
+                            </select>
+                            <span
+                                style={{
+                                    fontSize: 11,
+                                    padding: '2px 8px',
+                                    borderRadius: 999,
+                                    border: '1px solid',
+                                    borderColor: providerReady[provider] ? '#059669' : '#dc2626',
+                                    color: providerReady[provider] ? '#059669' : '#dc2626',
+                                }}
+                                title={
+                                    providerReady[provider]
+                                        ? 'Ключ провайдера найден'
+                                        : 'Ключ провайдера не найден — добавь его в «Провайдеры»'
+                                }
+                            >
+                                {providerReady[provider] ? 'ключ есть' : 'нет ключа'}
+                            </span>
+                        </>
                     )}
                     {availableAgents.length > 0 && (
                         <select
