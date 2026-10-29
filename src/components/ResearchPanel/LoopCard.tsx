@@ -11,6 +11,7 @@ interface LoopCardProps {
 
 const LoopCard: React.FC<LoopCardProps> = ({ loop, index }) => {
     const [expanded, setExpanded] = useState(false);
+    const synthesis = loop.synthesis;
     return (
         <motion.div
             layout
@@ -99,7 +100,7 @@ const LoopCard: React.FC<LoopCardProps> = ({ loop, index }) => {
                                 fontSize: '0.75rem',
                             }}
                         >
-                            {loop.synthesis && (
+                            {synthesis && (
                                 <>
                                     <div>
                                         <div
@@ -112,9 +113,9 @@ const LoopCard: React.FC<LoopCardProps> = ({ loop, index }) => {
                                             Summary
                                         </div>
                                         <div style={{ color: 'var(--slate-300)', lineHeight: 1.5 }}>
-                                            {loop.synthesis.summary}
+                                            {synthesis.summary}
                                         </div>
-                                        {typeof loop.synthesis.confidence === 'number' && (
+                                        {typeof synthesis.confidence === 'number' && (
                                             <div
                                                 style={{
                                                     fontSize: '0.65rem',
@@ -123,11 +124,11 @@ const LoopCard: React.FC<LoopCardProps> = ({ loop, index }) => {
                                                 }}
                                             >
                                                 Confidence:{' '}
-                                                {(loop.synthesis.confidence * 100).toFixed(0)}%
+                                                {(synthesis.confidence * 100).toFixed(0)}%
                                             </div>
                                         )}
                                     </div>
-                                    {loop.synthesis.keyFindings.length > 0 && (
+                                    {synthesis.keyFindings.length > 0 && (
                                         <div>
                                             <div
                                                 style={{
@@ -138,9 +139,9 @@ const LoopCard: React.FC<LoopCardProps> = ({ loop, index }) => {
                                             >
                                                 Key Findings
                                             </div>
-                                            {loop.synthesis.keyFindings.map((f) => {
+                                            {synthesis.keyFindings.map((f) => {
                                                 const refs = (
-                                                    loop.synthesis.evidenceRefs ?? []
+                                                    synthesis.evidenceRefs ?? []
                                                 ).filter((r) => r.text === f);
                                                 const srcIds = new Set(
                                                     refs
@@ -186,7 +187,7 @@ const LoopCard: React.FC<LoopCardProps> = ({ loop, index }) => {
                                             })}
                                         </div>
                                     )}
-                                    {loop.synthesis.gaps.length > 0 && (
+                                    {synthesis.gaps.length > 0 && (
                                         <div>
                                             <div
                                                 style={{
@@ -197,7 +198,7 @@ const LoopCard: React.FC<LoopCardProps> = ({ loop, index }) => {
                                             >
                                                 Gaps
                                             </div>
-                                            {loop.synthesis.gaps.map((g) => (
+                                            {synthesis.gaps.map((g) => (
                                                 <div
                                                     key={g}
                                                     style={{
@@ -212,7 +213,7 @@ const LoopCard: React.FC<LoopCardProps> = ({ loop, index }) => {
                                             ))}
                                         </div>
                                     )}
-                                    {loop.synthesis.newQuestions.length > 0 && (
+                                    {synthesis.newQuestions.length > 0 && (
                                         <div>
                                             <div
                                                 style={{
@@ -223,7 +224,7 @@ const LoopCard: React.FC<LoopCardProps> = ({ loop, index }) => {
                                             >
                                                 New Questions
                                             </div>
-                                            {loop.synthesis.newQuestions.map((q) => (
+                                            {synthesis.newQuestions.map((q) => (
                                                 <div
                                                     key={q}
                                                     style={{
