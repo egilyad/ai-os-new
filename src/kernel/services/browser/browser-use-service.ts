@@ -161,7 +161,7 @@ export class BrowserUseService {
 
     async execute(
         task: string,
-        opts: { ticketId?: string; maxSteps?: number } = {},
+        opts: { ticketId?: string; maxSteps?: number; signal?: AbortSignal } = {},
     ): Promise<BrowserUseResult> {
         assertTask(
             task,
@@ -179,6 +179,7 @@ export class BrowserUseService {
                 ticketId: opts.ticketId,
                 maxSteps,
                 allowedDomains: cfg.allowedDomains,
+                signal: opts.signal,
             });
             return this.parseResult('sidecar', stdout);
         }
@@ -201,11 +202,20 @@ export class BrowserUseService {
 
     private async postSidecar(
         sidecarUrl: string,
-        payload: { task: string; ticketId?: string; maxSteps: number; allowedDomains?: string[] },
+        payload: {
+            task: string;
+            ticketId?: string;
+            maxSteps: number;
+            allowedDomains?: string[];
+            signal?: AbortSignal;
+        },
     ): Promise<string> {
         const url = sidecarUrl.replace(/\/$/, '');
         const ctl = new AbortController();
         const timer = setTimeout(() => ctl.abort(), EXEC_TIMEOUT_MS);
+        if (payload.signal) {
+            payload.signal.addEventListener('abort', () => ctl.abort(), { once: true });
+        }
         let res: Response;
         try {
             res = await fetch(url, {

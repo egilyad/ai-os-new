@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
     MonitorPlay,
     Loader2,
@@ -74,6 +74,7 @@ const AgentTasksPanel: React.FC = () => {
     const [maxTurns, setMaxTurns] = useState('10');
     const [running, setRunning] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const abortRef = useRef<AbortController | null>(null);
     const [history, setHistory] = useState<RunRecord[]>(loadHistory);
     const [availableAgents, setAvailableAgents] = useState<Array<{ id: string; name: string }>>([]);
     const [sidecar, setSidecar] = useState<{ ok: boolean; via: string; detail?: string } | null>(
@@ -112,7 +113,6 @@ const AgentTasksPanel: React.FC = () => {
 
     useEffect(() => {
         void checkHealth();
-         
     }, [capability]);
 
     const startSidecar = () => {
@@ -157,7 +157,10 @@ const AgentTasksPanel: React.FC = () => {
             undefined,
             'ui:direct:tasks',
         );
-        const res = await browserUseService.execute(text, { maxSteps });
+        const res = await browserUseService.execute(text, {
+            maxSteps,
+            signal: abortRef.current?.signal,
+        });
         // Человеческая сводка вместо сырого stdout (там JSON со скриншотом —
         // именно он раньше пугал обрезанным base64-блобом).
         const fs = (res.finalState ?? {}) as { mode?: string; title?: string; url?: string };
@@ -211,11 +214,18 @@ const AgentTasksPanel: React.FC = () => {
         });
     }
 
+    function onCancel() {
+        abortRef.current?.abort();
+        setRunning(false);
+        setError('Отменено пользователем');
+    }
+
     async function onRun(): Promise<void> {
         const text = task.trim();
         if (!text || running) return;
         setError(null);
         setRunning(true);
+        abortRef.current = new AbortController();
         const id = ++runSeq;
         const agent = agentId.trim() || 'ui-tasks';
         const turns = Math.max(1, Math.min(50, Math.floor(Number(maxTurns) || 10)));
@@ -242,6 +252,7 @@ const AgentTasksPanel: React.FC = () => {
             setError(msg);
         } finally {
             setRunning(false);
+            abortRef.current = null;
         }
     }
 
@@ -402,6 +413,22 @@ const AgentTasksPanel: React.FC = () => {
                     <button onClick={() => void onRun()} disabled={running || !task.trim()}>
                         {running ? <Loader2 size={14} /> : null} {t('tasks.run')}
                     </button>
+                    {running && (
+                        <button
+                            onClick={onCancel}
+                            style={{
+                                fontSize: 12,
+                                padding: '4px 10px',
+                                color: '#fff',
+                                background: '#dc2626',
+                                border: 'none',
+                                borderRadius: 6,
+                                cursor: 'pointer',
+                            }}
+                        >
+                            Отменить
+                        </button>
+                    )}
                     <span style={{ fontSize: 11, color: 'var(--slate-400)' }}>
                         {t('tasks.hitl_note')}
                     </span>
