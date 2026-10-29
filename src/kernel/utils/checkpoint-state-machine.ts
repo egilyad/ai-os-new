@@ -19,7 +19,7 @@ export class CheckpointedStateMachine<S extends string> {
 
     constructor(
         private readonly config: StateMachineConfig<S>,
-        private readonly initial: S,
+        initial: S,
         private readonly store: CheckpointStore,
     ) {
         this.current = initial;
