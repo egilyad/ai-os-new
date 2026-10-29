@@ -31,16 +31,50 @@ function categoryOf(name) {
   return DEFAULT_CAT;
 }
 
+const GENERIC_HEADING = /главная|index|untitled|сайт[-\s]*без[-\s]*названия|без[-\s]*названия/i;
+const GENERIC_TITLE = /сайт-без-названия|без\s*названия/i;
+
+function isMeaningfulHeading(h) {
+  if (!h) return false;
+  if (h.length < 3) return false;
+  if (GENERIC_HEADING.test(h)) return false;
+  return true;
+}
+
+function headingOf(file) {
+  try {
+    const s = readFileSync(file, 'utf8').slice(0, 60000);
+    for (const line of s.split('\n')) {
+      const m = line.match(/^#\s+(.+)$/);
+      if (m && isMeaningfulHeading(m[1].trim())) return m[1].trim();
+    }
+    const t = s.match(/<title>([^<]+)<\/title>/i);
+    if (t && isMeaningfulHeading(t[1].trim())) return t[1].trim();
+  } catch {
+    /* skip */
+  }
+  return '';
+}
+
 function titleOf(dir) {
   const idx = join(SRC, dir, 'index.md');
+  const h = headingOf(idx);
+  if (h) return h;
+  // Generic/empty index — scan pages for the most meaningful heading.
+  let best = '';
+  let files = [];
   try {
-    const head = readFileSync(idx, 'utf8').slice(0, 3000);
-    const m = head.match(/^#\s+(.+)$/m);
-    if (m) return m[1].trim();
+    files = readdirSync(join(SRC, dir)).filter((f) => f.endsWith('.md'));
   } catch {
-    /* no index */
+    files = [];
   }
-  return dir.replace(/-\w{8,10}/i, '').replace(/[-_]/g, ' ').trim() || dir;
+  for (const f of files.slice(0, 20)) {
+    const hh = headingOf(join(SRC, dir, f));
+    if (hh && hh.length > best.length) best = hh;
+  }
+  if (best) return best;
+  const base = dir.replace(/-\w{8,10}$/i, '').replace(/[-_]/g, ' ').trim();
+  return base && !GENERIC_TITLE.test(base) ? base : 'Без названия';
 }
 
 function pagesOf(dir) {
@@ -85,7 +119,7 @@ for (const cat of cats) {
   const list = byCat.get(cat);
   lines.push(`### ${cat} (${list.length})`, '');
   for (const s of list) {
-    lines.push(`- **${s.title}** — ${s.pages} стр. → [index](${s.dir}/index.md)`);
+    lines.push(`- **${s.title}** — ${s.pages} стр. · категория: ${s.category} → [index](${s.dir}/index.md)`);
   }
   lines.push('');
 }
