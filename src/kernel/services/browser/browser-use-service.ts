@@ -65,7 +65,8 @@ function readDefaultConfig(): BrowserUseConfig {
     const cfg: BrowserUseConfig = {};
     try {
         const env = (import.meta as unknown as { env?: Record<string, string> })?.env;
-        if (env?.['VITE_BROWSER_USE_SIDECAR_URL']) cfg.sidecarUrl = env['VITE_BROWSER_USE_SIDECAR_URL'];
+        if (env?.['VITE_BROWSER_USE_SIDECAR_URL'])
+            cfg.sidecarUrl = env['VITE_BROWSER_USE_SIDECAR_URL'];
         if (env?.['VITE_COMPANY_GATEWAY_URL']) cfg.gatewayUrl = env['VITE_COMPANY_GATEWAY_URL'];
     } catch {
         /* ignore — нет import.meta в тестах */
@@ -135,8 +136,37 @@ export class BrowserUseService {
         return 'not configured (set browserUse.sidecarUrl or companyGateway.* in localStorage)';
     }
 
-    async execute(task: string, opts: { ticketId?: string; maxSteps?: number } = {}): Promise<BrowserUseResult> {
-        assertTask(task, this.deps.blockedPatterns ?? [/password|passwd|card|cvv|otp|2fa|seed phrase/i]);
+    /** Проверка доступности sidecar/gateway (для UX: статус в панели). */
+    async health(): Promise<{ ok: boolean; via: string; detail?: string }> {
+        const c = this.config();
+        if (c.sidecarUrl) {
+            const url = c.sidecarUrl.replace(/\/$/, '');
+            try {
+                const res = await fetch(`${url}/health`, { signal: AbortSignal.timeout(4000) });
+                const ok = res.ok;
+                return { ok, via: 'sidecar', detail: ok ? 'ready' : `HTTP ${res.status}` };
+            } catch (e) {
+                return {
+                    ok: false,
+                    via: 'sidecar',
+                    detail: e instanceof Error ? e.message : String(e),
+                };
+            }
+        }
+        if (c.gatewayUrl && c.gatewaySecret && c.companyId) {
+            return { ok: true, via: 'gateway', detail: 'configured' };
+        }
+        return { ok: false, via: 'none', detail: 'not configured' };
+    }
+
+    async execute(
+        task: string,
+        opts: { ticketId?: string; maxSteps?: number } = {},
+    ): Promise<BrowserUseResult> {
+        assertTask(
+            task,
+            this.deps.blockedPatterns ?? [/password|passwd|card|cvv|otp|2fa|seed phrase/i],
+        );
         const cfg = this.config();
         const maxSteps =
             opts.maxSteps !== undefined
@@ -201,7 +231,8 @@ export class BrowserUseService {
         // резать короче = рвать JSON и терять screenshot (баг: в историю
         // падал сырой обрезанный blob вместо картинки).
         const text = (await res.text()).slice(0, TRANSPORT_SLICE);
-        if (res.status >= 300 && res.status < 400) throw new Error(`sidecar refused redirect (HTTP ${res.status})`);
+        if (res.status >= 300 && res.status < 400)
+            throw new Error(`sidecar refused redirect (HTTP ${res.status})`);
         if (!res.ok) throw new Error(`sidecar HTTP ${res.status}: ${text.slice(0, 300)}`);
         return text;
     }
@@ -211,18 +242,34 @@ export class BrowserUseService {
         input: { task: string; ticketId?: string; maxSteps: number },
     ): Promise<string> {
         const base = String(cfg.gatewayUrl).replace(/\/$/, '');
-        const headers = { 'Content-Type': 'application/json', Authorization: `Bearer ${cfg.gatewaySecret}` };
+        const headers = {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${cfg.gatewaySecret}`,
+        };
         const timeout = (ms: number): AbortSignal => AbortSignal.timeout(ms);
 
         // 1. Создать run (нужен running-run для /execute, см. sync-server.mjs).
-        const runRes = await fetch(`${base}/api/companies/${encodeURIComponent(String(cfg.companyId))}/runs`, {
-            method: 'POST',
-            headers,
-            body: JSON.stringify({ trigger: 'manual', input: { task: input.task.slice(0, 500) } }),
-            signal: timeout(10_000),
-        });
-        const runBody = (await runRes.json().catch(() => ({}))) as { run?: { id?: string }; id?: string; error?: string };
-        if (!runRes.ok) throw new Error(`gateway create run failed: ${runBody.error || `HTTP ${runRes.status}`}`);
+        const runRes = await fetch(
+            `${base}/api/companies/${encodeURIComponent(String(cfg.companyId))}/runs`,
+            {
+                method: 'POST',
+                headers,
+                body: JSON.stringify({
+                    trigger: 'manual',
+                    input: { task: input.task.slice(0, 500) },
+                }),
+                signal: timeout(10_000),
+            },
+        );
+        const runBody = (await runRes.json().catch(() => ({}))) as {
+            run?: { id?: string };
+            id?: string;
+            error?: string;
+        };
+        if (!runRes.ok)
+            throw new Error(
+                `gateway create run failed: ${runBody.error || `HTTP ${runRes.status}`}`,
+            );
         const runId = runBody.run?.id ?? runBody.id;
         if (!runId) throw new Error('gateway create run: no run id in response');
 
@@ -244,8 +291,14 @@ export class BrowserUseService {
                 }),
                 signal: ctl.signal,
             });
-            const exBody = (await exRes.json().catch(() => ({}))) as { stdout?: string; error?: string };
-            if (!exRes.ok) throw new Error(`gateway execute failed: ${exBody.error || `HTTP ${exRes.status}`}`);
+            const exBody = (await exRes.json().catch(() => ({}))) as {
+                stdout?: string;
+                error?: string;
+            };
+            if (!exRes.ok)
+                throw new Error(
+                    `gateway execute failed: ${exBody.error || `HTTP ${exRes.status}`}`,
+                );
             return String(exBody.stdout ?? '');
         } finally {
             clearTimeout(timer);
@@ -258,7 +311,8 @@ export class BrowserUseService {
         let finalState: unknown;
         try {
             const parsed = JSON.parse(stdout) as Record<string, unknown>;
-            if (typeof parsed['screenshot'] === 'string') screenshot = parsed['screenshot'] as string;
+            if (typeof parsed['screenshot'] === 'string')
+                screenshot = parsed['screenshot'] as string;
             actions = parsed['actions'];
             finalState = parsed['finalState'] ?? parsed['result'];
         } catch {
@@ -267,6 +321,13 @@ export class BrowserUseService {
             const m = /"screenshot"\s*:\s*"([A-Za-z0-9+/=]+)"/.exec(stdout);
             if (m?.[1]) screenshot = m[1];
         }
-        return { ok: true, via, stdout: stdout.slice(0, RESULT_SLICE), screenshot, actions, finalState };
+        return {
+            ok: true,
+            via,
+            stdout: stdout.slice(0, RESULT_SLICE),
+            screenshot,
+            actions,
+            finalState,
+        };
     }
 }
