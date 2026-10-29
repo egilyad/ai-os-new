@@ -3,7 +3,7 @@
   "generatedBy": "scripts/gen-docs-inventory.mjs",
   "scope": "git-tracked markdown: docs/**/*.md (excluding docs/new drafts and the self-report pages docs-health, docs-inventory) plus repository entry docs (root *.md, .superagents/**, src/kernel/DEPENDENCY_MAP.md)",
   "totals": {
-    "documents": 1125,
+    "documents": 1126,
     "byCategory": {
       "repo": 13,
       "top": 48,
@@ -13,11 +13,11 @@
       "reference": 6,
       "roadmap": 17,
       "superseded": 3,
-      "wiki": 277
+      "wiki": 278
     },
     "byLanguage": {
       "en": 659,
-      "ru": 295,
+      "ru": 296,
       "mixed": 171
     }
   },
@@ -6565,8 +6565,8 @@
       "category": "top",
       "language": "ru",
       "title": "Мультиагентные ИИ-ОС: аналитический обзор и карта редких паттернов",
-      "bytes": 21479,
-      "hash": "cd54d026dc6d850f71f7a08b2d571e8556c94b11"
+      "bytes": 31473,
+      "hash": "117a745f703d898c5defec25d6e9ff1333d9c49c"
     },
     {
       "path": "docs/roadmap/adapters-improvements-roadmap.md",
@@ -7638,7 +7638,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4076,
-      "hash": "936fb347e6cd11651e588f94969e292e4eb3f72a"
+      "hash": "8c665b65da988a918e2006f95447fe9dd48417ba"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -7726,7 +7726,7 @@
       "language": "ru",
       "title": "Граф знаний",
       "bytes": 4837,
-      "hash": "e4a6ae43d724b205502f48ac9c02157d00549cbd"
+      "hash": "d73ee8eb6529d815b8bae3074cf4e6721744a4a3"
     },
     {
       "path": "docs/wiki/dev-history.md",
@@ -7941,8 +7941,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Карта документации",
-      "bytes": 37210,
-      "hash": "ad543c18dd9a8406e1944c74327e5df305aa8874"
+      "bytes": 37315,
+      "hash": "ee4a738704882eeeda34479075f1bf944b21f5c6"
     },
     {
       "path": "docs/wiki/docs-standard.md",
@@ -8743,6 +8743,14 @@
       "title": "Wiki SuperAgents OS",
       "bytes": 29124,
       "hash": "5aa1ddcdca180a491c53f4bc13f9677256c83d54"
+    },
+    {
+      "path": "docs/wiki/research-multiagent-patterns.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Исследование: мультиагентные ИИ-ОС",
+      "bytes": 3574,
+      "hash": "a6f196bc37beb8d9ed2b57855fd54a7c8c2783de"
     },
     {
       "path": "docs/wiki/roadmap-notes.md",
