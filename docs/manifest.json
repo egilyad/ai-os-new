@@ -55,7 +55,7 @@
     {
       "id": "notes",
       "title": "Заметки",
-      "articles": 1
+      "articles": 2
     },
     {
       "id": "dev-status",
@@ -151,6 +151,19 @@
         "panel-debate-live",
         "memory-center-audit"
       ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:research-multiagent-patterns",
+      "type": "article",
+      "slug": "research-multiagent-patterns",
+      "title": "Исследование: мультиагентные ИИ-ОС",
+      "section": "notes",
+      "status": "documented",
+      "tags": ["исследования", "мультиагентные системы", "паттерны", "roadmap", "deep research"],
+      "sources": ["docs/research/multiagent-os-patterns.md"],
+      "related": ["panel-research-cockpit", "panel-graph-workbench", "roadmap-notes"],
       "reviewed": null,
       "tests": []
     },

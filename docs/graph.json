@@ -3,22 +3,22 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 1426,
-    "edges": 3724,
+    "nodes": 1428,
+    "edges": 3728,
     "byType": {
       "audit": 75,
-      "code": 607,
+      "code": 608,
       "test": 198,
       "panel": 268,
-      "article": 278
+      "article": 279
     },
     "byKind": {
       "audit_test": 336,
       "audit_mention": 929,
       "documents": 204,
-      "source": 892,
+      "source": 893,
       "test": 293,
-      "related": 1070
+      "related": 1073
     }
   },
   "nodes": [
@@ -611,6 +611,11 @@
       "id": "file:docs/manifest.json",
       "type": "code",
       "label": "docs/manifest.json"
+    },
+    {
+      "id": "file:docs/research/multiagent-os-patterns.md",
+      "type": "code",
+      "label": "docs/research/multiagent-os-patterns.md"
     },
     {
       "id": "file:docs/roadmap/README.md",
@@ -8176,6 +8181,13 @@
       "label": "Провайдеры и маршрутизация",
       "section": "providers",
       "status": "verified"
+    },
+    {
+      "id": "wiki:research-multiagent-patterns",
+      "type": "article",
+      "label": "Исследование: мультиагентные ИИ-ОС",
+      "section": "notes",
+      "status": "documented"
     },
     {
       "id": "wiki:roadmap-notes",
@@ -26699,6 +26711,26 @@
     {
       "from": "wiki:providers",
       "to": "wiki:panel-providers",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:research-multiagent-patterns",
+      "to": "file:docs/research/multiagent-os-patterns.md",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:research-multiagent-patterns",
+      "to": "wiki:panel-graph-workbench",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:research-multiagent-patterns",
+      "to": "wiki:panel-research-cockpit",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:research-multiagent-patterns",
+      "to": "wiki:roadmap-notes",
       "kind": "related"
     },
     {
