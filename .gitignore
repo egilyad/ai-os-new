@@ -98,3 +98,6 @@ temp_*.txt
 
 .gprofile/
 
+
+# Local scraped sites (may contain secrets/third-party content) — NOT pushed
+docs/fetched-sites/
