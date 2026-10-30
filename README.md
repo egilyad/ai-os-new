@@ -40,25 +40,25 @@ flowchart TD
 
 ### Основное
 
-| Материал | О чём |
-| --- | --- |
-| [Что такое SuperAgents OS](./docs/wiki/what-is.md) | Философия, отличия от чат-бота |
-| [Путь идеи](./docs/wiki/idea-path.md) | Как провести идею через всю систему |
-| [Возможности ОС](./docs/wiki/capabilities.md) | Обзор функций |
-| [Как пользоваться панелями](./docs/wiki/panels-guide.md) | Навигация и типовой сценарий |
-| [Архитектура](./docs/wiki/architecture.md) | Слои, паттерны, поток данных |
-| [След исполнения](./docs/wiki/execution-trail.md) | Наблюдаемость шагов агентов |
+| Материал                                                 | О чём                               |
+| -------------------------------------------------------- | ----------------------------------- |
+| [Что такое SuperAgents OS](./docs/wiki/what-is.md)       | Философия, отличия от чат-бота      |
+| [Путь идеи](./docs/wiki/idea-path.md)                    | Как провести идею через всю систему |
+| [Возможности ОС](./docs/wiki/capabilities.md)            | Обзор функций                       |
+| [Как пользоваться панелями](./docs/wiki/panels-guide.md) | Навигация и типовой сценарий        |
+| [Архитектура](./docs/wiki/architecture.md)               | Слои, паттерны, поток данных        |
+| [След исполнения](./docs/wiki/execution-trail.md)        | Наблюдаемость шагов агентов         |
 
 ### Домены
 
-| Материал | О чём |
-| --- | --- |
-| [Дебаты](./docs/wiki/debates.md) | Форматы, стратегии, метрики качества |
-| [Агенты](./docs/wiki/agents.md) | Роли, персоны, топологии, консорциумы |
-| [Память](./docs/wiki/memory.md) | BM25 + семантика, RAG дебатов |
+| Материал                                     | О чём                                     |
+| -------------------------------------------- | ----------------------------------------- |
+| [Дебаты](./docs/wiki/debates.md)             | Форматы, стратегии, метрики качества      |
+| [Агенты](./docs/wiki/agents.md)              | Роли, персоны, топологии, консорциумы     |
+| [Память](./docs/wiki/memory.md)              | BM25 + семантика, RAG дебатов             |
 | [Память: аудит](./docs/wiki/memory-audit.md) | Что есть и чего нет против референс-стека |
-| [Провайдеры](./docs/wiki/providers.md) | Ключи, роутер, health, бюджеты |
-| [Диагностика](./docs/wiki/diagnostics.md) | Логи, трейсы, здоровье, аудиты |
+| [Провайдеры](./docs/wiki/providers.md)       | Ключи, роутер, health, бюджеты            |
+| [Диагностика](./docs/wiki/diagnostics.md)    | Логи, трейсы, здоровье, аудиты            |
 
 ### Компоненты и сервисы
 
@@ -78,23 +78,23 @@ flowchart TD
 
 ### Разработчикам
 
-| Руководство | О чём |
-| --- | --- |
-| [Обзор](./docs/wiki/dev-overview.md) | С чего начать в коде |
-| [Структура](./docs/wiki/dev-layout.md) | Где что лежит |
-| [Boot и DI](./docs/wiki/dev-boot.md) | Контейнер, фазы инициализации |
-| [События](./docs/wiki/dev-events.md) | EventBus и реестр событий |
-| [Сервисы](./docs/wiki/dev-services.md) | lazyService и баррели |
-| [Компоненты](./docs/wiki/dev-components.md) | Анатомия панели |
-| [Маршруты](./docs/wiki/dev-routing.md) | Как добавить панель |
-| [Сторы](./docs/wiki/dev-stores.md) | Состояние и хуки |
-| [i18n](./docs/wiki/dev-i18n.md) | Локализация en/ru |
-| [Тесты](./docs/wiki/dev-testing.md) | Vitest, что гонять |
-| [CI](./docs/wiki/dev-ci.md) | Гейты пайплайна |
-| [Генераторы](./docs/wiki/dev-generators.md) | Авто-каталоги |
-| [Конвенции](./docs/wiki/dev-conventions.md) | Правила кода |
-| [Глоссарий](./docs/wiki/dev-glossary.md) | Термины |
-| [Рецепты](./docs/wiki/dev-cookbook.md) | Частые задачи |
+| Руководство                                 | О чём                         |
+| ------------------------------------------- | ----------------------------- |
+| [Обзор](./docs/wiki/dev-overview.md)        | С чего начать в коде          |
+| [Структура](./docs/wiki/dev-layout.md)      | Где что лежит                 |
+| [Boot и DI](./docs/wiki/dev-boot.md)        | Контейнер, фазы инициализации |
+| [События](./docs/wiki/dev-events.md)        | EventBus и реестр событий     |
+| [Сервисы](./docs/wiki/dev-services.md)      | lazyService и баррели         |
+| [Компоненты](./docs/wiki/dev-components.md) | Анатомия панели               |
+| [Маршруты](./docs/wiki/dev-routing.md)      | Как добавить панель           |
+| [Сторы](./docs/wiki/dev-stores.md)          | Состояние и хуки              |
+| [i18n](./docs/wiki/dev-i18n.md)             | Локализация en/ru             |
+| [Тесты](./docs/wiki/dev-testing.md)         | Vitest, что гонять            |
+| [CI](./docs/wiki/dev-ci.md)                 | Гейты пайплайна               |
+| [Генераторы](./docs/wiki/dev-generators.md) | Авто-каталоги                 |
+| [Конвенции](./docs/wiki/dev-conventions.md) | Правила кода                  |
+| [Глоссарий](./docs/wiki/dev-glossary.md)    | Термины                       |
+| [Рецепты](./docs/wiki/dev-cookbook.md)      | Частые задачи                 |
 
 **Авто-каталоги (из кода):** [панели: раздел → маршрут → компонент → статья](./docs/wiki/panels-catalog.md), [компоненты](./docs/wiki/dev-component-catalog.md), [события](./docs/wiki/dev-event-catalog.md), [контракты](./docs/wiki/dev-contracts.md), [карта зависимостей ядра](./docs/wiki/dev-service-map.md), [сторы](./docs/wiki/dev-store-catalog.md), [локали](./docs/wiki/dev-i18n-catalog.md), [скрипты](./docs/wiki/dev-scripts.md), [тесты](./docs/wiki/dev-tests-catalog.md), [здоровье документации](./docs/wiki/docs-health.md), [инвентаризация документации](./docs/wiki/docs-inventory.md), [стандарт документации](./docs/wiki/docs-standard.md), [карта документации](./docs/wiki/docs-index.md), [карта системы](./docs/wiki/dev-system-map.md), [история разработки](./docs/wiki/dev-history.md), [возможности и сценарии](./docs/wiki/scenarios.md), [граф знаний](./docs/wiki/dev-graph.md), [проверки и показатели](./docs/wiki/dev-checks.md), [матрица покрытия](./docs/wiki/coverage-matrix.md).
 
@@ -147,19 +147,19 @@ npm run dev:shared
 
 ## Технологии
 
-| Категория | Технология |
-| --- | --- |
-| Язык | TypeScript 6.x |
-| UI | React 19.x |
-| Сборка | Vite 8.x |
-| База | Dexie.js (IndexedDB) |
+| Категория | Технология                            |
+| --------- | ------------------------------------- |
+| Язык      | TypeScript 6.x                        |
+| UI        | React 19.x                            |
+| Сборка    | Vite 8.x                              |
+| База      | Dexie.js (IndexedDB)                  |
 | Состояние | React hooks + типизированный EventBus |
-| Workflows | React Flow (@xyflow/react 12.x) |
-| Поиск | Orama (BM25) + Transformers.js |
-| Воркеры | Web Workers (memory, sandbox) |
-| Валидация | Zod 4.x |
-| Диаграммы | Mermaid 12.x |
-| Тесты | Vitest + React Testing Library |
+| Workflows | React Flow (@xyflow/react 12.x)       |
+| Поиск     | Orama (BM25) + Transformers.js        |
+| Воркеры   | Web Workers (memory, sandbox)         |
+| Валидация | Zod 4.x                               |
+| Диаграммы | Mermaid 12.x                          |
+| Тесты     | Vitest + React Testing Library        |
 
 ---
 
@@ -189,25 +189,25 @@ docs/wiki/           # markdown-зеркало вики (этот портал)
 
 ## Скрипты
 
-| Скрипт | Назначение |
-| --- | --- |
-| `npm run dev` | dev-сервер (HMR) |
-| `npm run dev:shared` | Vite + прокси + typecheck |
-| `npm run build` | typecheck + продакшн-сборка |
-| `npm run preview` | предпросмотр сборки |
-| `npm run test` | все тесты (Vitest) |
-| `npm run test:stable` | стабильный набор (stores, hooks, kernel, llm, tools) |
-| `npm run test:e2e` | e2e (Playwright) |
-| `npm run lint` | ESLint |
-| `npm run typecheck` | TypeScript без emit |
-| `npm run gen:wiki-docs` | пересобрать markdown-зеркало вики |
-| `npm run gen:wiki-manifest` | пересобрать машиночитаемый индекс (docs/manifest.json) |
-| `npm run gen:wiki-connections` | пересобрать связи «панель → маршрут → компонент → тесты» |
-| `npm run gen:wiki-panel-catalog` | пересобрать каталог панелей |
-| `npm run gen:wiki-site` | собрать статический сайт вики (для GitHub Pages) |
-| `npm run gen:readme-maps` | пересобрать таблицы README из кода |
-| `npm run docs:health` | проверка здоровья документации (ссылки, источники, полнота) |
-| `npm run proxy` | CORS-прокси для инструментов |
+| Скрипт                           | Назначение                                                  |
+| -------------------------------- | ----------------------------------------------------------- |
+| `npm run dev`                    | dev-сервер (HMR)                                            |
+| `npm run dev:shared`             | Vite + прокси + typecheck                                   |
+| `npm run build`                  | typecheck + продакшн-сборка                                 |
+| `npm run preview`                | предпросмотр сборки                                         |
+| `npm run test`                   | все тесты (Vitest)                                          |
+| `npm run test:stable`            | стабильный набор (stores, hooks, kernel, llm, tools)        |
+| `npm run test:e2e`               | e2e (Playwright)                                            |
+| `npm run lint`                   | ESLint                                                      |
+| `npm run typecheck`              | TypeScript без emit                                         |
+| `npm run gen:wiki-docs`          | пересобрать markdown-зеркало вики                           |
+| `npm run gen:wiki-manifest`      | пересобрать машиночитаемый индекс (docs/manifest.json)      |
+| `npm run gen:wiki-connections`   | пересобрать связи «панель → маршрут → компонент → тесты»    |
+| `npm run gen:wiki-panel-catalog` | пересобрать каталог панелей                                 |
+| `npm run gen:wiki-site`          | собрать статический сайт вики (для GitHub Pages)            |
+| `npm run gen:readme-maps`        | пересобрать таблицы README из кода                          |
+| `npm run docs:health`            | проверка здоровья документации (ссылки, источники, полнота) |
+| `npm run proxy`                  | CORS-прокси для инструментов                                |
 
 Полный список — в [английском README](./README_EN.md#scripts).
 
@@ -215,17 +215,15 @@ docs/wiki/           # markdown-зеркало вики (этот портал)
 
 ## Документация
 
-| Документ | О чём |
-| --- | --- |
-| [Вики (RU)](./docs/wiki/README.md) | Вся система: панели, домены, диагностика, история, руководства |
-| [manifest.json](./docs/manifest.json) | Машиночитаемый индекс: разделы, статьи (источники, тесты, связи), панели (маршрут, компонент, статья) |
-| [graph.json](./docs/graph.json) | Граф знаний: узлы (статьи, панели, код, тесты) и рёбра (связи, источники, тесты, панель→статья) |
-| [inventory.json](./docs/inventory.json) | Инвентарь всех документов `docs/**` (категория, язык, размер, hash) |
-| [entity-model.json](./docs/entity-model.json) | Стандарт документации: карточка сущности, статусы, источники истины, языки |
-| [System Manifest](./docs/SYSTEM_MANIFEST.md) | Принципы архитектуры |
-| [Полный реестр (RU)](./docs/ПОЛНЫЙ_РЕЕСТР.md) | Паспорт системы |
-| [Каталог сервисов (RU)](./docs/SERVICES_RU.md) | DI-сервисы |
-| [Event Reference](./docs/events.md) | Типизированные события |
+| Документ                                      | О чём                                                                                                 |
+| --------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| [Вики (RU)](./docs/wiki/README.md)            | Вся система: панели, домены, диагностика, история, руководства                                        |
+| [manifest.json](./docs/manifest.json)         | Машиночитаемый индекс: разделы, статьи (источники, тесты, связи), панели (маршрут, компонент, статья) |
+| [graph.json](./docs/graph.json)               | Граф знаний: узлы (статьи, панели, код, тесты) и рёбра (связи, источники, тесты, панель→статья)       |
+| [inventory.json](./docs/inventory.json)       | Инвентарь всех документов `docs/**` (категория, язык, размер, hash)                                   |
+| [entity-model.json](./docs/entity-model.json) | Стандарт документации: карточка сущности, статусы, источники истины, языки                            |
+| [System Manifest](./docs/SYSTEM_MANIFEST.md)  | Принципы архитектуры                                                                                  |
+| [Event Reference](./docs/events.md)           | Типизированные события                                                                                |
 
 ---
 
@@ -234,51 +232,53 @@ docs/wiki/           # markdown-зеркало вики (этот портал)
 > Блоки ниже собираются из исходников скриптом `npm run gen:readme-maps` — не редактировать вручную.
 
 <!-- README-MAPS-RU:STRATEGIES:BEGIN -->
+
 _Сгенерировано из кода 2026-10-27, скрипт `npm run gen:readme-maps` — не редактировать вручную, перезапускать скрипт._
 
 <details>
 <summary><b>Все 33 встроенных стратегий дебатов (из кода)</b></summary>
 
-| Стратегия | ID | Что делает |
-| -------- | -- | ----------- |
-| **Round Robin** | `builtin.round_robin` | Classic sequential round-robin where each agent speaks once per round |
-| **Socratic Method** | `builtin.socratic` | Question-driven inquiry that probes assumptions through iterative questioning |
-| **Argument Tree** | `builtin.argument_tree` | Tree-structured argumentation with challenges and refinements |
-| **Constrained Debate** | `builtin.constrained` | Debate with specific constraints on argument structure and evidence requirements |
-| **Moderated Debate** | `builtin.moderated` | Debate with a neutral moderator controlling flow and enforcing rules |
-| **Free-for-All** | `builtin.free_for_all` | Multiple agents debate simultaneously without turn ordering |
-| **Jury Trial** | `builtin.jury_trial` | Adversarial format with prosecution, defense, witnesses, and jury |
-| **Brainstorming** | `builtin.brainstorming` | Free-form idea generation without critique, followed by clustering |
-| **Delphi Method** | `builtin.delphi` | Iterative anonymous consensus-building with controlled feedback |
-| **Debate-athon** | `builtin.debate_athon` | Extended marathon format with multiple rounds, breaks, and endurance scoring |
-| **Meta-Debate** | `builtin.meta_debate` | Debate about the debate itself — rules, framing, methodology |
-| **Post-Mortem / Autopsy** | `builtin.autopsy` | Retrospective analysis of a past event, decision, or failure |
-| **Simulated Negotiation** | `builtin.simulated_negotiation` | Role-play negotiation between parties with competing interests |
-| **Premortem** | `builtin.premortem` | Assume a project has failed and work backwards to identify what went wrong |
-| **Red Teaming** | `builtin.red_teaming` | Adversarial testing where one team attacks and another defends |
-| **Rhetorical Triangle** | `builtin.rhetorical_triangle` | Analyze arguments through ethos, pathos, and logos lenses |
-| **Evidence-Based Policy Debate** | `builtin.evidence_based_policy` | Policy debate requiring cited evidence for each claim |
-| **Principle-Based Negotiation** | `builtin.principle_based_negotiation` | Harvard-style principled negotiation focusing on interests not positions |
-| **Uncertainty Quantification** | `builtin.uncertainty_quantification` | Systematically identify and quantify uncertainties in arguments |
-| **Multi-Criteria Decision Analysis** | `builtin.multi_criteria` | Evaluate options against multiple weighted criteria |
-| **Stakeholder Mapping** | `builtin.stakeholder_mapping` | Identify and analyze stakeholders, their interests, and influence |
-| **Cross-Examination** | `builtin.cross_examination` | Intense back-and-forth questioning between two parties |
-| **Trial by Argument** | `builtin.trial` | Full trial format with opening, evidence, witnesses, closing, and verdict |
-| **Parliamentary Debate** | `builtin.parliamentary` | Formal debate with government and opposition teams following parliamentary procedure |
-| **Oxford Union Debate** | `builtin.oxford_union` | Traditional Oxford Union format with proposition, opposition, and floor votes |
-| **Lincoln-Douglas Debate** | `builtin.lincoln_douglas` | Values-based one-on-one debate with structured case construction |
-| **Spontaneous Argumentation** | `builtin.spontaneous_argumentation` | Impromptu arguments with minimal preparation, testing quick thinking |
-| **Asynchronous Marathon** | `builtin.asynchronous_marathon` | Extended multi-day debate where agents respond at their own pace |
-| **Flash Debate** | `builtin.flash_debate` | Ultra-fast debate with very short response times and limited characters |
-| **Collaborative Consensus** | `builtin.collaborative_consensus` | Non-adversarial format focused on finding common ground and shared understanding |
-| **Scenario Testing** | `builtin.scenario_testing` | Test assumptions by exploring multiple hypothetical scenarios |
-| **Hypothesis Testing** | `builtin.hypothesis_testing` | Scientific method approach: hypothesis, test, evidence evaluation, conclusion |
-| **Contest Mode** | `builtin.contest_mode` | Competitive format with judges scoring each round, winner declared at end |
+| Стратегия                            | ID                                    | Что делает                                                                           |
+| ------------------------------------ | ------------------------------------- | ------------------------------------------------------------------------------------ |
+| **Round Robin**                      | `builtin.round_robin`                 | Classic sequential round-robin where each agent speaks once per round                |
+| **Socratic Method**                  | `builtin.socratic`                    | Question-driven inquiry that probes assumptions through iterative questioning        |
+| **Argument Tree**                    | `builtin.argument_tree`               | Tree-structured argumentation with challenges and refinements                        |
+| **Constrained Debate**               | `builtin.constrained`                 | Debate with specific constraints on argument structure and evidence requirements     |
+| **Moderated Debate**                 | `builtin.moderated`                   | Debate with a neutral moderator controlling flow and enforcing rules                 |
+| **Free-for-All**                     | `builtin.free_for_all`                | Multiple agents debate simultaneously without turn ordering                          |
+| **Jury Trial**                       | `builtin.jury_trial`                  | Adversarial format with prosecution, defense, witnesses, and jury                    |
+| **Brainstorming**                    | `builtin.brainstorming`               | Free-form idea generation without critique, followed by clustering                   |
+| **Delphi Method**                    | `builtin.delphi`                      | Iterative anonymous consensus-building with controlled feedback                      |
+| **Debate-athon**                     | `builtin.debate_athon`                | Extended marathon format with multiple rounds, breaks, and endurance scoring         |
+| **Meta-Debate**                      | `builtin.meta_debate`                 | Debate about the debate itself — rules, framing, methodology                         |
+| **Post-Mortem / Autopsy**            | `builtin.autopsy`                     | Retrospective analysis of a past event, decision, or failure                         |
+| **Simulated Negotiation**            | `builtin.simulated_negotiation`       | Role-play negotiation between parties with competing interests                       |
+| **Premortem**                        | `builtin.premortem`                   | Assume a project has failed and work backwards to identify what went wrong           |
+| **Red Teaming**                      | `builtin.red_teaming`                 | Adversarial testing where one team attacks and another defends                       |
+| **Rhetorical Triangle**              | `builtin.rhetorical_triangle`         | Analyze arguments through ethos, pathos, and logos lenses                            |
+| **Evidence-Based Policy Debate**     | `builtin.evidence_based_policy`       | Policy debate requiring cited evidence for each claim                                |
+| **Principle-Based Negotiation**      | `builtin.principle_based_negotiation` | Harvard-style principled negotiation focusing on interests not positions             |
+| **Uncertainty Quantification**       | `builtin.uncertainty_quantification`  | Systematically identify and quantify uncertainties in arguments                      |
+| **Multi-Criteria Decision Analysis** | `builtin.multi_criteria`              | Evaluate options against multiple weighted criteria                                  |
+| **Stakeholder Mapping**              | `builtin.stakeholder_mapping`         | Identify and analyze stakeholders, their interests, and influence                    |
+| **Cross-Examination**                | `builtin.cross_examination`           | Intense back-and-forth questioning between two parties                               |
+| **Trial by Argument**                | `builtin.trial`                       | Full trial format with opening, evidence, witnesses, closing, and verdict            |
+| **Parliamentary Debate**             | `builtin.parliamentary`               | Formal debate with government and opposition teams following parliamentary procedure |
+| **Oxford Union Debate**              | `builtin.oxford_union`                | Traditional Oxford Union format with proposition, opposition, and floor votes        |
+| **Lincoln-Douglas Debate**           | `builtin.lincoln_douglas`             | Values-based one-on-one debate with structured case construction                     |
+| **Spontaneous Argumentation**        | `builtin.spontaneous_argumentation`   | Impromptu arguments with minimal preparation, testing quick thinking                 |
+| **Asynchronous Marathon**            | `builtin.asynchronous_marathon`       | Extended multi-day debate where agents respond at their own pace                     |
+| **Flash Debate**                     | `builtin.flash_debate`                | Ultra-fast debate with very short response times and limited characters              |
+| **Collaborative Consensus**          | `builtin.collaborative_consensus`     | Non-adversarial format focused on finding common ground and shared understanding     |
+| **Scenario Testing**                 | `builtin.scenario_testing`            | Test assumptions by exploring multiple hypothetical scenarios                        |
+| **Hypothesis Testing**               | `builtin.hypothesis_testing`          | Scientific method approach: hypothesis, test, evidence evaluation, conclusion        |
+| **Contest Mode**                     | `builtin.contest_mode`                | Competitive format with judges scoring each round, winner declared at end            |
 
 </details>
 <!-- README-MAPS-RU:STRATEGIES:END -->
 
 <!-- README-MAPS-RU:TECHNIQUES:BEGIN -->
+
 _Сгенерировано из кода 2026-10-27, скрипт `npm run gen:readme-maps` — не редактировать вручную, перезапускать скрипт._
 
 <details>
@@ -339,7 +339,7 @@ _Сгенерировано из кода 2026-10-27, скрипт `npm run gen:
 - **Uncertainty Propagation** (`uncertainty-propagation`) — Explicitly propagate confidence levels through multi-step reasoning chains
 - **Hidden Incentives Mining** (`hidden-incentives`) — Generate 3 reasoning branches, synthesize strongest into public argument
 - **Semantic Concept Blending** (`semantic-blending`) — When deadlocked, invent new frameworks combining opposing concepts
-- **Outcome Forecaster** (`outcome-forecaster`) — 
+- **Outcome Forecaster** (`outcome-forecaster`) —
 
 **P2** (24)
 
@@ -365,13 +365,14 @@ _Сгенерировано из кода 2026-10-27, скрипт `npm run gen:
 - **Blind Evaluation** (`blind-evaluation`) — Judge arguments without knowing which agent made them
 - **Bidding for Speaking Time** (`bidding-time`) — Agents bid for speaking time — concise, high-impact arguments win the floor
 - **Adaptive Speaking Order** (`adaptive-order`) — Shuffle speaking order dynamically based on argument patterns
-- **Judge Deliberation** (`judge-deliberation`) — 
-- **Best-of-N Selection** (`best-of-n`) — 
+- **Judge Deliberation** (`judge-deliberation`) —
+- **Best-of-N Selection** (`best-of-n`) —
 
 </details>
 <!-- README-MAPS-RU:TECHNIQUES:END -->
 
 <!-- README-MAPS-RU:PANELS:BEGIN -->
+
 _Сгенерировано из кода 2026-10-27, скрипт `npm run gen:readme-maps` — не редактировать вручную, перезапускать скрипт._
 
 <details>
@@ -706,6 +707,7 @@ _Сгенерировано из кода 2026-10-27, скрипт `npm run gen:
 
 > Имена/описания стратегий и техник берутся из кода (без перевода);
 > панели подписаны русскими локалями `nav.*`.
+
 </details>
 <!-- README-MAPS-RU:PANELS:END -->
 
