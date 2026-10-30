@@ -38,7 +38,9 @@ export function createSendMessageHandler(
     return async (targets, text, systemPromptArg, temperature, maxTokens) => {
         const sessionId = get().activeSessionId;
         const existing = _sendQueue.get(sessionId);
-        if (existing && existing.length > 0) {
+        // An empty-but-claimed queue is still a claim: a concurrent first-time
+        // send must queue behind it (not spawn a second in-flight request).
+        if (existing !== undefined) {
             if (existing.length >= MAX_QUEUE_SIZE) {
                 eventBus.emit(EVENTS.NOTIFICATION, {
                     message: `Send queue full (${MAX_QUEUE_SIZE}) — message dropped`,

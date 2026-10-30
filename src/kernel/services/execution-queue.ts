@@ -95,6 +95,9 @@ export class ExecutionQueue {
      *  queue keeps moving instead of being blocked forever by a hung task. */
     private runTask(task: QueueTask): void {
         let settled = false;
+        // True once the watchdog has finalized a hung task — the processor's own
+        // late settle must not double-report / double-push DLQ.
+        let final = false;
         const timers = { current: undefined as ReturnType<typeof setTimeout> | undefined };
         const release = () => {
             if (settled) return;
@@ -113,6 +116,7 @@ export class ExecutionQueue {
         };
 
         const watchdog = setTimeout(() => {
+            final = true;
             LOGGER.warn('ExecutionQueue', 'Task hung — watchdog finalized task', {
                 taskId: task.id,
                 priority: task.priority,
@@ -147,9 +151,10 @@ export class ExecutionQueue {
 
         this.processor(task)
             .then(() => {
-                this.totalProcessed++;
+                if (!final) this.totalProcessed++;
             })
             .catch((err) => {
+                if (final) return;
                 this.totalErrors++;
                 LOGGER.error('ExecutionQueue', 'Task failed', {
                     taskId: task.id,

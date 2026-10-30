@@ -207,6 +207,9 @@ export function setupChatEventHandlers(set: ZustandSet, get: ZustandGet): Array<
                 // Post-terminal lookups safely miss (handlers return early).
                 requestEntryMap.delete(res.requestId);
                 persistSessionSnapshot(get, ref.sessionId);
+                // Drain any queued messages regardless of stream-terminal event
+                // ordering (some producers emit only MESSAGE_RESPONSE).
+                drainSendQueue(get, ref.sessionId);
             }
         }),
     );

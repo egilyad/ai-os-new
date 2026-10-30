@@ -49,23 +49,28 @@ export class AgemsApprovalService {
     async resolve(id: number, status: 'APPROVED' | 'REJECTED', reason?: string, resolverId?: string): Promise<void> {
         const req = (await getDexieDb().approvalRequests.get(id)) as unknown as ApprovalRequest | undefined;
         if (!req) throw new Error(`Approval request not found: ${id}`);
-        // ro2 §5.1: защита от replay — повторный resolve уже решённой
-        // заявки молча перезаписывал статус (APPROVED→REJECTED и наоборот).
-        if (req.status !== 'PENDING') throw new Error(`Approval request ${id} is already ${req.status}`);
         // ro2 §5.1: TTL — просроченная заявка переходит в EXPIRED
         // вместо исполнения по устаревшему решению человека.
         if (typeof req.expiresAt === 'number' && Date.now() > req.expiresAt) {
             await getDexieDb().approvalRequests.update(id, { status: 'EXPIRED', resolvedAt: Date.now() } as never);
             throw new Error(`Approval request ${id} expired`);
         }
-        await getDexieDb().approvalRequests.update(id, { status, rejectionReason: reason, resolvedBy: resolverId, resolvedAt: Date.now() } as never);
+        // ro2 §5.1: атомарный переход только из PENDING — при конкурентных
+        // resolve победитель один, остальные получают ошибку (нет двойного
+        // onResolved / двойного исполнения инструмента).
+        const updated = await getDexieDb().approvalRequests.where('id').equals(id).modify((r) => {
+            if (r.status !== 'PENDING') throw new Error(`Approval request ${id} is already ${r.status}`);
+            r.status = status;
+            r.rejectionReason = reason;
+            r.resolvedBy = resolverId;
+            r.resolvedAt = Date.now();
+        });
+        if (updated === 0) throw new Error(`Approval request ${id} is already ${req.status}`);
         // B3: живой junction — решение уходит делегату (execution-bridge), best-effort.
-        if (req) {
-            try {
-                this.delegates.onResolved?.({ ...req, status, resolvedBy: resolverId, resolvedAt: Date.now() }, status);
-            } catch {
-                /* delegate must never break resolve */
-            }
+        try {
+            this.delegates.onResolved?.({ ...req, status, resolvedBy: resolverId, resolvedAt: Date.now() }, status);
+        } catch {
+            /* delegate must never break resolve */
         }
     }
 
@@ -79,8 +84,14 @@ export class AgemsApprovalService {
     async claim(id: number): Promise<ApprovalRequest> {
         const req = (await getDexieDb().approvalRequests.get(id)) as unknown as ApprovalRequest | undefined;
         if (!req) throw new Error(`Approval request not found: ${id}`);
-        if (req.status !== 'APPROVED') throw new Error(`Approval request ${id} is already ${req.status}`);
-        await getDexieDb().approvalRequests.update(id, { status: 'CONSUMED', resolvedAt: Date.now() } as never);
+        // Атомарный переход только из APPROVED — исключает двойной запуск
+        // компьютер-лупа/инструмента при конкурентных claim.
+        const updated = await getDexieDb().approvalRequests.where('id').equals(id).modify((r) => {
+            if (r.status !== 'APPROVED') throw new Error(`Approval request ${id} is already ${r.status}`);
+            r.status = 'CONSUMED';
+            r.resolvedAt = Date.now();
+        });
+        if (updated === 0) throw new Error(`Approval request ${id} is already ${req.status}`);
         return { ...req, status: 'CONSUMED' as const, resolvedAt: Date.now() };
     }
 

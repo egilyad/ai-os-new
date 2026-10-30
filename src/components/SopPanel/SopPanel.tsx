@@ -24,6 +24,7 @@ export default function SopPanel() {
     const busyRef = useRef(false);
     busyRef.current = busy;
     const pollTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+    const isMountedRef = useRef(true);
     const active = runs.find((l) => l.id === activeId) ?? null;
 
     const fail = (e: unknown) => {
@@ -34,6 +35,7 @@ export default function SopPanel() {
     const reload = async (selectId?: string) => {
         try {
             const [defs, loops] = await Promise.all([sopService.listSops(), autonomyService.listLoops()]);
+            if (!isMountedRef.current) return;
             const safeDefs = Array.isArray(defs) ? defs : [];
             setSops(safeDefs);
             const sopRuns = [...(Array.isArray(loops) ? loops : [])].filter((l) => l.kind === 'sop').sort(byNewest);
@@ -41,13 +43,14 @@ export default function SopPanel() {
             if (selectId) setActiveId(selectId);
             else if (activeId === null && sopRuns.length > 0) setActiveId(sopRuns[0]!.id);
             if (safeDefs.length > 0 && !selectedSop) setSelectedSop(safeDefs[0]!.id);
-        } catch (e) { fail(e); }
+        } catch (e) { if (isMountedRef.current) fail(e); }
     };
 
     useEffect(() => { void reload(); /* eslint-disable-line react-hooks/exhaustive-deps */ }, []);
 
     useEffect(
         () => () => {
+            isMountedRef.current = false;
             if (pollTimerRef.current) {
                 window.clearInterval(pollTimerRef.current);
                 pollTimerRef.current = null;
@@ -59,11 +62,12 @@ export default function SopPanel() {
     const pollOnce = async () => {
         try {
             const loops = await autonomyService.listLoops();
+            if (!isMountedRef.current) return;
             const sopRuns = [...(Array.isArray(loops) ? loops : [])].filter((l) => l.kind === 'sop').sort(byNewest);
             setRuns(sopRuns);
             const running = sopRuns.find((l) => l.status === 'running') ?? null;
             if (running) setActiveId(running.id);
-        } catch (e) { fail(e); }
+        } catch (e) { if (isMountedRef.current) fail(e); }
     };
 
     const handleSeedDemo = async () => {
@@ -84,6 +88,7 @@ export default function SopPanel() {
         const timer = window.setInterval(() => { if (busyRef.current) void pollOnce(); }, 2000);
         pollTimerRef.current = timer;
         const done = () => {
+            if (!isMountedRef.current) return;
             if (pollTimerRef.current === timer) pollTimerRef.current = null;
             window.clearInterval(timer);
             setBusy(false);

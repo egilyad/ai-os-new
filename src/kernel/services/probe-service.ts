@@ -440,7 +440,22 @@ export class ProbeService implements IProbeService, ILifecycle {
         (globalThis as { gc?: () => void }).gc?.();
     }
 
+    private _probing = false;
+
     async probeAll(): Promise<ProbeResult[]> {
+        if (this._probing) {
+            LOGGER.warn('ProbeService', 'probeAll already running — skipping overlapping cycle');
+            return [];
+        }
+        this._probing = true;
+        try {
+            return await this.probeAllInner();
+        } finally {
+            this._probing = false;
+        }
+    }
+
+    private async probeAllInner(): Promise<ProbeResult[]> {
         const keys = this.deps.keyService.getKeys();
         const results: ProbeResult[] = [];
         for (const key of keys) {

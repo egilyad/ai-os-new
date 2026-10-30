@@ -67,16 +67,24 @@ export class RunQueueService implements IRunQueueService {
         return item;
     }
 
+    private draining = false;
+
     async drain(concurrency = 1): Promise<QueuedRun[]> {
-        const cap = Math.max(1, Math.min(4, concurrency));
-        const pending = (await this.deps.repo.listQueued()).filter((q) => q.status === 'queued');
-        const done: QueuedRun[] = [];
-        for (let i = 0; i < pending.length; i += cap) {
-            const wave = pending.slice(i, i + cap);
-            const results = await Promise.all(wave.map((q) => this.execute(q)));
-            done.push(...results);
+        if (this.draining) return [];
+        this.draining = true;
+        try {
+            const cap = Math.max(1, Math.min(4, concurrency));
+            const pending = (await this.deps.repo.listQueued()).filter((q) => q.status === 'queued');
+            const done: QueuedRun[] = [];
+            for (let i = 0; i < pending.length; i += cap) {
+                const wave = pending.slice(i, i + cap);
+                const results = await Promise.all(wave.map((q) => this.execute(q)));
+                done.push(...results);
+            }
+            return done;
+        } finally {
+            this.draining = false;
         }
-        return done;
     }
 
     async list(): Promise<QueuedRun[]> {

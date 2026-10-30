@@ -25,6 +25,7 @@ export default function DyadPanel() {
     const busyRef = useRef(false);
     busyRef.current = busy;
     const pollTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+    const isMountedRef = useRef(true);
     const active = loops.find((l) => l.id === activeId) ?? null;
 
     const fail = (e: unknown) => {
@@ -35,17 +36,19 @@ export default function DyadPanel() {
     const reload = async (selectId?: string) => {
         try {
             const all = await dyadService.listLoops();
+            if (!isMountedRef.current) return;
             const sorted = [...all].filter((l) => l.kind === 'dyad').sort(byNewest);
             setLoops(sorted);
             if (selectId) setActiveId(selectId);
             else if (activeId === null && sorted.length > 0) setActiveId(sorted[0]!.id);
-        } catch (e) { fail(e); }
+        } catch (e) { if (isMountedRef.current) fail(e); }
     };
 
     useEffect(() => { void reload(); /* eslint-disable-line react-hooks/exhaustive-deps */ }, []);
 
     useEffect(
         () => () => {
+            isMountedRef.current = false;
             if (pollTimerRef.current) {
                 window.clearInterval(pollTimerRef.current);
                 pollTimerRef.current = null;
@@ -57,11 +60,12 @@ export default function DyadPanel() {
     const pollOnce = async () => {
         try {
             const all = await dyadService.listLoops();
+            if (!isMountedRef.current) return;
             const sorted = [...all].filter((l) => l.kind === 'dyad').sort(byNewest);
             setLoops(sorted);
             const running = sorted.find((l) => l.status === 'running') ?? null;
             if (running) setActiveId(running.id);
-        } catch (e) { fail(e); }
+        } catch (e) { if (isMountedRef.current) fail(e); }
     };
 
     const handleStart = () => {
@@ -73,6 +77,7 @@ export default function DyadPanel() {
         const timer = window.setInterval(() => { if (busyRef.current) void pollOnce(); }, 1500);
         pollTimerRef.current = timer;
         const done = () => {
+            if (!isMountedRef.current) return;
             if (pollTimerRef.current === timer) pollTimerRef.current = null;
             window.clearInterval(timer);
             setBusy(false);

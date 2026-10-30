@@ -23,6 +23,10 @@ self.onunhandledrejection = (event: PromiseRejectionEvent) => {
 /* ---------- Main handler ---------- */
 
 self.onmessage = async (event: MessageEvent) => {
+    // Only run messages carry `code`. Ignore capability replies (`cap_response`)
+    // here — they are handled by the `executeTool` listener; re-entering
+    // runSandboxCode with undefined args would prematurely end the run.
+    if (typeof event.data?.code !== 'string') return;
     const { code, data, timeout } = event.data;
     const EXEC_TIMEOUT = typeof timeout === 'number' && timeout > 0 ? timeout : 5000;
 

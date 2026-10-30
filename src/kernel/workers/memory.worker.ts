@@ -77,7 +77,7 @@ function pruneVectors(): void {
     vectors.prune(MAX_VECTORS);
 }
 
-self.onmessage = async (event: MessageEvent) => {
+async function handleMessage(event: MessageEvent): Promise<void> {
     const { requestId, type, payload } = event.data;
 
     try {
@@ -234,6 +234,16 @@ self.onmessage = async (event: MessageEvent) => {
             payload: { message: (error as Error)?.message ?? String(error) },
         });
     }
+}
+
+/**
+ * Serialize message handling so shared module state (db, entries, vectors) is
+ * never mutated by two concurrent handlers — prevents duplicate upserts, torn
+ * search reads, and interleaved remove/upsert.
+ */
+let chain: Promise<unknown> = Promise.resolve();
+self.onmessage = (event: MessageEvent) => {
+    chain = chain.then(() => handleMessage(event));
 };
 
 self.onmessageerror = (event) => {
