@@ -14,8 +14,14 @@ export const COMPONENT_ARTICLES: WikiArticle[] = [
         section: 'components',
         tags: ['компоненты', 'сервисы', 'ядро', 'навигация'],
         freshness: 'verified',
-        sources: ['src/kernel/services/', 'src/kernel/contracts/', 'docs/SERVICES_RU.md'],
-        related: ['dev-overview', 'dev-services', 'dev-service-map', 'architecture', 'dev-contracts'],
+        sources: ['src/kernel/services/', 'src/kernel/contracts/'],
+        related: [
+            'dev-overview',
+            'dev-services',
+            'dev-service-map',
+            'architecture',
+            'dev-contracts',
+        ],
         body: `## Зачем этот раздел
 
 Панели описаны отдельно (раздел **Панели**), handbook разработчика — в разделе **Разработчикам**. Здесь — статьи **о самих подсистемах ядра**: что делает каждый существенный сервис, какие возможности даёт, как устроен, с чем связан и как проверить, что он работает.
@@ -144,8 +150,18 @@ sequenceDiagram
         section: 'components',
         tags: ['компоненты', 'DI', 'container', 'сервисы'],
         freshness: 'verified',
-        sources: ['src/kernel/container.ts', 'src/kernel/container.test.ts', 'src/kernel/service-helper.ts'],
-        related: ['comp-kernel-boot', 'dev-boot', 'dev-services', 'dev-service-map', 'dev-conventions'],
+        sources: [
+            'src/kernel/container.ts',
+            'src/kernel/container.test.ts',
+            'src/kernel/service-helper.ts',
+        ],
+        related: [
+            'comp-kernel-boot',
+            'dev-boot',
+            'dev-services',
+            'dev-service-map',
+            'dev-conventions',
+        ],
         body: `## Назначение
 
 Контейнер — единственный способ получить сервис: он владеет жизненным циклом, разрешает зависимости и защищает от циклов. \`lazyService\` — фасад для панелей: даёт «сервис», который подключается к контейнеру только при первом обращении.
@@ -206,7 +222,13 @@ flowchart LR
             'src/kernel/events/event-bus.test.ts',
             'src/kernel/events/event-registry.test.ts',
         ],
-        related: ['dev-events', 'dev-event-catalog', 'comp-kernel-boot', 'comp-di-container', 'comp-transactions'],
+        related: [
+            'dev-events',
+            'dev-event-catalog',
+            'comp-kernel-boot',
+            'comp-di-container',
+            'comp-transactions',
+        ],
         body: `## Назначение
 
 In-memory шина для доменных событий: сервисы и панели обмениваются сигналами, не зная друг о друге. \`event-registry.ts\` — **единый источник истины** имён и схем событий (Zod).
@@ -254,7 +276,11 @@ In-memory шина для доменных событий: сервисы и п�
         section: 'components',
         tags: ['компоненты', 'транзакции', 'атомарность'],
         freshness: 'verified',
-        sources: ['src/kernel/services/transaction.ts', 'src/kernel/contracts/transaction.ts', 'src/kernel/utils/with-transaction.ts'],
+        sources: [
+            'src/kernel/services/transaction.ts',
+            'src/kernel/contracts/transaction.ts',
+            'src/kernel/utils/with-transaction.ts',
+        ],
         related: ['comp-kernel-boot', 'comp-event-bus', 'comp-persistence', 'comp-config'],
         body: `## Назначение
 
@@ -368,7 +394,13 @@ flowchart TD
             'src/kernel/services/storage-adapter.ts',
             'src/kernel/services/dexie-schema-versioning.test.ts',
         ],
-        related: ['comp-config', 'comp-kernel-boot', 'comp-event-bus', 'dev-stores', 'dev-store-catalog'],
+        related: [
+            'comp-config',
+            'comp-kernel-boot',
+            'comp-event-bus',
+            'dev-stores',
+            'dev-store-catalog',
+        ],
         body: `## Назначение
 
 Локальное хранилище системы: IndexedDB через Dexie (основные данные) и обёртки над localStorage/bucket-хранилищем (лёгкие настройки, безопасные к SSR).
@@ -409,7 +441,11 @@ flowchart TD
         section: 'components',
         tags: ['компоненты', 'безопасность', 'шифрование', 'AES-GCM'],
         freshness: 'verified',
-        sources: ['src/kernel/security.ts', 'src/kernel/security.test.ts', 'src/kernel/services/key-management/key-vault.ts'],
+        sources: [
+            'src/kernel/security.ts',
+            'src/kernel/security.test.ts',
+            'src/kernel/services/key-management/key-vault.ts',
+        ],
         related: ['comp-key-management', 'comp-policy-security', 'comp-persistence'],
         body: `## Назначение
 
@@ -460,7 +496,13 @@ flowchart TD
             'src/kernel/services/virtual-key-service.ts',
             'src/kernel/services/key-intelligence-pipeline.ts',
         ],
-        related: ['comp-routing', 'comp-security-crypto', 'comp-budget-pricing', 'panel-pools', 'panel-providers'],
+        related: [
+            'comp-routing',
+            'comp-security-crypto',
+            'comp-budget-pricing',
+            'panel-pools',
+            'panel-providers',
+        ],
         body: `## Назначение
 
 Весь жизненный цикл API-ключей: регистрация, здоровье, квоты, группировка, выбор для запроса, ротация, привязка к сессии и реакция на компрометацию. Это фундамент, на котором стоит роутинг ([[comp-routing]]).
@@ -515,7 +557,13 @@ flowchart TD
             'src/kernel/services/router-config-manager.ts',
             'src/kernel/services/llm-client-service.ts',
         ],
-        related: ['comp-key-management', 'comp-budget-pricing', 'comp-policy-security', 'panel-providers', 'panel-routing'],
+        related: [
+            'comp-key-management',
+            'comp-budget-pricing',
+            'comp-policy-security',
+            'panel-providers',
+            'panel-routing',
+        ],
         body: `## Назначение
 
 Для каждого LLM-запроса выбрать оптимальный провайдер/ключ с учётом качества, стоимости, латентности, надёжности и политик — и объяснить решение.
@@ -619,7 +667,13 @@ flowchart TD
             'src/kernel/services/role-service.ts',
             'src/kernel/services/skill-service.ts',
         ],
-        related: ['agents', 'panel-roles', 'panel-agents-market', 'comp-routing', 'comp-crews-councils'],
+        related: [
+            'agents',
+            'panel-roles',
+            'panel-agents-market',
+            'comp-routing',
+            'comp-crews-councils',
+        ],
         body: `## Назначение
 
 Кто выполняет работу: агенты (исполнители в топологии), роли (права и профиль поведения) и навыки (переиспользуемые когнитивные умения).
@@ -666,7 +720,12 @@ flowchart TD
             'src/kernel/services/sandbox-service.ts',
             'src/kernel/services/tool-executor.test.ts',
         ],
-        related: ['comp-policy-security', 'comp-security-crypto', 'panel-integrations', 'panel-playground'],
+        related: [
+            'comp-policy-security',
+            'comp-security-crypto',
+            'panel-integrations',
+            'panel-playground',
+        ],
         body: `## Назначение
 
 Дать агентам и пользователю безопасно вызывать внешние возможности: HTTP-инструменты, внешний код, MCP-серверы — с изоляцией, лимитами и журналом исполнения.
@@ -712,7 +771,12 @@ flowchart TD
             'src/kernel/services/compromise-webhook-service.ts',
             'src/kernel/services/notification-webhook-service.ts',
         ],
-        related: ['comp-security-crypto', 'comp-key-management', 'panel-governance', 'panel-settings'],
+        related: [
+            'comp-security-crypto',
+            'comp-key-management',
+            'panel-governance',
+            'panel-settings',
+        ],
         body: `## Назначение
 
 Управлять правилами доступа и приватности (политики), хранить секреты во внешних бэкендах, принимать сигналы компрометации и отправлять уведомления наружу.
@@ -802,7 +866,14 @@ flowchart TD
             'src/kernel/services/debate-runtime/debate-consensus.ts',
             'src/kernel/services/debate-runtime/debate-evaluator.ts',
         ],
-        related: ['debates', 'comp-debate-techniques', 'panel-debate-live', 'comp-agents-roles-skills', 'comp-routing', 'panel-debate-toolkit'],
+        related: [
+            'debates',
+            'comp-debate-techniques',
+            'panel-debate-live',
+            'comp-agents-roles-skills',
+            'comp-routing',
+            'panel-debate-toolkit',
+        ],
         body: `## Назначение
 
 Многогерентные дебаты: несколько агентов-ролей обсуждают тему по заданной стратегии, а рантайм ведёт сессию, собирает аргументы, считает метрики, ищет консенсус и подводит итог.
@@ -914,7 +985,14 @@ flowchart TD
             'src/kernel/services/cognitive-intelligence/cognitive-diagnostics.ts',
             'src/kernel/services/cognitive-intelligence/cognitive-whatif.ts',
         ],
-        related: ['architecture', 'panel-dashboard', 'panel-knowledge', 'comp-routing', 'comp-agents-roles-skills', 'comp-debate-runtime'],
+        related: [
+            'architecture',
+            'panel-dashboard',
+            'panel-knowledge',
+            'comp-routing',
+            'comp-agents-roles-skills',
+            'comp-debate-runtime',
+        ],
         body: `## Назначение
 
 Исполнять когнитивные процессы и топологии: прогонять узлы (шаги) через цепочки провайдеров, фиксировать решения и монтировать графы (DAG) рабочих процессов.
@@ -967,7 +1045,15 @@ flowchart TD
             'src/kernel/dal/memory-repository.ts',
             'src/kernel/services/memory-engine.test.ts',
         ],
-        related: ['memory', 'comp-knowledge-rag', 'comp-flow-knowledge', 'panel-memory-palace', 'panel-knowledge', 'comp-persistence', 'dev-store-catalog'],
+        related: [
+            'memory',
+            'comp-knowledge-rag',
+            'comp-flow-knowledge',
+            'panel-memory-palace',
+            'panel-knowledge',
+            'comp-persistence',
+            'dev-store-catalog',
+        ],
         body: `## Назначение
 
 Семантическая и полнотекстовая память и знания: хранить заметки/факты/события и находить нужное по смыслу, а не только по подстроке.
@@ -1011,7 +1097,10 @@ flowchart TD
         section: 'components',
         tags: ['компоненты', 'чат', 'стриминг', 'LLM'],
         freshness: 'verified',
-        sources: ['src/kernel/services/chat-executor.ts', 'src/kernel/services/chat-executor.test.ts'],
+        sources: [
+            'src/kernel/services/chat-executor.ts',
+            'src/kernel/services/chat-executor.test.ts',
+        ],
         related: ['panel-chat', 'comp-routing', 'comp-budget-pricing', 'comp-policy-security'],
         body: `## Назначение
 
@@ -1056,7 +1145,13 @@ flowchart TD
             'src/kernel/services/cache-service.ts',
             'src/kernel/services/admin-service.ts',
         ],
-        related: ['panel-observability', 'panel-sre', 'diagnostics', 'panel-custom-metrics', 'comp-routing'],
+        related: [
+            'panel-observability',
+            'panel-sre',
+            'diagnostics',
+            'panel-custom-metrics',
+            'comp-routing',
+        ],
         body: `## Назначение
 
 Видеть, что происходит внутри: метрики провайдеров, здоровье системы, хронология событий, трейсы выполнения, сводный статус и админ-функции.
@@ -1108,7 +1203,13 @@ flowchart TD
             'src/kernel/services/runtime-intelligence/pressure-map-service.ts',
             'src/kernel/services/runtime-intelligence/whatif-service.ts',
         ],
-        related: ['panel-dashboard', 'diagnostics', 'panel-pressure', 'panel-sre', 'comp-observability'],
+        related: [
+            'panel-dashboard',
+            'diagnostics',
+            'panel-pressure',
+            'panel-sre',
+            'comp-observability',
+        ],
         body: `## Назначение
 
 Превращать «сырые» метрики и события в советы: что не так, почему, что будет, если изменить параметры, и что сделать, чтобы работало лучше.
@@ -1151,7 +1252,14 @@ flowchart TD
             'src/kernel/dal/event-log-repository.ts',
             'src/kernel/services/timeline-service.ts',
         ],
-        related: ['comp-event-bus', 'comp-persistence', 'comp-transactions', 'execution-trail', 'panel-history-audit', 'comp-storage-timeline'],
+        related: [
+            'comp-event-bus',
+            'comp-persistence',
+            'comp-transactions',
+            'execution-trail',
+            'panel-history-audit',
+            'comp-storage-timeline',
+        ],
         body: `## Назначение
 
 Сохранять поток событий и периодические контрольные точки, чтобы состояние можно было восстановить и проанализировать задним числом.
@@ -1198,7 +1306,13 @@ flowchart TD
             'src/kernel/services/counterfactual-explanation-service.ts',
             'src/kernel/services/causal-scope-manager.ts',
         ],
-        related: ['comp-event-sourcing', 'execution-trail', 'panel-history-audit', 'panel-shadow', 'panel-simulation'],
+        related: [
+            'comp-event-sourcing',
+            'execution-trail',
+            'panel-history-audit',
+            'panel-shadow',
+            'panel-simulation',
+        ],
         body: `## Назначение
 
 Перемещаться во времени: переиграть прошлое, снять/сравнить состояние, показать причинно-следственные цепочки и объяснить «а что если».
@@ -1247,7 +1361,13 @@ flowchart TD
             'src/kernel/services/task-work-product-service.ts',
             'src/kernel/services/scheduler-service.ts',
         ],
-        related: ['panel-agent-tasks', 'panel-scheduler', 'panel-tasks', 'panel-planning', 'comp-agents-roles-skills'],
+        related: [
+            'panel-agent-tasks',
+            'panel-scheduler',
+            'panel-tasks',
+            'panel-planning',
+            'comp-agents-roles-skills',
+        ],
         body: `## Назначение
 
 Ставить задачи агентам, передавать их «из рук в руки», запускать по триггерам/расписанию и собирать результат работы.
@@ -1295,7 +1415,14 @@ flowchart TD
             'src/kernel/services/permissions/permission-service.ts',
             'src/kernel/services/rivals/guardrail-service.ts',
         ],
-        related: ['panel-fleet', 'panel-governance', 'panel-roles', 'panel-history-audit', 'panel-provenance-junctions', 'comp-policy-security'],
+        related: [
+            'panel-fleet',
+            'panel-governance',
+            'panel-roles',
+            'panel-history-audit',
+            'panel-provenance-junctions',
+            'comp-policy-security',
+        ],
         body: `## Назначение
 
 Управлять «флотом» агентов и инструментов: следить за здоровьем, задавать правила, фиксировать происхождение и вести аудит.
@@ -1341,7 +1468,13 @@ flowchart TD
             'src/kernel/services/interop/mcp-harness-service.ts',
             'src/kernel/services/rivals2/integrations-service.ts',
         ],
-        related: ['panel-integrations', 'panel-gateway', 'comp-tools-mcp', 'panel-forum', 'comp-routing'],
+        related: [
+            'panel-integrations',
+            'panel-gateway',
+            'comp-tools-mcp',
+            'panel-forum',
+            'comp-routing',
+        ],
         body: `## Назначение
 
 Связывать систему с внешним миром: другими агентами, сервисами, MCP-инструментами и корпоративным шлюзом.
@@ -1388,7 +1521,13 @@ flowchart TD
             'src/kernel/services/provider-router.ts',
             'src/kernel/services/provider-tracker.ts',
         ],
-        related: ['providers', 'panel-providers', 'comp-routing', 'comp-key-management', 'comp-budget-pricing'],
+        related: [
+            'providers',
+            'panel-providers',
+            'comp-routing',
+            'comp-key-management',
+            'comp-budget-pricing',
+        ],
         body: `## Назначение
 
 Держать рантайм-состояние провайдеров: инстансы, сессии, бюджет и метрики, а также адаптеры, роутинг и миграции.
@@ -1426,8 +1565,18 @@ flowchart TD
         section: 'components',
         tags: ['компоненты', 'llm', 'адаптеры', 'мост', 'crews', 'council'],
         freshness: 'verified',
-        sources: ['src/kernel/services/llm-bridge/llm-task-executor.ts', 'src/kernel/contracts/provider-adapter.ts'],
-        related: ['comp-provider-runtime', 'comp-routing', 'comp-agents-roles-skills', 'comp-crews-councils', 'panel-director', 'for-developers'],
+        sources: [
+            'src/kernel/services/llm-bridge/llm-task-executor.ts',
+            'src/kernel/contracts/provider-adapter.ts',
+        ],
+        related: [
+            'comp-provider-runtime',
+            'comp-routing',
+            'comp-agents-roles-skills',
+            'comp-crews-councils',
+            'panel-director',
+            'for-developers',
+        ],
         body: `## Назначение
 
 Связывать прикладные подсистемы (экипажи, совет, графы, фронтир, личности) с LLM: единый мост исполняет их задачи через клиента провайдеров.
@@ -1464,7 +1613,11 @@ flowchart TD
         section: 'components',
         tags: ['компоненты', 'состояние', 'zustand', 'ui'],
         freshness: 'verified',
-        sources: ['src/stores/useKeyStore.ts', 'src/stores/debateLiveStore.ts', 'src/stores/chat/store.ts'],
+        sources: [
+            'src/stores/useKeyStore.ts',
+            'src/stores/debateLiveStore.ts',
+            'src/stores/chat/store.ts',
+        ],
         related: ['dev-stores', 'dev-store-catalog', 'comp-chat', 'panel-wiki', 'dev-layout'],
         body: `## Назначение
 
@@ -1506,7 +1659,14 @@ flowchart TD
             'src/kernel/services/debate-runtime/debate-engine.ts',
             'src/kernel/services/agems-task-service.ts',
         ],
-        related: ['scenarios', 'what-is', 'panels-guide', 'comp-chat', 'comp-debate-runtime', 'comp-task-planning'],
+        related: [
+            'scenarios',
+            'what-is',
+            'panels-guide',
+            'comp-chat',
+            'comp-debate-runtime',
+            'comp-task-planning',
+        ],
         body: `## Назначение
 
 Показать, как отдельные подсистемы собираются в целостные пользовательские потоки: от действия в панели до результата и записи в аудит.
@@ -1551,7 +1711,14 @@ flowchart TD
             'src/kernel/services/council/council-lenses.ts',
             'src/kernel/services/council/council-to-debate-mapper.ts',
         ],
-        related: ['panel-director', 'panel-synthesis', 'panel-fleet', 'comp-agents-roles-skills', 'comp-llm-bridge', 'comp-debate-runtime'],
+        related: [
+            'panel-director',
+            'panel-synthesis',
+            'panel-fleet',
+            'comp-agents-roles-skills',
+            'comp-llm-bridge',
+            'comp-debate-runtime',
+        ],
         body: `## Назначение
 
 Собирать группы агентов (экипажи) и «совет» судей, которые сообща решают задачу и оценивают результаты.
@@ -1596,7 +1763,13 @@ flowchart TD
             'src/kernel/services/agent-diversity/diversity-scorer.ts',
             'src/kernel/services/agent-diversity/clustering.ts',
         ],
-        related: ['panel-eval', 'panel-simulation', 'panel-analytics', 'panel-fleet', 'comp-eval-elo'],
+        related: [
+            'panel-eval',
+            'panel-simulation',
+            'panel-analytics',
+            'panel-fleet',
+            'comp-eval-elo',
+        ],
         body: `## Назначение
 
 Искать «фронтир» — лучшие конфигурации агентов — и измерять разнообразие/влияние участников, чтобы не вырождаться в однообразие.
@@ -1638,7 +1811,13 @@ flowchart TD
             'src/kernel/services/rivals2/swe-service.ts',
             'src/kernel/services/rivals3/codeplan-service.ts',
         ],
-        related: ['panel-agents-market', 'panel-ab-testing', 'panel-eval', 'comp-integrations-interop', 'panel-analytics'],
+        related: [
+            'panel-agents-market',
+            'panel-ab-testing',
+            'panel-eval',
+            'comp-integrations-interop',
+            'panel-analytics',
+        ],
         body: `## Назначение
 
 Набор «конкурентов» — альтернативных реализаций и внешних агентов (Aider, SWE-agent, React-режимы и т.п.), с которыми систему сравнивают и у которых заимствуют ходы.
@@ -1682,7 +1861,13 @@ flowchart TD
             'src/kernel/services/crystal-vault/crystal-vault-service.ts',
             'src/kernel/services/lens-engine/lens-engine-service.ts',
         ],
-        related: ['panel-knowledge', 'panel-knowledge-generator', 'panel-lenses-crystals', 'comp-memory', 'panel-memory-palace'],
+        related: [
+            'panel-knowledge',
+            'panel-knowledge-generator',
+            'panel-lenses-crystals',
+            'comp-memory',
+            'panel-memory-palace',
+        ],
         body: `## Назначение
 
 Порождать, хранить и находить знания: генерировать статьи, извлекать релевантное (RAG), кристаллизовать и смотреть через «линзы».
@@ -1723,7 +1908,13 @@ flowchart TD
             'src/kernel/services/eval/scorer-registry-service.ts',
             'src/kernel/services/elo/elo-service.ts',
         ],
-        related: ['panel-eval', 'panel-eval-extra', 'panel-quality-impact', 'panel-ab-testing', 'panel-analytics'],
+        related: [
+            'panel-eval',
+            'panel-eval-extra',
+            'panel-quality-impact',
+            'panel-ab-testing',
+            'panel-analytics',
+        ],
         body: `## Назначение
 
 Объективно сравнивать ответы и агентов: судить (LLM-judge и оценки), вести рейтинг Эло, показывать влияние качества.
@@ -1765,7 +1956,13 @@ flowchart TD
             'src/kernel/services/persona/shared-context-service.ts',
             'src/kernel/services/builder/builder-agent-service.ts',
         ],
-        related: ['panel-persona', 'panel-builder', 'panel-agents-market', 'comp-memory', 'comp-agents-roles-skills'],
+        related: [
+            'panel-persona',
+            'panel-builder',
+            'panel-agents-market',
+            'comp-memory',
+            'comp-agents-roles-skills',
+        ],
         body: `## Назначение
 
 Давать агентам устойчивую личность (персону) и общий контекст, а также строить/дорабатывать агентов и артефакты «строителем».
@@ -1809,7 +2006,13 @@ flowchart TD
             'src/kernel/services/meta/cog-memory-service.ts',
             'src/kernel/services/project-invocation-bridge.ts',
         ],
-        related: ['panel-settings', 'panel-analytics', 'comp-budget-pricing', 'comp-agents-roles-skills', 'comp-state-stores'],
+        related: [
+            'panel-settings',
+            'panel-analytics',
+            'comp-budget-pricing',
+            'comp-agents-roles-skills',
+            'comp-state-stores',
+        ],
         body: `## Назначение
 
 Фиксировать каждый вызов агента/инструмента (учёт, повтор) и управлять ими на мета-уровне: стратегии и «мета-агент», который предлагает улучшения.
@@ -1855,7 +2058,13 @@ flowchart TD
             'src/kernel/services/parity/knowledge-service.ts',
             'src/kernel/services/parity/tool-runner-service.ts',
         ],
-        related: ['panel-simulation', 'panel-playground', 'panel-guardians', 'panel-infra-meta', 'comp-tools-mcp'],
+        related: [
+            'panel-simulation',
+            'panel-playground',
+            'panel-guardians',
+            'panel-infra-meta',
+            'comp-tools-mcp',
+        ],
         body: `## Назначение
 
 Прогонять «мир» с агентами (симуляция), давать агенту управлять компьютером и проверять паритет с внешними рантаймами.
@@ -1899,7 +2108,13 @@ flowchart TD
             'src/kernel/services/forum/forum-service.ts',
             'src/kernel/services/junction-engine/junction-engine-service.ts',
         ],
-        related: ['panel-synthesis', 'panel-forum', 'panel-provenance-junctions', 'panel-group-chat', 'comp-crews-councils'],
+        related: [
+            'panel-synthesis',
+            'panel-forum',
+            'panel-provenance-junctions',
+            'panel-group-chat',
+            'comp-crews-councils',
+        ],
         body: `## Назначение
 
 Сводить мнения в единый вывод (синтез), вести публичное обсуждение (форум) и связывать разрозненные ветки рассуждений в «перекрёстки» (junction).
@@ -1942,7 +2157,13 @@ flowchart TD
             'src/kernel/services/timeline/timeline-map.ts',
             'src/kernel/services/projections/router-projection.ts',
         ],
-        related: ['comp-persistence', 'dev-store-catalog', 'comp-observability', 'execution-trail', 'panel-history-audit'],
+        related: [
+            'comp-persistence',
+            'dev-store-catalog',
+            'comp-observability',
+            'execution-trail',
+            'panel-history-audit',
+        ],
         body: `## Назначение
 
 Низкоуровневое хранение (Dexie/IndexedDB и localStorage), визуализация хронологии исполнения и «проекции» решений роутера.
@@ -1989,7 +2210,13 @@ flowchart TD
             'src/kernel/services/sandbox/code-sandbox-service.ts',
             'src/kernel/services/deploy/deploy-bundle-service.ts',
         ],
-        related: ['comp-tools-mcp', 'panel-playground', 'panel-infra-meta', 'comp-policy-security', 'comp-routing'],
+        related: [
+            'comp-tools-mcp',
+            'panel-playground',
+            'panel-infra-meta',
+            'comp-policy-security',
+            'comp-routing',
+        ],
         body: `## Назначение
 
 Знать, что система умеет: каталог инструментов, разрешение способностей агентов, политики маршрутизации, песочница кода и упаковка деплоя.
@@ -2029,7 +2256,13 @@ flowchart TD
             'src/kernel/services/event-bridge/event-bridge.ts',
             'src/kernel/services/event-bridge/projection-registry.ts',
         ],
-        related: ['comp-event-bus', 'comp-cognitive-orchestration', 'panel-workflows', 'dev-graph', 'comp-storage-timeline'],
+        related: [
+            'comp-event-bus',
+            'comp-cognitive-orchestration',
+            'panel-workflows',
+            'dev-graph',
+            'comp-storage-timeline',
+        ],
         body: `## Назначение
 
 Исполнять графовые режимы (узлы/связи) и переносить события в проекции (read-модели).
@@ -2070,7 +2303,13 @@ flowchart TD
             'src/kernel/services/debateplus/format-service.ts',
             'src/kernel/services/debateplus/argtech-consensus-bridge.ts',
         ],
-        related: ['comp-debate-runtime', 'panel-debate-toolkit', 'comp-consistency', 'debates', 'comp-synthesis-forum'],
+        related: [
+            'comp-debate-runtime',
+            'panel-debate-toolkit',
+            'comp-consistency',
+            'debates',
+            'comp-synthesis-forum',
+        ],
         body: `## Назначение
 
 Формализовать аргументацию: структуры аргументов/атак, форматирование и мост к консенсусу дебатов.
@@ -2127,7 +2366,13 @@ flowchart TD
             'src/llm/decorators/priority-queue.ts',
             'src/llm/decorators/logging-decorator.ts',
         ],
-        related: ['comp-llm-adapters', 'comp-provider-runtime', 'comp-routing', 'comp-budget-pricing', 'for-developers'],
+        related: [
+            'comp-llm-adapters',
+            'comp-provider-runtime',
+            'comp-routing',
+            'comp-budget-pricing',
+            'for-developers',
+        ],
         body: `## Назначение
 
 Обернуть вызовы LLM в переиспользуемые «декораторы»: устойчивость, экономия, маршрутизация и наблюдаемость — поверх базового адаптера.
@@ -2179,7 +2424,13 @@ flowchart TD
             'src/llm/catalog/models-catalog.ts',
             'src/llm/catalog/catalog-lookup.ts',
         ],
-        related: ['providers', 'panel-providers', 'comp-provider-runtime', 'comp-llm-pipeline', 'dev-component-catalog'],
+        related: [
+            'providers',
+            'panel-providers',
+            'comp-provider-runtime',
+            'comp-llm-pipeline',
+            'dev-component-catalog',
+        ],
         body: `## Назначение
 
 Говорить на «языке» каждого провайдера: превращать общий запрос в формат конкретного API и обратно, включая стриминг и tool-calls.
@@ -2221,7 +2472,13 @@ flowchart TD
             'src/kernel/services/external-secrets-service.ts',
             'src/kernel/services/cross-tab-lock-service.ts',
         ],
-        related: ['comp-security-crypto', 'comp-key-management', 'comp-policy-security', 'panel-settings', 'panel-infra-meta'],
+        related: [
+            'comp-security-crypto',
+            'comp-key-management',
+            'comp-policy-security',
+            'panel-settings',
+            'panel-infra-meta',
+        ],
         body: `## Назначение
 
 Хранить секреты безопасно и не давать вкладкам/процессам конфликтовать за общие ресурсы.
@@ -2261,7 +2518,13 @@ flowchart TD
             'src/kernel/services/notification-webhook-service.ts',
             'src/kernel/services/tool-executor.ts',
         ],
-        related: ['comp-integrations-interop', 'panel-integrations', 'panel-channels', 'comp-tools-mcp', 'comp-fleet-governance'],
+        related: [
+            'comp-integrations-interop',
+            'panel-integrations',
+            'panel-channels',
+            'comp-tools-mcp',
+            'comp-fleet-governance',
+        ],
         body: `## Назначение
 
 Связывать систему с внешним миром через автоматизацию, мессенджеры и вебхуки, а также исполнять внешние инструменты.
@@ -2306,7 +2569,13 @@ flowchart TD
             'src/llm/gemini/gemini-model-validator.ts',
             'src/llm/gemini/gemini-types.ts',
         ],
-        related: ['comp-llm-adapters', 'comp-llm-pipeline', 'comp-provider-runtime', 'providers', 'panel-providers'],
+        related: [
+            'comp-llm-adapters',
+            'comp-llm-pipeline',
+            'comp-provider-runtime',
+            'providers',
+            'panel-providers',
+        ],
         body: `## Назначение
 
 Обслуживать провайдера Google Gemini: сборка запроса, разбор ответа и стрима, проверка здоровья и валидация моделей.
@@ -2342,7 +2611,13 @@ flowchart TD
         tags: ['компоненты', 'llm', 'адаптер', 'anthropic', 'claude'],
         freshness: 'verified',
         sources: ['src/llm/anthropic/anthropic-adapter.ts'],
-        related: ['comp-llm-adapters', 'comp-llm-pipeline', 'comp-adapter-gemini-computer', 'providers', 'panel-providers'],
+        related: [
+            'comp-llm-adapters',
+            'comp-llm-pipeline',
+            'comp-adapter-gemini-computer',
+            'providers',
+            'panel-providers',
+        ],
         body: `## Назначение
 
 Обслуживать API Anthropic (Claude), включая инструменты и режим computer-use.
@@ -2378,7 +2653,13 @@ flowchart TD
         tags: ['компоненты', 'llm', 'адаптер', 'gemini', 'computer-use'],
         freshness: 'verified',
         sources: ['src/llm/gemini-computer/gemini-computer-adapter.ts'],
-        related: ['comp-llm-adapters', 'comp-adapter-gemini', 'comp-adapter-anthropic', 'comp-simulation-world', 'panel-providers'],
+        related: [
+            'comp-llm-adapters',
+            'comp-adapter-gemini',
+            'comp-adapter-anthropic',
+            'comp-simulation-world',
+            'panel-providers',
+        ],
         body: `## Назначение
 
 Давать моделям управлять «компьютером»: действия, шаги и результаты вызовов — через Gemini Computer Use.
@@ -2421,7 +2702,13 @@ flowchart TD
             'src/llm/qwen/qwen-adapter.ts',
             'src/llm/cerebras/cerebras-adapter.ts',
         ],
-        related: ['comp-llm-adapters', 'comp-adapter-groq', 'comp-adapter-openrouter', 'providers', 'panel-providers'],
+        related: [
+            'comp-llm-adapters',
+            'comp-adapter-groq',
+            'comp-adapter-openrouter',
+            'providers',
+            'panel-providers',
+        ],
         body: `## Назначение
 
 Одна реализация на весь класс провайдеров, говорящих на OpenAI-совместимом протоколе; конкретные вендоры — тонкие наследники с дефолтами.
@@ -2455,8 +2742,17 @@ flowchart TD
         section: 'components',
         tags: ['компоненты', 'llm', 'адаптер', 'openrouter'],
         freshness: 'documented',
-        sources: ['src/llm/openrouter/openrouter-adapter.ts', 'src/llm/openrouter/openrouter-types.ts'],
-        related: ['comp-llm-adapters', 'comp-adapter-openai-compatible', 'comp-adapter-groq', 'providers', 'panel-providers'],
+        sources: [
+            'src/llm/openrouter/openrouter-adapter.ts',
+            'src/llm/openrouter/openrouter-types.ts',
+        ],
+        related: [
+            'comp-llm-adapters',
+            'comp-adapter-openai-compatible',
+            'comp-adapter-groq',
+            'providers',
+            'panel-providers',
+        ],
         body: `## Назначение
 
 Ходить через агрегатор OpenRouter к множеству моделей одним ключом.
@@ -2493,7 +2789,13 @@ flowchart TD
         tags: ['компоненты', 'llm', 'адаптер', 'groq'],
         freshness: 'documented',
         sources: ['src/llm/groq/groq-adapter.ts'],
-        related: ['comp-llm-adapters', 'comp-adapter-openai-compatible', 'comp-adapter-nvidia-nim', 'providers', 'panel-providers'],
+        related: [
+            'comp-llm-adapters',
+            'comp-adapter-openai-compatible',
+            'comp-adapter-nvidia-nim',
+            'providers',
+            'panel-providers',
+        ],
         body: `## Назначение
 
 Подключать быстрый инференс Groq.
@@ -2530,7 +2832,13 @@ flowchart TD
         tags: ['компоненты', 'llm', 'адаптер', 'nvidia', 'nim'],
         freshness: 'documented',
         sources: ['src/llm/nvidia/nvidia-nim-adapter.ts', 'src/llm/nvidia/nvidia-nim-types.ts'],
-        related: ['comp-llm-adapters', 'comp-adapter-groq', 'comp-adapter-cloudflare', 'providers', 'panel-providers'],
+        related: [
+            'comp-llm-adapters',
+            'comp-adapter-groq',
+            'comp-adapter-cloudflare',
+            'providers',
+            'panel-providers',
+        ],
         body: `## Назначение
 
 Подключать инференс NVIDIA NIM.
@@ -2567,7 +2875,13 @@ flowchart TD
         tags: ['компоненты', 'llm', 'адаптер', 'cloudflare'],
         freshness: 'documented',
         sources: ['src/llm/cloudflare/cloudflare-adapter.ts'],
-        related: ['comp-llm-adapters', 'comp-adapter-nvidia-nim', 'comp-adapter-mock', 'providers', 'panel-providers'],
+        related: [
+            'comp-llm-adapters',
+            'comp-adapter-nvidia-nim',
+            'comp-adapter-mock',
+            'providers',
+            'panel-providers',
+        ],
         body: `## Назначение
 
 Подключать модели Cloudflare (Workers AI).
@@ -2604,7 +2918,13 @@ flowchart TD
         tags: ['компоненты', 'llm', 'адаптер', 'mock', 'тесты'],
         freshness: 'documented',
         sources: ['src/llm/mock/mock-adapter.ts'],
-        related: ['comp-llm-adapters', 'comp-adapter-cloudflare', 'for-developers', 'dev-component-catalog', 'panel-providers'],
+        related: [
+            'comp-llm-adapters',
+            'comp-adapter-cloudflare',
+            'for-developers',
+            'dev-component-catalog',
+            'panel-providers',
+        ],
         body: `## Назначение
 
 Давать детерминированные ответы без сети — для тестов, офлайн-режима и демо.
@@ -2646,7 +2966,13 @@ flowchart TD
             'src/llm/decorators/rate-limit-decorator.ts',
             'src/llm/decorators/fallback-decorator.ts',
         ],
-        related: ['comp-llm-pipeline', 'comp-llm-adapters', 'comp-provider-runtime', 'comp-routing', 'for-developers'],
+        related: [
+            'comp-llm-pipeline',
+            'comp-llm-adapters',
+            'comp-provider-runtime',
+            'comp-routing',
+            'for-developers',
+        ],
         body: `## Назначение
 
 Не падать и не перегружать провайдеров при сбоях и лимитах.
@@ -2686,7 +3012,13 @@ flowchart TD
             'src/llm/decorators/compress-route.ts',
             'src/llm/decorators/cache-decorator.ts',
         ],
-        related: ['comp-llm-pipeline', 'comp-budget-pricing', 'comp-llm-adapters', 'comp-provider-runtime', 'for-developers'],
+        related: [
+            'comp-llm-pipeline',
+            'comp-budget-pricing',
+            'comp-llm-adapters',
+            'comp-provider-runtime',
+            'for-developers',
+        ],
         body: `## Назначение
 
 Снижать стоимость и объём трафика, не теряя качества.
@@ -2726,7 +3058,13 @@ flowchart TD
             'src/llm/decorators/priority-queue.ts',
             'src/llm/decorators/logging-decorator.ts',
         ],
-        related: ['comp-llm-pipeline', 'comp-routing', 'comp-llm-adapters', 'comp-provider-runtime', 'comp-observability'],
+        related: [
+            'comp-llm-pipeline',
+            'comp-routing',
+            'comp-llm-adapters',
+            'comp-provider-runtime',
+            'comp-observability',
+        ],
         body: `## Назначение
 
 Выбирать, куда и в каком порядке отправлять запрос, и логировать это.
@@ -2770,7 +3108,13 @@ flowchart TD
             'src/llm/utils/compression.ts',
             'src/llm/utils/token-counter.ts',
         ],
-        related: ['comp-llm-pipeline', 'comp-llm-adapters', 'comp-provider-runtime', 'comp-routing', 'for-developers'],
+        related: [
+            'comp-llm-pipeline',
+            'comp-llm-adapters',
+            'comp-provider-runtime',
+            'comp-routing',
+            'for-developers',
+        ],
         body: `## Назначение
 
 Дать общий фундамент: базовые классы адаптера/декоратора, middleware-конвейер, сборку запроса, ошибки и утилиты.
@@ -2815,7 +3159,14 @@ flowchart TD
             'src/llm/http/llm-http-client.ts',
             'src/kernel/services/probe-service.ts',
         ],
-        related: ['comp-security-crypto', 'comp-integrations-interop', 'comp-policy-security', 'comp-messaging-integrations', 'for-developers', 'comp-provider-runtime'],
+        related: [
+            'comp-security-crypto',
+            'comp-integrations-interop',
+            'comp-policy-security',
+            'comp-messaging-integrations',
+            'for-developers',
+            'comp-provider-runtime',
+        ],
         body: `## Назначение
 
 Набор низкоуровневых защитных утилит: проверка адресов, безопасный парсинг и хранение.
@@ -2853,8 +3204,18 @@ flowchart TD
         section: 'components',
         tags: ['компоненты', 'утилиты', 'эмбеддинги', 'rng'],
         freshness: 'documented',
-        sources: ['src/kernel/utils/embedding.ts', 'src/kernel/utils/seedable-rng.ts', 'src/kernel/workers/memory-vector-space.ts'],
-        related: ['comp-knowledge-rag', 'comp-memory', 'comp-simulation-world', 'comp-frontier-diversity', 'for-developers'],
+        sources: [
+            'src/kernel/utils/embedding.ts',
+            'src/kernel/utils/seedable-rng.ts',
+            'src/kernel/workers/memory-vector-space.ts',
+        ],
+        related: [
+            'comp-knowledge-rag',
+            'comp-memory',
+            'comp-simulation-world',
+            'comp-frontier-diversity',
+            'for-developers',
+        ],
         body: `## Назначение
 
 Давать лёгкие локальные эмбеддинги и воспроизводимую случайность там, где не нужен внешний сервис.
@@ -2889,8 +3250,18 @@ flowchart TD
         section: 'components',
         tags: ['компоненты', 'утилиты', 'память', 'наблюдаемость'],
         freshness: 'documented',
-        sources: ['src/kernel/utils/memory-tracker.ts', 'src/kernel/utils/memory-watchdog.ts', 'src/kernel/utils/compute-memory-id.ts'],
-        related: ['comp-observability', 'comp-memory', 'comp-fleet-governance', 'panel-infra-meta', 'for-developers'],
+        sources: [
+            'src/kernel/utils/memory-tracker.ts',
+            'src/kernel/utils/memory-watchdog.ts',
+            'src/kernel/utils/compute-memory-id.ts',
+        ],
+        related: [
+            'comp-observability',
+            'comp-memory',
+            'comp-fleet-governance',
+            'panel-infra-meta',
+            'for-developers',
+        ],
         body: `## Назначение
 
 Следить за ростом памяти и предотвращать утечки/переполнение на клиенте.
@@ -2924,8 +3295,18 @@ flowchart TD
         section: 'components',
         tags: ['компоненты', 'утилиты', 'дебаты', 'анализ'],
         freshness: 'documented',
-        sources: ['src/kernel/utils/debate-analysis.ts', 'src/kernel/utils/topic-suggestions.ts', 'src/kernel/utils/tokenEstimate.ts'],
-        related: ['comp-debate-runtime', 'comp-eval-elo', 'comp-debateplus', 'comp-scenarios', 'for-developers'],
+        sources: [
+            'src/kernel/utils/debate-analysis.ts',
+            'src/kernel/utils/topic-suggestions.ts',
+            'src/kernel/utils/tokenEstimate.ts',
+        ],
+        related: [
+            'comp-debate-runtime',
+            'comp-eval-elo',
+            'comp-debateplus',
+            'comp-scenarios',
+            'for-developers',
+        ],
         body: `## Назначение
 
 Давать локальный анализ аргументации и подсказки тем, а также оценку токенов.
@@ -2964,7 +3345,13 @@ flowchart TD
             'src/kernel/utils/provider-default-models.ts',
             'src/kernel/utils/provider-fleet-health.ts',
         ],
-        related: ['comp-persistence', 'comp-provider-runtime', 'comp-fleet-governance', 'providers', 'panel-providers'],
+        related: [
+            'comp-persistence',
+            'comp-provider-runtime',
+            'comp-fleet-governance',
+            'providers',
+            'panel-providers',
+        ],
         body: `## Назначение
 
 Обеспечивать корректный порядок «сначала запись — потом событие» и справочные данные по провайдерам.
@@ -3007,7 +3394,13 @@ flowchart TD
             'src/kernel/dal/scenario-repository.ts',
             'src/kernel/dal/workspace-repository.ts',
         ],
-        related: ['comp-persistence', 'comp-storage-timeline', 'comp-event-sourcing', 'comp-state-stores', 'for-developers'],
+        related: [
+            'comp-persistence',
+            'comp-storage-timeline',
+            'comp-event-sourcing',
+            'comp-state-stores',
+            'for-developers',
+        ],
         body: `## Назначение
 
 Дать типизированный доступ к данным через репозитории поверх слоя хранения.
@@ -3058,7 +3451,13 @@ flowchart TD
             'src/stores/activeDebateStore.ts',
             'src/stores/debateLiveStore.ts',
         ],
-        related: ['comp-debate-runtime', 'comp-provider-runtime', 'comp-llm-adapters', 'comp-event-bus', 'comp-state-stores'],
+        related: [
+            'comp-debate-runtime',
+            'comp-provider-runtime',
+            'comp-llm-adapters',
+            'comp-event-bus',
+            'comp-state-stores',
+        ],
         body: `## Назначение
 
 Показать дебаты не как набор сервисов, а как **сквозной контур**: путь запроса от панели до сохранённого вердикта и обратно в интерфейс — вместе с точками обрыва.
@@ -3143,7 +3542,13 @@ flowchart TD
             'src/kernel/events/chat-events.ts',
             'src/kernel/events/event-registry.ts',
         ],
-        related: ['comp-chat', 'comp-provider-runtime', 'comp-llm-adapters', 'comp-event-bus', 'comp-state-stores'],
+        related: [
+            'comp-chat',
+            'comp-provider-runtime',
+            'comp-llm-adapters',
+            'comp-event-bus',
+            'comp-state-stores',
+        ],
         body: `## Назначение
 
 Показать чат как **сквозной контур**: путь сообщения от ввода в панели до стримингового ответа в UI и записи в хранилище — вместе с точками обрыва.
@@ -3221,7 +3626,13 @@ flowchart TD
             'src/kernel/services/debate-runtime/debate-knowledge-sync.ts',
             'src/kernel/service-registration/phase54-hybrid-rag.ts',
         ],
-        related: ['comp-knowledge-rag', 'comp-memory', 'comp-llm-bridge', 'comp-flow-debate', 'comp-event-bus'],
+        related: [
+            'comp-knowledge-rag',
+            'comp-memory',
+            'comp-llm-bridge',
+            'comp-flow-debate',
+            'comp-event-bus',
+        ],
         body: `## Назначение
 
 Показать знания и RAG как **сквозной контур**: путь источника от загрузки/индексации до выдачи релевантных фрагментов потребителям (чат, дебаты, инструменты) — вместе с точками обрыва.
@@ -3295,7 +3706,14 @@ flowchart TD
             'src/kernel/services/multi-agent-project-service.ts',
             'src/kernel/contracts/invocation.ts',
         ],
-        related: ['comp-invocation-meta', 'comp-crews-councils', 'comp-frontier-diversity', 'comp-flow-debate', 'comp-flow-chat', 'comp-budget-pricing'],
+        related: [
+            'comp-invocation-meta',
+            'comp-crews-councils',
+            'comp-frontier-diversity',
+            'comp-flow-debate',
+            'comp-flow-chat',
+            'comp-budget-pricing',
+        ],
         body: `## Назначение
 
 Показать мультиагентность как **сквозной контур**: от запроса «позвать агентов» до реального исполнения (дебаты или режиссируемый разговор) — с единым жизненным циклом и точками обрыва.
@@ -3377,7 +3795,13 @@ flowchart TD
             'src/kernel/services/mcp-service.ts',
             'src/kernel/service-registration/phase58-code-sandbox.ts',
         ],
-        related: ['comp-tools-mcp', 'comp-tool-capability', 'comp-policy-security', 'comp-flow-chat', 'comp-flow-knowledge'],
+        related: [
+            'comp-tools-mcp',
+            'comp-tool-capability',
+            'comp-policy-security',
+            'comp-flow-chat',
+            'comp-flow-knowledge',
+        ],
         body: `## Назначение
 
 Показать вызов инструментов как **сквозной контур**: от запроса агента/чата до выполнения в песочнице или через MCP — с политиками, защитой от циклов и точками обрыва.
@@ -3455,7 +3879,13 @@ flowchart TD
             'src/components/SimulationPanel/SimulationPanel.tsx',
             'src/components/AquariumPanel/AquariumPanel.tsx',
         ],
-        related: ['comp-simulation-world', 'comp-llm-adapters', 'comp-tool-capability', 'comp-policy-security', 'comp-flow-tools'],
+        related: [
+            'comp-simulation-world',
+            'comp-llm-adapters',
+            'comp-tool-capability',
+            'comp-policy-security',
+            'comp-flow-tools',
+        ],
         body: `## Назначение
 
 Показать computer-use (управление «компьютером» агентом) как **сквозной контур**: от запуска до многошагового цикла «действие → скриншот → действие» — с обязательными подтверждениями и точками обрыва.
@@ -3609,7 +4039,13 @@ flowchart TD
             'src/components/HealthPanel/HealthPanel.tsx',
             'src/main.tsx',
         ],
-        related: ['diagnostics', 'comp-key-management', 'comp-observability', 'comp-provider-runtime', 'comp-flow-restore'],
+        related: [
+            'diagnostics',
+            'comp-key-management',
+            'comp-observability',
+            'comp-provider-runtime',
+            'comp-flow-restore',
+        ],
         body: `## Назначение
 
 Показать **самодиагностику** как сквозной контур: запуск проверки → опрос провайдеров и ключей → проверка согласованности → агрегация здоровья и уведомления; с точками обрыва.

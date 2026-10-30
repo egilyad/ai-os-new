@@ -6,7 +6,7 @@ export const RESEARCH_MULTIAGENT_ARTICLE: WikiArticle = {
     section: 'notes',
     tags: ['исследования', 'мультиагентные системы', 'паттерны', 'roadmap', 'deep research'],
     freshness: 'documented',
-    sources: ['docs/research/multiagent-os-patterns.md'],
+    sources: [],
     related: ['panel-research-cockpit', 'panel-graph-workbench', 'roadmap-notes'],
     body: `## О чём это
 

@@ -181,9 +181,7 @@
         "roadmap",
         "deep research"
       ],
-      "sources": [
-        "docs/research/multiagent-os-patterns.md"
-      ],
+      "sources": [],
       "related": [
         "panel-research-cockpit",
         "panel-graph-workbench",
@@ -205,9 +203,7 @@
         "roadmap",
         "мультиагентные системы"
       ],
-      "sources": [
-        "docs/research/"
-      ],
+      "sources": [],
       "related": [
         "research-multiagent-patterns",
         "panel-research-cockpit",
@@ -229,8 +225,7 @@
         "local-first"
       ],
       "sources": [
-        "README_EN.md",
-        "docs/SYSTEM_MANIFEST_RU.md"
+        "README_EN.md"
       ],
       "related": [
         "capabilities",
@@ -335,7 +330,6 @@
         "скрапинг"
       ],
       "sources": [
-        "docs/fetched-sites/README.md",
         "scripts/gen-fetched-catalog.mjs"
       ],
       "related": [
@@ -359,9 +353,7 @@
         "учебник",
         "методология"
       ],
-      "sources": [
-        "docs/audits-tips/auditstips.md"
-      ],
+      "sources": [],
       "related": [
         "fetched-sites",
         "weekly-commits",
@@ -2070,9 +2062,7 @@
         "freeze",
         "тест-план"
       ],
-      "sources": [
-        "docs/audits/"
-      ],
+      "sources": [],
       "related": [
         "audit-type-bootstrap",
         "audit-type-domain",
@@ -2420,9 +2410,7 @@
         "сводка",
         "обзор"
       ],
-      "sources": [
-        "docs/audits/"
-      ],
+      "sources": [],
       "related": [
         "audit-methodology",
         "audit-type-bootstrap",
@@ -2463,7 +2451,6 @@
         "классы"
       ],
       "sources": [
-        "docs/audits/",
         "src/kernel/"
       ],
       "related": [
@@ -3579,7 +3566,6 @@
         "политики"
       ],
       "sources": [
-        "docs/audits/agent-team-audit-memory-history-management.md",
         "src/kernel/agents/registry.ts",
         "src/kernel/services/agent-service.ts",
         "src/kernel/services/permissions/permission-service.ts"
@@ -3661,8 +3647,7 @@
       "sources": [
         "src/kernel/services/memory-engine.ts",
         "src/kernel/services/memory-orchestrator.ts",
-        "src/kernel/services/rag/hybrid-retrieval-service.ts",
-        "docs/audits/agent-team-audit-memory-history-management.md"
+        "src/kernel/services/rag/hybrid-retrieval-service.ts"
       ],
       "related": [
         "comp-memory",
@@ -3693,8 +3678,7 @@
       ],
       "sources": [
         "src/kernel/services/tool-executor.ts",
-        "src/kernel/services/agent-project-runtime.ts",
-        "docs/audits/agent-team-audit-memory-history-management.md"
+        "src/kernel/services/agent-project-runtime.ts"
       ],
       "related": [
         "agents",
@@ -3720,7 +3704,6 @@
         "DI"
       ],
       "sources": [
-        "docs/SYSTEM_MANIFEST_RU.md",
         "README_EN.md"
       ],
       "related": [
@@ -3744,9 +3727,7 @@
         "проблемы",
         "ограничения"
       ],
-      "sources": [
-        "docs/audits/agent-team-audit-memory-history-management.md"
-      ],
+      "sources": [],
       "related": [
         "providers",
         "execution-trail",
@@ -3766,9 +3747,7 @@
         "планы",
         "P5"
       ],
-      "sources": [
-        "docs/roadmap/README.md"
-      ],
+      "sources": [],
       "related": [
         "agents",
         "execution-trail",
@@ -3819,8 +3798,7 @@
       ],
       "sources": [
         "src/kernel/services/",
-        "src/kernel/contracts/",
-        "docs/SERVICES_RU.md"
+        "src/kernel/contracts/"
       ],
       "related": [
         "dev-overview",

@@ -4,8 +4,6 @@
 
 > Раздел: **Диагностика** · Статус: documented · Теги: мониторинг, проблемы, ограничения
 
-Источники: `docs/audits/agent-team-audit-memory-history-management.md`
-
 ## Что смотреть
 
 Health-панели провайдеров, трейсы и timeline, DLQ (dead-letter очередь с retry), уведомления. У approvals есть TTL и claim-once семантика.

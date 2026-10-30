@@ -4,7 +4,7 @@
 
 > Раздел: **Знания и память** · Статус: verified · Теги: история, P1, P2, инструменты
 
-Источники: `src/kernel/services/tool-executor.ts`, `src/kernel/services/agent-project-runtime.ts`, `docs/audits/agent-team-audit-memory-history-management.md`
+Источники: `src/kernel/services/tool-executor.ts`, `src/kernel/services/agent-project-runtime.ts`
 
 ## P1 — журнал инструментов
 

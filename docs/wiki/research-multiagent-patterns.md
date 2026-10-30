@@ -4,8 +4,6 @@
 
 > Раздел: **Заметки** · Статус: documented · Теги: исследования, мультиагентные системы, паттерны, roadmap, deep research
 
-Источники: `docs/research/multiagent-os-patterns.md`
-
 ## О чём это
 
 [Исследование: мультиагентные ИИ-ОС](./research-multiagent-patterns.md) — аналитический обзор мультиагентных ИИ-ОС и фреймворков с целью выделить **редчайшие и наиболее полезные компоненты/паттерны** для SuperAgents OS. Полная версия — в `docs/research/multiagent-os-patterns.md`.

@@ -20,7 +20,7 @@
 - Панель **Wiki** в приложении и сайт `/wiki/` — тот же корпус статей
 - [`docs/manifest.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/manifest.json) — машиночитаемый индекс сущностей (статьи, панели)
 - [`docs/entity-model.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/entity-model.json) — стандарт документации
-- [`docs/inventory.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/inventory.json) — инвентарь всех `docs/**` (1221 документов)
+- [`docs/inventory.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/inventory.json) — инвентарь всех `docs/**` (316 документов)
 
 ## Вики по разделам
 
@@ -32,7 +32,7 @@
 
 **Дебаты** — 3: [Дебаты: стратегии — обзор](./debate-strategies.md) · [Дебаты: шпаргалка стратегий (33)](./debate-strategies-cheatsheet.md) · [Дебаты: режимы и механика](./debates.md)
 
-**Знания и память** — 4: [Memory Center: аудит памяти системы](./memory-center-audit.md) · [Знания и память](./memory.md) · [След исполнения: журнал, раны, зомби](./execution-trail.md) · [Память: что есть и чего нет (аудит)](./memory-audit.md)
+**Знания и память** — 5: [Record a Skill: процедурная память агента](./record-a-skill.md) · [Memory Center: аудит памяти системы](./memory-center-audit.md) · [Знания и память](./memory.md) · [След исполнения: журнал, раны, зомби](./execution-trail.md) · [Память: что есть и чего нет (аудит)](./memory-audit.md)
 
 **Провайдеры** — 1: [Провайдеры и маршрутизация](./providers.md)
 
@@ -44,160 +44,57 @@
 
 **Компоненты и сервисы** — 75: [Компоненты и сервисы: как читать этот раздел](./comp-overview.md) · [Компонент: запуск ядра (bootstrap, container, runtime)](./comp-kernel-boot.md) · [Компонент: DI-контейнер и lazyService](./comp-di-container.md) · [Компонент: шина событий (EventBus)](./comp-event-bus.md) · [Компонент: транзакции состояния](./comp-transactions.md) · [Компонент: конфигурация и настройки](./comp-config.md) · [Компонент: персистентность (Dexie и storage-адаптеры)](./comp-persistence.md) · [Компонент: шифрование at-rest (SecurityService)](./comp-security-crypto.md) · [Компонент: управление ключами провайдеров](./comp-key-management.md) · [Компонент: роутинг и провайдеры](./comp-routing.md) · [Компонент: бюджет, цены и расход](./comp-budget-pricing.md) · [Компонент: агенты, роли и навыки](./comp-agents-roles-skills.md) · [Компонент: инструменты, MCP и sandbox](./comp-tools-mcp.md) · [Компонент: политики, секреты и вебхуки](./comp-policy-security.md) · [Компонент: консистентность и дрейф](./comp-consistency.md) · [Компонент: рантайм дебатов](./comp-debate-runtime.md) · [Дебаты: стратегии, режимы и техники качества](./comp-debate-techniques.md) · [Компонент: когнитивные трассы и оркестрация топологий](./comp-cognitive-orchestration.md) · [Компонент: память и знания](./comp-memory.md) · [Компонент: чат (ChatExecutor)](./comp-chat.md) · [Компонент: наблюдаемость (метрики, трейсы, мониторинг)](./comp-observability.md) · [Компонент: советник и runtime-intelligence](./comp-advisor-runtime-intelligence.md) · [Компонент: журналирование событий (event sourcing)](./comp-event-sourcing.md) · [Компонент: тайм-тревел, снапшоты и каузальность](./comp-time-travel.md) · [Компонент: задачи, планирование и расписание](./comp-task-planning.md) · [Компонент: флот, governance и аудит](./comp-fleet-governance.md) · [Компонент: интеграции и интероперабельность](./comp-integrations-interop.md) · [Компонент: рантайм провайдеров](./comp-provider-runtime.md) · [Компонент: LLM-мост (адаптеры crews/council/graph/frontier)](./comp-llm-bridge.md) · [Компонент: слой состояния (Zustand-сторы)](./comp-state-stores.md) · [Компонент: сквозные сценарии](./comp-scenarios.md) · [Компонент: экипажи и совет](./comp-crews-councils.md) · [Компонент: фронтир и разнообразие агентов](./comp-frontier-diversity.md) · [Компонент: лаборатория вариантов (rivals)](./comp-rivals-lab.md) · [Компонент: генерация знаний и RAG](./comp-knowledge-rag.md) · [Компонент: оценка и рейтинг (eval, elo)](./comp-eval-elo.md) · [Компонент: персоны и строитель (persona, builder)](./comp-persona-builder.md) · [Компонент: вызовы (invocation) и мета-агент](./comp-invocation-meta.md) · [Компонент: симуляция, компьютер и parity](./comp-simulation-world.md) · [Компонент: синтез, форум и junction-движок](./comp-synthesis-forum.md) · [Компонент: хранилище, таймлайн и проекции](./comp-storage-timeline.md) · [Компонент: каталог инструментов, способности и политики](./comp-tool-capability.md) · [Компонент: графы режимов и мост событий](./comp-graph-eventbridge.md) · [Компонент: аргументация (debateplus)](./comp-debateplus.md) · [Компонент: LLM-конвейер и декораторы](./comp-llm-pipeline.md) · [Компонент: адаптеры провайдеров LLM](./comp-llm-adapters.md) · [Компонент: секреты и распределённые блокировки](./comp-secrets-locks.md) · [Компонент: мессенджеры и внешние интеграции (n8n, Telegram)](./comp-messaging-integrations.md) · [Компонент: адаптер Gemini](./comp-adapter-gemini.md) · [Компонент: адаптер Anthropic (Claude)](./comp-adapter-anthropic.md) · [Компонент: адаптер Gemini Computer Use](./comp-adapter-gemini-computer.md) · [Компонент: адаптер OpenAI-совместимых провайдеров (DeepSeek, Kimi, MiniMax, Qwen, Cerebras)](./comp-adapter-openai-compatible.md) · [Компонент: адаптер OpenRouter](./comp-adapter-openrouter.md) · [Компонент: адаптер Groq](./comp-adapter-groq.md) · [Компонент: адаптер NVIDIA NIM](./comp-adapter-nvidia-nim.md) · [Компонент: адаптер Cloudflare](./comp-adapter-cloudflare.md) · [Компонент: MockAdapter](./comp-adapter-mock.md) · [Компонент: декораторы устойчивости LLM](./comp-decorator-resilience.md) · [Компонент: декораторы экономии LLM](./comp-decorator-optimization.md) · [Компонент: декораторы маршрутизации LLM](./comp-decorator-routing.md) · [Компонент: ядро LLM-конвейера (базы, middleware, утилиты)](./comp-middleware-core.md) · [Компонент: утилиты сети и безопасности (kernel/utils)](./comp-util-network-security.md) · [Компонент: утилиты эмбеддингов и детерминированного RNG](./comp-util-embeddings-rng.md) · [Компонент: утилиты наблюдения за памятью](./comp-util-memory-observability.md) · [Компонент: утилиты анализа дебатов и оценки токенов](./comp-util-debate-analysis.md) · [Компонент: утилиты персиста и провайдеров](./comp-util-persistence-helpers.md) · [Компонент: Data Access Layer (репозитории)](./comp-dal-repositories.md) · [Сквозной контур: дебаты](./comp-flow-debate.md) · [Сквозной контур: чат](./comp-flow-chat.md) · [Сквозной контур: знания и RAG](./comp-flow-knowledge.md) · [Сквозной контур: мультиагентное исполнение](./comp-flow-multiagent.md) · [Сквозной контур: инструменты и песочница](./comp-flow-tools.md) · [Сквозной контур: computer-use](./comp-flow-computer-use.md) · [Сквозной контур: восстановление сессии](./comp-flow-restore.md) · [Сквозной контур: самодиагностика](./comp-flow-diagnostics.md)
 
-**Заметки** — 3: [Исследование: мультиагентные ИИ-ОС](./research-multiagent-patterns.md) · [Исследования ИИ-ОС: индекс](./research-os-index.md) · [Планы и направления](./roadmap-notes.md)
+**Заметки** — 5: [Исследование: мультиагентные ИИ-ОС](./research-multiagent-patterns.md) · [Исследования ИИ-ОС: индекс](./research-os-index.md) · [Скачанные сайты (каталог)](./fetched-sites.md) · [Учебник по аудитам больших ИИ-проектов](./audit-textbook.md) · [Планы и направления](./roadmap-notes.md)
 
 **Состояние разработки** — 10: [Завершённые задачи](./dev-status-done.md) · [Активная разработка](./dev-status-active.md) · [Критические проблемы](./dev-status-critical.md) · [Технический долг](./dev-status-debt.md) · [Отложенные баги](./dev-status-bugs.md) · [Состояние тестирования](./dev-status-testing.md) · [Документация](./dev-status-docs.md) · [Заблокированные задачи](./dev-status-blocked.md) · [Roadmaps](./dev-status-roadmaps.md) · [MD и другие файлы от разработки](./dev-status-files.md)
 
 **Разработчикам** — 52: [Аудит: запуск и выживание UI](./audit-type-bootstrap.md) · [Аудит: сборка и целостность репозитория](./audit-type-build.md) · [Аудит: ключи и секреты](./audit-type-keys.md) · [Аудит: системный по доменам](./audit-type-domain.md) · [Аудит: данные, состояние и стриминг](./audit-type-data-streaming.md) · [Аудит: безопасность и hardening](./audit-type-security.md) · [Аудит: методология и процесс](./audit-methodology.md) · [Аудит: класс дефектов — утечки памяти/ресурсов](./audit-defect-memory-leaks.md) · [Аудит: класс дефектов — безопасность/auth/песочница/CSP](./audit-defect-security.md) · [Аудит: класс дефектов — целостность данных и репозитории](./audit-defect-data-integrity.md) · [Аудит: класс дефектов — гонки/жизненный цикл/async cleanup](./audit-defect-race-lifecycle.md) · [Аудит: класс дефектов — типы/контракты/дрейф событий](./audit-defect-types-contracts.md) · [Аудит: класс дефектов — производительность/индексы/кэш](./audit-defect-performance.md) · [Аудит: класс дефектов — UX/корректность](./audit-defect-ux-correctness.md) · [Аудит: класс дефектов — сборка/деплой/конфиг](./audit-defect-build-deploy-config.md) · [Аудит: класс дефектов — наблюдаемость/мониторинг](./audit-defect-observability.md) · [Аудит: класс дефектов — общие логические ошибки](./audit-defect-logic.md) · [Аудит: класс дефектов — состояние и «вторые правды»](./audit-defect-state-consistency.md) · [Аудит: класс дефектов — нарушения контрактов](./audit-defect-contract-violations.md) · [Аудиты: сводный индекс](./audit-index.md) · [Аудиты: полный обзор](./audit-overview.md) · [Разработчикам: структура и ворота](./for-developers.md) · [Разработчикам: обзор и слои](./dev-overview.md) · [Разработчикам: карта каталогов](./dev-layout.md) · [Разработчикам: boot, DI и контейнер](./dev-boot.md) · [Разработчикам: шина событий](./dev-events.md) · [Разработчикам: сервисы и lazyService](./dev-services.md) · [Разработчикам: компоненты и панели](./dev-components.md) · [Разработчикам: маршруты и добавление панели](./dev-routing.md) · [Разработчикам: состояние (stores) и хуки](./dev-stores.md) · [Разработчикам: локализация (i18n)](./dev-i18n.md) · [Разработчикам: тесты](./dev-testing.md) · [Разработчикам: ворота качества и CI](./dev-ci.md) · [Разработчикам: генераторы и сгенерированные файлы](./dev-generators.md) · [Разработчикам: конвенции кода](./dev-conventions.md) · [Разработчикам: глоссарий](./dev-glossary.md) · [Рецепты: типовые задачи](./dev-cookbook.md) · [Реестр архитектурных решений (ADR)](./dev-adr.md) · [Каталог компонентов OS](./dev-component-catalog.md) · [Инвентаризация документации](./docs-inventory.md) · [Стандарт документации](./docs-standard.md) · [Граф знаний](./dev-graph.md) · [Проверки и показатели](./dev-checks.md) · [Внешние библиотеки](./dev-libraries.md) · [Матрица покрытия](./coverage-matrix.md) · [Каталог событий шины](./dev-event-catalog.md) · [Карта зависимостей ядра (DI)](./dev-service-map.md) · [Контракты ядра](./dev-contracts.md) · [Каталог сторов](./dev-store-catalog.md) · [Каталог локализации](./dev-i18n-catalog.md) · [Скрипты и CLI](./dev-scripts.md) · [Каталог тестов](./dev-tests-catalog.md)
 
-Всего статей вики: **282** в 13 разделах.
+Всего статей вики: **285** в 13 разделах.
 
 ## Документация верхнего уровня
 
 Крупные документы в корне `docs/`:
 
-- [00 — Обзор системы](https://github.com/egilyad/ai-os-new/blob/main/docs/00-overview_RU.md)
 - [00 — System Overview](https://github.com/egilyad/ai-os-new/blob/main/docs/00-overview.md)
 - [ADR-001: Event-Driven Architecture](https://github.com/egilyad/ai-os-new/blob/main/docs/001-event-driven-architecture.md)
 - [ADR-002: Worker Sandboxing (Web Workers)](https://github.com/egilyad/ai-os-new/blob/main/docs/002-worker-sandboxing.md)
 - [ADR-003: Dexie.js (IndexedDB) as Primary Storage](https://github.com/egilyad/ai-os-new/blob/main/docs/003-dexie-as-primary-storage.md)
 - [ADR-004: Hybrid Search Strategy](https://github.com/egilyad/ai-os-new/blob/main/docs/004-hybrid-search-strategy.md)
 - [ADR-005: MCP Integration](https://github.com/egilyad/ai-os-new/blob/main/docs/005-mcp-integration.md)
-- [01 — Архитектура системы](https://github.com/egilyad/ai-os-new/blob/main/docs/01-system-architecture_RU.md)
 - [01 — System Architecture](https://github.com/egilyad/ai-os-new/blob/main/docs/01-system-architecture.md)
-- [02 — Основные концепции](https://github.com/egilyad/ai-os-new/blob/main/docs/02-core-concepts_RU.md)
 - [02 — Core Concepts](https://github.com/egilyad/ai-os-new/blob/main/docs/02-core-concepts.md)
-- [03 — Когнитивные слои](https://github.com/egilyad/ai-os-new/blob/main/docs/03-cognitive-layers_RU.md)
 - [03 — Cognitive Layers](https://github.com/egilyad/ai-os-new/blob/main/docs/03-cognitive-layers.md)
-- [04 — Модификаторы поведения](https://github.com/egilyad/ai-os-new/blob/main/docs/04-behavior-modifiers_RU.md)
 - [04 — Behavior Modifiers](https://github.com/egilyad/ai-os-new/blob/main/docs/04-behavior-modifiers.md)
-- [05 — Система метрик](https://github.com/egilyad/ai-os-new/blob/main/docs/05-metrics-system_RU.md)
 - [05 — Metrics System](https://github.com/egilyad/ai-os-new/blob/main/docs/05-metrics-system.md)
-- [06 — Механизм интерпретации](https://github.com/egilyad/ai-os-new/blob/main/docs/06-interpretation-engine_RU.md)
 - [06 — Interpretation Engine](https://github.com/egilyad/ai-os-new/blob/main/docs/06-interpretation-engine.md)
-- [07 — UI Слой (Русский)](https://github.com/egilyad/ai-os-new/blob/main/docs/07-ui-layer_RU.md)
 - [07 — UI Layer](https://github.com/egilyad/ai-os-new/blob/main/docs/07-ui-layer.md)
-- [08 — Поток данных](https://github.com/egilyad/ai-os-new/blob/main/docs/08-data-flow_RU.md)
 - [08 — Data Flow](https://github.com/egilyad/ai-os-new/blob/main/docs/08-data-flow.md)
-- [09 — Принципы проектирования](https://github.com/egilyad/ai-os-new/blob/main/docs/09-design-principles_RU.md)
 - [09 — Design Principles](https://github.com/egilyad/ai-os-new/blob/main/docs/09-design-principles.md)
-- [10 — Фреймворк экспериментов](https://github.com/egilyad/ai-os-new/blob/main/docs/10-experiments-framework_RU.md)
 - [10 — Experiments Framework](https://github.com/egilyad/ai-os-new/blob/main/docs/10-experiments-framework.md)
 - [🧠 Cognitive Runtime Specification (CRS)](https://github.com/egilyad/ai-os-new/blob/main/docs/COGNITIVE_RUNTIME_SPEC.md)
-- [Company Gateway — сервер SuperAgents OS](https://github.com/egilyad/ai-os-new/blob/main/docs/COMPANY_GATEWAY.md)
-- [Debt Report — Технический долг системы](https://github.com/egilyad/ai-os-new/blob/main/docs/DEBT_REPORT.md)
-- [Демонстрация: Чат с ИИ](https://github.com/egilyad/ai-os-new/blob/main/docs/demos/chat.md)
-- [Демонстрация: Дебаты агентов](https://github.com/egilyad/ai-os-new/blob/main/docs/demos/debate.md)
-- [Демонстрация: Диагностика](https://github.com/egilyad/ai-os-new/blob/main/docs/demos/diagnostics.md)
-- [Демонстрация: Память](https://github.com/egilyad/ai-os-new/blob/main/docs/demos/memory.md)
-- [Демонстрация: Провайдеры и ключи](https://github.com/egilyad/ai-os-new/blob/main/docs/demos/providers.md)
-- [Демонстрации SuperAgents OS](https://github.com/egilyad/ai-os-new/blob/main/docs/demos/README.md)
 - [SuperAgents OS — Developer Quickstart](https://github.com/egilyad/ai-os-new/blob/main/docs/DEV_QUICKSTART.md)
 - [EventBus Reference](https://github.com/egilyad/ai-os-new/blob/main/docs/events.md)
 - [Navigation Map — зафиксированная раскладка меню](https://github.com/egilyad/ai-os-new/blob/main/docs/NAVIGATION_MAP.md)
 - [SuperAgents OS — Documentation Map](https://github.com/egilyad/ai-os-new/blob/main/docs/README.md)
-- [Исследование (сессия 1): Browser automation-фреймворки](https://github.com/egilyad/ai-os-new/blob/main/docs/research/browser-automation-frameworks.md)
-- [Исследование: управление браузером и компьютером ИИ](https://github.com/egilyad/ai-os-new/blob/main/docs/research/browser-computer-ai.md)
-- [Исследование (сессия 4): безопасность и устойчивость браузерных/компьютерных агентов](https://github.com/egilyad/ai-os-new/blob/main/docs/research/browser-computer-security-reliability.md)
-- [Исследование (сессия 2): способы управления браузером](https://github.com/egilyad/ai-os-new/blob/main/docs/research/browser-control-methods.md)
-- [Исследование (сессия 5): интеграция управления браузером/компьютером в SuperAgents OS](https://github.com/egilyad/ai-os-new/blob/main/docs/research/browser-integration-superagents.md)
-- [Исследование: кодинг-агенты](https://github.com/egilyad/ai-os-new/blob/main/docs/research/coding-agents.md)
-- [Исследование: когнитивные компоненты для ИИ-ОС](https://github.com/egilyad/ai-os-new/blob/main/docs/research/cognitive-components-os.md)
-- [Исследование: сложные агенты](https://github.com/egilyad/ai-os-new/blob/main/docs/research/complex-agents.md)
-- [Исследование (сессия 3): Computer Use / GUI-агенты](https://github.com/egilyad/ai-os-new/blob/main/docs/research/computer-use-gui-agents.md)
-- [Исследование: дебаты ИИ](https://github.com/egilyad/ai-os-new/blob/main/docs/research/debates-ai.md)
-- [Исследование: создание сложных исследований ИИ](https://github.com/egilyad/ai-os-new/blob/main/docs/research/deep-research-patterns.md)
-- [Исследование: ошибки в мультиагентных системах и борьба с ними](https://github.com/egilyad/ai-os-new/blob/main/docs/research/errors-recovery-audit.md)
-- [Исследование: память ИИ](https://github.com/egilyad/ai-os-new/blob/main/docs/research/memory-ai.md)
-- [Мультиагентные ИИ-ОС: аналитический обзор и карта редких паттернов](https://github.com/egilyad/ai-os-new/blob/main/docs/research/multiagent-os-patterns.md)
-- [Исследование: сложные темы в мультиагентных системах](https://github.com/egilyad/ai-os-new/blob/main/docs/research/multiagent-research-topics.md)
-- [Управление компьютером и браузером с помощью opencode](https://github.com/egilyad/ai-os-new/blob/main/docs/research/opencode-browser-computer.md)
-- [Исследование: оптимизация системы — надёжность и скорость](https://github.com/egilyad/ai-os-new/blob/main/docs/research/reliability-speed-optimization.md)
-- [Исследование: безопасность (минимум)](https://github.com/egilyad/ai-os-new/blob/main/docs/research/security-minimal.md)
-- [Исследование: прозрачность системы](https://github.com/egilyad/ai-os-new/blob/main/docs/research/transparency.md)
-- [Сервисы Ядра — Полный Справочник](https://github.com/egilyad/ai-os-new/blob/main/docs/SERVICES_RU.md)
-- [SuperAgents OS — Журнал сессий (Session Log)](https://github.com/egilyad/ai-os-new/blob/main/docs/SESSION_LOG.md)
-- [Сессия opencode — Roadmap P0–P3 (2026-10-29)](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/2026-10-29-roadmap-p0-p3.md)
-- [Сессии (opencode)](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/README.md)
-- [Ответ 001 · 2026-10-29](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/turns/2026-10-29-001-шалом-чем-могу-помочь.md)
-- [Ответ 002 · 2026-10-29](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/turns/2026-10-29-002-в-текущей-рабочей-папке-доник-этих-файлов-нет-docs.md)
-- [Ответ 003 · 2026-10-29](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/turns/2026-10-29-003-проект-нашёл-roadmap-p0-есть-начинаю-с-p0-1-keyvau.md)
-- [Ответ 004 · 2026-10-29](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/turns/2026-10-29-004-понял-пропускаю-typecheck-гоняю-только-целевые-тес.md)
-- [Ответ 005 · 2026-10-29](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/turns/2026-10-29-005-п0-1-готов-код-внесён-проверки-пропущены-по-твоей-.md)
-- [Ответ 006 · 2026-10-29](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/turns/2026-10-29-006-продолжаем-с-p1-ставлю-план-и-начинаю-с-p1-2-запре.md)
-- [Ответ 007 · 2026-10-29](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/turns/2026-10-29-007-turn.md)
-- [Ответ 008 · 2026-10-29](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/turns/2026-10-29-008-ci-ловит-loop-synthesis-может-быть-null-внутри-кол.md)
-- [Ответ 009 · 2026-10-29](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/turns/2026-10-29-009-линт-watchdog-объявлен-через-let-и-не-переприсваив.md)
-- [Ответ 010 · 2026-10-29](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/turns/2026-10-29-010-no-this-alias-запрещает-const-self-this-заменю-на-.md)
-- [Ответ 011 · 2026-10-29](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/turns/2026-10-29-011-ci-зелёный-отлично-продолжаем-p1-ставлю-план-и-раз.md)
-- [Ответ 012 · 2026-10-29](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/turns/2026-10-29-012-продолжаем-разведка-прервалась-читаю-ключевые-точк.md)
-- [Ответ 013 · 2026-10-29](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/turns/2026-10-29-013-продолжаем-p2-ставлю-план-и-разведываю-контейнерны.md)
-- [Ответ 014 · 2026-10-29](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/turns/2026-10-29-014-ci-зелёный-делаю-p2-1-контейнерно-тип-сервис-skill.md)
-- [Ответ 015 · 2026-10-29](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/turns/2026-10-29-015-p2-2-сначала-тщательно-изучу-memory-модель-чтобы-н.md)
-- [Ответ 016 · 2026-10-29](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/turns/2026-10-29-016-делаю-p2-6-контейнерно-универсальный-хук-виртуализ.md)
-- [Ответ 017 · 2026-10-29](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/turns/2026-10-29-017-ci-зелёный-бью-p3-начинаю-с-p3-1-dag-план-как-конт.md)
-- [Ответ 018 · 2026-10-29](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/turns/2026-10-29-018-ci-поле-initial-объявлено-как-поле-но-не-читается-.md)
-- [Ответ 019 · 2026-10-29](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/turns/2026-10-29-019-продолжаем-p3-делаю-p3-2-blackboard-контейнерно-с-.md)
-- [Ответ 020 · 2026-10-29](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/turns/2026-10-29-020-пуш-уже-актуален-head-origin-main-18047c9-все-изме.md)
-- [Ответ 021 · 2026-10-29](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/turns/2026-10-29-021-да-реально-в-проекте-уже-есть-вся-инфраструктура.md)
-- [Ответ 022 · 2026-10-29](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/turns/2026-10-29-022-а-ты-про-сохранение-наших-сессий-opencode-этого-ча.md)
-- [Ответ 023 · 2026-10-29](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/turns/2026-10-29-023-делаю-скрипт-автогенерации-сессий-сначала-гляну-pa.md)
-- [Ответ 024 · 2026-10-29](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/turns/2026-10-29-024-разберусь-не-затирает-ли-gen-wiki-docs-чужие-файлы.md)
-- [Ответ 025 · 2026-10-29](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/turns/2026-10-29-025-хороший-вопрос-гляну-что-реально-лежит-в-docs-grap.md)
-- [Ответ 026 · 2026-10-29](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/turns/2026-10-29-026-смотрю-wikibrainpanel-как-строится-граф-после-синх.md)
-- [Ответ 027 · 2026-10-29](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/turns/2026-10-29-027-ищу-реализацию-toflowgraph.md)
-- [Ответ 028 · 2026-10-29](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/turns/2026-10-29-028-понял-нужно-чтобы-каждый-мой-ответ-автоматически-с.md)
-- [Ответ 029 · 2026-10-29](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/turns/2026-10-29-029-проверю-как-opencode-поддерживает-хуки-плагины-что.md)
-- [Ответ 030 · 2026-10-29](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/turns/2026-10-29-030-гляну-что-внутри-opencode-и-как-он-в-gitignore-что.md)
-- [Ответ 031 · 2026-10-29](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/turns/2026-10-29-031-добавляю-в-плагин-автокоммит-пуш-только-по-docs-se.md)
-- [Ответ 032 · 2026-10-29](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/turns/2026-10-29-032-сделаю-это-правильно-как-настоящую-статью-вики-в-к.md)
-- [Ответ 033 · 2026-10-29](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/turns/2026-10-29-033-проверю-реальное-содержимое-файлов-на-диске-действ.md)
-- [Ответы ассистента (opencode)](https://github.com/egilyad/ai-os-new/blob/main/docs/sessions/turns/README.md)
 - [SuperAgents OS — Project Structure](https://github.com/egilyad/ai-os-new/blob/main/docs/STRUCTURE.md)
-- [SuperAgents OS — Системный Манифест](https://github.com/egilyad/ai-os-new/blob/main/docs/SYSTEM_MANIFEST_RU.md)
 - [SuperAgents OS — System Manifest (Quick Reference)](https://github.com/egilyad/ai-os-new/blob/main/docs/SYSTEM_MANIFEST.md)
 - [🪪 SuperAgents OS — Digital System Passport](https://github.com/egilyad/ai-os-new/blob/main/docs/SYSTEM_PASSPORT.md)
-- [Полный реестр системы — всё что запрограммировано](https://github.com/egilyad/ai-os-new/blob/main/docs/ПОЛНЫЙ_РЕЕСТР.md)
 
 ## Справочники и планы
 
 **Нормативные справочники:**
-- [CAPABILITY MATRIX — SuperAgents OS (STATICALLY VERIFIED, NOT RUNTIME VERIFIED)](https://github.com/egilyad/ai-os-new/blob/main/docs/reference/CAPABILITY_MATRIX.md)
-- [Cognitive Modules — Guide по использованию](https://github.com/egilyad/ai-os-new/blob/main/docs/reference/COGNITIVE_MODULES_GUIDE.md)
-- [🔵 REFERENCE — справочники, контракты, описания](https://github.com/egilyad/ai-os-new/blob/main/docs/reference/README.md)
-- [0. Главная идея](https://github.com/egilyad/ai-os-new/blob/main/docs/reference/roadmapp.md)
-- [USER ACTION → RESULT — 5 канонов SuperAgents OS (карта, без кода)](https://github.com/egilyad/ai-os-new/blob/main/docs/reference/USER_ACTION_MAP.md)
-- [Карта пользовательского управления — сотни сервисов → понятная OS](https://github.com/egilyad/ai-os-new/blob/main/docs/reference/USER_CONTROL_MAP.md)
 
 **Планы и направления** (не текущее состояние):
-- [Roadmap улучшений «Адаптеры провайдеров LLM»](https://github.com/egilyad/ai-os-new/blob/main/docs/roadmap/adapters-improvements-roadmap.md)
-- [AGEMS -> SuperAgents OS -- Roadmap](https://github.com/egilyad/ai-os-new/blob/main/docs/roadmap/AGEMS_ROADMAP.md)
-- [Roadmap улучшений «Агенты/Совет»](https://github.com/egilyad/ai-os-new/blob/main/docs/roadmap/agents-council-improvements-roadmap.md)
-- [Roadmap: управление браузером и компьютером (browser/computer use)](https://github.com/egilyad/ai-os-new/blob/main/docs/roadmap/browser-computer-roadmap.md)
-- [CHAT_DESIGN.md — Этап 2 (DESIGN): минимальный план исправлений](https://github.com/egilyad/ai-os-new/blob/main/docs/roadmap/CHAT_DESIGN.md)
-- [Roadmap улучшений «Когнитивная оркестрация / Симуляция / Тайм-тревел»](https://github.com/egilyad/ai-os-new/blob/main/docs/roadmap/cognitive-simulation-improvements-roadmap.md)
-- [Debate Multi-Session Rearchitecture (B-15/B-16 Phase 2)](https://github.com/egilyad/ai-os-new/blob/main/docs/roadmap/DEBATE_MULTI_SESSION_DESIGN.md)
-- [Программа экспериментальной проверки Debates](https://github.com/egilyad/ai-os-new/blob/main/docs/roadmap/debate-experiments.md)
-- [Roadmap улучшений Debates](https://github.com/egilyad/ai-os-new/blob/main/docs/roadmap/debate-improvements-roadmap.md)
-- [Roadmap: глубокие исследования и мультиагентные паттерны](https://github.com/egilyad/ai-os-new/blob/main/docs/roadmap/deep-research-roadmap.md)
-- [Roadmap улучшений «События / Event Sourcing / Хранилище»](https://github.com/egilyad/ai-os-new/blob/main/docs/roadmap/events-storage-improvements-roadmap.md)
-- [Roadmap улучшений «Флот / Governance»](https://github.com/egilyad/ai-os-new/blob/main/docs/roadmap/fleet-governance-improvements-roadmap.md)
-- [SuperAgents OS — План внедрения когнитивных модулей](https://github.com/egilyad/ai-os-new/blob/main/docs/roadmap/IMPLEMENTATION_PLAN.md)
-- [Roadmap улучшений «LLM-мост / Invocation-Мета-агент»](https://github.com/egilyad/ai-os-new/blob/main/docs/roadmap/llm-bridge-invocation-improvements-roadmap.md)
-- [Roadmap улучшений «Память/Знания»](https://github.com/egilyad/ai-os-new/blob/main/docs/roadmap/memory-improvements-roadmap.md)
-- [Roadmap улучшений «Провайдеры / LLM-конвейер»](https://github.com/egilyad/ai-os-new/blob/main/docs/roadmap/providers-llm-improvements-roadmap.md)
-- [🟣 ROADMAP — планы и архитектурные направления](https://github.com/egilyad/ai-os-new/blob/main/docs/roadmap/README.md)
-- [roadmap2.md](https://github.com/egilyad/ai-os-new/blob/main/docs/roadmap/roadmap2.md)
-- [Roadmap улучшений «Утилиты / Инфраструктура»](https://github.com/egilyad/ai-os-new/blob/main/docs/roadmap/utils-improvements-roadmap.md)
 
 ## Архив: история и аудиты
 
 Исторические материалы сохраняются без смысловой переписи (см. [Стандарт документации](./docs-standard.md)).
 
-- аудиты: **77** — [`docs/audits/`](https://github.com/egilyad/ai-os-new/tree/main/docs/audits)
-- история/зоны: **683** — [`docs/history/`](https://github.com/egilyad/ai-os-new/tree/main/docs/history)
-- заменённое: **3** — [`docs/superseded/`](https://github.com/egilyad/ai-os-new/tree/main/docs/superseded)
-- текущее рабочее: **1** — [`docs/active/`](https://github.com/egilyad/ai-os-new/tree/main/docs/active)
+- аудиты: **0** — [`docs/audits/`](https://github.com/egilyad/ai-os-new/tree/main/docs/audits)
+- история/зоны: **0** — [`docs/history/`](https://github.com/egilyad/ai-os-new/tree/main/docs/history)
+- заменённое: **0** — [`docs/superseded/`](https://github.com/egilyad/ai-os-new/tree/main/docs/superseded)
+- текущее рабочее: **0** — [`docs/active/`](https://github.com/egilyad/ai-os-new/tree/main/docs/active)
 
 Полный список каждого документа — в `docs/inventory.json` и в [Инвентаризация документации](./docs-inventory.md).
 

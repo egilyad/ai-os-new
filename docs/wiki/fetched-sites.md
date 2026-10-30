@@ -4,7 +4,7 @@
 
 > Раздел: **Заметки** · Статус: documented · Теги: сайты, каталог, скрапинг
 
-Источники: `docs/fetched-sites/README.md`, `scripts/gen-fetched-catalog.mjs`
+Источники: `scripts/gen-fetched-catalog.mjs`
 
 ## Что это
 

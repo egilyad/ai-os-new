@@ -58,7 +58,7 @@ const CORE_ARTICLES: WikiArticle[] = [
         section: 'guide',
         tags: ['обзор', 'философия', 'local-first'],
         freshness: 'documented',
-        sources: ['README_EN.md', 'docs/SYSTEM_MANIFEST_RU.md'],
+        sources: ['README_EN.md'],
         related: ['capabilities', 'architecture', 'providers'],
         body: `## Что это
 
@@ -327,7 +327,7 @@ await skillService.recordSkill({
         section: 'notes',
         tags: ['сайты', 'каталог', 'скрапинг'],
         freshness: 'documented',
-        sources: ['docs/fetched-sites/README.md', 'scripts/gen-fetched-catalog.mjs'],
+        sources: ['scripts/gen-fetched-catalog.mjs'],
         related: ['weekly-commits', 'roadmap-notes'],
         body: `## Что это
 
@@ -355,7 +355,7 @@ npm run gen:fetched-catalog
         section: 'notes',
         tags: ['аудит', 'баги', 'промты', 'учебник', 'методология'],
         freshness: 'documented',
-        sources: ['docs/audits-tips/auditstips.md'],
+        sources: [],
         related: ['fetched-sites', 'weekly-commits', 'comp-agents-roles-skills'],
         body: `## Оглавление
 
@@ -2982,7 +2982,7 @@ crews, councils, graphs, persona, ops, interop, meta, trust, frontier, rivals.
         section: 'dev',
         tags: ['аудит', 'методология', 'процесс', 'freeze', 'тест-план'],
         freshness: 'verified',
-        sources: ['docs/audits/'],
+        sources: [],
         related: ['audit-type-bootstrap', 'audit-type-domain', 'audit-type-security'],
         body: `## Назначение
 
@@ -3334,7 +3334,7 @@ crews, councils, graphs, persona, ops, interop, meta, trust, frontier, rivals.
         section: 'dev',
         tags: ['аудит', 'индекс', 'сводка', 'обзор'],
         freshness: 'verified',
-        sources: ['docs/audits/'],
+        sources: [],
         related: [
             'audit-methodology',
             'audit-type-bootstrap',
@@ -3397,7 +3397,7 @@ crews, councils, graphs, persona, ops, interop, meta, trust, frontier, rivals.
         section: 'dev',
         tags: ['аудит', 'обзор', 'полное руководство', 'типы', 'классы'],
         freshness: 'verified',
-        sources: ['docs/audits/', 'src/kernel/'],
+        sources: ['src/kernel/'],
         related: ['audit-index', 'audit-methodology', 'audit-type-domain', 'audit-type-security'],
         body: `## Назначение
 
@@ -4699,7 +4699,6 @@ flowchart LR
         tags: ['агенты', 'персоны', 'политики'],
         freshness: 'documented',
         sources: [
-            'docs/audits/agent-team-audit-memory-history-management.md',
             'src/kernel/agents/registry.ts',
             'src/kernel/services/agent-service.ts',
             'src/kernel/services/permissions/permission-service.ts',
@@ -4805,7 +4804,6 @@ flowchart TD
             'src/kernel/services/memory-engine.ts',
             'src/kernel/services/memory-orchestrator.ts',
             'src/kernel/services/rag/hybrid-retrieval-service.ts',
-            'docs/audits/agent-team-audit-memory-history-management.md',
         ],
         related: ['comp-memory', 'execution-trail', 'debates', 'architecture', 'memory-audit'],
         body: `## Слои
@@ -4841,7 +4839,6 @@ flowchart LR
         sources: [
             'src/kernel/services/tool-executor.ts',
             'src/kernel/services/agent-project-runtime.ts',
-            'docs/audits/agent-team-audit-memory-history-management.md',
         ],
         related: ['agents', 'panel-agent-tasks', 'diagnostics'],
         body: `## P1 — журнал инструментов
@@ -4871,7 +4868,7 @@ Browser-шлюз, MCP-делегаты, фабрика агентов — вне
         section: 'architecture',
         tags: ['слои', 'шина', 'DI'],
         freshness: 'documented',
-        sources: ['docs/SYSTEM_MANIFEST_RU.md', 'README_EN.md'],
+        sources: ['README_EN.md'],
         related: ['memory', 'execution-trail', 'for-developers', 'diagnostics'],
         body: `## Слои
 
@@ -4900,7 +4897,7 @@ flowchart LR
         section: 'diagnostics',
         tags: ['мониторинг', 'проблемы', 'ограничения'],
         freshness: 'documented',
-        sources: ['docs/audits/agent-team-audit-memory-history-management.md'],
+        sources: [],
         related: ['providers', 'execution-trail', 'panel-governance'],
         body: `## Что смотреть
 
@@ -4951,7 +4948,7 @@ Health-панели провайдеров, трейсы и timeline, DLQ (dead-
         section: 'notes',
         tags: ['планы', 'P5'],
         freshness: 'needs-check',
-        sources: ['docs/roadmap/README.md'],
+        sources: [],
         related: ['agents', 'execution-trail', 'memory', 'weekly-commits'],
         body: `## Что дальше (требует утверждения, не план работ)
 

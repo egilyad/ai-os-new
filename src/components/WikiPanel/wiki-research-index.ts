@@ -6,7 +6,7 @@ export const RESEARCH_INDEX_ARTICLE: WikiArticle = {
     section: 'notes',
     tags: ['исследования', 'индекс', 'roadmap', 'мультиагентные системы'],
     freshness: 'documented',
-    sources: ['docs/research/'],
+    sources: [],
     related: ['research-multiagent-patterns', 'panel-research-cockpit', 'roadmap-notes'],
     body: `## Что это
 

@@ -4,7 +4,7 @@
 
 > Раздел: **Агенты** · Статус: documented · Теги: агенты, персоны, политики
 
-Источники: `docs/audits/agent-team-audit-memory-history-management.md`, `src/kernel/agents/registry.ts`, `src/kernel/services/agent-service.ts`, `src/kernel/services/permissions/permission-service.ts`
+Источники: `src/kernel/agents/registry.ts`, `src/kernel/services/agent-service.ts`, `src/kernel/services/permissions/permission-service.ts`
 
 ## Что есть
 

@@ -3,16 +3,16 @@
   "generatedBy": "scripts/gen-docs-inventory.mjs",
   "scope": "git-tracked markdown: docs/**/*.md (excluding docs/new drafts and the self-report pages docs-health, docs-inventory) plus repository entry docs (root *.md, .superagents/**, src/kernel/DEPENDENCY_MAP.md)",
   "totals": {
-    "documents": 316,
+    "documents": 317,
     "byCategory": {
       "repo": 9,
       "top": 24,
-      "wiki": 283
+      "wiki": 284
     },
     "byLanguage": {
       "en": 34,
       "mixed": 61,
-      "ru": 221
+      "ru": 222
     }
   },
   "duplicates": {
@@ -267,16 +267,16 @@
       "category": "wiki",
       "language": "ru",
       "title": "Агенты: устройство и управление",
-      "bytes": 3976,
-      "hash": "11f5497d66426b477513e991e46d8c39d191b110"
+      "bytes": 3915,
+      "hash": "0e72822671de287ecadd07563a2c8bb9e84cb904"
     },
     {
       "path": "docs/wiki/architecture.md",
       "category": "wiki",
       "language": "ru",
       "title": "Архитектура и связи",
-      "bytes": 2030,
-      "hash": "8a72d262a859870fed35d8a7b5a92dcee1fb8aa9"
+      "bytes": 2000,
+      "hash": "dc9238ab960a4c1670e2af9fb20f5fee5b59faf1"
     },
     {
       "path": "docs/wiki/audit-defect-build-deploy-config.md",
@@ -379,24 +379,32 @@
       "category": "wiki",
       "language": "ru",
       "title": "Аудиты: сводный индекс",
-      "bytes": 6345,
-      "hash": "347c2c810dc5fa99de96c94527873c8812bc65c6"
+      "bytes": 6309,
+      "hash": "cece0b024b25f5bfb798f6d193d159cc111ff689"
     },
     {
       "path": "docs/wiki/audit-methodology.md",
       "category": "wiki",
       "language": "ru",
       "title": "Аудит: методология и процесс",
-      "bytes": 2312,
-      "hash": "33f4f9d920584535b3da392f48675a83974061fb"
+      "bytes": 2276,
+      "hash": "61d9121712f3f606061cc7f631155a9fe3a7fc49"
     },
     {
       "path": "docs/wiki/audit-overview.md",
       "category": "wiki",
       "language": "ru",
       "title": "Аудиты: полный обзор",
-      "bytes": 5248,
-      "hash": "4f90c79e3937a00e404f98ba921135fd4ef51514"
+      "bytes": 5232,
+      "hash": "88cef08e0f5ec854ea4601ec3922b76c60451951"
+    },
+    {
+      "path": "docs/wiki/audit-textbook.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Учебник по аудитам больших ИИ-проектов",
+      "bytes": 8690,
+      "hash": "e6c88d84981f25ea25ace029d06ba3d94bb96cfa"
     },
     {
       "path": "docs/wiki/audit-type-architecture.md",
@@ -875,8 +883,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Компоненты и сервисы: как читать этот раздел",
-      "bytes": 15179,
-      "hash": "27be2acb3adc641835748cc8fc59f006097aac66"
+      "bytes": 15156,
+      "hash": "e7efd492c53d58bf6cc4d4fbf1583e84c34bdd8b"
     },
     {
       "path": "docs/wiki/comp-persistence.md",
@@ -1075,8 +1083,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Матрица покрытия",
-      "bytes": 8585,
-      "hash": "d281c307329c30d240925e89f2b68e597ca2eaab"
+      "bytes": 8488,
+      "hash": "2aa0e4bbdf8f7bb29c071ff7e0c4172927d15eff"
     },
     {
       "path": "docs/wiki/debate-strategies-cheatsheet.md",
@@ -1124,7 +1132,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4076,
-      "hash": "35fd1bfe18a80422a31bc4ffa3bcb6755e6f9a4b"
+      "hash": "c892709b3092da4904a9b29290547433498ddba0"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -1211,16 +1219,16 @@
       "category": "wiki",
       "language": "ru",
       "title": "Граф знаний",
-      "bytes": 4837,
-      "hash": "3a2a7494cefc4e68e692c43e04b3423f8e344c7f"
+      "bytes": 4777,
+      "hash": "5459a631230e568edfeaaa4619c2ccd8d2705176"
     },
     {
       "path": "docs/wiki/dev-history.md",
       "category": "wiki",
       "language": "ru",
       "title": "История разработки",
-      "bytes": 8455,
-      "hash": "70cb76e7c86d57014f5a7e2e8b976d009795158d"
+      "bytes": 5076,
+      "hash": "4cd4a60175a49a2692b9f85ed8f53fe4e6ddbb72"
     },
     {
       "path": "docs/wiki/dev-i18n-catalog.md",
@@ -1419,16 +1427,16 @@
       "category": "wiki",
       "language": "ru",
       "title": "Диагностика и известные проблемы",
-      "bytes": 4744,
-      "hash": "f32b52786fc3fd044e80a4b47b2973338e502f2c"
+      "bytes": 4663,
+      "hash": "687997e747c25b544aeb117a30afb732e9b0b223"
     },
     {
       "path": "docs/wiki/docs-index.md",
       "category": "wiki",
       "language": "mixed",
       "title": "Карта документации",
-      "bytes": 48116,
-      "hash": "539a363e5021889e6832422f7a41f928baccd3e2"
+      "bytes": 30954,
+      "hash": "ebfbe848c44957768caee1e60d881d3aafe859a9"
     },
     {
       "path": "docs/wiki/docs-standard.md",
@@ -1443,16 +1451,16 @@
       "category": "wiki",
       "language": "ru",
       "title": "След исполнения: журнал, раны, зомби",
-      "bytes": 2630,
-      "hash": "94806552bb7caf4a1591d1718eb16a35fde1652c"
+      "bytes": 2569,
+      "hash": "2782e8ea76009daa69ef8d5071f0c0baa0689e17"
     },
     {
       "path": "docs/wiki/fetched-sites.md",
       "category": "wiki",
       "language": "ru",
       "title": "Скачанные сайты (каталог)",
-      "bytes": 1787,
-      "hash": "42e490d77722faae08c0bc11468da55f8aedc2dc"
+      "bytes": 1755,
+      "hash": "fd0f63f957b8fbbd462155d3bc91b5ffa654d636"
     },
     {
       "path": "docs/wiki/for-developers.md",
@@ -1499,8 +1507,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Знания и память",
-      "bytes": 3562,
-      "hash": "dd8d6b42d8651c77444ebf254a6cda071e6ea4a1"
+      "bytes": 3501,
+      "hash": "8f919bbb83d4dd06ce1430efff0cc9c53bb118a5"
     },
     {
       "path": "docs/wiki/panel-ab-testing.md",
@@ -2235,8 +2243,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Wiki SuperAgents OS",
-      "bytes": 29634,
-      "hash": "565d5a3fb66dbf2736505c3abca347f1e4c5128c"
+      "bytes": 29748,
+      "hash": "1f30963028556114b4586f4dcd92937be4a464d0"
     },
     {
       "path": "docs/wiki/record-a-skill.md",
@@ -2251,24 +2259,24 @@
       "category": "wiki",
       "language": "ru",
       "title": "Исследование: мультиагентные ИИ-ОС",
-      "bytes": 3574,
-      "hash": "a6f196bc37beb8d9ed2b57855fd54a7c8c2783de"
+      "bytes": 3511,
+      "hash": "e7d1f72149e140e1ae8be8dce2fa555722134082"
     },
     {
       "path": "docs/wiki/research-os-index.md",
       "category": "wiki",
       "language": "ru",
       "title": "Исследования ИИ-ОС: индекс",
-      "bytes": 2828,
-      "hash": "2587ea84c151133cdd3bc23be9520712c85d1a00"
+      "bytes": 2790,
+      "hash": "8d8d9f56d5d9ed409ec33622af0e11f8a27e3789"
     },
     {
       "path": "docs/wiki/roadmap-notes.md",
       "category": "wiki",
       "language": "ru",
       "title": "Планы и направления",
-      "bytes": 1635,
-      "hash": "8b9f0bafdc49c3fc80a32c82126affbec2bed3ed"
+      "bytes": 1589,
+      "hash": "687c2e31d4e7ab778010f70542efe3742673cbd8"
     },
     {
       "path": "docs/wiki/roles-for-agents.md",
@@ -2315,8 +2323,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Что такое SuperAgents OS",
-      "bytes": 2193,
-      "hash": "1465e37a89c79a55865c202a0c34b6780fb5be61"
+      "bytes": 2163,
+      "hash": "c423efe8a1e7980ff62a6ae3b927783d29daf705"
     },
     {
       "path": "docs/wiki/zone-1.md",

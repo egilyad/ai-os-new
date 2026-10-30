@@ -4,7 +4,7 @@
 
 > Раздел: **Компоненты и сервисы** · Статус: verified · Теги: компоненты, сервисы, ядро, навигация
 
-Источники: `src/kernel/services/`, `src/kernel/contracts/`, `docs/SERVICES_RU.md`
+Источники: `src/kernel/services/`, `src/kernel/contracts/`
 
 ## Зачем этот раздел
 

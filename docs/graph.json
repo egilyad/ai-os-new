@@ -3,18 +3,18 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 1370,
-    "edges": 2497,
+    "nodes": 1361,
+    "edges": 2482,
     "byType": {
-      "code": 619,
+      "code": 610,
       "test": 198,
       "panel": 268,
       "article": 285
     },
     "byKind": {
       "documents": 204,
-      "source": 906,
       "test": 294,
+      "source": 891,
       "related": 1093
     }
   },
@@ -60,29 +60,9 @@
       "label": "docs/005-mcp-integration.md"
     },
     {
-      "id": "file:docs/audits-tips/auditstips.md",
-      "type": "code",
-      "label": "docs/audits-tips/auditstips.md"
-    },
-    {
-      "id": "file:docs/audits/",
-      "type": "code",
-      "label": "docs/audits/"
-    },
-    {
-      "id": "file:docs/audits/agent-team-audit-memory-history-management.md",
-      "type": "code",
-      "label": "docs/audits/agent-team-audit-memory-history-management.md"
-    },
-    {
       "id": "file:docs/entity-model.json",
       "type": "code",
       "label": "docs/entity-model.json"
-    },
-    {
-      "id": "file:docs/fetched-sites/README.md",
-      "type": "code",
-      "label": "docs/fetched-sites/README.md"
     },
     {
       "id": "file:docs/inventory.json",
@@ -93,31 +73,6 @@
       "id": "file:docs/manifest.json",
       "type": "code",
       "label": "docs/manifest.json"
-    },
-    {
-      "id": "file:docs/research/",
-      "type": "code",
-      "label": "docs/research/"
-    },
-    {
-      "id": "file:docs/research/multiagent-os-patterns.md",
-      "type": "code",
-      "label": "docs/research/multiagent-os-patterns.md"
-    },
-    {
-      "id": "file:docs/roadmap/README.md",
-      "type": "code",
-      "label": "docs/roadmap/README.md"
-    },
-    {
-      "id": "file:docs/SERVICES_RU.md",
-      "type": "code",
-      "label": "docs/SERVICES_RU.md"
-    },
-    {
-      "id": "file:docs/SYSTEM_MANIFEST_RU.md",
-      "type": "code",
-      "label": "docs/SYSTEM_MANIFEST_RU.md"
     },
     {
       "id": "file:docs/wiki/comp-agents-roles-skills.md",
@@ -8999,11 +8954,6 @@
     },
     {
       "from": "wiki:agents",
-      "to": "file:docs/audits/agent-team-audit-memory-history-management.md",
-      "kind": "source"
-    },
-    {
-      "from": "wiki:agents",
       "to": "file:src/kernel/agents/registry.test.ts",
       "kind": "test"
     },
@@ -9051,11 +9001,6 @@
       "from": "wiki:agents",
       "to": "wiki:providers",
       "kind": "related"
-    },
-    {
-      "from": "wiki:architecture",
-      "to": "file:docs/SYSTEM_MANIFEST_RU.md",
-      "kind": "source"
     },
     {
       "from": "wiki:architecture",
@@ -9414,11 +9359,6 @@
     },
     {
       "from": "wiki:audit-index",
-      "to": "file:docs/audits/",
-      "kind": "source"
-    },
-    {
-      "from": "wiki:audit-index",
       "to": "wiki:audit-defect-build-deploy-config",
       "kind": "related"
     },
@@ -9519,11 +9459,6 @@
     },
     {
       "from": "wiki:audit-methodology",
-      "to": "file:docs/audits/",
-      "kind": "source"
-    },
-    {
-      "from": "wiki:audit-methodology",
       "to": "wiki:audit-type-bootstrap",
       "kind": "related"
     },
@@ -9536,11 +9471,6 @@
       "from": "wiki:audit-methodology",
       "to": "wiki:audit-type-security",
       "kind": "related"
-    },
-    {
-      "from": "wiki:audit-overview",
-      "to": "file:docs/audits/",
-      "kind": "source"
     },
     {
       "from": "wiki:audit-overview",
@@ -9566,11 +9496,6 @@
       "from": "wiki:audit-overview",
       "to": "wiki:audit-type-security",
       "kind": "related"
-    },
-    {
-      "from": "wiki:audit-textbook",
-      "to": "file:docs/audits-tips/auditstips.md",
-      "kind": "source"
     },
     {
       "from": "wiki:audit-textbook",
@@ -13334,11 +13259,6 @@
     },
     {
       "from": "wiki:comp-overview",
-      "to": "file:docs/SERVICES_RU.md",
-      "kind": "source"
-    },
-    {
-      "from": "wiki:comp-overview",
       "to": "file:src/kernel/contracts/",
       "kind": "source"
     },
@@ -16239,11 +16159,6 @@
     },
     {
       "from": "wiki:diagnostics",
-      "to": "file:docs/audits/agent-team-audit-memory-history-management.md",
-      "kind": "source"
-    },
-    {
-      "from": "wiki:diagnostics",
       "to": "wiki:execution-trail",
       "kind": "related"
     },
@@ -16399,11 +16314,6 @@
     },
     {
       "from": "wiki:execution-trail",
-      "to": "file:docs/audits/agent-team-audit-memory-history-management.md",
-      "kind": "source"
-    },
-    {
-      "from": "wiki:execution-trail",
       "to": "file:src/kernel/services/agent-project-runtime.test.ts",
       "kind": "test"
     },
@@ -16436,11 +16346,6 @@
       "from": "wiki:execution-trail",
       "to": "wiki:panel-agent-tasks",
       "kind": "related"
-    },
-    {
-      "from": "wiki:fetched-sites",
-      "to": "file:docs/fetched-sites/README.md",
-      "kind": "source"
     },
     {
       "from": "wiki:fetched-sites",
@@ -16836,11 +16741,6 @@
       "from": "wiki:memory-center-audit",
       "to": "wiki:panel-lenses-crystals",
       "kind": "related"
-    },
-    {
-      "from": "wiki:memory",
-      "to": "file:docs/audits/agent-team-audit-memory-history-management.md",
-      "kind": "source"
     },
     {
       "from": "wiki:memory",
@@ -20044,11 +19944,6 @@
     },
     {
       "from": "wiki:research-multiagent-patterns",
-      "to": "file:docs/research/multiagent-os-patterns.md",
-      "kind": "source"
-    },
-    {
-      "from": "wiki:research-multiagent-patterns",
       "to": "wiki:panel-graph-workbench",
       "kind": "related"
     },
@@ -20064,11 +19959,6 @@
     },
     {
       "from": "wiki:research-os-index",
-      "to": "file:docs/research/",
-      "kind": "source"
-    },
-    {
-      "from": "wiki:research-os-index",
       "to": "wiki:panel-research-cockpit",
       "kind": "related"
     },
@@ -20081,11 +19971,6 @@
       "from": "wiki:research-os-index",
       "to": "wiki:roadmap-notes",
       "kind": "related"
-    },
-    {
-      "from": "wiki:roadmap-notes",
-      "to": "file:docs/roadmap/README.md",
-      "kind": "source"
     },
     {
       "from": "wiki:roadmap-notes",
@@ -20306,11 +20191,6 @@
       "from": "wiki:weekly-commits",
       "to": "wiki:roadmap-notes",
       "kind": "related"
-    },
-    {
-      "from": "wiki:what-is",
-      "to": "file:docs/SYSTEM_MANIFEST_RU.md",
-      "kind": "source"
     },
     {
       "from": "wiki:what-is",

@@ -4,7 +4,7 @@
 
 > Раздел: **Знания и память** · Статус: verified · Теги: память, RAG, персоны
 
-Источники: `src/kernel/services/memory-engine.ts`, `src/kernel/services/memory-orchestrator.ts`, `src/kernel/services/rag/hybrid-retrieval-service.ts`, `docs/audits/agent-team-audit-memory-history-management.md`
+Источники: `src/kernel/services/memory-engine.ts`, `src/kernel/services/memory-orchestrator.ts`, `src/kernel/services/rag/hybrid-retrieval-service.ts`
 
 ## Слои
 

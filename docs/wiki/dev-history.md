@@ -22,35 +22,16 @@
 
 Каждая зона — отчёт о проделанном на тот момент. Не выдаётся за текущее состояние.
 
-## Аудиты (77)
+## Аудиты (0)
 
 Отчёты проверок сохраняются как есть:
 
-- папка [`docs/audits/_done/`](https://github.com/egilyad/ai-os-new/tree/main/docs/audits/_done/) — 58
-- [Аудит подсистемы «Адаптеры провайдеров LLM» — реестр дефектов и рисков](https://github.com/egilyad/ai-os-new/blob/main/docs/audits/adapters-audit.md)
-- [Аудит: память агентов, история действий, управление командой](https://github.com/egilyad/ai-os-new/blob/main/docs/audits/agent-team-audit-memory-history-management.md)
-- [Аудит подсистемы «Агенты/Совет» — реестр дефектов и рисков](https://github.com/egilyad/ai-os-new/blob/main/docs/audits/agents-council-audit.md)
-- [Аудит подсистемы «Когнитивная оркестрация / Симуляция / Тайм-тревел» — реестр дефектов и рисков](https://github.com/egilyad/ai-os-new/blob/main/docs/audits/cognitive-simulation-audit.md)
-- [Аудит компонента Debates — реестр дефектов и рисков](https://github.com/egilyad/ai-os-new/blob/main/docs/audits/debate-audit.md)
-- [Gap-аудит документации SuperAgents OS](https://github.com/egilyad/ai-os-new/blob/main/docs/audits/DOCS_GAP_AUDIT_2026-10-17.md)
-- [Инвентаризация `docs/` (2026-10-17)](https://github.com/egilyad/ai-os-new/blob/main/docs/audits/DOCS_INVENTORY_2026-10-17.md)
-- [Отчёт: программа документации SuperAgents OS](https://github.com/egilyad/ai-os-new/blob/main/docs/audits/DOCS_PROGRAM_REPORT_2026-10-17.md)
-- [Аудит подсистемы «События / Event Sourcing / Хранилище» — реестр дефектов и рисков](https://github.com/egilyad/ai-os-new/blob/main/docs/audits/events-storage-audit.md)
-- [Аудит подсистемы «Флот / Governance» — реестр дефектов и рисков](https://github.com/egilyad/ai-os-new/blob/main/docs/audits/fleet-governance-audit.md)
-- [Аудит «LLM-мост» и «Invocation/Мета-агент» — реестр дефектов и рисков](https://github.com/egilyad/ai-os-new/blob/main/docs/audits/llm-bridge-invocation-audit.md)
-- [Аудит подсистемы «Память/Знания» — реестр дефектов и рисков](https://github.com/egilyad/ai-os-new/blob/main/docs/audits/memory-audit.md)
-- [Аудит подсистемы «Провайдеры / LLM-конвейер» — реестр дефектов и рисков](https://github.com/egilyad/ai-os-new/blob/main/docs/audits/providers-llm-audit.md)
-- [Аудиты подсистем — указатель](https://github.com/egilyad/ai-os-new/blob/main/docs/audits/README.md)
-- [Аудит подсистемы «Утилиты/Инфраструктура» — реестр дефектов и рисков](https://github.com/egilyad/ai-os-new/blob/main/docs/audits/utils-audit.md)
-- папка [`docs/audits/New folder/`](https://github.com/egilyad/ai-os-new/tree/main/docs/audits/New folder/) — 4
 
-Всего отчётов: **77** (в корне — 15).
+Всего отчётов: **0** (в корне — 0).
 
-## Архив решений и планов (683)
+## Архив решений и планов (0)
 
 Материалы прежних решений и планов: [`docs/history/`](https://github.com/egilyad/ai-os-new/tree/main/docs/history).
-
-Подпапки: [`experementmdroadmaps/`](https://github.com/egilyad/ai-os-new/tree/main/docs/history/experementmdroadmaps), [`research-nightly/`](https://github.com/egilyad/ai-os-new/tree/main/docs/history/research-nightly).
 
 Реестр архитектурных решений (ADR) пока не выделен — это отдельный пункт плана ([Карта документации](./docs-index.md)).
 
