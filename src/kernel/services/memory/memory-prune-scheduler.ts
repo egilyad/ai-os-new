@@ -45,7 +45,11 @@ export class MemoryPruneScheduler {
         this.stop();
     }
 
+    private pruning = false;
+
     async pruneOldEntries(): Promise<void> {
+        if (this.pruning) return;
+        this.pruning = true;
         try {
             const cutoff = Date.now() - this.deps.ttlMs();
             const removed = this.deps
@@ -69,6 +73,8 @@ export class MemoryPruneScheduler {
             });
         } catch (e) {
             LOGGER.error('MemoryEngine', 'Prune cycle failed', { error: e });
+        } finally {
+            this.pruning = false;
         }
     }
 }

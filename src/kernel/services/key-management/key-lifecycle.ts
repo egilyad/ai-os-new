@@ -104,16 +104,22 @@ export class KeyLifecycle {
         }
     }
 
-    private async _save(): Promise<void> {
-        if (!this.deps.database) return;
-        try {
+    private saveChain: Promise<unknown> = Promise.resolve();
+
+    private _save(): Promise<void> {
+        if (!this.deps.database) return Promise.resolve();
+        const run = async (): Promise<void> => {
             await this.deps.database.setKv(COUNTERS_STORAGE_KEY, {
                 errorCounters: Array.from(this.errorCounters.entries()),
                 successCounters: Array.from(this.successCounters.entries()),
             });
-        } catch (e) {
-            LOGGER.warn('KeyLifecycle', 'Failed to persist counters', { error: e });
-        }
+        };
+        // Serialize writes so a concurrent save can never overwrite a fresher
+        // snapshot with a staler one.
+        this.saveChain = this.saveChain
+            .then(run, run)
+            .catch((e) => LOGGER.warn('KeyLifecycle', 'Failed to persist counters', { error: e }));
+        return this.saveChain as Promise<void>;
     }
 
     setKeyStateStore(store: IKeyStateStore): void {

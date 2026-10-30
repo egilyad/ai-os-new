@@ -46,13 +46,16 @@ export class MemoryWorkerClient {
     }
 
     async ensure(initialMemories: MemoryEntry[]): Promise<void> {
-        if (this.worker) return;
+        // Only return early once the worker is fully initialized — a second
+        // caller must wait for `init` to finish, not just for the worker to
+        // exist (it is assigned before init resolves).
+        if (this.worker && this.isDbReady) return;
         if (this.workerInitPromise) return this.workerInitPromise;
         this.workerInitPromise = this.initWorker(initialMemories);
         try {
             return await this.workerInitPromise;
         } finally {
-            if (!this.worker) this.workerInitPromise = null;
+            if (!this.worker || !this.isDbReady) this.workerInitPromise = null;
         }
     }
 
