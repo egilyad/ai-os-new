@@ -243,7 +243,11 @@ const WhatIfPanel: React.FC = () => {
                             min={1}
                             max={10}
                             value={partCount}
-                            onChange={(e) => setPartCount(Number(e.target.value))}
+                            onChange={(e) =>
+                                setPartCount(
+                                    Math.min(10, Math.max(1, Number(e.target.value) || 1)),
+                                )
+                            }
                             style={INPUT}
                         />
                         <button
@@ -455,7 +459,7 @@ const WhatIfPanel: React.FC = () => {
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                         {results.map((r, _i) => (
                             <div
-                                key={`${r.type}-${r.label}`}
+                                key={`${r.type}-${r.label}-${_i}`}
                                 style={{
                                     ...CARD,
                                     borderLeft: `3px solid ${r.type === 'topology' ? '#a78bfa' : r.type === 'participant' ? '#10b981' : r.type === 'budget' ? '#f59e0b' : r.type === 'provider' ? '#3b82f6' : '#a855f7'}`,

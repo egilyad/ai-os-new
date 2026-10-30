@@ -125,8 +125,12 @@ const VerdictActionButtons: React.FC<Props> = ({ session, t, onViewAnalysis, onR
         const a = document.createElement('a');
         a.href = url;
         a.download = `debate-${(session.topic ?? '').slice(0, 50).replace(/[^a-z0-9]/gi, '_')}-${new Date().toISOString().slice(0, 10)}.json`;
+        document.body.appendChild(a);
         a.click();
-        URL.revokeObjectURL(url);
+        setTimeout(() => {
+            URL.revokeObjectURL(url);
+            a.remove();
+        }, 100);
     };
 
     const btnBase: React.CSSProperties = {

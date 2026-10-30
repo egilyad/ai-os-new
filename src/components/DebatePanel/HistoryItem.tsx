@@ -398,7 +398,7 @@ const HistoryItem: React.FC<HistoryItemProps> = ({
                             +{filteredArguments.length - argDisplayCount}{' '}
                             {t('debate.more_arguments') || 'more arguments'}
                         </button>
-                    ) : filteredArguments.length > 6 ? (
+                    ) : filteredArguments.length > 6 && argDisplayCount > 6 ? (
                         <button
                             onClick={() => setArgDisplayCount(20)}
                             style={{

@@ -178,18 +178,26 @@ const AddKeyModal: React.FC<Props> = ({ onClose, defaultProvider }) => {
         }
     };
 
-    const handleFinalize = (selectedModel?: string) => {
-        addKey({
-            provider,
-            label: label.trim(),
-            key: apiKey.trim(),
-            status: 'pending',
-            group: group.trim() || undefined,
-            account: account.trim() || undefined,
-            accountId,
-            model: selectedModel || undefined,
-            availableModels: availableModels.length > 0 ? availableModels : undefined,
-        });
+    const handleFinalize = async (selectedModel?: string) => {
+        try {
+            await addKey({
+                provider,
+                label: label.trim(),
+                key: apiKey.trim(),
+                status: 'pending',
+                group: group.trim() || undefined,
+                account: account.trim() || undefined,
+                accountId,
+                model: selectedModel || undefined,
+                availableModels: availableModels.length > 0 ? availableModels : undefined,
+            });
+        } catch (e) {
+            if (isMountedRef.current) {
+                setError(e instanceof Error ? e.message : String(e));
+            }
+            return;
+        }
+        if (!isMountedRef.current) return;
         eventBus.emit(EVENTS.NOTIFICATION, {
             message: `${provider} key added — ${availableModels.length > 0 ? availableModels.length + ' models available' : 'health check pending'}${selectedModel ? ', default: ' + selectedModel : ''}`,
             type: 'success',
@@ -223,10 +231,10 @@ const AddKeyModal: React.FC<Props> = ({ onClose, defaultProvider }) => {
             setError(t('add_key.error_duplicate').replace('{0}', dup));
             return;
         }
-        handleFinalize();
+        await handleFinalize();
     };
 
-    const handleSkipModel = () => handleFinalize();
+    const handleSkipModel = () => void handleFinalize();
 
     const handleBulkImport = () => runBulkImport(account, group);
 

@@ -13,6 +13,12 @@ const DIFFICULTY_COLORS: Record<TopicSuggestion['difficulty'], string> = {
     advanced: '#ef4444',
 };
 
+const DIFFICULTY_LABELS: Record<TopicSuggestion['difficulty'], { en: string; ru: string }> = {
+    beginner: { en: 'Beginner', ru: 'Начинающий' },
+    intermediate: { en: 'Intermediate', ru: 'Средний' },
+    advanced: { en: 'Advanced', ru: 'Продвинутый' },
+};
+
 const CATEGORY_LABELS: Record<
     TopicSuggestion['category'],
     { en: string; ru: string; color: string }
@@ -286,7 +292,7 @@ const TopicSuggesterPanel: React.FC = () => {
                                         textTransform: 'uppercase',
                                     }}
                                 >
-                                    {t2.difficulty}
+                                    {DIFFICULTY_LABELS[t2.difficulty]?.[lang] ?? t2.difficulty}
                                 </span>
                             </div>
                             <div style={{ ...textWhiteXs, fontSize: '0.95rem', lineHeight: 1.4 }}>
