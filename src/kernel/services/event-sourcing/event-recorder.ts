@@ -545,7 +545,9 @@ export class EventRecorder {
         if (!this.store || this.persistQueued || this._destroyed) return;
         this.persistQueued = true;
         const gen = this._persistGen;
-        this._pendingPersistData = { events: [...this.events], sequence: this.sequence };
+        // Snapshot inside the debounce callback (copy once per window) instead
+        // of copying the whole event list on every recorded event.
+        this._pendingPersistData = null;
         // P1-15.4: Debounce persistence — coalesce bursts (LLM streaming emits
         // thousands of events/sec) into a single Dexie write + WAL flush instead
         // of a full-array JSON.stringify + bulkAdd per event. Previously every
@@ -559,9 +561,8 @@ export class EventRecorder {
             this.persistQueued = false;
             // P1-15.3: discard if clear() was called while timer was pending
             if (gen !== this._persistGen) return;
-            const data = this._pendingPersistData;
+            const data = { events: [...this.events], sequence: this.sequence };
             this._pendingPersistData = null;
-            if (!data) return;
             // Synchronous WAL write — survives tab close. Cap to the tail so a
             // large event array doesn't blow the localStorage quota or stringify cost.
             try {

@@ -65,7 +65,9 @@ const ResponseCard: React.FC<ResponseCardProps> = memo(
         const [copied, setCopied] = useState(false);
         const [feedback, setFeedback] = useState<'up' | 'down' | null>(null);
         const [showWhy, setShowWhy] = useState(false);
-        const routingInfo = getLatestRouting();
+        // Only compute routing when the panel is actually open — avoids a
+        // service call + sort on every stream frame.
+        const routingInfo = showWhy ? getLatestRouting() : null;
         const [ctxMenu, setCtxMenu] = useState<{ x: number; y: number } | null>(null);
         const color = getProviderColor(res?.provider);
         const isStreaming = res.status === 'loading' || res.status === 'streaming';
