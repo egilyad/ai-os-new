@@ -179,6 +179,8 @@ export class CheckpointStore {
         this.checkpoints = [];
     }
 
+    private persistChain: Promise<unknown> = Promise.resolve();
+
     private schedulePersist(): void {
         if (!this.store || this.persistQueued) return;
         this.persistQueued = true;
@@ -189,22 +191,24 @@ export class CheckpointStore {
         } catch {
             /* best-effort */
         }
-        queueMicrotask(() => {
+        const run = async (): Promise<void> => {
+            // Only one persist runs at a time; if new checkpoints arrive during
+            // the save (persistQueued re-set), loop back for a fresher write so
+            // a staler snapshot can never overwrite a newer one.
             this.persistQueued = false;
-            this.store
-                ?.save([...this.checkpoints])
-                .then(() => {
-                    // Clear WAL after successful persist
-                    try {
-                        ssrSafeStorage.removeItem(walKey);
-                    } catch {
-                        /* best-effort */
-                    }
-                })
-                .catch((e) =>
-                    LOGGER.warn('CheckpointStore', 'Failed to persist checkpoints', { error: e }),
-                );
-        });
+            await this.store?.save([...this.checkpoints]);
+            try {
+                ssrSafeStorage.removeItem(walKey);
+            } catch {
+                /* best-effort */
+            }
+            if (this.persistQueued) this.schedulePersist();
+        };
+        this.persistChain = this.persistChain
+            .then(run, run)
+            .catch((e) =>
+                LOGGER.warn('CheckpointStore', 'Failed to persist checkpoints', { error: e }),
+            );
     }
 
     /** Call from init() to recover any WAL data from a prior tab-close */

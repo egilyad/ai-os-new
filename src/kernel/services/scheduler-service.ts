@@ -49,6 +49,8 @@ export class SchedulerService {
     private checkIntervalMs = 60000; // Check every minute
     private isRunning = false;
     private _checkingSchedules = false; // H-30: re-entrancy guard
+    private _destroyed = false;
+    private scheduleRunning = new Set<string>(); // per-schedule single-flight
     lastCheckTime = 0; // OBS-96: public for external watchdog
     private _database: IDatabaseService | null = null;
     private _eventBus: IEventBus | null = null;
@@ -264,6 +266,7 @@ export class SchedulerService {
      * Check and run due schedules
      */
     private async checkSchedules(): Promise<void> {
+        if (this._destroyed) return;
         // H-30: re-entrancy guard — prevent double-execution when runSchedule takes > 60s
         if (this._checkingSchedules) return;
         this._checkingSchedules = true;
@@ -286,6 +289,9 @@ export class SchedulerService {
      * Run a schedule
      */
     private async runSchedule(schedule: Schedule): Promise<void> {
+        if (this._destroyed) return;
+        if (this.scheduleRunning.has(schedule.id)) return; // single-flight
+        this.scheduleRunning.add(schedule.id);
         LOGGER.info('SchedulerService', 'Running schedule', {
             id: schedule.id,
             name: schedule.name,
@@ -332,6 +338,8 @@ export class SchedulerService {
                 error: String(error),
                 timestamp: Date.now(),
             });
+        } finally {
+            this.scheduleRunning.delete(schedule.id);
         }
     }
 
@@ -539,6 +547,7 @@ export class SchedulerService {
      */
     destroy(): void {
         this.stop();
+        this._destroyed = true;
         this.schedules.clear();
         LOGGER.info('SchedulerService', 'Scheduler destroyed');
     }
