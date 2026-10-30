@@ -276,6 +276,7 @@ export function setupChatEventHandlers(set: ZustandSet, get: ZustandGet): Array<
             });
             persistSessionSnapshot(get, ref.sessionId);
             chunkBuffers.delete(payload.requestId);
+            requestEntryMap.delete(payload.requestId);
             drainSendQueue(get, ref.sessionId);
         }),
     );
@@ -313,6 +314,7 @@ export function setupChatEventHandlers(set: ZustandSet, get: ZustandGet): Array<
             });
             persistSessionSnapshot(get, ref.sessionId);
             chunkBuffers.delete(payload.requestId);
+            requestEntryMap.delete(payload.requestId);
             drainSendQueue(get, ref.sessionId);
         }),
     );

@@ -118,12 +118,12 @@ function computeConsensusQuality(session: DebateSession, verdict?: DebateVerdict
         else if (verdict.conclusionType === 'partial_agreement') conclusionBonus = 0.2;
         else if (verdict.conclusionType === 'dominance') conclusionBonus = 0.1;
     }
-    const score = Math.min(1, convergence * 0.7 + conclusionBonus);
+    const score = Math.min(1, (convergence / 100) * 0.7 + conclusionBonus);
     return {
         name: 'consensus_quality',
         score,
         weight: 0.25,
-        details: `Convergence: ${(convergence * 100).toFixed(0)}%, conclusion: ${verdict?.conclusionType ?? 'none'}`,
+        details: `Convergence: ${convergence.toFixed(0)}%, conclusion: ${verdict?.conclusionType ?? 'none'}`,
     };
 }
 

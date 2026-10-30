@@ -66,6 +66,7 @@ export function throttle<T extends (...args: unknown[]) => unknown>(
         lastArgs = args;
         if (now - last >= ms) {
             last = now;
+            if (trailingTimer) clearTimeout(trailingTimer);
             trailingTimer = null;
             fn(...args);
         } else if (!trailingTimer) {

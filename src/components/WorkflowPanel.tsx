@@ -398,7 +398,7 @@ const WorkflowPanel: React.FC = () => {
                                     <div
                                         style={{
                                             height: '100%',
-                                            width: `${(currentRun.stepResults.length / selectedWf.steps.length) * 100}%`,
+                                            width: `${(currentRun.stepResults.length / (selectedWf.steps.length || 1)) * 100}%`,
                                             background: 'linear-gradient(90deg, #3b82f6, #2563eb)',
                                             borderRadius: 2,
                                             transition: 'width 0.3s',

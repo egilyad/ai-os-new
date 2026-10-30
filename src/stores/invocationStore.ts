@@ -267,7 +267,8 @@ export const useInvocationStore = create<InvocationStoreState>((set) => {
         clear: () => set({ ...EMPTY_STATE }),
         select: (id) => set({ selectedId: id }),
         clearView: () => set({ feed: [], log: [] }),
-        clearHistory: () => set({ invocations: {}, order: [], costs: {}, feed: [], log: [] }),
+        clearHistory: () =>
+            set({ invocations: {}, order: [], costs: {}, feed: [], log: [], selectedId: null }),
         ensureSubscribed: () => subscribeInvocationStore(),
         destroy: () => {
             unsubscribeInvocationStore();

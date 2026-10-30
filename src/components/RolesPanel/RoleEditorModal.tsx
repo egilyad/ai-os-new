@@ -13,6 +13,8 @@ import {
 import { ModalShell } from '../ModalShell';
 import type { Role } from '../../types/role';
 import { RoleVersions } from './RoleVersions';
+import { roleVersionService } from '../../kernel/instances';
+import type { RoleVersion } from '../../kernel/services/role-version-service';
 import { EmojiPicker } from './EmojiPicker';
 import { ColorPicker } from './ColorPicker';
 import { ShapePicker } from './ShapePicker';
@@ -41,8 +43,9 @@ export const RoleEditorModal: React.FC<RoleEditorModalProps> = ({
     allRoles = [],
 }) => {
     const [tab, setTab] = useState<'editor' | 'avatar' | 'history'>('editor');
-    const handleRollback = () => {
-        onSave();
+    const handleRollback = (version: RoleVersion) => {
+        const restored = roleVersionService.rollbackTo(r.id, version.id);
+        if (restored) onChange({ ...r, ...restored });
     };
 
     const updateMeta = (patch: Partial<Role['metadata']>) => {

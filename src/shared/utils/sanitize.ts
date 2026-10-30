@@ -63,7 +63,7 @@ export function sanitizeError(text: string): string {
 }
 
 export function sanitizeApiKey(key: string): string {
-    if (!key || key.length < 8) return '[INVALID]';
+    if (!key || key.length <= 8) return '[INVALID]';
     return key.slice(0, 4) + '***' + key.slice(-4);
 }
 
