@@ -299,7 +299,7 @@ export const rawConfig: ConfigRegistry = {
             experimentalVisuals: false,
         },
         mockServices: {
-            enabled: true,
+            enabled: false,
         },
     },
 

@@ -128,6 +128,7 @@ jobs:
               env:
                   VITE_APP_ORIGIN: https://example.com
                   VITE_BUILD_ID: ${{ github.sha }}
+                  VITE_BASE_PATH: /ai-os-new/
 
             - name: Check bundle size
               run: |
