@@ -265,7 +265,7 @@ export function setupChatEventHandlers(set: ZustandSet, get: ZustandGet): Array<
                                           content: payload.fullContent || r.content,
                                           latency: payload.latency || r.latency,
                                           tokens: payload.tokens ?? r.tokens,
-                                          status: 'done' as const,
+                                          status: payload.status ?? ('done' as const),
                                       }
                                     : r,
                             ),

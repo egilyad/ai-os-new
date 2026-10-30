@@ -96,8 +96,8 @@ class DexieKeyStore implements KeyStore {
         if (fresh.length > 0) await db.apiKeys.bulkAdd(fresh);
     }
 
-    async where(field: 'id' | 'provider' | 'status', value: string): Promise<ApiKey | undefined> {
-        return getDexieDb().apiKeys.where(field).equals(value).first();
+    async where(field: string, value: string): Promise<ApiKey | undefined> {
+        return getDexieDb().apiKeys.where(field as 'id' | 'provider' | 'status').equals(value).first();
     }
 
     async exportAll(): Promise<string> {
