@@ -102,14 +102,16 @@ const ChatExportPanel: React.FC = () => {
                         provider: obj.provider,
                         messages: obj.messages.map((m: unknown) => {
                             const msg = m as { role?: string; content?: string };
+                            const role =
+                                msg.role === 'user' ||
+                                msg.role === 'assistant' ||
+                                msg.role === 'system' ||
+                                msg.role === 'tool'
+                                    ? msg.role
+                                    : 'user';
                             return {
-                                role:
-                                    msg.role === 'user' ||
-                                    msg.role === 'assistant' ||
-                                    msg.role === 'system' ||
-                                    msg.role === 'tool'
-                                        ? msg.role
-                                        : 'user',
+                                ...msg,
+                                role,
                                 content: typeof msg.content === 'string' ? msg.content : '',
                             };
                         }),
@@ -142,14 +144,16 @@ const ChatExportPanel: React.FC = () => {
                 title: obj.title ?? 'Pasted Chat',
                 messages: obj.messages.map((m: unknown) => {
                     const msg = m as { role?: string; content?: string };
+                    const role =
+                        msg.role === 'user' ||
+                        msg.role === 'assistant' ||
+                        msg.role === 'system' ||
+                        msg.role === 'tool'
+                            ? msg.role
+                            : 'user';
                     return {
-                        role:
-                            msg.role === 'user' ||
-                            msg.role === 'assistant' ||
-                            msg.role === 'system' ||
-                            msg.role === 'tool'
-                                ? msg.role
-                                : 'user',
+                        ...msg,
+                        role,
                         content: typeof msg.content === 'string' ? msg.content : '',
                     };
                 }),

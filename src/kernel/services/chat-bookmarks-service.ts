@@ -38,18 +38,37 @@ const STORAGE_KEY = 'chat_bookmarks_v1';
 function createDbStorage(db: IDatabaseService): NonNullable<ChatBookmarksServiceDeps['storage']> {
     return {
         async list(): Promise<ChatBookmark[]> {
-            // Migration read: prefer db, fall back to localStorage for existing data
+            // Migration read: merge DB + legacy localStorage so neither source is
+            // discarded. Union by id, prefer the newer createdAt.
             const raw = await db.getKv<ChatBookmark[]>(STORAGE_KEY);
             const lsRaw = await migrateFromLocalStorage();
-            if (raw && raw.length > 0 && (!lsRaw || lsRaw.length === 0)) {
-                return raw;
+            const dbList = Array.isArray(raw) ? raw : [];
+            const lsList = Array.isArray(lsRaw) ? lsRaw : [];
+            if (lsList.length === 0) return dbList;
+            const byId = new Map<string, ChatBookmark>();
+            for (const b of dbList) byId.set(b.id, b);
+            let added = 0;
+            for (const b of lsList) {
+                const existing = byId.get(b.id);
+                if (!existing || b.createdAt > existing.createdAt) {
+                    byId.set(b.id, b);
+                    added++;
+                }
             }
-            if (lsRaw && lsRaw.length > 0) {
-                await db.setKv(STORAGE_KEY, lsRaw);
+            const merged = [...byId.values()];
+            if (added > 0 || merged.length !== dbList.length) {
+                try {
+                    await db.setKv(STORAGE_KEY, merged);
+                } catch (e) {
+                    LOGGER.warn('ChatBookmarks', 'merge persist failed', { error: e });
+                }
+            }
+            try {
                 await BucketStorageAdapter.UI.remove(STORAGE_KEY);
-                return lsRaw;
+            } catch {
+                /* keep legacy until next merge */
             }
-            return raw && raw.length > 0 ? raw : [];
+            return merged;
         },
         async save(bookmark: ChatBookmark): Promise<void> {
             for (let attempt = 0; attempt < 3; attempt++) {

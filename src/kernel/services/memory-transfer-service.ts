@@ -11,6 +11,17 @@ import { rootLogger } from './logger-service';
 
 const MAX_IMPORT_ENTRIES = 10_000;
 const MAX_ENTRY_CONTENT_LENGTH = 100_000;
+
+/** Display labels used by the UI → canonical metadata.type values. */
+const SECTION_TYPE_MAP: Record<string, string> = {
+    'episodic memories': 'episodic',
+    'semantic memories': 'semantic',
+    'procedural memories': 'procedural',
+    'emotional memories': 'emotional',
+    'spatial memories': 'spatial',
+    'social memories': 'social',
+    'working memory': 'working',
+};
 const VALID_IMPORT_TYPES = new Set([
     'fact',
     'claim',
@@ -105,12 +116,16 @@ export class MemoryTransferService implements IMemoryTransferService {
     export(format: ExportFormat, sections: string[]): MemoryExport {
         const allMemories = this.memory.getMemories();
 
-        const filtered =
+        const normalizedSections =
             sections.length > 0 && sections[0] !== '*'
+                ? sections.map((s) => (SECTION_TYPE_MAP[s.toLowerCase()] ?? s).toLowerCase())
+                : [];
+        const filtered =
+            normalizedSections.length > 0
                 ? allMemories.filter(
                       (m) =>
-                          sections.includes(m.metadata.type ?? '') ||
-                          sections.includes(m.metadata.source ?? ''),
+                          normalizedSections.includes((m.metadata.type ?? '').toLowerCase()) ||
+                          normalizedSections.includes((m.metadata.source ?? '').toLowerCase()),
                   )
                 : allMemories;
 
@@ -187,19 +202,21 @@ export class MemoryTransferService implements IMemoryTransferService {
                             if (type !== undefined && !VALID_IMPORT_TYPES.has(type)) {
                                 throw new Error(`Invalid memory type: "${type}"`);
                             }
+                            const rawMeta = (r.metadata as Record<string, unknown>) ?? {};
+                            const rawTimestamp = rawMeta.timestamp as number;
+                            const rawImportance = rawMeta.importance as number;
                             return {
                                 content,
                                 metadata: {
-                                    source:
-                                        ((r.metadata as Record<string, unknown>)
-                                            ?.source as string) ?? 'import',
+                                    ...rawMeta,
+                                    source: (rawMeta.source as string) ?? 'import',
                                     type: type ?? 'imported',
-                                    timestamp:
-                                        ((r.metadata as Record<string, unknown>)
-                                            ?.timestamp as number) ?? Date.now(),
-                                    importance:
-                                        ((r.metadata as Record<string, unknown>)
-                                            ?.importance as number) ?? 0.5,
+                                    timestamp: Number.isFinite(rawTimestamp)
+                                        ? rawTimestamp
+                                        : Date.now(),
+                                    importance: Number.isFinite(rawImportance)
+                                        ? rawImportance
+                                        : 0.5,
                                 },
                                 vector: Array.isArray(r.vector)
                                     ? (r.vector as number[])
@@ -222,13 +239,22 @@ export class MemoryTransferService implements IMemoryTransferService {
                             .slice(1, -1);
                         const source = parts[1]!.slice(1, -1);
                         const type = parts[2]!.slice(1, -1);
-                        const timestamp = parts[3]
-                            ? Number(parts[3].replace(/"/g, ''))
-                            : Date.now();
-                        const importance = parts[4] ? Number(parts[4].replace(/"/g, '')) : 0.5;
+                        const parsedTimestamp = parts[3] ? Number(parts[3].replace(/"/g, '')) : NaN;
+                        const parsedImportance = parts[4]
+                            ? Number(parts[4].replace(/"/g, ''))
+                            : NaN;
                         entries.push({
                             content,
-                            metadata: { source, type, timestamp, importance },
+                            metadata: {
+                                source,
+                                type,
+                                timestamp: Number.isFinite(parsedTimestamp)
+                                    ? parsedTimestamp
+                                    : Date.now(),
+                                importance: Number.isFinite(parsedImportance)
+                                    ? parsedImportance
+                                    : 0.5,
+                            },
                         });
                     }
                     break;
