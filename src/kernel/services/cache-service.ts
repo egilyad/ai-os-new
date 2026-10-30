@@ -138,9 +138,14 @@ export class CacheService implements ICacheService {
 
     private evictExpired(): void {
         const now = Date.now();
+        let changed = false;
         for (const [key, entry] of this.cache) {
-            if (now - entry.timestamp > entry.ttl) this.cache.delete(key);
+            if (now - entry.timestamp > entry.ttl) {
+                this.cache.delete(key);
+                changed = true;
+            }
         }
+        if (changed) this.persist();
     }
 
     private async flush(): Promise<void> {
@@ -215,6 +220,7 @@ export class CacheService implements ICacheService {
         }
         if (Date.now() - entry.timestamp > entry.ttl) {
             this.cache.delete(key);
+            this.persist();
             this.misses++;
             this.emaHitRate = (1 - CacheService.EMA_ALPHA) * this.emaHitRate;
             return null;

@@ -60,7 +60,10 @@ export class BlackboardService {
     }
 
     read(agentId?: string, visibility?: 'public' | 'group' | 'private'): BlackboardEntry[] {
-        const all = Array.from(this.entries.values());
+        const now = Date.now();
+        const all = Array.from(this.entries.values()).filter(
+            (e) => !(e.ttl && now - e.timestamp > e.ttl),
+        );
         return all
             .filter((e) => {
                 if (visibility && e.visibility !== visibility) return false;
@@ -73,7 +76,13 @@ export class BlackboardService {
     }
 
     get(key: string): BlackboardEntry | undefined {
-        return this.entries.get(key);
+        const entry = this.entries.get(key);
+        if (!entry) return undefined;
+        if (entry.ttl && Date.now() - entry.timestamp > entry.ttl) {
+            this.entries.delete(key);
+            return undefined;
+        }
+        return entry;
     }
 
     delete(key: string) {
