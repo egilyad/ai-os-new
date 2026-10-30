@@ -156,28 +156,21 @@ export const registerPhase78: Phase = ({ register }) => {
                 trust: trust
                     ? {
                           list: (filter) =>
-                              trust
-                                  .list({ includeStale: filter?.includeStale })
-                                  .map((c) => ({
-                                      id: c.id,
-                                      kind: c.kind,
-                                      title: c.title,
-                                      trust: c.trust,
-                                      evidence: c.evidence,
-                                      stale: c.stale,
-                                  })),
+                              trust.list({ includeStale: filter?.includeStale }).map((c) => ({
+                                  id: c.id,
+                                  kind: c.kind,
+                                  title: c.title,
+                                  trust: c.trust,
+                                  evidence: c.evidence,
+                                  stale: c.stale,
+                              })),
                           stats: () => trust.stats(),
                       }
                     : undefined,
                 debates: debateService
                     ? {
                           startDebate: (topic, participants, strategy, maxRounds) =>
-                              debateService.startDebate(
-                                  topic,
-                                  participants,
-                                  strategy,
-                                  maxRounds,
-                              ),
+                              debateService.startDebate(topic, participants, strategy, maxRounds),
                       }
                     : undefined,
                 // The service is built after the registry; the action only
@@ -185,9 +178,9 @@ export const registerPhase78: Phase = ({ register }) => {
                 self: {
                     describe: () => {
                         try {
-                            return c.get<AssistantService>(
-                                'projectAssistantService',
-                            ).describeSelf();
+                            return c
+                                .get<AssistantService>('projectAssistantService')
+                                .describeSelf();
                         } catch {
                             return null;
                         }
@@ -260,9 +253,8 @@ export const registerPhase78: Phase = ({ register }) => {
                                   nodes: top.nodes.length,
                                   agents: agents.length,
                                   routers: top.nodes.filter((n) => n.type === 'router').length,
-                                  paused: agents.filter((n) =>
-                                      orchestrator.isNodeDisabled(n.id),
-                                  ).length,
+                                  paused: agents.filter((n) => orchestrator.isNodeDisabled(n.id))
+                                      .length,
                                   edges: (top.edges ?? []).length,
                               };
                           },
@@ -271,9 +263,7 @@ export const registerPhase78: Phase = ({ register }) => {
                 metrics: metricsService
                     ? { aggregated: () => metricsService.generateAggregated() }
                     : undefined,
-                traces: traceService
-                    ? { stats: () => traceService.getTraceStats() }
-                    : undefined,
+                traces: traceService ? { stats: () => traceService.getTraceStats() } : undefined,
                 approvals: approvalSvc
                     ? {
                           pending: () =>
@@ -294,17 +284,14 @@ export const registerPhase78: Phase = ({ register }) => {
                           validateCron: (cron) => schedulerService.validateCron?.(cron) ?? true,
                       }
                     : undefined,
-                agents: agentService
-                    ? { getAgents: () => agentService.getAgents() }
-                    : undefined,
+                agents: agentService ? { getAgents: () => agentService.getAgents() } : undefined,
                 tasks: {
                     list: () => agemsTaskService.list(),
                     create: (input) => agemsTaskService.create({ ...input, status: 'PENDING' }),
                 },
                 providers: providerTracker
                     ? {
-                          rankings: (installed) =>
-                              providerTracker.getProviderRankings(installed),
+                          rankings: (installed) => providerTracker.getProviderRankings(installed),
                           installed: () => {
                               try {
                                   if (!c.has('keyService')) return [];
@@ -363,9 +350,9 @@ export const registerPhase78: Phase = ({ register }) => {
         // The scheduler fires it through the invocation bridge, which routes the
         // prompt into the assistant brain; pause it in the Scheduler panel.
         if (schedulerService) {
-            const nightlyExists = schedulerService.getAll().some(
-                (s) => s.name === 'assistant-nightly',
-            );
+            const nightlyExists = schedulerService
+                .getAll()
+                .some((s) => s.name === 'assistant-nightly');
             if (!nightlyExists) {
                 void schedulerService
                     .create({
@@ -374,8 +361,7 @@ export const registerPhase78: Phase = ({ register }) => {
                         frequency: 'daily',
                         cronExpression: '0 3 * * *',
                         taskParams: {
-                            prompt:
-                                'Проведи ночной самоанализ: system.review, затем system.improve, запиши итог в дневник.',
+                            prompt: 'Проведи ночной самоанализ: system.review, затем system.improve, запиши итог в дневник.',
                         },
                     })
                     .catch(() => {
@@ -465,6 +451,17 @@ export const registerPhase78: Phase = ({ register }) => {
                               snippet: r.snippet.slice(0, 200),
                           }));
                       },
+                      neighbors: async (slug: string) => {
+                          const brain = c.get<IWikiBrainService>('wikiBrainService');
+                          const { nodes } = await brain.query.neighbors(slug, {
+                              depth: 1,
+                              maxNodes: 10,
+                          });
+                          return nodes.map((n) => ({
+                              slug: n.slug,
+                              title: n.frontmatter.title,
+                          }));
+                      },
                   }
                 : undefined,
             trust: c.has('capabilityTrustService')
@@ -509,11 +506,13 @@ export const registerPhase78: Phase = ({ register }) => {
                     const keys = keyService.getKeys();
                     const key = opts?.keyId
                         ? keys.find((k) => k.id === opts.keyId && !!k.key)
-                        : keyService
-                              .getActiveKeys()
-                              .find((k) => k.status === 'active' && !!k.key);
+                        : keyService.getActiveKeys().find((k) => k.status === 'active' && !!k.key);
                     if (!key) return undefined;
-                    const model = resolveProviderModel(key.provider, key.model, key.availableModels);
+                    const model = resolveProviderModel(
+                        key.provider,
+                        key.model,
+                        key.availableModels,
+                    );
                     return { provider: key.provider, model, apiKey: key.key };
                 } catch {
                     return undefined;

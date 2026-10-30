@@ -22,10 +22,7 @@ import {
     strategyManager,
 } from '../../kernel/instances/services-core';
 import { WIKI_ARTICLES } from '../WikiPanel/wiki-articles';
-import {
-    ensurePanelActionCatalog,
-    setPanelActionExtrasServices,
-} from './panel-actions-catalog';
+import { ensurePanelActionCatalog, setPanelActionExtrasServices } from './panel-actions-catalog';
 import {
     assistantService,
     auditService,
@@ -84,16 +81,78 @@ function articleCorpus() {
     }));
 }
 
+/**
+ * Seed WikiBrain with the manual UI corpus so it becomes the single canonical
+ * store of wiki pages. Idempotent: deterministic page ids upsert by id.
+ */
+async function seedWikiBrainFromCorpus(): Promise<void> {
+    const first = WIKI_ARTICLES[0];
+    if (first && (await wikiBrainService.store.getPageBySlug(first.slug))) return;
+    const now = new Date().toISOString();
+    const pages = WIKI_ARTICLES.map((a) => ({
+        id: `pg-corpus-${a.slug}`,
+        slug: a.slug,
+        frontmatter: {
+            slug: a.slug,
+            title: a.title,
+            type: 'curated' as const,
+            sources: a.sources.map((s) => ({ sourceId: s, title: s, sha256: '', ranges: [] })),
+            aliases: [],
+            tags: a.tags,
+            language: 'en' as const,
+            createdAt: a.reviewed?.at ?? now,
+            updatedAt: now,
+            reviewState: a.freshness === 'verified' ? ('approved' as const) : ('auto' as const),
+            graphIn: 0,
+            graphOut: 0,
+        },
+        body: a.body,
+        sha256: '',
+        rawMarkdown: a.body,
+    }));
+    await wikiBrainService.store.bulkPutPages(pages);
+}
+
+/** Load the documentary corpus from WikiBrain (the single source of truth). */
+async function loadWikiCorpus() {
+    const pages = await wikiBrainService.store.listPages({ limit: 10000 });
+    return pages.map((p) => ({
+        slug: p.slug,
+        title: p.frontmatter.title,
+        section: p.frontmatter.type,
+        body: p.body,
+        freshness: p.frontmatter.reviewState,
+        sources: (p.frontmatter.sources ?? []).map((s) => s.sourceId),
+        related: [],
+        tags: p.frontmatter.tags ?? [],
+    }));
+}
+
 /** Idempotent: safe to call from every mount of the assistant panel. */
 export function ensureAssistantWiring(): void {
     if (wired) return;
     wired = true;
 
-    try {
-        projectKnowledgeService.setCorpusProvider(articleCorpus);
-    } catch {
-        /* container not ready — the assistant works without articles */
-    }
+    // The documentary layer is sourced from WikiBrain (canonical), seeded from
+    // the manual UI corpus on first run. Falls back to the static corpus when
+    // WikiBrain is unavailable or empty.
+    void (async () => {
+        try {
+            await seedWikiBrainFromCorpus();
+            const pages = await loadWikiCorpus();
+            if (pages.length > 0) {
+                projectKnowledgeService.setCorpusProvider(() => pages);
+                return;
+            }
+        } catch {
+            /* container not ready — fall through to the static corpus */
+        }
+        try {
+            projectKnowledgeService.setCorpusProvider(articleCorpus);
+        } catch {
+            /* assistant works without articles */
+        }
+    })();
 
     // The panels can only advertise their capabilities from here: the kernel
     // must not import UI singletons. `panel.list/read/act` reach all of them.
@@ -636,7 +695,12 @@ export function ensureAssistantWiring(): void {
                 },
                 conclude: async (id) => {
                     const session = await councilService.conclude(id);
-                    return { id: session.id, phase: session.phase, status: session.status, winnerId: session.winnerId };
+                    return {
+                        id: session.id,
+                        phase: session.phase,
+                        status: session.status,
+                        winnerId: session.winnerId,
+                    };
                 },
                 abort: async (id) => {
                     await councilService.abort(id);
@@ -800,7 +864,8 @@ export function ensureAssistantWiring(): void {
                     const result = await autoDebateService.runAutoDebate({
                         topic,
                         category,
-                        strategy: strategy as 'round_robin' | 'moderated' | 'free_for_all' | undefined,
+                        strategy: strategy as
+                            'round_robin' | 'moderated' | 'free_for_all' | undefined,
                     });
                     return {
                         id: result.id,
@@ -818,42 +883,42 @@ export function ensureAssistantWiring(): void {
 
     try {
         assistantActionRegistry.attachUiActions({
-                keys: {
-                    getKeys: () =>
-                        keyService.getKeys().map((k) => ({
-                            id: k.id,
-                            provider: k.provider,
-                            status: String(k.status ?? 'unknown'),
-                        })),
-                    checkHealth: async (keyId?: string) => {
-                        const health = await keyService.checkHealth(keyId);
-                        return {
-                            id: health.id,
-                            status: String(health.status ?? 'unknown'),
-                            latency: health.latency,
-                        };
-                    },
+            keys: {
+                getKeys: () =>
+                    keyService.getKeys().map((k) => ({
+                        id: k.id,
+                        provider: k.provider,
+                        status: String(k.status ?? 'unknown'),
+                    })),
+                checkHealth: async (keyId?: string) => {
+                    const health = await keyService.checkHealth(keyId);
+                    return {
+                        id: health.id,
+                        status: String(health.status ?? 'unknown'),
+                        latency: health.latency,
+                    };
                 },
-                mcp: {
-                    listServers: async () => {
-                        const servers = mcpService.getServers();
-                        return servers.map((s) => ({
-                            id: s.id,
-                            name: s.name,
-                            status: s.status,
-                            tools: s.capabilities,
-                        }));
-                    },
+            },
+            mcp: {
+                listServers: async () => {
+                    const servers = mcpService.getServers();
+                    return servers.map((s) => ({
+                        id: s.id,
+                        name: s.name,
+                        status: s.status,
+                        tools: s.capabilities,
+                    }));
                 },
-                skills: {
-                    getSkills: () =>
-                        skillService.getSkills().map((s) => ({
-                            id: s.id,
-                            name: s.name,
-                            description: s.description,
-                        })),
-                },
-            });
+            },
+            skills: {
+                getSkills: () =>
+                    skillService.getSkills().map((s) => ({
+                        id: s.id,
+                        name: s.name,
+                        description: s.description,
+                    })),
+            },
+        });
     } catch {
         /* UI services are optional; the kernel actions still work */
     }

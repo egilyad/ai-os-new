@@ -75,6 +75,8 @@ export interface AssistantServiceDeps {
     /** The LLM-compiled wiki (Wiki Brain), queried as an extra knowledge layer. */
     wiki?: {
         search(query: string): Promise<Array<{ slug: string; title: string; snippet: string }>>;
+        /** Related pages from the knowledge graph around a page. */
+        neighbors?(slug: string): Promise<Array<{ slug: string; title: string }>>;
     };
     /** Provider/model of the assistant; the session may override it. */
     provider?: string;
@@ -84,9 +86,9 @@ export interface AssistantServiceDeps {
      * the assistant is expected to work on whatever key the user has.
      * Accepts an optional key id to pin the turn to a specific key.
      */
-    resolveRoute?: (opts?: { keyId?: string }) =>
-        | { provider?: string; model?: string; apiKey?: string }
-        | undefined;
+    resolveRoute?: (opts?: {
+        keyId?: string;
+    }) => { provider?: string; model?: string; apiKey?: string } | undefined;
 }
 
 export class AssistantService {
@@ -124,6 +126,27 @@ export class AssistantService {
                             .join('\n'),
                     );
                 }
+                if (this.deps.wiki.neighbors) {
+                    try {
+                        const top = wikiHits[0];
+                        if (top) {
+                            const related = await this.deps.wiki.neighbors(top.slug);
+                            if (related.length > 0) {
+                                blocks.push(
+                                    '[WIKI GRAPH — related pages]',
+                                    related
+                                        .slice(0, 8)
+                                        .map((n) => `- [[${n.slug}]] ${n.title}`)
+                                        .join('\n'),
+                                );
+                            }
+                        }
+                    } catch (e) {
+                        LOGGER.warn('Assistant', 'context: wiki graph neighbors failed', {
+                            error: e instanceof Error ? e.message : String(e),
+                        });
+                    }
+                }
             } catch (e) {
                 LOGGER.warn('Assistant', 'context: wiki search failed', {
                     error: e instanceof Error ? e.message : String(e),
@@ -139,7 +162,8 @@ export class AssistantService {
                         '[RECALLED MEMORY]',
                         hits
                             .map(
-                                (h) => `- (${h.metadata.type ?? 'memory'}) ${h.content.slice(0, 240)}`,
+                                (h) =>
+                                    `- (${h.metadata.type ?? 'memory'}) ${h.content.slice(0, 240)}`,
                             )
                             .join('\n'),
                     );
@@ -240,9 +264,11 @@ export class AssistantService {
      * then whatever active key the system has — an assistant that needs a
      * hand-configured default provider is useless on a fresh install.
      */
-    private resolveRoute(
-        req: AssistantTurnRequest,
-    ): { provider?: string; model?: string; apiKey?: string } {
+    private resolveRoute(req: AssistantTurnRequest): {
+        provider?: string;
+        model?: string;
+        apiKey?: string;
+    } {
         const pick = (provider?: string) =>
             provider && provider !== 'auto' && provider !== 'race' ? provider : undefined;
 
@@ -303,10 +329,7 @@ export class AssistantService {
     private async ensurePermissionState(): Promise<void> {
         const permissions = this.deps.permissionService;
         if (!permissions) return;
-        if (
-            typeof permissions.hasState !== 'function' ||
-            typeof permissions.setMode !== 'function'
-        )
+        if (typeof permissions.hasState !== 'function' || typeof permissions.setMode !== 'function')
             return;
         if (this.permissionSeeded || permissions.hasState(this.deps.agentId)) {
             this.permissionSeeded = true;
