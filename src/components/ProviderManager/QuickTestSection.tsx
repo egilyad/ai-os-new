@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Loader2, Send } from 'lucide-react';
 import type { ApiKey } from '../../types/metrics';
@@ -33,6 +33,15 @@ export const QuickTestSection: React.FC<QuickTestSectionProps> = ({ apiKey }) =>
         model?: string;
     } | null>(null);
     const [testError, setTestError] = useState<string | null>(null);
+    const cleanupRef = useRef<(() => void) | null>(null);
+
+    useEffect(
+        () => () => {
+            cleanupRef.current?.();
+            cleanupRef.current = null;
+        },
+        [],
+    );
 
     const handleTest = async () => {
         const prompt = testPrompt.trim();
@@ -62,17 +71,20 @@ export const QuickTestSection: React.FC<QuickTestSectionProps> = ({ apiKey }) =>
         });
 
         const cleanup = () => {
+            if (isDone) return;
+            isDone = true;
             subResp();
             subStreamEnd();
             subStreamErr();
+            clearTimeout(timeout);
+            if (cleanupRef.current === cleanup) cleanupRef.current = null;
         };
+        cleanupRef.current = cleanup;
 
         const subResp = eventBus.on(EVENTS.MESSAGE_RESPONSE, (res) => {
             if (isDone) return;
             if (res.requestId === reqId) {
-                isDone = true;
                 cleanup();
-                clearTimeout(timeout);
                 LOGGER.debug(`MESSAGE_RESPONSE received in ${Date.now() - start}ms`, res.status);
                 if (res.status === 'error') {
                     setTestStatus('error');
@@ -91,9 +103,7 @@ export const QuickTestSection: React.FC<QuickTestSectionProps> = ({ apiKey }) =>
         const subStreamEnd = eventBus.on(EVENTS.STREAM_END, ({ requestId, fullContent }) => {
             if (isDone) return;
             if (requestId === reqId) {
-                isDone = true;
                 cleanup();
-                clearTimeout(timeout);
                 LOGGER.debug('QuickTestSection', `STREAM_END received in ${Date.now() - start}ms`);
                 setTestStatus('success');
                 setTestResult({
@@ -107,9 +117,7 @@ export const QuickTestSection: React.FC<QuickTestSectionProps> = ({ apiKey }) =>
         const subStreamErr = eventBus.on(EVENTS.STREAM_ERROR, ({ requestId, error }) => {
             if (isDone) return;
             if (requestId === reqId) {
-                isDone = true;
                 cleanup();
-                clearTimeout(timeout);
                 LOGGER.debug(`STREAM_ERROR received in ${Date.now() - start}ms`, error);
                 setTestStatus('error');
                 setTestError(error || 'Stream error');
@@ -117,8 +125,6 @@ export const QuickTestSection: React.FC<QuickTestSectionProps> = ({ apiKey }) =>
         });
 
         const timeout = setTimeout(() => {
-            if (isDone) return;
-            isDone = true;
             cleanup();
             eventBus.emit(EVENTS.CANCEL_MESSAGE, { requestId: reqId });
             LOGGER.warn('QuickTestSection', `TIMEOUT after 60000ms (reqId=${reqId})`);

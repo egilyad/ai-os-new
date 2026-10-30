@@ -158,20 +158,25 @@ export class LLMHttpClient {
             () => controller.abort(new DOMException('Timeout', 'TimeoutError')),
             this.#timeoutMs,
         );
+        let onAbort: (() => void) | undefined;
         if (signal.aborted) {
             clearTimeout(timer);
             controller.abort(signal.reason || new DOMException('Aborted', 'AbortError'));
         } else {
-            signal.addEventListener(
-                'abort',
-                () => {
-                    clearTimeout(timer);
-                    controller.abort(signal.reason || new DOMException('Aborted', 'AbortError'));
-                },
-                { once: true },
-            );
+            onAbort = () => {
+                clearTimeout(timer);
+                controller.abort(signal.reason || new DOMException('Aborted', 'AbortError'));
+            };
+            signal.addEventListener('abort', onAbort, { once: true });
         }
-        return { signal: controller.signal, controller, disarm: () => clearTimeout(timer) };
+        return {
+            signal: controller.signal,
+            controller,
+            disarm: () => {
+                clearTimeout(timer);
+                if (onAbort) signal.removeEventListener('abort', onAbort);
+            },
+        };
     }
 
     /** Register an in-flight request and return a dispose function. */

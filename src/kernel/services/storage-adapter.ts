@@ -42,6 +42,7 @@ function legacyDeobfuscate(encoded: string): string | null {
 }
 
 const ssrFallback = new Map<string, string>();
+const SSR_FALLBACK_MAX = 500;
 
 export function clearSsrFallback(): void {
     ssrFallback.clear();
@@ -69,6 +70,10 @@ function writeRaw(key: string, value: string): void {
         localStorage.setItem(key, value);
     } else {
         ssrFallback.set(key, value);
+        if (ssrFallback.size > SSR_FALLBACK_MAX) {
+            const oldest = ssrFallback.keys().next().value;
+            if (oldest !== undefined) ssrFallback.delete(oldest);
+        }
     }
 }
 

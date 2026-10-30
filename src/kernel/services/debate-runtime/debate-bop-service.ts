@@ -10,6 +10,7 @@ import type { IBoPTrackerService, BurdenEntry, UnmetBurden } from '../../contrac
  * Complexity: 3/5 — lightweight in-memory tracker, no LLM calls.
  */
 export class BoPTrackerService implements IBoPTrackerService {
+    private static readonly MAX_ENTRIES = 500;
     private entries = new Map<string, BurdenEntry>();
     private burdenAgents = new Map<string, Set<string>>();
 
@@ -33,6 +34,20 @@ export class BoPTrackerService implements IBoPTrackerService {
             this.burdenAgents.set(agentId, new Set());
         }
         this.burdenAgents.get(agentId)!.add(claimId);
+
+        while (this.entries.size > BoPTrackerService.MAX_ENTRIES) {
+            const oldest = this.entries.keys().next().value;
+            if (oldest === undefined) break;
+            const entry = this.entries.get(oldest);
+            this.entries.delete(oldest);
+            if (entry) {
+                const agentSet = this.burdenAgents.get(entry.agentId);
+                if (agentSet) {
+                    agentSet.delete(oldest);
+                    if (agentSet.size === 0) this.burdenAgents.delete(entry.agentId);
+                }
+            }
+        }
     }
 
     meetBurden(claimId: string): void {

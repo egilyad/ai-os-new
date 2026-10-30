@@ -52,6 +52,7 @@ const OverviewTab: React.FC<Props> = ({ apiKey }) => {
     const [error, setError] = useState<string | null>(null);
     const isMountedRef = useRef(true);
     const copyTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const activeCleanupRef = useRef<(() => void) | null>(null);
     const clearError = useAutoClearError(setError);
     const [modelTestResults, setModelTestResults] = useState<Record<
         string,
@@ -178,7 +179,9 @@ const OverviewTab: React.FC<Props> = ({ apiKey }) => {
                         } catch {
                             /* ignore */
                         }
+                        if (activeCleanupRef.current === cleanup) activeCleanupRef.current = null;
                     };
+                    activeCleanupRef.current = cleanup;
                     eventBus.emit(EVENTS.SEND_MESSAGE, {
                         provider: apiKey.provider,
                         model,
@@ -215,6 +218,8 @@ const OverviewTab: React.FC<Props> = ({ apiKey }) => {
         return () => {
             isMountedRef.current = false;
             if (copyTimeoutRef.current) clearTimeout(copyTimeoutRef.current);
+            activeCleanupRef.current?.();
+            activeCleanupRef.current = null;
         };
     }, []);
 

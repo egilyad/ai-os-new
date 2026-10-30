@@ -23,6 +23,7 @@ export default function SopPanel() {
     const [search, setSearch] = useState('');
     const busyRef = useRef(false);
     busyRef.current = busy;
+    const pollTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
     const active = runs.find((l) => l.id === activeId) ?? null;
 
     const fail = (e: unknown) => {
@@ -44,6 +45,16 @@ export default function SopPanel() {
     };
 
     useEffect(() => { void reload(); /* eslint-disable-line react-hooks/exhaustive-deps */ }, []);
+
+    useEffect(
+        () => () => {
+            if (pollTimerRef.current) {
+                window.clearInterval(pollTimerRef.current);
+                pollTimerRef.current = null;
+            }
+        },
+        [],
+    );
 
     const pollOnce = async () => {
         try {
@@ -71,7 +82,12 @@ export default function SopPanel() {
         const text = goal.trim().slice(0, 500);
         setBusy(true);
         const timer = window.setInterval(() => { if (busyRef.current) void pollOnce(); }, 2000);
-        const done = () => { window.clearInterval(timer); setBusy(false); };
+        pollTimerRef.current = timer;
+        const done = () => {
+            if (pollTimerRef.current === timer) pollTimerRef.current = null;
+            window.clearInterval(timer);
+            setBusy(false);
+        };
         // runSop may throw synchronously (not just reject) — without this the
         // panel stays busy forever and the poll interval leaks.
         try {

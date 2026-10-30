@@ -181,10 +181,6 @@ export const useAquariumEngine = (
 
         const step = () => {
             if (!isMountedRef.current) return;
-            if (isPaused) {
-                frameId = requestAnimationFrame(animate);
-                return;
-            }
             const prevFood = foodRef.current;
             const fallenFood = prevFood
                 .map((p) => ({ ...p, y: p.y + 0.5 }))
@@ -314,6 +310,7 @@ export const useAquariumEngine = (
         };
 
         const animate = (now: number) => {
+            if (isPaused) return;
             if (now - lastStep >= 250) {
                 lastStep = now;
                 step();

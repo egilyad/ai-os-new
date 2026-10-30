@@ -72,7 +72,16 @@ function deterministicIndex(key: string, max: number): number {
 }
 
 export class PersonaMixer implements IPersonaMixer {
+    private static readonly MAX_AGENT_KEYS = 100;
     private usedKeys = new Map<string, Set<string>>();
+
+    private setAgentKeys(agentId: string, set: Set<string>): void {
+        this.usedKeys.set(agentId, set);
+        if (this.usedKeys.size > PersonaMixer.MAX_AGENT_KEYS) {
+            const oldest = this.usedKeys.keys().next().value;
+            if (oldest !== undefined) this.usedKeys.delete(oldest);
+        }
+    }
 
     getMix(context: MixContext): PersonaMix {
         const { agentId, basePersona, round, otherParticipants, usedPersonaKeys } = context;
@@ -89,7 +98,7 @@ export class PersonaMixer implements IPersonaMixer {
             const idx = deterministicIndex(`${agentId}-round-${round}`, pool.length);
             const chosen = pool[idx]!;
             activeKeySet.add(chosen.id);
-            this.usedKeys.set(agentId, activeKeySet);
+            this.setAgentKeys(agentId, activeKeySet);
             return {
                 variationKey: chosen.id,
                 personaText: `[Persona Variation: ${chosen.desc} As ${traitLabel}, approach this round with that lens.]`,
@@ -119,7 +128,7 @@ export class PersonaMixer implements IPersonaMixer {
         const idx = deterministicIndex(`${agentId}-round-${round}`, pool.length);
         const chosen = pool[idx]!;
         activeKeySet.add(chosen.id);
-        this.usedKeys.set(agentId, activeKeySet);
+        this.setAgentKeys(agentId, activeKeySet);
 
         return {
             variationKey: chosen.id,
@@ -131,7 +140,7 @@ export class PersonaMixer implements IPersonaMixer {
     recordMix(agentId: string, _round: number, variationKey: string): void {
         const set = this.usedKeys.get(agentId) ?? new Set();
         set.add(variationKey);
-        this.usedKeys.set(agentId, set);
+        this.setAgentKeys(agentId, set);
     }
 
     clearSession(): void {

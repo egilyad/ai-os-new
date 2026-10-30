@@ -23,6 +23,7 @@ export default function AutonomyPanel() {
     const [search, setSearch] = useState('');
     const busyRef = useRef(false);
     busyRef.current = busy;
+    const pollTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
     const active = loops.find((l) => l.id === activeId) ?? null;
 
     const fail = (e: unknown) => {
@@ -44,6 +45,16 @@ export default function AutonomyPanel() {
 
     useEffect(() => { void reload(); /* eslint-disable-line react-hooks/exhaustive-deps */ }, []);
 
+    useEffect(
+        () => () => {
+            if (pollTimerRef.current) {
+                window.clearInterval(pollTimerRef.current);
+                pollTimerRef.current = null;
+            }
+        },
+        [],
+    );
+
     const pollOnce = async () => {
         try {
             const all = await autonomyService.listLoops();
@@ -62,7 +73,13 @@ export default function AutonomyPanel() {
         const max = Math.max(1, Number(maxIters) || 8);
         setBusy(true); setRunningId(null);
         const timer = window.setInterval(() => { if (busyRef.current) void pollOnce(); }, 1500);
-        const done = () => { window.clearInterval(timer); setBusy(false); setRunningId(null); };
+        pollTimerRef.current = timer;
+        const done = () => {
+            if (pollTimerRef.current === timer) pollTimerRef.current = null;
+            window.clearInterval(timer);
+            setBusy(false);
+            setRunningId(null);
+        };
         (mode === 'goal' ? autonomyService.runGoal(text, max) : autonomyService.runTaskQueue(text, max)).then(
             (loop) => { done(); void reload(loop.id); setGoal(''); },
             (e) => { done(); fail(e); },

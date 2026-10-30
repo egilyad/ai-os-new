@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Loader2, Send, Check, X } from 'lucide-react';
 import { keyService, eventBus, EVENTS } from '../../kernel/instances';
@@ -33,6 +33,15 @@ export default function NvidiaKeyTable() {
     const [keys, setKeys] = useState<ApiKey[]>([]);
     const [testState, setTestState] = useState<Record<string, TestState>>({});
     const [prompts, setPrompts] = useState<Record<string, string>>({});
+    const cleanupRef = useRef<(() => void) | null>(null);
+
+    useEffect(
+        () => () => {
+            cleanupRef.current?.();
+            cleanupRef.current = null;
+        },
+        [],
+    );
 
     const load = useCallback(async () => {
         const all = await keyService.getKeys();
@@ -78,18 +87,21 @@ export default function NvidiaKeyTable() {
         });
 
         const cleanup = () => {
+            if (isDone) return;
+            isDone = true;
             subResp();
             subStreamEnd();
             subStreamErr();
+            clearTimeout(timeout);
+            if (cleanupRef.current === cleanup) cleanupRef.current = null;
         };
+        cleanupRef.current = cleanup;
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const subResp = eventBus.on(EVENTS.MESSAGE_RESPONSE, (res: any) => {
             if (isDone) return;
             if (res.requestId === reqId) {
-                isDone = true;
                 cleanup();
-                clearTimeout(timeout);
                 if (res.status === 'error') {
                     setTestState((prev) => ({
                         ...prev,
@@ -115,9 +127,7 @@ export default function NvidiaKeyTable() {
         const subStreamEnd = eventBus.on(EVENTS.STREAM_END, ({ requestId, fullContent }: any) => {
             if (isDone) return;
             if (requestId === reqId) {
-                isDone = true;
                 cleanup();
-                clearTimeout(timeout);
                 setTestState((prev) => ({
                     ...prev,
                     [apiKey.id]: {
@@ -136,9 +146,7 @@ export default function NvidiaKeyTable() {
         const subStreamErr = eventBus.on(EVENTS.STREAM_ERROR, ({ requestId, error }: any) => {
             if (isDone) return;
             if (requestId === reqId) {
-                isDone = true;
                 cleanup();
-                clearTimeout(timeout);
                 setTestState((prev) => ({
                     ...prev,
                     [apiKey.id]: { loading: false, error: error || 'Stream error' },
@@ -147,8 +155,6 @@ export default function NvidiaKeyTable() {
         });
 
         const timeout = setTimeout(() => {
-            if (isDone) return;
-            isDone = true;
             cleanup();
             eventBus.emit(EVENTS.CANCEL_MESSAGE, { requestId: reqId });
             setTestState((prev) => ({

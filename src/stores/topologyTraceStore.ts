@@ -67,24 +67,35 @@ export const useTopologyTraceStore = create<TopologyTraceState>((set, get) => {
         }),
     ];
 
-    const metricsInterval = setInterval(() => {
-        const s = get();
-        const errorCount = s.steps.filter((st) => st.status === 'error').length;
-        const activeCount = s.steps.filter((st) => st.status === 'active').length;
-        eventBus.emit(EVENTS.SYSTEM_RUNTIME_METRICS, {
-            source: 'topologyTraceStore',
-            totalSteps: s.steps.length,
-            errorCount,
-            activeCount,
-            activeTraceCount: s.activeTraces.size,
-        });
-    }, METRICS_INTERVAL_MS);
+    let metricsInterval: ReturnType<typeof setInterval> | null = null;
+    const ensureMetricsInterval = () => {
+        if (metricsInterval !== null) return;
+        metricsInterval = setInterval(() => {
+            const s = get();
+            const errorCount = s.steps.filter((st) => st.status === 'error').length;
+            const activeCount = s.steps.filter((st) => st.status === 'active').length;
+            eventBus.emit(EVENTS.SYSTEM_RUNTIME_METRICS, {
+                source: 'topologyTraceStore',
+                totalSteps: s.steps.length,
+                errorCount,
+                activeCount,
+                activeTraceCount: s.activeTraces.size,
+            });
+        }, METRICS_INTERVAL_MS);
+    };
+    const stopMetricsInterval = () => {
+        if (metricsInterval !== null) {
+            clearInterval(metricsInterval);
+            metricsInterval = null;
+        }
+    };
 
     return {
         steps: [],
         activeTraces: new Set<string>(),
-        addStep: (step) =>
-            set((s) => {
+        addStep: (step) => {
+            ensureMetricsInterval();
+            return set((s) => {
                 const activeTraces = new Set(s.activeTraces);
                 if (step.status === 'active') {
                     activeTraces.add(step.traceId);
@@ -96,16 +107,20 @@ export const useTopologyTraceStore = create<TopologyTraceState>((set, get) => {
                     activeTraces.delete(step.traceId);
                 }
                 return { steps: [...s.steps, step].slice(-MAX_STEPS), activeTraces };
-            }),
+            });
+        },
         clearTrace: (traceId) =>
             set((s) => ({
                 steps: s.steps.filter((st) => st.traceId !== traceId),
                 activeTraces: new Set([...s.activeTraces].filter((id) => id !== traceId)),
             })),
-        clearAll: () => set({ steps: [], activeTraces: new Set() }),
+        clearAll: () => {
+            stopMetricsInterval();
+            return set({ steps: [], activeTraces: new Set() });
+        },
         destroy: () => {
             subs.forEach((u) => u());
-            clearInterval(metricsInterval);
+            stopMetricsInterval();
         },
     };
 });

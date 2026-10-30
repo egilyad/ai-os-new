@@ -24,6 +24,7 @@ export default function DyadPanel() {
     const [search, setSearch] = useState('');
     const busyRef = useRef(false);
     busyRef.current = busy;
+    const pollTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
     const active = loops.find((l) => l.id === activeId) ?? null;
 
     const fail = (e: unknown) => {
@@ -43,6 +44,16 @@ export default function DyadPanel() {
 
     useEffect(() => { void reload(); /* eslint-disable-line react-hooks/exhaustive-deps */ }, []);
 
+    useEffect(
+        () => () => {
+            if (pollTimerRef.current) {
+                window.clearInterval(pollTimerRef.current);
+                pollTimerRef.current = null;
+            }
+        },
+        [],
+    );
+
     const pollOnce = async () => {
         try {
             const all = await dyadService.listLoops();
@@ -60,7 +71,12 @@ export default function DyadPanel() {
         const max = Math.max(2, Math.min(30, Number(maxTurns) || 10));
         setBusy(true);
         const timer = window.setInterval(() => { if (busyRef.current) void pollOnce(); }, 1500);
-        const done = () => { window.clearInterval(timer); setBusy(false); };
+        pollTimerRef.current = timer;
+        const done = () => {
+            if (pollTimerRef.current === timer) pollTimerRef.current = null;
+            window.clearInterval(timer);
+            setBusy(false);
+        };
         dyadService.startDyad({ topic: text, userRole: userRole.trim() || undefined, assistantRole: assistantRole.trim() || undefined, maxTurns: max }).then(
             (loop) => { done(); void reload(loop.id); setTopic(''); },
             (e) => { done(); fail(e); },

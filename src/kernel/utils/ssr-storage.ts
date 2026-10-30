@@ -1,4 +1,13 @@
 const memory = new Map<string, string>();
+const SSR_MEMORY_MAX = 500;
+
+function setMemory(key: string, value: string): void {
+    memory.set(key, value);
+    if (memory.size > SSR_MEMORY_MAX) {
+        const oldest = memory.keys().next().value;
+        if (oldest !== undefined) memory.delete(oldest);
+    }
+}
 
 function hasLocalStorage(): boolean {
     return typeof localStorage !== 'undefined';
@@ -18,7 +27,7 @@ export const ssrSafeStorage = {
             if (hasLocalStorage()) {
                 localStorage.setItem(key, value);
             } else {
-                memory.set(key, value);
+                setMemory(key, value);
             }
         } catch {
             /* silent */
