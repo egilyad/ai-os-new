@@ -157,11 +157,11 @@ export class KeyStateStore implements IKeyStateStore, ILifecycle {
 
     private async persistNow(): Promise<void> {
         if (!this.database) return;
-        const data = Array.from(this.states.entries()).map(([id, state]) => ({
-            id,
-            state,
-        }));
-        await this.database!.setKv('keystate_store_states', data);
+        // Route through the single coalesced writer so an immediate write can
+        // never land after a staler snapshot from the debounced path.
+        this._persistDirty = true;
+        if (!this.persistPromise) this.persist();
+        await this.persistPromise;
     }
 
     /**
@@ -450,12 +450,11 @@ export class KeyStateStore implements IKeyStateStore, ILifecycle {
                     payload.keyId && this.states.has(payload.keyId)
                         ? [payload.keyId]
                         : [...this.states]
-                                .filter(
-                                    ([, s]) =>
-                                        s.provider.toLowerCase() ===
-                                        payload.provider.toLowerCase(),
-                                )
-                                .map(([id]) => id);
+                              .filter(
+                                  ([, s]) =>
+                                      s.provider.toLowerCase() === payload.provider.toLowerCase(),
+                              )
+                              .map(([id]) => id);
                 for (const id of targets) {
                     const state = this.states.get(id);
                     if (!state) continue;
@@ -481,12 +480,11 @@ export class KeyStateStore implements IKeyStateStore, ILifecycle {
                     payload.keyId && this.states.has(payload.keyId)
                         ? [payload.keyId]
                         : [...this.states]
-                                .filter(
-                                    ([, s]) =>
-                                        s.provider.toLowerCase() ===
-                                        payload.provider.toLowerCase(),
-                                )
-                                .map(([id]) => id);
+                              .filter(
+                                  ([, s]) =>
+                                      s.provider.toLowerCase() === payload.provider.toLowerCase(),
+                              )
+                              .map(([id]) => id);
                 for (const id of targets) {
                     const state = this.states.get(id);
                     if (!state) continue;

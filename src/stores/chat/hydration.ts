@@ -8,7 +8,38 @@ import { runtime } from '../../kernel/runtime';
 import { BucketStorageAdapter } from '../../kernel/storage-adapter-instance';
 import { safeJsonParse } from '../../kernel/utils/safe-json';
 import { getDexieDb, rootLogger } from '../../kernel/instances';
+import { applyBufferedChunks } from './chat-event-handlers';
+import { _sendQueue } from './chat-send-message';
+import type { QueuedMessage } from './chat-send-message';
 const LOGGER = rootLogger.child('ChatHydration');
+
+const SEND_QUEUE_BACKUP_KEY = 'super_agents_chat_send_queue_backup';
+
+/**
+ * Serialize sessions to the localStorage backup, trimming oldest history rather
+ * than dropping entire sessions when the budget is exceeded.
+ */
+function serializeSessionsWithBudget(sessions: ChatSession[]): string | null {
+    const json = JSON.stringify(sessions);
+    if (json.length < 4_500_000) return json;
+    const copy = sessions.map((s) => ({ ...s, history: [...(s.history ?? [])] }));
+    while (copy.some((s) => s.history.length > 0)) {
+        let maxIdx = -1;
+        let maxLen = 0;
+        copy.forEach((s, i) => {
+            if (s.history.length > maxLen) {
+                maxLen = s.history.length;
+                maxIdx = i;
+            }
+        });
+        if (maxIdx < 0) break;
+        copy[maxIdx] = { ...copy[maxIdx], history: copy[maxIdx].history.slice(1) };
+        if (JSON.stringify(copy).length < 4_500_000) break;
+    }
+    const finalJson = JSON.stringify(copy);
+    if (finalJson.length < 4_500_000) return finalJson;
+    return JSON.stringify(copy.slice(-20));
+}
 
 function cleanupOrphanLoading(sessions: ChatSession[]): ChatSession[] {
     let changed = false;
@@ -151,9 +182,7 @@ export function useChatStoreHydration(): void {
                             // id may point to a deleted session.
                             let restoredId: string | null;
                             try {
-                                restoredId = BucketStorageAdapter.getItem(
-                                    'chat_active_session_id',
-                                );
+                                restoredId = BucketStorageAdapter.getItem('chat_active_session_id');
                             } catch {
                                 restoredId = null;
                             }
@@ -162,8 +191,7 @@ export function useChatStoreHydration(): void {
                             // session instead of pointing activeSessionId at a phantom id.
                             const seeded = cleaned.length > 0 ? cleaned : [{ ...DEFAULT_SESSION }];
                             const activeSessionId =
-                                (restoredId && ids.has(restoredId) && restoredId) ||
-                                seeded[0]!.id;
+                                (restoredId && ids.has(restoredId) && restoredId) || seeded[0]!.id;
                             useChatStore.setState({
                                 sessions: seeded,
                                 activeSessionId,
@@ -237,26 +265,71 @@ export function useChatStoreHydration(): void {
 
         const handleBeforeUnload = () => {
             const state = useChatStore.getState();
-            if (state.sessions.length > 0) {
+            // P-02: fold buffered stream chunks into the snapshot before backup
+            // so an in-flight response tail is not lost on close.
+            const sessions = applyBufferedChunks(state.sessions);
+            if (sessions !== state.sessions) {
+                useChatStore.setState({ sessions });
+            }
+            if (sessions.length > 0) {
                 try {
-                    const json = JSON.stringify(state.sessions);
-                    if (json.length < 4_500_000) {
+                    const json = serializeSessionsWithBudget(sessions);
+                    if (json) {
                         BucketStorageAdapter.setItem('super_agents_chat_sessions_backup', json);
-                    } else {
-                        const trimmed = state.sessions.slice(-5);
-                        BucketStorageAdapter.setItem(
-                            'super_agents_chat_sessions_backup',
-                            JSON.stringify(trimmed),
-                        );
                     }
                 } catch (e) {
-                    // Backup skipped (usually quota) — log instead of silent
-                    // loss so the next boot can surface it.
                     LOGGER.warn('ChatHydration', 'beforeunload backup skipped', { error: e });
                 }
             }
+            // P-01: persist unsent queued messages so they are not lost on close.
+            try {
+                if (_sendQueue.size > 0) {
+                    const snapshot: Record<string, QueuedMessage[]> = {};
+                    for (const [sessionId, items] of _sendQueue) {
+                        if (items && items.length > 0) snapshot[sessionId] = [...items];
+                    }
+                    if (Object.keys(snapshot).length > 0) {
+                        BucketStorageAdapter.setItem(
+                            SEND_QUEUE_BACKUP_KEY,
+                            JSON.stringify(snapshot),
+                        );
+                        return;
+                    }
+                }
+                BucketStorageAdapter.removeItem(SEND_QUEUE_BACKUP_KEY);
+            } catch {
+                /* best-effort */
+            }
         };
         window.addEventListener('beforeunload', handleBeforeUnload);
+
+        const restoreSendQueue = async () => {
+            const raw = BucketStorageAdapter.getItem(SEND_QUEUE_BACKUP_KEY);
+            if (!raw) return;
+            BucketStorageAdapter.removeItem(SEND_QUEUE_BACKUP_KEY);
+            try {
+                const queue = safeJsonParse(raw) as Record<string, QueuedMessage[]>;
+                const send = useChatStore.getState().sendMessage;
+                if (!queue || typeof send !== 'function') return;
+                for (const [sessionId, items] of Object.entries(queue)) {
+                    for (const item of items ?? []) {
+                        useChatStore.setState({ activeSessionId: sessionId });
+                        await send(
+                            item.targets,
+                            item.text,
+                            item.systemPromptArg,
+                            item.temperature,
+                            item.maxTokens,
+                        ).catch(() => {
+                            /* best-effort replay */
+                        });
+                    }
+                }
+            } catch (err) {
+                LOGGER.warn('ChatHydration', 'restore send queue failed', { error: err });
+            }
+        };
+        void restoreSendQueue().catch(() => {});
 
         return () => {
             cancelled = true;

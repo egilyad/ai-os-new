@@ -31,7 +31,7 @@ import type {
 import type { ApiKey } from '../../types/metrics-types';
 import type { MemoryEntry } from '../../types/memory-types';
 import type { CognitiveTrace } from '../../types/domain-types';
-import type { ChatSession } from '../../contracts/storage/session-store';
+import type { ChatSession, ChatEntry } from '../../contracts/storage/session-store';
 import type { Role } from '../../contracts/storage/roles-store';
 import type { Skill } from '../../contracts/storage/skills-store';
 import {
@@ -278,7 +278,7 @@ function isStaleSessionWrite(
     const incomingTs = session?.updatedAt ?? 0;
     const currentTs = current?.updatedAt ?? 0;
     if (incomingTs < currentTs) {
-        LOGGER.warn('DexieSessionStore', 'dropping stale session write', {
+        LOGGER.warn('DexieSessionStore', 'stale session write, merging', {
             id: session?.id,
             incomingVersion,
             currentVersion,
@@ -288,20 +288,60 @@ function isStaleSessionWrite(
     return false;
 }
 
-class DexieSessionStore implements SessionStore {    async saveSession(session: ChatSession): Promise<void> {
+/**
+ * Merge a stale (older) incoming session into the fresher current one instead
+ * of dropping it. The stale writer may hold messages the current record never
+ * saw (e.g. from another tab), so we union history by entry id while keeping
+ * the current record as the base. Returns `current` unchanged when the
+ * incoming history adds nothing new.
+ */
+function mergeStaleSession(current: ChatSession, incoming: ChatSession): ChatSession {
+    const byId = new Map<string, ChatEntry>();
+    for (const entry of current.history ?? []) byId.set(entry.id, entry);
+    let added = 0;
+    for (const entry of incoming.history ?? []) {
+        if (!byId.has(entry.id)) {
+            byId.set(entry.id, entry);
+            added++;
+        }
+    }
+    if (added === 0) return current;
+    return {
+        ...current,
+        history: [...byId.values()],
+        updatedAt: Math.max(current.updatedAt ?? 0, incoming.updatedAt ?? 0),
+    };
+}
+
+class DexieSessionStore implements SessionStore {
+    async saveSession(session: ChatSession): Promise<void> {
         await this.put(session);
     }
 
     async put(session: ChatSession): Promise<void> {
         const db = getDexieDb();
-        await db.transaction('rw', db.sessions, async () => {
-            const current = await db.sessions.get(session.id);
-            if (isStaleSessionWrite(session, current)) return;
-            const currentVersion = (current as { version?: number })?.version ?? 0;
-            const incomingVersion = (session as { version?: number })?.version ?? 0;
-            const newVersion = Math.max(currentVersion, incomingVersion) + 1;
-            await db.sessions.put({ ...session, version: newVersion });
-        });
+        await db.transaction('rw', db.sessions, () => this.writeGuarded(db, session));
+    }
+
+    private async writeGuarded(
+        db: ReturnType<typeof getDexieDb>,
+        session: ChatSession,
+    ): Promise<void> {
+        const current = await db.sessions.get(session.id);
+        if (isStaleSessionWrite(session, current)) {
+            if (current) {
+                const merged = mergeStaleSession(current, session);
+                if (merged !== current) {
+                    const version = (current.version ?? 0) + 1;
+                    await db.sessions.put({ ...merged, version });
+                }
+            }
+            return;
+        }
+        const currentVersion = (current as { version?: number })?.version ?? 0;
+        const incomingVersion = (session as { version?: number })?.version ?? 0;
+        const newVersion = Math.max(currentVersion, incomingVersion) + 1;
+        await db.sessions.put({ ...session, version: newVersion });
     }
 
     async getSession(id: string): Promise<ChatSession | null> {
@@ -339,12 +379,7 @@ class DexieSessionStore implements SessionStore {    async saveSession(session: 
         const db = getDexieDb();
         await db.transaction('rw', db.sessions, async () => {
             for (const session of sessions) {
-                const current = await db.sessions.get(session.id);
-                if (isStaleSessionWrite(session, current)) continue;
-                const currentVersion = (current as { version?: number })?.version ?? 0;
-                const incomingVersion = (session as { version?: number })?.version ?? 0;
-                const newVersion = Math.max(currentVersion, incomingVersion) + 1;
-                await db.sessions.put({ ...session, version: newVersion });
+                await this.writeGuarded(db, session);
             }
         });
     }
@@ -357,12 +392,7 @@ class DexieSessionStore implements SessionStore {    async saveSession(session: 
         const db = getDexieDb();
         await db.transaction('rw', db.sessions, async () => {
             for (const session of sessions) {
-                const current = await db.sessions.get(session.id);
-                if (isStaleSessionWrite(session, current)) continue;
-                const currentVersion = (current as { version?: number })?.version ?? 0;
-                const incomingVersion = (session as { version?: number })?.version ?? 0;
-                const newVersion = Math.max(currentVersion, incomingVersion) + 1;
-                await db.sessions.put({ ...session, version: newVersion });
+                await this.writeGuarded(db, session);
             }
             if (deletedIds.length > 0) await db.sessions.bulkDelete(deletedIds);
         });

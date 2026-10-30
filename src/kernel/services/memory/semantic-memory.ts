@@ -21,11 +21,9 @@ export class SemanticMemoryStore implements IMemoryStore {
         const dup = this.entries.find((e) => {
             const s1 = e.content.slice(0, 100);
             const s2 = full.content.slice(0, 100);
-            return (
-                s1 === s2 ||
-                (e.metadata.source === full.metadata.source &&
-                    e.metadata.type === full.metadata.type)
-            );
+            // Dedupe only on identical content — source+type alone must never
+            // discard distinct memories (they are common for agent-scoped data).
+            return s1 === s2;
         });
         if (dup) {
             dup.metadata.accessCount = (dup.metadata.accessCount || 0) + 1;

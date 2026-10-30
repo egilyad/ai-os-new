@@ -80,7 +80,9 @@ function flushChunkBuffers(set: ZustandSet): void {
     // 6.1: drop chunks whose request finished between buffering and flush —
     // without this the set() below runs a full sessions-tree pass that
     // notifies every subscriber yet changes nothing.
-    const batch = [...chunkBuffers.entries()].filter(([requestId]) => requestEntryMap.has(requestId));
+    const batch = [...chunkBuffers.entries()].filter(([requestId]) =>
+        requestEntryMap.has(requestId),
+    );
     chunkBuffers.clear();
     if (batch.length === 0) return;
     set((s) => {
@@ -109,7 +111,38 @@ function scheduleChunkFlush(set: ZustandSet): void {
     }
 }
 
-function updateEntryInSession(    sessions: ChatSession[],
+/**
+ * Synchronously fold any buffered stream chunks into a session-state snapshot,
+ * so a beforeunload backup does not lose the tail of an in-flight response.
+ * Pure: returns a new sessions array only when something changed.
+ */
+export function applyBufferedChunks(sessions: ChatSession[]): ChatSession[] {
+    if (chunkBuffers.size === 0) return sessions;
+    const batch = [...chunkBuffers.entries()].filter(([requestId]) =>
+        requestEntryMap.has(requestId),
+    );
+    if (batch.length === 0) return sessions;
+    let next = sessions;
+    let changed = false;
+    for (const [requestId, chunk] of batch) {
+        const ref = requestEntryMap.get(requestId);
+        if (!ref) continue;
+        const applied = updateEntryInSession(next, ref.sessionId, ref.entryId, (entry) => ({
+            ...entry,
+            responses: entry.responses.map((r) =>
+                r.requestId === requestId ? { ...r, content: r.content + chunk } : r,
+            ),
+        }));
+        if (applied !== next) {
+            next = applied;
+            changed = true;
+        }
+    }
+    return changed ? next : sessions;
+}
+
+function updateEntryInSession(
+    sessions: ChatSession[],
     sessionId: string,
     entryId: string,
     entryUpdater: (entry: ChatEntry) => ChatEntry,

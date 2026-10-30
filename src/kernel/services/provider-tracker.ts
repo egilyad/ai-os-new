@@ -131,15 +131,37 @@ export class ProviderTracker implements IProviderTracker {
         }
     }
 
+    private persistDirty = false;
+    private persistRunning = false;
+
+    /**
+     * Coalesced full-map persist. Mutations set a dirty flag; a single drain
+     * loop snapshots the current map at write time and repeats until no dirty
+     * flag is pending, so a staler snapshot can never land after a fresher one.
+     */
     private persistMetrics(): void {
         if (!this.database) return;
-        const obj: Record<string, ProviderState> = {};
-        for (const [id, prov] of this._metrics) {
-            obj[id] = prov;
-        }
-        void this.database
-            .setKv(ProviderTracker.METRICS_KEY, obj)
-            .catch((e) => LOGGER.warn('ProviderTracker', 'Persist metrics failed', { error: e }));
+        this.persistDirty = true;
+        if (this.persistRunning) return;
+        this.persistRunning = true;
+        void (async () => {
+            try {
+                while (this.persistDirty) {
+                    this.persistDirty = false;
+                    const obj: Record<string, ProviderState> = {};
+                    for (const [id, prov] of this._metrics) {
+                        obj[id] = prov;
+                    }
+                    try {
+                        await this.database.setKv(ProviderTracker.METRICS_KEY, obj);
+                    } catch (e) {
+                        LOGGER.warn('ProviderTracker', 'Persist metrics failed', { error: e });
+                    }
+                }
+            } finally {
+                this.persistRunning = false;
+            }
+        })();
     }
 
     private handleMetricUpdate(data: ProviderMetricData): void {

@@ -23,6 +23,14 @@ async function writeJSON<T>(key: string, data: T[]): Promise<void> {
     storageAdapter.setItem(key, JSON.stringify(data));
 }
 
+/** Serializes read-modify-write mutations so concurrent calls don't lose deltas. */
+let writeChain: Promise<unknown> = Promise.resolve();
+function enqueueWrite<T>(op: () => Promise<T>): Promise<T> {
+    const next = writeChain.then(op, op);
+    writeChain = next.catch(() => {});
+    return next;
+}
+
 function getNested(obj: Record<string, unknown>, path: string): number {
     const parts = path.split('.');
     let current: unknown = obj;
@@ -46,27 +54,33 @@ export class CustomMetricsService implements ICustomMetricsService {
     }
 
     async createMetric(metric: Omit<CustomMetric, 'id' | 'createdAt'>): Promise<string> {
-        const all = await this.listMetrics();
-        const id = crypto.randomUUID();
-        all.push({ ...metric, id, createdAt: Date.now() });
-        await writeJSON(METRICS_KEY, all);
-        return id;
+        return enqueueWrite(async () => {
+            const all = await this.listMetrics();
+            const id = crypto.randomUUID();
+            all.push({ ...metric, id, createdAt: Date.now() });
+            await writeJSON(METRICS_KEY, all);
+            return id;
+        });
     }
 
     async updateMetric(id: string, updates: Partial<CustomMetric>): Promise<void> {
-        const all = await this.listMetrics();
-        const idx = all.findIndex((m) => m.id === id);
-        if (idx < 0) throw new Error(`Metric ${id} not found`);
-        all[idx] = { ...all[idx]!, ...updates };
-        await writeJSON(METRICS_KEY, all);
+        return enqueueWrite(async () => {
+            const all = await this.listMetrics();
+            const idx = all.findIndex((m) => m.id === id);
+            if (idx < 0) throw new Error(`Metric ${id} not found`);
+            all[idx] = { ...all[idx]!, ...updates };
+            await writeJSON(METRICS_KEY, all);
+        });
     }
 
     async deleteMetric(id: string): Promise<void> {
-        const all = await this.listMetrics();
-        await writeJSON(
-            METRICS_KEY,
-            all.filter((m) => m.id !== id),
-        );
+        return enqueueWrite(async () => {
+            const all = await this.listMetrics();
+            await writeJSON(
+                METRICS_KEY,
+                all.filter((m) => m.id !== id),
+            );
+        });
     }
 
     async computeValue(metricId: string): Promise<MetricValue> {
@@ -167,26 +181,32 @@ export class CustomMetricsService implements ICustomMetricsService {
     }
 
     async createDashboard(name: string, metricIds: string[]): Promise<string> {
-        const all = await this.listDashboards();
-        const id = crypto.randomUUID();
-        all.push({ id, name, metricIds, layout: 'grid', createdAt: Date.now() });
-        await writeJSON(DASHBOARDS_KEY, all);
-        return id;
+        return enqueueWrite(async () => {
+            const all = await this.listDashboards();
+            const id = crypto.randomUUID();
+            all.push({ id, name, metricIds, layout: 'grid', createdAt: Date.now() });
+            await writeJSON(DASHBOARDS_KEY, all);
+            return id;
+        });
     }
 
     async deleteDashboard(id: string): Promise<void> {
-        const all = await this.listDashboards();
-        await writeJSON(
-            DASHBOARDS_KEY,
-            all.filter((d) => d.id !== id),
-        );
+        return enqueueWrite(async () => {
+            const all = await this.listDashboards();
+            await writeJSON(
+                DASHBOARDS_KEY,
+                all.filter((d) => d.id !== id),
+            );
+        });
     }
 
     private async recordHistory(entry: MetricValue): Promise<void> {
-        const all: MetricValue[] = await readJSON<MetricValue>(HISTORY_KEY);
-        all.push(entry);
-        if (all.length > 10000) all.splice(0, all.length - 10000);
-        await writeJSON(HISTORY_KEY, all);
+        return enqueueWrite(async () => {
+            const all: MetricValue[] = await readJSON<MetricValue>(HISTORY_KEY);
+            all.push(entry);
+            if (all.length > 10000) all.splice(0, all.length - 10000);
+            await writeJSON(HISTORY_KEY, all);
+        });
     }
 }
 

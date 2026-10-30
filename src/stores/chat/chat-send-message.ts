@@ -19,7 +19,7 @@ import type { ChatEntry, ZustandSet, ZustandGet, ChatStoreShape } from './types'
 import { genId, MAX_HISTORY, requestEntryMap } from './types';
 import { resolveSessionStore, updateSessionInList } from './store-helpers';
 
-interface QueuedMessage {
+export interface QueuedMessage {
     targets: Array<{ provider: string; model: string; keyId?: string; agentId?: string }>;
     text: string;
     systemPromptArg?: string;
@@ -149,7 +149,11 @@ export function createSendMessageHandler(
                 }
                 cancelGuard();
                 try {
-                    associativePrefix = await buildAssociativeContext(ltMemoryService, 'agent', text);
+                    associativePrefix = await buildAssociativeContext(
+                        ltMemoryService,
+                        'agent',
+                        text,
+                    );
                 } catch (e) {
                     LOGGER.warn('ChatStore', 'Associative memory recall failed', { error: e });
                 }
@@ -211,7 +215,12 @@ export function createSendMessageHandler(
                 const targetAgent = targets.find((t) => t.agentId)?.agentId;
                 if (targetAgent) attachedAgentId = targetAgent;
                 if (attachedAgentId) {
-                    const resolved = (agentService as { resolveAgent?: (id: string) => { systemPrompt?: string } | null })?.resolveAgent?.(attachedAgentId) ?? null;
+                    const resolved =
+                        (
+                            agentService as {
+                                resolveAgent?: (id: string) => { systemPrompt?: string } | null;
+                            }
+                        )?.resolveAgent?.(attachedAgentId) ?? null;
                     if (resolved?.systemPrompt) agentSystemPrompt = resolved.systemPrompt;
                 }
             } catch {

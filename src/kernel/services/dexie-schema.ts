@@ -98,12 +98,7 @@ import type {
 } from '../types/frontier-types';
 import type { KnowledgeSource, TrainGuide } from '../types/parity-types';
 import type { ScopedMem } from '../types/rival2-types';
-import type {
-    AgentLoop,
-    GroupChat,
-    MemoryBlock,
-    QueuedRun,
-} from '../types/rival-types';
+import type { AgentLoop, GroupChat, MemoryBlock, QueuedRun } from '../types/rival-types';
 import type { GraphThread } from '../types/graph-types';
 import type {
     Project,
@@ -137,7 +132,14 @@ import type {
     AgentBudget,
     AgentRepository,
 } from '../types/agems-agent';
-import type { AgemsTask, TaskComment, Label, TaskLabel, TaskWorkProduct, TaskTrigger } from '../types/agems-task';
+import type {
+    AgemsTask,
+    TaskComment,
+    Label,
+    TaskLabel,
+    TaskWorkProduct,
+    TaskTrigger,
+} from '../types/agems-task';
 import type { ApprovalPolicy, ApprovalRequest } from '../types/agems-approval';
 import type { PlatformBudget, BudgetIncident } from '../types/agems-budget';
 import type { Meeting, MeetingDecision } from '../types/agems-meeting';
@@ -514,6 +516,7 @@ export class SuperAgentsDB extends Dexie {
                                     ),
                                     arguments: JSON.stringify(s.arguments || []),
                                     topology: '{}',
+                                    memory: '{}',
                                     participants: JSON.stringify(s.participants || []),
                                     startedAt: s.createdAt ?? Date.now(),
                                     updatedAt: Date.now(),
@@ -549,6 +552,7 @@ export class SuperAgentsDB extends Dexie {
                         agentStates: '[]',
                         arguments: JSON.stringify((s as Record<string, unknown[]>).arguments || []),
                         topology: '{}',
+                        memory: '{}',
                         participants: JSON.stringify(
                             (s as Record<string, unknown[]>).participants || [],
                         ),
@@ -1842,7 +1846,8 @@ export class SuperAgentsDB extends Dexie {
 
         // v37 — AGEMS Phase 2 (Tasks): additive
         this.version(37).stores({
-            agemsTasks: 'id, status, priority, assigneeId, creatorId, projectId, createdAt, updatedAt',
+            agemsTasks:
+                'id, status, priority, assigneeId, creatorId, projectId, createdAt, updatedAt',
             taskComments: '++id, taskId, createdAt',
             labels: '++id, name',
             taskLabels: '++id, taskId, labelId, [taskId+labelId]',
@@ -3494,7 +3499,8 @@ export class SuperAgentsDB extends Dexie {
                 v: 34,
                 tables: {
                     notes: 'id, keyId, type, timestamp',
-                    memories: 'id, content, [metadata.source], [metadata.type], [metadata.timestamp]',
+                    memories:
+                        'id, content, [metadata.source], [metadata.type], [metadata.timestamp]',
                     apiKeys: 'id, provider, status',
                     sessions: 'id, title, updatedAt',
                     roles: 'id, name, metadata.category',
@@ -3509,7 +3515,8 @@ export class SuperAgentsDB extends Dexie {
                     debateOverrides: 'id, sessionId, appliedAt',
                     sessionLinks: 'id, fromId, toId, linkType',
                     eventLog: '++id, sequence, event, timestamp',
-                    crystals: 'crystalId, version, status, confidence, *linkedLensIds, *linkedRoleIds, originId, crystallizedAt',
+                    crystals:
+                        'crystalId, version, status, confidence, *linkedLensIds, *linkedRoleIds, originId, crystallizedAt',
                     crystalVersions: '[crystalId+version], crystalId',
                     junctions: 'id, status, synthesisType, createdAt',
                     synthSessions: 'id, status, createdAt',
@@ -3597,7 +3604,8 @@ export class SuperAgentsDB extends Dexie {
                 v: 35,
                 tables: {
                     notes: 'id, keyId, type, timestamp',
-                    memories: 'id, content, [metadata.source], [metadata.type], [metadata.timestamp]',
+                    memories:
+                        'id, content, [metadata.source], [metadata.type], [metadata.timestamp]',
                     apiKeys: 'id, provider, status',
                     sessions: 'id, title, updatedAt',
                     roles: 'id, name, metadata.category',
@@ -3612,7 +3620,8 @@ export class SuperAgentsDB extends Dexie {
                     debateOverrides: 'id, sessionId, appliedAt',
                     sessionLinks: 'id, fromId, toId, linkType',
                     eventLog: '++id, sequence, event, timestamp',
-                    crystals: 'crystalId, version, status, confidence, *linkedLensIds, *linkedRoleIds, originId, crystallizedAt',
+                    crystals:
+                        'crystalId, version, status, confidence, *linkedLensIds, *linkedRoleIds, originId, crystallizedAt',
                     crystalVersions: '[crystalId+version], crystalId',
                     junctions: 'id, status, synthesisType, createdAt',
                     synthSessions: 'id, status, createdAt',
@@ -3706,7 +3715,8 @@ export class SuperAgentsDB extends Dexie {
                     agentResponsibilities: '++id, agentId',
                     agentMetrics: '++id, [agentId+metricType], [agentId+periodStart]',
                     agentMemory: '++id, [agentId+type], agentId',
-                    agentExecutions: '++id, [agentId+status], [agentId+startedAt], [provider+model]',
+                    agentExecutions:
+                        '++id, [agentId+status], [agentId+startedAt], [provider+model]',
                     agentConfigRevisions: '++id, [agentId+version], agentId',
                     agentApiKeys: '++id, agentId',
                     agentBudgets: '++id, agentId',
@@ -3752,4 +3762,3 @@ export class SuperAgentsDB extends Dexie {
         }
     }
 }
-
