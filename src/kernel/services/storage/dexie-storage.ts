@@ -575,19 +575,25 @@ class DexieDebateStore implements DebateStore {
             const current = await getDexieDb().debateSessions.get(record.id);
             const currentVersion = (current as { version?: number })?.version ?? 0;
             if (current && record.version != null && record.version < currentVersion) {
-                LOGGER.error('DexieStorage', 'version conflict', {
+                // Stale writer: rather than throwing (which fire-and-forget
+                // callers swallow, losing the session the user just touched),
+                // overlay the incoming record onto the DB's fresher base so no
+                // user content is discarded. The DB version stays ahead.
+                LOGGER.warn('DexieStorage', 'version conflict — merging', {
                     id: record.id,
                     db: currentVersion,
                     attempted: record.version,
                 });
+                const merged = { ...current, ...record, id: record.id };
+                const newVersion = currentVersion + 1;
+                await getDexieDb().debateSessions.put({ ...merged, version: newVersion });
                 _dexieStorageEventBus?.emit(EVENTS.DEBATE_SESSION_CONFLICT, {
                     sessionId: record.id,
                     currentVersion,
                     attemptedVersion: record.version,
+                    resolved: 'merged',
                 });
-                throw new Error(
-                    `Debate session ${record.id} version conflict: DB has ${currentVersion}, attempted ${record.version}. Reload the page to get the latest version.`,
-                );
+                return newVersion;
             }
             const newVersion = currentVersion + 1;
             await getDexieDb().debateSessions.put({ ...record, version: newVersion });

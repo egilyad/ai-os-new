@@ -24,6 +24,7 @@ export class LoggerService implements ILogger {
     private persistDeps?: LoggerPersistenceDeps;
     private persistTimer: ReturnType<typeof setInterval> | null = null;
     private persistDirty = false;
+    private _unloadBound = false;
 
     constructor(_service: string = 'system', minLevel: LogLevel = 'info', state?: LoggerState) {
         this.minLevel = LEVELS[minLevel];
@@ -36,6 +37,16 @@ export class LoggerService implements ILogger {
         if (deps) {
             this.restorePersisted();
             this.persistTimer = setInterval(() => this.flushPersist(), 30000);
+            if (typeof window !== 'undefined' && !this._unloadBound) {
+                this._unloadBound = true;
+                window.addEventListener('beforeunload', () => {
+                    try {
+                        if (this.persistDirty) this.flushPersist();
+                    } catch {
+                        /* best-effort */
+                    }
+                });
+            }
         }
     }
 

@@ -22,7 +22,7 @@ export interface MemoryAccessTrackerDeps {
 }
 
 export class MemoryAccessTracker {
-    private readonly pending = new Set<string>();
+    private readonly pending = new Map<string, number>();
     private timer: unknown;
     private readonly now: () => number;
     private readonly debounceMs: number;
@@ -42,10 +42,10 @@ export class MemoryAccessTracker {
         if (ids.length === 0) return;
         const at = this.now();
         for (const id of ids) {
-            const entry = this.deps.get(id);
-            if (!entry) continue;
-            entry.metadata.lastAccessed = at;
-            this.pending.add(id);
+            // Record the access timestamp in `pending`; the entry itself is not
+            // relied on across flush, so an upsert between touch and flush cannot
+            // drop the access mark.
+            this.pending.set(id, at);
         }
         if (this.pending.size === 0) return;
         if (this.timer === undefined) {
@@ -59,12 +59,14 @@ export class MemoryAccessTracker {
     /** Persist all pending marks immediately (also called by the timer). */
     async flush(): Promise<void> {
         if (this.pending.size === 0) return;
-        const ids = [...this.pending];
+        const pending = [...this.pending.entries()];
         this.pending.clear();
         const entries: MemoryEntry[] = [];
-        for (const id of ids) {
+        for (const [id, at] of pending) {
             const entry = this.deps.get(id);
-            if (entry) entries.push(entry);
+            if (!entry) continue;
+            entry.metadata.lastAccessed = at;
+            entries.push(entry);
         }
         for (const entry of entries) {
             try {

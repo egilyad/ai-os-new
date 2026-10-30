@@ -153,10 +153,26 @@ export class SnapshotService {
                 snapshots: SystemSnapshot[];
                 diffs: SnapshotDiff[];
             }>(STORAGE_KEY);
-            if (saved) {
-                this.snapshots = saved.snapshots || [];
-                this.diffs = saved.diffs || [];
+            let snapshots = saved?.snapshots ?? [];
+            let diffs = saved?.diffs ?? [];
+            // Recover the write-ahead log: it holds the latest captures that may
+            // not have survived the debounced persistence yet.
+            try {
+                const walRaw = ssrSafeStorage.getItem('snapshots:wal');
+                if (walRaw) {
+                    const wal = JSON.parse(walRaw) as {
+                        snapshots?: SystemSnapshot[];
+                        diffs?: SnapshotDiff[];
+                    };
+                    if (Array.isArray(wal.snapshots)) snapshots = wal.snapshots;
+                    if (Array.isArray(wal.diffs)) diffs = wal.diffs;
+                    ssrSafeStorage.removeItem('snapshots:wal');
+                }
+            } catch {
+                /* WAL corrupt/absent — fall through to persisted state */
             }
+            this.snapshots = snapshots || [];
+            this.diffs = diffs || [];
         } catch (e) {
             LOGGER.warn('SnapshotService', 'Failed to load', { error: e });
         }

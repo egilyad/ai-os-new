@@ -10,6 +10,9 @@ const GEMINI_API_BASE =
 
 export class GeminiCacheService implements IGeminiCacheService {
     private caches: CachedContent[] = [];
+    /** Remote entries queued for deletion that haven't landed yet — kept out
+     *  of syncFromApi results so a "deleted" cache can't resurrect. */
+    private tombstoned = new Set<string>();
 
     async create(content: {
         systemPrompt: string;
@@ -103,7 +106,11 @@ export class GeminiCacheService implements IGeminiCacheService {
                     hits: 0,
                 }));
                 const remoteIds = new Set(remote.map((r) => r.id));
-                this.caches = [...remote, ...this.caches.filter((c) => !remoteIds.has(c.id))];
+                const visibleRemote = remote.filter((r) => !this.tombstoned.has(r.id));
+                this.caches = [
+                    ...visibleRemote,
+                    ...this.caches.filter((c) => !remoteIds.has(c.id)),
+                ];
             }
         } catch (e) {
             LOGGER.warn('GeminiCache', 'syncFromApi failed', { error: String(e) });
@@ -122,13 +129,20 @@ export class GeminiCacheService implements IGeminiCacheService {
             const apiKey = await this.#getApiKey();
             if (apiKey) {
                 try {
-                    await fetch(`${GEMINI_API_BASE}/${id}`, {
+                    const res = await fetch(`${GEMINI_API_BASE}/${id}`, {
                         method: 'DELETE',
                         headers: { 'x-goog-api-key': apiKey },
                         signal: AbortSignal.timeout(10000),
                     });
+                    if (res.ok) {
+                        this.tombstoned.delete(id);
+                    } else {
+                        res.body?.cancel()?.catch(() => {});
+                        this.tombstoned.add(id);
+                    }
                 } catch (e) {
                     LOGGER.warn('GeminiCache', 'delete remote failed', { error: String(e) });
+                    this.tombstoned.add(id);
                 }
             }
         }
