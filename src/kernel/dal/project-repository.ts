@@ -56,12 +56,25 @@ export class ProjectRepository {
     }
 
     async delete(id: ProjectId): Promise<void> {
-        await this.db.projects.delete(id);
-        await this.db.projectTasks.where('projectId').equals(id).delete();
-        await this.db.projectRuns.where('projectId').equals(id).delete();
-        await this.db.projectFiles.where('projectId').equals(id).delete();
-        await this.db.projectArtifacts.where('projectId').equals(id).delete();
-        await this.db.projectAssignments.where('projectId').equals(id).delete();
+        await this.db.transaction(
+            'rw',
+            [
+                this.db.projects,
+                this.db.projectTasks,
+                this.db.projectRuns,
+                this.db.projectFiles,
+                this.db.projectArtifacts,
+                this.db.projectAssignments,
+            ],
+            async () => {
+                await this.db.projects.delete(id);
+                await this.db.projectTasks.where('projectId').equals(id).delete();
+                await this.db.projectRuns.where('projectId').equals(id).delete();
+                await this.db.projectFiles.where('projectId').equals(id).delete();
+                await this.db.projectArtifacts.where('projectId').equals(id).delete();
+                await this.db.projectAssignments.where('projectId').equals(id).delete();
+            },
+        );
     }
 
     // ── Tasks ──
@@ -105,10 +118,7 @@ export class ProjectRepository {
     }
 
     async getFile(projectId: string, path: string): Promise<ProjectFile | undefined> {
-        const normalized = await this.db.projectFiles.get([
-            projectId,
-            normalizeProjectPath(path),
-        ]);
+        const normalized = await this.db.projectFiles.get([projectId, normalizeProjectPath(path)]);
         if (normalized) return normalized;
         // Tolerance for rows written before path normalization.
         return this.db.projectFiles.get([projectId, path]);

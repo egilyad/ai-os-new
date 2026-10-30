@@ -33,17 +33,24 @@ export class WikiDexieStore implements IWikiStore {
 
     async listSources(opts: { limit?: number; offset?: number } = {}) {
         const { limit = 100, offset = 0 } = opts;
-        return this.db.sources.orderBy('importedAt').reverse().offset(offset).limit(limit).toArray();
+        return this.db.sources
+            .orderBy('importedAt')
+            .reverse()
+            .offset(offset)
+            .limit(limit)
+            .toArray();
     }
 
     async deleteSource(id: string) {
-        await this.db.sources.delete(id);
-        const affected = await this.db.pages
-            .filter((p) => p.frontmatter.sources.some((s) => s.sourceId === id))
-            .toArray();
-        if (affected.length > 0) {
-            await this.db.pages.bulkDelete(affected.map((p) => p.id));
-        }
+        await this.db.transaction('rw', [this.db.sources, this.db.pages], async () => {
+            await this.db.sources.delete(id);
+            const affected = await this.db.pages
+                .filter((p) => p.frontmatter.sources.some((s) => s.sourceId === id))
+                .toArray();
+            if (affected.length > 0) {
+                await this.db.pages.bulkDelete(affected.map((p) => p.id));
+            }
+        });
     }
 
     async putPage(p: TWikiPage) {

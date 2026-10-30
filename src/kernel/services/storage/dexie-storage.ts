@@ -84,7 +84,16 @@ class DexieKeyStore implements KeyStore {
     }
 
     async bulkAdd(keys: ApiKey[]): Promise<void> {
-        await this.bulkPut(keys);
+        if (keys.length === 0) return;
+        const db = getDexieDb();
+        const existing = new Set(
+            (await db.apiKeys
+                .where('id')
+                .anyOf(keys.map((k) => k.id))
+                .primaryKeys()) as string[],
+        );
+        const fresh = keys.filter((k) => !existing.has(k.id));
+        if (fresh.length > 0) await db.apiKeys.bulkAdd(fresh);
     }
 
     async where(field: 'id' | 'provider' | 'status', value: string): Promise<ApiKey | undefined> {
@@ -177,7 +186,16 @@ class DexieMemoryStoreImpl implements DexieMemoryStore {
     }
 
     async bulkAdd(entries: MemoryEntry[]): Promise<void> {
-        await getDexieDb().memories.bulkPut(entries);
+        if (entries.length === 0) return;
+        const db = getDexieDb();
+        const existing = new Set(
+            (await db.memories
+                .where('id')
+                .anyOf(entries.map((e) => e.id))
+                .primaryKeys()) as string[],
+        );
+        const fresh = entries.filter((e) => !existing.has(e.id));
+        if (fresh.length > 0) await db.memories.bulkAdd(fresh);
     }
 
     async clear(): Promise<void> {
