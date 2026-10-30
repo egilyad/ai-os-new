@@ -149,6 +149,7 @@ export const ChatResponseSchema = z.object({
     provider: z.string(),
     model: z.string(),
     keyId: z.string().optional(),
+    agentId: z.string().optional(),
     content: z.string(),
     latency: z.number(),
     status: z.enum([
@@ -208,6 +209,7 @@ export const ChatSessionSchema = z.object({
     currentProvider: z.string().optional(),
     currentModel: z.string().optional(),
     currentKeyId: z.string().optional(),
+    currentAgentId: z.string().optional(),
 });
 
 export const ToolCallSchema = z.object({

@@ -76,6 +76,7 @@ export interface StreamEndPayload {
     model?: string;
     keyId?: string;
     agentId?: string;
+    invocationId?: string;
     ttft?: number;
     tps?: number;
     status?: StreamEndStatus;
@@ -87,4 +88,5 @@ export interface StreamErrorPayload {
     provider: string;
     error: string;
     keyId?: string;
+    model?: string;
 }
