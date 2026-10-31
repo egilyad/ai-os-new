@@ -11015,7 +11015,7 @@
       "id": "audit:waves--map-01-requirements",
       "type": "audit",
       "path": "docs/audits/waves/map-01-requirements.md",
-      "title": "map-01-requirements.md",
+      "title": "Карта готовности панелей — SuperAgents OS (`egilyad/ai-os-new`)",
       "date": "2026-10-31",
       "mentions": [
         "src/components/ChatPanel/ChatPanel.tsx",
@@ -11046,7 +11046,7 @@
       "id": "audit:waves--map-02-feature-value",
       "type": "audit",
       "path": "docs/audits/waves/map-02-feature-value.md",
-      "title": "map-02-feature-value.md",
+      "title": "Карта функциональной ценности — Feature Value Map",
       "date": "2026-10-31",
       "mentions": [],
       "tests": []
@@ -11055,7 +11055,7 @@
       "id": "audit:waves--map-03-technical-health",
       "type": "audit",
       "path": "docs/audits/waves/map-03-technical-health.md",
-      "title": "map-03-technical-health.md",
+      "title": "Карта технического состояния — Technical Health Map",
       "date": "2026-10-31",
       "mentions": [],
       "tests": []
@@ -11064,7 +11064,7 @@
       "id": "audit:waves--map-04-observability-diagnostics",
       "type": "audit",
       "path": "docs/audits/waves/map-04-observability-diagnostics.md",
-      "title": "map-04-observability-diagnostics.md",
+      "title": "Карта наблюдаемости и диагностики — Observability & Diagnostics Map",
       "date": "2026-10-31",
       "mentions": [
         "src/components/Common/ErrorBoundary.tsx",
@@ -11084,7 +11084,7 @@
       "id": "audit:waves--map-05-dead-abandoned",
       "type": "audit",
       "path": "docs/audits/waves/map-05-dead-abandoned.md",
-      "title": "map-05-dead-abandoned.md",
+      "title": "Карта мёртвого и заброшенного функционала — Dead & Abandoned Functionality Map",
       "date": "2026-10-31",
       "mentions": [
         "src/components/AppLayout.tsx",
@@ -11113,7 +11113,7 @@
       "id": "audit:waves--map-06-capability-gap",
       "type": "audit",
       "path": "docs/audits/waves/map-06-capability-gap.md",
-      "title": "map-06-capability-gap.md",
+      "title": "Карта функциональных пробелов — Capability Gap Map",
       "date": "2026-10-31",
       "mentions": [
         "src/components/BuilderPanel/ComponentPalette.tsx",
@@ -11127,7 +11127,7 @@
       "id": "audit:waves--map-07-opportunity",
       "type": "audit",
       "path": "docs/audits/waves/map-07-opportunity.md",
-      "title": "map-07-opportunity.md",
+      "title": "Карта потенциала — Opportunity Map",
       "date": "2026-10-31",
       "mentions": [],
       "tests": []
@@ -11136,7 +11136,7 @@
       "id": "audit:waves--map-08-capability-accessibility",
       "type": "audit",
       "path": "docs/audits/waves/map-08-capability-accessibility.md",
-      "title": "map-08-capability-accessibility.md",
+      "title": "Карта доступности возможностей — Capability Accessibility Map",
       "date": "2026-10-31",
       "mentions": [
         "src/components/AppLayout.tsx",
@@ -11158,7 +11158,7 @@
       "id": "audit:waves--map-09-duplication",
       "type": "audit",
       "path": "docs/audits/waves/map-09-duplication.md",
-      "title": "map-09-duplication.md",
+      "title": "Карта функционального дублирования — Duplication Map",
       "date": "2026-10-31",
       "mentions": [
         "src/kernel/contracts/index.ts"
@@ -11169,7 +11169,7 @@
       "id": "audit:waves--map-10-resource-consumption",
       "type": "audit",
       "path": "docs/audits/waves/map-10-resource-consumption.md",
-      "title": "map-10-resource-consumption.md",
+      "title": "Карта использования ресурсов — Resource Consumption Map",
       "date": "2026-10-31",
       "mentions": [
         "src/App.tsx",

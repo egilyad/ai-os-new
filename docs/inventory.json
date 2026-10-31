@@ -11,9 +11,9 @@
       "wiki": 285
     },
     "byLanguage": {
-      "en": 44,
-      "mixed": 63,
-      "ru": 237
+      "en": 34,
+      "mixed": 71,
+      "ru": 239
     }
   },
   "duplicates": {
@@ -322,82 +322,82 @@
     {
       "path": "docs/audits/waves/map-01-requirements.md",
       "category": "audits",
-      "language": "en",
-      "title": "map-01-requirements.md",
-      "bytes": 85745,
-      "hash": "9902d6d86794d6f6d5e0d2d52731a9a3e7649362"
+      "language": "ru",
+      "title": "Карта готовности панелей — SuperAgents OS (`egilyad/ai-os-new`)",
+      "bytes": 54535,
+      "hash": "94730a5257a1542fb9706fec2070239b8c4e1b4e"
     },
     {
       "path": "docs/audits/waves/map-02-feature-value.md",
       "category": "audits",
-      "language": "en",
-      "title": "map-02-feature-value.md",
-      "bytes": 84437,
-      "hash": "ae56ad6f5fc0ae1e1806df5974ba26d4eed7214b"
+      "language": "ru",
+      "title": "Карта функциональной ценности — Feature Value Map",
+      "bytes": 52578,
+      "hash": "51463ecd8725a13d1d93adef068f380279e16711"
     },
     {
       "path": "docs/audits/waves/map-03-technical-health.md",
       "category": "audits",
-      "language": "en",
-      "title": "map-03-technical-health.md",
-      "bytes": 67549,
-      "hash": "07dc21e206df0a05606289227b9b0212220c430b"
+      "language": "mixed",
+      "title": "Карта технического состояния — Technical Health Map",
+      "bytes": 46199,
+      "hash": "9c7357eed3cc671cf92a656909a3c1edecca03fa"
     },
     {
       "path": "docs/audits/waves/map-04-observability-diagnostics.md",
       "category": "audits",
-      "language": "en",
-      "title": "map-04-observability-diagnostics.md",
-      "bytes": 44161,
-      "hash": "393d48f470f84fbf4477bc371c6059a3dc6f3125"
+      "language": "mixed",
+      "title": "Карта наблюдаемости и диагностики — Observability & Diagnostics Map",
+      "bytes": 33474,
+      "hash": "1fdd660774d4c0ad7d3d79693bb30fa77a9e5150"
     },
     {
       "path": "docs/audits/waves/map-05-dead-abandoned.md",
       "category": "audits",
-      "language": "en",
-      "title": "map-05-dead-abandoned.md",
-      "bytes": 47480,
-      "hash": "a3d3ce6333f6b5083e07666636bc66091c1a6c21"
+      "language": "mixed",
+      "title": "Карта мёртвого и заброшенного функционала — Dead & Abandoned Functionality Map",
+      "bytes": 34265,
+      "hash": "e5938950de0c5112922f193ea931451d4c8659d5"
     },
     {
       "path": "docs/audits/waves/map-06-capability-gap.md",
       "category": "audits",
-      "language": "en",
-      "title": "map-06-capability-gap.md",
-      "bytes": 46539,
-      "hash": "1cabae6ee5f07e7bb2e1025e9a0ed66a90ca2f75"
+      "language": "mixed",
+      "title": "Карта функциональных пробелов — Capability Gap Map",
+      "bytes": 33868,
+      "hash": "a16f7f9a35efaabbf19c4b764e95504ce8fb70a8"
     },
     {
       "path": "docs/audits/waves/map-07-opportunity.md",
       "category": "audits",
-      "language": "en",
-      "title": "map-07-opportunity.md",
-      "bytes": 70059,
-      "hash": "737f835d5d2660ff779815cd50e58d2f9822c8e3"
+      "language": "mixed",
+      "title": "Карта потенциала — Opportunity Map",
+      "bytes": 49295,
+      "hash": "55b383723c3e1e26017cfd203f4fb91f45fc011c"
     },
     {
       "path": "docs/audits/waves/map-08-capability-accessibility.md",
       "category": "audits",
-      "language": "en",
-      "title": "map-08-capability-accessibility.md",
-      "bytes": 64838,
-      "hash": "cc3b9919ff2451a98b5150c6e1a4107f3b335d2f"
+      "language": "mixed",
+      "title": "Карта доступности возможностей — Capability Accessibility Map",
+      "bytes": 44144,
+      "hash": "e26b6d86e519cf4e63532cbd6842441d4a95149c"
     },
     {
       "path": "docs/audits/waves/map-09-duplication.md",
       "category": "audits",
-      "language": "en",
-      "title": "map-09-duplication.md",
-      "bytes": 59968,
-      "hash": "23cbf3041d77b0b01556c349663dc65985e3ed46"
+      "language": "mixed",
+      "title": "Карта функционального дублирования — Duplication Map",
+      "bytes": 41960,
+      "hash": "630c27b1ec3d8e4ed5938a825c1b67a9e76e4de8"
     },
     {
       "path": "docs/audits/waves/map-10-resource-consumption.md",
       "category": "audits",
-      "language": "en",
-      "title": "map-10-resource-consumption.md",
-      "bytes": 68420,
-      "hash": "4f087fc0dea12e5a3b9097e4648ea55f7e8eb962"
+      "language": "mixed",
+      "title": "Карта использования ресурсов — Resource Consumption Map",
+      "bytes": 46200,
+      "hash": "0e16014ddd33d6e3f79e6f221349431248503bc4"
     },
     {
       "path": "docs/COGNITIVE_RUNTIME_SPEC.md",
@@ -1293,7 +1293,7 @@
       "language": "mixed",
       "title": "Матрица покрытия",
       "bytes": 8585,
-      "hash": "7b13e8e6f6ae54dc40cd78418c2b6a9f693a5122"
+      "hash": "fcc38b6e6a1fe8d9c283a5e332e27b613c053cf9"
     },
     {
       "path": "docs/wiki/debate-strategies-cheatsheet.md",
@@ -1349,7 +1349,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4075,
-      "hash": "2b3a39c5214824e465880edd7d7e124624a2eb54"
+      "hash": "ca14ae62c71605f5025e1b008ee29f7ab8bb141d"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -1437,7 +1437,7 @@
       "language": "ru",
       "title": "Граф знаний",
       "bytes": 4835,
-      "hash": "dede89b7b37c4cb993b2233754808a0a2dd3967d"
+      "hash": "84f23ce7556cfe486ef89ae3c2e177d74951ffc5"
     },
     {
       "path": "docs/wiki/dev-history.md",
