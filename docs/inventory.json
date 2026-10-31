@@ -244,8 +244,8 @@
       "category": "audits",
       "language": "ru",
       "title": "Параллелизм и гонки (Concurrency & Races)",
-      "bytes": 1366,
-      "hash": "9258839cc9a9ee14be3bf105f4d548f70b7de817"
+      "bytes": 3248,
+      "hash": "c81b03f30d607cf32ffe9f63972a550fd6782fe0"
     },
     {
       "path": "docs/audits/waves/card-17-cost-tokens.md",
