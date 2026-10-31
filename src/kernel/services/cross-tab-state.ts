@@ -34,6 +34,16 @@ export interface CrossTabStateMessage {
     timestamp: number;
     tabId: string;
     payload: unknown;
+    /** Set when a remote message is being re-emitted locally, so the local
+     *  subscriber skips re-broadcasting (prevents the cross-tab echo loop). */
+    relayed?: boolean;
+}
+
+/** Snapshot of cross-tab state sent in a `sync-response`. */
+export interface SyncSnapshot {
+    circuitBreakers: CircuitBreakerState[];
+    rateLimits: RateLimitState[];
+    errors: ErrorEntry[];
 }
 
 export interface DebateSyncPayload {
@@ -72,6 +82,9 @@ class CrossTabStateSync implements ICrossTabStateSync {
     > = new Map();
     private debateSeqCounter = 0;
     private _eventBus: IEventBus;
+    /** True while re-emitting a remote message, so local broadcast subscribers
+     *  skip re-broadcasting (echo-loop guard). */
+    private _relaying = false;
 
     constructor(eventBus: IEventBus) {
         this._eventBus = eventBus;
@@ -145,6 +158,7 @@ class CrossTabStateSync implements ICrossTabStateSync {
 
         this.unsubs.push(
             this._eventBus.on(EVENTS.KEY_UPDATED, () => {
+                if (this._relaying) return;
                 this.broadcast({
                     type: 'key-update',
                     timestamp: Date.now(),
@@ -156,6 +170,7 @@ class CrossTabStateSync implements ICrossTabStateSync {
 
         this.unsubs.push(
             this._eventBus.on(EVENTS.SETTINGS_UPDATED, () => {
+                if (this._relaying) return;
                 this.broadcast({
                     type: 'settings-update',
                     timestamp: Date.now(),
@@ -167,6 +182,7 @@ class CrossTabStateSync implements ICrossTabStateSync {
 
         this.unsubs.push(
             this._eventBus.on(EVENTS.KERNEL_UPDATED, () => {
+                if (this._relaying) return;
                 this.broadcast({
                     type: 'kernel-state-update',
                     timestamp: Date.now(),
@@ -178,6 +194,7 @@ class CrossTabStateSync implements ICrossTabStateSync {
 
         this.unsubs.push(
             this._eventBus.on(EVENTS.CHAT_FORKED, () => {
+                if (this._relaying) return;
                 this.broadcast({
                     type: 'chat-session-update',
                     timestamp: Date.now(),
@@ -308,10 +325,11 @@ class CrossTabStateSync implements ICrossTabStateSync {
                     type: 'sync-response',
                     timestamp: Date.now(),
                     tabId: this.tabId,
-                    payload: null,
+                    payload: this.buildSyncSnapshot(),
                 });
                 break;
             case 'sync-response':
+                this.applySyncSnapshot(message.payload as SyncSnapshot | undefined);
                 break;
             case 'debate-update':
                 this.handleDebateUpdate(message.payload as DebateSyncPayload);
@@ -320,16 +338,21 @@ class CrossTabStateSync implements ICrossTabStateSync {
                 LOGGER.debug('CrossTabStateSync', 'Cross-tab key update, refreshing local state');
                 // NOTE: plain emit, not emitOnce — the constant dedup key used
                 // to drop repeat syncs within the idempotency TTL, losing updates.
-                if (message.payload == null) {
-                    this._eventBus.emit(EVENTS.KEY_UPDATED, []);
-                } else {
-                    const keyPayload = z.array(ApiKeySchema).safeParse(message.payload);
-                    if (keyPayload.success)
-                        this._eventBus.emit(EVENTS.KEY_UPDATED, keyPayload.data);
-                    else
-                        LOGGER.warn('CrossTabStateSync', 'malformed key-update payload', {
-                            issues: keyPayload.error.issues,
-                        });
+                this._relaying = true;
+                try {
+                    if (message.payload == null) {
+                        this._eventBus.emit(EVENTS.KEY_UPDATED, []);
+                    } else {
+                        const keyPayload = z.array(ApiKeySchema).safeParse(message.payload);
+                        if (keyPayload.success)
+                            this._eventBus.emit(EVENTS.KEY_UPDATED, keyPayload.data);
+                        else
+                            LOGGER.warn('CrossTabStateSync', 'malformed key-update payload', {
+                                issues: keyPayload.error.issues,
+                            });
+                    }
+                } finally {
+                    this._relaying = false;
                 }
                 break;
             }
@@ -338,16 +361,21 @@ class CrossTabStateSync implements ICrossTabStateSync {
                     'CrossTabStateSync',
                     'Cross-tab kernel update, refreshing local state',
                 );
-                if (message.payload == null) {
-                    this._eventBus.emit(EVENTS.KERNEL_UPDATED, {});
-                } else {
-                    const kernelPayload = SystemStateSchema.safeParse(message.payload);
-                    if (kernelPayload.success)
-                        this._eventBus.emit(EVENTS.KERNEL_UPDATED, kernelPayload.data);
-                    else
-                        LOGGER.warn('CrossTabStateSync', 'malformed kernel-state-update payload', {
-                            issues: kernelPayload.error.issues,
-                        });
+                this._relaying = true;
+                try {
+                    if (message.payload == null) {
+                        this._eventBus.emit(EVENTS.KERNEL_UPDATED, {});
+                    } else {
+                        const kernelPayload = SystemStateSchema.safeParse(message.payload);
+                        if (kernelPayload.success)
+                            this._eventBus.emit(EVENTS.KERNEL_UPDATED, kernelPayload.data);
+                        else
+                            LOGGER.warn('CrossTabStateSync', 'malformed kernel-state-update payload', {
+                                issues: kernelPayload.error.issues,
+                            });
+                    }
+                } finally {
+                    this._relaying = false;
                 }
                 break;
             }
@@ -356,7 +384,12 @@ class CrossTabStateSync implements ICrossTabStateSync {
                     'CrossTabStateSync',
                     'Cross-tab chat session update, refreshing local state',
                 );
-                this._eventBus.emit(EVENTS.CHAT_FORKED, message.payload);
+                this._relaying = true;
+                try {
+                    this._eventBus.emit(EVENTS.CHAT_FORKED, message.payload);
+                } finally {
+                    this._relaying = false;
+                }
                 break;
             case 'settings-update': {
                 LOGGER.debug(
@@ -366,20 +399,25 @@ class CrossTabStateSync implements ICrossTabStateSync {
                 // 4.9: plain emit, not emitOnce — the constant dedup key
                 // collapsed distinct updates <30s apart (same fix as
                 // key-update above; cross-tab messages are already distinct).
-                if (message.payload == null) {
-                    this._eventBus.emit(EVENTS.SETTINGS_UPDATED, {
-                        settings: {},
-                        changes: {},
-                    });
-                } else {
-                    const settingsSchema = EVENT_REGISTRY.SETTINGS_UPDATED.schema;
-                    const settingsPayload = settingsSchema.safeParse(message.payload);
-                    if (settingsPayload.success)
-                        this._eventBus.emit(EVENTS.SETTINGS_UPDATED, settingsPayload.data);
-                    else
-                        LOGGER.warn('CrossTabStateSync', 'malformed settings-update payload', {
-                            issues: settingsPayload.error.issues,
+                this._relaying = true;
+                try {
+                    if (message.payload == null) {
+                        this._eventBus.emit(EVENTS.SETTINGS_UPDATED, {
+                            settings: {},
+                            changes: {},
                         });
+                    } else {
+                        const settingsSchema = EVENT_REGISTRY.SETTINGS_UPDATED.schema;
+                        const settingsPayload = settingsSchema.safeParse(message.payload);
+                        if (settingsPayload.success)
+                            this._eventBus.emit(EVENTS.SETTINGS_UPDATED, settingsPayload.data);
+                        else
+                            LOGGER.warn('CrossTabStateSync', 'malformed settings-update payload', {
+                                issues: settingsPayload.error.issues,
+                            });
+                    }
+                } finally {
+                    this._relaying = false;
                 }
                 break;
             }
@@ -482,6 +520,31 @@ class CrossTabStateSync implements ICrossTabStateSync {
                 `${this.STORAGE_PREFIX}${message.type}:${Date.now()}-${crypto.randomUUID().slice(0, 8)}`,
                 JSON.stringify(message),
             );
+        }
+    }
+
+    private buildSyncSnapshot(): SyncSnapshot {
+        return {
+            circuitBreakers: Array.from(this.localCircuitBreakers.values()),
+            rateLimits: Array.from(this.localRateLimits.values()),
+            errors: [...this.localErrors],
+        };
+    }
+
+    private applySyncSnapshot(snapshot: SyncSnapshot | undefined): void {
+        if (!snapshot) return;
+        if (Array.isArray(snapshot.circuitBreakers)) {
+            for (const cb of snapshot.circuitBreakers) {
+                this.localCircuitBreakers.set(`${cb.provider}:${cb.keyId}`, cb);
+            }
+        }
+        if (Array.isArray(snapshot.rateLimits)) {
+            for (const rl of snapshot.rateLimits) {
+                this.localRateLimits.set(`${rl.provider}:${rl.keyId}`, rl);
+            }
+        }
+        if (Array.isArray(snapshot.errors)) {
+            this.localErrors = snapshot.errors.slice(-100);
         }
     }
 

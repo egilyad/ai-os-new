@@ -292,18 +292,11 @@ function isStaleSessionWrite(
 ): boolean {
     const currentVersion = current?.version ?? 0;
     const incomingVersion = session?.version ?? 0;
-    if (!(incomingVersion > 0 && incomingVersion < currentVersion)) return false;
-    const incomingTs = session?.updatedAt ?? 0;
-    const currentTs = current?.updatedAt ?? 0;
-    if (incomingTs < currentTs) {
-        LOGGER.warn('DexieSessionStore', 'stale session write, merging', {
-            id: session?.id,
-            incomingVersion,
-            currentVersion,
-        });
-        return true;
-    }
-    return false;
+    // Treat version as authoritative: an incoming snapshot whose version is
+    // behind the DB is stale regardless of wall-clock, because the in-memory
+    // copy never carries the latest version back. Merging is far safer than
+    // a last-writer-wins overwrite across tabs.
+    return incomingVersion > 0 && incomingVersion < currentVersion;
 }
 
 /**
