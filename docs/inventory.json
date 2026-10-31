@@ -252,8 +252,8 @@
       "category": "audits",
       "language": "ru",
       "title": "Экономика: токены и стоимость (Cost / Token Economy)",
-      "bytes": 1365,
-      "hash": "36a8bdd78126fa42f6f2a0ec8160dbb5875bf3a7"
+      "bytes": 3288,
+      "hash": "0cfe61ccdd2505577c0f4a665ed37a318d6495ff"
     },
     {
       "path": "docs/audits/waves/card-18-configuration-secrets.md",
