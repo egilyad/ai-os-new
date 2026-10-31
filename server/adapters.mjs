@@ -1,6 +1,7 @@
 import { spawn } from 'node:child_process';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import dns from 'node:dns';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const DATA_DIR = path.resolve(__dirname, '..', 'data');
@@ -18,6 +19,52 @@ function clampTimeout(v) {
 function truncate(buf) {
     if (buf.length > MAX_OUTPUT_BYTES) return buf.subarray(0, MAX_OUTPUT_BYTES);
     return buf;
+}
+
+// W6-021: SSRF guard. Reject loopback and private/IP-liable targets so the
+// http adapter cannot be abused to reach internal services (metadata, LAN).
+function isPrivateIpLiteral(ip) {
+    const host = String(ip || '').toLowerCase().replace(/^\[|\]$/g, '');
+    if (host === 'localhost' || host === '0.0.0.0' || host === '::1' || host === '::') return true;
+    if (/^127\./.test(host)) return true;
+    if (/^169\.254\./.test(host)) return true;
+    if (/^10\./.test(host)) return true;
+    if (/^192\.168\./.test(host)) return true;
+    const m = host.match(/^172\.(\d{1,3})\./);
+    if (m) {
+        const octet = Number(m[1]);
+        if (octet >= 16 && octet <= 31) return true;
+    }
+    return false;
+}
+
+async function assertPublicUrl(rawUrl) {
+    let u;
+    try {
+        u = new URL(String(rawUrl || ''));
+    } catch {
+        throw new Error('url must be a valid http(s) URL');
+    }
+    if (u.protocol !== 'http:' && u.protocol !== 'https:') {
+        throw new Error('url must be http(s)');
+    }
+    const hostname = u.hostname;
+    if (isPrivateIpLiteral(hostname)) {
+        throw new Error(`url host ${hostname} is not allowed (private/loopback)`);
+    }
+    // Hostname -> resolve all A/AAAA; refuse if any resolves private.
+    let addresses;
+    try {
+        addresses = await dns.promises.lookup(hostname, { all: true });
+    } catch {
+        throw new Error(`url host ${hostname} could not be resolved`);
+    }
+    for (const entry of addresses) {
+        if (isPrivateIpLiteral(entry.address)) {
+            throw new Error(`url host ${hostname} resolves to a private address (blocked)`);
+        }
+    }
+    return u;
 }
 
 function parseStdout(raw) {
@@ -59,6 +106,10 @@ const httpAdapter = {
             if (u.protocol !== 'http:' && u.protocol !== 'https:') {
                 return { ok: false, error: 'url must be http(s)' };
             }
+            // W6-021: refuse private/loopback literal targets up-front.
+            if (isPrivateIpLiteral(u.hostname)) {
+                return { ok: false, error: `url host ${u.hostname} is not allowed (private/loopback)` };
+            }
         } catch {
             return { ok: false, error: 'url is required and must be valid' };
         }
@@ -72,11 +123,15 @@ const httpAdapter = {
         const timer = setTimeout(() => ctl.abort(), timeoutMs);
         try {
             const method = String(cfg?.method || 'POST').toUpperCase();
+            // W6-021: enforce the SSRF guard (DNS check) before fetch; redirects
+            // are refused so a public URL cannot bounce into a private one.
+            await assertPublicUrl(cfg.url);
             const res = await fetch(String(cfg.url), {
                 method,
                 headers: { 'Content-Type': 'application/json', ...(cfg?.headers || {}) },
                 body: method === 'POST' ? JSON.stringify(ctx.input ?? {}) : undefined,
                 signal: ctl.signal,
+                redirect: 'manual',
             });
             const buf = Buffer.from(await res.arrayBuffer());
             return {
