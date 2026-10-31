@@ -74,6 +74,19 @@ export const DEFERRED_ARTICLES: WikiArticle[] = [
 | Dev-status-*.md заполнены | ✅ сделано | — |
 | Остальные Strategic Bets / Defer | 🔴/⚪ | крупное |
 
+## Из «Карты функционального дублирования»
+
+| Работа | Вердикт карты | Причина |
+|---|---|---|
+| 5 budget-панелей → BudgetHub | 🔴 MERGE | рефакторинг UI |
+| 4 health-панелей (System/HealthSla → HealthPanel) | 🟡 MERGE | рефакторинг UI |
+| ProviderDashboard → таб в ProviderManager; удалить OpenRouterPanel | 🔴 DUPLICATE | чистка |
+| MemoryCenterPanel как hub (не дубликат MemoryPanel) | 🟡 MERGE PARTIAL | архитектура |
+| 62 TechniquePanels → каталог | 🟡 MERGE | генерация/единый компонент |
+| rivals/ 19 подкаталогов → experimental/ или удалить | 🔴 REMOVE | чистка |
+| 97 ручных setError → useAutoClearError | 🟡 MERGE | стандартизация |
+| 8 типов памяти / 14 router / 16 key-management / адаптеры | 🟢 KEEP | преднамеренно |
+
 ## Из аудитов (волны 2–8) — безопасность/настойчивость
 
 | Работа | Источник | Причина |
