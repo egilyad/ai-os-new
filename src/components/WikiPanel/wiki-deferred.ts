@@ -87,6 +87,15 @@ export const DEFERRED_ARTICLES: WikiArticle[] = [
 | 97 ручных setError → useAutoClearError | 🟡 MERGE | стандартизация |
 | 8 типов памяти / 14 router / 16 key-management / адаптеры | 🟢 KEEP | преднамеренно |
 
+## Из «Карты наблюдаемости и диагностики»
+
+| Работа | Источник | Причина |
+|---|---|---|
+| Cross-nav из diagnostic панелей к источнику (0 сейчас) | Obs Map §1 | UI-ссылки |
+| UI для MemoryWatchdog / DLQ / CircuitBreaker / Bootstrap report / Event registry / Subscription stats | Obs Map §1 | новый UI |
+| Unified «explain state» dashboard | Obs Map §1 | новый UI |
+| HealthSlaPanel (@deprecated MOCK) — удалить/скрыть | Obs Map §3.1 | чистка |
+
 ## Из аудитов (волны 2–8) — безопасность/настойчивость
 
 | Работа | Источник | Причина |
