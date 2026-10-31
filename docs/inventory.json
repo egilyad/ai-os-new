@@ -12,8 +12,8 @@
     },
     "byLanguage": {
       "en": 44,
-      "mixed": 64,
-      "ru": 221
+      "mixed": 63,
+      "ru": 222
     }
   },
   "duplicates": {
@@ -1202,10 +1202,10 @@
     {
       "path": "docs/wiki/deferred-works-features.md",
       "category": "wiki",
-      "language": "mixed",
+      "language": "ru",
       "title": "Отложенные работы и фичи",
-      "bytes": 8718,
-      "hash": "2b974c05e1803293e84303a485a713701b4d9190"
+      "bytes": 9414,
+      "hash": "88d6f58fce5d160b61f2af480078b4074f645262"
     },
     {
       "path": "docs/wiki/dev-adr.md",
