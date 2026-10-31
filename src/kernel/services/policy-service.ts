@@ -1,4 +1,5 @@
 import { genId } from '../../utils/gen-id';
+import { isReDoSPattern } from '../../utils/regex-safe';
 
 export type PolicyType =
     'latency' | 'privacy' | 'cost' | 'safety' | 'rate_limit' | 'content' | 'custom';
@@ -482,6 +483,10 @@ export class PolicyService {
     }
 
     async addSecurityPattern(pattern: SecurityPattern) {
+        // W6-023: refuse pathological regex patterns instead of shipping them.
+        if (isReDoSPattern(pattern.pattern)) {
+            throw new Error(`Rejected ReDoS-prone pattern: ${pattern.label}`);
+        }
         this.auditMutation('addSecurityPattern', `${pattern.type}: ${pattern.label}`);
         this.securityPatterns.push(pattern);
         await this.persist();
