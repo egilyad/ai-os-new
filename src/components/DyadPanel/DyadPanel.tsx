@@ -24,7 +24,7 @@ export default function DyadPanel() {
     const [search, setSearch] = useState('');
     const busyRef = useRef(false);
     busyRef.current = busy;
-    const pollTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+    const pollTimerRef = useRef<number | null>(null);
     const isMountedRef = useRef(true);
     const active = loops.find((l) => l.id === activeId) ?? null;
 

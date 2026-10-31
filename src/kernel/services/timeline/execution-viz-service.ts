@@ -60,6 +60,7 @@ export class ExecutionVizService implements IExecutionVizService {
                     // notify subscribers best-effort
                     if (this.overlaySubs.size > 0) {
                         this.getOverlay(runId).then((ov) => {
+                            if (!ov) return;
                             try {
                                 this.overlaySubs.forEach((cb) => cb(ov));
                             } catch (e) {

@@ -23,7 +23,7 @@ export default function SopPanel() {
     const [search, setSearch] = useState('');
     const busyRef = useRef(false);
     busyRef.current = busy;
-    const pollTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+    const pollTimerRef = useRef<number | null>(null);
     const isMountedRef = useRef(true);
     const active = runs.find((l) => l.id === activeId) ?? null;
 

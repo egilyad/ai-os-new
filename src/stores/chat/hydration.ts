@@ -22,7 +22,14 @@ const SEND_QUEUE_BACKUP_KEY = 'super_agents_chat_send_queue_backup';
 function serializeSessionsWithBudget(sessions: ChatSession[]): string | null {
     const json = JSON.stringify(sessions);
     if (json.length < 4_500_000) return json;
-    const copy = sessions.map((s) => ({ ...s, history: [...(s.history ?? [])] }));
+    const copy: ChatSession[] = sessions.map((s) => ({
+        id: s.id,
+        title: s.title,
+        createdAt: s.createdAt,
+        updatedAt: s.updatedAt,
+        ...s,
+        history: [...(s.history ?? [])],
+    }));
     while (copy.some((s) => s.history.length > 0)) {
         let maxIdx = -1;
         let maxLen = 0;
@@ -32,8 +39,8 @@ function serializeSessionsWithBudget(sessions: ChatSession[]): string | null {
                 maxIdx = i;
             }
         });
-        if (maxIdx < 0) break;
-        copy[maxIdx] = { ...copy[maxIdx], history: copy[maxIdx].history.slice(1) };
+        if (maxIdx < 0 || !copy[maxIdx]) break;
+        copy[maxIdx] = { ...copy[maxIdx]!, history: copy[maxIdx]!.history.slice(1) };
         if (JSON.stringify(copy).length < 4_500_000) break;
     }
     const finalJson = JSON.stringify(copy);
