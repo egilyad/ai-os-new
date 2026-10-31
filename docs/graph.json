@@ -3,14 +3,14 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 1372,
-    "edges": 2553,
+    "nodes": 1373,
+    "edges": 2557,
     "byType": {
       "audit": 10,
       "code": 610,
       "test": 199,
       "panel": 268,
-      "article": 285
+      "article": 286
     },
     "byKind": {
       "audit_test": 18,
@@ -18,7 +18,7 @@
       "documents": 204,
       "test": 295,
       "source": 891,
-      "related": 1093
+      "related": 1097
     }
   },
   "nodes": [
@@ -6754,6 +6754,13 @@
       "label": "Дебаты: режимы и механика",
       "section": "debates",
       "status": "verified"
+    },
+    {
+      "id": "wiki:deferred-works-features",
+      "type": "article",
+      "label": "Отложенные работы и фичи",
+      "section": "dev-status",
+      "status": "needs-check"
     },
     {
       "id": "wiki:dev-adr",
@@ -15203,6 +15210,26 @@
     {
       "from": "wiki:debates",
       "to": "wiki:providers",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:deferred-works-features",
+      "to": "wiki:dev-status-bugs",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:deferred-works-features",
+      "to": "wiki:dev-status-critical",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:deferred-works-features",
+      "to": "wiki:dev-status-debt",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:deferred-works-features",
+      "to": "wiki:dev-status-roadmaps",
       "kind": "related"
     },
     {

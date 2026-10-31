@@ -60,7 +60,7 @@
     {
       "id": "dev-status",
       "title": "Состояние разработки",
-      "articles": 10
+      "articles": 11
     },
     {
       "id": "dev",
@@ -8050,6 +8050,29 @@
         "dev-status-testing",
         "dev-status-docs",
         "dev-status-blocked",
+        "dev-status-roadmaps"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:deferred-works-features",
+      "type": "article",
+      "slug": "deferred-works-features",
+      "title": "Отложенные работы и фичи",
+      "section": "dev-status",
+      "status": "needs-check",
+      "tags": [
+        "состояние разработки",
+        "бэклог",
+        "фичи",
+        "риски"
+      ],
+      "sources": [],
+      "related": [
+        "dev-status-debt",
+        "dev-status-critical",
+        "dev-status-bugs",
         "dev-status-roadmaps"
       ],
       "reviewed": null,

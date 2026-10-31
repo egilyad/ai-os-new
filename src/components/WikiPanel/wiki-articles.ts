@@ -13,6 +13,7 @@ import { CONTRACT_ARTICLES } from './wiki-contracts';
 import { LAYER_ARTICLES } from './wiki-layers';
 import { TOOLING_ARTICLES } from './wiki-tooling';
 import { DEV_STATUS_ARTICLES } from './wiki-dev-status';
+import { DEFERRED_ARTICLES } from './wiki-deferred';
 import { MEMORY_AUDIT_ARTICLES } from './wiki-memory-audit';
 import { ASSISTANT_ARTICLES } from './wiki-assistant';
 import { SYSTEM_AUDIT_PROMPT_ARTICLE } from './wiki-system-audit-prompt';
@@ -5010,6 +5011,7 @@ export const WIKI_ARTICLES: WikiArticle[] = [
     ...LAYER_ARTICLES,
     ...TOOLING_ARTICLES,
     ...DEV_STATUS_ARTICLES,
+    ...DEFERRED_ARTICLES,
     ...MEMORY_AUDIT_ARTICLES,
     ...ASSISTANT_ARTICLES,
 ];
