@@ -314,15 +314,21 @@ export function useChatStoreHydration(): void {
                 for (const [sessionId, items] of Object.entries(queue)) {
                     for (const item of items ?? []) {
                         useChatStore.setState({ activeSessionId: sessionId });
-                        await send(
-                            item.targets,
-                            item.text,
-                            item.systemPromptArg,
-                            item.temperature,
-                            item.maxTokens,
-                        ).catch(() => {
-                            /* best-effort replay */
-                        });
+                        try {
+                            await send(
+                                item.targets,
+                                item.text,
+                                item.systemPromptArg,
+                                item.temperature,
+                                item.maxTokens,
+                            );
+                        } catch (err) {
+                            // Keep replaying remaining items — one failure must not
+                            // drop the whole queue silently.
+                            LOGGER.warn('ChatHydration', 'restore send queue item failed', {
+                                error: err,
+                            });
+                        }
                     }
                 }
             } catch (err) {

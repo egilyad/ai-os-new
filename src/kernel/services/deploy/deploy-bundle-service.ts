@@ -113,7 +113,7 @@ export class DeployBundleService implements IDeployBundleService {
                 (EVENTS as unknown as Record<string, string>).DEPLOY_BUNDLE_CREATED ?? ('deploy:bundle:created' as unknown as string),
                 { bundleId: bundle.id, configId, target: cfg.target },
             );
-        } catch { /* ignore */ }
+        } catch (e) { LOGGER.debug("deploy-bundle-service.ts", "silent catch", { error: e }); }
         LOGGER.info('DeployBundle', 'bundle built', { bundleId: bundle.id, configId });
         return bundle;
     }

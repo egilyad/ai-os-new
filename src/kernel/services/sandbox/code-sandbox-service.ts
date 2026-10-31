@@ -101,7 +101,7 @@ export class CodeSandboxService implements ICodeSandboxService {
                 a.exitCode = isDone ? 0 : 1;
                 await this.deps.dal.kv.set(`${ARTIFACT_PREFIX}${ticketId}`, a);
             }
-        } catch { /* ignore */ }
+        } catch (e) { LOGGER.debug("code-sandbox-service.ts", "silent catch", { error: e }); }
         return a;
     }
 
@@ -118,7 +118,7 @@ export class CodeSandboxService implements ICodeSandboxService {
                 for (const [k, v] of store.entries()) if (k.startsWith(ARTIFACT_PREFIX)) out.push(v as CodeArtifact);
                 return out.sort((a, b) => b.createdAt - a.createdAt);
             }
-        } catch { /* ignore */ }
+        } catch (e) { LOGGER.debug("code-sandbox-service.ts", "silent catch", { error: e }); }
         return [];
     }
 
@@ -162,7 +162,7 @@ export class CodeSandboxService implements ICodeSandboxService {
                     (EVENTS as unknown as Record<string, string>).CODEEXEC_SANDBOX_DONE ?? ('codeexec:sandbox:done' as unknown as string),
                     { ticketId, language, timeoutMs },
                 );
-            } catch { /* ignore */ }
+        } catch (e) { LOGGER.debug("code-sandbox-service.ts", "silent catch", { error: e }); }
             return done.result ?? '';
         } catch (e) {
             if (timeoutHandle) clearTimeout(timeoutHandle);

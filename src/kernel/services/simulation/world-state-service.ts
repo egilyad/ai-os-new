@@ -66,7 +66,7 @@ export class WorldStateService implements IWorldStateService {
                 (EVENTS as unknown as Record<string, string>).SIM_WORLD_CREATED ?? ('sim:world:created' as unknown as string),
                 { worldId: world.id, name: world.name },
             );
-        } catch { /* ignore */ }
+        } catch (e) { LOGGER.debug("world-state-service.ts", "silent catch", { error: e }); }
         LOGGER.info('WorldState', 'world created', { worldId: world.id });
         return world;
     }
@@ -90,7 +90,7 @@ export class WorldStateService implements IWorldStateService {
         try {
             const dbAny = this.deps.database as unknown as { keyValue: { delete: (id: string) => Promise<void> } };
             try { await dbAny.keyValue.delete(`${PREFIX}${worldId}`); } catch { /* fallback set null */ }
-        } catch { /* ignore */ }
+        } catch (e) { LOGGER.debug("world-state-service.ts", "silent catch", { error: e }); }
         const idx = (await this.deps.database.getKv<string[]>(INDEX)) ?? [];
         await this.deps.database.setKv(INDEX, idx.filter((x) => x !== worldId));
     }
@@ -134,7 +134,7 @@ export class WorldStateService implements IWorldStateService {
                 (EVENTS as unknown as Record<string, string>).SIM_TICK ?? ('sim:tick' as unknown as string),
                 { worldId, tick: w.globalClock },
             );
-        } catch { /* ignore */ }
+        } catch (e) { LOGGER.debug("world-state-service.ts", "silent catch", { error: e }); }
         return w;
     }
 }

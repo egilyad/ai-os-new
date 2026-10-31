@@ -83,7 +83,7 @@ export class LlmJudgeService implements ILlmJudgeService {
                 (EVENTS as unknown as Record<string, string>).EVAL_JUDGE_DONE ?? ('eval:judge:done' as unknown as string),
                 { task: task.slice(0, 100), score: stub.score, via: 'stub' },
             );
-        } catch { /* ignore */ }
+        } catch (e) { LOGGER.debug("llm-judge-service.ts", "silent catch", { error: e }); }
         return { ...stub, via: 'stub' };
     }
 }

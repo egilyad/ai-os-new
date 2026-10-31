@@ -60,7 +60,13 @@ export class ExecutionVizService implements IExecutionVizService {
                     // notify subscribers best-effort
                     if (this.overlaySubs.size > 0) {
                         this.getOverlay(runId).then((ov) => {
-                            if (ov) for (const cb of this.overlaySubs) try { cb(ov); } catch { /* ignore */ }
+                            try {
+                                this.overlaySubs.forEach((cb) => cb(ov));
+                            } catch (e) {
+                                LOGGER.debug('ExecutionViz', 'overlay callback failed', {
+                                    error: e,
+                                });
+                            }
                         });
                     }
                 });
@@ -74,7 +80,6 @@ export class ExecutionVizService implements IExecutionVizService {
 
     async destroy(): Promise<void> {
         this._initialized = false;
-        for (const u of this.unsubs) try { u(); } catch { /* ignore */ }
         this.unsubs = [];
         this.overlaySubs.clear();
         this.runSpans.clear();
@@ -145,7 +150,7 @@ export class ExecutionVizService implements IExecutionVizService {
                     const ov = await this.getOverlay(rid);
                     if (ov) out.push(ov);
                 }
-            } catch { /* ignore */ }
+        } catch (e) { LOGGER.debug("execution-viz-service.ts", "silent catch", { error: e }); }
         }
         return out;
     }

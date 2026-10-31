@@ -59,7 +59,7 @@ export class ScorerRegistryService implements IScorerRegistryService {
                 (EVENTS as unknown as Record<string, string>).EVAL_SCORER_REGISTERED ?? ('eval:scorer:registered' as unknown as string),
                 { name },
             );
-        } catch { /* ignore */ }
+        } catch (e) { LOGGER.debug("scorer-registry-service.ts", "silent catch", { error: e }); }
     }
 
     async score(c: Benchmark['cases'][number], output: string, scorer?: string): Promise<ScorerResult> {

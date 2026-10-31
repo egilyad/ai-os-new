@@ -43,7 +43,7 @@ export class McpHarnessService implements IMcpHarnessService {
                 (EVENTS as unknown as Record<string, string>).MCP_HARNESS_RECONNECTED ?? ('mcp:harness:reconnected' as unknown as string),
                 out,
             );
-        } catch { /* ignore */ }
+        } catch (e) { LOGGER.debug("mcp-harness-service.ts", "silent catch", { error: e }); }
         return out;
     }
 
@@ -70,7 +70,7 @@ export class McpHarnessService implements IMcpHarnessService {
                     (EVENTS as unknown as Record<string, string>).MCP_HARNESS_PROXY ?? ('mcp:harness:proxy' as unknown as string),
                     { serverId, tool, ok: true },
                 );
-            } catch { /* ignore */ }
+        } catch (e) { LOGGER.debug("mcp-harness-service.ts", "silent catch", { error: e }); }
             return result;
         } catch (e) {
             const msg = e instanceof Error ? e.message : String(e);
@@ -80,7 +80,7 @@ export class McpHarnessService implements IMcpHarnessService {
                     (EVENTS as unknown as Record<string, string>).MCP_HARNESS_PROXY ?? ('mcp:harness:proxy' as unknown as string),
                     { serverId, tool, ok: false, error: msg },
                 );
-            } catch { /* ignore */ }
+        } catch (e) { LOGGER.debug("mcp-harness-service.ts", "silent catch", { error: e }); }
             throw e;
         }
     }

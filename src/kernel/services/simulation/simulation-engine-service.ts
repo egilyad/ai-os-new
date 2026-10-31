@@ -116,7 +116,7 @@ export class SimulationEngineService implements ISimulationEngineService {
                     (EVENTS as unknown as Record<string, string>).SIM_COMPLETED ?? ('sim:completed' as unknown as string),
                     { worldId, ticks },
                 );
-            } catch { /* ignore */ }
+        } catch (e) { LOGGER.debug("simulation-engine-service.ts", "silent catch", { error: e }); }
             return world;
         } finally {
             this.running.delete(worldId);
