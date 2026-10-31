@@ -7371,7 +7371,7 @@
       "type": "article",
       "label": "Панель: Governance и безопасность",
       "section": "panels",
-      "status": "verified"
+      "status": "needs-check"
     },
     {
       "id": "wiki:panel-graph-workbench",

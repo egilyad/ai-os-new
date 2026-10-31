@@ -2,7 +2,7 @@
 
 # Панель: Governance и безопасность
 
-> Раздел: **Панели** · Статус: verified · Теги: панель, governance, политики, guardrails, инструкция
+> Раздел: **Панели** · Статус: needs-check · Теги: панель, governance, политики, guardrails, инструкция
 
 Источники: `src/components/GovernancePanel/GovernancePanel.tsx`, `src/components/PolicyPanel/PolicyPanel.tsx`, `src/components/GuardrailsPanel/GuardrailsPanel.tsx`, `src/components/SopPanel/SopPanel.tsx`, `src/components/PromptSecurityPanel.tsx`
 
@@ -22,6 +22,8 @@ flowchart LR
 ## Роли (Governance)
 
 Назначение ролей: вводится `user_id`, выбирается роль, кнопка «назначить». Список назначенных и доступных ролей; при пустоте — честное «ролей нет».
+
+> **Статус:** панель `GovernancePanel` — минимальная RBAC-реализация (observer/approver/director/auditor). Audit trail, HITL-очередь и policy-binding реализуются соседними панелями группы (Policy / Guardrails / SOP), а не самой этой панелью.
 
 ## Политики (Policy + редактор)
 

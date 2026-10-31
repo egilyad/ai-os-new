@@ -1220,8 +1220,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Проверки и показатели",
-      "bytes": 4075,
-      "hash": "b320104ec5b1e983ad3823c38be9cc4eebc46b5d"
+      "bytes": 4074,
+      "hash": "6aa4f6550eca4259ff1cca31f1bd72821044ea3a"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -1892,8 +1892,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Панель: Governance и безопасность",
-      "bytes": 5288,
-      "hash": "d75f69106d3b61cb6ea83a04c4828b115cf33e3a"
+      "bytes": 5630,
+      "hash": "67d9c922d39a74d2eeabc23664bc7faeaa16d91c"
     },
     {
       "path": "docs/wiki/panel-graph-workbench.md",
@@ -2332,8 +2332,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Wiki SuperAgents OS",
-      "bytes": 29748,
-      "hash": "1f30963028556114b4586f4dcd92937be4a464d0"
+      "bytes": 29751,
+      "hash": "b5be99c7508d5c8f38e389990504dc63c8ea5de2"
     },
     {
       "path": "docs/wiki/record-a-skill.md",

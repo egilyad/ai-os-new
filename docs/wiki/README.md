@@ -49,7 +49,7 @@
 - [Панель: Провайдеры и ключи](./panel-providers.md) — _verified_
 - [Панель: Задачи агентов](./panel-agent-tasks.md) — _verified_
 - [Панель: Настройки](./panel-settings.md) — _verified_
-- [Панель: Governance и безопасность](./panel-governance.md) — _verified_
+- [Панель: Governance и безопасность](./panel-governance.md) — _needs-check_
 - [Панель: База знаний (RAG)](./panel-knowledge.md) — _verified_
 - [Панель: SRE-агент](./panel-sre.md) — _verified_
 - [Панель: Наблюдаемость (логи, трейсы, здоровье)](./panel-observability.md) — _verified_

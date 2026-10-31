@@ -1406,7 +1406,7 @@ Providers → Installed → Add Key → вставить ключ → дожда
         title: 'Панель: Governance и безопасность',
         section: 'panels',
         tags: ['панель', 'governance', 'политики', 'guardrails', 'инструкция'],
-        freshness: 'verified',
+        freshness: 'needs-check',
         sources: [
             'src/components/GovernancePanel/GovernancePanel.tsx',
             'src/components/PolicyPanel/PolicyPanel.tsx',
@@ -1431,6 +1431,8 @@ flowchart LR
 ## Роли (Governance)
 
 Назначение ролей: вводится \`user_id\`, выбирается роль, кнопка «назначить». Список назначенных и доступных ролей; при пустоте — честное «ролей нет».
+
+> **Статус:** панель \`GovernancePanel\` — минимальная RBAC-реализация (observer/approver/director/auditor). Audit trail, HITL-очередь и policy-binding реализуются соседними панелями группы (Policy / Guardrails / SOP), а не самой этой панелью.
 
 ## Политики (Policy + редактор)
 
