@@ -3,6 +3,7 @@ import type { RecordedEventRow } from '../services/dexie-schema';
 import type { EventRecorderStore, RecordedEvent } from '../services/event-sourcing/event-recorder';
 import { rootLogger } from '../services/logger-service';
 import { safeJsonParse } from '../utils/safe-json';
+import { redactPiiValue } from '../utils/pii-redact';
 
 const LOGGER = rootLogger.child('EventLogRepository');
 
@@ -71,7 +72,8 @@ export class EventLogRepository implements EventRecorderStore {
                         toInsert.push({
                             sequence: ev.sequence,
                             event: ev.event,
-                            dataJson: JSON.stringify(ev.data),
+                            // W2-006: never persist raw PII in the event log.
+                            dataJson: JSON.stringify(redactPiiValue(ev.data)),
                             checksum: ev.checksum,
                             timestamp: ev.timestamp,
                         });

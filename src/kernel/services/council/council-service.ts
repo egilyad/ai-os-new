@@ -22,11 +22,7 @@ import type {
 import { genId } from '../../../utils/gen-id';
 import { rootLogger } from '../logger-service';
 import { EVENTS } from '../../events/event-names';
-import {
-    COUNCIL_LENSES,
-    COUNCIL_POLARITIES,
-    buildParticipantPrompt,
-} from './council-lenses';
+import { COUNCIL_LENSES, COUNCIL_POLARITIES, buildParticipantPrompt } from './council-lenses';
 
 const LOGGER = rootLogger.child('CouncilService');
 
@@ -88,8 +84,18 @@ export class CouncilService implements ICouncilService {
             participants.push(
                 { id: genId('cmember'), name: 'Proponent', kind: 'proponent', lensId: 'steelman' },
                 { id: genId('cmember'), name: 'Opponent', kind: 'opponent', lensId: 'devil' },
-                { id: genId('cmember'), name: 'Researcher', kind: 'researcher', lensId: 'empiricist' },
-                { id: genId('cmember'), name: 'Fact Checker', kind: 'fact_checker', lensId: 'popper' },
+                {
+                    id: genId('cmember'),
+                    name: 'Researcher',
+                    kind: 'researcher',
+                    lensId: 'empiricist',
+                },
+                {
+                    id: genId('cmember'),
+                    name: 'Fact Checker',
+                    kind: 'fact_checker',
+                    lensId: 'popper',
+                },
             );
         }
         const config = {
@@ -145,7 +151,11 @@ export class CouncilService implements ICouncilService {
     }
 
     // ── Proposal ──
-    async submitProposal(sessionId: string, authorId: string, stance: string): Promise<CouncilMessage> {
+    async submitProposal(
+        sessionId: string,
+        authorId: string,
+        stance: string,
+    ): Promise<CouncilMessage> {
         const session = await this.require(sessionId);
         this.assertPhase(session, ['proposal']);
         const author = this.requireMember(session, authorId);
@@ -169,10 +179,17 @@ export class CouncilService implements ICouncilService {
         // Optional LLM co-draft is advisory only — the submitted stance always wins.
         if (this.llm) {
             try {
-                const draft = await this.llm.draftStance({ topic: session.topic, participant: author });
-                LOGGER.debug('CouncilService', 'llm draft stance (advisory)', { len: draft.length });
+                const draft = await this.llm.draftStance({
+                    topic: session.topic,
+                    participant: author,
+                });
+                LOGGER.debug('CouncilService', 'llm draft stance (advisory)', {
+                    len: draft.length,
+                });
             } catch (e) {
-                LOGGER.warn('CouncilService', 'llm draftStance failed', { error: e instanceof Error ? e.message : String(e) });
+                LOGGER.warn('CouncilService', 'llm draftStance failed', {
+                    error: e instanceof Error ? e.message : String(e),
+                });
             }
         }
         return msg;
@@ -189,8 +206,14 @@ export class CouncilService implements ICouncilService {
         const session = await this.require(sessionId);
         this.assertPhase(session, ['proposal', 'fact_gathering']);
         const author = this.requireMember(session, authorId);
-        if (author.kind !== 'researcher' && author.kind !== 'fact_checker' && author.kind !== 'moderator') {
-            throw new Error(`Role ${author.kind} cannot submit facts (researcher/fact_checker only)`);
+        if (
+            author.kind !== 'researcher' &&
+            author.kind !== 'fact_checker' &&
+            author.kind !== 'moderator'
+        ) {
+            throw new Error(
+                `Role ${author.kind} cannot submit facts (researcher/fact_checker only)`,
+            );
         }
         const fact: FactPacket = {
             id: genId('fact'),
@@ -210,18 +233,36 @@ export class CouncilService implements ICouncilService {
         // D2.3: wire Claim → Sources → Provenance (additive, no web grounding → RUNTIME-PENDING)
         if (this.provenance) {
             try {
-                const claimNode = await this.provenance.addNode('data', `Claim: ${claim.slice(0, 120)}`, sessionId);
+                const claimNode = await this.provenance.addNode(
+                    'data',
+                    `Claim: ${claim.slice(0, 120)}`,
+                    sessionId,
+                );
                 for (const src of sources.slice(0, 5)) {
-                    const srcNode = await this.provenance.addNode('data', `Source: ${src.slice(0, 120)}`, sessionId);
+                    const srcNode = await this.provenance.addNode(
+                        'data',
+                        `Source: ${src.slice(0, 120)}`,
+                        sessionId,
+                    );
                     await this.provenance.link(srcNode.id, claimNode.id, 'informed_by');
                 }
-                const verdictNode = await this.provenance.addNode('decision', `Fact verdict:${fact.verdict}`, fact.id);
+                const verdictNode = await this.provenance.addNode(
+                    'decision',
+                    `Fact verdict:${fact.verdict}`,
+                    fact.id,
+                );
                 await this.provenance.link(claimNode.id, verdictNode.id, 'derived_from');
                 // also link verdict → session trace anchor
-                const sessionNode = await this.provenance.addNode('prompt', `Council:${session.topic.slice(0, 80)}`, sessionId);
+                const sessionNode = await this.provenance.addNode(
+                    'prompt',
+                    `Council:${session.topic.slice(0, 80)}`,
+                    sessionId,
+                );
                 await this.provenance.link(verdictNode.id, sessionNode.id, 'derived_from');
             } catch (e) {
-                LOGGER.warn('CouncilService', 'provenance wire failed (D2.3, non-fatal)', { error: e instanceof Error ? e.message : String(e) });
+                LOGGER.warn('CouncilService', 'provenance wire failed (D2.3, non-fatal)', {
+                    error: e instanceof Error ? e.message : String(e),
+                });
             }
         }
         this.events.emit(EVENTS.COUNCIL_FACT, {
@@ -339,11 +380,32 @@ export class CouncilService implements ICouncilService {
         return entry;
     }
 
-    async castAudienceVote(sessionId: string, voterId: string, pickId: string): Promise<AudienceVote> {
+    async castAudienceVote(
+        sessionId: string,
+        voterId: string,
+        pickId: string,
+    ): Promise<AudienceVote> {
         const session = await this.require(sessionId);
-        if (!session.config.allowAudienceVoting) throw new Error('Audience voting is disabled for this session');
+        if (!session.config.allowAudienceVoting)
+            throw new Error('Audience voting is disabled for this session');
         this.assertPhase(session, ['debate', 'consensus']);
-        const vote: AudienceVote = { id: genId('vote'), sessionId, voterId, pickId, createdAt: now() };
+        // W2-016: validate the vote — reject empty/wrong targets and prevent
+        // vote stuffing by the same voter.
+        if (!voterId || !voterId.trim()) throw new Error('voterId is required');
+        if (!pickId || !pickId.trim()) throw new Error('pickId is required');
+        if (pickId !== 'skip' && !session.participants.some((p) => p.id === pickId)) {
+            throw new Error('pickId must reference a participant or be "skip"');
+        }
+        if (session.votes.some((v) => v.voterId === voterId)) {
+            throw new Error('voter has already voted in this session');
+        }
+        const vote: AudienceVote = {
+            id: genId('vote'),
+            sessionId,
+            voterId,
+            pickId,
+            createdAt: now(),
+        };
         session.votes.push(vote);
         session.updatedAt = now();
         await this.repo.putSession(session);
@@ -442,9 +504,12 @@ export class CouncilService implements ICouncilService {
     }
 
     private assertPhase(session: CouncilSession, allowed: string[]): void {
-        if (session.status !== 'running') throw new Error(`Council ${session.id} is ${session.status}`);
+        if (session.status !== 'running')
+            throw new Error(`Council ${session.id} is ${session.status}`);
         if (!allowed.includes(session.phase)) {
-            throw new Error(`Phase ${session.phase} does not allow this action (allowed: ${allowed.join(', ')})`);
+            throw new Error(
+                `Phase ${session.phase} does not allow this action (allowed: ${allowed.join(', ')})`,
+            );
         }
     }
 
