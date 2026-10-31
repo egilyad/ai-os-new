@@ -218,6 +218,35 @@ export class KeyStateStore implements IKeyStateStore, ILifecycle {
         }
         this.persist();
     }
+
+    /** Ensure an entry exists for a key (used for runtime-added keys). */
+    private _ensureState(
+        id: string,
+        key: import('../types/metrics-types').ApiKey,
+    ): void {
+        if (this.states.has(id)) return;
+        const status: KeyStatus =
+            key.status === 'active'
+                ? 'ready'
+                : key.status === 'error'
+                  ? 'broken'
+                  : 'unknown';
+        this.states.set(id, {
+            id,
+            provider: key.provider,
+            label: key.label || key.provider,
+            status,
+            healthScore: status === 'ready' ? 100 : status === 'broken' ? 0 : 25,
+            lastProbe: { status, latency: 0, timestamp: Date.now() },
+            health: { ...DEFAULT_HEALTH },
+            quota: { ...DEFAULT_QUOTA },
+            routing: { weight: status === 'ready' ? 1 : 0, blocked: status !== 'ready' },
+            flags: { circuitOpen: false, rateLimited: false, authFailed: false },
+            lifecycleState: 'active',
+            updatedAt: Date.now(),
+        });
+        this.persist();
+    }
     private _purgeTimer: ReturnType<typeof setInterval> | null = null;
 
     async start(): Promise<void> {
@@ -253,13 +282,13 @@ export class KeyStateStore implements IKeyStateStore, ILifecycle {
                     if (!Array.isArray(keys)) return;
                     for (const key of keys) {
                         const s = this.states.get(key.id);
+                        const status: KeyStatus =
+                            key.status === 'active'
+                                ? 'ready'
+                                : key.status === 'error'
+                                  ? 'broken'
+                                  : 'unknown';
                         if (s) {
-                            const status: KeyStatus =
-                                key.status === 'active'
-                                    ? 'ready'
-                                    : key.status === 'error'
-                                      ? 'broken'
-                                      : 'unknown';
                             // PRESERVE authFailed across KEY_UPDATED: a key marked authFailed
                             // by a 402/401 probe must stay excluded until a real success
                             // clears it — otherwise dead keys get re-probed and re-tried
@@ -279,8 +308,22 @@ export class KeyStateStore implements IKeyStateStore, ILifecycle {
                                 flags,
                             });
                             this.recomputeRouting(key.id);
+                        } else {
+                            // Upsert keys we haven't seen (e.g. added at runtime)
+                            // so the router learns about them without a reload.
+                            this._ensureState(key.id, key);
                         }
                     }
+                },
+            ),
+        );
+
+        this.unsubs.push(
+            this.eventBus.onSafe<import('../types/metrics-types').ApiKey>(
+                EVENTS.KEY_ADDED,
+                (key) => {
+                    if (!key || !key.id) return;
+                    if (!this.states.has(key.id)) this._ensureState(key.id, key);
                 },
             ),
         );

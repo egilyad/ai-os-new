@@ -977,6 +977,10 @@ export class MemoryService implements IMemoryEngine {
                             this.cache.entries.filter((m) => (m.metadata.timestamp ?? 0) >= cutoff),
                         );
                     });
+                    // Keep the worker search index in sync with the pruned rows.
+                    for (const m of old) {
+                        await this.workerClient.send('remove', { id: m.id }).catch(() => {});
+                    }
                 }
                 details.push({ type: 'olderThan', count: old.length });
             }
@@ -1000,6 +1004,7 @@ export class MemoryService implements IMemoryEngine {
                                     { error: e },
                                 ),
                             );
+                        await this.workerClient.send('remove', { id: m.id }).catch(() => {});
                     }
                     await this.cache.withLock(async () => {
                         this.cache.setAll(

@@ -327,6 +327,15 @@ export class SessionManagerService implements ISessionManager {
         }
         if (lastError) throw lastError;
 
+        // Keep the in-memory completed-history mirror consistent with the
+        // durable store: a debate deleted here must not linger in the History
+        // panel (and vice versa).
+        const historyIdx = this.completedSessions.findIndex((s) => s.id === id);
+        if (historyIdx !== -1) {
+            this.completedSessions.splice(historyIdx, 1);
+            this.persistDebateHistory();
+        }
+
         this.eventBus.emit(EVENTS.SESSION_DELETED, { id, type });
     }
 
@@ -528,6 +537,16 @@ export class SessionManagerService implements ISessionManager {
         const idx = this.completedSessions.findIndex((s) => s.id === id);
         if (idx === -1) return false;
         this.completedSessions.splice(idx, 1);
+        // Remove the durable row too — otherwise the debate resurrects in the
+        // History panel on next reload (it is still read back from debateStore).
+        this.debateStore
+            .deleteSession(id)
+            .catch((e: unknown) => {
+                LOGGER.warn('SessionManagerService', 'deleteDebateHistory: failed to delete durable row', {
+                    error: e instanceof Error ? e.message : String(e),
+                    sessionId: id,
+                });
+            });
         this.persistDebateHistory();
         return true;
     }
