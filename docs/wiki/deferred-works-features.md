@@ -31,6 +31,17 @@
 | Рефакторинг 62 TechniquePanels → generic | Tech Map §5.6 | устранить дублирование |
 | Внешний security audit sandbox-interpreter | Tech Map §6 | безопасность |
 
+## Из «Карты доступности возможностей»
+
+| Работа | Источник | Причина |
+|---|---|---|
+| Wiki-статьи для 64 панелей без документации | Accessibility Map §1 | discovery |
+| Снизить cognitive overload (268 панелей / 22 раздела) | Accessibility Map §3 | навигация |
+| Расширить CommandPalette quick actions (10 → больше) | Accessibility Map §3.2 | discovery |
+| Onboarding: познакомить с killer-фичами (Crystal/Synthesis/Builder) | Accessibility Map §3.4 | онбординг |
+| Явная команда «what can you do?» у Assistant | Accessibility Map §3.4 | discovery |
+| Убрать/расширить stub-панели в main nav | Accessibility Map §1 | UX |
+
 ## Из аудитов (волны 2–8) — безопасность/настойчивость
 
 | Работа | Источник | Причина |

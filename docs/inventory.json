@@ -1204,8 +1204,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Отложенные работы и фичи",
-      "bytes": 3753,
-      "hash": "daec6194e48689baedbf1cb0c9a1a882c03542d9"
+      "bytes": 4578,
+      "hash": "e0066f437eb0526f44fbba478b8275cec80ef886"
     },
     {
       "path": "docs/wiki/dev-adr.md",
@@ -1228,8 +1228,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Проверки и показатели",
-      "bytes": 4074,
-      "hash": "ad1b1ad57238fa5db3702ee2df9157642ea08986"
+      "bytes": 4075,
+      "hash": "2b3a39c5214824e465880edd7d7e124624a2eb54"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -1533,7 +1533,7 @@
       "language": "mixed",
       "title": "Карта документации",
       "bytes": 31191,
-      "hash": "c7ad1bb673a48b7c2e7cf4b9f2d800d0e6ba334a"
+      "hash": "1217ff2e00001237f0c5baff260b04de939fe02b"
     },
     {
       "path": "docs/wiki/docs-standard.md",
