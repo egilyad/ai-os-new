@@ -212,7 +212,7 @@
       "category": "audits",
       "language": "ru",
       "title": "Потоки данных, владение и целостность (Data Flow & Ownership)",
-      "bytes": 3925,
+      "bytes": 3927,
       "hash": "5b739b66a711a382ecc1c61c8e50b9cb0b9aa6cd"
     },
     {
@@ -220,8 +220,8 @@
       "category": "audits",
       "language": "ru",
       "title": "Контекст, промпты и память (Context & Prompts)",
-      "bytes": 1431,
-      "hash": "3396079328345a9de80ac6b62b76cb9ac9640713"
+      "bytes": 3851,
+      "hash": "aa124af608774bb9a2661d6c681926abfb13b6ab"
     },
     {
       "path": "docs/audits/waves/card-14-knowledge-quality.md",
