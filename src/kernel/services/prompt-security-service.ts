@@ -219,6 +219,19 @@ const DEFAULT_CONFIG: SecurityScanConfig = {
     rules: DEFAULT_RULES,
 };
 
+/**
+ * W6-023: cheap heuristic for catastrophic (ReDoS) regex patterns. Not a
+ * substitute for a proper analyzer — just enough to reject the common
+ * ambiguous-nesting forms that hang a regex engine.
+ */
+function isReDoSPattern(pattern: string): boolean {
+    if (/\([^)]*\+\)\s*[*+]/.test(pattern)) return true;
+    if (/\([^)]*\*\)\s*[*+]/.test(pattern)) return true;
+    if (/\([^)]*\{[^}]*,\s*\}\)\s*[*+]/.test(pattern)) return true;
+    if (/(?:\.\*){2,}/.test(pattern)) return true;
+    return false;
+}
+
 export class PromptSecurityService implements IPromptSecurityService {
     private config: SecurityScanConfig = DEFAULT_CONFIG;
     private history: SecurityScanEvent[] = [];
@@ -360,6 +373,14 @@ export class PromptSecurityService implements IPromptSecurityService {
                     LOGGER.warn(
                         'PromptSecurityService',
                         `Rejected update — invalid regex pattern for rule ${rule.id}: ${rule.pattern}`,
+                    );
+                    return;
+                }
+                // W6-023: reject pathological patterns instead of shipping them.
+                if (isReDoSPattern(rule.pattern)) {
+                    LOGGER.warn(
+                        'PromptSecurityService',
+                        `Rejected update — ReDoS-prone pattern for rule ${rule.id}`,
                     );
                     return;
                 }
