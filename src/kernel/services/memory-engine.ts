@@ -428,7 +428,9 @@ export class MemoryService implements IMemoryEngine {
         await this.cache.withLock(async () => {
             const doPersist = async () => {
                 await this.memoryRepo.save(newEntry);
-                this.cache.unshift(newEntry);
+                // upsert (not unshift) keeps the cache idempotent: retrying a
+                // store of the same content must not create duplicate rows.
+                this.cache.upsert(newEntry);
             };
             const onCommit = () => {
                 this.deps.eventBus.emit(EVENTS.MEMORY_UPDATED, this.cache.entries);

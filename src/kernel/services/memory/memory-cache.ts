@@ -76,9 +76,12 @@ export class MemoryCache {
         }
     }
 
-    /** Prepend an array of entries (storeBatch), trimming to maxEntries. */
+    /** Prepend an array of entries (storeBatch), deduping by id, trimming to maxEntries. */
     prepend(entries: MemoryEntry[]): void {
-        this._entries = [...entries, ...this._entries];
+        const byId = new Map<string, MemoryEntry>();
+        for (const m of this._entries) byId.set(m.id, m);
+        for (const m of entries) byId.set(m.id, m);
+        this._entries = [...byId.values()];
         if (this._entries.length > this._maxEntries) {
             this._entries = this._entries.slice(0, this._maxEntries);
         }

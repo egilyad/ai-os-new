@@ -55,22 +55,41 @@ export class TelegramService {
         // P-HIGH-6: real delivery (was a log-only stub). The token was
         // shape-validated on write and re-validated on read in getBot().
         const target = bot.channelId ?? String(chatId);
-        let res: Response;
-        try {
-            res = await fetch(`https://api.telegram.org/bot${bot.botToken}/sendMessage`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ chat_id: target, text: text.slice(0, 4096) }),
-            });
-        } catch (e) {
-            throw new Error(`Telegram send failed: ${e instanceof Error ? e.message : String(e)}`, {
-                cause: e,
-            });
+        // P-RES-1: bounded retry with backoff + timeout so a hung/transient
+        // Telegram API doesn't leave the promise pending or drop the message.
+        const url = `https://api.telegram.org/bot${bot.botToken}/sendMessage`;
+        const body = JSON.stringify({ chat_id: target, text: text.slice(0, 4096) });
+        let lastError: unknown;
+        for (let attempt = 0; attempt < 3; attempt++) {
+            try {
+                const res = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body,
+                    signal: AbortSignal.timeout(8000),
+                });
+                if (res.ok) {
+                    LOGGER.info('Telegram', 'bridge send', { agentId, chatId, len: text.length });
+                    return;
+                }
+                lastError = new Error(`Telegram send failed: HTTP ${res.status}`);
+                if (res.status !== 429 && (res.status < 500 || res.status > 599)) break;
+            } catch (e) {
+                lastError = e;
+                if (e instanceof DOMException && e.name === 'TimeoutError') break;
+            }
+            if (attempt < 2) {
+                await new Promise((r) => setTimeout(r, 200 * 2 ** attempt));
+            }
         }
-        if (!res.ok) {
-            throw new Error(`Telegram send failed: HTTP ${res.status}`);
-        }
-        LOGGER.info('Telegram', 'bridge send', { agentId, chatId, len: text.length });
+        throw new Error(
+            `Telegram send failed: ${lastError instanceof Error ? lastError.message : String(lastError)}`,
+            { cause: lastError },
+        );
+    }
+
+    destroy(): void {
+        // No long-lived timers/subscriptions; retry timeouts are request-scoped.
     }
 }
 

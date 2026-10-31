@@ -19,21 +19,37 @@ export class N8NService {
         if (!cfg.url) throw new Error(`No N8N URL for agent ${agentId}`);
         const endpoint = `${cfg.url.replace(/\/$/, '')}/api/v1/workflows/${workflowId}/execute`;
         LOGGER.info('N8N', 'trigger', { agentId, workflowId });
-        try {
-            const res = await fetch(endpoint, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    ...(cfg.apiKey ? { 'X-N8N-API-KEY': cfg.apiKey } : {}),
-                },
-                body: JSON.stringify(payload),
-            });
-            if (!res.ok) throw new Error(`N8N ${res.status}: ${await res.text()}`);
-            return await res.json();
-        } catch (e) {
-            LOGGER.warn('N8N', 'trigger failed', { error: e instanceof Error ? e.message : String(e) });
-            throw e;
+        // P-RES-1: bounded retry with backoff + timeout for transient/5xx failures.
+        const body = JSON.stringify(payload);
+        let lastError: unknown;
+        for (let attempt = 0; attempt < 3; attempt++) {
+            try {
+                const res = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...(cfg.apiKey ? { 'X-N8N-API-KEY': cfg.apiKey } : {}),
+                    },
+                    body,
+                    signal: AbortSignal.timeout(10000),
+                });
+                if (res.ok) return await res.json();
+                lastError = new Error(`N8N ${res.status}: ${await res.text()}`);
+                if (res.status !== 429 && (res.status < 500 || res.status > 599)) break;
+            } catch (e) {
+                lastError = e;
+                if (e instanceof DOMException && e.name === 'TimeoutError') break;
+            }
+            if (attempt < 2) {
+                await new Promise((r) => setTimeout(r, 250 * 2 ** attempt));
+            }
         }
+        LOGGER.warn('N8N', 'trigger failed', { error: String(lastError) });
+        throw lastError instanceof Error ? lastError : new Error(String(lastError));
+    }
+
+    destroy(): void {
+        // No long-lived timers/subscriptions; retry timeouts are request-scoped.
     }
 
     private async resolveConfig(agentId: string): Promise<{ url?: string; apiKey?: string }> {

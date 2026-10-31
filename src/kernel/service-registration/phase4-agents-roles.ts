@@ -10,6 +10,7 @@
  */
 import type { Phase } from './helpers';
 import type { IEventBus, IDatabaseService } from '../types/interfaces';
+import { rootLogger } from '../services/logger-service';
 import type { ILocalStorageAdapter } from '../contracts/storage-adapter';
 import type { StorageLayer, RolesStore, SkillsStore } from '../contracts/storage/storage-layer';
 import type { IDiagnosticService } from '../contracts/diagnostic-service';
@@ -93,14 +94,14 @@ export const registerPhase4: Phase = (helpers, ctx) => {
                 return c.get<OrchestrationService>('orchestrator');
             },
         });
-        void svc.init();
+        void svc.init().catch((e) => rootLogger.warn('Phase4', 'agentService.init failed', { error: e }));
         return svc;
     });
 
     // A-04: templateService.init() called inside factory on first get()
     register('templateService', (c) => {
         const ts = new TemplateService({ database: c.get<IDatabaseService>('database') });
-        void ts.init();
+        void ts.init().catch((e) => rootLogger.warn('Phase4', 'templateService.init failed', { error: e }));
         return ts;
     });
 
@@ -127,7 +128,7 @@ export const registerPhase4: Phase = (helpers, ctx) => {
             database: c.get<IDatabaseService>('database'),
             agentService: c.get<AgentService>('agentService'),
         });
-        void ahm.start();
+        void ahm.start().catch((e) => rootLogger.warn('Phase4', 'agentHealthMonitor.start failed', { error: e }));
         ctx.registerWithLifecycle('agentHealthMonitor', ahm);
         return ahm;
     });
@@ -190,7 +191,7 @@ export const registerPhase4: Phase = (helpers, ctx) => {
             orchestrator: c.get<OrchestrationService>('orchestrator'),
             roleVersionService: c.get<RoleVersionService>('roleVersionService'),
         });
-        void svc.init();
+        void svc.init().catch((e) => rootLogger.warn('Phase4', 'roleService.init failed', { error: e }));
         return svc;
     });
 
