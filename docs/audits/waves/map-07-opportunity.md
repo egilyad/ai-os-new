@@ -964,6 +964,22 @@ _(пересчитано — 9 quick wins, не 6, поскольку грани
 
 ---
 
+## Сверка с аудитами (волны 2–8)
+
+Дополнительные данные по opportunities из волн аудитов (реализовано позже):
+
+- W4-001/002: deploy-гейт (исправлено) и расширение `test:stable` — Opportunity coverage-gate.
+- W4-025 / W8-004: sidecar auth/SSRF (исправлено) — Opportunity security.
+- W6-023: ReDoS-гвард в prompt-security/policy (исправлено) — Opportunity safety.
+- W6-038: budget-exceeded → 402 (исправлено) — Opportunity cost-enforcement.
+- W6-032/033/034: budget retention, counters persist, percentiles (исправлено) — Opportunity metrics health.
+- W7-UNI-007: IME/maxLength (исправлено) — Opportunity input correctness.
+- W2-016: валидация голосования (исправлено) — Opportunity governance.
+- W8-017: лимит ExecutionQueue (исправлено) — Opportunity resilience.
+- Крупные opportunities (Builder killer-nodes, round-trip import, unified overviews) — по-прежнему открыты.
+
+---
+
 _Отчёт сгенерирован 2026-10-31 на основе коммита `e08ab8e`. Синтез 11 предыдущих карт в actionable strategy. Все 28 opportunities — data-backed из статического анализа кодовой базы. Runtime validation требует прототипирования._
 
 _Парные отчёты: «Карта готовности панелей», «Карта функциональной ценности», «Карта технического состояния», «Карта использования ресурсов», «Карта функционального дублирования», «Карта зависимостей», «Карта жизненного цикла», «Карта доступности возможностей», «Карта функциональных пробелов», «Карта интеграции», «Карта пользовательских сценариев»._
