@@ -388,8 +388,8 @@
       "category": "audits",
       "language": "mixed",
       "title": "Карта функционального дублирования — Duplication Map",
-      "bytes": 58187,
-      "hash": "304670158af6cf333dddbc51c64afa398b5a69b9"
+      "bytes": 59173,
+      "hash": "88697048b72ab2b02c033791a55ba131788b0c5d"
     },
     {
       "path": "docs/audits/waves/map-10-resource-consumption.md",
