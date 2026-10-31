@@ -295,7 +295,6 @@
 - [Заблокированные задачи](./dev-status-blocked.md) — _needs-check_
 - [Roadmaps](./dev-status-roadmaps.md) — _needs-check_
 - [MD и другие файлы от разработки](./dev-status-files.md) — _needs-check_
-- [Карта отложенных проблем](../known-issues-deferred.md) — _documented_
 
 ## Разработчикам (52)
 

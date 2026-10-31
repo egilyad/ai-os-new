@@ -20,10 +20,10 @@
 | Показатель | Значение | Как считается |
 | --- | --- | --- |
 | Статей проверено | 284 | файлы `docs/wiki/*.md`, кроме индекса и этой страницы |
-| Битые ссылки на исходники | 15 | пути из строки «Источники:» резолвятся как модули (расширение / index / glob) |
+| Битые ссылки на исходники | 0 | пути из строки «Источники:» резолвятся как модули (расширение / index / glob) |
 | Битые внутренние ссылки | 0 | markdown-ссылки внутри статей ведут на существующие файлы |
 | Неполные статьи | 9 | текст короче 250 символов или пометка «пока не написана» |
-| Статьи без источников | 36 | отсутствует строка «Источники:» (из них помечены verified: 0) |
+| Статьи без источников | 43 | отсутствует строка «Источники:» (из них помечены verified: 2) |
 | Панели с документацией | 178/184 | обычные панели из реестра маршрутов сопоставлены со статьёй |
 | &nbsp;&nbsp;авто-панели техник | 84 | покрыты статьёй [Каталог панелей: раздел → маршрут → компонент → статья](./panels-catalog.md), пробелом не считаются |
 | Проблемы манифеста | 0 | ссылки в `docs/manifest.json` резолвятся |
@@ -31,28 +31,11 @@
 | README → вики | 138 (RU) / 138 (EN) | ссылки README.md и README_EN.md в `docs/wiki/*.md` резолвятся |
 | README RU/EN расхождение | 0 | разница наборов статей между README.md и README_EN.md |
 | Статьи вне README | 147 | не залинкованные напрямую из README.md |
-| Статьи недостижимые по ссылкам | 3 | нет пути от README через внутренние ссылки (каталоги, индексы) |
+| Статьи недостижимые по ссылкам | 0 | нет пути от README через внутренние ссылки (каталоги, индексы) |
 
-Итог: **есть проблемы** — hard-ошибок: 15.
+Итог: **здорово** — hard-ошибок нет.
 
 ## Что требует внимания
-
-Битые источники (15):
-- agents → `docs/audits/agent-team-audit-memory-history-management.md`
-- architecture → `docs/SYSTEM_MANIFEST_RU.md`
-- audit-index → `docs/audits/`
-- audit-methodology → `docs/audits/`
-- audit-overview → `docs/audits/`
-- audit-textbook → `docs/audits-tips/auditstips.md`
-- comp-overview → `docs/SERVICES_RU.md`
-- diagnostics → `docs/audits/agent-team-audit-memory-history-management.md`
-- execution-trail → `docs/audits/agent-team-audit-memory-history-management.md`
-- fetched-sites → `docs/fetched-sites/README.md`
-- memory → `docs/audits/agent-team-audit-memory-history-management.md`
-- research-multiagent-patterns → `docs/research/multiagent-os-patterns.md`
-- research-os-index → `docs/research/`
-- roadmap-notes → `docs/roadmap/README.md`
-- what-is → `docs/SYSTEM_MANIFEST_RU.md`
 
 Панели без статьи (6):
 - exceptions (dashboard)
@@ -62,10 +45,9 @@
 - wiki-brain (wiki)
 - architecture-map (wiki)
 
-Недостижимы от README по ссылкам (3):
-- audit-textbook
-- fetched-sites
-- record-a-skill
+Помечены verified, но без источников (2):
+- audit-index
+- audit-methodology
 
 ## Как это проверяется
 
