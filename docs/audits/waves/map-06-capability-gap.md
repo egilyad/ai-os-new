@@ -554,4 +554,19 @@ BudgetAlertsPanel (322 строки) + polling. ✅
 
 ---
 
+## Сверка с аудитами (волны 2–8)
+
+Дополнительные факты по пробелам из волн аудитов:
+
+- W4-042: `parseAndWriteFiles` пишет файлы из raw LLM-вывода без Approval/ToolGovernance/AgentPermission/ToolPipeline.
+- W4-043: `autonomy-agent`/`autonomy-loop` не зарегистрированы в permission (обходят `guarded`).
+- W4-044: пресет AUTOPILOT без admin-гейта; `autoApproveAfterMin` (исправлено: ≥60 мин).
+- W2-016: произвольный voterId/pickId в голосовании (исправлено).
+- W8-009: LLM JSON без schema-валидации (исправлено частично → tool-loop).
+- W3-006: export/import покрывает 16/136 доменов (round-trip неполный).
+- W7-ANA-007: multi-tab потеря данных (LWW).
+- W8-019: ChannelService — unbounded/ghost cursors/private bypass.
+
+---
+
 _Отчёт сгенерирован 2026-10-31 на основе коммита `e08ab8e`. Анализ статический; runtime capability testing не проводился. Парные отчёты: «Карта готовности панелей», «Карта функциональной ценности», «Карта технического состояния», «Карта использования ресурсов», «Карта функционального дублирования», «Карта зависимостей», «Карта жизненного цикла», «Карта доступности возможностей»._

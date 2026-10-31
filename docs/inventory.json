@@ -364,8 +364,8 @@
       "category": "audits",
       "language": "mixed",
       "title": "Карта функциональных пробелов — Capability Gap Map",
-      "bytes": 42021,
-      "hash": "e16df5897e835507c1fea2a2b523c94edf6f23f5"
+      "bytes": 42986,
+      "hash": "8523280f99940a2037e6a0e64ec90f79dee30db3"
     },
     {
       "path": "docs/audits/waves/map-07-opportunity.md",
