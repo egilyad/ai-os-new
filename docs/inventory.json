@@ -204,7 +204,7 @@
       "category": "audits",
       "language": "ru",
       "title": "Безопасность, доверие и границы (Security & Trust)",
-      "bytes": 5164,
+      "bytes": 5168,
       "hash": "fb158216fbc215a1ce4975e3d73a75d249a453da"
     },
     {
@@ -212,8 +212,8 @@
       "category": "audits",
       "language": "ru",
       "title": "Потоки данных, владение и целостность (Data Flow & Ownership)",
-      "bytes": 1497,
-      "hash": "aa672239386647bb6ec11d5e100c42c04363a4b6"
+      "bytes": 3925,
+      "hash": "5b739b66a711a382ecc1c61c8e50b9cb0b9aa6cd"
     },
     {
       "path": "docs/audits/waves/card-13-context-prompts-memory.md",
