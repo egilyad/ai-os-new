@@ -380,8 +380,8 @@
       "category": "audits",
       "language": "mixed",
       "title": "Карта доступности возможностей — Capability Accessibility Map",
-      "bytes": 59625,
-      "hash": "12118393776778205a997604c23b60ddeb4c5e50"
+      "bytes": 60605,
+      "hash": "bb3f66313cfd2f1bcea2ddbd62872e45eac1a702"
     },
     {
       "path": "docs/audits/waves/map-09-duplication.md",
