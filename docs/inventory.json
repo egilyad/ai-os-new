@@ -316,8 +316,8 @@
       "category": "audits",
       "language": "ru",
       "title": "Наблюдаемость (расширенная) (Observability Deep)",
-      "bytes": 1293,
-      "hash": "52abcc521729edf76c0f29750746f4a47a7d2cb4"
+      "bytes": 2810,
+      "hash": "efb5ee86d9a96dad7c670dedf6a162ed1b23a265"
     },
     {
       "path": "docs/audits/waves/map-01-requirements.md",
