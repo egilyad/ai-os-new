@@ -10850,7 +10850,180 @@
       "status": "live"
     }
   ],
-  "audits": [],
+  "audits": [
+    {
+      "id": "audit:waves--map-01-requirements",
+      "type": "audit",
+      "path": "docs/audits/waves/map-01-requirements.md",
+      "title": "map-01-requirements.md",
+      "date": "2026-10-31",
+      "mentions": [
+        "src/components/ChatPanel/ChatPanel.tsx",
+        "src/components/GovernancePanel/GovernancePanel.test.tsx",
+        "src/components/GovernancePanel/GovernancePanel.tsx",
+        "src/components/HealthPanel/HealthPanel.tsx",
+        "src/components/LearnHubPanel.tsx",
+        "src/components/SREAgentPanel/SREAgentPanel.tsx",
+        "src/components/SocialLeaderboardPanel.tsx",
+        "src/components/TasksPanel/TasksPanel.tsx",
+        "src/components/TechniquePanels/HumorPanel.tsx",
+        "src/components/TechniquePanels/technique-panels-smoke.test.tsx",
+        "src/components/panel-smoke-tests.test.tsx",
+        "src/i18n/translations/ru/nav.ts",
+        "src/kernel/container.ts",
+        "src/route-registry-core.ts"
+      ],
+      "tests": [
+        "src/components/ChatPanel/ChatPanel.test.tsx",
+        "src/components/GovernancePanel/GovernancePanel.test.tsx",
+        "src/components/HealthPanel/HealthPanel.test.tsx",
+        "src/components/SREAgentPanel/SREAgentPanel.test.tsx",
+        "src/components/TasksPanel/TasksPanel.test.tsx",
+        "src/kernel/container.test.ts"
+      ]
+    },
+    {
+      "id": "audit:waves--map-02-feature-value",
+      "type": "audit",
+      "path": "docs/audits/waves/map-02-feature-value.md",
+      "title": "map-02-feature-value.md",
+      "date": "2026-10-31",
+      "mentions": [],
+      "tests": []
+    },
+    {
+      "id": "audit:waves--map-03-technical-health",
+      "type": "audit",
+      "path": "docs/audits/waves/map-03-technical-health.md",
+      "title": "map-03-technical-health.md",
+      "date": "2026-10-31",
+      "mentions": [],
+      "tests": []
+    },
+    {
+      "id": "audit:waves--map-04-observability-diagnostics",
+      "type": "audit",
+      "path": "docs/audits/waves/map-04-observability-diagnostics.md",
+      "title": "map-04-observability-diagnostics.md",
+      "date": "2026-10-31",
+      "mentions": [
+        "src/components/Common/ErrorBoundary.tsx",
+        "src/components/Sidebar.tsx",
+        "src/kernel/bootstrap.ts",
+        "src/kernel/events/event-names.ts",
+        "src/kernel/services/lifecycle-manager.ts",
+        "src/kernel/utils/memory-watchdog.ts"
+      ],
+      "tests": [
+        "src/components/Common/ErrorBoundary.test.tsx",
+        "src/kernel/services/lifecycle-manager.test.ts",
+        "src/kernel/utils/memory-watchdog.test.ts"
+      ]
+    },
+    {
+      "id": "audit:waves--map-05-dead-abandoned",
+      "type": "audit",
+      "path": "docs/audits/waves/map-05-dead-abandoned.md",
+      "title": "map-05-dead-abandoned.md",
+      "date": "2026-10-31",
+      "mentions": [
+        "src/components/AppLayout.tsx",
+        "src/components/AquariumPanel/AquariumPanel.tsx",
+        "src/components/FederatedMemoryPanel.tsx",
+        "src/kernel/events/event-bus.ts",
+        "src/kernel/services/config-registry.ts",
+        "src/kernel/services/deploy-service.ts",
+        "src/kernel/services/dexie-schema.ts",
+        "src/kernel/services/health-sla-service.ts",
+        "src/kernel/services/model-distillation-service.ts",
+        "src/kernel/services/obs-gaps-service.ts",
+        "src/kernel/services/provider-migration-service.ts",
+        "src/kernel/utils/memory-watchdog.ts"
+      ],
+      "tests": [
+        "src/components/AquariumPanel/AquariumPanel.test.tsx",
+        "src/components/FederatedMemoryPanel.test.tsx",
+        "src/kernel/events/event-bus.test.ts",
+        "src/kernel/services/config-registry.test.ts",
+        "src/kernel/services/health-sla-service.test.ts",
+        "src/kernel/utils/memory-watchdog.test.ts"
+      ]
+    },
+    {
+      "id": "audit:waves--map-06-capability-gap",
+      "type": "audit",
+      "path": "docs/audits/waves/map-06-capability-gap.md",
+      "title": "map-06-capability-gap.md",
+      "date": "2026-10-31",
+      "mentions": [
+        "src/components/BuilderPanel/ComponentPalette.tsx",
+        "src/components/BuilderPanel/builder-nodes.tsx",
+        "src/components/ExportImportPanel.tsx",
+        "src/kernel/services/dexie-schema.ts"
+      ],
+      "tests": []
+    },
+    {
+      "id": "audit:waves--map-07-opportunity",
+      "type": "audit",
+      "path": "docs/audits/waves/map-07-opportunity.md",
+      "title": "map-07-opportunity.md",
+      "date": "2026-10-31",
+      "mentions": [],
+      "tests": []
+    },
+    {
+      "id": "audit:waves--map-08-capability-accessibility",
+      "type": "audit",
+      "path": "docs/audits/waves/map-08-capability-accessibility.md",
+      "title": "map-08-capability-accessibility.md",
+      "date": "2026-10-31",
+      "mentions": [
+        "src/components/AppLayout.tsx",
+        "src/components/Assistant/AssistantPanel.tsx",
+        "src/components/Assistant/panel-actions-catalog.ts",
+        "src/components/CommandPalette.tsx",
+        "src/components/Common/KeyboardShortcutsModal.tsx",
+        "src/components/Layout/NextActionPredictions.tsx",
+        "src/components/ModuleInfo.tsx",
+        "src/components/NavGraphPanel/NavGraphPanel.tsx",
+        "src/components/Sidebar.tsx"
+      ],
+      "tests": [
+        "src/components/Assistant/AssistantPanel.test.tsx",
+        "src/components/Assistant/panel-actions-catalog.test.ts"
+      ]
+    },
+    {
+      "id": "audit:waves--map-09-duplication",
+      "type": "audit",
+      "path": "docs/audits/waves/map-09-duplication.md",
+      "title": "map-09-duplication.md",
+      "date": "2026-10-31",
+      "mentions": [
+        "src/kernel/contracts/index.ts"
+      ],
+      "tests": []
+    },
+    {
+      "id": "audit:waves--map-10-resource-consumption",
+      "type": "audit",
+      "path": "docs/audits/waves/map-10-resource-consumption.md",
+      "title": "map-10-resource-consumption.md",
+      "date": "2026-10-31",
+      "mentions": [
+        "src/App.tsx",
+        "src/components/Common/usePolling.ts",
+        "src/kernel/bootstrap-phases.ts",
+        "src/kernel/bootstrap.ts",
+        "src/kernel/utils/memory-watchdog.ts",
+        "src/route-imports.ts"
+      ],
+      "tests": [
+        "src/kernel/utils/memory-watchdog.test.ts"
+      ]
+    }
+  ],
   "catalogs": [
     {
       "id": "catalog:panels",

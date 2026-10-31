@@ -3,14 +3,15 @@
   "generatedBy": "scripts/gen-docs-inventory.mjs",
   "scope": "git-tracked markdown: docs/**/*.md (excluding docs/new drafts and the self-report pages docs-health, docs-inventory) plus repository entry docs (root *.md, .superagents/**, src/kernel/DEPENDENCY_MAP.md)",
   "totals": {
-    "documents": 318,
+    "documents": 328,
     "byCategory": {
       "repo": 9,
       "top": 25,
+      "audits": 10,
       "wiki": 284
     },
     "byLanguage": {
-      "en": 34,
+      "en": 44,
       "mixed": 62,
       "ru": 222
     }
@@ -199,6 +200,86 @@
       "hash": "2f02dd340a39842c9aca4be9bda5b0b319a7e980"
     },
     {
+      "path": "docs/audits/waves/map-01-requirements.md",
+      "category": "audits",
+      "language": "en",
+      "title": "map-01-requirements.md",
+      "bytes": 85745,
+      "hash": "9902d6d86794d6f6d5e0d2d52731a9a3e7649362"
+    },
+    {
+      "path": "docs/audits/waves/map-02-feature-value.md",
+      "category": "audits",
+      "language": "en",
+      "title": "map-02-feature-value.md",
+      "bytes": 84437,
+      "hash": "ae56ad6f5fc0ae1e1806df5974ba26d4eed7214b"
+    },
+    {
+      "path": "docs/audits/waves/map-03-technical-health.md",
+      "category": "audits",
+      "language": "en",
+      "title": "map-03-technical-health.md",
+      "bytes": 67549,
+      "hash": "07dc21e206df0a05606289227b9b0212220c430b"
+    },
+    {
+      "path": "docs/audits/waves/map-04-observability-diagnostics.md",
+      "category": "audits",
+      "language": "en",
+      "title": "map-04-observability-diagnostics.md",
+      "bytes": 44161,
+      "hash": "393d48f470f84fbf4477bc371c6059a3dc6f3125"
+    },
+    {
+      "path": "docs/audits/waves/map-05-dead-abandoned.md",
+      "category": "audits",
+      "language": "en",
+      "title": "map-05-dead-abandoned.md",
+      "bytes": 47480,
+      "hash": "a3d3ce6333f6b5083e07666636bc66091c1a6c21"
+    },
+    {
+      "path": "docs/audits/waves/map-06-capability-gap.md",
+      "category": "audits",
+      "language": "en",
+      "title": "map-06-capability-gap.md",
+      "bytes": 46539,
+      "hash": "1cabae6ee5f07e7bb2e1025e9a0ed66a90ca2f75"
+    },
+    {
+      "path": "docs/audits/waves/map-07-opportunity.md",
+      "category": "audits",
+      "language": "en",
+      "title": "map-07-opportunity.md",
+      "bytes": 70059,
+      "hash": "737f835d5d2660ff779815cd50e58d2f9822c8e3"
+    },
+    {
+      "path": "docs/audits/waves/map-08-capability-accessibility.md",
+      "category": "audits",
+      "language": "en",
+      "title": "map-08-capability-accessibility.md",
+      "bytes": 64838,
+      "hash": "cc3b9919ff2451a98b5150c6e1a4107f3b335d2f"
+    },
+    {
+      "path": "docs/audits/waves/map-09-duplication.md",
+      "category": "audits",
+      "language": "en",
+      "title": "map-09-duplication.md",
+      "bytes": 59968,
+      "hash": "23cbf3041d77b0b01556c349663dc65985e3ed46"
+    },
+    {
+      "path": "docs/audits/waves/map-10-resource-consumption.md",
+      "category": "audits",
+      "language": "en",
+      "title": "map-10-resource-consumption.md",
+      "bytes": 68420,
+      "hash": "4f087fc0dea12e5a3b9097e4648ea55f7e8eb962"
+    },
+    {
       "path": "docs/COGNITIVE_RUNTIME_SPEC.md",
       "category": "top",
       "language": "mixed",
@@ -227,8 +308,8 @@
       "category": "top",
       "language": "mixed",
       "title": "Карта отложенных проблем (Deferred / Known Issues)",
-      "bytes": 31854,
-      "hash": "7b3ffff003c77fe5cfcb48b660db0e7bb561000a"
+      "bytes": 57263,
+      "hash": "4d2acbf67e5aac0b0db833f7ba8d4898005808c4"
     },
     {
       "path": "docs/NAVIGATION_MAP.md",

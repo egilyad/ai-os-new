@@ -3,15 +3,18 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 1361,
-    "edges": 2482,
+    "nodes": 1371,
+    "edges": 2552,
     "byType": {
+      "audit": 10,
       "code": 610,
       "test": 198,
       "panel": 268,
       "article": 285
     },
     "byKind": {
+      "audit_test": 18,
+      "audit_mention": 52,
       "documents": 204,
       "test": 294,
       "source": 891,
@@ -19,6 +22,76 @@
     }
   },
   "nodes": [
+    {
+      "id": "audit:waves--map-01-requirements",
+      "type": "audit",
+      "label": "map-01-requirements.md",
+      "path": "docs/audits/waves/map-01-requirements.md",
+      "date": "2026-10-31"
+    },
+    {
+      "id": "audit:waves--map-02-feature-value",
+      "type": "audit",
+      "label": "map-02-feature-value.md",
+      "path": "docs/audits/waves/map-02-feature-value.md",
+      "date": "2026-10-31"
+    },
+    {
+      "id": "audit:waves--map-03-technical-health",
+      "type": "audit",
+      "label": "map-03-technical-health.md",
+      "path": "docs/audits/waves/map-03-technical-health.md",
+      "date": "2026-10-31"
+    },
+    {
+      "id": "audit:waves--map-04-observability-diagnostics",
+      "type": "audit",
+      "label": "map-04-observability-diagnostics.md",
+      "path": "docs/audits/waves/map-04-observability-diagnostics.md",
+      "date": "2026-10-31"
+    },
+    {
+      "id": "audit:waves--map-05-dead-abandoned",
+      "type": "audit",
+      "label": "map-05-dead-abandoned.md",
+      "path": "docs/audits/waves/map-05-dead-abandoned.md",
+      "date": "2026-10-31"
+    },
+    {
+      "id": "audit:waves--map-06-capability-gap",
+      "type": "audit",
+      "label": "map-06-capability-gap.md",
+      "path": "docs/audits/waves/map-06-capability-gap.md",
+      "date": "2026-10-31"
+    },
+    {
+      "id": "audit:waves--map-07-opportunity",
+      "type": "audit",
+      "label": "map-07-opportunity.md",
+      "path": "docs/audits/waves/map-07-opportunity.md",
+      "date": "2026-10-31"
+    },
+    {
+      "id": "audit:waves--map-08-capability-accessibility",
+      "type": "audit",
+      "label": "map-08-capability-accessibility.md",
+      "path": "docs/audits/waves/map-08-capability-accessibility.md",
+      "date": "2026-10-31"
+    },
+    {
+      "id": "audit:waves--map-09-duplication",
+      "type": "audit",
+      "label": "map-09-duplication.md",
+      "path": "docs/audits/waves/map-09-duplication.md",
+      "date": "2026-10-31"
+    },
+    {
+      "id": "audit:waves--map-10-resource-consumption",
+      "type": "audit",
+      "label": "map-10-resource-consumption.md",
+      "path": "docs/audits/waves/map-10-resource-consumption.md",
+      "date": "2026-10-31"
+    },
     {
       "id": "file:.dependency-cruiser.cjs",
       "type": "code",
@@ -7932,6 +8005,356 @@
     }
   ],
   "edges": [
+    {
+      "from": "audit:waves--map-01-requirements",
+      "to": "file:src/components/ChatPanel/ChatPanel.test.tsx",
+      "kind": "audit_test"
+    },
+    {
+      "from": "audit:waves--map-01-requirements",
+      "to": "file:src/components/ChatPanel/ChatPanel.tsx",
+      "kind": "audit_mention"
+    },
+    {
+      "from": "audit:waves--map-01-requirements",
+      "to": "file:src/components/GovernancePanel/GovernancePanel.test.tsx",
+      "kind": "audit_mention"
+    },
+    {
+      "from": "audit:waves--map-01-requirements",
+      "to": "file:src/components/GovernancePanel/GovernancePanel.test.tsx",
+      "kind": "audit_test"
+    },
+    {
+      "from": "audit:waves--map-01-requirements",
+      "to": "file:src/components/GovernancePanel/GovernancePanel.tsx",
+      "kind": "audit_mention"
+    },
+    {
+      "from": "audit:waves--map-01-requirements",
+      "to": "file:src/components/HealthPanel/HealthPanel.test.tsx",
+      "kind": "audit_test"
+    },
+    {
+      "from": "audit:waves--map-01-requirements",
+      "to": "file:src/components/HealthPanel/HealthPanel.tsx",
+      "kind": "audit_mention"
+    },
+    {
+      "from": "audit:waves--map-01-requirements",
+      "to": "file:src/components/LearnHubPanel.tsx",
+      "kind": "audit_mention"
+    },
+    {
+      "from": "audit:waves--map-01-requirements",
+      "to": "file:src/components/panel-smoke-tests.test.tsx",
+      "kind": "audit_mention"
+    },
+    {
+      "from": "audit:waves--map-01-requirements",
+      "to": "file:src/components/SocialLeaderboardPanel.tsx",
+      "kind": "audit_mention"
+    },
+    {
+      "from": "audit:waves--map-01-requirements",
+      "to": "file:src/components/SREAgentPanel/SREAgentPanel.test.tsx",
+      "kind": "audit_test"
+    },
+    {
+      "from": "audit:waves--map-01-requirements",
+      "to": "file:src/components/SREAgentPanel/SREAgentPanel.tsx",
+      "kind": "audit_mention"
+    },
+    {
+      "from": "audit:waves--map-01-requirements",
+      "to": "file:src/components/TasksPanel/TasksPanel.test.tsx",
+      "kind": "audit_test"
+    },
+    {
+      "from": "audit:waves--map-01-requirements",
+      "to": "file:src/components/TasksPanel/TasksPanel.tsx",
+      "kind": "audit_mention"
+    },
+    {
+      "from": "audit:waves--map-01-requirements",
+      "to": "file:src/components/TechniquePanels/HumorPanel.tsx",
+      "kind": "audit_mention"
+    },
+    {
+      "from": "audit:waves--map-01-requirements",
+      "to": "file:src/components/TechniquePanels/technique-panels-smoke.test.tsx",
+      "kind": "audit_mention"
+    },
+    {
+      "from": "audit:waves--map-01-requirements",
+      "to": "file:src/i18n/translations/ru/nav.ts",
+      "kind": "audit_mention"
+    },
+    {
+      "from": "audit:waves--map-01-requirements",
+      "to": "file:src/kernel/container.test.ts",
+      "kind": "audit_test"
+    },
+    {
+      "from": "audit:waves--map-01-requirements",
+      "to": "file:src/kernel/container.ts",
+      "kind": "audit_mention"
+    },
+    {
+      "from": "audit:waves--map-01-requirements",
+      "to": "file:src/route-registry-core.ts",
+      "kind": "audit_mention"
+    },
+    {
+      "from": "audit:waves--map-04-observability-diagnostics",
+      "to": "file:src/components/Common/ErrorBoundary.test.tsx",
+      "kind": "audit_test"
+    },
+    {
+      "from": "audit:waves--map-04-observability-diagnostics",
+      "to": "file:src/components/Common/ErrorBoundary.tsx",
+      "kind": "audit_mention"
+    },
+    {
+      "from": "audit:waves--map-04-observability-diagnostics",
+      "to": "file:src/components/Sidebar.tsx",
+      "kind": "audit_mention"
+    },
+    {
+      "from": "audit:waves--map-04-observability-diagnostics",
+      "to": "file:src/kernel/bootstrap.ts",
+      "kind": "audit_mention"
+    },
+    {
+      "from": "audit:waves--map-04-observability-diagnostics",
+      "to": "file:src/kernel/events/event-names.ts",
+      "kind": "audit_mention"
+    },
+    {
+      "from": "audit:waves--map-04-observability-diagnostics",
+      "to": "file:src/kernel/services/lifecycle-manager.test.ts",
+      "kind": "audit_test"
+    },
+    {
+      "from": "audit:waves--map-04-observability-diagnostics",
+      "to": "file:src/kernel/services/lifecycle-manager.ts",
+      "kind": "audit_mention"
+    },
+    {
+      "from": "audit:waves--map-04-observability-diagnostics",
+      "to": "file:src/kernel/utils/memory-watchdog.test.ts",
+      "kind": "audit_test"
+    },
+    {
+      "from": "audit:waves--map-04-observability-diagnostics",
+      "to": "file:src/kernel/utils/memory-watchdog.ts",
+      "kind": "audit_mention"
+    },
+    {
+      "from": "audit:waves--map-05-dead-abandoned",
+      "to": "file:src/components/AppLayout.tsx",
+      "kind": "audit_mention"
+    },
+    {
+      "from": "audit:waves--map-05-dead-abandoned",
+      "to": "file:src/components/AquariumPanel/AquariumPanel.test.tsx",
+      "kind": "audit_test"
+    },
+    {
+      "from": "audit:waves--map-05-dead-abandoned",
+      "to": "file:src/components/AquariumPanel/AquariumPanel.tsx",
+      "kind": "audit_mention"
+    },
+    {
+      "from": "audit:waves--map-05-dead-abandoned",
+      "to": "file:src/components/FederatedMemoryPanel.test.tsx",
+      "kind": "audit_test"
+    },
+    {
+      "from": "audit:waves--map-05-dead-abandoned",
+      "to": "file:src/components/FederatedMemoryPanel.tsx",
+      "kind": "audit_mention"
+    },
+    {
+      "from": "audit:waves--map-05-dead-abandoned",
+      "to": "file:src/kernel/events/event-bus.test.ts",
+      "kind": "audit_test"
+    },
+    {
+      "from": "audit:waves--map-05-dead-abandoned",
+      "to": "file:src/kernel/events/event-bus.ts",
+      "kind": "audit_mention"
+    },
+    {
+      "from": "audit:waves--map-05-dead-abandoned",
+      "to": "file:src/kernel/services/config-registry.test.ts",
+      "kind": "audit_test"
+    },
+    {
+      "from": "audit:waves--map-05-dead-abandoned",
+      "to": "file:src/kernel/services/config-registry.ts",
+      "kind": "audit_mention"
+    },
+    {
+      "from": "audit:waves--map-05-dead-abandoned",
+      "to": "file:src/kernel/services/deploy-service.ts",
+      "kind": "audit_mention"
+    },
+    {
+      "from": "audit:waves--map-05-dead-abandoned",
+      "to": "file:src/kernel/services/dexie-schema.ts",
+      "kind": "audit_mention"
+    },
+    {
+      "from": "audit:waves--map-05-dead-abandoned",
+      "to": "file:src/kernel/services/health-sla-service.test.ts",
+      "kind": "audit_test"
+    },
+    {
+      "from": "audit:waves--map-05-dead-abandoned",
+      "to": "file:src/kernel/services/health-sla-service.ts",
+      "kind": "audit_mention"
+    },
+    {
+      "from": "audit:waves--map-05-dead-abandoned",
+      "to": "file:src/kernel/services/model-distillation-service.ts",
+      "kind": "audit_mention"
+    },
+    {
+      "from": "audit:waves--map-05-dead-abandoned",
+      "to": "file:src/kernel/services/obs-gaps-service.ts",
+      "kind": "audit_mention"
+    },
+    {
+      "from": "audit:waves--map-05-dead-abandoned",
+      "to": "file:src/kernel/services/provider-migration-service.ts",
+      "kind": "audit_mention"
+    },
+    {
+      "from": "audit:waves--map-05-dead-abandoned",
+      "to": "file:src/kernel/utils/memory-watchdog.test.ts",
+      "kind": "audit_test"
+    },
+    {
+      "from": "audit:waves--map-05-dead-abandoned",
+      "to": "file:src/kernel/utils/memory-watchdog.ts",
+      "kind": "audit_mention"
+    },
+    {
+      "from": "audit:waves--map-06-capability-gap",
+      "to": "file:src/components/BuilderPanel/builder-nodes.tsx",
+      "kind": "audit_mention"
+    },
+    {
+      "from": "audit:waves--map-06-capability-gap",
+      "to": "file:src/components/BuilderPanel/ComponentPalette.tsx",
+      "kind": "audit_mention"
+    },
+    {
+      "from": "audit:waves--map-06-capability-gap",
+      "to": "file:src/components/ExportImportPanel.tsx",
+      "kind": "audit_mention"
+    },
+    {
+      "from": "audit:waves--map-06-capability-gap",
+      "to": "file:src/kernel/services/dexie-schema.ts",
+      "kind": "audit_mention"
+    },
+    {
+      "from": "audit:waves--map-08-capability-accessibility",
+      "to": "file:src/components/AppLayout.tsx",
+      "kind": "audit_mention"
+    },
+    {
+      "from": "audit:waves--map-08-capability-accessibility",
+      "to": "file:src/components/Assistant/AssistantPanel.test.tsx",
+      "kind": "audit_test"
+    },
+    {
+      "from": "audit:waves--map-08-capability-accessibility",
+      "to": "file:src/components/Assistant/AssistantPanel.tsx",
+      "kind": "audit_mention"
+    },
+    {
+      "from": "audit:waves--map-08-capability-accessibility",
+      "to": "file:src/components/Assistant/panel-actions-catalog.test.ts",
+      "kind": "audit_test"
+    },
+    {
+      "from": "audit:waves--map-08-capability-accessibility",
+      "to": "file:src/components/Assistant/panel-actions-catalog.ts",
+      "kind": "audit_mention"
+    },
+    {
+      "from": "audit:waves--map-08-capability-accessibility",
+      "to": "file:src/components/CommandPalette.tsx",
+      "kind": "audit_mention"
+    },
+    {
+      "from": "audit:waves--map-08-capability-accessibility",
+      "to": "file:src/components/Common/KeyboardShortcutsModal.tsx",
+      "kind": "audit_mention"
+    },
+    {
+      "from": "audit:waves--map-08-capability-accessibility",
+      "to": "file:src/components/Layout/NextActionPredictions.tsx",
+      "kind": "audit_mention"
+    },
+    {
+      "from": "audit:waves--map-08-capability-accessibility",
+      "to": "file:src/components/ModuleInfo.tsx",
+      "kind": "audit_mention"
+    },
+    {
+      "from": "audit:waves--map-08-capability-accessibility",
+      "to": "file:src/components/NavGraphPanel/NavGraphPanel.tsx",
+      "kind": "audit_mention"
+    },
+    {
+      "from": "audit:waves--map-08-capability-accessibility",
+      "to": "file:src/components/Sidebar.tsx",
+      "kind": "audit_mention"
+    },
+    {
+      "from": "audit:waves--map-09-duplication",
+      "to": "file:src/kernel/contracts/index.ts",
+      "kind": "audit_mention"
+    },
+    {
+      "from": "audit:waves--map-10-resource-consumption",
+      "to": "file:src/App.tsx",
+      "kind": "audit_mention"
+    },
+    {
+      "from": "audit:waves--map-10-resource-consumption",
+      "to": "file:src/components/Common/usePolling.ts",
+      "kind": "audit_mention"
+    },
+    {
+      "from": "audit:waves--map-10-resource-consumption",
+      "to": "file:src/kernel/bootstrap-phases.ts",
+      "kind": "audit_mention"
+    },
+    {
+      "from": "audit:waves--map-10-resource-consumption",
+      "to": "file:src/kernel/bootstrap.ts",
+      "kind": "audit_mention"
+    },
+    {
+      "from": "audit:waves--map-10-resource-consumption",
+      "to": "file:src/kernel/utils/memory-watchdog.test.ts",
+      "kind": "audit_test"
+    },
+    {
+      "from": "audit:waves--map-10-resource-consumption",
+      "to": "file:src/kernel/utils/memory-watchdog.ts",
+      "kind": "audit_mention"
+    },
+    {
+      "from": "audit:waves--map-10-resource-consumption",
+      "to": "file:src/route-imports.ts",
+      "kind": "audit_mention"
+    },
     {
       "from": "panel:ab-testing",
       "to": "wiki:panel-ab-testing",
