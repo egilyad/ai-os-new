@@ -1,6 +1,7 @@
 import { X } from 'lucide-react';
 import ChatExportPanel from '../ChatExportPanel';
 import { useEffect } from 'react';
+import { FocusScope } from '@react-aria/focus';
 
 interface Props {
     onClose: () => void;
@@ -31,7 +32,9 @@ const ChatExportOverlay: React.FC<Props> = ({ onClose, t }) => {
             }}
             role="dialog"
             aria-modal="true"
+            aria-label="Export chat"
         >
+            <FocusScope contain restoreFocus autoFocus>
             <div
                 onClick={(e) => e.stopPropagation()}
                 style={{
@@ -64,6 +67,7 @@ const ChatExportOverlay: React.FC<Props> = ({ onClose, t }) => {
                     <ChatExportPanel />
                 </div>
             </div>
+            </FocusScope>
         </div>
     );
 };

@@ -32,7 +32,7 @@ const PanelToggle: React.FC<{ checked: boolean; onChange: (v: boolean) => void }
     <button
         type="button"
         role="switch"
-        aria-checked={checked}
+        aria-checked={checked} aria-label="Toggle"
         onClick={() => onChange(!checked)}
         style={{
             width: 38, height: 20, borderRadius: 999, border: 'none', cursor: 'pointer',

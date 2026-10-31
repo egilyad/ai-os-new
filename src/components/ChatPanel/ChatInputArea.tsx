@@ -249,6 +249,7 @@ const ChatInputArea: React.FC<Props> = ({
                 <div style={{ flex: 1, position: 'relative' }}>
                     <textarea
                         value={input}
+                        aria-label={t('chat.placeholder')}
                         onChange={(e) => setInput(e.target.value)}
                         onKeyDown={handleKeyDown}
                         placeholder={
