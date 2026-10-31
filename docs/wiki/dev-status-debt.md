@@ -4,7 +4,15 @@
 
 > Раздел: **Состояние разработки** · Статус: needs-check · Теги: состояние разработки, долг
 
-текст в разработке
+Технический долг (крупные рефакторинги, требуют проверки регрессий):
+
+- CacheDecorator `streamMessage` без in-flight dedup (W6-039).
+- Singleton `ArgumentGraphService` — cross-session clobber (W6-014).
+- Feature-flag UI: `as unknown as Record<string, boolean>` (W6-018).
+- ReDoS-риски: 6 мест с пользовательскими regex (W6-023).
+- CI: deploy-гейт без тестов, `test:stable` неполный, `--ignore-scripts` (W4-001/002/036).
+- Prompt-versioning: 156 unversioned «You are…» (W4-041).
+- Retrieval: O(N) сканы, recall-перезапись (W8-012/013/014/015).
 
 ---
 

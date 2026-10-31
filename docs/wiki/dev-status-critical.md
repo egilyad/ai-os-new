@@ -4,7 +4,14 @@
 
 > Раздел: **Состояние разработки** · Статус: needs-check · Теги: состояние разработки, риски
 
-текст в разработке
+Актуальные критические проблемы (не закрыты, отложены до продуктового решения):
+
+- **KeyVault fail-open + deviceKey в plaintext** (localStorage) — шифрование ключей обесценивается; нужен passphrase-UI.
+- **API-ключи/секреты в открытом виде в IndexedDB** — зависит от vault.
+- **Multi-tenant IDOR / общий SYNC_SECRET / WS cross-tenant leak** — нужен server-скоупинг.
+- **CSAM/модерация изображений отсутствует** — требуется внешний сервис.
+
+Коды и детали — в [`docs/known-issues-deferred.md`](../../known-issues-deferred.md), разделы 12–13.
 
 ---
 

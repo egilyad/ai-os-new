@@ -4,7 +4,11 @@
 
 > Раздел: **Состояние разработки** · Статус: needs-check · Теги: состояние разработки, процесс
 
-текст в разработке
+Ключевые файлы состояния:
+
+- [`docs/known-issues-deferred.md`](../../known-issues-deferred.md) — карта отложенных.
+- `docs/audits/waves/` — карты системной разведки (10).
+- `docs/inventory.json`, `docs/manifest.json`, `docs/graph.json` — машиночитаемые индексы.
 
 ---
 

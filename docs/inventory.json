@@ -12,8 +12,8 @@
     },
     "byLanguage": {
       "en": 44,
-      "mixed": 62,
-      "ru": 222
+      "mixed": 63,
+      "ru": 221
     }
   },
   "duplicates": {
@@ -1396,72 +1396,72 @@
       "category": "wiki",
       "language": "ru",
       "title": "Активная разработка",
-      "bytes": 1085,
-      "hash": "0814888c64f97ad4e1faf0f4d1827f83275bf8a5"
+      "bytes": 1455,
+      "hash": "0c8908dbe9eb381e74646b62d70072ef92005f0f"
     },
     {
       "path": "docs/wiki/dev-status-blocked.md",
       "category": "wiki",
       "language": "ru",
       "title": "Заблокированные задачи",
-      "bytes": 1078,
-      "hash": "999151abd92b700a2ec222556a2e77506577a4d6"
+      "bytes": 1331,
+      "hash": "fe72269b8271a399597d197a35984224259b6bde"
     },
     {
       "path": "docs/wiki/dev-status-bugs.md",
       "category": "wiki",
       "language": "ru",
       "title": "Отложенные баги",
-      "bytes": 1079,
-      "hash": "efdf9e4ea2740dcacf85fd288dcb34762d913b0d"
+      "bytes": 1626,
+      "hash": "162c9042f4f9d3a9354125b7cb31e219b75461bf"
     },
     {
       "path": "docs/wiki/dev-status-critical.md",
       "category": "wiki",
       "language": "ru",
       "title": "Критические проблемы",
-      "bytes": 1077,
-      "hash": "45f3860544968e5a65c3418769610216f24baece"
+      "bytes": 1822,
+      "hash": "f6ecbf3802ba9addd390edd1825ae4f7e876239b"
     },
     {
       "path": "docs/wiki/dev-status-debt.md",
       "category": "wiki",
-      "language": "ru",
+      "language": "mixed",
       "title": "Технический долг",
-      "bytes": 1079,
-      "hash": "5f676a4e79ddeb4cc70f44a8b7b214d8a535b6ed"
+      "bytes": 1717,
+      "hash": "88ffd799af142883e5e988123701b21c8bd6b013"
     },
     {
       "path": "docs/wiki/dev-status-docs.md",
       "category": "wiki",
       "language": "ru",
       "title": "Документация",
-      "bytes": 1095,
-      "hash": "f455eba1c5be5229f54647869d4f610950e3c9c1"
+      "bytes": 1439,
+      "hash": "3206885a842de1a036f3120de657b9a0fcb6da4a"
     },
     {
       "path": "docs/wiki/dev-status-done.md",
       "category": "wiki",
       "language": "ru",
       "title": "Завершённые задачи",
-      "bytes": 1087,
-      "hash": "65ac1bdab0a0f67bb73eebd013ec0e0cf586ff1e"
+      "bytes": 1747,
+      "hash": "b91d6e22b3c723b9b12fa0b0f88cd3a1ac6b3d9e"
     },
     {
       "path": "docs/wiki/dev-status-files.md",
       "category": "wiki",
       "language": "ru",
       "title": "MD и другие файлы от разработки",
-      "bytes": 1084,
-      "hash": "a224fdfc23aec0ea9a4c62f908100bc30feab997"
+      "bytes": 1397,
+      "hash": "d73343d3d9370b37f3eacebca578e4ef7445087b"
     },
     {
       "path": "docs/wiki/dev-status-roadmaps.md",
       "category": "wiki",
       "language": "ru",
       "title": "Roadmaps",
-      "bytes": 1077,
-      "hash": "dfe15f68ba8ffccd025dbd6ce47f0725a713b727"
+      "bytes": 1320,
+      "hash": "c9bddc3630cb322a2178a82ced0c8c504c570fe7"
     },
     {
       "path": "docs/wiki/dev-status-testing.md",

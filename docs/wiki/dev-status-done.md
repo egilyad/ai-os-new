@@ -4,7 +4,15 @@
 
 > Раздел: **Состояние разработки** · Статус: needs-check · Теги: состояние разработки, прогресс
 
-текст в разработке
+Недавно закрыто (серия security/resilience-фиксов):
+
+- Sidecar: loopback-биндинг, Bearer, SSRF-allowlist (W4-025).
+- LLM tool args: отклонение невалидного JSON (W8-009).
+- PII-редэкция: трейсы, память, чат, tool-вывод, event log.
+- Dangerous-блоклист: CSAM/самоповреждение/оружие/наркотики (W4-026).
+- sync-server: XFF trust opt-in, WS maxPayload, SIGTERM drain (W6-024/029/030).
+- SSRF-гвард http-адаптера (W6-021); jitter retry-after (W6-016).
+- Перцентили с интерполяцией (W6-034); counters persist (W6-033); budget retention (W6-032).
 
 ---
 
