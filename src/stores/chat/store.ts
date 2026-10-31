@@ -312,9 +312,23 @@ export const useChatStore = create<ChatStoreShape>((set, get) => {
 
         deleteSession: async (id) => {
             distillSession(id);
+            const freedRequestIds: string[] = [];
             for (const [reqId, ref] of requestEntryMap) {
-                if (ref.sessionId === id) requestEntryMap.delete(reqId);
+                if (ref.sessionId === id) {
+                    requestEntryMap.delete(reqId);
+                    freedRequestIds.push(reqId);
+                }
             }
+            // Free the session's in-flight request ids so the send gate isn't
+            // left wedged forever (terminal handlers early-return once the refs
+            // are gone, so they would never clean activelyRequestIds themselves).
+            set((s) => {
+                if (freedRequestIds.length === 0) return {};
+                const activeRequestIds = new Set(s.activeRequestIds);
+                for (const reqId of freedRequestIds) activeRequestIds.delete(reqId);
+                return { activeRequestIds };
+            });
+            for (const reqId of freedRequestIds) dropChunkBuffer(reqId);
             _sendQueue.delete(id);
             try {
                 await sessionManager.delete(id);

@@ -73,7 +73,7 @@ export const useActiveDebateStore = create<{
                 sessions,
                 activeSessionId: session.id,
                 session,
-                governorState: s.governorState,
+                governorState: sessions[session.id]?.governorState ?? null,
             };
         });
     },
@@ -92,7 +92,7 @@ export const useActiveDebateStore = create<{
                     sessions,
                     activeSessionId: session.id,
                     session,
-                    governorState: s.governorState,
+                    governorState: sessions[session.id]?.governorState ?? null,
                 };
             }
             // Keep current view; surface the viewed session's data unchanged.
