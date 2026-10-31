@@ -1,4 +1,5 @@
 import type { LogEntry } from '../../kernel/contracts/logger';
+import { percentile } from '../../kernel/utils/percentile';
 
 export interface ServiceStats {
     service: string;
@@ -16,9 +17,7 @@ export interface ServiceStats {
 }
 
 function computePercentiles(sorted: number[], p: number): number {
-    if (sorted.length === 0) return 0;
-    const idx = Math.min(sorted.length - 1, Math.floor(sorted.length * p));
-    return sorted[idx]!;
+    return percentile(sorted, p);
 }
 
 export function aggregate(entries: ReadonlyArray<LogEntry>): ServiceStats[] {

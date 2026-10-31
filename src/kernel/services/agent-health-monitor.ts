@@ -3,6 +3,7 @@ import type { IEventBus } from '../types/interfaces';
 import { EVENTS } from '../events/event-names';
 import type { AgentHealth, AgentHealthSnapshot } from '../contracts/agent-health';
 import { rootLogger } from './logger-service';
+import { percentile } from '../utils/percentile';
 const LOGGER = rootLogger.child('AgentHealthMonitor');
 
 export type { AgentHealth, AgentHealthSnapshot } from '../contracts/agent-health';
@@ -69,7 +70,6 @@ export class AgentHealthMonitor implements ILifecycle {
     }
 
     private async _doStart() {
-
         await this.loadPersisted();
 
         // Mark restored agents as 'unknown' until fresh health data arrives
@@ -260,8 +260,7 @@ export class AgentHealthMonitor implements ILifecycle {
         const totalDuration = agentRecords.reduce((s, r) => s + r.duration, 0);
         const avgLatency = totalCalls > 0 ? totalDuration / totalCalls : 0;
         const sorted = agentRecords.map((r) => r.duration).sort((a, b) => a - b);
-        const p95Idx = Math.ceil(sorted.length * 0.95) - 1;
-        const p95Latency = p95Idx >= 0 ? sorted[p95Idx]! : 0;
+        const p95Latency = percentile(sorted, 0.95);
 
         let consecutiveErrors = 0;
         for (let i = agentRecords.length - 1; i >= 0; i--) {

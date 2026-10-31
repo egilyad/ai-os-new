@@ -359,7 +359,8 @@ describe('MetricsService', () => {
             service.recordLatency('agent-1', 300);
             const p = service.getAgentPercentiles('agent-1');
             expect(p.p50).toBe(200);
-            expect(p.p90).toBe(300);
+            // W6-034: linear interpolation — p90 of [100,200,300] is 280.
+            expect(p.p90).toBe(280);
         });
 
         it('returns zeros for unknown agent', () => {

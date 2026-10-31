@@ -1,6 +1,7 @@
 import { CONFIG } from './config-registry';
 import { EVENTS } from '../events/event-names';
 import { rootLogger } from './logger-service';
+import { percentile } from '../utils/percentile';
 import type {
     AggregatedMetrics,
     ProviderMetricSummary,
@@ -414,12 +415,11 @@ export class MetricsService {
     getAgentPercentiles(agentId: string): { p50: number; p90: number; p95: number; p99: number } {
         const buf = (this.recentLatencies.get(agentId) || []).slice().sort((a, b) => a - b);
         if (buf.length === 0) return { p50: 0, p90: 0, p95: 0, p99: 0 };
-        const len = buf.length;
         return {
-            p50: buf[Math.floor(len * 0.5)]!,
-            p90: buf[Math.floor(len * 0.9)]!,
-            p95: buf[Math.floor(len * 0.95)]!,
-            p99: buf[Math.floor(len * 0.99)]!,
+            p50: percentile(buf, 0.5),
+            p90: percentile(buf, 0.9),
+            p95: percentile(buf, 0.95),
+            p99: percentile(buf, 0.99),
         };
     }
 
