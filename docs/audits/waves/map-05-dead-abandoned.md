@@ -656,4 +656,19 @@ SuperAgents OS накопила **измеримый мёртвый и забр�
 
 ---
 
+## Сверка с аудитами (волны 2–8)
+
+Дополнительные факты по мёртвому/заброшенному из волн аудитов:
+
+- W6-032: `costHistory` count-cap был мёртвой логикой (искажал monthlySpend) — исправлено на time-retention.
+- W3-028: 4 dead/misleading feature-флага.
+- W4-021: OpenRouter rotation — только локальный флип, без revoke (DELETE).
+- W2-002/017/018: GovernanceService/AgentService/CrewService — мутации без authz (частично неиспользуемые вызовы).
+- W6-023: ReDoS-гвард отсутствовал в 6 местах (исправлено: regex-safe в prompt-security/policy).
+- W7-ANA-012: UsageTracker — мёртвый код (не enforced).
+- W4-083: AgemsAuditService — мёртвый.
+- W3-014/015: service worker / Web App Manifest отсутствуют (недореализовано).
+
+---
+
 _Отчёт сгенерирован 2026-10-31 на основе коммита `e08ab8e_. Анализ статический; **ничего не удалено** — только investigation framework. Парные отчёты: 12 предыдущих карт (готовность, ценность, техсостояние, ресурсы, дублирование, зависимости, lifecycle, доступность, пробелы, интеграция, user journeys, потенциал).*

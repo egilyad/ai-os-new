@@ -356,8 +356,8 @@
       "category": "audits",
       "language": "mixed",
       "title": "Карта мёртвого и заброшенного функционала — Dead & Abandoned Functionality Map",
-      "bytes": 43770,
-      "hash": "304a1849ad02854e2f22c955a8cee92d8d67354a"
+      "bytes": 44755,
+      "hash": "4278736b45a2d83953a53072755c119e4d439128"
     },
     {
       "path": "docs/audits/waves/map-06-capability-gap.md",
