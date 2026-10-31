@@ -10877,6 +10877,141 @@
   ],
   "audits": [
     {
+      "id": "audit:waves--card-11-security-trust",
+      "type": "audit",
+      "path": "docs/audits/waves/card-11-security-trust.md",
+      "title": "Безопасность, доверие и границы (Security & Trust)",
+      "date": "2026-10-31",
+      "mentions": [],
+      "tests": []
+    },
+    {
+      "id": "audit:waves--card-12-data-flows",
+      "type": "audit",
+      "path": "docs/audits/waves/card-12-data-flows.md",
+      "title": "Потоки данных, владение и целостность (Data Flow & Ownership)",
+      "date": "2026-10-31",
+      "mentions": [],
+      "tests": []
+    },
+    {
+      "id": "audit:waves--card-13-context-prompts-memory",
+      "type": "audit",
+      "path": "docs/audits/waves/card-13-context-prompts-memory.md",
+      "title": "Контекст, промпты и память (Context & Prompts)",
+      "date": "2026-10-31",
+      "mentions": [],
+      "tests": []
+    },
+    {
+      "id": "audit:waves--card-14-knowledge-quality",
+      "type": "audit",
+      "path": "docs/audits/waves/card-14-knowledge-quality.md",
+      "title": "Качество знаний и происхождение решений (Knowledge & Provenance)",
+      "date": "2026-10-31",
+      "mentions": [],
+      "tests": []
+    },
+    {
+      "id": "audit:waves--card-15-failure-resilience",
+      "type": "audit",
+      "path": "docs/audits/waves/card-15-failure-resilience.md",
+      "title": "Отказы, восстановление и blast radius (Failure & Resilience)",
+      "date": "2026-10-31",
+      "mentions": [],
+      "tests": []
+    },
+    {
+      "id": "audit:waves--card-16-concurrency-races",
+      "type": "audit",
+      "path": "docs/audits/waves/card-16-concurrency-races.md",
+      "title": "Параллелизм и гонки (Concurrency & Races)",
+      "date": "2026-10-31",
+      "mentions": [],
+      "tests": []
+    },
+    {
+      "id": "audit:waves--card-17-cost-tokens",
+      "type": "audit",
+      "path": "docs/audits/waves/card-17-cost-tokens.md",
+      "title": "Экономика: токены и стоимость (Cost / Token Economy)",
+      "date": "2026-10-31",
+      "mentions": [],
+      "tests": []
+    },
+    {
+      "id": "audit:waves--card-18-configuration-secrets",
+      "type": "audit",
+      "path": "docs/audits/waves/card-18-configuration-secrets.md",
+      "title": "Конфигурация, флаги и секреты (Configuration & Secrets)",
+      "date": "2026-10-31",
+      "mentions": [],
+      "tests": []
+    },
+    {
+      "id": "audit:waves--card-19-evolution-change",
+      "type": "audit",
+      "path": "docs/audits/waves/card-19-evolution-change.md",
+      "title": "Эволюция, churn и стоимость изменений (Evolution & Change)",
+      "date": "2026-10-31",
+      "mentions": [],
+      "tests": []
+    },
+    {
+      "id": "audit:waves--card-20-ux-perception",
+      "type": "audit",
+      "path": "docs/audits/waves/card-20-ux-perception.md",
+      "title": "UX: восприятие, нагрузка и онбординг (UX & Cognition)",
+      "date": "2026-10-31",
+      "mentions": [],
+      "tests": []
+    },
+    {
+      "id": "audit:waves--card-21-contracts-api",
+      "type": "audit",
+      "path": "docs/audits/waves/card-21-contracts-api.md",
+      "title": "Контракты, API и миграции (Contracts & Migrations)",
+      "date": "2026-10-31",
+      "mentions": [],
+      "tests": []
+    },
+    {
+      "id": "audit:waves--card-22-verification-confidence",
+      "type": "audit",
+      "path": "docs/audits/waves/card-22-verification-confidence.md",
+      "title": "Верификация и уверенность (Verification & Confidence)",
+      "date": "2026-10-31",
+      "mentions": [],
+      "tests": []
+    },
+    {
+      "id": "audit:waves--card-23-autonomy-control",
+      "type": "audit",
+      "path": "docs/audits/waves/card-23-autonomy-control.md",
+      "title": "Автономия агентов vs контроль (Autonomy & Control)",
+      "date": "2026-10-31",
+      "mentions": [],
+      "tests": []
+    },
+    {
+      "id": "audit:waves--card-24-extensibility-platform",
+      "type": "audit",
+      "path": "docs/audits/waves/card-24-extensibility-platform.md",
+      "title": "Расширяемость и платформа (Extensibility)",
+      "date": "2026-10-31",
+      "mentions": [],
+      "tests": []
+    },
+    {
+      "id": "audit:waves--card-25-observability-deep",
+      "type": "audit",
+      "path": "docs/audits/waves/card-25-observability-deep.md",
+      "title": "Наблюдаемость (расширенная) (Observability Deep)",
+      "date": "2026-10-31",
+      "mentions": [],
+      "tests": []
+    },
+    {
       "id": "audit:waves--map-01-requirements",
       "type": "audit",
       "path": "docs/audits/waves/map-01-requirements.md",
