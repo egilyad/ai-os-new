@@ -3,15 +3,15 @@
   "generatedBy": "scripts/gen-docs-inventory.mjs",
   "scope": "git-tracked markdown: docs/**/*.md (excluding docs/new drafts and the self-report pages docs-health, docs-inventory) plus repository entry docs (root *.md, .superagents/**, src/kernel/DEPENDENCY_MAP.md)",
   "totals": {
-    "documents": 317,
+    "documents": 318,
     "byCategory": {
       "repo": 9,
-      "top": 24,
+      "top": 25,
       "wiki": 284
     },
     "byLanguage": {
       "en": 34,
-      "mixed": 61,
+      "mixed": 62,
       "ru": 222
     }
   },
@@ -221,6 +221,14 @@
       "title": "EventBus Reference",
       "bytes": 22497,
       "hash": "4e366985b937c04ea1db0a50c536fcfc3e114aa0"
+    },
+    {
+      "path": "docs/known-issues-deferred.md",
+      "category": "top",
+      "language": "mixed",
+      "title": "Карта отложенных проблем (Deferred / Known Issues)",
+      "bytes": 31854,
+      "hash": "7b3ffff003c77fe5cfcb48b660db0e7bb561000a"
     },
     {
       "path": "docs/NAVIGATION_MAP.md",
@@ -2243,8 +2251,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Wiki SuperAgents OS",
-      "bytes": 29748,
-      "hash": "1f30963028556114b4586f4dcd92937be4a464d0"
+      "bytes": 29845,
+      "hash": "162720c3da228f3d61cce841ae87178a5e2c09c9"
     },
     {
       "path": "docs/wiki/record-a-skill.md",
