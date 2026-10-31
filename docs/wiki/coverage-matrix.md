@@ -76,6 +76,7 @@
 | Провайдеры (пулы) | 4 | [Карта системы](./dev-system-map.md) | `src/constants/pools.ts` |
 | Внешние библиотеки | — | [Внешние библиотеки](./dev-libraries.md) | `scripts/gen-wiki-libraries.mjs` |
 | Архитектурные решения | — | [Реестр архитектурных решений (ADR)](./dev-adr.md) | `docs/001-event-driven-architecture.md` |
+| Аудиты | 10 | [История разработки](./dev-history.md) | `docs/audits/` |
 | Панели | 184 | [Каталог панелей: раздел → маршрут → компонент → статья](./panels-catalog.md) | `src/route-registry-*.ts` |
 
 ## Что не подтверждено тестами
