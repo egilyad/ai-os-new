@@ -320,11 +320,18 @@ export class ChatExecutor {
                     );
                 }
 
+                // W6-020: resolve tool definitions BEFORE the race branch — race
+                // must never silently skip an agent's tool profile.
+                const toolDefs = this.resolveToolDefs(
+                    agentId,
+                    req.options?.metadata as Record<string, unknown> | undefined,
+                );
+
                 const useRace =
                     req.options?.strategy === 'race' ||
                     (req.provider && req.provider.toLowerCase() === 'race');
 
-                if (useRace && this.deps.raceExecutor) {
+                if (useRace && this.deps.raceExecutor && toolDefs.length === 0) {
                     const raceCandidates =
                         this.deps.routerService.getRaceCandidateDetails(promptText);
                     if (raceCandidates.length >= 2) {
@@ -441,11 +448,6 @@ export class ChatExecutor {
                         // Tool-enabled requests skip the response cache: the
                         // cached text is the answer *after* the tools ran, and
                         // replaying it would hide the tool turns from the model.
-                        const toolDefs = this.resolveToolDefs(
-                            agentId,
-                            req.options?.metadata as Record<string, unknown> | undefined,
-                        );
-
                         const cacheKey =
                             toolDefs.length > 0 || !this.deps.cacheService
                                 ? null
