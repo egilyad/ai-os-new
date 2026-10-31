@@ -1204,8 +1204,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Отложенные работы и фичи",
-      "bytes": 7272,
-      "hash": "e4cbe18212c173e914c67e323a2d806612e45cf7"
+      "bytes": 7974,
+      "hash": "6eeeac8c6cebc0169b9677056b1f165b03745d58"
     },
     {
       "path": "docs/wiki/dev-adr.md",

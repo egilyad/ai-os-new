@@ -96,6 +96,16 @@ export const DEFERRED_ARTICLES: WikiArticle[] = [
 | Unified «explain state» dashboard | Obs Map §1 | новый UI |
 | HealthSlaPanel (@deprecated MOCK) — удалить/скрыть | Obs Map §3.1 | чистка |
 
+## Из «Карты использования ресурсов»
+
+| Работа | Источник | Причина |
+|---|---|---|
+| Lazy-загрузить CommandPalette и TECHNIQUE_PANEL_COMPONENTS | Res Map §3.1 | сборка |
+| Почистить фоновые setInterval (39) + пауза при скрытой вкладке | Res Map §1 | ресурсы |
+| Увеличить долю useEffect с cleanup (17%) | Res Map §1 | утечки подписок |
+| Следить за Tier 7 («*») — 525 сервисов при старте | Res Map §3.2 | bootstrap |
+| framer-motion в 165 файлах — оптимизация импорта | Res Map §1 | сборка |
+
 ## Из аудитов (волны 2–8) — безопасность/настойчивость
 
 | Работа | Источник | Причина |
