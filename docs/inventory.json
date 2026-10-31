@@ -396,8 +396,8 @@
       "category": "audits",
       "language": "mixed",
       "title": "Карта использования ресурсов — Resource Consumption Map",
-      "bytes": 65913,
-      "hash": "b806d0f841daebdbec5fee6e065b0dc9dba4d2e2"
+      "bytes": 66928,
+      "hash": "bb8ada9b45d05dced7bc64022c18f63f2fb749ea"
     },
     {
       "path": "docs/COGNITIVE_RUNTIME_SPEC.md",
