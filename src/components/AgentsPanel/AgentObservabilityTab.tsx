@@ -34,7 +34,11 @@ const AgentObservabilityTab: React.FC<Props> = ({ agent, agentStats }) => {
     const profileColor = s.latency < 500 ? '#10b981' : s.latency < 1000 ? '#f59e0b' : '#ef4444';
 
     const latencyBuckets = [
-        { label: '<200ms', pct: Math.max(5, Math.round(40 - s.latency * 0.02)), color: 'var(--success)' },
+        {
+            label: '<200ms',
+            pct: Math.max(5, Math.round(40 - s.latency * 0.02)),
+            color: 'var(--success)',
+        },
         {
             label: '200-500ms',
             pct: Math.max(5, Math.round(35 - s.latency * 0.01)),
@@ -61,11 +65,13 @@ const AgentObservabilityTab: React.FC<Props> = ({ agent, agentStats }) => {
         { label: 'P99', value: pct.p99, color: 'var(--error)' },
     ];
     const hasSamples = entries.some((e) => e.value > 0);
+    // W6-003: never fabricate percentiles from avg latency — show "no data"
+    // instead of misleading numbers.
     const fallback = [
-        { label: 'P50', value: s.latency, color: 'var(--success)' },
-        { label: 'P90', value: Math.round(s.latency * 1.5), color: 'var(--accent)' },
-        { label: 'P95', value: Math.round(s.latency * 1.8), color: 'var(--warning)' },
-        { label: 'P99', value: Math.round(s.latency * 2.2), color: 'var(--error)' },
+        { label: 'P50', value: null as number | null, color: 'var(--success)' },
+        { label: 'P90', value: null as number | null, color: 'var(--accent)' },
+        { label: 'P95', value: null as number | null, color: 'var(--warning)' },
+        { label: 'P99', value: null as number | null, color: 'var(--error)' },
     ];
     const rows = hasSamples ? entries : fallback;
 
@@ -131,7 +137,9 @@ const AgentObservabilityTab: React.FC<Props> = ({ agent, agentStats }) => {
                         <div style={textXxsSecondary}>Avg / Call</div>
                     </div>
                     <div style={textCenter}>
-                        <div style={{ fontSize: '1rem', fontWeight: 800, color: 'var(--slate-50)' }}>
+                        <div
+                            style={{ fontSize: '1rem', fontWeight: 800, color: 'var(--slate-50)' }}
+                        >
                             {formatCost(cost)}
                         </div>
                         <div style={textXxsSecondary}>Total Est.</div>
@@ -228,17 +236,31 @@ const AgentObservabilityTab: React.FC<Props> = ({ agent, agentStats }) => {
                                 textAlign: 'center',
                             }}
                         >
-                            <div style={{ fontSize: '0.6rem', color: 'var(--slate-500)', fontWeight: 700 }}>
+                            <div
+                                style={{
+                                    fontSize: '0.6rem',
+                                    color: 'var(--slate-500)',
+                                    fontWeight: 700,
+                                }}
+                            >
                                 {row.label}
                             </div>
                             <div style={{ fontSize: '0.9rem', fontWeight: 800, color: row.color }}>
-                                {row.value}
-                                <span style={{ fontSize: '0.6rem' }}>ms</span>
+                                {row.value ?? '—'}
+                                {row.value !== null && (
+                                    <span style={{ fontSize: '0.6rem' }}>ms</span>
+                                )}
                             </div>
                         </div>
                     ))}
                 </div>
-                <div style={{ fontSize: '0.65rem', color: 'var(--slate-500)', marginBottom: '0.5rem' }}>
+                <div
+                    style={{
+                        fontSize: '0.65rem',
+                        color: 'var(--slate-500)',
+                        marginBottom: '0.5rem',
+                    }}
+                >
                     Throughput: {metricsService.getAgentThroughput(agent.id).toFixed(2)} req/s
                 </div>
                 <div style={flexAlignCenterGap2}>

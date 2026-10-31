@@ -721,6 +721,32 @@
 | W5-021/022/024 | recordSpend без enforcement; block_usage декларативно; нет cost-attribution | enforcement       |
 | W5-023         | cross-tab lock TOCTOU                                                       | конкурентность    |
 
+### 13.13. Остаток волны 6 (backlog)
+
+> Подробности — в `audit-wave6-2026-10-31.md`. Отложено (контейнер, secrets, cost/metrics, конкурентность, ReDoS, toolchain). Часть уже закрыта ранее (W6-013/016/020/021/022/024/029/030/032/033/034/038).
+
+| ID     | Пункт                                     | Причина отложения  |
+| ------ | ----------------------------------------- | ------------------ |
+| W6-001 | sidecar root + chromium --no-sandbox      | контейнер          |
+| W6-002 | SYNC_SECRET/BROWSER_USE_LLM_API_KEY в env | secrets            |
+| W6-004 | agent budget all-time vs monthly          | cost/metrics       |
+| W6-005 | SLA неправильные поля                     | metrics            |
+| W6-006 | ExecutionQueue watchdog double-execution  | конкурентность     |
+| W6-007 | fencing token                             | лок                |
+| W6-008 | Idempotency-Key на LLM-постах             | транспорт          |
+| W6-009 | duplicate run execution                   | конкурентность     |
+| W6-010 | saga checkpoint                           | распредел. системы |
+| W6-011 | isStaleSessionWrite                       | стейт              |
+| W6-012 | tool-loop не форвардит AbortSignal        | сигнатуры          |
+| W6-014 | singleton ArgumentGraphService            | см. 13.3           |
+| W6-015 | cache decorator timeout без abort         | см. 13.4           |
+| W6-017 | один плохой ключ банит провайдера         | circuit breaker    |
+| W6-018 | feature-flag UI                           | см. 13.2           |
+| W6-019 | cross-session                             | см. 13.1           |
+| W6-023 | ReDoS 6 мест                              | регекспы           |
+| W6-025 | unpinned npx                              | supply chain       |
+| W6-026 | ws/playwright в devDependencies           | toolchain          |
+
 ---
 
 ## Карты системной разведки (10)
