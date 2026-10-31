@@ -300,8 +300,8 @@
       "category": "audits",
       "language": "ru",
       "title": "Автономия агентов vs контроль (Autonomy & Control)",
-      "bytes": 1336,
-      "hash": "c7711c03c468b355f377b983ea2bd2b6c32e2aa5"
+      "bytes": 2923,
+      "hash": "34c75a1f2711d8ccf4ff979473ab58d5cc2fdf74"
     },
     {
       "path": "docs/audits/waves/card-24-extensibility-platform.md",

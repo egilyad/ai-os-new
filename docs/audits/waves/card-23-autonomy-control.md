@@ -16,15 +16,28 @@
 
 ## Что уже есть (факты из аудитов)
 
-- (заполнить из источников ниже)
+- W4-042: `parseAndWriteFiles` пишет файлы из raw LLM-вывода без ApprovalService/ToolGovernance/AgentPermission/ToolPipeline.
+- W4-043: `autonomy-agent`/`autonomy-loop` не зарегистрированы в permission — обходят `guarded`-гейт.
+- W4-044: пресет AUTOPILOT (все режимы FREE) без admin-гейта; `autoApproveAfterMin` (исправлено: ≥60 мин).
+- W6-004: agent budget — all-time vs monthly (атрибуция неверна).
+- W6-020: race-стратегия молча пропускала tools (исправлено).
+- W8-021: wakeups at-most-once (потеря работы).
+- HITL-контур: `agemsApprovalService` + `bulkResolve` (исправлено: массовый approve/reject в UI).
 
 ## Пробелы / риски
 
-- (заполнить)
+- Нет явного «уровня автономности» per-агента (советует/подтверждение/действует сам).
+- Опасные операции без подтверждения (file-writes, удаление, send).
+- Нет undo/отката для действий агентов.
+- Отсутствует понятность «что сейчас делает агент» и kill-switch.
 
 ## Рекомендации
 
-- (заполнить)
+1. Ввести шкалу автономности 1–10 и конфиг per-агента.
+2. Маршрутизировать все записи/опасные действия через ToolPipeline + approval.
+3. Pre-регистрировать агентов в permission (default `guarded`).
+4. Добавить undo/rollback для необратимых действий.
+5. Живой статус + пауза/остановка агента в UI.
 
 ---
 
