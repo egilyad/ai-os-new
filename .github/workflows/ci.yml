@@ -521,7 +521,7 @@ jobs:
     deploy:
         name: Deploy to GitHub Pages
         if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
-        needs: [build, e2e]
+        needs: [quality, build, test, coverage, security-audit, circular-check, dep-graph, e2e]
         runs-on: ubuntu-24.04
         timeout-minutes: 10
         permissions:
