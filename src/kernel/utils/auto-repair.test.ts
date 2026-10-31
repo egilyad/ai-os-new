@@ -24,10 +24,8 @@ describe('withAutoRepair (P3-4)', () => {
     });
 
     it('fails after exhausting attempts', async () => {
-        let attempts = 0;
         const result = await withAutoRepair({
             run: async () => {
-                attempts++;
                 throw new Error('always fails');
             },
             snapshot: () => 0,
