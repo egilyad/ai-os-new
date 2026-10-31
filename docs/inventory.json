@@ -236,8 +236,8 @@
       "category": "audits",
       "language": "ru",
       "title": "Отказы, восстановление и blast radius (Failure & Resilience)",
-      "bytes": 1417,
-      "hash": "f5b9586d8f590a71f5f17afff7ab3f8e71004f99"
+      "bytes": 3456,
+      "hash": "49b039f4417406e15d22fc79bbbc0d2d4cbcadf2"
     },
     {
       "path": "docs/audits/waves/card-16-concurrency-races.md",
