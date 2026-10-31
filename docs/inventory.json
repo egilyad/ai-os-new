@@ -1445,7 +1445,7 @@
       "language": "ru",
       "title": "История разработки",
       "bytes": 5188,
-      "hash": "735425364cfdd93b21913e9a42676fa648b00780"
+      "hash": "39d82b50c0de1548faba797613528c6f73dce1ed"
     },
     {
       "path": "docs/wiki/dev-i18n-catalog.md",
@@ -1653,7 +1653,7 @@
       "language": "mixed",
       "title": "Карта документации",
       "bytes": 31191,
-      "hash": "1217ff2e00001237f0c5baff260b04de939fe02b"
+      "hash": "a194a959af9eb17b7e760939a6f4790f09188fcd"
     },
     {
       "path": "docs/wiki/docs-standard.md",

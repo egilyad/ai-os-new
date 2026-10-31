@@ -22,13 +22,13 @@
 
 Каждая зона — отчёт о проделанном на тот момент. Не выдаётся за текущее состояние.
 
-## Аудиты (10)
+## Аудиты (25)
 
 Отчёты проверок сохраняются как есть:
 
-- папка [`docs/audits/waves/`](https://github.com/egilyad/ai-os-new/tree/main/docs/audits/waves/) — 10
+- папка [`docs/audits/waves/`](https://github.com/egilyad/ai-os-new/tree/main/docs/audits/waves/) — 25
 
-Всего отчётов: **10** (в корне — 0).
+Всего отчётов: **25** (в корне — 0).
 
 ## Архив решений и планов (0)
 
