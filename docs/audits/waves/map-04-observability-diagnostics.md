@@ -655,4 +655,19 @@ SuperAgents OS имеет **богатую observability-инфраструкт�
 
 ---
 
+## Сверка с аудитами (волны 2–8)
+
+Дополнительные факты по наблюдаемости из волн аудитов:
+
+- W2-033: TraceRepository хранил raw input/output (исправлено: PII-редэкция).
+- W2-034: LoggerService exportLogs отдавал raw meta.
+- W4-011: alert-события (BUDGET/METRICS/AGENT_HEALTH/SYSTEM_HEALTH/KEY_COMPROMISED) не уходят в alerting-каналы; Webhook не в bootstrap.
+- W6-003: фабрикация percentiles в UI (исправлено: «—» без данных).
+- W6-033: counters/gauges не персистятся (исправлено).
+- W8-020: SSE без Last-Event-ID — события теряются на реконнекте.
+- W5-006: nginx отдаёт X-Real-IP/XFF провайдерам.
+- W6-029: sync-server SIGTERM закрывал только HTTP-listener (исправлено: WS/SSE drain).
+
+---
+
 _Отчёт сгенерирован 2026-10-31 на основе коммита `e08ab8e_. Анализ статический; runtime observability (actual dashboard screenshots) не проводился. Парные отчёты: 13 предыдущих карт (готовность, ценность, техсостояние, ресурсы, дублирование, зависимости, lifecycle, доступность, пробелы, интеграция, user journeys, потенциал, мёртвый код).*

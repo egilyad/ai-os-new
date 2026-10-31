@@ -348,8 +348,8 @@
       "category": "audits",
       "language": "mixed",
       "title": "Карта наблюдаемости и диагностики — Observability & Diagnostics Map",
-      "bytes": 44834,
-      "hash": "ad3bb5efe09a41f8e08cc88e7b090a7e39d9fdab"
+      "bytes": 45780,
+      "hash": "745d6ee598fb0557640718614bde7a0e8002abaa"
     },
     {
       "path": "docs/audits/waves/map-05-dead-abandoned.md",
