@@ -106,6 +106,17 @@ export const DEFERRED_ARTICLES: WikiArticle[] = [
 | Следить за Tier 7 («*») — 525 сервисов при старте | Res Map §3.2 | bootstrap |
 | framer-motion в 165 файлах — оптимизация импорта | Res Map §1 | сборка |
 
+## Из «Карты мёртвого и заброшенного функционала»
+
+| Работа | Рекомендация карты | Причина |
+|---|---|---|
+| HIDE DeployPanel/DistillationPanel за featureFlags.mockServices.enabled=false | 🟡 HIDE+DOCUMENT | mock-бэкенды |
+| REMOVE HealthSlaPanel (mock SLA, 441 строка) | 🔴 REMOVE | mock |
+| Разобрать ~15 orphan компонентов | 🟡 DOCUMENT/REMOVE | не подключены |
+| 19 rivals/ подкаталогов (~175 файлов) | 🟡 REMOVE/experimental | research parallel |
+| 5 @deprecated MOCK сервисов | 🔴 HIDE/REPLACE | simulated |
+| dev-status-*.md (уже заполнены) | ✅ сделано | — |
+
 ## Из аудитов (волны 2–8) — безопасность/настойчивость
 
 | Работа | Источник | Причина |
