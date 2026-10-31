@@ -292,8 +292,8 @@
       "category": "audits",
       "language": "ru",
       "title": "Верификация и уверенность (Verification & Confidence)",
-      "bytes": 1373,
-      "hash": "6202d11a4fdae685b15c5d99a863a17a981019fe"
+      "bytes": 2856,
+      "hash": "436c108cd1e93bde7795b7fa2f3e5bad352de306"
     },
     {
       "path": "docs/audits/waves/card-23-autonomy-control.md",
