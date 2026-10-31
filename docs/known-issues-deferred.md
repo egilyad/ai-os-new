@@ -585,6 +585,55 @@
 
 ---
 
+## 13. Отложено — крупные рефакторинги / нужна проверка поведения
+
+> Пункты, которые НЕ трогаем «вслепую» (без локального прогона тестов/typecheck):
+> требуют структурных изменений или тонкой семантики, где регресс дороже выгоды.
+
+### 13.1. W6-019 — cross-session потеря сообщений (per-session изоляция)
+
+- **Файл:** `src/stores/chat/chat-send-message.ts`, `chat-event-handlers.ts`, `store.ts`
+- **Проблема:** `isAnySending()` глобальный (`activeRequestIds.size > 0`) — сессия B ждёт, пока сессия A шлёт; перекрытие очередей → потеря/задержка сообщений.
+- **Митигация:** привязка requestId → sessionId и гейт только по своей сессии. **Отложено.**
+
+### 13.2. W6-018 — feature-flag UI: `as unknown as Record<string, boolean>` (type lie)
+
+- **Файл:** `src/components/SettingsPanel/GeneralTab.tsx:408-529`
+- **Проблема:** `CONFIG.featureFlags` вложенный, а читается плоским `featureFlags['memory.enabled'] ?? true` — тумблеры показывают дефолт вместо реального значения; `setFeatureFlags(safeClone(CONFIG.featureFlags) as ...)` шлёт вложенный объект туда, где ждут плоский.
+- **Митигация:** хелперы dotted-path get/set + разобраться с получателем `setFeatureFlags`. **Отложено** (нужна проверка потребителей).
+
+### 13.3. W6-014 — singleton `ArgumentGraphService` (cross-session clobber)
+
+- **Файл:** `src/kernel/services/debate-runtime/debate-argument-graph-service.ts:156-220`
+- **Проблема:** DI-singleton; `build()` зовёт `clear()` → конкурентные дебаты затирают граф друг друга.
+- **Митигация:** per-session `Map<sessionId, GraphState>`. **Отложено.**
+
+### 13.4. W6-015 — CacheDecorator in-flight timeout не абортит inner
+
+- **Файл:** `src/llm/decorators/cache-decorator.ts:259-279`
+- **Проблема:** 120s-таймаут не прерывает внутренний вызов → кэш-stampede + orphaned HTTP-слот.
+- **Митигация:** cache-owned `AbortController`, abort при timeout. **Отложено.**
+
+### 13.5. W6-036 — `--ignore-scripts` для `npm ci` (CI + Dockerfile)
+
+- **Файл:** `.github/workflows/ci.yml:46..494`, `Dockerfile:34`
+- **Проблема:** supply-chain RCE через postinstall транзитивных зависимостей; но `--ignore-scripts` может сломать сборку, если нужный пакет получает бинарь через postinstall (не проверено локально).
+- **Митигация:** добавить флаг ТОЛЬКО после проверки полной сборки (build + e2e). **Отложено.**
+
+### 13.6. W6-007/W6-008/W6-009 — fencing token / Idempotency-Key / duplicate runs
+
+- **Файл:** `llm-http-client.ts`, `execution-queue.ts`, `server/adapters.mjs`
+- **Проблема:** нет fencing-токена у локов, нет `Idempotency-Key` на LLM-постах, дубль-запуск run.
+- **Митигация:** сквозные изменения транспорта/очередей. **Отложено.**
+
+### 13.7. W7-UGC-009 — CSAM/PhotoDNA-модерация изображений
+
+- **Файл:** image-пайплайн (нет)
+- **Проблема:** текстовый блоклист есть; модерация изображений (CSAM/PhotoDNA) отсутствует.
+- **Митигация:** внешний сервис модерации. **Отложено** (внешняя зависимость).
+
+---
+
 ## Карты системной разведки (10)
 
 Не «баги», а сквозные срезы системы для приоритизации и документации. Лежат в `docs/audits/waves/`:
@@ -606,18 +655,19 @@
 
 ## Сводка
 
-| Категория                    | Кол-во отложенных |
-| ---------------------------- | ----------------- |
-| Data Integrity / Persistence | 5                 |
-| Race Conditions / Lifecycle  | 6                 |
-| Types / Contracts            | 5                 |
-| Performance                  | 19                |
-| UX / Correctness             | 8                 |
-| Build / Deploy / Config      | 9                 |
-| General Logic                | 6                 |
-| SSoT / State Consistency     | 7                 |
-| Accessibility                | 9                 |
-| Resilience / Fault Tolerance | 12                |
-| Dependencies                 | 5                 |
-| Security / Secrets           | 4                 |
-| **Итого**                    | **91**            |
+| Категория                               | Кол-во отложенных |
+| --------------------------------------- | ----------------- |
+| Data Integrity / Persistence            | 5                 |
+| Race Conditions / Lifecycle             | 6                 |
+| Types / Contracts                       | 5                 |
+| Performance                             | 19                |
+| UX / Correctness                        | 8                 |
+| Build / Deploy / Config                 | 9                 |
+| General Logic                           | 6                 |
+| SSoT / State Consistency                | 7                 |
+| Accessibility                           | 9                 |
+| Resilience / Fault Tolerance            | 12                |
+| Dependencies                            | 5                 |
+| Security / Secrets                      | 4                 |
+| Deferred refactors (needs verification) | 7                 |
+| **Итого**                               | **91**            |
