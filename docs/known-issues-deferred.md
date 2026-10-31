@@ -766,6 +766,27 @@
 | Analytics               | событийная схема/атрибуция/TZ        | metrics           |
 | Unicode                 | Bidi/zero-width/графемы              | i18n              |
 
+### 13.15. Остаток волны 8 (backlog)
+
+> Подробности — в `audit-wave8-2026-10-31.md`. Отложено (server-архитектура, retrieval/перф, backpressure, конкурантность). Закрыто ранее: W8-003 (maxPayload), W8-004 (sidecar), W8-008 (PII), W8-009 (tool-loop args), W8-017 (лимит очереди).
+
+| ID                 | Пункт                                                    | Причина отложения |
+| ------------------ | -------------------------------------------------------- | ----------------- |
+| W8-001             | company-store.mjs синхронный JSON-файл-как-DB            | server            |
+| W8-002             | write-queue.mjs глобальная цепочка                       | server            |
+| W8-005             | CompressRouteDecorator opt-in / truncation               | семантика         |
+| W8-006             | prod-разрыв: server workers не в Docker                  | deploy            |
+| W8-007             | cross-tenant утечка памяти (unscoped recall)             | tenant            |
+| W8-010             | Runner tools в обход wrapExternalData                    | prompt injection  |
+| W8-011             | catalog tools с пустыми schema                           | валидация         |
+| W8-012/013/014/015 | retrieval O(N), cap+sort-per-write, recall перезапись    | перф              |
+| W8-016             | LLMHttpClient семафор без fairness                       | перф              |
+| W8-018             | ChatExecutor activeRequests без cap                      | backpressure      |
+| W8-019             | ChannelService unbounded/ghost cursors/private bypass    | данные            |
+| W8-020             | SSE без Last-Event-ID resume                             | стриминг          |
+| W8-021/022         | wakeups at-most-once; in-memory очереди теряют состояние | надёжность        |
+| W8-172             | A/B single-sample winner                                 | статистика        |
+
 ---
 
 ## Карты системной разведки (10)

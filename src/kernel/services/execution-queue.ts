@@ -5,6 +5,10 @@ import { rootLogger } from './logger-service';
 
 const LOGGER = rootLogger.child('ExecutionQueue');
 
+// W8-017: bound the queue so runaway/compromised agents cannot grow memory
+// without limit. Tasks beyond the cap are dropped with a warning.
+const MAX_QUEUE_TASKS = 10_000;
+
 export type QueuePriority = 'critical' | 'high' | 'normal' | 'low' | 'background';
 
 interface QueueTask {
@@ -58,6 +62,11 @@ export class ExecutionQueue {
             LOGGER.warn('ExecutionQueue', 'enqueue after destroy — task dropped', {
                 priority,
             });
+            return id;
+        }
+        const pending = Object.values(this.queues).reduce((s, q) => s + q.length, 0);
+        if (pending >= MAX_QUEUE_TASKS) {
+            LOGGER.warn('ExecutionQueue', 'queue full — task dropped', { priority, pending });
             return id;
         }
         this.queues[priority].push({ id, priority, payload, enqueuedAt: Date.now() });
