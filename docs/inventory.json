@@ -3,17 +3,17 @@
   "generatedBy": "scripts/gen-docs-inventory.mjs",
   "scope": "git-tracked markdown: docs/**/*.md (excluding docs/new drafts and the self-report pages docs-health, docs-inventory) plus repository entry docs (root *.md, .superagents/**, src/kernel/DEPENDENCY_MAP.md)",
   "totals": {
-    "documents": 329,
+    "documents": 344,
     "byCategory": {
       "repo": 9,
       "top": 25,
-      "audits": 10,
+      "audits": 25,
       "wiki": 285
     },
     "byLanguage": {
       "en": 44,
       "mixed": 63,
-      "ru": 222
+      "ru": 237
     }
   },
   "duplicates": {
@@ -198,6 +198,126 @@
       "title": "10 — Experiments Framework",
       "bytes": 4692,
       "hash": "2f02dd340a39842c9aca4be9bda5b0b319a7e980"
+    },
+    {
+      "path": "docs/audits/waves/card-11-security-trust.md",
+      "category": "audits",
+      "language": "ru",
+      "title": "Безопасность, доверие и границы (Security & Trust)",
+      "bytes": 5164,
+      "hash": "fb158216fbc215a1ce4975e3d73a75d249a453da"
+    },
+    {
+      "path": "docs/audits/waves/card-12-data-flows.md",
+      "category": "audits",
+      "language": "ru",
+      "title": "Потоки данных, владение и целостность (Data Flow & Ownership)",
+      "bytes": 1497,
+      "hash": "aa672239386647bb6ec11d5e100c42c04363a4b6"
+    },
+    {
+      "path": "docs/audits/waves/card-13-context-prompts-memory.md",
+      "category": "audits",
+      "language": "ru",
+      "title": "Контекст, промпты и память (Context & Prompts)",
+      "bytes": 1431,
+      "hash": "3396079328345a9de80ac6b62b76cb9ac9640713"
+    },
+    {
+      "path": "docs/audits/waves/card-14-knowledge-quality.md",
+      "category": "audits",
+      "language": "ru",
+      "title": "Качество знаний и происхождение решений (Knowledge & Provenance)",
+      "bytes": 1400,
+      "hash": "e9355679fb8aac496757fa5b85f2b9f205323bd8"
+    },
+    {
+      "path": "docs/audits/waves/card-15-failure-resilience.md",
+      "category": "audits",
+      "language": "ru",
+      "title": "Отказы, восстановление и blast radius (Failure & Resilience)",
+      "bytes": 1417,
+      "hash": "f5b9586d8f590a71f5f17afff7ab3f8e71004f99"
+    },
+    {
+      "path": "docs/audits/waves/card-16-concurrency-races.md",
+      "category": "audits",
+      "language": "ru",
+      "title": "Параллелизм и гонки (Concurrency & Races)",
+      "bytes": 1366,
+      "hash": "9258839cc9a9ee14be3bf105f4d548f70b7de817"
+    },
+    {
+      "path": "docs/audits/waves/card-17-cost-tokens.md",
+      "category": "audits",
+      "language": "ru",
+      "title": "Экономика: токены и стоимость (Cost / Token Economy)",
+      "bytes": 1365,
+      "hash": "36a8bdd78126fa42f6f2a0ec8160dbb5875bf3a7"
+    },
+    {
+      "path": "docs/audits/waves/card-18-configuration-secrets.md",
+      "category": "audits",
+      "language": "ru",
+      "title": "Конфигурация, флаги и секреты (Configuration & Secrets)",
+      "bytes": 1301,
+      "hash": "6b2651418295506800a38bb32589fce3bc4cb2b2"
+    },
+    {
+      "path": "docs/audits/waves/card-19-evolution-change.md",
+      "category": "audits",
+      "language": "ru",
+      "title": "Эволюция, churn и стоимость изменений (Evolution & Change)",
+      "bytes": 1393,
+      "hash": "f8e24888d5498ee9c7192e78968e8d06553efa61"
+    },
+    {
+      "path": "docs/audits/waves/card-20-ux-perception.md",
+      "category": "audits",
+      "language": "ru",
+      "title": "UX: восприятие, нагрузка и онбординг (UX & Cognition)",
+      "bytes": 1343,
+      "hash": "1155e70d52c23f6ad6e9598b6af51702adc39efc"
+    },
+    {
+      "path": "docs/audits/waves/card-21-contracts-api.md",
+      "category": "audits",
+      "language": "ru",
+      "title": "Контракты, API и миграции (Contracts & Migrations)",
+      "bytes": 1356,
+      "hash": "74d38ae114285db46f603a72eafafdbca9f47216"
+    },
+    {
+      "path": "docs/audits/waves/card-22-verification-confidence.md",
+      "category": "audits",
+      "language": "ru",
+      "title": "Верификация и уверенность (Verification & Confidence)",
+      "bytes": 1373,
+      "hash": "6202d11a4fdae685b15c5d99a863a17a981019fe"
+    },
+    {
+      "path": "docs/audits/waves/card-23-autonomy-control.md",
+      "category": "audits",
+      "language": "ru",
+      "title": "Автономия агентов vs контроль (Autonomy & Control)",
+      "bytes": 1336,
+      "hash": "c7711c03c468b355f377b983ea2bd2b6c32e2aa5"
+    },
+    {
+      "path": "docs/audits/waves/card-24-extensibility-platform.md",
+      "category": "audits",
+      "language": "ru",
+      "title": "Расширяемость и платформа (Extensibility)",
+      "bytes": 1300,
+      "hash": "0184ff2ada37cdcd209c16fe8f1d690530a4961c"
+    },
+    {
+      "path": "docs/audits/waves/card-25-observability-deep.md",
+      "category": "audits",
+      "language": "ru",
+      "title": "Наблюдаемость (расширенная) (Observability Deep)",
+      "bytes": 1293,
+      "hash": "52abcc521729edf76c0f29750746f4a47a7d2cb4"
     },
     {
       "path": "docs/audits/waves/map-01-requirements.md",
