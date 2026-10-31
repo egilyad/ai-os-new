@@ -11,7 +11,7 @@
 - **Multi-tenant IDOR / общий SYNC_SECRET / WS cross-tenant leak** — нужен server-скоупинг.
 - **CSAM/модерация изображений отсутствует** — требуется внешний сервис.
 
-Коды и детали — в [`docs/known-issues-deferred.md`](../../known-issues-deferred.md), разделы 12–13.
+Коды и детали — в `docs/known-issues-deferred.md`, разделы 12–13.
 
 ---
 

@@ -54,7 +54,7 @@ const BODIES: Record<string, string> = {
         '- **Multi-tenant IDOR / общий SYNC_SECRET / WS cross-tenant leak** — нужен server-скоупинг.',
         '- **CSAM/модерация изображений отсутствует** — требуется внешний сервис.',
         '',
-        'Коды и детали — в [`docs/known-issues-deferred.md`](../../known-issues-deferred.md), разделы 12–13.',
+        'Коды и детали — в `docs/known-issues-deferred.md`, разделы 12–13.',
     ].join('\n'),
     'dev-status-debt': [
         'Технический долг (крупные рефакторинги, требуют проверки регрессий):',
@@ -90,12 +90,12 @@ const BODIES: Record<string, string> = {
         'Активная разработка — системный проход по аудитам (волны 2–8):',
         '',
         '- В каждой волне закрываются безопасные/локальные пункты, остальное уходит в карту отложенных.',
-        '- Полная карта прогресса — [`docs/known-issues-deferred.md`](../../known-issues-deferred.md).',
+        '- Полная карта прогресса — `docs/known-issues-deferred.md`.',
     ].join('\n'),
     'dev-status-docs': [
         'Документация: активная, автогенерируемая (wiki-зеркало из корпуса).',
         '',
-        '- Карта отложенных проблем — [`docs/known-issues-deferred.md`](../../known-issues-deferred.md).',
+        '- Карта отложенных проблем — `docs/known-issues-deferred.md`.',
         '- Инвентарь/манифест/граф генерируются (`gen:wiki-*`); CI проверяет синхронизацию.',
     ].join('\n'),
     'dev-status-blocked': [
@@ -114,7 +114,7 @@ const BODIES: Record<string, string> = {
     'dev-status-files': [
         'Ключевые файлы состояния:',
         '',
-        '- [`docs/known-issues-deferred.md`](../../known-issues-deferred.md) — карта отложенных.',
+        '- `docs/known-issues-deferred.md` — карта отложенных.',
         '- `docs/audits/waves/` — карты системной разведки (10).',
         '- `docs/inventory.json`, `docs/manifest.json`, `docs/graph.json` — машиночитаемые индексы.',
     ].join('\n'),

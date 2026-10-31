@@ -1396,8 +1396,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Активная разработка",
-      "bytes": 1455,
-      "hash": "0c8908dbe9eb381e74646b62d70072ef92005f0f"
+      "bytes": 1421,
+      "hash": "c0d4dd900de0220f942cdf72f02c98e939bd91e4"
     },
     {
       "path": "docs/wiki/dev-status-blocked.md",
@@ -1420,8 +1420,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Критические проблемы",
-      "bytes": 1822,
-      "hash": "f6ecbf3802ba9addd390edd1825ae4f7e876239b"
+      "bytes": 1788,
+      "hash": "b92ffebcbc5e3cd812aa016ec4797e54331b6fe2"
     },
     {
       "path": "docs/wiki/dev-status-debt.md",
@@ -1436,8 +1436,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Документация",
-      "bytes": 1439,
-      "hash": "3206885a842de1a036f3120de657b9a0fcb6da4a"
+      "bytes": 1405,
+      "hash": "971295be47a833505f4a51f9efa3c7c3191cf27d"
     },
     {
       "path": "docs/wiki/dev-status-done.md",
@@ -1452,8 +1452,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "MD и другие файлы от разработки",
-      "bytes": 1397,
-      "hash": "d73343d3d9370b37f3eacebca578e4ef7445087b"
+      "bytes": 1363,
+      "hash": "b40b16588da17a08134edf680a3316c9beabff92"
     },
     {
       "path": "docs/wiki/dev-status-roadmaps.md",
