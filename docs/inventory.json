@@ -284,8 +284,8 @@
       "category": "audits",
       "language": "ru",
       "title": "Контракты, API и миграции (Contracts & Migrations)",
-      "bytes": 1356,
-      "hash": "74d38ae114285db46f603a72eafafdbca9f47216"
+      "bytes": 2839,
+      "hash": "c23c5a43cc83236364a9e7877106aad0a398d06d"
     },
     {
       "path": "docs/audits/waves/card-22-verification-confidence.md",
