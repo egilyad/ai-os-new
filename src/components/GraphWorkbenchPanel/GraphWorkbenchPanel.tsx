@@ -30,6 +30,14 @@ interface Ucb1Row {
     spark: number[];
 }
 
+/** Дедупликация узлов/рёбер по id — граф-библиотека падает на дублях. */
+function dedupGraph(nodes: VisGraphNode[], edges: VisGraphEdge[]) {
+    return {
+        nodes: Array.from(new Map(nodes.map((n) => [n.id, n])).values()),
+        edges: Array.from(new Map(edges.map((e) => [e.id, e])).values()),
+    };
+}
+
 function sparkPoints(data: number[], w: number, h: number): string {
     if (data.length === 0) return '';
     const min = Math.min(...data);
@@ -155,8 +163,9 @@ const GraphWorkbenchPanel: React.FC = () => {
                 });
             });
 
-            setRoutingNodes(nodes);
-            setRoutingEdges(edges);
+            const { nodes: uniqNodes, edges: uniqEdges } = dedupGraph(nodes, edges);
+            setRoutingNodes(uniqNodes);
+            setRoutingEdges(uniqEdges);
         } catch (e) {
             setError(e instanceof Error ? e.message : String(e));
         }
@@ -218,8 +227,9 @@ const GraphWorkbenchPanel: React.FC = () => {
                 });
             });
 
-            setCostNodes(nodes);
-            setCostEdges(edges);
+            const { nodes: uniqNodes, edges: uniqEdges } = dedupGraph(nodes, edges);
+            setCostNodes(uniqNodes);
+            setCostEdges(uniqEdges);
         } catch (e) {
             setError(e instanceof Error ? e.message : String(e));
         }
@@ -265,8 +275,9 @@ const GraphWorkbenchPanel: React.FC = () => {
                     });
                 }
             });
-            setTaskNodes(nodes);
-            setTaskEdges(edges);
+            const { nodes: uniqNodes, edges: uniqEdges } = dedupGraph(nodes, edges);
+            setTaskNodes(uniqNodes);
+            setTaskEdges(uniqEdges);
         } catch (e) {
             setError(e instanceof Error ? e.message : String(e));
         }
