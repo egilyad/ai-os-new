@@ -2703,7 +2703,9 @@
         "panel-debate-system-research"
       ],
       "reviewed": null,
-      "tests": []
+      "tests": [
+        "src/components/RivalsCatalogPanel.test.tsx"
+      ]
     },
     {
       "id": "wiki:guide-work-modes",

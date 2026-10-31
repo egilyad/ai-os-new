@@ -3,12 +3,12 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 1371,
-    "edges": 2552,
+    "nodes": 1372,
+    "edges": 2553,
     "byType": {
       "audit": 10,
       "code": 610,
-      "test": 198,
+      "test": 199,
       "panel": 268,
       "article": 285
     },
@@ -16,7 +16,7 @@
       "audit_test": 18,
       "audit_mention": 52,
       "documents": 204,
-      "test": 294,
+      "test": 295,
       "source": 891,
       "related": 1093
     }
@@ -1111,6 +1111,11 @@
       "id": "file:src/components/RivalLabs/RivalLabsPanel.tsx",
       "type": "code",
       "label": "src/components/RivalLabs/RivalLabsPanel.tsx"
+    },
+    {
+      "id": "file:src/components/RivalsCatalogPanel.test.tsx",
+      "type": "test",
+      "label": "src/components/RivalsCatalogPanel.test.tsx"
     },
     {
       "id": "file:src/components/RivalsCatalogPanel.tsx",
@@ -19704,6 +19709,11 @@
       "from": "wiki:panel-rival-labs",
       "to": "wiki:panel-rivals-catalog",
       "kind": "related"
+    },
+    {
+      "from": "wiki:panel-rivals-catalog",
+      "to": "file:src/components/RivalsCatalogPanel.test.tsx",
+      "kind": "test"
     },
     {
       "from": "wiki:panel-rivals-catalog",

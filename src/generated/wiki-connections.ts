@@ -1288,7 +1288,9 @@ export const WIKI_CONNECTIONS: Record<string, WikiConnection[]> = {
             "panelId": "rivals-catalog",
             "route": "/rivals-catalog",
             "component": "src/components/RivalsCatalogPanel",
-            "tests": []
+            "tests": [
+                "src/components/RivalsCatalogPanel.test.tsx"
+            ]
         },
         {
             "panelId": "provider-dashboard",

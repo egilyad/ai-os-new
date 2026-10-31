@@ -47,7 +47,7 @@
   - Тесты: `src/components/RivalLabs/RivalLabsPanel.test.tsx`
 - Панель `rivals-catalog` → маршрут `/rivals-catalog`
   - Компонент: `src/components/RivalsCatalogPanel`
-  - Тесты: — (рядом с компонентом не найдены)
+  - Тесты: `src/components/RivalsCatalogPanel.test.tsx`
 - Панель `provider-dashboard` → маршрут `/provider-dashboard`
   - Компонент: `src/components/ProviderDashboard`
   - Тесты: — (рядом с компонентом не найдены)
