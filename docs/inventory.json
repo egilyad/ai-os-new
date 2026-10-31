@@ -220,7 +220,7 @@
       "category": "audits",
       "language": "ru",
       "title": "Контекст, промпты и память (Context & Prompts)",
-      "bytes": 3851,
+      "bytes": 3854,
       "hash": "aa124af608774bb9a2661d6c681926abfb13b6ab"
     },
     {
@@ -228,8 +228,8 @@
       "category": "audits",
       "language": "ru",
       "title": "Качество знаний и происхождение решений (Knowledge & Provenance)",
-      "bytes": 1400,
-      "hash": "e9355679fb8aac496757fa5b85f2b9f205323bd8"
+      "bytes": 3538,
+      "hash": "987ca400dc2a649ac2a23982a6b00c06c669a940"
     },
     {
       "path": "docs/audits/waves/card-15-failure-resilience.md",
