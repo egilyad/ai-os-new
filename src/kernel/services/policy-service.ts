@@ -1,5 +1,5 @@
 import { genId } from '../../utils/gen-id';
-import { isReDoSPattern } from '../../utils/regex-safe';
+import { isReDoSPattern } from '../utils/regex-safe';
 
 export type PolicyType =
     'latency' | 'privacy' | 'cost' | 'safety' | 'rate_limit' | 'content' | 'custom';
