@@ -332,8 +332,8 @@
       "category": "audits",
       "language": "ru",
       "title": "Карта функциональной ценности — Feature Value Map",
-      "bytes": 82525,
-      "hash": "34fcd232126d10e5d772c8e50e0841f8395b4614"
+      "bytes": 83929,
+      "hash": "cb119a249478bda90da5d508a15d6f0f7d8f0f27"
     },
     {
       "path": "docs/audits/waves/map-03-technical-health.md",
