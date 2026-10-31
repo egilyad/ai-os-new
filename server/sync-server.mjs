@@ -87,12 +87,19 @@ function isAllowedOrigin(origin) {
     return ALLOWED_ORIGINS.includes(origin) || ALLOWED_ORIGINS.includes('*');
 }
 
+// W6-024: by default do NOT trust X-Forwarded-For — it is client-suppliable
+// and lets anyone bypass rate limiting. Only trust the header when the server
+// is deliberately placed behind a proxy that overwrites the chain, and then
+// take the RIGHTMOST entry (the IP added by the nearest trusted proxy).
+const TRUST_PROXY = process.env.SYNC_TRUST_PROXY === '1';
+
 function getClientIP(req) {
-    // M-1: prefer x-forwarded-for behind nginx; parse leftmost IP from chain
-    const forwarded = req.headers['x-forwarded-for'];
-    if (forwarded) {
-        const leftmost = forwarded.split(',')[0].trim();
-        if (leftmost) return leftmost;
+    if (TRUST_PROXY) {
+        const forwarded = req.headers['x-forwarded-for'];
+        if (forwarded) {
+            const rightmost = forwarded.split(',').pop().trim();
+            if (rightmost) return rightmost;
+        }
     }
     return req.socket?.remoteAddress || 'unknown';
 }
@@ -1116,6 +1123,8 @@ const server = http.createServer(async (req, res) => {
 // SYNC_SECRET is already validated at startup (above) — guard is unreachable.
 const wss = new WebSocketServer({
     server,
+    // W6-030: cap WebSocket frame size (default 100 MiB) against authenticated DoS.
+    maxPayload: 1024 * 1024,
     verifyClient: (info, callback) => {
         // H-14: Rate limit WebSocket connections per IP
         const wsIp = getClientIP(info.req);
@@ -1255,7 +1264,22 @@ server.listen(PORT, SYNC_HOST, () => {
         } catch {
             /* ignore */
         }
+        // W6-029: close WebSocket clients too, not just the HTTP listener, and
+        // force-exit if lingering handles (SSE/WS) keep the process alive.
+        try {
+            for (const client of wss.clients) {
+                try {
+                    client.terminate();
+                } catch {
+                    /* ignore */
+                }
+            }
+            wss.close();
+        } catch {
+            /* ignore */
+        }
         server.close();
+        setTimeout(() => process.exit(0), 3000).unref();
     };
     process.on('SIGTERM', shutdown);
     process.on('SIGINT', shutdown);
