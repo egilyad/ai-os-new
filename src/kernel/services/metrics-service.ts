@@ -151,11 +151,16 @@ export class MetricsService {
                 history: TimeSeriesPoint[];
                 thresholds: MetricsThreshold[];
                 alerts: MetricAlert[];
+                counters?: Record<string, number>;
+                gauges?: Record<string, number>;
             }>(METRICS_KEY);
             if (saved) {
                 this.history = saved.history || [];
                 this.thresholds = saved.thresholds || getDefaultThresholds();
                 this.alerts = saved.alerts || [];
+                // W6-033: restore counters/gauges so rate-alerts survive restarts.
+                if (saved.counters) this.counters = new Map(Object.entries(saved.counters));
+                if (saved.gauges) this.gauges = new Map(Object.entries(saved.gauges));
             }
         } catch (e) {
             LOGGER.error('MetricsService', 'Failed to load', { error: e });
@@ -168,6 +173,8 @@ export class MetricsService {
                 history: this.history.slice(-getMaxHistoryPoints()),
                 thresholds: this.thresholds,
                 alerts: this.alerts,
+                counters: Object.fromEntries(this.counters),
+                gauges: Object.fromEntries(this.gauges),
             });
         } catch (e) {
             LOGGER.error('MetricsService', 'Failed to persist', { error: e });
