@@ -340,8 +340,8 @@
       "category": "audits",
       "language": "mixed",
       "title": "Карта технического состояния — Technical Health Map",
-      "bytes": 74674,
-      "hash": "1d7d398a1bd5491bc21382f78cb516fd7e2eb3f3"
+      "bytes": 75679,
+      "hash": "f3052e3d713909e42b88ba7c8951901d7efd1b7f"
     },
     {
       "path": "docs/audits/waves/map-04-observability-diagnostics.md",

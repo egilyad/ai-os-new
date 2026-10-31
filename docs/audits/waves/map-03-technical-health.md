@@ -695,4 +695,20 @@ $ diff <(sed -E 's/humor|Humor/XXX/g' HumorPanel.tsx) \
 
 ---
 
+## Сверка с аудитами (волны 2–8)
+
+Дополнительные факты по техническому состоянию из волн аудитов:
+
+- W2-008/035: ключевые сервисы (key-management и др.) без юнит-тестов.
+- W4-002: CI гоняет только `test:stable` (44 пути из 596 тест-файлов) — покрытие не является гейтом.
+- W3-010/011: a11y-правила не в lint; 5 UI-нарушений.
+- W6-027: `engines.node` >=22 без `.nvmrc`; lint-staged требует >=22.22.1.
+- W6-025: unpinned `npx @sentry/cli`/`datadog-ci` в deploy (supply-chain).
+- W6-026: `ws`/`playwright` в devDependencies, но используются production-серверами.
+- W7-HTTP: 301 вместо 308 для POST; SSE без Last-Event-ID.
+- W3-013: build target es2023 (progressive enhancement).
+- W8-001: `company-store.mjs` — синхронный JSON-файл-как-DB (не durable).
+
+---
+
 _Отчёт сгенерирован 2026-10-31 на основе коммита `e08ab8e`. Все метрики — статический анализ; runtime-поведение и реальный CI run не проверялись. Парные отчёты: «Карта готовности панелей» (качество) и «Карта функциональной ценности» (зачем нужно) — dort._
