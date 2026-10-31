@@ -68,9 +68,9 @@ const AlertLayer: React.FC = () => {
     useEffect(() => {
         const currentTimers = timers.current;
         const refreshAlerts = () => {
-        const list = keyService.getAlerts();
-        setAlerts((Array.isArray(list) ? list : []).filter((a) => !a.resolved));
-    };
+            const list = keyService.getAlerts();
+            setAlerts((Array.isArray(list) ? list : []).filter((a) => !a.resolved));
+        };
         refreshAlerts();
 
         const getStr = (d: Record<string, unknown>, k: string, fallback = ''): string =>
@@ -158,6 +158,8 @@ const AlertLayer: React.FC = () => {
 
     return (
         <div
+            role="status"
+            aria-live="polite"
             style={{
                 position: 'fixed',
                 top: 16,

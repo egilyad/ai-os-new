@@ -194,6 +194,14 @@ const ChatHistoryEntry: React.FC<ChatHistoryEntryProps> = memo(
                                     if (sel && sel.length > 0) return;
                                     onStartEdit(entry.id, entry.text);
                                 }}
+                                role="button"
+                                tabIndex={0}
+                                onKeyDown={(e) => {
+                                    if ((e.key === 'Enter' || e.key === ' ') && !isEditing) {
+                                        e.preventDefault();
+                                        onStartEdit(entry.id, entry.text);
+                                    }
+                                }}
                                 title={t('chat.click_to_edit')}
                             >
                                 <MarkdownRenderer content={entry.text} />

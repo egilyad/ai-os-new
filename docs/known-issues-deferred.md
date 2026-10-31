@@ -659,6 +659,30 @@
 | W2-034      | LoggerService exportLogs отдаёт raw meta               | нужно решение по редэкции    |
 | W2-008/035  | ключевые сервисы без юнит-тестов                       | тесты/CI                     |
 
+### 13.10. Остаток волны 3 (backlog)
+
+> Подробности — в `audit-wave3-2026-10-31.md`. Отложено (tenant/шифрование, a11y-глубина, сборка):
+
+| ID                     | Пункт                                                                   | Причина отложения    |
+| ---------------------- | ----------------------------------------------------------------------- | -------------------- |
+| W3-001/002/003/004/005 | apiKeys/tenant-скоупинг, sync blob, broadcastLive, шифрование IndexedDB | tenant/шифрование    |
+| W3-006                 | exportToJson/importFromJson частичный (16/136)                          | формат/миграция      |
+| W3-007                 | Vault envelope salt статичный                                           | vault (см. 12.1)     |
+| W3-008/027/009         | feature flags dotted vs nested, событие                                 | семантика (см. 13.2) |
+| W3-010/011             | eslint a11y не в lint; 5 UI-нарушений                                   | eslint-конфиг        |
+| W3-012                 | 212 inline outline:none / focus-visible                                 | глобальный UI-стиль  |
+| W3-013                 | build target es2023                                                     | сборка               |
+| W3-014/015             | service worker / manifest                                               | PWA                  |
+| W3-016                 | MemoryCenterPanel hardcoded русский                                     | i18n-компонент       |
+| W3-017                 | t() fallback (104 места)                                                | i18n                 |
+| W3-018                 | useFocusTrap: Escape/focusables/inert                                   | a11y-хук             |
+| W3-021                 | VisGraph canvas недоступен для AT                                       | a11y-глубина         |
+| W3-024                 | /api/approvals/:id/decide companyId                                     | authz                |
+| W3-025                 | SYNC_SECRET в нескольких местах                                         | secrets              |
+| W3-026                 | personaStore.refresh() не обновляет контексты                           | логика               |
+| W3-028                 | 4 dead/misleading feature flags                                         | проверить ссылки     |
+| W3-029                 | Sandbox DEV-флаг без UI-warning                                         | UX                   |
+
 ---
 
 ## Карты системной разведки (10)
