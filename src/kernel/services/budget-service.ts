@@ -442,7 +442,8 @@ export class BudgetService implements IBudgetService {
     }
 
     recordSpend(agentId: string | null, provider: string, amount: number): void {
-        if (amount <= 0) return;
+        // W5-020: never let NaN/Infinity pollute cost history.
+        if (!Number.isFinite(amount) || amount <= 0) return;
         // Track by provider — append synthetic cost history entry so provider budgets are accurate
         this.costHistory.push({
             model: 'recorded',

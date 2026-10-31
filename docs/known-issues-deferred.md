@@ -700,6 +700,27 @@
 | W4-042/043     | автономные file-writes мимо ToolPipeline; autonomy agentIds | guardrails        |
 | W4-044         | AUTOPILOT для non-admin (авт-гвард сделан, admin-гейт нет)  | authz/роли        |
 
+### 13.12. Остаток волны 5 (backlog)
+
+> Подробности — в `audit-wave5-2026-10-31.md`. Отложено (privacy/compliance, доверие прокси, стриминг, cost-attribution):
+
+| ID             | Пункт                                                                       | Причина отложения |
+| -------------- | --------------------------------------------------------------------------- | ----------------- |
+| W5-001/002     | IndexedDB dump без tenant; ключи plaintext (см. 12.1/12.2)                  | vault/tenant      |
+| W5-004/005     | «copyright holder»/NVIDIA fake-compliance бейджи                            | контент/комплаенс |
+| W5-006         | nginx отдаёт X-Real-IP/XFF провайдерам                                      | nginx-конфиг      |
+| W5-007         | Anthropic dangerous direct browser access                                   | провайдер         |
+| W5-008/009     | нет right-to-be-forgotten; нет privacy policy/согласия                      | юридическое       |
+| W5-010         | HTTP-only дефолтный nginx                                                   | deploy            |
+| W5-011         | sync ws:// без fail-closed                                                  | server            |
+| W5-014/016     | частичный стрим теряется при ошибке; нет recovery                           | стриминг          |
+| W5-015         | raw provider error утекает в UI                                             | обработка ошибок  |
+| W5-017         | tool-call errors скрыты                                                     | UX                |
+| W5-018         | budget-gating float-округление                                              | стоимость         |
+| W5-019         | hardcoded per-token цена                                                    | стоимость         |
+| W5-021/022/024 | recordSpend без enforcement; block_usage декларативно; нет cost-attribution | enforcement       |
+| W5-023         | cross-tab lock TOCTOU                                                       | конкурентность    |
+
 ---
 
 ## Карты системной разведки (10)
