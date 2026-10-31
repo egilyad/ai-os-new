@@ -260,8 +260,8 @@
       "category": "audits",
       "language": "ru",
       "title": "Конфигурация, флаги и секреты (Configuration & Secrets)",
-      "bytes": 1301,
-      "hash": "6b2651418295506800a38bb32589fce3bc4cb2b2"
+      "bytes": 2923,
+      "hash": "a8a8e2646d3439e3413f0438ea09b21301d8a698"
     },
     {
       "path": "docs/audits/waves/card-19-evolution-change.md",
