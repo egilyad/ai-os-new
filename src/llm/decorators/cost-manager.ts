@@ -204,7 +204,7 @@ export class CostManagerDecorator extends BaseDecorator {
             signal,
         );
         if (blocked)
-            throw new LLMError(`Budget exceeded for ${this.id}. Request blocked.`, this.id, 429);
+            throw new LLMError(`Budget exceeded for ${this.id}. Request blocked.`, this.id, 402);
 
         const inputTokens = messages.reduce((s, m) => s + estimateTokenCount(m.content), 0);
 
@@ -215,8 +215,7 @@ export class CostManagerDecorator extends BaseDecorator {
         // usage is less than half of it.
         const estimatedTotal = inputTokens + estimateTokenCount(res.content ?? '');
         const reportedTotal = res.tokens ?? 0;
-        const totalTokens =
-            reportedTotal < estimatedTotal * 0.5 ? estimatedTotal : reportedTotal;
+        const totalTokens = reportedTotal < estimatedTotal * 0.5 ? estimatedTotal : reportedTotal;
         if (totalTokens !== reportedTotal) {
             LOGGER.warn('CostManagerDecorator', 'Provider token count distrusted, using estimate', {
                 model: resolvedModel,
@@ -262,7 +261,7 @@ export class CostManagerDecorator extends BaseDecorator {
             signal,
         );
         if (blocked)
-            throw new LLMError(`Budget exceeded for ${this.id}. Request blocked.`, this.id, 429);
+            throw new LLMError(`Budget exceeded for ${this.id}. Request blocked.`, this.id, 402);
 
         const inputTokens = messages.reduce((s, m) => s + estimateTokenCount(m.content), 0);
 
