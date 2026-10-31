@@ -42,6 +42,23 @@
 | Явная команда «what can you do?» у Assistant | Accessibility Map §3.4 | discovery |
 | Убрать/расширить stub-панели в main nav | Accessibility Map §1 | UX |
 
+## Из «Карты потенциала» (Opportunity Map)
+
+| Работа | Квадрант | Причина |
+|---|---|---|
+| Builder killer-service nodes (crystal/synthesis/lens/time-machine) | 🟢 Do First / 🔴 Strategic | стоимость 7, большой |
+| Cross-panel navigation links (ROI 32) | 🟢 Do First | UI-ссылки, много точек |
+| Import в 9 панелях (round-trip) | 🟢 Do First | фича восстановления |
+| WikiPanel «Create article» UI | 🟢 Do First | фича |
+| DebateArena «Save as Crystal» | 🟢 Do First | фича |
+| Settings search + tooltips | 🟡 Quick Win | UI |
+| Объединить budget/health панели | 🟡 Quick Win | рефакторинг |
+| Coverage threshold в CI | 🟡 Quick Win | gating |
+| eventBus cleanup audit (42 listeners) | 🟡 Quick Win | чинина |
+| Переименовать rivals/ → experimental/ | 🟡 Quick Win | рефакторинг |
+| Dev-status-*.md заполнены | ✅ сделано | — |
+| Остальные Strategic Bets / Defer | 🔴/⚪ | крупное |
+
 ## Из аудитов (волны 2–8) — безопасность/настойчивость
 
 | Работа | Источник | Причина |
