@@ -7,10 +7,7 @@ import { useTranslation } from '../../i18n/useTranslation';
 import { VoiceButton } from './VoiceButton';
 import ProviderIcon from '../ProviderIcon/ProviderIcon';
 import { DEFAULT_MODELS, formatContextWindow } from './chat-panel-utils';
-import {
-    getCatalogContextWindow,
-    getCatalogPricing,
-} from '../../llm/catalog/catalog-lookup';
+import { getCatalogContextWindow, getCatalogPricing } from '../../llm/catalog/catalog-lookup';
 
 interface Props {
     selectedKeys: string[];
@@ -59,7 +56,8 @@ const ChatInputArea: React.FC<Props> = ({
 
     const handleKeyDown = useCallback(
         (e: React.KeyboardEvent) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
+            // W7-UNI-007: don't submit while an IME composition is in progress.
+            if (e.key === 'Enter' && !e.shiftKey && !e.nativeEvent.isComposing) {
                 e.preventDefault();
                 const text = input.trim();
                 if (!text) return;
@@ -252,6 +250,7 @@ const ChatInputArea: React.FC<Props> = ({
                         aria-label={t('chat.placeholder')}
                         onChange={(e) => setInput(e.target.value)}
                         onKeyDown={handleKeyDown}
+                        maxLength={8000}
                         placeholder={
                             selectedKeys.length === 0
                                 ? t('chat.no_keys_selected')

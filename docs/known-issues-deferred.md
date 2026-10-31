@@ -747,6 +747,25 @@
 | W6-025 | unpinned npx                              | supply chain       |
 | W6-026 | ws/playwright в devDependencies           | toolchain          |
 
+### 13.14. Остаток волны 7 (backlog)
+
+> Подробности — в `audit-wave7-2026-10-31.md`. Отложено (sync, UGC, analytics, lifecycle, unicode, bulk). W7-UNI-007 закрыт (IME/maxLength).
+
+| ID                      | Пункт                                | Причина отложения |
+| ----------------------- | ------------------------------------ | ----------------- |
+| W7-SYN-001              | federated memory sync без шифрования | sync/шифрование   |
+| W7-ANA-007              | multi-tab потеря данных              | стейт             |
+| W7-ANA-012              | UsageTracker не enforced             | cost              |
+| W7-ANA-013              | fabricated daily trends              | metrics           |
+| Web Security / Sessions | CSRF/CORS/cookies/sessions           | authz             |
+| Randomness / Crypto     | Math.random в security; ключи        | crypto            |
+| Pagination              | сортировка/курсоры                   | UX                |
+| Multi-Device Sync       | конфликты/CRDT/ожибстоуны            | sync              |
+| UGC                     | модерация (CSAM/URL)                 | внешние сервисы   |
+| Account Lifecycle       | дельта-каскад/retention              | юридическое       |
+| Analytics               | событийная схема/атрибуция/TZ        | metrics           |
+| Unicode                 | Bidi/zero-width/графемы              | i18n              |
+
 ---
 
 ## Карты системной разведки (10)
