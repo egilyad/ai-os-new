@@ -466,6 +466,25 @@
 
 ---
 
+## Карты системной разведки (10)
+
+Не «баги», а сквозные срезы системы для приоритизации и документации. Лежат в `docs/audits/waves/`:
+
+| Карта | Файл | Назначение |
+|---|---|---|
+| Requirements | `docs/audits/waves/map-01-requirements.md` | требования и их покрытие |
+| Feature Value | `docs/audits/waves/map-02-feature-value.md` | ценность фич |
+| Technical Health | `docs/audits/waves/map-03-technical-health.md` | техздоровье |
+| Observability & Diagnostics | `docs/audits/waves/map-04-observability-diagnostics.md` | наблюдаемость |
+| Dead & Abandoned | `docs/audits/waves/map-05-dead-abandoned.md` | мёртвый/заброшенный код |
+| Capability Gap | `docs/audits/waves/map-06-capability-gap.md` | пробелы возможностей |
+| Opportunity | `docs/audits/waves/map-07-opportunity.md` | возможности |
+| Capability Accessibility | `docs/audits/waves/map-08-capability-accessibility.md` | доступность возможностей |
+| Duplication | `docs/audits/waves/map-09-duplication.md` | дублирование |
+| Resource Consumption | `docs/audits/waves/map-10-resource-consumption.md` | потребление ресурсов |
+
+---
+
 ## Сводка
 
 | Категория | Кол-во отложенных |
