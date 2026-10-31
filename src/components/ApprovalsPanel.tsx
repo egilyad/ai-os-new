@@ -123,10 +123,15 @@ const ApprovalsPanel: React.FC = () => {
         if (!selected || !comment.trim()) return;
         setError(null);
         try {
-            const data = await api<{ approval?: Approval }>(base, secret, `/api/approvals/${selected.id}/comments`, {
-                method: 'POST',
-                body: JSON.stringify({ author: decider, text: comment }),
-            });
+            const data = await api<{ approval?: Approval }>(
+                base,
+                secret,
+                `/api/approvals/${selected.id}/comments`,
+                {
+                    method: 'POST',
+                    body: JSON.stringify({ author: decider, text: comment }),
+                },
+            );
             if (data.approval) patchSelected(data.approval);
             setComment('');
         } catch (e) {
@@ -139,10 +144,15 @@ const ApprovalsPanel: React.FC = () => {
         setError(null);
         setNotice(null);
         try {
-            const data = await api<{ approval?: Approval }>(base, secret, `/api/approvals/${selected.id}/decide`, {
-                method: 'POST',
-                body: JSON.stringify({ decision, by: decider }),
-            });
+            const data = await api<{ approval?: Approval }>(
+                base,
+                secret,
+                `/api/approvals/${selected.id}/decide`,
+                {
+                    method: 'POST',
+                    body: JSON.stringify({ decision, by: decider }),
+                },
+            );
             if (data.approval) patchSelected(data.approval);
             setNotice(decision === 'approved' ? t('approvals.approved') : t('approvals.rejected'));
         } catch (e) {
@@ -152,16 +162,33 @@ const ApprovalsPanel: React.FC = () => {
 
     return (
         <div style={{ padding: '1.5rem', maxWidth: 1100, margin: '0 auto' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem' }}>
+            <div
+                style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.75rem',
+                    marginBottom: '1rem',
+                }}
+            >
                 <ShieldCheck size={20} />
                 <h2 style={{ margin: 0 }}>{t('approvals.title')}</h2>
-                <button onClick={() => void loadApprovals()} disabled={loading} style={{ marginLeft: 'auto' }}>
-                    {loading ? <Loader2 size={14} /> : <RefreshCw size={14} />} {t('approvals.refresh')}
+                <button
+                    onClick={() => void loadApprovals()}
+                    disabled={loading}
+                    style={{ marginLeft: 'auto' }}
+                >
+                    {loading ? <Loader2 size={14} /> : <RefreshCw size={14} />}{' '}
+                    {t('approvals.refresh')}
                 </button>
             </div>
 
             <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
-                <input value={url} onChange={(e) => setUrl(e.target.value)} placeholder={t('approvals.url')} style={{ flex: '2 1 200px' }} />
+                <input
+                    value={url}
+                    onChange={(e) => setUrl(e.target.value)}
+                    placeholder={t('approvals.url')}
+                    style={{ flex: '2 1 200px' }}
+                />
                 <input
                     value={secret}
                     onChange={(e) => setSecret(e.target.value)}
@@ -187,7 +214,15 @@ const ApprovalsPanel: React.FC = () => {
             </div>
 
             {error && (
-                <div style={{ display: 'flex', gap: 8, alignItems: 'center', color: '#dc2626', marginBottom: '1rem' }}>
+                <div
+                    style={{
+                        display: 'flex',
+                        gap: 8,
+                        alignItems: 'center',
+                        color: '#dc2626',
+                        marginBottom: '1rem',
+                    }}
+                >
                     <AlertTriangle size={16} /> <span>{error}</span>
                 </div>
             )}
@@ -199,7 +234,11 @@ const ApprovalsPanel: React.FC = () => {
                         <li key={a.id} style={{ marginBottom: 6 }}>
                             <button
                                 onClick={() => setSelectedId(a.id)}
-                                style={{ width: '100%', textAlign: 'left', fontWeight: a.id === selectedId ? 700 : 400 }}
+                                style={{
+                                    width: '100%',
+                                    textAlign: 'left',
+                                    fontWeight: a.id === selectedId ? 700 : 400,
+                                }}
                             >
                                 [{a.status}] {a.kind}
                             </button>
@@ -209,7 +248,14 @@ const ApprovalsPanel: React.FC = () => {
                 </ul>
 
                 {selected && (
-                    <div style={{ flex: '2 1 400px', border: '1px solid #e2e8f0', borderRadius: 8, padding: '1rem' }}>
+                    <div
+                        style={{
+                            flex: '2 1 400px',
+                            border: '1px solid #e2e8f0',
+                            borderRadius: 8,
+                            padding: '1rem',
+                        }}
+                    >
                         <h3 style={{ marginTop: 0 }}>
                             {selected.kind} · {selected.status}
                         </h3>
@@ -306,33 +352,114 @@ function LocalAgentApprovals(): React.JSX.Element {
         }
     }
 
+    // Capability-gap 8.2: mass approve/reject all pending local approvals.
+    async function bulk(status: 'APPROVED' | 'REJECTED'): Promise<void> {
+        const ids = items.map((r) => r.id).filter((id): id is number => typeof id === 'number');
+        if (ids.length === 0) return;
+        setError(null);
+        try {
+            await agemsApprovalService.bulkResolve(ids, status);
+            await load();
+        } catch (e) {
+            setError(e instanceof Error ? e.message : String(e));
+        }
+    }
+
     return (
         <div style={{ marginTop: '2rem', borderTop: '1px solid #e2e8f0', paddingTop: '1rem' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
+            <div
+                style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.5rem',
+                    marginBottom: '0.75rem',
+                }}
+            >
                 <ShieldCheck size={18} />
                 <h3 style={{ margin: 0 }}>Local agent approvals (browser.act HITL)</h3>
-                <button onClick={() => void load()} disabled={loading} style={{ marginLeft: 'auto' }}>
+                <span style={{ fontSize: 11, color: '#64748b' }}>{items.length} pending</span>
+                <button
+                    onClick={() => void bulk('APPROVED')}
+                    disabled={items.length === 0}
+                    style={{ marginLeft: 'auto' }}
+                >
+                    Approve all
+                </button>
+                <button onClick={() => void bulk('REJECTED')} disabled={items.length === 0}>
+                    Reject all
+                </button>
+                <button onClick={() => void load()} disabled={loading}>
                     {loading ? <Loader2 size={14} /> : <RefreshCw size={14} />} Refresh
                 </button>
             </div>
             {error && <div style={{ color: '#dc2626', marginBottom: '0.5rem' }}>{error}</div>}
-            {items.length === 0 && <div style={{ color: '#64748b' }}>No pending local approvals.</div>}
-            <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {items.length === 0 && (
+                <div style={{ color: '#64748b' }}>No pending local approvals.</div>
+            )}
+            <ul
+                style={{
+                    listStyle: 'none',
+                    padding: 0,
+                    margin: 0,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: 8,
+                }}
+            >
                 {items.map((r) => (
-                    <li key={r.id} style={{ border: '1px solid #e2e8f0', borderRadius: 8, padding: '0.75rem' }}>
-                        <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
+                    <li
+                        key={r.id}
+                        style={{ border: '1px solid #e2e8f0', borderRadius: 8, padding: '0.75rem' }}
+                    >
+                        <div
+                            style={{
+                                display: 'flex',
+                                gap: 8,
+                                alignItems: 'center',
+                                flexWrap: 'wrap',
+                            }}
+                        >
                             <strong>{r.toolName}</strong>
-                            <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 6, background: r.riskLevel === 'high' ? 'rgba(239,68,68,0.12)' : 'rgba(245,158,11,0.12)', color: r.riskLevel === 'high' ? '#dc2626' : '#b45309' }}>
+                            <span
+                                style={{
+                                    fontSize: 11,
+                                    padding: '2px 8px',
+                                    borderRadius: 6,
+                                    background:
+                                        r.riskLevel === 'high'
+                                            ? 'rgba(239,68,68,0.12)'
+                                            : 'rgba(245,158,11,0.12)',
+                                    color: r.riskLevel === 'high' ? '#dc2626' : '#b45309',
+                                }}
+                            >
                                 {r.riskLevel}
                             </span>
-                            <span style={{ fontSize: 11, color: '#64748b' }}>{r.agentId} · {r.category}</span>
+                            <span style={{ fontSize: 11, color: '#64748b' }}>
+                                {r.agentId} · {r.category}
+                            </span>
                             <span style={{ marginLeft: 'auto', display: 'flex', gap: 6 }}>
-                                <button onClick={() => void decide(r.id, 'APPROVED')}>Approve</button>
-                                <button onClick={() => void decide(r.id, 'REJECTED')}>Reject</button>
+                                <button onClick={() => void decide(r.id, 'APPROVED')}>
+                                    Approve
+                                </button>
+                                <button onClick={() => void decide(r.id, 'REJECTED')}>
+                                    Reject
+                                </button>
                             </span>
                         </div>
-                        {r.description && <div style={{ fontSize: 12, color: '#475569', marginTop: 4 }}>{r.description}</div>}
-                        <pre style={{ background: '#f8fafc', padding: 8, overflowX: 'auto', marginTop: 6, marginBottom: 0 }}>
+                        {r.description && (
+                            <div style={{ fontSize: 12, color: '#475569', marginTop: 4 }}>
+                                {r.description}
+                            </div>
+                        )}
+                        <pre
+                            style={{
+                                background: '#f8fafc',
+                                padding: 8,
+                                overflowX: 'auto',
+                                marginTop: 6,
+                                marginBottom: 0,
+                            }}
+                        >
                             {JSON.stringify(r.toolInput, null, 2)?.slice(0, 1500)}
                         </pre>
                     </li>
@@ -384,7 +511,14 @@ function BrowserUseConfig(): React.JSX.Element {
 
     return (
         <div style={{ marginTop: '2rem', borderTop: '1px solid #e2e8f0', paddingTop: '1rem' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
+            <div
+                style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.5rem',
+                    marginBottom: '0.75rem',
+                }}
+            >
                 <MonitorPlay size={18} />
                 <h3 style={{ margin: 0 }}>Browser-use executor</h3>
             </div>
@@ -411,10 +545,11 @@ function BrowserUseConfig(): React.JSX.Element {
                 {saved && <span style={{ color: '#059669' }}>Saved</span>}
             </div>
             <div style={{ fontSize: 12, color: '#64748b', marginTop: 6 }}>
-                Direct mode: browser calls the sidecar URL itself. Gateway mode: browser creates a run and calls
-                `/api/runs/:id/execute` with adapter `browser-use` (needs companyGateway.url/secret above + company id
-                here). Server side requires `ADAPTERS_ALLOW_BROWSER_USE=1`. Unused field can stay empty.
-                See `approvalBulkService` for bulk actions from the agent view.
+                Direct mode: browser calls the sidecar URL itself. Gateway mode: browser creates a
+                run and calls `/api/runs/:id/execute` with adapter `browser-use` (needs
+                companyGateway.url/secret above + company id here). Server side requires
+                `ADAPTERS_ALLOW_BROWSER_USE=1`. Unused field can stay empty. See
+                `approvalBulkService` for bulk actions from the agent view.
             </div>
         </div>
     );
