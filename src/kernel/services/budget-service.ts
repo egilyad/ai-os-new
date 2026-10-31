@@ -9,6 +9,9 @@ export type { AgentBudget, SpendSummary, BudgetAlert } from '../contracts/budget
 
 const BUDGET_KEY = 'super_agents_pricing_budget';
 const COST_HISTORY_KEY = 'super_agents_cost_history';
+// W6-032: keep ~4 months of cost history (well past any monthly window), so
+// pruning never drops same-month spend and undercounts the budget gate.
+const PRUNE_RETENTION_MS = 120 * 24 * 60 * 60 * 1000;
 
 export interface BudgetServiceDeps {
     eventBus: {
@@ -228,7 +231,15 @@ export class BudgetService implements IBudgetService {
                     this.costHistory.length > 10000 ||
                     (this._costDedupSet && this._costDedupSet.size > 15000)
                 ) {
-                    this.costHistory = this.costHistory.slice(-10000);
+                    // W6-032: prune by TIME, not by count — slicing to the last
+                    // 10000 dropped same-month entries on busy systems and made
+                    // monthlySpend undercount (budget gate unreliable).
+                    const cutoff = now - PRUNE_RETENTION_MS;
+                    this.costHistory = this.costHistory.filter((e) => e.timestamp >= cutoff);
+                    // Hard safety valve only against a pathological leak.
+                    if (this.costHistory.length > 200000) {
+                        this.costHistory = this.costHistory.slice(-200000);
+                    }
                     this._invalidateMonthFiltered();
                     this._costDedupSet = new Set(
                         this.costHistory.map(
@@ -446,7 +457,12 @@ export class BudgetService implements IBudgetService {
         });
         this._invalidateMonthFiltered();
         if (this.costHistory.length > 10000) {
-            this.costHistory = this.costHistory.slice(-10000);
+            // W6-032: time-based pruning (same rationale as the insert path).
+            const cutoff = Date.now() - PRUNE_RETENTION_MS;
+            this.costHistory = this.costHistory.filter((e) => e.timestamp >= cutoff);
+            if (this.costHistory.length > 200000) {
+                this.costHistory = this.costHistory.slice(-200000);
+            }
             this._invalidateMonthFiltered();
         }
         this.saveHistory();
