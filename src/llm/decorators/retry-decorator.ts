@@ -21,7 +21,10 @@ export class RetryDecorator extends BaseDecorator {
 
     private getDelayMs(attempt: number, error: unknown): number {
         if (error instanceof RetryableError && error.retryAfter !== undefined) {
-            return error.retryAfter;
+            // W6-016: jitter Retry-After too, otherwise synchronized probes
+            // from many independent requests thundering-herd the provider.
+            const jittered = error.retryAfter * (0.5 + Math.random());
+            return Math.min(jittered, 30_000);
         }
         const base = this.#baseDelayMs * Math.pow(2, attempt - 1);
         const jitter = base * (0.5 + Math.random());

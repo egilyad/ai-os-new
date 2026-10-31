@@ -241,19 +241,9 @@ function combineSignals(
     s1: AbortSignal,
     s2: AbortSignal,
 ): { signal: AbortSignal; cleanup: () => void } {
-    if (
-        typeof AbortSignal !== 'undefined' &&
-        typeof (AbortSignal as unknown as { any?: unknown }).any === 'function'
-    ) {
-        try {
-            const signal = (
-                AbortSignal as unknown as { any: (signals: AbortSignal[]) => AbortSignal }
-            ).any([s1, s2]);
-            return { signal, cleanup: () => {} };
-        } catch {
-            /* fall through */
-        }
-    }
+    // W6-013: do NOT use AbortSignal.any() — it has a Chromium GC bug where the
+    // combined signal can be collected while still wired, causing a hard crash.
+    // The manual controller below is the stable path.
     if (s1.aborted) return { signal: AbortSignal.abort(s1.reason), cleanup: () => {} };
     if (s2.aborted) return { signal: AbortSignal.abort(s2.reason), cleanup: () => {} };
     const controller = new AbortController();
