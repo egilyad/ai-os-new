@@ -276,8 +276,8 @@
       "category": "audits",
       "language": "ru",
       "title": "UX: восприятие, нагрузка и онбординг (UX & Cognition)",
-      "bytes": 1343,
-      "hash": "1155e70d52c23f6ad6e9598b6af51702adc39efc"
+      "bytes": 3052,
+      "hash": "cdfb36f673b0dee6fcee4cefe5a68dca5c20dbf9"
     },
     {
       "path": "docs/audits/waves/card-21-contracts-api.md",
