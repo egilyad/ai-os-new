@@ -23,10 +23,6 @@ function serializeSessionsWithBudget(sessions: ChatSession[]): string | null {
     const json = JSON.stringify(sessions);
     if (json.length < 4_500_000) return json;
     const copy: ChatSession[] = sessions.map((s) => ({
-        id: s.id,
-        title: s.title,
-        createdAt: s.createdAt,
-        updatedAt: s.updatedAt,
         ...s,
         history: [...(s.history ?? [])],
     }));
