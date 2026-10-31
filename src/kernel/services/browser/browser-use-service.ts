@@ -42,6 +42,7 @@ export interface BrowserUseConfig {
     companyId?: string;
     allowedDomains?: string[];
     maxSteps?: number;
+    token?: string;
 }
 
 export interface BrowserUseResult {
@@ -75,6 +76,7 @@ function readDefaultConfig(): BrowserUseConfig {
         const env = (import.meta as unknown as { env?: Record<string, string> })?.env;
         if (env?.['VITE_BROWSER_USE_SIDECAR_URL'])
             cfg.sidecarUrl = env['VITE_BROWSER_USE_SIDECAR_URL'];
+        if (env?.['VITE_BROWSER_USE_TOKEN']) cfg.token = env['VITE_BROWSER_USE_TOKEN'];
         if (env?.['VITE_COMPANY_GATEWAY_URL']) cfg.gatewayUrl = env['VITE_COMPANY_GATEWAY_URL'];
     } catch {
         /* ignore — нет import.meta в тестах */
@@ -83,6 +85,8 @@ function readDefaultConfig(): BrowserUseConfig {
         if (typeof localStorage !== 'undefined') {
             const sidecar = localStorage.getItem('browserUse.sidecarUrl');
             if (sidecar) cfg.sidecarUrl = sidecar;
+            const token = localStorage.getItem('browserUse.token');
+            if (token) cfg.token = token;
             const gw = localStorage.getItem('companyGateway.url');
             if (gw) cfg.gatewayUrl = gw;
             const secret = localStorage.getItem('companyGateway.secret');
@@ -94,7 +98,7 @@ function readDefaultConfig(): BrowserUseConfig {
         /* private mode / worker без localStorage */
     }
     // Нормализация: пустые строки — как отсутствие.
-    for (const k of ['sidecarUrl', 'gatewayUrl', 'gatewaySecret', 'companyId'] as const) {
+    for (const k of ['sidecarUrl', 'gatewayUrl', 'gatewaySecret', 'companyId', 'token'] as const) {
         if (typeof cfg[k] === 'string' && !(cfg[k] as string).trim()) delete cfg[k];
     }
     // Local-dev default: без явной настройки пробуем loopback-sidecar
@@ -162,7 +166,10 @@ export class BrowserUseService {
         if (c.sidecarUrl) {
             const url = c.sidecarUrl.replace(/\/$/, '');
             try {
-                const res = await fetch(`${url}/health`, { signal: AbortSignal.timeout(4000) });
+                const res = await fetch(`${url}/health`, {
+                    signal: AbortSignal.timeout(4000),
+                    headers: this.authHeaders(c),
+                });
                 const ok = res.ok;
                 return { ok, via: 'sidecar', detail: ok ? 'ready' : `HTTP ${res.status}` };
             } catch (e) {
@@ -199,6 +206,7 @@ export class BrowserUseService {
                 ticketId: opts.ticketId,
                 maxSteps,
                 allowedDomains: cfg.allowedDomains,
+                token: cfg.token,
                 signal: opts.signal,
             });
             return this.parseResult('sidecar', stdout);
@@ -238,7 +246,7 @@ export class BrowserUseService {
         try {
             res = await fetch(url, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json', ...this.authHeaders(cfg) },
                 body: JSON.stringify({ action, ...params }),
                 signal: ctl.signal,
                 redirect: 'manual',
@@ -279,6 +287,10 @@ export class BrowserUseService {
         }
     }
 
+    private authHeaders(c: { token?: string }): Record<string, string> {
+        return c.token ? { Authorization: `Bearer ${c.token}` } : {};
+    }
+
     private async postSidecar(
         sidecarUrl: string,
         payload: {
@@ -286,6 +298,7 @@ export class BrowserUseService {
             ticketId?: string;
             maxSteps: number;
             allowedDomains?: string[];
+            token?: string;
             signal?: AbortSignal;
         },
     ): Promise<string> {
@@ -299,7 +312,10 @@ export class BrowserUseService {
         try {
             res = await fetch(url, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                    ...this.authHeaders({ token: payload.token }),
+                },
                 body: JSON.stringify(payload),
                 signal: ctl.signal,
                 redirect: 'manual',

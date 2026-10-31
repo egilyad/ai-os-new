@@ -30,6 +30,7 @@ import type {
 } from '../../contracts/storage/debate-store';
 import type { ApiKey } from '../../types/metrics-types';
 import type { MemoryEntry } from '../../types/memory-types';
+import { redactPii } from '../../utils/pii-redact';
 import type { CognitiveTrace } from '../../types/domain-types';
 import type { ChatSession, ChatEntry } from '../../contracts/storage/session-store';
 import type { Role } from '../../contracts/storage/roles-store';
@@ -97,7 +98,10 @@ class DexieKeyStore implements KeyStore {
     }
 
     async where(field: string, value: string): Promise<ApiKey | undefined> {
-        return getDexieDb().apiKeys.where(field as 'id' | 'provider' | 'status').equals(value).first();
+        return getDexieDb()
+            .apiKeys.where(field as 'id' | 'provider' | 'status')
+            .equals(value)
+            .first();
     }
 
     async exportAll(): Promise<string> {
@@ -119,6 +123,11 @@ class DexieKeyStore implements KeyStore {
 
 class DexieMemoryStoreImpl implements DexieMemoryStore {
     async saveEntry(entry: MemoryEntry): Promise<void> {
+        // W8-008: don't persist raw PII/secrets into long-term memory. Redact
+        // before writing so recall never re-surfaces unmasked user identifiers.
+        if (typeof entry.content === 'string' && entry.content.length > 0) {
+            entry.content = redactPii(entry.content);
+        }
         await getDexieDb().memories.put(entry);
     }
 

@@ -8,12 +8,9 @@ import { EVENTS } from '../events/event-names';
 import { CONFIG } from './config-registry';
 import { LLMError } from '../errors';
 import type { ChatServiceDeps } from '../contracts/chat';
-import {
-    runToolLoop,
-    type ToolLoopMessage,
-    type ToolLoopTool,
-} from './tool-loop/tool-loop';
+import { runToolLoop, type ToolLoopMessage, type ToolLoopTool } from './tool-loop/tool-loop';
 import { rootLogger } from './logger-service';
+import { redactPii } from '../utils/pii-redact';
 
 const LOGGER = rootLogger.child('ChatExecutor');
 
@@ -640,7 +637,7 @@ export class ChatExecutor {
                                 provider: currentProvider,
                                 model: effectiveModel,
                                 keyId: req.keyId,
-                                content: result.content,
+                                content: redactPii(result.content),
                                 latency: latencyMs,
                                 status: 'done',
                                 tokens: result.tokens,
@@ -677,7 +674,7 @@ export class ChatExecutor {
 
                             this.deps.eventBus.emitOnce(EVENTS.STREAM_END, requestId, {
                                 requestId,
-                                fullContent: result.content,
+                                fullContent: redactPii(result.content),
                                 provider: currentProvider,
                                 model: effectiveModel,
                                 latency: latencyMs,
@@ -749,8 +746,7 @@ export class ChatExecutor {
 
                         const isAbort =
                             (error instanceof DOMException && error.name === 'AbortError') ||
-                            (error as { name?: string } | null)?.name ===
-                                'APIUserAbortError';
+                            (error as { name?: string } | null)?.name === 'APIUserAbortError';
                         if (isAbort) {
                             this.deps.eventBus.emit(EVENTS.MESSAGE_RESPONSE, {
                                 id: `err-${Date.now()}-${crypto.randomUUID().slice(0, 8)}`,

@@ -14,6 +14,7 @@
  *    spin forever.
  */
 import type { ToolCall } from '../../types/llm-types';
+import { redactPii } from '../../utils/pii-redact';
 
 export interface ToolLoopTool {
     name: string;
@@ -75,10 +76,7 @@ const MAX_TOOL_OUTPUT = 6000;
  */
 export async function runToolLoop(
     messages: ToolLoopMessage[],
-    call: (
-        messages: ToolLoopMessage[],
-        tools: ToolLoopTool[],
-    ) => Promise<ToolLoopCallResult>,
+    call: (messages: ToolLoopMessage[], tools: ToolLoopTool[]) => Promise<ToolLoopCallResult>,
     opts: ToolLoopOptions,
 ): Promise<ToolLoopResult> {
     const maxRounds = Math.max(1, Math.min(8, opts.maxRounds ?? 4));
@@ -107,25 +105,44 @@ export async function runToolLoop(
 
         for (const c of calls) {
             if (opts.signal?.aborted) break;
+            // W8-009 / W4-027: never pass unvalidated LLM JSON straight to a
+            // tool. Malformed or non-object arguments are reported back to the
+            // loop as an error string (the model can react to it) instead of
+            // silently invoking the tool with `{}`.
             let args: Record<string, unknown>;
+            let parseError: string | null = null;
             try {
-                args = JSON.parse(c.function.arguments || '{}') as Record<string, unknown>;
-            } catch {
+                const parsed: unknown = JSON.parse(c.function.arguments || '{}');
+                if (typeof parsed === 'object' && parsed !== null && !Array.isArray(parsed)) {
+                    args = parsed as Record<string, unknown>;
+                } else {
+                    throw new Error('tool arguments must be a JSON object');
+                }
+            } catch (e) {
+                parseError = e instanceof Error ? e.message : String(e);
                 args = {};
             }
             let output: string;
             let ok = true;
-            try {
-                output = await opts.runTool(c.function.name, args);
-            } catch (e) {
+            if (parseError !== null) {
                 ok = false;
-                output = `ERROR: ${e instanceof Error ? e.message : String(e)}`;
+                output = `ERROR: invalid JSON tool arguments for ${c.function.name}: ${parseError}`;
+            } else {
+                try {
+                    output = await opts.runTool(c.function.name, args);
+                } catch (e) {
+                    ok = false;
+                    output = `ERROR: ${e instanceof Error ? e.message : String(e)}`;
+                }
             }
             used.push(c.function.name);
             opts.onToolCall?.({ name: c.function.name, args, ok, output });
+            // W4-022: never re-inject raw (possibly prompt-injected) tool output
+            // into the agent context — redact PII before storing the turn.
+            const safeOutput = redactPii(output.slice(0, MAX_TOOL_OUTPUT));
             conversation.push({
                 role: 'tool',
-                content: output.slice(0, MAX_TOOL_OUTPUT),
+                content: safeOutput,
                 toolCallId: c.id,
             });
         }

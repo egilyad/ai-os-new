@@ -162,6 +162,55 @@ const DEFAULT_RULES: SecurityScanRule[] = [
         enabled: true,
         description: 'File system access attempt',
     },
+    {
+        id: 'dng-4',
+        name: 'Self-harm Request',
+        category: 'dangerous',
+        pattern:
+            '(?:help\\s+me\\s+(?:kill|end|harm)\\s+myself|i\\s+(?:want|need|plan|intend)\\s+to\\s+(?:kill|end)\\s+myself|wanna\\s+die)',
+        severity: 'critical',
+        enabled: true,
+        description: 'Explicit self-harm request',
+    },
+    {
+        id: 'dng-5',
+        name: 'Suicidality',
+        category: 'dangerous',
+        pattern: '\\b(suicide|suicidal|self.?harm)\\b',
+        severity: 'high',
+        enabled: true,
+        description: 'Suicidality / self-harm terminology',
+    },
+    {
+        id: 'dng-6',
+        name: 'CSAM',
+        category: 'dangerous',
+        pattern:
+            '(?:child\\s+(?:porn|pornography|sexual\\s+abuse)|underage\\s+sexual|sexual\\s+content\\s+involving\\s+minors)',
+        severity: 'critical',
+        enabled: true,
+        description: 'Child sexual abuse material intent',
+    },
+    {
+        id: 'dng-7',
+        name: 'Weapons / Explosives',
+        category: 'dangerous',
+        pattern:
+            '(?:make\\s+an?\\s+(?:explosive|bomb|incendiary)|improvised\\s+explosive|detonation\\s+device|pipe\\s+bomb|molotov)',
+        severity: 'high',
+        enabled: true,
+        description: 'Weapon/explosive fabrication intent',
+    },
+    {
+        id: 'dng-8',
+        name: 'Drug Synthesis',
+        category: 'dangerous',
+        pattern:
+            '(?:synthesize\\s+(?:meth|fentanyl|heroin|cocaine)|cook\\s+meth|how\\s+to\\s+(?:make|manufacture)\\s+(?:meth|fentanyl|heroin))',
+        severity: 'high',
+        enabled: true,
+        description: 'Illicit drug synthesis intent',
+    },
 ];
 
 const DEFAULT_CONFIG: SecurityScanConfig = {

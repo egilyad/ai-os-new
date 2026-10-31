@@ -9,12 +9,25 @@ import http from 'node:http';
 import { chromium } from 'playwright';
 
 const PORT = Number(process.env.BROWSER_SIDECAR_PORT || 3100);
+// W4-025 / W8-004: bind to loopback only by default — never expose the
+// unauthenticated browser driver to the LAN. Override only when deliberately
+// placing the sidecar behind an authenticated gateway.
+const HOST = process.env.BROWSER_SIDECAR_HOST || '127.0.0.1';
 const MAX_BODY = 2 * 1024 * 1024;
+
+// W4-025: optional shared bearer token. When `BROWSER_SIDECAR_TOKEN` is set,
+// every non-health request must carry `Authorization: Bearer <token>`.
+const AUTH_TOKEN = process.env.BROWSER_SIDECAR_TOKEN || '';
+const HEADLESS = process.env.BROWSER_SIDECAR_HEADLESS !== '0';
+const DEFAULT_ALLOWED_DOMAINS = (process.env.BROWSER_USE_ALLOWED_DOMAINS || '')
+  .split(',')
+  .map((d) => d.trim())
+  .filter(Boolean);
 
 let browser = null;
 async function getBrowser() {
   if (!browser) {
-    browser = await chromium.launch({ channel: 'chrome', headless: false });
+    browser = await chromium.launch({ channel: 'chrome', headless: HEADLESS });
   }
   return browser;
 }
@@ -29,14 +42,44 @@ function extractUrl(task) {
   return m ? m[0] : null;
 }
 
+/** W4-025: reject non-http(s) URLs and hosts outside the allowlist (SSRF guard). */
+function validateUrl(rawUrl, allowedDomains) {
+  let u;
+  try {
+    u = new URL(String(rawUrl || ''));
+  } catch {
+    throw new Error('url must be valid http(s)');
+  }
+  if (u.protocol !== 'http:' && u.protocol !== 'https:') {
+    throw new Error('url must be http(s)');
+  }
+  const list =
+    Array.isArray(allowedDomains) && allowedDomains.length > 0
+      ? allowedDomains
+      : DEFAULT_ALLOWED_DOMAINS;
+  if (list.length === 0) return u;
+  const host = u.hostname.toLowerCase();
+  const ok = list.some((d) => {
+    const dd = String(d).toLowerCase().replace(/^\./, '');
+    return host === dd || host.endsWith(`.${dd}`);
+  });
+  if (!ok) throw new Error(`url host ${u.hostname} not in allowlist`);
+  return u;
+}
+
+function authorized(req) {
+  if (!AUTH_TOKEN) return true;
+  return (req.headers.authorization || '') === `Bearer ${AUTH_TOKEN}`;
+}
+
 /** Выполнить «задачу» (свободный текст) эвристически. */
 async function handleExecute(body, ctx) {
   const task = String(body.task || '');
   const page = ctx.page;
   const url = extractUrl(task) || body.url;
   if (url) {
-    if (!/^https?:\/\//i.test(url)) throw new Error('url must be http(s)');
-    await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 45000 });
+    const target = validateUrl(url, body.allowedDomains);
+    await page.goto(target.href, { waitUntil: 'domcontentloaded', timeout: 45000 });
   }
 
   let output;
@@ -82,9 +125,8 @@ async function handleAct(body, ctx) {
   switch (action) {
     case 'open_url':
     case 'browser_navigate': {
-      const url = String(body.url || '');
-      if (!/^https?:\/\//i.test(url)) throw new Error('url must be http(s)');
-      await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 45000 });
+      const target = validateUrl(body.url, body.allowedDomains);
+      await page.goto(target.href, { waitUntil: 'domcontentloaded', timeout: 45000 });
       return { output: `opened ${page.url()}` };
     }
     case 'click_at': {
@@ -180,6 +222,7 @@ const server = http.createServer(async (req, res) => {
   if (req.method === 'GET' && url.pathname === '/health') return send(res, 200, { ok: true });
 
   if (req.method === 'POST' && (url.pathname === '/act' || url.pathname === '/execute')) {
+    if (!authorized(req)) return send(res, 401, { error: 'unauthorized' });
     let bodyRaw = '';
     req.on('data', (c) => {
       bodyRaw += c;
@@ -213,6 +256,6 @@ const server = http.createServer(async (req, res) => {
   send(res, 404, { error: 'not found' });
 });
 
-server.listen(PORT, () => {
-  console.log(`Browser sidecar listening on http://localhost:${PORT}`);
+server.listen(PORT, HOST, () => {
+  console.log(`Browser sidecar listening on http://${HOST}:${PORT}`);
 });

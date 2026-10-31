@@ -252,7 +252,11 @@ const server = http.createServer(async (req, res) => {
             try {
                 if (fs.existsSync(DB_FILE)) {
                     const data = fs.readFileSync(DB_FILE);
-                    res.writeHead(200, { 'Content-Type': 'application/octet-stream' });
+                    // W5-012: never cache the DB blob (contains API keys/secrets).
+                    res.writeHead(200, {
+                        'Content-Type': 'application/octet-stream',
+                        'Cache-Control': 'no-store',
+                    });
                     res.end(data);
                 } else {
                     res.writeHead(404);

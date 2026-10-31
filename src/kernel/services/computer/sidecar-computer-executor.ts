@@ -15,7 +15,11 @@
  * с исполнителем): здесь только транспорт — timeout/abort/redirect-guard.
  */
 
-import type { ComputerExecutor, ComputerActionInput, ComputerActionResult } from './computer-use-loop-service';
+import type {
+    ComputerExecutor,
+    ComputerActionInput,
+    ComputerActionResult,
+} from './computer-use-loop-service';
 import { rootLogger } from '../logger-service';
 
 const LOGGER = rootLogger.child('SidecarComputerExecutor');
@@ -29,6 +33,7 @@ export interface SidecarComputerConfig {
     gatewayUrl?: string;
     gatewaySecret?: string;
     companyId?: string;
+    token?: string;
 }
 
 function readDefaultConfig(): SidecarComputerConfig {
@@ -36,6 +41,7 @@ function readDefaultConfig(): SidecarComputerConfig {
     try {
         const env = (import.meta as unknown as { env?: Record<string, string> })?.env;
         if (env?.['VITE_BROWSER_USE_ACT_URL']) cfg.actUrl = env['VITE_BROWSER_USE_ACT_URL'];
+        if (env?.['VITE_BROWSER_USE_TOKEN']) cfg.token = env['VITE_BROWSER_USE_TOKEN'];
         if (env?.['VITE_COMPANY_GATEWAY_URL']) cfg.gatewayUrl = env['VITE_COMPANY_GATEWAY_URL'];
     } catch {
         /* нет import.meta в тестах */
@@ -44,6 +50,8 @@ function readDefaultConfig(): SidecarComputerConfig {
         if (typeof localStorage !== 'undefined') {
             const url = localStorage.getItem('browserUse.actUrl');
             if (url) cfg.actUrl = url;
+            const token = localStorage.getItem('browserUse.token');
+            if (token) cfg.token = token;
             const gw = localStorage.getItem('companyGateway.url');
             if (gw) cfg.gatewayUrl = gw;
             const secret = localStorage.getItem('companyGateway.secret');
@@ -54,13 +62,15 @@ function readDefaultConfig(): SidecarComputerConfig {
     } catch {
         /* private mode / worker без localStorage */
     }
-    for (const k of ['actUrl', 'gatewayUrl', 'gatewaySecret', 'companyId'] as const) {
+    for (const k of ['actUrl', 'gatewayUrl', 'gatewaySecret', 'companyId', 'token'] as const) {
         if (typeof cfg[k] === 'string' && !(cfg[k] as string).trim()) delete cfg[k];
     }
     return cfg;
 }
 
-function gatewayTriple(cfg: SidecarComputerConfig): { url: string; secret: string; companyId: string } | null {
+function gatewayTriple(
+    cfg: SidecarComputerConfig,
+): { url: string; secret: string; companyId: string } | null {
     if (cfg.gatewayUrl && cfg.gatewaySecret && cfg.companyId) {
         return { url: cfg.gatewayUrl, secret: cfg.gatewaySecret, companyId: cfg.companyId };
     }
@@ -105,7 +115,10 @@ export class SidecarComputerExecutor implements ComputerExecutor {
         return 'direct-default';
     }
 
-    async execute(action: ComputerActionInput, ctx: { ticketId?: string }): Promise<ComputerActionResult> {
+    async execute(
+        action: ComputerActionInput,
+        ctx: { ticketId?: string },
+    ): Promise<ComputerActionResult> {
         let cfg: SidecarComputerConfig = {};
         try {
             cfg = this.getConfig();
@@ -124,9 +137,11 @@ export class SidecarComputerExecutor implements ComputerExecutor {
         const ctl = new AbortController();
         const timer = setTimeout(() => ctl.abort(), EXEC_TIMEOUT_MS);
         try {
+            const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+            if (cfg.token) headers.Authorization = `Bearer ${cfg.token}`;
             const res = await fetch(url, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers,
                 body: JSON.stringify({
                     ...action,
                     ticketId: ctx.ticketId,
@@ -153,11 +168,17 @@ export class SidecarComputerExecutor implements ComputerExecutor {
             return {
                 screenshotBase64: typeof data.screenshot === 'string' ? data.screenshot : undefined,
                 output: typeof data.output === 'string' ? data.output.slice(0, 2000) : undefined,
-                error: typeof data.error === 'string' && data.error ? data.error.slice(0, 2000) : undefined,
+                error:
+                    typeof data.error === 'string' && data.error
+                        ? data.error.slice(0, 2000)
+                        : undefined,
             };
         } catch (e) {
             const msg = e instanceof Error ? e.message : String(e);
-            LOGGER.warn('SidecarComputerExecutor', 'execute failed', { action: action.action, error: msg });
+            LOGGER.warn('SidecarComputerExecutor', 'execute failed', {
+                action: action.action,
+                error: msg,
+            });
             throw new Error(`computer actuator failed: ${msg}`, { cause: e });
         } finally {
             clearTimeout(timer);
@@ -173,19 +194,28 @@ export class SidecarComputerExecutor implements ComputerExecutor {
         const gw = gatewayTriple(cfg);
         if (!gw) throw new Error('computer actuator gateway not configured');
         const base = gw.url.replace(/\/$/, '');
-        const headers = { 'Content-Type': 'application/json', Authorization: `Bearer ${gw.secret}` };
-        const runRes = await fetch(`${base}/api/companies/${encodeURIComponent(gw.companyId)}/runs`, {
-            method: 'POST',
-            headers,
-            body: JSON.stringify({ trigger: 'manual', input: { action: action.action } }),
-            signal: AbortSignal.timeout(10_000),
-        });
+        const headers = {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${gw.secret}`,
+        };
+        const runRes = await fetch(
+            `${base}/api/companies/${encodeURIComponent(gw.companyId)}/runs`,
+            {
+                method: 'POST',
+                headers,
+                body: JSON.stringify({ trigger: 'manual', input: { action: action.action } }),
+                signal: AbortSignal.timeout(10_000),
+            },
+        );
         const runBody = (await runRes.json().catch(() => ({}))) as {
             run?: { id?: string };
             id?: string;
             error?: string;
         };
-        if (!runRes.ok) throw new Error(`gateway create run failed: ${runBody.error || `HTTP ${runRes.status}`}`);
+        if (!runRes.ok)
+            throw new Error(
+                `gateway create run failed: ${runBody.error || `HTTP ${runRes.status}`}`,
+            );
         const runId = runBody.run?.id ?? runBody.id;
         if (!runId) throw new Error('gateway create run: no run id in response');
 
@@ -202,8 +232,14 @@ export class SidecarComputerExecutor implements ComputerExecutor {
                 }),
                 signal: ctl.signal,
             });
-            const exBody = (await exRes.json().catch(() => ({}))) as { stdout?: string; error?: string };
-            if (!exRes.ok) throw new Error(`gateway execute failed: ${exBody.error || `HTTP ${exRes.status}`}`);
+            const exBody = (await exRes.json().catch(() => ({}))) as {
+                stdout?: string;
+                error?: string;
+            };
+            if (!exRes.ok)
+                throw new Error(
+                    `gateway execute failed: ${exBody.error || `HTTP ${exRes.status}`}`,
+                );
             let data: { screenshot?: unknown; output?: unknown; error?: unknown } = {};
             try {
                 const parsed: unknown = JSON.parse(String(exBody.stdout ?? ''));
@@ -216,7 +252,10 @@ export class SidecarComputerExecutor implements ComputerExecutor {
             return {
                 screenshotBase64: typeof data.screenshot === 'string' ? data.screenshot : undefined,
                 output: typeof data.output === 'string' ? data.output.slice(0, 2000) : undefined,
-                error: typeof data.error === 'string' && data.error ? data.error.slice(0, 2000) : undefined,
+                error:
+                    typeof data.error === 'string' && data.error
+                        ? data.error.slice(0, 2000)
+                        : undefined,
             };
         } finally {
             clearTimeout(timer);

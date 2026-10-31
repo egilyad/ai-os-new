@@ -7,14 +7,17 @@
  */
 import type { IEventBus } from '../../types/interfaces';
 import type { PersonaRepository } from '../../dal/persona-repository';
+import type { ILtMemoryService, IPersonaLlmPort } from '../../contracts/persona';
 import type {
-    ILtMemoryService,
-    IPersonaLlmPort,
-} from '../../contracts/persona';
-import type { LongTermMemory, MemoryLink, MemoryRelation, MemoryTier } from '../../types/persona-types';
+    LongTermMemory,
+    MemoryLink,
+    MemoryRelation,
+    MemoryTier,
+} from '../../types/persona-types';
 import { isEdgeValidAt } from '../../types/temporal-edge';
 import { personalizedPageRank } from './ppr-recall';
 import { genId } from '../../../utils/gen-id';
+import { redactPii } from '../../utils/pii-redact';
 import { rootLogger } from '../logger-service';
 import { EVENTS } from '../../events/event-names';
 
@@ -81,7 +84,7 @@ export class LtMemoryService implements ILtMemoryService {
             id: genId('ltm'),
             ownerId: input.ownerId,
             tier: input.tier ?? 'recall',
-            content: input.content,
+            content: redactPii(input.content),
             tags: input.tags ? [...input.tags] : undefined,
             importance: input.importance,
             createdAt: t,
@@ -266,7 +269,9 @@ export class LtMemoryService implements ILtMemoryService {
             try {
                 return await this.llm.summarizeMemories(all.slice(0, 50));
             } catch (e) {
-                LOGGER.warn('LtMemory', 'llm summarize failed', { error: e instanceof Error ? e.message : String(e) });
+                LOGGER.warn('LtMemory', 'llm summarize failed', {
+                    error: e instanceof Error ? e.message : String(e),
+                });
             }
         }
         const byTier: Record<string, number> = {};

@@ -29,7 +29,10 @@ describe('runToolLoop', () => {
         const call_ = vi.fn().mockImplementation(async () => {
             round += 1;
             if (round === 1) {
-                return { content: '', toolCalls: [call('c1', 'workspace.read', '{"path":"a.ts"}')] };
+                return {
+                    content: '',
+                    toolCalls: [call('c1', 'workspace.read', '{"path":"a.ts"}')],
+                };
             }
             return { content: 'the file says hello' };
         });
@@ -102,8 +105,9 @@ describe('runToolLoop', () => {
         expect(res.content).toBe('partial');
     });
 
-    it('survives a malformed arguments payload', async () => {
+    it('does not invoke a tool with malformed arguments (W8-009)', async () => {
         const runTool = vi.fn().mockResolvedValue('ok');
+        const onToolCall = vi.fn();
         let round = 0;
         const call_ = vi.fn().mockImplementation(async () => {
             round += 1;
@@ -115,8 +119,14 @@ describe('runToolLoop', () => {
         const res = await runToolLoop([{ role: 'user', content: 'x' }], call_, {
             tools: TOOLS,
             runTool,
+            onToolCall,
         });
-        expect(runTool).toHaveBeenCalledWith('workspace.read', {});
+        expect(runTool).not.toHaveBeenCalled();
+        expect(onToolCall).toHaveBeenCalledWith(
+            expect.objectContaining({ name: 'workspace.read', ok: false }),
+        );
+        const toolTurn = res.messages.find((m) => m.role === 'tool');
+        expect(toolTurn?.content).toContain('invalid JSON tool arguments');
         expect(res.content).toBe('done');
     });
 });

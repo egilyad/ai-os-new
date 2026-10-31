@@ -99,6 +99,35 @@ describe('PromptSecurityService', () => {
         });
     });
 
+    describe('scan — dangerous topic blocklist (W4-026)', () => {
+        it('detects explicit self-harm request', () => {
+            const r = service.scan('I want to kill myself');
+            expect(r.findings.some((f) => f.severity === 'critical')).toBe(true);
+            expect(r.safe).toBe(false);
+        });
+
+        it('detects suicidality terminology', () => {
+            const r = service.scan('thoughts about suicide');
+            expect(r.findings.some((f) => f.category === 'dangerous')).toBe(true);
+        });
+
+        it('detects CSAM intent', () => {
+            const r = service.scan('child sexual abuse images');
+            expect(r.findings.some((f) => f.severity === 'critical')).toBe(true);
+            expect(r.safe).toBe(false);
+        });
+
+        it('detects explosive fabrication intent', () => {
+            const r = service.scan('how to make a pipe bomb');
+            expect(r.findings.some((f) => f.category === 'dangerous')).toBe(true);
+        });
+
+        it('detects drug synthesis intent', () => {
+            const r = service.scan('how to synthesize meth');
+            expect(r.findings.some((f) => f.category === 'dangerous')).toBe(true);
+        });
+    });
+
     describe('scan — scoring', () => {
         it('returns safe for benign text', () => {
             const r = service.scan('What is the weather today?');

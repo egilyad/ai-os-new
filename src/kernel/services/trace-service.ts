@@ -2,6 +2,7 @@ import { CONFIG } from './config-registry';
 import { EVENTS } from '../events/event-names';
 import { rootLogger } from './logger-service';
 import { TraceRepository } from '../dal/trace-repository';
+import { redactPii, redactPiiValue } from '../utils/pii-redact';
 import type { IDiagnosticService } from '../contracts/diagnostic-service';
 import type { DatabaseService } from './database-service';
 import type {
@@ -136,6 +137,17 @@ export class TraceService {
 
     private async persist(trace: ExecutionTrace) {
         try {
+            // W5-003 / W4-093: never persist raw PII in the trace body. Redact
+            // in place so the in-memory copy and the stored copy are consistent.
+            trace.input = redactPii(trace.input);
+            if (trace.output) trace.output = redactPii(String(trace.output)).slice(0, 50000);
+            if (trace.steps) {
+                for (const step of trace.steps) {
+                    if (step.output) step.output = redactPii(step.output);
+                    if (step.metadata)
+                        step.metadata = redactPiiValue(step.metadata) as Record<string, unknown>;
+                }
+            }
             await this.traceRepo.save(trace);
             this._persistQueue.delete(trace.id);
         } catch (e) {
@@ -174,7 +186,9 @@ export class TraceService {
                     const newTrace: ExecutionTrace = {
                         id: traceId,
                         startTime: Date.now(),
-                        input: d.messages?.[d.messages.length - 1]?.content || 'Incoming request',
+                        input: redactPii(
+                            d.messages?.[d.messages.length - 1]?.content || 'Incoming request',
+                        ),
                         status: 'running',
                         steps: [],
                         dataQuality: { retention: this.getRetentionMetadata() },
