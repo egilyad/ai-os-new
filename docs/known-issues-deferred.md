@@ -683,6 +683,23 @@
 | W3-028                 | 4 dead/misleading feature flags                                         | проверить ссылки     |
 | W3-029                 | Sandbox DEV-флаг без UI-warning                                         | UX                   |
 
+### 13.11. Остаток волны 4 (backlog)
+
+> Подробности — в `audit-wave4-2026-10-31.md`. Отложено (CI, cost-enforcement, prompt-versioning, autonomy-guardrails):
+
+| ID             | Пункт                                                       | Причина отложения |
+| -------------- | ----------------------------------------------------------- | ----------------- |
+| W4-001/002     | deploy-гейт без тестов; test:stable неполный                | CI                |
+| W4-003/004     | NotificationWebhook/BudgetAlert не заведены в bootstrap     | lifecycle-wiring  |
+| W4-005/006     | sourcemaps условно; нет zero-downtime                       | CI/deploy         |
+| W4-011         | alert-события не идут в alerting                            | wiring            |
+| W4-019         | vault passphrase (см. 12.1)                                 | vault             |
+| W4-021         | OpenRouter rotation без revoke (DELETE)                     | внешний API       |
+| W4-030/031/032 | cost-enforcement (decorator/chat/agems)                     | enforcement       |
+| W4-033/041     | prompt overrides без версий; 156 unversioned                | prompt-versioning |
+| W4-042/043     | автономные file-writes мимо ToolPipeline; autonomy agentIds | guardrails        |
+| W4-044         | AUTOPILOT для non-admin (авт-гвард сделан, admin-гейт нет)  | authz/роли        |
+
 ---
 
 ## Карты системной разведки (10)
