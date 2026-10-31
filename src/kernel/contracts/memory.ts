@@ -5,6 +5,8 @@ import type {
     MemoryPruneOptions,
     MemoryPruneResult,
 } from '../types/memory-types';
+import type { Result } from './results';
+import type { MemoryError } from './errors';
 
 export interface MemoryCapability {
     readonly maxEntries: number;

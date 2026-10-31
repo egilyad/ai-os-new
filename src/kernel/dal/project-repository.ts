@@ -57,7 +57,6 @@ export class ProjectRepository {
 
     async delete(id: ProjectId): Promise<void> {
         await this.db.transaction(
-            'rw',
             [
                 this.db.projects,
                 this.db.projectTasks,

@@ -140,7 +140,8 @@ export class ProviderTracker implements IProviderTracker {
      * flag is pending, so a staler snapshot can never land after a fresher one.
      */
     private persistMetrics(): void {
-        if (!this.database) return;
+        const database = this.database;
+        if (!database) return;
         this.persistDirty = true;
         if (this.persistRunning) return;
         this.persistRunning = true;
@@ -153,7 +154,7 @@ export class ProviderTracker implements IProviderTracker {
                         obj[id] = prov;
                     }
                     try {
-                        await this.database.setKv(ProviderTracker.METRICS_KEY, obj);
+                        await database.setKv(ProviderTracker.METRICS_KEY, obj);
                     } catch (e) {
                         LOGGER.warn('ProviderTracker', 'Persist metrics failed', { error: e });
                     }

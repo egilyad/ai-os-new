@@ -107,9 +107,10 @@ export class KeyLifecycle {
     private saveChain: Promise<unknown> = Promise.resolve();
 
     private _save(): Promise<void> {
-        if (!this.deps.database) return Promise.resolve();
+        const database = this.deps.database;
+        if (!database) return Promise.resolve();
         const run = async (): Promise<void> => {
-            await this.deps.database.setKv(COUNTERS_STORAGE_KEY, {
+            await database.setKv(COUNTERS_STORAGE_KEY, {
                 errorCounters: Array.from(this.errorCounters.entries()),
                 successCounters: Array.from(this.successCounters.entries()),
             });

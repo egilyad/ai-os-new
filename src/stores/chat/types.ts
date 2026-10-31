@@ -27,7 +27,7 @@ export const MODEL_CONTEXT_WINDOWS: Record<string, number> = {
 export interface ChatEntry {
     id: string;
     requestId?: string;
-    role: 'user' | 'system' | 'assistant';
+    role: 'user' | 'system' | 'assistant' | 'tool';
     text: string;
     responses: ChatResponse[];
     timestamp: number;

@@ -96,7 +96,6 @@ export class DebateRepository {
 
     async clearTimelineAndOverrides(sessionId: string): Promise<void> {
         await this.db.transaction(
-            'rw',
             [this.db.debateTimeline, this.db.debateOverrides],
             async () => {
                 await this.deleteTimelineBySession(sessionId);

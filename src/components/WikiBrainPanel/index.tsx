@@ -5,7 +5,6 @@ import { useTranslation } from '../../i18n/useTranslation';
 import { MarkdownRenderer } from '../ChatPanel/MarkdownRenderer';
 import { KnowledgeGraphView, type GraphViewData } from '../viz/KnowledgeGraphView';
 import { WIKI_ARTICLES } from '../WikiPanel/wiki-articles';
-import { wikiId } from '../../kernel/services/wiki-brain/wiki-brain-dexie';
 import type { IWikiBrainService } from '../../kernel/contracts/wiki-brain';
 import type { TWikiLink } from '../../kernel/contracts/wiki-brain/types';
 import type { TWikiPage, TWikiPageFrontmatter } from '../../kernel/contracts/wiki-brain';
