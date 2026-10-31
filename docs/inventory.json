@@ -308,8 +308,8 @@
       "category": "audits",
       "language": "ru",
       "title": "Расширяемость и платформа (Extensibility)",
-      "bytes": 1300,
-      "hash": "0184ff2ada37cdcd209c16fe8f1d690530a4961c"
+      "bytes": 2784,
+      "hash": "ed59058941d9bcaf78684c0d587b357017c66e89"
     },
     {
       "path": "docs/audits/waves/card-25-observability-deep.md",
