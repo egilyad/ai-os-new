@@ -137,4 +137,15 @@ describe('strategy-interpreter (SPEC_07)', () => {
         expect(p.topology.maxRounds).toBe(1);
         expect(p.turnPolicy.maxIterations).toBeUndefined();
     });
+
+    it('convergenceThreshold/earlyExitConfidence клампятся в 0–1', () => {
+        const p = interpret(
+            draft('builtin.round_robin', 'debate_graph', {
+                convergenceThreshold: 1.5,
+                earlyExitConfidence: -0.2,
+            }),
+        );
+        expect(p.convergenceThreshold).toBe(1);
+        expect(p.earlyExitConfidence).toBe(0);
+    });
 });

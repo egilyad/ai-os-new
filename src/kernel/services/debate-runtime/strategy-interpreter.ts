@@ -73,6 +73,9 @@ export function interpret(draft: StrategyDraft): StrategyProgram {
 
     const maxRounds = Math.max(1, draft.maxRounds ?? (draft.root === 'critic_loop' ? 6 : 5));
 
+    const clamp01 = (v?: number): number | undefined =>
+        v === undefined ? undefined : Math.min(1, Math.max(0, v));
+
     return {
         id: draft.id,
         name: draft.name,
@@ -84,8 +87,8 @@ export function interpret(draft: StrategyDraft): StrategyProgram {
             maxIterations: table.order === 'adversarial' ? maxRounds : undefined,
             stopWhen: table.stopWhen,
         },
-        convergenceThreshold: draft.convergenceThreshold,
-        earlyExitConfidence: draft.earlyExitConfidence,
+        convergenceThreshold: clamp01(draft.convergenceThreshold),
+        earlyExitConfidence: clamp01(draft.earlyExitConfidence),
     };
 }
 
