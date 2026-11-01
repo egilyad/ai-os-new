@@ -75,6 +75,10 @@ export const registerPhase82: Phase = (helpers, ctx) => {
         });
     });
 
+    // Eager: восстанавливаем сохранённые манифесты плагинов при старте.
+    const pluginRegistryForHydrate = ctx.container.get<PluginRegistry>('pluginRegistry');
+    void pluginRegistryForHydrate.hydrate();
+
     register('agentSecurityGuard', () => new AgentSecurityGuard());
 
     register(
