@@ -322,6 +322,7 @@ export {
     resolveStrategyConfig,
     buildTopologyForStrategy,
     roundToAvailableTopology,
+    isKnownStrategy,
 } from './services/debate-runtime/debate-session-bridge';
 export type { ResolvedStrategyConfig } from './services/debate-runtime/debate-session-bridge';
 

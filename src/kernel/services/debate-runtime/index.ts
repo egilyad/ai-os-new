@@ -20,6 +20,7 @@ export {
     roundToAvailableTopology,
     applyModeToSession,
     strategyQualityForced,
+    isKnownStrategy,
 } from './debate-session-bridge';
 export type { ResolvedStrategyConfig, ModeSessionHints } from './debate-session-bridge';
 export {
