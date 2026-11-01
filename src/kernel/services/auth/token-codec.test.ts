@@ -4,6 +4,10 @@ import { TokenCodec } from './token-codec';
 describe('TokenCodec (SPEC_10)', () => {
     const codec = new TokenCodec('test-secret-1234567890');
 
+    it('конструктор требует секрет >=16 символов', () => {
+        expect(() => new TokenCodec('short')).toThrow(/at least 16/);
+    });
+
     it('issue/verify round-trip', async () => {
         const token = await codec.issue({ tenantId: 'tenant-a', userId: 'u1', roles: ['approver'] });
         const ctx = await codec.verify(token);
