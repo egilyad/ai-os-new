@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { compileBuiltin, draft, interpret, programToPlan } from './strategy-interpreter';
 import { BUILTIN_STRATEGIES } from './debate-strategy-definitions';
+import type { TopologyKind } from '../../contracts/strategy-program';
 
 describe('strategy-interpreter (SPEC_07)', () => {
     it('sequence → linear/sequential, без quality', () => {
@@ -73,6 +74,24 @@ describe('strategy-interpreter (SPEC_07)', () => {
         expect(ids.length).toBeGreaterThanOrEqual(33);
         const uncovered = ids.filter((id) => compileBuiltin(id) === null);
         expect(uncovered, `uncovered: ${uncovered.join(', ')}`).toEqual([]);
+    });
+
+    it('каждая builtin-программа даёт валидную топологию', () => {
+        const kinds = new Set<TopologyKind>([
+            'linear',
+            'roundtable',
+            'judge',
+            'tree-of-thought',
+            'red-blue',
+        ]);
+        for (const id of BUILTIN_STRATEGIES.map((d) => d.id)) {
+            const program = compileBuiltin(id);
+            expect(program, id).not.toBeNull();
+            expect(kinds.has(program!.topology.kind), `${id} -> ${program!.topology.kind}`).toBe(
+                true,
+            );
+            expect(program!.topology.maxRounds).toBeGreaterThanOrEqual(1);
+        }
     });
 
     it('неизвестный корень → fallback на roundtable', () => {
