@@ -4,6 +4,7 @@ import {
     compileDefinition,
     draft,
     interpret,
+    isKnownBuiltin,
     programToPlan,
 } from './strategy-interpreter';
 import { BUILTIN_STRATEGIES } from './debate-strategy-definitions';
@@ -52,6 +53,12 @@ describe('strategy-interpreter (SPEC_07)', () => {
         expect(compileBuiltin('builtin.round_robin')?.root).toBe('debate_graph');
         expect(compileBuiltin('builtin.brainstorming')?.topology.kind).toBe('linear');
         expect(compileBuiltin('unknown.strategy')).toBeNull();
+    });
+
+    it('isKnownBuiltin распознаёт известные имена', () => {
+        expect(isKnownBuiltin('builtin.socratic')).toBe(true);
+        expect(isKnownBuiltin('builtin.contest_mode')).toBe(true);
+        expect(isKnownBuiltin('unknown.strategy')).toBe(false);
     });
 
     it('programToPlan конвертирует программу в план', () => {

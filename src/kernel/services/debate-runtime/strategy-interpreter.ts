@@ -145,6 +145,11 @@ const BUILTIN_ROOTS: Record<string, StrategyDraft['root']> = {
     'builtin.contest_mode': 'sequence',
 };
 
+/** Проверяет, что id — известная builtin-стратегия. */
+export function isKnownBuiltin(id: string): boolean {
+    return id in BUILTIN_ROOTS;
+}
+
 /**
  * Компилирует известную builtin-стратегию в StrategyProgram.
  * Возвращает null для неизвестных имён.
