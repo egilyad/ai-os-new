@@ -101,6 +101,17 @@ describe('MetricsCollector', () => {
         expect(snap['debate.agent_turns'].summary.sum).toBe(1);
     });
 
+    it('пишет debate.verdicts/verdict_confidence на verdict:generated', () => {
+        const events = makeEvents();
+        const metrics = new MetricsService();
+        const collector = new MetricsCollector(events as never, metrics);
+        collector.start();
+        events.emit('debate:verdict:generated', { sessionId: 's1', confidence: 0.8 });
+        const snap = metrics.snapshot();
+        expect(snap['debate.verdicts'].summary.sum).toBe(1);
+        expect(snap['debate.verdict_confidence'].summary.max).toBe(0.8);
+    });
+
     it('пишет provider.probe/active/latency на key:probe:result', () => {
         const events = makeEvents();
         const metrics = new MetricsService();

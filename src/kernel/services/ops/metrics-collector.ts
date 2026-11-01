@@ -110,6 +110,16 @@ export class MetricsCollector {
                 this.metrics.inc('debate.rounds');
             }),
         );
+
+        this.unsubs.push(
+            this.events.on(EVENTS.DEBATE_VERDICT_GENERATED, (data: unknown) => {
+                const d = data as { confidence?: number };
+                this.metrics.inc('debate.verdicts');
+                if (typeof d?.confidence === 'number') {
+                    this.metrics.record('debate.verdict_confidence', d.confidence);
+                }
+            }),
+        );
     }
 
     destroy(): void {
