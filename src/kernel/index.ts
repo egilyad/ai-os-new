@@ -301,6 +301,22 @@ export type {
 // SPEC-модули (Фаза 0 П SPEC-каркасы)
 export * from './services/new';
 
+// Debate DSL (SPEC_07)
+export {
+    interpret,
+    draft,
+    compileBuiltin,
+    compileDefinition,
+    programToPlan,
+} from './services/debate-runtime/strategy-interpreter';
+export type { DebateExecutionPlan } from './services/debate-runtime/strategy-interpreter';
+export { StrategyRegistry } from './services/debate-runtime/debate-strategy-registry';
+export {
+    resolveStrategyConfig,
+    buildTopologyForStrategy,
+} from './services/debate-runtime/debate-session-bridge';
+export type { ResolvedStrategyConfig } from './services/debate-runtime/debate-session-bridge';
+
 // Types
 export type {
     IEventBus,
