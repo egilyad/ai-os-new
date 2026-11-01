@@ -83,6 +83,22 @@ export class MetricsCollector {
         );
 
         this.unsubs.push(
+            this.events.on(EVENTS.KEY_PROBE_RESULT, (data: unknown) => {
+                const d = data as { status?: string; provider?: string; latency?: number };
+                this.metrics.inc('provider.probe');
+                const p = String(d?.provider ?? 'unknown');
+                if (d?.status === 'active') {
+                    this.metrics.gauge('provider.active', 1, { provider: p });
+                } else {
+                    this.metrics.gauge('provider.active', 0, { provider: p });
+                }
+                if (typeof d?.latency === 'number') {
+                    this.metrics.record('provider.latency', d.latency, { provider: p });
+                }
+            }),
+        );
+
+        this.unsubs.push(
             this.events.on(EVENTS.DEBATE_ROUND_ENDED, () => {
                 this.metrics.inc('debate.rounds');
             }),

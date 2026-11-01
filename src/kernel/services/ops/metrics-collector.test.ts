@@ -100,4 +100,16 @@ describe('MetricsCollector', () => {
         expect(snap['memory.reads'].summary.sum).toBe(1);
         expect(snap['debate.agent_turns'].summary.sum).toBe(1);
     });
+
+    it('пишет provider.probe/active/latency на key:probe:result', () => {
+        const events = makeEvents();
+        const metrics = new MetricsService();
+        const collector = new MetricsCollector(events as never, metrics);
+        collector.start();
+        events.emit('key:probe:result', { provider: 'gemini', status: 'active', latency: 80 });
+        const snap = metrics.snapshot();
+        expect(snap['provider.probe'].summary.sum).toBe(1);
+        expect(snap['provider.active{provider=gemini}'].summary.sum).toBe(1);
+        expect(snap['provider.latency{provider=gemini}'].summary.max).toBe(80);
+    });
 });
