@@ -203,6 +203,24 @@ const PluginManagerPanel: React.FC = () => {
                                 {p.error}
                             </div>
                         )}
+                        {(p.manifest.contributes.tools?.length ?? 0) > 0 && (
+                            <div
+                                style={{ fontSize: 10, color: 'var(--slate-500)', marginBottom: 2 }}
+                            >
+                                {t('plugin.tools')}:{' '}
+                                {p.manifest.contributes.tools!.map((t) => t.name).join(', ')}
+                            </div>
+                        )}
+                        {(p.manifest.contributes.subscriptions?.length ?? 0) > 0 && (
+                            <div
+                                style={{ fontSize: 10, color: 'var(--slate-500)', marginBottom: 2 }}
+                            >
+                                {t('plugin.events')}:{' '}
+                                {p.manifest.contributes
+                                    .subscriptions!.map((s) => s.event)
+                                    .join(', ')}
+                            </div>
+                        )}
                         <div style={{ display: 'flex', gap: 6, marginTop: 6 }}>
                             {p.status === 'error' ? (
                                 <button

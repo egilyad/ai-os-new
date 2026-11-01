@@ -22,7 +22,10 @@ const manifest = {
     name: 'Search',
     version: '1.0.0',
     engines: { os: '4.0.0' },
-    contributes: { tools: [{ name: 'acme.search', handler: 'search' }] },
+    contributes: {
+        tools: [{ name: 'acme.search', handler: 'search' }],
+        subscriptions: [{ event: 'agent:start' }],
+    },
 };
 
 vi.mock('../../kernel/instances', () => ({
@@ -62,6 +65,7 @@ describe('PluginManagerPanel (smoke)', () => {
         expect(await screen.findByText('plugin.title')).toBeDefined();
         expect(screen.getByText('Search')).toBeDefined();
         expect(screen.getByText('Other')).toBeDefined();
+        expect(screen.getByText('acme.search')).toBeDefined();
     });
 
     it('loads a manifest from JSON input', async () => {

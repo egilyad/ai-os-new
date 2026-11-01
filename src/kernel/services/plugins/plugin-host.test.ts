@@ -127,4 +127,20 @@ describe('PluginHost (SPEC_06)', () => {
         expect(host.hasTool('acme.search')).toBe(false);
         expect(host.listTools()).toHaveLength(0);
     });
+
+    it('registerTools не перезаписывает инструмент другого плагина', () => {
+        const host = new PluginHost();
+        const other: PluginManifest = {
+            id: 'other.tools',
+            name: 'Other',
+            version: '1.0.0',
+            engines: { os: '4.0.0' },
+            contributes: { tools: [{ name: 'acme.search', handler: 'x' }] },
+        };
+        host.registerTools(manifest);
+        const conflicts = host.registerTools(other);
+        expect(conflicts).toEqual(['acme.search']);
+        expect(host.getToolContext('acme.search')).toBeUndefined();
+        expect(host.listTools()[0].manifestId).toBe('acme.search');
+    });
 });

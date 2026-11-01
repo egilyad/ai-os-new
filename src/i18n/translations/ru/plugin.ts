@@ -16,6 +16,8 @@ const plugin: Record<string, string> = {
     'plugin.retry': 'Повторить',
     'plugin.activate': 'Активировать',
     'plugin.deactivate': 'Деактивировать',
+    'plugin.tools': 'Инструменты',
+    'plugin.events': 'Подписки',
     'info.plugins': 'Управление плагинами (SPEC_06): реестр, хост, загрузчик',
 };
 

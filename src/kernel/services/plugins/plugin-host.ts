@@ -45,8 +45,14 @@ export class PluginHost {
         manifest: PluginManifest,
         executor?: (name: string, args: Record<string, unknown>) => Promise<string>,
         context?: unknown,
-    ): void {
+    ): string[] {
+        const conflicts: string[] = [];
         for (const t of manifest.contributes.tools ?? []) {
+            const existing = this.tools.get(t.name);
+            if (existing && existing.manifestId !== manifest.id) {
+                conflicts.push(t.name);
+                continue;
+            }
             this.tools.set(t.name, {
                 name: t.name,
                 handler: t.handler,
@@ -55,6 +61,7 @@ export class PluginHost {
                 context,
             });
         }
+        return conflicts;
     }
 
     unregisterTools(manifestId: string): void {
