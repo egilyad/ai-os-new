@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { buildTopologyForStrategy, resolveStrategyConfig } from './debate-session-bridge';
 import { BUILTIN_STRATEGIES } from './debate-strategy-definitions';
-import type { DebateParticipant } from '../../contracts/debate-types';
+import type { DebateParticipant, DebateStrategy } from '../../contracts/debate-types';
 
 const baseline: DebateParticipant[] = [
     { id: 'a', name: 'A', role: 'pro' },
@@ -47,6 +47,34 @@ describe('buildTopologyForStrategy', () => {
         ]);
         expect(present.type).toBe('red-blue');
         expect(present.edges.length).toBeGreaterThanOrEqual(2);
+    });
+
+    it('обрабатывает все enum-стратегии без падений', () => {
+        const enums: DebateStrategy[] = [
+            'round_robin',
+            'socratic',
+            'argument_tree',
+            'constrained',
+            'moderated',
+            'free_for_all',
+            'jury_trial',
+            'cross-examination',
+            'tournament',
+            'sequential',
+            'tree-of-thought',
+            'judge',
+            'red-blue',
+        ];
+        const withJudge = [
+            ...baseline,
+            { id: 'j', name: 'Judge', role: 'judge' as const },
+            { id: 'atk', name: 'Atk', role: 'attacker' as const },
+            { id: 'def', name: 'Def', role: 'defender' as const },
+        ];
+        for (const s of enums) {
+            const topo = buildTopologyForStrategy(s, withJudge);
+            expect(topo.type, s).toMatch(/roundtable|linear|judge|tree-of-thought|red-blue/);
+        }
     });
 });
 
