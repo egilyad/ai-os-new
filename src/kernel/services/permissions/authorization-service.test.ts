@@ -58,6 +58,19 @@ describe('AuthorizationService (SPEC_08)', () => {
         expect((await svc.evaluate(req('a', 'b', 'c'))).effect).toBe('deny');
     });
 
+    it('assertAllowed бросает при deny и проходит при allow', async () => {
+        const svc = new AuthorizationService();
+        await svc.setRules([
+            { id: 'r1', subject: '*', action: '*', resource: '*', effect: 'deny' },
+        ]);
+        await expect(svc.assertAllowed(req('a', 'b', 'c'))).rejects.toThrow(/deny/i);
+
+        await svc.setRules([
+            { id: 'r1', subject: '*', action: '*', resource: '*', effect: 'allow' },
+        ]);
+        await expect(svc.assertAllowed(req('a', 'b', 'c'))).resolves.toBeUndefined();
+    });
+
     it('onDecision уведомляет наблюдателей, не ломая решение', async () => {
         const svc = new AuthorizationService();
         let seen: string | undefined;

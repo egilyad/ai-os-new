@@ -17,6 +17,13 @@ export class AuthorizationService implements IAuthorizationService {
     private _rules: AuthorizationRule[] = [];
     private _listeners: Array<(req: AuthzRequest, dec: AuthzDecision) => void> = [];
 
+    async assertAllowed(req: AuthzRequest): Promise<void> {
+        const dec = await this.evaluate(req);
+        if (dec.effect === 'deny') {
+            throw new Error(dec.reason ?? 'Access denied');
+        }
+    }
+
     async evaluate(req: AuthzRequest): Promise<AuthzDecision> {
         const matching = this._rules
             .filter(

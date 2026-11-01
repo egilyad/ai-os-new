@@ -41,6 +41,8 @@ export interface AuthorizationRule {
 
 export interface IAuthorizationService {
     evaluate(req: AuthzRequest): Promise<AuthzDecision>;
+    /** Бросает Error, если решение — deny (удобно для точек вызова). */
+    assertAllowed(req: AuthzRequest): Promise<void>;
     applyDefaultRules(rules: AuthorizationRule[]): Promise<void>;
     setRules(rules: AuthorizationRule[]): Promise<void>;
     rules(): AuthorizationRule[];
