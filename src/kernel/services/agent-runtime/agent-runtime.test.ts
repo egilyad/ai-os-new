@@ -96,6 +96,16 @@ describe('AgentRuntime (SPEC_05)', () => {
         expect(callLlm).not.toHaveBeenCalled();
     });
 
+    it('asCouncil собирает мнения агентов', async () => {
+        const outputs = ['m1', 'm2'];
+        const runtime = new AgentRuntime({
+            callLlm: vi.fn(async () => ({ content: outputs.shift()! })),
+        });
+        const council = runtime.asCouncil();
+        const result = await council.run([{ role: 'a1' }, { role: 'a2' }], { text: 'q' });
+        expect(result).toBe('m1\n---\nm2');
+    });
+
     it('asCrew прогоняет агентов последовательно', async () => {
         const outputs = ['step1', 'step2'];
         const runtime = new AgentRuntime({

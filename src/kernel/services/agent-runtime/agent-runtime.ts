@@ -26,6 +26,23 @@ export class CrewRuntime {
     }
 }
 
+/**
+ * CouncilRuntime — лёгкий фасад «совета» (SPEC_05): собирает мнения всех
+ * агентов по одному входу и объединяет их (консенсус-строка).
+ */
+export class CouncilRuntime {
+    constructor(private runtime: AgentRuntime) {}
+
+    async run(agents: AgentRuntimeConfig[], input: AgentTurnInput): Promise<string> {
+        const opinions: string[] = [];
+        for (const cfg of agents) {
+            const res = await this.runtime.run(input, cfg);
+            opinions.push(res.output);
+        }
+        return opinions.join('\n---\n');
+    }
+}
+
 export interface AgentRuntimeDeps {
     /** Один LLM-раунд-трип (получает диалог и схемы инструментов). */
     callLlm(messages: ToolLoopMessage[], tools: ToolLoopTool[]): Promise<ToolLoopCallResult>;
@@ -155,8 +172,8 @@ export class AgentRuntime implements IAgentRuntime {
     asCrew(): CrewRuntime {
         return new CrewRuntime(this);
     }
-    asCouncil(): unknown {
-        return this;
+    asCouncil(): CouncilRuntime {
+        return new CouncilRuntime(this);
     }
     asGraph(): unknown {
         return this;
