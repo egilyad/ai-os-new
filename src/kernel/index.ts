@@ -308,6 +308,7 @@ export {
     compileBuiltin,
     compileDefinition,
     programToPlan,
+    isKnownBuiltin,
 } from './services/debate-runtime/strategy-interpreter';
 export type { DebateExecutionPlan } from './services/debate-runtime/strategy-interpreter';
 export type {
