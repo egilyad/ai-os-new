@@ -38,6 +38,14 @@ describe('validateManifest', () => {
         expect(validateManifest(null).ok).toBe(false);
         expect(validateManifest('x').ok).toBe(false);
     });
+
+    it('отклоняет невалидные массивы contributes', () => {
+        expect(validateManifest({ ...validManifest, contributes: { tools: 'x' } }).ok).toBe(false);
+        expect(validateManifest({ ...validManifest, contributes: { panels: {} } }).ok).toBe(false);
+        expect(validateManifest({ ...validManifest, contributes: { mcpServers: 'x' } }).ok).toBe(
+            false,
+        );
+    });
 });
 
 describe('satisfiesMinKernel', () => {

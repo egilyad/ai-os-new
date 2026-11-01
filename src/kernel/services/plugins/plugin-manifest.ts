@@ -32,6 +32,23 @@ export function validateManifest(raw: unknown): ValidationResult {
     }
     if (!m.contributes || typeof m.contributes !== 'object') {
         errors.push('contributes is required');
+    } else {
+        const c = m.contributes as Record<string, unknown>;
+        if (c.tools !== undefined && !Array.isArray(c.tools)) {
+            errors.push('contributes.tools must be an array');
+        }
+        if (c.panels !== undefined && !Array.isArray(c.panels)) {
+            errors.push('contributes.panels must be an array');
+        }
+        if (c.services !== undefined && !Array.isArray(c.services)) {
+            errors.push('contributes.services must be an array');
+        }
+        if (c.mcpServers !== undefined && !Array.isArray(c.mcpServers)) {
+            errors.push('contributes.mcpServers must be an array');
+        }
+        if (c.subscriptions !== undefined && !Array.isArray(c.subscriptions)) {
+            errors.push('contributes.subscriptions must be an array');
+        }
     }
     if (m.permissions && !Array.isArray(m.permissions)) {
         errors.push('permissions must be an array');
