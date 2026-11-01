@@ -13,6 +13,7 @@ export interface PluginLoaderDeps {
         ) => void;
         unregisterTools: (manifestId: string) => void;
         registerSubscriptions: (manifest: PluginManifest, handler?: PluginEventHandler) => void;
+        registerMcpServers: (manifest: PluginManifest) => void;
         unregisterAll: (manifestId: string) => void;
     };
     /**
@@ -71,6 +72,7 @@ export class PluginLoader {
 
         this.deps.host.registerTools(manifest, executor, context);
         this.deps.host.registerSubscriptions(manifest, eventHandler);
+        this.deps.host.registerMcpServers(manifest);
         await this.deps.registry.activate(manifest.id);
         return true;
     }

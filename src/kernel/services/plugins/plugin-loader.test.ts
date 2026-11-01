@@ -22,6 +22,7 @@ function makeHost(
         registerTools?: ReturnType<typeof vi.fn>;
         unregisterTools?: ReturnType<typeof vi.fn>;
         registerSubscriptions?: ReturnType<typeof vi.fn>;
+        registerMcpServers?: ReturnType<typeof vi.fn>;
         unregisterAll?: ReturnType<typeof vi.fn>;
     } = {},
 ) {
@@ -29,6 +30,7 @@ function makeHost(
         registerTools: overrides.registerTools ?? vi.fn(),
         unregisterTools: overrides.unregisterTools ?? vi.fn(),
         registerSubscriptions: overrides.registerSubscriptions ?? vi.fn(),
+        registerMcpServers: overrides.registerMcpServers ?? vi.fn(),
         unregisterAll: overrides.unregisterAll ?? vi.fn(),
     };
 }
@@ -71,6 +73,7 @@ describe('PluginLoader (SPEC_06)', () => {
         expect(registry.activate).toHaveBeenCalledWith('acme.search');
         expect(host.registerTools).toHaveBeenCalledWith(manifest, executor, { apiKey: 'k' });
         expect(host.registerSubscriptions).toHaveBeenCalledWith(manifest, eventHandler);
+        expect(host.registerMcpServers).toHaveBeenCalledWith(manifest);
     });
 
     it('load отклоняет невалидный манифест', async () => {

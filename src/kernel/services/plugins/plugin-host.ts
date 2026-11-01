@@ -25,6 +25,17 @@ export interface PluginHostRegistryPort {
     getToolContext: (id: string) => unknown;
 }
 
+/** Порт MCPService (встроенные локальные MCP-серверы). */
+export interface PluginMcpPort {
+    registerLocalServer(
+        id: string,
+        name: string,
+        handle: (method: string, params?: unknown) => Promise<unknown>,
+    ): void;
+    unregisterLocalServer(id: string): void;
+    isLocalServer(id: string): boolean;
+}
+
 /**
  * PluginHost — лёгкий хост плагинов (SPEC_06).
  *
@@ -35,10 +46,13 @@ export interface PluginHostRegistryPort {
 export class PluginHost {
     private tools = new Map<string, PluginTool>();
     private subscriptions = new Map<string, Array<() => void>>();
+    private mcpServers = new Map<string, string>();
     private bus: PluginEventBusPort;
+    private mcp?: PluginMcpPort;
 
-    constructor(bus?: PluginEventBusPort) {
+    constructor(bus?: PluginEventBusPort, mcp?: PluginMcpPort) {
         this.bus = bus ?? { on: () => () => {} };
+        this.mcp = mcp;
     }
 
     registerTools(
@@ -126,16 +140,61 @@ export class PluginHost {
         this.subscriptions.delete(manifestId);
     }
 
-    /** Полная очистка плагина: инструменты + подписки. */
+    /** Регистрирует встроенные локальные MCP-серверы плагина (contributes.mcpServers). */
+    registerMcpServers(manifest: PluginManifest): void {
+        if (!this.mcp) return;
+        for (const m of manifest.contributes.mcpServers ?? []) {
+            const id = m.name.includes(':') ? m.name : `plugin:${manifest.id}:${m.name}`;
+            this.mcp.registerLocalServer(id, m.name, async (method, params) => {
+                if (method === 'tools/list') {
+                    const names = this.listTools()
+                        .filter((t) => t.manifestId === manifest.id)
+                        .map((t) => ({ name: t.name }));
+                    return { tools: names };
+                }
+                if (method === 'tools/call') {
+                    const p = (params ?? {}) as {
+                        name?: string;
+                        arguments?: Record<string, unknown>;
+                    };
+                    if (!p.name) throw new Error('MCP tool name required');
+                    return {
+                        content: [
+                            { type: 'text', text: await this.callTool(p.name, p.arguments ?? {}) },
+                        ],
+                    };
+                }
+                throw new Error(`MCP method not supported: ${method}`);
+            });
+            this.mcpServers.set(id, manifest.id);
+        }
+    }
+
+    /** Снимает встроенные MCP-серверы плагина. */
+    unregisterMcpServers(manifestId: string): void {
+        if (!this.mcp) return;
+        for (const [id, owner] of [...this.mcpServers]) {
+            if (owner === manifestId) {
+                this.mcp.unregisterLocalServer(id);
+                this.mcpServers.delete(id);
+            }
+        }
+    }
+
+    /** Полная очистка плагина: инструменты + подписки + MCP. */
     unregisterAll(manifestId: string): void {
         this.unregisterTools(manifestId);
         this.unregisterSubscriptions(manifestId);
+        this.unregisterMcpServers(manifestId);
     }
 
-    /** Очистка хоста при завершении: снимает все подписки (ILifecycle). */
+    /** Очистка хоста при завершении: снимает все подписки и MCP (ILifecycle). */
     destroy(): void {
         for (const manifestId of [...this.subscriptions.keys()]) {
             this.unregisterSubscriptions(manifestId);
+        }
+        for (const manifestId of [...this.mcpServers.values()]) {
+            this.unregisterMcpServers(manifestId);
         }
         this.tools.clear();
     }

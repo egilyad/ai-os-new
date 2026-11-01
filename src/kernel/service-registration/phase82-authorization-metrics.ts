@@ -19,7 +19,7 @@ import { MetricsCollector } from '../services/ops/metrics-collector';
 import { EmbeddingService } from '../services/embedding-service';
 import { DefaultEmbeddingService } from '../services/parity/default-embedding-service';
 import { PluginRegistry } from '../services/plugins/plugin-registry';
-import { PluginHost } from '../services/plugins/plugin-host';
+import { PluginHost, type PluginMcpPort } from '../services/plugins/plugin-host';
 import { PluginLoader } from '../services/plugins/plugin-loader';
 import { AgentSecurityGuard } from '../services/security/agent-security-guard';
 import { AgentRuntime } from '../services/agent-runtime/agent-runtime';
@@ -63,7 +63,10 @@ export const registerPhase82: Phase = (helpers, ctx) => {
         });
     });
 
-    register('pluginHost', () => new PluginHost());
+    register('pluginHost', (c) => {
+        const mcp = c.has('mcpService') ? c.get<PluginMcpPort>('mcpService') : undefined;
+        return new PluginHost(undefined, mcp);
+    });
 
     register('pluginLoader', (c) => {
         return new PluginLoader({

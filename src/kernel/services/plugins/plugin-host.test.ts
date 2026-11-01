@@ -143,4 +143,59 @@ describe('PluginHost (SPEC_06)', () => {
         expect(host.getToolContext('acme.search')).toBeUndefined();
         expect(host.listTools()[0].manifestId).toBe('acme.search');
     });
+
+    it('registerMcpServers регистрирует локальные MCP-серверы', async () => {
+        const registered: Array<{
+            id: string;
+            handle: (m: string, p?: unknown) => Promise<unknown>;
+        }> = [];
+        const mcp = {
+            registerLocalServer: vi.fn(
+                (
+                    id: string,
+                    name: string,
+                    handle: (m: string, p?: unknown) => Promise<unknown>,
+                ) => {
+                    registered.push({ id, handle });
+                },
+            ),
+            unregisterLocalServer: vi.fn(),
+            isLocalServer: vi.fn((id: string) => registered.some((r) => r.id === id)),
+        };
+        const mcpManifest: PluginManifest = {
+            id: 'acme.mcp',
+            name: 'Mcp',
+            version: '1.0.0',
+            engines: { os: '4.0.0' },
+            contributes: {
+                tools: [{ name: 'acme.search' }],
+                mcpServers: [{ name: 'demo-mcp' }],
+            },
+        };
+        const host = new PluginHost(undefined, mcp);
+        host.registerMcpServers(mcpManifest);
+        expect(mcp.registerLocalServer).toHaveBeenCalled();
+        expect(registered[0].id).toBe('plugin:acme.mcp:demo-mcp');
+        const tools = (await registered[0].handle('tools/list')) as { tools: { name: string }[] };
+        expect(tools.tools).toContainEqual({ name: 'acme.search' });
+    });
+
+    it('unregisterMcpServers снимает серверы плагина', () => {
+        const mcp = {
+            registerLocalServer: vi.fn(),
+            unregisterLocalServer: vi.fn(),
+            isLocalServer: vi.fn(() => false),
+        };
+        const mcpManifest: PluginManifest = {
+            id: 'acme.mcp',
+            name: 'Mcp',
+            version: '1.0.0',
+            engines: { os: '4.0.0' },
+            contributes: { mcpServers: [{ name: 'demo-mcp' }] },
+        };
+        const host = new PluginHost(undefined, mcp);
+        host.registerMcpServers(mcpManifest);
+        host.unregisterMcpServers('acme.mcp');
+        expect(mcp.unregisterLocalServer).toHaveBeenCalled();
+    });
 });
