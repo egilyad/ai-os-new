@@ -166,4 +166,15 @@ describe('resolveStrategyConfig (DSL interpreter integration)', () => {
     it('enum tournament → linear', () => {
         expect(buildTopologyForStrategy('tournament', baseline).type).toBe('linear');
     });
+
+    it('resolveStrategyConfig не мутирует входных участников', () => {
+        const participants: DebateParticipant[] = [
+            { id: 'a', name: 'A', role: 'pro' },
+            { id: 'b', name: 'B', role: 'con' },
+        ];
+        const snapshot = JSON.stringify(participants);
+        resolveStrategyConfig('builtin.socratic', participants);
+        resolveStrategyConfig('judge', participants);
+        expect(JSON.stringify(participants)).toBe(snapshot);
+    });
 });
