@@ -13,7 +13,9 @@ const manifest: PluginManifest = {
 describe('PluginHost (SPEC_06)', () => {
     it('регистрирует инструменты и вызывает их', async () => {
         const host = new PluginHost();
-        const executor = vi.fn(async (_name: string, args: Record<string, unknown>) => `found ${args.q}`);
+        const executor = vi.fn(
+            async (_name: string, args: Record<string, unknown>) => `found ${args.q}`,
+        );
         host.registerTools(manifest, executor);
 
         expect(host.hasTool('acme.search')).toBe(true);
@@ -40,5 +42,43 @@ describe('PluginHost (SPEC_06)', () => {
         host.registerTools(manifest);
         host.unregisterTools('acme.search');
         expect(host.hasTool('acme.search')).toBe(false);
+    });
+
+    it('getTool возвращает порт ToolService', async () => {
+        const host = new PluginHost();
+        const executor = vi.fn(
+            async (_name: string, args: Record<string, unknown>) => `found ${args.q}`,
+        );
+        host.registerTools(manifest, executor);
+
+        const port = host.getTool('acme.search');
+        expect(port).toBeDefined();
+        expect(await port!.execute({ q: 'x' }, {})).toBe('found x');
+        expect(executor).toHaveBeenCalledWith('acme.search', { q: 'x' });
+    });
+
+    it('getTool возвращает undefined для неизвестного/без executor', () => {
+        const host = new PluginHost();
+        expect(host.getTool('nope')).toBeUndefined();
+        host.registerTools(manifest);
+        expect(host.getTool('acme.search')).toBeUndefined();
+    });
+
+    it('getToolContext возвращает переданный контекст', () => {
+        const host = new PluginHost();
+        const ctx = { apiKey: 'k' };
+        host.registerTools(manifest, undefined, ctx);
+        expect(host.getToolContext('acme.search')).toBe(ctx);
+        expect(host.getToolContext('nope')).toBeUndefined();
+    });
+
+    it('toRegistryPort делегирует в getTool/getToolContext', async () => {
+        const host = new PluginHost();
+        const executor = vi.fn(async () => 'ok');
+        host.registerTools(manifest, executor);
+        const port = host.toRegistryPort();
+        expect(port.getTool('acme.search')).toBeDefined();
+        expect(port.getTool('nope')).toBeUndefined();
+        expect(port.getToolContext('acme.search')).toBeUndefined();
     });
 });

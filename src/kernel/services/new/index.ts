@@ -12,6 +12,8 @@ export { DexieMetricsStorage } from '../ops/metrics-dexie-storage';
 export { EvalHub } from '../eval/eval-hub';
 export { AgentRuntime, CrewRuntime } from '../agent-runtime/agent-runtime';
 export { PluginRegistry } from '../plugins/plugin-registry';
+export { PluginHost, type PluginHostRegistryPort } from '../plugins/plugin-host';
+export { PluginLoader } from '../plugins/plugin-loader';
 export { TokenCodec } from '../auth/token-codec';
 export { A2AClient } from '../interop/a2a-client';
 export { ProvenanceLinker } from '../trust/provenance-linker';

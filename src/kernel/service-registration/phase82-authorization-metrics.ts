@@ -20,6 +20,7 @@ import { EmbeddingService } from '../services/embedding-service';
 import { DefaultEmbeddingService } from '../services/parity/default-embedding-service';
 import { PluginRegistry } from '../services/plugins/plugin-registry';
 import { PluginHost } from '../services/plugins/plugin-host';
+import { PluginLoader } from '../services/plugins/plugin-loader';
 import { AgentSecurityGuard } from '../services/security/agent-security-guard';
 import { AgentRuntime } from '../services/agent-runtime/agent-runtime';
 import { createAgentCallLlm, type AgentLlmDeps } from '../services/agent-runtime/agent-runtime-llm';
@@ -54,6 +55,13 @@ export const registerPhase82: Phase = (helpers, ctx) => {
     register('pluginRegistry', () => new PluginRegistry());
 
     register('pluginHost', () => new PluginHost());
+
+    register('pluginLoader', (c) => {
+        return new PluginLoader({
+            registry: c.get<PluginRegistry>('pluginRegistry'),
+            host: c.get<PluginHost>('pluginHost'),
+        });
+    });
 
     register('agentSecurityGuard', () => new AgentSecurityGuard());
 

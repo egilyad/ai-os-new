@@ -5,12 +5,24 @@ export interface PluginTool {
     handler?: string;
     manifestId: string;
     execute?: (name: string, args: Record<string, unknown>) => Promise<string>;
+    context?: unknown;
+}
+
+export interface PluginToolPort {
+    execute: (input: unknown, context: unknown) => Promise<unknown>;
+}
+
+/** Порт, потребляемый ToolService (см. tool-executor.ts: pluginRegistry.getTool/getToolContext). */
+export interface PluginHostRegistryPort {
+    getTool: (id: string) => PluginToolPort | undefined;
+    getToolContext: (id: string) => unknown;
 }
 
 /**
  * PluginHost — лёгкий хост плагинов (SPEC_06).
  *
- * Регистрирует инструменты из манифестов плагинов и позволяет вызывать их.
+ * Регистрирует инструменты из манифестов плагинов, позволяет вызывать их и
+ * предоставляет порт, совместимый с ToolService (getTool/getToolContext).
  * (Полная изоляция через Worker/sandboxed iframe — следующий слой.)
  */
 export class PluginHost {
@@ -19,6 +31,7 @@ export class PluginHost {
     registerTools(
         manifest: PluginManifest,
         executor?: (name: string, args: Record<string, unknown>) => Promise<string>,
+        context?: unknown,
     ): void {
         for (const t of manifest.contributes.tools ?? []) {
             this.tools.set(t.name, {
@@ -26,6 +39,7 @@ export class PluginHost {
                 handler: t.handler,
                 manifestId: manifest.id,
                 execute: executor,
+                context,
             });
         }
     }
@@ -49,5 +63,27 @@ export class PluginHost {
         if (!tool) throw new Error(`Plugin tool not found: ${name}`);
         if (!tool.execute) return `Tool ${name} has no executor`;
         return tool.execute(name, args);
+    }
+
+    /** Возвращает исполнитель инструмента (порт ToolService). */
+    getTool(id: string): PluginToolPort | undefined {
+        const tool = this.tools.get(id);
+        if (!tool || !tool.execute) return undefined;
+        return {
+            execute: async (input: unknown) => tool.execute!(id, input as Record<string, unknown>),
+        };
+    }
+
+    /** Возвращает контекст инструмента (для ToolService). */
+    getToolContext(id: string): unknown {
+        return this.tools.get(id)?.context;
+    }
+
+    /** Порт для ToolService.deps.pluginRegistry. */
+    toRegistryPort(): PluginHostRegistryPort {
+        return {
+            getTool: (id) => this.getTool(id),
+            getToolContext: (id) => this.getToolContext(id),
+        };
     }
 }

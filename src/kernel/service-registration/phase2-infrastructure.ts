@@ -25,6 +25,7 @@ import { RotationService } from '../services/rotation-service';
 import { PolicyService } from '../services/policy-service';
 import { ToolService } from '../services/tool-executor';
 import type { ToolPipeline } from '../services/tool-pipeline/tool-pipeline';
+import type { PluginHost, PluginHostRegistryPort } from '../services/plugins/plugin-host';
 import { MemoryService } from '../services/memory-engine';
 import { MemoryGraphService } from '../services/viz/memory-graph.service';
 import { ArchitectureGraphService } from '../services/viz/architecture-graph.service';
@@ -33,6 +34,22 @@ import { LocalSecretStore } from '../services/local-secret-store';
 import { BlackboardService } from '../services/blackboard-service';
 import { CognitiveService, type CognitiveServiceDeps } from '../services/cognitive-service';
 import type { StorageLayer } from '../contracts/storage/storage-layer';
+
+/**
+ * Ленивый порт pluginHost для ToolService. pluginHost регистрируется в phase82
+ * (позже phase2), поэтому резолвим его при вызове через IContainer.
+ */
+function createLazyPluginPort(c: {
+    has: (id: string) => boolean;
+    get: <T>(id: string) => T;
+}): PluginHostRegistryPort {
+    return {
+        getTool: (id) =>
+            c.has('pluginHost') ? c.get<PluginHost>('pluginHost').getTool(id) : undefined,
+        getToolContext: (id) =>
+            c.has('pluginHost') ? c.get<PluginHost>('pluginHost').getToolContext(id) : undefined,
+    };
+}
 
 export const registerPhase2: Phase = (helpers, ctx) => {
     const { register, asDeps } = helpers;
@@ -115,6 +132,10 @@ export const registerPhase2: Phase = (helpers, ctx) => {
                         return undefined;
                     }
                 })(),
+                // Lazy port: pluginHost is registered in phase82 (later). Resolve
+                // on call so plugin tools become visible to the dispatcher once
+                // the plugin layer is bootstrapped.
+                pluginRegistry: createLazyPluginPort(c),
             }),
     );
 
@@ -148,22 +169,19 @@ export const registerPhase2: Phase = (helpers, ctx) => {
     register('memoryGraphService', () => new MemoryGraphService());
     register('architectureGraphService', () => new ArchitectureGraphService());
 
-    register(
-        'externalSecretsService',
-        (c) => {
-            const database = c.get<IDatabaseService>('database');
-            // P-CRIT-2: wire the working `local` backend so init/activate
-            // actually function. Cloud backends (vault/aws/gcp) remain
-            // unwired by design until their credentials UX exists.
-            return new ExternalSecretsService({
-                database: c.get<IDatabaseService>('database'),
-                eventBus: c.get<IEventBus>('eventBus'),
-                storeFactories: {
-                    local: () => new LocalSecretStore(database),
-                },
-            });
-        },
-    );
+    register('externalSecretsService', (c) => {
+        const database = c.get<IDatabaseService>('database');
+        // P-CRIT-2: wire the working `local` backend so init/activate
+        // actually function. Cloud backends (vault/aws/gcp) remain
+        // unwired by design until their credentials UX exists.
+        return new ExternalSecretsService({
+            database: c.get<IDatabaseService>('database'),
+            eventBus: c.get<IEventBus>('eventBus'),
+            storeFactories: {
+                local: () => new LocalSecretStore(database),
+            },
+        });
+    });
 
     // A-04: blackboardService created inside factory so it can be passed to cognitiveService
     register(
