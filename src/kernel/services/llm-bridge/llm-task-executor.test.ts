@@ -51,6 +51,25 @@ describe('LlmCrewExecutor', () => {
         const out = await exec.execute(crewInput);
         expect(out).toContain('[echo fallback]');
     });
+
+    it('использует tool-loop, когда роль объявляет инструменты', async () => {
+        const runWithTools = vi.fn(async () => ({ output: 'tool result' }));
+        const client = makeClient({ content: 'should not be used' });
+        const exec = new LlmCrewExecutor(
+            makeOpts(client, {
+                toolRunner: { runWithTools },
+                toolCheck: vi.fn(async () => true),
+            }),
+        );
+        const inputWithTools = {
+            ...crewInput,
+            role: { ...crewInput.role, tools: ['search'] },
+        };
+        const out = await exec.execute(inputWithTools);
+        expect(out).toBe('tool result');
+        expect(runWithTools).toHaveBeenCalledTimes(1);
+        expect(client.chat).not.toHaveBeenCalled();
+    });
 });
 
 describe('LlmCouncilPort', () => {
