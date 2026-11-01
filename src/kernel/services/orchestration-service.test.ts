@@ -86,4 +86,41 @@ describe('OrchestrationService', () => {
         await svc.execute({});
         expect(svc.getExecutionStats().totalExecutions).toBe(1);
     });
+
+    it('execute с tool-узлом вызывает toolService', async () => {
+        const toolService = {
+            execute: vi.fn(async () => ({ status: 'success', data: 'tool out' })),
+        };
+        const svc = new OrchestrationService(makeDeps({ toolService }));
+        const topology: ISTopology = {
+            id: 't2',
+            name: 'ToolTopo',
+            version: '1.0.0',
+            nodes: [
+                { id: 'entry', type: 'router', label: 'Entry' },
+                { id: 'tool', type: 'tool', label: 'Tool', config: { toolId: 't-web' } },
+            ],
+            edges: [{ from: 'entry', to: 'tool', type: 'sequential' }],
+        } as ISTopology;
+        svc.mount(topology);
+        await svc.execute({});
+        expect(toolService.execute).toHaveBeenCalled();
+    });
+
+    it('guardrail блокирует по keyword', async () => {
+        const svc = new OrchestrationService(makeDeps());
+        const topology: ISTopology = {
+            id: 't3',
+            name: 'GuardTopo',
+            version: '1.0.0',
+            nodes: [
+                { id: 'entry', type: 'router', label: 'Entry' },
+                { id: 'g', type: 'guardrail', label: 'G', config: { blockedKeywords: ['evil'] } },
+            ],
+            edges: [{ from: 'entry', to: 'g', type: 'sequential' }],
+        } as ISTopology;
+        svc.mount(topology);
+        await svc.execute({ output: 'contains evil word' });
+        expect(svc.getExecutionStats().failedNodes).toBeGreaterThanOrEqual(1);
+    });
 });
