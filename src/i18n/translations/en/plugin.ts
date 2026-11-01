@@ -18,6 +18,10 @@ const plugin: Record<string, string> = {
     'plugin.deactivate': 'Deactivate',
     'plugin.tools': 'Tools',
     'plugin.events': 'Subscriptions',
+    'plugin.marketplace_title': 'Plugin Marketplace',
+    'plugin.marketplace_installed': 'Plugin installed',
+    'plugin.install': 'Install',
+    'plugin.installed': 'Installed',
     'info.plugins': 'Plugin management (SPEC_06): registry, host, loader',
 };
 

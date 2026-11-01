@@ -286,6 +286,7 @@ export const VALID_ROUTE_IDS: string[] = [
     'voice-input',
     'plugin-sdk',
     'plugins',
+    'plugin-marketplace',
     'topology-templates',
     'cost-optimization',
     'logs',

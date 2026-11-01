@@ -341,6 +341,7 @@ const LogicalFormPanelLazy = React.lazy(
     () => import('./components/LogicalFormPanel/LogicalFormPanel'),
 );
 const PluginManagerPanelLazy = React.lazy(() => import('./components/PluginManagerPanel'));
+const PluginMarketplacePanelLazy = React.lazy(() => import('./components/PluginMarketplacePanel'));
 
 // Component map: nav id → React component (dashboard handled manually for onNavigate)
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -395,6 +396,7 @@ export const PANEL_COMPONENTS: Record<string, React.ComponentType<any>> = {
     'session-bindings': SessionBindingsPanel,
     guardians: GuardiansPanel,
     plugins: PluginManagerPanelLazy,
+    'plugin-marketplace': PluginMarketplacePanelLazy,
     playground: ModelComparePanel,
     prompts: PromptLibraryPanel,
     batch: BatchProcessingPanel,

@@ -426,6 +426,13 @@ export const CONTENT_SECTIONS: NavSection[] = [
                 lazy: true,
             },
             {
+                id: 'plugin-marketplace',
+                labelKey: 'nav.plugin_sdk',
+                icon: Icons.store,
+                color: '#a855f7',
+                lazy: true,
+            },
+            {
                 id: 'guardians',
                 labelKey: 'nav.guardians',
                 icon: Icons.shield,
