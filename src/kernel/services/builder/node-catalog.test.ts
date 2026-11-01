@@ -23,6 +23,14 @@ describe('BuilderNodeCatalog', () => {
         expect(exposed.map((n) => n.kind)).toEqual(expect.arrayContaining(['agent', 'router', 'guardrail', 'tool']));
     });
 
+    it('getByCategory фильтрует по категории', () => {
+        const catalog = new BuilderNodeCatalog();
+        const cognitive = catalog.getByCategory('cognitive');
+        const core = catalog.getByCategory('core');
+        expect(cognitive.length).toBeGreaterThanOrEqual(8);
+        expect(core.length).toBe(4);
+    });
+
     it('exposeCategory переключает всю категорию', () => {
         const catalog = new BuilderNodeCatalog();
         catalog.exposeCategory('cognitive', true);

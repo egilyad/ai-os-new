@@ -45,6 +45,10 @@ export class BuilderNodeCatalog implements IBuilderNodeCatalog {
         return this.list().filter((n) => n.exposed);
     }
 
+    getByCategory(category: BuilderNodeCategory): BuilderNodeDefinition[] {
+        return this.list().filter((n) => n.category === category);
+    }
+
     expose(kind: BuilderNodeKind, exposed: boolean): void {
         const n = this.map.get(kind);
         if (n) this.map.set(kind, { ...n, exposed });
