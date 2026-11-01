@@ -101,6 +101,15 @@ describe('MetricsCollector', () => {
         expect(snap['debate.agent_turns'].summary.sum).toBe(1);
     });
 
+    it('пишет policy.violations на policy:violation', () => {
+        const events = makeEvents();
+        const metrics = new MetricsService();
+        const collector = new MetricsCollector(events as never, metrics);
+        collector.start();
+        events.emit('policy:violation', { policyId: 'p1' });
+        expect(metrics.snapshot()['policy.violations'].summary.sum).toBe(1);
+    });
+
     it('пишет debate.verdicts/verdict_confidence на verdict:generated', () => {
         const events = makeEvents();
         const metrics = new MetricsService();

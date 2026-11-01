@@ -120,6 +120,12 @@ export class MetricsCollector {
                 }
             }),
         );
+
+        this.unsubs.push(
+            this.events.on(EVENTS.POLICY_VIOLATION, () => {
+                this.metrics.inc('policy.violations');
+            }),
+        );
     }
 
     destroy(): void {
