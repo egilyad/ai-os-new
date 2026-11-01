@@ -112,3 +112,13 @@ export function updateConvergenceScore(
     const target = avgOverlap * 100;
     session.convergenceScore = Math.min(100, 0.3 * target + 0.7 * session.convergenceScore);
 }
+
+/**
+ * Проверяет, достигло ли схождение порога остановки (convergenceThreshold).
+ * Порог нормализуется в [0,1] и сравнивается с score (0–100).
+ */
+export function shouldStopByConvergence(session: DebateSession, threshold?: number): boolean {
+    if (threshold === undefined) return false;
+    const t = Math.min(1, Math.max(0, threshold));
+    return session.convergenceScore >= t * 100;
+}
