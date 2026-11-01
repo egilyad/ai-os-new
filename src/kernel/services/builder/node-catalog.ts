@@ -49,4 +49,11 @@ export class BuilderNodeCatalog implements IBuilderNodeCatalog {
         const n = this.map.get(kind);
         if (n) this.map.set(kind, { ...n, exposed });
     }
+
+    /** Массово переключает доступность для категории. */
+    exposeCategory(category: BuilderNodeCategory, exposed: boolean): void {
+        for (const [kind, n] of this.map) {
+            if (n.category === category) this.map.set(kind, { ...n, exposed });
+        }
+    }
 }
