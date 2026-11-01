@@ -19,6 +19,7 @@ import { MetricsCollector } from '../services/ops/metrics-collector';
 import { EmbeddingService } from '../services/embedding-service';
 import { DefaultEmbeddingService } from '../services/parity/default-embedding-service';
 import { PluginRegistry } from '../services/plugins/plugin-registry';
+import { PluginHost } from '../services/plugins/plugin-host';
 import { AgentSecurityGuard } from '../services/security/agent-security-guard';
 import { AgentRuntime } from '../services/agent-runtime/agent-runtime';
 import { createAgentCallLlm, type AgentLlmDeps } from '../services/agent-runtime/agent-runtime-llm';
@@ -52,17 +53,21 @@ export const registerPhase82: Phase = (helpers, ctx) => {
 
     register('pluginRegistry', () => new PluginRegistry());
 
+    register('pluginHost', () => new PluginHost());
+
     register('agentSecurityGuard', () => new AgentSecurityGuard());
 
-    register('agentRuntime', (c) =>
-        new AgentRuntime({
-            callLlm: createAgentCallLlm({
-                adapterRegistry: c.get<AgentLlmDeps['adapterRegistry']>('adapterRegistry'),
-                keyService: c.get<AgentLlmDeps['keyService']>('keyService'),
+    register(
+        'agentRuntime',
+        (c) =>
+            new AgentRuntime({
+                callLlm: createAgentCallLlm({
+                    adapterRegistry: c.get<AgentLlmDeps['adapterRegistry']>('adapterRegistry'),
+                    keyService: c.get<AgentLlmDeps['keyService']>('keyService'),
+                }),
+                securityGuard: c.get<IAgentSecurityGuard>('agentSecurityGuard'),
+                metrics: c.get<IMetricsService>('realtimeMetricsService'),
             }),
-            securityGuard: c.get<IAgentSecurityGuard>('agentSecurityGuard'),
-            metrics: c.get<IMetricsService>('realtimeMetricsService'),
-        }),
     );
 
     register('evalHub', (c) => {
@@ -70,9 +75,7 @@ export const registerPhase82: Phase = (helpers, ctx) => {
         return new EvalHub({ runPrompt: (p) => driver.runPrompt(p) });
     });
 
-    register('agentEvalDriver', (c) =>
-        new AgentEvalDriver(c.get<IAgentRuntime>('agentRuntime')),
-    );
+    register('agentEvalDriver', (c) => new AgentEvalDriver(c.get<IAgentRuntime>('agentRuntime')));
 
     register('provenanceLinker', () => new ProvenanceLinker());
 

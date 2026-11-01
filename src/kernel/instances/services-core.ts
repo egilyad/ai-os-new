@@ -47,6 +47,7 @@ import type { IAuthorizationService } from '../contracts/authorization';
 import type { IMetricsService } from '../contracts/metrics';
 import type { IEmbeddingService } from '../contracts/embedding';
 import type { IPluginRegistry } from '../contracts/plugin';
+import type { PluginHost } from '../services/plugins/plugin-host';
 import type { IAgentSecurityGuard } from '../contracts/agent-security';
 import type { IAgentRuntime } from '../contracts/agent-runtime';
 import type { IEvalHub } from '../contracts/eval-hub';
@@ -79,6 +80,7 @@ export const authorizationService = lazyService<IAuthorizationService>('authoriz
 export const realtimeMetricsService = lazyService<IMetricsService>('realtimeMetricsService');
 export const embeddingServiceHub = lazyService<IEmbeddingService>('embeddingServiceHub');
 export const pluginRegistry = lazyService<IPluginRegistry>('pluginRegistry');
+export const pluginHost = lazyService<PluginHost>('pluginHost');
 export const agentSecurityGuard = lazyService<IAgentSecurityGuard>('agentSecurityGuard');
 export const agentRuntime = lazyService<IAgentRuntime>('agentRuntime');
 export const evalHub = lazyService<IEvalHub>('evalHub');
@@ -154,23 +156,17 @@ import type { CapabilityTrustService } from '../services/capability-trust/capabi
 import type { AssistantDiaryService } from '../services/assistant/assistant-diary-service';
 import type { AssistantViewService } from '../services/assistant/assistant-view-service';
 
-export const projectKnowledgeService = lazyService<ProjectKnowledgeService>(
-    'projectKnowledgeService',
-);
+export const projectKnowledgeService =
+    lazyService<ProjectKnowledgeService>('projectKnowledgeService');
 export const assistantNavigationService = lazyService<AssistantNavigationService>(
     'assistantNavigationService',
 );
-export const assistantActionRegistry = lazyService<AssistantActionRegistry>(
-    'assistantActionRegistry',
-);
+export const assistantActionRegistry =
+    lazyService<AssistantActionRegistry>('assistantActionRegistry');
 export const panelActionRegistry = lazyService<PanelActionRegistry>('panelActionRegistry');
 export const projectAssistantService = lazyService<AssistantService>('projectAssistantService');
-export const capabilityTrustService = lazyService<CapabilityTrustService>(
-    'capabilityTrustService',
-);
-export const assistantDiaryService = lazyService<AssistantDiaryService>(
-    'assistantDiaryService',
-);
+export const capabilityTrustService = lazyService<CapabilityTrustService>('capabilityTrustService');
+export const assistantDiaryService = lazyService<AssistantDiaryService>('assistantDiaryService');
 export const assistantViewService = lazyService<AssistantViewService>('assistantViewService');
 
 // ── Debate Services ──
