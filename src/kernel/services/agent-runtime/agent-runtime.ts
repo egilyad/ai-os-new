@@ -96,9 +96,14 @@ export class AgentRuntime implements IAgentRuntime {
                 }
             }
 
+            // SPEC_12 (LLM02): санитизация текста от секретов перед LLM.
+            const safeText = this.deps.securityGuard
+                ? this.deps.securityGuard.sanitizePromptForLLM(input.text)
+                : input.text;
+
             const messages: ToolLoopMessage[] = [
                 { role: 'system', content: systemPrompt },
-                { role: 'user', content: input.text },
+                { role: 'user', content: safeText },
             ];
 
             const toolDefs = (cfg.tools ?? [])
