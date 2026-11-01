@@ -81,4 +81,10 @@ describe('strategy-interpreter (SPEC_07)', () => {
         expect(p.topology.kind).toBe('roundtable');
         expect(p.turnPolicy.order).toBe('free');
     });
+
+    it('maxRounds нормализуется в минимум 1', () => {
+        const p = interpret(draft('builtin.round_robin', 'debate_graph', { maxRounds: 0 }));
+        expect(p.topology.maxRounds).toBe(1);
+        expect(p.turnPolicy.maxIterations).toBeUndefined();
+    });
 });

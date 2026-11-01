@@ -71,7 +71,7 @@ export function interpret(draft: StrategyDraft): StrategyProgram {
         qualityMask[t] = true;
     }
 
-    const maxRounds = draft.maxRounds ?? (draft.root === 'critic_loop' ? 6 : 5);
+    const maxRounds = Math.max(1, draft.maxRounds ?? (draft.root === 'critic_loop' ? 6 : 5));
 
     return {
         id: draft.id,
