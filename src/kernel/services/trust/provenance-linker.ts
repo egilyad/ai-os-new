@@ -45,6 +45,16 @@ export class ProvenanceLinker implements IProvenanceLinker {
         );
     }
 
+    /** Соседи сущности по связям (для обхода графа provenance). */
+    getNeighbors(id: string): Array<{ ref: ProvenanceRef; relation: ProvenanceRelation }> {
+        const out: Array<{ ref: ProvenanceRef; relation: ProvenanceRelation }> = [];
+        for (const l of this.links) {
+            if (l.from.id === id) out.push({ ref: l.to, relation: l.relation });
+            if (l.to.id === id) out.push({ ref: l.from, relation: l.relation });
+        }
+        return out;
+    }
+
     clear(): void {
         this.links = [];
     }

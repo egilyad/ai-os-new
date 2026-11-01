@@ -30,6 +30,15 @@ describe('ProvenanceLinker (cognitive provenance)', () => {
         expect(linker.get({ id: 'c2' })).toHaveLength(1);
     });
 
+    it('getNeighbors возвращает соседей', () => {
+        const linker = new ProvenanceLinker();
+        linker.link({ kind: 'debate', id: 'd1' }, { kind: 'crystal', id: 'c1' }, 'derived_from');
+        linker.link({ kind: 'memory', id: 'm1' }, { kind: 'crystal', id: 'c1' }, 'evidenced_by');
+        const neighbors = linker.getNeighbors('c1');
+        expect(neighbors.length).toBe(2);
+        expect(neighbors.map((n) => n.ref.id).sort()).toEqual(['d1', 'm1']);
+    });
+
     it('clear очищает', () => {
         const linker = new ProvenanceLinker();
         linker.link({ kind: 'debate', id: 'd' }, { kind: 'crystal', id: 'c' }, 'influenced');
