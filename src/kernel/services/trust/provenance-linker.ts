@@ -55,6 +55,30 @@ export class ProvenanceLinker implements IProvenanceLinker {
         return out;
     }
 
+    /**
+     * BFS-обход от стартовой сущности; возвращает достижимые ref.
+     * Полезно для прослеживания «что на что повлияло».
+     */
+    getTrail(start: ProvenanceRef, maxDepth = 5): ProvenanceRef[] {
+        const seen = new Set<string>();
+        const queue: Array<{ ref: ProvenanceRef; depth: number }> = [{ ref: start, depth: 0 }];
+        const out: ProvenanceRef[] = [];
+
+        while (queue.length > 0) {
+            const { ref, depth } = queue.shift()!;
+            const key = `${ref.kind}:${ref.id}`;
+            if (seen.has(key)) continue;
+            seen.add(key);
+            out.push(ref);
+            if (depth >= maxDepth) continue;
+            for (const n of this.getNeighbors(ref.id)) {
+                const nk = `${n.ref.kind}:${n.ref.id}`;
+                if (!seen.has(nk)) queue.push({ ref: n.ref, depth: depth + 1 });
+            }
+        }
+        return out;
+    }
+
     clear(): void {
         this.links = [];
     }

@@ -30,6 +30,16 @@ describe('ProvenanceLinker (cognitive provenance)', () => {
         expect(linker.get({ id: 'c2' })).toHaveLength(1);
     });
 
+    it('getTrail находит достижимые сущности (BFS)', () => {
+        const linker = new ProvenanceLinker();
+        linker.link({ kind: 'debate', id: 'd1' }, { kind: 'crystal', id: 'c1' }, 'derived_from');
+        linker.link({ kind: 'crystal', id: 'c1' }, { kind: 'synthesis', id: 's1' }, 'derived_from');
+        const trail = linker.getTrail({ kind: 'debate', id: 'd1' });
+        const ids = trail.map((r) => r.id);
+        expect(ids).toContain('c1');
+        expect(ids).toContain('s1');
+    });
+
     it('getNeighbors возвращает соседей', () => {
         const linker = new ProvenanceLinker();
         linker.link({ kind: 'debate', id: 'd1' }, { kind: 'crystal', id: 'c1' }, 'derived_from');
