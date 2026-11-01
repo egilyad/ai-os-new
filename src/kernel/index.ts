@@ -318,6 +318,13 @@ export type {
     StrategyDraft,
 } from './contracts/strategy-program';
 export { StrategyRegistry } from './services/debate-runtime/debate-strategy-registry';
+export type {
+    StrategyDefinition,
+    StrategyPrimitive,
+    StrategyPrimitiveType,
+    StrategyRegistryEntry,
+    IStrategyRegistry,
+} from './contracts/debate-strategy-dsl';
 export {
     resolveStrategyConfig,
     buildTopologyForStrategy,
