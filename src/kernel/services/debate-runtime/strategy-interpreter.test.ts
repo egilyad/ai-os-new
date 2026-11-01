@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { draft, interpret } from './strategy-interpreter';
+import { compileBuiltin, draft, interpret } from './strategy-interpreter';
 
 describe('strategy-interpreter (SPEC_07)', () => {
     it('sequence → linear/sequential, без quality', () => {
@@ -37,6 +37,13 @@ describe('strategy-interpreter (SPEC_07)', () => {
         expect(p.topology.kind).toBe('judge');
         expect(p.turnPolicy.order).toBe('sequential');
         expect(p.qualityMask['judge-deliberation']).toBe(true);
+    });
+
+    it('compileBuiltin компилирует известные имена', () => {
+        expect(compileBuiltin('builtin.socratic')?.topology.kind).toBe('roundtable');
+        expect(compileBuiltin('builtin.round_robin')?.root).toBe('debate_graph');
+        expect(compileBuiltin('builtin.brainstorming')?.topology.kind).toBe('linear');
+        expect(compileBuiltin('unknown.strategy')).toBeNull();
     });
 
     it('сохраняет convergenceThreshold/earlyExitConfidence', () => {

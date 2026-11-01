@@ -79,3 +79,38 @@ export function draft(
 ): StrategyDraft {
     return { id, root, ...partial };
 }
+
+/**
+ * Известные builtin-стратегии → root-примитив.
+ * (неполный, но покрывает ключевые).
+ */
+const BUILTIN_ROOTS: Record<string, StrategyDraft['root']> = {
+    'builtin.round_robin': 'debate_graph',
+    'builtin.socratic': 'critic_loop',
+    'builtin.argument_tree': 'debate_graph',
+    'builtin.constrained': 'peer_review',
+    'builtin.moderated': 'debate_graph',
+    'builtin.free_for_all': 'debate_graph',
+    'builtin.jury_trial': 'debate_graph',
+    'builtin.brainstorming': 'sequence',
+    'builtin.delphi': 'debate_graph',
+    'builtin.debate_athon': 'sequence',
+    'builtin.meta_debate': 'debate_graph',
+    'builtin.autopsy': 'debate_graph',
+    'builtin.red_teaming': 'debate_graph',
+    'builtin.cross_examination': 'debate_graph',
+    'builtin.trial': 'sequence',
+    'builtin.parliamentary': 'debate_graph',
+    'builtin.collaborative_consensus': 'debate_graph',
+    'builtin.contest_mode': 'sequence',
+};
+
+/**
+ * Компилирует известную builtin-стратегию в StrategyProgram.
+ * Возвращает null для неизвестных имён.
+ */
+export function compileBuiltin(id: string): StrategyProgram | null {
+    const root = BUILTIN_ROOTS[id];
+    if (!root) return null;
+    return interpret(draft(id, root));
+}
