@@ -12,6 +12,7 @@ import { rootLogger } from '../../logger-service';
 import { logMemoryStats } from '../../../utils/memory-tracker';
 import type { DebateRole } from '../../../contracts/debate-types';
 import { DEBATE_MODEL_PRIORITY, modelFamily } from '../debate-query-engine';
+import { isKnownStrategy } from '../debate-session-bridge';
 
 import { getAllSettings } from '../quality-settings-store';
 import { SeededRng } from '../../../utils/seedable-rng';
@@ -303,6 +304,20 @@ export class AutoDebateService implements IAutoDebateService {
     }
 
     async runAutoDebate(options: AutoDebateOptions = {}): Promise<AutoDebateResult> {
+        if (options.strategy && !isKnownStrategy(options.strategy)) {
+            return {
+                id: makeParticipantId(),
+                timestamp: Date.now(),
+                topic: options.topic ?? '',
+                strategy: options.strategy,
+                maxRounds: options.maxRounds ?? 3,
+                participants: [],
+                session: null,
+                durationMs: 0,
+                completed: false,
+                error: `Unknown debate strategy: ${options.strategy}`,
+            };
+        }
         if (this._abortController.signal.aborted)
             return {
                 id: '',
