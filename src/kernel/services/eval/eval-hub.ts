@@ -59,6 +59,15 @@ export class EvalHub implements IEvalHub {
                 : 0,
             totalCost: results.reduce((s, r) => s + (r.costUsd ?? 0), 0),
         };
+
+        // SPEC_03: запись результатов в единый MetricsService.
+        if (this.deps.metrics) {
+            this.deps.metrics.inc('eval.runs');
+            this.deps.metrics.inc('eval.passed', passed);
+            this.deps.metrics.record('eval.score', summary.avgScore);
+            this.deps.metrics.record('eval.latency', summary.avgLatency);
+        }
+
         return { results, summary };
     }
 

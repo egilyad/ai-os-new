@@ -62,6 +62,11 @@ export interface IEvalHubDeps {
     score?(output: string, expected: string | undefined, metric: string): { score: number; passed: boolean };
     /** LLM-as-judge для метрики llm_rubric. */
     judgeLLM?(output: string, rubric: string): Promise<{ score: number; passed: boolean }>;
+    /** SPEC_03: опционально записывать результаты в MetricsService. */
+    metrics?: {
+        inc(name: string, by?: number, tags?: Record<string, string>): void;
+        record(name: string, value: number, tags?: Record<string, string>): void;
+    };
 }
 
 export interface IEvalHub {

@@ -85,6 +85,20 @@ describe('EvalHub (SPEC_04)', () => {
         expect(report.results[0].passed).toBe(false);
     });
 
+    it('записывает результаты в metrics', async () => {
+        const metrics = {
+            inc: vi.fn(),
+            record: vi.fn(),
+        };
+        const hub = new EvalHub({
+            runPrompt: async () => ({ output: 'hello world', latencyMs: 5 }),
+            metrics,
+        });
+        await hub.run([basicCase]);
+        expect(metrics.inc).toHaveBeenCalledWith('eval.runs');
+        expect(metrics.record).toHaveBeenCalledWith('eval.score', expect.any(Number));
+    });
+
     it('abort останавливает цикл', async () => {
         const controller = new AbortController();
         const hub = new EvalHub({
