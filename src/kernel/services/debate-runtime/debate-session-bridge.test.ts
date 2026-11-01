@@ -68,4 +68,9 @@ describe('resolveStrategyConfig (DSL interpreter integration)', () => {
         ]);
         expect(withJudge.topology.type).toBe('judge');
     });
+
+    it('socratic применяет maxRounds из DSL (6)', () => {
+        const res = resolveStrategyConfig('builtin.socratic', baseline);
+        expect(res.topology.maxRounds).toBe(6);
+    });
 });
