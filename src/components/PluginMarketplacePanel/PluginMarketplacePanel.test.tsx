@@ -56,6 +56,7 @@ describe('PluginMarketplacePanel (smoke)', () => {
         expect(screen.getByText('Demo Search Provider')).toBeDefined();
         expect(screen.getByText('Demo Weather')).toBeDefined();
         expect(screen.getByText('Demo MCP Bridge')).toBeDefined();
+        expect(screen.getByText('Demo Service')).toBeDefined();
     });
 
     it('installs a plugin from catalog', async () => {

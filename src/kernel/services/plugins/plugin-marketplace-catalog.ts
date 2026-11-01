@@ -53,4 +53,19 @@ export const PLUGIN_MARKETPLACE_CATALOG: MarketplaceEntry[] = [
         blurb: 'Пример плагина со встроенным MCP-сервером.',
         category: 'demo',
     },
+    {
+        manifest: {
+            id: 'demo.service',
+            name: 'Demo Service',
+            description: 'Демо-плагин, регистрирующий сервис плагина.',
+            version: '1.0.0',
+            engines: { os: '4.5.0' },
+            contributes: {
+                services: [{ id: 'demo.provider' }],
+            },
+            permissions: ['service:demo.provider'],
+        },
+        blurb: 'Пример плагина с сервисом.',
+        category: 'demo',
+    },
 ];
