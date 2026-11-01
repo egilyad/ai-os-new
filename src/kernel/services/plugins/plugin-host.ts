@@ -36,6 +36,15 @@ export interface PluginMcpPort {
     isLocalServer(id: string): boolean;
 }
 
+/** Обработчик сервиса плагина (contributes.services). */
+export type PluginServiceHandler = (method: string, params?: unknown) => Promise<unknown>;
+
+export interface RegisteredPluginService {
+    id: string;
+    manifestId: string;
+    handle?: PluginServiceHandler;
+}
+
 /**
  * PluginHost — лёгкий хост плагинов (SPEC_06).
  *
@@ -47,6 +56,7 @@ export class PluginHost {
     private tools = new Map<string, PluginTool>();
     private subscriptions = new Map<string, Array<() => void>>();
     private mcpServers = new Map<string, string>();
+    private services = new Map<string, RegisteredPluginService>();
     private bus: PluginEventBusPort;
     private mcp?: PluginMcpPort;
 
@@ -188,11 +198,49 @@ export class PluginHost {
             .map(([id]) => id);
     }
 
-    /** Полная очистка плагина: инструменты + подписки + MCP. */
+    /** Регистрирует сервисы плагина (contributes.services). */
+    registerServices(
+        manifest: PluginManifest,
+        handlers?: Record<string, PluginServiceHandler>,
+    ): void {
+        this.unregisterServices(manifest.id);
+        for (const s of manifest.contributes.services ?? []) {
+            this.services.set(s.id, {
+                id: s.id,
+                manifestId: manifest.id,
+                handle: handlers?.[s.id],
+            });
+        }
+    }
+
+    /** Снимает сервисы плагина. */
+    unregisterServices(manifestId: string): void {
+        for (const [id, svc] of [...this.services]) {
+            if (svc.manifestId === manifestId) this.services.delete(id);
+        }
+    }
+
+    /** Вызывает метод зарегистрированного сервиса плагина. */
+    async callService(id: string, method: string, params?: unknown): Promise<unknown> {
+        const svc = this.services.get(id);
+        if (!svc) throw new Error(`Plugin service not found: ${id}`);
+        if (!svc.handle) throw new Error(`Plugin service ${id} has no handler`);
+        return svc.handle(method, params);
+    }
+
+    /** Список сервисов плагина (для UI). */
+    listServices(manifestId: string): string[] {
+        return [...this.services.values()]
+            .filter((s) => s.manifestId === manifestId)
+            .map((s) => s.id);
+    }
+
+    /** Полная очистка плагина: инструменты + подписки + MCP + сервисы. */
     unregisterAll(manifestId: string): void {
         this.unregisterTools(manifestId);
         this.unregisterSubscriptions(manifestId);
         this.unregisterMcpServers(manifestId);
+        this.unregisterServices(manifestId);
     }
 
     /** Очистка хоста при завершении: снимает все подписки и MCP (ILifecycle). */
@@ -202,6 +250,11 @@ export class PluginHost {
         }
         for (const manifestId of [...this.mcpServers.values()]) {
             this.unregisterMcpServers(manifestId);
+        }
+        for (const manifestId of [
+            ...new Set([...this.services.values()].map((s) => s.manifestId)),
+        ]) {
+            this.unregisterServices(manifestId);
         }
         this.tools.clear();
     }

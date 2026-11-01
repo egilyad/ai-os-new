@@ -1,6 +1,6 @@
 import type { IPluginRegistry, PluginManifest } from '../../contracts/plugin';
 import { validateManifest } from './plugin-manifest';
-import type { PluginEventHandler } from './plugin-host';
+import type { PluginEventHandler, PluginServiceHandler } from './plugin-host';
 
 export interface PluginLoaderDeps {
     registry: IPluginRegistry;
@@ -14,6 +14,10 @@ export interface PluginLoaderDeps {
         unregisterTools: (manifestId: string) => void;
         registerSubscriptions: (manifest: PluginManifest, handler?: PluginEventHandler) => void;
         registerMcpServers: (manifest: PluginManifest) => void;
+        registerServices: (
+            manifest: PluginManifest,
+            handlers?: Record<string, PluginServiceHandler>,
+        ) => void;
         unregisterAll: (manifestId: string) => void;
     };
     /**
@@ -59,6 +63,7 @@ export class PluginLoader {
         executor?: (name: string, args: Record<string, unknown>) => Promise<string>,
         context?: unknown,
         eventHandler?: PluginEventHandler,
+        serviceHandlers?: Record<string, PluginServiceHandler>,
     ): Promise<boolean> {
         const validation = validateManifest(manifest);
         if (!validation.ok) return false;
@@ -73,6 +78,7 @@ export class PluginLoader {
         this.deps.host.registerTools(manifest, executor, context);
         this.deps.host.registerSubscriptions(manifest, eventHandler);
         this.deps.host.registerMcpServers(manifest);
+        this.deps.host.registerServices(manifest, serviceHandlers);
         await this.deps.registry.activate(manifest.id);
         return true;
     }
@@ -86,6 +92,7 @@ export class PluginLoader {
         executor?: (name: string, args: Record<string, unknown>) => Promise<string>,
         context?: unknown,
         eventHandler?: PluginEventHandler,
+        serviceHandlers?: Record<string, PluginServiceHandler>,
     ): Promise<{ ok: boolean; error?: string }> {
         let manifest: PluginManifest;
         try {
@@ -97,7 +104,7 @@ export class PluginLoader {
         if (!validation.ok) {
             return { ok: false, error: validation.errors.join('; ') };
         }
-        const ok = await this.load(manifest, executor, context, eventHandler);
+        const ok = await this.load(manifest, executor, context, eventHandler, serviceHandlers);
         return { ok };
     }
 
@@ -115,8 +122,9 @@ export class PluginLoader {
         executor?: (name: string, args: Record<string, unknown>) => Promise<string>,
         context?: unknown,
         eventHandler?: PluginEventHandler,
+        serviceHandlers?: Record<string, PluginServiceHandler>,
     ): Promise<boolean> {
         await this.unload(manifest.id);
-        return this.load(manifest, executor, context, eventHandler);
+        return this.load(manifest, executor, context, eventHandler, serviceHandlers);
     }
 }

@@ -198,4 +198,44 @@ describe('PluginHost (SPEC_06)', () => {
         host.unregisterMcpServers('acme.mcp');
         expect(mcp.unregisterLocalServer).toHaveBeenCalled();
     });
+
+    it('registerServices/callService работают', async () => {
+        const host = new PluginHost();
+        const svcManifest: PluginManifest = {
+            id: 'acme.svc',
+            name: 'Svc',
+            version: '1.0.0',
+            engines: { os: '4.0.0' },
+            contributes: { services: [{ id: 'search-provider' }] },
+        };
+        const handle = vi.fn(
+            async (_method: string, params?: unknown) => `svc:${JSON.stringify(params)}`,
+        );
+        host.registerServices(svcManifest, { 'search-provider': handle });
+        expect(host.listServices('acme.svc')).toEqual(['search-provider']);
+        expect(await host.callService('search-provider', 'query', { q: 'x' })).toBe(
+            'svc:{"q":"x"}',
+        );
+        expect(handle).toHaveBeenCalledWith('query', { q: 'x' });
+    });
+
+    it('callService бросает для неизвестного сервиса', async () => {
+        const host = new PluginHost();
+        await expect(host.callService('nope', 'x')).rejects.toThrow(/not found/);
+    });
+
+    it('unregisterServices снимает сервисы плагина', () => {
+        const host = new PluginHost();
+        const svcManifest: PluginManifest = {
+            id: 'acme.svc',
+            name: 'Svc',
+            version: '1.0.0',
+            engines: { os: '4.0.0' },
+            contributes: { services: [{ id: 'search-provider' }] },
+        };
+        host.registerServices(svcManifest);
+        expect(host.listServices('acme.svc')).toHaveLength(1);
+        host.unregisterServices('acme.svc');
+        expect(host.listServices('acme.svc')).toHaveLength(0);
+    });
 });

@@ -23,6 +23,7 @@ function makeHost(
         unregisterTools?: ReturnType<typeof vi.fn>;
         registerSubscriptions?: ReturnType<typeof vi.fn>;
         registerMcpServers?: ReturnType<typeof vi.fn>;
+        registerServices?: ReturnType<typeof vi.fn>;
         unregisterAll?: ReturnType<typeof vi.fn>;
     } = {},
 ) {
@@ -31,6 +32,7 @@ function makeHost(
         unregisterTools: overrides.unregisterTools ?? vi.fn(),
         registerSubscriptions: overrides.registerSubscriptions ?? vi.fn(),
         registerMcpServers: overrides.registerMcpServers ?? vi.fn(),
+        registerServices: overrides.registerServices ?? vi.fn(),
         unregisterAll: overrides.unregisterAll ?? vi.fn(),
     };
 }
@@ -74,6 +76,7 @@ describe('PluginLoader (SPEC_06)', () => {
         expect(host.registerTools).toHaveBeenCalledWith(manifest, executor, { apiKey: 'k' });
         expect(host.registerSubscriptions).toHaveBeenCalledWith(manifest, eventHandler);
         expect(host.registerMcpServers).toHaveBeenCalledWith(manifest);
+        expect(host.registerServices).toHaveBeenCalledWith(manifest, undefined);
     });
 
     it('load отклоняет невалидный манифест', async () => {
