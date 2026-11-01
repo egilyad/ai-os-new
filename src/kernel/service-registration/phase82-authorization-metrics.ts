@@ -29,6 +29,7 @@ import { AgentEvalDriver } from '../services/eval/agent-eval-driver';
 import { ProvenanceLinker } from '../services/trust/provenance-linker';
 import { ProvenanceCollector } from '../services/trust/provenance-collector';
 import { BuilderNodeCatalog } from '../services/builder/node-catalog';
+import type { StorageLayer } from '../contracts/storage/storage-layer';
 
 export const registerPhase82: Phase = (helpers, ctx) => {
     const { register } = helpers;
@@ -52,7 +53,15 @@ export const registerPhase82: Phase = (helpers, ctx) => {
         return hub;
     });
 
-    register('pluginRegistry', (c) => new PluginRegistry({ bus: c.get<IEventBus>('eventBus') }));
+    register('pluginRegistry', (c) => {
+        const storageLayer = c.has('storageLayer')
+            ? c.get<StorageLayer>('storageLayer')
+            : undefined;
+        return new PluginRegistry({
+            bus: c.get<IEventBus>('eventBus'),
+            store: storageLayer?.config,
+        });
+    });
 
     register('pluginHost', () => new PluginHost());
 

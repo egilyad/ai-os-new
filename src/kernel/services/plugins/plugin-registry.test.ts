@@ -132,4 +132,28 @@ describe('PluginRegistry', () => {
             expect.objectContaining({ id: 'acme.search' }),
         );
     });
+
+    it('persist пишет манифесты в хранилище', async () => {
+        const set = vi.fn().mockResolvedValue(undefined);
+        const reg = new PluginRegistry({ store: { get: vi.fn(), set, delete: vi.fn() } });
+        await reg.register(validManifest);
+        expect(set).toHaveBeenCalled();
+        const [key, value] = set.mock.calls[0];
+        expect(key).toBe('plugins.registry');
+        expect(JSON.parse(value as string).plugins).toHaveLength(1);
+    });
+
+    it('hydrate восстанавливает манифесты из хранилища', async () => {
+        const stored = JSON.stringify({ plugins: [validManifest] });
+        const store = {
+            get: vi.fn().mockResolvedValue(stored),
+            set: vi.fn().mockResolvedValue(undefined),
+            delete: vi.fn().mockResolvedValue(undefined),
+        };
+        const reg = new PluginRegistry({ store });
+        expect(reg.has('acme.search')).toBe(false);
+        const count = await reg.hydrate();
+        expect(count).toBe(1);
+        expect(reg.has('acme.search')).toBe(true);
+    });
 });

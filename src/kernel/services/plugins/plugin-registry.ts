@@ -3,9 +3,16 @@ import { validateManifest } from './plugin-manifest';
 import { EVENTS } from '../../events/event-registry';
 
 const KERNEL_VERSION = '4.5.0';
+const PERSIST_KEY = 'plugins.registry';
 
 export interface PluginRegistryBus {
     emit(event: string, data: Record<string, unknown>): void;
+}
+
+export interface RegisteredRegistryStore {
+    get<T>(key: string): Promise<T | null>;
+    set<T>(key: string, value: T): Promise<void>;
+    delete(key: string): Promise<void>;
 }
 
 export interface PluginRegistryDeps {
@@ -13,6 +20,8 @@ export interface PluginRegistryDeps {
     kernelVersion?: string;
     /** Опциональный EventBus для событий жизненного цикла плагинов. */
     bus?: PluginRegistryBus;
+    /** Опциональное постоянное хранилище для манифестов (ConfigStore-совместимое). */
+    store?: RegisteredRegistryStore;
 }
 
 /**
@@ -26,14 +35,45 @@ export class PluginRegistry implements IPluginRegistry {
     private plugins = new Map<string, RegisteredPlugin>();
     private kernelVersion: string;
     private bus?: PluginRegistryBus;
+    private store?: RegisteredRegistryStore;
 
     constructor(deps?: PluginRegistryDeps) {
         this.kernelVersion = deps?.kernelVersion ?? KERNEL_VERSION;
         this.bus = deps?.bus;
+        this.store = deps?.store;
     }
 
     private emit(event: string, data: Record<string, unknown>): void {
         this.bus?.emit(event, data);
+    }
+
+    private async persist(): Promise<void> {
+        if (!this.store) return;
+        try {
+            await this.store.set(PERSIST_KEY, this.exportJson());
+        } catch {
+            /* некритично — хранилище может быть недоступно */
+        }
+    }
+
+    /** Восстанавливает манифесты из хранилища (при старте). */
+    async hydrate(): Promise<number> {
+        if (!this.store) return 0;
+        try {
+            const json = await this.store.get<string>(PERSIST_KEY);
+            if (!json) return 0;
+            const data = JSON.parse(json) as { plugins?: PluginManifest[] };
+            const manifests = Array.isArray(data.plugins) ? data.plugins : [];
+            let ok = 0;
+            for (const m of manifests) {
+                if (m && typeof m.id === 'string' && !this.plugins.has(m.id)) {
+                    if (await this.register(m)) ok++;
+                }
+            }
+            return ok;
+        } catch {
+            return 0;
+        }
     }
 
     async register(manifest: PluginManifest): Promise<boolean> {
@@ -72,12 +112,16 @@ export class PluginRegistry implements IPluginRegistry {
             status,
         });
         this.emit(EVENTS.PLUGIN_REGISTERED, { id: manifest.id, status });
+        await this.persist();
         return true;
     }
 
     async unregister(id: string): Promise<boolean> {
         const removed = this.plugins.delete(id);
-        if (removed) this.emit(EVENTS.PLUGIN_UNREGISTERED, { id });
+        if (removed) {
+            this.emit(EVENTS.PLUGIN_UNREGISTERED, { id });
+            await this.persist();
+        }
         return removed;
     }
 
@@ -87,6 +131,7 @@ export class PluginRegistry implements IPluginRegistry {
         p.status = 'active';
         this.plugins.set(id, p);
         this.emit(EVENTS.PLUGIN_ACTIVATED, { id });
+        await this.persist();
         return true;
     }
 
@@ -96,6 +141,7 @@ export class PluginRegistry implements IPluginRegistry {
         p.status = 'inactive';
         this.plugins.set(id, p);
         this.emit(EVENTS.PLUGIN_DEACTIVATED, { id });
+        await this.persist();
         return true;
     }
 
