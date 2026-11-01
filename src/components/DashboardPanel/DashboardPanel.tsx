@@ -17,6 +17,7 @@ import CriticalAlertBanner from './CriticalAlertBanner';
 import WelcomePanel from './WelcomePanel';
 import Desktop from './Desktop';
 import RuntimeMetricsView from './RuntimeMetricsView';
+import ProvenancePath from '../viz/ProvenancePath';
 import { dismissBtn, errorBanner } from '../../styles/common';
 
 interface DashboardPanelProps {
@@ -207,6 +208,10 @@ const DashboardPanel: React.FC<DashboardPanelProps> = ({ onNavigate }) => {
 
             <RuntimeMetricsView pattern="llm.*" limit={6} title="LLM runtime metrics" />
             <RuntimeMetricsView pattern="agent.*" limit={6} title="Agent runtime metrics" />
+            <div style={{ padding: '1rem', borderRadius: 14, border: '1px solid var(--border)', background: 'var(--bg-elevated)' }}>
+                <div style={{ fontWeight: 700, marginBottom: 8, color: 'var(--slate-200)' }}>Cognitive provenance</div>
+                <ProvenancePath />
+            </div>
 
             <ModuleInfo moduleKey="dashboard" />
         </div>
