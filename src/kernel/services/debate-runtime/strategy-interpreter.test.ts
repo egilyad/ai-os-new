@@ -118,6 +118,20 @@ describe('strategy-interpreter (SPEC_07)', () => {
         expect(p.earlyExitConfidence).toBe(0.9);
     });
 
+    it('compileDefinition покрывает все DSL-primitive-типы', () => {
+        const expectations: Record<string, string> = {
+            sequence: 'linear',
+            debate_graph: 'roundtable',
+            critic_loop: 'roundtable',
+            voting: 'judge',
+            peer_review: 'judge',
+        };
+        for (const [type, topology] of Object.entries(expectations)) {
+            const p = compileDefinition({ id: `x.${type}`, root: { type } });
+            expect(p.topology.kind, type).toBe(topology);
+        }
+    });
+
     it('maxRounds нормализуется в минимум 1', () => {
         const p = interpret(draft('builtin.round_robin', 'debate_graph', { maxRounds: 0 }));
         expect(p.topology.maxRounds).toBe(1);
