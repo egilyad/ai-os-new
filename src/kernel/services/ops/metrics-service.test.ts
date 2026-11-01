@@ -93,7 +93,7 @@ describe('MetricsService (SPEC_03)', () => {
 
     it('subscribe по паттерну получает события подходящих серий', () => {
         const m = new MetricsService();
-        let got: string[] = [];
+        const got: string[] = [];
         const unsub = m.subscribe('llm.*', (s) => got.push(s.name));
         m.inc('llm.request');
         m.inc('llm.latency', 5);

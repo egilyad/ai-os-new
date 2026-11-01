@@ -177,10 +177,9 @@ export class AgentRuntime implements IAgentRuntime {
     }
 
     async spawn(cfg: AgentRuntimeConfig): Promise<AgentHandle> {
-        const runtime = this;
         return {
             send: async (input) => {
-                const res = await runtime.run(input, cfg);
+                const res = await this.run(input, cfg);
                 return res.output;
             },
             getState: () => ({ role: cfg.role }),

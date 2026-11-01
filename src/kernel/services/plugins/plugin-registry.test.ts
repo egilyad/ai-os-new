@@ -28,8 +28,9 @@ describe('validateManifest', () => {
     });
 
     it('отклоняет отсутствие contributes', () => {
-        const { contributes: _c, ...rest } = validManifest;
-        const res = validateManifest(rest);
+        const manifestWithoutContributes: Partial<PluginManifest> = { ...validManifest };
+        delete manifestWithoutContributes.contributes;
+        const res = validateManifest(manifestWithoutContributes);
         expect(res.ok).toBe(false);
     });
 

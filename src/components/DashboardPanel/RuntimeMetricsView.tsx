@@ -61,8 +61,8 @@ const RuntimeMetricsView: React.FC<Props> = ({ pattern, limit = 8, title }) => {
                         gap: 8,
                         padding: '6px 10px',
                         borderRadius: 8,
-                        background: 'rgba(255,255,255,0.03)',
-                        border: '1px solid rgba(255,255,255,0.06)',
+                        background: 'var(--bg-elevated)',
+                        border: '1px solid var(--border)',
                     }}
                 >
                     <span style={{ color: 'var(--slate-300)', wordBreak: 'break-all' }}>
