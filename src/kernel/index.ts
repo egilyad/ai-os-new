@@ -310,6 +310,12 @@ export {
     programToPlan,
 } from './services/debate-runtime/strategy-interpreter';
 export type { DebateExecutionPlan } from './services/debate-runtime/strategy-interpreter';
+export type {
+    TopologyKind,
+    StrategyRoot,
+    StrategyProgram,
+    StrategyDraft,
+} from './contracts/strategy-program';
 export { StrategyRegistry } from './services/debate-runtime/debate-strategy-registry';
 export {
     resolveStrategyConfig,
