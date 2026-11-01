@@ -3,6 +3,24 @@ import type {
     StrategyProgram,
 } from '../../contracts/strategy-program';
 
+/** Исполняемый план дебатов (сжимает StrategyProgram для движка). */
+export interface DebateExecutionPlan {
+    topology: string;
+    techniques: string[];
+    maxRounds?: number;
+    earlyExitConfidence?: number;
+}
+
+/** Конвертирует StrategyProgram в DebateExecutionPlan. */
+export function programToPlan(program: StrategyProgram): DebateExecutionPlan {
+    return {
+        topology: program.topology.kind,
+        techniques: Object.keys(program.qualityMask).filter((k) => program.qualityMask[k]),
+        maxRounds: program.topology.maxRounds,
+        earlyExitConfidence: program.earlyExitConfidence,
+    };
+}
+
 /**
  * Сопоставление root-примитива → топология + quality-маска + порядок ходов.
  * (таблица из SPEC_07 / исследования argumentation).

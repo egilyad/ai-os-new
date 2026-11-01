@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { compileBuiltin, draft, interpret } from './strategy-interpreter';
+import { compileBuiltin, draft, interpret, programToPlan } from './strategy-interpreter';
 
 describe('strategy-interpreter (SPEC_07)', () => {
     it('sequence → linear/sequential, без quality', () => {
@@ -44,6 +44,14 @@ describe('strategy-interpreter (SPEC_07)', () => {
         expect(compileBuiltin('builtin.round_robin')?.root).toBe('debate_graph');
         expect(compileBuiltin('builtin.brainstorming')?.topology.kind).toBe('linear');
         expect(compileBuiltin('unknown.strategy')).toBeNull();
+    });
+
+    it('programToPlan конвертирует программу в план', () => {
+        const p = interpret(draft('builtin.socratic', 'critic_loop', { maxRounds: 6 }));
+        const plan = programToPlan(p);
+        expect(plan.topology).toBe('roundtable');
+        expect(plan.techniques).toContain('critic');
+        expect(plan.maxRounds).toBe(6);
     });
 
     it('сохраняет convergenceThreshold/earlyExitConfidence', () => {
