@@ -77,6 +77,14 @@ describe('EvalHub (SPEC_04)', () => {
         expect(report.results[0].costUsd).toBeCloseTo(0.02, 3);
     });
 
+    it('порог стоимости → failed', async () => {
+        const hub = new EvalHub({
+            runPrompt: async () => ({ output: 'hello world', latencyMs: 5, costUsd: 1.0 }),
+        });
+        const report = await hub.run([{ ...basicCase, thresholds: { costMaxUsd: 0.5 } }]);
+        expect(report.results[0].passed).toBe(false);
+    });
+
     it('abort останавливает цикл', async () => {
         const controller = new AbortController();
         const hub = new EvalHub({

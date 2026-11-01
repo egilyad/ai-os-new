@@ -86,8 +86,13 @@ export class EvalHub implements IEvalHub {
             if (c.thresholds?.latencyMaxMs && latency > c.thresholds.latencyMaxMs) {
                 passed = false;
             }
-            // cost не учитываем, пока runPrompt не вернёт costUsd
-            void costUsd;
+            if (
+                c.thresholds?.costMaxUsd !== undefined &&
+                costUsd !== undefined &&
+                costUsd > c.thresholds.costMaxUsd
+            ) {
+                passed = false;
+            }
 
             return {
                 caseId: c.id,
