@@ -49,6 +49,19 @@ export class ProvenanceCollector {
         );
 
         this.unsubs.push(
+            this.events.on(EVENTS.DEBATE_MEMORY_CLAIM, (data: unknown) => {
+                const d = data as { sessionId?: string; memoryId?: string };
+                if (d?.sessionId && d?.memoryId) {
+                    this.linker.link(
+                        { kind: 'debate', id: d.sessionId },
+                        { kind: 'memory', id: d.memoryId },
+                        'influenced',
+                    );
+                }
+            }),
+        );
+
+        this.unsubs.push(
             this.events.on(EVENTS.SYNTHESIS_COMPLETED, (data: unknown) => {
                 const d = data as { synthesisId?: string };
                 if (d?.synthesisId) {

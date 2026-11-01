@@ -48,6 +48,17 @@ describe('ProvenanceCollector', () => {
         expect(links).toHaveLength(1);
     });
 
+    it('memory claim → связь debate→memory', () => {
+        const events = makeEvents();
+        const linker = new ProvenanceLinker();
+        const collector = new ProvenanceCollector(events as never, linker);
+        collector.start();
+        events.emit('debate:runtime:memory:claim', { sessionId: 'd1', memoryId: 'm1' });
+        const links = linker.get({ kind: 'memory' });
+        expect(links).toHaveLength(1);
+        expect(links[0].relation).toBe('influenced');
+    });
+
     it('destroy отписывает', () => {
         const events = makeEvents();
         const linker = new ProvenanceLinker();
