@@ -42,7 +42,8 @@ export class KeyVault implements IKeyVaultService {
         try {
             const verifier = await createVerifier(passphrase);
             ssrSafeStorage.setItem(VERIFIER_KEY, JSON.stringify(verifier));
-            this._password = passphrase;
+            // Создание НЕ разблокирует vault — он остаётся locked до явной
+            // разблокировки passphrase-ом (unlockWithPassphrase).
             return true;
         } catch {
             return false;

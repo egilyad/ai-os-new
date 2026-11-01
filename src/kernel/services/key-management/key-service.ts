@@ -418,6 +418,8 @@ export class KeyService implements IKeyRotationManager {
     async createVault(passphrase: string): Promise<boolean> {
         const ok = await this.vault.createVault(passphrase);
         if (ok) {
+            // Создание оставляет vault locked; разблокируем перед миграцией ключей.
+            await this.unlockVaultWithPassphrase(passphrase);
             // Миграция (SPEC_01): после создания vault перешифровать существующие
             // plaintext-ключи (registry.saveKeys → vault.encryptAllKeys).
             try {
