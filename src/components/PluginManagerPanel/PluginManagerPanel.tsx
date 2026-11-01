@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Plugin, Power, PowerOff, Trash2, Plus, RefreshCw } from 'lucide-react';
-import { pluginRegistry, pluginLoader } from '../../kernel/instances';
+import { pluginRegistry, pluginLoader, eventBus, EVENTS } from '../../kernel/instances';
 import { useTranslation } from '../../i18n/useTranslation';
 import type { PluginManifest, RegisteredPlugin } from '../../kernel/contracts/plugin';
 import ModuleInfo from '../ModuleInfo';
@@ -24,6 +24,16 @@ const PluginManagerPanel: React.FC = () => {
 
     useEffect(() => {
         refresh();
+        const unsub = eventBus.on(EVENTS.PLUGIN_REGISTERED, refresh);
+        const unsub2 = eventBus.on(EVENTS.PLUGIN_UNREGISTERED, refresh);
+        const unsub3 = eventBus.on(EVENTS.PLUGIN_ACTIVATED, refresh);
+        const unsub4 = eventBus.on(EVENTS.PLUGIN_DEACTIVATED, refresh);
+        return () => {
+            unsub();
+            unsub2();
+            unsub3();
+            unsub4();
+        };
     }, [refresh]);
 
     const run = async (fn: () => Promise<boolean> | boolean, okLabel: string) => {
