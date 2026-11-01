@@ -32,17 +32,25 @@ export function isValidBotToken(token: unknown): token is string {
 }
 export class TelegramService {
     private async sealToken(token: string): Promise<{ encrypted: boolean; data: string }> {
-        if (!vault.isLocked()) {
-            const sealed = await vault.encryptKey(token);
-            if (sealed) return { encrypted: true, data: sealed };
+        try {
+            if (!vault.isLocked()) {
+                const sealed = await vault.encryptKey(token);
+                if (sealed) return { encrypted: true, data: sealed };
+            }
+        } catch {
+            // vault не зарегистрирован/заблокирован — legacy plaintext
         }
         return { encrypted: false, data: token };
     }
 
     private async unsealToken(payload: { encrypted: boolean; data: string }): Promise<string | null> {
         if (payload.encrypted) {
-            if (vault.isLocked()) return null;
-            return vault.decryptKey(payload.data);
+            try {
+                if (vault.isLocked()) return null;
+                return await vault.decryptKey(payload.data);
+            } catch {
+                return null;
+            }
         }
         return payload.data;
     }

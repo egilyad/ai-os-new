@@ -1,6 +1,17 @@
 import '@testing-library/jest-dom';
 import 'fake-indexeddb/auto';
 import { vi } from 'vitest';
+import { webcrypto } from 'node:crypto';
+
+// WebCrypto polyfill (jsdom не предоставляет crypto.subtle).
+const cryptoGlobal = globalThis as unknown as { crypto?: Crypto };
+if (!cryptoGlobal.crypto?.subtle) {
+    Object.defineProperty(globalThis, 'crypto', {
+        value: webcrypto,
+        configurable: true,
+        writable: true,
+    });
+}
 
 class WorkerMock {
     url: string;
