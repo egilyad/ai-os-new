@@ -64,6 +64,12 @@ export class MetricsCollector {
         );
 
         this.unsubs.push(
+            this.events.on(EVENTS.TOOL_EXECUTION_ERROR, () => {
+                this.metrics.inc('tool.error');
+            }),
+        );
+
+        this.unsubs.push(
             this.events.on(EVENTS.TOOL_EXECUTED, (data: unknown) => {
                 const d = data as { tool?: string; ok?: boolean; latencyMs?: number };
                 this.metrics.inc('tool.exec', 1, { tool: String(d?.tool ?? 'unknown') });
