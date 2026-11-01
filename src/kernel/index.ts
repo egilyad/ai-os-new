@@ -320,6 +320,7 @@ export { StrategyRegistry } from './services/debate-runtime/debate-strategy-regi
 export {
     resolveStrategyConfig,
     buildTopologyForStrategy,
+    roundToAvailableTopology,
 } from './services/debate-runtime/debate-session-bridge';
 export type { ResolvedStrategyConfig } from './services/debate-runtime/debate-session-bridge';
 
