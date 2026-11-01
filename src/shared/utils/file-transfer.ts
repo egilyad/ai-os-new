@@ -26,3 +26,16 @@ export function readFileAsText(file: File): Promise<string> {
         reader.readAsText(file);
     });
 }
+
+/**
+ * Читает JSON-файл и парсит его. Бросает Error при пустом/невалидном JSON.
+ */
+export async function importJsonFromFile(file: File): Promise<unknown> {
+    const raw = await readFileAsText(file);
+    if (!raw?.trim()) throw new Error('File is empty');
+    try {
+        return JSON.parse(raw);
+    } catch {
+        throw new Error('Invalid JSON format');
+    }
+}

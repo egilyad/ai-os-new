@@ -1,9 +1,19 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { downloadText, readFileAsText } from './file-transfer';
+import { downloadText, importJsonFromFile, readFileAsText } from './file-transfer';
 
 describe('file-transfer', () => {
     afterEach(() => {
         vi.restoreAllMocks();
+    });
+
+    it('importJsonFromFile парсит валидный JSON', async () => {
+        const file = new File(['{"a":1}'], 'data.json', { type: 'application/json' });
+        await expect(importJsonFromFile(file)).resolves.toEqual({ a: 1 });
+    });
+
+    it('importJsonFromFile бросает на невалидном JSON', async () => {
+        const file = new File(['nope'], 'data.json', { type: 'application/json' });
+        await expect(importJsonFromFile(file)).rejects.toThrow(/Invalid JSON/);
     });
 
     it('readFileAsText читает файл как текст', async () => {
