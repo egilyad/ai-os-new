@@ -18,8 +18,35 @@ const PluginManagerPanel: React.FC = () => {
     const [manifestOpen, setManifestOpen] = useState(false);
     const [message, setMessage] = useState<{ kind: 'ok' | 'err'; text: string } | null>(null);
 
+    const [stats, setStats] = useState({ total: 0, active: 0, inactive: 0, error: 0 });
+
     const refresh = useCallback(() => {
         setPlugins([...pluginRegistry.list()]);
+        if (
+            typeof (
+                pluginRegistry as {
+                    getStats?: () => {
+                        total: number;
+                        active: number;
+                        inactive: number;
+                        error: number;
+                    };
+                }
+            ).getStats === 'function'
+        ) {
+            setStats(
+                (
+                    pluginRegistry as {
+                        getStats: () => {
+                            total: number;
+                            active: number;
+                            inactive: number;
+                            error: number;
+                        };
+                    }
+                ).getStats(),
+            );
+        }
     }, []);
 
     useEffect(() => {
@@ -105,6 +132,29 @@ const PluginManagerPanel: React.FC = () => {
                         <Plus size={14} /> {t('plugin.load_manifest')}
                     </button>
                 </div>
+            </div>
+
+            <div
+                style={{
+                    display: 'flex',
+                    gap: 16,
+                    marginBottom: 12,
+                    fontSize: 12,
+                    color: 'var(--slate-400)',
+                }}
+            >
+                <span>
+                    {t('plugin.stats_total')}: {stats.total}
+                </span>
+                <span style={{ color: '#10b981' }}>
+                    {t('plugin.stats_active')}: {stats.active}
+                </span>
+                <span style={{ color: '#64748b' }}>
+                    {t('plugin.stats_inactive')}: {stats.inactive}
+                </span>
+                <span style={{ color: '#ef4444' }}>
+                    {t('plugin.stats_error')}: {stats.error}
+                </span>
             </div>
 
             {message && (

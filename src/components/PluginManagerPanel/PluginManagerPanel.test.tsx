@@ -34,6 +34,7 @@ vi.mock('../../kernel/instances', () => ({
             { manifest, status: 'active' },
             { manifest: { ...manifest, id: 'acme.other', name: 'Other' }, status: 'inactive' },
         ]),
+        getStats: vi.fn().mockReturnValue({ total: 2, active: 1, inactive: 1, error: 0 }),
         activate: vi.fn().mockResolvedValue(true),
         deactivate: vi.fn().mockResolvedValue(true),
         unregister: vi.fn().mockResolvedValue(true),

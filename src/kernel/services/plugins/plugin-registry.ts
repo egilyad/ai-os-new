@@ -161,6 +161,20 @@ export class PluginRegistry implements IPluginRegistry {
         return this.list().filter((p) => p.status === 'active');
     }
 
+    /** Сводная статистика реестра. */
+    getStats(): { total: number; active: number; inactive: number; error: number } {
+        const total = this.plugins.size;
+        let active = 0;
+        let inactive = 0;
+        let error = 0;
+        for (const p of this.plugins.values()) {
+            if (p.status === 'active') active++;
+            else if (p.status === 'error') error++;
+            else inactive++;
+        }
+        return { total, active, inactive, error };
+    }
+
     /** Инструменты всех активных плагинов (для PluginHost). */
     getTools(): Array<{ name: string; manifestId: string }> {
         return this.listActive().flatMap((p) =>
