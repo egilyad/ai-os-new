@@ -4,6 +4,7 @@ import {
     LlmCrewExecutor,
     LlmFrontierExecutor,
     LlmGraphPort,
+    LlmPersonaPort,
     type LlmBridgeOptions,
 } from './llm-task-executor';
 
@@ -108,5 +109,37 @@ describe('LlmFrontierExecutor', () => {
         const client = makeClient({ content: 'answer' });
         const exec = new LlmFrontierExecutor(makeOpts(client));
         await expect(exec.execute('task')).resolves.toBe('answer');
+    });
+});
+
+describe('LlmPersonaPort', () => {
+    it('distillStyle парсит JSON', async () => {
+        const client = makeClient({
+            content: '{"styleNotes":["formal"],"judgments":["clear"]}',
+        });
+        const port = new LlmPersonaPort(makeOpts(client));
+        const res = await port.distillStyle(['sample text']);
+        expect(res.styleNotes).toEqual(['formal']);
+        expect(res.judgments).toEqual(['clear']);
+    });
+
+    it('distillStyle при битом JSON возвращает heuristic split', async () => {
+        const client = makeClient({ content: 'line1\nline2' });
+        const port = new LlmPersonaPort(makeOpts(client));
+        const res = await port.distillStyle(['sample']);
+        expect(res.styleNotes).toContain('line1');
+    });
+
+    it('summarizeMemories возвращает компактный профиль', async () => {
+        const client = makeClient({ content: 'profile' });
+        const port = new LlmPersonaPort(makeOpts(client));
+        await expect(port.summarizeMemories([{ tier: 'stable', content: 'fact' }])).resolves.toBe(
+            'profile',
+        );
+    });
+
+    it('summarizeMemories без памяти возвращает заглушку', async () => {
+        const port = new LlmPersonaPort(makeOpts(makeClient()));
+        await expect(port.summarizeMemories([])).resolves.toBe('No long-term memories.');
     });
 });
