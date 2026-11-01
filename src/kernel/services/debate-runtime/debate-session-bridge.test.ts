@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { buildTopologyForStrategy, resolveStrategyConfig } from './debate-session-bridge';
+import { BUILTIN_STRATEGIES } from './debate-strategy-definitions';
 import type { DebateParticipant } from '../../contracts/debate-types';
 
 const baseline: DebateParticipant[] = [
@@ -72,5 +73,16 @@ describe('resolveStrategyConfig (DSL interpreter integration)', () => {
     it('socratic применяет maxRounds из DSL (6)', () => {
         const res = resolveStrategyConfig('builtin.socratic', baseline);
         expect(res.topology.maxRounds).toBe(6);
+    });
+
+    it('resolveStrategyConfig обрабатывает все BUILTIN без исключений', () => {
+        const withJudge = [...baseline, { id: 'j', name: 'Judge', role: 'judge' as const }];
+        for (const def of BUILTIN_STRATEGIES) {
+            const res = resolveStrategyConfig(def.id, withJudge);
+            expect(res.topology.type, def.id).toMatch(
+                /roundtable|linear|judge|tree-of-thought|red-blue/,
+            );
+            expect(Array.isArray(res.forcedQuality), def.id).toBe(true);
+        }
     });
 });
