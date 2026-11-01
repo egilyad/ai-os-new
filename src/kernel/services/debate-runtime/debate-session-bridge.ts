@@ -16,6 +16,7 @@ import { DebatePostProcessor } from './debate-post-processor';
 import type { DebateGovernor } from './debate-governor';
 import { BUILTIN_STRATEGIES } from './debate-strategy-definitions';
 import { BUILTIN_MODES } from './debate-mode-system';
+import { compileBuiltin, programToPlan } from './strategy-interpreter';
 
 export interface SnapshotBridgeContext {
     participants: DebateParticipant[];
@@ -145,7 +146,8 @@ export function buildRedBlueTopology(
     const defenders = participants.filter((p) => p.role === 'defender');
     const edges: DebateTopology['edges'] = [];
     for (const a of attackers) {
-        for (const d of defenders) edges.push({ from: a.id, to: d.id, type: 'sequential' as const });
+        for (const d of defenders)
+            edges.push({ from: a.id, to: d.id, type: 'sequential' as const });
     }
     if (edges.length === 1 && attackers.length && defenders.length) {
         edges.push({ from: defenders[0]!.id, to: attackers[0]!.id, type: 'sequential' as const });
@@ -188,7 +190,10 @@ export function strategyQualityForced(strategy: DebateStrategy): string[] {
  */
 const ROOT_TO_EXECUTION: Record<
     string,
-    { topology?: 'roundtable' | 'linear' | 'judge' | 'tree-of-thought' | 'red-blue'; quality: string[] }
+    {
+        topology?: 'roundtable' | 'linear' | 'judge' | 'tree-of-thought' | 'red-blue';
+        quality: string[];
+    }
 > = {
     sequence: { topology: 'linear', quality: ['adaptive-order'] },
     debate_graph: { topology: 'roundtable', quality: [] },
@@ -282,22 +287,44 @@ export function resolveStrategyConfig(
     let effective = strategy as DebateStrategy;
 
     if (typeof strategy === 'string' && strategy.startsWith('builtin.')) {
-        const hints = builtinExecutionHints(strategy);
-        forcedQuality.push(...hints.quality);
-        const topoType = hints.topology;
-        if (topoType === 'linear') {
-            return {
-                topology: buildLinearTopology(participants, maxRounds),
-                forcedQuality: [...new Set(forcedQuality)],
-            };
+        // Единый источник правды: интерпретатор DSL (SPEC_07) превращает
+        // builtin-стратегию в план (топология + техники + maxRounds).
+        const program = compileBuiltin(strategy);
+        if (program) {
+            const plan = programToPlan(program);
+            forcedQuality.push(...plan.techniques);
+            const rounds = plan.maxRounds ?? maxRounds;
+            if (plan.topology === 'linear') {
+                return {
+                    topology: buildLinearTopology(participants, rounds),
+                    forcedQuality: [...new Set(forcedQuality)],
+                };
+            }
+            if (plan.topology === 'judge' && participants.some((p) => p.role === 'judge')) {
+                return {
+                    topology: buildJudgeTopology(participants, rounds),
+                    forcedQuality: [...new Set(forcedQuality)],
+                };
+            }
+            effective = 'round_robin';
+        } else {
+            const hints = builtinExecutionHints(strategy);
+            forcedQuality.push(...hints.quality);
+            const topoType = hints.topology;
+            if (topoType === 'linear') {
+                return {
+                    topology: buildLinearTopology(participants, maxRounds),
+                    forcedQuality: [...new Set(forcedQuality)],
+                };
+            }
+            if (topoType === 'judge' && participants.some((p) => p.role === 'judge')) {
+                return {
+                    topology: buildJudgeTopology(participants, maxRounds),
+                    forcedQuality: [...new Set(forcedQuality)],
+                };
+            }
+            effective = 'round_robin';
         }
-        if (topoType === 'judge' && participants.some((p) => p.role === 'judge')) {
-            return {
-                topology: buildJudgeTopology(participants, maxRounds),
-                forcedQuality: [...new Set(forcedQuality)],
-            };
-        }
-        effective = 'round_robin';
     }
 
     const topology = buildTopologyForStrategy(effective, participants, maxRounds);

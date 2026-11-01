@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { buildTopologyForStrategy } from './debate-session-bridge';
+import { buildTopologyForStrategy, resolveStrategyConfig } from './debate-session-bridge';
 import type { DebateParticipant } from '../../contracts/debate-types';
 
 const baseline: DebateParticipant[] = [
@@ -46,5 +46,26 @@ describe('buildTopologyForStrategy', () => {
         ]);
         expect(present.type).toBe('red-blue');
         expect(present.edges.length).toBeGreaterThanOrEqual(2);
+    });
+});
+
+describe('resolveStrategyConfig (DSL interpreter integration)', () => {
+    it('builtin.socratic → roundtable + critic/socratic-pivot quality', () => {
+        const res = resolveStrategyConfig('builtin.socratic', baseline);
+        expect(res.topology.type).toBe('roundtable');
+        expect(res.forcedQuality).toEqual(expect.arrayContaining(['critic', 'socratic-pivot']));
+    });
+
+    it('builtin.brainstorming → linear', () => {
+        const res = resolveStrategyConfig('builtin.brainstorming', baseline);
+        expect(res.topology.type).toBe('linear');
+    });
+
+    it('builtin.constrained → judge when judge present', () => {
+        const withJudge = resolveStrategyConfig('builtin.constrained', [
+            ...baseline,
+            { id: 'j', name: 'Judge', role: 'judge' },
+        ]);
+        expect(withJudge.topology.type).toBe('judge');
     });
 });
