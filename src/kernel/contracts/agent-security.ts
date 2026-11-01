@@ -18,6 +18,8 @@ export interface SecretScanResult {
 export interface IAgentSecurityGuard {
     detectSecretsInPrompt(prompt: string): SecretScanResult;
     redactSensitive(text: string): string;
+    /** Санитизация текста перед отправкой в LLM (LLM02). */
+    sanitizePromptForLLM(text: string): string;
     enforceMaxIterations(iterations: number, max: number): boolean;
     isSuspiciousInstruction(text: string): boolean;
 }

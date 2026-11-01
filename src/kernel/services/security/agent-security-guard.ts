@@ -47,6 +47,10 @@ export class AgentSecurityGuard implements IAgentSecurityGuard {
         return out;
     }
 
+    sanitizePromptForLLM(text: string): string {
+        return this.redactSensitive(text);
+    }
+
     enforceMaxIterations(iterations: number, max: number): boolean {
         return iterations < max;
     }

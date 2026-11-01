@@ -27,6 +27,12 @@ describe('AgentSecurityGuard (SPEC_12)', () => {
         expect(out).not.toContain('sk-abcdef');
     });
 
+    it('sanitizePromptForLLM удаляет секреты', () => {
+        const out = guard.sanitizePromptForLLM('use sk-abcdefghijklmnopqrstuvwxyz123456 here');
+        expect(out).not.toContain('sk-abcdef');
+        expect(out).toContain('[REDACTED]');
+    });
+
     it('enforceMaxIterations', () => {
         expect(guard.enforceMaxIterations(3, 5)).toBe(true);
         expect(guard.enforceMaxIterations(5, 5)).toBe(false);
