@@ -16,4 +16,10 @@ describe('StrategyRegistry.compile (SPEC_07)', () => {
     it('возвращает undefined для неизвестной стратегии', () => {
         expect(registry.compile('unknown.strategy')).toBeUndefined();
     });
+
+    it('listCompiled возвращает программы всех зарегистрированных', () => {
+        const programs = registry.listCompiled();
+        expect(programs.length).toBeGreaterThanOrEqual(33);
+        expect(programs.every((p) => p.topology.maxRounds! >= 1)).toBe(true);
+    });
 });

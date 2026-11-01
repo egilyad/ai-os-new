@@ -194,4 +194,6 @@ export interface IStrategyRegistry {
     resolveConflicts(a: StrategyDefinition, b: StrategyDefinition): Incompatibility[];
     /** Компилирует зарегистрированную стратегию в исполняемую программу (SPEC_07). */
     compile(id: string): StrategyProgram | undefined;
+    /** Возвращает исполняемые программы всех зарегистрированных стратегий (SPEC_07). */
+    listCompiled(): StrategyProgram[];
 }

@@ -292,6 +292,15 @@ export class StrategyRegistry implements IStrategyRegistry {
         return compileDefinition(def);
     }
 
+    listCompiled(): StrategyProgram[] {
+        const programs: StrategyProgram[] = [];
+        for (const entry of this.list()) {
+            const program = compileDefinition(entry.definition);
+            if (program) programs.push(program);
+        }
+        return programs;
+    }
+
     list(): StrategyRegistryEntry[] {
         return [...this.entries.values()];
     }
