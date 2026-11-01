@@ -206,6 +206,7 @@ const DashboardPanel: React.FC<DashboardPanelProps> = ({ onNavigate }) => {
             )}
 
             <RuntimeMetricsView pattern="llm.*" limit={6} title="LLM runtime metrics" />
+            <RuntimeMetricsView pattern="agent.*" limit={6} title="Agent runtime metrics" />
 
             <ModuleInfo moduleKey="dashboard" />
         </div>
