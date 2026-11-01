@@ -298,6 +298,9 @@ export type {
     VirtualKeyStateSnapshot,
 } from './state';
 
+// SPEC-модули (Фаза 0 П SPEC-каркасы)
+export * from './services/new';
+
 // Types
 export type {
     IEventBus,
