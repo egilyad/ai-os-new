@@ -6,6 +6,7 @@ import type {
     IAgentRuntime,
 } from '../../contracts/agent-runtime';
 import type { IAgentSecurityGuard } from '../../contracts/agent-security';
+import type { IMetricsService } from '../../contracts/metrics';
 import { runToolLoop, type ToolLoopCallResult, type ToolLoopMessage, type ToolLoopTool } from '../tool-loop/tool-loop';
 
 /**
@@ -34,6 +35,8 @@ export interface AgentRuntimeDeps {
     runTool?(name: string, args: Record<string, unknown>): Promise<string>;
     /** SPEC_12: защита от утечки секретов в промпт (LLM07). */
     securityGuard?: IAgentSecurityGuard;
+    /** SPEC_03: опциональный единый MetricsService. */
+    metrics?: IMetricsService;
 }
 
 function buildSystemPrompt(cfg: AgentRuntimeConfig): string {
@@ -59,69 +62,77 @@ export class AgentRuntime implements IAgentRuntime {
         cfg: AgentRuntimeConfig,
         opts?: { signal?: AbortSignal },
     ): Promise<AgentTurnResult> {
-        const systemPrompt = buildSystemPrompt(cfg);
+        const started = Date.now();
+        this.deps.metrics?.inc('agent.turns');
+        try {
+            const systemPrompt = buildSystemPrompt(cfg);
 
-        // SPEC_12 (LLM07): отказываемся звать LLM, если в контексте есть секреты.
-        if (this.deps.securityGuard) {
-            const joined = `${systemPrompt}\n${input.text}`;
-            const scan = this.deps.securityGuard.detectSecretsInPrompt(joined);
-            if (scan.found) {
-                return {
-                    output: '',
-                    toolCalls: [],
-                    usage: { inputTokens: 0, outputTokens: 0, totalTokens: 0 },
-                    trace: [],
-                    status: 'error',
-                    error: 'refusing to send secrets to LLM (LLM07)',
-                };
+            // SPEC_12 (LLM07): отказываемся звать LLM, если в контексте есть секреты.
+            if (this.deps.securityGuard) {
+                const joined = `${systemPrompt}\n${input.text}`;
+                const scan = this.deps.securityGuard.detectSecretsInPrompt(joined);
+                if (scan.found) {
+                    this.deps.metrics?.inc('agent.errors');
+                    return {
+                        output: '',
+                        toolCalls: [],
+                        usage: { inputTokens: 0, outputTokens: 0, totalTokens: 0 },
+                        trace: [],
+                        status: 'error',
+                        error: 'refusing to send secrets to LLM (LLM07)',
+                    };
+                }
+                // SPEC_12 (LLM01): предупреждаем indirect prompt injection.
+                if (this.deps.securityGuard.isSuspiciousInstruction(input.text)) {
+                    this.deps.metrics?.inc('agent.errors');
+                    return {
+                        output: '',
+                        toolCalls: [],
+                        usage: { inputTokens: 0, outputTokens: 0, totalTokens: 0 },
+                        trace: [],
+                        status: 'error',
+                        error: 'suspicious instruction detected (LLM01)',
+                    };
+                }
             }
-            // SPEC_12 (LLM01): предупреждаем indirect prompt injection.
-            if (this.deps.securityGuard.isSuspiciousInstruction(input.text)) {
-                return {
-                    output: '',
-                    toolCalls: [],
-                    usage: { inputTokens: 0, outputTokens: 0, totalTokens: 0 },
-                    trace: [],
-                    status: 'error',
-                    error: 'suspicious instruction detected (LLM01)',
-                };
-            }
-        }
 
-        const messages: ToolLoopMessage[] = [
-            { role: 'system', content: systemPrompt },
-            { role: 'user', content: input.text },
-        ];
+            const messages: ToolLoopMessage[] = [
+                { role: 'system', content: systemPrompt },
+                { role: 'user', content: input.text },
+            ];
 
-        const toolDefs = (cfg.tools ?? [])
-            .map((name) => this.deps.toolCatalog?.(name))
-            .filter((t): t is ToolLoopTool => Boolean(t));
+            const toolDefs = (cfg.tools ?? [])
+                .map((name) => this.deps.toolCatalog?.(name))
+                .filter((t): t is ToolLoopTool => Boolean(t));
 
-        const result = await runToolLoop(
-            messages,
-            (msgs, tools) => this.deps.callLlm(msgs, tools),
-            {
-                tools: toolDefs,
-                runTool: async (name, args) => {
-                    if (this.deps.runTool) return this.deps.runTool(name, args);
-                    return `Tool ${name} is not available in this runtime.`;
+            const result = await runToolLoop(
+                messages,
+                (msgs, tools) => this.deps.callLlm(msgs, tools),
+                {
+                    tools: toolDefs,
+                    runTool: async (name, args) => {
+                        if (this.deps.runTool) return this.deps.runTool(name, args);
+                        return `Tool ${name} is not available in this runtime.`;
+                    },
+                    maxRounds: cfg.maxTurns,
+                    signal: opts?.signal,
                 },
-                maxRounds: cfg.maxTurns,
-                signal: opts?.signal,
-            },
-        );
+            );
 
-        return {
-            output: result.content,
-            toolCalls: [],
-            usage: { inputTokens: 0, outputTokens: 0, totalTokens: 0 },
-            trace: result.toolCalls.map((name, i) => ({
-                step: i + 1,
-                kind: 'tool',
-                tool: name,
-            })),
-            status: 'ok',
-        };
+            return {
+                output: result.content,
+                toolCalls: [],
+                usage: { inputTokens: 0, outputTokens: 0, totalTokens: 0 },
+                trace: result.toolCalls.map((name, i) => ({
+                    step: i + 1,
+                    kind: 'tool',
+                    tool: name,
+                })),
+                status: 'ok',
+            };
+        } finally {
+            this.deps.metrics?.record('agent.turn_latency', Date.now() - started);
+        }
     }
 
     async spawn(cfg: AgentRuntimeConfig): Promise<AgentHandle> {

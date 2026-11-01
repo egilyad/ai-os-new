@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { AgentRuntime } from './agent-runtime';
 import { AgentSecurityGuard } from '../security/agent-security-guard';
+import { MetricsService } from '../ops/metrics-service';
 import type { ToolLoopTool } from '../tool-loop/tool-loop';
 
 function tool(name: string): ToolLoopTool {
@@ -54,6 +55,18 @@ describe('AgentRuntime (SPEC_05)', () => {
         const res = await runtime.run({ text: 'my key is sk-abcdefghijklmnopqrstuvwxyz123456' }, { role: 'r' });
         expect(res.status).toBe('error');
         expect(callLlm).not.toHaveBeenCalled();
+    });
+
+    it('записывает agent.turns и turn_latency через metrics', async () => {
+        const metrics = new MetricsService();
+        const runtime = new AgentRuntime({
+            callLlm: vi.fn(async () => ({ content: 'ok' })),
+            metrics,
+        });
+        await runtime.run({ text: 'hi' }, { role: 'r' });
+        const snap = metrics.snapshot();
+        expect(snap['agent.turns'].summary.sum).toBe(1);
+        expect(snap['agent.turn_latency'].summary.count).toBe(1);
     });
 
     it('securityGuard блокирует indirect prompt injection', async () => {

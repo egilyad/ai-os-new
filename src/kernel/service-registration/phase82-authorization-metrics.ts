@@ -50,6 +50,7 @@ export const registerPhase82: Phase = (helpers, ctx) => {
             // прогоне/интеграции с routerService.
             callLlm: async () => ({ content: '' }),
             securityGuard: c.get<IAgentSecurityGuard>('agentSecurityGuard'),
+            metrics: c.get<IMetricsService>('metricsService'),
         }),
     );
 
