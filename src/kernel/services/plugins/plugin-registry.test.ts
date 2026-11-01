@@ -71,6 +71,15 @@ describe('PluginRegistry', () => {
         expect(reg.get('acme.search')?.status).toBe('inactive');
     });
 
+    it('getTools возвращает инструменты активных плагинов', async () => {
+        const reg = new PluginRegistry();
+        await reg.register(validManifest);
+        expect(reg.getTools()).toHaveLength(0);
+        await reg.activate('acme.search');
+        expect(reg.getTools()).toHaveLength(1);
+        expect(reg.getTools()[0].name).toBe('search');
+    });
+
     it('listActive возвращает только активные', async () => {
         const reg = new PluginRegistry();
         await reg.register(validManifest);

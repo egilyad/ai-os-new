@@ -91,6 +91,16 @@ export class PluginRegistry implements IPluginRegistry {
         return this.list().filter((p) => p.status === 'active');
     }
 
+    /** Инструменты всех активных плагинов (для PluginHost). */
+    getTools(): Array<{ name: string; manifestId: string }> {
+        return this.listActive().flatMap((p) =>
+            (p.manifest.contributes.tools ?? []).map((t) => ({
+                name: t.name,
+                manifestId: p.manifest.id,
+            })),
+        );
+    }
+
     /** Экспорт зарегистрированных манифестов (для persist). */
     exportJson(): string {
         return JSON.stringify({ plugins: this.list().map((p) => p.manifest) });
