@@ -130,6 +130,16 @@ function validatePrimitive(primitive: StrategyPrimitive, path: string): Validati
                     code: 'INVALID_THRESHOLD',
                 });
             }
+            if (
+                graph.earlyExitConfidence !== undefined &&
+                (graph.earlyExitConfidence < 0 || graph.earlyExitConfidence > 1)
+            ) {
+                errors.push({
+                    path: `${path}.earlyExitConfidence`,
+                    message: 'earlyExitConfidence must be 0-1',
+                    code: 'INVALID_EARLY_EXIT',
+                });
+            }
             break;
         }
         case 'critic_loop': {
