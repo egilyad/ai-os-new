@@ -1,5 +1,6 @@
 import type { IPluginRegistry, PluginManifest } from '../../contracts/plugin';
 import { validateManifest } from './plugin-manifest';
+import type { PluginEventHandler } from './plugin-host';
 
 export interface PluginLoaderDeps {
     registry: IPluginRegistry;
@@ -11,6 +12,8 @@ export interface PluginLoaderDeps {
             context?: unknown,
         ) => void;
         unregisterTools: (manifestId: string) => void;
+        registerSubscriptions: (manifest: PluginManifest, handler?: PluginEventHandler) => void;
+        unregisterAll: (manifestId: string) => void;
     };
 }
 
@@ -30,12 +33,13 @@ export class PluginLoader {
 
     /**
      * Подключает плагин: валидация → регистрация в реестре → регистрация
-     * инструментов в хосте → активация. Возвращает true при успехе.
+     * инструментов и подписок в хосте → активация. Возвращает true при успехе.
      */
     async load(
         manifest: PluginManifest,
         executor?: (name: string, args: Record<string, unknown>) => Promise<string>,
         context?: unknown,
+        eventHandler?: PluginEventHandler,
     ): Promise<boolean> {
         const validation = validateManifest(manifest);
         if (!validation.ok) return false;
@@ -44,15 +48,16 @@ export class PluginLoader {
         if (!ok) return false;
 
         this.deps.host.registerTools(manifest, executor, context);
+        this.deps.host.registerSubscriptions(manifest, eventHandler);
         await this.deps.registry.activate(manifest.id);
         return true;
     }
 
-    /** Отключает плагин: снимает инструменты из хоста и дерегистрирует. */
+    /** Отключает плагин: снимает инструменты/подписки из хоста и дерегистрирует. */
     async unload(id: string): Promise<boolean> {
         const registered = this.deps.registry.get(id);
         if (!registered) return false;
-        this.deps.host.unregisterTools(id);
+        this.deps.host.unregisterAll(id);
         return this.deps.registry.unregister(id);
     }
 
@@ -61,8 +66,9 @@ export class PluginLoader {
         manifest: PluginManifest,
         executor?: (name: string, args: Record<string, unknown>) => Promise<string>,
         context?: unknown,
+        eventHandler?: PluginEventHandler,
     ): Promise<boolean> {
         await this.unload(manifest.id);
-        return this.load(manifest, executor, context);
+        return this.load(manifest, executor, context, eventHandler);
     }
 }

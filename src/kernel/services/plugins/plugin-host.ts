@@ -1,5 +1,12 @@
 import type { PluginManifest } from '../../contracts/plugin';
 
+export type PluginEventHandler = (event: string, data: unknown) => void;
+
+/** Узкий порт EventBus для подписок плагинов. */
+export interface PluginEventBusPort {
+    on(event: string, callback: (data: unknown) => void): () => void;
+}
+
 export interface PluginTool {
     name: string;
     handler?: string;
@@ -27,6 +34,12 @@ export interface PluginHostRegistryPort {
  */
 export class PluginHost {
     private tools = new Map<string, PluginTool>();
+    private subscriptions = new Map<string, Array<() => void>>();
+    private bus: PluginEventBusPort;
+
+    constructor(bus?: PluginEventBusPort) {
+        this.bus = bus ?? { on: () => () => {} };
+    }
 
     registerTools(
         manifest: PluginManifest,
@@ -85,5 +98,38 @@ export class PluginHost {
             getTool: (id) => this.getTool(id),
             getToolContext: (id) => this.getToolContext(id),
         };
+    }
+
+    /** Подписывает плагин на события EventBus (contributes.subscriptions). */
+    registerSubscriptions(manifest: PluginManifest, handler?: PluginEventHandler): void {
+        this.unregisterSubscriptions(manifest.id);
+        const unsubs: Array<() => void> = [];
+        for (const s of manifest.contributes.subscriptions ?? []) {
+            const unsub = this.bus.on(s.event, (data) => handler?.(s.event, data));
+            unsubs.push(unsub);
+        }
+        if (unsubs.length > 0) this.subscriptions.set(manifest.id, unsubs);
+    }
+
+    /** Снимает подписки плагина на события. */
+    unregisterSubscriptions(manifestId: string): void {
+        const unsubs = this.subscriptions.get(manifestId);
+        if (!unsubs) return;
+        for (const unsub of unsubs) unsub();
+        this.subscriptions.delete(manifestId);
+    }
+
+    /** Полная очистка плагина: инструменты + подписки. */
+    unregisterAll(manifestId: string): void {
+        this.unregisterTools(manifestId);
+        this.unregisterSubscriptions(manifestId);
+    }
+
+    /** Очистка хоста при завершении: снимает все подписки (ILifecycle). */
+    destroy(): void {
+        for (const manifestId of [...this.subscriptions.keys()]) {
+            this.unregisterSubscriptions(manifestId);
+        }
+        this.tools.clear();
     }
 }

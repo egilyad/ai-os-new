@@ -7,8 +7,31 @@ const manifest: PluginManifest = {
     name: 'Search',
     version: '1.0.0',
     engines: { os: '4.0.0' },
-    contributes: { tools: [{ name: 'acme.search', handler: 'search' }] },
+    contributes: {
+        tools: [{ name: 'acme.search', handler: 'search' }],
+        subscriptions: [{ event: 'agent:start', handler: 'handlers/onAgentStart.js' }],
+    },
 };
+
+function fakeHost(overrides: Partial<Parameters<typeof makeHost>[0]> = {}) {
+    return makeHost(overrides);
+}
+
+function makeHost(
+    overrides: {
+        registerTools?: ReturnType<typeof vi.fn>;
+        unregisterTools?: ReturnType<typeof vi.fn>;
+        registerSubscriptions?: ReturnType<typeof vi.fn>;
+        unregisterAll?: ReturnType<typeof vi.fn>;
+    } = {},
+) {
+    return {
+        registerTools: overrides.registerTools ?? vi.fn(),
+        unregisterTools: overrides.unregisterTools ?? vi.fn(),
+        registerSubscriptions: overrides.registerSubscriptions ?? vi.fn(),
+        unregisterAll: overrides.unregisterAll ?? vi.fn(),
+    };
+}
 
 function fakeRegistry(): IPluginRegistry {
     const map = new Map<string, RegisteredPlugin>();
@@ -35,57 +58,55 @@ function fakeRegistry(): IPluginRegistry {
 }
 
 describe('PluginLoader (SPEC_06)', () => {
-    it('load регистрирует в реестре и подключает инструменты в хост', async () => {
+    it('load регистрирует в реестре, подключает инструменты и подписки', async () => {
         const registry = fakeRegistry();
-        const registerTools = vi.fn();
-        const host = { registerTools, unregisterTools: vi.fn() };
+        const host = fakeHost();
         const loader = new PluginLoader({ registry, host });
         const executor = vi.fn(async () => 'ok');
+        const eventHandler = vi.fn();
 
-        const ok = await loader.load(manifest, executor, { apiKey: 'k' });
+        const ok = await loader.load(manifest, executor, { apiKey: 'k' }, eventHandler);
         expect(ok).toBe(true);
         expect(registry.register).toHaveBeenCalledWith(manifest);
         expect(registry.activate).toHaveBeenCalledWith('acme.search');
-        expect(registerTools).toHaveBeenCalledWith(manifest, executor, { apiKey: 'k' });
+        expect(host.registerTools).toHaveBeenCalledWith(manifest, executor, { apiKey: 'k' });
+        expect(host.registerSubscriptions).toHaveBeenCalledWith(manifest, eventHandler);
     });
 
     it('load отклоняет невалидный манифест', async () => {
         const registry = fakeRegistry();
-        const loader = new PluginLoader({
-            registry,
-            host: { registerTools: vi.fn(), unregisterTools: vi.fn() },
-        });
+        const host = fakeHost();
+        const loader = new PluginLoader({ registry, host });
         const bad = { ...manifest, engines: { os: 'not-semver' } } as unknown as PluginManifest;
         const ok = await loader.load(bad);
         expect(ok).toBe(false);
         expect(registry.register).not.toHaveBeenCalled();
+        expect(host.registerTools).not.toHaveBeenCalled();
     });
 
-    it('unload снимает инструменты и дерегистрирует', async () => {
+    it('unload снимает инструменты/подписки и дерегистрирует', async () => {
         const registry = fakeRegistry();
         await registry.register(manifest);
-        const unregisterTools = vi.fn();
-        const loader = new PluginLoader({
-            registry,
-            host: { registerTools: vi.fn(), unregisterTools },
-        });
+        const host = fakeHost();
+        const loader = new PluginLoader({ registry, host });
         const ok = await loader.unload('acme.search');
         expect(ok).toBe(true);
-        expect(unregisterTools).toHaveBeenCalledWith('acme.search');
+        expect(host.unregisterAll).toHaveBeenCalledWith('acme.search');
         expect(registry.unregister).toHaveBeenCalledWith('acme.search');
     });
 
     it('reload пере-подключает плагин', async () => {
         const registry = fakeRegistry();
-        const unregisterTools = vi.fn();
-        const registerTools = vi.fn();
-        const loader = new PluginLoader({ registry, host: { registerTools, unregisterTools } });
+        const host = fakeHost();
+        const loader = new PluginLoader({ registry, host });
         const ok = await loader.reload(
             manifest,
             vi.fn(async () => 'ok'),
+            undefined,
+            vi.fn(),
         );
         expect(ok).toBe(true);
-        expect(unregisterTools).toHaveBeenCalledWith('acme.search');
-        expect(registerTools).toHaveBeenCalled();
+        expect(host.unregisterAll).toHaveBeenCalledWith('acme.search');
+        expect(host.registerTools).toHaveBeenCalled();
     });
 });

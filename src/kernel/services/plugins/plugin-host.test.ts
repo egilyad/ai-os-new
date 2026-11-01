@@ -7,7 +7,10 @@ const manifest: PluginManifest = {
     name: 'Search',
     version: '1.0.0',
     engines: { os: '4.0.0' },
-    contributes: { tools: [{ name: 'acme.search', handler: 'search' }] },
+    contributes: {
+        tools: [{ name: 'acme.search', handler: 'search' }],
+        subscriptions: [{ event: 'agent:start', handler: 'handlers/onAgentStart.js' }],
+    },
 };
 
 describe('PluginHost (SPEC_06)', () => {
@@ -80,5 +83,48 @@ describe('PluginHost (SPEC_06)', () => {
         expect(port.getTool('acme.search')).toBeDefined();
         expect(port.getTool('nope')).toBeUndefined();
         expect(port.getToolContext('acme.search')).toBeUndefined();
+    });
+
+    it('registerSubscriptions подписывается и вызывает handler', () => {
+        const handlers = new Map<string, (data: unknown) => void>();
+        const bus = {
+            on: vi.fn((event: string, cb: (data: unknown) => void) => {
+                handlers.set(event, cb);
+                return () => handlers.delete(event);
+            }),
+        };
+        const host = new PluginHost(bus);
+        const handler = vi.fn();
+        host.registerSubscriptions(manifest, handler);
+
+        expect(bus.on).toHaveBeenCalledWith('agent:start', expect.any(Function));
+        handlers.get('agent:start')!({ runId: 'r1' });
+        expect(handler).toHaveBeenCalledWith('agent:start', { runId: 'r1' });
+    });
+
+    it('unregisterSubscriptions снимает подписки', () => {
+        const unsubs: Array<() => void> = [];
+        const bus = {
+            on: vi.fn(() => {
+                const unsub = vi.fn();
+                unsubs.push(unsub);
+                return unsub;
+            }),
+        };
+        const host = new PluginHost(bus);
+        host.registerSubscriptions(manifest);
+        expect(unsubs).toHaveLength(1);
+        host.unregisterSubscriptions('acme.search');
+        expect(unsubs[0]).toHaveBeenCalled();
+    });
+
+    it('unregisterAll снимает инструменты и подписки', () => {
+        const bus = { on: vi.fn(() => vi.fn()) };
+        const host = new PluginHost(bus);
+        host.registerTools(manifest);
+        host.registerSubscriptions(manifest);
+        host.unregisterAll('acme.search');
+        expect(host.hasTool('acme.search')).toBe(false);
+        expect(host.listTools()).toHaveLength(0);
     });
 });
