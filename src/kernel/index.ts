@@ -318,6 +318,7 @@ export type {
     StrategyDraft,
 } from './contracts/strategy-program';
 export { StrategyRegistry } from './services/debate-runtime/debate-strategy-registry';
+export { shouldStopByConvergence } from './services/debate-runtime/debate-stop-conditions';
 export type {
     DebateSession,
     DebateParticipant,
