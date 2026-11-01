@@ -3,6 +3,7 @@ import {
     buildTopologyForStrategy,
     isKnownStrategy,
     resolveStrategyConfig,
+    resolveStrategyConfigForMode,
     roundToAvailableTopology,
 } from './debate-session-bridge';
 import { BUILTIN_STRATEGIES } from './debate-strategy-definitions';
@@ -176,5 +177,14 @@ describe('resolveStrategyConfig (DSL interpreter integration)', () => {
         resolveStrategyConfig('builtin.socratic', participants);
         resolveStrategyConfig('judge', participants);
         expect(JSON.stringify(participants)).toBe(snapshot);
+    });
+
+    it('resolveStrategyConfigForMode применяет режим и резолвит стратегию', () => {
+        const res = resolveStrategyConfigForMode('strict_logic', baseline);
+        expect(res.topology.type).toBe('roundtable');
+        expect(res.temperature).toBe(0.3);
+        expect(res.forcedQuality).toEqual(
+            expect.arrayContaining(['evidence-triangulation', 'fact-checking']),
+        );
     });
 });

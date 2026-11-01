@@ -346,6 +346,28 @@ export function resolveStrategyConfig(
 }
 
 /**
+ * Разрешает конфигурацию для режима: применяет дефолты режима (applyModeToSession)
+ * и затем резолвит стратегию в топологию/качество. Удобный API для UI.
+ */
+export function resolveStrategyConfigForMode(
+    modeId: string,
+    participants: DebateParticipant[],
+    options?: { maxRounds?: number },
+): ResolvedStrategyConfig & { temperature?: number } {
+    const hints = applyModeToSession(modeId);
+    const strategy = hints.strategy ?? 'round_robin';
+    const resolved = resolveStrategyConfig(
+        strategy,
+        participants,
+        options?.maxRounds ?? hints.maxRounds,
+    );
+    return {
+        ...resolved,
+        temperature: hints.temperature,
+    };
+}
+
+/**
  * Разрешает запрошенную топологию с «округлением»: если для неё не хватает
  * ролей среди участников (judge без судьи, red-blue без attacker/defender),
  * выполняется откат на roundtable. Гарантированно не бросает исключений.
