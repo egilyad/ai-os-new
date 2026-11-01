@@ -19,6 +19,8 @@ const plugin: Record<string, string> = {
     'plugin.tools': 'Инструменты',
     'plugin.events': 'Подписки',
     'plugin.mcp': 'MCP-серверы',
+    'plugin.panels': 'Панели',
+    'plugin.services': 'Сервисы',
     'plugin.marketplace_title': 'Каталог плагинов',
     'plugin.marketplace_installed': 'Плагин установлен',
     'plugin.install': 'Установить',

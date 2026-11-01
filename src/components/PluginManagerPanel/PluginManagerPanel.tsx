@@ -239,6 +239,22 @@ const PluginManagerPanel: React.FC = () => {
                                 {p.manifest.contributes.mcpServers!.map((s) => s.name).join(', ')}
                             </div>
                         )}
+                        {(p.manifest.contributes.panels?.length ?? 0) > 0 && (
+                            <div
+                                style={{ fontSize: 10, color: 'var(--slate-500)', marginBottom: 2 }}
+                            >
+                                {t('plugin.panels')}:{' '}
+                                {p.manifest.contributes.panels!.map((s) => s.id).join(', ')}
+                            </div>
+                        )}
+                        {(p.manifest.contributes.services?.length ?? 0) > 0 && (
+                            <div
+                                style={{ fontSize: 10, color: 'var(--slate-500)', marginBottom: 2 }}
+                            >
+                                {t('plugin.services')}:{' '}
+                                {p.manifest.contributes.services!.map((s) => s.id).join(', ')}
+                            </div>
+                        )}
                         <div style={{ display: 'flex', gap: 6, marginTop: 6 }}>
                             {p.status === 'error' ? (
                                 <button
