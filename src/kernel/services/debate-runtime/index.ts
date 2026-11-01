@@ -80,6 +80,7 @@ export { DebateGovernor } from './debate-governor';
 export { AutoDebateService } from './auto-debate/auto-debate-service';
 export { StrategyManager } from './debate-strategy-manager';
 export type { StrategyVersion } from './debate-strategy-manager';
+export { StrategyRegistry } from './debate-strategy-registry';
 
 // Debate enhancements (#2–#4)
 export { CrossDebateMemoryService } from './cross-debate-memory';
