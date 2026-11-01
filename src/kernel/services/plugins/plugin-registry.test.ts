@@ -70,6 +70,14 @@ describe('PluginRegistry', () => {
         expect(reg.get('acme.search')?.status).toBe('inactive');
     });
 
+    it('listActive возвращает только активные', async () => {
+        const reg = new PluginRegistry();
+        await reg.register(validManifest);
+        expect(reg.listActive()).toHaveLength(0);
+        await reg.activate('acme.search');
+        expect(reg.listActive()).toHaveLength(1);
+    });
+
     it('exportJson/importJson round-trip', async () => {
         const reg = new PluginRegistry();
         await reg.register(validManifest);
