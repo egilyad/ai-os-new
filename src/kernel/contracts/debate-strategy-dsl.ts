@@ -196,4 +196,6 @@ export interface IStrategyRegistry {
     compile(id: string): StrategyProgram | undefined;
     /** Возвращает исполняемые программы всех зарегистрированных стратегий (SPEC_07). */
     listCompiled(): StrategyProgram[];
+    /** Возвращает список вариантов для UI-выбора стратегии. */
+    getStrategySelectOptions(): Array<{ id: string; name: string; description: string }>;
 }

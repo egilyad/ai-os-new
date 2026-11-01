@@ -301,6 +301,16 @@ export class StrategyRegistry implements IStrategyRegistry {
         return programs.sort((a, b) => a.id.localeCompare(b.id));
     }
 
+    getStrategySelectOptions(): Array<{ id: string; name: string; description: string }> {
+        return this.list()
+            .map((e) => ({
+                id: e.definition.id,
+                name: e.definition.name,
+                description: e.definition.description,
+            }))
+            .sort((a, b) => a.id.localeCompare(b.id));
+    }
+
     list(): StrategyRegistryEntry[] {
         return [...this.entries.values()];
     }

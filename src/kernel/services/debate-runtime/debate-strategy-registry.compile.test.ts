@@ -22,4 +22,11 @@ describe('StrategyRegistry.compile (SPEC_07)', () => {
         expect(programs.length).toBeGreaterThanOrEqual(33);
         expect(programs.every((p) => p.topology.maxRounds! >= 1)).toBe(true);
     });
+
+    it('getStrategySelectOptions возвращает сортированный список', () => {
+        const options = registry.getStrategySelectOptions();
+        expect(options.length).toBeGreaterThanOrEqual(33);
+        expect(options[0]!.id).toBe('builtin.argument_tree');
+        expect(options.every((o) => o.name.length > 0 && o.description.length > 0)).toBe(true);
+    });
 });
