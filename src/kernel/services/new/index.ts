@@ -10,7 +10,19 @@ export { MetricsService } from '../ops/metrics-service';
 export { MetricsCollector } from '../ops/metrics-collector';
 export { DexieMetricsStorage } from '../ops/metrics-dexie-storage';
 export { EvalHub } from '../eval/eval-hub';
-export { AgentRuntime, CrewRuntime } from '../agent-runtime/agent-runtime';
+export {
+    AgentRuntime,
+    CrewRuntime,
+    CouncilRuntime,
+    ForumRuntime,
+} from '../agent-runtime/agent-runtime';
+export type {
+    IAgentRuntime,
+    AgentHandle,
+    AgentRuntimeConfig,
+    AgentTurnInput,
+    AgentTurnResult,
+} from '../contracts/agent-runtime';
 export { PluginRegistry } from '../plugins/plugin-registry';
 export { PluginHost, type PluginHostRegistryPort } from '../plugins/plugin-host';
 export { PluginLoader } from '../plugins/plugin-loader';
