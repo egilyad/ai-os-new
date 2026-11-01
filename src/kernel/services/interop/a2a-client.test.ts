@@ -26,7 +26,7 @@ describe('A2AClient (SPEC_09)', () => {
 
     it('sendMessage POST /tasks и возвращает задачу', async () => {
         const task = { id: 't1', status: 'SUBMITTED' as const };
-        const fetchImpl = vi.fn(async (url: string, init?: RequestInit) => jsonResponse(task));
+        const fetchImpl = vi.fn(async (_input: RequestInfo, _init?: RequestInit) => jsonResponse(task));
         const client = new A2AClient({ fetchImpl });
         const res = await client.sendMessage(card, { role: 'user', parts: [{ text: 'hi' }] });
         expect(res.id).toBe('t1');
@@ -37,7 +37,7 @@ describe('A2AClient (SPEC_09)', () => {
 
     it('getTask GET /tasks/:id', async () => {
         const task = { id: 't1', status: 'COMPLETED' as const };
-        const fetchImpl = vi.fn(async (url: string, init?: RequestInit) => jsonResponse(task));
+        const fetchImpl = vi.fn(async (_input: RequestInfo, _init?: RequestInit) => jsonResponse(task));
         const client = new A2AClient({ fetchImpl });
         const res = await client.getTask(card, 't1');
         expect(res.status).toBe('COMPLETED');
@@ -45,7 +45,7 @@ describe('A2AClient (SPEC_09)', () => {
     });
 
     it('бросает на не-ok ответ', async () => {
-        const fetchImpl = vi.fn(async (url: string, init?: RequestInit) => jsonResponse({}, false, 500));
+        const fetchImpl = vi.fn(async (_input: RequestInfo, _init?: RequestInit) => jsonResponse({}, false, 500));
         const client = new A2AClient({ fetchImpl });
         await expect(client.sendMessage(card, { role: 'user', parts: [] })).rejects.toThrow(/HTTP 500/);
     });
