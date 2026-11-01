@@ -43,4 +43,14 @@ describe('AgentRuntime (SPEC_05)', () => {
         const res = await runtime.run({ text: 'x' }, { role: 'r' }, { signal: controller.signal });
         expect(res.status).toBe('ok');
     });
+
+    it('asCrew прогоняет агентов последовательно', async () => {
+        const outputs = ['step1', 'step2'];
+        const runtime = new AgentRuntime({
+            callLlm: vi.fn(async () => ({ content: outputs.shift()! })),
+        });
+        const crew = runtime.asCrew();
+        const result = await crew.run([{ role: 'a1' }, { role: 'a2' }], { text: 'start' });
+        expect(result).toBe('step2');
+    });
 });

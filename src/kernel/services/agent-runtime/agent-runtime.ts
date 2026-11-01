@@ -7,6 +7,23 @@ import type {
 } from '../../contracts/agent-runtime';
 import { runToolLoop, type ToolLoopCallResult, type ToolLoopMessage, type ToolLoopTool } from '../tool-loop/tool-loop';
 
+/**
+ * CrewRuntime — тонкий sequential-фасад поверх AgentRuntime (SPEC_05).
+ * Прогоняет агентов по цепочке: вывод одного — вход следующего.
+ */
+export class CrewRuntime {
+    constructor(private runtime: AgentRuntime) {}
+
+    async run(agents: AgentRuntimeConfig[], input: AgentTurnInput): Promise<string> {
+        let text = input.text;
+        for (const cfg of agents) {
+            const res = await this.runtime.run({ text }, cfg);
+            text = res.output;
+        }
+        return text;
+    }
+}
+
 export interface AgentRuntimeDeps {
     /** Один LLM-раунд-трип (получает диалог и схемы инструментов). */
     callLlm(messages: ToolLoopMessage[], tools: ToolLoopTool[]): Promise<ToolLoopCallResult>;
@@ -87,8 +104,8 @@ export class AgentRuntime implements IAgentRuntime {
         };
     }
 
-    asCrew(): unknown {
-        return this;
+    asCrew(): CrewRuntime {
+        return new CrewRuntime(this);
     }
     asCouncil(): unknown {
         return this;
