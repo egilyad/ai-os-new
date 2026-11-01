@@ -209,6 +209,8 @@ export interface DebateConfig {
     modeId?: string;
     /** From DSL plan (SPEC_07) — early-exit confidence threshold. */
     earlyExitConfidence?: number;
+    /** From DSL plan (SPEC_07) — convergence threshold. */
+    convergenceThreshold?: number;
     /** From DSL plan (SPEC_07) — stop condition for the debate loop. */
     stopWhen?: string;
 }

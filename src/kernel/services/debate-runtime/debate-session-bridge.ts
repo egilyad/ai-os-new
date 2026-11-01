@@ -222,6 +222,7 @@ export interface ResolvedStrategyConfig {
     topology: DebateTopology;
     forcedQuality: string[];
     earlyExitConfidence?: number;
+    convergenceThreshold?: number;
     stopWhen?: string;
 }
 
@@ -287,7 +288,9 @@ export function resolveStrategyConfig(
 ): ResolvedStrategyConfig {
     const forcedQuality: string[] = [];
     let effective = strategy as DebateStrategy;
-    let planMeta: { earlyExitConfidence?: number; stopWhen?: string } | undefined;
+    let planMeta:
+        | { earlyExitConfidence?: number; convergenceThreshold?: number; stopWhen?: string }
+        | undefined;
 
     if (typeof strategy === 'string' && strategy.startsWith('builtin.')) {
         // Единый источник правды: интерпретатор DSL (SPEC_07) превращает
@@ -299,6 +302,7 @@ export function resolveStrategyConfig(
             const rounds = plan.maxRounds ?? maxRounds;
             planMeta = {
                 earlyExitConfidence: plan.earlyExitConfidence,
+                convergenceThreshold: plan.convergenceThreshold,
                 stopWhen: plan.stopWhen,
             };
             if (plan.topology === 'linear') {

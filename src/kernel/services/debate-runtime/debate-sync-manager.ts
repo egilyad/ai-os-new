@@ -327,6 +327,9 @@ export class DebateSyncManager {
         if (resolved.earlyExitConfidence !== undefined) {
             sessionConfig.earlyExitConfidence = resolved.earlyExitConfidence;
         }
+        if (resolved.convergenceThreshold !== undefined) {
+            sessionConfig.convergenceThreshold = resolved.convergenceThreshold;
+        }
         if (resolved.stopWhen) {
             sessionConfig.stopWhen = resolved.stopWhen;
         }

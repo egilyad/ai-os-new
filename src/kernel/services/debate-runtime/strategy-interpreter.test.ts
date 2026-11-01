@@ -70,6 +70,13 @@ describe('strategy-interpreter (SPEC_07)', () => {
         expect(plan.stopWhen).toBeUndefined();
     });
 
+    it('programToPlan сохраняет convergenceThreshold', () => {
+        const p = interpret(
+            draft('builtin.round_robin', 'debate_graph', { convergenceThreshold: 0.8 }),
+        );
+        expect(programToPlan(p).convergenceThreshold).toBe(0.8);
+    });
+
     it('сохраняет convergenceThreshold/earlyExitConfidence', () => {
         const p = interpret(
             draft('builtin.round_robin', 'debate_graph', {
