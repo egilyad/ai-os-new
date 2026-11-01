@@ -5,6 +5,7 @@ import type {
     AgentTurnResult,
     IAgentRuntime,
 } from '../../contracts/agent-runtime';
+import type { IAgentSecurityGuard } from '../../contracts/agent-security';
 import { runToolLoop, type ToolLoopCallResult, type ToolLoopMessage, type ToolLoopTool } from '../tool-loop/tool-loop';
 
 /**
@@ -31,6 +32,8 @@ export interface AgentRuntimeDeps {
     toolCatalog?(name: string): ToolLoopTool | undefined;
     /** Исполнение инструмента (опционально; default — заглушка). */
     runTool?(name: string, args: Record<string, unknown>): Promise<string>;
+    /** SPEC_12: защита от утечки секретов в промпт (LLM07). */
+    securityGuard?: IAgentSecurityGuard;
 }
 
 function buildSystemPrompt(cfg: AgentRuntimeConfig): string {
@@ -56,8 +59,26 @@ export class AgentRuntime implements IAgentRuntime {
         cfg: AgentRuntimeConfig,
         opts?: { signal?: AbortSignal },
     ): Promise<AgentTurnResult> {
+        const systemPrompt = buildSystemPrompt(cfg);
+
+        // SPEC_12 (LLM07): отказываемся звать LLM, если в контексте есть секреты.
+        if (this.deps.securityGuard) {
+            const joined = `${systemPrompt}\n${input.text}`;
+            const scan = this.deps.securityGuard.detectSecretsInPrompt(joined);
+            if (scan.found) {
+                return {
+                    output: '',
+                    toolCalls: [],
+                    usage: { inputTokens: 0, outputTokens: 0, totalTokens: 0 },
+                    trace: [],
+                    status: 'error',
+                    error: 'refusing to send secrets to LLM (LLM07)',
+                };
+            }
+        }
+
         const messages: ToolLoopMessage[] = [
-            { role: 'system', content: buildSystemPrompt(cfg) },
+            { role: 'system', content: systemPrompt },
             { role: 'user', content: input.text },
         ];
 

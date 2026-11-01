@@ -10,6 +10,7 @@ import type { Phase } from './helpers';
 import type { IEventBus } from '../types/interfaces';
 import type { IMetricsService } from '../contracts/metrics';
 import type { IProvenanceLinker } from '../contracts/provenance-link';
+import type { IAgentSecurityGuard } from '../contracts/agent-security';
 import { AuthorizationService } from '../services/permissions/authorization-service';
 import { MetricsService } from '../services/ops/metrics-service';
 import { DexieMetricsStorage } from '../services/ops/metrics-dexie-storage';
@@ -43,11 +44,12 @@ export const registerPhase82: Phase = (helpers, ctx) => {
 
     register('agentSecurityGuard', () => new AgentSecurityGuard());
 
-    register('agentRuntime', () =>
+    register('agentRuntime', (c) =>
         new AgentRuntime({
             // Дефолтная заглушка; реальный LLM-вызов подключается при первом
             // прогоне/интеграции с routerService.
             callLlm: async () => ({ content: '' }),
+            securityGuard: c.get<IAgentSecurityGuard>('agentSecurityGuard'),
         }),
     );
 

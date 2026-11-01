@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import { AgentRuntime } from './agent-runtime';
+import { AgentSecurityGuard } from '../security/agent-security-guard';
 import type { ToolLoopTool } from '../tool-loop/tool-loop';
 
 function tool(name: string): ToolLoopTool {
@@ -42,6 +43,17 @@ describe('AgentRuntime (SPEC_05)', () => {
         const runtime = new AgentRuntime({ callLlm });
         const res = await runtime.run({ text: 'x' }, { role: 'r' }, { signal: controller.signal });
         expect(res.status).toBe('ok');
+    });
+
+    it('securityGuard блокирует утечку секретов в промпт', async () => {
+        const callLlm = vi.fn(async () => ({ content: 'should not be called' }));
+        const runtime = new AgentRuntime({
+            callLlm,
+            securityGuard: new AgentSecurityGuard(),
+        });
+        const res = await runtime.run({ text: 'my key is sk-abcdefghijklmnopqrstuvwxyz123456' }, { role: 'r' });
+        expect(res.status).toBe('error');
+        expect(callLlm).not.toHaveBeenCalled();
     });
 
     it('asCrew прогоняет агентов последовательно', async () => {
