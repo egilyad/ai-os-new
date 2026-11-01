@@ -326,6 +326,7 @@ export type {
     DebateStrategy,
     DebateArgument,
 } from './contracts/debate-types';
+export type { DebateTopology } from './contracts/debate-runtime';
 export type {
     StrategyDefinition,
     StrategyPrimitive,
