@@ -75,6 +75,12 @@ describe('resolveStrategyConfig (DSL interpreter integration)', () => {
         expect(res.topology.maxRounds).toBe(6);
     });
 
+    it('socratic (roundtable-fallback) сохраняет stopWhen из плана', () => {
+        const res = resolveStrategyConfig('builtin.socratic', baseline);
+        expect(res.topology.type).toBe('roundtable');
+        expect(res.stopWhen).toBe('agreement');
+    });
+
     it('resolveStrategyConfig обрабатывает все BUILTIN без исключений', () => {
         const withJudge = [...baseline, { id: 'j', name: 'Judge', role: 'judge' as const }];
         for (const def of BUILTIN_STRATEGIES) {

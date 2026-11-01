@@ -287,6 +287,7 @@ export function resolveStrategyConfig(
 ): ResolvedStrategyConfig {
     const forcedQuality: string[] = [];
     let effective = strategy as DebateStrategy;
+    let planMeta: { earlyExitConfidence?: number; stopWhen?: string } | undefined;
 
     if (typeof strategy === 'string' && strategy.startsWith('builtin.')) {
         // Единый источник правды: интерпретатор DSL (SPEC_07) превращает
@@ -296,7 +297,7 @@ export function resolveStrategyConfig(
             const plan = programToPlan(program);
             forcedQuality.push(...plan.techniques);
             const rounds = plan.maxRounds ?? maxRounds;
-            const planMeta = {
+            planMeta = {
                 earlyExitConfidence: plan.earlyExitConfidence,
                 stopWhen: plan.stopWhen,
             };
@@ -337,7 +338,7 @@ export function resolveStrategyConfig(
 
     const topology = buildTopologyForStrategy(effective, participants, maxRounds);
     forcedQuality.push(...strategyQualityForced(effective));
-    return { topology, forcedQuality: [...new Set(forcedQuality)] };
+    return { topology, forcedQuality: [...new Set(forcedQuality)], ...planMeta };
 }
 
 export function buildTopologyForStrategy(
