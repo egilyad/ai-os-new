@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { AuthorizationService } from '../permissions/authorization-service';
 import { ToolGovernanceService } from './tool-governance-service';
 import type { IEventBus } from '../../types/interfaces';
+import type { IAuditService } from '../../contracts/ops';
 
 function mockRepo(servers: unknown[] = [], grants: unknown[] = []) {
     return {
@@ -14,7 +15,7 @@ function mockRepo(servers: unknown[] = [], grants: unknown[] = []) {
 }
 
 const mockEvents = { emit: () => {} } as unknown as IEventBus;
-const mockAudit = { append: async () => {} };
+const mockAudit = { append: async () => {} } as unknown as IAuditService;
 
 describe('ToolGovernanceService + authorizationService (SPEC_08)', () => {
     it('authz deny блокирует даже при allow-гранте', async () => {
