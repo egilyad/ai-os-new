@@ -82,6 +82,11 @@ describe('strategy-interpreter (SPEC_07)', () => {
         expect(uncovered, `uncovered: ${uncovered.join(', ')}`).toEqual([]);
     });
 
+    it('BUILTIN_STRATEGIES имеет уникальные id', () => {
+        const ids = BUILTIN_STRATEGIES.map((d) => d.id);
+        expect(new Set(ids).size).toBe(ids.length);
+    });
+
     it('каждая builtin-программа даёт валидную топологию', () => {
         const kinds = new Set<TopologyKind>([
             'linear',
