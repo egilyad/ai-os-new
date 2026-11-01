@@ -1,5 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { buildTopologyForStrategy, resolveStrategyConfig } from './debate-session-bridge';
+import {
+    buildTopologyForStrategy,
+    resolveStrategyConfig,
+    roundToAvailableTopology,
+} from './debate-session-bridge';
 import { BUILTIN_STRATEGIES } from './debate-strategy-definitions';
 import type { DebateParticipant, DebateStrategy } from '../../contracts/debate-types';
 
@@ -139,5 +143,15 @@ describe('resolveStrategyConfig (DSL interpreter integration)', () => {
             expect(() => buildTopologyForStrategy(s, []), s).not.toThrow();
         }
         expect(() => resolveStrategyConfig('builtin.socratic', [])).not.toThrow();
+    });
+
+    it('roundToAvailableTopology откатывается на roundtable при нехватке ролей', () => {
+        expect(roundToAvailableTopology('judge', baseline).type).toBe('roundtable');
+        expect(roundToAvailableTopology('red-blue', baseline).type).toBe('roundtable');
+        const present = roundToAvailableTopology('red-blue', [
+            { id: 'a', name: 'A', role: 'attacker' },
+            { id: 'b', name: 'B', role: 'defender' },
+        ]);
+        expect(present.type).toBe('red-blue');
     });
 });

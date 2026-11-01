@@ -345,7 +345,12 @@ export function resolveStrategyConfig(
     return { topology, forcedQuality: [...new Set(forcedQuality)], ...planMeta };
 }
 
-export function buildTopologyForStrategy(
+/**
+ * Разрешает запрошенную топологию с «округлением»: если для неё не хватает
+ * ролей среди участников (judge без судьи, red-blue без attacker/defender),
+ * выполняется откат на roundtable. Гарантированно не бросает исключений.
+ */
+export function roundToAvailableTopology(
     strategy: DebateStrategy,
     participants: DebateParticipant[],
     maxRounds?: number,
@@ -376,6 +381,14 @@ export function buildTopologyForStrategy(
             break;
     }
     return buildRoundtableTopology(participants, maxRounds);
+}
+
+export function buildTopologyForStrategy(
+    strategy: DebateStrategy,
+    participants: DebateParticipant[],
+    maxRounds?: number,
+): DebateTopology {
+    return roundToAvailableTopology(strategy, participants, maxRounds);
 }
 
 export function timelineToArguments(
