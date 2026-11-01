@@ -23,6 +23,7 @@ import { AgentRuntime } from '../services/agent-runtime/agent-runtime';
 import { EvalHub } from '../services/eval/eval-hub';
 import { ProvenanceLinker } from '../services/trust/provenance-linker';
 import { ProvenanceCollector } from '../services/trust/provenance-collector';
+import { BuilderNodeCatalog } from '../services/builder/node-catalog';
 
 export const registerPhase82: Phase = (helpers, ctx) => {
     const { register } = helpers;
@@ -57,6 +58,8 @@ export const registerPhase82: Phase = (helpers, ctx) => {
     );
 
     register('provenanceLinker', () => new ProvenanceLinker());
+
+    register('builderNodeCatalog', () => new BuilderNodeCatalog());
 
     register('provenanceCollector', (c) => {
         const collector = new ProvenanceCollector(
