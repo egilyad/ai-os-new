@@ -58,4 +58,30 @@ export class ProvenanceLinker implements IProvenanceLinker {
     clear(): void {
         this.links = [];
     }
+
+    /** Экспорт связей (для persist). */
+    exportJson(): string {
+        return JSON.stringify({ links: this.links });
+    }
+
+    /** Импорт связей (пере-загрузка). Возвращает число импортированных. */
+    importJson(json: string): number {
+        try {
+            const data = JSON.parse(json) as { links?: ProvenanceLink[] };
+            const links = Array.isArray(data.links) ? data.links : [];
+            let imported = 0;
+            for (const l of links) {
+                if (l?.id && l?.from && l?.to && l?.relation) {
+                    this.links.push(l);
+                    imported++;
+                }
+            }
+            if (this.links.length > ProvenanceLinker.MAX_LINKS) {
+                this.links = this.links.slice(-ProvenanceLinker.MAX_LINKS);
+            }
+            return imported;
+        } catch {
+            return 0;
+        }
+    }
 }

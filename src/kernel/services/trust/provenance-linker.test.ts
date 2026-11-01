@@ -39,6 +39,16 @@ describe('ProvenanceLinker (cognitive provenance)', () => {
         expect(neighbors.map((n) => n.ref.id).sort()).toEqual(['d1', 'm1']);
     });
 
+    it('exportJson/importJson round-trip', () => {
+        const linker = new ProvenanceLinker();
+        linker.link({ kind: 'debate', id: 'd1' }, { kind: 'crystal', id: 'c1' }, 'derived_from');
+        const json = linker.exportJson();
+        const linker2 = new ProvenanceLinker();
+        const n = linker2.importJson(json);
+        expect(n).toBe(1);
+        expect(linker2.get()).toHaveLength(1);
+    });
+
     it('clear очищает', () => {
         const linker = new ProvenanceLinker();
         linker.link({ kind: 'debate', id: 'd' }, { kind: 'crystal', id: 'c' }, 'influenced');
