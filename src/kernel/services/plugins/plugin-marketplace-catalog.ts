@@ -38,4 +38,19 @@ export const PLUGIN_MARKETPLACE_CATALOG: MarketplaceEntry[] = [
         blurb: 'Пример плагина с одним инструментом.',
         category: 'demo',
     },
+    {
+        manifest: {
+            id: 'demo.mcp',
+            name: 'Demo MCP Bridge',
+            description: 'Демо-плагин, встраивающий локальный MCP-сервер.',
+            version: '1.0.0',
+            engines: { os: '4.5.0' },
+            contributes: {
+                mcpServers: [{ name: 'demo-bridge' }],
+            },
+            permissions: ['mcp:demo-bridge'],
+        },
+        blurb: 'Пример плагина со встроенным MCP-сервером.',
+        category: 'demo',
+    },
 ];
