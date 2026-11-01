@@ -109,4 +109,33 @@ describe('PluginLoader (SPEC_06)', () => {
         expect(host.unregisterAll).toHaveBeenCalledWith('acme.search');
         expect(host.registerTools).toHaveBeenCalled();
     });
+
+    it('enforceToolPermissions отклоняет инструменты без permissions', async () => {
+        const registry = fakeRegistry();
+        const host = fakeHost();
+        const loader = new PluginLoader({ registry, host, enforceToolPermissions: true });
+        const ok = await loader.load(manifest);
+        expect(ok).toBe(false);
+        expect(registry.register).not.toHaveBeenCalled();
+        expect(host.registerTools).not.toHaveBeenCalled();
+    });
+
+    it('enforceToolPermissions пропускает плагин с tool:* permission', async () => {
+        const registry = fakeRegistry();
+        const host = fakeHost();
+        const loader = new PluginLoader({ registry, host, enforceToolPermissions: true });
+        const permitted = { ...manifest, permissions: ['tool:*'] };
+        const ok = await loader.load(permitted);
+        expect(ok).toBe(true);
+        expect(registry.register).toHaveBeenCalledWith(permitted);
+    });
+
+    it('enforceToolPermissions пропускает плагин с конкретной tool permission', async () => {
+        const registry = fakeRegistry();
+        const host = fakeHost();
+        const loader = new PluginLoader({ registry, host, enforceToolPermissions: true });
+        const permitted = { ...manifest, permissions: ['tool:acme.search'] };
+        const ok = await loader.load(permitted);
+        expect(ok).toBe(true);
+    });
 });

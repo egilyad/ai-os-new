@@ -15,6 +15,17 @@ export interface PluginLoaderDeps {
         registerSubscriptions: (manifest: PluginManifest, handler?: PluginEventHandler) => void;
         unregisterAll: (manifestId: string) => void;
     };
+    /**
+     * Принцип минимальных привилегий (SPEC §3/§7): при true плагин с
+     * инструментами, но без соответствующих permissions (tool:<name> | tool:*)
+     * отклоняется.
+     */
+    enforceToolPermissions?: boolean;
+}
+
+function hasToolPermission(manifest: PluginManifest, toolName: string): boolean {
+    const perms = manifest.permissions ?? [];
+    return perms.includes('tool:*') || perms.includes(`tool:${toolName}`);
 }
 
 /**
@@ -31,6 +42,13 @@ export class PluginLoader {
         this.deps = deps;
     }
 
+    private validateToolPermissions(manifest: PluginManifest): boolean {
+        for (const t of manifest.contributes.tools ?? []) {
+            if (!hasToolPermission(manifest, t.name)) return false;
+        }
+        return true;
+    }
+
     /**
      * Подключает плагин: валидация → регистрация в реестре → регистрация
      * инструментов и подписок в хосте → активация. Возвращает true при успехе.
@@ -43,6 +61,10 @@ export class PluginLoader {
     ): Promise<boolean> {
         const validation = validateManifest(manifest);
         if (!validation.ok) return false;
+
+        if (this.deps.enforceToolPermissions && !this.validateToolPermissions(manifest)) {
+            return false;
+        }
 
         const ok = await this.deps.registry.register(manifest);
         if (!ok) return false;
