@@ -72,4 +72,11 @@ describe('strategy-interpreter (SPEC_07)', () => {
         const uncovered = ids.filter((id) => compileBuiltin(id) === null);
         expect(uncovered, `uncovered: ${uncovered.join(', ')}`).toEqual([]);
     });
+
+    it('неизвестный корень → fallback на roundtable', () => {
+        const draft = { id: 'x', name: 'x', root: 'unknown_root' } as never;
+        const p = interpret(draft);
+        expect(p.topology.kind).toBe('roundtable');
+        expect(p.turnPolicy.order).toBe('free');
+    });
 });

@@ -1,7 +1,4 @@
-import type {
-    StrategyDraft,
-    StrategyProgram,
-} from '../../contracts/strategy-program';
+import type { StrategyDraft, StrategyProgram } from '../../contracts/strategy-program';
 
 /** Исполняемый план дебатов (сжимает StrategyProgram для движка). */
 export interface DebateExecutionPlan {
@@ -62,7 +59,8 @@ const ROOT_TABLE: Record<
  * DSL.
  */
 export function interpret(draft: StrategyDraft): StrategyProgram {
-    const table = ROOT_TABLE[draft.root];
+    // Защита от неизвестного корня: fallback на roundtable (debate_graph).
+    const table = ROOT_TABLE[draft.root] ?? ROOT_TABLE.debate_graph;
 
     const qualityMask: Record<string, boolean> = {};
     for (const t of table.quality) {
