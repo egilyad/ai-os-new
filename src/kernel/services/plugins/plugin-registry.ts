@@ -87,6 +87,26 @@ export class PluginRegistry implements IPluginRegistry {
         return this.plugins.has(id);
     }
 
+    /** Экспорт зарегистрированных манифестов (для persist). */
+    exportJson(): string {
+        return JSON.stringify({ plugins: this.list().map((p) => p.manifest) });
+    }
+
+    /** Импорт манифестов (пере-регистрация). Возвращает число успешных. */
+    async importJson(json: string): Promise<number> {
+        try {
+            const data = JSON.parse(json) as { plugins?: PluginManifest[] };
+            const manifests = Array.isArray(data.plugins) ? data.plugins : [];
+            let ok = 0;
+            for (const m of manifests) {
+                if (await this.register(m)) ok++;
+            }
+            return ok;
+        } catch {
+            return 0;
+        }
+    }
+
     private satisfies(required: string): boolean {
         const parse = (v: string) => v.split('.').map((n) => parseInt(n, 10) || 0);
         const r = parse(required);

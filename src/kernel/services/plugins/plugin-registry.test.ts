@@ -70,6 +70,16 @@ describe('PluginRegistry', () => {
         expect(reg.get('acme.search')?.status).toBe('inactive');
     });
 
+    it('exportJson/importJson round-trip', async () => {
+        const reg = new PluginRegistry();
+        await reg.register(validManifest);
+        const json = reg.exportJson();
+        const reg2 = new PluginRegistry();
+        const count = await reg2.importJson(json);
+        expect(count).toBe(1);
+        expect(reg2.has('acme.search')).toBe(true);
+    });
+
     it('list/has/unregister', async () => {
         const reg = new PluginRegistry();
         await reg.register(validManifest);
