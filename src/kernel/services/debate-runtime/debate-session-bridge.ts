@@ -16,7 +16,7 @@ import { DebatePostProcessor } from './debate-post-processor';
 import type { DebateGovernor } from './debate-governor';
 import { BUILTIN_STRATEGIES } from './debate-strategy-definitions';
 import { BUILTIN_MODES } from './debate-mode-system';
-import { compileBuiltin, programToPlan } from './strategy-interpreter';
+import { compileBuiltin, isKnownBuiltin, programToPlan } from './strategy-interpreter';
 
 export interface SnapshotBridgeContext {
     participants: DebateParticipant[];
@@ -389,6 +389,29 @@ export function buildTopologyForStrategy(
     maxRounds?: number,
 ): DebateTopology {
     return roundToAvailableTopology(strategy, participants, maxRounds);
+}
+
+/** Множество известных enum-стратегий (проверка ввода для UI). */
+const KNOWN_ENUM_STRATEGIES = new Set<string>([
+    'round_robin',
+    'socratic',
+    'argument_tree',
+    'constrained',
+    'moderated',
+    'free_for_all',
+    'jury_trial',
+    'cross-examination',
+    'tournament',
+    'sequential',
+    'tree-of-thought',
+    'judge',
+    'red-blue',
+]);
+
+/** Проверяет, что строка — известная enum- или builtin-стратегия. */
+export function isKnownStrategy(strategy: string): boolean {
+    if (KNOWN_ENUM_STRATEGIES.has(strategy)) return true;
+    return isKnownBuiltin(strategy);
 }
 
 export function timelineToArguments(

@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
     buildTopologyForStrategy,
+    isKnownStrategy,
     resolveStrategyConfig,
     roundToAvailableTopology,
 } from './debate-session-bridge';
@@ -153,5 +154,12 @@ describe('resolveStrategyConfig (DSL interpreter integration)', () => {
             { id: 'b', name: 'B', role: 'defender' },
         ]);
         expect(present.type).toBe('red-blue');
+    });
+
+    it('isKnownStrategy распознаёт enum и builtin', () => {
+        expect(isKnownStrategy('round_robin')).toBe(true);
+        expect(isKnownStrategy('tree-of-thought')).toBe(true);
+        expect(isKnownStrategy('builtin.socratic')).toBe(true);
+        expect(isKnownStrategy('bogus.strategy')).toBe(false);
     });
 });
