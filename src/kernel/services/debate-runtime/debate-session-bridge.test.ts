@@ -162,4 +162,8 @@ describe('resolveStrategyConfig (DSL interpreter integration)', () => {
         expect(isKnownStrategy('builtin.socratic')).toBe(true);
         expect(isKnownStrategy('bogus.strategy')).toBe(false);
     });
+
+    it('enum tournament → linear', () => {
+        expect(buildTopologyForStrategy('tournament', baseline).type).toBe('linear');
+    });
 });
