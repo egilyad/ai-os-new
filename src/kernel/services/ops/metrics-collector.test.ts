@@ -101,6 +101,15 @@ describe('MetricsCollector', () => {
         expect(snap['debate.agent_turns'].summary.sum).toBe(1);
     });
 
+    it('пишет tool.error на tool:execution:error', () => {
+        const events = makeEvents();
+        const metrics = new MetricsService();
+        const collector = new MetricsCollector(events as never, metrics);
+        collector.start();
+        events.emit('tool:execution:error', { toolId: 't-web', error: 'x' });
+        expect(metrics.snapshot()['tool.error'].summary.sum).toBe(1);
+    });
+
     it('пишет policy.violations на policy:violation', () => {
         const events = makeEvents();
         const metrics = new MetricsService();
