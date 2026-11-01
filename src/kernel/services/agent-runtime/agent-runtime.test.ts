@@ -106,6 +106,19 @@ describe('AgentRuntime (SPEC_05)', () => {
         expect(result).toBe('m1\n---\nm2');
     });
 
+    it('asForum ведёт транскрипт обмена репликами', async () => {
+        const runtime = new AgentRuntime({
+            callLlm: vi.fn(async (msgs: Array<{ role: string; content: string }>) => ({
+                content: `reply to ${msgs[msgs.length - 1].content.length}`,
+            })),
+        });
+        const forum = runtime.asForum();
+        const transcript = await forum.run('topic', [{ role: 'a' }, { role: 'b' }], 1);
+        expect(transcript).toContain('Topic: topic');
+        expect(transcript).toContain('a: reply');
+        expect(transcript).toContain('b: reply');
+    });
+
     it('asCrew прогоняет агентов последовательно', async () => {
         const outputs = ['step1', 'step2'];
         const runtime = new AgentRuntime({

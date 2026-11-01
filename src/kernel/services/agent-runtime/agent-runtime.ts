@@ -43,6 +43,25 @@ export class CouncilRuntime {
     }
 }
 
+/**
+ * ForumRuntime — лёгкий фасад асинхронного форума (SPEC_05): участники
+ * обмениваются репликами вокруг темы, транскрипт передаётся следующему.
+ */
+export class ForumRuntime {
+    constructor(private runtime: AgentRuntime) {}
+
+    async run(topic: string, participants: AgentRuntimeConfig[], rounds = 2): Promise<string> {
+        let transcript = `Topic: ${topic}\n`;
+        for (let r = 0; r < rounds; r++) {
+            for (const p of participants) {
+                const res = await this.runtime.run({ text: transcript }, p);
+                transcript += `${p.role}: ${res.output}\n`;
+            }
+        }
+        return transcript;
+    }
+}
+
 export interface AgentRuntimeDeps {
     /** Один LLM-раунд-трип (получает диалог и схемы инструментов). */
     callLlm(messages: ToolLoopMessage[], tools: ToolLoopTool[]): Promise<ToolLoopCallResult>;
@@ -178,7 +197,7 @@ export class AgentRuntime implements IAgentRuntime {
     asGraph(): unknown {
         return this;
     }
-    asForum(): unknown {
-        return this;
+    asForum(): ForumRuntime {
+        return new ForumRuntime(this);
     }
 }
