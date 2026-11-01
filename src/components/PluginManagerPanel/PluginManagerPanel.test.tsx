@@ -41,6 +41,7 @@ vi.mock('../../kernel/instances', () => ({
     },
     pluginLoader: {
         load: vi.fn().mockResolvedValue(true),
+        loadFromJson: vi.fn().mockResolvedValue({ ok: true }),
         unload: vi.fn().mockResolvedValue(true),
     },
     eventBus: {
@@ -87,7 +88,7 @@ describe('PluginManagerPanel (smoke)', () => {
         expect(textarea).not.toBeNull();
         fireEvent.change(textarea!, { target: { value: JSON.stringify(manifest) } });
         fireEvent.click(screen.getByText('plugin.load'));
-        expect(vi.mocked(pluginLoader.load)).toHaveBeenCalled();
+        expect(vi.mocked(pluginLoader.loadFromJson)).toHaveBeenCalledWith(JSON.stringify(manifest));
     });
 
     it('deactivates an active plugin', async () => {

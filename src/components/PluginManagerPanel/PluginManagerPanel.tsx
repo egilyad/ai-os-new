@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { Plugin, Power, PowerOff, Trash2, Plus, RefreshCw } from 'lucide-react';
 import { pluginRegistry, pluginLoader, eventBus, EVENTS } from '../../kernel/instances';
 import { useTranslation } from '../../i18n/useTranslation';
-import type { PluginManifest, RegisteredPlugin } from '../../kernel/contracts/plugin';
+import type { RegisteredPlugin } from '../../kernel/contracts/plugin';
 import ModuleInfo from '../ModuleInfo';
 
 const STATUS_COLOR: Record<string, string> = {
@@ -86,14 +86,14 @@ const PluginManagerPanel: React.FC = () => {
 
     const handleLoadManifest = async () => {
         try {
-            const manifest = JSON.parse(manifestText) as PluginManifest;
-            const ok = await pluginLoader.load(manifest);
-            setMessage({
-                kind: ok ? 'ok' : 'err',
-                text: ok ? t('plugin.loaded') : t('plugin.load_failed'),
-            });
-            setManifestOpen(false);
-            setManifestText('');
+            const res = await pluginLoader.loadFromJson(manifestText);
+            if (res.ok) {
+                setMessage({ kind: 'ok', text: t('plugin.loaded') });
+                setManifestOpen(false);
+                setManifestText('');
+            } else {
+                setMessage({ kind: 'err', text: res.error ?? t('plugin.load_failed') });
+            }
             refresh();
         } catch (e) {
             setMessage({ kind: 'err', text: e instanceof Error ? e.message : String(e) });
