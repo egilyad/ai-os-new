@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { compileBuiltin, draft, interpret, programToPlan } from './strategy-interpreter';
+import { BUILTIN_STRATEGIES } from './debate-strategy-definitions';
 
 describe('strategy-interpreter (SPEC_07)', () => {
     it('sequence → linear/sequential, без quality', () => {
@@ -63,5 +64,12 @@ describe('strategy-interpreter (SPEC_07)', () => {
         );
         expect(p.convergenceThreshold).toBe(0.85);
         expect(p.earlyExitConfidence).toBe(0.9);
+    });
+
+    it('compileBuiltin покрывает все BUILTIN_STRATEGIES', () => {
+        const ids = BUILTIN_STRATEGIES.map((d) => d.id);
+        expect(ids.length).toBeGreaterThanOrEqual(33);
+        const uncovered = ids.filter((id) => compileBuiltin(id) === null);
+        expect(uncovered, `uncovered: ${uncovered.join(', ')}`).toEqual([]);
     });
 });
