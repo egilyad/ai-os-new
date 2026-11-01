@@ -11,6 +11,7 @@ export {
     compileBuiltin,
     compileDefinition,
     programToPlan,
+    isKnownBuiltin,
 } from './strategy-interpreter';
 export type { DebateExecutionPlan } from './strategy-interpreter';
 export {
