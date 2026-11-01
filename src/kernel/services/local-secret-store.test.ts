@@ -3,7 +3,7 @@ import { LocalSecretStore } from './local-secret-store';
 
 describe('LocalSecretStore (атомарность)', () => {
     it('set использует batchSetKv одной записью, когда доступен', async () => {
-        const batch = vi.fn(async () => {});
+        const batch = vi.fn(async (entries: Record<string, unknown>) => {});
         const db = {
             getKv: vi.fn(async () => null),
             setKv: vi.fn(async () => {}),
@@ -18,7 +18,7 @@ describe('LocalSecretStore (атомарность)', () => {
     });
 
     it('delete удаляет из индекса через batchSetKv', async () => {
-        const batch = vi.fn(async () => {});
+        const batch = vi.fn(async (entries: Record<string, unknown>) => {});
         const db = {
             getKv: vi.fn(async () => ['a/b', 'c']),
             setKv: vi.fn(async () => {}),

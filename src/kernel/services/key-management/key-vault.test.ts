@@ -72,7 +72,7 @@ describe('KeyVault (SPEC_01)', () => {
     it('encryptAllKeys/decryptAllKeys сохраняют пары', async () => {
         const keys = [{ id: 'a', key: 'k1', isEncrypted: false }, { id: 'b', key: 'k2', isEncrypted: false }];
         await vault.createVault('pass');
-        const enc = await vault.encryptAllKeys(keys);
+        const enc = await vault.encryptAllKeys(keys as never);
         expect(enc.every((k) => k.isEncrypted)).toBe(true);
         const dec = await vault.decryptAllKeys(enc);
         expect(dec.map((k) => k.key)).toEqual(['k1', 'k2']);
