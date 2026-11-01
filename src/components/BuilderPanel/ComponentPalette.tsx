@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { Bot, GitBranch, ShieldCheck, Blocks } from 'lucide-react';
 import { labelSection800 } from '../../styles/common';
+import { useBuilderNodes } from '../../hooks/useBuilderNodes';
 
 interface ComponentPaletteProps {
     onAddNode: (type: string, label: string) => void;
@@ -43,6 +44,21 @@ const paletteItems = [
 ];
 
 const ComponentPalette: React.FC<ComponentPaletteProps> = ({ onAddNode, t }) => {
+    // Builder как IDE: динамически добавляем exposed cognitive-узлы из каталога
+    // (crystal/synthesis/lens/memory/time-machine/forum/director/memory-orchestrator).
+    const cognitiveNodes = useBuilderNodes(true).filter((n) => n.category === 'cognitive');
+    const items = [
+        ...paletteItems,
+        ...cognitiveNodes.map((n) => ({
+            type: n.kind,
+            icon: Blocks,
+            labelKey: n.labelKey,
+            descKey: n.descriptionKey ?? 'builder.node.cognitive_placeholder',
+            color: 'var(--purple)',
+            bg: 'rgba(139,92,246,0.1)',
+        })),
+    ];
+
     return (
         <div
             className="glass-panel"
@@ -73,7 +89,7 @@ const ComponentPalette: React.FC<ComponentPaletteProps> = ({ onAddNode, t }) => 
                     gap: '0.75rem',
                 }}
             >
-                {paletteItems.map((item) => (
+                {items.map((item) => (
                     <motion.div
                         key={item.type}
                         whileHover={{ scale: 1.02, x: 4 }}
