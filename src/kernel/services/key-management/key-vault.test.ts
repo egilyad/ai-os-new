@@ -39,6 +39,7 @@ describe('KeyVault (SPEC_01)', () => {
 
     it('round-trip encrypt → decrypt', async () => {
         await vault.createVault('pass');
+        expect(await vault.unlockWithPassphrase('pass')).toBe(true);
         const ct = await vault.encryptKey('sk-secret-1');
         expect(ct).not.toBeNull();
         const pt = await vault.decryptKey(ct as string);
@@ -47,6 +48,7 @@ describe('KeyVault (SPEC_01)', () => {
 
     it('неверный пароль после повторной разблокировки не расшифрует', async () => {
         await vault.createVault('pass');
+        expect(await vault.unlockWithPassphrase('pass')).toBe(true);
         const ct = (await vault.encryptKey('sk')) as string;
         vault.lock();
         // пытаемся разблокировать неверным — fail-closed
@@ -72,6 +74,7 @@ describe('KeyVault (SPEC_01)', () => {
     it('encryptAllKeys/decryptAllKeys сохраняют пары', async () => {
         const keys = [{ id: 'a', key: 'k1', isEncrypted: false }, { id: 'b', key: 'k2', isEncrypted: false }];
         await vault.createVault('pass');
+        expect(await vault.unlockWithPassphrase('pass')).toBe(true);
         const enc = await vault.encryptAllKeys(keys as never);
         expect(enc.every((k) => k.isEncrypted)).toBe(true);
         const dec = await vault.decryptAllKeys(enc);
