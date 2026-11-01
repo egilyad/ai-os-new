@@ -1,0 +1,19 @@
+import { describe, expect, it } from 'vitest';
+import { StrategyRegistry } from './debate-strategy-registry';
+import { BUILTIN_STRATEGIES } from './debate-strategy-definitions';
+
+describe('StrategyRegistry.compile (SPEC_07)', () => {
+    const registry = new StrategyRegistry();
+
+    it('компилирует builtin-стратегии в программу', () => {
+        for (const def of BUILTIN_STRATEGIES) {
+            const program = registry.compile(def.id);
+            expect(program, def.id).toBeDefined();
+            expect(program!.topology.maxRounds).toBeGreaterThanOrEqual(1);
+        }
+    });
+
+    it('возвращает undefined для неизвестной стратегии', () => {
+        expect(registry.compile('unknown.strategy')).toBeUndefined();
+    });
+});

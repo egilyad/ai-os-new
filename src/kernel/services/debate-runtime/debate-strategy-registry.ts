@@ -1,5 +1,7 @@
 import { safeJsonParse } from '../../../kernel/utils/safe-json';
 import { BUILTIN_STRATEGIES } from './debate-strategy-definitions';
+import { compileDefinition } from './strategy-interpreter';
+import type { StrategyProgram } from '../../contracts/strategy-program';
 import type {
     StrategyDefinition,
     StrategyPrimitive,
@@ -282,6 +284,12 @@ export class StrategyRegistry implements IStrategyRegistry {
 
     get(id: string): StrategyDefinition | undefined {
         return this.entries.get(id)?.definition;
+    }
+
+    compile(id: string): StrategyProgram | undefined {
+        const def = this.get(id);
+        if (!def) return undefined;
+        return compileDefinition(def);
     }
 
     list(): StrategyRegistryEntry[] {

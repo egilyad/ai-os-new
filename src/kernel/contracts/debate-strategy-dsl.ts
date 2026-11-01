@@ -3,6 +3,8 @@
 // Each primitive is a JSON-serializable block that can be composed
 // into complex strategy definitions.
 
+import type { StrategyProgram } from './strategy-program';
+
 // ── Primitive Types ────────────────────────────────────────────────
 
 export type StrategyPrimitiveType =
@@ -190,4 +192,6 @@ export interface IStrategyRegistry {
     validate(definition: StrategyDefinition): ValidationResult;
     getCompatibleStrategies(id: string): StrategyDefinition[];
     resolveConflicts(a: StrategyDefinition, b: StrategyDefinition): Incompatibility[];
+    /** Компилирует зарегистрированную стратегию в исполняемую программу (SPEC_07). */
+    compile(id: string): StrategyProgram | undefined;
 }
