@@ -40,6 +40,8 @@ export interface IMetricsService {
     snapshot(name?: string): Record<string, MetricSeries>;
     subscribe(pattern: string, cb: (series: MetricSeries) => void): () => void;
     flush(): Promise<void>;
+    /** Сброс одной серии (по точному имени/тегу) или всех. */
+    clear(name?: string): void;
     /** Агрегация по процентилям (p50/p90/p99). */
     percentiles(series: MetricSeries, ps?: number[]): Record<string, number>;
 }

@@ -141,6 +141,14 @@ export class MetricsService implements IMetricsService {
         };
     }
 
+    clear(name?: string): void {
+        if (name) {
+            this._series.delete(name);
+        } else {
+            this._series.clear();
+        }
+    }
+
     percentiles(series: MetricSeries, ps: number[] = DEFAULT_PERCENTILES): Record<string, number> {
         const values = series.points.map((p) => p.value).sort((a, b) => a - b);
         return computePercentiles(values, ps);

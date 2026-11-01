@@ -69,6 +69,17 @@ describe('MetricsService (SPEC_03)', () => {
         expect(storage.data['lat'].summary.percentiles['0.5']).toBeCloseTo(100, 5);
     });
 
+    it('clear сбрасывает одну серию и все', () => {
+        const m = new MetricsService();
+        m.inc('a');
+        m.inc('b');
+        m.clear('a');
+        expect(m.snapshot()['a']).toBeUndefined();
+        expect(m.snapshot()['b']).toBeDefined();
+        m.clear();
+        expect(Object.keys(m.snapshot())).toHaveLength(0);
+    });
+
     it('snapshot поддерживает wildcard-префикс', () => {
         const m = new MetricsService();
         m.inc('llm.request');
