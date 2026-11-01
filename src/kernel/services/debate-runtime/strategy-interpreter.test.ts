@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import { compileBuiltin, draft, interpret, programToPlan } from './strategy-interpreter';
+import {
+    compileBuiltin,
+    compileDefinition,
+    draft,
+    interpret,
+    programToPlan,
+} from './strategy-interpreter';
 import { BUILTIN_STRATEGIES } from './debate-strategy-definitions';
 import type { TopologyKind } from '../../contracts/strategy-program';
 
@@ -99,6 +105,17 @@ describe('strategy-interpreter (SPEC_07)', () => {
         const p = interpret(draft);
         expect(p.topology.kind).toBe('roundtable');
         expect(p.turnPolicy.order).toBe('free');
+    });
+
+    it('compileDefinition компилирует полный DSL', () => {
+        const p = compileDefinition({
+            id: 'custom.socratic',
+            root: { type: 'critic_loop', maxRounds: 6, earlyExitConfidence: 0.9 },
+        });
+        expect(p.topology.kind).toBe('roundtable');
+        expect(p.turnPolicy.order).toBe('adversarial');
+        expect(p.turnPolicy.stopWhen).toBe('agreement');
+        expect(p.earlyExitConfidence).toBe(0.9);
     });
 
     it('maxRounds нормализуется в минимум 1', () => {

@@ -149,3 +149,34 @@ export function compileBuiltin(id: string): StrategyProgram | null {
     if (!root) return null;
     return interpret(draft(id, root));
 }
+
+/**
+ * Компилирует полноценное DSL-определение (StrategyDefinition) в StrategyProgram.
+ * Это мост между StrategyRegistry (валидация/реестр) и исполняемым планом.
+ */
+export function compileDefinition(def: {
+    id: string;
+    root: {
+        type: string;
+        maxRounds?: number;
+        convergenceThreshold?: number;
+        earlyExitConfidence?: number;
+    };
+}): StrategyProgram {
+    const rootType = def.root.type;
+    const root: StrategyRoot =
+        rootType === 'sequence' ||
+        rootType === 'debate_graph' ||
+        rootType === 'critic_loop' ||
+        rootType === 'voting' ||
+        rootType === 'peer_review'
+            ? rootType
+            : 'debate_graph';
+    return interpret(
+        draft(def.id, root, {
+            maxRounds: def.root.maxRounds,
+            convergenceThreshold: def.root.convergenceThreshold,
+            earlyExitConfidence: def.root.earlyExitConfidence,
+        }),
+    );
+}
