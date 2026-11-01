@@ -130,6 +130,15 @@ describe('MetricsCollector', () => {
         expect(snap['debate.verdict_confidence'].summary.max).toBe(0.8);
     });
 
+    it('пишет provider.health_failed на key:health:check:failed', () => {
+        const events = makeEvents();
+        const metrics = new MetricsService();
+        const collector = new MetricsCollector(events as never, metrics);
+        collector.start();
+        events.emit('key:health:check:failed', { id: 'k1', provider: 'x', error: 'e' });
+        expect(metrics.snapshot()['provider.health_failed'].summary.sum).toBe(1);
+    });
+
     it('пишет provider.probe/active/latency на key:probe:result', () => {
         const events = makeEvents();
         const metrics = new MetricsService();

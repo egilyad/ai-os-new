@@ -96,6 +96,12 @@ export class MetricsCollector {
         );
 
         this.unsubs.push(
+            this.events.on(EVENTS.KEY_HEALTH_CHECK_FAILED, () => {
+                this.metrics.inc('provider.health_failed');
+            }),
+        );
+
+        this.unsubs.push(
             this.events.on(EVENTS.KEY_PROBE_RESULT, (data: unknown) => {
                 const d = data as { status?: string; provider?: string; latency?: number };
                 this.metrics.inc('provider.probe');
