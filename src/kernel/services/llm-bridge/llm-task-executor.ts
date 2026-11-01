@@ -12,10 +12,7 @@
  * so agents never contaminate each other's cache. Temperature/maxTokens are
  * conservative defaults; per-agent model override via `modelFor` callback.
  */
-import type {
-    ILLMClientService,
-    AdapterMessage,
-} from '../../contracts/provider-adapter';
+import type { ILLMClientService, AdapterMessage } from '../../contracts/provider-adapter';
 import type { ICrewTaskExecutor } from '../../contracts/crew';
 import type { ICouncilLlmPort } from '../../contracts/council';
 import type { IGraphLlmPort } from '../../contracts/graph';
@@ -36,9 +33,16 @@ export interface LlmBridgeOptions {
     /** GAP E.3 — trained guidance per role name (CrewAI `train` analogue). */
     guideFor?: (role: string) => Promise<string>;
     /** 6.1 — optional tool loop per task (when role declares tools) */
-    toolRunner?: { runWithTools(prompt: string, opts?: { agentId?: string; system?: string; maxRounds?: number }): Promise<{ output: string }> };
+    toolRunner?: {
+        runWithTools(
+            prompt: string,
+            opts?: { agentId?: string; system?: string; maxRounds?: number },
+        ): Promise<{ output: string }>;
+    };
     /** 6.1 — allow-list gating via ToolGovernance */
     toolCheck?: (agentId: string, tool: string) => Promise<boolean>;
+    /** GAP E.1 — явный echo-fallback при недоступности LLM (default: false). */
+    echoFallback?: boolean;
 }
 
 async function chat(
@@ -61,6 +65,23 @@ async function chat(
     });
     if (res.error) throw new Error(`LLM error: ${res.error}`);
     return res.content;
+}
+
+async function chatWithFallback(
+    opts: LlmBridgeOptions,
+    system: string,
+    user: string,
+    scope: { agentId?: string; sessionId?: string; role?: string },
+    agentIdForModel?: string,
+): Promise<string> {
+    try {
+        return await chat(opts, system, user, scope, agentIdForModel);
+    } catch (e) {
+        if (opts.echoFallback) {
+            return `[echo fallback] ${user.slice(0, 200)}`;
+        }
+        throw e;
+    }
 }
 
 export class LlmCrewExecutor implements ICrewTaskExecutor {
@@ -88,20 +109,30 @@ export class LlmCrewExecutor implements ICrewTaskExecutor {
             `Expected output: ${input.task.expectedOutput}` +
             (input.context ? `\nContext from previous tasks:\n${input.context}` : '');
         // 6.1 tool-loop branch: if role declares tools and runner is wired, use it
-        const hasTools = Array.isArray((input.role as unknown as { tools?: string[] }).tools) && ((input.role as unknown as { tools?: string[] }).tools!.length > 0);
+        const hasTools =
+            Array.isArray((input.role as unknown as { tools?: string[] }).tools) &&
+            (input.role as unknown as { tools?: string[] }).tools!.length > 0;
         if (hasTools && this.opts.toolRunner) {
             try {
-                const allowed = this.opts.toolCheck ? await this.opts.toolCheck(input.role.id, 'tool:use') : true;
+                const allowed = this.opts.toolCheck
+                    ? await this.opts.toolCheck(input.role.id, 'tool:use')
+                    : true;
                 if (allowed) {
-                    const res = await this.opts.toolRunner.runWithTools(user, { agentId: input.role.id, system, maxRounds: 2 });
+                    const res = await this.opts.toolRunner.runWithTools(user, {
+                        agentId: input.role.id,
+                        system,
+                        maxRounds: 2,
+                    });
                     if (res.output) return res.output;
                 }
             } catch (e) {
-                LOGGER.warn('LlmBridge', 'crew tool-loop failed, fallback to chat', { error: e instanceof Error ? e.message : String(e) });
+                LOGGER.warn('LlmBridge', 'crew tool-loop failed, fallback to chat', {
+                    error: e instanceof Error ? e.message : String(e),
+                });
             }
         }
         try {
-            return await chat(
+            return await chatWithFallback(
                 this.opts,
                 system,
                 user,
@@ -126,7 +157,7 @@ export class LlmCouncilPort implements ICouncilLlmPort {
         topic: string;
         participant: { id: string; name: string; kind: string };
     }): Promise<string> {
-        return chat(
+        return chatWithFallback(
             this.opts,
             `You are ${input.participant.name} (${input.participant.kind}) in a structured debate. Be sharp and evidence-driven.`,
             `Topic: ${input.topic}\nDraft your opening stance in 5 sentences or less.`,
@@ -149,7 +180,7 @@ export class LlmCouncilPort implements ICouncilLlmPort {
                 return `[${who}]: ${m.body.slice(0, 800)}`;
             })
             .join('\n');
-        const out = await chat(
+        const out = await chatWithFallback(
             this.opts,
             `You are ${input.judgeName}, an impartial debate judge. Score dimensions: ${input.dimensions.join(', ')}. ` +
                 `Reply as JSON: {"winnerId":"<speaker id or draw>","scores":{"<id>":0-10},"rationale":"..."}. ` +
@@ -179,8 +210,10 @@ export class LlmGraphPort implements IGraphLlmPort {
     constructor(private opts: LlmBridgeOptions) {}
 
     async runTask(input: { label: string; state: Record<string, unknown> }): Promise<string> {
-        const keys = Object.keys(input.state).filter((k) => !k.startsWith('out:')).slice(0, 20);
-        return chat(
+        const keys = Object.keys(input.state)
+            .filter((k) => !k.startsWith('out:'))
+            .slice(0, 20);
+        return chatWithFallback(
             this.opts,
             'You are a workflow step executor. Produce the step result concisely.',
             `Step: ${input.label}\nState keys: ${keys.join(', ') || 'none'}\nLast output: ${String(input.state['lastOutput'] ?? 'n/a').slice(0, 2000)}`,
@@ -189,7 +222,7 @@ export class LlmGraphPort implements IGraphLlmPort {
     }
 
     async reflect(input: { visited: string[]; state: Record<string, unknown> }): Promise<string> {
-        return chat(
+        return chatWithFallback(
             this.opts,
             'You are a workflow reflector. Summarize progress, risks and next best action in 5 lines.',
             `Visited: ${input.visited.join(' → ') || 'none'}\nLast output: ${String(input.state['lastOutput'] ?? 'n/a').slice(0, 2000)}`,
@@ -202,7 +235,7 @@ export class LlmFrontierExecutor implements IFrontierExecutor {
     constructor(private opts: LlmBridgeOptions) {}
 
     async execute(task: string): Promise<string> {
-        return chat(
+        return chatWithFallback(
             this.opts,
             'You are a benchmark subject. Solve the task directly and completely.',
             task,
@@ -218,11 +251,9 @@ export class LlmFrontierExecutor implements IFrontierExecutor {
 export class LlmPersonaPort implements IPersonaLlmPort {
     constructor(private opts: LlmBridgeOptions) {}
 
-    async distillStyle(
-        samples: string[],
-    ): Promise<{ styleNotes: string[]; judgments: string[] }> {
+    async distillStyle(samples: string[]): Promise<{ styleNotes: string[]; judgments: string[] }> {
         if (samples.length === 0) return { styleNotes: [], judgments: [] };
-        const out = await chat(
+        const out = await chatWithFallback(
             this.opts,
             'You are a forensic style analyst. Reply as JSON only: ' +
                 '{"styleNotes":["..."],"judgments":["..."]}. Keep at most 8 of each.',
@@ -240,13 +271,20 @@ export class LlmPersonaPort implements IPersonaLlmPort {
             };
             const toStrings = (v: unknown): string[] =>
                 Array.isArray(v) ? v.filter((x): x is string => typeof x === 'string') : [];
-            return { styleNotes: toStrings(parsed.styleNotes), judgments: toStrings(parsed.judgments) };
+            return {
+                styleNotes: toStrings(parsed.styleNotes),
+                judgments: toStrings(parsed.judgments),
+            };
         } catch (e) {
             LOGGER.warn('LlmBridge', 'distillStyle JSON parse failed, heuristic split', {
                 error: e instanceof Error ? e.message : String(e),
             });
             return {
-                styleNotes: out.split('\n').map((l) => l.trim()).filter(Boolean).slice(0, 8),
+                styleNotes: out
+                    .split('\n')
+                    .map((l) => l.trim())
+                    .filter(Boolean)
+                    .slice(0, 8),
                 judgments: [],
             };
         }
@@ -254,7 +292,7 @@ export class LlmPersonaPort implements IPersonaLlmPort {
 
     async summarizeMemories(memories: LongTermMemory[]): Promise<string> {
         if (memories.length === 0) return 'No long-term memories.';
-        return chat(
+        return chatWithFallback(
             this.opts,
             'You are a memory archivist. Compress the memories into a compact profile: ' +
                 'stable facts, preferences, decisions and open threads. Be concise and concrete.',
