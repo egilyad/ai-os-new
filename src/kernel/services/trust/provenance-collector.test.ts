@@ -48,6 +48,17 @@ describe('ProvenanceCollector', () => {
         expect(links).toHaveLength(1);
     });
 
+    it('synthesis exported to crystal → связь synthesis→crystal', () => {
+        const events = makeEvents();
+        const linker = new ProvenanceLinker();
+        const collector = new ProvenanceCollector(events as never, linker);
+        collector.start();
+        events.emit('synthesis:exported-to-crystal', { synthesisId: 's1', crystalId: 'c1' });
+        const links = linker.get({ kind: 'synthesis' });
+        expect(links).toHaveLength(1);
+        expect(links[0].to.id).toBe('c1');
+    });
+
     it('memory claim → связь debate→memory', () => {
         const events = makeEvents();
         const linker = new ProvenanceLinker();

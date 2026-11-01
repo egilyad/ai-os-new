@@ -73,6 +73,19 @@ export class ProvenanceCollector {
                 }
             }),
         );
+
+        this.unsubs.push(
+            this.events.on(EVENTS.SYNTHESIS_EXPORTED_TO_CRYSTAL, (data: unknown) => {
+                const d = data as { synthesisId?: string; crystalId?: string };
+                if (d?.synthesisId && d?.crystalId) {
+                    this.linker.link(
+                        { kind: 'synthesis', id: d.synthesisId },
+                        { kind: 'crystal', id: d.crystalId },
+                        'derived_from',
+                    );
+                }
+            }),
+        );
     }
 
     destroy(): void {
