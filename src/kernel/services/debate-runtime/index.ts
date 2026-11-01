@@ -8,6 +8,13 @@ export { DebateOrchestrator } from './debate-orchestrator';
 export { interpret, draft, compileBuiltin, programToPlan } from './strategy-interpreter';
 export type { DebateExecutionPlan } from './strategy-interpreter';
 export {
+    resolveStrategyConfig,
+    buildTopologyForStrategy,
+    applyModeToSession,
+    strategyQualityForced,
+} from './debate-session-bridge';
+export type { ResolvedStrategyConfig, ModeSessionHints } from './debate-session-bridge';
+export {
     ConversationBackedDebateOrchestrator,
     DebateAgentExecutionEngine,
 } from './conversation-backed-debate-orchestrator';
