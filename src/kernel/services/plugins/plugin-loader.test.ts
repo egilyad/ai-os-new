@@ -141,4 +141,24 @@ describe('PluginLoader (SPEC_06)', () => {
         const ok = await loader.load(permitted);
         expect(ok).toBe(true);
     });
+
+    it('loadFromJson загружает валидный манифест', async () => {
+        const registry = fakeRegistry();
+        const host = fakeHost();
+        const loader = new PluginLoader({ registry, host });
+        const res = await loader.loadFromJson(JSON.stringify(manifest));
+        expect(res.ok).toBe(true);
+        expect(registry.register).toHaveBeenCalledWith(manifest);
+        expect(host.registerTools).toHaveBeenCalled();
+    });
+
+    it('loadFromJson отклоняет невалидный JSON', async () => {
+        const registry = fakeRegistry();
+        const host = fakeHost();
+        const loader = new PluginLoader({ registry, host });
+        const res = await loader.loadFromJson('{ not json');
+        expect(res.ok).toBe(false);
+        expect(res.error).toBe('invalid JSON');
+        expect(registry.register).not.toHaveBeenCalled();
+    });
 });

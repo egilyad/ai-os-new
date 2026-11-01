@@ -77,6 +77,30 @@ export class PluginLoader {
         return true;
     }
 
+    /**
+     * Парсит JSON-строку манифеста и подключает плагин.
+     * Возвращает { ok, error? }.
+     */
+    async loadFromJson(
+        json: string,
+        executor?: (name: string, args: Record<string, unknown>) => Promise<string>,
+        context?: unknown,
+        eventHandler?: PluginEventHandler,
+    ): Promise<{ ok: boolean; error?: string }> {
+        let manifest: PluginManifest;
+        try {
+            manifest = JSON.parse(json) as PluginManifest;
+        } catch {
+            return { ok: false, error: 'invalid JSON' };
+        }
+        const validation = validateManifest(manifest);
+        if (!validation.ok) {
+            return { ok: false, error: validation.errors.join('; ') };
+        }
+        const ok = await this.load(manifest, executor, context, eventHandler);
+        return { ok };
+    }
+
     /** Отключает плагин: снимает инструменты/подписки из хоста и дерегистрирует. */
     async unload(id: string): Promise<boolean> {
         const registered = this.deps.registry.get(id);
