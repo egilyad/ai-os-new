@@ -111,7 +111,9 @@ const RolesConsortiaPanel = React.lazy(() => import('./components/RolesPanel/Rol
 const ResearchEnginePanelLazy = React.lazy(
     () => import('./components/ResearchPanel/ResearchEnginePanel'),
 );
-const ResearchCockpitPanelLazy = React.lazy(() => import('./components/ResearchCockpit/ResearchCockpit'));
+const ResearchCockpitPanelLazy = React.lazy(
+    () => import('./components/ResearchCockpit/ResearchCockpit'),
+);
 const ResearchEngineAdvancedPanelLazy = React.lazy(
     () => import('./components/ResearchPanel/ResearchEngineAdvancedPanel'),
 );
@@ -151,10 +153,16 @@ const QualityImpactDashboardLazy = React.lazy(
     () => import('./components/QualityImpactDashboard/QualityImpactDashboardPanel'),
 );
 const LensesPanelLazy = React.lazy(() => import('./components/LensesPanel/LensesPanel'));
-const ExceptionsPanelLazy = React.lazy(() => import('./components/ExceptionsPanel/ExceptionsPanel'));
-const MemoryCenterPanelLazy = React.lazy(() => import('./components/MemoryCenterPanel/MemoryCenterPanel'));
+const ExceptionsPanelLazy = React.lazy(
+    () => import('./components/ExceptionsPanel/ExceptionsPanel'),
+);
+const MemoryCenterPanelLazy = React.lazy(
+    () => import('./components/MemoryCenterPanel/MemoryCenterPanel'),
+);
 const NavGraphPanelLazy = React.lazy(() => import('./components/NavGraphPanel/NavGraphPanel'));
-const GraphWorkbenchPanelLazy = React.lazy(() => import('./components/GraphWorkbenchPanel/GraphWorkbenchPanel'));
+const GraphWorkbenchPanelLazy = React.lazy(
+    () => import('./components/GraphWorkbenchPanel/GraphWorkbenchPanel'),
+);
 const DefectMapPanelLazy = React.lazy(() => import('./components/DefectMapPanel/DefectMapPanel'));
 const CrystalVaultPanelLazy = React.lazy(
     () => import('./components/CrystalVaultPanel/CrystalVaultPanel'),
@@ -170,8 +178,12 @@ const RoomPanelLazy = React.lazy(() => import('./components/RoomPanel/RoomPanel'
 const ChannelPanelLazy = React.lazy(() => import('./components/ChannelPanel/ChannelPanel'));
 const ProjectsPanelLazy = React.lazy(() => import('./components/ProjectsPanel/ProjectsPanel'));
 const FleetPanelLazy = React.lazy(() => import('./components/FleetPanel/FleetPanel'));
-const GovernancePanelLazy = React.lazy(() => import('./components/GovernancePanel/GovernancePanel'));
-const ProvenancePanelLazy = React.lazy(() => import('./components/ProvenancePanel/ProvenancePanel'));
+const GovernancePanelLazy = React.lazy(
+    () => import('./components/GovernancePanel/GovernancePanel'),
+);
+const ProvenancePanelLazy = React.lazy(
+    () => import('./components/ProvenancePanel/ProvenancePanel'),
+);
 const FleetCrewsPanelLazy = React.lazy(() => import('./components/FleetPanels/CrewsPanel'));
 const CouncilPanelLazy = React.lazy(() => import('./components/CouncilPanel/CouncilPanel'));
 const FleetGraphsPanelLazy = React.lazy(() => import('./components/FleetPanels/GraphsPanel'));
@@ -183,10 +195,14 @@ const IssuesPanelLazy = React.lazy(() => import('./components/IssuesPanel'));
 const ApprovalsPanelLazy = React.lazy(() => import('./components/ApprovalsPanel'));
 const CostsPanelLazy = React.lazy(() => import('./components/CostsPanel'));
 const RunsPanelLazy = React.lazy(() => import('./components/RunsPanel'));
-const AgentTasksPanelLazy = React.lazy(() => import('./components/AgentTasksPanel/AgentTasksPanel'));
+const AgentTasksPanelLazy = React.lazy(
+    () => import('./components/AgentTasksPanel/AgentTasksPanel'),
+);
 const AdaptersPanelLazy = React.lazy(() => import('./components/AdaptersPanel'));
 const PortabilityPanelLazy = React.lazy(() => import('./components/PortabilityPanel'));
-const SimulationPanelLazy = React.lazy(() => import('./components/SimulationPanel/SimulationPanel'));
+const SimulationPanelLazy = React.lazy(
+    () => import('./components/SimulationPanel/SimulationPanel'),
+);
 const WikiPanelLazy = React.lazy(() => import('./components/WikiPanel/WikiPanel'));
 
 // ── Section 11 P2+P3 Lazy Imports ─────────────────────────────────────────────
@@ -228,7 +244,9 @@ const MCPPanelLazy = React.lazy(() => import('./components/MCPPanel/MCPPanel'));
 const SchedulerPanelLazy = React.lazy(() => import('./components/SchedulerPanel'));
 const RivalsCatalogPanelLazy = React.lazy(() => import('./components/RivalsCatalogPanel'));
 const GroupChatPanelLazy = React.lazy(() => import('./components/GroupChatPanel/GroupChatPanel'));
-const GuardrailsPanelLazy = React.lazy(() => import('./components/GuardrailsPanel/GuardrailsPanel'));
+const GuardrailsPanelLazy = React.lazy(
+    () => import('./components/GuardrailsPanel/GuardrailsPanel'),
+);
 const PlannerPanelLazy = React.lazy(() => import('./components/PlannerPanel/PlannerPanel'));
 const AutonomyPanelLazy = React.lazy(() => import('./components/AutonomyPanel/AutonomyPanel'));
 const DyadPanelLazy = React.lazy(() => import('./components/DyadPanel/DyadPanel'));
@@ -237,37 +255,92 @@ const RunQueuePanelLazy = React.lazy(() => import('./components/RunQueuePanel/Ru
 const RivalLabsPanelLazy = React.lazy(() => import('./components/RivalLabs/RivalLabsPanel'));
 const ExperimentalPanelLazy = React.lazy(() => import('./components/ExperimentalPanel'));
 const SteelmanPanelLazy = React.lazy(() => import('./components/SteelmanPanel/SteelmanPanel'));
-const BayesianJudgePanelLazy = React.lazy(() => import('./components/BayesianJudgePanel/BayesianJudgePanel'));
+const BayesianJudgePanelLazy = React.lazy(
+    () => import('./components/BayesianJudgePanel/BayesianJudgePanel'),
+);
 const BlindEvalPanelLazy = React.lazy(() => import('./components/BlindEvalPanel/BlindEvalPanel'));
-const CredibilityPanelLazy = React.lazy(() => import('./components/CredibilityPanel/CredibilityPanel'));
-const CalibrationPanelLazy = React.lazy(() => import('./components/CalibrationPanel/CalibrationPanel'));
-const ConsistencyPanelLazy = React.lazy(() => import('./components/ConsistencyPanel/ConsistencyPanel'));
-const FrameTrackerPanelLazy = React.lazy(() => import('./components/FrameTrackerPanel/FrameTrackerPanel'));
-const StanceDriftPanelLazy = React.lazy(() => import('./components/StanceDriftPanel/StanceDriftPanel'));
-const InsightBusPanelLazy = React.lazy(() => import('./components/InsightBusPanel/InsightBusPanel'));
-const EntanglementPanelLazy = React.lazy(() => import('./components/EntanglementPanel/EntanglementPanel'));
+const CredibilityPanelLazy = React.lazy(
+    () => import('./components/CredibilityPanel/CredibilityPanel'),
+);
+const CalibrationPanelLazy = React.lazy(
+    () => import('./components/CalibrationPanel/CalibrationPanel'),
+);
+const ConsistencyPanelLazy = React.lazy(
+    () => import('./components/ConsistencyPanel/ConsistencyPanel'),
+);
+const FrameTrackerPanelLazy = React.lazy(
+    () => import('./components/FrameTrackerPanel/FrameTrackerPanel'),
+);
+const StanceDriftPanelLazy = React.lazy(
+    () => import('./components/StanceDriftPanel/StanceDriftPanel'),
+);
+const InsightBusPanelLazy = React.lazy(
+    () => import('./components/InsightBusPanel/InsightBusPanel'),
+);
+const EntanglementPanelLazy = React.lazy(
+    () => import('./components/EntanglementPanel/EntanglementPanel'),
+);
 const AnchoringPanelLazy = React.lazy(() => import('./components/AnchoringPanel/AnchoringPanel'));
-const BeliefMiningPanelLazy = React.lazy(() => import('./components/BeliefMiningPanel/BeliefMiningPanel'));
-const GoTDeliberationPanelLazy = React.lazy(() => import('./components/GoTDeliberationPanel/GoTDeliberationPanel'));
-const BoPTrackerPanelLazy = React.lazy(() => import('./components/BoPTrackerPanel/BoPTrackerPanel'));
-const PersonaMixerPanelLazy = React.lazy(() => import('./components/PersonaMixerPanel/PersonaMixerPanel'));
-const ScratchpadPanelLazy = React.lazy(() => import('./components/ScratchpadPanel/ScratchpadPanel'));
-const IncentiveDetectorPanelLazy = React.lazy(() => import('./components/IncentiveDetectorPanel/IncentiveDetectorPanel'));
-const ConceptBlenderPanelLazy = React.lazy(() => import('./components/ConceptBlenderPanel/ConceptBlenderPanel'));
-const SimilarityPanelLazy = React.lazy(() => import('./components/SimilarityPanel/SimilarityPanel'));
-const MinimaxPlannerPanelLazy = React.lazy(() => import('./components/MinimaxPlannerPanel/MinimaxPlannerPanel'));
-const OutcomeForecasterPanelLazy = React.lazy(() => import('./components/OutcomeForecasterPanel/OutcomeForecasterPanel'));
+const BeliefMiningPanelLazy = React.lazy(
+    () => import('./components/BeliefMiningPanel/BeliefMiningPanel'),
+);
+const GoTDeliberationPanelLazy = React.lazy(
+    () => import('./components/GoTDeliberationPanel/GoTDeliberationPanel'),
+);
+const BoPTrackerPanelLazy = React.lazy(
+    () => import('./components/BoPTrackerPanel/BoPTrackerPanel'),
+);
+const PersonaMixerPanelLazy = React.lazy(
+    () => import('./components/PersonaMixerPanel/PersonaMixerPanel'),
+);
+const ScratchpadPanelLazy = React.lazy(
+    () => import('./components/ScratchpadPanel/ScratchpadPanel'),
+);
+const IncentiveDetectorPanelLazy = React.lazy(
+    () => import('./components/IncentiveDetectorPanel/IncentiveDetectorPanel'),
+);
+const ConceptBlenderPanelLazy = React.lazy(
+    () => import('./components/ConceptBlenderPanel/ConceptBlenderPanel'),
+);
+const SimilarityPanelLazy = React.lazy(
+    () => import('./components/SimilarityPanel/SimilarityPanel'),
+);
+const MinimaxPlannerPanelLazy = React.lazy(
+    () => import('./components/MinimaxPlannerPanel/MinimaxPlannerPanel'),
+);
+const OutcomeForecasterPanelLazy = React.lazy(
+    () => import('./components/OutcomeForecasterPanel/OutcomeForecasterPanel'),
+);
 const MetaAgentPanelLazy = React.lazy(() => import('./components/MetaAgentPanel/MetaAgentPanel'));
-const BiasProfilerPanelLazy = React.lazy(() => import('./components/BiasProfilerPanel/BiasProfilerPanel'));
-const StakeholderPanelLazy = React.lazy(() => import('./components/StakeholderPanel/StakeholderPanel'));
+const BiasProfilerPanelLazy = React.lazy(
+    () => import('./components/BiasProfilerPanel/BiasProfilerPanel'),
+);
+const StakeholderPanelLazy = React.lazy(
+    () => import('./components/StakeholderPanel/StakeholderPanel'),
+);
 const RhetoricPanelLazy = React.lazy(() => import('./components/RhetoricPanel/RhetoricPanel'));
-const ExpertWitnessPanelLazy = React.lazy(() => import('./components/ExpertWitnessPanel/ExpertWitnessPanel'));
-const DriftDetectorPanelLazy = React.lazy(() => import('./components/DriftDetectorPanel/DriftDetectorPanel'));
-const ShadowOpponentPanelLazy = React.lazy(() => import('./components/ShadowOpponentPanel/ShadowOpponentPanel'));
-const AdversarialSourcePanelLazy = React.lazy(() => import('./components/AdversarialSourcePanel/AdversarialSourcePanel'));
-const VulnTargetingPanelLazy = React.lazy(() => import('./components/VulnTargetingPanel/VulnTargetingPanel'));
-const JustificationPanelLazy = React.lazy(() => import('./components/JustificationPanel/JustificationPanel'));
-const LogicalFormPanelLazy = React.lazy(() => import('./components/LogicalFormPanel/LogicalFormPanel'));
+const ExpertWitnessPanelLazy = React.lazy(
+    () => import('./components/ExpertWitnessPanel/ExpertWitnessPanel'),
+);
+const DriftDetectorPanelLazy = React.lazy(
+    () => import('./components/DriftDetectorPanel/DriftDetectorPanel'),
+);
+const ShadowOpponentPanelLazy = React.lazy(
+    () => import('./components/ShadowOpponentPanel/ShadowOpponentPanel'),
+);
+const AdversarialSourcePanelLazy = React.lazy(
+    () => import('./components/AdversarialSourcePanel/AdversarialSourcePanel'),
+);
+const VulnTargetingPanelLazy = React.lazy(
+    () => import('./components/VulnTargetingPanel/VulnTargetingPanel'),
+);
+const JustificationPanelLazy = React.lazy(
+    () => import('./components/JustificationPanel/JustificationPanel'),
+);
+const LogicalFormPanelLazy = React.lazy(
+    () => import('./components/LogicalFormPanel/LogicalFormPanel'),
+);
+const PluginManagerPanelLazy = React.lazy(() => import('./components/PluginManagerPanel'));
 
 // Component map: nav id → React component (dashboard handled manually for onNavigate)
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -321,6 +394,7 @@ export const PANEL_COMPONENTS: Record<string, React.ComponentType<any>> = {
     mcp: MCPPanelLazy,
     'session-bindings': SessionBindingsPanel,
     guardians: GuardiansPanel,
+    plugins: PluginManagerPanelLazy,
     playground: ModelComparePanel,
     prompts: PromptLibraryPanel,
     batch: BatchProcessingPanel,
@@ -472,7 +546,7 @@ export const PANEL_COMPONENTS: Record<string, React.ComponentType<any>> = {
     'shadow-opponent': ShadowOpponentPanelLazy,
     'adversarial-source': AdversarialSourcePanelLazy,
     'vuln-targeting': VulnTargetingPanelLazy,
-    'justification': JustificationPanelLazy,
+    justification: JustificationPanelLazy,
     'logical-form': LogicalFormPanelLazy,
     scheduler: SchedulerPanelLazy,
     'rivals-catalog': RivalsCatalogPanelLazy,

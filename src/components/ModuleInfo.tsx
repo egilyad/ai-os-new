@@ -107,7 +107,8 @@ export type ModuleKey =
     | 'runtime_pressure_map'
     | 'diagnostics'
     | 'dependency_graph'
-    | 'service_registry';
+    | 'service_registry'
+    | 'plugins';
 
 const MODULE_NAV_KEY: Record<ModuleKey, TranslationKey> = {
     dashboard: 'nav.overview',
@@ -142,6 +143,7 @@ const MODULE_NAV_KEY: Record<ModuleKey, TranslationKey> = {
     dependency_graph: 'nav.dependency_graph',
     diagnostics: 'nav.diagnostics',
     service_registry: 'nav.service_registry',
+    plugins: 'nav.plugin_sdk',
 };
 
 const MODULE_INFO_KEY: Record<ModuleKey, TranslationKey> = {
@@ -177,6 +179,7 @@ const MODULE_INFO_KEY: Record<ModuleKey, TranslationKey> = {
     dependency_graph: 'info.dependency_graph',
     diagnostics: 'info.diagnostics',
     service_registry: 'info.service_registry',
+    plugins: 'info.plugins',
 };
 
 const MODULE_ICONS: Record<ModuleKey, React.ReactNode> = {
@@ -227,8 +230,39 @@ const ModuleInfo: React.FC<ModuleInfoProps> = ({ moduleKey, relatedModules }) =>
     if (!infoKey || !navKey) {
         return (
             <details style={{ marginTop: '1.5rem' }}>
-                <summary style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', userSelect: 'none', padding: '0.5rem 0.75rem', borderRadius: 8, background: 'rgba(139,92,246,0.04)', border: '1px solid rgba(139,92,246,0.12)', fontSize: '0.75rem', color: 'var(--slate-400)', fontWeight: 600 }}>Planned feature — {String(moduleKey).replace(/-/g, ' ')}</summary>
-                <div style={{ marginTop: '0.5rem', padding: '1rem 1.25rem', borderRadius: 12, background: 'rgba(139,92,246,0.04)', border: '1px solid rgba(139,92,246,0.12)', fontSize: '0.8rem', color: 'var(--slate-400)', lineHeight: 1.6 }}>This capability is planned and will be connected to its debate-runtime service. Track progress in Experimental hub.</div>
+                <summary
+                    style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.5rem',
+                        cursor: 'pointer',
+                        userSelect: 'none',
+                        padding: '0.5rem 0.75rem',
+                        borderRadius: 8,
+                        background: 'rgba(139,92,246,0.04)',
+                        border: '1px solid rgba(139,92,246,0.12)',
+                        fontSize: '0.75rem',
+                        color: 'var(--slate-400)',
+                        fontWeight: 600,
+                    }}
+                >
+                    Planned feature — {String(moduleKey).replace(/-/g, ' ')}
+                </summary>
+                <div
+                    style={{
+                        marginTop: '0.5rem',
+                        padding: '1rem 1.25rem',
+                        borderRadius: 12,
+                        background: 'rgba(139,92,246,0.04)',
+                        border: '1px solid rgba(139,92,246,0.12)',
+                        fontSize: '0.8rem',
+                        color: 'var(--slate-400)',
+                        lineHeight: 1.6,
+                    }}
+                >
+                    This capability is planned and will be connected to its debate-runtime service.
+                    Track progress in Experimental hub.
+                </div>
             </details>
         );
     }

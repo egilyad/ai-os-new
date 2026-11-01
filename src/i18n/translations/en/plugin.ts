@@ -1,0 +1,22 @@
+// plugin.* — English translations (SPEC_06)
+const plugin: Record<string, string> = {
+    'plugin.title': 'Plugins',
+    'plugin.refresh': 'Refresh',
+    'plugin.load_manifest': 'Load manifest',
+    'plugin.load': 'Load',
+    'plugin.manifest_hint':
+        'Paste a plugin manifest (JSON). It will be validated and its tools registered into the host.',
+    'plugin.loaded': 'Plugin loaded',
+    'plugin.load_failed': 'Plugin load failed (validation or kernel version)',
+    'plugin.op_failed': 'Operation failed',
+    'plugin.activated': 'Plugin activated',
+    'plugin.deactivated': 'Plugin deactivated',
+    'plugin.removed': 'Plugin removed',
+    'plugin.empty': 'No plugins registered',
+    'plugin.retry': 'Retry',
+    'plugin.activate': 'Activate',
+    'plugin.deactivate': 'Deactivate',
+    'info.plugins': 'Plugin management (SPEC_06): registry, host, loader',
+};
+
+export { plugin };

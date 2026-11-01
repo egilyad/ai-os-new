@@ -419,6 +419,13 @@ export const CONTENT_SECTIONS: NavSection[] = [
                 lazy: true,
             },
             {
+                id: 'plugins',
+                labelKey: 'nav.plugin_sdk',
+                icon: Icons.puzzle,
+                color: '#a855f7',
+                lazy: true,
+            },
+            {
                 id: 'guardians',
                 labelKey: 'nav.guardians',
                 icon: Icons.shield,

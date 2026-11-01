@@ -1,0 +1,22 @@
+// plugin.* — Русские переводы (SPEC_06)
+const plugin: Record<string, string> = {
+    'plugin.title': 'Плагины',
+    'plugin.refresh': 'Обновить',
+    'plugin.load_manifest': 'Загрузить манифест',
+    'plugin.load': 'Загрузить',
+    'plugin.manifest_hint':
+        'Вставьте манифест плагина (JSON). Он будет проверен и его инструменты зарегистрируются в хосте.',
+    'plugin.loaded': 'Плагин загружен',
+    'plugin.load_failed': 'Не удалось загрузить плагин (валидация или версия ядра)',
+    'plugin.op_failed': 'Операция не удалась',
+    'plugin.activated': 'Плагин активирован',
+    'plugin.deactivated': 'Плагин деактивирован',
+    'plugin.removed': 'Плагин удалён',
+    'plugin.empty': 'Плагины не зарегистрированы',
+    'plugin.retry': 'Повторить',
+    'plugin.activate': 'Активировать',
+    'plugin.deactivate': 'Деактивировать',
+    'info.plugins': 'Управление плагинами (SPEC_06): реестр, хост, загрузчик',
+};
+
+export { plugin };

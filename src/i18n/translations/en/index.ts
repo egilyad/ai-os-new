@@ -18,6 +18,7 @@ import { integrations } from './integrations';
 import { governance } from './governance';
 import { workspace } from './workspace';
 import { wiki } from './wiki';
+import { plugin as pluginEn } from './plugin';
 
 const en: Record<string, string> = {
     ...nav,
@@ -40,6 +41,7 @@ const en: Record<string, string> = {
     ...governance,
     ...workspace,
     ...wiki,
+    ...pluginEn,
 };
 
 export { en };
