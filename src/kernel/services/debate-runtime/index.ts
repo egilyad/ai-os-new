@@ -56,7 +56,7 @@ export {
     computeQualityMetrics,
 } from './debate-metrics';
 export { buildDebateState, buildDebateStatePrompt } from './debate-state-builder';
-export { updateConvergenceScore } from './debate-stop-conditions';
+export { updateConvergenceScore, shouldStopByConvergence } from './debate-stop-conditions';
 export { isDuplicateArgument } from './debate-duplicate-detection';
 export {
     loadActiveSession,
