@@ -298,7 +298,7 @@ export class StrategyRegistry implements IStrategyRegistry {
             const program = compileDefinition(entry.definition);
             if (program) programs.push(program);
         }
-        return programs;
+        return programs.sort((a, b) => a.id.localeCompare(b.id));
     }
 
     list(): StrategyRegistryEntry[] {
