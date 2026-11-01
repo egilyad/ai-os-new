@@ -64,6 +64,12 @@ describe('strategy-interpreter (SPEC_07)', () => {
         expect(plan.stopWhen).toBe('agreement');
     });
 
+    it('programToPlan для sequence-корня даёт order=sequential', () => {
+        const plan = programToPlan(interpret(draft('builtin.brainstorming', 'sequence')));
+        expect(plan.order).toBe('sequential');
+        expect(plan.stopWhen).toBeUndefined();
+    });
+
     it('сохраняет convergenceThreshold/earlyExitConfidence', () => {
         const p = interpret(
             draft('builtin.round_robin', 'debate_graph', {
