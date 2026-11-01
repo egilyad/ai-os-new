@@ -334,6 +334,7 @@ export type {
 } from './contracts/debate-strategy-dsl';
 export {
     resolveStrategyConfig,
+    resolveStrategyConfigForMode,
     buildTopologyForStrategy,
     roundToAvailableTopology,
     isKnownStrategy,

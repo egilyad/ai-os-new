@@ -16,6 +16,7 @@ export {
 export type { DebateExecutionPlan } from './strategy-interpreter';
 export {
     resolveStrategyConfig,
+    resolveStrategyConfigForMode,
     buildTopologyForStrategy,
     roundToAvailableTopology,
     applyModeToSession,
