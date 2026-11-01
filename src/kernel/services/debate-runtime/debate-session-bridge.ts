@@ -221,6 +221,8 @@ export function builtinExecutionHints(strategyId: string): {
 export interface ResolvedStrategyConfig {
     topology: DebateTopology;
     forcedQuality: string[];
+    earlyExitConfidence?: number;
+    stopWhen?: string;
 }
 
 export interface ModeSessionHints {
@@ -294,16 +296,22 @@ export function resolveStrategyConfig(
             const plan = programToPlan(program);
             forcedQuality.push(...plan.techniques);
             const rounds = plan.maxRounds ?? maxRounds;
+            const planMeta = {
+                earlyExitConfidence: plan.earlyExitConfidence,
+                stopWhen: plan.stopWhen,
+            };
             if (plan.topology === 'linear') {
                 return {
                     topology: buildLinearTopology(participants, rounds),
                     forcedQuality: [...new Set(forcedQuality)],
+                    ...planMeta,
                 };
             }
             if (plan.topology === 'judge' && participants.some((p) => p.role === 'judge')) {
                 return {
                     topology: buildJudgeTopology(participants, rounds),
                     forcedQuality: [...new Set(forcedQuality)],
+                    ...planMeta,
                 };
             }
             effective = 'round_robin';

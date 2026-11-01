@@ -207,6 +207,10 @@ export interface DebateConfig {
     qualitySettings?: Record<string, boolean>;
     /** Optional builtin mode id (D3) — its constraint/temperature/limits are applied at start. */
     modeId?: string;
+    /** From DSL plan (SPEC_07) — early-exit confidence threshold. */
+    earlyExitConfidence?: number;
+    /** From DSL plan (SPEC_07) — stop condition for the debate loop. */
+    stopWhen?: string;
 }
 
 export interface HumanVote {

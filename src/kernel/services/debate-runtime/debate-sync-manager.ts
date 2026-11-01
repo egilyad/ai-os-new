@@ -304,7 +304,8 @@ export class DebateSyncManager {
         // when a mode is requested — additive, only overrides defined fields.
         if (sessionConfig.modeId) {
             const modeHints = applyModeToSession(sessionConfig.modeId);
-            if (modeHints.temperature !== undefined) sessionConfig.temperature = modeHints.temperature;
+            if (modeHints.temperature !== undefined)
+                sessionConfig.temperature = modeHints.temperature;
             if (modeHints.maxRounds !== undefined) maxRounds = modeHints.maxRounds;
             if (modeHints.strategy) strategy = modeHints.strategy as DebateStrategy | string;
             if (modeHints.forcedQuality.length) {
@@ -322,6 +323,12 @@ export class DebateSyncManager {
                 ...(sessionConfig.qualitySettings ?? {}),
                 ...Object.fromEntries(resolved.forcedQuality.map((t) => [t, true])),
             };
+        }
+        if (resolved.earlyExitConfidence !== undefined) {
+            sessionConfig.earlyExitConfidence = resolved.earlyExitConfidence;
+        }
+        if (resolved.stopWhen) {
+            sessionConfig.stopWhen = resolved.stopWhen;
         }
         this._setupDurationTimer(entry, sessionConfig);
         this._resetCircuitBreakers();
