@@ -63,11 +63,10 @@ export const registerPhase82: Phase = (helpers, ctx) => {
         }),
     );
 
-    register('evalHub', () =>
-        new EvalHub({
-            runPrompt: async () => ({ output: '' }),
-        }),
-    );
+    register('evalHub', (c) => {
+        const driver = new AgentEvalDriver(c.get<IAgentRuntime>('agentRuntime'));
+        return new EvalHub({ runPrompt: (p) => driver.runPrompt(p) });
+    });
 
     register('agentEvalDriver', (c) =>
         new AgentEvalDriver(c.get<IAgentRuntime>('agentRuntime')),
