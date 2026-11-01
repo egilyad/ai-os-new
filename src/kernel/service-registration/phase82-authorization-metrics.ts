@@ -21,6 +21,7 @@ import { DefaultEmbeddingService } from '../services/parity/default-embedding-se
 import { PluginRegistry } from '../services/plugins/plugin-registry';
 import { AgentSecurityGuard } from '../services/security/agent-security-guard';
 import { AgentRuntime } from '../services/agent-runtime/agent-runtime';
+import { createAgentCallLlm, type AgentLlmDeps } from '../services/agent-runtime/agent-runtime-llm';
 import { EvalHub } from '../services/eval/eval-hub';
 import { AgentEvalDriver } from '../services/eval/agent-eval-driver';
 import { ProvenanceLinker } from '../services/trust/provenance-linker';
@@ -55,9 +56,10 @@ export const registerPhase82: Phase = (helpers, ctx) => {
 
     register('agentRuntime', (c) =>
         new AgentRuntime({
-            // Ð”ÐµÑ„Ð¾Ð»Ñ‚Ð½Ð°Ñ Ð·Ð°Ð³Ð»ÑƒÑˆÐºÐ°; Ñ€ÐµÐ°Ð»ÑŒÐ½Ñ‹Ð¹ LLM-Ð²Ñ‹Ð·Ð¾Ð² Ð¿Ð¾Ð´ÐºÐ»ÑŽÑ‡Ð°ÐµÑ‚ÑÑ Ð¿Ñ€Ð¸ Ð¿ÐµÑ€Ð²Ð¾Ð¼
-            // Ð¿Ñ€Ð¾Ð³Ð¾Ð½Ðµ/Ð¸Ð½Ñ‚ÐµÐ³Ñ€Ð°Ñ†Ð¸Ð¸ Ñ routerService.
-            callLlm: async () => ({ content: '' }),
+            callLlm: createAgentCallLlm({
+                adapterRegistry: c.get<AgentLlmDeps['adapterRegistry']>('adapterRegistry'),
+                keyService: c.get<AgentLlmDeps['keyService']>('keyService'),
+            }),
             securityGuard: c.get<IAgentSecurityGuard>('agentSecurityGuard'),
             metrics: c.get<IMetricsService>('realtimeMetricsService'),
         }),
