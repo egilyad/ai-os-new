@@ -31,7 +31,10 @@ export class MetricsCollector {
 
         this.unsubs.push(
             this.events.on(EVENTS.CHAT_STREAM_END, (data: unknown) => {
-                const d = data as { latency?: number; tokens?: { input?: number; output?: number } };
+                const d = data as {
+                    latency?: number;
+                    tokens?: { input?: number; output?: number };
+                };
                 this.metrics.inc('llm.request');
                 if (typeof d?.latency === 'number') {
                     this.metrics.record('llm.latency', d.latency);
@@ -136,6 +139,30 @@ export class MetricsCollector {
         this.unsubs.push(
             this.events.on(EVENTS.POLICY_VIOLATION, () => {
                 this.metrics.inc('policy.violations');
+            }),
+        );
+
+        this.unsubs.push(
+            this.events.on(EVENTS.PLUGIN_REGISTERED, () => {
+                this.metrics.inc('plugin.registered');
+            }),
+        );
+
+        this.unsubs.push(
+            this.events.on(EVENTS.PLUGIN_ACTIVATED, () => {
+                this.metrics.inc('plugin.activated');
+            }),
+        );
+
+        this.unsubs.push(
+            this.events.on(EVENTS.PLUGIN_DEACTIVATED, () => {
+                this.metrics.inc('plugin.deactivated');
+            }),
+        );
+
+        this.unsubs.push(
+            this.events.on(EVENTS.PLUGIN_LOAD_FAILED, () => {
+                this.metrics.inc('plugin.load_failed');
             }),
         );
     }
