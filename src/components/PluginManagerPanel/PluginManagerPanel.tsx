@@ -221,6 +221,14 @@ const PluginManagerPanel: React.FC = () => {
                                     .join(', ')}
                             </div>
                         )}
+                        {(p.manifest.contributes.mcpServers?.length ?? 0) > 0 && (
+                            <div
+                                style={{ fontSize: 10, color: 'var(--slate-500)', marginBottom: 2 }}
+                            >
+                                {t('plugin.mcp')}:{' '}
+                                {p.manifest.contributes.mcpServers!.map((s) => s.name).join(', ')}
+                            </div>
+                        )}
                         <div style={{ display: 'flex', gap: 6, marginTop: 6 }}>
                             {p.status === 'error' ? (
                                 <button

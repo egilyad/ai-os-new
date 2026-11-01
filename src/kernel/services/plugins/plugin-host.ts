@@ -181,6 +181,13 @@ export class PluginHost {
         }
     }
 
+    /** Имена встроенных MCP-серверов плагина (для UI). */
+    listMcpServers(manifestId: string): string[] {
+        return [...this.mcpServers.entries()]
+            .filter(([, owner]) => owner === manifestId)
+            .map(([id]) => id);
+    }
+
     /** Полная очистка плагина: инструменты + подписки + MCP. */
     unregisterAll(manifestId: string): void {
         this.unregisterTools(manifestId);
