@@ -187,4 +187,11 @@ describe('resolveStrategyConfig (DSL interpreter integration)', () => {
             expect.arrayContaining(['evidence-triangulation', 'fact-checking']),
         );
     });
+
+    it('resolveStrategyConfigForMode покрывает все режимы без падений', () => {
+        const modes = ['strict_logic', 'scientific_review', 'brainstorming', 'jury_trial'];
+        for (const mode of modes) {
+            expect(() => resolveStrategyConfigForMode(mode, baseline), mode).not.toThrow();
+        }
+    });
 });
