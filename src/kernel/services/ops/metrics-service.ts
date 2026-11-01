@@ -19,8 +19,8 @@ function computePercentiles(sorted: number[], ps: number[]): Record<string, numb
         const hi = Math.ceil(idx);
         out[String(p)] =
             lo === hi
-                ? sorted[lo]
-                : sorted[lo] + (sorted[hi] - sorted[lo]) * (idx - lo);
+                ? sorted[lo]!
+                : sorted[lo]! + (sorted[hi]! - sorted[lo]!) * (idx - lo);
     }
     return out;
 }

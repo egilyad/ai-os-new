@@ -37,11 +37,14 @@ export class AuthorizationService implements IAuthorizationService {
 
         const decision: AuthzDecision =
             matching.length > 0
-                ? {
-                      effect: matching[0].effect,
-                      matchedRule: matching[0].id,
-                      reason: `matched rule ${matching[0].id}`,
-                  }
+                ? (() => {
+                      const first = matching[0]!;
+                      return {
+                          effect: first.effect,
+                          matchedRule: first.id,
+                          reason: `matched rule ${first.id}`,
+                      };
+                  })()
                 : { effect: 'deny', reason: 'no matching rule — default deny' };
 
         for (const cb of this._listeners) {

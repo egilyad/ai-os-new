@@ -1,4 +1,5 @@
 import type {
+    BuilderNodeCategory,
     BuilderNodeDefinition,
     BuilderNodeKind,
     IBuilderNodeCatalog,

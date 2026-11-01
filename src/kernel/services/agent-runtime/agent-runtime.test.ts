@@ -58,7 +58,7 @@ describe('AgentRuntime (SPEC_05)', () => {
     });
 
     it('санитизирует текст от секретов перед LLM', async () => {
-        const callLlm = vi.fn(async (msgs: Array<{ content: string }>) => ({
+        const callLlm = vi.fn(async (msgs: Array<{ role?: string; content: string }>) => ({
             content: `got: ${msgs.find((m) => m.role === 'user')?.content}`,
         }));
         const runtime = new AgentRuntime({
