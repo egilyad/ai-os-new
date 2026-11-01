@@ -21,6 +21,7 @@ import { DefaultEmbeddingService } from '../services/parity/default-embedding-se
 import { PluginRegistry } from '../services/plugins/plugin-registry';
 import { PluginHost, type PluginMcpPort } from '../services/plugins/plugin-host';
 import { PluginLoader } from '../services/plugins/plugin-loader';
+import { PluginWorkerClient } from '../services/plugins/plugin-worker';
 import { AgentSecurityGuard } from '../services/security/agent-security-guard';
 import { AgentRuntime } from '../services/agent-runtime/agent-runtime';
 import { createAgentCallLlm, type AgentLlmDeps } from '../services/agent-runtime/agent-runtime-llm';
@@ -74,6 +75,8 @@ export const registerPhase82: Phase = (helpers, ctx) => {
             host: c.get<PluginHost>('pluginHost'),
         });
     });
+
+    register('pluginWorkerClient', () => new PluginWorkerClient());
 
     // Eager: восстанавливаем сохранённые манифесты плагинов при старте.
     const pluginRegistryForHydrate = ctx.container.get<PluginRegistry>('pluginRegistry');

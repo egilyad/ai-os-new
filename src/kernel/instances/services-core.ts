@@ -49,6 +49,7 @@ import type { IEmbeddingService } from '../contracts/embedding';
 import type { IPluginRegistry } from '../contracts/plugin';
 import type { PluginHost } from '../services/plugins/plugin-host';
 import type { PluginLoader } from '../services/plugins/plugin-loader';
+import type { PluginWorkerClient } from '../services/plugins/plugin-worker';
 import type { IAgentSecurityGuard } from '../contracts/agent-security';
 import type { IAgentRuntime } from '../contracts/agent-runtime';
 import type { IEvalHub } from '../contracts/eval-hub';
@@ -83,6 +84,7 @@ export const embeddingServiceHub = lazyService<IEmbeddingService>('embeddingServ
 export const pluginRegistry = lazyService<IPluginRegistry>('pluginRegistry');
 export const pluginHost = lazyService<PluginHost>('pluginHost');
 export const pluginLoader = lazyService<PluginLoader>('pluginLoader');
+export const pluginWorkerClient = lazyService<PluginWorkerClient>('pluginWorkerClient');
 export const agentSecurityGuard = lazyService<IAgentSecurityGuard>('agentSecurityGuard');
 export const agentRuntime = lazyService<IAgentRuntime>('agentRuntime');
 export const evalHub = lazyService<IEvalHub>('evalHub');
