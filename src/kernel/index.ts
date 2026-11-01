@@ -319,6 +319,8 @@ export type {
 } from './contracts/strategy-program';
 export { StrategyRegistry } from './services/debate-runtime/debate-strategy-registry';
 export { shouldStopByConvergence } from './services/debate-runtime/debate-stop-conditions';
+export { BUILTIN_MODES, DebateModeManager } from './services/debate-runtime/debate-mode-system';
+export type { DebateMode } from './contracts/debate-mode-system';
 export type {
     DebateSession,
     DebateParticipant,
