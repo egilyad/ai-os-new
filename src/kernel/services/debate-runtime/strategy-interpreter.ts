@@ -6,6 +6,8 @@ export interface DebateExecutionPlan {
     techniques: string[];
     maxRounds?: number;
     earlyExitConfidence?: number;
+    order?: string;
+    stopWhen?: string;
 }
 
 /** Конвертирует StrategyProgram в DebateExecutionPlan. */
@@ -15,6 +17,8 @@ export function programToPlan(program: StrategyProgram): DebateExecutionPlan {
         techniques: Object.keys(program.qualityMask).filter((k) => program.qualityMask[k]),
         maxRounds: program.topology.maxRounds,
         earlyExitConfidence: program.earlyExitConfidence,
+        order: program.turnPolicy.order,
+        stopWhen: program.turnPolicy.stopWhen,
     };
 }
 

@@ -53,6 +53,8 @@ describe('strategy-interpreter (SPEC_07)', () => {
         expect(plan.topology).toBe('roundtable');
         expect(plan.techniques).toContain('critic');
         expect(plan.maxRounds).toBe(6);
+        expect(plan.order).toBe('adversarial');
+        expect(plan.stopWhen).toBe('agreement');
     });
 
     it('сохраняет convergenceThreshold/earlyExitConfidence', () => {
