@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { AuthorizationService } from '../permissions/authorization-service';
 import { ToolGovernanceService } from './tool-governance-service';
+import type { IEventBus } from '../../types/interfaces';
 
 function mockRepo(servers: unknown[] = [], grants: unknown[] = []) {
     return {
@@ -12,7 +13,7 @@ function mockRepo(servers: unknown[] = [], grants: unknown[] = []) {
     } as never;
 }
 
-const mockEvents = { emit: () => {} };
+const mockEvents = { emit: () => {} } as unknown as IEventBus;
 const mockAudit = { append: async () => {} };
 
 describe('ToolGovernanceService + authorizationService (SPEC_08)', () => {

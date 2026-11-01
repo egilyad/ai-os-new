@@ -48,6 +48,6 @@ describe('createPermissionMiddleware + authorizationService (SPEC_08)', () => {
         const mw = createPermissionMiddleware(perm);
         const dec = await mw.pre!({ agentId: 'agent-1', toolId: 't-web' } as never);
         expect(dec.kind).toBe('deny');
-        expect(dec.reason).toBe('no');
+        expect((dec as { reason?: string }).reason).toBe('no');
     });
 });

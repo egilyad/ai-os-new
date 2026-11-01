@@ -3,7 +3,7 @@ import type { MetricSeries } from '../../contracts/metrics';
 
 const mockKeyValue = {
     put: vi.fn(async () => {}),
-    get: vi.fn(async () => null),
+    get: vi.fn(async (): Promise<{ value?: Record<string, MetricSeries> } | null> => null),
 };
 
 vi.mock('../database-service', () => ({
