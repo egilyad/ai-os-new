@@ -50,6 +50,7 @@ import type { IPluginRegistry } from '../contracts/plugin';
 import type { IAgentSecurityGuard } from '../contracts/agent-security';
 import type { IAgentRuntime } from '../contracts/agent-runtime';
 import type { IEvalHub } from '../contracts/eval-hub';
+import type { AgentEvalDriver } from '../services/eval/agent-eval-driver';
 import type { IProvenanceLinker } from '../contracts/provenance-link';
 import type { IBuilderNodeCatalog } from '../contracts/builder-node';
 
@@ -81,6 +82,7 @@ export const pluginRegistry = lazyService<IPluginRegistry>('pluginRegistry');
 export const agentSecurityGuard = lazyService<IAgentSecurityGuard>('agentSecurityGuard');
 export const agentRuntime = lazyService<IAgentRuntime>('agentRuntime');
 export const evalHub = lazyService<IEvalHub>('evalHub');
+export const agentEvalDriver = lazyService<AgentEvalDriver>('agentEvalDriver');
 export const provenanceLinker = lazyService<IProvenanceLinker>('provenanceLinker');
 export const builderNodeCatalog = lazyService<IBuilderNodeCatalog>('builderNodeCatalog');
 export const toolApprovalService = lazyService<IToolApprovalService>('toolApprovalService');

@@ -11,6 +11,7 @@ import type { IEventBus } from '../types/interfaces';
 import type { IMetricsService } from '../contracts/metrics';
 import type { IProvenanceLinker } from '../contracts/provenance-link';
 import type { IAgentSecurityGuard } from '../contracts/agent-security';
+import type { IAgentRuntime } from '../contracts/agent-runtime';
 import { AuthorizationService } from '../services/permissions/authorization-service';
 import { MetricsService } from '../services/ops/metrics-service';
 import { DexieMetricsStorage } from '../services/ops/metrics-dexie-storage';
@@ -22,6 +23,7 @@ import { PluginRegistry } from '../services/plugins/plugin-registry';
 import { AgentSecurityGuard } from '../services/security/agent-security-guard';
 import { AgentRuntime } from '../services/agent-runtime/agent-runtime';
 import { EvalHub } from '../services/eval/eval-hub';
+import { AgentEvalDriver } from '../services/eval/agent-eval-driver';
 import { ProvenanceLinker } from '../services/trust/provenance-linker';
 import { ProvenanceCollector } from '../services/trust/provenance-collector';
 import { BuilderNodeCatalog } from '../services/builder/node-catalog';
@@ -58,6 +60,10 @@ export const registerPhase82: Phase = (helpers, ctx) => {
         new EvalHub({
             runPrompt: async () => ({ output: '' }),
         }),
+    );
+
+    register('agentEvalDriver', (c) =>
+        new AgentEvalDriver(c.get<IAgentRuntime>('agentRuntime')),
     );
 
     register('provenanceLinker', () => new ProvenanceLinker());
