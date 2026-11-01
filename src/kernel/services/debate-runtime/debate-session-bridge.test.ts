@@ -119,4 +119,10 @@ describe('resolveStrategyConfig (DSL interpreter integration)', () => {
             expect(Array.isArray(res.forcedQuality), def.id).toBe(true);
         }
     });
+
+    it('builtin.constrained без судьи → откат на roundtable с сохранением качества', () => {
+        const res = resolveStrategyConfig('builtin.constrained', baseline);
+        expect(res.topology.type).toBe('roundtable');
+        expect(res.forcedQuality).toEqual(expect.arrayContaining(['judge-deliberation']));
+    });
 });
