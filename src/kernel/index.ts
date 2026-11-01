@@ -319,6 +319,13 @@ export type {
 } from './contracts/strategy-program';
 export { StrategyRegistry } from './services/debate-runtime/debate-strategy-registry';
 export type {
+    DebateSession,
+    DebateParticipant,
+    DebateConfig,
+    DebateStrategy,
+    DebateArgument,
+} from './contracts/debate-types';
+export type {
     StrategyDefinition,
     StrategyPrimitive,
     StrategyPrimitiveType,
