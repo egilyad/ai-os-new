@@ -125,4 +125,19 @@ describe('resolveStrategyConfig (DSL interpreter integration)', () => {
         expect(res.topology.type).toBe('roundtable');
         expect(res.forcedQuality).toEqual(expect.arrayContaining(['judge-deliberation']));
     });
+
+    it('пустые участники не роняют резолюцию', () => {
+        const enums: DebateStrategy[] = [
+            'round_robin',
+            'socratic',
+            'sequential',
+            'tree-of-thought',
+            'judge',
+            'red-blue',
+        ];
+        for (const s of enums) {
+            expect(() => buildTopologyForStrategy(s, []), s).not.toThrow();
+        }
+        expect(() => resolveStrategyConfig('builtin.socratic', [])).not.toThrow();
+    });
 });
