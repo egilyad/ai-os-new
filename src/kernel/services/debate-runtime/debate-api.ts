@@ -5,6 +5,7 @@ import type {
     DebateSession,
     DebateStrategy,
 } from '../../contracts/debate-types';
+import { isKnownStrategy } from './debate-session-bridge';
 import type { DebateSyncManager } from './debate-sync-manager';
 type DebateService = DebateSyncManager;
 import type { OrchestrationService } from '../orchestration-service';
@@ -141,6 +142,9 @@ export class DebateApiService {
             throw new Error('Need at least 2 participants');
         }
         const strategy = body.strategy ?? 'round_robin';
+        if (!isKnownStrategy(strategy)) {
+            throw new Error(`Unknown debate strategy: ${strategy}`);
+        }
         const maxRounds = body.maxRounds ?? 5;
         const config: Partial<DebateConfig> = {
             ...body.config,
