@@ -5,7 +5,13 @@ export { DebateMemory } from './debate-memory';
 export { DebateConsensusEngine } from './debate-consensus';
 export { DebateEvaluator } from './debate-evaluator';
 export { DebateOrchestrator } from './debate-orchestrator';
-export { interpret, draft, compileBuiltin, programToPlan } from './strategy-interpreter';
+export {
+    interpret,
+    draft,
+    compileBuiltin,
+    compileDefinition,
+    programToPlan,
+} from './strategy-interpreter';
 export type { DebateExecutionPlan } from './strategy-interpreter';
 export {
     resolveStrategyConfig,
