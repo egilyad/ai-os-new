@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import type { PluginManifest } from '../../contracts/plugin';
 import { validateManifest, satisfiesMinKernel } from './plugin-manifest';
 import { PluginRegistry } from './plugin-registry';
@@ -105,5 +105,31 @@ describe('PluginRegistry', () => {
         expect(reg.list()).toHaveLength(1);
         expect(await reg.unregister('acme.search')).toBe(true);
         expect(reg.has('acme.search')).toBe(false);
+    });
+
+    it('эмитит события жизненного цикла', async () => {
+        const emit = vi.fn();
+        const reg = new PluginRegistry({ bus: { emit } });
+        await reg.register(validManifest);
+        expect(emit).toHaveBeenCalledWith('plugin:registered', {
+            id: 'acme.search',
+            status: 'inactive',
+        });
+        await reg.activate('acme.search');
+        expect(emit).toHaveBeenCalledWith('plugin:activated', { id: 'acme.search' });
+        await reg.deactivate('acme.search');
+        expect(emit).toHaveBeenCalledWith('plugin:deactivated', { id: 'acme.search' });
+        await reg.unregister('acme.search');
+        expect(emit).toHaveBeenCalledWith('plugin:unregistered', { id: 'acme.search' });
+    });
+
+    it('эмитит PLUGIN_LOAD_FAILED при ошибке валидации', async () => {
+        const emit = vi.fn();
+        const reg = new PluginRegistry({ bus: { emit } });
+        await reg.register({ ...validManifest, version: 'abc' });
+        expect(emit).toHaveBeenCalledWith(
+            'plugin:load:failed',
+            expect.objectContaining({ id: 'acme.search' }),
+        );
     });
 });

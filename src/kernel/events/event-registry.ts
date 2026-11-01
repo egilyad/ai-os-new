@@ -1666,36 +1666,24 @@ export const EVENT_REGISTRY = {
             taskCount: z.number(),
         }),
     ),
-    CREW_STARTED: event(
-        'crew:started',
-        z.object({ crewId: z.string(), taskCount: z.number() }),
-    ),
+    CREW_STARTED: event('crew:started', z.object({ crewId: z.string(), taskCount: z.number() })),
     CREW_COMPLETED: event(
         'crew:completed',
         z.object({ crewId: z.string(), taskCount: z.number() }),
     ),
-    CREW_FAILED: event(
-        'crew:failed',
-        z.object({ crewId: z.string(), failedCount: z.number() }),
-    ),
+    CREW_FAILED: event('crew:failed', z.object({ crewId: z.string(), failedCount: z.number() })),
     CREW_ABORTED: event('crew:aborted', z.object({ crewId: z.string() })),
     CREW_DELETED: event('crew:deleted', z.object({ crewId: z.string() })),
     TASK_STARTED: event(
         'task:started',
         z.object({ crewId: z.string(), taskId: z.string(), assigneeId: z.string() }),
     ),
-    TASK_COMPLETED: event(
-        'task:completed',
-        z.object({ crewId: z.string(), taskId: z.string() }),
-    ),
+    TASK_COMPLETED: event('task:completed', z.object({ crewId: z.string(), taskId: z.string() })),
     TASK_FAILED: event(
         'task:failed',
         z.object({ crewId: z.string(), taskId: z.string(), error: z.string() }),
     ),
-    TASK_HITL: event(
-        'task:hitl',
-        z.object({ crewId: z.string(), taskId: z.string() }),
-    ),
+    TASK_HITL: event('task:hitl', z.object({ crewId: z.string(), taskId: z.string() })),
     FORGE_PROPOSED: event(
         'forge:proposed',
         z.object({
@@ -1738,10 +1726,7 @@ export const EVENT_REGISTRY = {
         'council:whisper',
         z.object({ sessionId: z.string(), fromId: z.string(), toId: z.string() }),
     ),
-    COUNCIL_PHASE: event(
-        'council:phase',
-        z.object({ sessionId: z.string(), phase: z.string() }),
-    ),
+    COUNCIL_PHASE: event('council:phase', z.object({ sessionId: z.string(), phase: z.string() })),
     COUNCIL_JUDGED: event(
         'council:judged',
         z.object({
@@ -1776,10 +1761,7 @@ export const EVENT_REGISTRY = {
             nodeCount: z.number(),
         }),
     ),
-    GRAPH_STARTED: event(
-        'graph:started',
-        z.object({ runId: z.string(), graphId: z.string() }),
-    ),
+    GRAPH_STARTED: event('graph:started', z.object({ runId: z.string(), graphId: z.string() })),
     GRAPH_NODE: event(
         'graph:node',
         z.object({ runId: z.string(), nodeId: z.string(), kind: z.string() }),
@@ -1797,18 +1779,9 @@ export const EVENT_REGISTRY = {
         z.object({ runId: z.string(), nodeId: z.string(), prompt: z.string() }),
     ),
     GRAPH_APPROVED: event('graph:approved', z.object({ runId: z.string() })),
-    GRAPH_REJECTED: event(
-        'graph:rejected',
-        z.object({ runId: z.string(), reason: z.string() }),
-    ),
-    GRAPH_COMPLETED: event(
-        'graph:completed',
-        z.object({ runId: z.string(), steps: z.number() }),
-    ),
-    GRAPH_FAILED: event(
-        'graph:failed',
-        z.object({ runId: z.string(), error: z.string() }),
-    ),
+    GRAPH_REJECTED: event('graph:rejected', z.object({ runId: z.string(), reason: z.string() })),
+    GRAPH_COMPLETED: event('graph:completed', z.object({ runId: z.string(), steps: z.number() })),
+    GRAPH_FAILED: event('graph:failed', z.object({ runId: z.string(), error: z.string() })),
     GRAPH_ABORTED: event('graph:aborted', z.object({ runId: z.string() })),
     GRAPH_RESTORED: event(
         'graph:restored',
@@ -1820,10 +1793,7 @@ export const EVENT_REGISTRY = {
         'memory:remembered',
         z.object({ memoryId: z.string(), ownerId: z.string(), tier: z.string() }),
     ),
-    MEMORY_PROMOTED: event(
-        'memory:promoted',
-        z.object({ memoryId: z.string(), tier: z.string() }),
-    ),
+    MEMORY_PROMOTED: event('memory:promoted', z.object({ memoryId: z.string(), tier: z.string() })),
     MEMORY_FORGOTTEN: event('memory:forgotten', z.object({ memoryId: z.string() })),
     LT_MEMORY_UPDATED: event(
         'memory:lt-updated',
@@ -1841,54 +1811,30 @@ export const EVENT_REGISTRY = {
         'context:created',
         z.object({ contextId: z.string(), scopeKind: z.string(), scopeRef: z.string() }),
     ),
-    CONTEXT_SHARED: event(
-        'context:shared',
-        z.object({ contextId: z.string(), kind: z.string() }),
-    ),
+    CONTEXT_SHARED: event('context:shared', z.object({ contextId: z.string(), kind: z.string() })),
     GOAL_CREATED: event(
         'goal:created',
         z.object({ goalId: z.string(), ownerId: z.string(), level: z.string() }),
     ),
-    GOAL_PROGRESS: event(
-        'goal:progress',
-        z.object({ goalId: z.string(), progress: z.number() }),
-    ),
-    GOAL_COMPLETED: event(
-        'goal:completed',
-        z.object({ goalId: z.string(), ownerId: z.string() }),
-    ),
+    GOAL_PROGRESS: event('goal:progress', z.object({ goalId: z.string(), progress: z.number() })),
+    GOAL_COMPLETED: event('goal:completed', z.object({ goalId: z.string(), ownerId: z.string() })),
 
     // ── Ops / governance / mobile (Wave 5) ──
     OPS_AUDIT: event(
         'ops:audit',
         z.object({ seq: z.number(), actor: z.string(), action: z.string(), target: z.string() }),
     ),
-    OPS_HIERARCHY: event(
-        'ops:hierarchy',
-        z.object({ nodeId: z.string(), action: z.string() }),
-    ),
-    OPS_BUDGET: event(
-        'ops:budget',
-        z.object({ nodeId: z.string(), spent: z.number() }),
-    ),
-    OPS_SANDBOX: event(
-        'ops:sandbox',
-        z.object({ ticketId: z.string(), status: z.string() }),
-    ),
-    OPS_MOBILE: event(
-        'ops:mobile',
-        z.object({ sessionId: z.string(), status: z.string() }),
-    ),
+    OPS_HIERARCHY: event('ops:hierarchy', z.object({ nodeId: z.string(), action: z.string() })),
+    OPS_BUDGET: event('ops:budget', z.object({ nodeId: z.string(), spent: z.number() })),
+    OPS_SANDBOX: event('ops:sandbox', z.object({ ticketId: z.string(), status: z.string() })),
+    OPS_MOBILE: event('ops:mobile', z.object({ sessionId: z.string(), status: z.string() })),
     OPS_NOTIFY: event(
         'ops:notify',
         z.object({ notificationId: z.string(), actionRef: z.string() }),
     ),
 
     // ── Interop / federation / coordination (Phase A: Waves 6+7) ──
-    INTEROP_AGENT: event(
-        'interop:agent',
-        z.object({ agentId: z.string(), action: z.string() }),
-    ),
+    INTEROP_AGENT: event('interop:agent', z.object({ agentId: z.string(), action: z.string() })),
     INTEROP_NEGOTIATED: event(
         'interop:negotiated',
         z.object({ agentId: z.string(), accepted: z.boolean() }),
@@ -1915,10 +1861,7 @@ export const EVENT_REGISTRY = {
         z.object({ handoffId: z.string(), target: z.string() }),
     ),
     HANDOFF_RETURNED: event('handoff:returned', z.object({ handoffId: z.string() })),
-    MARKET_OPENED: event(
-        'market:opened',
-        z.object({ listingId: z.string(), mode: z.string() }),
-    ),
+    MARKET_OPENED: event('market:opened', z.object({ listingId: z.string(), mode: z.string() })),
     MARKET_AWARDED: event(
         'market:awarded',
         z.object({ listingId: z.string(), winnerId: z.string() }),
@@ -1930,10 +1873,7 @@ export const EVENT_REGISTRY = {
         'meta:proposed',
         z.object({ proposalId: z.string(), kind: z.string(), confidence: z.number() }),
     ),
-    META_APPLIED: event(
-        'meta:applied',
-        z.object({ proposalId: z.string(), kind: z.string() }),
-    ),
+    META_APPLIED: event('meta:applied', z.object({ proposalId: z.string(), kind: z.string() })),
     META_EVOLVED: event('meta:evolved', z.object({ skillRef: z.string() })),
     META_HEALTH: event(
         'meta:health',
@@ -1943,36 +1883,18 @@ export const EVENT_REGISTRY = {
         'cog:written',
         z.object({ memoryId: z.string(), kind: z.string(), scope: z.string() }),
     ),
-    COG_GOVERNED: event(
-        'cog:governed',
-        z.object({ removed: z.number(), scope: z.string() }),
-    ),
+    COG_GOVERNED: event('cog:governed', z.object({ removed: z.number(), scope: z.string() })),
     COG_COUNTERFACTUAL: event(
         'cog:counterfactual',
         z.object({ recordId: z.string(), ownerId: z.string() }),
     ),
-    COG_COMPILED: event(
-        'cog:compiled',
-        z.object({ packageId: z.string(), taskClass: z.string() }),
-    ),
+    COG_COMPILED: event('cog:compiled', z.object({ packageId: z.string(), taskClass: z.string() })),
 
     // ── Trust & ecosystem (Phase C: Waves 10+11) ──
-    TRUST_UPDATED: event(
-        'trust:updated',
-        z.object({ subject: z.string(), score: z.number() }),
-    ),
-    TRUST_POLICY: event(
-        'trust:policy',
-        z.object({ policyId: z.string(), effect: z.string() }),
-    ),
-    ECO_INSTALLED: event(
-        'eco:installed',
-        z.object({ bundleId: z.string(), items: z.number() }),
-    ),
-    ECO_SNAPSHOT: event(
-        'eco:snapshot',
-        z.object({ snapshotId: z.string(), tables: z.number() }),
-    ),
+    TRUST_UPDATED: event('trust:updated', z.object({ subject: z.string(), score: z.number() })),
+    TRUST_POLICY: event('trust:policy', z.object({ policyId: z.string(), effect: z.string() })),
+    ECO_INSTALLED: event('eco:installed', z.object({ bundleId: z.string(), items: z.number() })),
+    ECO_SNAPSHOT: event('eco:snapshot', z.object({ snapshotId: z.string(), tables: z.number() })),
 
     // ── Frontier evals & exotic (Phase D: Waves 12+13) ──
     EVAL_RUN: event(
@@ -1988,18 +1910,9 @@ export const EVENT_REGISTRY = {
         'eval:compared',
         z.object({ benchmarkId: z.string(), winner: z.string(), delta: z.number() }),
     ),
-    EVAL_REDTEAM: event(
-        'eval:redteam',
-        z.object({ target: z.string(), attacks: z.number() }),
-    ),
-    EVAL_ORG: event(
-        'eval:org',
-        z.object({ orgId: z.string(), action: z.string() }),
-    ),
-    EVAL_INTENT: event(
-        'eval:intent',
-        z.object({ intentId: z.string(), steps: z.number() }),
-    ),
+    EVAL_REDTEAM: event('eval:redteam', z.object({ target: z.string(), attacks: z.number() })),
+    EVAL_ORG: event('eval:org', z.object({ orgId: z.string(), action: z.string() })),
+    EVAL_INTENT: event('eval:intent', z.object({ intentId: z.string(), steps: z.number() })),
 
     // ── Parity E.2/E.3 (tools, knowledge, training) ──
     TOOL_EXECUTED: event(
@@ -2035,46 +1948,28 @@ export const EVENT_REGISTRY = {
     ),
 
     // ── Rival parity (Phase F: 10 projects) ──
-    LOOP_ITER: event(
-        'loop:iter',
-        z.object({ loopId: z.string(), iteration: z.number() }),
-    ),
+    LOOP_ITER: event('loop:iter', z.object({ loopId: z.string(), iteration: z.number() })),
     GROUPCHAT_CREATED: event(
         'groupchat:created',
         z.object({ chatId: z.string(), members: z.number() }),
     ),
-    GROUPCHAT_TURN: event(
-        'groupchat:turn',
-        z.object({ chatId: z.string(), speaker: z.string() }),
-    ),
-    GUARDRAIL_HIT: event(
-        'guardrail:hit',
-        z.object({ ruleId: z.string(), tripwire: z.string() }),
-    ),
+    GROUPCHAT_TURN: event('groupchat:turn', z.object({ chatId: z.string(), speaker: z.string() })),
+    GUARDRAIL_HIT: event('guardrail:hit', z.object({ ruleId: z.string(), tripwire: z.string() })),
     GUARDRAIL_RULE_ADDED: event(
         'guardrail:rule:added',
         z.object({ ruleId: z.string(), name: z.string(), kind: z.string(), tripwire: z.string() }),
     ),
-    GUARDRAIL_RULE_REMOVED: event(
-        'guardrail:rule:removed',
-        z.object({ ruleId: z.string() }),
-    ),
+    GUARDRAIL_RULE_REMOVED: event('guardrail:rule:removed', z.object({ ruleId: z.string() })),
     INTERPRETER_EXEC: event(
         'interpreter:exec',
         z.object({ lang: z.string(), codeHash: z.string(), ok: z.boolean() }),
     ),
-    MINISWE_SOLVED: event(
-        'miniswe:solved',
-        z.object({ issue: z.string(), passed: z.boolean() }),
-    ),
+    MINISWE_SOLVED: event('miniswe:solved', z.object({ issue: z.string(), passed: z.boolean() })),
     WHALE_CARGO_CHECK: event(
         'whale:cargo:check',
         z.object({ ok: z.boolean(), output: z.string() }),
     ),
-    WHALE_PATCH_APPLIED: event(
-        'whale:patch:applied',
-        z.object({ lines: z.number() }),
-    ),
+    WHALE_PATCH_APPLIED: event('whale:patch:applied', z.object({ lines: z.number() })),
     CACHE_CONTROL_MARKED: event(
         'cache:control:marked',
         z.object({ key: z.string(), ttlMs: z.number() }),
@@ -2084,64 +1979,46 @@ export const EVENT_REGISTRY = {
         z.object({ entries: z.number(), hitRate: z.number() }),
     ),
     FILES_UPLOADED: event('files:uploaded', z.object({ fileId: z.string(), name: z.string() })),
-    PROJECT_CREATED_RIVALS: event('project:created:rivals', z.object({ projectId: z.string(), name: z.string() })),
-    PROJECT_FILE_ADDED: event('project:file:added', z.object({ projectId: z.string(), name: z.string() })),
-    ROUTINE_DEFINED: event('routine:defined', z.object({ routineId: z.string(), name: z.string() })),
+    PROJECT_CREATED_RIVALS: event(
+        'project:created:rivals',
+        z.object({ projectId: z.string(), name: z.string() }),
+    ),
+    PROJECT_FILE_ADDED: event(
+        'project:file:added',
+        z.object({ projectId: z.string(), name: z.string() }),
+    ),
+    ROUTINE_DEFINED: event(
+        'routine:defined',
+        z.object({ routineId: z.string(), name: z.string() }),
+    ),
     ROUTINE_TRIGGERED: event('routine:triggered', z.object({ routineId: z.string() })),
     AGENTVIEW_SESSIONS: event('agentview:sessions', z.object({ count: z.number() })),
     AGENTVIEW_SKILL: event('agentview:skill', z.object({ skill: z.string(), task: z.string() })),
-    BLOCK_SET: event(
-        'block:set',
-        z.object({ ownerId: z.string(), section: z.string() }),
-    ),
+    BLOCK_SET: event('block:set', z.object({ ownerId: z.string(), section: z.string() })),
     SOP_PHASE: event(
         'sop:phase',
         z.object({ loopId: z.string(), phase: z.string(), artifact: z.string(), role: z.string() }),
     ),
-    QUEUE_ENQUEUED: event(
-        'queue:enqueued',
-        z.object({ runId: z.string(), kind: z.string() }),
-    ),
-    DYAD_DONE: event(
-        'dyad:done',
-        z.object({ loopId: z.string(), turns: z.number() }),
-    ),
+    QUEUE_ENQUEUED: event('queue:enqueued', z.object({ runId: z.string(), kind: z.string() })),
+    DYAD_DONE: event('dyad:done', z.object({ loopId: z.string(), turns: z.number() })),
     PLANNER_PLAN_COMPLETED: event(
         'planner:plan:completed',
         z.object({ task: z.string(), strategy: z.string(), result: z.string() }),
     ),
-    PLANNER_STEP: event(
-        'planner:step',
-        z.object({ step: z.string(), result: z.string() }),
-    ),
+    PLANNER_STEP: event('planner:step', z.object({ step: z.string(), result: z.string() })),
     PLANNER_FILTER_ADDED: event(
         'planner:filter:added',
         z.object({ stage: z.string(), name: z.string() }),
     ),
 
     // ── Rival parity 2 (Phase G: 10 more projects) ──
-    REACT_STEP: event(
-        'react:step',
-        z.object({ runId: z.string(), step: z.number() }),
-    ),
-    RAG_ANSWERED: event(
-        'rag:answered',
-        z.object({ citations: z.number(), rounds: z.number() }),
-    ),
+    REACT_STEP: event('react:step', z.object({ runId: z.string(), step: z.number() })),
+    RAG_ANSWERED: event('rag:answered', z.object({ citations: z.number(), rounds: z.number() })),
     RUNTIME_STARTED: event('runtime:started', z.object({ runId: z.string() })),
-    RUNTIME_ACTION: event(
-        'runtime:action',
-        z.object({ runId: z.string(), action: z.string() }),
-    ),
+    RUNTIME_ACTION: event('runtime:action', z.object({ runId: z.string(), action: z.string() })),
     SWE_EDIT: event('swe:edit', z.object({ path: z.string() })),
-    MODES_SWITCHED: event(
-        'modes:switched',
-        z.object({ modeId: z.string(), name: z.string() }),
-    ),
-    SMEM_ADDED: event(
-        'smem:added',
-        z.object({ memoryId: z.string(), scope: z.string() }),
-    ),
+    MODES_SWITCHED: event('modes:switched', z.object({ modeId: z.string(), name: z.string() })),
+    SMEM_ADDED: event('smem:added', z.object({ memoryId: z.string(), scope: z.string() })),
     INTEGRATION_TRIGGER: event(
         'integration:trigger',
         z.object({ app: z.string(), trigger: z.string(), triggerId: z.string() }),
@@ -2165,71 +2042,29 @@ export const EVENT_REGISTRY = {
         'docstore:feedback',
         z.object({ messageId: z.string(), vote: z.string() }),
     ),
-    TYPED_VALID: event(
-        'typed:valid',
-        z.object({ agentId: z.string(), attempts: z.number() }),
-    ),
-    CODEPLAN_ROUND: event(
-        'codeplan:round',
-        z.object({ round: z.number(), calls: z.number() }),
-    ),
-    DIALOGUE_TURN: event(
-        'dialogue:turn',
-        z.object({ botId: z.string(), intent: z.string() }),
-    ),
-    BOTROUTE_NODE: event(
-        'botroute:node',
-        z.object({ nodeId: z.string(), hits: z.number() }),
-    ),
+    TYPED_VALID: event('typed:valid', z.object({ agentId: z.string(), attempts: z.number() })),
+    CODEPLAN_ROUND: event('codeplan:round', z.object({ round: z.number(), calls: z.number() })),
+    DIALOGUE_TURN: event('dialogue:turn', z.object({ botId: z.string(), intent: z.string() })),
+    BOTROUTE_NODE: event('botroute:node', z.object({ nodeId: z.string(), hits: z.number() })),
 
     // ── Rival parity 4 (Phase I: fourth 10) ──
-    COPILOT_TOPIC: event(
-        'copilot:topic',
-        z.object({ topicId: z.string(), score: z.number() }),
-    ),
-    BEDROCK_ACTION: event(
-        'bedrock:action',
-        z.object({ groupId: z.string(), tool: z.string() }),
-    ),
-    BEDROCK_GUARD: event(
-        'bedrock:guard',
-        z.object({ ok: z.boolean(), hits: z.number() }),
-    ),
-    CX_ROUTE: event(
-        'cx:route',
-        z.object({ flowId: z.string(), toPage: z.string() }),
-    ),
-    FORCE_RUN: event(
-        'force:run',
-        z.object({ topicId: z.string(), actions: z.number() }),
-    ),
-    KORE_INTERRUPT: event(
-        'kore:interrupt',
-        z.object({ dialogId: z.string(), intent: z.string() }),
-    ),
-    YELLOW_SENT: event(
-        'yellow:sent',
-        z.object({ campaignId: z.string(), delivered: z.number() }),
-    ),
+    COPILOT_TOPIC: event('copilot:topic', z.object({ topicId: z.string(), score: z.number() })),
+    BEDROCK_ACTION: event('bedrock:action', z.object({ groupId: z.string(), tool: z.string() })),
+    BEDROCK_GUARD: event('bedrock:guard', z.object({ ok: z.boolean(), hits: z.number() })),
+    CX_ROUTE: event('cx:route', z.object({ flowId: z.string(), toPage: z.string() })),
+    FORCE_RUN: event('force:run', z.object({ topicId: z.string(), actions: z.number() })),
+    KORE_INTERRUPT: event('kore:interrupt', z.object({ dialogId: z.string(), intent: z.string() })),
+    YELLOW_SENT: event('yellow:sent', z.object({ campaignId: z.string(), delivered: z.number() })),
     LINDY_HIRED: event('lindy:hired', z.object({ employeeId: z.string() })),
     SMOL_STEP: event('smol:step', z.object({ tool: z.string() })),
 
     // ── Rival parity 5 (Phase J: fifth 10) ──
     APP_SCAFFOLD: event('app:scaffold', z.object({ files: z.number() })),
-    ONTO_CREATED: event(
-        'onto:created',
-        z.object({ instanceId: z.string(), type: z.string() }),
-    ),
+    ONTO_CREATED: event('onto:created', z.object({ instanceId: z.string(), type: z.string() })),
     WORK_PUSHED: event('work:pushed', z.object({ itemId: z.string() })),
-    COMPUTER_ACT: event(
-        'computer:act',
-        z.object({ ticketId: z.string(), action: z.string() }),
-    ),
+    COMPUTER_ACT: event('computer:act', z.object({ ticketId: z.string(), action: z.string() })),
     COMPUTER_HANDOFF: event('computer:handoff', z.object({ action: z.string() })),
-    SEARCH_FANOUT: event(
-        'search:fanout',
-        z.object({ providers: z.number(), hits: z.number() }),
-    ),
+    SEARCH_FANOUT: event('search:fanout', z.object({ providers: z.number(), hits: z.number() })),
     CODEEXEC_QUEUED: event(
         'codeexec:queued',
         z.object({ ticketId: z.string(), language: z.string() }),
@@ -2244,83 +2079,48 @@ export const EVENT_REGISTRY = {
     ),
     MCP_HARNESS_RECONNECTED: event(
         'mcp:harness:reconnected',
-        z.object({ total: z.number(), connected: z.number(), reconnected: z.number(), failed: z.number() }),
+        z.object({
+            total: z.number(),
+            connected: z.number(),
+            reconnected: z.number(),
+            failed: z.number(),
+        }),
     ),
     MCP_HARNESS_PROXY: event(
         'mcp:harness:proxy',
-        z.object({ serverId: z.string(), tool: z.string(), ok: z.boolean(), error: z.string().optional() }),
+        z.object({
+            serverId: z.string(),
+            tool: z.string(),
+            ok: z.boolean(),
+            error: z.string().optional(),
+        }),
     ),
-    EVAL_SCORER_REGISTERED: event(
-        'eval:scorer:registered',
-        z.object({ name: z.string() }),
-    ),
+    EVAL_SCORER_REGISTERED: event('eval:scorer:registered', z.object({ name: z.string() })),
     EVAL_JUDGE_DONE: event(
         'eval:judge:done',
-        z.object({ task: z.string(), score: z.number(), via: z.enum(['stub','llm']) }),
+        z.object({ task: z.string(), score: z.number(), via: z.enum(['stub', 'llm']) }),
     ),
 
     // ── Rival parity 6 (Phase K: sixth 10) ──
-    N8N_RUN: event(
-        'n8n:run',
-        z.object({ workflowId: z.string(), execId: z.string() }),
-    ),
+    N8N_RUN: event('n8n:run', z.object({ workflowId: z.string(), execId: z.string() })),
     MAKE_RUN: event('make:run', z.object({ modules: z.number() })),
-    ZAP_FIRED: event(
-        'zap:fired',
-        z.object({ zapId: z.string(), actions: z.number() }),
-    ),
-    TEMPORAL_STEP: event(
-        'temporal:step',
-        z.object({ runId: z.string(), step: z.string() }),
-    ),
-    TEMPORAL_SIGNAL: event(
-        'temporal:signal',
-        z.object({ runId: z.string(), key: z.string() }),
-    ),
-    TEMPORAL_PAUSED: event(
-        'temporal:paused',
-        z.object({ runId: z.string(), step: z.string() }),
-    ),
-    ASSET_BUILT: event(
-        'asset:built',
-        z.object({ asset: z.string(), count: z.number() }),
-    ),
-    SENSOR_OK: event(
-        'sensor:ok',
-        z.object({ tool: z.string(), attempts: z.number() }),
-    ),
+    ZAP_FIRED: event('zap:fired', z.object({ zapId: z.string(), actions: z.number() })),
+    TEMPORAL_STEP: event('temporal:step', z.object({ runId: z.string(), step: z.string() })),
+    TEMPORAL_SIGNAL: event('temporal:signal', z.object({ runId: z.string(), key: z.string() })),
+    TEMPORAL_PAUSED: event('temporal:paused', z.object({ runId: z.string(), step: z.string() })),
+    ASSET_BUILT: event('asset:built', z.object({ asset: z.string(), count: z.number() })),
+    SENSOR_OK: event('sensor:ok', z.object({ tool: z.string(), attempts: z.number() })),
     VOICE_STARTED: event('voice:started', z.object({ callId: z.string() })),
-    VOICE_ENDED: event(
-        'voice:ended',
-        z.object({ callId: z.string(), turns: z.number() }),
-    ),
+    VOICE_ENDED: event('voice:ended', z.object({ callId: z.string(), turns: z.number() })),
     SUPPORT_OPEN: event('support:open', z.object({ ticketId: z.string() })),
-    SUPPORT_HANDOFF: event(
-        'support:handoff',
-        z.object({ ticketId: z.string(), team: z.string() }),
-    ),
+    SUPPORT_HANDOFF: event('support:handoff', z.object({ ticketId: z.string(), team: z.string() })),
 
     // ── Debate plus (Phase L: seventh 10, debate focus) ──
-    FORMAT_START: event(
-        'format:start',
-        z.object({ formatId: z.string(), topic: z.string() }),
-    ),
-    FORMAT_DONE: event(
-        'format:done',
-        z.object({ formatId: z.string(), winner: z.string() }),
-    ),
-    DUNG_ATTACK: event(
-        'dung:attack',
-        z.object({ from: z.string(), to: z.string() }),
-    ),
-    TOULMIN_CARD: event(
-        'toulmin:card',
-        z.object({ cardId: z.string(), completeness: z.number() }),
-    ),
-    BRIER_RESOLVED: event(
-        'brier:resolved',
-        z.object({ claimId: z.string(), brier: z.number() }),
-    ),
+    FORMAT_START: event('format:start', z.object({ formatId: z.string(), topic: z.string() })),
+    FORMAT_DONE: event('format:done', z.object({ formatId: z.string(), winner: z.string() })),
+    DUNG_ATTACK: event('dung:attack', z.object({ from: z.string(), to: z.string() })),
+    TOULMIN_CARD: event('toulmin:card', z.object({ cardId: z.string(), completeness: z.number() })),
+    BRIER_RESOLVED: event('brier:resolved', z.object({ claimId: z.string(), brier: z.number() })),
 
     // ── Rival parity 8 (Phase M: forums/diagnostics/cognitive) ──
     FORUMPLUS_POLL: event('forumplus:poll', z.object({ pollId: z.string() })),
@@ -2336,53 +2136,23 @@ export const EVENT_REGISTRY = {
         'polis:clustered',
         z.object({ convoId: z.string(), groups: z.number() }),
     ),
-    REFLEXION_TRIAL: event(
-        'reflexion:trial',
-        z.object({ trial: z.number(), ok: z.boolean() }),
-    ),
-    REFLEXION_DONE: event(
-        'reflexion:done',
-        z.object({ trials: z.number(), ok: z.boolean() }),
-    ),
-    TOT_LEVEL: event(
-        'tot:level',
-        z.object({ level: z.number(), kept: z.number() }),
-    ),
-    SELFCON_VOTE: event(
-        'selfcon:vote',
-        z.object({ paths: z.number(), confidence: z.number() }),
-    ),
+    REFLEXION_TRIAL: event('reflexion:trial', z.object({ trial: z.number(), ok: z.boolean() })),
+    REFLEXION_DONE: event('reflexion:done', z.object({ trials: z.number(), ok: z.boolean() })),
+    TOT_LEVEL: event('tot:level', z.object({ level: z.number(), kept: z.number() })),
+    SELFCON_VOTE: event('selfcon:vote', z.object({ paths: z.number(), confidence: z.number() })),
     SOAR_FIRED: event('soar:fired', z.object({ count: z.number() })),
     SOAR_IMPASSE: event('soar:impasse', z.object({ impasse: z.number() })),
-    METER_ALERT: event(
-        'meter:alert',
-        z.object({ name: z.string(), value: z.number() }),
-    ),
+    METER_ALERT: event('meter:alert', z.object({ name: z.string(), value: z.number() })),
     ERR_CAPTURED: event('err:captured', z.object({ fingerprint: z.string() })),
 
     // ── Rival parity 9 (Phase N: hype — OpenClaw/DSH/CN/Manus/Genspark) ──
-    CLAW_SOUL: event(
-        'claw:soul',
-        z.object({ personId: z.string(), name: z.string() }),
-    ),
+    CLAW_SOUL: event('claw:soul', z.object({ personId: z.string(), name: z.string() })),
     CLAW_CRON: event('claw:cron', z.object({ count: z.number() })),
-    DSH_PLUGIN: event(
-        'dsh:plugin',
-        z.object({ name: z.string(), enabled: z.boolean() }),
-    ),
-    MANUS_VERIFY: event(
-        'manus:verify',
-        z.object({ round: z.number(), pass: z.boolean() }),
-    ),
-    MANUS_EXPORT: event(
-        'manus:export',
-        z.object({ kind: z.string(), refId: z.string() }),
-    ),
+    DSH_PLUGIN: event('dsh:plugin', z.object({ name: z.string(), enabled: z.boolean() })),
+    MANUS_VERIFY: event('manus:verify', z.object({ round: z.number(), pass: z.boolean() })),
+    MANUS_EXPORT: event('manus:export', z.object({ kind: z.string(), refId: z.string() })),
     GEN_FANOUT: event('gen:fanout', z.object({ providers: z.number() })),
-    GEN_SHEETS: event(
-        'gen:sheets',
-        z.object({ rows: z.number(), cols: z.number() }),
-    ),
+    GEN_SHEETS: event('gen:sheets', z.object({ rows: z.number(), cols: z.number() })),
     GEN_LONGTASK: event(
         'gen:longtask',
         z.object({ kind: z.string(), refId: z.string(), status: z.string() }),
@@ -2390,53 +2160,23 @@ export const EVENT_REGISTRY = {
 
     // ── Rival parity 10 (Phase P: Google + Chat Studio) ──
     A2ASPEC_CARD: event('a2aspec:card', z.object({ agentId: z.string() })),
-    A2ASPEC_TASK: event(
-        'a2aspec:task',
-        z.object({ taskId: z.string(), state: z.string() }),
-    ),
-    CACHE_SAVED: event(
-        'cache:saved',
-        z.object({ cacheId: z.string(), bytes: z.number() }),
-    ),
+    A2ASPEC_TASK: event('a2aspec:task', z.object({ taskId: z.string(), state: z.string() })),
+    CACHE_SAVED: event('cache:saved', z.object({ cacheId: z.string(), bytes: z.number() })),
     NOTEBOOK_AUDIO: event(
         'notebook:audio',
         z.object({ notebookId: z.string(), chars: z.number() }),
     ),
-    LIVE_BARGE: event(
-        'live:barge',
-        z.object({ sessionId: z.string(), interruptions: z.number() }),
-    ),
-    LIVE_TOOL: event(
-        'live:tool',
-        z.object({ sessionId: z.string(), tool: z.string() }),
-    ),
+    LIVE_BARGE: event('live:barge', z.object({ sessionId: z.string(), interruptions: z.number() })),
+    LIVE_TOOL: event('live:tool', z.object({ sessionId: z.string(), tool: z.string() })),
     DEEPRES_STEP: event('deepres:step', z.object({ step: z.string() })),
-    STUDIO_PACK: event(
-        'studio:pack',
-        z.object({ kind: z.string(), ref: z.string() }),
-    ),
+    STUDIO_PACK: event('studio:pack', z.object({ kind: z.string(), ref: z.string() })),
 
     // ── Rival parity 11 (Phase Q: viz + light sims, the last 9 to 100) ──
-    NETLOGO_TICK: event(
-        'netlogo:tick',
-        z.object({ worldId: z.string(), ticks: z.number() }),
-    ),
-    MESA_STEP: event(
-        'mesa:step',
-        z.object({ modelId: z.string(), steps: z.number() }),
-    ),
-    BONSAI_TRAINED: event(
-        'bonsai:trained',
-        z.object({ lessonId: z.string(), reward: z.number() }),
-    ),
-    CHAINLIT_STEP: event(
-        'chainlit:step',
-        z.object({ stepId: z.string(), runId: z.string() }),
-    ),
-    MALMO_GOAL: event(
-        'malmo:goal',
-        z.object({ missionId: z.string(), agent: z.string() }),
-    ),
+    NETLOGO_TICK: event('netlogo:tick', z.object({ worldId: z.string(), ticks: z.number() })),
+    MESA_STEP: event('mesa:step', z.object({ modelId: z.string(), steps: z.number() })),
+    BONSAI_TRAINED: event('bonsai:trained', z.object({ lessonId: z.string(), reward: z.number() })),
+    CHAINLIT_STEP: event('chainlit:step', z.object({ stepId: z.string(), runId: z.string() })),
+    MALMO_GOAL: event('malmo:goal', z.object({ missionId: z.string(), agent: z.string() })),
 
     // ── Rival parity 12 (Phase R: exotic/research) ──
     CONSTIT_CRITIQUE: event('constit:critique', z.object({ violations: z.number() })),
@@ -2446,7 +2186,10 @@ export const EVENT_REGISTRY = {
 
     // ── Rival RU (Phase U: Russian school + market) ──
     METABOLIC_TICK: event('metabolic:tick', z.object({ dominant: z.string(), level: z.string() })),
-    MAESTRO_ORCHESTRATE: event('maestro:orchestrate', z.object({ ecoId: z.string(), role: z.string() })),
+    MAESTRO_ORCHESTRATE: event(
+        'maestro:orchestrate',
+        z.object({ ecoId: z.string(), role: z.string() }),
+    ),
     LOCALTRIPLE_RUN: event('localtriple:run', z.object({ ok: z.boolean() })),
     RUSLAN_LEARN: event('ruslan:learn', z.object({ skill: z.string() })),
     EVOLAB_RUN: event('evolab:run', z.object({ pattern: z.string(), score: z.number() })),
@@ -2463,7 +2206,10 @@ export const EVENT_REGISTRY = {
         'deploy:bundle:created',
         z.object({ bundleId: z.string(), configId: z.string(), target: z.string() }),
     ),
-    SIM_WORLD_CREATED: event('sim:world:created', z.object({ worldId: z.string(), name: z.string() })),
+    SIM_WORLD_CREATED: event(
+        'sim:world:created',
+        z.object({ worldId: z.string(), name: z.string() }),
+    ),
     SIM_TICK: event('sim:tick', z.object({ worldId: z.string(), tick: z.number() })),
     SIM_COMPLETED: event('sim:completed', z.object({ worldId: z.string(), ticks: z.number() })),
 
@@ -2519,14 +2265,8 @@ export const EVENT_REGISTRY = {
         'project:created',
         z.object({ projectId: z.string(), name: z.string(), type: z.string() }),
     ),
-    PROJECT_UPDATED: event(
-        'project:updated',
-        z.object({ projectId: z.string() }),
-    ),
-    PROJECT_DELETED: event(
-        'project:deleted',
-        z.object({ projectId: z.string() }),
-    ),
+    PROJECT_UPDATED: event('project:updated', z.object({ projectId: z.string() })),
+    PROJECT_DELETED: event('project:deleted', z.object({ projectId: z.string() })),
     PROJECT_AGENT_ASSIGNED: event(
         'project:agent:assigned',
         z.object({ projectId: z.string(), agentId: z.string(), role: z.string() }),
@@ -2545,7 +2285,12 @@ export const EVENT_REGISTRY = {
     ),
     PROJECT_RUN_STARTED: event(
         'project:run:started',
-        z.object({ projectId: z.string(), runId: z.string(), taskId: z.string(), agentId: z.string() }),
+        z.object({
+            projectId: z.string(),
+            runId: z.string(),
+            taskId: z.string(),
+            agentId: z.string(),
+        }),
     ),
     PROJECT_RUN_COMPLETED: event(
         'project:run:completed',
@@ -2561,10 +2306,7 @@ export const EVENT_REGISTRY = {
     ),
 
     // ── Project Workspace (roadmapp.md §P2) ──
-    WORKSPACE_INITIALIZED: event(
-        'workspace:initialized',
-        z.object({ projectId: z.string() }),
-    ),
+    WORKSPACE_INITIALIZED: event('workspace:initialized', z.object({ projectId: z.string() })),
     WORKSPACE_FILE_WRITTEN: event(
         'workspace:file:written',
         z.object({ projectId: z.string(), path: z.string(), size: z.number() }),
@@ -2605,7 +2347,12 @@ export const EVENT_REGISTRY = {
     // ── QA / Browser Inspector (roadmapp.md §P5) ──
     QA_INSPECTION_COMPLETED: event(
         'qa:inspection:completed',
-        z.object({ projectId: z.string(), score: z.number(), passed: z.boolean(), issueCount: z.number() }),
+        z.object({
+            projectId: z.string(),
+            score: z.number(),
+            passed: z.boolean(),
+            issueCount: z.number(),
+        }),
     ),
 
     // ── Multi-Agent Pipeline (roadmapp.md §P6) ──
@@ -2633,7 +2380,12 @@ export const EVENT_REGISTRY = {
     ),
     PYTHON_RUN_COMPLETED: event(
         'python:run:completed',
-        z.object({ projectId: z.string(), runId: z.string(), exitCode: z.number().nullable(), durationMs: z.number() }),
+        z.object({
+            projectId: z.string(),
+            runId: z.string(),
+            exitCode: z.number().nullable(),
+            durationMs: z.number(),
+        }),
     ),
     PYTHON_REQUIREMENT_ADDED: event(
         'python:requirement:added',
@@ -2643,11 +2395,21 @@ export const EVENT_REGISTRY = {
     // ── Artifacts (roadmapp.md §P11) ──
     ARTIFACT_CREATED: event(
         'artifact:created',
-        z.object({ projectId: z.string(), artifactId: z.string(), type: z.string(), name: z.string() }),
+        z.object({
+            projectId: z.string(),
+            artifactId: z.string(),
+            type: z.string(),
+            name: z.string(),
+        }),
     ),
     ARTIFACT_BUILD_COMPLETED: event(
         'artifact:build:completed',
-        z.object({ projectId: z.string(), artifactId: z.string(), success: z.boolean(), durationMs: z.number() }),
+        z.object({
+            projectId: z.string(),
+            artifactId: z.string(),
+            success: z.boolean(),
+            durationMs: z.number(),
+        }),
     ),
     SNAPSHOT_CREATED: event(
         'snapshot:created',
@@ -2671,7 +2433,12 @@ export const EVENT_REGISTRY = {
     // ── Debate Integration (roadmapp.md §P13) ──
     PROJECT_DEBATE_STARTED: event(
         'project:debate:started',
-        z.object({ projectId: z.string(), debateId: z.string(), decision: z.string(), trigger: z.string() }),
+        z.object({
+            projectId: z.string(),
+            debateId: z.string(),
+            decision: z.string(),
+            trigger: z.string(),
+        }),
     ),
     PROJECT_DEBATE_VERDICT: event(
         'project:debate:verdict',
@@ -2707,7 +2474,12 @@ export const EVENT_REGISTRY = {
     ),
     PROJECT_ERROR_LOGGED: event(
         'project:error:logged',
-        z.object({ projectId: z.string(), source: z.string(), severity: z.string(), message: z.string() }),
+        z.object({
+            projectId: z.string(),
+            source: z.string(),
+            severity: z.string(),
+            message: z.string(),
+        }),
     ),
 
     // ── Agent Channels (mIRC-like) ──
@@ -2734,9 +2506,16 @@ export const EVENT_REGISTRY = {
         'channel:agent:left',
         z.object({ channelId: z.string(), agentId: z.string() }),
     ),
-    CHANNEL_ARCHIVED: event(
-        'channel:archived',
-        z.object({ channelId: z.string() }),
+    CHANNEL_ARCHIVED: event('channel:archived', z.object({ channelId: z.string() })),
+
+    // ── Plugins (SPEC_06) ──
+    PLUGIN_REGISTERED: event('plugin:registered', z.object({ id: z.string(), status: z.string() })),
+    PLUGIN_UNREGISTERED: event('plugin:unregistered', z.object({ id: z.string() })),
+    PLUGIN_ACTIVATED: event('plugin:activated', z.object({ id: z.string() })),
+    PLUGIN_DEACTIVATED: event('plugin:deactivated', z.object({ id: z.string() })),
+    PLUGIN_LOAD_FAILED: event(
+        'plugin:load:failed',
+        z.object({ id: z.string(), reason: z.string() }),
     ),
 } as const;
 

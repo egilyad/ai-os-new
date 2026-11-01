@@ -52,7 +52,7 @@ export const registerPhase82: Phase = (helpers, ctx) => {
         return hub;
     });
 
-    register('pluginRegistry', () => new PluginRegistry());
+    register('pluginRegistry', (c) => new PluginRegistry({ bus: c.get<IEventBus>('eventBus') }));
 
     register('pluginHost', () => new PluginHost());
 

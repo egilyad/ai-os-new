@@ -1,15 +1,18 @@
-import type {
-    IPluginRegistry,
-    PluginManifest,
-    RegisteredPlugin,
-} from '../../contracts/plugin';
+import type { IPluginRegistry, PluginManifest, RegisteredPlugin } from '../../contracts/plugin';
 import { validateManifest } from './plugin-manifest';
+import { EVENTS } from '../../events/event-registry';
 
 const KERNEL_VERSION = '4.5.0';
+
+export interface PluginRegistryBus {
+    emit(event: string, data: Record<string, unknown>): void;
+}
 
 export interface PluginRegistryDeps {
     /** Резолв текущей версии ядра (по умолчанию 4.5.0). */
     kernelVersion?: string;
+    /** Опциональный EventBus для событий жизненного цикла плагинов. */
+    bus?: PluginRegistryBus;
 }
 
 /**
@@ -22,9 +25,15 @@ export interface PluginRegistryDeps {
 export class PluginRegistry implements IPluginRegistry {
     private plugins = new Map<string, RegisteredPlugin>();
     private kernelVersion: string;
+    private bus?: PluginRegistryBus;
 
     constructor(deps?: PluginRegistryDeps) {
         this.kernelVersion = deps?.kernelVersion ?? KERNEL_VERSION;
+        this.bus = deps?.bus;
+    }
+
+    private emit(event: string, data: Record<string, unknown>): void {
+        this.bus?.emit(event, data);
     }
 
     async register(manifest: PluginManifest): Promise<boolean> {
@@ -34,6 +43,10 @@ export class PluginRegistry implements IPluginRegistry {
                 manifest,
                 status: 'error',
                 error: validation.errors.join('; '),
+            });
+            this.emit(EVENTS.PLUGIN_LOAD_FAILED, {
+                id: manifest.id,
+                reason: validation.errors.join('; '),
             });
             return false;
         }
@@ -45,18 +58,27 @@ export class PluginRegistry implements IPluginRegistry {
                 status: 'error',
                 error: `kernel ${this.kernelVersion} does not satisfy engines.os ${required}`,
             });
+            this.emit(EVENTS.PLUGIN_LOAD_FAILED, {
+                id: manifest.id,
+                reason: `kernel ${this.kernelVersion} does not satisfy engines.os ${required}`,
+            });
             return false;
         }
         const existing = this.plugins.get(manifest.id);
+        const status: RegisteredPlugin['status'] =
+            existing?.status === 'active' ? 'active' : 'inactive';
         this.plugins.set(manifest.id, {
             manifest,
-            status: existing?.status === 'active' ? 'active' : 'inactive',
+            status,
         });
+        this.emit(EVENTS.PLUGIN_REGISTERED, { id: manifest.id, status });
         return true;
     }
 
     async unregister(id: string): Promise<boolean> {
-        return this.plugins.delete(id);
+        const removed = this.plugins.delete(id);
+        if (removed) this.emit(EVENTS.PLUGIN_UNREGISTERED, { id });
+        return removed;
     }
 
     async activate(id: string): Promise<boolean> {
@@ -64,6 +86,7 @@ export class PluginRegistry implements IPluginRegistry {
         if (!p || p.status === 'error') return false;
         p.status = 'active';
         this.plugins.set(id, p);
+        this.emit(EVENTS.PLUGIN_ACTIVATED, { id });
         return true;
     }
 
@@ -72,6 +95,7 @@ export class PluginRegistry implements IPluginRegistry {
         if (!p) return false;
         p.status = 'inactive';
         this.plugins.set(id, p);
+        this.emit(EVENTS.PLUGIN_DEACTIVATED, { id });
         return true;
     }
 
