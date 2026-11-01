@@ -65,3 +65,39 @@ export interface IAgentRuntime {
     asGraph(graphCfg: unknown): unknown;
     asForum(forumCfg: unknown): unknown;
 }
+
+// ── Существовавший контракт (легаси) — восстановлен после перезаписи ──
+import type {
+    RuntimeStatus,
+    RuntimeRunResult,
+    RuntimeProgress,
+    ProjectExecutionContext,
+    AgentRuntimeEvent,
+} from '../types/runtime-types';
+import type { ProjectId, ProjectTask } from '../types/project-types';
+
+/**
+ * IAgentProjectRuntime — проектный агентный рантайм (roadmapp.md §P3).
+ * Используется AgentProjectRuntime / AutonomyRunner.
+ */
+export interface IAgentProjectRuntime {
+    init(projectId: ProjectId): Promise<void>;
+    runTask(
+        projectId: ProjectId,
+        taskId: string,
+        agentId: string,
+        task: ProjectTask,
+        context?: Partial<ProjectExecutionContext>,
+    ): Promise<RuntimeRunResult>;
+    runPrompt(
+        projectId: ProjectId,
+        agentId: string,
+        prompt: string,
+        context?: Partial<ProjectExecutionContext>,
+    ): Promise<RuntimeRunResult>;
+    pause(projectId: ProjectId): Promise<void>;
+    resume(projectId: ProjectId): Promise<void>;
+    getStatus(projectId: ProjectId): RuntimeStatus;
+    getProgress(projectId: ProjectId): Promise<RuntimeProgress>;
+    getEvents(projectId: ProjectId, limit?: number): AgentRuntimeEvent[];
+}

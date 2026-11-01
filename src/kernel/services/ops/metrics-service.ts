@@ -149,6 +149,17 @@ export class MetricsService implements IMetricsService {
         }
     }
 
+    // Легаси-методы (совместимость с AgentObservabilityTab). Реальная
+    // per-agent агрегация будет добавлена позже; пока возвращаем нейтральные
+    // значения, чтобы не ломать UI.
+    getAgentThroughput(_agentId: string): number {
+        return 0;
+    }
+
+    getAgentPercentiles(_agentId: string): { p50: number; p90: number; p95: number; p99: number } {
+        return { p50: 0, p90: 0, p95: 0, p99: 0 };
+    }
+
     percentiles(series: MetricSeries, ps: number[] = DEFAULT_PERCENTILES): Record<string, number> {
         const values = series.points.map((p) => p.value).sort((a, b) => a - b);
         return computePercentiles(values, ps);

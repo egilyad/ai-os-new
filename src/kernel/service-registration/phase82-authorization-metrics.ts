@@ -1,10 +1,10 @@
-/**
- * Phase 82 — единый слой авторизации и метрический слой (SPEC_08, SPEC_03).
+﻿/**
+ * Phase 82 â€” ÐµÐ´Ð¸Ð½Ñ‹Ð¹ ÑÐ»Ð¾Ð¹ Ð°Ð²Ñ‚Ð¾Ñ€Ð¸Ð·Ð°Ñ†Ð¸Ð¸ Ð¸ Ð¼ÐµÑ‚Ñ€Ð¸Ñ‡ÐµÑÐºÐ¸Ð¹ ÑÐ»Ð¾Ð¹ (SPEC_08, SPEC_03).
  *
- *  - authorizationService: единый decision point прав с семантикой default deny
- *    (закрывает fail-open в GovernanceService/AgentPermissionService).
- *  - metricsService: единый in-memory метрический слой (counters/histograms/
- *    gauges) с опциональным персистентным storage.
+ *  - authorizationService: ÐµÐ´Ð¸Ð½Ñ‹Ð¹ decision point Ð¿Ñ€Ð°Ð² Ñ ÑÐµÐ¼Ð°Ð½Ñ‚Ð¸ÐºÐ¾Ð¹ default deny
+ *    (Ð·Ð°ÐºÑ€Ñ‹Ð²Ð°ÐµÑ‚ fail-open Ð² GovernanceService/AgentPermissionService).
+ *  - metricsService: ÐµÐ´Ð¸Ð½Ñ‹Ð¹ in-memory Ð¼ÐµÑ‚Ñ€Ð¸Ñ‡ÐµÑÐºÐ¸Ð¹ ÑÐ»Ð¾Ð¹ (counters/histograms/
+ *    gauges) Ñ Ð¾Ð¿Ñ†Ð¸Ð¾Ð½Ð°Ð»ÑŒÐ½Ñ‹Ð¼ Ð¿ÐµÑ€ÑÐ¸ÑÑ‚ÐµÐ½Ñ‚Ð½Ñ‹Ð¼ storage.
  */
 import type { Phase } from './helpers';
 import type { IEventBus } from '../types/interfaces';
@@ -17,7 +17,6 @@ import { MetricsService } from '../services/ops/metrics-service';
 import { DexieMetricsStorage } from '../services/ops/metrics-dexie-storage';
 import { MetricsCollector } from '../services/ops/metrics-collector';
 import { EmbeddingService } from '../services/embedding-service';
-import { EmbeddingPortAdapter } from '../services/interop/embedding-port-adapter';
 import { DefaultEmbeddingService } from '../services/parity/default-embedding-service';
 import { PluginRegistry } from '../services/plugins/plugin-registry';
 import { AgentSecurityGuard } from '../services/security/agent-security-guard';
@@ -33,12 +32,20 @@ export const registerPhase82: Phase = (helpers, ctx) => {
 
     register('authorizationService', () => new AuthorizationService());
 
-    register('metricsService', () => new MetricsService(new DexieMetricsStorage()));
+    register('realtimeMetricsService', () => new MetricsService(new DexieMetricsStorage()));
 
     register('embeddingServiceHub', () => {
         const hub = new EmbeddingService();
-        // Дефолтный офлайн-хэш-бэкенд (детерминированный, без сети).
-        hub.register(new EmbeddingPortAdapter(new DefaultEmbeddingService(), 'offline-hash'));
+        // Ð”ÐµÑ„Ð¾Ð»Ñ‚Ð½Ñ‹Ð¹ Ð¾Ñ„Ð»Ð°Ð¹Ð½-Ñ…ÑÑˆ-Ð±ÑÐºÐµÐ½Ð´ (Ð´ÐµÑ‚ÐµÑ€Ð¼Ð¸Ð½Ð¸Ñ€Ð¾Ð²Ð°Ð½Ð½Ñ‹Ð¹, Ð±ÐµÐ· ÑÐµÑ‚Ð¸).
+        const offline = new DefaultEmbeddingService();
+        hub.register({
+            id: 'offline-hash',
+            isAvailable: () => true,
+            embed: async ({ texts }) => {
+                const vectors = await offline.embed(texts);
+                return { vectors, dimensions: 384, provider: 'offline-hash' };
+            },
+        });
         return hub;
     });
 
@@ -48,11 +55,11 @@ export const registerPhase82: Phase = (helpers, ctx) => {
 
     register('agentRuntime', (c) =>
         new AgentRuntime({
-            // Дефолтная заглушка; реальный LLM-вызов подключается при первом
-            // прогоне/интеграции с routerService.
+            // Ð”ÐµÑ„Ð¾Ð»Ñ‚Ð½Ð°Ñ Ð·Ð°Ð³Ð»ÑƒÑˆÐºÐ°; Ñ€ÐµÐ°Ð»ÑŒÐ½Ñ‹Ð¹ LLM-Ð²Ñ‹Ð·Ð¾Ð² Ð¿Ð¾Ð´ÐºÐ»ÑŽÑ‡Ð°ÐµÑ‚ÑÑ Ð¿Ñ€Ð¸ Ð¿ÐµÑ€Ð²Ð¾Ð¼
+            // Ð¿Ñ€Ð¾Ð³Ð¾Ð½Ðµ/Ð¸Ð½Ñ‚ÐµÐ³Ñ€Ð°Ñ†Ð¸Ð¸ Ñ routerService.
             callLlm: async () => ({ content: '' }),
             securityGuard: c.get<IAgentSecurityGuard>('agentSecurityGuard'),
-            metrics: c.get<IMetricsService>('metricsService'),
+            metrics: c.get<IMetricsService>('realtimeMetricsService'),
         }),
     );
 
@@ -79,19 +86,19 @@ export const registerPhase82: Phase = (helpers, ctx) => {
         return collector;
     });
 
-    // Eager-старт коллектора provenance.
+    // Eager-ÑÑ‚Ð°Ñ€Ñ‚ ÐºÐ¾Ð»Ð»ÐµÐºÑ‚Ð¾Ñ€Ð° provenance.
     void ctx.container.get('provenanceCollector');
 
     register('metricsCollector', (c) => {
         const collector = new MetricsCollector(
             c.get<IEventBus>('eventBus'),
-            c.get<IMetricsService>('metricsService'),
+            c.get<IMetricsService>('realtimeMetricsService'),
         );
         collector.start();
         return collector;
     });
 
-    // Eager-старт коллектора: подписки должны жить с самого начала.
+    // Eager-ÑÑ‚Ð°Ñ€Ñ‚ ÐºÐ¾Ð»Ð»ÐµÐºÑ‚Ð¾Ñ€Ð°: Ð¿Ð¾Ð´Ð¿Ð¸ÑÐºÐ¸ Ð´Ð¾Ð»Ð¶Ð½Ñ‹ Ð¶Ð¸Ñ‚ÑŒ Ñ ÑÐ°Ð¼Ð¾Ð³Ð¾ Ð½Ð°Ñ‡Ð°Ð»Ð°.
     void ctx.container.get('metricsCollector');
 
     void ctx;

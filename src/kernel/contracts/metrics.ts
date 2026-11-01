@@ -44,4 +44,7 @@ export interface IMetricsService {
     clear(name?: string): void;
     /** Агрегация по процентилям (p50/p90/p99). */
     percentiles(series: MetricSeries, ps?: number[]): Record<string, number>;
+    /** Легаси-методы (совместимость с AgentObservabilityTab). */
+    getAgentThroughput(agentId: string): number;
+    getAgentPercentiles(agentId: string): { p50: number; p90: number; p95: number; p99: number };
 }

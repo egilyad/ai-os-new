@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { metricsService } from '../kernel/instances';
+import { realtimeMetricsService } from '../kernel/instances';
 import type { MetricSeries } from '../kernel/contracts/metrics';
 
 /**
@@ -10,17 +10,17 @@ import type { MetricSeries } from '../kernel/contracts/metrics';
  */
 export function useMetrics(pattern?: string): Record<string, MetricSeries> {
     const [series, setSeries] = useState<Record<string, MetricSeries>>(() =>
-        pattern ? metricsService.snapshot(pattern) : metricsService.snapshot(),
+        pattern ? realtimeMetricsService.snapshot(pattern) : realtimeMetricsService.snapshot(),
     );
 
     useEffect(() => {
         let mounted = true;
         const refresh = () => {
             if (!mounted) return;
-            setSeries(pattern ? metricsService.snapshot(pattern) : metricsService.snapshot());
+            setSeries(pattern ? realtimeMetricsService.snapshot(pattern) : realtimeMetricsService.snapshot());
         };
         refresh();
-        const unsub = metricsService.subscribe(pattern ?? '*', refresh);
+        const unsub = realtimeMetricsService.subscribe(pattern ?? '*', refresh);
         return () => {
             mounted = false;
             unsub();
