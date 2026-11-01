@@ -25,6 +25,13 @@ vi.mock('../../kernel/instances', () => ({
         load: vi.fn().mockResolvedValue(true),
         unload: vi.fn().mockResolvedValue(true),
     },
+    eventBus: {
+        on: vi.fn(() => vi.fn()),
+    },
+    EVENTS: {
+        PLUGIN_REGISTERED: 'plugin:registered',
+        PLUGIN_UNREGISTERED: 'plugin:unregistered',
+    },
     rootLogger: {
         child: vi
             .fn()

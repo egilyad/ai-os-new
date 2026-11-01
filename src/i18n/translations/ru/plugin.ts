@@ -21,6 +21,7 @@ const plugin: Record<string, string> = {
     'plugin.mcp': 'MCP-серверы',
     'plugin.panels': 'Панели',
     'plugin.services': 'Сервисы',
+    'plugin.permissions': 'Разрешения',
     'plugin.stats_total': 'Всего',
     'plugin.stats_active': 'Активных',
     'plugin.stats_inactive': 'Неактивных',

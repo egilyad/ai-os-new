@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Store, Download, Check } from 'lucide-react';
-import { pluginRegistry, pluginLoader } from '../../kernel/instances';
+import { pluginRegistry, pluginLoader, eventBus, EVENTS } from '../../kernel/instances';
 import { useTranslation } from '../../i18n/useTranslation';
 import { PLUGIN_MARKETPLACE_CATALOG } from '../../kernel/services/plugins/plugin-marketplace-catalog';
 import ModuleInfo from '../ModuleInfo';
@@ -16,7 +16,12 @@ const PluginMarketplacePanel: React.FC = () => {
 
     useEffect(() => {
         refresh();
-         
+        const unsub = eventBus.on(EVENTS.PLUGIN_REGISTERED, refresh);
+        const unsub2 = eventBus.on(EVENTS.PLUGIN_UNREGISTERED, refresh);
+        return () => {
+            unsub();
+            unsub2();
+        };
     }, [refresh]);
 
     const install = async (id: string) => {
@@ -105,6 +110,13 @@ const PluginMarketplacePanel: React.FC = () => {
                                 .map((x) => x.name)
                                 .join(', ') || '—'}
                         </div>
+                        {entry.manifest.permissions && entry.manifest.permissions.length > 0 && (
+                            <div
+                                style={{ fontSize: 10, color: 'var(--slate-600)', marginBottom: 8 }}
+                            >
+                                {t('plugin.permissions')}: {entry.manifest.permissions.join(', ')}
+                            </div>
+                        )}
                         {isInstalled ? (
                             <span
                                 style={{
