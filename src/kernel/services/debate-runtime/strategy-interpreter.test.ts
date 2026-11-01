@@ -150,6 +150,14 @@ describe('strategy-interpreter (SPEC_07)', () => {
         }
     });
 
+    it('compileDefinition принимает полный StrategyDefinition из реестра', () => {
+        const def = BUILTIN_STRATEGIES.find((d) => d.id === 'builtin.socratic')!;
+        const p = compileDefinition(def);
+        expect(p.root).toBe('critic_loop');
+        expect(p.topology.kind).toBe('roundtable');
+        expect(p.turnPolicy.stopWhen).toBe('agreement');
+    });
+
     it('maxRounds нормализуется в минимум 1', () => {
         const p = interpret(draft('builtin.round_robin', 'debate_graph', { maxRounds: 0 }));
         expect(p.topology.maxRounds).toBe(1);
