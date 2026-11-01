@@ -163,6 +163,8 @@ describe('strategy-interpreter (SPEC_07)', () => {
         expect(p.root).toBe('critic_loop');
         expect(p.topology.kind).toBe('roundtable');
         expect(p.turnPolicy.stopWhen).toBe('agreement');
+        expect(p.id).toBe('builtin.socratic');
+        expect(p.name).toBe('Socratic Method');
     });
 
     it('maxRounds нормализуется в минимум 1', () => {
