@@ -5,6 +5,8 @@ export { DebateMemory } from './debate-memory';
 export { DebateConsensusEngine } from './debate-consensus';
 export { DebateEvaluator } from './debate-evaluator';
 export { DebateOrchestrator } from './debate-orchestrator';
+export { interpret, draft, compileBuiltin, programToPlan } from './strategy-interpreter';
+export type { DebateExecutionPlan } from './strategy-interpreter';
 export {
     ConversationBackedDebateOrchestrator,
     DebateAgentExecutionEngine,
@@ -66,6 +68,16 @@ export type { StrategyVersion } from './debate-strategy-manager';
 export { CrossDebateMemoryService } from './cross-debate-memory';
 export type { CrossDebateMemoryEntry, CrossDebateContext } from './cross-debate-memory';
 export { DebateBreakpointService } from './debate-breakpoint-service';
-export type { DebateBreakpoint, BreakpointHit, HumanFeedback, BreakpointTrigger } from './debate-breakpoint-service';
+export type {
+    DebateBreakpoint,
+    BreakpointHit,
+    HumanFeedback,
+    BreakpointTrigger,
+} from './debate-breakpoint-service';
 export { DebateQualityBenchmarkService } from './debate-quality-benchmark';
-export type { DebateQualityScore, AgentQualityProfile, QualityTrend, QualityDimension } from './debate-quality-benchmark';
+export type {
+    DebateQualityScore,
+    AgentQualityProfile,
+    QualityTrend,
+    QualityDimension,
+} from './debate-quality-benchmark';
