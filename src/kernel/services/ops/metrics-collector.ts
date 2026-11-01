@@ -12,6 +12,8 @@ import { EVENTS } from '../../events/event-names';
 export class MetricsCollector {
     private unsubs: Array<() => void> = [];
     private started = false;
+    private flushTimer: ReturnType<typeof setInterval> | null = null;
+    private static readonly FLUSH_INTERVAL_MS = 30_000;
 
     constructor(
         private events: IEventBus,
@@ -21,6 +23,11 @@ export class MetricsCollector {
     start(): void {
         if (this.started) return;
         this.started = true;
+
+        // Периодический flush в персистентное хранилище (Dexie).
+        this.flushTimer = setInterval(() => {
+            void this.metrics.flush().catch(() => {});
+        }, MetricsCollector.FLUSH_INTERVAL_MS);
 
         this.unsubs.push(
             this.events.on(EVENTS.CHAT_STREAM_END, (data: unknown) => {
@@ -106,6 +113,10 @@ export class MetricsCollector {
     }
 
     destroy(): void {
+        if (this.flushTimer) {
+            clearInterval(this.flushTimer);
+            this.flushTimer = null;
+        }
         this.unsubs.forEach((u) => u());
         this.unsubs = [];
         this.started = false;
