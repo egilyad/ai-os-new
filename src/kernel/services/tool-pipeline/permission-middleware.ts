@@ -4,6 +4,7 @@
 import type { AgentPermissionService } from '../permissions/permission-service';
 import { actionForTool } from '../../contracts/agent-permissions';
 import type { IToolApprovalService } from '../../contracts/tool-approval';
+import type { IAuthorizationService } from '../../contracts/authorization';
 import type {
     ToolApprovalResolver,
     ToolPipelineMiddleware,
@@ -22,7 +23,7 @@ export type ApprovalRequestFn = (request: {
     reason: string;
 }) => Promise<'allow' | 'deny'>;
 
-const defaultResolver: PermissionActionResolver = (toolId) => ({
+export const defaultResolver: PermissionActionResolver = (toolId) => ({
     action: actionForTool(toolId),
     resource: toolId,
 });
@@ -36,13 +37,29 @@ const defaultResolver: PermissionActionResolver = (toolId) => ({
  */
 export function createPermissionMiddleware(
     permissionService: AgentPermissionService,
-    resolveAction: PermissionActionResolver = defaultResolver,
+    resolveAction?: PermissionActionResolver,
+    authorizationService?: IAuthorizationService,
 ): ToolPipelineMiddleware {
+    const resolver = resolveAction ?? defaultResolver;
     return {
         id: 'permission',
         async pre(ctx) {
+            // SPEC_08: если подключён единый authorizationService — используем его
+            // как первый decision point. deny из authz блокирует сразу; allow/ask
+            // передаются дальше в permissionService (для записи денайлов/approval).
+            if (authorizationService) {
+                const authzDec = await authorizationService.evaluate({
+                    actor: ctx.agentId ?? 'system',
+                    actorType: ctx.agentId ? 'agent' : 'service',
+                    action: actionForTool(ctx.toolId),
+                    resource: ctx.toolId,
+                });
+                if (authzDec.effect === 'deny') {
+                    return { kind: 'deny', reason: authzDec.reason ?? 'denied by authorization service' };
+                }
+            }
             if (!ctx.agentId) return { kind: 'allow' };
-            const { action, resource } = resolveAction(ctx.toolId);
+            const { action, resource } = resolver(ctx.toolId);
             const decision = await permissionService.evaluate(ctx.agentId, action, resource);
             switch (decision.effect) {
                 case 'allow':

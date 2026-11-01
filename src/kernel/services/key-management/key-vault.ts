@@ -1,86 +1,77 @@
 import type { ApiKey } from '../../types/metrics-types';
 import type { IKeyVaultService } from '../../contracts/key-vault';
 import { ssrSafeStorage } from '../../utils/ssr-storage';
+import {
+    createVerifier,
+    open,
+    seal,
+    type VaultPackage,
+    verify,
+} from './crypto/vault-crypto';
 
-const ALGORITHM = 'AES-GCM';
-const KEY_USAGE: KeyUsage[] = ['encrypt', 'decrypt'];
-const KEY_LENGTH = 256;
-// M-5: OWASP 2023 recommends 600k PBKDF2-HMAC-SHA-256 iterations (was 100k).
-// No live ciphertext exists (vault unwired by design), so no migration needed.
-const ITERATIONS = 600_000;
-const SALT_LENGTH = 16;
-const IV_LENGTH = 12;
-
-function bytesToHex(bytes: Uint8Array): string {
-    return Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('');
-}
-
-function hexToBytes(hex: string): Uint8Array {
-    const bytes = new Uint8Array(hex.length / 2);
-    for (let i = 0; i < hex.length; i += 2) {
-        bytes[i / 2] = parseInt(hex.slice(i, i + 2), 16);
-    }
-    return bytes;
-}
-
-// TS strict-mode ArrayBuffer compat
-function asBuf(data: Uint8Array): ArrayBuffer {
-    return data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength) as ArrayBuffer;
-}
+const VERIFIER_KEY = 'key-vault:verifier';
 
 /**
- * KeyVault — AES-GCM + PBKDF2 key encryption.
+ * KeyVault — passphrase-защищённое шифрование секретов (SPEC_01).
  *
- * NOTE: Vault is intentionally NOT wired into the app's bootstrap.
- * See key-registry.ts:619: "Vault system removed — keys stored as plaintext".
- * API keys are stored in IndexedDB in plaintext by design.
- * The vault code is kept as infrastructure for future password-gated encryption.
- * P0-#2 (key-registry-utils.ts) prevents silent plaintext during export.
+ * Модель:
+ *  - Мастер-ключ выводится из passphrase (VaultCrypto) и НЕ хранится.
+ *  - Каждый зашифрованный ключ — это сериализованный VaultPackage (JSON),
+ *    со своей солью и IV. Это самодостаточно и версионируемо.
+ *  - Верификатор пароля хранится в localStorage ('key-vault:verifier').
+ *  - Fail-closed: при заблокированном vault encryptKey/decryptKey возвращают
+ *    null, а не молчаливо возвращают открытый текст / ciphertext.
+ *
+ * Замечание: полная интеграция с key-service.ts (замена deviceKey на
+ * passphrase) и Passphrase-UI — следующие шаги SPEC_01.
  */
 export class KeyVault implements IKeyVaultService {
-    private masterKey: CryptoKey | null = null;
-    private _locked = true;
+    private _password: string | null = null;
 
-    constructor() {}
-
-    async unlock(password: string): Promise<boolean> {
+    private readVerifier(): VaultPackage | null {
+        const raw = ssrSafeStorage.getItem(VERIFIER_KEY);
+        if (!raw) return null;
         try {
-            const stored = ssrSafeStorage.getItem('key-vault:salt');
-            const salt = stored
-                ? hexToBytes(stored)
-                : crypto.getRandomValues(new Uint8Array(SALT_LENGTH));
-            if (!stored) {
-                ssrSafeStorage.setItem('key-vault:salt', bytesToHex(salt));
-            }
-            const baseKey = await crypto.subtle.importKey(
-                'raw',
-                new TextEncoder().encode(password),
-                { name: 'PBKDF2' },
-                false,
-                ['deriveKey'],
-            );
-            this.masterKey = await crypto.subtle.deriveKey(
-                {
-                    name: 'PBKDF2',
-                    salt: asBuf(salt),
-                    iterations: ITERATIONS,
-                    hash: 'SHA-256',
-                },
-                baseKey,
-                { name: ALGORITHM, length: KEY_LENGTH },
-                false,
-                KEY_USAGE,
-            );
-            this._locked = false;
+            return JSON.parse(raw) as VaultPackage;
+        } catch {
+            return null;
+        }
+    }
+
+    async createVault(passphrase: string): Promise<boolean> {
+        try {
+            const verifier = await createVerifier(passphrase);
+            ssrSafeStorage.setItem(VERIFIER_KEY, JSON.stringify(verifier));
+            this._password = passphrase;
             return true;
         } catch {
             return false;
         }
     }
 
+    hasVault(): boolean {
+        return this.readVerifier() !== null;
+    }
+
+    async verifyPassphrase(passphrase: string): Promise<boolean> {
+        const verifier = this.readVerifier();
+        if (!verifier) return true; // vault ещё не создан — первый вход
+        return verify(passphrase, verifier);
+    }
+
+    async unlockWithPassphrase(passphrase: string): Promise<boolean> {
+        const ok = await this.verifyPassphrase(passphrase);
+        if (!ok) return false;
+        this._password = passphrase;
+        return true;
+    }
+
+    async unlock(password: string): Promise<boolean> {
+        return this.unlockWithPassphrase(password);
+    }
+
     lock(keys?: ApiKey[]): void {
-        this.masterKey = null;
-        this._locked = true;
+        this._password = null;
         if (keys) {
             for (const k of keys) {
                 k.key = '[VAULT LOCKED]';
@@ -89,72 +80,58 @@ export class KeyVault implements IKeyVaultService {
     }
 
     isLocked(): boolean {
-        return this._locked;
+        return this._password === null;
     }
 
     async encryptKey(plaintext: string): Promise<string | null> {
-        if (this._locked || !this.masterKey) return null;
+        if (this._password === null) return null;
         try {
-            const iv = crypto.getRandomValues(new Uint8Array(IV_LENGTH));
-            const encoded = new TextEncoder().encode(plaintext);
-            const encrypted = await crypto.subtle.encrypt(
-                { name: ALGORITHM, iv: asBuf(iv) },
-                this.masterKey,
-                encoded,
-            );
-            const combined = new Uint8Array(iv.length + encrypted.byteLength);
-            combined.set(iv);
-            combined.set(new Uint8Array(encrypted), iv.length);
-            return bytesToHex(combined);
+            const pkg = await seal(this._password, new TextEncoder().encode(plaintext));
+            return JSON.stringify(pkg);
         } catch {
             return null;
         }
     }
 
     async decryptKey(ciphertext: string): Promise<string | null> {
-        if (this._locked || !this.masterKey) return ciphertext;
+        if (this._password === null) return null;
         try {
-            const combined = hexToBytes(ciphertext);
-            const iv = combined.slice(0, IV_LENGTH);
-            const data = combined.slice(IV_LENGTH);
-            const decrypted = await crypto.subtle.decrypt(
-                { name: ALGORITHM, iv: asBuf(iv) },
-                this.masterKey,
-                data,
-            );
-            return new TextDecoder().decode(decrypted);
+            const pkg = JSON.parse(ciphertext) as VaultPackage;
+            const opened = await open(this._password, pkg);
+            return opened ? new TextDecoder().decode(opened) : null;
         } catch {
             return null;
         }
     }
 
     async decryptAllKeys(keys: ApiKey[]): Promise<ApiKey[]> {
-        if (this._locked || !this.masterKey) return keys;
+        if (this._password === null) return keys;
         const out: ApiKey[] = [];
         for (const k of keys) {
-            const decrypted = k.key.startsWith('[VAULT')
-                ? k.key
-                : ((await this.decryptKey(k.key)) ?? k.key);
-            out.push({ ...k, key: decrypted });
+            if (!k.isEncrypted) {
+                out.push(k);
+                continue;
+            }
+            const decrypted = await this.decryptKey(k.key);
+            out.push({ ...k, key: decrypted ?? k.key, isEncrypted: false });
         }
         return out;
     }
 
     async encryptAllKeys(keys: ApiKey[]): Promise<ApiKey[]> {
-        if (this._locked || !this.masterKey) return keys;
+        if (this._password === null) return keys;
         const out: ApiKey[] = [];
         for (const k of keys) {
             const encrypted = await this.encryptKey(k.key);
-            out.push({ ...k, key: encrypted ?? k.key, isEncrypted: true });
+            out.push({ ...k, key: encrypted ?? k.key, isEncrypted: !!encrypted });
         }
         return out;
     }
 
     stripPlaintextKeys(keys: ApiKey[]): ApiKey[] {
-        if (this._locked) {
-            return keys.map((k) => ({ ...k, key: '[REDACTED]' }));
-        }
-        return keys;
+        return this._password === null
+            ? keys.map((k) => ({ ...k, key: '[REDACTED]' }))
+            : keys;
     }
 
     purgeKey(_key: ApiKey): void {

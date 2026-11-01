@@ -79,6 +79,7 @@ import { registerPhase78 } from './phase78-assistant';
 import { registerPhase79 } from './phase79-capability-trust';
 import { registerPhase80 } from './phase80-assistant-diary';
 import { registerPhase81 } from './phase81-wiki-brain';
+import { registerPhase82 } from './phase82-authorization-metrics';
 import type { IContainer } from '../container';
 import type { IEventBus } from '../types/interfaces';
 
@@ -170,6 +171,7 @@ export function registerServices(
     registerPhase80(helpers, ctx);
     registerPhase81(helpers, ctx);
     registerPhase77(helpers, ctx);
+    registerPhase82(helpers, ctx);
 }
 
 export type { PhaseContext, Phase } from './helpers';

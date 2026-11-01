@@ -28,7 +28,6 @@ import { ensureExtendedStats, buildRestoreKeys } from './key-registry-utils';
 import { CONFIG } from '../config-registry';
 import { rootLogger } from '../logger-service';
 const LOGGER = rootLogger.child('KeyService');
-import { ssrSafeStorage } from '../../utils/ssr-storage';
 
 import type { FreeTierLimit } from './key-types';
 
@@ -394,22 +393,72 @@ export class KeyService implements IKeyRotationManager {
         return restored;
     }
 
-    // -- Vault ----------------------------------------------------------
+    // -- Vault (SPEC_01) -----------------------------------------------
 
+    /**
+     * Разблокировка vault при старте.
+     *
+     * SPEC_01: больше НЕ используем deviceKey (он хранился в localStorage рядом
+     * с данными и делал шифрование косметическим). Вместо этого:
+     *  - если vault уже создан (есть верификатор пароля) — он остаётся
+     *    заблокированным, пока пользователь не введёт passphrase;
+     *  - если vault ещё не создан — данные остаются в открытом виде
+     *    (однопользовательский режим) до явного создания passphrase.
+     */
     private async unlockVault(): Promise<void> {
         if (!this.vault.isLocked()) return;
-        const STORAGE_KEY = 'key-vault:device-key';
-        try {
-            let deviceKey = ssrSafeStorage.getItem(STORAGE_KEY);
-            if (!deviceKey) {
-                const bytes = crypto.getRandomValues(new Uint8Array(32));
-                deviceKey = btoa(String.fromCharCode(...bytes));
-                ssrSafeStorage.setItem(STORAGE_KEY, deviceKey);
-            }
-            await this.vault.unlock(deviceKey);
-        } catch {
-            // Vault unlock failure is non-fatal — keys will be stored as plaintext
+        if (this.vault.hasVault()) {
+            LOGGER.info('KeyService', 'vault locked — awaiting passphrase');
+            return;
         }
+        // Первый вход: vault ещё не создан — остаёмся в plaintext-режиме
+        // до тех пор, пока пользователь не создаст vault через createVault().
+    }
+
+    async createVault(passphrase: string): Promise<boolean> {
+        const ok = await this.vault.createVault(passphrase);
+        if (ok) {
+            // Миграция (SPEC_01): после создания vault перешифровать существующие
+            // plaintext-ключи (registry.saveKeys → vault.encryptAllKeys).
+            try {
+                await this.registry.saveKeys();
+            } catch (e) {
+                rootLogger.warn('KeyService', 'vault created but key re-encrypt failed', {
+                    error: e,
+                });
+            }
+            this.deps.eventBus.emit(EVENTS.KEY_VAULT_CREATED, {});
+            this.notify();
+        }
+        return ok;
+    }
+
+    async unlockVaultWithPassphrase(passphrase: string): Promise<boolean> {
+        const ok = await this.vault.unlockWithPassphrase(passphrase);
+        if (ok) {
+            this.deps.eventBus.emit(EVENTS.KEY_VAULT_UNLOCKED, {});
+            this.notify();
+        }
+        return ok;
+    }
+
+    lockVault(): void {
+        if (this.vault.isLocked()) return;
+        this.vault.lock();
+        this.deps.eventBus.emit(EVENTS.KEY_VAULT_LOCKED, {});
+        this.notify();
+    }
+
+    hasVault(): boolean {
+        return this.vault.hasVault();
+    }
+
+    isVaultLocked(): boolean {
+        return this.vault.isLocked();
+    }
+
+    async verifyPassphrase(passphrase: string): Promise<boolean> {
+        return this.vault.verifyPassphrase(passphrase);
     }
 
     // -- Config Persistence ---------------------------------------------

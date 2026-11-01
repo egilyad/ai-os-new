@@ -25,6 +25,7 @@ import ForgettingCurvePanel from './ForgettingCurvePanel';
 import MemoryTimeline from './MemoryTimeline';
 import { KnowledgeGraphView } from '../viz/KnowledgeGraphView';
 import { memoryGraphService } from '../../kernel/instances';
+import { downloadText } from '../../shared/utils/file-transfer';
 
 const MemoryPanel: React.FC = () => {
     const { confirm, ConfirmDialog } = useConfirm();
@@ -238,13 +239,8 @@ const MemoryPanel: React.FC = () => {
             // "vectors" was the lie this fixes.
             const full = memoryService.getMemories();
             const exportData = JSON.stringify(full, null, 2);
-            const blob = new Blob([exportData], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `memory-export-${new Date().toISOString().slice(0, 10)}.json`;
-            a.click();
-            URL.revokeObjectURL(url);
+            const filename = `memory-export-${new Date().toISOString().slice(0, 10)}.json`;
+            downloadText(filename, exportData);
             eventBus.emit(EVENTS.NOTIFICATION, {
                 message: `Memory vectors exported (${full.length} entries)`,
                 type: 'success',

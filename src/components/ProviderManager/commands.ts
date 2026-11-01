@@ -1,6 +1,7 @@
 import type { ApiKey } from '../../types/metrics';
 import { safeJsonParse } from '../../kernel/utils/safe-json';
 import { sanitizeApiKey } from '../../shared/utils/sanitize';
+import { downloadText } from '../../shared/utils/file-transfer';
 
 export interface ProviderExportData {
     version: 1;
@@ -48,13 +49,7 @@ export class ExportProvidersCommand {
 
     download(): void {
         const { data, filename } = this.execute();
-        const blob = new Blob([data], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = filename;
-        a.click();
-        URL.revokeObjectURL(url);
+        downloadText(filename, data);
     }
 }
 

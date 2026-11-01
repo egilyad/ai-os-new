@@ -15,6 +15,7 @@
  */
 import { EVENTS } from '../../events/event-names';
 import { rootLogger } from '../logger-service';
+import type { IAuthorizationService } from '../../contracts/authorization';
 import {
     BASE_PERMISSION_RULES,
     PERMISSION_MODE_TO_PRESET,
@@ -65,6 +66,8 @@ export interface AgentPermissionServiceDeps {
         getKv: <T>(id: string) => Promise<T | null>;
         setKv: <T>(id: string, value: T) => Promise<void>;
     };
+    /** SPEC_08: единый decision point (опционально). */
+    authorizationService?: IAuthorizationService;
 }
 
 function defaultState(agentId: string): AgentPermissionState {
@@ -230,6 +233,45 @@ export class AgentPermissionService {
         resource: string,
     ): Promise<PermissionDecision> {
         const state = this.getState(agentId);
+
+        // SPEC_08: единый decision point (если подключён). deny из authz
+        // блокирует сразу; allow/ask передаются дальше в ruleset.
+        if (this.deps.authorizationService) {
+            const authzDec = await this.deps.authorizationService.evaluate({
+                actor: agentId,
+                actorType: 'agent',
+                action,
+                resource,
+            });
+            if (authzDec.effect === 'deny') {
+                const decision: PermissionDecision = {
+                    agentId,
+                    action,
+                    resource,
+                    effect: 'deny',
+                    reason: authzDec.reason ?? 'Denied by authorization service',
+                    escalated: false,
+                    rule: {
+                        id: 'authorization-service',
+                        action,
+                        resource,
+                        effect: 'deny',
+                    } as PermissionRule,
+                    mode: state.mode,
+                    preset: state.preset,
+                };
+                this.deps.eventBus.emit(EVENTS.PERMISSION_DECIDED, {
+                    agentId,
+                    action,
+                    resource,
+                    effect: 'deny',
+                    escalated: false,
+                    reason: decision.reason,
+                });
+                return decision;
+            }
+        }
+
         const rule = evaluatePermission(action, resource, this.getEffectiveRules(agentId));
         let effect = rule.effect;
         let reason = rule.note ?? defaultReason(effect, action, resource);

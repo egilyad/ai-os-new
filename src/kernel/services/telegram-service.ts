@@ -1,7 +1,14 @@
 import { getDexieDb } from './database-service';
 import { rootLogger } from './logger-service';
+import { lazyService } from '../service-helper';
+import type { IKeyVaultService } from '../contracts/key-vault';
 
 const LOGGER = rootLogger.child('Telegram');
+
+// SPEC_01: botToken хранится либо в открытом виде (legacy, vault не активен),
+// либо как зашифрованный VaultPackage (через keyVault). При заблокированном
+// vault зашифрованные токены не расшифровываются (fail-closed).
+const vault = lazyService<IKeyVaultService>('keyVault');
 
 export interface TelegramBridge {
     agentId: string;
@@ -24,14 +31,31 @@ export function isValidBotToken(token: unknown): token is string {
     return typeof token === 'string' && BOT_TOKEN_RE.test(token.trim());
 }
 export class TelegramService {
+    private async sealToken(token: string): Promise<{ encrypted: boolean; data: string }> {
+        if (!vault.isLocked()) {
+            const sealed = await vault.encryptKey(token);
+            if (sealed) return { encrypted: true, data: sealed };
+        }
+        return { encrypted: false, data: token };
+    }
+
+    private async unsealToken(payload: { encrypted: boolean; data: string }): Promise<string | null> {
+        if (payload.encrypted) {
+            if (vault.isLocked()) return null;
+            return vault.decryptKey(payload.data);
+        }
+        return payload.data;
+    }
+
     async setBot(agentId: string, cfg: { botToken: string; allowedChatIds?: number[]; channelId?: string }): Promise<void> {
         if (!isValidBotToken(cfg.botToken)) {
             throw new Error('Invalid Telegram bot token shape');
         }
+        const tokenPayload = await this.sealToken(cfg.botToken);
         await getDexieDb().agentMemory.add({
             agentId,
             type: 'KNOWLEDGE',
-            content: JSON.stringify({ kind: 'telegram', ...cfg }),
+            content: JSON.stringify({ kind: 'telegram', ...cfg, botToken: tokenPayload }),
             createdAt: Date.now(),
         } as never);
         LOGGER.info('Telegram', 'bot set', { agentId });
@@ -41,8 +65,16 @@ export class TelegramService {
         const rows = (await getDexieDb().agentMemory.where('agentId').equals(agentId).toArray()) as Array<{ content: string }>;
         for (let i = rows.length - 1; i >= 0; i--) {
             try {
-                const obj = JSON.parse(rows[i]!.content) as TelegramBridge & { kind?: string };
-                if (obj.kind === 'telegram' && isValidBotToken(obj.botToken)) return obj;
+                const obj = JSON.parse(rows[i]!.content) as TelegramBridge & { kind?: string; botToken?: unknown };
+                if (obj.kind !== 'telegram') continue;
+                if (typeof obj.botToken === 'object' && obj.botToken !== null) {
+                    const unsealed = await this.unsealToken(obj.botToken as { encrypted: boolean; data: string });
+                    if (unsealed && isValidBotToken(unsealed)) {
+                        return { agentId, botToken: unsealed, channelId: obj.channelId, allowedChatIds: obj.allowedChatIds };
+                    }
+                    continue;
+                }
+                if (typeof obj.botToken === 'string' && isValidBotToken(obj.botToken)) return obj;
             } catch { /* best-effort */ }
         }
         return null;

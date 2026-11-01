@@ -168,7 +168,9 @@ export class GovernanceService implements IGovernanceService {
                 return { decision: 'allow', ruleId: r.id };
             }
         }
-        return { decision: 'allow' };
+        // SPEC_08: default deny — отсутствие правила НЕ разрешает автоматически.
+        // Явные allow-политики (addPolicy с effect:'allow') добавляются сознательно.
+        return { decision: 'deny' };
     }
 
     // ── Human roles ──

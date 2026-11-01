@@ -11,6 +11,7 @@ import { eventBus, EVENTS, rootLogger } from '../../kernel/instances';
 const LOGGER = rootLogger.child('ProviderManagerContainer');
 import { safeJsonParse } from '../../kernel/utils/safe-json';
 import { groupManager } from '../../kernel/instances';
+import { downloadText, readFileAsText } from '../../shared/utils/file-transfer';
 
 const TABS: TabId[] = ['installed', 'browse', 'routing', 'pools', 'intel', 'rotation'];
 
@@ -69,13 +70,8 @@ const ProviderManagerContainer: React.FC = () => {
         setExporting(true);
         try {
             const data = await exportKeys();
-            const blob = new Blob([data], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `providers-export-${new Date().toISOString().slice(0, 10)}.json`;
-            a.click();
-            URL.revokeObjectURL(url);
+            const filename = `providers-export-${new Date().toISOString().slice(0, 10)}.json`;
+            downloadText(filename, data);
             eventBus.emit(EVENTS.NOTIFICATION, {
                 message: 'Providers exported successfully',
                 type: 'success',
@@ -95,58 +91,54 @@ const ProviderManagerContainer: React.FC = () => {
     }, [exportKeys]);
 
     const handleImport = useCallback(
-        (e: React.ChangeEvent<HTMLInputElement>) => {
+        async (e: React.ChangeEvent<HTMLInputElement>) => {
             const file = e.target.files?.[0];
             if (!file) return;
             setImporting(true);
-            const reader = new FileReader();
-            reader.onload = async (event) => {
+            try {
+                const raw = await readFileAsText(file);
+                if (!raw?.trim()) throw new Error('File is empty');
+                let parsed: unknown;
                 try {
-                    const raw = event.target?.result as string;
-                    if (!raw?.trim()) throw new Error('File is empty');
-                    let parsed: unknown;
-                    try {
-                        parsed = safeJsonParse(raw);
-                    } catch {
-                        throw new Error(
-                            'Invalid JSON format. Expected a valid JSON array of provider objects.',
-                        );
-                    }
-                    if (!Array.isArray(parsed))
-                        throw new Error('Invalid structure: expected a JSON array.');
-                    if (parsed.length === 0) throw new Error('File contains no providers.');
-                    const missingFields = parsed.filter((item: unknown) => {
-                        const p = item as Record<string, unknown>;
-                        return !p.provider || !p.label;
-                    });
-                    if (missingFields.length > 0) {
-                        throw new Error(
-                            `${missingFields.length} entr${missingFields.length === 1 ? 'y' : 'ies'} missing required fields (provider, label)`,
-                        );
-                    }
-                    const count = await importKeys(raw);
-                    // Only show success if keys were actually imported; vault-locked case already shows an error from importKeys
-                    if (count > 0) {
-                        eventBus.emit(EVENTS.NOTIFICATION, {
-                            message: `Successfully imported ${count} provider(s)`,
-                            type: 'success',
-                        });
-                    }
-                } catch (e) {
-                    const msg = e instanceof Error ? e.message : 'Unknown error';
-                    LOGGER.warn('ProviderManagerContainer', 'Failed to import providers', {
-                        error: e,
-                    });
-                    eventBus.emit(EVENTS.NOTIFICATION, {
-                        message: `Import failed: ${msg}`,
-                        type: 'error',
-                    });
-                } finally {
-                    setImporting(false);
-                    if (fileInputRef.current) fileInputRef.current.value = '';
+                    parsed = safeJsonParse(raw);
+                } catch {
+                    throw new Error(
+                        'Invalid JSON format. Expected a valid JSON array of provider objects.',
+                    );
                 }
-            };
-            reader.readAsText(file);
+                if (!Array.isArray(parsed))
+                    throw new Error('Invalid structure: expected a JSON array.');
+                if (parsed.length === 0) throw new Error('File contains no providers.');
+                const missingFields = parsed.filter((item: unknown) => {
+                    const p = item as Record<string, unknown>;
+                    return !p.provider || !p.label;
+                });
+                if (missingFields.length > 0) {
+                    throw new Error(
+                        `${missingFields.length} entr${missingFields.length === 1 ? 'y' : 'ies'} missing required fields (provider, label)`,
+                    );
+                }
+                const count = await importKeys(raw);
+                // Only show success if keys were actually imported; vault-locked case already shows an error from importKeys
+                if (count > 0) {
+                    eventBus.emit(EVENTS.NOTIFICATION, {
+                        message: `Successfully imported ${count} provider(s)`,
+                        type: 'success',
+                    });
+                }
+            } catch (e) {
+                const msg = e instanceof Error ? e.message : 'Unknown error';
+                LOGGER.warn('ProviderManagerContainer', 'Failed to import providers', {
+                    error: e,
+                });
+                eventBus.emit(EVENTS.NOTIFICATION, {
+                    message: `Import failed: ${msg}`,
+                    type: 'error',
+                });
+            } finally {
+                setImporting(false);
+                if (fileInputRef.current) fileInputRef.current.value = '';
+            }
         },
         [importKeys],
     );

@@ -4,6 +4,7 @@ import PanelLoader from './PanelLoader';
 import { usePolling } from './Common/usePolling';
 import { useTranslation } from '../i18n/useTranslation';
 import { keyUsageAnalyticsService } from '../kernel/instances';
+import RuntimeMetricsView from './DashboardPanel/RuntimeMetricsView';
 import type {
     KeyUsageSummary,
     ProviderUsageBreakdown,
@@ -285,6 +286,11 @@ const KeyUsageAnalyticsContent: React.FC = () => {
                     );
                 })}
             </div>
+
+            <h3 style={{ margin: '1rem 0 8px', fontSize: 14, fontWeight: 600, color: 'var(--slate-400)' }}>
+                Live LLM metrics (metricsService)
+            </h3>
+            <RuntimeMetricsView pattern="llm.*" limit={10} />
         </div>
     );
 };

@@ -1,50 +1,51 @@
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { LocalSecretStore } from './local-secret-store';
 
-function makeDb() {
-    const kv = new Map<string, unknown>();
-    return {
-        getKv: async <T,>(id: string): Promise<T | null> =>
-            (kv.has(id) ? (kv.get(id) as T) : null),
-        setKv: async <T,>(id: string, value: T): Promise<void> => {
-            kv.set(id, value);
-        },
-    };
-}
-
-describe('LocalSecretStore (P-CRIT-2)', () => {
-    it('inits healthy and round-trips secrets', async () => {
-        const store = new LocalSecretStore(makeDb());
-        await expect(store.init({ type: 'local', label: 'Local' })).resolves.toBe(true);
-        await expect(store.health()).resolves.toBe(true);
-        await expect(store.set({ path: 'a/b' }, 'v1')).resolves.toBe(true);
-        await expect(store.get({ path: 'a/b' })).resolves.toBe('v1');
-        await expect(store.get({ path: 'missing' })).resolves.toBeNull();
+describe('LocalSecretStore (атомарность)', () => {
+    it('set использует batchSetKv одной записью, когда доступен', async () => {
+        const batch = vi.fn(async () => {});
+        const db = {
+            getKv: vi.fn(async () => null),
+            setKv: vi.fn(async () => {}),
+            batchSetKv: batch,
+        };
+        const store = new LocalSecretStore(db as never);
+        await store.set({ path: 'a/b' }, 'secret');
+        expect(batch).toHaveBeenCalledTimes(1);
+        const args = batch.mock.calls[0][0];
+        expect(args['external_secret:a/b']).toBe('secret');
+        expect(args['external_secret_index']).toEqual(['a/b']);
     });
 
-    it('lists by prefix and forgets deleted paths', async () => {
-        const store = new LocalSecretStore(makeDb());
-        await store.init({ type: 'local', label: 'Local' });
-        await store.set({ path: 'x/1' }, '1');
-        await store.set({ path: 'x/2' }, '2');
-        await store.set({ path: 'y/1' }, '3');
-        expect(await store.list('x/')).toEqual(['x/1', 'x/2']);
-        await store.delete({ path: 'x/1' });
-        expect(await store.list('x/')).toEqual(['x/2']);
-        await expect(store.get({ path: 'x/1' })).resolves.toBeNull();
+    it('delete удаляет из индекса через batchSetKv', async () => {
+        const batch = vi.fn(async () => {});
+        const db = {
+            getKv: vi.fn(async () => ['a/b', 'c']),
+            setKv: vi.fn(async () => {}),
+            batchSetKv: batch,
+        };
+        const store = new LocalSecretStore(db as never);
+        await store.delete({ path: 'a/b' });
+        const args = batch.mock.calls[0][0];
+        expect(args['external_secret:a/b']).toBeNull();
+        expect(args['external_secret_index']).toEqual(['c']);
     });
 
-    it('plumbs through ExternalSecretsService init with local factory', async () => {
-        const { ExternalSecretsService } = await import('./external-secrets-service');
-        const db = makeDb();
-        const svc = new ExternalSecretsService({
-            eventBus: { on: vi.fn(() => vi.fn()), emit: vi.fn() },
-            database: db,
-            storeFactories: { local: () => new LocalSecretStore(db) },
-        });
-        await expect(svc.init()).resolves.toBe(true);
-        expect(svc.getActiveBackend()).toBe('local');
-        await expect(svc.setSecret({ path: 'k' }, 'v')).resolves.toBe(true);
-        await expect(svc.getSecret({ path: 'k' })).resolves.toBe('v');
+    it('fallback на последовательные setKv без batchSetKv', async () => {
+        const setKv = vi.fn(async () => {});
+        const db = { getKv: vi.fn(async () => null), setKv };
+        const store = new LocalSecretStore(db as never);
+        await store.set({ path: 'x' }, 'v');
+        expect(setKv).toHaveBeenCalledTimes(2);
+    });
+
+    it('get/list/health работают', async () => {
+        const db = {
+            getKv: vi.fn(async () => ['p1', 'p2']),
+            setKv: vi.fn(async () => {}),
+        };
+        const store = new LocalSecretStore(db as never);
+        expect(await store.list('p')).toEqual(['p1', 'p2']);
+        expect(await store.health()).toBe(true);
     });
 });

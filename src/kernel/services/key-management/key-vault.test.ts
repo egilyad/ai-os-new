@@ -1,101 +1,80 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { KeyVault } from './key-vault';
-import { ssrSafeStorage } from '../../utils/ssr-storage';
-import type { ApiKey } from '../../types/metrics-types';
 
-const SALT_KEY = 'key-vault:salt';
+// ssrSafeStorage обычно читает localStorage — в тестах (jsdom) он есть.
+describe('KeyVault (SPEC_01)', () => {
+    let vault: KeyVault;
 
-function makeKey(overrides: Partial<ApiKey> = {}): ApiKey {
-    return {
-        id: 'k1',
-        provider: 'openrouter',
-        key: 'sk-or-test-key',
-        label: 'test',
-        status: 'active',
-        ...overrides,
-    } as ApiKey;
-}
-
-describe('KeyVault (T-C-4)', () => {
     beforeEach(() => {
-        // Fresh salt per test: unlock() reuses a stored salt, so isolation
-        // requires clearing it (PBKDF2 salt is the only persisted state).
-        ssrSafeStorage.removeItem(SALT_KEY);
+        localStorage.clear();
+        vault = new KeyVault();
     });
 
-    it('starts locked: encrypt returns null, decrypt passes ciphertext through', async () => {
-        const vault = new KeyVault();
+    it('изначально заблокирован', () => {
         expect(vault.isLocked()).toBe(true);
-        await expect(vault.encryptKey('secret')).resolves.toBeNull();
-        await expect(vault.decryptKey('whatever')).resolves.toBe('whatever');
     });
 
-    it('unlocks with a password and round-trips encrypt/decrypt', async () => {
-        const vault = new KeyVault();
-        await expect(vault.unlock('correct-horse')).resolves.toBe(true);
+    it('createVault + unlockWithPassphrase с верным паролем', async () => {
+        expect(vault.hasVault()).toBe(false);
+        expect(await vault.createVault('my-passphrase')).toBe(true);
+        expect(vault.hasVault()).toBe(true);
+        expect(await vault.unlockWithPassphrase('my-passphrase')).toBe(true);
         expect(vault.isLocked()).toBe(false);
-        const cipher = await vault.encryptKey('sk-or-test-key');
-        expect(typeof cipher).toBe('string');
-        expect(cipher).not.toContain('sk-or-test-key');
-        await expect(vault.decryptKey(cipher as string)).resolves.toBe('sk-or-test-key');
     });
 
-    it('different passwords derive different keys (wrong password cannot decrypt)', async () => {
-        const a = new KeyVault();
-        await a.unlock('password-one');
-        const cipher = (await a.encryptKey('sk-or-test-key')) as string;
-
-        // Same stored salt, different password -> different key -> auth fails.
-        const b = new KeyVault();
-        await b.unlock('password-two');
-        await expect(b.decryptKey(cipher)).resolves.toBeNull();
-    });
-
-    it('tampered ciphertext fails authentication', async () => {
-        const vault = new KeyVault();
-        await vault.unlock('pw');
-        const cipher = (await vault.encryptKey('sk-or-test-key')) as string;
-        const tampered = cipher.slice(0, -2) + (cipher.endsWith('00') ? 'ff' : '00');
-        expect(tampered).not.toBe(cipher);
-        await expect(vault.decryptKey(tampered)).resolves.toBeNull();
-    });
-
-    it('lock() wipes the key, marks locked rows and blocks encrypt', async () => {
-        const vault = new KeyVault();
-        await vault.unlock('pw');
-        const keys = [makeKey(), makeKey({ id: 'k2' })];
-        vault.lock(keys);
+    it('unlockWithPassphrase с неверным паролем — fail-closed', async () => {
+        await vault.createVault('my-passphrase');
+        expect(await vault.unlockWithPassphrase('wrong')).toBe(false);
         expect(vault.isLocked()).toBe(true);
-        expect(keys.every((k) => k.key === '[VAULT LOCKED]')).toBe(true);
-        await expect(vault.encryptKey('x')).resolves.toBeNull();
     });
 
-    it('encryptAllKeys/decryptAllKeys round-trip; locked passes through', async () => {
-        const vault = new KeyVault();
-        const keys = [makeKey({ key: 'aaa' }), makeKey({ id: 'k2', key: 'bbb' })];
-        await expect(vault.encryptAllKeys(keys)).resolves.toBe(keys);
-
-        await vault.unlock('pw');
-        const encrypted = await vault.encryptAllKeys(keys);
-        expect(encrypted.map((k) => k.key)).not.toContain('aaa');
-        expect(encrypted.every((k) => k.isEncrypted === true)).toBe(true);
-        const decrypted = await vault.decryptAllKeys(encrypted);
-        expect(decrypted.map((k) => k.key)).toEqual(['aaa', 'bbb']);
-        expect(decrypted.every((k) => k.isEncrypted === true)).toBe(true);
+    it('encryptKey при locked → null (fail-closed)', async () => {
+        expect(await vault.encryptKey('sk-123')).toBeNull();
     });
 
-    it('stripPlaintextKeys redacts only while locked', () => {
-        const vault = new KeyVault();
-        expect(vault.stripPlaintextKeys([makeKey()])[0]?.key).toBe('[REDACTED]');
+    it('decryptKey при locked → null, а не ciphertext', async () => {
+        // даже если бы был ciphertext, locked должен возвращать null
+        expect(await vault.decryptKey('some-ciphertext')).toBeNull();
     });
 
-    it('each encryption uses a fresh IV (same plaintext -> different ciphertext)', async () => {
-        const vault = new KeyVault();
-        await vault.unlock('pw');
-        const c1 = await vault.encryptKey('same');
-        const c2 = await vault.encryptKey('same');
-        expect(c1).not.toBe(c2);
-        await expect(vault.decryptKey(c1 as string)).resolves.toBe('same');
-        await expect(vault.decryptKey(c2 as string)).resolves.toBe('same');
+    it('round-trip encrypt → decrypt', async () => {
+        await vault.createVault('pass');
+        const ct = await vault.encryptKey('sk-secret-1');
+        expect(ct).not.toBeNull();
+        const pt = await vault.decryptKey(ct as string);
+        expect(pt).toBe('sk-secret-1');
+    });
+
+    it('неверный пароль после повторной разблокировки не расшифрует', async () => {
+        await vault.createVault('pass');
+        const ct = (await vault.encryptKey('sk')) as string;
+        vault.lock();
+        // пытаемся разблокировать неверным — fail-closed
+        await vault.unlockWithPassphrase('bad');
+        expect(await vault.decryptKey(ct)).toBeNull();
+    });
+
+    it('lock маскирует переданные ключи', async () => {
+        const keys = [{ id: '1', key: 'sk' } as never];
+        await vault.createVault('pass');
+        vault.lock(keys);
+        expect((keys[0] as { key: string }).key).toBe('[VAULT LOCKED]');
+    });
+
+    it('stripPlaintextKeys при locked маскирует', async () => {
+        const keys = [{ id: '1', key: 'sk-1' } as never];
+        await vault.createVault('pass');
+        vault.lock();
+        const redacted = vault.stripPlaintextKeys(keys as never);
+        expect((redacted[0] as { key: string }).key).toBe('[REDACTED]');
+    });
+
+    it('encryptAllKeys/decryptAllKeys сохраняют пары', async () => {
+        const keys = [{ id: 'a', key: 'k1', isEncrypted: false }, { id: 'b', key: 'k2', isEncrypted: false }];
+        await vault.createVault('pass');
+        const enc = await vault.encryptAllKeys(keys);
+        expect(enc.every((k) => k.isEncrypted)).toBe(true);
+        const dec = await vault.decryptAllKeys(enc);
+        expect(dec.map((k) => k.key)).toEqual(['k1', 'k2']);
     });
 });

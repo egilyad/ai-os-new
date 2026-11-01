@@ -1,47 +1,67 @@
 /**
- * Agent project runtime contract (roadmapp.md §P3).
+ * Единый агентный runtime-фасад (SPEC_05 / ROADMAP_03).
+ *
+ * Объединяет Council/Crew/Forum/Graph/Director поверх общего цикла
+ * «LLM → tool calls → execute → LLM» (уже есть `tool-loop`). Цель — один
+ * движок и тонкие фасады вместо параллельных циклов управления.
  */
-import type {
-    RuntimeStatus,
-    RuntimeRunResult,
-    RuntimeProgress,
-    ProjectExecutionContext,
-} from '../types/runtime-types';
-import type { ProjectId, ProjectTask } from '../types/project-types';
 
-export interface IAgentProjectRuntime {
-    /** Initialize runtime for a project */
-    init(projectId: ProjectId): Promise<void>;
+export interface RuntimeToolCall {
+    id?: string;
+    name: string;
+    args: Record<string, unknown>;
+}
 
-    /** Run a single task with an agent in project context */
-    runTask(
-        projectId: ProjectId,
-        taskId: string,
-        agentId: string,
-        task: ProjectTask,
-        context?: Partial<ProjectExecutionContext>,
-    ): Promise<RuntimeRunResult>;
+export interface RuntimeUsage {
+    inputTokens: number;
+    outputTokens: number;
+    totalTokens: number;
+}
 
-    /** Run a freeform prompt (no task) */
-    runPrompt(
-        projectId: ProjectId,
-        agentId: string,
-        prompt: string,
-        context?: Partial<ProjectExecutionContext>,
-    ): Promise<RuntimeRunResult>;
+export interface RuntimeTraceStep {
+    step: number;
+    kind: 'llm' | 'tool' | 'memory' | 'handoff';
+    tool?: string;
+    summary?: string;
+    durationMs?: number;
+}
 
-    /** Pause the runtime */
-    pause(projectId: ProjectId): Promise<void>;
+export interface AgentTurnInput {
+    text: string;
+    context?: Record<string, unknown>;
+    tools?: string[];
+}
 
-    /** Resume the runtime */
-    resume(projectId: ProjectId): Promise<void>;
+export interface AgentTurnResult {
+    output: string;
+    toolCalls: RuntimeToolCall[];
+    usage: RuntimeUsage;
+    trace: RuntimeTraceStep[];
+    /** 'ok' | 'error' | 'cancelled' */
+    status: 'ok' | 'error' | 'cancelled';
+    error?: string;
+}
 
-    /** Get current status */
-    getStatus(projectId: ProjectId): RuntimeStatus;
+export interface AgentRuntimeConfig {
+    role: string;
+    persona?: string;
+    providers?: { primary?: string; fallback?: string };
+    tools?: string[];
+    memory?: { types?: string[]; rag?: boolean };
+    maxTurns?: number;
+}
 
-    /** Get progress (tasks completed/total) */
-    getProgress(projectId: ProjectId): Promise<RuntimeProgress>;
+export interface AgentHandle {
+    send(input: AgentTurnInput): Promise<string>;
+    getState(): Record<string, unknown>;
+    stop(): Promise<void>;
+}
 
-    /** Get recent events */
-    getEvents(projectId: ProjectId, limit?: number): import('../types/runtime-types').AgentRuntimeEvent[];
+export interface IAgentRuntime {
+    run(input: AgentTurnInput, cfg: AgentRuntimeConfig, opts?: { signal?: AbortSignal }): Promise<AgentTurnResult>;
+    spawn(cfg: AgentRuntimeConfig): Promise<AgentHandle>;
+    asCrew(crewCfg: unknown): unknown;
+    asCouncil(councilCfg: unknown): unknown;
+    asGraph(graphCfg: unknown): unknown;
+    asForum(forumCfg: unknown): unknown;
 }

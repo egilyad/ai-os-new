@@ -15,6 +15,7 @@ import { DecisionsTab } from './DecisionsTab';
 import SummaryStatsGrid from './SummaryStatsGrid';
 import ProviderHealthSection from './ProviderHealthSection';
 import ChartsSection from './ChartsSection';
+import RuntimeMetricsView from '../DashboardPanel/RuntimeMetricsView';
 
 const AnalyticsPanel: React.FC = () => {
     const { t } = useTranslation();
@@ -238,6 +239,17 @@ const AnalyticsPanel: React.FC = () => {
                                 itemVariants={itemVariants}
                                 t={t}
                             />
+                            <div
+                                style={{
+                                    display: 'grid',
+                                    gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+                                    gap: '1rem',
+                                }}
+                            >
+                                <RuntimeMetricsView pattern="llm.*" limit={6} title="LLM" />
+                                <RuntimeMetricsView pattern="tool.*" limit={6} title="Tools" />
+                                <RuntimeMetricsView pattern="memory.*" limit={6} title="Memory" />
+                            </div>
                         </motion.div>
                     )}
                     {activeTab === 'providers' && (

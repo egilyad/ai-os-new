@@ -5,6 +5,7 @@ import { useVirtualizer } from '@tanstack/react-virtual';
 import { rootLogger, eventBus, EVENTS } from '../../kernel/instances';
 import type { LogEntry, LogLevel } from '../../kernel/contracts/logger';
 import { useTranslation } from '../../i18n/useTranslation';
+import { downloadText } from '../../shared/utils/file-transfer';
 
 const ROW_HEIGHT = 36;
 
@@ -102,13 +103,8 @@ export const LogsPanel: React.FC = () => {
             });
             return;
         }
-        const blob = new Blob([content], { type: 'text/plain' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `logs-${new Date().toISOString().slice(0, 10)}.${exportFormat}`;
-        a.click();
-        URL.revokeObjectURL(url);
+        const filename = `logs-${new Date().toISOString().slice(0, 10)}.${exportFormat}`;
+        downloadText(filename, content, exportFormat === 'csv' ? 'text/csv' : 'text/plain');
     }, [exportFormat, levelFilter, serviceFilter, t]);
 
     const handleClear = useCallback(() => {

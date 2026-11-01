@@ -7,6 +7,7 @@
  */
 import type { Phase } from './helpers';
 import type { IEventBus, IDatabaseService } from '../types/interfaces';
+import type { IAuthorizationService } from '../contracts/authorization';
 import { AgentPermissionService } from '../services/permissions/permission-service';
 import { ToolPipeline } from '../services/tool-pipeline/tool-pipeline';
 import { ToolAvailabilityRegistry } from '../services/tool-pipeline/tool-availability';
@@ -14,6 +15,7 @@ import { ToolApprovalService } from '../services/tool-pipeline/tool-approval-ser
 import {
     createChannelApprovalResolver,
     createPermissionMiddleware,
+    defaultResolver,
 } from '../services/tool-pipeline/permission-middleware';
 
 export const registerPhase76: Phase = (helpers, ctx) => {
@@ -37,8 +39,9 @@ export const registerPhase76: Phase = (helpers, ctx) => {
     register('toolPipeline', (c) => {
         const permissionService = c.get<AgentPermissionService>('agentPermissionService');
         const approvalService = c.get<ToolApprovalService>('toolApprovalService');
+        const authorizationService = c.getOptional<IAuthorizationService>('authorizationService');
         return new ToolPipeline(
-            [createPermissionMiddleware(permissionService)],
+            [createPermissionMiddleware(permissionService, defaultResolver, authorizationService)],
             createChannelApprovalResolver(permissionService, approvalService),
         );
     });

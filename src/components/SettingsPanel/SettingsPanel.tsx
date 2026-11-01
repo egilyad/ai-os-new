@@ -47,6 +47,7 @@ import AppearanceTab from './AppearanceTab';
 
 import { errorBannerLg, flexJustifyBetween } from '../../styles/common';
 import { useConfirm } from '../../hooks/useConfirm';
+import VaultSettingsModal from '../ProviderManager/VaultSettingsModal';
 
 // AiModulesTab removed (Zone 9): its sliders only moved local useState and the
 // "Persisted via settingsService per-module" claim was false — settingsService
@@ -93,6 +94,7 @@ const SettingsPanel: React.FC = () => {
         () => safeClone(CONFIG.featureFlags) as unknown as Record<string, boolean>,
     );
     const [settingsSearch, setSettingsSearch] = useState('');
+    const [vaultOpen, setVaultOpen] = useState(false);
 
     const isMountedRef = useRef(true);
     const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -362,8 +364,17 @@ const SettingsPanel: React.FC = () => {
                 return (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
                         <h3 style={{ margin: 0, fontWeight: 800 }}>LLM Keys</h3>
-                        <p style={{ color: 'var(--slate-400)', fontSize: '0.85rem' }}>Manage API keys for all providers. Keys are stored in the local KeyStore (IndexedDB); passphrase encryption via KeyVault is not wired up yet — do not use on shared machines. Use the Providers panel for health checks and model discovery.</p>
-                        <div style={{ display: 'flex', gap: 8 }}><a href="#/providers" style={{ padding: '8px 14px', borderRadius: 8, background: '#3b82f6', color: 'white', textDecoration: 'none', fontWeight: 600, fontSize: 12 }}>Open Providers</a></div>
+                        <p style={{ color: 'var(--slate-400)', fontSize: '0.85rem' }}>Manage API keys for all providers. Keys are stored in the local KeyStore (IndexedDB). Enable the vault for passphrase encryption at rest. Use the Providers panel for health checks and model discovery.</p>
+                        <div style={{ display: 'flex', gap: 8 }}>
+                            <a href="#/providers" style={{ padding: '8px 14px', borderRadius: 8, background: '#3b82f6', color: 'white', textDecoration: 'none', fontWeight: 600, fontSize: 12 }}>Open Providers</a>
+                            <button
+                                type="button"
+                                onClick={() => setVaultOpen(true)}
+                                style={{ padding: '8px 14px', borderRadius: 8, background: 'var(--bg-elevated)', border: '1px solid rgba(59,130,246,0.3)', color: '#3b82f6', fontWeight: 600, fontSize: 12, cursor: 'pointer' }}
+                            >
+                                Vault…
+                            </button>
+                        </div>
                     </div>
                 );
             case 'platform':
@@ -720,6 +731,7 @@ const SettingsPanel: React.FC = () => {
             </div>
             <ModuleInfo moduleKey="settings" />
             <ConfirmDialog />
+            {vaultOpen && <VaultSettingsModal onClose={() => setVaultOpen(false)} />}
         </div>
     );
 };

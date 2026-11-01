@@ -21,6 +21,8 @@ export class LocalSecretStore implements SecretStore {
         private db: {
             getKv: <T>(id: string) => Promise<T | null>;
             setKv: <T>(id: string, value: T) => Promise<void>;
+            /** Опциональный батч (атомарная запись нескольких ключей). */
+            batchSetKv?: (entries: Record<string, unknown>) => Promise<void>;
         },
     ) {}
 
@@ -38,7 +40,16 @@ export class LocalSecretStore implements SecretStore {
     }
 
     async set(ref: SecretRef, value: string): Promise<boolean> {
-        await this.db.setKv(this.keyFor(ref.path), value);
+        const path = this.keyFor(ref.path);
+        // Атомарность: значение + индекс одной батч-записью (когда доступно),
+        // иначе последовательно (legacy-путь).
+        if (this.db.batchSetKv) {
+            const index = (await this.db.getKv<string[]>(INDEX_KEY)) ?? [];
+            const nextIndex = index.includes(ref.path) ? index : [...index, ref.path];
+            await this.db.batchSetKv({ [path]: value, [INDEX_KEY]: nextIndex });
+            return true;
+        }
+        await this.db.setKv(path, value);
         const index = (await this.db.getKv<string[]>(INDEX_KEY)) ?? [];
         if (!index.includes(ref.path)) {
             index.push(ref.path);
@@ -48,7 +59,16 @@ export class LocalSecretStore implements SecretStore {
     }
 
     async delete(ref: SecretRef): Promise<boolean> {
-        await this.db.setKv(this.keyFor(ref.path), null);
+        const path = this.keyFor(ref.path);
+        if (this.db.batchSetKv) {
+            const index = (await this.db.getKv<string[]>(INDEX_KEY)) ?? [];
+            await this.db.batchSetKv({
+                [path]: null,
+                [INDEX_KEY]: index.filter((p) => p !== ref.path),
+            });
+            return true;
+        }
+        await this.db.setKv(path, null);
         const index = (await this.db.getKv<string[]>(INDEX_KEY)) ?? [];
         await this.db.setKv(
             INDEX_KEY,

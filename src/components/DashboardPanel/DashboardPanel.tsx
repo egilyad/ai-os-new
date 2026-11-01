@@ -16,6 +16,7 @@ import QuickActionBar from './QuickActionBar';
 import CriticalAlertBanner from './CriticalAlertBanner';
 import WelcomePanel from './WelcomePanel';
 import Desktop from './Desktop';
+import RuntimeMetricsView from './RuntimeMetricsView';
 import { dismissBtn, errorBanner } from '../../styles/common';
 
 interface DashboardPanelProps {
@@ -203,6 +204,8 @@ const DashboardPanel: React.FC<DashboardPanelProps> = ({ onNavigate }) => {
             ) : (
                 <WelcomePanel onNavigate={onNavigate} />
             )}
+
+            <RuntimeMetricsView pattern="llm.*" limit={6} title="LLM runtime metrics" />
 
             <ModuleInfo moduleKey="dashboard" />
         </div>

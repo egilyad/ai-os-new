@@ -9,6 +9,7 @@ import type { IEventBus } from '../../types/interfaces';
 import type { OpsRepository } from '../../dal/ops-repository';
 import type { IAuditService, IToolGovernanceService } from '../../contracts/ops';
 import type { McpServer, ToolGrant } from '../../types/ops-types';
+import type { IAuthorizationService } from '../../contracts/authorization';
 import { genId } from '../../../utils/gen-id';
 import { rootLogger } from '../logger-service';
 
@@ -29,6 +30,7 @@ export class ToolGovernanceService implements IToolGovernanceService {
         private repo: OpsRepository,
         private events: IEventBus,
         private audit: IAuditService,
+        private authorizationService?: IAuthorizationService,
     ) {
         void this.events;
     }
@@ -79,6 +81,16 @@ export class ToolGovernanceService implements IToolGovernanceService {
     }
 
     async check(agentId: string, tool: string): Promise<boolean> {
+        // SPEC_08: единый decision point (если подключён) — deny блокирует сразу.
+        if (this.authorizationService) {
+            const authzDec = await this.authorizationService.evaluate({
+                actor: agentId,
+                actorType: 'agent',
+                action: 'tool:exec',
+                resource: tool,
+            });
+            if (authzDec.effect === 'deny') return false;
+        }
         // Disabled server => deny everything under it.
         const serverId = tool.split(':')[0] ?? '';
         const servers = await this.repo.listServers();

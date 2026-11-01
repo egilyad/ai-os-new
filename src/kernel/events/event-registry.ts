@@ -41,6 +41,10 @@ export const EVENT_REGISTRY = {
             previousState: z.string(),
         }),
     ),
+    // SPEC_01: passphrase-vault жизненный цикл
+    KEY_VAULT_CREATED: event('key:vault:created', z.object({})),
+    KEY_VAULT_UNLOCKED: event('key:vault:unlocked', z.object({})),
+    KEY_VAULT_LOCKED: event('key:vault:locked', z.object({})),
     KEY_COMPROMISED: event(
         'key:compromised',
         z.object({ id: z.string(), provider: z.string(), source: z.string() }),

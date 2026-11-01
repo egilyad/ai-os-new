@@ -17,6 +17,7 @@
 import type { Phase } from './helpers';
 import type { IContainer } from '../container';
 import type { IEventBus } from '../types/interfaces';
+import type { IAuthorizationService } from '../contracts/authorization';
 import type { DatabaseService } from '../services/database-service';
 import type { IGraphService } from '../contracts/graph';
 import type { ICouncilService } from '../contracts/council';
@@ -55,7 +56,8 @@ export const registerPhase27: Phase = ({ register }) => {
 
     register('toolGovernanceService', (c: IContainer) => {
         const { repo, events, audit } = withAudit(c);
-        return new ToolGovernanceService(repo, events, audit);
+        const authorizationService = c.getOptional<IAuthorizationService>('authorizationService');
+        return new ToolGovernanceService(repo, events, audit, authorizationService);
     });
 
     register('sandboxBrokerService', (c: IContainer) => {
