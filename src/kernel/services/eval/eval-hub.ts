@@ -57,6 +57,7 @@ export class EvalHub implements IEvalHub {
             avgLatency: results.length
                 ? results.reduce((s, r) => s + r.latencyMs, 0) / results.length
                 : 0,
+            totalCost: results.reduce((s, r) => s + (r.costUsd ?? 0), 0),
         };
         return { results, summary };
     }
@@ -94,6 +95,7 @@ export class EvalHub implements IEvalHub {
                 score,
                 metrics,
                 latencyMs: latency,
+                costUsd,
             };
         } catch (e) {
             return {

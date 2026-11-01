@@ -31,6 +31,7 @@ export interface EvalCaseResult {
     score: number;
     metrics: Record<string, number>;
     latencyMs: number;
+    costUsd?: number;
     error?: string;
 }
 
@@ -40,6 +41,7 @@ export interface EvalRunSummary {
     failed: number;
     avgScore: number;
     avgLatency: number;
+    totalCost: number;
 }
 
 export interface EvalRunReport {
