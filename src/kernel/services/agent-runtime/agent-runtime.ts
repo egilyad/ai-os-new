@@ -75,6 +75,17 @@ export class AgentRuntime implements IAgentRuntime {
                     error: 'refusing to send secrets to LLM (LLM07)',
                 };
             }
+            // SPEC_12 (LLM01): предупреждаем indirect prompt injection.
+            if (this.deps.securityGuard.isSuspiciousInstruction(input.text)) {
+                return {
+                    output: '',
+                    toolCalls: [],
+                    usage: { inputTokens: 0, outputTokens: 0, totalTokens: 0 },
+                    trace: [],
+                    status: 'error',
+                    error: 'suspicious instruction detected (LLM01)',
+                };
+            }
         }
 
         const messages: ToolLoopMessage[] = [
