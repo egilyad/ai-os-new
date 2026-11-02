@@ -174,6 +174,14 @@ describe('LlmGraphPort', () => {
         const port = new LlmGraphPort(makeOpts(client));
         await expect(port.reflect({ visited: ['a'], state: {} })).resolves.toBe('reflection');
     });
+
+    it('reflect передаёт visited-узлы', async () => {
+        const client = makeClient({ content: 'reflection' });
+        const port = new LlmGraphPort(makeOpts(client));
+        await port.reflect({ visited: ['a', 'b'], state: {} });
+        const userArg = client.chat.mock.calls[0][0][1].content as string;
+        expect(userArg).toContain('a → b');
+    });
 });
 
 describe('LlmFrontierExecutor', () => {
