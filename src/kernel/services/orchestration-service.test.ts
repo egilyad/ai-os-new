@@ -133,4 +133,27 @@ describe('OrchestrationService', () => {
         await svc.execute({ output: 'contains evil word' });
         expect(svc.getExecutionStats().failedNodes).toBeGreaterThanOrEqual(1);
     });
+
+    it('execute с цепочкой узлов проходит по всем', async () => {
+        const cognitiveService = { executeAgentNode: vi.fn(async () => 'agent out') };
+        const svc = new OrchestrationService(makeDeps({ cognitiveService }));
+        const topology: ISTopology = {
+            id: 't4',
+            name: 'ChainTopo',
+            version: '1.0.0',
+            nodes: [
+                { id: 'entry', type: 'router', label: 'Entry' },
+                { id: 'a1', type: 'agent', label: 'A1' },
+                { id: 'a2', type: 'agent', label: 'A2' },
+            ],
+            edges: [
+                { from: 'entry', to: 'a1', type: 'sequential' },
+                { from: 'a1', to: 'a2', type: 'sequential' },
+            ],
+        } as ISTopology;
+        svc.mount(topology);
+        await svc.execute({});
+        expect(svc.getExecutionStats().completedNodes).toBeGreaterThanOrEqual(2);
+        expect(cognitiveService.executeAgentNode).toHaveBeenCalledTimes(2);
+    });
 });
