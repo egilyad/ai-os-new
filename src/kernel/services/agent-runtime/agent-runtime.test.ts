@@ -31,6 +31,19 @@ describe('AgentRuntime (SPEC_05)', () => {
         expect(res.output).toContain('tools: a,b');
     });
 
+    it('runTool без runner возвращает fallback-текст', async () => {
+        const callLlm = vi.fn(async (messages: unknown[], tools: ToolLoopTool[]) => ({
+            content: `calls: ${tools.map((t) => t.name).join(',')}`,
+        }));
+        const runtime = new AgentRuntime({
+            callLlm,
+            toolCatalog: (name) => tool(name),
+        });
+        const res = await runtime.run({ text: 'use tools' }, { role: 'r', tools: ['a'] });
+        expect(res.status).toBe('ok');
+        expect(res.trace).toBeDefined();
+    });
+
     it('spawn создаёт хэндл, который отправляет сообщения', async () => {
         const callLlm = vi.fn(async () => ({ content: 'ok' }));
         const runtime = new AgentRuntime({ callLlm });
