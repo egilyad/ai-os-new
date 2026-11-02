@@ -156,4 +156,27 @@ describe('OrchestrationService', () => {
         expect(svc.getExecutionStats().completedNodes).toBeGreaterThanOrEqual(2);
         expect(cognitiveService.executeAgentNode).toHaveBeenCalledTimes(2);
     });
+
+    it('execute с router-узлом выбирает назначение', async () => {
+        const cognitiveService = { executeAgentNode: vi.fn(async () => 'agent out') };
+        const svc = new OrchestrationService(makeDeps({ cognitiveService }));
+        const topology: ISTopology = {
+            id: 't5',
+            name: 'RouterTopo',
+            version: '1.0.0',
+            nodes: [
+                { id: 'entry', type: 'router', label: 'Entry' },
+                { id: 'a1', type: 'agent', label: 'A1' },
+                { id: 'a2', type: 'agent', label: 'A2' },
+            ],
+            edges: [
+                { from: 'entry', to: 'a1', type: 'data_flow' },
+                { from: 'entry', to: 'a2', type: 'data_flow' },
+            ],
+        } as ISTopology;
+        svc.mount(topology);
+        await svc.execute({});
+        expect(cognitiveService.executeAgentNode).toHaveBeenCalled();
+        expect(svc.getExecutionStats().totalExecutions).toBe(1);
+    });
 });
