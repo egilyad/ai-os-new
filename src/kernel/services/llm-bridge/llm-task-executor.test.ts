@@ -131,6 +131,22 @@ describe('LlmCouncilPort', () => {
         const userArg = client.chat.mock.calls[0][0][1].content as string;
         expect(userArg).toContain('[Speaker A]');
     });
+
+    it('judgeRound парсит JSON с лишним текстом', async () => {
+        const client = makeClient({
+            content:
+                'Here is the verdict: {"winnerId":"p1","scores":{"p1":9},"rationale":"strong"}',
+        });
+        const port = new LlmCouncilPort(makeOpts(client));
+        const res = await port.judgeRound({
+            topic: 'X',
+            messages: [{ authorId: 'p1', body: 'a' }],
+            judgeName: 'J',
+            dimensions: ['clarity'],
+        });
+        expect(res.winnerId).toBe('p1');
+        expect(res.scores).toEqual({ p1: 9 });
+    });
 });
 
 describe('LlmGraphPort', () => {
