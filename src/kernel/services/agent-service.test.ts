@@ -1,4 +1,3 @@
- 
 import { describe, expect, it } from 'vitest';
 import { AgentService } from './agent-service';
 import type { ISTopology } from '../contracts/topology';
@@ -76,6 +75,13 @@ describe('AgentService.resolveAgent (Director B-seam)', () => {
         const agents = svc.getAgents();
         expect(agents.length).toBe(2);
         expect(agents.map((a) => a.id)).toEqual(['agent-1', 'agent-2']);
+    });
+
+    it('deleteAgent удаляет обычного агента из топологии', () => {
+        const live = freshTopology();
+        const svc = makeServiceWithKv(live, new Map());
+        expect(svc.deleteAgent('agent-2')).toBe(true);
+        expect(live.nodes.some((n) => n.id === 'agent-2')).toBe(false);
     });
 });
 
