@@ -321,6 +321,16 @@ export { StrategyRegistry } from './services/debate-runtime/debate-strategy-regi
 export { shouldStopByConvergence } from './services/debate-runtime/debate-stop-conditions';
 export { BUILTIN_MODES, DebateModeManager } from './services/debate-runtime/debate-mode-system';
 export type { DebateMode } from './contracts/debate-mode-system';
+export { CognitiveIntelligenceService } from './services/cognitive-intelligence/cognitive-intelligence-service';
+export type {
+    ICognitiveIntelligenceService,
+    CognitiveMetricsSnapshot,
+    CognitivePressure,
+    CognitiveSessionSummary,
+    SessionDiagnostic,
+    TopologyWhatIf,
+    CognitiveIssue,
+} from './contracts/cognitive-intelligence';
 export type {
     DebateSession,
     DebateParticipant,
