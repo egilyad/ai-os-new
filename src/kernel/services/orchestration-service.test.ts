@@ -55,6 +55,16 @@ describe('OrchestrationService', () => {
         expect(res.errors.join(' ')).toContain('Self-loop');
     });
 
+    it('validateTopology находит ссылки на несуществующие узлы', () => {
+        const svc = new OrchestrationService(makeDeps());
+        const bad: ISTopology = {
+            ...validTopology,
+            edges: [{ from: 'entry', to: 'ghost', type: 'sequential' }],
+        };
+        const res = svc.validateTopology(bad);
+        expect(res.errors.join(' ')).toContain('ghost');
+    });
+
     it('mount устанавливает lifecycle и эмитит событие', () => {
         const emit = vi.fn();
         const svc = new OrchestrationService(makeDeps({ eventBus: { on: vi.fn(), emit } }));
