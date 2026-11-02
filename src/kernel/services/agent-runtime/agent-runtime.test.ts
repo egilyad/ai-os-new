@@ -163,6 +163,25 @@ describe('AgentRuntime (SPEC_05)', () => {
         expect(runtime.asGraph()).toBeDefined();
     });
 
+    it('system prompt включает persona и memory-типы', async () => {
+        const callLlm = vi.fn(async (messages: { role: string; content: string }[]) => ({
+            content: String(messages[0]?.content ?? ''),
+        }));
+        const runtime = new AgentRuntime({ callLlm });
+        const res = await runtime.run(
+            { text: 'hi' },
+            {
+                role: 'analyst',
+                persona: 'curious expert',
+                memory: { types: ['semantic', 'episodic'] },
+            },
+        );
+        expect(res.output).toContain('analyst');
+        expect(res.output).toContain('curious expert');
+        expect(res.output).toContain('semantic');
+        expect(res.output).toContain('episodic');
+    });
+
     it('handle.stop и getState работают', async () => {
         const runtime = new AgentRuntime({ callLlm: vi.fn(async () => ({ content: '' })) });
         const handle = await runtime.spawn({ role: 'helper' });
