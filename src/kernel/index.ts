@@ -83,6 +83,9 @@ export type {
     DecisionAlternative,
 } from './services/cognitive-service';
 
+export { OrchestrationService } from './services/orchestration-service';
+export type { OrchestrationServiceDeps } from './services/orchestration-service';
+
 export { RoleService } from './services/role-service';
 export type { RoleServiceDeps, RoleUsageStats } from './services/role-service';
 
