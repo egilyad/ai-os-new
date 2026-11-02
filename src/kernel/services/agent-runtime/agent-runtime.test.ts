@@ -154,4 +154,19 @@ describe('AgentRuntime (SPEC_05)', () => {
         expect(result).toMatch(/pro: statement/);
         expect(result).toMatch(/con: statement/);
     });
+
+    it('runtime facade создаёт все компоненты', () => {
+        const runtime = new AgentRuntime({ callLlm: vi.fn(async () => ({ content: '' })) });
+        expect(runtime.asCrew()).toBeDefined();
+        expect(runtime.asCouncil()).toBeDefined();
+        expect(runtime.asForum()).toBeDefined();
+        expect(runtime.asGraph()).toBeDefined();
+    });
+
+    it('handle.stop и getState работают', async () => {
+        const runtime = new AgentRuntime({ callLlm: vi.fn(async () => ({ content: '' })) });
+        const handle = await runtime.spawn({ role: 'helper' });
+        expect(handle.getState()).toEqual({ role: 'helper' });
+        await expect(handle.stop()).resolves.toBeUndefined();
+    });
 });
