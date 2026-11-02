@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
 import { describe, expect, it } from 'vitest';
 import { AgentService } from './agent-service';
 import type { ISTopology } from '../contracts/topology';
@@ -70,12 +70,16 @@ describe('AgentService.resolveAgent (Director B-seam)', () => {
         expect(svc.resolveAgent('nope')).toBeNull();
         expect(makeService(null).resolveAgent('agent-1')).toBeNull();
     });
+
+    it('getAgents возвращает список из активной топологии', () => {
+        const svc = makeService(topology);
+        const agents = svc.getAgents();
+        expect(agents.length).toBe(2);
+        expect(agents.map((a) => a.id)).toEqual(['agent-1', 'agent-2']);
+    });
 });
 
-function makeServiceWithKv(
-    topology: ISTopology | null,
-    kv: Map<string, unknown>,
-): AgentService {
+function makeServiceWithKv(topology: ISTopology | null, kv: Map<string, unknown>): AgentService {
     return new AgentService({
         eventBus: { on: () => () => {}, onSafe: () => () => {}, emit: () => {} },
         orchestrator: {
@@ -126,7 +130,9 @@ describe('AgentService topology persistence (P0)', () => {
         // Simulate reboot: pristine registry topology, same KV store.
         const rebooted = freshTopology();
         const svc2 = makeServiceWithKv(rebooted, kv);
-        await (svc2 as unknown as { loadTopologyOverrides: () => Promise<void> }).loadTopologyOverrides();
+        await (
+            svc2 as unknown as { loadTopologyOverrides: () => Promise<void> }
+        ).loadTopologyOverrides();
         svc2.applyStoredTopologyOverrides();
 
         const ids = rebooted.nodes.map((n) => n.id);
@@ -142,7 +148,9 @@ describe('AgentService topology persistence (P0)', () => {
         const kv = new Map<string, unknown>();
         const rebooted = freshTopology();
         const svc = makeServiceWithKv(rebooted, kv);
-        await (svc as unknown as { loadTopologyOverrides: () => Promise<void> }).loadTopologyOverrides();
+        await (
+            svc as unknown as { loadTopologyOverrides: () => Promise<void> }
+        ).loadTopologyOverrides();
         svc.applyStoredTopologyOverrides();
         // Nothing stored: topology passes through unchanged.
         expect(rebooted.nodes.map((n) => n.id)).toEqual(['agent-1', 'agent-2', 'router-1']);
@@ -208,9 +216,7 @@ describe('AgentService built-in agents', () => {
         live.edges = [];
 
         svc.applyStoredTopologyOverrides();
-        (
-            svc as unknown as { ensureSystemAgents: () => void }
-        ).ensureSystemAgents();
+        (svc as unknown as { ensureSystemAgents: () => void }).ensureSystemAgents();
         expect(live.nodes.some((n) => n.id === 'assistant')).toBe(true);
     });
 });
