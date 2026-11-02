@@ -214,4 +214,9 @@ describe('LlmPersonaPort', () => {
         const port = new LlmPersonaPort(makeOpts(makeClient()));
         await expect(port.summarizeMemories([])).resolves.toBe('No long-term memories.');
     });
+
+    it('distillStyle с пустыми сэмплами возвращает пусто', async () => {
+        const port = new LlmPersonaPort(makeOpts(makeClient()));
+        await expect(port.distillStyle([])).resolves.toEqual({ styleNotes: [], judgments: [] });
+    });
 });
