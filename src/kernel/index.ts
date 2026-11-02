@@ -89,6 +89,8 @@ export type { ISTopology, ISNode, AgentLifecycleState } from './contracts/topolo
 
 export { RoleService } from './services/role-service';
 export type { RoleServiceDeps, RoleUsageStats } from './services/role-service';
+export { LIBRARY_ROLES, getLibraryRolesByCategory } from '../data/role-library';
+export type { LibraryRole, LibraryRoleCategory } from '../data/role-library';
 
 export { SkillService } from './services/skill-service';
 export type { SkillServiceDeps } from './services/skill-service';
