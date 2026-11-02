@@ -213,4 +213,16 @@ describe('AgentRuntime (SPEC_05)', () => {
         expect(handle.getState()).toEqual({ role: 'helper' });
         await expect(handle.stop()).resolves.toBeUndefined();
     });
+
+    it('spawn c securityGuard блокирует секреты через handle.send', async () => {
+        const callLlm = vi.fn(async () => ({ content: 'should not be called' }));
+        const runtime = new AgentRuntime({
+            callLlm,
+            securityGuard: new AgentSecurityGuard(),
+        });
+        const handle = await runtime.spawn({ role: 'helper' });
+        const out = await handle.send({ text: 'key sk-abcdefghijklmnopqrstuvwxyz123456' });
+        expect(out).toBe('');
+        expect(callLlm).not.toHaveBeenCalled();
+    });
 });
