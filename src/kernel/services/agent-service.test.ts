@@ -83,6 +83,17 @@ describe('AgentService.resolveAgent (Director B-seam)', () => {
         expect(svc.deleteAgent('agent-2')).toBe(true);
         expect(live.nodes.some((n) => n.id === 'agent-2')).toBe(false);
     });
+
+    it('resolveAgent не падает при пустом конфиге', () => {
+        const empty: ISTopology = {
+            nodes: [{ id: 'e', type: 'agent', label: 'E', config: {} }],
+            edges: [],
+        } as unknown as ISTopology;
+        const svc = makeService(empty);
+        const agent = svc.resolveAgent('e');
+        expect(agent).not.toBeNull();
+        expect(agent!.systemPrompt).toBe('');
+    });
 });
 
 function makeServiceWithKv(topology: ISTopology | null, kv: Map<string, unknown>): AgentService {
