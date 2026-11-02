@@ -107,6 +107,20 @@ describe('LlmCouncilPort', () => {
         });
         expect(res.winnerId).toBe('draw');
     });
+
+    it('judgeRound передаёт blindMap в транскрипт', async () => {
+        const client = makeClient({ content: '{"winnerId":"A","scores":{},"rationale":""}' });
+        const port = new LlmCouncilPort(makeOpts(client));
+        await port.judgeRound({
+            topic: 'X',
+            messages: [{ authorId: 'p1', body: 'arg' }],
+            judgeName: 'J',
+            dimensions: ['clarity'],
+            blindMap: { p1: 'Speaker A' },
+        });
+        const userArg = client.chat.mock.calls[0][0][1].content as string;
+        expect(userArg).toContain('[Speaker A]');
+    });
 });
 
 describe('LlmGraphPort', () => {
