@@ -76,4 +76,18 @@ describe('CognitiveService', () => {
         const stats = svc.getStats();
         expect(stats.totalTraces).toBe(0);
     });
+
+    it('executeAgentNode с ошибкой адаптера бросает', async () => {
+        const adapter = {
+            sendMessage: vi.fn(async () => {
+                throw new Error('adapter down');
+            }),
+        };
+        const deps = makeDeps({
+            keyService: { getKey: vi.fn(() => ({ key: 'sk', status: 'active' })) },
+            adapterRegistry: { getAdapter: vi.fn(() => adapter) },
+        });
+        const svc = new CognitiveService(deps);
+        await expect(svc.executeAgentNode(node, {})).rejects.toThrow('adapter down');
+    });
 });
