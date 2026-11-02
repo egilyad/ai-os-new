@@ -85,6 +85,7 @@ export type {
 
 export { OrchestrationService } from './services/orchestration-service';
 export type { OrchestrationServiceDeps } from './services/orchestration-service';
+export type { ISTopology, ISNode, AgentLifecycleState } from './contracts/topology';
 
 export { RoleService } from './services/role-service';
 export type { RoleServiceDeps, RoleUsageStats } from './services/role-service';
