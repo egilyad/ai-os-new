@@ -70,6 +70,16 @@ describe('LlmCrewExecutor', () => {
         expect(runWithTools).toHaveBeenCalledTimes(1);
         expect(client.chat).not.toHaveBeenCalled();
     });
+
+    it('без инструментов не использует tool-loop', async () => {
+        const runWithTools = vi.fn();
+        const client = makeClient({ content: 'chat output' });
+        const exec = new LlmCrewExecutor(makeOpts(client, { toolRunner: { runWithTools } }));
+        const out = await exec.execute(crewInput);
+        expect(out).toBe('chat output');
+        expect(runWithTools).not.toHaveBeenCalled();
+        expect(client.chat).toHaveBeenCalledTimes(1);
+    });
 });
 
 describe('LlmCouncilPort', () => {
