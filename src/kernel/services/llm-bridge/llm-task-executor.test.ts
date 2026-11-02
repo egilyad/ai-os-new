@@ -156,6 +156,19 @@ describe('LlmGraphPort', () => {
         await expect(port.runTask({ label: 'L', state: {} })).resolves.toBe('step');
     });
 
+    it('runTask передаёт только значимые state-ключи', async () => {
+        const client = makeClient({ content: 'step' });
+        const port = new LlmGraphPort(makeOpts(client));
+        await port.runTask({
+            label: 'L',
+            state: { input: 'x', 'out:1': 'hidden', lastOutput: 'y' },
+        });
+        const userArg = client.chat.mock.calls[0][0][1].content as string;
+        expect(userArg).toContain('input');
+        expect(userArg).not.toContain('out:1');
+        expect(userArg).toContain('lastOutput');
+    });
+
     it('reflect вызывает LLM', async () => {
         const client = makeClient({ content: 'reflection' });
         const port = new LlmGraphPort(makeOpts(client));
