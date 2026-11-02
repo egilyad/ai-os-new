@@ -195,6 +195,18 @@ describe('AgentRuntime (SPEC_05)', () => {
         expect(res.output).toContain('episodic');
     });
 
+    it('использует metrics для inc/record', async () => {
+        const inc = vi.fn();
+        const record = vi.fn();
+        const runtime = new AgentRuntime({
+            callLlm: vi.fn(async () => ({ content: 'ok' })),
+            metrics: { inc, record },
+        });
+        await runtime.run({ text: 'hi' }, { role: 'r' });
+        expect(inc).toHaveBeenCalledWith('agent.turns');
+        expect(record).toHaveBeenCalledWith('agent.turn_latency', expect.any(Number));
+    });
+
     it('handle.stop и getState работают', async () => {
         const runtime = new AgentRuntime({ callLlm: vi.fn(async () => ({ content: '' })) });
         const handle = await runtime.spawn({ role: 'helper' });
