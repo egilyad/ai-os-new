@@ -69,6 +69,14 @@ export type { ChatServiceDeps } from './contracts/chat';
 
 export { AgentService } from './services/agent-service';
 export type { AgentServiceDeps, AgentStats, AgentGroup } from './services/agent-service';
+export {
+    LlmCrewExecutor,
+    LlmCouncilPort,
+    LlmGraphPort,
+    LlmFrontierExecutor,
+    LlmPersonaPort,
+} from './services/llm-bridge/llm-task-executor';
+export type { LlmBridgeOptions } from './services/llm-bridge/llm-task-executor';
 
 export { SettingsService } from './services/settings-service';
 export type { SettingsServiceDeps, SettingsListener } from './services/settings-service';
