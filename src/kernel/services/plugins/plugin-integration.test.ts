@@ -17,15 +17,10 @@ const manifest: PluginManifest = {
     permissions: ['tool:acme.search'],
 };
 
-interface MockBus {
-    on: ReturnType<typeof vi.fn>;
-    emit: ReturnType<typeof vi.fn>;
-    off: ReturnType<typeof vi.fn>;
-    onSafe: ReturnType<typeof vi.fn>;
-    emitOnce: ReturnType<typeof vi.fn>;
-    subscribeAll: ReturnType<typeof vi.fn>;
-    getSubscriptionStats: ReturnType<typeof vi.fn>;
-}
+import type { PluginRegistryBus } from './plugin-registry';
+import type { PluginEventBusPort } from './plugin-host';
+
+// ... (interface MockBus removed)
 
 describe('Plugin integration (SPEC_06)', () => {
     it('полный жизненный цикл: load → call tool → unload', async () => {
@@ -35,7 +30,15 @@ describe('Plugin integration (SPEC_06)', () => {
             unregisterLocalServer: vi.fn(),
             isLocalServer: () => false,
         };
-        const bus: MockBus = {
+        const bus: {
+            on: ReturnType<typeof vi.fn>;
+            emit: ReturnType<typeof vi.fn>;
+            off: ReturnType<typeof vi.fn>;
+            onSafe: ReturnType<typeof vi.fn>;
+            emitOnce: ReturnType<typeof vi.fn>;
+            subscribeAll: ReturnType<typeof vi.fn>;
+            getSubscriptionStats: ReturnType<typeof vi.fn>;
+        } = {
             on: vi.fn(() => vi.fn()),
             emit: vi.fn(),
             off: vi.fn(),
@@ -51,8 +54,8 @@ describe('Plugin integration (SPEC_06)', () => {
             delete: vi.fn(async (key: string) => void store.delete(key)),
         } as RegisteredRegistryStore;
 
-        const registry = new PluginRegistry({ store: memoryStore, bus });
-        const host = new PluginHost(bus, mcp);
+        const registry = new PluginRegistry({ store: memoryStore, bus: bus as PluginRegistryBus });
+        const host = new PluginHost(bus as unknown as PluginEventBusPort, mcp);
         const loader = new PluginLoader({ registry, host });
 
         const executor = vi.fn(
@@ -73,7 +76,7 @@ describe('Plugin integration (SPEC_06)', () => {
         expect(memoryStore.set).toHaveBeenCalled();
 
         // hydrate в новый реестр
-        const registry2 = new PluginRegistry({ store: memoryStore, bus });
+        const registry2 = new PluginRegistry({ store: memoryStore, bus: bus as PluginRegistryBus });
         expect(registry2.has('acme.integration')).toBe(false);
         expect(await registry2.hydrate()).toBe(1);
         expect(registry2.has('acme.integration')).toBe(true);
