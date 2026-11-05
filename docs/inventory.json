@@ -3,22 +3,32 @@
   "generatedBy": "scripts/gen-docs-inventory.mjs",
   "scope": "git-tracked markdown: docs/**/*.md (excluding docs/new drafts and the self-report pages docs-health, docs-inventory) plus repository entry docs (root *.md, .superagents/**, src/kernel/DEPENDENCY_MAP.md)",
   "totals": {
-    "documents": 344,
+    "documents": 434,
     "byCategory": {
       "repo": 9,
-      "top": 25,
+      "top": 115,
       "audits": 25,
       "wiki": 285
     },
     "byLanguage": {
-      "en": 34,
-      "mixed": 71,
-      "ru": 239
+      "en": 39,
+      "mixed": 129,
+      "ru": 266
     }
   },
   "duplicates": {
     "content": [],
     "titles": [
+      "карта готовности панелей — superagents os (`egilyad/ai-os-new`)",
+      "карта доступности возможностей — capability accessibility map",
+      "карта использования ресурсов — resource consumption map",
+      "карта мёртвого и заброшенного функционала — dead & abandoned functionality map",
+      "карта наблюдаемости и диагностики — observability & diagnostics map",
+      "карта потенциала — opportunity map",
+      "карта технического состояния — technical health map",
+      "карта функционального дублирования — duplication map",
+      "карта функциональной ценности — feature value map",
+      "карта функциональных пробелов — capability gap map",
       "панель: исследовательский движок"
     ]
   },
@@ -198,6 +208,726 @@
       "title": "10 — Experiments Framework",
       "bytes": 4692,
       "hash": "2f02dd340a39842c9aca4be9bda5b0b319a7e980"
+    },
+    {
+      "path": "docs/arhive-research/новое/audit-wave2-2026-10-31.md",
+      "category": "top",
+      "language": "mixed",
+      "title": "Аудит SUPER-AGENTS OS — Волна 2 — 2026-10-31",
+      "bytes": 137300,
+      "hash": "b1839a7d0de03f63217b655d87ad238c81eaf719"
+    },
+    {
+      "path": "docs/arhive-research/новое/audit-wave3-2026-10-31.md",
+      "category": "top",
+      "language": "mixed",
+      "title": "Аудит SUPER-AGENTS OS — Волна 3 — 2026-10-31",
+      "bytes": 288674,
+      "hash": "f484596d93e136ea4897e6e73695605409b0e218"
+    },
+    {
+      "path": "docs/arhive-research/новое/audit-wave4-2026-10-31.md",
+      "category": "top",
+      "language": "mixed",
+      "title": "Аудит SUPER-AGENTS OS — Волна 4 — 2026-10-31",
+      "bytes": 174201,
+      "hash": "8ad0036ec246ab81a7c8d4eb2b516d372acfebaa"
+    },
+    {
+      "path": "docs/arhive-research/новое/audit-wave5-2026-10-31.md",
+      "category": "top",
+      "language": "en",
+      "title": "Аудит SUPER-AGENTS OS — Волна 5 — 2026-10-31",
+      "bytes": 164541,
+      "hash": "34a028323bf7ef61630c3f93e61d581fe7851c58"
+    },
+    {
+      "path": "docs/arhive-research/новое/audit-wave6-2026-10-31.md",
+      "category": "top",
+      "language": "mixed",
+      "title": "Аудит SUPER-AGENTS OS — Волна 6 — 2026-10-31",
+      "bytes": 162512,
+      "hash": "af8982558f17d609018821b0e15366cbf51d5190"
+    },
+    {
+      "path": "docs/arhive-research/новое/audit-wave7-2026-10-31.md",
+      "category": "top",
+      "language": "mixed",
+      "title": "Аудит SUPER-AGENTS OS — Волна 7 — 2026-10-31",
+      "bytes": 71645,
+      "hash": "174b520f10f4c57121d1b5a40c4f1a6f0700665d"
+    },
+    {
+      "path": "docs/arhive-research/новое/audit-wave8-2026-10-31.md",
+      "category": "top",
+      "language": "en",
+      "title": "Аудит SUPER-AGENTS OS — Волна 8 — 2026-10-31",
+      "bytes": 233000,
+      "hash": "6a6c236581dab2e9bf19dbbab3ed7712735b723d"
+    },
+    {
+      "path": "docs/arhive-research/новое/New folder/01-overview.md",
+      "category": "top",
+      "language": "ru",
+      "title": "SuperAgents OS — Дорожные карты и рекомендации",
+      "bytes": 4706,
+      "hash": "e59b5ed0c01371c8fec744030e7a7b31cd2384e0"
+    },
+    {
+      "path": "docs/arhive-research/новое/New folder/02-component-roadmaps.md",
+      "category": "top",
+      "language": "ru",
+      "title": "SuperAgents OS — Дорожные карты по компонентам",
+      "bytes": 8123,
+      "hash": "3acb6d7d9686669f9dcfb9194a54532bcbfaf8fa"
+    },
+    {
+      "path": "docs/arhive-research/новое/New folder/ANALOGS_COMPARISON.md",
+      "category": "top",
+      "language": "ru",
+      "title": "Сравнение с аналогами (исследование)",
+      "bytes": 14959,
+      "hash": "9b7a45889034a04ffc2d4415116f2dfc339932a3"
+    },
+    {
+      "path": "docs/arhive-research/новое/New folder/IMPLEMENTATION_STATUS.md",
+      "category": "top",
+      "language": "mixed",
+      "title": "Статус реализации — Фаза 0 + каркасы SPEC",
+      "bytes": 10946,
+      "hash": "73ea95eb9c1c6ffe57090220ecde8c29a362002d"
+    },
+    {
+      "path": "docs/arhive-research/новое/New folder/NEW_COMPONENTS.md",
+      "category": "top",
+      "language": "ru",
+      "title": "Новые компоненты: что логично писать дальше",
+      "bytes": 10761,
+      "hash": "837a974be5e6d4afdb5d81b2af8e5c554392e589"
+    },
+    {
+      "path": "docs/arhive-research/новое/New folder/PREP_00_BASELINE.md",
+      "category": "top",
+      "language": "mixed",
+      "title": "Подготовка: Baseline (точка старта)",
+      "bytes": 7404,
+      "hash": "e6c8ee92c2e5248f3f3ee17a1123c849c8c89a3a"
+    },
+    {
+      "path": "docs/arhive-research/новое/New folder/PREP_01_RISKS.md",
+      "category": "top",
+      "language": "ru",
+      "title": "Подготовка: Реестр рисков и контрмеры",
+      "bytes": 8584,
+      "hash": "2475188d0a35d9caa491c7a08a04c6e9484a4526"
+    },
+    {
+      "path": "docs/arhive-research/новое/New folder/PREP_02_CONVENTIONS_CHEATSHEET.md",
+      "category": "top",
+      "language": "mixed",
+      "title": "Подготовка: Чек-лист конвенций разработчика (cheat-sheet)",
+      "bytes": 5224,
+      "hash": "a87c7fe6d7435a00245c598c4f23c180678cde88"
+    },
+    {
+      "path": "docs/arhive-research/новое/New folder/REF_01_EVENT_REGISTRY_DOMAINS.md",
+      "category": "top",
+      "language": "en",
+      "title": "Справочник: Доменный каталог событий EventBus",
+      "bytes": 12346,
+      "hash": "36ab49cafdcc3e8d8b4aa68f9a11558a3f2025ad"
+    },
+    {
+      "path": "docs/arhive-research/новое/New folder/REF_02_STRATEGIES_INVENTORY.md",
+      "category": "top",
+      "language": "mixed",
+      "title": "Справочник: Полный инвентарь 33 встроенных стратегий дебатов",
+      "bytes": 11274,
+      "hash": "a761e1bc297e1ee7c0189f1634c9e67b9d210f67"
+    },
+    {
+      "path": "docs/arhive-research/новое/New folder/RESEARCH_TOPICS.md",
+      "category": "top",
+      "language": "ru",
+      "title": "Исследовательские темы и эксперименты",
+      "bytes": 7436,
+      "hash": "bfba9ba857955977e5ed2279deac586b344e3dd7"
+    },
+    {
+      "path": "docs/arhive-research/новое/New folder/ROADMAP_00_INDEX.md",
+      "category": "top",
+      "language": "ru",
+      "title": "SuperAgents OS — Пакет дорожных карт и рекомендаций",
+      "bytes": 16038,
+      "hash": "ca8e0048edb3732dd097ab4ead7d3cf122fc4bc2"
+    },
+    {
+      "path": "docs/arhive-research/новое/New folder/ROADMAP_01_LLM_LAYER.md",
+      "category": "top",
+      "language": "ru",
+      "title": "Роадмап: LLM-слой (адаптеры, декораторы, реестр, HTTP/SSE, эмбеддинги)",
+      "bytes": 16642,
+      "hash": "49895fea7a64b4cde47cc888def9c5c9ad52da74"
+    },
+    {
+      "path": "docs/arhive-research/новое/New folder/ROADMAP_02_DEBATE_RUNTIME.md",
+      "category": "top",
+      "language": "ru",
+      "title": "Роадмап: Движок дебатов (debate-runtime, техники, стратегии, rivals)",
+      "bytes": 10236,
+      "hash": "5926455ec083f6b3ab3bec833d8efa163e08921a"
+    },
+    {
+      "path": "docs/arhive-research/новое/New folder/ROADMAP_03_AGENTS_ORCHESTRATION.md",
+      "category": "top",
+      "language": "ru",
+      "title": "Роадмап: Агенты и когнитивная оркестрация",
+      "bytes": 5018,
+      "hash": "fa41100d354b0bc60480e668455fa0ce0c524a8f"
+    },
+    {
+      "path": "docs/arhive-research/новое/New folder/ROADMAP_04_MEMORY_KNOWLEDGE.md",
+      "category": "top",
+      "language": "ru",
+      "title": "Роадмап: Память и знания (memory, RAG, WikiBrain, knowledge-generator)",
+      "bytes": 7758,
+      "hash": "99125a43dfb526b2f82893f1b7eaec8462c9ab41"
+    },
+    {
+      "path": "docs/arhive-research/новое/New folder/ROADMAP_05_TOOLS_SANDBOX_MCP_BROWSER.md",
+      "category": "top",
+      "language": "ru",
+      "title": "Роадмап: Инструменты, песочница, MCP, Browser/Computer-use",
+      "bytes": 4715,
+      "hash": "87e0ef2d7af35fefe73c4e4433f2e1998016a603"
+    },
+    {
+      "path": "docs/arhive-research/новое/New folder/ROADMAP_06_OBSERVABILITY_DIAGNOSTICS.md",
+      "category": "top",
+      "language": "mixed",
+      "title": "Роадмап: Наблюдаемость, диагностика, советник, оценка",
+      "bytes": 3661,
+      "hash": "f0806b06004231c1b799e4199a2c803acd0f4f1f"
+    },
+    {
+      "path": "docs/arhive-research/новое/New folder/ROADMAP_07_SECURITY_KEYS_TRUST.md",
+      "category": "top",
+      "language": "mixed",
+      "title": "Роадмап: Безопасность, ключи, секреты, доверие, аудит",
+      "bytes": 6556,
+      "hash": "4dd8c91e35d159307b4c4508872298c10138ab57"
+    },
+    {
+      "path": "docs/arhive-research/новое/New folder/ROADMAP_08_KERNEL_EVENTS_STATE_DI.md",
+      "category": "top",
+      "language": "mixed",
+      "title": "Роадмап: Ядро — события, DI, состояние, персистентность, event-sourcing",
+      "bytes": 4260,
+      "hash": "f692c1cdb64e4ebd0b5bb8644829af29731f0740"
+    },
+    {
+      "path": "docs/arhive-research/новое/New folder/ROADMAP_09_UI_PANELS_STORES.md",
+      "category": "top",
+      "language": "mixed",
+      "title": "Роадмап: UI — панели, сторы, хуки, маршруты, i18n, визуализация",
+      "bytes": 4452,
+      "hash": "8534fffbf3bd7d457635fae7c51761b81ecae94e"
+    },
+    {
+      "path": "docs/arhive-research/новое/New folder/ROADMAP_10_INFRA_CI_SERVER_GENERATORS.md",
+      "category": "top",
+      "language": "mixed",
+      "title": "Роадмап: Инфраструктура — сервер, CLI, Docker, CI, скрипты-генераторы",
+      "bytes": 3669,
+      "hash": "5300346684a3d81ca0a53c773674ea3233a388e4"
+    },
+    {
+      "path": "docs/arhive-research/новое/New folder/ROADMAP_11_PARITY_RIVALS_ANALOGS.md",
+      "category": "top",
+      "language": "ru",
+      "title": "Роадмап: Rivals / Parity и паритет с аналогами",
+      "bytes": 3728,
+      "hash": "6fcb31f8fa6faee36d48a858022518272623e6ad"
+    },
+    {
+      "path": "docs/arhive-research/новое/New folder/SPEC_01_CRYPTO_VAULT.md",
+      "category": "top",
+      "language": "mixed",
+      "title": "Спецификация: Зашифрованное хранилище ключей (crypto vault) + passphrase-UI",
+      "bytes": 6881,
+      "hash": "0337aad397c03e3deea0dd474d5cc4351bc9102f"
+    },
+    {
+      "path": "docs/arhive-research/новое/New folder/SPEC_02_EMBEDDING_STANDARD.md",
+      "category": "top",
+      "language": "mixed",
+      "title": "Спецификация: Единый embedding-слой и RAG-стандарт",
+      "bytes": 4546,
+      "hash": "dd7acc54d2e913d335184cda8fd9f644fec7f88b"
+    },
+    {
+      "path": "docs/arhive-research/новое/New folder/SPEC_03_METRICS_SERVICE.md",
+      "category": "top",
+      "language": "mixed",
+      "title": "Спецификация: Единый MetricsService (метрический слой)",
+      "bytes": 3648,
+      "hash": "2b381b71f2f63da7d4475a0ee36f5b47559b079b"
+    },
+    {
+      "path": "docs/arhive-research/новое/New folder/SPEC_04_EVAL_HUB.md",
+      "category": "top",
+      "language": "mixed",
+      "title": "Спецификация: Eval-хаб (платформа оценки)",
+      "bytes": 4805,
+      "hash": "8df7a4285b42a16aeb8364e6a577a3d225cb09b3"
+    },
+    {
+      "path": "docs/arhive-research/новое/New folder/SPEC_05_AGENT_RUNTIME.md",
+      "category": "top",
+      "language": "mixed",
+      "title": "Спецификация: Единый IAgentRuntime (агентный runtime-фасад)",
+      "bytes": 4059,
+      "hash": "1d686712459ed288b78a52da4885147e7dea0455"
+    },
+    {
+      "path": "docs/arhive-research/новое/New folder/SPEC_06_PLUGIN_SYSTEM.md",
+      "category": "top",
+      "language": "ru",
+      "title": "Спецификация: Плагинная система",
+      "bytes": 5432,
+      "hash": "29eff5f80c1c760a80bc5083e9dfe21338c39d77"
+    },
+    {
+      "path": "docs/arhive-research/новое/New folder/SPEC_07_DEBATE_DSL_INTERPRETER.md",
+      "category": "top",
+      "language": "mixed",
+      "title": "Спецификация: Интерпретатор DSL-стратегий дебатов",
+      "bytes": 6662,
+      "hash": "d44f4e96780372e82a94c2d08120e58f37e9e730"
+    },
+    {
+      "path": "docs/arhive-research/новое/New folder/SPEC_08_AUTHORIZATION_LAYER.md",
+      "category": "top",
+      "language": "mixed",
+      "title": "Спецификация: Единый слой авторизации (authz) для сервисов",
+      "bytes": 5077,
+      "hash": "ae7b7dc4c2fcdb6819551224dba9a135a29c7d97"
+    },
+    {
+      "path": "docs/arhive-research/новое/New folder/SPEC_09_A2A_FEDERATION.md",
+      "category": "top",
+      "language": "mixed",
+      "title": "Спецификация: A2A-интеграция и Федерация (Interop)",
+      "bytes": 5697,
+      "hash": "235dd667649d83e6e7318d8d9e0c7dde28220e70"
+    },
+    {
+      "path": "docs/arhive-research/новое/New folder/SPEC_10_TEAM_SERVER_MODE.md",
+      "category": "top",
+      "language": "ru",
+      "title": "Спецификация: Командный / серверный режим (multi-user, tenant)",
+      "bytes": 5692,
+      "hash": "a2cca5d41c105232e8f0aeabf4ae290712dd5a1a"
+    },
+    {
+      "path": "docs/arhive-research/новое/New folder/SPEC_11_INFRA_CI_HARDENING.md",
+      "category": "top",
+      "language": "ru",
+      "title": "Спецификация: Закалка CI/инфраструктуры",
+      "bytes": 4742,
+      "hash": "8060bf8081b92f792f92f03775079501794d8b57"
+    },
+    {
+      "path": "docs/arhive-research/новое/New folder/SPEC_12_AGENT_SECURITY_OWASP.md",
+      "category": "top",
+      "language": "ru",
+      "title": "Спецификация: Безопасность агентов (карта соответствия OWASP)",
+      "bytes": 6998,
+      "hash": "94f4c0f9ad67e302c024ffae7b376e04b09d0798"
+    },
+    {
+      "path": "docs/arhive-research/новое/New folder/иследования/00_ИНДЕКС.md",
+      "category": "top",
+      "language": "ru",
+      "title": "иследования — индекс отчётов сабагентов",
+      "bytes": 12831,
+      "hash": "8a968b6182a9e6842a2895661bff77a198d1981c"
+    },
+    {
+      "path": "docs/arhive-research/новое/New folder/иследования/01_ядро-kernel.md",
+      "category": "top",
+      "language": "mixed",
+      "title": "Отчёт сабагента: Ядро `src/kernel/` (SuperAgents OS)",
+      "bytes": 13896,
+      "hash": "7a2aca292f42ebe9269540ae473479a8fe1766e1"
+    },
+    {
+      "path": "docs/arhive-research/новое/New folder/иследования/02_llm-слой.md",
+      "category": "top",
+      "language": "mixed",
+      "title": "Отчёт сабагента: LLM-слой (`src/llm/`)",
+      "bytes": 8233,
+      "hash": "0b14eace0830f714a99fef7e1bb9bf6199d26bdb"
+    },
+    {
+      "path": "docs/arhive-research/новое/New folder/иследования/03_ui-панели-сторы.md",
+      "category": "top",
+      "language": "en",
+      "title": "Отчёт сабагента: UI — панели, сторы, хуки, маршруты, i18n",
+      "bytes": 11873,
+      "hash": "82745da896b37c925d222b8281abb97f4bf32cb7"
+    },
+    {
+      "path": "docs/arhive-research/новое/New folder/иследования/04_документация.md",
+      "category": "top",
+      "language": "mixed",
+      "title": "Отчёт сабагента: Документация (`docs/`, `docs/wiki/`, `docs/audits/`)",
+      "bytes": 8264,
+      "hash": "55b7864c1c442cc14a22639f6a6da367d7406d4c"
+    },
+    {
+      "path": "docs/arhive-research/новое/New folder/иследования/05_движок-дебатов.md",
+      "category": "top",
+      "language": "mixed",
+      "title": "Отчёт сабагента: Движок дебатов (`debate-runtime/`)",
+      "bytes": 13579,
+      "hash": "2cff17e88560c7909e9c68c1b01a64839c6740ae"
+    },
+    {
+      "path": "docs/arhive-research/новое/New folder/иследования/06_крипто-ключи.md",
+      "category": "top",
+      "language": "mixed",
+      "title": "Отчёт сабагента: Безопасность, ключи и хранение",
+      "bytes": 6769,
+      "hash": "dcf0786a000695f381d3399aaa04cd83d16955d7"
+    },
+    {
+      "path": "docs/arhive-research/новое/New folder/иследования/07_инфраструктура-ci-сервер.md",
+      "category": "top",
+      "language": "mixed",
+      "title": "Отчёт сабагента: Инфраструктура и сборка",
+      "bytes": 8291,
+      "hash": "7a0c6fc6baf0353af49728ef84e76af5d3db25e4"
+    },
+    {
+      "path": "docs/arhive-research/новое/New folder/иследования/08_конвенции.md",
+      "category": "top",
+      "language": "mixed",
+      "title": "Отчёт сабагента: Конвенции разработки (чек-лист)",
+      "bytes": 4539,
+      "hash": "bd8fd79b2b1cb6114681e687bba76ef6a6e61436"
+    },
+    {
+      "path": "docs/arhive-research/новое/New folder/иследования/09_исследование-eval-платформ.md",
+      "category": "top",
+      "language": "mixed",
+      "title": "Исследование: Eval-платформы и оценка мультиагентных систем",
+      "bytes": 4888,
+      "hash": "09e254affcee929b179426d64509786101869de5"
+    },
+    {
+      "path": "docs/arhive-research/новое/New folder/иследования/10_исследование-a2a-mcp.md",
+      "category": "top",
+      "language": "mixed",
+      "title": "Исследование: A2A, MCP и протоколы взаимодействия агентов",
+      "bytes": 4046,
+      "hash": "ddf5cd3302e18a134843799148a5b04894d843e6"
+    },
+    {
+      "path": "docs/arhive-research/новое/New folder/иследования/11_исследование-плагинных-систем.md",
+      "category": "top",
+      "language": "mixed",
+      "title": "Исследование: Плагинные системы и безопасная изоляция в браузере",
+      "bytes": 6056,
+      "hash": "34accb1169fce406214465201d5172d6a6015933"
+    },
+    {
+      "path": "docs/arhive-research/новое/New folder/иследования/12_исследование-webcrypto-local-first.md",
+      "category": "top",
+      "language": "mixed",
+      "title": "Исследование: WebCrypto, local-first sync, атомарность Dexie",
+      "bytes": 3953,
+      "hash": "8e2fe61b17cf70856614fc31b4af28c1e9e3cefb"
+    },
+    {
+      "path": "docs/arhive-research/новое/New folder/иследования/13_память-глубоко.md",
+      "category": "top",
+      "language": "mixed",
+      "title": "Отчёт сабагента: Подсистема памяти (глубоко, file-level)",
+      "bytes": 10618,
+      "hash": "b74283fe87ab5c0ab8a649a5d2c985f672941961"
+    },
+    {
+      "path": "docs/arhive-research/новое/New folder/иследования/14_сервер-cli-docker.md",
+      "category": "top",
+      "language": "mixed",
+      "title": "Отчёт сабагента: Сервер, CLI, Docker",
+      "bytes": 9430,
+      "hash": "85185f09b8f57cee4897226e9463a1ee837abb2d"
+    },
+    {
+      "path": "docs/arhive-research/новое/New folder/иследования/15_стратегии-и-события.md",
+      "category": "top",
+      "language": "en",
+      "title": "Отчёт сабагента: Инвентарь стратегий и доменный каталог событий",
+      "bytes": 21456,
+      "hash": "4f4880b52f1dd8c00c11dc6c23fe4e19bf8f6c70"
+    },
+    {
+      "path": "docs/arhive-research/новое/New folder/иследования/16_остальные-сервисы.md",
+      "category": "top",
+      "language": "mixed",
+      "title": "Отчёт сабагента: Оставшиеся группы сервисов (для роадмапов 03/04/05/06/08)",
+      "bytes": 9944,
+      "hash": "7af9c0d6601dd8b23fad62c9d09ee74e198e1c37"
+    },
+    {
+      "path": "docs/arhive-research/новое/New folder/иследования/17_исследование-ландшафт-2025-26.md",
+      "category": "top",
+      "language": "mixed",
+      "title": "Исследование: Ландшафт мультиагентных фреймворков 2025–2026",
+      "bytes": 7939,
+      "hash": "8fb783198144bdca12b9fddb30fd08ed2cf5de4c"
+    },
+    {
+      "path": "docs/arhive-research/новое/New folder/иследования/18_исследование-owasp.md",
+      "category": "top",
+      "language": "ru",
+      "title": "Исследование: OWASP — безопасность LLM-приложений и агентов",
+      "bytes": 7376,
+      "hash": "2d4b1adc7c7ffdcf3351c1a8d737fc3a5372ca39"
+    },
+    {
+      "path": "docs/arhive-research/новое/New folder/иследования/19_исследование-аргументация.md",
+      "category": "top",
+      "language": "ru",
+      "title": "Исследование: Теория аргументации и оценка аргументов",
+      "bytes": 4760,
+      "hash": "b503f159fa0a4eaaf1c84dd0a25da5783a23c6f9"
+    },
+    {
+      "path": "docs/arhive-research/новое/New folder/иследования/20_исследование-маршрутизация-кэш.md",
+      "category": "top",
+      "language": "ru",
+      "title": "Исследование: Маршрутизация LLM, fallback и семантический кэш",
+      "bytes": 5413,
+      "hash": "8907006fe4aeae24e6d3a97201d461e7f92801be"
+    },
+    {
+      "path": "docs/arhive-research/новое/New folder/иследования/21_ui-панели-долг.md",
+      "category": "top",
+      "language": "mixed",
+      "title": "Отчёт сабагента: Технический долг и рефакторинг UI-панелей",
+      "bytes": 12444,
+      "hash": "e96ddcf58337b834ac86030cbb488dd010dd0e10"
+    },
+    {
+      "path": "docs/arhive-research/новое/New folder/иследования/22_инструменты-песочница.md",
+      "category": "top",
+      "language": "mixed",
+      "title": "Отчёт сабагента: Инструменты, песочница, browser/computer, MCP",
+      "bytes": 13029,
+      "hash": "a931ef16204466420127e1c537fbdda585818f66"
+    },
+    {
+      "path": "docs/arhive-research/новое/New folder/иследования/23_eventbus-di-bootstrap.md",
+      "category": "top",
+      "language": "mixed",
+      "title": "Отчёт сабагента: EventBus, DI, bootstrap — точная механика",
+      "bytes": 8652,
+      "hash": "ee760daf409d5b774ec549a9c1e3adcec3d92d4d"
+    },
+    {
+      "path": "docs/arhive-research/новое/New folder/иследования/24_наблюдаемость-метрики.md",
+      "category": "top",
+      "language": "mixed",
+      "title": "Отчёт сабагента: Наблюдаемость, метрики, советник, ELO, eval",
+      "bytes": 9639,
+      "hash": "c7eb1bc0953f48e931d7fa35d4ea78c3849dfb78"
+    },
+    {
+      "path": "docs/arhive-research/новое/New folder/иследования/25_состояние-сторы.md",
+      "category": "top",
+      "language": "mixed",
+      "title": "Отчёт сабагента: Состояние и сторы",
+      "bytes": 6888,
+      "hash": "b776b582b33a72bd22250e590e72d711ee8f84e6"
+    },
+    {
+      "path": "docs/arhive-research/новое/New folder/иследования/26_эмбеддинги-эвалы.md",
+      "category": "top",
+      "language": "mixed",
+      "title": "Отчёт сабагента: Эмбеддинги, RAG, эвалы, трассировка",
+      "bytes": 5795,
+      "hash": "47bd6c1ab1f89c73235a794932cebd50e0897c0d"
+    },
+    {
+      "path": "docs/arhive-research/новое/New folder/иследования/27_финальный-сквозной-анализ.md",
+      "category": "top",
+      "language": "mixed",
+      "title": "Отчёт сабагента: Финальный сквозной анализ",
+      "bytes": 6568,
+      "hash": "6dcc6765c3ecd78f607076d94553990d5c3ff3be"
+    },
+    {
+      "path": "docs/arhive-research/новое/New folder/иследования/28_машина-состояний-автономия-персоны.md",
+      "category": "top",
+      "language": "mixed",
+      "title": "Отчёт сабагента: Машина состояний, автономия, персоны, способности, топология",
+      "bytes": 7250,
+      "hash": "30c0f06a466fe219bb9d154bd0ca083d42af7d2a"
+    },
+    {
+      "path": "docs/arhive-research/новое/New folder/иследования/29_вики-генерация.md",
+      "category": "top",
+      "language": "mixed",
+      "title": "Отчёт сабагента: Система генерации вики/документации",
+      "bytes": 6519,
+      "hash": "d85fdf44effc285c28f51ee3e65d782da13cc9e2"
+    },
+    {
+      "path": "docs/arhive-research/новое/New folder/иследования/30_внешние-интеграции.md",
+      "category": "top",
+      "language": "mixed",
+      "title": "Отчёт сабагента: Внешние интеграции, событийный API, трансляция",
+      "bytes": 6834,
+      "hash": "73dfe1aa6bcced23102bfe6b98826c0847c28ac8"
+    },
+    {
+      "path": "docs/arhive-research/новое/New folder/иследования/31_концепции-философия.md",
+      "category": "top",
+      "language": "ru",
+      "title": "Отчёт сабагента: Концепции, философия, позиционирование",
+      "bytes": 9485,
+      "hash": "eea44cba2aecdbf78fc664919ebb865eec056b49"
+    },
+    {
+      "path": "docs/arhive-research/новое/New folder/иследования/32_СВОДКА.md",
+      "category": "top",
+      "language": "ru",
+      "title": "Сводка всех исследований проекта SuperAgents OS",
+      "bytes": 31412,
+      "hash": "eb7176b54ae0af1e2b1b9ca3ad239c42687198b3"
+    },
+    {
+      "path": "docs/arhive-research/новое/New folder/иследования/33_код-исполнение-среды.md",
+      "category": "top",
+      "language": "mixed",
+      "title": "Отчёт сабагента: Исполнение кода, среды, очереди",
+      "bytes": 7587,
+      "hash": "5413e08a22f311a287ef2bebfef25943ca43d883"
+    },
+    {
+      "path": "docs/arhive-research/новое/New folder/иследования/34_rivals-и-парадигмы.md",
+      "category": "top",
+      "language": "mixed",
+      "title": "Отчёт сабагента: Фреймворк Rivals / parity",
+      "bytes": 10768,
+      "hash": "16c4aa3947d6d88e98c11e497d77ea7c682bdb8b"
+    },
+    {
+      "path": "docs/arhive-research/новое/New folder/иследования/35_финальный-аудит-пробелов.md",
+      "category": "top",
+      "language": "mixed",
+      "title": "Отчёт сабагента: Окончательный аудит пробелов",
+      "bytes": 5302,
+      "hash": "01a30643b5c80ccfac5904c8116b83def165ce83"
+    },
+    {
+      "path": "docs/arhive-research/новое/spisok.md",
+      "category": "top",
+      "language": "ru",
+      "title": "spisok.md",
+      "bytes": 140386,
+      "hash": "f2769e0b3f1162886de86c4db86d9e586c89b0a2"
+    },
+    {
+      "path": "docs/arhive-research/новое/spisok2.md",
+      "category": "top",
+      "language": "ru",
+      "title": "spisok2.md",
+      "bytes": 99484,
+      "hash": "abf727837ae797689ecda5f66b0ed7b23416aa6b"
+    },
+    {
+      "path": "docs/arhive-research/новое/Карта-готовности-панелей-SuperAgents-OS.md",
+      "category": "top",
+      "language": "ru",
+      "title": "Карта готовности панелей — SuperAgents OS (`egilyad/ai-os-new`)",
+      "bytes": 81955,
+      "hash": "fbd9f1bc421601988adfe16f3af17b8f9e2a57ea"
+    },
+    {
+      "path": "docs/arhive-research/новое/Карта-доступности-возможностей-SuperAgents-OS.md",
+      "category": "top",
+      "language": "mixed",
+      "title": "Карта доступности возможностей — Capability Accessibility Map",
+      "bytes": 59625,
+      "hash": "12118393776778205a997604c23b60ddeb4c5e50"
+    },
+    {
+      "path": "docs/arhive-research/новое/Карта-использования-ресурсов-SuperAgents-OS.md",
+      "category": "top",
+      "language": "mixed",
+      "title": "Карта использования ресурсов — Resource Consumption Map",
+      "bytes": 65913,
+      "hash": "b806d0f841daebdbec5fee6e065b0dc9dba4d2e2"
+    },
+    {
+      "path": "docs/arhive-research/новое/Карта-мёртвого-и-заброшенного-функционала-SuperAgents-OS.md",
+      "category": "top",
+      "language": "mixed",
+      "title": "Карта мёртвого и заброшенного функционала — Dead & Abandoned Functionality Map",
+      "bytes": 43770,
+      "hash": "304a1849ad02854e2f22c955a8cee92d8d67354a"
+    },
+    {
+      "path": "docs/arhive-research/новое/Карта-наблюдаемости-и-диагностики-SuperAgents-OS.md",
+      "category": "top",
+      "language": "mixed",
+      "title": "Карта наблюдаемости и диагностики — Observability & Diagnostics Map",
+      "bytes": 44834,
+      "hash": "ad3bb5efe09a41f8e08cc88e7b090a7e39d9fdab"
+    },
+    {
+      "path": "docs/arhive-research/новое/Карта-потенциала-SuperAgents-OS.md",
+      "category": "top",
+      "language": "mixed",
+      "title": "Карта потенциала — Opportunity Map",
+      "bytes": 62057,
+      "hash": "5b5e47616432fa3a7d01b88e976d0c11200f9c6e"
+    },
+    {
+      "path": "docs/arhive-research/новое/Карта-технического-состояния-SuperAgents-OS.md",
+      "category": "top",
+      "language": "mixed",
+      "title": "Карта технического состояния — Technical Health Map",
+      "bytes": 74674,
+      "hash": "1d7d398a1bd5491bc21382f78cb516fd7e2eb3f3"
+    },
+    {
+      "path": "docs/arhive-research/новое/Карта-функционального-дублирования-SuperAgents-OS.md",
+      "category": "top",
+      "language": "mixed",
+      "title": "Карта функционального дублирования — Duplication Map",
+      "bytes": 58187,
+      "hash": "304670158af6cf333dddbc51c64afa398b5a69b9"
+    },
+    {
+      "path": "docs/arhive-research/новое/Карта-функциональной-ценности-SuperAgents-OS.md",
+      "category": "top",
+      "language": "ru",
+      "title": "Карта функциональной ценности — Feature Value Map",
+      "bytes": 82525,
+      "hash": "34fcd232126d10e5d772c8e50e0841f8395b4614"
+    },
+    {
+      "path": "docs/arhive-research/новое/Карта-функциональных-пробелов-SuperAgents-OS.md",
+      "category": "top",
+      "language": "mixed",
+      "title": "Карта функциональных пробелов — Capability Gap Map",
+      "bytes": 42021,
+      "hash": "e16df5897e835507c1fea2a2b523c94edf6f23f5"
     },
     {
       "path": "docs/audits/waves/card-11-security-trust.md",
@@ -1292,8 +2022,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Матрица покрытия",
-      "bytes": 8585,
-      "hash": "fcc38b6e6a1fe8d9c283a5e332e27b613c053cf9"
+      "bytes": 8638,
+      "hash": "d4da78f6e6b8e1eee3c68852d8352d4451d6d82a"
     },
     {
       "path": "docs/wiki/debate-strategies-cheatsheet.md",
@@ -1324,8 +2054,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Отложенные работы и фичи",
-      "bytes": 9414,
-      "hash": "88d6f58fce5d160b61f2af480078b4074f645262"
+      "bytes": 9767,
+      "hash": "49800ddcf40d2479272c4dcf075f252fdcac5867"
     },
     {
       "path": "docs/wiki/dev-adr.md",

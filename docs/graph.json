@@ -3,20 +3,20 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 1388,
-    "edges": 2557,
+    "nodes": 1395,
+    "edges": 2563,
     "byType": {
       "audit": 25,
       "code": 610,
-      "test": 199,
-      "panel": 268,
+      "test": 204,
+      "panel": 270,
       "article": 286
     },
     "byKind": {
       "audit_test": 18,
       "audit_mention": 52,
       "documents": 204,
-      "test": 295,
+      "test": 301,
       "source": 891,
       "related": 1097
     }
@@ -2173,6 +2173,11 @@
       "label": "src/kernel/services/cognitive-intelligence/cognitive-diagnostics.ts"
     },
     {
+      "id": "file:src/kernel/services/cognitive-intelligence/cognitive-intelligence-service.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/cognitive-intelligence/cognitive-intelligence-service.test.ts"
+    },
+    {
       "id": "file:src/kernel/services/cognitive-intelligence/cognitive-intelligence-service.ts",
       "type": "code",
       "label": "src/kernel/services/cognitive-intelligence/cognitive-intelligence-service.ts"
@@ -2191,6 +2196,11 @@
       "id": "file:src/kernel/services/cognitive-intelligence/cognitive-whatif.ts",
       "type": "code",
       "label": "src/kernel/services/cognitive-intelligence/cognitive-whatif.ts"
+    },
+    {
+      "id": "file:src/kernel/services/cognitive-service.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/cognitive-service.test.ts"
     },
     {
       "id": "file:src/kernel/services/cognitive-service.ts",
@@ -2421,6 +2431,11 @@
       "id": "file:src/kernel/services/debate-runtime/debate-llm-prompt-context.ts",
       "type": "code",
       "label": "src/kernel/services/debate-runtime/debate-llm-prompt-context.ts"
+    },
+    {
+      "id": "file:src/kernel/services/debate-runtime/debate-mode-system.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/debate-runtime/debate-mode-system.test.ts"
     },
     {
       "id": "file:src/kernel/services/debate-runtime/debate-mode-system.ts",
@@ -2778,6 +2793,11 @@
       "label": "src/kernel/services/lens-engine/lens-library.ts"
     },
     {
+      "id": "file:src/kernel/services/llm-bridge/llm-task-executor.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/llm-bridge/llm-task-executor.test.ts"
+    },
+    {
       "id": "file:src/kernel/services/llm-bridge/llm-task-executor.ts",
       "type": "code",
       "label": "src/kernel/services/llm-bridge/llm-task-executor.ts"
@@ -3001,6 +3021,11 @@
       "id": "file:src/kernel/services/ops/tool-governance-service.ts",
       "type": "code",
       "label": "src/kernel/services/ops/tool-governance-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/orchestration-service.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/orchestration-service.test.ts"
     },
     {
       "id": "file:src/kernel/services/orchestration-service.ts",
@@ -5489,11 +5514,25 @@
       "route": "/playground"
     },
     {
+      "id": "panel:plugin-marketplace",
+      "type": "panel",
+      "label": "plugin-marketplace",
+      "section": "system",
+      "route": "/plugin-marketplace"
+    },
+    {
       "id": "panel:plugin-sdk",
       "type": "panel",
       "label": "plugin-sdk",
       "section": "system",
       "route": "/plugin-sdk"
+    },
+    {
+      "id": "panel:plugins",
+      "type": "panel",
+      "label": "plugins",
+      "section": "system",
+      "route": "/plugins"
     },
     {
       "id": "panel:policies",
@@ -10879,6 +10918,11 @@
     },
     {
       "from": "wiki:comp-cognitive-orchestration",
+      "to": "file:src/kernel/services/cognitive-intelligence/cognitive-intelligence-service.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-cognitive-orchestration",
       "to": "file:src/kernel/services/cognitive-intelligence/cognitive-intelligence-service.ts",
       "kind": "source"
     },
@@ -10899,8 +10943,18 @@
     },
     {
       "from": "wiki:comp-cognitive-orchestration",
+      "to": "file:src/kernel/services/cognitive-service.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-cognitive-orchestration",
       "to": "file:src/kernel/services/cognitive-service.ts",
       "kind": "source"
+    },
+    {
+      "from": "wiki:comp-cognitive-orchestration",
+      "to": "file:src/kernel/services/orchestration-service.test.ts",
+      "kind": "test"
     },
     {
       "from": "wiki:comp-cognitive-orchestration",
@@ -11306,6 +11360,11 @@
       "from": "wiki:comp-debate-techniques",
       "to": "file:src/kernel/services/debate-runtime/debate-llm-prompt-context.ts",
       "kind": "source"
+    },
+    {
+      "from": "wiki:comp-debate-techniques",
+      "to": "file:src/kernel/services/debate-runtime/debate-mode-system.test.ts",
+      "kind": "test"
     },
     {
       "from": "wiki:comp-debate-techniques",
@@ -13271,6 +13330,11 @@
       "from": "wiki:comp-llm-bridge",
       "to": "file:src/kernel/contracts/provider-adapter.ts",
       "kind": "source"
+    },
+    {
+      "from": "wiki:comp-llm-bridge",
+      "to": "file:src/kernel/services/llm-bridge/llm-task-executor.test.ts",
+      "kind": "test"
     },
     {
       "from": "wiki:comp-llm-bridge",
@@ -17086,6 +17150,11 @@
       "from": "wiki:memory-audit",
       "to": "file:src/kernel/services/crystal-vault/crystal-vault-service.ts",
       "kind": "source"
+    },
+    {
+      "from": "wiki:memory-audit",
+      "to": "file:src/kernel/services/llm-bridge/llm-task-executor.test.ts",
+      "kind": "test"
     },
     {
       "from": "wiki:memory-audit",

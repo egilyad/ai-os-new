@@ -4328,7 +4328,9 @@
         "debates"
       ],
       "reviewed": null,
-      "tests": []
+      "tests": [
+        "src/kernel/services/debate-runtime/debate-mode-system.test.ts"
+      ]
     },
     {
       "id": "wiki:comp-cognitive-orchestration",
@@ -4362,7 +4364,11 @@
         "comp-debate-runtime"
       ],
       "reviewed": null,
-      "tests": []
+      "tests": [
+        "src/kernel/services/cognitive-service.test.ts",
+        "src/kernel/services/orchestration-service.test.ts",
+        "src/kernel/services/cognitive-intelligence/cognitive-intelligence-service.test.ts"
+      ]
     },
     {
       "id": "wiki:comp-memory",
@@ -4747,7 +4753,9 @@
         "for-developers"
       ],
       "reviewed": null,
-      "tests": []
+      "tests": [
+        "src/kernel/services/llm-bridge/llm-task-executor.test.ts"
+      ]
     },
     {
       "id": "wiki:comp-state-stores",
@@ -8139,6 +8147,7 @@
         "src/kernel/services/session-memory-service.test.ts",
         "src/kernel/services/memory/workflow-distiller.test.ts",
         "src/stores/chat/store.test.ts",
+        "src/kernel/services/llm-bridge/llm-task-executor.test.ts",
         "src/kernel/services/tool-executor.test.ts",
         "src/kernel/services/crystal-vault/crystal-vault-service.test.ts"
       ]
@@ -10492,6 +10501,26 @@
       "route": "/plugin-sdk",
       "component": "src/components/PluginSdkPanel",
       "article": "panel-infra-meta",
+      "status": "live"
+    },
+    {
+      "id": "panel:plugins",
+      "type": "panel",
+      "panelId": "plugins",
+      "section": "system",
+      "route": "/plugins",
+      "component": "src/components/PluginManagerPanel",
+      "article": null,
+      "status": "live"
+    },
+    {
+      "id": "panel:plugin-marketplace",
+      "type": "panel",
+      "panelId": "plugin-marketplace",
+      "section": "system",
+      "route": "/plugin-marketplace",
+      "component": "src/components/PluginMarketplacePanel",
+      "article": null,
       "status": "live"
     },
     {
