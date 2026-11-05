@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Plugin, Power, PowerOff, Trash2, Plus, RefreshCw } from 'lucide-react';
+import { Plug, Power, PowerOff, Trash2, Plus, RefreshCw } from 'lucide-react';
 import { pluginRegistry, pluginLoader, eventBus, EVENTS } from '../../kernel/instances';
 import { useTranslation } from '../../i18n/useTranslation';
 import type { RegisteredPlugin } from '../../kernel/contracts/plugin';
@@ -24,7 +24,7 @@ const PluginManagerPanel: React.FC = () => {
         setPlugins([...pluginRegistry.list()]);
         if (
             typeof (
-                pluginRegistry as {
+                pluginRegistry as unknown as {
                     getStats?: () => {
                         total: number;
                         active: number;
@@ -36,7 +36,7 @@ const PluginManagerPanel: React.FC = () => {
         ) {
             setStats(
                 (
-                    pluginRegistry as {
+                    pluginRegistry as unknown as {
                         getStats: () => {
                             total: number;
                             active: number;
@@ -111,7 +111,7 @@ const PluginManagerPanel: React.FC = () => {
                 }}
             >
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                    <Plugin size={18} color="#a855f7" />
+                    <Plug size={18} color="#a855f7" />
                     <h2
                         style={{
                             margin: 0,

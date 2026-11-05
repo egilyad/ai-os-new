@@ -1,4 +1,8 @@
-import type { StrategyDraft, StrategyProgram } from '../../contracts/strategy-program';
+import type {
+    StrategyDraft,
+    StrategyProgram,
+    StrategyRoot,
+} from '../../contracts/strategy-program';
 
 /** Исполняемый план дебатов (сжимает StrategyProgram для движка). */
 export interface DebateExecutionPlan {

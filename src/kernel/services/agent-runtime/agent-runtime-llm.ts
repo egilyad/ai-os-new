@@ -1,5 +1,6 @@
 import { PROVIDER_DEFAULT_MODELS } from '../../utils/provider-default-models';
 import type { ToolLoopCallResult } from '../tool-loop/tool-loop';
+import type { ToolCall } from '../../kernel/types/llm-types';
 
 /** Минимальный интерфейс адаптера для LLM-вызова. */
 interface LlmAdapter {
@@ -36,7 +37,7 @@ export interface AgentLlmDeps {
 export function createAgentCallLlm(deps: AgentLlmDeps) {
     return async (
         messages: Array<{ role: string; content: string }>,
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
         _tools: unknown[],
     ): Promise<ToolLoopCallResult> => {
         const keys = deps.keyService.getKeys?.() ?? [];
@@ -64,7 +65,7 @@ export function createAgentCallLlm(deps: AgentLlmDeps) {
             });
             return {
                 content: response?.content ?? '',
-                toolCalls: response?.toolCalls ?? [],
+                toolCalls: (response?.toolCalls ?? []) as ToolCall[],
             };
         } catch (e) {
             return {

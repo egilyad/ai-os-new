@@ -215,6 +215,7 @@ const MODULE_ICONS: Record<ModuleKey, React.ReactNode> = {
     settings: <Layers size={18} />,
     dependency_graph: <GitBranch size={18} />,
     service_registry: <Database size={18} />,
+    plugins: <Zap size={18} />,
 };
 
 interface ModuleInfoProps {

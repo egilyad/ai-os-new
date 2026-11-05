@@ -10,7 +10,8 @@ export interface ProvenanceRef {
     id: string;
 }
 
-export type ProvenanceRelation = 'influenced' | 'derived_from' | 'evidenced_by' | 'contradicts' | 'synthesized_into';
+export type ProvenanceRelation =
+    'influenced' | 'derived_from' | 'evidenced_by' | 'contradicts' | 'synthesized_into';
 
 export interface ProvenanceLink {
     id: string;
@@ -23,7 +24,13 @@ export interface ProvenanceLink {
 }
 
 export interface IProvenanceLinker {
-    link(from: ProvenanceRef, to: ProvenanceRef, relation: ProvenanceRelation, weight?: number): ProvenanceLink;
+    link(
+        from: ProvenanceRef,
+        to: ProvenanceRef,
+        relation: ProvenanceRelation,
+        weight?: number,
+    ): ProvenanceLink;
     get(filter?: { kind?: string; id?: string }): ProvenanceLink[];
+    getTrail(start: ProvenanceRef, maxDepth?: number): ProvenanceRef[];
     clear(): void;
 }

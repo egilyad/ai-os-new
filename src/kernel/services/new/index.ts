@@ -22,12 +22,28 @@ export type {
     AgentRuntimeConfig,
     AgentTurnInput,
     AgentTurnResult,
-} from '../contracts/agent-runtime';
+} from '../../contracts/agent-runtime';
 export { PluginRegistry } from '../plugins/plugin-registry';
 export { PluginHost, type PluginHostRegistryPort } from '../plugins/plugin-host';
 export { PluginLoader } from '../plugins/plugin-loader';
 export { PluginWorkerClient } from '../plugins/plugin-worker';
 export { TokenCodec } from '../auth/token-codec';
+export { AgentService } from '../agent-service';
+export type { AgentServiceDeps, AgentStats, AgentGroup } from '../agent-service';
+export { CognitiveService } from '../cognitive-service';
+export type { CognitiveServiceDeps, CognitiveStats } from '../cognitive-service';
+export { OrchestrationService } from '../orchestration-service';
+export type { OrchestrationServiceDeps } from '../orchestration-service';
+export {
+    LlmCrewExecutor,
+    LlmCouncilPort,
+    LlmGraphPort,
+    LlmFrontierExecutor,
+    LlmPersonaPort,
+} from '../llm-bridge/llm-task-executor';
+export type { LlmBridgeOptions } from '../llm-bridge/llm-task-executor';
+export { LIBRARY_ROLES, getLibraryRolesByCategory } from '../../../data/role-library';
+export type { LibraryRole, LibraryRoleCategory } from '../../../data/role-library';
 export { A2AClient } from '../interop/a2a-client';
 export { ProvenanceLinker } from '../trust/provenance-linker';
 export { ProvenanceCollector } from '../trust/provenance-collector';
