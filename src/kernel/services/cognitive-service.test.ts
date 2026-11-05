@@ -14,7 +14,11 @@ function makeDeps(overrides: Partial<CognitiveServiceDeps> = {}): CognitiveServi
             queryTraces: vi.fn(async () => []),
             deleteTrace: vi.fn(async () => {}),
             clear: vi.fn(async () => {}),
-        },
+            saveTrace: vi.fn(async () => {}),
+            getTrace: vi.fn(async () => undefined),
+            exportAll: vi.fn(async () => []),
+            importAll: vi.fn(async () => {}),
+        } as unknown as CognitiveServiceDeps['traceStore'],
         routerService: {
             getRankedProviders: vi.fn(() => []),
         },
@@ -23,7 +27,7 @@ function makeDeps(overrides: Partial<CognitiveServiceDeps> = {}): CognitiveServi
         },
         adapterRegistry: {
             getAdapter: vi.fn(),
-        },
+        } as unknown as CognitiveServiceDeps['adapterRegistry'],
         blackboardService: { read: vi.fn() },
         ...overrides,
     };
@@ -56,17 +60,17 @@ describe('CognitiveService', () => {
         const adapter = { sendMessage: vi.fn(async () => ({ content: 'answer' })) };
         const deps = makeDeps({
             keyService: { getKey: vi.fn(() => ({ key: 'sk', status: 'active' })) },
-            adapterRegistry: { getAdapter: vi.fn(() => adapter) },
+            adapterRegistry: { getAdapter: vi.fn(() => adapter) } as never,
         });
         const svc = new CognitiveService(deps);
-        const out = await svc.executeAgentNode(node, {});
+        const out = await svc.executeAgentNode(node, {} as never);
         expect(out).toBe('answer');
         expect(adapter.sendMessage).toHaveBeenCalledTimes(1);
     });
 
     it('executeAgentNode бросает при отсутствии альтернатив', async () => {
         const svc = new CognitiveService(makeDeps());
-        await expect(svc.executeAgentNode(node, {})).rejects.toThrow(
+        await expect(svc.executeAgentNode(node, {} as never)).rejects.toThrow(
             'No viable execution alternatives',
         );
     });
@@ -85,9 +89,9 @@ describe('CognitiveService', () => {
         };
         const deps = makeDeps({
             keyService: { getKey: vi.fn(() => ({ key: 'sk', status: 'active' })) },
-            adapterRegistry: { getAdapter: vi.fn(() => adapter) },
+            adapterRegistry: { getAdapter: vi.fn(() => adapter) } as never,
         });
         const svc = new CognitiveService(deps);
-        await expect(svc.executeAgentNode(node, {})).rejects.toThrow('adapter down');
+        await expect(svc.executeAgentNode(node, {} as never)).rejects.toThrow('adapter down');
     });
 });

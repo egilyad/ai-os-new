@@ -1,6 +1,6 @@
 import { PROVIDER_DEFAULT_MODELS } from '../../utils/provider-default-models';
 import type { ToolLoopCallResult } from '../tool-loop/tool-loop';
-import type { ToolCall } from '../../kernel/types/llm-types';
+import type { ToolCall } from '../../types/llm-types';
 
 /** Минимальный интерфейс адаптера для LLM-вызова. */
 interface LlmAdapter {

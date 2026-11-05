@@ -32,7 +32,7 @@ describe('AgentRuntime (SPEC_05)', () => {
     });
 
     it('runTool без runner возвращает fallback-текст', async () => {
-        const callLlm = vi.fn(async (messages: unknown[], tools: ToolLoopTool[]) => ({
+        const callLlm = vi.fn(async (_messages: unknown[], tools: ToolLoopTool[]) => ({
             content: `calls: ${tools.map((t) => t.name).join(',')}`,
         }));
         const runtime = new AgentRuntime({
@@ -200,7 +200,7 @@ describe('AgentRuntime (SPEC_05)', () => {
         const record = vi.fn();
         const runtime = new AgentRuntime({
             callLlm: vi.fn(async () => ({ content: 'ok' })),
-            metrics: { inc, record },
+            metrics: { inc, record } as never,
         });
         await runtime.run({ text: 'hi' }, { role: 'r' });
         expect(inc).toHaveBeenCalledWith('agent.turns');
