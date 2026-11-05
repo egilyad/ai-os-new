@@ -6,12 +6,12 @@ function makeDeps(overrides: Partial<OrchestrationServiceDeps> = {}): Orchestrat
     return {
         eventBus: {
             on: vi.fn(() => () => {}),
+            onSafe: vi.fn(() => () => {}),
             emit: vi.fn(),
             off: vi.fn(),
-            onSafe: vi.fn(() => () => {}),
             emitOnce: vi.fn(),
             subscribeAll: vi.fn(),
-            getSubscriptionStats: vi.fn(() => ({})),
+            getSubscriptionStats: vi.fn(() => ({ totalCallbacks: 0, perEvent: {} })),
         },
         toolService: { execute: vi.fn(async () => ({ status: 'success', data: 'ok' })) },
         cognitiveService: { executeAgentNode: vi.fn(async () => 'agent out') },
@@ -75,7 +75,19 @@ describe('OrchestrationService', () => {
 
     it('mount устанавливает lifecycle и эмитит событие', () => {
         const emit = vi.fn();
-        const svc = new OrchestrationService(makeDeps({ eventBus: { on: vi.fn(), emit } }));
+        const svc = new OrchestrationService(
+            makeDeps({
+                eventBus: {
+                    on: vi.fn(),
+                    onSafe: vi.fn(),
+                    emit,
+                    off: vi.fn(),
+                    emitOnce: vi.fn(),
+                    subscribeAll: vi.fn(),
+                    getSubscriptionStats: vi.fn(() => ({ totalCallbacks: 0, perEvent: {} })),
+                },
+            }),
+        );
         svc.mount(validTopology);
         expect(svc.getActiveTopology()).toBeDefined();
         expect(emit).toHaveBeenCalledWith(

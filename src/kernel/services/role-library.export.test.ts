@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { LIBRARY_ROLES, getLibraryRolesByCategory } from '../../../data/role-library';
+import { LIBRARY_ROLES, getLibraryRolesByCategory } from '../../data/role-library';
+import type { LibraryRole } from '../../data/role-library';
 
 describe('role-library export (kernel barrel)', () => {
     it('LIBRARY_ROLES не пуст', () => {
@@ -11,7 +12,7 @@ describe('role-library export (kernel barrel)', () => {
     });
 
     it('роль analyst имеет capabilities', () => {
-        const analyst = LIBRARY_ROLES.find((r) => r.id === 'analyst');
+        const analyst = LIBRARY_ROLES.find((r: LibraryRole) => r.id === 'analyst');
         expect(analyst).toBeDefined();
         expect(analyst!.capabilities).toContain('analysis');
     });

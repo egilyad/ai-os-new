@@ -1,11 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import type { PluginManifest } from '../../contracts/plugin';
-import {
-    PluginRegistry,
-    type PluginRegistryBus,
-    type RegisteredRegistryStore,
-} from './plugin-registry';
-import { PluginHost } from './plugin-host';
+import { PluginRegistry, type RegisteredRegistryStore } from './plugin-registry';
+import { PluginHost, type PluginEventBusPort } from './plugin-host';
 import { PluginLoader } from './plugin-loader';
 
 const manifest: PluginManifest = {
@@ -37,7 +33,7 @@ describe('Plugin integration (SPEC_06)', () => {
             emitOnce: vi.fn(),
             subscribeAll: vi.fn(),
             getSubscriptionStats: vi.fn(() => ({})),
-        } as PluginRegistryBus;
+        } as unknown as PluginEventBusPort;
 
         const memoryStore = {
             get: vi.fn(async (key: string) => (store.has(key) ? store.get(key)! : null)),

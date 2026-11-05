@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import type { IPluginRegistry, PluginManifest, RegisteredPlugin } from '../../contracts/plugin';
 import { PluginLoader } from './plugin-loader';
+import { PluginHost } from './plugin-host';
 
 const manifest: PluginManifest = {
     id: 'acme.search',
