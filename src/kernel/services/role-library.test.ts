@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { LIBRARY_ROLES, getLibraryRolesByCategory } from '../data/role-library';
-import type { LibraryRole } from '../data/role-library';
+import { LIBRARY_ROLES, getLibraryRolesByCategory } from '../../data/role-library';
+import type { LibraryRole } from '../../data/role-library';
 
 describe('role-library', () => {
     it('содержит уникальные id', () => {
@@ -22,7 +22,7 @@ describe('role-library', () => {
     });
 
     it('покрывает все категории', () => {
-        const categories = new Set(LIBRARY_ROLES.map((r) => r.category));
+        const categories = new Set(LIBRARY_ROLES.map((r: LibraryRole) => r.category));
         for (const c of ['code', 'writing', 'analysis', 'moderation', 'devops', 'design']) {
             expect(categories.has(c as never), c).toBe(true);
         }
