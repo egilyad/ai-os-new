@@ -1,5 +1,5 @@
 import { describe, expect, it, vi, type Mock } from 'vitest';
-import { type MemoryTier } from '../../types/memory-types';
+import { type MemoryTier } from '../../types/persona-types';
 import {
     LlmCouncilPort,
     LlmCrewExecutor,
@@ -221,7 +221,16 @@ describe('LlmPersonaPort', () => {
         const client = makeClient({ content: 'profile' });
         const port = new LlmPersonaPort(makeOpts(client));
         await expect(
-            port.summarizeMemories([{ tier: 'core' as MemoryTier, content: 'fact' }]),
+            port.summarizeMemories([
+                {
+                    id: 'm1',
+                    ownerId: 'u1',
+                    tier: 'core' as MemoryTier,
+                    content: 'fact',
+                    createdAt: Date.now(),
+                    updatedAt: Date.now(),
+                },
+            ]),
         ).resolves.toBe('profile');
     });
 

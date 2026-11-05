@@ -1,6 +1,10 @@
 import { describe, expect, it, vi } from 'vitest';
 import type { PluginManifest } from '../../contracts/plugin';
-import { PluginRegistry } from './plugin-registry';
+import {
+    PluginRegistry,
+    type PluginRegistryBus,
+    type RegisteredRegistryStore,
+} from './plugin-registry';
 import { PluginHost } from './plugin-host';
 import { PluginLoader } from './plugin-loader';
 
@@ -20,17 +24,26 @@ const manifest: PluginManifest = {
 describe('Plugin integration (SPEC_06)', () => {
     it('полный жизненный цикл: load → call tool → unload', async () => {
         const store = new Map<string, string>();
-        const memoryStore = {
-            get: vi.fn(async (key: string) => (store.has(key) ? store.get(key)! : null)),
-            set: vi.fn(async (key: string, value: string) => void store.set(key, value)),
-            delete: vi.fn(async (key: string) => void store.delete(key)),
-        };
         const mcp = {
             registerLocalServer: vi.fn(),
             unregisterLocalServer: vi.fn(),
             isLocalServer: () => false,
         };
-        const bus = { on: vi.fn(() => vi.fn()) };
+        const bus = {
+            on: vi.fn(() => vi.fn()),
+            emit: vi.fn(),
+            off: vi.fn(),
+            onSafe: vi.fn(() => vi.fn()),
+            emitOnce: vi.fn(),
+            subscribeAll: vi.fn(),
+            getSubscriptionStats: vi.fn(() => ({})),
+        } as PluginRegistryBus;
+
+        const memoryStore = {
+            get: vi.fn(async (key: string) => (store.has(key) ? store.get(key)! : null)),
+            set: vi.fn(async (key: string, value: string) => void store.set(key, value)),
+            delete: vi.fn(async (key: string) => void store.delete(key)),
+        } as RegisteredRegistryStore;
 
         const registry = new PluginRegistry({ store: memoryStore, bus });
         const host = new PluginHost(bus, mcp);

@@ -153,7 +153,7 @@ describe('PluginHost (SPEC_06)', () => {
             registerLocalServer: vi.fn(
                 (
                     id: string,
-                    name: string,
+                    _name: string,
                     handle: (m: string, p?: unknown) => Promise<unknown>,
                 ) => {
                     registered.push({ id, handle });

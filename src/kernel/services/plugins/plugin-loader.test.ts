@@ -17,16 +17,7 @@ function fakeHost(overrides: Partial<Parameters<typeof makeHost>[0]> = {}) {
     return makeHost(overrides);
 }
 
-function makeHost(
-    overrides: {
-        registerTools?: ReturnType<typeof vi.fn>;
-        unregisterTools?: ReturnType<typeof vi.fn>;
-        registerSubscriptions?: ReturnType<typeof vi.fn>;
-        registerMcpServers?: ReturnType<typeof vi.fn>;
-        registerServices?: ReturnType<typeof vi.fn>;
-        unregisterAll?: ReturnType<typeof vi.fn>;
-    } = {},
-) {
+function makeHost(overrides: Partial<PluginHost> = {}) {
     return {
         registerTools: overrides.registerTools ?? vi.fn(),
         unregisterTools: overrides.unregisterTools ?? vi.fn(),
@@ -34,7 +25,20 @@ function makeHost(
         registerMcpServers: overrides.registerMcpServers ?? vi.fn(),
         registerServices: overrides.registerServices ?? vi.fn(),
         unregisterAll: overrides.unregisterAll ?? vi.fn(),
-    };
+        listTools: overrides.listTools ?? vi.fn(),
+        hasTool: overrides.hasTool ?? vi.fn(),
+        callTool: overrides.callTool ?? vi.fn(),
+        getTool: overrides.getTool ?? vi.fn(),
+        getToolContext: overrides.getToolContext ?? vi.fn(),
+        toRegistryPort: overrides.toRegistryPort ?? vi.fn(),
+        unregisterSubscriptions: overrides.unregisterSubscriptions ?? vi.fn(),
+        unregisterMcpServers: overrides.unregisterMcpServers ?? vi.fn(),
+        listMcpServers: overrides.listMcpServers ?? vi.fn(),
+        unregisterServices: overrides.unregisterServices ?? vi.fn(),
+        callService: overrides.callService ?? vi.fn(),
+        listServices: overrides.listServices ?? vi.fn(),
+        destroy: overrides.destroy ?? vi.fn(),
+    } as unknown as PluginHost;
 }
 
 function fakeRegistry(): IPluginRegistry {
