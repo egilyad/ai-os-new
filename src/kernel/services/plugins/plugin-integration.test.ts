@@ -46,7 +46,7 @@ describe('Plugin integration (SPEC_06)', () => {
             emitOnce: vi.fn(),
             subscribeAll: vi.fn(),
             getSubscriptionStats: vi.fn(() => ({})),
-        };
+        } as unknown as PluginRegistryBus & PluginEventBusPort;
 
         const memoryStore = {
             get: vi.fn(async (key: string) => (store.has(key) ? store.get(key)! : null)),
