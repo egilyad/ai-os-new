@@ -22,7 +22,7 @@ describe('role-library', () => {
     });
 
     it('покрывает все категории', () => {
-        const categories = new Set(LIBRARY_ROLES.map((r: LibraryRole) => r.category));
+        const categories = new Set(LIBRARY_ROLES.map((r) => r.category));
         for (const c of ['code', 'writing', 'analysis', 'moderation', 'devops', 'design']) {
             expect(categories.has(c as never), c).toBe(true);
         }
