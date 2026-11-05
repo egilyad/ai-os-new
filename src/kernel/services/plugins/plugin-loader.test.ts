@@ -19,6 +19,7 @@ function fakeHost(overrides: Partial<Parameters<typeof makeHost>[0]> = {}) {
 }
 
 function makeHost(overrides: Partial<PluginHost> = {}) {
+     
     return {
         registerTools: overrides.registerTools ?? vi.fn(),
         unregisterTools: overrides.unregisterTools ?? vi.fn(),
