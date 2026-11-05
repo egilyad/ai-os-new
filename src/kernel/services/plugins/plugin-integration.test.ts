@@ -29,14 +29,14 @@ describe('Plugin integration (SPEC_06)', () => {
             unregisterLocalServer: vi.fn(),
             isLocalServer: () => false,
         };
-        const bus = {
+        const bus: PluginRegistryBus & PluginEventBusPort = {
             on: vi.fn(() => vi.fn()),
             emit: vi.fn(),
             off: vi.fn(),
             onSafe: vi.fn(() => vi.fn()),
             emitOnce: vi.fn(),
             subscribeAll: vi.fn(),
-            getSubscriptionStats: vi.fn(() => ({})),
+            getSubscriptionStats: vi.fn(() => ({ totalCallbacks: 0, perEvent: {} })),
         };
 
         const memoryStore = {
