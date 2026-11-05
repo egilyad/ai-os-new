@@ -4,7 +4,15 @@ import type { ISTopology } from '../contracts/topology';
 
 function makeDeps(overrides: Partial<OrchestrationServiceDeps> = {}): OrchestrationServiceDeps {
     return {
-        eventBus: { on: vi.fn(() => () => {}), emit: vi.fn() },
+        eventBus: {
+            on: vi.fn(() => () => {}),
+            emit: vi.fn(),
+            off: vi.fn(),
+            onSafe: vi.fn(() => () => {}),
+            emitOnce: vi.fn(),
+            subscribeAll: vi.fn(),
+            getSubscriptionStats: vi.fn(() => ({})),
+        },
         toolService: { execute: vi.fn(async () => ({ status: 'success', data: 'ok' })) },
         cognitiveService: { executeAgentNode: vi.fn(async () => 'agent out') },
         policyService: {
@@ -20,11 +28,11 @@ const validTopology: ISTopology = {
     name: 'Topo',
     version: '1.0.0',
     nodes: [
-        { id: 'entry', type: 'router', label: 'Entry' },
-        { id: 'n2', type: 'agent', label: 'Agent' },
+        { id: 'entry', type: 'router', label: 'Entry', config: {} },
+        { id: 'n2', type: 'agent', label: 'Agent', config: {} },
     ],
-    edges: [{ from: 'entry', to: 'n2', type: 'sequential' }],
-} as ISTopology;
+    edges: [{ id: 'e1', from: 'entry', to: 'n2', trigger: 'on_success' }],
+} as unknown as ISTopology;
 
 describe('OrchestrationService', () => {
     it('validateTopology принимает валидную топологию', () => {
@@ -38,7 +46,7 @@ describe('OrchestrationService', () => {
         const svc = new OrchestrationService(makeDeps());
         const bad: ISTopology = {
             ...validTopology,
-            nodes: [{ id: 'n2', type: 'agent', label: 'Agent' }],
+            nodes: [{ id: 'n2', type: 'agent', label: 'Agent', config: {} }],
         };
         const res = svc.validateTopology(bad);
         expect(res.valid).toBe(false);
@@ -49,7 +57,7 @@ describe('OrchestrationService', () => {
         const svc = new OrchestrationService(makeDeps());
         const bad: ISTopology = {
             ...validTopology,
-            edges: [{ from: 'entry', to: 'entry', type: 'sequential' }],
+            edges: [{ id: 'e2', from: 'entry', to: 'entry', trigger: 'on_success' }],
         };
         const res = svc.validateTopology(bad);
         expect(res.errors.join(' ')).toContain('Self-loop');
@@ -59,7 +67,7 @@ describe('OrchestrationService', () => {
         const svc = new OrchestrationService(makeDeps());
         const bad: ISTopology = {
             ...validTopology,
-            edges: [{ from: 'entry', to: 'ghost', type: 'sequential' }],
+            edges: [{ id: 'e3', from: 'entry', to: 'ghost', trigger: 'on_success' }],
         };
         const res = svc.validateTopology(bad);
         expect(res.errors.join(' ')).toContain('ghost');
@@ -107,11 +115,11 @@ describe('OrchestrationService', () => {
             name: 'ToolTopo',
             version: '1.0.0',
             nodes: [
-                { id: 'entry', type: 'router', label: 'Entry' },
+                { id: 'entry', type: 'router', label: 'Entry', config: {} },
                 { id: 'tool', type: 'tool', label: 'Tool', config: { toolId: 't-web' } },
             ],
-            edges: [{ from: 'entry', to: 'tool', type: 'sequential' }],
-        } as ISTopology;
+            edges: [{ id: 'e4', from: 'entry', to: 'tool', trigger: 'on_success' }],
+        } as unknown as ISTopology;
         svc.mount(topology);
         await svc.execute({});
         expect(toolService.execute).toHaveBeenCalled();
@@ -124,11 +132,11 @@ describe('OrchestrationService', () => {
             name: 'GuardTopo',
             version: '1.0.0',
             nodes: [
-                { id: 'entry', type: 'router', label: 'Entry' },
+                { id: 'entry', type: 'router', label: 'Entry', config: {} },
                 { id: 'g', type: 'guardrail', label: 'G', config: { blockedKeywords: ['evil'] } },
             ],
-            edges: [{ from: 'entry', to: 'g', type: 'sequential' }],
-        } as ISTopology;
+            edges: [{ id: 'e5', from: 'entry', to: 'g', trigger: 'on_success' }],
+        } as unknown as ISTopology;
         svc.mount(topology);
         await svc.execute({ output: 'contains evil word' });
         expect(svc.getExecutionStats().failedNodes).toBeGreaterThanOrEqual(1);
@@ -142,15 +150,15 @@ describe('OrchestrationService', () => {
             name: 'ChainTopo',
             version: '1.0.0',
             nodes: [
-                { id: 'entry', type: 'router', label: 'Entry' },
-                { id: 'a1', type: 'agent', label: 'A1' },
-                { id: 'a2', type: 'agent', label: 'A2' },
+                { id: 'entry', type: 'router', label: 'Entry', config: {} },
+                { id: 'a1', type: 'agent', label: 'A1', config: {} },
+                { id: 'a2', type: 'agent', label: 'A2', config: {} },
             ],
             edges: [
-                { from: 'entry', to: 'a1', type: 'sequential' },
-                { from: 'a1', to: 'a2', type: 'sequential' },
+                { id: 'e6', from: 'entry', to: 'a1', trigger: 'on_success' },
+                { id: 'e7', from: 'a1', to: 'a2', trigger: 'on_success' },
             ],
-        } as ISTopology;
+        } as unknown as ISTopology;
         svc.mount(topology);
         await svc.execute({});
         expect(svc.getExecutionStats().completedNodes).toBeGreaterThanOrEqual(2);
@@ -165,15 +173,15 @@ describe('OrchestrationService', () => {
             name: 'RouterTopo',
             version: '1.0.0',
             nodes: [
-                { id: 'entry', type: 'router', label: 'Entry' },
-                { id: 'a1', type: 'agent', label: 'A1' },
-                { id: 'a2', type: 'agent', label: 'A2' },
+                { id: 'entry', type: 'router', label: 'Entry', config: {} },
+                { id: 'a1', type: 'agent', label: 'A1', config: {} },
+                { id: 'a2', type: 'agent', label: 'A2', config: {} },
             ],
             edges: [
-                { from: 'entry', to: 'a1', type: 'data_flow' },
-                { from: 'entry', to: 'a2', type: 'data_flow' },
+                { id: 'e8', from: 'entry', to: 'a1', trigger: 'data_flow' },
+                { id: 'e9', from: 'entry', to: 'a2', trigger: 'data_flow' },
             ],
-        } as ISTopology;
+        } as unknown as ISTopology;
         svc.mount(topology);
         await svc.execute({});
         expect(cognitiveService.executeAgentNode).toHaveBeenCalled();

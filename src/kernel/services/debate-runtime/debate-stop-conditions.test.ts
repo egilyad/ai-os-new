@@ -14,7 +14,7 @@ function makeSession(score: number): DebateSession {
         arguments: [],
         convergenceScore: score,
         createdAt: Date.now(),
-    } as DebateSession;
+    } as unknown as DebateSession;
 }
 
 describe('shouldStopByConvergence', () => {

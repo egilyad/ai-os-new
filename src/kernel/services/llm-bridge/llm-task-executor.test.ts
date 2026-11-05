@@ -1,4 +1,5 @@
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi, type Mock } from 'vitest';
+import { type MemoryTier } from '../../types/memory-types';
 import {
     LlmCouncilPort,
     LlmCrewExecutor,
@@ -14,7 +15,7 @@ function makeClient(overrides: { content?: string; error?: string; throwIt?: boo
             if (overrides.throwIt) throw new Error('llm down');
             return { content: overrides.content ?? 'ok', error: overrides.error };
         }),
-    } as unknown as LlmBridgeOptions['client'];
+    } as unknown as { chat: ReturnType<typeof vi.fn> } & LlmBridgeOptions['client'];
 }
 
 function makeOpts(
@@ -128,7 +129,9 @@ describe('LlmCouncilPort', () => {
             dimensions: ['clarity'],
             blindMap: { p1: 'Speaker A' },
         });
-        const userArg = client.chat.mock.calls[0][0][1].content as string;
+        const userArg = (
+            (client.chat as Mock).mock.calls[0][0] as unknown as Array<{ content: string }>
+        )[1].content;
         expect(userArg).toContain('[Speaker A]');
     });
 
@@ -163,7 +166,9 @@ describe('LlmGraphPort', () => {
             label: 'L',
             state: { input: 'x', 'out:1': 'hidden', lastOutput: 'y' },
         });
-        const userArg = client.chat.mock.calls[0][0][1].content as string;
+        const userArg = (
+            (client.chat as Mock).mock.calls[0][0] as unknown as Array<{ content: string }>
+        )[1].content;
         expect(userArg).toContain('input');
         expect(userArg).not.toContain('out:1');
         expect(userArg).toContain('lastOutput');
@@ -179,7 +184,9 @@ describe('LlmGraphPort', () => {
         const client = makeClient({ content: 'reflection' });
         const port = new LlmGraphPort(makeOpts(client));
         await port.reflect({ visited: ['a', 'b'], state: {} });
-        const userArg = client.chat.mock.calls[0][0][1].content as string;
+        const userArg = (
+            (client.chat as Mock).mock.calls[0][0] as unknown as Array<{ content: string }>
+        )[1].content;
         expect(userArg).toContain('a → b');
     });
 });
@@ -213,9 +220,9 @@ describe('LlmPersonaPort', () => {
     it('summarizeMemories возвращает компактный профиль', async () => {
         const client = makeClient({ content: 'profile' });
         const port = new LlmPersonaPort(makeOpts(client));
-        await expect(port.summarizeMemories([{ tier: 'stable', content: 'fact' }])).resolves.toBe(
-            'profile',
-        );
+        await expect(
+            port.summarizeMemories([{ tier: 'core' as MemoryTier, content: 'fact' }]),
+        ).resolves.toBe('profile');
     });
 
     it('summarizeMemories без памяти возвращает заглушку', async () => {
