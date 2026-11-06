@@ -22,6 +22,14 @@ import type { PluginEventBusPort } from './plugin-host';
 
 // ... (interface MockBus removed)
 
+interface MockBus extends PluginRegistryBus, PluginEventBusPort {
+    off: ReturnType<typeof vi.fn>;
+    onSafe: ReturnType<typeof vi.fn>;
+    emitOnce: ReturnType<typeof vi.fn>;
+    subscribeAll: ReturnType<typeof vi.fn>;
+    getSubscriptionStats: ReturnType<typeof vi.fn>;
+}
+
 describe('Plugin integration (SPEC_06)', () => {
     it('полный жизненный цикл: load → call tool → unload', async () => {
         const store = new Map<string, string>();
@@ -30,15 +38,7 @@ describe('Plugin integration (SPEC_06)', () => {
             unregisterLocalServer: vi.fn(),
             isLocalServer: () => false,
         };
-        const bus: {
-            on: ReturnType<typeof vi.fn>;
-            emit: ReturnType<typeof vi.fn>;
-            off: ReturnType<typeof vi.fn>;
-            onSafe: ReturnType<typeof vi.fn>;
-            emitOnce: ReturnType<typeof vi.fn>;
-            subscribeAll: ReturnType<typeof vi.fn>;
-            getSubscriptionStats: ReturnType<typeof vi.fn>;
-        } = {
+        const bus: MockBus = {
             on: vi.fn(() => vi.fn()),
             emit: vi.fn(),
             off: vi.fn(),
@@ -46,7 +46,7 @@ describe('Plugin integration (SPEC_06)', () => {
             emitOnce: vi.fn(),
             subscribeAll: vi.fn(),
             getSubscriptionStats: vi.fn(() => ({})),
-        } as unknown as PluginRegistryBus & PluginEventBusPort;
+        };
 
         const memoryStore = {
             get: vi.fn(async (key: string) => (store.has(key) ? store.get(key)! : null)),
@@ -54,8 +54,8 @@ describe('Plugin integration (SPEC_06)', () => {
             delete: vi.fn(async (key: string) => void store.delete(key)),
         } as RegisteredRegistryStore;
 
-        const registry = new PluginRegistry({ store: memoryStore, bus: bus as PluginRegistryBus });
-        const host = new PluginHost(bus as unknown as PluginEventBusPort, mcp);
+        const registry = new PluginRegistry({ store: memoryStore, bus });
+        const host = new PluginHost(bus, mcp);
         const loader = new PluginLoader({ registry, host });
 
         const executor = vi.fn(
@@ -76,7 +76,7 @@ describe('Plugin integration (SPEC_06)', () => {
         expect(memoryStore.set).toHaveBeenCalled();
 
         // hydrate в новый реестр
-        const registry2 = new PluginRegistry({ store: memoryStore, bus: bus as PluginRegistryBus });
+        const registry2 = new PluginRegistry({ store: memoryStore, bus });
         expect(registry2.has('acme.integration')).toBe(false);
         expect(await registry2.hydrate()).toBe(1);
         expect(registry2.has('acme.integration')).toBe(true);
