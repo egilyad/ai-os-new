@@ -1,6 +1,11 @@
 import React, { useMemo, useState } from 'react';
 import { Plus, Trash2, Thermometer } from 'lucide-react';
-import { DEFECT_CLASSES, type DefectClass, type DefectFinding, type DefectSeverity } from '../../kernel/types/defect-map-types';
+import {
+    DEFECT_CLASSES,
+    type DefectClass,
+    type DefectFinding,
+    type DefectSeverity,
+} from '../../kernel/types/defect-map-types';
 import { loadFindings, saveFindings } from './defect-store';
 
 const SEVERITY_SCORE: Record<DefectSeverity, number> = {
@@ -17,7 +22,16 @@ const SEVERITY_COLOR: Record<DefectSeverity, string> = {
     critical: '#ef4444',
 };
 
-const COMMON_MODULES = ['kernel', 'stores', 'components', 'llm', 'server', 'scripts', 'docs', 'e2e'];
+const COMMON_MODULES = [
+    'kernel',
+    'stores',
+    'components',
+    'llm',
+    'server',
+    'scripts',
+    'docs',
+    'e2e',
+];
 
 const DefectMapPanel: React.FC = () => {
     const [findings, setFindings] = useState<DefectFinding[]>(() => loadFindings());
@@ -105,24 +119,57 @@ const DefectMapPanel: React.FC = () => {
                 </span>
             </div>
             <p style={{ margin: '0 0 1rem', fontSize: 13, color: 'var(--slate-400)' }}>
-                Тепловая карта «12 классов дефектов × модули». Данные хранятся локально — добавляй находки из аудитов и следи, где копятся проблемы.
+                Тепловая карта «12 классов дефектов × модули». Данные хранятся локально — добавляй
+                находки из аудитов и следи, где копятся проблемы.
             </p>
 
             {/* Форма */}
-            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: '1rem', padding: '0.9rem', borderRadius: 12, border: '1px solid rgba(245,158,11,0.2)', background: 'rgba(245,158,11,0.05)' }}>
-                <select value={defectClass} onChange={(e) => setDefectClass(e.target.value as DefectClass)} style={ctl} aria-label="Класс дефекта">
+            <div
+                style={{
+                    display: 'flex',
+                    gap: 8,
+                    flexWrap: 'wrap',
+                    marginBottom: '1rem',
+                    padding: '0.9rem',
+                    borderRadius: 12,
+                    border: '1px solid rgba(245,158,11,0.2)',
+                    background: 'rgba(245,158,11,0.05)',
+                }}
+            >
+                <select
+                    value={defectClass}
+                    onChange={(e) => setDefectClass(e.target.value as DefectClass)}
+                    style={ctl}
+                    aria-label="Класс дефекта"
+                >
                     {DEFECT_CLASSES.map((c) => (
-                        <option key={c} value={c}>{c}</option>
+                        <option key={c} value={c}>
+                            {c}
+                        </option>
                     ))}
                 </select>
-                <select value={defectModule} onChange={(e) => setDefectModule(e.target.value)} style={ctl} aria-label="Модуль">
+                <select
+                    value={defectModule}
+                    onChange={(e) => setDefectModule(e.target.value)}
+                    style={ctl}
+                    aria-label="Модуль"
+                >
                     {modules.map((m) => (
-                        <option key={m} value={m}>{m}</option>
+                        <option key={m} value={m}>
+                            {m}
+                        </option>
                     ))}
                 </select>
-                <select value={severity} onChange={(e) => setSeverity(e.target.value as DefectSeverity)} style={ctl} aria-label="Серьёзность">
+                <select
+                    value={severity}
+                    onChange={(e) => setSeverity(e.target.value as DefectSeverity)}
+                    style={ctl}
+                    aria-label="Серьёзность"
+                >
                     {(['low', 'medium', 'high', 'critical'] as DefectSeverity[]).map((s) => (
-                        <option key={s} value={s}>{s}</option>
+                        <option key={s} value={s}>
+                            {s}
+                        </option>
                     ))}
                 </select>
                 <input
@@ -142,9 +189,25 @@ const DefectMapPanel: React.FC = () => {
                 <table style={{ borderCollapse: 'collapse', fontSize: 12 }}>
                     <thead>
                         <tr>
-                            <th style={{ padding: '4px 8px', textAlign: 'left', color: 'var(--slate-400)' }}>Класс \ Модуль</th>
+                            <th
+                                style={{
+                                    padding: '4px 8px',
+                                    textAlign: 'left',
+                                    color: 'var(--slate-400)',
+                                }}
+                            >
+                                Класс \ Модуль
+                            </th>
                             {modules.map((m) => (
-                                <th key={m} style={{ padding: '4px 8px', minWidth: 70, color: 'var(--slate-400)' }} title={m}>
+                                <th
+                                    key={m}
+                                    style={{
+                                        padding: '4px 8px',
+                                        minWidth: 70,
+                                        color: 'var(--slate-400)',
+                                    }}
+                                    title={m}
+                                >
                                     {m.slice(0, 10)}
                                 </th>
                             ))}
@@ -153,16 +216,38 @@ const DefectMapPanel: React.FC = () => {
                     <tbody>
                         {DEFECT_CLASSES.map((cls) => (
                             <tr key={cls}>
-                                <td style={{ padding: '4px 8px', color: 'var(--slate-300)', whiteSpace: 'nowrap' }}>{cls}</td>
+                                <td
+                                    style={{
+                                        padding: '4px 8px',
+                                        color: 'var(--slate-300)',
+                                        whiteSpace: 'nowrap',
+                                    }}
+                                >
+                                    {cls}
+                                </td>
                                 {modules.map((m) => {
                                     const v = matrix.get(cls)?.get(m) ?? 0;
                                     return (
                                         <td
                                             key={m}
                                             style={{ padding: 0 }}
-                                            title={v > 0 ? `${cls} / ${m}: ${v} балл(ов)` : undefined}
+                                            title={
+                                                v > 0 ? `${cls} / ${m}: ${v} балл(ов)` : undefined
+                                            }
                                         >
-                                            <div style={{ width: '100%', height: 24, background: cellColor(v), display: 'flex', alignItems: 'center', justifyContent: 'center', color: v > 0 ? '#fff' : 'transparent', fontWeight: 700, borderRadius: 4 }}>
+                                            <div
+                                                style={{
+                                                    width: '100%',
+                                                    height: 24,
+                                                    background: cellColor(v),
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center',
+                                                    color: v > 0 ? '#fff' : 'transparent',
+                                                    fontWeight: 700,
+                                                    borderRadius: 4,
+                                                }}
+                                            >
                                                 {v > 0 ? v : ''}
                                             </div>
                                         </td>
@@ -175,40 +260,113 @@ const DefectMapPanel: React.FC = () => {
             </div>
 
             <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 8 }}>
-                <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, color: 'var(--slate-300)' }}>
-                    <input type="checkbox" checked={showResolved} onChange={(e) => setShowResolved(e.target.checked)} />
+                <label
+                    style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 6,
+                        fontSize: 13,
+                        color: 'var(--slate-300)',
+                    }}
+                >
+                    <input
+                        type="checkbox"
+                        checked={showResolved}
+                        onChange={(e) => setShowResolved(e.target.checked)}
+                    />
                     Показывать закрытые
                 </label>
                 {visible.length > 0 && (
-                    <span style={{ fontSize: 12, color: 'var(--slate-500)' }}>{visible.length} записей</span>
+                    <span style={{ fontSize: 12, color: 'var(--slate-500)' }}>
+                        {visible.length} записей
+                    </span>
                 )}
             </div>
 
             {/* Список находок */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                 {visible.length === 0 ? (
-                    <div style={{ color: 'var(--slate-500)', fontSize: 13, padding: 16, textAlign: 'center', border: '1px dashed rgba(255,255,255,0.1)', borderRadius: 12 }}>
+                    <div
+                        style={{
+                            color: 'var(--slate-500)',
+                            fontSize: 13,
+                            padding: 16,
+                            textAlign: 'center',
+                            border: '1px dashed rgba(255,255,255,0.1)',
+                            borderRadius: 12,
+                        }}
+                    >
                         Нет дефектов. Добавь первую находку выше.
                     </div>
                 ) : (
                     visible.map((f) => (
-                        <div key={f.id} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '0.55rem 0.8rem', borderRadius: 10, border: '1px solid rgba(255,255,255,0.06)', background: 'rgba(0,0,0,0.16)', opacity: f.resolved ? 0.55 : 1 }}>
+                        <div
+                            key={f.id}
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 10,
+                                padding: '0.55rem 0.8rem',
+                                borderRadius: 10,
+                                border: '1px solid rgba(255,255,255,0.06)',
+                                background: 'rgba(0,0,0,0.16)',
+                                opacity: f.resolved ? 0.55 : 1,
+                            }}
+                        >
                             <span
-                                style={{ width: 10, height: 10, borderRadius: '50%', background: SEVERITY_COLOR[f.severity], flexShrink: 0 }}
+                                style={{
+                                    width: 10,
+                                    height: 10,
+                                    borderRadius: '50%',
+                                    background: SEVERITY_COLOR[f.severity],
+                                    flexShrink: 0,
+                                }}
                                 title={`severity: ${f.severity}`}
                             />
-                            <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--slate-300)', minWidth: 90 }}>{f.defectClass}</span>
-                            <span style={{ fontSize: 12, color: 'var(--accent)', minWidth: 70 }}>{f.module}</span>
-                            <span style={{ flex: 1, fontSize: 13, color: 'var(--slate-200)', minWidth: 0 }}>
+                            <span
+                                style={{
+                                    fontSize: 12,
+                                    fontWeight: 700,
+                                    color: 'var(--slate-300)',
+                                    minWidth: 90,
+                                }}
+                            >
+                                {f.defectClass}
+                            </span>
+                            <span style={{ fontSize: 12, color: 'var(--accent)', minWidth: 70 }}>
+                                {f.module}
+                            </span>
+                            <span
+                                style={{
+                                    flex: 1,
+                                    fontSize: 13,
+                                    color: 'var(--slate-200)',
+                                    minWidth: 0,
+                                }}
+                            >
                                 {f.description}
                             </span>
-                            <span style={{ fontSize: 11, color: 'var(--slate-500)', whiteSpace: 'nowrap' }}>
+                            <span
+                                style={{
+                                    fontSize: 11,
+                                    color: 'var(--slate-500)',
+                                    whiteSpace: 'nowrap',
+                                }}
+                            >
                                 {new Date(f.createdAt).toLocaleDateString()}
                             </span>
-                            <button onClick={() => toggleResolved(f.id)} style={iconBtn} title={f.resolved ? 'Открыть' : 'Закрыть'}>
+                            <button
+                                onClick={() => toggleResolved(f.id)}
+                                style={iconBtn}
+                                title={f.resolved ? 'Открыть' : 'Закрыть'}
+                            >
                                 {f.resolved ? '↩' : '✓'}
                             </button>
-                            <button onClick={() => removeFinding(f.id)} style={iconBtn} title="Удалить">
+                            <button
+                                onClick={() => removeFinding(f.id)}
+                                style={iconBtn}
+                                title="Удалить"
+                            >
                                 <Trash2 size={14} />
                             </button>
                         </div>
@@ -235,7 +393,7 @@ const addBtn: React.CSSProperties = {
     padding: '0.45rem 0.9rem',
     borderRadius: 8,
     border: 'none',
-    background: '#f59e0b',
+    background: 'var(--warning)',
     color: '#1c1917',
     fontWeight: 700,
     cursor: 'pointer',

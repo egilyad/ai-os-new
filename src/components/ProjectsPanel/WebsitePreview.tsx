@@ -33,7 +33,7 @@ const PREVIEW_IFRAME: React.CSSProperties = {
 const ERROR_BAR: React.CSSProperties = {
     padding: '0.4rem 0.6rem',
     background: 'rgba(239,68,68,0.15)',
-    color: '#ef4444',
+    color: 'var(--error)',
     fontSize: '0.75rem',
     fontFamily: 'monospace',
     whiteSpace: 'pre-wrap',
@@ -79,7 +79,8 @@ const WebsitePreview: React.FC<Props> = ({ project }) => {
                 const ext = filePath.split('.').pop()?.toLowerCase();
                 if (ext === 'html') html += file.content;
                 else if (ext === 'css') css += `/* ${filePath} */\n${file.content}\n`;
-                else if (['js', 'jsx', 'ts', 'tsx'].includes(ext!)) js += `/* ${filePath} */\n${file.content}\n`;
+                else if (['js', 'jsx', 'ts', 'tsx'].includes(ext!))
+                    js += `/* ${filePath} */\n${file.content}\n`;
             }
 
             if (!html) {
@@ -89,14 +90,18 @@ const WebsitePreview: React.FC<Props> = ({ project }) => {
             // Inject CSS
             if (css) {
                 const tag = `<style data-project>\n${css}\n</style>`;
-                html = html.includes('</head>') ? html.replace('</head>', `${tag}\n</head>`) : html.replace('<body>', `<body>\n${tag}`);
+                html = html.includes('</head>')
+                    ? html.replace('</head>', `${tag}\n</head>`)
+                    : html.replace('<body>', `<body>\n${tag}`);
             }
 
             // Inject JS + error boundary
             if (js) {
                 const boundary = `<script>window.onerror=function(m,u,l){var e=document.createElement('div');e.style.cssText='position:fixed;bottom:0;left:0;right:0;padding:6px;background:#ef4444;color:#fff;font:12px monospace;z-index:99999';e.textContent='Error: '+m+' (line '+l+')';document.body.appendChild(e);};</script>`;
                 const tag = `<script data-project>\n${js}\n</script>`;
-                html = html.includes('</body>') ? html.replace('</body>', `${boundary}\n${tag}\n</body>`) : html + `\n${boundary}\n${tag}`;
+                html = html.includes('</body>')
+                    ? html.replace('</body>', `${boundary}\n${tag}\n</body>`)
+                    : html + `\n${boundary}\n${tag}`;
             }
 
             setPreviewHtml(html);
@@ -127,12 +132,27 @@ const WebsitePreview: React.FC<Props> = ({ project }) => {
     }, [autoRefresh, project.id]);
 
     return (
-        <div style={{ height: '100%', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+        <div
+            style={{ height: '100%', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}
+        >
             <div style={PREVIEW_HEADER}>
-                <span>{t('preview.title')}: {project.name}</span>
+                <span>
+                    {t('preview.title')}: {project.name}
+                </span>
                 <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-                    <label style={{ fontSize: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
-                        <input type="checkbox" checked={autoRefresh} onChange={(e) => setAutoRefresh(e.target.checked)} />
+                    <label
+                        style={{
+                            fontSize: '0.75rem',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '0.3rem',
+                        }}
+                    >
+                        <input
+                            type="checkbox"
+                            checked={autoRefresh}
+                            onChange={(e) => setAutoRefresh(e.target.checked)}
+                        />
                         {t('preview.autoRefresh')}
                     </label>
                     <Button variant="ghost" size="sm" onClick={generatePreview} disabled={loading}>
@@ -144,7 +164,9 @@ const WebsitePreview: React.FC<Props> = ({ project }) => {
             {errors.length > 0 && <div style={ERROR_BAR}>{errors.join('\n')}</div>}
             {validationErrors.length > 0 && (
                 <div style={VALIDATION_LIST}>
-                    {validationErrors.map((e, i) => <div key={i}>⚠ {e}</div>)}
+                    {validationErrors.map((e, i) => (
+                        <div key={i}>⚠ {e}</div>
+                    ))}
                 </div>
             )}
 
@@ -167,7 +189,9 @@ const WebsitePreview: React.FC<Props> = ({ project }) => {
     );
 };
 
-function flattenTree(tree: import('../../kernel/types/workspace-types').WorkspaceTreeEntry[]): string[] {
+function flattenTree(
+    tree: import('../../kernel/types/workspace-types').WorkspaceTreeEntry[],
+): string[] {
     const result: string[] = [];
     for (const entry of tree) {
         if (entry.type === 'file') result.push(entry.path);

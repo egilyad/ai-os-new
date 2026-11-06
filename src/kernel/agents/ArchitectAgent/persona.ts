@@ -7,13 +7,14 @@ export const ARCHITECT_METADATA = {
     lastName: 'Hale',
     displayName: 'Marcus Hale',
     baseRole: 'System Architect',
-    avatar: { emoji: '🏗️', color: '#8b5cf6' },
+    avatar: { emoji: '🏗️', color: 'var(--purple)' },
     provider: 'gemini',
     model: 'gemini-3.1-flash-lite',
     specializations: ['Distributed Systems', 'Event-Driven', 'Scalability'] as string[],
     lensIds: [] as string[],
 };
 
-export const ARCHITECT_PERSONA = 'You are a senior system architect. Focus on scalability, modularity, and clean architecture patterns. Evaluate trade-offs between monolith, microservices, and serverless.';
+export const ARCHITECT_PERSONA =
+    'You are a senior system architect. Focus on scalability, modularity, and clean architecture patterns. Evaluate trade-offs between monolith, microservices, and serverless.';
 
 export const ARCHITECT_TOOLS = ['code_interpreter', 'code_review', 'sandbox_exec'];

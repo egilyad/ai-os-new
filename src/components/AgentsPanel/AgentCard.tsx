@@ -15,7 +15,9 @@ const TYPE_ICON: Record<string, string> = {
 
 interface AgentCardProps {
     agent: AgentWithStats;
-    agentStats?: Record<string, { calls: number; errors?: number; latency?: number }> | { calls: number; errors?: number; latency?: number };
+    agentStats?:
+        | Record<string, { calls: number; errors?: number; latency?: number }>
+        | { calls: number; errors?: number; latency?: number };
     viewMode: 'grid' | 'list';
     onSelect: (id: string) => void;
     onToggleStatus: (id: string) => void;
@@ -29,7 +31,12 @@ export const AgentCard: React.FC<AgentCardProps> = memo(
         const stats = agentStats
             ? typeof agentStats === 'object' && 'calls' in agentStats
                 ? (agentStats as { calls: number; errors?: number; latency?: number })
-                : (agentStats as Record<string, { calls: number; errors?: number; latency?: number }>)?.[agent.id]
+                : (
+                      agentStats as Record<
+                          string,
+                          { calls: number; errors?: number; latency?: number }
+                      >
+                  )?.[agent.id]
             : undefined;
         const successRate =
             stats && stats.calls > 0 ? (stats.calls - (stats.errors ?? 0)) / stats.calls : null;
@@ -82,10 +89,41 @@ export const AgentCard: React.FC<AgentCardProps> = memo(
                             <h3 className="agents-card-name">
                                 {agent.name}
                                 {agent.system && (
-                                    <span style={{ marginLeft: 8, fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.04em', textTransform: 'uppercase', padding: '1px 6px', borderRadius: 999, border: '1px solid var(--slate-700)', color: 'var(--slate-400)' }}>built-in</span>
+                                    <span
+                                        style={{
+                                            marginLeft: 8,
+                                            fontSize: '0.6rem',
+                                            fontWeight: 700,
+                                            letterSpacing: '0.04em',
+                                            textTransform: 'uppercase',
+                                            padding: '1px 6px',
+                                            borderRadius: 999,
+                                            border: '1px solid var(--slate-700)',
+                                            color: 'var(--slate-400)',
+                                        }}
+                                    >
+                                        built-in
+                                    </span>
                                 )}
                             </h3>
-                            <p className="agents-card-role">{agent.role} {agent.type && <span style={{ marginLeft: 6, fontSize: '0.65rem', padding: '2px 6px', borderRadius: 6, background: 'rgba(139,92,246,0.12)', border: '1px solid rgba(139,92,246,0.2)', color: '#a78bfa' }}>{TYPE_ICON[agent.type] ?? '🤖'} {agent.type}</span>}</p>
+                            <p className="agents-card-role">
+                                {agent.role}{' '}
+                                {agent.type && (
+                                    <span
+                                        style={{
+                                            marginLeft: 6,
+                                            fontSize: '0.65rem',
+                                            padding: '2px 6px',
+                                            borderRadius: 6,
+                                            background: 'rgba(139,92,246,0.12)',
+                                            border: '1px solid rgba(139,92,246,0.2)',
+                                            color: 'var(--purple-muted)',
+                                        }}
+                                    >
+                                        {TYPE_ICON[agent.type] ?? '🤖'} {agent.type}
+                                    </span>
+                                )}
+                            </p>
                             {identity.specializations.length > 0 && (
                                 <p
                                     style={{
@@ -176,7 +214,9 @@ export const AgentCard: React.FC<AgentCardProps> = memo(
                                 className={`agents-card-stat-value${latency < 500 ? ' agents-card-stat-value--good' : latency < 1000 ? ' agents-card-stat-value--warn' : ' agents-card-stat-value--bad'}`}
                             >
                                 {latency}
-                                <span style={{ fontSize: '0.65rem', color: 'var(--slate-500)' }}>ms</span>
+                                <span style={{ fontSize: '0.65rem', color: 'var(--slate-500)' }}>
+                                    ms
+                                </span>
                             </span>
                         </div>
                     </div>
@@ -192,21 +232,56 @@ export const AgentCard: React.FC<AgentCardProps> = memo(
                 </div>
 
                 {(onDuplicate || onDeleteRequest) && (
-                    <div style={{ display: 'flex', gap: 6, marginTop: 8, justifyContent: 'flex-end' }}>
+                    <div
+                        style={{
+                            display: 'flex',
+                            gap: 6,
+                            marginTop: 8,
+                            justifyContent: 'flex-end',
+                        }}
+                    >
                         {onDuplicate && (
                             <button
-                                onClick={(e) => { e.stopPropagation(); onDuplicate(agent.id); }}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    onDuplicate(agent.id);
+                                }}
                                 title="Дублировать"
-                                style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '4px 8px', borderRadius: 6, border: '1px solid rgba(255,255,255,0.1)', background: 'transparent', color: 'var(--slate-300)', cursor: 'pointer', fontSize: '0.72rem' }}
+                                style={{
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    gap: 4,
+                                    padding: '4px 8px',
+                                    borderRadius: 6,
+                                    border: '1px solid rgba(255,255,255,0.1)',
+                                    background: 'transparent',
+                                    color: 'var(--slate-300)',
+                                    cursor: 'pointer',
+                                    fontSize: '0.72rem',
+                                }}
                             >
                                 <Copy size={13} /> Дублировать
                             </button>
                         )}
                         {onDeleteRequest && (
                             <button
-                                onClick={(e) => { e.stopPropagation(); onDeleteRequest(agent.id, agent.name); }}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    onDeleteRequest(agent.id, agent.name);
+                                }}
                                 title="Удалить"
-                                style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '4px 8px', borderRadius: 6, border: '1px solid rgba(239,68,68,0.25)', background: 'rgba(239,68,68,0.08)', color: '#f87171', cursor: 'pointer', fontSize: '0.72rem' }}
+                                style={{
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    gap: 4,
+                                    padding: '4px 8px',
+                                    borderRadius: 6,
+                                    border: '1px solid rgba(239,68,68,0.25)',
+                                    background: 'rgba(239,68,68,0.08)',
+                                    color: '#f87171',
+                                    cursor: 'pointer',
+                                    fontSize: '0.72rem',
+                                }}
                             >
                                 <Trash2 size={13} /> Удалить
                             </button>

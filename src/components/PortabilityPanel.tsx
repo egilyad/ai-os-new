@@ -73,9 +73,17 @@ const PortabilityPanel: React.FC = () => {
         setNotice(null);
         setLoading(true);
         try {
-            const data = await api<{ manifest?: unknown }>(base, secret, `/api/companies/${companyId}/export`);
+            const data = await api<{ manifest?: unknown }>(
+                base,
+                secret,
+                `/api/companies/${companyId}/export`,
+            );
             const name = companies.find((c) => c.id === companyId)?.name || companyId;
-            downloadFile(JSON.stringify(data.manifest, null, 2), `${name}-company.json`, 'application/json;charset=utf-8');
+            downloadFile(
+                JSON.stringify(data.manifest, null, 2),
+                `${name}-company.json`,
+                'application/json;charset=utf-8',
+            );
             setNotice(t('portability.exported'));
         } catch (e) {
             setError(e instanceof Error ? e.message : String(e));
@@ -92,10 +100,15 @@ const PortabilityPanel: React.FC = () => {
         try {
             const text = await file.text();
             const manifest = JSON.parse(text) as unknown;
-            const data = await api<{ skipped?: boolean; company?: Company }>(base, secret, '/api/companies/import', {
-                method: 'POST',
-                body: JSON.stringify({ manifest, collision }),
-            });
+            const data = await api<{ skipped?: boolean; company?: Company }>(
+                base,
+                secret,
+                '/api/companies/import',
+                {
+                    method: 'POST',
+                    body: JSON.stringify({ manifest, collision }),
+                },
+            );
             if (data.skipped) setNotice(t('portability.skipped'));
             else {
                 setNotice(`${t('portability.imported')}: ${data.company?.name || ''}`);
@@ -110,16 +123,33 @@ const PortabilityPanel: React.FC = () => {
 
     return (
         <div style={{ padding: '1.5rem', maxWidth: 1100, margin: '0 auto' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem' }}>
+            <div
+                style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.75rem',
+                    marginBottom: '1rem',
+                }}
+            >
                 <Share2 size={20} />
                 <h2 style={{ margin: 0 }}>{t('portability.title')}</h2>
-                <button onClick={() => void loadCompanies()} disabled={loading} style={{ marginLeft: 'auto' }}>
-                    {loading ? <Loader2 size={14} /> : <RefreshCw size={14} />} {t('portability.refresh')}
+                <button
+                    onClick={() => void loadCompanies()}
+                    disabled={loading}
+                    style={{ marginLeft: 'auto' }}
+                >
+                    {loading ? <Loader2 size={14} /> : <RefreshCw size={14} />}{' '}
+                    {t('portability.refresh')}
                 </button>
             </div>
 
             <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
-                <input value={url} onChange={(e) => setUrl(e.target.value)} placeholder={t('portability.url')} style={{ flex: '2 1 200px' }} />
+                <input
+                    value={url}
+                    onChange={(e) => setUrl(e.target.value)}
+                    placeholder={t('portability.url')}
+                    style={{ flex: '2 1 200px' }}
+                />
                 <input
                     value={secret}
                     onChange={(e) => setSecret(e.target.value)}
@@ -131,18 +161,37 @@ const PortabilityPanel: React.FC = () => {
             </div>
 
             {error && (
-                <div style={{ display: 'flex', gap: 8, alignItems: 'center', color: '#dc2626', marginBottom: '1rem' }}>
+                <div
+                    style={{
+                        display: 'flex',
+                        gap: 8,
+                        alignItems: 'center',
+                        color: '#dc2626',
+                        marginBottom: '1rem',
+                    }}
+                >
                     <AlertTriangle size={16} /> <span>{error}</span>
                 </div>
             )}
             {notice && <div style={{ color: '#059669', marginBottom: '1rem' }}>{notice}</div>}
 
             <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-                <div style={{ flex: '1 1 300px', border: '1px solid #e2e8f0', borderRadius: 8, padding: '1rem' }}>
+                <div
+                    style={{
+                        flex: '1 1 300px',
+                        border: '1px solid #e2e8f0',
+                        borderRadius: 8,
+                        padding: '1rem',
+                    }}
+                >
                     <h3 style={{ marginTop: 0 }}>
                         <Download size={14} /> {t('portability.export_h')}
                     </h3>
-                    <select value={companyId} onChange={(e) => setCompanyId(e.target.value)} style={{ width: '100%', marginBottom: 8 }}>
+                    <select
+                        value={companyId}
+                        onChange={(e) => setCompanyId(e.target.value)}
+                        style={{ width: '100%', marginBottom: 8 }}
+                    >
                         <option value="">{t('portability.pick_company')}</option>
                         {companies.map((c) => (
                             <option key={c.id} value={c.id}>
@@ -153,13 +202,26 @@ const PortabilityPanel: React.FC = () => {
                     <button onClick={() => void doExport()} disabled={loading || !companyId}>
                         {t('portability.export_btn')}
                     </button>
-                    <div style={{ color: '#64748b', marginTop: 8 }}>{t('portability.export_note')}</div>
+                    <div style={{ color: 'var(--slate-500)', marginTop: 8 }}>
+                        {t('portability.export_note')}
+                    </div>
                 </div>
-                <div style={{ flex: '1 1 300px', border: '1px solid #e2e8f0', borderRadius: 8, padding: '1rem' }}>
+                <div
+                    style={{
+                        flex: '1 1 300px',
+                        border: '1px solid #e2e8f0',
+                        borderRadius: 8,
+                        padding: '1rem',
+                    }}
+                >
                     <h3 style={{ marginTop: 0 }}>
                         <Upload size={14} /> {t('portability.import_h')}
                     </h3>
-                    <select value={collision} onChange={(e) => setCollision(e.target.value)} style={{ width: '100%', marginBottom: 8 }}>
+                    <select
+                        value={collision}
+                        onChange={(e) => setCollision(e.target.value)}
+                        style={{ width: '100%', marginBottom: 8 }}
+                    >
                         <option value="rename">{t('portability.rename')}</option>
                         <option value="skip">{t('portability.skip')}</option>
                         <option value="overwrite">{t('portability.overwrite')}</option>

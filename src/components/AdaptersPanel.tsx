@@ -102,15 +102,29 @@ const AdaptersPanel: React.FC = () => {
         }
         setLoading(true);
         try {
-            const run = await api<{ run?: { id: string } }>(base, secret, `/api/companies/${companyId}/runs`, {
-                method: 'POST',
-                body: JSON.stringify({ trigger: 'manual', ref: 'ui' }),
-            });
+            const run = await api<{ run?: { id: string } }>(
+                base,
+                secret,
+                `/api/companies/${companyId}/runs`,
+                {
+                    method: 'POST',
+                    body: JSON.stringify({ trigger: 'manual', ref: 'ui' }),
+                },
+            );
             if (!run.run) throw new Error('no run');
-            const res = await api<{ stdout?: string }>(base, secret, `/api/runs/${run.run.id}/execute`, {
-                method: 'POST',
-                body: JSON.stringify({ adapter, config: cfg.value, input: { text: inputText } }),
-            });
+            const res = await api<{ stdout?: string }>(
+                base,
+                secret,
+                `/api/runs/${run.run.id}/execute`,
+                {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        adapter,
+                        config: cfg.value,
+                        input: { text: inputText },
+                    }),
+                },
+            );
             setOutput(res.stdout || '');
             setNotice(t('adapters.done'));
         } catch (e) {
@@ -122,16 +136,33 @@ const AdaptersPanel: React.FC = () => {
 
     return (
         <div style={{ padding: '1.5rem', maxWidth: 1100, margin: '0 auto' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem' }}>
+            <div
+                style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.75rem',
+                    marginBottom: '1rem',
+                }}
+            >
                 <Webhook size={20} />
                 <h2 style={{ margin: 0 }}>{t('adapters.title')}</h2>
-                <button onClick={() => void loadAll()} disabled={loading} style={{ marginLeft: 'auto' }}>
-                    {loading ? <Loader2 size={14} /> : <RefreshCw size={14} />} {t('adapters.refresh')}
+                <button
+                    onClick={() => void loadAll()}
+                    disabled={loading}
+                    style={{ marginLeft: 'auto' }}
+                >
+                    {loading ? <Loader2 size={14} /> : <RefreshCw size={14} />}{' '}
+                    {t('adapters.refresh')}
                 </button>
             </div>
 
             <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
-                <input value={url} onChange={(e) => setUrl(e.target.value)} placeholder={t('adapters.url')} style={{ flex: '2 1 200px' }} />
+                <input
+                    value={url}
+                    onChange={(e) => setUrl(e.target.value)}
+                    placeholder={t('adapters.url')}
+                    style={{ flex: '2 1 200px' }}
+                />
                 <input
                     value={secret}
                     onChange={(e) => setSecret(e.target.value)}
@@ -143,7 +174,15 @@ const AdaptersPanel: React.FC = () => {
             </div>
 
             {error && (
-                <div style={{ display: 'flex', gap: 8, alignItems: 'center', color: '#dc2626', marginBottom: '1rem' }}>
+                <div
+                    style={{
+                        display: 'flex',
+                        gap: 8,
+                        alignItems: 'center',
+                        color: '#dc2626',
+                        marginBottom: '1rem',
+                    }}
+                >
                     <AlertTriangle size={16} /> <span>{error}</span>
                 </div>
             )}
@@ -198,7 +237,16 @@ const AdaptersPanel: React.FC = () => {
                     />
                 </div>
                 {output !== null && (
-                    <pre style={{ background: '#f8fafc', padding: 8, overflowX: 'auto', marginTop: 8 }}>{output}</pre>
+                    <pre
+                        style={{
+                            background: 'var(--slate-50)',
+                            padding: 8,
+                            overflowX: 'auto',
+                            marginTop: 8,
+                        }}
+                    >
+                        {output}
+                    </pre>
                 )}
             </div>
         </div>

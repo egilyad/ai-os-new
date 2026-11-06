@@ -18,7 +18,14 @@ export type AgemsTaskStatus =
 
 export type CronSchedule =
     | { kind: 'preset'; preset: 'DAILY' | 'WEEKDAY' | 'WEEKLY' | 'MONTHLY' | 'HOURLY' }
-    | { kind: 'custom'; minute: number; hour: number; dayOfMonth?: number; month?: number; weekday?: number };
+    | {
+          kind: 'custom';
+          minute: number;
+          hour: number;
+          dayOfMonth?: number;
+          month?: number;
+          weekday?: number;
+      };
 
 export interface AgemsTask {
     id: string;
@@ -85,9 +92,13 @@ export interface TaskTrigger {
 
 // Kanban column mapping (roadmap 2.2: 5 columns)
 export const KANBAN_COLUMNS: Array<{ status: AgemsTaskStatus[]; title: string; color: string }> = [
-    { status: ['PENDING', 'BLOCKED'], title: 'Pending', color: '#64748b' },
-    { status: ['IN_PROGRESS'], title: 'In Progress', color: '#3b82f6' },
-    { status: ['IN_REVIEW', 'IN_TESTING', 'AWAITING_APPROVAL', 'VERIFIED'], title: 'In Review', color: '#f59e0b' },
-    { status: ['COMPLETED'], title: 'Completed', color: '#10b981' },
-    { status: ['FAILED', 'CANCELLED'], title: 'Failed', color: '#ef4444' },
+    { status: ['PENDING', 'BLOCKED'], title: 'Pending', color: 'var(--slate-500)' },
+    { status: ['IN_PROGRESS'], title: 'In Progress', color: 'var(--accent)' },
+    {
+        status: ['IN_REVIEW', 'IN_TESTING', 'AWAITING_APPROVAL', 'VERIFIED'],
+        title: 'In Review',
+        color: 'var(--warning)',
+    },
+    { status: ['COMPLETED'], title: 'Completed', color: 'var(--success)' },
+    { status: ['FAILED', 'CANCELLED'], title: 'Failed', color: 'var(--error)' },
 ];

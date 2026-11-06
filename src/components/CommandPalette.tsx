@@ -126,12 +126,16 @@ function buildItems(t: (key: TranslationKey) => string): PaletteItem[] {
             labelKey: 'palette.action.toggleTheme',
             path: '',
             icon: <Search size={16} />,
-            color: '#f59e0b',
+            color: 'var(--warning)',
             action: () => {
                 const cur = document.documentElement.getAttribute('data-theme') || 'dark';
                 const next = cur === 'dark' ? 'light' : 'dark';
                 document.documentElement.setAttribute('data-theme', next);
-                try { localStorage.setItem('theme', next); } catch { /* private mode */ }
+                try {
+                    localStorage.setItem('theme', next);
+                } catch {
+                    /* private mode */
+                }
             },
         },
         {
@@ -139,28 +143,28 @@ function buildItems(t: (key: TranslationKey) => string): PaletteItem[] {
             labelKey: 'palette.action.openSettings',
             path: 'settings',
             icon: <Search size={16} />,
-            color: '#64748b',
+            color: 'var(--slate-500)',
         },
         {
             id: 'action-open-providers',
             labelKey: 'palette.action.openProviders',
             path: 'providers',
             icon: <Search size={16} />,
-            color: '#10b981',
+            color: 'var(--success)',
         },
         {
             id: 'action-open-chat',
             labelKey: 'palette.action.openChat',
             path: 'chat',
             icon: <MessageSquare size={16} />,
-            color: '#3b82f6',
+            color: 'var(--accent)',
         },
         {
             id: 'action-open-agents',
             labelKey: 'palette.action.openAgents',
             path: 'agents',
             icon: <Users size={16} />,
-            color: '#8b5cf6',
+            color: 'var(--purple)',
         },
     ];
     for (const a of actions) {

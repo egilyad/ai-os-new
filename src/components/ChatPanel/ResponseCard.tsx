@@ -142,7 +142,7 @@ const ResponseCard: React.FC<ResponseCardProps> = memo(
                                     <span
                                         style={{
                                             fontSize: '0.6rem',
-                                            color: '#a78bfa',
+                                            color: 'var(--purple-muted)',
                                             background: 'rgba(167,139,250,0.15)',
                                             padding: '2px 6px',
                                             borderRadius: 4,
@@ -160,39 +160,58 @@ const ResponseCard: React.FC<ResponseCardProps> = memo(
                                         style={{ animation: 'spin 1s linear infinite' }}
                                     />
                                 )}
-                {showWhy && res.status === 'done' && (
-                    <div
-                        style={{
-                            marginTop: '0.75rem',
-                            padding: '0.7rem 0.9rem',
-                            borderRadius: 8,
-                            background: 'rgba(255,255,255,0.03)',
-                            border: '1px solid rgba(255,255,255,0.06)',
-                            fontSize: '0.75rem',
-                            color: 'var(--text-muted)',
-                        }}
-                    >
-                        {routingInfo ? (
-                            <>
-                                <div>
-                                    Роутинг: <b style={{ color: 'var(--slate-200)' }}>{routingInfo.strategy}</b> → выбрано{' '}
-                                    <b style={{ color }}>{routingInfo.selected}</b>
-                                </div>
-                                <div style={{ marginTop: 6, fontWeight: 700, color: 'var(--slate-300)' }}>Топ кандидатов</div>
-                                {routingInfo.scores.map((s) => (
-                                    <div key={s.provider} style={{ display: 'flex', justifyContent: 'space-between', marginTop: 2 }}>
-                                        <span>{s.provider}</span>
-                                        <span>{s.score.toFixed(3)}</span>
+                                {showWhy && res.status === 'done' && (
+                                    <div
+                                        style={{
+                                            marginTop: '0.75rem',
+                                            padding: '0.7rem 0.9rem',
+                                            borderRadius: 8,
+                                            background: 'rgba(255,255,255,0.03)',
+                                            border: '1px solid rgba(255,255,255,0.06)',
+                                            fontSize: '0.75rem',
+                                            color: 'var(--text-muted)',
+                                        }}
+                                    >
+                                        {routingInfo ? (
+                                            <>
+                                                <div>
+                                                    Роутинг:{' '}
+                                                    <b style={{ color: 'var(--slate-200)' }}>
+                                                        {routingInfo.strategy}
+                                                    </b>{' '}
+                                                    → выбрано{' '}
+                                                    <b style={{ color }}>{routingInfo.selected}</b>
+                                                </div>
+                                                <div
+                                                    style={{
+                                                        marginTop: 6,
+                                                        fontWeight: 700,
+                                                        color: 'var(--slate-300)',
+                                                    }}
+                                                >
+                                                    Топ кандидатов
+                                                </div>
+                                                {routingInfo.scores.map((s) => (
+                                                    <div
+                                                        key={s.provider}
+                                                        style={{
+                                                            display: 'flex',
+                                                            justifyContent: 'space-between',
+                                                            marginTop: 2,
+                                                        }}
+                                                    >
+                                                        <span>{s.provider}</span>
+                                                        <span>{s.score.toFixed(3)}</span>
+                                                    </div>
+                                                ))}
+                                            </>
+                                        ) : (
+                                            <div>Нет данных о роутинге для этого ответа.</div>
+                                        )}
                                     </div>
-                                ))}
-                            </>
-                        ) : (
-                            <div>Нет данных о роутинге для этого ответа.</div>
-                        )}
-                    </div>
-                )}
+                                )}
 
-                {res.status === 'error' && (
+                                {res.status === 'error' && (
                                     <AlertCircle size={12} color="#ef4444" />
                                 )}
                                 {res.status === 'streaming' && (

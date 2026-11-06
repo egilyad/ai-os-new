@@ -21,7 +21,7 @@ const GUARDIAN_CONFIGS: GuardianConfig[] = [
         aspect: 'speed',
         providers: ['groq'],
         emoji: '⚡',
-        color: '#22c55e',
+        color: 'var(--success)',
         philosophy: 'Мгновенно — это единственная скорость',
     },
     {
@@ -29,7 +29,7 @@ const GUARDIAN_CONFIGS: GuardianConfig[] = [
         aspect: 'security',
         providers: ['openai', 'anthropic', 'generic'],
         emoji: '🛡️',
-        color: '#3b82f6',
+        color: 'var(--accent)',
         philosophy: 'Доверяй, но проверяй',
     },
     {
@@ -37,7 +37,7 @@ const GUARDIAN_CONFIGS: GuardianConfig[] = [
         aspect: 'power',
         providers: ['nvidia', 'together'],
         emoji: '🏔️',
-        color: '#ef4444',
+        color: 'var(--error)',
         philosophy: 'Нет задач, которые нельзя решить',
     },
     {
@@ -53,7 +53,7 @@ const GUARDIAN_CONFIGS: GuardianConfig[] = [
         aspect: 'cost',
         providers: [],
         emoji: '💰',
-        color: '#f59e0b',
+        color: 'var(--warning)',
         philosophy: 'Мудрость приходит с ценой',
     },
     {

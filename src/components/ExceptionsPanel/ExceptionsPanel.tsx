@@ -82,9 +82,9 @@ const ExceptionsPanel: React.FC = () => {
                 </span>
             </div>
             <p style={{ margin: '0 0 1rem', fontSize: '0.82rem', color: 'var(--slate-400)' }}>
-                Каждый шаблон — это текст ответа, который агент НЕ должен давать.
-                Активные шаблоны (scope «везде»/«глобально») автоматически
-                добавляются в инструкции ассистента и чата перед ответом.
+                Каждый шаблон — это текст ответа, который агент НЕ должен давать. Активные шаблоны
+                (scope «везде»/«глобально») автоматически добавляются в инструкции ассистента и чата
+                перед ответом.
             </p>
 
             <div
@@ -115,7 +115,14 @@ const ExceptionsPanel: React.FC = () => {
                     aria-label="Запрещённый текст"
                     style={{ ...inputStyle, resize: 'vertical', fontFamily: 'inherit' }}
                 />
-                <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', alignItems: 'center' }}>
+                <div
+                    style={{
+                        display: 'flex',
+                        gap: '0.5rem',
+                        flexWrap: 'wrap',
+                        alignItems: 'center',
+                    }}
+                >
                     <select
                         value={scope}
                         onChange={(e) => setScope(e.target.value as ExceptionScope)}
@@ -151,7 +158,7 @@ const ExceptionsPanel: React.FC = () => {
                             padding: '0.45rem 0.9rem',
                             borderRadius: 8,
                             border: 'none',
-                            background: '#ef4444',
+                            background: 'var(--error)',
                             color: '#fff',
                             fontWeight: 700,
                             fontSize: '0.78rem',
@@ -197,15 +204,34 @@ const ExceptionsPanel: React.FC = () => {
                                 <div style={{ fontWeight: 700, fontSize: '0.85rem' }}>
                                     {t.name}
                                     {!t.enabled && (
-                                        <span style={{ marginLeft: 6, fontSize: '0.65rem', color: 'var(--slate-500)' }}>
+                                        <span
+                                            style={{
+                                                marginLeft: 6,
+                                                fontSize: '0.65rem',
+                                                color: 'var(--slate-500)',
+                                            }}
+                                        >
                                             (выключена)
                                         </span>
                                     )}
                                 </div>
-                                <div style={{ fontSize: '0.8rem', color: 'var(--slate-300)', marginTop: 2 }}>
+                                <div
+                                    style={{
+                                        fontSize: '0.8rem',
+                                        color: 'var(--slate-300)',
+                                        marginTop: 2,
+                                    }}
+                                >
                                     {t.text}
                                 </div>
-                                <div style={{ display: 'flex', gap: 6, marginTop: 6, flexWrap: 'wrap' }}>
+                                <div
+                                    style={{
+                                        display: 'flex',
+                                        gap: 6,
+                                        marginTop: 6,
+                                        flexWrap: 'wrap',
+                                    }}
+                                >
                                     <span style={badgeStyle}>{scopeLabel[t.scope]}</span>
                                     <span style={badgeStyle}>{matchLabel[t.matchMode]}</span>
                                 </div>
@@ -216,7 +242,11 @@ const ExceptionsPanel: React.FC = () => {
                                 aria-label={t.enabled ? 'Выключить' : 'Включить'}
                                 style={iconBtnStyle}
                             >
-                                {t.enabled ? <CheckCircle2 size={16} color="#22c55e" /> : <XCircle size={16} color="var(--slate-500)" />}
+                                {t.enabled ? (
+                                    <CheckCircle2 size={16} color="#22c55e" />
+                                ) : (
+                                    <XCircle size={16} color="var(--slate-500)" />
+                                )}
                             </button>
                             <button
                                 onClick={() => handleDelete(t.id)}
@@ -230,7 +260,6 @@ const ExceptionsPanel: React.FC = () => {
                     ))
                 )}
             </div>
-
         </div>
     );
 };

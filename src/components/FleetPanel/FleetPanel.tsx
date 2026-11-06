@@ -93,7 +93,7 @@ const btn: React.CSSProperties = {
     color: 'inherit',
 };
 
-const primaryBtn: React.CSSProperties = { ...btn, background: '#3b82f6', color: '#fff' };
+const primaryBtn: React.CSSProperties = { ...btn, background: 'var(--accent)', color: '#fff' };
 
 const card: React.CSSProperties = {
     border: '1px solid #2a2a35',
@@ -188,7 +188,7 @@ function CrewsTab() {
 
     return (
         <div>
-            {error && <p style={{ color: '#ef4444' }}>{error}</p>}
+            {error && <p style={{ color: 'var(--error)' }}>{error}</p>}
             <Section title={t('fleet.forge_title')}>
                 <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
                     <input
@@ -208,7 +208,8 @@ function CrewsTab() {
                     <div key={c.id} style={card}>
                         <div style={{ fontWeight: 600 }}>{c.name}</div>
                         <div style={{ fontSize: '0.8rem', opacity: 0.7 }}>
-                            {c.process} · {c.status} · {c.roles.length} roles · {c.taskIds.length} tasks
+                            {c.process} · {c.status} · {c.roles.length} roles · {c.taskIds.length}{' '}
+                            tasks
                         </div>
                         <div style={{ marginTop: '0.4rem' }}>
                             <button style={btn} onClick={() => void run(c.id)} disabled={busy}>
@@ -261,8 +262,15 @@ function CouncilsTab() {
 
     return (
         <div>
-            {error && <p style={{ color: '#ef4444' }}>{error}</p>}
-            <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '0.75rem' }}>
+            {error && <p style={{ color: 'var(--error)' }}>{error}</p>}
+            <div
+                style={{
+                    display: 'flex',
+                    gap: '0.5rem',
+                    flexWrap: 'wrap',
+                    marginBottom: '0.75rem',
+                }}
+            >
                 <input
                     style={{ ...inputStyle, flex: '1 1 200px' }}
                     placeholder={t('fleet.topic_placeholder')}
@@ -272,7 +280,13 @@ function CouncilsTab() {
                 <button
                     style={primaryBtn}
                     disabled={busy || !topic.trim()}
-                    onClick={() => void act(() => councilService.createSession({ topic: topic.trim() }).then(() => setTopic('')))}
+                    onClick={() =>
+                        void act(() =>
+                            councilService
+                                .createSession({ topic: topic.trim() })
+                                .then(() => setTopic('')),
+                        )
+                    }
                 >
                     {t('fleet.create')}
                 </button>
@@ -285,11 +299,26 @@ function CouncilsTab() {
                         {s.phase} · {s.status} · {s.messages.length} msgs · {s.scores.length} judges
                         {s.winnerId ? ` · winner ${s.winnerId}` : ''}
                     </div>
-                    <div style={{ display: 'flex', gap: '0.4rem', marginTop: '0.4rem', flexWrap: 'wrap' }}>
-                        <button style={btn} disabled={busy} onClick={() => void act(() => councilService.advancePhase(s.id))}>
+                    <div
+                        style={{
+                            display: 'flex',
+                            gap: '0.4rem',
+                            marginTop: '0.4rem',
+                            flexWrap: 'wrap',
+                        }}
+                    >
+                        <button
+                            style={btn}
+                            disabled={busy}
+                            onClick={() => void act(() => councilService.advancePhase(s.id))}
+                        >
                             {t('fleet.advance')}
                         </button>
-                        <button style={btn} disabled={busy} onClick={() => void act(() => councilService.conclude(s.id))}>
+                        <button
+                            style={btn}
+                            disabled={busy}
+                            onClick={() => void act(() => councilService.conclude(s.id))}
+                        >
                             {t('fleet.conclude')}
                         </button>
                     </div>
@@ -297,7 +326,16 @@ function CouncilsTab() {
             ))}
             <Section title={t('fleet.formats_title')}>
                 <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap' }}>
-                    {(['oxford', 'lincoln-douglas', 'popper', 'deliberative', 'munk', 'adversarial'] as DebateFormatId[]).map((f) => (
+                    {(
+                        [
+                            'oxford',
+                            'lincoln-douglas',
+                            'popper',
+                            'deliberative',
+                            'munk',
+                            'adversarial',
+                        ] as DebateFormatId[]
+                    ).map((f) => (
                         <button
                             key={f}
                             style={btn}
@@ -308,7 +346,14 @@ function CouncilsTab() {
                         </button>
                     ))}
                 </div>
-                <div style={{ marginTop: '0.5rem', display: 'flex', gap: '0.4rem', flexWrap: 'wrap' }}>
+                <div
+                    style={{
+                        marginTop: '0.5rem',
+                        display: 'flex',
+                        gap: '0.4rem',
+                        flexWrap: 'wrap',
+                    }}
+                >
                     <button
                         style={btn}
                         disabled={busy || !topic.trim()}
@@ -358,8 +403,15 @@ function GraphsTab() {
 
     return (
         <div>
-            {error && <p style={{ color: '#ef4444' }}>{error}</p>}
-            <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '0.75rem' }}>
+            {error && <p style={{ color: 'var(--error)' }}>{error}</p>}
+            <div
+                style={{
+                    display: 'flex',
+                    gap: '0.5rem',
+                    flexWrap: 'wrap',
+                    marginBottom: '0.75rem',
+                }}
+            >
                 <input
                     style={{ ...inputStyle, flex: '1 1 200px' }}
                     placeholder={t('fleet.topic_placeholder')}
@@ -371,7 +423,9 @@ function GraphsTab() {
                     disabled={busy || !topic.trim()}
                     onClick={() =>
                         void act(async () => {
-                            const def = await graphService.buildModeGraph('sequential', { topic: topic.trim() });
+                            const def = await graphService.buildModeGraph('sequential', {
+                                topic: topic.trim(),
+                            });
                             await graphService.runGraph(def.id, { topic: topic.trim() });
                             setTopic('');
                         })
@@ -394,18 +448,48 @@ function GraphsTab() {
                     <div style={{ fontSize: '0.8rem', opacity: 0.7 }}>
                         {r.status} · {r.stepCount} steps · {r.visited.length} visited
                     </div>
-                    <div style={{ display: 'flex', gap: '0.4rem', marginTop: '0.4rem', flexWrap: 'wrap' }}>
+                    <div
+                        style={{
+                            display: 'flex',
+                            gap: '0.4rem',
+                            marginTop: '0.4rem',
+                            flexWrap: 'wrap',
+                        }}
+                    >
                         {r.status === 'paused' && (
                             <>
-                                <button style={primaryBtn} disabled={busy} onClick={() => void act(() => graphService.approve(r.id))}>
+                                <button
+                                    style={primaryBtn}
+                                    disabled={busy}
+                                    onClick={() => void act(() => graphService.approve(r.id))}
+                                >
                                     {t('fleet.approve')}
                                 </button>
-                                <button style={btn} disabled={busy} onClick={() => void act(() => graphService.reject(r.id, 'Rejected from Fleet'))}>
+                                <button
+                                    style={btn}
+                                    disabled={busy}
+                                    onClick={() =>
+                                        void act(() =>
+                                            graphService.reject(r.id, 'Rejected from Fleet'),
+                                        )
+                                    }
+                                >
                                     {t('fleet.reject')}
                                 </button>
                             </>
                         )}
-                        <button style={btn} onClick={() => { const url = `${window.location.pathname}?tab=graphs&run=${r.id}`; window.history.pushState({}, '', url); try { navigator.clipboard.writeText(window.location.href); } catch { /* clipboard unavailable */ } }}>
+                        <button
+                            style={btn}
+                            onClick={() => {
+                                const url = `${window.location.pathname}?tab=graphs&run=${r.id}`;
+                                window.history.pushState({}, '', url);
+                                try {
+                                    navigator.clipboard.writeText(window.location.href);
+                                } catch {
+                                    /* clipboard unavailable */
+                                }
+                            }}
+                        >
                             Open
                         </button>
                     </div>
@@ -445,8 +529,15 @@ function PersonaTab() {
 
     return (
         <div>
-            {error && <p style={{ color: '#ef4444' }}>{error}</p>}
-            <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '0.75rem' }}>
+            {error && <p style={{ color: 'var(--error)' }}>{error}</p>}
+            <div
+                style={{
+                    display: 'flex',
+                    gap: '0.5rem',
+                    flexWrap: 'wrap',
+                    marginBottom: '0.75rem',
+                }}
+            >
                 <input
                     style={{ ...inputStyle, flex: '1 1 200px' }}
                     placeholder={t('fleet.context_placeholder')}
@@ -460,7 +551,10 @@ function PersonaTab() {
                         setBusy(true);
                         clearError();
                         sharedContextService
-                            .createContext({ name: name.trim(), scope: { kind: 'room', ref: 'fleet' } })
+                            .createContext({
+                                name: name.trim(),
+                                scope: { kind: 'room', ref: 'fleet' },
+                            })
                             .then(() => {
                                 setName('');
                                 return refresh();
@@ -520,7 +614,7 @@ function OpsTab() {
 
     return (
         <div>
-            {error && <p style={{ color: '#ef4444' }}>{error}</p>}
+            {error && <p style={{ color: 'var(--error)' }}>{error}</p>}
             <Section title={t('fleet.missions_title')}>
                 {missions.length === 0 && <p style={{ opacity: 0.6 }}>{t('fleet.empty')}</p>}
                 {missions.map((m) => (
@@ -601,8 +695,15 @@ function InteropTab() {
 
     return (
         <div>
-            {error && <p style={{ color: '#ef4444' }}>{error}</p>}
-            <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '0.75rem' }}>
+            {error && <p style={{ color: 'var(--error)' }}>{error}</p>}
+            <div
+                style={{
+                    display: 'flex',
+                    gap: '0.5rem',
+                    flexWrap: 'wrap',
+                    marginBottom: '0.75rem',
+                }}
+            >
                 <input
                     style={{ ...inputStyle, flex: '1 1 200px' }}
                     placeholder={t('fleet.peer_placeholder')}
@@ -674,7 +775,7 @@ function MetaTab() {
 
     return (
         <div>
-            {error && <p style={{ color: '#ef4444' }}>{error}</p>}
+            {error && <p style={{ color: 'var(--error)' }}>{error}</p>}
             <Section title={t('fleet.proposals_title')}>
                 {proposals.length === 0 && <p style={{ opacity: 0.6 }}>{t('fleet.empty')}</p>}
                 {proposals.slice(0, 20).map((p) => (
@@ -743,7 +844,7 @@ function TrustTab() {
 
     return (
         <div>
-            {error && <p style={{ color: '#ef4444' }}>{error}</p>}
+            {error && <p style={{ color: 'var(--error)' }}>{error}</p>}
             <Section title={t('fleet.bundles_title')}>
                 {bundles.length === 0 && <p style={{ opacity: 0.6 }}>{t('fleet.empty')}</p>}
                 {bundles.map((b) => (
@@ -754,7 +855,13 @@ function TrustTab() {
                         </div>
                         {!b.installedAt && (
                             <div style={{ marginTop: '0.4rem' }}>
-                                <button style={btn} disabled={busy} onClick={() => void act(() => ecosystemService.installBundle(b.id))}>
+                                <button
+                                    style={btn}
+                                    disabled={busy}
+                                    onClick={() =>
+                                        void act(() => ecosystemService.installBundle(b.id))
+                                    }
+                                >
                                     {t('fleet.install')}
                                 </button>
                             </div>
@@ -772,7 +879,11 @@ function TrustTab() {
                         </div>
                     </div>
                 ))}
-                <button style={btn} disabled={busy} onClick={() => void act(() => ecosystemService.snapshot('fleet-manual'))}>
+                <button
+                    style={btn}
+                    disabled={busy}
+                    onClick={() => void act(() => ecosystemService.snapshot('fleet-manual'))}
+                >
                     {t('fleet.snapshot')}
                 </button>
             </Section>
@@ -824,8 +935,15 @@ function FrontierTab() {
 
     return (
         <div>
-            {error && <p style={{ color: '#ef4444' }}>{error}</p>}
-            <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '0.75rem' }}>
+            {error && <p style={{ color: 'var(--error)' }}>{error}</p>}
+            <div
+                style={{
+                    display: 'flex',
+                    gap: '0.5rem',
+                    flexWrap: 'wrap',
+                    marginBottom: '0.75rem',
+                }}
+            >
                 <input
                     style={{ ...inputStyle, flex: '1 1 200px' }}
                     placeholder={t('fleet.bench_placeholder')}
@@ -876,7 +994,15 @@ function FrontierTab() {
                         </div>
                         {o.status === 'active' && (
                             <div style={{ marginTop: '0.4rem' }}>
-                                <button style={btn} disabled={busy} onClick={() => void act(() => frontierOpsService.heartbeat(o.id, 'fleet ping'))}>
+                                <button
+                                    style={btn}
+                                    disabled={busy}
+                                    onClick={() =>
+                                        void act(() =>
+                                            frontierOpsService.heartbeat(o.id, 'fleet ping'),
+                                        )
+                                    }
+                                >
                                     {t('fleet.heartbeat')}
                                 </button>
                             </div>
@@ -935,8 +1061,15 @@ function RivalsTab() {
 
     return (
         <div>
-            {error && <p style={{ color: '#ef4444' }}>{error}</p>}
-            <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '0.75rem' }}>
+            {error && <p style={{ color: 'var(--error)' }}>{error}</p>}
+            <div
+                style={{
+                    display: 'flex',
+                    gap: '0.5rem',
+                    flexWrap: 'wrap',
+                    marginBottom: '0.75rem',
+                }}
+            >
                 <input
                     style={{ ...inputStyle, flex: '1 1 200px' }}
                     placeholder={t('fleet.goal_placeholder')}
@@ -946,21 +1079,37 @@ function RivalsTab() {
                 <button
                     style={primaryBtn}
                     disabled={busy || !goal.trim()}
-                    onClick={() => void act(() => autonomyService.runGoal(goal.trim(), 5).then(() => setGoal('')))}
+                    onClick={() =>
+                        void act(() =>
+                            autonomyService.runGoal(goal.trim(), 5).then(() => setGoal('')),
+                        )
+                    }
                 >
                     {t('fleet.run_goal')}
                 </button>
                 <button
                     style={btn}
                     disabled={busy || !goal.trim()}
-                    onClick={() => void act(() => dyadService.startDyad({ topic: goal.trim(), maxTurns: 6 }).then(() => setGoal('')))}
+                    onClick={() =>
+                        void act(() =>
+                            dyadService
+                                .startDyad({ topic: goal.trim(), maxTurns: 6 })
+                                .then(() => setGoal('')),
+                        )
+                    }
                 >
                     {t('fleet.run_dyad')}
                 </button>
                 <button
                     style={btn}
                     disabled={busy}
-                    onClick={() => void act(() => groupChatService.createChat({ name: 'fleet-chat', members: ['analyst', 'critic'] }).then((c) => groupChatService.nextTurn(c.id)))}
+                    onClick={() =>
+                        void act(() =>
+                            groupChatService
+                                .createChat({ name: 'fleet-chat', members: ['analyst', 'critic'] })
+                                .then((c) => groupChatService.nextTurn(c.id)),
+                        )
+                    }
                 >
                     {t('fleet.run_chat')}
                 </button>
@@ -1015,14 +1164,23 @@ function RivalsTab() {
                 <button
                     style={btn}
                     disabled={busy || !goal.trim()}
-                    onClick={() => void act(() => promptHubService.publish('fleet-adhoc', goal.trim()))}
+                    onClick={() =>
+                        void act(() => promptHubService.publish('fleet-adhoc', goal.trim()))
+                    }
                 >
                     {t('fleet.save_prompt')}
                 </button>
                 <button
                     style={btn}
                     disabled={busy || !goal.trim()}
-                    onClick={() => void act(() => forumPlusService.createPoll('fleet', goal.trim().slice(0, 120), ['yes', 'no']))}
+                    onClick={() =>
+                        void act(() =>
+                            forumPlusService.createPoll('fleet', goal.trim().slice(0, 120), [
+                                'yes',
+                                'no',
+                            ]),
+                        )
+                    }
                 >
                     {t('fleet.run_poll')}
                 </button>
@@ -1050,7 +1208,9 @@ function RivalsTab() {
                 <button
                     style={btn}
                     disabled={busy || !goal.trim()}
-                    onClick={() => void act(() => openClawService.importSoul(`# Identity\n${goal.trim()}`))}
+                    onClick={() =>
+                        void act(() => openClawService.importSoul(`# Identity\n${goal.trim()}`))
+                    }
                 >
                     {t('fleet.soul_import')}
                 </button>
@@ -1064,49 +1224,106 @@ function RivalsTab() {
                 <button
                     style={btn}
                     disabled={busy}
-                    onClick={() => void act(() => dshService.healthCheck().then((h) => `plugins:${h.plugins} keys:${h.keys} queue:${h.queue}`))}
+                    onClick={() =>
+                        void act(() =>
+                            dshService
+                                .healthCheck()
+                                .then(
+                                    (h) => `plugins:${h.plugins} keys:${h.keys} queue:${h.queue}`,
+                                ),
+                        )
+                    }
                 >
                     {t('fleet.dsh_health')}
                 </button>
                 <button
                     style={btn}
                     disabled={busy || !goal.trim()}
-                    onClick={() => void act(() => notebookService.createNotebook(goal.trim().slice(0, 80)).then((id) => notebookService.audioScript(id)))}
+                    onClick={() =>
+                        void act(() =>
+                            notebookService
+                                .createNotebook(goal.trim().slice(0, 80))
+                                .then((id) => notebookService.audioScript(id)),
+                        )
+                    }
                 >
                     {t('fleet.notebook_audio')}
                 </button>
                 <button
                     style={btn}
                     disabled={busy || !goal.trim()}
-                    onClick={() => void act(() => dotpromptService.define({ name: 'fleet-adhoc', template: goal.trim() }).then(() => dotpromptService.render('fleet-adhoc')))}
+                    onClick={() =>
+                        void act(() =>
+                            dotpromptService
+                                .define({ name: 'fleet-adhoc', template: goal.trim() })
+                                .then(() => dotpromptService.render('fleet-adhoc')),
+                        )
+                    }
                 >
                     {t('fleet.dotprompt')}
                 </button>
                 <button
                     style={btn}
                     disabled={busy}
-                    onClick={() => void act(() => netLogoService.createWorld(12).then((id) => netLogoService.seedTurtles(id, 'sheep', 15).then(() => netLogoService.tick(id, 10))))}
+                    onClick={() =>
+                        void act(() =>
+                            netLogoService
+                                .createWorld(12)
+                                .then((id) =>
+                                    netLogoService
+                                        .seedTurtles(id, 'sheep', 15)
+                                        .then(() => netLogoService.tick(id, 10)),
+                                ),
+                        )
+                    }
                 >
                     {t('fleet.run_sim')}
                 </button>
                 <button
                     style={btn}
                     disabled={busy}
-                    onClick={() => void act(() => mesaService.createModel('random').then((id) => mesaService.addAgents(id, 30).then(() => mesaService.step(id, 20))))}
+                    onClick={() =>
+                        void act(() =>
+                            mesaService
+                                .createModel('random')
+                                .then((id) =>
+                                    mesaService
+                                        .addAgents(id, 30)
+                                        .then(() => mesaService.step(id, 20)),
+                                ),
+                        )
+                    }
                 >
                     {t('fleet.run_mesa')}
                 </button>
                 <button
                     style={btn}
                     disabled={busy || !goal.trim()}
-                    onClick={() => void act(() => gymService.make('bandit').then((id) => gymService.reset(id).then(() => gymService.step(id, '1'))))}
+                    onClick={() =>
+                        void act(() =>
+                            gymService
+                                .make('bandit')
+                                .then((id) =>
+                                    gymService.reset(id).then(() => gymService.step(id, '1')),
+                                ),
+                        )
+                    }
                 >
                     {t('fleet.run_gym')}
                 </button>
                 <button
                     style={btn}
                     disabled={busy || !goal.trim()}
-                    onClick={() => void act(() => malmoService.createMission({ name: goal.trim().slice(0, 60), map: ['#####', '#0.G#', '#####'] }).then((id) => malmoService.act(id, 'agent0', 'E')))}
+                    onClick={() =>
+                        void act(() =>
+                            malmoService
+                                .createMission({
+                                    name: goal.trim().slice(0, 60),
+                                    map: ['#####', '#0.G#', '#####'],
+                                })
+                                .then((id) => malmoService.act(id, 'agent0', 'E')),
+                        )
+                    }
                 >
                     {t('fleet.run_mission')}
                 </button>
@@ -1120,7 +1337,11 @@ function RivalsTab() {
                 <button
                     style={btn}
                     disabled={busy || !goal.trim()}
-                    onClick={() => void act(() => supportService.openTicket(goal.trim().slice(0, 80), goal.trim()))}
+                    onClick={() =>
+                        void act(() =>
+                            supportService.openTicket(goal.trim().slice(0, 80), goal.trim()),
+                        )
+                    }
                 >
                     {t('fleet.run_ticket')}
                 </button>
@@ -1178,11 +1399,15 @@ const FleetPanel: React.FC<{ initialTab?: FleetTab }> = ({ initialTab }) => {
             const sp = new URLSearchParams(window.location.search);
             const tab = sp.get('tab') as FleetTab | null;
             if (tab && TABS.includes(tab)) setActiveTab(tab);
-        } catch { /* ignore */ }
+        } catch {
+            /* ignore */
+        }
     }, []);
 
     return (
-        <div style={{ height: '100%', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+        <div
+            style={{ height: '100%', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}
+        >
             <div style={{ padding: '0.75rem 1rem', borderBottom: '1px solid #2a2a35' }}>
                 <h2 style={{ margin: 0, fontSize: '1.1rem' }}>{t('fleet.title')}</h2>
                 <p style={{ margin: '0.25rem 0 0', fontSize: '0.8rem', opacity: 0.7 }}>

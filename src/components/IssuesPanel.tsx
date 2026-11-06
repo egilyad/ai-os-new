@@ -163,10 +163,15 @@ const IssuesPanel: React.FC = () => {
         setError(null);
         setNotice(null);
         try {
-            const data = await api<{ issue?: Issue }>(base, secret, `/api/companies/${companyId}/issues/${selected.id}/checkout`, {
-                method: 'POST',
-                body: JSON.stringify({ agentId }),
-            });
+            const data = await api<{ issue?: Issue }>(
+                base,
+                secret,
+                `/api/companies/${companyId}/issues/${selected.id}/checkout`,
+                {
+                    method: 'POST',
+                    body: JSON.stringify({ agentId }),
+                },
+            );
             setNotice(t('issues.checked_out'));
             if (data.issue) {
                 setIssues((prev) => prev.map((i) => (i.id === data.issue!.id ? data.issue! : i)));
@@ -205,7 +210,7 @@ const IssuesPanel: React.FC = () => {
             const st = (e as { status?: number }).status;
             const extra =
                 st === 422
-                    ? ` → ${( ((e as { body?: { chain?: Array<{ name: string }> } }).body?.chain || []).map((a) => a.name).join('>'))}`
+                    ? ` → ${((e as { body?: { chain?: Array<{ name: string }> } }).body?.chain || []).map((a) => a.name).join('>')}`
                     : '';
             setError((e instanceof Error ? e.message : String(e)) + extra);
         }
@@ -213,16 +218,33 @@ const IssuesPanel: React.FC = () => {
 
     return (
         <div style={{ padding: '1.5rem', maxWidth: 1100, margin: '0 auto' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem' }}>
+            <div
+                style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.75rem',
+                    marginBottom: '1rem',
+                }}
+            >
                 <ListChecks size={20} />
                 <h2 style={{ margin: 0 }}>{t('issues.title')}</h2>
-                <button onClick={() => void loadIssues()} disabled={loading} style={{ marginLeft: 'auto' }}>
-                    {loading ? <Loader2 size={14} /> : <RefreshCw size={14} />} {t('issues.refresh')}
+                <button
+                    onClick={() => void loadIssues()}
+                    disabled={loading}
+                    style={{ marginLeft: 'auto' }}
+                >
+                    {loading ? <Loader2 size={14} /> : <RefreshCw size={14} />}{' '}
+                    {t('issues.refresh')}
                 </button>
             </div>
 
             <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
-                <input value={url} onChange={(e) => setUrl(e.target.value)} placeholder={t('issues.url')} style={{ flex: '2 1 200px' }} />
+                <input
+                    value={url}
+                    onChange={(e) => setUrl(e.target.value)}
+                    placeholder={t('issues.url')}
+                    style={{ flex: '2 1 200px' }}
+                />
                 <input
                     value={secret}
                     onChange={(e) => setSecret(e.target.value)}
@@ -250,7 +272,15 @@ const IssuesPanel: React.FC = () => {
             </div>
 
             {error && (
-                <div style={{ display: 'flex', gap: 8, alignItems: 'center', color: '#dc2626', marginBottom: '1rem' }}>
+                <div
+                    style={{
+                        display: 'flex',
+                        gap: 8,
+                        alignItems: 'center',
+                        color: '#dc2626',
+                        marginBottom: '1rem',
+                    }}
+                >
                     <AlertTriangle size={16} /> <span>{error}</span>
                 </div>
             )}
@@ -262,7 +292,11 @@ const IssuesPanel: React.FC = () => {
                         <li key={i.id} style={{ marginBottom: 6 }}>
                             <button
                                 onClick={() => setSelectedId(i.id)}
-                                style={{ width: '100%', textAlign: 'left', fontWeight: i.id === selectedId ? 700 : 400 }}
+                                style={{
+                                    width: '100%',
+                                    textAlign: 'left',
+                                    fontWeight: i.id === selectedId ? 700 : 400,
+                                }}
                             >
                                 [{i.status}] {i.title}
                                 {i.needsVerification ? ' · verify!' : ''}
@@ -272,16 +306,32 @@ const IssuesPanel: React.FC = () => {
                     {issues.length === 0 && <li>{t('issues.empty')}</li>}
                 </ul>
                 {selected && (
-                    <div style={{ flex: '2 1 400px', border: '1px solid #e2e8f0', borderRadius: 8, padding: '1rem' }}>
+                    <div
+                        style={{
+                            flex: '2 1 400px',
+                            border: '1px solid #e2e8f0',
+                            borderRadius: 8,
+                            padding: '1rem',
+                        }}
+                    >
                         <h3 style={{ marginTop: 0 }}>{selected.title}</h3>
-                        <div style={{ color: '#64748b', marginBottom: 8 }}>
+                        <div style={{ color: 'var(--slate-500)', marginBottom: 8 }}>
                             {selected.status} · v{selected.version}
                             {selected.assigneeAgentId ? ` · ${selected.assigneeAgentId}` : ''}
                         </div>
                         {tree.length > 0 && (
-                            <div style={{ marginBottom: 8 }}>{tree.map((n) => n.title).join(' > ')}</div>
+                            <div style={{ marginBottom: 8 }}>
+                                {tree.map((n) => n.title).join(' > ')}
+                            </div>
                         )}
-                        <div style={{ display: 'flex', gap: '0.5rem', marginBottom: 8, flexWrap: 'wrap' }}>
+                        <div
+                            style={{
+                                display: 'flex',
+                                gap: '0.5rem',
+                                marginBottom: 8,
+                                flexWrap: 'wrap',
+                            }}
+                        >
                             <select value={agentId} onChange={(e) => setAgentId(e.target.value)}>
                                 <option value="">{t('issues.pick_agent')}</option>
                                 {agents.map((a) => (

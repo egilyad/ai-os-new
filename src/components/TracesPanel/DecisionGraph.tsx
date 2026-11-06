@@ -21,7 +21,12 @@ const TYPE_COLOR: Record<string, string> = {
  * DecisionGraph — интерактивный DAG когнитивных шагов. Зум, панорамирование,
  * тултипы, клик по узлу выделяет его.
  */
-const DecisionGraph: React.FC<DecisionGraphProps> = ({ steps, edges, selectedId, onSelectNode }) => {
+const DecisionGraph: React.FC<DecisionGraphProps> = ({
+    steps,
+    edges,
+    selectedId,
+    onSelectNode,
+}) => {
     const { nodes, visEdges } = useMemo(() => {
         const nodes: VisGraphNode[] = steps.map((s) => {
             const color = TYPE_COLOR[s.type] || '#64748b';
@@ -56,14 +61,34 @@ const DecisionGraph: React.FC<DecisionGraphProps> = ({ steps, edges, selectedId,
                 height={420}
             />
             <div
-                style={{ position: 'absolute', bottom: 15, right: 15, display: 'flex', gap: 15, fontSize: '0.6rem', color: 'var(--slate-400)', zIndex: 5, background: 'rgba(0,0,0,0.5)', padding: '0.4rem 0.7rem', borderRadius: 8 }}
+                style={{
+                    position: 'absolute',
+                    bottom: 15,
+                    right: 15,
+                    display: 'flex',
+                    gap: 15,
+                    fontSize: '0.6rem',
+                    color: 'var(--slate-400)',
+                    zIndex: 5,
+                    background: 'rgba(0,0,0,0.5)',
+                    padding: '0.4rem 0.7rem',
+                    borderRadius: 8,
+                }}
                 aria-label="Graph legend"
             >
                 <div style={flexAlignCenterGap5}>
-                    <div style={{ width: 10, height: 2, background: '#3b82f6' }} aria-hidden="true" /> Causal
+                    <div
+                        style={{ width: 10, height: 2, background: 'var(--accent)' }}
+                        aria-hidden="true"
+                    />{' '}
+                    Causal
                 </div>
                 <div style={flexAlignCenterGap5}>
-                    <div style={{ width: 10, height: 2, background: '#a855f7' }} aria-hidden="true" /> Data Flow
+                    <div
+                        style={{ width: 10, height: 2, background: '#a855f7' }}
+                        aria-hidden="true"
+                    />{' '}
+                    Data Flow
                 </div>
             </div>
         </div>

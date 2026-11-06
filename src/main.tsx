@@ -46,7 +46,11 @@ window.addEventListener('error', globalErrorHandler);
 
 // Memory monitor — logs every 30 seconds (DEV only)
 let memTimer: ReturnType<typeof setInterval> | undefined;
-if (import.meta.env.DEV && typeof window !== 'undefined' && (import.meta.env as unknown as { VITE_DEBUG_MEMORY?: string }).VITE_DEBUG_MEMORY) {
+if (
+    import.meta.env.DEV &&
+    typeof window !== 'undefined' &&
+    (import.meta.env as unknown as { VITE_DEBUG_MEMORY?: string }).VITE_DEBUG_MEMORY
+) {
     let memCount = 0;
     memTimer = setInterval(() => {
         const mem = (
@@ -79,8 +83,8 @@ const bootSplash = (
             height: '100vh',
             alignItems: 'center',
             justifyContent: 'center',
-            background: '#0f172a',
-            color: '#94a3b8',
+            background: 'var(--slate-900)',
+            color: 'var(--slate-400)',
             fontFamily: 'system-ui, sans-serif',
         }}
     >
@@ -90,7 +94,7 @@ const bootSplash = (
                     width: 32,
                     height: 32,
                     border: '3px solid #334155',
-                    borderTopColor: '#3b82f6',
+                    borderTopColor: 'var(--accent)',
                     borderRadius: '50%',
                     margin: '0 auto 1rem',
                     animation: 'spin 0.8s linear infinite',
@@ -119,8 +123,8 @@ try {
                 height: '100vh',
                 alignItems: 'center',
                 justifyContent: 'center',
-                background: '#0f172a',
-                color: '#ef4444',
+                background: 'var(--slate-900)',
+                color: 'var(--error)',
                 fontFamily: 'system-ui, sans-serif',
                 padding: '2rem',
                 textAlign: 'center',
@@ -130,7 +134,7 @@ try {
                 <div style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '0.5rem' }}>
                     System failed to initialize
                 </div>
-                <div style={{ fontSize: '0.85rem', color: '#94a3b8' }}>
+                <div style={{ fontSize: '0.85rem', color: 'var(--slate-400)' }}>
                     {e instanceof Error ? e.message : 'Unknown error'}
                 </div>
             </div>
@@ -168,43 +172,43 @@ interface WindowDebug {
 }
 if (import.meta.env.DEV) {
     const w = window as unknown as WindowDebug;
-w.__getState = async () => {
-    const { kernel, keyService } = await import('./kernel/instances');
-    const kState = kernel?.getState();
-    const proj = (kState as unknown as Record<string, unknown>)?.['keys'] as
-        Array<unknown> | undefined;
-    const keys = keyService?.getKeys();
-    return {
-        keyServiceCount: Array.isArray(keys) ? keys.length : 0,
-        projectionCount: Array.isArray(proj) ? proj.length : 0,
-        providerCount: kState?.providers ? Object.keys(kState.providers).length : 0,
-        dbsample:
-            Array.isArray(keys) && keys.length > 0
-                ? keys.slice(0, 3).map((k) => `${k.provider}/${k.label}`)
-                : [],
+    w.__getState = async () => {
+        const { kernel, keyService } = await import('./kernel/instances');
+        const kState = kernel?.getState();
+        const proj = (kState as unknown as Record<string, unknown>)?.['keys'] as
+            Array<unknown> | undefined;
+        const keys = keyService?.getKeys();
+        return {
+            keyServiceCount: Array.isArray(keys) ? keys.length : 0,
+            projectionCount: Array.isArray(proj) ? proj.length : 0,
+            providerCount: kState?.providers ? Object.keys(kState.providers).length : 0,
+            dbsample:
+                Array.isArray(keys) && keys.length > 0
+                    ? keys.slice(0, 3).map((k) => `${k.provider}/${k.label}`)
+                    : [],
+        };
     };
-};
 
-w.__checkConsistency = async () => {
-    const { truthConsistencyMonitor, kernel } = await import('./kernel/instances');
-    const kState = kernel?.getState();
-    if (!kState) {
-        LOGGER.warn('Main', '[Consistency] kernel not ready');
+    w.__checkConsistency = async () => {
+        const { truthConsistencyMonitor, kernel } = await import('./kernel/instances');
+        const kState = kernel?.getState();
+        if (!kState) {
+            LOGGER.warn('Main', '[Consistency] kernel not ready');
+            return null;
+        }
+        const report = truthConsistencyMonitor?.check(kState.providers, {});
+        LOGGER.info('Main', '[Consistency] Report', { value: JSON.stringify(report, null, 2) });
+        return report;
+    };
+
+    w.__probeAll = async () => {
+        const { probeService } = await import('./kernel/instances');
+        if (probeService && typeof probeService.probeAll === 'function') {
+            const result = await probeService.probeAll();
+            LOGGER.info('Main', '[Probe] probeAll completed', { value: JSON.stringify(result) });
+            return result;
+        }
+        LOGGER.warn('Main', '[Probe] probeService not available');
         return null;
-    }
-    const report = truthConsistencyMonitor?.check(kState.providers, {});
-    LOGGER.info('Main', '[Consistency] Report', { value: JSON.stringify(report, null, 2) });
-    return report;
-};
-
-w.__probeAll = async () => {
-    const { probeService } = await import('./kernel/instances');
-    if (probeService && typeof probeService.probeAll === 'function') {
-        const result = await probeService.probeAll();
-        LOGGER.info('Main', '[Probe] probeAll completed', { value: JSON.stringify(result) });
-        return result;
-    }
-    LOGGER.warn('Main', '[Probe] probeService not available');
-    return null;
-};
+    };
 } // end dev-only console helpers

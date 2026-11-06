@@ -60,7 +60,7 @@ const VisGraph: React.FC<Props> = ({
                 border: n.borderColor ?? '#0f172a',
                 highlight: { background: n.color ?? '#8b5cf6', border: '#fff' },
             },
-            font: { color: '#cbd5e1', size: 12 },
+            font: { color: 'var(--slate-300)', size: 12 },
             borderWidth: n.borderColor ? 3 : 2,
             shadow: true,
         }));
@@ -83,7 +83,16 @@ const VisGraph: React.FC<Props> = ({
                 edges: { arrowStrikethrough: false },
                 layout: { hierarchical: { enabled: hierarchical } },
                 physics: physics
-                    ? { stabilization: { iterations: 200 }, barnesHut: { gravitationalConstant: -3500, centralGravity: 0.25, springLength: 160, springConstant: 0.04, damping: 0.09 } }
+                    ? {
+                          stabilization: { iterations: 200 },
+                          barnesHut: {
+                              gravitationalConstant: -3500,
+                              centralGravity: 0.25,
+                              springLength: 160,
+                              springConstant: 0.04,
+                              damping: 0.09,
+                          },
+                      }
                     : { enabled: false },
                 interaction: { hover: true, tooltipDelay: 150, dragView: true, zoomView: true },
             },
@@ -105,7 +114,18 @@ const VisGraph: React.FC<Props> = ({
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [nodes, edges, hierarchical, physics]);
 
-    return <div ref={containerRef} style={{ width: '100%', height, border: '1px solid rgba(255,255,255,0.06)', borderRadius: 12, background: 'rgba(0,0,0,0.2)' }} />;
+    return (
+        <div
+            ref={containerRef}
+            style={{
+                width: '100%',
+                height,
+                border: '1px solid rgba(255,255,255,0.06)',
+                borderRadius: 12,
+                background: 'rgba(0,0,0,0.2)',
+            }}
+        />
+    );
 };
 
 export default VisGraph;

@@ -53,11 +53,9 @@ const CompaniesPanel: React.FC = () => {
         setLoading(true);
         setError(null);
         try {
-            const data = (await gatewayApi(
-                url.replace(/\/$/, ''),
-                secret,
-                '/api/companies',
-            )) as { companies?: GatewayCompany[] };
+            const data = (await gatewayApi(url.replace(/\/$/, ''), secret, '/api/companies')) as {
+                companies?: GatewayCompany[];
+            };
             const list = Array.isArray(data.companies) ? data.companies : [];
             setCompanies(list);
             setUsingFallback(false);
@@ -98,7 +96,14 @@ const CompaniesPanel: React.FC = () => {
 
     return (
         <div style={{ padding: '1.5rem', maxWidth: 1100, margin: '0 auto' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem' }}>
+            <div
+                style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.75rem',
+                    marginBottom: '1rem',
+                }}
+            >
                 <Server size={20} />
                 <h2 style={{ margin: 0 }}>{t('companies.title')}</h2>
                 <button
@@ -129,7 +134,15 @@ const CompaniesPanel: React.FC = () => {
             </div>
 
             {error && (
-                <div style={{ display: 'flex', gap: 8, alignItems: 'center', color: '#f59e0b', marginBottom: '1rem' }}>
+                <div
+                    style={{
+                        display: 'flex',
+                        gap: 8,
+                        alignItems: 'center',
+                        color: 'var(--warning)',
+                        marginBottom: '1rem',
+                    }}
+                >
                     <AlertTriangle size={16} />
                     <span>
                         {t('companies.no_gateway')}: {error}. {t('companies.local_fallback')}
@@ -163,22 +176,41 @@ const CompaniesPanel: React.FC = () => {
                                         fontWeight: c.id === selectedId ? 700 : 400,
                                     }}
                                 >
-                                    {c.name} · hb:{c.heartbeats} · {(c.agents || []).length} {t('companies.agents')}
+                                    {c.name} · hb:{c.heartbeats} · {(c.agents || []).length}{' '}
+                                    {t('companies.agents')}
                                 </button>
                             </li>
                         ))}
                     </ul>
                     {selected && (
-                        <div style={{ flex: '2 1 400px', border: '1px solid #e2e8f0', borderRadius: 8, padding: '1rem' }}>
+                        <div
+                            style={{
+                                flex: '2 1 400px',
+                                border: '1px solid #e2e8f0',
+                                borderRadius: 8,
+                                padding: '1rem',
+                            }}
+                        >
                             <h3 style={{ marginTop: 0 }}>{selected.name}</h3>
-                            <div style={{ color: '#64748b', marginBottom: 8 }}>{selected.mission}</div>
+                            <div style={{ color: 'var(--slate-500)', marginBottom: 8 }}>
+                                {selected.mission}
+                            </div>
                             <div style={{ marginBottom: 8 }}>
-                                {t('companies.heartbeats')}: {selected.heartbeats} · {t('companies.budget')}:{' '}
-                                {selected.monthlyBudgetCents === null || selected.monthlyBudgetCents === undefined
+                                {t('companies.heartbeats')}: {selected.heartbeats} ·{' '}
+                                {t('companies.budget')}:{' '}
+                                {selected.monthlyBudgetCents === null ||
+                                selected.monthlyBudgetCents === undefined
                                     ? t('companies.unlimited')
                                     : `${selected.monthlyBudgetCents}¢`}
                             </div>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 6 }}>
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: 6,
+                                    marginBottom: 6,
+                                }}
+                            >
                                 <Users size={14} />
                                 <strong>
                                     {agents.length} {t('companies.agents')}

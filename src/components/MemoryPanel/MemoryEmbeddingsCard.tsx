@@ -104,7 +104,13 @@ const MemoryEmbeddingsCard: React.FC = () => {
                 <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
                     <Sparkles size={18} color="#a78bfa" aria-hidden="true" />
                     <div>
-                        <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--slate-50)' }}>
+                        <div
+                            style={{
+                                fontSize: '0.9rem',
+                                fontWeight: 700,
+                                color: 'var(--slate-50)',
+                            }}
+                        >
                             {t('memory.embeddings_title')}
                         </div>
                         <div
@@ -207,7 +213,7 @@ const MemoryEmbeddingsCard: React.FC = () => {
                             borderRadius: 8,
                             border: '1px solid rgba(167,139,250,0.35)',
                             background: 'rgba(167,139,250,0.12)',
-                            color: '#a78bfa',
+                            color: 'var(--purple-muted)',
                             fontSize: '0.78rem',
                             fontWeight: 600,
                             cursor: busy ? 'wait' : 'pointer',

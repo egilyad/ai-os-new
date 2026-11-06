@@ -132,7 +132,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 </div>
 
                 <div style={{ padding: '0.5rem 1rem' }}>
-                    <div className="provider-search-wrapper" style={{ marginBottom: '0.5rem', position: 'relative' }}>
+                    <div
+                        className="provider-search-wrapper"
+                        style={{ marginBottom: '0.5rem', position: 'relative' }}
+                    >
                         <Search className="provider-search-icon" size={16} />
                         <input
                             type="text"
@@ -144,7 +147,24 @@ export const Sidebar: React.FC<SidebarProps> = ({
                             style={{ fontSize: '0.8rem', paddingRight: 36 }}
                         />
                         {!isCollapsed && !sidebarSearchQuery && (
-                            <span style={{ position: 'absolute', right: 8, top: '50%', transform: 'translateY(-50%)', fontSize: '0.65rem', color: 'var(--slate-500)', border: '1px solid rgba(148,163,184,0.2)', borderRadius: 4, padding: '1px 5px', lineHeight: 1.2, pointerEvents: 'none', background: 'rgba(255,255,255,0.04)' }}>⌘K</span>
+                            <span
+                                style={{
+                                    position: 'absolute',
+                                    right: 8,
+                                    top: '50%',
+                                    transform: 'translateY(-50%)',
+                                    fontSize: '0.65rem',
+                                    color: 'var(--slate-500)',
+                                    border: '1px solid rgba(148,163,184,0.2)',
+                                    borderRadius: 4,
+                                    padding: '1px 5px',
+                                    lineHeight: 1.2,
+                                    pointerEvents: 'none',
+                                    background: 'rgba(255,255,255,0.04)',
+                                }}
+                            >
+                                ⌘K
+                            </span>
                         )}
                     </div>
                 </div>
@@ -244,14 +264,22 @@ export const Sidebar: React.FC<SidebarProps> = ({
                                                     activeTab === item.id ? 'page' : undefined
                                                 }
                                                 disabled={isDisabled}
-                                                title={isPlanned ? `${t(navLabelKey[item.id] ?? 'nav.overview')} — Planned` : undefined}
+                                                title={
+                                                    isPlanned
+                                                        ? `${t(navLabelKey[item.id] ?? 'nav.overview')} — Planned`
+                                                        : undefined
+                                                }
                                                 style={
                                                     {
                                                         '--active-color': item.color,
                                                         justifyContent: isCollapsed
                                                             ? 'center'
                                                             : 'flex-start',
-                                                        opacity: isDisabled ? 0.3 : isPlanned ? 0.55 : 1,
+                                                        opacity: isDisabled
+                                                            ? 0.3
+                                                            : isPlanned
+                                                              ? 0.55
+                                                              : 1,
                                                         cursor: isDisabled ? 'default' : 'pointer',
                                                     } as React.CSSProperties
                                                 }
@@ -264,13 +292,60 @@ export const Sidebar: React.FC<SidebarProps> = ({
                                                     {!isCollapsed && <NavBadge routeId={item.id} />}
                                                 </span>
                                                 {!isCollapsed && (
-                                                    <span className="nav-label" style={{ display: 'flex', alignItems: 'center', gap: 6, flex: 1, minWidth: 0 }}>
-                                                        <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{t(navLabelKey[item.id] ?? 'nav.overview')}</span>
+                                                    <span
+                                                        className="nav-label"
+                                                        style={{
+                                                            display: 'flex',
+                                                            alignItems: 'center',
+                                                            gap: 6,
+                                                            flex: 1,
+                                                            minWidth: 0,
+                                                        }}
+                                                    >
+                                                        <span
+                                                            style={{
+                                                                flex: 1,
+                                                                overflow: 'hidden',
+                                                                textOverflow: 'ellipsis',
+                                                                whiteSpace: 'nowrap',
+                                                            }}
+                                                        >
+                                                            {t(
+                                                                navLabelKey[item.id] ??
+                                                                    'nav.overview',
+                                                            )}
+                                                        </span>
                                                         {isPlanned && (
-                                                            <span style={{ fontSize: '0.6rem', fontWeight: 700, color: '#a78bfa', border: '1px solid rgba(167,139,250,0.4)', borderRadius: 999, padding: '0 5px', lineHeight: '14px', flexShrink: 0 }}>Planned</span>
+                                                            <span
+                                                                style={{
+                                                                    fontSize: '0.6rem',
+                                                                    fontWeight: 700,
+                                                                    color: 'var(--purple-muted)',
+                                                                    border: '1px solid rgba(167,139,250,0.4)',
+                                                                    borderRadius: 999,
+                                                                    padding: '0 5px',
+                                                                    lineHeight: '14px',
+                                                                    flexShrink: 0,
+                                                                }}
+                                                            >
+                                                                Planned
+                                                            </span>
                                                         )}
                                                         {!isPlanned && item.experimental && (
-                                                            <span style={{ fontSize: '0.6rem', fontWeight: 700, color: '#f59e0b', border: '1px solid rgba(245,158,11,0.4)', borderRadius: 999, padding: '0 5px', lineHeight: '14px', flexShrink: 0 }}>Beta</span>
+                                                            <span
+                                                                style={{
+                                                                    fontSize: '0.6rem',
+                                                                    fontWeight: 700,
+                                                                    color: 'var(--warning)',
+                                                                    border: '1px solid rgba(245,158,11,0.4)',
+                                                                    borderRadius: 999,
+                                                                    padding: '0 5px',
+                                                                    lineHeight: '14px',
+                                                                    flexShrink: 0,
+                                                                }}
+                                                            >
+                                                                Beta
+                                                            </span>
                                                         )}
                                                     </span>
                                                 )}
@@ -302,7 +377,28 @@ export const Sidebar: React.FC<SidebarProps> = ({
                         )}
                     </div>
                     {!isCollapsed && (
-                        <div style={{ fontSize: '0.65rem', color: 'var(--slate-500)', marginTop: 6, textAlign: 'center', opacity: 0.7 }}>Press <span style={{ border: '1px solid rgba(148,163,184,0.2)', borderRadius: 3, padding: '0 4px', background: 'rgba(255,255,255,0.04)' }}>⌘K</span> to search</div>
+                        <div
+                            style={{
+                                fontSize: '0.65rem',
+                                color: 'var(--slate-500)',
+                                marginTop: 6,
+                                textAlign: 'center',
+                                opacity: 0.7,
+                            }}
+                        >
+                            Press{' '}
+                            <span
+                                style={{
+                                    border: '1px solid rgba(148,163,184,0.2)',
+                                    borderRadius: 3,
+                                    padding: '0 4px',
+                                    background: 'rgba(255,255,255,0.04)',
+                                }}
+                            >
+                                ⌘K
+                            </span>{' '}
+                            to search
+                        </div>
                     )}
                 </div>
             </aside>

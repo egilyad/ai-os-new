@@ -22,16 +22,19 @@ const IntelligenceGraph: React.FC = () => {
             setActiveNodeIds(new Set());
             setErrorNodeIds(new Set());
         });
-        const unsubActive = eventBus.onSafe<Record<string, unknown>>('cognitive:step:active', (d) => {
-            if (d?.nodeId) {
-                setActiveNodeIds((prev) => new Set(prev).add(d.nodeId as string));
-                setErrorNodeIds((prev) => {
-                    const n = new Set(prev);
-                    n.delete(d.nodeId as string);
-                    return n;
-                });
-            }
-        });
+        const unsubActive = eventBus.onSafe<Record<string, unknown>>(
+            'cognitive:step:active',
+            (d) => {
+                if (d?.nodeId) {
+                    setActiveNodeIds((prev) => new Set(prev).add(d.nodeId as string));
+                    setErrorNodeIds((prev) => {
+                        const n = new Set(prev);
+                        n.delete(d.nodeId as string);
+                        return n;
+                    });
+                }
+            },
+        );
         const unsubComplete = eventBus.onSafe<Record<string, unknown>>(
             'cognitive:step:completed',
             (d) => {
@@ -116,13 +119,29 @@ const IntelligenceGraph: React.FC = () => {
                 }}
             >
                 <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                    <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#3b82f6' }} /> Active
+                    <div
+                        style={{
+                            width: 6,
+                            height: 6,
+                            borderRadius: '50%',
+                            background: 'var(--accent)',
+                        }}
+                    />{' '}
+                    Active
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                    <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#ef4444' }} /> Error
+                    <div
+                        style={{
+                            width: 6,
+                            height: 6,
+                            borderRadius: '50%',
+                            background: 'var(--error)',
+                        }}
+                    />{' '}
+                    Error
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                    <div style={{ width: 10, height: 2, background: '#ef4444' }} /> Error Edge
+                    <div style={{ width: 10, height: 2, background: 'var(--error)' }} /> Error Edge
                 </div>
             </div>
         </div>

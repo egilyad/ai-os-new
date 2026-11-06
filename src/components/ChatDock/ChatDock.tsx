@@ -40,7 +40,7 @@ export default function ChatDock() {
                     width: 52,
                     height: 52,
                     borderRadius: '50%',
-                    background: '#3b82f6',
+                    background: 'var(--accent)',
                     border: 'none',
                     color: 'white',
                     display: 'flex',
@@ -61,7 +61,7 @@ export default function ChatDock() {
                             position: 'absolute',
                             top: -4,
                             right: -4,
-                            background: '#ef4444',
+                            background: 'var(--error)',
                             color: 'white',
                             fontSize: 10,
                             fontWeight: 800,
@@ -213,7 +213,7 @@ export default function ChatDock() {
                                             {d.unread > 0 && (
                                                 <span
                                                     style={{
-                                                        background: '#ef4444',
+                                                        background: 'var(--error)',
                                                         color: 'white',
                                                         fontSize: 10,
                                                         padding: '1px 5px',

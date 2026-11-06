@@ -7,7 +7,7 @@ export const SCHEMATICS_METADATA = {
     lastName: 'Пайкин',
     displayName: 'Игорь Пайкин',
     baseRole: 'Инженер-Схемотехник',
-    avatar: { emoji: '🤖', color: '#f59e0b' },
+    avatar: { emoji: '🤖', color: 'var(--warning)' },
     provider: 'gemini',
     model: 'gemini-3.1-flash-lite',
     specializations: ['Силовая электроника', 'Датчики', 'Гибридные контуры'] as string[],

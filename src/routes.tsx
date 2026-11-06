@@ -18,7 +18,7 @@ function Panel(key: string): React.ComponentType<Record<string, unknown>> {
     const component = PANEL_COMPONENTS[key];
     if (!component) {
         const Fallback: React.FC = () => (
-            <div style={{ padding: '2rem', textAlign: 'center', color: '#64748b' }}>
+            <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--slate-500)' }}>
                 Panel "{key}" not found
             </div>
         );
@@ -76,7 +76,7 @@ const NotFound: React.FC = () => {
                 style={{
                     fontSize: '5rem',
                     fontWeight: 900,
-                    color: '#64748b',
+                    color: 'var(--slate-500)',
                     opacity: 0.15,
                     lineHeight: 1,
                     letterSpacing: '-0.05em',
@@ -84,13 +84,13 @@ const NotFound: React.FC = () => {
             >
                 404
             </div>
-            <div style={{ fontSize: '1.2rem', color: '#94a3b8', fontWeight: 600 }}>
+            <div style={{ fontSize: '1.2rem', color: 'var(--slate-400)', fontWeight: 600 }}>
                 {t('not_found.title')}
             </div>
             <div
                 style={{
                     fontSize: '0.85rem',
-                    color: '#64748b',
+                    color: 'var(--slate-500)',
                     maxWidth: 400,
                     textAlign: 'center',
                 }}
@@ -105,7 +105,7 @@ const NotFound: React.FC = () => {
                         left: 12,
                         top: '50%',
                         transform: 'translateY(-50%)',
-                        color: '#64748b',
+                        color: 'var(--slate-500)',
                         pointerEvents: 'none',
                     }}
                 />
@@ -120,7 +120,7 @@ const NotFound: React.FC = () => {
                         background: 'rgba(255,255,255,0.05)',
                         border: '1px solid rgba(255,255,255,0.1)',
                         borderRadius: 12,
-                        color: '#e2e8f0',
+                        color: 'var(--slate-200)',
                         fontSize: '0.9rem',
                         outline: 'none',
                     }}
@@ -147,7 +147,7 @@ const NotFound: React.FC = () => {
                             background: 'rgba(255,255,255,0.03)',
                             border: '1px solid rgba(255,255,255,0.08)',
                             borderRadius: 10,
-                            color: '#94a3b8',
+                            color: 'var(--slate-400)',
                             cursor: 'pointer',
                             fontSize: '0.8rem',
                             fontWeight: 600,
@@ -295,7 +295,11 @@ export const AppRoutes: React.FC = () => {
             />
             {/* Debate-live is unified into the main debate view (live arena inline).
                 Keep the old URL as a redirect so bookmarks/links still work. */}
-            <Route key="/debates/live" path="/debates/live" element={<Navigate to="/debates/arena" replace />} />
+            <Route
+                key="/debates/live"
+                path="/debates/live"
+                element={<Navigate to="/debates/arena" replace />}
+            />
             <Route
                 key="/debates/replay"
                 path="/debates/replay"

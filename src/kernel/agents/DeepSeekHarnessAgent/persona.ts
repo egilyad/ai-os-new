@@ -8,7 +8,7 @@ export const DEEPSEEK_HARNESS_METADATA = {
     lastName: 'Алиев',
     displayName: 'Тимур Алиев',
     baseRole: 'Агент-воронка (tool pipeline)',
-    avatar: { emoji: '🧱', color: '#a78bfa' },
+    avatar: { emoji: '🧱', color: 'var(--purple-muted)' },
     provider: 'gemini',
     model: 'gemini-3.1-flash-lite',
     specializations: [

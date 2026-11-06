@@ -80,7 +80,11 @@ const RunsPanel: React.FC = () => {
             const q = statusFilter
                 ? `?status=${encodeURIComponent(statusFilter)}&limit=${limit}`
                 : `?limit=${limit}`;
-            const data = await api<{ runs?: Run[] }>(base, secret, `/api/companies/${companyId}/runs${q}`);
+            const data = await api<{ runs?: Run[] }>(
+                base,
+                secret,
+                `/api/companies/${companyId}/runs${q}`,
+            );
             const list = Array.isArray(data.runs) ? data.runs.slice().reverse() : [];
             setRuns(list);
             if (list.length > 0 && !list.some((x) => x.id === selectedId)) {
@@ -116,16 +120,32 @@ const RunsPanel: React.FC = () => {
 
     return (
         <div style={{ padding: '1.5rem', maxWidth: 1100, margin: '0 auto' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem' }}>
+            <div
+                style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.75rem',
+                    marginBottom: '1rem',
+                }}
+            >
                 <Activity size={20} />
                 <h2 style={{ margin: 0 }}>{t('runs.title')}</h2>
-                <button onClick={() => void loadRuns()} disabled={loading} style={{ marginLeft: 'auto' }}>
+                <button
+                    onClick={() => void loadRuns()}
+                    disabled={loading}
+                    style={{ marginLeft: 'auto' }}
+                >
                     {loading ? <Loader2 size={14} /> : <RefreshCw size={14} />} {t('runs.refresh')}
                 </button>
             </div>
 
             <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
-                <input value={url} onChange={(e) => setUrl(e.target.value)} placeholder={t('runs.url')} style={{ flex: '2 1 200px' }} />
+                <input
+                    value={url}
+                    onChange={(e) => setUrl(e.target.value)}
+                    placeholder={t('runs.url')}
+                    style={{ flex: '2 1 200px' }}
+                />
                 <input
                     value={secret}
                     onChange={(e) => setSecret(e.target.value)}
@@ -151,7 +171,15 @@ const RunsPanel: React.FC = () => {
             </div>
 
             {error && (
-                <div style={{ display: 'flex', gap: 8, alignItems: 'center', color: '#dc2626', marginBottom: '1rem' }}>
+                <div
+                    style={{
+                        display: 'flex',
+                        gap: 8,
+                        alignItems: 'center',
+                        color: '#dc2626',
+                        marginBottom: '1rem',
+                    }}
+                >
                     <AlertTriangle size={16} /> <span>{error}</span>
                 </div>
             )}
@@ -159,7 +187,14 @@ const RunsPanel: React.FC = () => {
             <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
                 <ul style={{ flex: '1 1 300px', listStyle: 'none', padding: 0, margin: 0 }}>
                     {loading ? (
-                        <li style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#64748b' }}>
+                        <li
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 8,
+                                color: 'var(--slate-500)',
+                            }}
+                        >
                             <Loader2 size={16} /> {t('runs.loading') ?? 'Загрузка…'}
                         </li>
                     ) : (
@@ -168,7 +203,11 @@ const RunsPanel: React.FC = () => {
                                 <li key={x.id} style={{ marginBottom: 6 }}>
                                     <button
                                         onClick={() => setSelectedId(x.id)}
-                                        style={{ width: '100%', textAlign: 'left', fontWeight: x.id === selectedId ? 700 : 400 }}
+                                        style={{
+                                            width: '100%',
+                                            textAlign: 'left',
+                                            fontWeight: x.id === selectedId ? 700 : 400,
+                                        }}
                                     >
                                         [{x.status}] {x.trigger}
                                         {x.agentId ? ` · ${x.agentId.slice(0, 14)}` : ''}
@@ -187,12 +226,21 @@ const RunsPanel: React.FC = () => {
                     )}
                 </ul>
                 {selected && (
-                    <div style={{ flex: '2 1 400px', border: '1px solid #e2e8f0', borderRadius: 8, padding: '1rem' }}>
+                    <div
+                        style={{
+                            flex: '2 1 400px',
+                            border: '1px solid #e2e8f0',
+                            borderRadius: 8,
+                            padding: '1rem',
+                        }}
+                    >
                         <h3 style={{ marginTop: 0 }}>
                             {selected.trigger} · {selected.status}
                         </h3>
-                        <div style={{ color: '#64748b', marginBottom: 8 }}>
-                            {selected.createdAt ? new Date(selected.createdAt).toLocaleString() : '—'}
+                        <div style={{ color: 'var(--slate-500)', marginBottom: 8 }}>
+                            {selected.createdAt
+                                ? new Date(selected.createdAt).toLocaleString()
+                                : '—'}
                             {selected.ref ? ` · ${selected.ref}` : ''}
                         </div>
                         <ol style={{ paddingLeft: '1.25rem', margin: 0 }}>

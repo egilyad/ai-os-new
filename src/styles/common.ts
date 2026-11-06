@@ -175,7 +175,7 @@ export const glassPanelAlt: CSSProperties = {
 export const errorContainer: CSSProperties = {
     padding: '0.75rem 1rem',
     borderRadius: 8,
-    background: 'rgba(239,68,68,0.1)',
+    background: 'var(--error-tint)',
     border: '1px solid rgba(239,68,68,0.3)',
     color: '#fca5a5',
     fontSize: '0.85rem',
@@ -302,7 +302,7 @@ export const btnDangerSm: CSSProperties = {
     padding: '0.4rem 0.75rem',
     borderRadius: 6,
     border: '1px solid rgba(239,68,68,0.2)',
-    background: 'rgba(239,68,68,0.1)',
+    background: 'var(--error-tint)',
     color: 'var(--error)',
     cursor: 'pointer',
     fontWeight: 600,
@@ -315,7 +315,7 @@ export const btnSuccessSm: CSSProperties = {
     padding: '0.4rem 0.75rem',
     borderRadius: 6,
     border: '1px solid rgba(34,197,94,0.2)',
-    background: 'rgba(34,197,94,0.1)',
+    background: 'var(--success-tint)',
     color: 'var(--success)',
     cursor: 'pointer',
     fontWeight: 600,
@@ -404,7 +404,7 @@ export const iconBtnBlue: CSSProperties = {
     height: 30,
     borderRadius: 6,
     border: '1px solid rgba(59,130,246,0.25)',
-    background: 'rgba(59,130,246,0.1)',
+    background: 'var(--accent-tint)',
     color: '#60a5fa',
     cursor: 'pointer',
     display: 'grid',
@@ -693,14 +693,14 @@ export const textErrorLabel: CSSProperties = {
 export const successBox: CSSProperties = {
     marginTop: '0.5rem',
     padding: '0.75rem',
-    background: 'rgba(16, 185, 129, 0.1)',
+    background: 'var(--success-tint)',
     border: '1px solid rgba(16, 185, 129, 0.2)',
     borderRadius: 8,
 };
 export const errorBox: CSSProperties = {
     marginTop: '0.5rem',
     padding: '0.75rem',
-    background: 'rgba(239, 68, 68, 0.1)',
+    background: 'var(--error-tint)',
     border: '1px solid rgba(239, 68, 68, 0.2)',
     borderRadius: 8,
 };
@@ -753,7 +753,7 @@ export const textSmMutedMarginTop: CSSProperties = {
 /* Cross-file common patterns */
 export const errorBanner: CSSProperties = {
     padding: '0.5rem 1rem',
-    background: 'rgba(239,68,68,0.1)',
+    background: 'var(--error-tint)',
     border: '1px solid rgba(239,68,68,0.2)',
     borderRadius: 10,
     color: '#fca5a5',
@@ -856,7 +856,7 @@ export const debateReturnActiveBtn: CSSProperties = {
     border: 'none',
     cursor: 'pointer',
     fontSize: '0.85rem',
-    background: 'rgba(16,185,129,0.1)',
+    background: 'var(--success-tint)',
     color: 'var(--success)',
     fontWeight: 600,
     display: 'flex',
@@ -1137,7 +1137,7 @@ export const amberBtn: CSSProperties = {
     borderRadius: 8,
     fontSize: '0.85rem',
     fontWeight: 700,
-    background: 'rgba(245,158,11,0.1)',
+    background: 'var(--warning-tint)',
     border: '1px solid rgba(245,158,11,0.3)',
     cursor: 'pointer',
 };
@@ -1147,7 +1147,7 @@ export const dangerBtn: CSSProperties = {
     borderRadius: 8,
     fontSize: '0.85rem',
     fontWeight: 700,
-    background: 'rgba(239,68,68,0.1)',
+    background: 'var(--error-tint)',
     border: '1px solid rgba(239,68,68,0.3)',
     cursor: 'pointer',
 };
@@ -1156,7 +1156,7 @@ export const errorBannerLg: CSSProperties = {
     alignItems: 'center',
     gap: 12,
     padding: '0.75rem 1rem',
-    background: 'rgba(239,68,68,0.1)',
+    background: 'var(--error-tint)',
     border: '1px solid rgba(239,68,68,0.2)',
     borderRadius: 12,
     color: '#fca5a5',
@@ -1478,7 +1478,7 @@ export const docCardTitle: CSSProperties = {
 };
 export const docIconContainer: CSSProperties = {
     padding: '0.5rem',
-    background: 'rgba(59,130,246,0.1)',
+    background: 'var(--accent-tint)',
     borderRadius: 10,
 };
 export const docCardDesc: CSSProperties = {
@@ -1892,7 +1892,7 @@ export const iconCircleBase: CSSProperties = {
     borderRadius: '50%',
     marginBottom: '1rem',
     border: '1px solid rgba(168,85,247,0.2)',
-    background: 'rgba(168,85,247,0.1)',
+    background: 'var(--purple-tint)',
 };
 export const iconCircleBlue: CSSProperties = {
     display: 'inline-flex',
@@ -1900,7 +1900,7 @@ export const iconCircleBlue: CSSProperties = {
     borderRadius: '50%',
     marginBottom: '1rem',
     border: '1px solid rgba(59,130,246,0.2)',
-    background: 'rgba(59,130,246,0.1)',
+    background: 'var(--accent-tint)',
 };
 export const iconCircleGreen: CSSProperties = {
     display: 'inline-flex',
@@ -1908,7 +1908,7 @@ export const iconCircleGreen: CSSProperties = {
     borderRadius: '50%',
     marginBottom: '1rem',
     border: '1px solid rgba(16,185,129,0.2)',
-    background: 'rgba(16,185,129,0.1)',
+    background: 'var(--success-tint)',
 };
 export const btnControlBase: CSSProperties = {
     padding: '0.6rem',

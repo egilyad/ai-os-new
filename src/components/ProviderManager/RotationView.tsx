@@ -1,6 +1,12 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { RefreshCw, Repeat, Timer, Link2 } from 'lucide-react';
-import { keyService, rotationService, sessionAffinityStore, keyStateStore, rootLogger } from '../../kernel/instances';
+import {
+    keyService,
+    rotationService,
+    sessionAffinityStore,
+    keyStateStore,
+    rootLogger,
+} from '../../kernel/instances';
 import { usePolling } from '../Common/usePolling';
 import { PROVIDER_DEFAULT_MODELS } from '../../kernel/utils/provider-default-models';
 import { DEBATE_MODEL_PRIORITY } from '../../kernel/services/debate-runtime/debate-query-engine';
@@ -34,8 +40,12 @@ const RotationView: React.FC<RotationViewProps> = ({ keys }) => {
     const [strategies, setStrategies] = useState<Record<string, PoolStrategy>>({});
     const [ttlHours, setTtlHours] = useState<Record<string, string>>({});
     const [autoRotate, setAutoRotate] = useState<Record<string, boolean>>({});
-    const [ttlInfo, setTtlInfo] = useState<Record<string, { remainingMs: number; expiresAt: string | null; active: boolean }>>({});
-    const [bindings, setBindings] = useState<Array<{ session: string; key: string; provider: string; status: string }>>([]);
+    const [ttlInfo, setTtlInfo] = useState<
+        Record<string, { remainingMs: number; expiresAt: string | null; active: boolean }>
+    >({});
+    const [bindings, setBindings] = useState<
+        Array<{ session: string; key: string; provider: string; status: string }>
+    >([]);
 
     const refresh = useCallback(() => setRefreshKey((k) => k + 1), []);
     usePolling(refresh, 15000);
@@ -52,7 +62,10 @@ const RotationView: React.FC<RotationViewProps> = ({ keys }) => {
         }
         setStrategies(s);
 
-        const t: Record<string, { remainingMs: number; expiresAt: string | null; active: boolean }> = {};
+        const t: Record<
+            string,
+            { remainingMs: number; expiresAt: string | null; active: boolean }
+        > = {};
         const hours: Record<string, string> = {};
         const auto: Record<string, boolean> = {};
         for (const k of keys) {
@@ -75,8 +88,15 @@ const RotationView: React.FC<RotationViewProps> = ({ keys }) => {
                     let status = 'unknown';
                     try {
                         status = keyStateStore?.get(b.keyId)?.status ?? 'unknown';
-                    } catch { /* ignore */ }
-                    return { session: b.sessionId, key: maskKey(b.keyId), provider: b.provider, status };
+                    } catch {
+                        /* ignore */
+                    }
+                    return {
+                        session: b.sessionId,
+                        key: maskKey(b.keyId),
+                        provider: b.provider,
+                        status,
+                    };
                 }),
             );
         } catch {
@@ -141,45 +161,91 @@ const RotationView: React.FC<RotationViewProps> = ({ keys }) => {
                 <div style={{ flex: 1 }}>
                     <h3 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 700 }}>Rotation</h3>
                     <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-                        Three separate mechanisms decide which key answers. This tab shows all three live.
+                        Three separate mechanisms decide which key answers. This tab shows all three
+                        live.
                     </p>
                 </div>
                 <button
                     onClick={refresh}
                     aria-label="Refresh rotation state"
-                    style={{ background: 'transparent', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 8, padding: '0.4rem 0.7rem', cursor: 'pointer', color: 'var(--slate-300)', display: 'flex', alignItems: 'center', gap: 6 }}
+                    style={{
+                        background: 'transparent',
+                        border: '1px solid rgba(255,255,255,0.1)',
+                        borderRadius: 8,
+                        padding: '0.4rem 0.7rem',
+                        cursor: 'pointer',
+                        color: 'var(--slate-300)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 6,
+                    }}
                 >
                     <RefreshCw size={14} /> Refresh
                 </button>
             </div>
 
             {/* 1. Mechanisms explainer */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '0.75rem' }}>
+            <div
+                style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+                    gap: '0.75rem',
+                }}
+            >
                 <div className="glass-panel" style={{ padding: '1rem' }}>
                     <strong>1 · Per-request pick</strong>
-                    <p style={{ margin: '0.4rem 0 0', fontSize: '0.78rem', color: 'var(--text-muted)' }}>
-                        Pool strategy per provider (round-robin / least-usage / random) + router scoring (health ≥ 75, circuit, cost, latency). Change the strategy below — it persists.
+                    <p
+                        style={{
+                            margin: '0.4rem 0 0',
+                            fontSize: '0.78rem',
+                            color: 'var(--text-muted)',
+                        }}
+                    >
+                        Pool strategy per provider (round-robin / least-usage / random) + router
+                        scoring (health ≥ 75, circuit, cost, latency). Change the strategy below —
+                        it persists.
                     </p>
                 </div>
                 <div className="glass-panel" style={{ padding: '1rem' }}>
                     <strong>2 · Session affinity</strong>
-                    <p style={{ margin: '0.4rem 0 0', fontSize: '0.78rem', color: 'var(--text-muted)' }}>
-                        A healthy bound key serves its session until circuit/rate/auth flags or health drops. {bindings.length > 0 ? `${bindings.length} live bindings shown below.` : 'No live bindings right now.'}
+                    <p
+                        style={{
+                            margin: '0.4rem 0 0',
+                            fontSize: '0.78rem',
+                            color: 'var(--text-muted)',
+                        }}
+                    >
+                        A healthy bound key serves its session until circuit/rate/auth flags or
+                        health drops.{' '}
+                        {bindings.length > 0
+                            ? `${bindings.length} live bindings shown below.`
+                            : 'No live bindings right now.'}
                     </p>
                 </div>
                 <div className="glass-panel" style={{ padding: '1rem' }}>
                     <strong>3 · TTL secret rotation</strong>
-                    <p style={{ margin: '0.4rem 0 0', fontSize: '0.78rem', color: 'var(--text-muted)' }}>
-                        Expiry timers per key (RotationService, 60s tick). TTL ≠ request routing — it rotates the secret itself.
+                    <p
+                        style={{
+                            margin: '0.4rem 0 0',
+                            fontSize: '0.78rem',
+                            color: 'var(--text-muted)',
+                        }}
+                    >
+                        Expiry timers per key (RotationService, 60s tick). TTL ≠ request routing —
+                        it rotates the secret itself.
                     </p>
                 </div>
             </div>
 
             {/* 2. Live per-provider table */}
             <div className="glass-panel" style={{ padding: '1rem' }}>
-                <h4 style={{ margin: '0 0 0.75rem', fontSize: '0.9rem' }}>Live selection state per provider</h4>
+                <h4 style={{ margin: '0 0 0.75rem', fontSize: '0.9rem' }}>
+                    Live selection state per provider
+                </h4>
                 <div style={{ overflowX: 'auto' }}>
-                    <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.8rem' }}>
+                    <table
+                        style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.8rem' }}
+                    >
                         <thead>
                             <tr style={{ textAlign: 'left', color: 'var(--text-muted)' }}>
                                 <th style={{ padding: '0.4rem' }}>Provider</th>
@@ -193,33 +259,82 @@ const RotationView: React.FC<RotationViewProps> = ({ keys }) => {
                         </thead>
                         <tbody>
                             {providers.map((p) => {
-                                const on = keys.filter((k) => k.provider.toLowerCase() === p && k.status === 'active').length;
-                                const total = keys.filter((k) => k.provider.toLowerCase() === p).length;
+                                const on = keys.filter(
+                                    (k) => k.provider.toLowerCase() === p && k.status === 'active',
+                                ).length;
+                                const total = keys.filter(
+                                    (k) => k.provider.toLowerCase() === p,
+                                ).length;
                                 return (
-                                    <tr key={p} style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+                                    <tr
+                                        key={p}
+                                        style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}
+                                    >
                                         <td style={{ padding: '0.4rem', fontWeight: 700 }}>{p}</td>
-                                        <td style={{ padding: '0.4rem' }}>{on}/{total}</td>
+                                        <td style={{ padding: '0.4rem' }}>
+                                            {on}/{total}
+                                        </td>
                                         <td style={{ padding: '0.4rem' }}>
                                             <select
                                                 value={strategies[p] ?? 'round-robin'}
-                                                onChange={(e) => void handleStrategy(p, e.target.value as PoolStrategy)}
+                                                onChange={(e) =>
+                                                    void handleStrategy(
+                                                        p,
+                                                        e.target.value as PoolStrategy,
+                                                    )
+                                                }
                                                 aria-label={`Pool strategy for ${p}`}
-                                                style={{ background: 'rgba(0,0,0,0.3)', color: 'var(--slate-200)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 8, padding: '0.25rem 0.5rem' }}
+                                                style={{
+                                                    background: 'rgba(0,0,0,0.3)',
+                                                    color: 'var(--slate-200)',
+                                                    border: '1px solid rgba(255,255,255,0.1)',
+                                                    borderRadius: 8,
+                                                    padding: '0.25rem 0.5rem',
+                                                }}
                                             >
                                                 {STRATEGIES.map((s) => (
-                                                    <option key={s} value={s}>{s}</option>
+                                                    <option key={s} value={s}>
+                                                        {s}
+                                                    </option>
                                                 ))}
                                             </select>
                                         </td>
                                         <td style={{ padding: '0.4rem' }}>{poolStatus(p)}</td>
-                                        <td style={{ padding: '0.4rem', fontFamily: 'monospace', fontSize: '0.72rem' }}>{PROVIDER_DEFAULT_MODELS[p] ?? '—'}</td>
-                                        <td style={{ padding: '0.4rem', fontFamily: 'monospace', fontSize: '0.72rem' }}>{(DEBATE_MODEL_PRIORITY[p] ?? []).join(', ') || '—'}</td>
-                                        <td style={{ padding: '0.4rem' }}>{DEBATE_PROVIDER_ORDER.indexOf(p) >= 0 ? `#${DEBATE_PROVIDER_ORDER.indexOf(p) + 1}` : '—'}</td>
+                                        <td
+                                            style={{
+                                                padding: '0.4rem',
+                                                fontFamily: 'monospace',
+                                                fontSize: '0.72rem',
+                                            }}
+                                        >
+                                            {PROVIDER_DEFAULT_MODELS[p] ?? '—'}
+                                        </td>
+                                        <td
+                                            style={{
+                                                padding: '0.4rem',
+                                                fontFamily: 'monospace',
+                                                fontSize: '0.72rem',
+                                            }}
+                                        >
+                                            {(DEBATE_MODEL_PRIORITY[p] ?? []).join(', ') || '—'}
+                                        </td>
+                                        <td style={{ padding: '0.4rem' }}>
+                                            {DEBATE_PROVIDER_ORDER.indexOf(p) >= 0
+                                                ? `#${DEBATE_PROVIDER_ORDER.indexOf(p) + 1}`
+                                                : '—'}
+                                        </td>
                                     </tr>
                                 );
                             })}
                             {providers.length === 0 && (
-                                <tr><td colSpan={7} style={{ padding: '0.75rem', color: 'var(--text-muted)' }}>No keys installed.</td></tr>
+                                <tr>
+                                    <td
+                                        colSpan={7}
+                                        style={{ padding: '0.75rem', color: 'var(--text-muted)' }}
+                                    >
+                                        No keys installed.
+                                    </td>
+                                </tr>
                             )}
                         </tbody>
                     </table>
@@ -228,7 +343,15 @@ const RotationView: React.FC<RotationViewProps> = ({ keys }) => {
 
             {/* 3. TTL rotation */}
             <div className="glass-panel" style={{ padding: '1rem' }}>
-                <h4 style={{ margin: '0 0 0.75rem', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: 8 }}>
+                <h4
+                    style={{
+                        margin: '0 0 0.75rem',
+                        fontSize: '0.9rem',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 8,
+                    }}
+                >
                     <Timer size={15} /> TTL secret rotation
                 </h4>
                 {ttlKeys.length === 0 ? (
@@ -237,11 +360,28 @@ const RotationView: React.FC<RotationViewProps> = ({ keys }) => {
                     </p>
                 ) : (
                     ttlKeys.map((k) => (
-                        <div key={k.id} style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', padding: '0.4rem 0', borderTop: '1px solid rgba(255,255,255,0.06)', fontSize: '0.8rem', flexWrap: 'wrap' }}>
+                        <div
+                            key={k.id}
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '0.6rem',
+                                padding: '0.4rem 0',
+                                borderTop: '1px solid rgba(255,255,255,0.06)',
+                                fontSize: '0.8rem',
+                                flexWrap: 'wrap',
+                            }}
+                        >
                             <span style={{ fontFamily: 'monospace' }}>{maskKey(k.id)}</span>
                             <span style={{ color: 'var(--text-muted)' }}>{k.provider}</span>
-                            <span>left: <strong>{formatLeft(ttlInfo[k.id]?.remainingMs ?? 0)}</strong></span>
-                            <span style={{ color: ttlInfo[k.id]?.active ? '#22c55e' : 'var(--text-muted)' }}>
+                            <span>
+                                left: <strong>{formatLeft(ttlInfo[k.id]?.remainingMs ?? 0)}</strong>
+                            </span>
+                            <span
+                                style={{
+                                    color: ttlInfo[k.id]?.active ? '#22c55e' : 'var(--text-muted)',
+                                }}
+                            >
                                 {ttlInfo[k.id]?.active ? 'active' : 'idle'}
                             </span>
                             <input
@@ -249,21 +389,78 @@ const RotationView: React.FC<RotationViewProps> = ({ keys }) => {
                                 min={1}
                                 placeholder="hours"
                                 value={ttlHours[k.id] ?? ''}
-                                onChange={(e) => setTtlHours((prev) => ({ ...prev, [k.id]: e.target.value }))}
+                                onChange={(e) =>
+                                    setTtlHours((prev) => ({ ...prev, [k.id]: e.target.value }))
+                                }
                                 aria-label={`TTL hours for ${maskKey(k.id)}`}
-                                style={{ width: 80, background: 'rgba(0,0,0,0.3)', color: 'var(--slate-200)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 8, padding: '0.25rem 0.5rem' }}
+                                style={{
+                                    width: 80,
+                                    background: 'rgba(0,0,0,0.3)',
+                                    color: 'var(--slate-200)',
+                                    border: '1px solid rgba(255,255,255,0.1)',
+                                    borderRadius: 8,
+                                    padding: '0.25rem 0.5rem',
+                                }}
                             />
-                            <label style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: '0.75rem' }}>
+                            <label
+                                style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: 4,
+                                    fontSize: '0.75rem',
+                                }}
+                            >
                                 <input
                                     type="checkbox"
                                     checked={autoRotate[k.id] ?? false}
-                                    onChange={(e) => setAutoRotate((prev) => ({ ...prev, [k.id]: e.target.checked }))}
+                                    onChange={(e) =>
+                                        setAutoRotate((prev) => ({
+                                            ...prev,
+                                            [k.id]: e.target.checked,
+                                        }))
+                                    }
                                 />
                                 auto
                             </label>
-                            <button onClick={() => handleSetTTL(k.id)} style={{ background: 'rgba(59,130,246,0.15)', border: '1px solid rgba(59,130,246,0.3)', borderRadius: 8, padding: '0.25rem 0.7rem', cursor: 'pointer', color: '#93c5fd' }}>Set</button>
-                            <button onClick={() => handleCancelTTL(k.id)} style={{ background: 'transparent', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 8, padding: '0.25rem 0.7rem', cursor: 'pointer', color: 'var(--slate-300)' }}>Cancel</button>
-                            <button onClick={() => void handleRotateNow(k.id)} style={{ background: 'transparent', border: '1px solid rgba(245,158,11,0.4)', borderRadius: 8, padding: '0.25rem 0.7rem', cursor: 'pointer', color: '#fbbf24' }}>Rotate now</button>
+                            <button
+                                onClick={() => handleSetTTL(k.id)}
+                                style={{
+                                    background: 'rgba(59,130,246,0.15)',
+                                    border: '1px solid rgba(59,130,246,0.3)',
+                                    borderRadius: 8,
+                                    padding: '0.25rem 0.7rem',
+                                    cursor: 'pointer',
+                                    color: '#93c5fd',
+                                }}
+                            >
+                                Set
+                            </button>
+                            <button
+                                onClick={() => handleCancelTTL(k.id)}
+                                style={{
+                                    background: 'transparent',
+                                    border: '1px solid rgba(255,255,255,0.1)',
+                                    borderRadius: 8,
+                                    padding: '0.25rem 0.7rem',
+                                    cursor: 'pointer',
+                                    color: 'var(--slate-300)',
+                                }}
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={() => void handleRotateNow(k.id)}
+                                style={{
+                                    background: 'transparent',
+                                    border: '1px solid rgba(245,158,11,0.4)',
+                                    borderRadius: 8,
+                                    padding: '0.25rem 0.7rem',
+                                    cursor: 'pointer',
+                                    color: 'var(--warning)',
+                                }}
+                            >
+                                Rotate now
+                            </button>
                         </div>
                     ))
                 )}
@@ -271,7 +468,15 @@ const RotationView: React.FC<RotationViewProps> = ({ keys }) => {
 
             {/* 4. Affinity snapshot */}
             <div className="glass-panel" style={{ padding: '1rem' }}>
-                <h4 style={{ margin: '0 0 0.75rem', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: 8 }}>
+                <h4
+                    style={{
+                        margin: '0 0 0.75rem',
+                        fontSize: '0.9rem',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 8,
+                    }}
+                >
                     <Link2 size={15} /> Session affinity snapshot
                 </h4>
                 {bindings.length === 0 ? (
@@ -279,7 +484,9 @@ const RotationView: React.FC<RotationViewProps> = ({ keys }) => {
                         No bound sessions. Full table lives at /session-bindings.
                     </p>
                 ) : (
-                    <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.8rem' }}>
+                    <table
+                        style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.8rem' }}
+                    >
                         <thead>
                             <tr style={{ textAlign: 'left', color: 'var(--text-muted)' }}>
                                 <th style={{ padding: '0.4rem' }}>Session</th>
@@ -290,9 +497,28 @@ const RotationView: React.FC<RotationViewProps> = ({ keys }) => {
                         </thead>
                         <tbody>
                             {bindings.map((b, i) => (
-                                <tr key={`${b.session}-${i}`} style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-                                    <td style={{ padding: '0.4rem', fontFamily: 'monospace', fontSize: '0.72rem' }}>{b.session}</td>
-                                    <td style={{ padding: '0.4rem', fontFamily: 'monospace', fontSize: '0.72rem' }}>{b.key}</td>
+                                <tr
+                                    key={`${b.session}-${i}`}
+                                    style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}
+                                >
+                                    <td
+                                        style={{
+                                            padding: '0.4rem',
+                                            fontFamily: 'monospace',
+                                            fontSize: '0.72rem',
+                                        }}
+                                    >
+                                        {b.session}
+                                    </td>
+                                    <td
+                                        style={{
+                                            padding: '0.4rem',
+                                            fontFamily: 'monospace',
+                                            fontSize: '0.72rem',
+                                        }}
+                                    >
+                                        {b.key}
+                                    </td>
                                     <td style={{ padding: '0.4rem' }}>{b.provider}</td>
                                     <td style={{ padding: '0.4rem' }}>{b.status}</td>
                                 </tr>

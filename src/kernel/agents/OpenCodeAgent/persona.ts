@@ -8,7 +8,7 @@ export const OPENCODE_METADATA = {
     lastName: 'Соловьёв',
     displayName: 'Марк Соловьёв',
     baseRole: 'Кодовый агент-исполнитель',
-    avatar: { emoji: '🛠️', color: '#38bdf8' },
+    avatar: { emoji: '🛠️', color: 'var(--info)' },
     provider: 'gemini',
     model: 'gemini-3.1-flash-lite',
     specializations: [

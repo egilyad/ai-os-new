@@ -259,7 +259,9 @@ const ApprovalsPanel: React.FC = () => {
                         <h3 style={{ marginTop: 0 }}>
                             {selected.kind} · {selected.status}
                         </h3>
-                        <pre style={{ background: '#f8fafc', padding: 8, overflowX: 'auto' }}>
+                        <pre
+                            style={{ background: 'var(--slate-50)', padding: 8, overflowX: 'auto' }}
+                        >
                             {JSON.stringify(selected.payload, null, 2)}
                         </pre>
                         {selected.executedAgentId && (
@@ -377,7 +379,9 @@ function LocalAgentApprovals(): React.JSX.Element {
             >
                 <ShieldCheck size={18} />
                 <h3 style={{ margin: 0 }}>Local agent approvals (browser.act HITL)</h3>
-                <span style={{ fontSize: 11, color: '#64748b' }}>{items.length} pending</span>
+                <span style={{ fontSize: 11, color: 'var(--slate-500)' }}>
+                    {items.length} pending
+                </span>
                 <button
                     onClick={() => void bulk('APPROVED')}
                     disabled={items.length === 0}
@@ -394,7 +398,7 @@ function LocalAgentApprovals(): React.JSX.Element {
             </div>
             {error && <div style={{ color: '#dc2626', marginBottom: '0.5rem' }}>{error}</div>}
             {items.length === 0 && (
-                <div style={{ color: '#64748b' }}>No pending local approvals.</div>
+                <div style={{ color: 'var(--slate-500)' }}>No pending local approvals.</div>
             )}
             <ul
                 style={{
@@ -434,7 +438,7 @@ function LocalAgentApprovals(): React.JSX.Element {
                             >
                                 {r.riskLevel}
                             </span>
-                            <span style={{ fontSize: 11, color: '#64748b' }}>
+                            <span style={{ fontSize: 11, color: 'var(--slate-500)' }}>
                                 {r.agentId} · {r.category}
                             </span>
                             <span style={{ marginLeft: 'auto', display: 'flex', gap: 6 }}>
@@ -447,13 +451,13 @@ function LocalAgentApprovals(): React.JSX.Element {
                             </span>
                         </div>
                         {r.description && (
-                            <div style={{ fontSize: 12, color: '#475569', marginTop: 4 }}>
+                            <div style={{ fontSize: 12, color: 'var(--slate-600)', marginTop: 4 }}>
                                 {r.description}
                             </div>
                         )}
                         <pre
                             style={{
-                                background: '#f8fafc',
+                                background: 'var(--slate-50)',
                                 padding: 8,
                                 overflowX: 'auto',
                                 marginTop: 6,
@@ -544,7 +548,7 @@ function BrowserUseConfig(): React.JSX.Element {
                 <button onClick={save}>Save</button>
                 {saved && <span style={{ color: '#059669' }}>Saved</span>}
             </div>
-            <div style={{ fontSize: 12, color: '#64748b', marginTop: 6 }}>
+            <div style={{ fontSize: 12, color: 'var(--slate-500)', marginTop: 6 }}>
                 Direct mode: browser calls the sidecar URL itself. Gateway mode: browser creates a
                 run and calls `/api/runs/:id/execute` with adapter `browser-use` (needs
                 companyGateway.url/secret above + company id here). Server side requires

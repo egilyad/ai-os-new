@@ -146,13 +146,13 @@ const PluginManagerPanel: React.FC = () => {
                 <span>
                     {t('plugin.stats_total')}: {stats.total}
                 </span>
-                <span style={{ color: '#10b981' }}>
+                <span style={{ color: 'var(--success)' }}>
                     {t('plugin.stats_active')}: {stats.active}
                 </span>
-                <span style={{ color: '#64748b' }}>
+                <span style={{ color: 'var(--slate-500)' }}>
                     {t('plugin.stats_inactive')}: {stats.inactive}
                 </span>
-                <span style={{ color: '#ef4444' }}>
+                <span style={{ color: 'var(--error)' }}>
                     {t('plugin.stats_error')}: {stats.error}
                 </span>
             </div>
@@ -259,7 +259,7 @@ const PluginManagerPanel: React.FC = () => {
                             </div>
                         )}
                         {p.error && (
-                            <div style={{ fontSize: 11, color: '#ef4444', marginBottom: 4 }}>
+                            <div style={{ fontSize: 11, color: 'var(--error)', marginBottom: 4 }}>
                                 {p.error}
                             </div>
                         )}
@@ -330,7 +330,7 @@ const PluginManagerPanel: React.FC = () => {
                             )}
                             <button
                                 onClick={() => handleUnregister(p.manifest.id)}
-                                style={{ ...buttonStyle, color: '#ef4444' }}
+                                style={{ ...buttonStyle, color: 'var(--error)' }}
                             >
                                 <Trash2 size={13} />
                             </button>

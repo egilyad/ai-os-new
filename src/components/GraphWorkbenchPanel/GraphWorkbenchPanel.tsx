@@ -78,7 +78,7 @@ const resetBtn: React.CSSProperties = {
     padding: '0.45rem 0.8rem',
     borderRadius: 8,
     border: '1px solid rgba(239,68,68,0.3)',
-    background: 'rgba(239,68,68,0.1)',
+    background: 'var(--error-tint)',
     color: '#fca5a5',
     cursor: 'pointer',
     fontSize: 13,
@@ -135,7 +135,7 @@ const GraphWorkbenchPanel: React.FC = () => {
                 nodes.push({
                     id: reqNode,
                     label: `Req ${i + 1}`,
-                    color: '#94a3b8',
+                    color: 'var(--slate-400)',
                     size: 8,
                     title: `strategy: ${d.strategy} · selected: ${d.selected} · ${new Date(d.timestamp).toLocaleTimeString()}`,
                 });
@@ -196,7 +196,7 @@ const GraphWorkbenchPanel: React.FC = () => {
                 nodes.push({
                     id: pid,
                     label: p.provider,
-                    color: '#f59e0b',
+                    color: 'var(--warning)',
                     size: 8 + Math.min(20, p.pct),
                     title: `spent $${p.spent.toFixed(2)} / $${p.budget.toFixed(2)}`,
                 });
@@ -204,7 +204,7 @@ const GraphWorkbenchPanel: React.FC = () => {
                     id: `ce:${p.provider}`,
                     from: globalNode,
                     to: pid,
-                    color: '#f59e0b',
+                    color: 'var(--warning)',
                     width: Math.max(1, p.pct / 20),
                 });
             });
@@ -214,7 +214,7 @@ const GraphWorkbenchPanel: React.FC = () => {
                 nodes.push({
                     id: aid,
                     label: a.name || a.agentId,
-                    color: '#8b5cf6',
+                    color: 'var(--purple)',
                     size: 10,
                     title: `spent $${a.spent.toFixed(2)}`,
                 });
@@ -222,7 +222,7 @@ const GraphWorkbenchPanel: React.FC = () => {
                     id: `ae:${a.agentId}`,
                     from: globalNode,
                     to: aid,
-                    color: '#8b5cf6',
+                    color: 'var(--purple)',
                     width: 1.2,
                 });
             });

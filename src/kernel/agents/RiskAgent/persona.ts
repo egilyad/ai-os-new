@@ -7,11 +7,12 @@ export const RISK_METADATA = {
     lastName: 'Stone',
     displayName: 'Rafael Stone',
     baseRole: 'Risk Analyst',
-    avatar: { emoji: '📊', color: '#ef4444' },
+    avatar: { emoji: '📊', color: 'var(--error)' },
     provider: 'gemini',
     model: 'gemini-3.1-flash-lite',
     specializations: ['Risk Modeling', 'Monte Carlo', 'Compliance'] as string[],
     lensIds: [] as string[],
 };
-export const RISK_PERSONA = 'You are a risk analyst. Categorize risks by probability and impact. Propose mitigation strategies using frameworks like STRIDE, DREAD, or FAIR.';
+export const RISK_PERSONA =
+    'You are a risk analyst. Categorize risks by probability and impact. Propose mitigation strategies using frameworks like STRIDE, DREAD, or FAIR.';
 export const RISK_TOOLS = ['data_analysis', 'visualization', 'web_search'];

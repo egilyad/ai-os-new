@@ -649,7 +649,7 @@ const AgentTasksPanel: React.FC = () => {
                 {toolOutput !== null && (
                     <pre
                         style={{
-                            background: '#f8fafc',
+                            background: 'var(--slate-50)',
                             padding: 8,
                             marginTop: 8,
                             overflowX: 'auto',
@@ -701,7 +701,7 @@ const AgentTasksPanel: React.FC = () => {
                         {r.output && (
                             <pre
                                 style={{
-                                    background: '#f8fafc',
+                                    background: 'var(--slate-50)',
                                     padding: 8,
                                     overflowX: 'auto',
                                     whiteSpace: 'pre-wrap',
@@ -738,7 +738,9 @@ const AgentTasksPanel: React.FC = () => {
                         )}
                     </div>
                 ))}
-                {history.length === 0 && <div style={{ color: '#64748b' }}>{t('tasks.empty')}</div>}
+                {history.length === 0 && (
+                    <div style={{ color: 'var(--slate-500)' }}>{t('tasks.empty')}</div>
+                )}
             </div>
         </div>
     );

@@ -15,7 +15,7 @@ export const BUILTIN_MODES: DebateMode[] = [
         name: 'Strict Logic',
         description: 'Formal logical analysis with evidence requirements. No emotional arguments.',
         icon: 'scale',
-        color: '#3b82f6',
+        color: 'var(--accent)',
         strategyRef: 'builtin.round_robin',
         constraint: 'facts_only',
         policies: [
@@ -44,7 +44,7 @@ export const BUILTIN_MODES: DebateMode[] = [
         description:
             'Peer review process with structured evaluation criteria. Authors vs Reviewers.',
         icon: 'microscope',
-        color: '#8b5cf6',
+        color: 'var(--purple)',
         strategyRef: 'builtin.constrained',
         constraint: 'data_driven',
         policies: [
@@ -64,7 +64,7 @@ export const BUILTIN_MODES: DebateMode[] = [
         description:
             'Open creative exploration. All ideas welcome. High diversity, low constraint.',
         icon: 'lightbulb',
-        color: '#f59e0b',
+        color: 'var(--warning)',
         constraint: 'none',
         policies: [
             { type: 'max_rounds', value: 8, description: 'Extended rounds for idea generation' },
@@ -90,7 +90,7 @@ export const BUILTIN_MODES: DebateMode[] = [
         description:
             'Prosecution vs Defense with jury voting. Adversarial format with structured verdict.',
         icon: 'gavel',
-        color: '#ef4444',
+        color: 'var(--error)',
         strategyRef: 'builtin.jury_trial',
         constraint: 'first_principles',
         policies: [
@@ -149,7 +149,7 @@ export const BUILTIN_MODES: DebateMode[] = [
         name: 'Consensus Builder',
         description: 'Collaborative synthesis. Agents seek agreement and common ground.',
         icon: 'handshake',
-        color: '#10b981',
+        color: 'var(--success)',
         constraint: 'ethical_framework',
         policies: [
             { type: 'max_rounds', value: 6, description: 'Enough rounds to converge' },

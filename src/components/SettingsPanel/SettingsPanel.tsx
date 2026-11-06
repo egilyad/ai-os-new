@@ -364,13 +364,39 @@ const SettingsPanel: React.FC = () => {
                 return (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
                         <h3 style={{ margin: 0, fontWeight: 800 }}>LLM Keys</h3>
-                        <p style={{ color: 'var(--slate-400)', fontSize: '0.85rem' }}>Manage API keys for all providers. Keys are stored in the local KeyStore (IndexedDB). Enable the vault for passphrase encryption at rest. Use the Providers panel for health checks and model discovery.</p>
+                        <p style={{ color: 'var(--slate-400)', fontSize: '0.85rem' }}>
+                            Manage API keys for all providers. Keys are stored in the local KeyStore
+                            (IndexedDB). Enable the vault for passphrase encryption at rest. Use the
+                            Providers panel for health checks and model discovery.
+                        </p>
                         <div style={{ display: 'flex', gap: 8 }}>
-                            <a href="#/providers" style={{ padding: '8px 14px', borderRadius: 8, background: '#3b82f6', color: 'white', textDecoration: 'none', fontWeight: 600, fontSize: 12 }}>Open Providers</a>
+                            <a
+                                href="#/providers"
+                                style={{
+                                    padding: '8px 14px',
+                                    borderRadius: 8,
+                                    background: 'var(--accent)',
+                                    color: 'white',
+                                    textDecoration: 'none',
+                                    fontWeight: 600,
+                                    fontSize: 12,
+                                }}
+                            >
+                                Open Providers
+                            </a>
                             <button
                                 type="button"
                                 onClick={() => setVaultOpen(true)}
-                                style={{ padding: '8px 14px', borderRadius: 8, background: 'var(--bg-elevated)', border: '1px solid rgba(59,130,246,0.3)', color: '#3b82f6', fontWeight: 600, fontSize: 12, cursor: 'pointer' }}
+                                style={{
+                                    padding: '8px 14px',
+                                    borderRadius: 8,
+                                    background: 'var(--bg-elevated)',
+                                    border: '1px solid rgba(59,130,246,0.3)',
+                                    color: 'var(--accent)',
+                                    fontWeight: 600,
+                                    fontSize: 12,
+                                    cursor: 'pointer',
+                                }}
                             >
                                 Vault…
                             </button>
@@ -381,8 +407,22 @@ const SettingsPanel: React.FC = () => {
                 return (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
                         <h3 style={{ margin: 0, fontWeight: 800 }}>Platform</h3>
-                        <p style={{ color: 'var(--slate-400)', fontSize: '0.85rem' }}>Global platform defaults: default model, theme, locale, retention. Persisted in settingsService (KV/Dexie).</p>
-                        <div style={{ padding: '12px 14px', borderRadius: 10, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', fontSize: 12 }}>Platform budget via <code>agems-budget-service</code> · org-wide limits hourly/daily/monthly</div>
+                        <p style={{ color: 'var(--slate-400)', fontSize: '0.85rem' }}>
+                            Global platform defaults: default model, theme, locale, retention.
+                            Persisted in settingsService (KV/Dexie).
+                        </p>
+                        <div
+                            style={{
+                                padding: '12px 14px',
+                                borderRadius: 10,
+                                background: 'rgba(255,255,255,0.03)',
+                                border: '1px solid rgba(255,255,255,0.06)',
+                                fontSize: 12,
+                            }}
+                        >
+                            Platform budget via <code>agems-budget-service</code> · org-wide limits
+                            hourly/daily/monthly
+                        </div>
                     </div>
                 );
             case 'systemPrompts':
@@ -391,8 +431,27 @@ const SettingsPanel: React.FC = () => {
                 return (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
                         <h3 style={{ margin: 0, fontWeight: 800 }}>System Prompts</h3>
-                        <p style={{ color: 'var(--slate-400)', fontSize: '0.85rem' }}>Global and per-agent system prompts live in the Prompts editor (autosaved per role).</p>
-                        <div style={{ display: 'flex', gap: 8 }}><button onClick={() => setActiveTab('prompts')} style={{ padding: '8px 14px', borderRadius: 8, background: '#3b82f6', color: 'white', border: 'none', fontWeight: 600, fontSize: 12, cursor: 'pointer' }}>Open Prompts Editor</button></div>
+                        <p style={{ color: 'var(--slate-400)', fontSize: '0.85rem' }}>
+                            Global and per-agent system prompts live in the Prompts editor
+                            (autosaved per role).
+                        </p>
+                        <div style={{ display: 'flex', gap: 8 }}>
+                            <button
+                                onClick={() => setActiveTab('prompts')}
+                                style={{
+                                    padding: '8px 14px',
+                                    borderRadius: 8,
+                                    background: 'var(--accent)',
+                                    color: 'white',
+                                    border: 'none',
+                                    fontWeight: 600,
+                                    fontSize: 12,
+                                    cursor: 'pointer',
+                                }}
+                            >
+                                Open Prompts Editor
+                            </button>
+                        </div>
                     </div>
                 );
             case 'n8n':
@@ -402,16 +461,68 @@ const SettingsPanel: React.FC = () => {
                 return (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
                         <h3 style={{ margin: 0, fontWeight: 800 }}>N8N</h3>
-                        <p style={{ color: 'var(--slate-400)', fontSize: '0.85rem' }}>N8N API URL + key are configured per-agent (RuntimeConfig.n8nApiUrl/n8nApiKey) — there is no global n8n credential. Open an agent to set it up.</p>
-                        <div style={{ display: 'flex', gap: 8 }}><a href="#/agents" style={{ padding: '8px 14px', borderRadius: 8, background: '#3b82f6', color: 'white', textDecoration: 'none', fontWeight: 600, fontSize: 12 }}>Open Agents</a></div>
+                        <p style={{ color: 'var(--slate-400)', fontSize: '0.85rem' }}>
+                            N8N API URL + key are configured per-agent
+                            (RuntimeConfig.n8nApiUrl/n8nApiKey) — there is no global n8n credential.
+                            Open an agent to set it up.
+                        </p>
+                        <div style={{ display: 'flex', gap: 8 }}>
+                            <a
+                                href="#/agents"
+                                style={{
+                                    padding: '8px 14px',
+                                    borderRadius: 8,
+                                    background: 'var(--accent)',
+                                    color: 'white',
+                                    textDecoration: 'none',
+                                    fontWeight: 600,
+                                    fontSize: 12,
+                                }}
+                            >
+                                Open Agents
+                            </a>
+                        </div>
                     </div>
                 );
             case 'system':
                 return (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
                         <h3 style={{ margin: 0, fontWeight: 800 }}>System</h3>
-                        <p style={{ color: 'var(--slate-400)', fontSize: '0.85rem' }}>Build: {CONFIG.buildId} · Version v{APP_VERSION} · Kernel ready</p>
-                        <div style={{ display: 'flex', gap: 8 }}><button onClick={handleResetDefaults} style={{ padding: '8px 14px', borderRadius: 8, background: 'rgba(239,68,68,0.12)', border: '1px solid rgba(239,68,68,0.2)', color: '#fca5a5', fontWeight: 600, fontSize: 12, cursor: 'pointer' }}>Reset Defaults</button><button onClick={handlePurgeData} style={{ padding: '8px 14px', borderRadius: 8, background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.15)', color: '#fca5a5', fontWeight: 600, fontSize: 12, cursor: 'pointer' }}>Purge All Data</button></div>
+                        <p style={{ color: 'var(--slate-400)', fontSize: '0.85rem' }}>
+                            Build: {CONFIG.buildId} · Version v{APP_VERSION} · Kernel ready
+                        </p>
+                        <div style={{ display: 'flex', gap: 8 }}>
+                            <button
+                                onClick={handleResetDefaults}
+                                style={{
+                                    padding: '8px 14px',
+                                    borderRadius: 8,
+                                    background: 'rgba(239,68,68,0.12)',
+                                    border: '1px solid rgba(239,68,68,0.2)',
+                                    color: '#fca5a5',
+                                    fontWeight: 600,
+                                    fontSize: 12,
+                                    cursor: 'pointer',
+                                }}
+                            >
+                                Reset Defaults
+                            </button>
+                            <button
+                                onClick={handlePurgeData}
+                                style={{
+                                    padding: '8px 14px',
+                                    borderRadius: 8,
+                                    background: 'rgba(239,68,68,0.08)',
+                                    border: '1px solid rgba(239,68,68,0.15)',
+                                    color: '#fca5a5',
+                                    fontWeight: 600,
+                                    fontSize: 12,
+                                    cursor: 'pointer',
+                                }}
+                            >
+                                Purge All Data
+                            </button>
+                        </div>
                     </div>
                 );
             default:

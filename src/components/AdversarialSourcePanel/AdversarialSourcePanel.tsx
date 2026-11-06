@@ -1,5 +1,14 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { Shield, Search, AlertTriangle, CheckCircle, RefreshCw, Info, BarChart3, ExternalLink } from 'lucide-react';
+import {
+    Shield,
+    Search,
+    AlertTriangle,
+    CheckCircle,
+    RefreshCw,
+    Info,
+    BarChart3,
+    ExternalLink,
+} from 'lucide-react';
 import { AdversarialSourceService } from '../../kernel/services/debate-runtime/debate-adversarial-source-service';
 import { useTranslation } from '../../i18n/useTranslation';
 import { useDebateArguments } from '../../hooks/useDebateArguments';
@@ -12,7 +21,9 @@ import type { SourceVerificationResult } from '../../kernel/contracts/debate-adv
 const _realFetch: typeof fetch =
     typeof globalThis !== 'undefined' && globalThis.fetch
         ? globalThis.fetch.bind(globalThis)
-        : (() => { throw new Error('fetch not available'); }) as typeof fetch;
+        : ((() => {
+              throw new Error('fetch not available');
+          }) as typeof fetch);
 const fetchImpl: typeof fetch = (...args: Parameters<typeof fetch>) => _realFetch(...args);
 try {
     (globalThis as { fetch?: typeof fetch }).fetch = fetchImpl;
@@ -28,7 +39,13 @@ export const AdversarialSourcePanel: React.FC = () => {
     const { args: liveArgs, topic: liveTopic, sessionId, hasLiveDebate } = useDebateArguments();
     const [text, setText] = useState<string>('');
     const loadDebate = useCallback(() => {
-        if (liveArgs.length) setText(liveArgs.map((a) => a.content ?? '').filter(Boolean).join('\n\n'));
+        if (liveArgs.length)
+            setText(
+                liveArgs
+                    .map((a) => a.content ?? '')
+                    .filter(Boolean)
+                    .join('\n\n'),
+            );
     }, [liveArgs, setText]);
     useEffect(() => {
         if (hasLiveDebate) loadDebate();
@@ -50,7 +67,10 @@ export const AdversarialSourcePanel: React.FC = () => {
             const ac = new AbortController();
             const res = await svc.verifyClaims(text, ac.signal);
             setResults(Array.isArray(res) ? res : []);
-            setHistory((h) => [...h, { text, results: Array.isArray(res) ? res : [], at: Date.now() }]);
+            setHistory((h) => [
+                ...h,
+                { text, results: Array.isArray(res) ? res : [], at: Date.now() },
+            ]);
         } catch (e) {
             setError(e instanceof Error ? e.message : 'Verification failed');
         } finally {
@@ -67,22 +87,70 @@ export const AdversarialSourcePanel: React.FC = () => {
     const distortedCount = results.filter((r) => r.isDistorted).length;
 
     return (
-        <div style={{ padding: 20, maxWidth: 1100, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 16 }}>
+        <div
+            style={{
+                padding: 20,
+                maxWidth: 1100,
+                margin: '0 auto',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 16,
+            }}
+        >
             <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                 <Shield size={22} color="#8b5cf6" />
-                <h2 style={{ margin: 0, fontSize: 18, fontWeight: 700, color: 'var(--slate-50)' }}>Adversarial Source — {t('nav.adversarial_source')}</h2>
-                <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 6, background: 'rgba(139,92,246,0.15)', color: '#a78bfa', fontWeight: 600 }}>P0.3</span>
-                <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 6, background: 'rgba(16,185,129,0.12)', color: '#10b981' }}>Live</span>
+                <h2 style={{ margin: 0, fontSize: 18, fontWeight: 700, color: 'var(--slate-50)' }}>
+                    Adversarial Source — {t('nav.adversarial_source')}
+                </h2>
+                <span
+                    style={{
+                        fontSize: 11,
+                        padding: '2px 8px',
+                        borderRadius: 6,
+                        background: 'rgba(139,92,246,0.15)',
+                        color: 'var(--purple-muted)',
+                        fontWeight: 600,
+                    }}
+                >
+                    P0.3
+                </span>
+                <span
+                    style={{
+                        fontSize: 11,
+                        padding: '2px 8px',
+                        borderRadius: 6,
+                        background: 'rgba(16,185,129,0.12)',
+                        color: 'var(--success)',
+                    }}
+                >
+                    Live
+                </span>
                 {hasLiveDebate && (
-                    <span title={sessionId ?? ''} style={{ fontSize: 11, padding: '2px 8px', borderRadius: 6, background: 'rgba(34,197,94,0.12)', color: '#10b981', fontWeight: 600, maxWidth: 260, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    <span
+                        title={sessionId ?? ''}
+                        style={{
+                            fontSize: 11,
+                            padding: '2px 8px',
+                            borderRadius: 6,
+                            background: 'rgba(34,197,94,0.12)',
+                            color: 'var(--success)',
+                            fontWeight: 600,
+                            maxWidth: 260,
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            whiteSpace: 'nowrap',
+                        }}
+                    >
                         Active debate: {liveTopic}
                     </span>
                 )}
             </div>
             <p style={{ margin: 0, fontSize: 13, color: 'var(--slate-400)', lineHeight: 1.5 }}>
-                Verifies opponent source citations in real-time: extract URLs → fetch (5s timeout, max 3) → strip HTML → Jaccard word-set (&gt;3 chars) →{' '}
-                <code style={{ color: '#ef4444' }}>score &lt;0.15 = distorted</code> → inject warning. Prompt context scans last 3 opponent turns. Fetches REAL URLs via the global{' '}
-                <code style={{ color: '#a78bfa' }}>fetch</code>.
+                Verifies opponent source citations in real-time: extract URLs → fetch (5s timeout,
+                max 3) → strip HTML → Jaccard word-set (&gt;3 chars) →{' '}
+                <code style={{ color: 'var(--error)' }}>score &lt;0.15 = distorted</code> → inject
+                warning. Prompt context scans last 3 opponent turns. Fetches REAL URLs via the
+                global <code style={{ color: 'var(--purple-muted)' }}>fetch</code>.
             </p>
 
             <div
@@ -97,14 +165,34 @@ export const AdversarialSourcePanel: React.FC = () => {
                     flexWrap: 'wrap',
                 }}
             >
-                <span style={{ fontSize: 12, color: 'var(--slate-300)', fontWeight: 600, paddingBottom: 6 }}>
+                <span
+                    style={{
+                        fontSize: 12,
+                        color: 'var(--slate-300)',
+                        fontWeight: 600,
+                        paddingBottom: 6,
+                    }}
+                >
                     Text to verify ({text.length} chars)
                 </span>
                 {!canRun && text.trim().length < 50 && (
-                    <span style={{ fontSize: 11, color: '#f87171', paddingBottom: 6, marginLeft: 8 }}>need ≥50 chars</span>
+                    <span
+                        style={{ fontSize: 11, color: '#f87171', paddingBottom: 6, marginLeft: 8 }}
+                    >
+                        need ≥50 chars
+                    </span>
                 )}
                 {!/https?:\/\//i.test(text) && text.trim().length >= 50 && (
-                    <span style={{ fontSize: 11, color: '#f59e0b', paddingBottom: 6, marginLeft: 8 }}>no URLs → empty</span>
+                    <span
+                        style={{
+                            fontSize: 11,
+                            color: 'var(--warning)',
+                            paddingBottom: 6,
+                            marginLeft: 8,
+                        }}
+                    >
+                        no URLs → empty
+                    </span>
                 )}
                 <span style={{ marginLeft: 'auto', display: 'flex', gap: 8 }}>
                     <Button variant="primary" onClick={handleVerify} disabled={isRunning}>
@@ -113,11 +201,25 @@ export const AdversarialSourcePanel: React.FC = () => {
                     <Button variant="ghost" onClick={handleClear}>
                         <RefreshCw size={14} /> Clear
                     </Button>
-                    <Button variant="secondary" onClick={loadDebate} disabled={!hasLiveDebate} title={sessionId ?? ''}>Load active debate</Button>
+                    <Button
+                        variant="secondary"
+                        onClick={loadDebate}
+                        disabled={!hasLiveDebate}
+                        title={sessionId ?? ''}
+                    >
+                        Load active debate
+                    </Button>
                 </span>
             </div>
 
-            <div style={{ padding: 14, borderRadius: 12, background: 'rgba(15,23,42,0.6)', border: '1px solid rgba(255,255,255,0.06)' }}>
+            <div
+                style={{
+                    padding: 14,
+                    borderRadius: 12,
+                    background: 'rgba(15,23,42,0.6)',
+                    border: '1px solid rgba(255,255,255,0.06)',
+                }}
+            >
                 <textarea
                     value={text}
                     onChange={(e) => setText(e.target.value)}
@@ -135,14 +237,39 @@ export const AdversarialSourcePanel: React.FC = () => {
                         lineHeight: 1.5,
                     }}
                 />
-                <div style={{ marginTop: 8, fontSize: 11, color: 'var(--slate-500)', display: 'flex', gap: 6, alignItems: 'center' }}>
-                    <Info size={12} /> URLs extracted via <code style={{ color: '#a78bfa' }}>/https?:\/\/[^\s)]+/gi</code> (dedup, ±150 chars context). Max 3 per call.
+                <div
+                    style={{
+                        marginTop: 8,
+                        fontSize: 11,
+                        color: 'var(--slate-500)',
+                        display: 'flex',
+                        gap: 6,
+                        alignItems: 'center',
+                    }}
+                >
+                    <Info size={12} /> URLs extracted via{' '}
+                    <code style={{ color: 'var(--purple-muted)' }}>/https?:\/\/[^\s)]+/gi</code>{' '}
+                    (dedup, ±150 chars context). Max 3 per call.
                 </div>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 0.8fr', gap: 14, alignItems: 'start' }}>
+            <div
+                style={{
+                    display: 'grid',
+                    gridTemplateColumns: '1.2fr 0.8fr',
+                    gap: 14,
+                    alignItems: 'start',
+                }}
+            >
                 {/* Left: results */}
-                <div style={{ padding: 14, borderRadius: 12, background: 'rgba(15,23,42,0.6)', border: '1px solid rgba(255,255,255,0.06)' }}>
+                <div
+                    style={{
+                        padding: 14,
+                        borderRadius: 12,
+                        background: 'rgba(15,23,42,0.6)',
+                        border: '1px solid rgba(255,255,255,0.06)',
+                    }}
+                >
                     <div
                         style={{
                             fontWeight: 700,
@@ -154,13 +281,51 @@ export const AdversarialSourcePanel: React.FC = () => {
                             gap: 6,
                         }}
                     >
-                        <BarChart3 size={16} color="#8b5cf6" /> Verification — {results.length} distorted
-                        {hasRun && <span style={{ marginLeft: 'auto', fontSize: 11, color: distortedCount ? '#f87171' : '#22c55e' }}>{distortedCount ? `${distortedCount} warnings` : 'no distortion'}</span>}
+                        <BarChart3 size={16} color="#8b5cf6" /> Verification — {results.length}{' '}
+                        distorted
+                        {hasRun && (
+                            <span
+                                style={{
+                                    marginLeft: 'auto',
+                                    fontSize: 11,
+                                    color: distortedCount ? '#f87171' : '#22c55e',
+                                }}
+                            >
+                                {distortedCount ? `${distortedCount} warnings` : 'no distortion'}
+                            </span>
+                        )}
                     </div>
                     {error && (
-                        <div role="alert" style={{ padding: '8px 10px', borderRadius: 8, background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)', fontSize: 12, color: '#f87171', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8, marginBottom: 10 }}>
+                        <div
+                            role="alert"
+                            style={{
+                                padding: '8px 10px',
+                                borderRadius: 8,
+                                background: 'rgba(239,68,68,0.08)',
+                                border: '1px solid rgba(239,68,68,0.2)',
+                                fontSize: 12,
+                                color: '#f87171',
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                alignItems: 'center',
+                                gap: 8,
+                                marginBottom: 10,
+                            }}
+                        >
                             <span>{error}</span>
-                            <button onClick={() => setError(null)} style={{ background: 'none', border: 'none', color: 'inherit', cursor: 'pointer', fontSize: 12 }} aria-label="Dismiss error">✕</button>
+                            <button
+                                onClick={() => setError(null)}
+                                style={{
+                                    background: 'none',
+                                    border: 'none',
+                                    color: 'inherit',
+                                    cursor: 'pointer',
+                                    fontSize: 12,
+                                }}
+                                aria-label="Dismiss error"
+                            >
+                                ✕
+                            </button>
                         </div>
                     )}
                     {!hasRun ? (
@@ -181,7 +346,7 @@ export const AdversarialSourcePanel: React.FC = () => {
                             style={{
                                 padding: 12,
                                 textAlign: 'center',
-                                color: '#22c55e',
+                                color: 'var(--success)',
                                 fontSize: 13,
                                 border: '1px solid rgba(34,197,94,0.2)',
                                 borderRadius: 8,
@@ -192,7 +357,8 @@ export const AdversarialSourcePanel: React.FC = () => {
                                 justifyContent: 'center',
                             }}
                         >
-                            <CheckCircle size={14} /> No distortion — sources match claim (Jaccard ≥0.15) or no URLs/short.
+                            <CheckCircle size={14} /> No distortion — sources match claim (Jaccard
+                            ≥0.15) or no URLs/short.
                         </div>
                     ) : (
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
@@ -206,22 +372,72 @@ export const AdversarialSourcePanel: React.FC = () => {
                                         border: '1px solid rgba(239,68,68,0.18)',
                                     }}
                                 >
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 6 }}>
+                                    <div
+                                        style={{
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            gap: 6,
+                                            marginBottom: 6,
+                                        }}
+                                    >
                                         <AlertTriangle size={14} color="#ef4444" />
-                                        <span style={{ fontSize: 11, fontWeight: 700, color: '#f87171' }}>DISTORTED</span>
-                                        <span style={{ fontSize: 11, color: 'var(--slate-500)' }}>score {(r.matchScore * 100).toFixed(1)}% &lt;15%</span>
+                                        <span
+                                            style={{
+                                                fontSize: 11,
+                                                fontWeight: 700,
+                                                color: '#f87171',
+                                            }}
+                                        >
+                                            DISTORTED
+                                        </span>
+                                        <span style={{ fontSize: 11, color: 'var(--slate-500)' }}>
+                                            score {(r.matchScore * 100).toFixed(1)}% &lt;15%
+                                        </span>
                                         <a
                                             href={r.sourceUrl}
                                             target="_blank"
                                             rel="noreferrer"
-                                            style={{ marginLeft: 'auto', fontSize: 11, color: '#a78bfa', display: 'flex', gap: 4, alignItems: 'center' }}
+                                            style={{
+                                                marginLeft: 'auto',
+                                                fontSize: 11,
+                                                color: 'var(--purple-muted)',
+                                                display: 'flex',
+                                                gap: 4,
+                                                alignItems: 'center',
+                                            }}
                                         >
                                             {r.sourceUrl} <ExternalLink size={10} />
                                         </a>
                                     </div>
-                                    <div style={{ fontSize: 11, color: 'var(--slate-500)', marginBottom: 4 }}>claim context</div>
-                                    <div style={{ fontSize: 12, color: 'var(--slate-200)', lineHeight: 1.4, marginBottom: 6, whiteSpace: 'pre-wrap' }}>{r.claimContext}</div>
-                                    <div style={{ fontSize: 11, color: 'var(--slate-500)', marginBottom: 4 }}>source excerpt (first 300 strip)</div>
+                                    <div
+                                        style={{
+                                            fontSize: 11,
+                                            color: 'var(--slate-500)',
+                                            marginBottom: 4,
+                                        }}
+                                    >
+                                        claim context
+                                    </div>
+                                    <div
+                                        style={{
+                                            fontSize: 12,
+                                            color: 'var(--slate-200)',
+                                            lineHeight: 1.4,
+                                            marginBottom: 6,
+                                            whiteSpace: 'pre-wrap',
+                                        }}
+                                    >
+                                        {r.claimContext}
+                                    </div>
+                                    <div
+                                        style={{
+                                            fontSize: 11,
+                                            color: 'var(--slate-500)',
+                                            marginBottom: 4,
+                                        }}
+                                    >
+                                        source excerpt (first 300 strip)
+                                    </div>
                                     <div
                                         style={{
                                             fontSize: 12,
@@ -236,16 +452,43 @@ export const AdversarialSourcePanel: React.FC = () => {
                                     >
                                         {r.sourceExcerpt}
                                     </div>
-                                    <div style={{ height: 6, borderRadius: 3, background: 'rgba(255,255,255,0.08)', marginTop: 8, overflow: 'hidden' }}>
-                                        <div style={{ width: `${Math.min(100, r.matchScore * 100)}%`, height: '100%', background: '#ef4444' }} />
+                                    <div
+                                        style={{
+                                            height: 6,
+                                            borderRadius: 3,
+                                            background: 'var(--border-subtle)',
+                                            marginTop: 8,
+                                            overflow: 'hidden',
+                                        }}
+                                    >
+                                        <div
+                                            style={{
+                                                width: `${Math.min(100, r.matchScore * 100)}%`,
+                                                height: '100%',
+                                                background: 'var(--error)',
+                                            }}
+                                        />
                                     </div>
                                 </div>
                             ))}
                         </div>
                     )}
-                    <div style={{ marginTop: 10, fontSize: 11, color: 'var(--slate-500)', display: 'flex', gap: 6, alignItems: 'center' }}>
-                        <Info size={12} /> Jaccard on word-sets (&gt;3 chars), &gt;5 words each. Threshold 0.15. See{' '}
-                        <code style={{ color: '#a78bfa' }}>debate-adversarial-source-service.ts:121</code>.
+                    <div
+                        style={{
+                            marginTop: 10,
+                            fontSize: 11,
+                            color: 'var(--slate-500)',
+                            display: 'flex',
+                            gap: 6,
+                            alignItems: 'center',
+                        }}
+                    >
+                        <Info size={12} /> Jaccard on word-sets (&gt;3 chars), &gt;5 words each.
+                        Threshold 0.15. See{' '}
+                        <code style={{ color: 'var(--purple-muted)' }}>
+                            debate-adversarial-source-service.ts:121
+                        </code>
+                        .
                     </div>
                 </div>
 
@@ -262,7 +505,16 @@ export const AdversarialSourcePanel: React.FC = () => {
                             gap: 8,
                         }}
                     >
-                        <div style={{ fontWeight: 700, fontSize: 13, color: 'var(--slate-200)', display: 'flex', alignItems: 'center', gap: 6 }}>
+                        <div
+                            style={{
+                                fontWeight: 700,
+                                fontSize: 13,
+                                color: 'var(--slate-200)',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 6,
+                            }}
+                        >
                             <AlertTriangle size={16} color="#ef4444" /> Prompt warning injection
                         </div>
                         {results.length === 0 ? (
@@ -276,7 +528,8 @@ export const AdversarialSourcePanel: React.FC = () => {
                                     borderRadius: 8,
                                 }}
                             >
-                                No warning — injection happens only when distorted (1 per URL, up to 3).
+                                No warning — injection happens only when distorted (1 per URL, up to
+                                3).
                             </div>
                         ) : (
                             results.map((r, i) => (
@@ -299,7 +552,11 @@ export const AdversarialSourcePanel: React.FC = () => {
                             ))
                         )}
                         <div style={{ fontSize: 11, color: 'var(--slate-500)' }}>
-                            Injected by <code style={{ color: '#a78bfa' }}>debate-llm-prompt-context.ts:179</code> into opponent verification — model is told to point out discrepancy.
+                            Injected by{' '}
+                            <code style={{ color: 'var(--purple-muted)' }}>
+                                debate-llm-prompt-context.ts:179
+                            </code>{' '}
+                            into opponent verification — model is told to point out discrepancy.
                         </div>
                     </div>
 
@@ -311,7 +568,17 @@ export const AdversarialSourcePanel: React.FC = () => {
                             border: '1px solid rgba(255,255,255,0.06)',
                         }}
                     >
-                        <div style={{ fontWeight: 700, fontSize: 13, color: 'var(--slate-200)', marginBottom: 10, display: 'flex', alignItems: 'center', gap: 6 }}>
+                        <div
+                            style={{
+                                fontWeight: 700,
+                                fontSize: 13,
+                                color: 'var(--slate-200)',
+                                marginBottom: 10,
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 6,
+                            }}
+                        >
                             <Search size={16} color="#8b5cf6" /> History — {history.length}
                         </div>
                         {history.length === 0 ? (
@@ -328,7 +595,15 @@ export const AdversarialSourcePanel: React.FC = () => {
                                 No history.
                             </div>
                         ) : (
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: 6, maxHeight: 220, overflowY: 'auto' }}>
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    gap: 6,
+                                    maxHeight: 220,
+                                    overflowY: 'auto',
+                                }}
+                            >
                                 {history
                                     .slice()
                                     .reverse()
@@ -348,11 +623,30 @@ export const AdversarialSourcePanel: React.FC = () => {
                                                 gap: 8,
                                             }}
                                         >
-                                            <span style={{ fontSize: 11, color: 'var(--slate-500)' }}>{new Date(h.at).toLocaleTimeString()}</span>
-                                            <span style={{ flex: 1, fontSize: 11, color: 'var(--slate-400)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                                            <span
+                                                style={{ fontSize: 11, color: 'var(--slate-500)' }}
+                                            >
+                                                {new Date(h.at).toLocaleTimeString()}
+                                            </span>
+                                            <span
+                                                style={{
+                                                    flex: 1,
+                                                    fontSize: 11,
+                                                    color: 'var(--slate-400)',
+                                                    whiteSpace: 'nowrap',
+                                                    overflow: 'hidden',
+                                                    textOverflow: 'ellipsis',
+                                                }}
+                                            >
                                                 {h.text.slice(0, 60)}…
                                             </span>
-                                            <span style={{ fontSize: 11, fontWeight: 700, color: h.results.length ? '#f87171' : '#22c55e' }}>
+                                            <span
+                                                style={{
+                                                    fontSize: 11,
+                                                    fontWeight: 700,
+                                                    color: h.results.length ? '#f87171' : '#22c55e',
+                                                }}
+                                            >
                                                 {h.results.length}⚠
                                             </span>
                                         </div>
@@ -372,8 +666,11 @@ export const AdversarialSourcePanel: React.FC = () => {
                             lineHeight: 1.5,
                         }}
                     >
-                        <strong style={{ color: 'var(--slate-300)' }}>Flow:</strong> opponent cites URL → next agent&apos;s prompt includes last 3 opponent turns →{' '}
-                        <code style={{ color: '#a78bfa' }}>verifyClaims()</code> fetches up to 3 sources (5s each) → if Jaccard &lt;0.15, warning injected. Private fetch, abort-aware.
+                        <strong style={{ color: 'var(--slate-300)' }}>Flow:</strong> opponent cites
+                        URL → next agent&apos;s prompt includes last 3 opponent turns →{' '}
+                        <code style={{ color: 'var(--purple-muted)' }}>verifyClaims()</code> fetches
+                        up to 3 sources (5s each) → if Jaccard &lt;0.15, warning injected. Private
+                        fetch, abort-aware.
                     </div>
                 </div>
             </div>

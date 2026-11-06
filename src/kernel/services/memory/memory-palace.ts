@@ -24,31 +24,31 @@ const ROOM_CONFIG: Record<
     [MemoryStoreType.WORKING]: {
         name: 'Study',
         description: 'Current session context — volatile, fast access',
-        color: '#f59e0b',
+        color: 'var(--warning)',
         icon: '⚡',
     },
     [MemoryStoreType.EPISODIC]: {
         name: 'Library',
         description: 'Past sessions and interactions',
-        color: '#3b82f6',
+        color: 'var(--accent)',
         icon: '📚',
     },
     [MemoryStoreType.SEMANTIC]: {
         name: 'Archive',
         description: 'Facts, concepts, and knowledge',
-        color: '#10b981',
+        color: 'var(--success)',
         icon: '🏛️',
     },
     [MemoryStoreType.PROCEDURAL]: {
         name: 'Workshop',
         description: 'Tools, patterns, and procedures',
-        color: '#8b5cf6',
+        color: 'var(--purple)',
         icon: '🔧',
     },
     [MemoryStoreType.EMOTIONAL]: {
         name: 'Garden',
         description: 'Emotional tags and affective memory',
-        color: '#ef4444',
+        color: 'var(--error)',
         icon: '🌺',
     },
     [MemoryStoreType.SOCIAL]: {

@@ -44,12 +44,16 @@ export const CopyButton: React.FC<{ text: string }> = ({ text }) => {
     const tone = failed ? 'failed' : copied ? 'ok' : 'idle';
     const palette =
         tone === 'ok'
-            ? { bg: 'rgba(16,185,129,0.2)', border: 'rgba(16,185,129,0.3)', color: '#10b981' }
+            ? {
+                  bg: 'rgba(16,185,129,0.2)',
+                  border: 'rgba(16,185,129,0.3)',
+                  color: 'var(--success)',
+              }
             : tone === 'failed'
-              ? { bg: 'rgba(239,68,68,0.2)', border: 'rgba(239,68,68,0.3)', color: '#ef4444' }
+              ? { bg: 'rgba(239,68,68,0.2)', border: 'rgba(239,68,68,0.3)', color: 'var(--error)' }
               : {
                     bg: 'rgba(255,255,255,0.08)',
-                    border: 'rgba(255,255,255,0.1)',
+                    border: 'var(--border-default)',
                     color: 'var(--text-muted)',
                 };
     return (

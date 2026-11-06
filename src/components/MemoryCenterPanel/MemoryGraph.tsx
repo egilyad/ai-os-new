@@ -2,7 +2,10 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Network } from 'vis-network/standalone';
 import { crystalVault } from '../../kernel/instances';
 import { getArticle } from '../WikiPanel/wiki-articles';
-import type { MemorySourceDescriptor, MemoryCategory } from '../../kernel/types/memory-center-types';
+import type {
+    MemorySourceDescriptor,
+    MemoryCategory,
+} from '../../kernel/types/memory-center-types';
 import type { Crystal } from '../../kernel/types/crystal-types';
 
 const CATEGORY_COLOR: Record<MemoryCategory, string> = {
@@ -38,7 +41,11 @@ interface Props {
 interface MemNode {
     id: string;
     label: string;
-    color: { background: string; border: string; highlight: { background: string; border: string } };
+    color: {
+        background: string;
+        border: string;
+        highlight: { background: string; border: string };
+    };
     font: { color: string; size: number; face?: string; bold?: boolean };
     shape: 'dot';
     size: number;
@@ -101,8 +108,12 @@ const MemoryGraph: React.FC<Props> = ({ sources, onOpen, height = 520 }) => {
             nodes.push({
                 id: `cat:${cat}`,
                 label: CATEGORY_LABEL[cat],
-                color: { background: CATEGORY_COLOR[cat], border: '#fff', highlight: { background: '#fff', border: CATEGORY_COLOR[cat] } },
-                font: { color: '#e2e8f0', size: 15, face: 'Arial', bold: true },
+                color: {
+                    background: CATEGORY_COLOR[cat],
+                    border: '#fff',
+                    highlight: { background: '#fff', border: CATEGORY_COLOR[cat] },
+                },
+                font: { color: 'var(--slate-200)', size: 15, face: 'Arial', bold: true },
                 shape: 'dot',
                 size: 30,
                 deepTarget: undefined,
@@ -114,15 +125,20 @@ const MemoryGraph: React.FC<Props> = ({ sources, onOpen, height = 520 }) => {
             nodes.push({
                 id: s.id,
                 label: s.name,
-                color: { background: color, border: '#0f172a', highlight: { background: color, border: '#fff' } },
-                font: { color: '#cbd5e1', size: 13 },
+                color: {
+                    background: color,
+                    border: 'var(--slate-900)',
+                    highlight: { background: color, border: '#fff' },
+                },
+                font: { color: 'var(--slate-300)', size: 13 },
                 shape: 'dot',
                 size: s.status === 'verified' ? 14 : 10,
                 title: `${s.name}\nвладелец: ${s.owner}\nтаблица: ${s.table ?? '—'}\nстатус: ${s.status}\nжми, чтобы открыть`,
                 deepTarget: s.openRoute ? `/${s.openRoute}` : undefined,
             });
             const catIdx = catIndex.get(s.category);
-            if (catIdx !== undefined) edges.push({ from: s.id, to: `cat:${s.category}`, color: { color, opacity: 0.5 } });
+            if (catIdx !== undefined)
+                edges.push({ from: s.id, to: `cat:${s.category}`, color: { color, opacity: 0.5 } });
         }
 
         for (const c of crystals) {
@@ -131,21 +147,40 @@ const MemoryGraph: React.FC<Props> = ({ sources, onOpen, height = 520 }) => {
             nodes.push({
                 id,
                 label: stmt.slice(0, 28) + (stmt.length > 28 ? '…' : ''),
-                color: { background: CATEGORY_COLOR.research, border: '#0f172a', highlight: { background: CATEGORY_COLOR.research, border: '#fff' } },
-                font: { color: '#e2e8f0', size: 11 },
+                color: {
+                    background: CATEGORY_COLOR.research,
+                    border: 'var(--slate-900)',
+                    highlight: { background: CATEGORY_COLOR.research, border: '#fff' },
+                },
+                font: { color: 'var(--slate-200)', size: 11 },
                 shape: 'dot',
                 size: 9,
                 title: `Кристалл: ${stmt.slice(0, 120)}\nстатус: ${c.status || '—'}\nдомен: ${c.applicableDomain || '—'}`,
                 deepTarget: resolveDeepTarget(c),
             });
             const catIdx = catIndex.get('research');
-            if (catIdx !== undefined) edges.push({ from: id, to: 'cat:research', color: { color: CATEGORY_COLOR.research, opacity: 0.4 } });
+            if (catIdx !== undefined)
+                edges.push({
+                    from: id,
+                    to: 'cat:research',
+                    color: { color: CATEGORY_COLOR.research, opacity: 0.4 },
+                });
             // Связи между кристаллами (поддержка / противоречие)
             for (const sup of c.supportingCrystalIds ?? []) {
-                edges.push({ from: id, to: `crystal:${sup}`, color: { color: '#34d399', opacity: 0.5 }, width: 1.5 });
+                edges.push({
+                    from: id,
+                    to: `crystal:${sup}`,
+                    color: { color: '#34d399', opacity: 0.5 },
+                    width: 1.5,
+                });
             }
             for (const con of c.contradictingCrystalIds ?? []) {
-                edges.push({ from: id, to: `crystal:${con}`, color: { color: '#ef4444', opacity: 0.5 }, width: 1.5 });
+                edges.push({
+                    from: id,
+                    to: `crystal:${con}`,
+                    color: { color: 'var(--error)', opacity: 0.5 },
+                    width: 1.5,
+                });
             }
         }
 
@@ -160,11 +195,20 @@ const MemoryGraph: React.FC<Props> = ({ sources, onOpen, height = 520 }) => {
             { nodes, edges },
             {
                 nodes: { borderWidth: 2, shadow: { enabled: true, size: 10 }, chosen: true },
-                edges: { smooth: { enabled: true, type: 'continuous', roundness: 0.4 }, width: 1.2 },
+                edges: {
+                    smooth: { enabled: true, type: 'continuous', roundness: 0.4 },
+                    width: 1.2,
+                },
                 layout: { hierarchical: { enabled: false } },
                 physics: {
                     stabilization: { iterations: 180 },
-                    barnesHut: { gravitationalConstant: -4000, centralGravity: 0.3, springLength: 140, springConstant: 0.04, damping: 0.09 },
+                    barnesHut: {
+                        gravitationalConstant: -4000,
+                        centralGravity: 0.3,
+                        springLength: 140,
+                        springConstant: 0.04,
+                        damping: 0.09,
+                    },
                 },
                 interaction: { hover: true, tooltipDelay: 150, dragView: true, zoomView: true },
             },
@@ -183,7 +227,18 @@ const MemoryGraph: React.FC<Props> = ({ sources, onOpen, height = 520 }) => {
         };
     }, [nodes, edges]);
 
-    return <div ref={containerRef} style={{ width: '100%', height, border: '1px solid rgba(255,255,255,0.06)', borderRadius: 12, background: 'rgba(0,0,0,0.2)' }} />;
+    return (
+        <div
+            ref={containerRef}
+            style={{
+                width: '100%',
+                height,
+                border: '1px solid rgba(255,255,255,0.06)',
+                borderRadius: 12,
+                background: 'rgba(0,0,0,0.2)',
+            }}
+        />
+    );
 };
 
 export default MemoryGraph;

@@ -121,7 +121,7 @@ const PluginMarketplacePanel: React.FC = () => {
                             <span
                                 style={{
                                     fontSize: 11,
-                                    color: '#10b981',
+                                    color: 'var(--success)',
                                     display: 'inline-flex',
                                     alignItems: 'center',
                                     gap: 4,

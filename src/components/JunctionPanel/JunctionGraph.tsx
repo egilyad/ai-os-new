@@ -40,7 +40,7 @@ const JunctionGraph: React.FC<Props> = ({ junction, height = 220 }) => {
             nodes.push({
                 id,
                 label: src.domain || src.kind,
-                color: '#38bdf8',
+                color: 'var(--info)',
                 size: 16,
                 title: `${src.kind} · ${src.label}\n${(src.statement ?? '').slice(0, 160)}`,
             });

@@ -8,7 +8,7 @@ export const OPENCLAW_METADATA = {
     lastName: 'Кравец',
     displayName: 'Денис Кравец',
     baseRole: 'Оркестратор роя',
-    avatar: { emoji: '🐝', color: '#fbbf24' },
+    avatar: { emoji: '🐝', color: 'var(--warning)' },
     provider: 'gemini',
     model: 'gemini-3.1-flash-lite',
     specializations: [

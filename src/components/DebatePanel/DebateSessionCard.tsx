@@ -142,7 +142,13 @@ const DebateSessionCard: React.FC<Props> = ({ session, isExpanded, onToggle }) =
                                     wordBreak: 'break-word',
                                 }}
                                 onClick={() => needsTruncate && toggleArg(arg.id)}
-                                title={needsTruncate ? (isArgExpanded ? 'Свернуть' : 'Развернуть полный текст') : undefined}
+                                title={
+                                    needsTruncate
+                                        ? isArgExpanded
+                                            ? 'Свернуть'
+                                            : 'Развернуть полный текст'
+                                        : undefined
+                                }
                             >
                                 <span style={{ fontWeight: 600, color: '#a855f7' }}>
                                     {arg.agentName}
@@ -154,7 +160,7 @@ const DebateSessionCard: React.FC<Props> = ({ session, isExpanded, onToggle }) =
                                         style={{
                                             marginLeft: 6,
                                             fontSize: '0.65rem',
-                                            color: '#a78bfa',
+                                            color: 'var(--purple-muted)',
                                             fontWeight: 600,
                                         }}
                                     >
