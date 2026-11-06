@@ -2079,7 +2079,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4075,
-      "hash": "ca14ae62c71605f5025e1b008ee29f7ab8bb141d"
+      "hash": "2ca3972a6e6cffbd2aadcfbd20b4545661264cf5"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -2167,7 +2167,7 @@
       "language": "ru",
       "title": "Граф знаний",
       "bytes": 4835,
-      "hash": "84f23ce7556cfe486ef89ae3c2e177d74951ffc5"
+      "hash": "89eeef288e3cf4c70a0feb8ecc39218f667d6e31"
     },
     {
       "path": "docs/wiki/dev-history.md",
@@ -2382,8 +2382,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Карта документации",
-      "bytes": 31191,
-      "hash": "a194a959af9eb17b7e760939a6f4790f09188fcd"
+      "bytes": 51515,
+      "hash": "a915b4e02ae1356018808f1d9ad40723d540e1d7"
     },
     {
       "path": "docs/wiki/docs-standard.md",
@@ -3247,7 +3247,7 @@
       "language": "ru",
       "title": "Возможности и сценарии",
       "bytes": 10004,
-      "hash": "c5ed4fbf6843d6917ba2073e98896f47d30f8df9"
+      "hash": "2dffd876cf86e29f3bcf5db3780b9a4f7279ab9b"
     },
     {
       "path": "docs/wiki/system-audit-prompt.md",
