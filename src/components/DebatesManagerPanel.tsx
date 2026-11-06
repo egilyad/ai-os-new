@@ -32,7 +32,7 @@ const sidebar: React.CSSProperties = {
     minWidth: 320,
     display: 'flex',
     flexDirection: 'column',
-    borderRight: '1px solid rgba(255,255,255,0.08)',
+    borderRight: 'var(--1px solid var(--border-subtle))',
     overflow: 'hidden',
 };
 
@@ -40,7 +40,7 @@ const searchInput: React.CSSProperties = {
     width: '100%',
     padding: '8px 12px',
     borderRadius: 6,
-    border: '1px solid rgba(255,255,255,0.1)',
+    border: 'var(--1px solid var(--border-default))',
     background: 'rgba(255,255,255,0.05)',
     color: 'var(--slate-200)',
     fontSize: 13,

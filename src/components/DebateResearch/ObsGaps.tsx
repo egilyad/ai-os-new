@@ -224,7 +224,7 @@ const ObsGaps: React.FC = () => {
                         style={{
                             padding: '0.35rem 0.75rem',
                             borderRadius: 5,
-                            border: '1px solid rgba(255,255,255,0.08)',
+                            border: 'var(--1px solid var(--border-subtle))',
                             background: 'transparent',
                             color: 'var(--slate-400)',
                             cursor: 'pointer',

@@ -114,7 +114,7 @@ export const GoTDeliberationPanel: React.FC = () => {
                             borderRadius: 8,
                             background: 'var(--slate-900)',
                             color: 'var(--slate-100)',
-                            border: '1px solid rgba(255,255,255,0.1)',
+                            border: 'var(--1px solid var(--border-default))',
                             fontSize: 13,
                         }}
                     />
@@ -137,7 +137,7 @@ export const GoTDeliberationPanel: React.FC = () => {
                             borderRadius: 8,
                             background: 'var(--slate-900)',
                             color: 'var(--slate-100)',
-                            border: '1px solid rgba(255,255,255,0.1)',
+                            border: 'var(--1px solid var(--border-default))',
                             fontSize: 13,
                         }}
                     />
@@ -161,7 +161,7 @@ export const GoTDeliberationPanel: React.FC = () => {
                             borderRadius: 8,
                             background: 'var(--slate-900)',
                             color: 'var(--slate-100)',
-                            border: '1px solid rgba(255,255,255,0.1)',
+                            border: 'var(--1px solid var(--border-default))',
                             fontSize: 13,
                         }}
                     />

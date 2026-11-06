@@ -190,7 +190,7 @@ const CommandPalette: React.FC = () => {
                         border: 'none',
                         outline: 'none',
                         color: 'var(--slate-100)',
-                        borderBottom: '1px solid rgba(255,255,255,0.08)',
+                        borderBottom: 'var(--1px solid var(--border-subtle))',
                     }}
                 />
                 <div style={{ maxHeight: 340, overflowY: 'auto', padding: '0.4rem' }}>

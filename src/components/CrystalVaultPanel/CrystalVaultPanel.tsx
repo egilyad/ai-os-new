@@ -180,7 +180,7 @@ const CrystalVaultPanel: React.FC = () => {
                         style={{
                             padding: '0.45rem 0.8rem',
                             borderRadius: 7,
-                            border: '1px solid rgba(255,255,255,0.1)',
+                            border: 'var(--1px solid var(--border-default))',
                             background: 'transparent',
                             color: 'var(--slate-400)',
                             cursor: 'pointer',
@@ -197,7 +197,7 @@ const CrystalVaultPanel: React.FC = () => {
                         style={{
                             padding: '0.45rem 0.8rem',
                             borderRadius: 7,
-                            border: '1px solid rgba(255,255,255,0.1)',
+                            border: 'var(--1px solid var(--border-default))',
                             background: 'transparent',
                             color: 'var(--slate-400)',
                             cursor: 'pointer',
@@ -387,7 +387,7 @@ const SupersedeModal: React.FC<{
                     maxWidth: '90vw',
                     background: 'var(--slate-800)',
                     borderRadius: 12,
-                    border: '1px solid rgba(255,255,255,0.08)',
+                    border: 'var(--1px solid var(--border-subtle))',
                     padding: '1.25rem',
                 }}
             >
@@ -419,7 +419,7 @@ const SupersedeModal: React.FC<{
                         width: '100%',
                         boxSizing: 'border-box',
                         background: 'rgba(0,0,0,0.3)',
-                        border: '1px solid rgba(255,255,255,0.08)',
+                        border: 'var(--1px solid var(--border-subtle))',
                         borderRadius: 6,
                         padding: '0.5rem 0.6rem',
                         color: 'var(--slate-200)',
@@ -454,7 +454,7 @@ const SupersedeModal: React.FC<{
                         style={{
                             padding: '0.5rem 1rem',
                             borderRadius: 7,
-                            border: '1px solid rgba(255,255,255,0.1)',
+                            border: 'var(--1px solid var(--border-default))',
                             background: 'transparent',
                             color: 'var(--slate-400)',
                             fontSize: '0.8rem',

@@ -194,7 +194,7 @@ const PluginManagerPanel: React.FC = () => {
                             width: '100%',
                             background: 'var(--slate-950)',
                             color: 'var(--slate-200)',
-                            border: '1px solid rgba(255,255,255,0.08)',
+                            border: 'var(--1px solid var(--border-subtle))',
                             borderRadius: 6,
                             padding: 8,
                             fontFamily: 'monospace',

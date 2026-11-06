@@ -126,7 +126,7 @@ const TeamChat: React.FC<TeamChatProps> = ({ team, onClose }) => {
                 style={{
                     background: '#1a1b2e',
                     borderRadius: 16,
-                    border: '1px solid rgba(255,255,255,0.1)',
+                    border: 'var(--1px solid var(--border-default))',
                     maxWidth: 700,
                     width: '100%',
                     maxHeight: '80vh',
@@ -167,7 +167,7 @@ const TeamChat: React.FC<TeamChatProps> = ({ team, onClose }) => {
                         style={{
                             padding: '4px 8px',
                             borderRadius: 6,
-                            border: '1px solid rgba(255,255,255,0.1)',
+                            border: 'var(--1px solid var(--border-default))',
                             background: 'transparent',
                             color: 'var(--slate-400)',
                             cursor: 'pointer',
@@ -451,7 +451,7 @@ const TeamChat: React.FC<TeamChatProps> = ({ team, onClose }) => {
                                 width: '100%',
                                 padding: '8px 12px',
                                 borderRadius: 8,
-                                border: '1px solid rgba(255,255,255,0.1)',
+                                border: 'var(--1px solid var(--border-default))',
                                 background: 'rgba(0,0,0,0.3)',
                                 color: 'var(--slate-200)',
                                 fontSize: '0.82rem',

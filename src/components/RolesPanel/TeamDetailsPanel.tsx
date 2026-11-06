@@ -26,7 +26,7 @@ const card: React.CSSProperties = {
     background: 'rgba(255,255,255,0.04)',
     borderRadius: 10,
     padding: 14,
-    border: '1px solid rgba(255,255,255,0.08)',
+    border: 'var(--1px solid var(--border-subtle))',
 };
 
 const chip = (color: string): React.CSSProperties => ({
@@ -110,7 +110,7 @@ const TeamDetailsPanel: React.FC<TeamDetailsPanelProps> = ({
                 style={{
                     background: '#1a1b2e',
                     borderRadius: 16,
-                    border: '1px solid rgba(255,255,255,0.1)',
+                    border: 'var(--1px solid var(--border-default))',
                     maxWidth: 900,
                     width: '100%',
                     maxHeight: '85vh',
@@ -214,7 +214,7 @@ const TeamDetailsPanel: React.FC<TeamDetailsPanelProps> = ({
                             style={{
                                 padding: '6px 10px',
                                 borderRadius: 8,
-                                border: '1px solid rgba(255,255,255,0.1)',
+                                border: 'var(--1px solid var(--border-default))',
                                 background: 'transparent',
                                 color: 'var(--slate-400)',
                                 cursor: 'pointer',

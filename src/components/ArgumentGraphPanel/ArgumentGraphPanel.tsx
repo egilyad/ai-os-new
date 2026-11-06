@@ -220,7 +220,7 @@ const ArgumentGraphPanel: React.FC = () => {
                         background: 'rgba(15,23,42,0.85)',
                         padding: '6px 10px',
                         borderRadius: 8,
-                        border: '1px solid rgba(255,255,255,0.08)',
+                        border: 'var(--1px solid var(--border-subtle))',
                         fontSize: 10,
                         display: 'flex',
                         gap: 10,

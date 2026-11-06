@@ -53,7 +53,7 @@ const ControlsBar: React.FC<ControlsBarProps> = ({
             style={{
                 padding: '0.55rem 0.9rem',
                 borderRadius: 7,
-                border: '1px solid rgba(255,255,255,0.08)',
+                border: 'var(--1px solid var(--border-subtle))',
                 background: 'transparent',
                 color: 'var(--slate-400)',
                 cursor: 'pointer',

@@ -272,7 +272,7 @@ export const PersonaSelector: React.FC = () => {
                         style={{
                             background: 'var(--slate-900)',
                             borderRadius: 16,
-                            border: '1px solid rgba(255,255,255,0.1)',
+                            border: 'var(--1px solid var(--border-default))',
                             maxWidth: 900,
                             width: '100%',
                             maxHeight: '85vh',

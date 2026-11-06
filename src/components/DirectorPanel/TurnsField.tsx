@@ -108,7 +108,7 @@ const TurnsField: React.FC<{
                 <div
                     key={idx}
                     style={{
-                        border: '1px solid rgba(255,255,255,0.08)',
+                        border: 'var(--1px solid var(--border-subtle))',
                         borderRadius: 8,
                         padding: '0.6rem',
                         marginBottom: '0.6rem',

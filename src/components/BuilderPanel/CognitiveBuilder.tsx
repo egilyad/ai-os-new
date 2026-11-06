@@ -362,7 +362,7 @@ const CognitiveBuilder: React.FC = () => {
                             <Controls
                                 style={{
                                     background: 'rgba(15,23,42,0.8)',
-                                    border: '1px solid rgba(255,255,255,0.1)',
+                                    border: 'var(--1px solid var(--border-default))',
                                     borderRadius: 8,
                                     padding: 4,
                                 }}
@@ -373,7 +373,7 @@ const CognitiveBuilder: React.FC = () => {
                                     background: 'rgba(15,23,42,0.8)',
                                     padding: '8px 12px',
                                     borderRadius: 8,
-                                    border: '1px solid rgba(255,255,255,0.1)',
+                                    border: 'var(--1px solid var(--border-default))',
                                     backdropFilter: 'blur(4px)',
                                 }}
                             >

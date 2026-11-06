@@ -49,7 +49,7 @@ const PatternDetailModal: React.FC<Props> = ({ note, onClose, onEdit, onSave, ed
                             overflowY: 'auto',
                             padding: '2.5rem',
                             borderRadius: 24,
-                            border: '1px solid rgba(255,255,255,0.1)',
+                            border: 'var(--1px solid var(--border-default))',
                             background: 'var(--slate-900)',
                         }}
                     >
@@ -177,7 +177,7 @@ const PatternDetailModal: React.FC<Props> = ({ note, onClose, onEdit, onSave, ed
                                         borderRadius: 12,
                                         background: 'rgba(255,255,255,0.05)',
                                         color: 'var(--slate-50)',
-                                        border: '1px solid rgba(255,255,255,0.1)',
+                                        border: 'var(--1px solid var(--border-default))',
                                         cursor: 'pointer',
                                         opacity: editDisabled ? 0.5 : 1,
                                     }}

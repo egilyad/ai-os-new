@@ -475,7 +475,7 @@ const setSessions = useChatStore((s) => s.setSessions);
                             flex: 1,
                             padding: '4px 8px',
                             borderRadius: 6,
-                            border: '1px solid rgba(255,255,255,0.1)',
+                            border: 'var(--1px solid var(--border-default))',
                             background: 'rgba(0,0,0,0.3)',
                             color: 'var(--slate-200)',
                             fontSize: 12,
@@ -496,7 +496,7 @@ const setSessions = useChatStore((s) => s.setSessions);
                             style={{
                                 padding: '4px 8px',
                                 borderRadius: 6,
-                                border: '1px solid rgba(255,255,255,0.1)',
+                                border: 'var(--1px solid var(--border-default))',
                                 background: 'rgba(255,255,255,0.05)',
                                 color: 'var(--slate-400)',
                                 fontSize: 11,

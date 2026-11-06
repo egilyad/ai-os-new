@@ -8,7 +8,7 @@ import { textXsMuted, textSecondaryXs, flexBetween } from '../styles/common';
 
 const CARD: React.CSSProperties = {
     background: 'rgba(255,255,255,0.03)',
-    border: '1px solid rgba(255,255,255,0.08)',
+    border: 'var(--1px solid var(--border-subtle))',
     borderRadius: 12,
     padding: '1rem',
 };
@@ -21,7 +21,7 @@ const STAT: React.CSSProperties = {
 
 const INPUT: React.CSSProperties = {
     background: 'rgba(255,255,255,0.05)',
-    border: '1px solid rgba(255,255,255,0.1)',
+    border: 'var(--1px solid var(--border-default))',
     borderRadius: 8,
     padding: '0.5rem 0.75rem',
     color: 'var(--slate-200)',
@@ -186,7 +186,7 @@ const GoogleCachePanel: React.FC = () => {
                     display: 'flex',
                     gap: '0.5rem',
                     marginBottom: '1rem',
-                    borderBottom: '1px solid rgba(255,255,255,0.08)',
+                    borderBottom: 'var(--1px solid var(--border-subtle))',
                     paddingBottom: '0.75rem',
                 }}
             >
@@ -244,7 +244,7 @@ const GoogleCachePanel: React.FC = () => {
                                         ...BTN,
                                         background: 'rgba(255,255,255,0.05)',
                                         color: 'var(--slate-400)',
-                                        border: '1px solid rgba(255,255,255,0.1)',
+                                        border: 'var(--1px solid var(--border-default))',
                                     }}
                                 >
                                     <RefreshCw size={14} /> Refresh
@@ -352,7 +352,7 @@ const GoogleCachePanel: React.FC = () => {
                                                             ...BTN,
                                                             background: 'transparent',
                                                             color: 'var(--slate-400)',
-                                                            border: '1px solid rgba(255,255,255,0.1)',
+                                                            border: 'var(--1px solid var(--border-default))',
                                                         }}
                                                     >
                                                         Cancel

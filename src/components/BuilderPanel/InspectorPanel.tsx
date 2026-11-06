@@ -117,7 +117,7 @@ const InspectorPanel: React.FC<InspectorPanelProps> = ({
                                         width: '100%',
                                         padding: '0.75rem',
                                         background: 'rgba(0,0,0,0.3)',
-                                        border: '1px solid rgba(255,255,255,0.1)',
+                                        border: 'var(--1px solid var(--border-default))',
                                         borderRadius: 8,
                                         color: 'white',
                                         outline: 'none',
@@ -193,7 +193,7 @@ const InspectorPanel: React.FC<InspectorPanelProps> = ({
                                                 width: '100%',
                                                 padding: '0.85rem',
                                                 background: 'rgba(0,0,0,0.3)',
-                                                border: '1px solid rgba(255,255,255,0.1)',
+                                                border: 'var(--1px solid var(--border-default))',
                                                 borderRadius: 8,
                                                 color: 'var(--slate-200)',
                                                 outline: 'none',
@@ -338,7 +338,7 @@ const InspectorPanel: React.FC<InspectorPanelProps> = ({
                                                                     width: 16,
                                                                     height: 16,
                                                                     borderRadius: '50%',
-                                                                    border: '1px solid rgba(255,255,255,0.2)',
+                                                                    border: 'var(--1px solid var(--border-strong))',
                                                                 }}
                                                                 aria-hidden="true"
                                                             />

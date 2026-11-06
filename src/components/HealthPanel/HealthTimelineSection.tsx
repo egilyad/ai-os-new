@@ -93,7 +93,7 @@ export const HealthTimelineSection: React.FC<HealthTimelineSectionProps> = ({
                     style={{
                         marginLeft: 'auto',
                         background: 'rgba(255,255,255,0.05)',
-                        border: '1px solid rgba(255,255,255,0.1)',
+                        border: 'var(--1px solid var(--border-default))',
                         borderRadius: 6,
                         padding: '3px 8px',
                         fontSize: '0.7rem',

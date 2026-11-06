@@ -430,7 +430,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ open, onClose, t
                             style={{
                                 padding: '0.15rem 0.4rem',
                                 background: 'rgba(255,255,255,0.05)',
-                                border: '1px solid rgba(255,255,255,0.1)',
+                                border: 'var(--1px solid var(--border-default))',
                                 borderRadius: 4,
                                 fontSize: '0.7rem',
                                 color: 'var(--text-muted)',
@@ -514,7 +514,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ open, onClose, t
 const kbdStyle: React.CSSProperties = {
     padding: '0.1rem 0.3rem',
     background: 'rgba(255,255,255,0.05)',
-    border: '1px solid rgba(255,255,255,0.1)',
+    border: 'var(--1px solid var(--border-default))',
     borderRadius: 3,
     fontFamily: 'monospace',
     fontSize: '0.65rem',

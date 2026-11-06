@@ -113,7 +113,7 @@ export const SourcePanel: React.FC<SourcePanelProps> = ({
                             height: 140,
                             padding: '0.5rem',
                             borderRadius: 6,
-                            border: '1px solid rgba(255,255,255,0.1)',
+                            border: 'var(--1px solid var(--border-default))',
                             background: 'rgba(0,0,0,0.3)',
                             color: 'var(--slate-200)',
                             fontFamily: 'monospace',

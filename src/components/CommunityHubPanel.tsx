@@ -160,7 +160,7 @@ const CommunityHubPanel: React.FC = () => {
                         width: 180,
                         padding: '0.25rem 0.5rem',
                         borderRadius: '4px',
-                        border: '1px solid rgba(255,255,255,0.1)',
+                        border: 'var(--1px solid var(--border-default))',
                         background: 'rgba(0,0,0,0.2)',
                         color: 'var(--text-primary)',
                         fontSize: '0.7rem',

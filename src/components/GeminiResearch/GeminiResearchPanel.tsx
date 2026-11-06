@@ -31,7 +31,7 @@ const TABS: { id: TabId; label: string; icon: React.ReactNode; color: string }[]
 const cardStyle: React.CSSProperties = {
     background: 'rgba(255,255,255,0.04)',
     borderRadius: 12,
-    border: '1px solid rgba(255,255,255,0.08)',
+    border: 'var(--1px solid var(--border-subtle))',
     padding: 16,
     marginBottom: 12,
 };
@@ -188,7 +188,7 @@ const GeminiResearchPanel: React.FC = () => {
                             maxWidth: 400,
                             padding: '8px 12px',
                             borderRadius: 8,
-                            border: '1px solid rgba(255,255,255,0.1)',
+                            border: 'var(--1px solid var(--border-default))',
                             background: 'rgba(0,0,0,0.3)',
                             color: 'var(--slate-200)',
                             fontSize: '0.85rem',

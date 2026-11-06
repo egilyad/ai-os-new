@@ -119,7 +119,7 @@ export const DebateLivePanel: React.FC = () => {
                         padding: '6px 12px',
                         borderRadius: 8,
                         background: 'rgba(0,0,0,0.4)',
-                        border: '1px solid rgba(255,255,255,0.1)',
+                        border: 'var(--1px solid var(--border-default))',
                         color: 'var(--slate-200)',
                         fontSize: '0.85rem',
                     }}
@@ -141,7 +141,7 @@ export const DebateLivePanel: React.FC = () => {
                         padding: '6px 12px',
                         borderRadius: 8,
                         background: 'rgba(0,0,0,0.4)',
-                        border: '1px solid rgba(255,255,255,0.1)',
+                        border: 'var(--1px solid var(--border-default))',
                         color: 'var(--slate-200)',
                         fontSize: '0.85rem',
                     }}

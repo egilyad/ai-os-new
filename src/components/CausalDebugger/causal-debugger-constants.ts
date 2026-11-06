@@ -19,7 +19,7 @@ export const INPUT_STYLE: React.CSSProperties = {
     width: '100%',
     padding: '0.5rem 0.5rem 0.5rem 2rem',
     borderRadius: 8,
-    border: '1px solid rgba(255,255,255,0.08)',
+    border: 'var(--1px solid var(--border-subtle))',
     background: 'rgba(255,255,255,0.03)',
     color: 'var(--slate-200)',
     fontSize: '0.8rem',

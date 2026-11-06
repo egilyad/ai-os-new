@@ -54,8 +54,9 @@ export default function RunQueuePanel() {
         }
     };
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(() => {
-        void reload(); /* eslint-disable-line react-hooks/exhaustive-deps */
+        void reload();
     }, []);
 
     const handleEnqueue = async () => {
@@ -187,7 +188,7 @@ export default function RunQueuePanel() {
                     minWidth: 360,
                     display: 'flex',
                     flexDirection: 'column',
-                    borderRight: '1px solid rgba(255,255,255,0.08)',
+                    borderRight: 'var(--1px solid var(--border-subtle))',
                     overflow: 'hidden',
                 }}
             >
@@ -227,7 +228,7 @@ export default function RunQueuePanel() {
                             width: '100%',
                             padding: '7px 10px',
                             borderRadius: 8,
-                            border: '1px solid rgba(255,255,255,0.1)',
+                            border: 'var(--1px solid var(--border-default))',
                             background: 'rgba(255,255,255,0.05)',
                             color: 'inherit',
                             fontSize: 12,
@@ -405,7 +406,7 @@ export default function RunQueuePanel() {
                             width: '100%',
                             padding: '6px 8px',
                             borderRadius: 8,
-                            border: '1px solid rgba(255,255,255,0.1)',
+                            border: 'var(--1px solid var(--border-default))',
                             background: 'rgba(0,0,0,0.2)',
                             color: 'inherit',
                             fontSize: 11,
@@ -420,7 +421,7 @@ export default function RunQueuePanel() {
                             width: '100%',
                             padding: '6px 8px',
                             borderRadius: 8,
-                            border: '1px solid rgba(255,255,255,0.1)',
+                            border: 'var(--1px solid var(--border-default))',
                             background: 'rgba(0,0,0,0.2)',
                             color: 'inherit',
                             fontSize: 11,
@@ -466,7 +467,7 @@ export default function RunQueuePanel() {
                             style={{
                                 padding: '7px 10px',
                                 borderRadius: 8,
-                                border: '1px solid rgba(255,255,255,0.1)',
+                                border: 'var(--1px solid var(--border-default))',
                                 background: 'rgba(0,0,0,0.3)',
                                 color: 'inherit',
                                 fontSize: 11,
@@ -490,7 +491,7 @@ export default function RunQueuePanel() {
                                 flex: 1,
                                 padding: '8px 10px',
                                 borderRadius: 8,
-                                border: '1px solid rgba(255,255,255,0.1)',
+                                border: 'var(--1px solid var(--border-default))',
                                 background: 'rgba(255,255,255,0.05)',
                                 color: 'inherit',
                                 fontSize: 12,
@@ -506,7 +507,7 @@ export default function RunQueuePanel() {
                             width: '100%',
                             padding: '8px 10px',
                             borderRadius: 8,
-                            border: '1px solid rgba(255,255,255,0.1)',
+                            border: 'var(--1px solid var(--border-default))',
                             background: 'rgba(0,0,0,0.2)',
                             color: 'inherit',
                             fontSize: 11,
@@ -562,7 +563,7 @@ export default function RunQueuePanel() {
                                     width: 60,
                                     padding: '6px 8px',
                                     borderRadius: 8,
-                                    border: '1px solid rgba(255,255,255,0.1)',
+                                    border: 'var(--1px solid var(--border-default))',
                                     background: 'rgba(0,0,0,0.2)',
                                     color: 'inherit',
                                     fontSize: 11,

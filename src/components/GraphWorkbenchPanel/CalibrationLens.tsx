@@ -26,7 +26,7 @@ const CalibrationLens: React.FC = () => {
 
     if (samples.length === 0) {
         return (
-            <div style={{ color: 'var(--slate-500)', fontSize: 13, padding: 24, textAlign: 'center', border: '1px dashed rgba(255,255,255,0.1)', borderRadius: 12 }}>
+            <div style={{ color: 'var(--slate-500)', fontSize: 13, padding: 24, textAlign: 'center', border: 'var(--1px dashed var(--border-default))', borderRadius: 12 }}>
                 Нет данных калибровки — запусти дебаты с техникой «epistemic-calibration», чтобы собрать замеры уверенности и точности.
             </div>
         );

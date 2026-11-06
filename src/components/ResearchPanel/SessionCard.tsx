@@ -50,7 +50,7 @@ const SessionCard: React.FC<SessionCardProps> = ({
             layout
             style={{
                 background: 'rgba(255,255,255,0.03)',
-                border: '1px solid rgba(255,255,255,0.08)',
+                border: 'var(--1px solid var(--border-subtle))',
                 borderRadius: 12,
                 overflow: 'hidden',
             }}
@@ -195,7 +195,7 @@ const SessionCard: React.FC<SessionCardProps> = ({
                                                 padding: '3px 6px',
                                                 borderRadius: 4,
                                                 background: 'rgba(255,255,255,0.05)',
-                                                border: '1px solid rgba(255,255,255,0.1)',
+                                                border: 'var(--1px solid var(--border-default))',
                                                 color: 'var(--slate-400)',
                                                 outline: 'none',
                                             }}
@@ -234,7 +234,7 @@ const SessionCard: React.FC<SessionCardProps> = ({
                                                     gap: 4,
                                                     padding: '4px 10px',
                                                     borderRadius: 6,
-                                                    border: '1px solid rgba(255,255,255,0.1)',
+                                                    border: 'var(--1px solid var(--border-default))',
                                                     background: 'transparent',
                                                     color: 'var(--slate-400)',
                                                     cursor: 'pointer',

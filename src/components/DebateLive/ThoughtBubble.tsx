@@ -26,7 +26,7 @@ export const ThoughtBubble: React.FC<Props> = ({ draftPreview, progress }) => {
                 overflow: 'hidden',
                 whiteSpace: 'nowrap',
                 textOverflow: 'ellipsis',
-                border: '1px solid rgba(255,255,255,0.08)',
+                border: 'var(--1px solid var(--border-subtle))',
                 pointerEvents: 'none',
                 zIndex: 15,
             }}

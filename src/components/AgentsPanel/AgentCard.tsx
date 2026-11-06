@@ -253,7 +253,7 @@ export const AgentCard: React.FC<AgentCardProps> = memo(
                                     gap: 4,
                                     padding: '4px 8px',
                                     borderRadius: 6,
-                                    border: '1px solid rgba(255,255,255,0.1)',
+                                    border: 'var(--1px solid var(--border-default))',
                                     background: 'transparent',
                                     color: 'var(--slate-300)',
                                     cursor: 'pointer',

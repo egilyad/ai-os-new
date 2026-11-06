@@ -176,7 +176,7 @@ const DashboardPanel: React.FC<DashboardPanelProps> = ({ onNavigate }) => {
                         cursor: 'pointer',
                         fontWeight: 700,
                         fontSize: '0.82rem',
-                        border: '1px solid rgba(255,255,255,0.1)',
+                        border: 'var(--1px solid var(--border-default))',
                         background: viewMode === 'desktop' ? 'linear-gradient(90deg, #3b82f6, #2563eb)' : 'rgba(255,255,255,0.04)',
                         color: viewMode === 'desktop' ? 'white' : 'var(--slate-300)',
                     }}
@@ -191,7 +191,7 @@ const DashboardPanel: React.FC<DashboardPanelProps> = ({ onNavigate }) => {
                         cursor: 'pointer',
                         fontWeight: 700,
                         fontSize: '0.82rem',
-                        border: '1px solid rgba(255,255,255,0.1)',
+                        border: 'var(--1px solid var(--border-default))',
                         background: viewMode === 'cards' ? 'linear-gradient(90deg, #8b5cf6, #7c3aed)' : 'rgba(255,255,255,0.04)',
                         color: viewMode === 'cards' ? 'white' : 'var(--slate-300)',
                     }}

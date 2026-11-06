@@ -76,7 +76,7 @@ function AudiencePollView({
                 padding: '0.75rem',
                 borderRadius: '8px',
                 background: 'rgba(255,255,255,0.03)',
-                border: '1px solid rgba(255,255,255,0.08)',
+                border: 'var(--1px solid var(--border-subtle))',
             }}
         >
             <div
@@ -166,7 +166,7 @@ function AudiencePollView({
                             style={{
                                 padding: '0.25rem 0.6rem',
                                 borderRadius: '4px',
-                                border: '1px solid rgba(255,255,255,0.1)',
+                                border: 'var(--1px solid var(--border-default))',
                                 background: 'rgba(59,130,246,0.2)',
                                 color: '#fff',
                                 cursor: 'pointer',
@@ -414,7 +414,7 @@ export const AudiencePanel: React.FC = () => {
                             width: 50,
                             padding: '0.2rem 0.3rem',
                             borderRadius: '4px',
-                            border: '1px solid rgba(255,255,255,0.1)',
+                            border: 'var(--1px solid var(--border-default))',
                             background: 'rgba(0,0,0,0.2)',
                             color: 'var(--text-primary)',
                             fontSize: '0.7rem',

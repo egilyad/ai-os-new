@@ -99,7 +99,7 @@ const PricingPanel: React.FC = () => {
                             borderRadius: 12,
                             background: 'rgba(255,255,255,0.05)',
                             color: 'var(--slate-50)',
-                            border: '1px solid rgba(255,255,255,0.1)',
+                            border: 'var(--1px solid var(--border-default))',
                             cursor: 'pointer',
                             fontSize: '0.9rem',
                         }}
@@ -429,7 +429,7 @@ const PricingPanel: React.FC = () => {
                                     padding: '0.6rem',
                                     borderRadius: 8,
                                     background: 'rgba(0,0,0,0.2)',
-                                    border: '1px solid rgba(255,255,255,0.1)',
+                                    border: 'var(--1px solid var(--border-default))',
                                     color: 'white',
                                 }}
                             />
@@ -564,7 +564,7 @@ const PricingPanel: React.FC = () => {
                                 padding: '2rem',
                                 borderRadius: 24,
                                 background: 'var(--slate-900)',
-                                border: '1px solid rgba(255,255,255,0.1)',
+                                border: 'var(--1px solid var(--border-default))',
                             }}
                         >
                             <h3
@@ -603,7 +603,7 @@ const PricingPanel: React.FC = () => {
                                         padding: '0.75rem',
                                         borderRadius: 10,
                                         background: 'rgba(255,255,255,0.05)',
-                                        border: '1px solid rgba(255,255,255,0.1)',
+                                        border: 'var(--1px solid var(--border-default))',
                                         color: 'white',
                                     }}
                                 />
@@ -634,7 +634,7 @@ const PricingPanel: React.FC = () => {
                                         padding: '0.75rem',
                                         borderRadius: 10,
                                         background: 'rgba(255,255,255,0.05)',
-                                        border: '1px solid rgba(255,255,255,0.1)',
+                                        border: 'var(--1px solid var(--border-default))',
                                         color: 'white',
                                     }}
                                 />
@@ -648,7 +648,7 @@ const PricingPanel: React.FC = () => {
                                         borderRadius: 12,
                                         background: 'rgba(255,255,255,0.05)',
                                         color: 'white',
-                                        border: '1px solid rgba(255,255,255,0.1)',
+                                        border: 'var(--1px solid var(--border-default))',
                                         cursor: 'pointer',
                                     }}
                                 >

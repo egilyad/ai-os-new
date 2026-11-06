@@ -450,7 +450,7 @@ const WhatIfPanel: React.FC = () => {
                                 ...BTN,
                                 background: 'rgba(255,255,255,0.05)',
                                 color: 'var(--slate-400)',
-                                border: '1px solid rgba(255,255,255,0.1)',
+                                border: 'var(--1px solid var(--border-default))',
                             }}
                         >
                             <RotateCcw size={14} /> Clear

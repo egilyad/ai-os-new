@@ -61,7 +61,7 @@ const PatternHeader: React.FC<Props> = ({
                             padding: '0.6rem 1rem 0.6rem 2.5rem',
                             borderRadius: 12,
                             background: 'rgba(255,255,255,0.05)',
-                            border: '1px solid rgba(255,255,255,0.1)',
+                            border: 'var(--1px solid var(--border-default))',
                             color: 'var(--slate-50)',
                             width: 300,
                         }}

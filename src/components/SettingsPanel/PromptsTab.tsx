@@ -151,7 +151,7 @@ const PromptsTab: React.FC = () => {
                                 padding: '0.75rem',
                                 borderRadius: 10,
                                 background: 'rgba(0,0,0,0.3)',
-                                border: '1px solid rgba(255,255,255,0.08)',
+                                border: 'var(--1px solid var(--border-subtle))',
                                 color: 'var(--slate-200)',
                                 fontSize: '0.85rem',
                                 fontFamily: '"JetBrains Mono", monospace',

@@ -67,7 +67,7 @@ const SynthesisComposer: React.FC<SynthesisComposerProps> = ({ synthesizing, onS
     return (
         <div
             style={{
-                border: '1px solid rgba(255,255,255,0.08)',
+                border: 'var(--1px solid var(--border-subtle))',
                 background: '#0b1220',
                 borderRadius: 10,
                 padding: '0.85rem 1rem',
@@ -82,7 +82,7 @@ const SynthesisComposer: React.FC<SynthesisComposerProps> = ({ synthesizing, onS
                 style={{
                     width: '100%',
                     background: 'var(--slate-900)',
-                    border: '1px solid rgba(255,255,255,0.1)',
+                    border: 'var(--1px solid var(--border-default))',
                     borderRadius: 8,
                     color: 'var(--slate-200)',
                     fontSize: '0.8rem',
@@ -130,7 +130,7 @@ const SynthesisComposer: React.FC<SynthesisComposerProps> = ({ synthesizing, onS
                         style={{
                             flex: 1,
                             background: 'var(--slate-900)',
-                            border: '1px solid rgba(255,255,255,0.1)',
+                            border: 'var(--1px solid var(--border-default))',
                             borderRadius: 6,
                             color: 'var(--slate-200)',
                             fontSize: '0.7rem',
@@ -205,7 +205,7 @@ const SynthesisComposer: React.FC<SynthesisComposerProps> = ({ synthesizing, onS
                         onChange={(e) => setDepth(e.target.value as SynthesisDepth)}
                         style={{
                             background: 'var(--slate-900)',
-                            border: '1px solid rgba(255,255,255,0.1)',
+                            border: 'var(--1px solid var(--border-default))',
                             borderRadius: 6,
                             color: 'var(--slate-200)',
                             fontSize: '0.7rem',

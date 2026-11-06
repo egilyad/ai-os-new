@@ -143,7 +143,7 @@ const TeamWizard: React.FC<TeamWizardProps> = ({ templates, roles, onSave, onCan
                     style={{
                         padding: '4px 10px',
                         borderRadius: 6,
-                        border: '1px solid rgba(255,255,255,0.1)',
+                        border: 'var(--1px solid var(--border-default))',
                         background: 'transparent',
                         color: 'var(--slate-400)',
                         cursor: 'pointer',
@@ -208,7 +208,7 @@ const TeamWizard: React.FC<TeamWizardProps> = ({ templates, roles, onSave, onCan
                             style={{
                                 padding: '8px 16px',
                                 borderRadius: 8,
-                                border: '1px solid rgba(255,255,255,0.1)',
+                                border: 'var(--1px solid var(--border-default))',
                                 background: 'transparent',
                                 color: 'var(--slate-400)',
                                 cursor: 'pointer',

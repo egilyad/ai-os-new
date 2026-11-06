@@ -237,7 +237,7 @@ const ModelComparePanel: React.FC = () => {
                             style={{
                                 padding: '0.25rem 0.7rem',
                                 borderRadius: 6,
-                                border: '1px solid rgba(255,255,255,0.08)',
+                                border: 'var(--1px solid var(--border-subtle))',
                                 background: 'var(--accent-tint)',
                                 color: '#60a5fa',
                                 cursor: 'pointer',
@@ -252,7 +252,7 @@ const ModelComparePanel: React.FC = () => {
                             style={{
                                 padding: '0.25rem 0.7rem',
                                 borderRadius: 6,
-                                border: '1px solid rgba(255,255,255,0.08)',
+                                border: 'var(--1px solid var(--border-subtle))',
                                 background: 'var(--error-tint)',
                                 color: '#f87171',
                                 cursor: 'pointer',
@@ -276,7 +276,7 @@ const ModelComparePanel: React.FC = () => {
                             padding: '0.75rem 1rem',
                             borderRadius: 12,
                             background: 'rgba(0,0,0,0.3)',
-                            border: '1px solid rgba(255,255,255,0.08)',
+                            border: 'var(--1px solid var(--border-subtle))',
                             color: 'var(--slate-200)',
                             fontSize: '0.85rem',
                             outline: 'none',

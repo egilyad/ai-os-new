@@ -100,7 +100,7 @@ const VotePanelSection: React.FC<Props> = ({
                             style={{
                                 padding: '0.5rem 1rem',
                                 borderRadius: 10,
-                                border: '1px solid rgba(255,255,255,0.1)',
+                                border: 'var(--1px solid var(--border-default))',
                                 cursor: 'pointer',
                                 fontSize: '0.85rem',
                                 fontWeight: 600,

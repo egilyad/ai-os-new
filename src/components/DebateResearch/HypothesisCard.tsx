@@ -325,7 +325,7 @@ const HypothesisCard: React.FC<HypothesisCardProps> = ({
                                                 padding: '0.1rem 0.35rem',
                                                 borderRadius: 3,
                                                 background: 'rgba(0,0,0,0.3)',
-                                                border: '1px solid rgba(255,255,255,0.1)',
+                                                border: 'var(--1px solid var(--border-default))',
                                                 color: 'var(--slate-200)',
                                                 fontSize: '0.68rem',
                                                 outline: 'none',

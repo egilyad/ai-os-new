@@ -288,7 +288,7 @@ const WebhooksPanel: React.FC = () => {
                                     style={{
                                         padding: '0.3rem 0.6rem',
                                         borderRadius: 6,
-                                        border: '1px solid rgba(255,255,255,0.1)',
+                                        border: 'var(--1px solid var(--border-default))',
                                         background: formEvents.includes(evt)
                                             ? 'rgba(168,85,247,0.2)'
                                             : 'transparent',
@@ -323,7 +323,7 @@ const WebhooksPanel: React.FC = () => {
                         color: 'var(--slate-500)',
                         fontSize: '0.9rem',
                         fontStyle: 'italic',
-                        border: '1px dashed rgba(255,255,255,0.1)',
+                        border: 'var(--1px dashed var(--border-default))',
                         borderRadius: 16,
                     }}
                 >
@@ -417,7 +417,7 @@ const WebhooksPanel: React.FC = () => {
                                             style={{
                                                 padding: '0.35rem 0.6rem',
                                                 borderRadius: 6,
-                                                border: '1px solid rgba(255,255,255,0.1)',
+                                                border: 'var(--1px solid var(--border-default))',
                                                 background: 'transparent',
                                                 color: 'var(--slate-400)',
                                                 cursor: 'pointer',

@@ -41,19 +41,19 @@ export const textLg: CSSProperties = { fontSize: '1.1rem' };
 
 export const panel: CSSProperties = {
     background: 'var(--slate-800)',
-    border: '1px solid rgba(255,255,255,0.1)',
+    border: 'var(--1px solid var(--border-default))',
     borderRadius: 12,
     padding: '1rem',
 };
 export const card: CSSProperties = {
     background: 'var(--slate-900)',
-    border: '1px solid rgba(255,255,255,0.08)',
+    border: 'var(--1px solid var(--border-subtle))',
     borderRadius: 8,
     padding: '0.75rem',
 };
 export const input: CSSProperties = {
     background: 'var(--slate-900)',
-    border: '1px solid rgba(255,255,255,0.1)',
+    border: 'var(--1px solid var(--border-default))',
     borderRadius: 8,
     padding: '0.5rem 0.75rem',
     color: 'var(--slate-100)',
@@ -86,7 +86,7 @@ export const buttonSm: CSSProperties = {
 export const buttonGhost: CSSProperties = {
     padding: '0.5rem 0.75rem',
     borderRadius: 8,
-    border: '1px solid rgba(255,255,255,0.1)',
+    border: 'var(--1px solid var(--border-default))',
     background: 'transparent',
     color: 'var(--slate-400)',
     cursor: 'pointer',
@@ -101,7 +101,7 @@ export const label: CSSProperties = {
 };
 export const divider: CSSProperties = {
     border: 'none',
-    borderTop: '1px solid rgba(255,255,255,0.08)',
+    borderTop: 'var(--1px solid var(--border-subtle))',
     margin: '0.75rem 0',
 };
 export const iconBtn: CSSProperties = {
@@ -523,7 +523,7 @@ export const selectDark: CSSProperties = {
     padding: '0.6rem',
     borderRadius: 8,
     background: 'rgba(0,0,0,0.3)',
-    border: '1px solid rgba(255,255,255,0.08)',
+    border: 'var(--1px solid var(--border-subtle))',
     color: 'var(--slate-200)',
     fontSize: '0.85rem',
     fontWeight: 600,
@@ -532,7 +532,7 @@ export const inputDarkSm: CSSProperties = {
     minWidth: 0,
     padding: '0.45rem 0.5rem',
     borderRadius: 6,
-    border: '1px solid rgba(255,255,255,0.08)',
+    border: 'var(--1px solid var(--border-subtle))',
     background: 'rgba(0,0,0,0.25)',
     fontSize: '0.75rem',
 };
@@ -594,7 +594,7 @@ export const btnGhostWithBorder: CSSProperties = {
     padding: '0.5rem 1rem',
     borderRadius: 8,
     background: 'rgba(255,255,255,0.05)',
-    border: '1px solid rgba(255,255,255,0.1)',
+    border: 'var(--1px solid var(--border-default))',
     color: 'var(--slate-200)',
     cursor: 'pointer',
     display: 'flex',
@@ -707,7 +707,7 @@ export const errorBox: CSSProperties = {
 export const selectSmall: CSSProperties = {
     padding: '0.35rem 0.5rem',
     background: 'rgba(0,0,0,0.2)',
-    border: '1px solid rgba(255,255,255,0.1)',
+    border: 'var(--1px solid var(--border-default))',
     borderRadius: 8,
     color: 'var(--slate-200)',
     fontSize: '0.75rem',
@@ -1035,7 +1035,7 @@ export const modalFormSelect: CSSProperties = {
     width: '100%',
     padding: '0.85rem 1rem',
     background: 'rgba(0,0,0,0.3)',
-    border: '1px solid rgba(255,255,255,0.1)',
+    border: 'var(--1px solid var(--border-default))',
     borderRadius: 10,
     color: 'white',
     outline: 'none',
@@ -1073,7 +1073,7 @@ export const formFieldWhite: CSSProperties = {
     padding: '0.75rem',
     borderRadius: 10,
     background: 'rgba(255,255,255,0.05)',
-    border: '1px solid rgba(255,255,255,0.1)',
+    border: 'var(--1px solid var(--border-default))',
     color: 'white',
 };
 export const textareaDark: CSSProperties = {
@@ -1082,7 +1082,7 @@ export const textareaDark: CSSProperties = {
     padding: '0.75rem',
     borderRadius: 10,
     background: 'rgba(255,255,255,0.05)',
-    border: '1px solid rgba(255,255,255,0.1)',
+    border: 'var(--1px solid var(--border-default))',
     color: 'white',
     fontFamily: 'monospace',
 };
@@ -1091,7 +1091,7 @@ export const textareaDark: CSSProperties = {
 export const settingSelect: CSSProperties = {
     padding: '0.6rem 1rem',
     background: 'rgba(0,0,0,0.3)',
-    border: '1px solid rgba(255,255,255,0.1)',
+    border: 'var(--1px solid var(--border-default))',
     borderRadius: 8,
     color: 'white',
     outline: 'none',
@@ -1125,7 +1125,7 @@ export const sectionTitleLarge: CSSProperties = {
 export const webhookInput: CSSProperties = {
     padding: '0.6rem 1rem',
     background: 'rgba(0,0,0,0.3)',
-    border: '1px solid rgba(255,255,255,0.1)',
+    border: 'var(--1px solid var(--border-default))',
     borderRadius: 8,
     color: 'white',
     fontSize: '0.85rem',
@@ -1325,7 +1325,7 @@ export const exportImportBtn: CSSProperties = {
     borderRadius: 10,
     fontWeight: 700,
     background: 'rgba(255,255,255,0.05)',
-    border: '1px solid rgba(255,255,255,0.1)',
+    border: 'var(--1px solid var(--border-default))',
     color: 'var(--slate-200)',
     cursor: 'pointer',
 };
@@ -1422,7 +1422,7 @@ export const selectDarkWide: CSSProperties = {
     width: '100%',
     padding: '0.75rem',
     background: 'rgba(0,0,0,0.3)',
-    border: '1px solid rgba(255,255,255,0.1)',
+    border: 'var(--1px solid var(--border-default))',
     borderRadius: 8,
     color: 'white',
     outline: 'none',
@@ -1515,7 +1515,7 @@ export const iconBtnGhostMd: CSSProperties = {
     padding: '0.6rem',
     borderRadius: 10,
     background: 'rgba(255,255,255,0.05)',
-    border: '1px solid rgba(255,255,255,0.1)',
+    border: 'var(--1px solid var(--border-default))',
     color: 'var(--slate-200)',
     cursor: 'pointer',
 };
@@ -1944,7 +1944,7 @@ export const btnOutlineMuted: CSSProperties = {
     fontSize: '0.8rem',
     borderRadius: 10,
     background: 'rgba(255,255,255,0.05)',
-    border: '1px solid rgba(255,255,255,0.1)',
+    border: 'var(--1px solid var(--border-default))',
     color: 'var(--slate-200)',
     fontWeight: 700,
     cursor: 'pointer',

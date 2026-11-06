@@ -72,7 +72,7 @@ const TriggerConfig: React.FC<TriggerConfigProps> = ({ onTrigger, running }) => 
     return (
         <div
             style={{
-                border: '1px solid rgba(255,255,255,0.08)',
+                border: 'var(--1px solid var(--border-subtle))',
                 background: '#0b1220',
                 borderRadius: 10,
                 padding: '0.85rem 1rem',
@@ -187,7 +187,7 @@ const TriggerConfig: React.FC<TriggerConfigProps> = ({ onTrigger, running }) => 
 const inputStyle: React.CSSProperties = {
     flex: 1,
     background: 'var(--slate-900)',
-    border: '1px solid rgba(255,255,255,0.1)',
+    border: 'var(--1px solid var(--border-default))',
     borderRadius: 6,
     color: 'var(--slate-200)',
     fontSize: '0.72rem',

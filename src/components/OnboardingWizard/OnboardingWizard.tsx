@@ -184,7 +184,7 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({ t }) => {
                                     gap: '0.4rem',
                                     padding: '0.55rem 1rem',
                                     background: 'rgba(255,255,255,0.06)',
-                                    border: '1px solid rgba(255,255,255,0.1)',
+                                    border: 'var(--1px solid var(--border-default))',
                                     borderRadius: 8,
                                     cursor: 'pointer',
                                     color: 'var(--text-secondary)',

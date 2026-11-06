@@ -46,7 +46,7 @@ export const replayStatusColor: Record<string, string> = {
 export const btn = (bg: string, color: string, disabled = false): React.CSSProperties => ({
     padding: '0.35rem 0.65rem',
     borderRadius: '6px',
-    border: '1px solid rgba(255,255,255,0.08)',
+    border: 'var(--1px solid var(--border-subtle))',
     background: disabled ? 'rgba(255,255,255,0.03)' : bg,
     color: disabled ? '#555' : color,
     cursor: disabled ? 'default' : 'pointer',

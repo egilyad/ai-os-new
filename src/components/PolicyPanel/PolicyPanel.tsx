@@ -890,7 +890,7 @@ const PolicyPanel: React.FC = () => {
                                         padding: '0.5rem',
                                         borderRadius: 8,
                                         background: 'rgba(255,255,255,0.05)',
-                                        border: '1px solid rgba(255,255,255,0.1)',
+                                        border: 'var(--1px solid var(--border-default))',
                                         color: 'var(--slate-200)',
                                         cursor: 'pointer',
                                     }}
@@ -1002,7 +1002,7 @@ const PolicyPanel: React.FC = () => {
                                         borderRadius: 12,
                                         fontWeight: 700,
                                         background: 'rgba(255,255,255,0.05)',
-                                        border: '1px solid rgba(255,255,255,0.1)',
+                                        border: 'var(--1px solid var(--border-default))',
                                         color: 'var(--slate-200)',
                                         cursor: 'pointer',
                                     }}
@@ -1149,7 +1149,7 @@ const PolicyPanel: React.FC = () => {
                                         borderRadius: 12,
                                         background: 'rgba(255,255,255,0.05)',
                                         color: 'white',
-                                        border: '1px solid rgba(255,255,255,0.1)',
+                                        border: 'var(--1px solid var(--border-default))',
                                         cursor: 'pointer',
                                     }}
                                 >

@@ -269,7 +269,7 @@ export function WikiArticleView({
                                     onClick={() => openSlug(slug)}
                                     style={{
                                         background: 'rgba(255,255,255,0.04)',
-                                        border: '1px solid rgba(255,255,255,0.08)',
+                                        border: 'var(--1px solid var(--border-subtle))',
                                         borderRadius: 8,
                                         padding: '0.4rem 0.8rem',
                                         cursor: 'pointer',

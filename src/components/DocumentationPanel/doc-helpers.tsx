@@ -63,7 +63,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
                 gap: '0.5rem',
                 padding: '0.6rem 1rem',
                 background: 'rgba(255,255,255,0.03)',
-                border: '1px solid rgba(255,255,255,0.08)',
+                border: 'var(--1px solid var(--border-subtle))',
                 borderRadius: 12,
             }}
         >
@@ -105,7 +105,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
                     right: 0,
                     zIndex: 10,
                     background: 'var(--slate-800)',
-                    border: '1px solid rgba(255,255,255,0.1)',
+                    border: 'var(--1px solid var(--border-default))',
                     borderRadius: 12,
                     marginTop: '0.25rem',
                     overflow: 'hidden',

@@ -180,7 +180,7 @@ export const VulnTargetingPanel: React.FC = () => {
                         textAlign: 'center',
                         color: 'var(--slate-400)',
                         fontSize: 14,
-                        border: '1px dashed rgba(255,255,255,0.1)',
+                        border: 'var(--1px dashed var(--border-default))',
                         borderRadius: 10,
                     }}
                 >
@@ -283,7 +283,7 @@ export const VulnTargetingPanel: React.FC = () => {
                             borderRadius: 8,
                             background: 'var(--slate-900)',
                             color: 'var(--slate-100)',
-                            border: '1px solid rgba(255,255,255,0.1)',
+                            border: 'var(--1px solid var(--border-default))',
                             fontSize: 13,
                         }}
                     >
@@ -316,7 +316,7 @@ export const VulnTargetingPanel: React.FC = () => {
                             borderRadius: 8,
                             background: 'var(--slate-900)',
                             color: 'var(--slate-100)',
-                            border: '1px solid rgba(255,255,255,0.1)',
+                            border: 'var(--1px solid var(--border-default))',
                             fontSize: 13,
                         }}
                     />
@@ -343,7 +343,7 @@ export const VulnTargetingPanel: React.FC = () => {
                             borderRadius: 8,
                             background: 'var(--slate-900)',
                             color: 'var(--slate-100)',
-                            border: '1px solid rgba(255,255,255,0.1)',
+                            border: 'var(--1px solid var(--border-default))',
                             fontSize: 13,
                         }}
                     />
@@ -366,7 +366,7 @@ export const VulnTargetingPanel: React.FC = () => {
                             borderRadius: 8,
                             background: 'var(--slate-900)',
                             color: 'var(--slate-100)',
-                            border: '1px solid rgba(255,255,255,0.1)',
+                            border: 'var(--1px solid var(--border-default))',
                             fontSize: 13,
                         }}
                     >
@@ -530,7 +530,7 @@ export const VulnTargetingPanel: React.FC = () => {
                                         borderRadius: 8,
                                         background: 'var(--slate-900)',
                                         color: 'var(--slate-100)',
-                                        border: '1px solid rgba(255,255,255,0.1)',
+                                        border: 'var(--1px solid var(--border-default))',
                                         fontSize: 12,
                                     }}
                                 />
@@ -543,7 +543,7 @@ export const VulnTargetingPanel: React.FC = () => {
                                     borderRadius: 8,
                                     background: 'var(--slate-900)',
                                     color: 'var(--slate-100)',
-                                    border: '1px solid rgba(255,255,255,0.1)',
+                                    border: 'var(--1px solid var(--border-default))',
                                     fontSize: 12,
                                 }}
                             >

@@ -661,7 +661,7 @@ const TracesPanel: React.FC = () => {
                                             padding: '0.6rem',
                                             borderRadius: 10,
                                             background: 'rgba(255,255,255,0.05)',
-                                            border: '1px solid rgba(255,255,255,0.1)',
+                                            border: 'var(--1px solid var(--border-default))',
                                             cursor: 'pointer',
                                         }}
                                         aria-label={t('traces.inspect_aria')}
@@ -677,7 +677,7 @@ const TracesPanel: React.FC = () => {
                                             padding: '0.6rem',
                                             borderRadius: 10,
                                             background: 'rgba(255,255,255,0.05)',
-                                            border: '1px solid rgba(255,255,255,0.1)',
+                                            border: 'var(--1px solid var(--border-default))',
                                             color: 'var(--error)',
                                             cursor: 'pointer',
                                         }}
@@ -699,7 +699,7 @@ const TracesPanel: React.FC = () => {
                                     padding: '0.5rem 1rem',
                                     borderRadius: 8,
                                     background: 'rgba(255,255,255,0.05)',
-                                    border: '1px solid rgba(255,255,255,0.1)',
+                                    border: 'var(--1px solid var(--border-default))',
                                     color: 'var(--slate-300)',
                                     cursor: 'pointer',
                                     fontSize: 12,

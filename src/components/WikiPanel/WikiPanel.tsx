@@ -211,7 +211,7 @@ export const WikiPanel: React.FC = () => {
                         onClick={() => setMenuOpen((v) => !v)}
                         style={{
                             background: 'rgba(255,255,255,0.06)',
-                            border: '1px solid rgba(255,255,255,0.1)',
+                            border: 'var(--1px solid var(--border-default))',
                             borderRadius: 8,
                             padding: '0.4rem 0.8rem',
                             cursor: 'pointer',
@@ -511,7 +511,7 @@ function WikiCoverage({
                                         alignItems: 'center',
                                         gap: '0.4rem',
                                         background: 'rgba(255,255,255,0.04)',
-                                        border: '1px solid rgba(255,255,255,0.08)',
+                                        border: 'var(--1px solid var(--border-subtle))',
                                         borderRadius: 8,
                                         padding: '0.35rem 0.7rem',
                                         cursor: 'pointer',
@@ -558,7 +558,7 @@ function WikiMap({
                                 onClick={() => openPanel(item.id, t(item.labelKey), t(s.labelKey))}
                                 style={{
                                     background: 'rgba(255,255,255,0.04)',
-                                    border: '1px solid rgba(255,255,255,0.08)',
+                                    border: 'var(--1px solid var(--border-subtle))',
                                     borderRadius: 8,
                                     padding: '0.35rem 0.7rem',
                                     cursor: 'pointer',

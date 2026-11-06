@@ -74,7 +74,7 @@ const ParticipantsField: React.FC<{
                         flexWrap: 'wrap',
                         padding: '0.5rem',
                         borderRadius: 8,
-                        border: '1px solid rgba(255,255,255,0.08)',
+                        border: 'var(--1px solid var(--border-subtle))',
                         background: 'rgba(0,0,0,0.2)',
                     }}
                 >

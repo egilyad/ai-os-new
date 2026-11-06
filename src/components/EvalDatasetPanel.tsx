@@ -8,7 +8,7 @@ const card: React.CSSProperties = {
     background: 'rgba(255,255,255,0.04)',
     borderRadius: 12,
     padding: 16,
-    border: '1px solid rgba(255,255,255,0.08)',
+    border: 'var(--1px solid var(--border-subtle))',
 };
 
 const btn: React.CSSProperties = {
@@ -17,7 +17,7 @@ const btn: React.CSSProperties = {
     gap: 6,
     padding: '8px 16px',
     borderRadius: 8,
-    border: '1px solid rgba(255,255,255,0.1)',
+    border: 'var(--1px solid var(--border-default))',
     color: 'var(--slate-200)',
     cursor: 'pointer',
     fontSize: '0.8rem',
@@ -29,7 +29,7 @@ const inputStyle: React.CSSProperties = {
     width: '100%',
     padding: '8px 12px',
     borderRadius: 8,
-    border: '1px solid rgba(255,255,255,0.1)',
+    border: 'var(--1px solid var(--border-default))',
     background: 'rgba(255,255,255,0.05)',
     color: 'var(--slate-200)',
     fontSize: '0.85rem',

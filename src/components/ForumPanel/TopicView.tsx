@@ -66,7 +66,7 @@ const PostCard: React.FC<{
     return (
         <div
             style={{
-                border: '1px solid rgba(255,255,255,0.08)',
+                border: 'var(--1px solid var(--border-subtle))',
                 background: '#0d1526',
                 borderRadius: 8,
                 padding: '0.6rem 0.8rem',
@@ -354,7 +354,7 @@ const exportBtn: React.CSSProperties = {
 const searchInput: React.CSSProperties = {
     width: '100%',
     background: 'var(--slate-900)',
-    border: '1px solid rgba(255,255,255,0.1)',
+    border: 'var(--1px solid var(--border-default))',
     borderRadius: 6,
     color: 'var(--slate-200)',
     fontSize: '0.7rem',

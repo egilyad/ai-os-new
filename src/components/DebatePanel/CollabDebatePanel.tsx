@@ -120,7 +120,7 @@ const CollabDebatePanel: React.FC<Props> = ({ session }) => {
                         style={{
                             padding: '0.4rem 0.75rem',
                             borderRadius: 8,
-                            border: '1px solid rgba(255,255,255,0.1)',
+                            border: 'var(--1px solid var(--border-default))',
                             background: 'rgba(0,0,0,0.3)',
                             color: 'var(--slate-200)',
                             fontSize: '0.85rem',
@@ -237,7 +237,7 @@ const CollabDebatePanel: React.FC<Props> = ({ session }) => {
                                         flex: 1,
                                         padding: '0.4rem 0.75rem',
                                         borderRadius: 8,
-                                        border: '1px solid rgba(255,255,255,0.1)',
+                                        border: 'var(--1px solid var(--border-default))',
                                         background: 'rgba(0,0,0,0.3)',
                                         color: 'var(--slate-200)',
                                         fontSize: '0.85rem',

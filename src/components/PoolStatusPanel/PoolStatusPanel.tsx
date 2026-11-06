@@ -541,7 +541,7 @@ const PoolStatusPanel: React.FC = () => {
                                                 padding: '0.3rem 0.5rem',
                                                 borderRadius: 6,
                                                 background: 'rgba(255,255,255,0.05)',
-                                                border: '1px solid rgba(255,255,255,0.1)',
+                                                border: 'var(--1px solid var(--border-default))',
                                                 color: 'var(--slate-300)',
                                                 fontSize: '0.7rem',
                                             }}
@@ -595,7 +595,7 @@ const PoolStatusPanel: React.FC = () => {
                                                 editingProvider === provider
                                                     ? 'rgba(59,130,246,0.2)'
                                                     : 'rgba(255,255,255,0.05)',
-                                            border: '1px solid rgba(255,255,255,0.1)',
+                                            border: 'var(--1px solid var(--border-default))',
                                             color: 'var(--slate-300)',
                                             cursor: 'pointer',
                                             fontSize: '0.7rem',
@@ -616,7 +616,7 @@ const PoolStatusPanel: React.FC = () => {
                                             padding: '1rem',
                                             borderRadius: 12,
                                             background: 'var(--slate-800)',
-                                            border: '1px solid rgba(255,255,255,0.1)',
+                                            border: 'var(--1px solid var(--border-default))',
                                             zIndex: 10,
                                             minWidth: 220,
                                         }}
@@ -654,7 +654,7 @@ const PoolStatusPanel: React.FC = () => {
                                                     padding: '0.4rem 0.6rem',
                                                     borderRadius: 6,
                                                     background: 'rgba(0,0,0,0.3)',
-                                                    border: '1px solid rgba(255,255,255,0.1)',
+                                                    border: 'var(--1px solid var(--border-default))',
                                                     color: 'var(--slate-50)',
                                                     fontSize: '0.75rem',
                                                 }}
@@ -675,7 +675,7 @@ const PoolStatusPanel: React.FC = () => {
                                                     padding: '0.4rem 0.6rem',
                                                     borderRadius: 6,
                                                     background: 'rgba(0,0,0,0.3)',
-                                                    border: '1px solid rgba(255,255,255,0.1)',
+                                                    border: 'var(--1px solid var(--border-default))',
                                                     color: 'var(--slate-50)',
                                                     fontSize: '0.75rem',
                                                 }}

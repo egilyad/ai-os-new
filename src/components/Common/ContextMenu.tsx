@@ -80,7 +80,7 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({ x, y, actions, onClose
                     zIndex: 9999,
                     minWidth: 180,
                     background: 'var(--slate-800)',
-                    border: '1px solid rgba(255,255,255,0.1)',
+                    border: 'var(--1px solid var(--border-default))',
                     borderRadius: 10,
                     padding: '0.35rem',
                     boxShadow: '0 10px 40px rgba(0,0,0,0.5)',

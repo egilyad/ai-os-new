@@ -439,12 +439,12 @@ const tabBtn = (active: boolean): React.CSSProperties => ({
     cursor: 'pointer',
 });
 
-const th: React.CSSProperties = { padding: '6px 10px', borderBottom: '1px solid rgba(255,255,255,0.1)', whiteSpace: 'nowrap' };
+const th: React.CSSProperties = { padding: '6px 10px', borderBottom: 'var(--1px solid var(--border-default))', whiteSpace: 'nowrap' };
 const td: React.CSSProperties = { padding: '6px 10px', verticalAlign: 'top' };
 const selectStyle: React.CSSProperties = {
     padding: '0.45rem 0.6rem',
     borderRadius: 8,
-    border: '1px solid rgba(255,255,255,0.1)',
+    border: 'var(--1px solid var(--border-default))',
     background: 'rgba(0,0,0,0.3)',
     color: 'var(--slate-200)',
     fontSize: '0.8rem',

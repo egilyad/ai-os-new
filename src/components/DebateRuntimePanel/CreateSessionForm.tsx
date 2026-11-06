@@ -195,7 +195,7 @@ const CreateSessionForm: React.FC<CreateSessionFormProps> = ({
                                         fontSize: '0.65rem',
                                         padding: '0.15rem 0.5rem',
                                         color: 'var(--slate-400)',
-                                        border: '1px solid rgba(255,255,255,0.1)',
+                                        border: 'var(--1px solid var(--border-default))',
                                         borderRadius: 4,
                                         cursor: 'pointer',
                                         background: 'transparent',

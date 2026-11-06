@@ -24,7 +24,7 @@ export function QuickActionBtn({
                 gap: 6,
                 borderRadius: 10,
                 background: 'rgba(255,255,255,0.04)',
-                border: '1px solid rgba(255,255,255,0.08)',
+                border: 'var(--1px solid var(--border-subtle))',
                 color: 'var(--slate-400)',
                 cursor: 'pointer',
                 fontSize: '0.8rem',
@@ -115,7 +115,7 @@ export const EmptyState = ({
             padding: '2rem',
             textAlign: 'center',
             color: 'var(--slate-500)',
-            border: '1px dashed rgba(255,255,255,0.1)',
+            border: 'var(--1px dashed var(--border-default))',
             borderRadius: 12,
             fontSize: '0.9rem',
         }}

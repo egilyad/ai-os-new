@@ -100,14 +100,14 @@ export const ExperimentComparison: React.FC = () => {
             <select
               value={leftId}
               onChange={e => setLeftId(e.target.value)}
-              style={{ flex: 1, padding: '0.5rem 0.75rem', borderRadius: 8, border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(0,0,0,0.3)', color: 'var(--slate-200)', fontSize: '0.75rem', outline: 'none' }}
+              style={{ flex: 1, padding: '0.5rem 0.75rem', borderRadius: 8, border: 'var(--1px solid var(--border-default))', background: 'rgba(0,0,0,0.3)', color: 'var(--slate-200)', fontSize: '0.75rem', outline: 'none' }}
             >
               <option value="">Select run...</option>
               {completedRuns.map(r => (
                 <option key={r.id} value={r.id}>{r.module} — {formatDate(r.startedAt)}</option>
               ))}
             </select>
-            <button onClick={() => selectRandom('left')} style={{ padding: '0.3rem 0.5rem', fontSize: '0.6rem', fontWeight: 700, borderRadius: 6, border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(255,255,255,0.05)', color: 'var(--slate-400)', cursor: 'pointer' }}>Random</button>
+            <button onClick={() => selectRandom('left')} style={{ padding: '0.3rem 0.5rem', fontSize: '0.6rem', fontWeight: 700, borderRadius: 6, border: 'var(--1px solid var(--border-default))', background: 'rgba(255,255,255,0.05)', color: 'var(--slate-400)', cursor: 'pointer' }}>Random</button>
           </div>
         </div>
 
@@ -127,14 +127,14 @@ export const ExperimentComparison: React.FC = () => {
             <select
               value={rightId}
               onChange={e => setRightId(e.target.value)}
-              style={{ flex: 1, padding: '0.5rem 0.75rem', borderRadius: 8, border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(0,0,0,0.3)', color: 'var(--slate-200)', fontSize: '0.75rem', outline: 'none' }}
+              style={{ flex: 1, padding: '0.5rem 0.75rem', borderRadius: 8, border: 'var(--1px solid var(--border-default))', background: 'rgba(0,0,0,0.3)', color: 'var(--slate-200)', fontSize: '0.75rem', outline: 'none' }}
             >
               <option value="">Select run...</option>
               {completedRuns.map(r => (
                 <option key={r.id} value={r.id}>{r.module} — {formatDate(r.startedAt)}</option>
               ))}
             </select>
-            <button onClick={() => selectRandom('right')} style={{ padding: '0.3rem 0.5rem', fontSize: '0.6rem', fontWeight: 700, borderRadius: 6, border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(255,255,255,0.05)', color: 'var(--slate-400)', cursor: 'pointer' }}>Random</button>
+            <button onClick={() => selectRandom('right')} style={{ padding: '0.3rem 0.5rem', fontSize: '0.6rem', fontWeight: 700, borderRadius: 6, border: 'var(--1px solid var(--border-default))', background: 'rgba(255,255,255,0.05)', color: 'var(--slate-400)', cursor: 'pointer' }}>Random</button>
           </div>
         </div>
       </div>

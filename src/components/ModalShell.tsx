@@ -35,7 +35,7 @@ export const ModalShell = ({ open, onClose, children, width = 500, zIndex = 9999
         overflowY: 'auto'
       }} onClick={onClose} role="dialog" aria-modal="true">
         <div style={{
-          background: 'var(--slate-800)', border: '1px solid rgba(255,255,255,0.1)',
+          background: 'var(--slate-800)', border: 'var(--1px solid var(--border-default))',
           borderRadius: 12, padding: '1.5rem', width: '100%',
           maxWidth: typeof width === 'number' ? width : `${width}`,
           maxHeight: '90vh', overflowY: 'auto',

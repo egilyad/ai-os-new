@@ -67,7 +67,7 @@ export const AchievementList: React.FC<AchievementListProps> = ({ achievements, 
 
     const CARD: React.CSSProperties = {
         background: 'rgba(255,255,255,0.03)',
-        border: '1px solid rgba(255,255,255,0.08)',
+        border: 'var(--1px solid var(--border-subtle))',
         borderRadius: 12,
         padding: '1rem',
     };

@@ -83,7 +83,7 @@ export default function ChatDock() {
                         width: 380,
                         maxHeight: 480,
                         background: 'var(--slate-900)',
-                        border: '1px solid rgba(255,255,255,0.08)',
+                        border: 'var(--1px solid var(--border-subtle))',
                         borderRadius: 16,
                         boxShadow: '0 20px 60px rgba(0,0,0,0.5)',
                         display: 'flex',

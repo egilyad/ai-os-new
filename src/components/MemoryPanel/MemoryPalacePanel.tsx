@@ -10,7 +10,7 @@ const card: React.CSSProperties = {
     background: 'rgba(255,255,255,0.04)',
     borderRadius: 12,
     padding: 16,
-    border: '1px solid rgba(255,255,255,0.08)',
+    border: 'var(--1px solid var(--border-subtle))',
     display: 'flex',
     flexDirection: 'column',
     gap: 8,

@@ -60,7 +60,7 @@ const LensStackVisualizer: React.FC<LensStackVisualizerProps> = ({
                     style={{
                         padding: '0.75rem',
                         borderRadius: 6,
-                        border: '1px dashed rgba(255,255,255,0.1)',
+                        border: 'var(--1px dashed var(--border-default))',
                         color: 'var(--slate-600)',
                         fontSize: '0.75rem',
                         textAlign: 'center',

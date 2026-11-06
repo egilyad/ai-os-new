@@ -19,7 +19,7 @@ export const card: React.CSSProperties = {
     background: 'rgba(255,255,255,0.04)',
     borderRadius: 10,
     padding: 14,
-    border: '1px solid rgba(255,255,255,0.08)',
+    border: 'var(--1px solid var(--border-subtle))',
 };
 
 export const chip = (color: string): React.CSSProperties => ({

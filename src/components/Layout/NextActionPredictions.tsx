@@ -195,7 +195,7 @@ export const NextActionPredictions: React.FC = () => {
                         alignItems: 'center',
                         gap: '0.3rem',
                         background: 'rgba(255,255,255,0.06)',
-                        border: '1px solid rgba(255,255,255,0.1)',
+                        border: 'var(--1px solid var(--border-default))',
                         borderRadius: 6,
                         padding: '0.2rem 0.6rem',
                         cursor: 'pointer',

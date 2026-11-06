@@ -424,7 +424,7 @@ const SandboxTab: React.FC<SandboxTabProps> = ({ apiKey, onClose }) => {
                         flex: 1,
                         padding: '0.75rem',
                         background: 'rgba(255,255,255,0.03)',
-                        border: '1px solid rgba(255,255,255,0.1)',
+                        border: 'var(--1px solid var(--border-default))',
                         borderRadius: '12px',
                         color: '#fff',
                         resize: 'none',

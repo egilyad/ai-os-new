@@ -115,7 +115,7 @@ const ResearchExportPanel: React.FC = () => {
           onClick={handleCopyIssue}
           style={{
             display: 'flex', alignItems: 'center', gap: 6, padding: '0.5rem 1rem', borderRadius: 8,
-            border: '1px solid rgba(255,255,255,0.1)', background: copied === 'clipboard' ? 'rgba(16,185,129,0.15)' : 'transparent',
+            border: 'var(--1px solid var(--border-default))', background: copied === 'clipboard' ? 'rgba(16,185,129,0.15)' : 'transparent',
             color: copied === 'clipboard' ? '#34d399' : '#94a3b8', cursor: 'pointer', fontSize: '0.78rem', transition: 'all 0.15s',
           }}
         >
@@ -126,7 +126,7 @@ const ResearchExportPanel: React.FC = () => {
           onClick={handleCopyJson}
           style={{
             display: 'flex', alignItems: 'center', gap: 6, padding: '0.5rem 1rem', borderRadius: 8,
-            border: '1px solid rgba(255,255,255,0.1)', background: copied === 'json' ? 'rgba(16,185,129,0.15)' : 'transparent',
+            border: 'var(--1px solid var(--border-default))', background: copied === 'json' ? 'rgba(16,185,129,0.15)' : 'transparent',
             color: copied === 'json' ? '#34d399' : '#94a3b8', cursor: 'pointer', fontSize: '0.78rem', transition: 'all 0.15s',
           }}
         >

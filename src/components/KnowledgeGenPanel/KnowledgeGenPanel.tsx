@@ -128,7 +128,7 @@ const KnowledgeGenPanel: React.FC = () => {
                         style={{
                             padding: '0.45rem 0.8rem',
                             borderRadius: 7,
-                            border: '1px solid rgba(255,255,255,0.1)',
+                            border: 'var(--1px solid var(--border-default))',
                             background: 'transparent',
                             color: 'var(--slate-400)',
                             cursor: 'pointer',
@@ -145,7 +145,7 @@ const KnowledgeGenPanel: React.FC = () => {
                         style={{
                             padding: '0.45rem 0.8rem',
                             borderRadius: 7,
-                            border: '1px solid rgba(255,255,255,0.1)',
+                            border: 'var(--1px solid var(--border-default))',
                             background: 'transparent',
                             color: 'var(--slate-400)',
                             cursor: 'pointer',

@@ -44,7 +44,7 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({
     return (
         <div
             style={{
-                border: '1px solid rgba(255,255,255,0.1)',
+                border: 'var(--1px solid var(--border-default))',
                 borderRadius: '8px',
                 overflow: 'hidden',
             }}
@@ -65,7 +65,7 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({
                     style={{
                         padding: '0.15rem 0.4rem',
                         borderRadius: '4px',
-                        border: '1px solid rgba(255,255,255,0.1)',
+                        border: 'var(--1px solid var(--border-default))',
                         background: 'rgba(0,0,0,0.2)',
                         color: 'var(--text-primary)',
                         fontSize: '0.7rem',

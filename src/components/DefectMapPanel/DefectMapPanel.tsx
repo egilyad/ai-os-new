@@ -292,7 +292,7 @@ const DefectMapPanel: React.FC = () => {
                             fontSize: 13,
                             padding: 16,
                             textAlign: 'center',
-                            border: '1px dashed rgba(255,255,255,0.1)',
+                            border: 'var(--1px dashed var(--border-default))',
                             borderRadius: 12,
                         }}
                     >
@@ -380,7 +380,7 @@ const DefectMapPanel: React.FC = () => {
 const ctl: React.CSSProperties = {
     padding: '0.45rem 0.6rem',
     borderRadius: 8,
-    border: '1px solid rgba(255,255,255,0.1)',
+    border: 'var(--1px solid var(--border-default))',
     background: 'rgba(0,0,0,0.3)',
     color: 'var(--slate-200)',
     fontSize: 13,

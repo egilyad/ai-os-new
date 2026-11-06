@@ -40,7 +40,7 @@ const WorkflowListPanel: React.FC<WorkflowListPanelProps> = ({ onLoadManifest, o
         <div
             style={{
                 background: 'rgba(15, 23, 42, 0.6)',
-                border: '1px solid rgba(255,255,255,0.08)',
+                border: 'var(--1px solid var(--border-subtle))',
                 borderRadius: 12,
                 padding: '1rem',
                 display: 'flex',
@@ -143,7 +143,7 @@ const WorkflowListPanel: React.FC<WorkflowListPanelProps> = ({ onLoadManifest, o
                                     onClick={() => onLoadManifest(flow)}
                                     style={{
                                         background: 'none',
-                                        border: '1px solid rgba(255,255,255,0.1)',
+                                        border: 'var(--1px solid var(--border-default))',
                                         color: 'var(--slate-400)',
                                         cursor: 'pointer',
                                         padding: '2px 6px',

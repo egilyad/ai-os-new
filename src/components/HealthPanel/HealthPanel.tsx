@@ -358,7 +358,7 @@ const HealthPanel: React.FC = () => {
                             padding: '0.6rem',
                             borderRadius: 8,
                             background: 'rgba(255,255,255,0.05)',
-                            border: '1px solid rgba(255,255,255,0.1)',
+                            border: 'var(--1px solid var(--border-default))',
                             color: 'var(--slate-200)',
                             cursor: 'pointer',
                             display: 'flex',

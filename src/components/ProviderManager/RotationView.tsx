@@ -170,7 +170,7 @@ const RotationView: React.FC<RotationViewProps> = ({ keys }) => {
                     aria-label="Refresh rotation state"
                     style={{
                         background: 'transparent',
-                        border: '1px solid rgba(255,255,255,0.1)',
+                        border: 'var(--1px solid var(--border-default))',
                         borderRadius: 8,
                         padding: '0.4rem 0.7rem',
                         cursor: 'pointer',
@@ -287,7 +287,7 @@ const RotationView: React.FC<RotationViewProps> = ({ keys }) => {
                                                 style={{
                                                     background: 'rgba(0,0,0,0.3)',
                                                     color: 'var(--slate-200)',
-                                                    border: '1px solid rgba(255,255,255,0.1)',
+                                                    border: 'var(--1px solid var(--border-default))',
                                                     borderRadius: 8,
                                                     padding: '0.25rem 0.5rem',
                                                 }}
@@ -397,7 +397,7 @@ const RotationView: React.FC<RotationViewProps> = ({ keys }) => {
                                     width: 80,
                                     background: 'rgba(0,0,0,0.3)',
                                     color: 'var(--slate-200)',
-                                    border: '1px solid rgba(255,255,255,0.1)',
+                                    border: 'var(--1px solid var(--border-default))',
                                     borderRadius: 8,
                                     padding: '0.25rem 0.5rem',
                                 }}
@@ -439,7 +439,7 @@ const RotationView: React.FC<RotationViewProps> = ({ keys }) => {
                                 onClick={() => handleCancelTTL(k.id)}
                                 style={{
                                     background: 'transparent',
-                                    border: '1px solid rgba(255,255,255,0.1)',
+                                    border: 'var(--1px solid var(--border-default))',
                                     borderRadius: 8,
                                     padding: '0.25rem 0.7rem',
                                     cursor: 'pointer',

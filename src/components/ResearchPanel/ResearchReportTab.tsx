@@ -44,7 +44,7 @@ export const ResearchReportTab: React.FC<Props> = ({ engine, session }) => {
                             style={{
                                 padding: '6px 10px',
                                 borderRadius: 6,
-                                border: '1px solid rgba(255,255,255,0.1)',
+                                border: 'var(--1px solid var(--border-default))',
                                 background: 'var(--slate-900)',
                                 color: 'var(--slate-200)',
                                 fontSize: '0.72rem',
@@ -225,7 +225,7 @@ export const ResearchReportTab: React.FC<Props> = ({ engine, session }) => {
                             alignSelf: 'flex-end',
                             padding: '6px 14px',
                             borderRadius: 8,
-                            border: '1px solid rgba(255,255,255,0.1)',
+                            border: 'var(--1px solid var(--border-default))',
                             background: 'transparent',
                             color: copied ? '#22c55e' : '#94a3b8',
                             cursor: 'pointer',

@@ -162,7 +162,7 @@ const DecisionLogPanel: React.FC = () => {
                         style={{
                             padding: '0.4rem 0.8rem',
                             borderRadius: 6,
-                            border: '1px solid rgba(255,255,255,0.1)',
+                            border: 'var(--1px solid var(--border-default))',
                             background: 'transparent',
                             color: decisions.length === 0 ? '#475569' : '#94a3b8',
                             cursor: decisions.length === 0 ? 'not-allowed' : 'pointer',
@@ -257,7 +257,7 @@ const DecisionLogPanel: React.FC = () => {
                             width: '100%',
                             padding: '0.4rem 0.5rem 0.4rem 28px',
                             borderRadius: 6,
-                            border: '1px solid rgba(255,255,255,0.1)',
+                            border: 'var(--1px solid var(--border-default))',
                             background: 'rgba(0,0,0,0.3)',
                             color: 'var(--slate-200)',
                             fontSize: '0.8rem',
@@ -270,7 +270,7 @@ const DecisionLogPanel: React.FC = () => {
                     style={{
                         padding: '0.4rem 0.6rem',
                         borderRadius: 6,
-                        border: '1px solid rgba(255,255,255,0.1)',
+                        border: 'var(--1px solid var(--border-default))',
                         background: 'rgba(0,0,0,0.3)',
                         color: 'var(--slate-200)',
                         fontSize: '0.8rem',

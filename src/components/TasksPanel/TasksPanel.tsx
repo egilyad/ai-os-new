@@ -487,7 +487,7 @@ const TasksPanel: React.FC = () => {
                             padding: '0.6rem',
                             borderRadius: 8,
                             background: 'rgba(255,255,255,0.05)',
-                            border: '1px solid rgba(255,255,255,0.1)',
+                            border: 'var(--1px solid var(--border-default))',
                             color: 'var(--slate-200)',
                             cursor: 'pointer',
                             display: 'flex',
@@ -516,7 +516,7 @@ const TasksPanel: React.FC = () => {
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
                     <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--slate-500)', letterSpacing: 0.5, textTransform: 'uppercase' }}>AGEMS Kanban · {agemsTasks.length} tasks</span>
                     <div style={{ display: 'flex', gap: 4, marginLeft: 'auto' }}>
-                        <button onClick={() => void handleSeedDemo()} disabled={seedingDemo} title={t('tasks.seed_demo')} aria-label={t('tasks.seed_demo')} style={{ padding: '4px 8px', borderRadius: 6, fontSize: 11, fontWeight: 600, border: '1px solid rgba(255,255,255,0.08)', background: 'transparent', color: 'var(--slate-500)', cursor: 'pointer' }}>☕</button>
+                        <button onClick={() => void handleSeedDemo()} disabled={seedingDemo} title={t('tasks.seed_demo')} aria-label={t('tasks.seed_demo')} style={{ padding: '4px 8px', borderRadius: 6, fontSize: 11, fontWeight: 600, border: 'var(--1px solid var(--border-subtle))', background: 'transparent', color: 'var(--slate-500)', cursor: 'pointer' }}>☕</button>
                         <button onClick={() => setKanbanView('board')} style={{ padding: '4px 8px', borderRadius: 6, fontSize: 11, fontWeight: 600, border: kanbanView === 'board' ? '1px solid #3b82f6' : '1px solid rgba(255,255,255,0.08)', background: kanbanView === 'board' ? 'rgba(59,130,246,0.12)' : 'transparent', color: kanbanView === 'board' ? '#60a5fa' : 'var(--slate-500)', cursor: 'pointer' }}>Board</button>
                         <button onClick={() => setKanbanView('list')} style={{ padding: '4px 8px', borderRadius: 6, fontSize: 11, fontWeight: 600, border: kanbanView === 'list' ? '1px solid #3b82f6' : '1px solid rgba(255,255,255,0.08)', background: kanbanView === 'list' ? 'rgba(59,130,246,0.12)' : 'transparent', color: kanbanView === 'list' ? '#60a5fa' : 'var(--slate-500)', cursor: 'pointer' }}>List</button>
                     </div>
@@ -566,8 +566,8 @@ const TasksPanel: React.FC = () => {
                     </div>
                 )}
                 <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
-                    <input placeholder="New AGEMS task title…" value={newTaskTitle} onChange={(e) => setNewTaskTitle(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter' && newTaskTitle.trim()) void handleCreateAgemsTask(); }} style={{ flex: 1, padding: '8px 10px', borderRadius: 8, border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(255,255,255,0.05)', color: 'inherit', fontSize: 12 }} />
-                    <button onClick={() => setShowCronPicker((p) => !p)} style={{ padding: '8px 10px', borderRadius: 8, border: '1px solid rgba(255,255,255,0.1)', background: newTaskCron ? 'rgba(59,130,246,0.2)' : 'rgba(255,255,255,0.05)', color: newTaskCron ? '#60a5fa' : 'var(--slate-400)', fontWeight: 600, fontSize: 11, cursor: 'pointer', whiteSpace: 'nowrap' }}>
+                    <input placeholder="New AGEMS task title…" value={newTaskTitle} onChange={(e) => setNewTaskTitle(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter' && newTaskTitle.trim()) void handleCreateAgemsTask(); }} style={{ flex: 1, padding: '8px 10px', borderRadius: 8, border: 'var(--1px solid var(--border-default))', background: 'rgba(255,255,255,0.05)', color: 'inherit', fontSize: 12 }} />
+                    <button onClick={() => setShowCronPicker((p) => !p)} style={{ padding: '8px 10px', borderRadius: 8, border: 'var(--1px solid var(--border-default))', background: newTaskCron ? 'rgba(59,130,246,0.2)' : 'rgba(255,255,255,0.05)', color: newTaskCron ? '#60a5fa' : 'var(--slate-400)', fontWeight: 600, fontSize: 11, cursor: 'pointer', whiteSpace: 'nowrap' }}>
                         {newTaskCron ? formatCronPreview(newTaskCron) : '⏰ Schedule'}
                     </button>
                     <button onClick={() => void handleCreateAgemsTask()} disabled={!newTaskTitle.trim()} style={{ padding: '8px 14px', borderRadius: 8, border: 'none', background: newTaskTitle.trim() ? '#3b82f6' : 'rgba(255,255,255,0.08)', color: 'white', fontWeight: 700, fontSize: 12, cursor: newTaskTitle.trim() ? 'pointer' : 'not-allowed' }}>Create</button>
@@ -575,10 +575,10 @@ const TasksPanel: React.FC = () => {
                 {showCronPicker && (
                     <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', padding: '8px 0' }}>
                         {getPresets().map((p) => (
-                            <button key={p.key} onClick={() => setNewTaskCron({ kind: 'preset', preset: p.key as 'DAILY' | 'WEEKDAY' | 'WEEKLY' | 'MONTHLY' | 'HOURLY' })} style={{ padding: '4px 10px', borderRadius: 6, border: '1px solid rgba(255,255,255,0.1)', background: newTaskCron?.kind === 'preset' && newTaskCron.preset === p.key ? 'rgba(59,130,246,0.2)' : 'rgba(255,255,255,0.05)', color: newTaskCron?.kind === 'preset' && newTaskCron.preset === p.key ? '#60a5fa' : 'var(--slate-400)', fontSize: 11, cursor: 'pointer' }}>{p.label}</button>
+                            <button key={p.key} onClick={() => setNewTaskCron({ kind: 'preset', preset: p.key as 'DAILY' | 'WEEKDAY' | 'WEEKLY' | 'MONTHLY' | 'HOURLY' })} style={{ padding: '4px 10px', borderRadius: 6, border: 'var(--1px solid var(--border-default))', background: newTaskCron?.kind === 'preset' && newTaskCron.preset === p.key ? 'rgba(59,130,246,0.2)' : 'rgba(255,255,255,0.05)', color: newTaskCron?.kind === 'preset' && newTaskCron.preset === p.key ? '#60a5fa' : 'var(--slate-400)', fontSize: 11, cursor: 'pointer' }}>{p.label}</button>
                         ))}
                         {newTaskCron && (
-                            <button onClick={() => setNewTaskCron(undefined)} style={{ padding: '4px 10px', borderRadius: 6, border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(255,255,255,0.05)', color: 'var(--slate-400)', fontSize: 11, cursor: 'pointer' }}>Clear</button>
+                            <button onClick={() => setNewTaskCron(undefined)} style={{ padding: '4px 10px', borderRadius: 6, border: 'var(--1px solid var(--border-default))', background: 'rgba(255,255,255,0.05)', color: 'var(--slate-400)', fontSize: 11, cursor: 'pointer' }}>Clear</button>
                         )}
                     </div>
                 )}

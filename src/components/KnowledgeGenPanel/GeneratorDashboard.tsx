@@ -71,7 +71,7 @@ const GeneratorDashboard: React.FC<GeneratorDashboardProps> = ({ jobs, onRefresh
                     <div
                         key={j.id}
                         style={{
-                            border: '1px solid rgba(255,255,255,0.08)',
+                            border: 'var(--1px solid var(--border-subtle))',
                             background: '#0d1526',
                             borderRadius: 10,
                             padding: '0.7rem 0.9rem',

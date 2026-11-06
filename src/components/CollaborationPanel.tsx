@@ -185,7 +185,7 @@ const CollaborationPanel: React.FC = () => {
                                     style={{
                                         padding: '0.3rem 0.5rem',
                                         borderRadius: 6,
-                                        border: '1px solid rgba(255,255,255,0.1)',
+                                        border: 'var(--1px solid var(--border-default))',
                                         background: 'rgba(0,0,0,0.3)',
                                         color: 'var(--slate-200)',
                                         fontSize: '0.8rem',
@@ -198,7 +198,7 @@ const CollaborationPanel: React.FC = () => {
                                     style={{
                                         padding: '0.3rem 0.5rem',
                                         borderRadius: 6,
-                                        border: '1px solid rgba(255,255,255,0.1)',
+                                        border: 'var(--1px solid var(--border-default))',
                                         background: 'rgba(0,0,0,0.3)',
                                         color: 'var(--slate-200)',
                                         fontSize: '0.8rem',
@@ -408,7 +408,7 @@ const CollaborationPanel: React.FC = () => {
                                             flex: 1,
                                             padding: '0.3rem 0.5rem',
                                             borderRadius: 6,
-                                            border: '1px solid rgba(255,255,255,0.1)',
+                                            border: 'var(--1px solid var(--border-default))',
                                             background: 'rgba(0,0,0,0.3)',
                                             color: 'var(--slate-200)',
                                             fontSize: '0.8rem',

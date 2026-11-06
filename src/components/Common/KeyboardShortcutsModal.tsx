@@ -219,7 +219,7 @@ export const KeyboardShortcutsModal: React.FC<KeyboardShortcutsModalProps> = ({
                             maxWidth: 520,
                             maxHeight: '80vh',
                             background: 'var(--slate-800)',
-                            border: '1px solid rgba(255,255,255,0.1)',
+                            border: 'var(--1px solid var(--border-default))',
                             borderRadius: 16,
                             overflow: 'hidden',
                             display: 'flex',

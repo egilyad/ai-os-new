@@ -259,12 +259,12 @@ export const SchedulerPanel: React.FC = () => {
                         placeholder={t('scheduler.namePlaceholder') ?? 'Schedule name'}
                         value={name}
                         onChange={e => setName(e.target.value)}
-                        style={{ padding: '8px 10px', borderRadius: 8, border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(15,23,42,0.6)', color: 'var(--slate-200)' }}
+                        style={{ padding: '8px 10px', borderRadius: 8, border: 'var(--1px solid var(--border-default))', background: 'rgba(15,23,42,0.6)', color: 'var(--slate-200)' }}
                     />
                     <select
                         value={agentId}
                         onChange={e => setAgentId(e.target.value)}
-                        style={{ padding: '8px 10px', borderRadius: 8, border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(15,23,42,0.6)', color: 'var(--slate-200)' }}
+                        style={{ padding: '8px 10px', borderRadius: 8, border: 'var(--1px solid var(--border-default))', background: 'rgba(15,23,42,0.6)', color: 'var(--slate-200)' }}
                     >
                         <option value="">{t('scheduler.selectAgent') ?? 'Select agent'}</option>
                         {agents.map(a => (
@@ -274,7 +274,7 @@ export const SchedulerPanel: React.FC = () => {
                     <select
                         value={frequency}
                         onChange={e => setFrequency(e.target.value as ScheduleFrequency)}
-                        style={{ padding: '8px 10px', borderRadius: 8, border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(15,23,42,0.6)', color: 'var(--slate-200)' }}
+                        style={{ padding: '8px 10px', borderRadius: 8, border: 'var(--1px solid var(--border-default))', background: 'rgba(15,23,42,0.6)', color: 'var(--slate-200)' }}
                     >
                         <option value="hourly">hourly — 0 * * * *</option>
                         <option value="daily">daily — 0 9 * * *</option>
@@ -287,7 +287,7 @@ export const SchedulerPanel: React.FC = () => {
                         value={cronExpression}
                         onChange={e => setCronExpression(e.target.value)}
                         disabled={frequency !== 'custom'}
-                        style={{ padding: '8px 10px', borderRadius: 8, border: '1px solid rgba(255,255,255,0.1)', background: frequency !== 'custom' ? 'rgba(15,23,42,0.3)' : 'rgba(15,23,42,0.6)', color: 'var(--slate-200)' }}
+                        style={{ padding: '8px 10px', borderRadius: 8, border: 'var(--1px solid var(--border-default))', background: frequency !== 'custom' ? 'rgba(15,23,42,0.3)' : 'rgba(15,23,42,0.6)', color: 'var(--slate-200)' }}
                     />
                 </div>
                 <textarea
@@ -295,7 +295,7 @@ export const SchedulerPanel: React.FC = () => {
                     value={taskPrompt}
                     onChange={e => setTaskPrompt(e.target.value)}
                     rows={3}
-                    style={{ width: '100%', padding: '8px 10px', borderRadius: 8, border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(15,23,42,0.6)', color: 'var(--slate-200)', resize: 'vertical', marginBottom: 10 }}
+                    style={{ width: '100%', padding: '8px 10px', borderRadius: 8, border: 'var(--1px solid var(--border-default))', background: 'rgba(15,23,42,0.6)', color: 'var(--slate-200)', resize: 'vertical', marginBottom: 10 }}
                 />
                 <button
                     onClick={() => void handleCreate()}
@@ -337,7 +337,7 @@ export const SchedulerPanel: React.FC = () => {
                             onChange={(e) => setSearchQuery(e.target.value)}
                             placeholder={t('scheduler.search_placeholder') ?? 'Search schedules…'}
                             aria-label={t('scheduler.search_placeholder') ?? 'Search schedules'}
-                            style={{ padding: '6px 10px 6px 28px', borderRadius: 8, border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(15,23,42,0.6)', color: 'var(--slate-200)', fontSize: 12, width: 180 }}
+                            style={{ padding: '6px 10px 6px 28px', borderRadius: 8, border: 'var(--1px solid var(--border-default))', background: 'rgba(15,23,42,0.6)', color: 'var(--slate-200)', fontSize: 12, width: 180 }}
                         />
                     </div>
                     <button
@@ -345,7 +345,7 @@ export const SchedulerPanel: React.FC = () => {
                         disabled={seedingDemo}
                         title={t('scheduler.seed_demo') ?? 'Load demo schedules'}
                         aria-label={t('scheduler.seed_demo') ?? 'Load demo schedules'}
-                        style={{ padding: 6, borderRadius: 6, border: '1px solid rgba(255,255,255,0.1)', background: 'transparent', cursor: 'pointer', color: 'var(--slate-400)' }}
+                        style={{ padding: 6, borderRadius: 6, border: 'var(--1px solid var(--border-default))', background: 'transparent', cursor: 'pointer', color: 'var(--slate-400)' }}
                     >
                         ☕
                     </button>
@@ -353,7 +353,7 @@ export const SchedulerPanel: React.FC = () => {
                         onClick={() => void load()}
                         title={t('scheduler.refresh') ?? 'Refresh'}
                         aria-label={t('scheduler.refresh') ?? 'Refresh'}
-                        style={{ padding: 6, borderRadius: 6, border: '1px solid rgba(255,255,255,0.1)', background: 'transparent', cursor: 'pointer', color: 'var(--slate-400)', display: 'inline-flex' }}
+                        style={{ padding: 6, borderRadius: 6, border: 'var(--1px solid var(--border-default))', background: 'transparent', cursor: 'pointer', color: 'var(--slate-400)', display: 'inline-flex' }}
                     >
                         <RefreshCw size={14} />
                     </button>

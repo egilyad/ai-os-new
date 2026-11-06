@@ -250,7 +250,7 @@ export default function GroqKeyTable() {
                                         style={{
                                             padding: '4px 8px',
                                             background: 'rgba(0,0,0,0.2)',
-                                            border: '1px solid rgba(255,255,255,0.1)',
+                                            border: 'var(--1px solid var(--border-default))',
                                             borderRadius: 8,
                                             color: 'var(--slate-200)',
                                             fontSize: '0.75rem',
@@ -289,7 +289,7 @@ export default function GroqKeyTable() {
                                                 flex: 1,
                                                 padding: '6px 10px',
                                                 background: 'rgba(0,0,0,0.2)',
-                                                border: '1px solid rgba(255,255,255,0.1)',
+                                                border: 'var(--1px solid var(--border-default))',
                                                 borderRadius: 8,
                                                 color: '#fff',
                                                 fontSize: '0.8rem',

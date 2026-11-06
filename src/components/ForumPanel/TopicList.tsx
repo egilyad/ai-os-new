@@ -251,7 +251,7 @@ const inputStyle: React.CSSProperties = {
     flex: 1,
     minWidth: 0,
     background: 'var(--slate-900)',
-    border: '1px solid rgba(255,255,255,0.1)',
+    border: 'var(--1px solid var(--border-default))',
     borderRadius: 6,
     color: 'var(--slate-200)',
     fontSize: '0.7rem',

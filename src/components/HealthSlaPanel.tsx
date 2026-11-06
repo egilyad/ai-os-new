@@ -156,7 +156,7 @@ const HealthSlaPanelContent: React.FC = () => {
                             style={{
                                 padding: '8px 10px',
                                 borderRadius: 6,
-                                border: '1px solid rgba(255,255,255,0.1)',
+                                border: 'var(--1px solid var(--border-default))',
                                 background: 'var(--slate-900)',
                                 color: 'var(--slate-200)',
                                 fontSize: 13,
@@ -170,7 +170,7 @@ const HealthSlaPanelContent: React.FC = () => {
                             style={{
                                 padding: '8px 10px',
                                 borderRadius: 6,
-                                border: '1px solid rgba(255,255,255,0.1)',
+                                border: 'var(--1px solid var(--border-default))',
                                 background: 'var(--slate-900)',
                                 color: 'var(--slate-200)',
                                 fontSize: 13,
@@ -244,7 +244,7 @@ const HealthSlaPanelContent: React.FC = () => {
                         style={{
                             padding: '10px',
                             borderRadius: 8,
-                            border: '1px dashed rgba(255,255,255,0.1)',
+                            border: 'var(--1px dashed var(--border-default))',
                             background: 'transparent',
                             color: 'var(--slate-500)',
                             cursor: 'pointer',

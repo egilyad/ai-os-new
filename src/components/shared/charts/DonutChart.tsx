@@ -83,7 +83,7 @@ export function DonutChart({
                         padding: '4px 8px',
                         borderRadius: 8,
                         background: 'var(--slate-800)',
-                        border: '1px solid rgba(255,255,255,0.1)',
+                        border: 'var(--1px solid var(--border-default))',
                         fontSize: '0.75rem',
                         color: 'var(--slate-400)',
                         pointerEvents: 'none',

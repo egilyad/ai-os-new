@@ -195,7 +195,7 @@ const BookmarksPanel: React.FC = () => {
                         style={{
                             padding: '0.5rem 0.9rem',
                             borderRadius: 8,
-                            border: '1px solid rgba(255,255,255,0.1)',
+                            border: 'var(--1px solid var(--border-default))',
                             background: 'transparent',
                             color: 'var(--slate-300)',
                             cursor: 'pointer',

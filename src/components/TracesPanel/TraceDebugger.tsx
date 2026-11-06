@@ -98,7 +98,7 @@ const TraceDebugger: React.FC<TraceDebuggerProps> = ({ trace, onClose }) => {
                             padding: '0.75rem',
                             borderRadius: 12,
                             background: 'rgba(255,255,255,0.05)',
-                            border: '1px solid rgba(255,255,255,0.1)',
+                            border: 'var(--1px solid var(--border-default))',
                             color: 'var(--slate-200)',
                             cursor: 'pointer',
                         }}
@@ -261,7 +261,7 @@ const TraceDebugger: React.FC<TraceDebuggerProps> = ({ trace, onClose }) => {
                                 padding: '0.6rem',
                                 borderRadius: 10,
                                 background: 'rgba(255,255,255,0.05)',
-                                border: '1px solid rgba(255,255,255,0.1)',
+                                border: 'var(--1px solid var(--border-default))',
                                 color: 'var(--slate-200)',
                                 cursor: 'pointer',
                                 marginLeft: '0.5rem',

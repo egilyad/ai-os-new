@@ -20,7 +20,7 @@ const card: React.CSSProperties = {
     background: 'rgba(255,255,255,0.04)',
     borderRadius: 12,
     padding: 16,
-    border: '1px solid rgba(255,255,255,0.08)',
+    border: 'var(--1px solid var(--border-subtle))',
 };
 
 const inputStyle: React.CSSProperties = {
@@ -28,7 +28,7 @@ const inputStyle: React.CSSProperties = {
     padding: '10px 12px',
     borderRadius: 8,
     background: 'rgba(0,0,0,0.3)',
-    border: '1px solid rgba(255,255,255,0.1)',
+    border: 'var(--1px solid var(--border-default))',
     color: 'var(--slate-200)',
     fontSize: '0.85rem',
     outline: 'none',
@@ -133,7 +133,7 @@ const WorkflowPanel: React.FC = () => {
                             padding: 6,
                             borderRadius: 8,
                             background: 'transparent',
-                            border: '1px solid rgba(255,255,255,0.1)',
+                            border: 'var(--1px solid var(--border-default))',
                             color: 'var(--slate-400)',
                             cursor: 'pointer',
                             display: 'flex',
@@ -558,7 +558,7 @@ const WorkflowPanel: React.FC = () => {
                             background: 'var(--slate-800)',
                             borderRadius: 16,
                             padding: 24,
-                            border: '1px solid rgba(255,255,255,0.1)',
+                            border: 'var(--1px solid var(--border-default))',
                         }}
                     >
                         <div
@@ -615,7 +615,7 @@ const WorkflowPanel: React.FC = () => {
                                         padding: '8px 16px',
                                         borderRadius: 8,
                                         background: 'rgba(255,255,255,0.05)',
-                                        border: '1px solid rgba(255,255,255,0.1)',
+                                        border: 'var(--1px solid var(--border-default))',
                                         color: 'var(--slate-400)',
                                         cursor: 'pointer',
                                         fontSize: '0.85rem',

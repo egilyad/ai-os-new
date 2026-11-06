@@ -173,7 +173,7 @@ const MemoryEmbeddingsCard: React.FC = () => {
                             padding: '0.4rem 0.6rem',
                             borderRadius: 8,
                             background: 'rgba(0,0,0,0.3)',
-                            border: '1px solid rgba(255,255,255,0.1)',
+                            border: 'var(--1px solid var(--border-default))',
                             color: 'var(--slate-200)',
                             fontSize: '0.78rem',
                         }}
@@ -197,7 +197,7 @@ const MemoryEmbeddingsCard: React.FC = () => {
                             padding: '0.4rem 0.6rem',
                             borderRadius: 8,
                             background: 'rgba(0,0,0,0.3)',
-                            border: '1px solid rgba(255,255,255,0.1)',
+                            border: 'var(--1px solid var(--border-default))',
                             color: 'var(--slate-200)',
                             fontSize: '0.78rem',
                         }}

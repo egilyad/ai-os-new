@@ -21,7 +21,7 @@ const card: React.CSSProperties = {
     background: 'rgba(255,255,255,0.04)',
     borderRadius: 10,
     padding: 12,
-    border: '1px solid rgba(255,255,255,0.08)',
+    border: 'var(--1px solid var(--border-subtle))',
 };
 
 const STATUS_CONFIG: Record<string, { icon: React.ReactNode; color: string; bg: string }> = {

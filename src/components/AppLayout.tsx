@@ -229,7 +229,7 @@ export const AppLayout: React.FC = () => {
                                     alignItems: 'center',
                                     gap: '0.5rem',
                                     background: 'rgba(255,255,255,0.05)',
-                                    border: '1px solid rgba(255,255,255,0.1)',
+                                    border: 'var(--1px solid var(--border-default))',
                                     borderRadius: 8,
                                     padding: '0.4rem 0.875rem',
                                     cursor: 'pointer',
@@ -274,7 +274,7 @@ export const AppLayout: React.FC = () => {
                                     onChange={(e) => handleThemeChange(e.target.value)}
                                     style={{
                                         background: 'rgba(255,255,255,0.05)',
-                                        border: '1px solid rgba(255,255,255,0.1)',
+                                        border: 'var(--1px solid var(--border-default))',
                                         color: 'var(--slate-400)',
                                         borderRadius: 6,
                                         padding: '0.25rem 0.5rem',

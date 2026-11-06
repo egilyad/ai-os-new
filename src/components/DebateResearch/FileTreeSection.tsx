@@ -277,7 +277,7 @@ export const FileTreeSection: React.FC<FileTreeSectionProps> = ({
                         top: contextMenu.y,
                         zIndex: 10000,
                         background: 'var(--slate-800)',
-                        border: '1px solid rgba(255,255,255,0.1)',
+                        border: 'var(--1px solid var(--border-default))',
                         borderRadius: 8,
                         padding: '0.25rem',
                         minWidth: 180,

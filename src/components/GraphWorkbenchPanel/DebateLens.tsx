@@ -121,7 +121,7 @@ const DebateLens: React.FC = () => {
 
     if (all.length === 0) {
         return (
-            <div style={{ color: 'var(--slate-500)', fontSize: 13, padding: 24, textAlign: 'center', border: '1px dashed rgba(255,255,255,0.1)', borderRadius: 12 }}>
+            <div style={{ color: 'var(--slate-500)', fontSize: 13, padding: 24, textAlign: 'center', border: 'var(--1px dashed var(--border-default))', borderRadius: 12 }}>
                 Нет проведённых дебатов — запусти дебаты, чтобы увидеть траектории позиций.
             </div>
         );
@@ -137,7 +137,7 @@ const DebateLens: React.FC = () => {
                     style={{
                         padding: '0.4rem 0.6rem',
                         borderRadius: 8,
-                        border: '1px solid rgba(255,255,255,0.1)',
+                        border: 'var(--1px solid var(--border-default))',
                         background: 'rgba(0,0,0,0.3)',
                         color: 'var(--slate-200)',
                         fontSize: 13,

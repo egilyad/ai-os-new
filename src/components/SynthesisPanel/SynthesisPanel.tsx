@@ -143,7 +143,7 @@ const SynthesisPanel: React.FC = () => {
                         style={{
                             padding: '0.45rem 0.8rem',
                             borderRadius: 7,
-                            border: '1px solid rgba(255,255,255,0.1)',
+                            border: 'var(--1px solid var(--border-default))',
                             background: 'transparent',
                             color: 'var(--slate-400)',
                             cursor: 'pointer',
@@ -160,7 +160,7 @@ const SynthesisPanel: React.FC = () => {
                         style={{
                             padding: '0.45rem 0.8rem',
                             borderRadius: 7,
-                            border: '1px solid rgba(255,255,255,0.1)',
+                            border: 'var(--1px solid var(--border-default))',
                             background: 'transparent',
                             color: 'var(--slate-400)',
                             cursor: 'pointer',
@@ -212,7 +212,7 @@ const SynthesisPanel: React.FC = () => {
                         <div
                             key={s.id}
                             style={{
-                                border: '1px solid rgba(255,255,255,0.08)',
+                                border: 'var(--1px solid var(--border-subtle))',
                                 background: '#0d1526',
                                 borderRadius: 10,
                                 padding: '0.75rem 0.9rem',
@@ -348,7 +348,7 @@ const SynthesisPanel: React.FC = () => {
                                             style={{
                                                 flex: 1,
                                                 background: 'var(--slate-900)',
-                                                border: '1px solid rgba(255,255,255,0.1)',
+                                                border: 'var(--1px solid var(--border-default))',
                                                 borderRadius: 6,
                                                 color: 'var(--slate-200)',
                                                 fontSize: '0.72rem',
@@ -384,7 +384,7 @@ const SynthesisPanel: React.FC = () => {
 const iconBtn: React.CSSProperties = {
     padding: '0.3rem 0.4rem',
     borderRadius: 6,
-    border: '1px solid rgba(255,255,255,0.1)',
+    border: 'var(--1px solid var(--border-default))',
     background: 'transparent',
     cursor: 'pointer',
     display: 'flex',

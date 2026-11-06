@@ -281,7 +281,7 @@ const PressureMap: React.FC = () => {
                         onClick={refresh}
                         style={{
                             background: 'rgba(255,255,255,0.06)',
-                            border: '1px solid rgba(255,255,255,0.1)',
+                            border: 'var(--1px solid var(--border-default))',
                             borderRadius: 8,
                             padding: '6px 10px',
                             color: 'var(--slate-400)',
@@ -387,7 +387,7 @@ const PressureMap: React.FC = () => {
                         textAlign: 'center',
                         padding: 40,
                         color: 'var(--slate-500)',
-                        border: '1px dashed rgba(255,255,255,0.1)',
+                        border: 'var(--1px dashed var(--border-default))',
                         borderRadius: 12,
                     }}
                 >

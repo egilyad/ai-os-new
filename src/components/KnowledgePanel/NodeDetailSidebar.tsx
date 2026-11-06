@@ -62,7 +62,7 @@ const NodeDetailSidebar: React.FC<NodeDetailSidebarProps> = ({
                         display: 'flex',
                         flexDirection: 'column',
                         gap: '1.25rem',
-                        border: '1px solid rgba(255,255,255,0.1)',
+                        border: 'var(--1px solid var(--border-default))',
                         background: 'rgba(15,23,42,0.8)',
                         backdropFilter: 'blur(10px)',
                         backgroundColor: 'rgba(255,255,255,0.02)',
@@ -130,7 +130,7 @@ const NodeDetailSidebar: React.FC<NodeDetailSidebarProps> = ({
                                     padding: '0.4rem',
                                     borderRadius: 8,
                                     background: 'rgba(255,255,255,0.05)',
-                                    border: '1px solid rgba(255,255,255,0.1)',
+                                    border: 'var(--1px solid var(--border-default))',
                                     color: 'var(--slate-200)',
                                     cursor: 'pointer',
                                 }}
@@ -203,7 +203,7 @@ const NodeDetailSidebar: React.FC<NodeDetailSidebarProps> = ({
                                             style={{
                                                 padding: '0.4rem 0.8rem',
                                                 borderRadius: 8,
-                                                border: '1px solid rgba(255,255,255,0.1)',
+                                                border: 'var(--1px solid var(--border-default))',
                                                 background: 'transparent',
                                                 color: 'var(--slate-400)',
                                                 cursor: 'pointer',

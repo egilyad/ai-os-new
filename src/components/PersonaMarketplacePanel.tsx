@@ -83,7 +83,7 @@ const PersonaMarketplacePanelContent: React.FC = () => {
                             width: '100%',
                             padding: '7px 10px 7px 30px',
                             borderRadius: 6,
-                            border: '1px solid rgba(255,255,255,0.1)',
+                            border: 'var(--1px solid var(--border-default))',
                             background: 'var(--slate-900)',
                             color: 'var(--slate-200)',
                             fontSize: 13,

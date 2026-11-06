@@ -200,7 +200,7 @@ const DocsHealthPanel: React.FC = () => {
                         color: 'var(--slate-500)',
                         fontSize: '0.9rem',
                         fontStyle: 'italic',
-                        border: '1px dashed rgba(255,255,255,0.1)',
+                        border: 'var(--1px dashed var(--border-default))',
                         borderRadius: 16,
                     }}
                 >

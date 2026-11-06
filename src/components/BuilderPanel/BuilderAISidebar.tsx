@@ -98,7 +98,7 @@ const BuilderAISidebar: React.FC<BuilderAISidebarProps> = ({ onGenerate }) => {
         <div
             style={{
                 background: 'rgba(15, 23, 42, 0.6)',
-                border: '1px solid rgba(255,255,255,0.08)',
+                border: 'var(--1px solid var(--border-subtle))',
                 borderRadius: 12,
                 padding: '1rem',
                 display: 'flex',
@@ -130,7 +130,7 @@ const BuilderAISidebar: React.FC<BuilderAISidebarProps> = ({ onGenerate }) => {
                 style={{
                     width: '100%',
                     background: 'rgba(0,0,0,0.3)',
-                    border: '1px solid rgba(255,255,255,0.1)',
+                    border: 'var(--1px solid var(--border-default))',
                     borderRadius: 8,
                     padding: '0.5rem',
                     color: 'var(--slate-200)',

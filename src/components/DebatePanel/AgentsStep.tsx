@@ -272,7 +272,7 @@ const AgеntsStep: React.FC<AgentsStepProps> = ({
                                         flex: 1,
                                         padding: '6px',
                                         borderRadius: 8,
-                                        border: '1px solid rgba(255,255,255,0.08)',
+                                        border: 'var(--1px solid var(--border-subtle))',
                                         background: 'transparent',
                                         color: 'var(--slate-400)',
                                         fontSize: '0.75rem',

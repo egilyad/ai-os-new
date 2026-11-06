@@ -110,7 +110,7 @@ export const AgentComparison: React.FC<AgentComparisonProps> = ({ agents, onClos
                 style={{
                     background: 'var(--slate-800)',
                     borderRadius: 16,
-                    border: '1px solid rgba(255,255,255,0.1)',
+                    border: 'var(--1px solid var(--border-default))',
                     width: '100%',
                     maxWidth: 700,
                     maxHeight: '80vh',

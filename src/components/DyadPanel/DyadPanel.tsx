@@ -46,8 +46,9 @@ export default function DyadPanel() {
         }
     };
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(() => {
-        void reload(); /* eslint-disable-line react-hooks/exhaustive-deps */
+        void reload();
     }, []);
 
     useEffect(
@@ -160,7 +161,7 @@ export default function DyadPanel() {
                     minWidth: 340,
                     display: 'flex',
                     flexDirection: 'column',
-                    borderRight: '1px solid rgba(255,255,255,0.08)',
+                    borderRight: 'var(--1px solid var(--border-subtle))',
                     overflow: 'hidden',
                 }}
             >
@@ -182,7 +183,7 @@ export default function DyadPanel() {
                             marginTop: 8,
                             padding: '6px 12px',
                             borderRadius: 8,
-                            border: '1px solid rgba(255,255,255,0.1)',
+                            border: 'var(--1px solid var(--border-default))',
                             background: 'transparent',
                             color: 'var(--slate-300)',
                             cursor: 'pointer',
@@ -217,7 +218,7 @@ export default function DyadPanel() {
                             width: '100%',
                             padding: '7px 10px',
                             borderRadius: 8,
-                            border: '1px solid rgba(255,255,255,0.1)',
+                            border: 'var(--1px solid var(--border-default))',
                             background: 'rgba(255,255,255,0.05)',
                             color: 'inherit',
                             fontSize: 12,
@@ -310,7 +311,7 @@ export default function DyadPanel() {
                             flex: 1,
                             padding: '6px 8px',
                             borderRadius: 8,
-                            border: '1px solid rgba(255,255,255,0.1)',
+                            border: 'var(--1px solid var(--border-default))',
                             background: 'rgba(0,0,0,0.2)',
                             color: 'inherit',
                             fontSize: 11,
@@ -353,7 +354,7 @@ export default function DyadPanel() {
                             width: '100%',
                             padding: '10px 12px',
                             borderRadius: 10,
-                            border: '1px solid rgba(255,255,255,0.1)',
+                            border: 'var(--1px solid var(--border-default))',
                             background: 'rgba(255,255,255,0.05)',
                             color: 'inherit',
                             fontSize: 13,
@@ -370,7 +371,7 @@ export default function DyadPanel() {
                                 minWidth: 140,
                                 padding: '7px 10px',
                                 borderRadius: 8,
-                                border: '1px solid rgba(255,255,255,0.1)',
+                                border: 'var(--1px solid var(--border-default))',
                                 background: 'rgba(0,0,0,0.2)',
                                 color: 'inherit',
                                 fontSize: 11,
@@ -385,7 +386,7 @@ export default function DyadPanel() {
                                 minWidth: 140,
                                 padding: '7px 10px',
                                 borderRadius: 8,
-                                border: '1px solid rgba(255,255,255,0.1)',
+                                border: 'var(--1px solid var(--border-default))',
                                 background: 'rgba(0,0,0,0.2)',
                                 color: 'inherit',
                                 fontSize: 11,
@@ -401,7 +402,7 @@ export default function DyadPanel() {
                                 width: 80,
                                 padding: '7px 8px',
                                 borderRadius: 8,
-                                border: '1px solid rgba(255,255,255,0.1)',
+                                border: 'var(--1px solid var(--border-default))',
                                 background: 'rgba(0,0,0,0.2)',
                                 color: 'inherit',
                                 fontSize: 11,

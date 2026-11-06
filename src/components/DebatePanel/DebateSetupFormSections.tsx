@@ -171,7 +171,7 @@ export const ParticipantSelector: React.FC<ParticipantSelectorProps> = ({
                     fontSize: '0.75rem',
                     padding: '0.25rem 0.75rem',
                     color: 'var(--slate-400)',
-                    border: '1px solid rgba(255,255,255,0.1)',
+                    border: 'var(--1px solid var(--border-default))',
                     borderRadius: 6,
                     cursor: 'pointer',
                     background: 'transparent',

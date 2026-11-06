@@ -47,8 +47,9 @@ export default function AutonomyPanel() {
         }
     };
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(() => {
-        void reload(); /* eslint-disable-line react-hooks/exhaustive-deps */
+        void reload();
     }, []);
 
     useEffect(
@@ -175,7 +176,7 @@ export default function AutonomyPanel() {
                     minWidth: 360,
                     display: 'flex',
                     flexDirection: 'column',
-                    borderRight: '1px solid rgba(255,255,255,0.08)',
+                    borderRight: 'var(--1px solid var(--border-subtle))',
                     overflow: 'hidden',
                 }}
             >
@@ -197,7 +198,7 @@ export default function AutonomyPanel() {
                             marginTop: 8,
                             padding: '6px 12px',
                             borderRadius: 8,
-                            border: '1px solid rgba(255,255,255,0.1)',
+                            border: 'var(--1px solid var(--border-default))',
                             background: 'transparent',
                             color: 'var(--slate-300)',
                             cursor: 'pointer',
@@ -235,7 +236,7 @@ export default function AutonomyPanel() {
                             flex: 1,
                             padding: '7px 10px',
                             borderRadius: 8,
-                            border: '1px solid rgba(255,255,255,0.1)',
+                            border: 'var(--1px solid var(--border-default))',
                             background: 'rgba(255,255,255,0.05)',
                             color: 'inherit',
                             fontSize: 12,
@@ -347,7 +348,7 @@ export default function AutonomyPanel() {
                             flex: 1,
                             padding: '6px 8px',
                             borderRadius: 8,
-                            border: '1px solid rgba(255,255,255,0.1)',
+                            border: 'var(--1px solid var(--border-default))',
                             background: 'rgba(0,0,0,0.2)',
                             color: 'inherit',
                             fontSize: 11,
@@ -380,7 +381,7 @@ export default function AutonomyPanel() {
                                 flex: 1,
                                 padding: '9px 12px',
                                 borderRadius: 10,
-                                border: '1px solid rgba(255,255,255,0.1)',
+                                border: 'var(--1px solid var(--border-default))',
                                 background: 'rgba(255,255,255,0.05)',
                                 color: 'inherit',
                                 fontSize: 12,
@@ -395,7 +396,7 @@ export default function AutonomyPanel() {
                                 width: 70,
                                 padding: '8px',
                                 borderRadius: 8,
-                                border: '1px solid rgba(255,255,255,0.1)',
+                                border: 'var(--1px solid var(--border-default))',
                                 background: 'rgba(0,0,0,0.2)',
                                 color: 'inherit',
                                 fontSize: 11,

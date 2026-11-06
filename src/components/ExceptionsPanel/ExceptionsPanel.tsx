@@ -179,7 +179,7 @@ const ExceptionsPanel: React.FC = () => {
                             textAlign: 'center',
                             color: 'var(--slate-500)',
                             fontSize: '0.85rem',
-                            border: '1px dashed rgba(255,255,255,0.1)',
+                            border: 'var(--1px dashed var(--border-default))',
                             borderRadius: 12,
                         }}
                     >
@@ -268,7 +268,7 @@ const inputStyle: React.CSSProperties = {
     width: '100%',
     padding: '0.45rem 0.6rem',
     borderRadius: 8,
-    border: '1px solid rgba(255,255,255,0.1)',
+    border: 'var(--1px solid var(--border-default))',
     background: 'rgba(0,0,0,0.3)',
     color: 'var(--slate-200)',
     fontSize: '0.8rem',
@@ -277,7 +277,7 @@ const inputStyle: React.CSSProperties = {
 const selectStyle: React.CSSProperties = {
     padding: '0.4rem 0.6rem',
     borderRadius: 8,
-    border: '1px solid rgba(255,255,255,0.1)',
+    border: 'var(--1px solid var(--border-default))',
     background: 'rgba(0,0,0,0.3)',
     color: 'var(--slate-200)',
     fontSize: '0.75rem',

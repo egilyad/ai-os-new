@@ -91,7 +91,7 @@ const TokenEditor: React.FC<TokenEditorProps> = ({ name, value, onChange }) => {
                     padding: '0.3rem 0.5rem',
                     borderRadius: 6,
                     background: 'rgba(0,0,0,0.3)',
-                    border: '1px solid rgba(255,255,255,0.08)',
+                    border: 'var(--1px solid var(--border-subtle))',
                     color: 'var(--slate-200)',
                     fontSize: '0.75rem',
                     fontFamily: 'monospace',
@@ -105,7 +105,7 @@ const TokenEditor: React.FC<TokenEditorProps> = ({ name, value, onChange }) => {
                     height: 24,
                     borderRadius: 6,
                     background: isColor ? localVal : 'rgba(255,255,255,0.05)',
-                    border: '1px solid rgba(255,255,255,0.1)',
+                    border: 'var(--1px solid var(--border-default))',
                     flexShrink: 0,
                 }}
             />
