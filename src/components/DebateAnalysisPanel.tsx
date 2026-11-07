@@ -268,7 +268,7 @@ const DebateAnalysisPanel: React.FC = () => {
                                 style={{
                                     fontSize: '0.95rem',
                                     fontWeight: 700,
-                                    color: '#6ee7b7',
+                                    color: 'var(--success)',
                                     margin: '0 0 0.75rem',
                                 }}
                             >

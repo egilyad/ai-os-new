@@ -47,7 +47,7 @@ export const DecisionCard: React.FC<DecisionCardProps> = ({ entry: d, isExpanded
                                 padding: '0.1rem 0.5rem',
                                 borderRadius: 6,
                                 background: 'rgba(16,185,129,0.15)',
-                                color: '#6ee7b7',
+                                color: 'var(--success)',
                                 fontSize: '0.7rem',
                                 fontWeight: 600,
                             }}

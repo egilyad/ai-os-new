@@ -49,7 +49,7 @@ const BulkImportStep: React.FC<BulkImportStepProps> = ({
                         <div style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--success)' }}>
                             {bulkReport.added}
                         </div>
-                        <div style={{ fontSize: '0.7rem', color: '#6ee7b7' }}>
+                        <div style={{ fontSize: '0.7rem', color: 'var(--success)' }}>
                             {t('add_key.stat_added')}
                         </div>
                     </div>

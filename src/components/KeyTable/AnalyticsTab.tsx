@@ -164,7 +164,7 @@ const AnalyticsTab: React.FC<AnalyticsTabProps> = ({ apiKey }) => {
           {taskRecommendations.length > 0 && (
             <div style={{ fontSize: '0.8rem', color: 'var(--slate-400)', marginBottom: '0.5rem' }}>
               Best for:{' '}
-              <span style={{ color: '#6ee7b7', fontWeight: 600 }}>{taskRecommendations.join(', ')}</span>
+              <span style={{ color: 'var(--success)', fontWeight: 600 }}>{taskRecommendations.join(', ')}</span>
             </div>
           )}
           {taskAvoid.length > 0 && (
@@ -244,7 +244,7 @@ const AnalyticsTab: React.FC<AnalyticsTabProps> = ({ apiKey }) => {
               </div>
             )}
             {reputationScore >= 70 && stability >= 0.7 && (
-              <div style={{ padding: '0.5rem', borderRadius: 8, background: 'var(--success-tint)', border: 'var(--1px solid var(--success-tint))', color: '#6ee7b7' }}>
+              <div style={{ padding: '0.5rem', borderRadius: 8, background: 'var(--success-tint)', border: 'var(--1px solid var(--success-tint))', color: 'var(--success)' }}>
                 Key is healthy — ideal for production workloads
               </div>
             )}

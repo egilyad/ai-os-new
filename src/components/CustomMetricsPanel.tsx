@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useTranslation } from '../i18n/useTranslation';
 import { BarChart3, Plus, Trash2, RefreshCw, LayoutDashboard } from 'lucide-react';
 import type { CustomMetric, MetricDashboard } from '../kernel/contracts/custom-metrics';
@@ -62,10 +62,12 @@ const CustomMetricsPanel: React.FC = () => {
         }
     }, []);
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const loadRef = useRef(load);
+    loadRef.current = load;
+
     useEffect(() => {
-        void load();
-    }, [load]);
+        void loadRef.current();
+    }, []);
 
     async function handleCreate() {
         if (!name.trim() || !field.trim()) return;
