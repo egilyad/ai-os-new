@@ -2,7 +2,7 @@ import 'fake-indexeddb/auto';
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { eventBus } from '../kernel/events/event-bus';
 import { EVENTS } from '../kernel/events/event-registry';
-import type { ConversationDirectorService } from '../kernel/services/conversation-director-service';
+import { ConversationDirectorService } from '../kernel/services/conversation-director-service';
 import { ChatExecutionEngine, type IChatExecutorAdapter } from '../kernel/services/conversation-execution-engine';
 import { ScenarioRepository } from '../kernel/dal/scenario-repository';
 import { createTestDb, type TestDb } from '../kernel/dal/_test-harness';
