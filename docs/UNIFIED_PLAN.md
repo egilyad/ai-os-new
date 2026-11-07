@@ -44,7 +44,8 @@
 
 | # | Задача | Статус | Источник |
 |---|---|---|---|
-| P0-1 | Полная интеграция passphrase-vault с `key-service`: заменить deviceKey на passphrase, ключи в IndexedDB только зашифрованными | 🟡 | полный отчёт §4.5; SPEC_01 |
+| P0-1 | Полная интеграция passphrase-vault с `key-service`: заменить deviceKey на passphrase, ключи в IndexedDB только зашифрованными | ✅ | полный отчёт §4.5; SPEC_01 |
+| P0-1a | Проверено: `KeyRegistry.saveKeys` → `encryptAllKeys`, load → `decryptAllKeys`, vault reconcile, миграция plaintext→encrypted | ✅ | SPEC_01 |
 | P0-2 | Multi-tenant server-скоупинг: per-company secret вместо общего `SYNC_SECRET`, WS cross-tenant isolation | ❌ | полный отчёт P0-#2; W2-009/W8-003 |
 | P0-3 | CSAM/модерация изображений (внешний API) | ❌ | полный отчёт P0-#4; W7-UGC-009 |
 | P0-4 | Prompt-versioning: 156 unversioned «You are…» → версии/A-B/rollback | ❌ | W4-041; dev-status-debt |
