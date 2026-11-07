@@ -8,7 +8,7 @@
 
 ## Тесты
 
-Тестовая поверхность: 486 unit/компонентных тестов в src, 8 server-тестов (node --test), 3 тестов скриптов, 17 e2e (Playwright) — всего 514. CI гоняет стабильный набор ([Разработчикам: ворота качества и CI](./dev-ci.md)), а не все сразу: полный vitest на общих раннерах не тянет.
+Тестовая поверхность: 623 unit/компонентных тестов в src, 8 server-тестов (node --test), 3 тестов скриптов, 20 e2e (Playwright) — всего 654. CI гоняет стабильный набор ([Разработчикам: ворота качества и CI](./dev-ci.md)), а не все сразу: полный vitest на общих раннерах не тянет.
 
 ```mermaid
 flowchart LR
@@ -22,15 +22,17 @@ flowchart LR
 
 | Область | Тестов |
 |---|---|
-| src/kernel | 290 |
-| src/components | 157 |
-| src/llm | 20 |
+| src/kernel | 407 |
+| src/components | 168 |
+| src/llm | 27 |
 | src/stores | 14 |
 | src/hooks | 3 |
 | src (корень) | 1 |
 | src/i18n | 1 |
+| src/shared | 1 |
+| src/tests | 1 |
 
-### Стабильный гейт CI — test:stable (34 путей)
+### Стабильный гейт CI — test:stable (50 путей)
 
 | Путь из package.json |
 |---|
@@ -66,8 +68,24 @@ flowchart LR
 | src/components/ChatPanel/code-escape.test.ts |
 | src/kernel/services/local-secret-store.test.ts |
 | src/kernel/services/external-secrets-service.test.ts |
-| src/kernel/services/debate-runtime/debate-preflight.test.t |
-| src/llm/http/sse-parser.test.tss |
+| src/kernel/services/debate-runtime/debate-preflight.test.ts |
+| src/llm/http/sse-parser.test.ts |
+| src/components/WikiPanel/wiki-integrity.test.ts |
+| src/components/WikiPanel/wiki-components.test.ts |
+| src/kernel/services/memory-engine.test.ts |
+| src/kernel/workers/memory-vector-space.test.ts |
+| src/kernel/services/memory/provider-embedding-service.test.ts |
+| src/llm/embeddings |
+| src/components/MemoryPanel |
+| src/components/ProviderManager/ModelCatalogView.test.tsx |
+| src/components/ProviderManager/ProviderManager.test.tsx |
+| src/components/ChatPanel/ChatPanel.test.tsx |
+| src/kernel/utils/pii-redact.test.ts |
+| src/kernel/utils/percentile.test.ts |
+| src/kernel/services/prompt-security-eval.test.ts |
+| src/components/RivalsCatalogPanel.test.tsx |
+| src/components/wrapper-panels-smoke.test.tsx |
+| src/kernel/utils/regex-safe.test.ts |
 
 ### Server-тесты (node --test)
 
@@ -94,6 +112,7 @@ flowchart LR
 
 | Спека |
 |---|
+| e2e/assistant-panel.spec.ts |
 | e2e/basic-flow.spec.ts |
 | e2e/data-chat.spec.ts |
 | e2e/data-debate.spec.ts |
@@ -111,6 +130,8 @@ flowchart LR
 | e2e/data-sync.spec.ts |
 | e2e/routes-a-flow.spec.ts |
 | e2e/routes-b-flow.spec.ts |
+| e2e/screenshots.spec.ts |
+| e2e/wiki-brain.spec.ts |
 
 
 ---
