@@ -208,7 +208,7 @@ export const AgentWizard: React.FC<AgentWizardProps> = ({ isOpen, onClose, onAge
 
             {/* Error */}
             {error && (
-              <div style={{ padding: '8px 12px', borderRadius: 8, background: 'var(--error-tint)', border: '1px solid rgba(239,68,68,0.2)', color: 'var(--error)', fontSize: '0.8rem', marginBottom: 12 }}>
+              <div style={{ padding: '8px 12px', borderRadius: 8, background: 'var(--error-tint)', border: 'var(--1px solid var(--error-tint))', color: 'var(--error)', fontSize: '0.8rem', marginBottom: 12 }}>
                 {error}
               </div>
             )}

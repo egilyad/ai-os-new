@@ -144,7 +144,7 @@ export const RoleCard: React.FC<RoleCardProps> = ({
                             padding: '0.5rem',
                             borderRadius: 10,
                             background: 'rgba(16,185,129,0.05)',
-                            border: '1px solid rgba(16,185,129,0.2)',
+                            border: 'var(--1px solid var(--success-tint))',
                             color: 'var(--success)',
                             cursor: 'pointer',
                             fontSize: '0.65rem',
@@ -178,7 +178,7 @@ export const RoleCard: React.FC<RoleCardProps> = ({
                         padding: '0.5rem',
                         borderRadius: 10,
                         background: 'rgba(239,68,68,0.05)',
-                        border: '1px solid rgba(239,68,68,0.2)',
+                        border: 'var(--1px solid var(--error-tint))',
                         color: 'var(--error)',
                         cursor: 'pointer',
                     }}

@@ -31,7 +31,7 @@ export const ExportActions: React.FC<ExportActionsProps> = ({
                 padding: '0.75rem 1rem',
                 borderRadius: 10,
                 background: 'rgba(16,185,129,0.08)',
-                border: '1px solid rgba(16,185,129,0.2)',
+                border: 'var(--1px solid var(--success-tint))',
             }}
         >
             <FileType size={16} color="#10b981" />

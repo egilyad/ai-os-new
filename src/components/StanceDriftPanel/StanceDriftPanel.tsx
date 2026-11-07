@@ -348,7 +348,7 @@ export const StanceDriftPanel: React.FC = () => {
                                 textAlign: 'center',
                                 color: 'var(--success)',
                                 fontSize: 13,
-                                border: '1px solid rgba(34,197,94,0.2)',
+                                border: 'var(--1px solid var(--success-tint))',
                                 borderRadius: 8,
                                 background: 'rgba(34,197,94,0.06)',
                             }}
@@ -508,7 +508,7 @@ export const StanceDriftPanel: React.FC = () => {
                                 padding: '8px 10px',
                                 borderRadius: 8,
                                 background: 'rgba(239,68,68,0.08)',
-                                border: '1px solid rgba(239,68,68,0.2)',
+                                border: 'var(--1px solid var(--error-tint))',
                                 fontSize: 12,
                                 color: '#fca5a5',
                                 whiteSpace: 'pre-wrap',

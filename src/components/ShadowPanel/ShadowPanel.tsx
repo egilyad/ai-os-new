@@ -81,7 +81,7 @@ const ShadowPanel: React.FC = () => {
                         marginBottom: 16,
                         borderRadius: 8,
                         background: 'rgba(239,68,68,0.08)',
-                        border: '1px solid rgba(239,68,68,0.2)',
+                        border: 'var(--1px solid var(--error-tint))',
                         color: '#fca5a5',
                         fontSize: 13,
                         display: 'flex',

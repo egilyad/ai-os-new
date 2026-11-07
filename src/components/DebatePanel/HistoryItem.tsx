@@ -175,7 +175,7 @@ const HistoryItem: React.FC<HistoryItemProps> = ({
                         }}
                         style={{
                             background: 'var(--success-tint)',
-                            border: '1px solid rgba(16,185,129,0.2)',
+                            border: 'var(--1px solid var(--success-tint))',
                             borderRadius: 8,
                             padding: 6,
                             color: 'var(--success)',
@@ -212,7 +212,7 @@ const HistoryItem: React.FC<HistoryItemProps> = ({
                         }}
                         style={{
                             background: 'var(--error-tint)',
-                            border: '1px solid rgba(239,68,68,0.2)',
+                            border: 'var(--1px solid var(--error-tint))',
                             borderRadius: 8,
                             padding: 6,
                             color: 'var(--error)',

@@ -224,7 +224,7 @@ const AnalyticsTab: React.FC<AnalyticsTabProps> = ({ apiKey }) => {
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', fontSize: '0.8rem' }}>
             {reputationScore < 40 && (
-              <div style={{ padding: '0.5rem', borderRadius: 8, background: 'var(--error-tint)', border: '1px solid rgba(239,68,68,0.2)', color: '#fca5a5' }}>
+              <div style={{ padding: '0.5rem', borderRadius: 8, background: 'var(--error-tint)', border: 'var(--1px solid var(--error-tint))', color: '#fca5a5' }}>
                 Low reputation — consider rotating this key
               </div>
             )}
@@ -244,7 +244,7 @@ const AnalyticsTab: React.FC<AnalyticsTabProps> = ({ apiKey }) => {
               </div>
             )}
             {reputationScore >= 70 && stability >= 0.7 && (
-              <div style={{ padding: '0.5rem', borderRadius: 8, background: 'var(--success-tint)', border: '1px solid rgba(16,185,129,0.2)', color: '#6ee7b7' }}>
+              <div style={{ padding: '0.5rem', borderRadius: 8, background: 'var(--success-tint)', border: 'var(--1px solid var(--success-tint))', color: '#6ee7b7' }}>
                 Key is healthy — ideal for production workloads
               </div>
             )}

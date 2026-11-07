@@ -387,7 +387,7 @@ export const SchedulerPanel: React.FC = () => {
                                 <button onClick={() => void handleTrigger(s.id)} disabled={busy} title={t('scheduler.trigger_now') ?? 'Trigger now'} aria-label={t('scheduler.trigger_now') ?? 'Trigger now'} style={{ padding: '6px 8px', borderRadius: 6, border: '1px solid rgba(59,130,246,0.2)', background: 'rgba(59,130,246,0.12)', color: 'var(--accent-color)', cursor: 'pointer', display: 'inline-flex' }}>
                                     <Play size={12} />
                                 </button>
-                                <button onClick={() => void handleDelete(s.id)} title={t('scheduler.delete') ?? 'Delete'} aria-label={t('scheduler.delete') ?? 'Delete'} style={{ padding: '6px 8px', borderRadius: 6, border: '1px solid rgba(239,68,68,0.2)', background: 'rgba(239,68,68,0.12)', color: 'var(--error)', cursor: 'pointer', display: 'inline-flex' }}>
+                                <button onClick={() => void handleDelete(s.id)} title={t('scheduler.delete') ?? 'Delete'} aria-label={t('scheduler.delete') ?? 'Delete'} style={{ padding: '6px 8px', borderRadius: 6, border: 'var(--1px solid var(--error-tint))', background: 'rgba(239,68,68,0.12)', color: 'var(--error)', cursor: 'pointer', display: 'inline-flex' }}>
                                     <Trash2 size={12} />
                                 </button>
                             </div>

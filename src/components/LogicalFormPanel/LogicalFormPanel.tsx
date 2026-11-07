@@ -245,7 +245,7 @@ export const LogicalFormPanel: React.FC = () => {
                         padding: 10,
                         borderRadius: 8,
                         background: 'rgba(239,68,68,0.08)',
-                        border: '1px solid rgba(239,68,68,0.2)',
+                        border: 'var(--1px solid var(--error-tint))',
                         fontSize: 13,
                         color: '#f87171',
                     }}
@@ -365,7 +365,7 @@ export const LogicalFormPanel: React.FC = () => {
                                 textAlign: 'center',
                                 color: '#f87171',
                                 fontSize: 12,
-                                border: '1px solid rgba(239,68,68,0.2)',
+                                border: 'var(--1px solid var(--error-tint))',
                                 borderRadius: 8,
                                 background: 'rgba(239,68,68,0.06)',
                             }}

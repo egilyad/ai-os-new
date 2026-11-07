@@ -94,7 +94,7 @@ export const KnowledgeGraphTab: React.FC<Props> = ({ engine, session }) => {
                                 padding: '12px',
                                 borderRadius: 8,
                                 background: 'var(--success-tint)',
-                                border: '1px solid rgba(16,185,129,0.2)',
+                                border: 'var(--1px solid var(--success-tint))',
                             }}
                         >
                             <div

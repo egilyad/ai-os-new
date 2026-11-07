@@ -16,7 +16,7 @@ const MemoryErrorAlert: React.FC<MemoryErrorAlertProps> = ({ error, onDismiss })
             style={{
                 padding: '0.5rem 1rem',
                 background: 'var(--error-tint)',
-                border: '1px solid rgba(239,68,68,0.2)',
+                border: 'var(--1px solid var(--error-tint))',
                 borderRadius: 10,
                 color: '#fca5a5',
                 fontSize: '0.85rem',

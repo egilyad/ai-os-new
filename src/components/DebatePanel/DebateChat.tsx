@@ -363,7 +363,7 @@ const DebateChat: React.FC<DebateChatProps> = ({
                         style={{
                             background: 'rgba(239,68,68,0.05)',
                             borderRadius: 16,
-                            border: '1px solid rgba(239,68,68,0.2)',
+                            border: 'var(--1px solid var(--error-tint))',
                             overflow: 'hidden',
                         }}
                     >

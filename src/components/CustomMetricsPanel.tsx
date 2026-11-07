@@ -62,6 +62,7 @@ const CustomMetricsPanel: React.FC = () => {
         }
     }, []);
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(() => {
         void load();
     }, [load]);

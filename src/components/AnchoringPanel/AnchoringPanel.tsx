@@ -392,7 +392,7 @@ export const AnchoringPanel: React.FC = () => {
                                         padding: '8px 10px',
                                         borderRadius: 8,
                                         background: 'rgba(34,197,94,0.08)',
-                                        border: '1px solid rgba(34,197,94,0.2)',
+                                        border: 'var(--1px solid var(--success-tint))',
                                         fontSize: 12,
                                         color: 'var(--slate-300)',
                                     }}

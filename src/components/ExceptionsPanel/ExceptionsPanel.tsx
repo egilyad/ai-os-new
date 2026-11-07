@@ -94,7 +94,7 @@ const ExceptionsPanel: React.FC = () => {
                     gap: '0.5rem',
                     padding: '0.9rem',
                     borderRadius: 14,
-                    border: '1px solid rgba(239,68,68,0.2)',
+                    border: 'var(--1px solid var(--error-tint))',
                     background: 'rgba(239,68,68,0.04)',
                     marginBottom: '1rem',
                 }}

@@ -580,7 +580,7 @@ const BatchProcessingPanel: React.FC = () => {
                                 padding: '4px 8px',
                                 borderRadius: 6,
                                 background: 'var(--error-tint)',
-                                border: '1px solid rgba(239,68,68,0.2)',
+                                border: 'var(--1px solid var(--error-tint))',
                                 color: '#f87171',
                                 cursor: 'pointer',
                                 fontSize: '0.75rem',

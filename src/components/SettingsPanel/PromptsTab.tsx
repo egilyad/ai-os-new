@@ -93,7 +93,7 @@ const PromptsTab: React.FC = () => {
                         padding: '0.5rem 1rem',
                         borderRadius: 8,
                         background: 'var(--error-tint)',
-                        border: '1px solid rgba(239,68,68,0.2)',
+                        border: 'var(--1px solid var(--error-tint))',
                         color: 'var(--error)',
                         cursor: 'pointer',
                         fontWeight: 700,

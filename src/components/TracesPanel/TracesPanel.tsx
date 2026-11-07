@@ -324,7 +324,7 @@ const TracesPanel: React.FC = () => {
                         style={{
                             padding: '0.5rem 1rem',
                             background: 'var(--error-tint)',
-                            border: '1px solid rgba(239,68,68,0.2)',
+                            border: 'var(--1px solid var(--error-tint))',
                             borderRadius: 10,
                             color: '#fca5a5',
                             fontSize: '0.85rem',
@@ -359,7 +359,7 @@ const TracesPanel: React.FC = () => {
                     animate={{ opacity: 1, height: 'auto' }}
                     style={{
                         borderRadius: 16,
-                        border: '1px solid rgba(16,185,129,0.2)',
+                        border: 'var(--1px solid var(--success-tint))',
                         background: 'rgba(16,185,129,0.03)',
                         padding: '1rem',
                         overflow: 'hidden',

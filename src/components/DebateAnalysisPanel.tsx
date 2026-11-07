@@ -216,7 +216,7 @@ const DebateAnalysisPanel: React.FC = () => {
                             style={{
                                 padding: '1rem',
                                 borderRadius: 12,
-                                border: '1px solid rgba(239,68,68,0.2)',
+                                border: 'var(--1px solid var(--error-tint))',
                                 background: 'rgba(239,68,68,0.04)',
                             }}
                         >
@@ -260,7 +260,7 @@ const DebateAnalysisPanel: React.FC = () => {
                             style={{
                                 padding: '1rem',
                                 borderRadius: 12,
-                                border: '1px solid rgba(16,185,129,0.2)',
+                                border: 'var(--1px solid var(--success-tint))',
                                 background: 'rgba(16,185,129,0.04)',
                             }}
                         >

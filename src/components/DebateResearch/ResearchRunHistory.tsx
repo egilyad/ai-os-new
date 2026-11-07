@@ -209,7 +209,7 @@ const ResearchRunHistory: React.FC<ResearchRunHistoryProps> = ({ module, runServ
                                                 padding: '0.3rem 0.6rem',
                                                 borderRadius: 6,
                                                 background: 'var(--error-tint)',
-                                                border: '1px solid rgba(239,68,68,0.2)',
+                                                border: 'var(--1px solid var(--error-tint))',
                                                 color: 'var(--error)',
                                                 cursor: 'pointer',
                                             }}

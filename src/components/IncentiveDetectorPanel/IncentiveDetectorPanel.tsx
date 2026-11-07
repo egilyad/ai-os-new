@@ -283,7 +283,7 @@ export const IncentiveDetectorPanel: React.FC = () => {
                                 textAlign: 'center',
                                 color: 'var(--success)',
                                 fontSize: 13,
-                                border: '1px solid rgba(34,197,94,0.2)',
+                                border: 'var(--1px solid var(--success-tint))',
                                 borderRadius: 8,
                                 background: 'rgba(34,197,94,0.06)',
                             }}
@@ -417,7 +417,7 @@ export const IncentiveDetectorPanel: React.FC = () => {
                                 fontSize: 12,
                                 whiteSpace: 'pre-wrap',
                                 lineHeight: 1.5,
-                                border: '1px solid rgba(239,68,68,0.2)',
+                                border: 'var(--1px solid var(--error-tint))',
                             }}
                         >
                             {analysis.disclosurePrompt}

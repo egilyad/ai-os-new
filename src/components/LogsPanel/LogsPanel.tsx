@@ -334,7 +334,7 @@ export const LogsPanel: React.FC = () => {
                             gap: 6,
                             padding: '0.4rem 0.75rem',
                             borderRadius: 8,
-                            border: '1px solid rgba(239,68,68,0.2)',
+                            border: 'var(--1px solid var(--error-tint))',
                             background: 'var(--error-tint)',
                             color: '#fca5a5',
                             fontSize: '0.8rem',

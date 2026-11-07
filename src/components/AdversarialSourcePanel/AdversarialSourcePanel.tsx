@@ -302,7 +302,7 @@ export const AdversarialSourcePanel: React.FC = () => {
                                 padding: '8px 10px',
                                 borderRadius: 8,
                                 background: 'rgba(239,68,68,0.08)',
-                                border: '1px solid rgba(239,68,68,0.2)',
+                                border: 'var(--1px solid var(--error-tint))',
                                 fontSize: 12,
                                 color: '#f87171',
                                 display: 'flex',
@@ -348,7 +348,7 @@ export const AdversarialSourcePanel: React.FC = () => {
                                 textAlign: 'center',
                                 color: 'var(--success)',
                                 fontSize: 13,
-                                border: '1px solid rgba(34,197,94,0.2)',
+                                border: 'var(--1px solid var(--success-tint))',
                                 borderRadius: 8,
                                 background: 'rgba(34,197,94,0.06)',
                                 display: 'flex',
@@ -544,7 +544,7 @@ export const AdversarialSourcePanel: React.FC = () => {
                                         fontSize: 11,
                                         whiteSpace: 'pre-wrap',
                                         lineHeight: 1.4,
-                                        border: '1px solid rgba(239,68,68,0.2)',
+                                        border: 'var(--1px solid var(--error-tint))',
                                     }}
                                 >
                                     {r.warning}

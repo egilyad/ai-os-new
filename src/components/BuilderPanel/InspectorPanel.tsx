@@ -414,7 +414,7 @@ const InspectorPanel: React.FC<InspectorPanelProps> = ({
                                     padding: '0.75rem',
                                     background: 'var(--error-tint)',
                                     color: 'var(--error)',
-                                    border: '1px solid rgba(239,68,68,0.2)',
+                                    border: 'var(--1px solid var(--error-tint))',
                                     borderRadius: 8,
                                     display: 'flex',
                                     alignItems: 'center',

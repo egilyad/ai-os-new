@@ -394,7 +394,7 @@ const SandboxTab: React.FC<SandboxTabProps> = ({ apiKey, onClose }) => {
                         style={{
                             padding: '1rem',
                             background: 'var(--error-tint)',
-                            border: '1px solid rgba(239,68,68,0.2)',
+                            border: 'var(--1px solid var(--error-tint))',
                             borderRadius: 10,
                             color: 'var(--error)',
                             fontSize: '0.85rem',

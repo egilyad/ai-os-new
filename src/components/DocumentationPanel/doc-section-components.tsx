@@ -131,7 +131,7 @@ export const InvariantCard: React.FC<{ inv: string; desc: string; detail: string
                 padding: '0.4rem 0.8rem',
                 borderRadius: 8,
                 flexShrink: 0,
-                border: '1px solid rgba(239,68,68,0.2)',
+                border: 'var(--1px solid var(--error-tint))',
             }}
         >
             {inv}

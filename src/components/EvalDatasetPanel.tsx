@@ -58,6 +58,7 @@ const EvalDatasetPanel: React.FC = () => {
         }
     }, []);
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(() => {
         void load();
     }, [load]);

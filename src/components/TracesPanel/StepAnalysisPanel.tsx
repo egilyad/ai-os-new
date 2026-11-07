@@ -348,7 +348,7 @@ const StepAnalysisPanel: React.FC<Props> = ({ step: selectedStep, onClose }) => 
                                 padding: '1.25rem',
                                 background: 'rgba(16,185,129,0.05)',
                                 borderRadius: 12,
-                                border: '1px solid rgba(16,185,129,0.2)',
+                                border: 'var(--1px solid var(--success-tint))',
                                 fontSize: '0.9rem',
                                 lineHeight: 1.6,
                                 fontFamily: 'monospace',

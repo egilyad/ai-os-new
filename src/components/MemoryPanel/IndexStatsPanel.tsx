@@ -114,7 +114,7 @@ const IndexStatsPanel: React.FC<IndexStatsPanelProps> = ({
                 <div
                     style={{
                         background: 'rgba(16,185,129,0.05)',
-                        border: '1px solid rgba(16,185,129,0.2)',
+                        border: 'var(--1px solid var(--success-tint))',
                         padding: '1.25rem',
                         borderRadius: 12,
                         display: 'flex',

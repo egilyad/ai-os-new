@@ -149,7 +149,7 @@ const WhatIfPanel: React.FC = () => {
             </p>
 
             {error && (
-                <div role="alert" style={{ padding: '0.6rem 0.9rem', borderRadius: 10, background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)', color: '#fca5a5', fontSize: '0.82rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8, marginBottom: '1rem' }}>
+                <div role="alert" style={{ padding: '0.6rem 0.9rem', borderRadius: 10, background: 'rgba(239,68,68,0.08)', border: 'var(--1px solid var(--error-tint))', color: '#fca5a5', fontSize: '0.82rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8, marginBottom: '1rem' }}>
                     <span>{error}</span>
                     <button onClick={() => setError(null)} style={{ background: 'none', border: 'none', color: 'inherit', cursor: 'pointer', fontSize: '0.85rem', flexShrink: 0 }} aria-label="Dismiss error">✕</button>
                 </div>

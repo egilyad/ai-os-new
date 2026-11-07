@@ -62,7 +62,7 @@ const MemoryCard: React.FC<MemoryCardProps> = memo(
                                 borderRadius: 6,
                                 textTransform: 'uppercase',
                                 letterSpacing: '0.05em',
-                                border: '1px solid rgba(16,185,129,0.2)',
+                                border: 'var(--1px solid var(--success-tint))',
                             }}
                         >
                             {memory.metadata.type || t('memory.context_fallback')}
@@ -98,7 +98,7 @@ const MemoryCard: React.FC<MemoryCardProps> = memo(
                                 background: 'var(--success-tint)',
                                 padding: '0.3rem 0.6rem',
                                 borderRadius: 8,
-                                border: '1px solid rgba(16,185,129,0.2)',
+                                border: 'var(--1px solid var(--success-tint))',
                             }}
                         >
                             <Target size={12} aria-hidden="true" />{' '}

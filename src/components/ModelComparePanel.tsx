@@ -336,7 +336,7 @@ const ModelComparePanel: React.FC = () => {
                                     padding: '0.4rem',
                                     borderRadius: 8,
                                     background: 'var(--error-tint)',
-                                    border: '1px solid rgba(239,68,68,0.2)',
+                                    border: 'var(--1px solid var(--error-tint))',
                                     color: '#f87171',
                                     cursor: 'pointer',
                                     fontSize: '0.72rem',

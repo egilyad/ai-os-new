@@ -42,7 +42,7 @@ const BulkImportStep: React.FC<BulkImportStepProps> = ({
                             padding: '0.75rem',
                             borderRadius: 12,
                             background: 'var(--success-tint)',
-                            border: '1px solid rgba(16,185,129,0.2)',
+                            border: 'var(--1px solid var(--success-tint))',
                             textAlign: 'center',
                         }}
                     >
@@ -74,7 +74,7 @@ const BulkImportStep: React.FC<BulkImportStepProps> = ({
                             padding: '0.75rem',
                             borderRadius: 12,
                             background: 'var(--error-tint)',
-                            border: '1px solid rgba(239,68,68,0.2)',
+                            border: 'var(--1px solid var(--error-tint))',
                             textAlign: 'center',
                         }}
                     >

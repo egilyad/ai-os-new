@@ -285,7 +285,7 @@ export const ExpertWitnessPanel: React.FC = () => {
                                         padding: '8px 10px',
                                         borderRadius: 6,
                                         background: 'rgba(34,197,94,0.08)',
-                                        border: '1px solid rgba(34,197,94,0.2)',
+                                        border: 'var(--1px solid var(--success-tint))',
                                         display: 'flex',
                                         gap: 6,
                                         alignItems: 'center',

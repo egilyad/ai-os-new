@@ -179,7 +179,7 @@ const ReadingTab: React.FC<ReadingTabProps> = ({ settings, updateSetting }) => {
                     marginTop: '2rem',
                     padding: '1.5rem',
                     borderRadius: 16,
-                    border: '1px solid rgba(239,68,68,0.2)',
+                    border: 'var(--1px solid var(--error-tint))',
                     background: 'rgba(239,68,68,0.05)',
                 }}
             >

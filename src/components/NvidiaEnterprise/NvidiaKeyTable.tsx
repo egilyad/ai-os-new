@@ -340,7 +340,7 @@ export default function NvidiaKeyTable() {
                                             margin: '0 14px 10px',
                                             padding: 10,
                                             background: 'rgba(16,185,129,0.08)',
-                                            border: '1px solid rgba(16,185,129,0.2)',
+                                            border: 'var(--1px solid var(--success-tint))',
                                             borderRadius: 8,
                                             fontSize: '0.8rem',
                                         }}
@@ -390,7 +390,7 @@ export default function NvidiaKeyTable() {
                                             margin: '0 14px 10px',
                                             padding: 10,
                                             background: 'rgba(239,68,68,0.08)',
-                                            border: '1px solid rgba(239,68,68,0.2)',
+                                            border: 'var(--1px solid var(--error-tint))',
                                             borderRadius: 8,
                                             fontSize: '0.8rem',
                                         }}

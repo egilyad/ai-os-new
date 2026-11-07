@@ -94,7 +94,7 @@ export function MCPEditorModal({ server: editing, onClose, onSaved }: MCPEditorM
                                 padding: '0.75rem',
                                 borderRadius: 8,
                                 background: 'var(--error-tint)',
-                                border: '1px solid rgba(239,68,68,0.2)',
+                                border: 'var(--1px solid var(--error-tint))',
                                 color: '#fca5a5',
                                 fontSize: '0.85rem',
                             }}

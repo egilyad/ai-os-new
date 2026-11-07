@@ -59,6 +59,12 @@ const HEX_MAP = {
     '1px dashed rgba(255, 255, 255, 0.1)': '1px dashed var(--border-default)',
     '1px solid #e2e8f0': '1px solid var(--slate-200)',
     '1px solid  #e2e8f0': '1px solid var(--slate-200)',
+    '1px solid rgba(16,185,129,0.2)': '1px solid var(--success-tint)',
+    '1px solid rgba(16, 185, 129, 0.2)': '1px solid var(--success-tint)',
+    '1px solid rgba(34,197,94,0.2)': '1px solid var(--success-tint)',
+    '1px solid rgba(34, 197, 94, 0.2)': '1px solid var(--success-tint)',
+    '1px solid rgba(239,68,68,0.2)': '1px solid var(--error-tint)',
+    '1px solid rgba(239, 68, 68, 0.2)': '1px solid var(--error-tint)',
     'rgba(59,130,246,0.5)': 'accent-glow',
     'rgba(59, 130, 246, 0.5)': 'accent-glow',
     // tinted state-backgrounds

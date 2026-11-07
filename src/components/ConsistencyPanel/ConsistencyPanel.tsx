@@ -321,7 +321,7 @@ export const ConsistencyPanel: React.FC = () => {
                                 textAlign: 'center',
                                 color: 'var(--success)',
                                 fontSize: 13,
-                                border: '1px solid rgba(34,197,94,0.2)',
+                                border: 'var(--1px solid var(--success-tint))',
                                 borderRadius: 8,
                                 background: 'rgba(34,197,94,0.06)',
                             }}

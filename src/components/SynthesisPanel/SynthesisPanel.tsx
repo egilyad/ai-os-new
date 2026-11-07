@@ -175,7 +175,7 @@ const SynthesisPanel: React.FC = () => {
             </div>
 
             {error && (
-                <div role="alert" style={{ margin: '0.5rem 1.25rem 0', padding: '0.5rem 0.75rem', borderRadius: 8, background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)', color: '#fca5a5', fontSize: '0.8rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8 }}>
+                <div role="alert" style={{ margin: '0.5rem 1.25rem 0', padding: '0.5rem 0.75rem', borderRadius: 8, background: 'rgba(239,68,68,0.08)', border: 'var(--1px solid var(--error-tint))', color: '#fca5a5', fontSize: '0.8rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8 }}>
                     <span>{error}</span>
                     <button onClick={() => setError(null)} style={{ background: 'none', border: 'none', color: 'inherit', cursor: 'pointer', fontSize: '0.8rem', flexShrink: 0 }} aria-label={t('common.dismiss_error')}>✕</button>
                 </div>

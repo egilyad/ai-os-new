@@ -447,7 +447,7 @@ const GoogleCachePanel: React.FC = () => {
                                                         ...BTN,
                                                         background: 'var(--error-tint)',
                                                         color: 'var(--error)',
-                                                        border: '1px solid rgba(239,68,68,0.2)',
+                                                        border: 'var(--1px solid var(--error-tint))',
                                                         padding: '0.35rem 0.75rem',
                                                     }}
                                                 >

@@ -498,7 +498,7 @@ const SettingsPanel: React.FC = () => {
                                     padding: '8px 14px',
                                     borderRadius: 8,
                                     background: 'rgba(239,68,68,0.12)',
-                                    border: '1px solid rgba(239,68,68,0.2)',
+                                    border: 'var(--1px solid var(--error-tint))',
                                     color: '#fca5a5',
                                     fontWeight: 600,
                                     fontSize: 12,

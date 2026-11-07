@@ -71,7 +71,7 @@ const AutoDebateSection: React.FC<Props> = ({ onAutoDebate, onStressTest, onBatc
       </div>
 
       {error && (
-        <div style={{ padding: '0.5rem 1rem', background: 'var(--error-tint)', border: '1px solid rgba(239,68,68,0.2)', borderRadius: 10, color: '#fca5a5', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: 8 }}>
+        <div style={{ padding: '0.5rem 1rem', background: 'var(--error-tint)', border: 'var(--1px solid var(--error-tint))', borderRadius: 10, color: '#fca5a5', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: 8 }}>
           <AlertTriangle size={14} /> {error}
           <button onClick={() => setError(null)} style={{ cursor: 'pointer', marginLeft: 'auto', background: 'none', border: 'none', color: '#fca5a5', padding: 0 }}><X size={14} /></button>
         </div>

@@ -183,7 +183,7 @@ const ResearchEnginePanel: React.FC = () => {
                         padding: '0.6rem 0.9rem',
                         borderRadius: 10,
                         background: 'rgba(239,68,68,0.08)',
-                        border: '1px solid rgba(239,68,68,0.2)',
+                        border: 'var(--1px solid var(--error-tint))',
                         color: '#fca5a5',
                         fontSize: '0.82rem',
                         display: 'flex',

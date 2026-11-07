@@ -458,7 +458,7 @@ const WelcomePanel: React.FC<WelcomePanelProps> = ({ onNavigate }) => {
                 style={{
                     padding: '1rem 1.25rem',
                     borderRadius: 14,
-                    border: '1px solid rgba(34,197,94,0.2)',
+                    border: 'var(--1px solid var(--success-tint))',
                     background: 'rgba(34,197,94,0.06)',
                 }}
             >

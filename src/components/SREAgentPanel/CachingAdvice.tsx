@@ -16,7 +16,7 @@ const CachingAdvice: React.FC<Props> = ({ estimatedSavings, details }) => {
                 padding: '1rem 1.25rem',
                 borderRadius: 12,
                 background: 'rgba(16,185,129,0.05)',
-                border: '1px solid rgba(16,185,129,0.2)',
+                border: 'var(--1px solid var(--success-tint))',
             }}
         >
             <div style={flexAlignCenterGap2Mb03}>

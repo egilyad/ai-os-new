@@ -301,7 +301,7 @@ export const h3SectionFlex: CSSProperties = {
 export const btnDangerSm: CSSProperties = {
     padding: '0.4rem 0.75rem',
     borderRadius: 6,
-    border: '1px solid rgba(239,68,68,0.2)',
+    border: 'var(--1px solid var(--error-tint))',
     background: 'var(--error-tint)',
     color: 'var(--error)',
     cursor: 'pointer',
@@ -314,7 +314,7 @@ export const btnDangerSm: CSSProperties = {
 export const btnSuccessSm: CSSProperties = {
     padding: '0.4rem 0.75rem',
     borderRadius: 6,
-    border: '1px solid rgba(34,197,94,0.2)',
+    border: 'var(--1px solid var(--success-tint))',
     background: 'var(--success-tint)',
     color: 'var(--success)',
     cursor: 'pointer',
@@ -694,14 +694,14 @@ export const successBox: CSSProperties = {
     marginTop: '0.5rem',
     padding: '0.75rem',
     background: 'var(--success-tint)',
-    border: '1px solid rgba(16, 185, 129, 0.2)',
+    border: 'var(--1px solid var(--success-tint))',
     borderRadius: 8,
 };
 export const errorBox: CSSProperties = {
     marginTop: '0.5rem',
     padding: '0.75rem',
     background: 'var(--error-tint)',
-    border: '1px solid rgba(239, 68, 68, 0.2)',
+    border: 'var(--1px solid var(--error-tint))',
     borderRadius: 8,
 };
 export const selectSmall: CSSProperties = {
@@ -754,7 +754,7 @@ export const textSmMutedMarginTop: CSSProperties = {
 export const errorBanner: CSSProperties = {
     padding: '0.5rem 1rem',
     background: 'var(--error-tint)',
-    border: '1px solid rgba(239,68,68,0.2)',
+    border: 'var(--1px solid var(--error-tint))',
     borderRadius: 10,
     color: '#fca5a5',
     fontSize: '0.85rem',
@@ -1157,7 +1157,7 @@ export const errorBannerLg: CSSProperties = {
     gap: 12,
     padding: '0.75rem 1rem',
     background: 'var(--error-tint)',
-    border: '1px solid rgba(239,68,68,0.2)',
+    border: 'var(--1px solid var(--error-tint))',
     borderRadius: 12,
     color: '#fca5a5',
     fontSize: '0.9rem',
@@ -1272,7 +1272,7 @@ export const winnerRow: CSSProperties = {
     padding: '1rem',
     borderRadius: 12,
     background: 'rgba(16,185,129,0.05)',
-    border: '1px solid rgba(16,185,129,0.2)',
+    border: 'var(--1px solid var(--success-tint))',
 };
 
 /* From ToolsPanel + RolesPanel + MemoryPanel + PricingPanel extraction (2026-05-27) */
@@ -1907,7 +1907,7 @@ export const iconCircleGreen: CSSProperties = {
     padding: '1rem',
     borderRadius: '50%',
     marginBottom: '1rem',
-    border: '1px solid rgba(16,185,129,0.2)',
+    border: 'var(--1px solid var(--success-tint))',
     background: 'var(--success-tint)',
 };
 export const btnControlBase: CSSProperties = {

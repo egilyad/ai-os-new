@@ -258,7 +258,7 @@ const MCPPanel: React.FC = () => {
                             gap: 12,
                             padding: '0.75rem 1rem',
                             background: 'var(--error-tint)',
-                            border: '1px solid rgba(239,68,68,0.2)',
+                            border: 'var(--1px solid var(--error-tint))',
                             borderRadius: 12,
                             color: '#fca5a5',
                             fontSize: '0.9rem',

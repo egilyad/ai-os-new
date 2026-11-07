@@ -105,7 +105,7 @@ export const MCPServerCard = memo(function MCPServerCard({
                                 padding: '0.5rem',
                                 borderRadius: 8,
                                 background: 'var(--success-tint)',
-                                border: '1px solid rgba(16,185,129,0.2)',
+                                border: 'var(--1px solid var(--success-tint))',
                                 color: 'var(--success)',
                                 cursor: 'pointer',
                             }}
@@ -155,7 +155,7 @@ export const MCPServerCard = memo(function MCPServerCard({
                             padding: '0.5rem',
                             borderRadius: 8,
                             background: 'rgba(239,68,68,0.05)',
-                            border: '1px solid rgba(239,68,68,0.2)',
+                            border: 'var(--1px solid var(--error-tint))',
                             color: 'var(--error)',
                             cursor: 'pointer',
                         }}

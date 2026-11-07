@@ -459,7 +459,7 @@ const PolicyPanel: React.FC = () => {
                             borderRadius: 12,
                             fontWeight: 700,
                             background: 'var(--error-tint)',
-                            border: '1px solid rgba(239,68,68,0.2)',
+                            border: 'var(--1px solid var(--error-tint))',
                             color: 'var(--error)',
                             cursor: 'pointer',
                             display: 'flex',
@@ -553,7 +553,7 @@ const PolicyPanel: React.FC = () => {
                                         borderRadius: 6,
                                         fontSize: '0.7rem',
                                         background: 'var(--success-tint)',
-                                        border: '1px solid rgba(16,185,129,0.2)',
+                                        border: 'var(--1px solid var(--success-tint))',
                                         color: 'var(--success)',
                                         cursor: 'pointer',
                                     }}
@@ -691,7 +691,7 @@ const PolicyPanel: React.FC = () => {
                                                             padding: '0.4rem',
                                                             borderRadius: 8,
                                                             background: 'rgba(239,68,68,0.05)',
-                                                            border: '1px solid rgba(239,68,68,0.2)',
+                                                            border: 'var(--1px solid var(--error-tint))',
                                                             color: 'var(--error)',
                                                             cursor: 'pointer',
                                                         }}
