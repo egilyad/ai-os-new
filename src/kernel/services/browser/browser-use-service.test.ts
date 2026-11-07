@@ -98,7 +98,9 @@ describe('BrowserUseService (phase70)', () => {
             }),
         );
         const svc = new BrowserUseService({ events: fakeBus() });
-        await expect(svc.execute('open https://example.com')).rejects.toThrow(/is it running/);
+        await expect(svc.execute('open https://example.com')).rejects.toThrow(
+            /browser:sidecar/,
+        );
         await svc.destroy();
     });
 
