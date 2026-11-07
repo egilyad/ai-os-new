@@ -27,7 +27,7 @@ function makeDeps(initial?: { groups: unknown[]; passports: [string, unknown][] 
 describe('GroupManagerService', () => {
     it('init creates the default group when nothing is stored', async () => {
         const deps = makeDeps();
-        const gm = new GroupManagerService(deps);
+        const gm = new GroupManagerService(deps as never);
         await gm.init();
         expect(gm.ready).toBe(true);
         expect(gm.getDefaultGroup().id).toBe('__default__');
@@ -39,7 +39,7 @@ describe('GroupManagerService', () => {
             groups: [{ id: 'grp_a', name: 'A', createdAt: 1, keyIds: [] }],
             passports: [],
         });
-        const gm = new GroupManagerService(deps);
+        const gm = new GroupManagerService(deps as never);
         await gm.init();
         expect(gm.getGroups().some((g) => g.id === 'grp_a')).toBe(true);
         await gm.destroy();
@@ -47,7 +47,7 @@ describe('GroupManagerService', () => {
 
     it('createGroup persists and returns the existing id for duplicate names', async () => {
         const deps = makeDeps();
-        const gm = new GroupManagerService(deps);
+        const gm = new GroupManagerService(deps as never);
         await gm.init();
         const id1 = await gm.createGroup('Work');
         const id2 = await gm.createGroup('Work');
@@ -59,7 +59,7 @@ describe('GroupManagerService', () => {
 
     it('deleteGroup forbids deleting the default group', async () => {
         const deps = makeDeps();
-        const gm = new GroupManagerService(deps);
+        const gm = new GroupManagerService(deps as never);
         await gm.init();
         await expect(gm.deleteGroup('__default__')).rejects.toThrow(/default/);
         await gm.destroy();

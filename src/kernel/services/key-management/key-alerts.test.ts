@@ -76,7 +76,7 @@ describe('KeyAlerts', () => {
         const alerts = new KeyAlerts(deps);
         const k = keyWithAlerts('k1', [
             alert({ severity: 'critical' }),
-            alert({ id: 'a2', severity: 'warning', resolved: true }),
+            alert({ id: 'a2', severity: 'medium', resolved: true }),
             alert({ id: 'a3', severity: 'high' }),
         ]);
         const summary = alerts.getAlertSummary([k]);

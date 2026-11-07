@@ -17,7 +17,7 @@ function makePipeline(overrides: { existingKeys?: unknown[]; verifyKey?: unknown
         getExistingKeys: vi.fn(() => (overrides.existingKeys ?? []) as never[]),
         verifyKey: overrides.verifyKey as never,
     };
-    const svc = new KeyIntelligencePipeline(deps);
+    const svc = new KeyIntelligencePipeline(deps as never);
     return { svc, fingerprints, deps };
 }
 

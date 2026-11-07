@@ -2,6 +2,7 @@ import { describe, it, expect, vi } from 'vitest';
 import { KeyService, type KeyServiceDeps } from './key-service';
 import { EVENTS } from '../../events/event-names';
 import type { ApiKey } from '../../types/metrics-types';
+import type { IAdapterRegistry } from '../../contracts/provider-adapter';
 
 function makeEventBus() {
     return {
@@ -79,8 +80,8 @@ function makeProviderAdapterRegistry() {
 function makeService(overrides: Partial<KeyServiceDeps> = {}) {
     const eventBus = makeEventBus();
     const keyStore = makeKeyStore();
-    const database = makeDb();
-    const providerAdapterRegistry = makeProviderAdapterRegistry();
+    const database = makeDb() as KeyServiceDeps['database'];
+    const providerAdapterRegistry = makeProviderAdapterRegistry() as unknown as IAdapterRegistry;
     const deps: KeyServiceDeps = {
         eventBus,
         securityService: {

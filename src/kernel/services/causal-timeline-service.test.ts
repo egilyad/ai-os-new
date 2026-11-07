@@ -138,7 +138,10 @@ describe('CausalTimelineService', () => {
     });
 
     it('subscribes to decisions on start and tolerates payloads without requestId', () => {
-        const eventBus = { on: vi.fn(() => () => {}), onSafe: vi.fn(() => () => {}) };
+        const eventBus = {
+            on: vi.fn((_event: string, _cb: (...args: unknown[]) => void) => () => {}),
+            onSafe: vi.fn((_event: string, _cb: (...args: unknown[]) => void) => () => {}),
+        };
         const logger = { info: vi.fn(), warn: vi.fn(), error: vi.fn() };
         const svc = new CausalTimelineService(
             fakeScopeManager(),
