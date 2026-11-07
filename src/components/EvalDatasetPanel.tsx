@@ -56,7 +56,7 @@ const EvalDatasetPanel: React.FC = () => {
                 `Failed to load datasets: ${e instanceof Error ? e.message : 'Unknown error'}`,
             );
         }
-    }, []);
+    }, [setDatasets, setError]);
 
     useEffect(() => {
         void load();

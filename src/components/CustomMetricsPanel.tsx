@@ -42,11 +42,11 @@ const CustomMetricsPanel: React.FC = () => {
             const m = await import('../kernel/instances');
             const svc = m.customMetricsService;
             if (!svc) return;
-            setMetrics(await svc.listMetrics());
+            const metricsList = await svc.listMetrics();
+            setMetrics(metricsList);
             setDashboards(await svc.listDashboards());
             const vals: Record<string, number> = {};
-            const all = await svc.listMetrics();
-            for (const metric of all) {
+            for (const metric of metricsList) {
                 try {
                     const v = await svc.computeValue(metric.id);
                     vals[metric.id] = v.value;
@@ -60,7 +60,7 @@ const CustomMetricsPanel: React.FC = () => {
         } catch (e) {
             setError(`Failed to load metrics: ${e instanceof Error ? e.message : 'Unknown error'}`);
         }
-    }, []);
+    }, [setError, setMetrics, setDashboards, setValues]);
 
     useEffect(() => {
         void load();
