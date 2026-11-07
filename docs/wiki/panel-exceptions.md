@@ -17,7 +17,6 @@
 ## Связанные материалы
 
 - [Панель: Governance и безопасность](./panel-governance.md)
-- [panel-policy-editor](./panel-policy-editor.md)
 
 ---
 

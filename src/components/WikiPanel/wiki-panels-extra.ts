@@ -11,7 +11,7 @@ export const PANELS_EXTRA_ARTICLES: WikiArticle[] = [
         tags: ['панели', 'политики', 'исключения'],
         freshness: 'documented',
         sources: ['src/components/ExceptionsPanel/ExceptionsPanel'],
-        related: ['panel-governance', 'panel-policy-editor'],
+        related: ['panel-governance'],
         body: `## Исключения
 
 Панель показывает исключения/вето, наложенные на операции политиками или вручную. Применяется вместе с [[panel-governance]] для контроля над нежелательными действиями агентов.

@@ -9379,8 +9379,7 @@
         "src/components/ExceptionsPanel/ExceptionsPanel"
       ],
       "related": [
-        "panel-governance",
-        "panel-policy-editor"
+        "panel-governance"
       ],
       "reviewed": null,
       "tests": []

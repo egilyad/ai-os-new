@@ -32,7 +32,7 @@ flowchart LR
 | src/shared | 1 |
 | src/tests | 1 |
 
-### Стабильный гейт CI — test:stable (51 путей)
+### Стабильный гейт CI — test:stable (52 путей)
 
 | Путь из package.json |
 |---|
@@ -87,6 +87,7 @@ flowchart LR
 | src/components/wrapper-panels-smoke.test.tsx |
 | src/kernel/utils/regex-safe.test.ts |
 | src/kernel/utils/session-write-guard.test.ts |
+| src/kernel/services/browser/browser-use-service.test.ts |
 
 ### Server-тесты (node --test)
 

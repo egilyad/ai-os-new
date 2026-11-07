@@ -3,22 +3,22 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 1395,
-    "edges": 2563,
+    "nodes": 1528,
+    "edges": 2768,
     "byType": {
       "audit": 25,
-      "code": 610,
-      "test": 204,
+      "code": 676,
+      "test": 206,
       "panel": 270,
-      "article": 286
+      "article": 351
     },
     "byKind": {
       "audit_test": 18,
       "audit_mention": 52,
-      "documents": 204,
-      "test": 301,
-      "source": 891,
-      "related": 1097
+      "documents": 270,
+      "test": 303,
+      "source": 957,
+      "related": 1168
     }
   },
   "nodes": [
@@ -483,6 +483,11 @@
       "label": "src/components/AquariumPanel/AquariumPanel.tsx"
     },
     {
+      "id": "file:src/components/ArchitectureMapPanel",
+      "type": "code",
+      "label": "src/components/ArchitectureMapPanel"
+    },
+    {
       "id": "file:src/components/Assistant/assistant-wiring.ts",
       "type": "code",
       "label": "src/components/Assistant/assistant-wiring.ts"
@@ -763,6 +768,11 @@
       "label": "src/components/DebateTemplatesPanel/"
     },
     {
+      "id": "file:src/components/DefectMapPanel/DefectMapPanel",
+      "type": "code",
+      "label": "src/components/DefectMapPanel/DefectMapPanel"
+    },
+    {
       "id": "file:src/components/DirectorPanel/DirectorPanel.test.tsx",
       "type": "test",
       "label": "src/components/DirectorPanel/DirectorPanel.test.tsx"
@@ -801,6 +811,11 @@
       "id": "file:src/components/ExceptionsPanel/exception-veto.ts",
       "type": "code",
       "label": "src/components/ExceptionsPanel/exception-veto.ts"
+    },
+    {
+      "id": "file:src/components/ExceptionsPanel/ExceptionsPanel",
+      "type": "code",
+      "label": "src/components/ExceptionsPanel/ExceptionsPanel"
     },
     {
       "id": "file:src/components/ExceptionsPanel/ExceptionsPanel.tsx",
@@ -1038,6 +1053,16 @@
       "label": "src/components/MCPPanel/MCPPanel.tsx"
     },
     {
+      "id": "file:src/components/MemoryCenterPanel/MemoryCenterPanel",
+      "type": "code",
+      "label": "src/components/MemoryCenterPanel/MemoryCenterPanel"
+    },
+    {
+      "id": "file:src/components/MemoryCenterPanel/MemoryCenterPanel.test.tsx",
+      "type": "test",
+      "label": "src/components/MemoryCenterPanel/MemoryCenterPanel.test.tsx"
+    },
+    {
       "id": "file:src/components/MemoryPanel/MemoryPalacePanel.tsx",
       "type": "code",
       "label": "src/components/MemoryPanel/MemoryPalacePanel.tsx"
@@ -1068,6 +1093,11 @@
       "label": "src/components/ModelComparePanel/"
     },
     {
+      "id": "file:src/components/NavGraphPanel/NavGraphPanel",
+      "type": "code",
+      "label": "src/components/NavGraphPanel/NavGraphPanel"
+    },
+    {
       "id": "file:src/components/PersonaMarketplacePanel/",
       "type": "code",
       "label": "src/components/PersonaMarketplacePanel/"
@@ -1091,6 +1121,16 @@
       "id": "file:src/components/PlannerPanel/",
       "type": "code",
       "label": "src/components/PlannerPanel/"
+    },
+    {
+      "id": "file:src/components/PluginManagerPanel",
+      "type": "code",
+      "label": "src/components/PluginManagerPanel"
+    },
+    {
+      "id": "file:src/components/PluginMarketplacePanel",
+      "type": "code",
+      "label": "src/components/PluginMarketplacePanel"
     },
     {
       "id": "file:src/components/PluginSdkPanel",
@@ -1388,6 +1428,301 @@
       "label": "src/components/TasksPanel/TasksPanel.tsx"
     },
     {
+      "id": "file:src/components/TechniquePanels/AbstractionLadderPanel",
+      "type": "code",
+      "label": "src/components/TechniquePanels/AbstractionLadderPanel"
+    },
+    {
+      "id": "file:src/components/TechniquePanels/AdaptiveOrderPanel",
+      "type": "code",
+      "label": "src/components/TechniquePanels/AdaptiveOrderPanel"
+    },
+    {
+      "id": "file:src/components/TechniquePanels/AgreementAnchoringPanel",
+      "type": "code",
+      "label": "src/components/TechniquePanels/AgreementAnchoringPanel"
+    },
+    {
+      "id": "file:src/components/TechniquePanels/AlliancePanel",
+      "type": "code",
+      "label": "src/components/TechniquePanels/AlliancePanel"
+    },
+    {
+      "id": "file:src/components/TechniquePanels/BayesianJudgesPanel",
+      "type": "code",
+      "label": "src/components/TechniquePanels/BayesianJudgesPanel"
+    },
+    {
+      "id": "file:src/components/TechniquePanels/BiasExploitPanel",
+      "type": "code",
+      "label": "src/components/TechniquePanels/BiasExploitPanel"
+    },
+    {
+      "id": "file:src/components/TechniquePanels/BiddingTimePanel",
+      "type": "code",
+      "label": "src/components/TechniquePanels/BiddingTimePanel"
+    },
+    {
+      "id": "file:src/components/TechniquePanels/BlindEvaluationPanel",
+      "type": "code",
+      "label": "src/components/TechniquePanels/BlindEvaluationPanel"
+    },
+    {
+      "id": "file:src/components/TechniquePanels/BurdenOfProofPanel",
+      "type": "code",
+      "label": "src/components/TechniquePanels/BurdenOfProofPanel"
+    },
+    {
+      "id": "file:src/components/TechniquePanels/CausalGraphPanel",
+      "type": "code",
+      "label": "src/components/TechniquePanels/CausalGraphPanel"
+    },
+    {
+      "id": "file:src/components/TechniquePanels/ConcessionEnginePanel",
+      "type": "code",
+      "label": "src/components/TechniquePanels/ConcessionEnginePanel"
+    },
+    {
+      "id": "file:src/components/TechniquePanels/ConcessionPanel",
+      "type": "code",
+      "label": "src/components/TechniquePanels/ConcessionPanel"
+    },
+    {
+      "id": "file:src/components/TechniquePanels/ConsistencyCheckPanel",
+      "type": "code",
+      "label": "src/components/TechniquePanels/ConsistencyCheckPanel"
+    },
+    {
+      "id": "file:src/components/TechniquePanels/CredibilityScoringPanel",
+      "type": "code",
+      "label": "src/components/TechniquePanels/CredibilityScoringPanel"
+    },
+    {
+      "id": "file:src/components/TechniquePanels/CriticPanel",
+      "type": "code",
+      "label": "src/components/TechniquePanels/CriticPanel"
+    },
+    {
+      "id": "file:src/components/TechniquePanels/CrossExaminationPanel",
+      "type": "code",
+      "label": "src/components/TechniquePanels/CrossExaminationPanel"
+    },
+    {
+      "id": "file:src/components/TechniquePanels/CrossExaminationPanel.test.tsx",
+      "type": "test",
+      "label": "src/components/TechniquePanels/CrossExaminationPanel.test.tsx"
+    },
+    {
+      "id": "file:src/components/TechniquePanels/DeltaFocusingPanel",
+      "type": "code",
+      "label": "src/components/TechniquePanels/DeltaFocusingPanel"
+    },
+    {
+      "id": "file:src/components/TechniquePanels/DpoSamplerPanel",
+      "type": "code",
+      "label": "src/components/TechniquePanels/DpoSamplerPanel"
+    },
+    {
+      "id": "file:src/components/TechniquePanels/DynamicPersonaPanel",
+      "type": "code",
+      "label": "src/components/TechniquePanels/DynamicPersonaPanel"
+    },
+    {
+      "id": "file:src/components/TechniquePanels/EmpathyPanel",
+      "type": "code",
+      "label": "src/components/TechniquePanels/EmpathyPanel"
+    },
+    {
+      "id": "file:src/components/TechniquePanels/EnthymemePanel",
+      "type": "code",
+      "label": "src/components/TechniquePanels/EnthymemePanel"
+    },
+    {
+      "id": "file:src/components/TechniquePanels/EpistemicCalibrationPanel",
+      "type": "code",
+      "label": "src/components/TechniquePanels/EpistemicCalibrationPanel"
+    },
+    {
+      "id": "file:src/components/TechniquePanels/EvidenceRevelationPanel",
+      "type": "code",
+      "label": "src/components/TechniquePanels/EvidenceRevelationPanel"
+    },
+    {
+      "id": "file:src/components/TechniquePanels/EvidenceTriangulationPanel",
+      "type": "code",
+      "label": "src/components/TechniquePanels/EvidenceTriangulationPanel"
+    },
+    {
+      "id": "file:src/components/TechniquePanels/ExecutableEvidencePanel",
+      "type": "code",
+      "label": "src/components/TechniquePanels/ExecutableEvidencePanel"
+    },
+    {
+      "id": "file:src/components/TechniquePanels/FactCheckingPanel",
+      "type": "code",
+      "label": "src/components/TechniquePanels/FactCheckingPanel"
+    },
+    {
+      "id": "file:src/components/TechniquePanels/FogOfWarPanel",
+      "type": "code",
+      "label": "src/components/TechniquePanels/FogOfWarPanel"
+    },
+    {
+      "id": "file:src/components/TechniquePanels/FramePanel",
+      "type": "code",
+      "label": "src/components/TechniquePanels/FramePanel"
+    },
+    {
+      "id": "file:src/components/TechniquePanels/GraphMinimaxPanel",
+      "type": "code",
+      "label": "src/components/TechniquePanels/GraphMinimaxPanel"
+    },
+    {
+      "id": "file:src/components/TechniquePanels/HeatPanel",
+      "type": "code",
+      "label": "src/components/TechniquePanels/HeatPanel"
+    },
+    {
+      "id": "file:src/components/TechniquePanels/HegelianSynthesisPanel",
+      "type": "code",
+      "label": "src/components/TechniquePanels/HegelianSynthesisPanel"
+    },
+    {
+      "id": "file:src/components/TechniquePanels/HiddenIncentivesPanel",
+      "type": "code",
+      "label": "src/components/TechniquePanels/HiddenIncentivesPanel"
+    },
+    {
+      "id": "file:src/components/TechniquePanels/HumorPanel",
+      "type": "code",
+      "label": "src/components/TechniquePanels/HumorPanel"
+    },
+    {
+      "id": "file:src/components/TechniquePanels/InterruptPanel",
+      "type": "code",
+      "label": "src/components/TechniquePanels/InterruptPanel"
+    },
+    {
+      "id": "file:src/components/TechniquePanels/JudgeDeliberationPanel",
+      "type": "code",
+      "label": "src/components/TechniquePanels/JudgeDeliberationPanel"
+    },
+    {
+      "id": "file:src/components/TechniquePanels/MultiHopPanel",
+      "type": "code",
+      "label": "src/components/TechniquePanels/MultiHopPanel"
+    },
+    {
+      "id": "file:src/components/TechniquePanels/NarrativeArcPanel",
+      "type": "code",
+      "label": "src/components/TechniquePanels/NarrativeArcPanel"
+    },
+    {
+      "id": "file:src/components/TechniquePanels/ObjectionAnticipationPanel",
+      "type": "code",
+      "label": "src/components/TechniquePanels/ObjectionAnticipationPanel"
+    },
+    {
+      "id": "file:src/components/TechniquePanels/PivotPanel",
+      "type": "code",
+      "label": "src/components/TechniquePanels/PivotPanel"
+    },
+    {
+      "id": "file:src/components/TechniquePanels/PredictionMarketPanel",
+      "type": "code",
+      "label": "src/components/TechniquePanels/PredictionMarketPanel"
+    },
+    {
+      "id": "file:src/components/TechniquePanels/PrePublishCriticPanel",
+      "type": "code",
+      "label": "src/components/TechniquePanels/PrePublishCriticPanel"
+    },
+    {
+      "id": "file:src/components/TechniquePanels/RedundancyPanel",
+      "type": "code",
+      "label": "src/components/TechniquePanels/RedundancyPanel"
+    },
+    {
+      "id": "file:src/components/TechniquePanels/ReplayPanel",
+      "type": "code",
+      "label": "src/components/TechniquePanels/ReplayPanel"
+    },
+    {
+      "id": "file:src/components/TechniquePanels/RhetoricalDevicePanel",
+      "type": "code",
+      "label": "src/components/TechniquePanels/RhetoricalDevicePanel"
+    },
+    {
+      "id": "file:src/components/TechniquePanels/RhetoricSafetyPanel",
+      "type": "code",
+      "label": "src/components/TechniquePanels/RhetoricSafetyPanel"
+    },
+    {
+      "id": "file:src/components/TechniquePanels/RoleReversalPanel",
+      "type": "code",
+      "label": "src/components/TechniquePanels/RoleReversalPanel"
+    },
+    {
+      "id": "file:src/components/TechniquePanels/RtomPanel",
+      "type": "code",
+      "label": "src/components/TechniquePanels/RtomPanel"
+    },
+    {
+      "id": "file:src/components/TechniquePanels/SemanticBlendingPanel",
+      "type": "code",
+      "label": "src/components/TechniquePanels/SemanticBlendingPanel"
+    },
+    {
+      "id": "file:src/components/TechniquePanels/SentinelPanel",
+      "type": "code",
+      "label": "src/components/TechniquePanels/SentinelPanel"
+    },
+    {
+      "id": "file:src/components/TechniquePanels/SocraticPivotPanel",
+      "type": "code",
+      "label": "src/components/TechniquePanels/SocraticPivotPanel"
+    },
+    {
+      "id": "file:src/components/TechniquePanels/StatusDynamicsPanel",
+      "type": "code",
+      "label": "src/components/TechniquePanels/StatusDynamicsPanel"
+    },
+    {
+      "id": "file:src/components/TechniquePanels/StrategistPanel",
+      "type": "code",
+      "label": "src/components/TechniquePanels/StrategistPanel"
+    },
+    {
+      "id": "file:src/components/TechniquePanels/StrategyFingerprintPanel",
+      "type": "code",
+      "label": "src/components/TechniquePanels/StrategyFingerprintPanel"
+    },
+    {
+      "id": "file:src/components/TechniquePanels/StyleMatchingPanel",
+      "type": "code",
+      "label": "src/components/TechniquePanels/StyleMatchingPanel"
+    },
+    {
+      "id": "file:src/components/TechniquePanels/TriangulationPanel",
+      "type": "code",
+      "label": "src/components/TechniquePanels/TriangulationPanel"
+    },
+    {
+      "id": "file:src/components/TechniquePanels/UncertaintyPropagationPanel",
+      "type": "code",
+      "label": "src/components/TechniquePanels/UncertaintyPropagationPanel"
+    },
+    {
+      "id": "file:src/components/TechniquePanels/VulnerabilityTargetingPanel",
+      "type": "code",
+      "label": "src/components/TechniquePanels/VulnerabilityTargetingPanel"
+    },
+    {
+      "id": "file:src/components/TechniquePanels/WhisperChannelsPanel",
+      "type": "code",
+      "label": "src/components/TechniquePanels/WhisperChannelsPanel"
+    },
+    {
       "id": "file:src/components/TimeMachinePanel",
       "type": "code",
       "label": "src/components/TimeMachinePanel"
@@ -1431,6 +1766,11 @@
       "id": "file:src/components/WhatIfPanel/WhatIfPanel.test.tsx",
       "type": "test",
       "label": "src/components/WhatIfPanel/WhatIfPanel.test.tsx"
+    },
+    {
+      "id": "file:src/components/WikiBrainPanel",
+      "type": "code",
+      "label": "src/components/WikiBrainPanel"
     },
     {
       "id": "file:src/components/WikiPanel/wiki-articles.ts",
@@ -7306,6 +7646,13 @@
       "status": "verified"
     },
     {
+      "id": "wiki:panel-architecture-map",
+      "type": "article",
+      "label": "Карта архитектуры",
+      "section": "panels",
+      "status": "documented"
+    },
+    {
       "id": "wiki:panel-assistant",
       "type": "article",
       "label": "Панель: Помощник проекта",
@@ -7458,6 +7805,13 @@
       "label": "Панель: Турнир дебатов",
       "section": "panels",
       "status": "verified"
+    },
+    {
+      "id": "wiki:panel-defect-map",
+      "type": "article",
+      "label": "Карта дефектов",
+      "section": "panels",
+      "status": "documented"
     },
     {
       "id": "wiki:panel-director",
@@ -7628,6 +7982,13 @@
       "status": "verified"
     },
     {
+      "id": "wiki:panel-memory-center",
+      "type": "article",
+      "label": "Memory Center",
+      "section": "panels",
+      "status": "documented"
+    },
+    {
       "id": "wiki:panel-memory-extra",
       "type": "article",
       "label": "Панели: Федеративная память и перенос",
@@ -7640,6 +8001,13 @@
       "label": "Панель: Дворец памяти",
       "section": "panels",
       "status": "verified"
+    },
+    {
+      "id": "wiki:panel-nav-graph",
+      "type": "article",
+      "label": "Граф навигации",
+      "section": "panels",
+      "status": "documented"
     },
     {
       "id": "wiki:panel-observability",
@@ -7668,6 +8036,20 @@
       "label": "Панель: Песочница сравнения моделей",
       "section": "panels",
       "status": "verified"
+    },
+    {
+      "id": "wiki:panel-plugin-marketplace",
+      "type": "article",
+      "label": "Маркетплейс плагинов",
+      "section": "panels",
+      "status": "documented"
+    },
+    {
+      "id": "wiki:panel-plugins",
+      "type": "article",
+      "label": "Плагины",
+      "section": "panels",
+      "status": "documented"
     },
     {
       "id": "wiki:panel-pools",
@@ -7880,6 +8262,13 @@
       "status": "verified"
     },
     {
+      "id": "wiki:panel-wiki-brain",
+      "type": "article",
+      "label": "Вики-мозг",
+      "section": "panels",
+      "status": "documented"
+    },
+    {
       "id": "wiki:panel-workflows",
       "type": "article",
       "label": "Панель: Потоки (workflows)",
@@ -7962,6 +8351,412 @@
       "label": "SuperAgents OS — полное описание (промт для дебатов/ИИ)",
       "section": "guide",
       "status": "verified"
+    },
+    {
+      "id": "wiki:technique-abstraction-ladder",
+      "type": "article",
+      "label": "Лестница абстракции",
+      "section": "panels",
+      "status": "documented"
+    },
+    {
+      "id": "wiki:technique-adaptive-order",
+      "type": "article",
+      "label": "Адаптивный порядок",
+      "section": "panels",
+      "status": "documented"
+    },
+    {
+      "id": "wiki:technique-agreement-anchoring",
+      "type": "article",
+      "label": "Якорение на согласии",
+      "section": "panels",
+      "status": "documented"
+    },
+    {
+      "id": "wiki:technique-alliance",
+      "type": "article",
+      "label": "Альянс",
+      "section": "panels",
+      "status": "documented"
+    },
+    {
+      "id": "wiki:technique-bayesian-judges",
+      "type": "article",
+      "label": "Байесовские судьи",
+      "section": "panels",
+      "status": "documented"
+    },
+    {
+      "id": "wiki:technique-bias-exploit",
+      "type": "article",
+      "label": "Эксплуатация искажений",
+      "section": "panels",
+      "status": "documented"
+    },
+    {
+      "id": "wiki:technique-bidding-time",
+      "type": "article",
+      "label": "Торг за время",
+      "section": "panels",
+      "status": "documented"
+    },
+    {
+      "id": "wiki:technique-blind-evaluation",
+      "type": "article",
+      "label": "Слепая оценка",
+      "section": "panels",
+      "status": "documented"
+    },
+    {
+      "id": "wiki:technique-burden-of-proof",
+      "type": "article",
+      "label": "Бремя доказательства",
+      "section": "panels",
+      "status": "documented"
+    },
+    {
+      "id": "wiki:technique-causal-graph",
+      "type": "article",
+      "label": "Каузальный граф",
+      "section": "panels",
+      "status": "documented"
+    },
+    {
+      "id": "wiki:technique-concession",
+      "type": "article",
+      "label": "Уступка",
+      "section": "panels",
+      "status": "documented"
+    },
+    {
+      "id": "wiki:technique-concession-engine",
+      "type": "article",
+      "label": "Движок уступок",
+      "section": "panels",
+      "status": "documented"
+    },
+    {
+      "id": "wiki:technique-consistency-check",
+      "type": "article",
+      "label": "Проверка согласованности",
+      "section": "panels",
+      "status": "documented"
+    },
+    {
+      "id": "wiki:technique-credibility-scoring",
+      "type": "article",
+      "label": "Оценка достоверности",
+      "section": "panels",
+      "status": "documented"
+    },
+    {
+      "id": "wiki:technique-critic",
+      "type": "article",
+      "label": "Критик",
+      "section": "panels",
+      "status": "documented"
+    },
+    {
+      "id": "wiki:technique-cross-examination",
+      "type": "article",
+      "label": "Перекрёстный допрос",
+      "section": "panels",
+      "status": "documented"
+    },
+    {
+      "id": "wiki:technique-delta-focusing",
+      "type": "article",
+      "label": "Фокусировка на дельте",
+      "section": "panels",
+      "status": "documented"
+    },
+    {
+      "id": "wiki:technique-dpo-sampler",
+      "type": "article",
+      "label": "Семплер DPO",
+      "section": "panels",
+      "status": "documented"
+    },
+    {
+      "id": "wiki:technique-dynamic-persona",
+      "type": "article",
+      "label": "Динамическая персона",
+      "section": "panels",
+      "status": "documented"
+    },
+    {
+      "id": "wiki:technique-empathy",
+      "type": "article",
+      "label": "Эмпатия",
+      "section": "panels",
+      "status": "documented"
+    },
+    {
+      "id": "wiki:technique-enthymeme",
+      "type": "article",
+      "label": "Энтимема",
+      "section": "panels",
+      "status": "documented"
+    },
+    {
+      "id": "wiki:technique-epistemic-calibration",
+      "type": "article",
+      "label": "Эпистемическая калибровка",
+      "section": "panels",
+      "status": "documented"
+    },
+    {
+      "id": "wiki:technique-evidence-revelation",
+      "type": "article",
+      "label": "Раскрытие улик",
+      "section": "panels",
+      "status": "documented"
+    },
+    {
+      "id": "wiki:technique-evidence-triangulation",
+      "type": "article",
+      "label": "Триангуляция улик",
+      "section": "panels",
+      "status": "documented"
+    },
+    {
+      "id": "wiki:technique-executable-evidence",
+      "type": "article",
+      "label": "Исполняемые улики",
+      "section": "panels",
+      "status": "documented"
+    },
+    {
+      "id": "wiki:technique-fact-checking",
+      "type": "article",
+      "label": "Проверка фактов",
+      "section": "panels",
+      "status": "documented"
+    },
+    {
+      "id": "wiki:technique-fog-of-war",
+      "type": "article",
+      "label": "Туман войны",
+      "section": "panels",
+      "status": "documented"
+    },
+    {
+      "id": "wiki:technique-frame",
+      "type": "article",
+      "label": "Фрейминг",
+      "section": "panels",
+      "status": "documented"
+    },
+    {
+      "id": "wiki:technique-graph-minimax",
+      "type": "article",
+      "label": "Граф минимакса",
+      "section": "panels",
+      "status": "documented"
+    },
+    {
+      "id": "wiki:technique-heat",
+      "type": "article",
+      "label": "Накал",
+      "section": "panels",
+      "status": "documented"
+    },
+    {
+      "id": "wiki:technique-hegelian-synthesis",
+      "type": "article",
+      "label": "Гегелевский синтез",
+      "section": "panels",
+      "status": "documented"
+    },
+    {
+      "id": "wiki:technique-hidden-incentives",
+      "type": "article",
+      "label": "Скрытые стимулы",
+      "section": "panels",
+      "status": "documented"
+    },
+    {
+      "id": "wiki:technique-humor",
+      "type": "article",
+      "label": "Юмор",
+      "section": "panels",
+      "status": "documented"
+    },
+    {
+      "id": "wiki:technique-interrupt",
+      "type": "article",
+      "label": "Прерывание",
+      "section": "panels",
+      "status": "documented"
+    },
+    {
+      "id": "wiki:technique-judge-deliberation",
+      "type": "article",
+      "label": "Совещание судей",
+      "section": "panels",
+      "status": "documented"
+    },
+    {
+      "id": "wiki:technique-multi-hop",
+      "type": "article",
+      "label": "Многошаговость",
+      "section": "panels",
+      "status": "documented"
+    },
+    {
+      "id": "wiki:technique-narrative-arc",
+      "type": "article",
+      "label": "Нарративная дуга",
+      "section": "panels",
+      "status": "documented"
+    },
+    {
+      "id": "wiki:technique-objection-anticipation",
+      "type": "article",
+      "label": "Предвосхищение возражений",
+      "section": "panels",
+      "status": "documented"
+    },
+    {
+      "id": "wiki:technique-pivot",
+      "type": "article",
+      "label": "Пивот",
+      "section": "panels",
+      "status": "documented"
+    },
+    {
+      "id": "wiki:technique-pre-publish-critic",
+      "type": "article",
+      "label": "Критик перед публикацией",
+      "section": "panels",
+      "status": "documented"
+    },
+    {
+      "id": "wiki:technique-prediction-market",
+      "type": "article",
+      "label": "Рынок предсказаний",
+      "section": "panels",
+      "status": "documented"
+    },
+    {
+      "id": "wiki:technique-redundancy",
+      "type": "article",
+      "label": "Избыточность",
+      "section": "panels",
+      "status": "documented"
+    },
+    {
+      "id": "wiki:technique-replay",
+      "type": "article",
+      "label": "Повтор",
+      "section": "panels",
+      "status": "documented"
+    },
+    {
+      "id": "wiki:technique-rhetoric-safety",
+      "type": "article",
+      "label": "Безопасная риторика",
+      "section": "panels",
+      "status": "documented"
+    },
+    {
+      "id": "wiki:technique-rhetorical-device",
+      "type": "article",
+      "label": "Риторический приём",
+      "section": "panels",
+      "status": "documented"
+    },
+    {
+      "id": "wiki:technique-role-reversal",
+      "type": "article",
+      "label": "Обмен ролями",
+      "section": "panels",
+      "status": "documented"
+    },
+    {
+      "id": "wiki:technique-rtom",
+      "type": "article",
+      "label": "RT-OM",
+      "section": "panels",
+      "status": "documented"
+    },
+    {
+      "id": "wiki:technique-semantic-blending",
+      "type": "article",
+      "label": "Семантическое смешение",
+      "section": "panels",
+      "status": "documented"
+    },
+    {
+      "id": "wiki:technique-sentinel",
+      "type": "article",
+      "label": "Страж",
+      "section": "panels",
+      "status": "documented"
+    },
+    {
+      "id": "wiki:technique-socratic-pivot",
+      "type": "article",
+      "label": "Сократический разворот",
+      "section": "panels",
+      "status": "documented"
+    },
+    {
+      "id": "wiki:technique-status-dynamics",
+      "type": "article",
+      "label": "Динамика статуса",
+      "section": "panels",
+      "status": "documented"
+    },
+    {
+      "id": "wiki:technique-strategist",
+      "type": "article",
+      "label": "Стратегист",
+      "section": "panels",
+      "status": "documented"
+    },
+    {
+      "id": "wiki:technique-strategy-fingerprint",
+      "type": "article",
+      "label": "Отпечаток стратегии",
+      "section": "panels",
+      "status": "documented"
+    },
+    {
+      "id": "wiki:technique-style-matching",
+      "type": "article",
+      "label": "Подбор стиля",
+      "section": "panels",
+      "status": "documented"
+    },
+    {
+      "id": "wiki:technique-triangulation",
+      "type": "article",
+      "label": "Триангуляция",
+      "section": "panels",
+      "status": "documented"
+    },
+    {
+      "id": "wiki:technique-uncertainty-propagation",
+      "type": "article",
+      "label": "Распространение неопределённости",
+      "section": "panels",
+      "status": "documented"
+    },
+    {
+      "id": "wiki:technique-vulnerability-targeting",
+      "type": "article",
+      "label": "Атака уязвимостей",
+      "section": "panels",
+      "status": "documented"
+    },
+    {
+      "id": "wiki:technique-whisper-channels",
+      "type": "article",
+      "label": "Шёпот-каналы",
+      "section": "panels",
+      "status": "documented"
     },
     {
       "id": "wiki:weekly-commits",
@@ -8517,8 +9312,18 @@
       "kind": "documents"
     },
     {
+      "from": "panel:abstraction-ladder",
+      "to": "wiki:technique-abstraction-ladder",
+      "kind": "documents"
+    },
+    {
       "from": "panel:adapters",
       "to": "wiki:panel-gateway",
+      "kind": "documents"
+    },
+    {
+      "from": "panel:adaptive-order",
+      "to": "wiki:technique-adaptive-order",
       "kind": "documents"
     },
     {
@@ -8557,6 +9362,16 @@
       "kind": "documents"
     },
     {
+      "from": "panel:agreement-anchoring",
+      "to": "wiki:technique-agreement-anchoring",
+      "kind": "documents"
+    },
+    {
+      "from": "panel:alliance",
+      "to": "wiki:technique-alliance",
+      "kind": "documents"
+    },
+    {
       "from": "panel:analytics",
       "to": "wiki:panel-analytics",
       "kind": "documents"
@@ -8579,6 +9394,11 @@
     {
       "from": "panel:arch-review",
       "to": "wiki:panel-debate-research",
+      "kind": "documents"
+    },
+    {
+      "from": "panel:architecture-map",
+      "to": "wiki:panel-architecture-map",
       "kind": "documents"
     },
     {
@@ -8612,6 +9432,11 @@
       "kind": "documents"
     },
     {
+      "from": "panel:bayesian-judges",
+      "to": "wiki:technique-bayesian-judges",
+      "kind": "documents"
+    },
+    {
       "from": "panel:bayesian-judge",
       "to": "wiki:panel-debate-toolkit",
       "kind": "documents"
@@ -8622,8 +9447,23 @@
       "kind": "documents"
     },
     {
+      "from": "panel:bias-exploit",
+      "to": "wiki:technique-bias-exploit",
+      "kind": "documents"
+    },
+    {
       "from": "panel:bias-profiler",
       "to": "wiki:panel-debate-toolkit",
+      "kind": "documents"
+    },
+    {
+      "from": "panel:bidding-time",
+      "to": "wiki:technique-bidding-time",
+      "kind": "documents"
+    },
+    {
+      "from": "panel:blind-evaluation",
+      "to": "wiki:technique-blind-evaluation",
       "kind": "documents"
     },
     {
@@ -8657,6 +9497,11 @@
       "kind": "documents"
     },
     {
+      "from": "panel:burden-of-proof",
+      "to": "wiki:technique-burden-of-proof",
+      "kind": "documents"
+    },
+    {
       "from": "panel:cache",
       "to": "wiki:panel-integrations",
       "kind": "documents"
@@ -8669,6 +9514,11 @@
     {
       "from": "panel:causal-debugger",
       "to": "wiki:panel-simulation",
+      "kind": "documents"
+    },
+    {
+      "from": "panel:causal-graph",
+      "to": "wiki:technique-causal-graph",
       "kind": "documents"
     },
     {
@@ -8702,8 +9552,23 @@
       "kind": "documents"
     },
     {
+      "from": "panel:concession-engine",
+      "to": "wiki:technique-concession-engine",
+      "kind": "documents"
+    },
+    {
+      "from": "panel:concession",
+      "to": "wiki:technique-concession",
+      "kind": "documents"
+    },
+    {
       "from": "panel:connectors",
       "to": "wiki:panel-integrations",
+      "kind": "documents"
+    },
+    {
+      "from": "panel:consistency-check",
+      "to": "wiki:technique-consistency-check",
       "kind": "documents"
     },
     {
@@ -8737,8 +9602,23 @@
       "kind": "documents"
     },
     {
+      "from": "panel:credibility-scoring",
+      "to": "wiki:technique-credibility-scoring",
+      "kind": "documents"
+    },
+    {
       "from": "panel:credibility",
       "to": "wiki:panel-debate-toolkit",
+      "kind": "documents"
+    },
+    {
+      "from": "panel:critic",
+      "to": "wiki:technique-critic",
+      "kind": "documents"
+    },
+    {
+      "from": "panel:cross-examination",
+      "to": "wiki:technique-cross-examination",
       "kind": "documents"
     },
     {
@@ -8817,6 +9697,16 @@
       "kind": "documents"
     },
     {
+      "from": "panel:defect-map",
+      "to": "wiki:panel-defect-map",
+      "kind": "documents"
+    },
+    {
+      "from": "panel:delta-focusing",
+      "to": "wiki:technique-delta-focusing",
+      "kind": "documents"
+    },
+    {
       "from": "panel:dependency-map",
       "to": "wiki:panel-infra-meta",
       "kind": "documents"
@@ -8842,6 +9732,11 @@
       "kind": "documents"
     },
     {
+      "from": "panel:dpo-sampler",
+      "to": "wiki:technique-dpo-sampler",
+      "kind": "documents"
+    },
+    {
       "from": "panel:drift-detector",
       "to": "wiki:panel-eval-extra",
       "kind": "documents"
@@ -8852,8 +9747,18 @@
       "kind": "documents"
     },
     {
+      "from": "panel:dynamic-persona",
+      "to": "wiki:technique-dynamic-persona",
+      "kind": "documents"
+    },
+    {
       "from": "panel:editors",
       "to": "wiki:panel-files-editors",
+      "kind": "documents"
+    },
+    {
+      "from": "panel:empathy",
+      "to": "wiki:technique-empathy",
       "kind": "documents"
     },
     {
@@ -8862,8 +9767,38 @@
       "kind": "documents"
     },
     {
+      "from": "panel:enthymeme",
+      "to": "wiki:technique-enthymeme",
+      "kind": "documents"
+    },
+    {
+      "from": "panel:epistemic-calibration",
+      "to": "wiki:technique-epistemic-calibration",
+      "kind": "documents"
+    },
+    {
       "from": "panel:eval-datasets",
       "to": "wiki:panel-eval",
+      "kind": "documents"
+    },
+    {
+      "from": "panel:evidence-revelation",
+      "to": "wiki:technique-evidence-revelation",
+      "kind": "documents"
+    },
+    {
+      "from": "panel:evidence-triangulation",
+      "to": "wiki:technique-evidence-triangulation",
+      "kind": "documents"
+    },
+    {
+      "from": "panel:exceptions",
+      "to": "wiki:panel-exceptions",
+      "kind": "documents"
+    },
+    {
+      "from": "panel:executable-evidence",
+      "to": "wiki:technique-executable-evidence",
       "kind": "documents"
     },
     {
@@ -8879,6 +9814,11 @@
     {
       "from": "panel:export-import",
       "to": "wiki:panel-infra-meta",
+      "kind": "documents"
+    },
+    {
+      "from": "panel:fact-checking",
+      "to": "wiki:technique-fact-checking",
       "kind": "documents"
     },
     {
@@ -8927,6 +9867,11 @@
       "kind": "documents"
     },
     {
+      "from": "panel:fog-of-war",
+      "to": "wiki:technique-fog-of-war",
+      "kind": "documents"
+    },
+    {
       "from": "panel:forum",
       "to": "wiki:panel-forum",
       "kind": "documents"
@@ -8934,6 +9879,11 @@
     {
       "from": "panel:frame-tracker",
       "to": "wiki:panel-debate-toolkit",
+      "kind": "documents"
+    },
+    {
+      "from": "panel:frame",
+      "to": "wiki:technique-frame",
       "kind": "documents"
     },
     {
@@ -8964,6 +9914,11 @@
     {
       "from": "panel:governance",
       "to": "wiki:panel-governance",
+      "kind": "documents"
+    },
+    {
+      "from": "panel:graph-minimax",
+      "to": "wiki:technique-graph-minimax",
       "kind": "documents"
     },
     {
@@ -9007,8 +9962,28 @@
       "kind": "documents"
     },
     {
+      "from": "panel:heat",
+      "to": "wiki:technique-heat",
+      "kind": "documents"
+    },
+    {
+      "from": "panel:hegelian-synthesis",
+      "to": "wiki:technique-hegelian-synthesis",
+      "kind": "documents"
+    },
+    {
+      "from": "panel:hidden-incentives",
+      "to": "wiki:technique-hidden-incentives",
+      "kind": "documents"
+    },
+    {
       "from": "panel:history",
       "to": "wiki:panel-history-audit",
+      "kind": "documents"
+    },
+    {
+      "from": "panel:humor",
+      "to": "wiki:technique-humor",
       "kind": "documents"
     },
     {
@@ -9027,8 +10002,18 @@
       "kind": "documents"
     },
     {
+      "from": "panel:interrupt",
+      "to": "wiki:technique-interrupt",
+      "kind": "documents"
+    },
+    {
       "from": "panel:issues",
       "to": "wiki:panel-gateway",
+      "kind": "documents"
+    },
+    {
+      "from": "panel:judge-deliberation",
+      "to": "wiki:technique-judge-deliberation",
       "kind": "documents"
     },
     {
@@ -9097,6 +10082,11 @@
       "kind": "documents"
     },
     {
+      "from": "panel:memory-center",
+      "to": "wiki:panel-memory-center",
+      "kind": "documents"
+    },
+    {
       "from": "panel:memory-export-import",
       "to": "wiki:panel-memory-extra",
       "kind": "documents"
@@ -9132,8 +10122,28 @@
       "kind": "documents"
     },
     {
+      "from": "panel:multi-hop",
+      "to": "wiki:technique-multi-hop",
+      "kind": "documents"
+    },
+    {
+      "from": "panel:narrative-arc",
+      "to": "wiki:technique-narrative-arc",
+      "kind": "documents"
+    },
+    {
+      "from": "panel:nav-graph",
+      "to": "wiki:panel-nav-graph",
+      "kind": "documents"
+    },
+    {
       "from": "panel:nvidia-enterprise",
       "to": "wiki:panel-providers-extra",
+      "kind": "documents"
+    },
+    {
+      "from": "panel:objection-anticipation",
+      "to": "wiki:technique-objection-anticipation",
       "kind": "documents"
     },
     {
@@ -9172,6 +10182,11 @@
       "kind": "documents"
     },
     {
+      "from": "panel:pivot",
+      "to": "wiki:technique-pivot",
+      "kind": "documents"
+    },
+    {
       "from": "panel:planner",
       "to": "wiki:panel-planning",
       "kind": "documents"
@@ -9182,8 +10197,18 @@
       "kind": "documents"
     },
     {
+      "from": "panel:plugin-marketplace",
+      "to": "wiki:panel-plugin-marketplace",
+      "kind": "documents"
+    },
+    {
       "from": "panel:plugin-sdk",
       "to": "wiki:panel-infra-meta",
+      "kind": "documents"
+    },
+    {
+      "from": "panel:plugins",
+      "to": "wiki:panel-plugins",
       "kind": "documents"
     },
     {
@@ -9204,6 +10229,16 @@
     {
       "from": "panel:portability",
       "to": "wiki:panel-gateway",
+      "kind": "documents"
+    },
+    {
+      "from": "panel:pre-publish-critic",
+      "to": "wiki:technique-pre-publish-critic",
+      "kind": "documents"
+    },
+    {
+      "from": "panel:prediction-market",
+      "to": "wiki:technique-prediction-market",
       "kind": "documents"
     },
     {
@@ -9262,6 +10297,16 @@
       "kind": "documents"
     },
     {
+      "from": "panel:redundancy",
+      "to": "wiki:technique-redundancy",
+      "kind": "documents"
+    },
+    {
+      "from": "panel:replay",
+      "to": "wiki:technique-replay",
+      "kind": "documents"
+    },
+    {
       "from": "panel:research-advanced",
       "to": "wiki:panel-research-extra",
       "kind": "documents"
@@ -9287,6 +10332,16 @@
       "kind": "documents"
     },
     {
+      "from": "panel:rhetoric-safety",
+      "to": "wiki:technique-rhetoric-safety",
+      "kind": "documents"
+    },
+    {
+      "from": "panel:rhetorical-device",
+      "to": "wiki:technique-rhetorical-device",
+      "kind": "documents"
+    },
+    {
       "from": "panel:rhetoric",
       "to": "wiki:panel-debate-toolkit",
       "kind": "documents"
@@ -9299,6 +10354,11 @@
     {
       "from": "panel:rivals-catalog",
       "to": "wiki:panel-providers-extra",
+      "kind": "documents"
+    },
+    {
+      "from": "panel:role-reversal",
+      "to": "wiki:technique-role-reversal",
       "kind": "documents"
     },
     {
@@ -9337,6 +10397,11 @@
       "kind": "documents"
     },
     {
+      "from": "panel:rtom",
+      "to": "wiki:technique-rtom",
+      "kind": "documents"
+    },
+    {
       "from": "panel:run-queue",
       "to": "wiki:panel-provenance-junctions",
       "kind": "documents"
@@ -9364,6 +10429,16 @@
     {
       "from": "panel:security",
       "to": "wiki:panel-governance",
+      "kind": "documents"
+    },
+    {
+      "from": "panel:semantic-blending",
+      "to": "wiki:technique-semantic-blending",
+      "kind": "documents"
+    },
+    {
+      "from": "panel:sentinel",
+      "to": "wiki:technique-sentinel",
       "kind": "documents"
     },
     {
@@ -9417,6 +10492,11 @@
       "kind": "documents"
     },
     {
+      "from": "panel:socratic-pivot",
+      "to": "wiki:technique-socratic-pivot",
+      "kind": "documents"
+    },
+    {
       "from": "panel:sop",
       "to": "wiki:panel-governance",
       "kind": "documents"
@@ -9442,13 +10522,33 @@
       "kind": "documents"
     },
     {
+      "from": "panel:status-dynamics",
+      "to": "wiki:technique-status-dynamics",
+      "kind": "documents"
+    },
+    {
       "from": "panel:steelman",
       "to": "wiki:panel-debate-toolkit",
       "kind": "documents"
     },
     {
+      "from": "panel:strategist",
+      "to": "wiki:technique-strategist",
+      "kind": "documents"
+    },
+    {
       "from": "panel:strategy-builder",
       "to": "wiki:panel-shadow",
+      "kind": "documents"
+    },
+    {
+      "from": "panel:strategy-fingerprint",
+      "to": "wiki:technique-strategy-fingerprint",
+      "kind": "documents"
+    },
+    {
+      "from": "panel:style-matching",
+      "to": "wiki:technique-style-matching",
       "kind": "documents"
     },
     {
@@ -9497,8 +10597,18 @@
       "kind": "documents"
     },
     {
+      "from": "panel:triangulation",
+      "to": "wiki:technique-triangulation",
+      "kind": "documents"
+    },
+    {
       "from": "panel:tutorials",
       "to": "wiki:panel-files-editors",
+      "kind": "documents"
+    },
+    {
+      "from": "panel:uncertainty-propagation",
+      "to": "wiki:technique-uncertainty-propagation",
       "kind": "documents"
     },
     {
@@ -9512,6 +10622,11 @@
       "kind": "documents"
     },
     {
+      "from": "panel:vulnerability-targeting",
+      "to": "wiki:technique-vulnerability-targeting",
+      "kind": "documents"
+    },
+    {
       "from": "panel:webhooks",
       "to": "wiki:panel-integrations",
       "kind": "documents"
@@ -9519,6 +10634,16 @@
     {
       "from": "panel:what-if",
       "to": "wiki:panel-simulation",
+      "kind": "documents"
+    },
+    {
+      "from": "panel:whisper-channels",
+      "to": "wiki:technique-whisper-channels",
+      "kind": "documents"
+    },
+    {
+      "from": "panel:wiki-brain",
+      "to": "wiki:panel-wiki-brain",
       "kind": "documents"
     },
     {
@@ -17572,6 +18697,21 @@
       "kind": "related"
     },
     {
+      "from": "wiki:panel-architecture-map",
+      "to": "file:src/components/ArchitectureMapPanel",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:panel-architecture-map",
+      "to": "wiki:architecture",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:panel-architecture-map",
+      "to": "wiki:dev-overview",
+      "kind": "related"
+    },
+    {
       "from": "wiki:panel-assistant",
       "to": "file:src/components/Assistant/assistant-wiring.ts",
       "kind": "source"
@@ -18332,6 +19472,21 @@
       "kind": "related"
     },
     {
+      "from": "wiki:panel-defect-map",
+      "to": "file:src/components/DefectMapPanel/DefectMapPanel",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:panel-defect-map",
+      "to": "wiki:diagnostics",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:panel-defect-map",
+      "to": "wiki:panel-observability",
+      "kind": "related"
+    },
+    {
       "from": "wiki:panel-director",
       "to": "file:src/components/DirectorPanel/DirectorPanel.test.tsx",
       "kind": "test"
@@ -18463,6 +19618,11 @@
     },
     {
       "from": "wiki:panel-exceptions",
+      "to": "file:src/components/ExceptionsPanel/ExceptionsPanel",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:panel-exceptions",
       "to": "file:src/kernel/types/exception-template.ts",
       "kind": "source"
     },
@@ -18474,6 +19634,11 @@
     {
       "from": "wiki:panel-exceptions",
       "to": "wiki:panel-chat",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:panel-exceptions",
+      "to": "wiki:panel-governance",
       "kind": "related"
     },
     {
@@ -19217,6 +20382,26 @@
       "kind": "related"
     },
     {
+      "from": "wiki:panel-memory-center",
+      "to": "file:src/components/MemoryCenterPanel/MemoryCenterPanel.test.tsx",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:panel-memory-center",
+      "to": "file:src/components/MemoryCenterPanel/MemoryCenterPanel",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:panel-memory-center",
+      "to": "wiki:memory",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:panel-memory-center",
+      "to": "wiki:panel-memory-palace",
+      "kind": "related"
+    },
+    {
       "from": "wiki:panel-memory-extra",
       "to": "file:src/components/FederatedMemoryPanel.test.tsx",
       "kind": "test"
@@ -19279,6 +20464,16 @@
     {
       "from": "wiki:panel-memory-palace",
       "to": "wiki:panel-lenses-crystals",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:panel-nav-graph",
+      "to": "file:src/components/NavGraphPanel/NavGraphPanel",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:panel-nav-graph",
+      "to": "wiki:dev-routing",
       "kind": "related"
     },
     {
@@ -19429,6 +20624,31 @@
     {
       "from": "wiki:panel-playground",
       "to": "wiki:providers",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:panel-plugin-marketplace",
+      "to": "file:src/components/PluginMarketplacePanel",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:panel-plugin-marketplace",
+      "to": "wiki:panel-plugins",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:panel-plugins",
+      "to": "file:src/components/PluginManagerPanel",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:panel-plugins",
+      "to": "wiki:panel-infra-meta",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:panel-plugins",
+      "to": "wiki:panel-plugin-marketplace",
       "kind": "related"
     },
     {
@@ -20372,6 +21592,21 @@
       "kind": "related"
     },
     {
+      "from": "wiki:panel-wiki-brain",
+      "to": "file:src/components/WikiBrainPanel",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:panel-wiki-brain",
+      "to": "wiki:memory",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:panel-wiki-brain",
+      "to": "wiki:panel-wiki",
+      "kind": "related"
+    },
+    {
       "from": "wiki:panel-wiki",
       "to": "file:src/components/WikiPanel/wiki-articles.ts",
       "kind": "source"
@@ -20804,6 +22039,591 @@
     {
       "from": "wiki:system-audit-prompt",
       "to": "wiki:what-is",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:technique-abstraction-ladder",
+      "to": "file:src/components/TechniquePanels/AbstractionLadderPanel",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:technique-abstraction-ladder",
+      "to": "wiki:panel-debate-toolkit",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:technique-adaptive-order",
+      "to": "file:src/components/TechniquePanels/AdaptiveOrderPanel",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:technique-adaptive-order",
+      "to": "wiki:panel-debate-toolkit",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:technique-agreement-anchoring",
+      "to": "file:src/components/TechniquePanels/AgreementAnchoringPanel",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:technique-agreement-anchoring",
+      "to": "wiki:panel-debate-toolkit",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:technique-alliance",
+      "to": "file:src/components/TechniquePanels/AlliancePanel",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:technique-alliance",
+      "to": "wiki:panel-debate-toolkit",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:technique-bayesian-judges",
+      "to": "file:src/components/TechniquePanels/BayesianJudgesPanel",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:technique-bayesian-judges",
+      "to": "wiki:panel-debate-toolkit",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:technique-bias-exploit",
+      "to": "file:src/components/TechniquePanels/BiasExploitPanel",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:technique-bias-exploit",
+      "to": "wiki:panel-debate-toolkit",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:technique-bidding-time",
+      "to": "file:src/components/TechniquePanels/BiddingTimePanel",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:technique-bidding-time",
+      "to": "wiki:panel-debate-toolkit",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:technique-blind-evaluation",
+      "to": "file:src/components/TechniquePanels/BlindEvaluationPanel",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:technique-blind-evaluation",
+      "to": "wiki:panel-debate-toolkit",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:technique-burden-of-proof",
+      "to": "file:src/components/TechniquePanels/BurdenOfProofPanel",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:technique-burden-of-proof",
+      "to": "wiki:panel-debate-toolkit",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:technique-causal-graph",
+      "to": "file:src/components/TechniquePanels/CausalGraphPanel",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:technique-causal-graph",
+      "to": "wiki:panel-debate-toolkit",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:technique-concession-engine",
+      "to": "file:src/components/TechniquePanels/ConcessionEnginePanel",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:technique-concession-engine",
+      "to": "wiki:panel-debate-toolkit",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:technique-concession",
+      "to": "file:src/components/TechniquePanels/ConcessionPanel",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:technique-concession",
+      "to": "wiki:panel-debate-toolkit",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:technique-consistency-check",
+      "to": "file:src/components/TechniquePanels/ConsistencyCheckPanel",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:technique-consistency-check",
+      "to": "wiki:panel-debate-toolkit",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:technique-credibility-scoring",
+      "to": "file:src/components/TechniquePanels/CredibilityScoringPanel",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:technique-credibility-scoring",
+      "to": "wiki:panel-debate-toolkit",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:technique-critic",
+      "to": "file:src/components/TechniquePanels/CriticPanel",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:technique-critic",
+      "to": "wiki:panel-debate-toolkit",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:technique-cross-examination",
+      "to": "file:src/components/TechniquePanels/CrossExaminationPanel.test.tsx",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:technique-cross-examination",
+      "to": "file:src/components/TechniquePanels/CrossExaminationPanel",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:technique-cross-examination",
+      "to": "wiki:panel-debate-toolkit",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:technique-delta-focusing",
+      "to": "file:src/components/TechniquePanels/DeltaFocusingPanel",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:technique-delta-focusing",
+      "to": "wiki:panel-debate-toolkit",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:technique-dpo-sampler",
+      "to": "file:src/components/TechniquePanels/DpoSamplerPanel",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:technique-dpo-sampler",
+      "to": "wiki:panel-debate-toolkit",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:technique-dynamic-persona",
+      "to": "file:src/components/TechniquePanels/DynamicPersonaPanel",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:technique-dynamic-persona",
+      "to": "wiki:panel-debate-toolkit",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:technique-empathy",
+      "to": "file:src/components/TechniquePanels/EmpathyPanel",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:technique-empathy",
+      "to": "wiki:panel-debate-toolkit",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:technique-enthymeme",
+      "to": "file:src/components/TechniquePanels/EnthymemePanel",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:technique-enthymeme",
+      "to": "wiki:panel-debate-toolkit",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:technique-epistemic-calibration",
+      "to": "file:src/components/TechniquePanels/EpistemicCalibrationPanel",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:technique-epistemic-calibration",
+      "to": "wiki:panel-debate-toolkit",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:technique-evidence-revelation",
+      "to": "file:src/components/TechniquePanels/EvidenceRevelationPanel",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:technique-evidence-revelation",
+      "to": "wiki:panel-debate-toolkit",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:technique-evidence-triangulation",
+      "to": "file:src/components/TechniquePanels/EvidenceTriangulationPanel",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:technique-evidence-triangulation",
+      "to": "wiki:panel-debate-toolkit",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:technique-executable-evidence",
+      "to": "file:src/components/TechniquePanels/ExecutableEvidencePanel",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:technique-executable-evidence",
+      "to": "wiki:panel-debate-toolkit",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:technique-fact-checking",
+      "to": "file:src/components/TechniquePanels/FactCheckingPanel",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:technique-fact-checking",
+      "to": "wiki:panel-debate-toolkit",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:technique-fog-of-war",
+      "to": "file:src/components/TechniquePanels/FogOfWarPanel",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:technique-fog-of-war",
+      "to": "wiki:panel-debate-toolkit",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:technique-frame",
+      "to": "file:src/components/TechniquePanels/FramePanel",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:technique-frame",
+      "to": "wiki:panel-debate-toolkit",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:technique-graph-minimax",
+      "to": "file:src/components/TechniquePanels/GraphMinimaxPanel",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:technique-graph-minimax",
+      "to": "wiki:panel-debate-toolkit",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:technique-heat",
+      "to": "file:src/components/TechniquePanels/HeatPanel",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:technique-heat",
+      "to": "wiki:panel-debate-toolkit",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:technique-hegelian-synthesis",
+      "to": "file:src/components/TechniquePanels/HegelianSynthesisPanel",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:technique-hegelian-synthesis",
+      "to": "wiki:panel-debate-toolkit",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:technique-hidden-incentives",
+      "to": "file:src/components/TechniquePanels/HiddenIncentivesPanel",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:technique-hidden-incentives",
+      "to": "wiki:panel-debate-toolkit",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:technique-humor",
+      "to": "file:src/components/TechniquePanels/HumorPanel",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:technique-humor",
+      "to": "wiki:panel-debate-toolkit",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:technique-interrupt",
+      "to": "file:src/components/TechniquePanels/InterruptPanel",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:technique-interrupt",
+      "to": "wiki:panel-debate-toolkit",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:technique-judge-deliberation",
+      "to": "file:src/components/TechniquePanels/JudgeDeliberationPanel",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:technique-judge-deliberation",
+      "to": "wiki:panel-debate-toolkit",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:technique-multi-hop",
+      "to": "file:src/components/TechniquePanels/MultiHopPanel",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:technique-multi-hop",
+      "to": "wiki:panel-debate-toolkit",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:technique-narrative-arc",
+      "to": "file:src/components/TechniquePanels/NarrativeArcPanel",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:technique-narrative-arc",
+      "to": "wiki:panel-debate-toolkit",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:technique-objection-anticipation",
+      "to": "file:src/components/TechniquePanels/ObjectionAnticipationPanel",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:technique-objection-anticipation",
+      "to": "wiki:panel-debate-toolkit",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:technique-pivot",
+      "to": "file:src/components/TechniquePanels/PivotPanel",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:technique-pivot",
+      "to": "wiki:panel-debate-toolkit",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:technique-pre-publish-critic",
+      "to": "file:src/components/TechniquePanels/PrePublishCriticPanel",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:technique-pre-publish-critic",
+      "to": "wiki:panel-debate-toolkit",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:technique-prediction-market",
+      "to": "file:src/components/TechniquePanels/PredictionMarketPanel",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:technique-prediction-market",
+      "to": "wiki:panel-debate-toolkit",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:technique-redundancy",
+      "to": "file:src/components/TechniquePanels/RedundancyPanel",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:technique-redundancy",
+      "to": "wiki:panel-debate-toolkit",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:technique-replay",
+      "to": "file:src/components/TechniquePanels/ReplayPanel",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:technique-replay",
+      "to": "wiki:panel-debate-toolkit",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:technique-rhetoric-safety",
+      "to": "file:src/components/TechniquePanels/RhetoricSafetyPanel",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:technique-rhetoric-safety",
+      "to": "wiki:panel-debate-toolkit",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:technique-rhetorical-device",
+      "to": "file:src/components/TechniquePanels/RhetoricalDevicePanel",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:technique-rhetorical-device",
+      "to": "wiki:panel-debate-toolkit",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:technique-role-reversal",
+      "to": "file:src/components/TechniquePanels/RoleReversalPanel",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:technique-role-reversal",
+      "to": "wiki:panel-debate-toolkit",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:technique-rtom",
+      "to": "file:src/components/TechniquePanels/RtomPanel",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:technique-rtom",
+      "to": "wiki:panel-debate-toolkit",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:technique-semantic-blending",
+      "to": "file:src/components/TechniquePanels/SemanticBlendingPanel",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:technique-semantic-blending",
+      "to": "wiki:panel-debate-toolkit",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:technique-sentinel",
+      "to": "file:src/components/TechniquePanels/SentinelPanel",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:technique-sentinel",
+      "to": "wiki:panel-debate-toolkit",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:technique-socratic-pivot",
+      "to": "file:src/components/TechniquePanels/SocraticPivotPanel",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:technique-socratic-pivot",
+      "to": "wiki:panel-debate-toolkit",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:technique-status-dynamics",
+      "to": "file:src/components/TechniquePanels/StatusDynamicsPanel",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:technique-status-dynamics",
+      "to": "wiki:panel-debate-toolkit",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:technique-strategist",
+      "to": "file:src/components/TechniquePanels/StrategistPanel",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:technique-strategist",
+      "to": "wiki:panel-debate-toolkit",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:technique-strategy-fingerprint",
+      "to": "file:src/components/TechniquePanels/StrategyFingerprintPanel",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:technique-strategy-fingerprint",
+      "to": "wiki:panel-debate-toolkit",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:technique-style-matching",
+      "to": "file:src/components/TechniquePanels/StyleMatchingPanel",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:technique-style-matching",
+      "to": "wiki:panel-debate-toolkit",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:technique-triangulation",
+      "to": "file:src/components/TechniquePanels/TriangulationPanel",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:technique-triangulation",
+      "to": "wiki:panel-debate-toolkit",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:technique-uncertainty-propagation",
+      "to": "file:src/components/TechniquePanels/UncertaintyPropagationPanel",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:technique-uncertainty-propagation",
+      "to": "wiki:panel-debate-toolkit",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:technique-vulnerability-targeting",
+      "to": "file:src/components/TechniquePanels/VulnerabilityTargetingPanel",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:technique-vulnerability-targeting",
+      "to": "wiki:panel-debate-toolkit",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:technique-whisper-channels",
+      "to": "file:src/components/TechniquePanels/WhisperChannelsPanel",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:technique-whisper-channels",
+      "to": "wiki:panel-debate-toolkit",
       "kind": "related"
     },
     {

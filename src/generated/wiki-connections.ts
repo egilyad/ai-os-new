@@ -81,11 +81,45 @@ export const WIKI_CONNECTIONS: Record<string, WikiConnection[]> = {
             ]
         }
     ],
+    "panel-exceptions": [
+        {
+            "panelId": "exceptions",
+            "route": "/exceptions",
+            "component": "src/components/ExceptionsPanel/ExceptionsPanel",
+            "tests": []
+        }
+    ],
+    "panel-memory-center": [
+        {
+            "panelId": "memory-center",
+            "route": "/memory-center",
+            "component": "src/components/MemoryCenterPanel/MemoryCenterPanel",
+            "tests": [
+                "src/components/MemoryCenterPanel/MemoryCenterPanel.test.tsx"
+            ]
+        }
+    ],
+    "panel-nav-graph": [
+        {
+            "panelId": "nav-graph",
+            "route": "/nav-graph",
+            "component": "src/components/NavGraphPanel/NavGraphPanel",
+            "tests": []
+        }
+    ],
     "panel-graph-workbench": [
         {
             "panelId": "graph-workbench",
             "route": "/graph-workbench",
             "component": "src/components/GraphWorkbenchPanel/GraphWorkbenchPanel",
+            "tests": []
+        }
+    ],
+    "panel-defect-map": [
+        {
+            "panelId": "defect-map",
+            "route": "/defect-map",
+            "component": "src/components/DefectMapPanel/DefectMapPanel",
             "tests": []
         }
     ],
@@ -819,6 +853,472 @@ export const WIKI_CONNECTIONS: Record<string, WikiConnection[]> = {
             "tests": []
         }
     ],
+    "technique-cross-examination": [
+        {
+            "panelId": "cross-examination",
+            "route": "/cross-examination",
+            "component": "src/components/TechniquePanels/CrossExaminationPanel",
+            "tests": [
+                "src/components/TechniquePanels/CrossExaminationPanel.test.tsx"
+            ]
+        }
+    ],
+    "technique-delta-focusing": [
+        {
+            "panelId": "delta-focusing",
+            "route": "/delta-focusing",
+            "component": "src/components/TechniquePanels/DeltaFocusingPanel",
+            "tests": []
+        }
+    ],
+    "technique-vulnerability-targeting": [
+        {
+            "panelId": "vulnerability-targeting",
+            "route": "/vulnerability-targeting",
+            "component": "src/components/TechniquePanels/VulnerabilityTargetingPanel",
+            "tests": []
+        }
+    ],
+    "technique-agreement-anchoring": [
+        {
+            "panelId": "agreement-anchoring",
+            "route": "/agreement-anchoring",
+            "component": "src/components/TechniquePanels/AgreementAnchoringPanel",
+            "tests": []
+        }
+    ],
+    "technique-graph-minimax": [
+        {
+            "panelId": "graph-minimax",
+            "route": "/graph-minimax",
+            "component": "src/components/TechniquePanels/GraphMinimaxPanel",
+            "tests": []
+        }
+    ],
+    "technique-burden-of-proof": [
+        {
+            "panelId": "burden-of-proof",
+            "route": "/burden-of-proof",
+            "component": "src/components/TechniquePanels/BurdenOfProofPanel",
+            "tests": []
+        }
+    ],
+    "technique-consistency-check": [
+        {
+            "panelId": "consistency-check",
+            "route": "/consistency-check",
+            "component": "src/components/TechniquePanels/ConsistencyCheckPanel",
+            "tests": []
+        }
+    ],
+    "technique-credibility-scoring": [
+        {
+            "panelId": "credibility-scoring",
+            "route": "/credibility-scoring",
+            "component": "src/components/TechniquePanels/CredibilityScoringPanel",
+            "tests": []
+        }
+    ],
+    "technique-causal-graph": [
+        {
+            "panelId": "causal-graph",
+            "route": "/causal-graph",
+            "component": "src/components/TechniquePanels/CausalGraphPanel",
+            "tests": []
+        }
+    ],
+    "technique-pre-publish-critic": [
+        {
+            "panelId": "pre-publish-critic",
+            "route": "/pre-publish-critic",
+            "component": "src/components/TechniquePanels/PrePublishCriticPanel",
+            "tests": []
+        }
+    ],
+    "technique-fact-checking": [
+        {
+            "panelId": "fact-checking",
+            "route": "/fact-checking",
+            "component": "src/components/TechniquePanels/FactCheckingPanel",
+            "tests": []
+        }
+    ],
+    "technique-epistemic-calibration": [
+        {
+            "panelId": "epistemic-calibration",
+            "route": "/epistemic-calibration",
+            "component": "src/components/TechniquePanels/EpistemicCalibrationPanel",
+            "tests": []
+        }
+    ],
+    "technique-socratic-pivot": [
+        {
+            "panelId": "socratic-pivot",
+            "route": "/socratic-pivot",
+            "component": "src/components/TechniquePanels/SocraticPivotPanel",
+            "tests": []
+        }
+    ],
+    "technique-concession-engine": [
+        {
+            "panelId": "concession-engine",
+            "route": "/concession-engine",
+            "component": "src/components/TechniquePanels/ConcessionEnginePanel",
+            "tests": []
+        }
+    ],
+    "technique-bayesian-judges": [
+        {
+            "panelId": "bayesian-judges",
+            "route": "/bayesian-judges",
+            "component": "src/components/TechniquePanels/BayesianJudgesPanel",
+            "tests": []
+        }
+    ],
+    "technique-dpo-sampler": [
+        {
+            "panelId": "dpo-sampler",
+            "route": "/dpo-sampler",
+            "component": "src/components/TechniquePanels/DpoSamplerPanel",
+            "tests": []
+        }
+    ],
+    "technique-critic": [
+        {
+            "panelId": "critic",
+            "route": "/critic",
+            "component": "src/components/TechniquePanels/CriticPanel",
+            "tests": []
+        }
+    ],
+    "technique-pivot": [
+        {
+            "panelId": "pivot",
+            "route": "/pivot",
+            "component": "src/components/TechniquePanels/PivotPanel",
+            "tests": []
+        }
+    ],
+    "technique-concession": [
+        {
+            "panelId": "concession",
+            "route": "/concession",
+            "component": "src/components/TechniquePanels/ConcessionPanel",
+            "tests": []
+        }
+    ],
+    "technique-triangulation": [
+        {
+            "panelId": "triangulation",
+            "route": "/triangulation",
+            "component": "src/components/TechniquePanels/TriangulationPanel",
+            "tests": []
+        }
+    ],
+    "technique-empathy": [
+        {
+            "panelId": "empathy",
+            "route": "/empathy",
+            "component": "src/components/TechniquePanels/EmpathyPanel",
+            "tests": []
+        }
+    ],
+    "technique-heat": [
+        {
+            "panelId": "heat",
+            "route": "/heat",
+            "component": "src/components/TechniquePanels/HeatPanel",
+            "tests": []
+        }
+    ],
+    "technique-sentinel": [
+        {
+            "panelId": "sentinel",
+            "route": "/sentinel",
+            "component": "src/components/TechniquePanels/SentinelPanel",
+            "tests": []
+        }
+    ],
+    "technique-redundancy": [
+        {
+            "panelId": "redundancy",
+            "route": "/redundancy",
+            "component": "src/components/TechniquePanels/RedundancyPanel",
+            "tests": []
+        }
+    ],
+    "technique-replay": [
+        {
+            "panelId": "replay",
+            "route": "/replay",
+            "component": "src/components/TechniquePanels/ReplayPanel",
+            "tests": []
+        }
+    ],
+    "technique-enthymeme": [
+        {
+            "panelId": "enthymeme",
+            "route": "/enthymeme",
+            "component": "src/components/TechniquePanels/EnthymemePanel",
+            "tests": []
+        }
+    ],
+    "technique-multi-hop": [
+        {
+            "panelId": "multi-hop",
+            "route": "/multi-hop",
+            "component": "src/components/TechniquePanels/MultiHopPanel",
+            "tests": []
+        }
+    ],
+    "technique-bias-exploit": [
+        {
+            "panelId": "bias-exploit",
+            "route": "/bias-exploit",
+            "component": "src/components/TechniquePanels/BiasExploitPanel",
+            "tests": []
+        }
+    ],
+    "technique-interrupt": [
+        {
+            "panelId": "interrupt",
+            "route": "/interrupt",
+            "component": "src/components/TechniquePanels/InterruptPanel",
+            "tests": []
+        }
+    ],
+    "technique-frame": [
+        {
+            "panelId": "frame",
+            "route": "/frame",
+            "component": "src/components/TechniquePanels/FramePanel",
+            "tests": []
+        }
+    ],
+    "technique-rhetorical-device": [
+        {
+            "panelId": "rhetorical-device",
+            "route": "/rhetorical-device",
+            "component": "src/components/TechniquePanels/RhetoricalDevicePanel",
+            "tests": []
+        }
+    ],
+    "technique-narrative-arc": [
+        {
+            "panelId": "narrative-arc",
+            "route": "/narrative-arc",
+            "component": "src/components/TechniquePanels/NarrativeArcPanel",
+            "tests": []
+        }
+    ],
+    "technique-abstraction-ladder": [
+        {
+            "panelId": "abstraction-ladder",
+            "route": "/abstraction-ladder",
+            "component": "src/components/TechniquePanels/AbstractionLadderPanel",
+            "tests": []
+        }
+    ],
+    "technique-role-reversal": [
+        {
+            "panelId": "role-reversal",
+            "route": "/role-reversal",
+            "component": "src/components/TechniquePanels/RoleReversalPanel",
+            "tests": []
+        }
+    ],
+    "technique-fog-of-war": [
+        {
+            "panelId": "fog-of-war",
+            "route": "/fog-of-war",
+            "component": "src/components/TechniquePanels/FogOfWarPanel",
+            "tests": []
+        }
+    ],
+    "technique-evidence-revelation": [
+        {
+            "panelId": "evidence-revelation",
+            "route": "/evidence-revelation",
+            "component": "src/components/TechniquePanels/EvidenceRevelationPanel",
+            "tests": []
+        }
+    ],
+    "technique-humor": [
+        {
+            "panelId": "humor",
+            "route": "/humor",
+            "component": "src/components/TechniquePanels/HumorPanel",
+            "tests": []
+        }
+    ],
+    "technique-status-dynamics": [
+        {
+            "panelId": "status-dynamics",
+            "route": "/status-dynamics",
+            "component": "src/components/TechniquePanels/StatusDynamicsPanel",
+            "tests": []
+        }
+    ],
+    "technique-style-matching": [
+        {
+            "panelId": "style-matching",
+            "route": "/style-matching",
+            "component": "src/components/TechniquePanels/StyleMatchingPanel",
+            "tests": []
+        }
+    ],
+    "technique-dynamic-persona": [
+        {
+            "panelId": "dynamic-persona",
+            "route": "/dynamic-persona",
+            "component": "src/components/TechniquePanels/DynamicPersonaPanel",
+            "tests": []
+        }
+    ],
+    "technique-strategist": [
+        {
+            "panelId": "strategist",
+            "route": "/strategist",
+            "component": "src/components/TechniquePanels/StrategistPanel",
+            "tests": []
+        }
+    ],
+    "technique-whisper-channels": [
+        {
+            "panelId": "whisper-channels",
+            "route": "/whisper-channels",
+            "component": "src/components/TechniquePanels/WhisperChannelsPanel",
+            "tests": []
+        }
+    ],
+    "technique-alliance": [
+        {
+            "panelId": "alliance",
+            "route": "/alliance",
+            "component": "src/components/TechniquePanels/AlliancePanel",
+            "tests": []
+        }
+    ],
+    "technique-prediction-market": [
+        {
+            "panelId": "prediction-market",
+            "route": "/prediction-market",
+            "component": "src/components/TechniquePanels/PredictionMarketPanel",
+            "tests": []
+        }
+    ],
+    "technique-rtom": [
+        {
+            "panelId": "rtom",
+            "route": "/rtom",
+            "component": "src/components/TechniquePanels/RtomPanel",
+            "tests": []
+        }
+    ],
+    "technique-strategy-fingerprint": [
+        {
+            "panelId": "strategy-fingerprint",
+            "route": "/strategy-fingerprint",
+            "component": "src/components/TechniquePanels/StrategyFingerprintPanel",
+            "tests": []
+        }
+    ],
+    "technique-objection-anticipation": [
+        {
+            "panelId": "objection-anticipation",
+            "route": "/objection-anticipation",
+            "component": "src/components/TechniquePanels/ObjectionAnticipationPanel",
+            "tests": []
+        }
+    ],
+    "technique-evidence-triangulation": [
+        {
+            "panelId": "evidence-triangulation",
+            "route": "/evidence-triangulation",
+            "component": "src/components/TechniquePanels/EvidenceTriangulationPanel",
+            "tests": []
+        }
+    ],
+    "technique-hegelian-synthesis": [
+        {
+            "panelId": "hegelian-synthesis",
+            "route": "/hegelian-synthesis",
+            "component": "src/components/TechniquePanels/HegelianSynthesisPanel",
+            "tests": []
+        }
+    ],
+    "technique-uncertainty-propagation": [
+        {
+            "panelId": "uncertainty-propagation",
+            "route": "/uncertainty-propagation",
+            "component": "src/components/TechniquePanels/UncertaintyPropagationPanel",
+            "tests": []
+        }
+    ],
+    "technique-rhetoric-safety": [
+        {
+            "panelId": "rhetoric-safety",
+            "route": "/rhetoric-safety",
+            "component": "src/components/TechniquePanels/RhetoricSafetyPanel",
+            "tests": []
+        }
+    ],
+    "technique-blind-evaluation": [
+        {
+            "panelId": "blind-evaluation",
+            "route": "/blind-evaluation",
+            "component": "src/components/TechniquePanels/BlindEvaluationPanel",
+            "tests": []
+        }
+    ],
+    "technique-bidding-time": [
+        {
+            "panelId": "bidding-time",
+            "route": "/bidding-time",
+            "component": "src/components/TechniquePanels/BiddingTimePanel",
+            "tests": []
+        }
+    ],
+    "technique-adaptive-order": [
+        {
+            "panelId": "adaptive-order",
+            "route": "/adaptive-order",
+            "component": "src/components/TechniquePanels/AdaptiveOrderPanel",
+            "tests": []
+        }
+    ],
+    "technique-executable-evidence": [
+        {
+            "panelId": "executable-evidence",
+            "route": "/executable-evidence",
+            "component": "src/components/TechniquePanels/ExecutableEvidencePanel",
+            "tests": []
+        }
+    ],
+    "technique-hidden-incentives": [
+        {
+            "panelId": "hidden-incentives",
+            "route": "/hidden-incentives",
+            "component": "src/components/TechniquePanels/HiddenIncentivesPanel",
+            "tests": []
+        }
+    ],
+    "technique-semantic-blending": [
+        {
+            "panelId": "semantic-blending",
+            "route": "/semantic-blending",
+            "component": "src/components/TechniquePanels/SemanticBlendingPanel",
+            "tests": []
+        }
+    ],
+    "technique-judge-deliberation": [
+        {
+            "panelId": "judge-deliberation",
+            "route": "/judge-deliberation",
+            "component": "src/components/TechniquePanels/JudgeDeliberationPanel",
+            "tests": []
+        }
+    ],
     "agents": [
         {
             "panelId": "agents",
@@ -1163,6 +1663,22 @@ export const WIKI_CONNECTIONS: Record<string, WikiConnection[]> = {
             ]
         }
     ],
+    "panel-wiki-brain": [
+        {
+            "panelId": "wiki-brain",
+            "route": "/wiki-brain",
+            "component": "src/components/WikiBrainPanel",
+            "tests": []
+        }
+    ],
+    "panel-architecture-map": [
+        {
+            "panelId": "architecture-map",
+            "route": "/architecture-map",
+            "component": "src/components/ArchitectureMapPanel",
+            "tests": []
+        }
+    ],
     "panel-fleet": [
         {
             "panelId": "fleet",
@@ -1455,6 +1971,22 @@ export const WIKI_CONNECTIONS: Record<string, WikiConnection[]> = {
             "tests": [
                 "src/components/RoutingIntelligence/RoutingIntelligence.test.tsx"
             ]
+        }
+    ],
+    "panel-plugins": [
+        {
+            "panelId": "plugins",
+            "route": "/plugins",
+            "component": "src/components/PluginManagerPanel",
+            "tests": []
+        }
+    ],
+    "panel-plugin-marketplace": [
+        {
+            "panelId": "plugin-marketplace",
+            "route": "/plugin-marketplace",
+            "component": "src/components/PluginMarketplacePanel",
+            "tests": []
         }
     ],
     "panel-guardians": [
