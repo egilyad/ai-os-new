@@ -2,18 +2,6 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { HierarchyService } from './hierarchy-service';
 import type { HierarchyNode } from '../../types/ops-types';
 
-function node(id: string, partial: Partial<HierarchyNode> = {}): HierarchyNode {
-    return {
-        id,
-        name: id,
-        parentId: null,
-        spent: 0,
-        createdAt: 0,
-        updatedAt: 0,
-        ...partial,
-    };
-}
-
 function makeRepo() {
     const nodes = new Map<string, HierarchyNode>();
     return {

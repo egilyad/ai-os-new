@@ -48,7 +48,7 @@ describe('ToolGovernanceService', () => {
     });
 
     it('disabled server denies every tool under it', async () => {
-        const { svc, repo } = makeDeps();
+        const { svc } = makeDeps();
         const s = await svc.registerServer({ name: 'db', url: 'https://db.local', tools: ['query'] });
         await svc.grant('agent-1', 'db:*');
         expect(await svc.check('agent-1', 'db:query')).toBe(true);

@@ -22,9 +22,12 @@ function fakeDb(initial: Record<string, unknown> = {}) {
 function fakeBus() {
     return {
         on: vi.fn(() => () => {}),
+        off: vi.fn(),
         onSafe: vi.fn(() => () => {}),
         emit: vi.fn(),
         emitOnce: vi.fn(),
+        subscribeAll: vi.fn(() => () => {}),
+        getSubscriptionStats: vi.fn(() => ({ totalCallbacks: 0, perEvent: {} })),
     };
 }
 

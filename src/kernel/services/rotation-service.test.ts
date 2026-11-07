@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { RotationService, type RotationServiceDeps } from './rotation-service';
 import type { ApiKey } from '../types/metrics-types';
+import type { IAdapterRegistry } from '../contracts/provider-adapter';
 
 function makeKey(id: string, partial: Partial<ApiKey> = {}): ApiKey {
     return {
@@ -35,7 +36,17 @@ function makeDeps() {
     };
     const adapterRegistry = {
         getAdapter: vi.fn(() => undefined),
-    };
+        hasAdapter: vi.fn(() => false),
+        getOrCreateWithFallback: vi.fn(() => ({})) as never,
+        getAllProviders: vi.fn(() => []),
+        getProviderRuntimeStatus: vi.fn(() => ({ circuitOpen: false, rateLimited: false })),
+        getCircuitBreakerState: vi.fn(() => 'closed'),
+        resetCircuitBreaker: vi.fn(),
+        syncCircuitBreakerState: vi.fn(),
+        syncRateLimitState: vi.fn(),
+        invalidateCache: vi.fn(),
+        clearAllCaches: vi.fn(),
+    } as unknown as IAdapterRegistry;
     const deps: RotationServiceDeps = {
         keyManager,
         eventBus,

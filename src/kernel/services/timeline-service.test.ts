@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { TimelineService, type TimelineServiceDeps } from './timeline-service';
 import { EVENTS } from '../events/event-names';
+import type { TimelineEvent } from '../contracts/observability';
 
 function makeDeps(): TimelineServiceDeps {
     return {
@@ -12,7 +13,7 @@ function makeDeps(): TimelineServiceDeps {
     };
 }
 
-function baseEvent(partial: Record<string, unknown> = {}) {
+function baseEvent(partial: Partial<Omit<TimelineEvent, 'id'>> = {}): Omit<TimelineEvent, 'id'> {
     return {
         type: 'system_event',
         category: 'system',
