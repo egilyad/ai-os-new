@@ -4,7 +4,7 @@ import type { WorkflowManifest } from '../../types/builder-types';
 
 function makeGraphs() {
     return {
-        defineGraph: vi.fn(async () => ({ id: 'graph-1' })),
+        defineGraph: vi.fn(async (_manifest: Record<string, unknown>) => ({ id: 'graph-1' })),
         runGraph: vi.fn(async () => ({ id: 'run-1', status: 'completed' })),
     };
 }
@@ -27,7 +27,7 @@ describe('executeBuilderManifest', () => {
         const graphs = makeGraphs();
         const result = await executeBuilderManifest(graphs as never, makeManifest(), { q: 1 });
         expect(result).toEqual({ graphId: 'graph-1', runId: 'run-1', status: 'completed' });
-        const [defInput] = graphs.defineGraph.mock.calls[0] as [Record<string, unknown>];
+        const defInput = graphs.defineGraph.mock.calls[0]![0];
         expect((defInput.name as string)).toContain('My Flow');
         const nodes = defInput.nodes as Array<{ kind: string }>;
         expect(nodes[0]!.kind).toBe('task');
@@ -41,7 +41,7 @@ describe('executeBuilderManifest', () => {
     it('defaults unknown node kinds to task', async () => {
         const graphs = makeGraphs();
         const manifest = makeManifest();
-        manifest.nodes = [{ id: 'x', type: 'custom', label: 'X' }];
+        manifest.nodes = [{ id: 'x', type: 'custom', label: 'X' }] as unknown as WorkflowManifest['nodes'];
         await executeBuilderManifest(graphs as never, manifest);
         const nodes = graphs.defineGraph.mock.calls[0]![0].nodes as Array<{ kind: string }>;
         expect(nodes[0]!.kind).toBe('task');

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { KeyStateStore } from './key-state-store';
+import { KeyStateStore } from '../key-state-store';
 import type { ApiKey } from '../../contracts/storage/storage-layer';
 import type { KeyState } from '../../contracts/key-state';
 import { EVENTS } from '../../events/event-names';
