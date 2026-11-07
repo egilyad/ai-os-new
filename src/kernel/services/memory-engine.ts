@@ -838,12 +838,13 @@ export class MemoryService implements IMemoryEngine {
         mode: SearchMode = 'auto',
     ): Promise<MemorySearchResult[]> {
         if (!CONFIG.featureFlags.memory.enabled) return [];
+        const start = Date.now();
         if (!query.trim()) {
             const recent = this.cache
                 .slice(limit)
                 .map((e) => ({ entry: e, score: 0, matchedOn: 'keyword' as const }));
             this.accessTracker.touch(recent.map((r) => r.entry.id));
-            return recent;
+            return this.finishSearch(start, recent);
         }
 
         if (!this.workerClient.ready) {
@@ -892,10 +893,10 @@ export class MemoryService implements IMemoryEngine {
                             matchedOn: 'keyword' as const,
                         }));
                         this.accessTracker.touch(fallbackHits.map((r) => r.entry.id));
-                        return fallbackHits;
+                        return this.finishSearch(start, fallbackHits);
                     }
                     this.accessTracker.touch(hits.map((r) => r.entry.id));
-                    return hits;
+                    return this.finishSearch(start, hits);
                 } catch (e) {
                     govOp?.fail(e instanceof Error ? e : new Error(String(e)));
                     LOGGER.warn('MemoryEngine', 'Semantic search failed, falling back', {
@@ -914,7 +915,7 @@ export class MemoryService implements IMemoryEngine {
                     matchedOn: 'keyword' as const,
                 }));
                 this.accessTracker.touch(hits.map((r) => r.entry.id));
-                return hits;
+                return this.finishSearch(start, hits);
             } catch (e) {
                 LOGGER.warn('MemoryEngine', 'Worker search failed, falling back to local filter', {
                     error: e,
@@ -924,7 +925,15 @@ export class MemoryService implements IMemoryEngine {
 
         const local = keywordFilterSearch(this.cache.entries, query, limit);
         this.accessTracker.touch(local.map((r) => r.entry.id));
-        return local;
+        return this.finishSearch(start, local);
+    }
+
+    private finishSearch(start: number, results: MemorySearchResult[]): MemorySearchResult[] {
+        this.deps.eventBus.emit(EVENTS.MEMORY_SEARCHED, {
+            latencyMs: Date.now() - start,
+            hit: results.length > 0,
+        });
+        return results;
     }
 
     /**

@@ -1795,6 +1795,10 @@ export const EVENT_REGISTRY = {
     ),
     MEMORY_PROMOTED: event('memory:promoted', z.object({ memoryId: z.string(), tier: z.string() })),
     MEMORY_FORGOTTEN: event('memory:forgotten', z.object({ memoryId: z.string() })),
+    MEMORY_SEARCHED: event(
+        'memory:searched',
+        z.object({ latencyMs: z.number(), hit: z.boolean() }),
+    ),
     LT_MEMORY_UPDATED: event(
         'memory:lt-updated',
         z.object({ memoryId: z.string(), ownerId: z.string() }),

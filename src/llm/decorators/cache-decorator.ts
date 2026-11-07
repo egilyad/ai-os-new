@@ -47,6 +47,8 @@ export class CacheDecorator extends BaseDecorator {
     readonly #evictionTimer: ReturnType<typeof setInterval>;
     readonly #inFlight = new Map<string, Promise<ProviderResponse>>();
     readonly #inFlightTimers = new Map<string, ReturnType<typeof setTimeout>>();
+    /** W6-039: waiters for the same stream key — one upstream stream, many listeners. */
+    readonly #streamWaiters = new Map<string, Array<(content: string) => void>>();
     static readonly #IN_FLIGHT_TIMEOUT_MS = 120_000;
     #destroyed = false;
 
@@ -424,6 +426,20 @@ export class CacheDecorator extends BaseDecorator {
             return;
         }
 
+        // W6-039: dedup concurrent streams for the same cache key — one upstream
+        // stream feeds all listeners instead of N identical requests.
+        const existingWaiters = this.#streamWaiters.get(key);
+        if (existingWaiters) {
+            return new Promise<void>((resolve) => {
+                existingWaiters.push((content) => {
+                    onChunk(content);
+                    resolve();
+                });
+            });
+        }
+        const waiters: Array<(content: string) => void> = [];
+        this.#streamWaiters.set(key, waiters);
+
         // Stream fresh, buffer chunks, cache on completion
         const chunks: string[] = [];
         let sawToolCalls = false;
@@ -437,7 +453,16 @@ export class CacheDecorator extends BaseDecorator {
 
         if (!this.inner.streamMessage)
             throw new Error('CacheDecorator: inner adapter does not support streaming');
-        await this.inner.streamMessage(messages, model, apiKey, wrapped, signal, options);
+        try {
+            await this.inner.streamMessage(messages, model, apiKey, wrapped, signal, options);
+        } finally {
+            const pending = this.#streamWaiters.get(key);
+            this.#streamWaiters.delete(key);
+            if (pending && pending.length > 0) {
+                const content = chunks.join('');
+                for (const cb of pending) cb(content);
+            }
+        }
 
         // A tool-call answer has no text worth replaying; caching it would turn
         // the next round into an empty answer without the call.
@@ -514,6 +539,7 @@ export class CacheDecorator extends BaseDecorator {
         this.#inFlight.clear();
         for (const timer of this.#inFlightTimers.values()) clearTimeout(timer);
         this.#inFlightTimers.clear();
+        this.#streamWaiters.clear();
         this.cache.clear();
         this.approximateTextIndex.clear();
         this.modelCache.clear();
@@ -527,5 +553,6 @@ export class CacheDecorator extends BaseDecorator {
         this.#inFlight.clear();
         for (const timer of this.#inFlightTimers.values()) clearTimeout(timer);
         this.#inFlightTimers.clear();
+        this.#streamWaiters.clear();
     }
 }

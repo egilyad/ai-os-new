@@ -83,6 +83,17 @@ export class MetricsCollector {
         );
 
         this.unsubs.push(
+            this.events.on(EVENTS.MEMORY_SEARCHED, (data: unknown) => {
+                const d = data as { latencyMs?: number; hit?: boolean };
+                this.metrics.inc('memory.search_total');
+                if (d?.hit) this.metrics.inc('memory.search_hits');
+                if (typeof d?.latencyMs === 'number') {
+                    this.metrics.record('memory.search_latency', d.latencyMs);
+                }
+            }),
+        );
+
+        this.unsubs.push(
             this.events.on(EVENTS.DEBATE_AGENT_RESPONDED, () => {
                 this.metrics.inc('debate.agent_turns');
             }),

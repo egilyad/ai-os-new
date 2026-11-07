@@ -33,6 +33,10 @@
 | Заглушки dev-status-*.md заполнены | опер. отчёт 3.9 |
 | DI-регистрация `agentRuntime`/`evalHub` (phase82) | SPEC_05/04, «осталось» |
 | `ProviderEmbeddingService` (реальный бэкенд) | SPEC_02, «осталось» |
+| Dedup `streamMessage` в CacheDecorator (in-flight) | P1-5, W6-039 |
+| Метрики памяти: `memory:searched` → search_total/hits/latency | P1-12 |
+| KeyUsageAnalyticsPanel подключена к metricsService (`RuntimeMetricsView`) | P1-11 |
+| `.nvmrc` (Node 22) + pre-commit хуки подтверждены | QW-7/8 |
 
 ---
 
@@ -53,14 +57,14 @@
 | P1-2 | Тесты для key-management: KeyService/KeyStateStore/GroupManager/SessionAffinity/Rotation/KeyIntelligence | 🟡 | полный отчёт P1-#12 |
 | P1-3 | Тесты для bootstrap/kernel/runtime/bootstrap-phases | ❌ | полный отчёт P1-#13 |
 | P1-4 | Тесты для «голых» модулей: CognitiveService/Orchestration/LlmCrewExecutor/CouncilPort/GraphPort/Audit/Governance/FleetMonitor/ToolGovernance/SandboxService/service-helper | ❌ | ROADMAP_00 Фаза 0 |
-| P1-5 | Dedup `streamMessage` в CacheDecorator (in-flight) | ❌ | W6-039; dev-status-debt |
+| P1-5 | Dedup `streamMessage` в CacheDecorator (in-flight) | ✅ | W6-039; dev-status-debt |
 | P1-6 | Singleton `ArgumentGraphService` → per-session instance | ❌ | W6-014 |
 | P1-7 | Retrieval: O(N) сканы → индексы (W8-012/013/014/015) | ❌ | dev-status-debt |
 | P1-8 | Включить SemanticRouter/CanaryRouter/CompressRoute в default-chain | ❌ | ROADMAP_00 Фаза 1 |
 | P1-9 | Убрать дублирование RouterRankingService vs KeyStateStore | ❌ | ROADMAP_00 Фаза 1 |
 | P1-10 | Data-driven список провайдеров в дебатах (не жёсткий список) | ❌ | ROADMAP_00 Фаза 1 |
-| P1-11 | KeyUsageAnalyticsPanel → `useMetrics` | ❌ | IMPLEMENTATION_STATUS «осталось» |
-| P1-12 | Метрики памяти (search_latency/hit_rate) в MemoryService | ❌ | IMPLEMENTATION_STATUS «осталось» |
+| P1-11 | KeyUsageAnalyticsPanel → `useMetrics` | ✅ | IMPLEMENTATION_STATUS «осталось» |
+| P1-12 | Метрики памяти (search_latency/hit_rate) в MemoryService | ✅ | IMPLEMENTATION_STATUS «осталось» |
 | P1-13 | Dexie migration test до v43 | ❌ | полный отчёт P1-#19 |
 | P1-14 | Fix 16 дубликатов имён событий в event-registry | ❌ | полный отчёт P1-#14 |
 | P1-15 | `registerTransient` cleanup | ✅ | полный отчёт P1-#15 |
@@ -108,8 +112,8 @@
 | QW-4 | Визуальная регрессия панелей (Playwright snapshots) | Roadmaps |
 | QW-5 | a11y: axe-тесты ключевых панелей, focus-trap | опер. отчёт 3.7 |
 | QW-6 | Бенчмарк-пороги на горячих путях | опер. отчёт 3.6 |
-| QW-7 | Проверить pre-commit хуки (lint-staged) реально гоняются | опер. отчёт 3.10 |
-| QW-8 | `.nvmrc` / фиксация Node 22 | опер. отчёт 3.10 |
+| QW-7 | Проверить pre-commit хуки (lint-staged) реально гоняются | ✅ опер. отчёт 3.10 |
+| QW-8 | `.nvmrc` / фиксация Node 22 | ✅ опер. отчёт 3.10 |
 
 ---
 
