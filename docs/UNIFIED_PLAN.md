@@ -55,7 +55,7 @@
 | # | Задача | Статус | Источник |
 |---|---|---|---|
 | P1-1 | Тесты для observability: metrics/monitoring/timeline/trace/admin/causal-timeline | 🟡 (metrics ✅, monitoring ✅, timeline ✅, causal-timeline ✅) | полный отчёт P1-#11 |
-| P1-2 | Тесты для key-management: KeyService/KeyStateStore/GroupManager/SessionAffinity/Rotation/KeyIntelligence | 🟡 (KeyStateStore ✅, GroupManager ✅, Rotation ✅, KeyIntelligence ✅) | полный отчёт P1-#12 |
+| P1-2 | Тесты для key-management: KeyService/KeyStateStore/GroupManager/SessionAffinity/Rotation/KeyIntelligence | 🟡 (KeyStateStore ✅, GroupManager ✅, Rotation ✅, KeyIntelligence ✅, SessionAffinity ✅) | полный отчёт P1-#12 |
 | P1-3 | Тесты для bootstrap/kernel/runtime/bootstrap-phases | ❌ | полный отчёт P1-#13 |
 | P1-4 | Тесты для «голых» модулей: CognitiveService/Orchestration/LlmCrewExecutor/CouncilPort/GraphPort/Audit/Governance/FleetMonitor/ToolGovernance/SandboxService/service-helper | ❌ | ROADMAP_00 Фаза 0 |
 | P1-5 | Dedup `streamMessage` в CacheDecorator (in-flight) | ✅ | W6-039; dev-status-debt |
