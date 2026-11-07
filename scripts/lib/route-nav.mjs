@@ -40,9 +40,9 @@ export function techniqueItems() {
 export function techniqueComponents() {
     const src = read('src/components/TechniquePanels/technique-panels-bundle.tsx');
     const map = {};
-    const re = /'([\w-]+)':\s*React\.lazy\(\s*\(\)\s*=>\s*import\('\.\/([\w]+)'\)/g;
+    const re = /(?:'([\w-]+)'|([\w-]+)):\s*React\.lazy\(\s*\(\)\s*=>\s*import\('\.\/([\w]+)'\)/g;
     let m;
-    while ((m = re.exec(src))) map[m[1]] = `src/components/TechniquePanels/${m[2]}`;
+    while ((m = re.exec(src))) map[m[1] ?? m[2]] = `src/components/TechniquePanels/${m[3]}`;
     return map;
 }
 

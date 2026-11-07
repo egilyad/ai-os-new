@@ -34,7 +34,7 @@ export function poolCatalog() {
     const poolSrc = read('src/constants/pools.ts');
     return [
         ...poolSrc.matchAll(
-            /\{ id: '([^']+)', name: '([^']+)', color: '[^']*', description: '([^']*)', providers: \[([^\]]*)\] \}/g,
+            /\{\s*id: '([^']+)',\s*name: '([^']+)',\s*color: '[^']*',\s*description: '([^']*)',\s*providers: \[([^\]]*)\]\s*,?\s*\}/g,
         ),
     ].map((m) => ({
         id: m[1],
