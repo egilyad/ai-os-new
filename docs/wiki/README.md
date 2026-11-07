@@ -5,7 +5,7 @@
 > Полная документация системы: панели, агенты, дебаты, память, провайдеры, диагностика, история разработки, архитектура и руководства для разработчиков.
 > Страницы автосгенерированы из корпуса Wiki (`scripts/gen-wiki-docs.mjs`). Та же документация доступна в приложении в панели «Wiki».
 
-Всего материалов: **286** в 13 разделах.
+Всего материалов: **344** в 13 разделах.
 
 > Разработчикам: начните с [Обзор для разработчиков](./dev-overview.md), затем [Структура](./dev-layout.md) и [Каталог компонентов](./dev-component-catalog.md).
 
@@ -14,7 +14,7 @@
 | Раздел | Материалов |
 | --- | --- |
 | Руководство | 10 |
-| Панели | 89 |
+| Панели | 147 |
 | Агенты | 2 |
 | Дебаты | 3 |
 | Знания и память | 5 |
@@ -40,7 +40,7 @@
 - [Карта документации](./docs-index.md) — _verified_
 - [Возможности и сценарии](./scenarios.md) — _verified_
 
-## Панели (89)
+## Панели (147)
 
 - [Graph Workbench](./panel-graph-workbench.md) — _verified_
 - [Deep Research](./panel-research-cockpit.md) — _verified_
@@ -131,6 +131,64 @@
 - [Панель: Wiki](./panel-wiki.md) — _verified_
 - [Каталог панелей: раздел → маршрут → компонент → статья](./panels-catalog.md) — _verified_
 - [Панель: Помощник проекта](./panel-assistant.md) — _verified_
+- [Перекрёстный допрос](./technique-cross-examination.md) — _documented_
+- [Фокусировка на дельте](./technique-delta-focusing.md) — _documented_
+- [Атака уязвимостей](./technique-vulnerability-targeting.md) — _documented_
+- [Якорение на согласии](./technique-agreement-anchoring.md) — _documented_
+- [Граф минимакса](./technique-graph-minimax.md) — _documented_
+- [Бремя доказательства](./technique-burden-of-proof.md) — _documented_
+- [Проверка согласованности](./technique-consistency-check.md) — _documented_
+- [Оценка достоверности](./technique-credibility-scoring.md) — _documented_
+- [Каузальный граф](./technique-causal-graph.md) — _documented_
+- [Критик перед публикацией](./technique-pre-publish-critic.md) — _documented_
+- [Проверка фактов](./technique-fact-checking.md) — _documented_
+- [Эпистемическая калибровка](./technique-epistemic-calibration.md) — _documented_
+- [Сократический разворот](./technique-socratic-pivot.md) — _documented_
+- [Движок уступок](./technique-concession-engine.md) — _documented_
+- [Байесовские судьи](./technique-bayesian-judges.md) — _documented_
+- [Семплер DPO](./technique-dpo-sampler.md) — _documented_
+- [Критик](./technique-critic.md) — _documented_
+- [Пивот](./technique-pivot.md) — _documented_
+- [Уступка](./technique-concession.md) — _documented_
+- [Триангуляция](./technique-triangulation.md) — _documented_
+- [Эмпатия](./technique-empathy.md) — _documented_
+- [Накал](./technique-heat.md) — _documented_
+- [Страж](./technique-sentinel.md) — _documented_
+- [Избыточность](./technique-redundancy.md) — _documented_
+- [Повтор](./technique-replay.md) — _documented_
+- [Энтимема](./technique-enthymeme.md) — _documented_
+- [Многошаговость](./technique-multi-hop.md) — _documented_
+- [Эксплуатация искажений](./technique-bias-exploit.md) — _documented_
+- [Прерывание](./technique-interrupt.md) — _documented_
+- [Фрейминг](./technique-frame.md) — _documented_
+- [Риторический приём](./technique-rhetorical-device.md) — _documented_
+- [Нарративная дуга](./technique-narrative-arc.md) — _documented_
+- [Лестница абстракции](./technique-abstraction-ladder.md) — _documented_
+- [Обмен ролями](./technique-role-reversal.md) — _documented_
+- [Туман войны](./technique-fog-of-war.md) — _documented_
+- [Раскрытие улик](./technique-evidence-revelation.md) — _documented_
+- [Юмор](./technique-humor.md) — _documented_
+- [Динамика статуса](./technique-status-dynamics.md) — _documented_
+- [Подбор стиля](./technique-style-matching.md) — _documented_
+- [Динамическая персона](./technique-dynamic-persona.md) — _documented_
+- [Стратегист](./technique-strategist.md) — _documented_
+- [Шёпот-каналы](./technique-whisper-channels.md) — _documented_
+- [Альянс](./technique-alliance.md) — _documented_
+- [Рынок предсказаний](./technique-prediction-market.md) — _documented_
+- [RT-OM](./technique-rtom.md) — _documented_
+- [Отпечаток стратегии](./technique-strategy-fingerprint.md) — _documented_
+- [Предвосхищение возражений](./technique-objection-anticipation.md) — _documented_
+- [Триангуляция улик](./technique-evidence-triangulation.md) — _documented_
+- [Гегелевский синтез](./technique-hegelian-synthesis.md) — _documented_
+- [Распространение неопределённости](./technique-uncertainty-propagation.md) — _documented_
+- [Безопасная риторика](./technique-rhetoric-safety.md) — _documented_
+- [Слепая оценка](./technique-blind-evaluation.md) — _documented_
+- [Торг за время](./technique-bidding-time.md) — _documented_
+- [Адаптивный порядок](./technique-adaptive-order.md) — _documented_
+- [Исполняемые улики](./technique-executable-evidence.md) — _documented_
+- [Скрытые стимулы](./technique-hidden-incentives.md) — _documented_
+- [Семантическое смешение](./technique-semantic-blending.md) — _documented_
+- [Совещание судей](./technique-judge-deliberation.md) — _documented_
 
 ## Агенты (2)
 

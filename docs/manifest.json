@@ -10,7 +10,7 @@
     {
       "id": "panels",
       "title": "Панели",
-      "articles": 89
+      "articles": 147
     },
     {
       "id": "agents",
@@ -8200,6 +8200,1168 @@
         "src/kernel/services/assistant/assistant-diagnosis-service.test.ts",
         "src/kernel/services/capability-trust/capability-trust-service.test.ts"
       ]
+    },
+    {
+      "id": "wiki:technique-cross-examination",
+      "type": "article",
+      "slug": "technique-cross-examination",
+      "title": "Перекрёстный допрос",
+      "section": "panels",
+      "status": "documented",
+      "tags": [
+        "техники",
+        "дебаты"
+      ],
+      "sources": [
+        "src/components/TechniquePanels/CrossExaminationPanel"
+      ],
+      "related": [
+        "panel-debate-toolkit"
+      ],
+      "reviewed": null,
+      "tests": [
+        "src/components/TechniquePanels/CrossExaminationPanel.test.tsx"
+      ]
+    },
+    {
+      "id": "wiki:technique-delta-focusing",
+      "type": "article",
+      "slug": "technique-delta-focusing",
+      "title": "Фокусировка на дельте",
+      "section": "panels",
+      "status": "documented",
+      "tags": [
+        "техники",
+        "дебаты"
+      ],
+      "sources": [
+        "src/components/TechniquePanels/DeltaFocusingPanel"
+      ],
+      "related": [
+        "panel-debate-toolkit"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:technique-vulnerability-targeting",
+      "type": "article",
+      "slug": "technique-vulnerability-targeting",
+      "title": "Атака уязвимостей",
+      "section": "panels",
+      "status": "documented",
+      "tags": [
+        "техники",
+        "дебаты"
+      ],
+      "sources": [
+        "src/components/TechniquePanels/VulnerabilityTargetingPanel"
+      ],
+      "related": [
+        "panel-debate-toolkit"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:technique-agreement-anchoring",
+      "type": "article",
+      "slug": "technique-agreement-anchoring",
+      "title": "Якорение на согласии",
+      "section": "panels",
+      "status": "documented",
+      "tags": [
+        "техники",
+        "дебаты"
+      ],
+      "sources": [
+        "src/components/TechniquePanels/AgreementAnchoringPanel"
+      ],
+      "related": [
+        "panel-debate-toolkit"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:technique-graph-minimax",
+      "type": "article",
+      "slug": "technique-graph-minimax",
+      "title": "Граф минимакса",
+      "section": "panels",
+      "status": "documented",
+      "tags": [
+        "техники",
+        "дебаты"
+      ],
+      "sources": [
+        "src/components/TechniquePanels/GraphMinimaxPanel"
+      ],
+      "related": [
+        "panel-debate-toolkit"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:technique-burden-of-proof",
+      "type": "article",
+      "slug": "technique-burden-of-proof",
+      "title": "Бремя доказательства",
+      "section": "panels",
+      "status": "documented",
+      "tags": [
+        "техники",
+        "дебаты"
+      ],
+      "sources": [
+        "src/components/TechniquePanels/BurdenOfProofPanel"
+      ],
+      "related": [
+        "panel-debate-toolkit"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:technique-consistency-check",
+      "type": "article",
+      "slug": "technique-consistency-check",
+      "title": "Проверка согласованности",
+      "section": "panels",
+      "status": "documented",
+      "tags": [
+        "техники",
+        "дебаты"
+      ],
+      "sources": [
+        "src/components/TechniquePanels/ConsistencyCheckPanel"
+      ],
+      "related": [
+        "panel-debate-toolkit"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:technique-credibility-scoring",
+      "type": "article",
+      "slug": "technique-credibility-scoring",
+      "title": "Оценка достоверности",
+      "section": "panels",
+      "status": "documented",
+      "tags": [
+        "техники",
+        "дебаты"
+      ],
+      "sources": [
+        "src/components/TechniquePanels/CredibilityScoringPanel"
+      ],
+      "related": [
+        "panel-debate-toolkit"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:technique-causal-graph",
+      "type": "article",
+      "slug": "technique-causal-graph",
+      "title": "Каузальный граф",
+      "section": "panels",
+      "status": "documented",
+      "tags": [
+        "техники",
+        "дебаты"
+      ],
+      "sources": [
+        "src/components/TechniquePanels/CausalGraphPanel"
+      ],
+      "related": [
+        "panel-debate-toolkit"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:technique-pre-publish-critic",
+      "type": "article",
+      "slug": "technique-pre-publish-critic",
+      "title": "Критик перед публикацией",
+      "section": "panels",
+      "status": "documented",
+      "tags": [
+        "техники",
+        "дебаты"
+      ],
+      "sources": [
+        "src/components/TechniquePanels/PrePublishCriticPanel"
+      ],
+      "related": [
+        "panel-debate-toolkit"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:technique-fact-checking",
+      "type": "article",
+      "slug": "technique-fact-checking",
+      "title": "Проверка фактов",
+      "section": "panels",
+      "status": "documented",
+      "tags": [
+        "техники",
+        "дебаты"
+      ],
+      "sources": [
+        "src/components/TechniquePanels/FactCheckingPanel"
+      ],
+      "related": [
+        "panel-debate-toolkit"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:technique-epistemic-calibration",
+      "type": "article",
+      "slug": "technique-epistemic-calibration",
+      "title": "Эпистемическая калибровка",
+      "section": "panels",
+      "status": "documented",
+      "tags": [
+        "техники",
+        "дебаты"
+      ],
+      "sources": [
+        "src/components/TechniquePanels/EpistemicCalibrationPanel"
+      ],
+      "related": [
+        "panel-debate-toolkit"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:technique-socratic-pivot",
+      "type": "article",
+      "slug": "technique-socratic-pivot",
+      "title": "Сократический разворот",
+      "section": "panels",
+      "status": "documented",
+      "tags": [
+        "техники",
+        "дебаты"
+      ],
+      "sources": [
+        "src/components/TechniquePanels/SocraticPivotPanel"
+      ],
+      "related": [
+        "panel-debate-toolkit"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:technique-concession-engine",
+      "type": "article",
+      "slug": "technique-concession-engine",
+      "title": "Движок уступок",
+      "section": "panels",
+      "status": "documented",
+      "tags": [
+        "техники",
+        "дебаты"
+      ],
+      "sources": [
+        "src/components/TechniquePanels/ConcessionEnginePanel"
+      ],
+      "related": [
+        "panel-debate-toolkit"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:technique-bayesian-judges",
+      "type": "article",
+      "slug": "technique-bayesian-judges",
+      "title": "Байесовские судьи",
+      "section": "panels",
+      "status": "documented",
+      "tags": [
+        "техники",
+        "дебаты"
+      ],
+      "sources": [
+        "src/components/TechniquePanels/BayesianJudgesPanel"
+      ],
+      "related": [
+        "panel-debate-toolkit"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:technique-dpo-sampler",
+      "type": "article",
+      "slug": "technique-dpo-sampler",
+      "title": "Семплер DPO",
+      "section": "panels",
+      "status": "documented",
+      "tags": [
+        "техники",
+        "дебаты"
+      ],
+      "sources": [
+        "src/components/TechniquePanels/DpoSamplerPanel"
+      ],
+      "related": [
+        "panel-debate-toolkit"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:technique-critic",
+      "type": "article",
+      "slug": "technique-critic",
+      "title": "Критик",
+      "section": "panels",
+      "status": "documented",
+      "tags": [
+        "техники",
+        "дебаты"
+      ],
+      "sources": [
+        "src/components/TechniquePanels/CriticPanel"
+      ],
+      "related": [
+        "panel-debate-toolkit"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:technique-pivot",
+      "type": "article",
+      "slug": "technique-pivot",
+      "title": "Пивот",
+      "section": "panels",
+      "status": "documented",
+      "tags": [
+        "техники",
+        "дебаты"
+      ],
+      "sources": [
+        "src/components/TechniquePanels/PivotPanel"
+      ],
+      "related": [
+        "panel-debate-toolkit"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:technique-concession",
+      "type": "article",
+      "slug": "technique-concession",
+      "title": "Уступка",
+      "section": "panels",
+      "status": "documented",
+      "tags": [
+        "техники",
+        "дебаты"
+      ],
+      "sources": [
+        "src/components/TechniquePanels/ConcessionPanel"
+      ],
+      "related": [
+        "panel-debate-toolkit"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:technique-triangulation",
+      "type": "article",
+      "slug": "technique-triangulation",
+      "title": "Триангуляция",
+      "section": "panels",
+      "status": "documented",
+      "tags": [
+        "техники",
+        "дебаты"
+      ],
+      "sources": [
+        "src/components/TechniquePanels/TriangulationPanel"
+      ],
+      "related": [
+        "panel-debate-toolkit"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:technique-empathy",
+      "type": "article",
+      "slug": "technique-empathy",
+      "title": "Эмпатия",
+      "section": "panels",
+      "status": "documented",
+      "tags": [
+        "техники",
+        "дебаты"
+      ],
+      "sources": [
+        "src/components/TechniquePanels/EmpathyPanel"
+      ],
+      "related": [
+        "panel-debate-toolkit"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:technique-heat",
+      "type": "article",
+      "slug": "technique-heat",
+      "title": "Накал",
+      "section": "panels",
+      "status": "documented",
+      "tags": [
+        "техники",
+        "дебаты"
+      ],
+      "sources": [
+        "src/components/TechniquePanels/HeatPanel"
+      ],
+      "related": [
+        "panel-debate-toolkit"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:technique-sentinel",
+      "type": "article",
+      "slug": "technique-sentinel",
+      "title": "Страж",
+      "section": "panels",
+      "status": "documented",
+      "tags": [
+        "техники",
+        "дебаты"
+      ],
+      "sources": [
+        "src/components/TechniquePanels/SentinelPanel"
+      ],
+      "related": [
+        "panel-debate-toolkit"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:technique-redundancy",
+      "type": "article",
+      "slug": "technique-redundancy",
+      "title": "Избыточность",
+      "section": "panels",
+      "status": "documented",
+      "tags": [
+        "техники",
+        "дебаты"
+      ],
+      "sources": [
+        "src/components/TechniquePanels/RedundancyPanel"
+      ],
+      "related": [
+        "panel-debate-toolkit"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:technique-replay",
+      "type": "article",
+      "slug": "technique-replay",
+      "title": "Повтор",
+      "section": "panels",
+      "status": "documented",
+      "tags": [
+        "техники",
+        "дебаты"
+      ],
+      "sources": [
+        "src/components/TechniquePanels/ReplayPanel"
+      ],
+      "related": [
+        "panel-debate-toolkit"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:technique-enthymeme",
+      "type": "article",
+      "slug": "technique-enthymeme",
+      "title": "Энтимема",
+      "section": "panels",
+      "status": "documented",
+      "tags": [
+        "техники",
+        "дебаты"
+      ],
+      "sources": [
+        "src/components/TechniquePanels/EnthymemePanel"
+      ],
+      "related": [
+        "panel-debate-toolkit"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:technique-multi-hop",
+      "type": "article",
+      "slug": "technique-multi-hop",
+      "title": "Многошаговость",
+      "section": "panels",
+      "status": "documented",
+      "tags": [
+        "техники",
+        "дебаты"
+      ],
+      "sources": [
+        "src/components/TechniquePanels/MultiHopPanel"
+      ],
+      "related": [
+        "panel-debate-toolkit"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:technique-bias-exploit",
+      "type": "article",
+      "slug": "technique-bias-exploit",
+      "title": "Эксплуатация искажений",
+      "section": "panels",
+      "status": "documented",
+      "tags": [
+        "техники",
+        "дебаты"
+      ],
+      "sources": [
+        "src/components/TechniquePanels/BiasExploitPanel"
+      ],
+      "related": [
+        "panel-debate-toolkit"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:technique-interrupt",
+      "type": "article",
+      "slug": "technique-interrupt",
+      "title": "Прерывание",
+      "section": "panels",
+      "status": "documented",
+      "tags": [
+        "техники",
+        "дебаты"
+      ],
+      "sources": [
+        "src/components/TechniquePanels/InterruptPanel"
+      ],
+      "related": [
+        "panel-debate-toolkit"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:technique-frame",
+      "type": "article",
+      "slug": "technique-frame",
+      "title": "Фрейминг",
+      "section": "panels",
+      "status": "documented",
+      "tags": [
+        "техники",
+        "дебаты"
+      ],
+      "sources": [
+        "src/components/TechniquePanels/FramePanel"
+      ],
+      "related": [
+        "panel-debate-toolkit"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:technique-rhetorical-device",
+      "type": "article",
+      "slug": "technique-rhetorical-device",
+      "title": "Риторический приём",
+      "section": "panels",
+      "status": "documented",
+      "tags": [
+        "техники",
+        "дебаты"
+      ],
+      "sources": [
+        "src/components/TechniquePanels/RhetoricalDevicePanel"
+      ],
+      "related": [
+        "panel-debate-toolkit"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:technique-narrative-arc",
+      "type": "article",
+      "slug": "technique-narrative-arc",
+      "title": "Нарративная дуга",
+      "section": "panels",
+      "status": "documented",
+      "tags": [
+        "техники",
+        "дебаты"
+      ],
+      "sources": [
+        "src/components/TechniquePanels/NarrativeArcPanel"
+      ],
+      "related": [
+        "panel-debate-toolkit"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:technique-abstraction-ladder",
+      "type": "article",
+      "slug": "technique-abstraction-ladder",
+      "title": "Лестница абстракции",
+      "section": "panels",
+      "status": "documented",
+      "tags": [
+        "техники",
+        "дебаты"
+      ],
+      "sources": [
+        "src/components/TechniquePanels/AbstractionLadderPanel"
+      ],
+      "related": [
+        "panel-debate-toolkit"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:technique-role-reversal",
+      "type": "article",
+      "slug": "technique-role-reversal",
+      "title": "Обмен ролями",
+      "section": "panels",
+      "status": "documented",
+      "tags": [
+        "техники",
+        "дебаты"
+      ],
+      "sources": [
+        "src/components/TechniquePanels/RoleReversalPanel"
+      ],
+      "related": [
+        "panel-debate-toolkit"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:technique-fog-of-war",
+      "type": "article",
+      "slug": "technique-fog-of-war",
+      "title": "Туман войны",
+      "section": "panels",
+      "status": "documented",
+      "tags": [
+        "техники",
+        "дебаты"
+      ],
+      "sources": [
+        "src/components/TechniquePanels/FogOfWarPanel"
+      ],
+      "related": [
+        "panel-debate-toolkit"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:technique-evidence-revelation",
+      "type": "article",
+      "slug": "technique-evidence-revelation",
+      "title": "Раскрытие улик",
+      "section": "panels",
+      "status": "documented",
+      "tags": [
+        "техники",
+        "дебаты"
+      ],
+      "sources": [
+        "src/components/TechniquePanels/EvidenceRevelationPanel"
+      ],
+      "related": [
+        "panel-debate-toolkit"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:technique-humor",
+      "type": "article",
+      "slug": "technique-humor",
+      "title": "Юмор",
+      "section": "panels",
+      "status": "documented",
+      "tags": [
+        "техники",
+        "дебаты"
+      ],
+      "sources": [
+        "src/components/TechniquePanels/HumorPanel"
+      ],
+      "related": [
+        "panel-debate-toolkit"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:technique-status-dynamics",
+      "type": "article",
+      "slug": "technique-status-dynamics",
+      "title": "Динамика статуса",
+      "section": "panels",
+      "status": "documented",
+      "tags": [
+        "техники",
+        "дебаты"
+      ],
+      "sources": [
+        "src/components/TechniquePanels/StatusDynamicsPanel"
+      ],
+      "related": [
+        "panel-debate-toolkit"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:technique-style-matching",
+      "type": "article",
+      "slug": "technique-style-matching",
+      "title": "Подбор стиля",
+      "section": "panels",
+      "status": "documented",
+      "tags": [
+        "техники",
+        "дебаты"
+      ],
+      "sources": [
+        "src/components/TechniquePanels/StyleMatchingPanel"
+      ],
+      "related": [
+        "panel-debate-toolkit"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:technique-dynamic-persona",
+      "type": "article",
+      "slug": "technique-dynamic-persona",
+      "title": "Динамическая персона",
+      "section": "panels",
+      "status": "documented",
+      "tags": [
+        "техники",
+        "дебаты"
+      ],
+      "sources": [
+        "src/components/TechniquePanels/DynamicPersonaPanel"
+      ],
+      "related": [
+        "panel-debate-toolkit"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:technique-strategist",
+      "type": "article",
+      "slug": "technique-strategist",
+      "title": "Стратегист",
+      "section": "panels",
+      "status": "documented",
+      "tags": [
+        "техники",
+        "дебаты"
+      ],
+      "sources": [
+        "src/components/TechniquePanels/StrategistPanel"
+      ],
+      "related": [
+        "panel-debate-toolkit"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:technique-whisper-channels",
+      "type": "article",
+      "slug": "technique-whisper-channels",
+      "title": "Шёпот-каналы",
+      "section": "panels",
+      "status": "documented",
+      "tags": [
+        "техники",
+        "дебаты"
+      ],
+      "sources": [
+        "src/components/TechniquePanels/WhisperChannelsPanel"
+      ],
+      "related": [
+        "panel-debate-toolkit"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:technique-alliance",
+      "type": "article",
+      "slug": "technique-alliance",
+      "title": "Альянс",
+      "section": "panels",
+      "status": "documented",
+      "tags": [
+        "техники",
+        "дебаты"
+      ],
+      "sources": [
+        "src/components/TechniquePanels/AlliancePanel"
+      ],
+      "related": [
+        "panel-debate-toolkit"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:technique-prediction-market",
+      "type": "article",
+      "slug": "technique-prediction-market",
+      "title": "Рынок предсказаний",
+      "section": "panels",
+      "status": "documented",
+      "tags": [
+        "техники",
+        "дебаты"
+      ],
+      "sources": [
+        "src/components/TechniquePanels/PredictionMarketPanel"
+      ],
+      "related": [
+        "panel-debate-toolkit"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:technique-rtom",
+      "type": "article",
+      "slug": "technique-rtom",
+      "title": "RT-OM",
+      "section": "panels",
+      "status": "documented",
+      "tags": [
+        "техники",
+        "дебаты"
+      ],
+      "sources": [
+        "src/components/TechniquePanels/RtomPanel"
+      ],
+      "related": [
+        "panel-debate-toolkit"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:technique-strategy-fingerprint",
+      "type": "article",
+      "slug": "technique-strategy-fingerprint",
+      "title": "Отпечаток стратегии",
+      "section": "panels",
+      "status": "documented",
+      "tags": [
+        "техники",
+        "дебаты"
+      ],
+      "sources": [
+        "src/components/TechniquePanels/StrategyFingerprintPanel"
+      ],
+      "related": [
+        "panel-debate-toolkit"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:technique-objection-anticipation",
+      "type": "article",
+      "slug": "technique-objection-anticipation",
+      "title": "Предвосхищение возражений",
+      "section": "panels",
+      "status": "documented",
+      "tags": [
+        "техники",
+        "дебаты"
+      ],
+      "sources": [
+        "src/components/TechniquePanels/ObjectionAnticipationPanel"
+      ],
+      "related": [
+        "panel-debate-toolkit"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:technique-evidence-triangulation",
+      "type": "article",
+      "slug": "technique-evidence-triangulation",
+      "title": "Триангуляция улик",
+      "section": "panels",
+      "status": "documented",
+      "tags": [
+        "техники",
+        "дебаты"
+      ],
+      "sources": [
+        "src/components/TechniquePanels/EvidenceTriangulationPanel"
+      ],
+      "related": [
+        "panel-debate-toolkit"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:technique-hegelian-synthesis",
+      "type": "article",
+      "slug": "technique-hegelian-synthesis",
+      "title": "Гегелевский синтез",
+      "section": "panels",
+      "status": "documented",
+      "tags": [
+        "техники",
+        "дебаты"
+      ],
+      "sources": [
+        "src/components/TechniquePanels/HegelianSynthesisPanel"
+      ],
+      "related": [
+        "panel-debate-toolkit"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:technique-uncertainty-propagation",
+      "type": "article",
+      "slug": "technique-uncertainty-propagation",
+      "title": "Распространение неопределённости",
+      "section": "panels",
+      "status": "documented",
+      "tags": [
+        "техники",
+        "дебаты"
+      ],
+      "sources": [
+        "src/components/TechniquePanels/UncertaintyPropagationPanel"
+      ],
+      "related": [
+        "panel-debate-toolkit"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:technique-rhetoric-safety",
+      "type": "article",
+      "slug": "technique-rhetoric-safety",
+      "title": "Безопасная риторика",
+      "section": "panels",
+      "status": "documented",
+      "tags": [
+        "техники",
+        "дебаты"
+      ],
+      "sources": [
+        "src/components/TechniquePanels/RhetoricSafetyPanel"
+      ],
+      "related": [
+        "panel-debate-toolkit"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:technique-blind-evaluation",
+      "type": "article",
+      "slug": "technique-blind-evaluation",
+      "title": "Слепая оценка",
+      "section": "panels",
+      "status": "documented",
+      "tags": [
+        "техники",
+        "дебаты"
+      ],
+      "sources": [
+        "src/components/TechniquePanels/BlindEvaluationPanel"
+      ],
+      "related": [
+        "panel-debate-toolkit"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:technique-bidding-time",
+      "type": "article",
+      "slug": "technique-bidding-time",
+      "title": "Торг за время",
+      "section": "panels",
+      "status": "documented",
+      "tags": [
+        "техники",
+        "дебаты"
+      ],
+      "sources": [
+        "src/components/TechniquePanels/BiddingTimePanel"
+      ],
+      "related": [
+        "panel-debate-toolkit"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:technique-adaptive-order",
+      "type": "article",
+      "slug": "technique-adaptive-order",
+      "title": "Адаптивный порядок",
+      "section": "panels",
+      "status": "documented",
+      "tags": [
+        "техники",
+        "дебаты"
+      ],
+      "sources": [
+        "src/components/TechniquePanels/AdaptiveOrderPanel"
+      ],
+      "related": [
+        "panel-debate-toolkit"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:technique-executable-evidence",
+      "type": "article",
+      "slug": "technique-executable-evidence",
+      "title": "Исполняемые улики",
+      "section": "panels",
+      "status": "documented",
+      "tags": [
+        "техники",
+        "дебаты"
+      ],
+      "sources": [
+        "src/components/TechniquePanels/ExecutableEvidencePanel"
+      ],
+      "related": [
+        "panel-debate-toolkit"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:technique-hidden-incentives",
+      "type": "article",
+      "slug": "technique-hidden-incentives",
+      "title": "Скрытые стимулы",
+      "section": "panels",
+      "status": "documented",
+      "tags": [
+        "техники",
+        "дебаты"
+      ],
+      "sources": [
+        "src/components/TechniquePanels/HiddenIncentivesPanel"
+      ],
+      "related": [
+        "panel-debate-toolkit"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:technique-semantic-blending",
+      "type": "article",
+      "slug": "technique-semantic-blending",
+      "title": "Семантическое смешение",
+      "section": "panels",
+      "status": "documented",
+      "tags": [
+        "техники",
+        "дебаты"
+      ],
+      "sources": [
+        "src/components/TechniquePanels/SemanticBlendingPanel"
+      ],
+      "related": [
+        "panel-debate-toolkit"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:technique-judge-deliberation",
+      "type": "article",
+      "slug": "technique-judge-deliberation",
+      "title": "Совещание судей",
+      "section": "panels",
+      "status": "documented",
+      "tags": [
+        "техники",
+        "дебаты"
+      ],
+      "sources": [
+        "src/components/TechniquePanels/JudgeDeliberationPanel"
+      ],
+      "related": [
+        "panel-debate-toolkit"
+      ],
+      "reviewed": null,
+      "tests": []
     }
   ],
   "panels": [
@@ -9070,7 +10232,7 @@
       "section": "techniques",
       "route": "/cross-examination",
       "component": "src/components/TechniquePanels/CrossExaminationPanel",
-      "article": null,
+      "article": "technique-cross-examination",
       "status": "live"
     },
     {
@@ -9080,7 +10242,7 @@
       "section": "techniques",
       "route": "/delta-focusing",
       "component": "src/components/TechniquePanels/DeltaFocusingPanel",
-      "article": null,
+      "article": "technique-delta-focusing",
       "status": "live"
     },
     {
@@ -9090,7 +10252,7 @@
       "section": "techniques",
       "route": "/vulnerability-targeting",
       "component": "src/components/TechniquePanels/VulnerabilityTargetingPanel",
-      "article": null,
+      "article": "technique-vulnerability-targeting",
       "status": "live"
     },
     {
@@ -9100,7 +10262,7 @@
       "section": "techniques",
       "route": "/agreement-anchoring",
       "component": "src/components/TechniquePanels/AgreementAnchoringPanel",
-      "article": null,
+      "article": "technique-agreement-anchoring",
       "status": "live"
     },
     {
@@ -9110,7 +10272,7 @@
       "section": "techniques",
       "route": "/graph-minimax",
       "component": "src/components/TechniquePanels/GraphMinimaxPanel",
-      "article": null,
+      "article": "technique-graph-minimax",
       "status": "live"
     },
     {
@@ -9120,7 +10282,7 @@
       "section": "techniques",
       "route": "/burden-of-proof",
       "component": "src/components/TechniquePanels/BurdenOfProofPanel",
-      "article": null,
+      "article": "technique-burden-of-proof",
       "status": "live"
     },
     {
@@ -9130,7 +10292,7 @@
       "section": "techniques",
       "route": "/consistency-check",
       "component": "src/components/TechniquePanels/ConsistencyCheckPanel",
-      "article": null,
+      "article": "technique-consistency-check",
       "status": "live"
     },
     {
@@ -9140,7 +10302,7 @@
       "section": "techniques",
       "route": "/credibility-scoring",
       "component": "src/components/TechniquePanels/CredibilityScoringPanel",
-      "article": null,
+      "article": "technique-credibility-scoring",
       "status": "live"
     },
     {
@@ -9150,7 +10312,7 @@
       "section": "techniques",
       "route": "/causal-graph",
       "component": "src/components/TechniquePanels/CausalGraphPanel",
-      "article": null,
+      "article": "technique-causal-graph",
       "status": "live"
     },
     {
@@ -9160,7 +10322,7 @@
       "section": "techniques",
       "route": "/pre-publish-critic",
       "component": "src/components/TechniquePanels/PrePublishCriticPanel",
-      "article": null,
+      "article": "technique-pre-publish-critic",
       "status": "live"
     },
     {
@@ -9170,7 +10332,7 @@
       "section": "techniques",
       "route": "/fact-checking",
       "component": "src/components/TechniquePanels/FactCheckingPanel",
-      "article": null,
+      "article": "technique-fact-checking",
       "status": "live"
     },
     {
@@ -9180,7 +10342,7 @@
       "section": "techniques",
       "route": "/epistemic-calibration",
       "component": "src/components/TechniquePanels/EpistemicCalibrationPanel",
-      "article": null,
+      "article": "technique-epistemic-calibration",
       "status": "live"
     },
     {
@@ -9190,7 +10352,7 @@
       "section": "techniques",
       "route": "/socratic-pivot",
       "component": "src/components/TechniquePanels/SocraticPivotPanel",
-      "article": null,
+      "article": "technique-socratic-pivot",
       "status": "live"
     },
     {
@@ -9200,7 +10362,7 @@
       "section": "techniques",
       "route": "/concession-engine",
       "component": "src/components/TechniquePanels/ConcessionEnginePanel",
-      "article": null,
+      "article": "technique-concession-engine",
       "status": "live"
     },
     {
@@ -9210,7 +10372,7 @@
       "section": "techniques",
       "route": "/bayesian-judges",
       "component": "src/components/TechniquePanels/BayesianJudgesPanel",
-      "article": null,
+      "article": "technique-bayesian-judges",
       "status": "live"
     },
     {
@@ -9220,7 +10382,7 @@
       "section": "techniques",
       "route": "/dpo-sampler",
       "component": "src/components/TechniquePanels/DpoSamplerPanel",
-      "article": null,
+      "article": "technique-dpo-sampler",
       "status": "live"
     },
     {
@@ -9230,7 +10392,7 @@
       "section": "techniques",
       "route": "/critic",
       "component": "src/components/TechniquePanels/CriticPanel",
-      "article": null,
+      "article": "technique-critic",
       "status": "live"
     },
     {
@@ -9240,7 +10402,7 @@
       "section": "techniques",
       "route": "/pivot",
       "component": "src/components/TechniquePanels/PivotPanel",
-      "article": null,
+      "article": "technique-pivot",
       "status": "live"
     },
     {
@@ -9250,7 +10412,7 @@
       "section": "techniques",
       "route": "/concession",
       "component": "src/components/TechniquePanels/ConcessionPanel",
-      "article": null,
+      "article": "technique-concession",
       "status": "live"
     },
     {
@@ -9260,7 +10422,7 @@
       "section": "techniques",
       "route": "/triangulation",
       "component": "src/components/TechniquePanels/TriangulationPanel",
-      "article": null,
+      "article": "technique-triangulation",
       "status": "live"
     },
     {
@@ -9270,7 +10432,7 @@
       "section": "techniques",
       "route": "/empathy",
       "component": "src/components/TechniquePanels/EmpathyPanel",
-      "article": null,
+      "article": "technique-empathy",
       "status": "live"
     },
     {
@@ -9280,7 +10442,7 @@
       "section": "techniques",
       "route": "/heat",
       "component": "src/components/TechniquePanels/HeatPanel",
-      "article": null,
+      "article": "technique-heat",
       "status": "live"
     },
     {
@@ -9290,7 +10452,7 @@
       "section": "techniques",
       "route": "/sentinel",
       "component": "src/components/TechniquePanels/SentinelPanel",
-      "article": null,
+      "article": "technique-sentinel",
       "status": "live"
     },
     {
@@ -9300,7 +10462,7 @@
       "section": "techniques",
       "route": "/redundancy",
       "component": "src/components/TechniquePanels/RedundancyPanel",
-      "article": null,
+      "article": "technique-redundancy",
       "status": "live"
     },
     {
@@ -9310,7 +10472,7 @@
       "section": "techniques",
       "route": "/replay",
       "component": "src/components/TechniquePanels/ReplayPanel",
-      "article": null,
+      "article": "technique-replay",
       "status": "live"
     },
     {
@@ -9320,7 +10482,7 @@
       "section": "techniques",
       "route": "/enthymeme",
       "component": "src/components/TechniquePanels/EnthymemePanel",
-      "article": null,
+      "article": "technique-enthymeme",
       "status": "live"
     },
     {
@@ -9330,7 +10492,7 @@
       "section": "techniques",
       "route": "/multi-hop",
       "component": "src/components/TechniquePanels/MultiHopPanel",
-      "article": null,
+      "article": "technique-multi-hop",
       "status": "live"
     },
     {
@@ -9340,7 +10502,7 @@
       "section": "techniques",
       "route": "/bias-exploit",
       "component": "src/components/TechniquePanels/BiasExploitPanel",
-      "article": null,
+      "article": "technique-bias-exploit",
       "status": "live"
     },
     {
@@ -9350,7 +10512,7 @@
       "section": "techniques",
       "route": "/interrupt",
       "component": "src/components/TechniquePanels/InterruptPanel",
-      "article": null,
+      "article": "technique-interrupt",
       "status": "live"
     },
     {
@@ -9360,7 +10522,7 @@
       "section": "techniques",
       "route": "/frame",
       "component": "src/components/TechniquePanels/FramePanel",
-      "article": null,
+      "article": "technique-frame",
       "status": "live"
     },
     {
@@ -9370,7 +10532,7 @@
       "section": "techniques",
       "route": "/rhetorical-device",
       "component": "src/components/TechniquePanels/RhetoricalDevicePanel",
-      "article": null,
+      "article": "technique-rhetorical-device",
       "status": "live"
     },
     {
@@ -9380,7 +10542,7 @@
       "section": "techniques",
       "route": "/narrative-arc",
       "component": "src/components/TechniquePanels/NarrativeArcPanel",
-      "article": null,
+      "article": "technique-narrative-arc",
       "status": "live"
     },
     {
@@ -9390,7 +10552,7 @@
       "section": "techniques",
       "route": "/abstraction-ladder",
       "component": "src/components/TechniquePanels/AbstractionLadderPanel",
-      "article": null,
+      "article": "technique-abstraction-ladder",
       "status": "live"
     },
     {
@@ -9400,7 +10562,7 @@
       "section": "techniques",
       "route": "/role-reversal",
       "component": "src/components/TechniquePanels/RoleReversalPanel",
-      "article": null,
+      "article": "technique-role-reversal",
       "status": "live"
     },
     {
@@ -9410,7 +10572,7 @@
       "section": "techniques",
       "route": "/fog-of-war",
       "component": "src/components/TechniquePanels/FogOfWarPanel",
-      "article": null,
+      "article": "technique-fog-of-war",
       "status": "live"
     },
     {
@@ -9420,7 +10582,7 @@
       "section": "techniques",
       "route": "/evidence-revelation",
       "component": "src/components/TechniquePanels/EvidenceRevelationPanel",
-      "article": null,
+      "article": "technique-evidence-revelation",
       "status": "live"
     },
     {
@@ -9430,7 +10592,7 @@
       "section": "techniques",
       "route": "/humor",
       "component": "src/components/TechniquePanels/HumorPanel",
-      "article": null,
+      "article": "technique-humor",
       "status": "live"
     },
     {
@@ -9440,7 +10602,7 @@
       "section": "techniques",
       "route": "/status-dynamics",
       "component": "src/components/TechniquePanels/StatusDynamicsPanel",
-      "article": null,
+      "article": "technique-status-dynamics",
       "status": "live"
     },
     {
@@ -9450,7 +10612,7 @@
       "section": "techniques",
       "route": "/style-matching",
       "component": "src/components/TechniquePanels/StyleMatchingPanel",
-      "article": null,
+      "article": "technique-style-matching",
       "status": "live"
     },
     {
@@ -9460,7 +10622,7 @@
       "section": "techniques",
       "route": "/dynamic-persona",
       "component": "src/components/TechniquePanels/DynamicPersonaPanel",
-      "article": null,
+      "article": "technique-dynamic-persona",
       "status": "live"
     },
     {
@@ -9470,7 +10632,7 @@
       "section": "techniques",
       "route": "/strategist",
       "component": "src/components/TechniquePanels/StrategistPanel",
-      "article": null,
+      "article": "technique-strategist",
       "status": "live"
     },
     {
@@ -9480,7 +10642,7 @@
       "section": "techniques",
       "route": "/whisper-channels",
       "component": "src/components/TechniquePanels/WhisperChannelsPanel",
-      "article": null,
+      "article": "technique-whisper-channels",
       "status": "live"
     },
     {
@@ -9490,7 +10652,7 @@
       "section": "techniques",
       "route": "/alliance",
       "component": "src/components/TechniquePanels/AlliancePanel",
-      "article": null,
+      "article": "technique-alliance",
       "status": "live"
     },
     {
@@ -9500,7 +10662,7 @@
       "section": "techniques",
       "route": "/prediction-market",
       "component": "src/components/TechniquePanels/PredictionMarketPanel",
-      "article": null,
+      "article": "technique-prediction-market",
       "status": "live"
     },
     {
@@ -9510,7 +10672,7 @@
       "section": "techniques",
       "route": "/rtom",
       "component": "src/components/TechniquePanels/RtomPanel",
-      "article": null,
+      "article": "technique-rtom",
       "status": "live"
     },
     {
@@ -9520,7 +10682,7 @@
       "section": "techniques",
       "route": "/strategy-fingerprint",
       "component": "src/components/TechniquePanels/StrategyFingerprintPanel",
-      "article": null,
+      "article": "technique-strategy-fingerprint",
       "status": "live"
     },
     {
@@ -9530,7 +10692,7 @@
       "section": "techniques",
       "route": "/objection-anticipation",
       "component": "src/components/TechniquePanels/ObjectionAnticipationPanel",
-      "article": null,
+      "article": "technique-objection-anticipation",
       "status": "live"
     },
     {
@@ -9540,7 +10702,7 @@
       "section": "techniques",
       "route": "/evidence-triangulation",
       "component": "src/components/TechniquePanels/EvidenceTriangulationPanel",
-      "article": null,
+      "article": "technique-evidence-triangulation",
       "status": "live"
     },
     {
@@ -9550,7 +10712,7 @@
       "section": "techniques",
       "route": "/hegelian-synthesis",
       "component": "src/components/TechniquePanels/HegelianSynthesisPanel",
-      "article": null,
+      "article": "technique-hegelian-synthesis",
       "status": "live"
     },
     {
@@ -9560,7 +10722,7 @@
       "section": "techniques",
       "route": "/uncertainty-propagation",
       "component": "src/components/TechniquePanels/UncertaintyPropagationPanel",
-      "article": null,
+      "article": "technique-uncertainty-propagation",
       "status": "live"
     },
     {
@@ -9570,7 +10732,7 @@
       "section": "techniques",
       "route": "/rhetoric-safety",
       "component": "src/components/TechniquePanels/RhetoricSafetyPanel",
-      "article": null,
+      "article": "technique-rhetoric-safety",
       "status": "live"
     },
     {
@@ -9580,7 +10742,7 @@
       "section": "techniques",
       "route": "/blind-evaluation",
       "component": "src/components/TechniquePanels/BlindEvaluationPanel",
-      "article": null,
+      "article": "technique-blind-evaluation",
       "status": "live"
     },
     {
@@ -9590,7 +10752,7 @@
       "section": "techniques",
       "route": "/bidding-time",
       "component": "src/components/TechniquePanels/BiddingTimePanel",
-      "article": null,
+      "article": "technique-bidding-time",
       "status": "live"
     },
     {
@@ -9600,7 +10762,7 @@
       "section": "techniques",
       "route": "/adaptive-order",
       "component": "src/components/TechniquePanels/AdaptiveOrderPanel",
-      "article": null,
+      "article": "technique-adaptive-order",
       "status": "live"
     },
     {
@@ -9610,7 +10772,7 @@
       "section": "techniques",
       "route": "/executable-evidence",
       "component": "src/components/TechniquePanels/ExecutableEvidencePanel",
-      "article": null,
+      "article": "technique-executable-evidence",
       "status": "live"
     },
     {
@@ -9620,7 +10782,7 @@
       "section": "techniques",
       "route": "/hidden-incentives",
       "component": "src/components/TechniquePanels/HiddenIncentivesPanel",
-      "article": null,
+      "article": "technique-hidden-incentives",
       "status": "live"
     },
     {
@@ -9630,7 +10792,7 @@
       "section": "techniques",
       "route": "/semantic-blending",
       "component": "src/components/TechniquePanels/SemanticBlendingPanel",
-      "article": null,
+      "article": "technique-semantic-blending",
       "status": "live"
     },
     {
@@ -9640,7 +10802,7 @@
       "section": "techniques",
       "route": "/judge-deliberation",
       "component": "src/components/TechniquePanels/JudgeDeliberationPanel",
-      "article": null,
+      "article": "technique-judge-deliberation",
       "status": "live"
     },
     {

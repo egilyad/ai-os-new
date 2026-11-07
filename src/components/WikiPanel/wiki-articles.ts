@@ -21,6 +21,7 @@ import { GRAPH_WORKBENCH_ARTICLE } from './wiki-graph-workbench';
 import { RESEARCH_DEEP_ARTICLE } from './wiki-research-deep';
 import { RESEARCH_MULTIAGENT_ARTICLE } from './wiki-research-multiagent';
 import { RESEARCH_INDEX_ARTICLE } from './wiki-research-index';
+import { TECHNIQUE_ARTICLES } from './wiki-techniques';
 import type { WikiArticle, WikiFreshness, WikiSection } from './wiki-types';
 
 export type { WikiArticle, WikiFreshness, WikiSection } from './wiki-types';
@@ -5014,6 +5015,7 @@ export const WIKI_ARTICLES: WikiArticle[] = [
     ...DEFERRED_ARTICLES,
     ...MEMORY_AUDIT_ARTICLES,
     ...ASSISTANT_ARTICLES,
+    ...TECHNIQUE_ARTICLES,
 ];
 
 export function getArticle(slug: string): WikiArticle | undefined {

@@ -1,0 +1,35 @@
+<!-- АВТОСГЕНЕРАЦИЯ: файл создан scripts/gen-wiki-docs.mjs из корпуса Wiki (src/components/WikiPanel). Не редактировать вручную. -->
+
+# Перекрёстный допрос
+
+> Раздел: **Панели** · Статус: documented · Теги: техники, дебаты
+
+Источники: `src/components/TechniquePanels/CrossExaminationPanel`
+
+## Перекрёстный допрос
+
+Каждый аргумент подвергается серии уточняющих вопросов оппонента; слабые места фиксируются и возвращаются автору.
+
+Компонент: `src/components/TechniquePanels/CrossExaminationPanel`.
+
+Входит в набор техник дебатов; инструменты качества и анализа — [Инструменты анализа дебатов](./panel-debate-toolkit.md).
+
+---
+
+## Связанные материалы
+
+- [Инструменты анализа дебатов](./panel-debate-toolkit.md)
+
+---
+
+## Связи с кодом (авто)
+
+Цепочка «панель → маршрут → компонент → тесты» собрана из реестра маршрутов.
+
+- Панель `cross-examination` → маршрут `/cross-examination`
+  - Компонент: `src/components/TechniquePanels/CrossExaminationPanel`
+  - Тесты: `src/components/TechniquePanels/CrossExaminationPanel.test.tsx`
+
+См. также: [Каталог панелей](./panels-catalog.md) · [Каталог компонентов OS](./dev-component-catalog.md).
+
+[← Все материалы](./README.md)

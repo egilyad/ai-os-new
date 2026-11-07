@@ -1,0 +1,35 @@
+<!-- АВТОСГЕНЕРАЦИЯ: файл создан scripts/gen-wiki-docs.mjs из корпуса Wiki (src/components/WikiPanel). Не редактировать вручную. -->
+
+# Проверка фактов
+
+> Раздел: **Панели** · Статус: documented · Теги: техники, дебаты
+
+Источники: `src/components/TechniquePanels/FactCheckingPanel`
+
+## Проверка фактов
+
+Сверяет утверждения с внешним поиском/знанием и помечает неподтверждённые факты.
+
+Компонент: `src/components/TechniquePanels/FactCheckingPanel`.
+
+Входит в набор техник дебатов; инструменты качества и анализа — [Инструменты анализа дебатов](./panel-debate-toolkit.md).
+
+---
+
+## Связанные материалы
+
+- [Инструменты анализа дебатов](./panel-debate-toolkit.md)
+
+---
+
+## Связи с кодом (авто)
+
+Цепочка «панель → маршрут → компонент → тесты» собрана из реестра маршрутов.
+
+- Панель `fact-checking` → маршрут `/fact-checking`
+  - Компонент: `src/components/TechniquePanels/FactCheckingPanel`
+  - Тесты: — (рядом с компонентом не найдены)
+
+См. также: [Каталог панелей](./panels-catalog.md) · [Каталог компонентов OS](./dev-component-catalog.md).
+
+[← Все материалы](./README.md)
