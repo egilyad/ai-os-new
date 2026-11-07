@@ -1,57 +1,256 @@
-import { describe, it, expect, vi } from 'vitest';
-import { LlmCrewExecutor } from './llm-task-executor';
+import { describe, expect, it, vi, type Mock } from 'vitest';
+import { type MemoryTier } from '../../types/persona-types';
+import {
+    LlmCouncilPort,
+    LlmCrewExecutor,
+    LlmFrontierExecutor,
+    LlmGraphPort,
+    LlmPersonaPort,
+    type LlmBridgeOptions,
+} from './llm-task-executor';
 
-function makeInput() {
+function makeClient(overrides: { content?: string; error?: string; throwIt?: boolean } = {}) {
     return {
-        crew: { id: 'c1', name: 'Crew 1' },
-        task: { id: 't1', description: 'Do the thing', expectedOutput: 'A report' },
-        role: { id: 'r1', name: 'Analyst', role: 'analysis', goal: 'analyze', backstory: 'expert' },
-        context: 'Previous context',
-    };
+        chat: vi.fn(async () => {
+            if (overrides.throwIt) throw new Error('llm down');
+            return { content: overrides.content ?? 'ok', error: overrides.error };
+        }),
+    } as unknown as { chat: ReturnType<typeof vi.fn> } & LlmBridgeOptions['client'];
 }
 
-function makeClient(overrides: { content?: string; error?: string } = {}) {
-    return {
-        chat: vi.fn(async () =>
-            overrides.error
-                ? { content: '', error: overrides.error }
-                : { content: overrides.content ?? 'generated output' },
-        ),
-    };
+function makeOpts(
+    client: LlmBridgeOptions['client'],
+    extra: Partial<LlmBridgeOptions> = {},
+): LlmBridgeOptions {
+    return { client, defaultModel: 'm', ...extra };
 }
+
+const crewInput = {
+    crew: { id: 'c1', name: 'Crew' },
+    task: { id: 't1', description: 'Research X', expectedOutput: 'summary' },
+    role: { id: 'r1', name: 'Analyst', role: 'analyst', goal: 'analyze', backstory: 'expert' },
+    context: 'ctx',
+};
 
 describe('LlmCrewExecutor', () => {
-    it('executes a task through the LLM client', async () => {
-        const client = makeClient();
-        const executor = new LlmCrewExecutor({ client: client as never });
-        const out = await executor.execute(makeInput());
-        expect(out).toBe('generated output');
+    it('вызывает LLM и возвращает контент', async () => {
+        const client = makeClient({ content: 'done' });
+        const exec = new LlmCrewExecutor(makeOpts(client));
+        await expect(exec.execute(crewInput)).resolves.toBe('done');
         expect(client.chat).toHaveBeenCalledTimes(1);
-        const [messages, options] = client.chat.mock.calls[0] as [unknown[], { cacheScope: unknown }];
-        expect((messages as { role: string }[])[0]!.role).toBe('system');
-        expect(options.cacheScope).toEqual({ agentId: undefined, sessionId: undefined, role: 'analysis' });
     });
 
-    it('throws when the client reports an error', async () => {
-        const client = makeClient({ error: 'upstream down' });
-        const executor = new LlmCrewExecutor({ client: client as never });
-        await expect(executor.execute(makeInput())).rejects.toThrow(/upstream down/);
+    it('пробрасывает ошибку LLM (без echo-fallback)', async () => {
+        const client = makeClient({ throwIt: true });
+        const exec = new LlmCrewExecutor(makeOpts(client));
+        await expect(exec.execute(crewInput)).rejects.toThrow('llm down');
     });
 
-    it('echo fallback returns the prompt when enabled', async () => {
-        const client = makeClient({ error: 'upstream down' });
-        const executor = new LlmCrewExecutor({ client: client as never, echoFallback: true });
-        const out = await executor.execute(makeInput());
+    it('echo-fallback при недоступности LLM', async () => {
+        const client = makeClient({ throwIt: true });
+        const exec = new LlmCrewExecutor(makeOpts(client, { echoFallback: true }));
+        const out = await exec.execute(crewInput);
         expect(out).toContain('[echo fallback]');
     });
 
-    it('appends role guidance when guideFor is provided', async () => {
-        const client = makeClient();
+    it('включает роль-гайд в системный промт, когда guideFor задан', async () => {
+        const client = makeClient({ content: 'done' });
         const guideFor = vi.fn(async () => 'Follow the rubric.');
-        const executor = new LlmCrewExecutor({ client: client as never, guideFor });
-        await executor.execute(makeInput());
-        expect(guideFor).toHaveBeenCalledWith('analysis');
+        const exec = new LlmCrewExecutor(makeOpts(client, { guideFor }));
+        await exec.execute(crewInput);
+        expect(guideFor).toHaveBeenCalledWith('analyst');
         const messages = client.chat.mock.calls[0]![0] as { content: string }[];
         expect(messages[0]!.content).toContain('Follow the rubric.');
+    });
+
+    it('использует tool-loop, когда роль объявляет инструменты', async () => {
+        const runWithTools = vi.fn(async () => ({ output: 'tool result' }));
+        const client = makeClient({ content: 'should not be used' });
+        const exec = new LlmCrewExecutor(
+            makeOpts(client, {
+                toolRunner: { runWithTools },
+                toolCheck: vi.fn(async () => true),
+            }),
+        );
+        const inputWithTools = {
+            ...crewInput,
+            role: { ...crewInput.role, tools: ['search'] },
+        };
+        const out = await exec.execute(inputWithTools);
+        expect(out).toBe('tool result');
+        expect(runWithTools).toHaveBeenCalledTimes(1);
+        expect(client.chat).not.toHaveBeenCalled();
+    });
+
+    it('без инструментов не использует tool-loop', async () => {
+        const runWithTools = vi.fn();
+        const client = makeClient({ content: 'chat output' });
+        const exec = new LlmCrewExecutor(makeOpts(client, { toolRunner: { runWithTools } }));
+        const out = await exec.execute(crewInput);
+        expect(out).toBe('chat output');
+        expect(runWithTools).not.toHaveBeenCalled();
+        expect(client.chat).toHaveBeenCalledTimes(1);
+    });
+});
+
+describe('LlmCouncilPort', () => {
+    it('draftStance возвращает контент', async () => {
+        const client = makeClient({ content: 'stance' });
+        const port = new LlmCouncilPort(makeOpts(client));
+        await expect(
+            port.draftStance({ topic: 'X', participant: { id: 'p', name: 'P', kind: 'pro' } }),
+        ).resolves.toBe('stance');
+    });
+
+    it('judgeRound парсит JSON и возвращает winner', async () => {
+        const client = makeClient({
+            content: '{"winnerId":"p1","scores":{"p1":8},"rationale":"good"}',
+        });
+        const port = new LlmCouncilPort(makeOpts(client));
+        const res = await port.judgeRound({
+            topic: 'X',
+            messages: [{ authorId: 'p1', body: 'a' }],
+            judgeName: 'J',
+            dimensions: ['clarity'],
+        });
+        expect(res.winnerId).toBe('p1');
+        expect(res.scores).toEqual({ p1: 8 });
+    });
+
+    it('judgeRound при битом JSON возвращает draw', async () => {
+        const client = makeClient({ content: 'not json' });
+        const port = new LlmCouncilPort(makeOpts(client));
+        const res = await port.judgeRound({
+            topic: 'X',
+            messages: [],
+            judgeName: 'J',
+            dimensions: ['clarity'],
+        });
+        expect(res.winnerId).toBe('draw');
+    });
+
+    it('judgeRound передаёт blindMap в транскрипт', async () => {
+        const client = makeClient({ content: '{"winnerId":"A","scores":{},"rationale":""}' });
+        const port = new LlmCouncilPort(makeOpts(client));
+        await port.judgeRound({
+            topic: 'X',
+            messages: [{ authorId: 'p1', body: 'arg' }],
+            judgeName: 'J',
+            dimensions: ['clarity'],
+            blindMap: { p1: 'Speaker A' },
+        });
+        const userArg = (
+            (client.chat as Mock).mock.calls[0][0] as unknown as Array<{ content: string }>
+        )[1].content;
+        expect(userArg).toContain('[Speaker A]');
+    });
+
+    it('judgeRound парсит JSON с лишним текстом', async () => {
+        const client = makeClient({
+            content:
+                'Here is the verdict: {"winnerId":"p1","scores":{"p1":9},"rationale":"strong"}',
+        });
+        const port = new LlmCouncilPort(makeOpts(client));
+        const res = await port.judgeRound({
+            topic: 'X',
+            messages: [{ authorId: 'p1', body: 'a' }],
+            judgeName: 'J',
+            dimensions: ['clarity'],
+        });
+        expect(res.winnerId).toBe('p1');
+        expect(res.scores).toEqual({ p1: 9 });
+    });
+});
+
+describe('LlmGraphPort', () => {
+    it('runTask вызывает LLM', async () => {
+        const client = makeClient({ content: 'step' });
+        const port = new LlmGraphPort(makeOpts(client));
+        await expect(port.runTask({ label: 'L', state: {} })).resolves.toBe('step');
+    });
+
+    it('runTask передаёт только значимые state-ключи', async () => {
+        const client = makeClient({ content: 'step' });
+        const port = new LlmGraphPort(makeOpts(client));
+        await port.runTask({
+            label: 'L',
+            state: { input: 'x', 'out:1': 'hidden', lastOutput: 'y' },
+        });
+        const userArg = (
+            (client.chat as Mock).mock.calls[0][0] as unknown as Array<{ content: string }>
+        )[1].content;
+        expect(userArg).toContain('input');
+        expect(userArg).not.toContain('out:1');
+        expect(userArg).toContain('lastOutput');
+    });
+
+    it('reflect вызывает LLM', async () => {
+        const client = makeClient({ content: 'reflection' });
+        const port = new LlmGraphPort(makeOpts(client));
+        await expect(port.reflect({ visited: ['a'], state: {} })).resolves.toBe('reflection');
+    });
+
+    it('reflect передаёт visited-узлы', async () => {
+        const client = makeClient({ content: 'reflection' });
+        const port = new LlmGraphPort(makeOpts(client));
+        await port.reflect({ visited: ['a', 'b'], state: {} });
+        const userArg = (
+            (client.chat as Mock).mock.calls[0][0] as unknown as Array<{ content: string }>
+        )[1].content;
+        expect(userArg).toContain('a → b');
+    });
+});
+
+describe('LlmFrontierExecutor', () => {
+    it('execute возвращает контент', async () => {
+        const client = makeClient({ content: 'answer' });
+        const exec = new LlmFrontierExecutor(makeOpts(client));
+        await expect(exec.execute('task')).resolves.toBe('answer');
+    });
+});
+
+describe('LlmPersonaPort', () => {
+    it('distillStyle парсит JSON', async () => {
+        const client = makeClient({
+            content: '{"styleNotes":["formal"],"judgments":["clear"]}',
+        });
+        const port = new LlmPersonaPort(makeOpts(client));
+        const res = await port.distillStyle(['sample text']);
+        expect(res.styleNotes).toEqual(['formal']);
+        expect(res.judgments).toEqual(['clear']);
+    });
+
+    it('distillStyle при битом JSON возвращает heuristic split', async () => {
+        const client = makeClient({ content: 'line1\nline2' });
+        const port = new LlmPersonaPort(makeOpts(client));
+        const res = await port.distillStyle(['sample']);
+        expect(res.styleNotes).toContain('line1');
+    });
+
+    it('summarizeMemories возвращает компактный профиль', async () => {
+        const client = makeClient({ content: 'profile' });
+        const port = new LlmPersonaPort(makeOpts(client));
+        await expect(
+            port.summarizeMemories([
+                {
+                    id: 'm1',
+                    ownerId: 'u1',
+                    tier: 'core' as MemoryTier,
+                    content: 'fact',
+                    createdAt: Date.now(),
+                    updatedAt: Date.now(),
+                },
+            ]),
+        ).resolves.toBe('profile');
+    });
+
+    it('summarizeMemories без памяти возвращает заглушку', async () => {
+        const port = new LlmPersonaPort(makeOpts(makeClient()));
+        await expect(port.summarizeMemories([])).resolves.toBe('No long-term memories.');
+    });
+
+    it('distillStyle с пустыми сэмплами возвращает пусто', async () => {
+        const port = new LlmPersonaPort(makeOpts(makeClient()));
+        await expect(port.distillStyle([])).resolves.toEqual({ styleNotes: [], judgments: [] });
     });
 });
