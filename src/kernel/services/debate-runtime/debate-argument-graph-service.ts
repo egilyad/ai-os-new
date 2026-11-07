@@ -153,26 +153,56 @@ function detectEdge(current: GraphBuildInput, earlier: GraphBuildInput): Detecte
 
 const MAX_COMPARISONS = 5000;
 
-export class ArgumentGraphService implements IArgumentGraphService {
-    private _nodes = new Map<string, ArgumentNode>();
-    private _allEdges: ArgumentEdge[] = [];
-    private _outEdges = new Map<string, ArgumentEdge[]>();
-    private _inEdges = new Map<string, ArgumentEdge[]>();
-    private _nodeOrder: string[] = [];
-    private _built = false;
+interface SessionGraphState {
+    nodes: Map<string, ArgumentNode>;
+    allEdges: ArgumentEdge[];
+    outEdges: Map<string, ArgumentEdge[]>;
+    inEdges: Map<string, ArgumentEdge[]>;
+    nodeOrder: string[];
+    built: boolean;
+}
 
-    get initialized(): boolean {
-        return this._built;
+export class ArgumentGraphService implements IArgumentGraphService {
+    private _sessions = new Map<string, SessionGraphState>();
+
+    private _session(sessionId: string): SessionGraphState | undefined {
+        return this._sessions.get(sessionId);
     }
 
-    build(args: ReadonlyArray<GraphBuildInput>): void {
-        this.clear();
+    private _state(sessionId: string): SessionGraphState {
+        let s = this._sessions.get(sessionId);
+        if (!s) {
+            s = {
+                nodes: new Map(),
+                allEdges: [],
+                outEdges: new Map(),
+                inEdges: new Map(),
+                nodeOrder: [],
+                built: false,
+            };
+            this._sessions.set(sessionId, s);
+        }
+        return s;
+    }
+
+    isInitialized(sessionId: string): boolean {
+        return this._session(sessionId)?.built ?? false;
+    }
+
+    build(sessionId: string, args: ReadonlyArray<GraphBuildInput>): void {
+        const state = this._state(sessionId);
+        state.nodes.clear();
+        state.allEdges = [];
+        state.outEdges.clear();
+        state.inEdges.clear();
+        state.nodeOrder = [];
+        state.built = false;
 
         if (args.length === 0) return;
 
         // Build nodes
         for (const a of args) {
-            this._nodes.set(a.id, {
+            state.nodes.set(a.id, {
                 id: a.id,
                 agentId: a.agentId,
                 agentName: a.agentName,
@@ -183,7 +213,7 @@ export class ArgumentGraphService implements IArgumentGraphService {
                 position: a.position,
                 sourceArgumentId: a.id,
             });
-            this._nodeOrder.push(a.id);
+            state.nodeOrder.push(a.id);
         }
 
         // Detect edges
@@ -202,7 +232,7 @@ export class ArgumentGraphService implements IArgumentGraphService {
                 comparisons++;
                 const edge = detectEdge(current, earlier);
                 if (edge) {
-                    this._addEdge({
+                    this._addEdge(state, {
                         id: `edge-${earlier.id}-${current.id}`,
                         sourceId: current.id,
                         targetId: edge.targetId,
@@ -216,70 +246,70 @@ export class ArgumentGraphService implements IArgumentGraphService {
             }
         }
 
-        this._built = true;
+        state.built = true;
     }
 
-    clear(): void {
-        this._nodes.clear();
-        this._allEdges = [];
-        this._outEdges.clear();
-        this._inEdges.clear();
-        this._nodeOrder = [];
-        this._built = false;
+    clear(sessionId: string): void {
+        this._sessions.delete(sessionId);
     }
 
-    getNode(id: string): ArgumentNode | undefined {
-        return this._nodes.get(id);
+    getNode(sessionId: string, id: string): ArgumentNode | undefined {
+        return this._session(sessionId)?.nodes.get(id);
     }
 
-    getAllNodes(): readonly ArgumentNode[] {
-        return Array.from(this._nodes.values());
+    getAllNodes(sessionId: string): readonly ArgumentNode[] {
+        return Array.from(this._session(sessionId)?.nodes.values() ?? []);
     }
 
-    getAgentNodes(agentId: string): readonly ArgumentNode[] {
-        return Array.from(this._nodes.values()).filter((n) => n.agentId === agentId);
+    getAgentNodes(sessionId: string, agentId: string): readonly ArgumentNode[] {
+        return Array.from(this._session(sessionId)?.nodes.values() ?? []).filter(
+            (n) => n.agentId === agentId,
+        );
     }
 
-    getRoundNodes(round: number): readonly ArgumentNode[] {
-        return Array.from(this._nodes.values()).filter((n) => n.round === round);
+    getRoundNodes(sessionId: string, round: number): readonly ArgumentNode[] {
+        return Array.from(this._session(sessionId)?.nodes.values() ?? []).filter(
+            (n) => n.round === round,
+        );
     }
 
-    getAllEdges(): readonly ArgumentEdge[] {
-        return this._allEdges;
+    getAllEdges(sessionId: string): readonly ArgumentEdge[] {
+        return this._session(sessionId)?.allEdges ?? [];
     }
 
-    getOutgoingEdges(nodeId: string): readonly ArgumentEdge[] {
-        return this._outEdges.get(nodeId) ?? [];
+    getOutgoingEdges(sessionId: string, nodeId: string): readonly ArgumentEdge[] {
+        return this._session(sessionId)?.outEdges.get(nodeId) ?? [];
     }
 
-    getIncomingEdges(nodeId: string): readonly ArgumentEdge[] {
-        return this._inEdges.get(nodeId) ?? [];
+    getIncomingEdges(sessionId: string, nodeId: string): readonly ArgumentEdge[] {
+        return this._session(sessionId)?.inEdges.get(nodeId) ?? [];
     }
 
-    getStats(): ArgumentGraphStats {
-        const nodeCount = this._nodes.size;
-        const edgeCount = this._allEdges.length;
+    getStats(sessionId: string): ArgumentGraphStats {
+        const state = this._state(sessionId);
+        const nodeCount = state.nodes.size;
+        const edgeCount = state.allEdges.length;
 
-        const supports = this._allEdges.filter((e) => e.type === 'supports').length;
-        const attacks = this._allEdges.filter((e) => e.type === 'attacks').length;
+        const supports = state.allEdges.filter((e) => e.type === 'supports').length;
+        const attacks = state.allEdges.filter((e) => e.type === 'attacks').length;
 
         const visited = new Set<string>();
         let components = 0;
-        for (const id of this._nodeOrder) {
+        for (const id of state.nodeOrder) {
             if (!visited.has(id)) {
                 components++;
-                this._bfs(id, visited);
+                this._bfs(state, id, visited);
             }
         }
 
         const withEdges = new Set<string>();
-        for (const e of this._allEdges) {
+        for (const e of state.allEdges) {
             withEdges.add(e.sourceId);
             withEdges.add(e.targetId);
         }
         const orphans = nodeCount - withEdges.size;
 
-        const allConfidences = Array.from(this._nodes.values()).map((n) => n.confidence);
+        const allConfidences = Array.from(state.nodes.values()).map((n) => n.confidence);
         const avgConf =
             allConfidences.length > 0
                 ? allConfidences.reduce((s, c) => s + c, 0) / allConfidences.length
@@ -289,7 +319,7 @@ export class ArgumentGraphService implements IArgumentGraphService {
             totalNodes: nodeCount,
             totalEdges: edgeCount,
             connectedComponents: components,
-            longestPath: this._computeLongestPath(),
+            longestPath: this._computeLongestPath(state),
             supportRatio: attacks > 0 ? supports / attacks : supports > 0 ? Infinity : 0,
             attackRatio: supports > 0 ? attacks / supports : attacks > 0 ? Infinity : 0,
             orphanNodes: orphans,
@@ -297,20 +327,24 @@ export class ArgumentGraphService implements IArgumentGraphService {
         };
     }
 
-    getCentrality(nodeId: string): number {
-        const nodeCount = this._nodes.size;
+    getCentrality(sessionId: string, nodeId: string): number {
+        const state = this._session(sessionId);
+        const nodeCount = state?.nodes.size ?? 0;
         if (nodeCount <= 1) return 1;
 
-        const outDegree = this._outEdges.get(nodeId)?.length ?? 0;
-        const inDegree = this._inEdges.get(nodeId)?.length ?? 0;
+        const outDegree = state?.outEdges.get(nodeId)?.length ?? 0;
+        const inDegree = state?.inEdges.get(nodeId)?.length ?? 0;
         const degree = outDegree + inDegree;
 
         return degree / (nodeCount - 1);
     }
 
-    getLongestChain(): readonly ArgumentNode[] {
+    getLongestChain(sessionId: string): readonly ArgumentNode[] {
+        const state = this._session(sessionId);
+        if (!state) return [];
+
         // DP on nodes sorted by round
-        const sorted = Array.from(this._nodes.values()).sort((a, b) => a.round - b.round);
+        const sorted = Array.from(state.nodes.values()).sort((a, b) => a.round - b.round);
         const dist = new Map<string, number>();
         const prev = new Map<string, string | null>();
 
@@ -318,7 +352,7 @@ export class ArgumentGraphService implements IArgumentGraphService {
             dist.set(node.id, 1);
             prev.set(node.id, null);
 
-            const incoming = this._inEdges.get(node.id) ?? [];
+            const incoming = state.inEdges.get(node.id) ?? [];
             for (const edge of incoming) {
                 const sourceDist = dist.get(edge.sourceId) ?? 0;
                 if (sourceDist + 1 > (dist.get(node.id) ?? 0)) {
@@ -342,7 +376,7 @@ export class ArgumentGraphService implements IArgumentGraphService {
         const path: ArgumentNode[] = [];
         let current = maxNode;
         while (current) {
-            const node = this._nodes.get(current);
+            const node = state.nodes.get(current);
             if (node) path.unshift(node);
             current = prev.get(current) ?? null;
         }
@@ -351,13 +385,17 @@ export class ArgumentGraphService implements IArgumentGraphService {
     }
 
     getUnattackedClaims(
+        sessionId: string,
         currentRound: number,
         minRoundsUnchallenged = 3,
     ): readonly UnattackedClaim[] {
+        const state = this._session(sessionId);
+        if (!state) return [];
+
         const result: UnattackedClaim[] = [];
 
-        for (const [id, node] of this._nodes) {
-            const incoming = this._inEdges.get(id) ?? [];
+        for (const [id, node] of state.nodes) {
+            const incoming = state.inEdges.get(id) ?? [];
             const attacks = incoming.filter((e) => e.type === 'attacks');
 
             if (attacks.length > 0) {
@@ -378,16 +416,23 @@ export class ArgumentGraphService implements IArgumentGraphService {
         return result.sort((a, b) => b.roundsSince - a.roundsSince);
     }
 
-    findBestConstraint(agentId: string, currentRound: number): ConstraintCandidate | null {
+    findBestConstraint(
+        sessionId: string,
+        agentId: string,
+        currentRound: number,
+    ): ConstraintCandidate | null {
+        const state = this._session(sessionId);
+        if (!state) return null;
+
         let best: ConstraintCandidate | null = null;
         let bestScore = -1;
 
-        for (const [id, node] of this._nodes) {
+        for (const [id, node] of state.nodes) {
             if (node.agentId === agentId) continue;
             if (node.round >= currentRound) continue;
 
             // Check if this agent already attacked this node
-            const outgoing = this._outEdges.get(id) ?? [];
+            const outgoing = state.outEdges.get(id) ?? [];
             const alreadyAttacked = outgoing.some(
                 (e) => e.agentId === agentId && (e.type === 'attacks' || e.type === 'responds_to'),
             );
@@ -396,8 +441,8 @@ export class ArgumentGraphService implements IArgumentGraphService {
             // Prefer claims that were recently made by opponents
             const recencyBonus = Math.max(0, 1 - (currentRound - node.round) * 0.2);
             const attackCount =
-                this._inEdges.get(id)?.filter((e) => e.type === 'attacks').length ?? 0;
-            const centrality = this.getCentrality(id);
+                state.inEdges.get(id)?.filter((e) => e.type === 'attacks').length ?? 0;
+            const centrality = this.getCentrality(sessionId, id);
 
             // Target high-centrality claims that haven't been over-attacked
             const score = centrality * 0.4 + recencyBonus * 0.4 - attackCount * 0.05;
@@ -414,18 +459,25 @@ export class ArgumentGraphService implements IArgumentGraphService {
         return best;
     }
 
-    getAttacksOnAgent(targetAgentId: string): readonly ArgumentEdge[] {
-        return this._allEdges.filter(
-            (e) => e.type === 'attacks' && this._nodes.get(e.targetId)?.agentId === targetAgentId,
+    getAttacksOnAgent(sessionId: string, targetAgentId: string): readonly ArgumentEdge[] {
+        const state = this._session(sessionId);
+        if (!state) return [];
+        return state.allEdges.filter(
+            (e) => e.type === 'attacks' && state.nodes.get(e.targetId)?.agentId === targetAgentId,
         );
     }
 
-    getSupportsFromAgent(agentId: string): readonly ArgumentEdge[] {
-        return this._allEdges.filter((e) => e.type === 'supports' && e.agentId === agentId);
+    getSupportsFromAgent(sessionId: string, agentId: string): readonly ArgumentEdge[] {
+        const state = this._session(sessionId);
+        if (!state) return [];
+        return state.allEdges.filter((e) => e.type === 'supports' && e.agentId === agentId);
     }
 
-    getEdgeBalance(nodeId: string): { support: number; attack: number; ratio: number } {
-        const incoming = this._inEdges.get(nodeId) ?? [];
+    getEdgeBalance(
+        sessionId: string,
+        nodeId: string,
+    ): { support: number; attack: number; ratio: number } {
+        const incoming = this._session(sessionId)?.inEdges.get(nodeId) ?? [];
         const support = incoming.filter(
             (e) => e.type === 'supports' || e.type === 'evidence_for',
         ).length;
@@ -439,7 +491,14 @@ export class ArgumentGraphService implements IArgumentGraphService {
         };
     }
 
-    getSubgraph(nodeId: string, maxDepth = 3): { nodes: ArgumentNode[]; edges: ArgumentEdge[] } {
+    getSubgraph(
+        sessionId: string,
+        nodeId: string,
+        maxDepth = 3,
+    ): { nodes: ArgumentNode[]; edges: ArgumentEdge[] } {
+        const state = this._session(sessionId);
+        if (!state) return { nodes: [], edges: [] };
+
         const visited = new Set<string>();
         const nodes: ArgumentNode[] = [];
         const edges: ArgumentEdge[] = [];
@@ -450,16 +509,16 @@ export class ArgumentGraphService implements IArgumentGraphService {
             if (visited.has(id) || depth > maxDepth) continue;
             visited.add(id);
 
-            const node = this._nodes.get(id);
+            const node = state.nodes.get(id);
             if (node) nodes.push(node);
 
-            const outgoing = this._outEdges.get(id) ?? [];
+            const outgoing = state.outEdges.get(id) ?? [];
             for (const edge of outgoing) {
                 edges.push(edge);
                 queue.push({ id: edge.targetId, depth: depth + 1 });
             }
 
-            const incoming = this._inEdges.get(id) ?? [];
+            const incoming = state.inEdges.get(id) ?? [];
             for (const edge of incoming) {
                 edges.push(edge);
                 queue.push({ id: edge.sourceId, depth: depth + 1 });
@@ -471,42 +530,42 @@ export class ArgumentGraphService implements IArgumentGraphService {
 
     // ── Private ──
 
-    private _addEdge(edge: ArgumentEdge): void {
-        this._allEdges.push(edge);
+    private _addEdge(state: SessionGraphState, edge: ArgumentEdge): void {
+        state.allEdges.push(edge);
 
-        const out = this._outEdges.get(edge.sourceId) ?? [];
+        const out = state.outEdges.get(edge.sourceId) ?? [];
         out.push(edge);
-        this._outEdges.set(edge.sourceId, out);
+        state.outEdges.set(edge.sourceId, out);
 
-        const inc = this._inEdges.get(edge.targetId) ?? [];
+        const inc = state.inEdges.get(edge.targetId) ?? [];
         inc.push(edge);
-        this._inEdges.set(edge.targetId, inc);
+        state.inEdges.set(edge.targetId, inc);
     }
 
-    private _bfs(start: string, visited: Set<string>): void {
+    private _bfs(state: SessionGraphState, start: string, visited: Set<string>): void {
         const queue = [start];
         while (queue.length > 0) {
             const id = queue.shift()!;
             if (visited.has(id)) continue;
             visited.add(id);
 
-            const outgoing = this._outEdges.get(id) ?? [];
+            const outgoing = state.outEdges.get(id) ?? [];
             for (const e of outgoing) {
                 if (!visited.has(e.targetId)) queue.push(e.targetId);
             }
-            const incoming = this._inEdges.get(id) ?? [];
+            const incoming = state.inEdges.get(id) ?? [];
             for (const e of incoming) {
                 if (!visited.has(e.sourceId)) queue.push(e.sourceId);
             }
         }
     }
 
-    private _computeLongestPath(): number {
-        const sorted = Array.from(this._nodes.values()).sort((a, b) => a.round - b.round);
+    private _computeLongestPath(state: SessionGraphState): number {
+        const sorted = Array.from(state.nodes.values()).sort((a, b) => a.round - b.round);
         const dist = new Map<string, number>();
 
         for (const node of sorted) {
-            const incoming = this._inEdges.get(node.id) ?? [];
+            const incoming = state.inEdges.get(node.id) ?? [];
             let best = 1;
             for (const edge of incoming) {
                 const d = (dist.get(edge.sourceId) ?? 0) + 1;

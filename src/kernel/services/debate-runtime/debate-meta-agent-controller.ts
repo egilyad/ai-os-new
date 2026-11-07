@@ -19,6 +19,7 @@ export class MetaAgentController implements IMetaAgentController {
     }
 
     getDirective(
+        sessionId: string,
         agentId: string,
         agentName: string,
         previousArguments: ReadonlyArray<{
@@ -39,16 +40,17 @@ export class MetaAgentController implements IMetaAgentController {
         const otherArgCount = previousArguments.length - ownArgCount;
 
         // Compute average centrality of this agent's claims from the graph
-        const agentNodes = this.graph.getAgentNodes(agentId);
+        const agentNodes = this.graph.getAgentNodes(sessionId, agentId);
         const avgCentrality =
             agentNodes.length > 0
-                ? agentNodes.map((n) => this.graph.getCentrality(n.id)).reduce((a, b) => a + b, 0) /
-                  agentNodes.length
+                ? agentNodes
+                      .map((n) => this.graph.getCentrality(sessionId, n.id))
+                      .reduce((a, b) => a + b, 0) / agentNodes.length
                 : 0;
 
         // Compute how many different opponents this agent has engaged
         const attackedOpponents = new Set<string>();
-        const allEdges = this.graph.getAllEdges();
+        const allEdges = this.graph.getAllEdges(sessionId);
         for (const e of allEdges) {
             if (e.sourceId.startsWith(agentId) || e.targetId.startsWith(agentId)) {
                 const otherEdge = e.sourceId.startsWith(agentId) ? e.targetId : e.sourceId;
@@ -81,7 +83,7 @@ export class MetaAgentController implements IMetaAgentController {
         // 4. Agent's claims have high support ratio (mostly agreeing) →
         //    switch to devil's advocate to introduce tension
         if (agentNodes.length >= 2) {
-            const balances = agentNodes.map((n) => this.graph.getEdgeBalance(n.id));
+            const balances = agentNodes.map((n) => this.graph.getEdgeBalance(sessionId, n.id));
             const avgSupportRatio =
                 balances.reduce((s, b) => s + b.support, 0) /
                 Math.max(

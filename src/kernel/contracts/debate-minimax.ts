@@ -25,5 +25,10 @@ export interface IMinimaxPlanner {
      * minimax on the argument graph. Returns null when there are too few
      * arguments (< 3) or the graph is not initialized.
      */
-    plan(agentId: string, agentName: string, currentRound: number): MinimaxMove | null;
+    plan(
+        sessionId: string,
+        agentId: string,
+        agentName: string,
+        currentRound: number,
+    ): MinimaxMove | null;
 }

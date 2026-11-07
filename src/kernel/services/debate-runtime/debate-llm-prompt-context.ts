@@ -69,7 +69,7 @@ export async function buildDebateSystemContent(
                 parentResolution: a.parentResolution,
                 duplicateOf: a.duplicateOf,
             }));
-            deps.argumentGraphService.build(graphInput);
+            deps.argumentGraphService.build(sessionId, graphInput);
         } catch {
             LOGGER.warn('DebateLlmCaller', 'Argument graph build error', { sessionId });
         }
@@ -80,6 +80,7 @@ export async function buildDebateSystemContent(
     if (isQ('entanglement') && deps.entanglementEngine && previousArguments.length >= 2) {
         try {
             entanglementConstraint = deps.entanglementEngine.getConstraint(
+                sessionId,
                 participant.agentId,
                 currentName,
                 previousArguments,
@@ -118,7 +119,12 @@ export async function buildDebateSystemContent(
     let anchors: import('../../contracts/debate-entanglement').AnchorClaim[] | undefined;
     if (isQ('agreement-anchoring') && deps.anchoringService && previousArguments.length >= 6) {
         try {
-            anchors = deps.anchoringService.extractAnchors(previousArguments, session.round, 3);
+            anchors = deps.anchoringService.extractAnchors(
+                sessionId,
+                previousArguments,
+                session.round,
+                3,
+            );
         } catch {
             LOGGER.warn('DebateLlmCaller', 'Anchoring service error', { sessionId });
         }
@@ -130,11 +136,12 @@ export async function buildDebateSystemContent(
     if (
         isQ('vulnerability-targeting') &&
         deps.vulnerabilityTargeting &&
-        deps.argumentGraphService?.initialized &&
+        deps.argumentGraphService?.isInitialized(sessionId) &&
         previousArguments.length >= 4
     ) {
         try {
             vulnerabilityTargets = deps.vulnerabilityTargeting.findVulnerabilities(
+                sessionId,
                 participant.agentId,
                 currentName,
                 session.round,
@@ -234,11 +241,16 @@ export async function buildDebateSystemContent(
     if (
         isQ('graph-minimax') &&
         deps.minimaxPlanner &&
-        deps.argumentGraphService?.initialized &&
+        deps.argumentGraphService?.isInitialized(sessionId) &&
         previousArguments.length >= 4
     ) {
         try {
-            minimaxMove = deps.minimaxPlanner.plan(participant.agentId, currentName, session.round);
+            minimaxMove = deps.minimaxPlanner.plan(
+                sessionId,
+                participant.agentId,
+                currentName,
+                session.round,
+            );
             if (minimaxMove) {
                 LOGGER.debug('DebateLlmCaller', 'Minimax strategic move found', {
                     type: minimaxMove.type,
@@ -258,7 +270,7 @@ export async function buildDebateSystemContent(
     if (
         isQ('meta-agent') &&
         deps.metaAgent &&
-        deps.argumentGraphService?.initialized &&
+        deps.argumentGraphService?.isInitialized(sessionId) &&
         previousArguments.length >= 3
     ) {
         try {
@@ -269,6 +281,7 @@ export async function buildDebateSystemContent(
                 round: a.round,
             }));
             tacticalDirective = deps.metaAgent.getDirective(
+                sessionId,
                 participant.agentId,
                 currentName,
                 miningInput,

@@ -22,6 +22,7 @@ export interface IMetaAgentController {
      * when there is insufficient data (< 3 arguments total).
      */
     getDirective(
+        sessionId: string,
         agentId: string,
         agentName: string,
         previousArguments: ReadonlyArray<{

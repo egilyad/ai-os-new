@@ -33,6 +33,7 @@ export const VulnTargetingPanel: React.FC = () => {
     const agents = realAgents;
 
     const { args: liveArgs, sessionId, hasLiveDebate } = useDebateArguments();
+    const graphSession = sessionId || 'vuln-demo';
 
     const derivedArgs: GraphBuildInput[] = [];
 
@@ -72,13 +73,19 @@ export const VulnTargetingPanel: React.FC = () => {
 
     // force recompute on version change
     void version;
-    const stats = graph.getStats();
-    const edges = graph.getAllEdges();
-    const nodes = graph.getAllNodes();
+    const stats = graph.getStats(graphSession);
+    const edges = graph.getAllEdges(graphSession);
+    const nodes = graph.getAllNodes(graphSession);
     const attackerName = agents.find((a) => a.id === attackerId)?.name ?? attackerId;
     const targets = useMemo(() => {
-        if (!graph.initialized || nodes.length < 4) return [] as VulnerabilityTarget[];
-        return svc.findVulnerabilities(attackerId, attackerName, currentRound, maxTargets);
+        if (!graph.isInitialized(graphSession) || nodes.length < 4) return [] as VulnerabilityTarget[];
+        return svc.findVulnerabilities(
+            graphSession,
+            attackerId,
+            attackerName,
+            currentRound,
+            maxTargets,
+        );
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [attackerId, attackerName, currentRound, maxTargets, version, nodes.length]);
     const prompt = useMemo(
@@ -101,18 +108,18 @@ export const VulnTargetingPanel: React.FC = () => {
         };
         const updated = [...args, next];
         setArgs(updated);
-        graph.build(updated);
+        graph.build(graphSession, updated);
         setVersion((v) => v + 1);
     };
 
     const handleRebuild = () => {
-        graph.build(args);
+        graph.build(graphSession, args);
         setVersion((v) => v + 1);
     };
 
     const handleReset = () => {
         setArgs([...derivedArgs]);
-        graph.build(derivedArgs);
+        graph.build(graphSession, derivedArgs);
         setVersion((v) => v + 1);
         setCurrentRound(4);
     };
@@ -128,10 +135,10 @@ export const VulnTargetingPanel: React.FC = () => {
             timestamp: i + 1,
             confidence: 0.8,
         }));
-        graph.build(mapped);
+        graph.build(graphSession, mapped);
         setArgs(mapped);
         setVersion((v) => v + 1);
-    }, [liveArgs, graph]);
+    }, [liveArgs, graph, graphSession]);
 
     useEffect(() => {
         if (hasLiveDebate) loadDebate();

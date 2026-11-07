@@ -77,61 +77,73 @@ export interface GraphBuildInput {
 }
 
 export interface IArgumentGraphService {
-    /** Build (or rebuild) the graph from debate arguments. Idempotent. */
-    build(args: ReadonlyArray<GraphBuildInput>): void;
+    /**
+     * Build (or rebuild) the graph for a session from debate arguments.
+     * Idempotent. Each session keeps an isolated graph state.
+     */
+    build(sessionId: string, args: ReadonlyArray<GraphBuildInput>): void;
 
-    /** Clear all nodes and edges. */
-    clear(): void;
+    /** Clear all nodes and edges for a session. */
+    clear(sessionId: string): void;
 
-    /** Returns true if graph has been built and has nodes. */
-    readonly initialized: boolean;
+    /** Returns true if the session graph has been built and has nodes. */
+    isInitialized(sessionId: string): boolean;
 
     // ── Node access ──
 
-    getNode(id: string): ArgumentNode | undefined;
-    getAllNodes(): readonly ArgumentNode[];
-    getAgentNodes(agentId: string): readonly ArgumentNode[];
-    getRoundNodes(round: number): readonly ArgumentNode[];
+    getNode(sessionId: string, id: string): ArgumentNode | undefined;
+    getAllNodes(sessionId: string): readonly ArgumentNode[];
+    getAgentNodes(sessionId: string, agentId: string): readonly ArgumentNode[];
+    getRoundNodes(sessionId: string, round: number): readonly ArgumentNode[];
 
     // ── Edge access ──
 
-    getAllEdges(): readonly ArgumentEdge[];
-    getOutgoingEdges(nodeId: string): readonly ArgumentEdge[];
-    getIncomingEdges(nodeId: string): readonly ArgumentEdge[];
+    getAllEdges(sessionId: string): readonly ArgumentEdge[];
+    getOutgoingEdges(sessionId: string, nodeId: string): readonly ArgumentEdge[];
+    getIncomingEdges(sessionId: string, nodeId: string): readonly ArgumentEdge[];
 
     // ── Graph analysis ──
 
-    getStats(): ArgumentGraphStats;
+    getStats(sessionId: string): ArgumentGraphStats;
 
     /** Compute PageRank-like centrality for a node. */
-    getCentrality(nodeId: string): number;
+    getCentrality(sessionId: string, nodeId: string): number;
 
     /** Longest directed path through the graph. */
-    getLongestChain(): readonly ArgumentNode[];
+    getLongestChain(sessionId: string): readonly ArgumentNode[];
 
     /**
      * Find claims that have not been attacked for N rounds.
      * Used by AnchoringService (P0.5) and Delta-Focusing.
      */
     getUnattackedClaims(
+        sessionId: string,
         currentRound: number,
         minRoundsUnchallenged?: number,
     ): readonly UnattackedClaim[];
 
     /** Find the best candidate for entanglement constraint. */
-    findBestConstraint(agentId: string, currentRound: number): ConstraintCandidate | null;
+    findBestConstraint(
+        sessionId: string,
+        agentId: string,
+        currentRound: number,
+    ): ConstraintCandidate | null;
 
     /** Find all attack edges for a given agent. */
-    getAttacksOnAgent(targetAgentId: string): readonly ArgumentEdge[];
+    getAttacksOnAgent(sessionId: string, targetAgentId: string): readonly ArgumentEdge[];
 
     /** Find all support edges from a given agent. */
-    getSupportsFromAgent(agentId: string): readonly ArgumentEdge[];
+    getSupportsFromAgent(sessionId: string, agentId: string): readonly ArgumentEdge[];
 
     /** Compute the ratio of support vs attack edges for a claim node. */
-    getEdgeBalance(nodeId: string): { support: number; attack: number; ratio: number };
+    getEdgeBalance(
+        sessionId: string,
+        nodeId: string,
+    ): { support: number; attack: number; ratio: number };
 
     /** Return subgraph reachable from a node via outgoing edges. */
     getSubgraph(
+        sessionId: string,
         nodeId: string,
         maxDepth?: number,
     ): { nodes: ArgumentNode[]; edges: ArgumentEdge[] };

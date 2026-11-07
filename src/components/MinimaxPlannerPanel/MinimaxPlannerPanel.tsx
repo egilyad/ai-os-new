@@ -30,10 +30,12 @@ export const MinimaxPlannerPanel: React.FC = () => {
     const realAgents = useRealAgents();
     const agents = realAgents;
     const { args: liveArgs, sessionId, hasLiveDebate } = useDebateArguments();
+    const graphSession = sessionId || 'minimax-demo';
     type Arg = { id: string; agentId: string; agentName: string; content: string; round: number };
     const buildPlanner = (argList: Arg[]) => {
         const g = new ArgumentGraphService();
         g.build(
+            graphSession,
             argList.map((a) => ({
                 id: a.id,
                 agentId: a.agentId,
@@ -58,6 +60,7 @@ export const MinimaxPlannerPanel: React.FC = () => {
         if (!liveArgs.length) return;
         const g = new ArgumentGraphService();
         g.build(
+            graphSession,
             liveArgs.map((a) => ({
                 id: a.id,
                 agentId: a.agentId,
@@ -69,7 +72,7 @@ export const MinimaxPlannerPanel: React.FC = () => {
             })),
         );
         setServices({ planner: new MinimaxPlanner(g), graph: g });
-    }, [liveArgs]);
+    }, [liveArgs, graphSession]);
     useEffect(() => {
         if (hasLiveDebate) loadDebate();
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -80,11 +83,11 @@ export const MinimaxPlannerPanel: React.FC = () => {
 
     const handlePlan = () => {
         const name = agents.find((a) => a.id === agentId)?.name ?? agentId;
-        const move = planner.plan(agentId, name, round);
+        const move = planner.plan(graphSession, agentId, name, round);
         setBest(move);
         // Generate all candidates for display
         try {
-            const all = planner.getCandidates(agentId, round);
+            const all = planner.getCandidates(graphSession, agentId, round);
             setCandidates(all.length > 0 ? all.slice(0, 6) : move ? [move] : []);
         } catch {
             setCandidates(move ? [move] : []);
@@ -93,13 +96,13 @@ export const MinimaxPlannerPanel: React.FC = () => {
 
     const graphInfo = useMemo(() => {
         try {
-            const nodes = graph.getAllNodes();
-            const initialized = graph.initialized || nodes.length > 0;
+            const nodes = graph.getAllNodes(graphSession);
+            const initialized = graph.isInitialized(graphSession) || nodes.length > 0;
             return { count: nodes.length, initialized };
         } catch {
             return { count: 0, initialized: false };
         }
-    }, [graph]);
+    }, [graph, graphSession]);
 
     return (
         <div

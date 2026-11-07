@@ -20,12 +20,12 @@ export class MinimaxPlanner implements IMinimaxPlanner {
         this.graph = graph;
     }
 
-    plan(agentId: string, _agentName: string, currentRound: number): MinimaxMove | null {
-        if (!this.graph.initialized || this.graph.getAllNodes().length < 3) {
+    plan(sessionId: string, agentId: string, _agentName: string, currentRound: number): MinimaxMove | null {
+        if (!this.graph.isInitialized(sessionId) || this.graph.getAllNodes(sessionId).length < 3) {
             return null;
         }
 
-        const candidates = this._generateCandidates(agentId, currentRound);
+        const candidates = this._generateCandidates(sessionId, agentId, currentRound);
         if (candidates.length === 0) return null;
 
         // 2-ply minimax: for each candidate, compute opponent's best response
@@ -33,8 +33,9 @@ export class MinimaxPlanner implements IMinimaxPlanner {
         let bestMinimaxValue = -Infinity;
 
         for (const candidate of candidates) {
-            const ourValue = this._evaluateMove(candidate, agentId);
+            const ourValue = this._evaluateMove(sessionId, candidate, agentId);
             const opponentResponse = this._simulateOpponentResponse(
+                sessionId,
                 candidate,
                 agentId,
                 currentRound,
@@ -54,15 +55,15 @@ export class MinimaxPlanner implements IMinimaxPlanner {
     }
 
     /** Public candidate list for UI display (wraps internal generation). */
-    getCandidates(agentId: string, currentRound: number): MinimaxMove[] {
-        return this._generateCandidates(agentId, currentRound);
+    getCandidates(sessionId: string, agentId: string, currentRound: number): MinimaxMove[] {
+        return this._generateCandidates(sessionId, agentId, currentRound);
     }
 
     // ── Candidate generation ──
 
-    private _generateCandidates(agentId: string, currentRound: number): MinimaxMove[] {
+    private _generateCandidates(sessionId: string, agentId: string, currentRound: number): MinimaxMove[] {
         const candidates: MinimaxMove[] = [];
-        const allNodes = this.graph.getAllNodes();
+        const allNodes = this.graph.getAllNodes(sessionId);
         const ownNodes = allNodes.filter((n) => n.agentId === agentId);
         const opponentNodes = allNodes.filter((n) => n.agentId !== agentId);
 
@@ -70,8 +71,8 @@ export class MinimaxPlanner implements IMinimaxPlanner {
         const centralOpponents = [...opponentNodes]
             .map((n) => ({
                 node: n,
-                centrality: this.graph.getCentrality(n.id),
-                balance: this.graph.getEdgeBalance(n.id),
+                centrality: this.graph.getCentrality(sessionId, n.id),
+                balance: this.graph.getEdgeBalance(sessionId, n.id),
             }))
             .filter(
                 (c) =>
@@ -98,7 +99,7 @@ export class MinimaxPlanner implements IMinimaxPlanner {
         const weakOpponents = [...opponentNodes]
             .map((n) => ({
                 node: n,
-                balance: this.graph.getEdgeBalance(n.id),
+                balance: this.graph.getEdgeBalance(sessionId, n.id),
             }))
             .filter((c) => c.balance.ratio < 0.4 && currentRound - c.node.round < 4)
             .sort((a, b) => a.balance.ratio - b.balance.ratio)
@@ -120,8 +121,8 @@ export class MinimaxPlanner implements IMinimaxPlanner {
         const ownWeak = ownNodes
             .map((n) => ({
                 node: n,
-                balance: this.graph.getEdgeBalance(n.id),
-                centrality: this.graph.getCentrality(n.id),
+                balance: this.graph.getEdgeBalance(sessionId, n.id),
+                centrality: this.graph.getCentrality(sessionId, n.id),
             }))
             .filter((c) => c.balance.attack > c.balance.support && c.centrality > 0.2)
             .sort((a, b) => b.centrality - a.centrality)
@@ -142,8 +143,8 @@ export class MinimaxPlanner implements IMinimaxPlanner {
         const ownStrong = ownNodes
             .map((n) => ({
                 node: n,
-                balance: this.graph.getEdgeBalance(n.id),
-                centrality: this.graph.getCentrality(n.id),
+                balance: this.graph.getEdgeBalance(sessionId, n.id),
+                centrality: this.graph.getCentrality(sessionId, n.id),
             }))
             .filter((c) => c.centrality > 0.4 && c.balance.support < c.balance.attack + 1)
             .sort((a, b) => b.centrality - a.centrality)
@@ -161,7 +162,7 @@ export class MinimaxPlanner implements IMinimaxPlanner {
         }
 
         // 5. Challenge unattacked opponent claims
-        const unattacked = this.graph.getUnattackedClaims(currentRound, 2);
+        const unattacked = this.graph.getUnattackedClaims(sessionId, currentRound, 2);
         const targetableUnattacked = unattacked.filter((u) => u.node.agentId !== agentId);
         for (const u of targetableUnattacked.slice(0, 2)) {
             candidates.push({
@@ -179,8 +180,8 @@ export class MinimaxPlanner implements IMinimaxPlanner {
 
     // ── Move evaluation ──
 
-    private _evaluateMove(move: MinimaxMove, _agentId: string): number {
-        const node = this.graph.getNode(move.targetNodeId);
+    private _evaluateMove(sessionId: string, move: MinimaxMove, _agentId: string): number {
+        const node = this.graph.getNode(sessionId, move.targetNodeId);
         if (!node) return 0;
 
         let score: number;
@@ -189,14 +190,16 @@ export class MinimaxPlanner implements IMinimaxPlanner {
             case 'attack_high_centrality':
             case 'attack_low_support':
                 score =
-                    this.graph.getCentrality(move.targetNodeId) * CENTRALITY_WEIGHT +
-                    (1 - this.graph.getEdgeBalance(move.targetNodeId).ratio) * SUPPORT_RATIO_WEIGHT;
+                    this.graph.getCentrality(sessionId, move.targetNodeId) * CENTRALITY_WEIGHT +
+                    (1 - this.graph.getEdgeBalance(sessionId, move.targetNodeId).ratio) *
+                        SUPPORT_RATIO_WEIGHT;
                 break;
             case 'defend_own_weak':
-                score = this.graph.getCentrality(move.targetNodeId) * CENTRALITY_WEIGHT;
+                score = this.graph.getCentrality(sessionId, move.targetNodeId) * CENTRALITY_WEIGHT;
                 break;
             case 'support_own_strong':
-                score = this.graph.getCentrality(move.targetNodeId) * 0.6 * CENTRALITY_WEIGHT;
+                score =
+                    this.graph.getCentrality(sessionId, move.targetNodeId) * 0.6 * CENTRALITY_WEIGHT;
                 break;
             case 'challenge_unattacked':
                 score = 0.5;
@@ -211,11 +214,12 @@ export class MinimaxPlanner implements IMinimaxPlanner {
     // ── Opponent response simulation ──
 
     private _simulateOpponentResponse(
+        sessionId: string,
         _ourMove: MinimaxMove,
         agentId: string,
         _currentRound: number,
     ): { score: number } | null {
-        const allNodes = this.graph.getAllNodes();
+        const allNodes = this.graph.getAllNodes(sessionId);
         const ourNodes = allNodes.filter((n) => n.agentId === agentId);
 
         if (ourNodes.length === 0) return null;
@@ -224,8 +228,8 @@ export class MinimaxPlanner implements IMinimaxPlanner {
         let worstDamage = 0;
 
         for (const node of ourNodes) {
-            const centrality = this.graph.getCentrality(node.id);
-            const balance = this.graph.getEdgeBalance(node.id);
+            const centrality = this.graph.getCentrality(sessionId, node.id);
+            const balance = this.graph.getEdgeBalance(sessionId, node.id);
             const damage = centrality * 0.5 + (1 - balance.ratio) * 0.3;
             if (damage > worstDamage) worstDamage = damage;
         }

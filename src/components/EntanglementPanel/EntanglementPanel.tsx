@@ -21,6 +21,7 @@ export const EntanglementPanel: React.FC = () => {
     const realAgents = useRealAgents();
     const agents = realAgents;
     const { args: liveArgs, sessionId, hasLiveDebate } = useDebateArguments();
+    const graphSession = sessionId || 'entanglement-demo';
     const [argList, setArgList] = useState<Arg[]>([]);
     const [agentId, setAgentId] = useState<string>(() => agents[0]?.id ?? '');
     useEffect(() => {
@@ -54,8 +55,8 @@ export const EntanglementPanel: React.FC = () => {
     }, [engines.ent, response, constraint]);
 
     const anchors = useMemo(
-        () => engines.anchor.extractAnchors(argList, round, 2),
-        [engines.anchor, round, argList],
+        () => engines.anchor.extractAnchors(graphSession, argList, round, 2),
+        [engines.anchor, round, argList, graphSession],
     );
     const deltaPrompt = useMemo(
         () => engines.anchor.buildDeltaPrompt(anchors, 'English'),
@@ -64,6 +65,7 @@ export const EntanglementPanel: React.FC = () => {
 
     const handleGetConstraint = () => {
         const c = engines.ent.getConstraint(
+            graphSession,
             agentId,
             agents.find((a) => a.id === agentId)?.name ?? agentId,
             argList,

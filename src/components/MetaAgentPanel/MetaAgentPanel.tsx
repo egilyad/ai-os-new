@@ -30,11 +30,13 @@ export const MetaAgentPanel: React.FC = () => {
     const realAgents = useRealAgents();
     const agents = realAgents;
     const { args: liveArgs, sessionId, hasLiveDebate } = useDebateArguments();
+    const graphSession = sessionId || 'meta-demo';
     const [argList, setArgList] = useState<Arg[]>([]);
     const { controller, graph } = useMemo(() => {
         const g = new ArgumentGraphService();
         // Seed graph with args for centrality demo
         g.build(
+            graphSession,
             argList.map((a, i) => ({
                 id: a.id,
                 agentId: a.agentId,
@@ -47,7 +49,7 @@ export const MetaAgentPanel: React.FC = () => {
         );
         const c = new MetaAgentController(g);
         return { controller: c, graph: g };
-    }, [argList]);
+    }, [argList, graphSession]);
     const [agentId, setAgentId] = useState<string>(() => agents[0]?.id ?? '');
     const [round, setRound] = useState(4);
     const [directive, setDirective] =
@@ -75,12 +77,12 @@ export const MetaAgentPanel: React.FC = () => {
 
     const handleGet = () => {
         const name = agents.find((a) => a.id === agentId)?.name ?? agentId;
-        const d = controller.getDirective(agentId, name, argList, round);
+        const d = controller.getDirective(graphSession, agentId, name, argList, round);
         setDirective(d);
     };
 
     const allDirectives = agents.map((a) => {
-        const d = controller.getDirective(a.id, a.name, argList, round);
+        const d = controller.getDirective(graphSession, a.id, a.name, argList, round);
         return { agentId: a.id, agentName: a.name, directive: d };
     });
 

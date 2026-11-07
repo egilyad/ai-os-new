@@ -65,6 +65,7 @@ export class EntanglementEngine implements IEntanglementEngine {
     }
 
     getConstraint(
+        sessionId: string,
         agentId: string,
         _agentName: string,
         allArguments: ReadonlyArray<{
@@ -77,8 +78,8 @@ export class EntanglementEngine implements IEntanglementEngine {
         currentRound: number,
     ): EntanglementConstraint | null {
         // ── Graph path (preferred) ──
-        if (this._graph && this._graph.initialized) {
-            const candidate = this._graph.findBestConstraint(agentId, currentRound);
+        if (this._graph && this._graph.isInitialized(sessionId)) {
+            const candidate = this._graph.findBestConstraint(sessionId, agentId, currentRound);
             if (candidate) {
                 const mappedType = this._mapEdgeType(candidate.type);
                 const contextPhrase = `Your opponent ${candidate.node.agentName} stated: "${candidate.node.content.slice(0, 200)}". Address this specific claim directly.`;
@@ -216,6 +217,7 @@ export class AnchoringService implements IAnchoringService {
     }
 
     extractAnchors(
+        sessionId: string,
         allArguments: ReadonlyArray<{
             id: string;
             agentId: string;
@@ -229,8 +231,12 @@ export class AnchoringService implements IAnchoringService {
         if (currentRound < minRoundsForAnchor + 2) return [];
 
         // ── Graph path (preferred) ──
-        if (this._graph && this._graph.initialized) {
-            const unattacked = this._graph.getUnattackedClaims(currentRound, minRoundsForAnchor);
+        if (this._graph && this._graph.isInitialized(sessionId)) {
+            const unattacked = this._graph.getUnattackedClaims(
+                sessionId,
+                currentRound,
+                minRoundsForAnchor,
+            );
             return unattacked.slice(0, 10).map((u) => ({
                 claimId: u.node.id,
                 agentName: u.node.agentName,

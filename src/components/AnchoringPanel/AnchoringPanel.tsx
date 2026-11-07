@@ -15,6 +15,7 @@ export const AnchoringPanel: React.FC = () => {
     const agents = useRealAgents();
     const [args, setArgs] = useState<Arg[]>([]);
     const { args: liveArgs, sessionId, hasLiveDebate } = useDebateArguments();
+    const graphSession = sessionId || 'anchoring-demo';
     const [round, setRound] = useState(4);
     const loadDebate = useCallback(() => {
         if (!liveArgs.length) return;
@@ -41,11 +42,11 @@ export const AnchoringPanel: React.FC = () => {
 
     const anchors = useMemo(() => {
         try {
-            return svc.extractAnchors(args, round, 2);
+            return svc.extractAnchors(graphSession, args, round, 2);
         } catch {
             return [];
         }
-    }, [svc, args, round]);
+    }, [svc, args, round, graphSession]);
     const prompt = useMemo(() => {
         try {
             return svc.buildDeltaPrompt(anchors, 'English');

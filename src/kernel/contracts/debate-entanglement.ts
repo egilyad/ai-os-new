@@ -22,6 +22,7 @@ export interface ResponseValidationResult {
 
 export interface IEntanglementEngine {
     getConstraint(
+        sessionId: string,
         agentId: string,
         agentName: string,
         allArguments: ReadonlyArray<{
@@ -52,6 +53,7 @@ export interface AnchorClaim {
 
 export interface IAnchoringService {
     extractAnchors(
+        sessionId: string,
         allArguments: ReadonlyArray<{
             id: string;
             agentId: string;

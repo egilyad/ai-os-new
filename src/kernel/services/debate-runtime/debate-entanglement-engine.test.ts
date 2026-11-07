@@ -7,7 +7,7 @@ describe('EntanglementEngine', () => {
         const graph = new ArgumentGraphService();
         const e = new EntanglementEngine();
         e.setGraph(graph);
-        expect(e.getConstraint('alice', 'Alice', [], 1)).toBeNull();
+        expect(e.getConstraint('s1', 'alice', 'Alice', [], 1)).toBeNull();
     });
     it('getConstraint does not throw with data', () => {
         const graph = new ArgumentGraphService();
@@ -17,7 +17,7 @@ describe('EntanglementEngine', () => {
             { id: 'b1', agentId: 'bob', agentName: 'Bob', content: 'We must ban fossil fuels immediately because climate is urgent', round: 1 },
             { id: 'a1', agentId: 'alice', agentName: 'Alice', content: 'My own claim', round: 1 },
         ];
-        expect(() => e.getConstraint('alice', 'Alice', args, 2)).not.toThrow();
+        expect(() => e.getConstraint('s1', 'alice', 'Alice', args, 2)).not.toThrow();
     });
     it('validateEntanglement detects engagement', () => {
         const graph = new ArgumentGraphService();
