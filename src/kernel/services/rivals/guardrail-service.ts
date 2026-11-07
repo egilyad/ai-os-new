@@ -12,6 +12,7 @@ import type { DataAccessLayer } from '../../dal/types';
 import { genId } from '../../../utils/gen-id';
 import { rootLogger } from '../logger-service';
 import { EVENTS } from '../../events/event-names';
+import { isReDoSPattern } from '../../utils/regex-safe';
 
 const LOGGER = rootLogger.child('Guardrail');
 
@@ -70,6 +71,10 @@ export class GuardrailService implements IGuardrailService {
             } catch {
                 throw new Error('Invalid regex pattern');
             }
+            // W6-023: reject pathological patterns instead of executing them.
+            if (isReDoSPattern(input.pattern as string)) {
+                throw new Error('ReDoS-prone regex pattern rejected');
+            }
         }
         const rule: GuardrailRule = {
             id: genId('guard'),
@@ -121,6 +126,7 @@ export class GuardrailService implements IGuardrailService {
             case 'contains':
                 return text.toLowerCase().includes((rule.pattern ?? '').toLowerCase());
             case 'regex':
+                if (isReDoSPattern(rule.pattern ?? '')) return false;
                 return new RegExp(rule.pattern as string).test(text);
             case 'minLength':
                 return text.length < (rule.value ?? 0);

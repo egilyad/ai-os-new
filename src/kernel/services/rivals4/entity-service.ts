@@ -7,6 +7,7 @@
  */
 import type { IEntityService } from '../../contracts/rivals4';
 import { rootLogger } from '../logger-service';
+import { isReDoSPattern } from '../../utils/regex-safe';
 
 const LOGGER = rootLogger.child('Entity');
 
@@ -35,6 +36,9 @@ export class EntityService implements IEntityService {
     }
 
     async extractPattern(text: string, pattern: string): Promise<string[]> {
+        if (isReDoSPattern(pattern)) {
+            throw new Error(`ReDoS-prone entity pattern: ${pattern}`);
+        }
         let re: RegExp;
         try {
             re = new RegExp(pattern, 'gi');

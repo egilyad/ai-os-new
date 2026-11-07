@@ -12,6 +12,7 @@ import type { ICopilotService } from '../../contracts/rivals4';
 import { genId } from '../../../utils/gen-id';
 import { rootLogger } from '../logger-service';
 import { EVENTS } from '../../events/event-names';
+import { isReDoSPattern } from '../../utils/regex-safe';
 
 const LOGGER = rootLogger.child('Copilot');
 
@@ -73,6 +74,10 @@ export class CopilotService implements ICopilotService {
                 } catch {
                     throw new Error(`Invalid entity pattern: ${v}`);
                 }
+                // W6-023: reject pathological patterns instead of executing them.
+                if (isReDoSPattern(v)) {
+                    throw new Error(`ReDoS-prone entity pattern: ${v}`);
+                }
             }
         }
         doc.entities.push({ name, kind, values: values.slice(0, 50) });
@@ -131,6 +136,7 @@ export class CopilotService implements ICopilotService {
             return null;
         }
         for (const p of values) {
+            if (isReDoSPattern(p)) continue;
             const m = text.match(new RegExp(p, 'i'));
             if (m) return m[0];
         }

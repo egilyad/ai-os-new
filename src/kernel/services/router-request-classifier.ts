@@ -1,11 +1,16 @@
 import type { RouterConfig } from '../types/routing-types';
 import type { RequestClassification, RequestIntent, RequestLanguage } from './router-types';
+import { isReDoSPattern } from '../utils/regex-safe';
 
 // B10-152: Cache compiled RegExp to avoid re-compiling on every call
 const regexCache = new Map<string, RegExp>();
 const MAX_REGEX_CACHE = 100;
 
+const NEVER_MATCH = /$^/;
+
 function getRegex(pattern: string, flags = 'i'): RegExp {
+    // W6-023: never compile ReDoS-prone patterns — match nothing instead.
+    if (isReDoSPattern(pattern)) return NEVER_MATCH;
     const key = `${flags}:${pattern}`;
     let r = regexCache.get(key);
     if (!r) {

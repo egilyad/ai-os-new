@@ -2,6 +2,7 @@ import { EVENTS } from '../events/event-names';
 import type { IEventBus } from '../types/interfaces';
 import type { ILogger } from '../contracts/logger';
 import { rootLogger } from './logger-service';
+import { isReDoSPattern } from '../utils/regex-safe';
 
 const LOGGER = rootLogger.child('MessageIndex');
 
@@ -281,7 +282,8 @@ export class MessageIndexService {
         let regex: RegExp | null = null;
         if (q && opts.useRegex) {
             try {
-                regex = new RegExp(q, opts.caseSensitive ? '' : 'i');
+                // W6-023: reject ReDoS-prone patterns — fall back to plain search.
+                regex = isReDoSPattern(q) ? null : new RegExp(q, opts.caseSensitive ? '' : 'i');
             } catch {
                 return [];
             }

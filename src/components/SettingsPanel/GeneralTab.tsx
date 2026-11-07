@@ -23,6 +23,7 @@ import { useKeyList } from '../../stores/useKeyStore';
 import { PROVIDER_DEFAULT_MODELS } from '../../kernel/utils/provider-default-models';
 import { useTranslation } from '../../i18n/useTranslation';
 import { safeClone } from '../../shared/utils/safe-json';
+import { flattenFeatureFlags } from '../../kernel/utils/feature-flags';
 import {
     detailsContainer,
     detailsSummary,
@@ -409,10 +410,7 @@ const GeneralTab: React.FC<GeneralTabProps> = ({
                             onChange={(v) => {
                                 setFeatureFlag('memory.enabled', v);
                                 setFeatureFlags(
-                                    safeClone(CONFIG.featureFlags) as unknown as Record<
-                                        string,
-                                        boolean
-                                    >,
+                                    flattenFeatureFlags(safeClone(CONFIG.featureFlags)),
                                 );
                             }}
                             accent="#10b981"
@@ -428,10 +426,7 @@ const GeneralTab: React.FC<GeneralTabProps> = ({
                             onChange={(v) => {
                                 setFeatureFlag('memory.semantic', v);
                                 setFeatureFlags(
-                                    safeClone(CONFIG.featureFlags) as unknown as Record<
-                                        string,
-                                        boolean
-                                    >,
+                                    flattenFeatureFlags(safeClone(CONFIG.featureFlags)),
                                 );
                             }}
                             accent="#8b5cf6"
@@ -447,10 +442,7 @@ const GeneralTab: React.FC<GeneralTabProps> = ({
                             onChange={(v) => {
                                 setFeatureFlag('memory.ragOnChat', v);
                                 setFeatureFlags(
-                                    safeClone(CONFIG.featureFlags) as unknown as Record<
-                                        string,
-                                        boolean
-                                    >,
+                                    flattenFeatureFlags(safeClone(CONFIG.featureFlags)),
                                 );
                             }}
                             accent="#f59e0b"
@@ -466,10 +458,7 @@ const GeneralTab: React.FC<GeneralTabProps> = ({
                             onChange={(v) => {
                                 setFeatureFlag('memory.autoStore', v);
                                 setFeatureFlags(
-                                    safeClone(CONFIG.featureFlags) as unknown as Record<
-                                        string,
-                                        boolean
-                                    >,
+                                    flattenFeatureFlags(safeClone(CONFIG.featureFlags)),
                                 );
                             }}
                             accent="#3b82f6"
@@ -485,10 +474,7 @@ const GeneralTab: React.FC<GeneralTabProps> = ({
                             onChange={(v) => {
                                 setFeatureFlag('debate.runtimeEngine', v);
                                 setFeatureFlags(
-                                    safeClone(CONFIG.featureFlags) as unknown as Record<
-                                        string,
-                                        boolean
-                                    >,
+                                    flattenFeatureFlags(safeClone(CONFIG.featureFlags)),
                                 );
                             }}
                             accent="#ec4899"
@@ -504,10 +490,7 @@ const GeneralTab: React.FC<GeneralTabProps> = ({
                             onChange={(v) => {
                                 setFeatureFlag('ui.experimentalVisuals', v);
                                 setFeatureFlags(
-                                    safeClone(CONFIG.featureFlags) as unknown as Record<
-                                        string,
-                                        boolean
-                                    >,
+                                    flattenFeatureFlags(safeClone(CONFIG.featureFlags)),
                                 );
                             }}
                             accent="#06b6d4"
@@ -523,10 +506,7 @@ const GeneralTab: React.FC<GeneralTabProps> = ({
                             onChange={(v) => {
                                 setFeatureFlag('mockServices.enabled', v);
                                 setFeatureFlags(
-                                    safeClone(CONFIG.featureFlags) as unknown as Record<
-                                        string,
-                                        boolean
-                                    >,
+                                    flattenFeatureFlags(safeClone(CONFIG.featureFlags)),
                                 );
                             }}
                             accent="#f59e0b"

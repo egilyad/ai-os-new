@@ -289,6 +289,7 @@ export class PromptSecurityService implements IPromptSecurityService {
         const findings: SecurityFinding[] = [];
         for (const rule of this.config.rules) {
             if (!rule.enabled) continue;
+            if (isReDoSPattern(rule.pattern)) continue;
             let regex: RegExp;
             try {
                 regex = new RegExp(rule.pattern, 'gi');

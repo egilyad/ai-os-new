@@ -19,6 +19,7 @@ import { KeyboardShortcutsModal } from './Common/KeyboardShortcutsModal';
 import { CONFIG } from '../kernel/instances';
 import ChatDock from './ChatDock/ChatDock';
 import { safeClone } from '../shared/utils/safe-json';
+import { flattenFeatureFlags } from '../kernel/utils/feature-flags';
 import { eventBus, EVENTS } from '../kernel/instances';
 import { settingsService, groupManager } from '../kernel/instances';
 import { assistantViewService } from '../kernel/instances/services-core';
@@ -69,7 +70,7 @@ export const AppLayout: React.FC = () => {
         [setTheme],
     );
     const [featureFlags, setFeatureFlags] = useState<Record<string, boolean>>(
-        () => safeClone(CONFIG.featureFlags) as unknown as Record<string, boolean>,
+        () => flattenFeatureFlags(safeClone(CONFIG.featureFlags)),
     );
 
     const [shortcutsOpen, setShortcutsOpen] = useState(false);
@@ -108,7 +109,7 @@ export const AppLayout: React.FC = () => {
 
     useEffect(() => {
         const unsub = eventBus.on(EVENTS.SETTINGS_UPDATED, () => {
-            setFeatureFlags(safeClone(CONFIG.featureFlags) as unknown as Record<string, boolean>);
+            setFeatureFlags(flattenFeatureFlags(safeClone(CONFIG.featureFlags)));
         });
         return () => unsub();
     }, []);
