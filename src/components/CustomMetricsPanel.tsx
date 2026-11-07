@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from '../i18n/useTranslation';
 import { BarChart3, Plus, Trash2, RefreshCw, LayoutDashboard } from 'lucide-react';
 import type { CustomMetric, MetricDashboard } from '../kernel/contracts/custom-metrics';

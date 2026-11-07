@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from '../i18n/useTranslation';
 import { Database, Plus, Play, Trash2, CheckCircle, XCircle, BarChart3 } from 'lucide-react';
 import type { EvalDataset, EvalRun } from '../kernel/contracts/eval-dataset';
