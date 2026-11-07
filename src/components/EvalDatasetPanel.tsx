@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from '../i18n/useTranslation';
 import { Database, Plus, Play, Trash2, CheckCircle, XCircle, BarChart3 } from 'lucide-react';
 import type { EvalDataset, EvalRun } from '../kernel/contracts/eval-dataset';
@@ -46,13 +46,7 @@ const EvalDatasetPanel: React.FC = () => {
     const [runningId, setRunningId] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
 
-    useEffect(() => {
-        load();
-    }, [
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    ]);
-
-    async function load() {
+    const load = useCallback(async () => {
         try {
             const m = await import('../kernel/instances');
             const s = m.evalDatasetService;
@@ -62,7 +56,11 @@ const EvalDatasetPanel: React.FC = () => {
                 `Failed to load datasets: ${e instanceof Error ? e.message : 'Unknown error'}`,
             );
         }
-    }
+    }, []);
+
+    useEffect(() => {
+        void load();
+    }, [load]);
 
     async function handleCreate() {
         if (!name.trim()) return;

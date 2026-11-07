@@ -29,6 +29,7 @@ const HEX_MAP = {
     '#3b82f6': 'accent',
     '#10b981': 'success',
     '#22c55e': 'success',
+    '#059669': 'success',
     '#ef4444': 'error',
     '#f59e0b': 'warning',
     '#fbbf24': 'warning',

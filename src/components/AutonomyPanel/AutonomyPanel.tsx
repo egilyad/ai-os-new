@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { useTranslation } from '../../i18n/useTranslation';
 import { autonomyService } from '../../kernel/instances/services-extras';
 import { seedAutonomyDemo } from '../../kernel/services/rivals/autonomy-demo-seed';
@@ -34,24 +34,22 @@ export default function AutonomyPanel() {
         setError(`${t('autonomy.error.generic')}: ${detail}`.slice(0, 300));
     };
 
-    const reload = async (selectId?: string) => {
+    const reload = useCallback(async (selectId?: string) => {
         try {
             const all = await autonomyService.listLoops();
             if (!isMountedRef.current) return;
             const sorted = [...all].sort(byNewest);
             setLoops(sorted);
             if (selectId) setActiveId(selectId);
-            else if (activeId === null && sorted.length > 0) setActiveId(sorted[0]!.id);
+            else setActiveId((prev) => (prev === null && sorted.length > 0 ? sorted[0]!.id : prev));
         } catch (e) {
             if (isMountedRef.current) fail(e);
         }
-    };
+    }, []);
 
     useEffect(() => {
         void reload();
-    }, [
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    ]);
+    }, [reload]);
 
     useEffect(
         () => () => {

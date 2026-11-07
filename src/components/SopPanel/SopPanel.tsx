@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { useTranslation } from '../../i18n/useTranslation';
 import { sopService, autonomyService } from '../../kernel/instances/services-extras';
 import { seedSopDemo } from '../../kernel/services/rivals/sop-demo-seed';
@@ -32,7 +32,7 @@ export default function SopPanel() {
         setError(t('sop.error.generic'));
     };
 
-    const reload = async (selectId?: string) => {
+    const reload = useCallback(async (selectId?: string) => {
         try {
             const [defs, loops] = await Promise.all([
                 sopService.listSops(),
@@ -46,18 +46,16 @@ export default function SopPanel() {
                 .sort(byNewest);
             setRuns(sopRuns);
             if (selectId) setActiveId(selectId);
-            else if (activeId === null && sopRuns.length > 0) setActiveId(sopRuns[0]!.id);
-            if (safeDefs.length > 0 && !selectedSop) setSelectedSop(safeDefs[0]!.id);
+            else setActiveId((prev) => (prev === null && sopRuns.length > 0 ? sopRuns[0]!.id : prev));
+            setSelectedSop((prev) => (safeDefs.length > 0 && !prev ? safeDefs[0]!.id : prev));
         } catch (e) {
             if (isMountedRef.current) fail(e);
         }
-    };
+    }, []);
 
     useEffect(() => {
         void reload();  
-    }, [
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    ]);
+    }, [reload]);
 
     useEffect(
         () => () => {

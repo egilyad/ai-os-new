@@ -186,7 +186,7 @@ const AdaptersPanel: React.FC = () => {
                     <AlertTriangle size={16} /> <span>{error}</span>
                 </div>
             )}
-            {notice && <div style={{ color: '#059669', marginBottom: '1rem' }}>{notice}</div>}
+            {notice && <div style={{ color: 'var(--success)', marginBottom: '1rem' }}>{notice}</div>}
 
             <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 1rem 0' }}>
                 {adapters.map((a) => (

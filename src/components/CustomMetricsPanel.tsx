@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from '../i18n/useTranslation';
 import { BarChart3, Plus, Trash2, RefreshCw, LayoutDashboard } from 'lucide-react';
 import type { CustomMetric, MetricDashboard } from '../kernel/contracts/custom-metrics';
@@ -37,13 +37,7 @@ const CustomMetricsPanel: React.FC = () => {
     const [showDash, setShowDash] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    useEffect(() => {
-        load();
-    }, [
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    ]);
-
-    async function load() {
+    const load = useCallback(async () => {
         try {
             const m = await import('../kernel/instances');
             const svc = m.customMetricsService;
@@ -66,7 +60,11 @@ const CustomMetricsPanel: React.FC = () => {
         } catch (e) {
             setError(`Failed to load metrics: ${e instanceof Error ? e.message : 'Unknown error'}`);
         }
-    }
+    }, []);
+
+    useEffect(() => {
+        void load();
+    }, [load]);
 
     async function handleCreate() {
         if (!name.trim() || !field.trim()) return;

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useTranslation } from '../../i18n/useTranslation';
 import { runQueueService } from '../../kernel/instances/services-extras';
 import { seedRunQueueDemo } from '../../kernel/services/rivals/runqueue-demo-seed';
@@ -36,7 +36,7 @@ export default function RunQueuePanel() {
         setError(t('runQueue.error.generic'));
     };
 
-    const reload = async () => {
+    const reload = useCallback(async () => {
         try {
             const [q, tk] = await Promise.all([
                 runQueueService.list(),
@@ -45,20 +45,21 @@ export default function RunQueuePanel() {
             const queue = Array.isArray(q) ? q : [];
             setRuns([...queue].sort(byNewest));
             setToolkits(Array.isArray(tk) ? tk : []);
-            if (activeId === null && queue.length > 0) {
-                const sorted = [...queue].sort(byNewest);
-                setActiveId(sorted[0]!.id);
-            }
+            setActiveId((prev) => {
+                if (prev === null && queue.length > 0) {
+                    const sorted = [...queue].sort(byNewest);
+                    return sorted[0]!.id;
+                }
+                return prev;
+            });
         } catch (e) {
             fail(e);
         }
-    };
+    }, []);
 
     useEffect(() => {
         void reload();
-    }, [
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    ]);
+    }, [reload]);
 
     const handleEnqueue = async () => {
         setError(null);

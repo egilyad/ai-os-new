@@ -226,7 +226,7 @@ const ApprovalsPanel: React.FC = () => {
                     <AlertTriangle size={16} /> <span>{error}</span>
                 </div>
             )}
-            {notice && <div style={{ color: '#059669', marginBottom: '1rem' }}>{notice}</div>}
+            {notice && <div style={{ color: 'var(--success)', marginBottom: '1rem' }}>{notice}</div>}
 
             <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
                 <ul style={{ flex: '1 1 300px', listStyle: 'none', padding: 0, margin: 0 }}>
@@ -546,7 +546,7 @@ function BrowserUseConfig(): React.JSX.Element {
                     style={{ flex: '2 1 280px' }}
                 />
                 <button onClick={save}>Save</button>
-                {saved && <span style={{ color: '#059669' }}>Saved</span>}
+                {saved && <span style={{ color: 'var(--success)' }}>Saved</span>}
             </div>
             <div style={{ fontSize: 12, color: 'var(--slate-500)', marginTop: 6 }}>
                 Direct mode: browser calls the sidecar URL itself. Gateway mode: browser creates a

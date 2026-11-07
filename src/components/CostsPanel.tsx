@@ -202,7 +202,7 @@ const CostsPanel: React.FC = () => {
                     <AlertTriangle size={16} /> <span>{error}</span>
                 </div>
             )}
-            {notice && <div style={{ color: '#059669', marginBottom: '1rem' }}>{notice}</div>}
+            {notice && <div style={{ color: 'var(--success)', marginBottom: '1rem' }}>{notice}</div>}
 
             {budget && (
                 <div

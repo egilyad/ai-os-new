@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { useTranslation } from '../../i18n/useTranslation';
 import { dyadService } from '../../kernel/instances/services-extras';
 import { seedDyadDemo } from '../../kernel/services/rivals/dyad-demo-seed';
@@ -33,24 +33,22 @@ export default function DyadPanel() {
         setError(t('dyad.error.generic'));
     };
 
-    const reload = async (selectId?: string) => {
+    const reload = useCallback(async (selectId?: string) => {
         try {
             const all = await dyadService.listLoops();
             if (!isMountedRef.current) return;
             const sorted = [...all].filter((l) => l.kind === 'dyad').sort(byNewest);
             setLoops(sorted);
             if (selectId) setActiveId(selectId);
-            else if (activeId === null && sorted.length > 0) setActiveId(sorted[0]!.id);
+            else setActiveId((prev) => (prev === null && sorted.length > 0 ? sorted[0]!.id : prev));
         } catch (e) {
             if (isMountedRef.current) fail(e);
         }
-    };
+    }, []);
 
     useEffect(() => {
         void reload();
-    }, [
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    ]);
+    }, [reload]);
 
     useEffect(
         () => () => {
