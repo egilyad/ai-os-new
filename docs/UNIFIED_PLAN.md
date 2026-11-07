@@ -16,7 +16,7 @@
 
 | Группа | Статус |
 |---|---|
-| P0 (безопасность) | `P0-1/3/6/7` ✅ (vault, governance fail-closed, KeyStateStore, миграция). Осталось: `P0-2` (multi-tenant), `P0-3` (CSAM — нужен внешний API), `P0-4` (prompt-versioning). |
+| P0 (безопасность) | `P0-1/3/6/7` ✅ (vault, governance fail-closed, KeyStateStore, миграция). `P0-2` 🟡 (каркас multi-tenant: per-company секреты + verifyWsUpgradeCompany + тесты; осталась привязка sync-server). Осталось: `P0-3` (CSAM — нужен внешний API), `P0-4` (prompt-versioning). |
 | P1 (качество/тесты) | `P1-1` ✅ (observability: metrics/monitoring/timeline/trace/admin/causal-timeline). `P1-2` ✅ (KeyService: 13 юнит-тестов на полном моке deps; покрыты KeyStateStore, GroupManager, Rotation, KeyIntelligence, SessionAffinity, KeyFingerprints, KeyQuotas, KeyModels, KeyAlerts, KeyStatus, KeyPoolSelector). `P1-3` ✅ (kernel/runtime/bootstrap smoke). `P1-4` 🟡 (покрыты service-helper, Audit, Governance, FleetMonitor, ToolGovernance, llm-bridge порты, SandboxService.fetchUrl, utils: constant-time/Outbox/hash/embedding/provider-fleet-health; осталось: SandboxService execute, Cognitive/Orchestration уже имеют тесты). `P1-5` ✅ (streamMessage dedup). `P1-6` ✅ (ArgumentGraphService per-session: sessionId во всех методах IArgumentGraphService, изоляция состояния по сессиям, обновлены потребители — entanglement/anchoring/vulnerability/minimax/meta-agent + панели; новые тесты изоляции в test:stable). `P1-11/12` ✅. `P1-14` — алиасы событий (не баг), фикс отложен. `P1-15` ✅. |
 | P2 | 🟡 (не начато: Builder killer-services, round-trip, консолидация панелей, etc.). |
 | P3 | 🟡 (не начато: плагинный sandbox, федерация, серверный режим, декомпозиция). |
@@ -67,7 +67,7 @@
 |---|---|---|---|
 | P0-1 | Полная интеграция passphrase-vault с `key-service`: заменить deviceKey на passphrase, ключи в IndexedDB только зашифрованными | ✅ | полный отчёт §4.5; SPEC_01 |
 | P0-1a | Проверено: `KeyRegistry.saveKeys` → `encryptAllKeys`, load → `decryptAllKeys`, vault reconcile, миграция plaintext→encrypted | ✅ | SPEC_01 |
-| P0-2 | Multi-tenant server-скоупинг: per-company secret вместо общего `SYNC_SECRET`, WS cross-tenant isolation | ❌ | полный отчёт P0-#2; W2-009/W8-003 |
+| P0-2 | Multi-tenant server-скоупинг: per-company secret вместо общего `SYNC_SECRET`, WS cross-tenant isolation | 🟡 (каркас: per-company секреты в company-store (хеш SHA-256, set/rotate/verify), verifyWsUpgradeCompany с токеном `companyId:secret` + тесты; осталось: привязка соединений и скоупинг сообщений в sync-server) | полный отчёт P0-#2; W2-009/W8-003 |
 | P0-3 | CSAM/модерация изображений (внешний API) | ❌ | полный отчёт P0-#4; W7-UGC-009 |
 | P0-4 | Prompt-versioning: 156 unversioned «You are…» → версии/A-B/rollback | ❌ | W4-041; dev-status-debt |
 

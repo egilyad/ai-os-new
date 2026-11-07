@@ -72,6 +72,50 @@ export function getCompany(id) {
     return listCompanies().find((c) => c.id === id) || null;
 }
 
+// ── P0-2: per-company sync secret (multi-tenant) ──
+// Вместо общего SYNC_SECRET каждая компания получает собственный секрет.
+// Хранится только SHA-256-хеш — сырое значение не персистится.
+
+function hashSecret(secret) {
+    return crypto.createHash('sha256').update(String(secret)).digest('hex');
+}
+
+function timingSafeHexEqual(a, b) {
+    const bufA = Buffer.from(String(a), 'hex');
+    const bufB = Buffer.from(String(b), 'hex');
+    if (bufA.length !== bufB.length) return false;
+    return crypto.timingSafeEqual(bufA, bufB);
+}
+
+export function setCompanySyncSecret(companyId, secret) {
+    const clean = String(secret || '');
+    if (clean.length < 16) {
+        throw new Error('sync secret must be at least 16 characters');
+    }
+    const all = listCompanies();
+    const org = all.find((c) => c.id === companyId);
+    if (!org) return null;
+    org.syncSecretHash = hashSecret(clean);
+    org.syncSecretUpdatedAt = Date.now();
+    org.updatedAt = Date.now();
+    saveCompanies(all);
+    return { id: org.id, syncSecretUpdatedAt: org.syncSecretUpdatedAt };
+}
+
+export function rotateCompanySyncSecret(companyId, nextSecret) {
+    return setCompanySyncSecret(companyId, nextSecret);
+}
+
+export function getCompanySyncSecretHash(companyId) {
+    return getCompany(companyId)?.syncSecretHash || null;
+}
+
+export function verifyCompanySyncSecret(companyId, candidate) {
+    const hash = getCompanySyncSecretHash(companyId);
+    if (!hash) return false;
+    return timingSafeHexEqual(hash, hashSecret(candidate));
+}
+
 export function createCompany({ name, mission, monthlyBudgetCents }) {
     const cleanName = String(name || '').slice(0, 200).trim();
     if (!cleanName) throw new Error('name is required');

@@ -45,3 +45,56 @@ export function verifyWsUpgrade({ protocols, authorization }, secret) {
     }
     return { ok: false, code: 401, message: 'Unauthorized' };
 }
+
+/**
+ * P0-2: multi-tenant WebSocket upgrade verification. The bearer token is
+ * `<companyId>:<secret>` — the server resolves the company's own secret via
+ * `resolveSecret(companyId)` and compares in constant time. This prevents a
+ * client holding one company's secret from authenticating as another.
+ * Returns a verdict with `companyId` on success; the caller attaches it to
+ * the connection for cross-tenant scoping.
+ */
+export function parseSyncToken(raw) {
+    const parts = String(raw || '').split(':');
+    if (parts.length !== 2) return null;
+    const [companyId, secret] = parts;
+    if (!companyId || !secret) return null;
+    return { companyId, secret };
+}
+
+export function verifyWsUpgradeCompany({ protocols, authorization }, resolveSecret) {
+    if (protocols) {
+        const parts = String(protocols)
+            .split(',')
+            .map((p) => p.trim());
+        if (parts[0] === 'sync-token') {
+            const parsed = parseSyncToken(parts[1]);
+            if (!parsed) {
+                return { ok: false, code: 4001, message: 'Invalid token' };
+            }
+            const secret = resolveSecret(parsed.companyId);
+            if (!secret) {
+                return { ok: false, code: 401, message: 'Unknown company' };
+            }
+            if (timingSafeEqual(parsed.secret, secret)) {
+                return { ok: true, protocol: 'sync-token', companyId: parsed.companyId };
+            }
+            return { ok: false, code: 4001, message: 'Invalid token' };
+        }
+    }
+    if (authorization && authorization.startsWith('Bearer ')) {
+        const parsed = parseSyncToken(authorization.slice(7));
+        if (!parsed) {
+            return { ok: false, code: 401, message: 'Unauthorized' };
+        }
+        const secret = resolveSecret(parsed.companyId);
+        if (!secret) {
+            return { ok: false, code: 401, message: 'Unknown company' };
+        }
+        if (timingSafeEqual(parsed.secret, secret)) {
+            return { ok: true, companyId: parsed.companyId };
+        }
+        return { ok: false, code: 4001, message: 'Invalid token' };
+    }
+    return { ok: false, code: 401, message: 'Unauthorized' };
+}
