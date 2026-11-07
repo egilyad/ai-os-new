@@ -62,7 +62,7 @@ export class SessionRepository {
   }
 
   async save(session: ChatSession): Promise<void> {
-    await this.db.sessions.transaction('rw', this.db.sessions, async () => {
+    await this.db.transaction([this.db.sessions], async () => {
       const current = await this.db.sessions.get(session.id);
       if (isStaleSessionWrite(session, current)) {
         if (current) {

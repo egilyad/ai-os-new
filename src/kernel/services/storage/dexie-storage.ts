@@ -32,7 +32,7 @@ import type { ApiKey } from '../../types/metrics-types';
 import type { MemoryEntry } from '../../types/memory-types';
 import { redactPii } from '../../utils/pii-redact';
 import type { CognitiveTrace } from '../../types/domain-types';
-import type { ChatSession, ChatEntry } from '../../contracts/storage/session-store';
+import type { ChatSession } from '../../contracts/storage/session-store';
 import type { Role } from '../../contracts/storage/roles-store';
 import type { Skill } from '../../contracts/storage/skills-store';
 import {
