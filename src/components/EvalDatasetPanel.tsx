@@ -58,12 +58,9 @@ const EvalDatasetPanel: React.FC = () => {
         }
     }, []);
 
-    const loadRef = useRef(load);
-    loadRef.current = load;
-
     useEffect(() => {
-        void loadRef.current();
-    }, []);
+        void load();
+    }, [load]);
 
     async function handleCreate() {
         if (!name.trim()) return;
