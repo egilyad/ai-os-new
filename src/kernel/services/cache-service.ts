@@ -150,7 +150,7 @@ export class CacheService implements ICacheService {
 
     private async flush(): Promise<void> {
         if (this.cache.size === 0) return;
-        const entries = Array.from(this.cache.values()).slice(-500);
+        const entries = Array.from(this.cache.values()).slice(-this.maxEntries);
         try {
             await this.deps.database.setKv('super_agents_llm_cache', entries);
         } catch (e) {
@@ -180,7 +180,7 @@ export class CacheService implements ICacheService {
             if (!this.dirty) return;
             this.dirty = false;
             const entries = Array.from(this.cache.values())
-                .slice(-500)
+                .slice(-this.maxEntries)
                 .map((e) => ({ ...e }));
             this._persistPromise = this.deps.database
                 .setKv('super_agents_llm_cache', entries)
