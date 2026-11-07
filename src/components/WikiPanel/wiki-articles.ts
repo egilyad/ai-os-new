@@ -22,6 +22,7 @@ import { RESEARCH_DEEP_ARTICLE } from './wiki-research-deep';
 import { RESEARCH_MULTIAGENT_ARTICLE } from './wiki-research-multiagent';
 import { RESEARCH_INDEX_ARTICLE } from './wiki-research-index';
 import { TECHNIQUE_ARTICLES } from './wiki-techniques';
+import { PANELS_EXTRA_ARTICLES } from './wiki-panels-extra';
 import type { WikiArticle, WikiFreshness, WikiSection } from './wiki-types';
 
 export type { WikiArticle, WikiFreshness, WikiSection } from './wiki-types';
@@ -5016,6 +5017,7 @@ export const WIKI_ARTICLES: WikiArticle[] = [
     ...MEMORY_AUDIT_ARTICLES,
     ...ASSISTANT_ARTICLES,
     ...TECHNIQUE_ARTICLES,
+    ...PANELS_EXTRA_ARTICLES,
 ];
 
 export function getArticle(slug: string): WikiArticle | undefined {

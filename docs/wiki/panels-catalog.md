@@ -11,7 +11,7 @@
 > Автосгенерировано `scripts/gen-wiki-panel-catalog.mjs` из реестра маршрутов,
 > `route-imports.ts`, локалей `nav.*` и карты статей вики. Не редактировать вручную.
 
-Панелей: **270** · с компонентом: **269** · со статьёй: **262** · всего разделов: **20**.
+Панелей: **270** · с компонентом: **269** · со статьёй: **270** · всего разделов: **20**.
 
 | Раздел | Панель | Маршрут | Компонент | Статья |
 | --- | --- | --- | --- | --- |
@@ -21,11 +21,11 @@
 | Панель | знания `knowledge` | `/knowledge` | `src/components/KnowledgePanel/KnowledgePanel` | [Панель: База знаний (RAG)](./panel-knowledge.md) |
 | Панель | проводник Project OS `project-os` | `/project-os` | `src/components/DebateResearch/ProjectOsExplorer` | [Панель: Проекты](./panel-projects.md) |
 | Панель | Когнитивные линзы `lenses` | `/lenses` | `src/components/LensesPanel/LensesPanel` | [Панели: Линзы и кристаллы](./panel-lenses-crystals.md) |
-| Панель | Исключения (вето) `exceptions` | `/exceptions` | `src/components/ExceptionsPanel/ExceptionsPanel` | — |
-| Панель | Memory Center `memory-center` | `/memory-center` | `src/components/MemoryCenterPanel/MemoryCenterPanel` | — |
-| Панель | Граф навигации `nav-graph` | `/nav-graph` | `src/components/NavGraphPanel/NavGraphPanel` | — |
+| Панель | Исключения (вето) `exceptions` | `/exceptions` | `src/components/ExceptionsPanel/ExceptionsPanel` | [Исключения (вето)](./panel-exceptions.md) |
+| Панель | Memory Center `memory-center` | `/memory-center` | `src/components/MemoryCenterPanel/MemoryCenterPanel` | [Memory Center](./panel-memory-center.md) |
+| Панель | Граф навигации `nav-graph` | `/nav-graph` | `src/components/NavGraphPanel/NavGraphPanel` | [Граф навигации](./panel-nav-graph.md) |
 | Панель | Graph Workbench `graph-workbench` | `/graph-workbench` | `src/components/GraphWorkbenchPanel/GraphWorkbenchPanel` | [Graph Workbench](./panel-graph-workbench.md) |
-| Панель | Карта дефектов `defect-map` | `/defect-map` | `src/components/DefectMapPanel/DefectMapPanel` | — |
+| Панель | Карта дефектов `defect-map` | `/defect-map` | `src/components/DefectMapPanel/DefectMapPanel` | [Карта дефектов](./panel-defect-map.md) |
 | Панель | Хранилище кристаллов `crystals` | `/crystals` | `src/components/CrystalVaultPanel/CrystalVaultPanel` | [Панели: Линзы и кристаллы](./panel-lenses-crystals.md) |
 | Панель | Движок связей `junctions` | `/junctions` | `src/components/JunctionPanel/JunctionPanel` | [Панели: Связи, происхождение, очередь](./panel-provenance-junctions.md) |
 | Панель | Движок синтеза `synthesis` | `/synthesis` | `src/components/SynthesisPanel/SynthesisPanel` | [Панель: Синтез мнений](./panel-synthesis.md) |
@@ -195,8 +195,8 @@
 | Диагностика | Здоровье SLA `health-sla` | `/health-sla` | `src/components/HealthSlaPanel` | [Панель: Наблюдаемость (логи, трейсы, здоровье)](./panel-observability.md) |
 | Диагностика | Пользовательский Метрики `custom-metrics` | `/custom-metrics` | `src/components/CustomMetricsPanel` | [Панель: Пользовательские метрики](./panel-custom-metrics.md) |
 | Вики | Вики `wiki` | `/wiki` | `src/components/WikiPanel/WikiPanel` | [Панель: Wiki](./panel-wiki.md) |
-| Вики | Вики-мозг `wiki-brain` | `/wiki-brain` | `src/components/WikiBrainPanel` | — |
-| Вики | Карта архитектуры `architecture-map` | `/architecture-map` | `src/components/ArchitectureMapPanel` | — |
+| Вики | Вики-мозг `wiki-brain` | `/wiki-brain` | `src/components/WikiBrainPanel` | [Вики-мозг](./panel-wiki-brain.md) |
+| Вики | Карта архитектуры `architecture-map` | `/architecture-map` | `src/components/ArchitectureMapPanel` | [Карта архитектуры](./panel-architecture-map.md) |
 | Флот | Консоль флота `fleet` | `/fleet` | `src/components/FleetPanel/FleetPanel` | [Панель: Флот (Fleet Console)](./panel-fleet.md) |
 | Флот | Флот — Команды `fleet-crews` | `/fleet-crews` | `src/components/FleetPanels/CrewsPanel` | [Панель: Флот (Fleet Console)](./panel-fleet.md) |
 | Флот | Флот — Советы `fleet-councils` | `/fleet-councils` | `src/components/CouncilPanel/CouncilPanel` | [Панель: Флот (Fleet Console)](./panel-fleet.md) |
@@ -245,8 +245,8 @@
 | Системные сервисы | Кэш `cache` | `/cache` | `src/components/CachePanel` | [Панели: Интеграции (MCP, коннекторы, навыки, инструменты, вебхуки)](./panel-integrations.md) |
 | Системные сервисы | Вебхуки `webhooks` | `/webhooks` | `src/components/WebhooksPanel` | [Панели: Интеграции (MCP, коннекторы, навыки, инструменты, вебхуки)](./panel-integrations.md) |
 | Системные сервисы | Плагин Сдк `plugin-sdk` | `/plugin-sdk` | `src/components/PluginSdkPanel` | [Панели: Инфраструктура и платформа](./panel-infra-meta.md) |
-| Системные сервисы | Плагин Сдк `plugins` | `/plugins` | `src/components/PluginManagerPanel` | — |
-| Системные сервисы | Плагин Сдк `plugin-marketplace` | `/plugin-marketplace` | `src/components/PluginMarketplacePanel` | — |
+| Системные сервисы | Плагин Сдк `plugins` | `/plugins` | `src/components/PluginManagerPanel` | [Плагины](./panel-plugins.md) |
+| Системные сервисы | Плагин Сдк `plugin-marketplace` | `/plugin-marketplace` | `src/components/PluginMarketplacePanel` | [Маркетплейс плагинов](./panel-plugin-marketplace.md) |
 | Системные сервисы | стражи `guardians` | `/guardians` | `src/components/GuardiansPanel` | [Панель: Хранители (Guardians)](./panel-guardians.md) |
 | Системные сервисы | Адаптеры агентов `adapters` | `/adapters` | `src/components/AdaptersPanel` | [Панели: Компании и корпоративный gateway](./panel-gateway.md) |
 | Системные сервисы | Переносимость `portability` | `/portability` | `src/components/PortabilityPanel` | [Панели: Компании и корпоративный gateway](./panel-gateway.md) |

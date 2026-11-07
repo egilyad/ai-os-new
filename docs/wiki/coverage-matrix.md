@@ -29,14 +29,14 @@
 
 | Показатель | Значение |
 | --- | --- |
-| Статей всего | 344 |
-| source-checked (есть источники) | 301 |
-| test-backed (есть co-located тесты) | 127 |
+| Статей всего | 352 |
+| source-checked (есть источники) | 309 |
+| test-backed (есть co-located тесты) | 128 |
 | manual-verified (reviewed) | 1 |
 | Панелей (обычных) | 186 |
 | Панелей с компонентом | 185 |
 | Панелей с тестами у компонента | 73 |
-| Панелей без статьи | 8 |
+| Панелей без статьи | 0 |
 | Авто-панелей техник | 84 (покрыты [Каталог панелей: раздел → маршрут → компонент → статья](./panels-catalog.md)) |
 
 ## По разделам
@@ -44,7 +44,7 @@
 | Раздел | Статей | source-checked | test-backed |
 | --- | ---: | ---: | ---: |
 | Руководство | 10 | 10 | 3 |
-| Панели | 147 | 147 | 48 |
+| Панели | 155 | 155 | 49 |
 | Агенты | 2 | 2 | 1 |
 | Дебаты | 3 | 3 | 0 |
 | Знания и память | 5 | 5 | 4 |
@@ -106,17 +106,6 @@
 - `audience` → `src/components/AudiencePanel`
 - `argument-graph` → `src/components/ArgumentGraphPanel/ArgumentGraphPanel`
 - `debate-analysis` → `src/components/DebateAnalysisPanel`
-
-Панели без статьи:
-
-- `exceptions` (dashboard)
-- `memory-center` (dashboard)
-- `nav-graph` (dashboard)
-- `defect-map` (dashboard)
-- `wiki-brain` (wiki)
-- `architecture-map` (wiki)
-- `plugins` (system)
-- `plugin-marketplace` (system)
 
 ## Как это проверяется
 

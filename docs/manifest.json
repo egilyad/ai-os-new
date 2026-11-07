@@ -10,7 +10,7 @@
     {
       "id": "panels",
       "title": "Панели",
-      "articles": 147
+      "articles": 155
     },
     {
       "id": "agents",
@@ -9362,6 +9362,177 @@
       ],
       "reviewed": null,
       "tests": []
+    },
+    {
+      "id": "wiki:panel-exceptions",
+      "type": "article",
+      "slug": "panel-exceptions",
+      "title": "Исключения (вето)",
+      "section": "panels",
+      "status": "documented",
+      "tags": [
+        "панели",
+        "политики",
+        "исключения"
+      ],
+      "sources": [
+        "src/components/ExceptionsPanel/ExceptionsPanel"
+      ],
+      "related": [
+        "panel-governance",
+        "panel-policy-editor"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:panel-memory-center",
+      "type": "article",
+      "slug": "panel-memory-center",
+      "title": "Memory Center",
+      "section": "panels",
+      "status": "documented",
+      "tags": [
+        "панели",
+        "память"
+      ],
+      "sources": [
+        "src/components/MemoryCenterPanel/MemoryCenterPanel"
+      ],
+      "related": [
+        "memory",
+        "panel-memory-palace"
+      ],
+      "reviewed": null,
+      "tests": [
+        "src/components/MemoryCenterPanel/MemoryCenterPanel.test.tsx"
+      ]
+    },
+    {
+      "id": "wiki:panel-nav-graph",
+      "type": "article",
+      "slug": "panel-nav-graph",
+      "title": "Граф навигации",
+      "section": "panels",
+      "status": "documented",
+      "tags": [
+        "панели",
+        "навигация"
+      ],
+      "sources": [
+        "src/components/NavGraphPanel/NavGraphPanel"
+      ],
+      "related": [
+        "dev-routing"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:panel-defect-map",
+      "type": "article",
+      "slug": "panel-defect-map",
+      "title": "Карта дефектов",
+      "section": "panels",
+      "status": "documented",
+      "tags": [
+        "панели",
+        "диагностика",
+        "дефекты"
+      ],
+      "sources": [
+        "src/components/DefectMapPanel/DefectMapPanel"
+      ],
+      "related": [
+        "panel-observability",
+        "diagnostics"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:panel-wiki-brain",
+      "type": "article",
+      "slug": "panel-wiki-brain",
+      "title": "Вики-мозг",
+      "section": "panels",
+      "status": "documented",
+      "tags": [
+        "панели",
+        "вики",
+        "знания"
+      ],
+      "sources": [
+        "src/components/WikiBrainPanel"
+      ],
+      "related": [
+        "panel-wiki",
+        "memory"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:panel-architecture-map",
+      "type": "article",
+      "slug": "panel-architecture-map",
+      "title": "Карта архитектуры",
+      "section": "panels",
+      "status": "documented",
+      "tags": [
+        "панели",
+        "архитектура"
+      ],
+      "sources": [
+        "src/components/ArchitectureMapPanel"
+      ],
+      "related": [
+        "architecture",
+        "dev-overview"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:panel-plugins",
+      "type": "article",
+      "slug": "panel-plugins",
+      "title": "Плагины",
+      "section": "panels",
+      "status": "documented",
+      "tags": [
+        "панели",
+        "плагины"
+      ],
+      "sources": [
+        "src/components/PluginManagerPanel"
+      ],
+      "related": [
+        "panel-plugin-marketplace",
+        "panel-infra-meta"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:panel-plugin-marketplace",
+      "type": "article",
+      "slug": "panel-plugin-marketplace",
+      "title": "Маркетплейс плагинов",
+      "section": "panels",
+      "status": "documented",
+      "tags": [
+        "панели",
+        "плагины"
+      ],
+      "sources": [
+        "src/components/PluginMarketplacePanel"
+      ],
+      "related": [
+        "panel-plugins"
+      ],
+      "reviewed": null,
+      "tests": []
     }
   ],
   "panels": [
@@ -9432,7 +9603,7 @@
       "section": "dashboard",
       "route": "/exceptions",
       "component": "src/components/ExceptionsPanel/ExceptionsPanel",
-      "article": null,
+      "article": "panel-exceptions",
       "status": "live"
     },
     {
@@ -9442,7 +9613,7 @@
       "section": "dashboard",
       "route": "/memory-center",
       "component": "src/components/MemoryCenterPanel/MemoryCenterPanel",
-      "article": null,
+      "article": "panel-memory-center",
       "status": "live"
     },
     {
@@ -9452,7 +9623,7 @@
       "section": "dashboard",
       "route": "/nav-graph",
       "component": "src/components/NavGraphPanel/NavGraphPanel",
-      "article": null,
+      "article": "panel-nav-graph",
       "status": "live"
     },
     {
@@ -9472,7 +9643,7 @@
       "section": "dashboard",
       "route": "/defect-map",
       "component": "src/components/DefectMapPanel/DefectMapPanel",
-      "article": null,
+      "article": "panel-defect-map",
       "status": "live"
     },
     {
@@ -11172,7 +11343,7 @@
       "section": "wiki",
       "route": "/wiki-brain",
       "component": "src/components/WikiBrainPanel",
-      "article": null,
+      "article": "panel-wiki-brain",
       "status": "live"
     },
     {
@@ -11182,7 +11353,7 @@
       "section": "wiki",
       "route": "/architecture-map",
       "component": "src/components/ArchitectureMapPanel",
-      "article": null,
+      "article": "panel-architecture-map",
       "status": "live"
     },
     {
@@ -11672,7 +11843,7 @@
       "section": "system",
       "route": "/plugins",
       "component": "src/components/PluginManagerPanel",
-      "article": null,
+      "article": "panel-plugins",
       "status": "live"
     },
     {
@@ -11682,7 +11853,7 @@
       "section": "system",
       "route": "/plugin-marketplace",
       "component": "src/components/PluginMarketplacePanel",
-      "article": null,
+      "article": "panel-plugin-marketplace",
       "status": "live"
     },
     {
