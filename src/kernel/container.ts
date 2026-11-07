@@ -37,6 +37,7 @@ export class Container implements IContainer {
     private dependencies = new Map<ServiceIdentifier, Set<ServiceIdentifier>>();
     private activeFactoryId: ServiceIdentifier | null = null;
     private transientFactories = new Map<ServiceIdentifier, (container: IContainer) => unknown>();
+    private transientInstances = new Map<ServiceIdentifier, unknown[]>();
     private failedFactories = new Map<ServiceIdentifier, { error: unknown; timestamp: number }>();
     // Audit #8: was 60s — a transient failure at boot (e.g. IndexedDB not
     // ready yet) blocked every service for a full minute. 5s keeps the
@@ -64,7 +65,11 @@ export class Container implements IContainer {
     }
 
     registerTransient<T>(id: ServiceIdentifier, factory: (container: IContainer) => T): void {
+        const exists = this.services.has(id) || this.factories.has(id) || this.transientFactories.has(id);
         this.transientFactories.set(id, factory);
+        if (!exists) {
+            this.registrationOrder.push(id);
+        }
     }
 
     override<T>(id: ServiceIdentifier, factory: (container: IContainer) => T): void {
@@ -131,7 +136,14 @@ export class Container implements IContainer {
         // HIGH-K5: transient factories create a new instance on every get()
         const transientFactory = this.transientFactories.get(id);
         if (transientFactory) {
-            return transientFactory(this) as T;
+            const instance = transientFactory(this) as T;
+            const instances = this.transientInstances.get(id);
+            if (instances) {
+                instances.push(instance as unknown);
+            } else {
+                this.transientInstances.set(id, [instance as unknown]);
+            }
+            return instance;
         }
 
         throw new Error(`Service not found: ${String(id)}`);
@@ -180,9 +192,29 @@ export class Container implements IContainer {
                 }
             }
         }
+        // Transient instances aren't in `services`, but they may hold resources;
+        // destroy them in LIFO order per registration so they are still cleaned up.
+        for (const id of this.registrationOrder.slice().reverse()) {
+            const instances = this.transientInstances.get(id);
+            if (!instances) continue;
+            for (const instance of instances.slice().reverse()) {
+                if (instance && typeof (instance as Record<string, unknown>).destroy === 'function') {
+                    try {
+                        await (instance as { destroy: () => Promise<void> | void }).destroy();
+                    } catch (e) {
+                        errors.push({ service: String(id), error: e });
+                        getLogger().error('Container', 'transient destroy failed', {
+                            service: String(id),
+                            error: e,
+                        });
+                    }
+                }
+            }
+        }
         this.services.clear();
         this.factories.clear();
         this.transientFactories.clear();
+        this.transientInstances.clear();
         this.failedFactories.clear();
         this.dependencies.clear();
         this.resolving.clear();

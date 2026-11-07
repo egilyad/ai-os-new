@@ -17,6 +17,9 @@ import type { QuotaExceededPayload } from '../events/provider-events';
 import { rootLogger } from './logger-service';
 const LOGGER = rootLogger.child('KeyStateStore');
 
+const KV_STATES_KEY = 'keystore_store_states';
+const KV_STATES_KEY_LEGACY = 'keystate_store_states';
+
 const DEFAULT_HEALTH: KeyHealthSnapshot = { errorRate: 0, successRate: 1, consecutiveErrors: 0 };
 const DEFAULT_QUOTA: KeyQuotaSnapshot = {
     usedTokens: 0,
@@ -67,10 +70,24 @@ export class KeyStateStore implements IKeyStateStore, ILifecycle {
         if (!this.database) return;
         const doLoad = async (): Promise<boolean> => {
             try {
-                const data =
-                    await this.database!.getKv<Array<{ id: string; state: KeyState }>>(
-                        'keystore_store_states',
-                    );
+                const read = async (
+                    key: string,
+                ): Promise<Array<{ id: string; state: KeyState }> | null> =>
+                    this.database!.getKv<Array<{ id: string; state: KeyState }>>(key);
+                let data = await read(KV_STATES_KEY);
+                if (!data) {
+                    data = await read(KV_STATES_KEY_LEGACY);
+                    if (data) {
+                        // One-time migration: legacy snapshot → canonical key.
+                        try {
+                            await this.database!.setKv(KV_STATES_KEY, data);
+                        } catch (e) {
+                            rootLogger.warn('KeyStateStore', 'legacy migration failed', {
+                                error: e,
+                            });
+                        }
+                    }
+                }
                 if (data) {
                     for (const { id, state } of data) {
                         if (!this.states.has(id)) {
@@ -145,7 +162,7 @@ export class KeyStateStore implements IKeyStateStore, ILifecycle {
                     id,
                     state,
                 }));
-                await this.database!.setKv('keystate_store_states', data);
+                await this.database!.setKv(KV_STATES_KEY, data);
             } catch (e) {
                 rootLogger.warn('KeyStateStore', 'Failed to persist states', { error: e });
             } finally {
