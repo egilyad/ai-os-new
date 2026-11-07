@@ -6,6 +6,7 @@
 
 import type { DatabaseService } from '../services/database-service';
 import type { ChatSession } from '../contracts/storage/session-store';
+import { isStaleSessionWrite, mergeStaleSession } from '../utils/session-write-guard';
 
 const MAX_SESSIONS = 500;
 
@@ -61,8 +62,27 @@ export class SessionRepository {
   }
 
   async save(session: ChatSession): Promise<void> {
-    await this.db.sessions.put(session);
-    this.cache.set(session.id, session);
+    await this.db.sessions.transaction('rw', this.db.sessions, async () => {
+      const current = await this.db.sessions.get(session.id);
+      if (isStaleSessionWrite(session, current)) {
+        if (current) {
+          const merged = mergeStaleSession(current, session);
+          if (merged !== current) {
+            const version = (current.version ?? 0) + 1;
+            const next = { ...merged, version };
+            await this.db.sessions.put(next);
+            this.cache.set(merged.id, next);
+          }
+        }
+        return;
+      }
+      const currentVersion = (current as { version?: number })?.version ?? 0;
+      const incomingVersion = (session as { version?: number })?.version ?? 0;
+      const newVersion = Math.max(currentVersion, incomingVersion) + 1;
+      const next = { ...session, version: newVersion };
+      await this.db.sessions.put(next);
+      this.cache.set(session.id, next);
+    });
     await this.enforceLimit();
   }
 
