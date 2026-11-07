@@ -8,13 +8,15 @@ const KV_KEY = 'keystore_store_states';
 
 function fakeDb(initial: Record<string, unknown> = {}) {
     const store = new Map<string, unknown>(Object.entries(initial));
+    const getKv = vi.fn(async <T>(id: string): Promise<T | null> =>
+        store.has(id) ? (store.get(id) as T) : null,
+    );
+    const setKv = vi.fn(async <T>(id: string, value: T): Promise<void> => {
+        store.set(id, value);
+    });
     return {
-        getKv: vi.fn(async <T>(id: string): Promise<T | null> =>
-            store.has(id) ? (store.get(id) as T) : null,
-        ),
-        setKv: vi.fn(async <T>(id: string, value: T): Promise<void> => {
-            store.set(id, value);
-        }),
+        getKv: getKv as unknown as <T>(id: string) => Promise<T | null>,
+        setKv: setKv as unknown as <T>(id: string, value: T) => Promise<void>,
         store,
     };
 }
