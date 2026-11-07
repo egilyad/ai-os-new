@@ -46,20 +46,21 @@ const EvalDatasetPanel: React.FC = () => {
     const [runningId, setRunningId] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
 
-    useEffect(() => {
-        async function load() {
-            try {
-                const m = await import('../kernel/instances');
-                const s = m.evalDatasetService;
-                if (s) setDatasets(await s.list());
-            } catch (e) {
-                setError(
-                    `Failed to load datasets: ${e instanceof Error ? e.message : 'Unknown error'}`,
-                );
-            }
+    const load = useCallback(async () => {
+        try {
+            const m = await import('../kernel/instances');
+            const s = m.evalDatasetService;
+            if (s) setDatasets(await s.list());
+        } catch (e) {
+            setError(
+                `Failed to load datasets: ${e instanceof Error ? e.message : 'Unknown error'}`,
+            );
         }
-        void load();
     }, []);
+
+    useEffect(() => {
+        void load();
+    }, [load]);
 
     async function handleCreate() {
         if (!name.trim()) return;
