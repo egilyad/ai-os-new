@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Copy, BookOpen, RefreshCw, Trash2, Pause, Play, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -475,7 +475,7 @@ function ApprovalsTab({ agentId }: { agentId: string }) {
     const [lowRisk, setLowRisk] = useState(false);
     const [afterMin, setAfterMin] = useState('');
     const [costThreshold, setCostThreshold] = useState('');
-    const load = async () => {
+    const load = useCallback(async () => {
         await approvalAutoService.evaluateAgent(agentId);
         const pol = await agemsApprovalService.getPolicy(agentId);
         setPreset(pol?.preset ?? '—');
@@ -485,10 +485,10 @@ function ApprovalsTab({ agentId }: { agentId: string }) {
         const list = await approvalBulkService.listPending(agentId);
         setPending(list as unknown as typeof pending);
         setSelected([]);
-    };
-    useEffect(() => {
-        void load(); /* eslint-disable-line react-hooks/exhaustive-deps */
     }, [agentId]);
+    useEffect(() => {
+        void load();
+    }, [load]);
     const toggle = (id: number) =>
         setSelected((p) => (p.includes(id) ? p.filter((x) => x !== id) : [...p, id]));
     const approve = async () => {
@@ -1015,13 +1015,13 @@ function RepositoryTab({ agentId }: { agentId: string }) {
         Array<{ repositoryId: string; repoUrl: string; branch: string; isDefault: boolean }>
     >([]);
 
-    const load = async () => {
+    const load = useCallback(async () => {
         const list = await agentRepositoryService.listByAgent(agentId);
         setRepos(list);
-    };
-    useEffect(() => {
-        void load(); /* eslint-disable-line react-hooks/exhaustive-deps */
     }, [agentId]);
+    useEffect(() => {
+        void load();
+    }, [load]);
 
     const handleLink = async () => {
         if (!repoUrl.trim()) return;
