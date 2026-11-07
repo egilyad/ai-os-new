@@ -8,7 +8,7 @@
 
 ## Тесты
 
-Тестовая поверхность: 623 unit/компонентных тестов в src, 8 server-тестов (node --test), 3 тестов скриптов, 20 e2e (Playwright) — всего 654. CI гоняет стабильный набор ([Разработчикам: ворота качества и CI](./dev-ci.md)), а не все сразу: полный vitest на общих раннерах не тянет.
+Тестовая поверхность: 624 unit/компонентных тестов в src, 8 server-тестов (node --test), 3 тестов скриптов, 20 e2e (Playwright) — всего 655. CI гоняет стабильный набор ([Разработчикам: ворота качества и CI](./dev-ci.md)), а не все сразу: полный vitest на общих раннерах не тянет.
 
 ```mermaid
 flowchart LR
@@ -22,7 +22,7 @@ flowchart LR
 
 | Область | Тестов |
 |---|---|
-| src/kernel | 407 |
+| src/kernel | 408 |
 | src/components | 168 |
 | src/llm | 27 |
 | src/stores | 14 |
@@ -32,7 +32,7 @@ flowchart LR
 | src/shared | 1 |
 | src/tests | 1 |
 
-### Стабильный гейт CI — test:stable (50 путей)
+### Стабильный гейт CI — test:stable (51 путей)
 
 | Путь из package.json |
 |---|
@@ -86,6 +86,7 @@ flowchart LR
 | src/components/RivalsCatalogPanel.test.tsx |
 | src/components/wrapper-panels-smoke.test.tsx |
 | src/kernel/utils/regex-safe.test.ts |
+| src/kernel/utils/session-write-guard.test.ts |
 
 ### Server-тесты (node --test)
 
