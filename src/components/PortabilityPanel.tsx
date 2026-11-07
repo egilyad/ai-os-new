@@ -179,7 +179,7 @@ const PortabilityPanel: React.FC = () => {
                 <div
                     style={{
                         flex: '1 1 300px',
-                        border: '1px solid #e2e8f0',
+                        border: 'var(--1px solid var(--slate-200))',
                         borderRadius: 8,
                         padding: '1rem',
                     }}
@@ -209,7 +209,7 @@ const PortabilityPanel: React.FC = () => {
                 <div
                     style={{
                         flex: '1 1 300px',
-                        border: '1px solid #e2e8f0',
+                        border: 'var(--1px solid var(--slate-200))',
                         borderRadius: 8,
                         padding: '1rem',
                     }}

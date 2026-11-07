@@ -28,10 +28,10 @@ export default function DyadPanel() {
     const isMountedRef = useRef(true);
     const active = loops.find((l) => l.id === activeId) ?? null;
 
-    const fail = (e: unknown) => {
+    const fail = useCallback((e: unknown) => {
         console.error('[DyadPanel]', e);
         setError(t('dyad.error.generic'));
-    };
+    }, [t]);
 
     const reload = useCallback(async (selectId?: string) => {
         try {
@@ -44,7 +44,7 @@ export default function DyadPanel() {
         } catch (e) {
             if (isMountedRef.current) fail(e);
         }
-    }, []);
+    }, [fail]);
 
     useEffect(() => {
         void reload();

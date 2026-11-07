@@ -251,7 +251,7 @@ const ApprovalsPanel: React.FC = () => {
                     <div
                         style={{
                             flex: '2 1 400px',
-                            border: '1px solid #e2e8f0',
+                            border: 'var(--1px solid var(--slate-200))',
                             borderRadius: 8,
                             padding: '1rem',
                         }}
@@ -368,7 +368,7 @@ function LocalAgentApprovals(): React.JSX.Element {
     }
 
     return (
-        <div style={{ marginTop: '2rem', borderTop: '1px solid #e2e8f0', paddingTop: '1rem' }}>
+        <div style={{ marginTop: '2rem', borderTop: 'var(--1px solid var(--slate-200))', paddingTop: '1rem' }}>
             <div
                 style={{
                     display: 'flex',
@@ -413,7 +413,7 @@ function LocalAgentApprovals(): React.JSX.Element {
                 {items.map((r) => (
                     <li
                         key={r.id}
-                        style={{ border: '1px solid #e2e8f0', borderRadius: 8, padding: '0.75rem' }}
+                        style={{ border: 'var(--1px solid var(--slate-200))', borderRadius: 8, padding: '0.75rem' }}
                     >
                         <div
                             style={{
@@ -514,7 +514,7 @@ function BrowserUseConfig(): React.JSX.Element {
     }
 
     return (
-        <div style={{ marginTop: '2rem', borderTop: '1px solid #e2e8f0', paddingTop: '1rem' }}>
+        <div style={{ marginTop: '2rem', borderTop: 'var(--1px solid var(--slate-200))', paddingTop: '1rem' }}>
             <div
                 style={{
                     display: 'flex',

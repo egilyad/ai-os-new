@@ -27,12 +27,12 @@ export default function AutonomyPanel() {
     const isMountedRef = useRef(true);
     const active = loops.find((l) => l.id === activeId) ?? null;
 
-    const fail = (e: unknown) => {
+    const fail = useCallback((e: unknown) => {
         console.error('[AutonomyPanel]', e);
         // Keep the real message: a generic banner alone cannot be diagnosed.
         const detail = e instanceof Error ? e.message : String(e);
         setError(`${t('autonomy.error.generic')}: ${detail}`.slice(0, 300));
-    };
+    }, [t]);
 
     const reload = useCallback(async (selectId?: string) => {
         try {
@@ -45,7 +45,7 @@ export default function AutonomyPanel() {
         } catch (e) {
             if (isMountedRef.current) fail(e);
         }
-    }, []);
+    }, [fail]);
 
     useEffect(() => {
         void reload();

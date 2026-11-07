@@ -229,7 +229,7 @@ const RunsPanel: React.FC = () => {
                     <div
                         style={{
                             flex: '2 1 400px',
-                            border: '1px solid #e2e8f0',
+                            border: 'var(--1px solid var(--slate-200))',
                             borderRadius: 8,
                             padding: '1rem',
                         }}

@@ -57,6 +57,8 @@ const HEX_MAP = {
     '1px solid rgba(255, 255, 255, 0.2)': '1px solid var(--border-strong)',
     '1px dashed rgba(255,255,255,0.1)': '1px dashed var(--border-default)',
     '1px dashed rgba(255, 255, 255, 0.1)': '1px dashed var(--border-default)',
+    '1px solid #e2e8f0': '1px solid var(--slate-200)',
+    '1px solid  #e2e8f0': '1px solid var(--slate-200)',
     'rgba(59,130,246,0.5)': 'accent-glow',
     'rgba(59, 130, 246, 0.5)': 'accent-glow',
     // tinted state-backgrounds

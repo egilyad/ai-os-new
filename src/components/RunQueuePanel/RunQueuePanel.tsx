@@ -31,10 +31,10 @@ export default function RunQueuePanel() {
 
     const active = runs.find((r) => r.id === activeId) ?? null;
 
-    const fail = (e: unknown) => {
+    const fail = useCallback((e: unknown) => {
         console.error('[RunQueuePanel]', e);
         setError(t('runQueue.error.generic'));
-    };
+    }, [t]);
 
     const reload = useCallback(async () => {
         try {
@@ -55,7 +55,7 @@ export default function RunQueuePanel() {
         } catch (e) {
             fail(e);
         }
-    }, []);
+    }, [fail]);
 
     useEffect(() => {
         void reload();

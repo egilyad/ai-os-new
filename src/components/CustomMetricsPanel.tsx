@@ -37,34 +37,33 @@ const CustomMetricsPanel: React.FC = () => {
     const [showDash, setShowDash] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    const load = useCallback(async () => {
-        try {
-            const m = await import('../kernel/instances');
-            const svc = m.customMetricsService;
-            if (!svc) return;
-            setMetrics(await svc.listMetrics());
-            setDashboards(await svc.listDashboards());
-            const vals: Record<string, number> = {};
-            const all = await svc.listMetrics();
-            for (const metric of all) {
-                try {
-                    const v = await svc.computeValue(metric.id);
-                    vals[metric.id] = v.value;
-                } catch (e) {
-                    setError(
-                        `Failed to compute value for '${metric.name}': ${e instanceof Error ? e.message : 'Unknown error'}`,
-                    );
-                }
-            }
-            setValues(vals);
-        } catch (e) {
-            setError(`Failed to load metrics: ${e instanceof Error ? e.message : 'Unknown error'}`);
-        }
-    }, []);
-
     useEffect(() => {
+        async function load() {
+            try {
+                const m = await import('../kernel/instances');
+                const svc = m.customMetricsService;
+                if (!svc) return;
+                setMetrics(await svc.listMetrics());
+                setDashboards(await svc.listDashboards());
+                const vals: Record<string, number> = {};
+                const all = await svc.listMetrics();
+                for (const metric of all) {
+                    try {
+                        const v = await svc.computeValue(metric.id);
+                        vals[metric.id] = v.value;
+                    } catch (e) {
+                        setError(
+                            `Failed to compute value for '${metric.name}': ${e instanceof Error ? e.message : 'Unknown error'}`,
+                        );
+                    }
+                }
+                setValues(vals);
+            } catch (e) {
+                setError(`Failed to load metrics: ${e instanceof Error ? e.message : 'Unknown error'}`);
+            }
+        }
         void load();
-    }, [load]);
+    }, []);
 
     async function handleCreate() {
         if (!name.trim() || !field.trim()) return;

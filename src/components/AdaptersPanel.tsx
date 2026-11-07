@@ -197,7 +197,7 @@ const AdaptersPanel: React.FC = () => {
                 {adapters.length === 0 && <li>{t('adapters.empty')}</li>}
             </ul>
 
-            <div style={{ border: '1px solid #e2e8f0', borderRadius: 8, padding: '1rem' }}>
+            <div style={{ border: 'var(--1px solid var(--slate-200))', borderRadius: 8, padding: '1rem' }}>
                 <div style={{ display: 'flex', gap: '0.5rem', marginBottom: 8, flexWrap: 'wrap' }}>
                     <select value={companyId} onChange={(e) => setCompanyId(e.target.value)}>
                         <option value="">{t('adapters.pick_company')}</option>

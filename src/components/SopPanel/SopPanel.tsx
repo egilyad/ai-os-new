@@ -27,10 +27,10 @@ export default function SopPanel() {
     const isMountedRef = useRef(true);
     const active = runs.find((l) => l.id === activeId) ?? null;
 
-    const fail = (e: unknown) => {
+    const fail = useCallback((e: unknown) => {
         console.error('[SopPanel]', e);
         setError(t('sop.error.generic'));
-    };
+    }, [t]);
 
     const reload = useCallback(async (selectId?: string) => {
         try {
@@ -51,7 +51,7 @@ export default function SopPanel() {
         } catch (e) {
             if (isMountedRef.current) fail(e);
         }
-    }, []);
+    }, [fail]);
 
     useEffect(() => {
         void reload();  

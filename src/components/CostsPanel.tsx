@@ -207,7 +207,7 @@ const CostsPanel: React.FC = () => {
             {budget && (
                 <div
                     style={{
-                        border: '1px solid #e2e8f0',
+                        border: 'var(--1px solid var(--slate-200))',
                         borderRadius: 8,
                         padding: '1rem',
                         marginBottom: '1rem',
