@@ -17,14 +17,14 @@
 | Группа | Статус |
 |---|---|
 | P0 (безопасность) | `P0-1/3/6/7` ✅ (vault, governance fail-closed, KeyStateStore, миграция). Осталось: `P0-2` (multi-tenant), `P0-3` (CSAM — нужен внешний API), `P0-4` (prompt-versioning). |
-| P1 (качество/тесты) | `P1-1` ✅ (observability: metrics/monitoring/timeline/trace/admin/causal-timeline). `P1-2` 🟡 (KeyService остался; покрыты KeyStateStore, GroupManager, Rotation, KeyIntelligence, SessionAffinity, KeyFingerprints, KeyQuotas, KeyModels, KeyAlerts, KeyStatus, KeyPoolSelector). `P1-3` ✅ (kernel/runtime/bootstrap smoke). `P1-4` 🟡 (покрыты service-helper, Audit, Governance, FleetMonitor, ToolGovernance, llm-bridge порты, SandboxService.fetchUrl, utils: constant-time/Outbox/hash/embedding/provider-fleet-health; осталось: SandboxService execute, Cognitive/Orchestration уже имеют тесты). `P1-5` ✅ (streamMessage dedup). `P1-6` ❌ (ArgumentGraphService per-session — требует изменения API, отложено). `P1-11/12` ✅. `P1-14` — алиасы событий (не баг), фикс отложен. `P1-15` ✅. |
+| P1 (качество/тесты) | `P1-1` ✅ (observability: metrics/monitoring/timeline/trace/admin/causal-timeline). `P1-2` ✅ (KeyService: 13 юнит-тестов на полном моке deps; покрыты KeyStateStore, GroupManager, Rotation, KeyIntelligence, SessionAffinity, KeyFingerprints, KeyQuotas, KeyModels, KeyAlerts, KeyStatus, KeyPoolSelector). `P1-3` ✅ (kernel/runtime/bootstrap smoke). `P1-4` 🟡 (покрыты service-helper, Audit, Governance, FleetMonitor, ToolGovernance, llm-bridge порты, SandboxService.fetchUrl, utils: constant-time/Outbox/hash/embedding/provider-fleet-health; осталось: SandboxService execute, Cognitive/Orchestration уже имеют тесты). `P1-5` ✅ (streamMessage dedup). `P1-6` ❌ (ArgumentGraphService per-session — требует изменения API, отложено). `P1-11/12` ✅. `P1-14` — алиасы событий (не баг), фикс отложен. `P1-15` ✅. |
 | P2 | 🟡 (не начато: Builder killer-services, round-trip, консолидация панелей, etc.). |
 | P3 | 🟡 (не начато: плагинный sandbox, федерация, серверный режим, декомпозиция). |
 | Quick Wins | ✅ QW-3/4 частично, QW-7/8 ✅; QW-1/2/5/6 ❌ (требуют прогона инструментов). |
-| Тестовая база | 654 теста, 84 стабильных пути (test:stable) — рост с 623/50. |
+| Тестовая база | 660 тестов, 90 стабильных путей (test:stable) — рост с 623/50. |
 
 ### Рекомендуемый следующий курс
-1. `P1-2 KeyService` — с локальным прогоном (полный мок deps), отдельной сессией.
+1. `P1-2 KeyService` ✅ — закрыт (13 юнит-тестов, 2026-11-07).
 2. `P1-6` — рефакторинг IArgumentGraphService (sessionId в build/get*) + тесты, отдельной сессией с прогоном.
 3. `P0-2` (server-скоупинг) — большой; требует чтения sync-server/ws-auth/company-store.
 4. Затем P2 (UI/продукт) и P3.
@@ -76,7 +76,7 @@
 | # | Задача | Статус | Источник |
 |---|---|---|---|
 | P1-1 | Тесты для observability: metrics/monitoring/timeline/trace/admin/causal-timeline | ✅ | полный отчёт P1-#11 |
-| P1-2 | Тесты для key-management: KeyService/KeyStateStore/GroupManager/SessionAffinity/Rotation/KeyIntelligence | 🟡 (KeyStateStore ✅, GroupManager ✅, Rotation ✅, KeyIntelligence ✅, SessionAffinity ✅, KeyFingerprints ✅, KeyQuotas ✅, KeyModels ✅, KeyAlerts ✅, KeyStatus ✅, KeyPoolSelector ✅) | полный отчёт P1-#12 |
+| P1-2 | Тесты для key-management: KeyService/KeyStateStore/GroupManager/SessionAffinity/Rotation/KeyIntelligence | ✅ (KeyService ✅, KeyStateStore ✅, GroupManager ✅, Rotation ✅, KeyIntelligence ✅, SessionAffinity ✅, KeyFingerprints ✅, KeyQuotas ✅, KeyModels ✅, KeyAlerts ✅, KeyStatus ✅, KeyPoolSelector ✅) | полный отчёт P1-#12 |
 | P1-3 | Тесты для bootstrap/kernel/runtime/bootstrap-phases | 🟡 (kernel ✅, runtime ✅, bootstrap ✅) | полный отчёт P1-#13 |
 | P1-4 | Тесты для «голых» модулей: CognitiveService/Orchestration/LlmCrewExecutor/CouncilPort/GraphPort/Audit/Governance/FleetMonitor/ToolGovernance/SandboxService/service-helper | 🟡 (service-helper ✅, Audit ✅, Governance ✅, FleetMonitor ✅, ToolGovernance ✅, LlmCrewExecutor/CouncilPort/GraphPort/Frontier/Persona ✅, SandboxService.fetchUrl ✅, constant-time/Outbox ✅, provider-fleet-health ✅, hash/embedding ✅, topic-suggestions ✅, builder-bridge ✅, skill-market ✅, hierarchy ✅, sandbox-broker ✅) | ROADMAP_00 Фаза 0 |
 | P1-5 | Dedup `streamMessage` в CacheDecorator (in-flight) | ✅ | W6-039; dev-status-debt |
