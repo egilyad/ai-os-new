@@ -165,7 +165,7 @@ const DebateSystemResearch: React.FC = () => {
                                     onClick={() => navigate('/hypothesis-gen')}
                                     style={{
                                         textAlign: 'left',
-                                        background: 'rgba(0,0,0,0.2)',
+                                        background: 'var(--bg-main)',
                                         border: 'none',
                                         borderRadius: 8,
                                         padding: '0.5rem 0.75rem',

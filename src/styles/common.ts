@@ -279,7 +279,7 @@ export const panelRounded16: CSSProperties = {
 export const panelDark: CSSProperties = {
     padding: '0.75rem',
     borderRadius: 8,
-    background: 'rgba(0,0,0,0.2)',
+    background: 'var(--bg-main)',
 };
 
 export const h3Section: CSSProperties = {
@@ -350,7 +350,7 @@ export const flexCenterFull: CSSProperties = {
 export const metricCard: CSSProperties = {
     padding: '0.4rem 0.6rem',
     borderRadius: 6,
-    background: 'rgba(0,0,0,0.2)',
+    background: 'var(--bg-main)',
 };
 export const proseLine: CSSProperties = {
     display: 'flex',
@@ -374,7 +374,7 @@ export const flexColFull: CSSProperties = {
 export const inputDarkBg: CSSProperties = {
     padding: '0.6rem 0.75rem',
     borderRadius: 8,
-    background: 'rgba(0,0,0,0.2)',
+    background: 'var(--bg-main)',
 };
 export const textMutedWeight700XsMargin: CSSProperties = {
     fontSize: '0.6rem',
@@ -483,7 +483,7 @@ export const detailRow: CSSProperties = {
     gap: '0.75rem',
     padding: '0.75rem',
     borderRadius: 8,
-    background: 'rgba(0,0,0,0.2)',
+    background: 'var(--bg-main)',
 };
 export const flexBetweenGapMd: CSSProperties = {
     display: 'flex',
@@ -522,7 +522,7 @@ export const selectDark: CSSProperties = {
     width: '100%',
     padding: '0.6rem',
     borderRadius: 8,
-    background: 'rgba(0,0,0,0.3)',
+    background: 'var(--bg-elevated)',
     border: 'var(--1px solid var(--border-subtle))',
     color: 'var(--slate-200)',
     fontSize: '0.85rem',
@@ -706,7 +706,7 @@ export const errorBox: CSSProperties = {
 };
 export const selectSmall: CSSProperties = {
     padding: '0.35rem 0.5rem',
-    background: 'rgba(0,0,0,0.2)',
+    background: 'var(--bg-main)',
     border: 'var(--1px solid var(--border-default))',
     borderRadius: 8,
     color: 'var(--slate-200)',
@@ -735,7 +735,7 @@ export const textLabelSmall: CSSProperties = {
 export const metricBox: CSSProperties = {
     padding: '0.4rem 0.6rem',
     borderRadius: 6,
-    background: 'rgba(0,0,0,0.2)',
+    background: 'var(--bg-main)',
 };
 export const textXxsSecondary: CSSProperties = { fontSize: '0.6rem', color: 'var(--slate-500)' };
 export const progressBar8: CSSProperties = {
@@ -1034,7 +1034,7 @@ export const debateRuntimeIssuePanel: CSSProperties = {
 export const modalFormSelect: CSSProperties = {
     width: '100%',
     padding: '0.85rem 1rem',
-    background: 'rgba(0,0,0,0.3)',
+    background: 'var(--bg-elevated)',
     border: 'var(--1px solid var(--border-default))',
     borderRadius: 10,
     color: 'white',
@@ -1090,7 +1090,7 @@ export const textareaDark: CSSProperties = {
 /* From SettingsPanel.tsx extraction */
 export const settingSelect: CSSProperties = {
     padding: '0.6rem 1rem',
-    background: 'rgba(0,0,0,0.3)',
+    background: 'var(--bg-elevated)',
     border: 'var(--1px solid var(--border-default))',
     borderRadius: 8,
     color: 'white',
@@ -1124,7 +1124,7 @@ export const sectionTitleLarge: CSSProperties = {
 };
 export const webhookInput: CSSProperties = {
     padding: '0.6rem 1rem',
-    background: 'rgba(0,0,0,0.3)',
+    background: 'var(--bg-elevated)',
     border: 'var(--1px solid var(--border-default))',
     borderRadius: 8,
     color: 'white',
@@ -1173,7 +1173,7 @@ export const summaryMetricCard: CSSProperties = {
     overflow: 'hidden',
 };
 export const providerMetricBox: CSSProperties = {
-    background: 'rgba(0,0,0,0.2)',
+    background: 'var(--bg-main)',
     padding: '1rem',
     borderRadius: 12,
     border: '1px solid rgba(255,255,255,0.02)',
@@ -1199,7 +1199,7 @@ export const workloadInfoBox: CSSProperties = {
 export const searchInputCompact: CSSProperties = {
     width: '100%',
     padding: '0.5rem 0.75rem 0.5rem 2rem',
-    background: 'rgba(0,0,0,0.3)',
+    background: 'var(--bg-elevated)',
     border: '1px solid rgba(255,255,255,0.05)',
     borderRadius: 10,
     color: 'white',
@@ -1300,7 +1300,7 @@ export const pageSubtitleMuted: CSSProperties = {
 export const searchInputLarge: CSSProperties = {
     width: '100%',
     padding: '0.85rem 1rem 0.85rem 2.75rem',
-    background: 'rgba(0,0,0,0.3)',
+    background: 'var(--bg-elevated)',
     border: '1px solid rgba(255,255,255,0.05)',
     borderRadius: 12,
     color: 'white',
@@ -1353,7 +1353,7 @@ export const dismissBtnRed: CSSProperties = {
     cursor: 'pointer',
 };
 export const statBox: CSSProperties = {
-    background: 'rgba(0,0,0,0.3)',
+    background: 'var(--bg-elevated)',
     padding: '1.25rem',
     borderRadius: 12,
     border: '1px solid rgba(255,255,255,0.05)',
@@ -1402,7 +1402,7 @@ export const panelColDark: CSSProperties = {
     display: 'flex',
     flexDirection: 'column',
     overflow: 'hidden',
-    background: 'rgba(0,0,0,0.2)',
+    background: 'var(--bg-main)',
 };
 export const labelSection800: CSSProperties = {
     fontSize: '0.75rem',
@@ -1421,7 +1421,7 @@ export const labelBlockUppercase: CSSProperties = {
 export const selectDarkWide: CSSProperties = {
     width: '100%',
     padding: '0.75rem',
-    background: 'rgba(0,0,0,0.3)',
+    background: 'var(--bg-elevated)',
     border: 'var(--1px solid var(--border-default))',
     borderRadius: 8,
     color: 'white',
@@ -1435,7 +1435,7 @@ export const flexButtonRow: CSSProperties = { display: 'flex', alignItems: 'cent
 export const metricCardCenter: CSSProperties = {
     padding: '1rem',
     borderRadius: 12,
-    background: 'rgba(0,0,0,0.2)',
+    background: 'var(--bg-main)',
     border: '1px solid rgba(255,255,255,0.05)',
     textAlign: 'center',
 };
@@ -1632,7 +1632,7 @@ export const btnActionCompact: CSSProperties = {
 };
 export const inputLargeSelect: CSSProperties = {
     padding: '1rem 1.25rem',
-    background: 'rgba(0,0,0,0.3)',
+    background: 'var(--bg-elevated)',
     border: '2px solid rgba(255,255,255,0.1)',
     borderRadius: 14,
     color: 'var(--slate-200)',
@@ -1703,7 +1703,7 @@ export const loadingContainer: CSSProperties = {
 /* From EventsTimeline.tsx extraction */
 export const buttonGroupPill: CSSProperties = {
     display: 'flex',
-    background: 'rgba(0,0,0,0.3)',
+    background: 'var(--bg-elevated)',
     borderRadius: 10,
     padding: '0.2rem',
 };
@@ -1722,14 +1722,14 @@ export const btnEventControl: CSSProperties = {
 export const statCardDark: CSSProperties = {
     padding: '1rem',
     borderRadius: 12,
-    background: 'rgba(0,0,0,0.3)',
+    background: 'var(--bg-elevated)',
     border: '1px solid rgba(255,255,255,0.05)',
     textAlign: 'center',
 };
 export const infoCardDark: CSSProperties = {
     padding: '1rem',
     borderRadius: 12,
-    background: 'rgba(0,0,0,0.3)',
+    background: 'var(--bg-elevated)',
     border: '1px solid rgba(255,255,255,0.05)',
 };
 export const statLabelDark: CSSProperties = {
@@ -1867,7 +1867,7 @@ export const stepCardPanel: CSSProperties = {
     display: 'flex',
     flexDirection: 'column',
     gap: '1.5rem',
-    background: 'rgba(0,0,0,0.3)',
+    background: 'var(--bg-elevated)',
     padding: '2.5rem',
     borderRadius: 24,
     border: '1px solid rgba(255,255,255,0.05)',

@@ -222,7 +222,7 @@ const ProviderDashboard: React.FC = () => {
                         style={{
                             padding: '1rem',
                             borderRadius: 12,
-                            background: 'rgba(0,0,0,0.2)',
+                            background: 'var(--bg-main)',
                             border: '1px solid rgba(255,255,255,0.05)',
                             display: 'flex',
                             flexDirection: 'column',
@@ -268,7 +268,7 @@ const ProviderDashboard: React.FC = () => {
                             style={{
                                 padding: '1rem',
                                 borderRadius: 12,
-                                background: 'rgba(0,0,0,0.2)',
+                                background: 'var(--bg-main)',
                                 border: '1px solid rgba(255,255,255,0.05)',
                             }}
                         >

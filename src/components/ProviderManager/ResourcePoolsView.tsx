@@ -75,15 +75,15 @@ const ResourcePoolsView: React.FC<ResourcePoolsViewProps> = ({ keys }) => {
               </div>
 
               <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem' }}>
-                <div style={{ flex: 1, padding: '0.75rem', borderRadius: 10, background: 'rgba(0,0,0,0.2)', textAlign: 'center' }}>
+                <div style={{ flex: 1, padding: '0.75rem', borderRadius: 10, background: 'var(--bg-main)', textAlign: 'center' }}>
                   <div style={{ fontSize: '1.2rem', fontWeight: 800, color: activeKeys > 0 ? '#10b981' : '#64748b' }}>{activeKeys}/{kps.length}</div>
                   <div style={{ fontSize: '0.65rem', color: 'var(--slate-500)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Active</div>
                 </div>
-                <div style={{ flex: 1, padding: '0.75rem', borderRadius: 10, background: 'rgba(0,0,0,0.2)', textAlign: 'center' }}>
+                <div style={{ flex: 1, padding: '0.75rem', borderRadius: 10, background: 'var(--bg-main)', textAlign: 'center' }}>
                   <div style={{ fontSize: '1.2rem', fontWeight: 800, color: avgLatency > 0 ? avgLatency < 500 ? '#10b981' : avgLatency < 1500 ? '#f59e0b' : '#ef4444' : '#64748b' }}>{avgLatency > 0 ? `${avgLatency}ms` : '--'}</div>
                   <div style={{ fontSize: '0.65rem', color: 'var(--slate-500)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Avg Latency</div>
                 </div>
-                <div style={{ flex: 1, padding: '0.75rem', borderRadius: 10, background: 'rgba(0,0,0,0.2)', textAlign: 'center' }}>
+                <div style={{ flex: 1, padding: '0.75rem', borderRadius: 10, background: 'var(--bg-main)', textAlign: 'center' }}>
                   <div style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--slate-50)' }}>{kps.length}</div>
                   <div style={{ fontSize: '0.65rem', color: 'var(--slate-500)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Keys</div>
                 </div>

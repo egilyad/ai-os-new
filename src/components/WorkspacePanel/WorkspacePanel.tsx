@@ -467,7 +467,7 @@ const WorkspacePanel: React.FC = () => {
                                 display: 'flex',
                                 alignItems: 'center',
                                 gap: 6,
-                                background: 'rgba(0,0,0,0.3)',
+                                background: 'var(--bg-elevated)',
                                 borderRadius: 8,
                                 padding: '6px 10px',
                                 border: '1px solid rgba(255,255,255,0.05)',
@@ -636,7 +636,7 @@ const WorkspacePanel: React.FC = () => {
                         <div
                             style={{
                                 borderTop: '1px solid rgba(255,255,255,0.05)',
-                                background: 'rgba(0,0,0,0.3)',
+                                background: 'var(--bg-elevated)',
                                 display: 'flex',
                                 flexDirection: 'column',
                                 maxHeight: '45%',

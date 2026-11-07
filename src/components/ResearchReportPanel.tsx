@@ -350,7 +350,7 @@ const ResearchReportPanelContent: React.FC = () => {
                                         display: 'flex',
                                         gap: 12,
                                         padding: '8px 10px',
-                                        background: 'rgba(0,0,0,0.2)',
+                                        background: 'var(--bg-main)',
                                         borderRadius: 8,
                                         fontSize: 11,
                                         color: 'var(--slate-400)',

@@ -148,7 +148,7 @@ export function GoogleChatTab({ model }: GoogleChatTabProps) {
                                         style={{
                                             marginTop: 8,
                                             padding: 8,
-                                            background: 'rgba(0,0,0,0.2)',
+                                            background: 'var(--bg-main)',
                                             borderRadius: 8,
                                             fontSize: 12,
                                         }}

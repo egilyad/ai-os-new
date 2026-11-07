@@ -196,7 +196,7 @@ const RoleLibrary: React.FC = () => {
                         style={{
                             width: '100%',
                             padding: '0.55rem 0.75rem 0.55rem 2.2rem',
-                            background: 'rgba(0,0,0,0.3)',
+                            background: 'var(--bg-elevated)',
                             border: '1px solid rgba(255,255,255,0.05)',
                             borderRadius: 10,
                             color: 'var(--slate-200)',

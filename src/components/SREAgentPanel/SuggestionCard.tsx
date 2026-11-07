@@ -22,7 +22,7 @@ const SuggestionCard: React.FC<Props> = ({ suggestion: s, executingId, onExecute
             style={{
                 padding: '1rem 1.25rem',
                 borderRadius: 12,
-                background: 'rgba(0,0,0,0.2)',
+                background: 'var(--bg-main)',
                 border: `1px solid ${IMPACT_COLORS[s.impact]}20`,
                 borderLeft: `4px solid ${IMPACT_COLORS[s.impact]}`,
             }}
@@ -142,7 +142,7 @@ const SuggestionCard: React.FC<Props> = ({ suggestion: s, executingId, onExecute
                             padding: '0.5rem',
                             borderRadius: 8,
                             border: 'var(--1px solid var(--border-default))',
-                            background: 'rgba(0,0,0,0.3)',
+                            background: 'var(--bg-elevated)',
                             color: 'var(--slate-500)',
                             cursor: 'pointer',
                             display: 'flex',

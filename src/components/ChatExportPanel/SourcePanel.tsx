@@ -29,7 +29,7 @@ export const SourcePanel: React.FC<SourcePanelProps> = ({
                 padding: '1rem',
                 borderRadius: 12,
                 border: '1px solid rgba(255,255,255,0.05)',
-                background: 'rgba(0,0,0,0.2)',
+                background: 'var(--bg-main)',
             }}
         >
             <h3
@@ -114,7 +114,7 @@ export const SourcePanel: React.FC<SourcePanelProps> = ({
                             padding: '0.5rem',
                             borderRadius: 6,
                             border: 'var(--1px solid var(--border-default))',
-                            background: 'rgba(0,0,0,0.3)',
+                            background: 'var(--bg-elevated)',
                             color: 'var(--slate-200)',
                             fontFamily: 'monospace',
                             fontSize: '0.75rem',

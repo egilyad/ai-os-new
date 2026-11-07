@@ -164,7 +164,7 @@ const ProviderDetailModal: React.FC<ProviderDetailModalProps> = ({
                             style={{
                                 width: '100%',
                                 padding: '0.75rem',
-                                background: 'rgba(0,0,0,0.3)',
+                                background: 'var(--bg-elevated)',
                                 borderRadius: 8,
                                 fontSize: '0.65rem',
                                 fontFamily: 'monospace',

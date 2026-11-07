@@ -275,7 +275,7 @@ const ModelComparePanel: React.FC = () => {
                             flex: 1,
                             padding: '0.75rem 1rem',
                             borderRadius: 12,
-                            background: 'rgba(0,0,0,0.3)',
+                            background: 'var(--bg-elevated)',
                             border: 'var(--1px solid var(--border-subtle))',
                             color: 'var(--slate-200)',
                             fontSize: '0.85rem',
@@ -458,7 +458,7 @@ const ModelComparePanel: React.FC = () => {
                                     style={{
                                         padding: '0.75rem',
                                         borderRadius: 8,
-                                        background: 'rgba(0,0,0,0.2)',
+                                        background: 'var(--bg-main)',
                                         color: 'var(--slate-200)',
                                         fontSize: '0.82rem',
                                         lineHeight: 1.7,

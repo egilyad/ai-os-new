@@ -94,7 +94,7 @@ const DependencyMapPanel: React.FC = () => {
                 </h2>
                 <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
                     {selectedNode && (
-                        <div style={{ fontSize: '0.85rem', color: 'var(--slate-400)', background: 'rgba(0,0,0,0.2)', padding: '0.5rem 1rem', borderRadius: 8 }}>
+                        <div style={{ fontSize: '0.85rem', color: 'var(--slate-400)', background: 'var(--bg-main)', padding: '0.5rem 1rem', borderRadius: 8 }}>
                             <span style={{ color: 'var(--error)', fontWeight: 700 }}>Impact Analysis:</span> {impactedNodes.size} downstream services affected by <strong style={{ color: 'var(--slate-50)' }}>{selectedNode}</strong>
                         </div>
                     )}
@@ -111,7 +111,7 @@ const DependencyMapPanel: React.FC = () => {
                 </div>
             </div>
 
-            <div style={{ flex: 1, border: '1px solid rgba(255,255,255,0.05)', borderRadius: 16, overflow: 'hidden', background: 'rgba(0,0,0,0.2)' }}>
+            <div style={{ flex: 1, border: '1px solid rgba(255,255,255,0.05)', borderRadius: 16, overflow: 'hidden', background: 'var(--bg-main)' }}>
                 <VisGraph nodes={nodes} edges={edges} onClickNode={handleNodeClick} height={640} />
             </div>
             <ModuleInfo moduleKey="dependency_graph" />

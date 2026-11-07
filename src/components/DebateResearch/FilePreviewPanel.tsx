@@ -169,7 +169,7 @@ export const FilePreviewPanel: React.FC<FilePreviewPanelProps> = ({
                                     style={{
                                         fontSize: '0.72rem',
                                         color: 'var(--slate-200)',
-                                        background: 'rgba(0,0,0,0.2)',
+                                        background: 'var(--bg-main)',
                                         borderRadius: 4,
                                         padding: '0.3rem 0.5rem',
                                         wordBreak: 'break-all',
@@ -207,7 +207,7 @@ export const FilePreviewPanel: React.FC<FilePreviewPanelProps> = ({
                                 width: 50,
                                 padding: '0.1rem 0.3rem',
                                 borderRadius: 3,
-                                background: 'rgba(0,0,0,0.3)',
+                                background: 'var(--bg-elevated)',
                                 border: '1px solid rgba(255,255,255,0.06)',
                                 color: 'var(--slate-200)',
                                 fontSize: '0.65rem',

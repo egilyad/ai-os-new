@@ -232,7 +232,7 @@ const AgentObservabilityTab: React.FC<Props> = ({ agent, agentStats }) => {
                                 flex: 1,
                                 padding: '0.5rem',
                                 borderRadius: 8,
-                                background: 'rgba(0,0,0,0.2)',
+                                background: 'var(--bg-main)',
                                 textAlign: 'center',
                             }}
                         >
@@ -274,7 +274,7 @@ const AgentObservabilityTab: React.FC<Props> = ({ agent, agentStats }) => {
                             height: 12,
                             borderRadius: 6,
                             overflow: 'hidden',
-                            background: 'rgba(0,0,0,0.3)',
+                            background: 'var(--bg-elevated)',
                         }}
                     >
                         {normalizedBuckets.map((b) => (

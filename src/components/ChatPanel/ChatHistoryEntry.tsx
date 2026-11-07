@@ -122,7 +122,7 @@ const ChatHistoryEntry: React.FC<ChatHistoryEntryProps> = memo(
                                     style={{
                                         width: '100%',
                                         padding: '0.75rem 1rem',
-                                        background: 'rgba(0,0,0,0.3)',
+                                        background: 'var(--bg-elevated)',
                                         border: '1px solid rgba(59,130,246,0.3)',
                                         borderRadius: 12,
                                         color: 'var(--text-main)',

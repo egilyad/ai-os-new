@@ -129,7 +129,7 @@ const BuilderAISidebar: React.FC<BuilderAISidebarProps> = ({ onGenerate }) => {
                 rows={3}
                 style={{
                     width: '100%',
-                    background: 'rgba(0,0,0,0.3)',
+                    background: 'var(--bg-elevated)',
                     border: 'var(--1px solid var(--border-default))',
                     borderRadius: 8,
                     padding: '0.5rem',

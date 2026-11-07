@@ -960,7 +960,7 @@ function BudgetTab({ agentId }: { agentId: string }) {
                         style={{
                             height: 6,
                             borderRadius: 6,
-                            background: 'rgba(0,0,0,0.2)',
+                            background: 'var(--bg-main)',
                             marginTop: 8,
                         }}
                     >
@@ -1184,7 +1184,7 @@ function ChatTab({ agentId, agentName }: { agentId: string; agentName: string })
                     overflowY: 'auto',
                     padding: '8px 10px',
                     borderRadius: 10,
-                    background: 'rgba(0,0,0,0.2)',
+                    background: 'var(--bg-main)',
                     border: '1px solid rgba(255,255,255,0.06)',
                     fontSize: 12,
                     color: 'var(--slate-400)',

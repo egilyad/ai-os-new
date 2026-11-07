@@ -265,7 +265,7 @@ export const AgentComparison: React.FC<AgentComparisonProps> = ({ agents, onClos
                             style={{
                                 fontSize: '0.7rem',
                                 color: 'var(--slate-400)',
-                                background: 'rgba(0,0,0,0.2)',
+                                background: 'var(--bg-main)',
                                 padding: '0.5rem',
                                 borderRadius: 8,
                                 maxHeight: 80,
@@ -281,7 +281,7 @@ export const AgentComparison: React.FC<AgentComparisonProps> = ({ agents, onClos
                             style={{
                                 fontSize: '0.7rem',
                                 color: 'var(--slate-400)',
-                                background: 'rgba(0,0,0,0.2)',
+                                background: 'var(--bg-main)',
                                 padding: '0.5rem',
                                 borderRadius: 8,
                                 maxHeight: 80,

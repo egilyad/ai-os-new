@@ -126,7 +126,7 @@ const EditorsPanel: React.FC = () => {
                                 maxHeight: 100,
                                 marginTop: '0.3rem',
                                 padding: '0.5rem',
-                                background: 'rgba(0,0,0,0.2)',
+                                background: 'var(--bg-main)',
                                 borderRadius: '4px',
                             }}
                         >

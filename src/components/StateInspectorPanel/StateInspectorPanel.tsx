@@ -262,7 +262,7 @@ export const StateInspectorPanel: React.FC = () => {
                         padding: '0.4rem 0.5rem 0.4rem 28px',
                         borderRadius: 6,
                         border: 'var(--1px solid var(--border-default))',
-                        background: 'rgba(0,0,0,0.3)',
+                        background: 'var(--bg-elevated)',
                         color: 'var(--slate-200)',
                         fontSize: '0.8rem',
                     }}
@@ -275,7 +275,7 @@ export const StateInspectorPanel: React.FC = () => {
                     overflow: 'auto',
                     borderRadius: 8,
                     border: '1px solid rgba(255,255,255,0.05)',
-                    background: 'rgba(0,0,0,0.2)',
+                    background: 'var(--bg-main)',
                     padding: '0.5rem',
                 }}
             >

@@ -75,7 +75,7 @@ const ParticipantsField: React.FC<{
                         padding: '0.5rem',
                         borderRadius: 8,
                         border: 'var(--1px solid var(--border-subtle))',
-                        background: 'rgba(0,0,0,0.2)',
+                        background: 'var(--bg-main)',
                     }}
                 >
                     <AgentIdentityChip identity={identities[idx]!} showDetails />

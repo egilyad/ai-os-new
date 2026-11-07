@@ -89,7 +89,7 @@ const ReadingTab: React.FC<ReadingTabProps> = ({ settings, updateSetting }) => {
                                 marginBottom: '1rem',
                                 padding: '0.75rem',
                                 borderRadius: 8,
-                                background: 'rgba(0,0,0,0.2)',
+                                background: 'var(--bg-main)',
                             }}
                         >
                             <div

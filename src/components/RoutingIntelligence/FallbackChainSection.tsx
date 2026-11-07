@@ -38,7 +38,7 @@ const FallbackChainSection: React.FC<Props> = ({
                     style={{
                         padding: '0.9rem',
                         borderRadius: 8,
-                        background: 'rgba(0,0,0,0.2)',
+                        background: 'var(--bg-main)',
                         border: '1px solid rgba(255,255,255,0.05)',
                     }}
                 >

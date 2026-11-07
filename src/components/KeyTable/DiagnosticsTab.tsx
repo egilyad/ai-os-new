@@ -77,7 +77,7 @@ const DiagnosticsTab: React.FC<DiagnosticsTabProps> = ({ apiKey }) => {
                         {f.category}
                       </span>
                       {f.metric && (
-                        <span style={{ padding: '0.15rem 0.4rem', borderRadius: 4, fontSize: '0.6rem', fontFamily: 'monospace', background: 'rgba(0,0,0,0.2)', color: 'var(--slate-400)' }}>
+                        <span style={{ padding: '0.15rem 0.4rem', borderRadius: 4, fontSize: '0.6rem', fontFamily: 'monospace', background: 'var(--bg-main)', color: 'var(--slate-400)' }}>
                           {f.metric}
                         </span>
                       )}

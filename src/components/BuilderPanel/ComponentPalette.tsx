@@ -68,7 +68,7 @@ const ComponentPalette: React.FC<ComponentPaletteProps> = ({ onAddNode, t }) => 
                 display: 'flex',
                 flexDirection: 'column',
                 overflow: 'hidden',
-                background: 'rgba(0,0,0,0.2)',
+                background: 'var(--bg-main)',
             }}
         >
             <div

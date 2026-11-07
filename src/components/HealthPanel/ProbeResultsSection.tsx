@@ -82,7 +82,7 @@ export const ProbeResultsSection: React.FC<ProbeResultsSectionProps> = ({
                                     gap: 8,
                                     padding: '8px 12px',
                                     borderRadius: isExpanded ? '10px 10px 0 0' : 10,
-                                    background: 'rgba(0,0,0,0.2)',
+                                    background: 'var(--bg-main)',
                                     cursor: 'pointer',
                                     fontSize: '0.82rem',
                                     border: isExpanded

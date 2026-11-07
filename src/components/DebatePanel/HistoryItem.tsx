@@ -350,7 +350,7 @@ const HistoryItem: React.FC<HistoryItemProps> = ({
                                     padding: '0.25rem 0.5rem',
                                     borderRadius: 6,
                                     border: '1px solid var(--border)',
-                                    background: 'rgba(0,0,0,0.3)',
+                                    background: 'var(--bg-elevated)',
                                     color: 'var(--slate-200)',
                                     fontSize: '0.7rem',
                                     outline: 'none',

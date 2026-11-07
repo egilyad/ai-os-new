@@ -130,7 +130,7 @@ const AuditLogView: React.FC = () => {
                             style={{
                                 padding: '0.4rem 0.75rem 0.4rem 2rem',
                                 borderRadius: 8,
-                                background: 'rgba(0,0,0,0.3)',
+                                background: 'var(--bg-elevated)',
                                 border: '1px solid rgba(255,255,255,0.05)',
                                 color: 'white',
                                 fontSize: '0.8rem',
@@ -142,7 +142,7 @@ const AuditLogView: React.FC = () => {
                     <div
                         style={{
                             display: 'flex',
-                            background: 'rgba(0,0,0,0.3)',
+                            background: 'var(--bg-elevated)',
                             borderRadius: 8,
                             padding: '0.15rem',
                         }}
@@ -177,7 +177,7 @@ const AuditLogView: React.FC = () => {
                         style={{
                             padding: '0.35rem 0.5rem',
                             borderRadius: 8,
-                            background: 'rgba(0,0,0,0.3)',
+                            background: 'var(--bg-elevated)',
                             border: '1px solid rgba(255,255,255,0.05)',
                             color: '#a1a1aa',
                             fontSize: '0.65rem',
@@ -201,7 +201,7 @@ const AuditLogView: React.FC = () => {
                         style={{
                             padding: '0.3rem 0.5rem',
                             borderRadius: 8,
-                            background: 'rgba(0,0,0,0.3)',
+                            background: 'var(--bg-elevated)',
                             border: '1px solid rgba(255,255,255,0.05)',
                             color: '#a1a1aa',
                             fontSize: '0.65rem',
@@ -219,7 +219,7 @@ const AuditLogView: React.FC = () => {
                         style={{
                             padding: '0.3rem 0.5rem',
                             borderRadius: 8,
-                            background: 'rgba(0,0,0,0.3)',
+                            background: 'var(--bg-elevated)',
                             border: '1px solid rgba(255,255,255,0.05)',
                             color: '#a1a1aa',
                             fontSize: '0.65rem',
@@ -233,7 +233,7 @@ const AuditLogView: React.FC = () => {
                             padding: '0.4rem 0.6rem',
                             borderRadius: 8,
                             border: '1px solid rgba(255,255,255,0.05)',
-                            background: 'rgba(0,0,0,0.3)',
+                            background: 'var(--bg-elevated)',
                             color: 'var(--slate-500)',
                             cursor: 'pointer',
                             display: 'flex',
@@ -252,7 +252,7 @@ const AuditLogView: React.FC = () => {
                             padding: '0.4rem 0.6rem',
                             borderRadius: 8,
                             border: '1px solid rgba(255,255,255,0.05)',
-                            background: 'rgba(0,0,0,0.3)',
+                            background: 'var(--bg-elevated)',
                             color: 'var(--slate-500)',
                             cursor: 'pointer',
                             display: 'flex',

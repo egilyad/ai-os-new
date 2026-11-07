@@ -178,7 +178,7 @@ const AgеntsStep: React.FC<AgentsStepProps> = ({
                                         padding: '8px 10px',
                                         borderRadius: 8,
                                         border: '1px solid rgba(100,116,139,0.2)',
-                                        background: 'rgba(0,0,0,0.2)',
+                                        background: 'var(--bg-main)',
                                         color: 'var(--slate-100)',
                                         fontSize: '0.85rem',
                                         outline: 'none',

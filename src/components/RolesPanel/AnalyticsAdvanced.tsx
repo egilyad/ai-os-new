@@ -397,7 +397,7 @@ const AnalyticsAdvanced: React.FC<AnalyticsAdvancedProps> = ({
                                     alignItems: 'center',
                                     gap: 8,
                                     padding: '0.4rem 0.5rem',
-                                    background: 'rgba(0,0,0,0.2)',
+                                    background: 'var(--bg-main)',
                                     borderRadius: 8,
                                 }}
                             >

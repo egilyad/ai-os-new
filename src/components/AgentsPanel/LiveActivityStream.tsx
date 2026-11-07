@@ -504,7 +504,7 @@ export const LiveActivityStream: React.FC = () => {
                                                     marginTop: '0.4rem',
                                                     padding: '0.5rem',
                                                     borderRadius: 6,
-                                                    background: 'rgba(0,0,0,0.3)',
+                                                    background: 'var(--bg-elevated)',
                                                     fontSize: '0.65rem',
                                                     color: 'var(--slate-400)',
                                                     fontFamily: 'monospace',

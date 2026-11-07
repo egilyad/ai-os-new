@@ -355,7 +355,7 @@ const AgentsPanelView: React.FC = () => {
                         border: 'var(--1px solid var(--border-subtle))',
                         borderRadius: 8,
                         padding: 2,
-                        background: 'rgba(0,0,0,0.2)',
+                        background: 'var(--bg-main)',
                     }}
                 >
                     <button

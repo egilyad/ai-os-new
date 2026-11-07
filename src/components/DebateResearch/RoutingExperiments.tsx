@@ -330,7 +330,7 @@ const RoutingExperiments: React.FC = () => {
                                 width: 45,
                                 padding: '0.25rem 0.4rem',
                                 borderRadius: 5,
-                                background: 'rgba(0,0,0,0.3)',
+                                background: 'var(--bg-elevated)',
                                 border: '1px solid rgba(255,255,255,0.06)',
                                 color: 'var(--slate-200)',
                                 fontSize: '0.75rem',

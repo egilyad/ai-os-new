@@ -30,7 +30,7 @@ const MemoryCard: React.FC<MemoryCardProps> = memo(
                 className="glass-panel"
                 style={{
                     padding: '1.5rem',
-                    background: 'rgba(0,0,0,0.2)',
+                    background: 'var(--bg-main)',
                     border: '1px solid rgba(255,255,255,0.05)',
                     borderRadius: 16,
                     display: 'flex',
@@ -214,7 +214,7 @@ const MemoryCard: React.FC<MemoryCardProps> = memo(
                             color: 'var(--slate-400)',
                             fontFamily: 'monospace',
                             wordBreak: 'break-all',
-                            background: 'rgba(0,0,0,0.2)',
+                            background: 'var(--bg-main)',
                             borderRadius: 8,
                             padding: '0.5rem 0.75rem',
                         }}

@@ -260,7 +260,7 @@ export const MessageSearchPanel: React.FC = () => {
                             padding: '0.4rem 0.5rem 0.4rem 28px',
                             borderRadius: 6,
                             border: 'var(--1px solid var(--border-default))',
-                            background: 'rgba(0,0,0,0.3)',
+                            background: 'var(--bg-elevated)',
                             color: 'var(--slate-200)',
                             fontSize: '0.85rem',
                         }}
@@ -300,7 +300,7 @@ export const MessageSearchPanel: React.FC = () => {
                                 padding: '0.5rem',
                                 borderRadius: 8,
                                 border: '1px solid rgba(255,255,255,0.05)',
-                                background: 'rgba(0,0,0,0.2)',
+                                background: 'var(--bg-main)',
                             }}
                         >
                             <FilterSelect
@@ -344,7 +344,7 @@ export const MessageSearchPanel: React.FC = () => {
                                         padding: '0.3rem 0.4rem',
                                         borderRadius: 4,
                                         border: 'var(--1px solid var(--border-default))',
-                                        background: 'rgba(0,0,0,0.3)',
+                                        background: 'var(--bg-elevated)',
                                         color: 'var(--slate-200)',
                                         fontSize: '0.75rem',
                                         marginBottom: 4,
@@ -358,7 +358,7 @@ export const MessageSearchPanel: React.FC = () => {
                                         padding: '0.3rem 0.4rem',
                                         borderRadius: 4,
                                         border: 'var(--1px solid var(--border-default))',
-                                        background: 'rgba(0,0,0,0.3)',
+                                        background: 'var(--bg-elevated)',
                                         color: 'var(--slate-200)',
                                         fontSize: '0.75rem',
                                     }}
@@ -596,7 +596,7 @@ const FilterSelect: React.FC<{
                 padding: '0.3rem 0.4rem',
                 borderRadius: 4,
                 border: 'var(--1px solid var(--border-default))',
-                background: 'rgba(0,0,0,0.3)',
+                background: 'var(--bg-elevated)',
                 color: 'var(--slate-200)',
                 fontSize: '0.75rem',
             }}
@@ -627,7 +627,7 @@ const FilterInput: React.FC<{
                 padding: '0.3rem 0.4rem',
                 borderRadius: 4,
                 border: 'var(--1px solid var(--border-default))',
-                background: 'rgba(0,0,0,0.3)',
+                background: 'var(--bg-elevated)',
                 color: 'var(--slate-200)',
                 fontSize: '0.75rem',
             }}

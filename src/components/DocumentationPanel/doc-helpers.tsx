@@ -152,7 +152,7 @@ interface CodeBlockProps {
 export const CodeBlock: React.FC<CodeBlockProps> = ({ code }) => (
     <pre
         style={{
-            background: 'rgba(0,0,0,0.3)',
+            background: 'var(--bg-elevated)',
             padding: '1rem',
             borderRadius: 8,
             overflowX: 'auto',

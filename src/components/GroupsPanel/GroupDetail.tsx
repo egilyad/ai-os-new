@@ -75,7 +75,7 @@ const GroupDetail: React.FC<GroupDetailProps> = ({
                                         e.key === 'Enter' && onRename(group.id, editName)
                                     }
                                     style={{
-                                        background: 'rgba(0,0,0,0.3)',
+                                        background: 'var(--bg-elevated)',
                                         border: '1px solid rgba(148,163,184,0.2)',
                                         borderRadius: 6,
                                         padding: '0.3rem 0.6rem',
@@ -214,7 +214,7 @@ const GroupDetail: React.FC<GroupDetailProps> = ({
                                     gap: 8,
                                     fontSize: '0.75rem',
                                     padding: '0.5rem 0.65rem',
-                                    background: 'rgba(0,0,0,0.2)',
+                                    background: 'var(--bg-main)',
                                     borderRadius: 8,
                                 }}
                             >
@@ -348,7 +348,7 @@ const GroupDetail: React.FC<GroupDetailProps> = ({
                                             if (e.target.value) onMoveKey(k.id, e.target.value);
                                         }}
                                         style={{
-                                            background: 'rgba(0,0,0,0.3)',
+                                            background: 'var(--bg-elevated)',
                                             border: '1px solid rgba(148,163,184,0.15)',
                                             borderRadius: 6,
                                             padding: '0.25rem 0.4rem',

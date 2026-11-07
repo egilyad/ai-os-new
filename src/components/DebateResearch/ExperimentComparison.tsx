@@ -100,7 +100,7 @@ export const ExperimentComparison: React.FC = () => {
             <select
               value={leftId}
               onChange={e => setLeftId(e.target.value)}
-              style={{ flex: 1, padding: '0.5rem 0.75rem', borderRadius: 8, border: 'var(--1px solid var(--border-default))', background: 'rgba(0,0,0,0.3)', color: 'var(--slate-200)', fontSize: '0.75rem', outline: 'none' }}
+              style={{ flex: 1, padding: '0.5rem 0.75rem', borderRadius: 8, border: 'var(--1px solid var(--border-default))', background: 'var(--bg-elevated)', color: 'var(--slate-200)', fontSize: '0.75rem', outline: 'none' }}
             >
               <option value="">Select run...</option>
               {completedRuns.map(r => (
@@ -127,7 +127,7 @@ export const ExperimentComparison: React.FC = () => {
             <select
               value={rightId}
               onChange={e => setRightId(e.target.value)}
-              style={{ flex: 1, padding: '0.5rem 0.75rem', borderRadius: 8, border: 'var(--1px solid var(--border-default))', background: 'rgba(0,0,0,0.3)', color: 'var(--slate-200)', fontSize: '0.75rem', outline: 'none' }}
+              style={{ flex: 1, padding: '0.5rem 0.75rem', borderRadius: 8, border: 'var(--1px solid var(--border-default))', background: 'var(--bg-elevated)', color: 'var(--slate-200)', fontSize: '0.75rem', outline: 'none' }}
             >
               <option value="">Select run...</option>
               {completedRuns.map(r => (
@@ -143,7 +143,7 @@ export const ExperimentComparison: React.FC = () => {
       {left && right && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
           {/* Summary bar */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.5rem 0.75rem', borderRadius: 8, background: 'rgba(0,0,0,0.2)', fontSize: '0.7rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.5rem 0.75rem', borderRadius: 8, background: 'var(--bg-main)', fontSize: '0.7rem' }}>
             <span style={{ color: 'var(--slate-400)', fontWeight: 700 }}>Differences:</span>
             <span style={{ color: 'var(--success)', fontWeight: 700 }}>{diffFields.filter(f => f.match).length} same</span>
             <span style={{ color: 'var(--warning)', fontWeight: 700 }}>{diffFields.filter(f => !f.match).length} different</span>
@@ -188,11 +188,11 @@ export const ExperimentComparison: React.FC = () => {
                   {isExpanded && (
                     <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} style={{ overflow: 'hidden' }}>
                       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem', padding: '0.5rem 0.75rem 0.75rem 0.75rem' }}>
-                        <div style={{ padding: '0.5rem', borderRadius: 6, background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.05)' }}>
+                        <div style={{ padding: '0.5rem', borderRadius: 6, background: 'var(--bg-elevated)', border: '1px solid rgba(255,255,255,0.05)' }}>
                           <div style={{ fontSize: '0.55rem', fontWeight: 700, color: 'var(--slate-500)', textTransform: 'uppercase', marginBottom: '0.25rem' }}>Run A — {left.module}</div>
                           <pre style={{ fontSize: '0.6rem', color: 'var(--slate-300)', fontFamily: 'monospace', margin: 0, whiteSpace: 'pre-wrap', wordBreak: 'break-all', maxHeight: 150, overflow: 'auto' }}>{f.leftVal}</pre>
                         </div>
-                        <div style={{ padding: '0.5rem', borderRadius: 6, background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.05)' }}>
+                        <div style={{ padding: '0.5rem', borderRadius: 6, background: 'var(--bg-elevated)', border: '1px solid rgba(255,255,255,0.05)' }}>
                           <div style={{ fontSize: '0.55rem', fontWeight: 700, color: 'var(--slate-500)', textTransform: 'uppercase', marginBottom: '0.25rem' }}>Run B — {right.module}</div>
                           <pre style={{ fontSize: '0.6rem', color: 'var(--slate-300)', fontFamily: 'monospace', margin: 0, whiteSpace: 'pre-wrap', wordBreak: 'break-all', maxHeight: 150, overflow: 'auto' }}>{f.rightVal}</pre>
                         </div>

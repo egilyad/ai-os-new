@@ -132,7 +132,7 @@ const DISTILLATION_PANEL: React.FC = () => {
                                     padding: '0.4rem 0.6rem',
                                     borderRadius: 6,
                                     border: 'var(--1px solid var(--border-default))',
-                                    background: 'rgba(0,0,0,0.3)',
+                                    background: 'var(--bg-elevated)',
                                     color: 'var(--slate-200)',
                                     fontSize: '0.8rem',
                                 }}
@@ -201,7 +201,7 @@ const DISTILLATION_PANEL: React.FC = () => {
                                     padding: '0.4rem 0.6rem',
                                     borderRadius: 6,
                                     border: 'var(--1px solid var(--border-default))',
-                                    background: 'rgba(0,0,0,0.3)',
+                                    background: 'var(--bg-elevated)',
                                     color: 'var(--slate-200)',
                                     fontSize: '0.8rem',
                                 }}
@@ -232,7 +232,7 @@ const DISTILLATION_PANEL: React.FC = () => {
                                     padding: '0.4rem 0.6rem',
                                     borderRadius: 6,
                                     border: 'var(--1px solid var(--border-default))',
-                                    background: 'rgba(0,0,0,0.3)',
+                                    background: 'var(--bg-elevated)',
                                     color: 'var(--slate-200)',
                                     fontSize: '0.8rem',
                                 }}
@@ -287,7 +287,7 @@ const DISTILLATION_PANEL: React.FC = () => {
                                             padding: '0.3rem 0.4rem',
                                             borderRadius: 4,
                                             border: 'var(--1px solid var(--border-subtle))',
-                                            background: 'rgba(0,0,0,0.3)',
+                                            background: 'var(--bg-elevated)',
                                             color: 'var(--slate-200)',
                                             fontSize: '0.75rem',
                                         }}

@@ -38,7 +38,7 @@ const UsageChart: React.FC<UsageChartProps> = ({
                         borderRadius: 12,
                         border: '1px solid rgba(255,255,255,0.05)',
                         padding: '1rem',
-                        background: 'rgba(0,0,0,0.2)',
+                        background: 'var(--bg-main)',
                     }}
                 >
                     <h4
@@ -70,7 +70,7 @@ const UsageChart: React.FC<UsageChartProps> = ({
                         borderRadius: 12,
                         border: '1px solid rgba(255,255,255,0.05)',
                         padding: '1rem',
-                        background: 'rgba(0,0,0,0.2)',
+                        background: 'var(--bg-main)',
                     }}
                 >
                     <h4
@@ -118,7 +118,7 @@ const UsageChart: React.FC<UsageChartProps> = ({
                         borderRadius: 12,
                         border: '1px solid rgba(255,255,255,0.05)',
                         padding: '1rem',
-                        background: 'rgba(0,0,0,0.2)',
+                        background: 'var(--bg-main)',
                     }}
                 >
                     <h4
@@ -167,7 +167,7 @@ const UsageChart: React.FC<UsageChartProps> = ({
                     borderRadius: 12,
                     border: '1px solid rgba(255,255,255,0.05)',
                     padding: '1rem',
-                    background: 'rgba(0,0,0,0.2)',
+                    background: 'var(--bg-main)',
                 }}
             >
                 <h4

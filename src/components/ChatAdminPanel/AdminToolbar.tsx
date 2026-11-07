@@ -65,7 +65,7 @@ const AdminToolbar: React.FC<AdminToolbarProps> = ({
                         onChange={(e) => onSearchChange(e.target.value)}
                         style={{
                             padding: '1rem 1.25rem 1rem 3.5rem',
-                            background: 'rgba(0,0,0,0.3)',
+                            background: 'var(--bg-elevated)',
                             border: '2px solid rgba(255,255,255,0.1)',
                             borderRadius: 14,
                             color: 'white',

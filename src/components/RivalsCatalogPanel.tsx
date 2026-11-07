@@ -30,7 +30,7 @@ const RivalsCatalogPanel: React.FC = () => {
                         onChange={(e) => setQuery(e.target.value)}
                         placeholder="Search services..."
                         aria-label="Search rivals services"
-                        style={{ padding: '0.5rem 0.75rem 0.5rem 2rem', borderRadius: 10, background: 'rgba(0,0,0,0.3)', border: 'var(--1px solid var(--border-subtle))', color: 'var(--slate-200)', fontSize: '0.85rem', outline: 'none', width: 240 }}
+                        style={{ padding: '0.5rem 0.75rem 0.5rem 2rem', borderRadius: 10, background: 'var(--bg-elevated)', border: 'var(--1px solid var(--border-subtle))', color: 'var(--slate-200)', fontSize: '0.85rem', outline: 'none', width: 240 }}
                     />
                 </div>
             </div>

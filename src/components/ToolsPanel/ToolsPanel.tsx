@@ -335,7 +335,7 @@ const ToolsPanel: React.FC = () => {
                             alignItems: 'center',
                             padding: '1.5rem',
                             borderBottom: '1px solid rgba(255,255,255,0.05)',
-                            background: 'rgba(0,0,0,0.2)',
+                            background: 'var(--bg-main)',
                         }}
                     >
                         <div style={positionRelativeFlex1}>
@@ -359,7 +359,7 @@ const ToolsPanel: React.FC = () => {
                                 onChange={(e) => setTypeFilter(e.target.value as ToolTypeFilter)}
                                 style={{
                                     padding: '0.85rem 1rem',
-                                    background: 'rgba(0,0,0,0.3)',
+                                    background: 'var(--bg-elevated)',
                                     border: '1px solid rgba(255,255,255,0.05)',
                                     borderRadius: 12,
                                     color: 'white',

@@ -14,7 +14,7 @@ const ScenarioResultCard: React.FC<Props> = ({ result }) => {
                 marginBottom: '0.4rem',
                 padding: '0.55rem 0.75rem',
                 borderRadius: 8,
-                background: 'rgba(0,0,0,0.2)',
+                background: 'var(--bg-main)',
                 border: `1px solid ${outcome === 'block' ? 'rgba(239,68,68,0.12)' : outcome === 'warn' ? 'rgba(245,158,11,0.12)' : 'rgba(16,185,129,0.08)'}`,
             }}
         >

@@ -49,7 +49,7 @@ export const FallacyCard: React.FC<{
             style={{
                 padding: '0.6rem 0.8rem',
                 borderRadius: 8,
-                background: 'rgba(0,0,0,0.2)',
+                background: 'var(--bg-main)',
                 border: '1px solid rgba(255,255,255,0.05)',
             }}
         >
@@ -93,7 +93,7 @@ export const PersuasionCard: React.FC<{ p: PersuasionScore }> = ({ p }) => {
             style={{
                 padding: '0.6rem 0.8rem',
                 borderRadius: 8,
-                background: 'rgba(0,0,0,0.2)',
+                background: 'var(--bg-main)',
                 border: '1px solid rgba(255,255,255,0.05)',
             }}
         >
@@ -142,7 +142,7 @@ export const ToneChart: React.FC<{ points: TonePoint[] }> = ({ points }) => {
                 style={{
                     width: '100%',
                     height: 80,
-                    background: 'rgba(0,0,0,0.2)',
+                    background: 'var(--bg-main)',
                     borderRadius: 6,
                 }}
             >

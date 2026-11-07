@@ -126,7 +126,7 @@ const SREHeader: React.FC<Props> = ({
                         alignItems: 'center',
                         padding: '0.4rem 0.8rem',
                         borderRadius: 10,
-                        background: 'rgba(0,0,0,0.3)',
+                        background: 'var(--bg-elevated)',
                         border: '1px solid rgba(255,255,255,0.05)',
                         fontSize: '0.75rem',
                     }}

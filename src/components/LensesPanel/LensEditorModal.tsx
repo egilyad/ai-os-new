@@ -231,7 +231,7 @@ const labelStyle: React.CSSProperties = {
 };
 
 const inputStyle: React.CSSProperties = {
-    background: 'rgba(0,0,0,0.3)',
+    background: 'var(--bg-elevated)',
     border: 'var(--1px solid var(--border-subtle))',
     borderRadius: 6,
     padding: '0.45rem 0.6rem',

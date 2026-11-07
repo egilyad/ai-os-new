@@ -384,7 +384,7 @@ const TeamChat: React.FC<TeamChatProps> = ({ team, onClose }) => {
                                 padding: '3px 8px',
                                 borderRadius: 6,
                                 border: '1px solid rgba(139,92,246,0.2)',
-                                background: 'rgba(0,0,0,0.3)',
+                                background: 'var(--bg-elevated)',
                                 color: 'var(--slate-200)',
                                 fontSize: '0.75rem',
                             }}
@@ -452,7 +452,7 @@ const TeamChat: React.FC<TeamChatProps> = ({ team, onClose }) => {
                                 padding: '8px 12px',
                                 borderRadius: 8,
                                 border: 'var(--1px solid var(--border-default))',
-                                background: 'rgba(0,0,0,0.3)',
+                                background: 'var(--bg-elevated)',
                                 color: 'var(--slate-200)',
                                 fontSize: '0.82rem',
                                 outline: 'none',

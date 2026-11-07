@@ -180,7 +180,7 @@ const TeamPipeline: React.FC<TeamPipelineProps> = ({ execution, strategy, onReRu
                         style={{
                             marginTop: 8,
                             padding: 8,
-                            background: 'rgba(0,0,0,0.2)',
+                            background: 'var(--bg-main)',
                             borderRadius: 6,
                             fontSize: '0.72rem',
                             color: 'var(--slate-300)',

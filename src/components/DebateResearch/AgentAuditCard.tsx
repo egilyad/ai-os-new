@@ -21,7 +21,7 @@ const AgentAuditCard: React.FC<Props> = ({ agent }) => {
                 marginBottom: '0.4rem',
                 padding: '0.6rem 0.8rem',
                 borderRadius: 8,
-                background: 'rgba(0,0,0,0.2)',
+                background: 'var(--bg-main)',
                 border: '1px solid rgba(255,255,255,0.03)',
             }}
         >

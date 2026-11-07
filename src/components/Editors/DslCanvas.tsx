@@ -274,14 +274,14 @@ export const DslCanvas: React.FC<DslCanvasProps> = ({
                     <Background color="rgba(255,255,255,0.05)" />
                     <Controls
                         style={{
-                            background: 'rgba(0,0,0,0.3)',
+                            background: 'var(--bg-elevated)',
                             borderRadius: 8,
                             border: 'var(--1px solid var(--border-default))',
                         }}
                     />
                     <MiniMap
                         style={{
-                            background: 'rgba(0,0,0,0.3)',
+                            background: 'var(--bg-elevated)',
                             borderRadius: 8,
                             border: 'var(--1px solid var(--border-default))',
                         }}

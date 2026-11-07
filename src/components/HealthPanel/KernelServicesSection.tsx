@@ -61,7 +61,7 @@ export const KernelServicesSection: React.FC<KernelServicesSectionProps> = ({
                                     justifyContent: 'space-between',
                                     alignItems: 'center',
                                     padding: '1rem',
-                                    background: 'rgba(0,0,0,0.2)',
+                                    background: 'var(--bg-main)',
                                     borderRadius: 12,
                                     border: '1px solid rgba(255,255,255,0.03)',
                                 }}

@@ -108,7 +108,7 @@ const PromptSecurityPanel: React.FC = () => {
                         width: '100%',
                         padding: 10,
                         borderRadius: 8,
-                        background: 'rgba(0,0,0,0.3)',
+                        background: 'var(--bg-elevated)',
                         border: 'var(--1px solid var(--border-default))',
                         color: 'var(--slate-200)',
                         fontSize: '0.85rem',
@@ -236,7 +236,7 @@ const PromptSecurityPanel: React.FC = () => {
                                                 <code
                                                     style={{
                                                         color: '#f87171',
-                                                        background: 'rgba(0,0,0,0.2)',
+                                                        background: 'var(--bg-main)',
                                                         padding: '1px 4px',
                                                         borderRadius: 4,
                                                     }}

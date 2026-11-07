@@ -68,7 +68,7 @@ export const ProbeResultsList: React.FC<ProbeResultsListProps> = ({
                                 gap: 8,
                                 padding: '7px 10px',
                                 borderRadius: isExpanded ? '8px 8px 0 0' : 8,
-                                background: 'rgba(0,0,0,0.2)',
+                                background: 'var(--bg-main)',
                                 cursor: 'pointer',
                                 fontSize: '0.78rem',
                                 border: isExpanded

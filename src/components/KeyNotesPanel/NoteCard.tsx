@@ -20,7 +20,7 @@ export const NoteCard: React.FC<NoteCardProps> = memo(({ note, onDelete, onPrevi
             padding: '0.75rem 1rem',
             borderRadius: 10,
             border: '1px solid rgba(255,255,255,0.05)',
-            background: 'rgba(0,0,0,0.2)',
+            background: 'var(--bg-main)',
         }}
     >
         <div style={flexBetween}>
@@ -89,7 +89,7 @@ export const NoteCard: React.FC<NoteCardProps> = memo(({ note, onDelete, onPrevi
                             gap: 4,
                             padding: '0.2rem 0.5rem',
                             borderRadius: 6,
-                            background: 'rgba(0,0,0,0.3)',
+                            background: 'var(--bg-elevated)',
                             border: 'var(--1px solid var(--border-default))',
                             color: 'var(--slate-300)',
                             fontSize: '0.7rem',

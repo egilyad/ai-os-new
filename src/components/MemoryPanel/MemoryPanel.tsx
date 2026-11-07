@@ -318,7 +318,7 @@ const MemoryPanel: React.FC = () => {
                         style={{
                             padding: '1.5rem',
                             borderBottom: '1px solid rgba(255,255,255,0.05)',
-                            background: 'rgba(0,0,0,0.2)',
+                            background: 'var(--bg-main)',
                             display: 'flex',
                             flexDirection: 'column',
                             gap: '1.25rem',

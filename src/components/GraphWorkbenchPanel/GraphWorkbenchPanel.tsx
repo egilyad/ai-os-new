@@ -69,7 +69,7 @@ const ctlSelect: React.CSSProperties = {
     padding: '0.45rem 0.7rem',
     borderRadius: 8,
     border: '1px solid rgba(255,255,255,0.12)',
-    background: 'rgba(0,0,0,0.3)',
+    background: 'var(--bg-elevated)',
     color: 'var(--slate-200)',
     fontSize: 13,
 };

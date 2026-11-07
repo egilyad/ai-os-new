@@ -84,7 +84,7 @@ const NotesTab: React.FC<NotesTabProps> = ({ apiKey }) => {
                     style={{
                         flex: 1,
                         padding: '0.75rem',
-                        background: 'rgba(0,0,0,0.2)',
+                        background: 'var(--bg-main)',
                         border: 'var(--1px solid var(--border-default))',
                         borderRadius: '8px',
                         color: '#fff',

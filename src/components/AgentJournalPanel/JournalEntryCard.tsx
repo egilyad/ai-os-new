@@ -28,7 +28,7 @@ export const JournalEntryCard: React.FC<JournalEntryCardProps> = memo(
                     padding: '0.75rem 1rem',
                     borderRadius: 10,
                     border: '1px solid rgba(255,255,255,0.05)',
-                    background: 'rgba(0,0,0,0.2)',
+                    background: 'var(--bg-main)',
                     display: 'grid',
                     gridTemplateColumns: '1fr auto',
                     gap: 8,

@@ -282,7 +282,7 @@ const GroupsPanel: React.FC = () => {
                             onKeyDown={(e) => e.key === 'Enter' && handleCreate()}
                             style={{
                                 width: '100%',
-                                background: 'rgba(0,0,0,0.3)',
+                                background: 'var(--bg-elevated)',
                                 border: '1px solid rgba(148,163,184,0.2)',
                                 borderRadius: 6,
                                 padding: '0.4rem 0.6rem',
@@ -390,7 +390,7 @@ const CreateGroupForm: React.FC<{
                 onKeyDown={(e) => e.key === 'Enter' && onSave()}
                 style={{
                     width: '100%',
-                    background: 'rgba(0,0,0,0.3)',
+                    background: 'var(--bg-elevated)',
                     border: '1px solid rgba(148,163,184,0.2)',
                     borderRadius: 8,
                     padding: '0.5rem 0.75rem',

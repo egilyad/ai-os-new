@@ -183,7 +183,7 @@ const ObsGaps: React.FC = () => {
                         display: 'flex',
                         alignItems: 'center',
                         gap: 3,
-                        background: 'rgba(0,0,0,0.3)',
+                        background: 'var(--bg-elevated)',
                         borderRadius: 4,
                         padding: '2px 6px',
                     }}

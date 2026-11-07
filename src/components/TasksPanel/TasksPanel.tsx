@@ -315,7 +315,7 @@ const TasksPanel: React.FC = () => {
                     style={{
                         display: 'flex',
                         gap: '0.5rem',
-                        background: 'rgba(0,0,0,0.3)',
+                        background: 'var(--bg-elevated)',
                         padding: '0.3rem',
                         borderRadius: 12,
                         border: '1px solid rgba(255,255,255,0.05)',

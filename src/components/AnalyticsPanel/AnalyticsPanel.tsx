@@ -144,7 +144,7 @@ const AnalyticsPanel: React.FC = () => {
                     style={{
                         display: 'flex',
                         gap: '0.5rem',
-                        background: 'rgba(0,0,0,0.2)',
+                        background: 'var(--bg-main)',
                         padding: '0.3rem',
                         borderRadius: 12,
                         border: '1px solid var(--border)',

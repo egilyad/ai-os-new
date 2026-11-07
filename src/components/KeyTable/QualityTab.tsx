@@ -62,7 +62,7 @@ const QualityTab: React.FC<QualityTabProps> = ({ stats }) => {
 };
 
 const MetricCard: React.FC<{ icon: React.ReactNode; label: string; value: string; color: string }> = ({ icon, label, value, color }) => (
-  <div style={{ padding: '0.75rem', borderRadius: 10, border: '1px solid rgba(255,255,255,0.05)', background: 'rgba(0,0,0,0.2)' }}>
+  <div style={{ padding: '0.75rem', borderRadius: 10, border: '1px solid rgba(255,255,255,0.05)', background: 'var(--bg-main)' }}>
     <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: '0.3rem', color: 'var(--slate-500)', fontSize: '0.7rem', textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.05em' }}>
       {icon} {label}
     </div>

@@ -215,7 +215,7 @@ const inputStyle: React.CSSProperties = {
     padding: '0.4rem 0.6rem',
     borderRadius: 6,
     border: 'var(--1px solid var(--border-default))',
-    background: 'rgba(0,0,0,0.3)',
+    background: 'var(--bg-elevated)',
     color: 'var(--slate-200)',
     fontSize: '0.8rem',
 };

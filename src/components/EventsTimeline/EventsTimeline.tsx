@@ -299,7 +299,7 @@ const EventsTimeline: React.FC = () => {
                                 padding: '0.4rem 0.8rem 0.4rem 2rem',
                                 borderRadius: 8,
                                 border: 'var(--1px solid var(--border-default))',
-                                background: 'rgba(0,0,0,0.3)',
+                                background: 'var(--bg-elevated)',
                                 color: 'var(--slate-50)',
                                 fontSize: '0.75rem',
                                 width: 160,
@@ -377,7 +377,7 @@ const EventsTimeline: React.FC = () => {
                         onClick={clearEvents}
                         style={{
                             border: 'var(--1px solid var(--border-default))',
-                            background: 'rgba(0,0,0,0.3)',
+                            background: 'var(--bg-elevated)',
                             color: 'var(--slate-400)',
                         }}
                     >

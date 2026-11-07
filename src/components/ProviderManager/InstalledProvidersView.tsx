@@ -295,7 +295,7 @@ const InstalledProvidersView: React.FC<InstalledProvidersViewProps> = React.memo
                                 marginLeft: 'auto',
                                 padding: '0.3rem 0.6rem',
                                 borderRadius: 6,
-                                background: 'rgba(0,0,0,0.2)',
+                                background: 'var(--bg-main)',
                                 border: '1px solid rgba(255,255,255,0.06)',
                                 color: 'var(--slate-200)',
                                 fontSize: '0.75rem',
@@ -370,7 +370,7 @@ const InstalledProvidersView: React.FC<InstalledProvidersViewProps> = React.memo
                                             gap: 8,
                                             padding: '6px 10px',
                                             borderRadius: isExpanded ? '8px 8px 0 0' : 8,
-                                            background: 'rgba(0,0,0,0.2)',
+                                            background: 'var(--bg-main)',
                                             cursor: 'pointer',
                                             fontSize: '0.78rem',
                                             border: isExpanded

@@ -49,7 +49,7 @@ export function MermaidDiagram({ code }: { code: string }): React.ReactNode {
         return (
             <pre
                 style={{
-                    background: 'rgba(0,0,0,0.3)',
+                    background: 'var(--bg-elevated)',
                     borderRadius: 8,
                     padding: '1rem',
                     overflow: 'auto',

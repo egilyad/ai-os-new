@@ -366,7 +366,7 @@ const RotationsPanel: React.FC = () => {
                                                 marginTop: '0.75rem',
                                                 padding: '0.75rem',
                                                 borderRadius: 8,
-                                                background: 'rgba(0,0,0,0.2)',
+                                                background: 'var(--bg-main)',
                                             }}
                                         >
                                             {history.length === 0 ? (

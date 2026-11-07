@@ -27,7 +27,7 @@ export const MiniStat: React.FC<{ label: string; value: string; color: string }>
     value,
     color,
 }) => (
-    <div style={{ padding: '0.25rem 0.4rem', borderRadius: 4, background: 'rgba(0,0,0,0.2)' }}>
+    <div style={{ padding: '0.25rem 0.4rem', borderRadius: 4, background: 'var(--bg-main)' }}>
         <div style={{ ...textMutedXs, fontSize: '0.6rem' }}>{label}</div>
         <div style={{ color, fontSize: '0.8rem', fontWeight: 600 }}>{value}</div>
     </div>

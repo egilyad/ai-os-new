@@ -66,7 +66,7 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({
                         padding: '0.15rem 0.4rem',
                         borderRadius: '4px',
                         border: 'var(--1px solid var(--border-default))',
-                        background: 'rgba(0,0,0,0.2)',
+                        background: 'var(--bg-main)',
                         color: 'var(--text-primary)',
                         fontSize: '0.7rem',
                     }}

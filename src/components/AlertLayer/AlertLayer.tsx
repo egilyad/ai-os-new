@@ -286,7 +286,7 @@ const AlertLayer: React.FC = () => {
                                     style={{
                                         padding: '0.5rem 0.75rem',
                                         borderRadius: 8,
-                                        background: 'rgba(0,0,0,0.3)',
+                                        background: 'var(--bg-elevated)',
                                         border: '1px solid rgba(255,255,255,0.05)',
                                         fontSize: '0.65rem',
                                         color: 'var(--slate-300)',

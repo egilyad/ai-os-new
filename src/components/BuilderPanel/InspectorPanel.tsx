@@ -43,7 +43,7 @@ const InspectorPanel: React.FC<InspectorPanelProps> = ({
                 display: 'flex',
                 flexDirection: 'column',
                 overflow: 'hidden',
-                background: 'rgba(0,0,0,0.2)',
+                background: 'var(--bg-main)',
             }}
         >
             <div
@@ -116,7 +116,7 @@ const InspectorPanel: React.FC<InspectorPanelProps> = ({
                                     style={{
                                         width: '100%',
                                         padding: '0.75rem',
-                                        background: 'rgba(0,0,0,0.3)',
+                                        background: 'var(--bg-elevated)',
                                         border: 'var(--1px solid var(--border-default))',
                                         borderRadius: 8,
                                         color: 'white',
@@ -192,7 +192,7 @@ const InspectorPanel: React.FC<InspectorPanelProps> = ({
                                             style={{
                                                 width: '100%',
                                                 padding: '0.85rem',
-                                                background: 'rgba(0,0,0,0.3)',
+                                                background: 'var(--bg-elevated)',
                                                 border: 'var(--1px solid var(--border-default))',
                                                 borderRadius: 8,
                                                 color: 'var(--slate-200)',
@@ -253,7 +253,7 @@ const InspectorPanel: React.FC<InspectorPanelProps> = ({
                                                 display: 'flex',
                                                 flexDirection: 'column',
                                                 gap: '0.5rem',
-                                                background: 'rgba(0,0,0,0.2)',
+                                                background: 'var(--bg-main)',
                                                 padding: '0.75rem',
                                                 borderRadius: 8,
                                                 border: '1px solid rgba(255,255,255,0.05)',

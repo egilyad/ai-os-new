@@ -251,7 +251,7 @@ const SessionCard: React.FC<SessionCardProps> = ({
                                                 fontSize: '0.65rem',
                                                 lineHeight: 1.5,
                                                 color: 'var(--slate-400)',
-                                                background: 'rgba(0,0,0,0.2)',
+                                                background: 'var(--bg-main)',
                                                 padding: 12,
                                                 borderRadius: 8,
                                                 overflow: 'auto',

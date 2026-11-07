@@ -34,7 +34,7 @@ const LiveTerminalSection: React.FC<LiveTerminalSectionProps> = ({ events, onNav
             <div
                 style={{
                     padding: '1.25rem 1.5rem',
-                    background: 'rgba(0,0,0,0.3)',
+                    background: 'var(--bg-elevated)',
                     borderBottom: '1px solid rgba(255,255,255,0.05)',
                 }}
             >

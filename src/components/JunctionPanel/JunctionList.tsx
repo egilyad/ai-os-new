@@ -94,7 +94,7 @@ const JunctionList: React.FC<Props> = ({ junctions, onChallenge }) => {
                                         padding: '0.35rem 0.6rem',
                                         borderRadius: 6,
                                         border: 'var(--1px solid var(--border-subtle))',
-                                        background: 'rgba(0,0,0,0.3)',
+                                        background: 'var(--bg-elevated)',
                                         color: 'var(--slate-200)',
                                         fontSize: '0.72rem',
                                     }}

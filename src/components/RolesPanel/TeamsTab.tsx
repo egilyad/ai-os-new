@@ -539,7 +539,7 @@ const TeamsTab: React.FC<TeamsTabProps> = ({ teamSvc, teams, setTeams, roles, te
                                                 padding: '6px 10px',
                                                 borderRadius: 6,
                                                 border: 'var(--1px solid var(--border-default))',
-                                                background: 'rgba(0,0,0,0.2)',
+                                                background: 'var(--bg-main)',
                                                 color: 'var(--slate-200)',
                                                 fontSize: '0.75rem',
                                             }}

@@ -46,10 +46,11 @@ export default function DyadPanel() {
         }
     };
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(() => {
         void reload();
-    }, []);
+    }, [
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    ]);
 
     useEffect(
         () => () => {
@@ -312,7 +313,7 @@ export default function DyadPanel() {
                             padding: '6px 8px',
                             borderRadius: 8,
                             border: 'var(--1px solid var(--border-default))',
-                            background: 'rgba(0,0,0,0.2)',
+                            background: 'var(--bg-main)',
                             color: 'inherit',
                             fontSize: 11,
                         }}
@@ -372,7 +373,7 @@ export default function DyadPanel() {
                                 padding: '7px 10px',
                                 borderRadius: 8,
                                 border: 'var(--1px solid var(--border-default))',
-                                background: 'rgba(0,0,0,0.2)',
+                                background: 'var(--bg-main)',
                                 color: 'inherit',
                                 fontSize: 11,
                             }}
@@ -387,7 +388,7 @@ export default function DyadPanel() {
                                 padding: '7px 10px',
                                 borderRadius: 8,
                                 border: 'var(--1px solid var(--border-default))',
-                                background: 'rgba(0,0,0,0.2)',
+                                background: 'var(--bg-main)',
                                 color: 'inherit',
                                 fontSize: 11,
                             }}
@@ -403,7 +404,7 @@ export default function DyadPanel() {
                                 padding: '7px 8px',
                                 borderRadius: 8,
                                 border: 'var(--1px solid var(--border-default))',
-                                background: 'rgba(0,0,0,0.2)',
+                                background: 'var(--bg-main)',
                                 color: 'inherit',
                                 fontSize: 11,
                             }}

@@ -176,7 +176,7 @@ export const DecisionsTab: React.FC<DecisionsTabProps> = ({
                                             fontSize: '0.8rem',
                                             fontWeight: 700,
                                             color: i === 0 ? '#10b981' : '#94a3b8',
-                                            background: 'rgba(0,0,0,0.2)',
+                                            background: 'var(--bg-main)',
                                             padding: '0.2rem 0.5rem',
                                             borderRadius: 6,
                                         }}

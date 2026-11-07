@@ -298,7 +298,7 @@ const AgentLiveBoard: React.FC = () => {
                                 <div
                                     style={{
                                         padding: '0.75rem',
-                                        background: 'rgba(0,0,0,0.2)',
+                                        background: 'var(--bg-main)',
                                         borderRadius: 8,
                                         border: '1px solid var(--border)',
                                         fontSize: '0.8rem',

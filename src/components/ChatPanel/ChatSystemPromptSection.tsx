@@ -24,7 +24,7 @@ const ChatSystemPromptSection: React.FC<Props> = ({ value, onChange, onSave, onC
                 width: '100%',
                 padding: '0.75rem',
                 borderRadius: 8,
-                background: 'rgba(0,0,0,0.2)',
+                background: 'var(--bg-main)',
                 border: '1px solid var(--border)',
                 color: 'var(--text-main)',
                 fontSize: '0.85rem',

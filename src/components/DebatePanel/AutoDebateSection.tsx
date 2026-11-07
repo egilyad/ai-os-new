@@ -117,7 +117,7 @@ const AutoDebateSection: React.FC<Props> = ({ onAutoDebate, onStressTest, onBatc
 
       {/* Batch results */}
       {batchResult && (
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} style={{ background: 'rgba(0,0,0,0.3)', borderRadius: 16, padding: '1rem', border: '1px solid rgba(255,255,255,0.05)' }}>
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} style={{ background: 'var(--bg-elevated)', borderRadius: 16, padding: '1rem', border: '1px solid rgba(255,255,255,0.05)' }}>
           <h4 style={{ margin: '0 0 0.75rem', fontSize: '0.9rem', color: 'var(--slate-50)', display: 'flex', alignItems: 'center', gap: 8 }}>
             <BarChart3 size={16} color="#10b981" /> Batch Results: "{batchResult.topic}"
           </h4>
@@ -138,7 +138,7 @@ const AutoDebateSection: React.FC<Props> = ({ onAutoDebate, onStressTest, onBatc
 
       {/* History summary */}
       {results.length > 0 && (
-        <div style={{ background: 'rgba(0,0,0,0.3)', borderRadius: 16, padding: '1rem', border: '1px solid rgba(255,255,255,0.05)' }}>
+        <div style={{ background: 'var(--bg-elevated)', borderRadius: 16, padding: '1rem', border: '1px solid rgba(255,255,255,0.05)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
             <h4 style={{ margin: 0, fontSize: '0.9rem', color: 'var(--slate-50)' }}>History ({results.length} debates)</h4>
             <button onClick={onClear} className="btn-secondary" style={{ padding: '0.25rem 0.75rem', fontSize: '0.75rem', borderRadius: 8, color: 'var(--error)' }}>

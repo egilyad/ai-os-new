@@ -8,7 +8,7 @@ export const StatCard: React.FC<{ label: string; value: string; color: string }>
         style={{
             padding: '1rem',
             borderRadius: 10,
-            background: 'rgba(0,0,0,0.2)',
+            background: 'var(--bg-main)',
             textAlign: 'center',
         }}
     >

@@ -181,7 +181,7 @@ export const ToolCard: React.FC<ToolCardProps> = memo(
                     <span
                         style={{
                             fontSize: '0.7rem',
-                            background: 'rgba(0,0,0,0.3)',
+                            background: 'var(--bg-elevated)',
                             color,
                             padding: '0.3rem 0.6rem',
                             borderRadius: 8,

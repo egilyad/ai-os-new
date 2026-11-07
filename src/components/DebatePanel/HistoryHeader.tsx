@@ -98,7 +98,7 @@ const HistoryHeader: React.FC<HistoryHeaderProps> = ({
                     gap: 6,
                     padding: '0.35rem 0.75rem',
                     borderRadius: 10,
-                    background: 'rgba(0,0,0,0.3)',
+                    background: 'var(--bg-elevated)',
                     border: '1px solid var(--border)',
                 }}
             >
@@ -125,7 +125,7 @@ const HistoryHeader: React.FC<HistoryHeaderProps> = ({
                     padding: '0.35rem 0.6rem',
                     borderRadius: 10,
                     border: '1px solid var(--border)',
-                    background: 'rgba(0,0,0,0.3)',
+                    background: 'var(--bg-elevated)',
                     color: 'var(--slate-200)',
                     fontSize: '0.75rem',
                     outline: 'none',

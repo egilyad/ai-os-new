@@ -243,7 +243,7 @@ const DiagnosticPanel: React.FC = () => {
                                 flex: 1,
                                 padding: '0.4rem 0.6rem',
                                 borderRadius: 6,
-                                background: 'rgba(0,0,0,0.3)',
+                                background: 'var(--bg-elevated)',
                                 border: '1px solid rgba(148,163,184,0.15)',
                                 color: 'var(--slate-200)',
                                 fontSize: '0.75rem',

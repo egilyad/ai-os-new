@@ -78,7 +78,7 @@ const CoverageLens: React.FC = () => {
                     Нет записей памяти — добавь заметки или результаты исследований.
                 </div>
             ) : (
-                <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`} style={{ maxWidth: '100%', height: 'auto', background: 'rgba(0,0,0,0.2)', borderRadius: 12, border: '1px solid rgba(255,255,255,0.06)' }}>
+                <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`} style={{ maxWidth: '100%', height: 'auto', background: 'var(--bg-main)', borderRadius: 12, border: '1px solid rgba(255,255,255,0.06)' }}>
                     {rects.map((r, i) => (
                         <rect key={i} x={r.x} y={r.y} width={CELL} height={CELL} rx={2} fill={TYPE_COLOR[r.type] ?? TYPE_COLOR.default} opacity={0.85} />
                     ))}

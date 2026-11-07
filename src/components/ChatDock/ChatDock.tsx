@@ -193,7 +193,7 @@ export default function ChatDock() {
                                                 alignItems: 'center',
                                                 gap: 8,
                                                 padding: '8px 10px',
-                                                background: 'rgba(0,0,0,0.2)',
+                                                background: 'var(--bg-main)',
                                                 cursor: 'pointer',
                                             }}
                                             onClick={() => toggleMin(d.id)}

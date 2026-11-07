@@ -180,7 +180,7 @@ const MissionControl: React.FC = () => {
                                 key={s.id}
                                 style={{
                                     padding: '1rem',
-                                    background: 'rgba(0,0,0,0.2)',
+                                    background: 'var(--bg-main)',
                                     borderRadius: 10,
                                     border: '1px solid var(--border)',
                                 }}

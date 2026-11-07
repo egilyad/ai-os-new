@@ -45,7 +45,7 @@ const UsageHeatmap: React.FC<UsageHeatmapProps> = ({ keys }) => {
             const intensity = getIntensity(used);
 
             return (
-              <div key={key.id} style={{ padding: '1rem', borderRadius: 12, background: 'rgba(0,0,0,0.2)', border: '1px solid rgba(255,255,255,0.03)' }}>
+              <div key={key.id} style={{ padding: '1rem', borderRadius: 12, background: 'var(--bg-main)', border: '1px solid rgba(255,255,255,0.03)' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                     <span style={{ width: 8, height: 8, borderRadius: '50%', background: key.status === 'active' ? '#10b981' : '#ef4444' }} />

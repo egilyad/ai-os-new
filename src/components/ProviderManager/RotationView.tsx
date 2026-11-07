@@ -285,7 +285,7 @@ const RotationView: React.FC<RotationViewProps> = ({ keys }) => {
                                                 }
                                                 aria-label={`Pool strategy for ${p}`}
                                                 style={{
-                                                    background: 'rgba(0,0,0,0.3)',
+                                                    background: 'var(--bg-elevated)',
                                                     color: 'var(--slate-200)',
                                                     border: 'var(--1px solid var(--border-default))',
                                                     borderRadius: 8,
@@ -395,7 +395,7 @@ const RotationView: React.FC<RotationViewProps> = ({ keys }) => {
                                 aria-label={`TTL hours for ${maskKey(k.id)}`}
                                 style={{
                                     width: 80,
-                                    background: 'rgba(0,0,0,0.3)',
+                                    background: 'var(--bg-elevated)',
                                     color: 'var(--slate-200)',
                                     border: 'var(--1px solid var(--border-default))',
                                     borderRadius: 8,

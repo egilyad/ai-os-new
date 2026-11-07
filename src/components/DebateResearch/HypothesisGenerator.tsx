@@ -235,7 +235,7 @@ const HypothesisGenerator: React.FC = () => {
                         display: 'flex',
                         alignItems: 'center',
                         gap: 5,
-                        background: 'rgba(0,0,0,0.3)',
+                        background: 'var(--bg-elevated)',
                         borderRadius: 6,
                         padding: '4px 8px',
                     }}

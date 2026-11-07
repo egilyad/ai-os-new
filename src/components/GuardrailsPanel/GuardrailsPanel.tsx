@@ -241,7 +241,7 @@ export default function GuardrailsPanel() {
                                             color: 'var(--slate-400)',
                                             marginTop: 6,
                                             wordBreak: 'break-all',
-                                            background: 'rgba(0,0,0,0.2)',
+                                            background: 'var(--bg-main)',
                                             padding: '4px 6px',
                                             borderRadius: 6,
                                             fontFamily: 'monospace',
@@ -312,7 +312,7 @@ export default function GuardrailsPanel() {
                                 padding: '7px 8px',
                                 borderRadius: 8,
                                 border: 'var(--1px solid var(--border-default))',
-                                background: 'rgba(0,0,0,0.3)',
+                                background: 'var(--bg-elevated)',
                                 color: 'inherit',
                                 fontSize: 11,
                             }}
@@ -364,7 +364,7 @@ export default function GuardrailsPanel() {
                                 padding: '7px 8px',
                                 borderRadius: 8,
                                 border: 'var(--1px solid var(--border-default))',
-                                background: 'rgba(0,0,0,0.3)',
+                                background: 'var(--bg-elevated)',
                                 color: 'inherit',
                                 fontSize: 11,
                             }}
@@ -409,7 +409,7 @@ export default function GuardrailsPanel() {
                             padding: '10px 12px',
                             borderRadius: 10,
                             border: 'var(--1px solid var(--border-default))',
-                            background: 'rgba(0,0,0,0.2)',
+                            background: 'var(--bg-main)',
                             color: 'inherit',
                             fontSize: 12,
                             resize: 'vertical',
@@ -460,7 +460,7 @@ export default function GuardrailsPanel() {
                                             style={{
                                                 padding: '6px 8px',
                                                 borderRadius: 8,
-                                                background: 'rgba(0,0,0,0.2)',
+                                                background: 'var(--bg-main)',
                                                 fontSize: 11,
                                                 fontFamily: 'monospace',
                                             }}

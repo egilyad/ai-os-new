@@ -13,7 +13,7 @@ const WhatIfCard: React.FC<Props> = ({ scenario, improvement, details, impact })
         style={{
             padding: '1rem 1.25rem',
             borderRadius: 12,
-            background: 'rgba(0,0,0,0.2)',
+            background: 'var(--bg-main)',
             border: `1px solid ${impact === 'high' ? 'rgba(239,68,68,0.3)' : 'rgba(245,158,11,0.3)'}`,
             borderLeft: `4px solid ${impact === 'high' ? '#ef4444' : '#f59e0b'}`,
         }}

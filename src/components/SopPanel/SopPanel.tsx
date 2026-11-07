@@ -53,10 +53,11 @@ export default function SopPanel() {
         }
     };
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(() => {
         void reload();  
-    }, []);
+    }, [
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    ]);
 
     useEffect(
         () => () => {
@@ -449,7 +450,7 @@ export default function SopPanel() {
                                     padding: '6px 8px',
                                     borderRadius: 8,
                                     border: 'var(--1px solid var(--border-default))',
-                                    background: 'rgba(0,0,0,0.2)',
+                                    background: 'var(--bg-main)',
                                     color: 'inherit',
                                     fontSize: 11,
                                 }}
@@ -482,7 +483,7 @@ export default function SopPanel() {
                                         gap: 6,
                                         padding: '6px 10px',
                                         borderRadius: 8,
-                                        background: 'rgba(0,0,0,0.2)',
+                                        background: 'var(--bg-main)',
                                         border: '1px solid rgba(255,255,255,0.06)',
                                         fontSize: 11,
                                     }}
@@ -641,7 +642,7 @@ export default function SopPanel() {
                                         style={{
                                             padding: '8px 10px',
                                             borderRadius: 8,
-                                            background: 'rgba(0,0,0,0.2)',
+                                            background: 'var(--bg-main)',
                                             border: '1px solid rgba(255,255,255,0.05)',
                                             fontSize: 11,
                                             fontFamily: 'monospace',

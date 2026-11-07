@@ -654,7 +654,7 @@ const PersonaPickerPanel: React.FC<PersonaPickerPanelProps> = ({
                                 <div
                                     style={{
                                         padding: 12,
-                                        background: 'rgba(0,0,0,0.3)',
+                                        background: 'var(--bg-elevated)',
                                         borderRadius: 8,
                                         fontSize: '0.75rem',
                                         color: 'var(--slate-400)',

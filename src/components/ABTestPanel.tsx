@@ -230,7 +230,7 @@ const ABTestPanel: React.FC = () => {
                                 width: '100%',
                                 padding: 10,
                                 borderRadius: 8,
-                                background: 'rgba(0,0,0,0.3)',
+                                background: 'var(--bg-elevated)',
                                 border: 'var(--1px solid var(--border-default))',
                                 color: 'var(--slate-200)',
                                 fontSize: '0.85rem',
@@ -263,7 +263,7 @@ const ABTestPanel: React.FC = () => {
                                     style={{
                                         padding: '8px 10px',
                                         borderRadius: 8,
-                                        background: 'rgba(0,0,0,0.3)',
+                                        background: 'var(--bg-elevated)',
                                         border: 'var(--1px solid var(--border-default))',
                                         color: 'var(--slate-200)',
                                         fontSize: '0.85rem',
@@ -284,7 +284,7 @@ const ABTestPanel: React.FC = () => {
                                     style={{
                                         padding: '8px 10px',
                                         borderRadius: 8,
-                                        background: 'rgba(0,0,0,0.3)',
+                                        background: 'var(--bg-elevated)',
                                         border: 'var(--1px solid var(--border-default))',
                                         color: 'var(--slate-200)',
                                         fontSize: '0.85rem',
@@ -321,7 +321,7 @@ const ABTestPanel: React.FC = () => {
                                     style={{
                                         padding: '8px 10px',
                                         borderRadius: 8,
-                                        background: 'rgba(0,0,0,0.3)',
+                                        background: 'var(--bg-elevated)',
                                         border: 'var(--1px solid var(--border-default))',
                                         color: 'var(--slate-200)',
                                         fontSize: '0.85rem',
@@ -342,7 +342,7 @@ const ABTestPanel: React.FC = () => {
                                     style={{
                                         padding: '8px 10px',
                                         borderRadius: 8,
-                                        background: 'rgba(0,0,0,0.3)',
+                                        background: 'var(--bg-elevated)',
                                         border: 'var(--1px solid var(--border-default))',
                                         color: 'var(--slate-200)',
                                         fontSize: '0.85rem',
@@ -501,7 +501,7 @@ const ABTestPanel: React.FC = () => {
                                             maxHeight: 200,
                                             overflowY: 'auto',
                                             padding: 8,
-                                            background: 'rgba(0,0,0,0.2)',
+                                            background: 'var(--bg-main)',
                                             borderRadius: 6,
                                             whiteSpace: 'pre-wrap',
                                         }}
@@ -531,7 +531,7 @@ const ABTestPanel: React.FC = () => {
                                             maxHeight: 200,
                                             overflowY: 'auto',
                                             padding: 8,
-                                            background: 'rgba(0,0,0,0.2)',
+                                            background: 'var(--bg-main)',
                                             borderRadius: 6,
                                             whiteSpace: 'pre-wrap',
                                         }}

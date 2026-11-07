@@ -69,7 +69,7 @@ const MarkdownRendererImpl: React.FC<MarkdownRendererProps> = ({ content, isStre
                                     fontSize: '0.65rem',
                                     color: 'var(--text-muted)',
                                     padding: '4px 12px',
-                                    background: 'rgba(0,0,0,0.2)',
+                                    background: 'var(--bg-main)',
                                     borderRadius: '8px 8px 0 0',
                                     borderBottom: '1px solid rgba(255,255,255,0.05)',
                                     fontFamily: 'monospace',
@@ -83,7 +83,7 @@ const MarkdownRendererImpl: React.FC<MarkdownRendererProps> = ({ content, isStre
                         )}
                         <pre
                             style={{
-                                background: 'rgba(0,0,0,0.3)',
+                                background: 'var(--bg-elevated)',
                                 borderRadius: codeBlockLang ? '0 0 8px 8px' : 8,
                                 padding: '1rem',
                                 overflow: 'auto',
@@ -248,7 +248,7 @@ const MarkdownRendererImpl: React.FC<MarkdownRendererProps> = ({ content, isStre
                             fontSize: '0.65rem',
                             color: 'var(--text-muted)',
                             padding: '4px 12px',
-                            background: 'rgba(0,0,0,0.2)',
+                            background: 'var(--bg-main)',
                             borderRadius: '8px 8px 0 0',
                             borderBottom: '1px solid rgba(255,255,255,0.05)',
                             fontFamily: 'monospace',
@@ -262,7 +262,7 @@ const MarkdownRendererImpl: React.FC<MarkdownRendererProps> = ({ content, isStre
                 )}
                 <pre
                     style={{
-                        background: 'rgba(0,0,0,0.3)',
+                        background: 'var(--bg-elevated)',
                         borderRadius: codeBlockLang ? '0 0 8px 8px' : 8,
                         padding: '1rem',
                         overflow: 'auto',

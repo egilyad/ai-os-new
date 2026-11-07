@@ -176,7 +176,7 @@ const ChatInputArea: React.FC<Props> = ({
                                     style={{
                                         padding: '0.25rem 0.5rem',
                                         borderRadius: 6,
-                                        background: 'rgba(0,0,0,0.2)',
+                                        background: 'var(--bg-main)',
                                         border: '1px solid var(--border)',
                                         color: 'var(--text-main)',
                                         fontSize: '0.7rem',

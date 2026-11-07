@@ -51,7 +51,7 @@ const INPUT: React.CSSProperties = {
     width: '100%',
     padding: '0.5rem 0.75rem',
     borderRadius: 8,
-    background: 'rgba(0,0,0,0.3)',
+    background: 'var(--bg-elevated)',
     border: '1px solid rgba(148,163,184,0.15)',
     color: 'var(--slate-200)',
     fontSize: '0.8rem',

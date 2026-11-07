@@ -206,7 +206,7 @@ const TracesPanel: React.FC = () => {
                             style={{
                                 width: '100%',
                                 padding: '0.85rem 1rem 0.85rem 2.75rem',
-                                background: 'rgba(0,0,0,0.3)',
+                                background: 'var(--bg-elevated)',
                                 border: '1px solid rgba(255,255,255,0.05)',
                                 borderRadius: 12,
                                 color: 'white',
@@ -222,7 +222,7 @@ const TracesPanel: React.FC = () => {
                     <div
                         style={{
                             display: 'flex',
-                            background: 'rgba(0,0,0,0.3)',
+                            background: 'var(--bg-elevated)',
                             padding: '0.4rem',
                             borderRadius: 12,
                             border: '1px solid rgba(255,255,255,0.05)',
@@ -386,7 +386,7 @@ const TracesPanel: React.FC = () => {
                     style={{
                         padding: isMobile ? '1rem' : '1.5rem',
                         borderBottom: '1px solid rgba(255,255,255,0.05)',
-                        background: 'rgba(0,0,0,0.3)',
+                        background: 'var(--bg-elevated)',
                         display: 'grid',
                         gridTemplateColumns: isMobile ? '110px 1fr 100px' : '150px 1fr 140px 120px 180px 100px',
                         gap: isMobile ? '0.75rem' : '1.5rem',

@@ -74,7 +74,7 @@ const ProjectToolbar: React.FC<Props> = ({
                     display: 'flex',
                     alignItems: 'center',
                     gap: 4,
-                    background: 'rgba(0,0,0,0.3)',
+                    background: 'var(--bg-elevated)',
                     borderRadius: 5,
                     padding: '3px 7px',
                     marginLeft: 4,

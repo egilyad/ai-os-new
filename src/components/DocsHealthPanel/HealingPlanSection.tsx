@@ -64,7 +64,7 @@ export const HealingPlanSection: React.FC<HealingPlanSectionProps> = ({ plan }) 
                     style={{
                         padding: '0.75rem 1rem',
                         borderRadius: 8,
-                        background: 'rgba(0,0,0,0.2)',
+                        background: 'var(--bg-main)',
                         border: '1px solid rgba(255,255,255,0.05)',
                         marginBottom: '0.5rem',
                     }}

@@ -68,7 +68,7 @@ const TournamentPanel: React.FC = () => {
                                 padding: '0.4rem 0.6rem',
                                 borderRadius: '6px',
                                 border: 'var(--1px solid var(--border-default))',
-                                background: 'rgba(0,0,0,0.2)',
+                                background: 'var(--bg-main)',
                                 color: 'var(--text-primary)',
                                 fontSize: '0.8rem',
                             }}
@@ -99,7 +99,7 @@ const TournamentPanel: React.FC = () => {
                                 padding: '0.4rem 0.6rem',
                                 borderRadius: '6px',
                                 border: 'var(--1px solid var(--border-default))',
-                                background: 'rgba(0,0,0,0.2)',
+                                background: 'var(--bg-main)',
                                 color: 'var(--text-primary)',
                                 fontSize: '0.8rem',
                             }}

@@ -251,7 +251,7 @@ const AdvancedTab: React.FC<AdvancedTabProps> = ({
                         marginBottom: '1rem',
                         marginLeft: '3rem',
                         padding: '0.75rem',
-                        background: 'rgba(0,0,0,0.2)',
+                        background: 'var(--bg-main)',
                         borderRadius: 10,
                         fontSize: '0.78rem',
                         display: 'flex',

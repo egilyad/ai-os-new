@@ -159,7 +159,7 @@ export const FaqCard: React.FC<{ q: string; a: string }> = ({ q, a }) => (
             padding: '1.5rem',
             borderRadius: 16,
             border: '1px solid rgba(255,255,255,0.05)',
-            background: 'rgba(0,0,0,0.2)',
+            background: 'var(--bg-main)',
         }}
     >
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem' }}>

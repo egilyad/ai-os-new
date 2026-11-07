@@ -161,7 +161,7 @@ const NodeDetailSidebar: React.FC<NodeDetailSidebarProps> = ({
                                             width: '100%',
                                             minHeight: 100,
                                             padding: '0.75rem',
-                                            background: 'rgba(0,0,0,0.3)',
+                                            background: 'var(--bg-elevated)',
                                             border: '1px solid rgba(168,85,247,0.3)',
                                             borderRadius: 10,
                                             color: 'var(--slate-50)',
@@ -218,7 +218,7 @@ const NodeDetailSidebar: React.FC<NodeDetailSidebarProps> = ({
                             ) : (
                                 <div
                                     style={{
-                                        background: 'rgba(0,0,0,0.3)',
+                                        background: 'var(--bg-elevated)',
                                         padding: '1rem',
                                         borderRadius: 10,
                                         border: '1px solid var(--border)',

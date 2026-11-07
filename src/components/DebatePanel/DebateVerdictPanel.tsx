@@ -83,7 +83,7 @@ export const DebateVerdictPanel: React.FC<DebateVerdictPanelProps> = ({
     return (
         <div
             style={{
-                background: 'rgba(0,0,0,0.2)',
+                background: 'var(--bg-main)',
                 borderRadius: 16,
                 border: '1px solid var(--border)',
                 padding: '1.5rem',

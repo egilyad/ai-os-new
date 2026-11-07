@@ -241,7 +241,7 @@ const SkillsPanel: React.FC = () => {
                         style={{
                             display: 'flex',
                             gap: '0.75rem',
-                            background: 'rgba(0,0,0,0.3)',
+                            background: 'var(--bg-elevated)',
                             padding: '0.4rem',
                             borderRadius: 12,
                             border: '1px solid rgba(255,255,255,0.05)',
@@ -342,7 +342,7 @@ const SkillsPanel: React.FC = () => {
                                 style={{
                                     width: '100%',
                                     padding: '0.85rem 1rem 0.85rem 2.75rem',
-                                    background: 'rgba(0,0,0,0.3)',
+                                    background: 'var(--bg-elevated)',
                                     border: '1px solid rgba(255,255,255,0.05)',
                                     borderRadius: 12,
                                     color: 'white',

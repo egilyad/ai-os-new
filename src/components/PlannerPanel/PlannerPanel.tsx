@@ -259,7 +259,7 @@ export default function PlannerPanel() {
                                     padding: '6px 8px',
                                     borderRadius: 8,
                                     border: 'var(--1px solid var(--border-default))',
-                                    background: 'rgba(0,0,0,0.3)',
+                                    background: 'var(--bg-elevated)',
                                     color: 'inherit',
                                     fontSize: 11,
                                 }}
@@ -278,7 +278,7 @@ export default function PlannerPanel() {
                                     padding: '6px 8px',
                                     borderRadius: 8,
                                     border: 'var(--1px solid var(--border-default))',
-                                    background: 'rgba(0,0,0,0.3)',
+                                    background: 'var(--bg-elevated)',
                                     color: 'inherit',
                                     fontSize: 11,
                                 }}
@@ -437,7 +437,7 @@ export default function PlannerPanel() {
                                                 gap: 10,
                                                 padding: '10px 12px',
                                                 borderRadius: 10,
-                                                background: 'rgba(0,0,0,0.2)',
+                                                background: 'var(--bg-main)',
                                                 border: '1px solid rgba(255,255,255,0.05)',
                                             }}
                                         >
@@ -484,7 +484,7 @@ export default function PlannerPanel() {
                                         padding: '8px 10px',
                                         borderRadius: 8,
                                         border: 'var(--1px solid var(--border-default))',
-                                        background: 'rgba(0,0,0,0.2)',
+                                        background: 'var(--bg-main)',
                                         color: 'inherit',
                                         fontSize: 12,
                                     }}

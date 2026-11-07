@@ -122,7 +122,7 @@ export function MCPEditorModal({ server: editing, onClose, onSaved }: MCPEditorM
                             style={{
                                 width: '100%',
                                 padding: '0.85rem 1rem',
-                                background: 'rgba(0,0,0,0.3)',
+                                background: 'var(--bg-elevated)',
                                 border: 'var(--1px solid var(--border-default))',
                                 borderRadius: 10,
                                 color: 'white',
@@ -152,7 +152,7 @@ export function MCPEditorModal({ server: editing, onClose, onSaved }: MCPEditorM
                             style={{
                                 width: '100%',
                                 padding: '0.85rem 1rem',
-                                background: 'rgba(0,0,0,0.3)',
+                                background: 'var(--bg-elevated)',
                                 border: 'var(--1px solid var(--border-default))',
                                 borderRadius: 10,
                                 color: 'white',
@@ -180,7 +180,7 @@ export function MCPEditorModal({ server: editing, onClose, onSaved }: MCPEditorM
                             <div
                                 style={{
                                     padding: '0.85rem 1rem',
-                                    background: 'rgba(0,0,0,0.3)',
+                                    background: 'var(--bg-elevated)',
                                     border: 'var(--1px solid var(--border-default))',
                                     borderRadius: 10,
                                     color: 'var(--slate-500)',

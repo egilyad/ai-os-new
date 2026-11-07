@@ -20,7 +20,7 @@ export const DecisionCard: React.FC<DecisionCardProps> = ({ entry: d, isExpanded
             style={{
                 borderRadius: 8,
                 border: '1px solid rgba(255,255,255,0.05)',
-                background: 'rgba(0,0,0,0.2)',
+                background: 'var(--bg-main)',
                 overflow: 'hidden',
             }}
         >
@@ -166,7 +166,7 @@ export const DecisionCard: React.FC<DecisionCardProps> = ({ entry: d, isExpanded
                                                 style={{
                                                     padding: '0.3rem 0.5rem',
                                                     borderRadius: 6,
-                                                    background: 'rgba(0,0,0,0.2)',
+                                                    background: 'var(--bg-main)',
                                                     border: '1px solid rgba(255,255,255,0.05)',
                                                 }}
                                             >

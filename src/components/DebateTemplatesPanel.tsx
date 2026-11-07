@@ -132,7 +132,7 @@ const DebateTemplatesPanelContent: React.FC = () => {
                         <div
                             style={{
                                 padding: '8px 10px',
-                                background: 'rgba(0,0,0,0.2)',
+                                background: 'var(--bg-main)',
                                 borderRadius: 8,
                                 fontSize: 12,
                                 color: 'var(--slate-400)',

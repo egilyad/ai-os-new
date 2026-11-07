@@ -108,7 +108,7 @@ const SummaryStatsGrid: React.FC<SummaryStatsGridProps> = ({
                                     : s.trend.startsWith('-')
                                       ? '#3b82f6'
                                       : 'var(--text-muted)',
-                                background: 'rgba(0,0,0,0.3)',
+                                background: 'var(--bg-elevated)',
                                 padding: '0.2rem 0.6rem',
                                 borderRadius: 10,
                             }}

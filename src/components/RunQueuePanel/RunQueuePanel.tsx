@@ -54,10 +54,11 @@ export default function RunQueuePanel() {
         }
     };
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(() => {
         void reload();
-    }, []);
+    }, [
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    ]);
 
     const handleEnqueue = async () => {
         setError(null);
@@ -386,7 +387,7 @@ export default function RunQueuePanel() {
                                     style={{
                                         padding: '6px 8px',
                                         borderRadius: 8,
-                                        background: 'rgba(0,0,0,0.2)',
+                                        background: 'var(--bg-main)',
                                         fontSize: 11,
                                     }}
                                 >
@@ -407,7 +408,7 @@ export default function RunQueuePanel() {
                             padding: '6px 8px',
                             borderRadius: 8,
                             border: 'var(--1px solid var(--border-default))',
-                            background: 'rgba(0,0,0,0.2)',
+                            background: 'var(--bg-main)',
                             color: 'inherit',
                             fontSize: 11,
                             marginBottom: 6,
@@ -422,7 +423,7 @@ export default function RunQueuePanel() {
                             padding: '6px 8px',
                             borderRadius: 8,
                             border: 'var(--1px solid var(--border-default))',
-                            background: 'rgba(0,0,0,0.2)',
+                            background: 'var(--bg-main)',
                             color: 'inherit',
                             fontSize: 11,
                             marginBottom: 6,
@@ -468,7 +469,7 @@ export default function RunQueuePanel() {
                                 padding: '7px 10px',
                                 borderRadius: 8,
                                 border: 'var(--1px solid var(--border-default))',
-                                background: 'rgba(0,0,0,0.3)',
+                                background: 'var(--bg-elevated)',
                                 color: 'inherit',
                                 fontSize: 11,
                                 minWidth: 110,
@@ -508,7 +509,7 @@ export default function RunQueuePanel() {
                             padding: '8px 10px',
                             borderRadius: 8,
                             border: 'var(--1px solid var(--border-default))',
-                            background: 'rgba(0,0,0,0.2)',
+                            background: 'var(--bg-main)',
                             color: 'inherit',
                             fontSize: 11,
                             resize: 'vertical',
@@ -564,7 +565,7 @@ export default function RunQueuePanel() {
                                     padding: '6px 8px',
                                     borderRadius: 8,
                                     border: 'var(--1px solid var(--border-default))',
-                                    background: 'rgba(0,0,0,0.2)',
+                                    background: 'var(--bg-main)',
                                     color: 'inherit',
                                     fontSize: 11,
                                 }}

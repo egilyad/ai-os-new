@@ -115,7 +115,7 @@ const TopicSuggesterPanel: React.FC = () => {
                         padding: '0.75rem 1rem',
                         borderRadius: 10,
                         border: '1px solid rgba(255,255,255,0.05)',
-                        background: 'rgba(0,0,0,0.2)',
+                        background: 'var(--bg-main)',
                     }}
                 >
                     <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 6 }}>
@@ -155,7 +155,7 @@ const TopicSuggesterPanel: React.FC = () => {
                         padding: '0.75rem 1rem',
                         borderRadius: 10,
                         border: '1px solid rgba(255,255,255,0.05)',
-                        background: 'rgba(0,0,0,0.2)',
+                        background: 'var(--bg-main)',
                     }}
                 >
                     <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 6 }}>
@@ -254,7 +254,7 @@ const TopicSuggesterPanel: React.FC = () => {
                                 padding: '1rem',
                                 borderRadius: 12,
                                 border: '1px solid rgba(255,255,255,0.05)',
-                                background: 'rgba(0,0,0,0.2)',
+                                background: 'var(--bg-main)',
                                 display: 'flex',
                                 flexDirection: 'column',
                                 gap: 8,
@@ -405,7 +405,7 @@ const TopicSuggesterPanel: React.FC = () => {
                             padding: '0.4rem 0.6rem',
                             borderRadius: 6,
                             border: 'var(--1px solid var(--border-default))',
-                            background: 'rgba(0,0,0,0.3)',
+                            background: 'var(--bg-elevated)',
                             color: 'var(--slate-200)',
                             fontSize: '0.85rem',
                         }}

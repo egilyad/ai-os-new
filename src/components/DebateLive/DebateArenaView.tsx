@@ -71,7 +71,7 @@ export const DebateArenaView: React.FC<DebateArenaViewProps> = ({
                             color: 'var(--slate-500)',
                             padding: '4px 10px',
                             borderRadius: 6,
-                            background: 'rgba(0,0,0,0.3)',
+                            background: 'var(--bg-elevated)',
                             display: 'inline-block',
                             marginBottom: 8,
                         }}

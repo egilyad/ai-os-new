@@ -177,7 +177,7 @@ const DecisionDetail: React.FC<DecisionDetailProps> = ({ decision }) => {
                         height: 24,
                         borderRadius: 12,
                         overflow: 'hidden',
-                        background: 'rgba(0,0,0,0.2)',
+                        background: 'var(--bg-main)',
                     }}
                 >
                     {(() => {

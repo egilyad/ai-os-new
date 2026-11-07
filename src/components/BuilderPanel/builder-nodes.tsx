@@ -140,7 +140,7 @@ export const AgentNode = ({
                 <span
                     style={{
                         fontWeight: 600,
-                        background: 'rgba(0,0,0,0.3)',
+                        background: 'var(--bg-elevated)',
                         padding: '2px 6px',
                         borderRadius: 4,
                     }}

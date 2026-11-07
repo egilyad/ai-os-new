@@ -435,7 +435,7 @@ export const PromptStudio: React.FC<PromptStudioProps> = ({ value, onChange }) =
                     alignItems: 'center',
                     marginTop: '0.5rem',
                     padding: '0.5rem 0.75rem',
-                    background: 'rgba(0,0,0,0.2)',
+                    background: 'var(--bg-main)',
                     borderRadius: 8,
                     border: '1px solid rgba(255,255,255,0.03)',
                 }}
