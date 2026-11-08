@@ -47,11 +47,11 @@
 | Работа | Квадрант | Причина |
 |---|---|---|
 | Builder killer-service nodes (crystal/synthesis/lens/time-machine) | 🟢 Do First / 🔴 Strategic | стоимость 7, большой |
-| Cross-panel navigation links (ROI 32) | 🟢 Do First | UI-ссылки, много точек |
+| Cross-panel navigation links (ROI 32) | ✅ ЗАКРЫТО (P2-7) | UI-ссылки, много точек |
 | Import в 9 панелях (round-trip) | 🟢 Do First | фича восстановления |
-| WikiPanel «Create article» UI | 🟢 Do First | фича |
-| DebateArena «Save as Crystal» | 🟢 Do First | фича |
-| Settings search + tooltips | 🟡 Quick Win | UI |
+| WikiPanel «Create article» UI | ✅ ЗАКРЫТО (P2-5) | фича |
+| DebateArena «Save as Crystal» | ✅ ЗАКРЫТО (P2-5) | фича |
+| Settings search + tooltips | ✅ ЗАКРЫТО (P2-6) | UI |
 | Объединить budget/health панели | 🟡 Quick Win | рефакторинг |
 | Coverage threshold в CI | 🟡 Quick Win | gating |
 | eventBus cleanup audit (42 listeners) | 🟡 Quick Win | чинина |

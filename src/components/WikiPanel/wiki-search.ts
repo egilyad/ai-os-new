@@ -1,6 +1,6 @@
 import { Bm25Service } from '../../kernel/services/rag/bm25-service';
 import { filterOptions } from '../../kernel/utils/filter-options';
-import { WIKI_ARTICLES } from './wiki-articles';
+import { getAllArticles } from './wiki-articles';
 
 export interface WikiHit {
     slug: string;
@@ -14,7 +14,7 @@ export interface WikiHit {
 export function searchWikiQuick(query: string, limit = 10): WikiHit[] {
     const q = query.trim();
     if (!q) return [];
-    return filterOptions(WIKI_ARTICLES, q, ['title'], limit).map(({ item }) => ({
+    return filterOptions(getAllArticles(), q, ['title'], limit).map(({ item }) => ({
         slug: item.slug,
         score: 0.5,
     }));
@@ -24,16 +24,17 @@ let cached: Bm25Service | null = null;
 let builtFor = -1;
 
 async function index(): Promise<Bm25Service> {
-    if (!cached || builtFor !== WIKI_ARTICLES.length) {
+    const all = getAllArticles();
+    if (!cached || builtFor !== all.length) {
         cached = new Bm25Service();
         await cached.init();
         await cached.build(
-            WIKI_ARTICLES.map((a) => ({
+            all.map((a) => ({
                 id: a.slug,
                 text: `${a.title}\n${a.tags.join(' ')}\n${a.body}`,
             })),
         );
-        builtFor = WIKI_ARTICLES.length;
+        builtFor = all.length;
     }
     return cached;
 }

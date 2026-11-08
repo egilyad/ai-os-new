@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { BarChart3, Play, Download, ClipboardCopy } from 'lucide-react';
-import { eventBus, EVENTS } from '../../kernel/instances';
-import type { DebateSession } from '../../kernel/contracts/debate-types';
+import { BarChart3, Play, Download, ClipboardCopy, Gem } from 'lucide-react';
+import { eventBus, EVENTS, crystalVault } from '../../kernel/instances';
+import type { DebateSession, DebateVerdict } from '../../kernel/contracts/debate-types';
 
 interface ExportData {
     topic: string;
@@ -24,6 +24,7 @@ interface ExportData {
 
 interface Props {
     session: DebateSession | null;
+    verdict: DebateVerdict | null;
     t: (k: string) => string;
     onViewAnalysis: () => void;
     onReplay?: () => void;
@@ -68,9 +69,80 @@ function buildTranscript(session: DebateSession): string {
     return lines.join('\n');
 }
 
-const VerdictActionButtons: React.FC<Props> = ({ session, t, onViewAnalysis, onReplay }) => {
+const VerdictActionButtons: React.FC<Props> = ({
+    session,
+    verdict,
+    t,
+    onViewAnalysis,
+    onReplay,
+}) => {
     const [copying, setCopying] = useState(false);
+    const [savingCrystal, setSavingCrystal] = useState(false);
     if (!session || session.status !== 'completed') return null;
+
+    const handleSaveCrystal = async () => {
+        if (!verdict || !session || savingCrystal) return;
+        setSavingCrystal(true);
+        try {
+            const existing = await crystalVault.list({ status: 'semi' });
+            const already = existing.some(
+                (c) =>
+                    c.provenance.originKind === 'debate' && c.provenance.originId === session.id,
+            );
+            if (already) {
+                eventBus.emit(EVENTS.NOTIFICATION, {
+                    message: t('debate.verdict.crystal_exists'),
+                    type: 'warning',
+                });
+                return;
+            }
+            const proArgs = verdict.keyArguments.filter((a) => a.stance !== 'con');
+            const conArgs = verdict.keyArguments.filter((a) => a.stance === 'con');
+            const crystalId = await crystalVault.propose({
+                content: {
+                    statement: verdict.summary?.trim() || verdict.topic?.trim() || session.topic,
+                    elaboration: verdict.reasoning?.trim() || undefined,
+                    evidence: proArgs.map((a) => a.content).filter(Boolean),
+                    evidenceRefs: proArgs
+                        .filter((a) => a.content)
+                        .map((a) => ({
+                            claimId: a.argumentId,
+                            quote: a.content,
+                            agentId: a.agentId,
+                            agentName: a.agentName,
+                        })),
+                },
+                originKind: 'debate',
+                originId: session.id,
+                contributingAgents: (session.participants ?? [])
+                    .map((p) => p.name)
+                    .filter(Boolean),
+                modelIds: (session.participants ?? [])
+                    .map((p) => p.modelId)
+                    .filter((m): m is string => Boolean(m)),
+                totalTokensSpent: verdict.totalTokens ?? session.totalTokens ?? 0,
+                applicableDomain: 'general',
+            });
+            await crystalVault.validate(crystalId, {
+                debateId: session.id,
+                proArguments: proArgs.map((a) => a.content).filter(Boolean),
+                conArguments: conArgs.map((a) => a.content).filter(Boolean),
+                reviewers: [],
+                confidence: Math.min(0.95, verdict.confidence ?? 0.5),
+            });
+            eventBus.emit(EVENTS.NOTIFICATION, {
+                message: t('debate.verdict.crystal_saved'),
+                type: 'success',
+            });
+        } catch {
+            eventBus.emit(EVENTS.NOTIFICATION, {
+                message: t('debate.verdict.copy_failed'),
+                type: 'error',
+            });
+        } finally {
+            setSavingCrystal(false);
+        }
+    };
 
     const handleCopyTranscript = async () => {
         if (!session) return;
@@ -192,6 +264,18 @@ const VerdictActionButtons: React.FC<Props> = ({ session, t, onViewAnalysis, onR
                 }}
             >
                 <Download size={16} /> {t('debate.verdict.export')}
+            </button>
+            <button
+                onClick={() => void handleSaveCrystal()}
+                disabled={savingCrystal}
+                style={{
+                    ...btnBase,
+                    border: '1px solid rgba(16,185,129,0.3)',
+                    background: 'var(--success-tint)',
+                    color: '#34d399',
+                }}
+            >
+                <Gem size={16} /> {savingCrystal ? '...' : t('debate.verdict.save_crystal')}
             </button>
         </div>
     );

@@ -102,7 +102,7 @@
 | P2-2 | Round-trip export/import для 9 панелей | ❌ | Gap Map §4; Opportunity |
 | P2-3 | Vertical-консолидация: 5 budget → BudgetHub; 4 health → HealthPanel; 6 research | ❌ | Duplication Map; P3-#32/33/34 |
 | P2-4 | Рефакторинг 62 TechniquePanels → generic-панель | ❌ | Tech Map §5.6; Duplication |
-| P2-5 | WikiPanel «Create article» UI; DebateArena «Save as Crystal» | ❌ | Opportunity Map |
+| P2-5 | WikiPanel «Create article» UI; DebateArena «Save as Crystal» | ✅ (Wiki: кнопка «+ Создать статью», редактор (title/slug/section/tags/body markdown), сохранение в localStorage (wiki.userArticles.v1), мёрж в getArticle/articlesBySection/search (getAllArticles); Debate: кнопка «Save as Crystal» в VerdictActionButtons (propose+validate с защитой от дублей по originId=session.id), ключи i18n en/ru) | Opportunity Map |
 | P2-6 | Settings search + autocomplete в Wiki; tooltips | ✅ (Settings search через filterOptions + tooltips/описания ко всем 13 табам (en/ru); Wiki autocomplete — chip-подсказки через searchWikiQuick при вводе) | Gap Map §7; Opportunity |
 | P2-7 | Cross-panel navigation links (ROI 32) | ✅ (CrossPanelLinks интегрирован в 10 панелей: Settings, ResearchEngine, Scheduler, Issues, Costs, Governance, Fleet, Groups, Knowledge; curated-пары + same-section siblings; общий хук useNavItems) | Opportunity Map |
 | P2-8 | Скрыть Optional/Experimental/Stub-панели из main nav; cognitive overload | ❌ | Value/Accessibility Map |

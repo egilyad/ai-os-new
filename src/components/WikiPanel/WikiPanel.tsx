@@ -4,7 +4,9 @@ import { useTranslation } from '../../i18n/useTranslation';
 import { useResponsive } from '../Layout/ResponsiveShell';
 import { NAV_SECTIONS } from '../../route-registry';
 import { MarkdownRenderer } from '../ChatPanel/MarkdownRenderer';
-import { WIKI_SECTIONS, articlesBySection, getArticle } from './wiki-articles';
+import { WIKI_SECTIONS, articlesBySection, getArticle, getAllArticles } from './wiki-articles';
+import { addUserArticle } from './wiki-user-articles';
+import { WikiArticleEditor } from './WikiArticleEditor';
 import { PANEL_ARTICLES } from './wiki-panels';
 import { searchSnippet, searchWiki, searchWikiQuick } from './wiki-search';
 import { COMMITS_FEED } from '../../generated/commits-feed';
@@ -17,6 +19,7 @@ type WikiView =
     | { name: 'coverage' }
     | { name: 'search' }
     | { name: 'news' }
+    | { name: 'create' }
     | { name: 'article'; slug: string }
     | { name: 'panel'; panelId: string; title: string; sectionTitle: string };
 
@@ -143,6 +146,7 @@ export const WikiPanel: React.FC = () => {
             coverage: 'Покрытие документации',
             search: 'Поиск',
             news: 'Новости',
+            create: 'Создать статью',
         };
         return ['Вики', names[view.name] ?? ''];
     }, [view]);
@@ -167,6 +171,9 @@ export const WikiPanel: React.FC = () => {
             </button>
             <button type="button" onClick={() => setView({ name: 'news' })} style={navButton(view.name === 'news')}>
                 Новости ({COMMITS_FEED.commits.length})
+            </button>
+            <button type="button" onClick={() => setView({ name: 'create' })} style={navButton(view.name === 'create')}>
+                + Создать статью
             </button>
             <SectionLabel>Разделы</SectionLabel>
             {WIKI_SECTIONS.map((s) => {
@@ -258,6 +265,16 @@ export const WikiPanel: React.FC = () => {
                             />
                         )}
                         {view.name === 'news' && <WikiNews />}
+                        {view.name === 'create' && (
+                            <WikiArticleEditor
+                                existingSlugs={new Set(getAllArticles().map((a) => a.slug))}
+                                onSave={(article) => {
+                                    addUserArticle(article);
+                                    openSlug(article.slug);
+                                }}
+                                onCancel={() => setView({ name: 'home' })}
+                            />
+                        )}
                         {view.name === 'article' &&
                             (() => {
                                 const a = getArticle(view.slug);

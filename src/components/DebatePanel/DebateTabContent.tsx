@@ -195,6 +195,7 @@ export function DebateTabContent({
                                 <DebateVerdictPanel verdict={verdict} sessionId={session?.id ?? ''} />
                                 <VerdictActionButtons
                                     session={session}
+                                    verdict={verdict}
                                     t={t}
                                     onViewAnalysis={() => setViewTab('active')}
                                     onReplay={replay}

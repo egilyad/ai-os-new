@@ -1206,8 +1206,8 @@
       "category": "top",
       "language": "mixed",
       "title": "SuperAgents OS — Единый план работ (сводный)",
-      "bytes": 16945,
-      "hash": "6622252dde1ddf4b15bc5698e9d758a706db9caa"
+      "bytes": 17354,
+      "hash": "de46ac6b817543e65ce860b8ee97f7ab9f380d49"
     },
     {
       "path": "docs/wiki/agents.md",
@@ -2062,8 +2062,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Отложенные работы и фичи",
-      "bytes": 9783,
-      "hash": "82bc5e2a7464249fd57c50e47200e3ec6bb801f2"
+      "bytes": 9830,
+      "hash": "ea4871f74ed450b9d9804dc5e879ed65d47a0c5e"
     },
     {
       "path": "docs/wiki/dev-adr.md",

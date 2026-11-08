@@ -3,6 +3,7 @@
 // Freshness: verified = checked against code this session; documented = from
 // repo docs/audits; needs-check = not yet verified; not-implemented = confirmed absent.
 
+import { getUserArticles } from './wiki-user-articles';
 import { ZONE_ARTICLES } from './wiki-zones';
 import { COMPONENT_ARTICLES } from './wiki-components';
 import { DEV_ARTICLES } from './wiki-dev';
@@ -5020,10 +5021,14 @@ export const WIKI_ARTICLES: WikiArticle[] = [
     ...PANELS_EXTRA_ARTICLES,
 ];
 
+export function getAllArticles(): WikiArticle[] {
+    return [...getUserArticles(), ...WIKI_ARTICLES];
+}
+
 export function getArticle(slug: string): WikiArticle | undefined {
-    return WIKI_ARTICLES.find((a) => a.slug === slug);
+    return getAllArticles().find((a) => a.slug === slug);
 }
 
 export function articlesBySection(sectionId: string): WikiArticle[] {
-    return WIKI_ARTICLES.filter((a) => a.section === sectionId);
+    return getAllArticles().filter((a) => a.section === sectionId);
 }
