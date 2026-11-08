@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import { useAutoClearError } from '../hooks/useAutoClearError';
 import { RefreshCw, ListChecks, Loader2, AlertTriangle } from 'lucide-react';
 import { useTranslation } from '../i18n/useTranslation';
 import { gatewayApi as api, DEFAULT_GATEWAY_URL } from './Common';
@@ -74,6 +75,7 @@ const IssuesPanel: React.FC = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [notice, setNotice] = useState<string | null>(null);
+    const clearError = useAutoClearError(setError);
 
     const base = url.replace(/\/$/, '');
 
@@ -90,11 +92,12 @@ const IssuesPanel: React.FC = () => {
             }
         } catch (e) {
             setError(e instanceof Error ? e.message : String(e));
+            clearError();
             setCompanies([]);
         } finally {
             setLoading(false);
         }
-    }, [base, secret, companyId]);
+    }, [base, secret, companyId, clearError]);
 
     const loadIssues = useCallback(async () => {
         if (!companyId) return;
@@ -110,10 +113,11 @@ const IssuesPanel: React.FC = () => {
             setAgents(Array.isArray(ags.agents) ? ags.agents : []);
         } catch (e) {
             setError(e instanceof Error ? e.message : String(e));
+            clearError();
         } finally {
             setLoading(false);
         }
-    }, [base, secret, companyId, statusFilter]);
+    }, [base, secret, companyId, statusFilter, clearError]);
 
     const loadTree = useCallback(
         async (iid: string) => {
@@ -178,6 +182,7 @@ const IssuesPanel: React.FC = () => {
             }
         } catch (e) {
             setError(e instanceof Error ? e.message : String(e));
+            clearError();
         }
     }
 
@@ -213,6 +218,7 @@ const IssuesPanel: React.FC = () => {
                     ? ` → ${((e as { body?: { chain?: Array<{ name: string }> } }).body?.chain || []).map((a) => a.name).join('>')}`
                     : '';
             setError((e instanceof Error ? e.message : String(e)) + extra);
+            clearError();
         }
     }
 
