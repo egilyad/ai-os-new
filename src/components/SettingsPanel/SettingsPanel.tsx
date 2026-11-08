@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -35,6 +35,8 @@ import { APP_VERSION } from '../../utils/version';
 import { useAutoClearError } from '../../hooks/useAutoClearError';
 import { useTranslation } from '../../i18n/useTranslation';
 import ModuleInfo from '../ModuleInfo';
+import { CrossPanelLinks } from '../Common/CrossPanelLinks';
+import { NAV_SECTIONS } from '../../route-registry';
 import PromptsTab from './PromptsTab';
 import { canonicalHealthColor, canonicalHealthLabel } from '../Common/status-vocabulary';
 import type { SettingsTab, RuntimeConfigForm } from './settings-shared';
@@ -96,6 +98,18 @@ const SettingsPanel: React.FC = () => {
     );
     const [settingsSearch, setSettingsSearch] = useState('');
     const [vaultOpen, setVaultOpen] = useState(false);
+
+    const navItems = useMemo(
+        () =>
+            NAV_SECTIONS.flatMap((section) =>
+                section.items.map((item) => ({
+                    id: item.id,
+                    label: t(item.labelKey),
+                    sectionId: section.id,
+                })),
+            ),
+        [t],
+    );
 
     const isMountedRef = useRef(true);
     const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -824,6 +838,7 @@ const SettingsPanel: React.FC = () => {
                         paddingBottom: '2rem',
                     }}
                 >
+                    <CrossPanelLinks panelId={activeTab} items={navItems} />
                     <AnimatePresence mode="wait">
                         <motion.div
                             key={activeTab}
