@@ -96,7 +96,13 @@ export const registerPhase5: Phase = (helpers) => {
             database: c.get<IDatabaseService>('database'),
             memoryStore: storageLayer?.memory,
             kernel: c.get<SystemKernel>('kernel'),
-            orchestrator: c.get<OrchestrationService>('orchestrator'),
+            // Lazy: snapshotService может быть зарезолвлен из фабрики
+            // orchestrator (timeMachineService → snapshotService). Жадный
+            // c.get('orchestrator') здесь вызывает «Circular dependency
+            // detected: orchestrator is already being resolved».
+            get orchestrator() {
+                return c.get<OrchestrationService>('orchestrator');
+            },
         });
     });
 
