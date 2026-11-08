@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { useAutoClearError } from '../../hooks/useAutoClearError';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Network, Brain, AlertTriangle, X } from 'lucide-react';
 import { useTranslation } from '../../i18n/useTranslation';
@@ -24,14 +25,7 @@ const LiveWorkspace: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
     const isMountedRef = useRef(true);
     const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-    const errorTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-    const clearErrorAfterDelay = useCallback(() => {
-        if (errorTimeoutRef.current) clearTimeout(errorTimeoutRef.current);
-        errorTimeoutRef.current = setTimeout(() => {
-            if (isMountedRef.current) setError(null);
-        }, 5000);
-    }, []);
+    const clearErrorAfterDelay = useAutoClearError(setError, 5000);
 
     useEffect(() => {
         isMountedRef.current = true;
@@ -83,13 +77,11 @@ const LiveWorkspace: React.FC = () => {
                 'eventBus.subscribeAll does not return an unsubscribe function',
             );
         const savedIntervalRef = intervalRef;
-        const savedTimeoutRef = errorTimeoutRef;
         return () => {
             isMountedRef.current = false;
             unsubHealth();
             if (savedIntervalRef.current) clearInterval(savedIntervalRef.current);
             if (unsubscribeAll) unsubscribeAll();
-            if (savedTimeoutRef.current) clearTimeout(savedTimeoutRef.current);
         };
     }, [clearErrorAfterDelay]);
 
