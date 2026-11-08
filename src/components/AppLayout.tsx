@@ -1,9 +1,8 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { lazy, Suspense, useEffect, useState, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 // Route transitions use CSS animation instead of framer-motion to keep ~50KB gzip off the critical path.
-// TODO: CommandPalette and OnboardingWizard still synchronously import framer-motion (via their own imports).
-// To fully remove framer-motion from the critical path, split useCommandPalette into a separate file
-// (e.g. hooks/useCommandPalette.ts), then wrap CommandPalette and OnboardingWizard with React.lazy + Suspense.
+// CommandPalette is lazy-loaded (below) so its framer-motion import stays off
+// the initial critical path; the hook lives in hooks/useCommandPalette.ts.
 import { History, Search, Menu } from 'lucide-react';
 import { Sidebar } from './Sidebar';
 import { BottomNav } from './Layout/BottomNav';
@@ -12,7 +11,7 @@ import { AppRoutes } from '../routes';
 import { GlobalErrorBoundary } from './GlobalErrorBoundary';
 import AlertLayer from './AlertLayer/AlertLayer';
 import ToolApprovalLayer from './ToolApprovalLayer/ToolApprovalLayer';
-import { CommandPalette, useCommandPalette } from './CommandPalette';
+import { useCommandPalette } from '../hooks/useCommandPalette';
 import { Breadcrumbs } from './Common/Breadcrumbs';
 import { OnboardingWizard } from './OnboardingWizard/OnboardingWizard';
 import { KeyboardShortcutsModal } from './Common/KeyboardShortcutsModal';
@@ -31,6 +30,10 @@ import { NAV_SECTIONS } from '../route-registry';
 import { LayoutProvider } from './Layout/LayoutContext';
 import { LayoutSelector } from './Layout/LayoutSelector';
 import { NextActionPredictions } from './Layout/NextActionPredictions';
+
+const LazyCommandPalette = lazy(() =>
+    import('./CommandPalette').then((m) => ({ default: m.CommandPalette })),
+);
 
 const navLabelKey: Record<string, TranslationKey> = {};
 for (const section of NAV_SECTIONS) {
@@ -363,11 +366,13 @@ export const AppLayout: React.FC = () => {
                         {activeTab !== 'debate' && <NextActionPredictions />}
                         <AlertLayer />
                         <ToolApprovalLayer />
-                        <CommandPalette
-                            open={isPaletteOpen}
-                            onClose={closePalette}
-                            t={t as (key: TranslationKey) => string}
-                        />
+                        <Suspense fallback={null}>
+                            <LazyCommandPalette
+                                open={isPaletteOpen}
+                                onClose={closePalette}
+                                t={t as (key: TranslationKey) => string}
+                            />
+                        </Suspense>
                         <OnboardingWizard t={t as (key: TranslationKey) => string} />
                         <KeyboardShortcutsModal
                             isOpen={shortcutsOpen}

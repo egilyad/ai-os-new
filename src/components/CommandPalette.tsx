@@ -604,19 +604,7 @@ const PaletteRow: React.FC<PaletteRowProps> = ({ item, idx, selected, onSelect, 
 );
 
 // ─── useCommandPalette hook ───────────────────────────────────────────────────
-export function useCommandPalette() {
-    const [isOpen, setIsOpen] = useState(false);
-
-    useEffect(() => {
-        const handler = (e: KeyboardEvent) => {
-            if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-                e.preventDefault();
-                setIsOpen((v) => !v);
-            }
-        };
-        window.addEventListener('keydown', handler);
-        return () => window.removeEventListener('keydown', handler);
-    }, []);
-
-    return { isOpen, open: () => setIsOpen(true), close: () => setIsOpen(false) };
-}
+// Lives in src/hooks/useCommandPalette.ts so the palette component can be
+// loaded lazily without synchronously pulling the hook (and framer-motion)
+// into the critical path. Re-exported here for backward compatibility.
+export { useCommandPalette } from '../hooks/useCommandPalette';
