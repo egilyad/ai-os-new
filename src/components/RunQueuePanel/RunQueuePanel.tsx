@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from 'react';
+import { useAutoClearError } from '../../hooks/useAutoClearError';
 import { useTranslation } from '../../i18n/useTranslation';
 import { runQueueService } from '../../kernel/instances/services-extras';
 import { seedRunQueueDemo } from '../../kernel/services/rivals/runqueue-demo-seed';
@@ -31,10 +32,15 @@ export default function RunQueuePanel() {
 
     const active = runs.find((r) => r.id === activeId) ?? null;
 
-    const fail = useCallback((e: unknown) => {
-        console.error('[RunQueuePanel]', e);
-        setError(t('runQueue.error.generic'));
-    }, [t]);
+    const clearError = useAutoClearError(setError);
+    const fail = useCallback(
+        (e: unknown) => {
+            console.error('[RunQueuePanel]', e);
+            setError(t('runQueue.error.generic'));
+            clearError();
+        },
+        [t, clearError],
+    );
 
     const reload = useCallback(async () => {
         try {
