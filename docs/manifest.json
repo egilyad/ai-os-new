@@ -11191,7 +11191,7 @@
       "panelId": "health",
       "section": "diagnostics",
       "route": "/health",
-      "component": "src/components/HealthPanel/HealthPanel",
+      "component": "src/components/HealthHub",
       "article": "panel-observability",
       "status": "live"
     },
@@ -11531,7 +11531,7 @@
       "panelId": "research-engine",
       "section": "research",
       "route": "/research-engine",
-      "component": "src/components/ResearchPanel/ResearchEnginePanel",
+      "component": "src/components/ResearchHub",
       "article": "panel-research",
       "status": "live"
     },

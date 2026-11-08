@@ -38,8 +38,8 @@
 Цепочка «панель → маршрут → компонент → тесты» собрана из реестра маршрутов.
 
 - Панель `research-engine` → маршрут `/research-engine`
-  - Компонент: `src/components/ResearchPanel/ResearchEnginePanel`
-  - Тесты: `src/components/ResearchPanel/ResearchEnginePanel.test.tsx`
+  - Компонент: `src/components/ResearchHub`
+  - Тесты: — (рядом с компонентом не найдены)
 - Панель `research-reports` → маршрут `/research-reports`
   - Компонент: `src/components/ResearchReportPanel`
   - Тесты: — (рядом с компонентом не найдены)

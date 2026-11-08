@@ -1206,8 +1206,8 @@
       "category": "top",
       "language": "mixed",
       "title": "SuperAgents OS — Единый план работ (сводный)",
-      "bytes": 18852,
-      "hash": "0912d7e09ebe69435ce87d69dc6c604643e92c4c"
+      "bytes": 18917,
+      "hash": "7a99c442c6b9dc11509378f1d1dcfa23aed2b9cc"
     },
     {
       "path": "docs/wiki/agents.md",
@@ -2926,8 +2926,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Панель: Наблюдаемость (логи, трейсы, здоровье)",
-      "bytes": 5033,
-      "hash": "71376ba16613178c7b2e15cd579d8c72cc9a4ff8"
+      "bytes": 5032,
+      "hash": "3c15d14dd45db56ace14bade37d79232df64cc76"
     },
     {
       "path": "docs/wiki/panel-persona.md",
@@ -3078,8 +3078,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Панель: Исследовательский движок",
-      "bytes": 2353,
-      "hash": "a2c6d4e0da945bd937f72de60d7710c3f0eb3e31"
+      "bytes": 2334,
+      "hash": "80e210fd9d292bf6ac1c2d4486da7dfa14fa5041"
     },
     {
       "path": "docs/wiki/panel-rival-labs.md",

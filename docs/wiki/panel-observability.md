@@ -73,8 +73,8 @@ flowchart LR
   - Компонент: `src/components/RouterTraceView/RouterTraceView`
   - Тесты: — (рядом с компонентом не найдены)
 - Панель `health` → маршрут `/health`
-  - Компонент: `src/components/HealthPanel/HealthPanel`
-  - Тесты: `src/components/HealthPanel/HealthPanel.test.tsx`
+  - Компонент: `src/components/HealthHub`
+  - Тесты: — (рядом с компонентом не найдены)
 - Панель `system-health` → маршрут `/system-health`
   - Компонент: `src/components/SystemHealthPanel`
   - Тесты: — (рядом с компонентом не найдены)

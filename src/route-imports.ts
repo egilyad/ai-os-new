@@ -13,7 +13,7 @@ const LogsPanel = React.lazy(() => import('./components/LogsPanel/LogsPanel'));
 const MemoryPanel = React.lazy(() => import('./components/MemoryPanel/MemoryPanel'));
 const WikiBrainPanelLazy = React.lazy(() => import('./components/WikiBrainPanel'));
 const ArchitectureMapPanelLazy = React.lazy(() => import('./components/ArchitectureMapPanel'));
-const HealthPanel = React.lazy(() => import('./components/HealthPanel/HealthPanel'));
+const HealthHub = React.lazy(() => import('./components/HealthHub'));
 const SystemHealthPanel = React.lazy(() => import('./components/SystemHealthPanel'));
 const AquariumPanel = React.lazy(() => import('./components/AquariumPanel/AquariumPanel'));
 const DebateArena = React.lazy(() => import('./components/DebateArena'));
@@ -108,9 +108,7 @@ const DebateHistoryPage = React.lazy(() => import('./components/DebatePanel/Deba
 const DebateLivePanel = React.lazy(() => import('./components/DebateLive/DebateLivePanel'));
 const PolicyEditorPanelLazy = React.lazy(() => import('./components/PolicyEditorPanel'));
 const RolesConsortiaPanel = React.lazy(() => import('./components/RolesPanel/RolesConsortiaPanel'));
-const ResearchEnginePanelLazy = React.lazy(
-    () => import('./components/ResearchPanel/ResearchEnginePanel'),
-);
+const ResearchHubLazy = React.lazy(() => import('./components/ResearchHub'));
 const ResearchCockpitPanelLazy = React.lazy(
     () => import('./components/ResearchCockpit/ResearchCockpit'),
 );
@@ -410,7 +408,7 @@ export const PANEL_COMPONENTS: Record<string, React.ComponentType<any>> = {
     'router-trace': RouterTraceView,
     memory: MemoryPanel,
     'memory-palace': MemoryPalacePanel,
-    health: HealthPanel,
+        health: HealthHub,
     'system-health': SystemHealthPanel,
     'docs-health': DocsHealthPanel,
     pressure: PressureMap,
@@ -439,7 +437,7 @@ export const PANEL_COMPONENTS: Record<string, React.ComponentType<any>> = {
     'architecture-map': ArchitectureMapPanelLazy,
     'obs-gaps': ObsGaps,
     'debate-system-research': DebateSystemResearch,
-    'research-engine': ResearchEnginePanelLazy,
+        'research-engine': ResearchHubLazy,
     'research-cockpit': ResearchCockpitPanelLazy,
     skills: SkillsPanelLazy,
     tools: ToolsPanelLazy,

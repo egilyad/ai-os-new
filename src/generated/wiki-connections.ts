@@ -1491,10 +1491,8 @@ export const WIKI_CONNECTIONS: Record<string, WikiConnection[]> = {
         {
             "panelId": "health",
             "route": "/health",
-            "component": "src/components/HealthPanel/HealthPanel",
-            "tests": [
-                "src/components/HealthPanel/HealthPanel.test.tsx"
-            ]
+            "component": "src/components/HealthHub",
+            "tests": []
         },
         {
             "panelId": "system-health",
@@ -1851,10 +1849,8 @@ export const WIKI_CONNECTIONS: Record<string, WikiConnection[]> = {
         {
             "panelId": "research-engine",
             "route": "/research-engine",
-            "component": "src/components/ResearchPanel/ResearchEnginePanel",
-            "tests": [
-                "src/components/ResearchPanel/ResearchEnginePanel.test.tsx"
-            ]
+            "component": "src/components/ResearchHub",
+            "tests": []
         },
         {
             "panelId": "research-reports",
