@@ -1,4 +1,5 @@
 import React, { useState, useRef, useCallback } from 'react';
+import { useAutoClearError } from '../hooks/useAutoClearError';
 import { FileDown, X } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useTranslation } from '../i18n/useTranslation';
@@ -29,18 +30,21 @@ const ChatExportPanel: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
     const [busy, setBusy] = useState(false);
     const isMountedRef = useRef(true);
+    const clearError = useAutoClearError(setError);
 
     const loadFromSession = useCallback(() => {
         try {
             const { sessions, activeSessionId } = useChatStore.getState();
             if (!sessions || sessions.length === 0) {
                 setError(t('chat_export.no_sessions'));
+                clearError();
                 return;
             }
             const active = activeSessionId ? sessions.find((s) => s.id === activeSessionId) : null;
             const session = active ?? sessions[0];
             if (!session?.history || !Array.isArray(session.history)) {
                 setError(t('chat_export.invalid_session'));
+                clearError();
                 return;
             }
             setChat({
@@ -76,8 +80,9 @@ const ChatExportPanel: React.FC = () => {
             setSourceMode('session');
         } catch (err) {
             setError(String(err));
+            clearError();
         }
-    }, [t]);
+    }, [t, clearError]);
 
     const loadFromFile = useCallback(
         (file: File) => {
@@ -118,20 +123,23 @@ const ChatExportPanel: React.FC = () => {
                     });
                     setSourceMode('file');
                 } catch (err) {
-                    if (isMountedRef.current)
+                    if (isMountedRef.current) {
                         setError(
                             `${t('chat_export.parse_error')}: ${err instanceof Error ? err.message : String(err)}`,
                         );
+                        clearError();
+                    }
                 }
             };
             reader.readAsText(file);
         },
-        [t],
+        [t, clearError],
     );
 
     const loadFromPaste = useCallback(() => {
         if (!pasted.trim()) {
             setError(t('chat_export.empty_paste'));
+            clearError();
             return;
         }
         try {
@@ -159,12 +167,14 @@ const ChatExportPanel: React.FC = () => {
                 }),
             });
         } catch (err) {
-            if (isMountedRef.current)
+            if (isMountedRef.current) {
                 setError(
                     `${t('chat_export.parse_error')}: ${err instanceof Error ? err.message : String(err)}`,
                 );
+                clearError();
+            }
         }
-    }, [pasted, t]);
+    }, [pasted, t, clearError]);
 
     React.useEffect(() => {
         isMountedRef.current = true;
@@ -205,8 +215,11 @@ const ChatExportPanel: React.FC = () => {
                 setCopied(true);
                 setTimeout(() => setCopied(false), 1500);
             })
-            .catch(() => setError(t('chat_export.copy_failed')));
-    }, [chat, format, includeMeta, includeStats, t]);
+            .catch(() => {
+                setError(t('chat_export.copy_failed'));
+                clearError();
+            });
+    }, [chat, format, includeMeta, includeStats, t, clearError]);
 
     const preview = React.useMemo(() => {
         if (!chat) return '';
