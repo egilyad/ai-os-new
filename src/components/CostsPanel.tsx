@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import { useAutoClearError } from '../hooks/useAutoClearError';
 import { RefreshCw, DollarSign, Loader2, AlertTriangle } from 'lucide-react';
 import { useTranslation } from '../i18n/useTranslation';
 import { gatewayApi as api, DEFAULT_GATEWAY_URL } from './Common';
@@ -61,6 +62,7 @@ const CostsPanel: React.FC = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [notice, setNotice] = useState<string | null>(null);
+    const clearError = useAutoClearError(setError);
 
     const base = url.replace(/\/$/, '');
 
@@ -76,9 +78,10 @@ const CostsPanel: React.FC = () => {
             }
         } catch (e) {
             setError(e instanceof Error ? e.message : String(e));
+            clearError();
             setCompanies([]);
         }
-    }, [base, secret, companyId]);
+    }, [base, secret, companyId, clearError]);
 
     const loadMoney = useCallback(async () => {
         if (!companyId) return;
@@ -97,10 +100,11 @@ const CostsPanel: React.FC = () => {
             setAgents(Array.isArray(a.agents) ? a.agents : []);
         } catch (e) {
             setError(e instanceof Error ? e.message : String(e));
+            clearError();
         } finally {
             setLoading(false);
         }
-    }, [base, secret, companyId, agentId]);
+    }, [base, secret, companyId, agentId, clearError]);
 
     useEffect(() => {
         try {
@@ -135,6 +139,7 @@ const CostsPanel: React.FC = () => {
             await loadMoney();
         } catch (e) {
             setError(e instanceof Error ? e.message : String(e));
+            clearError();
         }
     }
 
@@ -156,6 +161,7 @@ const CostsPanel: React.FC = () => {
             await loadMoney();
         } catch (e) {
             setError(e instanceof Error ? e.message : String(e));
+            clearError();
         }
     }
 
