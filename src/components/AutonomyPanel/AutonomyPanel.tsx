@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
+import { useAutoClearError } from '../../hooks/useAutoClearError';
 import { useTranslation } from '../../i18n/useTranslation';
 import { autonomyService } from '../../kernel/instances/services-extras';
 import { seedAutonomyDemo } from '../../kernel/services/rivals/autonomy-demo-seed';
@@ -27,12 +28,17 @@ export default function AutonomyPanel() {
     const isMountedRef = useRef(true);
     const active = loops.find((l) => l.id === activeId) ?? null;
 
-    const fail = useCallback((e: unknown) => {
-        console.error('[AutonomyPanel]', e);
-        // Keep the real message: a generic banner alone cannot be diagnosed.
-        const detail = e instanceof Error ? e.message : String(e);
-        setError(`${t('autonomy.error.generic')}: ${detail}`.slice(0, 300));
-    }, [t]);
+    const clearError = useAutoClearError(setError);
+    const fail = useCallback(
+        (e: unknown) => {
+            console.error('[AutonomyPanel]', e);
+            // Keep the real message: a generic banner alone cannot be diagnosed.
+            const detail = e instanceof Error ? e.message : String(e);
+            setError(`${t('autonomy.error.generic')}: ${detail}`.slice(0, 300));
+            clearError();
+        },
+        [t, clearError],
+    );
 
     const reload = useCallback(async (selectId?: string) => {
         try {
