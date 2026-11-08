@@ -1,7 +1,14 @@
 # Line-ending normalization for deterministic generation on all platforms.
 # CI (Linux) and local generators must see identical bytes: LF everywhere
-# for documentation, JSON artifacts and generated sources.
-*.md text eol=lf
-*.json text eol=lf
+# for documentation, JSON artifacts, generated sources and code files that
+# generators parse (regex parsers assume LF newlines).
+* text=auto eol=lf
 docs/** text eol=lf
 src/generated/** text eol=lf
+*.md text eol=lf
+*.json text eol=lf
+*.ts text eol=lf
+*.tsx text eol=lf
+*.js text eol=lf
+*.mjs text eol=lf
+*.cjs text eol=lf
