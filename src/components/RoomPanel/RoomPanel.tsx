@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { useAutoClearError } from '../../hooks/useAutoClearError';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from '../../i18n/useTranslation';
 import type {
@@ -148,10 +149,12 @@ const RoomPanel: React.FC = () => {
         }
     };
 
+    const clearError = useAutoClearError(setError);
     const handleInvoke = async () => {
         setError(null);
         if (!agentId || !task.trim()) {
             setError(t('room.invoke.validation'));
+            clearError();
             return;
         }
         const req: InvocationRequest = {
@@ -173,6 +176,7 @@ const RoomPanel: React.FC = () => {
             } else {
                 setError(t('room.error.generic'));
             }
+            clearError();
         }
     };
 
