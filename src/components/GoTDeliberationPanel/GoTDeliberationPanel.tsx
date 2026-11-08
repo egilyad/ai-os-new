@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import { useAutoClearError } from '../../hooks/useAutoClearError';
 import { GitCommit, Zap, RefreshCw, Lightbulb, Info } from 'lucide-react';
 import { GoTDeliberation } from '../../kernel/services/debate-runtime/got-deliberation';
 import { useTranslation } from '../../i18n/useTranslation';
@@ -20,6 +21,7 @@ export const GoTDeliberationPanel: React.FC = () => {
     );
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const clearError = useAutoClearError(setError);
 
     const handleDeliberate = async () => {
         setLoading(true);
@@ -34,6 +36,7 @@ export const GoTDeliberationPanel: React.FC = () => {
         } catch (e) {
             setResult(null);
             setError(e instanceof Error ? e.message : 'Deliberation failed');
+            clearError();
         } finally {
             setLoading(false);
         }
