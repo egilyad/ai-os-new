@@ -31,6 +31,7 @@ import { CONFIG } from '../../kernel/instances';
 import { configService } from '../../kernel/instances';
 import { safeClone } from '../../shared/utils/safe-json';
 import { flattenFeatureFlags } from '../../kernel/utils/feature-flags';
+import { filterOptions } from '../../kernel/utils/filter-options';
 import { APP_VERSION } from '../../utils/version';
 import { useAutoClearError } from '../../hooks/useAutoClearError';
 import { useTranslation } from '../../i18n/useTranslation';
@@ -110,6 +111,26 @@ const SettingsPanel: React.FC = () => {
             ),
         [t],
     );
+
+    const settingsTabs = [
+        { id: 'general', label: t('settings.general'), icon: <Settings size={18} aria-hidden="true" /> },
+        { id: 'writing', label: t('settings.interaction'), icon: <MessageSquare size={18} aria-hidden="true" /> },
+        { id: 'reading', label: t('nav.routing_ai'), icon: <Cpu size={18} aria-hidden="true" /> },
+        { id: 'alerts', label: t('settings.tab.alerts'), icon: <Bell size={18} aria-hidden="true" /> },
+        { id: 'notifications', label: t('settings.notifications'), icon: <Bell size={18} aria-hidden="true" /> },
+        { id: 'appearance', label: 'Design Tokens LIVE', icon: <Palette size={18} aria-hidden="true" /> },
+        { id: 'prompts', label: t('settings.tab.prompts'), icon: <BookText size={18} aria-hidden="true" /> },
+        { id: 'advanced', label: t('settings.security'), icon: <Lock size={18} aria-hidden="true" /> },
+        { id: 'llmKeys', label: 'LLM Keys', icon: <Key size={18} aria-hidden="true" /> },
+        { id: 'platform', label: 'Platform', icon: <Globe size={18} aria-hidden="true" /> },
+        { id: 'systemPrompts', label: 'System Prompts', icon: <FileText size={18} aria-hidden="true" /> },
+        { id: 'n8n', label: 'N8N', icon: <Network size={18} aria-hidden="true" /> },
+        { id: 'system', label: 'System', icon: <HardDrive size={18} aria-hidden="true" /> },
+    ] as const;
+
+    const visibleSettingsTabs = settingsSearch
+        ? filterOptions(settingsTabs, settingsSearch, ['label']).map(({ item }) => item)
+        : settingsTabs;
 
     const isMountedRef = useRef(true);
     const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -650,81 +671,7 @@ const SettingsPanel: React.FC = () => {
                         }}
                         aria-label={t('common.aria.search')}
                     />
-                    {(
-                        [
-                            {
-                                id: 'general',
-                                label: t('settings.general'),
-                                icon: <Settings size={18} aria-hidden="true" />,
-                            },
-                            {
-                                id: 'writing',
-                                label: t('settings.interaction'),
-                                icon: <MessageSquare size={18} aria-hidden="true" />,
-                            },
-                            {
-                                id: 'reading',
-                                label: t('nav.routing_ai'),
-                                icon: <Cpu size={18} aria-hidden="true" />,
-                            },
-                            {
-                                id: 'alerts',
-                                label: t('settings.tab.alerts'),
-                                icon: <Bell size={18} aria-hidden="true" />,
-                            },
-                            {
-                                id: 'notifications',
-                                label: t('settings.notifications'),
-                                icon: <Bell size={18} aria-hidden="true" />,
-                            },
-                            {
-                                id: 'appearance',
-                                label: 'Design Tokens LIVE',
-                                icon: <Palette size={18} aria-hidden="true" />,
-                            },
-                            {
-                                id: 'prompts',
-                                label: t('settings.tab.prompts'),
-                                icon: <BookText size={18} aria-hidden="true" />,
-                            },
-                            {
-                                id: 'advanced',
-                                label: t('settings.security'),
-                                icon: <Lock size={18} aria-hidden="true" />,
-                            },
-                            {
-                                id: 'llmKeys',
-                                label: 'LLM Keys',
-                                icon: <Key size={18} aria-hidden="true" />,
-                            },
-                            {
-                                id: 'platform',
-                                label: 'Platform',
-                                icon: <Globe size={18} aria-hidden="true" />,
-                            },
-                            {
-                                id: 'systemPrompts',
-                                label: 'System Prompts',
-                                icon: <FileText size={18} aria-hidden="true" />,
-                            },
-                            {
-                                id: 'n8n',
-                                label: 'N8N',
-                                icon: <Network size={18} aria-hidden="true" />,
-                            },
-                            {
-                                id: 'system',
-                                label: 'System',
-                                icon: <HardDrive size={18} aria-hidden="true" />,
-                            },
-                        ] as const
-                    )
-                        .filter(
-                            (tab) =>
-                                !settingsSearch ||
-                                tab.label.toLowerCase().includes(settingsSearch.toLowerCase()),
-                        )
-                        .map((tab) => (
+                    {visibleSettingsTabs.map((tab) => (
                             <button
                                 key={tab.id}
                                 type="button"
