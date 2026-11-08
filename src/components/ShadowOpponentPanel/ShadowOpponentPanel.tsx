@@ -1,4 +1,5 @@
 import React, { useCallback, useMemo, useState, useEffect } from 'react';
+import { useAutoClearError } from '../../hooks/useAutoClearError';
 import {
     FileCode,
     Sword,
@@ -84,6 +85,7 @@ export const ShadowOpponentPanel: React.FC = () => {
     const [result, setResult] = useState<ShadowCritique | null>(null);
     const [history, setHistory] = useState<HistoryEntry[]>([]);
     const [error, setError] = useState<string | null>(null);
+    const clearError = useAutoClearError(setError);
 
     const persona = personas.find((a) => a.id === agentId) ?? personas[0];
 
@@ -94,10 +96,12 @@ export const ShadowOpponentPanel: React.FC = () => {
         setResult(null);
         if (!persona) {
             setError('No agents available.');
+            clearError();
             return;
         }
         if (draft.trim().length < 50) {
             setError('Draft too short — need ≥50 chars (service returns null).');
+            clearError();
             return;
         }
         setIsRunning(true);
@@ -120,6 +124,7 @@ export const ShadowOpponentPanel: React.FC = () => {
                 setError(
                     'No result — signal aborted or LLM returned empty/invalid (strengthened <20 chars).',
                 );
+                clearError();
                 return;
             }
             // enrich latency if mock was too fast (service already measures)
@@ -134,6 +139,7 @@ export const ShadowOpponentPanel: React.FC = () => {
             ]);
         } catch (e) {
             setError(e instanceof Error ? e.message : String(e));
+            clearError();
         } finally {
             setIsRunning(false);
         }
