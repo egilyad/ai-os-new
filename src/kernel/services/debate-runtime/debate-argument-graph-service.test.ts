@@ -31,7 +31,7 @@ describe('ArgumentGraphService (per-session)', () => {
         expect(svc.getAllNodes('s-b')).toHaveLength(1);
         expect(svc.getNode('s-a', 'b1')).toBeUndefined();
         expect(svc.getNode('s-b', 'a1')).toBeUndefined();
-        expect(svc.getEdgeBalance('s-a', 'a2').attack).toBeGreaterThan(0);
+        expect(svc.getEdgeBalance('s-a', 'a1').attack).toBeGreaterThan(0);
         expect(svc.getEdgeBalance('s-b', 'b1').attack).toBe(0);
     });
 
