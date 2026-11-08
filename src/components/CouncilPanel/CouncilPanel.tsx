@@ -7,6 +7,7 @@
  */
 
 import React, { useEffect, useState } from 'react';
+import { useAutoClearError } from '../../hooks/useAutoClearError';
 import { useCouncilStore } from '../../stores/councilStore';
 import { useResponsive } from '../Layout/ResponsiveShell';
 import { lazyService } from '../../kernel/service-helper';
@@ -56,6 +57,7 @@ export const CouncilPanel: React.FC = () => {
     const [topic, setTopic] = useState('');
     const [busy, setBusy] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const clearError = useAutoClearError(setError);
     const [detail, setDetail] = useState<CouncilSession | null>(null);
     const [msgBody, setMsgBody] = useState('');
     const [factClaim, setFactClaim] = useState('');
@@ -73,14 +75,18 @@ export const CouncilPanel: React.FC = () => {
             councilService
                 .getSession(activeId)
                 .then(setDetail)
-                .catch((e) => setError(e instanceof Error ? e.message : String(e)));
+                .catch((e) => {
+                    setError(e instanceof Error ? e.message : String(e));
+                    clearError();
+                });
         } catch (e) {
             // The lazy proxy can throw synchronously (unregistered service) —
             // that path never reaches the promise .catch above.
             setDetail(null);
             setError(e instanceof Error ? e.message : String(e));
+            clearError();
         }
-    }, [activeId, sessions]);
+    }, [activeId, sessions, clearError]);
 
     const run = async (fn: () => Promise<unknown>) => {
         setBusy(true);
@@ -94,6 +100,7 @@ export const CouncilPanel: React.FC = () => {
             }
         } catch (e) {
             setError(e instanceof Error ? e.message : String(e));
+            clearError();
         } finally {
             setBusy(false);
         }
