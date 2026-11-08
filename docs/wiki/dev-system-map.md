@@ -30,12 +30,40 @@
 | Стратегии дебатов | `src/components/DebatePanel/wizard-constants.ts` | этот документ |
 | Провайдеры (пулы) | `src/constants/pools.ts` | этот документ |
 
-## Роли и агенты (0)
+## Роли и агенты (28)
 
 Библиотека ролей — `src/data/role-library.ts` (`LIBRARY_ROLES`).
 
 | ID | Название | Категория | Темп. | Реком. модель |
 | --- | --- | --- | --- | --- |
+| `idea-generator` | Генератор идей | design | 0.8 | `openai:gpt-4o` |
+| `critic` | Критик | analysis | 0.3 | — |
+| `analyst` | Аналитик | analysis | 0.3 | — |
+| `engineer` | Инженер / Разработчик | code | 0.2 | `openai:gpt-4o` |
+| `defender` | Защитник решения (Адвокат) | writing | 0.4 | — |
+| `moderator` | Модератор / Координатор | moderation | 0.3 | — |
+| `researcher` | Исследователь / Факт-чекер | analysis | 0.2 | — |
+| `secretary` | Секретарь / Детерминатор | writing | 0.2 | — |
+| `erudite` | Эрудит | analysis | 0.4 | — |
+| `organizer` | Организатор | moderation | 0.3 | — |
+| `expert` | Эксперт | analysis | 0.3 | — |
+| `communicator` | Коммуникатор | moderation | 0.4 | — |
+| `entrepreneur` | Реализатор / Антрепренер | devops | 0.5 | — |
+| `arbitrator` | Систематизатор / Арбитр | moderation | 0.4 | — |
+| `mathematician` | Математик | analysis | 0.2 | — |
+| `physicist` | Физик | analysis | 0.2 | — |
+| `chemist` | Химик | analysis | 0.2 | — |
+| `biologist` | Биолог | analysis | 0.3 | — |
+| `computer-scientist` | Информатик / Компьютерный учёный | code | 0.2 | `openai:gpt-4o` |
+| `economist` | Экономист | analysis | 0.3 | — |
+| `sociologist` | Социолог | analysis | 0.4 | — |
+| `psychologist` | Психолог | design | 0.4 | — |
+| `philosopher` | Философ / Этик | analysis | 0.5 | — |
+| `lawyer` | Юрист / Правовед | analysis | 0.2 | — |
+| `doctor` | Врач / Биомедик | analysis | 0.2 | — |
+| `ecologist` | Эколог | analysis | 0.3 | — |
+| `statistician` | Статистик / Дата-сайентист | analysis | 0.2 | — |
+| `security` | Специалист по безопасности / Криптограф | code | 0.2 | `openai:gpt-4o` |
 
 ## Стратегии дебатов
 
@@ -56,7 +84,7 @@
 | Free Tier | `groq`, `google`, `openrouter` | Zero-cost models with quota limits for experimentation |
 | Experimental | `nvidia`, `openrouter`, `together`, `fireworks`, `deepseek`, `mistral`, `cohere` | New/unstable providers and bleeding-edge models |
 
-Упоминаемые провайдеры: `cohere`, `deepseek`, `fireworks`, `gemini`, `google`, `groq`, `mistral`, `nvidia`, `openrouter`, `together`.
+Упоминаемые провайдеры: `cohere`, `deepseek`, `fireworks`, `gemini`, `google`, `groq`, `mistral`, `nvidia`, `openai`, `openrouter`, `together`.
 
 ## Пробелы (по плану этапа)
 

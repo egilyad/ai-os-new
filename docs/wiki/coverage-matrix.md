@@ -71,7 +71,7 @@
 | Матрица покрытия | — | [Матрица покрытия](./coverage-matrix.md) | `scripts/gen-wiki-coverage.mjs` |
 | Скрипты и генераторы | — | [Скрипты и CLI](./dev-scripts.md) | `scripts/gen-wiki-scripts.mjs` |
 | Локализация | — | [Каталог локализации](./dev-i18n-catalog.md) | `scripts/gen-wiki-i18n.mjs` |
-| Роли и агенты | 0 | [Карта системы](./dev-system-map.md) | `src/data/role-library.ts` |
+| Роли и агенты | 28 | [Карта системы](./dev-system-map.md) | `src/data/role-library.ts` |
 | Стратегии дебатов | 6 | [Карта системы](./dev-system-map.md) | `src/components/DebatePanel/wizard-constants.ts` |
 | Провайдеры (пулы) | 4 | [Карта системы](./dev-system-map.md) | `src/constants/pools.ts` |
 | Внешние библиотеки | — | [Внешние библиотеки](./dev-libraries.md) | `scripts/gen-wiki-libraries.mjs` |

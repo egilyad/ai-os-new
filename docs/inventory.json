@@ -12,8 +12,8 @@
     },
     "byLanguage": {
       "en": 40,
-      "mixed": 128,
-      "ru": 332
+      "mixed": 129,
+      "ru": 331
     }
   },
   "duplicates": {
@@ -2030,8 +2030,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Матрица покрытия",
-      "bytes": 8389,
-      "hash": "6dac19e1b849355ec85ed4c6bcc722a2ee235bf2"
+      "bytes": 8390,
+      "hash": "0827d2d80031e7cb14932552037ad2bdb9b87bf5"
     },
     {
       "path": "docs/wiki/debate-strategies-cheatsheet.md",
@@ -2356,10 +2356,10 @@
     {
       "path": "docs/wiki/dev-system-map.md",
       "category": "wiki",
-      "language": "ru",
+      "language": "mixed",
       "title": "Карта системы",
-      "bytes": 5117,
-      "hash": "4735371667adfe645f602ea83f727a8552fa16dc"
+      "bytes": 7167,
+      "hash": "c8d289899739c362b953656955ba8dab0ddb8b21"
     },
     {
       "path": "docs/wiki/dev-testing.md",
