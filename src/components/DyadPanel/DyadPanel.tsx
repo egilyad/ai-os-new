@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
+import { useAutoClearError } from '../../hooks/useAutoClearError';
 import { useTranslation } from '../../i18n/useTranslation';
 import { dyadService } from '../../kernel/instances/services-extras';
 import { seedDyadDemo } from '../../kernel/services/rivals/dyad-demo-seed';
@@ -28,10 +29,15 @@ export default function DyadPanel() {
     const isMountedRef = useRef(true);
     const active = loops.find((l) => l.id === activeId) ?? null;
 
-    const fail = useCallback((e: unknown) => {
-        console.error('[DyadPanel]', e);
-        setError(t('dyad.error.generic'));
-    }, [t]);
+    const clearError = useAutoClearError(setError);
+    const fail = useCallback(
+        (e: unknown) => {
+            console.error('[DyadPanel]', e);
+            setError(t('dyad.error.generic'));
+            clearError();
+        },
+        [t, clearError],
+    );
 
     const reload = useCallback(async (selectId?: string) => {
         try {
