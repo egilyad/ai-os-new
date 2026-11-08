@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { useAutoClearError } from '../hooks/useAutoClearError';
 import { useTranslation } from '../i18n/useTranslation';
 import { BarChart3, Plus, Trash2, RefreshCw, LayoutDashboard } from 'lucide-react';
 import type { CustomMetric, MetricDashboard } from '../kernel/contracts/custom-metrics';
@@ -36,6 +37,7 @@ const CustomMetricsPanel: React.FC = () => {
     const [field, setField] = useState('');
     const [showDash, setShowDash] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const clearError = useAutoClearError(setError);
 
     const load = useCallback(async () => {
         try {
@@ -54,13 +56,15 @@ const CustomMetricsPanel: React.FC = () => {
                     setError(
                         `Failed to compute value for '${metric.name}': ${e instanceof Error ? e.message : 'Unknown error'}`,
                     );
+                    clearError();
                 }
             }
             setValues(vals);
         } catch (e) {
             setError(`Failed to load metrics: ${e instanceof Error ? e.message : 'Unknown error'}`);
+            clearError();
         }
-    }, [setError, setMetrics, setDashboards, setValues]);
+    }, [setError, setMetrics, setDashboards, setValues, clearError]);
 
     useEffect(() => {
         void load();
@@ -90,6 +94,7 @@ const CustomMetricsPanel: React.FC = () => {
             setError(
                 `Failed to create metric: ${e instanceof Error ? e.message : 'Unknown error'}`,
             );
+            clearError();
         }
     }
 
@@ -103,6 +108,7 @@ const CustomMetricsPanel: React.FC = () => {
             setError(
                 `Failed to delete metric: ${e instanceof Error ? e.message : 'Unknown error'}`,
             );
+            clearError();
         }
     }
 
@@ -118,6 +124,7 @@ const CustomMetricsPanel: React.FC = () => {
             setError(
                 `Failed to create dashboard: ${e instanceof Error ? e.message : 'Unknown error'}`,
             );
+            clearError();
         }
     }
 
