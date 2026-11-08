@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
+import { useAutoClearError } from '../../hooks/useAutoClearError';
 import { Bot, TrendingUp, Shield, Download, Send, Loader2 } from 'lucide-react';
 import { AnimatePresence } from 'framer-motion';
 import { usePolling } from '../Common/usePolling';
@@ -44,6 +45,7 @@ const SREAgentPanel: React.FC = () => {
     const [executingId, setExecutingId] = useState<string | null>(null);
     const [auditing, setAuditing] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const clearError = useAutoClearError(setError);
     const keys = useKeyStore((s) => s.keys);
     const [selectedKeyId, setSelectedKeyId] = useState<string>(() => {
         try {
@@ -92,9 +94,10 @@ const SREAgentPanel: React.FC = () => {
         } catch (e) {
             console.error('[SREAgentPanel] refresh failed', e);
             setError(t('sre.error.refresh'));
+            clearError();
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [clearError]);
 
     useEffect(() => {
         let retryCount = 0;
@@ -139,6 +142,7 @@ const SREAgentPanel: React.FC = () => {
             } catch (e) {
                 console.error('[SREAgentPanel] execute failed', e);
                 setError(t('sre.error.execute'));
+                clearError();
             }
             setExecutingId(null);
         }, 500);
@@ -152,9 +156,10 @@ const SREAgentPanel: React.FC = () => {
         } catch (e) {
             console.error('[SREAgentPanel] dismiss failed', e);
             setError(t('sre.error.dismiss'));
+            clearError();
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [clearError]);
 
     const handleRunAudit = useCallback(async () => {
         setError(null);
@@ -165,6 +170,7 @@ const SREAgentPanel: React.FC = () => {
         } catch (e) {
             console.error('[SREAgentPanel] audit failed', e);
             setError(t('sre.error.refresh'));
+            clearError();
         } finally {
             setAuditing(false);
         }
@@ -183,6 +189,7 @@ const SREAgentPanel: React.FC = () => {
         } catch (e) {
             console.error('[SREAgentPanel] ask failed', e);
             setError(t('sre.error.refresh'));
+            clearError();
         } finally {
             setChatBusy(false);
         }
@@ -213,9 +220,10 @@ const SREAgentPanel: React.FC = () => {
         } catch (e) {
             console.error('[SREAgentPanel] autofix toggle failed', e);
             setError(t('sre.error.config'));
+            clearError();
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [clearError]);
 
     const criticalCount = alerts.filter((a) => a.severity === 'critical').length;
     const warningCount = alerts.filter((a) => a.severity === 'warning').length;
