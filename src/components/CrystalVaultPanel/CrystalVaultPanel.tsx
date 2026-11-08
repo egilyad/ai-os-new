@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useAutoClearError } from '../../hooks/useAutoClearError';
 import { Gem, Plus, Search, RefreshCw } from 'lucide-react';
 import { useTranslation } from '../../i18n/useTranslation';
 import { crystalVault, eventBus } from '../../kernel/instances';
@@ -22,8 +23,10 @@ const CrystalVaultPanel: React.FC = () => {
     const [superseding, setSuperseding] = useState<Crystal | null>(null);
     const [error, setError] = useState<string | null>(null);
 
+    const clearError = useAutoClearError(setError);
     const fail = (e: unknown) => {
         setError(e instanceof Error ? e.message : String(e));
+        clearError();
     };
 
     const refresh = useCallback(async () => {
