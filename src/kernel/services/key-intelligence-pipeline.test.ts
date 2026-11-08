@@ -34,7 +34,9 @@ describe('KeyIntelligencePipeline', () => {
     });
 
     it('detects duplicates against existing fingerprints', async () => {
-        const existing = [{ id: 'k1', provider: 'openrouter', key: 'sk-a', fingerprint: 'fp:sk-a' }];
+        const existing = [
+            { id: 'k1', provider: 'openrouter', key: 'sk-a', label: 'k1', fingerprint: 'fp:sk-a' },
+        ];
         const { svc } = makePipeline({ existingKeys: existing });
         const report = await svc.run({ rawText: 'sk-a\nsk-b', existingKeys: existing });
         expect(report.added).toBe(1);
