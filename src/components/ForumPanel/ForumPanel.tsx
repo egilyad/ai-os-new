@@ -1,4 +1,5 @@
 import React from 'react';
+import { useAutoClearError } from '../../hooks/useAutoClearError';
 import { MessagesSquare } from 'lucide-react';
 import { useTranslation } from '../../i18n/useTranslation';
 import { forumService } from '../../kernel/instances/services-extras';
@@ -23,6 +24,7 @@ const ForumPanel: React.FC = () => {
     const [consensus, setConsensus] = React.useState<string | null>(null);
     const [heatmap, setHeatmap] = React.useState<Array<{ category: string; count: number }>>([]);
     const [error, setError] = React.useState<string | null>(null);
+    const clearError = useAutoClearError(setError);
 
     const currentAuthor: ForumAuthor = {
         kind: 'human',
@@ -41,6 +43,7 @@ const ForumPanel: React.FC = () => {
         } catch (e) {
             console.error('[ForumPanel]', e);
             setError(t('forum.error.generic'));
+            clearError();
         }
     };
 
