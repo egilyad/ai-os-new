@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useAutoClearError } from '../../hooks/useAutoClearError';
 import { X } from 'lucide-react';
 import { ModalShell } from '../ModalShell';
 import { mcpService } from '../../kernel/instances';
@@ -16,6 +17,7 @@ export function MCPEditorModal({ server: editing, onClose, onSaved }: MCPEditorM
     const [name, setName] = useState(editing?.name || '');
     const [url, setUrl] = useState(editing?.url || '');
     const [error, setError] = useState('');
+    const clearError = useAutoClearError(setError as (v: string | null) => void);
     const [saving, setSaving] = useState(false);
 
     if (!editing) return null;
@@ -38,6 +40,7 @@ export function MCPEditorModal({ server: editing, onClose, onSaved }: MCPEditorM
             onClose();
         } catch (err) {
             setError(`Failed to save server: ${err instanceof Error ? err.message : String(err)}`);
+            clearError();
         } finally {
             setSaving(false);
         }
