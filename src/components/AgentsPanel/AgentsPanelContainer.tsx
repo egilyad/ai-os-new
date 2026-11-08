@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import { useAutoClearError } from '../../hooks/useAutoClearError';
 import { orchestrator } from '../../kernel/instances';
 import { agentService, agentVersionService } from '../../kernel/instances';
 import { toolService } from '../../kernel/instances';
@@ -122,17 +123,9 @@ const AgentsPanelContainer: React.FC = () => {
     const modalRef = useRef<HTMLDivElement>(null);
     const searchInputRef = useRef<HTMLInputElement>(null);
     const lastFocusedElementRef = useRef<HTMLElement | null>(null);
-    const errorTimeoutRef = useRef<ReturnType<typeof setTimeout>>(undefined);
     const containerIsMountedRef = useRef(true);
     const armTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-    const setErrorWithTimeout = useCallback((msg: string) => {
-        setError(msg);
-        if (errorTimeoutRef.current) clearTimeout(errorTimeoutRef.current);
-        errorTimeoutRef.current = setTimeout(() => {
-            if (containerIsMountedRef.current) setError(null);
-        }, 5000);
-    }, []);
+    const clearError = useAutoClearError(setError, 5000);
 
     useEffect(() => {
         containerIsMountedRef.current = true;
@@ -213,10 +206,11 @@ const AgentsPanelContainer: React.FC = () => {
                 setError(null);
             } catch (e) {
                 LOGGER.warn('AgentsPanel', 'Failed to update agent configuration', { error: e });
-                setErrorWithTimeout('Failed to update agent configuration');
+                setError('Failed to update agent configuration');
+            clearError();
             }
         },
-        [setErrorWithTimeout],
+        [clearError],
     );
 
     const applyRoleToAgent = useCallback(
@@ -251,7 +245,8 @@ const AgentsPanelContainer: React.FC = () => {
                         'AgentsPanel',
                         'deployNewAgent: spawnAgent returned null — no active topology',
                     );
-                    setErrorWithTimeout('Failed to spawn agent: no active topology');
+                    setError('Failed to spawn agent: no active topology');
+            clearError();
                     return;
                 }
                 setAgents(getAgentsFromTopology());
@@ -260,10 +255,11 @@ const AgentsPanelContainer: React.FC = () => {
                 setError(null);
             } catch (e) {
                 LOGGER.warn('AgentsPanel', 'Failed to deploy agent', { error: e });
-                setErrorWithTimeout('Failed to deploy agent');
+                setError('Failed to deploy agent');
+            clearError();
             }
         },
-        [setErrorWithTimeout],
+        [clearError],
     );
 
     const toggleStatus = useCallback(
@@ -274,10 +270,11 @@ const AgentsPanelContainer: React.FC = () => {
                 setError(null);
             } catch (e) {
                 LOGGER.warn('AgentsPanel', 'Failed to toggle agent status', { error: e });
-                setErrorWithTimeout('Failed to toggle agent status');
+                setError('Failed to toggle agent status');
+            clearError();
             }
         },
-        [setErrorWithTimeout],
+        [clearError],
     );
 
     const handlePauseAll = useCallback(() => {
@@ -301,10 +298,11 @@ const AgentsPanelContainer: React.FC = () => {
                 eventBus.emit(EVENTS.NOTIFICATION, { message: 'Agent deleted', type: 'info' });
             } catch (e) {
                 LOGGER.warn('AgentsPanel', 'Failed to delete agent', { error: e });
-                setErrorWithTimeout('Failed to delete agent');
+                setError('Failed to delete agent');
+            clearError();
             }
         },
-        [setErrorWithTimeout],
+        [clearError],
     );
 
     const handleDuplicateAgent = useCallback(
@@ -330,10 +328,11 @@ const AgentsPanelContainer: React.FC = () => {
                 });
             } catch (e) {
                 LOGGER.warn('AgentsPanel', 'Failed to duplicate agent', { error: e });
-                setErrorWithTimeout('Failed to duplicate agent');
+                setError('Failed to duplicate agent');
+            clearError();
             }
         },
-        [agents, setErrorWithTimeout],
+        [agents, clearError],
     );
 
     const handleResetAgentStats = useCallback(
@@ -344,10 +343,11 @@ const AgentsPanelContainer: React.FC = () => {
                 eventBus.emit(EVENTS.NOTIFICATION, { message: 'Agent stats reset', type: 'info' });
             } catch (e) {
                 LOGGER.warn('AgentsPanel', 'Failed to reset stats', { error: e });
-                setErrorWithTimeout('Failed to reset stats');
+                setError('Failed to reset stats');
+            clearError();
             }
         },
-        [setErrorWithTimeout],
+        [clearError],
     );
 
     const handleResetAllStats = useCallback(() => {
