@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
+import { useAutoClearError } from '../../hooks/useAutoClearError';
 import { useTranslation } from '../../i18n/useTranslation';
 import { sopService, autonomyService } from '../../kernel/instances/services-extras';
 import { seedSopDemo } from '../../kernel/services/rivals/sop-demo-seed';
@@ -27,10 +28,15 @@ export default function SopPanel() {
     const isMountedRef = useRef(true);
     const active = runs.find((l) => l.id === activeId) ?? null;
 
-    const fail = useCallback((e: unknown) => {
-        console.error('[SopPanel]', e);
-        setError(t('sop.error.generic'));
-    }, [t]);
+    const clearError = useAutoClearError(setError);
+    const fail = useCallback(
+        (e: unknown) => {
+            console.error('[SopPanel]', e);
+            setError(t('sop.error.generic'));
+            clearError();
+        },
+        [t, clearError],
+    );
 
     const reload = useCallback(async (selectId?: string) => {
         try {
