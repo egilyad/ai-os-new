@@ -13,7 +13,7 @@ import AlertLayer from './AlertLayer/AlertLayer';
 import ToolApprovalLayer from './ToolApprovalLayer/ToolApprovalLayer';
 import { useCommandPalette } from '../hooks/useCommandPalette';
 import { Breadcrumbs } from './Common/Breadcrumbs';
-import { OnboardingWizard } from './OnboardingWizard/OnboardingWizard';
+import { LazyOnboardingWizard } from './OnboardingWizard/lazy-onboarding-wizard';
 import { KeyboardShortcutsModal } from './Common/KeyboardShortcutsModal';
 import { CONFIG } from '../kernel/instances';
 import ChatDock from './ChatDock/ChatDock';
@@ -373,7 +373,9 @@ export const AppLayout: React.FC = () => {
                                 t={t as (key: TranslationKey) => string}
                             />
                         </Suspense>
-                        <OnboardingWizard t={t as (key: TranslationKey) => string} />
+                        <Suspense fallback={null}>
+                            <LazyOnboardingWizard t={t as (key: TranslationKey) => string} />
+                        </Suspense>
                         <KeyboardShortcutsModal
                             isOpen={shortcutsOpen}
                             onClose={() => setShortcutsOpen(false)}
