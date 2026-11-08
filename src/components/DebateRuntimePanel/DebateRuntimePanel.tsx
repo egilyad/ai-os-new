@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { useAutoClearError } from '../../hooks/useAutoClearError';
 import { Sliders, AlertTriangle, Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -67,6 +68,7 @@ const DebateRuntimePanel: React.FC = () => {
     const [topic, setTopic] = useState('');
     const [topologyType, setTopologyType] = useState<TopologyType>('roundtable');
     const [error, setError] = useState<string | null>(null);
+    const clearError = useAutoClearError(setError);
     const [actionLoading] = useState<string | null>(null);
     const [creating, setCreating] = useState(false);
     const [cancelling, setCancelling] = useState(false);
@@ -241,10 +243,12 @@ const DebateRuntimePanel: React.FC = () => {
     const handleCreate = async () => {
         if (!topic.trim()) {
             setError(t('debate_runtime.error_topic_required'));
+            clearError();
             return;
         }
         if (selectedAgentIds.length < 2) {
             setError(t('debate_runtime.error_agents_required'));
+            clearError();
             return;
         }
         setCreating(true);
@@ -318,6 +322,7 @@ const DebateRuntimePanel: React.FC = () => {
             });
         } catch (e) {
             setError(String(e));
+            clearError();
             setCreating(false);
         }
     };
