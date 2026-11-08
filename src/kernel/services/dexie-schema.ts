@@ -150,15 +150,8 @@ export interface QueryResult<T> {
     affectedRows: number;
 }
 
-// Schema for EventRecorder persistence (Dexie store)
-export interface RecordedEventRow {
-    id?: number; // auto-increment
-    sequence: number;
-    event: string;
-    dataJson: string; // JSON.stringify(data)
-    checksum: string;
-    timestamp: number;
-}
+export type { RecordedEventRow };
+import type { RecordedEventRow } from './dexie/recorded-event-row';
 
 export class SuperAgentsDB extends Dexie {
     notes!: Table<KeyNote>;
