@@ -3,6 +3,7 @@
  * What-if simulation surface — research-grade, not production surface (P1.21).
  */
 import React, { useState, useCallback } from 'react';
+import { useAutoClearError } from '../../hooks/useAutoClearError';
 import { usePolling } from '../Common/usePolling';
 import {
     GitBranch,
@@ -106,6 +107,7 @@ const WhatIfPanel: React.FC = () => {
         setSessions(sessions_.map((s) => ({ id: s.id, topic: s.topic ?? '' })));
     }, 10000);
 
+    const clearError = useAutoClearError(setError);
     const runSim = useCallback(async (type: SimType, label: string, fn: () => Promise<unknown>) => {
         setRunning(type);
         setError(null);
@@ -125,10 +127,11 @@ const WhatIfPanel: React.FC = () => {
             );
         } catch (e) {
             setError(e instanceof Error ? e.message : 'Simulation failed');
+            clearError();
         } finally {
             setRunning(null);
         }
-    }, []);
+    }, [clearError]);
 
     return (
         <div
