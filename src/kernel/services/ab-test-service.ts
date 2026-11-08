@@ -30,6 +30,7 @@ export async function runABTest(request: ABTestRequest): Promise<ABTestResult> {
     const runSingle = async (
         provider: string,
         model: string,
+        prompt: string,
     ): Promise<{
         content: string;
         latency: number;
@@ -45,7 +46,7 @@ export async function runABTest(request: ABTestRequest): Promise<ABTestResult> {
             if (!key) throw new Error(`No key for ${provider}`);
 
             const response = await adapter.sendMessage(
-                [{ role: 'user', content: request.prompt }],
+                [{ role: 'user', content: prompt }],
                 model,
                 key.key,
                 undefined,
@@ -72,8 +73,8 @@ export async function runABTest(request: ABTestRequest): Promise<ABTestResult> {
     };
 
     const [respA, respB] = await Promise.all([
-        runSingle(request.providerA, request.modelA),
-        runSingle(request.providerB, request.modelB),
+        runSingle(request.providerA, request.modelA, request.prompt),
+        runSingle(request.providerB, request.modelB, request.promptB ?? request.prompt),
     ]);
 
     const comparison: ABTestComparison = {

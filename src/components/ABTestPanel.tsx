@@ -44,6 +44,8 @@ const ABTestPanel: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
     const clearError = useAutoClearError(setError);
     const [viewTab, setViewTab] = useState<'test' | 'history'>('test');
+    const [compareVersions, setCompareVersions] = useState(false);
+    const [promptB, setPromptB] = useState('');
 
     const allKeys = useMemo(() => keyService.getKeys(), []);
     const providers = useMemo(() => [...new Set(allKeys.map((k) => k.provider))], [allKeys]);
@@ -79,16 +81,20 @@ const ABTestPanel: React.FC = () => {
     }, [loadHistory]);
 
     const handleRun = async () => {
-        if (!prompt.trim() || !providerA || !modelA || !providerB || !modelB || running) return;
+        if (!prompt.trim() || running) return;
+        if (!providerA || !modelA) return;
+        if (!compareVersions && (!providerB || !modelB)) return;
+        if (compareVersions && !promptB.trim()) return;
         setRunning(true);
         setResult(null);
         try {
             const res = await runABTest({
                 prompt: prompt.trim(),
+                promptB: compareVersions ? promptB.trim() : undefined,
                 providerA,
                 modelA,
-                providerB,
-                modelB,
+                providerB: compareVersions ? providerA : providerB,
+                modelB: compareVersions ? modelA : modelB,
             });
             setResult(res);
             loadHistory();
@@ -242,6 +248,56 @@ const ABTestPanel: React.FC = () => {
                                 resize: 'vertical',
                             }}
                         />
+                        <label
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 8,
+                                marginTop: 10,
+                                fontSize: '0.8rem',
+                                color: 'var(--slate-400)',
+                                cursor: 'pointer',
+                            }}
+                        >
+                            <input
+                                type="checkbox"
+                                checked={compareVersions}
+                                onChange={(e) => setCompareVersions(e.target.checked)}
+                            />
+                            {t('ab_test.compare_versions')}
+                        </label>
+                        {compareVersions && (
+                            <div style={{ marginTop: 10 }}>
+                                <h3
+                                    style={{
+                                        margin: '0 0 8px',
+                                        fontSize: '0.85rem',
+                                        color: 'var(--warning)',
+                                        fontWeight: 600,
+                                    }}
+                                >
+                                    {t('ab_test.prompt_b')}
+                                </h3>
+                                <textarea
+                                    value={promptB}
+                                    onChange={(e) => setPromptB(e.target.value)}
+                                    placeholder={t('ab_test.prompt_b_placeholder')}
+                                    rows={3}
+                                    style={{
+                                        width: '100%',
+                                        padding: 10,
+                                        borderRadius: 8,
+                                        background: 'var(--bg-elevated)',
+                                        border: 'var(--1px solid var(--border-default))',
+                                        color: 'var(--slate-200)',
+                                        fontSize: '0.85rem',
+                                        outline: 'none',
+                                        fontFamily: 'monospace',
+                                        resize: 'vertical',
+                                    }}
+                                />
+                            </div>
+                        )}
                     </div>
 
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
@@ -303,7 +359,7 @@ const ABTestPanel: React.FC = () => {
                                 </select>
                             </div>
                         </div>
-                        <div style={card}>
+                         <div style={card}>
                             <h3
                                 style={{
                                     margin: '0 0 8px',
@@ -314,64 +370,76 @@ const ABTestPanel: React.FC = () => {
                             >
                                 {t('ab_test.provider_b')}
                             </h3>
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                                <select
-                                    value={providerB}
-                                    onChange={(e) => {
-                                        setProviderB(e.target.value);
-                                        setModelB('');
-                                    }}
+                            {compareVersions ? (
+                                <div
                                     style={{
-                                        padding: '8px 10px',
-                                        borderRadius: 8,
-                                        background: 'var(--bg-elevated)',
-                                        border: 'var(--1px solid var(--border-default))',
-                                        color: 'var(--slate-200)',
-                                        fontSize: '0.85rem',
-                                        outline: 'none',
+                                        fontSize: '0.8rem',
+                                        color: 'var(--slate-500)',
+                                        padding: '6px 0',
+                                        lineHeight: 1.5,
                                     }}
                                 >
-                                    <option value="">{t('ab_test.select_provider')}</option>
-                                    {providers.map((p) => (
-                                        <option key={p} value={p}>
-                                            {p}
-                                        </option>
-                                    ))}
-                                </select>
-                                <select
-                                    value={modelB}
-                                    onChange={(e) => setModelB(e.target.value)}
-                                    disabled={!providerB}
-                                    style={{
-                                        padding: '8px 10px',
-                                        borderRadius: 8,
-                                        background: 'var(--bg-elevated)',
-                                        border: 'var(--1px solid var(--border-default))',
-                                        color: 'var(--slate-200)',
-                                        fontSize: '0.85rem',
-                                        outline: 'none',
-                                    }}
-                                >
-                                    <option value="">{t('ab_test.select_model')}</option>
-                                    {modelsForB.map((m) => (
-                                        <option key={m} value={m}>
-                                            {m}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
+                                    {t('ab_test.compare_versions')}
+                                </div>
+                            ) : (
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                                    <select
+                                        value={providerB}
+                                        onChange={(e) => {
+                                            setProviderB(e.target.value);
+                                            setModelB('');
+                                        }}
+                                        style={{
+                                            padding: '8px 10px',
+                                            borderRadius: 8,
+                                            background: 'var(--bg-elevated)',
+                                            border: 'var(--1px solid var(--border-default))',
+                                            color: 'var(--slate-200)',
+                                            fontSize: '0.85rem',
+                                            outline: 'none',
+                                        }}
+                                    >
+                                        <option value="">{t('ab_test.select_provider')}</option>
+                                        {providers.map((p) => (
+                                            <option key={p} value={p}>
+                                                {p}
+                                            </option>
+                                        ))}
+                                    </select>
+                                    <select
+                                        value={modelB}
+                                        onChange={(e) => setModelB(e.target.value)}
+                                        disabled={!providerB}
+                                        style={{
+                                            padding: '8px 10px',
+                                            borderRadius: 8,
+                                            background: 'var(--bg-elevated)',
+                                            border: 'var(--1px solid var(--border-default))',
+                                            color: 'var(--slate-200)',
+                                            fontSize: '0.85rem',
+                                            outline: 'none',
+                                        }}
+                                    >
+                                        <option value="">{t('ab_test.select_model')}</option>
+                                        {modelsForB.map((m) => (
+                                            <option key={m} value={m}>
+                                                {m}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                            )}
                         </div>
                     </div>
 
-                    <button
+                     <button
                         onClick={handleRun}
                         disabled={
                             running ||
                             !prompt.trim() ||
                             !providerA ||
                             !modelA ||
-                            !providerB ||
-                            !modelB
+                            (compareVersions ? !promptB.trim() : !providerB || !modelB)
                         }
                         style={{
                             display: 'flex',
@@ -384,8 +452,7 @@ const ABTestPanel: React.FC = () => {
                                 !prompt.trim() ||
                                 !providerA ||
                                 !modelA ||
-                                !providerB ||
-                                !modelB
+                                (compareVersions ? !promptB.trim() : !providerB || !modelB)
                                     ? 'rgba(255,255,255,0.05)'
                                     : 'linear-gradient(135deg, #8b5cf6, #7c3aed)',
                             border: 'none',

@@ -1,5 +1,7 @@
 export interface ABTestRequest {
     prompt: string;
+    /** Optional second prompt version (A/B by prompt, same provider/model). */
+    promptB?: string;
     providerA: string;
     modelA: string;
     providerB: string;
