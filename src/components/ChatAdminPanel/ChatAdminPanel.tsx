@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useDeferredValue, useEffect } from 'react';
+import { useAutoClearError } from '../../hooks/useAutoClearError';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AlertCircle } from 'lucide-react';
 import { useChatStore } from '../../stores/useChatStore';
@@ -44,6 +45,7 @@ const ChatAdminPanel: React.FC = () => {
         return () => window.removeEventListener('keydown', handleKeyDown);
     }, [previewSession]);
     const [error, setError] = useState<string | null>(null);
+    const clearError = useAutoClearError(setError);
     const [confirmAction, setConfirmAction] = useState<{
         title: string;
         message: string;
@@ -68,11 +70,13 @@ const ChatAdminPanel: React.FC = () => {
         const MAX_IMPORT_SIZE = 50 * 1024 * 1024;
         if (file.size > MAX_IMPORT_SIZE) {
             setError(`File too large (max ${MAX_IMPORT_SIZE / 1024 / 1024}MB)`);
+            clearError();
             if (fileInputRef.current) fileInputRef.current.value = '';
             return;
         }
         if (file.size === 0) {
             setError('File is empty');
+            clearError();
             if (fileInputRef.current) fileInputRef.current.value = '';
             return;
         }
