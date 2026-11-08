@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { useAutoClearError } from '../../hooks/useAutoClearError';
 import { Plus, MessageCircle, Trash2, Play, Bot, Activity, Clock, Loader2 } from 'lucide-react';
 import { runtime } from '../../kernel/runtime';
 import { debateWorkspace, rootLogger } from '../../kernel/instances';
@@ -27,6 +28,7 @@ const DebateWorkspacePanel: React.FC = () => {
     const [rooms, setRooms] = useState<WorkspaceRoomEntry[]>([]);
     const [newTopic, setNewTopic] = useState('');
     const [error, setError] = useState<string | null>(null);
+    const clearError = useAutoClearError(setError);
     const [ready, setReady] = useState(false);
     const [isCreating, setIsCreating] = useState(false);
     const initRef = useRef(false);
@@ -99,6 +101,7 @@ const DebateWorkspacePanel: React.FC = () => {
         } catch (e) {
             const msg = e instanceof Error ? e.message : String(e);
             setError('Create failed: ' + msg);
+            clearError();
             LOGGER.error('DebateWorkspacePanel', 'Create room failed', { error: e });
         } finally {
             setIsCreating(false);
