@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useAutoClearError } from '../../hooks/useAutoClearError';
 import { useTranslation } from '../../i18n/useTranslation';
 import { plannerService } from '../../kernel/instances/services-extras';
 import type { PlannerStrategy } from '../../kernel/contracts/rivals';
@@ -27,9 +28,11 @@ export default function PlannerPanel() {
     const [error, setError] = useState<string | null>(null);
     const [notice, setNotice] = useState<string | null>(null);
 
+    const clearError = useAutoClearError(setError);
     const fail = (e: unknown) => {
         console.error('[PlannerPanel]', e);
         setError(t('planner.error.generic'));
+        clearError();
     };
 
     const reloadFilters = async () => {
