@@ -12,6 +12,7 @@ function e(event: string) {
 describe('EventBus listener lifecycle (P2-13 audit)', () => {
     it('stats track subscriptions per event and drop them on unsubscribe', () => {
         const bus = makeBus();
+        const baseline = bus.getSubscriptionStats().totalCallbacks;
         const h1 = vi.fn();
         const h2 = vi.fn();
 
@@ -26,7 +27,7 @@ describe('EventBus listener lifecycle (P2-13 audit)', () => {
         unsub1();
         const after = bus.getSubscriptionStats();
         expect(after.perEvent['audit:stats']).toBe(1);
-        expect(after.totalCallbacks).toBe(2);
+        expect(after.totalCallbacks).toBe(baseline + 2);
 
         bus.emit(e('audit:stats'), {});
         expect(h1).not.toHaveBeenCalled();
@@ -50,6 +51,7 @@ describe('EventBus listener lifecycle (P2-13 audit)', () => {
 
     it('service-style lifecycle leaves zero residual subscriptions', () => {
         const bus = makeBus();
+        const baseline = bus.getSubscriptionStats().totalCallbacks;
         const unsubs: Array<() => void> = [];
         const handlers = Array.from({ length: 10 }, () => vi.fn());
 
@@ -60,7 +62,7 @@ describe('EventBus listener lifecycle (P2-13 audit)', () => {
 
         for (const u of unsubs) u();
         const stats = bus.getSubscriptionStats();
-        expect(stats.totalCallbacks).toBe(0);
+        expect(stats.totalCallbacks).toBe(baseline);
         expect(stats.perEvent['audit:lifecycle'] ?? 0).toBe(0);
 
         bus.emit(e('audit:lifecycle'), {});
