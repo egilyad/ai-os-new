@@ -20,7 +20,7 @@
 - Панель **Wiki** в приложении и сайт `/wiki/` — тот же корпус статей
 - [`docs/manifest.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/manifest.json) — машиночитаемый индекс сущностей (статьи, панели)
 - [`docs/entity-model.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/entity-model.json) — стандарт документации
-- [`docs/inventory.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/inventory.json) — инвентарь всех `docs/**` (499 документов)
+- [`docs/inventory.json`](https://github.com/egilyad/ai-os-new/blob/main/docs/inventory.json) — инвентарь всех `docs/**` (500 документов)
 
 ## Вики по разделам
 
@@ -171,6 +171,7 @@
 - [SuperAgents OS — Project Structure](https://github.com/egilyad/ai-os-new/blob/main/docs/STRUCTURE.md)
 - [SuperAgents OS — System Manifest (Quick Reference)](https://github.com/egilyad/ai-os-new/blob/main/docs/SYSTEM_MANIFEST.md)
 - [🪪 SuperAgents OS — Digital System Passport](https://github.com/egilyad/ai-os-new/blob/main/docs/SYSTEM_PASSPORT.md)
+- [SuperAgents OS — Единый план работ (сводный)](https://github.com/egilyad/ai-os-new/blob/main/docs/UNIFIED_PLAN.md)
 
 ## Справочники и планы
 

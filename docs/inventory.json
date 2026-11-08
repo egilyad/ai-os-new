@@ -12,8 +12,8 @@
     },
     "byLanguage": {
       "en": 40,
-      "mixed": 129,
-      "ru": 331
+      "mixed": 128,
+      "ru": 332
     }
   },
   "duplicates": {
@@ -2030,8 +2030,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Матрица покрытия",
-      "bytes": 8391,
-      "hash": "a0acfafde6b593e202105f72bdc5f7586e8aa1af"
+      "bytes": 8389,
+      "hash": "6dac19e1b849355ec85ed4c6bcc722a2ee235bf2"
     },
     {
       "path": "docs/wiki/debate-strategies-cheatsheet.md",
@@ -2087,7 +2087,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4077,
-      "hash": "bc8a5d218f0a820e3b7034897703368181d2bd71"
+      "hash": "dceae2be1e5fa5502e2e8558faffcea561a85ed9"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -2175,7 +2175,7 @@
       "language": "ru",
       "title": "Граф знаний",
       "bytes": 4877,
-      "hash": "bfc889dd9f0ae0a9469aaeff2e31b7cdea4b2c46"
+      "hash": "75545606b111328d61ef562331d23c8b8a36ea28"
     },
     {
       "path": "docs/wiki/dev-history.md",
@@ -2356,10 +2356,10 @@
     {
       "path": "docs/wiki/dev-system-map.md",
       "category": "wiki",
-      "language": "mixed",
+      "language": "ru",
       "title": "Карта системы",
-      "bytes": 7167,
-      "hash": "c8d289899739c362b953656955ba8dab0ddb8b21"
+      "bytes": 5117,
+      "hash": "4735371667adfe645f602ea83f727a8552fa16dc"
     },
     {
       "path": "docs/wiki/dev-testing.md",
@@ -2390,8 +2390,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Карта документации",
-      "bytes": 55749,
-      "hash": "95ad852e74860f90b6212c1e0d515acd74a11bd8"
+      "bytes": 55891,
+      "hash": "5aae440c9b6d457e4528eb7fe2c6185898654251"
     },
     {
       "path": "docs/wiki/docs-standard.md",
