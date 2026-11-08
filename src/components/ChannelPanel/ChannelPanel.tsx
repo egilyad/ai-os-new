@@ -5,6 +5,7 @@
  * Right: message stream with threading, reactions, edit/delete, typing indicators.
  */
 import React, { useEffect, useState, useRef, useCallback } from 'react';
+import { useAutoClearError } from '../../hooks/useAutoClearError';
 import { shallow } from 'zustand/shallow';
 import { useTranslation } from '../../i18n/useTranslation';
 import { channelService } from '../../kernel/instances/services-extras';
@@ -75,6 +76,7 @@ const ChannelPanel: React.FC = () => {
     const [threadMessages, setThreadMessages] = useState<ChannelMessage[]>([]);
     const [error, setError] = useState<string | null>(null);
     const messagesEndRef = useRef<HTMLDivElement>(null);
+    const clearError = useAutoClearError(setError);
 
     // Every mutation funnels through here: channel failures used to vanish
     // into unhandled rejections while the UI pretended everything sent.
@@ -85,6 +87,7 @@ const ChannelPanel: React.FC = () => {
         } catch (e) {
             console.error('[ChannelPanel]', e);
             setError(t('channels.error.generic'));
+            clearError();
         }
     };
 
@@ -123,8 +126,9 @@ const ChannelPanel: React.FC = () => {
         } catch (e) {
             console.error('[ChannelPanel] load thread failed', e);
             setError(t('channels.error.generic'));
+            clearError();
         }
-    }, [t]);
+    }, [t, clearError]);
 
     const handleSend = useCallback(async () => {
         if (!input.trim() || !selectedId) return;
