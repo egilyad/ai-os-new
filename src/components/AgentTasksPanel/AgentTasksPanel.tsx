@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useAutoClearError } from '../../hooks/useAutoClearError';
 import {
     MonitorPlay,
     Loader2,
@@ -78,6 +79,7 @@ const AgentTasksPanel: React.FC = () => {
     const [maxTurns, setMaxTurns] = useState('10');
     const [running, setRunning] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const clearError = useAutoClearError(setError);
     const abortRef = useRef<AbortController | null>(null);
     const [history, setHistory] = useState<RunRecord[]>(loadHistory);
     const [availableAgents, setAvailableAgents] = useState<Array<{ id: string; name: string }>>([]);
@@ -265,6 +267,7 @@ const AgentTasksPanel: React.FC = () => {
             setError(null);
         } catch (e) {
             setError(e instanceof Error ? e.message : String(e));
+            clearError();
         } finally {
             setSavingId(null);
         }
@@ -274,6 +277,7 @@ const AgentTasksPanel: React.FC = () => {
         abortRef.current?.abort();
         setRunning(false);
         setError('Отменено пользователем');
+        clearError();
     }
 
     type ToolKind = 'click_selector' | 'extract_text_selector' | 'extract_table' | 'extract_schema';
@@ -282,10 +286,12 @@ const AgentTasksPanel: React.FC = () => {
         if (running || toolBusy) return;
         if (!sidecar?.ok) {
             setError('Sidecar не запущен. Запусти: npm run browser:sidecar, затем «Проверить».');
+            clearError();
             return;
         }
         if (kind !== 'extract_table' && !selector.trim()) {
             setError('Введи CSS-селектор (например: #price, h1, table tr)');
+            clearError();
             return;
         }
         setError(null);
@@ -336,6 +342,7 @@ const AgentTasksPanel: React.FC = () => {
         } catch (e) {
             const msg = e instanceof Error ? e.message : String(e);
             setError(msg);
+            clearError();
             logRun('browser', label, 'error', msg.slice(0, 2000));
         } finally {
             setToolBusy(false);
@@ -372,6 +379,7 @@ const AgentTasksPanel: React.FC = () => {
             const msg = e instanceof Error ? e.message : String(e);
             pushHistory({ id, status: 'error', output: msg.slice(0, 2000) });
             setError(msg);
+            clearError();
         } finally {
             setRunning(false);
             abortRef.current = null;
