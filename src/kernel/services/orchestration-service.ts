@@ -66,6 +66,45 @@ export interface OrchestrationServiceDeps {
             retryCount: number;
         }): Promise<void>;
     };
+    crystalVault?: {
+        propose(input: {
+            content: Record<string, unknown>;
+            originKind: string;
+            originId: string;
+            contributingAgents?: string[];
+            modelIds?: string[];
+            totalTokensSpent?: number;
+            applicableDomain?: string;
+        }): Promise<string>;
+        query(q: { status?: string; domain?: string; limit?: number }): Promise<Array<Record<string, unknown>>>;
+        search(query: string, limit?: number): Promise<Array<{ crystal: Record<string, unknown>; score: number }>>;
+        list(opts?: { status?: string; domain?: string }): Promise<Array<Record<string, unknown>>>;
+    };
+    synthesisEngine?: {
+        synthesize(input: {
+            question: string;
+            roleIds: string[];
+            lensIds: string[];
+            depth?: 'quick' | 'standard' | 'deep';
+            preserveDissent?: boolean;
+            costBudget?: number;
+        }): Promise<string>;
+        getSynthesis(
+            id: string,
+        ): Promise<{ synthesizedStatement?: string; statement?: string } | null>;
+    };
+    lensEngine?: {
+        validateStack(lensIds: string[]): { valid: boolean; errors?: string[] };
+        applyStack(input: {
+            context: { roleSystemPrompt?: string; userPrompt: string };
+            lensIds: string[];
+        }): { context: { userPrompt: string } };
+    };
+    timeMachineService?: {
+        createSnapshot(label?: string, scope?: string): Promise<{ id: string }>;
+        restoreSnapshot(id: string): Promise<void>;
+        getSnapshots(): Array<Record<string, unknown>>;
+    };
 }
 
 export class OrchestrationService {
@@ -315,9 +354,139 @@ export class OrchestrationService {
                 return mode === 'simulation'
                     ? `[SIM] Tool ${node.config.toolId || 'unknown'} executed`
                     : await this.executeToolNode(node, data);
+            case 'crystal':
+                return mode === 'simulation'
+                    ? `[SIM] Crystal ${node.config.action || 'propose'}`
+                    : await this.executeCrystalNode(node, data);
+            case 'synthesis':
+                return mode === 'simulation'
+                    ? `[SIM] Synthesis ${node.config.question || ''}`
+                    : await this.executeSynthesisNode(node, data);
+            case 'lens':
+                return mode === 'simulation'
+                    ? `[SIM] Lens ${(node.config.lensIds || []).join(',')}`
+                    : this.executeLensNode(node, data);
+            case 'time-machine':
+                return mode === 'simulation'
+                    ? `[SIM] TimeMachine ${node.config.action || 'list'}`
+                    : await this.executeTimeMachineNode(node);
             default:
                 LOGGER.warn('Orchestrator', `Unknown node type: ${node.type} (${node.label})`);
                 return data.output || `[Unhandled node: ${node.label}]`;
+        }
+    }
+
+    private async executeCrystalNode(node: ISNode, data: NodeContext): Promise<string> {
+        const vault = this.deps.crystalVault;
+        if (!vault) return '[Crystal service unavailable]';
+        const cfg = (node.config ?? {}) as Record<string, unknown>;
+        const action = (cfg.action as string) || 'propose';
+        try {
+            if (action === 'query') {
+                const rows = await vault.query({
+                    status: typeof cfg.status === 'string' ? cfg.status : undefined,
+                    domain: typeof cfg.domain === 'string' ? cfg.domain : undefined,
+                    limit: typeof cfg.limit === 'number' ? cfg.limit : undefined,
+                });
+                return `Query: ${rows.length} crystals`;
+            }
+            if (action === 'search') {
+                const q = typeof cfg.query === 'string' ? cfg.query : '';
+                const hits = await vault.search(q, typeof cfg.limit === 'number' ? cfg.limit : 5);
+                return hits.length
+                    ? hits
+                          .map((h) => (h.crystal as { statement?: string }).statement || h.crystal.id)
+                          .join(' | ')
+                    : 'No crystal matches';
+            }
+            if (action === 'list') {
+                const rows = await vault.list({ status: typeof cfg.status === 'string' ? cfg.status : undefined });
+                return `Crystals: ${rows.length}`;
+            }
+            const statement = typeof cfg.statement === 'string' ? cfg.statement : data?.output;
+            if (!statement) return '[Crystal: no statement]';
+            const id = await vault.propose({
+                content: {
+                    statement,
+                    elaboration: typeof cfg.elaboration === 'string' ? cfg.elaboration : undefined,
+                },
+                originKind: 'synthesis',
+                originId: `builder-${Date.now()}`,
+                applicableDomain: typeof cfg.domain === 'string' ? cfg.domain : 'general',
+            });
+            return `Crystal proposed: ${id}`;
+        } catch (e) {
+            LOGGER.warn('Orchestrator', 'Crystal node failed', { error: e });
+            return `[Crystal node failed]`;
+        }
+    }
+
+    private async executeSynthesisNode(node: ISNode, data: NodeContext): Promise<string> {
+        const engine = this.deps.synthesisEngine;
+        if (!engine) return '[Synthesis service unavailable]';
+        const cfg = (node.config ?? {}) as Record<string, unknown>;
+        const question = typeof cfg.question === 'string' ? cfg.question : data?.output;
+        if (!question) return '[Synthesis: no question]';
+        try {
+            const id = await engine.synthesize({
+                question,
+                roleIds: Array.isArray(cfg.roleIds) ? (cfg.roleIds as string[]) : [],
+                lensIds: Array.isArray(cfg.lensIds) ? (cfg.lensIds as string[]) : [],
+                depth: cfg.depth === 'deep' || cfg.depth === 'quick' ? cfg.depth : 'standard',
+                preserveDissent: cfg.preserveDissent === true,
+                costBudget: typeof cfg.costBudget === 'number' ? cfg.costBudget : undefined,
+            });
+            const s = await engine.getSynthesis(id);
+            const statement = s?.synthesizedStatement || s?.statement || '';
+            return statement ? `${statement} (${id})` : `Synthesis created: ${id}`;
+        } catch (e) {
+            LOGGER.warn('Orchestrator', 'Synthesis node failed', { error: e });
+            return `[Synthesis node failed]`;
+        }
+    }
+
+    private executeLensNode(node: ISNode, data: NodeContext): string {
+        const lens = this.deps.lensEngine;
+        if (!lens) return '[Lens service unavailable]';
+        const cfg = (node.config ?? {}) as Record<string, unknown>;
+        const lensIds = Array.isArray(cfg.lensIds) ? (cfg.lensIds as string[]) : [];
+        if (lensIds.length === 0) return '[Lens: no lensIds]';
+        const check = lens.validateStack(lensIds);
+        if (!check.valid) return `[Lens stack invalid]`;
+        const result = lens.applyStack({
+            context: {
+                roleSystemPrompt: typeof cfg.roleSystemPrompt === 'string' ? cfg.roleSystemPrompt : undefined,
+                userPrompt: data.output || '',
+            },
+            lensIds,
+        });
+        return result.context.userPrompt || data.output || '';
+    }
+
+    private async executeTimeMachineNode(node: ISNode): Promise<string> {
+        const tm = this.deps.timeMachineService;
+        if (!tm) return '[TimeMachine service unavailable]';
+        const cfg = (node.config ?? {}) as Record<string, unknown>;
+        const action = (cfg.action as string) || 'list';
+        try {
+            if (action === 'createSnapshot') {
+                const snap = await tm.createSnapshot(
+                    typeof cfg.label === 'string' ? cfg.label : 'builder',
+                    typeof cfg.scope === 'string' ? cfg.scope : 'full',
+                );
+                return `Snapshot created: ${snap.id}`;
+            }
+            if (action === 'restore') {
+                const id = typeof cfg.snapshotId === 'string' ? cfg.snapshotId : '';
+                if (!id) return '[TimeMachine: no snapshotId]';
+                await tm.restoreSnapshot(id);
+                return `Snapshot restored: ${id}`;
+            }
+            const snaps = tm.getSnapshots();
+            return `Snapshots: ${snaps.length}`;
+        } catch (e) {
+            LOGGER.warn('Orchestrator', 'TimeMachine node failed', { error: e });
+            return `[TimeMachine node failed]`;
         }
     }
 

@@ -98,7 +98,7 @@
 
 | # | Задача | Статус | Источник |
 |---|---|---|---|
-| P2-1 | Builder: интеграция killer-сервисов (crystal/synthesis/lens/time-machine) | ❌ | Gap Map §3; P1-#8 |
+| P2-1 | Builder: интеграция killer-сервисов (crystal/synthesis/lens/time-machine) | ✅ (узлы crystal/synthesis/lens/time-machine открыты в каталоге (exposed) + палитра; рантайм-диспетчер в orchestration-service (executeCrystalNode/executeSynthesisNode/executeLensNode/executeTimeMachineNode) через DI getOptional; NodeType расширен; i18n en/ru) | Gap Map §3; P1-#8 |
 | P2-2 | Round-trip export/import для 9 панелей | 🟡 (ExportImportPanel: импорт включён для prompts (promptLibraryService.create), workflows (workflowService.create), новая секция roles (roleService.getAllRoles/addRole), новая секция crystal (crystalVault.list/propose imported). Уже были round-trip: keys/memory/agents/settings. Остаток: debates/topologies импорт (нужно восстановление сессий/топологий) + панельные кнопки local-first) | Gap Map §4; Opportunity |
 | P2-3 | Vertical-консолидация: 5 budget → BudgetHub; 4 health → HealthPanel; 6 research | ❌ | Duplication Map; P3-#32/33/34 |
 | P2-4 | Рефакторинг 62 TechniquePanels → generic-панель | ❌ | Tech Map §5.6; Duplication |

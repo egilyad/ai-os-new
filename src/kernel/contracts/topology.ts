@@ -1,4 +1,13 @@
-export type NodeType = 'agent' | 'tool' | 'router' | 'aggregator' | 'guardrail';
+export type NodeType =
+    | 'agent'
+    | 'tool'
+    | 'router'
+    | 'aggregator'
+    | 'guardrail'
+    | 'crystal'
+    | 'synthesis'
+    | 'lens'
+    | 'time-machine';
 
 export type AgentLifecycleState =
     'initializing' | 'ready' | 'busy' | 'idle' | 'paused' | 'degraded' | 'errored' | 'terminated';

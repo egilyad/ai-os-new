@@ -170,6 +170,18 @@ export const registerPhase4: Phase = (helpers, ctx) => {
                     c.get<import('../contracts/dead-letter-queue').IDeadLetterQueue>(
                         'deadLetterQueue',
                     ),
+                crystalVault: c.getOptional<import('../contracts/knowledge-crystal').ICrystalVaultService>(
+                    'crystalVault',
+                ),
+                synthesisEngine: c.getOptional<import('../contracts/synthesis-engine').ISynthesisEngineService>(
+                    'synthesisEngine',
+                ),
+                lensEngine: c.getOptional<import('../contracts/lens-engine').ILensEngineService>(
+                    'lensEngine',
+                ),
+                timeMachineService: c.getOptional<import('../contracts/time-machine').ITimeMachineService>(
+                    'timeMachineService',
+                ),
             }),
     );
 
