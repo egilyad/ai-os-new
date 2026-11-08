@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import { useAutoClearError } from '../../hooks/useAutoClearError';
 import {
     BrainCircuit,
     RefreshCw,
@@ -29,6 +30,7 @@ const SynthesisPanel: React.FC = () => {
     const [expanded, setExpanded] = useState<Set<string>>(new Set());
     const [feedback, setFeedback] = useState<Record<string, string>>({});
     const [error, setError] = useState<string | null>(null);
+    const clearError = useAutoClearError(setError);
 
     const runGuarded = async (fn: () => Promise<unknown>) => {
         setError(null);
@@ -37,6 +39,7 @@ const SynthesisPanel: React.FC = () => {
         } catch (e) {
             console.error('[SynthesisPanel]', e);
             setError(e instanceof Error ? e.message : 'Synthesis request failed');
+            clearError();
         }
     };
 
