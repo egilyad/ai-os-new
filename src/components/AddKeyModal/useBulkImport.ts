@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react';
+import { useAutoClearError } from '../../hooks/useAutoClearError';
 import { eventBus, EVENTS } from '../../kernel/instances';
 import { useKeyStore } from '../../stores/useKeyStore';
 import { useKeyIntelligence } from '../../stores/useKeyIntelligence';
@@ -27,6 +28,7 @@ export function useBulkImport(): BulkImportState {
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+    const clearError = useAutoClearError(setError as (v: string | null) => void);
     const [bulkInput, setBulkInput] = useState('');
     const [bulkReport, setBulkReport] = useState<BulkImportReport | null>(null);
     const [bulkProgress, setBulkProgress] = useState<{ current: number; total: number } | null>(
@@ -145,11 +147,12 @@ export function useBulkImport(): BulkImportState {
                 });
             } catch (err: unknown) {
                 setError(err instanceof Error ? err.message : 'Bulk import failed.');
+                clearError();
             } finally {
                 setLoading(false);
             }
         },
-        [bulkInput, addKey, keys, pipeline, t],
+        [bulkInput, addKey, keys, pipeline, t, clearError],
     );
 
     const reset = useCallback(() => {
