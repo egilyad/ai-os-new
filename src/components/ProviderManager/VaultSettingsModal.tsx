@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useAutoClearError } from '../../hooks/useAutoClearError';
 import { AnimatePresence, motion } from 'framer-motion';
 import { FocusScope } from '@react-aria/focus';
 import { eventBus, EVENTS, keyService } from '../../kernel/instances';
@@ -25,6 +26,7 @@ const VaultSettingsModal: React.FC<Props> = ({ onClose }) => {
     const [passphrase, setPassphrase] = useState('');
     const [confirm, setConfirm] = useState('');
     const [error, setError] = useState('');
+    const clearError = useAutoClearError(setError as (v: string | null) => void);
     const [busy, setBusy] = useState(false);
 
     useEffect(() => {
@@ -50,23 +52,28 @@ const VaultSettingsModal: React.FC<Props> = ({ onClose }) => {
     const handleCreate = async () => {
         if (passphrase.length < 8) {
             setError('Passphrase must be at least 8 characters');
+            clearError();
             return;
         }
         if (passphrase !== confirm) {
             setError('Passphrases do not match');
+            clearError();
             return;
         }
         setBusy(true);
         setError('');
         try {
             const ok = await keyService.createVault(passphrase);
-            if (!ok) setError('Failed to create vault');
-            else {
+            if (!ok) {
+                setError('Failed to create vault');
+                clearError();
+            } else {
                 setPassphrase('');
                 setConfirm('');
             }
         } catch {
             setError('Failed to create vault');
+            clearError();
         } finally {
             setBusy(false);
         }
@@ -77,10 +84,13 @@ const VaultSettingsModal: React.FC<Props> = ({ onClose }) => {
         setError('');
         try {
             const ok = await keyService.unlockVaultWithPassphrase(passphrase);
-            if (!ok) setError('Incorrect passphrase');
-            else setPassphrase('');
+            if (!ok) {
+                setError('Incorrect passphrase');
+                clearError();
+            } else setPassphrase('');
         } catch {
             setError('Failed to unlock vault');
+            clearError();
         } finally {
             setBusy(false);
         }
