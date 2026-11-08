@@ -103,7 +103,7 @@
 | P2-4 | Рефакторинг 62 TechniquePanels → generic-панель | ❌ | Tech Map §5.6; Duplication |
 | P2-5 | WikiPanel «Create article» UI; DebateArena «Save as Crystal» | ❌ | Opportunity Map |
 | P2-6 | Settings search + autocomplete в Wiki; tooltips | 🟡 (фундамент: filter-options (скоринг/фильтрация) + тесты в test:stable; осталась интеграция в UI) | Gap Map §7; Opportunity |
-| P2-7 | Cross-panel navigation links (ROI 32) | ❌ | Opportunity Map |
+| P2-7 | Cross-panel navigation links (ROI 32) | 🟡 (фундамент: getCrossPanelLinks (curated+same-section) + тесты в test:stable; осталась интеграция в UI) | Opportunity Map |
 | P2-8 | Скрыть Optional/Experimental/Stub-панели из main nav; cognitive overload | ❌ | Value/Accessibility Map |
 | P2-9 | Команда «what can you do?» у Assistant; onboarding killer-фич | ❌ | Accessibility Map §3.4 |
 | P2-10 | Объединить/скрыть HealthSlaPanel и 5 @deprecated MOCK сервисов | ❌ | Dead Map; Obs Map §3.1 |
