@@ -3,12 +3,12 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 1553,
-    "edges": 2803,
+    "nodes": 1554,
+    "edges": 2805,
     "byType": {
       "audit": 25,
       "code": 675,
-      "test": 232,
+      "test": 233,
       "panel": 270,
       "article": 351
     },
@@ -16,7 +16,7 @@
       "audit_test": 20,
       "audit_mention": 52,
       "documents": 270,
-      "test": 338,
+      "test": 340,
       "source": 956,
       "related": 1167
     }
@@ -2931,6 +2931,11 @@
       "id": "file:src/kernel/services/event-bridge/projection-registry.ts",
       "type": "code",
       "label": "src/kernel/services/event-bridge/projection-registry.ts"
+    },
+    {
+      "id": "file:src/kernel/services/event-sourcing/checkpoint-store.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/event-sourcing/checkpoint-store.test.ts"
     },
     {
       "id": "file:src/kernel/services/event-sourcing/checkpoint-store.ts",
@@ -13058,6 +13063,11 @@
     },
     {
       "from": "wiki:comp-event-sourcing",
+      "to": "file:src/kernel/services/event-sourcing/checkpoint-store.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-event-sourcing",
       "to": "file:src/kernel/services/event-sourcing/checkpoint-store.ts",
       "kind": "source"
     },
@@ -13905,6 +13915,11 @@
       "from": "wiki:comp-flow-restore",
       "to": "file:src/kernel/services/debate-runtime/debate-persistence-manager.ts",
       "kind": "source"
+    },
+    {
+      "from": "wiki:comp-flow-restore",
+      "to": "file:src/kernel/services/event-sourcing/checkpoint-store.test.ts",
+      "kind": "test"
     },
     {
       "from": "wiki:comp-flow-restore",

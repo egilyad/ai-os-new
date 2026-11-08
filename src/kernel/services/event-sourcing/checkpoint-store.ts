@@ -48,8 +48,18 @@ export class CheckpointStore {
         if (!this.store) return;
         try {
             const checkpoints = await this.store.load();
-            if (!checkpoints) return;
-            this.checkpoints = checkpoints.slice(-this.config.maxCheckpoints);
+            if (checkpoints) {
+                // Merge instead of replace: checkpoints created while the async
+                // load was in flight must not be dropped by the restore.
+                const existingIds = new Set(this.checkpoints.map((c) => c.id));
+                const missing = checkpoints.filter((c) => !existingIds.has(c.id));
+                if (missing.length > 0) {
+                    this.checkpoints = [...missing, ...this.checkpoints];
+                }
+                if (this.checkpoints.length > this.config.maxCheckpoints) {
+                    this.checkpoints = this.checkpoints.slice(-this.config.maxCheckpoints);
+                }
+            }
         } catch (e) {
             LOGGER.warn('CheckpointStore', 'Failed to restore persisted checkpoints', { error: e });
         }

@@ -4567,6 +4567,7 @@
       ],
       "reviewed": null,
       "tests": [
+        "src/kernel/services/event-sourcing/checkpoint-store.test.ts",
         "src/kernel/dal/event-log-repository.test.ts",
         "src/kernel/services/timeline-service.test.ts"
       ]
@@ -6361,6 +6362,7 @@
         "src/kernel/runtime.test.ts",
         "src/kernel/bootstrap.test.ts",
         "src/kernel/services/debate-runtime/debate-persistence-manager.test.ts",
+        "src/kernel/services/event-sourcing/checkpoint-store.test.ts",
         "src/kernel/services/reconnection-service.test.ts",
         "src/kernel/services/snapshot-service.test.ts",
         "src/kernel/services/time-machine-service.test.ts"

@@ -90,7 +90,7 @@
 | P1-13 | Dexie migration test до v43 | ❌ | полный отчёт P1-#19 |
 | P1-14 | Fix 16 дубликатов имён событий в event-registry | ❌ | полный отчёт P1-#14 |
 | P1-15 | `registerTransient` cleanup | ✅ | полный отчёт P1-#15 |
-| P1-16 | Race conditions (6): CheckpointStore/DebateEngine/AutoDebate/MemoryEngine/Scheduler | 🟡 | полный отчёт P1-#16 |
+| P1-16 | Race conditions (6): CheckpointStore/DebateEngine/AutoDebate/MemoryEngine/Scheduler | 🟡 (CheckpointStore ✅ — merge при init вместо replace + регрессионный тест; остальные открыты) | полный отчёт P1-#16 |
 | P1-17 | Perf hot-paths (10): memory O(n²), syncSessions, embedding batch, VisGraph и др. | ❌ | полный отчёт P1-#17 |
 
 ## 3. Приоритет P2 — продукт и UX
