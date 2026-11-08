@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
+import { useAutoClearError } from '../../hooks/useAutoClearError';
 import { useTranslation } from '../../i18n/useTranslation';
 import { groupChatService } from '../../kernel/instances/services-extras';
 import { seedGroupChatDemo } from '../../kernel/services/rivals/groupchat-demo-seed';
@@ -77,9 +78,11 @@ export default function GroupChatPanel() {
         );
     }, [chats, search]);
 
+    const clearError = useAutoClearError(setError);
     const fail = (e: unknown) => {
         console.error('[GroupChatPanel]', e);
         setError(t('groupChat.error.generic'));
+        clearError();
     };
 
     const refresh = async (id: string) => {
