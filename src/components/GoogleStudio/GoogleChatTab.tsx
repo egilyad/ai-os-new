@@ -23,8 +23,8 @@ export function GoogleChatTab({ model }: GoogleChatTabProps) {
     const [groundingEnabled, setGroundingEnabled] = useState(false);
     const [imageBase64, setImageBase64] = useState('');
     const [imageMime, setImageMime] = useState('');
-    const [error, setError] = useState('');
-    const clearError = useAutoClearError(setError as (v: string | null) => void);
+    const [error, setError] = useState<string | null>(null);
+    const clearError = useAutoClearError(setError);
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const abortRef = useRef<AbortController | null>(null);
 

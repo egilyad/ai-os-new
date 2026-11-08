@@ -161,7 +161,6 @@ const AgentsPanelContainer: React.FC = () => {
             unsubTopology();
             unsubStats();
             clearTimeout(timer);
-            if (errorTimeoutRef.current) clearTimeout(errorTimeoutRef.current);
             if (armTimerRef.current) clearTimeout(armTimerRef.current);
         };
     }, []);

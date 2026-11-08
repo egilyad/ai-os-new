@@ -28,7 +28,7 @@ export function useBulkImport(): BulkImportState {
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
-    const clearError = useAutoClearError(setError as (v: string | null) => void, null);
+    const clearError = useAutoClearError(setError as unknown as (v: string | null) => void, null);
     const [bulkInput, setBulkInput] = useState('');
     const [bulkReport, setBulkReport] = useState<BulkImportReport | null>(null);
     const [bulkProgress, setBulkProgress] = useState<{ current: number; total: number } | null>(

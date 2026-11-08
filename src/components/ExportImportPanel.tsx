@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import PanelLoader from './PanelLoader';
 import { encryptExportPayload, decryptExportPayload } from './ExportImportPanel/export-crypto';
+import type { RoleCategory } from '../kernel/types/role-types';
 
 interface ExportSection {
     id: string;
@@ -262,7 +263,7 @@ const ExportImportPanel: React.FC = () => {
                             priority: typeof r.priority === 'number' ? r.priority : undefined,
                             parentRoleId: typeof r.parentRoleId === 'string' ? r.parentRoleId : undefined,
                             metadata: {
-                                category: typeof meta.category === 'string' ? meta.category : 'custom',
+                                category: (typeof meta.category === 'string' ? meta.category : 'custom') as RoleCategory,
                                 tags: Array.isArray(meta.tags) ? (meta.tags as string[]) : undefined,
                                 author: typeof meta.author === 'string' ? meta.author : undefined,
                             },

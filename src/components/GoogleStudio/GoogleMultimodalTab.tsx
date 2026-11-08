@@ -13,8 +13,8 @@ export function GoogleMultimodalTab({ model }: GoogleMultimodalTabProps) {
     const [imageMime, setImageMime] = useState('');
     const [input, setInput] = useState('');
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState('');
-    const clearError = useAutoClearError(setError as (v: string | null) => void);
+    const [error, setError] = useState<string | null>(null);
+    const clearError = useAutoClearError(setError);
     const abortRef = useRef<AbortController | null>(null);
 
     useEffect(() => {

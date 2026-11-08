@@ -19,7 +19,7 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({ t }) => {
     const [apiKey, setApiKey] = useState('');
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState('');
-    const clearError = useAutoClearError(setError as (v: string | null) => void);
+    const clearError = useAutoClearError(setError as unknown as (v: string | null) => void);
     const { onboardingCompleted, setOnboardingCompleted } = useUiPreferences();
 
     const totalSteps = 3;

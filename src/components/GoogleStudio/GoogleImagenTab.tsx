@@ -7,8 +7,8 @@ export function GoogleImagenTab() {
     const [prompt, setPrompt] = useState('');
     const [images, setImages] = useState<string[]>([]);
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState('');
-    const clearError = useAutoClearError(setError as (v: string | null) => void);
+    const [error, setError] = useState<string | null>(null);
+    const clearError = useAutoClearError(setError);
 
     const handleGenerate = useCallback(async () => {
         if (!prompt.trim()) return;
