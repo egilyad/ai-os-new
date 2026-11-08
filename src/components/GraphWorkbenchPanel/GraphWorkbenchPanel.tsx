@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useAutoClearError } from '../../hooks/useAutoClearError';
 import { routerService } from '../../kernel/instances/services-core';
 import { budgetService } from '../../kernel/instances/services-extras';
 import { keyService } from '../../kernel/instances';
@@ -95,6 +96,7 @@ const GraphWorkbenchPanel: React.FC = () => {
     const [taskEdges, setTaskEdges] = useState<VisGraphEdge[]>([]);
     const [ucbRows, setUcbRows] = useState<Ucb1Row[]>([]);
     const [error, setError] = useState<string | null>(null);
+    const clearError = useAutoClearError(setError);
     const [loading, setLoading] = useState(false);
     const [providerFilter, setProviderFilter] = useState('');
     const [windowHours, setWindowHours] = useState(0);
@@ -168,6 +170,7 @@ const GraphWorkbenchPanel: React.FC = () => {
             setRoutingEdges(uniqEdges);
         } catch (e) {
             setError(e instanceof Error ? e.message : String(e));
+            clearError();
         }
     }, [providerFilter, windowHours]);
 
@@ -232,8 +235,9 @@ const GraphWorkbenchPanel: React.FC = () => {
             setCostEdges(uniqEdges);
         } catch (e) {
             setError(e instanceof Error ? e.message : String(e));
+            clearError();
         }
-    }, [providerFilter]);
+    }, [providerFilter, clearError]);
 
     const loadTask = useCallback(async () => {
         try {
@@ -280,8 +284,9 @@ const GraphWorkbenchPanel: React.FC = () => {
             setTaskEdges(uniqEdges);
         } catch (e) {
             setError(e instanceof Error ? e.message : String(e));
+            clearError();
         }
-    }, []);
+    }, [clearError]);
 
     const loadUcb1 = useCallback(() => {
         try {
@@ -317,6 +322,7 @@ const GraphWorkbenchPanel: React.FC = () => {
             setUcbRows(rows);
         } catch (e) {
             setError(e instanceof Error ? e.message : String(e));
+            clearError();
         }
     }, [providerFilter, windowHours]);
 
