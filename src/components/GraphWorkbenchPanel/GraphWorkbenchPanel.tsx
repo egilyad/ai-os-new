@@ -172,7 +172,7 @@ const GraphWorkbenchPanel: React.FC = () => {
             setError(e instanceof Error ? e.message : String(e));
             clearError();
         }
-    }, [providerFilter, windowHours]);
+    }, [providerFilter, windowHours, clearError]);
 
     const loadCost = useCallback(async () => {
         try {
@@ -324,7 +324,7 @@ const GraphWorkbenchPanel: React.FC = () => {
             setError(e instanceof Error ? e.message : String(e));
             clearError();
         }
-    }, [providerFilter, windowHours]);
+    }, [providerFilter, windowHours, clearError]);
 
     const load = useCallback(
         async (l: Lens) => {

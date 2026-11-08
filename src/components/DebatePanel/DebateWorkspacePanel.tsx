@@ -106,7 +106,7 @@ const DebateWorkspacePanel: React.FC = () => {
         } finally {
             setIsCreating(false);
         }
-    }, [newTopic, isCreating, loadRooms]);
+    }, [newTopic, isCreating, loadRooms, clearError]);
 
     const openRoom = useCallback(
         (roomId: string) => {

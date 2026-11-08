@@ -52,7 +52,7 @@ const KeyNotesPanel: React.FC = () => {
         } finally {
             if (isMountedRef.current) setLoading(false);
         }
-    }, [selectedKeyId]);
+    }, [selectedKeyId, clearError]);
 
     useEffect(() => {
         isMountedRef.current = true;

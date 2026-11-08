@@ -78,7 +78,7 @@ const CompaniesPanel: React.FC = () => {
         } finally {
             setLoading(false);
         }
-    }, [url, secret, selectedId, refreshLocal]);
+    }, [url, secret, selectedId, refreshLocal, clearError]);
 
     useEffect(() => {
         try {

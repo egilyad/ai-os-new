@@ -100,7 +100,7 @@ const RunsPanel: React.FC = () => {
         } finally {
             setLoading(false);
         }
-    }, [base, secret, companyId, statusFilter, selectedId, limit]);
+    }, [base, secret, companyId, statusFilter, selectedId, limit, clearError]);
 
     useEffect(() => {
         try {

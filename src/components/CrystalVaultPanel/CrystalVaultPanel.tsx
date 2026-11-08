@@ -36,7 +36,7 @@ const CrystalVaultPanel: React.FC = () => {
         } catch (e) {
             fail(e);
         }
-    }, []);
+    }, [fail]);
 
     const handleSeedDemo = useCallback(async () => {
         if (seedingDemo) return;
@@ -49,7 +49,7 @@ const CrystalVaultPanel: React.FC = () => {
         } finally {
             setSeedingDemo(false);
         }
-    }, [seedingDemo, refresh]);
+    }, [seedingDemo, refresh, fail]);
     useEffect(() => {
         void refresh();
     }, [refresh]);

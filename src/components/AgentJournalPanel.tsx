@@ -90,7 +90,7 @@ const AgentJournalPanel: React.FC = () => {
             unsub2();
             unsub3();
         };
-    }, [refresh]);
+    }, [refresh, clearError]);
 
     useEffect(() => {
         refresh();

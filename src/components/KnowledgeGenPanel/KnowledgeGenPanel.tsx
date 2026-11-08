@@ -35,7 +35,7 @@ const KnowledgeGenPanel: React.FC = () => {
         } catch (e) {
             fail(e);
         }
-    }, []);
+    }, [fail]);
 
     useEffect(() => {
         void refresh();
