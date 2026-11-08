@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useAutoClearError } from '../../hooks/useAutoClearError';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronRight, ChevronLeft } from 'lucide-react';
 import { keyService } from '../../kernel/instances';
@@ -18,6 +19,7 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({ t }) => {
     const [apiKey, setApiKey] = useState('');
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState('');
+    const clearError = useAutoClearError(setError as (v: string | null) => void);
     const { onboardingCompleted, setOnboardingCompleted } = useUiPreferences();
 
     const totalSteps = 3;
@@ -31,10 +33,12 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({ t }) => {
     const handleSaveConnection = async () => {
         if (!selectedProvider) {
             setError(t('onboarding.error_select_provider'));
+            clearError();
             return;
         }
         if (!apiKey.trim()) {
             setError(t('onboarding.error_enter_key'));
+            clearError();
             return;
         }
         setSaving(true);
@@ -49,6 +53,7 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({ t }) => {
             setStep(2);
         } catch (err: unknown) {
             setError(err instanceof Error ? err.message : t('onboarding.error_generic'));
+            clearError();
         } finally {
             setSaving(false);
         }
