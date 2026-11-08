@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useAutoClearError } from '../../hooks/useAutoClearError';
 import { useTranslation } from '../../i18n/useTranslation';
 import { useCrewStore } from '../../stores/crewStore';
 import { useCouncilStore } from '../../stores/councilStore';
@@ -123,10 +124,14 @@ function Section(props: { title: string; children: React.ReactNode }) {
 
 function useAsyncError(): [string | null, (e: unknown) => void, () => void] {
     const [error, setError] = useState<string | null>(null);
+    const clearError = useAutoClearError(setError);
     return [
         error,
-        (e: unknown) => setError(e instanceof Error ? e.message : String(e)),
-        () => setError(null),
+        (e: unknown) => {
+            setError(e instanceof Error ? e.message : String(e));
+            clearError();
+        },
+        clearError,
     ];
 }
 
