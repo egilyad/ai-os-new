@@ -5,7 +5,7 @@
 > Полная документация системы: панели, агенты, дебаты, память, провайдеры, диагностика, история разработки, архитектура и руководства для разработчиков.
 > Страницы автосгенерированы из корпуса Wiki (`scripts/gen-wiki-docs.mjs`). Та же документация доступна в приложении в панели «Wiki».
 
-Всего материалов: **352** в 13 разделах.
+Всего материалов: **351** в 13 разделах.
 
 > Разработчикам: начните с [Обзор для разработчиков](./dev-overview.md), затем [Структура](./dev-layout.md) и [Каталог компонентов](./dev-component-catalog.md).
 
@@ -14,7 +14,7 @@
 | Раздел | Материалов |
 | --- | --- |
 | Руководство | 10 |
-| Панели | 155 |
+| Панели | 154 |
 | Агенты | 2 |
 | Дебаты | 3 |
 | Знания и память | 5 |
@@ -40,7 +40,7 @@
 - [Карта документации](./docs-index.md) — _verified_
 - [Возможности и сценарии](./scenarios.md) — _verified_
 
-## Панели (155)
+## Панели (154)
 
 - [Graph Workbench](./panel-graph-workbench.md) — _verified_
 - [Deep Research](./panel-research-cockpit.md) — _verified_
@@ -189,7 +189,6 @@
 - [Скрытые стимулы](./technique-hidden-incentives.md) — _documented_
 - [Семантическое смешение](./technique-semantic-blending.md) — _documented_
 - [Совещание судей](./technique-judge-deliberation.md) — _documented_
-- [Исключения (вето)](./panel-exceptions.md) — _documented_
 - [Memory Center](./panel-memory-center.md) — _documented_
 - [Граф навигации](./panel-nav-graph.md) — _documented_
 - [Карта дефектов](./panel-defect-map.md) — _documented_

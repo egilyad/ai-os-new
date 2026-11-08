@@ -10,7 +10,7 @@ describe('KeyFingerprints', () => {
         expect(fp.detectProvider('sk-ant-abc')).toBe('anthropic');
         expect(fp.detectProvider('nvapi-abc')).toBe('nvidia');
         expect(fp.detectProvider('sk-or-abc')).toBe('openrouter');
-        expect(fp.detectProvider('sk-proj-abc123')).toBe('openai');
+        expect(fp.detectProvider('sk-proj-abcdefghijklmnopqrstuvwxyz')).toBe('openai');
         expect(fp.detectProvider('unknown-key')).toBeNull();
     });
 
@@ -32,8 +32,8 @@ describe('KeyFingerprints', () => {
     });
 
     it('matchesProviderFormat compares detected provider', async () => {
-        await expect(fp.matchesProviderFormat('openai', 'sk-proj-xyz')).resolves.toBe(true);
-        await expect(fp.matchesProviderFormat('groq', 'sk-proj-xyz')).resolves.toBe(false);
+        await expect(fp.matchesProviderFormat('openai', 'sk-proj-abcdefghijklmnopqrstuvwxyz')).resolves.toBe(true);
+        await expect(fp.matchesProviderFormat('groq', 'sk-proj-abcdefghijklmnopqrstuvwxyz')).resolves.toBe(false);
     });
 
     it('suggestModel returns a default model for known providers', () => {

@@ -2031,7 +2031,7 @@
       "language": "mixed",
       "title": "Матрица покрытия",
       "bytes": 8390,
-      "hash": "0827d2d80031e7cb14932552037ad2bdb9b87bf5"
+      "hash": "a4d1b97659a5aebdf25a2234e053b36bde6da37a"
     },
     {
       "path": "docs/wiki/debate-strategies-cheatsheet.md",
@@ -2087,7 +2087,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4077,
-      "hash": "dceae2be1e5fa5502e2e8558faffcea561a85ed9"
+      "hash": "0437722d197bfc763d95c5fc6b141441cd422de1"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -2175,7 +2175,7 @@
       "language": "ru",
       "title": "Граф знаний",
       "bytes": 4877,
-      "hash": "75545606b111328d61ef562331d23c8b8a36ea28"
+      "hash": "c65c9d130795bf43ff11afafdf3da24ea0a9397d"
     },
     {
       "path": "docs/wiki/dev-history.md",
@@ -2390,8 +2390,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Карта документации",
-      "bytes": 55891,
-      "hash": "5aae440c9b6d457e4528eb7fe2c6185898654251"
+      "bytes": 55845,
+      "hash": "afb81ae8b95c687600e016281f4246922f03a6d6"
     },
     {
       "path": "docs/wiki/docs-standard.md",
@@ -2733,9 +2733,9 @@
       "path": "docs/wiki/panel-exceptions.md",
       "category": "wiki",
       "language": "ru",
-      "title": "Исключения (вето)",
-      "bytes": 1609,
-      "hash": "70153ef913fabee1a429418cff759863622742f2"
+      "title": "Панель: Исключения (вето)",
+      "bytes": 3992,
+      "hash": "1f6da8204b46bd24d99c90b00adb5e0eee5ec3de"
     },
     {
       "path": "docs/wiki/panel-files-editors.md",
@@ -3230,8 +3230,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Каталог панелей: раздел → маршрут → компонент → статья",
-      "bytes": 57677,
-      "hash": "095d5cd485e590c2ba42fdb26ebf1a3ca7851adc"
+      "bytes": 57691,
+      "hash": "7ddefcc1593e1c2e59ce05b289b9437ff805f34f"
     },
     {
       "path": "docs/wiki/panels-guide.md",
@@ -3254,8 +3254,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Wiki SuperAgents OS",
-      "bytes": 35154,
-      "hash": "679a9e2501eb0b05ec08b648df8c5bce0ca749f3"
+      "bytes": 35078,
+      "hash": "72060196f7ff6e161937a464fbfc68f8c3d278cb"
     },
     {
       "path": "docs/wiki/record-a-skill.md",

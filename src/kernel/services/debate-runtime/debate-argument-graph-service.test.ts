@@ -19,7 +19,7 @@ describe('ArgumentGraphService (per-session)', () => {
         const svc = new ArgumentGraphService();
         svc.build('s-a', [
             input({ id: 'a1', agentId: 'alice', content: 'We must ban fossil fuels because climate is urgent' }),
-            input({ id: 'a2', agentId: 'bob', agentName: 'Bob', content: 'Banning fossil fuels would wreck the economy', round: 2 }),
+            input({ id: 'a2', agentId: 'bob', agentName: 'Bob', content: 'Banning fossil fuels is wrong because it would wreck the economy', round: 2 }),
         ]);
         svc.build('s-b', [input({ id: 'b1', agentId: 'bob', agentName: 'Bob' })]);
 

@@ -20,7 +20,9 @@ function key(id: string, provider = 'OpenRouter'): ApiKey {
     } as ApiKey;
 }
 
-function makeDeps(overrides: { adapter?: { getAvailableModels: unknown }; provider?: string } = {}) {
+function makeDeps(
+    overrides: { adapter?: { getAvailableModels: unknown } | null; provider?: string } = {},
+) {
     const keys = new Map<string, ApiKey>([[overrides.provider ? 'k1' : 'k1', key('k1', overrides.provider ?? 'OpenRouter')]]);
     const registry = {
         getKey: vi.fn((id: string) => keys.get(id)),
@@ -34,9 +36,12 @@ function makeDeps(overrides: { adapter?: { getAvailableModels: unknown }; provid
     };
     const eventBus = { emit: vi.fn() };
     const updateKeyStatus = vi.fn();
-    const providerAdapterRegistry = overrides.adapter
-        ? { getAdapter: vi.fn(() => overrides.adapter) }
-        : undefined;
+    const providerAdapterRegistry =
+        overrides.adapter === null
+            ? { getAdapter: vi.fn(() => undefined) }
+            : overrides.adapter
+              ? { getAdapter: vi.fn(() => overrides.adapter) }
+              : undefined;
     const svc = new KeyModels({
         eventBus,
         registry,
@@ -60,7 +65,7 @@ describe('KeyModels', () => {
     });
 
     it('refreshModels falls back to static defaults without an adapter', async () => {
-        const { svc, registry } = makeDeps();
+        const { svc, registry } = makeDeps({ adapter: null });
         await svc.refreshModels('k1');
         expect(registry.getKey('k1')?.availableModels?.length).toBeGreaterThan(0);
     });

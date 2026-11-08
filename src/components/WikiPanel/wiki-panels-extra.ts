@@ -5,20 +5,6 @@ import type { WikiArticle } from './wiki-types';
 
 export const PANELS_EXTRA_ARTICLES: WikiArticle[] = [
     {
-        slug: 'panel-exceptions',
-        title: 'Исключения (вето)',
-        section: 'panels',
-        tags: ['панели', 'политики', 'исключения'],
-        freshness: 'documented',
-        sources: ['src/components/ExceptionsPanel/ExceptionsPanel'],
-        related: ['panel-governance'],
-        body: `## Исключения
-
-Панель показывает исключения/вето, наложенные на операции политиками или вручную. Применяется вместе с [[panel-governance]] для контроля над нежелательными действиями агентов.
-
-Компонент: \`src/components/ExceptionsPanel/ExceptionsPanel\`.`,
-    },
-    {
         slug: 'panel-memory-center',
         title: 'Memory Center',
         section: 'panels',

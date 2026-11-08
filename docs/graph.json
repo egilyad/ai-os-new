@@ -3,11 +3,11 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 1554,
-    "edges": 2805,
+    "nodes": 1553,
+    "edges": 2803,
     "byType": {
       "audit": 25,
-      "code": 676,
+      "code": 675,
       "test": 232,
       "panel": 270,
       "article": 351
@@ -17,8 +17,8 @@
       "audit_mention": 52,
       "documents": 270,
       "test": 338,
-      "source": 957,
-      "related": 1168
+      "source": 956,
+      "related": 1167
     }
   },
   "nodes": [
@@ -811,11 +811,6 @@
       "id": "file:src/components/ExceptionsPanel/exception-veto.ts",
       "type": "code",
       "label": "src/components/ExceptionsPanel/exception-veto.ts"
-    },
-    {
-      "id": "file:src/components/ExceptionsPanel/ExceptionsPanel",
-      "type": "code",
-      "label": "src/components/ExceptionsPanel/ExceptionsPanel"
     },
     {
       "id": "file:src/components/ExceptionsPanel/ExceptionsPanel.tsx",
@@ -19928,11 +19923,6 @@
     },
     {
       "from": "wiki:panel-exceptions",
-      "to": "file:src/components/ExceptionsPanel/ExceptionsPanel",
-      "kind": "source"
-    },
-    {
-      "from": "wiki:panel-exceptions",
       "to": "file:src/kernel/types/exception-template.ts",
       "kind": "source"
     },
@@ -19944,11 +19934,6 @@
     {
       "from": "wiki:panel-exceptions",
       "to": "wiki:panel-chat",
-      "kind": "related"
-    },
-    {
-      "from": "wiki:panel-exceptions",
-      "to": "wiki:panel-governance",
       "kind": "related"
     },
     {

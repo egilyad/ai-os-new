@@ -95,6 +95,9 @@ describe('MonitoringService', () => {
     it('getProviderHealthSummary returns provider breakdown', () => {
         const deps = makeDeps();
         const svc = new MonitoringService(deps);
-        expect(svc.getProviderHealthSummary()).toEqual([{ provider: 'openrouter' }]);
+        const summary = svc.getProviderHealthSummary();
+        expect(summary).toHaveLength(1);
+        expect(summary[0]!.id).toBe('openrouter');
+        expect(summary[0]!.status).toBe('active');
     });
 });

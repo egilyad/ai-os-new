@@ -72,6 +72,7 @@ describe('KeyStateStore', () => {
 
     it('seeds keys with defaults and exposes them for routing', async () => {
         const store = new KeyStateStore(bus, db);
+        await store.start();
         store.seedFromKeys([key(), key({ id: 'k2', status: 'error' })]);
         const all = store.getAll();
         expect(all).toHaveLength(2);
@@ -95,6 +96,7 @@ describe('KeyStateStore', () => {
 
     it('update mutates state, persists and emits', async () => {
         const store = new KeyStateStore(bus, db);
+        await store.start();
         store.seedFromKeys([key()]);
         await store.update('k1', { status: 'broken', healthScore: 10 });
         expect(store.get('k1')?.status).toBe('broken');
@@ -105,6 +107,7 @@ describe('KeyStateStore', () => {
 
     it('purgeOrphans removes only non-live ids', async () => {
         const store = new KeyStateStore(bus, db);
+        await store.start();
         store.seedFromKeys([key(), key({ id: 'k2' })]);
         store.purgeOrphans(new Set(['k1']));
         expect(store.get('k1')).toBeDefined();
@@ -114,6 +117,7 @@ describe('KeyStateStore', () => {
 
     it('getForRouting filters blocked keys', async () => {
         const store = new KeyStateStore(bus, db);
+        await store.start();
         store.seedFromKeys([key(), key({ id: 'k2', status: 'error' })]);
         const routing = store.getForRouting();
         expect(routing.every((s) => !s.routing.blocked)).toBe(true);

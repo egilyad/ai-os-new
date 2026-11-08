@@ -21,7 +21,7 @@
 | Панель | знания `knowledge` | `/knowledge` | `src/components/KnowledgePanel/KnowledgePanel` | [Панель: База знаний (RAG)](./panel-knowledge.md) |
 | Панель | проводник Project OS `project-os` | `/project-os` | `src/components/DebateResearch/ProjectOsExplorer` | [Панель: Проекты](./panel-projects.md) |
 | Панель | Когнитивные линзы `lenses` | `/lenses` | `src/components/LensesPanel/LensesPanel` | [Панели: Линзы и кристаллы](./panel-lenses-crystals.md) |
-| Панель | Исключения (вето) `exceptions` | `/exceptions` | `src/components/ExceptionsPanel/ExceptionsPanel` | [Исключения (вето)](./panel-exceptions.md) |
+| Панель | Исключения (вето) `exceptions` | `/exceptions` | `src/components/ExceptionsPanel/ExceptionsPanel` | [Панель: Исключения (вето)](./panel-exceptions.md) |
 | Панель | Memory Center `memory-center` | `/memory-center` | `src/components/MemoryCenterPanel/MemoryCenterPanel` | [Memory Center](./panel-memory-center.md) |
 | Панель | Граф навигации `nav-graph` | `/nav-graph` | `src/components/NavGraphPanel/NavGraphPanel` | [Граф навигации](./panel-nav-graph.md) |
 | Панель | Graph Workbench `graph-workbench` | `/graph-workbench` | `src/components/GraphWorkbenchPanel/GraphWorkbenchPanel` | [Graph Workbench](./panel-graph-workbench.md) |

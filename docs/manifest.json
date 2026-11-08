@@ -10,7 +10,7 @@
     {
       "id": "panels",
       "title": "Панели",
-      "articles": 155
+      "articles": 154
     },
     {
       "id": "agents",
@@ -9398,27 +9398,6 @@
       ],
       "related": [
         "panel-debate-toolkit"
-      ],
-      "reviewed": null,
-      "tests": []
-    },
-    {
-      "id": "wiki:panel-exceptions",
-      "type": "article",
-      "slug": "panel-exceptions",
-      "title": "Исключения (вето)",
-      "section": "panels",
-      "status": "documented",
-      "tags": [
-        "панели",
-        "политики",
-        "исключения"
-      ],
-      "sources": [
-        "src/components/ExceptionsPanel/ExceptionsPanel"
-      ],
-      "related": [
-        "panel-governance"
       ],
       "reviewed": null,
       "tests": []
