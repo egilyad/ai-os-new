@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
+import { useAutoClearError } from '../../hooks/useAutoClearError';
 import { lazyService } from '../../kernel/service-helper';
 import { agentService } from '../../kernel/instances/services-core';
 import type { IWorldStateService, SimulationWorld } from '../../kernel/contracts/simulation-world';
@@ -34,6 +35,7 @@ export const SimulationPanel: React.FC = () => {
     const [ticks, setTicks] = useState(5);
     const [busy, setBusy] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const clearError = useAutoClearError(setError);
     const [log, setLog] = useState<string[]>([]);
     const [availableAgents, setAvailableAgents] = useState<Array<{ id: string; name: string }>>([]);
     const [pickedAgentIds, setPickedAgentIds] = useState<string[]>([]);
@@ -122,6 +124,7 @@ export const SimulationPanel: React.FC = () => {
             setPickedAgentIds(ids);
         } catch (e) {
             setError(e instanceof Error ? e.message : String(e));
+            clearError();
         } finally {
             setBusy(false);
         }
@@ -143,8 +146,9 @@ export const SimulationPanel: React.FC = () => {
             }
         } catch (e) {
             setError(e instanceof Error ? e.message : String(e));
+            clearError();
         }
-    }, [selectedId]);
+    }, [selectedId, clearError]);
 
     useEffect(() => {
         void refresh();
@@ -192,6 +196,7 @@ export const SimulationPanel: React.FC = () => {
             setWorld(w);
         } catch (e) {
             setError(e instanceof Error ? e.message : String(e));
+            clearError();
         } finally {
             setBusy(false);
         }
@@ -208,6 +213,7 @@ export const SimulationPanel: React.FC = () => {
             await refresh();
         } catch (e) {
             setError(e instanceof Error ? e.message : String(e));
+            clearError();
         } finally {
             setBusy(false);
         }
@@ -228,6 +234,7 @@ export const SimulationPanel: React.FC = () => {
             );
         } catch (e) {
             setError(e instanceof Error ? e.message : String(e));
+            clearError();
         } finally {
             setBusy(false);
         }
@@ -243,6 +250,7 @@ export const SimulationPanel: React.FC = () => {
             await refresh();
         } catch (e) {
             setError(e instanceof Error ? e.message : String(e));
+            clearError();
         } finally {
             setBusy(false);
         }
