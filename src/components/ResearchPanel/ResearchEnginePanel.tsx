@@ -8,6 +8,8 @@ import { useVisibilityInterval } from '../../utils/visibility-interval';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Layers, Plus } from 'lucide-react';
 import { useTranslation } from '../../i18n/useTranslation';
+import { useNavItems } from '../../hooks/useNavItems';
+import { CrossPanelLinks } from '../Common/CrossPanelLinks';
 import type { SourceType } from '../../kernel/contracts/research-engine';
 import { researchEngine, sourceAdapterRegistry } from '../../kernel/instances';
 import { SOURCE_COLORS } from './research-constants';
@@ -16,6 +18,7 @@ import type { ResearchSession } from '../../kernel/contracts/research-engine';
 
 const ResearchEnginePanel: React.FC = () => {
     const { t } = useTranslation();
+    const navItems = useNavItems();
     const [sessions, setSessions] = useState<ResearchSession[]>([]);
     const [expandedId, setExpandedId] = useState<string | null>(null);
     const [newTitle, setNewTitle] = useState('');
@@ -116,6 +119,13 @@ const ResearchEnginePanel: React.FC = () => {
 
     return (
         <div style={{ padding: '1.5rem', maxWidth: 960, margin: '0 auto' }}>
+            <CrossPanelLinks
+                panelId="research-engine"
+                items={navItems}
+                curated={{
+                    'research-engine': ['knowledge', 'scratchpad', 'adversarial-source', 'outcome-forecaster'],
+                }}
+            />
             <div
                 style={{
                     display: 'flex',

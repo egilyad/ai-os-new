@@ -1,6 +1,8 @@
 import React, { useMemo, useState, useEffect, useRef, useCallback } from 'react';
 import { useAutoClearError } from '../../hooks/useAutoClearError';
 import { useTranslation } from '../../i18n/useTranslation';
+import { useNavItems } from '../../hooks/useNavItems';
+import { CrossPanelLinks } from '../Common/CrossPanelLinks';
 import { useConfirm } from '../../hooks/useConfirm';
 import { memoryService, rootLogger } from '../../kernel/instances';
 const LOGGER = rootLogger.child('KnowledgePanel');
@@ -23,6 +25,7 @@ import type { GraphNodeData } from './graph-utils';
 
 const KnowledgePanel: React.FC = () => {
     const { t } = useTranslation();
+    const navItems = useNavItems();
     const { confirm, ConfirmDialog } = useConfirm();
     const [memories, setMemories] = useState(() => {
         try {
@@ -208,6 +211,13 @@ const KnowledgePanel: React.FC = () => {
                 overflowY: 'auto',
             }}
         >
+            <CrossPanelLinks
+                panelId="knowledge"
+                items={navItems}
+                curated={{
+                    knowledge: ['memory-center', 'key-notes', 'knowledge-generator', 'chat'],
+                }}
+            />
             <GraphHeader t={t} />
 
             <ErrorBanner error={error} onDismiss={() => setError(null)} t={t} />

@@ -4,6 +4,8 @@ import { Calendar, Clock, Plus, RefreshCw, Trash2, Play, Loader2, Search } from 
 import { getAllSettings, setSetting } from '../kernel/instances';
 import type { QualityTechnique } from '../kernel/contracts/debate-quality-settings';
 import { useTranslation } from '../i18n/useTranslation';
+import { useNavItems } from '../hooks/useNavItems';
+import { CrossPanelLinks } from './Common/CrossPanelLinks';
 import { useRealAgents } from '../hooks/useRealAgents';
 import { schedulerService } from '../kernel/services/scheduler-service';
 import { seedSchedulerDemo } from '../kernel/services/scheduler-demo-seed';
@@ -58,6 +60,7 @@ const Toggle: React.FC<{ checked: boolean; onChange: (v: boolean) => void }> = (
 
 export const SchedulerPanel: React.FC = () => {
     const { t, lang } = useTranslation();
+    const navItems = useNavItems();
     const agents = useRealAgents();
     const [settings, setSettingsState] = useState(() => getAllSettings());
     const enabled = settings[TECHNIQUE_ID] ?? TECHNIQUE.defaultEnabled;
@@ -208,6 +211,13 @@ export const SchedulerPanel: React.FC = () => {
 
     return (
         <div style={{ padding: 24, maxWidth: 900, margin: '0 auto' }}>
+            <CrossPanelLinks
+                panelId="scheduler"
+                items={navItems}
+                curated={{
+                    scheduler: ['run-queue', 'planner', 'autonomy', 'tasks'],
+                }}
+            />
             <div
                 className="glass-panel"
                 style={{

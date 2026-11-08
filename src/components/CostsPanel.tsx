@@ -2,6 +2,8 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useAutoClearError } from '../hooks/useAutoClearError';
 import { RefreshCw, DollarSign, Loader2, AlertTriangle } from 'lucide-react';
 import { useTranslation } from '../i18n/useTranslation';
+import { useNavItems } from '../hooks/useNavItems';
+import { CrossPanelLinks } from './Common/CrossPanelLinks';
 import { gatewayApi as api, DEFAULT_GATEWAY_URL } from './Common';
 
 interface Company {
@@ -36,6 +38,7 @@ const SECRET_KEY = 'companyGateway.secret';
 
 const CostsPanel: React.FC = () => {
     const { t } = useTranslation();
+    const navItems = useNavItems();
     const [url, setUrl] = useState(() => {
         try {
             return localStorage.getItem(URL_KEY) || DEFAULT_GATEWAY_URL;
@@ -167,6 +170,13 @@ const CostsPanel: React.FC = () => {
 
     return (
         <div style={{ padding: '1.5rem', maxWidth: 1100, margin: '0 auto' }}>
+            <CrossPanelLinks
+                panelId="costs"
+                items={navItems}
+                curated={{
+                    costs: ['budget', 'analytics', 'key-usage-analytics', 'pricing'],
+                }}
+            />
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem' }}>
                 <DollarSign size={20} />
                 <h2 style={{ margin: 0 }}>{t('costs.title')}</h2>

@@ -113,19 +113,19 @@ const SettingsPanel: React.FC = () => {
     );
 
     const settingsTabs = [
-        { id: 'general', label: t('settings.general'), icon: <Settings size={18} aria-hidden="true" /> },
-        { id: 'writing', label: t('settings.interaction'), icon: <MessageSquare size={18} aria-hidden="true" /> },
-        { id: 'reading', label: t('nav.routing_ai'), icon: <Cpu size={18} aria-hidden="true" /> },
-        { id: 'alerts', label: t('settings.tab.alerts'), icon: <Bell size={18} aria-hidden="true" /> },
-        { id: 'notifications', label: t('settings.notifications'), icon: <Bell size={18} aria-hidden="true" /> },
-        { id: 'appearance', label: 'Design Tokens LIVE', icon: <Palette size={18} aria-hidden="true" /> },
-        { id: 'prompts', label: t('settings.tab.prompts'), icon: <BookText size={18} aria-hidden="true" /> },
-        { id: 'advanced', label: t('settings.security'), icon: <Lock size={18} aria-hidden="true" /> },
-        { id: 'llmKeys', label: 'LLM Keys', icon: <Key size={18} aria-hidden="true" /> },
-        { id: 'platform', label: 'Platform', icon: <Globe size={18} aria-hidden="true" /> },
-        { id: 'systemPrompts', label: 'System Prompts', icon: <FileText size={18} aria-hidden="true" /> },
-        { id: 'n8n', label: 'N8N', icon: <Network size={18} aria-hidden="true" /> },
-        { id: 'system', label: 'System', icon: <HardDrive size={18} aria-hidden="true" /> },
+        { id: 'general', label: t('settings.general'), desc: t('settings.tab.general_desc'), icon: <Settings size={18} aria-hidden="true" /> },
+        { id: 'writing', label: t('settings.interaction'), desc: t('settings.tab.writing_desc'), icon: <MessageSquare size={18} aria-hidden="true" /> },
+        { id: 'reading', label: t('nav.routing_ai'), desc: t('settings.tab.reading_desc'), icon: <Cpu size={18} aria-hidden="true" /> },
+        { id: 'alerts', label: t('settings.tab.alerts'), desc: t('settings.tab.alerts_desc'), icon: <Bell size={18} aria-hidden="true" /> },
+        { id: 'notifications', label: t('settings.notifications'), desc: t('settings.tab.notifications_desc'), icon: <Bell size={18} aria-hidden="true" /> },
+        { id: 'appearance', label: 'Design Tokens LIVE', desc: t('settings.tab.appearance_desc'), icon: <Palette size={18} aria-hidden="true" /> },
+        { id: 'prompts', label: t('settings.tab.prompts'), desc: t('settings.tab.prompts_desc'), icon: <BookText size={18} aria-hidden="true" /> },
+        { id: 'advanced', label: t('settings.security'), desc: t('settings.tab.advanced_desc'), icon: <Lock size={18} aria-hidden="true" /> },
+        { id: 'llmKeys', label: 'LLM Keys', desc: t('settings.tab.llmKeys_desc'), icon: <Key size={18} aria-hidden="true" /> },
+        { id: 'platform', label: 'Platform', desc: t('settings.tab.platform_desc'), icon: <Globe size={18} aria-hidden="true" /> },
+        { id: 'systemPrompts', label: 'System Prompts', desc: t('settings.tab.systemPrompts_desc'), icon: <FileText size={18} aria-hidden="true" /> },
+        { id: 'n8n', label: 'N8N', desc: t('settings.tab.n8n_desc'), icon: <Network size={18} aria-hidden="true" /> },
+        { id: 'system', label: 'System', desc: t('settings.tab.system_desc'), icon: <HardDrive size={18} aria-hidden="true" /> },
     ] as const;
 
     const visibleSettingsTabs = settingsSearch
@@ -677,6 +677,7 @@ const SettingsPanel: React.FC = () => {
                                 type="button"
                                 onClick={() => setActiveTab(tab.id)}
                                 role="tab"
+                                title={tab.desc}
                                 aria-selected={activeTab === tab.id}
                                 aria-controls={`settings-tab-${tab.id}`}
                                 style={{
@@ -702,7 +703,22 @@ const SettingsPanel: React.FC = () => {
                                     textAlign: 'left',
                                 }}
                             >
-                                {tab.icon} {tab.label}
+                                {tab.icon}
+                                <span style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                                    <span>{tab.label}</span>
+                                    <span
+                                        style={{
+                                            fontSize: '0.68rem',
+                                            fontWeight: 400,
+                                            color: 'var(--text-muted)',
+                                            lineHeight: 1.35,
+                                            opacity: activeTab === tab.id ? 0.85 : 0.6,
+                                            maxWidth: 180,
+                                        }}
+                                    >
+                                        {tab.desc}
+                                    </span>
+                                </span>
                             </button>
                         ))}
 

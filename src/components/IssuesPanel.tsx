@@ -2,6 +2,8 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useAutoClearError } from '../hooks/useAutoClearError';
 import { RefreshCw, ListChecks, Loader2, AlertTriangle } from 'lucide-react';
 import { useTranslation } from '../i18n/useTranslation';
+import { useNavItems } from '../hooks/useNavItems';
+import { CrossPanelLinks } from './Common/CrossPanelLinks';
 import { gatewayApi as api, DEFAULT_GATEWAY_URL } from './Common';
 
 interface Agent {
@@ -47,6 +49,7 @@ const GATE_STATUSES = ['in_review', 'done'];
 
 const IssuesPanel: React.FC = () => {
     const { t } = useTranslation();
+    const navItems = useNavItems();
     const [url, setUrl] = useState(() => {
         try {
             return localStorage.getItem(URL_KEY) || DEFAULT_GATEWAY_URL;
@@ -224,6 +227,13 @@ const IssuesPanel: React.FC = () => {
 
     return (
         <div style={{ padding: '1.5rem', maxWidth: 1100, margin: '0 auto' }}>
+            <CrossPanelLinks
+                panelId="issues"
+                items={navItems}
+                curated={{
+                    issues: ['approvals', 'companies', 'governance', 'audit'],
+                }}
+            />
             <div
                 style={{
                     display: 'flex',

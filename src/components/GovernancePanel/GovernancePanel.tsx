@@ -1,6 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useAutoClearError } from '../../hooks/useAutoClearError';
 import { useTranslation } from '../../i18n/useTranslation';
+import { useNavItems } from '../../hooks/useNavItems';
+import { CrossPanelLinks } from '../Common/CrossPanelLinks';
 import { governanceService } from '../../kernel/instances/services-extras';
 
 const btn: React.CSSProperties = {
@@ -20,6 +22,7 @@ const card: React.CSSProperties = {
 
 const GovernancePanel: React.FC = () => {
     const { t } = useTranslation();
+    const navItems = useNavItems();
     const [userId, setUserId] = useState('demo-user');
     const [role, setRole] = useState<'observer' | 'approver' | 'director' | 'auditor'>('observer');
     const [roles, setRoles] = useState<{ role: string; scope?: string }[]>([]);
@@ -44,6 +47,13 @@ const GovernancePanel: React.FC = () => {
 
     return (
         <div style={{ padding: '1rem' }}>
+            <CrossPanelLinks
+                panelId="governance"
+                items={navItems}
+                curated={{
+                    governance: ['policies', 'guardrails', 'audit', 'approvals'],
+                }}
+            />
             <h2 style={{ margin: 0 }}>
                 {t('governance.title', { defaultValue: 'Governance / RBAC' })}
             </h2>

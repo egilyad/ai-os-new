@@ -6,7 +6,7 @@ import { NAV_SECTIONS } from '../../route-registry';
 import { MarkdownRenderer } from '../ChatPanel/MarkdownRenderer';
 import { WIKI_SECTIONS, articlesBySection, getArticle } from './wiki-articles';
 import { PANEL_ARTICLES } from './wiki-panels';
-import { searchSnippet, searchWiki } from './wiki-search';
+import { searchSnippet, searchWiki, searchWikiQuick } from './wiki-search';
 import { COMMITS_FEED } from '../../generated/commits-feed';
 import { WIKI_PANEL_MAP } from '../../generated/wiki-panel-map';
 import { WikiArticleView, WikiPanelStub } from './WikiArticleView';
@@ -587,6 +587,8 @@ function WikiSearch({
     hits: Array<{ slug: string; score: number }>;
     openSlug: (slug: string) => void;
 }): React.ReactNode {
+    const q = query.trim();
+    const suggestions = q ? searchWikiQuick(q, 8) : [];
     return (
         <div>
             <h3 style={{ marginTop: 0 }}>Поиск по Wiki</h3>
@@ -603,10 +605,46 @@ function WikiSearch({
                     background: 'rgba(0,0,0,0.25)',
                     color: 'inherit',
                     fontSize: '0.9rem',
-                    marginBottom: '1rem',
+                    marginBottom: '0.5rem',
                 }}
             />
-            {query.trim().length >= 2 && hits.length === 0 && (
+            {suggestions.length > 0 && (
+                <div
+                    style={{
+                        display: 'flex',
+                        flexWrap: 'wrap',
+                        gap: '0.35rem',
+                        marginBottom: '0.75rem',
+                    }}
+                >
+                    {suggestions.map((s) => {
+                        const a = getArticle(s.slug);
+                        if (!a) return null;
+                        return (
+                            <button
+                                key={s.slug}
+                                type="button"
+                                onClick={() => {
+                                    setQuery('');
+                                    openSlug(s.slug);
+                                }}
+                                style={{
+                                    background: 'rgba(96,165,250,0.1)',
+                                    border: '1px solid rgba(96,165,250,0.25)',
+                                    borderRadius: 999,
+                                    color: '#60a5fa',
+                                    fontSize: '0.78rem',
+                                    padding: '0.2rem 0.6rem',
+                                    cursor: 'pointer',
+                                }}
+                            >
+                                {a.title}
+                            </button>
+                        );
+                    })}
+                </div>
+            )}
+            {q.length >= 2 && hits.length === 0 && (
                 <p style={{ color: 'var(--text-muted)' }}>Ничего не найдено.</p>
             )}
             {hits.map((h) => {

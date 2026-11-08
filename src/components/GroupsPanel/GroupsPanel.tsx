@@ -4,6 +4,8 @@ import { groupManager, keyService, rootLogger } from '../../kernel/instances';
 const LOGGER = rootLogger.child('GroupsPanel');
 import { useKeyStore, refreshKeyStore } from '../../stores/useKeyStore';
 import { useTranslation } from '../../i18n/useTranslation';
+import { useNavItems } from '../../hooks/useNavItems';
+import { CrossPanelLinks } from '../Common/CrossPanelLinks';
 import { Users, Plus, Check, X, Shield, FolderTree } from 'lucide-react';
 import type { KeyGroup } from '../../kernel/contracts/group-manager';
 import GroupDetail from './GroupDetail';
@@ -17,6 +19,7 @@ const CARD: React.CSSProperties = {
 };
 
 const GroupsPanel: React.FC = () => {
+    const navItems = useNavItems();
     const { t } = useTranslation();
     const keys = useKeyStore((s) => s.keys);
     const [groups, setGroups] = useState<KeyGroup[]>([]);
@@ -118,10 +121,16 @@ const GroupsPanel: React.FC = () => {
     };
 
     if (groups.length === 0) {
-        return (
-            <div style={{ padding: 24, maxWidth: 1200, margin: '0 auto', color: 'var(--slate-200)' }}>
-                {error && <ErrorBanner error={error} onDismiss={() => setError(null)} />}
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 24 }}>
+    return (
+        <div style={{ padding: 24, maxWidth: 1200, margin: '0 auto', color: 'var(--slate-200)' }}>
+            <CrossPanelLinks
+                panelId="groups"
+                items={navItems}
+                curated={{
+                    groups: ['approvals', 'roles', 'agent-tasks', 'keys'],
+                }}
+            />
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 24 }}>
                     <FolderTree size={24} color="#3b82f6" />
                     <h1 style={{ fontSize: '1.25rem', fontWeight: 700, margin: 0 }}>
                         {t('groups.title')}

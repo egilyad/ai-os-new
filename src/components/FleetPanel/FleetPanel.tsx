@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useAutoClearError } from '../../hooks/useAutoClearError';
 import { useTranslation } from '../../i18n/useTranslation';
+import { useNavItems } from '../../hooks/useNavItems';
+import { CrossPanelLinks } from '../Common/CrossPanelLinks';
 import { useCrewStore } from '../../stores/crewStore';
 import { useCouncilStore } from '../../stores/councilStore';
 import { useGraphStore } from '../../stores/graphStore';
@@ -1397,6 +1399,7 @@ function RivalsTab() {
 
 const FleetPanel: React.FC<{ initialTab?: FleetTab }> = ({ initialTab }) => {
     const { t } = useTranslation();
+    const navItems = useNavItems();
     const [activeTab, setActiveTab] = useState<FleetTab>(initialTab ?? 'crews');
     // 6.3 deep-link: ?tab=graphs&run=xxx highlights card
     useEffect(() => {
@@ -1414,6 +1417,13 @@ const FleetPanel: React.FC<{ initialTab?: FleetTab }> = ({ initialTab }) => {
             style={{ height: '100%', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}
         >
             <div style={{ padding: '0.75rem 1rem', borderBottom: '1px solid #2a2a35' }}>
+                <CrossPanelLinks
+                    panelId="fleet"
+                    items={navItems}
+                    curated={{
+                        fleet: ['health', 'sre', 'agent-tasks', 'governance'],
+                    }}
+                />
                 <h2 style={{ margin: 0, fontSize: '1.1rem' }}>{t('fleet.title')}</h2>
                 <p style={{ margin: '0.25rem 0 0', fontSize: '0.8rem', opacity: 0.7 }}>
                     {t('fleet.subtitle')}
