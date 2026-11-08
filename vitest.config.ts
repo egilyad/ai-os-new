@@ -31,6 +31,19 @@ export default defineConfig({
                 'src/kernel/utils/**',
                 'src/kernel/services/key-management/**',
                 'src/components/WikiPanel/**',
+                // QW-1: extend include to directories covered by the stable
+                // test set (same paths as test:coverage) with a high
+                // test-to-file ratio. Measured 2026-11-08: All files
+                // 36.22% stmts / 29.91% branch / 36.03% funcs / 37.3% lines.
+                'src/kernel/services/storage/**',
+                'src/kernel/services/event-sourcing/**',
+                'src/kernel/services/trust/**',
+                'src/kernel/services/llm-bridge/**',
+                'src/kernel/services/ops/**',
+                'src/kernel/services/browser/**',
+                'src/llm/http/**',
+                'src/llm/decorators/**',
+                'src/llm/registry/**',
             ],
             exclude: ['src/**/*.test.*', 'src/**/*.d.ts', 'src/types/**'],
             // P1.8: 30% floor on covered code. Measured 2026-08-01:
