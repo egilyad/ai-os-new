@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useAutoClearError } from '../../hooks/useAutoClearError';
 import { Sparkles, Loader2, Check, X, Wand2, RefreshCw } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FocusScope } from '@react-aria/focus';
@@ -40,6 +41,7 @@ export const AgentWizard: React.FC<AgentWizardProps> = ({ isOpen, onClose, onAge
   const [isRefining, setIsRefining] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const clearError = useAutoClearError(setError);
   const [created, setCreated] = useState(false);
   // T1.3: rotation (default) vs pinned provider/key binding
   const [bindProvider, setBindProvider] = useState('auto');
@@ -77,6 +79,7 @@ export const AgentWizard: React.FC<AgentWizardProps> = ({ isOpen, onClose, onAge
       setConfig(result);
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : 'Generation failed');
+      clearError();
     } finally {
       setIsGenerating(false);
     }
@@ -92,6 +95,7 @@ export const AgentWizard: React.FC<AgentWizardProps> = ({ isOpen, onClose, onAge
       setRefineInstruction('');
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : 'Refinement failed');
+      clearError();
     } finally {
       setIsRefining(false);
     }
@@ -114,9 +118,11 @@ export const AgentWizard: React.FC<AgentWizardProps> = ({ isOpen, onClose, onAge
         setTimeout(() => { onClose(); setCreated(false); setConfig(null); setDescription(''); }, 1500);
       } else {
         setError('Failed to create agent. Make sure a topology is active.');
+        clearError();
       }
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : 'Creation failed');
+      clearError();
     } finally {
       setIsCreating(false);
     }
