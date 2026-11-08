@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import { useAutoClearError } from '../../hooks/useAutoClearError';
 import { groupManager, keyService, rootLogger } from '../../kernel/instances';
 const LOGGER = rootLogger.child('GroupsPanel');
 import { useKeyStore, refreshKeyStore } from '../../stores/useKeyStore';
@@ -23,6 +24,7 @@ const GroupsPanel: React.FC = () => {
     const [createOpen, setCreateOpen] = useState(false);
     const [createName, setCreateName] = useState('');
     const [error, setError] = useState<string | null>(null);
+    const clearError = useAutoClearError(setError);
 
     const refresh = useCallback(async () => {
         try {
@@ -32,8 +34,9 @@ const GroupsPanel: React.FC = () => {
         } catch (e) {
             LOGGER.error('Failed to load groups', String(e));
             setError(t('groups.error.load'));
+            clearError();
         }
-    }, [t]);
+    }, [t, clearError]);
 
     useEffect(() => {
         refresh();
@@ -76,6 +79,7 @@ const GroupsPanel: React.FC = () => {
             await refresh();
         } catch (e) {
             setError((e as Error).message);
+            clearError();
         }
     };
 
@@ -86,6 +90,7 @@ const GroupsPanel: React.FC = () => {
             await refresh();
         } catch (e) {
             setError((e as Error).message);
+            clearError();
         }
     };
 
@@ -97,6 +102,7 @@ const GroupsPanel: React.FC = () => {
             await refresh();
         } catch (e) {
             setError((e as Error).message);
+            clearError();
         }
     };
 
@@ -107,6 +113,7 @@ const GroupsPanel: React.FC = () => {
         } catch (e) {
             LOGGER.error('Failed to move key', String(e));
             setError('Failed to move key to group');
+            clearError();
         }
     };
 
