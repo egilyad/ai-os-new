@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
+import { useAutoClearError } from '../hooks/useAutoClearError';
 import { Calendar, Clock, Plus, RefreshCw, Trash2, Play, Loader2, Search } from 'lucide-react';
 import { getAllSettings, setSetting } from '../kernel/instances';
 import type { QualityTechnique } from '../kernel/contracts/debate-quality-settings';
@@ -64,6 +65,7 @@ export const SchedulerPanel: React.FC = () => {
     const [schedules, setSchedules] = useState<Schedule[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const clearError = useAutoClearError(setError);
 
     const [name, setName] = useState('');
     const [agentId, setAgentId] = useState('');
@@ -92,10 +94,11 @@ export const SchedulerPanel: React.FC = () => {
             }
         } catch (e) {
             setError(e instanceof Error ? e.message : String(e));
+            clearError();
         } finally {
             setLoading(false);
         }
-    }, []);
+    }, [clearError]);
 
     useEffect(() => {
         void load();
@@ -114,10 +117,12 @@ export const SchedulerPanel: React.FC = () => {
     const handleCreate = useCallback(async () => {
         if (!name.trim() || !agentId) {
             setError(t('scheduler.validation.required'));
+            clearError();
             return;
         }
         if (!schedulerService) {
             setError('SchedulerService unavailable');
+            clearError();
             return;
         }
         setBusy(true);
@@ -126,6 +131,7 @@ export const SchedulerPanel: React.FC = () => {
             const cron = frequency === 'custom' ? cronExpression.trim() : undefined;
             if (frequency === 'custom' && cron && !schedulerService.validateCron(cron)) {
                 setError(t('scheduler.validation.cron'));
+                clearError();
                 setBusy(false);
                 return;
             }
@@ -143,10 +149,11 @@ export const SchedulerPanel: React.FC = () => {
             await load();
         } catch (e) {
             setError(e instanceof Error ? e.message : String(e));
+            clearError();
         } finally {
             setBusy(false);
         }
-    }, [name, agentId, frequency, cronExpression, taskPrompt, agents, load, t]);
+    }, [name, agentId, frequency, cronExpression, taskPrompt, agents, load, t, clearError]);
 
     const handleSeedDemo = useCallback(async () => {
         if (!schedulerService || seedingDemo) return;
@@ -156,10 +163,11 @@ export const SchedulerPanel: React.FC = () => {
             await load();
         } catch (e) {
             setError(e instanceof Error ? e.message : String(e));
+            clearError();
         } finally {
             setSeedingDemo(false);
         }
-    }, [seedingDemo, load]);
+    }, [seedingDemo, load, clearError]);
 
     const handleToggleSchedule = useCallback(async (id: string, next: boolean) => {
         if (!schedulerService) return;
@@ -181,10 +189,11 @@ export const SchedulerPanel: React.FC = () => {
             await load();
         } catch (e) {
             setError(e instanceof Error ? e.message : String(e));
+            clearError();
         } finally {
             setBusy(false);
         }
-    }, [load]);
+    }, [load, clearError]);
 
     const filteredSchedules = React.useMemo(() => {
         const q = searchQuery.trim().toLowerCase();
