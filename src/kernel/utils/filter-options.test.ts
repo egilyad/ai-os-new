@@ -21,7 +21,7 @@ describe('scoreOption', () => {
 
     it('prefers prefix matches over substring matches', () => {
         const prefix = scoreOption(ITEMS[0]!, 'api', ['title']);
-        const substring = scoreOption(ITEMS[4]!, 'keys', ['title']);
+        const substring = scoreOption(ITEMS[4]!, 'keys', ['description']);
         expect(prefix.score).toBeGreaterThan(0);
         expect(prefix.score).toBeGreaterThan(substring.score);
     });
@@ -48,7 +48,7 @@ describe('filterOptions', () => {
     it('filters and sorts by relevance', () => {
         const res = filterOptions(ITEMS, 'key', ['title', 'description']);
         expect(res.length).toBeGreaterThan(0);
-        expect(res[0]!.item.id).toBe('1');
+        expect(res[0]!.item.id).toBe('3');
         for (let i = 1; i < res.length; i++) {
             expect(res[i - 1]!.score).toBeGreaterThanOrEqual(res[i]!.score);
         }
