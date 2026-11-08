@@ -45,9 +45,9 @@ describe('CheckpointStore (P1-16 race hardening)', () => {
         releaseLoad();
         await initPromise;
 
-        const ids = svc.getAll().map((c) => c.id);
-        expect(ids).toContain('live');
-        expect(ids).toContain('persisted-1');
+        const all = svc.getAll();
+        expect(all.map((c) => c.label)).toContain('live');
+        expect(all.map((c) => c.id)).toContain('persisted-1');
     });
 
     it('concurrent creates serialize and the final persisted set is complete', async () => {
