@@ -3,6 +3,7 @@
  * Gemini-powered research — research-grade, not production surface (P1.21).
  */
 import React, { useState, useEffect } from 'react';
+import { useAutoClearError } from '../../hooks/useAutoClearError';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Search, Sparkles, Shield, AlertTriangle, FileText, Users } from 'lucide-react';
 import type { ResearchSession } from '../../kernel/contracts/research-engine';
@@ -41,6 +42,7 @@ const GeminiResearchPanel: React.FC = () => {
     const [sessions, setSessions] = useState<ResearchSession[]>([]);
     const [selectedSessionId, setSelectedSessionId] = useState<string>('');
     const [error, setError] = useState<string | null>(null);
+    const clearError = useAutoClearError(setError);
 
     useEffect(() => {
         if (!researchEngine) return;
@@ -49,8 +51,9 @@ const GeminiResearchPanel: React.FC = () => {
             setSessions(Array.isArray(all) ? all : []);
         } catch {
             setError('Failed to load research sessions');
+            clearError();
         }
-    }, []);
+    }, [clearError]);
 
     usePolling(() => {
         if (!researchEngine) return;
