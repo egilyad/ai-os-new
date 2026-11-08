@@ -20,7 +20,7 @@
 | P1 (качество/тесты) | `P1-1` ✅ (observability: metrics/monitoring/timeline/trace/admin/causal-timeline). `P1-2` ✅ (KeyService: 13 юнит-тестов на полном моке deps; покрыты KeyStateStore, GroupManager, Rotation, KeyIntelligence, SessionAffinity, KeyFingerprints, KeyQuotas, KeyModels, KeyAlerts, KeyStatus, KeyPoolSelector). `P1-3` ✅ (kernel/runtime/bootstrap smoke). `P1-4` 🟡 (покрыты service-helper, Audit, Governance, FleetMonitor, ToolGovernance, llm-bridge порты, SandboxService.fetchUrl, utils: constant-time/Outbox/hash/embedding/provider-fleet-health; осталось: SandboxService execute, Cognitive/Orchestration уже имеют тесты). `P1-5` ✅ (streamMessage dedup). `P1-6` ✅ (ArgumentGraphService per-session: sessionId во всех методах IArgumentGraphService, изоляция состояния по сессиям, обновлены потребители — entanglement/anchoring/vulnerability/minimax/meta-agent + панели; новые тесты изоляции в test:stable). `P1-11/12` ✅. `P1-14` — алиасы событий (не баг), фикс отложен. `P1-15` ✅. |
 | P2 | 🟡 (P2-13 ✅, P2-11 ✅, P2-12 ✅, P2-6 ✅, P2-7 ✅; остальное: Builder killer-services, round-trip, консолидация панелей, etc.). |
 | P3 | 🟡 (P3-5 ✅; не начато: плагинный sandbox, федерация, серверный режим). |
-| Quick Wins | ✅ QW-3/4 частично, QW-7/8 ✅; QW-1/2/5/6 ❌ (требуют прогона инструментов). |
+| Quick Wins | ✅ QW-3/4 частично, QW-7/8 ✅, QW-1 ✅; QW-2/5/6 ❌ (требуют прогона инструментов). |
 | Тестовая база | 661 тест, 91 стабильный путь (test:stable) — рост с 623/50. |
 
 ### Рекомендуемый следующий курс
@@ -130,7 +130,7 @@
 
 | # | Задача | Источник |
 |---|---|---|
-| QW-1 | Coverage threshold в CI (порог уже есть — поднять/расширить include) | 🟡 (include расширен на key-management/utils/WikiPanel; проверка по CI) | Tech Map §9.4 |
+| QW-1 | Coverage threshold в CI (порог уже есть — поднять/расширить include) | ✅ (include расширен: +storage/event-sourcing/trust/llm-bridge/ops/browser +llm(http/decorators/registry); пороги подняты 30/20/30/30 → 31/25/30/32; замерено 2026-11-08: All files 33.37% stmts / 27.75% branch / 31.98% funcs / 34.41% lines; в CI сводка покрытия публикуется аннотацией без логина) | Tech Map §9.4 |
 | QW-2 | Снизить lint baseline (5600) — плановая чистка raw colors/set-state-in-effect | Tech Map §3.5 |
 | QW-3 | E2E для SRE/Health/Diagnostics | Roadmaps |
 | QW-4 | Визуальная регрессия панелей (Playwright snapshots) | Roadmaps |
