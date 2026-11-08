@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useAutoClearError } from '../../hooks/useAutoClearError';
 import { useTranslation } from '../../i18n/useTranslation';
 import type { ConversationScenario } from '../../kernel/contracts/conversation/scenario';
 import type { TurnProposal } from '../../kernel/contracts/conversation/turn';
@@ -43,6 +44,7 @@ const ScenarioEditor: React.FC<{
     const [participants, setParticipants] = useState<ParticipantInput[]>([]);
     const [turns, setTurns] = useState<TurnProposal[]>([]);
     const [error, setError] = useState<string | null>(null);
+    const clearError = useAutoClearError(setError);
     const [saved, setSaved] = useState(false);
 
     const canSave = name.trim().length > 0 && participants.length > 0;
@@ -54,6 +56,7 @@ const ScenarioEditor: React.FC<{
                     ? t('director.configure.name_required')
                     : t('director.configure.needs_participant'),
             );
+            clearError();
             return;
         }
         setError(null);
