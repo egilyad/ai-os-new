@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
+import { useAutoClearError } from '../../hooks/useAutoClearError';
 import {
     Database,
     Search,
@@ -28,6 +29,7 @@ export const StateInspectorPanel: React.FC = () => {
         () => new Set(['root.providers', 'root.weights']),
     );
     const [error, setError] = useState<string | null>(null);
+    const clearError = useAutoClearError(setError);
     const [copied, setCopied] = useState(false);
     const isMountedRef = useRef(true);
 
@@ -36,9 +38,12 @@ export const StateInspectorPanel: React.FC = () => {
             const snap = kernel.getStateSnapshot();
             if (isMountedRef.current) setState(snap);
         } catch (err) {
-            if (isMountedRef.current) setError(String(err));
+            if (isMountedRef.current) {
+                setError(String(err));
+                clearError();
+            }
         }
-    }, []);
+    }, [clearError]);
 
     useEffect(() => {
         isMountedRef.current = true;
@@ -92,8 +97,9 @@ export const StateInspectorPanel: React.FC = () => {
             }, 1500);
         } catch (err) {
             setError(String(err));
+            clearError();
         }
-    }, [state]);
+    }, [state, clearError]);
 
     const handleDownload = useCallback(() => {
         if (!state) return;
@@ -112,8 +118,9 @@ export const StateInspectorPanel: React.FC = () => {
             }, 100);
         } catch (err) {
             setError(String(err));
+            clearError();
         }
-    }, [state]);
+    }, [state, clearError]);
 
     const stats = useMemo(() => {
         if (!state) return null;
