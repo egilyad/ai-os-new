@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { useAutoClearError } from '../../hooks/useAutoClearError';
 import { useTranslation } from '../../i18n/useTranslation';
 import type { ConversationScenario } from '../../kernel/contracts/conversation/scenario';
 import { scenarioRepository } from '../../kernel/instances/services-extras';
@@ -13,6 +14,7 @@ const LibraryTab: React.FC<{
     const [filter, setFilter] = useState<ScenarioFilter>('all');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const clearError = useAutoClearError(setError);
 
     const load = useCallback(async () => {
         setLoading(true);
@@ -22,10 +24,11 @@ const LibraryTab: React.FC<{
             setScenarios(list);
         } catch {
             setError(t('director.library.error'));
+            clearError();
         } finally {
             setLoading(false);
         }
-    }, [filter, t]);
+    }, [filter, t, clearError]);
 
     useEffect(() => {
         void load();
@@ -38,9 +41,10 @@ const LibraryTab: React.FC<{
                 await load();
             } catch {
                 setError(t('director.library.error'));
+                clearError();
             }
         },
-        [load, t],
+        [load, t, clearError],
     );
 
     const handleArchive = useCallback(
@@ -50,9 +54,10 @@ const LibraryTab: React.FC<{
                 await load();
             } catch {
                 setError(t('director.library.error'));
+                clearError();
             }
         },
-        [load, t],
+        [load, t, clearError],
     );
 
     const handleDelete = useCallback(
@@ -62,9 +67,10 @@ const LibraryTab: React.FC<{
                 await load();
             } catch {
                 setError(t('director.library.error'));
+                clearError();
             }
         },
-        [load, t],
+        [load, t, clearError],
     );
 
     return (
