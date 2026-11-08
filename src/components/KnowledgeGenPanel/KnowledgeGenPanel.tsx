@@ -23,10 +23,13 @@ const KnowledgeGenPanel: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
     const clearError = useAutoClearError(setError);
 
-    const fail = (e: unknown) => {
-        setError(e instanceof Error ? e.message : String(e));
-        clearError();
-    };
+    const fail = useCallback(
+        (e: unknown) => {
+            setError(e instanceof Error ? e.message : String(e));
+            clearError();
+        },
+        [clearError],
+    );
 
     const refresh = useCallback(async () => {
         try {
