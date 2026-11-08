@@ -18,7 +18,7 @@
 |---|---|
 | P0 (безопасность) | `P0-1/2/3/6/7` ✅ (vault, multi-tenant server-секреты + WS-скоупинг, governance fail-closed, KeyStateStore, миграция). Осталось: `P0-3` (CSAM — нужен внешний API), `P0-4` (prompt-versioning). |
 | P1 (качество/тесты) | `P1-1` ✅ (observability: metrics/monitoring/timeline/trace/admin/causal-timeline). `P1-2` ✅ (KeyService: 13 юнит-тестов на полном моке deps; покрыты KeyStateStore, GroupManager, Rotation, KeyIntelligence, SessionAffinity, KeyFingerprints, KeyQuotas, KeyModels, KeyAlerts, KeyStatus, KeyPoolSelector). `P1-3` ✅ (kernel/runtime/bootstrap smoke). `P1-4` 🟡 (покрыты service-helper, Audit, Governance, FleetMonitor, ToolGovernance, llm-bridge порты, SandboxService.fetchUrl, utils: constant-time/Outbox/hash/embedding/provider-fleet-health; осталось: SandboxService execute, Cognitive/Orchestration уже имеют тесты). `P1-5` ✅ (streamMessage dedup). `P1-6` ✅ (ArgumentGraphService per-session: sessionId во всех методах IArgumentGraphService, изоляция состояния по сессиям, обновлены потребители — entanglement/anchoring/vulnerability/minimax/meta-agent + панели; новые тесты изоляции в test:stable). `P1-11/12` ✅. `P1-14` — алиасы событий (не баг), фикс отложен. `P1-15` ✅. |
-| P2 | 🟡 (P2-13 ✅; остальное: Builder killer-services, round-trip, консолидация панелей, etc.). |
+| P2 | 🟡 (P2-13 ✅, P2-11 ✅, P2-6 🟡; остальное: Builder killer-services, round-trip, консолидация панелей, etc.). |
 | P3 | 🟡 (не начато: плагинный sandbox, федерация, серверный режим, декомпозиция). |
 | Quick Wins | ✅ QW-3/4 частично, QW-7/8 ✅; QW-1/2/5/6 ❌ (требуют прогона инструментов). |
 | Тестовая база | 661 тест, 91 стабильный путь (test:stable) — рост с 623/50. |
@@ -107,7 +107,7 @@
 | P2-8 | Скрыть Optional/Experimental/Stub-панели из main nav; cognitive overload | ❌ | Value/Accessibility Map |
 | P2-9 | Команда «what can you do?» у Assistant; onboarding killer-фич | ❌ | Accessibility Map §3.4 |
 | P2-10 | Объединить/скрыть HealthSlaPanel и 5 @deprecated MOCK сервисов | ❌ | Dead Map; Obs Map §3.1 |
-| P2-11 | Lazy-загрузка CommandPalette/TECHNIQUE_PANEL_COMPONENTS; framer-motion 165 файлов | ❌ | Res Map §3.1 |
+| P2-11 | Lazy-загрузка CommandPalette/TECHNIQUE_PANEL_COMPONENTS; framer-motion 165 файлов | ✅ (CommandPalette + OnboardingWizard → React.lazy/Suspense; TECHNIQUE_PANEL_COMPONENTS уже lazy + PanelLoader; framer-motion 165 файлов — отдельная долгая миграция) | Res Map §3.1 |
 | P2-12 | Убрать 97 ручных setError → useAutoClearError | ❌ | Duplication Map |
 | P2-13 | eventBus cleanup audit (42 listeners) | ✅ (аудит: EventBus/сервисы/компоненты чистят подписки; добавлен тест жизненного цикла подписок event-bus-cleanup) | Opportunity Map |
 
@@ -128,7 +128,7 @@
 
 | # | Задача | Источник |
 |---|---|---|
-| QW-1 | Coverage threshold в CI (порог уже есть — поднять/расширить include) | Tech Map §9.4 |
+| QW-1 | Coverage threshold в CI (порог уже есть — поднять/расширить include) | 🟡 (include расширен на key-management/utils/WikiPanel; проверка по CI) | Tech Map §9.4 |
 | QW-2 | Снизить lint baseline (5600) — плановая чистка raw colors/set-state-in-effect | Tech Map §3.5 |
 | QW-3 | E2E для SRE/Health/Diagnostics | Roadmaps |
 | QW-4 | Визуальная регрессия панелей (Playwright snapshots) | Roadmaps |

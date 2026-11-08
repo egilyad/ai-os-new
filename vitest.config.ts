@@ -28,6 +28,9 @@ export default defineConfig({
                 'src/kernel/events/**',
                 'src/kernel/workers/**',
                 'src/kernel/container.ts',
+                'src/kernel/utils/**',
+                'src/kernel/services/key-management/**',
+                'src/components/WikiPanel/**',
             ],
             exclude: ['src/**/*.test.*', 'src/**/*.d.ts', 'src/types/**'],
             // P1.8: 30% floor on covered code. Measured 2026-08-01:
