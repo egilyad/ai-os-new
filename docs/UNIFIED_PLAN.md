@@ -120,7 +120,7 @@
 | P3-2 | Мультиклиентная федерация (A2A довести до мультиtenant) | 🟡 | SPEC_09/10 |
 | P3-3 | Серверный командный режим (multi-user/tenant) | 🟡 | SPEC_10 |
 | P3-4 | Автономный супервизор флота (Fleet → не только projection) | ❌ | ROADMAP_00 Фаза 2; полный отчёт |
-| P3-5 | Декомпозиция hotspots: dexie-schema (3764 LoC), event-registry (2555 LoC), sandbox, key-service | ❌ | Tech Map §6; полный отчёт P3-#35/36 |
+| P3-5 | Декомпозиция hotspots: dexie-schema (3764 LoC), event-registry (2555 LoC), sandbox, key-service | 🟡 (event-registry ✅: разбит на 9 тематических модулей (registry-groups/), 285 событий сохранены, публичные экспорты без изменений; sandbox уже модульный (208/165 LoC); dexie-schema и key-service — цельные классы с внутренними зависимостями, требуют ручной переработки под тестами) | Tech Map §6; полный отчёт P3-#35/36 |
 | P3-6 | Переименовать rivals/ → experimental/ (19 подкаталогов) | ❌ | Duplication/Dead Map |
 | P3-7 | Внешний security audit sandbox-interpreter | ❌ | Tech Map §6 |
 | P3-8 | External observability (Sentry/Prometheus/Grafana) | ❌ | полный отчёт P3-#38 |
