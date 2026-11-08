@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import { useAutoClearError } from '../../hooks/useAutoClearError';
 import { useTranslation } from '../../i18n/useTranslation';
 import { governanceService } from '../../kernel/instances/services-extras';
 
@@ -24,6 +25,7 @@ const GovernancePanel: React.FC = () => {
     const [roles, setRoles] = useState<{ role: string; scope?: string }[]>([]);
     const [msg, setMsg] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
+    const clearError = useAutoClearError(setError);
 
     const refresh = useCallback(async () => {
         try {
@@ -33,8 +35,9 @@ const GovernancePanel: React.FC = () => {
         } catch {
             // An empty list must mean "no roles", never a hidden load failure.
             setError(t('governance.error_load'));
+            clearError();
         }
-    }, [userId, t]);
+    }, [userId, t, clearError]);
     useEffect(() => {
         void refresh();
     }, [refresh]);
@@ -94,6 +97,7 @@ const GovernancePanel: React.FC = () => {
                             void refresh();
                         } catch {
                             setError(t('governance.assign_failed'));
+                            clearError();
                         }
                     }}
                 >
