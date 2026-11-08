@@ -3,16 +3,16 @@
   "generatedBy": "scripts/gen-docs-inventory.mjs",
   "scope": "git-tracked markdown: docs/**/*.md (excluding docs/new drafts and the self-report pages docs-health, docs-inventory) plus repository entry docs (root *.md, .superagents/**, src/kernel/DEPENDENCY_MAP.md)",
   "totals": {
-    "documents": 499,
+    "documents": 500,
     "byCategory": {
       "repo": 9,
-      "top": 115,
+      "top": 116,
       "audits": 25,
       "wiki": 350
     },
     "byLanguage": {
       "en": 40,
-      "mixed": 128,
+      "mixed": 129,
       "ru": 331
     }
   },
@@ -1202,6 +1202,14 @@
       "hash": "dcb910509722d9f68395f2b0cdafae3f243827d6"
     },
     {
+      "path": "docs/UNIFIED_PLAN.md",
+      "category": "top",
+      "language": "mixed",
+      "title": "SuperAgents OS — Единый план работ (сводный)",
+      "bytes": 14304,
+      "hash": "182bd734ed2024a949a7b8bea1e8fbb88f7bffbe"
+    },
+    {
       "path": "docs/wiki/agents.md",
       "category": "wiki",
       "language": "ru",
@@ -2078,8 +2086,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Проверки и показатели",
-      "bytes": 4075,
-      "hash": "2ca3972a6e6cffbd2aadcfbd20b4545661264cf5"
+      "bytes": 4077,
+      "hash": "bc8a5d218f0a820e3b7034897703368181d2bd71"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -2166,8 +2174,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Граф знаний",
-      "bytes": 4835,
-      "hash": "89eeef288e3cf4c70a0feb8ecc39218f667d6e31"
+      "bytes": 4877,
+      "hash": "bfc889dd9f0ae0a9469aaeff2e31b7cdea4b2c46"
     },
     {
       "path": "docs/wiki/dev-history.md",
@@ -2366,8 +2374,8 @@
       "category": "wiki",
       "language": "en",
       "title": "Каталог тестов",
-      "bytes": 5385,
-      "hash": "840ef00dce53025336843f99000e08417aa9b1ae"
+      "bytes": 7487,
+      "hash": "16b188a03aae1f443f80c30ea816c222a4851830"
     },
     {
       "path": "docs/wiki/diagnostics.md",
@@ -2382,8 +2390,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Карта документации",
-      "bytes": 51501,
-      "hash": "c42d80e2501e4ff28598467d826e101cd754b509"
+      "bytes": 55749,
+      "hash": "95ad852e74860f90b6212c1e0d515acd74a11bd8"
     },
     {
       "path": "docs/wiki/docs-standard.md",
@@ -3302,8 +3310,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Возможности и сценарии",
-      "bytes": 10004,
-      "hash": "2dffd876cf86e29f3bcf5db3780b9a4f7279ab9b"
+      "bytes": 10060,
+      "hash": "4d5baf1aade542c70c86d20c530d51a7f539533c"
     },
     {
       "path": "docs/wiki/system-audit-prompt.md",

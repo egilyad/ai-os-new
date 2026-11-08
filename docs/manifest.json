@@ -592,7 +592,9 @@
         "zone-1"
       ],
       "reviewed": null,
-      "tests": []
+      "tests": [
+        "src/kernel/services/key-management/key-service.test.ts"
+      ]
     },
     {
       "id": "wiki:panel-agent-tasks",
@@ -1892,7 +1894,10 @@
         "audit-type-security"
       ],
       "reviewed": null,
-      "tests": []
+      "tests": [
+        "src/kernel/kernel.test.ts",
+        "src/kernel/runtime.test.ts"
+      ]
     },
     {
       "id": "wiki:audit-type-build",
@@ -3840,7 +3845,11 @@
         "dev-layout"
       ],
       "reviewed": null,
-      "tests": []
+      "tests": [
+        "src/kernel/bootstrap.test.ts",
+        "src/kernel/kernel.test.ts",
+        "src/kernel/runtime.test.ts"
+      ]
     },
     {
       "id": "wiki:comp-di-container",
@@ -3869,7 +3878,8 @@
       ],
       "reviewed": null,
       "tests": [
-        "src/kernel/container.test.ts"
+        "src/kernel/container.test.ts",
+        "src/kernel/service-helper.test.ts"
       ]
     },
     {
@@ -4057,7 +4067,13 @@
       ],
       "reviewed": null,
       "tests": [
-        "src/kernel/services/virtual-key-service.test.ts"
+        "src/kernel/services/key-management/key-service.test.ts",
+        "src/kernel/services/group-manager.test.ts",
+        "src/kernel/services/key-management/key-pool-selector.test.ts",
+        "src/kernel/services/session-affinity-store.test.ts",
+        "src/kernel/services/rotation-service.test.ts",
+        "src/kernel/services/virtual-key-service.test.ts",
+        "src/kernel/services/key-intelligence-pipeline.test.ts"
       ]
     },
     {
@@ -4194,7 +4210,8 @@
       "reviewed": null,
       "tests": [
         "src/kernel/services/tool-executor.test.ts",
-        "src/kernel/services/memory/memory-mcp-server.test.ts"
+        "src/kernel/services/memory/memory-mcp-server.test.ts",
+        "src/kernel/services/sandbox-service.test.ts"
       ]
     },
     {
@@ -4475,8 +4492,12 @@
       "reviewed": null,
       "tests": [
         "src/kernel/services/metrics-service.test.ts",
+        "src/kernel/services/monitoring-service.test.ts",
+        "src/kernel/services/timeline-service.test.ts",
+        "src/kernel/services/trace-service.test.ts",
         "src/kernel/services/system-status-service.test.ts",
-        "src/kernel/services/cache-service.test.ts"
+        "src/kernel/services/cache-service.test.ts",
+        "src/kernel/services/admin-service.test.ts"
       ]
     },
     {
@@ -4546,7 +4567,8 @@
       ],
       "reviewed": null,
       "tests": [
-        "src/kernel/dal/event-log-repository.test.ts"
+        "src/kernel/dal/event-log-repository.test.ts",
+        "src/kernel/services/timeline-service.test.ts"
       ]
     },
     {
@@ -4651,7 +4673,12 @@
       ],
       "reviewed": null,
       "tests": [
+        "src/kernel/services/ops/fleet-monitor-service.test.ts",
+        "src/kernel/services/trust/governance-service.test.ts",
+        "src/kernel/services/ops/tool-governance-service.test.ts",
         "src/kernel/services/trust/provenance-service.test.ts",
+        "src/kernel/services/ops/audit-service.test.ts",
+        "src/kernel/services/ops/hierarchy-service.test.ts",
         "src/kernel/services/policy-service.test.ts",
         "src/kernel/services/permissions/permission-service.test.ts",
         "src/kernel/services/rivals/guardrail-service.test.ts"
@@ -5852,6 +5879,7 @@
       "reviewed": null,
       "tests": [
         "src/kernel/utils/network.test.ts",
+        "src/kernel/utils/constant-time.test.ts",
         "src/kernel/utils/safe-json.test.ts",
         "src/llm/http/llm-http-client.test.ts",
         "src/kernel/services/probe-service.test.ts"
@@ -5884,6 +5912,7 @@
       ],
       "reviewed": null,
       "tests": [
+        "src/kernel/utils/embedding.test.ts",
         "src/kernel/utils/seedable-rng.test.ts",
         "src/kernel/workers/memory-vector-space.test.ts"
       ]
@@ -5947,6 +5976,7 @@
       ],
       "reviewed": null,
       "tests": [
+        "src/kernel/utils/topic-suggestions.test.ts",
         "src/kernel/utils/tokenEstimate.test.ts"
       ]
     },
@@ -5978,8 +6008,10 @@
       ],
       "reviewed": null,
       "tests": [
+        "src/kernel/utils/persist-then-emit.test.ts",
         "src/kernel/utils/with-transaction.test.ts",
-        "src/kernel/utils/provider-default-models.test.ts"
+        "src/kernel/utils/provider-default-models.test.ts",
+        "src/kernel/utils/provider-fleet-health.test.ts"
       ]
     },
     {
@@ -6240,6 +6272,8 @@
         "src/components/ToolsPanel/ToolsPanel.test.tsx",
         "src/kernel/services/parity/tool-runner-service.test.ts",
         "src/kernel/services/tool-executor.test.ts",
+        "src/kernel/services/ops/tool-governance-service.test.ts",
+        "src/kernel/services/ops/sandbox-broker-service.test.ts",
         "src/kernel/services/sandbox/code-sandbox-service.test.ts",
         "src/kernel/workers/sandbox-interpreter.test.ts"
       ]
@@ -6324,6 +6358,8 @@
       ],
       "reviewed": null,
       "tests": [
+        "src/kernel/runtime.test.ts",
+        "src/kernel/bootstrap.test.ts",
         "src/kernel/services/debate-runtime/debate-persistence-manager.test.ts",
         "src/kernel/services/reconnection-service.test.ts",
         "src/kernel/services/snapshot-service.test.ts",
@@ -6914,6 +6950,7 @@
       ],
       "reviewed": null,
       "tests": [
+        "src/kernel/bootstrap.test.ts",
         "src/kernel/container.test.ts"
       ]
     },
@@ -6969,7 +7006,9 @@
         "dev-components"
       ],
       "reviewed": null,
-      "tests": []
+      "tests": [
+        "src/kernel/service-helper.test.ts"
+      ]
     },
     {
       "id": "wiki:dev-components",
@@ -12437,6 +12476,7 @@
       ],
       "tests": [
         "src/components/Common/ErrorBoundary.test.tsx",
+        "src/kernel/bootstrap.test.ts",
         "src/kernel/services/lifecycle-manager.test.ts",
         "src/kernel/utils/memory-watchdog.test.ts"
       ]
@@ -12541,6 +12581,7 @@
         "src/route-imports.ts"
       ],
       "tests": [
+        "src/kernel/bootstrap.test.ts",
         "src/kernel/utils/memory-watchdog.test.ts"
       ]
     }

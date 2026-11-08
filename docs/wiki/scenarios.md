@@ -27,7 +27,7 @@
 | Техники | 84 | [Инструменты анализа дебатов](./panel-debate-toolkit.md), [Панели: Метрики-анализаторы](./panel-eval-extra.md), [Панели: Связи, происхождение, очередь](./panel-provenance-junctions.md) |
 | Агенты | 15 | [Агенты: устройство и управление](./agents.md), [Панель: Роли и консорциумы](./panel-roles.md), [Панель: SRE-агент](./panel-sre.md) |
 | Диагностика | 20 | [Панель: Наблюдаемость (логи, трейсы, здоровье)](./panel-observability.md), [Знания и память](./memory.md), [Панель: Карта давления](./panel-pressure.md) |
-| Вики | 3 | [Панель: Wiki](./panel-wiki.md), Вики-мозг, Карта архитектуры |
+| Вики | 3 | [Панель: Wiki](./panel-wiki.md), [Вики-мозг](./panel-wiki-brain.md), [Карта архитектуры](./panel-architecture-map.md) |
 | Флот | 12 | [Панель: Флот (Fleet Console)](./panel-fleet.md), [Панели: Компании и корпоративный gateway](./panel-gateway.md), [Панель: Задачи агентов](./panel-agent-tasks.md) |
 | Google AI | 4 | [Панели: Провайдерские дополнения](./panel-providers-extra.md), [Панели: Интеграции (MCP, коннекторы, навыки, инструменты, вебхуки)](./panel-integrations.md), [Панели: Исследование (расширенное и Gemini)](./panel-research-extra.md) |
 | Исследования | 8 | [Панель: Исследовательский движок](./panel-research.md), [Deep Research](./panel-research-cockpit.md), [Панели: Исследования системы дебатов](./panel-debate-research.md) |
