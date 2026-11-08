@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import { useAutoClearError } from '../hooks/useAutoClearError';
 import { RefreshCw, Activity, Loader2, AlertTriangle } from 'lucide-react';
 import { useTranslation } from '../i18n/useTranslation';
 import { gatewayApi as api, DEFAULT_GATEWAY_URL } from './Common';
@@ -52,6 +53,7 @@ const RunsPanel: React.FC = () => {
     const [selectedId, setSelectedId] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const clearError = useAutoClearError(setError);
     const [limit, setLimit] = useState(50);
 
     const base = url.replace(/\/$/, '');
@@ -68,9 +70,10 @@ const RunsPanel: React.FC = () => {
             }
         } catch (e) {
             setError(e instanceof Error ? e.message : String(e));
+            clearError();
             setCompanies([]);
         }
-    }, [base, secret, companyId]);
+    }, [base, secret, companyId, clearError]);
 
     const loadRuns = useCallback(async () => {
         if (!companyId) return;
@@ -93,6 +96,7 @@ const RunsPanel: React.FC = () => {
             }
         } catch (e) {
             setError(e instanceof Error ? e.message : String(e));
+            clearError();
         } finally {
             setLoading(false);
         }
