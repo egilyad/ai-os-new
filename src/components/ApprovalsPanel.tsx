@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import { useAutoClearError } from '../hooks/useAutoClearError';
 import { RefreshCw, ShieldCheck, Loader2, AlertTriangle, MonitorPlay } from 'lucide-react';
 import { useTranslation } from '../i18n/useTranslation';
 import { gatewayApi as api, DEFAULT_GATEWAY_URL } from './Common';
@@ -56,6 +57,7 @@ const ApprovalsPanel: React.FC = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [notice, setNotice] = useState<string | null>(null);
+    const clearError = useAutoClearError(setError);
 
     const base = url.replace(/\/$/, '');
 
@@ -71,9 +73,10 @@ const ApprovalsPanel: React.FC = () => {
             }
         } catch (e) {
             setError(e instanceof Error ? e.message : String(e));
+            clearError();
             setCompanies([]);
         }
-    }, [base, secret, companyId]);
+    }, [base, secret, companyId, clearError]);
 
     const loadApprovals = useCallback(async () => {
         if (!companyId) return;
@@ -89,10 +92,11 @@ const ApprovalsPanel: React.FC = () => {
             setApprovals(Array.isArray(data.approvals) ? data.approvals : []);
         } catch (e) {
             setError(e instanceof Error ? e.message : String(e));
+            clearError();
         } finally {
             setLoading(false);
         }
-    }, [base, secret, companyId, statusFilter]);
+    }, [base, secret, companyId, statusFilter, clearError]);
 
     useEffect(() => {
         try {
@@ -136,6 +140,7 @@ const ApprovalsPanel: React.FC = () => {
             setComment('');
         } catch (e) {
             setError(e instanceof Error ? e.message : String(e));
+            clearError();
         }
     }
 
@@ -157,6 +162,7 @@ const ApprovalsPanel: React.FC = () => {
             setNotice(decision === 'approved' ? t('approvals.approved') : t('approvals.rejected'));
         } catch (e) {
             setError(e instanceof Error ? e.message : String(e));
+            clearError();
         }
     }
 
