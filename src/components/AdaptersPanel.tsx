@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import { useAutoClearError } from '../hooks/useAutoClearError';
 import { RefreshCw, Webhook, Loader2, AlertTriangle } from 'lucide-react';
 import { useTranslation } from '../i18n/useTranslation';
 import { gatewayApi as api, DEFAULT_GATEWAY_URL } from './Common';
@@ -51,6 +52,7 @@ const AdaptersPanel: React.FC = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [notice, setNotice] = useState<string | null>(null);
+    const clearError = useAutoClearError(setError);
 
     const base = url.replace(/\/$/, '');
 
@@ -71,10 +73,11 @@ const AdaptersPanel: React.FC = () => {
             }
         } catch (e) {
             setError(e instanceof Error ? e.message : String(e));
+            clearError();
         } finally {
             setLoading(false);
         }
-    }, [base, secret, companyId]);
+    }, [base, secret, companyId, clearError]);
 
     useEffect(() => {
         try {
@@ -98,6 +101,7 @@ const AdaptersPanel: React.FC = () => {
         const cfg = parseJson(configText);
         if (!cfg.ok) {
             setError(`${t('adapters.bad_json')}: ${cfg.error}`);
+            clearError();
             return;
         }
         setLoading(true);
@@ -129,6 +133,7 @@ const AdaptersPanel: React.FC = () => {
             setNotice(t('adapters.done'));
         } catch (e) {
             setError(e instanceof Error ? e.message : String(e));
+            clearError();
         } finally {
             setLoading(false);
         }
