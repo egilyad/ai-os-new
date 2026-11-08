@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import { useAutoClearError } from '../hooks/useAutoClearError';
 import { RefreshCw, Server, Users, AlertTriangle, Loader2 } from 'lucide-react';
 import { useTranslation } from '../i18n/useTranslation';
 import { useFrontierStore } from '../stores/frontierStore';
@@ -47,6 +48,7 @@ const CompaniesPanel: React.FC = () => {
     const [selectedId, setSelectedId] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const clearError = useAutoClearError(setError);
     const [usingFallback, setUsingFallback] = useState(false);
 
     const load = useCallback(async () => {
@@ -65,6 +67,7 @@ const CompaniesPanel: React.FC = () => {
             }
         } catch (e) {
             setError(e instanceof Error ? e.message : String(e));
+            clearError();
             setUsingFallback(true);
             setCompanies([]);
             try {
