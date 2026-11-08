@@ -108,7 +108,7 @@
 | P2-9 | Команда «what can you do?» у Assistant; onboarding killer-фич | ❌ | Accessibility Map §3.4 |
 | P2-10 | Объединить/скрыть HealthSlaPanel и 5 @deprecated MOCK сервисов | ❌ | Dead Map; Obs Map §3.1 |
 | P2-11 | Lazy-загрузка CommandPalette/TECHNIQUE_PANEL_COMPONENTS; framer-motion 165 файлов | ✅ (CommandPalette + OnboardingWizard → React.lazy/Suspense; TECHNIQUE_PANEL_COMPONENTS уже lazy + PanelLoader; framer-motion 165 файлов — отдельная долгая миграция) | Res Map §3.1 |
-| P2-12 | Убрать 97 ручных setError → useAutoClearError | ❌ | Duplication Map |
+| P2-12 | Убрать 97 ручных setError → useAutoClearError | 🟡 (11 файлов: ApprovalsPanel, LiveWorkspace, SREAgentPanel, SimulationPanel, ResearchEnginePanel, CostsPanel, SchedulerPanel, AgentTasksPanel, GroupsPanel, IssuesPanel, useBulkImport) | Duplication Map |
 | P2-13 | eventBus cleanup audit (42 listeners) | ✅ (аудит: EventBus/сервисы/компоненты чистят подписки; добавлен тест жизненного цикла подписок event-bus-cleanup) | Opportunity Map |
 
 ## 4. Приоритет P3 — платформа
