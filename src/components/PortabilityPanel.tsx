@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import { useAutoClearError } from '../hooks/useAutoClearError';
 import { RefreshCw, Share2, Loader2, AlertTriangle, Download, Upload } from 'lucide-react';
 import { useTranslation } from '../i18n/useTranslation';
 import { gatewayApi as api, DEFAULT_GATEWAY_URL } from './Common';
@@ -34,6 +35,7 @@ const PortabilityPanel: React.FC = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [notice, setNotice] = useState<string | null>(null);
+    const clearError = useAutoClearError(setError);
 
     const base = url.replace(/\/$/, '');
 
@@ -49,9 +51,10 @@ const PortabilityPanel: React.FC = () => {
             }
         } catch (e) {
             setError(e instanceof Error ? e.message : String(e));
+            clearError();
             setCompanies([]);
         }
-    }, [base, secret, companyId]);
+    }, [base, secret, companyId, clearError]);
 
     useEffect(() => {
         try {
@@ -87,6 +90,7 @@ const PortabilityPanel: React.FC = () => {
             setNotice(t('portability.exported'));
         } catch (e) {
             setError(e instanceof Error ? e.message : String(e));
+            clearError();
         } finally {
             setLoading(false);
         }
@@ -116,6 +120,7 @@ const PortabilityPanel: React.FC = () => {
             }
         } catch (e) {
             setError(e instanceof Error ? e.message : String(e));
+            clearError();
         } finally {
             setLoading(false);
         }
