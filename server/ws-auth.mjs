@@ -62,6 +62,51 @@ export function parseSyncToken(raw) {
     return { companyId, secret };
 }
 
+/**
+ * P0-2: multi-tenant upgrade verification against per-company secret HASHES.
+ * The server never holds plaintext company secrets, so instead of resolving a
+ * secret string we pass an inspector: `inspectSecret(companyId)` returns
+ * `{ exists, verify(candidate) }` where `verify` performs the constant-time
+ * hash comparison. This keeps the same verdict shape as verifyWsUpgradeCompany
+ * (including `companyId` on success) for the verifyClient caller.
+ */
+export function verifyWsUpgradeCompanyHash({ protocols, authorization }, inspectSecret) {
+    if (protocols) {
+        const parts = String(protocols)
+            .split(',')
+            .map((p) => p.trim());
+        if (parts[0] === 'sync-token') {
+            const parsed = parseSyncToken(parts[1]);
+            if (!parsed) {
+                return { ok: false, code: 4001, message: 'Invalid token' };
+            }
+            const inspected = inspectSecret(parsed.companyId);
+            if (!inspected || !inspected.exists) {
+                return { ok: false, code: 401, message: 'Unknown company' };
+            }
+            if (inspected.verify(parsed.secret)) {
+                return { ok: true, protocol: 'sync-token', companyId: parsed.companyId };
+            }
+            return { ok: false, code: 4001, message: 'Invalid token' };
+        }
+    }
+    if (authorization && authorization.startsWith('Bearer ')) {
+        const parsed = parseSyncToken(authorization.slice(7));
+        if (!parsed) {
+            return { ok: false, code: 401, message: 'Unauthorized' };
+        }
+        const inspected = inspectSecret(parsed.companyId);
+        if (!inspected || !inspected.exists) {
+            return { ok: false, code: 401, message: 'Unknown company' };
+        }
+        if (inspected.verify(parsed.secret)) {
+            return { ok: true, companyId: parsed.companyId };
+        }
+        return { ok: false, code: 4001, message: 'Invalid token' };
+    }
+    return { ok: false, code: 401, message: 'Unauthorized' };
+}
+
 export function verifyWsUpgradeCompany({ protocols, authorization }, resolveSecret) {
     if (protocols) {
         const parts = String(protocols)

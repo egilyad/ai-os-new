@@ -41,11 +41,13 @@ import {
     logActivity,
     exportCompany,
     importCompany,
+    getCompanySyncSecretHash,
+    verifyCompanySyncSecret,
 } from './company-store.mjs';
 import { listAdapters, getAdapter, parseStdout } from './adapters.mjs';
 import { startHeartbeatLoop } from './heartbeat-loop.mjs';
 import { enqueueDbWrite } from './write-queue.mjs';
-import { timingSafeEqual, verifyWsUpgrade } from './ws-auth.mjs';
+import { timingSafeEqual, verifyWsUpgrade, verifyWsUpgradeCompanyHash } from './ws-auth.mjs';
 
 const PORT = parseInt(process.env.SYNC_PORT || '3001', 10);
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -1144,6 +1146,31 @@ const wss = new WebSocketServer({
         // T-H-6: verdict logic lives in ws-auth.mjs (unit-tested); here we
         // only map it onto the verifyClient callback, echoing the selected
         // subprotocol so browser handshakes complete with it negotiated.
+        // P0-2: multi-tenant upgrade — <companyId>:<secret> token resolved
+        // against the company's stored secret hash. The connection is then
+        // bound to that company (req.syncCompanyId) for cross-tenant scoping.
+        const companyVerdict = verifyWsUpgradeCompanyHash(
+            {
+                protocols: info.req.headers['sec-websocket-protocol'],
+                authorization: info.req.headers['authorization'],
+            },
+            (companyId) => ({
+                exists: getCompanySyncSecretHash(companyId) !== null,
+                verify: (candidate) => verifyCompanySyncSecret(companyId, candidate),
+            }),
+        );
+        if (companyVerdict.ok) {
+            info.req.syncCompanyId = companyVerdict.companyId;
+            if (companyVerdict.protocol) {
+                callback(true, undefined, undefined, {
+                    'Sec-WebSocket-Protocol': companyVerdict.protocol,
+                });
+            } else {
+                callback(true);
+            }
+            return;
+        }
+        // Legacy fallback: single shared SYNC_SECRET (pre-tenant clients).
         const verdict = verifyWsUpgrade(
             {
                 protocols: info.req.headers['sec-websocket-protocol'],
@@ -1167,8 +1194,10 @@ const wss = new WebSocketServer({
     },
 });
 
-wss.on('connection', (ws) => {
+wss.on('connection', (ws, request) => {
     const clientIp = ws._socket?.remoteAddress || 'unknown';
+    const companyId = request?.syncCompanyId || null;
+    if (companyId) ws.companyId = companyId;
     ws.send(JSON.stringify({ type: 'connected', timestamp: Date.now() }));
     const id = `${clientIp}-${Date.now()}`;
     // Liveness for dead-TCP detection (see sweeper below).
