@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { RotateCcw } from 'lucide-react';
+import { RotateCcw, History, Clock } from 'lucide-react';
 import {
     getAllPrompts,
     setPrompt,
     resetAllPrompts,
+    getVersionHistory,
+    rollbackPrompt,
     type PromptRole,
+    type PromptRoleVersion,
 } from '../../kernel/services/prompt-store';
 import { useConfirm } from '../../hooks/useConfirm';
 import { eventBus } from '../../kernel/instances';
@@ -31,6 +34,8 @@ const PromptsTab: React.FC = () => {
     });
     const [saved, setSaved] = useState(false);
     const [resetDone, setResetDone] = useState(false);
+    const [history, setHistory] = useState<Partial<Record<PromptRole, PromptRoleVersion[]>>>({});
+    const [openRole, setOpenRole] = useState<PromptRole | null>(null);
     const { confirm, ConfirmDialog } = useConfirm();
 
     useEffect(() => {
@@ -43,7 +48,18 @@ const PromptsTab: React.FC = () => {
                     type: 'error' as const,
                 });
             });
+        void refreshHistory();
     }, []);
+
+    const refreshHistory = async () => {
+        const roles = Object.keys(PROMPT_LABELS) as PromptRole[];
+        const entries = await Promise.all(roles.map((r) => getVersionHistory(r)));
+        const next: Partial<Record<PromptRole, PromptRoleVersion[]>> = {};
+        roles.forEach((r, i) => {
+            next[r] = entries[i];
+        });
+        setHistory(next);
+    };
 
     useEffect(() => {
         if (saved || resetDone) {
@@ -56,9 +72,19 @@ const PromptsTab: React.FC = () => {
     }, [saved, resetDone]);
 
     const handleChange = (role: PromptRole, value: string) => {
-        setPrompt(role, value);
+        void setPrompt(role, value);
         setPrompts((prev) => ({ ...prev, [role]: value }));
         setSaved(true);
+        void refreshHistory();
+    };
+
+    const handleRollback = async (role: PromptRole, versionId: string) => {
+        const ok = await rollbackPrompt(role, versionId);
+        if (ok) {
+            const fresh = await getAllPrompts();
+            setPrompts(fresh);
+            await refreshHistory();
+        }
     };
 
     const handleReset = async () => {
@@ -159,6 +185,78 @@ const PromptsTab: React.FC = () => {
                                 outline: 'none',
                             }}
                         />
+                        <button
+                            onClick={() => setOpenRole(openRole === role ? null : role)}
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 6,
+                                alignSelf: 'flex-start',
+                                background: 'none',
+                                border: 'none',
+                                color: 'var(--slate-400)',
+                                cursor: 'pointer',
+                                fontSize: '0.75rem',
+                                padding: 0,
+                            }}
+                        >
+                            <History size={13} /> History ({(history[role] ?? []).length})
+                        </button>
+                        {openRole === role && (
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    gap: 6,
+                                    background: 'rgba(0,0,0,0.2)',
+                                    borderRadius: 8,
+                                    padding: '0.5rem',
+                                }}
+                            >
+                                {(history[role] ?? []).length === 0 && (
+                                    <div style={{ fontSize: '0.75rem', color: 'var(--slate-500)' }}>
+                                        No recorded versions yet.
+                                    </div>
+                                )}
+                                {(history[role] ?? []).map((v) => (
+                                    <div
+                                        key={v.id}
+                                        style={{
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            gap: 8,
+                                            fontSize: '0.75rem',
+                                            color: 'var(--slate-400)',
+                                        }}
+                                    >
+                                        <Clock size={12} />
+                                        <span style={{ fontFamily: 'monospace', flexShrink: 0 }}>
+                                            {new Date(v.createdAt).toLocaleString()}
+                                        </span>
+                                        <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                            {v.comment}
+                                        </span>
+                                        <button
+                                            onClick={() => void handleRollback(role, v.id)}
+                                            style={{
+                                                background: 'none',
+                                                border: '1px solid rgba(245,158,11,0.3)',
+                                                color: '#f59e0b',
+                                                borderRadius: 6,
+                                                padding: '2px 8px',
+                                                cursor: 'pointer',
+                                                fontSize: '0.7rem',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                gap: 4,
+                                            }}
+                                        >
+                                            <RotateCcw size={11} /> Rollback
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
                     </div>
                 ))}
             </div>

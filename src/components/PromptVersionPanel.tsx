@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { History, Plus, Trash2, Clock, Hash, FileText, ArrowLeft } from 'lucide-react';
+import { History, Plus, Trash2, Clock, Hash, FileText, ArrowLeft, RotateCcw } from 'lucide-react';
 import PanelLoader from './PanelLoader';
 import { promptVersionService } from '../kernel/instances';
 import type { PromptMeta, PromptVersion } from '../kernel/contracts/prompt-version-history';
@@ -12,6 +12,7 @@ const PromptVersionPanelContent: React.FC = () => {
     const [newName, setNewName] = useState('');
     const [newContent, setNewContent] = useState('');
     const [newComment, setNewComment] = useState('');
+    const [rollbackMessage, setRollbackMessage] = useState('');
 
     const refresh = () => setPrompts(promptVersionService.getPrompts());
 
@@ -38,6 +39,17 @@ const PromptVersionPanelContent: React.FC = () => {
         setShowForm(false);
         setSelectedPrompt(id);
         refresh();
+    };
+
+    const handleRollback = (versionTo: PromptVersion) => {
+        const content = promptVersionService.rollbackTo(selectedPrompt!, versionTo.id);
+        if (content !== undefined) {
+            setRollbackMessage(`Rolled back to v${versionTo.version}`);
+            setSelectedPrompt(null);
+            setVersions([]);
+            refresh();
+            setTimeout(() => setRollbackMessage(''), 3000);
+        }
     };
 
     if (selectedPrompt) {
@@ -71,6 +83,22 @@ const PromptVersionPanelContent: React.FC = () => {
                     {meta?.currentVersion} versions · Updated{' '}
                     {meta ? new Date(meta.updatedAt).toLocaleDateString() : ''}
                 </p>
+
+                {rollbackMessage && (
+                    <div
+                        style={{
+                            background: 'rgba(245,158,11,0.1)',
+                            border: '1px solid rgba(245,158,11,0.2)',
+                            color: '#f59e0b',
+                            fontSize: 12,
+                            padding: '6px 10px',
+                            borderRadius: 6,
+                            marginBottom: 12,
+                        }}
+                    >
+                        {rollbackMessage}
+                    </div>
+                )}
 
                 <button
                     onClick={() => {
@@ -202,6 +230,31 @@ const PromptVersionPanelContent: React.FC = () => {
                         >
                             {v.content}
                         </pre>
+                        <div
+                            style={{
+                                display: 'flex',
+                                justifyContent: 'flex-end',
+                                marginTop: 6,
+                            }}
+                        >
+                            <button
+                                onClick={() => handleRollback(v)}
+                                style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: 4,
+                                    background: 'none',
+                                    border: '1px solid rgba(245,158,11,0.3)',
+                                    color: '#f59e0b',
+                                    borderRadius: 6,
+                                    padding: '4px 10px',
+                                    cursor: 'pointer',
+                                    fontSize: 11,
+                                }}
+                            >
+                                <RotateCcw size={12} /> Rollback
+                            </button>
+                        </div>
                     </div>
                 ))}
             </div>

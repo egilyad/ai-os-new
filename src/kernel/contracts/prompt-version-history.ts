@@ -27,4 +27,5 @@ export interface IPromptVersionService {
         comment: string,
     ): PromptVersion;
     deletePrompt(promptId: string): void;
+    rollbackTo(promptId: string, versionId: string): string | undefined;
 }

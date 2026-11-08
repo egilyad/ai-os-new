@@ -202,4 +202,27 @@ export class PromptVersionService implements IPromptVersionService {
         this.versions = this.versions.filter((v) => v.promptId !== promptId);
         this.persist();
     }
+
+    rollbackTo(promptId: string, versionId: string): string | undefined {
+        const target = this.versions.find(
+            (v) => v.id === versionId && v.promptId === promptId,
+        );
+        if (!target) return undefined;
+        const meta = this.prompts.find((p) => p.id === promptId);
+        if (meta) {
+            meta.currentVersion++;
+            meta.updatedAt = Date.now();
+        }
+        this.versions.push({
+            id: id(),
+            promptId,
+            content: target.content,
+            version: (meta?.currentVersion ?? 0) + 1,
+            author: 'admin',
+            createdAt: Date.now(),
+            comment: `Rolled back to ${target.id}`,
+        });
+        this.persist();
+        return target.content;
+    }
 }

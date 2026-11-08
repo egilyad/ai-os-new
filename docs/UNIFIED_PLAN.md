@@ -70,7 +70,7 @@
 | P0-1a | Проверено: `KeyRegistry.saveKeys` → `encryptAllKeys`, load → `decryptAllKeys`, vault reconcile, миграция plaintext→encrypted | ✅ | SPEC_01 |
 | P0-2 | Multi-tenant server-скоупинг: per-company secret вместо общего `SYNC_SECRET`, WS cross-tenant isolation | ✅ (per-company секреты в company-store (хеш SHA-256, set/rotate/verify), verifyWsUpgradeCompanyHash в ws-auth, привязка `companyId` к WS-соединению в sync-server verifyClient; legacy `SYNC_SECRET` сохранён как fallback; тесты) | полный отчёт P0-#2; W2-009/W8-003 |
 | P0-3 | CSAM/модерация изображений (внешний API) | ❌ | полный отчёт P0-#4; W7-UGC-009 |
-| P0-4 | Prompt-versioning: 156 unversioned «You are…» → версии/A-B/rollback | ❌ | W4-041; dev-status-debt |
+| P0-4 | Prompt-versioning: 156 unversioned «You are…» → версии/A-B/rollback | 🟡 (версии + rollback для редактируемых debate-промптов: prompt-store автофиксирует версию при setPrompt (история до 50/роль), rollback в PromptsTab и PromptVersionPanel; в PromptVersionService добавлен rollbackTo. Остаток: A/B по версиям промптов — ABTestPanel существует для провайдеров, по версиям не подключён) | W4-041; dev-status-debt |
 
 ## 2. Приоритет P1 — качество кода и тесты
 
