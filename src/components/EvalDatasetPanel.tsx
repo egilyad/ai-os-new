@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { useAutoClearError } from '../hooks/useAutoClearError';
 import { useTranslation } from '../i18n/useTranslation';
 import { Database, Plus, Play, Trash2, CheckCircle, XCircle, BarChart3 } from 'lucide-react';
 import type { EvalDataset, EvalRun } from '../kernel/contracts/eval-dataset';
@@ -45,6 +46,7 @@ const EvalDatasetPanel: React.FC = () => {
     const [inputText, setInputText] = useState('');
     const [runningId, setRunningId] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
+    const clearError = useAutoClearError(setError);
 
     const load = useCallback(async () => {
         try {
@@ -55,8 +57,9 @@ const EvalDatasetPanel: React.FC = () => {
             setError(
                 `Failed to load datasets: ${e instanceof Error ? e.message : 'Unknown error'}`,
             );
+            clearError();
         }
-    }, [setDatasets, setError]);
+    }, [setDatasets, setError, clearError]);
 
     useEffect(() => {
         void load();
@@ -82,6 +85,7 @@ const EvalDatasetPanel: React.FC = () => {
             setError(
                 `Failed to create dataset: ${e instanceof Error ? e.message : 'Unknown error'}`,
             );
+            clearError();
         }
     }
 
@@ -95,6 +99,7 @@ const EvalDatasetPanel: React.FC = () => {
             setError(
                 `Failed to delete dataset: ${e instanceof Error ? e.message : 'Unknown error'}`,
             );
+            clearError();
         }
     }
 
@@ -112,6 +117,7 @@ const EvalDatasetPanel: React.FC = () => {
             await load();
         } catch (e) {
             setError(`Failed to run eval: ${e instanceof Error ? e.message : 'Unknown error'}`);
+            clearError();
         }
         setRunningId(null);
     }
