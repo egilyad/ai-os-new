@@ -19,7 +19,7 @@
 | P0 (безопасность) | `P0-1/2/3/6/7` ✅ (vault, multi-tenant server-секреты + WS-скоупинг, governance fail-closed, KeyStateStore, миграция). Осталось: `P0-3` (CSAM — нужен внешний API), `P0-4` (prompt-versioning). |
 | P1 (качество/тесты) | `P1-1` ✅ (observability: metrics/monitoring/timeline/trace/admin/causal-timeline). `P1-2` ✅ (KeyService: 13 юнит-тестов на полном моке deps; покрыты KeyStateStore, GroupManager, Rotation, KeyIntelligence, SessionAffinity, KeyFingerprints, KeyQuotas, KeyModels, KeyAlerts, KeyStatus, KeyPoolSelector). `P1-3` ✅ (kernel/runtime/bootstrap smoke). `P1-4` 🟡 (покрыты service-helper, Audit, Governance, FleetMonitor, ToolGovernance, llm-bridge порты, SandboxService.fetchUrl, utils: constant-time/Outbox/hash/embedding/provider-fleet-health; осталось: SandboxService execute, Cognitive/Orchestration уже имеют тесты). `P1-5` ✅ (streamMessage dedup). `P1-6` ✅ (ArgumentGraphService per-session: sessionId во всех методах IArgumentGraphService, изоляция состояния по сессиям, обновлены потребители — entanglement/anchoring/vulnerability/minimax/meta-agent + панели; новые тесты изоляции в test:stable). `P1-11/12` ✅. `P1-14` — алиасы событий (не баг), фикс отложен. `P1-15` ✅. |
 | P2 | 🟡 (P2-13 ✅, P2-11 ✅, P2-12 ✅, P2-6 ✅, P2-7 ✅; остальное: Builder killer-services, round-trip, консолидация панелей, etc.). |
-| P3 | 🟡 (не начато: плагинный sandbox, федерация, серверный режим, декомпозиция). |
+| P3 | 🟡 (P3-5 ✅; не начато: плагинный sandbox, федерация, серверный режим). |
 | Quick Wins | ✅ QW-3/4 частично, QW-7/8 ✅; QW-1/2/5/6 ❌ (требуют прогона инструментов). |
 | Тестовая база | 661 тест, 91 стабильный путь (test:stable) — рост с 623/50. |
 
@@ -29,6 +29,7 @@
 3. `P0-2` ✅ — закрыт (per-company секреты + WS-скоупинг; legacy SYNC_SECRET как fallback, 2026-11-08).
 4. `P2-12` ✅ — закрыт (97 ручных setError → useAutoClearError; `autoClearMs: null` для стойких ошибок, 2026-11-08).
 5. Затем P2 (UI/продукт) и P3.
+6. `P3-5` ✅ — закрыт (декомпозиция dexie-schema + key-service, 2026-11-08).
 
 ---
 
@@ -120,7 +121,7 @@
 | P3-2 | Мультиклиентная федерация (A2A довести до мультиtenant) | 🟡 | SPEC_09/10 |
 | P3-3 | Серверный командный режим (multi-user/tenant) | 🟡 | SPEC_10 |
 | P3-4 | Автономный супервизор флота (Fleet → не только projection) | ❌ | ROADMAP_00 Фаза 2; полный отчёт |
-| P3-5 | Декомпозиция hotspots: dexie-schema (3764 LoC), event-registry (2555 LoC), sandbox, key-service | 🟡 (event-registry ✅: разбит на 9 тематических модулей (registry-groups/), 285 событий сохранены, публичные экспорты без изменений; sandbox уже модульный (208/165 LoC); dexie-schema и key-service — цельные классы с внутренними зависимостями, требуют ручной переработки под тестами) | Tech Map §6; полный отчёт P3-#35/36 |
+| P3-5 | Декомпозиция hotspots: dexie-schema (3764 LoC), event-registry (2555 LoC), sandbox, key-service | ✅ (event-registry ✅: 9 тематических модулей (registry-groups/); dexie-schema ✅: версии вынесены в `dexie/schema-versions.ts` (DEXIE_VERSION_DEFS — единственный источник истины, 39 версий v5..v43 побайтово идентичны), хуки валидации — `schema-hooks.ts`, аудит миграций — `migration-guard.ts` (validateMigrationChain на тех же данных, расхождение с регистрацией исключено), `RecordedEventRow` — leaf `recorded-event-row.ts` с ре-экспортом; key-service ✅: `key-service-deps.ts`/`key-service-constants.ts`/`key-service-subsystems.ts` (конструктор-фабрика createKeyServiceSubsystems + общий createKeyPoolSelector; публичные экспорты KeyService/KeyServiceDeps/FREE_TIER_LIMITS без изменений); sandbox уже модульный; 0 круговых зависимостей по madge/depcruise) | Tech Map §6; полный отчёт P3-#35/36 |
 | P3-6 | Переименовать rivals/ → experimental/ (19 подкаталогов) | ❌ | Duplication/Dead Map |
 | P3-7 | Внешний security audit sandbox-interpreter | ❌ | Tech Map §6 |
 | P3-8 | External observability (Sentry/Prometheus/Grafana) | ❌ | полный отчёт P3-#38 |
