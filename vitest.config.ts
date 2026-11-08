@@ -46,15 +46,16 @@ export default defineConfig({
                 'src/llm/registry/**',
             ],
             exclude: ['src/**/*.test.*', 'src/**/*.d.ts', 'src/types/**'],
-            // P1.8: 30% floor on covered code. Measured 2026-08-01:
-            //   stores+hooks:                66.68% stmts / 50.51% branch
-            //   kernel events+workers+cont:  62.76% stmts / 57.67% branch
-            //   combined set:                ~46% stmts / ~40% branch
+            // QW-1: thresholds raised above the previous 30/20/30/30 floor.
+            // Measured 2026-11-08 on the expanded include set:
+            //   All files: 33.37% stmts / 27.75% branch / 31.98% funcs /
+            //              34.41% lines
+            // Margins ~2.4–2.8pp; re-calibrate as include grows (P3+).
             thresholds: {
-                statements: 30,
-                branches: 20,
+                statements: 31,
+                branches: 25,
                 functions: 30,
-                lines: 30,
+                lines: 32,
             },
         },
     },
