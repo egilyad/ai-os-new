@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
+import { useAutoClearError } from '../hooks/useAutoClearError';
 import {
     BookOpen,
     Plus,
@@ -47,6 +48,7 @@ const AgentJournalPanel: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
     const isMountedRef = useRef(true);
+    const clearError = useAutoClearError(setError);
 
     const refresh = useCallback(() => {
         const list = search.trim() ? service.search(search) : service.listAll();
@@ -69,6 +71,7 @@ const AgentJournalPanel: React.FC = () => {
             .catch((err) => {
                 if (isMountedRef.current) {
                     setError(String(err));
+                    clearError();
                     setLoading(false);
                 }
             });
@@ -96,6 +99,7 @@ const AgentJournalPanel: React.FC = () => {
     const handleAdd = useCallback(async () => {
         if (!newEntry.agentId.trim() || !newEntry.taskDescription.trim()) {
             setError(t('agent_journal.required_fields'));
+            clearError();
             return;
         }
         try {
@@ -127,8 +131,9 @@ const AgentJournalPanel: React.FC = () => {
             setShowAddForm(false);
         } catch (err) {
             setError(String(err));
+            clearError();
         }
-    }, [newEntry, t]);
+    }, [newEntry, t, clearError]);
 
     const handleDelete = useCallback(
         async (id: string) => {
@@ -144,9 +149,10 @@ const AgentJournalPanel: React.FC = () => {
                 await service.remove(id);
             } catch (e) {
                 setError(String(e));
+                clearError();
             }
         },
-        [confirm],
+        [confirm, clearError],
     );
 
     const handleClear = useCallback(async () => {
@@ -162,8 +168,9 @@ const AgentJournalPanel: React.FC = () => {
             await service.clear();
         } catch (e) {
             setError(String(e));
+            clearError();
         }
-    }, [t, confirm]);
+    }, [t, confirm, clearError]);
 
     const allTags = service.getAllTags();
     const totalEntries = service.count();
