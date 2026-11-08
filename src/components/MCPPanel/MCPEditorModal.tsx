@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import type { Dispatch, SetStateAction } from 'react';
 import { useAutoClearError } from '../../hooks/useAutoClearError';
 import { X } from 'lucide-react';
 import { ModalShell } from '../ModalShell';
@@ -17,7 +18,9 @@ export function MCPEditorModal({ server: editing, onClose, onSaved }: MCPEditorM
     const [name, setName] = useState(editing?.name || '');
     const [url, setUrl] = useState(editing?.url || '');
     const [error, setError] = useState('');
-    const clearError = useAutoClearError(setError as unknown as (v: string | null) => void);
+    const clearError = useAutoClearError(
+        setError as unknown as Dispatch<SetStateAction<string | null>>,
+    );
     const [saving, setSaving] = useState(false);
 
     if (!editing) return null;

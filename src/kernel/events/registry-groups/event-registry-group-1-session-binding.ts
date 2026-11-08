@@ -13,12 +13,10 @@ import {
     CognitiveDecisionSchema,
     OptimizationSuggestionSchema,
     AdapterMessageSchema,
-} from '../types/schema-types';
-
+} from '../../types/schema-types';
 function event<N extends string, S extends z.ZodType>(name: N, schema: S) {
     return { name, schema } as const;
 }
-
 export const EVENT_REGISTRY_GROUP_1 = {
 
     KEYS_LOADED: event('key:loaded', z.array(ApiKeySchema)),

@@ -26,14 +26,14 @@ export function useAutoClearError(
 
   return useCallback(() => {
     if (autoClearMs === null) {
-      LOGGER.debug('auto-clear skipped (sticky error)');
+      LOGGER.debug('useAutoClearError', 'auto-clear skipped (sticky error)');
       return;
     }
     if (timerRef.current) clearTimeout(timerRef.current);
     timerRef.current = setTimeout(() => {
       timerRef.current = null;
       if (isMountedRef.current) {
-        LOGGER.debug(`auto-clearing error after ${autoClearMs}ms`);
+        LOGGER.debug('useAutoClearError', `auto-clearing error after ${autoClearMs}ms`);
         setError(null);
       }
     }, autoClearMs);

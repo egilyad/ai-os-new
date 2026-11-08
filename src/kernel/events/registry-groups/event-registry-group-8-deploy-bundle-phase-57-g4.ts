@@ -1,24 +1,7 @@
 import { z } from 'zod';
-import {
-    ApiKeySchema,
-    SystemStateSchema,
-    ChatResponseSchema,
-    MemoryEntrySchema,
-    CognitiveSkillSchema,
-    RoleSchema,
-    ToolDefinitionSchema,
-    MCPServerConfigSchema,
-    BudgetStateSnapshotSchema,
-    PolicyViolationSchema,
-    CognitiveDecisionSchema,
-    OptimizationSuggestionSchema,
-    AdapterMessageSchema,
-} from '../types/schema-types';
-
 function event<N extends string, S extends z.ZodType>(name: N, schema: S) {
     return { name, schema } as const;
 }
-
 export const EVENT_REGISTRY_GROUP_8 = {
 
     // ── Deploy bundle (Phase 57: G4) ──

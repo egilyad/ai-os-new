@@ -1,20 +1,3 @@
-import { z } from 'zod';
-import {
-    ApiKeySchema,
-    SystemStateSchema,
-    ChatResponseSchema,
-    MemoryEntrySchema,
-    CognitiveSkillSchema,
-    RoleSchema,
-    ToolDefinitionSchema,
-    MCPServerConfigSchema,
-    BudgetStateSnapshotSchema,
-    PolicyViolationSchema,
-    CognitiveDecisionSchema,
-    OptimizationSuggestionSchema,
-    AdapterMessageSchema,
-} from '../types/schema-types';
-
 import { EVENT_REGISTRY_GROUP_1 } from './registry-groups/event-registry-group-1-session-binding';
 import { EVENT_REGISTRY_GROUP_2 } from './registry-groups/event-registry-group-2-persona-events';
 import { EVENT_REGISTRY_GROUP_3 } from './registry-groups/event-registry-group-3-provider-catalog-personality';

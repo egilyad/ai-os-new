@@ -26,7 +26,10 @@ const VaultSettingsModal: React.FC<Props> = ({ onClose }) => {
     const [passphrase, setPassphrase] = useState('');
     const [confirm, setConfirm] = useState('');
     const [error, setError] = useState('');
-    const clearError = useAutoClearError(setError as unknown as (v: string | null) => void, null);
+    const clearError = useAutoClearError(
+        setError as unknown as React.Dispatch<React.SetStateAction<string | null>>,
+        null,
+    );
     const [busy, setBusy] = useState(false);
 
     useEffect(() => {
