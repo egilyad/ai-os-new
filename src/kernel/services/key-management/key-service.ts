@@ -1,29 +1,13 @@
 import type { ApiKey, KeyHistoryEntry, ProviderAlert, KeyNote } from '../../types/metrics-types';
 import { EVENTS } from '../../events/event-names';
-import { KeyVault } from './key-vault';
-import { KeyMetricsHandler } from './key-metrics-handler';
-import { KeyStatusManager } from './key-status';
-import { KeyModels } from './key-models';
-import { KeyRegistry } from './key-registry';
-import { KeyHealth } from './key-health';
-import { KeyQuotas } from './key-quotas';
-import { KeyAnalytics } from './key-analytics';
-import { KeyFingerprints } from './key-fingerprints';
-import { KeyAlerts } from './key-alerts';
-import { KeyLifecycle } from './key-lifecycle';
 import { BucketStorageAdapter } from '../../storage-adapter-instance';
-import { KeyPoolSelector } from './key-pool-selector';
-import { KeyDiagnostics } from './key-diagnostics';
 import { debounce } from '../../../utils/debounce';
-import type { IAdapterRegistry } from '../../contracts/provider-adapter';
 import type { IKeyVaultService } from '../../contracts/key-vault';
 import type { IHealthCheckService } from '../../contracts/health-check';
 import type { IKeyAnalyticsService } from '../../contracts/key-analytics';
 import type { PoolStrategy } from '../../contracts/pool-selector';
 import type { IGroupManager } from '../../contracts/group-manager';
-import type { IKeyStateStore } from '../../contracts/key-state';
 import type { IKeyRotationManager } from '../../contracts/key-rotation';
-import type { KeyStore } from '../../contracts/storage/key-store';
 import { ensureExtendedStats, buildRestoreKeys } from './key-registry-utils';
 import { CONFIG } from '../config-registry';
 import { rootLogger } from '../logger-service';
@@ -33,49 +17,26 @@ import type { FreeTierLimit } from './key-types';
 
 import { withTransaction } from '../../utils/with-transaction';
 
-const DEFAULT_FREE_TIER_LIMITS: Record<string, FreeTierLimit> = {
-    ...CONFIG.keys.freeTierLimits,
-    Together: { requestsPerDay: 0, tokensPerDay: 0 },
-};
+import type { KeyVault } from './key-vault';
+import type { KeyMetricsHandler } from './key-metrics-handler';
+import type { KeyStatusManager } from './key-status';
+import type { KeyModels } from './key-models';
+import type { KeyRegistry } from './key-registry';
+import type { KeyHealth } from './key-health';
+import type { KeyQuotas } from './key-quotas';
+import type { KeyAnalytics } from './key-analytics';
+import type { KeyFingerprints } from './key-fingerprints';
+import type { KeyAlerts } from './key-alerts';
+import type { KeyLifecycle } from './key-lifecycle';
+import type { KeyPoolSelector } from './key-pool-selector';
+import type { KeyDiagnostics } from './key-diagnostics';
+import { createKeyServiceSubsystems, createKeyPoolSelector } from './key-service-subsystems';
+import type { KeyServiceDeps } from './key-service-deps';
+import { DEFAULT_FREE_TIER_LIMITS, STORAGE_KEY } from './key-service-constants';
 
 export const FREE_TIER_LIMITS = DEFAULT_FREE_TIER_LIMITS;
 
-const STORAGE_KEY = 'super_agents_api_keys';
-
-export interface KeyServiceDeps {
-    eventBus: {
-        on: (event: string, cb: (...args: unknown[]) => void) => () => void;
-        onSafe: <T>(event: string, cb: (data: T) => void) => () => void;
-        emit: (event: string, data?: unknown) => void;
-        emitOnce: (event: string, key: string, data?: unknown) => boolean;
-    };
-    securityService: {
-        initialize: (password: string, userId?: string) => Promise<boolean>;
-        encrypt: (text: string) => Promise<string | null>;
-        decrypt: (base64: string) => Promise<string | null>;
-        isLocked: () => boolean;
-        lock: () => void;
-    };
-    pricingService: {
-        calculateCost: (model: string, inputTokens: number, outputTokens: number) => number;
-    };
-    keyStore: KeyStore;
-    database: {
-        getKv: <T>(id: string) => Promise<T | null>;
-        setKv: <T>(id: string, value: T) => Promise<void>;
-        batchSetKv: (entries: Record<string, unknown>) => Promise<void>;
-        db: {
-            keyValue: {
-                put: (obj: { id: string; value: unknown; createdAt: number }) => Promise<void>;
-            };
-        };
-    };
-    advisorService?: {
-        getSuggestions(): Array<{ targetNodeId?: string }>;
-    };
-    providerAdapterRegistry?: IAdapterRegistry;
-    keyStateStore?: IKeyStateStore;
-}
+export type { KeyServiceDeps };
 
 export class KeyService implements IKeyRotationManager {
     private vault: KeyVault;
@@ -119,166 +80,33 @@ export class KeyService implements IKeyRotationManager {
     constructor(deps: KeyServiceDeps) {
         this.deps = deps;
 
-        this.vault = new KeyVault();
-
-        this.registry = new KeyRegistry({
-            eventBus: deps.eventBus,
-            keyStore: deps.keyStore,
-            database: deps.database,
-            vault: this.vault,
-            freeTierLimits: this.freeTierLimits,
-        });
-
-        this.alerts = new KeyAlerts({ eventBus: deps.eventBus });
-
-        this.quotas = new KeyQuotas(
-            {
-                eventBus: deps.eventBus,
-                onQuotaExceeded: (id, provider, quotaType) => {
-                    deps.eventBus.emitOnce(
-                        EVENTS.KEY_QUOTA_EXCEEDED,
-                        `${id}:${provider}:${quotaType}`,
-                        { id, provider, quotaType },
-                    );
-                    this.registry.pushHistory(id, 'quota_exceeded', `${quotaType} quota exceeded`);
-                },
-                onStateTransition: (id, newState) => {
-                    const key = this.registry.getKey(id);
-                    if (key) this.health.transitionState(key, newState);
-                },
-                addAlert: (keyId, alert) => {
-                    const key = this.registry.getKey(keyId);
-                    if (key) this.alerts.addAlert(key, alert);
-                },
-            },
-            this.freeTierLimits,
-        );
-
-        this.health = new KeyHealth({
-            eventBus: deps.eventBus,
-            onStateChanged: (id, provider, newState, previousState) => {
-                deps.eventBus.emitOnce(EVENTS.KEY_STATE_CHANGED, `${id}:${provider}:${newState}`, {
-                    id,
-                    provider,
-                    state: newState,
-                    previousState,
-                });
-            },
-            addAlert: (keyId, alert) => {
-                const key = this.registry.getKey(keyId);
-                if (key) this.alerts.addAlert(key, alert);
-            },
-            saveKeys: () => this.registry.saveKeys(),
+        const subs = createKeyServiceSubsystems(deps, {
             notify: () => this.notify(),
-            getKey: (id) => this.registry.getKey(id),
-            getActiveKeys: () => this.registry.getActiveKeys(),
-            modifyKey: (id, fn) => this.registry.modifyKey(id, fn),
-            providerAdapterRegistry: deps.providerAdapterRegistry,
-        });
-
-        this.analytics = new KeyAnalytics({
-            pricingService: deps.pricingService,
-            eventBus: deps.eventBus,
-            onLatencyBurst: (id, provider, latency) => {
-                deps.eventBus.emit(EVENTS.KEY_LATENCY_BURST, { id, provider, latency });
-            },
-            onStateChanged: (id, provider, newState, previousState) => {
-                deps.eventBus.emitOnce(EVENTS.KEY_STATE_CHANGED, `${id}:${provider}:${newState}`, {
-                    id,
-                    provider,
-                    state: newState,
-                    previousState,
-                });
-            },
-            onReputationThresholdCrossed: (id, provider, score) => {
-                deps.eventBus.emit(EVENTS.KEY_REPUTATION_THRESHOLD_CROSSED, {
-                    id,
-                    provider,
-                    score,
-                });
-            },
-            ensureExtendedStats: (key) => ensureExtendedStats(key),
-        });
-
-        this.fingerprints = new KeyFingerprints();
-        this.lifecycle = new KeyLifecycle({
-            getKey: (id) => this.registry.getKey(id),
-            saveKeys: () => this.registry.saveKeys(),
-            notify: () => this.notify(),
-            eventBus: this.deps.eventBus,
-            keyHealth: this.health,
-            keyStateStore: deps.keyStateStore,
-            database: this.deps.database,
-        });
-
-        this.poolSelector = this.createPoolSelector();
-
-        this.diagnostics = new KeyDiagnostics({
-            eventBus: deps.eventBus,
-            providerAdapterRegistry: deps.providerAdapterRegistry,
-            get advisorService() {
-                return deps.advisorService;
-            },
+            saveConfig: () => this.saveConfig(),
             recordUsage: (id, latency, tokens, model, extra) =>
                 this.recordUsage(id, latency, tokens, model, extra),
-            getKey: (id) => this.registry.getKey(id),
-            getKeys: () => this.registry.getKeys(),
+            updateKeyStatus: (id, status, latency) => this.updateKeyStatus(id, status, latency),
+            addTimer: (timer) => this._timers.add(timer),
         });
+
+        this.freeTierLimits = subs.freeTierLimits;
+        this.vault = subs.vault;
+        this.registry = subs.registry;
+        this.alerts = subs.alerts;
+        this.quotas = subs.quotas;
+        this.health = subs.health;
+        this.analytics = subs.analytics;
+        this.fingerprints = subs.fingerprints;
+        this.lifecycle = subs.lifecycle;
+        this.poolSelector = subs.poolSelector;
+        this.diagnostics = subs.diagnostics;
+        this.metricsHandler = subs.metricsHandler;
+        this.statusManager = subs.statusManager;
+        this.modelsManager = subs.modelsManager;
 
         this.vaultService = this.vault;
         this.healthCheckService = this.health;
         this.analyticsService = this.analytics;
-
-        this.metricsHandler = new KeyMetricsHandler({
-            eventBus: deps.eventBus,
-            registry: {
-                getKey: (id) => this.registry.getKey(id),
-                getKeys: () => this.registry.getKeys(),
-                modifyKey: (id, fn) => this.registry.modifyKey(id, fn),
-                saveKeys: () => this.registry.saveKeys(),
-            },
-            health: {
-                check429Spike: (keyId) => this.health.check429Spike(keyId),
-                getBackoffMs: (keyId) => this.health.getBackoffMs(keyId),
-            },
-            alerts: {
-                addAlert: (key, alert) => this.alerts.addAlert(key, alert),
-            },
-            analytics: {
-                updateMetricsFromResponse: (key, res) =>
-                    this.analytics.updateMetricsFromResponse(key, res),
-            },
-            notify: () => this.notify(),
-            addTimer: (timer) => this._timers.add(timer),
-        });
-
-        this.statusManager = new KeyStatusManager({
-            eventBus: deps.eventBus,
-            registry: {
-                getKey: (id) => this.registry.getKey(id),
-                getKeys: () => this.registry.getKeys(),
-                modifyKey: (id, fn) => this.registry.modifyKey(id, fn),
-                saveKeys: () => this.registry.saveKeys(),
-            },
-            health: {
-                quarantineKey: (key, source) => this.health.quarantineKey(key, source),
-                compromiseKey: (key, source) => this.health.compromiseKey(key, source),
-            },
-            lifecycle: {
-                onError: (id) => this.lifecycle.onError(id),
-            },
-            notify: () => this.notify(),
-        });
-
-        this.modelsManager = new KeyModels({
-            eventBus: deps.eventBus,
-            registry: {
-                getKey: (id) => this.registry.getKey(id),
-                modifyKey: (id, fn) => this.registry.modifyKey(id, fn),
-            },
-            providerAdapterRegistry: deps.providerAdapterRegistry,
-            updateKeyStatus: (id, status) => this.updateKeyStatus(id, status),
-        });
     }
 
     async init() {
@@ -795,26 +623,13 @@ export class KeyService implements IKeyRotationManager {
     }
 
     private createPoolSelector(): KeyPoolSelector {
-        const gm = this.groupManager;
-        return new KeyPoolSelector({
-            eventBus: this.deps.eventBus,
-            getPoolKeys: (provider) => this.registry.getPoolKeys(provider),
-            getKeysByProvider: (provider) => this.registry.getKeysByProvider(provider),
-            canUseKey: (key) => this.quotas.canUseKey(key),
-            isKeyQuotaExhausted: (key) => this.quotas.isKeyQuotaExhausted(key),
-            saveConfig: () => this.saveConfig(),
+        return createKeyPoolSelector({
+            deps: this.deps,
+            registry: this.registry,
+            quotas: this.quotas,
             freeTierLimits: this.freeTierLimits,
-            getGroupKeys: gm
-                ? (groupId) => {
-                      if (!groupId) return undefined;
-                      const group = gm.getGroup(groupId);
-                      if (!group) return undefined;
-                      return group.keyIds
-                          .map((id) => this.registry.getKey(id))
-                          .filter((k): k is ApiKey => !!k && typeof k === 'object');
-                  }
-                : undefined,
-            getKeyGroupId: gm ? (keyId) => gm.getPassport(keyId)?.groupId : undefined,
+            groupManager: this.groupManager,
+            saveConfig: () => this.saveConfig(),
         });
     }
 
