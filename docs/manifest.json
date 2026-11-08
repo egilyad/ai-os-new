@@ -9861,7 +9861,7 @@
       "panelId": "budget",
       "section": "budget",
       "route": "/budget",
-      "component": "src/components/BudgetPanel",
+      "component": "src/components/BudgetHub",
       "article": "panel-budget",
       "status": "live"
     },

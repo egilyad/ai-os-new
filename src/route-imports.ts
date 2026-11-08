@@ -27,7 +27,7 @@ const WhatIfPanel = React.lazy(() => import('./components/WhatIfPanel/WhatIfPane
 const DocsHealthPanel = React.lazy(() => import('./components/DocsHealthPanel'));
 const WebhooksPanel = React.lazy(() => import('./components/WebhooksPanel'));
 const RotationsPanel = React.lazy(() => import('./components/RotationsPanel'));
-const BudgetPanel = React.lazy(() => import('./components/BudgetPanel'));
+const BudgetHub = React.lazy(() => import('./components/BudgetHub'));
 const CostAnalyticsPanel = React.lazy(() => import('./components/CostAnalyticsPanel'));
 const ProviderMarketplace = React.lazy(() => import('./components/ProviderMarketplace'));
 const AgentMarketplacePanel = React.lazy(() => import('./components/AgentMarketplacePanel'));
@@ -349,7 +349,7 @@ export const PANEL_COMPONENTS: Record<string, React.ComponentType<any>> = {
     ...TECHNIQUE_PANEL_COMPONENTS,
     analytics: AnalyticsPanelLazy,
     pricing: PricingPanel,
-    budget: BudgetPanel,
+        budget: BudgetHub,
     'cost-analytics': CostAnalyticsPanel,
     routing: RoutingIntelligence,
     chat: ChatPanel,

@@ -1206,8 +1206,8 @@
       "category": "top",
       "language": "mixed",
       "title": "SuperAgents OS — Единый план работ (сводный)",
-      "bytes": 18161,
-      "hash": "52935e55cf5ac334cc5ca8136e9adf46a0b64c6a"
+      "bytes": 18467,
+      "hash": "13f11bbd7c142868e2757c86692c3192cfb40d18"
     },
     {
       "path": "docs/wiki/agents.md",
@@ -2550,8 +2550,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Панель: Бюджет и затраты",
-      "bytes": 4404,
-      "hash": "bb08551d9f390360d1d957f7451577f7a7506f16"
+      "bytes": 4402,
+      "hash": "6a8c45880fe65cf3fc8a24cf7abcb9c3b9de85ed"
     },
     {
       "path": "docs/wiki/panel-builder.md",

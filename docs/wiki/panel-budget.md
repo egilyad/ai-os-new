@@ -60,7 +60,7 @@ flowchart LR
   - Компонент: `src/components/AnalyticsPanel/PricingPanel`
   - Тесты: — (рядом с компонентом не найдены)
 - Панель `budget` → маршрут `/budget`
-  - Компонент: `src/components/BudgetPanel`
+  - Компонент: `src/components/BudgetHub`
   - Тесты: — (рядом с компонентом не найдены)
 - Панель `cost-optimization` → маршрут `/cost-optimization`
   - Компонент: `src/components/CostOptimizationPanel`

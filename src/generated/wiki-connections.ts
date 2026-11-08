@@ -383,7 +383,7 @@ export const WIKI_CONNECTIONS: Record<string, WikiConnection[]> = {
         {
             "panelId": "budget",
             "route": "/budget",
-            "component": "src/components/BudgetPanel",
+            "component": "src/components/BudgetHub",
             "tests": []
         },
         {
