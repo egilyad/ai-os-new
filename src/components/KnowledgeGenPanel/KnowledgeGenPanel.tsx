@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import { useAutoClearError } from '../../hooks/useAutoClearError';
 import { Lightbulb } from 'lucide-react';
 import { useTranslation } from '../../i18n/useTranslation';
 import { knowledgeGenerator, eventBus } from '../../kernel/instances';
@@ -20,9 +21,11 @@ const KnowledgeGenPanel: React.FC = () => {
     const [seedingDemo, setSeedingDemo] = useState(false);
     const [message, setMessage] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
+    const clearError = useAutoClearError(setError);
 
     const fail = (e: unknown) => {
         setError(e instanceof Error ? e.message : String(e));
+        clearError();
     };
 
     const refresh = useCallback(async () => {
