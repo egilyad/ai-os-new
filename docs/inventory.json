@@ -12,8 +12,8 @@
     },
     "byLanguage": {
       "en": 40,
-      "mixed": 129,
-      "ru": 331
+      "mixed": 128,
+      "ru": 332
     }
   },
   "duplicates": {
@@ -2062,8 +2062,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Отложенные работы и фичи",
-      "bytes": 9830,
-      "hash": "ea4871f74ed450b9d9804dc5e879ed65d47a0c5e"
+      "bytes": 10307,
+      "hash": "1669b4e7984ae6054bd104a34537d9a001dc00eb"
     },
     {
       "path": "docs/wiki/dev-adr.md",
@@ -2292,10 +2292,10 @@
     {
       "path": "docs/wiki/dev-status-debt.md",
       "category": "wiki",
-      "language": "mixed",
+      "language": "ru",
       "title": "Технический долг",
-      "bytes": 1786,
-      "hash": "c1bbfe1d619bac6e4f16054a873b6d7e892f6539"
+      "bytes": 1930,
+      "hash": "7b420e76a9306b70b3c5017e9cdc49d8c242180b"
     },
     {
       "path": "docs/wiki/dev-status-docs.md",

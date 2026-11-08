@@ -13,11 +13,11 @@
 
 | Работа | Источник | Причина |
 |---|---|---|
-| Builder не вызывает killer-сервисы (crystal/synthesis/lens/time-machine) | Gap Map §3 | архитектурный, большой |
+| Builder не вызывает killer-сервисы (crystal/synthesis/lens/time-machine) | ✅ ЗАКРЫТО (P2-1) | запушено |
 | Round-trip: export без import у 9 панелей | Gap Map §4 | фича восстановления из бэкапа |
 | Provenance агент↔память / дебаты↔память | Gap Map §5 | граф/связи |
 | Единые overview: agents/memory/debates/providers/background | Gap Map §6 | новый UI |
-| Search в Settings, autocomplete в Wiki | Gap Map §7 | UI |
+| Search в Settings, autocomplete в Wiki | ✅ ЗАКРЫТО (P2-6) | UI |
 | Массовые операции (Roles/Traces/Governance) | Gap Map §8 | фича (approvals уже сделаны) |
 | Уведомления: crystal refuted / debate concluded / memory worker | Gap Map §9 | событийная шина |
 
@@ -25,10 +25,10 @@
 
 | Работа | Источник | Причина |
 |---|---|---|
-| Coverage-gate в CI | Tech Map §9.4 | нужен порог, риск падения |
+| Coverage-gate в CI | ✅ ЗАКРЫТО (QW-1) | пороги 31/25/30/32, include расширен |
 | Снизить lint baseline (5600) | Tech Map §3.5 | плановая чистка |
-| Декомпозиция hotspots (dexie-schema, sandbox, key-service…) | Tech Map §6 | рефакторинг |
-| Рефакторинг 62 TechniquePanels → generic | Tech Map §5.6 | устранить дублирование |
+| Декомпозиция hotspots (dexie-schema, sandbox, key-service…) | ✅ ЗАКРЫТО (P3-5) | schema-versions/hooks/guard; key-service-subsystems |
+| Рефакторинг 62 TechniquePanels → generic | ✅ ЗАКРЫТО (P2-4) | lazy-фабрика, один общий чанк |
 | Внешний security audit sandbox-interpreter | Tech Map §6 | безопасность |
 
 ## Из «Карты доступности возможностей»
@@ -52,9 +52,9 @@
 | WikiPanel «Create article» UI | ✅ ЗАКРЫТО (P2-5) | фича |
 | DebateArena «Save as Crystal» | ✅ ЗАКРЫТО (P2-5) | фича |
 | Settings search + tooltips | ✅ ЗАКРЫТО (P2-6) | UI |
-| Объединить budget/health панели | 🟡 Quick Win | рефакторинг |
-| Coverage threshold в CI | 🟡 Quick Win | gating |
-| eventBus cleanup audit (42 listeners) | 🟡 Quick Win | чинина |
+| Объединить budget/health панели | ✅ ЗАКРЫТО (P2-3) | BudgetHub + HealthHub |
+| Coverage threshold в CI | ✅ ЗАКРЫТО (QW-1) | gating |
+| eventBus cleanup audit (42 listeners) | ✅ ЗАКРЫТО (P2-13) | чинина |
 | Переименовать rivals/ → experimental/ | 🟡 Quick Win | рефакторинг |
 | Dev-status-*.md заполнены | ✅ сделано | — |
 | Остальные Strategic Bets / Defer | 🔴/⚪ | крупное |
@@ -63,11 +63,11 @@
 
 | Работа | Вердикт карты | Причина |
 |---|---|---|
-| 5 budget-панелей → BudgetHub | 🔴 MERGE | рефакторинг UI |
-| 4 health-панелей (System/HealthSla → HealthPanel) | 🟡 MERGE | рефакторинг UI |
+| 5 budget-панелей → BudgetHub | ✅ ЗАКРЫТО (P2-3) | рефакторинг UI |
+| 4 health-панелей (System/HealthSla → HealthPanel) | ✅ ЗАКРЫТО (P2-3) | рефакторинг UI |
 | ProviderDashboard → таб в ProviderManager; удалить OpenRouterPanel | 🔴 DUPLICATE | чистка |
 | MemoryCenterPanel как hub (не дубликат MemoryPanel) | 🟡 MERGE PARTIAL | архитектура |
-| 62 TechniquePanels → каталог | 🟡 MERGE | генерация/единый компонент |
+| 62 TechniquePanels → каталог | ✅ ЗАКРЫТО (P2-4) | генерация/единый компонент |
 | rivals/ 19 подкаталогов → experimental/ или удалить | 🔴 REMOVE | чистка |
 | 97 ручных setError → useAutoClearError | ✅ ЗАКРЫТО (P2-12) | стандартизация |
 | 8 типов памяти / 14 router / 16 key-management / адаптеры | 🟢 KEEP | преднамеренно |
@@ -79,13 +79,13 @@
 | Cross-nav из diagnostic панелей к источнику (0 сейчас) | Obs Map §1 | UI-ссылки |
 | UI для MemoryWatchdog / DLQ / CircuitBreaker / Bootstrap report / Event registry / Subscription stats | Obs Map §1 | новый UI |
 | Unified «explain state» dashboard | Obs Map §1 | новый UI |
-| HealthSlaPanel (@deprecated MOCK) — удалить/скрыть | Obs Map §3.1 | чистка |
+| HealthSlaPanel (@deprecated MOCK) — удалить/скрыть | ✅ ЗАКРЫТО (P2-10: скрыт из NAV; удаление отложено) | чистка |
 
 ## Из «Карты использования ресурсов»
 
 | Работа | Источник | Причина |
 |---|---|---|
-| Lazy-загрузить CommandPalette и TECHNIQUE_PANEL_COMPONENTS | Res Map §3.1 | сборка |
+| Lazy-загрузить CommandPalette и TECHNIQUE_PANEL_COMPONENTS | ✅ ЗАКРЫТО (P2-11) | сборка |
 | Почистить фоновые setInterval (39) + пауза при скрытой вкладке | Res Map §1 | ресурсы |
 | Увеличить долю useEffect с cleanup (17%) | Res Map §1 | утечки подписок |
 | Следить за Tier 7 («*») — 525 сервисов при старте | Res Map §3.2 | bootstrap |
@@ -95,11 +95,11 @@
 
 | Работа | Рекомендация карты | Причина |
 |---|---|---|
-| HIDE DeployPanel/DistillationPanel за featureFlags.mockServices.enabled=false | 🟡 HIDE+DOCUMENT | mock-бэкенды |
-| REMOVE HealthSlaPanel (mock SLA, 441 строка) | 🔴 REMOVE | mock |
+| HIDE DeployPanel/DistillationPanel за featureFlags.mockServices.enabled=false | ✅ ЗАКРЫТО (P2-10) | mock-бэкенды |
+| REMOVE HealthSlaPanel (mock SLA, 441 строка) | 🟡 (P2-10: скрыт из NAV; удаление отложено) | mock |
 | Разобрать ~15 orphan компонентов | 🟡 DOCUMENT/REMOVE | не подключены |
 | 19 rivals/ подкаталогов (~175 файлов) | 🟡 REMOVE/experimental | research parallel |
-| 5 @deprecated MOCK сервисов | 🔴 HIDE/REPLACE | simulated |
+| 5 @deprecated MOCK сервисов | 🟡 (P2-10: скрыты из NAV; удаление отложено) | simulated |
 | dev-status-*.md (уже заполнены) | ✅ сделано | — |
 
 ## Из «Карты функциональной ценности»
@@ -116,12 +116,12 @@
 
 | Работа | Источник | Причина |
 |---|---|---|
-| KeyVault fail-open + passphrase-UI | W2-005/W4-019/W7-CRY-001 | продуктовое решение |
-| API-ключи в IndexedDB plaintext | W5-002 | зависит от vault |
-| Multi-tenant IDOR / SYNC_SECRET / WS cross-tenant | W2-009/W8-003 | server-скоупинг |
-| Cross-session потеря сообщений | W6-019 | per-session изоляция |
-| Feature-flag UI (dotted vs nested) | W6-018 | типы/семантика |
-| streamMessage in-flight dedup | W6-039 | обёртка большого блока |
+| KeyVault fail-open + passphrase-UI | ✅ ЗАКРЫТО (P0-1) | passphrase-vault, ключи только encrypted |
+| API-ключи в IndexedDB plaintext | ✅ ЗАКРЫТО (P0-1) | миграция plaintext→encrypted |
+| Multi-tenant IDOR / SYNC_SECRET / WS cross-tenant | ✅ ЗАКРЫТО (P0-2) | per-company секреты + WS-скоупинг |
+| Cross-session потеря сообщений | ✅ ЗАКРЫТО (P1-6) | per-session ArgumentGraphService |
+| Feature-flag UI (dotted vs nested) | ✅ ЗАКРЫТО (P2-#25) | flattenFeatureFlags() |
+| streamMessage in-flight dedup | ✅ ЗАКРЫТО (P1-5) | CacheDecorator in-flight |
 | CSAM/модерация изображений | W7-UGC-009 | внешний сервис |
 
 ## Из SPEC_06 (плагинная система)
