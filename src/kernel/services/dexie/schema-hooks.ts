@@ -1,4 +1,4 @@
-import Dexie from 'dexie';
+import type { Table } from 'dexie';
 import { rootLogger } from '../logger-service';
 import type { KeyNote, ApiKey } from '../../types/metrics-types';
 import type { MemoryEntry } from '../../types/memory-types';
@@ -38,6 +38,31 @@ import {
 
 const LOGGER = rootLogger.child('DatabaseService');
 
+/**
+ * Структурный тип для хуков валидации. Это не полный SuperAgentsDB,
+ * а только набор таблиц с типами строк — позволяет избежать циклического
+ * импорта с dexie-schema.ts (хуки вызываются из его конструктора).
+ */
+export interface ValidationHookDb {
+    memories: Table<MemoryEntry>;
+    cognitiveTraces: Table<CognitiveTrace>;
+    sessions: Table<ChatSession>;
+    notes: Table<KeyNote>;
+    apiKeys: Table<ApiKey>;
+    roles: Table<Role>;
+    traces: Table<ExecutionTrace>;
+    skills: Table<CognitiveSkill>;
+    connectors: Table<Connector>;
+    keyValue: Table<{ id: string; value: unknown; createdAt?: number; version?: number }>;
+    debateSessions: Table<DebateSessionRecord>;
+    debateVerdicts: Table<DebateVerdictRecord>;
+    debateTimeline: Table<DebateTimelineEntry>;
+    debateOverrides: Table<DebateOverride>;
+    sessionLinks: Table<SessionLink>;
+    eventLog: Table<RecordedEventRow>;
+    scenarios: Table<ConversationScenario>;
+}
+
 const rejectHook =
     (schema: { parse: (data: unknown) => unknown }, label: string) =>
     (_primKey: unknown, obj: unknown): boolean | undefined => {
@@ -57,14 +82,10 @@ const rejectHook =
 /**
  * Устанавливает Zod-хуки валидации на таблицы Dexie (creating/updating).
  * Вызывается из конструктора SuperAgentsDB после регистрации версий.
- * Принимает Dexie (не конкретный класс), чтобы не создавать циклический
- * импорт с dexie-schema.ts; таблицы типизируются локальными row-типами.
  */
-export function installValidationHooks(db: Dexie): void {
-    const h = <T>(name: string) => db.table<T, any>(name);
-
-    h<MemoryEntry>('memories').hook('creating', rejectHook(MemoryEntrySchema, 'MemoryEntry'));
-    h<MemoryEntry>('memories').hook('updating', (mods, _primKey, obj) => {
+export function installValidationHooks(db: ValidationHookDb): void {
+    db.memories.hook('creating', rejectHook(MemoryEntrySchema, 'MemoryEntry'));
+    db.memories.hook('updating', (mods, _primKey, obj) => {
         try {
             MemoryEntrySchema.parse({ ...obj, ...mods });
             return undefined;
@@ -76,11 +97,8 @@ export function installValidationHooks(db: Dexie): void {
         }
     });
 
-    h<CognitiveTrace>('cognitiveTraces').hook(
-        'creating',
-        rejectHook(CognitiveTraceSchema, 'CognitiveTrace'),
-    );
-    h<CognitiveTrace>('cognitiveTraces').hook('updating', (mods, _primKey, obj) => {
+    db.cognitiveTraces.hook('creating', rejectHook(CognitiveTraceSchema, 'CognitiveTrace'));
+    db.cognitiveTraces.hook('updating', (mods, _primKey, obj) => {
         try {
             CognitiveTraceSchema.parse({ ...obj, ...mods });
             return undefined;
@@ -92,8 +110,8 @@ export function installValidationHooks(db: Dexie): void {
         }
     });
 
-    h<ChatSession>('sessions').hook('creating', rejectHook(ChatSessionSchema, 'ChatSession'));
-    h<ChatSession>('sessions').hook('updating', (mods, _primKey, obj) => {
+    db.sessions.hook('creating', rejectHook(ChatSessionSchema, 'ChatSession'));
+    db.sessions.hook('updating', (mods, _primKey, obj) => {
         try {
             ChatSessionSchema.parse({ ...obj, ...mods });
             return undefined;
@@ -105,8 +123,8 @@ export function installValidationHooks(db: Dexie): void {
         }
     });
 
-    h<KeyNote>('notes').hook('creating', rejectHook(KeyNoteSchema, 'KeyNote'));
-    h<KeyNote>('notes').hook('updating', (mods, _primKey, obj) => {
+    db.notes.hook('creating', rejectHook(KeyNoteSchema, 'KeyNote'));
+    db.notes.hook('updating', (mods, _primKey, obj) => {
         try {
             KeyNoteSchema.parse({ ...obj, ...mods });
             return undefined;
@@ -116,8 +134,8 @@ export function installValidationHooks(db: Dexie): void {
         }
     });
 
-    h<ApiKey>('apiKeys').hook('creating', rejectHook(ApiKeySchema, 'ApiKey'));
-    h<ApiKey>('apiKeys').hook('updating', (mods, _primKey, obj) => {
+    db.apiKeys.hook('creating', rejectHook(ApiKeySchema, 'ApiKey'));
+    db.apiKeys.hook('updating', (mods, _primKey, obj) => {
         try {
             ApiKeySchema.parse({ ...obj, ...mods });
             return undefined;
@@ -127,8 +145,8 @@ export function installValidationHooks(db: Dexie): void {
         }
     });
 
-    h<Role>('roles').hook('creating', rejectHook(RoleSchema, 'Role'));
-    h<Role>('roles').hook('updating', (mods, _primKey, obj) => {
+    db.roles.hook('creating', rejectHook(RoleSchema, 'Role'));
+    db.roles.hook('updating', (mods, _primKey, obj) => {
         try {
             RoleSchema.parse({ ...obj, ...mods });
             return undefined;
@@ -138,11 +156,8 @@ export function installValidationHooks(db: Dexie): void {
         }
     });
 
-    h<ExecutionTrace>('traces').hook(
-        'creating',
-        rejectHook(ExecutionTraceSchema, 'ExecutionTrace'),
-    );
-    h<ExecutionTrace>('traces').hook('updating', (mods, _primKey, obj) => {
+    db.traces.hook('creating', rejectHook(ExecutionTraceSchema, 'ExecutionTrace'));
+    db.traces.hook('updating', (mods, _primKey, obj) => {
         try {
             ExecutionTraceSchema.parse({ ...obj, ...mods });
             return undefined;
@@ -152,8 +167,8 @@ export function installValidationHooks(db: Dexie): void {
         }
     });
 
-    h<CognitiveSkill>('skills').hook('creating', rejectHook(CognitiveSkillSchema, 'CognitiveSkill'));
-    h<CognitiveSkill>('skills').hook('updating', (mods, _primKey, obj) => {
+    db.skills.hook('creating', rejectHook(CognitiveSkillSchema, 'CognitiveSkill'));
+    db.skills.hook('updating', (mods, _primKey, obj) => {
         try {
             CognitiveSkillSchema.parse({ ...obj, ...mods });
             return undefined;
@@ -163,8 +178,8 @@ export function installValidationHooks(db: Dexie): void {
         }
     });
 
-    h<Connector>('connectors').hook('creating', rejectHook(ConnectorSchema, 'Connector'));
-    h<Connector>('connectors').hook('updating', (mods, _primKey, obj) => {
+    db.connectors.hook('creating', rejectHook(ConnectorSchema, 'Connector'));
+    db.connectors.hook('updating', (mods, _primKey, obj) => {
         try {
             ConnectorSchema.parse({ ...obj, ...mods });
             return undefined;
@@ -174,28 +189,22 @@ export function installValidationHooks(db: Dexie): void {
         }
     });
 
-    h<{ id: string; value: unknown; createdAt?: number; version?: number }>('keyValue').hook(
-        'creating',
-        rejectHook(KeyValueSchema, 'KeyValue'),
-    );
-    h<{ id: string; value: unknown; createdAt?: number; version?: number }>('keyValue').hook(
-        'updating',
-        (mods, _primKey, obj) => {
-            try {
-                KeyValueSchema.parse({ ...obj, ...mods });
-                return undefined;
-            } catch {
-                LOGGER.error('DatabaseService', 'KeyValue update validation FAILED');
-                return false;
-            }
-        },
-    );
+    db.keyValue.hook('creating', rejectHook(KeyValueSchema, 'KeyValue'));
+    db.keyValue.hook('updating', (mods, _primKey, obj) => {
+        try {
+            KeyValueSchema.parse({ ...obj, ...mods });
+            return undefined;
+        } catch {
+            LOGGER.error('DatabaseService', 'KeyValue update validation FAILED');
+            return false;
+        }
+    });
 
-    h<DebateSessionRecord>('debateSessions').hook(
+    db.debateSessions.hook(
         'creating',
         rejectHook(DebateSessionRecordSchema, 'DebateSession'),
     );
-    h<DebateSessionRecord>('debateSessions').hook('updating', (mods, _primKey, obj) => {
+    db.debateSessions.hook('updating', (mods, _primKey, obj) => {
         try {
             DebateSessionRecordSchema.parse({ ...obj, ...mods });
             return undefined;
@@ -207,11 +216,11 @@ export function installValidationHooks(db: Dexie): void {
         }
     });
 
-    h<DebateVerdictRecord>('debateVerdicts').hook(
+    db.debateVerdicts.hook(
         'creating',
         rejectHook(DebateVerdictRecordSchema, 'DebateVerdict'),
     );
-    h<DebateVerdictRecord>('debateVerdicts').hook('updating', (mods, _primKey, obj) => {
+    db.debateVerdicts.hook('updating', (mods, _primKey, obj) => {
         try {
             DebateVerdictRecordSchema.parse({ ...obj, ...mods });
             return undefined;
@@ -223,11 +232,11 @@ export function installValidationHooks(db: Dexie): void {
         }
     });
 
-    h<DebateTimelineEntry>('debateTimeline').hook(
+    db.debateTimeline.hook(
         'creating',
         rejectHook(DebateTimelineEntrySchema, 'DebateTimeline'),
     );
-    h<DebateTimelineEntry>('debateTimeline').hook('updating', (mods, _primKey, obj) => {
+    db.debateTimeline.hook('updating', (mods, _primKey, obj) => {
         try {
             DebateTimelineEntrySchema.parse({ ...obj, ...mods });
             return undefined;
@@ -239,11 +248,8 @@ export function installValidationHooks(db: Dexie): void {
         }
     });
 
-    h<DebateOverride>('debateOverrides').hook(
-        'creating',
-        rejectHook(DebateOverrideSchema, 'DebateOverride'),
-    );
-    h<DebateOverride>('debateOverrides').hook('updating', (mods, _primKey, obj) => {
+    db.debateOverrides.hook('creating', rejectHook(DebateOverrideSchema, 'DebateOverride'));
+    db.debateOverrides.hook('updating', (mods, _primKey, obj) => {
         try {
             DebateOverrideSchema.parse({ ...obj, ...mods });
             return undefined;
@@ -255,8 +261,8 @@ export function installValidationHooks(db: Dexie): void {
         }
     });
 
-    h<SessionLink>('sessionLinks').hook('creating', rejectHook(SessionLinkSchema, 'SessionLink'));
-    h<SessionLink>('sessionLinks').hook('updating', (mods, _primKey, obj) => {
+    db.sessionLinks.hook('creating', rejectHook(SessionLinkSchema, 'SessionLink'));
+    db.sessionLinks.hook('updating', (mods, _primKey, obj) => {
         try {
             SessionLinkSchema.parse({ ...obj, ...mods });
             return undefined;
@@ -268,8 +274,8 @@ export function installValidationHooks(db: Dexie): void {
         }
     });
 
-    h<RecordedEventRow>('eventLog').hook('creating', rejectHook(EventLogEntrySchema, 'EventLog'));
-    h<RecordedEventRow>('eventLog').hook('updating', (mods, _primKey, obj) => {
+    db.eventLog.hook('creating', rejectHook(EventLogEntrySchema, 'EventLog'));
+    db.eventLog.hook('updating', (mods, _primKey, obj) => {
         try {
             EventLogEntrySchema.parse({ ...obj, ...mods });
             return undefined;
@@ -279,11 +285,11 @@ export function installValidationHooks(db: Dexie): void {
         }
     });
 
-    h<ConversationScenario>('scenarios').hook(
+    db.scenarios.hook(
         'creating',
         rejectHook(ConversationScenarioSchema, 'ConversationScenario'),
     );
-    h<ConversationScenario>('scenarios').hook('updating', (mods, _primKey, obj) => {
+    db.scenarios.hook('updating', (mods, _primKey, obj) => {
         try {
             ConversationScenarioSchema.parse({ ...obj, ...mods });
             return undefined;
