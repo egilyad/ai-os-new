@@ -27,7 +27,6 @@
 Цепочка «панель → маршрут → компонент → тесты» собрана из реестра маршрутов.
 
 - Панель `blind-evaluation` → маршрут `/blind-evaluation`
-  - Компонент: `src/components/TechniquePanels/BlindEvaluationPanel`
   - Тесты: — (рядом с компонентом не найдены)
 
 См. также: [Каталог панелей](./panels-catalog.md) · [Каталог компонентов OS](./dev-component-catalog.md).

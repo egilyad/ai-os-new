@@ -27,7 +27,6 @@
 Цепочка «панель → маршрут → компонент → тесты» собрана из реестра маршрутов.
 
 - Панель `dynamic-persona` → маршрут `/dynamic-persona`
-  - Компонент: `src/components/TechniquePanels/DynamicPersonaPanel`
   - Тесты: — (рядом с компонентом не найдены)
 
 См. также: [Каталог панелей](./panels-catalog.md) · [Каталог компонентов OS](./dev-component-catalog.md).

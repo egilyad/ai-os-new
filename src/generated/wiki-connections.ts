@@ -857,17 +857,15 @@ export const WIKI_CONNECTIONS: Record<string, WikiConnection[]> = {
         {
             "panelId": "cross-examination",
             "route": "/cross-examination",
-            "component": "src/components/TechniquePanels/CrossExaminationPanel",
-            "tests": [
-                "src/components/TechniquePanels/CrossExaminationPanel.test.tsx"
-            ]
+            "component": null,
+            "tests": []
         }
     ],
     "technique-delta-focusing": [
         {
             "panelId": "delta-focusing",
             "route": "/delta-focusing",
-            "component": "src/components/TechniquePanels/DeltaFocusingPanel",
+            "component": null,
             "tests": []
         }
     ],
@@ -875,7 +873,7 @@ export const WIKI_CONNECTIONS: Record<string, WikiConnection[]> = {
         {
             "panelId": "vulnerability-targeting",
             "route": "/vulnerability-targeting",
-            "component": "src/components/TechniquePanels/VulnerabilityTargetingPanel",
+            "component": null,
             "tests": []
         }
     ],
@@ -883,7 +881,7 @@ export const WIKI_CONNECTIONS: Record<string, WikiConnection[]> = {
         {
             "panelId": "agreement-anchoring",
             "route": "/agreement-anchoring",
-            "component": "src/components/TechniquePanels/AgreementAnchoringPanel",
+            "component": null,
             "tests": []
         }
     ],
@@ -891,7 +889,7 @@ export const WIKI_CONNECTIONS: Record<string, WikiConnection[]> = {
         {
             "panelId": "graph-minimax",
             "route": "/graph-minimax",
-            "component": "src/components/TechniquePanels/GraphMinimaxPanel",
+            "component": null,
             "tests": []
         }
     ],
@@ -899,7 +897,7 @@ export const WIKI_CONNECTIONS: Record<string, WikiConnection[]> = {
         {
             "panelId": "burden-of-proof",
             "route": "/burden-of-proof",
-            "component": "src/components/TechniquePanels/BurdenOfProofPanel",
+            "component": null,
             "tests": []
         }
     ],
@@ -907,7 +905,7 @@ export const WIKI_CONNECTIONS: Record<string, WikiConnection[]> = {
         {
             "panelId": "consistency-check",
             "route": "/consistency-check",
-            "component": "src/components/TechniquePanels/ConsistencyCheckPanel",
+            "component": null,
             "tests": []
         }
     ],
@@ -915,7 +913,7 @@ export const WIKI_CONNECTIONS: Record<string, WikiConnection[]> = {
         {
             "panelId": "credibility-scoring",
             "route": "/credibility-scoring",
-            "component": "src/components/TechniquePanels/CredibilityScoringPanel",
+            "component": null,
             "tests": []
         }
     ],
@@ -923,7 +921,7 @@ export const WIKI_CONNECTIONS: Record<string, WikiConnection[]> = {
         {
             "panelId": "causal-graph",
             "route": "/causal-graph",
-            "component": "src/components/TechniquePanels/CausalGraphPanel",
+            "component": null,
             "tests": []
         }
     ],
@@ -931,7 +929,7 @@ export const WIKI_CONNECTIONS: Record<string, WikiConnection[]> = {
         {
             "panelId": "pre-publish-critic",
             "route": "/pre-publish-critic",
-            "component": "src/components/TechniquePanels/PrePublishCriticPanel",
+            "component": null,
             "tests": []
         }
     ],
@@ -939,7 +937,7 @@ export const WIKI_CONNECTIONS: Record<string, WikiConnection[]> = {
         {
             "panelId": "fact-checking",
             "route": "/fact-checking",
-            "component": "src/components/TechniquePanels/FactCheckingPanel",
+            "component": null,
             "tests": []
         }
     ],
@@ -947,7 +945,7 @@ export const WIKI_CONNECTIONS: Record<string, WikiConnection[]> = {
         {
             "panelId": "epistemic-calibration",
             "route": "/epistemic-calibration",
-            "component": "src/components/TechniquePanels/EpistemicCalibrationPanel",
+            "component": null,
             "tests": []
         }
     ],
@@ -955,7 +953,7 @@ export const WIKI_CONNECTIONS: Record<string, WikiConnection[]> = {
         {
             "panelId": "socratic-pivot",
             "route": "/socratic-pivot",
-            "component": "src/components/TechniquePanels/SocraticPivotPanel",
+            "component": null,
             "tests": []
         }
     ],
@@ -963,7 +961,7 @@ export const WIKI_CONNECTIONS: Record<string, WikiConnection[]> = {
         {
             "panelId": "concession-engine",
             "route": "/concession-engine",
-            "component": "src/components/TechniquePanels/ConcessionEnginePanel",
+            "component": null,
             "tests": []
         }
     ],
@@ -971,7 +969,7 @@ export const WIKI_CONNECTIONS: Record<string, WikiConnection[]> = {
         {
             "panelId": "bayesian-judges",
             "route": "/bayesian-judges",
-            "component": "src/components/TechniquePanels/BayesianJudgesPanel",
+            "component": null,
             "tests": []
         }
     ],
@@ -979,7 +977,7 @@ export const WIKI_CONNECTIONS: Record<string, WikiConnection[]> = {
         {
             "panelId": "dpo-sampler",
             "route": "/dpo-sampler",
-            "component": "src/components/TechniquePanels/DpoSamplerPanel",
+            "component": null,
             "tests": []
         }
     ],
@@ -987,7 +985,7 @@ export const WIKI_CONNECTIONS: Record<string, WikiConnection[]> = {
         {
             "panelId": "critic",
             "route": "/critic",
-            "component": "src/components/TechniquePanels/CriticPanel",
+            "component": null,
             "tests": []
         }
     ],
@@ -995,7 +993,7 @@ export const WIKI_CONNECTIONS: Record<string, WikiConnection[]> = {
         {
             "panelId": "pivot",
             "route": "/pivot",
-            "component": "src/components/TechniquePanels/PivotPanel",
+            "component": null,
             "tests": []
         }
     ],
@@ -1003,7 +1001,7 @@ export const WIKI_CONNECTIONS: Record<string, WikiConnection[]> = {
         {
             "panelId": "concession",
             "route": "/concession",
-            "component": "src/components/TechniquePanels/ConcessionPanel",
+            "component": null,
             "tests": []
         }
     ],
@@ -1011,7 +1009,7 @@ export const WIKI_CONNECTIONS: Record<string, WikiConnection[]> = {
         {
             "panelId": "triangulation",
             "route": "/triangulation",
-            "component": "src/components/TechniquePanels/TriangulationPanel",
+            "component": null,
             "tests": []
         }
     ],
@@ -1019,7 +1017,7 @@ export const WIKI_CONNECTIONS: Record<string, WikiConnection[]> = {
         {
             "panelId": "empathy",
             "route": "/empathy",
-            "component": "src/components/TechniquePanels/EmpathyPanel",
+            "component": null,
             "tests": []
         }
     ],
@@ -1027,7 +1025,7 @@ export const WIKI_CONNECTIONS: Record<string, WikiConnection[]> = {
         {
             "panelId": "heat",
             "route": "/heat",
-            "component": "src/components/TechniquePanels/HeatPanel",
+            "component": null,
             "tests": []
         }
     ],
@@ -1035,7 +1033,7 @@ export const WIKI_CONNECTIONS: Record<string, WikiConnection[]> = {
         {
             "panelId": "sentinel",
             "route": "/sentinel",
-            "component": "src/components/TechniquePanels/SentinelPanel",
+            "component": null,
             "tests": []
         }
     ],
@@ -1043,7 +1041,7 @@ export const WIKI_CONNECTIONS: Record<string, WikiConnection[]> = {
         {
             "panelId": "redundancy",
             "route": "/redundancy",
-            "component": "src/components/TechniquePanels/RedundancyPanel",
+            "component": null,
             "tests": []
         }
     ],
@@ -1051,7 +1049,7 @@ export const WIKI_CONNECTIONS: Record<string, WikiConnection[]> = {
         {
             "panelId": "replay",
             "route": "/replay",
-            "component": "src/components/TechniquePanels/ReplayPanel",
+            "component": null,
             "tests": []
         }
     ],
@@ -1059,7 +1057,7 @@ export const WIKI_CONNECTIONS: Record<string, WikiConnection[]> = {
         {
             "panelId": "enthymeme",
             "route": "/enthymeme",
-            "component": "src/components/TechniquePanels/EnthymemePanel",
+            "component": null,
             "tests": []
         }
     ],
@@ -1067,7 +1065,7 @@ export const WIKI_CONNECTIONS: Record<string, WikiConnection[]> = {
         {
             "panelId": "multi-hop",
             "route": "/multi-hop",
-            "component": "src/components/TechniquePanels/MultiHopPanel",
+            "component": null,
             "tests": []
         }
     ],
@@ -1075,7 +1073,7 @@ export const WIKI_CONNECTIONS: Record<string, WikiConnection[]> = {
         {
             "panelId": "bias-exploit",
             "route": "/bias-exploit",
-            "component": "src/components/TechniquePanels/BiasExploitPanel",
+            "component": null,
             "tests": []
         }
     ],
@@ -1083,7 +1081,7 @@ export const WIKI_CONNECTIONS: Record<string, WikiConnection[]> = {
         {
             "panelId": "interrupt",
             "route": "/interrupt",
-            "component": "src/components/TechniquePanels/InterruptPanel",
+            "component": null,
             "tests": []
         }
     ],
@@ -1091,7 +1089,7 @@ export const WIKI_CONNECTIONS: Record<string, WikiConnection[]> = {
         {
             "panelId": "frame",
             "route": "/frame",
-            "component": "src/components/TechniquePanels/FramePanel",
+            "component": null,
             "tests": []
         }
     ],
@@ -1099,7 +1097,7 @@ export const WIKI_CONNECTIONS: Record<string, WikiConnection[]> = {
         {
             "panelId": "rhetorical-device",
             "route": "/rhetorical-device",
-            "component": "src/components/TechniquePanels/RhetoricalDevicePanel",
+            "component": null,
             "tests": []
         }
     ],
@@ -1107,7 +1105,7 @@ export const WIKI_CONNECTIONS: Record<string, WikiConnection[]> = {
         {
             "panelId": "narrative-arc",
             "route": "/narrative-arc",
-            "component": "src/components/TechniquePanels/NarrativeArcPanel",
+            "component": null,
             "tests": []
         }
     ],
@@ -1115,7 +1113,7 @@ export const WIKI_CONNECTIONS: Record<string, WikiConnection[]> = {
         {
             "panelId": "abstraction-ladder",
             "route": "/abstraction-ladder",
-            "component": "src/components/TechniquePanels/AbstractionLadderPanel",
+            "component": null,
             "tests": []
         }
     ],
@@ -1123,7 +1121,7 @@ export const WIKI_CONNECTIONS: Record<string, WikiConnection[]> = {
         {
             "panelId": "role-reversal",
             "route": "/role-reversal",
-            "component": "src/components/TechniquePanels/RoleReversalPanel",
+            "component": null,
             "tests": []
         }
     ],
@@ -1131,7 +1129,7 @@ export const WIKI_CONNECTIONS: Record<string, WikiConnection[]> = {
         {
             "panelId": "fog-of-war",
             "route": "/fog-of-war",
-            "component": "src/components/TechniquePanels/FogOfWarPanel",
+            "component": null,
             "tests": []
         }
     ],
@@ -1139,7 +1137,7 @@ export const WIKI_CONNECTIONS: Record<string, WikiConnection[]> = {
         {
             "panelId": "evidence-revelation",
             "route": "/evidence-revelation",
-            "component": "src/components/TechniquePanels/EvidenceRevelationPanel",
+            "component": null,
             "tests": []
         }
     ],
@@ -1147,7 +1145,7 @@ export const WIKI_CONNECTIONS: Record<string, WikiConnection[]> = {
         {
             "panelId": "humor",
             "route": "/humor",
-            "component": "src/components/TechniquePanels/HumorPanel",
+            "component": null,
             "tests": []
         }
     ],
@@ -1155,7 +1153,7 @@ export const WIKI_CONNECTIONS: Record<string, WikiConnection[]> = {
         {
             "panelId": "status-dynamics",
             "route": "/status-dynamics",
-            "component": "src/components/TechniquePanels/StatusDynamicsPanel",
+            "component": null,
             "tests": []
         }
     ],
@@ -1163,7 +1161,7 @@ export const WIKI_CONNECTIONS: Record<string, WikiConnection[]> = {
         {
             "panelId": "style-matching",
             "route": "/style-matching",
-            "component": "src/components/TechniquePanels/StyleMatchingPanel",
+            "component": null,
             "tests": []
         }
     ],
@@ -1171,7 +1169,7 @@ export const WIKI_CONNECTIONS: Record<string, WikiConnection[]> = {
         {
             "panelId": "dynamic-persona",
             "route": "/dynamic-persona",
-            "component": "src/components/TechniquePanels/DynamicPersonaPanel",
+            "component": null,
             "tests": []
         }
     ],
@@ -1179,7 +1177,7 @@ export const WIKI_CONNECTIONS: Record<string, WikiConnection[]> = {
         {
             "panelId": "strategist",
             "route": "/strategist",
-            "component": "src/components/TechniquePanels/StrategistPanel",
+            "component": null,
             "tests": []
         }
     ],
@@ -1187,7 +1185,7 @@ export const WIKI_CONNECTIONS: Record<string, WikiConnection[]> = {
         {
             "panelId": "whisper-channels",
             "route": "/whisper-channels",
-            "component": "src/components/TechniquePanels/WhisperChannelsPanel",
+            "component": null,
             "tests": []
         }
     ],
@@ -1195,7 +1193,7 @@ export const WIKI_CONNECTIONS: Record<string, WikiConnection[]> = {
         {
             "panelId": "alliance",
             "route": "/alliance",
-            "component": "src/components/TechniquePanels/AlliancePanel",
+            "component": null,
             "tests": []
         }
     ],
@@ -1203,7 +1201,7 @@ export const WIKI_CONNECTIONS: Record<string, WikiConnection[]> = {
         {
             "panelId": "prediction-market",
             "route": "/prediction-market",
-            "component": "src/components/TechniquePanels/PredictionMarketPanel",
+            "component": null,
             "tests": []
         }
     ],
@@ -1211,7 +1209,7 @@ export const WIKI_CONNECTIONS: Record<string, WikiConnection[]> = {
         {
             "panelId": "rtom",
             "route": "/rtom",
-            "component": "src/components/TechniquePanels/RtomPanel",
+            "component": null,
             "tests": []
         }
     ],
@@ -1219,7 +1217,7 @@ export const WIKI_CONNECTIONS: Record<string, WikiConnection[]> = {
         {
             "panelId": "strategy-fingerprint",
             "route": "/strategy-fingerprint",
-            "component": "src/components/TechniquePanels/StrategyFingerprintPanel",
+            "component": null,
             "tests": []
         }
     ],
@@ -1227,7 +1225,7 @@ export const WIKI_CONNECTIONS: Record<string, WikiConnection[]> = {
         {
             "panelId": "objection-anticipation",
             "route": "/objection-anticipation",
-            "component": "src/components/TechniquePanels/ObjectionAnticipationPanel",
+            "component": null,
             "tests": []
         }
     ],
@@ -1235,7 +1233,7 @@ export const WIKI_CONNECTIONS: Record<string, WikiConnection[]> = {
         {
             "panelId": "evidence-triangulation",
             "route": "/evidence-triangulation",
-            "component": "src/components/TechniquePanels/EvidenceTriangulationPanel",
+            "component": null,
             "tests": []
         }
     ],
@@ -1243,7 +1241,7 @@ export const WIKI_CONNECTIONS: Record<string, WikiConnection[]> = {
         {
             "panelId": "hegelian-synthesis",
             "route": "/hegelian-synthesis",
-            "component": "src/components/TechniquePanels/HegelianSynthesisPanel",
+            "component": null,
             "tests": []
         }
     ],
@@ -1251,7 +1249,7 @@ export const WIKI_CONNECTIONS: Record<string, WikiConnection[]> = {
         {
             "panelId": "uncertainty-propagation",
             "route": "/uncertainty-propagation",
-            "component": "src/components/TechniquePanels/UncertaintyPropagationPanel",
+            "component": null,
             "tests": []
         }
     ],
@@ -1259,7 +1257,7 @@ export const WIKI_CONNECTIONS: Record<string, WikiConnection[]> = {
         {
             "panelId": "rhetoric-safety",
             "route": "/rhetoric-safety",
-            "component": "src/components/TechniquePanels/RhetoricSafetyPanel",
+            "component": null,
             "tests": []
         }
     ],
@@ -1267,7 +1265,7 @@ export const WIKI_CONNECTIONS: Record<string, WikiConnection[]> = {
         {
             "panelId": "blind-evaluation",
             "route": "/blind-evaluation",
-            "component": "src/components/TechniquePanels/BlindEvaluationPanel",
+            "component": null,
             "tests": []
         }
     ],
@@ -1275,7 +1273,7 @@ export const WIKI_CONNECTIONS: Record<string, WikiConnection[]> = {
         {
             "panelId": "bidding-time",
             "route": "/bidding-time",
-            "component": "src/components/TechniquePanels/BiddingTimePanel",
+            "component": null,
             "tests": []
         }
     ],
@@ -1283,7 +1281,7 @@ export const WIKI_CONNECTIONS: Record<string, WikiConnection[]> = {
         {
             "panelId": "adaptive-order",
             "route": "/adaptive-order",
-            "component": "src/components/TechniquePanels/AdaptiveOrderPanel",
+            "component": null,
             "tests": []
         }
     ],
@@ -1291,7 +1289,7 @@ export const WIKI_CONNECTIONS: Record<string, WikiConnection[]> = {
         {
             "panelId": "executable-evidence",
             "route": "/executable-evidence",
-            "component": "src/components/TechniquePanels/ExecutableEvidencePanel",
+            "component": null,
             "tests": []
         }
     ],
@@ -1299,7 +1297,7 @@ export const WIKI_CONNECTIONS: Record<string, WikiConnection[]> = {
         {
             "panelId": "hidden-incentives",
             "route": "/hidden-incentives",
-            "component": "src/components/TechniquePanels/HiddenIncentivesPanel",
+            "component": null,
             "tests": []
         }
     ],
@@ -1307,7 +1305,7 @@ export const WIKI_CONNECTIONS: Record<string, WikiConnection[]> = {
         {
             "panelId": "semantic-blending",
             "route": "/semantic-blending",
-            "component": "src/components/TechniquePanels/SemanticBlendingPanel",
+            "component": null,
             "tests": []
         }
     ],
@@ -1315,7 +1313,7 @@ export const WIKI_CONNECTIONS: Record<string, WikiConnection[]> = {
         {
             "panelId": "judge-deliberation",
             "route": "/judge-deliberation",
-            "component": "src/components/TechniquePanels/JudgeDeliberationPanel",
+            "component": null,
             "tests": []
         }
     ],

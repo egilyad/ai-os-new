@@ -27,8 +27,7 @@
 Цепочка «панель → маршрут → компонент → тесты» собрана из реестра маршрутов.
 
 - Панель `cross-examination` → маршрут `/cross-examination`
-  - Компонент: `src/components/TechniquePanels/CrossExaminationPanel`
-  - Тесты: `src/components/TechniquePanels/CrossExaminationPanel.test.tsx`
+  - Тесты: — (рядом с компонентом не найдены)
 
 См. также: [Каталог панелей](./panels-catalog.md) · [Каталог компонентов OS](./dev-component-catalog.md).
 

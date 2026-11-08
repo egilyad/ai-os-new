@@ -1206,8 +1206,8 @@
       "category": "top",
       "language": "mixed",
       "title": "SuperAgents OS — Единый план работ (сводный)",
-      "bytes": 18467,
-      "hash": "13f11bbd7c142868e2757c86692c3192cfb40d18"
+      "bytes": 18852,
+      "hash": "0912d7e09ebe69435ce87d69dc6c604643e92c4c"
     },
     {
       "path": "docs/wiki/agents.md",
@@ -3326,464 +3326,464 @@
       "category": "wiki",
       "language": "ru",
       "title": "Лестница абстракции",
-      "bytes": 1587,
-      "hash": "fe05341332a1a13362f9bb6443fc5ef5d1ef6399"
+      "bytes": 1507,
+      "hash": "6f9874b9bf78cf915eec960dba9ae45b1de4590d"
     },
     {
       "path": "docs/wiki/technique-adaptive-order.md",
       "category": "wiki",
       "language": "ru",
       "title": "Адаптивный порядок",
-      "bytes": 1556,
-      "hash": "9f4d3744d649c3ee53107d86bb18eef347f4e41a"
+      "bytes": 1480,
+      "hash": "039744f2318ede9c902d3cdbbea63534bd660d5c"
     },
     {
       "path": "docs/wiki/technique-agreement-anchoring.md",
       "category": "wiki",
       "language": "ru",
       "title": "Якорение на согласии",
-      "bytes": 1663,
-      "hash": "106a2933fd1e6b55e8db6fbeb687c1d2bec56412"
+      "bytes": 1582,
+      "hash": "4aaf674c04b9c16619e0fa83006992be6a0ee83d"
     },
     {
       "path": "docs/wiki/technique-alliance.md",
       "category": "wiki",
       "language": "ru",
       "title": "Альянс",
-      "bytes": 1483,
-      "hash": "7f0b5dc54cc30b0d8f5d0b1df0f66e3ef3029d35"
+      "bytes": 1412,
+      "hash": "70f3c81cf00e1662c7ba4f017d9828293b60fe23"
     },
     {
       "path": "docs/wiki/technique-bayesian-judges.md",
       "category": "wiki",
       "language": "ru",
       "title": "Байесовские судьи",
-      "bytes": 1635,
-      "hash": "53595028007c47037bcd3038743c1d6fb2bfd78b"
+      "bytes": 1558,
+      "hash": "7bb845df631c14b72d5e8afd5879d58ae4a0f299"
     },
     {
       "path": "docs/wiki/technique-bias-exploit.md",
       "category": "wiki",
       "language": "ru",
       "title": "Эксплуатация искажений",
-      "bytes": 1631,
-      "hash": "b39c079ca844e7ae2715af45875959de3e4c1846"
+      "bytes": 1557,
+      "hash": "ecca98e2ee5867e5ddefd7621136f2a55e09c00d"
     },
     {
       "path": "docs/wiki/technique-bidding-time.md",
       "category": "wiki",
       "language": "ru",
       "title": "Торг за время",
-      "bytes": 1514,
-      "hash": "780bdcfe01aa3e80ef3470a1eca1ab669e97154b"
+      "bytes": 1440,
+      "hash": "8473eebc7e47342446bd2250b4acfcc7a7a46a75"
     },
     {
       "path": "docs/wiki/technique-blind-evaluation.md",
       "category": "wiki",
       "language": "ru",
       "title": "Слепая оценка",
-      "bytes": 1538,
-      "hash": "42c6fce48aa8274b985cdd73d8a8c1fb9251395b"
+      "bytes": 1460,
+      "hash": "5f75f30a4f53e84f7699c7df5c5b30c7a1d043b5"
     },
     {
       "path": "docs/wiki/technique-burden-of-proof.md",
       "category": "wiki",
       "language": "ru",
       "title": "Бремя доказательства",
-      "bytes": 1652,
-      "hash": "4caae59e83ed6ff48b2bac14b70a35a46e509f76"
+      "bytes": 1576,
+      "hash": "c33fdd2acd71abad7fcccaa68ef92cbd563d45cf"
     },
     {
       "path": "docs/wiki/technique-causal-graph.md",
       "category": "wiki",
       "language": "ru",
       "title": "Каузальный граф",
-      "bytes": 1598,
-      "hash": "bd686d0bdb9f7028ab5549884e892e916a4b3bbb"
+      "bytes": 1524,
+      "hash": "93f8a8a3382d50a91b38abaa7aa8584b8e1091bb"
     },
     {
       "path": "docs/wiki/technique-concession-engine.md",
       "category": "wiki",
       "language": "ru",
       "title": "Движок уступок",
-      "bytes": 1593,
-      "hash": "36415065fca69b43e3ed9b3fef5243c9f9972616"
+      "bytes": 1514,
+      "hash": "fa14b758c6fdb0f6930b635cdcb9cde13e4c50ff"
     },
     {
       "path": "docs/wiki/technique-concession.md",
       "category": "wiki",
       "language": "ru",
       "title": "Уступка",
-      "bytes": 1528,
-      "hash": "693d023c7c212c6ec3c0106cf18f7b4c50813c63"
+      "bytes": 1455,
+      "hash": "bb5e3a71b619a3283ca0de1ddb84e6714e40ddc7"
     },
     {
       "path": "docs/wiki/technique-consistency-check.md",
       "category": "wiki",
       "language": "ru",
       "title": "Проверка согласованности",
-      "bytes": 1665,
-      "hash": "cd836a1c4f2eb8034c0a5618a5ec3b0b1f51fba9"
+      "bytes": 1586,
+      "hash": "3b6f263daf6720a1b3ddf815d1e70d6983308e60"
     },
     {
       "path": "docs/wiki/technique-credibility-scoring.md",
       "category": "wiki",
       "language": "ru",
       "title": "Оценка достоверности",
-      "bytes": 1670,
-      "hash": "f578e123f0b73766980407061a722c2ad2e33cb3"
+      "bytes": 1589,
+      "hash": "f5f114f055db11181e9576e24ca43d27dfcee2f1"
     },
     {
       "path": "docs/wiki/technique-critic.md",
       "category": "wiki",
       "language": "ru",
       "title": "Критик",
-      "bytes": 1506,
-      "hash": "b162ead13849126da8be29170cc4e0f170319ce3"
+      "bytes": 1437,
+      "hash": "799a438bc2c6036782699f75a2ccbf0f7dc3db15"
     },
     {
       "path": "docs/wiki/technique-cross-examination.md",
       "category": "wiki",
       "language": "ru",
       "title": "Перекрёстный допрос",
-      "bytes": 1694,
-      "hash": "985a480fbc3b01339a23146f9d38e999ebdcfd25"
+      "bytes": 1614,
+      "hash": "f31d76ee05398dcbe34c0576ef48fb06e0203dc8"
     },
     {
       "path": "docs/wiki/technique-delta-focusing.md",
       "category": "wiki",
       "language": "ru",
       "title": "Фокусировка на дельте",
-      "bytes": 1655,
-      "hash": "f5770300d3931325e8d5ec48d6b2d3a5cc35072c"
+      "bytes": 1579,
+      "hash": "c65c5a879b64094e8ce1c1fd754c4c6ce313b576"
     },
     {
       "path": "docs/wiki/technique-dpo-sampler.md",
       "category": "wiki",
       "language": "ru",
       "title": "Семплер DPO",
-      "bytes": 1533,
-      "hash": "6b5bdb50a4dbfdaf08308f2649e818459f408747"
+      "bytes": 1460,
+      "hash": "e39768c9ddc60cb4f1824907d94aa4ebea172eac"
     },
     {
       "path": "docs/wiki/technique-dynamic-persona.md",
       "category": "wiki",
       "language": "ru",
       "title": "Динамическая персона",
-      "bytes": 1571,
-      "hash": "ad83d08bfa8a5b552488884ded9d42bbd6530867"
+      "bytes": 1494,
+      "hash": "088adc7906cc3542ab5f5d598d004a20fe31cbfb"
     },
     {
       "path": "docs/wiki/technique-empathy.md",
       "category": "wiki",
       "language": "ru",
       "title": "Эмпатия",
-      "bytes": 1527,
-      "hash": "e7349ae296e0cafbadfbe36a7cd661c3669f96e6"
+      "bytes": 1457,
+      "hash": "cacb1283af77d08c06d0a0105bb2b5c03425e1fb"
     },
     {
       "path": "docs/wiki/technique-enthymeme.md",
       "category": "wiki",
       "language": "ru",
       "title": "Энтимема",
-      "bytes": 1505,
-      "hash": "b27c4baa57ee823b1f4e0726ccca6c912ede6854"
+      "bytes": 1433,
+      "hash": "b483355ec7cf16f17c2fb8ce4aedd174a85437c6"
     },
     {
       "path": "docs/wiki/technique-epistemic-calibration.md",
       "category": "wiki",
       "language": "ru",
       "title": "Эпистемическая калибровка",
-      "bytes": 1680,
-      "hash": "5094f3a6ec4949ceda072575dd30867c8ff17694"
+      "bytes": 1597,
+      "hash": "38890f63d62111534fb9bd41eca6e1090ec382b7"
     },
     {
       "path": "docs/wiki/technique-evidence-revelation.md",
       "category": "wiki",
       "language": "ru",
       "title": "Раскрытие улик",
-      "bytes": 1580,
-      "hash": "2481d86c8a957d848a3ce6e5071e51165cee42ac"
+      "bytes": 1499,
+      "hash": "e606fd6a6aea8f92eab108f3ce7f3b38cb06f73e"
     },
     {
       "path": "docs/wiki/technique-evidence-triangulation.md",
       "category": "wiki",
       "language": "ru",
       "title": "Триангуляция улик",
-      "bytes": 1602,
-      "hash": "a7a390c4fd3dddd0eaf37d5a11e12124495b55ad"
+      "bytes": 1518,
+      "hash": "1be2cf8728208e492f73da4bf4e830aa2e5e0fd8"
     },
     {
       "path": "docs/wiki/technique-executable-evidence.md",
       "category": "wiki",
       "language": "ru",
       "title": "Исполняемые улики",
-      "bytes": 1597,
-      "hash": "1eeba2030ed4a037bd3d75eb7499507aef909210"
+      "bytes": 1516,
+      "hash": "731d204cc6547e3e06fa4aa3cb6f63777268a1eb"
     },
     {
       "path": "docs/wiki/technique-fact-checking.md",
       "category": "wiki",
       "language": "ru",
       "title": "Проверка фактов",
-      "bytes": 1595,
-      "hash": "1ddec3fbe7e53ee5b3d06118b4282609b65bcc36"
+      "bytes": 1520,
+      "hash": "dd2c8cd95d0a9469e684cf5418264e6eba2c93fb"
     },
     {
       "path": "docs/wiki/technique-fog-of-war.md",
       "category": "wiki",
       "language": "ru",
       "title": "Туман войны",
-      "bytes": 1532,
-      "hash": "e4e42f46585259063878629ba4ffdc5d38fa1148"
+      "bytes": 1461,
+      "hash": "e38990300a7d9a9539fd02ac04bbea72f4f059f9"
     },
     {
       "path": "docs/wiki/technique-frame.md",
       "category": "wiki",
       "language": "ru",
       "title": "Фрейминг",
-      "bytes": 1490,
-      "hash": "3192a015d135cc734b5288f7ea0ecd4446f8f210"
+      "bytes": 1422,
+      "hash": "398676849e2e5eeb63ba528615ef301b9f27644c"
     },
     {
       "path": "docs/wiki/technique-graph-minimax.md",
       "category": "wiki",
       "language": "ru",
       "title": "Граф минимакса",
-      "bytes": 1610,
-      "hash": "c3e34ea31b662a098bebe12365f9208c11966317"
+      "bytes": 1535,
+      "hash": "ed1bfa85e79c704062ed49c489498fd8743337e6"
     },
     {
       "path": "docs/wiki/technique-heat.md",
       "category": "wiki",
       "language": "ru",
       "title": "Накал",
-      "bytes": 1508,
-      "hash": "570c652dc8f72b446a17bb55bd72c1889bdbe027"
+      "bytes": 1441,
+      "hash": "223714e75bfd728027a06a35adaebf15022e55bf"
     },
     {
       "path": "docs/wiki/technique-hegelian-synthesis.md",
       "category": "wiki",
       "language": "ru",
       "title": "Гегелевский синтез",
-      "bytes": 1579,
-      "hash": "9ad50bcefc11db2f228b1c00bbe7731ddd7d000f"
+      "bytes": 1499,
+      "hash": "36f82e116077bc062331e4b5c92afb5ce3f32f80"
     },
     {
       "path": "docs/wiki/technique-hidden-incentives.md",
       "category": "wiki",
       "language": "ru",
       "title": "Скрытые стимулы",
-      "bytes": 1581,
-      "hash": "da55fa5b4d93debafbfff0a51432fdb37a47522e"
+      "bytes": 1502,
+      "hash": "2b9b072624ed157de627fd2652715c39ade11fda"
     },
     {
       "path": "docs/wiki/technique-humor.md",
       "category": "wiki",
       "language": "ru",
       "title": "Юмор",
-      "bytes": 1453,
-      "hash": "99d53a0478548d207869da54bb6fdad74806f466"
+      "bytes": 1385,
+      "hash": "d833ba9a57878653447f97d0eb05ac6cd88fe752"
     },
     {
       "path": "docs/wiki/technique-interrupt.md",
       "category": "wiki",
       "language": "ru",
       "title": "Прерывание",
-      "bytes": 1537,
-      "hash": "5d57b95bdc98b6edbc685dab38b322e6af5ba8b8"
+      "bytes": 1465,
+      "hash": "b7ff1dfd799b26682e47af53676ef09fccba28b1"
     },
     {
       "path": "docs/wiki/technique-judge-deliberation.md",
       "category": "wiki",
       "language": "ru",
       "title": "Совещание судей",
-      "bytes": 1565,
-      "hash": "0d6ab1fbe51d39ffece2cce60a7fc149cd067f70"
+      "bytes": 1485,
+      "hash": "6d5cd05cb77cb6d480ed7ddadd419a5e697c4ae1"
     },
     {
       "path": "docs/wiki/technique-multi-hop.md",
       "category": "wiki",
       "language": "ru",
       "title": "Многошаговость",
-      "bytes": 1529,
-      "hash": "1a7fb639d2c3a242d005698002b00aabe8f3482e"
+      "bytes": 1458,
+      "hash": "3c49b43eb96e58c5bda2a874e23a4f270d005fb6"
     },
     {
       "path": "docs/wiki/technique-narrative-arc.md",
       "category": "wiki",
       "language": "ru",
       "title": "Нарративная дуга",
-      "bytes": 1587,
-      "hash": "57bf758843b578d8ed28b5f0bc784399a1a5ca7d"
+      "bytes": 1512,
+      "hash": "b8acebb9bfaf5e93238f0e889ae36a22289ac606"
     },
     {
       "path": "docs/wiki/technique-objection-anticipation.md",
       "category": "wiki",
       "language": "ru",
       "title": "Предвосхищение возражений",
-      "bytes": 1626,
-      "hash": "dcb9134ad5f0b25ebf81d595ca80d765a7fc11c0"
+      "bytes": 1542,
+      "hash": "05795f1c7001f1dd4ce1540cdbdf8a8946b5b856"
     },
     {
       "path": "docs/wiki/technique-pivot.md",
       "category": "wiki",
       "language": "ru",
       "title": "Пивот",
-      "bytes": 1502,
-      "hash": "96b9679e825b6f8363ad39d943aa7b5679f816bb"
+      "bytes": 1434,
+      "hash": "4898de8c62a502c679c2d8ad0a8dcf169d457277"
     },
     {
       "path": "docs/wiki/technique-pre-publish-critic.md",
       "category": "wiki",
       "language": "ru",
       "title": "Критик перед публикацией",
-      "bytes": 1650,
-      "hash": "a06637946c2f5422ca2a9f5d6f10ffffbb81b4e0"
+      "bytes": 1571,
+      "hash": "229d2a1a441d7616d8c9b7d925e6b2e4a80c527a"
     },
     {
       "path": "docs/wiki/technique-prediction-market.md",
       "category": "wiki",
       "language": "ru",
       "title": "Рынок предсказаний",
-      "bytes": 1586,
-      "hash": "cf066fd85d92946949e12bcb61c32d3aeb74eff1"
+      "bytes": 1507,
+      "hash": "d49340a88f17b68952b312e7b05041ba87cfd8ad"
     },
     {
       "path": "docs/wiki/technique-redundancy.md",
       "category": "wiki",
       "language": "ru",
       "title": "Избыточность",
-      "bytes": 1529,
-      "hash": "3e073b364f6069471ecc2df9c4b686dd97509c22"
+      "bytes": 1456,
+      "hash": "7438b2d16d73c85636199212f639f7b02e30b0d2"
     },
     {
       "path": "docs/wiki/technique-replay.md",
       "category": "wiki",
       "language": "ru",
       "title": "Повтор",
-      "bytes": 1480,
-      "hash": "d64ba91e929fdbc11817117c0bd548580fe92181"
+      "bytes": 1411,
+      "hash": "84f5965fd9b52b4c7ec248aed29706b75fa685bd"
     },
     {
       "path": "docs/wiki/technique-rhetoric-safety.md",
       "category": "wiki",
       "language": "ru",
       "title": "Безопасная риторика",
-      "bytes": 1577,
-      "hash": "2ddda6de753e5c17bcea3f44da3172ad9c9d529d"
+      "bytes": 1500,
+      "hash": "7f24458db569d0ddc39f2286b477e3bf56b69976"
     },
     {
       "path": "docs/wiki/technique-rhetorical-device.md",
       "category": "wiki",
       "language": "ru",
       "title": "Риторический приём",
-      "bytes": 1612,
-      "hash": "b319f0c7ff66c3a5fa6135c14b2dee998e55efd3"
+      "bytes": 1533,
+      "hash": "4cc7bb7596a8e7b1e140cf2c6aa7e28f09fb22fa"
     },
     {
       "path": "docs/wiki/technique-role-reversal.md",
       "category": "wiki",
       "language": "ru",
       "title": "Обмен ролями",
-      "bytes": 1549,
-      "hash": "9fe67e2642fc08d1ba90d9520a25b75b036f9d57"
+      "bytes": 1474,
+      "hash": "5deab80d23f03735fa537a73dbc00c71a9b96348"
     },
     {
       "path": "docs/wiki/technique-rtom.md",
       "category": "wiki",
       "language": "ru",
       "title": "RT-OM",
-      "bytes": 1469,
-      "hash": "000ce782e7ee474c08d0dac7e408a2c0e242f918"
+      "bytes": 1402,
+      "hash": "7fc034c293dd2d1f8ba5a7991461e33cb52f129f"
     },
     {
       "path": "docs/wiki/technique-semantic-blending.md",
       "category": "wiki",
       "language": "ru",
       "title": "Семантическое смешение",
-      "bytes": 1590,
-      "hash": "dd4cd97ea2812230339efce804fd747e8bf400ea"
+      "bytes": 1511,
+      "hash": "af8c2ac8efeca2424e7287bf1dcb9f806df34ba6"
     },
     {
       "path": "docs/wiki/technique-sentinel.md",
       "category": "wiki",
       "language": "ru",
       "title": "Страж",
-      "bytes": 1493,
-      "hash": "23cd7881991389c9356bf95f2281b439ca1610b4"
+      "bytes": 1422,
+      "hash": "5a6deb9fe303f1dfd1c9bc89b7ad76521d6b06ce"
     },
     {
       "path": "docs/wiki/technique-socratic-pivot.md",
       "category": "wiki",
       "language": "ru",
       "title": "Сократический разворот",
-      "bytes": 1629,
-      "hash": "dfb643aea202f02454e908f940d5338fa1e73892"
+      "bytes": 1553,
+      "hash": "cb795c3eba33a62beb0f9df579c005bb6317ea5f"
     },
     {
       "path": "docs/wiki/technique-status-dynamics.md",
       "category": "wiki",
       "language": "ru",
       "title": "Динамика статуса",
-      "bytes": 1586,
-      "hash": "5a0219caf2bb532138eaaceb953be71b5767659d"
+      "bytes": 1509,
+      "hash": "4e0403be253f82aa75f292cdf3eb1a6dd7689c8e"
     },
     {
       "path": "docs/wiki/technique-strategist.md",
       "category": "wiki",
       "language": "ru",
       "title": "Стратегист",
-      "bytes": 1531,
-      "hash": "702ebdbd1136e111d67cf8514547e7966461a4a7"
+      "bytes": 1458,
+      "hash": "a6e82243a38624668bfdbae1fa4df3cec517426c"
     },
     {
       "path": "docs/wiki/technique-strategy-fingerprint.md",
       "category": "wiki",
       "language": "ru",
       "title": "Отпечаток стратегии",
-      "bytes": 1605,
-      "hash": "b708f2324a1fe1222af5e75fcb8043c040b8f715"
+      "bytes": 1523,
+      "hash": "9da5f5e326a627b146838cce558983cba24165eb"
     },
     {
       "path": "docs/wiki/technique-style-matching.md",
       "category": "wiki",
       "language": "ru",
       "title": "Подбор стиля",
-      "bytes": 1505,
-      "hash": "8a84521d83bf0d437658e429298639c63719a849"
+      "bytes": 1429,
+      "hash": "0a26724e54c1dd72f0d693265bb6a739b1da33ff"
     },
     {
       "path": "docs/wiki/technique-triangulation.md",
       "category": "wiki",
       "language": "ru",
       "title": "Триангуляция",
-      "bytes": 1573,
-      "hash": "c88d87ccc5d871470da1efe120c5bfa1ed08bf66"
+      "bytes": 1497,
+      "hash": "f959fb6487ff53742065afcf00454d16b329d1ec"
     },
     {
       "path": "docs/wiki/technique-uncertainty-propagation.md",
       "category": "wiki",
       "language": "ru",
       "title": "Распространение неопределённости",
-      "bytes": 1665,
-      "hash": "6dfe0c49feeb874553fa59405e556290b13989f4"
+      "bytes": 1580,
+      "hash": "c70fa0884ea690ecd9f7943e45286056587add16"
     },
     {
       "path": "docs/wiki/technique-vulnerability-targeting.md",
       "category": "wiki",
       "language": "ru",
       "title": "Атака уязвимостей",
-      "bytes": 1725,
-      "hash": "f77535ca5deed09abf101128fbc596d1e03a15d4"
+      "bytes": 1640,
+      "hash": "96b081928162104b53f39878bc113bdc3c7d87b1"
     },
     {
       "path": "docs/wiki/technique-whisper-channels.md",
       "category": "wiki",
       "language": "ru",
       "title": "Шёпот-каналы",
-      "bytes": 1551,
-      "hash": "b9be43a2675179d87c2eab01f3dfd026eb828fda"
+      "bytes": 1473,
+      "hash": "b01c92cd8066654c2e58abf89fed0bf2844933f7"
     },
     {
       "path": "docs/wiki/weekly-commits.md",

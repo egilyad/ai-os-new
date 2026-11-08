@@ -10421,7 +10421,7 @@
       "panelId": "cross-examination",
       "section": "techniques",
       "route": "/cross-examination",
-      "component": "src/components/TechniquePanels/CrossExaminationPanel",
+      "component": null,
       "article": "technique-cross-examination",
       "status": "live"
     },
@@ -10431,7 +10431,7 @@
       "panelId": "delta-focusing",
       "section": "techniques",
       "route": "/delta-focusing",
-      "component": "src/components/TechniquePanels/DeltaFocusingPanel",
+      "component": null,
       "article": "technique-delta-focusing",
       "status": "live"
     },
@@ -10441,7 +10441,7 @@
       "panelId": "vulnerability-targeting",
       "section": "techniques",
       "route": "/vulnerability-targeting",
-      "component": "src/components/TechniquePanels/VulnerabilityTargetingPanel",
+      "component": null,
       "article": "technique-vulnerability-targeting",
       "status": "live"
     },
@@ -10451,7 +10451,7 @@
       "panelId": "agreement-anchoring",
       "section": "techniques",
       "route": "/agreement-anchoring",
-      "component": "src/components/TechniquePanels/AgreementAnchoringPanel",
+      "component": null,
       "article": "technique-agreement-anchoring",
       "status": "live"
     },
@@ -10461,7 +10461,7 @@
       "panelId": "graph-minimax",
       "section": "techniques",
       "route": "/graph-minimax",
-      "component": "src/components/TechniquePanels/GraphMinimaxPanel",
+      "component": null,
       "article": "technique-graph-minimax",
       "status": "live"
     },
@@ -10471,7 +10471,7 @@
       "panelId": "burden-of-proof",
       "section": "techniques",
       "route": "/burden-of-proof",
-      "component": "src/components/TechniquePanels/BurdenOfProofPanel",
+      "component": null,
       "article": "technique-burden-of-proof",
       "status": "live"
     },
@@ -10481,7 +10481,7 @@
       "panelId": "consistency-check",
       "section": "techniques",
       "route": "/consistency-check",
-      "component": "src/components/TechniquePanels/ConsistencyCheckPanel",
+      "component": null,
       "article": "technique-consistency-check",
       "status": "live"
     },
@@ -10491,7 +10491,7 @@
       "panelId": "credibility-scoring",
       "section": "techniques",
       "route": "/credibility-scoring",
-      "component": "src/components/TechniquePanels/CredibilityScoringPanel",
+      "component": null,
       "article": "technique-credibility-scoring",
       "status": "live"
     },
@@ -10501,7 +10501,7 @@
       "panelId": "causal-graph",
       "section": "techniques",
       "route": "/causal-graph",
-      "component": "src/components/TechniquePanels/CausalGraphPanel",
+      "component": null,
       "article": "technique-causal-graph",
       "status": "live"
     },
@@ -10511,7 +10511,7 @@
       "panelId": "pre-publish-critic",
       "section": "techniques",
       "route": "/pre-publish-critic",
-      "component": "src/components/TechniquePanels/PrePublishCriticPanel",
+      "component": null,
       "article": "technique-pre-publish-critic",
       "status": "live"
     },
@@ -10521,7 +10521,7 @@
       "panelId": "fact-checking",
       "section": "techniques",
       "route": "/fact-checking",
-      "component": "src/components/TechniquePanels/FactCheckingPanel",
+      "component": null,
       "article": "technique-fact-checking",
       "status": "live"
     },
@@ -10531,7 +10531,7 @@
       "panelId": "epistemic-calibration",
       "section": "techniques",
       "route": "/epistemic-calibration",
-      "component": "src/components/TechniquePanels/EpistemicCalibrationPanel",
+      "component": null,
       "article": "technique-epistemic-calibration",
       "status": "live"
     },
@@ -10541,7 +10541,7 @@
       "panelId": "socratic-pivot",
       "section": "techniques",
       "route": "/socratic-pivot",
-      "component": "src/components/TechniquePanels/SocraticPivotPanel",
+      "component": null,
       "article": "technique-socratic-pivot",
       "status": "live"
     },
@@ -10551,7 +10551,7 @@
       "panelId": "concession-engine",
       "section": "techniques",
       "route": "/concession-engine",
-      "component": "src/components/TechniquePanels/ConcessionEnginePanel",
+      "component": null,
       "article": "technique-concession-engine",
       "status": "live"
     },
@@ -10561,7 +10561,7 @@
       "panelId": "bayesian-judges",
       "section": "techniques",
       "route": "/bayesian-judges",
-      "component": "src/components/TechniquePanels/BayesianJudgesPanel",
+      "component": null,
       "article": "technique-bayesian-judges",
       "status": "live"
     },
@@ -10571,7 +10571,7 @@
       "panelId": "dpo-sampler",
       "section": "techniques",
       "route": "/dpo-sampler",
-      "component": "src/components/TechniquePanels/DpoSamplerPanel",
+      "component": null,
       "article": "technique-dpo-sampler",
       "status": "live"
     },
@@ -10581,7 +10581,7 @@
       "panelId": "critic",
       "section": "techniques",
       "route": "/critic",
-      "component": "src/components/TechniquePanels/CriticPanel",
+      "component": null,
       "article": "technique-critic",
       "status": "live"
     },
@@ -10591,7 +10591,7 @@
       "panelId": "pivot",
       "section": "techniques",
       "route": "/pivot",
-      "component": "src/components/TechniquePanels/PivotPanel",
+      "component": null,
       "article": "technique-pivot",
       "status": "live"
     },
@@ -10601,7 +10601,7 @@
       "panelId": "concession",
       "section": "techniques",
       "route": "/concession",
-      "component": "src/components/TechniquePanels/ConcessionPanel",
+      "component": null,
       "article": "technique-concession",
       "status": "live"
     },
@@ -10611,7 +10611,7 @@
       "panelId": "triangulation",
       "section": "techniques",
       "route": "/triangulation",
-      "component": "src/components/TechniquePanels/TriangulationPanel",
+      "component": null,
       "article": "technique-triangulation",
       "status": "live"
     },
@@ -10621,7 +10621,7 @@
       "panelId": "empathy",
       "section": "techniques",
       "route": "/empathy",
-      "component": "src/components/TechniquePanels/EmpathyPanel",
+      "component": null,
       "article": "technique-empathy",
       "status": "live"
     },
@@ -10631,7 +10631,7 @@
       "panelId": "heat",
       "section": "techniques",
       "route": "/heat",
-      "component": "src/components/TechniquePanels/HeatPanel",
+      "component": null,
       "article": "technique-heat",
       "status": "live"
     },
@@ -10641,7 +10641,7 @@
       "panelId": "sentinel",
       "section": "techniques",
       "route": "/sentinel",
-      "component": "src/components/TechniquePanels/SentinelPanel",
+      "component": null,
       "article": "technique-sentinel",
       "status": "live"
     },
@@ -10651,7 +10651,7 @@
       "panelId": "redundancy",
       "section": "techniques",
       "route": "/redundancy",
-      "component": "src/components/TechniquePanels/RedundancyPanel",
+      "component": null,
       "article": "technique-redundancy",
       "status": "live"
     },
@@ -10661,7 +10661,7 @@
       "panelId": "replay",
       "section": "techniques",
       "route": "/replay",
-      "component": "src/components/TechniquePanels/ReplayPanel",
+      "component": null,
       "article": "technique-replay",
       "status": "live"
     },
@@ -10671,7 +10671,7 @@
       "panelId": "enthymeme",
       "section": "techniques",
       "route": "/enthymeme",
-      "component": "src/components/TechniquePanels/EnthymemePanel",
+      "component": null,
       "article": "technique-enthymeme",
       "status": "live"
     },
@@ -10681,7 +10681,7 @@
       "panelId": "multi-hop",
       "section": "techniques",
       "route": "/multi-hop",
-      "component": "src/components/TechniquePanels/MultiHopPanel",
+      "component": null,
       "article": "technique-multi-hop",
       "status": "live"
     },
@@ -10691,7 +10691,7 @@
       "panelId": "bias-exploit",
       "section": "techniques",
       "route": "/bias-exploit",
-      "component": "src/components/TechniquePanels/BiasExploitPanel",
+      "component": null,
       "article": "technique-bias-exploit",
       "status": "live"
     },
@@ -10701,7 +10701,7 @@
       "panelId": "interrupt",
       "section": "techniques",
       "route": "/interrupt",
-      "component": "src/components/TechniquePanels/InterruptPanel",
+      "component": null,
       "article": "technique-interrupt",
       "status": "live"
     },
@@ -10711,7 +10711,7 @@
       "panelId": "frame",
       "section": "techniques",
       "route": "/frame",
-      "component": "src/components/TechniquePanels/FramePanel",
+      "component": null,
       "article": "technique-frame",
       "status": "live"
     },
@@ -10721,7 +10721,7 @@
       "panelId": "rhetorical-device",
       "section": "techniques",
       "route": "/rhetorical-device",
-      "component": "src/components/TechniquePanels/RhetoricalDevicePanel",
+      "component": null,
       "article": "technique-rhetorical-device",
       "status": "live"
     },
@@ -10731,7 +10731,7 @@
       "panelId": "narrative-arc",
       "section": "techniques",
       "route": "/narrative-arc",
-      "component": "src/components/TechniquePanels/NarrativeArcPanel",
+      "component": null,
       "article": "technique-narrative-arc",
       "status": "live"
     },
@@ -10741,7 +10741,7 @@
       "panelId": "abstraction-ladder",
       "section": "techniques",
       "route": "/abstraction-ladder",
-      "component": "src/components/TechniquePanels/AbstractionLadderPanel",
+      "component": null,
       "article": "technique-abstraction-ladder",
       "status": "live"
     },
@@ -10751,7 +10751,7 @@
       "panelId": "role-reversal",
       "section": "techniques",
       "route": "/role-reversal",
-      "component": "src/components/TechniquePanels/RoleReversalPanel",
+      "component": null,
       "article": "technique-role-reversal",
       "status": "live"
     },
@@ -10761,7 +10761,7 @@
       "panelId": "fog-of-war",
       "section": "techniques",
       "route": "/fog-of-war",
-      "component": "src/components/TechniquePanels/FogOfWarPanel",
+      "component": null,
       "article": "technique-fog-of-war",
       "status": "live"
     },
@@ -10771,7 +10771,7 @@
       "panelId": "evidence-revelation",
       "section": "techniques",
       "route": "/evidence-revelation",
-      "component": "src/components/TechniquePanels/EvidenceRevelationPanel",
+      "component": null,
       "article": "technique-evidence-revelation",
       "status": "live"
     },
@@ -10781,7 +10781,7 @@
       "panelId": "humor",
       "section": "techniques",
       "route": "/humor",
-      "component": "src/components/TechniquePanels/HumorPanel",
+      "component": null,
       "article": "technique-humor",
       "status": "live"
     },
@@ -10791,7 +10791,7 @@
       "panelId": "status-dynamics",
       "section": "techniques",
       "route": "/status-dynamics",
-      "component": "src/components/TechniquePanels/StatusDynamicsPanel",
+      "component": null,
       "article": "technique-status-dynamics",
       "status": "live"
     },
@@ -10801,7 +10801,7 @@
       "panelId": "style-matching",
       "section": "techniques",
       "route": "/style-matching",
-      "component": "src/components/TechniquePanels/StyleMatchingPanel",
+      "component": null,
       "article": "technique-style-matching",
       "status": "live"
     },
@@ -10811,7 +10811,7 @@
       "panelId": "dynamic-persona",
       "section": "techniques",
       "route": "/dynamic-persona",
-      "component": "src/components/TechniquePanels/DynamicPersonaPanel",
+      "component": null,
       "article": "technique-dynamic-persona",
       "status": "live"
     },
@@ -10821,7 +10821,7 @@
       "panelId": "strategist",
       "section": "techniques",
       "route": "/strategist",
-      "component": "src/components/TechniquePanels/StrategistPanel",
+      "component": null,
       "article": "technique-strategist",
       "status": "live"
     },
@@ -10831,7 +10831,7 @@
       "panelId": "whisper-channels",
       "section": "techniques",
       "route": "/whisper-channels",
-      "component": "src/components/TechniquePanels/WhisperChannelsPanel",
+      "component": null,
       "article": "technique-whisper-channels",
       "status": "live"
     },
@@ -10841,7 +10841,7 @@
       "panelId": "alliance",
       "section": "techniques",
       "route": "/alliance",
-      "component": "src/components/TechniquePanels/AlliancePanel",
+      "component": null,
       "article": "technique-alliance",
       "status": "live"
     },
@@ -10851,7 +10851,7 @@
       "panelId": "prediction-market",
       "section": "techniques",
       "route": "/prediction-market",
-      "component": "src/components/TechniquePanels/PredictionMarketPanel",
+      "component": null,
       "article": "technique-prediction-market",
       "status": "live"
     },
@@ -10861,7 +10861,7 @@
       "panelId": "rtom",
       "section": "techniques",
       "route": "/rtom",
-      "component": "src/components/TechniquePanels/RtomPanel",
+      "component": null,
       "article": "technique-rtom",
       "status": "live"
     },
@@ -10871,7 +10871,7 @@
       "panelId": "strategy-fingerprint",
       "section": "techniques",
       "route": "/strategy-fingerprint",
-      "component": "src/components/TechniquePanels/StrategyFingerprintPanel",
+      "component": null,
       "article": "technique-strategy-fingerprint",
       "status": "live"
     },
@@ -10881,7 +10881,7 @@
       "panelId": "objection-anticipation",
       "section": "techniques",
       "route": "/objection-anticipation",
-      "component": "src/components/TechniquePanels/ObjectionAnticipationPanel",
+      "component": null,
       "article": "technique-objection-anticipation",
       "status": "live"
     },
@@ -10891,7 +10891,7 @@
       "panelId": "evidence-triangulation",
       "section": "techniques",
       "route": "/evidence-triangulation",
-      "component": "src/components/TechniquePanels/EvidenceTriangulationPanel",
+      "component": null,
       "article": "technique-evidence-triangulation",
       "status": "live"
     },
@@ -10901,7 +10901,7 @@
       "panelId": "hegelian-synthesis",
       "section": "techniques",
       "route": "/hegelian-synthesis",
-      "component": "src/components/TechniquePanels/HegelianSynthesisPanel",
+      "component": null,
       "article": "technique-hegelian-synthesis",
       "status": "live"
     },
@@ -10911,7 +10911,7 @@
       "panelId": "uncertainty-propagation",
       "section": "techniques",
       "route": "/uncertainty-propagation",
-      "component": "src/components/TechniquePanels/UncertaintyPropagationPanel",
+      "component": null,
       "article": "technique-uncertainty-propagation",
       "status": "live"
     },
@@ -10921,7 +10921,7 @@
       "panelId": "rhetoric-safety",
       "section": "techniques",
       "route": "/rhetoric-safety",
-      "component": "src/components/TechniquePanels/RhetoricSafetyPanel",
+      "component": null,
       "article": "technique-rhetoric-safety",
       "status": "live"
     },
@@ -10931,7 +10931,7 @@
       "panelId": "blind-evaluation",
       "section": "techniques",
       "route": "/blind-evaluation",
-      "component": "src/components/TechniquePanels/BlindEvaluationPanel",
+      "component": null,
       "article": "technique-blind-evaluation",
       "status": "live"
     },
@@ -10941,7 +10941,7 @@
       "panelId": "bidding-time",
       "section": "techniques",
       "route": "/bidding-time",
-      "component": "src/components/TechniquePanels/BiddingTimePanel",
+      "component": null,
       "article": "technique-bidding-time",
       "status": "live"
     },
@@ -10951,7 +10951,7 @@
       "panelId": "adaptive-order",
       "section": "techniques",
       "route": "/adaptive-order",
-      "component": "src/components/TechniquePanels/AdaptiveOrderPanel",
+      "component": null,
       "article": "technique-adaptive-order",
       "status": "live"
     },
@@ -10961,7 +10961,7 @@
       "panelId": "executable-evidence",
       "section": "techniques",
       "route": "/executable-evidence",
-      "component": "src/components/TechniquePanels/ExecutableEvidencePanel",
+      "component": null,
       "article": "technique-executable-evidence",
       "status": "live"
     },
@@ -10971,7 +10971,7 @@
       "panelId": "hidden-incentives",
       "section": "techniques",
       "route": "/hidden-incentives",
-      "component": "src/components/TechniquePanels/HiddenIncentivesPanel",
+      "component": null,
       "article": "technique-hidden-incentives",
       "status": "live"
     },
@@ -10981,7 +10981,7 @@
       "panelId": "semantic-blending",
       "section": "techniques",
       "route": "/semantic-blending",
-      "component": "src/components/TechniquePanels/SemanticBlendingPanel",
+      "component": null,
       "article": "technique-semantic-blending",
       "status": "live"
     },
@@ -10991,7 +10991,7 @@
       "panelId": "judge-deliberation",
       "section": "techniques",
       "route": "/judge-deliberation",
-      "component": "src/components/TechniquePanels/JudgeDeliberationPanel",
+      "component": null,
       "article": "technique-judge-deliberation",
       "status": "live"
     },
