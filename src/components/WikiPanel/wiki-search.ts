@@ -1,9 +1,23 @@
 import { Bm25Service } from '../../kernel/services/rag/bm25-service';
+import { filterOptions } from '../../kernel/utils/filter-options';
 import { WIKI_ARTICLES } from './wiki-articles';
 
 export interface WikiHit {
     slug: string;
     score: number;
+}
+
+/**
+ * Synchronous prefix/title fallback for very short queries (1 character)
+ * where BM25 has too little signal. Reuses the relevance scorer.
+ */
+export function searchWikiQuick(query: string, limit = 10): WikiHit[] {
+    const q = query.trim();
+    if (!q) return [];
+    return filterOptions(WIKI_ARTICLES, q, ['title'], limit).map(({ item }) => ({
+        slug: item.slug,
+        score: 0.5,
+    }));
 }
 
 let cached: Bm25Service | null = null;
@@ -26,7 +40,8 @@ async function index(): Promise<Bm25Service> {
 
 export async function searchWiki(query: string, limit = 10): Promise<WikiHit[]> {
     const q = query.trim();
-    if (q.length < 2) return [];
+    if (!q) return [];
+    if (q.length < 2) return searchWikiQuick(q, limit);
     const svc = await index();
     const hits = await svc.search(q, limit);
     return hits.map((h) => ({ slug: h.id, score: h.score }));
