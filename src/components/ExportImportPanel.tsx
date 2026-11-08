@@ -162,8 +162,26 @@ const ExportImportPanel: React.FC = () => {
                     }
                     return { prompts: [] };
                 },
-                async () => 'Prompt import not supported yet',
-                false,
+                async (data) => {
+                    const m = await loadServices();
+                    const list = Array.isArray(data.prompts) ? data.prompts : [];
+                    let count = 0;
+                    for (const p of list as Array<Record<string, unknown>>) {
+                        if (p.isBuiltIn) continue;
+                        const title = typeof p.title === 'string' ? p.title : '';
+                        const content = typeof p.content === 'string' ? p.content : '';
+                        if (!title || !content) continue;
+                        await m.promptLibraryService.create({
+                            title,
+                            content,
+                            category: typeof p.category === 'string' ? p.category : 'general',
+                            tags: Array.isArray(p.tags) ? (p.tags as string[]) : [],
+                            variables: Array.isArray(p.variables) ? (p.variables as string[]) : [],
+                        });
+                        count++;
+                    }
+                    return `Imported ${count} prompt templates`;
+                },
             ),
             makeSection(
                 'workflows',
@@ -177,8 +195,27 @@ const ExportImportPanel: React.FC = () => {
                     }
                     return { workflows: [] };
                 },
-                async () => 'Workflow import not supported yet',
-                false,
+                async (data) => {
+                    const m = await loadServices();
+                    const list = Array.isArray(data.workflows) ? data.workflows : [];
+                    let count = 0;
+                    for (const w of list as Array<Record<string, unknown>>) {
+                        if (w.isBuiltIn) continue;
+                        const title = typeof w.title === 'string' ? w.title : '';
+                        if (!title) continue;
+                        const steps = Array.isArray(w.steps)
+                            ? (w.steps as Array<Record<string, unknown>>).map(({ id: _id, ...rest }) => rest)
+                            : [];
+                        await m.workflowService.create({
+                            title,
+                            description: typeof w.description === 'string' ? w.description : '',
+                            steps: steps as never,
+                            tags: Array.isArray(w.tags) ? (w.tags as string[]) : [],
+                        });
+                        count++;
+                    }
+                    return `Imported ${count} workflows`;
+                },
             ),
             makeSection(
                 'topologies',
@@ -191,6 +228,103 @@ const ExportImportPanel: React.FC = () => {
                 },
                 async () => 'Topology import not supported yet',
                 false,
+            ),
+            makeSection(
+                'roles',
+                'Roles',
+                '\uD83E\uDDB9',
+                async () => {
+                    const m = await loadServices();
+                    const roles = m.roleService?.getAllRoles?.() || [];
+                    return { roles: JSON.parse(JSON.stringify(roles)) };
+                },
+                async (data) => {
+                    const m = await loadServices();
+                    const list = Array.isArray(data.roles) ? data.roles : [];
+                    let count = 0;
+                    for (const r of list as Array<Record<string, unknown>>) {
+                        if (r.isBuiltin) continue;
+                        const name = typeof r.name === 'string' ? r.name : '';
+                        if (!name) continue;
+                        const meta = (r.metadata as Record<string, unknown> | undefined) ?? {};
+                        await m.roleService.addRole({
+                            name,
+                            description: typeof r.description === 'string' ? r.description : undefined,
+                            systemPrompt: typeof r.systemPrompt === 'string' ? r.systemPrompt : undefined,
+                            baseTemperature:
+                                typeof r.baseTemperature === 'number' ? r.baseTemperature : undefined,
+                            capabilities: Array.isArray(r.capabilities) ? (r.capabilities as string[]) : [],
+                            permissions: Array.isArray(r.permissions) ? (r.permissions as string[]) : [],
+                            deniedPermissions: Array.isArray(r.deniedPermissions)
+                                ? (r.deniedPermissions as string[])
+                                : undefined,
+                            icon: typeof r.icon === 'string' ? r.icon : undefined,
+                            priority: typeof r.priority === 'number' ? r.priority : undefined,
+                            parentRoleId: typeof r.parentRoleId === 'string' ? r.parentRoleId : undefined,
+                            metadata: {
+                                category: typeof meta.category === 'string' ? meta.category : 'custom',
+                                tags: Array.isArray(meta.tags) ? (meta.tags as string[]) : undefined,
+                                author: typeof meta.author === 'string' ? meta.author : undefined,
+                            },
+                        });
+                        count++;
+                    }
+                    return `Imported ${count} roles`;
+                },
+            ),
+            makeSection(
+                'crystal',
+                'Crystals',
+                '\uD83D\uDC8E',
+                async () => {
+                    const m = await loadServices();
+                    const crystals = await m.crystalVault.list();
+                    return { crystals: JSON.parse(JSON.stringify(crystals)) };
+                },
+                async (data) => {
+                    const m = await loadServices();
+                    const list = Array.isArray(data.crystals) ? data.crystals : [];
+                    let count = 0;
+                    for (const c of list as Array<Record<string, unknown>>) {
+                        const content = c.content as Record<string, unknown> | undefined;
+                        const statement = typeof content?.statement === 'string' ? content.statement : '';
+                        if (!statement) continue;
+                        const provenance = (c.provenance as Record<string, unknown> | undefined) ?? {};
+                        await m.crystalVault.propose({
+                            content: {
+                                statement,
+                                elaboration:
+                                    typeof content?.elaboration === 'string'
+                                        ? content.elaboration
+                                        : undefined,
+                                evidence: Array.isArray(content?.evidence)
+                                    ? (content.evidence as string[])
+                                    : [],
+                                evidenceRefs: Array.isArray(content?.evidenceRefs)
+                                    ? (content.evidenceRefs as never[])
+                                    : undefined,
+                            },
+                            originKind: 'imported',
+                            originId:
+                                typeof provenance.originId === 'string'
+                                    ? provenance.originId
+                                    : `imported-${Date.now()}-${count}`,
+                            contributingAgents: Array.isArray(provenance.contributingAgents)
+                                ? (provenance.contributingAgents as string[])
+                                : [],
+                            modelIds: Array.isArray(provenance.modelIds)
+                                ? (provenance.modelIds as string[])
+                                : [],
+                            totalTokensSpent:
+                                typeof provenance.totalTokensSpent === 'number'
+                                    ? provenance.totalTokensSpent
+                                    : 0,
+                            applicableDomain: 'general',
+                        });
+                        count++;
+                    }
+                    return `Imported ${count} crystals`;
+                },
             ),
         ],
         [],

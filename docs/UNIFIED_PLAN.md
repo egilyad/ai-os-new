@@ -99,7 +99,7 @@
 | # | Задача | Статус | Источник |
 |---|---|---|---|
 | P2-1 | Builder: интеграция killer-сервисов (crystal/synthesis/lens/time-machine) | ❌ | Gap Map §3; P1-#8 |
-| P2-2 | Round-trip export/import для 9 панелей | ❌ | Gap Map §4; Opportunity |
+| P2-2 | Round-trip export/import для 9 панелей | 🟡 (ExportImportPanel: импорт включён для prompts (promptLibraryService.create), workflows (workflowService.create), новая секция roles (roleService.getAllRoles/addRole), новая секция crystal (crystalVault.list/propose imported). Уже были round-trip: keys/memory/agents/settings. Остаток: debates/topologies импорт (нужно восстановление сессий/топологий) + панельные кнопки local-first) | Gap Map §4; Opportunity |
 | P2-3 | Vertical-консолидация: 5 budget → BudgetHub; 4 health → HealthPanel; 6 research | ❌ | Duplication Map; P3-#32/33/34 |
 | P2-4 | Рефакторинг 62 TechniquePanels → generic-панель | ❌ | Tech Map §5.6; Duplication |
 | P2-5 | WikiPanel «Create article» UI; DebateArena «Save as Crystal» | ✅ (Wiki: кнопка «+ Создать статью», редактор (title/slug/section/tags/body markdown), сохранение в localStorage (wiki.userArticles.v1), мёрж в getArticle/articlesBySection/search (getAllArticles); Debate: кнопка «Save as Crystal» в VerdictActionButtons (propose+validate с защитой от дублей по originId=session.id), ключи i18n en/ru) | Opportunity Map |
