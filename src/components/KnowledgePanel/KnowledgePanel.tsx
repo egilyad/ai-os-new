@@ -1,4 +1,5 @@
 import React, { useMemo, useState, useEffect, useRef, useCallback } from 'react';
+import { useAutoClearError } from '../../hooks/useAutoClearError';
 import { useTranslation } from '../../i18n/useTranslation';
 import { useConfirm } from '../../hooks/useConfirm';
 import { memoryService, rootLogger } from '../../kernel/instances';
@@ -43,14 +44,7 @@ const KnowledgePanel: React.FC = () => {
 
     const isMountedRef = useRef(true);
     const loadingTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-    const errorTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-    const clearErrorAfterDelay = useCallback(() => {
-        if (errorTimeoutRef.current) clearTimeout(errorTimeoutRef.current);
-        errorTimeoutRef.current = setTimeout(() => {
-            if (isMountedRef.current) setError(null);
-        }, 5000);
-    }, []);
+    const clearErrorAfterDelay = useAutoClearError(setError, 5000);
 
     useEffect(() => {
         isMountedRef.current = true;
@@ -69,7 +63,6 @@ const KnowledgePanel: React.FC = () => {
             isMountedRef.current = false;
             unsub();
             if (loadingTimerRef.current) clearTimeout(loadingTimerRef.current);
-            if (errorTimeoutRef.current) clearTimeout(errorTimeoutRef.current);
         };
     }, []);
 
