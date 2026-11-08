@@ -3,6 +3,7 @@
  * Shadow router projection — research-grade, not production surface (P1.21).
  */
 import React, { useState, useEffect, useCallback } from 'react';
+import { useAutoClearError } from '../../hooks/useAutoClearError';
 import { GitBranch } from 'lucide-react';
 import { routerProjection, routerService } from '../../kernel/instances';
 import { eventBus } from '../../kernel/instances';
@@ -15,6 +16,7 @@ const ShadowPanel: React.FC = () => {
     const [routerReport, setRouterReport] = useState<RouterDiffReport | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const clearError = useAutoClearError(setError);
 
     const runDiff = useCallback(() => {
         setLoading(true);
@@ -35,10 +37,11 @@ const ShadowPanel: React.FC = () => {
         } catch (e) {
             console.error('[ShadowPanel] Diff failed:', e);
             setError(e instanceof Error ? e.message : String(e));
+            clearError();
         } finally {
             setLoading(false);
         }
-    }, []);
+    }, [clearError]);
 
     useEffect(() => {
         runDiff();
