@@ -3,6 +3,7 @@
  * Research engine surface — research-grade, not production surface (P1.21).
  */
 import React, { useState, useEffect, useCallback } from 'react';
+import { useAutoClearError } from '../../hooks/useAutoClearError';
 import { useVisibilityInterval } from '../../utils/visibility-interval';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Layers, Plus } from 'lucide-react';
@@ -29,6 +30,7 @@ const ResearchEnginePanel: React.FC = () => {
         }
     });
     const [error, setError] = useState<string | null>(null);
+    const clearError = useAutoClearError(setError);
     const refresh = useCallback(() => {
         try {
             const all = researchEngine.getAllSessions();
@@ -36,9 +38,10 @@ const ResearchEnginePanel: React.FC = () => {
         } catch (e) {
             console.error('[ResearchEnginePanel] refresh failed', e);
             setError(t('research_engine.error_refresh'));
+            clearError();
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [clearError]);
 
     useEffect(() => {
         refresh();
@@ -57,6 +60,7 @@ const ResearchEnginePanel: React.FC = () => {
         } catch (e) {
             console.error('[ResearchEnginePanel] create failed', e);
             setError(t('research_engine.error_create'));
+            clearError();
         }
     };
 
@@ -67,6 +71,7 @@ const ResearchEnginePanel: React.FC = () => {
         } catch (e) {
             console.error('[ResearchEnginePanel] run failed', e);
             setError(t('research_engine.error_run'));
+            clearError();
         } finally {
             refresh();
         }
@@ -81,6 +86,7 @@ const ResearchEnginePanel: React.FC = () => {
         } catch (e) {
             console.error('[ResearchEnginePanel] delete failed', e);
             setError(t('research_engine.error_delete'));
+            clearError();
         }
     };
 
@@ -94,6 +100,7 @@ const ResearchEnginePanel: React.FC = () => {
         } catch (e) {
             console.error('[ResearchEnginePanel] source toggle failed', e);
             setError(t('research_engine.error_refresh'));
+            clearError();
         }
     };
 
