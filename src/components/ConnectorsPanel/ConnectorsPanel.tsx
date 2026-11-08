@@ -5,6 +5,7 @@ import { AlertTriangle, X, Plus, Globe } from 'lucide-react';
 import { eventBus, EVENTS, connectorService, rootLogger } from '../../kernel/instances';
 const LOGGER = rootLogger.child('ConnectorsPanel');
 import { useTranslation } from '../../i18n/useTranslation';
+import { useAutoClearError } from '../../hooks/useAutoClearError';
 import { DEFAULT_CONNECTORS } from './connector-constants';
 import ConnectorHeader from './ConnectorHeader';
 import ConnectorControls from './ConnectorControls';
@@ -27,14 +28,7 @@ const ConnectorsPanel: React.FC = () => {
     const [confirmDisconnect, setConfirmDisconnect] = useState<string | null>(null);
     const { t } = useTranslation();
     const isMountedRef = useRef(true);
-    const errorTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-    const clearErrorAfterDelay = useCallback(() => {
-        if (errorTimeoutRef.current) clearTimeout(errorTimeoutRef.current);
-        errorTimeoutRef.current = setTimeout(() => {
-            if (isMountedRef.current) setErrorMsg(null);
-        }, 5000);
-    }, []);
+    const clearError = useAutoClearError(setErrorMsg);
 
     useEffect(() => {
         isMountedRef.current = true;
@@ -52,7 +46,7 @@ const ConnectorsPanel: React.FC = () => {
                 LOGGER.warn('Failed to load connectors', String(e));
                 if (isMountedRef.current) {
                     setErrorMsg('Could not load connectors. Using default configuration.');
-                    clearErrorAfterDelay();
+                    clearError();
                     setConnectors(DEFAULT_CONNECTORS);
                 }
             } finally {
@@ -62,9 +56,8 @@ const ConnectorsPanel: React.FC = () => {
         load();
         return () => {
             isMountedRef.current = false;
-            if (errorTimeoutRef.current) clearTimeout(errorTimeoutRef.current);
         };
-    }, [clearErrorAfterDelay]);
+    }, [clearError]);
 
     const persist = useCallback(
         async (updated: Connector[]) => {
@@ -75,11 +68,11 @@ const ConnectorsPanel: React.FC = () => {
                 LOGGER.warn('Failed to save', String(e));
                 if (isMountedRef.current) {
                     setErrorMsg('Could not save connector changes.');
-                    clearErrorAfterDelay();
+                    clearError();
                 }
             }
         },
-        [clearErrorAfterDelay],
+        [clearError],
     );
 
     const filteredConnectors = useMemo(
@@ -167,7 +160,7 @@ const ConnectorsPanel: React.FC = () => {
         if (!isMountedRef.current) return;
         if (!newName.trim()) {
             setErrorMsg(t('connectors.error_name'));
-            clearErrorAfterDelay();
+            clearError();
             return;
         }
         const id = `custom-${genId().slice(0, 8)}`;
@@ -191,7 +184,7 @@ const ConnectorsPanel: React.FC = () => {
             message: t('connectors.notif_added', { name: nc.name }),
             type: 'success',
         });
-    }, [newName, newType, persist, clearErrorAfterDelay, t]);
+    }, [newName, newType, persist, clearError, t]);
 
     if (!loaded) {
         return (

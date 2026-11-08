@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from '../i18n/useTranslation';
+import { useAutoClearError } from '../hooks/useAutoClearError';
 import {
     getMessageIndexService,
     type IndexedMessage,
@@ -58,6 +59,7 @@ export const MessageSearchPanel: React.FC = () => {
     const [results, setResults] = useState<IndexedMessage[]>([]);
     const [showFilters, setShowFilters] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const clearError = useAutoClearError(setError);
     const [, force] = useState(0);
     const isMountedRef = useRef(true);
     const searchTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -93,7 +95,10 @@ export const MessageSearchPanel: React.FC = () => {
             });
             if (isMountedRef.current) setResults(out);
         } catch (err) {
-            if (isMountedRef.current) setError(String(err));
+            if (isMountedRef.current) {
+                setError(String(err));
+                clearError();
+            }
         }
     }, [
         query,
@@ -106,6 +111,7 @@ export const MessageSearchPanel: React.FC = () => {
         fromDate,
         toDate,
         minTokens,
+        clearError,
     ]);
 
     useEffect(() => {
@@ -159,8 +165,9 @@ export const MessageSearchPanel: React.FC = () => {
             }, 100);
         } catch (err) {
             setError(String(err));
+            clearError();
         }
-    }, [results]);
+    }, [results, clearError]);
 
     const total = messageIndex.count();
     const userCount = useMemo(() => results.filter((r) => r.role === 'user').length, [results]);

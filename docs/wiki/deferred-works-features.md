@@ -69,7 +69,7 @@
 | MemoryCenterPanel как hub (не дубликат MemoryPanel) | 🟡 MERGE PARTIAL | архитектура |
 | 62 TechniquePanels → каталог | 🟡 MERGE | генерация/единый компонент |
 | rivals/ 19 подкаталогов → experimental/ или удалить | 🔴 REMOVE | чистка |
-| 97 ручных setError → useAutoClearError | 🟡 MERGE | стандартизация |
+| 97 ручных setError → useAutoClearError | ✅ ЗАКРЫТО (P2-12) | стандартизация |
 | 8 типов памяти / 14 router / 16 key-management / адаптеры | 🟢 KEEP | преднамеренно |
 
 ## Из «Карты наблюдаемости и диагностики»

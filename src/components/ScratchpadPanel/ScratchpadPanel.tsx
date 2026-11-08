@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { ClipboardList, Zap, RefreshCw, Info, Target, AlertTriangle } from 'lucide-react';
 import { ScratchpadService } from '../../kernel/services/debate-runtime/scratchpad-service';
 import { useTranslation } from '../../i18n/useTranslation';
+import { useAutoClearError } from '../../hooks/useAutoClearError';
 import ModuleInfo from '../ModuleInfo';
 import { Button } from '../Common';
 import { useRealAgents } from '../../hooks/useRealAgents';
@@ -43,6 +44,7 @@ export const ScratchpadPanel: React.FC = () => {
     }, [sessionId]);
     const [analysis, setAnalysis] = useState<ReturnType<ScratchpadService['analyze']> | null>(null);
     const [error, setError] = useState<string | null>(null);
+    const clearError = useAutoClearError(setError);
 
     const handleAnalyze = () => {
         setError(null);
@@ -53,6 +55,7 @@ export const ScratchpadPanel: React.FC = () => {
         } catch (e) {
             setAnalysis(null);
             setError(e instanceof Error ? e.message : 'Analysis failed');
+            clearError();
         }
     };
 

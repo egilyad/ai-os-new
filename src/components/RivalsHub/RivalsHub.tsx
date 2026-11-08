@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from '../../i18n/useTranslation';
+import { useAutoClearError } from '../../hooks/useAutoClearError';
 import {
     autonomyService,
     groupChatService,
@@ -37,6 +38,7 @@ export default function RivalsHub() {
     const navigate = useNavigate();
     const [busy, setBusy] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const clearError = useAutoClearError(setError);
     const [notice, setNotice] = useState<string | null>(null);
 
     const [loops, setLoops] = useState<AgentLoop[]>([]);
@@ -58,6 +60,7 @@ export default function RivalsHub() {
     const fail = (e: unknown) => {
         console.error('[RivalsHub]', e);
         setError(t('hub.error.generic'));
+        clearError();
     };
 
     const reload = async () => {

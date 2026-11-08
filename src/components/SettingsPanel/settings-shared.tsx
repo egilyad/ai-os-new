@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useAutoClearError } from '../../hooks/useAutoClearError';
 
 export type SettingsTab =
     | 'general'
@@ -147,20 +148,24 @@ export const ConfigInput = ({
     defaultValue = 0,
 }: ConfigInputProps) => {
     const [error, setError] = useState<string | null>(null);
+    const clearError = useAutoClearError(setError);
     const handleChange = (raw: string) => {
         const parsed = parseFloat(raw);
         if (isNaN(parsed)) {
             setError('Invalid number');
+            clearError();
             onChange(defaultValue);
             return;
         }
         if (parsed < min) {
             setError(`Min ${min}`);
+            clearError();
             onChange(min);
             return;
         }
         if (parsed > max) {
             setError(`Max ${max}`);
+            clearError();
             onChange(max);
             return;
         }

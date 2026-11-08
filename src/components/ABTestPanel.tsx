@@ -3,6 +3,7 @@
  * A/B test harness — research-grade, not production surface (P1.21).
  */
 import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useAutoClearError } from '../hooks/useAutoClearError';
 // eslint-disable-next-line no-restricted-imports -- ab-test-service is local-only helpers, no kernel instance exists
 import { runABTest, getABTestHistory } from '../kernel/services/ab-test-service';
 import { keyService, rootLogger } from '../kernel/instances';
@@ -41,6 +42,7 @@ const ABTestPanel: React.FC = () => {
     const [result, setResult] = useState<ABTestResult | null>(null);
     const [history, setHistory] = useState<ABTestHistoryEntry[]>([]);
     const [error, setError] = useState<string | null>(null);
+    const clearError = useAutoClearError(setError);
     const [viewTab, setViewTab] = useState<'test' | 'history'>('test');
 
     const allKeys = useMemo(() => keyService.getKeys(), []);
@@ -92,6 +94,7 @@ const ABTestPanel: React.FC = () => {
             loadHistory();
         } catch (e) {
             setError(e instanceof Error ? e.message : 'AB test failed');
+            clearError();
             LOGGER.warn('AB test failed', String(e));
         } finally {
             setRunning(false);

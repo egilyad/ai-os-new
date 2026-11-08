@@ -24,7 +24,7 @@ const GroupsPanel: React.FC = () => {
     const [createOpen, setCreateOpen] = useState(false);
     const [createName, setCreateName] = useState('');
     const [error, setError] = useState<string | null>(null);
-    const clearError = useAutoClearError(setError);
+    const clearError = useAutoClearError(setError, null);
 
     const refresh = useCallback(async () => {
         try {

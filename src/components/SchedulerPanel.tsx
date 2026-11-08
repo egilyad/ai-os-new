@@ -65,7 +65,7 @@ export const SchedulerPanel: React.FC = () => {
     const [schedules, setSchedules] = useState<Schedule[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const clearError = useAutoClearError(setError);
+    const clearError = useAutoClearError(setError, null);
 
     const [name, setName] = useState('');
     const [agentId, setAgentId] = useState('');

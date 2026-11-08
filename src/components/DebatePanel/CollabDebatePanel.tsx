@@ -10,6 +10,7 @@ import {
     Scale,
 } from 'lucide-react';
 import { collaborativeService, eventBus, rootLogger } from '../../kernel/instances';
+import { useAutoClearError } from '../../hooks/useAutoClearError';
 import type { DebateSession } from '../../kernel/contracts/debate-types';
 import type { CollabRole, HumanParticipant } from '../../kernel/services/collaborative-service';
 const LOGGER = rootLogger.child('CollabDebatePanel');
@@ -40,6 +41,7 @@ const CollabDebatePanel: React.FC<Props> = ({ session }) => {
     const [message, setMessage] = useState('');
     const [joined, setJoined] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const clearError = useAutoClearError(setError);
     const isMounted = useRef(true);
 
     useEffect(() => {
@@ -71,6 +73,7 @@ const CollabDebatePanel: React.FC<Props> = ({ session }) => {
         } catch (err) {
             LOGGER.warn('CollabDebatePanel', 'Failed to join', { error: err });
             setError(err instanceof Error ? err.message : 'Failed to join debate');
+            clearError();
         }
     };
 

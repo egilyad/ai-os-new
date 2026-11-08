@@ -4,6 +4,7 @@
  */
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from '../../i18n/useTranslation';
+import { useAutoClearError } from '../../hooks/useAutoClearError';
 import type { PalaceState } from '../../kernel/services/memory/memory-palace';
 
 const card: React.CSSProperties = {
@@ -23,6 +24,7 @@ const MemoryPalacePanel: React.FC = () => {
     const [state, setState] = useState<PalaceState | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const clearError = useAutoClearError(setError);
 
     useEffect(() => {
         (async () => {
@@ -36,14 +38,18 @@ const MemoryPalacePanel: React.FC = () => {
                 const orch: { getPalaceState: () => Promise<PalaceState> } | undefined =
                     mod.memoryOrchestrator;
                 if (orch) setState(await orch.getPalaceState());
-                else setError(t('memory_palace.service_unavailable'));
+                else {
+                    setError(t('memory_palace.service_unavailable'));
+                    clearError();
+                }
             } catch {
                 setError(t('memory_palace.load_error'));
+                clearError();
             } finally {
                 setLoading(false);
             }
         })();
-    }, [t]);
+    }, [t, clearError]);
 
     if (loading) {
         return (

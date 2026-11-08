@@ -4,6 +4,7 @@ import { PanelSkeleton } from './Common/Skeleton';
 import { motion } from 'framer-motion';
 import { useTranslation } from '../i18n/useTranslation';
 import { sessionManager, debateService } from '../kernel/instances';
+import { useAutoClearError } from '../hooks/useAutoClearError';
 import { analyzeDebate } from '../kernel/utils/debate-analysis';
 import type { DebateAnalysis } from '../kernel/utils/debate-analysis';
 import { errorContainer, dismissBtnRed } from '../styles/common';
@@ -18,6 +19,7 @@ const DebateAnalysisPanel: React.FC = () => {
     const [analysis, setAnalysis] = useState<DebateAnalysis | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const clearError = useAutoClearError(setError);
     const isMountedRef = useRef(true);
 
     useEffect(() => {
@@ -29,14 +31,17 @@ const DebateAnalysisPanel: React.FC = () => {
                 if (!sessionId) setSessionId(active.id);
             }
         } catch (err) {
-            if (isMountedRef.current) setError(String(err));
+            if (isMountedRef.current) {
+                setError(String(err));
+                clearError();
+            }
         } finally {
             if (isMountedRef.current) setLoading(false);
         }
         return () => {
             isMountedRef.current = false;
         };
-    }, [sessionId]);
+    }, [sessionId, clearError]);
 
     const runAnalysis = useMemo(() => {
         if (!sessionId) return null;

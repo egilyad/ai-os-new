@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react';
 import { googleGenAIService } from '../../kernel/instances';
+import { useAutoClearError } from '../../hooks/useAutoClearError';
 import { Image, Loader2 } from 'lucide-react';
 
 export function GoogleImagenTab() {
@@ -7,6 +8,7 @@ export function GoogleImagenTab() {
     const [images, setImages] = useState<string[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+    const clearError = useAutoClearError(setError as (v: string | null) => void);
 
     const handleGenerate = useCallback(async () => {
         if (!prompt.trim()) return;
@@ -18,10 +20,11 @@ export function GoogleImagenTab() {
             setImages(result.images);
         } catch (err) {
             setError(err instanceof Error ? err.message : String(err));
+            clearError();
         } finally {
             setLoading(false);
         }
-    }, [prompt]);
+    }, [prompt, clearError]);
 
     return (
         <div

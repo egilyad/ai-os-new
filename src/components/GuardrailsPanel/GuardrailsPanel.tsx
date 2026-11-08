@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useAutoClearError } from '../../hooks/useAutoClearError';
 import { useTranslation } from '../../i18n/useTranslation';
 import { guardrailService } from '../../kernel/instances/services-extras';
 import type { GuardrailRule } from '../../kernel/contracts/rivals';
@@ -27,9 +28,11 @@ export default function GuardrailsPanel() {
     const [verdict, setVerdict] = useState<{ ok: boolean; hits: string[] } | null>(null);
     const [search, setSearch] = useState('');
 
+    const clearError = useAutoClearError(setError);
     const fail = (e: unknown) => {
         console.error('[GuardrailsPanel]', e);
         setError(t('guardrails.error.generic'));
+        clearError();
     };
 
     const reload = async () => {

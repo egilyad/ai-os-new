@@ -62,7 +62,7 @@ const CostsPanel: React.FC = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [notice, setNotice] = useState<string | null>(null);
-    const clearError = useAutoClearError(setError);
+    const clearError = useAutoClearError(setError, null);
 
     const base = url.replace(/\/$/, '');
 

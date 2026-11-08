@@ -1,5 +1,6 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { googleGenAIService } from '../../kernel/instances';
+import { useAutoClearError } from '../../hooks/useAutoClearError';
 import { Globe, Loader2 } from 'lucide-react';
 import type { ChatMessage, ProviderResponse } from '../../kernel/types/llm-types';
 
@@ -11,6 +12,7 @@ export function GoogleGroundingTab({ model }: GoogleGroundingTabProps) {
     const [loading, setLoading] = useState(false);
     const [result, setLocalResult] = useState<ProviderResponse | null>(null);
     const [error, setError] = useState('');
+    const clearError = useAutoClearError(setError as (v: string | null) => void);
     const abortRef = useRef<AbortController | null>(null);
 
     useEffect(() => {
@@ -40,11 +42,12 @@ export function GoogleGroundingTab({ model }: GoogleGroundingTabProps) {
             setLocalResult(r);
         } catch (err) {
             setError(err instanceof Error ? err.message : String(err));
+            clearError();
         } finally {
             setLoading(false);
             abortRef.current = null;
         }
-    }, [model]);
+    }, [model, clearError]);
 
     return (
         <div

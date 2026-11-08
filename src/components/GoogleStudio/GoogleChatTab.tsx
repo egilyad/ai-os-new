@@ -1,5 +1,6 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { googleGenAIService } from '../../kernel/instances';
+import { useAutoClearError } from '../../hooks/useAutoClearError';
 import { Send, StopCircle, Loader2, Globe, Brain } from 'lucide-react';
 import type { ChatMessage, ProviderResponse } from '../../kernel/types/llm-types';
 
@@ -23,6 +24,7 @@ export function GoogleChatTab({ model }: GoogleChatTabProps) {
     const [imageBase64, setImageBase64] = useState('');
     const [imageMime, setImageMime] = useState('');
     const [error, setError] = useState('');
+    const clearError = useAutoClearError(setError as (v: string | null) => void);
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const abortRef = useRef<AbortController | null>(null);
 
@@ -77,12 +79,13 @@ export function GoogleChatTab({ model }: GoogleChatTabProps) {
             setImageMime('');
         } catch (err) {
             setError(err instanceof Error ? err.message : String(err));
+            clearError();
         } finally {
             setStreaming(false);
             setLoading(false);
             abortRef.current = null;
         }
-    }, [input, model, thinkingEnabled, groundingEnabled, imageBase64, imageMime]);
+    }, [input, model, thinkingEnabled, groundingEnabled, imageBase64, imageMime, clearError]);
 
     const handleStop = useCallback(() => {
         abortRef.current?.abort();

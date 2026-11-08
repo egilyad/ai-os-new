@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { StickyNote, Search, Tag, AlertTriangle, X, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from '../i18n/useTranslation';
+import { useAutoClearError } from '../hooks/useAutoClearError';
 import { keyService } from '../kernel/instances';
 import { errorContainer, dismissBtnRed } from '../styles/common';
 import { useConfirm } from '../hooks/useConfirm';
@@ -26,6 +27,7 @@ const KeyNotesPanel: React.FC = () => {
     const [adding, setAdding] = useState(false);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const clearError = useAutoClearError(setError);
     const [previewFile, setPreviewFile] = useState<AttachedFile | null>(null);
     const isMountedRef = useRef(true);
 
@@ -43,7 +45,10 @@ const KeyNotesPanel: React.FC = () => {
                 if (!selectedKeyId && list.length > 0) setSelectedKeyId(list[0]!.id);
             }
         } catch (err) {
-            if (isMountedRef.current) setError(String(err));
+            if (isMountedRef.current) {
+                setError(String(err));
+                clearError();
+            }
         } finally {
             if (isMountedRef.current) setLoading(false);
         }
@@ -88,11 +93,14 @@ const KeyNotesPanel: React.FC = () => {
             setAttachments([]);
             loadNotes();
         } catch (err) {
-            if (isMountedRef.current) setError(String(err));
+            if (isMountedRef.current) {
+                setError(String(err));
+                clearError();
+            }
         } finally {
             if (isMountedRef.current) setAdding(false);
         }
-    }, [selectedKeyId, newText, newTags, attachments, loadNotes]);
+    }, [selectedKeyId, newText, newTags, attachments, loadNotes, clearError]);
 
     const handleDeleteNote = useCallback(
         async (noteId: string) => {
@@ -114,10 +122,13 @@ const KeyNotesPanel: React.FC = () => {
                 await keyService.updateKey(selectedKeyId, { notes });
                 loadNotes();
             } catch (err) {
-                if (isMountedRef.current) setError(String(err));
+                if (isMountedRef.current) {
+                    setError(String(err));
+                    clearError();
+                }
             }
         },
-        [selectedKeyId, loadNotes, confirm],
+        [selectedKeyId, loadNotes, confirm, clearError],
     );
 
     const filteredNotes = (() => {

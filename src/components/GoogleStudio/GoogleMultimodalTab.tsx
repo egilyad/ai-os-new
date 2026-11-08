@@ -1,5 +1,6 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { googleGenAIService } from '../../kernel/instances';
+import { useAutoClearError } from '../../hooks/useAutoClearError';
 import { Image, Send, Loader2, CheckCircle2 } from 'lucide-react';
 import type { ChatMessage } from '../../kernel/types/llm-types';
 
@@ -13,6 +14,7 @@ export function GoogleMultimodalTab({ model }: GoogleMultimodalTabProps) {
     const [input, setInput] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+    const clearError = useAutoClearError(setError as (v: string | null) => void);
     const abortRef = useRef<AbortController | null>(null);
 
     useEffect(() => {
@@ -53,11 +55,12 @@ export function GoogleMultimodalTab({ model }: GoogleMultimodalTabProps) {
             setImageMime('');
         } catch (err) {
             setError(err instanceof Error ? err.message : String(err));
+            clearError();
         } finally {
             setLoading(false);
             abortRef.current = null;
         }
-    }, [input, model, imageBase64, imageMime]);
+    }, [input, model, imageBase64, imageMime, clearError]);
 
     return (
         <div

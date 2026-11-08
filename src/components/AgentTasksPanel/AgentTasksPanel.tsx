@@ -79,7 +79,7 @@ const AgentTasksPanel: React.FC = () => {
     const [maxTurns, setMaxTurns] = useState('10');
     const [running, setRunning] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const clearError = useAutoClearError(setError);
+    const clearError = useAutoClearError(setError, null);
     const abortRef = useRef<AbortController | null>(null);
     const [history, setHistory] = useState<RunRecord[]>(loadHistory);
     const [availableAgents, setAvailableAgents] = useState<Array<{ id: string; name: string }>>([]);

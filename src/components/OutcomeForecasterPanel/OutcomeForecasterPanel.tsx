@@ -3,6 +3,7 @@ import { TrendingUp, Target, BarChart3, Info, Zap } from 'lucide-react';
 import { OutcomeForecaster } from '../../kernel/services/debate-runtime/outcome-forecaster';
 import { agentService } from '../../kernel/instances/services-core';
 import { useTranslation } from '../../i18n/useTranslation';
+import { useAutoClearError } from '../../hooks/useAutoClearError';
 import ModuleInfo from '../ModuleInfo';
 import { Button } from '../Common';
 
@@ -17,6 +18,7 @@ export const OutcomeForecasterPanel: React.FC = () => {
     const [topic, setTopic] = useState('Should we invest heavily in solar energy?');
     const [result, setResult] = useState<ReturnType<OutcomeForecaster['forecast']> | null>(null);
     const [error, setError] = useState<string | null>(null);
+    const clearError = useAutoClearError(setError);
 
     useEffect(() => {
         try {
@@ -49,6 +51,7 @@ export const OutcomeForecasterPanel: React.FC = () => {
         } catch (e) {
             setResult(null);
             setError(e instanceof Error ? e.message : 'Forecast failed');
+            clearError();
         }
     };
 

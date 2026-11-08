@@ -1,6 +1,7 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { Play, Terminal, X } from 'lucide-react';
 import { useConfirm } from '../../hooks/useConfirm';
+import { useAutoClearError } from '../../hooks/useAutoClearError';
 import DOMPurify from 'dompurify';
 import { rootLogger } from '../../kernel/instances';
 import { escapeForScriptContent, escapeForStyleContent } from './code-escape';
@@ -75,6 +76,7 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({ code, language }) => {
     const [isRunning, setIsRunning] = useState(false);
     const [output, setOutput] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
+    const clearError = useAutoClearError(setError);
     const [showOutput, setShowOutput] = useState(false);
     const iframeRef = useRef<HTMLIFrameElement | null>(null);
     const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -233,6 +235,7 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({ code, language }) => {
                 setTimeout(cleanup, 100);
             } else if (e.data?.type === 'sandbox-error') {
                 setError(e.data.message || 'Execution failed');
+                clearError();
                 setOutput(logs.join('\n') || '(no output before error)');
                 setIsRunning(false);
                 window.removeEventListener('message', listener);
@@ -244,6 +247,7 @@ export const CodeRunner: React.FC<CodeRunnerProps> = ({ code, language }) => {
 
         timeoutRef.current = setTimeout(() => {
             setError('Execution timed out (10s limit)');
+            clearError();
             setOutput(logs.join('\n') || '(no output)');
             setIsRunning(false);
             window.removeEventListener('message', listener);
@@ -300,7 +304,7 @@ try {
 
         blobUrlRef.current = htmlToBlobUrl(sandboxHtml);
         iframe.src = blobUrlRef.current;
-    }, [code, language, cleanup, confirm]);
+    }, [code, language, cleanup, confirm, clearError]);
 
     const closeOutput = useCallback(() => {
         setShowOutput(false);

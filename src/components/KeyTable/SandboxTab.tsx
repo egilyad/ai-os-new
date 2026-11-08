@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { RefreshCw, Send, MessageSquare } from 'lucide-react';
 import { eventBus, EVENTS } from '../../kernel/instances';
+import { useAutoClearError } from '../../hooks/useAutoClearError';
 import { PROVIDER_DEFAULT_MODELS } from '../../kernel/utils/provider-default-models';
 import type { ApiKey } from '../../types/metrics';
 
@@ -45,6 +46,7 @@ const SandboxTab: React.FC<SandboxTabProps> = ({ apiKey, onClose }) => {
     const [messages, setMessages] = useState<{ role: 'user' | 'assistant'; content: string }[]>([]);
     const [status, setStatus] = useState<'idle' | 'loading' | 'error'>('idle');
     const [error, setError] = useState<string | null>(null);
+    const clearError = useAutoClearError(setError);
     const isMountedRef = useRef(true);
     const isDoneRef = useRef(false);
     const activeRequestIdRef = useRef<string | null>(null);
@@ -73,6 +75,7 @@ const SandboxTab: React.FC<SandboxTabProps> = ({ apiKey, onClose }) => {
                 if (res.status === 'error') {
                     setStatus('error');
                     setError(res.error || 'Unknown error');
+                    clearError();
                 } else if (res.status === 'done') {
                     setMessages((prev) => {
                         const last = prev[prev.length - 1];
@@ -136,6 +139,7 @@ const SandboxTab: React.FC<SandboxTabProps> = ({ apiKey, onClose }) => {
                 isDoneRef.current = true;
                 setStatus('error');
                 setError(error);
+                clearError();
             }
         });
 
@@ -146,7 +150,7 @@ const SandboxTab: React.FC<SandboxTabProps> = ({ apiKey, onClose }) => {
             subStreamEnd();
             subStreamError();
         };
-    }, [apiKey.id]);
+    }, [apiKey.id, clearError]);
 
     useEffect(() => {
         if (status !== 'loading') return;
@@ -154,6 +158,7 @@ const SandboxTab: React.FC<SandboxTabProps> = ({ apiKey, onClose }) => {
             if (!isMountedRef.current || isDoneRef.current) return;
             setStatus('error');
             setError('Request timed out after 60 seconds');
+            clearError();
             const rid = activeRequestIdRef.current;
             if (rid) eventBus.emit(EVENTS.CANCEL_MESSAGE, { requestId: rid });
         }, 60000);
@@ -161,7 +166,7 @@ const SandboxTab: React.FC<SandboxTabProps> = ({ apiKey, onClose }) => {
             clearTimeout(timeout);
             if (isDoneRef.current) activeRequestIdRef.current = null;
         };
-    }, [status]);
+    }, [status, clearError]);
 
     const handleSend = () => {
         if (!input.trim() || status === 'loading') return;

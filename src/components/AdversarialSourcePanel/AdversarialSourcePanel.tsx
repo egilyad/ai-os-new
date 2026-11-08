@@ -12,6 +12,7 @@ import {
 import { AdversarialSourceService } from '../../kernel/services/debate-runtime/debate-adversarial-source-service';
 import { useTranslation } from '../../i18n/useTranslation';
 import { useDebateArguments } from '../../hooks/useDebateArguments';
+import { useAutoClearError } from '../../hooks/useAutoClearError';
 import ModuleInfo from '../ModuleInfo';
 import { Button } from '../Common';
 import type { SourceVerificationResult } from '../../kernel/contracts/debate-adversarial-source';
@@ -56,6 +57,7 @@ export const AdversarialSourcePanel: React.FC = () => {
     const [isRunning, setIsRunning] = useState(false);
     const [hasRun, setHasRun] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const clearError = useAutoClearError(setError);
 
     const canRun = text.trim().length >= 50 && /https?:\/\//i.test(text);
 
@@ -73,6 +75,7 @@ export const AdversarialSourcePanel: React.FC = () => {
             ]);
         } catch (e) {
             setError(e instanceof Error ? e.message : 'Verification failed');
+            clearError();
         } finally {
             setIsRunning(false);
         }

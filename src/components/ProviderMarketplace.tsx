@@ -3,6 +3,7 @@ import { ThumbsUp, ThumbsDown, Minus, Lightbulb, RefreshCcw } from 'lucide-react
 import { kernel, keyService, adapterRegistry } from '../kernel/instances';
 import type { ProviderRanking } from '../kernel/types/interfaces';
 import { usePolling } from './Common/usePolling';
+import { useAutoClearError } from '../hooks/useAutoClearError';
 import PanelLoader from './PanelLoader';
 import {
     glassPanel,
@@ -33,6 +34,7 @@ const ProviderMarketplace: React.FC = () => {
     const [rankings, setRankings] = useState<ProviderRanking[]>([]);
     const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
     const [error, setError] = useState<string | null>(null);
+    const clearError = useAutoClearError(setError);
 
     const catalog = useMemo(() => adapterRegistry.getAllProviders(), []);
     const [keyVersion, setKeyVersion] = useState(0);
@@ -56,8 +58,9 @@ const ProviderMarketplace: React.FC = () => {
             setError(null);
         } catch (e) {
             setError(e instanceof Error ? e.message : 'Failed to load marketplace');
+            clearError();
         }
-    }, [catalog, installed]);
+    }, [catalog, installed, clearError]);
 
     useEffect(() => {
         const unsub = eventBus.on(EVENTS.KERNEL_UPDATED, refresh);
