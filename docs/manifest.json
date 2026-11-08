@@ -11326,16 +11326,6 @@
       "status": "live"
     },
     {
-      "id": "panel:health-sla",
-      "type": "panel",
-      "panelId": "health-sla",
-      "section": "diagnostics",
-      "route": "/health-sla",
-      "component": "src/components/HealthSlaPanel",
-      "article": "panel-observability",
-      "status": "live"
-    },
-    {
       "id": "panel:custom-metrics",
       "type": "panel",
       "panelId": "custom-metrics",
@@ -12183,26 +12173,6 @@
       "route": "/community-hub",
       "component": "src/components/CommunityHubPanel",
       "article": "panel-contribution",
-      "status": "live"
-    },
-    {
-      "id": "panel:model-distillation",
-      "type": "panel",
-      "panelId": "model-distillation",
-      "section": "other",
-      "route": "/model-distillation",
-      "component": "src/components/DistillationPanel",
-      "article": "panel-providers-extra",
-      "status": "live"
-    },
-    {
-      "id": "panel:deploy",
-      "type": "panel",
-      "panelId": "deploy",
-      "section": "other",
-      "route": "/deploy",
-      "component": "src/components/DeployPanel",
-      "article": "panel-history-audit",
       "status": "live"
     },
     {

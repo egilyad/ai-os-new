@@ -48,9 +48,6 @@
 - Панель `prompt-versions` → маршрут `/prompt-versions`
   - Компонент: `src/components/PromptVersionPanel`
   - Тесты: — (рядом с компонентом не найдены)
-- Панель `deploy` → маршрут `/deploy`
-  - Компонент: `src/components/DeployPanel`
-  - Тесты: — (рядом с компонентом не найдены)
 
 См. также: [Каталог панелей](./panels-catalog.md) · [Каталог компонентов OS](./dev-component-catalog.md).
 

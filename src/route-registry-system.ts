@@ -248,13 +248,6 @@ export const SYSTEM_SECTIONS: NavSection[] = [
                 experimental: true,
             },
             {
-                id: 'health-sla',
-                labelKey: 'nav.health_sla',
-                icon: Icons.slidersHorizontal,
-                color: 'var(--success)',
-                lazy: true,
-            },
-            {
                 id: 'custom-metrics',
                 labelKey: 'nav.custom_metrics',
                 icon: Icons.barChart3,

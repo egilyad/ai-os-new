@@ -3,19 +3,19 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 1554,
-    "edges": 2805,
+    "nodes": 1551,
+    "edges": 2802,
     "byType": {
       "audit": 25,
       "code": 675,
       "test": 233,
-      "panel": 270,
+      "panel": 267,
       "article": 351
     },
     "byKind": {
       "audit_test": 20,
       "audit_mention": 52,
-      "documents": 270,
+      "documents": 267,
       "test": 340,
       "source": 956,
       "related": 1167
@@ -5305,13 +5305,6 @@
       "route": "/dependency-map"
     },
     {
-      "id": "panel:deploy",
-      "type": "panel",
-      "label": "deploy",
-      "section": "other",
-      "route": "/deploy"
-    },
-    {
       "id": "panel:diagnostics",
       "type": "panel",
       "label": "diagnostics",
@@ -5648,13 +5641,6 @@
       "route": "/health"
     },
     {
-      "id": "panel:health-sla",
-      "type": "panel",
-      "label": "health-sla",
-      "section": "diagnostics",
-      "route": "/health-sla"
-    },
-    {
       "id": "panel:heat",
       "type": "panel",
       "label": "heat",
@@ -5870,13 +5856,6 @@
       "label": "mission",
       "section": "agents",
       "route": "/mission"
-    },
-    {
-      "id": "panel:model-distillation",
-      "type": "panel",
-      "label": "model-distillation",
-      "section": "other",
-      "route": "/model-distillation"
     },
     {
       "id": "panel:multi-hop",
@@ -9852,11 +9831,6 @@
       "kind": "documents"
     },
     {
-      "from": "panel:deploy",
-      "to": "wiki:panel-history-audit",
-      "kind": "documents"
-    },
-    {
       "from": "panel:diagnostics",
       "to": "wiki:diagnostics",
       "kind": "documents"
@@ -10092,11 +10066,6 @@
       "kind": "documents"
     },
     {
-      "from": "panel:health-sla",
-      "to": "wiki:panel-observability",
-      "kind": "documents"
-    },
-    {
       "from": "panel:health",
       "to": "wiki:panel-observability",
       "kind": "documents"
@@ -10254,11 +10223,6 @@
     {
       "from": "panel:mission",
       "to": "wiki:panel-planning",
-      "kind": "documents"
-    },
-    {
-      "from": "panel:model-distillation",
-      "to": "wiki:panel-providers-extra",
       "kind": "documents"
     },
     {

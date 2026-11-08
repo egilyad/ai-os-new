@@ -87,9 +87,6 @@ flowchart LR
 - Панель `performance-profiler` → маршрут `/performance-profiler`
   - Компонент: `src/components/PerformanceProfilerPanel`
   - Тесты: — (рядом с компонентом не найдены)
-- Панель `health-sla` → маршрут `/health-sla`
-  - Компонент: `src/components/HealthSlaPanel`
-  - Тесты: — (рядом с компонентом не найдены)
 
 См. также: [Каталог панелей](./panels-catalog.md) · [Каталог компонентов OS](./dev-component-catalog.md).
 

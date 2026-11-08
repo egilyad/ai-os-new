@@ -1206,8 +1206,8 @@
       "category": "top",
       "language": "mixed",
       "title": "SuperAgents OS — Единый план работ (сводный)",
-      "bytes": 16684,
-      "hash": "41f7b7fc92174c5671b5122e5168ae99a87e858a"
+      "bytes": 16945,
+      "hash": "6622252dde1ddf4b15bc5698e9d758a706db9caa"
     },
     {
       "path": "docs/wiki/agents.md",
@@ -2814,8 +2814,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Панели: История, аудит, версии, деплой",
-      "bytes": 2968,
-      "hash": "77738b48f47ae730ceca7c3cfa5f4dc9ca5523c1"
+      "bytes": 2783,
+      "hash": "05ade9bc7fe5b76583706fb819cfe963374a3fe0"
     },
     {
       "path": "docs/wiki/panel-hypothesis-generator.md",
@@ -2926,8 +2926,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Панель: Наблюдаемость (логи, трейсы, здоровье)",
-      "bytes": 5229,
-      "hash": "dc44c64a61e6b25fd4770c2675204f4ef2ff6744"
+      "bytes": 5033,
+      "hash": "71376ba16613178c7b2e15cd579d8c72cc9a4ff8"
     },
     {
       "path": "docs/wiki/panel-persona.md",
@@ -3014,8 +3014,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Панели: Провайдерские дополнения",
-      "bytes": 4487,
-      "hash": "a7ced8231d6641250c9249b7be070b799e84a4ad"
+      "bytes": 4272,
+      "hash": "62ef93c03ef02795e5f881950d4c5dd066021bfe"
     },
     {
       "path": "docs/wiki/panel-providers.md",

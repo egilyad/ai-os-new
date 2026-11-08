@@ -1523,12 +1523,6 @@ export const WIKI_CONNECTIONS: Record<string, WikiConnection[]> = {
             "route": "/performance-profiler",
             "component": "src/components/PerformanceProfilerPanel",
             "tests": []
-        },
-        {
-            "panelId": "health-sla",
-            "route": "/health-sla",
-            "component": "src/components/HealthSlaPanel",
-            "tests": []
         }
     ],
     "memory": [
@@ -1837,12 +1831,6 @@ export const WIKI_CONNECTIONS: Record<string, WikiConnection[]> = {
             "route": "/openrouter",
             "component": "src/components/OpenRouterPanel",
             "tests": []
-        },
-        {
-            "panelId": "model-distillation",
-            "route": "/model-distillation",
-            "component": "src/components/DistillationPanel",
-            "tests": []
         }
     ],
     "panel-research-extra": [
@@ -2030,12 +2018,6 @@ export const WIKI_CONNECTIONS: Record<string, WikiConnection[]> = {
             "panelId": "prompt-versions",
             "route": "/prompt-versions",
             "component": "src/components/PromptVersionPanel",
-            "tests": []
-        },
-        {
-            "panelId": "deploy",
-            "route": "/deploy",
-            "component": "src/components/DeployPanel",
             "tests": []
         }
     ],

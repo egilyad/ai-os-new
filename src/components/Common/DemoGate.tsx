@@ -15,7 +15,7 @@ interface DemoGateProps {
  * renders the Demo badge above the panel content.
  */
 export const DemoGate: React.FC<DemoGateProps> = ({ title, children }) => {
-    const enabled = CONFIG?.featureFlags?.mockServices?.enabled ?? true;
+    const enabled = CONFIG?.featureFlags?.mockServices?.enabled ?? false;
 
     if (!enabled) {
         return (

@@ -63,9 +63,6 @@
 - Панель `openrouter` → маршрут `/openrouter`
   - Компонент: `src/components/OpenRouterPanel`
   - Тесты: — (рядом с компонентом не найдены)
-- Панель `model-distillation` → маршрут `/model-distillation`
-  - Компонент: `src/components/DistillationPanel`
-  - Тесты: — (рядом с компонентом не найдены)
 
 См. также: [Каталог панелей](./panels-catalog.md) · [Каталог компонентов OS](./dev-component-catalog.md).
 

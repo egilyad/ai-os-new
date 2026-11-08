@@ -678,20 +678,6 @@ export const CONTENT_SECTIONS: NavSection[] = [
                 lazy: true,
             },
             {
-                id: 'model-distillation',
-                labelKey: 'nav.model_distillation',
-                icon: Icons.brain,
-                color: 'var(--purple)',
-                lazy: true,
-            },
-            {
-                id: 'deploy',
-                labelKey: 'nav.deploy',
-                icon: Icons.rocket,
-                color: 'var(--success)',
-                lazy: true,
-            },
-            {
                 id: 'voice-input',
                 labelKey: 'nav.voice_input',
                 icon: Icons.mic,
