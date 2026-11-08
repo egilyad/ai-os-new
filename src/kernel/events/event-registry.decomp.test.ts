@@ -13,13 +13,18 @@ describe('event-registry decomposition (P3-5)', () => {
     });
 
     it('EVENTS mirrors registry names', () => {
-        for (const key of Object.keys(EVENT_REGISTRY)) {
-            expect(EVENTS[key as keyof typeof EVENTS]).toBe(EVENT_REGISTRY[key].name);
+        const events = EVENTS as Record<string, string>;
+        const entries = Object.entries(EVENT_REGISTRY) as Array<
+            [string, { name: string; schema: unknown }]
+        >;
+        for (const [key, entry] of entries) {
+            expect(events[key]).toBe(entry.name);
         }
     });
 
     it('EventValidators covers every registered event', () => {
-        for (const entry of Object.values(EVENT_REGISTRY)) {
+        const entries = Object.values(EVENT_REGISTRY) as Array<{ name: string; schema: unknown }>;
+        for (const entry of entries) {
             expect(EventValidators[entry.name]).toBeDefined();
         }
     });
