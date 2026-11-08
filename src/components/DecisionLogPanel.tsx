@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { useAutoClearError } from '../hooks/useAutoClearError';
 import {
     ClipboardList,
     Search,
@@ -29,6 +30,7 @@ const DecisionLogPanel: React.FC = () => {
     const [expandedId, setExpandedId] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const clearError = useAutoClearError(setError);
     const isMountedRef = useRef(true);
 
     const refresh = useCallback(() => {
@@ -62,8 +64,9 @@ const DecisionLogPanel: React.FC = () => {
             }, 100);
         } catch (err) {
             setError(String(err));
+            clearError();
         }
-    }, [decisions]);
+    }, [decisions, clearError]);
 
     const handleClear = useCallback(async () => {
         if (
