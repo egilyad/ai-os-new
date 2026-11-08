@@ -6,6 +6,11 @@ import { EVENTS } from '../events/event-names';
 import { ExecutionQueue } from './execution-queue';
 import { estimateTokenCount } from '../../llm/utils/token-counter';
 import type { QueuePriority } from './execution-queue';
+import type { ICrystalVaultService } from '../contracts/knowledge-crystal';
+import type { ISynthesisEngineService } from '../contracts/synthesis-engine';
+import type { ILensEngineService } from '../contracts/lens-engine';
+import type { ITimeMachineService, SnapshotScope } from '../contracts/time-machine';
+import type { CrystalOriginKind, CrystalDomain, CrystalStatus } from '../types/crystal-types';
 
 import { rootLogger } from './logger-service';
 import { safeJsonParse } from '../../kernel/utils/safe-json';
@@ -66,45 +71,10 @@ export interface OrchestrationServiceDeps {
             retryCount: number;
         }): Promise<void>;
     };
-    crystalVault?: {
-        propose(input: {
-            content: Record<string, unknown>;
-            originKind: string;
-            originId: string;
-            contributingAgents?: string[];
-            modelIds?: string[];
-            totalTokensSpent?: number;
-            applicableDomain?: string;
-        }): Promise<string>;
-        query(q: { status?: string; domain?: string; limit?: number }): Promise<Array<Record<string, unknown>>>;
-        search(query: string, limit?: number): Promise<Array<{ crystal: Record<string, unknown>; score: number }>>;
-        list(opts?: { status?: string; domain?: string }): Promise<Array<Record<string, unknown>>>;
-    };
-    synthesisEngine?: {
-        synthesize(input: {
-            question: string;
-            roleIds: string[];
-            lensIds: string[];
-            depth?: 'quick' | 'standard' | 'deep';
-            preserveDissent?: boolean;
-            costBudget?: number;
-        }): Promise<string>;
-        getSynthesis(
-            id: string,
-        ): Promise<{ synthesizedStatement?: string; statement?: string } | null>;
-    };
-    lensEngine?: {
-        validateStack(lensIds: string[]): { valid: boolean; errors?: string[] };
-        applyStack(input: {
-            context: { roleSystemPrompt?: string; userPrompt: string };
-            lensIds: string[];
-        }): { context: { userPrompt: string } };
-    };
-    timeMachineService?: {
-        createSnapshot(label?: string, scope?: string): Promise<{ id: string }>;
-        restoreSnapshot(id: string): Promise<void>;
-        getSnapshots(): Array<Record<string, unknown>>;
-    };
+    crystalVault?: ICrystalVaultService;
+    synthesisEngine?: ISynthesisEngineService;
+    lensEngine?: ILensEngineService;
+    timeMachineService?: ITimeMachineService;
 }
 
 export class OrchestrationService {
@@ -364,7 +334,11 @@ export class OrchestrationService {
                     : await this.executeSynthesisNode(node, data);
             case 'lens':
                 return mode === 'simulation'
-                    ? `[SIM] Lens ${(node.config.lensIds || []).join(',')}`
+                    ? `[SIM] Lens ${
+                          Array.isArray(node.config.lensIds)
+                              ? (node.config.lensIds as string[]).join(',')
+                              : ''
+                      }`
                     : this.executeLensNode(node, data);
             case 'time-machine':
                 return mode === 'simulation'
@@ -384,8 +358,8 @@ export class OrchestrationService {
         try {
             if (action === 'query') {
                 const rows = await vault.query({
-                    status: typeof cfg.status === 'string' ? cfg.status : undefined,
-                    domain: typeof cfg.domain === 'string' ? cfg.domain : undefined,
+                    status: typeof cfg.status === 'string' ? (cfg.status as CrystalStatus) : undefined,
+                    domain: typeof cfg.domain === 'string' ? (cfg.domain as CrystalDomain) : undefined,
                     limit: typeof cfg.limit === 'number' ? cfg.limit : undefined,
                 });
                 return `Query: ${rows.length} crystals`;
@@ -395,24 +369,26 @@ export class OrchestrationService {
                 const hits = await vault.search(q, typeof cfg.limit === 'number' ? cfg.limit : 5);
                 return hits.length
                     ? hits
-                          .map((h) => (h.crystal as { statement?: string }).statement || h.crystal.id)
+                          .map((h) => h.crystal.content.statement || h.crystal.crystalId)
                           .join(' | ')
                     : 'No crystal matches';
             }
             if (action === 'list') {
-                const rows = await vault.list({ status: typeof cfg.status === 'string' ? cfg.status : undefined });
+                const rows = await vault.list({
+                    status: typeof cfg.status === 'string' ? (cfg.status as CrystalStatus) : undefined,
+                });
                 return `Crystals: ${rows.length}`;
             }
-            const statement = typeof cfg.statement === 'string' ? cfg.statement : data?.output;
+            const statement = typeof cfg.statement === 'string' ? cfg.statement : data.output;
             if (!statement) return '[Crystal: no statement]';
             const id = await vault.propose({
                 content: {
                     statement,
                     elaboration: typeof cfg.elaboration === 'string' ? cfg.elaboration : undefined,
                 },
-                originKind: 'synthesis',
+                originKind: 'synthesis' as CrystalOriginKind,
                 originId: `builder-${Date.now()}`,
-                applicableDomain: typeof cfg.domain === 'string' ? cfg.domain : 'general',
+                applicableDomain: (typeof cfg.domain === 'string' ? cfg.domain : 'general') as CrystalDomain,
             });
             return `Crystal proposed: ${id}`;
         } catch (e) {
@@ -425,19 +401,20 @@ export class OrchestrationService {
         const engine = this.deps.synthesisEngine;
         if (!engine) return '[Synthesis service unavailable]';
         const cfg = (node.config ?? {}) as Record<string, unknown>;
-        const question = typeof cfg.question === 'string' ? cfg.question : data?.output;
+        const question = typeof cfg.question === 'string' ? cfg.question : data.output;
         if (!question) return '[Synthesis: no question]';
         try {
             const id = await engine.synthesize({
                 question,
                 roleIds: Array.isArray(cfg.roleIds) ? (cfg.roleIds as string[]) : [],
                 lensIds: Array.isArray(cfg.lensIds) ? (cfg.lensIds as string[]) : [],
-                depth: cfg.depth === 'deep' || cfg.depth === 'quick' ? cfg.depth : 'standard',
+                depth:
+                    cfg.depth === 'deep' ? 'deep' : cfg.depth === 'quick' ? 'quick' : 'standard',
                 preserveDissent: cfg.preserveDissent === true,
                 costBudget: typeof cfg.costBudget === 'number' ? cfg.costBudget : undefined,
             });
             const s = await engine.getSynthesis(id);
-            const statement = s?.synthesizedStatement || s?.statement || '';
+            const statement = s?.synthesizedStatement ?? '';
             return statement ? `${statement} (${id})` : `Synthesis created: ${id}`;
         } catch (e) {
             LOGGER.warn('Orchestrator', 'Synthesis node failed', { error: e });
@@ -455,7 +432,7 @@ export class OrchestrationService {
         if (!check.valid) return `[Lens stack invalid]`;
         const result = lens.applyStack({
             context: {
-                roleSystemPrompt: typeof cfg.roleSystemPrompt === 'string' ? cfg.roleSystemPrompt : undefined,
+                roleSystemPrompt: typeof cfg.roleSystemPrompt === 'string' ? cfg.roleSystemPrompt : '',
                 userPrompt: data.output || '',
             },
             lensIds,
@@ -470,9 +447,9 @@ export class OrchestrationService {
         const action = (cfg.action as string) || 'list';
         try {
             if (action === 'createSnapshot') {
-                const snap = await tm.createSnapshot(
+                const snap = tm.createSnapshot(
                     typeof cfg.label === 'string' ? cfg.label : 'builder',
-                    typeof cfg.scope === 'string' ? cfg.scope : 'full',
+                    (typeof cfg.scope === 'string' ? cfg.scope : 'full') as SnapshotScope,
                 );
                 return `Snapshot created: ${snap.id}`;
             }
