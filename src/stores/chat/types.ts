@@ -115,7 +115,13 @@ export interface ChatActions {
     switchKey: (keyId: string) => Promise<void>;
     setAgent: (agentId: string | null) => Promise<void>;
     setModelForKey: (keyId: string, model: string) => Promise<void>;
-    getSessionConfig: () => { provider?: string; model?: string; keyId?: string; agentId?: string } | undefined;
+    getSessionConfig: () => {
+        provider?: string;
+        model?: string;
+        keyId?: string;
+        agentId?: string;
+        modelsByKey?: Record<string, string>;
+    } | undefined;
     destroy: () => void;
 }
 

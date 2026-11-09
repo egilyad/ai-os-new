@@ -17,6 +17,7 @@ export interface ChatSession {
     currentModel?: string;
     currentKeyId?: string;
     currentAgentId?: string;
+    currentModelsByKey?: Record<string, string>;
 }
 
 export interface ChatEntry {
