@@ -548,14 +548,8 @@ export const useChatStore = create<ChatStoreShape>((set, get) => {
         },
 
         switchModel: async (provider, model) => {
-            if (get().isAnySending()) {
-                eventBus.emit(EVENTS.NOTIFICATION, {
-                    message:
-                        'Cannot switch model while a message is being sent. Wait for completion.',
-                    type: 'warning',
-                });
-                return;
-            }
+            // Мультичат: переключение разрешено во время отправки — применится
+            // к следующим сообщениям (текущий ответ продолжает со старым выбором).
             const sessionId = get().activeSessionId;
             const session = get().sessions.find((s) => s.id === sessionId);
             const historyText =
@@ -606,14 +600,6 @@ export const useChatStore = create<ChatStoreShape>((set, get) => {
         },
 
         switchKey: async (keyId) => {
-            if (get().isAnySending()) {
-                eventBus.emit(EVENTS.NOTIFICATION, {
-                    message:
-                        'Cannot switch key while a message is being sent. Wait for completion.',
-                    type: 'warning',
-                });
-                return;
-            }
             const sessionId = get().activeSessionId;
             const keyLabel = keyId?.slice(0, 8) ?? '';
             const systemEntry: ChatEntry = {

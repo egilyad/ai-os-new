@@ -641,6 +641,16 @@ describe('useChatStore', () => {
         expect(mockSStore.put).toHaveBeenCalled();
     });
 
+    it('switchModel works while a message is sending (pending switch)', async () => {
+        useChatStore.setState({
+            activeRequestIds: new Set(['chat-1']),
+        });
+        await useChatStore.getState().switchModel('groq', 'm2');
+        const s = useChatStore.getState();
+        expect(s.sessions[0].currentProvider).toBe('groq');
+        expect(s.sessions[0].currentModel).toBe('m2');
+    });
+
     it('switchModel warns when context may exceed window', async () => {
         useChatStore.setState({
             sessions: [makeSession('s1', [makeEntry({ text: 'a'.repeat(440_000) })])],
