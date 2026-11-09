@@ -361,13 +361,48 @@ export function setCompanyBudget(companyId, monthlyBudgetCents) {
 }
 
 // ── M7.1: cost ledger (центы как первоклассная сущность) ──
-function readCosts() {
-    const db = readJson(COSTS_FILE, { costs: [] });
-    return Array.isArray(db.costs) ? db.costs : [];
-}
+// P1-17: recordCost буферизуется и флашится пачкой — вместо полной
+// перезаписи costs.json на каждое событие STREAM_END.
+const pendingCosts = [];
+let costFlushTimer = null;
 
 function saveCosts(costs) {
     writeJsonAtomic(COSTS_FILE, { costs, updatedAt: Date.now() });
+}
+
+function flushCosts() {
+    if (costFlushTimer) {
+        clearTimeout(costFlushTimer);
+        costFlushTimer = null;
+    }
+    if (pendingCosts.length === 0) return;
+    const all = readCostsFromDisk();
+    all.push(...pendingCosts);
+    if (all.length > MAX_COST_EVENTS) all.splice(0, all.length - MAX_COST_EVENTS);
+    pendingCosts.length = 0;
+    saveCosts(all);
+}
+
+function readCostsFromDisk() {
+    return readJson(COSTS_FILE, { costs: [] }).costs || [];
+}
+
+function readCosts() {
+    flushCosts();
+    return readCostsFromDisk();
+}
+
+function scheduleCostFlush() {
+    if (costFlushTimer) return;
+    costFlushTimer = setTimeout(() => {
+        costFlushTimer = null;
+        try {
+            flushCosts();
+        } catch {
+            /* best-effort flush */
+        }
+    }, 500);
+    if (costFlushTimer.unref) costFlushTimer.unref();
 }
 
 export function monthKey(ts) {
@@ -391,10 +426,8 @@ export function recordCost({ companyId, agentId, taskId, model, inputTokens, out
         month: monthKey(Date.now()),
         createdAt: Date.now(),
     };
-    const all = readCosts();
-    all.push(ev);
-    if (all.length > MAX_COST_EVENTS) all.splice(0, all.length - MAX_COST_EVENTS);
-    saveCosts(all);
+    pendingCosts.push(ev);
+    scheduleCostFlush();
     return ev;
 }
 
