@@ -107,8 +107,16 @@ export function recallRank(
 export function computeEngineStats(memories: MemoryEntry[]): MemoryStats {
     const byType: Record<string, number> = {};
     const byImportance: Record<string, number> = { low: 0, medium: 0, high: 0, critical: 0 };
+    const sources = new Set<string>();
+    const encoder = new TextEncoder();
     let totalImportance = 0;
+    let totalTokens = 0;
+    let totalStorageBytes = 0;
+    let oldestEntry = Number.POSITIVE_INFINITY;
+    let newestEntry = 0;
 
+    // P1-17: single pass instead of five full traversals (getStats is on the
+    // monitoring hot path and can run on large collections).
     for (const m of memories) {
         const type = m.metadata.type ?? 'unknown';
         byType[type] = (byType[type] || 0) + 1;
@@ -116,26 +124,24 @@ export function computeEngineStats(memories: MemoryEntry[]): MemoryStats {
         const label = imp < 0.3 ? 'low' : imp < 0.6 ? 'medium' : imp < 0.9 ? 'high' : 'critical';
         byImportance[label] = (byImportance[label] || 0) + 1;
         totalImportance += imp;
+        totalTokens += m.metadata.tokenCount || estimateTokenCount(m.content);
+        if (m.metadata.source) sources.add(m.metadata.source);
+        totalStorageBytes += encoder.encode(m.content).length;
+        const ts = m.metadata.timestamp ?? 0;
+        if (ts < oldestEntry) oldestEntry = ts;
+        if (ts > newestEntry) newestEntry = ts;
     }
 
     return {
         totalEntries: memories.length,
-        totalTokens: memories.reduce(
-            (s, m) => s + (m.metadata.tokenCount || estimateTokenCount(m.content)),
-            0,
-        ),
-        uniqueSources: new Set(memories.map((m) => m.metadata.source)).size,
+        totalTokens,
+        uniqueSources: sources.size,
         byType,
         byImportance: byImportance as MemoryStats['byImportance'],
         avgImportance: memories.length > 0 ? totalImportance / memories.length : 0,
-        oldestEntry:
-            memories.length > 0 ? Math.min(...memories.map((m) => m.metadata.timestamp ?? 0)) : 0,
-        newestEntry:
-            memories.length > 0 ? Math.max(...memories.map((m) => m.metadata.timestamp ?? 0)) : 0,
-        totalStorageBytes: memories.reduce(
-            (s, m) => s + new TextEncoder().encode(m.content).length,
-            0,
-        ),
+        oldestEntry: memories.length > 0 ? oldestEntry : 0,
+        newestEntry,
+        totalStorageBytes,
         lastPruned: null,
     };
 }
