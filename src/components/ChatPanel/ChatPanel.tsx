@@ -212,6 +212,39 @@ const setSessions = useChatStore((s) => s.setSessions);
         userScrolledUpRef.current = distFromBottom > 100;
     }, []);
 
+    const buildTargets = useCallback(() => {
+        const cfg = getSessionConfig();
+        const ids = selectedKeys.length > 0 ? selectedKeys : cfg?.keyId ? [cfg.keyId] : [];
+        const targets: Array<{
+            provider: string;
+            model: string;
+            keyId?: string;
+            agentId?: string;
+        }> = [];
+        for (const id of ids) {
+            const key = activeKeys.find((k) => k.id === id);
+            const provider = key?.provider ?? cfg?.provider ?? 'auto';
+            const model =
+                selectedModelPerKey[id] || selectedModel || cfg?.model || defaultModelFor(key) || '';
+            if (!model) continue;
+            targets.push({
+                provider,
+                model,
+                keyId: id,
+                ...(currentAgentId ? { agentId: currentAgentId } : {}),
+            });
+        }
+        return targets;
+    }, [
+        activeKeys,
+        currentAgentId,
+        defaultModelFor,
+        getSessionConfig,
+        selectedKeys,
+        selectedModel,
+        selectedModelPerKey,
+    ]);
+
     const handleSend = useCallback(
         (text: string) => {
             // M-07: return the promise so the input can restore text on failure.
@@ -219,17 +252,14 @@ const setSessions = useChatStore((s) => s.setSessions);
             const veto = buildExceptionVeto();
             const extra = [guidance, veto].filter(Boolean).join('\n\n');
             const finalText = extra ? `${text}\n\n${extra}` : text;
-            return sendMessage(
-                selectedKeys.map((id) => ({
-                    provider: 'auto',
-                    model: selectedModelPerKey[id] || selectedModel,
-                    keyId: id,
-                    ...(currentAgentId ? { agentId: currentAgentId } : {}),
-                })),
-                finalText,
-            );
+            const targets = buildTargets();
+            if (targets.length === 0) {
+                showStatus('Нет доступных ключей/моделей для отправки', 'error');
+                return Promise.resolve();
+            }
+            return sendMessage(targets, finalText);
         },
-        [sendMessage, selectedKeys, selectedModel, selectedModelPerKey, currentAgentId],
+        [buildTargets, sendMessage, showStatus],
     );
 
     const handleStartEdit = useCallback((id: string, text: string) => {
@@ -275,17 +305,17 @@ const setSessions = useChatStore((s) => s.setSessions);
             const guidance = buildLensGuidance(loadActiveLensIds());
             const veto = buildExceptionVeto();
             const extra = [guidance, veto].filter(Boolean).join('\n\n');
+            const targets = buildTargets();
+            if (targets.length === 0) {
+                showStatus('Нет доступных ключей/моделей для отправки', 'error');
+                return;
+            }
             sendMessage(
-                selectedKeys.map((id) => ({
-                    provider: 'auto',
-                    model: selectedModelPerKey[id] || selectedModel,
-                    keyId: id,
-                    ...(currentAgentId ? { agentId: currentAgentId } : {}),
-                })),
+                targets,
                 extra ? `${originalText}\n\n${extra}` : originalText,
             );
         },
-        [sendMessage, selectedKeys, selectedModel, selectedModelPerKey, currentAgentId],
+        [buildTargets, sendMessage, showStatus],
     );
 
     const activeConfig = activeSessionId ? getSessionConfig() : undefined;
