@@ -119,7 +119,7 @@
 
 | # | Задача | Статус | Источник |
 |---|---|---|---|
-| P3-1 | Плагинный sandbox для сторонних плагинов + динамические маршруты `contributes.panels` | 🟡 | SPEC_06 §5 |
+| P3-1 | Плагинный sandbox для сторонних плагинов + динамические маршруты `contributes.panels` | 🟡 (реестр contributed panels в PluginHost ✅ — registerPanels/unregisterPanels/listPanels/getPanel/hasPanel с дедупликацией конфликтов + тесты, 2026-11-09; остаток: интеграция с route-registry + lazy-iframe рендер, sandbox-изоляция) | SPEC_06 §5 |
 | P3-2 | Мультиклиентная федерация (A2A довести до мультиtenant) | 🟡 | SPEC_09/10 |
 | P3-3 | Серверный командный режим (multi-user/tenant) | 🟡 | SPEC_10 |
 | P3-4 | Автономный супервизор флота (Fleet → не только projection) | ❌ | ROADMAP_00 Фаза 2; полный отчёт |
