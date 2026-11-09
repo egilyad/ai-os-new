@@ -94,15 +94,19 @@ export class InteropRepository {
         await this.db.collabContracts.put(clone(c));
     }
 
-    async getContract(id: string): Promise<CollaborationContract | null> {
+    async getContract(id: string, tenantId?: string): Promise<CollaborationContract | null> {
         const r = await this.db.collabContracts.get(id);
-        return r ? clone(r) : null;
+        if (!r) return null;
+        if (tenantId && r.tenantId && r.tenantId !== tenantId) return null;
+        return clone(r);
     }
 
-    async listContracts(): Promise<CollaborationContract[]> {
+    async listContracts(tenantId?: string): Promise<CollaborationContract[]> {
         const rows = await this.db.collabContracts.toArray();
         rows.sort((a, b) => b.createdAt - a.createdAt);
-        return rows.map(clone);
+        return rows
+            .filter((c) => !tenantId || !c.tenantId || c.tenantId === tenantId)
+            .map(clone);
     }
 
     // ── Market ──
@@ -110,15 +114,19 @@ export class InteropRepository {
         await this.db.marketListings.put(clone(l));
     }
 
-    async getListing(id: string): Promise<MarketListing | null> {
+    async getListing(id: string, tenantId?: string): Promise<MarketListing | null> {
         const r = await this.db.marketListings.get(id);
-        return r ? clone(r) : null;
+        if (!r) return null;
+        if (tenantId && r.tenantId && r.tenantId !== tenantId) return null;
+        return clone(r);
     }
 
-    async listListings(): Promise<MarketListing[]> {
+    async listListings(tenantId?: string): Promise<MarketListing[]> {
         const rows = await this.db.marketListings.toArray();
         rows.sort((a, b) => b.createdAt - a.createdAt);
-        return rows.map(clone);
+        return rows
+            .filter((l) => !tenantId || !l.tenantId || l.tenantId === tenantId)
+            .map(clone);
     }
 
     async putBid(b: MarketBid): Promise<void> {

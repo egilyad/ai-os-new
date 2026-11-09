@@ -69,6 +69,7 @@ export class CoordinationService implements ICoordinationService {
         protocols?: InteropProtocol[];
         streaming?: boolean;
         memoryPolicies?: string[];
+        tenantId?: string;
     }): Promise<CapabilityManifest> {
         const t = now();
         const prev = this.manifests.get(input.agentId);
@@ -86,18 +87,27 @@ export class CoordinationService implements ICoordinationService {
             version: (prev?.version ?? 0) + 1,
             createdAt: prev?.createdAt ?? t,
             updatedAt: t,
+            tenantId: input.tenantId,
         };
         this.manifests.set(input.agentId, manifest);
         this.events.emit(EVENTS.INTEROP_AGENT, { agentId: input.agentId, action: 'manifest-published' });
         return manifest;
     }
 
-    async getManifest(agentId: string): Promise<CapabilityManifest | null> {
-        return this.manifests.get(agentId) ?? null;
+    async getManifest(agentId: string, tenantId?: string): Promise<CapabilityManifest | null> {
+        const m = this.manifests.get(agentId) ?? null;
+        if (!m) return null;
+        if (tenantId && m.tenantId && m.tenantId !== tenantId) return null;
+        return m;
     }
 
     // ── Cross-runtime handoff ──
-    async handoffExternal(target: string, task: string, context: Record<string, unknown> = {}): Promise<HandoffRecord> {
+    async handoffExternal(
+        target: string,
+        task: string,
+        context: Record<string, unknown> = {},
+        tenantId?: string,
+    ): Promise<HandoffRecord> {
         const t = now();
         const record: HandoffRecord = {
             id: genId('handoff'),
@@ -108,15 +118,19 @@ export class CoordinationService implements ICoordinationService {
             traceId: genId('trace'),
             createdAt: t,
             updatedAt: t,
+            tenantId,
         };
         await this.repo.putHandoff(record);
         this.events.emit(EVENTS.HANDOFF_DISPATCHED, { handoffId: record.id, target });
         return record;
     }
 
-    async completeHandoff(id: string, result: string): Promise<HandoffRecord> {
+    async completeHandoff(id: string, result: string, tenantId?: string): Promise<HandoffRecord> {
         const h = await this.repo.getHandoff(id);
         if (!h) throw new Error(`Handoff not found: ${id}`);
+        if (tenantId && h.tenantId && h.tenantId !== tenantId) {
+            throw new Error(`Handoff not found: ${id}`);
+        }
         h.status = 'returned';
         h.result = result.slice(0, 8000);
         h.updatedAt = now();
@@ -125,12 +139,17 @@ export class CoordinationService implements ICoordinationService {
         return h;
     }
 
-    async listHandoffs(): Promise<HandoffRecord[]> {
-        return this.repo.listHandoffs();
+    async listHandoffs(tenantId?: string): Promise<HandoffRecord[]> {
+        return this.repo.listHandoffs(tenantId);
     }
 
     // ── Market / contract-net ──
-    async openListing(task: string, mode: MarketListing['mode'] = 'auction', askPrice?: number): Promise<MarketListing> {
+    async openListing(
+        task: string,
+        mode: MarketListing['mode'] = 'auction',
+        askPrice?: number,
+        tenantId?: string,
+    ): Promise<MarketListing> {
         const t = now();
         const listing: MarketListing = {
             id: genId('listing'),
@@ -140,14 +159,22 @@ export class CoordinationService implements ICoordinationService {
             status: 'open',
             createdAt: t,
             updatedAt: t,
+            tenantId,
         };
         await this.repo.putListing(listing);
         this.events.emit(EVENTS.MARKET_OPENED, { listingId: listing.id, mode });
         return listing;
     }
 
-    async bid(listingId: string, bidderId: string, price: number, etaMs?: number, note?: string): Promise<MarketBid> {
-        const listing = await this.repo.getListing(listingId);
+    async bid(
+        listingId: string,
+        bidderId: string,
+        price: number,
+        etaMs?: number,
+        note?: string,
+        tenantId?: string,
+    ): Promise<MarketBid> {
+        const listing = await this.repo.getListing(listingId, tenantId);
         if (!listing) throw new Error(`Listing not found: ${listingId}`);
         if (listing.status !== 'open') throw new Error(`Listing ${listingId} is ${listing.status}`);
         const bid: MarketBid = {
@@ -158,13 +185,17 @@ export class CoordinationService implements ICoordinationService {
             etaMs,
             note: note?.slice(0, 300),
             createdAt: now(),
+            tenantId,
         };
         await this.repo.putBid(bid);
         return bid;
     }
 
-    async award(listingId: string): Promise<{ listing: MarketListing; winner?: MarketBid }> {
-        const listing = await this.repo.getListing(listingId);
+    async award(
+        listingId: string,
+        tenantId?: string,
+    ): Promise<{ listing: MarketListing; winner?: MarketBid }> {
+        const listing = await this.repo.getListing(listingId, tenantId);
         if (!listing) throw new Error(`Listing not found: ${listingId}`);
         if (listing.status !== 'open') throw new Error(`Listing ${listingId} is ${listing.status}`);
         const bids = await this.repo.listBids(listingId);
@@ -183,7 +214,11 @@ export class CoordinationService implements ICoordinationService {
     }
 
     // ── Capability routing ──
-    async route(task: string, candidates: Array<{ agentId: string; load?: number }>): Promise<{
+    async route(
+        task: string,
+        candidates: Array<{ agentId: string; load?: number }>,
+        tenantId?: string,
+    ): Promise<{
         agentId: string;
         score: number;
         reason: string;
@@ -192,7 +227,7 @@ export class CoordinationService implements ICoordinationService {
         const taskTokens = new Set(task.toLowerCase().split(/[^a-zа-яё0-9]+/u).filter((t) => t.length > 2));
         let best = { agentId: candidates[0]!.agentId, score: -1, reason: '' };
         for (const c of candidates) {
-            const m = this.manifests.get(c.agentId);
+            const m = await this.getManifest(c.agentId, tenantId);
             const caps = m?.capabilities ?? [];
             let overlap = 0;
             for (const cap of caps) {
@@ -226,6 +261,7 @@ export class CoordinationService implements ICoordinationService {
         acceptance: string[];
         budget?: number;
         timeoutMs?: number;
+        tenantId?: string;
     }): Promise<CollaborationContract> {
         if (input.parties.length < 2) throw new Error('Contract needs at least 2 parties');
         const t = now();
@@ -239,14 +275,15 @@ export class CoordinationService implements ICoordinationService {
             status: 'proposed',
             createdAt: t,
             updatedAt: t,
+            tenantId: input.tenantId,
         };
         await this.repo.putContract(contract);
         this.events.emit(EVENTS.CONTRACT_PROPOSED, { contractId: contract.id });
         return contract;
     }
 
-    async acceptContract(id: string): Promise<CollaborationContract> {
-        const c = await this.requireContract(id);
+    async acceptContract(id: string, tenantId?: string): Promise<CollaborationContract> {
+        const c = await this.requireContract(id, tenantId);
         if (c.status !== 'proposed') throw new Error(`Contract ${id} is ${c.status}`);
         c.status = 'accepted';
         c.updatedAt = now();
@@ -254,8 +291,8 @@ export class CoordinationService implements ICoordinationService {
         return c;
     }
 
-    async completeContract(id: string): Promise<CollaborationContract> {
-        const c = await this.requireContract(id);
+    async completeContract(id: string, tenantId?: string): Promise<CollaborationContract> {
+        const c = await this.requireContract(id, tenantId);
         if (c.status !== 'accepted') throw new Error(`Contract ${id} is ${c.status}`);
         c.status = 'completed';
         c.updatedAt = now();
@@ -277,8 +314,8 @@ export class CoordinationService implements ICoordinationService {
         return this.delegates.forgeSubCrew(goal);
     }
 
-    private async requireContract(id: string): Promise<CollaborationContract> {
-        const c = await this.repo.getContract(id);
+    private async requireContract(id: string, tenantId?: string): Promise<CollaborationContract> {
+        const c = await this.repo.getContract(id, tenantId);
         if (!c) throw new Error(`Contract not found: ${id}`);
         return c;
     }

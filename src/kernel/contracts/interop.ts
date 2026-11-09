@@ -113,22 +113,47 @@ export interface ICoordinationService extends ILifecycle {
         protocols?: InteropProtocol[];
         streaming?: boolean;
         memoryPolicies?: string[];
+        tenantId?: string;
     }): Promise<CapabilityManifest>;
-    getManifest(agentId: string): Promise<CapabilityManifest | null>;
+    getManifest(agentId: string, tenantId?: string): Promise<CapabilityManifest | null>;
 
     // Cross-runtime handoff (6.6)
-    handoffExternal(target: string, task: string, context?: Record<string, unknown>): Promise<HandoffRecord>;
-    completeHandoff(id: string, result: string): Promise<HandoffRecord>;
-    listHandoffs(): Promise<HandoffRecord[]>;
+    handoffExternal(
+        target: string,
+        task: string,
+        context?: Record<string, unknown>,
+        tenantId?: string,
+    ): Promise<HandoffRecord>;
+    completeHandoff(id: string, result: string, tenantId?: string): Promise<HandoffRecord>;
+    listHandoffs(tenantId?: string): Promise<HandoffRecord[]>;
     spawnSubCrew(goal: string): Promise<string>;
 
     // Market / auction + contract-net (7)
-    openListing(task: string, mode?: MarketListing['mode'], askPrice?: number): Promise<MarketListing>;
-    bid(listingId: string, bidderId: string, price: number, etaMs?: number, note?: string): Promise<MarketBid>;
-    award(listingId: string): Promise<{ listing: MarketListing; winner?: MarketBid }>;
+    openListing(
+        task: string,
+        mode?: MarketListing['mode'],
+        askPrice?: number,
+        tenantId?: string,
+    ): Promise<MarketListing>;
+    bid(
+        listingId: string,
+        bidderId: string,
+        price: number,
+        etaMs?: number,
+        note?: string,
+        tenantId?: string,
+    ): Promise<MarketBid>;
+    award(
+        listingId: string,
+        tenantId?: string,
+    ): Promise<{ listing: MarketListing; winner?: MarketBid }>;
 
     // Capability-based routing (7.9)
-    route(task: string, candidates: Array<{ agentId: string; load?: number }>): Promise<{
+    route(
+        task: string,
+        candidates: Array<{ agentId: string; load?: number }>,
+        tenantId?: string,
+    ): Promise<{
         agentId: string;
         score: number;
         reason: string;
@@ -141,7 +166,8 @@ export interface ICoordinationService extends ILifecycle {
         acceptance: string[];
         budget?: number;
         timeoutMs?: number;
+        tenantId?: string;
     }): Promise<CollaborationContract>;
-    acceptContract(id: string): Promise<CollaborationContract>;
-    completeContract(id: string): Promise<CollaborationContract>;
+    acceptContract(id: string, tenantId?: string): Promise<CollaborationContract>;
+    completeContract(id: string, tenantId?: string): Promise<CollaborationContract>;
 }

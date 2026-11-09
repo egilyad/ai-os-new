@@ -3,6 +3,7 @@ import { createTestDb, type TestDb } from '../../dal/_test-harness';
 import { InteropRepository } from '../../dal/interop-repository';
 import { A2AService } from './a2a-service';
 import { FederationService } from './federation-service';
+import { CoordinationService } from './coordination-service';
 import type { IEventBus } from '../../types/interfaces';
 
 function makeBus(): IEventBus {
@@ -20,6 +21,7 @@ describe('A2A / federation multi-tenant isolation (P3-2)', () => {
     let tdb: TestDb;
     let a2a: A2AService;
     let fed: FederationService;
+    let coord: CoordinationService;
 
     beforeEach(async () => {
         tdb = await createTestDb();
@@ -28,6 +30,7 @@ describe('A2A / federation multi-tenant isolation (P3-2)', () => {
         const bus = makeBus();
         a2a = new A2AService(repo, bus);
         fed = new FederationService(repo, bus);
+        coord = new CoordinationService(repo, bus);
     });
 
     it('discover scopes agents by tenant and keeps global agents visible', async () => {
@@ -84,5 +87,53 @@ describe('A2A / federation multi-tenant isolation (P3-2)', () => {
         const handoff = await fed.dispatch(aPeer.id, 'task', {}, 'tenant-a');
         expect(handoff.tenantId).toBe('tenant-a');
         expect(handoff.target).toBe(`fed:${aPeer.id}`);
+    });
+
+    it('coordination scopes manifests, listings and contracts by tenant', async () => {
+        await coord.publishManifest({
+            agentId: 'a1',
+            displayName: 'A1',
+            capabilities: ['translate'],
+            tenantId: 'tenant-a',
+        });
+        await coord.publishManifest({
+            agentId: 'b1',
+            displayName: 'B1',
+            capabilities: ['code'],
+            tenantId: 'tenant-b',
+        });
+        await coord.publishManifest({
+            agentId: 'g1',
+            displayName: 'G1',
+            capabilities: ['notes'],
+        });
+
+        expect((await coord.getManifest('a1', 'tenant-b'))).toBeNull();
+        expect((await coord.getManifest('a1', 'tenant-a'))?.displayName).toBe('A1');
+        expect((await coord.getManifest('g1', 'tenant-a'))?.displayName).toBe('G1');
+
+        const routeA = await coord.route('translate please', [{ agentId: 'a1' }, { agentId: 'b1' }], 'tenant-a');
+        expect(routeA.agentId).toBe('a1');
+
+        const listing = await coord.openListing('task', 'auction', undefined, 'tenant-a');
+        await expect(coord.bid(listing.id, 'bidder', 1, undefined, undefined, 'tenant-b')).rejects.toThrow(
+            /not found/,
+        );
+        await coord.bid(listing.id, 'bidder', 1, undefined, undefined, 'tenant-a');
+        const award = await coord.award(listing.id, 'tenant-a');
+        expect(award.listing.status).toBe('awarded');
+        await expect(coord.award(listing.id, 'tenant-b')).rejects.toThrow(/not found/);
+
+        const contract = await coord.proposeContract({
+            parties: ['x', 'y'],
+            work: ['w'],
+            acceptance: ['ok'],
+            tenantId: 'tenant-a',
+        });
+        await expect(coord.acceptContract(contract.id, 'tenant-b')).rejects.toThrow(/not found/);
+        const accepted = await coord.acceptContract(contract.id, 'tenant-a');
+        expect(accepted.status).toBe('accepted');
+        await coord.completeContract(contract.id, 'tenant-a');
+        await expect(coord.completeContract(contract.id, 'tenant-b')).rejects.toThrow(/not found/);
     });
 });

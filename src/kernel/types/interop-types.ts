@@ -46,6 +46,8 @@ export interface CapabilityManifest {
     version: number;
     createdAt: number;
     updatedAt: number;
+    /** P3-2: мультиtenant — владелец манифеста. */
+    tenantId?: string;
 }
 
 /** Universal envelope — every external message normalizes to this. */
@@ -98,6 +100,8 @@ export interface CollaborationContract {
     status: 'proposed' | 'accepted' | 'completed' | 'breached';
     createdAt: number;
     updatedAt: number;
+    /** P3-2: мультиtenant — владелец контракта. */
+    tenantId?: string;
 }
 
 /** Market / auction listing (Wave 7: market + contract-net). */
@@ -109,6 +113,8 @@ export interface MarketListing {
     status: 'open' | 'awarded' | 'closed';
     createdAt: number;
     updatedAt: number;
+    /** P3-2: мультиtenant — владелец листинга. */
+    tenantId?: string;
 }
 
 export interface MarketBid {
@@ -119,4 +125,6 @@ export interface MarketBid {
     etaMs?: number;
     note?: string;
     createdAt: number;
+    /** P3-2: мультиtenant — владелец ставки. */
+    tenantId?: string;
 }
