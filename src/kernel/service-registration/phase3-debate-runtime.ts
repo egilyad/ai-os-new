@@ -212,6 +212,15 @@ const EMPTY_DEBATE_STORE: DebateStore = {
     count: async () => {
         throw new Error('DebateStore not available — storageLayer not configured');
     },
+    listAllVerdicts: async () => {
+        throw new Error('DebateStore not available — storageLayer not configured');
+    },
+    importSessions: async () => {
+        throw new Error('DebateStore not available — storageLayer not configured');
+    },
+    importVerdicts: async () => {
+        throw new Error('DebateStore not available — storageLayer not configured');
+    },
 };
 
 export const registerPhase3: Phase = (helpers, ctx) => {
