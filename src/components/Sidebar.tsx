@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { Search, X, PanelRightOpen, PanelRightClose, ChevronDown } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useLocation } from 'react-router-dom';
 import type { TranslationKey } from '../i18n/translations';
-import { NAV_SECTIONS } from '../route-registry';
+import { NAV_SECTIONS, getPluginNavSections } from '../route-registry';
 import {
     getPinned,
     savePinned,
@@ -43,8 +44,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
     const [sidebarSearchQuery, setSidebarSearchQuery] = useState('');
     const [pinned, setPinned] = useState<string[]>(getPinned);
     const [collapsedSections, setCollapsedSections] = useState<Set<string>>(getCollapsedSections);
+    const location = useLocation();
 
     useNavBadgeSubscriptions();
+
+    // P3-1: статические секции + динамические плагинные панели.
+    const navSections = [...NAV_SECTIONS, ...getPluginNavSections()];
 
     const toggleSection = (sectionId: string) => {
         setCollapsedSections((prev) => {
@@ -190,19 +195,18 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 )}
 
                 <nav className="sidebar-nav">
-                    {NAV_SECTIONS.map((section) => {
+                    {navSections.map((section) => {
                         const sectionCollapsed = collapsedSections.has(section.id);
                         const q = sidebarSearchQuery.toLowerCase();
                         const hasSearch = q.length > 0;
                         const showItems = hasSearch || !sectionCollapsed;
                         const visibleItems = section.items.filter((item) => {
-                            if (
-                                q &&
-                                !t(navLabelKey[item.id] ?? '')
-                                    .toLowerCase()
-                                    .includes(q)
-                            )
-                                return false;
+                            if (q) {
+                                const searchLabel = navLabelKey[item.id]
+                                    ? t(navLabelKey[item.id]!)
+                                    : (item.label ?? item.id);
+                                if (!searchLabel.toLowerCase().includes(q)) return false;
+                            }
                             return true;
                         });
                         if (visibleItems.length === 0 && !q) return null;
@@ -234,7 +238,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
                                         }
                                         aria-expanded={!sectionCollapsed}
                                     >
-                                        <span>{t(navLabelKey[section.id] ?? 'nav.overview')}</span>
+                                        <span>
+                                            {navLabelKey[section.id]
+                                                ? t(navLabelKey[section.id]!)
+                                                : (section.labelKey === 'nav.section_plugins'
+                                                      ? 'Плагины'
+                                                      : t('nav.overview'))}
+                                        </span>
                                         <ChevronDown
                                             size={14}
                                             style={{
@@ -255,18 +265,23 @@ export const Sidebar: React.FC<SidebarProps> = ({
                                                 key={item.id}
                                                 onClick={() => {
                                                     if (!isDisabled) {
-                                                        onNavigate(item.id);
+                                                        onNavigate(item.path ?? item.id);
                                                         onMobileMenuClose();
                                                     }
                                                 }}
-                                                className={`nav-item ${activeTab === item.id ? 'active' : ''}`}
+                                                className={`nav-item ${
+                                                    activeTab === item.id ||
+                                                    (item.path && location.pathname === item.path)
+                                                        ? 'active'
+                                                        : ''
+                                                }`}
                                                 aria-current={
                                                     activeTab === item.id ? 'page' : undefined
                                                 }
                                                 disabled={isDisabled}
                                                 title={
                                                     isPlanned
-                                                        ? `${t(navLabelKey[item.id] ?? 'nav.overview')} — Planned`
+                                                        ? `${navLabelKey[item.id] ? t(navLabelKey[item.id]!) : (item.label ?? item.id)} — Planned`
                                                         : undefined
                                                 }
                                                 style={
@@ -310,10 +325,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
                                                                 whiteSpace: 'nowrap',
                                                             }}
                                                         >
-                                                            {t(
-                                                                navLabelKey[item.id] ??
-                                                                    'nav.overview',
-                                                            )}
+                                                            {navLabelKey[item.id]
+                                                                ? t(navLabelKey[item.id]!)
+                                                                : (item.label ?? t('nav.overview'))}
                                                         </span>
                                                         {isPlanned && (
                                                             <span
