@@ -3,22 +3,22 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 1551,
-    "edges": 2802,
+    "nodes": 1563,
+    "edges": 2819,
     "byType": {
       "audit": 25,
-      "code": 675,
-      "test": 233,
+      "code": 682,
+      "test": 236,
       "panel": 267,
-      "article": 351
+      "article": 353
     },
     "byKind": {
       "audit_test": 20,
       "audit_mention": 52,
       "documents": 267,
-      "test": 340,
-      "source": 956,
-      "related": 1167
+      "test": 343,
+      "source": 964,
+      "related": 1173
     }
   },
   "nodes": [
@@ -1123,9 +1123,19 @@
       "label": "src/components/PluginManagerPanel"
     },
     {
+      "id": "file:src/components/PluginManagerPanel.tsx",
+      "type": "code",
+      "label": "src/components/PluginManagerPanel.tsx"
+    },
+    {
       "id": "file:src/components/PluginMarketplacePanel",
       "type": "code",
       "label": "src/components/PluginMarketplacePanel"
+    },
+    {
+      "id": "file:src/components/PluginMarketplacePanel.tsx",
+      "type": "code",
+      "label": "src/components/PluginMarketplacePanel.tsx"
     },
     {
       "id": "file:src/components/PluginSdkPanel",
@@ -2026,6 +2036,11 @@
       "id": "file:src/kernel/contracts/memory-store.ts",
       "type": "code",
       "label": "src/kernel/contracts/memory-store.ts"
+    },
+    {
+      "id": "file:src/kernel/contracts/plugin.ts",
+      "type": "code",
+      "label": "src/kernel/contracts/plugin.ts"
     },
     {
       "id": "file:src/kernel/contracts/pricing.ts",
@@ -3516,6 +3531,41 @@
       "id": "file:src/kernel/services/persona/shared-context-service.ts",
       "type": "code",
       "label": "src/kernel/services/persona/shared-context-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/plugins/plugin-host.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/plugins/plugin-host.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/plugins/plugin-host.ts",
+      "type": "code",
+      "label": "src/kernel/services/plugins/plugin-host.ts"
+    },
+    {
+      "id": "file:src/kernel/services/plugins/plugin-loader.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/plugins/plugin-loader.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/plugins/plugin-loader.ts",
+      "type": "code",
+      "label": "src/kernel/services/plugins/plugin-loader.ts"
+    },
+    {
+      "id": "file:src/kernel/services/plugins/plugin-manifest.ts",
+      "type": "code",
+      "label": "src/kernel/services/plugins/plugin-manifest.ts"
+    },
+    {
+      "id": "file:src/kernel/services/plugins/plugin-marketplace-catalog.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/plugins/plugin-marketplace-catalog.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/plugins/plugin-marketplace-catalog.ts",
+      "type": "code",
+      "label": "src/kernel/services/plugins/plugin-marketplace-catalog.ts"
     },
     {
       "id": "file:src/kernel/services/policy-service.test.ts",
@@ -8396,6 +8446,20 @@
       "type": "article",
       "label": "Как пользоваться панелями",
       "section": "guide",
+      "status": "verified"
+    },
+    {
+      "id": "wiki:plugins-create",
+      "type": "article",
+      "label": "Как написать свой плагин",
+      "section": "dev",
+      "status": "verified"
+    },
+    {
+      "id": "wiki:plugins-guide",
+      "type": "article",
+      "label": "Плагины: возможности и использование",
+      "section": "dev",
       "status": "verified"
     },
     {
@@ -22018,6 +22082,91 @@
     {
       "from": "wiki:panels-guide",
       "to": "wiki:panel-providers",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:plugins-create",
+      "to": "file:src/kernel/contracts/plugin.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:plugins-create",
+      "to": "file:src/kernel/services/plugins/plugin-manifest.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:plugins-create",
+      "to": "file:src/kernel/services/plugins/plugin-marketplace-catalog.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:plugins-create",
+      "to": "file:src/kernel/services/plugins/plugin-marketplace-catalog.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:plugins-create",
+      "to": "wiki:panel-plugins",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:plugins-create",
+      "to": "wiki:plugins-guide",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:plugins-guide",
+      "to": "file:src/components/PluginManagerPanel.tsx",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:plugins-guide",
+      "to": "file:src/components/PluginMarketplacePanel.tsx",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:plugins-guide",
+      "to": "file:src/kernel/contracts/plugin.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:plugins-guide",
+      "to": "file:src/kernel/services/plugins/plugin-host.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:plugins-guide",
+      "to": "file:src/kernel/services/plugins/plugin-host.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:plugins-guide",
+      "to": "file:src/kernel/services/plugins/plugin-loader.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:plugins-guide",
+      "to": "file:src/kernel/services/plugins/plugin-loader.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:plugins-guide",
+      "to": "wiki:dev-status-debt",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:plugins-guide",
+      "to": "wiki:panel-plugin-marketplace",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:plugins-guide",
+      "to": "wiki:panel-plugins",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:plugins-guide",
+      "to": "wiki:plugins-create",
       "kind": "related"
     },
     {

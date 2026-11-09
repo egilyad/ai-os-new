@@ -65,7 +65,7 @@
     {
       "id": "dev",
       "title": "Разработчикам",
-      "articles": 52
+      "articles": 54
     }
   ],
   "articles": [
@@ -9552,6 +9552,69 @@
       ],
       "reviewed": null,
       "tests": []
+    },
+    {
+      "id": "wiki:plugins-guide",
+      "type": "article",
+      "slug": "plugins-guide",
+      "title": "Плагины: возможности и использование",
+      "section": "dev",
+      "status": "verified",
+      "tags": [
+        "разработчикам",
+        "плагины",
+        "SPEC_06"
+      ],
+      "sources": [
+        "src/kernel/services/plugins/plugin-host.ts",
+        "src/kernel/services/plugins/plugin-loader.ts",
+        "src/kernel/contracts/plugin.ts",
+        "src/components/PluginManagerPanel.tsx",
+        "src/components/PluginMarketplacePanel.tsx"
+      ],
+      "related": [
+        "plugins-create",
+        "panel-plugins",
+        "panel-plugin-marketplace",
+        "dev-status-debt"
+      ],
+      "reviewed": {
+        "at": "2026-11-09",
+        "by": "mercury"
+      },
+      "tests": [
+        "src/kernel/services/plugins/plugin-host.test.ts",
+        "src/kernel/services/plugins/plugin-loader.test.ts"
+      ]
+    },
+    {
+      "id": "wiki:plugins-create",
+      "type": "article",
+      "slug": "plugins-create",
+      "title": "Как написать свой плагин",
+      "section": "dev",
+      "status": "verified",
+      "tags": [
+        "разработчикам",
+        "плагины",
+        "SPEC_06"
+      ],
+      "sources": [
+        "src/kernel/contracts/plugin.ts",
+        "src/kernel/services/plugins/plugin-manifest.ts",
+        "src/kernel/services/plugins/plugin-marketplace-catalog.ts"
+      ],
+      "related": [
+        "plugins-guide",
+        "panel-plugins"
+      ],
+      "reviewed": {
+        "at": "2026-11-09",
+        "by": "mercury"
+      },
+      "tests": [
+        "src/kernel/services/plugins/plugin-marketplace-catalog.test.ts"
+      ]
     }
   ],
   "panels": [

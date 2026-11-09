@@ -15,6 +15,7 @@ import { LAYER_ARTICLES } from './wiki-layers';
 import { TOOLING_ARTICLES } from './wiki-tooling';
 import { DEV_STATUS_ARTICLES } from './wiki-dev-status';
 import { DEFERRED_ARTICLES } from './wiki-deferred';
+import { PLUGINS_GUIDE_ARTICLES } from './wiki-plugins-guide';
 import { MEMORY_AUDIT_ARTICLES } from './wiki-memory-audit';
 import { ASSISTANT_ARTICLES } from './wiki-assistant';
 import { SYSTEM_AUDIT_PROMPT_ARTICLE } from './wiki-system-audit-prompt';
@@ -5019,6 +5020,7 @@ export const WIKI_ARTICLES: WikiArticle[] = [
     ...ASSISTANT_ARTICLES,
     ...TECHNIQUE_ARTICLES,
     ...PANELS_EXTRA_ARTICLES,
+    ...PLUGINS_GUIDE_ARTICLES,
 ];
 
 export function getAllArticles(): WikiArticle[] {
