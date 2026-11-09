@@ -12,6 +12,7 @@ import { rootLogger } from '../../kernel/services/logger-service';
 const LOGGER = rootLogger.child('EmbeddingClient');
 
 export const EMBEDDING_TIMEOUT_MS = 30_000;
+export const EMBEDDING_RETRY_BASE_DELAY_MS = 250;
 
 export interface EmbeddingRequest {
     baseUrl: string;
@@ -26,6 +27,9 @@ export interface EmbeddingRequest {
 export interface EmbeddingClientDeps {
     fetchImpl?: typeof fetch;
     timeoutMs?: number;
+    /** P1-17: retries on 429/5xx with exponential backoff (default 2). */
+    maxRetries?: number;
+    retryBaseDelayMs?: number;
 }
 
 interface EmbeddingResponsePayload {
@@ -44,10 +48,14 @@ function normalize(vector: number[]): number[] {
 export class EmbeddingClient {
     private readonly fetchImpl: typeof fetch;
     private readonly timeoutMs: number;
+    private readonly maxRetries: number;
+    private readonly retryBaseDelayMs: number;
 
     constructor(deps: EmbeddingClientDeps = {}) {
         this.fetchImpl = deps.fetchImpl ?? globalThis.fetch.bind(globalThis);
         this.timeoutMs = deps.timeoutMs ?? EMBEDDING_TIMEOUT_MS;
+        this.maxRetries = deps.maxRetries ?? 2;
+        this.retryBaseDelayMs = deps.retryBaseDelayMs ?? EMBEDDING_RETRY_BASE_DELAY_MS;
     }
 
     async embed(req: EmbeddingRequest): Promise<number[][]> {
@@ -57,48 +65,65 @@ export class EmbeddingClient {
         const timer = setTimeout(() => controller.abort(), this.timeoutMs);
         const onAbort = (): void => controller.abort();
         req.signal?.addEventListener('abort', onAbort);
+        const body: Record<string, unknown> = {
+            model: req.model,
+            input: req.texts,
+        };
+        if (typeof req.dimensions === 'number') body['dimensions'] = req.dimensions;
         try {
-            const body: Record<string, unknown> = {
-                model: req.model,
-                input: req.texts,
-            };
-            if (typeof req.dimensions === 'number') body['dimensions'] = req.dimensions;
+            let lastError: unknown;
+            for (let attempt = 0; attempt <= this.maxRetries; attempt++) {
+                if (req.signal?.aborted) throw new Error('Embeddings aborted');
+                const res = await this.fetchImpl(`${base}/embeddings`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${req.apiKey}`,
+                    },
+                    body: JSON.stringify(body),
+                    signal: controller.signal,
+                });
 
-            const res = await this.fetchImpl(`${base}/embeddings`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${req.apiKey}`,
-                },
-                body: JSON.stringify(body),
-                signal: controller.signal,
-            });
+                if (res.ok) {
+                    const payload = (await res.json()) as EmbeddingResponsePayload;
+                    const rows = Array.isArray(payload?.data) ? payload.data : [];
+                    const ordered = rows
+                        .map((row, idx) => ({
+                            idx: typeof row.index === 'number' ? row.index : idx,
+                            vector: Array.isArray(row.embedding)
+                                ? (row.embedding as number[])
+                                : undefined,
+                        }))
+                        .filter((row): row is { idx: number; vector: number[] } => !!row.vector)
+                        .sort((a, b) => a.idx - b.idx);
 
-            if (!res.ok) {
+                    if (ordered.length !== req.texts.length) {
+                        throw new Error(
+                            `Embeddings response mismatch: expected ${req.texts.length} vectors, got ${ordered.length}`,
+                        );
+                    }
+                    return ordered.map((row) => normalize(row.vector));
+                }
+
                 const text = await res.text().catch(() => '');
-                throw new Error(
-                    `Embeddings request failed: ${res.status} ${res.statusText}${
-                        text ? ` — ${text.slice(0, 200)}` : ''
-                    }`,
-                );
+                const retriable = res.status === 429 || res.status >= 500;
+                if (!retriable || attempt === this.maxRetries) {
+                    throw new Error(
+                        `Embeddings request failed: ${res.status} ${res.statusText}${
+                            text ? ` — ${text.slice(0, 200)}` : ''
+                        }`,
+                    );
+                }
+                lastError = new Error(`HTTP ${res.status}`);
+                const delay = this.retryBaseDelayMs * 2 ** attempt;
+                LOGGER.warn('EmbeddingClient', 'embed retry scheduled', {
+                    status: res.status,
+                    attempt: attempt + 1,
+                    delayMs: delay,
+                });
+                await new Promise((resolve) => setTimeout(resolve, delay));
             }
-
-            const payload = (await res.json()) as EmbeddingResponsePayload;
-            const rows = Array.isArray(payload?.data) ? payload.data : [];
-            const ordered = rows
-                .map((row, idx) => ({
-                    idx: typeof row.index === 'number' ? row.index : idx,
-                    vector: Array.isArray(row.embedding) ? (row.embedding as number[]) : undefined,
-                }))
-                .filter((row): row is { idx: number; vector: number[] } => !!row.vector)
-                .sort((a, b) => a.idx - b.idx);
-
-            if (ordered.length !== req.texts.length) {
-                throw new Error(
-                    `Embeddings response mismatch: expected ${req.texts.length} vectors, got ${ordered.length}`,
-                );
-            }
-            return ordered.map((row) => normalize(row.vector));
+            throw lastError ?? new Error('Embeddings request failed');
         } catch (e) {
             LOGGER.warn('EmbeddingClient', 'embed request failed', { error: e });
             throw e instanceof Error ? e : new Error(String(e));

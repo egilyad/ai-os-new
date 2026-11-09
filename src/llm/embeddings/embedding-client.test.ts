@@ -119,4 +119,64 @@ describe('EmbeddingClient', () => {
         ).toEqual([]);
         expect(fetchImpl).not.toHaveBeenCalled();
     });
+
+    it('retries on 429 with exponential backoff then succeeds (P1-17)', async () => {
+        const fetchImpl = vi
+            .fn()
+            .mockResolvedValueOnce(jsonResponse({ error: { message: 'slow down' } }, false, 429))
+            .mockResolvedValueOnce(
+                jsonResponse({ data: [{ embedding: [1, 0] }] }),
+            );
+        const client = new EmbeddingClient({
+            fetchImpl: fetchImpl as unknown as typeof fetch,
+            retryBaseDelayMs: 1,
+        });
+        const vectors = await client.embed({
+            baseUrl: 'https://example.test/v1',
+            apiKey: 'k',
+            model: 'm',
+            texts: ['a'],
+        });
+        expect(fetchImpl).toHaveBeenCalledTimes(2);
+        expect(vectors).toEqual([[1, 0]]);
+    });
+
+    it('gives up after maxRetries on persistent 429 (P1-17)', async () => {
+        const fetchImpl = vi.fn(async () =>
+            jsonResponse({ error: { message: 'slow down' } }, false, 429),
+        );
+        const client = new EmbeddingClient({
+            fetchImpl: fetchImpl as unknown as typeof fetch,
+            maxRetries: 2,
+            retryBaseDelayMs: 1,
+        });
+        await expect(
+            client.embed({
+                baseUrl: 'https://example.test/v1',
+                apiKey: 'k',
+                model: 'm',
+                texts: ['a'],
+            }),
+        ).rejects.toThrow(/429/);
+        expect(fetchImpl).toHaveBeenCalledTimes(3);
+    });
+
+    it('does not retry on 400 (P1-17)', async () => {
+        const fetchImpl = vi.fn(async () =>
+            jsonResponse({ error: { message: 'bad request' } }, false, 400),
+        );
+        const client = new EmbeddingClient({
+            fetchImpl: fetchImpl as unknown as typeof fetch,
+            maxRetries: 3,
+        });
+        await expect(
+            client.embed({
+                baseUrl: 'https://example.test/v1',
+                apiKey: 'k',
+                model: 'm',
+                texts: ['a'],
+            }),
+        ).rejects.toThrow(/400/);
+        expect(fetchImpl).toHaveBeenCalledTimes(1);
+    });
 });
