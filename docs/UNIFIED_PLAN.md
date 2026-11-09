@@ -30,6 +30,7 @@
 4. `P2-12` ✅ — закрыт (97 ручных setError → useAutoClearError; `autoClearMs: null` для стойких ошибок, 2026-11-08).
 5. Затем P2 (UI/продукт) и P3.
 6. `P3-5` ✅ — закрыт (декомпозиция dexie-schema + key-service, 2026-11-08).
+7. `P2-2` остаток — импорт дебатов/топологий ✅ (2026-11-09); осталась UI-мелочь «панельные кнопки local-first».
 
 ---
 
@@ -101,7 +102,7 @@
 | # | Задача | Статус | Источник |
 |---|---|---|---|
 | P2-1 | Builder: интеграция killer-сервисов (crystal/synthesis/lens/time-machine) | ✅ (узлы crystal/synthesis/lens/time-machine открыты в каталоге (exposed) + палитра; рантайм-диспетчер в orchestration-service (executeCrystalNode/executeSynthesisNode/executeLensNode/executeTimeMachineNode) через DI getOptional; NodeType расширен; i18n en/ru) | Gap Map §3; P1-#8 |
-| P2-2 | Round-trip export/import для 9 панелей | 🟡 (ExportImportPanel: импорт включён для prompts (promptLibraryService.create), workflows (workflowService.create), новая секция roles (roleService.getAllRoles/addRole), новая секция crystal (crystalVault.list/propose imported). Уже были round-trip: keys/memory/agents/settings. Остаток: debates/topologies импорт (нужно восстановление сессий/топологий) + панельные кнопки local-first) | Gap Map §4; Opportunity |
+| P2-2 | Round-trip export/import для 9 панелей | 🟡 (импорт включён для всех 9 секций: prompts, workflows, roles, crystal, keys/memory/agents/settings (были), **debates** (сессии+вердикты, skip существующих id — DebateStore.importSessions/importVerdicts, 2026-11-09), **topologies** (mount импортированной топологии); остаток: панельные кнопки local-first (UI-мелочь), timeline/оверрайды вне round-trip) | Gap Map §4; Opportunity |
 | P2-3 | Vertical-консолидация: 5 budget → BudgetHub; 4 health → HealthPanel; 6 research | ✅ (BUDGET ✅: BudgetHub на /budget (Overview/Alerts/Optimization). HEALTH ✅: HealthHub на /health (Health/System Zones), HealthSla скрыт ранее. RESEARCH ✅: ResearchHub на /research-engine (Engine/Advanced/Reports/Cockpit/Hypotheses/System). Старые роуты сохранены) | Duplication Map; P3-#32/33/34 |
 | P2-4 | Рефакторинг 62 TechniquePanels → generic-панель | ✅ (создан generic TechniquePanel (techniqueId+category); TECHNIQUE_PANEL_COMPONENTS переведён на ленивую фабрику lazyTechnique — один общий чанк вместо 58 почти идентичных; NAV_ITEMS без изменений; оригинальные 58 файлов сохранены для последующего удаления) | Tech Map §5.6; Duplication |
 | P2-5 | WikiPanel «Create article» UI; DebateArena «Save as Crystal» | ✅ (Wiki: кнопка «+ Создать статью», редактор (title/slug/section/tags/body markdown), сохранение в localStorage (wiki.userArticles.v1), мёрж в getArticle/articlesBySection/search (getAllArticles); Debate: кнопка «Save as Crystal» в VerdictActionButtons (propose+validate с защитой от дублей по originId=session.id), ключи i18n en/ru) | Opportunity Map |
