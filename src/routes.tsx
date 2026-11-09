@@ -6,6 +6,7 @@ import ErrorBoundary from './components/Common/ErrorBoundary';
 import ExperimentalBadge from './components/Common/ExperimentalBadge';
 import { NAV_SECTIONS } from './route-registry';
 import { PANEL_COMPONENTS, PanelLoader } from './route-imports';
+import { getPluginPanelRoutes, PluginPanelRouteElement } from './plugin-panels';
 const DashboardPanel = React.lazy(() => import('./components/DashboardPanel/DashboardPanel'));
 const ProviderManager = React.lazy(() => import('./components/ProviderManager/ProviderManager'));
 const GroupsPanel = React.lazy(() => import('./components/GroupsPanel/GroupsPanel'));
@@ -250,6 +251,15 @@ export const AppRoutes: React.FC = () => {
                         );
                     }),
             )}
+
+            {/* ── Plugin contributed panels (SPEC_06 §5) ── */}
+            {getPluginPanelRoutes().map((r) => (
+                <Route
+                    key={`plugin-${r.id}`}
+                    path={r.path}
+                    element={<PluginPanelRouteElement panelId={r.id} />}
+                />
+            ))}
 
             {/* ── Redirects ── */}
             <Route
