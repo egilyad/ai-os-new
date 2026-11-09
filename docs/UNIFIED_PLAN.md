@@ -86,9 +86,9 @@
 | P1-5 | Dedup `streamMessage` в CacheDecorator (in-flight) | ✅ | W6-039; dev-status-debt |
 | P1-6 | Singleton `ArgumentGraphService` → per-session instance | ✅ (sessionId во всех методах, изоляция состояния, тесты) | W6-014 |
 | P1-7 | Retrieval: O(N) сканы → индексы (W8-012/013/014/015) | ⏭️ ПРОПУЩЕНО по решению пользователя | dev-status-debt |
-| P1-8 | Включить SemanticRouter/CanaryRouter/CompressRoute в default-chain | ❌ | ROADMAP_00 Фаза 1 |
-| P1-9 | Убрать дублирование RouterRankingService vs KeyStateStore | ❌ | ROADMAP_00 Фаза 1 |
-| P1-10 | Data-driven список провайдеров в дебатах (не жёсткий список) | ❌ | ROADMAP_00 Фаза 1 |
+| P1-8 | Включить SemanticRouter/CanaryRouter/CompressRoute в default-chain | 🟡 (CompressRoute ✅ включён в default-chain adapter-factory (`compress` config, default true, opt-out false; бережёт tool-call payloads, 2026-11-09); SemanticRouter/CanaryRouter остаются явно opt-in — требуют кросс-провайдерных таргетов (fast/powerful, canary policy), безопасного глобального дефолта нет) | ROADMAP_00 Фаза 1 |
+| P1-9 | Убрать дублирование RouterRankingService vs KeyStateStore | ✅ (health-предикат ключа вынесен в единый `keyStateHealthy()` — раньше был продублирован в 3 местах с риском дрейфа; семантика без изменений) | ROADMAP_00 Фаза 1 |
+| P1-10 | Data-driven список провайдеров в дебатах (не жёсткий список) | ✅ (DEBATE_MODEL_PRIORITY строится из PROVIDER_PREFERRED_MODELS (база) + дебатные пины; неизвестный провайдер использует живые availableModels в pickBestModelForDebate) | ROADMAP_00 Фаза 1 |
 | P1-11 | KeyUsageAnalyticsPanel → `useMetrics` | ✅ | IMPLEMENTATION_STATUS «осталось» |
 | P1-12 | Метрики памяти (search_latency/hit_rate) в MemoryService | ✅ | IMPLEMENTATION_STATUS «осталось» |
 | P1-13 | Dexie migration test до v43 | ❌ | полный отчёт P1-#19 |
