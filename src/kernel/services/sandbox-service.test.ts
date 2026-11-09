@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, afterEach } from 'vitest';
+﻿import { describe, it, expect, vi, afterEach } from 'vitest';
 import { SandboxService } from './sandbox-service';
 
 function makeService(overrides: { toolExecute?: ReturnType<typeof vi.fn> } = {}) {
@@ -7,24 +7,41 @@ function makeService(overrides: { toolExecute?: ReturnType<typeof vi.fn> } = {})
     });
 }
 
-type FakeBehavior = (msg: Record<string, unknown>, worker: { onmessage: ((e: { data: unknown }) => void) | null }) => unknown;
+type FakeBehavior = (msg: Record<string, unknown>, worker: FakeSandboxWorker) => unknown;
 
-let currentSandboxWorker: { terminate: ReturnType<typeof vi.fn>; postMessage: ReturnType<typeof vi.fn> } | null = null;
-
-function stubWorker(behavior: FakeBehavior) {
-    const Fake = function FakeSandboxWorker() {
-        this.onmessage = null;
-        this.onerror = null;
-        this.postMessage = vi.fn((msg: Record<string, unknown>) => {
-            queueMicrotask(() => {
-                const next = behavior(msg, this);
-                if (next !== undefined) this.onmessage?.({ data: next });
-            });
+class FakeSandboxWorker {
+    onmessage: ((e: { data: unknown }) => void) | null = null;
+    onerror: ((e: unknown) => void) | null = null;
+    postMessage = vi.fn((msg: Record<string, unknown>) => {
+        queueMicrotask(() => {
+            const next = behavior(msg, this);
+            if (next !== undefined) this.onmessage?.({ data: next });
         });
-        this.terminate = vi.fn(() => {});
-        currentSandboxWorker = this;
-    } as unknown as typeof Worker;
-    vi.stubGlobal('Worker', Fake);
+    });
+    terminate = vi.fn(() => {});
+}
+
+let behavior: FakeBehavior = () => undefined;
+
+let workerClass: (typeof FakeSandboxWorker & { lastInstance: FakeSandboxWorker | null }) | null = null;
+
+function stubWorker(b: FakeBehavior) {
+    behavior = b;
+    class WorkerFake extends FakeSandboxWorker {
+        static lastInstance: FakeSandboxWorker | null = null;
+        constructor() {
+            super();
+            WorkerFake.lastInstance = this;
+        }
+    }
+    workerClass = WorkerFake as typeof FakeSandboxWorker & {
+        lastInstance: FakeSandboxWorker | null;
+    };
+    vi.stubGlobal('Worker', WorkerFake as unknown as typeof Worker);
+}
+
+function lastSandboxWorker(): FakeSandboxWorker | null {
+    return workerClass?.lastInstance ?? null;
 }
 
 function jsonResponse(body: string, status = 200): Response {
@@ -73,14 +90,14 @@ describe('SandboxService.fetchUrl', () => {
 describe('SandboxService.execute', () => {
     afterEach(() => {
         vi.unstubAllGlobals();
-        currentSandboxWorker = null;
+        workerClass = null;
     });
 
     it('resolves with the worker result', async () => {
         stubWorker(() => ({ type: 'result', result: 'done' }));
         const svc = makeService();
         await expect(svc.execute('return 1')).resolves.toBe('done');
-        expect(currentSandboxWorker?.terminate).toHaveBeenCalled();
+        expect(lastSandboxWorker()?.terminate).toHaveBeenCalled();
     });
 
     it('rejects on worker error', async () => {
