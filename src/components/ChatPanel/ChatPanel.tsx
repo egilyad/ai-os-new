@@ -1,10 +1,10 @@
-import { storageAdapter, settingsService, orchestrator } from '../../kernel/instances';
+import { storageAdapter, settingsService, orchestrator, keyService } from '../../kernel/instances';
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 
 import { X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSearchParams } from 'react-router-dom';
-import { useKeyList } from '../../stores/useKeyStore';
+import { useKeyList, refreshKeyStore } from '../../stores/useKeyStore';
 import { useChatStore } from '../../stores/useChatStore';
 import { seedChatDemo } from '../../kernel/services/chat-demo-seed';
 import { resolveSessionStore } from '../../stores/chat/store-helpers';
@@ -31,6 +31,24 @@ const ChatPanel: React.FC = () => {
     const activeKeysRef = useRef(activeKeys);
     useEffect(() => {
         activeKeysRef.current = activeKeys;
+    }, [activeKeys]);
+
+    // Авто-discover моделей: для ключей без availableModels делаем одноразовый
+    // debounced refresh (не чаще, чем один раз на ключ за сессию).
+    const modelsRefreshRequestedRef = useRef<Set<string>>(new Set());
+    useEffect(() => {
+        const missing = activeKeys.filter(
+            (k) => !k.availableModels || k.availableModels.length === 0,
+        );
+        const fresh = missing.filter((k) => !modelsRefreshRequestedRef.current.has(k.id));
+        if (fresh.length === 0) return;
+        for (const k of fresh) modelsRefreshRequestedRef.current.add(k.id);
+        const timer = setTimeout(() => {
+            void Promise.allSettled(fresh.map((k) => keyService.refreshModels(k.id))).then(() => {
+                refreshKeyStore();
+            });
+        }, 1500);
+        return () => clearTimeout(timer);
     }, [activeKeys]);
     const sendMessage = useChatStore((s) => s.sendMessage);
     const activeSessionId = useChatStore((s) => s.activeSessionId);
