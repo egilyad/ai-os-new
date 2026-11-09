@@ -94,7 +94,7 @@
 | P1-13 | Dexie migration test до v43 | ✅ (тест версий переписан под v43 (5 кейсов): порядок, покрытие v5..v43, проектные таблицы, отсутствие дропов между версиями, соответствие Table-деклараций; включён в test:stable/coverage. Заодно устранён риск потери данных: карты таблиц аккумулированы по версиям (v35+ не дельта, а полный набор — WARN о дропах исчезли из логов)) | полный отчёт P1-#19 |
 | P1-14 | Fix 16 дубликатов имён событий в event-registry | ❌ | полный отчёт P1-#14 |
 | P1-15 | `registerTransient` cleanup | ✅ | полный отчёт P1-#15 |
-| P1-16 | Race conditions (6): CheckpointStore/DebateEngine/AutoDebate/MemoryEngine/Scheduler | 🟡 (CheckpointStore ✅ — merge при init вместо replace + регрессионный тест; остальные открыты) | полный отчёт P1-#16 |
+| P1-16 | Race conditions (6): CheckpointStore/DebateEngine/AutoDebate/MemoryEngine/Scheduler | ✅ (CheckpointStore ✅ (merge при init); 2.1 DebateEngine resume-during-pause ✅ — пер-сессионные run-промисы, re-entrant resume ждёт teardown; 2.2 AutoDebate ✅ — single-flight + destroy ждёт pending; 2.3 MemoryEngine ✅ — worker-publish только в onCommit (нет dangling при rollback), включая storeBatch; 2.4 MemoryOrchestrator.summarizeRecent ✅ — single-flight mutex; 2.5 Scheduler ✅ — trigger ждёт in-flight, destroy ждёт запуски; 2.6 MemoryWorkerClient осталась на проверке полноты) | полный отчёт P1-#16 |
 | P1-17 | Perf hot-paths (10): memory O(n²), syncSessions, embedding batch, VisGraph и др. | ❌ | полный отчёт P1-#17 |
 
 ## 3. Приоритет P2 — продукт и UX
