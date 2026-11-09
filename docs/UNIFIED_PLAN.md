@@ -119,7 +119,7 @@
 
 | # | Задача | Статус | Источник |
 |---|---|---|---|
-| P3-1 | Плагинный sandbox для сторонних плагинов + динамические маршруты `contributes.panels` | 🟡 (реестр contributed panels в PluginHost ✅; динамические маршруты ✅ — `/plugin/<id>` в routes.tsx + PluginPanelFrame (sandboxed iframe: allow-scripts allow-same-origin), 2026-11-09; остаток: интеграция в сайдбар/навигацию, полная sandbox-изоляция (Worker/iframe-политики), marketplace) | SPEC_06 §5 |
+| P3-1 | Плагинный sandbox для сторонних плагинов + динамические маршруты `contributes.panels` | 🟡 (реестр contributed panels ✅; динамические маршруты `/plugin/<id>` + sandboxed iframe ✅; сайдбар-секция «Плагины» ✅ (path-aware активность, label-fallback) — 2026-11-09; панели PluginManager/PluginMarketplace ✅ (ранее битые lazy-импорты починены); остаток: полная sandbox-изоляция (Worker/iframe-политики), каталог сторонних плагинов) | SPEC_06 §5 |
 | P3-2 | Мультиклиентная федерация (A2A довести до мультиtenant) | 🟡 | SPEC_09/10 |
 | P3-3 | Серверный командный режим (multi-user/tenant) | 🟡 | SPEC_10 |
 | P3-4 | Автономный супервизор флота (Fleet → не только projection) | ❌ | ROADMAP_00 Фаза 2; полный отчёт |
