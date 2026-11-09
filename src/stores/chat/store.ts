@@ -641,6 +641,7 @@ export const useChatStore = create<ChatStoreShape>((set, get) => {
                       model: session.currentModel,
                       keyId: session.currentKeyId,
                       agentId: session.currentAgentId,
+                      modelsByKey: session.currentModelsByKey,
                   }
                 : undefined;
         },
@@ -682,6 +683,37 @@ export const useChatStore = create<ChatStoreShape>((set, get) => {
                 }),
             }));
             ups(sessionId, (prev) => [...prev, systemEntry]);
+        },
+
+        setModelForKey: async (keyId, model) => {
+            const sessionId = get().activeSessionId;
+            const sStore = resolveSessionStore();
+            if (sStore) {
+                const fullSession = get().sessions.find((s) => s.id === sessionId);
+                if (fullSession) {
+                    try {
+                        await sStore.put({
+                            ...fullSession,
+                            currentModelsByKey: {
+                                ...(fullSession.currentModelsByKey ?? {}),
+                                [keyId]: model,
+                            },
+                            updatedAt: Date.now(),
+                        });
+                    } catch (e) {
+                        console.error('[ChatStore] Failed to persist setModelForKey', e);
+                        return;
+                    }
+                }
+            }
+            set((s) => ({
+                sessions: updateSessionInList(s.sessions, sessionId, {
+                    currentModelsByKey: {
+                        ...(s.sessions.find((x) => x.id === sessionId)?.currentModelsByKey ?? {}),
+                        [keyId]: model,
+                    },
+                }),
+            }));
         },
 
         destroy: () => {

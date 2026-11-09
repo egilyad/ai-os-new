@@ -61,6 +61,7 @@ const setSessions = useChatStore((s) => s.setSessions);
     const switchModel = useChatStore((s) => s.switchModel);
     const switchKey = useChatStore((s) => s.switchKey);
     const setAgent = useChatStore((s) => s.setAgent);
+    const setModelForKey = useChatStore((s) => s.setModelForKey);
     const currentAgentId = useChatStore((s) => s.sessions.find((x) => x.id === s.activeSessionId)?.currentAgentId ?? null);
     // T2: global default key/model for new chats (per-chat override persists on session)
     const globalDefaults = (() => {
@@ -161,6 +162,9 @@ const setSessions = useChatStore((s) => s.setSessions);
             }
         } else if (cfg.model) {
             setSelectedModel(cfg.model);
+        }
+        if (cfg.modelsByKey && Object.keys(cfg.modelsByKey).length > 0) {
+            setSelectedModelPerKey((prev) => ({ ...prev, ...cfg.modelsByKey }));
         }
         // restore agent selection for Poe-style continuation
         // (agent is continuation state, not identity)
@@ -589,6 +593,9 @@ const setSessions = useChatStore((s) => s.setSessions);
                             const provider = activeKeys.find((k) => k.id === kid)?.provider ?? 'auto';
                             void switchModel(provider, m).catch(() => {
                                 showStatus('Failed to persist model override', 'error');
+                            });
+                            void setModelForKey(kid, m).catch(() => {
+                                showStatus('Failed to persist per-key model', 'error');
                             });
                         }
                     }}

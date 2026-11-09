@@ -673,6 +673,15 @@ describe('useChatStore', () => {
         expect(mockSStore.put).toHaveBeenCalled();
     });
 
+    it('setModelForKey persists per-key model in the session', async () => {
+        await useChatStore.getState().setModelForKey('k1', 'model-x');
+        const s = useChatStore.getState();
+        expect(s.sessions[0].currentModelsByKey?.['k1']).toBe('model-x');
+        expect(mockSStore.put).toHaveBeenCalled();
+        const cfg = useChatStore.getState().getSessionConfig();
+        expect(cfg?.modelsByKey?.['k1']).toBe('model-x');
+    });
+
     it('getSessionConfig returns provider/model/keyId', () => {
         useChatStore.setState({
             sessions: [makeSession('s1', [])],

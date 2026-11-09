@@ -52,6 +52,8 @@ export interface ChatSession {
     currentModel?: string;
     currentKeyId?: string;
     currentAgentId?: string;
+    /** Мультичат: выбранная модель для каждого ключа (per-key). */
+    currentModelsByKey?: Record<string, string>;
 }
 
 export const DEFAULT_SESSION: ChatSession = {
@@ -112,6 +114,7 @@ export interface ChatActions {
     switchModel: (provider: string, model: string) => Promise<void>;
     switchKey: (keyId: string) => Promise<void>;
     setAgent: (agentId: string | null) => Promise<void>;
+    setModelForKey: (keyId: string, model: string) => Promise<void>;
     getSessionConfig: () => { provider?: string; model?: string; keyId?: string; agentId?: string } | undefined;
     destroy: () => void;
 }
