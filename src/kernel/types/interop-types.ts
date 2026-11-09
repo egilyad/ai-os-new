@@ -60,6 +60,8 @@ export interface GatewayEnvelope {
     payload: Record<string, unknown>;
     traceId?: string;
     createdAt: number;
+    /** P3-2: мультиtenant — владелец сообщения. */
+    tenantId?: string;
 }
 
 export interface FederationPeer {

@@ -72,6 +72,7 @@ export interface IGatewayService extends ILifecycle {
         protocol: InteropProtocol;
         kind?: GatewayEnvelope['kind'];
         payload?: Record<string, unknown>;
+        tenantId?: string;
     }): Promise<GatewayEnvelope>;
     translate(envelope: GatewayEnvelope, target: InteropProtocol): Promise<GatewayEnvelope>;
     recent(limit?: number): Promise<GatewayEnvelope[]>;

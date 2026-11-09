@@ -4,6 +4,7 @@ import { InteropRepository } from '../../dal/interop-repository';
 import { A2AService } from './a2a-service';
 import { FederationService } from './federation-service';
 import { CoordinationService } from './coordination-service';
+import { GatewayService } from './gateway-service';
 import type { IEventBus } from '../../types/interfaces';
 
 function makeBus(): IEventBus {
@@ -22,6 +23,7 @@ describe('A2A / federation multi-tenant isolation (P3-2)', () => {
     let a2a: A2AService;
     let fed: FederationService;
     let coord: CoordinationService;
+    let gateway: GatewayService;
 
     beforeEach(async () => {
         tdb = await createTestDb();
@@ -31,6 +33,7 @@ describe('A2A / federation multi-tenant isolation (P3-2)', () => {
         a2a = new A2AService(repo, bus);
         fed = new FederationService(repo, bus);
         coord = new CoordinationService(repo, bus);
+        gateway = new GatewayService(repo, bus);
     });
 
     it('discover scopes agents by tenant and keeps global agents visible', async () => {
@@ -135,5 +138,22 @@ describe('A2A / federation multi-tenant isolation (P3-2)', () => {
         expect(accepted.status).toBe('accepted');
         await coord.completeContract(contract.id, 'tenant-a');
         await expect(coord.completeContract(contract.id, 'tenant-b')).rejects.toThrow(/not found/);
+    });
+
+    it('gateway envelope carries tenantId through ingress and federation dispatch', async () => {
+        const envelope = await gateway.ingress({
+            from: 'a',
+            to: 'b',
+            protocol: 'a2a',
+            payload: { task: 't' },
+            tenantId: 'tenant-a',
+        });
+        expect(envelope.tenantId).toBe('tenant-a');
+
+        await fed.addPeer({ name: 'P', baseUrl: 'http://p', tenantId: 'tenant-a' });
+        const peer = (await fed.listPeers('tenant-a'))[0]!;
+        const record = await fed.dispatch(peer.id, 't', {}, 'tenant-a');
+        expect(record.tenantId).toBe('tenant-a');
+        expect(record.context.traceId).toBeDefined();
     });
 });

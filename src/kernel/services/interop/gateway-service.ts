@@ -42,6 +42,7 @@ export class GatewayService implements IGatewayService {
         protocol: InteropProtocol;
         kind?: GatewayEnvelope['kind'];
         payload?: Record<string, unknown>;
+        tenantId?: string;
     }): Promise<GatewayEnvelope> {
         const envelope = toEnvelope(input);
         this.buffer.push(envelope);

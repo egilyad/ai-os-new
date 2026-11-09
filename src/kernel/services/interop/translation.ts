@@ -24,6 +24,7 @@ export function toEnvelope(input: {
     kind?: GatewayEnvelope['kind'];
     payload?: Record<string, unknown>;
     traceId?: string;
+    tenantId?: string;
 }): GatewayEnvelope {
     return {
         id: genId('gw'),
@@ -33,6 +34,7 @@ export function toEnvelope(input: {
         kind: input.kind ?? 'task',
         payload: { ...(input.payload ?? {}), _via: PROTOCOL_HINTS[input.protocol] },
         traceId: input.traceId,
+        tenantId: input.tenantId,
         createdAt: Date.now(),
     };
 }

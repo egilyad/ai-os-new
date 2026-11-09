@@ -83,7 +83,14 @@ export class FederationService implements IFederationService {
         const peer = await this.require(peerId, tenantId);
         if (peer.trust === 'untrusted') throw new Error(`Peer ${peer.name} is untrusted — dispatch refused`);
         const t = now();
-        const envelope = toEnvelope({ from: 'local-os', to: peer.id, protocol: 'a2a', kind: 'task', payload: { task, ...payload } });
+        const envelope = toEnvelope({
+            from: 'local-os',
+            to: peer.id,
+            protocol: 'a2a',
+            kind: 'task',
+            payload: { task, ...payload },
+            tenantId,
+        });
         let status: HandoffRecord['status'] = 'dispatched';
         let result: string | undefined;
         if (this.transport) {
