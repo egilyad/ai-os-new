@@ -91,7 +91,7 @@
 | P1-10 | Data-driven список провайдеров в дебатах (не жёсткий список) | ✅ (DEBATE_MODEL_PRIORITY строится из PROVIDER_PREFERRED_MODELS (база) + дебатные пины; неизвестный провайдер использует живые availableModels в pickBestModelForDebate) | ROADMAP_00 Фаза 1 |
 | P1-11 | KeyUsageAnalyticsPanel → `useMetrics` | ✅ | IMPLEMENTATION_STATUS «осталось» |
 | P1-12 | Метрики памяти (search_latency/hit_rate) в MemoryService | ✅ | IMPLEMENTATION_STATUS «осталось» |
-| P1-13 | Dexie migration test до v43 | ❌ | полный отчёт P1-#19 |
+| P1-13 | Dexie migration test до v43 | ✅ (тест версий переписан под v43 (5 кейсов): порядок, покрытие v5..v43, проектные таблицы, отсутствие дропов между версиями, соответствие Table-деклараций; включён в test:stable/coverage. Заодно устранён риск потери данных: карты таблиц аккумулированы по версиям (v35+ не дельта, а полный набор — WARN о дропах исчезли из логов)) | полный отчёт P1-#19 |
 | P1-14 | Fix 16 дубликатов имён событий в event-registry | ❌ | полный отчёт P1-#14 |
 | P1-15 | `registerTransient` cleanup | ✅ | полный отчёт P1-#15 |
 | P1-16 | Race conditions (6): CheckpointStore/DebateEngine/AutoDebate/MemoryEngine/Scheduler | 🟡 (CheckpointStore ✅ — merge при init вместо replace + регрессионный тест; остальные открыты) | полный отчёт P1-#16 |
