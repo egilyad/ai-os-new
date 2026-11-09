@@ -135,7 +135,7 @@
 | QW-1 | Coverage threshold в CI (порог уже есть — поднять/расширить include) | ✅ (include расширен: +storage/event-sourcing/trust/llm-bridge/ops/browser +llm(http/decorators/registry); пороги подняты 30/20/30/30 → 31/25/30/32; замерено 2026-11-08: All files 33.37% stmts / 27.75% branch / 31.98% funcs / 34.41% lines; в CI сводка покрытия публикуется аннотацией без логина) | Tech Map §9.4 |
 | QW-2 | Снизить lint baseline (5600) — плановая чистка raw colors/set-state-in-effect | 🟡 (порог снижен 5600 → 4300 (факт 4199), 2026-11-09; основной остаток: 3.7k fa-02/no-raw-style-color + 178 no-restricted-imports в UI — крупная плановая чистка) | Tech Map §3.5 |
 | QW-3 | E2E для SRE/Health/Diagnostics | ✅ (спек e2e/data-sre-health-diagnostics.spec.ts: рендер /sre, /health, /diagnostics после полного boot, 2026-11-09; выполняется в E2E-матрице CI) | Roadmaps |
-| QW-4 | Визуальная регрессия панелей (Playwright snapshots) | Roadmaps |
+| QW-4 | Визуальная регрессия панелей (Playwright snapshots) | 🟡 (визуальная регрессия ✅ — e2e/visual-regression.spec.ts: baseline toHaveScreenshot для /chat /keys /health /diagnostics /settings (2% maxDiff), 2026-11-09; остаток: первичный baseline-коммит после прогона на стабильном раннере, включение в матрицу при стабильности) | Roadmaps |
 | QW-5 | a11y: axe-тесты ключевых панелей, focus-trap | 🟡 (axe-free базовый a11y e2e ✅ — landmark main, заголовки, title у iframe, клавиатурный фокус сайдбара (/keys /chat /settings), 2026-11-09; остаток: полноценный axe-прогон (требует установки @axe-core/playwright), focus-trap-проверки модалок) | опер. отчёт 3.7 |
 | QW-6 | Бенчмарк-пороги на горячих путях | опер. отчёт 3.6 |
 | QW-7 | Проверить pre-commit хуки (lint-staged) реально гоняются | ✅ опер. отчёт 3.10 |
