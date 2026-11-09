@@ -137,11 +137,21 @@ function writeJson(res, status, data) {
 
 // M1.1: SSE live-events clients (additive, WS db_changed untouched)
 const sseClients = new Set();
+// P1-17: WS broadcast backpressure — skip consumers whose send queue is
+// already backed up (1 MiB), so one slow client cannot stall the event loop.
+const WS_MAX_BUFFERED_BYTES = 1024 * 1024;
 function broadcastLive(type, payload) {
     const msg = JSON.stringify({ type, timestamp: Date.now(), ...payload });
     for (const client of wssClientsSnapshot()) {
         try {
-            if (client.readyState === 1) client.send(msg);
+            if (client.readyState !== 1) continue;
+            if (
+                typeof client.bufferedAmount === 'number' &&
+                client.bufferedAmount > WS_MAX_BUFFERED_BYTES
+            ) {
+                continue;
+            }
+            client.send(msg);
         } catch {
             /* ignore */
         }
