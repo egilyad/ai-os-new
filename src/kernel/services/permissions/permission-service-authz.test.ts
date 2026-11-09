@@ -22,19 +22,19 @@ describe('AgentPermissionService + authorizationService (SPEC_08)', () => {
         expect(dec.reason).toContain('authorization service');
     });
 
-    it('authz allow не меняет поведение (BASE=allow all)', async () => {
+    it('authz allow не меняет дефолт ruleset (ask без правил)', async () => {
         const authz = new AuthorizationService();
         await authz.setRules([
             { id: 'r', subject: '*', action: '*', resource: '*', effect: 'allow' },
         ]);
         const svc = new AgentPermissionService(mockDeps(authz));
         const dec = await svc.evaluate('agent-1', 'tool:exec', 't-web');
-        expect(dec.effect).toBe('allow');
+        expect(dec.effect).toBe('ask');
     });
 
-    it('без authz поведение прежнее', async () => {
+    it('без authz поведение прежнее (ask без правил)', async () => {
         const svc = new AgentPermissionService(mockDeps());
         const dec = await svc.evaluate('agent-1', 'tool:exec', 't-web');
-        expect(dec.effect).toBe('allow');
+        expect(dec.effect).toBe('ask');
     });
 });

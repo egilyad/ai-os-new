@@ -8,6 +8,7 @@ function createDeps(overrides?: Partial<MetricsServiceDeps>): MetricsServiceDeps
         eventBus: {
             on: vi.fn(() => vi.fn()),
             emit: vi.fn(),
+            emitOnce: vi.fn(() => true),
         },
         database: {
             getKv: vi.fn().mockResolvedValue(null),

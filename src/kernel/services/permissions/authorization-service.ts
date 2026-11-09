@@ -20,7 +20,7 @@ export class AuthorizationService implements IAuthorizationService {
     async assertAllowed(req: AuthzRequest): Promise<void> {
         const dec = await this.evaluate(req);
         if (dec.effect === 'deny') {
-            throw new Error(dec.reason ?? 'Access denied');
+            throw new Error(`Access denied: ${dec.reason ?? 'no matching rule'}`);
         }
     }
 

@@ -249,7 +249,7 @@ export class AgentPermissionService {
                     action,
                     resource,
                     effect: 'deny',
-                    reason: authzDec.reason ?? 'Denied by authorization service',
+                    reason: `Authorization service denied: ${authzDec.reason ?? 'no matching rule'}`,
                     escalated: false,
                     rule: {
                         id: 'authorization-service',

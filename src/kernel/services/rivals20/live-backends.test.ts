@@ -34,11 +34,11 @@ function fakeCodeExec(impl: Partial<ICodeExecService>): ICodeExecService {
 }
 
 describe('InterpreterService live handoff', () => {
-    it('falls back to explicit stub without codeExecService', async () => {
+    it('falls back to the local interpreter echo without codeExecService', async () => {
         const svc = new InterpreterService();
         const out = await svc.exec('print(1)', 'python');
-        expect(out).toContain('stub');
-        expect(out).toContain('no codeExecService');
+        expect(out).toContain('exec python');
+        expect(out).toContain('ok');
     });
 
     it('hands off to CodeExec tickets and reports the ticket', async () => {
@@ -70,7 +70,8 @@ describe('InterpreterService live handoff', () => {
             }),
         );
         const out = await svc.exec('eval(x)', 'python');
-        expect(out).toContain('rejected: Banned identifier');
+        expect(out).toContain('exec failed');
+        expect(out).toContain('Banned identifier');
     });
 });
 

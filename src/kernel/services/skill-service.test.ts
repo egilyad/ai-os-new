@@ -174,22 +174,22 @@ describe('SkillService', () => {
             expect(parsed.length).toBeGreaterThanOrEqual(5);
         });
 
-        it('should import new skills', () => {
+        it('should import new skills', async () => {
             const before = svc.getSkills().length;
             const newSkill = makeSkill({ id: 'sk-imported', name: 'Imported' });
-            const imported = svc.importSkills(JSON.stringify([newSkill]));
+            const imported = await svc.importSkills(JSON.stringify([newSkill]));
             expect(imported).toBe(1);
             expect(svc.getSkills().length).toBe(before + 1);
         });
 
-        it('should not import duplicate IDs', () => {
+        it('should not import duplicate IDs', async () => {
             const existing = svc.getSkills()[0];
-            const imported = svc.importSkills(JSON.stringify([existing]));
+            const imported = await svc.importSkills(JSON.stringify([existing]));
             expect(imported).toBe(0);
         });
 
-        it('should throw on invalid JSON', () => {
-            expect(() => svc.importSkills('not json')).toThrow();
+        it('should throw on invalid JSON', async () => {
+            await expect(svc.importSkills('not json')).rejects.toThrow();
         });
     });
 

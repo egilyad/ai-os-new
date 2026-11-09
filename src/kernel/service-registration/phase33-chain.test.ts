@@ -13,6 +13,7 @@ import type {
 } from '../contracts/rivals';
 import type { IToolRunnerService } from '../contracts/parity';
 import type { ILtMemoryService } from '../contracts/persona';
+import type { IToolGovernanceService } from '../contracts/ops';
 
 const get = <T>(token: string): T => runtime.getService<T>(token);
 
@@ -67,6 +68,8 @@ describe('Phase33 e2e chain (F)', () => {
 
     it('lets agents curate their own long-term memory', async () => {
         get<IMemoryBlocksService>('memoryBlocksService');
+        const governance = get<IToolGovernanceService>('toolGovernanceService');
+        await governance.grant('agent', 'memory:*', true);
         const runner = get<IToolRunnerService>('toolRunnerService');
         const lt = get<ILtMemoryService>('ltMemoryService');
         const m = await lt.remember({ ownerId: 'agent', content: 'self-edit probe' });
@@ -83,6 +86,8 @@ describe('Phase33 e2e chain (F)', () => {
 
     it('lets an agent rewrite its own memory text', async () => {
         get<IMemoryBlocksService>('memoryBlocksService');
+        const governance = get<IToolGovernanceService>('toolGovernanceService');
+        await governance.grant('agent', 'memory:*', true);
         const runner = get<IToolRunnerService>('toolRunnerService');
         const lt = get<ILtMemoryService>('ltMemoryService');
         const m = await lt.remember({ ownerId: 'agent', content: 'draft v1' });

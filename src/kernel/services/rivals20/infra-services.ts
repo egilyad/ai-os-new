@@ -35,5 +35,21 @@ export class LangfuseService implements ILangfuseService {
     ) {}
     async init(){} async destroy(){}
     async trace(name: string, data: string){ await this.dal.kv.set(`langfuse/${name}/${Date.now()}`, data.slice(0,1000)); try{ this.events?.emit(EVENTS.LANGFUSE_TRACE, { name }); }catch{ /* best-effort */ } }
-    async eval(_dataset: string){ return 0.85; }
+    async eval(dataset: string): Promise<number> {
+        // Если есть наблюдения со score — усредняем; иначе prior 0.85.
+        const rows = await this.dal.kv.list(`langfuse/${dataset}/`);
+        const scores: number[] = [];
+        for (const row of rows) {
+            const v = row.value;
+            if (typeof v !== 'string') continue;
+            try {
+                const parsed = JSON.parse(v);
+                if (typeof parsed?.score === 'number') scores.push(parsed.score);
+            } catch {
+                /* plain text, no score */
+            }
+        }
+        if (scores.length === 0) return 0.85;
+        return scores.reduce((a, b) => a + b, 0) / scores.length;
+    }
 }

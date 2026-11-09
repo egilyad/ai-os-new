@@ -2,6 +2,20 @@ import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import AddKeyModal from './AddKeyModal';
 
+vi.mock('../../kernel/instances', () => ({
+    eventBus: { on: vi.fn(() => () => {}), emit: vi.fn(), onSafe: vi.fn(() => () => {}) },
+    EVENTS: {},
+    keyService: { getKeys: vi.fn(() => []) },
+    adapterRegistry: {
+        getAllProviders: vi.fn(() => [
+            { id: 'openrouter', name: 'OpenRouter', label: 'OpenRouter' },
+            { id: 'openai', name: 'OpenAI', label: 'OpenAI' },
+            { id: 'groq', name: 'Groq Cloud', label: 'Groq Cloud' },
+        ]),
+    },
+    rootLogger: { child: () => ({ info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn() }) },
+}));
+
 vi.mock('../../i18n/useTranslation', () => {
     const labels: Record<string, string> = {
         'add_key.title_provider': 'Select AI Provider',

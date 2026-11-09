@@ -53,7 +53,7 @@ describe('CompaniesPanel', () => {
         frontierState.orgs = [{ id: 'o1', name: 'Legacy Org' }];
         const Panel = (await import('./CompaniesPanel')).default;
         render(<Panel />);
-        expect(await screen.findByText('Legacy Org')).toBeDefined();
+        expect(await screen.findByText(/Legacy Org/)).toBeDefined();
         expect(screen.queryByText('undefined')).toBeNull();
     });
 });

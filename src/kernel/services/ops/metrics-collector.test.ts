@@ -7,7 +7,9 @@ function makeEvents() {
     return {
         on: (e: string, cb: (d?: unknown) => void) => {
             (reg[e] ??= []).push(cb);
-            return () => {};
+            return () => {
+                reg[e] = (reg[e] ?? []).filter((f) => f !== cb);
+            };
         },
         emit: (e: string, d?: unknown) => {
             (reg[e] ?? []).forEach((cb) => cb(d));

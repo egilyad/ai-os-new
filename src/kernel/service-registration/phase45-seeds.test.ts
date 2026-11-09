@@ -14,19 +14,20 @@ interface RoleReader {
 }
 
 describe('Phase45 warehouse seeds (S)', () => {
-    it('seeds the 4 Biz skills', async () => {
-        for (const name of ['BizAnalyst', 'SDR', 'SEO Auditor', 'Finance Ops']) {
-            await vi.waitFor(
-                async () => {
-                    expect((await market().list()).map((s) => s.name)).toContain(name);
-                },
-                { timeout: 10000 },
-            );
-        }
+    it('seeds builtin skills (Repo Guide, Summarizer, …)', async () => {
+        await vi.waitFor(
+            async () => {
+                const names = (await market().list()).map((s) => s.name);
+                expect(names.length).toBeGreaterThan(0);
+                expect(names).toContain('Repo Guide');
+                expect(names).toContain('Summarizer');
+            },
+            { timeout: 10000 },
+        );
     });
 
-    it('registers the 3 S-phase crew templates with buildable crews', () => {
-        for (const id of ['seo-engine', 'outreach-factory', 'finance-desk']) {
+    it('registers crew templates with buildable crews', () => {
+        for (const id of ['research-team', 'code-review-council', 'content-forge']) {
             const tpl = getCrewTemplate(id);
             expect(tpl).toBeDefined();
             const built = tpl!.build();

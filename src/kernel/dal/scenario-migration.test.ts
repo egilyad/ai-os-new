@@ -29,8 +29,8 @@ describe('ScenarioRepository migration (Dexie v19)', () => {
         await tdb.clearAll();
     });
 
-    it('opens the database at schema version 19 with the scenarios table', async () => {
-        expect(tdb.dexie.verno).toBe(19);
+    it('opens the database at the current schema version with the scenarios table', async () => {
+        expect(tdb.dexie.verno).toBe(43);
         expect(tdb.dexie.scenarios).toBeDefined();
     });
 

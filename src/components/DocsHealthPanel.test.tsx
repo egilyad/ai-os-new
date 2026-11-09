@@ -15,6 +15,7 @@ vi.mock('../kernel/instances', () => ({
     },
     eventBus: { emit: vi.fn() },
     EVENTS: { NOTIFICATION: 'NOTIFICATION' },
+    rootLogger: { child: () => ({ info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn() }) },
 }));
 
 vi.mock('../i18n/useTranslation', () => ({

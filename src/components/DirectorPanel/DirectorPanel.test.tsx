@@ -18,13 +18,25 @@ beforeAll(() => {
 });
 
 vi.mock('../../stores/directorStore', () => ({
-    useDirectorStore: () => ({
-        sessionId: 's1',
-        status: 'idle',
-        currentParticipantId: null,
-        turnLog: [],
-        reset: vi.fn(),
-    }),
+    useDirectorStore: Object.assign(
+        () => ({
+            sessionId: 's1',
+            status: 'idle',
+            currentParticipantId: null,
+            turnLog: [],
+            reset: vi.fn(),
+        }),
+        {
+            getState: () => ({
+                sessionId: 's1',
+                status: 'idle',
+                currentParticipantId: null,
+                turnLog: [],
+                reset: vi.fn(),
+                loadHistory: vi.fn(),
+            }),
+        },
+    ),
 }));
 
 vi.mock('../../kernel/instances/services-core', () => ({
