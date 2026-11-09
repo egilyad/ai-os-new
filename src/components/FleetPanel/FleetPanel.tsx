@@ -677,6 +677,8 @@ function InteropTab() {
     const peers = useInteropStore((s) => s.peers);
     const handoffs = useInteropStore((s) => s.handoffs);
     const refresh = useInteropStore((s) => s.refresh);
+    const tenantId = useInteropStore((s) => s.tenantId);
+    const setTenantId = useInteropStore((s) => s.setTenantId);
     const [peerName, setPeerName] = useState('');
     const [busy, setBusy] = useState(false);
     const [seeding, setSeeding] = useState(false);
@@ -712,6 +714,12 @@ function InteropTab() {
                 }}
             >
                 <input
+                    style={{ ...inputStyle, flex: '1 1 160px' }}
+                    placeholder="tenant (опц.)"
+                    value={tenantId}
+                    onChange={(e) => setTenantId(e.target.value)}
+                />
+                <input
                     style={{ ...inputStyle, flex: '1 1 200px' }}
                     placeholder={t('fleet.peer_placeholder')}
                     value={peerName}
@@ -724,7 +732,11 @@ function InteropTab() {
                         setBusy(true);
                         clearError();
                         federationService
-                            .addPeer({ name: peerName.trim(), baseUrl: 'local' })
+                            .addPeer({
+                                name: peerName.trim(),
+                                baseUrl: 'local',
+                                tenantId: tenantId || undefined,
+                            })
                             .then(() => {
                                 setPeerName('');
                                 return refresh();

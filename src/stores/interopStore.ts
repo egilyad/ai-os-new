@@ -8,6 +8,8 @@ interface InteropState {
     handoffs: HandoffRecord[];
     loading: boolean;
     error: string | null;
+    tenantId: string;
+    setTenantId: (id: string) => void;
     refresh: () => Promise<void>;
 }
 
@@ -40,19 +42,25 @@ export function resetInteropStoreSubscription(): void {
     _subscribed = false;
 }
 
-export const useInteropStore = create<InteropState>()((set) => {
+export const useInteropStore = create<InteropState>()((set, get) => {
     ensureSubscription();
     return {
         peers: [],
         handoffs: [],
         loading: false,
         error: null,
+        tenantId: '',
+        setTenantId: (id: string) => {
+            set({ tenantId: id });
+            void get().refresh();
+        },
         refresh: async () => {
             set({ loading: true, error: null });
             try {
+                const tenantId = get().tenantId || undefined;
                 const [peers, handoffs] = await Promise.all([
-                    federationService.listPeers(),
-                    coordinationService.listHandoffs(),
+                    federationService.listPeers(tenantId),
+                    coordinationService.listHandoffs(tenantId),
                 ]);
                 set({ peers, handoffs, loading: false });
             } catch (e) {
