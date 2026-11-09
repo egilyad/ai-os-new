@@ -49,6 +49,7 @@ const ActionChips: React.FC<{ actions: AssistantMessage['actions'] }> = ({ actio
 };
 
 const SUGGESTIONS = [
+    'Что ты умеешь?',
     'Где находится панель памяти и что её обслуживает?',
     'Сколько у меня ключей и все ли они живы?',
     'Кто сейчас в топологии агентов?',
