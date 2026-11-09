@@ -1,9 +1,12 @@
 ﻿import { describe, it, expect, vi, afterEach } from 'vitest';
 import { SandboxService } from './sandbox-service';
 
-function makeService(overrides: { toolExecute?: ReturnType<typeof vi.fn> } = {}) {
+type ToolExecute = (toolId: string, input: unknown) => Promise<unknown>;
+
+function makeService(overrides: { toolExecute?: ToolExecute } = {}) {
+    const toolExecute: ToolExecute = overrides.toolExecute ?? (async () => '');
     return new SandboxService({
-        toolService: { execute: overrides.toolExecute ?? vi.fn() },
+        toolService: { execute: toolExecute },
     });
 }
 
