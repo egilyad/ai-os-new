@@ -95,7 +95,7 @@
 | P1-14 | Fix 16 дубликатов имён событий в event-registry | ❌ | полный отчёт P1-#14 |
 | P1-15 | `registerTransient` cleanup | ✅ | полный отчёт P1-#15 |
 | P1-16 | Race conditions (6): CheckpointStore/DebateEngine/AutoDebate/MemoryEngine/Scheduler | ✅ (CheckpointStore ✅ (merge при init); 2.1 DebateEngine resume-during-pause ✅ — пер-сессионные run-промисы, re-entrant resume ждёт teardown; 2.2 AutoDebate ✅ — single-flight + destroy ждёт pending; 2.3 MemoryEngine ✅ — worker-publish только в onCommit (нет dangling при rollback), включая storeBatch; 2.4 MemoryOrchestrator.summarizeRecent ✅ — single-flight mutex; 2.5 Scheduler ✅ — trigger ждёт in-flight, destroy ждёт запуски; 2.6 MemoryWorkerClient осталась на проверке полноты) | полный отчёт P1-#16 |
-| P1-17 | Perf hot-paths (10): memory O(n²), syncSessions, embedding batch, VisGraph и др. | 🟡 (сделано 2026-11-09: syncSessions ✅; searchAdvanced ✅; computeEngineStats ✅; embedding batch rate-limit ✅; WS broadcast backpressure ✅; heartbeat batch ✅; cost recording ✅; stream chunk rAF — не обнаружен в актуальном коде (нет rAF-bound flush), закрыт как неактуальный. Остаток: VisGraph, VectorSpace.match, chat send serial awaits) | полный отчёт P1-#17 |
+| P1-17 | Perf hot-paths (10): memory O(n²), syncSessions, embedding batch, VisGraph и др. | 🟡 (сделано 2026-11-09: syncSessions ✅; searchAdvanced ✅; computeEngineStats ✅; embedding batch rate-limit ✅; WS broadcast backpressure ✅; heartbeat batch ✅; cost recording ✅; stream chunk rAF n/a ✅; chat send serial awaits ✅ — параллелизация pre-LLM контекст-запросов (scoped recall/сводки/ассоциации/воркспейс) в Promise.all (38/38 чат-тестов). Остаток: VisGraph, VectorSpace.match) | полный отчёт P1-#17 |
 
 ## 3. Приоритет P2 — продукт и UX
 
