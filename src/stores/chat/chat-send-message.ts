@@ -115,51 +115,56 @@ export function createSendMessageHandler(
             let relatedMemories: Array<{ entry: { content: string }; score?: number }> = [];
             let associativePrefix = '';
             let summaryPrefix = '';
-            if (CONFIG.featureFlags.memory.ragOnChat) {
-                try {
-                    // Session-scoped recall first (ACL): prefer memories written
-                    // inside this chat, then widen to the global mesh if the
-                    // current session has too little of its own context.
-                    const scoped = memoryService.searchAdvanced
-                        ? await memoryService.searchAdvanced({
-                              query: text,
-                              filter: { sessionId },
-                              limit: 3,
+            // P1-17: запускаем независимые pre-LLM контекст-запросы параллельно
+            // (scoped recall, сводки, ассоциативный контекст, snapshot воркспейса)
+            // вместо последовательных await перед LLM-эмиссией.
+            const rag = CONFIG.featureFlags.memory.ragOnChat;
+            type MemoryHit = { entry: { content: string }; score?: number };
+            const scopedP: Promise<MemoryHit[]> =
+                rag && memoryService.searchAdvanced
+                    ? memoryService
+                          .searchAdvanced({ query: text, filter: { sessionId }, limit: 3 })
+                          .catch(() => [])
+                    : Promise.resolve([]);
+            const summariesP: Promise<MemoryHit[]> =
+                rag && memoryService.searchAdvanced
+                    ? memoryService
+                          .searchAdvanced({
+                              query: '',
+                              filter: { type: CONSOLIDATION_SUMMARY_TYPE },
+                              limit: 2,
                           })
-                        : [];
+                          .catch(() => [])
+                    : Promise.resolve([]);
+            const assocP: Promise<string> = rag
+                ? buildAssociativeContext(ltMemoryService, 'agent', text).catch(() => '')
+                : Promise.resolve('');
+            const wsP = workspaceService.isAttached()
+                ? workspaceService.getFileTreeSnapshot().catch(() => '')
+                : Promise.resolve(null);
+
+            const [scoped, summaries, associative, workspaceTree] = await Promise.all([
+                scopedP,
+                summariesP,
+                assocP,
+                wsP,
+            ]);
+            cancelGuard();
+
+            if (rag) {
+                try {
                     relatedMemories =
                         scoped.length >= 2 ? scoped : (await memoryService.search(text, 3)) || [];
                 } catch (e) {
                     LOGGER.warn('ChatStore', 'Memory search failed', { error: e });
                 }
                 cancelGuard();
-                try {
-                    const summaries = memoryService.searchAdvanced
-                        ? await memoryService.searchAdvanced({
-                              query: '',
-                              filter: { type: CONSOLIDATION_SUMMARY_TYPE },
-                              limit: 2,
-                          })
-                        : [];
-                    if (summaries.length > 0) {
-                        summaryPrefix = `[CONSOLIDATED MEMORY]\n${summaries
-                            .map((s) => `- ${s.entry.content.slice(0, 1200)}`)
-                            .join('\n')}\n\n`;
-                    }
-                } catch (e) {
-                    LOGGER.warn('ChatStore', 'Consolidation summary recall failed', { error: e });
+                if (Array.isArray(summaries) && summaries.length > 0) {
+                    summaryPrefix = `[CONSOLIDATED MEMORY]\n${summaries
+                        .map((s) => `- ${s.entry.content.slice(0, 1200)}`)
+                        .join('\n')}\n\n`;
                 }
-                cancelGuard();
-                try {
-                    associativePrefix = await buildAssociativeContext(
-                        ltMemoryService,
-                        'agent',
-                        text,
-                    );
-                } catch (e) {
-                    LOGGER.warn('ChatStore', 'Associative memory recall failed', { error: e });
-                }
-                cancelGuard();
+                associativePrefix = typeof associative === 'string' ? associative : '';
             }
             const recalledPrefix =
                 relatedMemories.length > 0
@@ -191,9 +196,10 @@ export function createSendMessageHandler(
                 cancelGuard();
             }
 
-            const workspaceContext = workspaceService.isAttached()
-                ? (await workspaceService.getFileTreeSnapshot()).slice(0, 5000)
-                : null;
+            const workspaceContext =
+                typeof workspaceTree === 'string' && workspaceTree.length > 0
+                    ? workspaceTree.slice(0, 5000)
+                    : null;
             cancelGuard();
 
             const sanitize = (content: string): string =>
