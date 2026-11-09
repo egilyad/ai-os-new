@@ -84,4 +84,25 @@ describe('MemoryOrchestrator.summarizeRecent', () => {
         expect(store).toHaveBeenCalledTimes(1);
         expect(deleteMemory).toHaveBeenCalledWith('s4');
     });
+
+    it('single-flights overlapping calls (P1-16/2.4)', async () => {
+        const delayed = vi.fn(async () => {
+            await new Promise((resolve) => setTimeout(resolve, 20));
+            return 'SUMMARY';
+        });
+        const store = vi.fn(async () => {});
+        const deleteMemory = vi.fn(async () => {});
+        const svc = {
+            getMemories: () => recent(8),
+            store,
+            deleteMemory,
+        } as unknown as MemoryService;
+        const orch = new MemoryOrchestrator(() => svc, () => ({ summarize: delayed }));
+
+        const [a, b] = await Promise.all([orch.summarizeRecent(), orch.summarizeRecent()]);
+        expect(a).toBe(true);
+        expect(b).toBe(true);
+        expect(delayed).toHaveBeenCalledTimes(1);
+        expect(store).toHaveBeenCalledTimes(1);
+    });
 });

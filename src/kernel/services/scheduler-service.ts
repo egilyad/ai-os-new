@@ -258,6 +258,16 @@ export class SchedulerService {
         const schedule = this.schedules.get(id);
         if (!schedule) return false;
 
+        // P1-16/2.5: wait for an in-flight run of this schedule to finish
+        // instead of silently dropping the manual trigger (double-start is
+        // already prevented by the per-schedule single-flight in runSchedule).
+        if (this.scheduleRunning.has(id)) {
+            const deadline = Date.now() + 30_000;
+            while (this.scheduleRunning.has(id) && Date.now() < deadline) {
+                await new Promise((resolve) => setTimeout(resolve, 25));
+            }
+        }
+
         await this.runSchedule(schedule);
         return true;
     }
@@ -545,9 +555,15 @@ export class SchedulerService {
     /**
      * Destroy the scheduler — clean up interval and clear state
      */
-    destroy(): void {
+    async destroy(): Promise<void> {
         this.stop();
         this._destroyed = true;
+        // P1-16/2.5: wait for in-flight schedule runs to finish (bounded)
+        // so no background work outlives destroy().
+        const deadline = Date.now() + 5000;
+        while (this.scheduleRunning.size > 0 && Date.now() < deadline) {
+            await new Promise((resolve) => setTimeout(resolve, 25));
+        }
         this.schedules.clear();
         LOGGER.info('SchedulerService', 'Scheduler destroyed');
     }

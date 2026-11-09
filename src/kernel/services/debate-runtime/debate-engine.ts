@@ -62,6 +62,7 @@ export class DebateEngine implements IDebateEngine, ILifecycle {
     private sessionAbortControllers = new Map<string, Map<string, AbortController>>();
     private sessionPhaseControllers = new Map<string, AbortController>();
     private runningSessions = new Set<string>();
+    private sessionRunPromises = new Map<string, Promise<void>>();
     private preflightDone = new Set<string>();
     /** C13: Guards against duplicate concurrent preflight for the same provider across sessions */
     private _preflightingProviders = new Set<string>();
@@ -370,7 +371,21 @@ export class DebateEngine implements IDebateEngine, ILifecycle {
         const session = this.sessions.get(sessionId);
         if (!session) throw new Error(`Session not found: ${sessionId}`);
         if (session.phase === 'active') return;
-        if (this.runningSessions.has(sessionId)) return;
+        if (this.runningSessions.has(sessionId)) {
+            // P1-16/2.1: re-entrant intent while a previous run is still
+            // tearing down (e.g. resume right after pause during an active
+            // pipeline). Wait for the in-flight run, then restart cleanly —
+            // otherwise the resume is silently dropped and the session stays
+            // paused forever.
+            if (session.phase === 'paused') {
+                const inflight = this.sessionRunPromises.get(sessionId);
+                if (inflight) {
+                    await inflight.catch(() => {});
+                    return this.startSession(sessionId, isResume);
+                }
+            }
+            return;
+        }
         this.runningSessions.add(sessionId);
 
         const lockSvc = this.deps.distributedLock;
@@ -417,44 +432,51 @@ export class DebateEngine implements IDebateEngine, ILifecycle {
             );
         }
 
-        try {
-            const result = await buildPipeline(this.toPipelineEngine(), isResume).run(sessionId);
-            if (!result.ok) {
-                const s = this.sessions.get(sessionId);
-                if (
-                    s &&
-                    s.phase !== 'cancelled' &&
-                    s.phase !== 'failed' &&
-                    s.phase !== 'completed'
-                ) {
-                    try {
-                        s.transition('failed');
-                    } catch {
-                        /* phase already terminal */
+        const runPromise = (async () => {
+            try {
+                const result = await buildPipeline(this.toPipelineEngine(), isResume).run(
+                    sessionId,
+                );
+                if (!result.ok) {
+                    const s = this.sessions.get(sessionId);
+                    if (
+                        s &&
+                        s.phase !== 'cancelled' &&
+                        s.phase !== 'failed' &&
+                        s.phase !== 'completed'
+                    ) {
+                        try {
+                            s.transition('failed');
+                        } catch {
+                            /* phase already terminal */
+                        }
+                        this.deps.eventBus.emitOnce(EVENTS.DEBATE_SESSION_FAILED, sessionId, {
+                            sessionId,
+                            error: result.error,
+                        });
                     }
-                    this.deps.eventBus.emitOnce(EVENTS.DEBATE_SESSION_FAILED, sessionId, {
-                        sessionId,
-                        error: result.error,
-                    });
+                }
+            } finally {
+                this.runningSessions.delete(sessionId);
+                const timer = this.sessionTimeoutTimers.get(sessionId);
+                if (timer) {
+                    clearTimeout(timer);
+                    this.sessionTimeoutTimers.delete(sessionId);
+                }
+                this.sessionStartTimes.delete(sessionId);
+                this.sessionRunPromises.delete(sessionId);
+                if (lock) {
+                    lockSvc!.release(lock).catch((e) =>
+                        LOGGER.warn('DebateEngine', 'Failed to release debate lock', {
+                            sessionId,
+                            error: e,
+                        }),
+                    );
                 }
             }
-        } finally {
-            this.runningSessions.delete(sessionId);
-            const timer = this.sessionTimeoutTimers.get(sessionId);
-            if (timer) {
-                clearTimeout(timer);
-                this.sessionTimeoutTimers.delete(sessionId);
-            }
-            this.sessionStartTimes.delete(sessionId);
-            if (lock) {
-                lockSvc!.release(lock).catch((e) =>
-                    LOGGER.warn('DebateEngine', 'Failed to release debate lock', {
-                        sessionId,
-                        error: e,
-                    }),
-                );
-            }
-        }
+        })();
+        this.sessionRunPromises.set(sessionId, runPromise);
+        await runPromise;
     }
 
     private toPipelineEngine(): PipelineEngine {

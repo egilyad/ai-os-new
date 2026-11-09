@@ -470,29 +470,38 @@ export class MemoryService implements IMemoryEngine {
                     itx.onCommit(onCommit);
                 });
             }
-            this.workerClient
-                .ensure(this.cache.entries)
-                .then(async () => {
-                    if (this.workerClient.ready) {
-                        const vectors = await this.providerEmbed([newEntry.content]);
-                        const vector = vectors?.[0];
-                        if (vector) {
-                            const model = this.embedderModel();
-                            if (model) this.pendingProviderModel.set(newEntry.id, model);
-                        }
-                        await this.workerClient.send('upsert', {
-                            entry: newEntry,
-                            generateEmbedding: this.semanticReady,
-                            vector,
-                            vectorSpace: vector ? PROVIDER_VECTOR_SPACE : undefined,
-                        });
-                    }
-                })
-                .catch((e) => {
-                    LOGGER.warn('MemoryEngine', 'Worker insert failed', { error: e });
-                    this.semanticReady = false;
-                });
+            this.publishToWorker(newEntry);
         });
+    }
+
+    /**
+     * P1-16/2.3: worker publish only on transaction commit — if the tx rolls
+     * back, the worker must not keep a dangling entry that the cache/repo
+     * have discarded.
+     */
+    private publishToWorker(entry: MemoryEntry): void {
+        this.workerClient
+            .ensure(this.cache.entries)
+            .then(async () => {
+                if (this.workerClient.ready) {
+                    const vectors = await this.providerEmbed([entry.content]);
+                    const vector = vectors?.[0];
+                    if (vector) {
+                        const model = this.embedderModel();
+                        if (model) this.pendingProviderModel.set(entry.id, model);
+                    }
+                    await this.workerClient.send('upsert', {
+                        entry,
+                        generateEmbedding: this.semanticReady,
+                        vector,
+                        vectorSpace: vector ? PROVIDER_VECTOR_SPACE : undefined,
+                    });
+                }
+            })
+            .catch((e) => {
+                LOGGER.warn('MemoryEngine', 'Worker insert failed', { error: e });
+                this.semanticReady = false;
+            });
     }
 
     async upsert(entry: Omit<MemoryEntry, 'id'>, tx?: ITransaction) {
@@ -545,28 +554,7 @@ export class MemoryService implements IMemoryEngine {
                     itx.onCommit(onCommit);
                 });
             }
-            this.workerClient
-                .ensure(this.cache.entries)
-                .then(async () => {
-                    if (this.workerClient.ready) {
-                        const vectors = await this.providerEmbed([newEntry.content]);
-                        const vector = vectors?.[0];
-                        if (vector) {
-                            const model = this.embedderModel();
-                            if (model) this.pendingProviderModel.set(newEntry.id, model);
-                        }
-                        await this.workerClient.send('upsert', {
-                            entry: newEntry,
-                            generateEmbedding: this.semanticReady,
-                            vector,
-                            vectorSpace: vector ? PROVIDER_VECTOR_SPACE : undefined,
-                        });
-                    }
-                })
-                .catch((e) => {
-                    LOGGER.warn('MemoryEngine', 'Worker upsert failed', { error: e });
-                    this.semanticReady = false;
-                });
+            this.publishToWorker(newEntry);
         });
     }
 
@@ -602,6 +590,7 @@ export class MemoryService implements IMemoryEngine {
                 this.cache.prepend(persisted);
             };
             const onCommit = () => {
+                this.publishBatchToWorker(newEntries);
                 this.deps.eventBus.emit(EVENTS.MEMORY_UPDATED, this.cache.entries);
                 govOp?.complete();
             };
@@ -624,44 +613,45 @@ export class MemoryService implements IMemoryEngine {
                     itx.onCommit(onCommit);
                 });
             }
-            this.workerClient
-                .ensure(this.cache.entries)
-                .then(async () => {
-                    if (this.workerClient.ready) {
-                        const vectors = await this.providerEmbed(
-                            newEntries.map((e) => e.content),
-                        );
-                        const model = vectors ? this.embedderModel() : undefined;
-                        newEntries.forEach((e, idx) => {
-                            if (model && vectors?.[idx]) {
-                                this.pendingProviderModel.set(e.id, model);
-                            }
-                        });
-                        Promise.all(
-                            newEntries.map((e, idx) =>
-                                this.workerClient.send('upsert', {
-                                    entry: e,
-                                    generateEmbedding: false,
-                                    vector: vectors?.[idx],
-                                    vectorSpace: vectors?.[idx]
-                                        ? PROVIDER_VECTOR_SPACE
-                                        : undefined,
-                                }),
-                            ),
-                        ).catch((err) =>
-                            LOGGER.warn('MemoryEngine', 'Batch insert to worker failed', {
-                                error: err,
-                            }),
-                        );
-                    }
-                })
-                .catch((e) => {
-                    LOGGER.warn('MemoryEngine', 'init worker failed', {
-                        error: e,
-                    });
-                    this.semanticReady = false;
-                });
         });
+    }
+
+    private publishBatchToWorker(entries: MemoryEntry[]): void {
+        this.workerClient
+            .ensure(this.cache.entries)
+            .then(async () => {
+                if (this.workerClient.ready) {
+                    const vectors = await this.providerEmbed(entries.map((e) => e.content));
+                    const model = vectors ? this.embedderModel() : undefined;
+                    entries.forEach((e, idx) => {
+                        if (model && vectors?.[idx]) {
+                            this.pendingProviderModel.set(e.id, model);
+                        }
+                    });
+                    Promise.all(
+                        entries.map((e, idx) =>
+                            this.workerClient.send('upsert', {
+                                entry: e,
+                                generateEmbedding: false,
+                                vector: vectors?.[idx],
+                                vectorSpace: vectors?.[idx]
+                                    ? PROVIDER_VECTOR_SPACE
+                                    : undefined,
+                            }),
+                        ),
+                    ).catch((err) =>
+                        LOGGER.warn('MemoryEngine', 'Batch insert to worker failed', {
+                            error: err,
+                        }),
+                    );
+                }
+            })
+            .catch((e) => {
+                LOGGER.warn('MemoryEngine', 'init worker failed', {
+                    error: e,
+                });
+                this.semanticReady = false;
+            });
     }
 
     getMemories(limit?: number): MemoryEntry[] {

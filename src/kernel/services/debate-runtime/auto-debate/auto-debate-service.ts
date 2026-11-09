@@ -304,6 +304,21 @@ export class AutoDebateService implements IAutoDebateService {
     }
 
     async runAutoDebate(options: AutoDebateOptions = {}): Promise<AutoDebateResult> {
+        // P1-16/2.2: single-flight — concurrent calls share one in-flight run
+        // (prevents double debate execution and lets destroy() await it).
+        if (this._pendingPromise) {
+            return this._pendingPromise as Promise<AutoDebateResult>;
+        }
+        const run = this.runAutoDebateInner(options);
+        this._pendingPromise = run;
+        try {
+            return await run;
+        } finally {
+            if (this._pendingPromise === run) this._pendingPromise = null;
+        }
+    }
+
+    private async runAutoDebateInner(options: AutoDebateOptions): Promise<AutoDebateResult> {
         if (options.strategy && !isKnownStrategy(options.strategy)) {
             return {
                 id: makeParticipantId(),

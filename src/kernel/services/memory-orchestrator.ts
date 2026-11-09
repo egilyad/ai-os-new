@@ -30,6 +30,7 @@ export class MemoryOrchestrator {
     readonly stores: Map<MemoryStoreType, IMemoryStore>;
     readonly sleepEngine: SleepEngine;
     readonly palace: MemoryPalace;
+    private _summarizeInFlight: Promise<boolean> | null = null;
 
     constructor(
         private memoryService?: () => MemoryService | undefined,
@@ -156,6 +157,21 @@ export class MemoryOrchestrator {
      * MAX_SUMMARIES summaries (oldest pruned). Returns true when stored.
      */
     async summarizeRecent(windowMs: number = SUMMARY_WINDOW_MS): Promise<boolean> {
+        // P1-16/2.4: single-flight — overlapping calls must not both write
+        // summaries and race the MAX_SUMMARIES pruning.
+        if (this._summarizeInFlight) {
+            return this._summarizeInFlight;
+        }
+        const run = this.summarizeRecentInner(windowMs);
+        this._summarizeInFlight = run;
+        try {
+            return await run;
+        } finally {
+            if (this._summarizeInFlight === run) this._summarizeInFlight = null;
+        }
+    }
+
+    private async summarizeRecentInner(windowMs: number): Promise<boolean> {
         const svc = this.getService();
         const summarizer = this.summarizer?.();
         if (!svc || !summarizer) return false;

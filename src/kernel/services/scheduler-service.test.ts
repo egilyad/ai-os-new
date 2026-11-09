@@ -26,8 +26,8 @@ describe('SchedulerService', () => {
         service = new SchedulerService(db as never, eventBus);
     });
 
-    afterEach(() => {
-        service.destroy();
+    afterEach(async () => {
+        await service.destroy();
         vi.restoreAllMocks();
     });
 
@@ -486,6 +486,46 @@ describe('SchedulerService', () => {
                 (service as unknown as { intervalId: ReturnType<typeof setInterval> | null })
                     .intervalId,
             ).toBe(id);
+        });
+    });
+
+    describe('trigger single-flight (P1-16/2.5)', () => {
+        it('does not drop a manual trigger while a run is in flight', async () => {
+            vi.mocked(db.getKv).mockResolvedValue([]);
+            await service.init();
+            const sched = await service.create({
+                name: 'Race',
+                agentId: 'a1',
+                frequency: 'daily',
+                cronExpression: '* * * * *',
+                taskParams: {},
+            });
+            const p1 = service.trigger(sched.id);
+            const p2 = service.trigger(sched.id);
+            const [r1, r2] = await Promise.all([p1, p2]);
+            expect(r1).toBe(true);
+            expect(r2).toBe(true);
+            const triggered = emitSpy.mock.calls.filter((c) =>
+                String(c[0]).includes('schedule:triggered'),
+            );
+            expect(triggered.length).toBe(2);
+        });
+
+        it('destroy waits for in-flight runs and clears state', async () => {
+            vi.mocked(db.getKv).mockResolvedValue([]);
+            await service.init();
+            const sched = await service.create({
+                name: 'Destroy',
+                agentId: 'a1',
+                frequency: 'daily',
+                cronExpression: '* * * * *',
+                taskParams: {},
+            });
+            const pending = service.trigger(sched.id);
+            await service.destroy();
+            await pending;
+            expect(service.getAll()).toHaveLength(0);
+            expect((service as unknown as { _destroyed: boolean })._destroyed).toBe(true);
         });
     });
 
