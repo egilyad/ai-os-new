@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { googleGenAIService } from '../../kernel/instances';
 import { Shield, Brain, Image, Send, Globe, Building2, Loader2 } from 'lucide-react';
+import { GEMINI_FREE_MODELS } from '../../kernel/utils/provider-default-models';
 import { GoogleChatTab } from './GoogleChatTab';
 import { GoogleGroundingTab } from './GoogleGroundingTab';
 import { GoogleThinkingTab } from './GoogleThinkingTab';
@@ -15,7 +16,7 @@ export function GoogleStudioPanel() {
     const [autoConfiguring, setAutoConfiguring] = useState(true);
     const [configError, setConfigError] = useState('');
     const [activeTab, setActiveTab] = useState<TabId>('chat');
-    const [model, setModel] = useState('gemini-3.1-flash-lite');
+    const [model, setModel] = useState(GEMINI_FREE_MODELS[0]!);
     const [apiKey, setApiKey] = useState('');
 
     useEffect(() => {
@@ -181,9 +182,11 @@ export function GoogleStudioPanel() {
                             fontSize: 13,
                         }}
                     >
-                        <option value="gemini-3.1-flash-lite">Gemini 3.1 Flash Lite</option>
-                        <option value="gemini-3.1-flash">Gemini 3.1 Flash</option>
-                        <option value="gemini-3.1-pro">Gemini 3.1 Pro</option>
+                    {GEMINI_FREE_MODELS.map((m) => (
+                        <option key={m} value={m}>
+                            Gemini {m.replace(/^gemini-/, '')}
+                        </option>
+                    ))}
                     </select>
                     <button
                         onClick={() => {

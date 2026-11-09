@@ -24,6 +24,15 @@ export const PROVIDER_DEFAULT_MODELS: Record<string, string> = {
     inception: 'mercury-3',
 };
 
+/** Бесплатные модели Gemini API (Free tier, на 2026-11): доступны во всех
+ *  выпадающих списках проекта, где используется провайдер gemini. */
+export const GEMINI_FREE_MODELS: readonly string[] = [
+    'gemini-3.8-flash',
+    'gemini-3.6-flash',
+    'gemini-3.5-flash-lite',
+    'gemini-3.1-flash-lite',
+];
+
 /** Preferred models for each provider (ordered by quality). */
 export const PROVIDER_PREFERRED_MODELS: Record<string, string[]> = {
     groq: ['openai/gpt-oss-120b', 'openai/gpt-oss-20b'],
@@ -56,9 +65,6 @@ export function resolveProviderModel(
     return availableModels?.find((m) => m && m !== 'auto') ?? PROVIDER_DEFAULT_MODELS[p];
 }
 
-/** Human-readable provider names keyed by the canonical provider slug.
- *  Reused by the Agent Identity view so "Groq" / "Meta" is shown instead of
- *  an inferred model prefix. */
 export const PROVIDER_DISPLAY_NAMES: Record<string, string> = {
     groq: 'Groq',
     gemini: 'Google',

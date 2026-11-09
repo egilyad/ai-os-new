@@ -8,6 +8,7 @@ import { VoiceButton } from './VoiceButton';
 import ProviderIcon from '../ProviderIcon/ProviderIcon';
 import { DEFAULT_MODELS, formatContextWindow } from './chat-panel-utils';
 import { getCatalogContextWindow, getCatalogPricing } from '../../llm/catalog/catalog-lookup';
+import { GEMINI_FREE_MODELS } from '../../kernel/utils/provider-default-models';
 
 interface Props {
     selectedKeys: string[];
@@ -149,7 +150,12 @@ const ChatInputArea: React.FC<Props> = ({
                     {selectedKeys.map((kid) => {
                         const k = activeKeys.find((ak) => ak.id === kid);
                         if (!k) return null;
-                        const models = k.availableModels || [];
+                        const models =
+                            k.provider.toLowerCase() === 'gemini'
+                                ? Array.from(
+                                      new Set([...GEMINI_FREE_MODELS, ...(k.availableModels || [])]),
+                                  )
+                                : k.availableModels || [];
                         const currentModel = selectedModelPerKey[k.id] || '';
                         return (
                             <div

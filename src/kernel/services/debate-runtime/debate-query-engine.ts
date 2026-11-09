@@ -42,8 +42,8 @@ export const DEBATE_MODEL_PRIORITY: Record<string, string[]> = {
     ...(Object.fromEntries(
         Object.entries(PROVIDER_PREFERRED_MODELS).map(([p, models]) => [p, [...models]]),
     ) as Record<string, string[]>),
-    // gemini-3.1-flash 404s via the v1beta generateContent API — flash-lite only.
-    gemini: ['gemini-3.1-flash-lite'],
+    // Free-tier Gemini API (2026-11): flash-lite first как самый дешёвый.
+    gemini: ['gemini-3.1-flash-lite', 'gemini-3.5-flash-lite', 'gemini-3.6-flash', 'gemini-3.8-flash'],
     // Oct-2026: Groq+NVIDIA production pins are openai/gpt-oss-120b/20b
     // (verified 2026-10-02). Llama 3.3/3.1 dead for free/dev, Maverick/Scout
     // unlisted — the old pins 404/410 on every debate call.
