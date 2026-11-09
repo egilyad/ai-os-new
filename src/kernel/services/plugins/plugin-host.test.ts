@@ -173,6 +173,7 @@ describe('PluginHost (SPEC_06)', () => {
             },
         };
         const host = new PluginHost(undefined, mcp);
+        host.registerTools(mcpManifest);
         host.registerMcpServers(mcpManifest);
         expect(mcp.registerLocalServer).toHaveBeenCalled();
         expect(registered[0].id).toBe('plugin:acme.mcp:demo-mcp');
@@ -237,5 +238,60 @@ describe('PluginHost (SPEC_06)', () => {
         expect(host.listServices('acme.svc')).toHaveLength(1);
         host.unregisterServices('acme.svc');
         expect(host.listServices('acme.svc')).toHaveLength(0);
+    });
+
+    describe('panels (P3-1)', () => {
+        const panelsManifest: PluginManifest = {
+            id: 'acme.panels',
+            name: 'Panels',
+            version: '1.0.0',
+            engines: { os: '4.0.0' },
+            contributes: {
+                panels: [
+                    {
+                        id: 'acme.dashboard',
+                        titleKey: 'acme.dashboard.title',
+                        entry: 'panels/dashboard.html',
+                    },
+                    { id: 'acme.report', entry: 'panels/report.html' },
+                ],
+            },
+        };
+
+        it('registers and lists contributed panels', () => {
+            const host = new PluginHost();
+            expect(host.registerPanels(panelsManifest)).toEqual([]);
+            expect(host.listPanels()).toHaveLength(2);
+            expect(host.hasPanel('acme.dashboard')).toBe(true);
+            const panel = host.getPanel('acme.dashboard');
+            expect(panel?.manifestId).toBe('acme.panels');
+            expect(panel?.entry).toBe('panels/dashboard.html');
+            expect(panel?.titleKey).toBe('acme.dashboard.title');
+        });
+
+        it('reports conflicts when an id is already taken by another plugin', () => {
+            const host = new PluginHost();
+            host.registerPanels(panelsManifest);
+            const other: PluginManifest = {
+                id: 'other.panels',
+                name: 'Other',
+                version: '1.0.0',
+                engines: { os: '4.0.0' },
+                contributes: { panels: [{ id: 'acme.dashboard', entry: 'x.html' }] },
+            };
+            expect(host.registerPanels(other)).toEqual(['acme.dashboard']);
+            // First owner keeps the panel.
+            expect(host.getPanel('acme.dashboard')?.manifestId).toBe('acme.panels');
+        });
+
+        it('unregisters panels on plugin cleanup', () => {
+            const host = new PluginHost();
+            host.registerPanels(panelsManifest);
+            host.unregisterPanels('acme.panels');
+            expect(host.listPanels()).toHaveLength(0);
+            host.registerPanels(panelsManifest);
+            host.unregisterAll('acme.panels');
+            expect(host.listPanels()).toHaveLength(0);
+        });
     });
 });

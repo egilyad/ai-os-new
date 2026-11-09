@@ -2,6 +2,13 @@ import type { PluginManifest } from '../../contracts/plugin';
 
 export type PluginEventHandler = (event: string, data: unknown) => void;
 
+export interface RegisteredPluginPanel {
+    id: string;
+    titleKey?: string;
+    entry: string;
+    manifestId: string;
+}
+
 /** Узкий порт EventBus для подписок плагинов. */
 export interface PluginEventBusPort {
     on(event: string, callback: (data: unknown) => void): () => void;
@@ -54,6 +61,7 @@ export interface RegisteredPluginService {
  */
 export class PluginHost {
     private tools = new Map<string, PluginTool>();
+    private panels = new Map<string, RegisteredPluginPanel>();
     private subscriptions = new Map<string, Array<() => void>>();
     private mcpServers = new Map<string, string>();
     private services = new Map<string, RegisteredPluginService>();
@@ -92,6 +100,47 @@ export class PluginHost {
         for (const [name, t] of this.tools) {
             if (t.manifestId === manifestId) this.tools.delete(name);
         }
+    }
+
+    /**
+     * Регистрирует панели плагина (contributes.panels). Возвращает имена
+     * конфликтующих панелей (id уже занят другим плагином).
+     */
+    registerPanels(manifest: PluginManifest): string[] {
+        const conflicts: string[] = [];
+        for (const p of manifest.contributes.panels ?? []) {
+            const existing = this.panels.get(p.id);
+            if (existing && existing.manifestId !== manifest.id) {
+                conflicts.push(p.id);
+                continue;
+            }
+            this.panels.set(p.id, {
+                id: p.id,
+                titleKey: p.titleKey,
+                entry: p.entry,
+                manifestId: manifest.id,
+            });
+        }
+        return conflicts;
+    }
+
+    unregisterPanels(manifestId: string): void {
+        for (const [id, p] of this.panels) {
+            if (p.manifestId === manifestId) this.panels.delete(id);
+        }
+    }
+
+    listPanels(manifestId?: string): RegisteredPluginPanel[] {
+        const all = [...this.panels.values()];
+        return manifestId ? all.filter((p) => p.manifestId === manifestId) : all;
+    }
+
+    getPanel(id: string): RegisteredPluginPanel | undefined {
+        return this.panels.get(id);
+    }
+
+    hasPanel(id: string): boolean {
+        return this.panels.has(id);
     }
 
     listTools(): PluginTool[] {
@@ -235,9 +284,10 @@ export class PluginHost {
             .map((s) => s.id);
     }
 
-    /** Полная очистка плагина: инструменты + подписки + MCP + сервисы. */
+    /** Полная очистка плагина: инструменты + панели + подписки + MCP + сервисы. */
     unregisterAll(manifestId: string): void {
         this.unregisterTools(manifestId);
+        this.unregisterPanels(manifestId);
         this.unregisterSubscriptions(manifestId);
         this.unregisterMcpServers(manifestId);
         this.unregisterServices(manifestId);
@@ -257,5 +307,6 @@ export class PluginHost {
             this.unregisterServices(manifestId);
         }
         this.tools.clear();
+        this.panels.clear();
     }
 }
