@@ -60,6 +60,7 @@
 | Метрики памяти: `memory:searched` → search_total/hits/latency | P1-12 |
 | KeyUsageAnalyticsPanel подключена к metricsService (`RuntimeMetricsView`) | P1-11 |
 | `.nvmrc` (Node 22) + pre-commit хуки подтверждены | QW-7/8 |
+| DI-цикл orchestrator (timeMachineService→snapshotService→orchestrator) — ленивый геттер в snapshotService + регрессионный boot-smoke-тест | рантайм, 2026-11-08 |
 
 ---
 
