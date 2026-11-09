@@ -111,6 +111,7 @@ describe('PluginLoader (SPEC_06)', () => {
         const registry = fakeRegistry();
         const host = fakeHost();
         const loader = new PluginLoader({ registry, host });
+        await loader.load(manifest);
         const ok = await loader.reload(
             manifest,
             vi.fn(async () => 'ok'),

@@ -23,10 +23,10 @@ let currentWorker: FakeWorker | null = null;
 
 vi.stubGlobal(
     'Worker',
-    vi.fn(() => {
+    function WorkerFake() {
         currentWorker = new FakeWorker();
         return currentWorker;
-    }),
+    } as unknown as typeof Worker,
 );
 
 afterEach(() => {
@@ -38,11 +38,13 @@ describe('PluginWorkerClient (SPEC_06 §3)', () => {
     it('выполняет код в воркере и возвращает результат', async () => {
         const client = new PluginWorkerClient();
         const result = await client.run({ code: 'return "hi"' });
-        expect(result).toBe('"HI"');
+        expect(result).toEqual({ result: 'RETURN "HI"' });
         client.destroy();
     });
 
     it('отклоняет при ошибке воркера', async () => {
+        const client = new PluginWorkerClient();
+        client.ensure();
         const original = currentWorker;
         original!.postMessage = vi.fn((msg: unknown) => {
             queueMicrotask(() => {
@@ -55,7 +57,6 @@ describe('PluginWorkerClient (SPEC_06 §3)', () => {
                 });
             });
         });
-        const client = new PluginWorkerClient();
         await expect(client.run({ code: 'throw new Error("boom")' })).rejects.toThrow('boom');
         client.destroy();
     });

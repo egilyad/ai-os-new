@@ -43,7 +43,7 @@ export const PluginPanelFrame: React.FC<{ panelId: string }> = ({ panelId }) => 
         <iframe
             title={panel.titleKey ?? panel.id}
             src={panel.entry}
-            sandbox="allow-scripts allow-same-origin"
+            sandbox="allow-scripts"
             style={{
                 width: '100%',
                 height: 'calc(100vh - 140px)',
