@@ -40,6 +40,7 @@ export class FederationService implements IFederationService {
         baseUrl: string;
         trust?: TrustLevel;
         capabilities?: string[];
+        tenantId?: string;
     }): Promise<FederationPeer> {
         const t = now();
         const peer: FederationPeer = {
@@ -49,30 +50,37 @@ export class FederationService implements IFederationService {
             trust: input.trust ?? 'known',
             capabilities: input.capabilities ?? [],
             createdAt: t,
+            tenantId: input.tenantId,
         };
         await this.repo.putPeer(peer);
         this.events.emit(EVENTS.FED_PEER, { peerId: peer.id, action: 'added', trust: peer.trust });
         return peer;
     }
 
-    async removePeer(id: string): Promise<void> {
-        await this.repo.deletePeer(id);
+    async removePeer(id: string, tenantId?: string): Promise<void> {
+        const peer = await this.require(id, tenantId);
+        await this.repo.deletePeer(peer.id);
         this.events.emit(EVENTS.FED_PEER, { peerId: id, action: 'removed', trust: '' });
     }
 
-    async listPeers(): Promise<FederationPeer[]> {
-        return this.repo.listPeers();
+    async listPeers(tenantId?: string): Promise<FederationPeer[]> {
+        return this.repo.listPeers(tenantId);
     }
 
-    async heartbeat(id: string): Promise<FederationPeer> {
-        const peer = await this.require(id);
+    async heartbeat(id: string, tenantId?: string): Promise<FederationPeer> {
+        const peer = await this.require(id, tenantId);
         peer.lastHeartbeatAt = now();
         await this.repo.putPeer(peer);
         return peer;
     }
 
-    async dispatch(peerId: string, task: string, payload: Record<string, unknown> = {}): Promise<HandoffRecord> {
-        const peer = await this.require(peerId);
+    async dispatch(
+        peerId: string,
+        task: string,
+        payload: Record<string, unknown> = {},
+        tenantId?: string,
+    ): Promise<HandoffRecord> {
+        const peer = await this.require(peerId, tenantId);
         if (peer.trust === 'untrusted') throw new Error(`Peer ${peer.name} is untrusted — dispatch refused`);
         const t = now();
         const envelope = toEnvelope({ from: 'local-os', to: peer.id, protocol: 'a2a', kind: 'task', payload: { task, ...payload } });
@@ -98,21 +106,24 @@ export class FederationService implements IFederationService {
             traceId: envelope.id,
             createdAt: t,
             updatedAt: now(),
+            tenantId,
         };
         await this.repo.putHandoff(record);
         this.events.emit(EVENTS.HANDOFF_DISPATCHED, { handoffId: record.id, target: record.target });
         return record;
     }
 
-    async fleetView(): Promise<{ peers: FederationPeer[]; totalCapabilities: string[] }> {
-        const peers = await this.repo.listPeers();
+    async fleetView(
+        tenantId?: string,
+    ): Promise<{ peers: FederationPeer[]; totalCapabilities: string[] }> {
+        const peers = await this.repo.listPeers(tenantId);
         const caps = new Set<string>();
         for (const p of peers) for (const c of p.capabilities) caps.add(c);
         return { peers, totalCapabilities: [...caps].sort() };
     }
 
-    private async require(id: string): Promise<FederationPeer> {
-        const p = await this.repo.getPeer(id);
+    private async require(id: string, tenantId?: string): Promise<FederationPeer> {
+        const p = await this.repo.getPeer(id, tenantId);
         if (!p) throw new Error(`Federation peer not found: ${id}`);
         return p;
     }

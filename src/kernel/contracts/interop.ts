@@ -39,11 +39,29 @@ export interface IA2AService extends ILifecycle {
         capabilities?: string[];
         streaming?: boolean;
         trust?: TrustLevel;
+        tenantId?: string;
     }): Promise<A2AAgent>;
-    discover(filter?: { capability?: string; protocol?: InteropProtocol }): Promise<A2AAgent[]>;
-    negotiate(agentId: string, task: string): Promise<{ accepted: boolean; note: string }>;
-    handoff(agentId: string, task: string, context?: Record<string, unknown>): Promise<HandoffRecord>;
-    reportError(agentId: string, code: string, message: string): Promise<void>;
+    discover(
+        filter?: { capability?: string; protocol?: InteropProtocol },
+        tenantId?: string,
+    ): Promise<A2AAgent[]>;
+    negotiate(
+        agentId: string,
+        task: string,
+        tenantId?: string,
+    ): Promise<{ accepted: boolean; note: string }>;
+    handoff(
+        agentId: string,
+        task: string,
+        context?: Record<string, unknown>,
+        tenantId?: string,
+    ): Promise<HandoffRecord>;
+    reportError(
+        agentId: string,
+        code: string,
+        message: string,
+        tenantId?: string,
+    ): Promise<void>;
 }
 
 /** Wave 6.2/6.5 — gateway: multi-protocol ingress/egress + translation. */
@@ -66,12 +84,20 @@ export interface IFederationService extends ILifecycle {
         baseUrl: string;
         trust?: TrustLevel;
         capabilities?: string[];
+        tenantId?: string;
     }): Promise<FederationPeer>;
-    removePeer(id: string): Promise<void>;
-    listPeers(): Promise<FederationPeer[]>;
-    heartbeat(id: string): Promise<FederationPeer>;
-    dispatch(peerId: string, task: string, payload?: Record<string, unknown>): Promise<HandoffRecord>;
-    fleetView(): Promise<{ peers: FederationPeer[]; totalCapabilities: string[] }>;
+    removePeer(id: string, tenantId?: string): Promise<void>;
+    listPeers(tenantId?: string): Promise<FederationPeer[]>;
+    heartbeat(id: string, tenantId?: string): Promise<FederationPeer>;
+    dispatch(
+        peerId: string,
+        task: string,
+        payload?: Record<string, unknown>,
+        tenantId?: string,
+    ): Promise<HandoffRecord>;
+    fleetView(
+        tenantId?: string,
+    ): Promise<{ peers: FederationPeer[]; totalCapabilities: string[] }>;
 }
 
 /** Wave 6.3 + 7.x — manifests, handoff, market, contracts, routing, topology. */

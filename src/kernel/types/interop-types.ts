@@ -25,6 +25,8 @@ export interface A2AAgent {
     trust: TrustLevel;
     lastSeenAt: number;
     createdAt: number;
+    /** P3-2: мультиtenant — владелец карточки (пусто = глобальный/локальный). */
+    tenantId?: string;
 }
 
 /** Capability Manifest 2.0 — extends Wave 1 Agent Card with ops metadata. */
@@ -66,6 +68,8 @@ export interface FederationPeer {
     capabilities: string[];
     lastHeartbeatAt?: number;
     createdAt: number;
+    /** P3-2: мультиtenant — владелец пира (пусто = глобальный/локальный). */
+    tenantId?: string;
 }
 
 export interface HandoffRecord {
@@ -79,6 +83,8 @@ export interface HandoffRecord {
     traceId: string;
     createdAt: number;
     updatedAt: number;
+    /** P3-2: мультиtenant — владелец хендоффа. */
+    tenantId?: string;
 }
 
 /** Structured collaboration contract (Wave 7.11). */

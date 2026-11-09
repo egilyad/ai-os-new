@@ -34,13 +34,18 @@ export class InteropRepository {
         await this.db.a2aAgents.put(clone(a));
     }
 
-    async getAgent(id: string): Promise<A2AAgent | null> {
+    async getAgent(id: string, tenantId?: string): Promise<A2AAgent | null> {
         const r = await this.db.a2aAgents.get(id);
-        return r ? clone(r) : null;
+        if (!r) return null;
+        if (tenantId && r.tenantId && r.tenantId !== tenantId) return null;
+        return clone(r);
     }
 
-    async listAgents(): Promise<A2AAgent[]> {
-        return (await this.db.a2aAgents.toArray()).map(clone);
+    async listAgents(tenantId?: string): Promise<A2AAgent[]> {
+        const rows = await this.db.a2aAgents.toArray();
+        return rows
+            .filter((a) => !tenantId || !a.tenantId || a.tenantId === tenantId)
+            .map(clone);
     }
 
     // ── Federation ──
@@ -48,13 +53,18 @@ export class InteropRepository {
         await this.db.fedPeers.put(clone(p));
     }
 
-    async getPeer(id: string): Promise<FederationPeer | null> {
+    async getPeer(id: string, tenantId?: string): Promise<FederationPeer | null> {
         const r = await this.db.fedPeers.get(id);
-        return r ? clone(r) : null;
+        if (!r) return null;
+        if (tenantId && r.tenantId && r.tenantId !== tenantId) return null;
+        return clone(r);
     }
 
-    async listPeers(): Promise<FederationPeer[]> {
-        return (await this.db.fedPeers.toArray()).map(clone);
+    async listPeers(tenantId?: string): Promise<FederationPeer[]> {
+        const rows = await this.db.fedPeers.toArray();
+        return rows
+            .filter((p) => !tenantId || !p.tenantId || p.tenantId === tenantId)
+            .map(clone);
     }
 
     async deletePeer(id: string): Promise<void> {
@@ -71,10 +81,12 @@ export class InteropRepository {
         return r ? clone(r) : null;
     }
 
-    async listHandoffs(): Promise<HandoffRecord[]> {
+    async listHandoffs(tenantId?: string): Promise<HandoffRecord[]> {
         const rows = await this.db.handoffs.toArray();
         rows.sort((a, b) => b.createdAt - a.createdAt);
-        return rows.map(clone);
+        return rows
+            .filter((h) => !tenantId || !h.tenantId || h.tenantId === tenantId)
+            .map(clone);
     }
 
     // ── Contracts ──

@@ -42,6 +42,7 @@ export class A2AService implements IA2AService {
         capabilities?: string[];
         streaming?: boolean;
         trust?: TrustLevel;
+        tenantId?: string;
     }): Promise<A2AAgent> {
         const t = now();
         const agent: A2AAgent = {
@@ -54,14 +55,18 @@ export class A2AService implements IA2AService {
             trust: input.trust ?? 'known',
             lastSeenAt: t,
             createdAt: t,
+            tenantId: input.tenantId,
         };
         await this.repo.putAgent(agent);
         this.events.emit(EVENTS.INTEROP_AGENT, { agentId: agent.id, action: 'advertised' });
         return agent;
     }
 
-    async discover(filter: { capability?: string; protocol?: InteropProtocol } = {}): Promise<A2AAgent[]> {
-        const all = await this.repo.listAgents();
+    async discover(
+        filter: { capability?: string; protocol?: InteropProtocol } = {},
+        tenantId?: string,
+    ): Promise<A2AAgent[]> {
+        const all = await this.repo.listAgents(tenantId);
         return all.filter(
             (a) =>
                 (!filter.capability || a.capabilities.includes(filter.capability)) &&
@@ -69,8 +74,12 @@ export class A2AService implements IA2AService {
         );
     }
 
-    async negotiate(agentId: string, task: string): Promise<{ accepted: boolean; note: string }> {
-        const agent = await this.require(agentId);
+    async negotiate(
+        agentId: string,
+        task: string,
+        tenantId?: string,
+    ): Promise<{ accepted: boolean; note: string }> {
+        const agent = await this.require(agentId, tenantId);
         // Deterministic policy: untrusted agents never auto-accept; others accept
         // when at least one capability token overlaps the task (else explicit refuse).
         if (agent.trust === 'untrusted') {
@@ -88,8 +97,13 @@ export class A2AService implements IA2AService {
         };
     }
 
-    async handoff(agentId: string, task: string, context: Record<string, unknown> = {}): Promise<HandoffRecord> {
-        const agent = await this.require(agentId);
+    async handoff(
+        agentId: string,
+        task: string,
+        context: Record<string, unknown> = {},
+        tenantId?: string,
+    ): Promise<HandoffRecord> {
+        const agent = await this.require(agentId, tenantId);
         const t = now();
         const record: HandoffRecord = {
             id: genId('handoff'),
@@ -100,14 +114,20 @@ export class A2AService implements IA2AService {
             traceId: genId('trace'),
             createdAt: t,
             updatedAt: t,
+            tenantId,
         };
         await this.repo.putHandoff(record);
         this.events.emit(EVENTS.HANDOFF_DISPATCHED, { handoffId: record.id, target: agentId });
         return record;
     }
 
-    async reportError(agentId: string, code: string, message: string): Promise<void> {
-        await this.require(agentId);
+    async reportError(
+        agentId: string,
+        code: string,
+        message: string,
+        tenantId?: string,
+    ): Promise<void> {
+        await this.require(agentId, tenantId);
         this.events.emit(EVENTS.INTEROP_ERROR, {
             agentId,
             error: a2aError(code, message) as { code?: string },
@@ -115,8 +135,8 @@ export class A2AService implements IA2AService {
         LOGGER.warn('A2A', 'a2a peer error', { agentId, code });
     }
 
-    private async require(id: string): Promise<A2AAgent> {
-        const a = await this.repo.getAgent(id);
+    private async require(id: string, tenantId?: string): Promise<A2AAgent> {
+        const a = await this.repo.getAgent(id, tenantId);
         if (!a) throw new Error(`A2A agent not found: ${id}`);
         return a;
     }
