@@ -84,6 +84,11 @@ const VisGraph: React.FC<Props> = ({
 
     const nodeById = useMemo(() => new Map(nodes.map((n) => [n.id, n] as const)), [nodes]);
 
+    const nodeByIdRef = useRef(nodeById);
+    nodeByIdRef.current = nodeById;
+    const dataRef = useRef({ nodes: netNodes, edges: netEdges });
+    dataRef.current = { nodes: netNodes, edges: netEdges };
+
     useEffect(() => {
         if (!containerRef.current) return;
         const net = new Network(
@@ -110,10 +115,11 @@ const VisGraph: React.FC<Props> = ({
         );
 
         netRef.current = net;
+        net.setData(dataRef.current);
         net.on('click', (params: { nodes?: string[] }) => {
             const nodeIds = params.nodes;
             if (nodeIds && nodeIds.length > 0) {
-                const node = nodeById.get(nodeIds[0]!);
+                const node = nodeByIdRef.current.get(nodeIds[0]!);
                 if (node) onClickNodeRef.current(node);
             }
         });

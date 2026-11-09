@@ -3,17 +3,17 @@
   "generatedBy": "scripts/gen-docs-inventory.mjs",
   "scope": "git-tracked markdown: docs/**/*.md (excluding docs/new drafts and the self-report pages docs-health, docs-inventory) plus repository entry docs (root *.md, .superagents/**, src/kernel/DEPENDENCY_MAP.md)",
   "totals": {
-    "documents": 500,
+    "documents": 502,
     "byCategory": {
       "repo": 9,
       "top": 116,
       "audits": 25,
-      "wiki": 350
+      "wiki": 352
     },
     "byLanguage": {
       "en": 40,
-      "mixed": 128,
-      "ru": 332
+      "mixed": 129,
+      "ru": 333
     }
   },
   "duplicates": {
@@ -2031,7 +2031,7 @@
       "language": "mixed",
       "title": "Матрица покрытия",
       "bytes": 8388,
-      "hash": "6921b73f2031882d86e2baa2e7b0946ce675a0bc"
+      "hash": "c9f05dbc10d97992a5cbc6b2396e87111318fe37"
     },
     {
       "path": "docs/wiki/debate-strategies-cheatsheet.md",
@@ -2087,7 +2087,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4077,
-      "hash": "dcd4cc72c8febff57c3f41e670ea2c155e83f4aa"
+      "hash": "fee0a15279fe00debf79c2fbaddd0d262f888cef"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -2175,7 +2175,7 @@
       "language": "ru",
       "title": "Граф знаний",
       "bytes": 4835,
-      "hash": "447bdfdc639b1a2177799d3ececdbc7ae2fe1b0c"
+      "hash": "b2a018a6766ba01fb1d5c06f7908542602a22d0e"
     },
     {
       "path": "docs/wiki/dev-history.md",
@@ -2390,8 +2390,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Карта документации",
-      "bytes": 55845,
-      "hash": "afb81ae8b95c687600e016281f4246922f03a6d6"
+      "bytes": 56011,
+      "hash": "7d4575296c55b94537e01adb681d5e5b55ac8cbf"
     },
     {
       "path": "docs/wiki/docs-standard.md",
@@ -3240,6 +3240,22 @@
       "title": "Как пользоваться панелями",
       "bytes": 2096,
       "hash": "50981570f3105bfe6f7982a5e5cc3a0f754a51f7"
+    },
+    {
+      "path": "docs/wiki/plugins-create.md",
+      "category": "wiki",
+      "language": "mixed",
+      "title": "Как написать свой плагин",
+      "bytes": 3555,
+      "hash": "b877bf2c478e6ee78b3eeaeffd444fcee1e0b833"
+    },
+    {
+      "path": "docs/wiki/plugins-guide.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Плагины: возможности и использование",
+      "bytes": 3988,
+      "hash": "0f86897f50b6f1fbb1e738be434313af8b5a25f1"
     },
     {
       "path": "docs/wiki/providers.md",
