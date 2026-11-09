@@ -119,7 +119,7 @@
 
 | # | Задача | Статус | Источник |
 |---|---|---|---|
-| P3-1 | Плагинный sandbox для сторонних плагинов + динамические маршруты `contributes.panels` | 🟡 (реестр contributed panels ✅; динамические маршруты `/plugin/<id>` + sandboxed iframe ✅; сайдбар-секция «Плагины» ✅ (path-aware активность, label-fallback) — 2026-11-09; панели PluginManager/PluginMarketplace ✅ (ранее битые lazy-импорты починены); остаток: полная sandbox-изоляция (Worker/iframe-политики), каталог сторонних плагинов) | SPEC_06 §5 |
+| P3-1 | Плагинный sandbox для сторонних плагинов + динамические маршруты `contributes.panels` | 🟡 (реестр contributed panels ✅; маршруты `/plugin/<id>` + sandboxed iframe (allow-scripts, без same-origin) ✅; сайдбар ✅; PluginManager/PluginMarketplace ✅; permission enforcement ✅ (enforceToolPermissions: tool:* / tool:<name>); worker-изоляция ✅ (тесты починены, 50/50 зелёные) — 2026-11-09; остаток: внешний каталог сторонних плагинов (marketplace-каталог)) | SPEC_06 §5 |
 | P3-2 | Мультиклиентная федерация (A2A довести до мультиtenant) | 🟡 (мультиtenant-изоляция A2A/федерации ✅ — tenantId в A2AAgent/FederationPeer/HandoffRecord, скоуп в InteropRepository (list/get по tenant, глобальные видны всем), контракты IA2AService/IFederationService принимают tenantId, 4 tenant-теста, 2026-11-09; остаток: tenant-скоуп в координации (ICOordinationService), транспорт/сеть с tenant-полями, UI) | SPEC_09/10 |
 | P3-3 | Серверный командный режим (multi-user/tenant) | 🟡 | SPEC_10 |
 | P3-4 | Автономный супервизор флота (Fleet → не только projection) | ❌ | ROADMAP_00 Фаза 2; полный отчёт |
