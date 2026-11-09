@@ -64,4 +64,18 @@ export interface DebateStore {
     saveVerdict(record: DebateVerdictRecord): Promise<void>;
     getVerdict(sessionId: string): Promise<DebateVerdictRecord | null>;
     count(): Promise<number>;
+    /** All stored verdicts (for export/round-trip). */
+    listAllVerdicts(): Promise<DebateVerdictRecord[]>;
+    /**
+     * Import full session records (round-trip). Existing ids are skipped
+     * (merge semantics — never overwrite live debates). Returns counts.
+     */
+    importSessions(
+        records: DebateSessionRecord[],
+    ): Promise<{ imported: number; skipped: number }>;
+    /**
+     * Import verdicts, but only for the given session ids (guards against
+     * clobbering verdicts of already-existing sessions). Returns imported count.
+     */
+    importVerdicts(records: DebateVerdictRecord[], sessionIds: string[]): Promise<number>;
 }

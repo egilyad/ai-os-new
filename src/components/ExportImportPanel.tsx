@@ -2,6 +2,7 @@ import React, { useState, useCallback, useMemo } from 'react';
 import PanelLoader from './PanelLoader';
 import { encryptExportPayload, decryptExportPayload } from './ExportImportPanel/export-crypto';
 import type { RoleCategory } from '../kernel/types/role-types';
+import type { DebateSessionRecord, DebateVerdictRecord } from '../kernel/contracts/storage/debate-store';
 
 interface ExportSection {
     id: string;
@@ -136,20 +137,29 @@ const ExportImportPanel: React.FC = () => {
                 '\uD83C\uDF96\uFE0F',
                 async () => {
                     const m = await loadServices();
-                    const sessions = m.debateEngine?.getAllSessions?.() || [];
-                    return {
-                        debates: sessions.map((s) => ({
-                            id: (s as { id: unknown }).id,
-                            topic: (s as { topic: unknown }).topic,
-                            phase: (s as { phase: unknown }).phase,
-                            round: (s as { round: unknown }).round,
-                            startedAt: (s as { startedAt: unknown }).startedAt,
-                            updatedAt: (s as { updatedAt: unknown }).updatedAt,
-                        })),
-                    };
+                    const store = m.storageLayer?.debates;
+                    const sessions = store ? await store.listAllSessions() : [];
+                    const verdicts = store ? await store.listAllVerdicts() : [];
+                    return { debates: sessions, verdicts };
                 },
-                async () => 'Debate import not supported yet',
-                false,
+                async (data) => {
+                    const m = await loadServices();
+                    const store = m.storageLayer?.debates;
+                    if (!store) return 'Debate import unavailable (storage layer missing)';
+                    const sessions = (Array.isArray(data.debates)
+                        ? data.debates
+                        : []) as DebateSessionRecord[];
+                    const verdicts = (Array.isArray(data.verdicts)
+                        ? data.verdicts
+                        : []) as DebateVerdictRecord[];
+                    const { imported, skipped } = await store.importSessions(sessions);
+                    const importedIds = sessions.slice(0, imported).map((s) => s.id);
+                    const verdictImported = await store.importVerdicts(
+                        verdicts,
+                        importedIds,
+                    );
+                    return `Imported ${imported} debate session(s) (${skipped} skipped as existing), ${verdictImported} verdict(s)`;
+                },
             ),
             makeSection(
                 'prompts',
@@ -227,8 +237,20 @@ const ExportImportPanel: React.FC = () => {
                     const active = m.orchestrator?.getActiveTopology?.();
                     return { topologies: active ? [JSON.parse(JSON.stringify(active))] : [] };
                 },
-                async () => 'Topology import not supported yet',
-                false,
+                async (data) => {
+                    const m = await loadServices();
+                    const list = Array.isArray(data.topologies) ? data.topologies : [];
+                    const first = list[0] as Record<string, unknown> | undefined;
+                    if (!first || !Array.isArray(first.nodes) || !Array.isArray(first.edges)) {
+                        throw new Error('Invalid topology payload (expected nodes + edges)');
+                    }
+                    if (!m.orchestrator?.mount) {
+                        return 'Topology import unavailable (orchestrator missing)';
+                    }
+                    m.orchestrator.mount(first as never);
+                    const name = typeof first.name === 'string' ? first.name : 'imported';
+                    return `Topology mounted: ${name}`;
+                },
             ),
             makeSection(
                 'roles',

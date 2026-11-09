@@ -76,6 +76,9 @@ export const orchestrator = lazyService<OrchestrationService>('orchestrator');
 export const agentService = lazyService<AgentService>('agentService');
 export const toolService = lazyService<ToolService>('toolService');
 export const roleService = lazyService<RoleService>('roleService');
+export const storageLayer = lazyService<import('../contracts/storage/storage-layer').StorageLayer>(
+    'storageLayer',
+);
 export const policyService = lazyService<PolicyService>('policyService');
 export const agentPermissionService = lazyService<AgentPermissionService>('agentPermissionService');
 export const authorizationService = lazyService<IAuthorizationService>('authorizationService');

@@ -601,6 +601,46 @@ class DexieDebateStore implements DebateStore {
         return raw ?? null;
     }
 
+    async listAllVerdicts(): Promise<DebateVerdictRecord[]> {
+        return getDexieDb().debateVerdicts.toArray();
+    }
+
+    async importSessions(
+        records: DebateSessionRecord[],
+    ): Promise<{ imported: number; skipped: number }> {
+        const db = getDexieDb();
+        const existing = new Set((await db.debateSessions.toArray()).map((r) => r.id));
+        const fresh = records.filter(
+            (r) =>
+                r &&
+                typeof r.id === 'string' &&
+                r.id.length > 0 &&
+                typeof r.topic === 'string' &&
+                !existing.has(r.id),
+        );
+        if (fresh.length === 0) return { imported: 0, skipped: records.length };
+        await db.transaction('rw', db.debateSessions, async () => {
+            await db.debateSessions.bulkPut(fresh);
+        });
+        return { imported: fresh.length, skipped: records.length - fresh.length };
+    }
+
+    async importVerdicts(
+        records: DebateVerdictRecord[],
+        sessionIds: string[],
+    ): Promise<number> {
+        const allow = new Set(sessionIds);
+        const fresh = records.filter(
+            (r) => r && typeof r.sessionId === 'string' && allow.has(r.sessionId),
+        );
+        if (fresh.length === 0) return 0;
+        const db = getDexieDb();
+        await db.transaction('rw', db.debateVerdicts, async () => {
+            await db.debateVerdicts.bulkPut(fresh);
+        });
+        return fresh.length;
+    }
+
     async count(): Promise<number> {
         return getDexieDb().debateSessions.count();
     }
