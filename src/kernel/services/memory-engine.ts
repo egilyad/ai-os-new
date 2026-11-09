@@ -940,7 +940,7 @@ export class MemoryService implements IMemoryEngine {
         if (query.query.trim()) {
             const fetched = await this.search(
                 query.query,
-                Math.max(limit * 10, 100),
+                Math.max(limit * 5, 50),
                 (query.mode as SearchMode) || 'auto',
             );
             results = fetched.filter((r) => matchesMemoryQuery(r.entry, filter));

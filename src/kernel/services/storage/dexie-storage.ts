@@ -366,9 +366,27 @@ class DexieSessionStore implements SessionStore {
     async syncSessions(sessions: ChatSession[], deletedIds: string[]): Promise<void> {
         const db = getDexieDb();
         await db.transaction('rw', db.sessions, async () => {
+            // P1-17: batch write instead of N sequential put+get round-trips.
+            const current = new Map(
+                (await db.sessions.toArray()).map((s) => [s.id, s] as const),
+            );
+            const toPut: ChatSession[] = [];
             for (const session of sessions) {
-                await this.writeGuarded(db, session);
+                const cur = current.get(session.id);
+                if (isStaleSessionWrite(session, cur)) {
+                    if (cur) {
+                        const merged = mergeStaleSession(cur, session);
+                        if (merged !== cur) {
+                            toPut.push({ ...merged, version: (cur.version ?? 0) + 1 });
+                        }
+                    }
+                    continue;
+                }
+                const version =
+                    Math.max(cur?.version ?? 0, (session as { version?: number }).version ?? 0) + 1;
+                toPut.push({ ...session, version });
             }
+            if (toPut.length > 0) await db.sessions.bulkPut(toPut);
             if (deletedIds.length > 0) await db.sessions.bulkDelete(deletedIds);
         });
     }
