@@ -55,12 +55,11 @@ jobs:
             - name: ESLint
               # Stage 4: 0 errors. Warnings are React Compiler strictness
               # (set-state-in-effect/refs/purity) + no-restricted-imports +
-              # react-refresh/only-export-components + fa-02 raw colors (~5k
+              # react-refresh/only-export-components + fa-02 raw colors (~4.2k
               # across all panels). Threshold pinned at current count to keep
               # errors fatal while allowing warnings to trend down.
-              # Bumped 5200 -> 5600 to absorb new dashboard/desktop UI raw-color
-              # warnings; re-tighten as warnings are fixed.
-              run: npm run lint -- --max-warnings 5600
+              # QW-2: lowered 5600 -> 4300 (2026-11-09, actual 4199).
+              run: npm run lint -- --max-warnings 4300
 
             - name: Wiki docs in sync
               # docs/wiki is generated from the Wiki corpus
