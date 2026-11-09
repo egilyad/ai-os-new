@@ -21,6 +21,7 @@ import ChatSystemPromptSection from './ChatSystemPromptSection';
 import ChatSearchBar from './ChatSearchBar';
 import ChatMessagesSection from './ChatMessagesSection';
 import ChatStatusToast from './ChatStatusToast';
+import ChatDiagnosticsBlock from './ChatDiagnosticsBlock';
 import ChatExportOverlay from './ChatExportOverlay';
 
 import { iconBtnMuted } from '../../styles/common';
@@ -343,6 +344,26 @@ const setSessions = useChatStore((s) => s.setSessions);
     const activeConfig = activeSessionId ? getSessionConfig() : undefined;
     const activeModel = activeConfig?.model || selectedModel;
 
+    // Единая диагностика: последняя ошибка в активной сессии.
+    const lastChatError = useChatStore((s) => {
+        const session = s.sessions.find((x) => x.id === s.activeSessionId);
+        if (!session) return null;
+        for (let i = session.history.length - 1; i >= 0; i--) {
+            const entry = session.history[i]!;
+            for (let j = entry.responses.length - 1; j >= 0; j--) {
+                const r = entry.responses[j]!;
+                if (r.status === 'error' || r.status === 'timeout') {
+                    return {
+                        message: r.error ?? `${r.status}`,
+                        requestId: r.requestId,
+                        status: r.status,
+                    };
+                }
+            }
+        }
+        return null;
+    });
+
     const handleNewChat = useCallback(async () => {
         try {
             const newId = await createSession();
@@ -560,6 +581,7 @@ const setSessions = useChatStore((s) => s.setSessions);
                     )}
                 </div>
 
+                <ChatDiagnosticsBlock error={lastChatError} />
                 <ChatInputArea
                     selectedKeys={selectedKeys}
                     selectedModel={selectedModel}
