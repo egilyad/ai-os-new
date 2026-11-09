@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import { Network } from 'vis-network/standalone';
 
 export interface VisGraphNode {
@@ -46,38 +46,49 @@ const VisGraph: React.FC<Props> = ({
     const onClickNodeRef = useRef(onClickNode);
     onClickNodeRef.current = onClickNode;
 
+    // P1-17: пред-вычисленные наборы и индекс узлов — сеть пересоздаётся
+    // только при смене опций, данные обновляются через setData (без destroy).
+    const netNodes = useMemo(
+        () =>
+            nodes.map((n) => ({
+                id: n.id,
+                label: n.label,
+                title: n.title ?? n.label,
+                shape: 'dot' as const,
+                size: n.size ?? 14,
+                color: {
+                    background: n.color ?? '#8b5cf6',
+                    border: n.borderColor ?? '#0f172a',
+                    highlight: { background: n.color ?? '#8b5cf6', border: '#fff' },
+                },
+                font: { color: 'var(--slate-300)', size: 12 },
+                borderWidth: n.borderColor ? 3 : 2,
+                shadow: true,
+            })),
+        [nodes],
+    );
+
+    const netEdges = useMemo(
+        () =>
+            edges.map((e) => ({
+                id: e.id,
+                from: e.from,
+                to: e.to,
+                color: { color: e.color ?? '#64748b', opacity: 0.5 },
+                width: e.width ?? 1.2,
+                title: e.title,
+                smooth: { enabled: true, type: 'continuous' as const, roundness: 0.35 },
+            })),
+        [edges],
+    );
+
+    const nodeById = useMemo(() => new Map(nodes.map((n) => [n.id, n] as const)), [nodes]);
+
     useEffect(() => {
         if (!containerRef.current) return;
-
-        const netNodes = nodes.map((n) => ({
-            id: n.id,
-            label: n.label,
-            title: n.title ?? n.label,
-            shape: 'dot' as const,
-            size: n.size ?? 14,
-            color: {
-                background: n.color ?? '#8b5cf6',
-                border: n.borderColor ?? '#0f172a',
-                highlight: { background: n.color ?? '#8b5cf6', border: '#fff' },
-            },
-            font: { color: 'var(--slate-300)', size: 12 },
-            borderWidth: n.borderColor ? 3 : 2,
-            shadow: true,
-        }));
-
-        const netEdges = edges.map((e) => ({
-            id: e.id,
-            from: e.from,
-            to: e.to,
-            color: { color: e.color ?? '#64748b', opacity: 0.5 },
-            width: e.width ?? 1.2,
-            title: e.title,
-            smooth: { enabled: true, type: 'continuous' as const, roundness: 0.35 },
-        }));
-
         const net = new Network(
             containerRef.current,
-            { nodes: netNodes, edges: netEdges },
+            { nodes: [], edges: [] },
             {
                 nodes: { chosen: true },
                 edges: { arrowStrikethrough: false },
@@ -102,7 +113,7 @@ const VisGraph: React.FC<Props> = ({
         net.on('click', (params: { nodes?: string[] }) => {
             const nodeIds = params.nodes;
             if (nodeIds && nodeIds.length > 0) {
-                const node = nodes.find((n) => n.id === nodeIds[0]);
+                const node = nodeById.get(nodeIds[0]!);
                 if (node) onClickNodeRef.current(node);
             }
         });
@@ -112,7 +123,11 @@ const VisGraph: React.FC<Props> = ({
             netRef.current = null;
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [nodes, edges, hierarchical, physics]);
+    }, [hierarchical, physics]);
+
+    useEffect(() => {
+        netRef.current?.setData({ nodes: netNodes, edges: netEdges });
+    }, [netNodes, netEdges]);
 
     return (
         <div
