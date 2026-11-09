@@ -97,17 +97,43 @@ export class VectorSpace {
     /**
      * Score every vector that lives in the same space as the query and has the
      * same dimensionality. Returns the best matches first.
+     *
+     * P1-17: когда задан конечный limit, использует top-k выборку вместо
+     * полной сортировки всех совпадений (O(M·D + M·log k) против O(M·D + M·log M)).
      */
     match(
         queryVector: number[],
         querySpace: VectorSpaceName = 'hash',
+        limit: number = Infinity,
     ): Array<{ id: string; score: number }> {
         const scored: Array<{ id: string; score: number }> = [];
+        const pushTop = (entry: { id: string; score: number }): void => {
+            if (scored.length < limit) {
+                scored.push(entry);
+                scored.sort((a, b) => b.score - a.score);
+                return;
+            }
+            const lastIdx = scored.length - 1;
+            if (entry.score > scored[lastIdx]!.score) {
+                let i = lastIdx - 1;
+                while (i >= 0 && scored[i]!.score < entry.score) {
+                    scored[i + 1] = scored[i]!;
+                    i--;
+                }
+                scored[i + 1] = entry;
+            }
+        };
         for (const [id, vector] of this.vectors.entries()) {
             if (this.spaceOf(id) !== querySpace) continue;
             if (vector.length !== queryVector.length) continue;
-            scored.push({ id, score: cosineSimilarity(queryVector, vector) });
+            const score = cosineSimilarity(queryVector, vector);
+            if (Number.isFinite(limit)) {
+                pushTop({ id, score });
+            } else {
+                scored.push({ id, score });
+            }
         }
+        if (Number.isFinite(limit)) return scored;
         return scored.sort((a, b) => b.score - a.score);
     }
 

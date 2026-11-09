@@ -52,6 +52,20 @@ describe('memory vector space', () => {
         expect(space.match([1, 0], 'provider')).toEqual([]);
     });
 
+    it('returns the top-k matches when a finite limit is given (P1-17)', () => {
+        const space = new VectorSpace();
+        space.set('b', [0, 1], 'provider');
+        space.set('a', [1, 0], 'provider');
+        space.set('c', [0.5, 0.5], 'provider');
+        const top1 = space.match([1, 0], 'provider', 1);
+        expect(top1).toHaveLength(1);
+        expect(top1[0]!.id).toBe('a');
+        const top2 = space.match([1, 0], 'provider', 2);
+        expect(top2.map((h) => h.id)).toEqual(['a', 'c']);
+        // Без лимита — все совпадения, как раньше.
+        expect(space.match([1, 0], 'provider')).toHaveLength(3);
+    });
+
     it('prunes the oldest vectors first', () => {
         const space = new VectorSpace();
         space.set('a', [1], 'provider');

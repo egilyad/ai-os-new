@@ -208,8 +208,7 @@ async function handleMessage(event: MessageEvent): Promise<void> {
                         ? payload.queryVector
                         : hashEmbedding(payload.query);
                 const scored = vectors
-                    .match(queryVec, querySpace)
-                    .slice(0, payload.limit ?? 5)
+                    .match(queryVec, querySpace, payload.limit ?? 5)
                     .map(({ id, score }) => {
                         const entry = entries.find((e) => e.id === id);
                         return entry ? { ...entry, score } : null;
