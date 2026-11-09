@@ -146,6 +146,64 @@ export function createCompany({ name, mission, monthlyBudgetCents }) {
     return company;
 }
 
+// ── P3-3: командный режим — члены компании (users) ──
+
+const MEMBER_ROLES = ['admin', 'operator', 'viewer'];
+
+export function listMembers(companyId) {
+    const c = getCompany(companyId);
+    return c ? (Array.isArray(c.members) ? c.members : []) : null;
+}
+
+export function getMember(companyId, memberId) {
+    const members = listMembers(companyId);
+    if (!members) return null;
+    return members.find((m) => m.id === memberId) || null;
+}
+
+export function addMember(companyId, { name, role, email }) {
+    const all = listCompanies();
+    const org = all.find((c) => c.id === companyId);
+    if (!org) return null;
+    if (!Array.isArray(org.members)) org.members = [];
+    const cleanName = String(name || '').slice(0, 200).trim();
+    if (!cleanName) throw new Error('member name is required');
+    const cleanRole = String(role || 'operator').toLowerCase();
+    if (!MEMBER_ROLES.includes(cleanRole)) {
+        throw new Error(`role must be one of: ${MEMBER_ROLES.join(', ')}`);
+    }
+    const t = Date.now();
+    const member = {
+        id: genId('member'),
+        name: cleanName,
+        role: cleanRole,
+        email: email ? String(email).slice(0, 320) : undefined,
+        createdAt: t,
+        updatedAt: t,
+    };
+    org.members.push(member);
+    org.updatedAt = t;
+    saveCompanies(all);
+    logActivity(companyId, 'member_added', cleanName);
+    return member;
+}
+
+export function removeMember(companyId, memberId) {
+    const all = listCompanies();
+    const org = all.find((c) => c.id === companyId);
+    if (!org) return false;
+    if (!Array.isArray(org.members)) return false;
+    const before = org.members.length;
+    org.members = org.members.filter((m) => m.id !== memberId);
+    org.updatedAt = Date.now();
+    if (org.members.length !== before) {
+        saveCompanies(all);
+        logActivity(companyId, 'member_removed', memberId);
+        return true;
+    }
+    return false;
+}
+
 const AGENT_STATUS = ['active', 'idle', 'running', 'error', 'paused', 'terminated'];
 
 export function listAgents(companyId) {

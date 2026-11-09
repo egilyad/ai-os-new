@@ -9,6 +9,9 @@ import {
     getCompany,
     createCompany,
     heartbeatCompany,
+    listMembers,
+    addMember,
+    removeMember,
     listWakeups,
     enqueueWakeup,
     listAgents,
@@ -423,6 +426,53 @@ const server = http.createServer(async (req, res) => {
                 return;
             }
             writeJson(res, 200, { company });
+            return;
+        }
+
+        // P3-3: командный режим — члены компании (members)
+        const membersMatch = pathname.match(/^\/api\/companies\/([^/]+)\/members$/);
+        if (membersMatch && (req.method === 'GET' || req.method === 'POST')) {
+            if (!hasAuth(req)) {
+                writeJson(res, 401, { error: 'Unauthorized' });
+                return;
+            }
+            const companyId = membersMatch[1];
+            if (req.method === 'GET') {
+                writeJson(res, 200, { members: listMembers(companyId) ?? [] });
+                return;
+            }
+            const body = await readJsonBody(req).catch(() => null);
+            if (!body) {
+                writeJson(res, 400, { error: 'Invalid JSON' });
+                return;
+            }
+            try {
+                const member = addMember(companyId, body);
+                if (!member) {
+                    writeJson(res, 404, { error: 'Company not found' });
+                    return;
+                }
+                broadcastLive('member_added', { companyId, memberId: member.id });
+                writeJson(res, 201, { member });
+            } catch (e) {
+                writeJson(res, 400, { error: e instanceof Error ? e.message : 'Bad request' });
+            }
+            return;
+        }
+
+        const memberOne = pathname.match(/^\/api\/companies\/([^/]+)\/members\/([^/]+)$/);
+        if (memberOne && req.method === 'DELETE') {
+            if (!hasAuth(req)) {
+                writeJson(res, 401, { error: 'Unauthorized' });
+                return;
+            }
+            const ok = removeMember(memberOne[1], memberOne[2]);
+            if (!ok) {
+                writeJson(res, 404, { error: 'Member not found' });
+                return;
+            }
+            broadcastLive('member_removed', { companyId: memberOne[1], memberId: memberOne[2] });
+            writeJson(res, 200, { status: 'ok' });
             return;
         }
 
