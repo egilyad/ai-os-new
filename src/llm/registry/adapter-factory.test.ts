@@ -1,6 +1,19 @@
 import { describe, it, expect } from 'vitest';
 import { AdapterFactory } from './adapter-factory';
 
+/** Unwrap decorator layers (CompressRoute default is now in the chain). */
+function unwrap(adapter: unknown): unknown {
+    let cur: unknown = adapter;
+    const seen = new Set<unknown>();
+    while (cur && !seen.has(cur)) {
+        seen.add(cur);
+        const inner = (cur as { inner?: unknown }).inner;
+        if (!inner) return cur;
+        cur = inner;
+    }
+    return cur;
+}
+
 describe('AdapterFactory', () => {
     it('lists supported providers', () => {
         const factory = new AdapterFactory();
@@ -18,7 +31,7 @@ describe('AdapterFactory', () => {
         expect(factory.getSupportedProviders()).toContain('gemini-computer');
         expect(factory.isSupported('gemini-computer')).toBe(true);
         const { GeminiComputerAdapter } = await import('../gemini-computer/gemini-computer-adapter');
-        expect(factory.create('gemini-computer')).toBeInstanceOf(GeminiComputerAdapter);
+        expect(unwrap(factory.create('gemini-computer'))).toBeInstanceOf(GeminiComputerAdapter);
     });
 
     it('creates the anthropic adapter (Phase 70, трасса B)', async () => {
@@ -27,7 +40,7 @@ describe('AdapterFactory', () => {
         expect(factory.isSupported('anthropic')).toBe(true);
         expect(factory.isSupported('claude')).toBe(true);
         const { AnthropicAdapter } = await import('../anthropic/anthropic-adapter');
-        expect(factory.create('anthropic')).toBeInstanceOf(AnthropicAdapter);
+        expect(unwrap(factory.create('anthropic'))).toBeInstanceOf(AnthropicAdapter);
         expect(factory.create('ANTHROPIC')).toBe(factory.create('anthropic'));
     });
 

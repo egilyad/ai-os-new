@@ -6,6 +6,8 @@ import { RetryDecorator } from '../decorators/retry-decorator';
 import { RateLimitDecorator } from '../decorators/rate-limit-decorator';
 import { PriorityQueueDecorator } from '../decorators/priority-queue';
 import { CostManagerDecorator } from '../decorators/cost-manager';
+import { CompressRouteDecorator } from '../decorators/compress-route';
+import type { CompressRouteConfig } from '../decorators/compress-route';
 import type { PriorityQueueConfig } from '../decorators/priority-queue';
 import { GeminiAdapter } from '../gemini/gemini-adapter';
 import { OpenRouterAdapter } from '../openrouter/openrouter-adapter';
@@ -44,6 +46,8 @@ export interface AdapterFactoryConfig {
     priorityQueue?: boolean;
     priorityQueueConfig?: Partial<PriorityQueueConfig>;
     costManager?: boolean;
+    /** CompressRoute decorator — enabled by default (P1-8); pass false to opt out. */
+    compress?: boolean | Partial<CompressRouteConfig>;
 }
 
 export class AdapterFactory {
@@ -272,12 +276,12 @@ export class AdapterFactory {
         let rlRef: RateLimitDecorator | undefined;
         let cbRef: CircuitBreakerDecorator | undefined;
 
-        // P-HIGH-5, documented as opt-in architecture: SemanticRouter,
-        // CanaryRouter and CompressRoute decorators are exported, tested and
-        // available for explicit composition, but NOT in this default chain —
-        // each needs product configuration (fast/powerful targets, canary
-        // policy, compression rules) that has no sane global default.
-        // Auto-wiring them would change routing for every request.
+        // P-HIGH-5 + P1-8, documented: CompressRoute IS in the default chain
+        // (safe: applies only above token threshold, respects tool calls).
+        // SemanticRouter/CanaryRouter remain explicit opt-in — they need
+        // cross-provider targets (fast/powerful pairs, canary policy) that
+        // have no sane global default; auto-wiring would change routing for
+        // every request.
         if (this.#config.rateLimit) {
             rlRef = new RateLimitDecorator(
                 adapter,
@@ -312,6 +316,16 @@ export class AdapterFactory {
             adapter = new PriorityQueueDecorator(adapter, this.#config.priorityQueueConfig);
         if (this.#config.costManager)
             adapter = new CostManagerDecorator(adapter, { logCosts: true });
+        // P1-8: CompressRoute is now part of the default chain (applies only
+        // to messages above the token threshold; tool-call payloads are left
+        // untouched). Opt out with `compress: false`.
+        if (this.#config.compress !== false)
+            adapter = new CompressRouteDecorator(
+                adapter,
+                typeof this.#config.compress === 'object'
+                    ? this.#config.compress
+                    : undefined,
+            );
         if (this.#config.cache)
             adapter = new CacheDecorator(
                 adapter,

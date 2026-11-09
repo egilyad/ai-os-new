@@ -1,7 +1,10 @@
 import type { TimelineEntry, IDebateQueryEngine } from '../../contracts/debate-types';
 import type { DebateSession } from '../../contracts/debate-types';
 import type { IAdapterRegistry } from '../../contracts/provider-adapter';
-import { PROVIDER_DEFAULT_MODELS } from '../../utils/provider-default-models';
+import {
+    PROVIDER_DEFAULT_MODELS,
+    PROVIDER_PREFERRED_MODELS,
+} from '../../utils/provider-default-models';
 import { rootLogger } from '../logger-service';
 
 const NON_CHAT_PREFIXES = [
@@ -29,7 +32,16 @@ export function isLargeModel(model: string): boolean {
     return LARGE_MODEL_PATTERNS.some((re) => re.test(model));
 }
 
+/**
+ * P1-10: debate provider/model priorities are data-driven. The generic
+ * per-provider preferred lists (PROVIDER_PREFERRED_MODELS) are the baseline —
+ * a new provider needs no code edit once it is listed there. Debate-specific
+ * pins below override the generic lists for the verified fleet.
+ */
 export const DEBATE_MODEL_PRIORITY: Record<string, string[]> = {
+    ...(Object.fromEntries(
+        Object.entries(PROVIDER_PREFERRED_MODELS).map(([p, models]) => [p, [...models]]),
+    ) as Record<string, string[]>),
     // gemini-3.1-flash 404s via the v1beta generateContent API — flash-lite only.
     gemini: ['gemini-3.1-flash-lite'],
     // Oct-2026: Groq+NVIDIA production pins are openai/gpt-oss-120b/20b
@@ -159,6 +171,14 @@ export function pickBestModelForDebate(
             )
                 return model;
         }
+    }
+    // P1-10: unknown provider (not in any static list) — use its live
+    // availableModels as the data-driven source instead of failing.
+    if (availableModels.length > 0) {
+        const fallback = availableModels.find(
+            (m) => isChatModel(m) && !skipModels?.has(m),
+        );
+        if (fallback) return fallback;
     }
     return undefined;
 }

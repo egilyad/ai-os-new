@@ -99,17 +99,7 @@ export class RouterRankingService {
                 hadExistingBinding = true;
                 const boundKey = allKeys.find((k) => k.id === binding.keyId);
                 if (boundKey) {
-                    const ks = this.deps.keyStateStore?.get(boundKey.id);
-                    const healthOk = ks
-                        ? ks.healthScore >= 75 &&
-                          !ks.flags.circuitOpen &&
-                          !ks.flags.rateLimited &&
-                          !ks.flags.authFailed
-                        : boundKey.status === 'active' &&
-                          !this.deps.keyService.isKeyInBackoff(boundKey.id).backoff &&
-                          !this.deps.keyService.isProviderCircuitOpen(boundKey.provider) &&
-                          !this.deps.keyService.isProviderRateLimited(boundKey.provider);
-                    if (healthOk) {
+                    if (this.keyStateHealthy(boundKey)) {
                         return [boundKey];
                     }
                 }
@@ -120,16 +110,7 @@ export class RouterRankingService {
                         k.id === binding.keyId
                     )
                         return false;
-                    const kks = this.deps.keyStateStore?.get(k.id);
-                    return kks
-                        ? kks.healthScore >= 75 &&
-                              !kks.flags.circuitOpen &&
-                              !kks.flags.rateLimited &&
-                              !kks.flags.authFailed
-                        : k.status === 'active' &&
-                              !this.deps.keyService.isKeyInBackoff(k.id).backoff &&
-                              !this.deps.keyService.isProviderCircuitOpen(k.provider) &&
-                              !this.deps.keyService.isProviderRateLimited(k.provider);
+                    return this.keyStateHealthy(k);
                 });
                 if (sameProvider.length > 0) {
                     this.deps.sessionAffinityStore.bind(
@@ -587,6 +568,29 @@ export class RouterRankingService {
 
     // C-78: removed deduplicateCandidates — return ALL usable keys ranked by score
     // so callers can fall through multiple keys per provider if the first fails
+
+    /**
+     * P1-9: single source of truth for key health — KeyStateStore snapshot
+     * when available, legacy keyService fallback otherwise. Previously this
+     * predicate was duplicated in three places with drift risk.
+     */
+    private keyStateHealthy(key: ApiKey): boolean {
+        const ks = this.deps.keyStateStore?.get(key.id);
+        if (ks) {
+            return (
+                ks.healthScore >= 75 &&
+                !ks.flags.circuitOpen &&
+                !ks.flags.rateLimited &&
+                !ks.flags.authFailed
+            );
+        }
+        return (
+            key.status === 'active' &&
+            !this.deps.keyService.isKeyInBackoff(key.id).backoff &&
+            !this.deps.keyService.isProviderCircuitOpen(key.provider) &&
+            !this.deps.keyService.isProviderRateLimited(key.provider)
+        );
+    }
 
     private getBudgetPenalty(provider: string): number {
         const info = this.deps.budgetService.getBudgetInfo();
