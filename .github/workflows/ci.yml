@@ -249,6 +249,52 @@ jobs:
               # inspectable for threshold calibration (QW-1).
               run: node -e "const fs=require('fs');let t='';try{t=fs.readFileSync('coverage-output.log','utf8')}catch(e){console.log('no coverage-output log');process.exit(0)};const i=t.indexOf('All files');const head=i>=0?t.slice(Math.max(0,i-250),i+500):t.split('\n').slice(0,12).join('\n');const tail=t.split('\n').slice(-30).join('\n');const out=(head+'\n---TAIL---\n'+tail).slice(-5000).replace(/%/g,'%25').replace(/\r/g,'%0D').replace(/\n/g,'%0A');console.log('::notice title=coverage-summary::'+out)"
 
+    full-tests:
+        # Полный прогон всех unit/компонентных тестов (не только test:stable).
+        # Разбит на три группы, чтобы не OOM-ить раннер на одном процессе.
+        name: Full Unit Tests (${{ matrix.group }})
+        runs-on: ubuntu-24.04
+        timeout-minutes: 30
+        needs: quality
+        strategy:
+            fail-fast: false
+            matrix:
+                group: [kernel, components, rest]
+        permissions:
+            contents: read
+        steps:
+            - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+              with:
+                persist-credentials: false
+            - name: Setup Node.js
+              uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+              with:
+                  node-version: ${{ env.NODE_VERSION }}
+                  cache: 'npm'
+            - name: Cache node_modules
+              uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+              id: full-npm-cache
+              with:
+                  path: node_modules
+                  key: npm-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+            - name: Install dependencies
+              if: steps.full-npm-cache.outputs.cache-hit != 'true'
+              run: npm ci --legacy-peer-deps
+            - name: Run full tests (${{ matrix.group }})
+              env:
+                  NODE_OPTIONS: --max-old-space-size=6144
+              run: |
+                  set -o pipefail
+                  case "${{ matrix.group }}" in
+                    kernel) TARGETS="src/kernel" ;;
+                    components) TARGETS="src/components" ;;
+                    rest) TARGETS="src/llm src/stores src/hooks src/tests" ;;
+                  esac
+                  npx vitest run $TARGETS --pool=forks --no-coverage 2>&1 | tee full-${{ matrix.group }}-tests.log
+            - name: Publish test tail on failure
+              if: failure()
+              run: node -e "const fs=require('fs');const f='full-${{ matrix.group }}-tests.log';let t='';try{t=fs.readFileSync(f,'utf8')}catch(e){console.log('no log');process.exit(0)};const tail=t.split('\n').slice(-80).join('\n').slice(-6000).replace(/%/g,'%25').replace(/\r/g,'%0D').replace(/\n/g,'%0A');console.log('::notice title=full-${{ matrix.group }}-tail::'+tail)"
+
     security-audit:
         name: Security Audit
         runs-on: ubuntu-24.04
