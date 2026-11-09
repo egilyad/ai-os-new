@@ -41,8 +41,13 @@ export const DEFERRED_ARTICLES: WikiArticle[] = [
 | Работа | Источник | Причина |
 |---|---|---|
 | Coverage-gate в CI | ✅ ЗАКРЫТО (QW-1) | пороги 31/25/30/32, include расширен |
-| Снизить lint baseline (5600) | Tech Map §3.5 | плановая чистка |
+| Снизить lint baseline (5600) | 🟡 (QW-2: порог снижен 5600 → 4300, факт 4199 warnings; остаток: 3.7k raw colors + 178 no-restricted-imports в UI) | плановая чистка |
 | Декомпозиция hotspots (dexie-schema, sandbox, key-service…) | ✅ ЗАКРЫТО (P3-5) | schema-versions/hooks/guard; key-service-subsystems |
+| Dexie schema versioning до v43 (P1-13) | ✅ ЗАКРЫТО | версии v5..v43 + аккумулированные карты таблиц в schema-versions |
+| Race conditions DebateEngine/AutoDebate/MemoryEngine/Scheduler (P1-16) | ✅ ЗАКРЫТО | run-промисы, single-flight, worker-publish в onCommit, mutex, trigger/destroy awaits |
+| Round-trip import дебатов/топологий (P2-2) | ✅ ЗАКРЫТО | DebateStore.importSessions/importVerdicts; mount топологии в оркестратор |
+| Плагины: панели/маршруты/sandbox (P3-1) | ✅ ЗАКРЫТО | реестр contributed panels, /plugin/<id>, сайдбар, PluginManager/PluginMarketplace, permission enforcement, worker-изоляция |
+| Мультиtenant A2A/федерация (P3-2) | 🟡 | tenantId-скоуп в A2A/Federation; остаток: координация, транспорт, UI |
 | Рефакторинг 62 TechniquePanels → generic | ✅ ЗАКРЫТО (P2-4) | lazy-фабрика, один общий чанк |
 | Внешний security audit sandbox-interpreter | Tech Map §6 | безопасность |
 
