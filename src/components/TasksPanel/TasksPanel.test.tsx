@@ -30,6 +30,9 @@ vi.mock('../../i18n/useTranslation', () => ({
 }));
 
 vi.mock('../../kernel/instances', () => ({
+    rootLogger: {
+        child: () => ({ info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn() }),
+    },
     cognitiveService: {
         getTraces: vi.fn(() => [
             {

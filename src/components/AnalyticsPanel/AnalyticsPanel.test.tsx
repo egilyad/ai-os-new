@@ -42,6 +42,17 @@ vi.mock('../../i18n/useTranslation', () => ({
 }));
 
 vi.mock('../../kernel/instances', () => ({
+    rootLogger: {
+        child: () => ({ info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn() }),
+    },
+    realtimeMetricsService: {
+        snapshot: vi.fn(() => ({})),
+        subscribe: vi.fn(() => vi.fn()),
+    },
+    provenanceLinker: {
+        get: vi.fn(() => []),
+        getTrail: vi.fn(() => []),
+    },
     kernel: {
         getState: vi.fn(() => ({
             providers: {
