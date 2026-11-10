@@ -1,5 +1,23 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { WorkflowService } from './workflow-service';
+
+vi.mock('../instances/core-references', () => {
+    const kv = new Map<string, unknown>();
+    return {
+        database: {
+            getKv: async <T>(id: string): Promise<T | null> => (kv.get(id) as T) ?? null,
+            setKv: async <T>(id: string, value: T): Promise<void> => {
+                kv.set(id, value);
+            },
+        },
+        adapterRegistry: {
+            getAdapter: vi.fn(() => undefined),
+        },
+        keyService: {
+            getKeys: vi.fn(() => []),
+        },
+    };
+});
 
 describe('WorkflowService', () => {
     let svc: WorkflowService;

@@ -100,6 +100,8 @@ vi.mock('../../kernel/instances', () => ({
     EVENTS: {}, qualityImpactCollector: noopStub, debateEngine: noopStub,
     memoryEngine: noopStub, sessionManager: noopStub, getAllSettings: () => ({} as Record<string, boolean>),
     setSetting: noopStub,
+    realtimeMetricsService: { snapshot: () => ({}), subscribe: () => () => {} },
+    provenanceLinker: { get: () => [], getTrail: () => [] },
 }));
 vi.mock('../kernel/instances', () => ({
     debatePolicyEngine: noopStub, groupManager: noopStub, keyService: noopStub,
@@ -109,6 +111,8 @@ vi.mock('../kernel/instances', () => ({
     EVENTS: {}, qualityImpactCollector: noopStub, debateEngine: noopStub,
     memoryEngine: noopStub, sessionManager: noopStub, getAllSettings: () => ({} as Record<string, boolean>),
     setSetting: noopStub,
+    realtimeMetricsService: { snapshot: () => ({}), subscribe: () => () => {} },
+    provenanceLinker: { get: () => [], getTrail: () => [] },
 }));
 vi.mock('../../kernel/instances/services-extras', () => ({
     debatePolicyEngine: noopStub, groupManager: noopStub, keyService: noopStub,

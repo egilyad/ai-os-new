@@ -44,6 +44,9 @@ const mockTraces = [
 ];
 
 vi.mock('../../kernel/instances', () => ({
+    rootLogger: {
+        child: () => ({ info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn() }),
+    },
     cognitiveService: {
         getTraces: vi.fn(() => mockTraces),
         deleteTrace: vi.fn(),

@@ -2,6 +2,9 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 
 vi.mock('../../kernel/instances', () => ({
+    rootLogger: {
+        child: () => ({ info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn() }),
+    },
     debateEngine: {
         getActiveSessions: vi.fn(() => []),
     },

@@ -13,6 +13,7 @@ vi.mock('./logger-service', () => ({
 
 function mockProjectManager() {
     return {
+        get: vi.fn().mockResolvedValue({ id: 'p1', name: 'Test' }),
         getProject: vi.fn().mockResolvedValue({ id: 'p1', name: 'Test' }),
         listProjects: vi.fn().mockResolvedValue([]),
         createProject: vi.fn(),

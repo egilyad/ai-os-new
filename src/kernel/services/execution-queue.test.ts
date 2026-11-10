@@ -41,11 +41,11 @@ describe('ExecutionQueue', () => {
             queue.enqueue('normal', 'b');
             queue.enqueue('normal', 'c');
             queue.enqueue('normal', 'd');
-            await vi.runAllTimersAsync();
+            await vi.advanceTimersByTimeAsync(0);
             expect(queue.active).toBe(3);
             expect(queue.pending).toBe(1);
             resolvers.slice(0, 3).forEach((r) => r());
-            await vi.runAllTimersAsync();
+            await vi.advanceTimersByTimeAsync(0);
             expect(queue.active).toBe(1);
         });
 

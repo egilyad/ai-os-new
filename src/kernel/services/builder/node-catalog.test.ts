@@ -2,13 +2,16 @@ import { describe, expect, it } from 'vitest';
 import { BuilderNodeCatalog } from './node-catalog';
 
 describe('BuilderNodeCatalog', () => {
-    it('содержит core-узлы exposed и cognitive-узлы скрытыми', () => {
+    it('содержит core-узлы exposed и частные cognitive-узлы скрытыми', () => {
         const catalog = new BuilderNodeCatalog();
         expect(catalog.get('agent')?.exposed).toBe(true);
         expect(catalog.get('tool')?.exposed).toBe(true);
-        expect(catalog.get('crystal')?.exposed).toBe(false);
-        expect(catalog.get('synthesis')?.exposed).toBe(false);
-        expect(catalog.get('time-machine')?.exposed).toBe(false);
+        expect(catalog.get('crystal')?.exposed).toBe(true);
+        expect(catalog.get('synthesis')?.exposed).toBe(true);
+        expect(catalog.get('time-machine')?.exposed).toBe(true);
+        expect(catalog.get('memory')?.exposed).toBe(false);
+        expect(catalog.get('forum')?.exposed).toBe(false);
+        expect(catalog.get('director')?.exposed).toBe(false);
     });
 
     it('list возвращает все узлы', () => {

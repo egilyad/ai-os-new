@@ -7,7 +7,8 @@ const mockKeys = [
 ];
 
 vi.mock('../../stores/useKeyStore', () => ({
-  useKeyStore: () => ({ keys: mockKeys }),
+  useKeyStore: (selector?: (s: { keys: typeof mockKeys }) => unknown) =>
+    selector ? selector({ keys: mockKeys }) : { keys: mockKeys },
 }));
 
 vi.mock('../../kernel/events/event-bus', () => ({

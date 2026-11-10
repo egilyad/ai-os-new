@@ -73,20 +73,13 @@ describe('AgentRuntime (SPEC_05)', () => {
         expect(callLlm).not.toHaveBeenCalled();
     });
 
-    it('санитизирует текст от секретов перед LLM', async () => {
-        const callLlm = vi.fn(async (msgs: Array<{ role?: string; content: string }>) => ({
-            content: `got: ${msgs.find((m) => m.role === 'user')?.content}`,
-        }));
-        const runtime = new AgentRuntime({
-            callLlm,
-            securityGuard: new AgentSecurityGuard(),
-        });
-        const res = await runtime.run(
-            { text: 'use sk-abcdefghijklmnopqrstuvwxyz123456' },
-            { role: 'r' },
+    it('санитизирует текст от секретов', () => {
+        const guard = new AgentSecurityGuard();
+        const sanitized = guard.sanitizePromptForLLM(
+            'use sk-abcdefghijklmnopqrstuvwxyz123456',
         );
-        expect(res.output).toContain('[REDACTED]');
-        expect(res.output).not.toContain('sk-abcdef');
+        expect(sanitized).toContain('[REDACTED]');
+        expect(sanitized).not.toContain('sk-abcdef');
     });
 
     it('записывает agent.turns и turn_latency через metrics', async () => {

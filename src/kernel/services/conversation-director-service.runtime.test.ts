@@ -17,18 +17,23 @@ interface FakeBus {
 
 function makeBus(): FakeBus {
     const map = new Map<string, Array<(d: unknown) => void>>();
+    const subscribe = (e: string, cb: (d: unknown) => void) => {
+        const arr = map.get(e) ?? [];
+        arr.push(cb);
+        map.set(e, arr);
+        return () =>
+            map.set(
+                e,
+                (map.get(e) ?? []).filter((c) => c !== cb),
+            );
+    };
     return {
-        on: (e, cb) => {
-            const arr = map.get(e) ?? [];
-            arr.push(cb);
-            map.set(e, arr);
-            return () =>
-                map.set(
-                    e,
-                    (map.get(e) ?? []).filter((c) => c !== cb),
-                );
-        },
+        on: (e, cb) => subscribe(e, cb),
+        onSafe: (e, cb) => subscribe(e, cb),
+        emitOnce: (e, _k, d) => (map.get(e) ?? []).forEach((cb) => cb(d)),
         emit: (e, d) => (map.get(e) ?? []).forEach((cb) => cb(d)),
+        off: () => {},
+        subscribeAll: () => () => {},
     };
 }
 

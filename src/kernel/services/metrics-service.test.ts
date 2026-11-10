@@ -293,8 +293,9 @@ describe('MetricsService', () => {
             };
             service['alerts'].push(alert);
             service.resolveAlert('alert-2');
-            expect(deps.eventBus.emit).toHaveBeenCalledWith(
+            expect(deps.eventBus.emitOnce).toHaveBeenCalledWith(
                 'observability:metrics:alert:resolved',
+                'alert-2',
                 expect.objectContaining({ id: 'alert-2' }),
             );
         });
@@ -409,14 +410,21 @@ describe('MetricsService', () => {
         it('emits alert when avgLatency exceeds warning threshold', () => {
             deps.kernel.getState = vi.fn(stateWithHighLatency);
             service['captureSnapshot']();
-            expect(deps.eventBus.emit).toHaveBeenCalledWith(
+            expect(deps.eventBus.emitOnce).toHaveBeenCalledWith(
                 'observability:metrics:alert',
+                expect.any(String),
                 expect.objectContaining({ metric: 'avgLatency', severity: 'warning' }),
+            );
+            expect(deps.eventBus.emit).toHaveBeenCalledWith(
+                'system:notification',
+                expect.objectContaining({ type: 'warning' }),
             );
         });
 
         it('does not emit duplicate unresolved alerts', () => {
-            const emitMock = deps.eventBus.emit as unknown as { mock: { calls: unknown[][] } };
+            const emitMock = deps.eventBus.emitOnce as unknown as {
+                mock: { calls: unknown[][] };
+            };
             deps.kernel.getState = vi.fn(stateWithHighLatency) as unknown as () => SystemState;
             service['captureSnapshot']();
             service['captureSnapshot']();
