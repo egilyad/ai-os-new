@@ -282,7 +282,7 @@ jobs:
               run: npm ci --legacy-peer-deps
             - name: Run full tests (${{ matrix.group }})
               env:
-                  NODE_OPTIONS: --max-old-space-size=8192
+                  NODE_OPTIONS: --max-old-space-size=6144
               run: |
                   set -o pipefail
                   case "${{ matrix.group }}" in
@@ -290,7 +290,7 @@ jobs:
                     components) TARGETS="src/components" ;;
                     rest) TARGETS="src/llm src/stores src/hooks src/tests" ;;
                   esac
-                  npx vitest run $TARGETS --pool=forks --no-coverage --poolOptions.forks.maxForks=3 2>&1 | tee full-${{ matrix.group }}-tests.log
+                  npx vitest run $TARGETS --pool=forks --no-coverage 2>&1 | tee full-${{ matrix.group }}-tests.log
             - name: Publish test tail on failure
               if: failure()
               run: node -e "const fs=require('fs');const f='full-${{ matrix.group }}-tests.log';let t='';try{t=fs.readFileSync(f,'utf8')}catch(e){console.log('no log');process.exit(0)};const tail=t.split('\n').slice(-80).join('\n').slice(-6000).replace(/%/g,'%25').replace(/\r/g,'%0D').replace(/\n/g,'%0A');console.log('::notice title=full-${{ matrix.group }}-tail::'+tail)"
