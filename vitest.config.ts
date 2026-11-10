@@ -14,6 +14,10 @@ export default defineConfig({
         // Heavy store tests under v8 coverage can need longer worker teardown
         // on shared GH runners ("Timeout terminating forks worker").
         teardownTimeout: 30000,
+        // CI full-matrix runs cap parallel forks to stay under runner memory.
+        ...(process.env.CI_FULL_TESTS === '1'
+            ? { poolOptions: { forks: { maxForks: 3 } } }
+            : {}),
         coverage: {
             provider: 'v8',
             reporter: ['text', 'lcov', 'html'],

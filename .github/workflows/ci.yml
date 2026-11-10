@@ -283,6 +283,7 @@ jobs:
             - name: Run full tests (${{ matrix.group }})
               env:
                   NODE_OPTIONS: --max-old-space-size=8192
+                  CI_FULL_TESTS: '1'
               run: |
                   set -o pipefail
                   case "${{ matrix.group }}" in
