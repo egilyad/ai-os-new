@@ -55,6 +55,8 @@ describe('SnapshotService', () => {
     let service: SnapshotService;
 
     beforeEach(async () => {
+        localStorage.removeItem('snapshots:wal');
+        localStorage.removeItem('super_agents_snapshots');
         vi.clearAllMocks();
         vi.useFakeTimers();
         vi.setSystemTime(1000);

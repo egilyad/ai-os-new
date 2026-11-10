@@ -124,7 +124,13 @@ export function modelFamily(provider: string, model?: string): string {
     if (m.startsWith('anthropic/') || m.includes('claude')) return 'anthropic';
     if (m.startsWith('openai/gpt-oss')) return 'openai-gpt-oss';
     if (m.startsWith('openai/')) return 'openai';
-    if (m.startsWith('meta/') || m.startsWith('llama')) return 'llama';
+    if (
+        m.startsWith('meta/') ||
+        m.startsWith('meta-llama/') ||
+        m.startsWith('llama')
+    ) {
+        return 'llama';
+    }
     if (m.startsWith('deepseek/') || m.includes('deepseek')) return 'deepseek';
     if (m.startsWith('mistral/') || m.includes('mistral')) return 'mistral';
     if (m.startsWith('cohere/') || m.includes('cohere')) return 'cohere';

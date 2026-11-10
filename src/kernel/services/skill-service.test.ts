@@ -121,9 +121,9 @@ describe('SkillService', () => {
             expect(updated.status).toBe('not_installed');
         });
 
-        it('should emit event', () => {
+        it('should emit event', async () => {
             const active = svc.getSkills().find((s) => s.status === 'active')!;
-            svc.toggleActive(active.id);
+            await svc.toggleActive(active.id);
             expect(deps.eventBus.emit).toHaveBeenCalled();
         });
     });
@@ -140,9 +140,9 @@ describe('SkillService', () => {
             expect(svc.getSkills().find((s) => s.id === notInstalled.id)!.status).toBe('installed');
         });
 
-        it('should emit event', () => {
+        it('should emit event', async () => {
             const notInstalled = svc.getSkills().find((s) => s.status === 'not_installed')!;
-            svc.installSkill(notInstalled.id);
+            await svc.installSkill(notInstalled.id);
             expect(deps.eventBus.emit).toHaveBeenCalled();
         });
     });

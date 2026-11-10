@@ -29,6 +29,10 @@ beforeEach(async () => {
         projectAssignments: '[projectId+agentId], projectId, agentId',
     });
     await db.open();
+    const origTransaction = db.transaction.bind(db);
+    // @ts-ignore — repo expects DatabaseService-style transaction(tables, fn)
+    db.transaction = ((tables: unknown[], fn: () => Promise<unknown>) =>
+        origTransaction('rw', tables, fn)) as never;
     repo = new ProjectRepository(db as any);
     service = new ProjectService(repo);
 });
