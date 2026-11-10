@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+﻿import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 
 const mockSubscribeAll = vi.fn(() => vi.fn()) as unknown as (
@@ -25,6 +25,9 @@ const mockEvents = [
 ];
 
 vi.mock('../../kernel/instances', () => ({
+    rootLogger: {
+        child: () => ({ info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn() }),
+    },
     eventBus: {
         emit: vi.fn(),
         on: vi.fn(() => vi.fn()),

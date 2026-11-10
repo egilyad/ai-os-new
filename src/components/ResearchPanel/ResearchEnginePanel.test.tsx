@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+﻿import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 
 const mockSessions = [
@@ -6,6 +6,9 @@ const mockSessions = [
 ];
 
 vi.mock('../../kernel/instances', () => ({
+    rootLogger: {
+        child: () => ({ info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn() }),
+    },
     researchEngine: {
         getAllSessions: vi.fn(() => [...mockSessions]),
         startSession: vi.fn(() => Promise.resolve({ id: 's2' })),

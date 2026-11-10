@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+﻿import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 
 const mockSkills = [
@@ -39,6 +39,9 @@ const { mockGetSkills } = vi.hoisted(() => ({
 }));
 
 vi.mock('../../kernel/instances', () => ({
+    rootLogger: {
+        child: () => ({ info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn() }),
+    },
     skillService: {
         getSkills: mockGetSkills,
         exportSkills: vi.fn(() => '[]'),

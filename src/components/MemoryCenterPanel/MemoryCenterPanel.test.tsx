@@ -1,9 +1,12 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+﻿import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, cleanup, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import MemoryCenterPanel from './MemoryCenterPanel';
 
 vi.mock('../../kernel/instances', () => ({
+    rootLogger: {
+        child: () => ({ info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn() }),
+    },
     memoryService: { search: vi.fn().mockResolvedValue([]) },
     wikiBrainService: { query: { search: vi.fn().mockResolvedValue([]) } },
     crystalVault: { search: vi.fn().mockResolvedValue([]), list: vi.fn().mockResolvedValue([]) },

@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeAll } from 'vitest';
+﻿import { describe, it, expect, vi, beforeAll } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 
 beforeAll(() => {
@@ -24,6 +24,9 @@ const exportToForum = vi.fn(async () => undefined);
 const refine = vi.fn(async () => undefined);
 
 vi.mock('../../kernel/instances', () => ({
+    rootLogger: {
+        child: () => ({ info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn() }),
+    },
     synthesisEngine: { list, synthesize, exportToCrystal, exportToForum, refine },
     lensEngine: { listLenses: vi.fn(() => []) },
 }));

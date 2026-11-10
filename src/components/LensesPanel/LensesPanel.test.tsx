@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeAll } from 'vitest';
+﻿import { describe, it, expect, vi, beforeAll } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import type { Lens } from '../../kernel/types/lens-types';
 
@@ -50,6 +50,9 @@ const suggestLenses = vi.fn(() => [{ lensId: 'lens-b', confidence: 0.8, rational
 const addLens = vi.fn();
 
 vi.mock('../../kernel/instances', () => ({
+    rootLogger: {
+        child: () => ({ info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn() }),
+    },
     lensEngine: {
         listLenses,
         validateStack,

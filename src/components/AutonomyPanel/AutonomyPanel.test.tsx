@@ -108,10 +108,10 @@ describe('AutonomyPanel', () => {
         expect(screen.getByText('ok')).toBeDefined();
     });
 
-    it('shows validation on empty goal', async () => {
+    it('disables run controls when goal is empty', async () => {
         const Panel = (await import('./AutonomyPanel')).default;
         render(<Panel />);
-        fireEvent.click(screen.getByRole('button', { name: 'autonomy.run.queue' }));
-        expect(await screen.findByText('autonomy.validation.goal')).toBeDefined();
+        expect(screen.getByRole('button', { name: 'autonomy.run.queue' })).toBeDisabled();
+        expect(screen.getByRole('button', { name: 'autonomy.run.goal' })).toBeDisabled();
     });
 });

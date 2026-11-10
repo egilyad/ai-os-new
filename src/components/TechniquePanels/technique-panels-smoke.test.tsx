@@ -1,4 +1,4 @@
-/**
+﻿/**
  * P2.17 — Parameterized smoke test for ALL TechniquePanels.
  * Renders every panel from the bundle with mocked dependencies.
  * Verifies: no crash, no white-screen, renders at least some content.
@@ -11,6 +11,9 @@ import {
 } from './technique-panels-bundle';
 
 vi.mock('../../kernel/instances', () => ({
+    rootLogger: {
+        child: () => ({ info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn() }),
+    },
     getAllSettings: () => ({} as Record<string, boolean>),
     setSetting: () => {},
     qualityImpactCollector: { getAllMetrics: () => [], getMetricsForTechnique: () => [] },

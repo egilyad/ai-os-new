@@ -40,6 +40,13 @@ vi.mock('../../stores/useKeyStore', () => ({
 }));
 
 vi.mock('../../kernel/instances', () => ({
+    rootLogger: {
+        child: () => ({ info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn() }),
+    },
+    builderNodeCatalog: {
+        getExposed: vi.fn(() => []),
+        list: vi.fn(() => []),
+    },
     toolService: { getTools: vi.fn(() => []) },
     orchestrator: { mount: vi.fn() },
     settingsService: {

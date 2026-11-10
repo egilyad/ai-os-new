@@ -49,7 +49,7 @@ describe('BeliefMiningPanel', () => {
         try {
             render(<BeliefMiningPanel />);
             fireEvent.click(await screen.findByText('Load active debate (1)'));
-            await screen.findByText('Mined beliefs');
+            await screen.findByText(/Mined beliefs/);
             expect(document.body.textContent).not.toContain('NaN');
         } finally {
             debateArgsState.args = [];

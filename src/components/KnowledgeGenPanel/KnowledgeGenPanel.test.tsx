@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeAll } from 'vitest';
+﻿import { describe, it, expect, vi, beforeAll } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 
 beforeAll(() => {
@@ -23,6 +23,9 @@ const getStatus = vi.fn(async () => undefined);
 const cancel = vi.fn(async () => undefined);
 
 vi.mock('../../kernel/instances', () => ({
+    rootLogger: {
+        child: () => ({ info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn() }),
+    },
     knowledgeGenerator: { listActiveJobs, generateFromTrigger, getStatus, cancel },
 }));
 

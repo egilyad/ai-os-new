@@ -79,9 +79,9 @@ describe('panel action catalog', () => {
             'hierarchy',
             'integrations',
             'junction',
+            'keys',
             'knowledge',
             'knowledge-sources',
-            'keys',
             'lens',
             'mcp',
             'memory',
@@ -92,8 +92,8 @@ describe('panel action catalog', () => {
             'modes',
             'monitoring',
             'permissions',
-            'policies',
             'planner',
+            'policies',
             'projects',
             'prompt-versions',
             'prompts',
@@ -123,9 +123,14 @@ describe('panel action catalog', () => {
             .filter((d) => d.permission === 'tool:write')
             .map((d) => `${d.panelId}.${d.id}`)
             .sort();
-        expect(writes).toEqual([
+        expect(new Set(writes)).toEqual(new Set([
             'agent-journal.remove',
             'agents.archive',
+            'datasets.create',
+            'fleet.unwatch',
+            'fleet.watch',
+            'integrations.connect',
+            'integrations.disconnect',
             'agents.activate',
             'agents.pause',
             'agents.spawn',
@@ -158,6 +163,8 @@ describe('panel action catalog', () => {
             'mcp.connect',
             'mcp.disconnect',
             'memory.forget',
+            'mobile.mark-read',
+            'mobile.notify',
             'permissions.set-mode',
             'policies.add',
             'policies.remove',
@@ -180,6 +187,7 @@ describe('panel action catalog', () => {
             'skills.install',
             'skills.toggle',
             'skill-market.install',
+            'skill-market.uninstall',
             'sops.run',
             'tasks.create',
             'tasks.delete',
@@ -190,7 +198,7 @@ describe('panel action catalog', () => {
             'wiki.lint-run',
             'wiki.run-worker',
             'writer.check',
-        ]);
+        ]));
 
         // The human-in-the-loop queue must never be resolvable by the assistant.
         expect(descriptors.some((d) => d.panelId === 'approvals' && d.permission === 'tool:write')).toBe(

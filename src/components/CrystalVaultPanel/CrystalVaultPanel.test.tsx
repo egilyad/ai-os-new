@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeAll, afterEach } from 'vitest';
+﻿import { describe, it, expect, vi, beforeAll, afterEach } from 'vitest';
 import { render, screen, fireEvent, cleanup } from '@testing-library/react';
 
 beforeAll(() => {
@@ -24,6 +24,9 @@ const refute = vi.fn(async () => undefined);
 const supersede = vi.fn(async () => undefined);
 
 vi.mock('../../kernel/instances', () => ({
+    rootLogger: {
+        child: () => ({ info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn() }),
+    },
     crystalVault: { list, propose, crystallize, refute, supersede },
 }));
 

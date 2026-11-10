@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+﻿import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 
 vi.mock('../../i18n/useTranslation', () => ({
@@ -124,6 +124,9 @@ vi.mock('../../kernel/events/event-bus', () => ({
 }));
 
 vi.mock('../../kernel/instances', () => ({
+    rootLogger: {
+        child: () => ({ info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn() }),
+    },
     keyService: {
         getKeys: vi.fn(() => []),
         getFreeTierLimits: vi.fn(() => ({})),

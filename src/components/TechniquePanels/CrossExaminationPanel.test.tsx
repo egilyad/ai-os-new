@@ -1,7 +1,10 @@
-import { describe, it, expect, vi } from 'vitest';
+﻿import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 
 vi.mock('../../kernel/instances', () => ({
+    rootLogger: {
+        child: () => ({ info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn() }),
+    },
     getAllSettings: () => ({} as Record<string, boolean>),
     setSetting: () => {},
     qualityImpactCollector: { getAllMetrics: () => [] },

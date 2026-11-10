@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+﻿import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 
 interface TestAlert {
@@ -15,6 +15,9 @@ const mockOn = vi.fn(() => vi.fn()) as unknown as (...args: unknown[]) => Return
 const mockGetAlerts = vi.fn((): TestAlert[] => []);
 
 vi.mock('../../kernel/instances', () => ({
+    rootLogger: {
+        child: () => ({ info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn() }),
+    },
     eventBus: {
         emit: vi.fn(),
         on: (...args: unknown[]) => mockOn(...args),

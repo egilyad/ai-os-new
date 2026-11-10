@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeAll } from 'vitest';
+﻿import { describe, it, expect, vi, beforeAll } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 
 beforeAll(() => {
@@ -23,6 +23,9 @@ const detect = vi.fn(() => Promise.resolve([]));
 const submitCounterargument = vi.fn(async () => undefined);
 
 vi.mock('../../kernel/instances', () => ({
+    rootLogger: {
+        child: () => ({ info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn() }),
+    },
     junctionEngine: { list, getSources, detect, submitCounterargument },
 }));
 

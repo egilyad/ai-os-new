@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+﻿import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 
 const mockRoles = [
@@ -79,6 +79,9 @@ vi.mock('../../kernel/runtime', () => ({
 }));
 
 vi.mock('../../kernel/instances', () => ({
+    rootLogger: {
+        child: () => ({ info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn() }),
+    },
     settingsService: {
         getSettings: vi.fn(() => ({ language: 'en' })),
         subscribe: vi.fn(() => vi.fn()),
