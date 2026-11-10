@@ -24,6 +24,8 @@ describe('BudgetAlertService', () => {
     let svc: BudgetAlertService;
 
     beforeEach(async () => {
+        localStorage.removeItem('budget_alert_rules');
+        localStorage.removeItem('budget_alert_history');
         svc = new BudgetAlertService();
         svc.setBudgetService(makeBudgetService());
         await svc.init();
@@ -100,7 +102,7 @@ describe('BudgetAlertService', () => {
             expect(events).toHaveLength(0);
         });
 
-        it('should trigger near_limit rule for global usage near threshold', () => {
+        it('should trigger near_limit rule for global usage near threshold', async () => {
             const budget = makeBudgetService({
                 getSpendSummary: vi.fn().mockReturnValue({
                     global: { budget: 100, spent: 75, remaining: 25, pct: 75 },
@@ -118,7 +120,7 @@ describe('BudgetAlertService', () => {
             expect(event!.ruleName).toBe('Monthly budget 80%');
         });
 
-        it('should trigger trending_up rule', () => {
+        it('should trigger trending_up rule', async () => {
             const budget = makeBudgetService({
                 getCostTrend: vi.fn().mockReturnValue({
                     direction: 'up',
