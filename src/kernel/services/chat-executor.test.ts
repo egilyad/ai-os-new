@@ -637,13 +637,17 @@ describe('ChatExecutor', () => {
                 });
             const localExecutor = new ChatExecutor(deps, deps.llmClient);
             localExecutor.handleMessage(makeRequest());
-            await vi.waitFor(() => expect(capturedSignal).toBeDefined());
+            for (let i = 0; i < 200 && !capturedSignal; i++) {
+                await new Promise((r) => setImmediate(r));
+            }
+            expect(capturedSignal).toBeDefined();
             expect(capturedSignal!.aborted).toBe(false);
             vi.setSystemTime(baseTime + 11 * 60 * 1000);
             vi.advanceTimersByTime(61000);
-            await vi.waitFor(() => {
-                expect(capturedSignal!.aborted).toBe(true);
-            });
+            for (let i = 0; i < 200 && !capturedSignal?.aborted; i++) {
+                await new Promise((r) => setImmediate(r));
+            }
+            expect(capturedSignal!.aborted).toBe(true);
             resolveSend(undefined);
             vi.useRealTimers();
             localExecutor.destroy();
