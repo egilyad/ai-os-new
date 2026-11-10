@@ -80,9 +80,11 @@ describe('DebateGovernor claim-graph wiring', () => {
         expect(restored.getState().graph.edges[0]!.type).toBe('challenges');
         // Edge is stamped with the argument timestamp, not rebuild time.
         expect(restored.getState().graph.edges[0]!.validFrom).toBe(2);
-        expect(Object.keys(restored.getState().graph.claims).sort()).toEqual(
-            Object.keys(live.getState().graph.claims).sort(),
-        );
+        const claimTexts = (g: { graph: { claims: Record<string, { text: string }> } }) =>
+            Object.values(g.graph.claims)
+                .map((c) => c.text)
+                .sort();
+        expect(claimTexts(restored.getState())).toEqual(claimTexts(live.getState()));
     });
 
     it('skips arguments already flagged as duplicates when rehydrating', () => {

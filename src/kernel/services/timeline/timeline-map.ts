@@ -85,6 +85,16 @@ export const TIMELINE_MAP: Record<
     'eval:run:completed': e('ops', (d) => `Eval ${String(d.benchmarkId ?? d.id ?? '')}`, 'info', 'id'),
     'capability:granted': e('ops', (d) => `Capability ${String(d.capability ?? '')}`, 'info', 'capability'),
     'trust:score:updated': e('ops', (d) => `Trust ${String(d.agentId ?? '')} ${String(d.score ?? '')}`, 'info', 'agentId'),
+
+    // extended coverage
+    'key:added': e('provider', (d) => `Key added: ${String(d.provider ?? '')}`, 'info', 'id'),
+    'chat:response': e('request', (d) => `Chat response ${String(d.requestId ?? '')}`, 'info', 'requestId'),
+    'kernel:updated': e('system', (_d) => `Kernel updated`, 'info'),
+    'system:runtime:ready': e('system', (_d) => `Runtime ready`, 'info'),
+    'cognitive:decision:made': e('ops', (d) => `Decision ${String(d.decisionId ?? d.id ?? '')}`, 'info', 'id'),
+    'debate:updated': e('fleet', (d) => `Debate updated ${String(d.sessionId ?? '')}`, 'info', 'sessionId'),
+    'skills:updated': e('tool', (_d) => `Skills updated`, 'info'),
+    'policy:violation': e('ops', (d) => `Policy violation ${String(d.ruleId ?? d.policyId ?? '')}`, 'warning', 'id'),
 };
 
 export const TIMELINE_MAP_SIZE = Object.keys(TIMELINE_MAP).length; // 60

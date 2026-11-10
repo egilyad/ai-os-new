@@ -25,13 +25,15 @@ function fakeCodeExec(dal: ReturnType<typeof fakeDal>) {
             const id = `codeticket-${Math.random().toString(36).slice(2, 6)}`;
             await dal.kv.set(`codetickets/${id}`, { id, language: lang, code, status: 'queued', createdAt: Date.now() });
             if (delegate) {
-                try {
-                    const result = await delegate(id, lang, code);
-                    await dal.kv.set(`codetickets/${id}`, { id, language: lang, code, status: 'done', result, createdAt: Date.now() });
-                } catch (e) {
-                    await dal.kv.set(`codetickets/${id}`, { id, language: lang, code, status: 'rejected', result: e instanceof Error ? e.message : String(e), createdAt: Date.now() });
-                    throw e;
-                }
+                setTimeout(() => {
+                    void delegate(id, lang, code)
+                        .then(async (result) => {
+                            await dal.kv.set(`codetickets/${id}`, { id, language: lang, code, status: 'done', result, createdAt: Date.now() });
+                        })
+                        .catch(async (e) => {
+                            await dal.kv.set(`codetickets/${id}`, { id, language: lang, code, status: 'rejected', result: e instanceof Error ? e.message : String(e), createdAt: Date.now() });
+                        });
+                }, 0);
             }
             return id;
         },
@@ -56,6 +58,7 @@ describe('G5 CodeSandboxService (static)', () => {
         await svc.init();
         svc.setExecutor(async () => 'hello artifact');
         const id = await svc.submit('python', 'print("hi")', { timeoutMs: 2000 });
+        await new Promise((r) => setTimeout(r, 50));
         const art = await svc.artifact(id);
         expect(art.status).toBe('done');
         expect(art.result).toContain('hello artifact');
@@ -76,24 +79,17 @@ describe('G5 CodeSandboxService (static)', () => {
         const dal = fakeDal();
         const svc = new CodeSandboxService({ dal: dal as unknown as import('../../dal/types').DataAccessLayer, codeExec: fakeCodeExec(dal), events: fakeBus() });
         await svc.init();
-        svc.setExecutor(async () => new Promise<string>(() => {})); // never resolves
-        const idP = svc.submit('javascript', 'while(true){}', { timeoutMs: 50 }).catch((e) => e.message as string);
-        // submit will throw after delegate timeout via CodeExec, but artifact should be timeout
-        let id: string | null = null;
-        try {
-            id = await svc.submit('javascript', 'while(true){}', { timeoutMs: 50 });
-        } catch {
-            // CodeExec rethrows with timeout message — we still can find artifact by scanning
-            // For this test we capture via list
-        }
-        // Wait a bit for timeout
-        await new Promise((r) => setTimeout(r, 120));
-        const list = await svc.list();
-        const timed = list.find((a) => a.status === 'timeout');
-        expect(timed?.exitCode).toBe(124);
+        svc.setExecutor(async () => {
+            await new Promise((r) => setTimeout(r, 5000));
+            throw new Error('Sandbox timeout after 5000ms');
+        });
+        const id = await svc.submit('javascript', 'while(true){}', { timeoutMs: 50 });
+        // Sandbox timeout floor is 1000ms; wait until the timeout finalizes the artifact
+        await new Promise((r) => setTimeout(r, 1600));
+        const timed = await svc.artifact(id);
+        expect(timed.status).toBe('timeout');
+        expect(timed.exitCode).toBe(124);
         await svc.destroy();
-        expect(idP).toBeDefined();
-        expect(id).toBeDefined();
     });
 
     it('BLOCKED-RUNTIME stub when no executor set', async () => {
@@ -102,6 +98,7 @@ describe('G5 CodeSandboxService (static)', () => {
         await svc.init();
         // no setExecutor → stub
         const id = await svc.submit('sql', 'SELECT 1');
+        await new Promise((r) => setTimeout(r, 50));
         const art = await svc.artifact(id);
         expect(art.result).toContain('BLOCKED-RUNTIME');
         await svc.destroy();
