@@ -16,7 +16,7 @@ export default defineConfig({
         teardownTimeout: 30000,
         // CI full-matrix runs cap parallel forks to stay under runner memory.
         ...(process.env.CI_FULL_TESTS === '1'
-            ? { poolOptions: { forks: { maxForks: 3 } } }
+            ? { poolOptions: { forks: { maxForks: 2 } } }
             : {}),
         coverage: {
             provider: 'v8',
