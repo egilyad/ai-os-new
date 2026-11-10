@@ -286,6 +286,10 @@ jobs:
                   CI_FULL_TESTS: '1'
               run: |
                   set -o pipefail
+                  if [[ "${{ matrix.group }}" == "kernel-svc-r1a2" ]]; then
+                    export NODE_OPTIONS="--max-old-space-size=15360"
+                    export VITEST_MAX_FORKS=1
+                  fi
                   case "${{ matrix.group }}" in
                     kernel-debate) TARGETS="src/kernel/services/debate-runtime" ;;
                     kernel-svc-a) TARGETS="src/kernel/services/advisor src/kernel/services/agent-diversity src/kernel/services/agent-runtime src/kernel/services/assistant src/kernel/services/auth src/kernel/services/browser src/kernel/services/builder" ;;
