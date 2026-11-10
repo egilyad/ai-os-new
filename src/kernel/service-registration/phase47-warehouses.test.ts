@@ -1,13 +1,8 @@
 import '../../tests/setup-runtime';
 import { describe, it, expect, vi } from 'vitest';
 import { runtime } from '../runtime';
-import type { Role } from '../types/role-types';
 import { LENS_LIBRARY } from '../services/lens-engine/lens-library';
 import { TopologyTemplateService } from '../services/topology-template-service';
-
-interface RoleReader {
-    getRole(id: string): Role | undefined;
-}
 
 describe('Phase47 warehouses (U)', () => {
     it('ships the science-wing builtin roles', async () => {

@@ -2,15 +2,10 @@ import '../../tests/setup-runtime';
 import { describe, it, expect, vi } from 'vitest';
 import { runtime } from '../runtime';
 import type { ISkillMarketService } from '../contracts/ops';
-import type { Role } from '../types/role-types';
 import { getCrewTemplate } from '../services/crew/crew-templates';
 
 function market(): ISkillMarketService {
     return runtime.getService<ISkillMarketService>('skillMarketService');
-}
-
-interface RoleReader {
-    getRole(id: string): Role | undefined;
 }
 
 describe('Phase45 warehouse seeds (S)', () => {
