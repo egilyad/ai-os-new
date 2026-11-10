@@ -58,14 +58,14 @@ const BulkImportStep: React.FC<BulkImportStepProps> = ({
                             padding: '0.75rem',
                             borderRadius: 12,
                             background: 'var(--warning-tint)',
-                            border: '1px solid rgba(245,158,11,0.2)',
+                            border: '1px solid var(--warning-tint)',
                             textAlign: 'center',
                         }}
                     >
                         <div style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--warning)' }}>
                             {bulkReport.duplicates}
                         </div>
-                        <div style={{ fontSize: '0.7rem', color: '#fde68a' }}>
+                        <div style={{ fontSize: '0.7rem', color: 'var(--warning)' }}>
                             {t('add_key.stat_duplicates')}
                         </div>
                     </div>
