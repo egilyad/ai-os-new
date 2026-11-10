@@ -282,7 +282,7 @@ jobs:
               run: npm ci --legacy-peer-deps
             - name: Run full tests (${{ matrix.group }})
               env:
-                  NODE_OPTIONS: --max-old-space-size=8192
+                  NODE_OPTIONS: --max-old-space-size=12288
                   CI_FULL_TESTS: '1'
               run: |
                   set -o pipefail
