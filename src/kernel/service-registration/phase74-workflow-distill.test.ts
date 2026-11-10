@@ -33,7 +33,13 @@ function boot(rec: SessionMemoryRecord | null) {
             return f(c);
         },
         registerFactory: (name: string, f: (cc: never) => unknown) => {
-            factories.set(name, f as (c: unknown) => unknown);
+            factories.set(name, ((cc: unknown) => {
+                const cached = (c as { __singletons?: Map<string, unknown> }).__singletons?.get(name);
+                if (cached) return cached;
+                const inst = (f as (cc2: unknown) => unknown)(cc);
+                ((c as { __singletons?: Map<string, unknown> }).__singletons ??= new Map()).set(name, inst);
+                return inst;
+            }) as (c: unknown) => unknown);
         },
     };
 

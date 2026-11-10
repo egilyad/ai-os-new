@@ -68,10 +68,24 @@ describe('Phase33 e2e chain (F)', () => {
 
     it('lets agents curate their own long-term memory', async () => {
         get<IMemoryBlocksService>('memoryBlocksService');
-        const authz = get<{ setRules(rules: unknown[]): Promise<void> }>('authorizationService');
+        const authz = get<{
+            setRules(rules: unknown[]): Promise<void>;
+            evaluate(req: { actor: string; action: string; resource: string }): Promise<{
+                effect: string;
+            }>;
+        }>('authorizationService');
         await authz.setRules([{ id: 'test-allow', subject: '*', action: '*', resource: '*', effect: 'allow' }]);
         const governance = get<IToolGovernanceService>('toolGovernanceService');
         await governance.grant('agent', 'tool:memory:*', true);
+        const grants = await governance.listGrants('agent');
+        expect(grants.map((g) => g.pattern)).toContain('tool:memory:*');
+        const authzDec = await authz.evaluate({
+            actor: 'agent',
+            action: 'tool:exec',
+            resource: 'tool:memory.edit',
+        });
+        expect(authzDec.effect).toBe('allow');
+        expect(await governance.check('agent', 'tool:memory.edit')).toBe(true);
         const runner = get<IToolRunnerService>('toolRunnerService');
         const lt = get<ILtMemoryService>('ltMemoryService');
         const m = await lt.remember({ ownerId: 'agent', content: 'self-edit probe' });
@@ -88,10 +102,24 @@ describe('Phase33 e2e chain (F)', () => {
 
     it('lets an agent rewrite its own memory text', async () => {
         get<IMemoryBlocksService>('memoryBlocksService');
-        const authz = get<{ setRules(rules: unknown[]): Promise<void> }>('authorizationService');
+        const authz = get<{
+            setRules(rules: unknown[]): Promise<void>;
+            evaluate(req: { actor: string; action: string; resource: string }): Promise<{
+                effect: string;
+            }>;
+        }>('authorizationService');
         await authz.setRules([{ id: 'test-allow', subject: '*', action: '*', resource: '*', effect: 'allow' }]);
         const governance = get<IToolGovernanceService>('toolGovernanceService');
         await governance.grant('agent', 'tool:memory:*', true);
+        const grants = await governance.listGrants('agent');
+        expect(grants.map((g) => g.pattern)).toContain('tool:memory:*');
+        const authzDec = await authz.evaluate({
+            actor: 'agent',
+            action: 'tool:exec',
+            resource: 'tool:memory.edit',
+        });
+        expect(authzDec.effect).toBe('allow');
+        expect(await governance.check('agent', 'tool:memory.edit')).toBe(true);
         const runner = get<IToolRunnerService>('toolRunnerService');
         const lt = get<ILtMemoryService>('ltMemoryService');
         const m = await lt.remember({ ownerId: 'agent', content: 'draft v1' });

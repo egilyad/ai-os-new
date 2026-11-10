@@ -319,6 +319,13 @@ export function resolveStrategyConfig(
                     ...planMeta,
                 };
             }
+            if (plan.topology === 'roundtable') {
+                return {
+                    topology: buildRoundtableTopology(participants, rounds),
+                    forcedQuality: [...new Set(forcedQuality)],
+                    ...planMeta,
+                };
+            }
             effective = 'round_robin';
         } else {
             const hints = builtinExecutionHints(strategy);

@@ -21,7 +21,10 @@ function now(): number {
 
 function patternMatches(pattern: string, tool: string): boolean {
     if (pattern === '*') return true;
-    if (pattern.endsWith(':*')) return tool.startsWith(pattern.slice(0, -1));
+    if (pattern.endsWith(':*')) {
+        const base = pattern.slice(0, -2);
+        return tool.startsWith(base) || tool.startsWith(`${base}.`) || tool.startsWith(`${base}:`);
+    }
     return pattern === tool;
 }
 

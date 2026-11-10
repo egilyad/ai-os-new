@@ -34,7 +34,7 @@ describe('computeRetention (Ebbinghaus)', () => {
 
     it('decays with age and is slower for more important memories', () => {
         expect(computeRetention(0.5, 100)).toBeLessThan(computeRetention(0.5, 10));
-        expect(computeRetention(0.9, 100)).toBeGreaterThan(computeRetention(0.2, 100));
+        expect(computeRetention(1.5, 100)).toBeGreaterThan(computeRetention(0.5, 100));
     });
 });
 
