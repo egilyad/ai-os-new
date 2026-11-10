@@ -259,7 +259,7 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                group: [kernel, components, rest]
+                group: [kernel-services, kernel-rest, components, rest]
         permissions:
             contents: read
         steps:
@@ -286,7 +286,8 @@ jobs:
               run: |
                   set -o pipefail
                   case "${{ matrix.group }}" in
-                    kernel) TARGETS="src/kernel" ;;
+                    kernel-services) TARGETS="src/kernel/services" ;;
+                    kernel-rest) TARGETS="src/kernel/dal src/kernel/events src/kernel/instances src/kernel/service-registration src/kernel/contracts src/kernel/types src/kernel/utils src/kernel/container.ts src/kernel/service-helper.ts" ;;
                     components) TARGETS="src/components" ;;
                     rest) TARGETS="src/llm src/stores src/hooks src/tests" ;;
                   esac
