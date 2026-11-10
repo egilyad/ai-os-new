@@ -12,12 +12,16 @@ import { EVENTS } from '../events/event-registry';
 
 interface FakeBus {
     on: (e: string, cb: (d: unknown) => void) => () => void;
+    onSafe: <T>(e: string, cb: (d: T) => void) => () => void;
+    emitOnce: (e: string, k: string, d?: unknown) => void;
     emit: (e: string, d?: unknown) => void;
+    off: () => void;
+    subscribeAll: () => () => void;
 }
 
 function makeBus(): FakeBus {
     const map = new Map<string, Array<(d: unknown) => void>>();
-    const subscribe = (e: string, cb: (d: unknown) => void) => {
+    const subscribe = (e: string, cb: (d: unknown) => void): (() => void) => {
         const arr = map.get(e) ?? [];
         arr.push(cb);
         map.set(e, arr);
