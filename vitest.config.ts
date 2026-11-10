@@ -17,9 +17,10 @@ export default defineConfig({
         // CI full-matrix runs cap parallel forks to stay under runner memory.
         ...(process.env.CI_FULL_TESTS === '1'
             ? {
+                  pool: 'threads',
                   poolOptions: {
-                      forks: {
-                          maxForks: process.env.VITEST_MAX_FORKS
+                      threads: {
+                          maxThreads: process.env.VITEST_MAX_FORKS
                               ? Number(process.env.VITEST_MAX_FORKS)
                               : 2,
                       },
