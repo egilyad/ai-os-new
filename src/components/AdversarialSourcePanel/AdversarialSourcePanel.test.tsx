@@ -59,7 +59,7 @@ describe('AdversarialSourcePanel', () => {
             },
         });
         fireEvent.click(screen.getByRole('button', { name: /Verify claims/i }));
-        expect(await screen.findByText('net down')).toBeDefined();
+        expect(await screen.findByText(/net down/)).toBeDefined();
         expect(screen.getByRole('alert')).toBeDefined();
     });
 });

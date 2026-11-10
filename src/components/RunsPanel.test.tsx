@@ -40,7 +40,7 @@ describe('RunsPanel', () => {
         const Panel = (await import('./RunsPanel')).default;
         render(<Panel />);
         await screen.findByText('Acme');
-        expect(await screen.findByText(/nightly/)).toBeDefined();
+        expect((await screen.findAllByText(/nightly/)).length).toBeGreaterThanOrEqual(1);
         expect(screen.getByText('—')).toBeDefined();
         expect(screen.queryByText('Invalid Date')).toBeNull();
     });

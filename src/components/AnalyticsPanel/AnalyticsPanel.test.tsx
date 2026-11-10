@@ -99,6 +99,8 @@ vi.mock('../../kernel/instances', () => ({
     providerTracker: { getHealthEvents: vi.fn(() => []) },
     eventBus: { on: vi.fn(() => vi.fn()), emit: vi.fn(), off: vi.fn() },
     EVENTS: { KERNEL_UPDATED: 'kernel:updated', NOTIFICATION: 'notification' },
+    rootLogger: { child: () => ({ info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn() }) },
+    getDexieDb: () => ({ tables: [], apiKeys: { toArray: async () => [] } }),
 }));
 
 describe('AnalyticsPanel', () => {

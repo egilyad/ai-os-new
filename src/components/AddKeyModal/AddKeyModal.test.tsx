@@ -14,6 +14,7 @@ vi.mock('../../kernel/instances', () => ({
         ]),
     },
     rootLogger: { child: () => ({ info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn() }) },
+    getDexieDb: () => ({ tables: [], apiKeys: { toArray: async () => [] } }),
 }));
 
 vi.mock('../../i18n/useTranslation', () => {

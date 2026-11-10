@@ -50,6 +50,9 @@ function boot(rec: SessionMemoryRecord | null) {
         } as never,
     );
 
+    // Фабрика ленивая — дёргаем её, чтобы инструмент был зарегистрирован.
+    c.get('workflowDistiller');
+
     return { c, tools, lt, sop };
 }
 

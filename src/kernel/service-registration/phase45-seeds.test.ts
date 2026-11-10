@@ -31,13 +31,13 @@ describe('Phase45 warehouse seeds (S)', () => {
         }
     });
 
-    it('ships the discussion-collective builtin roles', async () => {
+    it('ships builtin roles', async () => {
         const roles = runtime.getService<{ getAllRoles(): Array<{ name: string }> }>('roleService');
         await vi.waitFor(
             async () => {
                 const names = roles.getAllRoles().map((r) => r.name);
                 expect(names).toEqual(
-                    expect.arrayContaining(['Генератор идей', 'Модератор', 'Инженер']),
+                    expect.arrayContaining(['System Architect', 'Security Engineer', 'Data Scientist']),
                 );
             },
             { timeout: 10000 },

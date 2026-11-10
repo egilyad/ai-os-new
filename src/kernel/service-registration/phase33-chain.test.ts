@@ -1,4 +1,4 @@
-import '../../tests/setup-runtime';
+﻿import '../../tests/setup-runtime';
 import { describe, it, expect } from 'vitest';
 import { runtime } from '../runtime';
 import type {
@@ -18,7 +18,7 @@ import type { IToolGovernanceService } from '../contracts/ops';
 const get = <T>(token: string): T => runtime.getService<T>(token);
 
 describe('Phase33 e2e chain (F)', () => {
-    it('chat → guardrail → block → sop → goal → queue → step → dyad', async () => {
+    it('chat â†’ guardrail â†’ block â†’ sop â†’ goal â†’ queue â†’ step â†’ dyad', async () => {
         const chat = get<IGroupChatService>('groupChatService');
         expect((await chat.createChat({ name: 't', members: ['a', 'b'] })).status).toBe('running');
 
@@ -71,7 +71,7 @@ describe('Phase33 e2e chain (F)', () => {
         const authz = get<{ setRules(rules: unknown[]): Promise<void> }>('authorizationService');
         await authz.setRules([{ id: 'test-allow', subject: '*', action: '*', resource: '*', effect: 'allow' }]);
         const governance = get<IToolGovernanceService>('toolGovernanceService');
-        await governance.grant('agent', 'memory:*', true);
+        await governance.grant('agent', 'tool:memory:*', true);
         const runner = get<IToolRunnerService>('toolRunnerService');
         const lt = get<ILtMemoryService>('ltMemoryService');
         const m = await lt.remember({ ownerId: 'agent', content: 'self-edit probe' });
@@ -91,7 +91,7 @@ describe('Phase33 e2e chain (F)', () => {
         const authz = get<{ setRules(rules: unknown[]): Promise<void> }>('authorizationService');
         await authz.setRules([{ id: 'test-allow', subject: '*', action: '*', resource: '*', effect: 'allow' }]);
         const governance = get<IToolGovernanceService>('toolGovernanceService');
-        await governance.grant('agent', 'memory:*', true);
+        await governance.grant('agent', 'tool:memory:*', true);
         const runner = get<IToolRunnerService>('toolRunnerService');
         const lt = get<ILtMemoryService>('ltMemoryService');
         const m = await lt.remember({ ownerId: 'agent', content: 'draft v1' });

@@ -51,6 +51,9 @@ function boot() {
         } as never,
     );
 
+    // Фабрика ленивая — дёргаем её, чтобы инструменты были зарегистрированы.
+    c.get('sessionMemoryService');
+
     return { c, tools };
 }
 

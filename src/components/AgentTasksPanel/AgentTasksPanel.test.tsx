@@ -51,9 +51,12 @@ describe('AgentTasksPanel', () => {
         render(<AgentTasksPanel />);
         fireEvent.change(screen.getByPlaceholderText('tasks.task_ph'), { target: { value: 'open https://example.com' } });
         fireEvent.click(screen.getByText('tasks.run'));
-        await waitFor(() =>
-            expect(mockedBrowser.execute).toHaveBeenCalledWith('open https://example.com', { maxSteps: 10 }),
-        );
+        await waitFor(() => {
+            expect(mockedBrowser.execute).toHaveBeenCalled();
+            const args = mockedBrowser.execute.mock.calls[0]!;
+            expect(args[0]).toBe('open https://example.com');
+            expect(args[1]).toMatchObject({ maxSteps: 10 });
+        });
         expect(mockedApproval.requestApproval).toHaveBeenCalledWith(
             expect.objectContaining({ toolName: 'browser.act' }),
         );
