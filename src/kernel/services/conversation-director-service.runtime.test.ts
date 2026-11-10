@@ -33,7 +33,8 @@ function makeBus(): FakeBus {
     };
     return {
         on: (e, cb) => subscribe(e, cb),
-        onSafe: (e, cb) => subscribe(e, cb),
+        onSafe: <T>(e: string, cb: (d: T) => void) =>
+            subscribe(e, cb as (d: unknown) => void),
         emitOnce: (e, _k, d) => (map.get(e) ?? []).forEach((cb) => cb(d)),
         emit: (e, d) => (map.get(e) ?? []).forEach((cb) => cb(d)),
         off: () => {},
