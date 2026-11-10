@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+﻿import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { EVENTS } from '../instances';
 
 vi.mock('../utils/tokenEstimate', () => ({ estimateTokens: vi.fn(() => 100) }));
@@ -50,6 +50,7 @@ const mockEventBus = {
         };
     }),
     off: vi.fn(),
+    emitOnce: vi.fn(() => true),
 };
 
 const mockKeyService = {
@@ -116,6 +117,14 @@ describe('ChatExecutor auto-routing', () => {
                 checkAgentPolicy: vi.fn(() => ({ allowed: true })),
             },
             freeTierLimits: {},
+            promptSecurityService: {
+                scan: vi.fn(() => ({ safe: true, score: 0, summary: '' })),
+                getConfig: vi.fn(() => ({ enabled: false, blockOnScore: 9 })),
+                updateConfig: vi.fn(),
+                addEvent: vi.fn(async () => {}),
+                getHistory: vi.fn(async () => []),
+                clearHistory: vi.fn(async () => {}),
+            },
             llmClient: mockLLMClient,
             logger: { info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn() },
         };
@@ -161,6 +170,7 @@ describe('ChatExecutor auto-routing', () => {
             'Hello, how are you?',
             undefined,
             undefined,
+            undefined, undefined, undefined, undefined, undefined
         );
         expect(res.provider).toBe('Gemini');
         expect(res.status).toBe('done');
@@ -193,6 +203,7 @@ describe('ChatExecutor auto-routing', () => {
             'Urgent request',
             'high',
             undefined,
+            undefined, undefined, undefined, undefined, undefined
         );
     });
 
@@ -214,15 +225,19 @@ describe('ChatExecutor auto-routing', () => {
     it('should emit error when getRankedProviders returns empty', async () => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (mockRouterService.getRankedProviders as any).mockReturnValue([]);
-        const resPromise = waitForResponse();
+        const errorPromise = new Promise<{ error?: string }>((resolve) => {
+            const unsub = mockEventBus.on(EVENTS.STREAM_ERROR, (res: unknown) => {
+                unsub();
+                resolve((res ?? {}) as { error?: string });
+            });
+        });
         mockEventBus.emit(EVENTS.SEND_MESSAGE, {
             provider: 'auto',
             model: 'gpt-4',
             messages: [{ role: 'user', content: 'Hello?' }],
             requestId: 'test-empty-1',
         });
-        const res = await resPromise;
-        expect(res.status).toBe('error');
+        const res = await errorPromise;
         expect(res.error).toContain('No providers available');
     });
 
@@ -263,23 +278,11 @@ describe('ChatExecutor auto-routing', () => {
             requestId: 'test-concat-1',
         });
         await resPromise;
-        expect(mockRouterService.getRankedProviders).toHaveBeenCalledWith(
-            'content',
-            expect.stringContaining('You are a helpful assistant.'),
-            undefined,
-            undefined,
-        );
-        expect(mockRouterService.getRankedProviders).toHaveBeenCalledWith(
-            'content',
-            expect.stringContaining('Tell me a joke.'),
-            undefined,
-            undefined,
-        );
-        expect(mockRouterService.getRankedProviders).toHaveBeenCalledWith(
-            'content',
-            expect.stringContaining('Sure!'),
-            undefined,
-            undefined,
-        );
+        expect(mockRouterService.getRankedProviders).toHaveBeenCalledTimes(1);
+        const args = mockRouterService.getRankedProviders.mock.calls[0]!;
+        expect(args[0]).toBe('content');
+        expect(args[1]).toContain('You are a helpful assistant.');
+        expect(args[1]).toContain('Tell me a joke.');
+        expect(args[1]).toContain('Sure!');
     });
 });
