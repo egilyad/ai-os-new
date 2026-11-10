@@ -159,6 +159,7 @@ vi.mock('../../stores/useKeyStore', () => {
 });
 
 vi.mock('../../kernel/instances', () => ({
+    getDexieDb: () => ({ tables: [], apiKeys: { toArray: async () => [] } }),
     rootLogger: {
         child: vi.fn(() => ({ info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn() })),
     },

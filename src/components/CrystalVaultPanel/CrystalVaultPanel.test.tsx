@@ -24,8 +24,16 @@ const refute = vi.fn(async () => undefined);
 const supersede = vi.fn(async () => undefined);
 
 vi.mock('../../kernel/instances', () => ({
+    getDexieDb: () => ({ tables: [], apiKeys: { toArray: async () => [] } }),
     rootLogger: {
         child: () => ({ info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn() }),
+    },
+    eventBus: {
+        emit: vi.fn(),
+        on: vi.fn(() => vi.fn()),
+        onSafe: vi.fn(() => vi.fn()),
+        off: vi.fn(),
+        subscribeAll: vi.fn(() => vi.fn()),
     },
     crystalVault: { list, propose, crystallize, refute, supersede },
 }));

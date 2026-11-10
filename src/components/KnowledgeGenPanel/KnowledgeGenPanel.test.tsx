@@ -23,6 +23,7 @@ const getStatus = vi.fn(async () => undefined);
 const cancel = vi.fn(async () => undefined);
 
 vi.mock('../../kernel/instances', () => ({
+    getDexieDb: () => ({ tables: [], apiKeys: { toArray: async () => [] } }),
     rootLogger: {
         child: () => ({ info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn() }),
     },

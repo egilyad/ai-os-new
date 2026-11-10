@@ -15,6 +15,7 @@ const mockOn = vi.fn(() => vi.fn()) as unknown as (...args: unknown[]) => Return
 const mockGetAlerts = vi.fn((): TestAlert[] => []);
 
 vi.mock('../../kernel/instances', () => ({
+    getDexieDb: () => ({ tables: [], apiKeys: { toArray: async () => [] } }),
     rootLogger: {
         child: () => ({ info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn() }),
     },

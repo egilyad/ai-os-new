@@ -18,6 +18,7 @@ beforeAll(() => {
 });
 
 vi.mock('../../kernel/instances', () => ({
+    getDexieDb: () => ({ tables: [], apiKeys: { toArray: async () => [] } }),
     debateEngine: {
         listSessions: vi.fn().mockResolvedValue([]),
         getSession: vi.fn().mockResolvedValue(null),

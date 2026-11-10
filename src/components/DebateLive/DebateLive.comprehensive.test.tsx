@@ -43,6 +43,7 @@ const mockLiveStore = {
 };
 
 vi.mock('../../kernel/instances', () => ({
+    getDexieDb: () => ({ tables: [], apiKeys: { toArray: async () => [] } }),
     debateEngine: mockDebateEngine,
     eventBus: mockEventBus,
     EVENTS: {
@@ -256,7 +257,7 @@ describe('SpeakerNode', () => {
                 sessionId="s1"
             />,
         );
-        expect(screen.getByText('Agent 1')).toBeDefined();
+        expect(screen.getByText('Agent A')).toBeDefined();
         expect(screen.getByText('pro')).toBeDefined();
     });
 

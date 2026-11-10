@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, beforeAll } from 'vitest';
+﻿import { describe, it, expect, vi, beforeEach, beforeAll } from 'vitest';
 import { render, screen, fireEvent, act, waitFor } from '@testing-library/react';
 import { eventBus } from '../../kernel/instances';
 import React from 'react';
@@ -57,6 +57,7 @@ const {
             recordHumanVote: vi.fn(),
         },
         mockDebateEngine: {
+            getAllSessions: vi.fn(() => []),
             pauseSession: vi.fn(),
             resumeSession: vi.fn(),
             cancelSession: vi.fn(),
@@ -114,6 +115,7 @@ vi.mock('../../kernel/instances', () => {
         },
         sessionManager: {
             getDebateHistory: vi.fn(() => []),
+            getTerminalHistory: vi.fn(async () => []),
             restoreDebateSession: vi.fn(),
             deleteDebateHistory: vi.fn(),
             archiveDebateSession: vi.fn(),

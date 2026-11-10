@@ -29,6 +29,7 @@ const manifest = {
 };
 
 vi.mock('../../kernel/instances', () => ({
+    getDexieDb: () => ({ tables: [], apiKeys: { toArray: async () => [] } }),
     pluginRegistry: {
         list: vi.fn().mockReturnValue([
             { manifest, status: 'active' },

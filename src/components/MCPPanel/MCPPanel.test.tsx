@@ -7,6 +7,7 @@ const mockServers = [
 ];
 
 vi.mock('../../kernel/instances', () => ({
+    getDexieDb: () => ({ tables: [], apiKeys: { toArray: async () => [] } }),
     mcpService: {
         getServers: vi.fn(() => [...mockServers]),
         getConnectionStats: vi.fn(() => ({ total: 2, connected: 1, disconnected: 1, error: 0 })),

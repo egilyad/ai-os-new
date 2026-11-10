@@ -50,6 +50,7 @@ const suggestLenses = vi.fn(() => [{ lensId: 'lens-b', confidence: 0.8, rational
 const addLens = vi.fn();
 
 vi.mock('../../kernel/instances', () => ({
+    getDexieDb: () => ({ tables: [], apiKeys: { toArray: async () => [] } }),
     rootLogger: {
         child: () => ({ info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn() }),
     },

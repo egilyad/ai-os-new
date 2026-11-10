@@ -3,6 +3,7 @@ import { render, screen } from '@testing-library/react';
 import ErrorBoundary from './ErrorBoundary';
 
 vi.mock('../../kernel/instances', () => ({
+    getDexieDb: () => ({ tables: [], apiKeys: { toArray: async () => [] } }),
     eventBus: { emit: vi.fn(), on: vi.fn(), off: vi.fn() },
     rootLogger: { error: vi.fn() },
     settingsService: {

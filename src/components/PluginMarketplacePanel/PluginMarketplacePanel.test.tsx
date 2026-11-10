@@ -18,6 +18,7 @@ beforeAll(() => {
 });
 
 vi.mock('../../kernel/instances', () => ({
+    getDexieDb: () => ({ tables: [], apiKeys: { toArray: async () => [] } }),
     pluginRegistry: {
         list: vi.fn().mockReturnValue([]),
     },

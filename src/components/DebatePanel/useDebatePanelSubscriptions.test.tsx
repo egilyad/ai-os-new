@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, afterEach } from 'vitest';
+﻿import { describe, it, expect, vi, afterEach } from 'vitest';
 import { render, cleanup, act } from '@testing-library/react';
 import { useRef } from 'react';
 import { useDebatePanelSubscriptions } from './useDebatePanelSubscriptions';

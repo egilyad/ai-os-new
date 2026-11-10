@@ -88,6 +88,7 @@ const mockOrchestrator = {
 };
 
 vi.mock('../../kernel/instances', () => ({
+    getDexieDb: () => ({ tables: [], apiKeys: { toArray: async () => [] } }),
     debateEngine: mockDebateEngine,
     debateService: mockDebateService,
     debateHumanService: { addArgument: vi.fn().mockResolvedValue(undefined) },

@@ -95,6 +95,7 @@ const mockTools = [
 ];
 
 vi.mock('../../kernel/instances', () => ({
+    getDexieDb: () => ({ tables: [], apiKeys: { toArray: async () => [] } }),
     rootLogger: {
         child: vi.fn(() => ({
             debug: vi.fn(),

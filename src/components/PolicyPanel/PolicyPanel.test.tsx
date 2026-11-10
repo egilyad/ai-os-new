@@ -18,6 +18,7 @@ beforeAll(() => {
 });
 
 vi.mock('../../kernel/instances', () => ({
+    getDexieDb: () => ({ tables: [], apiKeys: { toArray: async () => [] } }),
     policyService: {
         getPolicies: vi.fn().mockReturnValue([]),
         createPolicy: vi.fn().mockReturnValue({ id: 'p1' }),

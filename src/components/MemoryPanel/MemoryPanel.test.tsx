@@ -20,6 +20,7 @@ const mockMemories = [
 ];
 
 vi.mock('../../kernel/instances', () => ({
+    getDexieDb: () => ({ tables: [], apiKeys: { toArray: async () => [] } }),
     CONFIG: {
         services: {
             memory: {

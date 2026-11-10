@@ -4,6 +4,7 @@ import { MemoryRouter } from 'react-router-dom';
 import MemoryCenterPanel from './MemoryCenterPanel';
 
 vi.mock('../../kernel/instances', () => ({
+    getDexieDb: () => ({ tables: [], apiKeys: { toArray: async () => [] } }),
     rootLogger: {
         child: () => ({ info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn() }),
     },

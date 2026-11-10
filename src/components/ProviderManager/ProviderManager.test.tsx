@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, beforeAll } from 'vitest';
+﻿import { describe, it, expect, vi, beforeEach, beforeAll } from 'vitest';
 import ProviderManagerComponent from './ProviderManager';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import type { FC } from 'react';

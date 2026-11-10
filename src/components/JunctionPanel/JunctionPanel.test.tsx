@@ -23,6 +23,7 @@ const detect = vi.fn(() => Promise.resolve([]));
 const submitCounterargument = vi.fn(async () => undefined);
 
 vi.mock('../../kernel/instances', () => ({
+    getDexieDb: () => ({ tables: [], apiKeys: { toArray: async () => [] } }),
     rootLogger: {
         child: () => ({ info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn() }),
     },

@@ -18,6 +18,7 @@ const mockEntries = [
 ];
 
 vi.mock('../../kernel/instances', () => ({
+    getDexieDb: () => ({ tables: [], apiKeys: { toArray: async () => [] } }),
     rootLogger: {
         getBuffer: vi.fn(() => [...mockEntries]),
         exportLogs: vi.fn(() => 'exported-content'),

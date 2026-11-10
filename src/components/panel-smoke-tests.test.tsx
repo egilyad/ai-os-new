@@ -93,6 +93,7 @@ const noopStub = Object.assign(vi.fn(() => {}), {
 });
 
 vi.mock('../../kernel/instances', () => ({
+    getDexieDb: () => ({ tables: [], apiKeys: { toArray: async () => [] } }),
     debatePolicyEngine: noopStub, groupManager: noopStub, keyService: noopStub,
     rootLogger: noopStub, mcpService: noopStub, chatBookmarksService: noopStub,
     budgetService: noopStub, bridgeKeeperService: noopStub, agentJournalService: noopStub,

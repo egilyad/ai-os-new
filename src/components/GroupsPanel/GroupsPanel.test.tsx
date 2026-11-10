@@ -6,6 +6,7 @@ let keys: Array<Record<string, unknown>> = [];
 let getGroupsImpl: () => Array<Record<string, unknown>> = () => groups;
 
 vi.mock('../../kernel/instances', () => ({
+    getDexieDb: () => ({ tables: [], apiKeys: { toArray: async () => [] } }),
     groupManager: {
         getGroups: () => getGroupsImpl(),
         createGroup: vi.fn(async () => {}),

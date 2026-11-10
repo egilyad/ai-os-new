@@ -2,6 +2,7 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 
 vi.mock('../../kernel/instances', () => ({
+    getDexieDb: () => ({ tables: [], apiKeys: { toArray: async () => [] } }),
     rootLogger: {
         child: vi.fn(() => ({
             debug: vi.fn(),
