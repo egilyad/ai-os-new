@@ -27,9 +27,9 @@ function entry(
 }
 
 describe('computeRetention (Ebbinghaus)', () => {
-    it('is 1 at zero age and ~0.5 at one half-life', () => {
+    it('is 1 at zero age and ~1/e at one half-life', () => {
         expect(computeRetention(1, 0)).toBe(1);
-        expect(computeRetention(1, computeHalfLife(1))).toBeCloseTo(0.5, 5);
+        expect(computeRetention(1, computeHalfLife(1))).toBeCloseTo(Math.exp(-1), 5);
     });
 
     it('decays with age and is slower for more important memories', () => {

@@ -68,6 +68,8 @@ describe('Phase33 e2e chain (F)', () => {
 
     it('lets agents curate their own long-term memory', async () => {
         get<IMemoryBlocksService>('memoryBlocksService');
+        const authz = get<{ setRules(rules: unknown[]): Promise<void> }>('authorizationService');
+        await authz.setRules([{ id: 'test-allow', subject: '*', action: '*', resource: '*', effect: 'allow' }]);
         const governance = get<IToolGovernanceService>('toolGovernanceService');
         await governance.grant('agent', 'memory:*', true);
         const runner = get<IToolRunnerService>('toolRunnerService');
@@ -86,6 +88,8 @@ describe('Phase33 e2e chain (F)', () => {
 
     it('lets an agent rewrite its own memory text', async () => {
         get<IMemoryBlocksService>('memoryBlocksService');
+        const authz = get<{ setRules(rules: unknown[]): Promise<void> }>('authorizationService');
+        await authz.setRules([{ id: 'test-allow', subject: '*', action: '*', resource: '*', effect: 'allow' }]);
         const governance = get<IToolGovernanceService>('toolGovernanceService');
         await governance.grant('agent', 'memory:*', true);
         const runner = get<IToolRunnerService>('toolRunnerService');

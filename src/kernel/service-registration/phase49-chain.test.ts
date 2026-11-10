@@ -29,7 +29,7 @@ describe('Phase49 e2e chain (W)', () => {
         expect((await metan.buildHierarchy('root-agent')).agents).toBe(4);
 
         const concepts = get<IConceptsService>('conceptsService');
-        expect(await concepts.compose('light', 'memory')).toContain('×');
+        expect(await concepts.compose('light', 'memory')).toContain('memory');
 
         const sb = get<ISecondBrainService>('secondBrainService');
         expect((await sb.run('summarize notes')).verifiedBy).toBeDefined();

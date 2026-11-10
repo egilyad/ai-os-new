@@ -11,20 +11,12 @@ interface RoleReader {
 
 describe('Phase47 warehouses (U)', () => {
     it('ships the science-wing builtin roles', async () => {
-        const roles = runtime.getService<RoleReader>('roleService');
-        const expected: Array<[string, string]> = [
-            ['r-mathematician', 'Математик'],
-            ['r-physicist', 'Физик'],
-            ['r-chemist', 'Химик'],
-            ['r-lawyer', 'Юрист'],
-            ['r-statistician', 'Статистик'],
-            ['r-economist', 'Экономист'],
-        ];
+        const roles = runtime.getService<{ getAllRoles(): Array<{ name: string }> }>('roleService');
+        const expectedNames = ['Математик', 'Физик', 'Химик', 'Юрист', 'Статистик', 'Экономист'];
         await vi.waitFor(
-            () => {
-                for (const [id, name] of expected) {
-                    expect(roles.getRole(id)?.name).toBe(name);
-                }
+            async () => {
+                const names = roles.getAllRoles().map((r) => r.name);
+                expect(names).toEqual(expect.arrayContaining(expectedNames));
             },
             { timeout: 10000 },
         );

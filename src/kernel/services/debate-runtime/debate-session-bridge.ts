@@ -364,6 +364,7 @@ export function resolveStrategyConfigForMode(
     return {
         ...resolved,
         temperature: hints.temperature,
+        forcedQuality: [...new Set([...(resolved.forcedQuality ?? []), ...(hints.forcedQuality ?? [])])],
     };
 }
 

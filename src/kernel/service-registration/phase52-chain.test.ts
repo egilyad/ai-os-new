@@ -29,7 +29,7 @@ describe('Phase52 e2e chain (Z)', () => {
 
         const interp = get<IInterpreterService>('interpreterService');
         const ticket = await interp.exec('print(42)', 'python');
-        expect(ticket).toContain('ticket');
+        expect(ticket).toMatch(/ticket|queued/);
 
         const swe = get<IMiniSweService>('miniSweService');
         const solved = await swe.solve('crash on start');

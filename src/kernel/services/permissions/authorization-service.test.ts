@@ -63,7 +63,7 @@ describe('AuthorizationService (SPEC_08)', () => {
         await svc.setRules([
             { id: 'r1', subject: '*', action: '*', resource: '*', effect: 'deny' },
         ]);
-        await expect(svc.assertAllowed(req('a', 'b', 'c'))).rejects.toThrow(/deny/i);
+        await expect(svc.assertAllowed(req('a', 'b', 'c'))).rejects.toThrow(/denied|deny/i);
 
         await svc.setRules([
             { id: 'r1', subject: '*', action: '*', resource: '*', effect: 'allow' },

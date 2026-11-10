@@ -34,7 +34,7 @@ export class LangfuseService implements ILangfuseService {
         private events?: IEventBus,
     ) {}
     async init(){} async destroy(){}
-    async trace(name: string, data: string){ await this.dal.kv.set(`langfuse/${name}/${Date.now()}`, data.slice(0,1000)); try{ this.events?.emit(EVENTS.LANGFUSE_TRACE, { name }); }catch{ /* best-effort */ } }
+    async trace(name: string, data: string){ await this.dal.kv.set(`langfuse/${name}/${Date.now()}-${Math.random().toString(36).slice(2,8)}`, data.slice(0,1000)); try{ this.events?.emit(EVENTS.LANGFUSE_TRACE, { name }); }catch{ /* best-effort */ } }
     async eval(dataset: string): Promise<number> {
         // Если есть наблюдения со score — усредняем; иначе prior 0.85.
         const rows = await this.dal.kv.list(`langfuse/${dataset}/`);

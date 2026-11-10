@@ -68,14 +68,16 @@ describe('Debate session reload (P3, real Dexie)', () => {
         ]);
     });
 
-    it('stale version writes throw instead of silently clobbering', async () => {
+    it('stale version writes merge over the fresher base (no data loss)', async () => {
         const store = createDexieStorage().debates;
         await store.saveSnapshot(sessionToRecord(session()));
         await store.saveSnapshot(sessionToRecord(session()));
         const stale = { ...sessionToRecord(session()), version: 1 };
-        await expect(store.saveSnapshot(stale)).rejects.toThrow(/version conflict/i);
+        const newVersion = await store.saveSnapshot(stale);
+        expect(newVersion).toBeGreaterThanOrEqual(2);
         const kept = await store.getSnapshot('s1');
         expect(kept).not.toBeNull();
+        expect(kept?.version).toBeGreaterThanOrEqual(2);
     });
 
     it('missing rows read as null (no masquerade)', async () => {

@@ -170,6 +170,7 @@ export function compileBuiltin(id: string): StrategyProgram | null {
  */
 export function compileDefinition(def: {
     id: string;
+    name?: string;
     root: {
         type: string;
         maxRounds?: number;
@@ -188,6 +189,7 @@ export function compileDefinition(def: {
             : 'debate_graph';
     return interpret(
         draft(def.id, root, {
+            name: def.name,
             maxRounds: def.root.maxRounds,
             convergenceThreshold: def.root.convergenceThreshold,
             earlyExitConfidence: def.root.earlyExitConfidence,
