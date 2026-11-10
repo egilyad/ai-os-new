@@ -26,6 +26,7 @@ function fakeCodeExec(dal: ReturnType<typeof fakeDal>) {
             await dal.kv.set(`codetickets/${id}`, { id, language: lang, code, status: 'queued', createdAt: Date.now() });
             if (delegate) {
                 setTimeout(() => {
+                    if (!delegate) return;
                     void delegate(id, lang, code)
                         .then(async (result) => {
                             await dal.kv.set(`codetickets/${id}`, { id, language: lang, code, status: 'done', result, createdAt: Date.now() });
