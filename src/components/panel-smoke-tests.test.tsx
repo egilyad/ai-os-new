@@ -1,4 +1,4 @@
-/**
+﻿/**
  * P2.17 — Smoke tests for top untested panels.
  * Each panel is rendered with mocked kernel dependencies.
  * Verifies: no crash, renders content.

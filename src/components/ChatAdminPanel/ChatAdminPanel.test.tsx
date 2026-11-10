@@ -7,14 +7,18 @@ const mockSessions = [
   { id: 's3', title: 'Debugging Session', history: Array.from({ length: 5 }, (_, i) => ({ text: `msg${i}`, responses: [{ provider: 'openai', content: `resp${i}` }] })), createdAt: Date.now() - 30000, updatedAt: Date.now() - 15000 },
 ];
 
-vi.mock('../../stores/useChatStore', () => ({
-  useChatStore: () => ({
+vi.mock('../../stores/useChatStore', () => {
+  const state = {
     sessions: mockSessions,
     deleteSession: vi.fn(),
     setActiveSessionId: vi.fn(),
     importSessions: vi.fn(),
-  }),
-}));
+  };
+  return {
+    useChatStore: (selector?: (s: typeof state) => unknown) =>
+      selector ? selector(state) : state,
+  };
+});
 
 vi.mock('../../kernel/events/event-bus', () => ({
   eventBus: { emit: vi.fn(), on: vi.fn(() => vi.fn()), off: vi.fn() },
