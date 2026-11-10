@@ -279,10 +279,10 @@ describe('ChatExecutor auto-routing', () => {
         });
         await resPromise;
         expect(mockRouterService.getRankedProviders).toHaveBeenCalledTimes(1);
-        const args = mockRouterService.getRankedProviders.mock.calls[0]!;
+        const args = mockRouterService.getRankedProviders.mock.calls[0] as unknown as unknown[];
         expect(args[0]).toBe('content');
-        expect(args[1]).toContain('You are a helpful assistant.');
-        expect(args[1]).toContain('Tell me a joke.');
-        expect(args[1]).toContain('Sure!');
+        expect(args[1] as string).toContain('You are a helpful assistant.');
+        expect(args[1] as string).toContain('Tell me a joke.');
+        expect(args[1] as string).toContain('Sure!');
     });
 });
