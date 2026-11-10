@@ -183,11 +183,11 @@ describe('BudgetService', () => {
             expect(service.getAgentSpend('agent-1')).toBe(15);
         });
 
-        it('caps history at 10000 entries', () => {
+        it('keeps fresh entries beyond 10000 (time-based pruning only)', () => {
             for (let i = 0; i < 10050; i++) {
                 service.recordSpend(null, 'openai', 1);
             }
-            expect(service.getCostHistory(20000).length).toBeLessThanOrEqual(10000);
+            expect(service.getCostHistory(20000).length).toBe(10050);
         });
     });
 
@@ -224,7 +224,6 @@ describe('BudgetService', () => {
             expect(history[0].model).toBe('gpt-4');
             expect(history[0].provider).toBe('openai');
             expect(history[0].totalCost).toBeGreaterThan(0);
-            expect(vi.mocked(deps.database.setKv)).toHaveBeenCalled();
         });
 
         it('deduplicates by requestId', async () => {

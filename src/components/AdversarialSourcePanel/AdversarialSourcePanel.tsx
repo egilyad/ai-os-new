@@ -25,7 +25,11 @@ const _realFetch: typeof fetch =
         : ((() => {
               throw new Error('fetch not available');
           }) as typeof fetch);
-const fetchImpl: typeof fetch = (...args: Parameters<typeof fetch>) => _realFetch(...args);
+const fetchImpl: typeof fetch = (...args: Parameters<typeof fetch>) => {
+    const current = (globalThis as { fetch?: typeof fetch }).fetch;
+    if (typeof current === 'function' && current !== fetchImpl) return current(...args);
+    return _realFetch(...args);
+};
 try {
     (globalThis as { fetch?: typeof fetch }).fetch = fetchImpl;
 } catch {

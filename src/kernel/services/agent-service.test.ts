@@ -73,8 +73,9 @@ describe('AgentService.resolveAgent (Director B-seam)', () => {
     it('getAgents возвращает список из активной топологии', () => {
         const svc = makeService(topology);
         const agents = svc.getAgents();
-        expect(agents.length).toBe(2);
-        expect(agents.map((a) => a.id)).toEqual(['agent-1', 'agent-2']);
+        expect(agents.length).toBe(3);
+        expect(agents.map((a) => a.id)).toEqual(['agent-1', 'agent-2', 'router-1']);
+        expect(agents[2].role).toBe('Semantic Router');
     });
 
     it('deleteAgent удаляет обычного агента из топологии', () => {
@@ -92,7 +93,7 @@ describe('AgentService.resolveAgent (Director B-seam)', () => {
         const svc = makeService(empty);
         const agent = svc.resolveAgent('e');
         expect(agent).not.toBeNull();
-        expect(agent!.systemPrompt).toBe('');
+        expect(agent!.systemPrompt).toBeUndefined();
     });
 });
 

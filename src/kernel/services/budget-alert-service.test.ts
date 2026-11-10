@@ -110,7 +110,7 @@ describe('BudgetAlertService', () => {
             });
             const s = new BudgetAlertService();
             s.setBudgetService(budget);
-            s.init();
+            await s.init();
             const events = s.evaluate();
             expect(events.length).toBeGreaterThanOrEqual(1);
             const event = events[0];
@@ -138,7 +138,7 @@ describe('BudgetAlertService', () => {
             });
             const s = new BudgetAlertService();
             s.setBudgetService(budget);
-            s.init();
+            await s.init();
             const events = s.evaluate();
             expect(events.length).toBeGreaterThanOrEqual(1);
             expect(events.some((e) => e.ruleName === 'Cost spike detection')).toBe(true);

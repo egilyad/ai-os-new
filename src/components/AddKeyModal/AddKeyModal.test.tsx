@@ -5,7 +5,13 @@ import AddKeyModal from './AddKeyModal';
 vi.mock('../../kernel/instances', () => ({
     eventBus: { on: vi.fn(() => () => {}), emit: vi.fn(), onSafe: vi.fn(() => () => {}) },
     EVENTS: {},
-    keyService: { getKeys: vi.fn(() => []) },
+    keyService: {
+        getKeys: vi.fn(() => []),
+        detectProvider: vi.fn(() => 'OpenAI'),
+        verifyKey: vi.fn(async () => true),
+        extractAccountId: vi.fn(() => 'acct-test'),
+        fingerprintKey: vi.fn((k: string) => `fp-${k}`),
+    },
     adapterRegistry: {
         getAllProviders: vi.fn(() => [
             'OpenRouter',
@@ -27,6 +33,18 @@ vi.mock('../../kernel/instances', () => ({
     rootLogger: { child: () => ({ info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn() }) },
     getDexieDb: () => ({ tables: [], apiKeys: { toArray: async () => [] } }),
 }));
+
+vi.mock('../../stores/useKeyStore', () => {
+    const state = {
+        keys: [],
+        addKey: vi.fn(async () => {}),
+        checkAllHealth: vi.fn(),
+    };
+    return {
+        useKeyStore: (selector?: (s: typeof state) => unknown) =>
+            selector ? selector(state) : state,
+    };
+});
 
 vi.mock('../../i18n/useTranslation', () => {
     const labels: Record<string, string> = {

@@ -68,15 +68,15 @@ beforeEach(async () => {
 
     // Stub runtime that echoes the prompt
     const stubRuntime = {
-        execute: vi.fn().mockImplementation(async (_pid: string, prompt: string) => ({
-            output: `Executed: ${prompt.slice(0, 50)}`,
-        })),
+        runPrompt: vi.fn().mockImplementation(
+            async (_pid: string, _agent: string, prompt: string) => ({
+                output: `Executed: ${prompt.slice(0, 50)}`,
+            }),
+        ),
         getStatus: vi.fn().mockReturnValue('idle'),
         pause: vi.fn(),
         resume: vi.fn(),
-        abort: vi.fn(),
         getEvents: vi.fn().mockReturnValue([]),
-        on: vi.fn(),
     };
 
     runner = new AutonomyRunner(orch, stubRuntime as any, ws, mockEventBus());
@@ -97,18 +97,20 @@ describe('AutonomyRunner', () => {
 
         // Stub runtime that outputs file patterns
         const fileRuntime = {
-            execute: vi.fn().mockImplementation(async (_pid: string, prompt: string) => {
-                if (prompt.includes('HTML')) {
-                    return { output: 'FILE: /index.html\n```\n<!DOCTYPE html>\n<html><body>Hello</body></html>\n```' };
-                }
-                if (prompt.includes('CSS')) {
-                    return { output: 'FILE: /style.css\n```\nbody { color: red; }\n```' };
-                }
-                return { output: 'FILE: /script.js\n```\nconsole.log("test")\n```' };
-            }),
+            runPrompt: vi.fn().mockImplementation(
+                async (_pid: string, _agent: string, prompt: string) => {
+                    if (prompt.includes('HTML')) {
+                        return { output: 'FILE: /index.html\n```\n<!DOCTYPE html>\n<html><body>Hello</body></html>\n```' };
+                    }
+                    if (prompt.includes('CSS')) {
+                        return { output: 'FILE: /style.css\n```\nbody { color: red; }\n```' };
+                    }
+                    return { output: 'FILE: /script.js\n```\nconsole.log("test")\n```' };
+                },
+            ),
             getStatus: vi.fn().mockReturnValue('idle'),
-            pause: vi.fn(), resume: vi.fn(), abort: vi.fn(),
-            getEvents: vi.fn().mockReturnValue([]), on: vi.fn(),
+            pause: vi.fn(), resume: vi.fn(),
+            getEvents: vi.fn().mockReturnValue([]),
         };
 
         const fileRunner = new AutonomyRunner(orch, fileRuntime as any, ws, mockEventBus());
@@ -134,10 +136,10 @@ describe('AutonomyRunner', () => {
 
         // Make runtime throw
         const failingRuntime = {
-            execute: vi.fn().mockRejectedValue(new Error('LLM timeout')),
+            runPrompt: vi.fn().mockRejectedValue(new Error('LLM timeout')),
             getStatus: vi.fn().mockReturnValue('idle'),
-            pause: vi.fn(), resume: vi.fn(), abort: vi.fn(),
-            getEvents: vi.fn().mockReturnValue([]), on: vi.fn(),
+            pause: vi.fn(), resume: vi.fn(),
+            getEvents: vi.fn().mockReturnValue([]),
         };
 
         const failingRunner = new AutonomyRunner(orch, failingRuntime as any, ws, mockEventBus());

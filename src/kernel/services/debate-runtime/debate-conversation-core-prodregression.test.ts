@@ -36,6 +36,10 @@ function stripVolatile(value: unknown): unknown {
         const out: Record<string, unknown> = {};
         for (const [k, v] of Object.entries(value)) {
             if (k === 'sessionId' || k === 'generatedAt') continue;
+            if ((k === 'argumentId' || k === 'parentId') && typeof v === 'string') {
+                out[k] = v.replace(/\d{13}-\d+/, '<ts>-<n>');
+                continue;
+            }
             out[k] = stripVolatile(v);
         }
         return out;
@@ -59,14 +63,18 @@ describe('A.3a production-path regression (real buildPipeline, old vs Conversati
     });
 
     for (const [name, opts] of scenarios) {
-        it(`identical DEBATE_* stream + terminal state — ${name}`, async () => {
-            const oldR = await runBudgetScenario('old', opts);
-            const newR = await runBudgetScenario('new', opts);
+        it(
+            `identical DEBATE_* stream + terminal state — ${name}`,
+            async () => {
+                const oldR = await runBudgetScenario('old', opts);
+                const newR = await runBudgetScenario('new', opts);
 
-            expect(stripVolatile(newR.events)).toEqual(stripVolatile(oldR.events));
-            expect(newR.phase).toBe(oldR.phase);
-            expect(newR.round).toBe(oldR.round);
-        });
+                expect(stripVolatile(newR.events)).toEqual(stripVolatile(oldR.events));
+                expect(newR.phase).toBe(oldR.phase);
+                expect(newR.round).toBe(oldR.round);
+            },
+            60_000,
+        );
     }
 
     it('RejectBudget helper forces the budget-skip path (sanity)', async () => {

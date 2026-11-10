@@ -1,6 +1,18 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { ConfigHistoryService } from './config-history';
 import { CONFIG } from './config-registry';
+
+vi.mock('../instances/core-references', () => {
+    const kv = new Map<string, unknown>();
+    return {
+        database: {
+            getKv: async <T>(id: string): Promise<T | null> => (kv.get(id) as T) ?? null,
+            setKv: async <T>(id: string, value: T): Promise<void> => {
+                kv.set(id, value);
+            },
+        },
+    };
+});
 
 describe('ConfigHistoryService', () => {
     let service: ConfigHistoryService;

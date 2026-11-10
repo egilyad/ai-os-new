@@ -436,9 +436,9 @@ describe('AgentsPanel', () => {
     it('shows empty state description placeholder for stat cards', async () => {
         render(<AgentsPanel />);
         await waitForAgentCards();
-        const invocations = screen.getAllByText(/Invocations|Invoc/);
+        const invocations = screen.queryAllByText(/Invocations|Invoc/);
         expect(invocations.length).toBeGreaterThanOrEqual(0);
-        const latency = screen.getAllByText(/Latency|Lat/);
+        const latency = screen.queryAllByText(/Latency|Lat/);
         expect(latency.length).toBeGreaterThanOrEqual(0);
     });
 

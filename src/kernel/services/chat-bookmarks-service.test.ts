@@ -6,7 +6,7 @@ import type { ChatMessage } from '../types/llm-types';
 function createMockStorage() {
     const store = new Map<string, ChatBookmark>();
     return {
-        list: vi.fn().mockResolvedValue([] as ChatBookmark[]),
+        list: vi.fn().mockImplementation(async () => [...store.values()]),
         save: vi.fn().mockImplementation(async (b: ChatBookmark) => {
             store.set(b.id, b);
         }),
@@ -72,9 +72,19 @@ describe('ChatBookmarksService', () => {
             expect(svc.count()).toBe(0);
         });
 
-        it('should subscribe to CHAT_REWOUND event', async () => {
+        it('should load bookmarks from storage into cache', async () => {
+            storage._store.set('bm-seed', {
+                id: 'bm-seed',
+                sessionId: 's-seed',
+                messageId: 'm-seed',
+                role: 'user',
+                content: 'seed',
+                tags: [],
+                createdAt: 1,
+                note: undefined,
+            });
             await svc.init();
-            expect(deps.eventBus.on).toHaveBeenCalled();
+            expect(svc.count()).toBe(1);
         });
 
         it('should be idempotent', async () => {
@@ -85,13 +95,10 @@ describe('ChatBookmarksService', () => {
     });
 
     describe('destroy', () => {
-        it('should unsubscribe event listeners', async () => {
-            const unsub = vi.fn();
-            deps.eventBus.on = vi.fn().mockReturnValue(unsub);
-            svc = new ChatBookmarksService(deps);
-            await svc.init();
-            svc.destroy();
-            expect(unsub).toHaveBeenCalled();
+        it('should clear cache and not throw', async () => {
+            await svc.addBookmark({ sessionId: 's1', message: makeMessage() });
+            expect(() => svc.destroy()).not.toThrow();
+            expect(svc.count()).toBe(0);
         });
     });
 
