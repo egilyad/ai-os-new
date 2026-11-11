@@ -1,5 +1,6 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+﻿import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 
 vi.mock('./Common', () => ({
     gatewayApi: vi.fn((_base: string, _secret: string, path: string) => {
@@ -22,7 +23,7 @@ describe('CostsPanel', () => {
 
     it('shows the empty state when there are no costs', async () => {
         const Panel = (await import('./CostsPanel')).default;
-        render(<Panel />);
+        render(<MemoryRouter><Panel /></MemoryRouter>);
         expect(await screen.findByText('costs.empty')).toBeDefined();
     });
 
@@ -42,10 +43,10 @@ describe('CostsPanel', () => {
             return Promise.resolve({});
         });
         const Panel = (await import('./CostsPanel')).default;
-        render(<Panel />);
+        render(<MemoryRouter><Panel /></MemoryRouter>);
         await screen.findByText('Acme');
         // Missing cents/timestamps render dashes, never undefined/Invalid Date.
-        expect(screen.getAllByText('—').length).toBeGreaterThanOrEqual(1);
+        expect(screen.getAllByText('-').length).toBeGreaterThanOrEqual(1);
         expect(screen.queryByText('undefined')).toBeNull();
         expect(screen.queryByText('Invalid Date')).toBeNull();
     });

@@ -7,13 +7,14 @@ const makeSession = (
     id: string,
     scenarioId = 'sc1',
     status: SessionStatus = 'completed',
+    updatedAt = Date.now(),
 ): ConversationSession => ({
     id,
     scenarioId,
     scenarioName: `Scenario ${scenarioId}`,
     status,
     createdAt: Date.now(),
-    updatedAt: Date.now(),
+    updatedAt,
     events: [],
     checkpoints: [],
     results: [],
@@ -51,8 +52,8 @@ describe('DirectorRepository', () => {
     });
 
     it('lists and filters by status, newest first', async () => {
-        await repo.put(makeSession('a', 'sc1', 'completed'));
-        await repo.put(makeSession('b', 'sc1', 'aborted'));
+        await repo.put(makeSession('a', 'sc1', 'completed', 1000));
+        await repo.put(makeSession('b', 'sc1', 'aborted', 2000));
         const aborted = await repo.list({ status: 'aborted' });
         expect(aborted.map((s) => s.id)).toEqual(['b']);
         const all = await repo.list();

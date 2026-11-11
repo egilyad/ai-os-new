@@ -1,5 +1,6 @@
 ﻿import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 
 const mockSessions = [
     { id: 's1', title: 'Session One', question: 'Why?', loops: [], createdAt: 1 },
@@ -69,7 +70,7 @@ describe('ResearchEnginePanel', () => {
 
     it('renders sessions from the engine', async () => {
         const Panel = (await import('./ResearchEnginePanel')).default;
-        render(<Panel />);
+        render(<MemoryRouter><Panel /></MemoryRouter>);
         expect(await screen.findByText('Research Engine')).toBeDefined();
         expect(screen.getByText('Session One')).toBeDefined();
     });
@@ -78,7 +79,7 @@ describe('ResearchEnginePanel', () => {
         const { researchEngine } = await import('../../kernel/instances');
         vi.mocked(researchEngine.startSession).mockRejectedValueOnce(new Error('db down'));
         const Panel = (await import('./ResearchEnginePanel')).default;
-        render(<Panel />);
+        render(<MemoryRouter><Panel /></MemoryRouter>);
         await screen.findByText('Research Engine');
         fireEvent.click(screen.getByText('New Session'));
         fireEvent.change(screen.getByPlaceholderText('Session title...'), {
@@ -95,7 +96,7 @@ describe('ResearchEnginePanel', () => {
         const { researchEngine } = await import('../../kernel/instances');
         vi.mocked(researchEngine.getAllSessions).mockReturnValueOnce(null as never);
         const Panel = (await import('./ResearchEnginePanel')).default;
-        render(<Panel />);
+        render(<MemoryRouter><Panel /></MemoryRouter>);
         expect(await screen.findByText('No research sessions yet')).toBeDefined();
     });
 });
