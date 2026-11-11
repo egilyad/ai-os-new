@@ -25,6 +25,7 @@ import { RESEARCH_MULTIAGENT_ARTICLE } from './wiki-research-multiagent';
 import { RESEARCH_INDEX_ARTICLE } from './wiki-research-index';
 import { TECHNIQUE_ARTICLES } from './wiki-techniques';
 import { PANELS_EXTRA_ARTICLES } from './wiki-panels-extra';
+import { TESTING_ARTICLES } from './wiki-testing';
 import type { WikiArticle, WikiFreshness, WikiSection } from './wiki-types';
 
 export type { WikiArticle, WikiFreshness, WikiSection } from './wiki-types';
@@ -5021,6 +5022,7 @@ export const WIKI_ARTICLES: WikiArticle[] = [
     ...TECHNIQUE_ARTICLES,
     ...PANELS_EXTRA_ARTICLES,
     ...PLUGINS_GUIDE_ARTICLES,
+    ...TESTING_ARTICLES,
 ];
 
 export function getAllArticles(): WikiArticle[] {

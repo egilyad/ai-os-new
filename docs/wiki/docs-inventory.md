@@ -11,7 +11,7 @@
 > Автосгенерировано `scripts/gen-docs-inventory.mjs` из отслеживаемых git-файлов `docs/**/*.md`.
 > Машиночитаемая версия — `docs/inventory.json`. Не редактировать вручную.
 
-Это Этап 1 программы документации: полный учёт существующих Markdown-файлов. Всего: **502** документов (только отслеживаемые git): `docs/**` плюс корневые `*.md`, `.superagents/**` и `src/kernel/DEPENDENCY_MAP.md`.
+Это Этап 1 программы документации: полный учёт существующих Markdown-файлов. Всего: **510** документов (только отслеживаемые git): `docs/**` плюс корневые `*.md`, `.superagents/**` и `src/kernel/DEPENDENCY_MAP.md`.
 Две генерируемые страницы-самоотчёта (`docs-health`, `docs-inventory`) исключены, чтобы числа не зависели от самих отчётов.
 
 ## По категориям
@@ -21,15 +21,15 @@
 | audits | 25 |
 | repo | 9 |
 | top | 116 |
-| wiki | 352 |
+| wiki | 360 |
 
 ## По языку
 
 | Язык | Документов |
 | --- | --- |
 | en | 40 |
-| mixed | 129 |
-| ru | 333 |
+| mixed | 133 |
+| ru | 337 |
 
 _Основной язык подробной документации — русский (`ru`)._
 
@@ -37,7 +37,7 @@ _Основной язык подробной документации — ру�
 
 Не найдено.
 
-## Совпадающие заголовки (11)
+## Совпадающие заголовки (12)
 
 - «карта готовности панелей — superagents os (`egilyad/ai-os-new`)»: `docs/arhive-research/новое/Карта-готовности-панелей-SuperAgents-OS.md`, `docs/audits/waves/map-01-requirements.md`
 - «карта доступности возможностей — capability accessibility map»: `docs/arhive-research/новое/Карта-доступности-возможностей-SuperAgents-OS.md`, `docs/audits/waves/map-08-capability-accessibility.md`
@@ -49,6 +49,7 @@ _Основной язык подробной документации — ру�
 - «карта функционального дублирования — duplication map»: `docs/arhive-research/новое/Карта-функционального-дублирования-SuperAgents-OS.md`, `docs/audits/waves/map-09-duplication.md`
 - «карта функциональной ценности — feature value map»: `docs/arhive-research/новое/Карта-функциональной-ценности-SuperAgents-OS.md`, `docs/audits/waves/map-02-feature-value.md`
 - «карта функциональных пробелов — capability gap map»: `docs/arhive-research/новое/Карта-функциональных-пробелов-SuperAgents-OS.md`, `docs/audits/waves/map-06-capability-gap.md`
+- «каталог тестов»: `docs/wiki/dev-tests-catalog.md`, `docs/wiki/testing-catalog.md`
 - «панель: исследовательский движок»: `docs/wiki/panel-research-engine.md`, `docs/wiki/panel-research.md`
 
 ## Код-сущности (существующие авто-каталоги)

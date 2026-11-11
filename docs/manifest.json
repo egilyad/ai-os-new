@@ -65,7 +65,7 @@
     {
       "id": "dev",
       "title": "Разработчикам",
-      "articles": 54
+      "articles": 62
     }
   ],
   "articles": [
@@ -9615,6 +9615,194 @@
       "tests": [
         "src/kernel/services/plugins/plugin-marketplace-catalog.test.ts"
       ]
+    },
+    {
+      "id": "wiki:testing-architecture",
+      "type": "article",
+      "slug": "testing-architecture",
+      "title": "Архитектура тестирования",
+      "section": "dev",
+      "status": "verified",
+      "tags": [
+        "тесты",
+        "vitest",
+        "playwright",
+        "архитектура"
+      ],
+      "sources": [
+        "package.json",
+        "vitest.config.ts",
+        "e2e/playwright.config.ts",
+        ".github/workflows/ci.yml"
+      ],
+      "related": [
+        "testing-runbook",
+        "ci-architecture",
+        "testing-catalog"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:testing-catalog",
+      "type": "article",
+      "slug": "testing-catalog",
+      "title": "Каталог тестов",
+      "section": "dev",
+      "status": "verified",
+      "tags": [
+        "тесты",
+        "каталог",
+        "покрытие"
+      ],
+      "sources": [
+        "src/kernel/services",
+        "src/components",
+        "e2e"
+      ],
+      "related": [
+        "testing-architecture",
+        "testing-stats"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:testing-stats",
+      "type": "article",
+      "slug": "testing-stats",
+      "title": "Статистика тестов",
+      "section": "dev",
+      "status": "verified",
+      "tags": [
+        "тесты",
+        "статистика",
+        "метрики"
+      ],
+      "sources": [
+        "src",
+        "e2e"
+      ],
+      "related": [
+        "testing-catalog"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:ci-architecture",
+      "type": "article",
+      "slug": "ci-architecture",
+      "title": "CI/CD Architecture",
+      "section": "dev",
+      "status": "verified",
+      "tags": [
+        "ci",
+        "github actions",
+        "workflow"
+      ],
+      "sources": [
+        ".github/workflows/ci.yml"
+      ],
+      "related": [
+        "ci-checks-full",
+        "testing-architecture"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:ci-checks-full",
+      "type": "article",
+      "slug": "ci-checks-full",
+      "title": "Полный перечень проверок CI",
+      "section": "dev",
+      "status": "verified",
+      "tags": [
+        "ci",
+        "проверки",
+        "гейты"
+      ],
+      "sources": [
+        ".github/workflows/ci.yml"
+      ],
+      "related": [
+        "ci-architecture",
+        "testing-runbook"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:testing-fixes-history",
+      "type": "article",
+      "slug": "testing-fixes-history",
+      "title": "История исправлений тестов",
+      "section": "dev",
+      "status": "documented",
+      "tags": [
+        "тесты",
+        "история",
+        "фиксы"
+      ],
+      "sources": [
+        ".github/workflows/ci.yml",
+        "src/kernel/services",
+        "src/components"
+      ],
+      "related": [
+        "testing-gaps",
+        "ci-architecture"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:testing-gaps",
+      "type": "article",
+      "slug": "testing-gaps",
+      "title": "Пробелы покрытия",
+      "section": "dev",
+      "status": "needs-check",
+      "tags": [
+        "тесты",
+        "пробелы",
+        "покрытие"
+      ],
+      "sources": [
+        "src",
+        "e2e"
+      ],
+      "related": [
+        "testing-catalog",
+        "testing-stats"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:testing-runbook",
+      "type": "article",
+      "slug": "testing-runbook",
+      "title": "Инструкция по запуску тестов",
+      "section": "dev",
+      "status": "verified",
+      "tags": [
+        "тесты",
+        "инструкция",
+        "команды"
+      ],
+      "sources": [
+        "package.json",
+        "vitest.config.ts",
+        "e2e/playwright.config.ts"
+      ],
+      "related": [
+        "ci-architecture",
+        "testing-architecture"
+      ],
+      "reviewed": null,
+      "tests": []
     }
   ],
   "panels": [

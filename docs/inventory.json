@@ -3,17 +3,17 @@
   "generatedBy": "scripts/gen-docs-inventory.mjs",
   "scope": "git-tracked markdown: docs/**/*.md (excluding docs/new drafts and the self-report pages docs-health, docs-inventory) plus repository entry docs (root *.md, .superagents/**, src/kernel/DEPENDENCY_MAP.md)",
   "totals": {
-    "documents": 502,
+    "documents": 510,
     "byCategory": {
       "repo": 9,
       "top": 116,
       "audits": 25,
-      "wiki": 352
+      "wiki": 360
     },
     "byLanguage": {
       "en": 40,
-      "mixed": 129,
-      "ru": 333
+      "mixed": 133,
+      "ru": 337
     }
   },
   "duplicates": {
@@ -29,6 +29,7 @@
       "карта функционального дублирования — duplication map",
       "карта функциональной ценности — feature value map",
       "карта функциональных пробелов — capability gap map",
+      "каталог тестов",
       "панель: исследовательский движок"
     ]
   },
@@ -1418,6 +1419,22 @@
       "hash": "16ed03b558c230bbadadd1a6e54c84be00d39c99"
     },
     {
+      "path": "docs/wiki/ci-architecture.md",
+      "category": "wiki",
+      "language": "mixed",
+      "title": "CI/CD Architecture",
+      "bytes": 3115,
+      "hash": "37411316e3819ccb46e7d4d30ad45ce6f340e0b5"
+    },
+    {
+      "path": "docs/wiki/ci-checks-full.md",
+      "category": "wiki",
+      "language": "mixed",
+      "title": "Полный перечень проверок CI",
+      "bytes": 2008,
+      "hash": "8407ce74cb9df7ecbccf05dbb603dc6018ca3a64"
+    },
+    {
       "path": "docs/wiki/comp-adapter-anthropic.md",
       "category": "wiki",
       "language": "mixed",
@@ -2390,8 +2407,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Карта документации",
-      "bytes": 56011,
-      "hash": "26409c104f7cb4c07a3254237d72dee9d2064816"
+      "bytes": 56548,
+      "hash": "60c9541436e07a040695aaf028a8655797aa4c87"
     },
     {
       "path": "docs/wiki/docs-standard.md",
@@ -3270,8 +3287,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Wiki SuperAgents OS",
-      "bytes": 35272,
-      "hash": "d1d59279ab3558f47d4b284797b53a6ac5d576da"
+      "bytes": 35926,
+      "hash": "cb2f1e873605dcdf56df786a13d2b23282f6f5d1"
     },
     {
       "path": "docs/wiki/record-a-skill.md",
@@ -3800,6 +3817,54 @@
       "title": "Шёпот-каналы",
       "bytes": 1473,
       "hash": "b01c92cd8066654c2e58abf89fed0bf2844933f7"
+    },
+    {
+      "path": "docs/wiki/testing-architecture.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Архитектура тестирования",
+      "bytes": 3272,
+      "hash": "867794464c4cae7b49a8e93e1679b245bb874004"
+    },
+    {
+      "path": "docs/wiki/testing-catalog.md",
+      "category": "wiki",
+      "language": "mixed",
+      "title": "Каталог тестов",
+      "bytes": 2995,
+      "hash": "13b0ad296aa13f27e2ef450075c366ecff6abaee"
+    },
+    {
+      "path": "docs/wiki/testing-fixes-history.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "История исправлений тестов",
+      "bytes": 2760,
+      "hash": "9183ded5889e1df3e5ea6ce9297f0b34c18071ad"
+    },
+    {
+      "path": "docs/wiki/testing-gaps.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Пробелы покрытия",
+      "bytes": 2553,
+      "hash": "ce5cd2cff9130fe3a18506c62350b41dc4914be7"
+    },
+    {
+      "path": "docs/wiki/testing-runbook.md",
+      "category": "wiki",
+      "language": "mixed",
+      "title": "Инструкция по запуску тестов",
+      "bytes": 2645,
+      "hash": "da58474be23e23153b192d6d74c35b1d9e047dc6"
+    },
+    {
+      "path": "docs/wiki/testing-stats.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Статистика тестов",
+      "bytes": 1437,
+      "hash": "59f8aeaa8f87c03a9309e759d40fde352c0f0f47"
     },
     {
       "path": "docs/wiki/weekly-commits.md",
