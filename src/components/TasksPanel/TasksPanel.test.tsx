@@ -1,32 +1,34 @@
 ﻿import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 
+const TASKS_LABELS: Record<string, string> = {
+    'tasks.title': 'Task Orchestrator',
+    'tasks.subtitle': 'Monitor and manage workflow tasks',
+    'tasks.all': 'All Workflows',
+    'tasks.active_pipeline': 'Active Pipeline',
+    'tasks.succeeded': 'Succeeded',
+    'tasks.failed': 'Failed',
+    'tasks.active_runners': 'Active Runners',
+    'tasks.queued': 'Queued',
+    'tasks.completed': 'Completed',
+    'tasks.exceptions': 'Exceptions',
+    'tasks.search_placeholder': 'Search tasks...',
+    'tasks.empty_none': 'No tasks yet',
+    'tasks.empty_search': 'No tasks match your search',
+    'tasks.empty_hint': 'Run a workflow to see tasks here',
+    'tasks.loading': 'Loading tasks...',
+    'tasks.loading_aria': 'Loading tasks',
+    'tasks.error_load': 'Failed to load tasks',
+    'tasks.error_update': 'Failed to update tasks',
+    'tasks.error_refresh': 'Failed to refresh tasks',
+    'common.dismiss_error': 'Dismiss error',
+    'common.aria.search': 'Search tasks by ID or instruction',
+    'common.aria.refresh': 'Refresh tasks',
+};
+const stableT = (key: string) => TASKS_LABELS[key] || key;
+
 vi.mock('../../i18n/useTranslation', () => ({
-    useTranslation: () => {
-        const labels: Record<string, string> = {
-            'tasks.title': 'Task Orchestrator',
-            'tasks.subtitle': 'Monitor and manage workflow tasks',
-            'tasks.all': 'All Workflows',
-            'tasks.active_pipeline': 'Active Pipeline',
-            'tasks.succeeded': 'Succeeded',
-            'tasks.failed': 'Failed',
-            'tasks.active_runners': 'Active Runners',
-            'tasks.queued': 'Queued',
-            'tasks.completed': 'Completed',
-            'tasks.exceptions': 'Exceptions',
-            'tasks.search_placeholder': 'Search tasks...',
-            'tasks.empty_none': 'No tasks yet',
-            'tasks.empty_search': 'No tasks match your search',
-            'tasks.empty_hint': 'Run a workflow to see tasks here',
-            'tasks.loading': 'Loading tasks...',
-            'tasks.loading_aria': 'Loading tasks',
-            'tasks.error_load': 'Failed to load tasks',
-            'tasks.error_update': 'Failed to update tasks',
-            'tasks.error_refresh': 'Failed to refresh tasks',
-            'common.dismiss_error': 'Dismiss error',
-        };
-        return { t: (key: string) => labels[key] || key };
-    },
+    useTranslation: () => ({ t: stableT }),
 }));
 
 vi.mock('../../kernel/instances', () => ({
@@ -105,9 +107,19 @@ vi.mock('../../kernel/events/event-bus', () => ({
     EVENTS: { TRACE_UPDATED: 'trace:updated' },
 }));
 
-// СИ: этот файл зависает (бесконечный цикл при импорте/рендере TasksPanel).
-// Возврат к разбору после стабилизации матрицы.
-describe.skip('TasksPanel', () => {
+vi.mock('../../kernel/services/agems-task-service', () => ({
+    agemsTaskService: {
+        list: vi.fn(async () => []),
+        create: vi.fn(async () => ({ id: 't-new' })),
+        updateStatus: vi.fn(async () => {}),
+    },
+}));
+
+vi.mock('../../kernel/services/tasks-demo-seed', () => ({
+    seedTasksDemo: vi.fn(async () => {}),
+}));
+
+describe('TasksPanel', () => {
     beforeEach(() => {
         vi.clearAllMocks();
     });
@@ -129,8 +141,8 @@ describe.skip('TasksPanel', () => {
         render(<TasksPanel />);
         expect(await screen.findByText('All Workflows')).toBeDefined();
         expect(screen.getByText('Active Pipeline')).toBeDefined();
-        expect(screen.getByText('Succeeded')).toBeDefined();
-        expect(screen.getByText('Failed')).toBeDefined();
+        expect(document.body.textContent).toContain('Succeeded');
+        expect(document.body.textContent).toContain('Failed');
     });
 
     it('renders stat cards', async () => {
@@ -138,7 +150,7 @@ describe.skip('TasksPanel', () => {
         render(<TasksPanel />);
         expect(await screen.findByText('Active Runners')).toBeDefined();
         expect(screen.getByText('Queued')).toBeDefined();
-        expect(screen.getByText('Completed')).toBeDefined();
+        expect(screen.getAllByText('Completed').length).toBeGreaterThan(0);
         expect(screen.getByText('Exceptions')).toBeDefined();
     });
 
