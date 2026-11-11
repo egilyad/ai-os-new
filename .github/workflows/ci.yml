@@ -498,13 +498,15 @@ jobs:
               # bump dropping a system lib surfaced as a test failure.
               run: npx playwright install --with-deps chromium
 
-            - name: Download build artifact
-              # Reuses dist/ from the build job instead of rebuilding: faster
-              # and guarantees e2e runs against the exact shipped bundle.
-              uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
-              with:
-                  name: dist
-                  path: dist/
+            - name: Build app
+              # Build in-job (no artifact download dependency): guarantees dist/
+              # exists for the preview server. Vite preview hard-fails with
+              # "The directory dist does not exist" when the artifact is absent.
+              run: npm run build
+              env:
+                  VITE_APP_ORIGIN: https://example.com
+                  VITE_BUILD_ID: ${{ github.sha }}
+                  VITE_BASE_PATH: /ai-os-new/
 
             - name: Run E2E tests
               run: npm run test:e2e -- ${{ matrix.spec }}
