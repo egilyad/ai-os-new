@@ -12,8 +12,8 @@
     },
     "byLanguage": {
       "en": 40,
-      "mixed": 134,
-      "ru": 336
+      "mixed": 133,
+      "ru": 337
     }
   },
   "duplicates": {
@@ -1423,16 +1423,16 @@
       "category": "wiki",
       "language": "mixed",
       "title": "CI/CD Architecture",
-      "bytes": 3284,
-      "hash": "b9f2e7ca0a47bee695b291ea28c56918ba153b21"
+      "bytes": 3286,
+      "hash": "4e83dba6973b91a1cb65e43ee52dbfc4790c6418"
     },
     {
       "path": "docs/wiki/ci-checks-full.md",
       "category": "wiki",
-      "language": "mixed",
+      "language": "ru",
       "title": "Полный перечень проверок CI",
-      "bytes": 2427,
-      "hash": "d41e888dc1b4293205b500a9825c4a3405036636"
+      "bytes": 2471,
+      "hash": "79ac24d626c0e17dde7d4dd16c1f57c6073ae1c5"
     },
     {
       "path": "docs/wiki/comp-adapter-anthropic.md",
@@ -3823,24 +3823,24 @@
       "category": "wiki",
       "language": "ru",
       "title": "Архитектура тестирования",
-      "bytes": 3456,
-      "hash": "d1e19bf5b4692f61b4464815f01980f1cca57b6c"
+      "bytes": 3407,
+      "hash": "2657be285ee5cc42ba32814981c69726c4cbae86"
     },
     {
       "path": "docs/wiki/testing-catalog.md",
       "category": "wiki",
       "language": "mixed",
       "title": "Каталог тестов",
-      "bytes": 3417,
-      "hash": "16064c7c554ed5d6365730215971c7db0fb79bb2"
+      "bytes": 3868,
+      "hash": "c1994024f9ec819194eb497588d87999335f16af"
     },
     {
       "path": "docs/wiki/testing-fixes-history.md",
       "category": "wiki",
       "language": "ru",
       "title": "История исправлений тестов",
-      "bytes": 2760,
-      "hash": "9183ded5889e1df3e5ea6ce9297f0b34c18071ad"
+      "bytes": 2818,
+      "hash": "f40b217a2c67918ade9224bdf64c27e6339568c7"
     },
     {
       "path": "docs/wiki/testing-gaps.md",
@@ -3864,7 +3864,7 @@
       "language": "mixed",
       "title": "Статистика тестов",
       "bytes": 1926,
-      "hash": "e25a74b293e156edfc67ecbf745de72959b0a151"
+      "hash": "89ccb3e2963f0223be92de0f54e930c44f5e2626"
     },
     {
       "path": "docs/wiki/weekly-commits.md",

@@ -3,22 +3,22 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 1563,
-    "edges": 2819,
+    "nodes": 1576,
+    "edges": 2854,
     "byType": {
       "audit": 25,
-      "code": 682,
+      "code": 687,
       "test": 236,
       "panel": 267,
-      "article": 353
+      "article": 361
     },
     "byKind": {
       "audit_test": 20,
       "audit_mention": 52,
       "documents": 267,
       "test": 343,
-      "source": 964,
-      "related": 1173
+      "source": 983,
+      "related": 1189
     }
   },
   "nodes": [
@@ -258,9 +258,19 @@
       "label": "docs/wiki/comp-agents-roles-skills.md"
     },
     {
+      "id": "file:e2e",
+      "type": "code",
+      "label": "e2e"
+    },
+    {
       "id": "file:e2e/",
       "type": "code",
       "label": "e2e/"
+    },
+    {
+      "id": "file:e2e/playwright.config.ts",
+      "type": "code",
+      "label": "e2e/playwright.config.ts"
     },
     {
       "id": "file:eslint.config.js",
@@ -418,9 +428,19 @@
       "label": "server/browser-sidecar.mjs"
     },
     {
+      "id": "file:src",
+      "type": "code",
+      "label": "src"
+    },
+    {
       "id": "file:src/",
       "type": "code",
       "label": "src/"
+    },
+    {
+      "id": "file:src/components",
+      "type": "code",
+      "label": "src/components"
     },
     {
       "id": "file:src/components/",
@@ -2281,6 +2301,11 @@
       "id": "file:src/kernel/service-registration/phase71-computer-use-loop.ts",
       "type": "code",
       "label": "src/kernel/service-registration/phase71-computer-use-loop.ts"
+    },
+    {
+      "id": "file:src/kernel/services",
+      "type": "code",
+      "label": "src/kernel/services"
     },
     {
       "id": "file:src/kernel/services/",
@@ -6839,6 +6864,20 @@
       "status": "documented"
     },
     {
+      "id": "wiki:ci-architecture",
+      "type": "article",
+      "label": "CI/CD Architecture",
+      "section": "dev",
+      "status": "verified"
+    },
+    {
+      "id": "wiki:ci-checks-full",
+      "type": "article",
+      "label": "Полный перечень проверок CI",
+      "section": "dev",
+      "status": "verified"
+    },
+    {
       "id": "wiki:comp-adapter-anthropic",
       "type": "article",
       "label": "Компонент: адаптер Anthropic (Claude)",
@@ -8929,6 +8968,48 @@
       "type": "article",
       "label": "Шёпот-каналы",
       "section": "panels",
+      "status": "documented"
+    },
+    {
+      "id": "wiki:testing-architecture",
+      "type": "article",
+      "label": "Архитектура тестирования",
+      "section": "dev",
+      "status": "verified"
+    },
+    {
+      "id": "wiki:testing-catalog",
+      "type": "article",
+      "label": "Каталог тестов",
+      "section": "dev",
+      "status": "verified"
+    },
+    {
+      "id": "wiki:testing-fixes-history",
+      "type": "article",
+      "label": "История исправлений тестов",
+      "section": "dev",
+      "status": "documented"
+    },
+    {
+      "id": "wiki:testing-gaps",
+      "type": "article",
+      "label": "Пробелы покрытия",
+      "section": "dev",
+      "status": "needs-check"
+    },
+    {
+      "id": "wiki:testing-runbook",
+      "type": "article",
+      "label": "Инструкция по запуску тестов",
+      "section": "dev",
+      "status": "verified"
+    },
+    {
+      "id": "wiki:testing-stats",
+      "type": "article",
+      "label": "Статистика тестов",
+      "section": "dev",
       "status": "documented"
     },
     {
@@ -11597,6 +11678,36 @@
     {
       "from": "wiki:capabilities",
       "to": "wiki:what-is",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:ci-architecture",
+      "to": "file:.github/workflows/ci.yml",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:ci-architecture",
+      "to": "wiki:ci-checks-full",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:ci-architecture",
+      "to": "wiki:testing-architecture",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:ci-checks-full",
+      "to": "file:.github/workflows/ci.yml",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:ci-checks-full",
+      "to": "wiki:ci-architecture",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:ci-checks-full",
+      "to": "wiki:testing-runbook",
       "kind": "related"
     },
     {
@@ -23052,6 +23163,151 @@
     {
       "from": "wiki:technique-whisper-channels",
       "to": "wiki:panel-debate-toolkit",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:testing-architecture",
+      "to": "file:.github/workflows/ci.yml",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:testing-architecture",
+      "to": "file:e2e/playwright.config.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:testing-architecture",
+      "to": "file:package.json",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:testing-architecture",
+      "to": "file:vitest.config.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:testing-architecture",
+      "to": "wiki:ci-architecture",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:testing-architecture",
+      "to": "wiki:testing-catalog",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:testing-architecture",
+      "to": "wiki:testing-runbook",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:testing-catalog",
+      "to": "file:e2e",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:testing-catalog",
+      "to": "file:src/components",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:testing-catalog",
+      "to": "file:src/kernel/services",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:testing-catalog",
+      "to": "wiki:testing-architecture",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:testing-catalog",
+      "to": "wiki:testing-stats",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:testing-fixes-history",
+      "to": "file:.github/workflows/ci.yml",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:testing-fixes-history",
+      "to": "file:src/components",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:testing-fixes-history",
+      "to": "file:src/kernel/services",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:testing-fixes-history",
+      "to": "wiki:ci-architecture",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:testing-fixes-history",
+      "to": "wiki:testing-gaps",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:testing-gaps",
+      "to": "file:e2e",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:testing-gaps",
+      "to": "file:src",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:testing-gaps",
+      "to": "wiki:testing-catalog",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:testing-gaps",
+      "to": "wiki:testing-stats",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:testing-runbook",
+      "to": "file:e2e/playwright.config.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:testing-runbook",
+      "to": "file:package.json",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:testing-runbook",
+      "to": "file:vitest.config.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:testing-runbook",
+      "to": "wiki:ci-architecture",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:testing-runbook",
+      "to": "wiki:testing-architecture",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:testing-stats",
+      "to": "file:package.json",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:testing-stats",
+      "to": "file:vitest.config.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:testing-stats",
+      "to": "wiki:testing-catalog",
       "kind": "related"
     },
     {
