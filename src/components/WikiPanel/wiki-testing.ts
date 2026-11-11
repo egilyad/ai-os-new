@@ -11,7 +11,12 @@ export const TESTING_ARTICLES: WikiArticle[] = [
         section: 'dev',
         tags: ['тесты', 'vitest', 'playwright', 'архитектура'],
         freshness: 'verified',
-        sources: ['package.json', 'vitest.config.ts', 'e2e/playwright.config.ts', '.github/workflows/ci.yml'],
+        sources: [
+            'package.json',
+            'vitest.config.ts',
+            'e2e/playwright.config.ts',
+            '.github/workflows/ci.yml',
+        ],
         related: ['testing-runbook', 'ci-architecture', 'testing-catalog'],
         body: `## Уровни проверок
 
@@ -19,7 +24,7 @@ export const TESTING_ARTICLES: WikiArticle[] = [
 
 1. **Unit-тесты (Vitest).** Тестовые файлы лежат рядом с кодом: \`src/**/*.test.{ts,tsx}\`.
    Среда: jsdom + \`fake-indexeddb/auto\` + лёгкий setup (\`src/tests/setup-light.ts\`).
-   Пул: \`forks\` (по умолчанию) или \`threads\` в CI; покрытие — v8.
+   Пул: \`forks\` (\`--pool=forks\` в CI); покрытие — v8.
 2. **E2E-тесты (Playwright).** Все спек-файлы в \`e2e/*.spec.ts\` (23 файла).
    Запускаются против свежесобранного \`dist/\` через \`vite preview\` (порт 5199)
    и test-only sync-server (порт 3001).
@@ -49,8 +54,8 @@ export const TESTING_ARTICLES: WikiArticle[] = [
 ждём появления заголовка \`Mission Control\`, что означает завершённую гидратацию SPA.
 Затем тесты работают с реальным приложением через роуты и UI.
 
-Шарды E2E (12) разбиты по доменам: basic/routes, debate, dialogs, fleet, forum,
-health-chat-sync, knowledge, organizer, projects, research, runtime.
+Шарды E2E (12): basic-routes-a, routes-b, health-chat-sync, debate, forum, projects,
+organizer, dialogs, knowledge, research, fleet, runtime.
 `,
     },
     {
@@ -66,7 +71,7 @@ health-chat-sync, knowledge, organizer, projects, research, runtime.
 Это обзор ключевых групп и файлов, а не исчерпывающий перечень (файлов ~671).
 Полный актуальный список формируется командой:
 
-\`\`\`bash
+\`\`\`powershell
 Get-ChildItem -Recurse src -Include *.test.ts,*.test.tsx -File |
   Where-Object { $_.FullName -notmatch 'node_modules' } |
   ForEach-Object { $_.FullName }
@@ -98,12 +103,19 @@ Get-ChildItem -Recurse src -Include *.test.ts,*.test.tsx -File |
 - **Вики** — \`WikiPanel/wiki-*.test.ts(x)\`: целостность корпуса, поиск, рендер статей.
 
 ### E2E (e2e/)
-- \`basic-flow.spec.ts\`, \`routes-a-flow.spec.ts\`, \`routes-b-flow.spec.ts\` — навигация, роуты;
-- \`data-*.spec.ts\` (11) — доменные данные: chat, debate, dialogs, fleet, forum,
-  health, keys, knowledge, organizer, projects, research, room, runtime, sync, sre;
-- \`a11y-basic.spec.ts\` — базовые accessibility-проверки;
-- \`wiki-brain.spec.ts\` — вики-поиск;
-- \`screenshots.spec.ts\`, \`visual-regression.spec.ts\` — демо-скриншоты.
+Всего 23 спек-файла; CI запускает их матрицей из 12 шардов
+(см. «CI/CD Architecture»), которая покрывает 17 файлов:
+
+- Навигация/роуты: \`basic-flow.spec.ts\`, \`routes-a-flow.spec.ts\`,
+  \`routes-b-flow.spec.ts\`;
+- Доменные данные (\`data-*.spec.ts\`, 15): chat, debate, dialogs, fleet, forum,
+  health, keys, knowledge, organizer, projects, research, room, runtime, sync,
+  sre-health-diagnostics. Из них в CI-матрице участвуют 14 (без
+  \`data-sre-health-diagnostics.spec.ts\`);
+- Не входят в стандартную матрицу: \`a11y-basic.spec.ts\` (доступность),
+  \`assistant-panel.spec.ts\`, \`wiki-brain.spec.ts\` (вики-поиск),
+  \`screenshots.spec.ts\` и \`visual-regression.spec.ts\` (демо-скриншоты;
+  screenshots гоняется отдельной джобой demos на main).
 `,
     },
     {
@@ -127,7 +139,7 @@ Get-ChildItem -Recurse src -Include *.test.ts,*.test.tsx -File |
 | Проверок в джобе Unit Tests | **2** (test:stable + test:server) |
 
 Метод замера: Get-ChildItem -Recurse src -Include *.test.ts,*.test.tsx и подсчёт
-регуляркой ^\s*(it|test)( по содержимому. Дата замера: 2026-11-11.
+регуляркой ^\\s*(it|test) по содержимому. Дата замера: 2026-11-11.
 
 ### Распределение unit-файлов по каталогам
 
@@ -169,7 +181,7 @@ components-a, components-b1 … components-b7, rest.
 | **build** | quality | \`npm run build\` + проверка размера бандла, upload артефакта \`dist\` |
 | **test** | quality | Стабильный набор юнит-тестов (\`npm run test:stable\`) |
 | **coverage** | quality | Покрытие v8 с порогами (statements/branches/functions/lines) |
-| **full-tests** | quality | Полная матрица: 23 среза unit-тестов (threads-пул, heap 8192) |
+| **full-tests** | quality | Полная матрица: 23 среза unit-тестов (\`--pool=forks\`, heap 12288) |
 | **e2e** | quality, build | 12 шардов Playwright; каждая джоба сама собирает dist (base "/") и ставит chromium с ретраями |
 | **demos** | build | Демо-скриншоты (screenshots/visual-regression), upload PNG |
 | **security-audit** | — | \`npm audit\` + проверка секретов |
@@ -179,7 +191,7 @@ components-a, components-b1 … components-b7, rest.
 
 ### Ключевые решения
 
-- **23 среза unit** — чтобы каждая джоба укладывалась в память раннера (heap 8192,
+- **23 среза unit** — чтобы каждая джоба укладывалась в память раннера (heap 12288;
   команда CI явно задаёт \`--pool=forks\`, переопределяя конфиг).
 - **E2E собирает dist сама** — исключает зависимость от артефакта; \`VITE_BASE_PATH=/\`
   обязательно, иначе ассеты по \`/ai-os-new/\` 404 и SPA пуст.
@@ -193,7 +205,7 @@ flowchart LR
     Q[quality] --> B[build]
     Q --> T[test]
     Q --> C[coverage]
-    Q --> F[full-tests: 17 shards]
+    Q --> F[full-tests: 23 shards]
     B --> E[e2e: 12 shards]
     B --> D[demos]
     Q --> CC[circular-check]
@@ -224,7 +236,7 @@ flowchart LR
    серверные и скриптовые тесты).
 5. **Full Unit Tests** — 23 среза, включая kernel, components, rest.
 6. **Test Coverage** — v8: statements ≥ 31, branches ≥ 25, functions ≥ 30, lines ≥ 32.
-7. **E2E Tests** — 12 шардов Playwright (23 спек-файла, ~65 тестов).
+7. **E2E Tests** — 12 шардов Playwright (матрица покрывает 17 из 23 спек-файлов, ~65 тестов).
 8. **Demo screenshots** — \`npm run gen:demos\` (screenshots + visual regression);
    CI загружает PNG артефактом для просмотра и не обновляет закоммиченные изображения
    автоматически (обновление — \`npm run gen:demos\` локально).
@@ -249,8 +261,9 @@ flowchart LR
 
 ### Проблемы и что было сделано
 
-- **OOM в полном прогоне kernel** → матрица разбита на 13 kernel-срезов; пул forks→threads
-  (изоляция по файлам), heap 8192, лимит тредов.
+- **OOM в полном прогоне kernel** → матрица разбита на kernel-срезы (сейчас 14);
+  CI-команда задаёт \`--pool=forks\`, heap поднят до 12288 МБ (для
+  kernel-svc-r1a2 — 15360, один воркер).
 - **Нестабильные моки сервисов** → ленивые сервисы (\`lazyService\`) замоканы через
   \`vi.mock\` с hoisted-фабриками (например, GovernancePanel, ChatService.autoRouting).
 - **«Зависшая» TasksPanel** → причина: нестабильный \`t\` из мока useTranslation вызывал

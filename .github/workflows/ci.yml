@@ -424,7 +424,8 @@ jobs:
     e2e:
         name: E2E Tests (${{ matrix.name }})
         runs-on: ubuntu-24.04
-        # 30 specs (basic 4 + data 4 + routes 22) with cold-boot gates.
+        # 23 spec files in e2e/; the 12-shard matrix runs 17 of them
+        # (screenshots.spec.ts is run by the demos job on main).
         # Explicit file groups: the 4 double-boot data tests are the heavy
         # ones — routes-b-keys used to pair 2 of them with 11 route tests
         # (CI-H-1). Now all 4 heavies share one shard, route shards are

@@ -16,7 +16,7 @@
 | **build** | quality | `npm run build` + проверка размера бандла, upload артефакта `dist` |
 | **test** | quality | Стабильный набор юнит-тестов (`npm run test:stable`) |
 | **coverage** | quality | Покрытие v8 с порогами (statements/branches/functions/lines) |
-| **full-tests** | quality | Полная матрица: 23 среза unit-тестов (threads-пул, heap 8192) |
+| **full-tests** | quality | Полная матрица: 23 среза unit-тестов (`--pool=forks`, heap 12288) |
 | **e2e** | quality, build | 12 шардов Playwright; каждая джоба сама собирает dist (base "/") и ставит chromium с ретраями |
 | **demos** | build | Демо-скриншоты (screenshots/visual-regression), upload PNG |
 | **security-audit** | — | `npm audit` + проверка секретов |
@@ -26,7 +26,7 @@
 
 ### Ключевые решения
 
-- **23 среза unit** — чтобы каждая джоба укладывалась в память раннера (heap 8192,
+- **23 среза unit** — чтобы каждая джоба укладывалась в память раннера (heap 12288;
   команда CI явно задаёт `--pool=forks`, переопределяя конфиг).
 - **E2E собирает dist сама** — исключает зависимость от артефакта; `VITE_BASE_PATH=/`
   обязательно, иначе ассеты по `/ai-os-new/` 404 и SPA пуст.
@@ -40,7 +40,7 @@ flowchart LR
     Q[quality] --> B[build]
     Q --> T[test]
     Q --> C[coverage]
-    Q --> F[full-tests: 17 shards]
+    Q --> F[full-tests: 23 shards]
     B --> E[e2e: 12 shards]
     B --> D[demos]
     Q --> CC[circular-check]

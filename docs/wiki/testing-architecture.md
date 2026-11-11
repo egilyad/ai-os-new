@@ -12,7 +12,7 @@
 
 1. **Unit-тесты (Vitest).** Тестовые файлы лежат рядом с кодом: `src/**/*.test.{ts,tsx}`.
    Среда: jsdom + `fake-indexeddb/auto` + лёгкий setup (`src/tests/setup-light.ts`).
-   Пул: `forks` (по умолчанию) или `threads` в CI; покрытие — v8.
+   Пул: `forks` (`--pool=forks` в CI); покрытие — v8.
 2. **E2E-тесты (Playwright).** Все спек-файлы в `e2e/*.spec.ts` (23 файла).
    Запускаются против свежесобранного `dist/` через `vite preview` (порт 5199)
    и test-only sync-server (порт 3001).
@@ -42,8 +42,8 @@
 ждём появления заголовка `Mission Control`, что означает завершённую гидратацию SPA.
 Затем тесты работают с реальным приложением через роуты и UI.
 
-Шарды E2E (12) разбиты по доменам: basic/routes, debate, dialogs, fleet, forum,
-health-chat-sync, knowledge, organizer, projects, research, runtime.
+Шарды E2E (12): basic-routes-a, routes-b, health-chat-sync, debate, forum, projects,
+organizer, dialogs, knowledge, research, fleet, runtime.
 
 
 ---

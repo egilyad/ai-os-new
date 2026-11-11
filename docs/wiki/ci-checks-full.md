@@ -15,7 +15,7 @@
    серверные и скриптовые тесты).
 5. **Full Unit Tests** — 23 среза, включая kernel, components, rest.
 6. **Test Coverage** — v8: statements ≥ 31, branches ≥ 25, functions ≥ 30, lines ≥ 32.
-7. **E2E Tests** — 12 шардов Playwright (23 спек-файла, ~65 тестов).
+7. **E2E Tests** — 12 шардов Playwright (матрица покрывает 17 из 23 спек-файлов, ~65 тестов).
 8. **Demo screenshots** — `npm run gen:demos` (screenshots + visual regression);
    CI загружает PNG артефактом для просмотра и не обновляет закоммиченные изображения
    автоматически (обновление — `npm run gen:demos` локально).

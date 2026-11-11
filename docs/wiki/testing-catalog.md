@@ -11,7 +11,7 @@
 Это обзор ключевых групп и файлов, а не исчерпывающий перечень (файлов ~671).
 Полный актуальный список формируется командой:
 
-```bash
+```powershell
 Get-ChildItem -Recurse src -Include *.test.ts,*.test.tsx -File |
   Where-Object { $_.FullName -notmatch 'node_modules' } |
   ForEach-Object { $_.FullName }
@@ -43,12 +43,19 @@ Get-ChildItem -Recurse src -Include *.test.ts,*.test.tsx -File |
 - **Вики** — `WikiPanel/wiki-*.test.ts(x)`: целостность корпуса, поиск, рендер статей.
 
 ### E2E (e2e/)
-- `basic-flow.spec.ts`, `routes-a-flow.spec.ts`, `routes-b-flow.spec.ts` — навигация, роуты;
-- `data-*.spec.ts` (11) — доменные данные: chat, debate, dialogs, fleet, forum,
-  health, keys, knowledge, organizer, projects, research, room, runtime, sync, sre;
-- `a11y-basic.spec.ts` — базовые accessibility-проверки;
-- `wiki-brain.spec.ts` — вики-поиск;
-- `screenshots.spec.ts`, `visual-regression.spec.ts` — демо-скриншоты.
+Всего 23 спек-файла; CI запускает их матрицей из 12 шардов
+(см. «CI/CD Architecture»), которая покрывает 17 файлов:
+
+- Навигация/роуты: `basic-flow.spec.ts`, `routes-a-flow.spec.ts`,
+  `routes-b-flow.spec.ts`;
+- Доменные данные (`data-*.spec.ts`, 15): chat, debate, dialogs, fleet, forum,
+  health, keys, knowledge, organizer, projects, research, room, runtime, sync,
+  sre-health-diagnostics. Из них в CI-матрице участвуют 14 (без
+  `data-sre-health-diagnostics.spec.ts`);
+- Не входят в стандартную матрицу: `a11y-basic.spec.ts` (доступность),
+  `assistant-panel.spec.ts`, `wiki-brain.spec.ts` (вики-поиск),
+  `screenshots.spec.ts` и `visual-regression.spec.ts` (демо-скриншоты;
+  screenshots гоняется отдельной джобой demos на main).
 
 
 ---
