@@ -2047,8 +2047,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Матрица покрытия",
-      "bytes": 8388,
-      "hash": "c9f05dbc10d97992a5cbc6b2396e87111318fe37"
+      "bytes": 8389,
+      "hash": "b86edbea1dae38fcf7ce97d4e63d3cc0fd4b75cf"
     },
     {
       "path": "docs/wiki/debate-strategies-cheatsheet.md",
@@ -2104,7 +2104,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4077,
-      "hash": "7e7911b39aca8963ff2138a74aac7109c95fb4ab"
+      "hash": "c46806bb98b771cb7a398d8133131dd533f19745"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -2192,7 +2192,7 @@
       "language": "ru",
       "title": "Граф знаний",
       "bytes": 4835,
-      "hash": "b2a018a6766ba01fb1d5c06f7908542602a22d0e"
+      "hash": "eaabbc2c85a98f4d2de5ad734fa781f5ad3b76ab"
     },
     {
       "path": "docs/wiki/dev-history.md",
