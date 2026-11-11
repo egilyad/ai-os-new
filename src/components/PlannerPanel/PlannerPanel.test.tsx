@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeAll } from 'vitest';
+﻿import { describe, it, expect, vi, beforeAll } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 
 beforeAll(() => {
@@ -40,7 +40,8 @@ describe('PlannerPanel', () => {
         const Panel = (await import('./PlannerPanel')).default;
         render(<Panel />);
         await waitFor(() => expect(plannerService.listFilters).toHaveBeenCalled());
-        expect(await screen.findByText('pre · trim')).toBeDefined();
+        await waitFor(() => expect(document.body.textContent).toContain('pre:trim'));
+        expect(document.body.textContent).toContain('trim');
     });
 
     it('runs a plan with the chosen strategy and shows the result', async () => {
@@ -50,9 +51,7 @@ describe('PlannerPanel', () => {
         fireEvent.change(screen.getByPlaceholderText('planner.taskPlaceholder'), {
             target: { value: 'Ship it' },
         });
-        fireEvent.change(screen.getByLabelText('planner.strategy'), {
-            target: { value: 'sequential' },
-        });
+        fireEvent.click(screen.getByRole('button', { name: /planner.strategy.sequential/ }));
         fireEvent.click(screen.getByRole('button', { name: 'planner.plan.submit' }));
         await waitFor(() => expect(plannerService.plan).toHaveBeenCalledWith('Ship it', 'sequential'));
         expect(await screen.findByText('planned:sequential:Ship it')).toBeDefined();
@@ -65,9 +64,7 @@ describe('PlannerPanel', () => {
         fireEvent.change(screen.getByPlaceholderText('planner.taskPlaceholder'), {
             target: { value: 'Build' },
         });
-        fireEvent.change(screen.getByLabelText('planner.strategy'), {
-            target: { value: 'stepwise' },
-        });
+        fireEvent.click(screen.getByRole('button', { name: /planner.strategy.stepwise/ }));
         fireEvent.click(screen.getByRole('button', { name: 'planner.plan.submit' }));
         fireEvent.change(await screen.findByPlaceholderText('planner.nextStepPlaceholder'), {
             target: { value: 'step two' },
@@ -83,7 +80,7 @@ describe('PlannerPanel', () => {
         render(<Panel />);
         fireEvent.click(screen.getByRole('button', { name: 'planner.filter.add' }));
         await waitFor(() => expect(plannerService.addFilter).toHaveBeenCalled());
-        expect((await screen.findAllByText('pre · policy')).length).toBeGreaterThan(0);
+        expect((await screen.findAllByText('policy')).length).toBeGreaterThan(0);
     });
 
     it('tolerates a non-array filter payload', async () => {

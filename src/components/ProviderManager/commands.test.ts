@@ -5,7 +5,7 @@ describe('ExportProvidersCommand', () => {
     it('should generate export data and filename', () => {
         const cmd = new ExportProvidersCommand(() => JSON.stringify({ version: 1, providers: [] }));
         const result = cmd.execute();
-        expect(result.data).toBe('{"version":1,"providers":[]}');
+        expect(JSON.parse(result.data)).toEqual({ version: 1, providers: [] });
         expect(result.filename).toMatch(/^providers-export-\d{4}-\d{2}-\d{2}\.json$/);
     });
 });

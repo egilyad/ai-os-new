@@ -27,6 +27,13 @@ vi.mock('../../kernel/instances', () => ({
     rootLogger: {
         child: () => ({ info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn() }),
     },
+    eventBus: {
+        emit: vi.fn(),
+        on: vi.fn(() => vi.fn()),
+        onSafe: vi.fn(() => vi.fn()),
+        off: vi.fn(),
+        subscribeAll: vi.fn(() => vi.fn()),
+    },
     knowledgeGenerator: { listActiveJobs, generateFromTrigger, getStatus, cancel },
 }));
 
