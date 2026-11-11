@@ -489,11 +489,13 @@ jobs:
               # Build first so dist/ always exists for the preview server,
               # independent of later browser-install steps. Vite preview hard-
               # fails with "The directory dist does not exist" otherwise.
+              # VITE_BASE_PATH must be "/" here: preview serves assets from the
+              # root, while /ai-os-new/ links would 404 and leave a blank SPA.
               run: npm run build
               env:
                   VITE_APP_ORIGIN: https://example.com
                   VITE_BUILD_ID: ${{ github.sha }}
-                  VITE_BASE_PATH: /ai-os-new/
+                  VITE_BASE_PATH: /
 
             - name: Cache Playwright browsers
               uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
