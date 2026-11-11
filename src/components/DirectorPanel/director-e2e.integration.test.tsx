@@ -13,6 +13,7 @@ import { EVENTS } from '../../kernel/events/event-registry';
 import { ScenarioRepository } from '../../kernel/dal/scenario-repository';
 import { createTestDb, type TestDb } from '../../kernel/dal/_test-harness';
 import { useDirectorStore } from '../../stores/directorStore';
+import { setAgentIdentityResolver } from '../../kernel/services/agent-identity';
 
 /**
  * B6.1 — End-to-end integration gate for the generic Conversation Director.
@@ -36,6 +37,15 @@ import { useDirectorStore } from '../../stores/directorStore';
  */
 
 beforeAll(() => {
+    setAgentIdentityResolver({
+        resolveAgent: (id: string) => ({
+            id,
+            name: id,
+            role: id,
+            systemPrompt: `Persona of ${id}.`,
+            model: undefined,
+        }),
+    } as never);
     Object.defineProperty(window, 'matchMedia', {
         writable: true,
         value: vi.fn().mockImplementation((query: string) => ({
