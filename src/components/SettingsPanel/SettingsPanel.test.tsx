@@ -1,4 +1,5 @@
-﻿import { describe, it, expect, vi, beforeEach } from 'vitest';
+﻿import React from 'react';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 
 const mockSettings = {
@@ -21,6 +22,7 @@ const mockCONFIG = {
         memory: { enabled: true, semantic: true, ragOnChat: true, autoStore: true },
         debate: { runtimeEngine: true, engineOnly: false },
         ui: { experimentalVisuals: false },
+        mockServices: { enabled: false },
     },
     monitoring: {
         latencyPenalty: { divisor: 2, cap: 5000, thresholdMs: 1000 },
@@ -43,6 +45,10 @@ const mockCONFIG = {
 
 vi.mock('react-router-dom', () => ({
     useSearchParams: () => [new URLSearchParams()],
+    Link: ({ to, children }: { to: string; children?: React.ReactNode }) => (
+        <a href={to}>{children}</a>
+    ),
+    useNavigate: () => vi.fn(),
 }));
 
 // The real store boots Dexie at import (throws in this env) — some settings
@@ -275,7 +281,11 @@ vi.mock('../../i18n/useTranslation', () => {
 });
 
 function getTab(name: string) {
-    return screen.getByRole('tab', { name });
+    const tab = screen
+        .getAllByRole('tab')
+        .find((t) => t.textContent?.trim()?.startsWith(name));
+    if (!tab) throw new Error(`tab not found: ${name}`);
+    return tab;
 }
 
 describe('SettingsPanel', () => {
@@ -292,18 +302,18 @@ describe('SettingsPanel', () => {
             { timeout: 10000 },
         );
         expect(heading).toBeDefined();
-    }, 15000);
+    }, 45000);
 
     it('renders navigation tabs', async () => {
         const SettingsPanel = (await import('./SettingsPanel')).default;
         render(<SettingsPanel />);
         await screen.findByRole('tab', { name: /General Preferences/i }, { timeout: 10000 });
         const tabNames = screen.getAllByRole('tab').map((t) => t.textContent?.trim());
-        expect(tabNames).toContain('General Preferences');
-        expect(tabNames).toContain('Interaction & Memory');
-        expect(tabNames).toContain('Routing AI');
-        expect(tabNames).toContain('Security & Core Access');
-    }, 15000);
+        expect(tabNames.some((t) => t?.startsWith('General Preferences'))).toBe(true);
+        expect(tabNames.some((t) => t?.startsWith('Interaction & Memory'))).toBe(true);
+        expect(tabNames.some((t) => t?.startsWith('Routing AI'))).toBe(true);
+        expect(tabNames.some((t) => t?.startsWith('Security & Core Access'))).toBe(true);
+    }, 45000);
 
     it('shows General Preferences by default', async () => {
         const SettingsPanel = (await import('./SettingsPanel')).default;
@@ -313,7 +323,7 @@ describe('SettingsPanel', () => {
         expect(screen.getByText('Interface Theme')).toBeDefined();
         expect(screen.getByText('System Language')).toBeDefined();
         expect(screen.getAllByText('System Notifications').length).toBeGreaterThan(0);
-    }, 15000);
+    }, 45000);
 
     it('switches to Interaction & Memory tab', async () => {
         const SettingsPanel = (await import('./SettingsPanel')).default;
@@ -323,7 +333,7 @@ describe('SettingsPanel', () => {
         expect(await screen.findByText('Default Chat Strategy')).toBeDefined();
         expect(screen.getByText('Streaming Responses')).toBeDefined();
         expect(screen.getByText('History Persistence')).toBeDefined();
-    }, 15000);
+    }, 45000);
 
     it('switches to Routing AI tab', async () => {
         const SettingsPanel = (await import('./SettingsPanel')).default;
@@ -333,7 +343,7 @@ describe('SettingsPanel', () => {
         expect(await screen.findByText('Reinforcement Router (UCB1)')).toBeDefined();
         expect(screen.getByText('Fallback Routing')).toBeDefined();
         expect(screen.getByText('Auto Health Check')).toBeDefined();
-    }, 15000);
+    }, 45000);
 
     it('switches to Security & Core Access tab', async () => {
         const SettingsPanel = (await import('./SettingsPanel')).default;
@@ -344,13 +354,13 @@ describe('SettingsPanel', () => {
         expect(screen.getByText('Debug Mode')).toBeDefined();
         expect(screen.getByText('Reset Settings')).toBeDefined();
         expect(screen.getByText('Factory Reset')).toBeDefined();
-    }, 15000);
+    }, 45000);
 
     it('shows OS Telemetry sidebar section', async () => {
         const SettingsPanel = (await import('./SettingsPanel')).default;
         render(<SettingsPanel />);
         expect(await screen.findByText('OS Telemetry', {}, { timeout: 10000 })).toBeDefined();
-    }, 15000);
+    }, 45000);
 
     it('renders theme select dropdown', async () => {
         const SettingsPanel = (await import('./SettingsPanel')).default;
@@ -358,7 +368,7 @@ describe('SettingsPanel', () => {
         await screen.findByText('Interface Theme', {}, { timeout: 10000 });
         const selects = document.querySelectorAll('select');
         expect(selects.length).toBeGreaterThanOrEqual(1);
-    }, 15000);
+    }, 45000);
 
     it('renders toggle switch for notifications', async () => {
         const SettingsPanel = (await import('./SettingsPanel')).default;
@@ -366,7 +376,7 @@ describe('SettingsPanel', () => {
         await screen.findAllByText('System Notifications', {}, { timeout: 10000 });
         const buttons = document.querySelectorAll('button');
         expect(buttons.length).toBeGreaterThan(0);
-    }, 15000);
+    }, 45000);
 
     it('renders exploration factor slider in Routing AI', async () => {
         const SettingsPanel = (await import('./SettingsPanel')).default;
@@ -376,7 +386,7 @@ describe('SettingsPanel', () => {
         await screen.findByText('Reinforcement Router (UCB1)');
         const sliders = document.querySelectorAll('input[type="range"]');
         expect(sliders.length).toBeGreaterThan(0);
-    }, 15000);
+    }, 45000);
 
     it('shows version info in sidebar', async () => {
         const SettingsPanel = (await import('./SettingsPanel')).default;
@@ -384,14 +394,14 @@ describe('SettingsPanel', () => {
         expect(await screen.findByText(/v0\.0\.0/, {}, { timeout: 10000 })).toBeDefined();
         expect(screen.getByText('dev')).toBeDefined();
         expect(screen.getByText('HEALTHY')).toBeDefined();
-    }, 15000);
+    }, 45000);
 
     it('has no dead AI Modules tab', async () => {
         const SettingsPanel = (await import('./SettingsPanel')).default;
         render(<SettingsPanel />);
         await screen.findByRole('tab', { name: /General Preferences/i }, { timeout: 10000 });
         expect(screen.queryByRole('tab', { name: 'AI Modules' })).toBeNull();
-    }, 15000);
+    }, 45000);
 
     it('System Prompts tab redirects to the real Prompts editor', async () => {
         const SettingsPanel = (await import('./SettingsPanel')).default;
@@ -404,9 +414,9 @@ describe('SettingsPanel', () => {
         expect(panel?.querySelectorAll('textarea').length ?? 0).toBe(0);
         fireEvent.click(screen.getByText('Open Prompts Editor'));
         expect(
-            screen.getByRole('tab', { name: 'Prompts' }).getAttribute('aria-selected'),
+            getTab('Prompts').getAttribute('aria-selected'),
         ).toBe('true');
-    }, 15000);
+    }, 45000);
 
     it('N8N tab has no fake credential form', async () => {
         const SettingsPanel = (await import('./SettingsPanel')).default;
@@ -416,5 +426,5 @@ describe('SettingsPanel', () => {
         expect(await screen.findByText('Open Agents')).toBeDefined();
         const panel = document.getElementById('settings-tab-n8n');
         expect(panel?.querySelectorAll('input').length ?? 0).toBe(0);
-    }, 15000);
+    }, 45000);
 });

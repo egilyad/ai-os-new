@@ -1,5 +1,5 @@
 ﻿import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 
 vi.mock('../../kernel/instances', () => ({
     getDexieDb: () => ({ tables: [], apiKeys: { toArray: async () => [] } }),
@@ -71,21 +71,18 @@ describe('SREAgentPanel', () => {
 
     it('banners a failed fix execution', async () => {
         const { advisorService } = await import('../../kernel/instances');
-        vi.mocked(advisorService.getSuggestions).mockReturnValueOnce([
+        vi.mocked(advisorService.getSuggestions).mockReturnValue([
             { id: 's1', title: 'Fix me', severity: 'warning' },
         ] as never);
-        vi.mocked(advisorService.executeFix).mockImplementationOnce(() => {
+        vi.mocked(advisorService.executeFix).mockImplementation(() => {
             throw new Error('nope');
         });
-        vi.useFakeTimers();
-        try {
-            const Panel = (await import('./SREAgentPanel')).default;
-            render(<Panel />);
-            fireEvent.click(await screen.findByText('sre.execute'));
-            await vi.advanceTimersByTimeAsync(600);
-            expect(await screen.findByText('sre.error.execute')).toBeDefined();
-        } finally {
-            vi.useRealTimers();
-        }
+        const Panel = (await import('./SREAgentPanel')).default;
+        render(<Panel />);
+        fireEvent.click(await screen.findByText('sre.execute'));
+        await waitFor(
+            () => expect(screen.getByText('sre.error.execute')).toBeDefined(),
+            { timeout: 3000 },
+        );
     });
 });

@@ -141,6 +141,15 @@ describe('Invocation Engine — Room → Engine → policy → ConversationCore 
         defaultContainer.register('debateService', {
             startDebate: async () => ({ id: 'stub-debate' }) as never,
         } as unknown as import('../../kernel/services/debate-runtime/debate-sync-manager').DebateSyncManager);
+        defaultContainer.register('budgetService', {
+            getBudgetInfo: () => ({ spentThisMonth: 0, dailyAverage: 0 }),
+            recordSpend: () => {},
+            getCostByAgent: () => 0,
+            getAgentBudget: () => ({ budget: 100, spent: 0, remaining: 100, pct: 0 }),
+            getSpendSummary: () => ({ global: { budget: 100, spent: 0, remaining: 100, pct: 0 }, providers: [], agents: [] }),
+            getCostTrend: () => ({ direction: 'stable', dailyAvg: 0, projectedMonthly: 0, forecast: 0 }),
+            detectAnomalies: () => [],
+        } as never);
 
         const ctx: PhaseContext = {
             container: defaultContainer,
@@ -151,6 +160,8 @@ describe('Invocation Engine — Room → Engine → policy → ConversationCore 
         registerPhase21(makeHelpers(ctx), ctx);
 
         // Seed ONE minimal smoke policy through the existing repo mechanism.
+        // eslint-disable-next-line no-console
+        console.log('DEBUG_HAS_INV=' + defaultContainer.has('invocationEngineService'));
         await invocationEngine.createPolicy({
             name: 'Room smoke policy',
             enabled: true,

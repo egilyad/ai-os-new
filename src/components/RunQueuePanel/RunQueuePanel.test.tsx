@@ -123,15 +123,16 @@ describe('RunQueuePanel', () => {
         await waitFor(() => expect(runQueueService.drain).toHaveBeenCalled());
     });
 
-    it('shows validation on empty refId', async () => {
+    it('disables enqueue when refId is empty', async () => {
         const Panel = (await import('./RunQueuePanel')).default;
         render(<Panel />);
         await waitFor(() => {
-            const items = screen.getAllByRole('listitem');
+            const items = screen.queryAllByRole('listitem');
             expect(items.length).toBeGreaterThanOrEqual(0);
         });
-        fireEvent.click(screen.getByRole('button', { name: 'runQueue.enqueue.submit' }));
-        expect(await screen.findByText('runQueue.validation.refId')).toBeDefined();
+        expect(
+            screen.getByRole('button', { name: 'runQueue.enqueue.submit' }),
+        ).toBeDisabled();
     });
 
     it('defines a toolkit and shows it in the list', async () => {
