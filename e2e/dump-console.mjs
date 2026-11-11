@@ -4,6 +4,7 @@
 // (visible without login, unlike full logs). Always exits 0.
 import { spawn } from 'node:child_process';
 import { chromium } from '@playwright/test';
+import { existsSync } from 'node:fs';
 
 const PORT = 5180;
 const ROUTES = ['/', '/agents', '/chat', '/keys'];
@@ -18,13 +19,12 @@ const note = (t) =>
                 .replace(/\n/g, '%0A'),
     );
 
-note('DUMP_CWD=' + process.cwd() + ' distExists=' + (() => {
-    try {
-        return require('node:fs').existsSync('dist/index.html');
-    } catch {
-        return 'err';
-    }
-})());
+note(
+    'DUMP_CWD=' +
+        process.cwd() +
+        ' distExists=' +
+        existsSync('dist/index.html'),
+);
 
 const server = spawn(
     'node',
