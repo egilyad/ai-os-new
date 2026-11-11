@@ -597,11 +597,14 @@ jobs:
                   done
                   exit 1
 
-            - name: Download build artifact
-              uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
-              with:
-                  name: dist
-                  path: dist/
+            - name: Build app
+              # In-job build with "/" base (preview serves assets from root);
+              # the Pages-deploy artifact uses /ai-os-new/ and would 404 here.
+              run: npm run build
+              env:
+                  VITE_APP_ORIGIN: https://example.com
+                  VITE_BUILD_ID: ${{ github.sha }}
+                  VITE_BASE_PATH: /
 
             - name: Capture demo screenshots
               run: npm run gen:demos
