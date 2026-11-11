@@ -12,8 +12,8 @@
     },
     "byLanguage": {
       "en": 40,
-      "mixed": 133,
-      "ru": 337
+      "mixed": 134,
+      "ru": 336
     }
   },
   "duplicates": {
@@ -1423,16 +1423,16 @@
       "category": "wiki",
       "language": "mixed",
       "title": "CI/CD Architecture",
-      "bytes": 3115,
-      "hash": "37411316e3819ccb46e7d4d30ad45ce6f340e0b5"
+      "bytes": 3284,
+      "hash": "b9f2e7ca0a47bee695b291ea28c56918ba153b21"
     },
     {
       "path": "docs/wiki/ci-checks-full.md",
       "category": "wiki",
       "language": "mixed",
       "title": "Полный перечень проверок CI",
-      "bytes": 2008,
-      "hash": "8407ce74cb9df7ecbccf05dbb603dc6018ca3a64"
+      "bytes": 2427,
+      "hash": "d41e888dc1b4293205b500a9825c4a3405036636"
     },
     {
       "path": "docs/wiki/comp-adapter-anthropic.md",
@@ -3287,8 +3287,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Wiki SuperAgents OS",
-      "bytes": 35926,
-      "hash": "cb2f1e873605dcdf56df786a13d2b23282f6f5d1"
+      "bytes": 35928,
+      "hash": "15a91e5bac62b9bf7c93551a8e8816fb48b8465a"
     },
     {
       "path": "docs/wiki/record-a-skill.md",
@@ -3823,16 +3823,16 @@
       "category": "wiki",
       "language": "ru",
       "title": "Архитектура тестирования",
-      "bytes": 3272,
-      "hash": "867794464c4cae7b49a8e93e1679b245bb874004"
+      "bytes": 3456,
+      "hash": "d1e19bf5b4692f61b4464815f01980f1cca57b6c"
     },
     {
       "path": "docs/wiki/testing-catalog.md",
       "category": "wiki",
       "language": "mixed",
       "title": "Каталог тестов",
-      "bytes": 2995,
-      "hash": "13b0ad296aa13f27e2ef450075c366ecff6abaee"
+      "bytes": 3417,
+      "hash": "16064c7c554ed5d6365730215971c7db0fb79bb2"
     },
     {
       "path": "docs/wiki/testing-fixes-history.md",
@@ -3861,10 +3861,10 @@
     {
       "path": "docs/wiki/testing-stats.md",
       "category": "wiki",
-      "language": "ru",
+      "language": "mixed",
       "title": "Статистика тестов",
-      "bytes": 1437,
-      "hash": "59f8aeaa8f87c03a9309e759d40fde352c0f0f47"
+      "bytes": 1926,
+      "hash": "e25a74b293e156edfc67ecbf745de72959b0a151"
     },
     {
       "path": "docs/wiki/weekly-commits.md",

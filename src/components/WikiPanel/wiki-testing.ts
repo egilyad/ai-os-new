@@ -1,4 +1,4 @@
-import type { WikiArticle } from './wiki-articles';
+﻿import type { WikiArticle } from './wiki-articles';
 
 /**
  * Статьи о тестировании и CI (актуальное состояние на конец 2026-11).
@@ -38,8 +38,10 @@ export const TESTING_ARTICLES: WikiArticle[] = [
 - \`src/llm/**\` — HTTP-клиенты и декораторы LLM-провайдеров (27 файлов);
 - \`src/stores/**\`, \`src/hooks/**\`, \`src/tests/**\` — сторы, хуки, интеграционные бут-тесты.
 
-Полная unit-матрица в CI разбита на 17 срезов (см. «CI/CD Architecture»),
+Полная unit-матрица в CI разбита на 23 среза (см. «CI/CD Architecture»),
 чтобы уложиться в лимит памяти раннера и ускорить параллельность.
+Фактический пул исполнения в CI — "forks" ("--pool=forks" в команде),
+который переопределяет настройки vitest.config.ts.
 
 ## Как E2E-тесты организованы
 
@@ -59,7 +61,18 @@ health-chat-sync, knowledge, organizer, projects, research, runtime.
         freshness: 'verified',
         sources: ['src/kernel/services', 'src/components', 'e2e'],
         related: ['testing-architecture', 'testing-stats'],
-        body: `## Ключевые группы unit-тестов
+        body: `## О «каталоге»
+
+Это обзор ключевых групп и файлов, а не исчерпывающий перечень (файлов ~671).
+Полный актуальный список формируется командой:
+
+\`\`\`bash
+Get-ChildItem -Recurse src -Include *.test.ts,*.test.tsx -File |
+  Where-Object { $_.FullName -notmatch 'node_modules' } |
+  ForEach-Object { $_.FullName }
+\`\`\`
+
+## Ключевые группы unit-тестов
 
 ### Ядро (src/kernel/services)
 - **Сервисы дебатов/ривалов** — \`debate-runtime/**\`, \`rivals*/**\`: оркестрация,
@@ -98,8 +111,8 @@ health-chat-sync, knowledge, organizer, projects, research, runtime.
         title: 'Статистика тестов',
         section: 'dev',
         tags: ['тесты', 'статистика', 'метрики'],
-        freshness: 'verified',
-        sources: ['src', 'e2e'],
+        freshness: 'documented',
+        sources: ['package.json', 'vitest.config.ts'],
         related: ['testing-catalog'],
         body: `## Реальные замеры (на момент написания)
 
@@ -109,8 +122,12 @@ health-chat-sync, knowledge, organizer, projects, research, runtime.
 | Unit-тестов (it/test) | **≈ 4426** |
 | E2E-спек-файлов | **23** |
 | E2E-тестов | **≈ 65** |
-| Срезов полной unit-матрицы CI | **17** |
+| Срезов полной unit-матрицы CI | **23** |
 | E2E-шардов CI | **12** |
+| Проверок в джобе Unit Tests | **2** (test:stable + test:server) |
+
+Метод замера: Get-ChildItem -Recurse src -Include *.test.ts,*.test.tsx и подсчёт
+регуляркой ^\s*(it|test)( по содержимому. Дата замера: 2026-11-11.
 
 ### Распределение unit-файлов по каталогам
 
@@ -122,12 +139,16 @@ health-chat-sync, knowledge, organizer, projects, research, runtime.
 | src/stores | 14 |
 | src/hooks | 3 |
 | src/tests | 2 |
-| src/shared, src/i18n | 1 |
+| src/shared | 1 |
+| src/i18n | 1 |
+| корень src (единичные файлы) | 1 |
 
-### Что значат «17 срезов»
+### Что значат «23 среза»
 
-Полная unit-матрица: kernel-debate, kernel-svc-a, kernel-svc-r1a1/r1a2/r1a2-2/r1a2-3/r1a2b/r1b/r2,
-kernel-svc-a2/a3/a4/b, kernel-rest, components-a, components-b1…b7, rest.
+Полная unit-матрица: kernel-debate, kernel-svc-a, kernel-svc-r1a1, kernel-svc-r1a2,
+kernel-svc-r1a2-2, kernel-svc-r1a2-3, kernel-svc-r1a2b, kernel-svc-r1b, kernel-svc-r2,
+kernel-svc-a2, kernel-svc-a3, kernel-svc-a4, kernel-svc-b, kernel-rest,
+components-a, components-b1 … components-b7, rest.
 `,
     },
     {
@@ -148,7 +169,7 @@ kernel-svc-a2/a3/a4/b, kernel-rest, components-a, components-b1…b7, rest.
 | **build** | quality | \`npm run build\` + проверка размера бандла, upload артефакта \`dist\` |
 | **test** | quality | Стабильный набор юнит-тестов (\`npm run test:stable\`) |
 | **coverage** | quality | Покрытие v8 с порогами (statements/branches/functions/lines) |
-| **full-tests** | quality | Полная матрица: 17 срезов unit-тестов (threads-пул, heap 8192) |
+| **full-tests** | quality | Полная матрица: 23 среза unit-тестов (threads-пул, heap 8192) |
 | **e2e** | quality, build | 12 шардов Playwright; каждая джоба сама собирает dist (base "/") и ставит chromium с ретраями |
 | **demos** | build | Демо-скриншоты (screenshots/visual-regression), upload PNG |
 | **security-audit** | — | \`npm audit\` + проверка секретов |
@@ -158,12 +179,14 @@ kernel-svc-a2/a3/a4/b, kernel-rest, components-a, components-b1…b7, rest.
 
 ### Ключевые решения
 
-- **17 срезов unit** — чтобы каждая джоба укладывалась в память раннера (heap 8192,
-  пул \`threads\`, максимум 2 треда на группу).
+- **23 среза unit** — чтобы каждая джоба укладывалась в память раннера (heap 8192,
+  команда CI явно задаёт \`--pool=forks\`, переопределяя конфиг).
 - **E2E собирает dist сама** — исключает зависимость от артефакта; \`VITE_BASE_PATH=/\`
   обязательно, иначе ассеты по \`/ai-os-new/\` 404 и SPA пуст.
 - **Install Playwright с ретраями** — против транзиентных DNS/apt-сбоев раннеров.
-- **Gates**: \`deploy\` ждёт все проверки; E2E не блокируют деплой? — блокируют: deploy needs e2e.
+- **Gates публикации**: \`deploy.needs\` = quality, build, test, coverage, security-audit,
+  circular-check, dep-graph, e2e. Полная матрица (full-tests) и Demo screenshots (demos)
+  выполняются независимо и НЕ блокируют Deploy.
 
 \`\`\`mermaid
 flowchart LR
@@ -197,17 +220,21 @@ flowchart LR
 1. **TypeScript type-check** — \`tsc --noEmit\` по проектным tsconfig-ссылкам.
 2. **ESLint** — 0 ошибок, порог предупреждений 4300.
 3. **Build (Vite)** — \`npm run build\` + предупреждение, если dist > 30 МБ.
-4. **Unit Tests (stable)** — \`npm run test:stable\`.
-5. **Full Unit Tests** — 17 срезов, включая kernel, components, rest.
+4. **Unit Tests** — \`npm run test:stable\` + \`npm run test:server\` (Node test-runner,
+   серверные и скриптовые тесты).
+5. **Full Unit Tests** — 23 среза, включая kernel, components, rest.
 6. **Test Coverage** — v8: statements ≥ 31, branches ≥ 25, functions ≥ 30, lines ≥ 32.
 7. **E2E Tests** — 12 шардов Playwright (23 спек-файла, ~65 тестов).
-8. **Demo screenshots** — \`npm run gen:demos\` (screenshots + visual regression).
+8. **Demo screenshots** — \`npm run gen:demos\` (screenshots + visual regression);
+   CI загружает PNG артефактом для просмотра и не обновляет закоммиченные изображения
+   автоматически (обновление — \`npm run gen:demos\` локально).
 9. **Security Audit** — \`npm audit\` (provenance/audit флаги).
 10. **Circular Dependency Check** — поиск циклов в графе импортов.
 11. **Dependency Graph Check** — целостность графа зависимостей ядра.
 12. **Wiki docs in sync** — генераторы вики должны давать нулевой diff.
 13. **Documentation health** — проверка источников статей и внутренних ссылок вики.
-14. **Deploy to GitHub Pages** — только на main/master и только если все гейты зелёные.
+14. **Deploy to GitHub Pages** — только на main/master и только если гейты из
+    \`deploy.needs\` зелёные (см. CI/CD Architecture; full-tests и demos в needs нет).
 `,
     },
     {

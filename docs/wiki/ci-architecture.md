@@ -16,7 +16,7 @@
 | **build** | quality | `npm run build` + проверка размера бандла, upload артефакта `dist` |
 | **test** | quality | Стабильный набор юнит-тестов (`npm run test:stable`) |
 | **coverage** | quality | Покрытие v8 с порогами (statements/branches/functions/lines) |
-| **full-tests** | quality | Полная матрица: 17 срезов unit-тестов (threads-пул, heap 8192) |
+| **full-tests** | quality | Полная матрица: 23 среза unit-тестов (threads-пул, heap 8192) |
 | **e2e** | quality, build | 12 шардов Playwright; каждая джоба сама собирает dist (base "/") и ставит chromium с ретраями |
 | **demos** | build | Демо-скриншоты (screenshots/visual-regression), upload PNG |
 | **security-audit** | — | `npm audit` + проверка секретов |
@@ -26,12 +26,14 @@
 
 ### Ключевые решения
 
-- **17 срезов unit** — чтобы каждая джоба укладывалась в память раннера (heap 8192,
-  пул `threads`, максимум 2 треда на группу).
+- **23 среза unit** — чтобы каждая джоба укладывалась в память раннера (heap 8192,
+  команда CI явно задаёт `--pool=forks`, переопределяя конфиг).
 - **E2E собирает dist сама** — исключает зависимость от артефакта; `VITE_BASE_PATH=/`
   обязательно, иначе ассеты по `/ai-os-new/` 404 и SPA пуст.
 - **Install Playwright с ретраями** — против транзиентных DNS/apt-сбоев раннеров.
-- **Gates**: `deploy` ждёт все проверки; E2E не блокируют деплой? — блокируют: deploy needs e2e.
+- **Gates публикации**: `deploy.needs` = quality, build, test, coverage, security-audit,
+  circular-check, dep-graph, e2e. Полная матрица (full-tests) и Demo screenshots (demos)
+  выполняются независимо и НЕ блокируют Deploy.
 
 ```mermaid
 flowchart LR

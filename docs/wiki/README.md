@@ -420,7 +420,7 @@
 - [Как написать свой плагин](./plugins-create.md) — _verified_
 - [Архитектура тестирования](./testing-architecture.md) — _verified_
 - [Каталог тестов](./testing-catalog.md) — _verified_
-- [Статистика тестов](./testing-stats.md) — _verified_
+- [Статистика тестов](./testing-stats.md) — _documented_
 - [CI/CD Architecture](./ci-architecture.md) — _verified_
 - [Полный перечень проверок CI](./ci-checks-full.md) — _verified_
 - [История исправлений тестов](./testing-fixes-history.md) — _documented_

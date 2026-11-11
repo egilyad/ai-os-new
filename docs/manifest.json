@@ -9673,15 +9673,15 @@
       "slug": "testing-stats",
       "title": "Статистика тестов",
       "section": "dev",
-      "status": "verified",
+      "status": "documented",
       "tags": [
         "тесты",
         "статистика",
         "метрики"
       ],
       "sources": [
-        "src",
-        "e2e"
+        "package.json",
+        "vitest.config.ts"
       ],
       "related": [
         "testing-catalog"

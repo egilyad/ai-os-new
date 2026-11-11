@@ -2,9 +2,9 @@
 
 # Статистика тестов
 
-> Раздел: **Разработчикам** · Статус: verified · Теги: тесты, статистика, метрики
+> Раздел: **Разработчикам** · Статус: documented · Теги: тесты, статистика, метрики
 
-Источники: `src`, `e2e`
+Источники: `package.json`, `vitest.config.ts`
 
 ## Реальные замеры (на момент написания)
 
@@ -14,8 +14,12 @@
 | Unit-тестов (it/test) | **≈ 4426** |
 | E2E-спек-файлов | **23** |
 | E2E-тестов | **≈ 65** |
-| Срезов полной unit-матрицы CI | **17** |
+| Срезов полной unit-матрицы CI | **23** |
 | E2E-шардов CI | **12** |
+| Проверок в джобе Unit Tests | **2** (test:stable + test:server) |
+
+Метод замера: Get-ChildItem -Recurse src -Include *.test.ts,*.test.tsx и подсчёт
+регуляркой ^s*(it|test)( по содержимому. Дата замера: 2026-11-11.
 
 ### Распределение unit-файлов по каталогам
 
@@ -27,12 +31,16 @@
 | src/stores | 14 |
 | src/hooks | 3 |
 | src/tests | 2 |
-| src/shared, src/i18n | 1 |
+| src/shared | 1 |
+| src/i18n | 1 |
+| корень src (единичные файлы) | 1 |
 
-### Что значат «17 срезов»
+### Что значат «23 среза»
 
-Полная unit-матрица: kernel-debate, kernel-svc-a, kernel-svc-r1a1/r1a2/r1a2-2/r1a2-3/r1a2b/r1b/r2,
-kernel-svc-a2/a3/a4/b, kernel-rest, components-a, components-b1…b7, rest.
+Полная unit-матрица: kernel-debate, kernel-svc-a, kernel-svc-r1a1, kernel-svc-r1a2,
+kernel-svc-r1a2-2, kernel-svc-r1a2-3, kernel-svc-r1a2b, kernel-svc-r1b, kernel-svc-r2,
+kernel-svc-a2, kernel-svc-a3, kernel-svc-a4, kernel-svc-b, kernel-rest,
+components-a, components-b1 … components-b7, rest.
 
 
 ---

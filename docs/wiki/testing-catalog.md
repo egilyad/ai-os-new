@@ -6,6 +6,17 @@
 
 Источники: `src/kernel/services`, `src/components`, `e2e`
 
+## О «каталоге»
+
+Это обзор ключевых групп и файлов, а не исчерпывающий перечень (файлов ~671).
+Полный актуальный список формируется командой:
+
+```bash
+Get-ChildItem -Recurse src -Include *.test.ts,*.test.tsx -File |
+  Where-Object { $_.FullName -notmatch 'node_modules' } |
+  ForEach-Object { $_.FullName }
+```
+
 ## Ключевые группы unit-тестов
 
 ### Ядро (src/kernel/services)
