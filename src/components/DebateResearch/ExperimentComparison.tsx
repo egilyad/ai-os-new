@@ -27,6 +27,7 @@ export const ExperimentComparison: React.FC = () => {
   const right = useMemo(() => allRuns.find(r => r.id === rightId) || null, [allRuns, rightId]);
 
   const formatDate = (ts: number) => {
+    if (!Number.isFinite(ts)) return '-';
     const d = new Date(ts);
     return `${d.getMonth() + 1}/${d.getDate()} ${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`;
   };

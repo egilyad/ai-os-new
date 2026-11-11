@@ -28,6 +28,8 @@ const resolveAgent = vi.fn((id: string) => ({
     displayName: 'Alex Petrov',
     baseRole: 'Critical Auditor',
     specializations: ['Chemistry'],
+    lensNames: [],
+    avatar: { emoji: '🤖', color: '#8b5cf6', url: '', initials: 'AP', seed: 'agent-x' },
     model: 'llama-3.3-70b-versatile',
     provider: 'groq',
 }));
@@ -38,6 +40,15 @@ vi.mock('../../kernel/instances/services-core', () => ({
         resolveAgent: (id: string) => resolveAgent(id),
     },
 }));
+
+vi.mock('../../kernel/services/agent-identity', async (importOriginal) => {
+    const actual = await importOriginal<typeof import('../../kernel/services/agent-identity')>();
+    return {
+        ...actual,
+        resolveAgentIdentity: (id: string) =>
+            resolveAgent(id) ?? actual.resolveAgentIdentity(id),
+    };
+});
 
 vi.mock('../../i18n/useTranslation', () => ({
     useTranslation: () => ({
@@ -61,7 +72,7 @@ describe('ParticipantsField (identity vs conversation role)', () => {
         render(
             <ParticipantsField value={[{ id: 'agent-x', role: 'Critic' }]} onChange={() => {}} />,
         );
-        expect(screen.getByText('Alex Petrov')).toBeDefined();
+        expect(screen.getAllByText('Alex Petrov').length).toBeGreaterThanOrEqual(1);
         expect(screen.getByText(/Chemistry/)).toBeDefined();
         const roleInput = screen.getByLabelText('Conversation role') as HTMLInputElement;
         expect(roleInput.value).toBe('Critic');

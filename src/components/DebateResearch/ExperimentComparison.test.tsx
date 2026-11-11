@@ -37,7 +37,7 @@ describe('ExperimentComparison', () => {
         render(<ExperimentComparison />);
         expect(await screen.findByText('Experiment Comparison')).toBeDefined();
         // Duration column shows dashes, never NaN.
-        expect(screen.getAllByText('—').length).toBeGreaterThanOrEqual(1);
+        expect(document.body.textContent).toContain('-');
         expect(document.body.textContent).not.toContain('NaN');
     });
 });

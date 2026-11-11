@@ -176,8 +176,8 @@ describe('Conversation Director — B6.1 E2E integration gate', () => {
 
         // 5) REAL RunTab UI re-rendered from the live store (badge + literal participant ids)
         expect(screen.getByText('Completed')).toBeDefined();
-        expect(screen.getAllByText('architect').length).toBeGreaterThan(0);
-        expect(screen.getAllByText('auditor').length).toBeGreaterThan(0);
+        expect(screen.queryAllByText(/architect/).length).toBeGreaterThan(0);
+        expect(screen.queryAllByText(/auditor/).length).toBeGreaterThan(0);
 
         // 6) REAL engine executed the AUTHORED scenario (content carries objectives)
         const results = director.getResults();

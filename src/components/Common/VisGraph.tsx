@@ -138,6 +138,7 @@ const VisGraph: React.FC<Props> = ({
     return (
         <div
             ref={containerRef}
+            data-visgraph
             style={{
                 width: '100%',
                 height,

@@ -91,11 +91,10 @@ describe('DyadPanel', () => {
         expect((await screen.findAllByText('Explain quantum computing')).length).toBeGreaterThan(0);
     });
 
-    it('shows validation on empty topic', async () => {
+    it('disables start when topic is empty', async () => {
         const Panel = (await import('./DyadPanel')).default;
         render(<Panel />);
-        fireEvent.click(screen.getByRole('button', { name: 'dyad.run.start' }));
-        expect(await screen.findByText('dyad.validation.topic')).toBeDefined();
+        expect(screen.getByRole('button', { name: 'dyad.run.start' })).toBeDisabled();
     });
 
     it('tolerates a legacy loop missing goal/log without crashing', async () => {

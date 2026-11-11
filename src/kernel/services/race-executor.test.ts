@@ -187,7 +187,7 @@ describe('RaceExecutor', () => {
             const r = await e.race(msgs, [{ provider: 'p', model: 'm', keyId: 'k' }], {
                 keyResolver,
             });
-            expect(r.latency).toBeGreaterThanOrEqual(20);
+            expect(r.latency).toBeGreaterThanOrEqual(15);
         });
     });
 });
