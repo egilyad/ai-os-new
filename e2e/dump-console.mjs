@@ -18,6 +18,14 @@ const note = (t) =>
                 .replace(/\n/g, '%0A'),
     );
 
+note('DUMP_CWD=' + process.cwd() + ' distExists=' + (() => {
+    try {
+        return require('node:fs').existsSync('dist/index.html');
+    } catch {
+        return 'err';
+    }
+})());
+
 const server = spawn(
     'node',
     ['node_modules/vite/bin/vite.js', 'preview', '--port', String(PORT), '--strictPort'],
