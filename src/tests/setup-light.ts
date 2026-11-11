@@ -33,21 +33,22 @@ class WorkerMock {
 
 vi.stubGlobal('Worker', WorkerMock);
 
-vi.mock('vis-network', () => ({
-    Network: class {
-        on() {}
-        setData() {}
-        destroy() {}
-        fit() {}
-        moveTo() {}
-        getPositions() {
-            return {};
-        }
-        getBoundingBox() {
-            return { x: 0, y: 0, width: 0, height: 0 };
-        }
-    },
-}));
+const NetworkMock = class {
+    on() {}
+    setData() {}
+    destroy() {}
+    fit() {}
+    moveTo() {}
+    getPositions() {
+        return {};
+    }
+    getBoundingBox() {
+        return { x: 0, y: 0, width: 0, height: 0 };
+    }
+};
+
+vi.mock('vis-network', () => ({ Network: NetworkMock }));
+vi.mock('vis-network/standalone', () => ({ Network: NetworkMock }));
 
 /**
  * T-M-1: configurable Worker mock for tests that need realistic shapes
