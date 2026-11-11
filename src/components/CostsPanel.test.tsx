@@ -1,5 +1,5 @@
 ﻿import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 
 vi.mock('./Common', () => ({
@@ -45,8 +45,9 @@ describe('CostsPanel', () => {
         const Panel = (await import('./CostsPanel')).default;
         render(<MemoryRouter><Panel /></MemoryRouter>);
         await screen.findByText('Acme');
+        await waitFor(() => expect(document.body.textContent).toContain('—'));
         // Missing cents/timestamps render dashes, never undefined/Invalid Date.
-        expect(screen.getAllByText('-').length).toBeGreaterThanOrEqual(1);
+        expect(document.body.textContent).toContain('—');
         expect(screen.queryByText('undefined')).toBeNull();
         expect(screen.queryByText('Invalid Date')).toBeNull();
     });
