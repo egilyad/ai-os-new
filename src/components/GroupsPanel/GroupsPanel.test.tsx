@@ -1,5 +1,6 @@
 ﻿import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 
 let groups: Array<Record<string, unknown>> = [];
 let keys: Array<Record<string, unknown>> = [];
@@ -45,7 +46,7 @@ describe('GroupsPanel', () => {
             { id: 'g1', name: 'Team', createdAt: 2, keyIds: ['k2', 'k3'] },
         ];
         const Panel = (await import('./GroupsPanel')).default;
-        render(<Panel />);
+        render(<MemoryRouter><Panel /></MemoryRouter>);
         expect(screen.getByText('groups.title')).toBeDefined();
         expect(screen.getByText('Team')).toBeDefined();
         expect(screen.getByText('2')).toBeDefined();
@@ -54,7 +55,7 @@ describe('GroupsPanel', () => {
     it('tolerates a legacy group without keyIds without crashing', async () => {
         groups = [{ id: 'legacy', name: 'Legacy', createdAt: 1 } as Record<string, unknown>];
         const Panel = (await import('./GroupsPanel')).default;
-        render(<Panel />);
+        render(<MemoryRouter><Panel /></MemoryRouter>);
         fireEvent.click(screen.getByText('Legacy'));
         expect(document.body.textContent).toContain('groups.keys_in_group');
         expect(document.body.textContent).not.toContain('undefined');
@@ -65,7 +66,8 @@ describe('GroupsPanel', () => {
             throw new Error('boom');
         };
         const Panel = (await import('./GroupsPanel')).default;
-        render(<Panel />);
-        expect(screen.getByText('groups.error.load')).toBeDefined();
+        render(<MemoryRouter><Panel /></MemoryRouter>);
+        expect(await screen.findByText('groups.error.load')).toBeDefined();
+        expect(screen.getByRole('button', { name: 'groups.error.load' })).toBeDefined();
     });
 });

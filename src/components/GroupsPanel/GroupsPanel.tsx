@@ -42,7 +42,7 @@ const GroupsPanel: React.FC = () => {
     }, [t, clearError]);
 
     useEffect(() => {
-        refresh();
+        void refresh();
     }, [refresh]);
 
     const selectedGroup = useMemo(
@@ -130,6 +130,7 @@ const GroupsPanel: React.FC = () => {
                     groups: ['approvals', 'roles', 'agent-tasks', 'keys'],
                 }}
             />
+            {error && <ErrorBanner error={error} onDismiss={() => setError(null)} />}
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 24 }}>
                     <FolderTree size={24} color="#3b82f6" />
                     <h1 style={{ fontSize: '1.25rem', fontWeight: 700, margin: 0 }}>

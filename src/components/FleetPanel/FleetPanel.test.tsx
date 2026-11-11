@@ -1,5 +1,6 @@
 ﻿import { describe, it, expect, vi, beforeAll } from 'vitest';
 import { render, screen } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 
 beforeAll(() => {
     Object.defineProperty(window, 'matchMedia', {
@@ -144,7 +145,7 @@ vi.mock('../../i18n/useTranslation', () => ({
 describe('FleetPanel (smoke)', () => {
     it('renders without crashing', async () => {
         const { default: FleetPanel } = await import('./FleetPanel');
-        render(<FleetPanel />);
+        render(<MemoryRouter><FleetPanel /></MemoryRouter>);
         expect(screen.getByText('fleet.title')).toBeDefined();
     });
 });
