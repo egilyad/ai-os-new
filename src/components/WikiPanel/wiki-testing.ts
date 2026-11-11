@@ -1,4 +1,4 @@
-﻿import type { WikiArticle } from './wiki-articles';
+﻿import type { WikiArticle } from './wiki-types';
 
 /**
  * Статьи о тестировании и CI (актуальное состояние на конец 2026-11).
