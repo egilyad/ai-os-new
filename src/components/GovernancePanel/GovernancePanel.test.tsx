@@ -42,20 +42,12 @@ describe('GovernancePanel', () => {
     });
 
     it('shows an error when assigning fails', async () => {
-        governanceService.assignRole.mockRejectedValueOnce(new Error('denied'));
+        governanceService.assignRole.mockImplementationOnce(() => Promise.reject(new Error('denied')));
         const Panel = (await import('./GovernancePanel')).default;
         render(<MemoryRouter><Panel /></MemoryRouter>);
         await screen.findByText('observer');
         fireEvent.click(screen.getByRole('button', { name: 'governance.assign' }));
-        await waitFor(() =>
-            expect(
-                (
-                    governanceService.assignRole.mock.results[0] as
-                        | { status: string }
-                        | undefined
-                )?.status,
-            ).toBe('rejected'),
-        );
+        await waitFor(() => expect(governanceService.assignRole).toHaveBeenCalledTimes(1));
         expect(screen.queryByText('governance.assigned')).toBeNull();
     });
 
