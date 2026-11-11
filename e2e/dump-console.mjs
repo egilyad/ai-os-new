@@ -21,8 +21,12 @@ const note = (t) =>
 const server = spawn(
     'node',
     ['node_modules/vite/bin/vite.js', 'preview', '--port', String(PORT), '--strictPort'],
-    { stdio: 'ignore' },
+    { stdio: ['ignore', 'pipe', 'pipe'] },
 );
+let serverErr = '';
+server.stderr.on('data', (d) => {
+    serverErr = (serverErr + String(d)).slice(-4000);
+});
 
 const waitPort = async () => {
     const start = Date.now();
@@ -40,7 +44,9 @@ const waitPort = async () => {
 
 try {
     if (!(await waitPort())) {
-        note('DUMP-FAILED: preview did not start on ' + PORT);
+        note(
+            'DUMP-FAILED: preview did not start on ' + PORT + ' stderr=' + serverErr,
+        );
         process.exit(0);
     }
     const browser = await chromium.launch();
