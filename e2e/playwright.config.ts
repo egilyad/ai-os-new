@@ -24,7 +24,7 @@ export default defineConfig({
             command: `npx vite preview ${REPO_ROOT} --port 5199 --strictPort`,
             port: 5199,
             reuseExistingServer: !process.env.CI,
-            timeout: 120000,
+            timeout: 180000,
         },
         {
             // T-H-7: live sync-server for the data-sync spec (auth +

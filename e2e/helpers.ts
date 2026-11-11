@@ -11,13 +11,21 @@ export const STUB_REPLY = 'E2E-STUB-REPLY-42';
 
 /** Full cold-boot gate: dashboard heading means hydration is complete. */
 export async function boot(page: Page) {
-    await page.goto('/');
+    const heading = page.getByRole('heading', { name: /mission control/i });
     // Cold boot on shared GH runners exceeds 60s (38MB bundle, Dexie
     // migrations + seed). Gate every test on the dashboard heading so
     // the app is fully hydrated before any test-specific assertion.
-    await expect(page.getByRole('heading', { name: /mission control/i })).toBeVisible({
-        timeout: 120000,
-    });
+    for (let attempt = 0; attempt < 2; attempt++) {
+        await page.goto('/');
+        try {
+            await expect(heading).toBeVisible({ timeout: 120000 });
+            break;
+        } catch (e) {
+            if (attempt === 1) throw e;
+            // Empty-document / server-not-ready hiccup: retry once from a
+            // fresh navigation before declaring the boot failed.
+        }
+    }
     await dismissWizard(page);
 }
 
