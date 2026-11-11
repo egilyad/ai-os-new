@@ -48,7 +48,13 @@ describe('GovernancePanel', () => {
         await screen.findByText('observer');
         fireEvent.click(screen.getByRole('button', { name: 'governance.assign' }));
         await waitFor(() =>
-            expect(governanceService.assignRole.mock.results[0]?.status).toBe('rejected'),
+            expect(
+                (
+                    governanceService.assignRole.mock.results[0] as
+                        | { status: string }
+                        | undefined
+                )?.status,
+            ).toBe('rejected'),
         );
         expect(screen.queryByText('governance.assigned')).toBeNull();
     });
