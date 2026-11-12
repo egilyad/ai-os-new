@@ -23,7 +23,6 @@ import type { CreateProjectInput, ProjectAgentAssignment } from '../../kernel/ty
 import type { Artifact } from '../../kernel/types/artifact-types';
 import type { AutonomyGoal } from '../../kernel/types/autonomy-types';
 import type { MemoryEntryType, ProjectMemoryEntry } from '../../kernel/types/project-memory-types';
-import type { AutonomyGoal } from '../../kernel/types/autonomy-types';
 import type { PythonRun } from '../../kernel/types/python-runtime-types';
 
 const CARD: React.CSSProperties = {
