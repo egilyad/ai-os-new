@@ -356,7 +356,7 @@ export class AssistantService {
             { role: 'user', content: `${context}\n\n[QUESTION]\n${req.text}` },
         ];
 
-        const definitions = this.deps.actions.definitions();
+        const definitions = this.selectRelevantTools(this.deps.actions.definitions(), req.text);
         const tools: ToolLoopTool[] = definitions.map((d) => ({
             name: d.function.name,
             description: d.function.description,
@@ -395,6 +395,7 @@ export class AssistantService {
             {
                 tools,
                 maxRounds: MAX_ROUNDS,
+                signal: req.signal,
                 runTool: async (name, args) => {
                     const action = this.deps.actions.get(name);
                     if (!action) return `Unknown action: ${name}`;
@@ -427,11 +428,16 @@ export class AssistantService {
             },
         );
 
+        const cancelled = req.signal?.aborted === true;
+        const finalContent =
+            cancelled && !loop.content.trim() ? 'Остановлено пользователем.' : loop.content;
+
         this.deps.events.emit(EVENTS.ASSISTANT_DONE, {
             requestId,
-            content: loop.content,
+            content: finalContent,
             toolCalls: loop.toolCalls,
             rounds: loop.rounds,
+            cancelled,
         });
 
         // The assistant is an agent of the topology: its turns feed the same
@@ -446,13 +452,69 @@ export class AssistantService {
             model: route.model ?? 'auto',
         });
 
-        await this.recordExperience(req.text, loop.content, used);
+        if (!cancelled) {
+            await this.recordExperience(req.text, finalContent, used);
+        }
 
         return {
-            content: loop.content,
+            content: finalContent,
             toolCalls: used,
             rounds: loop.rounds,
         };
+    }
+
+    /**
+     * Trim the tool catalog to what the question is about.
+     *
+     * The full catalog has ~100 capabilities; sending all of them on every
+     * turn wastes tokens and makes the model's tool choice noisier. Core
+     * system tools (panel list, self, navigation, status) are always kept;
+     * the rest are ranked by lexical overlap with the question. If filtering
+     * leaves fewer than 15 tools the whole catalog is kept as a fallback so
+     * no capability is ever hidden.
+     */
+    private selectRelevantTools(
+        definitions: Array<{
+            type: 'function';
+            function: { name: string; description: string; parameters: Record<string, unknown> };
+        }>,
+        question: string,
+    ): Array<{
+        type: 'function';
+        function: { name: string; description: string; parameters: Record<string, unknown> };
+    }> {
+        const CORE_TOOLS = new Set([
+            'panel.list',
+            'system.self',
+            'system.status',
+            'navigation.open',
+        ]);
+        if (definitions.length <= 25) return definitions;
+
+        const words = question
+            .toLowerCase()
+            .split(/\s+/)
+            .map((w) => w.replace(/[^a-zа-яё0-9_-]/g, ''))
+            .filter((w) => w.length > 3);
+
+        const scored = definitions.map((d) => {
+            const haystack = `${d.function.name} ${d.function.description}`.toLowerCase();
+            let score = 0;
+            for (const w of words) {
+                if (haystack.includes(w)) score += 2;
+            }
+            if (CORE_TOOLS.has(d.function.name)) score += 100;
+            return { d, score };
+        });
+
+        const ranked = scored
+            .filter((x) => x.score > 0)
+            .sort((a, b) => b.score - a.score)
+            .map((x) => x.d);
+
+        const merged = [...new Map(ranked.map((d) => [d.function.name, d])).values()];
+        if (merged.length < 15) return definitions;
+        return merged.slice(0, 40);
     }
 
     /**
@@ -470,15 +532,21 @@ export class AssistantService {
         const diary = this.deps.diary;
         if (!diary) return;
         try {
+            const recent = diary.recent(1);
+            const lastText = recent[0]?.text ?? '';
+            if (lastText && question.slice(0, 240) === lastText) {
+                // identical question just recorded — skip the duplicate
+                return;
+            }
             await diary.write({
-                kind: 'question',
+                kind: toolCalls.length > 0 ? 'action' : 'answer',
                 text: question.slice(0, 240),
                 evidence: [
                     toolCalls.length ? `actions: ${toolCalls.join(', ')}` : 'no actions',
                     answer.slice(0, 400),
                 ].join(' | '),
                 outcome: answer ? 'success' : 'partial',
-                importance: 0.35,
+                importance: toolCalls.length > 0 ? 0.55 : 0.35,
             });
         } catch (e) {
             LOGGER.warn('Assistant', 'diary write failed', {

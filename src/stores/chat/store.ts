@@ -2,7 +2,13 @@ import { create } from 'zustand';
 import { rootLogger } from '../../kernel/instances';
 const LOGGER = rootLogger.child('ChatStore');
 import { BucketStorageAdapter } from '../../kernel/storage-adapter-instance';
-import { eventBus, EVENTS, sessionManager, getDistributedLock, workflowDistiller } from './service-deps';
+import {
+    eventBus,
+    EVENTS,
+    sessionManager,
+    getDistributedLock,
+    workflowDistiller,
+} from './service-deps';
 import { setupChatEventHandlers, dropChunkBuffer } from './chat-event-handlers';
 import { createSendMessageHandler, _sendQueue, _historyLimitWarned } from './chat-send-message';
 import { resolveSessionStore, updateSessionInList } from './store-helpers';
@@ -95,7 +101,9 @@ export const useChatStore = create<ChatStoreShape>((set, get) => {
             const sStore = resolveSessionStore();
             if (!sStore) return;
             const offset = get().sessions.length;
-            const more = await sStore.listSessions(SESSION_BATCH_SIZE, offset);
+            const more = (await sStore.listSessions(SESSION_BATCH_SIZE, offset)).filter(
+                (s) => s.folder !== 'assistant',
+            );
             if (more.length > 0) {
                 set((s) => {
                     const existing = new Set(s.sessions.map((x) => x.id));
@@ -654,9 +662,7 @@ export const useChatStore = create<ChatStoreShape>((set, get) => {
             const systemEntry: ChatEntry = {
                 id: crypto.randomUUID(),
                 role: 'system' as const,
-                text: agentId
-                    ? `\u{1F9D1} Attached agent ${label}`
-                    : `\u{1F9D1} Detached agent`,
+                text: agentId ? `\u{1F9D1} Attached agent ${label}` : `\u{1F9D1} Detached agent`,
                 responses: [],
                 timestamp: Date.now(),
             };

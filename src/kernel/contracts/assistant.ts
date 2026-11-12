@@ -69,6 +69,8 @@ export interface AssistantTurnRequest {
     model?: string;
     /** Pin this turn to a specific key (by id) instead of auto-routing. */
     keyId?: string;
+    /** Abort signal to cancel the turn (checked between LLM rounds/tools). */
+    signal?: AbortSignal;
 }
 
 export interface AssistantTurnResult {
@@ -84,12 +86,7 @@ export interface AssistantTurnResult {
 
 /** What kind of experience the assistant records. */
 export type AssistantDiaryKind =
-    | 'question'
-    | 'action'
-    | 'decision'
-    | 'mistake'
-    | 'lesson'
-    | 'answer';
+    'question' | 'action' | 'decision' | 'mistake' | 'lesson' | 'answer';
 
 export interface AssistantDiaryEntry {
     id: string;

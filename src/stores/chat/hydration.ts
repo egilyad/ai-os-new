@@ -168,7 +168,12 @@ export function useChatStoreHydration(): void {
 
         const db = getDexieDb();
         const observable = liveQuery(() =>
-            db.sessions.orderBy('updatedAt').reverse().limit(100).toArray(),
+            db.sessions
+                .orderBy('updatedAt')
+                .reverse()
+                .limit(100)
+                .toArray()
+                .then((rows) => rows.filter((s) => s.folder !== 'assistant')),
         );
         const subscription = observable.subscribe({
             next: (sessions: ChatSession[]) => {

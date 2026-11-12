@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Brain, Key, MessageSquare, RefreshCw } from 'lucide-react';
+import { Brain, Key, MessageSquare, RefreshCw, Bot } from 'lucide-react';
 import { keyService } from '../../kernel/instances';
 import { useKeyList } from '../../stores/useKeyStore';
 import type { ApiKey } from '../../kernel/types/metrics-types';
@@ -115,6 +115,11 @@ const ModelExplorerContent: React.FC = () => {
         );
     };
 
+    const useWithAssistant = () => {
+        if (!selectedKey) return;
+        navigate(`/assistant?keyId=${encodeURIComponent(selectedKey.id)}`);
+    };
+
     const keyLabel = (k: ApiKey) => k.label || `${k.provider} — Key ${k.id.slice(0, 4)}`;
 
     return (
@@ -174,6 +179,26 @@ const ModelExplorerContent: React.FC = () => {
                     >
                         <RefreshCw size={14} aria-hidden="true" />
                         Обновить модели
+                    </button>
+                    <button
+                        onClick={useWithAssistant}
+                        disabled={!selectedKey}
+                        title="Открыть ассистента с этим ключом"
+                        style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 6,
+                            padding: '0.45rem 0.85rem',
+                            borderRadius: 8,
+                            border: '1px solid var(--accent)',
+                            background: 'rgba(167,139,250,0.10)',
+                            color: 'var(--accent)',
+                            fontSize: '0.78rem',
+                            cursor: 'pointer',
+                        }}
+                    >
+                        <Bot size={14} aria-hidden="true" />
+                        Ассистент на этом ключе
                     </button>
                 </div>
             </section>

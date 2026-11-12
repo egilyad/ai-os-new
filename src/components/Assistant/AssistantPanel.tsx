@@ -1,8 +1,22 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Mic, MicOff, Send, Square, Volume2, VolumeX, Trash2, Loader2, ShieldCheck, BookOpen } from 'lucide-react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import {
+    Mic,
+    MicOff,
+    Send,
+    Square,
+    Volume2,
+    VolumeX,
+    Trash2,
+    Loader2,
+    ShieldCheck,
+    BookOpen,
+    History,
+    Plus,
+} from 'lucide-react';
 import { useAssistantStore, type AssistantMessage } from '../../stores/assistant-store';
 import { useKeyStore } from '../../stores/useKeyStore';
+import { MarkdownRenderer } from '../ChatPanel/MarkdownRenderer';
 import { buildLensGuidance } from '../LensesPanel/lens-guidance';
 import { loadActiveLensIds } from '../LensesPanel/lens-stack-store';
 import { buildExceptionVeto } from '../ExceptionsPanel/exception-veto';
@@ -58,9 +72,16 @@ const SUGGESTIONS = [
 
 const AssistantPanel: React.FC = () => {
     const navigate = useNavigate();
-    const { messages, busy, error, send, clear } = useAssistantStore();
+    const [searchParams] = useSearchParams();
+    const { messages, busy, error, send, clear, cancel } = useAssistantStore();
     const keyId = useAssistantStore((s) => s.keyId);
     const setKey = useAssistantStore((s) => s.setKey);
+    const sessionList = useAssistantStore((s) => s.sessionList);
+    const sessionId = useAssistantStore((s) => s.sessionId);
+    const loadSession = useAssistantStore((s) => s.loadSession);
+    const newSession = useAssistantStore((s) => s.newSession);
+    const deleteSession = useAssistantStore((s) => s.deleteSession);
+    const [showHistory, setShowHistory] = useState(false);
     const keys = useKeyStore((s) => s.keys);
     const [input, setInput] = useState('');
     const [autoSpeak, setAutoSpeak] = useState<boolean>(() => {
@@ -86,6 +107,23 @@ const AssistantPanel: React.FC = () => {
     useEffect(() => {
         ensureAssistantWiring();
     }, []);
+
+    // Model Explorer deep-link: ?keyId=<id> pins the assistant key.
+    const handledKeyLinkRef = useRef(false);
+    useEffect(() => {
+        if (handledKeyLinkRef.current || keys.length === 0) return;
+        const urlKeyId = searchParams.get('keyId');
+        if (!urlKeyId) {
+            handledKeyLinkRef.current = true;
+            return;
+        }
+        const k = keys.find((x) => x.id === urlKeyId);
+        if (k) {
+            setKey(k.id);
+            handledKeyLinkRef.current = true;
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [keys, searchParams]);
 
     // The trust ledger: what is verified, what is only documented.
     useEffect(() => {
@@ -264,6 +302,32 @@ const AssistantPanel: React.FC = () => {
                     >
                         {autoSpeak ? <Volume2 size={18} /> : <VolumeX size={18} />}
                     </button>
+                    {busy && (
+                        <button
+                            className="assistant-icon-btn is-active"
+                            onClick={cancel}
+                            aria-label="Остановить генерацию"
+                            title="Остановить генерацию"
+                        >
+                            <Square size={16} />
+                        </button>
+                    )}
+                    <button
+                        className="assistant-icon-btn"
+                        onClick={() => setShowHistory((v) => !v)}
+                        aria-label="История диалогов"
+                        title="История диалогов"
+                    >
+                        <History size={18} />
+                    </button>
+                    <button
+                        className="assistant-icon-btn"
+                        onClick={() => void newSession()}
+                        aria-label="Новый диалог"
+                        title="Новый диалог"
+                    >
+                        <Plus size={18} />
+                    </button>
                     <button
                         className="assistant-icon-btn"
                         onClick={clear}
@@ -275,6 +339,34 @@ const AssistantPanel: React.FC = () => {
                     </button>
                 </div>
             </header>
+
+            {showHistory && (
+                <div className="assistant-history">
+                    <span className="assistant-history__label">История:</span>
+                    <select
+                        value={sessionId ?? ''}
+                        onChange={(e) => e.target.value && void loadSession(e.target.value)}
+                        aria-label="История диалогов"
+                    >
+                        <option value="">— выбрать диалог —</option>
+                        {sessionList.map((s) => (
+                            <option key={s.id} value={s.id}>
+                                {s.title}
+                            </option>
+                        ))}
+                    </select>
+                    {sessionId && (
+                        <button
+                            className="assistant-icon-btn"
+                            onClick={() => void deleteSession(sessionId)}
+                            aria-label="Удалить текущий диалог"
+                            title="Удалить текущий диалог"
+                        >
+                            <Trash2 size={14} />
+                        </button>
+                    )}
+                </div>
+            )}
 
             <div className="assistant-thread" ref={scrollRef}>
                 {messages.length === 0 && (
@@ -303,13 +395,18 @@ const AssistantPanel: React.FC = () => {
                     >
                         {m.role === 'assistant' && <ActionChips actions={m.actions} />}
                         <div className="assistant-msg__body">
-                            {m.content ||
-                                (m.pending ? (
-                                    <span className="assistant-typing">
-                                        <Loader2 size={14} className="assistant-spin" />
-                                        работаю…
-                                    </span>
-                                ) : null)}
+                            {m.content ? (
+                                m.role === 'assistant' ? (
+                                    <MarkdownRenderer content={m.content} isStreaming={m.pending} />
+                                ) : (
+                                    <span style={{ whiteSpace: 'pre-wrap' }}>{m.content}</span>
+                                )
+                            ) : m.pending ? (
+                                <span className="assistant-typing">
+                                    <Loader2 size={14} className="assistant-spin" />
+                                    работаю…
+                                </span>
+                            ) : null}
                         </div>
                     </article>
                 ))}
@@ -359,7 +456,9 @@ const AssistantPanel: React.FC = () => {
                     value={speech.interim || input}
                     onChange={(e) => setInput(e.target.value)}
                     placeholder={
-                        speech.listening ? 'Говорите…' : 'Спросите про проект или попросите действие'
+                        speech.listening
+                            ? 'Говорите…'
+                            : 'Спросите про проект или попросите действие'
                     }
                     aria-label="Вопрос помощнику"
                     disabled={busy}

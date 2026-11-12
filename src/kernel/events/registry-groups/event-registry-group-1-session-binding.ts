@@ -18,7 +18,6 @@ function event<N extends string, S extends z.ZodType>(name: N, schema: S) {
     return { name, schema } as const;
 }
 export const EVENT_REGISTRY_GROUP_1 = {
-
     KEYS_LOADED: event('key:loaded', z.array(ApiKeySchema)),
     KEY_ADDED: event('key:added', ApiKeySchema),
     KEY_REMOVED: event('key:removed', z.object({ id: z.string() })),
@@ -957,6 +956,7 @@ export const EVENT_REGISTRY_GROUP_1 = {
             content: z.string(),
             toolCalls: z.array(z.string()),
             rounds: z.number(),
+            cancelled: z.boolean().optional(),
         }),
     ),
     /** A capability changed its trust level. */

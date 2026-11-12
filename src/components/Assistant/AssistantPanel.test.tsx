@@ -92,7 +92,10 @@ describe('AssistantPanel', () => {
         await waitFor(() => {
             expect(screen.getByText('Панель памяти — /memory.')).toBeDefined();
         });
-        expect(ask).toHaveBeenCalledWith({ text: 'где память?' });
+        expect(ask).toHaveBeenCalledWith(
+            expect.objectContaining({ text: 'где память?', keyId: undefined }),
+        );
+        expect(ask.mock.calls[0][0].signal).toBeInstanceOf(AbortSignal);
         expect(screen.getByText('где память?')).toBeDefined();
     });
 
