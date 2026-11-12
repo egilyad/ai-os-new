@@ -33,7 +33,7 @@ test.describe('AI-OS Data Projects', () => {
         // QA tab inspects the seeded landing: headings, viewport, charset,
         // title, description, alt texts and anchors are all compliant.
         await page.getByRole('button', { name: 'QA', exact: true }).click();
-        await page.getByRole('button', { name: 'Refresh', exact: true }).click();
+        await page.getByRole('button', { name: 'Run QA', exact: true }).click();
         await expect(page.getByText('100%').first()).toBeVisible({
             timeout: 60000,
         });
