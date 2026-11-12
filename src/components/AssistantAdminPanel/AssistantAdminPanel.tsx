@@ -14,6 +14,10 @@ import {
     capabilityTrustService,
     assistantDiaryService,
     projectAssistantService,
+    agentService,
+    orchestrator,
+    skillService,
+    toolService,
 } from '../../kernel/instances/services-core';
 import { useAssistantStore, type AssistantSessionMeta } from '../../stores/assistant-store';
 import { useKeyStore } from '../../stores/useKeyStore';
@@ -78,6 +82,18 @@ const AssistantAdminContent: React.FC = () => {
     const [diaryKind, setDiaryKind] = useState<string>('all');
     const [trustFilter, setTrustFilter] = useState<string>('all');
     const [saving, setSaving] = useState(false);
+    const [agentLabel, setAgentLabel] = useState('');
+    const [agentRole, setAgentRole] = useState('');
+    const [agentPrompt, setAgentPrompt] = useState('');
+    const [assignedSkills, setAssignedSkills] = useState<string[]>([]);
+    const [assignedTools, setAssignedTools] = useState<string[]>([]);
+    const [denyTools, setDenyTools] = useState<string[]>([]);
+    const [allSkills, setAllSkills] = useState<Array<{ id: string; name: string; status: string }>>(
+        [],
+    );
+    const [allTools, setAllTools] = useState<Array<{ id: string; name: string; group: string }>>(
+        [],
+    );
 
     const sessionList = useAssistantStore((s) => s.sessionList);
     const sessionId = useAssistantStore((s) => s.sessionId);
@@ -158,6 +174,52 @@ const AssistantAdminContent: React.FC = () => {
         } catch {
             setDiary([]);
         }
+        // Profile + skills/tools of the assistant node.
+        try {
+            const top = orchestrator.getActiveTopology();
+            const node = top?.nodes.find((n) => n.id === ASSISTANT_AGENT_ID);
+            const cfg = ((node?.config ?? {}) as Record<string, unknown>) ?? {};
+            const asArr = (v: unknown): string[] =>
+                Array.isArray(v) ? v.map((x) => String(x)).filter(Boolean) : [];
+            setAgentLabel(typeof node?.label === 'string' ? node.label : 'Project Assistant');
+            setAgentRole(typeof cfg.roleName === 'string' ? (cfg.roleName as string) : '');
+            setAgentPrompt(
+                typeof cfg.systemPrompt === 'string'
+                    ? (cfg.systemPrompt as string)
+                    : typeof cfg.prompt === 'string'
+                      ? (cfg.prompt as string)
+                      : '',
+            );
+            setAssignedSkills(asArr(cfg.skills));
+            setAssignedTools(asArr(cfg.tools));
+            setDenyTools(asArr(cfg.denyTools));
+        } catch {
+            /* topology not ready */
+        }
+        try {
+            const skills = skillService.getSkills();
+            setAllSkills(
+                skills.map((s) => ({
+                    id: s.id,
+                    name: s.name ?? s.id,
+                    status: s.status ?? 'installed',
+                })),
+            );
+        } catch {
+            setAllSkills([]);
+        }
+        try {
+            const tools = toolService.getTools();
+            setAllTools(
+                tools.map((t) => ({
+                    id: t.id,
+                    name: t.name ?? t.id,
+                    group: t.group ?? '',
+                })),
+            );
+        } catch {
+            setAllTools([]);
+        }
     }, []);
 
     useEffect(() => {
@@ -191,6 +253,46 @@ const AssistantAdminContent: React.FC = () => {
             /* best-effort */
         } finally {
             setSaving(false);
+        }
+    };
+
+    const saveProfile = async () => {
+        setSaving(true);
+        try {
+            agentService.updateAgent(ASSISTANT_AGENT_ID, {
+                label: agentLabel.trim() || 'Project Assistant',
+                roleName: agentRole,
+                systemPrompt: agentPrompt,
+            });
+        } catch {
+            /* best-effort */
+        } finally {
+            setSaving(false);
+            refresh();
+        }
+    };
+
+    const toggleSkill = async (skillId: string) => {
+        const next = assignedSkills.includes(skillId)
+            ? assignedSkills.filter((s) => s !== skillId)
+            : [...assignedSkills, skillId];
+        setAssignedSkills(next);
+        try {
+            agentService.updateAgent(ASSISTANT_AGENT_ID, { skills: next });
+        } catch {
+            /* best-effort */
+        }
+    };
+
+    const toggleTool = async (toolId: string) => {
+        const next = assignedTools.includes(toolId)
+            ? assignedTools.filter((t) => t !== toolId)
+            : [...assignedTools, toolId];
+        setAssignedTools(next);
+        try {
+            agentService.updateAgent(ASSISTANT_AGENT_ID, { tools: next });
+        } catch {
+            /* best-effort */
         }
     };
 
@@ -356,6 +458,230 @@ const AssistantAdminContent: React.FC = () => {
                         onModelChange={setAssistantModel}
                         ariaLabel="Модель ассистента"
                     />
+                </div>
+            </section>
+
+            {/* Профиль */}
+            <section>
+                <h2
+                    style={{
+                        margin: '0 0 0.5rem',
+                        fontSize: '0.78rem',
+                        fontWeight: 600,
+                        letterSpacing: '0.05em',
+                        textTransform: 'uppercase',
+                        color: 'var(--text-muted)',
+                    }}
+                >
+                    Профиль
+                </h2>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                    <div
+                        style={{
+                            display: 'flex',
+                            gap: '0.6rem',
+                            flexWrap: 'wrap',
+                            alignItems: 'center',
+                        }}
+                    >
+                        <label style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                            Имя агента
+                        </label>
+                        <input
+                            value={agentLabel}
+                            onChange={(e) => setAgentLabel(e.target.value)}
+                            aria-label="Имя агента"
+                            style={{ ...input, minWidth: 240, flex: 1 }}
+                        />
+                    </div>
+                    <div
+                        style={{
+                            display: 'flex',
+                            gap: '0.6rem',
+                            flexWrap: 'wrap',
+                            alignItems: 'center',
+                        }}
+                    >
+                        <label style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                            Роль
+                        </label>
+                        <input
+                            value={agentRole}
+                            onChange={(e) => setAgentRole(e.target.value)}
+                            aria-label="Роль агента"
+                            style={{ ...input, minWidth: 240, flex: 1 }}
+                        />
+                    </div>
+                    <textarea
+                        value={agentPrompt}
+                        onChange={(e) => setAgentPrompt(e.target.value)}
+                        aria-label="Системный промпт"
+                        placeholder="Системный промпт ассистента"
+                        rows={4}
+                        style={{
+                            ...input,
+                            width: '100%',
+                            resize: 'vertical',
+                            fontFamily: 'monospace',
+                            fontSize: '0.75rem',
+                        }}
+                    />
+                    <div>
+                        <button
+                            onClick={() => void saveProfile()}
+                            disabled={saving}
+                            style={{
+                                padding: '0.4rem 1rem',
+                                borderRadius: 8,
+                                border: '1px solid var(--accent)',
+                                background: 'rgba(167,139,250,0.12)',
+                                color: 'var(--accent)',
+                                fontSize: '0.8rem',
+                                cursor: 'pointer',
+                            }}
+                        >
+                            {saving ? 'Сохраняю…' : 'Сохранить профиль'}
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            {/* Skills */}
+            <section>
+                <h2
+                    style={{
+                        margin: '0 0 0.5rem',
+                        fontSize: '0.78rem',
+                        fontWeight: 600,
+                        letterSpacing: '0.05em',
+                        textTransform: 'uppercase',
+                        color: 'var(--text-muted)',
+                    }}
+                >
+                    Skills — {assignedSkills.length} назначено
+                </h2>
+                <div
+                    style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '0.3rem',
+                        maxHeight: 260,
+                        overflowY: 'auto',
+                    }}
+                >
+                    {allSkills.map((s) => {
+                        const on = assignedSkills.includes(s.id);
+                        return (
+                            <label
+                                key={s.id}
+                                style={{
+                                    display: 'flex',
+                                    gap: '0.5rem',
+                                    alignItems: 'center',
+                                    fontSize: '0.78rem',
+                                    cursor: 'pointer',
+                                    padding: '0.25rem 0.5rem',
+                                    borderRadius: 8,
+                                    background: 'rgba(0,0,0,0.15)',
+                                }}
+                            >
+                                <input
+                                    type="checkbox"
+                                    checked={on}
+                                    onChange={() => void toggleSkill(s.id)}
+                                />
+                                <span style={{ flex: 1 }}>{s.name}</span>
+                                <span style={{ color: 'var(--text-muted)', fontSize: '0.65rem' }}>
+                                    {s.id}
+                                </span>
+                                <span style={{ color: 'var(--text-muted)', fontSize: '0.65rem' }}>
+                                    {s.status}
+                                </span>
+                            </label>
+                        );
+                    })}
+                    {allSkills.length === 0 && (
+                        <div style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>
+                            Навыки не найдены.
+                        </div>
+                    )}
+                </div>
+            </section>
+
+            {/* Tools */}
+            <section>
+                <h2
+                    style={{
+                        margin: '0 0 0.5rem',
+                        fontSize: '0.78rem',
+                        fontWeight: 600,
+                        letterSpacing: '0.05em',
+                        textTransform: 'uppercase',
+                        color: 'var(--text-muted)',
+                    }}
+                >
+                    Tools — {assignedTools.length} включено
+                </h2>
+                {denyTools.length > 0 && (
+                    <div
+                        style={{
+                            fontSize: '0.7rem',
+                            color: 'var(--warning)',
+                            marginBottom: '0.4rem',
+                        }}
+                    >
+                        Запрещены: {denyTools.join(', ')}
+                    </div>
+                )}
+                <div
+                    style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '0.3rem',
+                        maxHeight: 260,
+                        overflowY: 'auto',
+                    }}
+                >
+                    {allTools.map((t) => {
+                        const on = assignedTools.includes(t.id);
+                        return (
+                            <label
+                                key={t.id}
+                                style={{
+                                    display: 'flex',
+                                    gap: '0.5rem',
+                                    alignItems: 'center',
+                                    fontSize: '0.78rem',
+                                    cursor: 'pointer',
+                                    padding: '0.25rem 0.5rem',
+                                    borderRadius: 8,
+                                    background: 'rgba(0,0,0,0.15)',
+                                }}
+                            >
+                                <input
+                                    type="checkbox"
+                                    checked={on}
+                                    onChange={() => void toggleTool(t.id)}
+                                />
+                                <span style={{ flex: 1 }}>{t.name}</span>
+                                <span style={{ color: 'var(--text-muted)', fontSize: '0.65rem' }}>
+                                    {t.id}
+                                </span>
+                                {t.group && (
+                                    <span
+                                        style={{ color: 'var(--text-muted)', fontSize: '0.65rem' }}
+                                    >
+                                        {t.group}
+                                    </span>
+                                )}
+                            </label>
+                        );
+                    })}
+                    {allTools.length === 0 && (
+                        <div style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>
+                            Инструменты не найдены.
+                        </div>
+                    )}
                 </div>
             </section>
 
