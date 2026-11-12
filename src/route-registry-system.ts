@@ -40,6 +40,13 @@ export const SYSTEM_SECTIONS: NavSection[] = [
                 lazy: true,
             },
             {
+                id: 'assistant-admin',
+                labelKey: 'nav.assistant_admin',
+                icon: Icons.shield,
+                color: 'var(--accent)',
+                lazy: true,
+            },
+            {
                 id: 'mission',
                 labelKey: 'nav.mission_control',
                 icon: Icons.zap,

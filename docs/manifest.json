@@ -10,7 +10,7 @@
     {
       "id": "panels",
       "title": "Панели",
-      "articles": 155
+      "articles": 156
     },
     {
       "id": "agents",
@@ -9576,6 +9576,28 @@
       "tests": []
     },
     {
+      "id": "wiki:panel-assistant-admin",
+      "type": "article",
+      "slug": "panel-assistant-admin",
+      "title": "Админка ассистента",
+      "section": "panels",
+      "status": "documented",
+      "tags": [
+        "панели",
+        "ассистент",
+        "управление"
+      ],
+      "sources": [
+        "src/components/AssistantAdminPanel/AssistantAdminPanel"
+      ],
+      "related": [
+        "panel-assistant",
+        "memory"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
       "id": "wiki:plugins-guide",
       "type": "article",
       "slug": "plugins-guide",
@@ -11316,6 +11338,16 @@
       "route": "/agent-journal",
       "component": "src/components/AgentJournalPanel",
       "article": "execution-trail",
+      "status": "live"
+    },
+    {
+      "id": "panel:assistant-admin",
+      "type": "panel",
+      "panelId": "assistant-admin",
+      "section": "agents",
+      "route": "/assistant-admin",
+      "component": "src/components/AssistantAdminPanel",
+      "article": null,
       "status": "live"
     },
     {

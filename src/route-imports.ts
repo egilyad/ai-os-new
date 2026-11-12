@@ -146,6 +146,7 @@ const BudgetAlertsPanelLazy = React.lazy(() => import('./components/BudgetAlerts
 const TopologyGalleryPanelLazy = React.lazy(() => import('./components/TopologyGalleryPanel'));
 const KeyUsageAnalyticsPanelLazy = React.lazy(() => import('./components/KeyUsageAnalyticsPanel'));
 const ModelExplorerPanelLazy = React.lazy(() => import('./components/ModelExplorerPanel'));
+const AssistantAdminPanelLazy = React.lazy(() => import('./components/AssistantAdminPanel'));
 const PromptVersionPanelLazy = React.lazy(() => import('./components/PromptVersionPanel'));
 const DebateQualityPanelLazy = React.lazy(() => import('./components/DebateQualityPanel'));
 const QualityImpactDashboardLazy = React.lazy(
@@ -457,6 +458,7 @@ export const PANEL_COMPONENTS: Record<string, React.ComponentType<any>> = {
     'topology-templates': TopologyGalleryPanelLazy,
     'key-usage-analytics': KeyUsageAnalyticsPanelLazy,
     'model-explorer': ModelExplorerPanelLazy,
+    'assistant-admin': AssistantAdminPanelLazy,
     'prompt-versions': PromptVersionPanelLazy,
     'community-hub': CommunityHubPanelLazy,
     'export-import': ExportImportPanelLazy,

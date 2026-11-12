@@ -3,17 +3,17 @@
   "generatedBy": "scripts/gen-docs-inventory.mjs",
   "scope": "git-tracked markdown: docs/**/*.md (excluding docs/new drafts and the self-report pages docs-health, docs-inventory) plus repository entry docs (root *.md, .superagents/**, src/kernel/DEPENDENCY_MAP.md)",
   "totals": {
-    "documents": 511,
+    "documents": 512,
     "byCategory": {
       "repo": 9,
       "top": 116,
       "audits": 25,
-      "wiki": 361
+      "wiki": 362
     },
     "byLanguage": {
       "en": 40,
       "mixed": 133,
-      "ru": 338
+      "ru": 339
     }
   },
   "duplicates": {
@@ -2047,8 +2047,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Матрица покрытия",
-      "bytes": 8459,
-      "hash": "d1e3c82ac1fea41226a703224314868a48fa362e"
+      "bytes": 8488,
+      "hash": "004810bbaedaccc4e8fbfbd87f10c439d4d64acf"
     },
     {
       "path": "docs/wiki/debate-strategies-cheatsheet.md",
@@ -2103,8 +2103,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Проверки и показатели",
-      "bytes": 4077,
-      "hash": "e2c81815524c5c6564d489e02e0b4f7fddd52e08"
+      "bytes": 4076,
+      "hash": "7cb2fbdcf087289169c448fbf2285ad46289432f"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -2192,7 +2192,7 @@
       "language": "ru",
       "title": "Граф знаний",
       "bytes": 4835,
-      "hash": "418692ef4436909090a35c26f4eb2482170479b9"
+      "hash": "ec8bd5015dee404591ce9a3a72606b22b1d221d3"
     },
     {
       "path": "docs/wiki/dev-history.md",
@@ -2407,8 +2407,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Карта документации",
-      "bytes": 56595,
-      "hash": "5eecb0c88b193146792170b408f15de0ea22cbc9"
+      "bytes": 56664,
+      "hash": "c4d533af86cc5c5b75e4ecf1572d597fa91f1601"
     },
     {
       "path": "docs/wiki/docs-standard.md",
@@ -2529,6 +2529,14 @@
       "title": "Карта архитектуры",
       "bytes": 1560,
       "hash": "756aa616044081ab0e3ede599d0ae8b26e8d60bf"
+    },
+    {
+      "path": "docs/wiki/panel-assistant-admin.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Админка ассистента",
+      "bytes": 1285,
+      "hash": "0cce4ac63471a2fd14c8124a633db0685fff1647"
     },
     {
       "path": "docs/wiki/panel-assistant.md",
@@ -3295,8 +3303,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Wiki SuperAgents OS",
-      "bytes": 35991,
-      "hash": "596b879c1c4e06cfe393f131b7d621eb5c9eba8d"
+      "bytes": 36076,
+      "hash": "bcb32310b1c74b962eeb3327e0c6b59c5f3aa4fe"
     },
     {
       "path": "docs/wiki/record-a-skill.md",
@@ -3352,7 +3360,7 @@
       "language": "ru",
       "title": "Возможности и сценарии",
       "bytes": 10060,
-      "hash": "3b2057503a1e307a831bfe46f7845439321db3b2"
+      "hash": "89318ab7cd4030c1194fbfdc7969e6d4d9601106"
     },
     {
       "path": "docs/wiki/system-audit-prompt.md",

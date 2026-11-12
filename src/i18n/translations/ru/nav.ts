@@ -82,6 +82,7 @@ const nav: Record<string, string> = {
     'nav.runtime_pressure_map': 'Карта давления рантайма',
     'nav.provider_dashboard': 'Провайдер Панель',
     'nav.model_explorer': 'Модели (Model Explorer)',
+    'nav.assistant_admin': 'Админка ассистента',
     'nav.groq_speed': 'Скорость Groq',
     'nav.dependency_graph': 'Граф зависимостей',
     'nav.diagnostics': 'диагностика',

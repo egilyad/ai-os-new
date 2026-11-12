@@ -3,22 +3,22 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 1579,
-    "edges": 2857,
+    "nodes": 1582,
+    "edges": 2860,
     "byType": {
       "audit": 25,
-      "code": 688,
+      "code": 689,
       "test": 236,
-      "panel": 268,
-      "article": 362
+      "panel": 269,
+      "article": 363
     },
     "byKind": {
       "audit_test": 20,
       "audit_mention": 52,
       "documents": 267,
       "test": 343,
-      "source": 984,
-      "related": 1191
+      "source": 985,
+      "related": 1193
     }
   },
   "nodes": [
@@ -531,6 +531,11 @@
       "id": "file:src/components/Assistant/use-speech.ts",
       "type": "code",
       "label": "src/components/Assistant/use-speech.ts"
+    },
+    {
+      "id": "file:src/components/AssistantAdminPanel/AssistantAdminPanel",
+      "type": "code",
+      "label": "src/components/AssistantAdminPanel/AssistantAdminPanel"
     },
     {
       "id": "file:src/components/AuditLogView",
@@ -4965,6 +4970,13 @@
       "route": "/assistant"
     },
     {
+      "id": "panel:assistant-admin",
+      "type": "panel",
+      "label": "assistant-admin",
+      "section": "agents",
+      "route": "/assistant-admin"
+    },
+    {
       "id": "panel:audience",
       "type": "panel",
       "label": "audience",
@@ -7868,6 +7880,13 @@
       "label": "Панель: Помощник проекта",
       "section": "panels",
       "status": "verified"
+    },
+    {
+      "id": "wiki:panel-assistant-admin",
+      "type": "article",
+      "label": "Админка ассистента",
+      "section": "panels",
+      "status": "documented"
     },
     {
       "id": "wiki:panel-autonomy",
@@ -19187,6 +19206,21 @@
     {
       "from": "wiki:panel-architecture-map",
       "to": "wiki:dev-overview",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:panel-assistant-admin",
+      "to": "file:src/components/AssistantAdminPanel/AssistantAdminPanel",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:panel-assistant-admin",
+      "to": "wiki:memory",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:panel-assistant-admin",
+      "to": "wiki:panel-assistant",
       "kind": "related"
     },
     {

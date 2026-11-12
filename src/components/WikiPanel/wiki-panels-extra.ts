@@ -116,4 +116,18 @@ export const PANELS_EXTRA_ARTICLES: WikiArticle[] = [
 
 Компонент: \`src/components/ModelExplorerPanel/ModelExplorerPanel\`.`,
     },
+    {
+        slug: 'panel-assistant-admin',
+        title: 'Админка ассистента',
+        section: 'panels',
+        tags: ['панели', 'ассистент', 'управление'],
+        freshness: 'documented',
+        sources: ['src/components/AssistantAdminPanel/AssistantAdminPanel'],
+        related: ['panel-assistant', 'memory'],
+        body: `## Админка ассистента
+
+Единая панель управления ассистентом: идентичность агента, режим разрешений (mode/preset), ключ по умолчанию, лента возможностей (trust: verified/discovered/declared/stale), дневник опыта и история диалогов. Все данные берутся из существующих сервисов — \`agentPermissionService\`, \`capabilityTrustService\`, \`assistantDiaryService\`, \`useAssistantStore\`.
+
+Компонент: \`src/components/AssistantAdminPanel/AssistantAdminPanel\`.`,
+    },
 ];
