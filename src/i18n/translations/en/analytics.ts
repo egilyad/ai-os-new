@@ -500,6 +500,7 @@ const analytics: Record<string, string> = {
     'preview.refreshing': 'Refreshing...',
     'preview.noFiles': 'No files to preview. Add HTML, CSS, or JS files.',
     'qa.title': 'QA Inspector',
+    'qa.run': 'Run QA',
     'qa.score': 'Score',
     'qa.issues': 'Issues',
     'qa.links': 'Links',

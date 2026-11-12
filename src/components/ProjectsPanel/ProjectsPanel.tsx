@@ -20,6 +20,8 @@ import { StatusBadge, Button } from '../../components/Common';
 import { seedProjectDemo } from '../../kernel/services/project-demo-seed';
 import ActivitiesPanel from './ActivitiesPanel';
 import type { CreateProjectInput, ProjectAgentAssignment } from '../../kernel/types/project-types';
+import type { Artifact } from '../../kernel/types/artifact-types';
+import type { AutonomyGoal } from '../../kernel/types/autonomy-types';
 import type { MemoryEntryType, ProjectMemoryEntry } from '../../kernel/types/project-memory-types';
 import type { AutonomyGoal } from '../../kernel/types/autonomy-types';
 import type { PythonRun } from '../../kernel/types/python-runtime-types';
@@ -176,6 +178,17 @@ const ProjectsPanel: React.FC = () => {
     const [allAgents, setAllAgents] = useState<Array<{ id: string; name: string }>>([]);
     const [newAgentId, setNewAgentId] = useState('');
     const [newAgentRole, setNewAgentRole] = useState('developer');
+    const [artifactsList, setArtifactsList] = useState<Artifact[]>([]);
+    const [openArtifact, setOpenArtifact] = useState<Artifact | null>(null);
+    const [snapshotsList, setSnapshotsList] = useState<
+        Array<{ id: string; name: string; fileCount: number; createdAt: number }>
+    >([]);
+    const [goalsList, setGoalsList] = useState<AutonomyGoal[]>([]);
+    const [editingGoalId, setEditingGoalId] = useState<string | null>(null);
+    const [editGoalDesc, setEditGoalDesc] = useState('');
+    const [editGoalPriority, setEditGoalPriority] = useState<
+        'low' | 'medium' | 'high' | 'critical'
+    >('medium');
 
     useEffect(() => {
         ensureSubscribed();
@@ -214,9 +227,19 @@ const ProjectsPanel: React.FC = () => {
                 if (!isCurrent()) return;
                 setTemplateCount(count);
             } else if (activeTab === 'artifacts') {
-                const count = artifactService.listSnapshots(selectedId).length;
+                const snapshots = artifactService.listSnapshots(selectedId);
+                const arts = artifactService.listArtifacts(selectedId);
                 if (!isCurrent()) return;
-                setSnapshotCount(count);
+                setSnapshotCount(snapshots.length);
+                setSnapshotsList(
+                    snapshots.map((s) => ({
+                        id: s.id,
+                        name: s.name,
+                        fileCount: s.fileCount,
+                        createdAt: s.createdAt,
+                    })),
+                );
+                setArtifactsList(arts);
             } else if (activeTab === 'agents') {
                 const list = await projectManagerService.listAgents(selectedId);
                 if (!isCurrent()) return;
@@ -235,6 +258,7 @@ const ProjectsPanel: React.FC = () => {
                 const list = autonomyOrchestrator.listGoals(selectedId);
                 if (!isCurrent()) return;
                 setGoals(Array.isArray(list) ? list : []);
+                setGoalsList(Array.isArray(list) ? list : []);
             } else if (activeTab === 'python') {
                 const hist = pythonRunnerService.getRunHistory(selectedId);
                 if (!isCurrent()) return;
@@ -310,7 +334,17 @@ const ProjectsPanel: React.FC = () => {
         if (!selectedId) return;
         await runGuarded(async () => {
             await artifactService.build(selectedId, `Build ${Date.now()}`);
-            setSnapshotCount(artifactService.listSnapshots(selectedId).length);
+            const snapshots = artifactService.listSnapshots(selectedId);
+            setSnapshotCount(snapshots.length);
+            setSnapshotsList(
+                snapshots.map((s) => ({
+                    id: s.id,
+                    name: s.name,
+                    fileCount: s.fileCount,
+                    createdAt: s.createdAt,
+                })),
+            );
+            setArtifactsList(artifactService.listArtifacts(selectedId));
         });
     };
 
@@ -318,7 +352,16 @@ const ProjectsPanel: React.FC = () => {
         if (!selectedId) return;
         await runGuarded(async () => {
             await artifactService.createSnapshot(selectedId, `Snapshot ${Date.now()}`);
-            setSnapshotCount(artifactService.listSnapshots(selectedId).length);
+            const snapshots = artifactService.listSnapshots(selectedId);
+            setSnapshotCount(snapshots.length);
+            setSnapshotsList(
+                snapshots.map((s) => ({
+                    id: s.id,
+                    name: s.name,
+                    fileCount: s.fileCount,
+                    createdAt: s.createdAt,
+                })),
+            );
         });
     };
 
@@ -478,12 +521,80 @@ const ProjectsPanel: React.FC = () => {
         });
     };
 
+    const handleDeleteArtifact = (artifactId: string) => {
+        void runGuarded(() => {
+            artifactService.deleteArtifact(artifactId);
+            if (selectedId) {
+                setArtifactsList(artifactService.listArtifacts(selectedId));
+            }
+            setOpenArtifact(null);
+        });
+    };
+
+    const handleRestoreSnapshot = (snapshotId: string) => {
+        void runGuarded(async () => {
+            await artifactService.restoreSnapshot(snapshotId);
+            if (selectedId) {
+                const tree = await projectWorkspaceService.getTree(selectedId);
+                setFiles(Array.isArray(tree) ? tree.map((e) => e.path) : []);
+            }
+        });
+    };
+
+    const handleDownloadArtifact = (art: Artifact) => {
+        try {
+            const filesJson = JSON.stringify(
+                art.files.map((f) => ({ path: f.path, content: f.content })),
+                null,
+                2,
+            );
+            const blob = new Blob([filesJson], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${art.name.replace(/[^a-z0-9-_]+/gi, '-')}.json`;
+            a.click();
+            setTimeout(() => URL.revokeObjectURL(url), 1000);
+        } catch {
+            /* best-effort */
+        }
+    };
+
+    const startEditGoal = (g: AutonomyGoal) => {
+        setEditingGoalId(g.id);
+        setEditGoalDesc(g.description);
+        setEditGoalPriority(g.priority);
+    };
+
+    const saveGoal = (g: AutonomyGoal) => {
+        void runGuarded(() => {
+            autonomyOrchestrator.updateGoal(g.id, {
+                description: editGoalDesc.trim() || g.description,
+                priority: editGoalPriority,
+            });
+            const list = autonomyOrchestrator.listGoals(g.projectId);
+            setGoals(Array.isArray(list) ? list : []);
+            setGoalsList(Array.isArray(list) ? list : []);
+            setEditingGoalId(null);
+        });
+    };
+
+    const deleteGoal = (g: AutonomyGoal) => {
+        void runGuarded(() => {
+            autonomyOrchestrator.deleteGoal(g.id);
+            const list = autonomyOrchestrator.listGoals(g.projectId);
+            setGoals(Array.isArray(list) ? list : []);
+            setGoalsList(Array.isArray(list) ? list : []);
+        });
+    };
+
     const handleCreateGoal = () => {
         if (!selectedId) return;
         void runGuarded(() => {
             autonomyOrchestrator.createGoal(selectedId, 'New goal');
             const list = autonomyOrchestrator.listGoals(selectedId);
             setGoals(Array.isArray(list) ? list : []);
+            setGoalsList(Array.isArray(list) ? list : []);
         });
     };
 
@@ -1025,8 +1136,8 @@ const ProjectsPanel: React.FC = () => {
                             }}
                         >
                             <h3 style={{ margin: 0 }}>{t('qa.title')}</h3>
-                            <Button variant="ghost" size="sm" onClick={loadTab}>
-                                {t('preview.refresh')}
+                            <Button variant="primary" size="sm" onClick={loadTab}>
+                                {t('qa.run')}
                             </Button>
                         </div>
                         {qaScore !== null ? (
@@ -1357,19 +1468,131 @@ const ProjectsPanel: React.FC = () => {
                         <p style={{ fontSize: '0.8rem', opacity: 0.7 }}>
                             Snapshots: {snapshotCount}
                         </p>
-                        {artifactService.listArtifacts(selectedId).map((art) => (
+                        {snapshotsList.map((s) => (
+                            <div
+                                key={s.id}
+                                style={{
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                    alignItems: 'center',
+                                    padding: '0.3rem 0.5rem',
+                                    fontSize: '0.78rem',
+                                    borderBottom: '1px solid rgba(255,255,255,0.05)',
+                                }}
+                            >
+                                <span>
+                                    {s.name}{' '}
+                                    <span style={{ opacity: 0.5 }}>({s.fileCount} файлов)</span>
+                                </span>
+                                <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => handleRestoreSnapshot(s.id)}
+                                >
+                                    ↺ Восстановить
+                                </Button>
+                            </div>
+                        ))}
+                        {artifactsList.map((art) => (
                             <div key={art.id} style={{ ...CARD, cursor: 'default' }}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                <div
+                                    style={{
+                                        display: 'flex',
+                                        justifyContent: 'space-between',
+                                        alignItems: 'center',
+                                    }}
+                                >
                                     <strong style={{ fontSize: '0.85rem' }}>{art.name}</strong>
-                                    <span style={{ fontSize: '0.75rem', opacity: 0.5 }}>
-                                        {art.type}
-                                    </span>
+                                    <div
+                                        style={{
+                                            display: 'flex',
+                                            gap: '0.3rem',
+                                            alignItems: 'center',
+                                        }}
+                                    >
+                                        <span style={{ fontSize: '0.75rem', opacity: 0.5 }}>
+                                            {art.type}
+                                        </span>
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            onClick={() => setOpenArtifact(art)}
+                                        >
+                                            👁
+                                        </Button>
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            onClick={() => handleDownloadArtifact(art)}
+                                        >
+                                            ⬇
+                                        </Button>
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            onClick={() => handleDeleteArtifact(art.id)}
+                                        >
+                                            🗑️
+                                        </Button>
+                                    </div>
                                 </div>
                                 <div style={{ fontSize: '0.75rem', opacity: 0.7 }}>
                                     {art.files.length} files
                                 </div>
                             </div>
                         ))}
+                        {openArtifact && (
+                            <div
+                                style={{
+                                    marginTop: '0.75rem',
+                                    borderTop: '1px solid #2a2a35',
+                                    paddingTop: '0.5rem',
+                                }}
+                            >
+                                <div
+                                    style={{
+                                        display: 'flex',
+                                        justifyContent: 'space-between',
+                                        alignItems: 'center',
+                                        marginBottom: '0.4rem',
+                                    }}
+                                >
+                                    <strong style={{ fontSize: '0.85rem' }}>
+                                        {openArtifact.name}
+                                    </strong>
+                                    <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        onClick={() => setOpenArtifact(null)}
+                                    >
+                                        ✕
+                                    </Button>
+                                </div>
+                                {openArtifact.files.map((f) => (
+                                    <details key={f.path} style={{ marginBottom: '0.3rem' }}>
+                                        <summary style={{ fontSize: '0.78rem', cursor: 'pointer' }}>
+                                            {f.path}{' '}
+                                            <span style={{ opacity: 0.5 }}>({f.sizeBytes} B)</span>
+                                        </summary>
+                                        <pre
+                                            style={{
+                                                fontSize: '0.75rem',
+                                                opacity: 0.8,
+                                                whiteSpace: 'pre-wrap',
+                                                wordBreak: 'break-word',
+                                                background: 'rgba(0,0,0,0.2)',
+                                                padding: '0.5rem',
+                                                borderRadius: 6,
+                                                maxHeight: 300,
+                                                overflowY: 'auto',
+                                            }}
+                                        >
+                                            {f.content}
+                                        </pre>
+                                    </details>
+                                ))}
+                            </div>
+                        )}
                     </div>
                 )}
 
@@ -1394,22 +1617,107 @@ const ProjectsPanel: React.FC = () => {
                                 No goals yet. Create one to start autonomous execution.
                             </p>
                         )}
-                        {goals.map((g) => (
+                        {goalsList.map((g) => (
                             <div key={g.id} style={{ ...CARD, cursor: 'default' }}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                    <strong style={{ fontSize: '0.85rem' }}>{g.description}</strong>
-                                    <StatusBadge status={g.status} label={g.status} />
-                                </div>
-                                <div
-                                    style={{
-                                        fontSize: '0.75rem',
-                                        opacity: 0.7,
-                                        marginTop: '0.2rem',
-                                    }}
-                                >
-                                    Priority: {g.priority} | Created:{' '}
-                                    {g.createdAt ? new Date(g.createdAt).toLocaleDateString() : '—'}
-                                </div>
+                                {editingGoalId === g.id ? (
+                                    <div>
+                                        <input
+                                            style={INPUT}
+                                            value={editGoalDesc}
+                                            onChange={(e) => setEditGoalDesc(e.target.value)}
+                                            aria-label="Описание цели"
+                                        />
+                                        <select
+                                            style={{ ...SELECT, marginTop: '0.4rem' }}
+                                            value={editGoalPriority}
+                                            onChange={(e) =>
+                                                setEditGoalPriority(
+                                                    e.target.value as AutonomyGoal['priority'],
+                                                )
+                                            }
+                                            aria-label="Приоритет цели"
+                                        >
+                                            {(['low', 'medium', 'high', 'critical'] as const).map(
+                                                (p) => (
+                                                    <option key={p} value={p}>
+                                                        {p}
+                                                    </option>
+                                                ),
+                                            )}
+                                        </select>
+                                        <div
+                                            style={{
+                                                marginTop: '0.4rem',
+                                                display: 'flex',
+                                                gap: '0.4rem',
+                                            }}
+                                        >
+                                            <Button
+                                                variant="accent"
+                                                size="sm"
+                                                onClick={() => saveGoal(g)}
+                                            >
+                                                {t('projects.save')}
+                                            </Button>
+                                            <Button
+                                                variant="ghost"
+                                                size="sm"
+                                                onClick={() => setEditingGoalId(null)}
+                                            >
+                                                {t('projects.cancel')}
+                                            </Button>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <>
+                                        <div
+                                            style={{
+                                                display: 'flex',
+                                                justifyContent: 'space-between',
+                                                alignItems: 'center',
+                                            }}
+                                        >
+                                            <strong style={{ fontSize: '0.85rem' }}>
+                                                {g.description}
+                                            </strong>
+                                            <div
+                                                style={{
+                                                    display: 'flex',
+                                                    gap: '0.3rem',
+                                                    alignItems: 'center',
+                                                }}
+                                            >
+                                                <StatusBadge status={g.status} label={g.status} />
+                                                <Button
+                                                    variant="ghost"
+                                                    size="sm"
+                                                    onClick={() => startEditGoal(g)}
+                                                >
+                                                    ✏️
+                                                </Button>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="sm"
+                                                    onClick={() => deleteGoal(g)}
+                                                >
+                                                    🗑️
+                                                </Button>
+                                            </div>
+                                        </div>
+                                        <div
+                                            style={{
+                                                fontSize: '0.75rem',
+                                                opacity: 0.7,
+                                                marginTop: '0.2rem',
+                                            }}
+                                        >
+                                            Priority: {g.priority} | Created:{' '}
+                                            {g.createdAt
+                                                ? new Date(g.createdAt).toLocaleDateString()
+                                                : '—'}
+                                        </div>
+                                    </>
+                                )}
                             </div>
                         ))}
                     </div>

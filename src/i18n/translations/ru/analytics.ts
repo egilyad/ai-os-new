@@ -499,6 +499,7 @@ const analytics: Record<string, string> = {
     'preview.refreshing': 'Обновление...',
     'preview.noFiles': 'Нет файлов для превью. Добавьте HTML, CSS или JS.',
     'qa.title': 'QA Инспектор',
+    'qa.run': 'Запустить QA',
     'qa.score': 'Оценка',
     'qa.issues': 'Проблемы',
     'qa.links': 'Ссылки',

@@ -18,11 +18,37 @@ import { rootLogger } from './logger-service';
 const LOGGER = rootLogger.child('AutonomyOrchestrator');
 
 export interface IAutonomyOrchestrator {
-    createGoal(projectId: string, description: string, criteria?: string[], constraints?: string[]): AutonomyGoal;
+    createGoal(
+        projectId: string,
+        description: string,
+        criteria?: string[],
+        constraints?: string[],
+    ): AutonomyGoal;
     getGoal(goalId: string): AutonomyGoal | undefined;
+    updateGoal(
+        goalId: string,
+        patch: Partial<
+            Pick<AutonomyGoal, 'description' | 'priority' | 'successCriteria' | 'constraints'>
+        >,
+    ): AutonomyGoal | undefined;
+    deleteGoal(goalId: string): boolean;
     listGoals(projectId: string): AutonomyGoal[];
-    createPlan(goalId: string, strategy: string, estimatedSteps: number, risk?: string): AutonomyPlan;
-    decomposeTasks(goalId: string, planId: string, tasks: Array<Omit<DecomposedTask, 'id' | 'goalId' | 'planId' | 'status' | 'revisionCount' | 'createdAt' | 'updatedAt'>>): DecomposedTask[];
+    createPlan(
+        goalId: string,
+        strategy: string,
+        estimatedSteps: number,
+        risk?: string,
+    ): AutonomyPlan;
+    decomposeTasks(
+        goalId: string,
+        planId: string,
+        tasks: Array<
+            Omit<
+                DecomposedTask,
+                'id' | 'goalId' | 'planId' | 'status' | 'revisionCount' | 'createdAt' | 'updatedAt'
+            >
+        >,
+    ): DecomposedTask[];
     assignTask(taskId: string, agentId: string): void;
     startTask(taskId: string): void;
     completeTask(taskId: string, result: string): void;
@@ -44,15 +70,17 @@ export class AutonomyOrchestrator implements IAutonomyOrchestrator {
     private plans = new Map<string, AutonomyPlan>();
     private tasks = new Map<string, DecomposedTask>();
     private runs = new Map<string, AutonomyRun>();
-    constructor(
-        _projectManager: IProjectManagerService,
-        _workspace: IProjectWorkspaceService,
-    ) {
+    constructor(_projectManager: IProjectManagerService, _workspace: IProjectWorkspaceService) {
         void _projectManager;
         void _workspace;
     }
 
-    createGoal(projectId: string, description: string, criteria: string[] = [], constraints: string[] = []): AutonomyGoal {
+    createGoal(
+        projectId: string,
+        description: string,
+        criteria: string[] = [],
+        constraints: string[] = [],
+    ): AutonomyGoal {
         const goal: AutonomyGoal = {
             id: `goal-${Date.now()}-${++goalCounter}`,
             projectId,
@@ -84,11 +112,45 @@ export class AutonomyOrchestrator implements IAutonomyOrchestrator {
         return this.goals.get(goalId);
     }
 
+    updateGoal(
+        goalId: string,
+        patch: Partial<
+            Pick<AutonomyGoal, 'description' | 'priority' | 'successCriteria' | 'constraints'>
+        >,
+    ): AutonomyGoal | undefined {
+        const existing = this.goals.get(goalId);
+        if (!existing) return undefined;
+        const updated: AutonomyGoal = {
+            ...existing,
+            ...patch,
+            updatedAt: Date.now(),
+        };
+        this.goals.set(goalId, updated);
+        LOGGER.info('updateGoal', `Goal ${goalId} updated`);
+        return updated;
+    }
+
+    deleteGoal(goalId: string): boolean {
+        const deleted = this.goals.delete(goalId);
+        this.plans.delete(goalId);
+        this.runs.delete(goalId);
+        for (const [taskId, task] of this.tasks) {
+            if (task.goalId === goalId) this.tasks.delete(taskId);
+        }
+        if (deleted) LOGGER.info('deleteGoal', `Goal ${goalId} deleted`);
+        return deleted;
+    }
+
     listGoals(projectId: string): AutonomyGoal[] {
         return Array.from(this.goals.values()).filter((g) => g.projectId === projectId);
     }
 
-    createPlan(goalId: string, strategy: string, estimatedSteps: number, risk = 'Low'): AutonomyPlan {
+    createPlan(
+        goalId: string,
+        strategy: string,
+        estimatedSteps: number,
+        risk = 'Low',
+    ): AutonomyPlan {
         const plan: AutonomyPlan = {
             id: `plan-${Date.now()}-${++planCounter}`,
             goalId,
@@ -102,7 +164,16 @@ export class AutonomyOrchestrator implements IAutonomyOrchestrator {
         return plan;
     }
 
-    decomposeTasks(goalId: string, planId: string, taskDefs: Array<Omit<DecomposedTask, 'id' | 'goalId' | 'planId' | 'status' | 'revisionCount' | 'createdAt' | 'updatedAt'>>): DecomposedTask[] {
+    decomposeTasks(
+        goalId: string,
+        planId: string,
+        taskDefs: Array<
+            Omit<
+                DecomposedTask,
+                'id' | 'goalId' | 'planId' | 'status' | 'revisionCount' | 'createdAt' | 'updatedAt'
+            >
+        >,
+    ): DecomposedTask[] {
         const result: DecomposedTask[] = [];
 
         for (const def of taskDefs) {
