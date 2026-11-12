@@ -102,4 +102,18 @@ export const PANELS_EXTRA_ARTICLES: WikiArticle[] = [
 
 Компонент: \`src/components/PluginMarketplacePanel\`.`,
     },
+    {
+        slug: 'panel-model-explorer',
+        title: 'Model Explorer',
+        section: 'panels',
+        tags: ['панели', 'модели', 'ключи'],
+        freshness: 'documented',
+        sources: ['src/components/ModelExplorerPanel/ModelExplorerPanel'],
+        related: ['panel-providers', 'dev-tests-catalog'],
+        body: `## Model Explorer
+
+Панель выбора модели по ключу: показывает подключённые API-ключи, каталог моделей выбранного ключа и открывает чат с нужной моделью через выбранный ключ. Каталог моделей берётся из полного каталога \`src/llm/catalog/models-catalog-detail.ts\`.
+
+Компонент: \`src/components/ModelExplorerPanel/ModelExplorerPanel\`.`,
+    },
 ];

@@ -3,22 +3,22 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 1576,
-    "edges": 2854,
+    "nodes": 1579,
+    "edges": 2857,
     "byType": {
       "audit": 25,
-      "code": 687,
+      "code": 688,
       "test": 236,
-      "panel": 267,
-      "article": 361
+      "panel": 268,
+      "article": 362
     },
     "byKind": {
       "audit_test": 20,
       "audit_mention": 52,
       "documents": 267,
       "test": 343,
-      "source": 983,
-      "related": 1189
+      "source": 984,
+      "related": 1191
     }
   },
   "nodes": [
@@ -1106,6 +1106,11 @@
       "id": "file:src/components/ModelComparePanel/",
       "type": "code",
       "label": "src/components/ModelComparePanel/"
+    },
+    {
+      "id": "file:src/components/ModelExplorerPanel/ModelExplorerPanel",
+      "type": "code",
+      "label": "src/components/ModelExplorerPanel/ModelExplorerPanel"
     },
     {
       "id": "file:src/components/NavGraphPanel/NavGraphPanel",
@@ -5933,6 +5938,13 @@
       "route": "/mission"
     },
     {
+      "id": "panel:model-explorer",
+      "type": "panel",
+      "label": "model-explorer",
+      "section": "ai-providers",
+      "route": "/model-explorer"
+    },
+    {
       "id": "panel:multi-hop",
       "type": "panel",
       "label": "multi-hop",
@@ -8199,6 +8211,13 @@
       "label": "Панель: Дворец памяти",
       "section": "panels",
       "status": "verified"
+    },
+    {
+      "id": "wiki:panel-model-explorer",
+      "type": "article",
+      "label": "Model Explorer",
+      "section": "panels",
+      "status": "documented"
     },
     {
       "id": "wiki:panel-nav-graph",
@@ -20913,6 +20932,21 @@
     {
       "from": "wiki:panel-memory-palace",
       "to": "wiki:panel-lenses-crystals",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:panel-model-explorer",
+      "to": "file:src/components/ModelExplorerPanel/ModelExplorerPanel",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:panel-model-explorer",
+      "to": "wiki:dev-tests-catalog",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:panel-model-explorer",
+      "to": "wiki:panel-providers",
       "kind": "related"
     },
     {

@@ -54,7 +54,7 @@ const ChatPanel: React.FC = () => {
     const sendMessage = useChatStore((s) => s.sendMessage);
     const activeSessionId = useChatStore((s) => s.activeSessionId);
     const setActiveSessionId = useChatStore((s) => s.setActiveSessionId);
-const setSessions = useChatStore((s) => s.setSessions);
+    const setSessions = useChatStore((s) => s.setSessions);
     const createSession = useChatStore((s) => s.createSession);
     const forkSession = useChatStore((s) => s.forkSession);
     const editEntry = useChatStore((s) => s.editEntry);
@@ -63,7 +63,9 @@ const setSessions = useChatStore((s) => s.setSessions);
     const switchKey = useChatStore((s) => s.switchKey);
     const setAgent = useChatStore((s) => s.setAgent);
     const setModelForKey = useChatStore((s) => s.setModelForKey);
-    const currentAgentId = useChatStore((s) => s.sessions.find((x) => x.id === s.activeSessionId)?.currentAgentId ?? null);
+    const currentAgentId = useChatStore(
+        (s) => s.sessions.find((x) => x.id === s.activeSessionId)?.currentAgentId ?? null,
+    );
     // T2: global default key/model for new chats (per-chat override persists on session)
     const globalDefaults = (() => {
         try {
@@ -172,6 +174,37 @@ const setSessions = useChatStore((s) => s.setSessions);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [activeSessionId]);
 
+    // Model Explorer deep-link: ?model=<id>&keyId=<id>&provider=<catalog-id>
+    // opens chat with the chosen model pinned to the chosen key.
+    useEffect(() => {
+        if (!isLoaded) return;
+        const urlModel = searchParams.get('model');
+        const urlKeyId = searchParams.get('keyId');
+        const urlProvider = searchParams.get('provider');
+        if (!urlModel && !urlKeyId) return;
+        try {
+            const targetKey = urlKeyId ? activeKeys.find((k) => k.id === urlKeyId) : undefined;
+            if (targetKey) {
+                setSelectedKeys([targetKey.id]);
+                void switchKey(targetKey.id).catch(() => {});
+                if (urlModel) {
+                    setSelectedModel(urlModel);
+                    setSelectedModelPerKey({ [targetKey.id]: urlModel });
+                    void setModelForKey(targetKey.id, urlModel).catch(() => {});
+                    if (urlProvider) {
+                        void switchModel(urlProvider, urlModel).catch(() => {});
+                    }
+                }
+            } else if (urlModel) {
+                setSelectedModel(urlModel);
+            }
+        } catch {
+            /* best-effort: ignore malformed deep-link */
+        }
+        setSearchParams({}, { replace: true });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [searchParams, isLoaded]);
+
     // B.3: auto-discover models for keys that have no cached availableModels
     // Temporarily disabled — discovery is on-demand via KeyTable; auto-spam
     // on every activeKeys ref change was suspected to block UI.
@@ -248,7 +281,11 @@ const setSessions = useChatStore((s) => s.setSessions);
             const key = activeKeys.find((k) => k.id === id);
             const provider = key?.provider ?? cfg?.provider ?? 'auto';
             const model =
-                selectedModelPerKey[id] || selectedModel || cfg?.model || defaultModelFor(key) || '';
+                selectedModelPerKey[id] ||
+                selectedModel ||
+                cfg?.model ||
+                defaultModelFor(key) ||
+                '';
             if (!model) continue;
             targets.push({
                 provider,
@@ -333,10 +370,7 @@ const setSessions = useChatStore((s) => s.setSessions);
                 showStatus('Нет доступных ключей/моделей для отправки', 'error');
                 return;
             }
-            sendMessage(
-                targets,
-                extra ? `${originalText}\n\n${extra}` : originalText,
-            );
+            sendMessage(targets, extra ? `${originalText}\n\n${extra}` : originalText);
         },
         [buildTargets, sendMessage, showStatus],
     );
@@ -374,7 +408,10 @@ const setSessions = useChatStore((s) => s.setSessions);
         } catch (e) {
             // Surface instead of swallowing: a dead button is worse than an error.
             showStatus(
-                `Failed to create chat: ${e instanceof Error ? e.message : String(e)}`.slice(0, 200),
+                `Failed to create chat: ${e instanceof Error ? e.message : String(e)}`.slice(
+                    0,
+                    200,
+                ),
                 'error',
             );
         }
@@ -541,7 +578,12 @@ const setSessions = useChatStore((s) => s.setSessions);
                         onChange={(e) => {
                             const v = e.target.value || null;
                             void setAgent(v)
-                                .then(() => showStatus(v ? `Agent ${v.slice(0, 8)} attached` : 'Agent detached', 'success'))
+                                .then(() =>
+                                    showStatus(
+                                        v ? `Agent ${v.slice(0, 8)} attached` : 'Agent detached',
+                                        'success',
+                                    ),
+                                )
                                 .catch(() => showStatus('Failed to set agent', 'error'));
                         }}
                         style={{
@@ -555,17 +597,23 @@ const setSessions = useChatStore((s) => s.setSessions);
                         }}
                     >
                         <option value="">— No agent (direct) —</option>
-                        {(orchestrator.getActiveTopology()?.nodes.filter((n) => n.type === 'agent') ?? []).map(
-                            (n) => (
-                                <option key={n.id} value={n.id}>
-                                    {n.label || n.id}
-                                </option>
-                            ),
-                        )}
+                        {(
+                            orchestrator
+                                .getActiveTopology()
+                                ?.nodes.filter((n) => n.type === 'agent') ?? []
+                        ).map((n) => (
+                            <option key={n.id} value={n.id}>
+                                {n.label || n.id}
+                            </option>
+                        ))}
                     </select>
                     {currentAgentId && (
                         <button
-                            onClick={() => void setAgent(null).then(() => showStatus('Agent detached', 'info')).catch(() => showStatus('Failed to detach agent', 'error'))}
+                            onClick={() =>
+                                void setAgent(null)
+                                    .then(() => showStatus('Agent detached', 'info'))
+                                    .catch(() => showStatus('Failed to detach agent', 'error'))
+                            }
                             style={{
                                 padding: '4px 8px',
                                 borderRadius: 6,
@@ -612,7 +660,8 @@ const setSessions = useChatStore((s) => s.setSessions);
                         const kid = selectedKeys[0];
                         const m = kid ? models[kid] : undefined;
                         if (kid && m) {
-                            const provider = activeKeys.find((k) => k.id === kid)?.provider ?? 'auto';
+                            const provider =
+                                activeKeys.find((k) => k.id === kid)?.provider ?? 'auto';
                             void switchModel(provider, m).catch(() => {
                                 showStatus('Failed to persist model override', 'error');
                             });

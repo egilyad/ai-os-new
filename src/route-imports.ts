@@ -145,6 +145,7 @@ const DeployPanelLazy = React.lazy(() => import('./components/DeployPanel'));
 const BudgetAlertsPanelLazy = React.lazy(() => import('./components/BudgetAlertsPanel'));
 const TopologyGalleryPanelLazy = React.lazy(() => import('./components/TopologyGalleryPanel'));
 const KeyUsageAnalyticsPanelLazy = React.lazy(() => import('./components/KeyUsageAnalyticsPanel'));
+const ModelExplorerPanelLazy = React.lazy(() => import('./components/ModelExplorerPanel'));
 const PromptVersionPanelLazy = React.lazy(() => import('./components/PromptVersionPanel'));
 const DebateQualityPanelLazy = React.lazy(() => import('./components/DebateQualityPanel'));
 const QualityImpactDashboardLazy = React.lazy(
@@ -347,7 +348,7 @@ export const PANEL_COMPONENTS: Record<string, React.ComponentType<any>> = {
     ...TECHNIQUE_PANEL_COMPONENTS,
     analytics: AnalyticsPanelLazy,
     pricing: PricingPanel,
-        budget: BudgetHub,
+    budget: BudgetHub,
     'cost-analytics': CostAnalyticsPanel,
     routing: RoutingIntelligence,
     chat: ChatPanel,
@@ -408,7 +409,7 @@ export const PANEL_COMPONENTS: Record<string, React.ComponentType<any>> = {
     'router-trace': RouterTraceView,
     memory: MemoryPanel,
     'memory-palace': MemoryPalacePanel,
-        health: HealthHub,
+    health: HealthHub,
     'system-health': SystemHealthPanel,
     'docs-health': DocsHealthPanel,
     pressure: PressureMap,
@@ -437,7 +438,7 @@ export const PANEL_COMPONENTS: Record<string, React.ComponentType<any>> = {
     'architecture-map': ArchitectureMapPanelLazy,
     'obs-gaps': ObsGaps,
     'debate-system-research': DebateSystemResearch,
-        'research-engine': ResearchHubLazy,
+    'research-engine': ResearchHubLazy,
     'research-cockpit': ResearchCockpitPanelLazy,
     skills: SkillsPanelLazy,
     tools: ToolsPanelLazy,
@@ -455,6 +456,7 @@ export const PANEL_COMPONENTS: Record<string, React.ComponentType<any>> = {
     'budget-alerts': BudgetAlertsPanelLazy,
     'topology-templates': TopologyGalleryPanelLazy,
     'key-usage-analytics': KeyUsageAnalyticsPanelLazy,
+    'model-explorer': ModelExplorerPanelLazy,
     'prompt-versions': PromptVersionPanelLazy,
     'community-hub': CommunityHubPanelLazy,
     'export-import': ExportImportPanelLazy,

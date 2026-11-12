@@ -81,6 +81,7 @@ const nav: Record<string, string> = {
     'nav.what_if': 'What-If',
     'nav.runtime_pressure_map': 'Runtime Pressure',
     'nav.provider_dashboard': 'Provider Dashboard',
+    'nav.model_explorer': 'Model Explorer',
     'nav.groq_speed': 'Groq Speed ⚡',
     'nav.dependency_graph': 'Dependency Graph',
     'nav.diagnostics': 'Diagnostics',

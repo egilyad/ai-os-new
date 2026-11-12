@@ -10,7 +10,7 @@
     {
       "id": "panels",
       "title": "Панели",
-      "articles": 154
+      "articles": 155
     },
     {
       "id": "agents",
@@ -9554,6 +9554,28 @@
       "tests": []
     },
     {
+      "id": "wiki:panel-model-explorer",
+      "type": "article",
+      "slug": "panel-model-explorer",
+      "title": "Model Explorer",
+      "section": "panels",
+      "status": "documented",
+      "tags": [
+        "панели",
+        "модели",
+        "ключи"
+      ],
+      "sources": [
+        "src/components/ModelExplorerPanel/ModelExplorerPanel"
+      ],
+      "related": [
+        "panel-providers",
+        "dev-tests-catalog"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
       "id": "wiki:plugins-guide",
       "type": "article",
       "slug": "plugins-guide",
@@ -11964,6 +11986,16 @@
       "route": "/provider-dashboard",
       "component": "src/components/ProviderDashboard",
       "article": "panel-providers-extra",
+      "status": "live"
+    },
+    {
+      "id": "panel:model-explorer",
+      "type": "panel",
+      "panelId": "model-explorer",
+      "section": "ai-providers",
+      "route": "/model-explorer",
+      "component": "src/components/ModelExplorerPanel",
+      "article": null,
       "status": "live"
     },
     {

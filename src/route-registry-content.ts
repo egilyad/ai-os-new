@@ -325,6 +325,13 @@ export const CONTENT_SECTIONS: NavSection[] = [
                 lazy: true,
             },
             {
+                id: 'model-explorer',
+                labelKey: 'nav.model_explorer',
+                icon: Icons.brain,
+                color: '#a855f7',
+                lazy: true,
+            },
+            {
                 id: 'provider-marketplace',
                 labelKey: 'nav.provider_marketplace',
                 icon: Icons.star,
