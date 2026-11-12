@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { shallow } from 'zustand/shallow';
 import { useTranslation } from '../../i18n/useTranslation';
 import {
@@ -13,12 +13,13 @@ import {
     autonomyOrchestrator,
     projectMemoryService,
 } from '../../kernel/instances/services-extras';
+import { agentService } from '../../kernel/instances/services-core';
 import { useProjectStore, ensureSubscribed, destroy } from '../../stores/project-store';
 import type { ProjectStoreState } from '../../stores/project-store';
 import { StatusBadge, Button } from '../../components/Common';
 import { seedProjectDemo } from '../../kernel/services/project-demo-seed';
 import ActivitiesPanel from './ActivitiesPanel';
-import type { CreateProjectInput } from '../../kernel/types/project-types';
+import type { CreateProjectInput, ProjectAgentAssignment } from '../../kernel/types/project-types';
 import type { MemoryEntryType, ProjectMemoryEntry } from '../../kernel/types/project-memory-types';
 import type { AutonomyGoal } from '../../kernel/types/autonomy-types';
 import type { PythonRun } from '../../kernel/types/python-runtime-types';
@@ -96,6 +97,7 @@ type Tab =
     | 'preview'
     | 'pipeline'
     | 'qa'
+    | 'agents'
     | 'memory'
     | 'templates'
     | 'artifacts'
@@ -108,6 +110,7 @@ const TABS: Tab[] = [
     'preview',
     'pipeline',
     'qa',
+    'agents',
     'memory',
     'templates',
     'artifacts',
@@ -148,6 +151,9 @@ const ProjectsPanel: React.FC = () => {
     const [creating, setCreating] = useState(false);
     const [seeding, setSeeding] = useState(false);
     const [activeTab, setActiveTab] = useState<Tab>('files');
+    const [searchQuery, setSearchQuery] = useState('');
+    const [statusFilter, setStatusFilter] = useState('');
+    const [typeFilter, setTypeFilter] = useState('');
     const [files, setFiles] = useState<string[]>([]);
     const [previewHtml, setPreviewHtml] = useState('');
     const [qaScore, setQaScore] = useState<number | null>(null);
@@ -159,6 +165,17 @@ const ProjectsPanel: React.FC = () => {
     const [goals, setGoals] = useState<AutonomyGoal[]>([]);
     const [pyHistory, setPyHistory] = useState<PythonRun[]>([]);
     const [tabError, setTabError] = useState<string | null>(null);
+    const tabRequestRef = useRef(0);
+    const [selectedFile, setSelectedFile] = useState<string | null>(null);
+    const [selectedFileContent, setSelectedFileContent] = useState('');
+    const [fileError, setFileError] = useState<string | null>(null);
+    const [showCreateFile, setShowCreateFile] = useState(false);
+    const [newFilePath, setNewFilePath] = useState('');
+    const [newFileContent, setNewFileContent] = useState('');
+    const [assignments, setAssignments] = useState<ProjectAgentAssignment[]>([]);
+    const [allAgents, setAllAgents] = useState<Array<{ id: string; name: string }>>([]);
+    const [newAgentId, setNewAgentId] = useState('');
+    const [newAgentRole, setNewAgentRole] = useState('developer');
 
     useEffect(() => {
         ensureSubscribed();
@@ -170,37 +187,63 @@ const ProjectsPanel: React.FC = () => {
 
     const loadTab = useCallback(async () => {
         if (!selectedId) return;
+        const requestId = ++tabRequestRef.current;
+        const isCurrent = () => tabRequestRef.current === requestId;
         try {
             setTabError(null);
             if (activeTab === 'files') {
                 const tree = await projectWorkspaceService.getTree(selectedId);
+                if (!isCurrent()) return;
                 setFiles(Array.isArray(tree) ? tree.map((e) => e.path) : []);
             } else if (activeTab === 'preview') {
                 const r = await websitePreviewService.generatePreview(selectedId);
+                if (!isCurrent()) return;
                 setPreviewHtml(r?.html ?? '');
             } else if (activeTab === 'qa') {
                 const r = await browserInspectorService.inspect(selectedId);
+                if (!isCurrent()) return;
                 setQaScore(typeof r?.score === 'number' ? r.score : null);
                 setQaIssues(Array.isArray(r?.issues) ? r.issues : []);
             } else if (activeTab === 'pipeline') {
                 let pipe = await multiAgentProjectService.getPipeline(selectedId);
                 if (!pipe) pipe = await multiAgentProjectService.createPipeline(selectedId);
+                if (!isCurrent()) return;
                 setPipelineStage(pipe?.currentStage ?? '');
             } else if (activeTab === 'templates') {
-                setTemplateCount(projectTemplateService.listTemplates().length);
+                const count = projectTemplateService.listTemplates().length;
+                if (!isCurrent()) return;
+                setTemplateCount(count);
             } else if (activeTab === 'artifacts') {
-                setSnapshotCount(artifactService.listSnapshots(selectedId).length);
+                const count = artifactService.listSnapshots(selectedId).length;
+                if (!isCurrent()) return;
+                setSnapshotCount(count);
+            } else if (activeTab === 'agents') {
+                const list = await projectManagerService.listAgents(selectedId);
+                if (!isCurrent()) return;
+                setAssignments(Array.isArray(list) ? list : []);
+                try {
+                    const agents = agentService.getAgents();
+                    setAllAgents(agents.map((a) => ({ id: a.id, name: a.name })));
+                } catch {
+                    setAllAgents([]);
+                }
             } else if (activeTab === 'memory') {
                 const entries = projectMemoryService.getEntries(selectedId);
+                if (!isCurrent()) return;
                 setMemories(Array.isArray(entries) ? entries : []);
             } else if (activeTab === 'autonomy') {
                 const list = autonomyOrchestrator.listGoals(selectedId);
+                if (!isCurrent()) return;
                 setGoals(Array.isArray(list) ? list : []);
             } else if (activeTab === 'python') {
                 const hist = pythonRunnerService.getRunHistory(selectedId);
+                if (!isCurrent()) return;
                 setPyHistory(Array.isArray(hist) ? hist : []);
             }
         } catch (e) {
+            // A stale request may be rejected after the current one started;
+            // do not surface its error over the fresh tab.
+            if (tabRequestRef.current !== requestId) return;
             console.error('[ProjectsPanel] loadTab error', e);
             // Stale/empty tabs must not masquerade as "no data".
             setTabError(t('projects.error_load_tab'));
@@ -294,6 +337,100 @@ const ProjectsPanel: React.FC = () => {
         });
     };
 
+    const [editingName, setEditingName] = useState(false);
+    const [editNameValue, setEditNameValue] = useState('');
+    const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+
+    const startEditName = (project: { id: string; name: string }) => {
+        setEditNameValue(project.name);
+        setEditingName(true);
+    };
+
+    const saveName = async (projectId: string) => {
+        const name = editNameValue.trim();
+        if (!name) {
+            setEditingName(false);
+            return;
+        }
+        await runGuarded(async () => {
+            await projectManagerService.update(projectId, { name });
+            setEditingName(false);
+            await refresh();
+        });
+    };
+
+    const handleDeleteProject = async (projectId: string) => {
+        if (confirmDeleteId !== projectId) {
+            setConfirmDeleteId(projectId);
+            return;
+        }
+        await runGuarded(async () => {
+            await projectManagerService.delete(projectId);
+            setConfirmDeleteId(null);
+            if (selectedId === projectId) select('');
+            await refresh();
+        });
+    };
+
+    const handleArchiveProject = async (projectId: string) => {
+        await runGuarded(async () => {
+            const p = projects.get(projectId);
+            if (!p) return;
+            await projectManagerService.update(projectId, {
+                status: p.status === 'archived' ? 'draft' : 'archived',
+            });
+            await refresh();
+        });
+    };
+
+    const handleReadFile = async (path: string) => {
+        if (!selectedId) return;
+        setFileError(null);
+        try {
+            const file = await projectWorkspaceService.readFile(selectedId, path);
+            setSelectedFile(path);
+            setSelectedFileContent(file?.content ?? '');
+        } catch {
+            setSelectedFile(path);
+            setSelectedFileContent('');
+            setFileError(t('projects.error_load_tab'));
+        }
+    };
+
+    const handleCreateFile = async () => {
+        if (!selectedId || !newFilePath.trim()) return;
+        await runGuarded(async () => {
+            await projectWorkspaceService.writeFile(selectedId, newFilePath.trim(), newFileContent);
+            setShowCreateFile(false);
+            setNewFilePath('');
+            setNewFileContent('');
+            const tree = await projectWorkspaceService.getTree(selectedId);
+            setFiles(Array.isArray(tree) ? tree.map((e) => e.path) : []);
+            await handleReadFile(newFilePath.trim());
+        });
+    };
+
+    const handleAssignAgent = async () => {
+        if (!selectedId || !newAgentId) return;
+        await runGuarded(async () => {
+            await projectManagerService.assignAgent(selectedId, newAgentId, newAgentRole);
+            setNewAgentId('');
+            const list = await projectManagerService.listAgents(selectedId);
+            setAssignments(Array.isArray(list) ? list : []);
+            await refresh();
+        });
+    };
+
+    const handleRemoveAgent = async (agentId: string) => {
+        if (!selectedId) return;
+        await runGuarded(async () => {
+            await projectManagerService.removeAgent(selectedId, agentId);
+            const list = await projectManagerService.listAgents(selectedId);
+            setAssignments(Array.isArray(list) ? list : []);
+            await refresh();
+        });
+    };
+
     const handleAddMemory = (type: MemoryEntryType) => {
         if (!selectedId) return;
         void runGuarded(() => {
@@ -309,6 +446,38 @@ const ProjectsPanel: React.FC = () => {
         });
     };
 
+    const [editingMemoryId, setEditingMemoryId] = useState<string | null>(null);
+    const [editMemoryTitle, setEditMemoryTitle] = useState('');
+    const [editMemoryContent, setEditMemoryContent] = useState('');
+
+    const startEditMemory = (m: ProjectMemoryEntry) => {
+        setEditingMemoryId(m.id);
+        setEditMemoryTitle(m.title);
+        setEditMemoryContent(m.content);
+    };
+
+    const saveMemory = async (m: ProjectMemoryEntry) => {
+        if (!selectedId) return;
+        await runGuarded(() => {
+            projectMemoryService.updateEntry(selectedId, m.id, {
+                title: editMemoryTitle,
+                content: editMemoryContent,
+            });
+            const entries = projectMemoryService.getEntries(selectedId);
+            setMemories(Array.isArray(entries) ? entries : []);
+            setEditingMemoryId(null);
+        });
+    };
+
+    const deleteMemory = async (m: ProjectMemoryEntry) => {
+        if (!selectedId) return;
+        await runGuarded(() => {
+            projectMemoryService.deleteEntry(selectedId, m.id);
+            const entries = projectMemoryService.getEntries(selectedId);
+            setMemories(Array.isArray(entries) ? entries : []);
+        });
+    };
+
     const handleCreateGoal = () => {
         if (!selectedId) return;
         void runGuarded(() => {
@@ -317,6 +486,19 @@ const ProjectsPanel: React.FC = () => {
             setGoals(Array.isArray(list) ? list : []);
         });
     };
+
+    const filteredOrder = order.filter((id) => {
+        const p = projects.get(id);
+        if (!p) return false;
+        if (statusFilter && p.status !== statusFilter) return false;
+        if (typeFilter && p.type !== typeFilter) return false;
+        if (searchQuery.trim()) {
+            const q = searchQuery.trim().toLowerCase();
+            const hay = `${p.name} ${p.description} ${p.type}`.toLowerCase();
+            if (!hay.includes(q)) return false;
+        }
+        return true;
+    });
 
     // ── Project list view ──
     if (!selectedId) {
@@ -416,6 +598,50 @@ const ProjectsPanel: React.FC = () => {
                     </div>
                 )}
                 <div style={{ flex: 1, overflowY: 'auto', padding: '0.75rem 1rem' }}>
+                    <div
+                        style={{
+                            display: 'flex',
+                            gap: '0.5rem',
+                            flexWrap: 'wrap',
+                            marginBottom: '0.75rem',
+                        }}
+                    >
+                        <input
+                            style={{ ...INPUT, flex: 1, minWidth: 180 }}
+                            placeholder="Поиск по проектам…"
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            aria-label="Поиск проектов"
+                        />
+                        <select
+                            style={SELECT}
+                            value={typeFilter}
+                            onChange={(e) => setTypeFilter(e.target.value)}
+                            aria-label="Фильтр по типу"
+                        >
+                            <option value="">Все типы</option>
+                            {PROJECT_TYPES.map((pt) => (
+                                <option key={pt.value} value={pt.value}>
+                                    {pt.label}
+                                </option>
+                            ))}
+                        </select>
+                        <select
+                            style={SELECT}
+                            value={statusFilter}
+                            onChange={(e) => setStatusFilter(e.target.value)}
+                            aria-label="Фильтр по статусу"
+                        >
+                            <option value="">Все статусы</option>
+                            {['draft', 'building', 'running', 'ready', 'failed', 'archived'].map(
+                                (s) => (
+                                    <option key={s} value={s}>
+                                        {s}
+                                    </option>
+                                ),
+                            )}
+                        </select>
+                    </div>
                     {loading && order.length === 0 && (
                         <p style={{ opacity: 0.5 }}>{t('projects.loading')}</p>
                     )}
@@ -423,7 +649,10 @@ const ProjectsPanel: React.FC = () => {
                     {!loading && order.length === 0 && (
                         <p style={{ opacity: 0.5 }}>{t('projects.empty')}</p>
                     )}
-                    {order.map((id) => {
+                    {!loading && order.length > 0 && filteredOrder.length === 0 && (
+                        <p style={{ opacity: 0.5 }}>Ничего не найдено по фильтру.</p>
+                    )}
+                    {filteredOrder.map((id) => {
                         const p = projects.get(id);
                         if (!p) return null;
                         return (
@@ -481,16 +710,72 @@ const ProjectsPanel: React.FC = () => {
             style={{ height: '100%', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}
         >
             <div style={{ padding: '0.5rem 1rem', borderBottom: '1px solid #2a2a35' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                <div
+                    style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.75rem',
+                        flexWrap: 'wrap',
+                    }}
+                >
                     <Button variant="ghost" size="sm" onClick={() => select('')}>
                         {'< ' + t('projects.back')}
                     </Button>
-                    <strong>{project?.name || selectedId}</strong>
+                    {editingName && project ? (
+                        <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
+                            <input
+                                style={{ ...INPUT, width: 200 }}
+                                value={editNameValue}
+                                onChange={(e) => setEditNameValue(e.target.value)}
+                                autoFocus
+                                aria-label="Имя проекта"
+                            />
+                            <Button
+                                variant="accent"
+                                size="sm"
+                                onClick={() => void saveName(project.id)}
+                            >
+                                {t('projects.save')}
+                            </Button>
+                            <Button variant="ghost" size="sm" onClick={() => setEditingName(false)}>
+                                {t('projects.cancel')}
+                            </Button>
+                        </div>
+                    ) : (
+                        <strong>{project?.name || selectedId}</strong>
+                    )}
                     {project && (
                         <StatusBadge
                             status={project.status}
                             label={t(`projects.status.${project.status}`)}
                         />
+                    )}
+                    {project && !editingName && (
+                        <>
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => startEditName(project)}
+                            >
+                                ✏️
+                            </Button>
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => void handleArchiveProject(project.id)}
+                            >
+                                {project.status === 'archived' ? '↩️' : '📦'}
+                            </Button>
+                            <Button
+                                variant={confirmDeleteId === project.id ? 'danger' : 'ghost'}
+                                size="sm"
+                                onClick={() => void handleDeleteProject(project.id)}
+                            >
+                                {confirmDeleteId === project.id
+                                    ? t('projects.confirmDelete')
+                                    : '🗑️'}
+                            </Button>
+                        </>
                     )}
                 </div>
                 <div
@@ -554,18 +839,111 @@ const ProjectsPanel: React.FC = () => {
                 {/* ── Files Tab ── */}
                 {activeTab === 'files' && (
                     <div>
-                        <h3 style={{ margin: '0 0 0.5rem' }}>{t('projects.files')}</h3>
+                        <div
+                            style={{
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                alignItems: 'center',
+                                marginBottom: '0.5rem',
+                            }}
+                        >
+                            <h3 style={{ margin: 0 }}>{t('projects.files')}</h3>
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => setShowCreateFile(!showCreateFile)}
+                            >
+                                + {t('projects.newFile')}
+                            </Button>
+                        </div>
+                        {showCreateFile && (
+                            <div style={{ ...CARD, cursor: 'default', marginBottom: '0.75rem' }}>
+                                <input
+                                    style={INPUT}
+                                    placeholder="path/to/file.ts"
+                                    value={newFilePath}
+                                    onChange={(e) => setNewFilePath(e.target.value)}
+                                    aria-label="Путь файла"
+                                />
+                                <textarea
+                                    style={{ ...INPUT, marginTop: '0.4rem', minHeight: 80 }}
+                                    placeholder="Содержимое (необязательно)"
+                                    value={newFileContent}
+                                    onChange={(e) => setNewFileContent(e.target.value)}
+                                    aria-label="Содержимое файла"
+                                />
+                                <div style={{ marginTop: '0.4rem' }}>
+                                    <Button
+                                        variant="accent"
+                                        size="sm"
+                                        onClick={() => void handleCreateFile()}
+                                        disabled={!newFilePath.trim()}
+                                    >
+                                        {t('projects.create')}
+                                    </Button>
+                                </div>
+                            </div>
+                        )}
                         {files.length === 0 && (
                             <p style={{ opacity: 0.5 }}>
                                 No files. Apply a template or create files via agent.
                             </p>
                         )}
                         {files.map((f) => (
-                            <div key={f} style={FILE_ROW}>
+                            <div
+                                key={f}
+                                style={{ ...FILE_ROW, cursor: 'pointer' }}
+                                onClick={() => void handleReadFile(f)}
+                            >
                                 <span>{f}</span>
-                                <span style={{ opacity: 0.5, fontSize: '0.8rem' }}></span>
+                                <span style={{ opacity: 0.4, fontSize: '0.75rem' }}>👁</span>
                             </div>
                         ))}
+                        {selectedFile && fileError && (
+                            <p style={{ color: 'var(--error)', fontSize: '0.8rem' }}>{fileError}</p>
+                        )}
+                        {selectedFile && !fileError && (
+                            <div
+                                style={{
+                                    marginTop: '0.75rem',
+                                    borderTop: '1px solid #2a2a35',
+                                    paddingTop: '0.5rem',
+                                }}
+                            >
+                                <div
+                                    style={{
+                                        display: 'flex',
+                                        justifyContent: 'space-between',
+                                        alignItems: 'center',
+                                        marginBottom: '0.4rem',
+                                    }}
+                                >
+                                    <strong style={{ fontSize: '0.85rem' }}>{selectedFile}</strong>
+                                    <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        onClick={() => setSelectedFile(null)}
+                                    >
+                                        ✕
+                                    </Button>
+                                </div>
+                                <pre
+                                    style={{
+                                        fontSize: '0.78rem',
+                                        opacity: 0.8,
+                                        whiteSpace: 'pre-wrap',
+                                        wordBreak: 'break-word',
+                                        maxHeight: 320,
+                                        overflowY: 'auto',
+                                        background: 'rgba(0,0,0,0.2)',
+                                        padding: '0.6rem',
+                                        borderRadius: 6,
+                                    }}
+                                >
+                                    {selectedFileContent || '(пусто)'}
+                                </pre>
+                            </div>
+                        )}
                     </div>
                 )}
 
@@ -696,6 +1074,101 @@ const ProjectsPanel: React.FC = () => {
                     </div>
                 )}
 
+                {/* ── Agents Tab ── */}
+                {activeTab === 'agents' && (
+                    <div>
+                        <h3 style={{ margin: '0 0 0.5rem' }}>{t('projects.agents')}</h3>
+                        <div
+                            style={{
+                                display: 'flex',
+                                gap: '0.5rem',
+                                flexWrap: 'wrap',
+                                marginBottom: '0.75rem',
+                            }}
+                        >
+                            <select
+                                style={SELECT}
+                                value={newAgentId}
+                                onChange={(e) => setNewAgentId(e.target.value)}
+                                aria-label="Агент"
+                            >
+                                <option value="">— выберите агента —</option>
+                                {allAgents.map((a) => (
+                                    <option key={a.id} value={a.id}>
+                                        {a.name}
+                                    </option>
+                                ))}
+                            </select>
+                            <select
+                                style={SELECT}
+                                value={newAgentRole}
+                                onChange={(e) => setNewAgentRole(e.target.value)}
+                                aria-label="Роль"
+                            >
+                                {[
+                                    'director',
+                                    'researcher',
+                                    'developer',
+                                    'designer',
+                                    'content',
+                                    'qa',
+                                ].map((r) => (
+                                    <option key={r} value={r}>
+                                        {r}
+                                    </option>
+                                ))}
+                            </select>
+                            <Button
+                                variant="primary"
+                                size="sm"
+                                onClick={() => void handleAssignAgent()}
+                                disabled={!newAgentId}
+                            >
+                                {t('projects.assignAgent')}
+                            </Button>
+                        </div>
+                        {assignments.length === 0 && (
+                            <p style={{ opacity: 0.5 }}>{t('projects.noAgents')}</p>
+                        )}
+                        {assignments.map((a) => (
+                            <div key={a.agentId} style={{ ...CARD, cursor: 'default' }}>
+                                <div
+                                    style={{
+                                        display: 'flex',
+                                        justifyContent: 'space-between',
+                                        alignItems: 'center',
+                                    }}
+                                >
+                                    <div>
+                                        <strong style={{ fontSize: '0.85rem' }}>{a.agentId}</strong>
+                                        <span
+                                            style={{
+                                                fontSize: '0.75rem',
+                                                opacity: 0.6,
+                                                marginLeft: 8,
+                                            }}
+                                        >
+                                            {a.role}
+                                        </span>
+                                        {a.capabilities.length > 0 && (
+                                            <div style={{ fontSize: '0.7rem', opacity: 0.5 }}>
+                                                {a.capabilities.join(', ')}
+                                            </div>
+                                        )}
+                                    </div>
+                                    <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        onClick={() => void handleRemoveAgent(a.agentId)}
+                                    >
+                                        ✕
+                                    </Button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                )}
+
                 {/* ── Memory Tab ── */}
                 {activeTab === 'memory' && (
                     <div>
@@ -724,22 +1197,93 @@ const ProjectsPanel: React.FC = () => {
                         {memories.length === 0 && <p style={{ opacity: 0.5 }}>No memories yet.</p>}
                         {memories.map((m) => (
                             <div key={m.id} style={{ ...CARD, cursor: 'default' }}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                    <strong style={{ fontSize: '0.85rem' }}>{m.title}</strong>
-                                    <span style={{ fontSize: '0.75rem', opacity: 0.5 }}>
-                                        {m.type}
-                                    </span>
-                                </div>
-                                {m.content && (
-                                    <div
-                                        style={{
-                                            fontSize: '0.8rem',
-                                            opacity: 0.7,
-                                            marginTop: '0.2rem',
-                                        }}
-                                    >
-                                        {m.content}
+                                {editingMemoryId === m.id ? (
+                                    <div>
+                                        <input
+                                            style={INPUT}
+                                            value={editMemoryTitle}
+                                            onChange={(e) => setEditMemoryTitle(e.target.value)}
+                                            aria-label="Заголовок записи"
+                                        />
+                                        <textarea
+                                            style={{ ...INPUT, marginTop: '0.4rem', minHeight: 70 }}
+                                            value={editMemoryContent}
+                                            onChange={(e) => setEditMemoryContent(e.target.value)}
+                                            aria-label="Содержимое записи"
+                                        />
+                                        <div
+                                            style={{
+                                                marginTop: '0.4rem',
+                                                display: 'flex',
+                                                gap: '0.4rem',
+                                            }}
+                                        >
+                                            <Button
+                                                variant="accent"
+                                                size="sm"
+                                                onClick={() => void saveMemory(m)}
+                                            >
+                                                {t('projects.save')}
+                                            </Button>
+                                            <Button
+                                                variant="ghost"
+                                                size="sm"
+                                                onClick={() => setEditingMemoryId(null)}
+                                            >
+                                                {t('projects.cancel')}
+                                            </Button>
+                                        </div>
                                     </div>
+                                ) : (
+                                    <>
+                                        <div
+                                            style={{
+                                                display: 'flex',
+                                                justifyContent: 'space-between',
+                                                alignItems: 'center',
+                                            }}
+                                        >
+                                            <strong style={{ fontSize: '0.85rem' }}>
+                                                {m.title}
+                                            </strong>
+                                            <div
+                                                style={{
+                                                    display: 'flex',
+                                                    gap: '0.3rem',
+                                                    alignItems: 'center',
+                                                }}
+                                            >
+                                                <span style={{ fontSize: '0.75rem', opacity: 0.5 }}>
+                                                    {m.type}
+                                                </span>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="sm"
+                                                    onClick={() => startEditMemory(m)}
+                                                >
+                                                    ✏️
+                                                </Button>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="sm"
+                                                    onClick={() => void deleteMemory(m)}
+                                                >
+                                                    🗑️
+                                                </Button>
+                                            </div>
+                                        </div>
+                                        {m.content && (
+                                            <div
+                                                style={{
+                                                    fontSize: '0.8rem',
+                                                    opacity: 0.7,
+                                                    marginTop: '0.2rem',
+                                                }}
+                                            >
+                                                {m.content}
+                                            </div>
+                                        )}
+                                    </>
                                 )}
                             </div>
                         ))}
