@@ -266,7 +266,7 @@ function ensureSubscribed(set: (fn: (s: AssistantState) => Partial<AssistantStat
             const id = await persistSession(prevSessionId || null, messages);
             if (id) {
                 const sessionList = await listAssistantSessions();
-                set({ sessionId: id, sessionList });
+                set(() => ({ sessionId: id, sessionList }));
             }
         })();
     });
