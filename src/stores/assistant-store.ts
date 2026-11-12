@@ -63,6 +63,8 @@ export interface AssistantState {
     self: AssistantSelfRow | null;
     /** Key id the assistant is pinned to (null = auto-routing). */
     keyId: string | null;
+    /** Model the assistant is pinned to (null = key default). */
+    modelId: string | null;
     /** Current persisted session id (folder=assistant). */
     sessionId: string | null;
     /** Past assistant sessions, newest first. */
@@ -71,6 +73,7 @@ export interface AssistantState {
     send: (text: string) => Promise<void>;
     cancel: () => void;
     setKey: (keyId: string | null) => void;
+    setModel: (modelId: string | null) => void;
     refreshSelf: () => void;
     clear: () => void;
     newSession: () => Promise<void>;
@@ -79,12 +82,22 @@ export interface AssistantState {
 }
 
 const KEY_STORAGE_KEY = 'assistant.keyId';
+const MODEL_STORAGE_KEY = 'assistant.modelId';
 const ASSISTANT_FOLDER = 'assistant';
 const MAX_ASSISTANT_SESSIONS = 30;
 
 function readStoredKey(): string | null {
     try {
         const v = localStorage.getItem(KEY_STORAGE_KEY);
+        return v ? v : null;
+    } catch {
+        return null;
+    }
+}
+
+function readStoredModel(): string | null {
+    try {
+        const v = localStorage.getItem(MODEL_STORAGE_KEY);
         return v ? v : null;
     } catch {
         return null;
@@ -299,6 +312,7 @@ export const useAssistantStore = create<AssistantState>((set, get) => {
         diary: [],
         self: readSelf(),
         keyId: readStoredKey(),
+        modelId: readStoredModel(),
         sessionId: null,
         sessionList: [],
         isHistoryLoaded: false,
@@ -335,6 +349,7 @@ export const useAssistantStore = create<AssistantState>((set, get) => {
                 const result = await projectAssistantService.ask({
                     text: trimmed,
                     keyId: get().keyId ?? undefined,
+                    model: get().modelId ?? undefined,
                     signal: controller.signal,
                 });
                 set((s) => ({
@@ -390,6 +405,19 @@ export const useAssistantStore = create<AssistantState>((set, get) => {
                 /* storage may be unavailable (private mode) */
             }
             set({ keyId });
+        },
+
+        setModel: (modelId) => {
+            try {
+                if (modelId) {
+                    localStorage.setItem(MODEL_STORAGE_KEY, modelId);
+                } else {
+                    localStorage.removeItem(MODEL_STORAGE_KEY);
+                }
+            } catch {
+                /* storage may be unavailable (private mode) */
+            }
+            set({ modelId });
         },
 
         clear: () => set({ messages: [], busy: false, error: null, diary: [], self: readSelf() }),

@@ -17,6 +17,7 @@ import {
 import { useAssistantStore, type AssistantMessage } from '../../stores/assistant-store';
 import { useKeyStore } from '../../stores/useKeyStore';
 import { MarkdownRenderer } from '../ChatPanel/MarkdownRenderer';
+import AssistantModelSelect from './AssistantModelSelect';
 import { buildLensGuidance } from '../LensesPanel/lens-guidance';
 import { loadActiveLensIds } from '../LensesPanel/lens-stack-store';
 import { buildExceptionVeto } from '../ExceptionsPanel/exception-veto';
@@ -76,6 +77,8 @@ const AssistantPanel: React.FC = () => {
     const { messages, busy, error, send, clear, cancel } = useAssistantStore();
     const keyId = useAssistantStore((s) => s.keyId);
     const setKey = useAssistantStore((s) => s.setKey);
+    const modelId = useAssistantStore((s) => s.modelId);
+    const setModel = useAssistantStore((s) => s.setModel);
     const sessionList = useAssistantStore((s) => s.sessionList);
     const sessionId = useAssistantStore((s) => s.sessionId);
     const loadSession = useAssistantStore((s) => s.loadSession);
@@ -236,6 +239,15 @@ const AssistantPanel: React.FC = () => {
                         </option>
                     ))}
                 </select>
+                <span className="assistant-keybar__label">Модель</span>
+                <AssistantModelSelect
+                    keys={keys}
+                    keyId={keyId}
+                    modelId={modelId}
+                    onModelChange={setModel}
+                    disabled={busy}
+                    ariaLabel="Модель помощника"
+                />
             </div>
             <header className="assistant-head">
                 <AssistantFace state={faceState} />

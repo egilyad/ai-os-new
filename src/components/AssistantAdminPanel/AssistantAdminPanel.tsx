@@ -19,6 +19,7 @@ import { useAssistantStore, type AssistantSessionMeta } from '../../stores/assis
 import { useKeyStore } from '../../stores/useKeyStore';
 import { eventBus, EVENTS } from '../../kernel/instances';
 import PanelLoader from '../PanelLoader';
+import AssistantModelSelect from '../Assistant/AssistantModelSelect';
 import { input } from '../../styles/common';
 
 const ASSISTANT_AGENT_ID = 'assistant';
@@ -85,6 +86,8 @@ const AssistantAdminContent: React.FC = () => {
     const deleteSession = useAssistantStore((s) => s.deleteSession);
     const assistantKeyId = useAssistantStore((s) => s.keyId);
     const setAssistantKey = useAssistantStore((s) => s.setKey);
+    const assistantModelId = useAssistantStore((s) => s.modelId);
+    const setAssistantModel = useAssistantStore((s) => s.setModel);
     const keys = useKeyStore((s) => s.keys);
 
     const refresh = useCallback(() => {
@@ -325,19 +328,35 @@ const AssistantAdminContent: React.FC = () => {
                     />
                     Ключ по умолчанию
                 </h2>
-                <select
-                    value={assistantKeyId ?? ''}
-                    onChange={(e) => setAssistantKey(e.target.value || null)}
-                    aria-label="Ключ ассистента"
-                    style={{ ...input, minWidth: 320 }}
+                <div
+                    style={{
+                        display: 'flex',
+                        gap: '0.6rem',
+                        flexWrap: 'wrap',
+                        alignItems: 'center',
+                    }}
                 >
-                    <option value="">Авто — первый активный</option>
-                    {keys.map((k) => (
-                        <option key={k.id} value={k.id}>
-                            {k.label || k.id.slice(0, 8)} · {k.provider} ({k.status})
-                        </option>
-                    ))}
-                </select>
+                    <select
+                        value={assistantKeyId ?? ''}
+                        onChange={(e) => setAssistantKey(e.target.value || null)}
+                        aria-label="Ключ ассистента"
+                        style={{ ...input, minWidth: 320 }}
+                    >
+                        <option value="">Авто — первый активный</option>
+                        {keys.map((k) => (
+                            <option key={k.id} value={k.id}>
+                                {k.label || k.id.slice(0, 8)} · {k.provider} ({k.status})
+                            </option>
+                        ))}
+                    </select>
+                    <AssistantModelSelect
+                        keys={keys}
+                        keyId={assistantKeyId}
+                        modelId={assistantModelId}
+                        onModelChange={setAssistantModel}
+                        ariaLabel="Модель ассистента"
+                    />
+                </div>
             </section>
 
             {/* Возможности / trust */}
