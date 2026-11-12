@@ -178,7 +178,7 @@ const AssistantAdminContent: React.FC = () => {
         try {
             const top = orchestrator.getActiveTopology();
             const node = top?.nodes.find((n) => n.id === ASSISTANT_AGENT_ID);
-            const cfg = ((node?.config ?? {}) as Record<string, unknown>) ?? {};
+            const cfg = (node?.config ?? {}) as Record<string, unknown>;
             const asArr = (v: unknown): string[] =>
                 Array.isArray(v) ? v.map((x) => String(x)).filter(Boolean) : [];
             setAgentLabel(typeof node?.label === 'string' ? node.label : 'Project Assistant');
