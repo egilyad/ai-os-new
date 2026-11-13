@@ -28,7 +28,7 @@ Autonomous, event-driven multi-agent runtime. v4.5.0 — 326 contracts, 810 serv
 
 ## Wiki generation rule
 
-При добавлении любого нового `.md`/`.json` файла в репозиторий (включая `.superagents/memory/`) — ОБЯЗАТЕЛЬНО перегенерировать вики-артефакты (иначе CI упадёт на «Wiki docs in sync»): `npm run gen:wiki-libraries && npm run gen:wiki-docs && npm run gen:wiki-manifest && npm run gen:wiki-connections && npm run gen:wiki-docs-health && npm run gen:docs-inventory && npm run gen:wiki-docs-standard && npm run gen:wiki-docs-index && npm run gen:wiki-system-map && npm run gen:wiki-history && npm run gen:wiki-capabilities && npm run gen:docs-graph && npm run gen:wiki-checks && npm run gen:wiki-coverage` и закоммитить изменения вместе с кодом.
+При добавлении нового или изменении существующего `.md`/`.json` файла (включая корневые `AGENTS.md`/`README.md`, `.superagents/memory/`) — ОБЯЗАТЕЛЬНО перегенерировать вики-артефакты (иначе CI упадёт на «Wiki docs in sync»): `npm run gen:wiki-libraries && npm run gen:wiki-docs && npm run gen:wiki-manifest && npm run gen:wiki-connections && npm run gen:wiki-docs-health && npm run gen:docs-inventory && npm run gen:wiki-docs-standard && npm run gen:wiki-docs-index && npm run gen:wiki-system-map && npm run gen:wiki-history && npm run gen:wiki-capabilities && npm run gen:docs-graph && npm run gen:wiki-checks && npm run gen:wiki-coverage` и закоммитить изменения вместе с кодом.
 
 ## Key Principles
 
