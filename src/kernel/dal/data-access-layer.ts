@@ -39,6 +39,7 @@ import { TrustRepository } from './trust-repository';
 import { FrontierRepository } from './frontier-repository';
 import { ParityRepository } from './parity-repository';
 import { RivalRepository } from './rival-repository';
+import { TaskRepository } from './task-repository';
 
 export class DataAccessLayerImpl implements DataAccessLayer {
     readonly memory: MemoryRepository;
@@ -69,6 +70,7 @@ export class DataAccessLayerImpl implements DataAccessLayer {
     readonly frontier: FrontierRepository;
     readonly parity: ParityRepository;
     readonly rival: RivalRepository;
+    readonly tasks: TaskRepository;
     readonly kv: KvRepository;
 
     constructor(db: DatabaseService) {
@@ -99,6 +101,7 @@ export class DataAccessLayerImpl implements DataAccessLayer {
         this.frontier = new FrontierRepository(db);
         this.parity = new ParityRepository(db);
         this.rival = new RivalRepository(db);
+        this.tasks = new TaskRepository(db);
         this.kv = new KvRepositoryImpl(db);
         this.workspace = new WorkspaceRepository(this.kv);
     }

@@ -35,6 +35,7 @@ import type { TrustRepository } from './trust-repository';
 import type { FrontierRepository } from './frontier-repository';
 import type { ParityRepository } from './parity-repository';
 import type { RivalRepository } from './rival-repository';
+import type { TaskRepository } from './task-repository';
 
 // =============================================================================
 // Repository Interfaces (see repository-types.ts for MemoryRepository)
@@ -156,6 +157,7 @@ export interface DataAccessLayer {
     frontier: FrontierRepository;
     parity: ParityRepository;
     rival: RivalRepository;
+    tasks: TaskRepository;
     kv: KvRepository;
 }
 

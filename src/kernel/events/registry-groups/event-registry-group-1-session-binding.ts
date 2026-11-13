@@ -1150,4 +1150,47 @@ export const EVENT_REGISTRY_GROUP_1 = {
         z.object({ reason: z.string(), section: z.string().optional() }),
     ),
     SESSION_DELETED: event('session:deleted', z.object({ id: z.string(), type: z.string() })),
+    TASK_CREATED: event(
+        'task:created',
+        z.object({
+            taskId: z.string(),
+            title: z.string(),
+            creatorId: z.string().optional(),
+            assigneeId: z.string().optional(),
+            projectId: z.string().optional(),
+        }),
+    ),
+    TASK_STATUS_CHANGED: event(
+        'task:status:changed',
+        z.object({
+            taskId: z.string(),
+            from: z.string(),
+            to: z.string(),
+            actorId: z.string().optional(),
+            reason: z.string().optional(),
+        }),
+    ),
+    TASK_CLAIMED: event(
+        'task:claimed',
+        z.object({ taskId: z.string(), workerId: z.string(), ttlMs: z.number() }),
+    ),
+    TASK_RELEASED: event('task:released', z.object({ taskId: z.string(), workerId: z.string() })),
+    TASK_REQUEUED: event(
+        'task:requeued',
+        z.object({
+            taskId: z.string(),
+            reason: z.enum(['lock-expired', 'manual', 'retry']),
+        }),
+    ),
+    TASK_DELETED: event('task:deleted', z.object({ taskId: z.string() })),
+    TASK_WORK_PRODUCT_ADDED: event(
+        'task:work-product:added',
+        z.object({
+            taskId: z.string(),
+            workProductId: z.number(),
+            fileName: z.string(),
+            mimeType: z.string().optional(),
+            size: z.number().optional(),
+        }),
+    ),
 } as const;

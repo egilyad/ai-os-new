@@ -83,12 +83,7 @@ import type {
 } from '../types/frontier-types';
 import type { KnowledgeSource, TrainGuide } from '../types/parity-types';
 import type { ScopedMem } from '../types/rival2-types';
-import type {
-    AgentLoop,
-    GroupChat,
-    MemoryBlock,
-    QueuedRun,
-} from '../types/rival-types';
+import type { AgentLoop, GroupChat, MemoryBlock, QueuedRun } from '../types/rival-types';
 import type { GraphThread } from '../types/graph-types';
 import type {
     Project,
@@ -352,6 +347,24 @@ export class DatabaseService implements IDatabaseService {
     }
     get junctions() {
         return getDexieDb().junctions;
+    }
+    get agemsTasks() {
+        return getDexieDb().agemsTasks;
+    }
+    get taskComments() {
+        return getDexieDb().taskComments;
+    }
+    get labels() {
+        return getDexieDb().labels;
+    }
+    get taskLabels() {
+        return getDexieDb().taskLabels;
+    }
+    get taskWorkProducts() {
+        return getDexieDb().taskWorkProducts;
+    }
+    get taskTriggers() {
+        return getDexieDb().taskTriggers;
     }
     get synthSessions() {
         return getDexieDb().synthSessions;
