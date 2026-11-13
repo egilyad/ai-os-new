@@ -51,6 +51,16 @@ function sendJson(res, status, data) {
 }
 
 /**
+ * Per-task authorization (M2.4): a worker may only act on tasks assigned
+ * to it, or on unassigned tasks. Deny otherwise.
+ */
+function canActOnTask(task, actor) {
+    if (!actor) return false;
+    if (!task.assigneeId) return true;
+    return task.assigneeId === actor;
+}
+
+/**
  * Mounts /api/tasks REST router. Returns true if the request was handled.
  * Auth: requires a valid sync secret token (Authorization: Bearer <token>).
  */
@@ -154,6 +164,10 @@ export async function handleTasksRequest(req, res, hasAuth) {
         }
         const body = await parseBody(req);
         const workerId = body?.workerId || 'external';
+        if (!canActOnTask(task, workerId)) {
+            sendJson(res, 403, { error: 'Not allowed on this task' });
+            return true;
+        }
         const now = Date.now();
         if (task.lockedBy && task.lockedUntil && task.lockedUntil > now && task.lockedBy !== workerId) {
             sendJson(res, 409, { error: 'Locked by another worker' });

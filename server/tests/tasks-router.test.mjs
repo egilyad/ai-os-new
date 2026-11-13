@@ -97,6 +97,33 @@ describe('tasks-router', () => {
         assert.equal(conflict.status, 409);
     });
 
+    it('rejects claim on a task assigned to another worker (403)', async () => {
+        await call(handleTasksRequest, 'POST', '/api/tasks', {
+            title: 'job',
+            assigneeId: 'agent-a',
+        });
+        const list = await call(handleTasksRequest, 'GET', '/api/tasks');
+        const id = list.body.tasks[0].id;
+        const denied = await call(handleTasksRequest, 'POST', `/api/tasks/${id}/claim`, {
+            workerId: 'agent-b',
+        });
+        assert.equal(denied.status, 403);
+        const allowed = await call(handleTasksRequest, 'POST', `/api/tasks/${id}/claim`, {
+            workerId: 'agent-a',
+        });
+        assert.equal(allowed.status, 200);
+    });
+
+    it('allows claim on an unassigned task for any worker', async () => {
+        await call(handleTasksRequest, 'POST', '/api/tasks', { title: 'job' });
+        const list = await call(handleTasksRequest, 'GET', '/api/tasks');
+        const id = list.body.tasks[0].id;
+        const ok = await call(handleTasksRequest, 'POST', `/api/tasks/${id}/claim`, {
+            workerId: 'agent-any',
+        });
+        assert.equal(ok.status, 200);
+    });
+
     it('sync replaces the mirror', async () => {
         const { status, body } = await call(handleTasksSync, 'PUT', '/api/tasks/sync', {
             tasks: [{ id: 't1', title: 'x', status: 'PENDING' }],
