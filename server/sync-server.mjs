@@ -51,6 +51,7 @@ import { listAdapters, getAdapter, parseStdout } from './adapters.mjs';
 import { startHeartbeatLoop } from './heartbeat-loop.mjs';
 import { enqueueDbWrite } from './write-queue.mjs';
 import { timingSafeEqual, verifyWsUpgrade, verifyWsUpgradeCompanyHash } from './ws-auth.mjs';
+import { handleTasksRequest, handleTasksSync } from './tasks-router.mjs';
 
 const PORT = parseInt(process.env.SYNC_PORT || '3001', 10);
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -1173,6 +1174,10 @@ const server = http.createServer(async (req, res) => {
             }
             return;
         }
+
+        // AGEMS tasks REST API (mirror of client-side Dexie tasks).
+        if (await handleTasksSync(req, res, hasAuth)) return;
+        if (await handleTasksRequest(req, res, hasAuth)) return;
     } catch (err) {
         console.error('[sync-server] M1.1 gateway error:', err);
         writeJson(res, 500, { error: 'Internal server error' });
