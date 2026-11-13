@@ -3,16 +3,16 @@
   "generatedBy": "scripts/gen-docs-inventory.mjs",
   "scope": "git-tracked markdown: docs/**/*.md (excluding docs/new drafts and the self-report pages docs-health, docs-inventory) plus repository entry docs (root *.md, .superagents/**, src/kernel/DEPENDENCY_MAP.md)",
   "totals": {
-    "documents": 512,
+    "documents": 513,
     "byCategory": {
-      "repo": 9,
+      "repo": 10,
       "top": 116,
       "audits": 25,
       "wiki": 362
     },
     "byLanguage": {
       "en": 40,
-      "mixed": 133,
+      "mixed": 134,
       "ru": 339
     }
   },
@@ -51,6 +51,14 @@
       "hash": "a07119bc07dabf7cd54587d857454b87efe17037"
     },
     {
+      "path": ".superagents/memory/context.md",
+      "category": "repo",
+      "language": "mixed",
+      "title": "Контекст: SuperAgents OS — 2026-11-13",
+      "bytes": 2188,
+      "hash": "b1606360f29372b0804a70fd079ed7d0c2b15bdb"
+    },
+    {
       "path": ".superagents/README.md",
       "category": "repo",
       "language": "en",
@@ -71,8 +79,8 @@
       "category": "repo",
       "language": "en",
       "title": "SuperAgents OS — Agent Guide",
-      "bytes": 4924,
-      "hash": "9db65ad47e8feb1e73c4b9982f76a6e1cd9e9f4a"
+      "bytes": 6476,
+      "hash": "b179d5f8c773a0e220b87675fa0070b02fd55a37"
     },
     {
       "path": "CHANGELOG.md",
