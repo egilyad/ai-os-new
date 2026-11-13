@@ -25,6 +25,7 @@ import { AgentVersionService } from '../services/agent-version-service';
 import { RoleVersionService } from '../services/role-version-service';
 import { AgentHealthMonitor } from '../services/agent-health-monitor';
 import { TaskHandoffService } from '../services/task-handoff';
+import { TaskLockSweeperService } from '../services/task-lock-sweeper-service';
 import { TraceService } from '../services/trace-service';
 import { OrchestrationService as OrchestratorClass } from '../services/orchestration-service';
 import { RoleService } from '../services/role-service';
@@ -94,14 +95,18 @@ export const registerPhase4: Phase = (helpers, ctx) => {
                 return c.get<OrchestrationService>('orchestrator');
             },
         });
-        void svc.init().catch((e) => rootLogger.warn('Phase4', 'agentService.init failed', { error: e }));
+        void svc
+            .init()
+            .catch((e) => rootLogger.warn('Phase4', 'agentService.init failed', { error: e }));
         return svc;
     });
 
     // A-04: templateService.init() called inside factory on first get()
     register('templateService', (c) => {
         const ts = new TemplateService({ database: c.get<IDatabaseService>('database') });
-        void ts.init().catch((e) => rootLogger.warn('Phase4', 'templateService.init failed', { error: e }));
+        void ts
+            .init()
+            .catch((e) => rootLogger.warn('Phase4', 'templateService.init failed', { error: e }));
         return ts;
     });
 
@@ -128,7 +133,11 @@ export const registerPhase4: Phase = (helpers, ctx) => {
             database: c.get<IDatabaseService>('database'),
             agentService: c.get<AgentService>('agentService'),
         });
-        void ahm.start().catch((e) => rootLogger.warn('Phase4', 'agentHealthMonitor.start failed', { error: e }));
+        void ahm
+            .start()
+            .catch((e) =>
+                rootLogger.warn('Phase4', 'agentHealthMonitor.start failed', { error: e }),
+            );
         ctx.registerWithLifecycle('agentHealthMonitor', ahm);
         return ahm;
     });
@@ -143,6 +152,12 @@ export const registerPhase4: Phase = (helpers, ctx) => {
                     c.get<AgentService>('agentService')?.getLifecycleState?.(agentId),
             }),
     );
+
+    register('taskLockSweeperService', () => {
+        const sweeper = new TaskLockSweeperService();
+        sweeper.start();
+        return sweeper;
+    });
 
     register(
         'traceService',
@@ -170,18 +185,22 @@ export const registerPhase4: Phase = (helpers, ctx) => {
                     c.get<import('../contracts/dead-letter-queue').IDeadLetterQueue>(
                         'deadLetterQueue',
                     ),
-                crystalVault: c.getOptional<import('../contracts/knowledge-crystal').ICrystalVaultService>(
-                    'crystalVault',
-                ),
-                synthesisEngine: c.getOptional<import('../contracts/synthesis-engine').ISynthesisEngineService>(
-                    'synthesisEngine',
-                ),
-                lensEngine: c.getOptional<import('../contracts/lens-engine').ILensEngineService>(
-                    'lensEngine',
-                ),
-                timeMachineService: c.getOptional<import('../contracts/time-machine').ITimeMachineService>(
-                    'timeMachineService',
-                ),
+                crystalVault:
+                    c.getOptional<import('../contracts/knowledge-crystal').ICrystalVaultService>(
+                        'crystalVault',
+                    ),
+                synthesisEngine:
+                    c.getOptional<import('../contracts/synthesis-engine').ISynthesisEngineService>(
+                        'synthesisEngine',
+                    ),
+                lensEngine:
+                    c.getOptional<import('../contracts/lens-engine').ILensEngineService>(
+                        'lensEngine',
+                    ),
+                timeMachineService:
+                    c.getOptional<import('../contracts/time-machine').ITimeMachineService>(
+                        'timeMachineService',
+                    ),
             }),
     );
 
@@ -203,7 +222,9 @@ export const registerPhase4: Phase = (helpers, ctx) => {
             orchestrator: c.get<OrchestrationService>('orchestrator'),
             roleVersionService: c.get<RoleVersionService>('roleVersionService'),
         });
-        void svc.init().catch((e) => rootLogger.warn('Phase4', 'roleService.init failed', { error: e }));
+        void svc
+            .init()
+            .catch((e) => rootLogger.warn('Phase4', 'roleService.init failed', { error: e }));
         return svc;
     });
 

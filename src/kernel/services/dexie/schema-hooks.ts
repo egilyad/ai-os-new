@@ -6,7 +6,10 @@ import type { ChatSession } from '../../contracts/storage/session-store';
 import type { CognitiveTrace, CognitiveSkill, Connector } from '../../types/domain-types';
 import type { ExecutionTrace } from '../../contracts/observability';
 import type { Role } from '../../types/role-types';
-import type { DebateSessionRecord, DebateVerdictRecord } from '../../contracts/storage/debate-store';
+import type {
+    DebateSessionRecord,
+    DebateVerdictRecord,
+} from '../../contracts/storage/debate-store';
 import type {
     DebateTimelineEntry,
     DebateOverride,
@@ -34,7 +37,21 @@ import {
     SessionLinkSchema,
     EventLogEntrySchema,
     ConversationScenarioSchema,
+    AgemsTaskSchema,
+    TaskCommentSchema,
+    LabelSchema,
+    TaskLabelSchema,
+    TaskWorkProductSchema,
+    TaskTriggerSchema,
 } from '../../types/schema-types';
+import type {
+    AgemsTask,
+    TaskComment,
+    Label,
+    TaskLabel,
+    TaskWorkProduct,
+    TaskTrigger,
+} from '../../types/agems-task';
 
 const LOGGER = rootLogger.child('DatabaseService');
 
@@ -61,6 +78,12 @@ export interface ValidationHookDb {
     sessionLinks: Table<SessionLink>;
     eventLog: Table<RecordedEventRow>;
     scenarios: Table<ConversationScenario>;
+    agemsTasks: Table<AgemsTask>;
+    taskComments: Table<TaskComment>;
+    labels: Table<Label>;
+    taskLabels: Table<TaskLabel>;
+    taskWorkProducts: Table<TaskWorkProduct>;
+    taskTriggers: Table<TaskTrigger>;
 }
 
 const rejectHook =
@@ -71,10 +94,7 @@ const rejectHook =
             return undefined;
         } catch (e) {
             const msg = e instanceof Error ? e.message : String(e);
-            LOGGER.error(
-                'DatabaseService',
-                `${label} validation FAILED — rejecting write: ${msg}`,
-            );
+            LOGGER.error('DatabaseService', `${label} validation FAILED — rejecting write: ${msg}`);
             return false;
         }
     };
@@ -200,10 +220,7 @@ export function installValidationHooks(db: ValidationHookDb): void {
         }
     });
 
-    db.debateSessions.hook(
-        'creating',
-        rejectHook(DebateSessionRecordSchema, 'DebateSession'),
-    );
+    db.debateSessions.hook('creating', rejectHook(DebateSessionRecordSchema, 'DebateSession'));
     db.debateSessions.hook('updating', (mods, _primKey, obj) => {
         try {
             DebateSessionRecordSchema.parse({ ...obj, ...mods });
@@ -216,10 +233,7 @@ export function installValidationHooks(db: ValidationHookDb): void {
         }
     });
 
-    db.debateVerdicts.hook(
-        'creating',
-        rejectHook(DebateVerdictRecordSchema, 'DebateVerdict'),
-    );
+    db.debateVerdicts.hook('creating', rejectHook(DebateVerdictRecordSchema, 'DebateVerdict'));
     db.debateVerdicts.hook('updating', (mods, _primKey, obj) => {
         try {
             DebateVerdictRecordSchema.parse({ ...obj, ...mods });
@@ -232,10 +246,7 @@ export function installValidationHooks(db: ValidationHookDb): void {
         }
     });
 
-    db.debateTimeline.hook(
-        'creating',
-        rejectHook(DebateTimelineEntrySchema, 'DebateTimeline'),
-    );
+    db.debateTimeline.hook('creating', rejectHook(DebateTimelineEntrySchema, 'DebateTimeline'));
     db.debateTimeline.hook('updating', (mods, _primKey, obj) => {
         try {
             DebateTimelineEntrySchema.parse({ ...obj, ...mods });
@@ -285,10 +296,7 @@ export function installValidationHooks(db: ValidationHookDb): void {
         }
     });
 
-    db.scenarios.hook(
-        'creating',
-        rejectHook(ConversationScenarioSchema, 'ConversationScenario'),
-    );
+    db.scenarios.hook('creating', rejectHook(ConversationScenarioSchema, 'ConversationScenario'));
     db.scenarios.hook('updating', (mods, _primKey, obj) => {
         try {
             ConversationScenarioSchema.parse({ ...obj, ...mods });
@@ -297,6 +305,74 @@ export function installValidationHooks(db: ValidationHookDb): void {
             LOGGER.error('DatabaseService', 'ConversationScenario update validation FAILED', {
                 error: e,
             });
+            return false;
+        }
+    });
+
+    db.agemsTasks.hook('creating', rejectHook(AgemsTaskSchema, 'AgemsTask'));
+    db.agemsTasks.hook('updating', (mods, _primKey, obj) => {
+        try {
+            AgemsTaskSchema.parse({ ...obj, ...mods });
+            return undefined;
+        } catch (e) {
+            LOGGER.error('DatabaseService', 'AgemsTask update validation FAILED', { error: e });
+            return false;
+        }
+    });
+
+    db.taskComments.hook('creating', rejectHook(TaskCommentSchema, 'TaskComment'));
+    db.taskComments.hook('updating', (mods, _primKey, obj) => {
+        try {
+            TaskCommentSchema.parse({ ...obj, ...mods });
+            return undefined;
+        } catch (e) {
+            LOGGER.error('DatabaseService', 'TaskComment update validation FAILED', { error: e });
+            return false;
+        }
+    });
+
+    db.labels.hook('creating', rejectHook(LabelSchema, 'Label'));
+    db.labels.hook('updating', (mods, _primKey, obj) => {
+        try {
+            LabelSchema.parse({ ...obj, ...mods });
+            return undefined;
+        } catch (e) {
+            LOGGER.error('DatabaseService', 'Label update validation FAILED', { error: e });
+            return false;
+        }
+    });
+
+    db.taskLabels.hook('creating', rejectHook(TaskLabelSchema, 'TaskLabel'));
+    db.taskLabels.hook('updating', (mods, _primKey, obj) => {
+        try {
+            TaskLabelSchema.parse({ ...obj, ...mods });
+            return undefined;
+        } catch (e) {
+            LOGGER.error('DatabaseService', 'TaskLabel update validation FAILED', { error: e });
+            return false;
+        }
+    });
+
+    db.taskWorkProducts.hook('creating', rejectHook(TaskWorkProductSchema, 'TaskWorkProduct'));
+    db.taskWorkProducts.hook('updating', (mods, _primKey, obj) => {
+        try {
+            TaskWorkProductSchema.parse({ ...obj, ...mods });
+            return undefined;
+        } catch (e) {
+            LOGGER.error('DatabaseService', 'TaskWorkProduct update validation FAILED', {
+                error: e,
+            });
+            return false;
+        }
+    });
+
+    db.taskTriggers.hook('creating', rejectHook(TaskTriggerSchema, 'TaskTrigger'));
+    db.taskTriggers.hook('updating', (mods, _primKey, obj) => {
+        try {
+            TaskTriggerSchema.parse({ ...obj, ...mods });
+            return undefined;
+        } catch (e) {
+            LOGGER.error('DatabaseService', 'TaskTrigger update validation FAILED', { error: e });
             return false;
         }
     });

@@ -1,11 +1,14 @@
 import { getDexieDb } from './database-service';
 import type { AgemsTask, AgemsTaskStatus } from '../types/agems-task';
 import { rootLogger } from './logger-service';
+import { canTransition, TaskIllegalTransitionError } from './task-state-machine';
 
 const LOGGER = rootLogger.child('AgemsTask');
 
 export class AgemsTaskService {
-    async create(input: Omit<AgemsTask, 'id' | 'createdAt' | 'updatedAt' | 'labels'> & { labels?: string[] }): Promise<AgemsTask> {
+    async create(
+        input: Omit<AgemsTask, 'id' | 'createdAt' | 'updatedAt' | 'labels'> & { labels?: string[] },
+    ): Promise<AgemsTask> {
         const task: AgemsTask = {
             id: `task-${crypto.randomUUID()}`,
             title: input.title.slice(0, 200),
@@ -32,27 +35,55 @@ export class AgemsTaskService {
         const all = (await col.toArray()) as unknown as AgemsTask[];
         let filtered = all;
         if (filters?.status) filtered = filtered.filter((t) => t.status === filters.status);
-        if (filters?.assigneeId) filtered = filtered.filter((t) => t.assigneeId === filters.assigneeId);
+        if (filters?.assigneeId)
+            filtered = filtered.filter((t) => t.assigneeId === filters.assigneeId);
         return filtered.sort((a, b) => b.updatedAt - a.updatedAt);
     }
 
     async updateStatus(id: string, status: AgemsTaskStatus): Promise<AgemsTask | undefined> {
+        const existing = (await getDexieDb().agemsTasks.get(id)) as unknown as
+            AgemsTask | undefined;
+        if (!existing) return undefined;
+        if (!canTransition(existing.status, status))
+            throw new TaskIllegalTransitionError(existing.status, status);
         await getDexieDb().agemsTasks.update(id, { status, updatedAt: Date.now() } as never);
         // 2.8 Triggers — fire after status change (lazy import to avoid cycle)
-        try { const { taskTriggerService } = await import('./task-trigger-service'); await taskTriggerService.fire(id, status); } catch { /* trigger optional */ }
+        try {
+            const { taskTriggerService } = await import('./task-trigger-service');
+            await taskTriggerService.fire(id, status);
+        } catch {
+            /* trigger optional */
+        }
         return (await getDexieDb().agemsTasks.get(id)) as unknown as AgemsTask | undefined;
     }
 
     async claimTask(taskId: string, workerId: string, ttlMs = 60000): Promise<boolean> {
-        const task = (await getDexieDb().agemsTasks.get(taskId)) as unknown as AgemsTask | undefined;
-        if (!task) return false;
-        if (task.lockedBy && task.lockedUntil && task.lockedUntil > Date.now() && task.lockedBy !== workerId) return false;
-        await getDexieDb().agemsTasks.update(taskId, { lockedBy: workerId, lockedUntil: Date.now() + ttlMs, updatedAt: Date.now() } as never);
-        return true;
+        const db = getDexieDb();
+        return db.transaction('rw!', db.agemsTasks, async () => {
+            const task = (await db.agemsTasks.get(taskId)) as unknown as AgemsTask | undefined;
+            if (!task) return false;
+            const now = Date.now();
+            const lockedByOther =
+                task.lockedBy &&
+                task.lockedUntil &&
+                task.lockedUntil > now &&
+                task.lockedBy !== workerId;
+            if (lockedByOther) return false;
+            await db.agemsTasks.update(taskId, {
+                lockedBy: workerId,
+                lockedUntil: now + ttlMs,
+                updatedAt: now,
+            } as never);
+            return true;
+        });
     }
 
     async releaseTask(taskId: string): Promise<void> {
-        await getDexieDb().agemsTasks.update(taskId, { lockedBy: undefined, lockedUntil: undefined, updatedAt: Date.now() } as never);
+        await getDexieDb().agemsTasks.update(taskId, {
+            lockedBy: undefined,
+            lockedUntil: undefined,
+            updatedAt: Date.now(),
+        } as never);
     }
 
     async delete(id: string): Promise<void> {

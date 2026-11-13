@@ -669,3 +669,103 @@ export const ConversationScenarioSchema = z.object({
     createdAt: z.number(),
     updatedAt: z.number(),
 });
+
+export const AgemsTaskSchema = z.object({
+    id: z.string(),
+    title: z.string().max(200),
+    description: z.string().max(2000).optional(),
+    type: z.enum(['ONE_TIME', 'RECURRING', 'CONTINUOUS']),
+    status: z.enum([
+        'PENDING',
+        'IN_PROGRESS',
+        'IN_REVIEW',
+        'IN_TESTING',
+        'VERIFIED',
+        'AWAITING_APPROVAL',
+        'COMPLETED',
+        'FAILED',
+        'BLOCKED',
+        'CANCELLED',
+    ]),
+    priority: z.enum(['LOW', 'MEDIUM', 'HIGH', 'CRITICAL']),
+    assigneeId: z.string().optional(),
+    creatorId: z.string().optional(),
+    projectId: z.string().optional(),
+    goalId: z.string().optional(),
+    labels: z.array(z.string()),
+    dueDate: z.number().optional(),
+    cronSchedule: z
+        .union([
+            z.object({
+                kind: z.literal('preset'),
+                preset: z.enum(['DAILY', 'WEEKDAY', 'WEEKLY', 'MONTHLY', 'HOURLY']),
+            }),
+            z.object({
+                kind: z.literal('custom'),
+                minute: z.number(),
+                hour: z.number(),
+                dayOfMonth: z.number().optional(),
+                month: z.number().optional(),
+                weekday: z.number().optional(),
+            }),
+        ])
+        .optional(),
+    createdAt: z.number(),
+    updatedAt: z.number(),
+    lockedBy: z.string().optional(),
+    lockedUntil: z.number().optional(),
+});
+
+export const TaskCommentSchema = z.object({
+    id: z.number().optional(),
+    taskId: z.string(),
+    authorType: z.string(),
+    authorId: z.string(),
+    content: z.string(),
+    metadata: z.record(z.unknown()).optional(),
+    createdAt: z.number(),
+});
+
+export const LabelSchema = z.object({
+    id: z.number().optional(),
+    name: z.string(),
+    color: z.string(),
+});
+
+export const TaskLabelSchema = z.object({
+    id: z.number().optional(),
+    taskId: z.string(),
+    labelId: z.number(),
+});
+
+export const TaskWorkProductSchema = z.object({
+    id: z.number().optional(),
+    taskId: z.string(),
+    fileName: z.string(),
+    filePath: z.string().optional(),
+    mimeType: z.string().optional(),
+    size: z.number().optional(),
+    createdAt: z.number(),
+    createdBy: z.string().optional(),
+});
+
+export const TaskTriggerSchema = z.object({
+    id: z.number().optional(),
+    taskId: z.string(),
+    onStatus: z.enum([
+        'PENDING',
+        'IN_PROGRESS',
+        'IN_REVIEW',
+        'IN_TESTING',
+        'VERIFIED',
+        'AWAITING_APPROVAL',
+        'COMPLETED',
+        'FAILED',
+        'BLOCKED',
+        'CANCELLED',
+    ]),
+    action: z.string(),
+    target: z.string().optional(),
+    enabled: z.boolean(),
+    createdAt: z.number(),
+});

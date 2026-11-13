@@ -15,17 +15,16 @@ export async function seedTasksDemo(
     const existing = (await service.list()).filter((t) => t.labels.includes(DEMO_TASK_LABEL));
     if (existing.length > 0) return existing;
 
-    const doneCreated = await service.create({
+    const done = await service.create({
         title: 'Демо: собрать утренний дайджест',
         description: 'Собрать задачи дня из всех источников и разослать участникам.',
         type: 'ONE_TIME',
-        status: 'PENDING',
+        status: 'COMPLETED',
         priority: 'HIGH',
         assigneeId: 'agent-risk',
         creatorId: 'local-user',
         labels: [DEMO_TASK_LABEL],
     });
-    const done = (await service.updateStatus(doneCreated.id, 'COMPLETED')) ?? doneCreated;
 
     const runningCreated = await service.create({
         title: 'Демо: проверить риски релиза',
