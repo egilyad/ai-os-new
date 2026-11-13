@@ -1,5 +1,5 @@
 {
-  "generatedAt": 1794593864030,
+  "generatedAt": 1794598818402,
   "source": "C:/Users/evgeny/.local/share/opencode/opencode.db",
   "note": "read-only индекс, метаданные без содержимого. Никогда не инжектится в промпт целиком.",
   "schema": "v0",
@@ -19,7 +19,7 @@
           "version": "1.19.4",
           "agent": "build",
           "createdAt": 1794589135869,
-          "updatedAt": 1794593856704,
+          "updatedAt": 1794598810143,
           "additions": 0,
           "deletions": 0,
           "files": 0,

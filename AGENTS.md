@@ -26,6 +26,19 @@ Autonomous, event-driven multi-agent runtime. v4.5.0 — 326 contracts, 810 serv
 
 Скрипты: `scripts/opencode/{session-index,context-build,project-state,checkpoint,session-search,wiki-find,stats}.mjs` (read-only, кроме checkpoint). Индекс `.superagents/memory/session-index.json` не попадает в промпт целиком — только короткая выжимка `context.md`.
 
+## Codebase Memory (CBM MCP)
+
+MCP-сервер `codebase-memory` (исполняемый файл `C:/Users/evgeny/AppData/Local/Programs/codebase-memory-mcp/codebase-memory-mcp.exe`) индексирует проект в граф знаний (38К+ узлов, 175К+ рёбер). Используй инструменты вместо длинных grep/read цепочек:
+
+- `search_graph` — поиск символов (BM25/regex, field-фильтры)
+- `trace_path` — трассировка вызовов inbound/outbound, data flow, cross-service (HTTP-связки)
+- `get_architecture` — архитектурная сводка (языки, пакеты, entry points, слои)
+- `detect_changes` — импакт незакоммиченных изменений по git diff
+- `query_graph` — multi-hop запросы (Cypher)
+- `check_index_coverage` — проверка, что нужные пути проиндексированы
+
+Первая инициализация сервера медленная (~40 сек); дальнейшие запросы быстрые. Индекс живёт в `~/.cache/codebase-memory-mcp/`, вне git.
+
 ## Wiki generation rule
 
 При добавлении нового или изменении существующего `.md`/`.json` файла (включая корневые `AGENTS.md`/`README.md`, `.superagents/memory/`) — ОБЯЗАТЕЛЬНО перегенерировать вики-артефакты (иначе CI упадёт на «Wiki docs in sync»): `npm run gen:wiki-libraries && npm run gen:wiki-docs && npm run gen:wiki-manifest && npm run gen:wiki-connections && npm run gen:wiki-docs-health && npm run gen:docs-inventory && npm run gen:wiki-docs-standard && npm run gen:wiki-docs-index && npm run gen:wiki-system-map && npm run gen:wiki-history && npm run gen:wiki-capabilities && npm run gen:docs-graph && npm run gen:wiki-checks && npm run gen:wiki-coverage` и закоммитить изменения вместе с кодом.
