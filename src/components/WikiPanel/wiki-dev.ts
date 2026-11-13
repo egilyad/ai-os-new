@@ -84,7 +84,11 @@ docs/           манифесты, аудиты, roadmap
         section: 'dev',
         tags: ['dev', 'bootstrap', 'DI'],
         freshness: 'verified',
-        sources: ['src/kernel/bootstrap.ts', 'src/kernel/bootstrap-phases.ts', 'src/kernel/container.ts'],
+        sources: [
+            'src/kernel/bootstrap.ts',
+            'src/kernel/bootstrap-phases.ts',
+            'src/kernel/container.ts',
+        ],
         related: ['dev-services', 'dev-events', 'dev-overview'],
         body: `## Как поднимается ядро
 
@@ -123,7 +127,11 @@ sequenceDiagram
         section: 'dev',
         tags: ['dev', 'события', 'шина'],
         freshness: 'verified',
-        sources: ['src/kernel/events/event-bus.ts', 'src/kernel/events/event-names.ts', 'src/kernel/events/event-registry.ts'],
+        sources: [
+            'src/kernel/events/event-bus.ts',
+            'src/kernel/events/event-names.ts',
+            'src/kernel/events/event-registry.ts',
+        ],
         related: ['dev-event-catalog', 'dev-services', 'dev-boot'],
         body: `## Где что
 
@@ -239,7 +247,12 @@ flowchart TD
         section: 'dev',
         tags: ['dev', 'роутинг', 'панель'],
         freshness: 'verified',
-        sources: ['src/route-registry-core.ts', 'src/route-registry-content.ts', 'src/route-registry-system.ts', 'src/route-imports.ts'],
+        sources: [
+            'src/route-registry-core.ts',
+            'src/route-registry-content.ts',
+            'src/route-registry-system.ts',
+            'src/route-imports.ts',
+        ],
         related: ['dev-components', 'dev-i18n'],
         body: `## Реестр маршрутов
 
@@ -361,7 +374,13 @@ flowchart LR
         tags: ['dev', 'CI', 'гейт', 'сборка'],
         freshness: 'verified',
         sources: ['.github/workflows/ci.yml', 'package.json'],
-        related: ['dev-testing', 'dev-generators', 'dev-scripts', 'dev-tests-catalog', 'for-developers'],
+        related: [
+            'dev-testing',
+            'dev-generators',
+            'dev-scripts',
+            'dev-tests-catalog',
+            'for-developers',
+        ],
         body: `## Конвейер (.github/workflows/ci.yml)
 
 \`\`\`mermaid
@@ -475,7 +494,15 @@ flowchart LR
         tags: ['dev', 'рецепты', 'how-to'],
         freshness: 'verified',
         sources: ['src/route-registry-*.ts', 'src/kernel/', 'src/i18n/'],
-        related: ['dev-routing', 'dev-services', 'dev-events', 'dev-i18n', 'dev-testing', 'dev-conventions', 'dev-generators'],
+        related: [
+            'dev-routing',
+            'dev-services',
+            'dev-events',
+            'dev-i18n',
+            'dev-testing',
+            'dev-conventions',
+            'dev-generators',
+        ],
         body: `## Как что-то добавить или починить
 
 Короткие рецепты. Детали — по ссылкам.
@@ -568,5 +595,103 @@ flowchart LR
 - Новые решения — файлом \`docs/NNN-краткое-имя.md\` (или \`docs/reference/adr/\`) плюс строка в таблице.
 - Историю не переписываем: уточнение к принятому ADR — отдельная пометка \`Updated\` в шапке.
 - Файл считается «живым», только если на него есть входящая ссылка (этот реестр или \`DOC_FILES\`).`,
+    },
+    {
+        slug: 'dev-opencode-memory',
+        title: 'Память OpenCode: команды и скрипты непрерывности сессий',
+        section: 'dev',
+        tags: ['dev', 'opencode', 'память', 'контекст', 'контрольные точки'],
+        freshness: 'verified',
+        sources: [
+            'scripts/opencode/session-index.mjs',
+            'scripts/opencode/context-build.mjs',
+            'scripts/opencode/project-state.mjs',
+            'scripts/opencode/checkpoint.mjs',
+            'scripts/opencode/session-search.mjs',
+            'scripts/opencode/wiki-find.mjs',
+            'scripts/opencode/stats.mjs',
+            '.opencode/command/',
+            '.superagents/memory/',
+        ],
+        related: ['dev-overview', 'dev-scripts', 'dev-graph', 'docs-index'],
+        body: `## Зачем
+
+OpenCode не переносит контекст между сессиями. Чтобы новая сессия начиналась осведомлённо, в проекте есть система памяти: скрипты в \`scripts/opencode/\`, команды в \`.opencode/command/\` и артефакты в \`.superagents/memory/\`.
+
+## Команды (slash-commands)
+
+| Команда | Назначение |
+| --- | --- |
+| \`/context\` | Собрать контекст: git + последние сессии + контрольные точки + wiki-подсказки |
+| \`/status\` | Снимок состояния: ветка, грязные файлы, stash, незапушенное, последняя точка |
+| \`/checkpoint <slug>\` | Создать контрольную точку \`docs/sessions/YYYY-MM-DD-<slug>.md\` по шаблону |
+| \`/sessions <запрос>\` | Поиск по прошлым сессиям (\`--dir\`, \`--open\`, \`--since\`, \`--limit\`) |
+| \`/wiki <тема>\` | Поиск статей по \`docs/manifest.json\` |
+| \`/check\` | Подбор уровня проверок L0–L4 (не гонять тяжёлое локально) |
+
+## Скрипты (read-only, кроме checkpoint)
+
+- \`session-index.mjs\` — читает локальную БД OpenCode (SQLite, только чтение) и строит \`.superagents/memory/session-index.json\` (метаданные сессий, без содержимого частей).
+- \`context-build.mjs\` — генерирует \`.superagents/memory/context.md\` (выжимка ≤150 строк со ссылками; в промпт целиком не попадает).
+- \`project-state.mjs\` — Git-состояние + последняя контрольная точка (для \`/status\`).
+- \`checkpoint.mjs\` — создаёт контрольную точку с авто-фактами (git, diff, todo).
+- \`session-search.mjs\` — поиск по индексу сессий.
+- \`wiki-find.mjs\` — поиск статей/панелей по манифесту.
+- \`stats.mjs\` — актуальные счётчики проекта (contracts/services/panels/events).
+
+## Контрольные точки
+
+Хранятся в \`docs/sessions/\` по шаблону: цель, сделано (файлы + коммиты), решения, проблемы/гипотезы, проверки, следующий логический шаг. Коммитятся вместе с работой — история сохраняется в git.
+
+## Правило регенерации вики
+
+Любое изменение \`.md\`/\`.json\` (включая \`AGENTS.md\` и \`.superagents/memory/\`) требует перегенерировать вики-артефакты (\`npm run gen:wiki-*\`), иначе CI упадёт на шаге «Wiki docs in sync».
+
+## Связанное
+
+- Инструмент «Codebase Memory MCP» (граф кода) — [[dev-codebase-memory-mcp]].
+- Общие практики разработки — [[dev-overview]], [[dev-scripts]].`,
+    },
+    {
+        slug: 'dev-codebase-memory-mcp',
+        title: 'Codebase Memory MCP: граф кода для агентов',
+        section: 'dev',
+        tags: ['dev', 'mcp', 'граф', 'поиск', 'opencode'],
+        freshness: 'verified',
+        sources: ['scripts/opencode/', '.opencode/command/', 'docs/wiki/dev-opencode-memory.md'],
+        related: ['dev-overview', 'dev-opencode-memory', 'comp-integrations-interop', 'dev-graph'],
+        body: `## Что это
+
+**Codebase Memory MCP** (CBM) — локальный MCP-сервер, который индексирует репозиторий в граф знаний (tree-sitter, 158 языков) и отвечает на структурные запросы: символы, вызовы, архитектура, импакт изменений. Работает 100% локально, без API-ключей и телеметрии.
+
+Установлен в \`C:/Users/evgeny/AppData/Local/Programs/codebase-memory-mcp/\`, подключён как MCP-сервер \`codebase-memory\` в глобальном \`opencode.jsonc\`. Индекс хранится вне репозитория, в домашнем кэше пользователя.
+
+## Инструменты (17)
+
+- \`search_graph\` — поиск символов (BM25/regex, фильтры по полям).
+- \`trace_path\` — трассировка вызовов inbound/outbound, data flow, cross-service (HTTP-связки).
+- \`get_architecture\` — архитектурная сводка (языки, пакеты, entry points, слои, маршруты).
+- \`detect_changes\` — импакт незакоммиченных изменений по git diff.
+- \`query_graph\` — multi-hop запросы (Cypher).
+- \`check_index_coverage\` — проверка, что нужные пути проиндексированы.
+- остальные: \`get_code_snippet\`, \`get_file_outline\`, \`search_code\`, \`list_projects\`, \`index_status\`, \`manage_adr\`, и др.
+
+## Особенности
+
+- Первая инициализация сервера медленная (~40 сек); дальнейшие запросы быстрые.
+- CLI-режим: \`codebase-memory-mcp cli <tool> --args-file <json>\` (например, для проверок вне чата).
+- Индекс проекта ai-os-new: ~38.7K узлов, ~175K рёбер (функции, методы, классы, интерфейсы, маршруты, каналы EventBus).
+
+## Полезные паттерны
+
+- «Что сломается при изменении X?» → \`trace_path\` (inbound) по символу X.
+- «Как устроен проект?» → \`get_architecture\` (aspects: structure/boundaries/layers/routes).
+- «Найди, где используется сервис Y» → \`search_graph\` + \`trace_path\`.
+- «Проверь, что я не сломал ничего» → \`detect_changes\` (git diff → импакт).
+
+## Связанное
+
+- Система памяти OpenCode (команды/скрипты) — [[dev-opencode-memory]].
+- MCP-интеграция в целом — [[comp-integrations-interop]].`,
     },
 ];

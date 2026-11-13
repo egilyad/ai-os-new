@@ -3,22 +3,22 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 1582,
-    "edges": 2860,
+    "nodes": 1595,
+    "edges": 2880,
     "byType": {
       "audit": 25,
-      "code": 689,
+      "code": 700,
       "test": 236,
       "panel": 269,
-      "article": 363
+      "article": 365
     },
     "byKind": {
       "audit_test": 20,
       "audit_mention": 52,
       "documents": 267,
       "test": 343,
-      "source": 985,
-      "related": 1193
+      "source": 997,
+      "related": 1201
     }
   },
   "nodes": [
@@ -208,6 +208,16 @@
       "label": ".github/workflows/ci.yml"
     },
     {
+      "id": "file:.opencode/command/",
+      "type": "code",
+      "label": ".opencode/command/"
+    },
+    {
+      "id": "file:.superagents/memory/",
+      "type": "code",
+      "label": ".superagents/memory/"
+    },
+    {
       "id": "file:Dockerfile",
       "type": "code",
       "label": "Dockerfile"
@@ -256,6 +266,11 @@
       "id": "file:docs/wiki/comp-agents-roles-skills.md",
       "type": "code",
       "label": "docs/wiki/comp-agents-roles-skills.md"
+    },
+    {
+      "id": "file:docs/wiki/dev-opencode-memory.md",
+      "type": "code",
+      "label": "docs/wiki/dev-opencode-memory.md"
     },
     {
       "id": "file:e2e",
@@ -416,6 +431,46 @@
       "id": "file:scripts/lib/route-nav.mjs",
       "type": "code",
       "label": "scripts/lib/route-nav.mjs"
+    },
+    {
+      "id": "file:scripts/opencode/",
+      "type": "code",
+      "label": "scripts/opencode/"
+    },
+    {
+      "id": "file:scripts/opencode/checkpoint.mjs",
+      "type": "code",
+      "label": "scripts/opencode/checkpoint.mjs"
+    },
+    {
+      "id": "file:scripts/opencode/context-build.mjs",
+      "type": "code",
+      "label": "scripts/opencode/context-build.mjs"
+    },
+    {
+      "id": "file:scripts/opencode/project-state.mjs",
+      "type": "code",
+      "label": "scripts/opencode/project-state.mjs"
+    },
+    {
+      "id": "file:scripts/opencode/session-index.mjs",
+      "type": "code",
+      "label": "scripts/opencode/session-index.mjs"
+    },
+    {
+      "id": "file:scripts/opencode/session-search.mjs",
+      "type": "code",
+      "label": "scripts/opencode/session-search.mjs"
+    },
+    {
+      "id": "file:scripts/opencode/stats.mjs",
+      "type": "code",
+      "label": "scripts/opencode/stats.mjs"
+    },
+    {
+      "id": "file:scripts/opencode/wiki-find.mjs",
+      "type": "code",
+      "label": "scripts/opencode/wiki-find.mjs"
     },
     {
       "id": "file:server/",
@@ -7497,6 +7552,13 @@
       "status": "verified"
     },
     {
+      "id": "wiki:dev-codebase-memory-mcp",
+      "type": "article",
+      "label": "Codebase Memory MCP: граф кода для агентов",
+      "section": "dev",
+      "status": "verified"
+    },
+    {
       "id": "wiki:dev-component-catalog",
       "type": "article",
       "label": "Каталог компонентов OS",
@@ -7598,6 +7660,13 @@
       "id": "wiki:dev-libraries",
       "type": "article",
       "label": "Внешние библиотеки",
+      "section": "dev",
+      "status": "verified"
+    },
+    {
+      "id": "wiki:dev-opencode-memory",
+      "type": "article",
+      "label": "Память OpenCode: команды и скрипты непрерывности сессий",
       "section": "dev",
       "status": "verified"
     },
@@ -17169,6 +17238,41 @@
       "kind": "related"
     },
     {
+      "from": "wiki:dev-codebase-memory-mcp",
+      "to": "file:.opencode/command/",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:dev-codebase-memory-mcp",
+      "to": "file:docs/wiki/dev-opencode-memory.md",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:dev-codebase-memory-mcp",
+      "to": "file:scripts/opencode/",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:dev-codebase-memory-mcp",
+      "to": "wiki:comp-integrations-interop",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-codebase-memory-mcp",
+      "to": "wiki:dev-graph",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-codebase-memory-mcp",
+      "to": "wiki:dev-opencode-memory",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-codebase-memory-mcp",
+      "to": "wiki:dev-overview",
+      "kind": "related"
+    },
+    {
       "from": "wiki:dev-component-catalog",
       "to": "file:scripts/gen-wiki-catalog.mjs",
       "kind": "source"
@@ -17631,6 +17735,71 @@
     {
       "from": "wiki:dev-libraries",
       "to": "wiki:dev-scripts",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-opencode-memory",
+      "to": "file:.opencode/command/",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:dev-opencode-memory",
+      "to": "file:.superagents/memory/",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:dev-opencode-memory",
+      "to": "file:scripts/opencode/checkpoint.mjs",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:dev-opencode-memory",
+      "to": "file:scripts/opencode/context-build.mjs",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:dev-opencode-memory",
+      "to": "file:scripts/opencode/project-state.mjs",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:dev-opencode-memory",
+      "to": "file:scripts/opencode/session-index.mjs",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:dev-opencode-memory",
+      "to": "file:scripts/opencode/session-search.mjs",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:dev-opencode-memory",
+      "to": "file:scripts/opencode/stats.mjs",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:dev-opencode-memory",
+      "to": "file:scripts/opencode/wiki-find.mjs",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:dev-opencode-memory",
+      "to": "wiki:dev-graph",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-opencode-memory",
+      "to": "wiki:dev-overview",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-opencode-memory",
+      "to": "wiki:dev-scripts",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-opencode-memory",
+      "to": "wiki:docs-index",
       "kind": "related"
     },
     {

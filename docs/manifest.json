@@ -65,7 +65,7 @@
     {
       "id": "dev",
       "title": "Разработчикам",
-      "articles": 62
+      "articles": 64
     }
   ],
   "articles": [
@@ -7291,6 +7291,68 @@
         "architecture",
         "dev-history",
         "docs-index"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:dev-opencode-memory",
+      "type": "article",
+      "slug": "dev-opencode-memory",
+      "title": "Память OpenCode: команды и скрипты непрерывности сессий",
+      "section": "dev",
+      "status": "verified",
+      "tags": [
+        "dev",
+        "opencode",
+        "память",
+        "контекст",
+        "контрольные точки"
+      ],
+      "sources": [
+        "scripts/opencode/session-index.mjs",
+        "scripts/opencode/context-build.mjs",
+        "scripts/opencode/project-state.mjs",
+        "scripts/opencode/checkpoint.mjs",
+        "scripts/opencode/session-search.mjs",
+        "scripts/opencode/wiki-find.mjs",
+        "scripts/opencode/stats.mjs",
+        ".opencode/command/",
+        ".superagents/memory/"
+      ],
+      "related": [
+        "dev-overview",
+        "dev-scripts",
+        "dev-graph",
+        "docs-index"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:dev-codebase-memory-mcp",
+      "type": "article",
+      "slug": "dev-codebase-memory-mcp",
+      "title": "Codebase Memory MCP: граф кода для агентов",
+      "section": "dev",
+      "status": "verified",
+      "tags": [
+        "dev",
+        "mcp",
+        "граф",
+        "поиск",
+        "opencode"
+      ],
+      "sources": [
+        "scripts/opencode/",
+        ".opencode/command/",
+        "docs/wiki/dev-opencode-memory.md"
+      ],
+      "related": [
+        "dev-overview",
+        "dev-opencode-memory",
+        "comp-integrations-interop",
+        "dev-graph"
       ],
       "reviewed": null,
       "tests": []
