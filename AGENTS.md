@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-Autonomous, event-driven multi-agent runtime. v4.5.0 — 177 contracts, 352 services, 7 LLM adapters + 11 decorators, 638 UI panels.
+Autonomous, event-driven multi-agent runtime. v4.5.0 — 326 contracts, 810 services, 569 event-registry entries, 830 UI panels (актуальные счётчики: `node scripts/opencode/stats.mjs`).
 
 ## Workflow Convention
 
@@ -22,8 +22,13 @@ Autonomous, event-driven multi-agent runtime. v4.5.0 — 177 contracts, 352 serv
 | `/status`            | Свежий снимок состояния: ветка, грязные файлы, stash, незапушенное, последняя точка   |
 | `/checkpoint <slug>` | Создать контрольную точку `docs/sessions/YYYY-MM-DD-<slug>.md` по шаблону             |
 | `/sessions <запрос>` | Поиск по прошлым сессиям (`--dir`, `--open`, `--since`, `--limit`)                    |
+| `/wiki <тема>`       | Поиск статей по `docs/manifest.json`                                                  |
 
-Скрипты: `scripts/opencode/{session-index,context-build,project-state,checkpoint,session-search}.mjs` (read-only, кроме checkpoint). Индекс `.superagents/memory/session-index.json` не попадает в промпт целиком — только короткая выжимка `context.md`.
+Скрипты: `scripts/opencode/{session-index,context-build,project-state,checkpoint,session-search,wiki-find,stats}.mjs` (read-only, кроме checkpoint). Индекс `.superagents/memory/session-index.json` не попадает в промпт целиком — только короткая выжимка `context.md`.
+
+## Wiki generation rule
+
+При добавлении любого нового `.md`/`.json` файла в репозиторий (включая `.superagents/memory/`) — ОБЯЗАТЕЛЬНО перегенерировать вики-артефакты (иначе CI упадёт на «Wiki docs in sync»): `npm run gen:wiki-libraries && npm run gen:wiki-docs && npm run gen:wiki-manifest && npm run gen:wiki-connections && npm run gen:wiki-docs-health && npm run gen:docs-inventory && npm run gen:wiki-docs-standard && npm run gen:wiki-docs-index && npm run gen:wiki-system-map && npm run gen:wiki-history && npm run gen:wiki-capabilities && npm run gen:docs-graph && npm run gen:wiki-checks && npm run gen:wiki-coverage` и закоммитить изменения вместе с кодом.
 
 ## Key Principles
 
@@ -35,12 +40,12 @@ Autonomous, event-driven multi-agent runtime. v4.5.0 — 177 contracts, 352 serv
 
 ## Architecture Layers
 
-- `src/kernel/contracts/` — 177 interfaces + types
-- `src/kernel/services/` — 352 implementations
-- `src/kernel/events/` — event names + payloads
+- `src/kernel/contracts/` — 326 interfaces + types
+- `src/kernel/services/` — 810 implementations
+- `src/kernel/events/` — event names + payloads (569 записей в registry)
 - `src/kernel/state/` — state shapes (19 files)
-- `src/llm/` — 7 provider adapters + 11 decorators
-- `src/components/` — React UI (638 panels)
+- `src/llm/` — provider adapters + decorators
+- `src/components/` — React UI (830 panels)
 - `src/stores/` — Zustand stores (22 files)
 - `docs/` — architecture docs (63 files, RU/EN)
 - `docs/wiki/` — full system Wiki mirror (markdown, GitHub-readable; regenerate with `npm run gen:wiki-docs`); panel pages end with an auto «Связи с кодом» chain (panel → route → component → tests)
