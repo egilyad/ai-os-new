@@ -90,6 +90,16 @@ export interface TaskTrigger {
     createdAt: number;
 }
 
+export interface TaskStatusHistoryRow {
+    id?: number;
+    taskId: string;
+    fromStatus: AgemsTaskStatus;
+    toStatus: AgemsTaskStatus;
+    actorId?: string;
+    reason?: string;
+    timestamp: number;
+}
+
 // Kanban column mapping (roadmap 2.2: 5 columns)
 export const KANBAN_COLUMNS: Array<{ status: AgemsTaskStatus[]; title: string; color: string }> = [
     { status: ['PENDING', 'BLOCKED'], title: 'Pending', color: 'var(--slate-500)' },

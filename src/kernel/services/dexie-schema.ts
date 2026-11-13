@@ -127,6 +127,7 @@ import type {
     TaskLabel,
     TaskWorkProduct,
     TaskTrigger,
+    TaskStatusHistoryRow,
 } from '../types/agems-task';
 import type { ApprovalPolicy, ApprovalRequest } from '../types/agems-approval';
 import type { PlatformBudget, BudgetIncident } from '../types/agems-budget';
@@ -210,6 +211,7 @@ export class SuperAgentsDB extends Dexie {
     taskLabels!: Table<TaskLabel>;
     taskWorkProducts!: Table<TaskWorkProduct>;
     taskTriggers!: Table<TaskTrigger>;
+    taskStatusHistory!: Table<TaskStatusHistoryRow>;
     // Phase 3 — AGEMS Approvals
     approvalPolicies!: Table<ApprovalPolicy>;
     approvalRequests!: Table<ApprovalRequest>;

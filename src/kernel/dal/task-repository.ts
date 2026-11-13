@@ -1,5 +1,5 @@
 import { getDexieDb, type DatabaseService } from '../services/database-service';
-import type { AgemsTask, AgemsTaskStatus } from '../types/agems-task';
+import type { AgemsTask, AgemsTaskStatus, TaskStatusHistoryRow } from '../types/agems-task';
 
 export interface TaskFilters {
     status?: AgemsTaskStatus;
@@ -38,9 +38,36 @@ export class TaskRepository {
         return all.sort((a, b) => b.updatedAt - a.updatedAt);
     }
 
-    async updateStatus(id: string, status: AgemsTaskStatus): Promise<AgemsTask | undefined> {
-        await this.db.agemsTasks.update(id, { status, updatedAt: Date.now() } as never);
+    async updateStatus(
+        id: string,
+        status: AgemsTaskStatus,
+        actorId?: string,
+        reason?: string,
+    ): Promise<AgemsTask | undefined> {
+        const existing = await this.get(id);
+        if (!existing) return undefined;
+        const db = getDexieDb();
+        await db.transaction('rw', db.agemsTasks, db.taskStatusHistory, async () => {
+            await db.agemsTasks.update(id, { status, updatedAt: Date.now() } as never);
+            const row: TaskStatusHistoryRow = {
+                taskId: id,
+                fromStatus: existing.status,
+                toStatus: status,
+                actorId,
+                reason,
+                timestamp: Date.now(),
+            };
+            await db.taskStatusHistory.add(row as never);
+        });
         return this.get(id);
+    }
+
+    async getHistory(taskId: string): Promise<TaskStatusHistoryRow[]> {
+        const rows = (await this.db.taskStatusHistory
+            .where('taskId')
+            .equals(taskId)
+            .toArray()) as unknown as TaskStatusHistoryRow[];
+        return rows.sort((a, b) => a.timestamp - b.timestamp);
     }
 
     async updateFields(id: string, patch: Partial<AgemsTask>): Promise<AgemsTask | undefined> {

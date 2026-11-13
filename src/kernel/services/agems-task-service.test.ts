@@ -80,4 +80,18 @@ describe('agems-task-service', () => {
         expect(after?.lockedBy).toBeUndefined();
         expect(after?.lockedUntil).toBeUndefined();
     });
+
+    it('records status history transitions', async () => {
+        const task = await makeTask();
+        await service.updateStatus(task.id, 'IN_PROGRESS', 'agent-a');
+        await service.updateStatus(task.id, 'IN_REVIEW', 'agent-a');
+        const history = await getDexieDb()
+            .taskStatusHistory.where('taskId')
+            .equals(task.id)
+            .toArray();
+        expect(history).toHaveLength(2);
+        expect(history[0]?.fromStatus).toBe('PENDING');
+        expect(history[0]?.toStatus).toBe('IN_PROGRESS');
+        expect(history[1]?.toStatus).toBe('IN_REVIEW');
+    });
 });

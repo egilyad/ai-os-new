@@ -366,6 +366,9 @@ export class DatabaseService implements IDatabaseService {
     get taskTriggers() {
         return getDexieDb().taskTriggers;
     }
+    get taskStatusHistory() {
+        return getDexieDb().taskStatusHistory;
+    }
     get synthSessions() {
         return getDexieDb().synthSessions;
     }

@@ -55,16 +55,21 @@ export class AgemsTaskService {
         return this.repo.list(filters);
     }
 
-    async updateStatus(id: string, status: AgemsTaskStatus): Promise<AgemsTask | undefined> {
+    async updateStatus(
+        id: string,
+        status: AgemsTaskStatus,
+        actorId?: string,
+    ): Promise<AgemsTask | undefined> {
         const existing = await this.repo.get(id);
         if (!existing) return undefined;
         if (!canTransition(existing.status, status))
             throw new TaskIllegalTransitionError(existing.status, status);
-        const updated = await this.repo.updateStatus(id, status);
+        const updated = await this.repo.updateStatus(id, status, actorId);
         this.emit('task:status:changed', {
             taskId: id,
             from: existing.status,
             to: status,
+            actorId,
         });
         // 2.8 Triggers — fire after status change (lazy import to avoid cycle)
         try {
