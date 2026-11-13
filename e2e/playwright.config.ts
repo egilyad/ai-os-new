@@ -41,6 +41,7 @@ export default defineConfig({
                 SYNC_ORIGINS: 'http://localhost:5199',
                 HEARTBEAT_LOOP: '0',
                 COMPANY_DATA_DIR: path.join(REPO_ROOT, 'test-results', 'sync-data'),
+                TASKS_FILE: path.join(REPO_ROOT, 'test-results', 'tasks.json'),
             },
         },
     ],

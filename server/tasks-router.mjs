@@ -3,7 +3,8 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-export const TASKS_FILE = path.join(__dirname, '..', 'data', 'tasks.json');
+export const TASKS_FILE =
+    process.env.TASKS_FILE || path.join(__dirname, '..', 'data', 'tasks.json');
 
 export function readTasks() {
     try {
