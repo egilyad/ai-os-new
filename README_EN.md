@@ -886,6 +886,7 @@ Adjust routing behavior in **Settings → SLA Mode**:
 | [inventory.json](./docs/inventory.json)                    | Inventory of all `docs/**` documents (category, language, size, hash)                                                          |
 | [entity-model.json](./docs/entity-model.json)              | Documentation standard: entity card, statuses, sources of truth, languages                                                     |
 | Wiki site (GitHub Pages)                                   | Static wiki with section menu, search and mermaid, built from the same mirror and served at `/wiki/` (`npm run gen:wiki-site`) |
+| [DeepWiki (EN)](https://deepwiki.com/egilyad/ai-os-new)    | Professional technical documentation in English (auto-generated)                                                               |
 
 ### Wiki map
 

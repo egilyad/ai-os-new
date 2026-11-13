@@ -3,22 +3,22 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 1595,
-    "edges": 2880,
+    "nodes": 1597,
+    "edges": 2886,
     "byType": {
       "audit": 25,
-      "code": 700,
+      "code": 701,
       "test": 236,
       "panel": 269,
-      "article": 365
+      "article": 366
     },
     "byKind": {
       "audit_test": 20,
       "audit_mention": 52,
       "documents": 267,
       "test": 343,
-      "source": 997,
-      "related": 1201
+      "source": 999,
+      "related": 1205
     }
   },
   "nodes": [
@@ -306,6 +306,11 @@
       "id": "file:README_EN.md",
       "type": "code",
       "label": "README_EN.md"
+    },
+    {
+      "id": "file:README.md",
+      "type": "code",
+      "label": "README.md"
     },
     {
       "id": "file:scripts/",
@@ -7592,6 +7597,13 @@
       "label": "Рецепты: типовые задачи",
       "section": "dev",
       "status": "verified"
+    },
+    {
+      "id": "wiki:dev-deepwiki",
+      "type": "article",
+      "label": "DeepWiki: облачная техническая документация на английском",
+      "section": "dev",
+      "status": "documented"
     },
     {
       "id": "wiki:dev-event-catalog",
@@ -17440,6 +17452,36 @@
     {
       "from": "wiki:dev-cookbook",
       "to": "wiki:dev-testing",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-deepwiki",
+      "to": "file:README_EN.md",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:dev-deepwiki",
+      "to": "file:README.md",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:dev-deepwiki",
+      "to": "wiki:dev-codebase-memory-mcp",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-deepwiki",
+      "to": "wiki:dev-opencode-memory",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-deepwiki",
+      "to": "wiki:dev-overview",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-deepwiki",
+      "to": "wiki:docs-index",
       "kind": "related"
     },
     {

@@ -3,17 +3,17 @@
   "generatedBy": "scripts/gen-docs-inventory.mjs",
   "scope": "git-tracked markdown: docs/**/*.md (excluding docs/new drafts and the self-report pages docs-health, docs-inventory) plus repository entry docs (root *.md, .superagents/**, src/kernel/DEPENDENCY_MAP.md)",
   "totals": {
-    "documents": 513,
+    "documents": 515,
     "byCategory": {
       "repo": 10,
       "top": 116,
       "audits": 25,
-      "wiki": 362
+      "wiki": 364
     },
     "byLanguage": {
       "en": 39,
       "mixed": 135,
-      "ru": 339
+      "ru": 341
     }
   },
   "duplicates": {
@@ -2112,7 +2112,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4076,
-      "hash": "a388c851c8182a400fede6a402f6035dce4d33ff"
+      "hash": "20bdb084b49f2b85d4a723f614d781e3b9d3de2c"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -2121,6 +2121,14 @@
       "title": "Разработчикам: ворота качества и CI",
       "bytes": 2559,
       "hash": "93c96cc1613354c80c5d4c782f3620a45f11dd9c"
+    },
+    {
+      "path": "docs/wiki/dev-codebase-memory-mcp.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Codebase Memory MCP: граф кода для агентов",
+      "bytes": 3821,
+      "hash": "5441a3eebf7fbdbad575d3da9a143dc659bd4736"
     },
     {
       "path": "docs/wiki/dev-component-catalog.md",
@@ -2241,6 +2249,14 @@
       "title": "Внешние библиотеки",
       "bytes": 3697,
       "hash": "72b24a2d07f269e55d244cbbed9bc843efa52511"
+    },
+    {
+      "path": "docs/wiki/dev-opencode-memory.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "Память OpenCode: команды и скрипты непрерывности сессий",
+      "bytes": 4332,
+      "hash": "6a8d5f8d8ca06f3cae689e51a7a2284f61dd88c9"
     },
     {
       "path": "docs/wiki/dev-overview.md",
@@ -3311,8 +3327,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Wiki SuperAgents OS",
-      "bytes": 36327,
-      "hash": "ed7562f1dd5fc6b7f2ae5532819f890f528836e8"
+      "bytes": 36468,
+      "hash": "3a2de999338594964d22b6fdd073709936adc6fb"
     },
     {
       "path": "docs/wiki/record-a-skill.md",
@@ -4119,16 +4135,16 @@
       "category": "repo",
       "language": "en",
       "title": "SuperAgents OS",
-      "bytes": 59623,
-      "hash": "7ac319559a3038f8570736faa035ec9097f7376a"
+      "bytes": 59814,
+      "hash": "7fa3fce1314aec7b0d174460cbe7748f6fc59852"
     },
     {
       "path": "README.md",
       "category": "repo",
       "language": "mixed",
       "title": "SuperAgents OS — Wiki",
-      "bytes": 52860,
-      "hash": "e9f4d02112f4ab259e224d898a8181c1124afef2"
+      "bytes": 53059,
+      "hash": "b7b15fa19004f9d1d90ced8714a0502bcc798775"
     },
     {
       "path": "src/kernel/DEPENDENCY_MAP.md",

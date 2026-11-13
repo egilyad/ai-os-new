@@ -65,7 +65,7 @@
     {
       "id": "dev",
       "title": "Разработчикам",
-      "articles": 64
+      "articles": 65
     }
   ],
   "articles": [
@@ -7324,6 +7324,32 @@
         "dev-overview",
         "dev-scripts",
         "dev-graph",
+        "docs-index"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:dev-deepwiki",
+      "type": "article",
+      "slug": "dev-deepwiki",
+      "title": "DeepWiki: облачная техническая документация на английском",
+      "section": "dev",
+      "status": "documented",
+      "tags": [
+        "dev",
+        "deepwiki",
+        "документация",
+        "english"
+      ],
+      "sources": [
+        "README.md",
+        "README_EN.md"
+      ],
+      "related": [
+        "dev-overview",
+        "dev-codebase-memory-mcp",
+        "dev-opencode-memory",
         "docs-index"
       ],
       "reviewed": null,
