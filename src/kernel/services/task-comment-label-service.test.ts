@@ -10,7 +10,12 @@ describe('task-comment-service', () => {
 
     beforeEach(async () => {
         await getDexieDb().taskComments.clear();
-        const task = await service.create({ title: 'c', type: 'ONE_TIME', priority: 'MEDIUM' });
+        const task = await service.create({
+            title: 'c',
+            type: 'ONE_TIME',
+            status: 'PENDING',
+            priority: 'MEDIUM',
+        });
         taskId = task.id;
     });
 
@@ -34,7 +39,12 @@ describe('task-label-service', () => {
     beforeEach(async () => {
         await getDexieDb().taskLabels.clear();
         await getDexieDb().labels.clear();
-        const task = await service.create({ title: 'l', type: 'ONE_TIME', priority: 'MEDIUM' });
+        const task = await service.create({
+            title: 'l',
+            type: 'ONE_TIME',
+            status: 'PENDING',
+            priority: 'MEDIUM',
+        });
         taskId = task.id;
     });
 

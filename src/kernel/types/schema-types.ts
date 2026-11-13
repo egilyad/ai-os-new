@@ -722,7 +722,7 @@ export const TaskCommentSchema = z.object({
     authorType: z.string(),
     authorId: z.string(),
     content: z.string(),
-    metadata: z.record(z.unknown()).optional(),
+    metadata: z.record(z.string(), z.unknown()).optional(),
     createdAt: z.number(),
 });
 
