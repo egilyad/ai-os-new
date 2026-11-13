@@ -5,6 +5,15 @@
       "type": "local",
       "command": ["node", "C:/Users/evgeny/AppData/Roaming/npm/node_modules/@playwright/mcp/cli.js"],
       "enabled": true
+    },
+    "aios-tasks": {
+      "type": "local",
+      "command": ["node", "./cli/tasks-mcp-server.mjs"],
+      "environment": {
+        "AIOS_SYNC_URL": "{env:AIOS_SYNC_URL}",
+        "AIOS_SYNC_TOKEN": "{env:AIOS_SYNC_TOKEN}"
+      },
+      "enabled": true
     }
   },
   "permission": {
@@ -23,6 +32,7 @@
       "git diff*": "allow",
       "git stash list*": "allow"
     },
-    "playwright_*": "ask"
+    "playwright_*": "ask",
+    "aios-tasks_*": "allow"
   }
 }
