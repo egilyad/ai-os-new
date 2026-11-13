@@ -16,7 +16,13 @@
     "glob": "allow",
     "webfetch": "allow",
     "websearch": "allow",
-    "bash": "ask",
+    "bash": {
+      "node scripts/opencode/*.mjs*": "allow",
+      "git status*": "allow",
+      "git log*": "allow",
+      "git diff*": "allow",
+      "git stash list*": "allow"
+    },
     "playwright_*": "ask"
   }
 }
