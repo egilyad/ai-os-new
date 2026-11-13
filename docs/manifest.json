@@ -4634,6 +4634,7 @@
       ],
       "reviewed": null,
       "tests": [
+        "src/kernel/services/agems-task-service.test.ts",
         "src/kernel/services/task-handoff.test.ts",
         "src/kernel/services/scheduler-service.test.ts"
       ]
@@ -4845,7 +4846,8 @@
       ],
       "reviewed": null,
       "tests": [
-        "src/kernel/services/chat-executor.test.ts"
+        "src/kernel/services/chat-executor.test.ts",
+        "src/kernel/services/agems-task-service.test.ts"
       ]
     },
     {

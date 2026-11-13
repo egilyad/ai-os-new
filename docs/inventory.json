@@ -3,17 +3,17 @@
   "generatedBy": "scripts/gen-docs-inventory.mjs",
   "scope": "git-tracked markdown: docs/**/*.md (excluding docs/new drafts and the self-report pages docs-health, docs-inventory) plus repository entry docs (root *.md, .superagents/**, src/kernel/DEPENDENCY_MAP.md)",
   "totals": {
-    "documents": 515,
+    "documents": 516,
     "byCategory": {
       "repo": 10,
       "top": 116,
       "audits": 25,
-      "wiki": 364
+      "wiki": 365
     },
     "byLanguage": {
       "en": 39,
       "mixed": 135,
-      "ru": 341
+      "ru": 342
     }
   },
   "duplicates": {
@@ -2056,7 +2056,7 @@
       "language": "mixed",
       "title": "Матрица покрытия",
       "bytes": 8488,
-      "hash": "ee5be3789249cbdb5aa8dd5e7716893014bbd0c0"
+      "hash": "d21ca9ec1d5dfd368d5f16587fc59ce4ca236ae7"
     },
     {
       "path": "docs/wiki/debate-strategies-cheatsheet.md",
@@ -2112,7 +2112,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4076,
-      "hash": "20bdb084b49f2b85d4a723f614d781e3b9d3de2c"
+      "hash": "1f0cdd2ec7ff22e79bcd1694874412d6ea1763f4"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -2171,6 +2171,14 @@
       "hash": "dc5c12afedc3e933bc572634e21d6274bf610825"
     },
     {
+      "path": "docs/wiki/dev-deepwiki.md",
+      "category": "wiki",
+      "language": "ru",
+      "title": "DeepWiki: облачная техническая документация на английском",
+      "bytes": 2922,
+      "hash": "9779706107d66ceb1c2f125c81fbfbc59b4c6493"
+    },
+    {
       "path": "docs/wiki/dev-event-catalog.md",
       "category": "wiki",
       "language": "en",
@@ -2208,7 +2216,7 @@
       "language": "ru",
       "title": "Граф знаний",
       "bytes": 4835,
-      "hash": "289f8243a42a45e32acb55c9704e140c2f0eae0f"
+      "hash": "46b5c10990deb468c68ccbc40cc41b80f871ef40"
     },
     {
       "path": "docs/wiki/dev-history.md",
@@ -2431,8 +2439,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Карта документации",
-      "bytes": 56887,
-      "hash": "7a00f17160b5cd37420d87a411230e179511db3e"
+      "bytes": 57012,
+      "hash": "be51821892a81d8a76abafa95796f27c39942986"
     },
     {
       "path": "docs/wiki/docs-standard.md",
@@ -4135,7 +4143,7 @@
       "category": "repo",
       "language": "en",
       "title": "SuperAgents OS",
-      "bytes": 59814,
+      "bytes": 59815,
       "hash": "7fa3fce1314aec7b0d174460cbe7748f6fc59852"
     },
     {
@@ -4143,8 +4151,8 @@
       "category": "repo",
       "language": "mixed",
       "title": "SuperAgents OS — Wiki",
-      "bytes": 53059,
-      "hash": "b7b15fa19004f9d1d90ced8714a0502bcc798775"
+      "bytes": 53178,
+      "hash": "c6764aa0675875d95eb50e942fbec23fb3c067ec"
     },
     {
       "path": "src/kernel/DEPENDENCY_MAP.md",

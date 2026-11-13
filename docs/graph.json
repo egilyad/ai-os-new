@@ -3,12 +3,12 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 1597,
-    "edges": 2886,
+    "nodes": 1598,
+    "edges": 2888,
     "byType": {
       "audit": 25,
       "code": 701,
-      "test": 236,
+      "test": 237,
       "panel": 269,
       "article": 366
     },
@@ -16,7 +16,7 @@
       "audit_test": 20,
       "audit_mention": 52,
       "documents": 267,
-      "test": 343,
+      "test": 345,
       "source": 999,
       "related": 1205
     }
@@ -2421,6 +2421,11 @@
       "id": "file:src/kernel/services/advisor/whatif-engine.ts",
       "type": "code",
       "label": "src/kernel/services/advisor/whatif-engine.ts"
+    },
+    {
+      "id": "file:src/kernel/services/agems-task-service.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/agems-task-service.test.ts"
     },
     {
       "id": "file:src/kernel/services/agems-task-service.ts",
@@ -15921,6 +15926,11 @@
     },
     {
       "from": "wiki:comp-scenarios",
+      "to": "file:src/kernel/services/agems-task-service.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:comp-scenarios",
       "to": "file:src/kernel/services/agems-task-service.ts",
       "kind": "source"
     },
@@ -16308,6 +16318,11 @@
       "from": "wiki:comp-synthesis-forum",
       "to": "wiki:panel-synthesis",
       "kind": "related"
+    },
+    {
+      "from": "wiki:comp-task-planning",
+      "to": "file:src/kernel/services/agems-task-service.test.ts",
+      "kind": "test"
     },
     {
       "from": "wiki:comp-task-planning",
