@@ -11,8 +11,8 @@
       "wiki": 362
     },
     "byLanguage": {
-      "en": 40,
-      "mixed": 134,
+      "en": 39,
+      "mixed": 135,
       "ru": 339
     }
   },
@@ -77,10 +77,10 @@
     {
       "path": "AGENTS.md",
       "category": "repo",
-      "language": "en",
+      "language": "mixed",
       "title": "SuperAgents OS — Agent Guide",
-      "bytes": 6476,
-      "hash": "b179d5f8c773a0e220b87675fa0070b02fd55a37"
+      "bytes": 7526,
+      "hash": "db192238cb584d48a79f62a1a6c8c0abf8504cc3"
     },
     {
       "path": "CHANGELOG.md",
@@ -2112,7 +2112,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4076,
-      "hash": "7cb2fbdcf087289169c448fbf2285ad46289432f"
+      "hash": "6fa111b8b120eecba777ca8abda4e04b164d685b"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -2416,7 +2416,7 @@
       "language": "mixed",
       "title": "Карта документации",
       "bytes": 56664,
-      "hash": "c4d533af86cc5c5b75e4ecf1572d597fa91f1601"
+      "hash": "99f4a857dcc2569d83453592cd5a29040d695d63"
     },
     {
       "path": "docs/wiki/docs-standard.md",
