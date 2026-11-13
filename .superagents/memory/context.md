@@ -2,19 +2,18 @@
 
 ## Подтверждено
 
-- Ветка: main @ 406138c 406138cf1f96a1087d867781f1281a142fae54f8
+- Ветка: main @ 64cc73a 64cc73accbe36d1322ada913a5033e6c3dfc0aec
 - HEAD±5:
+  - 64cc73a feat(devtools): команды /context /status /checkpoint + скрипты состояния проекта
   - 406138c feat(devtools): сборка контекста сессии (context-build.mjs)
   - 86f71e9 feat(devtools): read-only индекс сессий OpenCode
   - bec48c4 ci: retrigger (flaky e2e data-chat)
   - 2cc024d ci: retrigger (flaky kernel-rest)
   - af67b56 test(e2e): кнопка QA переименована в Run QA
-  - a57b695 fix(projects): добавить updateGoal/deleteGoal в контракт автономии, убрать дубль импорта
-- Статус: 4 грязных файлов
-  - M .gitignore
-  - M opencode.jsonc
-  - ?? scripts/opencode/checkpoint.mjs
-  - ?? scripts/opencode/project-state.mjs
+- Статус: 3 грязных файлов
+  - M AGENTS.md
+  - ?? .opencode/command/sessions.md
+  - ?? scripts/opencode/session-search.mjs
 - Stash (5):
   - stash@{0}: lint-staged automatic backup
   - stash@{1}: lint-staged automatic backup
