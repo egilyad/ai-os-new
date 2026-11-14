@@ -51,7 +51,9 @@ describe('assistant ops actions', () => {
         registry.registerAll(createAssistantOpsActions(deps()));
         const ids = registry.list().map((a) => a.id);
         expect(ids).toEqual([
+            'agents.execute-group',
             'approvals.pending',
+            'invocation.run',
             'metrics.summary',
             'providers.health',
             'scheduler.create',
@@ -69,8 +71,15 @@ describe('assistant ops actions', () => {
             'scheduler.toggle',
             'tasks.create',
         ]);
+        const execs = new Set(['invocation.run', 'agents.execute-group']);
         for (const action of registry.list()) {
-            expect(action.action).toBe(writes.has(action.id) ? 'tool:write' : 'tool:read');
+            if (writes.has(action.id)) {
+                expect(action.action).toBe('tool:write');
+            } else if (execs.has(action.id)) {
+                expect(action.action).toBe('tool:exec');
+            } else {
+                expect(action.action).toBe('tool:read');
+            }
         }
     });
 
@@ -89,9 +98,7 @@ describe('assistant ops actions', () => {
         });
         const registry = new AssistantActionRegistry();
         registry.registerAll(
-            createAssistantOpsActions(
-                deps({ scheduler: { create, getAll: () => rows } as never }),
-            ),
+            createAssistantOpsActions(deps({ scheduler: { create, getAll: () => rows } as never })),
         );
 
         const result = await registry.run('scheduler.create', {
@@ -543,13 +550,34 @@ describe('assistant ops actions', () => {
     it('lists tasks honestly when the board is empty', async () => {
         const registry = new AssistantActionRegistry();
         registry.registerAll(
-            createAssistantOpsActions(
-                deps({ tasks: { list: async () => [], create: vi.fn() } }),
-            ),
+            createAssistantOpsActions(deps({ tasks: { list: async () => [], create: vi.fn() } })),
         );
         const all = await registry.run('tasks.list', {});
         expect(all.ok).toBe(true);
         expect(all.detail).toBe('no tasks');
         expect(all.evidence).toBe('tasks: 0');
+    });
+
+    it('invocation.run invokes the engine and reports status', async () => {
+        const invoke = vi.fn(async () => ({ id: 'inv-1', status: 'accepted' }));
+        const registry = new AssistantActionRegistry();
+        registry.registerAll(createAssistantOpsActions(deps({ invocation: { invoke } })));
+        const result = await registry.run('invocation.run', {
+            target: { agentId: 'agent-research' },
+            reason: 'нужен анализ',
+        });
+        expect(result.ok).toBe(true);
+        expect(invoke).toHaveBeenCalled();
+        expect(String(result.evidence)).toContain('accepted');
+    });
+
+    it('agents.execute-group runs the group', async () => {
+        const executeGroup = vi.fn(async () => ['[agent-a] completed']);
+        const registry = new AssistantActionRegistry();
+        registry.registerAll(createAssistantOpsActions(deps({ agentsExecute: { executeGroup } })));
+        const result = await registry.run('agents.execute-group', { groupId: 'g1' });
+        expect(result.ok).toBe(true);
+        expect(executeGroup).toHaveBeenCalledWith('g1', '');
+        expect(String(result.evidence)).toContain('completed');
     });
 });

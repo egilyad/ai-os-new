@@ -306,6 +306,23 @@ export const registerPhase78: Phase = ({ register }) => {
                           },
                       }
                     : undefined,
+                invocation: c.has('invocationEngineService')
+                    ? {
+                          invoke: (req) => {
+                              const svc = c.get<{
+                                  invoke(req: never): Promise<{
+                                      id: string;
+                                      status: string;
+                                      rejectionReason?: string;
+                                  }>;
+                              }>('invocationEngineService');
+                              return svc.invoke(req as never);
+                          },
+                      }
+                    : undefined,
+                agentsExecute: agentService
+                    ? { executeGroup: (id, input) => agentService.executeGroup(id, input) }
+                    : undefined,
                 providers: providerTracker
                     ? {
                           rankings: (installed) => providerTracker.getProviderRankings(installed),

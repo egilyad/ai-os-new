@@ -109,6 +109,21 @@ export interface AssistantOpsDeps {
             priority?: 'critical' | 'high' | 'normal' | 'low';
         }): Promise<{ id: string; status: string }>;
     };
+    /** M2.3 — Invocation Engine. */
+    invocation?: {
+        invoke(req: {
+            source: string;
+            caller: { kind: string; id: string };
+            target: { agentId?: string; role?: string; expertise?: string[] };
+            reason: string;
+            context: { type: string; ref: string };
+            constraints?: { mode?: string; maxTurns?: number; ttlMs?: number };
+        }): Promise<{ id: string; status: string; rejectionReason?: string }>;
+    };
+    /** M2.4 — agent group execution. */
+    agentsExecute?: {
+        executeGroup(groupId: string, input: string): Promise<string[]>;
+    };
     /** Real provider behaviour: score, reliability, latency and cost. */
     providers?: {
         rankings(installed: string[]): Array<{
@@ -657,6 +672,101 @@ export function createAssistantOpsActions(deps: AssistantOpsDeps): AssistantActi
                 evidence: lines.join(' | '),
                 verification: 'verified',
             };
+        },
+    });
+
+    actions.push({
+        id: 'invocation.run',
+        group: 'coordination',
+        description:
+            'Run a task on an agent via the Invocation Engine. Target can be agentId, role or expertise. Confirm with the user before invoking.',
+        parameters: {
+            type: 'object',
+            properties: {
+                target: {
+                    type: 'object',
+                    description: '{ agentId } | { role } | { expertise: [] }',
+                },
+                reason: { type: 'string', description: 'Why this invocation is needed.' },
+                context: {
+                    type: 'object',
+                    description: '{ type: "room"|"conversation"|"scheduled", ref: "..." }',
+                },
+            },
+            required: ['target', 'reason'],
+        },
+        action: 'tool:exec',
+        run: async (args) => {
+            const inv = deps.invocation;
+            if (!inv) return { ok: false, detail: 'invocation engine is not available' };
+            const target = args['target'] as
+                { agentId?: string; role?: string; expertise?: string[] } | undefined;
+            if (!target || (!target.agentId && !target.role && !target.expertise)) {
+                return { ok: false, detail: 'target must be {agentId} | {role} | {expertise}' };
+            }
+            const reason = typeof args['reason'] === 'string' ? args['reason'].trim() : '';
+            if (!reason) return { ok: false, detail: 'reason is required' };
+            try {
+                const invocation = await inv.invoke({
+                    source: 'human-expert-request',
+                    caller: { kind: 'human', id: 'assistant' },
+                    target: target as never,
+                    reason,
+                    context: {
+                        type: 'conversation',
+                        ref: String(args['context']?.ref ?? 'assistant'),
+                    },
+                    constraints: { mode: 'chat' },
+                });
+                return {
+                    ok: invocation.status !== 'rejected',
+                    detail: `Invocation ${invocation.id} ${invocation.status}`,
+                    evidence: `status: ${invocation.status}${invocation.rejectionReason ? ` | ${invocation.rejectionReason}` : ''}`,
+                    verification: 'verified',
+                };
+            } catch (e) {
+                return {
+                    ok: false,
+                    detail: `invocation failed: ${e instanceof Error ? e.message : String(e)}`,
+                };
+            }
+        },
+    });
+
+    actions.push({
+        id: 'agents.execute-group',
+        group: 'coordination',
+        description:
+            'Execute a group of agents (parallel/sequential/pipeline/consensus/debate). Requires an existing group id.',
+        parameters: {
+            type: 'object',
+            properties: {
+                groupId: { type: 'string', description: 'Group id from agents.list.' },
+                input: { type: 'string', description: 'Input for the group.' },
+            },
+            required: ['groupId'],
+        },
+        action: 'tool:exec',
+        run: async (args) => {
+            const agents = deps.agentsExecute;
+            if (!agents) return { ok: false, detail: 'agent execution is not available' };
+            const groupId = typeof args['groupId'] === 'string' ? args['groupId'].trim() : '';
+            if (!groupId) return { ok: false, detail: 'groupId is required' };
+            const input = typeof args['input'] === 'string' ? args['input'] : '';
+            try {
+                const results = await agents.executeGroup(groupId, input);
+                return {
+                    ok: results.length > 0,
+                    detail: `Group ${groupId}: ${results.length} step(s)`,
+                    evidence: results.join(' | '),
+                    verification: 'verified',
+                };
+            } catch (e) {
+                return {
+                    ok: false,
+                    detail: `execute-group failed: ${e instanceof Error ? e.message : String(e)}`,
+                };
+            }
         },
     });
 
