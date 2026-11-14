@@ -45,6 +45,11 @@ export interface AgemsTask {
     updatedAt: number;
     lockedBy?: string;
     lockedUntil?: number;
+    retryCount?: number;
+    maxRetries?: number;
+    nextRetryAt?: number;
+    parentId?: string;
+    lastRunAt?: number;
 }
 
 export interface TaskComment {

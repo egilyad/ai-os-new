@@ -1193,4 +1193,13 @@ export const EVENT_REGISTRY_GROUP_1 = {
             size: z.number().optional(),
         }),
     ),
+    TASK_TRIGGER_FIRED: event(
+        'task:trigger:fired',
+        z.object({
+            taskId: z.string(),
+            status: z.string(),
+            action: z.string(),
+            target: z.string().optional(),
+        }),
+    ),
 } as const;

@@ -714,6 +714,11 @@ export const AgemsTaskSchema = z.object({
     updatedAt: z.number(),
     lockedBy: z.string().optional(),
     lockedUntil: z.number().optional(),
+    retryCount: z.number().optional(),
+    maxRetries: z.number().optional(),
+    nextRetryAt: z.number().optional(),
+    parentId: z.string().optional(),
+    lastRunAt: z.number().optional(),
 });
 
 export const TaskCommentSchema = z.object({

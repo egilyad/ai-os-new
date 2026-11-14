@@ -36,6 +36,11 @@ export class AgemsTaskService {
             labels: input.labels ?? [],
             dueDate: input.dueDate,
             cronSchedule: input.cronSchedule,
+            retryCount: input.retryCount,
+            maxRetries: input.maxRetries,
+            nextRetryAt: input.nextRetryAt,
+            parentId: input.parentId,
+            lastRunAt: input.lastRunAt,
             createdAt: Date.now(),
             updatedAt: Date.now(),
         };
@@ -65,6 +70,12 @@ export class AgemsTaskService {
         if (!canTransition(existing.status, status))
             throw new TaskIllegalTransitionError(existing.status, status);
         const updated = await this.repo.updateStatus(id, status, actorId);
+        if (updated && status === 'FAILED' && updated.retryCount === undefined) {
+            await this.repo.updateFields(id, {
+                retryCount: 0,
+                maxRetries: updated.maxRetries ?? 3,
+            });
+        }
         this.emit('task:status:changed', {
             taskId: id,
             from: existing.status,

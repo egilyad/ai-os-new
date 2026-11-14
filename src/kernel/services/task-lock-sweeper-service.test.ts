@@ -75,4 +75,56 @@ describe('task-lock-sweeper-service', () => {
         expect(after?.status).toBe('IN_PROGRESS');
         expect(after?.lockedBy).toBe('agent-a');
     });
+
+    it('re-queues FAILED task with retry backoff (M5.3)', async () => {
+        const task = await service.create({
+            title: 'failed task',
+            type: 'ONE_TIME',
+            status: 'FAILED',
+            priority: 'MEDIUM',
+            retryCount: 0,
+            maxRetries: 3,
+        });
+
+        await sweeper.sweep();
+
+        const after = (await service.list()).find((t) => t.id === task.id);
+        expect(after?.status).toBe('PENDING');
+        expect(after?.retryCount).toBe(1);
+        expect(after?.nextRetryAt).toBeGreaterThan(Date.now());
+    });
+
+    it('does not retry beyond maxRetries (M5.3)', async () => {
+        const task = await service.create({
+            title: 'failed task',
+            type: 'ONE_TIME',
+            status: 'FAILED',
+            priority: 'MEDIUM',
+            retryCount: 3,
+            maxRetries: 3,
+        });
+
+        await sweeper.sweep();
+
+        const after = (await service.list()).find((t) => t.id === task.id);
+        expect(after?.status).toBe('FAILED');
+    });
+
+    it('spawns due RECURRING instances (M5.1)', async () => {
+        const recurring = await service.create({
+            title: 'daily digest',
+            type: 'RECURRING',
+            status: 'PENDING',
+            priority: 'MEDIUM',
+            cronSchedule: { kind: 'preset', preset: 'DAILY' },
+            lastRunAt: Date.now() - 2 * 24 * 60 * 60 * 1000,
+        });
+
+        await sweeper.sweep();
+
+        const all = await service.list();
+        const instances = all.filter((t) => t.parentId === recurring.id);
+        expect(instances).toHaveLength(1);
+        expect(instances[0]?.type).toBe('ONE_TIME');
+    });
 });
