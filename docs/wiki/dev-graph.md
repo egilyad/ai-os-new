@@ -17,9 +17,9 @@
 
 | Тип узла | Узлов |
 | --- | --- |
-| article | 370 |
+| article | 371 |
 | audit | 25 |
-| code | 722 |
+| code | 724 |
 | panel | 269 |
 | test | 242 |
 
@@ -28,11 +28,11 @@
 | audit_mention | 52 |
 | audit_test | 20 |
 | documents | 267 |
-| related | 1219 |
-| source | 1024 |
+| related | 1222 |
+| source | 1026 |
 | test | 353 |
 
-Всего: **1628** узлов, **2935** рёбер.
+Всего: **1631** узлов, **2940** рёбер.
 
 Виды связей: `related` (статья → статья), `source` (статья → файл кода),
 `test` (статья → тест), `documents` (панель → статья), `audit_mention`

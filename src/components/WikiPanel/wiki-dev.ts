@@ -907,6 +907,64 @@ Obsidian Vault — локальная папка с Markdown-файлами, к�
 «Открой SuperAgents OS, перейди в панель агентов, сделай скриншот, найди проблему, подготовь исправление» — \`computer_launch\` → \`computer_windows\` → \`computer_screenshot\` → \`computer_click\` → \`computer_type\`.`,
     },
     {
+        slug: 'dev-mcp-tools',
+        title: 'MCP-инструменты OpenCode: сводный каталог',
+        section: 'dev',
+        tags: ['dev', 'mcp', 'инструменты', 'opencode', 'каталог'],
+        freshness: 'documented',
+        sources: [
+            'opencode.jsonc',
+            'C:/Users/evgeny/.config/opencode/opencode.jsonc',
+            'C:/Users/evgeny/.agents/skills/context7-mcp/SKILL.md',
+        ],
+        related: [
+            'dev-codebase-memory-mcp',
+            'dev-computer-use',
+            'dev-obsidian-vault',
+            'dev-opencode-memory',
+            'dev-autonomy-governor',
+            'dev-deepwiki',
+        ],
+        body: `## Подключённые MCP-серверы
+
+| Сервер | Тип | Что даёт | Инструменты |
+| --- | --- | --- | --- |
+| **Context7** | remote | Актуальная документация библиотек/API | \`resolve-library-id\`, \`query-docs\` |
+| **Codebase Memory (CBM)** | local | Граф кода: символы, вызовы, архитектура | \`search_graph\`, \`trace_path\`, \`get_architecture\`, \`detect_changes\`, \`query_graph\` |
+| **desk-mcp (Computer Use)** | local | Управление рабочим столом Windows | \`computer_*\` (46 шт: экран, мышь, клавиатура, окна, OCR, UIA, браузер CDP) |
+| **Playwright** | local | Браузерная автоматизация | \`playwright_*\` |
+| **aios-tasks** | local | AGEMS-задачи для внешних агентов | \`task_list/get/create/next/claim/release/set_status/delete\` |
+
+## Команды OpenCode
+
+| Команда | Назначение |
+| --- | --- |
+| \`/context\` | Собрать контекст: git + сессии + контрольные точки + wiki |
+| \`/status\` | Снимок состояния проекта |
+| \`/checkpoint <slug>\` | Контрольная точка в docs/sessions/ |
+| \`/sessions <запрос>\` | Поиск по прошлым сессиям |
+| \`/wiki <тема>\` | Поиск статей по manifest.json |
+| \`/check\` | Уровни проверок L0-L4 |
+| \`/vault\`, \`/vault-draft\`, \`/vault-saving\` | Obsidian Vault: чтение, черновики |
+| \`/autonomy-status\`, \`/autonomy-next\`, \`/autonomy-complete\` | Autonomy Governor: автономная работа по плану |
+
+## Скрипты (scripts/opencode/)
+
+\`session-index\`, \`context-build\`, \`project-state\`, \`checkpoint\`, \`session-search\`, \`wiki-find\`, \`stats\`, \`autonomy-state\`, \`autonomy-next\`.
+
+## Установленные сторонние инструменты
+
+- **desk-mcp** (Computer Use): \`C:\\Users\\evgeny\\AppData\\Local\\Programs\\desk-mcp\` — требует исключение Defender (AMSI).
+- **Codebase Memory MCP**: \`C:\\Users\\evgeny\\AppData\\Local\\Programs\\codebase-memory-mcp\`.
+- **Context7**: remote MCP, API-ключ в глобальном конфиге.
+
+## Безопасность
+
+- Bash: всё allow, кроме необратимого (\`git reset --hard\`, \`rm -rf\`, \`format\`, \`*opencode.db*\`).
+- \`computer_launch\`/\`computer_close_window\` требуют \`confirm: true\`.
+- MCP-inструменты работают в рамках глобальных разрешений.`,
+    },
+    {
         slug: 'dev-deepwiki',
         title: 'DeepWiki: облачная техническая документация на английском',
         section: 'dev',

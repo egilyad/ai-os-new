@@ -3,16 +3,16 @@
   "generatedBy": "scripts/gen-docs-inventory.mjs",
   "scope": "git-tracked markdown: docs/**/*.md (excluding docs/new drafts and the self-report pages docs-health, docs-inventory) plus repository entry docs (root *.md, .superagents/**, src/kernel/DEPENDENCY_MAP.md)",
   "totals": {
-    "documents": 520,
+    "documents": 521,
     "byCategory": {
       "repo": 10,
       "top": 116,
       "audits": 25,
-      "wiki": 369
+      "wiki": 370
     },
     "byLanguage": {
       "en": 39,
-      "mixed": 137,
+      "mixed": 138,
       "ru": 344
     }
   },
@@ -2056,7 +2056,7 @@
       "language": "mixed",
       "title": "Матрица покрытия",
       "bytes": 8489,
-      "hash": "4706d60e72f72f6aa4fbd27db51f72e6224c8b23"
+      "hash": "b905f730eb6fd2a8dcfc114628b75618c055a9e6"
     },
     {
       "path": "docs/wiki/debate-strategies-cheatsheet.md",
@@ -2128,7 +2128,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4076,
-      "hash": "d5d4d31943bb9d34cd466698f7f14901eec8fb39"
+      "hash": "290ea0119ff2fde49a089c5a6bf812776a729118"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -2161,6 +2161,14 @@
       "title": "Разработчикам: компоненты и панели",
       "bytes": 2450,
       "hash": "52a3b24e22135234847f10a335e85e6ed69566e7"
+    },
+    {
+      "path": "docs/wiki/dev-computer-use.md",
+      "category": "wiki",
+      "language": "mixed",
+      "title": "Computer Use: управление рабочим столом Windows (desk-mcp)",
+      "bytes": 3435,
+      "hash": "0636fa95777078d6870a983d2b77648de809a53b"
     },
     {
       "path": "docs/wiki/dev-contracts.md",
@@ -2232,7 +2240,7 @@
       "language": "ru",
       "title": "Граф знаний",
       "bytes": 4836,
-      "hash": "3da32d55edfce648aad3516e3f297fb638254e87"
+      "hash": "62adf43b9a99bed74fe4b0c6adf7af75b2b4a0d0"
     },
     {
       "path": "docs/wiki/dev-history.md",
@@ -2471,8 +2479,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Карта документации",
-      "bytes": 57416,
-      "hash": "8fa432ef6d38082dc4bcfa720dc00872548bb2a7"
+      "bytes": 57526,
+      "hash": "c1070a0357bef8ab1497832bfe8c028ebe0094bc"
     },
     {
       "path": "docs/wiki/docs-standard.md",
@@ -3367,8 +3375,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Wiki SuperAgents OS",
-      "bytes": 37062,
-      "hash": "4b2fd95a7a10f478307fcc923bbd3ca1722e0b13"
+      "bytes": 37170,
+      "hash": "ad3fefeccff2b2a20b66906c128da4a21737706b"
     },
     {
       "path": "docs/wiki/record-a-skill.md",

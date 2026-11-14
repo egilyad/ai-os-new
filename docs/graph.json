@@ -3,22 +3,22 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 1631,
-    "edges": 2940,
+    "nodes": 1634,
+    "edges": 2949,
     "byType": {
       "audit": 25,
-      "code": 724,
+      "code": 726,
       "test": 242,
       "panel": 269,
-      "article": 371
+      "article": 372
     },
     "byKind": {
       "audit_test": 20,
       "audit_mention": 52,
       "documents": 267,
       "test": 353,
-      "source": 1026,
-      "related": 1222
+      "source": 1029,
+      "related": 1228
     }
   },
   "nodes": [
@@ -251,6 +251,16 @@
       "id": "file:AGENTS.md",
       "type": "code",
       "label": "AGENTS.md"
+    },
+    {
+      "id": "file:C:/Users/evgeny/.agents/skills/context7-mcp/SKILL.md",
+      "type": "code",
+      "label": "C:/Users/evgeny/.agents/skills/context7-mcp/SKILL.md"
+    },
+    {
+      "id": "file:C:/Users/evgeny/.config/opencode/opencode.jsonc",
+      "type": "code",
+      "label": "C:/Users/evgeny/.config/opencode/opencode.jsonc"
     },
     {
       "id": "file:C:/Users/evgeny/AppData/Local/Programs/desk-mcp/README.ru.md",
@@ -7840,6 +7850,13 @@
       "label": "Внешние библиотеки",
       "section": "dev",
       "status": "verified"
+    },
+    {
+      "id": "wiki:dev-mcp-tools",
+      "type": "article",
+      "label": "MCP-инструменты OpenCode: сводный каталог",
+      "section": "dev",
+      "status": "documented"
     },
     {
       "id": "wiki:dev-obsidian-vault",
@@ -18102,6 +18119,51 @@
     {
       "from": "wiki:dev-libraries",
       "to": "wiki:dev-scripts",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-mcp-tools",
+      "to": "file:C:/Users/evgeny/.agents/skills/context7-mcp/SKILL.md",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:dev-mcp-tools",
+      "to": "file:C:/Users/evgeny/.config/opencode/opencode.jsonc",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:dev-mcp-tools",
+      "to": "file:opencode.jsonc",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:dev-mcp-tools",
+      "to": "wiki:dev-autonomy-governor",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-mcp-tools",
+      "to": "wiki:dev-codebase-memory-mcp",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-mcp-tools",
+      "to": "wiki:dev-computer-use",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-mcp-tools",
+      "to": "wiki:dev-deepwiki",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-mcp-tools",
+      "to": "wiki:dev-obsidian-vault",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-mcp-tools",
+      "to": "wiki:dev-opencode-memory",
       "kind": "related"
     },
     {

@@ -5,7 +5,7 @@
 > Полная документация системы: панели, агенты, дебаты, память, провайдеры, диагностика, история разработки, архитектура и руководства для разработчиков.
 > Страницы автосгенерированы из корпуса Wiki (`scripts/gen-wiki-docs.mjs`). Та же документация доступна в приложении в панели «Wiki».
 
-Всего материалов: **371** в 13 разделах.
+Всего материалов: **372** в 13 разделах.
 
 > Разработчикам: начните с [Обзор для разработчиков](./dev-overview.md), затем [Структура](./dev-layout.md) и [Каталог компонентов](./dev-component-catalog.md).
 
@@ -25,7 +25,7 @@
 | Компоненты и сервисы | 75 |
 | Заметки | 5 |
 | Состояние разработки | 11 |
-| Разработчикам | 70 |
+| Разработчикам | 71 |
 
 ## Руководство (10)
 
@@ -364,7 +364,7 @@
 - [MD и другие файлы от разработки](./dev-status-files.md) — _needs-check_
 - [Отложенные работы и фичи](./deferred-works-features.md) — _needs-check_
 
-## Разработчикам (70)
+## Разработчикам (71)
 
 - [Аудит: запуск и выживание UI](./audit-type-bootstrap.md) — _verified_
 - [Аудит: сборка и целостность репозитория](./audit-type-build.md) — _verified_
@@ -410,6 +410,7 @@
 - [Obsidian Vault: рабочий буфер пользователя (интеграция)](./dev-obsidian-vault.md) — _documented_
 - [Autonomy Governor: автономная работа по плану](./dev-autonomy-governor.md) — _documented_
 - [Computer Use: управление рабочим столом Windows (desk-mcp)](./dev-computer-use.md) — _documented_
+- [MCP-инструменты OpenCode: сводный каталог](./dev-mcp-tools.md) — _documented_
 - [DeepWiki: облачная техническая документация на английском](./dev-deepwiki.md) — _documented_
 - [Codebase Memory MCP: граф кода для агентов](./dev-codebase-memory-mcp.md) — _verified_
 - [Каталог компонентов OS](./dev-component-catalog.md) — _verified_

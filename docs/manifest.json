@@ -65,7 +65,7 @@
     {
       "id": "dev",
       "title": "Разработчикам",
-      "articles": 70
+      "articles": 71
     }
   ],
   "articles": [
@@ -7485,6 +7485,36 @@
       "related": [
         "dev-overview",
         "dev-opencode-memory",
+        "dev-deepwiki"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:dev-mcp-tools",
+      "type": "article",
+      "slug": "dev-mcp-tools",
+      "title": "MCP-инструменты OpenCode: сводный каталог",
+      "section": "dev",
+      "status": "documented",
+      "tags": [
+        "dev",
+        "mcp",
+        "инструменты",
+        "opencode",
+        "каталог"
+      ],
+      "sources": [
+        "opencode.jsonc",
+        "C:/Users/evgeny/.config/opencode/opencode.jsonc",
+        "C:/Users/evgeny/.agents/skills/context7-mcp/SKILL.md"
+      ],
+      "related": [
+        "dev-codebase-memory-mcp",
+        "dev-computer-use",
+        "dev-obsidian-vault",
+        "dev-opencode-memory",
+        "dev-autonomy-governor",
         "dev-deepwiki"
       ],
       "reviewed": null,
