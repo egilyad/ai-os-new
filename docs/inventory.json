@@ -2120,7 +2120,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4076,
-      "hash": "711b203281fc7e90dfa3762ac4d528645d76f7ec"
+      "hash": "7869dac53f1bfec31c8a773c7b0b02982cfb1cfa"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -2456,7 +2456,7 @@
       "language": "mixed",
       "title": "Карта документации",
       "bytes": 57194,
-      "hash": "4a60ad9c5f674685c221ff373e7b0939e1d861a8"
+      "hash": "a75e916167eca52d69151da98cb4d9a7cc00b386"
     },
     {
       "path": "docs/wiki/docs-standard.md",
