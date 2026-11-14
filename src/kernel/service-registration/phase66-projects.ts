@@ -26,6 +26,8 @@ import { AutonomyRunner } from '../services/autonomy-runner';
 import { ProjectInvocationBridge } from '../services/project-invocation-bridge';
 import { ProjectGraphService } from '../services/project-graph/project-graph-service';
 import { ProjectGraphProjection } from '../services/project-graph/project-graph-projection';
+import { UnifiedProvenanceBridge } from '../services/trust/unified-provenance-bridge';
+import type { IProvenanceService } from '../contracts/trust';
 import { rootLogger } from '../services/logger-service';
 
 const LOGGER = rootLogger.child('Phase66Projects');
@@ -45,6 +47,14 @@ export const registerPhase66: Phase = ({ register }) => {
         );
         projection.start();
         return projection;
+    });
+
+    register('unifiedProvenanceBridge', (c: IContainer) => {
+        const bridge = new UnifiedProvenanceBridge({
+            provenance: c.get<IProvenanceService>('provenanceService'),
+        });
+        bridge.start();
+        return bridge;
     });
 
     register('projectManagerService', (c: IContainer) => {

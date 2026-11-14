@@ -59,19 +59,63 @@ export interface GovAssignment {
 
 export type SandboxLevel = 'isolated' | 'restricted' | 'standard' | 'trusted';
 
+export type ProvenanceNodeKind =
+    | 'decision'
+    | 'data'
+    | 'prompt'
+    | 'vote'
+    | 'toolcall'
+    | 'agent'
+    | 'project'
+    | 'task'
+    | 'goal'
+    | 'debate'
+    | 'knowledge'
+    | 'artifact'
+    | 'note'
+    | 'concept'
+    | 'requirement'
+    | 'document'
+    | 'research'
+    | 'codebase'
+    | 'website'
+    | 'subgraph';
+
 export interface ProvenanceNode {
     id: string;
-    kind: 'decision' | 'data' | 'prompt' | 'vote' | 'toolcall' | 'agent';
+    kind: ProvenanceNodeKind;
     label: string;
     ref?: string;
     createdAt: number;
 }
 
+export type ProvenanceEdgeRelation =
+    | 'derived_from'
+    | 'voted_by'
+    | 'executed_by'
+    | 'prompted_by'
+    | 'informed_by'
+    | 'contains'
+    | 'depends_on'
+    | 'created_from'
+    | 'implements'
+    | 'improves'
+    | 'contradicts'
+    | 'supports'
+    | 'connected_to'
+    | 'refines'
+    | 'extends'
+    | 'evidence_for'
+    | 'evidence_against'
+    | 'cites'
+    | 'assigned_to'
+    | 'produces';
+
 export interface ProvenanceEdge extends TemporalEdgeFields {
     id: string;
     fromId: string;
     toId: string;
-    relation: 'derived_from' | 'voted_by' | 'executed_by' | 'prompted_by' | 'informed_by';
+    relation: ProvenanceEdgeRelation;
     createdAt: number;
 }
 
