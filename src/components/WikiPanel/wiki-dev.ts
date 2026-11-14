@@ -947,10 +947,12 @@ Obsidian Vault — локальная папка с Markdown-файлами, к�
 | \`/check\` | Уровни проверок L0-L4 |
 | \`/vault\`, \`/vault-draft\`, \`/vault-saving\` | Obsidian Vault: чтение, черновики |
 | \`/autonomy-status\`, \`/autonomy-next\`, \`/autonomy-complete\` | Autonomy Governor: автономная работа по плану |
+| \`/import-roadmap <файл>\` | Парсит роадмап в задачи (кандидаты в AGEMS) |
+| \`/ci\` | Статус последних GitHub Actions ранов |
 
 ## Скрипты (scripts/opencode/)
 
-\`session-index\`, \`context-build\`, \`project-state\`, \`checkpoint\`, \`session-search\`, \`wiki-find\`, \`stats\`, \`autonomy-state\`, \`autonomy-next\`.
+\`session-index\`, \`context-build\`, \`project-state\`, \`checkpoint\`, \`session-search\`, \`wiki-find\`, \`stats\`, \`autonomy-state\`, \`autonomy-next\`, \`import-roadmap\`, \`ci-status\`.
 
 ## Установленные сторонние инструменты
 

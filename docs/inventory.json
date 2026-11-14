@@ -2128,7 +2128,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4076,
-      "hash": "87dd32477ab0fca40e689909761e3afa038e9f70"
+      "hash": "f009bac97261eb43b0f493637199cedc57f6c170"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -2287,8 +2287,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "MCP-инструменты OpenCode: сводный каталог",
-      "bytes": 3898,
-      "hash": "c2e2b62ea0c6b6cd414fb7981bf8ba183c341943"
+      "bytes": 4108,
+      "hash": "d51b99d7445dee300dfa8237a6c0a99a0cba76aa"
     },
     {
       "path": "docs/wiki/dev-obsidian-vault.md",
@@ -2488,7 +2488,7 @@
       "language": "mixed",
       "title": "Карта документации",
       "bytes": 57618,
-      "hash": "5a56551a0e96d570c05b18a0a056b3ab4db33549"
+      "hash": "5fe1aa4ecff58e03cdee34986645d1ed4845245a"
     },
     {
       "path": "docs/wiki/docs-standard.md",
