@@ -105,6 +105,31 @@ describe('ProjectGraphProjection', () => {
         );
     });
 
+    it('graph step node on GRAPH_NODE after GRAPH_STARTED', async () => {
+        eventBus.emit(EVENTS.GRAPH_STARTED as never, {
+            runId: 'r1',
+            graphId: 'g1',
+            projectId: 'p1',
+        });
+        await new Promise((r) => setTimeout(r, 30));
+        eventBus.emit(EVENTS.GRAPH_NODE as never, {
+            runId: 'r1',
+            nodeId: 'n-exec',
+            kind: 'task',
+        });
+        await new Promise((r) => setTimeout(r, 30));
+        expect(graph.upsertNode).toHaveBeenCalledWith(
+            expect.objectContaining({ kind: 'task', refId: 'n-exec' }),
+        );
+        expect(graph.link).toHaveBeenCalledWith(
+            expect.objectContaining({
+                from: 'node-subgraph',
+                to: 'node-task',
+                relation: 'contains',
+            }),
+        );
+    });
+
     it('goal node on AUTONOMY_GOAL_CREATED', async () => {
         eventBus.emit(EVENTS.AUTONOMY_GOAL_CREATED as never, {
             projectId: 'p1',

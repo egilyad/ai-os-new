@@ -12,6 +12,7 @@ const LOGGER = rootLogger.child('ProjectGraphProjection');
  */
 export class ProjectGraphProjection {
     private unsubscribe: Array<() => void> = [];
+    private runIndex = new Map<string, { projectId: string; nodeId: string }>();
 
     constructor(private graph: ProjectGraphService) {}
 
@@ -166,10 +167,43 @@ export class ProjectGraphProjection {
                             to: graphNode.id,
                             relation: 'contains',
                         });
+                        this.runIndex.set(data.runId!, {
+                            projectId: data.projectId!,
+                            nodeId: graphNode.id,
+                        });
                     } catch (e) {
                         LOGGER.warn('ProjectGraphProjection', 'graph run node failed', {
                             error: e,
                         });
+                    }
+                })();
+            }),
+        );
+
+        this.unsubscribe.push(
+            eventBus.on(EVENTS.GRAPH_NODE as never, (d) => {
+                const data = d as { runId?: string; nodeId?: string; kind?: string };
+                if (!data.runId || !data.nodeId) return;
+                const run = this.runIndex.get(data.runId);
+                if (!run) return;
+                void (async () => {
+                    try {
+                        const stepNode = await this.graph.upsertNode({
+                            projectId: run.projectId,
+                            kind: 'task',
+                            label: data.nodeId!,
+                            refType: 'graph-node',
+                            refId: data.nodeId,
+                            payload: data.kind ? { graphKind: data.kind } : undefined,
+                        });
+                        await this.graph.link({
+                            projectId: run.projectId,
+                            from: run.nodeId,
+                            to: stepNode.id,
+                            relation: 'contains',
+                        });
+                    } catch (e) {
+                        LOGGER.warn('ProjectGraphProjection', 'graph node failed', { error: e });
                     }
                 })();
             }),
