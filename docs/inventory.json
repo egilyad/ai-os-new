@@ -3,16 +3,16 @@
   "generatedBy": "scripts/gen-docs-inventory.mjs",
   "scope": "git-tracked markdown: docs/**/*.md (excluding docs/new drafts and the self-report pages docs-health, docs-inventory) plus repository entry docs (root *.md, .superagents/**, src/kernel/DEPENDENCY_MAP.md)",
   "totals": {
-    "documents": 521,
+    "documents": 522,
     "byCategory": {
       "repo": 10,
       "top": 116,
       "audits": 25,
-      "wiki": 370
+      "wiki": 371
     },
     "byLanguage": {
       "en": 39,
-      "mixed": 138,
+      "mixed": 139,
       "ru": 344
     }
   },
@@ -2056,7 +2056,7 @@
       "language": "mixed",
       "title": "Матрица покрытия",
       "bytes": 8489,
-      "hash": "b905f730eb6fd2a8dcfc114628b75618c055a9e6"
+      "hash": "fba012b07a6dbca7c85bb9bcccf8e3eac77b1933"
     },
     {
       "path": "docs/wiki/debate-strategies-cheatsheet.md",
@@ -2128,7 +2128,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4076,
-      "hash": "290ea0119ff2fde49a089c5a6bf812776a729118"
+      "hash": "87dd32477ab0fca40e689909761e3afa038e9f70"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -2240,7 +2240,7 @@
       "language": "ru",
       "title": "Граф знаний",
       "bytes": 4836,
-      "hash": "62adf43b9a99bed74fe4b0c6adf7af75b2b4a0d0"
+      "hash": "4b659d16ed053ee4c7c8450ed42ca93b72441610"
     },
     {
       "path": "docs/wiki/dev-history.md",
@@ -2281,6 +2281,14 @@
       "title": "Внешние библиотеки",
       "bytes": 3697,
       "hash": "72b24a2d07f269e55d244cbbed9bc843efa52511"
+    },
+    {
+      "path": "docs/wiki/dev-mcp-tools.md",
+      "category": "wiki",
+      "language": "mixed",
+      "title": "MCP-инструменты OpenCode: сводный каталог",
+      "bytes": 3898,
+      "hash": "c2e2b62ea0c6b6cd414fb7981bf8ba183c341943"
     },
     {
       "path": "docs/wiki/dev-obsidian-vault.md",
@@ -2479,8 +2487,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Карта документации",
-      "bytes": 57526,
-      "hash": "c1070a0357bef8ab1497832bfe8c028ebe0094bc"
+      "bytes": 57618,
+      "hash": "5a56551a0e96d570c05b18a0a056b3ab4db33549"
     },
     {
       "path": "docs/wiki/docs-standard.md",
