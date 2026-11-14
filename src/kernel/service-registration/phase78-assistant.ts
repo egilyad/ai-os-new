@@ -36,6 +36,7 @@ import { agemsTaskService } from '../services/agems-task-service';
 import { createAssistantAdminActions } from '../services/assistant/assistant-admin-actions';
 import { AssistantService } from '../services/assistant/assistant-service';
 import type { OrchestrationService } from '../services/orchestration-service';
+import type { ProjectGraphService } from '../services/project-graph/project-graph-service';
 import type { MetricsService } from '../services/metrics-service';
 import type { TraceService } from '../services/trace-service';
 import type { RoleService } from '../services/role-service';
@@ -228,6 +229,9 @@ export const registerPhase78: Phase = ({ register }) => {
             delete(id: string): Promise<boolean>;
             validateCron?(cron: string): boolean;
         }>('schedulerService');
+        const projectGraphSvc = c.has('projectGraphService')
+            ? c.get<ProjectGraphService>('projectGraphService')
+            : null;
         const providerTracker = optional<{
             getProviderRankings(catalogProviders?: string[]): Array<{
                 provider: string;
@@ -441,6 +445,20 @@ export const registerPhase78: Phase = ({ register }) => {
                           ): Promise<Array<{ id: string; kind: string; label: string }>>;
                       }>('projectGraphService')
                     : undefined,
+                graphF6: projectGraphSvc
+                    ? {
+                          proposeNode: (input, confidence) =>
+                              projectGraphSvc.proposeNode(
+                                  input as Parameters<ProjectGraphService['proposeNode']>[0],
+                                  confidence,
+                              ),
+                          activateNode: (id) => projectGraphSvc.activateNode(id),
+                          supersedeNode: (id) => projectGraphSvc.supersedeNode(id),
+                          listPotential: (projectId) => projectGraphSvc.listPotential(projectId),
+                          promoteEdge: (id) => projectGraphSvc.promoteEdge(id),
+                      }
+                    : undefined,
+
                 providers: providerTracker
                     ? {
                           rankings: (installed) => providerTracker.getProviderRankings(installed),

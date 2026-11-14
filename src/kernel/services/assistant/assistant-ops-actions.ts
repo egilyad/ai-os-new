@@ -134,6 +134,30 @@ export interface AssistantOpsDeps {
         }>;
         checkHypothesis(id: string): Promise<{ ok: boolean; evidence: string[]; message: string }>;
     };
+    /** F6 — Knowledge Potential Graph lifecycle (propose/activate/supersede). */
+    graphF6?: {
+        proposeNode(
+            input: {
+                projectId: string;
+                kind: string;
+                label: string;
+                refType?: string;
+                refId?: string;
+                payload?: Record<string, unknown>;
+            },
+            confidence?: number,
+        ): Promise<{ id: string; status?: string }>;
+        activateNode(id: string): Promise<{ id: string; status?: string } | undefined>;
+        supersedeNode(id: string): Promise<{ id: string; status?: string } | undefined>;
+        listPotential(projectId: string): Promise<
+            Array<{
+                node: { id: string; label: string; kind: string };
+                edges: Array<{ id: string; relation: string }>;
+            }>
+        >;
+        promoteEdge(id: string): Promise<{ id: string; status?: string } | undefined>;
+    };
+
     /** M3.1 ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â Projects subsystem (read). */
     projects?: {
         list(): Promise<
@@ -855,6 +879,7 @@ export function createAssistantOpsActions(deps: AssistantOpsDeps): AssistantActi
         },
         action: 'tool:read',
         run: async (args) => {
+            const text = (v: unknown): string => (typeof v === 'string' ? v.trim() : '');
             const graph = deps.graph;
             if (!graph) return { ok: false, detail: 'project graph is not available' };
             const projectId = text(args['projectId']);
@@ -967,6 +992,7 @@ export function createAssistantOpsActions(deps: AssistantOpsDeps): AssistantActi
         parameters: { type: 'object', properties: { id: { type: 'string' } }, required: ['id'] },
         action: 'tool:read',
         run: async (args) => {
+            const text = (v: unknown): string => (typeof v === 'string' ? v.trim() : '');
             if (!deps.projects) return { ok: false, detail: 'projects subsystem is not available' };
             const id = text(args['id']);
             if (!id) return { ok: false, detail: 'id is required' };
@@ -999,6 +1025,7 @@ export function createAssistantOpsActions(deps: AssistantOpsDeps): AssistantActi
         },
         action: 'tool:read',
         run: async (args) => {
+            const text = (v: unknown): string => (typeof v === 'string' ? v.trim() : '');
             if (!deps.forum) return { ok: false, detail: 'forum subsystem is not available' };
             try {
                 const topics = await deps.forum.listTopics({
@@ -1035,6 +1062,7 @@ export function createAssistantOpsActions(deps: AssistantOpsDeps): AssistantActi
         },
         action: 'tool:read',
         run: async (args) => {
+            const text = (v: unknown): string => (typeof v === 'string' ? v.trim() : '');
             if (!deps.forum) return { ok: false, detail: 'forum subsystem is not available' };
             const topicId = text(args['topicId']);
             if (!topicId) return { ok: false, detail: 'topicId is required' };
@@ -1071,6 +1099,7 @@ export function createAssistantOpsActions(deps: AssistantOpsDeps): AssistantActi
         },
         action: 'tool:read',
         run: async (args) => {
+            const text = (v: unknown): string => (typeof v === 'string' ? v.trim() : '');
             if (!deps.wikiResearch) return { ok: false, detail: 'wiki research is not available' };
             const question = text(args['question']);
             if (!question) return { ok: false, detail: 'question is required' };
@@ -1082,7 +1111,9 @@ export function createAssistantOpsActions(deps: AssistantOpsDeps): AssistantActi
                     .join(' | ');
                 return {
                     ok: result.status === 'completed',
-                    detail: result.summary ? result.summary.slice(0, 400) : esearch,
+                    detail: result.summary
+                        ? result.summary.slice(0, 400)
+                        : `research ${result.status}`,
                     evidence: sourceList || 'no sources',
                     verification: 'verified',
                 };
@@ -1094,5 +1125,151 @@ export function createAssistantOpsActions(deps: AssistantOpsDeps): AssistantActi
             }
         },
     });
+    actions.push({
+        id: 'graph.propose',
+        group: 'research',
+        description:
+            'Propose a knowledge node (hypothesis) in the project graph with a confidence score.',
+        parameters: {
+            type: 'object',
+            properties: {
+                projectId: { type: 'string' },
+                kind: { type: 'string' },
+                label: { type: 'string' },
+                refType: { type: 'string' },
+                refId: { type: 'string' },
+                confidence: { type: 'number', description: '0..1' },
+            },
+            required: ['projectId', 'kind', 'label'],
+        },
+        action: 'tool:write',
+        run: async (args) => {
+            const text = (v: unknown): string => (typeof v === 'string' ? v.trim() : '');
+            const graph = deps.graphF6;
+            if (!graph) return { ok: false, detail: 'project graph is not available' };
+            try {
+                const node = await graph.proposeNode(
+                    {
+                        projectId: text(args['projectId']),
+                        kind: text(args['kind']),
+                        label: text(args['label']),
+                        refType: text(args['refType']) || undefined,
+                        refId: text(args['refId']) || undefined,
+                    },
+                    typeof args['confidence'] === 'number' ? args['confidence'] : 0.5,
+                );
+                if (!node) return { ok: false, detail: 'failed to propose node' };
+                return {
+                    ok: true,
+                    detail: `proposed ${node.id} (${node.status ?? 'proposed'})`,
+                    evidence: node.id,
+                    verification: 'verified',
+                };
+            } catch (e) {
+                return {
+                    ok: false,
+                    detail: `graph.propose failed: ${e instanceof Error ? e.message : String(e)}`,
+                };
+            }
+        },
+    });
+
+    actions.push({
+        id: 'graph.potential',
+        group: 'research',
+        description: 'List knowledge-potential (proposed) nodes of a project with their edges.',
+        parameters: {
+            type: 'object',
+            properties: { projectId: { type: 'string' } },
+            required: ['projectId'],
+        },
+        action: 'tool:read',
+        run: async (args) => {
+            const text = (v: unknown): string => (typeof v === 'string' ? v.trim() : '');
+            const graph = deps.graphF6;
+            if (!graph) return { ok: false, detail: 'project graph is not available' };
+            try {
+                const potential = await graph.listPotential(text(args['projectId']));
+                const summary = potential
+                    .slice(0, 30)
+                    .map((p) => `${p.node.label} [${p.node.id}]`)
+                    .join(' | ');
+                return {
+                    ok: true,
+                    detail: `${potential.length} potential node(s)`,
+                    evidence: summary || 'none',
+                    verification: 'verified',
+                };
+            } catch (e) {
+                return {
+                    ok: false,
+                    detail: `graph.potential failed: ${e instanceof Error ? e.message : String(e)}`,
+                };
+            }
+        },
+    });
+
+    actions.push({
+        id: 'graph.activate',
+        group: 'research',
+        description: 'Promote a proposed graph node to active (validated).',
+        parameters: {
+            type: 'object',
+            properties: { nodeId: { type: 'string' } },
+            required: ['nodeId'],
+        },
+        action: 'tool:write',
+        run: async (args) => {
+            const text = (v: unknown): string => (typeof v === 'string' ? v.trim() : '');
+            const graph = deps.graphF6;
+            if (!graph) return { ok: false, detail: 'project graph is not available' };
+            try {
+                const node = await graph.activateNode(text(args['nodeId']));
+                if (!node) return { ok: false, detail: 'node not found' };
+                return {
+                    ok: true,
+                    detail: `${node.id} -> ${node.status}`,
+                    verification: 'verified',
+                };
+            } catch (e) {
+                return {
+                    ok: false,
+                    detail: `graph.activate failed: ${e instanceof Error ? e.message : String(e)}`,
+                };
+            }
+        },
+    });
+
+    actions.push({
+        id: 'graph.supersede',
+        group: 'research',
+        description: 'Mark a graph node as superseded.',
+        parameters: {
+            type: 'object',
+            properties: { nodeId: { type: 'string' } },
+            required: ['nodeId'],
+        },
+        action: 'tool:write',
+        run: async (args) => {
+            const text = (v: unknown): string => (typeof v === 'string' ? v.trim() : '');
+            const graph = deps.graphF6;
+            if (!graph) return { ok: false, detail: 'project graph is not available' };
+            try {
+                const node = await graph.supersedeNode(text(args['nodeId']));
+                if (!node) return { ok: false, detail: 'node not found' };
+                return {
+                    ok: true,
+                    detail: `${node.id} -> ${node.status}`,
+                    verification: 'verified',
+                };
+            } catch (e) {
+                return {
+                    ok: false,
+                    detail: `graph.supersede failed: ${e instanceof Error ? e.message : String(e)}`,
+                };
+            }
+        },
+    });
+
     return actions;
 }

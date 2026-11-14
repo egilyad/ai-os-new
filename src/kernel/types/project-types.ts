@@ -153,6 +153,12 @@ export type ProjectGraphNodeKind =
     | 'artifact'
     | 'subgraph';
 
+/**
+ * F6 — Knowledge Potential Graph lifecycle status.
+ * proposed → active (validated) → superseded.
+ */
+export type ProjectGraphStatus = 'proposed' | 'active' | 'superseded';
+
 export interface ProjectGraphNode {
     id: string;
     projectId: string;
@@ -161,6 +167,9 @@ export interface ProjectGraphNode {
     refType?: string;
     refId?: string;
     payload?: Record<string, unknown>;
+    status?: ProjectGraphStatus;
+    /** 0..1 — how confident we are (used for proposed nodes) */
+    confidence?: number;
     createdAt: number;
     updatedAt: number;
 }
@@ -193,6 +202,9 @@ export interface ProjectGraphEdge {
     relation: ProjectGraphRelation;
     weight: number;
     label?: string;
+    status?: ProjectGraphStatus;
+    /** 0..1 — evidential strength of the relation */
+    strength?: number;
     validFrom?: number;
     validTo?: number;
     createdAt: number;

@@ -139,6 +139,65 @@ export class ProjectGraphService {
         return out;
     }
 
+    /**
+     * F6 — Knowledge Potential Graph: nodes are born as 'proposed'
+     * (hypothesis), get validated into 'active', then may be 'superseded'.
+     */
+    async proposeNode(input: AddNodeInput, confidence = 0.5): Promise<ProjectGraphNode> {
+        const node = await this.upsertNode(input);
+        const updated: ProjectGraphNode = {
+            ...node,
+            status: node.status ?? 'proposed',
+            confidence: node.confidence ?? confidence,
+            updatedAt: Date.now(),
+        };
+        await this.repo.putNode(updated);
+        return updated;
+    }
+
+    async activateNode(nodeId: string): Promise<ProjectGraphNode | undefined> {
+        return this.setNodeStatus(nodeId, 'active');
+    }
+
+    async supersedeNode(nodeId: string): Promise<ProjectGraphNode | undefined> {
+        return this.setNodeStatus(nodeId, 'superseded');
+    }
+
+    private async setNodeStatus(
+        nodeId: string,
+        status: NonNullable<ProjectGraphNode['status']>,
+    ): Promise<ProjectGraphNode | undefined> {
+        const node = await this.repo.getNode(nodeId);
+        if (!node) return undefined;
+        const updated = { ...node, status, updatedAt: Date.now() };
+        await this.repo.putNode(updated);
+        return updated;
+    }
+
+    /** F6 — everything that is proposed (knowledge potential), with incident edges. */
+    async listPotential(
+        projectId: string,
+    ): Promise<Array<{ node: ProjectGraphNode; edges: ProjectGraphEdge[] }>> {
+        const [nodes, edges] = await Promise.all([
+            this.repo.listNodes({ projectId }),
+            this.repo.listEdges(projectId),
+        ]);
+        return nodes
+            .filter((n) => n.status === 'proposed')
+            .map((node) => ({
+                node,
+                edges: edges.filter((e) => e.from === node.id || e.to === node.id),
+            }));
+    }
+
+    async promoteEdge(edgeId: string): Promise<ProjectGraphEdge | undefined> {
+        const edge = (await this.repo.listEdges()).find((e) => e.id === edgeId);
+        if (!edge) return undefined;
+        const updated = { ...edge, status: 'active' as const, updatedAt: Date.now() };
+        await this.repo.putEdge(updated);
+        return updated;
+    }
+
     async listProject(
         projectId: string,
     ): Promise<{ nodes: ProjectGraphNode[]; edges: ProjectGraphEdge[] }> {
