@@ -23,6 +23,17 @@ interface TaskDetailModalProps {
     onUpdate: (updated: AgemsTask) => void;
 }
 
+const fieldStyle: React.CSSProperties = {
+    flex: 1,
+    minWidth: 100,
+    padding: '6px 10px',
+    borderRadius: 8,
+    border: '1px solid var(--border)',
+    background: 'var(--bg-elevated)',
+    fontSize: 12,
+    color: 'inherit',
+};
+
 export default function TaskDetailModal({ task, onClose, onUpdate }: TaskDetailModalProps) {
     const [comments, setComments] = useState<TaskComment[]>([]);
     const [allLabels, setAllLabels] = useState<Label[]>([]);
@@ -35,6 +46,41 @@ export default function TaskDetailModal({ task, onClose, onUpdate }: TaskDetailM
     const [newWpName, setNewWpName] = useState('');
     const [newTriggerAction, setNewTriggerAction] = useState('');
     const [newTriggerStatus, setNewTriggerStatus] = useState<AgemsTask['status']>('COMPLETED');
+    const [editDraft, setEditDraft] = useState({
+        title: task.title,
+        description: task.description ?? '',
+        priority: task.priority,
+        type: task.type,
+        assigneeId: task.assigneeId ?? '',
+        dueDate: task.dueDate ? new Date(task.dueDate).toISOString().slice(0, 16) : '',
+        maxRetries: task.maxRetries ?? 3,
+    });
+    const [editing, setEditing] = useState(false);
+    const [saving, setSaving] = useState(false);
+    const [saveError, setSaveError] = useState<string | null>(null);
+
+    const saveFields = async () => {
+        setSaving(true);
+        setSaveError(null);
+        try {
+            const patch: Partial<AgemsTask> = {
+                title: editDraft.title.trim(),
+                description: editDraft.description.trim() || undefined,
+                priority: editDraft.priority,
+                type: editDraft.type,
+                assigneeId: editDraft.assigneeId.trim() || undefined,
+                dueDate: editDraft.dueDate ? new Date(editDraft.dueDate).getTime() : undefined,
+                maxRetries: Math.max(0, Number(editDraft.maxRetries) || 0),
+            };
+            const updated = await agemsTaskService.updateFields(task.id, patch);
+            if (updated) onUpdate(updated);
+            setEditing(false);
+        } catch (e) {
+            setSaveError(e instanceof Error ? e.message : String(e));
+        } finally {
+            setSaving(false);
+        }
+    };
 
     useEffect(() => {
         const db = getDexieDb();
@@ -80,7 +126,6 @@ export default function TaskDetailModal({ task, onClose, onUpdate }: TaskDetailM
         const tl: TaskLabel = { taskId: task.id, labelId };
         await db.taskLabels.add(tl as never);
         setTaskLabelIds((prev) => [...prev, labelId]);
-        setNewTaskLabelIds_on_task((prev) => [...prev, labelId]);
         setNewLabelName('');
     };
 
@@ -88,10 +133,7 @@ export default function TaskDetailModal({ task, onClose, onUpdate }: TaskDetailM
         const db = getDexieDb();
         await db.taskLabels.where({ taskId: task.id, labelId }).delete();
         setTaskLabelIds((prev) => prev.filter((id) => id !== labelId));
-        setNewTaskLabelIds_on_task((prev) => prev.filter((id) => id !== labelId));
     };
-
-    const [, setNewTaskLabelIds_on_task] = useState<number[]>(taskLabelIds);
 
     const lock = async () => {
         await agemsTaskService.claimTask(task.id, 'current', 300000);
@@ -696,12 +738,166 @@ export default function TaskDetailModal({ task, onClose, onUpdate }: TaskDetailM
                     </div>
                 </div>
 
-                {/* Description */}
-                {task.description && (
-                    <div style={{ fontSize: 12, color: 'var(--slate-400)', lineHeight: 1.5 }}>
-                        {task.description}
+                {/* Edit fields (AGEMS M4) */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                    <div
+                        style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                        }}
+                    >
+                        <span style={{ fontWeight: 700, fontSize: 12 }}>Task</span>
+                        <button
+                            onClick={() => {
+                                if (editing) {
+                                    setEditDraft({
+                                        title: task.title,
+                                        description: task.description ?? '',
+                                        priority: task.priority,
+                                        type: task.type,
+                                        assigneeId: task.assigneeId ?? '',
+                                        dueDate: task.dueDate
+                                            ? new Date(task.dueDate).toISOString().slice(0, 16)
+                                            : '',
+                                        maxRetries: task.maxRetries ?? 3,
+                                    });
+                                }
+                                setEditing((e) => !e);
+                                setSaveError(null);
+                            }}
+                            style={{
+                                padding: '4px 10px',
+                                borderRadius: 6,
+                                border: '1px solid rgba(59,130,246,0.3)',
+                                background: editing ? 'rgba(59,130,246,0.15)' : 'transparent',
+                                color: '#60a5fa',
+                                fontSize: 11,
+                                cursor: 'pointer',
+                            }}
+                        >
+                            {editing ? 'Cancel' : 'Edit'}
+                        </button>
                     </div>
-                )}
+
+                    {editing ? (
+                        <>
+                            <input
+                                value={editDraft.title}
+                                onChange={(e) =>
+                                    setEditDraft((d) => ({ ...d, title: e.target.value }))
+                                }
+                                placeholder="Title"
+                                style={fieldStyle}
+                            />
+                            <textarea
+                                value={editDraft.description}
+                                onChange={(e) =>
+                                    setEditDraft((d) => ({ ...d, description: e.target.value }))
+                                }
+                                placeholder="Description"
+                                rows={3}
+                                style={{ ...fieldStyle, resize: 'vertical', minHeight: 56 }}
+                            />
+                            <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                                <select
+                                    value={editDraft.priority}
+                                    onChange={(e) =>
+                                        setEditDraft((d) => ({
+                                            ...d,
+                                            priority: e.target.value as AgemsTask['priority'],
+                                        }))
+                                    }
+                                    style={fieldStyle}
+                                >
+                                    {['LOW', 'MEDIUM', 'HIGH', 'CRITICAL'].map((p) => (
+                                        <option key={p} value={p}>
+                                            {p}
+                                        </option>
+                                    ))}
+                                </select>
+                                <select
+                                    value={editDraft.type}
+                                    onChange={(e) =>
+                                        setEditDraft((d) => ({
+                                            ...d,
+                                            type: e.target.value as AgemsTask['type'],
+                                        }))
+                                    }
+                                    style={fieldStyle}
+                                >
+                                    {['ONE_TIME', 'RECURRING', 'CONTINUOUS'].map((tp) => (
+                                        <option key={tp} value={tp}>
+                                            {tp}
+                                        </option>
+                                    ))}
+                                </select>
+                                <input
+                                    value={editDraft.assigneeId}
+                                    onChange={(e) =>
+                                        setEditDraft((d) => ({ ...d, assigneeId: e.target.value }))
+                                    }
+                                    placeholder="Assignee id"
+                                    style={fieldStyle}
+                                />
+                                <input
+                                    type="datetime-local"
+                                    value={editDraft.dueDate}
+                                    onChange={(e) =>
+                                        setEditDraft((d) => ({ ...d, dueDate: e.target.value }))
+                                    }
+                                    style={fieldStyle}
+                                />
+                                <input
+                                    type="number"
+                                    value={editDraft.maxRetries}
+                                    onChange={(e) =>
+                                        setEditDraft((d) => ({
+                                            ...d,
+                                            maxRetries: Number(e.target.value),
+                                        }))
+                                    }
+                                    min={0}
+                                    title="Max retries"
+                                    style={{ ...fieldStyle, width: 72 }}
+                                />
+                            </div>
+                            {saveError && (
+                                <div style={{ fontSize: 11, color: 'var(--error)' }}>
+                                    {saveError}
+                                </div>
+                            )}
+                            <button
+                                onClick={() => void saveFields()}
+                                disabled={saving || !editDraft.title.trim()}
+                                style={{
+                                    padding: '6px 12px',
+                                    borderRadius: 8,
+                                    border: 'none',
+                                    background:
+                                        saving || !editDraft.title.trim()
+                                            ? 'rgba(255,255,255,0.08)'
+                                            : '#3b82f6',
+                                    color: 'white',
+                                    fontWeight: 700,
+                                    fontSize: 12,
+                                    cursor:
+                                        saving || !editDraft.title.trim()
+                                            ? 'not-allowed'
+                                            : 'pointer',
+                                }}
+                            >
+                                {saving ? 'Saving…' : 'Save'}
+                            </button>
+                        </>
+                    ) : (
+                        <div style={{ fontSize: 12, color: 'var(--slate-400)', lineHeight: 1.5 }}>
+                            {task.description || (
+                                <em style={{ color: 'var(--slate-600)' }}>No description</em>
+                            )}
+                        </div>
+                    )}
+                </div>
             </div>
         </div>
     );
