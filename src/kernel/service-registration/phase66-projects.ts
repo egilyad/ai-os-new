@@ -24,6 +24,7 @@ import { ProjectDebateIntegration } from '../services/project-debate-integration
 import { AutonomyOrchestrator } from '../services/autonomy-orchestrator';
 import { AutonomyRunner } from '../services/autonomy-runner';
 import { ProjectInvocationBridge } from '../services/project-invocation-bridge';
+import { ProjectGraphService } from '../services/project-graph/project-graph-service';
 import { rootLogger } from '../services/logger-service';
 
 const LOGGER = rootLogger.child('Phase66Projects');
@@ -31,6 +32,10 @@ const LOGGER = rootLogger.child('Phase66Projects');
 export const registerPhase66: Phase = ({ register }) => {
     register('projectRepository', (c: IContainer) => {
         return new ProjectRepository(c.get<DatabaseService>('database'));
+    });
+
+    register('projectGraphService', () => {
+        return new ProjectGraphService();
     });
 
     register('projectManagerService', (c: IContainer) => {
@@ -51,21 +56,19 @@ export const registerPhase66: Phase = ({ register }) => {
         return new AgentProjectRuntime(
             c.get('projectManagerService'),
             c.get('projectWorkspaceService'),
-            c.has('toolRunnerService') ? c.get('toolRunnerService') : { runWithTools: async () => ({ output: 'stub' }) },
+            c.has('toolRunnerService')
+                ? c.get('toolRunnerService')
+                : { runWithTools: async () => ({ output: 'stub' }) },
             c.get<IEventBus>('eventBus'),
         );
     });
 
     register('websitePreviewService', (c: IContainer) => {
-        return new WebsitePreviewService(
-            c.get('projectWorkspaceService'),
-        );
+        return new WebsitePreviewService(c.get('projectWorkspaceService'));
     });
 
     register('browserInspectorService', (c: IContainer) => {
-        return new BrowserInspectorService(
-            c.get('projectWorkspaceService'),
-        );
+        return new BrowserInspectorService(c.get('projectWorkspaceService'));
     });
 
     register('multiAgentProjectService', (c: IContainer) => {
@@ -76,15 +79,11 @@ export const registerPhase66: Phase = ({ register }) => {
     });
 
     register('pythonRunnerService', (c: IContainer) => {
-        return new PythonRunnerService(
-            c.get('projectWorkspaceService'),
-        );
+        return new PythonRunnerService(c.get('projectWorkspaceService'));
     });
 
     register('projectObservabilityService', (c: IContainer) => {
-        return new ProjectObservabilityService(
-            c.get<IEventBus>('eventBus'),
-        );
+        return new ProjectObservabilityService(c.get<IEventBus>('eventBus'));
     });
 
     register('projectMemoryService', (c: IContainer) => {
@@ -108,7 +107,9 @@ export const registerPhase66: Phase = ({ register }) => {
         const service = new ProjectMemoryService(store);
         service
             .init()
-            .catch((e: unknown) => LOGGER.warn('Phase66', 'ProjectMemoryService.init failed', { error: e }));
+            .catch((e: unknown) =>
+                LOGGER.warn('Phase66', 'ProjectMemoryService.init failed', { error: e }),
+            );
         return service;
     });
 

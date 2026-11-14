@@ -323,6 +323,37 @@ export const registerPhase78: Phase = ({ register }) => {
                 agentsExecute: agentService
                     ? { executeGroup: (id, input) => agentService.executeGroup(id, input) }
                     : undefined,
+                graph: c.has('projectGraphService')
+                    ? c.get<{
+                          listProject(projectId: string): Promise<{
+                              nodes: Array<{ id: string; kind: string; label: string }>;
+                              edges: Array<{
+                                  id: string;
+                                  from: string;
+                                  to: string;
+                                  relation: string;
+                              }>;
+                          }>;
+                          neighbors(
+                              projectId: string,
+                              nodeId: string,
+                          ): Promise<
+                              Array<{
+                                  node: { id: string; kind: string; label: string };
+                                  edges: Array<{ relation: string }>;
+                              }>
+                          >;
+                          findByRelation(
+                              projectId: string,
+                              relation: string,
+                          ): Promise<Array<{ from: string; to: string; relation: string }>>;
+                          traverse(
+                              projectId: string,
+                              nodeId: string,
+                              depth?: number,
+                          ): Promise<Array<{ id: string; kind: string; label: string }>>;
+                      }>('projectGraphService')
+                    : undefined,
                 providers: providerTracker
                     ? {
                           rankings: (installed) => providerTracker.getProviderRankings(installed),

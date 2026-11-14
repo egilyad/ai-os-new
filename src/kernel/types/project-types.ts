@@ -113,7 +113,8 @@ export interface ProjectArtifact {
 
 // ── Project Agent Assignment ──
 
-export type AgentRole = 'director' | 'researcher' | 'developer' | 'designer' | 'content' | 'qa' | string;
+export type AgentRole =
+    'director' | 'researcher' | 'developer' | 'designer' | 'content' | 'qa' | string;
 
 export interface ProjectAgentAssignment {
     projectId: ProjectId;
@@ -130,4 +131,69 @@ export interface CreateProjectInput {
     description: string;
     type: ProjectType;
     agentIds?: string[];
+}
+
+// ---- Universal project graph (entity-relationship, concept from projects-universal-graph audit) ----
+
+export type ProjectGraphNodeKind =
+    | 'project'
+    | 'goal'
+    | 'concept'
+    | 'requirement'
+    | 'decision'
+    | 'task'
+    | 'document'
+    | 'note'
+    | 'codebase'
+    | 'website'
+    | 'research'
+    | 'debate'
+    | 'agent'
+    | 'knowledge'
+    | 'artifact'
+    | 'subgraph';
+
+export interface ProjectGraphNode {
+    id: string;
+    projectId: string;
+    kind: ProjectGraphNodeKind;
+    label: string;
+    refType?: string;
+    refId?: string;
+    payload?: Record<string, unknown>;
+    createdAt: number;
+    updatedAt: number;
+}
+
+export type ProjectGraphRelation =
+    | 'contains'
+    | 'depends_on'
+    | 'created_from'
+    | 'implements'
+    | 'improves'
+    | 'contradicts'
+    | 'supports'
+    | 'derived_from'
+    | 'connected_to'
+    | 'refines'
+    | 'extends'
+    | 'evidence_for'
+    | 'evidence_against'
+    | 'responds_to'
+    | 'duplicates'
+    | 'cites'
+    | 'assigned_to'
+    | 'produces';
+
+export interface ProjectGraphEdge {
+    id: string;
+    projectId: string;
+    from: string;
+    to: string;
+    relation: ProjectGraphRelation;
+    weight: number;
+    label?: string;
+    validFrom?: number;
+    validTo?: number;
+    createdAt: number;
 }

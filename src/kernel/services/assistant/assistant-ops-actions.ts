@@ -124,6 +124,31 @@ export interface AssistantOpsDeps {
     agentsExecute?: {
         executeGroup(groupId: string, input: string): Promise<string[]>;
     };
+    /** Universal project graph (entity-relationship). */
+    graph?: {
+        listProject(projectId: string): Promise<{
+            nodes: Array<{ id: string; kind: string; label: string }>;
+            edges: Array<{ id: string; from: string; to: string; relation: string }>;
+        }>;
+        neighbors(
+            projectId: string,
+            nodeId: string,
+        ): Promise<
+            Array<{
+                node: { id: string; kind: string; label: string };
+                edges: Array<{ relation: string }>;
+            }>
+        >;
+        findByRelation(
+            projectId: string,
+            relation: string,
+        ): Promise<Array<{ from: string; to: string; relation: string }>>;
+        traverse(
+            projectId: string,
+            nodeId: string,
+            depth?: number,
+        ): Promise<Array<{ id: string; kind: string; label: string }>>;
+    };
     /** Real provider behaviour: score, reliability, latency and cost. */
     providers?: {
         rankings(installed: string[]): Array<{
@@ -766,6 +791,108 @@ export function createAssistantOpsActions(deps: AssistantOpsDeps): AssistantActi
                 return {
                     ok: false,
                     detail: `execute-group failed: ${e instanceof Error ? e.message : String(e)}`,
+                };
+            }
+        },
+    });
+
+    actions.push({
+        id: 'graph.query',
+        group: 'research',
+        description:
+            'Query the project entity-relationship graph: list nodes, neighbors, relations of a given type, or multi-hop traversal.',
+        parameters: {
+            type: 'object',
+            properties: {
+                projectId: { type: 'string', description: 'Project id.' },
+                nodeId: { type: 'string', description: 'Start node id for neighbors/traverse.' },
+                relation: {
+                    type: 'string',
+                    description:
+                        'Filter by relation type (depends_on, supports, contradicts, ...).',
+                },
+                mode: {
+                    type: 'string',
+                    enum: ['list', 'neighbors', 'relations', 'traverse'],
+                    description: 'Query mode.',
+                },
+                depth: { type: 'number', description: 'Traversal depth (default 2).' },
+            },
+            required: ['projectId', 'mode'],
+        },
+        action: 'tool:read',
+        run: async (args) => {
+            const graph = deps.graph;
+            if (!graph) return { ok: false, detail: 'project graph is not available' };
+            const projectId = text(args['projectId']);
+            const mode = text(args['mode']);
+            if (!projectId || !mode)
+                return { ok: false, detail: 'projectId and mode are required' };
+            try {
+                if (mode === 'list') {
+                    const { nodes, edges } = await graph.listProject(projectId);
+                    const summary = nodes
+                        .slice(0, 30)
+                        .map((n) => `[${n.kind}] ${n.label} (${n.id})`)
+                        .join(' | ');
+                    return {
+                        ok: true,
+                        detail: `Project graph: ${nodes.length} nodes, ${edges.length} edges`,
+                        evidence: summary || 'empty graph',
+                        verification: 'verified',
+                    };
+                }
+                if (mode === 'relations') {
+                    const relation = text(args['relation']);
+                    if (!relation)
+                        return { ok: false, detail: 'relation is required for mode=relations' };
+                    const edges = await graph.findByRelation(projectId, relation as never);
+                    const summary = edges
+                        .slice(0, 30)
+                        .map((e) => `${e.from} —${e.relation}→ ${e.to}`)
+                        .join(' | ');
+                    return {
+                        ok: true,
+                        detail: `${edges.length} edge(s) of relation ${relation}`,
+                        evidence: summary || 'none',
+                        verification: 'verified',
+                    };
+                }
+                const nodeId = text(args['nodeId']);
+                if (!nodeId)
+                    return { ok: false, detail: 'nodeId is required for neighbors/traverse' };
+                if (mode === 'neighbors') {
+                    const nbrs = await graph.neighbors(projectId, nodeId);
+                    const summary = nbrs
+                        .slice(0, 30)
+                        .map(
+                            ({ node, edges: es }) =>
+                                `[${node.kind}] ${node.label} (${es.map((x) => x.relation).join(',')})`,
+                        )
+                        .join(' | ');
+                    return {
+                        ok: true,
+                        detail: `${nbrs.length} neighbor(s)`,
+                        evidence: summary || 'none',
+                        verification: 'verified',
+                    };
+                }
+                if (mode === 'traverse') {
+                    const depth = Number(args['depth'] ?? 2);
+                    const nodes = await graph.traverse(projectId, nodeId, depth);
+                    const summary = nodes.map((n) => `[${n.kind}] ${n.label}`).join(' | ');
+                    return {
+                        ok: true,
+                        detail: `${nodes.length} node(s) reached`,
+                        evidence: summary,
+                        verification: 'verified',
+                    };
+                }
+                return { ok: false, detail: `unknown mode: ${mode}` };
+            } catch (e) {
+                return {
+                    ok: false,
+                    detail: `graph query failed: ${e instanceof Error ? e.message : String(e)}`,
                 };
             }
         },
