@@ -418,6 +418,49 @@ export const registerPhase78: Phase = ({ register }) => {
     });
 
     register('projectAssistantService', (c: IContainer) => {
+        // M0.7 — seed explicit authorization rules for the assistant agent.
+        // Reads are allowed; non-read actions ask the user (fail-closed).
+        if (c.has('authorizationService')) {
+            try {
+                const authz = c.get<{
+                    applyDefaultRules(
+                        rules: Array<{
+                            id: string;
+                            subject?: string;
+                            action?: string;
+                            resource?: string;
+                            effect: 'allow' | 'deny' | 'ask';
+                            priority?: number;
+                        }>,
+                    ): Promise<void>;
+                }>('authorizationService');
+                void authz.applyDefaultRules([
+                    {
+                        id: 'assistant-read',
+                        subject: 'agent:assistant',
+                        action: 'tool:read',
+                        effect: 'allow',
+                        priority: 10,
+                    },
+                    {
+                        id: 'assistant-write-ask',
+                        subject: 'agent:assistant',
+                        action: 'tool:write',
+                        effect: 'ask',
+                        priority: 10,
+                    },
+                    {
+                        id: 'assistant-exec-ask',
+                        subject: 'agent:assistant',
+                        action: 'tool:exec',
+                        effect: 'ask',
+                        priority: 10,
+                    },
+                ]);
+            } catch {
+                /* authz optional */
+            }
+        }
         return new AssistantService({
             llm: c.get<ILLMClientService>('llmClientService'),
             actions: c.get<AssistantActionRegistry>('assistantActionRegistry'),
@@ -470,6 +513,7 @@ export const registerPhase78: Phase = ({ register }) => {
             diary: c.has('assistantDiaryService')
                 ? c.get<AssistantDiaryService>('assistantDiaryService')
                 : undefined,
+            audit: c.has('auditService') ? c.get<IAuditService>('auditService') : undefined,
             exam: c.has('assistantExamService')
                 ? c.get<AssistantExamService>('assistantExamService')
                 : undefined,

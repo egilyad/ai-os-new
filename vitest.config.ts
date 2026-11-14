@@ -57,6 +57,11 @@ export default defineConfig({
                 'src/llm/http/**',
                 'src/llm/decorators/**',
                 'src/llm/registry/**',
+                'src/kernel/services/assistant/**',
+                'src/kernel/services/task-state-machine.ts',
+                'src/kernel/services/agems-task-service.ts',
+                'src/kernel/services/task-lock-sweeper-service.ts',
+                'src/kernel/dal/task-repository.ts',
             ],
             exclude: ['src/**/*.test.*', 'src/**/*.d.ts', 'src/types/**'],
             // QW-1: thresholds raised above the previous 30/20/30/30 floor.
