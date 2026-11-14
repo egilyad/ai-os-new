@@ -4,7 +4,7 @@ import type {
 } from '../../contracts/wiki-brain/wiki-query.service';
 import type { IWikiStore } from '../../contracts/wiki-brain/wiki-store';
 import type { IWikiSearchAdapter } from '../../contracts/wiki-brain/wiki-search-adapter';
-import type { TWikiPage } from '../../contracts/wiki-brain/types';
+import type { TWikiLink, TWikiPage } from '../../contracts/wiki-brain/types';
 
 function snippet(body: string, max = 180): string {
     const flat = body.replace(/\s+/g, ' ').trim();

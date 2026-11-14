@@ -707,6 +707,7 @@ export function createAssistantOpsActions(deps: AssistantOpsDeps): AssistantActi
             const reason = typeof args['reason'] === 'string' ? args['reason'].trim() : '';
             if (!reason) return { ok: false, detail: 'reason is required' };
             try {
+                const rawContext = args['context'] as { ref?: unknown } | undefined;
                 const invocation = await inv.invoke({
                     source: 'human-expert-request',
                     caller: { kind: 'human', id: 'assistant' },
@@ -714,7 +715,7 @@ export function createAssistantOpsActions(deps: AssistantOpsDeps): AssistantActi
                     reason,
                     context: {
                         type: 'conversation',
-                        ref: String(args['context']?.ref ?? 'assistant'),
+                        ref: String(rawContext?.ref ?? 'assistant'),
                     },
                     constraints: { mode: 'chat' },
                 });

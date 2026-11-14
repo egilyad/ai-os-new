@@ -103,6 +103,10 @@ export class AgemsTaskService {
         this.emit('task:released', { taskId, workerId: 'unknown' });
     }
 
+    async updateFields(id: string, patch: Partial<AgemsTask>): Promise<AgemsTask | undefined> {
+        return this.repo.updateFields(id, patch);
+    }
+
     async delete(id: string): Promise<void> {
         await this.repo.delete(id);
         this.emit('task:deleted', { taskId: id });

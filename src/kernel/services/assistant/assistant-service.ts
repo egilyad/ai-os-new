@@ -26,7 +26,12 @@ import type {
 import type { IToolApprovalService } from '../../contracts/tool-approval';
 import type { IEventBus } from '../../types/interfaces';
 import { EVENTS } from '../../events/event-names';
-import { runToolLoop, type ToolLoopMessage, type ToolLoopTool } from '../tool-loop/tool-loop';
+import {
+    runToolLoop,
+    type ToolLoopCallResult,
+    type ToolLoopMessage,
+    type ToolLoopTool,
+} from '../tool-loop/tool-loop';
 import { AssistantActionRegistry } from './assistant-action-registry';
 import { ProjectKnowledgeService } from './project-knowledge-service';
 import type { AgentPermissionService } from '../permissions/permission-service';
@@ -56,8 +61,8 @@ function isTransientError(message: string): boolean {
 
 async function llmCallWithRetry(
     attempt: number,
-    send: () => Promise<{ content: string; toolCalls?: unknown[]; error?: string }>,
-): Promise<{ content: string; toolCalls?: unknown[]; error?: string }> {
+    send: () => Promise<ToolLoopCallResult & { error?: string }>,
+): Promise<ToolLoopCallResult & { error?: string }> {
     const res = await send();
     if (res.error && attempt < MAX_LLM_ATTEMPTS && isTransientError(res.error)) {
         await new Promise((r) => setTimeout(r, RETRY_BACKOFF_MS * attempt));

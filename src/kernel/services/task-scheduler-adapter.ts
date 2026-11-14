@@ -47,6 +47,7 @@ export async function fireDueRecurring(
             title: t.title,
             description: t.description,
             type: 'ONE_TIME',
+            status: 'PENDING',
             priority: t.priority,
             assigneeId: t.assigneeId,
             projectId: t.projectId,
@@ -54,7 +55,7 @@ export async function fireDueRecurring(
             parentId: t.id,
         });
         created.push(instance);
-        await service.repo.updateFields(t.id, { lastRunAt: now });
+        await service.updateFields(t.id, { lastRunAt: now });
     }
     return created;
 }

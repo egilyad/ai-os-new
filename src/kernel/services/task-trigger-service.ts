@@ -60,16 +60,16 @@ async function dispatchTrigger(
             // M5.2 — agent dispatch via handoff protocol
             const { TaskHandoffService } = await import('./task-handoff');
             const handoff = new TaskHandoffService({
-                eventBus,
+                eventBus: { emit: (e, d) => eventBus.emit(e as never, d as never) },
                 database: getDexieDb() as never,
                 getLifecycleState: () => 'active',
             });
-            const toAgent = action.slice('agent:'.length) || t.target;
+            const toAgent = (action.slice('agent:'.length) || t.target || '').trim();
             await handoff.handoff({
                 fromAgent: 'system',
                 toAgent,
                 description: `task ${taskId} -> ${status}`,
-                context: { taskId, status },
+                context: `task:${taskId} status:${status}`,
             });
         } else if (action.startsWith('http:')) {
             const url = (t.target || action.slice('http:'.length)).trim();

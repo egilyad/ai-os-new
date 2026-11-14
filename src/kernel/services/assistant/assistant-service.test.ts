@@ -494,7 +494,9 @@ describe('AssistantService', () => {
             },
             { content: 'готово' },
         ]);
-        const audit = { append: vi.fn(async () => undefined) };
+        const audit = {
+            append: vi.fn<(actor: string, action: string) => Promise<void>>(async () => undefined),
+        };
         const service = new AssistantService({
             llm: llm.service,
             actions: makeRegistry(),
