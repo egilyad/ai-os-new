@@ -98,7 +98,9 @@ const VisGraph: React.FC<Props> = ({
     const nodeById = useMemo(() => new Map(nodes.map((n) => [n.id, n] as const)), [nodes]);
 
     const nodeByIdRef = useRef(nodeById);
-    nodeByIdRef.current = nodeById;
+    useEffect(() => {
+        nodeByIdRef.current = nodeById;
+    }, [nodeById]);
     const dataRef = useRef({ nodes: netNodes, edges: netEdges });
     dataRef.current = { nodes: netNodes, edges: netEdges };
 
