@@ -176,6 +176,41 @@ export class ProjectGraphProjection {
         );
 
         this.unsubscribe.push(
+            eventBus.on(EVENTS.JUNCTION_DETECTED as never, (d) => {
+                const data = d as {
+                    junctionId?: string;
+                    synthesisType?: string;
+                    confidence?: number;
+                };
+                if (!data.junctionId) return;
+                const GLOBAL_JUNCTION_PROJECT = '__junction__';
+                void (async () => {
+                    try {
+                        const junctionNode = await this.graph.upsertNode({
+                            projectId: GLOBAL_JUNCTION_PROJECT,
+                            kind: 'research',
+                            label: data.synthesisType ?? data.junctionId!,
+                            refType: 'junction',
+                            refId: data.junctionId,
+                            payload:
+                                data.confidence != null
+                                    ? { confidence: data.confidence }
+                                    : undefined,
+                        });
+                        await this.graph.link({
+                            projectId: GLOBAL_JUNCTION_PROJECT,
+                            from: GLOBAL_JUNCTION_PROJECT,
+                            to: junctionNode.id,
+                            relation: 'contains',
+                        });
+                    } catch (e) {
+                        LOGGER.warn('ProjectGraphProjection', 'junction node failed', { error: e });
+                    }
+                })();
+            }),
+        );
+
+        this.unsubscribe.push(
             eventBus.on(EVENTS.WIKI_PAGE_WRITTEN as never, (d) => {
                 const data = d as { pageId?: string; slug?: string; projectId?: string };
                 if (!data.pageId || !data.projectId) return;

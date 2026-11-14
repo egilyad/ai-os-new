@@ -85,6 +85,26 @@ describe('ProjectGraphProjection', () => {
         );
     });
 
+    it('junction node on JUNCTION_DETECTED', async () => {
+        eventBus.emit(EVENTS.JUNCTION_DETECTED as never, {
+            junctionId: 'j1',
+            synthesisType: 'contradiction',
+            confidence: 0.8,
+            inputs: ['a', 'b'],
+        });
+        await new Promise((r) => setTimeout(r, 30));
+        expect(graph.upsertNode).toHaveBeenCalledWith(
+            expect.objectContaining({
+                kind: 'research',
+                refId: 'j1',
+                projectId: '__junction__',
+            }),
+        );
+        expect(graph.link).toHaveBeenCalledWith(
+            expect.objectContaining({ from: '__junction__', relation: 'contains' }),
+        );
+    });
+
     it('goal node on AUTONOMY_GOAL_CREATED', async () => {
         eventBus.emit(EVENTS.AUTONOMY_GOAL_CREATED as never, {
             projectId: 'p1',
