@@ -86,7 +86,7 @@ export interface AssistantTurnResult {
 
 /** What kind of experience the assistant records. */
 export type AssistantDiaryKind =
-    'question' | 'action' | 'decision' | 'mistake' | 'lesson' | 'answer';
+    'question' | 'action' | 'decision' | 'mistake' | 'lesson' | 'answer' | 'interrupted';
 
 export interface AssistantDiaryEntry {
     id: string;

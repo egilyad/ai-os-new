@@ -37,6 +37,34 @@ import type { AssistantDiagnosisService } from './assistant-diagnosis-service';
 import type { AssistantViewService } from './assistant-view-service';
 import { ASSISTANT_IDENTITY } from './assistant-agent';
 import { rootLogger } from '../logger-service';
+import { redactPii } from '../../utils/pii-redact';
+
+const MAX_LLM_ATTEMPTS = 2;
+const RETRY_BACKOFF_MS = 1500;
+
+function isTransientError(message: string): boolean {
+    const m = message.toLowerCase();
+    return (
+        m.includes('network') ||
+        m.includes('timeout') ||
+        m.includes('fetch failed') ||
+        m.includes('5') ||
+        m.includes('econnreset') ||
+        m.includes('socket')
+    );
+}
+
+async function llmCallWithRetry(
+    attempt: number,
+    send: () => Promise<{ content: string; toolCalls?: unknown[]; error?: string }>,
+): Promise<{ content: string; toolCalls?: unknown[]; error?: string }> {
+    const res = await send();
+    if (res.error && attempt < MAX_LLM_ATTEMPTS && isTransientError(res.error)) {
+        await new Promise((r) => setTimeout(r, RETRY_BACKOFF_MS * attempt));
+        return llmCallWithRetry(attempt + 1, send);
+    }
+    return res;
+}
 
 const LOGGER = rootLogger.child('Assistant');
 
@@ -71,6 +99,10 @@ export interface AssistantServiceDeps {
             context: string,
             limit?: number,
         ): Promise<Array<{ content: string; metadata: { type?: string } }>>;
+    };
+    /** Append-only hash-chained audit log (M0.2). */
+    audit?: {
+        append(actor: string, action: string, target?: string, detail?: string): Promise<unknown>;
     };
     /** The LLM-compiled wiki (Wiki Brain), queried as an extra knowledge layer. */
     wiki?: {
@@ -368,14 +400,14 @@ export class AssistantService {
         const loop = await runToolLoop(
             messages,
             async (conversation, available) => {
-                const res = await this.deps.llm.sendMessage(
-                    conversation as unknown as ChatMessage[],
-                    {
+                const res = await llmCallWithRetry(1, () =>
+                    this.deps.llm.sendMessage(conversation as unknown as ChatMessage[], {
                         provider: route.provider,
                         model: route.model,
                         temperature: 0.2,
                         maxTokens: 1500,
                         apiKeyOverride: route.apiKey,
+                        signal: req.signal,
                         tools: available.map((t) => ({
                             type: 'function',
                             function: {
@@ -387,7 +419,7 @@ export class AssistantService {
                         onChunk: (chunk: string) => {
                             this.deps.events.emit(EVENTS.ASSISTANT_CHUNK, { requestId, chunk });
                         },
-                    },
+                    }),
                 );
                 if (res.error) throw new Error(`LLM error: ${res.error}`);
                 return { content: res.content, toolCalls: res.toolCalls };
@@ -409,6 +441,21 @@ export class AssistantService {
                     const blocked = await this.gate(action, args);
                     const result = blocked ?? (await this.deps.actions.run(name, args));
                     used.push(name);
+                    // M0.2 — hash-chained audit for write/exec actions.
+                    if (result.ok && this.deps.audit && action.group !== 'research') {
+                        try {
+                            await this.deps.audit.append(
+                                this.deps.agentId,
+                                `assistant:${name}`,
+                                name,
+                                JSON.stringify(args).slice(0, 500),
+                            );
+                        } catch (e) {
+                            LOGGER.warn('Assistant', 'audit append failed', {
+                                error: e instanceof Error ? e.message : String(e),
+                            });
+                        }
+                    }
                     this.deps.events.emit(EVENTS.ASSISTANT_TOOL_CALL, {
                         requestId,
                         action: name,
@@ -429,8 +476,9 @@ export class AssistantService {
         );
 
         const cancelled = req.signal?.aborted === true;
-        const finalContent =
+        const rawFinal =
             cancelled && !loop.content.trim() ? 'Остановлено пользователем.' : loop.content;
+        const finalContent = redactPii(rawFinal);
 
         this.deps.events.emit(EVENTS.ASSISTANT_DONE, {
             requestId,
@@ -452,7 +500,9 @@ export class AssistantService {
             model: route.model ?? 'auto',
         });
 
-        if (!cancelled) {
+        if (cancelled) {
+            await this.recordInterrupted(req.text, used);
+        } else {
             await this.recordExperience(req.text, finalContent, used);
         }
 
@@ -524,6 +574,24 @@ export class AssistantService {
      * what the answer was. Lessons and mistakes are written by the assistant
      * itself (the `diary.write` action) — the harness only records the trace.
      */
+    private async recordInterrupted(question: string, toolCalls: string[]): Promise<void> {
+        const diary = this.deps.diary;
+        if (!diary) return;
+        try {
+            await diary.write({
+                kind: 'interrupted',
+                text: question.slice(0, 240),
+                evidence: toolCalls.length ? `actions: ${toolCalls.join(', ')}` : 'no actions',
+                outcome: 'partial',
+                importance: 0.4,
+            });
+        } catch (e) {
+            LOGGER.warn('Assistant', 'diary interrupted write failed', {
+                error: e instanceof Error ? e.message : String(e),
+            });
+        }
+    }
+
     private async recordExperience(
         question: string,
         answer: string,

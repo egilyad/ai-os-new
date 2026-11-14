@@ -85,7 +85,9 @@ describe('AssistantService', () => {
 
     it('injects the four context layers into the prompt', async () => {
         const llm = llmStub([{ content: 'ok' }]);
-        const memory = { recall: vi.fn(async () => [{ content: 'решили X', metadata: { type: 'decision' } }]) };
+        const memory = {
+            recall: vi.fn(async () => [{ content: 'решили X', metadata: { type: 'decision' } }]),
+        };
         const service = new AssistantService({
             llm: llm.service,
             actions: makeRegistry(),
@@ -219,9 +221,9 @@ describe('AssistantService', () => {
         expect(request).toHaveBeenCalledWith(
             expect.objectContaining({ toolId: 'agents.spawn', agentId: 'assistant' }),
         );
-        const toolMessage = (llm.calls[1]!.messages as Array<{ role: string; content: string }>).find(
-            (m) => m.role === 'tool',
-        );
+        const toolMessage = (
+            llm.calls[1]!.messages as Array<{ role: string; content: string }>
+        ).find((m) => m.role === 'tool');
         expect(toolMessage?.content).toContain('did not allow');
         expect(result.content).toContain('не создал');
     });
@@ -256,9 +258,9 @@ describe('AssistantService', () => {
 
         const result = await service.ask({ text: 'создай агента' });
         expect(result.toolCalls).toEqual(['agents.spawn']);
-        const toolMessage = (llm.calls[1]!.messages as Array<{ role: string; content: string }>).find(
-            (m) => m.role === 'tool',
-        );
+        const toolMessage = (
+            llm.calls[1]!.messages as Array<{ role: string; content: string }>
+        ).find((m) => m.role === 'tool');
         expect(toolMessage?.content).toContain('agentId: a1');
     });
 
@@ -291,9 +293,9 @@ describe('AssistantService', () => {
 
         await service.ask({ text: 'создай' });
         expect(request).not.toHaveBeenCalled();
-        const toolMessage = (llm.calls[1]!.messages as Array<{ role: string; content: string }>).find(
-            (m) => m.role === 'tool',
-        );
+        const toolMessage = (
+            llm.calls[1]!.messages as Array<{ role: string; content: string }>
+        ).find((m) => m.role === 'tool');
         expect(toolMessage?.content).toContain('Permission denied');
     });
 
@@ -317,7 +319,8 @@ describe('AssistantService', () => {
         });
     });
 
-    it('prefers the session route and ignores an "auto" default', async () => {        const llm = llmStub([{ content: 'a' }, { content: 'b' }]);
+    it('prefers the session route and ignores an "auto" default', async () => {
+        const llm = llmStub([{ content: 'a' }, { content: 'b' }]);
         const resolveRoute = vi.fn(() => ({ provider: 'OpenRouter', model: 'm-1' }));
         const service = new AssistantService({
             llm: llm.service,
@@ -433,9 +436,9 @@ describe('AssistantService', () => {
 
         const result = await service.ask({ text: 'найди память' });
         expect(result.content).toContain('паузе');
-        const toolMessage = (llm.calls[1]!.messages as Array<{ role: string; content: string }>).find(
-            (m) => m.role === 'tool',
-        );
+        const toolMessage = (
+            llm.calls[1]!.messages as Array<{ role: string; content: string }>
+        ).find((m) => m.role === 'tool');
         expect(toolMessage?.content).toContain('paused');
     });
 
@@ -460,6 +463,74 @@ describe('AssistantService', () => {
                 provider: 'OpenRouter',
                 model: 'openai/gpt-4o',
             }),
+        );
+    });
+
+    it('M0.1 — redacts PII in the final answer', async () => {
+        const llm = llmStub([{ content: 'Мой ключ: sk-1234567890abcdef' }]);
+        const service = new AssistantService({
+            llm: llm.service,
+            actions: makeRegistry(),
+            knowledge: makeKnowledge(),
+            events: makeEvents(),
+            agentId: 'assistant',
+        });
+
+        const result = await service.ask({ text: 'ключ?' });
+        expect(result.content).not.toContain('sk-1234567890abcdef');
+    });
+
+    it('M0.2 — appends audit for write actions, not for research', async () => {
+        const llm = llmStub([
+            {
+                content: '',
+                toolCalls: [
+                    {
+                        id: 'c1',
+                        type: 'function',
+                        function: { name: 'agents.spawn', arguments: '{"name":"b"}' },
+                    },
+                ],
+            },
+            { content: 'готово' },
+        ]);
+        const audit = { append: vi.fn(async () => undefined) };
+        const service = new AssistantService({
+            llm: llm.service,
+            actions: makeRegistry(),
+            knowledge: makeKnowledge(),
+            events: makeEvents(),
+            agentId: 'assistant',
+            audit,
+        });
+
+        await service.ask({ text: 'спавни агента' });
+        expect(audit.append).toHaveBeenCalled();
+        const calledWith = audit.append.mock.calls[0];
+        expect(String(calledWith?.[1])).toContain('agents.spawn');
+    });
+
+    it('M0.4 — records interrupted turn on abort', async () => {
+        const llm = llmStub([{ content: 'незакончено' }]);
+        const diary = {
+            recent: vi.fn(() => []),
+            summary: vi.fn(() => undefined),
+            write: vi.fn(async () => undefined),
+        };
+        const service = new AssistantService({
+            llm: llm.service,
+            actions: makeRegistry(),
+            knowledge: makeKnowledge(),
+            events: makeEvents(),
+            agentId: 'assistant',
+            diary: diary as never,
+        });
+        const controller = new AbortController();
+        controller.abort();
+
+        await service.ask({ text: 'задача', signal: controller.signal });
+        expect(diary.write).toHaveBeenCalledWith(
+            expect.objectContaining({ kind: 'interrupted', outcome: 'partial' }),
         );
     });
 });

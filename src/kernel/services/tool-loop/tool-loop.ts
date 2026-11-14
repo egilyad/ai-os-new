@@ -146,6 +146,16 @@ export async function runToolLoop(
                 toolCallId: c.id,
             });
         }
+
+        // M0.6 — round-cap awareness: if the budget is exhausted and the model
+        // still wants to act, tell it to summarize unfinished work.
+        if (round === maxRounds - 1 && calls.length > 0 && !opts.signal?.aborted) {
+            conversation.push({
+                role: 'tool',
+                content:
+                    'you have reached the round cap; summarize what is done and what remains unfinished',
+            });
+        }
     }
 
     return { content, messages: conversation, toolCalls: used, rounds };
