@@ -36,9 +36,9 @@
 - Реальный dispatch триггеров (`agent:*` → handoff, `http:*` → webhook).
 - Retry/backoff для FAILED (`retryCount/maxRetries/nextRetryAt`).
 
-## Открытые вопросы
-- Полноценный executor-раннер поверх handoff (пока accept без исполнения).
-- UI-редактор всех полей задачи (M4 роадмапа).
+### M4 — UI & executor
+- UI-редактор всех полей задачи (title/description/priority/type/assignee/dueDate/maxRetries) в `TaskDetailModal`.
+- Полноценный executor-раннер поверх handoff: accept → `InvocationEngine.invoke` (source=module-event) → complete/fail.
 
 ---
 

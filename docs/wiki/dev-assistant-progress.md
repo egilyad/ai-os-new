@@ -1,6 +1,6 @@
 <!-- АВТОСГЕНЕРАЦИЯ: файл создан scripts/gen-wiki-docs.mjs из корпуса Wiki (src/components/WikiPanel). Не редактировать вручную. -->
 
-# Assistant: статус реализации (M0–M2)
+# Assistant: статус реализации (M0–M4)
 
 > Раздел: **Разработчикам** · Статус: documented · Теги: dev, assistant, safety, roadmap, статус
 
@@ -8,7 +8,7 @@
 
 ## Что было сделано
 
-Ассистент прошёл роадмап M0→M2 — закрыты критические safety/context/delegation-пробелы.
+Ассистент прошёл роадмап M0→M4 — закрыты критические safety/context/delegation-пробелы и добавлены исследовательские/управляющие возможности.
 
 ### M0 — Safety
 - PII redaction на финальный ответ (`redactPii(finalContent)`).
@@ -29,12 +29,23 @@
 
 ### M2 — Delegation
 - `tasks.create` с agentId теперь создаёт handoff (TaskHandoffService).
-- `TaskExecutorDispatcher` — подписчик на AGENT_HANDOFF_INITIATED, accept при старте.
+- `TaskExecutorDispatcher` — подписчик на AGENT_HANDOFF_INITIATED: accept + реальный запуск через Invocation Engine, результат закрывает handoff (complete/fail).
 - `invocation.run` (tool:exec) — запуск агента через Invocation Engine (agentId/role/expertise).
 - `agents.execute-group` (tool:exec) — выполнение группы (parallel/sequential/pipeline).
 
+### M3 — Research & read access
+- `projects.list`, `projects.detail`, `forum.list`, `forum.read` — read-actions.
+- `wiki.research` — замкнутый research-loop поверх Wiki-Brain.
+- `graph.query` / `graph.propose` / `graph.potential` / `graph.activate` / `graph.supersede` — Universal Graph.
+
+### M4 — Structured planner
+- `AssistantPlannerService` — декомпозиция цели, план-цикл, пауза, пошаговый режим, персистентность (Dexie).
+- Действия: `plan.create/list/run/pause/step`.
+- Sidecar-вложения и vision: `attachment.register/list/get/detach/describe`, `image.generate`.
+- Read-only observer: `observer.status`; привилегированные операции через approvals: `agent.restart`, `task.retry`, `profile.switch`.
+
 ## Открытые вопросы
-- Plan-execution loop и structured planner (M4).
+- Полноценный UI для планов; внешние провайдеры генерации изображений (сейчас stub).
 
 ---
 

@@ -706,13 +706,13 @@ OpenCode не переносит контекст между сессиями. �
 - Реальный dispatch триггеров (\`agent:*\` → handoff, \`http:*\` → webhook).
 - Retry/backoff для FAILED (\`retryCount/maxRetries/nextRetryAt\`).
 
-## Открытые вопросы
-- Полноценный executor-раннер поверх handoff (пока accept без исполнения).
-- UI-редактор всех полей задачи (M4 роадмапа).`,
+### M4 — UI & executor
+- UI-редактор всех полей задачи (title/description/priority/type/assignee/dueDate/maxRetries) в \`TaskDetailModal\`.
+- Полноценный executor-раннер поверх handoff: accept → \`InvocationEngine.invoke\` (source=module-event) → complete/fail.`,
     },
     {
         slug: 'dev-assistant-progress',
-        title: 'Assistant: статус реализации (M0–M2)',
+        title: 'Assistant: статус реализации (M0–M4)',
         section: 'dev',
         tags: ['dev', 'assistant', 'safety', 'roadmap', 'статус'],
         freshness: 'documented',
@@ -726,7 +726,7 @@ OpenCode не переносит контекст между сессиями. �
         related: ['panel-assistant', 'panel-assistant-admin', 'dev-tasks-agems-progress'],
         body: `## Что было сделано
 
-Ассистент прошёл роадмап M0→M2 — закрыты критические safety/context/delegation-пробелы.
+Ассистент прошёл роадмап M0→M4 — закрыты критические safety/context/delegation-пробелы и добавлены исследовательские/управляющие возможности.
 
 ### M0 — Safety
 - PII redaction на финальный ответ (\`redactPii(finalContent)\`).
@@ -747,12 +747,23 @@ OpenCode не переносит контекст между сессиями. �
 
 ### M2 — Delegation
 - \`tasks.create\` с agentId теперь создаёт handoff (TaskHandoffService).
-- \`TaskExecutorDispatcher\` — подписчик на AGENT_HANDOFF_INITIATED, accept при старте.
+- \`TaskExecutorDispatcher\` — подписчик на AGENT_HANDOFF_INITIATED: accept + реальный запуск через Invocation Engine, результат закрывает handoff (complete/fail).
 - \`invocation.run\` (tool:exec) — запуск агента через Invocation Engine (agentId/role/expertise).
 - \`agents.execute-group\` (tool:exec) — выполнение группы (parallel/sequential/pipeline).
 
+### M3 — Research & read access
+- \`projects.list\`, \`projects.detail\`, \`forum.list\`, \`forum.read\` — read-actions.
+- \`wiki.research\` — замкнутый research-loop поверх Wiki-Brain.
+- \`graph.query\` / \`graph.propose\` / \`graph.potential\` / \`graph.activate\` / \`graph.supersede\` — Universal Graph.
+
+### M4 — Structured planner
+- \`AssistantPlannerService\` — декомпозиция цели, план-цикл, пауза, пошаговый режим, персистентность (Dexie).
+- Действия: \`plan.create/list/run/pause/step\`.
+- Sidecar-вложения и vision: \`attachment.register/list/get/detach/describe\`, \`image.generate\`.
+- Read-only observer: \`observer.status\`; привилегированные операции через approvals: \`agent.restart\`, \`task.retry\`, \`profile.switch\`.
+
 ## Открытые вопросы
-- Plan-execution loop и structured planner (M4).`,
+- Полноценный UI для планов; внешние провайдеры генерации изображений (сейчас stub).`,
     },
     {
         slug: 'dev-obsidian-vault',

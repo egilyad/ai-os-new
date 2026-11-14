@@ -406,7 +406,7 @@
 - [Реестр архитектурных решений (ADR)](./dev-adr.md) — _verified_
 - [Память OpenCode: команды и скрипты непрерывности сессий](./dev-opencode-memory.md) — _verified_
 - [AGEMS Tasks: статус реализации (M0–M5)](./dev-tasks-agems-progress.md) — _documented_
-- [Assistant: статус реализации (M0–M2)](./dev-assistant-progress.md) — _documented_
+- [Assistant: статус реализации (M0–M4)](./dev-assistant-progress.md) — _documented_
 - [Obsidian Vault: рабочий буфер пользователя (интеграция)](./dev-obsidian-vault.md) — _documented_
 - [Autonomy Governor: автономная работа по плану](./dev-autonomy-governor.md) — _documented_
 - [Computer Use: управление рабочим столом Windows (desk-mcp)](./dev-computer-use.md) — _documented_
