@@ -521,6 +521,53 @@ export const registerPhase78: Phase = ({ register }) => {
                                   .retrieveBySlugs(slugs),
                       }
                     : undefined,
+                literature: c.has('literatureFetcherService')
+                    ? {
+                          fetch: (query, opts) =>
+                              c
+                                  .get<{
+                                      fetch(
+                                          query: string,
+                                          opts?: { provider?: string; maxResults?: number },
+                                      ): Promise<
+                                          Array<{
+                                              provider: string;
+                                              providerLabel: string;
+                                              papers: Array<{
+                                                  id: string;
+                                                  title: string;
+                                                  summary: string;
+                                                  url: string;
+                                                  authors: string[];
+                                                  source: string;
+                                              }>;
+                                          }>
+                                      >;
+                                  }>('literatureFetcherService')
+                                  .fetch(query, opts),
+                          listProviders: () =>
+                              c
+                                  .get<{ listProviders(): Array<{ id: string; label: string }> }>(
+                                      'literatureFetcherService',
+                                  )
+                                  .listProviders(),
+                          ingestAsSources: (papers, projectId) =>
+                              c
+                                  .get<{
+                                      ingestAsSources(
+                                          papers: Array<{
+                                              title: string;
+                                              url: string;
+                                              summary: string;
+                                              authors: string[];
+                                              source: string;
+                                          }>,
+                                          projectId?: string,
+                                      ): Promise<number>;
+                                  }>('literatureFetcherService')
+                                  .ingestAsSources(papers, projectId),
+                      }
+                    : undefined,
                 agents: agentService ? { getAgents: () => agentService.getAgents() } : undefined,
                 tasks: {
                     list: () => agemsTaskService.list(),

@@ -237,6 +237,37 @@ export interface AssistantOpsDeps {
         }>;
         retrieveBySlugs(slugs: string[]): Promise<Array<{ slug: string }>>;
     };
+    /** F5b — external literature retrieval (SciAgents-pattern). */
+    literature?: {
+        fetch(
+            query: string,
+            opts?: { provider?: string; maxResults?: number },
+        ): Promise<
+            Array<{
+                provider: string;
+                providerLabel: string;
+                papers: Array<{
+                    id: string;
+                    title: string;
+                    summary: string;
+                    url: string;
+                    authors: string[];
+                    source: string;
+                }>;
+            }>
+        >;
+        listProviders(): Array<{ id: string; label: string }>;
+        ingestAsSources(
+            papers: Array<{
+                title: string;
+                url: string;
+                summary: string;
+                authors: string[];
+                source: string;
+            }>,
+            projectId?: string,
+        ): Promise<number>;
+    };
     /** M4 — structured planner & plan-execution loop. */
     planner?: {
         createPlan(
@@ -1979,6 +2010,62 @@ export function createAssistantOpsActions(deps: AssistantOpsDeps): AssistantActi
                 return {
                     ok: false,
                     detail: `wiki.context failed: ${e instanceof Error ? e.message : String(e)}`,
+                };
+            }
+        },
+    });
+
+    actions.push({
+        id: 'research.fetch_literature',
+        group: 'research',
+        description:
+            'Fetch external literature (arXiv/web) and optionally ingest results as wiki sources.',
+        parameters: {
+            type: 'object',
+            properties: {
+                query: { type: 'string' },
+                provider: { type: 'string', description: 'arxiv | web' },
+                maxResults: { type: 'number' },
+                ingest: { type: 'boolean' },
+                projectId: { type: 'string' },
+            },
+            required: ['query'],
+        },
+        action: 'tool:read',
+        run: async (args) => {
+            const text = (v: unknown): string => (typeof v === 'string' ? v.trim() : '');
+            const lit = deps.literature;
+            if (!lit) return { ok: false, detail: 'literature fetcher is not available' };
+            try {
+                const results = await lit.fetch(text(args['query']), {
+                    provider: text(args['provider']) || undefined,
+                    maxResults: typeof args['maxResults'] === 'number' ? args['maxResults'] : 5,
+                });
+                const total = results.reduce((a, r) => a + r.papers.length, 0);
+                const summary = results
+                    .flatMap((r) => r.papers)
+                    .slice(0, 10)
+                    .map((p) => `${p.title.slice(0, 80)} [${p.source}]`)
+                    .join(' | ');
+                let ingestLine = '';
+                if (args['ingest'] === true && total > 0) {
+                    const papers = results.flatMap((r) => r.papers);
+                    const count = await lit.ingestAsSources(
+                        papers,
+                        text(args['projectId']) || undefined,
+                    );
+                    ingestLine = ` | ingested ${count}`;
+                }
+                return {
+                    ok: true,
+                    detail: `fetched ${total} paper(s)${ingestLine}`,
+                    evidence: summary || 'none',
+                    verification: 'verified',
+                };
+            } catch (e) {
+                return {
+                    ok: false,
+                    detail: `research.fetch_literature failed: ${e instanceof Error ? e.message : String(e)}`,
                 };
             }
         },
