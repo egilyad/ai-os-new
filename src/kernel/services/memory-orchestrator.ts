@@ -143,7 +143,12 @@ export class MemoryOrchestrator {
         const svc = this.getService();
         if (svc && typeof svc.search === 'function') {
             try {
-                const found = await svc.search(context, limit);
+                const found = await Promise.race([
+                    svc.search(context, limit),
+                    new Promise<never>((_, reject) =>
+                        setTimeout(() => reject(new Error('recallSmart timeout')), 2000),
+                    ),
+                ]);
                 const entries = found.map((r) => r.entry).filter(Boolean);
                 if (entries.length > 0) return entries.slice(0, limit);
             } catch (e) {
