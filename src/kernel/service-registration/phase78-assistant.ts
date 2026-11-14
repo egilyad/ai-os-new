@@ -289,6 +289,23 @@ export const registerPhase78: Phase = ({ register }) => {
                     list: () => agemsTaskService.list(),
                     create: (input) => agemsTaskService.create({ ...input, status: 'PENDING' }),
                 },
+                handoff: c.has('taskHandoffService')
+                    ? {
+                          handoff: (opts) => {
+                              const svc = c.get<{
+                                  handoff(opts: {
+                                      fromAgent: string;
+                                      toAgent: string;
+                                      description: string;
+                                      context: string;
+                                      expectedOutput?: string;
+                                      priority?: string;
+                                  }): Promise<{ id: string; status: string }>;
+                              }>('taskHandoffService');
+                              return svc.handoff({ ...opts, priority: opts.priority as never });
+                          },
+                      }
+                    : undefined,
                 providers: providerTracker
                     ? {
                           rankings: (installed) => providerTracker.getProviderRankings(installed),

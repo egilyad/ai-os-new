@@ -75,7 +75,10 @@ export interface AssistantOpsDeps {
             runCount?: number;
         }>;
         getById(id: string): { id: string; name: string; enabled: boolean } | undefined;
-        toggle(id: string, enabled: boolean): Promise<{ id: string; name: string; enabled: boolean } | null>;
+        toggle(
+            id: string,
+            enabled: boolean,
+        ): Promise<{ id: string; name: string; enabled: boolean } | null>;
         remove(id: string): Promise<boolean>;
         validateCron?(cron: string): boolean;
     };
@@ -85,9 +88,7 @@ export interface AssistantOpsDeps {
     };
     /** The task board: what the system owes and who is on it. */
     tasks?: {
-        list(): Promise<
-            Array<{ id: string; title: string; status: string; assigneeId?: string }>
-        >;
+        list(): Promise<Array<{ id: string; title: string; status: string; assigneeId?: string }>>;
         create(input: {
             title: string;
             description?: string;
@@ -96,6 +97,17 @@ export interface AssistantOpsDeps {
             assigneeId?: string;
             creatorId?: string;
         }): Promise<{ id: string; title: string; status: string; assigneeId?: string }>;
+    };
+    /** M2.1 — agent→agent handoff protocol. */
+    handoff?: {
+        handoff(opts: {
+            fromAgent: string;
+            toAgent: string;
+            description: string;
+            context: string;
+            expectedOutput?: string;
+            priority?: 'critical' | 'high' | 'normal' | 'low';
+        }): Promise<{ id: string; status: string }>;
     };
     /** Real provider behaviour: score, reliability, latency and cost. */
     providers?: {
@@ -157,7 +169,12 @@ export function createAssistantOpsActions(deps: AssistantOpsDeps): AssistantActi
         action: 'tool:read',
         run: async () => {
             const m = deps.metrics?.aggregated();
-            if (!m) return { ok: false, detail: 'metrics are not available', verification: 'discovered' };
+            if (!m)
+                return {
+                    ok: false,
+                    detail: 'metrics are not available',
+                    verification: 'discovered',
+                };
             return {
                 ok: true,
                 detail: `${m.totalRequests} request(s), ${m.totalTokens} tokens, ~$${m.estimatedCost.toFixed(4)}, avg ${Math.round(m.avgLatency)} ms, success ${pct(m.successRate)}, errors ${pct(m.errorRate)}, providers ${m.activeProviders}/${m.totalProviders}`,
@@ -177,7 +194,11 @@ export function createAssistantOpsActions(deps: AssistantOpsDeps): AssistantActi
         run: async () => {
             const providers = deps.providers;
             if (!providers) {
-                return { ok: false, detail: 'provider metrics are not available', verification: 'discovered' };
+                return {
+                    ok: false,
+                    detail: 'provider metrics are not available',
+                    verification: 'discovered',
+                };
             }
             const rows = providers
                 .rankings(providers.installed())
@@ -213,7 +234,12 @@ export function createAssistantOpsActions(deps: AssistantOpsDeps): AssistantActi
         action: 'tool:read',
         run: async () => {
             const t = deps.traces?.stats();
-            if (!t) return { ok: false, detail: 'traces are not available', verification: 'discovered' };
+            if (!t)
+                return {
+                    ok: false,
+                    detail: 'traces are not available',
+                    verification: 'discovered',
+                };
             return {
                 ok: true,
                 detail: `${t.total} trace(s): ${t.completed} completed, ${t.failed} failed, ${t.running} running, success ${pct(t.successRate)}, avg ${Math.round(t.avgDuration)} ms`,
@@ -232,15 +258,28 @@ export function createAssistantOpsActions(deps: AssistantOpsDeps): AssistantActi
         action: 'tool:read',
         run: async () => {
             const pending = deps.approvals?.pending();
-            if (!pending) return { ok: false, detail: 'approvals are not available', verification: 'discovered' };
+            if (!pending)
+                return {
+                    ok: false,
+                    detail: 'approvals are not available',
+                    verification: 'discovered',
+                };
             if (pending.length === 0) {
-                return { ok: true, detail: 'nothing is waiting for confirmation', evidence: 'pending: 0', verification: 'verified' };
+                return {
+                    ok: true,
+                    detail: 'nothing is waiting for confirmation',
+                    evidence: 'pending: 0',
+                    verification: 'verified',
+                };
             }
             return {
                 ok: true,
                 detail: `${pending.length} request(s) waiting for confirmation`,
                 evidence: pending
-                    .map((p) => `${p.id}${p.tool ? ` ${p.tool}` : ''}${p.agentId ? ` (${p.agentId})` : ''}`)
+                    .map(
+                        (p) =>
+                            `${p.id}${p.tool ? ` ${p.tool}` : ''}${p.agentId ? ` (${p.agentId})` : ''}`,
+                    )
                     .join(' | '),
                 verification: 'verified',
             };
@@ -280,7 +319,9 @@ export function createAssistantOpsActions(deps: AssistantOpsDeps): AssistantActi
                 ok: true,
                 detail: `${filtered.length} task(s)`,
                 evidence: filtered
-                    .map((t) => `${t.title} (${t.status}${t.assigneeId ? `, ${t.assigneeId}` : ''})`)
+                    .map(
+                        (t) => `${t.title} (${t.status}${t.assigneeId ? `, ${t.assigneeId}` : ''})`,
+                    )
                     .join(' | '),
                 verification: 'verified',
             };
@@ -291,7 +332,7 @@ export function createAssistantOpsActions(deps: AssistantOpsDeps): AssistantActi
         id: 'tasks.create',
         group: 'coordination',
         description:
-            'Delegate work by creating a task for an agent. The task is stored on the board and becomes that agent\'s responsibility. Confirm with the user before delegating.',
+            "Delegate work by creating a task for an agent. The task is stored on the board and becomes that agent's responsibility. Confirm with the user before delegating.",
         parameters: {
             type: 'object',
             properties: {
@@ -357,10 +398,33 @@ export function createAssistantOpsActions(deps: AssistantOpsDeps): AssistantActi
             const fresh = listed.find((t) => t.id === created.id);
             if (!fresh) return { ok: false, detail: `Task ${created.id} was not stored` };
 
+            // M2.1 — initiate a handoff when a specific agent was picked.
+            let handoffEvidence = '';
+            if (agentId && deps.handoff) {
+                try {
+                    const ho = await deps.handoff.handoff({
+                        fromAgent: 'assistant',
+                        toAgent: agentId,
+                        description: title,
+                        context: `task:${created.id}`,
+                        expectedOutput: description || undefined,
+                        priority:
+                            priority === 'CRITICAL'
+                                ? 'critical'
+                                : priority === 'HIGH'
+                                  ? 'high'
+                                  : 'normal',
+                    });
+                    handoffEvidence = ` | handoff: ${ho.id}`;
+                } catch (e) {
+                    handoffEvidence = ` | handoff failed: ${e instanceof Error ? e.message : String(e)}`;
+                }
+            }
+
             return {
                 ok: true,
                 detail: `Created task "${fresh.title}"${fresh.assigneeId ? ` for ${fresh.assigneeId}` : ' (unassigned)'}`,
-                evidence: `task: ${fresh.id} | status: ${fresh.status} | priority: ${priority}${fresh.assigneeId ? ` | assignee: ${fresh.assigneeId}` : ''}`,
+                evidence: `task: ${fresh.id} | status: ${fresh.status} | priority: ${priority}${fresh.assigneeId ? ` | assignee: ${fresh.assigneeId}` : ''}${handoffEvidence}`,
                 verification: 'verified',
             };
         },
@@ -415,7 +479,10 @@ export function createAssistantOpsActions(deps: AssistantOpsDeps): AssistantActi
             }
             if (frequency === 'custom') {
                 if (!cronExpression) {
-                    return { ok: false, detail: 'cronExpression is required for the custom frequency' };
+                    return {
+                        ok: false,
+                        detail: 'cronExpression is required for the custom frequency',
+                    };
                 }
                 if (scheduler.validateCron && !scheduler.validateCron(cronExpression)) {
                     return { ok: false, detail: `Invalid cron expression: ${cronExpression}` };
@@ -536,7 +603,8 @@ export function createAssistantOpsActions(deps: AssistantOpsDeps): AssistantActi
             const deleted = await scheduler.remove(id);
             if (!deleted) return { ok: false, detail: `Schedule ${id} was not deleted` };
             // A deletion that still lists the schedule did not happen.
-            if (scheduler.getById(id)) return { ok: false, detail: `Schedule ${id} is still there` };
+            if (scheduler.getById(id))
+                return { ok: false, detail: `Schedule ${id} is still there` };
             return {
                 ok: true,
                 detail: `Deleted schedule "${before.name}"`,

@@ -26,6 +26,7 @@ import { RoleVersionService } from '../services/role-version-service';
 import { AgentHealthMonitor } from '../services/agent-health-monitor';
 import { TaskHandoffService } from '../services/task-handoff';
 import { TaskLockSweeperService } from '../services/task-lock-sweeper-service';
+import { TaskExecutorDispatcher } from '../services/task-executor-dispatcher';
 import { TraceService } from '../services/trace-service';
 import { OrchestrationService as OrchestratorClass } from '../services/orchestration-service';
 import { RoleService } from '../services/role-service';
@@ -157,6 +158,14 @@ export const registerPhase4: Phase = (helpers, ctx) => {
         const sweeper = new TaskLockSweeperService();
         sweeper.start();
         return sweeper;
+    });
+
+    register('taskExecutorDispatcher', (c) => {
+        const dispatcher = new TaskExecutorDispatcher({
+            handoff: c.get<TaskHandoffService>('taskHandoffService'),
+        });
+        dispatcher.start();
+        return dispatcher;
     });
 
     register(
