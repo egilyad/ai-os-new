@@ -382,7 +382,7 @@ export const useAssistantStore = create<AssistantState>((set, get) => {
                     error: aborted ? null : detail,
                     self: readSelf(),
                 }));
-                if (!aborted) schedulePersist(get().messages);
+                schedulePersist(get().messages);
             } finally {
                 if (activeAbort === controller) activeAbort = null;
             }
