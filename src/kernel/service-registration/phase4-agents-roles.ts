@@ -27,6 +27,7 @@ import { AgentHealthMonitor } from '../services/agent-health-monitor';
 import { TaskHandoffService } from '../services/task-handoff';
 import { TaskLockSweeperService } from '../services/task-lock-sweeper-service';
 import { TaskExecutorDispatcher } from '../services/task-executor-dispatcher';
+import type { IInvocationEngineService } from '../contracts/invocation';
 import { TraceService } from '../services/trace-service';
 import { OrchestrationService as OrchestratorClass } from '../services/orchestration-service';
 import { RoleService } from '../services/role-service';
@@ -163,6 +164,9 @@ export const registerPhase4: Phase = (helpers, ctx) => {
     register('taskExecutorDispatcher', (c) => {
         const dispatcher = new TaskExecutorDispatcher({
             handoff: c.get<TaskHandoffService>('taskHandoffService'),
+            invoke: c.has('invocationEngineService')
+                ? (req) => c.get<IInvocationEngineService>('invocationEngineService').invoke(req)
+                : undefined,
         });
         dispatcher.start();
         return dispatcher;
