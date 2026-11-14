@@ -65,7 +65,7 @@
     {
       "id": "dev",
       "title": "Разработчикам",
-      "articles": 68
+      "articles": 69
     }
   ],
   "articles": [
@@ -7428,6 +7428,37 @@
       "related": [
         "dev-opencode-memory",
         "dev-deepwiki",
+        "dev-overview"
+      ],
+      "reviewed": null,
+      "tests": []
+    },
+    {
+      "id": "wiki:dev-autonomy-governor",
+      "type": "article",
+      "slug": "dev-autonomy-governor",
+      "title": "Autonomy Governor: автономная работа по плану",
+      "section": "dev",
+      "status": "documented",
+      "tags": [
+        "dev",
+        "autonomy",
+        "roadmap",
+        "агенты",
+        "прогресс"
+      ],
+      "sources": [
+        "scripts/opencode/autonomy-state.mjs",
+        "scripts/opencode/autonomy-next.mjs",
+        ".opencode/command/autonomy-status.md",
+        ".opencode/command/autonomy-next.md",
+        ".opencode/command/autonomy-complete.md",
+        "docs/UNIFIED_PLAN.md"
+      ],
+      "related": [
+        "dev-opencode-memory",
+        "dev-obsidian-vault",
+        "dev-tasks-agems-progress",
         "dev-overview"
       ],
       "reviewed": null,

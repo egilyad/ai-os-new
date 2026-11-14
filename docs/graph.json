@@ -3,22 +3,22 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 1621,
-    "edges": 2925,
+    "nodes": 1628,
+    "edges": 2935,
     "byType": {
       "audit": 25,
-      "code": 716,
+      "code": 722,
       "test": 242,
       "panel": 269,
-      "article": 369
+      "article": 370
     },
     "byKind": {
       "audit_test": 20,
       "audit_mention": 52,
       "documents": 267,
       "test": 353,
-      "source": 1018,
-      "related": 1215
+      "source": 1024,
+      "related": 1219
     }
   },
   "nodes": [
@@ -213,6 +213,21 @@
       "label": ".opencode/command/"
     },
     {
+      "id": "file:.opencode/command/autonomy-complete.md",
+      "type": "code",
+      "label": ".opencode/command/autonomy-complete.md"
+    },
+    {
+      "id": "file:.opencode/command/autonomy-next.md",
+      "type": "code",
+      "label": ".opencode/command/autonomy-next.md"
+    },
+    {
+      "id": "file:.opencode/command/autonomy-status.md",
+      "type": "code",
+      "label": ".opencode/command/autonomy-status.md"
+    },
+    {
       "id": "file:.opencode/command/vault-draft.md",
       "type": "code",
       "label": ".opencode/command/vault-draft.md"
@@ -286,6 +301,11 @@
       "id": "file:docs/manifest.json",
       "type": "code",
       "label": "docs/manifest.json"
+    },
+    {
+      "id": "file:docs/UNIFIED_PLAN.md",
+      "type": "code",
+      "label": "docs/UNIFIED_PLAN.md"
     },
     {
       "id": "file:docs/wiki/comp-agents-roles-skills.md",
@@ -466,6 +486,16 @@
       "id": "file:scripts/opencode/",
       "type": "code",
       "label": "scripts/opencode/"
+    },
+    {
+      "id": "file:scripts/opencode/autonomy-next.mjs",
+      "type": "code",
+      "label": "scripts/opencode/autonomy-next.mjs"
+    },
+    {
+      "id": "file:scripts/opencode/autonomy-state.mjs",
+      "type": "code",
+      "label": "scripts/opencode/autonomy-state.mjs"
     },
     {
       "id": "file:scripts/opencode/checkpoint.mjs",
@@ -7644,6 +7674,13 @@
       "id": "wiki:dev-assistant-progress",
       "type": "article",
       "label": "Assistant: статус реализации (M0–M2)",
+      "section": "dev",
+      "status": "documented"
+    },
+    {
+      "id": "wiki:dev-autonomy-governor",
+      "type": "article",
+      "label": "Autonomy Governor: автономная работа по плану",
       "section": "dev",
       "status": "documented"
     },
@@ -17333,6 +17370,56 @@
     {
       "from": "wiki:dev-assistant-progress",
       "to": "wiki:panel-assistant",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-autonomy-governor",
+      "to": "file:.opencode/command/autonomy-complete.md",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:dev-autonomy-governor",
+      "to": "file:.opencode/command/autonomy-next.md",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:dev-autonomy-governor",
+      "to": "file:.opencode/command/autonomy-status.md",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:dev-autonomy-governor",
+      "to": "file:docs/UNIFIED_PLAN.md",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:dev-autonomy-governor",
+      "to": "file:scripts/opencode/autonomy-next.mjs",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:dev-autonomy-governor",
+      "to": "file:scripts/opencode/autonomy-state.mjs",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:dev-autonomy-governor",
+      "to": "wiki:dev-obsidian-vault",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-autonomy-governor",
+      "to": "wiki:dev-opencode-memory",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-autonomy-governor",
+      "to": "wiki:dev-overview",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-autonomy-governor",
+      "to": "wiki:dev-tasks-agems-progress",
       "kind": "related"
     },
     {
