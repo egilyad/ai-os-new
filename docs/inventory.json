@@ -2128,7 +2128,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4076,
-      "hash": "f009bac97261eb43b0f493637199cedc57f6c170"
+      "hash": "2c77f15473eb6d00373d9c560e47a630bfa372e0"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -2240,7 +2240,7 @@
       "language": "ru",
       "title": "Граф знаний",
       "bytes": 4836,
-      "hash": "4b659d16ed053ee4c7c8450ed42ca93b72441610"
+      "hash": "b53a4fcce400c0a61791196c77b55f654171c574"
     },
     {
       "path": "docs/wiki/dev-history.md",
