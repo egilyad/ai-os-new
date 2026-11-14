@@ -102,7 +102,9 @@ const VisGraph: React.FC<Props> = ({
         nodeByIdRef.current = nodeById;
     }, [nodeById]);
     const dataRef = useRef({ nodes: netNodes, edges: netEdges });
-    dataRef.current = { nodes: netNodes, edges: netEdges };
+    useEffect(() => {
+        dataRef.current = { nodes: netNodes, edges: netEdges };
+    }, [netNodes, netEdges]);
 
     useEffect(() => {
         if (!containerRef.current) return;
