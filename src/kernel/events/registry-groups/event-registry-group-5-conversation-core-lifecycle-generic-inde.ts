@@ -3,7 +3,6 @@ function event<N extends string, S extends z.ZodType>(name: N, schema: S) {
     return { name, schema } as const;
 }
 export const EVENT_REGISTRY_GROUP_5 = {
-
     // ── Conversation Core lifecycle (generic; independent of Debate/Forum/Chat) ──
     CONVERSATION_TURN_START: event(
         'conversation:turn:start',
@@ -146,7 +145,10 @@ export const EVENT_REGISTRY_GROUP_5 = {
             nodeCount: z.number(),
         }),
     ),
-    GRAPH_STARTED: event('graph:started', z.object({ runId: z.string(), graphId: z.string() })),
+    GRAPH_STARTED: event(
+        'graph:started',
+        z.object({ runId: z.string(), graphId: z.string(), projectId: z.string().optional() }),
+    ),
     GRAPH_NODE: event(
         'graph:node',
         z.object({ runId: z.string(), nodeId: z.string(), kind: z.string() }),

@@ -70,6 +70,21 @@ describe('ProjectGraphProjection', () => {
         );
     });
 
+    it('subgraph node on GRAPH_STARTED', async () => {
+        eventBus.emit(EVENTS.GRAPH_STARTED as never, {
+            runId: 'r1',
+            graphId: 'g1',
+            projectId: 'p1',
+        });
+        await new Promise((r) => setTimeout(r, 30));
+        expect(graph.upsertNode).toHaveBeenCalledWith(
+            expect.objectContaining({ kind: 'subgraph', refId: 'r1' }),
+        );
+        expect(graph.link).toHaveBeenCalledWith(
+            expect.objectContaining({ from: 'p1', relation: 'contains' }),
+        );
+    });
+
     it('goal node on AUTONOMY_GOAL_CREATED', async () => {
         eventBus.emit(EVENTS.AUTONOMY_GOAL_CREATED as never, {
             projectId: 'p1',

@@ -148,6 +148,34 @@ export class ProjectGraphProjection {
         );
 
         this.unsubscribe.push(
+            eventBus.on(EVENTS.GRAPH_STARTED as never, (d) => {
+                const data = d as { runId?: string; graphId?: string; projectId?: string };
+                if (!data.runId || !data.graphId || !data.projectId) return;
+                void (async () => {
+                    try {
+                        const graphNode = await this.graph.upsertNode({
+                            projectId: data.projectId!,
+                            kind: 'subgraph',
+                            label: data.graphId!,
+                            refType: 'graph-run',
+                            refId: data.runId,
+                        });
+                        await this.graph.link({
+                            projectId: data.projectId!,
+                            from: data.projectId!,
+                            to: graphNode.id,
+                            relation: 'contains',
+                        });
+                    } catch (e) {
+                        LOGGER.warn('ProjectGraphProjection', 'graph run node failed', {
+                            error: e,
+                        });
+                    }
+                })();
+            }),
+        );
+
+        this.unsubscribe.push(
             eventBus.on(EVENTS.WIKI_PAGE_WRITTEN as never, (d) => {
                 const data = d as { pageId?: string; slug?: string; projectId?: string };
                 if (!data.pageId || !data.projectId) return;

@@ -97,7 +97,10 @@ export class GraphService implements IGraphService {
             name: input.name,
             description: input.description,
             mode: input.mode ?? 'graph',
-            nodes: input.nodes.map((n) => ({ ...n, config: n.config ? { ...n.config } : undefined })),
+            nodes: input.nodes.map((n) => ({
+                ...n,
+                config: n.config ? { ...n.config } : undefined,
+            })),
             edges: input.edges.map((e) => ({ ...e })),
             entryNodeId: input.entryNodeId,
             reflectEvery: input.reflectEvery ?? 0,
@@ -152,7 +155,11 @@ export class GraphService implements IGraphService {
             updatedAt: t,
         };
         await this.repo.putRun(run);
-        this.events.emit(EVENTS.GRAPH_STARTED, { runId: run.id, graphId });
+        this.events.emit(EVENTS.GRAPH_STARTED, {
+            runId: run.id,
+            graphId,
+            projectId: typeof input['projectId'] === 'string' ? input['projectId'] : undefined,
+        });
         return this.drive(def, run);
     }
 
@@ -209,7 +216,11 @@ export class GraphService implements IGraphService {
         run.pendingHitl = req;
         run.updatedAt = now();
         await this.repo.putRun(run);
-        this.events.emit(EVENTS.GRAPH_HITL, { runId, nodeId: req.nodeId, prompt: prompt.slice(0, 280) });
+        this.events.emit(EVENTS.GRAPH_HITL, {
+            runId,
+            nodeId: req.nodeId,
+            prompt: prompt.slice(0, 280),
+        });
         return req;
     }
 
@@ -321,7 +332,10 @@ export class GraphService implements IGraphService {
         const restored = Array.isArray(run.state['_queue'])
             ? (run.state['_queue'] as string[]).filter((id) => byId.has(id))
             : null;
-        const queue: string[] = restored ?? [run.currentNodeId ?? def.entryNodeId, ...roots.map((r) => r.id)];
+        const queue: string[] = restored ?? [
+            run.currentNodeId ?? def.entryNodeId,
+            ...roots.map((r) => r.id),
+        ];
         if (restored) delete run.state['_queue'];
         const maxSteps = def.maxSteps ?? 50;
 
@@ -362,7 +376,11 @@ export class GraphService implements IGraphService {
                 run.updatedAt = now();
                 await this.repo.putRun(run);
                 await this.checkpoint(run, hitlNode.id, `hitl@${run.stepCount}`);
-                this.events.emit(EVENTS.GRAPH_HITL, { runId: run.id, nodeId: hitlNode.id, prompt: hitlNode.label.slice(0, 280) });
+                this.events.emit(EVENTS.GRAPH_HITL, {
+                    runId: run.id,
+                    nodeId: hitlNode.id,
+                    prompt: hitlNode.label.slice(0, 280),
+                });
                 return run;
             }
 
@@ -372,7 +390,11 @@ export class GraphService implements IGraphService {
                     try {
                         return { ok: true as const, output: await this.executeNode(node, run) };
                     } catch (e) {
-                        return { ok: false as const, output: '', error: e instanceof Error ? e.message : String(e) };
+                        return {
+                            ok: false as const,
+                            output: '',
+                            error: e instanceof Error ? e.message : String(e),
+                        };
                     }
                 }),
             );
@@ -382,8 +404,17 @@ export class GraphService implements IGraphService {
                 const node = wave[i]!;
                 const res = results[i]!;
                 if (!res.ok) {
-                    LOGGER.warn('GraphService', 'node execution failed', { nodeId: node.id, error: res.error });
-                    await this.logDecision(run, node.id, `failed: ${res.error}`, `Node "${node.label}" failed`, []);
+                    LOGGER.warn('GraphService', 'node execution failed', {
+                        nodeId: node.id,
+                        error: res.error,
+                    });
+                    await this.logDecision(
+                        run,
+                        node.id,
+                        `failed: ${res.error}`,
+                        `Node "${node.label}" failed`,
+                        [],
+                    );
                     continue;
                 }
                 const output = res.output;
@@ -401,14 +432,25 @@ export class GraphService implements IGraphService {
                     `Executed ${node.kind} node "${node.label}"`,
                     this.rejectedBranches(def, node.id, run.state),
                 );
-                this.events.emit(EVENTS.GRAPH_NODE, { runId: run.id, nodeId: node.id, kind: node.kind });
+                this.events.emit(EVENTS.GRAPH_NODE, {
+                    runId: run.id,
+                    nodeId: node.id,
+                    kind: node.kind,
+                });
 
                 // Periodic reflection.
-                if (def.reflectEvery && def.reflectEvery > 0 && run.stepCount % def.reflectEvery === 0) {
+                if (
+                    def.reflectEvery &&
+                    def.reflectEvery > 0 &&
+                    run.stepCount % def.reflectEvery === 0
+                ) {
                     const text = await this.doReflect(run);
                     run.state['lastReflection'] = text;
                     await this.repo.putRun(run);
-                    this.events.emit(EVENTS.GRAPH_REFLECTED, { runId: run.id, stepCount: run.stepCount });
+                    this.events.emit(EVENTS.GRAPH_REFLECTED, {
+                        runId: run.id,
+                        stepCount: run.stepCount,
+                    });
                 }
 
                 // Static routing + F.1 Send dispatch (state[`send:<nodeId>`] = string[]).
@@ -432,9 +474,10 @@ export class GraphService implements IGraphService {
                 delete run.state['_queue'];
                 run.status = 'completed';
                 run.currentNodeId = null;
-                run.result = typeof run.state['lastOutput'] === 'string'
-                    ? (run.state['lastOutput'] as string)
-                    : JSON.stringify(run.state['lastOutput'] ?? {});
+                run.result =
+                    typeof run.state['lastOutput'] === 'string'
+                        ? (run.state['lastOutput'] as string)
+                        : JSON.stringify(run.state['lastOutput'] ?? {});
                 run.updatedAt = now();
                 await this.repo.putRun(run);
                 this.events.emit(EVENTS.GRAPH_COMPLETED, { runId: run.id, steps: run.stepCount });
@@ -450,12 +493,19 @@ export class GraphService implements IGraphService {
         return run;
     }
 
-    private async executeNode(node: GraphDefinition['nodes'][number], run: GraphRun): Promise<string> {
+    private async executeNode(
+        node: GraphDefinition['nodes'][number],
+        run: GraphRun,
+    ): Promise<string> {
         const cfg = node.config ?? {};
         try {
             switch (node.kind) {
                 case 'task': {
-                    if (typeof cfg['forge'] === 'boolean' && cfg['forge'] && this.delegates.forgeDraft) {
+                    if (
+                        typeof cfg['forge'] === 'boolean' &&
+                        cfg['forge'] &&
+                        this.delegates.forgeDraft
+                    ) {
                         return await this.delegates.forgeDraft(String(cfg['topic'] ?? node.label));
                     }
                     if (this.llm) {
@@ -516,7 +566,8 @@ export class GraphService implements IGraphService {
                     if (child.status !== 'completed') {
                         throw new Error(`subgraph ${childId} ended ${child.status}`);
                     }
-                    const outKey = typeof cfg['outputKey'] === 'string' ? cfg['outputKey'] : undefined;
+                    const outKey =
+                        typeof cfg['outputKey'] === 'string' ? cfg['outputKey'] : undefined;
                     if (outKey) run.state[outKey] = child.result ?? '';
                     return `subgraph:${childId} → ${String(child.result ?? '').slice(0, 500)}`;
                 }
@@ -535,7 +586,9 @@ export class GraphService implements IGraphService {
             try {
                 return await this.llm.reflect({ visited: [...run.visited], state: run.state });
             } catch (e) {
-                LOGGER.warn('GraphService', 'llm reflect failed', { error: e instanceof Error ? e.message : String(e) });
+                LOGGER.warn('GraphService', 'llm reflect failed', {
+                    error: e instanceof Error ? e.message : String(e),
+                });
             }
         }
         const keys = Object.keys(run.state).filter((k) => !k.startsWith('out:'));
@@ -568,7 +621,11 @@ export class GraphService implements IGraphService {
             createdAt: now(),
         };
         await this.repo.putCheckpoint(cp);
-        this.events.emit(EVENTS.GRAPH_CHECKPOINT, { runId: run.id, stepIndex: cp.stepIndex, nodeId });
+        this.events.emit(EVENTS.GRAPH_CHECKPOINT, {
+            runId: run.id,
+            stepIndex: cp.stepIndex,
+            nodeId,
+        });
     }
 
     private async logDecision(
