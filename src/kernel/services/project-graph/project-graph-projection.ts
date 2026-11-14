@@ -20,21 +20,22 @@ export class ProjectGraphProjection {
 
         this.unsubscribe.push(
             eventBus.on(EVENTS.PROJECT_CREATED as never, (d) => {
-                const data = d as { id?: string; name?: string };
-                if (!data.id) return;
+                const data = d as { projectId?: string; id?: string; name?: string };
+                const projectId = data.projectId ?? data.id;
+                if (!projectId) return;
                 void this.graph
                     .upsertNode({
-                        projectId: data.id,
+                        projectId,
                         kind: 'project',
-                        label: data.name ?? data.id,
+                        label: data.name ?? projectId,
                         refType: 'project',
-                        refId: data.id,
+                        refId: projectId,
                     })
                     .then(() =>
                         this.graph.link({
-                            projectId: data.id!,
-                            from: data.id!,
-                            to: data.id!,
+                            projectId,
+                            from: projectId,
+                            to: projectId,
                             relation: 'contains',
                         }),
                     )
@@ -85,6 +86,62 @@ export class ProjectGraphProjection {
                         }
                     } catch (e) {
                         LOGGER.warn('ProjectGraphProjection', 'task node failed', { error: e });
+                    }
+                })();
+            }),
+        );
+
+        this.unsubscribe.push(
+            eventBus.on(EVENTS.PROJECT_DEBATE_STARTED as never, (d) => {
+                const data = d as {
+                    projectId?: string;
+                    debateId?: string;
+                    decision?: string;
+                };
+                if (!data.projectId || !data.debateId) return;
+                void (async () => {
+                    try {
+                        const debateNode = await this.graph.upsertNode({
+                            projectId: data.projectId!,
+                            kind: 'debate',
+                            label: data.decision ?? data.debateId!,
+                            refType: 'debate',
+                            refId: data.debateId,
+                        });
+                        await this.graph.link({
+                            projectId: data.projectId!,
+                            from: data.projectId!,
+                            to: debateNode.id,
+                            relation: 'contains',
+                        });
+                    } catch (e) {
+                        LOGGER.warn('ProjectGraphProjection', 'debate node failed', { error: e });
+                    }
+                })();
+            }),
+        );
+
+        this.unsubscribe.push(
+            eventBus.on(EVENTS.AUTONOMY_GOAL_CREATED as never, (d) => {
+                const data = d as { projectId?: string; goalId?: string; description?: string };
+                if (!data.projectId || !data.goalId) return;
+                void (async () => {
+                    try {
+                        const goalNode = await this.graph.upsertNode({
+                            projectId: data.projectId!,
+                            kind: 'goal',
+                            label: data.description ?? data.goalId!,
+                            refType: 'goal',
+                            refId: data.goalId,
+                        });
+                        await this.graph.link({
+                            projectId: data.projectId!,
+                            from: data.projectId!,
+                            to: goalNode.id,
+                            relation: 'contains',
+                        });
+                    } catch (e) {
+                        LOGGER.warn('ProjectGraphProjection', 'goal node failed', { error: e });
                     }
                 })();
             }),
