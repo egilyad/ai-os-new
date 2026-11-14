@@ -3,16 +3,16 @@
   "generatedBy": "scripts/gen-docs-inventory.mjs",
   "scope": "git-tracked markdown: docs/**/*.md (excluding docs/new drafts and the self-report pages docs-health, docs-inventory) plus repository entry docs (root *.md, .superagents/**, src/kernel/DEPENDENCY_MAP.md)",
   "totals": {
-    "documents": 516,
+    "documents": 518,
     "byCategory": {
       "repo": 10,
       "top": 116,
       "audits": 25,
-      "wiki": 365
+      "wiki": 367
     },
     "byLanguage": {
       "en": 39,
-      "mixed": 135,
+      "mixed": 137,
       "ru": 342
     }
   },
@@ -2099,6 +2099,14 @@
       "hash": "ce97a7b0a7f0c7134c6ecf7fa8bc5a39c6cf885f"
     },
     {
+      "path": "docs/wiki/dev-assistant-progress.md",
+      "category": "wiki",
+      "language": "mixed",
+      "title": "Assistant: статус реализации (M0–M2)",
+      "bytes": 2820,
+      "hash": "a37761f5c3f9554c14bdff30c564c204cf3a3057"
+    },
+    {
       "path": "docs/wiki/dev-boot.md",
       "category": "wiki",
       "language": "ru",
@@ -2409,6 +2417,14 @@
       "title": "Карта системы",
       "bytes": 7167,
       "hash": "c8d289899739c362b953656955ba8dab0ddb8b21"
+    },
+    {
+      "path": "docs/wiki/dev-tasks-agems-progress.md",
+      "category": "wiki",
+      "language": "mixed",
+      "title": "AGEMS Tasks: статус реализации (M0–M5)",
+      "bytes": 3381,
+      "hash": "a8598ed70777c353f3a2bbc6240df4793286c08a"
     },
     {
       "path": "docs/wiki/dev-testing.md",

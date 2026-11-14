@@ -30,9 +30,10 @@
 ### M2 — Delegation
 - `tasks.create` с agentId теперь создаёт handoff (TaskHandoffService).
 - `TaskExecutorDispatcher` — подписчик на AGENT_HANDOFF_INITIATED, accept при старте.
+- `invocation.run` (tool:exec) — запуск агента через Invocation Engine (agentId/role/expertise).
+- `agents.execute-group` (tool:exec) — выполнение группы (parallel/sequential/pipeline).
 
 ## Открытые вопросы
-- `invocation.run` и `agents.execute-group` (M2.3–M2.4).
 - Plan-execution loop и structured planner (M4).
 
 ---
