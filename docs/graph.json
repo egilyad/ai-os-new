@@ -3,22 +3,22 @@
   "generatedBy": "scripts/gen-docs-graph.mjs",
   "source": "docs/manifest.json",
   "stats": {
-    "nodes": 1598,
-    "edges": 2888,
+    "nodes": 1616,
+    "edges": 2918,
     "byType": {
       "audit": 25,
-      "code": 701,
-      "test": 237,
+      "code": 712,
+      "test": 242,
       "panel": 269,
-      "article": 366
+      "article": 368
     },
     "byKind": {
       "audit_test": 20,
       "audit_mention": 52,
       "documents": 267,
-      "test": 345,
-      "source": 999,
-      "related": 1205
+      "test": 353,
+      "source": 1014,
+      "related": 1212
     }
   },
   "nodes": [
@@ -216,6 +216,11 @@
       "id": "file:.superagents/memory/",
       "type": "code",
       "label": ".superagents/memory/"
+    },
+    {
+      "id": "file:cli/tasks-mcp-server.mjs",
+      "type": "code",
+      "label": "cli/tasks-mcp-server.mjs"
     },
     {
       "id": "file:Dockerfile",
@@ -486,6 +491,11 @@
       "id": "file:server/browser-sidecar.mjs",
       "type": "code",
       "label": "server/browser-sidecar.mjs"
+    },
+    {
+      "id": "file:server/tasks-router.mjs",
+      "type": "code",
+      "label": "server/tasks-router.mjs"
     },
     {
       "id": "file:src",
@@ -2223,6 +2233,11 @@
       "label": "src/kernel/dal/session-repository.ts"
     },
     {
+      "id": "file:src/kernel/dal/task-repository.ts",
+      "type": "code",
+      "label": "src/kernel/dal/task-repository.ts"
+    },
+    {
       "id": "file:src/kernel/dal/workspace-repository.test.ts",
       "type": "test",
       "label": "src/kernel/dal/workspace-repository.test.ts"
@@ -2371,6 +2386,11 @@
       "id": "file:src/kernel/service-registration/phase71-computer-use-loop.ts",
       "type": "code",
       "label": "src/kernel/service-registration/phase71-computer-use-loop.ts"
+    },
+    {
+      "id": "file:src/kernel/service-registration/phase78-assistant.ts",
+      "type": "code",
+      "label": "src/kernel/service-registration/phase78-assistant.ts"
     },
     {
       "id": "file:src/kernel/services",
@@ -2526,6 +2546,16 @@
       "id": "file:src/kernel/services/assistant/assistant-navigation-service.ts",
       "type": "code",
       "label": "src/kernel/services/assistant/assistant-navigation-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/assistant/assistant-ops-actions.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/assistant/assistant-ops-actions.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/assistant/assistant-ops-actions.ts",
+      "type": "code",
+      "label": "src/kernel/services/assistant/assistant-ops-actions.ts"
     },
     {
       "id": "file:src/kernel/services/assistant/assistant-service.test.ts",
@@ -4048,6 +4078,16 @@
       "label": "src/kernel/services/system-status-service.ts"
     },
     {
+      "id": "file:src/kernel/services/task-executor-dispatcher.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/task-executor-dispatcher.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/task-executor-dispatcher.ts",
+      "type": "code",
+      "label": "src/kernel/services/task-executor-dispatcher.ts"
+    },
+    {
       "id": "file:src/kernel/services/task-handoff.test.ts",
       "type": "test",
       "label": "src/kernel/services/task-handoff.test.ts"
@@ -4058,6 +4098,31 @@
       "label": "src/kernel/services/task-handoff.ts"
     },
     {
+      "id": "file:src/kernel/services/task-lock-sweeper-service.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/task-lock-sweeper-service.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/task-lock-sweeper-service.ts",
+      "type": "code",
+      "label": "src/kernel/services/task-lock-sweeper-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/task-scheduler-adapter.ts",
+      "type": "code",
+      "label": "src/kernel/services/task-scheduler-adapter.ts"
+    },
+    {
+      "id": "file:src/kernel/services/task-state-machine.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/task-state-machine.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/task-state-machine.ts",
+      "type": "code",
+      "label": "src/kernel/services/task-state-machine.ts"
+    },
+    {
       "id": "file:src/kernel/services/task-trigger-service.ts",
       "type": "code",
       "label": "src/kernel/services/task-trigger-service.ts"
@@ -4066,6 +4131,11 @@
       "id": "file:src/kernel/services/task-work-product-service.ts",
       "type": "code",
       "label": "src/kernel/services/task-work-product-service.ts"
+    },
+    {
+      "id": "file:src/kernel/services/tasks-sync.ts",
+      "type": "code",
+      "label": "src/kernel/services/tasks-sync.ts"
     },
     {
       "id": "file:src/kernel/services/telegram-service.test.ts",
@@ -4131,6 +4201,16 @@
       "id": "file:src/kernel/services/tool-loop-detector.ts",
       "type": "code",
       "label": "src/kernel/services/tool-loop-detector.ts"
+    },
+    {
+      "id": "file:src/kernel/services/tool-loop/tool-loop.test.ts",
+      "type": "test",
+      "label": "src/kernel/services/tool-loop/tool-loop.test.ts"
+    },
+    {
+      "id": "file:src/kernel/services/tool-loop/tool-loop.ts",
+      "type": "code",
+      "label": "src/kernel/services/tool-loop/tool-loop.ts"
     },
     {
       "id": "file:src/kernel/services/tool-repair-service.ts",
@@ -7541,6 +7621,13 @@
       "status": "verified"
     },
     {
+      "id": "wiki:dev-assistant-progress",
+      "type": "article",
+      "label": "Assistant: статус реализации (M0–M2)",
+      "section": "dev",
+      "status": "documented"
+    },
+    {
       "id": "wiki:dev-boot",
       "type": "article",
       "label": "Разработчикам: boot, DI и контейнер",
@@ -7812,6 +7899,13 @@
       "label": "Карта системы",
       "section": "architecture",
       "status": "verified"
+    },
+    {
+      "id": "wiki:dev-tasks-agems-progress",
+      "type": "article",
+      "label": "AGEMS Tasks: статус реализации (M0–M5)",
+      "section": "dev",
+      "status": "documented"
     },
     {
       "id": "wiki:dev-testing",
@@ -17155,6 +17249,66 @@
       "kind": "related"
     },
     {
+      "from": "wiki:dev-assistant-progress",
+      "to": "file:src/kernel/service-registration/phase78-assistant.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:dev-assistant-progress",
+      "to": "file:src/kernel/services/assistant/assistant-ops-actions.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:dev-assistant-progress",
+      "to": "file:src/kernel/services/assistant/assistant-ops-actions.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:dev-assistant-progress",
+      "to": "file:src/kernel/services/assistant/assistant-service.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:dev-assistant-progress",
+      "to": "file:src/kernel/services/assistant/assistant-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:dev-assistant-progress",
+      "to": "file:src/kernel/services/task-executor-dispatcher.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:dev-assistant-progress",
+      "to": "file:src/kernel/services/task-executor-dispatcher.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:dev-assistant-progress",
+      "to": "file:src/kernel/services/tool-loop/tool-loop.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:dev-assistant-progress",
+      "to": "file:src/kernel/services/tool-loop/tool-loop.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:dev-assistant-progress",
+      "to": "wiki:dev-tasks-agems-progress",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-assistant-progress",
+      "to": "wiki:panel-assistant-admin",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-assistant-progress",
+      "to": "wiki:panel-assistant",
+      "kind": "related"
+    },
+    {
       "from": "wiki:dev-boot",
       "to": "file:src/kernel/bootstrap-phases.ts",
       "kind": "source"
@@ -18567,6 +18721,96 @@
     {
       "from": "wiki:dev-system-map",
       "to": "wiki:panel-infra-meta",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-tasks-agems-progress",
+      "to": "file:cli/tasks-mcp-server.mjs",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:dev-tasks-agems-progress",
+      "to": "file:server/tasks-router.mjs",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:dev-tasks-agems-progress",
+      "to": "file:src/kernel/dal/task-repository.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:dev-tasks-agems-progress",
+      "to": "file:src/kernel/services/agems-task-service.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:dev-tasks-agems-progress",
+      "to": "file:src/kernel/services/agems-task-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:dev-tasks-agems-progress",
+      "to": "file:src/kernel/services/task-executor-dispatcher.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:dev-tasks-agems-progress",
+      "to": "file:src/kernel/services/task-executor-dispatcher.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:dev-tasks-agems-progress",
+      "to": "file:src/kernel/services/task-lock-sweeper-service.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:dev-tasks-agems-progress",
+      "to": "file:src/kernel/services/task-lock-sweeper-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:dev-tasks-agems-progress",
+      "to": "file:src/kernel/services/task-scheduler-adapter.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:dev-tasks-agems-progress",
+      "to": "file:src/kernel/services/task-state-machine.test.ts",
+      "kind": "test"
+    },
+    {
+      "from": "wiki:dev-tasks-agems-progress",
+      "to": "file:src/kernel/services/task-state-machine.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:dev-tasks-agems-progress",
+      "to": "file:src/kernel/services/task-trigger-service.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:dev-tasks-agems-progress",
+      "to": "file:src/kernel/services/tasks-sync.ts",
+      "kind": "source"
+    },
+    {
+      "from": "wiki:dev-tasks-agems-progress",
+      "to": "wiki:comp-task-planning",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-tasks-agems-progress",
+      "to": "wiki:dev-codebase-memory-mcp",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-tasks-agems-progress",
+      "to": "wiki:dev-opencode-memory",
+      "kind": "related"
+    },
+    {
+      "from": "wiki:dev-tasks-agems-progress",
+      "to": "wiki:panel-tasks",
       "kind": "related"
     },
     {

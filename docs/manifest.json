@@ -65,7 +65,7 @@
     {
       "id": "dev",
       "title": "Разработчикам",
-      "articles": 65
+      "articles": 67
     }
   ],
   "articles": [
@@ -7330,6 +7330,80 @@
       ],
       "reviewed": null,
       "tests": []
+    },
+    {
+      "id": "wiki:dev-tasks-agems-progress",
+      "type": "article",
+      "slug": "dev-tasks-agems-progress",
+      "title": "AGEMS Tasks: статус реализации (M0–M5)",
+      "section": "dev",
+      "status": "documented",
+      "tags": [
+        "dev",
+        "tasks",
+        "agems",
+        "roadmap",
+        "статус"
+      ],
+      "sources": [
+        "src/kernel/services/agems-task-service.ts",
+        "src/kernel/services/task-state-machine.ts",
+        "src/kernel/services/task-lock-sweeper-service.ts",
+        "src/kernel/services/task-scheduler-adapter.ts",
+        "src/kernel/services/task-trigger-service.ts",
+        "src/kernel/services/tasks-sync.ts",
+        "src/kernel/dal/task-repository.ts",
+        "server/tasks-router.mjs",
+        "cli/tasks-mcp-server.mjs",
+        "src/kernel/services/task-executor-dispatcher.ts"
+      ],
+      "related": [
+        "panel-tasks",
+        "comp-task-planning",
+        "dev-opencode-memory",
+        "dev-codebase-memory-mcp"
+      ],
+      "reviewed": null,
+      "tests": [
+        "src/kernel/services/agems-task-service.test.ts",
+        "src/kernel/services/task-state-machine.test.ts",
+        "src/kernel/services/task-lock-sweeper-service.test.ts",
+        "src/kernel/services/task-executor-dispatcher.test.ts"
+      ]
+    },
+    {
+      "id": "wiki:dev-assistant-progress",
+      "type": "article",
+      "slug": "dev-assistant-progress",
+      "title": "Assistant: статус реализации (M0–M2)",
+      "section": "dev",
+      "status": "documented",
+      "tags": [
+        "dev",
+        "assistant",
+        "safety",
+        "roadmap",
+        "статус"
+      ],
+      "sources": [
+        "src/kernel/services/assistant/assistant-service.ts",
+        "src/kernel/services/tool-loop/tool-loop.ts",
+        "src/kernel/services/task-executor-dispatcher.ts",
+        "src/kernel/services/assistant/assistant-ops-actions.ts",
+        "src/kernel/service-registration/phase78-assistant.ts"
+      ],
+      "related": [
+        "panel-assistant",
+        "panel-assistant-admin",
+        "dev-tasks-agems-progress"
+      ],
+      "reviewed": null,
+      "tests": [
+        "src/kernel/services/assistant/assistant-service.test.ts",
+        "src/kernel/services/tool-loop/tool-loop.test.ts",
+        "src/kernel/services/task-executor-dispatcher.test.ts",
+        "src/kernel/services/assistant/assistant-ops-actions.test.ts"
+      ]
     },
     {
       "id": "wiki:dev-deepwiki",

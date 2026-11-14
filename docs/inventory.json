@@ -2055,8 +2055,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Матрица покрытия",
-      "bytes": 8488,
-      "hash": "d21ca9ec1d5dfd368d5f16587fc59ce4ca236ae7"
+      "bytes": 8489,
+      "hash": "692af8c6e983843b75086465f67ec94d3741e446"
     },
     {
       "path": "docs/wiki/debate-strategies-cheatsheet.md",
@@ -2112,7 +2112,7 @@
       "language": "ru",
       "title": "Проверки и показатели",
       "bytes": 4076,
-      "hash": "a5cafcc27962ab018ace544cd07653f93f0fe88d"
+      "hash": "711b203281fc7e90dfa3762ac4d528645d76f7ec"
     },
     {
       "path": "docs/wiki/dev-ci.md",
@@ -2215,8 +2215,8 @@
       "category": "wiki",
       "language": "ru",
       "title": "Граф знаний",
-      "bytes": 4835,
-      "hash": "78ad2f0be8ba2a6da57db21d449ccc3e237cc5e0"
+      "bytes": 4836,
+      "hash": "30057955ddca63be0b0128a04b617ff3f4c62ca7"
     },
     {
       "path": "docs/wiki/dev-history.md",
@@ -2439,8 +2439,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Карта документации",
-      "bytes": 57012,
-      "hash": "68348e6b405d19ef318ba45bfc7bf3bd3bb18307"
+      "bytes": 57194,
+      "hash": "4a60ad9c5f674685c221ff373e7b0939e1d861a8"
     },
     {
       "path": "docs/wiki/docs-standard.md",
@@ -3335,8 +3335,8 @@
       "category": "wiki",
       "language": "mixed",
       "title": "Wiki SuperAgents OS",
-      "bytes": 36468,
-      "hash": "3a2de999338594964d22b6fdd073709936adc6fb"
+      "bytes": 36682,
+      "hash": "30584cc513a15b65949f36f2607c046aa6101626"
     },
     {
       "path": "docs/wiki/record-a-skill.md",
